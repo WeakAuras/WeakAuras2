@@ -624,9 +624,28 @@ hooksecurefunc("SetItemRef", function(link, text)
   end
 end);
 
+local compressedTablesCache = {}
+
 function TableToString(inTable, forChat)
   local serialized = Serializer:Serialize(inTable)
-  local compressed = LibDeflate:CompressDeflate(serialized, configForDeflate)
+  local compressed
+  -- get from / add to cache
+  if compressedTablesCache[serialized] then
+    compressed = compressedTablesCache[serialized].compressed
+    compressedTablesCache[serialized].lastAccess = time()
+  else
+    compressed = LibDeflate:CompressDeflate(serialized, configForDeflate)
+    compressedTablesCache[serialized] = {
+      compressed = compressed,
+      lastAccess = time(),
+    }
+  end
+  -- remove cache items after 5 minutes
+  for k, v in pairs(compressedTablesCache) do
+    if v.lastAccess < (time() - 300) then
+      compressedTablesCache[k] = nil
+    end
+  end
   -- prepend with "!" so that we know that it is not a legacy compression
   -- also this way, old versions of weakauras will error out due to the "bad" encoding
   local encoded = "!"
