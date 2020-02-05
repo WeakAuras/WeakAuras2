@@ -974,6 +974,16 @@ WeakAuras.texture_types = {
     ["Legionfall_BarSpark"]= "Blizzard Legionfall Spark",
     ["honorsystem-bar-spark"] = "Blizzard Honor System Spark",
     ["bonusobjectives-bar-spark"] = "Bonus Objectives Spark"
+  },
+  [BINDING_HEADER_RAID_TARGET] = {
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_1"] = RAID_TARGET_1,
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_2"] = RAID_TARGET_2,
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_3"] = RAID_TARGET_3,
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_4"] = RAID_TARGET_4,
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_5"] = RAID_TARGET_5,
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_6"] = RAID_TARGET_6,
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_7"] = RAID_TARGET_7,
+    ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_8"] = RAID_TARGET_8,
   }
 }
 local BuildInfo = select(4, GetBuildInfo())
