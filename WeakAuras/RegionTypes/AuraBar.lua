@@ -860,6 +860,7 @@ local function modify(parent, region, data)
   region.flipX = false
   region.flipY = false
   region.orientation = data.orientation
+  region.effectiveOrientation = nil
 
   region.overlayclip = data.overlayclip;
 
