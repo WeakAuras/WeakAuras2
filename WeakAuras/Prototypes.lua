@@ -1071,7 +1071,7 @@ WeakAuras.load_prototype = {
       type = "multiselect",
       values = valuesForTalentFunction,
       test = "WeakAuras.CheckTalentByIndex(%d)",
-      events = {"PLAYER_TALENT_UPDATE"}
+      events = WeakAuras.IsClassic() and {"CHARACTER_POINTS_CHANGED"} or {"PLAYER_TALENT_UPDATE"}
     },
     {
       name = "talent2",
@@ -1082,7 +1082,7 @@ WeakAuras.load_prototype = {
       enable = function(trigger)
         return trigger.use_talent ~= nil or trigger.use_talent2 ~= nil;
       end,
-      events = {"PLAYER_TALENT_UPDATE"}
+      events = WeakAuras.IsClassic() and {"CHARACTER_POINTS_CHANGED"} or {"PLAYER_TALENT_UPDATE"}
     },
     {
       name = "talent3",
@@ -1093,7 +1093,7 @@ WeakAuras.load_prototype = {
       enable = function(trigger)
         return (trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil;
       end,
-      events = {"PLAYER_TALENT_UPDATE"}
+      events = WeakAuras.IsClassic() and {"CHARACTER_POINTS_CHANGED"} or {"PLAYER_TALENT_UPDATE"}
     },
     {
       name = "pvptalent",
@@ -4098,7 +4098,7 @@ WeakAuras.event_prototypes = {
         ["events"] = events
       }
     end,
-    force_events = "PLAYER_TALENT_UPDATE",
+    force_events = WeakAuras.IsClassic() and "CHARACTER_POINTS_CHANGED" or "PLAYER_TALENT_UPDATE",
     name = L["Talent Selected"],
     init = function(trigger)
       local inverse = trigger.use_inverse;
