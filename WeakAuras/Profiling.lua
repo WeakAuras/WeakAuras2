@@ -464,7 +464,7 @@ function RealTimeProfilingWindow:GetBar(name)
 end
 
 function RealTimeProfilingWindow:RefreshBars()
-  if not profileData.systems.time then
+  if not profileData.systems.time or profileData.systems.time.count == 0 then
     return
   end
 
@@ -481,7 +481,11 @@ function RealTimeProfilingWindow:RefreshBars()
   end
   if profileData.systems.wa then
     local timespent = debugprofilestop() - profileData.systems.time.start
-    self.statsFrameText:SetText(("Time in WeakAuras: %.2f%%"):format(100 * profileData.systems.wa.elapsed / timespent))
+    self.statsFrameText:SetText(("Time in WA: %.2fs / %ds (%.1f%%)"):format(
+      profileData.systems.wa.elapsed / 1000,
+      timespent / 1000,
+      100 * profileData.systems.wa.elapsed / timespent
+    ))
   end
 end
 
