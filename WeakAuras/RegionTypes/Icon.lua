@@ -104,8 +104,6 @@ local function GetTexCoord(region, texWidth, aspectRatio)
   region.currentCoord = region.currentCoord or {}
   local usesMasque = false
   if region.MSQGroup then
-    region.MSQGroup:ReSkin();
-
     local db = region.MSQGroup.db
     if db and not db.Disabled then
       usesMasque = true
@@ -309,6 +307,11 @@ local function modify(parent, region, data)
       else
         aspectRatio = width / height;
       end
+    end
+
+    if region.MSQGroup then
+      region.MSQGroup:RemoveButton(button)
+      region.MSQGroup:AddButton(button, {Icon = icon, Cooldown = cooldown}, "WA_Aura", true)
     end
 
     local ulx, uly, llx, lly, urx, ury, lrx, lry = GetTexCoord(region, texWidth, aspectRatio)
