@@ -1933,7 +1933,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
           end
         end
         skipSubOptions = #values == 0
-        local buttonWidth = 0.60
+        local buttonWidth = 0.75
         if option.limitType == "fixed" then
           buttonWidth = buttonWidth - 0.30
         end
@@ -1968,6 +1968,27 @@ local function addUserModeOption(options, args, data, order, prefix, i)
             end
             WeakAuras.ReloadTriggerOptions(data)
           end,
+        }
+        args[prefix .. "resetEntry"] = {
+          type = "execute",
+          name = L["Reset Entry"],
+          order = order(),
+          func = function()
+            for id, optionData in pairs(option.references) do
+              local childOption = optionData.options[optionData.index]
+              local childData = optionData.data
+              local childPage = getPage(id, optionData.path)
+              local childConfigList = optionData.config[childOption.key]
+              childConfigList[childPage] = {}
+              WeakAuras.Add(childData)
+            end
+            WeakAuras.ReloadTriggerOptions(data)
+          end,
+          width = 0.15,
+          image = "Interface\\Addons\\WeakAuras\\Media\\Textures\\reset",
+          imageWidth = 18,
+          imageHeight = 18,
+          control = "WeakAurasIcon"
         }
         if option.limitType ~= "fixed" then
           args[prefix .. "createEntry"] = {
