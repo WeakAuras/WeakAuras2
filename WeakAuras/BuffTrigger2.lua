@@ -1140,7 +1140,7 @@ local function CleanUpOutdatedMatchData(time, unit, filter)
   -- Figure out if any matchData is outdated
   if matchData[unit] and matchData[unit][filter] then
     for index, data in pairs(matchData[unit][filter]) do
-      if data.time < time then
+      if data.time < time or not UnitExistsFixed(unit) then
          matchData[unit][filter][index] = nil
          for id, triggerData in pairs(data.auras) do
            for triggernum in pairs(triggerData) do
