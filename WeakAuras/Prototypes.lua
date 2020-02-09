@@ -114,6 +114,10 @@ local zoneId_list = ""
 local zoneGroupId_list = ""
 function WeakAuras.InitializeEncounterAndZoneLists()
   if WeakAuras.IsClassic() then return "" end
+  if encounter_list ~= "" then
+    return
+  end
+
   EJ_SelectTier(EJ_GetNumTiers())
 
   for _, inRaid in ipairs({false, true}) do
