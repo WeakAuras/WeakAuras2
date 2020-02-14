@@ -45,4 +45,5 @@ ignore:
 move-folders:
   WeakAuras/WeakAuras: WeakAuras
   WeakAuras/WeakAurasOptions: WeakAurasOptions
+  WeakAuras/WeakAurasTemplates: WeakAurasTemplates
   WeakAuras/WeakAurasArchive: WeakAurasArchive
