@@ -2197,6 +2197,16 @@ function WeakAuras.RegisterLoadEvents()
     WeakAuras.StopProfileSystem("load");
   end);
 
+  C_Timer.NewTicker(0.5, function()
+    WeakAuras.StartProfileSystem("load");
+    local zoneId = C_Map.GetBestMapForUnit("player");
+    if loadFrame.zoneId ~= zoneId then
+      WeakAuras.ScanForLoads(nil, "ZONE_CHANGED")
+      loadFrame.zoneId = zoneId;
+    end
+    WeakAuras.StopProfileSystem("load");
+  end)
+
   unitLoadFrame:SetScript("OnEvent", function(frame, e, arg1, ...)
     WeakAuras.StartProfileSystem("load");
     if (arg1 == "player") then
