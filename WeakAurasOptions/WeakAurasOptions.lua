@@ -406,7 +406,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       else
         options["use_"..name] = {
           type = "toggle",
-          width = WeakAuras.normalWidth,
+          width = arg.width or WeakAuras.normalWidth,
           name = arg.display,
           order = order,
           hidden = hidden,

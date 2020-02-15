@@ -3105,29 +3105,51 @@ end
 -- Player Moving
 do
   local playerMovingFrame = nil
-  WeakAuras.frames["Player Moving Frame"] =  playerMovingFrame;
   local moving;
+
+  local function PlayerMoveUpdate(self, event)
+    WeakAuras.StartProfileSystem("generictrigger");
+    -- channeling e.g. Mind Flay results in lots of PLAYER_STARTED_MOVING, PLAYER_STOPPED_MOVING
+    -- for each frame
+    -- So check after 0.01 s if IsPlayerMoving() actually returns something different.
+    timer:ScheduleTimer(function()
+      WeakAuras.StartProfileSystem("generictrigger");
+      if (moving ~= IsPlayerMoving() or moving == nil) then
+        moving = IsPlayerMoving();
+        WeakAuras.ScanEvents("PLAYER_MOVING_UPDATE")
+      end
+      WeakAuras.StopProfileSystem("generictrigger");
+    end, 0.01);
+    WeakAuras.StopProfileSystem("generictrigger");
+  end
+
+  local function PlayerMoveSpeedUpdate()
+    WeakAuras.StartProfileSystem("generictrigger");
+    local speed = GetUnitSpeed("player")
+    if speed ~= playerMovingFrame.speed then
+      playerMovingFrame.speed = speed
+      WeakAuras.ScanEvents("PLAYER_MOVE_SPEED_UPDATE")
+    end
+    WeakAuras.StopProfileSystem("generictrigger");
+  end
+
   function WeakAuras.WatchForPlayerMoving()
     if not(playerMovingFrame) then
       playerMovingFrame = CreateFrame("frame");
-      playerMovingFrame:RegisterEvent("PLAYER_STARTED_MOVING");
-      playerMovingFrame:RegisterEvent("PLAYER_STOPPED_MOVING");
-      playerMovingFrame:SetScript("OnEvent", function(self, event)
-        WeakAuras.StartProfileSystem("generictrigger");
-        -- channeling e.g. Mind Flay results in lots of PLAYER_STARTED_MOVING, PLAYER_STOPPED_MOVING
-        -- for each frame
-        -- So check after 0.01 s if IsPlayerMoving() actually returns something different.
-        timer:ScheduleTimer(function()
-          WeakAuras.StartProfileSystem("generictrigger");
-          if (moving ~= IsPlayerMoving() or moving == nil) then
-            moving = IsPlayerMoving();
-            WeakAuras.ScanEvents("PLAYER_MOVING_UPDATE");
-          end
-          WeakAuras.StopProfileSystem("generictrigger");
-        end, 0.01);
-        WeakAuras.StopProfileSystem("generictrigger");
-      end)
+      WeakAuras.frames["Player Moving Frame"] =  playerMovingFrame;
     end
+    playerMovingFrame:RegisterEvent("PLAYER_STARTED_MOVING");
+    playerMovingFrame:RegisterEvent("PLAYER_STOPPED_MOVING");
+    playerMovingFrame:SetScript("OnEvent", PlayerMoveUpdate)
+  end
+
+  function WeakAuras.WatchPlayerMoveSpeed()
+    if not(playerMovingFrame) then
+      playerMovingFrame = CreateFrame("frame");
+      WeakAuras.frames["Player Moving Frame"] =  playerMovingFrame;
+    end
+    playerMovingFrame.speed = GetUnitSpeed("player")
+    playerMovingFrame:SetScript("OnUpdate", PlayerMoveSpeedUpdate)
   end
 end
 

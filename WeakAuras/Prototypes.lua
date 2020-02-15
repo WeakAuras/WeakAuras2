@@ -5567,12 +5567,18 @@ WeakAuras.event_prototypes = {
         ["player"] = {"UNIT_STATS"}
       }
     },
-    internal_events = {
-      "WA_DELAYED_PLAYER_ENTERING_WORLD",
-      "PLAYER_MOVING_UPDATE"
-    },
-    loadFunc = function()
-      WeakAuras.WatchForPlayerMoving();
+    internal_events = function(trigger, untrigger)
+      local events = { "WA_DELAYED_PLAYER_ENTERING_WORLD", "PLAYER_MOVING_UPDATE" }
+      if trigger.use_moveSpeed then
+        tinsert(events, "PLAYER_MOVE_SPEED_UPDATE")
+      end
+      return events
+    end,
+    loadFunc = function(trigger)
+      if trigger.use_moveSpeed then
+        WeakAuras.WatchPlayerMoveSpeed()
+      end
+      WeakAuras.WatchForPlayerMoving()
     end,
     init = function()
       local ret = [[
@@ -5801,6 +5807,13 @@ WeakAuras.event_prototypes = {
         hidden = WeakAuras.IsClassic()
       },
       {
+        name = "moveSpeed",
+        display = L["Continously update Movement Speed"],
+        type = "boolean",
+        test = true,
+        width = WeakAuras.doubleWidth
+      },
+      {
         name = "movespeedpercent",
         display = L["Movement Speed (%)"],
         type = "number",
@@ -5989,7 +6002,6 @@ WeakAuras.event_prototypes = {
     force_events = "CONDITIONS_CHECK",
     name = L["Conditions"],
     loadFunc = function(trigger)
-
       if (trigger.use_ismoving ~= nil) then
         WeakAuras.WatchForPlayerMoving();
       end
