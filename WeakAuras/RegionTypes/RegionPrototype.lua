@@ -380,6 +380,7 @@ local function SetRegionAlpha(self, alpha)
 
   self.alpha = alpha;
   self:SetAlpha(self.animAlpha or self.alpha or 1);
+  self.subRegionEvents:Notify("AlphaChanged")
 end
 
 local function GetRegionAlpha(self)
@@ -392,6 +393,7 @@ local function SetAnimAlpha(self, alpha)
   end
   self.animAlpha = alpha;
   self:SetAlpha(self.animAlpha or self.alpha or 1);
+  self.subRegionEvents:Notify("AlphaChanged")
 end
 
 local function SetTriggerProvidesTimer(self, timerTick)
