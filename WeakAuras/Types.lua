@@ -1709,6 +1709,8 @@ WeakAuras.item_slot_types = {
   [13] = TRINKET0SLOT_UNIQUE,
   [14] = TRINKET1SLOT_UNIQUE,
   [15] = BACKSLOT,
+  [16] = MAINHANDSLOT,
+  [17] = SECONDARYHANDSLOT,
   [19] = TABARDSLOT
 }
 
@@ -2228,8 +2230,6 @@ if WeakAuras.IsClassic() then
   WeakAuras.actual_unit_types.focus = nil
   WeakAuras.unit_types_range_check.focus = nil
   WeakAuras.item_slot_types[0] = AMMOSLOT
-  WeakAuras.item_slot_types[16] = MAINHANDSLOT
-  WeakAuras.item_slot_types[17] = SECONDARYHANDSLOT
   WeakAuras.item_slot_types[18] = RANGEDSLOT
 
   local reset_swing_spell_list = {
