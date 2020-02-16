@@ -2167,7 +2167,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
         for id, optionData in pairs(option.references) do
           if value == nil then
             value = optionData.config[option.key][k]
-          elseif value ~= optionData.config[option.key] then
+          elseif value ~= optionData.config[option.key][k] then
             return
           end
         end
