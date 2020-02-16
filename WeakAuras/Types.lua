@@ -158,7 +158,9 @@ WeakAuras.actual_unit_types_cast = {
   player = L["Player"],
   target = L["Target"],
   focus = L["Focus"],
-  group = L["Group"],
+  group = L["Smart Group"],
+  party = L["Party"],
+  raid = L["Raid"],
   boss = L["Boss"],
   arena = L["Arena"],
   nameplate = L["Nameplate"],
@@ -2166,17 +2168,36 @@ WeakAuras.multiUnitId = {
   ["boss"] = true,
   ["arena"] = true,
   ["group"] = true,
+  ["party"] = true,
+  ["raid"] = true,
 }
+
+WeakAuras.multiUnitUnits = {
+  ["nameplate"] = {},
+  ["boss"] = {},
+  ["arena"] = {},
+  ["group"] = {},
+  ["party"] = {},
+  ["raid"] = {}
+}
+
+
+WeakAuras.multiUnitUnits.group["player"] = true
+WeakAuras.multiUnitUnits.party["player"] = true
 
 for i = 1, 4 do
   WeakAuras.baseUnitId["party"..i] = true
   WeakAuras.baseUnitId["partypet"..i] = true
+  WeakAuras.multiUnitUnits.group["party"..i] = true
+  WeakAuras.multiUnitUnits.party["party"..i] = true
 end
 
 if not WeakAuras.IsClassic() then
   for i = 1, 5 do
     WeakAuras.baseUnitId["arena"..i] = true
     WeakAuras.baseUnitId["boss"..i] = true
+    WeakAuras.multiUnitUnits.arena["arena"..i] = true
+    WeakAuras.multiUnitUnits.boss["boss"..i] = true
   end
 end
 
@@ -2184,6 +2205,9 @@ for i = 1, 40 do
   WeakAuras.baseUnitId["raid"..i] = true
   WeakAuras.baseUnitId["raidpet"..i] = true
   WeakAuras.baseUnitId["nameplate"..i] = true
+  WeakAuras.multiUnitUnits.nameplate["nameplate"..i] = true
+  WeakAuras.multiUnitUnits.group["raid"..i] = true
+  WeakAuras.multiUnitUnits.raid["raid"..i] = true
 end
 
 WeakAuras.dbm_types = {
