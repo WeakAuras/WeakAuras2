@@ -5,4 +5,7 @@
   <Binding name="WEAKAURASPROFILINGTOGGLE" Category="ADDONS">
     WeakAuras.RealTimeProfilingWindow:Toggle()
   </Binding>
+  <Binding name="WEAKAURASPRINTPROFILING" Category="ADDONS">
+    WeakAuras.PrintProfile()
+  </Binding>
 </Bindings>
