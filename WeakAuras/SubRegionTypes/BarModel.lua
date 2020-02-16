@@ -163,6 +163,9 @@ local funcs = {
     end
     self.alpha = alpha
   end,
+  AlphaChanged = function(self)
+    self:SetAlpha(self.alpha)
+  end
 }
 
 local function modify(parent, region, parentData, data, first)
@@ -193,6 +196,8 @@ local function modify(parent, region, parentData, data, first)
 
   region:SetAlpha(data.bar_model_alpha)
   region:SetVisible(data.bar_model_visible)
+
+  parent.subRegionEvents:AddSubscriber("AlphaChanged", region)
 end
 
 local function supports(regionType)
