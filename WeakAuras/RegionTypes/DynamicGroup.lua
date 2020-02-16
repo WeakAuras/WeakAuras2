@@ -382,7 +382,7 @@ local function createAnchorPerUnitFunc(data)
 end
 
 local function getDimension(regionData, dim)
-  return regionData.data[dim] or regionData.region[dim]
+  return regionData.dimensions[dim]
 end
 
 local growers = {
@@ -407,7 +407,7 @@ local growers = {
         for i, regionData in ipairs(regionDatas) do
           if i <= numVisible then
             newPositions[frame][regionData] = { x, y, true }
-            x = x - (regionData.data.width or regionData.region.width) - space
+            x = x - regionData.dimensions.width - space
             y = y - stagger
           end
         end
@@ -435,7 +435,7 @@ local growers = {
         for i, regionData in ipairs(regionDatas) do
           if i <= numVisible then
             newPositions[frame][regionData] = { x, y, true }
-            x = x + (regionData.data.width or regionData.region.width) + space
+            x = x + (regionData.dimensions.width) + space
             y = y + stagger
           end
         end
@@ -464,7 +464,7 @@ local growers = {
           if i <= numVisible then
             newPositions[frame][regionData] = { x, y, true }
             x = x + stagger
-            y = y + (regionData.data.height or regionData.region.height) + space
+            y = y + (regionData.dimensions.height) + space
           end
         end
       end
@@ -492,7 +492,7 @@ local growers = {
           if i <= numVisible then
             newPositions[frame][regionData] = { x, y, true }
             x = x + stagger
-            y = y - (regionData.data.height or regionData.region.height) - space
+            y = y - (regionData.dimensions.height) - space
           end
         end
       end
@@ -516,15 +516,15 @@ local growers = {
         local totalWidth = (numVisible - 1) * space
         for i = 1, numVisible do
           local regionData = regionDatas[i]
-          totalWidth = totalWidth + (regionData.data.width or regionData.region.width)
+          totalWidth = totalWidth + (regionData.dimensions.width)
         end
         local x, y = midX - totalWidth/2, midY - (stagger * (numVisible - 1)/2)
         newPositions[frame] = {}
         for i, regionData in ipairs(regionDatas) do
           if i <= numVisible then
-            x = x + (regionData.data.width or regionData.region.width) / 2
+            x = x + (regionData.dimensions.width) / 2
             newPositions[frame][regionData] = { x, y, true }
-            x = x + (regionData.data.width or regionData.region.width) / 2 + space
+            x = x + (regionData.dimensions.width) / 2 + space
             y = y + stagger
           end
         end
@@ -549,16 +549,16 @@ local growers = {
         local totalHeight = (numVisible - 1) * space
         for i = 1, numVisible do
           local regionData = regionDatas[i]
-          totalHeight = totalHeight + (regionData.data.height or regionData.region.height)
+          totalHeight = totalHeight + (regionData.dimensions.height)
         end
         local x, y = midX - (stagger * (numVisible - 1)/2), midY - totalHeight/2
         newPositions[frame] = {}
         for i, regionData in ipairs(regionDatas) do
           if i <= numVisible then
-            y = y + (regionData.data.height or regionData.region.height) / 2
+            y = y + (regionData.dimensions.height) / 2
             newPositions[frame][regionData] = { x, y, true }
             x = x + stagger
-            y = y + (regionData.data.height or regionData.region.height) / 2 + space
+            y = y + (regionData.dimensions.height) / 2 + space
           end
         end
       end
@@ -821,6 +821,13 @@ local function modify(parent, region, data)
       dataIndex = dataIndex,
       controlPoint = controlPoint,
     }
+
+    if childData.regionType == "text" then
+      regionData.dimensions = childRegion
+    else
+      regionData.dimensions = childData
+    end
+
     controlPoint.regionData = regionData
     childRegion:SetParent(controlPoint)
     region.controlledChildren[childID] = region.controlledChildren[childID] or {}
@@ -1034,8 +1041,8 @@ local function modify(parent, region, data)
         x + data.xOffset, y + data.yOffset
       )
       controlPoint:SetShown(show)
-      controlPoint:SetWidth(regionData.data.width or regionData.region.width)
-      controlPoint:SetHeight(regionData.data.height or regionData.region.height)
+      controlPoint:SetWidth(regionData.dimensions.width)
+      controlPoint:SetHeight(regionData.dimensions.height)
       if animate then
         WeakAuras.CancelAnimation(regionData.controlPoint, true)
         local xPrev = regionData.xOffset or x
