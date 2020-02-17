@@ -4510,6 +4510,7 @@ else
         title = L["Abilities"],
         args = {
           { spell = 131347, type = "ability"}, -- Glide
+          { spell = 162794, type = "ability", requiresTarget = true, usable = true}, -- Chaos Strike
           { spell = 179057, type = "ability"}, -- Chaos Nova
           { spell = 183752, type = "ability", requiresTarget = true}, -- Disrupt
           { spell = 185123, type = "ability", requiresTarget = true}, -- Throw Glaive
