@@ -457,6 +457,7 @@ local function modify(parent, region, data)
     region:UpdateTexCoords();
   end
 
+  cooldown:Hide()
   if(data.cooldown) then
     function region:SetValue(value, total)
       cooldown.duration = 0
@@ -523,7 +524,6 @@ local function modify(parent, region, data)
       region:SetIcon(state.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
     end
   else
-    cooldown:Hide();
     region.SetValue = nil
     region.SetTime = nil
 
