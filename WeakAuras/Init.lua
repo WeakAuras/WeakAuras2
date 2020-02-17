@@ -1,5 +1,6 @@
 WeakAuras = {}
 WeakAuras.L = {}
+WeakAuras.frames = {}
 
 WeakAuras.normalWidth = 1.25
 WeakAuras.halfWidth = WeakAuras.normalWidth / 2
