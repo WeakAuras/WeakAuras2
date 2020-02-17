@@ -464,7 +464,7 @@ local function modify(parent, region, data)
     end
 
     function region:SetTime(duration, expirationTime)
-      if (duration > 0) then
+      if (duration > 0 and expirationTime > GetTime()) then
         cooldown:Show();
         cooldown.expirationTime = expirationTime;
         cooldown.duration = duration;
