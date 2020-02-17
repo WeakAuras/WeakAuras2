@@ -234,6 +234,7 @@ local function create(parent, data)
   local cooldown = CreateFrame("COOLDOWN", "WeakAurasCooldown"..frameId, region, "CooldownFrameTemplate");
   region.cooldown = cooldown;
   cooldown:SetAllPoints(icon);
+  cooldown:SetDrawBling(false)
 
   region.values = {};
 
