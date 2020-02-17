@@ -376,7 +376,7 @@ RealTimeProfilingWindow:Hide()
 WeakAuras.RealTimeProfilingWindow = RealTimeProfilingWindow
 
 local texture = "Interface\\DialogFrame\\UI-DialogBox-Background"
-
+local margin = 5
 function RealTimeProfilingWindow:GetBar(name)
   if self.bars[name] then
     return self.bars[name]
@@ -410,14 +410,14 @@ function RealTimeProfilingWindow:GetBar(name)
 
     local txtName = bar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     bar.txtName = txtName
-    txtName:SetPoint("TOPLEFT", bar, "TOPLEFT")
-    txtName:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", -30)
+    txtName:SetPoint("TOPLEFT", bar, "TOPLEFT", margin, 0)
+    txtName:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", -30, 0)
     txtName:SetJustifyH("LEFT")
 
     local txtPct = bar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     bar.txtPct = txtPct
-    txtPct:SetPoint("TOPLEFT", bar, "TOPRIGHT", -50, 0)
-    txtPct:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT")
+    txtPct:SetPoint("TOPLEFT", bar, "TOPRIGHT", -55, 0)
+    txtPct:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", - margin, 0)
     txtPct:SetJustifyH("RIGHT")
 
     function bar:SetValue(value)
@@ -449,10 +449,10 @@ function RealTimeProfilingWindow:GetBar(name)
         self:ClearAllPoints()
         self:SetPoint("TOPLEFT", self.parent.barsFrame, "TOPLEFT", 0, - (pos - 1) * self.parent.barHeight)
         if pos % 2 == 0 then
-          bar.fg:SetColorTexture(1, 1, 1, 0.7)
+          bar.fg:SetColorTexture(0.7, 0.7, 0.7, 0.7)
           bar.bg:SetColorTexture(0, 0, 0, 0.2)
         else
-          bar.fg:SetColorTexture(1, 1, 1, 0.9)
+          bar.fg:SetColorTexture(0.5, 0.5, 0.5, 0.7)
           bar.bg:SetColorTexture(0, 0, 0, 0.4)
         end
         self:Show()
@@ -533,7 +533,7 @@ function RealTimeProfilingWindow:Init()
 
   local statsFrameText = self.statsFrame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
   self.statsFrameText = statsFrameText
-  statsFrameText:SetPoint("LEFT", self.statsFrame)
+  statsFrameText:SetPoint("LEFT", self.statsFrame, "LEFT", margin, 0)
 
   local closeButton = CreateFrame("Button", nil, self.titleFrame, "UIPanelCloseButton")
   closeButton:SetPoint("TOPRIGHT", self.titleFrame, "TOPRIGHT", 1, 5)
