@@ -1503,6 +1503,7 @@ do
   local mainTimer, offTimer, rangeTimer;
   local selfGUID;
   local mainSpeed, offSpeed = UnitAttackSpeed("player")
+  local casting = false
 
   function WeakAuras.GetSwingTimerInfo(hand)
     if(hand == "main") then
@@ -1619,8 +1620,13 @@ do
         end
       end
       mainSpeed, offSpeed = mainSpeedNew, offSpeedNew
+    elseif casting and (event == "UNIT_SPELLCAST_INTERRUPTED" or event == "UNIT_SPELLCAST_FAILED") then
+      casting = false
     elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
-      if WeakAuras.reset_swing_spells[spell] then
+      if WeakAuras.reset_swing_spells[spell] or casting then
+        if casting then
+          casting = false
+        end
         local event;
         mainSpeed, offSpeed = UnitAttackSpeed("player");
         lastSwingMain = GetTime();
@@ -1657,6 +1663,12 @@ do
         end
         WeakAuras.ScanEvents(event);
       end
+    elseif event == "UNIT_SPELLCAST_START" then
+      -- pause swing timer
+      casting = true
+      lastSwingMain, swingDurationMain, mainSwingOffset = nil, nil, nil
+      lastSwingOff, swingDurationOff = nil, nil
+      WeakAuras.ScanEvents("SWING_TIMER_END")
     end
     WeakAuras.StopProfileSystem("generictrigger swing");
   end
@@ -1668,6 +1680,11 @@ do
       swingTimerFrame:RegisterEvent("PLAYER_ENTER_COMBAT");
       swingTimerFrame:RegisterUnitEvent("UNIT_ATTACK_SPEED", "player");
       swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
+      if WeakAuras.IsClassic() then
+        swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
+        swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
+        swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")
+      end
       swingTimerFrame:SetScript("OnEvent",
         function(_, event, ...)
           if event == "COMBAT_LOG_EVENT_UNFILTERED" then
