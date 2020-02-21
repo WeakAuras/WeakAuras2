@@ -457,6 +457,8 @@ local function modify(parent, region, data)
     region:UpdateTexCoords();
   end
 
+  cooldown.expirationTime = nil;
+  cooldown.duration = nil;
   cooldown:Hide()
   if(data.cooldown) then
     function region:SetValue(value, total)
