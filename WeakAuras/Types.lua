@@ -1394,7 +1394,8 @@ WeakAuras.anim_start_preset_types = {
   shrink = L["Grow"],
   grow = L["Shrink"],
   spiral = L["Spiral"],
-  bounceDecay = L["Bounce"]
+  bounceDecay = L["Bounce"],
+  starShakeDecay = L["Star Shake"],
 }
 
 WeakAuras.anim_main_preset_types = {
@@ -1420,7 +1421,8 @@ WeakAuras.anim_finish_preset_types = {
   shrink = L["Shrink"],
   grow =L["Grow"],
   spiral = L["Spiral"],
-  bounceDecay = L["Bounce"]
+  bounceDecay = L["Bounce"],
+  starShakeDecay = L["Star Shake"],
 };
 
 WeakAuras.chat_message_types = {
