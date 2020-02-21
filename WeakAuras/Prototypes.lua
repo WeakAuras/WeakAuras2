@@ -345,6 +345,34 @@ WeakAuras.anim_function_strings = {
       return startX + (prog * deltaX), startY + (prog * deltaY)
     end
   ]],
+  starShakeDecay = [[
+    function(progress, startX, startY, deltaX, deltaY)
+      local spokes = 10
+      local fullCircles = 4
+
+      local r = min(abs(deltaX), abs(deltaY))
+      local xScale = deltaX / r
+      local yScale = deltaY / r
+
+      local deltaAngle = fullCircles *2 / spokes * math.pi
+      local p = progress * spokes
+      local i1 = floor(p)
+      p = p - i1
+
+      local angle1 = i1 * deltaAngle
+      local angle2 = angle1 + deltaAngle
+
+      local x1 = r * math.cos(angle1)
+      local y1 = r * math.sin(angle1)
+
+      local x2 = r * math.cos(angle2)
+      local y2 = r * math.sin(angle2)
+
+      local x, y = p * x2 + (1-p) * x1, p * y2 + (1-p) * y1
+      local ease = math.sin(progress * math.pi / 2)
+      return ease * x * xScale, ease * y * yScale
+    end
+  ]],
   bounceDecay = [[
     function(progress, startX, startY, deltaX, deltaY)
       local prog = (progress * 3.5) % 1
@@ -518,7 +546,16 @@ WeakAuras.anim_presets = {
     use_alpha = true,
     alpha = 0
   },
-
+  starShakeDecay = {
+    type = "custom",
+    duration = 1,
+    use_translate = true,
+    x = 50,
+    y = 50,
+    translateType = "starShakeDecay",
+    use_alpha = true,
+    alpha = 0
+  },
   -- Main
   shake = {
     type = "custom",
