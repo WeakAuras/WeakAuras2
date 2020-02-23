@@ -440,6 +440,10 @@ local function importPendingData()
       end
       if data then
         data.parent = parentData.id
+        data.authorMode = nil
+      end
+      if oldData then
+        oldData.authorMode = nil
       end
       local childData = install(data, oldData, patch, mode)
       if childData then
