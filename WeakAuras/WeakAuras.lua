@@ -143,6 +143,7 @@ end
 BINDING_HEADER_WEAKAURAS = ADDON_NAME
 BINDING_NAME_WEAKAURASTOGGLE = L["Toggle Options Window"]
 BINDING_NAME_WEAKAURASPROFILINGTOGGLE = L["Toggle Performance Profiling Window"]
+BINDING_NAME_WEAKAURASPRINTPROFILING = L["Print Profiling Results"]
 
 -- An alias for WeakAurasSaved, the SavedVariables
 -- Noteable properties:
