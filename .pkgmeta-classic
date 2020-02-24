@@ -39,8 +39,7 @@ ignore:
   - generate_changelog.sh
   - WeakAuras/RegionTypes/Model.lua
   - WeakAurasOptions/RegionOptions/Model.lua
-  - WeakAuras/WeakAurasTemplates
-  - WeakAuras/WeakAurasModelPaths
+  - WeakAurasModelPaths
 
 move-folders:
   WeakAuras/WeakAuras: WeakAuras
