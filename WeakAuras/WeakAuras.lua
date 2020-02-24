@@ -6753,6 +6753,16 @@ local function GetAnchorFrame(region, anchorFrameType, parent, anchorFrameFrame)
     return mouseFrame;
   end
 
+  if (anchorFrameType == "NAMEPLATE") then
+    local unit = region.state.unit
+    return unit and C_NamePlate.GetNamePlateForUnit(unit)
+  end
+
+  if (anchorFrameType == "UNITFRAME") then
+    local unit = region.state.unit
+    return unit and WeakAuras.GetUnitFrame(unit)
+  end
+
   if (anchorFrameType == "SELECTFRAME" and anchorFrameFrame) then
     if(anchorFrameFrame:sub(1, 10) == "WeakAuras:") then
       local frame_name = anchorFrameFrame:sub(11);
