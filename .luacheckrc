@@ -3592,6 +3592,7 @@ globals = {
 	"UnitInPhase",
 	"UnitInRaid",
 	"UnitInRange",
+	"UnitInSubgroup",
 	"UnitInVehicle",
 	"UnitInVehicleControlSeat",
 	"UnitInVehicleHidesPetFrame",
