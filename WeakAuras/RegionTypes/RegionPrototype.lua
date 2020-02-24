@@ -801,11 +801,6 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       WeakAuras.UnRegisterForFrameTick(region)
     end
     function region:Expand()
-      if (region.toShow) then
-        return;
-      end
-      region.toShow = true;
-
       if data.anchorFrameType == "SELECTFRAME"
       or data.anchorFrameType == "CUSTOM"
       or data.anchorFrameType == "UNITFRAME"
@@ -813,6 +808,11 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       then
         WeakAuras.AnchorFrame(data, region, parent);
       end
+
+      if (region.toShow) then
+        return;
+      end
+      region.toShow = true;
 
       region.justCreated = nil;
       if(region.PreShow) then
