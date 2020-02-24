@@ -476,7 +476,10 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = WeakAuras.normalWidth,
       name = L["Filter by Group Role"],
       order = 67.1,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group") end
+      hidden = function() return
+        not (trigger.type == "aura2" and trigger.unit == "group")
+        or WeakAuras.IsClassic()
+      end
     },
     group_role = {
       type = "select",
