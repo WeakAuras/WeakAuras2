@@ -337,6 +337,8 @@ WeakAuras.anchor_frame_types = {
   PRD = L["Personal Resource Display"],
   MOUSE = L["Mouse Cursor"],
   SELECTFRAME = L["Select Frame"],
+  NAMEPLATE = WeakAuras.newFeatureString..L["Nameplates"],
+  UNITFRAME = WeakAuras.newFeatureString..L["Unit Frames"],
   CUSTOM = WeakAuras.newFeatureString..L["Custom"]
 }
 
