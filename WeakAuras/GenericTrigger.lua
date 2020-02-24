@@ -558,7 +558,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         allStates[arg1] = allStates[arg1] or {};
         local state = allStates[arg1];
         local ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, arg1, arg2, ...);
-        if( (ok and returnValue) or optionsEvent) then
+        if (ok and returnValue) or optionsEvent then
           if(WeakAuras.ActivateEvent(id, triggernum, data, state, errorHandler)) then
             updateTriggerState = true;
           end
@@ -570,7 +570,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       allStates[""] = allStates[""] or {};
       local state = allStates[""];
       local ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, arg1, arg2, ...);
-      if( (ok and returnValue) or optionsEvent) then
+      if (ok and returnValue) or optionsEvent then
         if(WeakAuras.ActivateEvent(id, triggernum, data, state, errorHandler)) then
           updateTriggerState = true;
         end
@@ -579,7 +579,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       end
     else
       local ok, returnValue = xpcall(data.triggerFunc, errorHandler, event, arg1, arg2, ...);
-      if( (ok and returnValue) or optionsEvent) then
+      if (ok and returnValue) or optionsEvent then
         allStates[""] = allStates[""] or {};
         local state = allStates[""];
         if(WeakAuras.ActivateEvent(id, triggernum, data, state, errorHandler)) then
@@ -591,9 +591,9 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
     end
     if (untriggerCheck and not optionsEvent) then
       if (data.statesParameter == "all") then
-        if(data.untriggerFunc) then
+        if data.untriggerFunc then
           local ok, returnValue = xpcall(data.untriggerFunc, errorHandler, allStates, event, arg1, arg2, ...);
-          if(ok and returnValue) then
+          if ok and returnValue then
             for id, state in pairs(allStates) do
               if (state.changed) then
                 if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
@@ -604,10 +604,10 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           end
         end
       elseif data.statesParameter == "unit" then
-        if(data.untriggerFunc) then
+        if data.untriggerFunc then
           if arg1 then
             local ok, returnValue =  xpcall(data.untriggerFunc, errorHandler, allStates[arg1], event, arg1, arg2, ...);
-            if(ok and returnValue) then
+            if ok and returnValue then
               if allStates[arg1] then
                 if (WeakAuras.EndEvent(id, triggernum, nil, allStates[arg1])) then
                   updateTriggerState = true;
@@ -619,7 +619,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       elseif (data.statesParameter == "one") then
         allStates[""] = allStates[""] or {};
         local state = allStates[""];
-        if(data.untriggerFunc) then
+        if data.untriggerFunc then
           local ok, returnValue = xpcall(data.untriggerFunc, errorHandler, state, event, arg1, arg2, ...);
           if (ok and returnValue) then
             if (WeakAuras.EndEvent(id, triggernum, nil, state)) then
@@ -628,9 +628,9 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           end
         end
       else
-        if(data.untriggerFunc) then
+        if data.untriggerFunc then
           local ok, returnValue = xpcall(data.untriggerFunc, errorHandler, event, arg1, arg2, ...);
-          if(ok and returnValue) then
+          if ok and returnValue then
             allStates[""] = allStates[""] or {};
             local state = allStates[""];
             if(WeakAuras.EndEvent(id, triggernum, nil, state)) then
@@ -2616,6 +2616,7 @@ function WeakAuras.WatchUnitChange(unit)
       else
         local inRaid = IsInRaid()
         local inRaidChanged = inRaid ~= watchUnitChange.inRaid
+        local UnitGroupRolesAssigned = not WeakAuras.IsClassic() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 
         for unit, guid in pairs(watchUnitChange.unitChangeGUIDS) do
           local newGuid = WeakAuras.UnitExistsFixed(unit) and UnitGUID(unit) or ""
@@ -2630,7 +2631,7 @@ function WeakAuras.WatchUnitChange(unit)
               local newRole = UnitGroupRolesAssigned(unit)
               if watchUnitChange.unitRoles[unit] ~= newRole then
                 watchUnitChange.unitRoles[unit] = newRole
-                WeakAuras.ScanEvents("UNIT_ROLE_CHANGED", unit)
+                WeakAuras.ScanEvents("UNIT_ROLE_CHANGED_" .. unit, unit)
               end
             end
           end

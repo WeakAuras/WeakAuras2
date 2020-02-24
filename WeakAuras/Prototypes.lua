@@ -1382,7 +1382,13 @@ WeakAuras.event_prototypes = {
       if trigger.unitisunit then
         AddUnitChangeInternalEvents(trigger.unitisunit, result)
       end
-      tinsert(result, "UNIT_ROLE_CHANGED")
+      if WeakAuras.multiUnitUnits[trigger.unit] then
+        for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
+          tinsert(result, "UNIT_ROLE_CHANGED_" .. unit)
+        end
+      else
+        tinsert(result, "UNIT_ROLE_CHANGED_" .. trigger.unit)
+      end
       return result
     end,
     force_events = function(trigger)
@@ -1526,7 +1532,13 @@ WeakAuras.event_prototypes = {
     internal_events = function(trigger)
       local result = {}
       AddUnitChangeInternalEvents(trigger.unit, result)
-      tinsert(result, "UNIT_ROLE_CHANGED")
+      if WeakAuras.multiUnitUnits[trigger.unit] then
+        for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
+          tinsert(result, "UNIT_ROLE_CHANGED_" .. unit)
+        end
+      else
+        tinsert(result, "UNIT_ROLE_CHANGED_" .. trigger.unit)
+      end
       return result
     end,
     force_events = function(trigger)
@@ -1559,7 +1571,8 @@ WeakAuras.event_prototypes = {
         type = "unit",
         init = "arg",
         values = "actual_unit_types_cast",
-        test = "true"
+        test = "true",
+        store = true
       },
       {
         name = "health",
@@ -1680,8 +1693,8 @@ WeakAuras.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-           return not WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
-         end
+          return not WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+        end
       },
       {
         name = "nameplateType",
@@ -1692,8 +1705,8 @@ WeakAuras.event_prototypes = {
         conditionType = "select",
         store = true,
         enable = function(trigger)
-           return trigger.unit == "nameplate"
-         end
+          return trigger.unit == "nameplate"
+        end
       },
       {
         name = "name",
@@ -1760,7 +1773,13 @@ WeakAuras.event_prototypes = {
     internal_events = function(trigger)
       local result = {}
       AddUnitChangeInternalEvents(trigger.unit, result)
-      tinsert(result, "UNIT_ROLE_CHANGED")
+      if WeakAuras.multiUnitUnits[trigger.unit] then
+        for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
+          tinsert(result, "UNIT_ROLE_CHANGED_" .. unit)
+        end
+      else
+        tinsert(result, "UNIT_ROLE_CHANGED_" .. trigger.unit)
+      end
       return result
     end,
     force_events = function(trigger)
@@ -1859,7 +1878,8 @@ WeakAuras.event_prototypes = {
         type = "unit",
         init = "arg",
         values = "actual_unit_types_cast",
-        test = "true"
+        test = "true",
+        store = true
       },
       {
         name = "powertype",
@@ -1904,7 +1924,7 @@ WeakAuras.event_prototypes = {
         name = "power",
         display = L["Power"],
         type = "number",
-        init = WeakAuras.IsClassic() and "powerType == 4 and GetComboPoints(unit, 'target') or UnitPower(unit, powerType, powerThirdArg) / WeakAuras.UnitPowerDisplayMod(powerTypeToCheck)"
+        init = WeakAuras.IsClassic() and "powerType == 4 and GetComboPoints(unit, unit .. '-target') or UnitPower(unit, powerType, powerThirdArg)"
                                      or "UnitPower(unit, powerType, powerThirdArg) / WeakAuras.UnitPowerDisplayMod(powerTypeToCheck)",
         store = true,
         conditionType = "number",
@@ -1919,7 +1939,7 @@ WeakAuras.event_prototypes = {
       {
         name = "total",
         hidden = true,
-        init = WeakAuras.IsClassic() and "powerType == 4 and (math.max(1, UnitPowerMax(unit, 14))) or math.max(1, UnitPowerMax(unit, powerType, powerThirdArg)) * 100"
+        init = WeakAuras.IsClassic() and "powerType == 4 and (math.max(1, UnitPowerMax(unit, 14))) or math.max(1, UnitPowerMax(unit, powerType, powerThirdArg))"
                                       or "math.max(1, UnitPowerMax(unit, powerType, powerThirdArg)) / WeakAuras.UnitPowerDisplayMod(powerTypeToCheck)",
         store = true,
         test = "true"
@@ -1973,8 +1993,8 @@ WeakAuras.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-           return not WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
-         end
+          return not WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+        end
       },
       {
         name = "nameplateType",
@@ -1985,8 +2005,8 @@ WeakAuras.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-           return trigger.unit == "nameplate"
-         end
+          return trigger.unit == "nameplate"
+        end
       },
       {
         hidden = true,
@@ -2016,7 +2036,13 @@ WeakAuras.event_prototypes = {
     internal_events = function(trigger)
       local result = { }
       AddUnitChangeInternalEvents(trigger.unit, result)
-      tinsert(result, "UNIT_ROLE_CHANGED")
+      if WeakAuras.multiUnitUnits[trigger.unit] then
+        for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
+          tinsert(result, "UNIT_ROLE_CHANGED_" .. unit)
+        end
+      else
+        tinsert(result, "UNIT_ROLE_CHANGED_" .. trigger.unit)
+      end
       return result
     end,
     force_events = function(trigger)
@@ -2048,7 +2074,8 @@ WeakAuras.event_prototypes = {
         type = "unit",
         init = "arg",
         values = "actual_unit_types_cast",
-        test = "true"
+        test = "true",
+        store = true
       },
       {
         name = "power",
@@ -2117,8 +2144,8 @@ WeakAuras.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-           return not WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
-         end
+          return not WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+        end
       },
       {
         name = "nameplateType",
@@ -2129,8 +2156,8 @@ WeakAuras.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-           return trigger.unit == "nameplate"
-         end
+          return trigger.unit == "nameplate"
+        end
       },
       {
         hidden = true,
@@ -5567,7 +5594,13 @@ WeakAuras.event_prototypes = {
         tinsert(result, "UNIT_SPELLCAST_CHANNEL_START")
       end
       AddUnitChangeInternalEvents(trigger.unit, result)
-      tinsert(result, "UNIT_ROLE_CHANGED")
+      if WeakAuras.multiUnitUnits[trigger.unit] then
+        for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
+          tinsert(result, "UNIT_ROLE_CHANGED_" .. unit)
+        end
+      else
+        tinsert(result, "UNIT_ROLE_CHANGED_" .. trigger.unit)
+      end
       return result
     end,
     force_events = function(trigger)
@@ -5590,7 +5623,7 @@ WeakAuras.event_prototypes = {
         unit = string.lower(unit)
         local smart = %s
         local remainingCheck = %s
-        local inverse = %s
+        local inverseTrigger = %s
 
         local show, expirationTime, castType, spell, icon, startTime, endTime, interruptible, spellId, remaining
 
@@ -5631,7 +5664,8 @@ WeakAuras.event_prototypes = {
             return WeakAuras.actual_unit_types_cast
           end
         end,
-        test = "true"
+        test = "true",
+        store = true
       },
       {
         name = "spell",
@@ -5708,6 +5742,13 @@ WeakAuras.event_prototypes = {
         store = true
       },
       {
+        name = "inverse",
+        hidden = true,
+        init = "castType == 'cast'",
+        test = "true",
+        store = true
+      },
+      {
         name = "autoHide",
         hidden = true,
         init = "true",
@@ -5765,12 +5806,13 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "sourceUnit",
+        init = "unit",
         display = L["Caster"],
         type = "unit",
         values = "actual_unit_types_with_specific",
         conditionType = "unit",
         conditionTest = function(state, unit, op)
-          return state and state.show and (UnitIsUnit(state.sourceUnit, unit) == (op == "=="))
+          return state and state.show and state.unit and (UnitIsUnit(state.sourceUnit, unit) == (op == "=="))
         end,
         store = true,
         hidden = true,
@@ -5782,7 +5824,8 @@ WeakAuras.event_prototypes = {
         display = L["Caster Name"],
         store = true,
         hidden = true,
-        test = "true"
+        test = "true",
+        init = "UnitName(unit)"
       },
       {
         name = "destUnit",
@@ -5803,7 +5846,8 @@ WeakAuras.event_prototypes = {
         display = L["Name of Caster's Target"],
         store = true,
         hidden = true,
-        test = "true"
+        test = "true",
+        init = "UnitName(destUnit)"
       },
       {
         name = "inverse",
@@ -5814,7 +5858,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "WeakAuras.UnitExistsFixed(unit, smart) and ((not inverse and spell) or (inverse and not spell))"
+        test = "WeakAuras.UnitExistsFixed(unit, smart) and ((not inverseTrigger and spell) or (inverseTrigger and not spell))"
       }
     },
     automaticrequired = true,
