@@ -3781,7 +3781,7 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
       name = L["Anchored To"],
       order = 72,
       hidden = IsParentDynamicGroup,
-      values = WeakAuras.anchor_frame_types,
+      values = (data.regionType == "group" or data.regionType == "dynamicgroup") and WeakAuras.anchor_frame_types_group or WeakAuras.anchor_frame_types,
     },
     -- Input field to select frame to anchor on
     anchorFrameFrame = {
