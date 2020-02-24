@@ -3820,7 +3820,7 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
           return L["To Screen's"]
         elseif (data.anchorFrameType == "PRD") then
           return L["To Personal Ressource Display's"];
-        elseif (data.anchorFrameType == "SELECTFRAME" or data.anchorFrameType == "CUSTOM") then
+        else
           return L["To Frame's"];
         end
       end,
@@ -3840,7 +3840,7 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
     anchorPointGroup = {
       type = "select",
       width = WeakAuras.normalWidth,
-      name = function() return L["to group's"] end,
+      name = L["To Group's"],
       order = 76,
       hidden = function()
         if (data.anchorFrameType ~= "SCREEN") then
