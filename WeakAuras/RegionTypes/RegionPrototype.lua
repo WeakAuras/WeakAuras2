@@ -520,8 +520,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
 
   if not parent or parent.regionType ~= "dynamicgroup" then
     if not (
-      data.anchorFrameType == "SELECTFRAME"
-      or data.anchorFrameType == "CUSTOM"
+      data.anchorFrameType == "CUSTOM"
       or data.anchorFrameType == "UNITFRAME"
       or data.anchorFrameType == "NAMEPLATE"
     ) then
