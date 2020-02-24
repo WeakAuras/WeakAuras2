@@ -342,13 +342,11 @@ WeakAuras.anchor_frame_types = {
   CUSTOM = WeakAuras.newFeatureString..L["Custom"]
 }
 
-WeakAuras.anchor_frame_types_dynamicgroup = {
+WeakAuras.anchor_frame_types_group = {
   SCREEN = L["Screen/Parent Group"],
   PRD = L["Personal Resource Display"],
   MOUSE = L["Mouse Cursor"],
   SELECTFRAME = L["Select Frame"],
-  NAMEPLATE = WeakAuras.newFeatureString..L["Nameplates"],
-  UNITFRAME = WeakAuras.newFeatureString..L["Unit Frames"],
   CUSTOM = WeakAuras.newFeatureString..L["Custom"]
 }
 
