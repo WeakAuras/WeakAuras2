@@ -7,13 +7,14 @@ local function AdjustConditions(data, replacements)
   if (data.conditions) then
     for conditionIndex, condition in ipairs(data.conditions) do
       for changeIndex, change in ipairs(condition.changes) do
-        local sub, rest = string.match(change.property, "^(sub.%d+%.)(.+)$")
-        if sub and replacements[sub] then
-
-          if replacements[sub] == deleteCondition then
-            change.property = nil
-          else
-            change.property = replacements[sub] .. rest
+        if change.property then
+          local sub, rest = string.match(change.property, "^(sub.%d+%.)(.+)$")
+          if sub and replacements[sub] then
+            if replacements[sub] == deleteCondition then
+              change.property = nil
+            else
+              change.property = replacements[sub] .. rest
+            end
           end
         end
       end

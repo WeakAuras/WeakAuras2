@@ -2181,7 +2181,6 @@ WeakAuras.multiUnitUnits = {
   ["raid"] = {}
 }
 
-
 WeakAuras.multiUnitUnits.group["player"] = true
 WeakAuras.multiUnitUnits.party["player"] = true
 
