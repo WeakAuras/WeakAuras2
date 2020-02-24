@@ -58,7 +58,8 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   end
 
   local function IsGroupTrigger(trigger)
-    return trigger.unit == "group" or trigger.unit == "boss" or trigger.unit == "nameplate" or trigger.unit == "arena" or trigger.unit == "multi"
+    return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+           or trigger.unit == "boss" or trigger.unit == "nameplate" or trigger.unit == "arena" or trigger.unit == "multi"
   end
 
   local function IsSingleMissing(trigger)
@@ -435,7 +436,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = L["Fetch Affected/Unaffected Names"],
       width = WeakAuras.doubleWidth,
       order = 65,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group") end
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
     },
     ownOnly = {
       type = "toggle",
@@ -477,7 +478,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = L["Filter by Group Role"],
       order = 67.1,
       hidden = function() return
-        not (trigger.type == "aura2" and trigger.unit == "group")
+        not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
         or WeakAuras.IsClassic()
       end
     },
@@ -486,7 +487,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = WeakAuras.normalWidth,
       name = L["Group Role"],
       values = WeakAuras.role_types,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group" and trigger.useGroupRole) end,
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useGroupRole) end,
       order = 67.2
     },
     group_roleSpace = {
@@ -494,14 +495,14 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = "",
       order = 67.2,
       width = WeakAuras.normalWidth,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group"and not trigger.useGroupRole) end
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useGroupRole) end
     },
     ignoreSelf = {
       type = "toggle",
       name = L["Ignore Self"],
       order = 67.3,
       width = WeakAuras.doubleWidth,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "group") end
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
     },
     useGroup_count = {
       type = "toggle",
