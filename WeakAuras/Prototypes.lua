@@ -5846,6 +5846,7 @@ WeakAuras.event_prototypes = {
         display = L["Name of Caster's Target"],
         store = true,
         hidden = true,
+        enable = function(trigger) return not trigger.use_inverse end,
         test = "true",
         init = "UnitName(destUnit)"
       },
