@@ -1350,6 +1350,20 @@ local function AddUnitChangeInternalEvents(triggerUnit, t)
   end
 end
 
+local function AddUnitRoleChangeInternalEvents(triggerUnit, t)
+  if (triggerUnit == nil) then
+    return
+  end
+
+  if WeakAuras.multiUnitUnits[triggerUnit] then
+    for unit in pairs(WeakAuras.multiUnitUnits[triggerUnit]) do
+      tinsert(t, "UNIT_ROLE_CHANGED_" .. string.lower(unit))
+    end
+  else
+    tinsert(t, "UNIT_ROLE_CHANGED_" .. string.lower(triggerUnit))
+  end
+end
+
 local function AddUnitEventForEvents(result, unit, event)
   if not unit or not (WeakAuras.baseUnitId[unit] or WeakAuras.multiUnitId[unit]) then
     if not result.events then
@@ -1367,41 +1381,57 @@ local function AddUnitEventForEvents(result, unit, event)
   end
 end
 
+local unitHelperFunctions = {
+  UnitChangedForceEvents = function(trigger)
+    local events = {}
+    if WeakAuras.multiUnitUnits[trigger.unit] then
+      for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
+        tinsert(events, {"UNIT_CHANGED_" .. unit, unit})
+      end
+    else
+      if trigger.unit then
+        tinsert(events, {"UNIT_CHANGED_" .. trigger.unit, trigger.unit})
+      end
+    end
+    return events
+  end,
+
+  SpecificUnitCheck = function(trigger)
+    if not trigger.use_specific_unit then
+      return "local specificUnitCheck = true\n"
+    end
+
+    if trigger.unit == nil then
+      return "local specificUnitCheck = false\n"
+    end
+
+    return string.format([=[
+      local specificUnitCheck = UnitIsUnit(%q, unit)
+    ]=], trigger.unit or "")
+  end
+}
+
 WeakAuras.event_prototypes = {
   ["Unit Characteristics"] = {
     type = "status",
     events = function(trigger)
+      local unit = trigger.unit
       local result = {}
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_LEVEL")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_FACTION")
+      AddUnitEventForEvents(result, unit, "UNIT_LEVEL")
+      AddUnitEventForEvents(result, unit, "UNIT_FACTION")
       return result;
     end,
     internal_events = function(trigger)
+      local unit = trigger.unit
       local result = {}
-      AddUnitChangeInternalEvents(trigger.unit, result)
+      AddUnitChangeInternalEvents(unit, result)
       if trigger.unitisunit then
         AddUnitChangeInternalEvents(trigger.unitisunit, result)
       end
-      if WeakAuras.multiUnitUnits[trigger.unit] then
-        for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
-          tinsert(result, "UNIT_ROLE_CHANGED_" .. unit)
-        end
-      else
-        tinsert(result, "UNIT_ROLE_CHANGED_" .. trigger.unit)
-      end
+      AddUnitRoleChangeInternalEvents(unit, result)
       return result
     end,
-    force_events = function(trigger)
-      local events = {}
-      if WeakAuras.multiUnitUnits[trigger.unit] then
-        for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
-          tinsert(events, {"UNIT_CHANGED_" .. unit, unit})
-        end
-      else
-        tinsert(events, {"UNIT_CHANGED_" .. trigger.unit, trigger.unit})
-      end
-      return events;
-    end,
+    force_events = unitHelperFunctions.UnitChangedForceEvents,
     name = L["Unit Characteristics"],
     init = function(trigger)
       trigger.unit = trigger.unit or "target";
@@ -1410,6 +1440,8 @@ WeakAuras.event_prototypes = {
         local smart = %s
         local extraUnit = %q;
       ]=];
+
+      ret = ret .. unitHelperFunctions.SpecificUnitCheck(trigger)
 
       return ret:format(trigger.unit == "group" and "true" or "false", trigger.unitisunit or "");
     end,
@@ -1509,7 +1541,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "WeakAuras.UnitExistsFixed(unit, smart)"
+        test = "WeakAuras.UnitExistsFixed(unit, smart) and specificUnitCheck"
       }
     },
     automaticrequired = true
@@ -1517,41 +1549,27 @@ WeakAuras.event_prototypes = {
   ["Health"] = {
     type = "status",
     events = function(trigger)
+      local unit = trigger.unit
       local result = {}
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_HEALTH_FREQUENT")
+      AddUnitEventForEvents(result, unit, "UNIT_HEALTH_FREQUENT")
       if not WeakAuras.IsClassic() then
         if trigger.use_showAbsorb then
-          AddUnitEventForEvents(result, trigger.unit, "UNIT_ABSORB_AMOUNT_CHANGED")
+          AddUnitEventForEvents(result, unit, "UNIT_ABSORB_AMOUNT_CHANGED")
         end
         if trigger.use_showIncomingHeal then
-          AddUnitEventForEvents(result, trigger.unit, "UNIT_HEAL_PREDICTION")
+          AddUnitEventForEvents(result, unit, "UNIT_HEAL_PREDICTION")
         end
       end
       return result
     end,
     internal_events = function(trigger)
+      local unit = trigger.unit
       local result = {}
-      AddUnitChangeInternalEvents(trigger.unit, result)
-      if WeakAuras.multiUnitUnits[trigger.unit] then
-        for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
-          tinsert(result, "UNIT_ROLE_CHANGED_" .. unit)
-        end
-      else
-        tinsert(result, "UNIT_ROLE_CHANGED_" .. trigger.unit)
-      end
+      AddUnitChangeInternalEvents(unit, result)
+      AddUnitRoleChangeInternalEvents(unit, result)
       return result
     end,
-    force_events = function(trigger)
-      local events = {}
-      if WeakAuras.multiUnitUnits[trigger.unit] then
-        for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
-          tinsert(events, {"UNIT_CHANGED_" .. unit, unit})
-        end
-      else
-        tinsert(events, {"UNIT_CHANGED_" .. trigger.unit, trigger.unit})
-      end
-      return events;
-    end,
+    force_events = unitHelperFunctions.UnitChangedForceEvents,
     name = L["Health"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -1559,6 +1577,8 @@ WeakAuras.event_prototypes = {
         unit = string.lower(unit)
         local smart = %s
       ]=];
+
+      ret = ret .. unitHelperFunctions.SpecificUnitCheck(trigger)
 
       return ret:format(trigger.unit == "group" and "true" or "false");
     end,
@@ -1716,7 +1736,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "WeakAuras.UnitExistsFixed(unit, smart)"
+        test = "WeakAuras.UnitExistsFixed(unit, smart) and specificUnitCheck"
       }
     },
     overlayFuncs = {
@@ -1752,47 +1772,34 @@ WeakAuras.event_prototypes = {
   ["Power"] = {
     type = "status",
     events = function(trigger)
+      local unit = trigger.unit
       local result = {}
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_POWER_FREQUENT")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_MAXPOWER")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_DISPLAYPOWER")
+      AddUnitEventForEvents(result, unit, "UNIT_POWER_FREQUENT")
+      AddUnitEventForEvents(result, unit, "UNIT_MAXPOWER")
+      AddUnitEventForEvents(result, unit, "UNIT_DISPLAYPOWER")
 
       -- The api for spell power costs is not meant to be for other units
       if trigger.use_showCost and trigger.unit == "player" then
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_STOP")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_FAILED")
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_SUCCEEDED")
+        AddUnitEventForEvents(result, "player", "UNIT_SPELLCAST_START")
+        AddUnitEventForEvents(result, "player", "UNIT_SPELLCAST_STOP")
+        AddUnitEventForEvents(result, "player", "UNIT_SPELLCAST_FAILED")
+        AddUnitEventForEvents(result, "player", "UNIT_SPELLCAST_SUCCEEDED")
       end
       if trigger.use_powertype and trigger.powertype == 99 then
-        AddUnitEventForEvents(result, trigger.unit, "UNIT_ABSORB_AMOUNT_CHANGED")
+        AddUnitEventForEvents(result, unit, "UNIT_ABSORB_AMOUNT_CHANGED")
       end
 
       return result;
     end,
     internal_events = function(trigger)
+      local unit = trigger.unit
       local result = {}
-      AddUnitChangeInternalEvents(trigger.unit, result)
-      if WeakAuras.multiUnitUnits[trigger.unit] then
-        for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
-          tinsert(result, "UNIT_ROLE_CHANGED_" .. unit)
-        end
-      else
-        tinsert(result, "UNIT_ROLE_CHANGED_" .. trigger.unit)
-      end
+      AddUnitChangeInternalEvents(unit, result)
+      AddUnitRoleChangeInternalEvents(unit, result)
+
       return result
     end,
-    force_events = function(trigger)
-      local events = {}
-      if WeakAuras.multiUnitUnits[trigger.unit] then
-        for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
-          tinsert(events, {"UNIT_CHANGED_" .. unit, unit})
-        end
-      else
-        tinsert(events, {"UNIT_CHANGED_" .. trigger.unit, trigger.unit})
-      end
-      return events;
-    end,
+    force_events = unitHelperFunctions.UnitChangedForceEvents,
     name = L["Power"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -1806,6 +1813,9 @@ WeakAuras.event_prototypes = {
         if WeakAuras.IsClassic() and powerType == 99 then powerType = 1 end
       ]=];
       ret = ret:format(trigger.unit == "group" and "true" or "false", trigger.use_powertype and trigger.powertype or "nil");
+
+      ret = ret .. unitHelperFunctions.SpecificUnitCheck(trigger)
+
       if (trigger.use_powertype and trigger.powertype == 99 and not WeakAuras.IsClassic()) then
         ret = ret .. [[
           local UnitPower = UnitStagger;
@@ -2010,7 +2020,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "WeakAuras.UnitExistsFixed(unit, smart)"
+        test = "WeakAuras.UnitExistsFixed(unit, smart) and specificUnitCheck"
       }
     },
     overlayFuncs = {
@@ -2029,33 +2039,19 @@ WeakAuras.event_prototypes = {
   ["Alternate Power"] = {
     type = "status",
     events = function(trigger)
+      local unit = trigger.unit
       local result = {}
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_POWER_FREQUENT")
+      AddUnitEventForEvents(result, unit, "UNIT_POWER_FREQUENT")
       return result
     end,
     internal_events = function(trigger)
+      local unit = trigger.unit
       local result = { }
-      AddUnitChangeInternalEvents(trigger.unit, result)
-      if WeakAuras.multiUnitUnits[trigger.unit] then
-        for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
-          tinsert(result, "UNIT_ROLE_CHANGED_" .. unit)
-        end
-      else
-        tinsert(result, "UNIT_ROLE_CHANGED_" .. trigger.unit)
-      end
+      AddUnitChangeInternalEvents(unit, result)
+      AddUnitRoleChangeInternalEvents(unit, result)
       return result
     end,
-    force_events = function(trigger)
-      local events = {}
-      if WeakAuras.multiUnitUnits[trigger.unit] then
-        for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
-          tinsert(events, {"UNIT_CHANGED_" .. unit, unit})
-        end
-      else
-        tinsert(events, {"UNIT_CHANGED_" .. trigger.unit, trigger.unit})
-      end
-      return events;
-    end,
+    force_events = unitHelperFunctions.UnitChangedForceEvents,
     name = L["Alternate Power"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -2063,6 +2059,9 @@ WeakAuras.event_prototypes = {
         unit = string.lower(unit)
         local smart = %s
       ]=]
+
+      ret = ret .. unitHelperFunctions.SpecificUnitCheck(trigger)
+
       return ret:format(trigger.unit == "group" and "true" or "false");
     end,
     statesParameter = "unit",
@@ -2161,7 +2160,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "WeakAuras.UnitExistsFixed(unit, smart)"
+        test = "name and WeakAuras.UnitExistsFixed(unit, smart) and specificUnitCheck"
       }
     },
     automaticrequired = true
@@ -5565,16 +5564,17 @@ WeakAuras.event_prototypes = {
     type = "status",
     events = function(trigger)
       local result = {}
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_START")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_DELAYED")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_STOP")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_START")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_CHANNEL_STOP")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_SPELLCAST_INTERRUPTED")
-      if WeakAuras.IsClassic() and trigger.unit ~= "player" then
+      local unit = trigger.unit
+      AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_START")
+      AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_DELAYED")
+      AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_STOP")
+      AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_CHANNEL_START")
+      AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_CHANNEL_UPDATE")
+      AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_CHANNEL_STOP")
+      AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
+      AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
+      AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_INTERRUPTED")
+      if WeakAuras.IsClassic() and unit ~= "player" then
         LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_START", WeakAuras.ScanUnitEvents)
         LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_DELAYED", WeakAuras.ScanUnitEvents) -- only for player
         LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_STOP", WeakAuras.ScanUnitEvents)
@@ -5583,37 +5583,22 @@ WeakAuras.event_prototypes = {
         LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_CHANNEL_STOP", WeakAuras.ScanUnitEvents)
         LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_INTERRUPTED", WeakAuras.ScanUnitEvents)
       end
-      AddUnitEventForEvents(result, trigger.unit, "UNIT_TARGET")
+      AddUnitEventForEvents(result, unit, "UNIT_TARGET")
       return result
     end,
     internal_events = function(trigger)
+      local unit = trigger.unit
       local result = {"CAST_REMAINING_CHECK"}
-      if WeakAuras.IsClassic() and trigger.unit ~= "player" then
+      if WeakAuras.IsClassic() and unit ~= "player" then
         tinsert(result, "UNIT_SPELLCAST_START")
         tinsert(result, "UNIT_SPELLCAST_DELAYED")
         tinsert(result, "UNIT_SPELLCAST_CHANNEL_START")
       end
-      AddUnitChangeInternalEvents(trigger.unit, result)
-      if WeakAuras.multiUnitUnits[trigger.unit] then
-        for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
-          tinsert(result, "UNIT_ROLE_CHANGED_" .. unit)
-        end
-      else
-        tinsert(result, "UNIT_ROLE_CHANGED_" .. trigger.unit)
-      end
+      AddUnitChangeInternalEvents(unit, result)
+      AddUnitRoleChangeInternalEvents(unit, result)
       return result
     end,
-    force_events = function(trigger)
-      local events = {}
-      if WeakAuras.multiUnitUnits[trigger.unit] then
-        for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
-          tinsert(events, {"UNIT_CHANGED_" .. unit, unit})
-        end
-      else
-        tinsert(events, {"UNIT_CHANGED_" .. trigger.unit, trigger.unit})
-      end
-      return events;
-    end,
+    force_events = unitHelperFunctions.UnitChangedForceEvents,
     canHaveAuto = true,
     canHaveDuration = "timed",
     name = L["Cast"],
@@ -5645,9 +5630,11 @@ WeakAuras.event_prototypes = {
         end
       ]=];
 
-      return ret:format(trigger.unit == "group" and "true" or "false",
+      ret = ret:format(trigger.unit == "group" and "true" or "false",
                         trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
                         trigger.use_inverse and "true" or "false");
+     ret = ret .. unitHelperFunctions.SpecificUnitCheck(trigger)
+     return ret
     end,
     statesParameter = "unit",
     args = {
@@ -5825,7 +5812,8 @@ WeakAuras.event_prototypes = {
         store = true,
         hidden = true,
         test = "true",
-        init = "UnitName(unit)"
+        init = "UnitName(unit)",
+        enable = function(trigger) return not trigger.use_inverse end,
       },
       {
         name = "destUnit",
@@ -5847,7 +5835,8 @@ WeakAuras.event_prototypes = {
         store = true,
         hidden = true,
         test = "true",
-        init = "UnitName(destUnit)"
+        init = "UnitName(destUnit)",
+        enable = function(trigger) return not trigger.use_inverse end,
       },
       {
         name = "inverse",
@@ -5858,7 +5847,7 @@ WeakAuras.event_prototypes = {
       },
       {
         hidden = true,
-        test = "WeakAuras.UnitExistsFixed(unit, smart) and ((not inverseTrigger and spell) or (inverseTrigger and not spell))"
+        test = "WeakAuras.UnitExistsFixed(unit, smart) and ((not inverseTrigger and spell) or (inverseTrigger and not spell)) and specificUnitCheck"
       }
     },
     automaticrequired = true,
