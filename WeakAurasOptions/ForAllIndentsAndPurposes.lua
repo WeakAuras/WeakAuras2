@@ -1,7 +1,7 @@
 if not WeakAuras.IsCorrectVersion() then return end
 
 -- For All Indents And Purposes
-local revision = 22
+local revision = 23
 -- Maintainer: kristofer.karlsson@gmail.com
 
 -- For All Indents And Purposes -
@@ -1108,7 +1108,7 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
         if oldFun then
             oldFun(editbox, ...)
         end
-        if enabled[editbox] then
+        if enabled[editbox] and not editbox:IsInIMECompositionMode() then
             dirty[editbox] = GetTime()
         end
     end
@@ -1128,7 +1128,7 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
         if oldFun then
             oldFun(editbox, ...)
         end
-        if enabled[editbox] then
+        if enabled[editbox] and not editbox:IsInIMECompositionMode() then
             local now = GetTime()
             local lastUpdate = dirty[editbox] or now
             if now - lastUpdate > 0.2 then
