@@ -707,6 +707,27 @@ function OptionsPrivate.CreateFrame()
     frame.addonsButton = addonsButton
   end
 
+  local pendingImportButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
+  pendingImportButton:SetText(L["Ready to Import"])
+  pendingImportButton:Disable()
+  pendingImportButton:EnableExpand()
+  if odb.pendingImportCollapse then
+    pendingImportButton:Collapse()
+  else
+    pendingImportButton:Expand()
+  end
+  pendingImportButton:SetOnExpandCollapse(function()
+    if pendingImportButton:GetExpanded() then
+      odb.pendingImportCollapse = nil
+    else
+      odb.pendingImportCollapse = true
+    end
+    WeakAuras.SortDisplayButtons()
+  end)
+  pendingImportButton:SetExpandDescription(L["Expand all Pending Import"])
+  pendingImportButton:SetCollapseDescription(L["Collapse all Pending Import"])
+  frame.pendingImportButton = pendingImportButton
+
   local loadedButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
   loadedButton:SetText(L["Loaded"])
   loadedButton:Disable()
