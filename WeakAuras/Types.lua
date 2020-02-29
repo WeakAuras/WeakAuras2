@@ -2017,6 +2017,7 @@ WeakAuras.author_option_fields = {
   header = {
     useName = false,
     text = "",
+    noMerge = false
   },
   group = {
     groupType = "simple",
