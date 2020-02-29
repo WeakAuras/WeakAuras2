@@ -409,6 +409,8 @@ local growers = {
             newPositions[frame][regionData] = { x, y, true }
             x = x - regionData.dimensions.width - space
             y = y - stagger
+          else
+            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -437,6 +439,8 @@ local growers = {
             newPositions[frame][regionData] = { x, y, true }
             x = x + (regionData.dimensions.width) + space
             y = y + stagger
+          else
+            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -465,6 +469,8 @@ local growers = {
             newPositions[frame][regionData] = { x, y, true }
             x = x + stagger
             y = y + (regionData.dimensions.height) + space
+          else
+            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -493,6 +499,8 @@ local growers = {
             newPositions[frame][regionData] = { x, y, true }
             x = x + stagger
             y = y - (regionData.dimensions.height) - space
+          else
+            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -526,6 +534,8 @@ local growers = {
             newPositions[frame][regionData] = { x, y, true }
             x = x + (regionData.dimensions.width) / 2 + space
             y = y + stagger
+          else
+            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -559,6 +569,8 @@ local growers = {
             newPositions[frame][regionData] = { x, y, true }
             x = x + stagger
             y = y + (regionData.dimensions.height) / 2 + space
+          else
+            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -600,6 +612,8 @@ local growers = {
             local x, y = polarToRect(r, theta)
             newPositions[frame][regionData] = { x, y, true }
             theta = theta + dAngle
+          else
+            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -641,6 +655,8 @@ local growers = {
             local x, y = polarToRect(r, theta)
             newPositions[frame][regionData] = { x, y, true }
             theta = theta + dAngle
+          else
+            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -708,6 +724,8 @@ local growers = {
             else
               primary.current = primary.current + (primary.space + getDimension(regionData, primary.dim)) * primary.mul
             end
+          else
+            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
