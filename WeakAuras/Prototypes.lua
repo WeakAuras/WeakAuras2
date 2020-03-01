@@ -1627,7 +1627,7 @@ WeakAuras.event_prototypes = {
         name = "percenthealth",
         display = L["Health (%)"],
         type = "number",
-        init = "(value / total) * 100",
+        init = "total ~= 0 and (value / total) * 100",
         store = true,
         conditionType = "number"
       },
@@ -1965,7 +1965,7 @@ WeakAuras.event_prototypes = {
         name = "percentpower",
         display = L["Power (%)"],
         type = "number",
-        init = "value / total * 100",
+        init = "total ~= 0 and (value / total) * 100",
         store = true,
         conditionType = "number"
       },
