@@ -2388,17 +2388,12 @@ WeakAuras.event_prototypes = {
         type = "string",
         init = "arg",
         enable = function(trigger)
-          return not WeakAuras.IsClassic() and trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
+          return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
         end,
-        hidden = WeakAuras.IsClassic(),
+        test = WeakAuras.IsClassic() and "GetSpellInfo(%q) == spellName" or nil,
         store = true,
         conditionType = "number"
       },
-      {
-        enable = function(trigger)
-          return WeakAuras.IsClassic() and trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
-        end
-      }, -- spellId ignored on classic
       {
         name = "spellName",
         display = L["Spell Name"],
