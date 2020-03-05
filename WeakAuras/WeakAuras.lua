@@ -4596,6 +4596,51 @@ function WeakAuras.HandleChatAction(message_type, message, message_dest, message
   end
 end
 
+local function actionGlowStop(actions, frame, id)
+  if actions.glow_type == "buttonOverlay" then
+    LCG.ButtonGlow_Stop(frame)
+  elseif actions.glow_type == "Pixel" then
+    LCG.PixelGlow_Stop(frame, id)
+  elseif actions.glow_type == "ACShine" then
+    LCG.AutoCastGlow_Stop(frame, id)
+  end
+end
+
+local function actionGlowStart(actions, frame, id)
+  if frame:GetWidth() < 1 or frame:GetHeight() < 1 then
+    actionGlowStop(actions, frame)
+    return
+  end
+  local color = actions.use_glow_color and actions.glow_color or nil
+  if actions.glow_type == "buttonOverlay" then
+    LCG.ButtonGlow_Start(frame, color)
+  elseif actions.glow_type == "Pixel" then
+    LCG.PixelGlow_Start(
+      frame,
+      color,
+      actions.glow_lines,
+      actions.glow_frequency,
+      actions.glow_length,
+      actions.glow_thickness,
+      actions.glow_XOffset,
+      actions.glow_YOffset,
+      actions.glow_border,
+      id
+    )
+  elseif actions.glow_type == "ACShine" then
+    LCG.AutoCastGlow_Start(
+      frame,
+      color,
+      actions.glow_lines,
+      actions.glow_frequency,
+      actions.glow_scale,
+      actions.glow_XOffset,
+      actions.glow_YOffset,
+      id
+    )
+  end
+end
+
 function WeakAuras.PerformActions(data, type, region)
   if (paused or WeakAuras.IsOptionsOpen()) then
     return;
@@ -4637,51 +4682,47 @@ function WeakAuras.PerformActions(data, type, region)
 
   -- Apply start glow actions even if squelch_actions is true, but don't apply finish glow actions
   local squelch_glow = squelch_actions and (type == "finish");
-  if(actions.do_glow and actions.glow_action and actions.glow_frame and not squelch_glow) then
-    local glowStart, glowStop
-    if actions.glow_type == "ACShine" then
-      glowStart = LCG.AutoCastGlow_Start
-      glowStop = LCG.AutoCastGlow_Stop
-    elseif actions.glow_type == "Pixel" then
-      glowStart = LCG.PixelGlow_Start
-      glowStop = LCG.PixelGlow_Stop
-    else
-      glowStart = WeakAuras.ShowOverlayGlow
-      glowStop = WeakAuras.HideOverlayGlow
-    end
-
+  if actions.do_glow
+  and actions.glow_action
+  and (
+    (actions.glow_frame_type == "UNITFRAME" and region.state.unit)
+    or (actions.glow_frame_type == "FRAMESELECTOR" and actions.glow_frame)
+  )
+  and not squelch_glow
+  then
     local glow_frame
     local original_glow_frame
-    if(actions.glow_frame:sub(1, 10) == "WeakAuras:") then
-      local frame_name = actions.glow_frame:sub(11);
-      if(regions[frame_name]) then
-        glow_frame = regions[frame_name].region;
-      end
-    else
-      glow_frame = WeakAuras.GetSanitizedGlobal(actions.glow_frame);
-      original_glow_frame = glow_frame
-    end
-
-    if (glow_frame) then
-      if (not glow_frame.__WAGlowFrame) then
-        glow_frame.__WAGlowFrame = CreateFrame("Frame", nil, glow_frame);
-        glow_frame.__WAGlowFrame:SetAllPoints(glow_frame);
-        glow_frame.__WAGlowFrame:SetSize(glow_frame:GetSize());
-      end
-      glow_frame = glow_frame.__WAGlowFrame;
-    end
-
-    if(glow_frame) then
-      if(actions.glow_action == "show") then
-        local color
-        if actions.use_glow_color then
-          color = actions.glow_color
+    if actions.glow_frame_type == "FRAMESELECTOR" then
+      if actions.glow_frame:sub(1, 10) == "WeakAuras:" then
+        local frame_name = actions.glow_frame:sub(11)
+        if regions[frame_name] then
+          glow_frame = regions[frame_name].region
         end
-        glowStart(glow_frame, color);
+      else
+        glow_frame = WeakAuras.GetSanitizedGlobal(actions.glow_frame)
+        original_glow_frame = glow_frame
+      end
+    elseif actions.glow_frame_type == "UNITFRAME" and region.state.unit then
+      glow_frame = WeakAuras.GetUnitFrame(region.state.unit)
+    end
+
+    if glow_frame then
+      if not glow_frame.__WAGlowFrame then
+        glow_frame.__WAGlowFrame = CreateFrame("Frame", nil, glow_frame)
+        glow_frame.__WAGlowFrame:SetAllPoints(glow_frame)
+        glow_frame.__WAGlowFrame:SetSize(glow_frame:GetSize())
+      end
+      glow_frame = glow_frame.__WAGlowFrame
+    end
+
+    if glow_frame then
+      local id = region.id .. (region.cloneId or "")
+      if actions.glow_action == "show" then
+        actionGlowStart(actions, glow_frame, id)
       elseif(actions.glow_action == "hide") then
-        glowStop(glow_frame);
+        actionGlowStop(actions, glow_frame, id)
         if original_glow_frame then
-          glowStop(original_glow_frame);
+          actionGlowStop(actions, original_glow_frame, id)
         end
       end
     end
