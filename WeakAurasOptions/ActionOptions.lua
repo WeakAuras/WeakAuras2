@@ -233,12 +233,17 @@ function WeakAuras.AddActionOption(id, data)
         type = "select",
         width = WeakAuras.normalWidth,
         desc = function()
-          return data.actions.start.glow_frame_type == "UNITFRAME" and L["Require unit from trigger"] or nil
+          return (
+            data.actions.start.glow_frame_type == "UNITFRAME"
+            or data.actions.start.glow_frame_type == "NAMEPLATE"
+          )
+          and L["Require unit from trigger"] or nil
         end,
         name = L["Glow Frame Type"],
         order = 10.3,
         values = {
           UNITFRAME = L["Unit Frame"],
+          NAMEPLATE = L["Name Plate"],
           FRAMESELECTOR = L["Frame Selector"]
         },
         hidden = function() return not data.actions.start.do_glow end
@@ -583,10 +588,18 @@ function WeakAuras.AddActionOption(id, data)
       finish_glow_frame_type = {
         type = "select",
         width = WeakAuras.normalWidth,
+        desc = function()
+          return (
+            data.actions.finish.glow_frame_type == "UNITFRAME"
+            or data.actions.finish.glow_frame_type == "NAMEPLATE"
+          )
+          and L["Require unit from trigger"] or nil
+        end,
         name = L["Glow Frame Type"],
-        order = 30.3,
+        order = 10.3,
         values = {
           UNITFRAME = L["Unit Frame"],
+          NAMEPLATE = L["Name Plate"],
           FRAMESELECTOR = L["Frame Selector"]
         },
         hidden = function() return not data.actions.finish.do_glow end
@@ -785,13 +798,13 @@ function WeakAuras.AddActionOption(id, data)
         type = "toggle",
         width = WeakAuras.doubleWidth,
         name = L["Hide Glows applied by this aura"],
-        order = 30.9,
+        order = 31,
       },
       finish_do_custom = {
         type = "toggle",
         width = WeakAuras.doubleWidth,
         name = L["Custom"],
-        order = 31,
+        order = 32,
       },
     -- Text editor added below
     },

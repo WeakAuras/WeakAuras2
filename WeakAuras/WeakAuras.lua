@@ -4685,7 +4685,10 @@ function WeakAuras.PerformActions(data, type, region)
   if actions.do_glow
   and actions.glow_action
   and (
-    (actions.glow_frame_type == "UNITFRAME" and region.state.unit)
+    (
+      (actions.glow_frame_type == "UNITFRAME" or actions.glow_frame_type == "NAMEPLATE")
+      and region.state.unit
+    )
     or (actions.glow_frame_type == "FRAMESELECTOR" and actions.glow_frame)
   )
   and not squelch_glow
@@ -4704,6 +4707,8 @@ function WeakAuras.PerformActions(data, type, region)
       end
     elseif actions.glow_frame_type == "UNITFRAME" and region.state.unit then
       glow_frame = WeakAuras.GetUnitFrame(region.state.unit)
+    elseif actions.glow_frame_type == "NAMEPLATE" and region.state.unit then
+      glow_frame = WeakAuras.GetUnitNameplate(region.state.unit)
     end
 
     if glow_frame then
@@ -4719,6 +4724,8 @@ function WeakAuras.PerformActions(data, type, region)
       local id = region.id .. (region.cloneId or "")
       if actions.glow_action == "show" then
         actionGlowStart(actions, glow_frame, id)
+        region.active_glows = region.active_glows or {}
+        tinsert(region.active_glows, function() actionGlowStop(actions, glow_frame, id) end)
       elseif(actions.glow_action == "hide") then
         actionGlowStop(actions, glow_frame, id)
         if original_glow_frame then
@@ -4726,6 +4733,14 @@ function WeakAuras.PerformActions(data, type, region)
         end
       end
     end
+  end
+
+  -- remove all glows on finish
+  if type == "finish" and actions.hide_all_glows and region.active_glows then
+    for k, stopFunc in pairs(region.active_glows) do
+      stopFunc()
+    end
+    wipe(region.active_glows)
   end
 end
 
