@@ -4641,49 +4641,8 @@ local function actionGlowStart(actions, frame, id)
   end
 end
 
-function WeakAuras.PerformActions(data, type, region)
-  if (paused or WeakAuras.IsOptionsOpen()) then
-    return;
-  end;
-  local actions;
-  if(type == "start") then
-    actions = data.actions.start;
-  elseif(type == "finish") then
-    actions = data.actions.finish;
-  else
-    return;
-  end
-
-  if(actions.do_message and actions.message_type and actions.message) then
-    local customFunc = WeakAuras.customActionsFunctions[data.id][type .. "_message"];
-    WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc);
-  end
-
-  if (actions.stop_sound) then
-    if (region.SoundStop) then
-      region:SoundStop();
-    end
-  end
-
-  if(actions.do_sound and actions.sound) then
-    if (region.SoundPlay) then
-      region:SoundPlay(actions);
-    end
-  end
-
-  if(actions.do_custom and actions.custom) then
-    local func = WeakAuras.customActionsFunctions[data.id][type]
-    if func then
-      WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state, region.states);
-      xpcall(func, geterrorhandler());
-      WeakAuras.ActivateAuraEnvironment(nil);
-    end
-  end
-
-  -- Apply start glow actions even if squelch_actions is true, but don't apply finish glow actions
-  local squelch_glow = squelch_actions and (type == "finish");
-  if actions.do_glow
-  and actions.glow_action
+function WeakAuras.HandleGlowAction(actions, region)
+  if actions.glow_action
   and (
     (
       (actions.glow_frame_type == "UNITFRAME" or actions.glow_frame_type == "NAMEPLATE")
@@ -4691,7 +4650,6 @@ function WeakAuras.PerformActions(data, type, region)
     )
     or (actions.glow_frame_type == "FRAMESELECTOR" and actions.glow_frame)
   )
-  and not squelch_glow
   then
     local glow_frame
     local original_glow_frame
@@ -4733,6 +4691,51 @@ function WeakAuras.PerformActions(data, type, region)
         end
       end
     end
+  end
+end
+
+function WeakAuras.PerformActions(data, type, region)
+  if (paused or WeakAuras.IsOptionsOpen()) then
+    return;
+  end;
+  local actions;
+  if(type == "start") then
+    actions = data.actions.start;
+  elseif(type == "finish") then
+    actions = data.actions.finish;
+  else
+    return;
+  end
+
+  if(actions.do_message and actions.message_type and actions.message) then
+    local customFunc = WeakAuras.customActionsFunctions[data.id][type .. "_message"];
+    WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc);
+  end
+
+  if (actions.stop_sound) then
+    if (region.SoundStop) then
+      region:SoundStop();
+    end
+  end
+
+  if(actions.do_sound and actions.sound) then
+    if (region.SoundPlay) then
+      region:SoundPlay(actions);
+    end
+  end
+
+  if(actions.do_custom and actions.custom) then
+    local func = WeakAuras.customActionsFunctions[data.id][type]
+    if func then
+      WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state, region.states);
+      xpcall(func, geterrorhandler());
+      WeakAuras.ActivateAuraEnvironment(nil);
+    end
+  end
+
+  -- Apply start glow actions even if squelch_actions is true, but don't apply finish glow actions
+  if actions.do_glow then
+    WeakAuras.HandleGlowAction(actions, region)
   end
 
   -- remove all glows on finish
