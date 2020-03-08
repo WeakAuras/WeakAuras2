@@ -504,17 +504,43 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = WeakAuras.doubleWidth,
       hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
     },
+
+    useClass = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Filter by Class"],
+      order = 68.1,
+      hidden = function() return
+        not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
+      end
+    },
+    class = {
+      type = "multiselect",
+      width = WeakAuras.normalWidth,
+      name = L["Group Role"],
+      values = WeakAuras.class_types,
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useClass) end,
+      order = 68.2
+    },
+    classSpace = {
+      type = "description",
+      name = "",
+      order = 68.3,
+      width = WeakAuras.normalWidth,
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useClass) end
+    },
+
     useGroup_count = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Unit Count"],
       hidden = function() return not (trigger.type == "aura2" and IsGroupTrigger(trigger)) end,
-      order = 68
+      order = 69
     },
     useGroup_countSpace = {
       type = "description",
       name = "",
-      order = 68.1,
+      order = 69.1,
       width = WeakAuras.normalWidth,
       hidden = function() return not (trigger.type == "aura2" and IsGroupTrigger(trigger) and not trigger.useGroup_count) end
     },
@@ -529,7 +555,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
           return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType)
         end
       end,
-      order = 68.2,
+      order = 69.2,
       width = WeakAuras.halfWidth,
       values = operator_types,
       hidden = function() return not (trigger.type == "aura2" and IsGroupTrigger(trigger) and trigger.useGroup_count) end,
@@ -546,10 +572,11 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
           return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType)
         end
       end,
-      order = 68.3,
+      order = 69.3,
       width = WeakAuras.halfWidth,
       hidden = function() return not (trigger.type == "aura2" and IsGroupTrigger(trigger) and trigger.useGroup_count) end,
     },
+
     use_matchesShowOn = {
       type = "toggle",
       width = WeakAuras.normalWidth,
