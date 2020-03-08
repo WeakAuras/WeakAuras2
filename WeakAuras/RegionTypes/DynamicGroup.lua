@@ -409,8 +409,6 @@ local growers = {
             newPositions[frame][regionData] = { x, y, true }
             x = x - regionData.dimensions.width - space
             y = y - stagger
-          else
-            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -439,8 +437,6 @@ local growers = {
             newPositions[frame][regionData] = { x, y, true }
             x = x + (regionData.dimensions.width) + space
             y = y + stagger
-          else
-            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -469,8 +465,6 @@ local growers = {
             newPositions[frame][regionData] = { x, y, true }
             x = x + stagger
             y = y + (regionData.dimensions.height) + space
-          else
-            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -499,8 +493,6 @@ local growers = {
             newPositions[frame][regionData] = { x, y, true }
             x = x + stagger
             y = y - (regionData.dimensions.height) - space
-          else
-            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -534,8 +526,6 @@ local growers = {
             newPositions[frame][regionData] = { x, y, true }
             x = x + (regionData.dimensions.width) / 2 + space
             y = y + stagger
-          else
-            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -569,8 +559,6 @@ local growers = {
             newPositions[frame][regionData] = { x, y, true }
             x = x + stagger
             y = y + (regionData.dimensions.height) / 2 + space
-          else
-            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -612,8 +600,6 @@ local growers = {
             local x, y = polarToRect(r, theta)
             newPositions[frame][regionData] = { x, y, true }
             theta = theta + dAngle
-          else
-            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -655,8 +641,6 @@ local growers = {
             local x, y = polarToRect(r, theta)
             newPositions[frame][regionData] = { x, y, true }
             theta = theta + dAngle
-          else
-            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -724,8 +708,6 @@ local growers = {
             else
               primary.current = primary.current + (primary.space + getDimension(regionData, primary.dim)) * primary.mul
             end
-          else
-            newPositions[frame][regionData] = { 0, 0, false }
           end
         end
       end
@@ -1044,8 +1026,9 @@ local function modify(parent, region, data)
     LGF.UnregisterCallback("WeakAuras" .. data.uid, "GETFRAME_REFRESH")
   end
 
-  function region:DoPositionChildrenPerFrame(frame, positions)
+  function region:DoPositionChildrenPerFrame(frame, positions, handledRegionData)
     for regionData, pos in pairs(positions) do
+      handledRegionData[regionData] = true
       local x, y, show =  type(pos[1]) == "number" and pos[1] or 0,
                           type(pos[2]) == "number" and pos[2] or 0,
                           type(pos[3]) ~= "boolean" and true or pos[3]
@@ -1145,6 +1128,9 @@ local function modify(parent, region, data)
   function region:DoPositionChildren()
     WeakAuras.StartProfileSystem("dynamicgroup")
     WeakAuras.StartProfileAura(data.id)
+
+    local handledRegionData = {}
+
     local newPositions = {}
     self.growFunc(newPositions, self.sortedChildren)
     if #newPositions > 0 then
@@ -1160,12 +1146,19 @@ local function modify(parent, region, data)
           newPositions[index] = nil
         end
       end
-      region:DoPositionChildrenPerFrame("", newPositions)
+      region:DoPositionChildrenPerFrame("", newPositions, handledRegionData)
     else
       for frame, positions in pairs(newPositions) do
-        region:DoPositionChildrenPerFrame(frame, positions)
+        region:DoPositionChildrenPerFrame(frame, positions, handledRegionData)
       end
     end
+
+    for index, child in ipairs(self.sortedChildren) do
+      if not handledRegionData[child] then
+        child.controlPoint:SetShown(false)
+      end
+    end
+
     WeakAuras.StopProfileSystem("dynamicgroup")
     WeakAuras.StopProfileAura(data.id)
     self:Resize()
