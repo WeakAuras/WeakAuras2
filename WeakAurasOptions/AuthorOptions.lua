@@ -1549,7 +1549,8 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
     func = function()
       for id, optionData in pairs(option.references) do
         local path = optionData.path
-        local parentOptions = optionData.parent.options
+        local parent = optionData.parent
+        local parentOptions = parent and parent.references[id].options or optionData.data.authorOptions
         local childOption = tremove(optionData.options, optionData.index)
         local childCollapsed = WeakAuras.IsCollapsed(id, "author", optionData.path, true)
         WeakAuras.RemoveCollapsed(id, "author", optionData.path)
@@ -1574,7 +1575,8 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
     func = function()
       for id, optionData in pairs(option.references) do
         local path = optionData.path
-        local parentOptions = optionData.parent.options
+        local parent = optionData.parent
+        local parentOptions = parent and parent.references[id].options or optionData.data.authorOptions
         local childOption = tremove(optionData.options, optionData.index)
         local childCollapsed = WeakAuras.IsCollapsed(id, "author", optionData.path, true)
         WeakAuras.RemoveCollapsed(id, "author", optionData.path)
