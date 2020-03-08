@@ -243,8 +243,8 @@ local function createOptions(parentData, data, index, subIndex)
       local selfPoint = data.text_selfPoint ~= "AUTO" and self_point_types[data.text_selfPoint]
       local anchorPoint = anchors[data.text_anchorPoint or "CENTER"] or anchors["CENTER"]
 
-      local xOffset = data.anchorXOffset or 0
-      local yOffset = data.anchorYOffset or 0
+      local xOffset = data.text_anchorXOffset or 0
+      local yOffset = data.text_anchorYOffset or 0
 
       if (type(anchorPoint) == "table") then
         anchorPoint = anchorPoint[1] .. "/" .. anchorPoint[2]
