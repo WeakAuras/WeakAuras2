@@ -21,7 +21,6 @@
   <!--@non-retail@
   <Include file="Libs\LibClassicDurations\LibClassicDurations.xml"/>
   <Script file="Libs\LibClassicCasterino\LibClassicCasterino.lua"/>
-  <Include file="Libs\!LibTotemInfo\embeds.xml"/>
   <Script file="Libs\LibClassicSpellActionCount-1.0\LibClassicSpellActionCount-1.0.lua"/>
   @end-non-retail@-->
   <Script file="Libs\LibGetFrame-1.0\LibGetFrame-1.0.lua"/>
