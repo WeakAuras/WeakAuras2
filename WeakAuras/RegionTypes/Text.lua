@@ -200,7 +200,14 @@ local function modify(parent, region, data)
     SetText(data.displayText);
   end
 
-  function region:Color(r, g, b, a)
+  function region:Color(r, g, b, a, auto)
+    if auto and region.state and region.state.color then
+      local autoColor = region.state.color
+      r = autoColor[1]
+      g = autoColor[2]
+      b = autoColor[3]
+      a = autoColor[4]
+    end
     region.color_r = r;
     region.color_g = g;
     region.color_b = b;

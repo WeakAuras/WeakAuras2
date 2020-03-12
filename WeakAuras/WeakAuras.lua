@@ -722,7 +722,7 @@ local function formatValueForAssignment(vtype, value, pathToCustomFunction)
     return type(value) == "string" and string.format("%q", value) or "nil";
   elseif(vtype == "color") then
     if (value and type(value) == "table") then
-      return string.format("{%s, %s, %s, %s}", tostring(value[1]), tostring(value[2]), tostring(value[3]), tostring(value[4]));
+      return string.format("{%s, %s, %s, %s, %s}", tostring(value[1]), tostring(value[2]), tostring(value[3]), tostring(value[4]), value.auto and "true" or "false");
     end
     return "{1, 1, 1, 1}";
   elseif(vtype == "chat") then
@@ -750,7 +750,7 @@ local function formatValueForCall(type, property)
     return "propertyChanges['" .. property .. "']";
   elseif (type == "color") then
     local pcp = "propertyChanges['" .. property .. "']";
-    return pcp  .. "[1], " .. pcp .. "[2], " .. pcp  .. "[3], " .. pcp  .. "[4]";
+    return pcp  .. "[1], " .. pcp .. "[2], " .. pcp  .. "[3], " .. pcp  .. "[4]," .. pcp .. "[5]";
   end
   return "nil";
 end

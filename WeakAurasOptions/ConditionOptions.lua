@@ -410,18 +410,31 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
   elseif (propertyType == "color") then
     args["condition" .. i .. "value" .. j] = {
       type = "color",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.normalWidth / 4,
       name = blueIfNoValue(data, conditions[i].changes[j], "value", L["Differences"]),
       desc = descIfNoValue(data, conditions[i].changes[j], "value", propertyType),
       order = order,
       hasAlpha = true,
       get = function()
         if (conditions[i].changes[j].value and type(conditions[i].changes[j].value) == "table") then
-          return conditions[i].changes[j].value[1], conditions[i].changes[j].value[2], conditions[i].changes[j].value[3], conditions[i].changes[j].value[4];
+          return conditions[i].changes[j].value[1], conditions[i].changes[j].value[2], conditions[i].changes[j].value[3], conditions[i].changes[j].value[4], conditions[i].changes[j].value.auto;
         end
         return 1, 1, 1, 1;
       end,
-      set = setValueColor
+      set = setValueColor,
+      disabled = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.auto
+      end
+    }
+    args["condition" .. i .. "value" .. j .. "auto"] = {
+      type = "toggle",
+      width = WeakAuras.normalWidth / 4 * 3,
+      name = L["Auto"],
+      order = order + 0.1,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.auto;
+      end,
+      set = setValueComplex("auto")
     }
     order = order + 1;
   elseif (propertyType == "list") then
