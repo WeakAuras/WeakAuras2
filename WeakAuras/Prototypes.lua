@@ -2198,7 +2198,10 @@ WeakAuras.event_prototypes = {
           return not (trigger.subeventPrefix == "ENVIRONMENTAL")
         end,
         store = true,
-        conditionType = "select"
+        conditionType = "select",
+        conditionTest = function(state, needle, op)
+          return state and state.show and ((state.sourceGUID or '') == (UnitGUID(needle) or '')) == (op == "==")
+        end
       },
       {
         name = "sourceName",
@@ -2282,7 +2285,10 @@ WeakAuras.event_prototypes = {
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end,
         store = true,
-        conditionType = "select"
+        conditionType = "select",
+        conditionTest = function(state, needle, op)
+          return state and state.show and ((state.destGUID or '') == (UnitGUID(needle) or '')) == (op == "==")
+        end
       },
       {
         name = "destName",
