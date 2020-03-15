@@ -729,7 +729,20 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   }
 
   -- Names
-  local nameOptionSize = 100
+  local nameOptionSize = 0
+  if data.controlledChildren then
+    for index, childId in ipairs(data.controlledChildren) do
+      local childData = WeakAuras.GetData(childId)
+      local trigger = optionTriggerChoices[childId] and childData.triggers[optionTriggerChoices[childId]].trigger
+      if trigger and trigger.auranames  then
+        nameOptionSize = max(nameOptionSize, #(trigger.auranames))
+      end
+    end
+  else
+    nameOptionSize = (trigger.auranames and #(trigger.auranames) or 0)
+  end
+  nameOptionSize = nameOptionSize + 1
+
   for i = 1, nameOptionSize do
     if i ~= 1 then
       aura_options["namespace" .. i] = {
@@ -813,7 +826,20 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     }
   end
   -- Exact Spell IDs
-  local spellOptionsSize = 100
+  local spellOptionsSize = 0
+  if data.controlledChildren then
+    for index, childId in ipairs(data.controlledChildren) do
+      local childData = WeakAuras.GetData(childId)
+      local trigger = optionTriggerChoices[childId] and childData.triggers[optionTriggerChoices[childId]].trigger
+      if trigger and trigger.auraspellids  then
+        spellOptionsSize = max(spellOptionsSize, #(trigger.auraspellids))
+      end
+    end
+  else
+    spellOptionsSize = (trigger.auraspellids and #(trigger.auraspellids) or 0)
+  end
+  spellOptionsSize = spellOptionsSize + 1
+
   for i = 1, spellOptionsSize do
     if i ~= 1 then
       aura_options["spellidspace" .. i] = {
