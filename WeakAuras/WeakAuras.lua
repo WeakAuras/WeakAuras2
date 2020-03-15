@@ -1782,7 +1782,6 @@ function WeakAuras.IsPaused()
 end
 
 function WeakAuras.Pause()
-  paused = true;
   -- Forcibly hide all displays, and clear all trigger information (it will be restored on .Resume() due to forced events)
   for id, region in pairs(regions) do
     region.region:Collapse(); -- ticket 366
@@ -1793,13 +1792,13 @@ function WeakAuras.Pause()
       clone:Collapse();
     end
   end
+
+  paused = true;
 end
 
 function WeakAuras.Resume()
   paused = false;
-  squelch_actions = true;
   WeakAuras.ScanAll();
-  squelch_actions = false;
   for _, regionData in pairs(regions) do
     if regionData.region.Resume then
       regionData.region:Resume(true)
@@ -4610,7 +4609,7 @@ function WeakAuras.PerformActions(data, type, region)
     return;
   end
 
-  if(actions.do_message and actions.message_type and actions.message and not squelch_actions) then
+  if(actions.do_message and actions.message_type and actions.message) then
     local customFunc = WeakAuras.customActionsFunctions[data.id][type .. "_message"];
     WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc);
   end
@@ -4627,7 +4626,7 @@ function WeakAuras.PerformActions(data, type, region)
     end
   end
 
-  if(actions.do_custom and actions.custom and not squelch_actions) then
+  if(actions.do_custom and actions.custom) then
     local func = WeakAuras.customActionsFunctions[data.id][type]
     if func then
       WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state, region.states);
