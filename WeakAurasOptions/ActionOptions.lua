@@ -596,7 +596,7 @@ function WeakAuras.AddActionOption(id, data)
           and L["Require unit from trigger"] or nil
         end,
         name = L["Glow Frame Type"],
-        order = 10.3,
+        order = 30.3,
         values = {
           UNITFRAME = L["Unit Frame"],
           NAMEPLATE = L["Name Plate"],
