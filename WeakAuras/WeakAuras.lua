@@ -39,6 +39,7 @@ end
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
 local LDBIcon = LibStub("LibDBIcon-1.0")
 local LCG = LibStub("LibCustomGlow-1.0")
+local LGF = LibStub("LibGetFrame-1.0")
 local timer = WeakAurasTimers
 WeakAuras.timer = timer
 
@@ -4686,7 +4687,6 @@ function WeakAuras.HandleGlowAction(actions, region)
         end
       else
         glow_frame = WeakAuras.GetSanitizedGlobal(actions.glow_frame)
-        original_glow_frame = glow_frame
       end
     elseif actions.glow_frame_type == "UNITFRAME" and region.state.unit then
       glow_frame = WeakAuras.GetUnitFrame(region.state.unit)
@@ -4700,6 +4700,7 @@ function WeakAuras.HandleGlowAction(actions, region)
         glow_frame.__WAGlowFrame:SetAllPoints(glow_frame)
         glow_frame.__WAGlowFrame:SetSize(glow_frame:GetSize())
       end
+      original_glow_frame = glow_frame
       glow_frame = glow_frame.__WAGlowFrame
     end
 
@@ -4708,12 +4709,29 @@ function WeakAuras.HandleGlowAction(actions, region)
       if actions.glow_action == "show" then
         actionGlowStart(actions, glow_frame, id)
         region.active_glows = region.active_glows or {}
+        if actions.glow_frame_type == "UNITFRAME" then
+          local glow_guid = UnitGUID(region.state.unit)
+          LGF.RegisterCallback("WeakAuras" .. id, "FRAME_GUID_UPDATE", function(event, frame, guid)
+            if frame ~= original_glow_frame and guid == glow_guid then
+              local new_glow_frame = WeakAuras.GetUnitFrame(region.state.unit)
+              if new_glow_frame and new_glow_frame ~= original_glow_frame then
+                actionGlowStop(actions, glow_frame, id)
+                if not new_glow_frame.__WAGlowFrame then
+                  new_glow_frame.__WAGlowFrame = CreateFrame("Frame", nil, new_glow_frame)
+                  new_glow_frame.__WAGlowFrame:SetAllPoints(new_glow_frame)
+                  new_glow_frame.__WAGlowFrame:SetSize(new_glow_frame:GetSize())
+                end
+                original_glow_frame = new_glow_frame
+                glow_frame = new_glow_frame.__WAGlowFrame
+                actionGlowStart(actions, glow_frame, id)
+              end
+            end
+          end)
+        end
         tinsert(region.active_glows, function() actionGlowStop(actions, glow_frame, id) end)
       elseif(actions.glow_action == "hide") then
         actionGlowStop(actions, glow_frame, id)
-        if original_glow_frame then
-          actionGlowStop(actions, original_glow_frame, id)
-        end
+        LGF.UnregisterCallback("WeakAuras" .. id, "FRAME_GUID_UPDATE")
       end
     end
   end
