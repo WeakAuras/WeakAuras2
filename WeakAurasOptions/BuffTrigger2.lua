@@ -48,6 +48,136 @@ local function shiftTable(tbl, pos)
   end
 end
 
+-- Counts the Names or SpellIds in a aura, recursively.
+local function CountNames(data, optionTriggerChoices, name)
+  local result = 0
+  if data.controlledChildren then
+    for index, childId in ipairs(data.controlledChildren) do
+      local childData = WeakAuras.GetData(childId)
+      local trigger = optionTriggerChoices[childId] and childData.triggers[optionTriggerChoices[childId]].trigger
+      if trigger and trigger[name]  then
+        result = max(result, #trigger[name])
+      end
+    end
+  else
+    local trigger = optionTriggerChoices[data.id] and data.triggers[optionTriggerChoices[data.id]].trigger
+    if trigger[name] then
+      result = #trigger[name]
+    end
+  end
+  return result
+end
+
+local function CreateNameOptions(aura_options, data, trigger, size, isExactSpellId, prefix, baseOrder, useKey, optionKey, name, desc)
+  local spellCache = WeakAuras.spellCache
+  for i = 1, size do
+    if i ~= 1 then
+      aura_options[prefix .. "space" .. i] = {
+        type = "execute",
+        name = L["or"],
+        width = WeakAuras.normalWidth - 0.2,
+        image = function() return "", 0, 0 end,
+        order = baseOrder + i / 100 + 0.0001,
+        hidden = function() return not (trigger.type == "aura2" and trigger[useKey] and trigger[optionKey] and trigger[optionKey][i - 1]) end
+      }
+    end
+
+    local iconOption = prefix .. "icon" .. i
+    aura_options[iconOption] = {
+      type = "execute",
+      width = 0.2,
+      order = baseOrder + i / 100 + 0.0002,
+      hidden = function() return not (trigger.type == "aura2" and trigger[useKey] and (i == 1 or trigger[optionKey] and trigger[optionKey][i - 1])) end
+    }
+
+    if isExactSpellId then
+      aura_options[iconOption].name = ""
+      aura_options[iconOption].desc = function()
+        local name = GetSpellInfo(trigger[optionKey] and trigger[optionKey][i])
+        return name
+      end
+      aura_options[iconOption].image = function()
+        local icon = select(3, GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i]))
+        return icon and tostring(icon) or "", 18, 18
+      end
+      aura_options[iconOption].disabled = function()
+        return not trigger[optionKey] or not trigger[optionKey][i] or not select(3, GetSpellInfo(trigger[optionKey] and trigger[optionKey][i]))
+      end
+    else
+      aura_options[iconOption].name = function()
+        local spellId = trigger[optionKey] and trigger[optionKey][i] and WeakAuras.SafeToNumber(trigger[optionKey][i])
+        if spellId then
+          return getAuraMatchesLabel(GetSpellInfo(spellId))
+        else
+          return getAuraMatchesLabel(trigger[optionKey] and trigger[optionKey][i])
+        end
+      end
+
+      aura_options[iconOption].desc = function()
+        local spellId = trigger[optionKey] and trigger[optionKey][i] and WeakAuras.SafeToNumber(trigger[optionKey][i])
+        if spellId then
+          local name = GetSpellInfo(spellId)
+          if name then
+            local auraDesc = getAuraMatchesList(name)
+            if auraDesc then
+              auraDesc = name .. "\n" .. auraDesc
+            end
+            return auraDesc
+          end
+        else
+          return getAuraMatchesList(trigger[optionKey] and trigger[optionKey][i])
+        end
+      end
+      aura_options[iconOption].image = function()
+        local icon
+        local spellId = trigger[optionKey] and trigger[optionKey][i] and WeakAuras.SafeToNumber(trigger[optionKey][i])
+        if spellId then
+          icon = select(3, GetSpellInfo(spellId))
+        else
+          icon = spellCache.GetIcon(trigger[optionKey] and trigger[optionKey][i])
+        end
+        return icon and tostring(icon) or "", 18, 18
+      end
+    end
+
+    aura_options[prefix .. i] = {
+      type = "input",
+      width = WeakAuras.normalWidth,
+      name = name,
+      desc = desc,
+      order = baseOrder + i / 100 + 0.0003,
+      hidden = function() return not (trigger.type == "aura2" and trigger[useKey] and (i == 1 or trigger[optionKey] and trigger[optionKey][i - 1])) end,
+      get = function(info) return trigger[optionKey] and trigger[optionKey][i] end,
+      set = function(info, v)
+        trigger[optionKey] = trigger[optionKey] or {}
+        if v == "" then
+          shiftTable(trigger[optionKey], i)
+        else
+          if isExactSpellId then
+            trigger[optionKey][i] = v
+          else
+            local spellId = tonumber(v)
+            if spellId then
+              WeakAuras.spellCache.CorrectAuraName(v)
+              trigger[optionKey][i] = v
+            else
+              trigger[optionKey][i] = spellCache.BestKeyMatch(v)
+            end
+          end
+        end
+
+        WeakAuras.Add(data)
+        WeakAuras.UpdateThumbnail(data)
+        WeakAuras.SetIconNames(data)
+        WeakAuras.UpdateDisplayButton(data)
+        WeakAuras.ReloadTriggerOptions(data)
+      end,
+      validate = isExactSpellId and WeakAuras.ValidateNumeric or nil
+    }
+  end
+  -- VALIDATE ?
+end
+
 local function GetBuffTriggerOptions(data, optionTriggerChoices)
   local trigger
   if not data.controlledChildren then
@@ -74,7 +204,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     end
   end
 
-  local spellCache = WeakAuras.spellCache
   local ValidateNumeric = WeakAuras.ValidateNumeric
   local aura_options = {
     useUnit = {
@@ -729,172 +858,20 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   }
 
   -- Names
-  local nameOptionSize = 0
-  if data.controlledChildren then
-    for index, childId in ipairs(data.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
-      local trigger = optionTriggerChoices[childId] and childData.triggers[optionTriggerChoices[childId]].trigger
-      if trigger and trigger.auranames  then
-        nameOptionSize = max(nameOptionSize, #(trigger.auranames))
-      end
-    end
-  else
-    nameOptionSize = (trigger.auranames and #(trigger.auranames) or 0)
-  end
-  nameOptionSize = nameOptionSize + 1
+  local nameOptionSize = CountNames(data, optionTriggerChoices, "auranames") + 1
+  local spellOptionsSize = CountNames(data, optionTriggerChoices, "auraspellids") + 1
 
-  for i = 1, nameOptionSize do
-    if i ~= 1 then
-      aura_options["namespace" .. i] = {
-        type = "execute",
-        name = L["or"],
-        width = WeakAuras.normalWidth - 0.2,
-        image = function() return "", 0, 0 end,
-        order = i / 100 + 12.0001,
-        hidden = function() return not (trigger.type == "aura2" and trigger.useName and trigger.auranames and trigger.auranames[i - 1]) end
-      }
-    end
+  CreateNameOptions(aura_options, data, trigger, nameOptionSize,
+                    false, "name", 12, "useName", "auranames",
+                    L["Aura Name"],
+                    L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."])
 
-    aura_options["nameicon" .. i] = {
-      type = "execute",
-      name = function()
-        local spellId = trigger.auranames and trigger.auranames[i] and WeakAuras.SafeToNumber(trigger.auranames[i])
-        if spellId then
-          return getAuraMatchesLabel(GetSpellInfo(spellId))
-        else
-          return getAuraMatchesLabel(trigger.auranames and trigger.auranames[i])
-        end
-      end,
-      desc = function()
-        local spellId = trigger.auranames and trigger.auranames[i] and WeakAuras.SafeToNumber(trigger.auranames[i])
-        if spellId then
-          local name = GetSpellInfo(spellId)
-          if name then
-            local auraDesc = getAuraMatchesList(name)
-            if auraDesc then
-              auraDesc = name .. "\n" .. auraDesc
-            end
-            return auraDesc
-          end
-        else
-          return getAuraMatchesList(trigger.auranames and trigger.auranames[i])
-        end
-      end,
-      width = 0.2,
-      image = function()
-        local icon
-        local spellId = trigger.auranames and trigger.auranames[i] and WeakAuras.SafeToNumber(trigger.auranames[i])
-        if spellId then
-          icon = select(3, GetSpellInfo(spellId))
-        else
-          icon = spellCache.GetIcon(trigger.auranames and trigger.auranames[i])
-        end
-        return icon and tostring(icon) or "", 18, 18
-      end,
-      order = i / 100 + 12.0002,
-      hidden = function() return not (trigger.type == "aura2" and trigger.useName and (i == 1 or trigger.auranames and trigger.auranames[i - 1])) end
-    }
 
-    aura_options["name" .. i] = {
-      type = "input",
-      width = WeakAuras.normalWidth,
-      name = L["Aura Name"],
-      desc = L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."],
-      order = i / 100 + 12.0003,
-      hidden = function() return not (trigger.type == "aura2" and trigger.useName and (i == 1 or trigger.auranames and trigger.auranames[i - 1])) end,
-      get = function(info) return trigger.auranames and trigger.auranames[i] end,
-      set = function(info, v)
-        trigger.auranames = trigger.auranames or {}
-        if v == "" then
-          shiftTable(trigger.auranames, i)
-        else
-          local spellId = tonumber(v)
-          if spellId then
-            WeakAuras.spellCache.CorrectAuraName(v)
-            trigger.auranames[i] = v
-          else
-            trigger.auranames[i] = spellCache.BestKeyMatch(v)
-          end
-        end
+  CreateNameOptions(aura_options, data, trigger, spellOptionsSize,
+                    true, "spellid", 22, "useExactSpellId", "auraspellids",
+                    L["Spell ID"], L["Enter a Spell ID"])
 
-        WeakAuras.Add(data)
-        WeakAuras.UpdateThumbnail(data)
-        WeakAuras.SetIconNames(data)
-        WeakAuras.UpdateDisplayButton(data)
-        WeakAuras.ReloadTriggerOptions(data)
-      end
-    }
-  end
-  -- Exact Spell IDs
-  local spellOptionsSize = 0
-  if data.controlledChildren then
-    for index, childId in ipairs(data.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
-      local trigger = optionTriggerChoices[childId] and childData.triggers[optionTriggerChoices[childId]].trigger
-      if trigger and trigger.auraspellids  then
-        spellOptionsSize = max(spellOptionsSize, #(trigger.auraspellids))
-      end
-    end
-  else
-    spellOptionsSize = (trigger.auraspellids and #(trigger.auraspellids) or 0)
-  end
-  spellOptionsSize = spellOptionsSize + 1
 
-  for i = 1, spellOptionsSize do
-    if i ~= 1 then
-      aura_options["spellidspace" .. i] = {
-        type = "execute",
-        name = L["or"],
-        width = WeakAuras.normalWidth - 0.2,
-        image = function() return "", 0, 0 end,
-        order = i / 100 + 22.0001,
-        hidden = function() return not (trigger.type == "aura2" and trigger.useExactSpellId and trigger.auraspellids and trigger.auraspellids[i - 1]) end
-      }
-    end
-
-    aura_options["spellidicon" .. i] = {
-      type = "execute",
-      name = function()
-        return " "
-      end,
-      desc = function()
-        local name = GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i])
-        return name
-      end,
-      width = 0.2,
-      image = function()
-        local icon = select(3, GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i]))
-        return icon and tostring(icon) or "", 18, 18
-      end,
-      order = i / 100 + 22.0002,
-      disabled = function() return not trigger.auraspellids or not trigger.auraspellids[i] or not select(3, GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i])) end,
-      hidden = function() return not (trigger.type == "aura2" and trigger.useExactSpellId and (i == 1 or trigger.auraspellids and trigger.auraspellids[i - 1])) end
-    }
-
-    aura_options["spellid" .. i] = {
-      type = "input",
-      width = WeakAuras.normalWidth,
-      name = L["Spell ID"],
-      desc = L["Enter a Spell ID"],
-      order = i / 100 + 22.0003,
-      hidden = function() return not (trigger.type == "aura2" and trigger.useExactSpellId and (i == 1 or trigger.auraspellids and trigger.auraspellids[i - 1])) end,
-      get = function(info) return trigger.auraspellids and trigger.auraspellids[i] end,
-      set = function(info, v)
-        trigger.auraspellids = trigger.auraspellids or {}
-        if v == "" then
-          shiftTable(trigger.auraspellids, i)
-        else
-          trigger.auraspellids[i] = v
-        end
-        WeakAuras.Add(data)
-        WeakAuras.UpdateThumbnail(data)
-        WeakAuras.SetIconNames(data)
-        WeakAuras.UpdateDisplayButton(data)
-        WeakAuras.ReloadTriggerOptions(data)
-      end,
-      validate = ValidateNumeric
-    }
-  end
 
   return aura_options
 end
