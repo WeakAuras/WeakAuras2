@@ -61,7 +61,7 @@ local function createOptions(parentData, data, index, subIndex)
       desc = L["Automatic mode moves the tick as the bar progresses"],
     },
     tick_placement = {
-      type = "input",
+      type = "number",
       width = WeakAuras.normalWidth,
       name = L["Tick Placement"],
       order = order + 0.11,

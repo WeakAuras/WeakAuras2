@@ -111,14 +111,11 @@ local funcs = {
   SetTickPlacement = function(self, placement)
     local offset, offsetx, offsety = self.tick_placement, 0, 0
     local width = self.parentTrueWidth
-    if self.tick_placement_mode == "STATIC" then
-      local percent = string.match(placement, "(%d+)%%")
-      if percent then
-        offset = (tonumber(percent) / 100) * width
-      else
-        local pixels = width / (self.parent.state.duration or self.parent.state.total or 1)
-        offset = math.max((tonumber(placement) * pixels), width)
-      end
+    if self.tick_placement_mode == "NUMERIC" then
+      local pixels = width / (self.parent.state.duration or self.parent.state.total or 1)
+      offset = math.max((placement * pixels), width)
+    elseif self.tick_placement_mode == "PERCENT" then
+      offset = (placement / 100) * width
     end
 
     if self.parentInverse ~= ((self.parentOrientation == "HORIZONTAL_INVERSE") or (self.parentOrientation == "VERTICAL")) then
