@@ -110,73 +110,160 @@ local encounter_list = ""
 local zoneId_list = ""
 local zoneGroupId_list = ""
 function WeakAuras.InitializeEncounterAndZoneLists()
-  if WeakAuras.IsClassic() then return "" end
   if encounter_list ~= "" then
     return
   end
+  if WeakAuras.IsClassic() then
 
-  EJ_SelectTier(EJ_GetNumTiers())
-
-  for _, inRaid in ipairs({false, true}) do
-    local instance_index = 1
-    local instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
-
-    local title = inRaid and L["Raids"] or L["Dungeons"]
-    zoneId_list = ("%s|cffffd200%s|r\n"):format(zoneId_list, title)
-    zoneGroupId_list = ("%s|cffffd200%s|r\n"):format(zoneGroupId_list, title)
-
-    while instance_id do
-      EJ_SelectInstance(instance_id)
-      local instance_name, _, _, _, _, _, dungeonAreaMapID = EJ_GetInstanceInfo(instance_id)
-      local ej_index = 1
-      local boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
-
-      -- zone ids and zone group ids
-      if dungeonAreaMapID and dungeonAreaMapID ~= 0 then
-        local mapGroupId = C_Map.GetMapGroupID(dungeonAreaMapID)
-        if mapGroupId then
-          zoneGroupId_list = ("%s%s: %d\n"):format(zoneGroupId_list, instance_name, mapGroupId)
-          local maps = ""
-          for k, map in ipairs(C_Map.GetMapGroupMembersInfo(mapGroupId)) do
-            if map.mapID then
-              maps = maps .. map.mapID .. ", "
-            end
-          end
-          maps = maps:match "^(.*), \n?$" or "" -- trim last ", "
-          zoneId_list = ("%s%s: %s\n"):format(zoneId_list, instance_name, maps)
-        else
-          zoneId_list = ("%s%s: %d\n"):format(zoneId_list, instance_name, dungeonAreaMapID)
-        end
+    local classic_raids = {
+      ["Black Wing Lair"] = {
+          { "Razorgore the Untamed", 610 },
+          { "Vaelastrasz the Corrupt", 611 },
+          { "Broodlord Lashlayer", 612 },
+          { "Firemaw", 613 },
+          { "Ebonroc", 614 },
+          { "Flamegor", 615 },
+          { "Chromaggus", 616 },
+          { "Nefarian", 617 }
+      },
+      ["Molten Core"] = {
+          { "Lucifron", 663 },
+          { "Magmadar", 664 },
+          { "Gehennas", 665 },
+          { "Garr", 666 },
+          { "Shazzrah", 667 },
+          { "Baron Geddon", 668 },
+          { "Sulfuron Harbinger", 669 },
+          { "Golemagg the Incinerator", 670 },
+          { "Majordomo Executus", 671 },
+          { "Ragnaros", 672 }
+      },
+      ["Ahn'Qiraj"] = {
+          { "The Prophet Skeram", 709 },
+          { "Silithid Royalty", 710 },
+          { "Battleguard Sartura", 711 },
+          { "Fankriss the Unyielding", 712 },
+          { "Viscidus", 713 },
+          { "Princess Huhuran", 714 },
+          { "Twin Emperors", 715 },
+          { "Ouro", 716 },
+          { "C'thun", 717 }
+      },
+      ["Ruins of Ahn'Qiraj"] = {
+          { "Kurinnaxx", 718 },
+          { "General Rajaxx", 719 },
+          { "Moam", 720 },
+          { "Buru the Gorger", 721 },
+          { "Ayamiss the Hunter", 722 },
+          { "Ossirian the Unscarred", 723 }
+      },
+      ["Zul'Gurub"] = {
+          { "High Priest Venoxis", 784 },
+          { "High Priestess Jeklik", 785 },
+          { "High Priestess Mar'li", 786 },
+          { "Bloodlord Mandokir", 787 },
+          { "Edge of Madness", 788 },
+          { "High Priest Thekal", 789 },
+          { "Gahz'ranka", 790 },
+          { "High Priestess Arlokk", 791 },
+          { "Jin'do the Hexxer", 792 },
+          { "Hakkar", 793 }
+      },
+      ["Onyxia's Lair"] = {
+          { "Onyxia", 1084 }
+      },
+      ["Naxxramas"] = {
+          -- The Arachnid Quarter
+          { "Anub'Rekhan", 1107 },
+          { "Grand Widow Faerlina", 1110 },
+          { "Maexxna", 1116 },
+          -- The Plague Quarter
+          { "Noth the Plaguebringer", 1117 },
+          { "Heigan the Unclean", 1112 },
+          { "Loatheb", 1115 },
+          -- The Military Quarter
+          { "Instructor Razuvious", 1113 },
+          { "Gothik the Harvester", 1109 },
+          { "The Four Horsemen", 1121 },
+          -- The Construct Quarter
+          { "Patchwerk", 1118 },
+          { "Grobbulus", 1111 },
+          { "Gluth", 1108 },
+          { "Thaddius", 1120 },
+          -- Frostwyrm Lair
+          { "Sapphiron", 1119 },
+          { "Kel'Thuzad", 1114 }
+      }
+    }
+    for instance_name, instance_boss in pairs(classic_raids) do
+      encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, instance_name)
+      for _, data in ipairs(instance_boss) do
+          encounter_list = ("%s%s: %d\n"):format(encounter_list, data[1], data[2])
       end
-
-      -- Encounter ids
-      if inRaid then
-        while boss do
-          if encounter_id then
-            if instance_name then
-              encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, instance_name)
-              instance_name = nil -- Only add it once per section
-            end
-            encounter_list = ("%s%s: %d\n"):format(encounter_list, boss, encounter_id)
-          end
-          ej_index = ej_index + 1
-          boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
-        end
-        encounter_list = encounter_list .. "\n"
-      end
-      instance_index = instance_index + 1
-      instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
+      encounter_list = encounter_list .. "\n"
     end
-    zoneId_list = zoneId_list .. "\n"
-    zoneGroupId_list = zoneGroupId_list .. "\n"
+  else
+    EJ_SelectTier(EJ_GetNumTiers())
+
+    for _, inRaid in ipairs({false, true}) do
+      local instance_index = 1
+      local instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
+
+      local title = inRaid and L["Raids"] or L["Dungeons"]
+      zoneId_list = ("%s|cffffd200%s|r\n"):format(zoneId_list, title)
+      zoneGroupId_list = ("%s|cffffd200%s|r\n"):format(zoneGroupId_list, title)
+
+      while instance_id do
+        EJ_SelectInstance(instance_id)
+        local instance_name, _, _, _, _, _, dungeonAreaMapID = EJ_GetInstanceInfo(instance_id)
+        local ej_index = 1
+        local boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
+
+        -- zone ids and zone group ids
+        if dungeonAreaMapID and dungeonAreaMapID ~= 0 then
+          local mapGroupId = C_Map.GetMapGroupID(dungeonAreaMapID)
+          if mapGroupId then
+            zoneGroupId_list = ("%s%s: %d\n"):format(zoneGroupId_list, instance_name, mapGroupId)
+            local maps = ""
+            for k, map in ipairs(C_Map.GetMapGroupMembersInfo(mapGroupId)) do
+              if map.mapID then
+                maps = maps .. map.mapID .. ", "
+              end
+            end
+            maps = maps:match "^(.*), \n?$" or "" -- trim last ", "
+            zoneId_list = ("%s%s: %s\n"):format(zoneId_list, instance_name, maps)
+          else
+            zoneId_list = ("%s%s: %d\n"):format(zoneId_list, instance_name, dungeonAreaMapID)
+          end
+        end
+
+        -- Encounter ids
+        if inRaid then
+          while boss do
+            if encounter_id then
+              if instance_name then
+                encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, instance_name)
+                instance_name = nil -- Only add it once per section
+              end
+              encounter_list = ("%s%s: %d\n"):format(encounter_list, boss, encounter_id)
+            end
+            ej_index = ej_index + 1
+            boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
+          end
+          encounter_list = encounter_list .. "\n"
+        end
+        instance_index = instance_index + 1
+        instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
+      end
+      zoneId_list = zoneId_list .. "\n"
+      zoneGroupId_list = zoneGroupId_list .. "\n"
+    end
   end
 
   encounter_list = encounter_list:sub(1, -3) .. "\n\n" .. L["Supports multiple entries, separated by commas\n"]
 end
 
 local function get_encounters_list()
-  if WeakAuras.IsClassic() then return "" end
-
   return encounter_list
 end
 
@@ -1271,8 +1358,6 @@ WeakAuras.load_prototype = {
       init = "arg",
       desc = get_encounters_list,
       test = "WeakAuras.CheckNumericIds(%q, encounterid)",
-      enable = not WeakAuras.IsClassic(),
-      hidden = WeakAuras.IsClassic(),
       events = {"ENCOUNTER_START", "ENCOUNTER_END"}
     },
     {
