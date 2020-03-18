@@ -116,83 +116,83 @@ function WeakAuras.InitializeEncounterAndZoneLists()
   if WeakAuras.IsClassic() then
 
     local classic_raids = {
-      ["Black Wing Lair"] = {
-          { "Razorgore the Untamed", 610 },
-          { "Vaelastrasz the Corrupt", 611 },
-          { "Broodlord Lashlayer", 612 },
-          { "Firemaw", 613 },
-          { "Ebonroc", 614 },
-          { "Flamegor", 615 },
-          { "Chromaggus", 616 },
-          { "Nefarian", 617 }
+      [L["Black Wing Lair"]] = {
+          { L["Razorgore the Untamed"], 610 },
+          { L["Vaelastrasz the Corrupt"], 611 },
+          { L["Broodlord Lashlayer"], 612 },
+          { L["Firemaw"], 613 },
+          { L["Ebonroc"], 614 },
+          { L["Flamegor"], 615 },
+          { L["Chromaggus"], 616 },
+          { L["Nefarian"], 617 }
       },
-      ["Molten Core"] = {
-          { "Lucifron", 663 },
-          { "Magmadar", 664 },
-          { "Gehennas", 665 },
-          { "Garr", 666 },
-          { "Shazzrah", 667 },
-          { "Baron Geddon", 668 },
-          { "Sulfuron Harbinger", 669 },
-          { "Golemagg the Incinerator", 670 },
-          { "Majordomo Executus", 671 },
-          { "Ragnaros", 672 }
+      [L["Molten Core"]] = {
+          { L["Lucifron"], 663 },
+          { L["Magmadar"], 664 },
+          { L["Gehennas"], 665 },
+          { L["Garr"], 666 },
+          { L["Shazzrah"], 667 },
+          { L["Baron Geddon"], 668 },
+          { L["Sulfuron Harbinger"], 669 },
+          { L["Golemagg the Incinerator"], 670 },
+          { L["Majordomo Executus"], 671 },
+          { L["Ragnaros"], 672 }
       },
-      ["Ahn'Qiraj"] = {
-          { "The Prophet Skeram", 709 },
-          { "Silithid Royalty", 710 },
-          { "Battleguard Sartura", 711 },
-          { "Fankriss the Unyielding", 712 },
-          { "Viscidus", 713 },
-          { "Princess Huhuran", 714 },
-          { "Twin Emperors", 715 },
-          { "Ouro", 716 },
-          { "C'thun", 717 }
+      [L["Ahn'Qiraj"]] = {
+          { L["The Prophet Skeram"], 709 },
+          { L["Silithid Royalty"], 710 },
+          { L["Battleguard Sartura"], 711 },
+          { L["Fankriss the Unyielding"], 712 },
+          { L["Viscidus"], 713 },
+          { L["Princess Huhuran"], 714 },
+          { L["Twin Emperors"], 715 },
+          { L["Ouro"], 716 },
+          { L["C'thun"], 717 }
       },
-      ["Ruins of Ahn'Qiraj"] = {
-          { "Kurinnaxx", 718 },
-          { "General Rajaxx", 719 },
-          { "Moam", 720 },
-          { "Buru the Gorger", 721 },
-          { "Ayamiss the Hunter", 722 },
-          { "Ossirian the Unscarred", 723 }
+      [L["Ruins of Ahn'Qiraj"]] = {
+          { L["Kurinnaxx"], 718 },
+          { L["General Rajaxx"], 719 },
+          { L["Moam"], 720 },
+          { L["Buru the Gorger"], 721 },
+          { L["Ayamiss the Hunter"], 722 },
+          { L["Ossirian the Unscarred"], 723 }
       },
-      ["Zul'Gurub"] = {
-          { "High Priest Venoxis", 784 },
-          { "High Priestess Jeklik", 785 },
-          { "High Priestess Mar'li", 786 },
-          { "Bloodlord Mandokir", 787 },
-          { "Edge of Madness", 788 },
-          { "High Priest Thekal", 789 },
-          { "Gahz'ranka", 790 },
-          { "High Priestess Arlokk", 791 },
-          { "Jin'do the Hexxer", 792 },
-          { "Hakkar", 793 }
+      [L["Zul'Gurub"]] = {
+          { L["High Priest Venoxis"], 784 },
+          { L["High Priestess Jeklik"], 785 },
+          { L["High Priestess Mar'li"], 786 },
+          { L["Bloodlord Mandokir"], 787 },
+          { L["Edge of Madness"], 788 },
+          { L["High Priest Thekal"], 789 },
+          { L["Gahz'ranka"], 790 },
+          { L["High Priestess Arlokk"], 791 },
+          { L["Jin'do the Hexxer"], 792 },
+          { L["Hakkar"], 793 }
       },
-      ["Onyxia's Lair"] = {
-          { "Onyxia", 1084 }
+      [L["Onyxia's Lair"]] = {
+          { L["Onyxia"], 1084 }
       },
-      ["Naxxramas"] = {
+      [L["Naxxramas"]] = {
           -- The Arachnid Quarter
-          { "Anub'Rekhan", 1107 },
-          { "Grand Widow Faerlina", 1110 },
-          { "Maexxna", 1116 },
+          { L["Anub'Rekhan"], 1107 },
+          { L["Grand Widow Faerlina"], 1110 },
+          { L["Maexxna"], 1116 },
           -- The Plague Quarter
-          { "Noth the Plaguebringer", 1117 },
-          { "Heigan the Unclean", 1112 },
-          { "Loatheb", 1115 },
+          { L["Noth the Plaguebringer"], 1117 },
+          { L["Heigan the Unclean"], 1112 },
+          { L["Loatheb"], 1115 },
           -- The Military Quarter
-          { "Instructor Razuvious", 1113 },
-          { "Gothik the Harvester", 1109 },
-          { "The Four Horsemen", 1121 },
+          { L["Instructor Razuvious"], 1113 },
+          { L["Gothik the Harvester"], 1109 },
+          { L["The Four Horsemen"], 1121 },
           -- The Construct Quarter
-          { "Patchwerk", 1118 },
-          { "Grobbulus", 1111 },
-          { "Gluth", 1108 },
-          { "Thaddius", 1120 },
+          { L["Patchwerk"], 1118 },
+          { L["Grobbulus"], 1111 },
+          { L["Gluth"], 1108 },
+          { L["Thaddius"], 1120 },
           -- Frostwyrm Lair
-          { "Sapphiron", 1119 },
-          { "Kel'Thuzad", 1114 }
+          { L["Sapphiron"], 1119 },
+          { L["Kel'Thuzad"], 1114 }
       }
     }
     for instance_name, instance_boss in pairs(classic_raids) do
