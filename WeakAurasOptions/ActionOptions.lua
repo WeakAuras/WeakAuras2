@@ -218,7 +218,7 @@ function WeakAuras.AddActionOption(id, data)
       start_do_glow = {
         type = "toggle",
         width = WeakAuras.normalWidth,
-        name = L["Button Glow"],
+        name = L["Glow External Element"],
         order = 10.1
       },
       start_glow_action = {
@@ -574,7 +574,7 @@ function WeakAuras.AddActionOption(id, data)
       finish_do_glow = {
         type = "toggle",
         width = WeakAuras.normalWidth,
-        name = L["Button Glow"],
+        name = L["Glow External Element"],
         order = 30.1
       },
       finish_glow_action = {

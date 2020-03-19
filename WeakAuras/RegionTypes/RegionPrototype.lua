@@ -184,7 +184,7 @@ function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
     bigStep = 1
   }
   properties["glowexternal"] = {
-    display = L["Glow external element"],
+    display = L["Glow External Element"],
     action = "GlowExternal",
     type = "glowexternal"
   }
