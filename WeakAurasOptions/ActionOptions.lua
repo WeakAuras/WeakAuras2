@@ -248,13 +248,23 @@ function WeakAuras.AddActionOption(id, data)
         },
         hidden = function() return not data.actions.start.do_glow end
       },
+      start_glow_type_spacer = {
+        type = "description",
+        width = WeakAuras.normalWidth,
+        name = "",
+        order = 10.35,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or not (data.actions.start.glow_action == "hide" and data.actions.start.glow_frame_type == "FRAMESELECTOR")
+        end,
+      },
       start_glow_type = {
         type = "select",
         width = WeakAuras.normalWidth,
         name = L["Glow Type"],
         order = 10.4,
         values = WeakAuras.glow_types,
-        hidden = function() return not data.actions.start.do_glow end,
+        hidden = function() return not data.actions.start.do_glow or data.actions.start.glow_action ~= "show" end,
       },
       start_glow_frame = {
         type = "input",
@@ -280,16 +290,6 @@ function WeakAuras.AddActionOption(id, data)
             WeakAuras.StartFrameChooser(data, {"actions", "start", "glow_frame"});
           end
         end
-      },
-      start_glow_type_spacer = {
-        type = "description",
-        width = WeakAuras.doubleWidth,
-        name = "",
-        order = 10.6,
-        hidden = function()
-          return not data.actions.start.do_glow
-          or data.actions.start.glow_action ~= "show"
-        end,
       },
       start_use_glow_color = {
         type = "toggle",
@@ -604,13 +604,23 @@ function WeakAuras.AddActionOption(id, data)
         },
         hidden = function() return not data.actions.finish.do_glow end
       },
+      finish_glow_type_spacer = {
+        type = "description",
+        width = WeakAuras.normalWidth,
+        name = "",
+        order = 30.35,
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or not (data.actions.finish.glow_action == "hide" and data.actions.finish.glow_frame_type == "FRAMESELECTOR")
+        end,
+      },
       finish_glow_type = {
         type = "select",
         width = WeakAuras.normalWidth,
         name = L["Glow Type"],
         order = 30.4,
         values = WeakAuras.glow_types,
-        hidden = function() return not data.actions.finish.do_glow end,
+        hidden = function() return not data.actions.finish.do_glow or data.actions.finish.glow_action ~= "show" end,
       },
       finish_glow_frame = {
         type = "input",
@@ -633,16 +643,6 @@ function WeakAuras.AddActionOption(id, data)
             WeakAuras.finishFrameChooser(data, {"actions", "finish", "glow_frame"});
           end
         end
-      },
-      finish_glow_type_spacer = {
-        type = "description",
-        width = WeakAuras.doubleWidth,
-        name = "",
-        order = 30.6,
-        hidden = function()
-          return not data.actions.finish.do_glow
-          or data.actions.finish.glow_action ~= "show"
-        end,
       },
       finish_use_glow_color = {
         type = "toggle",

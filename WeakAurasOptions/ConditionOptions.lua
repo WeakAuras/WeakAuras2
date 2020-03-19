@@ -913,6 +913,13 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       set = setValueComplex("glow_frame_type")
     }
     order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_type_spacer"] = {
+      type = "description",
+      width = WeakAuras.normalWidth,
+      name = "",
+      order = order,
+      hidden = function() return anyGlowExternal("glow_action", "show") end,
+    }
     args["condition" .. i .. "value" .. j .. "glow_type"] = {
       type = "select",
       values = WeakAuras.glow_types,
@@ -923,7 +930,8 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_type;
       end,
-      set = setValueComplex("glow_type")
+      set = setValueComplex("glow_type"),
+      hidden = function() return not anyGlowExternal("glow_action", "show") end
     }
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_frame"] = {
@@ -936,7 +944,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_frame;
       end,
       set = setValueComplex("glow_frame"),
-      hidden = not anyGlowExternal("glow_frame_type", "FRAMESELECTOR")
+      hidden = function() return not anyGlowExternal("glow_frame_type", "FRAMESELECTOR") end
     }
     order = order + 1
     args["condition" .. i .. "value" .. j .. "choose_glow_frame"] = {
