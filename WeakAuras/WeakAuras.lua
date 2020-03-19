@@ -6197,9 +6197,9 @@ local function ValueForSymbol(symbol, region, customFunc, regionState, regionSta
   if triggerNum and sym then
     if regionStates and regionStates[triggerNum] then
       if regionStates[triggerNum][sym] then
-        return regionStates[triggerNum].show and tostring(regionStates[triggerNum][sym]) or ""
+        return tostring(regionStates[triggerNum][sym]) or ""
       else
-        local value = regionStates[triggerNum].show and ReplaceValuePlaceHolders(sym, region, customFunc, regionStates[triggerNum]);
+        local value = ReplaceValuePlaceHolders(sym, region, customFunc, regionStates[triggerNum]);
         return value or ""
       end
     end
@@ -6207,7 +6207,7 @@ local function ValueForSymbol(symbol, region, customFunc, regionState, regionSta
   elseif regionState and regionState[symbol] then
     return regionState.show and tostring(regionState[symbol]) or ""
   else
-    local value = regionState and regionState.show and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState);
+    local value = regionState and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState);
     return value or ""
   end
 end
