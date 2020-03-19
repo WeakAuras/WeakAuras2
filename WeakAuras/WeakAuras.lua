@@ -4694,7 +4694,9 @@ do
             data.region.active_glows_hidefunc[data.frame] = function()
               actionGlowStop(data.actions, data.frame, id)
               glow_frame_monitor[guid][id] = nil
-              -- TODO: purge glow_frame_monitor[glow_guid] if it's empty
+              if next(glow_frame_monitor[guid]) == nil then
+                glow_frame_monitor[guid] = nil
+              end
             end
           end
         end
@@ -4748,7 +4750,9 @@ function WeakAuras.HandleGlowAction(actions, region)
             region.active_glows_hidefunc[glow_frame] = function()
               actionGlowStop(actions, glow_frame, id)
               glow_frame_monitor[glow_guid][id] = nil
-              -- TODO: purge glow_frame_monitor[glow_guid] if it's empty
+              if next(glow_frame_monitor[glow_guid]) == nil then
+                glow_frame_monitor[glow_guid] = nil
+              end
             end
           end
         else
