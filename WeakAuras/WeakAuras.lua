@@ -4623,26 +4623,33 @@ function WeakAuras.HandleChatAction(message_type, message, message_dest, message
 end
 
 local function actionGlowStop(actions, frame, id)
+  if not frame.__WAGlowFrame then return end
   if actions.glow_type == "buttonOverlay" then
-    LCG.ButtonGlow_Stop(frame)
+    LCG.ButtonGlow_Stop(frame.__WAGlowFrame)
   elseif actions.glow_type == "Pixel" then
-    LCG.PixelGlow_Stop(frame, id)
+    LCG.PixelGlow_Stop(frame.__WAGlowFrame, id)
   elseif actions.glow_type == "ACShine" then
-    LCG.AutoCastGlow_Stop(frame, id)
+    LCG.AutoCastGlow_Stop(frame.__WAGlowFrame, id)
   end
 end
 
 local function actionGlowStart(actions, frame, id)
-  if frame:GetWidth() < 1 or frame:GetHeight() < 1 then
+  if not frame.__WAGlowFrame then
+    frame.__WAGlowFrame = CreateFrame("Frame", nil, frame)
+    frame.__WAGlowFrame:SetAllPoints(frame)
+    frame.__WAGlowFrame:SetSize(frame:GetSize())
+  end
+  local glow_frame = frame.__WAGlowFrame
+  if glow_frame:GetWidth() < 1 or glow_frame:GetHeight() < 1 then
     actionGlowStop(actions, frame)
     return
   end
   local color = actions.use_glow_color and actions.glow_color or nil
   if actions.glow_type == "buttonOverlay" then
-    LCG.ButtonGlow_Start(frame, color)
+    LCG.ButtonGlow_Start(glow_frame, color)
   elseif actions.glow_type == "Pixel" then
     LCG.PixelGlow_Start(
-      frame,
+      glow_frame,
       color,
       actions.glow_lines,
       actions.glow_frequency,
@@ -4655,7 +4662,7 @@ local function actionGlowStart(actions, frame, id)
     )
   elseif actions.glow_type == "ACShine" then
     LCG.AutoCastGlow_Start(
-      frame,
+      glow_frame,
       color,
       actions.glow_lines,
       actions.glow_frequency,
@@ -4665,6 +4672,35 @@ local function actionGlowStart(actions, frame, id)
       id
     )
   end
+end
+
+local glow_frame_monitor
+do
+  LGF.RegisterCallback("WeakAuras", "FRAME_GUID_UPDATE", function(event, frame, guid)
+    if type(glow_frame_monitor) ~= "table" then return end
+
+    local glows = glow_frame_monitor[guid]
+    if glows then
+      for id, data in pairs(glows) do
+        if data.frame ~= frame then
+          local new_frame = WeakAuras.GetUnitFrame(data.region.state.unit)
+          if new_frame and new_frame ~= data.frame then
+            -- remove previous glow
+            actionGlowStop(data.actions, data.frame, id)
+            -- apply the glow to new_frame
+            data.frame = new_frame
+            actionGlowStart(data.actions, data.frame, id)
+            -- update hidefunc
+            data.region.active_glows_hidefunc[data.frame] = function()
+              actionGlowStop(data.actions, data.frame, id)
+              glow_frame_monitor[guid][id] = nil
+              -- TODO: purge glow_frame_monitor[glow_guid] if it's empty
+            end
+          end
+        end
+      end
+    end
+  end)
 end
 
 function WeakAuras.HandleGlowAction(actions, region)
@@ -4695,43 +4731,37 @@ function WeakAuras.HandleGlowAction(actions, region)
     end
 
     if glow_frame then
-      if not glow_frame.__WAGlowFrame then
-        glow_frame.__WAGlowFrame = CreateFrame("Frame", nil, glow_frame)
-        glow_frame.__WAGlowFrame:SetAllPoints(glow_frame)
-        glow_frame.__WAGlowFrame:SetSize(glow_frame:GetSize())
-      end
-      original_glow_frame = glow_frame
-      glow_frame = glow_frame.__WAGlowFrame
-    end
-
-    if glow_frame then
       local id = region.id .. (region.cloneId or "")
       if actions.glow_action == "show" then
         actionGlowStart(actions, glow_frame, id)
-        region.active_glows = region.active_glows or {}
+        region.active_glows_hidefunc = region.active_glows_hidefunc or {}
         if actions.glow_frame_type == "UNITFRAME" then
           local glow_guid = UnitGUID(region.state.unit)
-          LGF.RegisterCallback("WeakAuras" .. id, "FRAME_GUID_UPDATE", function(event, frame, guid)
-            if frame ~= original_glow_frame and guid == glow_guid then
-              local new_glow_frame = WeakAuras.GetUnitFrame(region.state.unit)
-              if new_glow_frame and new_glow_frame ~= original_glow_frame then
-                actionGlowStop(actions, glow_frame, id)
-                if not new_glow_frame.__WAGlowFrame then
-                  new_glow_frame.__WAGlowFrame = CreateFrame("Frame", nil, new_glow_frame)
-                  new_glow_frame.__WAGlowFrame:SetAllPoints(new_glow_frame)
-                  new_glow_frame.__WAGlowFrame:SetSize(new_glow_frame:GetSize())
-                end
-                original_glow_frame = new_glow_frame
-                glow_frame = new_glow_frame.__WAGlowFrame
-                actionGlowStart(actions, glow_frame, id)
-              end
+          if glow_guid then
+            glow_frame_monitor = glow_frame_monitor or {}
+            glow_frame_monitor[glow_guid] = glow_frame_monitor[glow_guid] or {}
+            glow_frame_monitor[glow_guid][id] = {
+              region = region,
+              actions = actions,
+              frame = glow_frame
+            }
+            region.active_glows_hidefunc[glow_frame] = function()
+              actionGlowStop(actions, glow_frame, id)
+              glow_frame_monitor[glow_guid][id] = nil
+              -- TODO: purge glow_frame_monitor[glow_guid] if it's empty
             end
-          end)
+          end
+        else
+          region.active_glows_hidefunc[glow_frame] = function()
+            actionGlowStop(actions, glow_frame, id)
+          end
         end
-        tinsert(region.active_glows, function() actionGlowStop(actions, glow_frame, id) end)
-      elseif(actions.glow_action == "hide") then
-        actionGlowStop(actions, glow_frame, id)
-        LGF.UnregisterCallback("WeakAuras" .. id, "FRAME_GUID_UPDATE")
+      elseif actions.glow_action == "hide"
+      and region.active_glows_hidefunc
+      and region.active_glows_hidefunc[glow_frame]
+      then
+        region.active_glows_hidefunc[glow_frame]()
+        region.active_glows_hidefunc[glow_frame] = nil
       end
     end
   end
@@ -4782,11 +4812,11 @@ function WeakAuras.PerformActions(data, type, region)
   end
 
   -- remove all glows on finish
-  if type == "finish" and actions.hide_all_glows and region.active_glows then
-    for k, stopFunc in pairs(region.active_glows) do
-      stopFunc()
+  if type == "finish" and actions.hide_all_glows and region.active_glows_hidefunc then
+    for _, hideFunc in pairs(region.active_glows_hidefunc) do
+      hideFunc()
     end
-    wipe(region.active_glows)
+    wipe(region.active_glows_hidefunc)
   end
 end
 
