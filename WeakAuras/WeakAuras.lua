@@ -39,6 +39,7 @@ end
 local LDB = LibStub:GetLibrary("LibDataBroker-1.1")
 local LDBIcon = LibStub("LibDBIcon-1.0")
 local LCG = LibStub("LibCustomGlow-1.0")
+local LGF = LibStub("LibGetFrame-1.0")
 local timer = WeakAurasTimers
 WeakAuras.timer = timer
 
@@ -741,6 +742,31 @@ local function formatValueForAssignment(vtype, value, pathToCustomFunction)
     end
   elseif(vtype == "customcode") then
     return string.format("%s", pathToCustomFunction);
+  elseif vtype == "glowexternal" then
+    if (value and type(value) == "table") then
+      return ([[{ glow_action = %q, glow_frame_type = %q, glow_type = %q,
+      glow_frame = %q, use_glow_color = %s, glow_color = {%s, %s, %s, %s},
+      glow_lines = %d, glow_frequency = %f, glow_length = %f, glow_thickness = %f, glow_XOffset = %f, glow_YOffset = %f,
+      glow_scale = %f, glow_border = %s }]]):format(
+        value.glow_action or "",
+        value.glow_frame_type or "",
+        value.glow_type or "",
+        value.glow_frame or "",
+        value.use_glow_color and "true" or "false",
+        type(value.glow_color) == "table" and tostring(value.glow_color[1]) or "1",
+        type(value.glow_color) == "table" and tostring(value.glow_color[2]) or "1",
+        type(value.glow_color) == "table" and tostring(value.glow_color[3]) or "1",
+        type(value.glow_color) == "table" and tostring(value.glow_color[4]) or "1",
+        value.glow_lines or 8,
+        value.glow_frequency or 0.25,
+        value.glow_length or 10,
+        value.glow_thickness or 1,
+        value.glow_XOffset or 0,
+        value.glow_YOffset or 0,
+        value.glow_scale or 1,
+        value.glow_border and "true" or "false"
+      )
+    end
   end
   return "nil";
 end
@@ -4596,6 +4622,155 @@ function WeakAuras.HandleChatAction(message_type, message, message_dest, message
   end
 end
 
+local function actionGlowStop(actions, frame, id)
+  if not frame.__WAGlowFrame then return end
+  if actions.glow_type == "buttonOverlay" then
+    LCG.ButtonGlow_Stop(frame.__WAGlowFrame)
+  elseif actions.glow_type == "Pixel" then
+    LCG.PixelGlow_Stop(frame.__WAGlowFrame, id)
+  elseif actions.glow_type == "ACShine" then
+    LCG.AutoCastGlow_Stop(frame.__WAGlowFrame, id)
+  end
+end
+
+local function actionGlowStart(actions, frame, id)
+  if not frame.__WAGlowFrame then
+    frame.__WAGlowFrame = CreateFrame("Frame", nil, frame)
+    frame.__WAGlowFrame:SetAllPoints(frame)
+    frame.__WAGlowFrame:SetSize(frame:GetSize())
+  end
+  local glow_frame = frame.__WAGlowFrame
+  if glow_frame:GetWidth() < 1 or glow_frame:GetHeight() < 1 then
+    actionGlowStop(actions, frame)
+    return
+  end
+  local color = actions.use_glow_color and actions.glow_color or nil
+  if actions.glow_type == "buttonOverlay" then
+    LCG.ButtonGlow_Start(glow_frame, color)
+  elseif actions.glow_type == "Pixel" then
+    LCG.PixelGlow_Start(
+      glow_frame,
+      color,
+      actions.glow_lines,
+      actions.glow_frequency,
+      actions.glow_length,
+      actions.glow_thickness,
+      actions.glow_XOffset,
+      actions.glow_YOffset,
+      actions.glow_border,
+      id
+    )
+  elseif actions.glow_type == "ACShine" then
+    LCG.AutoCastGlow_Start(
+      glow_frame,
+      color,
+      actions.glow_lines,
+      actions.glow_frequency,
+      actions.glow_scale,
+      actions.glow_XOffset,
+      actions.glow_YOffset,
+      id
+    )
+  end
+end
+
+local glow_frame_monitor
+do
+  LGF.RegisterCallback("WeakAuras", "FRAME_GUID_UPDATE", function(event, frame, guid)
+    if type(glow_frame_monitor) ~= "table" then return end
+
+    local glows = glow_frame_monitor[guid]
+    if glows then
+      for id, data in pairs(glows) do
+        if data.frame ~= frame then
+          local new_frame = WeakAuras.GetUnitFrame(data.region.state.unit)
+          if new_frame and new_frame ~= data.frame then
+            -- remove previous glow
+            actionGlowStop(data.actions, data.frame, id)
+            -- apply the glow to new_frame
+            data.frame = new_frame
+            actionGlowStart(data.actions, data.frame, id)
+            -- update hidefunc
+            data.region.active_glows_hidefunc[data.frame] = function()
+              actionGlowStop(data.actions, data.frame, id)
+              glow_frame_monitor[guid][id] = nil
+              if next(glow_frame_monitor[guid]) == nil then
+                glow_frame_monitor[guid] = nil
+              end
+            end
+          end
+        end
+      end
+    end
+  end)
+end
+
+function WeakAuras.HandleGlowAction(actions, region)
+  if actions.glow_action
+  and (
+    (
+      (actions.glow_frame_type == "UNITFRAME" or actions.glow_frame_type == "NAMEPLATE")
+      and region.state.unit
+    )
+    or (actions.glow_frame_type == "FRAMESELECTOR" and actions.glow_frame)
+  )
+  then
+    local glow_frame
+    local original_glow_frame
+    if actions.glow_frame_type == "FRAMESELECTOR" then
+      if actions.glow_frame:sub(1, 10) == "WeakAuras:" then
+        local frame_name = actions.glow_frame:sub(11)
+        if regions[frame_name] then
+          glow_frame = regions[frame_name].region
+        end
+      else
+        glow_frame = WeakAuras.GetSanitizedGlobal(actions.glow_frame)
+      end
+    elseif actions.glow_frame_type == "UNITFRAME" and region.state.unit then
+      glow_frame = WeakAuras.GetUnitFrame(region.state.unit)
+    elseif actions.glow_frame_type == "NAMEPLATE" and region.state.unit then
+      glow_frame = WeakAuras.GetUnitNameplate(region.state.unit)
+    end
+
+    if glow_frame then
+      local id = region.id .. (region.cloneId or "")
+      if actions.glow_action == "show" then
+        actionGlowStart(actions, glow_frame, id)
+        region.active_glows_hidefunc = region.active_glows_hidefunc or {}
+        if actions.glow_frame_type == "UNITFRAME" then
+          local glow_guid = UnitGUID(region.state.unit)
+          if glow_guid then
+            glow_frame_monitor = glow_frame_monitor or {}
+            glow_frame_monitor[glow_guid] = glow_frame_monitor[glow_guid] or {}
+            glow_frame_monitor[glow_guid][id] = {
+              region = region,
+              actions = actions,
+              frame = glow_frame
+            }
+            region.active_glows_hidefunc[glow_frame] = function()
+              actionGlowStop(actions, glow_frame, id)
+              glow_frame_monitor[glow_guid][id] = nil
+              if next(glow_frame_monitor[glow_guid]) == nil then
+                glow_frame_monitor[glow_guid] = nil
+              end
+            end
+          end
+        else
+          region.active_glows_hidefunc[glow_frame] = function()
+            actionGlowStop(actions, glow_frame, id)
+          end
+        end
+      elseif actions.glow_action == "hide"
+      and region.active_glows_hidefunc
+      and region.active_glows_hidefunc[glow_frame]
+      then
+        region.active_glows_hidefunc[glow_frame]()
+        region.active_glows_hidefunc[glow_frame] = nil
+      end
+    end
+  end
+end
+
 function WeakAuras.PerformActions(data, type, region)
   if (paused or WeakAuras.IsOptionsOpen()) then
     return;
@@ -4636,55 +4811,16 @@ function WeakAuras.PerformActions(data, type, region)
   end
 
   -- Apply start glow actions even if squelch_actions is true, but don't apply finish glow actions
-  local squelch_glow = squelch_actions and (type == "finish");
-  if(actions.do_glow and actions.glow_action and actions.glow_frame and not squelch_glow) then
-    local glowStart, glowStop
-    if actions.glow_type == "ACShine" then
-      glowStart = LCG.AutoCastGlow_Start
-      glowStop = LCG.AutoCastGlow_Stop
-    elseif actions.glow_type == "Pixel" then
-      glowStart = LCG.PixelGlow_Start
-      glowStop = LCG.PixelGlow_Stop
-    else
-      glowStart = WeakAuras.ShowOverlayGlow
-      glowStop = WeakAuras.HideOverlayGlow
-    end
+  if actions.do_glow then
+    WeakAuras.HandleGlowAction(actions, region)
+  end
 
-    local glow_frame
-    local original_glow_frame
-    if(actions.glow_frame:sub(1, 10) == "WeakAuras:") then
-      local frame_name = actions.glow_frame:sub(11);
-      if(regions[frame_name]) then
-        glow_frame = regions[frame_name].region;
-      end
-    else
-      glow_frame = WeakAuras.GetSanitizedGlobal(actions.glow_frame);
-      original_glow_frame = glow_frame
+  -- remove all glows on finish
+  if type == "finish" and actions.hide_all_glows and region.active_glows_hidefunc then
+    for _, hideFunc in pairs(region.active_glows_hidefunc) do
+      hideFunc()
     end
-
-    if (glow_frame) then
-      if (not glow_frame.__WAGlowFrame) then
-        glow_frame.__WAGlowFrame = CreateFrame("Frame", nil, glow_frame);
-        glow_frame.__WAGlowFrame:SetAllPoints(glow_frame);
-        glow_frame.__WAGlowFrame:SetSize(glow_frame:GetSize());
-      end
-      glow_frame = glow_frame.__WAGlowFrame;
-    end
-
-    if(glow_frame) then
-      if(actions.glow_action == "show") then
-        local color
-        if actions.use_glow_color then
-          color = actions.glow_color
-        end
-        glowStart(glow_frame, color);
-      elseif(actions.glow_action == "hide") then
-        glowStop(glow_frame);
-        if original_glow_frame then
-          glowStop(original_glow_frame);
-        end
-      end
-    end
+    wipe(region.active_glows_hidefunc)
   end
 end
 

@@ -218,7 +218,7 @@ function WeakAuras.AddActionOption(id, data)
       start_do_glow = {
         type = "toggle",
         width = WeakAuras.normalWidth,
-        name = L["Button Glow"],
+        name = L["Glow External Element"],
         order = 10.1
       },
       start_glow_action = {
@@ -229,19 +229,59 @@ function WeakAuras.AddActionOption(id, data)
         values = WeakAuras.glow_action_types,
         disabled = function() return not data.actions.start.do_glow end
       },
+      start_glow_frame_type = {
+        type = "select",
+        width = WeakAuras.normalWidth,
+        desc = function()
+          return (
+            data.actions.start.glow_frame_type == "UNITFRAME"
+            or data.actions.start.glow_frame_type == "NAMEPLATE"
+          )
+          and L["Require unit from trigger"] or nil
+        end,
+        name = L["Glow Frame Type"],
+        order = 10.3,
+        values = {
+          UNITFRAME = L["Unit Frame"],
+          NAMEPLATE = L["Name Plate"],
+          FRAMESELECTOR = L["Frame Selector"]
+        },
+        hidden = function() return not data.actions.start.do_glow end
+      },
+      start_glow_type_spacer = {
+        type = "description",
+        width = WeakAuras.normalWidth,
+        name = "",
+        order = 10.35,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or not (data.actions.start.glow_action == "hide" and data.actions.start.glow_frame_type == "FRAMESELECTOR")
+        end,
+      },
+      start_glow_type = {
+        type = "select",
+        width = WeakAuras.normalWidth,
+        name = L["Glow Type"],
+        order = 10.4,
+        values = WeakAuras.glow_types,
+        hidden = function() return not data.actions.start.do_glow or data.actions.start.glow_action ~= "show" end,
+      },
       start_glow_frame = {
         type = "input",
         width = WeakAuras.normalWidth,
         name = L["Frame"],
-        order = 10.3,
-        hidden = function() return not data.actions.start.do_glow end
+        order = 10.5,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or data.actions.start.glow_frame_type ~= "FRAMESELECTOR"
+        end
       },
       start_choose_glow_frame = {
         type = "execute",
         width = WeakAuras.normalWidth,
         name = L["Choose"],
-        order = 10.4,
-        hidden = function() return not data.actions.start.do_glow end,
+        order = 10.55,
+        hidden = function() return not data.actions.start.do_glow or data.actions.start.glow_frame_type ~= "FRAMESELECTOR" end,
         func = function()
           if(data.controlledChildren and data.controlledChildren[1]) then
             WeakAuras.PickDisplay(data.controlledChildren[1]);
@@ -251,35 +291,155 @@ function WeakAuras.AddActionOption(id, data)
           end
         end
       },
-      start_glow_type = {
-        type = "select",
-        width = WeakAuras.normalWidth,
-        name = L["Glow Type"],
-        order = 10.5,
-        values = WeakAuras.glow_types,
-        hidden = function() return not data.actions.start.do_glow end,
-      },
-      start_glow_type_spacer = {
-        type = "description",
-        width = WeakAuras.doubleWidth,
-        name = "",
-        order = 10.6,
-        hidden = function() return not data.actions.start.do_glow end,
-      },
       start_use_glow_color = {
         type = "toggle",
         width = WeakAuras.normalWidth,
         name = L["Glow Color"],
         order = 10.7,
-        hidden = function() return not data.actions.start.do_glow end,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or data.actions.start.glow_action ~= "show"
+        end,
       },
       start_glow_color = {
         type = "color",
         width = WeakAuras.normalWidth,
         name = L["Glow Color"],
         order = 10.8,
-        hidden = function() return not data.actions.start.do_glow end,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or data.actions.start.glow_action ~= "show"
+        end,
         disabled = function() return not data.actions.start.use_glow_color end,
+      },
+      start_glow_lines = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Lines & Particles"],
+        order = 10.81,
+        min = 1,
+        softMax = 30,
+        step = 1,
+        get = function()
+          return data.actions.start.glow_lines or 8
+        end,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or data.actions.start.glow_action ~= "show"
+          or not data.actions.start.glow_type
+          or data.actions.start.glow_type == "buttonOverlay"
+        end,
+      },
+      start_glow_frequency = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Frequency"],
+        order = 10.82,
+        softMin = -2,
+        softMax = 2,
+        step = 0.05,
+        get = function()
+          return data.actions.start.glow_frequency or 0.25
+        end,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or data.actions.start.glow_action ~= "show"
+          or not data.actions.start.glow_type
+          or data.actions.start.glow_type == "buttonOverlay"
+        end,
+      },
+      start_glow_length = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Length"],
+        order = 10.83,
+        min = 0.05,
+        softMax = 20,
+        step = 0.05,
+        get = function()
+          return data.actions.start.glow_length or 10
+        end,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or data.actions.start.glow_action ~= "show"
+          or data.actions.start.glow_type ~= "Pixel"
+        end,
+      },
+      start_glow_thickness = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Thickness"],
+        order = 10.84,
+        min = 0.05,
+        softMax = 20,
+        step = 0.05,
+        get = function()
+          return data.actions.start.glow_thickness or 1
+        end,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or data.actions.start.glow_action ~= "show"
+          or data.actions.start.glow_type ~= "Pixel"
+        end,
+      },
+      start_glow_XOffset = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["X-Offset"],
+        order = 10.85,
+        softMin = -100,
+        softMax = 100,
+        step = 0.5,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or data.actions.start.glow_action ~= "show"
+          or not data.actions.start.glow_type
+          or data.actions.start.glow_type == "buttonOverlay"
+        end,
+      },
+      start_glow_YOffset = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Y-Offset"],
+        order = 10.86,
+        softMin = -100,
+        softMax = 100,
+        step = 0.5,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or data.actions.start.glow_action ~= "show"
+          or not data.actions.start.glow_type
+          or data.actions.start.glow_type == "buttonOverlay"
+        end,
+      },
+      start_glow_scale = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Scale"],
+        order = 10.87,
+        min = 0.05,
+        softMax = 10,
+        step = 0.05,
+        isPercent = true,
+        get = function()
+          return data.actions.start.glow_scale or 1
+        end,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or data.actions.start.glow_action ~= "show"
+          or data.actions.start.glow_type ~= "ACShine"
+        end,
+      },
+      start_glow_border = {
+        type = "toggle",
+        width = WeakAuras.normalWidth,
+        name = L["Border"],
+        order = 10.88,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or data.actions.start.glow_action ~= "show"
+          or data.actions.start.glow_type ~= "Pixel"
+        end,
       },
       start_do_custom = {
         type = "toggle",
@@ -414,7 +574,7 @@ function WeakAuras.AddActionOption(id, data)
       finish_do_glow = {
         type = "toggle",
         width = WeakAuras.normalWidth,
-        name = L["Button Glow"],
+        name = L["Glow External Element"],
         order = 30.1
       },
       finish_glow_action = {
@@ -425,63 +585,226 @@ function WeakAuras.AddActionOption(id, data)
         values = WeakAuras.glow_action_types,
         disabled = function() return not data.actions.finish.do_glow end
       },
-      finish_glow_frame = {
-        type = "input",
+      finish_glow_frame_type = {
+        type = "select",
         width = WeakAuras.normalWidth,
-        name = L["Frame"],
+        desc = function()
+          return (
+            data.actions.finish.glow_frame_type == "UNITFRAME"
+            or data.actions.finish.glow_frame_type == "NAMEPLATE"
+          )
+          and L["Require unit from trigger"] or nil
+        end,
+        name = L["Glow Frame Type"],
         order = 30.3,
+        values = {
+          UNITFRAME = L["Unit Frame"],
+          NAMEPLATE = L["Name Plate"],
+          FRAMESELECTOR = L["Frame Selector"]
+        },
         hidden = function() return not data.actions.finish.do_glow end
       },
-      finish_choose_glow_frame = {
-        type = "execute",
+      finish_glow_type_spacer = {
+        type = "description",
         width = WeakAuras.normalWidth,
-        name = L["Choose"],
-        order = 30.4,
-        hidden = function() return not data.actions.finish.do_glow end,
-        func = function()
-          if(data.controlledChildren and data.controlledChildren[1]) then
-            WeakAuras.PickDisplay(data.controlledChildren[1]);
-            WeakAuras.StartFrameChooser(WeakAuras.GetData(data.controlledChildren[1]), {"actions", "finish", "glow_frame"});
-          else
-            WeakAuras.StartFrameChooser(data, {"actions", "finish", "glow_frame"});
-          end
-        end
+        name = "",
+        order = 30.35,
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or not (data.actions.finish.glow_action == "hide" and data.actions.finish.glow_frame_type == "FRAMESELECTOR")
+        end,
       },
       finish_glow_type = {
         type = "select",
         width = WeakAuras.normalWidth,
         name = L["Glow Type"],
-        order = 30.5,
+        order = 30.4,
         values = WeakAuras.glow_types,
-        hidden = function() return not data.actions.finish.do_glow end,
+        hidden = function() return not data.actions.finish.do_glow or data.actions.finish.glow_action ~= "show" end,
       },
-      finish_glow_type_spacer = {
-        type = "description",
-        width = WeakAuras.doubleWidth,
-        name = "",
-        order = 30.6,
-        hidden = function() return not data.actions.finish.do_glow end,
+      finish_glow_frame = {
+        type = "input",
+        width = WeakAuras.normalWidth,
+        name = L["Frame"],
+        order = 30.5,
+        hidden = function() return not data.actions.finish.do_glow or data.actions.finish.glow_frame_type ~= "FRAMESELECTOR" end
+      },
+      finish_choose_glow_frame = {
+        type = "execute",
+        width = WeakAuras.normalWidth,
+        name = L["Choose"],
+        order = 30.55,
+        hidden = function() return not data.actions.finish.do_glow or data.actions.finish.glow_frame_type ~= "FRAMESELECTOR" end,
+        func = function()
+          if(data.controlledChildren and data.controlledChildren[1]) then
+            WeakAuras.PickDisplay(data.controlledChildren[1]);
+            WeakAuras.finishFrameChooser(WeakAuras.GetData(data.controlledChildren[1]), {"actions", "finish", "glow_frame"});
+          else
+            WeakAuras.finishFrameChooser(data, {"actions", "finish", "glow_frame"});
+          end
+        end
       },
       finish_use_glow_color = {
         type = "toggle",
         width = WeakAuras.normalWidth,
         name = L["Glow Color"],
         order = 30.7,
-        hidden = function() return not data.actions.finish.do_glow end,
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or data.actions.finish.glow_action ~= "show"
+        end,
       },
       finish_glow_color = {
         type = "color",
         width = WeakAuras.normalWidth,
         name = L["Glow Color"],
         order = 30.8,
-        hidden = function() return not data.actions.finish.do_glow end,
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or data.actions.finish.glow_action ~= "show"
+        end,
         disabled = function() return not data.actions.finish.use_glow_color end,
+      },
+      finish_glow_lines = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Lines & Particles"],
+        order = 30.81,
+        min = 1,
+        softMax = 30,
+        step = 1,
+        get = function()
+          return data.actions.finish.glow_lines or 8
+        end,
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or data.actions.finish.glow_action ~= "show"
+          or not data.actions.finish.glow_type
+          or data.actions.finish.glow_type == "buttonOverlay"
+        end,
+      },
+      finish_glow_frequency = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Frequency"],
+        order = 30.82,
+        softMin = -2,
+        softMax = 2,
+        step = 0.05,
+        get = function()
+          return data.actions.finish.glow_frequency or 0.25
+        end,
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or data.actions.finish.glow_action ~= "show"
+          or not data.actions.finish.glow_type
+          or data.actions.finish.glow_type == "buttonOverlay"
+        end,
+      },
+      finish_glow_length = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Length"],
+        order = 30.83,
+        min = 0.05,
+        softMax = 20,
+        step = 0.05,
+        get = function()
+          return data.actions.finish.glow_length or 10
+        end,
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or data.actions.finish.glow_action ~= "show"
+          or data.actions.finish.glow_type ~= "Pixel"
+        end,
+      },
+      finish_glow_thickness = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Thickness"],
+        order = 30.84,
+        min = 0.05,
+        softMax = 20,
+        step = 0.05,
+        get = function()
+          return data.actions.finish.glow_thickness or 1
+        end,
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or data.actions.finish.glow_action ~= "show"
+          or data.actions.finish.glow_type ~= "Pixel"
+        end,
+      },
+      finish_glow_XOffset = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["X-Offset"],
+        order = 30.85,
+        softMin = -100,
+        softMax = 100,
+        step = 0.5,
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or data.actions.finish.glow_action ~= "show"
+          or not data.actions.finish.glow_type
+          or data.actions.finish.glow_type == "buttonOverlay"
+        end,
+      },
+      finish_glow_YOffset = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Y-Offset"],
+        order = 30.86,
+        softMin = -100,
+        softMax = 100,
+        step = 0.5,
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or data.actions.finish.glow_action ~= "show"
+          or not data.actions.finish.glow_type
+          or data.actions.finish.glow_type == "buttonOverlay"
+        end,
+      },
+      finish_glow_scale = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Scale"],
+        order = 30.87,
+        min = 0.05,
+        softMax = 10,
+        step = 0.05,
+        isPercent = true,
+        get = function()
+          return data.actions.finish.glow_scale or 1
+        end,
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or data.actions.finish.glow_action ~= "show"
+          or data.actions.finish.glow_type ~= "ACShine"
+        end,
+      },
+      finish_glow_border = {
+        type = "toggle",
+        width = WeakAuras.normalWidth,
+        name = L["Border"],
+        order = 30.88,
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or data.actions.finish.glow_action ~= "show"
+          or data.actions.finish.glow_type ~= "Pixel"
+        end,
+      },
+      finish_hide_all_glows = {
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        name = L["Hide Glows applied by this aura"],
+        order = 31,
       },
       finish_do_custom = {
         type = "toggle",
         width = WeakAuras.doubleWidth,
         name = L["Custom"],
-        order = 31,
+        order = 32,
       },
     -- Text editor added below
     },

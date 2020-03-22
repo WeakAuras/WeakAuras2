@@ -183,6 +183,11 @@ function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
     softMax = screenHeight,
     bigStep = 1
   }
+  properties["glowexternal"] = {
+    display = L["Glow External Element"],
+    action = "GlowExternal",
+    type = "glowexternal"
+  }
 
   if (defaultsForRegion and defaultsForRegion.alpha) then
     properties["alpha"] = {
@@ -282,6 +287,13 @@ local function RunCode(self, func)
     xpcall(func, geterrorhandler());
     WeakAuras.ActivateAuraEnvironment(nil);
   end
+end
+
+local function GlowExternal(self, options)
+  if (not options or WeakAuras.IsOptionsOpen()) then
+    return
+  end
+  WeakAuras.HandleGlowAction(options, self)
 end
 
 local function UpdatePosition(self)
@@ -438,6 +450,7 @@ function WeakAuras.regionPrototype.create(region)
   region.SoundRepeatStop = SoundRepeatStop;
   region.SendChat = SendChat;
   region.RunCode = RunCode;
+  region.GlowExternal = GlowExternal;
 
   region.SetAnchor = SetAnchor;
   region.SetOffset = SetOffset;

@@ -88,7 +88,7 @@ local function compareValues(a, b, propertytype)
   return a == b;
 end
 
-local function valueToString(a, propertytype, subtype)
+local function valueToString(a, propertytype)
   if (propertytype == "color") then
     if (type(a) == "table") then
       local r, g, b, a = floor((a[1] or 0) * 255), floor((a[2] or 0) * 255), floor((a[3] or 0) * 255), floor((a[4] or 0) * 255)
@@ -96,7 +96,7 @@ local function valueToString(a, propertytype, subtype)
     else
       return "";
     end
-  elseif (propertytype == "chat" or propertytype == "sound" or propertytype == "customcode") then
+  elseif (propertytype == "chat" or propertytype == "sound" or propertytype == "customcode" or propertytype == "glowexternal") then
     return tostring(a);
   elseif (propertytype == "bool") then
     return (a == 1 or a == true) and L["True"] or L["False"];
@@ -177,7 +177,7 @@ local function descIfNoValue2(data, object, variable, subvariable, type, values)
         if (values) then
           desc = desc .."|cFFE0E000".. id .. ": |r" .. (values[reference[variable][subvariable]] or "") .. "\n";
         else
-          desc = desc .."|cFFE0E000".. id .. ": |r" .. (valueToString(reference[variable][subvariable], type, subvariable) or "") .. "\n";
+          desc = desc .."|cFFE0E000".. id .. ": |r" .. valueToString(reference[variable][subvariable], type or "") .. "\n";
         end
       end
       return desc;
@@ -300,6 +300,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
   local setValue;
   local setValueColor;
   local setValueComplex;
+  local setValueColorComplex;
   if (data.controlledChildren) then
     setValue = function(info, v)
       for id, reference in pairs(conditions[i].changes[j].references) do
@@ -348,6 +349,37 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         WeakAuras.ReloadTriggerOptions(data);
       end
     end
+
+    setValueColorComplex = function(property)
+      return function(info, r, g, b, a)
+        for id, reference in pairs(conditions[i].changes[j].references) do
+          local auraData = WeakAuras.GetData(id);
+          local conditionIndex = conditions[i].check.references[id].conditionIndex;
+          if (type(auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value) ~= "table") then
+            auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value = {};
+          end
+          if (type(auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[property]) ~= "table") then
+            auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[property] = {};
+          end
+          auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[property][1] = r;
+          auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[property][2] = g;
+          auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[property][3] = b;
+          auraData[conditionVariable][conditionIndex].changes[reference.changeIndex].value[property][4] = a;
+          WeakAuras.Add(auraData);
+        end
+        if (type(conditions[i].changes[j].value) ~= "table") then
+          conditions[i].changes[j].value = {};
+        end
+        if (type(conditions[i].changes[j].value[property]) ~= "table") then
+          conditions[i].changes[j].value[property] = {};
+        end
+        conditions[i].changes[j].value[property][1] = r;
+        conditions[i].changes[j].value[property][2] = g;
+        conditions[i].changes[j].value[property][3] = b;
+        conditions[i].changes[j].value[property][4] = a;
+        WeakAuras.ReloadTriggerOptions(data);
+      end
+    end
   else
     setValue = function(info, v)
       conditions[i].changes[j].value = v;
@@ -368,6 +400,22 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
           conditions[i].changes[j].value = {};
         end
         conditions[i].changes[j].value[property] = v;
+        WeakAuras.Add(data);
+      end
+    end
+
+    setValueColorComplex = function(property)
+      return function(info, r, g, b, a)
+        if (type (conditions[i].changes[j].value) ~= "table") then
+          conditions[i].changes[j].value = {};
+        end
+        if (type (conditions[i].changes[j].value[property]) ~= "table") then
+          conditions[i].changes[j].value[property] = {};
+        end
+        conditions[i].changes[j].value[property][1] = r;
+        conditions[i].changes[j].value[property][2] = g;
+        conditions[i].changes[j].value[property][3] = b;
+        conditions[i].changes[j].value[property][4] = a;
         WeakAuras.Add(data);
       end
     end
@@ -815,6 +863,266 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       end
     }
     order = order + 1;
+  elseif (propertyType == "glowexternal") then
+    local function anyGlowExternal(property, needle)
+      local ref = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value[property]
+      if ref then
+        return ref == needle
+      end
+      if conditions[i].changes[j].references then
+        for id, reference in pairs(conditions[i].changes[j].references) do
+          if type(reference.value) == "table" and reference.value[property] == needle then
+            return true
+          end
+        end
+      end
+      return false
+    end
+
+    args["condition" .. i .. "value" .. j .. "glow_action"] = {
+      type = "select",
+      values = WeakAuras.glow_action_types,
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_action", L["Glow Action"], L["Glow Action"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_action", propertyType, WeakAuras.glow_action_types),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_action;
+      end,
+      set = setValueComplex("glow_action")
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_frame_type"] = {
+      type = "select",
+      values = {
+        UNITFRAME = L["Unit Frame"],
+        NAMEPLATE = L["Name Plate"],
+        FRAMESELECTOR = L["Frame Selector"]
+      },
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame_type", L["Glow Frame Type"], L["Glow Frame Type"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame_type", propertyType, {
+        UNITFRAME = L["Unit Frame"],
+        NAMEPLATE = L["Name Plate"],
+        FRAMESELECTOR = L["Frame Selector"]
+      }),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_frame_type;
+      end,
+      set = setValueComplex("glow_frame_type")
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_type_spacer"] = {
+      type = "description",
+      width = WeakAuras.normalWidth,
+      name = "",
+      order = order,
+      hidden = function() return anyGlowExternal("glow_action", "show") end,
+    }
+    args["condition" .. i .. "value" .. j .. "glow_type"] = {
+      type = "select",
+      values = WeakAuras.glow_types,
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_type", L["Glow Type"], L["Glow Type"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_type", propertyType, WeakAuras.glow_types),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_type;
+      end,
+      set = setValueComplex("glow_type"),
+      hidden = function() return not anyGlowExternal("glow_action", "show") end
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_frame"] = {
+      type = "input",
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame", L["Frame"], L["Frame"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame", propertyType),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_frame;
+      end,
+      set = setValueComplex("glow_frame"),
+      hidden = function() return not anyGlowExternal("glow_frame_type", "FRAMESELECTOR") end
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "choose_glow_frame"] = {
+      type = "execute",
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame", L["Choose"], L["Choose"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame", propertyType),
+      order = order,
+      func = function()
+        WeakAuras.finishFrameChooser(conditions[i].changes[j].value, {"glow_frame"});
+      end,
+      hidden = function() return not anyGlowExternal("glow_frame_type", "FRAMESELECTOR") end
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "use_glow_color"] = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "use_glow_color", L["Glow Color"], L["Glow Color"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "use_glow_color", propertyType),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.use_glow_color;
+      end,
+      set = setValueComplex("use_glow_color"),
+      hidden = function() return not anyGlowExternal("glow_action", "show") end
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_color"] = {
+      type = "color",
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_color", L["Glow Color"], L["Glow Color"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_color", "color"),
+      order = order,
+      get = function()
+        if (conditions[i].changes[j].value and type(conditions[i].changes[j].value) == "table") and type(conditions[i].changes[j].value.glow_color) == "table" then
+          return conditions[i].changes[j].value.glow_color[1], conditions[i].changes[j].value.glow_color[2], conditions[i].changes[j].value.glow_color[3], conditions[i].changes[j].value.glow_color[4];
+        end
+        return 1, 1, 1, 1;
+      end,
+      set = setValueColorComplex("glow_color"),
+      hidden = function() return not anyGlowExternal("glow_action", "show") end,
+      disabled = function() return not anyGlowExternal("use_glow_color", true) end
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_lines"] = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_lines", L["Lines & Particles"], L["Lines & Particles"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_lines", propertyType),
+      order = order,
+      min = 1,
+      softMax = 30,
+      step = 1,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_lines or 8;
+      end,
+      set = setValueComplex("glow_lines"),
+      hidden = function() return not anyGlowExternal("glow_action", "show") or anyGlowExternal("glow_type", "buttonOverlay") end,
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_frequency"] = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_frequency", L["Frequency"], L["Frequency"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frequency", propertyType),
+      order = order,
+      softMin = -2,
+      softMax = 2,
+      step = 0.05,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_frequency or 0.25;
+      end,
+      set = setValueComplex("glow_frequency"),
+      hidden = function() return not anyGlowExternal("glow_action", "show") or anyGlowExternal("glow_type", "buttonOverlay") end,
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_length"] = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_length", L["Length"], L["Length"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_length", propertyType),
+      order = order,
+      min = 0.05,
+      softMax = 20,
+      step = 0.05,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_length or 10;
+      end,
+      set = setValueComplex("glow_length"),
+      hidden = function() return not anyGlowExternal("glow_action", "show") or not anyGlowExternal("glow_type", "Pixel") end,
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_thickness"] = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_thickness", L["Thickness"], L["Thickness"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_thickness", propertyType),
+      order = order,
+      min = 0.05,
+      softMax = 20,
+      step = 0.05,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_thickness or 1;
+      end,
+      set = setValueComplex("glow_thickness"),
+      hidden = function() return not anyGlowExternal("glow_action", "show") or not anyGlowExternal("glow_type", "Pixel") end,
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_XOffset"] = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_XOffset", L["X-Offset"], L["X-Offset"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_XOffset", propertyType),
+      order = order,
+      softMin = -100,
+      softMax = 100,
+      step = 0.5,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_XOffset or 0;
+      end,
+      set = setValueComplex("glow_XOffset"),
+      hidden = function() return not anyGlowExternal("glow_action", "show") or anyGlowExternal("glow_type", "buttonOverlay") end,
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_YOffset"] = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_YOffset", L["Y-Offset"], L["Y-Offset"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_YOffset", propertyType),
+      order = order,
+      softMin = -100,
+      softMax = 100,
+      step = 0.5,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_YOffset or 0;
+      end,
+      set = setValueComplex("glow_YOffset"),
+      hidden = function() return not anyGlowExternal("glow_action", "show") or anyGlowExternal("glow_type", "buttonOverlay") end,
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_scale"] = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_scale", L["Scale"], L["Scale"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_scale", propertyType),
+      order = order,
+      min = 0.05,
+      softMax = 10,
+      step = 0.05,
+      isPercent = true,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_scale or 1;
+      end,
+      set = setValueComplex("glow_scale"),
+      hidden = function() return not anyGlowExternal("glow_action", "show") or not anyGlowExternal("glow_type", "ACShine") end,
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_border"] = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_border", L["Border"], L["Border"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_border", propertyType),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_border;
+      end,
+      set = setValueComplex("glow_border"),
+      hidden = function() return not anyGlowExternal("glow_action", "show") or not anyGlowExternal("glow_type", "Pixel") end,
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_spacer"] = {
+      type = "description",
+      width = WeakAuras.normalWidth,
+      name = "",
+      order = order,
+      hidden = function() return not anyGlowExternal("glow_action", "show") or anyGlowExternal("glow_type", "buttonOverlay") end,
+    }
+    order = order + 1
   else -- Unknown property type
     order = addSpace(args, order);
   end
@@ -1777,12 +2085,23 @@ end
 local propertyTypeToSubProperty = {
   chat = { "message_type", "message_dest", "message_channel", "message", "custom" },
   sound = { "sound", "sound_channel", "sound_path", "sound_kit_id", "sound_repeat", "sound_type"},
-  customcode = { "custom" }
+  customcode = { "custom" },
+  glowexternal = {
+    "glow_action", "glow_frame_type", "glow_type",
+    "glow_frame", "choose_glow_frame",
+    "use_glow_color", "glow_color",
+    "glow_lines", "glow_frequency", "glow_length", "glow_thickness", "glow_XOffset", "glow_YOffset",
+    "glow_scale", "glow_border"
+  }
 };
+
+local subPropertyToType = {
+  glow_color = "color"
+}
 
 local function mergeConditionChange(all, change, id, changeIndex, allProperties)
   local propertyType = all.property and allProperties.propertyMap[all.property] and allProperties.propertyMap[all.property].type
-  if (propertyType == "chat" or propertyType == "sound" or propertyType == "customcode") then
+  if (propertyType == "chat" or propertyType == "sound" or propertyType == "customcode" or propertyType == "glowexternal") then
     if (type(all.value) ~= type(change.value)) then
       all.value = nil;
       all.samevalue = nil;
@@ -1794,7 +2113,7 @@ local function mergeConditionChange(all, change, id, changeIndex, allProperties)
         end
       else
         for _, propertyName in ipairs(propertyTypeToSubProperty[propertyType]) do
-          if (all.value[propertyName] ~= change.value[propertyName]) then
+          if not compareValues(all.value[propertyName], change.value[propertyName], subPropertyToType[propertyName]) then
             all.value[propertyName] = nil;
             if all.samevalue then
               all.samevalue[propertyName] = false;
@@ -1848,7 +2167,7 @@ local function mergeCondition(all, aura, id, conditionIndex, allProperties)
       WeakAuras.DeepCopy(change, copy);
 
       local propertyType = change.property and allProperties.propertyMap[change.property] and allProperties.propertyMap[change.property].type;
-      if (propertyType == "chat" or propertyType == "sound" or propertyType == "customcode") then
+      if (propertyType == "chat" or propertyType == "sound" or propertyType == "customcode" or propertyType == "glowexternal") then
         copy.samevalue = {};
         for _, propertyName in ipairs(propertyTypeToSubProperty[propertyType]) do
           copy.samevalue[propertyName] = true;
@@ -1896,7 +2215,7 @@ local function mergeConditions(all, aura, id, allConditionTemplates, propertyTyp
       if (copy.changes) then
         for changeIndex, change in pairs(copy.changes) do
           local propertyType = change.property and propertyTypes.propertyMap[change.property] and propertyTypes.propertyMap[change.property].type;
-          if (propertyType == "chat" or propertyType == "sound" or propertyType == "customcode") then
+          if (propertyType == "chat" or propertyType == "sound" or propertyType == "customcode" or propertyType == "glowexternal") then
             change.samevalue = {};
             for _, propertyName in ipairs(propertyTypeToSubProperty[propertyType]) do
               change.samevalue[propertyName] = true;
