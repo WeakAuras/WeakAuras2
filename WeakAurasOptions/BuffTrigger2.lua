@@ -68,9 +68,30 @@ local function CountNames(data, optionTriggerChoices, name)
   return result
 end
 
-local function CreateNameOptions(aura_options, data, trigger, size, isExactSpellId, prefix, baseOrder, useKey, optionKey, name, desc)
+local function IsGroupTrigger(trigger)
+  return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+         or trigger.unit == "boss" or trigger.unit == "nameplate" or trigger.unit == "arena" or trigger.unit == "multi"
+end
+
+local function IsSingleMissing(trigger)
+  return not IsGroupTrigger(trigger) and trigger.matchesShowOn == "showOnMissing"
+end
+
+local function CreateNameOptions(aura_options, data, trigger, size, isExactSpellId, blacklist, prefix, baseOrder, useKey, optionKey, name, desc)
   local spellCache = WeakAuras.spellCache
+
   for i = 1, size do
+    local hiddenFunction
+    if blacklist then
+      hiddenFunction = function()
+        return not (trigger.type == "aura2" and trigger[useKey] and (i == 1 or trigger[optionKey] and trigger[optionKey][i - 1]) and trigger.unit ~= "multi" and not IsSingleMissing(trigger))
+      end
+    else
+      hiddenFunction = function()
+        return not (trigger.type == "aura2" and trigger[useKey] and (i == 1 or trigger[optionKey] and trigger[optionKey][i - 1]))
+      end
+    end
+
     if i ~= 1 then
       aura_options[prefix .. "space" .. i] = {
         type = "execute",
@@ -78,7 +99,7 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
         width = WeakAuras.normalWidth - 0.2,
         image = function() return "", 0, 0 end,
         order = baseOrder + i / 100 + 0.0001,
-        hidden = function() return not (trigger.type == "aura2" and trigger[useKey] and trigger[optionKey] and trigger[optionKey][i - 1]) end
+        hidden = hiddenFunction
       }
     end
 
@@ -87,7 +108,7 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
       type = "execute",
       width = 0.2,
       order = baseOrder + i / 100 + 0.0002,
-      hidden = function() return not (trigger.type == "aura2" and trigger[useKey] and (i == 1 or trigger[optionKey] and trigger[optionKey][i - 1])) end
+      hidden = hiddenFunction
     }
 
     if isExactSpellId then
@@ -146,7 +167,7 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
       name = name,
       desc = desc,
       order = baseOrder + i / 100 + 0.0003,
-      hidden = function() return not (trigger.type == "aura2" and trigger[useKey] and (i == 1 or trigger[optionKey] and trigger[optionKey][i - 1])) end,
+      hidden = hiddenFunction,
       get = function(info) return trigger[optionKey] and trigger[optionKey][i] end,
       set = function(info, v)
         trigger[optionKey] = trigger[optionKey] or {}
@@ -187,14 +208,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     end
   end
 
-  local function IsGroupTrigger(trigger)
-    return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
-           or trigger.unit == "boss" or trigger.unit == "nameplate" or trigger.unit == "arena" or trigger.unit == "multi"
-  end
 
-  local function IsSingleMissing(trigger)
-    return not IsGroupTrigger(trigger) and trigger.matchesShowOn == "showOnMissing"
-  end
 
   local function HasMatchCount(trigger)
     if IsGroupTrigger(trigger) then
@@ -326,17 +340,46 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       width = WeakAuras.normalWidth,
       hidden = function() return not (trigger.type == "aura2" and not trigger.useExactSpellId) end
     },
+    useBlackName = {
+      type = "toggle",
+      name = L["Blacklisted Name(s)"],
+      order = 32,
+      width = WeakAuras.normalWidth - 0.2,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end
+    },
+    useBlackNameSpace = {
+      type = "description",
+      name = "",
+      order = 32.1,
+      width = WeakAuras.normalWidth,
+      hidden = function() return not (trigger.type == "aura2" and not trigger.useBlackName and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end
+    },
+    useBlackExactSpellId = {
+      type = "toggle",
+      name = L["Blacklisted Exact Spell ID(s)"],
+      width = WeakAuras.normalWidth - 0.2,
+      order = 42,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end
+    },
+    useBlackExactSpellIdSpace = {
+      type = "description",
+      name = "",
+      order = 42.1,
+      width = WeakAuras.normalWidth,
+      hidden = function() return not (trigger.type == "aura2" and not trigger.useBlackExactSpellId and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end
+    },
+
     useNamePattern = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Name Pattern Match"],
-      order = 45,
+      order = 55,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi") end
     },
     useNamePatternSpace = {
       type = "description",
       name = "",
-      order = 45.2,
+      order = 55.2,
       width = WeakAuras.normalWidth,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not trigger.useNamePattern) end
     },
@@ -344,7 +387,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Operator"],
-      order = 45.1,
+      order = 55.1,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and trigger.useNamePattern) end,
       values = WeakAuras.string_operator_types
     },
@@ -352,7 +395,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       type = "input",
       name = L["Aura Name Pattern"],
       width = WeakAuras.doubleWidth,
-      order = 45.2,
+      order = 55.2,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and trigger.useNamePattern) end
     },
     useStacks = {
@@ -860,17 +903,27 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   -- Names
   local nameOptionSize = CountNames(data, optionTriggerChoices, "auranames") + 1
   local spellOptionsSize = CountNames(data, optionTriggerChoices, "auraspellids") + 1
+  local blackNameOptionSize = CountNames(data, optionTriggerChoices, "blackauranames") + 1
+  local blackSpellOptionsSize = CountNames(data, optionTriggerChoices, "blackauraspellids") + 1
 
   CreateNameOptions(aura_options, data, trigger, nameOptionSize,
-                    false, "name", 12, "useName", "auranames",
+                    false, false, "name", 12, "useName", "auranames",
                     L["Aura Name"],
                     L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."])
 
 
   CreateNameOptions(aura_options, data, trigger, spellOptionsSize,
-                    true, "spellid", 22, "useExactSpellId", "auraspellids",
+                    true, false, "spellid", 22, "useExactSpellId", "auraspellids",
                     L["Spell ID"], L["Enter a Spell ID"])
 
+  CreateNameOptions(aura_options, data, trigger, blackNameOptionSize,
+                    false, true, "blackname", 32, "useBlackName", "blackauranames",
+                    L["Blacklisted Aura Name"],
+                    L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."])
+
+  CreateNameOptions(aura_options, data, trigger, blackSpellOptionsSize,
+                    true, true, "blackspellid", 42, "useBlackExactSpellId", "blackauraspellids",
+                    L["Blacklisted Spell ID"], L["Enter a Spell ID"])
 
 
   return aura_options

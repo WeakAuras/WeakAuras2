@@ -2003,11 +2003,16 @@ local function createScanFunc(trigger)
   local use_tooltip = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltip
   local use_tooltipValue = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltipValue
   local use_total = not isSingleMissing and not isMulti and trigger.useTotal and trigger.total
+  local use_blacklist_name = not isSingleMissing and not isMulti and trigger.useBlackName and trigger.blackauranames
+  local use_blacklist_spellId = not isSingleMissing and not isMulti and trigger.useBlackExactSpellId and trigger.blackauraspellids
 
   if not useStacks and use_stealable == nil and not use_debuffClass and trigger.ownOnly == nil
-       and not use_tooltip and not use_tooltipValue and not trigger.useNamePattern and not use_total then
+       and not use_tooltip and not use_tooltipValue and not trigger.useNamePattern and not use_total
+       and not use_blacklist_name and not use_blacklist_spellId then
     return nil
   end
+
+  local preamble = ""
 
   local ret = [[
     return function(time, matchData)
@@ -2128,12 +2133,48 @@ local function createScanFunc(trigger)
     end
   end
 
+  if use_blacklist_name then
+    local names = {}
+    for index, spellName in ipairs(trigger.blackauranames) do
+      local spellId = WeakAuras.SafeToNumber(spellName)
+      local name = GetSpellInfo(spellId) or spellName
+      tinsert(names, name)
+    end
+
+    preamble = preamble .. "local blacklistNames = {\n"
+    for index, name in ipairs(names) do
+      preamble = preamble .. string.format("  [%q] = true,\n", name)
+    end
+    preamble = preamble .. "}\n"
+    ret = ret .. [[
+      if blacklistNames[matchData.name] then
+        return false
+      end
+    ]]
+  end
+
+  if use_blacklist_spellId then
+    preamble = preamble .. "local blacklistSpellId = {\n"
+    for index, spellId in ipairs(trigger.blackauraspellids) do
+      local spell = WeakAuras.SafeToNumber(spellId)
+      if spell then
+        preamble = preamble .. string.format("  [%s]  = true,\n", spell)
+      end
+    end
+    preamble = preamble .. "}\n"
+    ret = ret .. [[
+      if blacklistSpellId[matchData.spellId] then
+        return false
+      end
+    ]]
+  end
+
   ret = ret .. [[
       return true
     end
   ]]
 
-  local func, err = loadstring(ret)
+  local func, err = loadstring(preamble .. ret)
 
   if func then
     return func()
