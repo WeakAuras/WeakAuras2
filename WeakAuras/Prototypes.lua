@@ -3017,7 +3017,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "ignoreSpellKnown",
-        display = L["Ignore Spell Known"],
+        display = L["Disable Spell Known Check"],
         type = "toggle",
         test = "true",
         collapse = "extra Cooldown Progress (Spell)"

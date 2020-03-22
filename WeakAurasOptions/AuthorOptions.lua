@@ -2101,7 +2101,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
           }
           args[prefix .. "moveEntryDown"] = {
             type = "execute",
-            name = L["Move Entry Up"],
+            name = L["Move Entry Down"],
             order = order(),
             func = function()
               for id, optionData in pairs(option.references) do

@@ -55,7 +55,7 @@ local function createOptions(parentData, data, index, subIndex)
     glow_anchor = {
       type = "select",
       width = WeakAuras.normalWidth,
-      name = L["Border Anchor"],
+      name = L["Glow Anchor"],
       order = order + 0.6,
       values = WeakAuras.aurabar_anchor_areas,
       hidden = function() return parentData.regionType ~= "aurabar" end
