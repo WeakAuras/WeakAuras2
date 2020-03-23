@@ -1,4 +1,4 @@
-local internalVersion = 26;
+local internalVersion = 27;
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
@@ -3800,6 +3800,17 @@ function WeakAuras.Modernize(data)
             change.property = change.property .. "Relative"
           end
         end
+      end
+    end
+  end
+
+  if data.internalVersion < 27 then
+    if data.actions then
+      if data.actions.start and data.actions.start.do_glow then
+        data.actions.start.do_glow.glow_frame_type = "FRAMESELECTOR"
+      end
+      if data.actions.finish and data.actions.finish.do_glow then
+        data.actions.finish.do_glow.glow_frame_type = "FRAMESELECTOR"
       end
     end
   end
