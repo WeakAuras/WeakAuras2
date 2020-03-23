@@ -4427,11 +4427,17 @@ local function pAdd(data, simpleChange)
 end
 
 function WeakAuras.Add(data, takeSnapshot, simpleChange)
-  if takeSnapshot then
-    WeakAuras.SetMigrationSnapshot(data.uid, CopyTable(data))
+  local snapshot
+  if takeSnapshot or (data.internalVersion or 0) < internalVersion then
+    snapshot = CopyTable(data)
   end
-  WeakAuras.PreAdd(data)
-  pAdd(data, simpleChange);
+  if takeSnapshot then
+    WeakAuras.SetMigrationSnapshot(data.uid, snapshot)
+  end
+  local ok = xpcall(WeakAuras.PreAdd, geterrorhandler(), data)
+  if ok then
+    pAdd(data, simpleChange)
+  end
 end
 
 function WeakAuras.SetRegion(data, cloneId)
