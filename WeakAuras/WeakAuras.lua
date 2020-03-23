@@ -4686,28 +4686,42 @@ local function actionGlowStart(actions, frame, id)
 end
 
 local glow_frame_monitor
+local anchor_unitframe_monitor
 do
   LGF.RegisterCallback("WeakAuras", "FRAME_GUID_UPDATE", function(event, frame, guid)
-    if type(glow_frame_monitor) ~= "table" then return end
-
-    local glows = glow_frame_monitor[guid]
-    if glows then
-      for id, data in pairs(glows) do
-        if data.frame ~= frame then
-          local new_frame = WeakAuras.GetUnitFrame(data.region.state.unit)
-          if new_frame and new_frame ~= data.frame then
-            -- remove previous glow
-            actionGlowStop(data.actions, data.frame, id)
-            -- apply the glow to new_frame
-            data.frame = new_frame
-            actionGlowStart(data.actions, data.frame, id)
-            -- update hidefunc
-            data.region.active_glows_hidefunc[data.frame] = function()
+    if type(glow_frame_monitor) == "table" then
+      local glows = glow_frame_monitor[guid]
+      if glows then
+        for id, data in pairs(glows) do
+          if data.frame ~= frame then
+            local new_frame = WeakAuras.GetUnitFrame(data.region.state.unit)
+            if new_frame and new_frame ~= data.frame then
+              -- remove previous glow
               actionGlowStop(data.actions, data.frame, id)
-              glow_frame_monitor[guid][id] = nil
-              if next(glow_frame_monitor[guid]) == nil then
-                glow_frame_monitor[guid] = nil
+              -- apply the glow to new_frame
+              data.frame = new_frame
+              actionGlowStart(data.actions, data.frame, id)
+              -- update hidefunc
+              data.region.active_glows_hidefunc[data.frame] = function()
+                actionGlowStop(data.actions, data.frame, id)
+                glow_frame_monitor[guid][id] = nil
+                if next(glow_frame_monitor[guid]) == nil then
+                  glow_frame_monitor[guid] = nil
+                end
               end
+            end
+          end
+        end
+      end
+    end
+    if type(anchor_unitframe_monitor) == "table" then
+      local frames = anchor_unitframe_monitor[guid]
+      if frames then
+        for id, data in pairs(frames) do
+          if data.frame ~= frame then
+            local new_frame = WeakAuras.GetUnitFrame(data.region.state.unit)
+            if new_frame and new_frame ~= data.frame then
+              WeakAuras.AnchorFrame(data.data, data.region, data.parent)
             end
           end
         end
@@ -4832,6 +4846,15 @@ function WeakAuras.PerformActions(data, type, region)
       hideFunc()
     end
     wipe(region.active_glows_hidefunc)
+  end
+  if type == "finish" and region.unitframe_monitor then
+    local id = region.id .. region.cloneId or ""
+    local guid = region.unitframe_monitor
+    anchor_unitframe_monitor[guid][id] = nil
+    if not next(anchor_unitframe_monitor[guid]) then
+      anchor_unitframe_monitor[guid] = nil
+    end
+    region.unitframe_monitor = nil
   end
 end
 
@@ -6882,8 +6905,10 @@ end
 local HiddenFrames = CreateFrame("FRAME", "WeakAurasHiddenFrames")
 HiddenFrames:Hide()
 
-local function GetAnchorFrame(region, anchorFrameType, parent, anchorFrameFrame)
+local function GetAnchorFrame(data, region, parent)
   local id = region.id
+  local anchorFrameType = data.anchorFrameType
+  local anchorFrameFrame = data.anchorFrameFrame
   if not id then return end
   if (personalRessourceDisplayFrame) then
     personalRessourceDisplayFrame:anchorFrame(id, anchorFrameType);
@@ -6916,7 +6941,24 @@ local function GetAnchorFrame(region, anchorFrameType, parent, anchorFrameFrame)
 
   if (anchorFrameType == "UNITFRAME") then
     local unit = region.state.unit
-    return unit and WeakAuras.GetUnitFrame(unit)
+    if unit then
+      local guid = UnitGUID(unit)
+      if guid then
+        local frame = WeakAuras.GetUnitFrame(unit)
+        if frame then
+          anchor_unitframe_monitor = anchor_unitframe_monitor or {}
+          anchor_unitframe_monitor[guid] = anchor_unitframe_monitor[guid] or {}
+          anchor_unitframe_monitor[guid][id] = {
+            data = data,
+            region = region,
+            parent = parent,
+            frame = frame
+          }
+          region.unitframe_monitor = guid
+          return frame
+        end
+      end
+    end
   end
 
   if (anchorFrameType == "SELECTFRAME" and anchorFrameFrame) then
@@ -6969,7 +7011,7 @@ function WeakAuras.AnchorFrame(data, region, parent)
     loginQueue[#loginQueue + 1] = {WeakAuras.AnchorFrame, {data, region, parent}}
     anchorFrameDeferred[data.id] = true
   else
-    local anchorParent = GetAnchorFrame(region, data.anchorFrameType, parent, data.anchorFrameFrame);
+    local anchorParent = GetAnchorFrame(data, region, parent);
     if not anchorParent then return end
     if (data.anchorFrameParent or data.anchorFrameParent == nil
         or data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE") then
