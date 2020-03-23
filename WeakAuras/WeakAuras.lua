@@ -2823,7 +2823,8 @@ function WeakAuras.RepairDatabase(loginAfter)
     for id, data in pairs(db.displays) do
       local snapshot = WeakAuras.GetMigrationSnapshot(data.uid)
       if snapshot then
-        db.displays[id] = snapshot
+        db.displays[id] = nil
+        db.displays[snapshot.id] = snapshot
         coroutine.yield()
       end
     end
