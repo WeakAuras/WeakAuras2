@@ -70,7 +70,7 @@ function WeakAuras.SetMigrationSnapshot(uid, oldData)
   end
 end
 
-function WeakAuras.GetMigrationSnapshot(uid, load)
-  return loadMigrations():Get(uid, load)
+function WeakAuras.GetMigrationSnapshot(uid)
+  return loadMigrations():GetData(uid)
 end
 

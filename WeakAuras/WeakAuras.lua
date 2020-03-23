@@ -2821,7 +2821,7 @@ function WeakAuras.RepairDatabase(loginAfter)
     db.dbVersion = WeakAuras.InternalVersion()
     -- reinstall snapshots from history
     for id, data in pairs(db.displays) do
-      local snapshot = WeakAuras.GetMigrationSnapshot(data.uid, true)
+      local snapshot = WeakAuras.GetMigrationSnapshot(data.uid)
       if snapshot then
         db.displays[id] = snapshot
         coroutine.yield()
