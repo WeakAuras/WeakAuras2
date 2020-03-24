@@ -4687,6 +4687,7 @@ end
 
 local glow_frame_monitor
 local anchor_unitframe_monitor
+WeakAuras.dyngroup_unitframe_monitor = {}
 do
   LGF.RegisterCallback("WeakAuras", "FRAME_GUID_UPDATE", function(event, frame, guid)
     if type(glow_frame_monitor) == "table" then
@@ -4722,6 +4723,19 @@ do
             local new_frame = WeakAuras.GetUnitFrame(data.region.state.unit)
             if new_frame and new_frame ~= data.frame then
               WeakAuras.AnchorFrame(data.data, data.region, data.parent)
+            end
+          end
+        end
+      end
+    end
+    if type(WeakAuras.dyngroup_unitframe_monitor) == "table" then
+      local frames = WeakAuras.dyngroup_unitframe_monitor
+      if frames then
+        for data, data_frame in pairs(frames) do
+          if data_frame ~= frame then
+            local new_frame = WeakAuras.GetUnitFrame(data.region.state.unit)
+            if new_frame and new_frame ~= data.frame then
+              data.controlPoint:ReAnchor(new_frame)
             end
           end
         end
