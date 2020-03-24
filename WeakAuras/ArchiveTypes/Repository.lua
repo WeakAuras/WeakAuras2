@@ -58,7 +58,7 @@ local storeMethods = {
     return subStore, data
   end,
   GetData = function(self, id)
-    return self:Get(id, true)
+    return select(2, self:Get(id, true))
   end,
   Set = function(self, id, data)
     if data ~= nil and type(id) == "string" then
