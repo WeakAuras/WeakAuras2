@@ -6936,7 +6936,7 @@ local function GetAnchorFrame(data, region, parent)
 
   if (anchorFrameType == "NAMEPLATE") then
     local unit = region.state.unit
-    return unit and C_NamePlate.GetNamePlateForUnit(unit)
+    return unit and WeakAuras.GetUnitNameplate(unit)
   end
 
   if (anchorFrameType == "UNITFRAME") then

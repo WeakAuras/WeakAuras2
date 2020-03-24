@@ -342,7 +342,7 @@ local anchorers = {
       for _, regionData in ipairs(activeRegions) do
         local unit = regionData.region.state and regionData.region.state.unit
         if unit then
-          local frame = C_NamePlate.GetNamePlateForUnit(unit)
+          local frame = WeakAuras.GetUnitNameplate(unit)
           if frame then
             frames[frame] = frames[frame] or {}
             tinsert(frames[frame], regionData)
