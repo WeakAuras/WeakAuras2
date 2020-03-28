@@ -212,6 +212,7 @@ local function modify(parent, region, parentData, data, first)
     else
       parent.customTextFunc = nil
     end
+    parent.values.custom = nil
   end
 
   local UpdateText
