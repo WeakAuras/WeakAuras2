@@ -5868,18 +5868,6 @@ do
     end
   end
 
-  local function ApplyFakeAlpha(region)
-    if (region.GetRegionAlpha and region:GetRegionAlpha() < 0.5) then
-      region:SetAlpha(0.5);
-    end
-  end
-
-  local function RestoreAlpha(region)
-    if (region.GetRegionAlpha) then
-      region:SetAlpha(region:GetRegionAlpha());
-    end
-  end
-
   function WeakAuras.FakeStatesFor(id, visible)
     if visibleFakeStates[id] == visible then
       return visibleFakeStates[id]
@@ -5897,9 +5885,6 @@ do
         if changed then
           WeakAuras.UpdatedTriggerState(id)
         end
-      end
-      if WeakAuras.regions[id] and WeakAuras.regions[id].region then
-        RestoreAlpha(WeakAuras.regions[id].region)
       end
     end
     return not visibleFakeStates[id]
@@ -5919,10 +5904,6 @@ do
         WeakAuras.UpdatedTriggerState(id)
         if WeakAuras.GetMoverSizerId() == id then
           WeakAuras.SetMoverSizer(id)
-        end
-
-        if WeakAuras.regions[id] and WeakAuras.regions[id].region then
-          ApplyFakeAlpha(WeakAuras.regions[id].region)
         end
       end
     end
