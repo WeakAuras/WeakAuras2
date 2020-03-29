@@ -3291,15 +3291,17 @@ end
 do
   local scheduled_scans = {};
 
-  local function doCooldownScan(fireTime)
-    WeakAuras.debug("Performing cooldown scan at "..fireTime.." ("..GetTime()..")");
-    scheduled_scans[fireTime] = nil;
-    WeakAuras.ScanEvents("COOLDOWN_REMAINING_CHECK");
+  local function doScan(fireTime, event)
+    WeakAuras.debug("Performing scan at "..fireTime.." ("..GetTime()..") " .. event);
+    scheduled_scans[event][fireTime] = nil;
+    WeakAuras.ScanEvents(event);
   end
-  function WeakAuras.ScheduleCooldownScan(fireTime)
-    if not(scheduled_scans[fireTime]) then
-      WeakAuras.debug("Scheduled cooldown scan at "..fireTime);
-      scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doCooldownScan, fireTime - GetTime() + 0.1, fireTime);
+  function WeakAuras.ScheduleScan(fireTime, event)
+    event = event or "COOLDOWN_REMAINING_CHECK"
+    scheduled_scans[event] = scheduled_scans[event] or {}
+    if not(scheduled_scans[event][fireTime]) then
+      WeakAuras.debug("Scheduled scan at " .. fireTime .. " for event " .. event);
+      scheduled_scans[event][fireTime] = timer:ScheduleTimerFixed(doScan, fireTime - GetTime() + 0.1, fireTime, event);
     end
   end
 end

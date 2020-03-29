@@ -2930,7 +2930,7 @@ WeakAuras.event_prototypes = {
             remaining = expirationTime - GetTime();
             local remainingCheck = %s;
             if(remaining >= remainingCheck and remaining > 0) then
-              WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+              WeakAuras.ScheduleScan(expirationTime - remainingCheck);
             end
           end
         ]];
@@ -3359,7 +3359,7 @@ WeakAuras.event_prototypes = {
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
           local remainingCheck = %s;
           if(remaining >= remainingCheck and remaining > 0) then
-            WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+            WeakAuras.ScheduleScan(expirationTime - remainingCheck);
           end
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
@@ -3528,7 +3528,7 @@ WeakAuras.event_prototypes = {
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
           local remainingCheck = %s;
           if(remaining >= remainingCheck and remaining > 0) then
-            WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+            WeakAuras.ScheduleScan(expirationTime - remainingCheck);
           end
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
@@ -4654,7 +4654,7 @@ WeakAuras.event_prototypes = {
             local expirationTime = startTime and (startTime + duration) or 0;
             local remainingTime = expirationTime - GetTime()
             if (remainingTime >= remainingCheck) then
-              WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+              WeakAuras.ScheduleScan(expirationTime - remainingCheck);
             end
             active = checkActive(remainingTime);
           end
@@ -4702,7 +4702,7 @@ WeakAuras.event_prototypes = {
               local expirationTime = startTime and (startTime + duration) or 0;
               local remainingTime = expirationTime - GetTime()
               if (remainingTime >= remainingCheck) then
-                WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+                WeakAuras.ScheduleScan(expirationTime - remainingCheck);
               end
               active = checkActive(remainingTime);
             end
@@ -5024,6 +5024,10 @@ WeakAuras.event_prototypes = {
         local stackCheck = not triggerStack or stack and stack %s triggerStack
         local remainingCheck = not triggerRemaining or remaining and remaining %s triggerRemaining
         local found = expirationTime and nameCheck and stackCheck and remainingCheck
+
+        if(triggerRemaining and remaining and remaining >= triggerRemaining and remaining > 0) then
+          WeakAuras.ScheduleScan(expirationTime - triggerRemaining, "TENCH_UPDATE");
+        end
       ]];
 
       return ret:format(trigger.weapon or "main",
@@ -5296,7 +5300,7 @@ WeakAuras.event_prototypes = {
         local remaining = expirationTime - GetTime();
         local remainingCheck = %s;
         if(remaining >= remainingCheck and remaining > 0) then
-          WeakAuras.ScheduleCooldownScan(expirationTime - remainingCheck);
+          WeakAuras.ScheduleScan(expirationTime - remainingCheck);
         end
       ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
