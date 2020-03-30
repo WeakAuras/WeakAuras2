@@ -54,9 +54,9 @@ local controlPointFunctions = {
   ["ClearAnchorPoint"] = function(self)
     self.point, self.relativeFrame, self.relativePoint, self.offsetX, self.offsetY = nil, nil, nil, nil, nil
   end,
-  ["ReAnchor"] = function(self, point)
+  ["ReAnchor"] = function(self, frame)
     self:ClearAllPoints()
-    self.point = point
+    self.relativeFrame = frame
     if self.relativeFrame and self.relativePoint then
       self:SetPoint(self.point, self.relativeFrame, self.relativePoint, self.totalOffsetX, self.totalOffsetY)
     else
