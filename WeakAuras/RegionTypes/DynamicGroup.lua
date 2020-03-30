@@ -93,14 +93,7 @@ local function releaseControlPoint(self, controlPoint)
   controlPoint:ClearAnchorPoint()
   local regionData = controlPoint.regionData
   if regionData then
-    local guid = regionData.unitframe_monitor
-    if guid then
-      WeakAuras.dyngroup_unitframe_monitor[guid][regionData] = nil
-      if not next(WeakAuras.dyngroup_unitframe_monitor[guid]) then
-        WeakAuras.dyngroup_unitframe_monitor[guid] = nil
-      end
-      regionData.unitframe_monitor = nil
-    end
+    WeakAuras.dyngroup_unitframe_monitor[regionData] = nil
     controlPoint.regionData = nil
     regionData.controlPoint = nil
   end
@@ -1014,6 +1007,7 @@ local function modify(parent, region, data)
   end
 
   region.growFunc = createGrowFunc(data)
+  region.anchorPerUnit = data.useAnchorPerUnit and data.anchorPerUnit
 
   local animate = data.animate
   function region:PositionChildren()
@@ -1053,14 +1047,8 @@ local function modify(parent, region, data)
       controlPoint:SetShown(show)
       controlPoint:SetWidth(regionData.dimensions.width)
       controlPoint:SetHeight(regionData.dimensions.height)
-      if regionData.useAnchorPerUnit and regionData.anchorPerUnit == "UNITFRAME" then
-        local guid = UnitGUID(regionData.region.state.unit)
-        if guid then
-          WeakAuras.dyngroup_unitframe_monitor = WeakAuras.dyngroup_unitframe_monitor or {}
-          WeakAuras.dyngroup_unitframe_monitor[guid] = WeakAuras.dyngroup_unitframe_monitor[guid] or {}
-          WeakAuras.dyngroup_unitframe_monitor[guid][regionData] = frame
-          regionData.unitframe_monitor = guid
-        end
+      if self.anchorPerUnit == "UNITFRAME" then
+        WeakAuras.dyngroup_unitframe_monitor[regionData] = frame
       end
       if animate then
         WeakAuras.CancelAnimation(regionData.controlPoint, true)

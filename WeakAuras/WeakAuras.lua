@@ -4689,55 +4689,57 @@ local glow_frame_monitor
 local anchor_unitframe_monitor
 WeakAuras.dyngroup_unitframe_monitor = {}
 do
-  LGF.RegisterCallback("WeakAuras", "FRAME_GUID_UPDATE", function(event, frame, guid)
+  LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_UPDATE", function(event, frame, unit)
+    local new_frame
     if type(glow_frame_monitor) == "table" then
-      local glows = glow_frame_monitor[guid]
-      if glows then
-        for id, data in pairs(glows) do
-          if data.frame ~= frame then
-            local new_frame = WeakAuras.GetUnitFrame(data.region.state.unit)
-            if new_frame and new_frame ~= data.frame then
-              -- remove previous glow
+      for region, data in pairs(glow_frame_monitor) do
+        if region.state and region.state.unit == unit
+        and data.frame ~= frame
+        then
+          if not new_frame then
+            new_frame = WeakAuras.GetUnitFrame(unit)
+          end
+          if new_frame and new_frame ~= data.frame then
+            local id = region.id .. (region.cloneId or "")
+            -- remove previous glow
+            actionGlowStop(data.actions, data.frame, id)
+            -- apply the glow to new_frame
+            data.frame = new_frame
+            actionGlowStart(data.actions, data.frame, id)
+            -- update hidefunc
+            local region = region
+            region.active_glows_hidefunc[data.frame] = function()
               actionGlowStop(data.actions, data.frame, id)
-              -- apply the glow to new_frame
-              data.frame = new_frame
-              actionGlowStart(data.actions, data.frame, id)
-              -- update hidefunc
-              data.region.active_glows_hidefunc[data.frame] = function()
-                actionGlowStop(data.actions, data.frame, id)
-                glow_frame_monitor[guid][id] = nil
-                if next(glow_frame_monitor[guid]) == nil then
-                  glow_frame_monitor[guid] = nil
-                end
-              end
+              glow_frame_monitor[region] = nil
             end
           end
         end
       end
     end
     if type(anchor_unitframe_monitor) == "table" then
-      local frames = anchor_unitframe_monitor[guid]
-      if frames then
-        for id, data in pairs(frames) do
-          if data.frame ~= frame then
-            local new_frame = WeakAuras.GetUnitFrame(data.region.state.unit)
-            if new_frame and new_frame ~= data.frame then
-              WeakAuras.AnchorFrame(data.data, data.region, data.parent)
-            end
+      for region, data in pairs(anchor_unitframe_monitor) do
+        if region.state and region.state.unit == unit
+        and data.frame ~= frame
+        then
+          if not new_frame then
+            new_frame = WeakAuras.GetUnitFrame(unit)
+          end
+          if new_frame and new_frame ~= data.frame then
+            WeakAuras.AnchorFrame(data.data, region, data.parent)
           end
         end
       end
     end
-    if type(WeakAuras.dyngroup_unitframe_monitor) == "table" then
-      local frames = WeakAuras.dyngroup_unitframe_monitor
-      if frames then
-        for data, data_frame in pairs(frames) do
-          if data_frame ~= frame then
-            local new_frame = WeakAuras.GetUnitFrame(data.region.state.unit)
-            if new_frame and new_frame ~= data.frame then
-              data.controlPoint:ReAnchor(new_frame)
-            end
-          end
+    for regionData, data_frame in pairs(WeakAuras.dyngroup_unitframe_monitor) do
+      if regionData.region and regionData.region.state and regionData.region.state.unit == unit
+      and data_frame ~= frame
+      then
+        if not new_frame then
+          new_frame = WeakAuras.GetUnitFrame(unit)
+        end
+        if new_frame and new_frame ~= data_frame then
+          regionData.controlPoint:ReAnchor(new_frame)
+          WeakAuras.dyngroup_unitframe_monitor[regionData] = new_frame
         end
       end
     end
@@ -4777,22 +4779,14 @@ function WeakAuras.HandleGlowAction(actions, region)
         actionGlowStart(actions, glow_frame, id)
         region.active_glows_hidefunc = region.active_glows_hidefunc or {}
         if actions.glow_frame_type == "UNITFRAME" then
-          local glow_guid = UnitGUID(region.state.unit)
-          if glow_guid then
-            glow_frame_monitor = glow_frame_monitor or {}
-            glow_frame_monitor[glow_guid] = glow_frame_monitor[glow_guid] or {}
-            glow_frame_monitor[glow_guid][id] = {
-              region = region,
-              actions = actions,
-              frame = glow_frame
-            }
-            region.active_glows_hidefunc[glow_frame] = function()
-              actionGlowStop(actions, glow_frame, id)
-              glow_frame_monitor[glow_guid][id] = nil
-              if next(glow_frame_monitor[glow_guid]) == nil then
-                glow_frame_monitor[glow_guid] = nil
-              end
-            end
+          glow_frame_monitor = glow_frame_monitor or {}
+          glow_frame_monitor[region] = {
+            actions = actions,
+            frame = glow_frame
+          }
+          region.active_glows_hidefunc[glow_frame] = function()
+            actionGlowStop(actions, glow_frame, id)
+            glow_frame_monitor[region] = nil
           end
         else
           region.active_glows_hidefunc[glow_frame] = function()
@@ -4810,21 +4804,21 @@ function WeakAuras.HandleGlowAction(actions, region)
   end
 end
 
-function WeakAuras.PerformActions(data, type, region)
+function WeakAuras.PerformActions(data, when, region)
   if (paused or WeakAuras.IsOptionsOpen()) then
     return;
   end;
   local actions;
-  if(type == "start") then
+  if(when == "start") then
     actions = data.actions.start;
-  elseif(type == "finish") then
+  elseif(when == "finish") then
     actions = data.actions.finish;
   else
     return;
   end
 
   if(actions.do_message and actions.message_type and actions.message) then
-    local customFunc = WeakAuras.customActionsFunctions[data.id][type .. "_message"];
+    local customFunc = WeakAuras.customActionsFunctions[data.id][when .. "_message"];
     WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc);
   end
 
@@ -4841,7 +4835,7 @@ function WeakAuras.PerformActions(data, type, region)
   end
 
   if(actions.do_custom and actions.custom) then
-    local func = WeakAuras.customActionsFunctions[data.id][type]
+    local func = WeakAuras.customActionsFunctions[data.id][when]
     if func then
       WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state, region.states);
       xpcall(func, geterrorhandler());
@@ -4855,20 +4849,14 @@ function WeakAuras.PerformActions(data, type, region)
   end
 
   -- remove all glows on finish
-  if type == "finish" and actions.hide_all_glows and region.active_glows_hidefunc then
+  if when == "finish" and actions.hide_all_glows and region.active_glows_hidefunc then
     for _, hideFunc in pairs(region.active_glows_hidefunc) do
       hideFunc()
     end
     wipe(region.active_glows_hidefunc)
   end
-  if type == "finish" and region.unitframe_monitor then
-    local id = region.id .. region.cloneId or ""
-    local guid = region.unitframe_monitor
-    anchor_unitframe_monitor[guid][id] = nil
-    if not next(anchor_unitframe_monitor[guid]) then
-      anchor_unitframe_monitor[guid] = nil
-    end
-    region.unitframe_monitor = nil
+  if when == "finish" and type(anchor_unitframe_monitor) == "table" then
+    anchor_unitframe_monitor[region] = nil
   end
 end
 
@@ -6961,14 +6949,11 @@ local function GetAnchorFrame(data, region, parent)
         local frame = WeakAuras.GetUnitFrame(unit)
         if frame then
           anchor_unitframe_monitor = anchor_unitframe_monitor or {}
-          anchor_unitframe_monitor[guid] = anchor_unitframe_monitor[guid] or {}
-          anchor_unitframe_monitor[guid][id] = {
+          anchor_unitframe_monitor[region] = {
             data = data,
-            region = region,
             parent = parent,
             frame = frame
           }
-          region.unitframe_monitor = guid
           return frame
         end
       end
