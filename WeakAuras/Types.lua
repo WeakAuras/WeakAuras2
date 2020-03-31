@@ -1321,10 +1321,10 @@ WeakAuras.anim_translate_types = {
   shake = L["Shake"],
   bounce = L["Bounce"],
   bounceDecay = L["Bounce with Decay"],
-  custom = L["Custom Function"],
   easeIn = L["Ease In"],
   easeOut = L["Ease Out"],
-  easeInOut = L["Ease In and Out"]
+  easeInOut = L["Ease In and Out"],
+  custom = L["Custom Function"]
 }
 
 WeakAuras.anim_scale_types = {
