@@ -53,33 +53,6 @@ end
 local poolOldApi = CreateObjectPool(CreateModel)
 local poolNewApi = CreateObjectPool(CreateModel)
 
-local function UpdateModel(region)
-  local data = region.data
-  local model = region.model
-
-  if not model then
-    return
-  end
-
-  -- Adjust model
-  local modelId = tonumber(data.model_fileId)
-  if modelId and model then
-    model:SetModel(modelId)
-  end
-
-  model:ClearTransform()
-  if (data.api) then
-    model:MakeCurrentCameraCustom()
-    model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
-      rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
-      data.model_st_us / 1000);
-  else
-    model:SetPosition(data.model_z, data.model_x, data.model_y);
-    model:SetFacing(0);
-  end
-  model:SetModelAlpha(region.alpha)
-end
-
 local function AcquireModel(region, data)
   local pool = data.api and poolNewApi or poolOldApi
   local model = pool:Acquire()
@@ -144,9 +117,6 @@ local funcs = {
       if not self.model then
         self.model = AcquireModel(self, self.data)
         self.model:SetModelAlpha(self.alpha)
-        C_Timer.After(0, function()
-          UpdateModel(self)
-        end)
       end
       self:Show()
     else
@@ -182,7 +152,7 @@ local function modify(parent, region, parentData, data, first)
 
   if parentData.regionType == "aurabar" then
     if data.bar_model_clip then
-      region:SetAllPoints(parent.bar.fg)
+      region:SetAllPoints(parent.bar.fgFrame)
     else
       region:SetAllPoints(parent.bar)
     end

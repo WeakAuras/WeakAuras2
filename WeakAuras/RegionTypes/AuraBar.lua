@@ -240,6 +240,8 @@ local barPrototype = {
     self.fg:ClearAllPoints();
     self.fg:SetPoint(self.align1);
     self.fg:SetPoint(self.align2);
+    self.fgFrame:SetPoint(self.align1);
+    self.fgFrame:SetPoint(self.align2);
 
     self.spark:SetPoint("CENTER", self.fg, self.alignSpark, self.spark.sparkOffsetX or 0, self.spark.sparkOffsetY or 0);
 
@@ -268,9 +270,11 @@ local barPrototype = {
     if (self.horizontal) then
       local xProgress = self:GetRealSize() * progress;
       self.fg:SetWidth(xProgress > 0.0001 and xProgress or 0.0001);
+      self.fgFrame:SetWidth(xProgress > 0.0001 and xProgress or 0.0001);
     else
       local yProgress = select(2, self:GetRealSize()) * progress;
       self.fg:SetHeight(yProgress > 0.0001 and yProgress or 0.0001);
+      self.fgFrame:SetHeight(yProgress > 0.0001 and yProgress or 0.0001);
     end
 
     -- Stretch texture
@@ -557,7 +561,7 @@ local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoi
     elseif selfPoint == "icon" then
       anchor = self.icon
     elseif selfPoint == "fg" then
-      anchor = self.bar.fg
+      anchor = self.bar.fgFrame
     elseif selfPoint == "bg" then
       anchor = self.bar.bg
     end
@@ -630,6 +634,7 @@ local function create(parent)
   bg:SetSnapToPixelGrid(false)
   bg:SetTexelSnappingBias(0)
   bg:SetAllPoints();
+  local fgFrame = CreateFrame("FRAME", nil, bar)
   local spark = bar:CreateTexture(nil, "ARTWORK");
   spark:SetSnapToPixelGrid(false)
   spark:SetTexelSnappingBias(0)
@@ -637,6 +642,7 @@ local function create(parent)
   bg:SetDrawLayer("ARTWORK", -1);
   spark:SetDrawLayer("ARTWORK", 7);
   bar.fg = fg;
+  bar.fgFrame = fgFrame
   bar.bg = bg;
   bar.spark = spark;
   for key, value in pairs(barPrototype) do
