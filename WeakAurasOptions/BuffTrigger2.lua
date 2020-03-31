@@ -689,7 +689,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     class = {
       type = "multiselect",
       width = WeakAuras.normalWidth,
-      name = L["Group Role"],
+      name = L["Class"],
       values = WeakAuras.class_types,
       hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useClass) end,
       order = 68.2
