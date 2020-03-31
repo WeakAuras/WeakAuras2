@@ -186,6 +186,7 @@ local function modify(parent, region, data)
 
   if region.model then
     ReleaseModel(region.model)
+    region.model = nil
   end
 
   -- Reset position and size
