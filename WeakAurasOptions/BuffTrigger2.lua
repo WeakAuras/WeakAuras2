@@ -860,7 +860,18 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = L["Preferred Match"],
       order = 72.5,
       hidden = function()
-        return not (trigger.type == "aura2" and not IsSingleMissing(trigger) and (IsGroupTrigger(trigger) and trigger.combinePerUnit or not trigger.showClones))
+        if (trigger.type == "aura2") then
+          if (IsGroupTrigger(trigger)) then
+            if trigger.showClones then
+              return not (trigger.combinePerUnit and trigger.perUnitMode ~= "unaffected")
+            else
+              return false
+            end
+          else
+            return not (not IsSingleMissing(trigger) and not trigger.showClones)
+          end
+        end
+        return true
       end,
       get = function() return true end,
       disabled = true
@@ -892,11 +903,11 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     unitExists = {
       type = "toggle",
       name = L["Show If Unit Does Not Exist"],
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.doubleWidth,
       order = 73,
       hidden = function()
         return not (trigger.type == "aura2" and trigger.unit ~= "player" and not IsGroupTrigger(trigger))
-      end
+      end,
     },
   }
 
