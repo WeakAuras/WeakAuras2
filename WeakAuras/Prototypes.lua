@@ -561,7 +561,7 @@ WeakAuras.anim_function_strings = {
   ]],
   easeInOut = [[
     function(progress, startX, startY, deltaX, deltaY)
-    progress = EasingUtil.InCubic(progress)
+    progress = EasingUtil.InOutCubic(progress)
     return startX + (progress * deltaX), startY + (progress * deltaY)
     end
   ]]
