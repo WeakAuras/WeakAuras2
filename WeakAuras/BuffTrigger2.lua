@@ -366,7 +366,7 @@ local function FindBestMatchData(time, id, triggernum, triggerInfo, matchedUnits
 
       if remCheck then
         matchCount = matchCount + 1
-        stackCount = stackCount + auraData.stacks
+        stackCount = stackCount + (auraData.stacks or 0)
         matchedUnits[unit] = true
         if not unitCounted then
           unitCount = unitCount + 1
