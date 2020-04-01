@@ -1295,8 +1295,11 @@ function WeakAuras.DeleteOption(data, massDelete)
 
   frame:ClearPicks();
   WeakAuras.Delete(data);
-  frame.buttonsScroll:DeleteChild(displayButtons[id]);
-  displayButtons[id] = nil;
+
+  if(displayButtons[id])then
+    frame.buttonsScroll:DeleteChild(displayButtons[id]);
+    displayButtons[id] = nil;
+  end
 
   if(parentData and parentData.controlledChildren and not massDelete) then
     for index, childId in pairs(parentData.controlledChildren) do
