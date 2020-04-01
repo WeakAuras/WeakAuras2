@@ -3508,7 +3508,14 @@ end
 
 function GenericTrigger.SetToolTip(trigger, state)
   if (trigger.type == "custom" and trigger.custom_type == "stateupdate") then
-    if (state.spellId) then
+    if (state.tooltip) then
+      local lines = { strsplit("\n", state.tooltip) };
+      GameTooltip:ClearLines();
+      for i, line in ipairs(lines) do
+        GameTooltip:AddLine(line);
+      end
+      return true
+    elseif (state.spellId) then
       GameTooltip:SetSpellByID(state.spellId);
       return true
     elseif (state.link) then
