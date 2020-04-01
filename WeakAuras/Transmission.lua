@@ -1903,7 +1903,8 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
           WeakAuras.PreAdd(child)
         end
       end
-      WeakAuras.ShowDisplayTooltip(data, children, nil, icon, icons, sender, true)
+      local matchInfo = WeakAuras.MatchInfo(data, children)
+      WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, sender, true)
     elseif(received.m == "dR") then
       --if(WeakAuras.linked[received.d]) then
       TransmitDisplay(received.d, sender);
