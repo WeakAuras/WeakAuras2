@@ -24,6 +24,10 @@ local default = function(parentType)
       text_shadowXOffset = 0,
       text_shadowYOffset = 0,
       rotateText = "NONE",
+
+      text_automaticWidth = "Auto",
+      text_fixedWidth = 64,
+      text_wordWrap = "WordWrap",
     }
   else
     -- With Shadow, without Outline
@@ -45,6 +49,10 @@ local default = function(parentType)
       text_shadowXOffset = 1,
       text_shadowYOffset = -1,
       rotateText = "NONE",
+
+      text_automaticWidth = "Auto",
+      text_fixedWidth = 64,
+      text_wordWrap = "WordWrap",
     }
   end
 end
@@ -144,6 +152,9 @@ local function create()
   -- the issue. Also see #1778
   text:SetPoint("CENTER", UIParent, "CENTER")
 
+  text:SetWordWrap(true)
+  text:SetNonSpaceWrap(true)
+
   return region;
 end
 
@@ -191,6 +202,24 @@ local function modify(parent, region, parentData, data, first)
   text:SetShadowColor(unpack(data.text_shadowColor))
   text:SetShadowOffset(data.text_shadowXOffset, data.text_shadowYOffset)
   text:SetJustifyH(data.text_justify or "CENTER")
+
+  if (data.text_automaticWidth == "Fixed") then
+    if (data.text_wordWrap == "WordWrap") then
+      text:SetWordWrap(true);
+      text:SetNonSpaceWrap(true);
+    else
+      text:SetWordWrap(false);
+      text:SetNonSpaceWrap(false);
+    end
+
+    text:SetWidth(data.text_fixedWidth);
+    region:SetWidth(data.text_fixedWidth);
+    region.width = data.text_fixedWidth;
+  else
+    text:SetWidth(0);
+    text:SetWordWrap(true);
+    text:SetNonSpaceWrap(true);
+  end
 
   if first then
     -- Certain data is stored directly on the parent, because it's shared between multiple texts
