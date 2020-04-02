@@ -546,6 +546,24 @@ WeakAuras.anim_function_strings = {
     function()
     return 0
     end
+  ]],
+  easeIn = [[
+    function(progress, startX, startY, deltaX, deltaY)
+    progress = EasingUtil.InCubic(progress)
+    return startX + (progress * deltaX), startY + (progress * deltaY)
+    end
+  ]],
+  easeOut = [[
+    function(progress, startX, startY, deltaX, deltaY)
+    progress = EasingUtil.OutCubic(progress)
+    return startX + (progress * deltaX), startY + (progress * deltaY)
+    end
+  ]],
+  easeInOut = [[
+    function(progress, startX, startY, deltaX, deltaY)
+    progress = EasingUtil.InOutCubic(progress)
+    return startX + (progress * deltaX), startY + (progress * deltaY)
+    end
   ]]
 };
 
