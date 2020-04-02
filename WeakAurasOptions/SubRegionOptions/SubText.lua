@@ -118,7 +118,18 @@ local function createOptions(parentData, data, index, subIndex)
           textRotate = " " .. L["and rotated right"]
         end
 
-        local secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s"]:format(textFlags, color, data.text_shadowXOffset, data.text_shadowYOffset, textRotate, textJustify)
+        local textWidth = ""
+        if data.text_automaticWidth == "Fixed" then
+          local wordWarp = ""
+          if data.text_wordWrap == "WordWrap" then
+            wordWarp = L["wrapping"]
+          else
+            wordWarp = L["eliding"]
+          end
+          textWidth = " "..L["and with width |cFFFF0000%s|r and %s"]:format(data.text_fixedWidth, wordWarp)
+        end
+
+        local secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s%s"]:format(textFlags, color, data.text_shadowXOffset, data.text_shadowYOffset, textRotate, textJustify, textWidth)
 
         return secondline
       end,
@@ -218,7 +229,54 @@ local function createOptions(parentData, data, index, subIndex)
       values = WeakAuras.justify_types,
       order = 50.5,
       hidden = hiddenFontExtra
-    }
+    },
+    text_font_space5 = {
+      type = "description",
+      name = "",
+      order = 51,
+      hidden = hiddenFontExtra,
+      width = indentWidth
+    },
+    text_automaticWidth = {
+      type = "select",
+      width = WeakAuras.normalWidth - indentWidth,
+      name = L["Width"],
+      order = 51.5,
+      values = WeakAuras.text_automatic_width,
+      hidden = hiddenFontExtra
+    },
+    text_font_space6 = {
+      type = "description",
+      name = "",
+      order = 52,
+      hidden = hiddenFontExtra,
+      width = WeakAuras.normalWidth
+    },
+    text_font_space7 = {
+      type = "description",
+      name = "",
+      order = 52.5,
+      width = indentWidth,
+      hidden = function() return hiddenFontExtra() or data.text_automaticWidth ~= "Fixed" end
+    },
+    text_fixedWidth = {
+      name = L["Width"],
+      width = WeakAuras.normalWidth - indentWidth,
+      order = 53,
+      type = "range",
+      min = 1,
+      softMax = 200,
+      bigStep = 1,
+      hidden = function() return hiddenFontExtra() or data.text_automaticWidth ~= "Fixed" end
+    },
+    text_wordWrap = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Overflow"],
+      order = 54,
+      values = WeakAuras.text_word_wrap,
+      hidden = function() return hiddenFontExtra() or data.text_automaticWidth ~= "Fixed" end
+    },
   }
 
   -- Note: Anchor Options need to be generalized once there are multiple sub regions
