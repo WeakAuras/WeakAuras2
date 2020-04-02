@@ -1013,7 +1013,7 @@ local function UpdateTriggerState(time, id, triggernum)
           if remCheck then
             tinsert(auraDatas, auraData)
             matchCount = matchCount + 1
-            totalStacks = totalStacks + auraData.stacks
+            totalStacks = totalStacks + (auraData.stacks or 0)
             matchedUnits[unit] = true
             matchCountPerUnit[unit] = (matchCountPerUnit[unit] or 0) + 1
             if not unitCounted then
@@ -1072,7 +1072,7 @@ local function UpdateTriggerState(time, id, triggernum)
         local bestMatch, countPerUnit, stacks, nextCheckForMatch = FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
         matchCount = matchCount + countPerUnit
         if bestMatch then
-          totalStacks = totalStacks + bestMatch.stacks
+          totalStacks = totalStacks + (bestMatch.stacks or 0)
           unitCount = unitCount + 1
           matchedUnits[unit] = true
         end
