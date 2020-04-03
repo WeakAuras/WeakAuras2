@@ -4905,6 +4905,7 @@ function WeakAuras.UpdateAnimations()
       anim.progress = 1;
     end
     local progress = anim.inverse and (1 - anim.progress) or anim.progress;
+    progress = anim.easeFunc(progress, anim.easeStrength or 3)
     WeakAuras.ActivateAuraEnvironment(anim.name, anim.cloneId, anim.region.state, anim.region.states);
     if(anim.translateFunc) then
       if (anim.region.SetOffsetAnim) then
@@ -5027,8 +5028,8 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     valid = true;
   end
   if(valid) then
-    local progress, duration, selfPoint, anchor, anchorPoint, startX, startY, startAlpha, startWidth, startHeight, startRotation;
-    local translateFunc, alphaFunc, scaleFunc, rotateFunc, colorFunc;
+    local progress, duration, selfPoint, anchor, anchorPoint, startX, startY, startAlpha, startWidth, startHeight, startRotation, easeType, easeStrength;
+    local translateFunc, alphaFunc, scaleFunc, rotateFunc, colorFunc, easeFunc;
     if(animations[key]) then
       if(animations[key].type == type and not loop) then
         return "no replace";
@@ -5199,6 +5200,9 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     animation.duration = duration
     animation.duration_type = anim.duration_type or "seconds"
     animation.inverse = inverse
+    animation.easeType = anim.easeType
+    animation.easeFunc = easeFunc
+    animation.easeStrength = anim.easeStrength
     animation.type = type
     animation.loop = loop
     animation.onFinished = onFinished
