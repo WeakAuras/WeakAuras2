@@ -13,6 +13,7 @@ local anim_main_preset_types = WeakAuras.anim_main_preset_types;
 local anim_finish_preset_types = WeakAuras.anim_finish_preset_types;
 local duration_types = WeakAuras.duration_types;
 local duration_types_no_choice = WeakAuras.duration_types_no_choice;
+local anim_ease_types = WeakAuras.anim_ease_types;
 
 local function filterAnimPresetTypes(intable, id)
   local ret = {};
@@ -171,6 +172,24 @@ function WeakAuras.AddAnimationOption(id, data)
           end
         end,
         order = 33.5,
+        hidden = function() return data.animation.start.type ~= "custom" end
+      },
+      start_easeType = {
+        type = "select",
+        width = WeakAuras.normalWidth,
+        name = L["Ease type"],
+        values = anim_ease_types,
+        order = 33.7,
+        hidden = function() return data.animation.start.type ~= "custom" end
+      },
+      start_easeStrength = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Ease Strength"],
+        order = 33.8,
+        min = 1,
+        max = 5,
+        bigStep = 1,
         hidden = function() return data.animation.start.type ~= "custom" end
       },
       start_use_alpha = {
@@ -403,6 +422,24 @@ function WeakAuras.AddAnimationOption(id, data)
         order = 53.5,
         hidden = function() return data.animation.main.type ~= "custom" end
       },
+      main_easeType = {
+        type = "select",
+        width = WeakAuras.normalWidth,
+        name = L["Ease type"],
+        values = anim_ease_types,
+        order = 53.7,
+        hidden = function() return data.animation.main.type ~= "custom" end
+      },
+      main_easeStrength = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Ease Strength"],
+        order = 53.8,
+        min = 1,
+        max = 5,
+        bigStep = 1,
+        hidden = function() return data.animation.main.type ~= "custom" end
+      },
       main_use_alpha = {
         type = "toggle",
         width = WeakAuras.normalWidth,
@@ -604,6 +641,24 @@ function WeakAuras.AddAnimationOption(id, data)
         name = L["Duration (s)"],
         desc = L["The duration of the animation in seconds. The finish animation does not start playing until after the display would normally be hidden."],
         order = 73.5,
+        hidden = function() return data.animation.finish.type ~= "custom" end
+      },
+      finish_easeType = {
+        type = "select",
+        width = WeakAuras.normalWidth,
+        name = L["Ease type"],
+        values = anim_ease_types,
+        order = 73.7,
+        hidden = function() return data.animation.finish.type ~= "custom" end
+      },
+      finish_easeStrength = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Ease Strength"],
+        order = 73.8,
+        min = 1,
+        max = 5,
+        bigStep = 1,
         hidden = function() return data.animation.finish.type ~= "custom" end
       },
       finish_use_alpha = {
