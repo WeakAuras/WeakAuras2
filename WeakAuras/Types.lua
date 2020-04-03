@@ -1312,6 +1312,29 @@ WeakAuras.anim_types = {
   preset = L["Preset"],
   custom = L["Custom"]
 }
+  
+WeakAuras.anim_ease_types = {
+  none = L["None"],
+  easeIn = L["Ease In"],
+  easeOut = L["Ease Out"],
+  easeOutIn = L["Ease In and Out"]
+}
+
+WeakAuras.anim_ease_functions = {
+  none = function(percent) return percent end,
+  easeIn = function(percent, power)
+    return percent ^ power;
+  end,
+  easeOut = function(percent, power)
+    return 1.0 - (1.0 - percent) ^ power;
+  end,
+  easeOutIn = function(percent, power)
+    if percent < .5 then
+        return (percent * 2.0) ^ power * .5;
+    end
+    return 1.0 - ((1.0 - percent) * 2.0) ^ power * .5;
+  end
+}
 
 WeakAuras.anim_translate_types = {
   straightTranslate = L["Normal"],
