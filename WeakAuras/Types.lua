@@ -1942,14 +1942,20 @@ WeakAuras.data_stub = {
     start = {
       type = "none",
       duration_type = "seconds",
+      easeType = "none",
+      easeStrength = 3,
     },
     main = {
       type = "none",
       duration_type = "seconds",
+      easeType = "none",
+      easeStrength = 3,
     },
     finish = {
       type = "none",
       duration_type = "seconds",
+      easeType = "none",
+      easeStrength = 3,
     },
   },
   conditions = {},
