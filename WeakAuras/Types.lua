@@ -1312,7 +1312,7 @@ WeakAuras.anim_types = {
   preset = L["Preset"],
   custom = L["Custom"]
 }
-  
+
 WeakAuras.anim_ease_types = {
   none = L["None"],
   easeIn = L["Ease In"],

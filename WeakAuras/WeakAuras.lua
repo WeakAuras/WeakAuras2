@@ -5149,7 +5149,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
       region:ColorAnim(nil);
     end
     easeFunc = WeakAuras.anim_ease_functions[anim.easeType or "none"]
-    
+
     duration = WeakAuras.ParseNumber(anim.duration) or 0;
     progress = 0;
     if(namespace == "display" and type == "main" and not onFinished and not anim.duration_type == "relative") then
