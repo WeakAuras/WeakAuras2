@@ -190,7 +190,8 @@ function WeakAuras.AddAnimationOption(id, data)
         min = 1,
         max = 5,
         bigStep = 1,
-        hidden = function() return data.animation.start.type ~= "custom" end
+        hidden = function() return data.animation.start.type ~= "custom" end,
+        disabled = function() return data.animation.start.easeType == "none" end
       },
       start_use_alpha = {
         type = "toggle",
@@ -438,7 +439,8 @@ function WeakAuras.AddAnimationOption(id, data)
         min = 1,
         max = 5,
         bigStep = 1,
-        hidden = function() return data.animation.main.type ~= "custom" end
+        hidden = function() return data.animation.main.type ~= "custom" end,
+        disabled = function() return data.animation.main.easeType == "none" end
       },
       main_use_alpha = {
         type = "toggle",
@@ -659,7 +661,8 @@ function WeakAuras.AddAnimationOption(id, data)
         min = 1,
         max = 5,
         bigStep = 1,
-        hidden = function() return data.animation.finish.type ~= "custom" end
+        hidden = function() return data.animation.finish.type ~= "custom" end,
+        disabled = function() return data.animation.finish.easeType == "none" end
       },
       finish_use_alpha = {
         type = "toggle",
