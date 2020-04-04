@@ -2,7 +2,6 @@ if not WeakAuras.IsCorrectVersion() then return end
 
 local WeakAuras = WeakAuras
 local SharedMedia = LibStub("LibSharedMedia-3.0")
-local LGF = LibStub("LibGetFrame-1.0")
 
 local default = {
   controlledChildren = {},
@@ -54,6 +53,15 @@ local controlPointFunctions = {
   ["ClearAnchorPoint"] = function(self)
     self.point, self.relativeFrame, self.relativePoint, self.offsetX, self.offsetY = nil, nil, nil, nil, nil
   end,
+  ["ReAnchor"] = function(self, frame)
+    self:ClearAllPoints()
+    self.relativeFrame = frame
+    if self.relativeFrame and self.relativePoint then
+      self:SetPoint(self.point, self.relativeFrame, self.relativePoint, self.totalOffsetX, self.totalOffsetY)
+    else
+      self:SetPoint(self.point, self.totalOffsetX, self.totalOffsetY)
+    end
+  end,
   ["SetOffsetAnim"] = function(self, x, y)
     self.animOffsetX, self.animOffsetY = x, y
     self.totalOffsetX = (self.animOffsetX or 0) + (self.offsetX or 0)
@@ -84,6 +92,9 @@ local function releaseControlPoint(self, controlPoint)
   controlPoint:ClearAnchorPoint()
   local regionData = controlPoint.regionData
   if regionData then
+    if self.parent.anchorPerUnit == "UNITFRAME" then
+      WeakAuras.dyngroup_unitframe_monitor[regionData] = nil
+    end
     controlPoint.regionData = nil
     regionData.controlPoint = nil
   end
@@ -342,7 +353,7 @@ local anchorers = {
       for _, regionData in ipairs(activeRegions) do
         local unit = regionData.region.state and regionData.region.state.unit
         if unit then
-          local frame = C_NamePlate.GetNamePlateForUnit(unit)
+          local frame = WeakAuras.GetUnitNameplate(unit)
           if frame then
             frames[frame] = frames[frame] or {}
             tinsert(frames[frame], regionData)
@@ -997,6 +1008,7 @@ local function modify(parent, region, data)
   end
 
   region.growFunc = createGrowFunc(data)
+  region.anchorPerUnit = data.useAnchorPerUnit and data.anchorPerUnit
 
   local animate = data.animate
   function region:PositionChildren()
@@ -1018,14 +1030,6 @@ local function modify(parent, region, data)
     end
   end
 
-  if data.useAnchorPerUnit and data.anchorPerUnit == "UNITFRAME" then
-    LGF.RegisterCallback("WeakAuras" .. data.uid, "GETFRAME_REFRESH", function()
-      region:PositionChildren()
-    end)
-  else
-    LGF.UnregisterCallback("WeakAuras" .. data.uid, "GETFRAME_REFRESH")
-  end
-
   function region:DoPositionChildrenPerFrame(frame, positions, handledRegionData)
     for regionData, pos in pairs(positions) do
       handledRegionData[regionData] = true
@@ -1044,6 +1048,9 @@ local function modify(parent, region, data)
       controlPoint:SetShown(show)
       controlPoint:SetWidth(regionData.dimensions.width)
       controlPoint:SetHeight(regionData.dimensions.height)
+      if self.anchorPerUnit == "UNITFRAME" then
+        WeakAuras.dyngroup_unitframe_monitor[regionData] = frame
+      end
       if animate then
         WeakAuras.CancelAnimation(regionData.controlPoint, true)
         local xPrev = regionData.xOffset or x
