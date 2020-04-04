@@ -36,8 +36,8 @@ local properties = {
   tick_placement = {
     display = L["Placement"],
     setter = "SetTickPlacement",
-    type = "string",
-    validate = WeakAuras.ValidateNumericOrPercent,
+    type = "number",
+    validate = WeakAuras.ValidateNumeric,
   },
   tick_thickness = {
     display = L["Thickness"],

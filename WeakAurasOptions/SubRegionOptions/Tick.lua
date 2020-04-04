@@ -62,7 +62,6 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Tick Placement"],
       order = order + 0.11,
       validate = WeakAuras.ValidateNumeric,
-      disabled = function() return data.tick_placement_mode == "CUSTOM" end,
       desc = L["Enter in a value for the tick's placement."],
     },
     tick_space1 = {
