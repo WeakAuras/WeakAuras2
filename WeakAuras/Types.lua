@@ -375,15 +375,6 @@ WeakAuras.spark_hide_types = {
 WeakAuras.tick_placement_modes = {
   NUMBER = L["Number Value"],
   PERCENT = L["Percentage"],
-  CUSTOM  = L["Custom"]
-}
-
-WeakAuras.tick_hide_modes = {
-  NEVER = L["Never"],
-  FULL  = L["Full"],
-  EMPTY = L["Empty"],
-  BOTH  = L["Both"],
-  AUTO  = L["Automatic"],
 }
 
 WeakAuras.containment_types = {

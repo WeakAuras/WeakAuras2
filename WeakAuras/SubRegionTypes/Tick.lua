@@ -12,7 +12,6 @@ local default = function(parentType)
     automatic_length = true,
     tick_thickness = 2,
     tick_length = 30,
-    tick_hide_mode = "NEVER",
   }
 end
 
@@ -55,12 +54,6 @@ local properties = {
     min = 0,
     bigStep = 1,
     default = 30,
-  },
-  tick_hide_mode = {
-    display = L["Placement Mode"],
-    setter = "SetTickPlacementMode",
-    type = "list",
-    values = WeakAuras.tick_hide_modes,
   },
 }
 

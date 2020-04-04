@@ -11,10 +11,6 @@ local indentWidth = WeakAuras.normalWidth * 0.06
 
 local function createOptions(parentData, data, index, subIndex)
 
-  local hiddenTickExtra = function()
-    return WeakAuras.IsCollapsed("tick", "tick", "tickextra" .. index, true);
-  end
-
   local order = 9
   local options = {
     __title = L["Tick %s"]:format(subIndex),
@@ -88,7 +84,6 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Thickness"],
       order = order + 0.30,
       min = 0,
-      --softMin = 0,
       softMax = 20,
       step = 1,
     },
@@ -98,18 +93,9 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Length"],
       order = order + 0.31,
       min = 0,
-      --softMin = 0,
       softMax = 50,
       step = 1,
       disabled = function() return data.automatic_length end,
-    },
-    tick_hide_mode = {
-      type = "select",
-      name = L["Hide On"],
-      width = WeakAuras.normalWidth - indentWidth,
-      order = order + 1.52,
-      values = WeakAuras.tick_hide_modes,
-      hidden = hiddenTickExtra,
     },
   }
   return options
