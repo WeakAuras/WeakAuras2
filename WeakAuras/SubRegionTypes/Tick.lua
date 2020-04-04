@@ -7,9 +7,9 @@ local default = function(parentType)
   return {
     tick_visible = true,
     tick_color = {1, 1, 1, 1},
-    tick_placement_mode = "STATIC",
-    tick_placement = "50%",
-    automatic_height = true,
+    tick_placement_mode = "NUMBER",
+    tick_placement = 50,
+    automatic_length = true,
     tick_thickness = 2,
     tick_length = 30,
     tick_hide_mode = "NEVER",
@@ -48,9 +48,9 @@ local properties = {
     bigStep = 1,
     default = 2,
   },
-  tick_height = {
-    display = L["Height"],
-    setter = "SetTickHeight",
+  tick_length = {
+    display = L["Length"],
+    setter = "SetTickLength",
     type = "number",
     min = 0,
     bigStep = 1,
@@ -138,12 +138,12 @@ local funcs = {
       self:SetWidth(thickness)
     end
   end,
-  SetTickHeight = function(self, height)
-    if self.automatic_height then height = self.parentTrueHeight end
+  SetTickLength = function(self, length)
+    if self.automatic_length then length = self.parentTrueHeight end
     if (self.parentOrientation == "VERTICAL") or (self.parentOrientation == "VERTICAL_INVERSE") then
-      self:SetWidth(height)
+      self:SetWidth(length)
     else
-      self:SetHeight(height)
+      self:SetHeight(length)
     end
   end,
 }
@@ -170,15 +170,15 @@ local function modify(parent, region, parentData, data, first)
   region.tick_color = data.tick_color
   region.tick_placement_mode = data.tick_placement_mode
   region.tick_placement = data.tick_placement
-  region.automatic_height = data.automatic_height
+  region.automatic_length = data.automatic_length
   region.tick_thickness = data.tick_thickness
-  region.tick_height = data.tick_height
+  region.tick_length = data.tick_length
 
 
   region:SetVisible(data.tick_visible)
   region:SetTickColor(unpack(data.tick_color))
   region:SetTickThickness(data.tick_thickness)
-  region:SetTickHeight(data.tick_height)
+  region:SetTickLength(data.tick_length)
 
   parent.subRegionEvents:AddSubscriber("Update", region)
   --parent.subRegionEvents:AddSubscriber("FrameTick", region)

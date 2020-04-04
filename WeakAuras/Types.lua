@@ -373,7 +373,7 @@ WeakAuras.spark_hide_types = {
 }
 
 WeakAuras.tick_placement_modes = {
-  NUMERIC = L["Number Value"],
+  NUMBER = L["Number Value"],
   PERCENT = L["Percentage"],
   CUSTOM  = L["Custom"]
 }

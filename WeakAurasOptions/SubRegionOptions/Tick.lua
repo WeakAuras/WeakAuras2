@@ -61,13 +61,13 @@ local function createOptions(parentData, data, index, subIndex)
       desc = L["Automatic mode moves the tick as the bar progresses"],
     },
     tick_placement = {
-      type = "number",
+      type = "input",
       width = WeakAuras.normalWidth,
       name = L["Tick Placement"],
       order = order + 0.11,
-      validate = WeakAuras.ValidateNumericOrPercent,
-      disabled = function() return data.tick_placement_mode == "AUTO" end,
-      desc = L["Enter progress values that are static or relative values with %"],
+      validate = WeakAuras.ValidateNumeric,
+      disabled = function() return data.tick_placement_mode == "CUSTOM" end,
+      desc = L["Enter in a value for the tick's placement."],
     },
     tick_space1 = {
       type = "description",
