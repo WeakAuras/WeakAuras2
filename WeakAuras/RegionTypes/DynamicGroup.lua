@@ -92,7 +92,9 @@ local function releaseControlPoint(self, controlPoint)
   controlPoint:ClearAnchorPoint()
   local regionData = controlPoint.regionData
   if regionData then
-    WeakAuras.dyngroup_unitframe_monitor[regionData] = nil
+    if self.parent.anchorPerUnit == "UNITFRAME" then
+      WeakAuras.dyngroup_unitframe_monitor[regionData] = nil
+    end
     controlPoint.regionData = nil
     regionData.controlPoint = nil
   end
