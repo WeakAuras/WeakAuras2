@@ -6944,18 +6944,15 @@ local function GetAnchorFrame(data, region, parent)
   if (anchorFrameType == "UNITFRAME") then
     local unit = region.state.unit
     if unit then
-      local guid = UnitGUID(unit)
-      if guid then
-        local frame = WeakAuras.GetUnitFrame(unit)
-        if frame then
-          anchor_unitframe_monitor = anchor_unitframe_monitor or {}
-          anchor_unitframe_monitor[region] = {
-            data = data,
-            parent = parent,
-            frame = frame
-          }
-          return frame
-        end
+      local frame = WeakAuras.GetUnitFrame(unit)
+      if frame then
+        anchor_unitframe_monitor = anchor_unitframe_monitor or {}
+        anchor_unitframe_monitor[region] = {
+          data = data,
+          parent = parent,
+          frame = frame
+        }
+        return frame
       end
     end
   end
