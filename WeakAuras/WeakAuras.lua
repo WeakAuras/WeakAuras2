@@ -811,7 +811,14 @@ function WeakAuras.scheduleConditionCheck(time, id, cloneId)
   end
 end
 
-WeakAuras.customConditionTestFunctions = {};
+local customConditionTestFunctions = {};
+
+function WeakAuras.CallCustomConditionTest(testFunctionNumber, ...)
+  local ok, result = xpcall(customConditionTestFunctions[testFunctionNumber], geterrorhandler(), ...)
+  if (ok) then
+    return result
+  end
+end
 
 local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
   local trigger = input and input.trigger;
@@ -856,11 +863,11 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
     local stateVariableCheck = "state[" .. trigger .. "]." .. variable .. "~= nil and ";
     if (test) then
       if (value) then
-        tinsert(WeakAuras.customConditionTestFunctions, test);
-        local testFunctionNumber = #(WeakAuras.customConditionTestFunctions);
+        tinsert(customConditionTestFunctions, test);
+        local testFunctionNumber = #(customConditionTestFunctions);
         local valueString = type(value) == "string" and "[[" .. value .. "]]" or value;
         local opString = type(op) == "string" and  "[[" .. op .. "]]" or op;
-        check = "state and WeakAuras.customConditionTestFunctions[" .. testFunctionNumber .. "](state[" .. trigger .. "], " .. valueString .. ", " .. (opString or "nil") .. ")";
+        check = "state and WeakAuras.CallCustomConditionTest(" .. testFunctionNumber .. ", state[" .. trigger .. "], " .. valueString .. ", " .. (opString or "nil") .. ")";
       end
     elseif (ctype == "number" and op) then
       local v = tonumber(value)
