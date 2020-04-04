@@ -61,7 +61,8 @@ local function createOptions(parentData, data, index, subIndex)
       hidden = function() return parentData.regionType ~= "aurabar" end
     },
     glowExtraDescription = {
-      type = "description",
+      type = "execute",
+      control = "WeakAurasExpandSmall",
       name = function()
         local line = L["|cFFffcc00Extra Options:|r"]
         local color = L["Default Color"]
@@ -104,18 +105,8 @@ local function createOptions(parentData, data, index, subIndex)
         end
         return line
       end,
-      width = WeakAuras.doubleWidth - 0.15,
+      width = WeakAuras.doubleWidth,
       order = order + 1,
-      fontSize = "medium"
-    },
-    glowExpand = {
-      type = "execute",
-      name = function()
-        local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra" .. index, true)
-        return collapsed and L["Show Extra Options"] or L["Hide Extra Options"]
-      end,
-      order = order + 1.01,
-      width = 0.15,
       image = function()
         local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra" .. index, true);
         return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
@@ -126,7 +117,6 @@ local function createOptions(parentData, data, index, subIndex)
         local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra" .. index, true);
         WeakAuras.SetCollapsed("glow", "glow", "glowextra" .. index, not collapsed);
       end,
-      control = "WeakAurasIcon"
     },
     glow_space1 = {
       type = "description",

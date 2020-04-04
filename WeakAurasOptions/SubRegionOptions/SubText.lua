@@ -95,7 +95,8 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
     },
     text_fontFlagsDescription = {
-      type = "description",
+      type = "execute",
+      control = "WeakAurasExpandSmall",
       name = function()
         local textFlags = WeakAuras.font_flags[data.text_fontType]
         local color = format("%02x%02x%02x%02x",
@@ -133,25 +134,18 @@ local function createOptions(parentData, data, index, subIndex)
 
         return secondline
       end,
-      width = WeakAuras.doubleWidth - 0.15,
+      width = WeakAuras.doubleWidth,
       order = 44,
-      fontSize = "medium"
-    },
-    text_fontFlagsExpand = {
-      type = "execute",
-      name = "",
-      order = 44.1,
-      width = 0.15,
+      func = function()
+        local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
+        WeakAuras.SetCollapsed("subtext", "subtext", "fontflags" .. index, not collapsed)
+      end,
       image = function()
         local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
         return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
       end,
       imageWidth = 24,
-      imageHeight = 24,
-      func = function()
-        local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
-        WeakAuras.SetCollapsed("subtext", "subtext", "fontflags" .. index, not collapsed)
-      end
+      imageHeight = 24
     },
 
     text_font_space = {
@@ -296,7 +290,8 @@ local function createOptions(parentData, data, index, subIndex)
   end
   -- Anchor Options
   options.text_anchorsDescription = {
-    type = "description",
+    type = "execute",
+    control = "WeakAurasExpandSmall",
     name = function()
       local selfPoint = data.text_selfPoint ~= "AUTO" and self_point_types[data.text_selfPoint]
       local anchorPoint = anchors[data.text_anchorPoint or "CENTER"] or anchors["CENTER"]
@@ -322,16 +317,8 @@ local function createOptions(parentData, data, index, subIndex)
         end
       end
     end,
-    width = WeakAuras.doubleWidth - 0.15,
+    width = WeakAuras.doubleWidth,
     order = 60,
-    fontSize = "medium"
-  }
-
-  options.text_expandAnchors = {
-    type = "execute",
-    name = "",
-    order = 60.1,
-    width = 0.15,
     image = function()
       local collapsed = WeakAuras.IsCollapsed("subregion", "text_anchors", tostring(index), true)
       return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
@@ -343,6 +330,7 @@ local function createOptions(parentData, data, index, subIndex)
       WeakAuras.SetCollapsed("subregion", "text_anchors", tostring(index), not collapsed)
     end
   }
+
 
   local hiddenFunction = function()
     return WeakAuras.IsCollapsed("subregion", "text_anchors", tostring(index), true)

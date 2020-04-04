@@ -65,7 +65,8 @@ local function createOptions(id, data)
       order = 6
     },
     iconExtraDescription = {
-      type = "description",
+      type = "execute",
+      control = "WeakAurasExpandSmall",
       name = function()
         local line = L["|cFFffcc00Extra Options:|r"]
         local changed = false
@@ -90,18 +91,8 @@ local function createOptions(id, data)
         end
         return line
       end,
-      width = WeakAuras.doubleWidth - 0.15,
+      width = WeakAuras.doubleWidth,
       order = 7,
-      fontSize = "medium"
-    },
-    iconExtraExpand = {
-      type = "execute",
-      name = function()
-        local collapsed = WeakAuras.IsCollapsed("icon", "icon", "iconextra", true)
-        return collapsed and L["Show Extra Options"] or L["Hide Extra Options"]
-      end,
-      order = 7.01,
-      width = 0.15,
       image = function()
         local collapsed = WeakAuras.IsCollapsed("icon", "icon", "iconextra", true);
         return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
@@ -112,7 +103,6 @@ local function createOptions(id, data)
         local collapsed = WeakAuras.IsCollapsed("icon", "icon", "iconextra", true);
         WeakAuras.SetCollapsed("icon", "icon", "iconextra", not collapsed);
       end,
-      control = "WeakAurasIcon"
     },
     iconExtra_space1 = {
       type = "description",
