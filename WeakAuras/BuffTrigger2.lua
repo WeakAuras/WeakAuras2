@@ -1455,8 +1455,8 @@ local function UpdatePerGroupUnitScanFuncs()
         local inParty = UnitInSubgroupOrPlayer(unit)
         local class = select(2, UnitClass(unit))
         scanFuncNameGroup[unit] = FilterScanFuncs(scanFuncName, unit, isSelf, role, inParty, class)
-        scanFuncSpellIdGroup[unit] = FilterScanFuncs(scanFuncSpellId, unit, inParty, class)
-        scanFuncGeneralGroup[unit] = FilterGeneralScanFuncs(scanFuncGeneral, unit, inParty, class)
+        scanFuncSpellIdGroup[unit] = FilterScanFuncs(scanFuncSpellId, unit, isSelf, role, inParty, class)
+        scanFuncGeneralGroup[unit] = FilterGeneralScanFuncs(scanFuncGeneral, unit, isSelf, role, inParty, class)
       end
     end
   else
