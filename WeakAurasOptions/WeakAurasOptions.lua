@@ -237,20 +237,10 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
     local reloadOptions = arg.reloadOptions;
     if (name and arg.type == "collapse") then
       options["summary_" .. arg.name] = {
-        type = "description",
-        width = WeakAuras.doubleWidth - 0.15,
-        name = type(arg.display) == "function" and arg.display(trigger) or arg.display,
-        order = order,
-        fontSize = "medium"
-      }
-      order = order + 1;
-      options["button_" .. arg.name] = {
         type = "execute",
-        width = 0.15,
-        name = function()
-          local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
-          return collapsed and L["Show Extra Options"] or L["Hide Extra Options"]
-        end,
+        control = "WeakAurasExpandSmall",
+        width = WeakAuras.doubleWidth,
+        name = type(arg.display) == "function" and arg.display(trigger) or arg.display,
         order = order,
         image = function()
           local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
@@ -263,7 +253,6 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           WeakAuras.SetCollapsed("trigger", name, "", not collapsed)
           WeakAuras.ReloadTriggerOptions(data);
         end,
-        control = "WeakAurasIcon"
       }
       order = order + 1;
 
