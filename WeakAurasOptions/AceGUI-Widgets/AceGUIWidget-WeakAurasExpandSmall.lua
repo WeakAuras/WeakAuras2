@@ -74,6 +74,7 @@ local methods = {
 		self.image:SetWidth(width)
 		self.image:SetHeight(height)
 		--self.frame:SetWidth(width + 30)
+		self:UpdateWidth()
 		if self.label:IsShown() then
 			self:SetHeight(max(self.label:GetStringHeight(), self.image:GetHeight()))
 		else
@@ -91,6 +92,19 @@ local methods = {
 			self.frame:Enable()
 			self.label:SetTextColor(1, 1, 1)
 			self.image:SetVertexColor(1, 1, 1, 1)
+		end
+	end,
+
+	["OnWidthSet"] = function(self, width)
+		self:UpdateWidth()
+	end,
+
+	["UpdateWidth"] = function(self)
+		self.label:SetWidth(self.frame:GetWidth() - self.image:GetWidth())
+		if self.label:IsShown() then
+			self:SetHeight(max(self.label:GetStringHeight(), self.image:GetHeight()))
+		else
+			self:SetHeight(self.image:GetHeight())
 		end
 	end
 }
