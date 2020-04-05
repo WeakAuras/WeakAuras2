@@ -2181,6 +2181,11 @@ do
       startTimeCooldown = 0;
     end
 
+    if (startTimeCooldown > (2^31 + 2^30) / 1000) then
+      -- WORKAROUND wow wraps around negative values that are too big
+      startTimeCooldown = startTimeCooldown - 2^32 / 1000
+    end
+
     -- Default to GetSpellCharges
     local unifiedCooldownBecauseRune, cooldownBecauseRune = false, false;
     if (enabled == 0) then
