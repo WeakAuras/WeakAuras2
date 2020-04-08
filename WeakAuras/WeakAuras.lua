@@ -4793,7 +4793,15 @@ function WeakAuras.HandleGlowAction(actions, region)
     if glow_frame then
       local id = region.id .. (region.cloneId or "")
       if actions.glow_action == "show" then
+        -- remove previous glow
+        if region.active_glows_hidefunc
+        and region.active_glows_hidefunc[glow_frame]
+        then
+          region.active_glows_hidefunc[glow_frame]()
+        end
+        -- start glow
         actionGlowStart(actions, glow_frame, id)
+        -- make unglow function & monitor unitframe changes
         region.active_glows_hidefunc = region.active_glows_hidefunc or {}
         if actions.glow_frame_type == "UNITFRAME" then
           glow_frame_monitor = glow_frame_monitor or {}
