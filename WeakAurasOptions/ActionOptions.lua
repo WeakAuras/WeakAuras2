@@ -246,7 +246,10 @@ function WeakAuras.AddActionOption(id, data)
           NAMEPLATE = L["Name Plate"],
           FRAMESELECTOR = L["Frame Selector"]
         },
-        hidden = function() return not data.actions.start.do_glow end
+        hidden = function()
+          return not data.actions.start.do_glow
+          or data.actions.start.glow_action == nil
+        end
       },
       start_glow_type_spacer = {
         type = "description",
@@ -264,7 +267,11 @@ function WeakAuras.AddActionOption(id, data)
         name = L["Glow Type"],
         order = 10.4,
         values = WeakAuras.glow_types,
-        hidden = function() return not data.actions.start.do_glow or data.actions.start.glow_action ~= "show" end,
+        hidden = function()
+          return not data.actions.start.do_glow
+          or data.actions.start.glow_action ~= "show"
+          or data.actions.start.glow_frame_type == nil
+        end,
       },
       start_glow_frame = {
         type = "input",
@@ -299,6 +306,8 @@ function WeakAuras.AddActionOption(id, data)
         hidden = function()
           return not data.actions.start.do_glow
           or data.actions.start.glow_action ~= "show"
+          or data.actions.start.glow_frame_type == nil
+          or data.actions.start.glow_type == nil
         end,
       },
       start_glow_color = {
@@ -309,6 +318,8 @@ function WeakAuras.AddActionOption(id, data)
         hidden = function()
           return not data.actions.start.do_glow
           or data.actions.start.glow_action ~= "show"
+          or data.actions.start.glow_frame_type == nil
+          or data.actions.start.glow_type == nil
         end,
         disabled = function() return not data.actions.start.use_glow_color end,
       },
@@ -328,6 +339,7 @@ function WeakAuras.AddActionOption(id, data)
           or data.actions.start.glow_action ~= "show"
           or not data.actions.start.glow_type
           or data.actions.start.glow_type == "buttonOverlay"
+          or data.actions.start.glow_frame_type == nil
         end,
       },
       start_glow_frequency = {
@@ -346,6 +358,7 @@ function WeakAuras.AddActionOption(id, data)
           or data.actions.start.glow_action ~= "show"
           or not data.actions.start.glow_type
           or data.actions.start.glow_type == "buttonOverlay"
+          or data.actions.start.glow_frame_type == nil
         end,
       },
       start_glow_length = {
@@ -363,6 +376,7 @@ function WeakAuras.AddActionOption(id, data)
           return not data.actions.start.do_glow
           or data.actions.start.glow_action ~= "show"
           or data.actions.start.glow_type ~= "Pixel"
+          or data.actions.start.glow_frame_type == nil
         end,
       },
       start_glow_thickness = {
@@ -380,6 +394,7 @@ function WeakAuras.AddActionOption(id, data)
           return not data.actions.start.do_glow
           or data.actions.start.glow_action ~= "show"
           or data.actions.start.glow_type ~= "Pixel"
+          or data.actions.start.glow_frame_type == nil
         end,
       },
       start_glow_XOffset = {
@@ -395,6 +410,7 @@ function WeakAuras.AddActionOption(id, data)
           or data.actions.start.glow_action ~= "show"
           or not data.actions.start.glow_type
           or data.actions.start.glow_type == "buttonOverlay"
+          or data.actions.start.glow_frame_type == nil
         end,
       },
       start_glow_YOffset = {
@@ -410,6 +426,7 @@ function WeakAuras.AddActionOption(id, data)
           or data.actions.start.glow_action ~= "show"
           or not data.actions.start.glow_type
           or data.actions.start.glow_type == "buttonOverlay"
+          or data.actions.start.glow_frame_type == nil
         end,
       },
       start_glow_scale = {
@@ -428,6 +445,7 @@ function WeakAuras.AddActionOption(id, data)
           return not data.actions.start.do_glow
           or data.actions.start.glow_action ~= "show"
           or data.actions.start.glow_type ~= "ACShine"
+          or data.actions.start.glow_frame_type == nil
         end,
       },
       start_glow_border = {
@@ -439,6 +457,7 @@ function WeakAuras.AddActionOption(id, data)
           return not data.actions.start.do_glow
           or data.actions.start.glow_action ~= "show"
           or data.actions.start.glow_type ~= "Pixel"
+          or data.actions.start.glow_frame_type == nil
         end,
       },
       start_do_custom = {
@@ -602,7 +621,10 @@ function WeakAuras.AddActionOption(id, data)
           NAMEPLATE = L["Name Plate"],
           FRAMESELECTOR = L["Frame Selector"]
         },
-        hidden = function() return not data.actions.finish.do_glow end
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or data.actions.finish.glow_action == nil
+        end
       },
       finish_glow_type_spacer = {
         type = "description",
@@ -620,14 +642,21 @@ function WeakAuras.AddActionOption(id, data)
         name = L["Glow Type"],
         order = 30.4,
         values = WeakAuras.glow_types,
-        hidden = function() return not data.actions.finish.do_glow or data.actions.finish.glow_action ~= "show" end,
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or data.actions.finish.glow_action ~= "show"
+          or data.actions.finish.glow_frame_type == nil
+        end,
       },
       finish_glow_frame = {
         type = "input",
         width = WeakAuras.normalWidth,
         name = L["Frame"],
         order = 30.5,
-        hidden = function() return not data.actions.finish.do_glow or data.actions.finish.glow_frame_type ~= "FRAMESELECTOR" end
+        hidden = function()
+          return not data.actions.finish.do_glow
+          or data.actions.finish.glow_frame_type ~= "FRAMESELECTOR"
+        end
       },
       finish_choose_glow_frame = {
         type = "execute",
@@ -652,6 +681,8 @@ function WeakAuras.AddActionOption(id, data)
         hidden = function()
           return not data.actions.finish.do_glow
           or data.actions.finish.glow_action ~= "show"
+          or data.actions.finish.glow_frame_type == nil
+          or data.actions.finish.glow_type == nil
         end,
       },
       finish_glow_color = {
@@ -662,6 +693,8 @@ function WeakAuras.AddActionOption(id, data)
         hidden = function()
           return not data.actions.finish.do_glow
           or data.actions.finish.glow_action ~= "show"
+          or data.actions.finish.glow_frame_type == nil
+          or data.actions.finish.glow_type == nil
         end,
         disabled = function() return not data.actions.finish.use_glow_color end,
       },
@@ -681,6 +714,7 @@ function WeakAuras.AddActionOption(id, data)
           or data.actions.finish.glow_action ~= "show"
           or not data.actions.finish.glow_type
           or data.actions.finish.glow_type == "buttonOverlay"
+          or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_glow_frequency = {
@@ -699,6 +733,7 @@ function WeakAuras.AddActionOption(id, data)
           or data.actions.finish.glow_action ~= "show"
           or not data.actions.finish.glow_type
           or data.actions.finish.glow_type == "buttonOverlay"
+          or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_glow_length = {
@@ -716,6 +751,7 @@ function WeakAuras.AddActionOption(id, data)
           return not data.actions.finish.do_glow
           or data.actions.finish.glow_action ~= "show"
           or data.actions.finish.glow_type ~= "Pixel"
+          or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_glow_thickness = {
@@ -733,6 +769,7 @@ function WeakAuras.AddActionOption(id, data)
           return not data.actions.finish.do_glow
           or data.actions.finish.glow_action ~= "show"
           or data.actions.finish.glow_type ~= "Pixel"
+          or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_glow_XOffset = {
@@ -748,6 +785,7 @@ function WeakAuras.AddActionOption(id, data)
           or data.actions.finish.glow_action ~= "show"
           or not data.actions.finish.glow_type
           or data.actions.finish.glow_type == "buttonOverlay"
+          or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_glow_YOffset = {
@@ -763,6 +801,7 @@ function WeakAuras.AddActionOption(id, data)
           or data.actions.finish.glow_action ~= "show"
           or not data.actions.finish.glow_type
           or data.actions.finish.glow_type == "buttonOverlay"
+          or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_glow_scale = {
@@ -781,6 +820,7 @@ function WeakAuras.AddActionOption(id, data)
           return not data.actions.finish.do_glow
           or data.actions.finish.glow_action ~= "show"
           or data.actions.finish.glow_type ~= "ACShine"
+          or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_glow_border = {
@@ -792,6 +832,7 @@ function WeakAuras.AddActionOption(id, data)
           return not data.actions.finish.do_glow
           or data.actions.finish.glow_action ~= "show"
           or data.actions.finish.glow_type ~= "Pixel"
+          or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_hide_all_glows = {
