@@ -4866,25 +4866,14 @@ WeakAuras.event_prototypes = {
     init = function(trigger)
       local inverse = trigger.use_inverse;
       local ret = [[
-        local form
+        local form = GetShapeshiftForm()
         local active = false
       ]]
       if trigger.use_form and trigger.form and trigger.form.single then
         -- Single selection
         ret = ret .. [[
           local trigger_form = %d
-          if WeakAuras.IsClassic() then
-            for i=1, GetNumShapeshiftForms() do
-              local _, isActive = GetShapeshiftFormInfo(i)
-              if isActive then
-                form = i
-                active = i == trigger_form
-              end
-            end
-          else
-            form = GetShapeshiftForm()
-            active = form == trigger_form
-          end
+          active = form == trigger_form
         ]]
         if inverse then
           ret = ret .. [[
@@ -4897,18 +4886,7 @@ WeakAuras.event_prototypes = {
           local ret2 = [[
             if not active then
               local index = %d
-              if WeakAuras.IsClassic() then
-                local _, isActive = GetShapeshiftFormInfo(index)
-                if isActive then
-                  form = index
-                  active = true
-                end
-              else
-                if GetShapeshiftForm() == index then
-                  form = index
-                  active = true
-                end
-              end
+              active = form == index
             end
           ]]
           ret = ret .. ret2:format(index)
@@ -4921,17 +4899,6 @@ WeakAuras.event_prototypes = {
         return ret
       elseif trigger.use_form == nil then
         ret = ret .. [[
-          if WeakAuras.IsClassic() then
-            for i=1, GetNumShapeshiftForms() do
-              local _, isActive = GetShapeshiftFormInfo(i)
-              if isActive then
-                form = i
-                break
-              end
-            end
-          else
-            form = GetShapeshiftForm()
-          end
           active = true
         ]]
         return ret
@@ -4976,18 +4943,9 @@ WeakAuras.event_prototypes = {
     end,
     iconFunc = function(trigger)
       local icon = "136116"
-      if WeakAuras.IsClassic() then
-        for i=1, GetNumShapeshiftForms() do
-          local texture, isActive = GetShapeshiftFormInfo(i)
-          if isActive then
-            icon = texture
-          end
-        end
-      else
-        local form = GetShapeshiftForm()
-        if form and form > 0 then
-          icon = GetShapeshiftFormInfo(form);
-        end
+      local form = GetShapeshiftForm()
+      if form and form > 0 then
+        icon = GetShapeshiftFormInfo(form);
       end
       return icon or "136116"
     end,
