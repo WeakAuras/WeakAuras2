@@ -601,6 +601,7 @@ hooksecurefunc("SetItemRef", function(link, text)
           editbox:Insert("[WeakAuras: "..characterName.." - "..displayName.."]");
         end
       else
+        characterName = characterName:gsub("%.", "")
         ShowTooltip({
           {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
           {1, L["Requesting display information from %s ..."]:format(characterName), 1, 0.82, 0},
