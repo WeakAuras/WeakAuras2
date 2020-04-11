@@ -15,6 +15,12 @@ WeakAuras.glow_action_types = {
   hide = L["Hide"]
 }
 
+WeakAuras.glow_frame_types = {
+  UNITFRAME = L["Unit Frame"],
+  NAMEPLATE = L["Name Plate"],
+  FRAMESELECTOR = L["Frame Selector"]
+}
+
 WeakAuras.circular_group_constant_factor_types = {
   RADIUS = L["Radius"],
   SPACING = L["Spacing"]
