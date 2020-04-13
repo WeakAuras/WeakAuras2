@@ -2276,9 +2276,15 @@ WeakAuras.reset_ranged_swing_spells = {
 if WeakAuras.IsClassic() then
   WeakAuras.baseUnitId.focus = nil
   WeakAuras.baseUnitId.vehicle = nil
+  WeakAuras.multiUnitId.boss = nil
+  WeakAuras.multiUnitUnits.boss = nil
   WeakAuras.unit_types.focus = nil
   WeakAuras.unit_types_bufftrigger_2.focus = nil
+  WeakAuras.unit_types_bufftrigger_2.boss = nil
+  WeakAuras.unit_types_bufftrigger_2.arena = nil
   WeakAuras.actual_unit_types_with_specific.focus = nil
+  WeakAuras.actual_unit_types_cast.boss = nil
+  WeakAuras.actual_unit_types_cast.arena = nil
   WeakAuras.actual_unit_types_cast.focus = nil
   WeakAuras.actual_unit_types.focus = nil
   WeakAuras.unit_types_range_check.focus = nil
