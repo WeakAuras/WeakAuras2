@@ -7,8 +7,8 @@ local default = function(parentType)
   return {
     tick_visible = true,
     tick_color = {1, 1, 1, 1},
-    tick_placement_mode = "NUMBER",
-    tick_placement = 50,
+    tick_placement_mode = "ABSOLUTE",
+    tick_placement = "50",
     automatic_length = true,
     tick_thickness = 2,
     tick_length = 30,
