@@ -2163,6 +2163,10 @@ WeakAuras.difficulty_info = {
     size = "flexible",
     difficulty = "timewalking",
   },
+  [148] = {
+    size = "twenty",
+    difficulty = "normal",
+  },
 }
 
 WeakAuras.glow_types = {
