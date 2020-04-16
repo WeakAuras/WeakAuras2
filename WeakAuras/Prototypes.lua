@@ -1630,6 +1630,7 @@ WeakAuras.event_prototypes = {
   },
   ["Health"] = {
     type = "status",
+    canHaveDuration = true,
     events = function(trigger)
       local unit = trigger.unit
       local result = {}
@@ -1853,6 +1854,7 @@ WeakAuras.event_prototypes = {
   },
   ["Power"] = {
     type = "status",
+    canHaveDuration = true,
     events = function(trigger)
       local unit = trigger.unit
       local result = {}
@@ -2120,6 +2122,7 @@ WeakAuras.event_prototypes = {
   },
   ["Alternate Power"] = {
     type = "status",
+    canHaveDuration = true,
     events = function(trigger)
       local unit = trigger.unit
       local result = {}
