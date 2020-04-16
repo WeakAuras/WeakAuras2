@@ -1760,6 +1760,9 @@ local function AddScanFuncs(triggerInfo, unit, scanFuncName, scanFuncSpellId, sc
 end
 
 local function LoadAura(id, triggernum, triggerInfo)
+  if not triggerInfo.unit then
+    return
+  end
   local filter = triggerInfo.debuffType
   local time = GetTime();
 
