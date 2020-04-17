@@ -914,7 +914,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame_type", L["Glow Frame Type"], L["Glow Frame Type"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame_type", propertyType, {
         UNITFRAME = L["Unit Frame"],
-        NAMEPLATE = L["Name Plate"],
+        NAMEPLATE = L["Nameplate"],
         FRAMESELECTOR = L["Frame Selector"]
       }),
       order = order,
