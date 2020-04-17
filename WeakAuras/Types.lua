@@ -17,7 +17,7 @@ WeakAuras.glow_action_types = {
 
 WeakAuras.glow_frame_types = {
   UNITFRAME = L["Unit Frame"],
-  NAMEPLATE = L["Name Plate"],
+  NAMEPLATE = L["Nameplate"],
   FRAMESELECTOR = L["Frame Selector"]
 }
 
