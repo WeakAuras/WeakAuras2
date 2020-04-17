@@ -243,7 +243,7 @@ function WeakAuras.AddActionOption(id, data)
         order = 10.3,
         values = {
           UNITFRAME = L["Unit Frame"],
-          NAMEPLATE = L["Name Plate"],
+          NAMEPLATE = L["Nameplate"],
           FRAMESELECTOR = L["Frame Selector"]
         },
         hidden = function()
@@ -618,7 +618,7 @@ function WeakAuras.AddActionOption(id, data)
         order = 30.3,
         values = {
           UNITFRAME = L["Unit Frame"],
-          NAMEPLATE = L["Name Plate"],
+          NAMEPLATE = L["Nameplate"],
           FRAMESELECTOR = L["Frame Selector"]
         },
         hidden = function()
