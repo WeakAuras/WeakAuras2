@@ -97,7 +97,6 @@ local funcs = {
     self:SetTickThickness(self.tick_thickness)
   end,
   ["OnSizeChanged"] = function(self)
-    print("size changed")
     self:SetTickPlacement(self.tick_placement)
     self:SetTickLength(self.tick_length)
     self:SetTickThickness(self.tick_thickness)
@@ -122,10 +121,9 @@ local funcs = {
     end
     local offset, offsetx, offsety = self.tick_placement, 0, 0
     local width = self.parentTrueWidth
-    print(offset, width, self.parentTrueHeight)
     if self.tick_placement_mode == "ABSOLUTE" then
       local pixels = width / (self.parent.state.duration or self.parent.state.total or 1)
-      offset = math.max((placement * pixels), width)
+      offset = math.max(math.min((placement * pixels), width), 0)
     elseif self.tick_placement_mode == "RELATIVE" then
       offset = (placement / 100) * width
     end
@@ -139,12 +137,10 @@ local funcs = {
       offsetx = offset
     end
     local side = self.parentInverse and auraBarTrueLeftInverse or auraBarTrueLeft
-    print(offset, offsetx, offsety)
     self:ClearAllPoints()
     self:SetPoint("CENTER", self.parent.bar, side[self.parentOrientation], offsetx, offsety)
   end,
   SetTickThickness = function(self, thickness)
-    self.parentOrientation = self.parent.effectiveOrientation
     if (self.parentOrientation == "VERTICAL") or (self.parentOrientation == "VERTICAL_INVERSE") then
       self:SetHeight(thickness)
     else
@@ -152,7 +148,6 @@ local funcs = {
     end
   end,
   SetTickLength = function(self, length)
-    self.parentOrientation = self.parent.effectiveOrientation
     if self.automatic_length then length = self.parentTrueHeight end
     if (self.parentOrientation == "VERTICAL") or (self.parentOrientation == "VERTICAL_INVERSE") then
       self:SetWidth(length)
@@ -197,7 +192,7 @@ local function modify(parent, region, parentData, data, first)
 
   parent.subRegionEvents:AddSubscriber("Update", region)
   parent.subRegionEvents:AddSubscriber("OrientationChanged", region)
-  parent.subRegionEvents:AddSubscriber("OnSizeChanged", region)
+  parent:SetScript("OnSizeChanged", function() region:OnSizeChanged() end)
 end
 
 local function supports(regionType)
