@@ -1192,13 +1192,13 @@ local function modify(parent, region, data)
       region.flipY = false
     end
 
-    region:UpdateEffectiveOrientation()
-
     -- Update height
     self.bar.totalHeight = region.height * scaley
     self.bar.iconHeight = iconsize * scaley
     self:SetHeight(self.bar.totalHeight);
     icon:SetHeight(self.bar.iconHeight);
+
+    region:UpdateEffectiveOrientation()
   end
   --  region:Scale(1.0, 1.0);
   if data.smoothProgress then
