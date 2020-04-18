@@ -2181,8 +2181,9 @@ do
       startTimeCooldown = 0;
     end
 
-    if (startTimeCooldown > (2^31 + 2^30) / 1000) then
-      -- WORKAROUND wow wraps around negative values that are too big
+    if (startTimeCooldown > GetTime() + 2^31 / 1000) then
+      -- WORKAROUND WoW wraps around negative values with 2^32/1000
+      -- So if we find a cooldown in the far future, then undo the wrapping
       startTimeCooldown = startTimeCooldown - 2^32 / 1000
     end
 
