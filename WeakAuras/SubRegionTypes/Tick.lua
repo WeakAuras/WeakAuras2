@@ -91,6 +91,17 @@ local funcs = {
   ["Update"] = function(self)
     self:SetTickPlacement(self.tick_placement)
   end,
+  ["OrientationChanged"] = function(self)
+    self:SetTickPlacement(self.tick_placement)
+    self:SetTickLength(self.tick_length)
+    self:SetTickThickness(self.tick_thickness)
+  end,
+  ["OnSizeChanged"] = function(self)
+    print("size changed")
+    self:SetTickPlacement(self.tick_placement)
+    self:SetTickLength(self.tick_length)
+    self:SetTickThickness(self.tick_thickness)
+  end,
   SetVisible = function(self, visible)
     if visible then
       self:Show()
@@ -102,12 +113,20 @@ local funcs = {
     self.texture:SetColorTexture(r, g, b, a or 1)
   end,
   SetTickPlacement = function(self, placement)
+    self.parentOrientation = self.parent.effectiveOrientation
+    self.parentInverse = self.parent.inverseDirection
+    if (self.parentOrientation == "VERTICAL") or (self.parentOrientation == "VERTICAL_INVERSE") then
+      self.parentTrueHeight, self.parentTrueWidth = self.parent.bar:GetRealSize()
+    else
+      self.parentTrueWidth, self.parentTrueHeight = self.parent.bar:GetRealSize()
+    end
     local offset, offsetx, offsety = self.tick_placement, 0, 0
     local width = self.parentTrueWidth
-    if self.tick_placement_mode == "NUMERIC" then
+    print(offset, width, self.parentTrueHeight)
+    if self.tick_placement_mode == "ABSOLUTE" then
       local pixels = width / (self.parent.state.duration or self.parent.state.total or 1)
       offset = math.max((placement * pixels), width)
-    elseif self.tick_placement_mode == "PERCENT" then
+    elseif self.tick_placement_mode == "RELATIVE" then
       offset = (placement / 100) * width
     end
 
@@ -120,11 +139,12 @@ local funcs = {
       offsetx = offset
     end
     local side = self.parentInverse and auraBarTrueLeftInverse or auraBarTrueLeft
-
+    print(offset, offsetx, offsety)
     self:ClearAllPoints()
     self:SetPoint("CENTER", self.parent.bar, side[self.parentOrientation], offsetx, offsety)
   end,
   SetTickThickness = function(self, thickness)
+    self.parentOrientation = self.parent.effectiveOrientation
     if (self.parentOrientation == "VERTICAL") or (self.parentOrientation == "VERTICAL_INVERSE") then
       self:SetHeight(thickness)
     else
@@ -132,6 +152,7 @@ local funcs = {
     end
   end,
   SetTickLength = function(self, length)
+    self.parentOrientation = self.parent.effectiveOrientation
     if self.automatic_length then length = self.parentTrueHeight end
     if (self.parentOrientation == "VERTICAL") or (self.parentOrientation == "VERTICAL_INVERSE") then
       self:SetWidth(length)
@@ -144,7 +165,7 @@ local funcs = {
 local function modify(parent, region, parentData, data, first)
 
   region:SetParent(parent)
-  region.parentOrientation = parentData.orientation
+  region.parentOrientation = parent.effectiveOrientation
   region.parentInverse = parentData.inverse
   if (region.parentOrientation == "VERTICAL") or (region.parentOrientation == "VERTICAL_INVERSE") then
     region.parentTrueHeight, region.parentTrueWidth = parent.bar:GetRealSize()
@@ -159,6 +180,7 @@ local function modify(parent, region, parentData, data, first)
   --for k, v in pairs(parent.state) do print(k, v) end
 
   region.parent = parent
+  region.parentData = parentData
   region.tick_visible = data.tick_visible
   region.tick_color = data.tick_color
   region.tick_placement_mode = data.tick_placement_mode
@@ -174,7 +196,8 @@ local function modify(parent, region, parentData, data, first)
   region:SetTickLength(data.tick_length)
 
   parent.subRegionEvents:AddSubscriber("Update", region)
-  --parent.subRegionEvents:AddSubscriber("FrameTick", region)
+  parent.subRegionEvents:AddSubscriber("OrientationChanged", region)
+  parent.subRegionEvents:AddSubscriber("OnSizeChanged", region)
 end
 
 local function supports(regionType)

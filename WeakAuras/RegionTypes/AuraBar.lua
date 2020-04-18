@@ -1060,6 +1060,8 @@ local function modify(parent, region, data)
         orientVertical(region, data);
       end
     end
+
+    region.subRegionEvents:Notify("OrientationChanged")
   end
 
   -- Apply orientation alignment
