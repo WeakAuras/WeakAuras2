@@ -2038,6 +2038,13 @@ WeakAuras.event_prototypes = {
         test = "true"
       },
       {
+        name = "stacks",
+        hidden = true,
+        init = "power",
+        store = true,
+        test = "true"
+      },
+      {
         name = "progressType",
         hidden = true,
         init = "'static'",
