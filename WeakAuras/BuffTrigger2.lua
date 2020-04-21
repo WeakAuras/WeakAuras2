@@ -898,7 +898,7 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
-  if triggerInfo.groupSubType == "party" then
+  if triggerInfo.unit == "group" and triggerInfo.groupSubType == "party" then
     if IsInRaid() then
       -- Filter our player/party# while in raid and keep only raid units that are correct
       if unit:sub(1,4) ~= "raid" or not UnitInSubgroupOrPlayer(unit) then
@@ -912,11 +912,11 @@ local function TriggerInfoApplies(triggerInfo, unit)
   end
 
   -- Filter our player/party# while in raid
-  if (triggerInfo.groupSubType == "group" and IsInRaid() and unit:sub(1,4) ~= "raid") then
+  if (triggerInfo.unit == "group" and triggerInfo.groupSubType == "group" and IsInRaid() and unit:sub(1,4) ~= "raid") then
     return false
   end
 
-  if triggerInfo.groupSubType == "raid" and unit:sub(1,4) ~= "raid" then
+  if triggerInfo.unit == "group" and triggerInfo.groupSubType == "raid" and unit:sub(1,4) ~= "raid" then
     return false
   end
 
@@ -1502,7 +1502,7 @@ local function EventHandler(frame, event, arg1, arg2, ...)
   elseif event == "ENCOUNTER_START" or event == "ENCOUNTER_END" or event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" then
     local unitsToCheck = {}
     for unit in GetAllUnits("boss", true) do
-      RecheckActiveForUnitType("boss", unit, unitsToCheck, deactivatedTriggerInfos)
+      RecheckActiveForUnitType("boss", unit, deactivatedTriggerInfos)
     end
   elseif event =="ARENA_OPPONENT_UPDATE" then
     local unitsToCheck = {}
