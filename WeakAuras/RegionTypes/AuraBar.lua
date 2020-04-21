@@ -296,7 +296,7 @@ local barPrototype = {
       self.fgFrame:SetHeight(yProgress > 0.0001 and yProgress or 0.0001);
     end
 
-    -- Apply updated gradient 
+    -- Apply updated gradient
     if self.updateGradient then
       self:GetParent():Color(self:GetParent():GetColor())
     end
@@ -940,7 +940,7 @@ local function modify(parent, region, data)
   region.bar.gradient = data.gradient
   region.bar.gradientDirection = data.gradientDirection
   region.bar.gradientColor = data.gradientColor
-  region.bar.updateGradient = data.gradient and data.orientation:match(data.gradientDirection) 
+  region.bar.updateGradient = data.gradient and data.orientation:match(data.gradientDirection)
 
   -- Color update function
   region.Color = region.Color or function(self, r, g, b, a)
