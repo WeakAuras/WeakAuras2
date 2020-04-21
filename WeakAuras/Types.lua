@@ -556,6 +556,11 @@ WeakAuras.combatlog_raid_mark_check_type = {
   L["Any"]
 }
 
+WeakAuras.gradient_direction_types = {
+  HORIZONTAL = L["Horizontal"],
+  VERTICAL = L["Vertical"]
+}
+
 WeakAuras.orientation_types = {
   HORIZONTAL_INVERSE = L["Left to Right"],
   HORIZONTAL = L["Right to Left"],

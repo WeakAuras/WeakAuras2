@@ -15,6 +15,9 @@ local default = {
   inverse = false,
   barColor = {1.0, 0.0, 0.0, 1.0},
   backgroundColor = {0.0, 0.0, 0.0, 0.5},
+  gradient = false,
+  gradientColor = {1,1,1,1},
+  gradientDirection = "HORIZONTAL",
   spark = false,
   sparkWidth = 10,
   sparkHeight = 30,
@@ -117,6 +120,22 @@ local properties = {
     display = L["Inverse"],
     setter = "SetInverse",
     type = "bool"
+  },
+  gradientColor = {
+    display = L["Gradient Color"],
+    setter = "SetGradientColor",
+    type = "color"
+  },
+  gradientDirection = {
+    display = L["Gradient Direction"],
+    setter = "SetGradientDirection",
+    type = "list",
+    values = WeakAuras.gradient_direction_types
+  },
+  gradient = {
+    display = L["Gradient Enable"],
+    setter = "SetGradient",
+    type = "bool",
   }
 };
 
@@ -275,6 +294,11 @@ local barPrototype = {
       local yProgress = select(2, self:GetRealSize()) * progress;
       self.fg:SetHeight(yProgress > 0.0001 and yProgress or 0.0001);
       self.fgFrame:SetHeight(yProgress > 0.0001 and yProgress or 0.0001);
+    end
+
+    -- Apply updated gradient 
+    if self.updateGradient then
+      self:GetParent():Color(self:GetParent():GetColor())
     end
 
     -- Stretch texture
@@ -508,7 +532,26 @@ local barPrototype = {
 
   -- Set bar color
   ["SetForegroundColor"] = function(self, r, g, b, a)
-    self.fg:SetVertexColor(r, g, b, a);
+    if self.gradient then
+      local r2, g2, b2 = unpack(self.gradientColor)
+      if self.updateGradient then
+        local value = self.value;
+        value = math.max(self.min, value);
+        value = math.min(self.max, value);
+        local progress = (value - self.min) / (self.max - self.min);
+
+        local r3, g3, b3 = r + (progress * (r2 - r)), g + (progress * (g2 - g)), b + (progress * (b2 - b))
+        if self.directionInverse then
+          self.fg:SetGradient(self.gradientDirection, r3, g3, b3, r, g, b)
+        else
+          self.fg:SetGradient(self.gradientDirection, r, g, b, r3, g3, b3)
+        end
+      else
+        self.fg:SetGradient(self.gradientDirection, r, g, b, r2, g2, b2)
+      end
+    else
+      self.fg:SetVertexColor(r, g, b, a)
+    end
   end,
 
   ["GetForegroundColor"] = function(self)
@@ -893,6 +936,12 @@ local function modify(parent, region, data)
   bar.spark.sparkRotation = data.sparkRotation;
   bar.spark.sparkMirror = data.sparkMirror;
 
+    -- Gradient
+  region.bar.gradient = data.gradient
+  region.bar.gradientDirection = data.gradientDirection
+  region.bar.gradientColor = data.gradientColor
+  region.bar.updateGradient = data.gradient and data.orientation:match(data.gradientDirection) 
+
   -- Color update function
   region.Color = region.Color or function(self, r, g, b, a)
     self.color_r = r;
@@ -1219,6 +1268,22 @@ local function modify(parent, region, data)
   function region:SetOverlayColor(id, r, g, b, a)
     region.bar:SetAdditionalBarColor(id, { r, g, b, a});
   end
+
+  function region:SetGradientColor(r,g,b)
+    self.bar.gradientColor = {r,g,b}
+    self:Color(self:GetColor())
+  end
+
+  function region:SetGradientDirection(direction)
+    self.bar.gradientDirection = direction
+    self:Color(self:GetColor())
+  end
+
+  function region:SetGradient(bool)
+    self.bar.gradient = bool
+    self:Color(self:GetColor())
+  end
+
   -- Update internal bar alignment
   region.bar:Update();
 

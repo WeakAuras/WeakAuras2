@@ -106,11 +106,33 @@ local function createOptions(id, data)
       hasAlpha = true,
       order = 39.2
     },
+    gradient = {
+      name = L["Gradient"],
+      type = "toggle",
+      width = WeakAuras.halfWidth,
+      order = 39.3,
+    },
+    gradientColor = {
+      name = L["Gradient Color"],
+      type = "color",
+      width = WeakAuras.halfWidth,
+      order = 39.4,
+    },
+    gradientDirection = {
+      name = L["Gradient Direction"],
+      type = "select",
+      width = WeakAuras.normalWidth,
+      values = WeakAuras.gradient_direction_types,
+      get = function()
+        return data.gradientDirection
+      end,
+      order = 39.5,
+    },
     alpha = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Bar Alpha"],
-      order = 39.3,
+      order = 39.8,
       min = 0,
       max = 1,
       bigStep = 0.01,
