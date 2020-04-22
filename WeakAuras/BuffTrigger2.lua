@@ -2936,7 +2936,7 @@ local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, filter, event, s
         pendingTracks[destGUID] = true
       end
       if updatedSpellId then
-        for index, triggerInfo in ipairs(scanFuncsSpellId[spellId]) do
+        for triggerInfo in pairs(scanFuncsSpellId[spellId]) do
           if MatchesTriggerInfoMulti(triggerInfo, sourceGUID) then
             ReferenceMatchDataMulti(matchDataMulti[destGUID][spellId][sourceGUID], triggerInfo.id, triggerInfo.triggernum, destGUID)
           end
@@ -2952,7 +2952,7 @@ local function HandleCombatLog(scanFuncsName, scanFuncsSpellId, filter, event, s
         pendingTracks[destGUID] = true
       end
       if updatedName then
-        for index, triggerInfo in ipairs(scanFuncsName[spellName]) do
+        for triggerInfo in pairs(scanFuncsName[spellName]) do
           if MatchesTriggerInfoMulti(triggerInfo, sourceGUID) then
             ReferenceMatchDataMulti(matchDataMulti[destGUID][spellName][sourceGUID], triggerInfo.id, triggerInfo.triggernum, destGUID)
           end
