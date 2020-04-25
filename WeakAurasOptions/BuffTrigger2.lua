@@ -702,6 +702,31 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useClass) end
     },
 
+    useHostility = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Filter by Hostility"],
+      order = 68.4,
+      hidden = function() return
+        not (trigger.type == "aura2" and trigger.unit == "nameplate")
+      end
+    },
+    hostility = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Hostility"],
+      values = WeakAuras.hostility_types,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and trigger.useHostility) end,
+      order = 68.5
+    },
+    hostilitySpace = {
+      type = "description",
+      name = "",
+      order = 68.6,
+      width = WeakAuras.normalWidth,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and not trigger.useHostility) end
+    },
+
     useGroup_count = {
       type = "toggle",
       width = WeakAuras.normalWidth,

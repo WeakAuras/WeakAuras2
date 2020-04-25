@@ -898,6 +898,10 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
+  if triggerInfo.hostility and WeakAuras.GetPlayerReaction(unit) ~= triggerInfo.hostility then
+    return false
+  end
+
   if triggerInfo.unit == "group" and triggerInfo.groupSubType == "party" then
     if IsInRaid() then
       -- Filter our player/party# while in raid and keep only raid units that are correct
@@ -1526,6 +1530,10 @@ local function EventHandler(frame, event, arg1, arg2, ...)
     nameplateExists[arg1] = false
     RecheckActiveForUnitType("nameplate", arg1, deactivatedTriggerInfos)
     tinsert(unitsToRemove, arg1)
+  elseif event == "UNIT_FACTION" then
+    if arg1:sub(1, 9) == "nameplate" then
+      RecheckActiveForUnitType("nameplate", arg1, deactivatedTriggerInfos)
+    end
   elseif event == "ENCOUNTER_START" or event == "ENCOUNTER_END" or event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" then
     local unitsToCheck = {}
     for unit in GetAllUnits("boss", true) do
@@ -1577,6 +1585,7 @@ local function EventHandler(frame, event, arg1, arg2, ...)
 end
 
 frame:RegisterEvent("UNIT_AURA")
+frame:RegisterEvent("UNIT_FACTION")
 frame:RegisterUnitEvent("UNIT_PET", "player")
 if not WeakAuras.IsClassic() then
   frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
@@ -2167,6 +2176,7 @@ function BuffTrigger.Add(data)
       local effectiveIgnoreSelf = (groupTrigger or trigger.unit == "nameplate") and trigger.ignoreSelf
       local effectiveGroupRole = groupTrigger and trigger.useGroupRole and trigger.group_role
       local effectiveClass = groupTrigger and trigger.useClass and trigger.class
+      local effectiveHostility = trigger.unit == "nameplate" and trigger.useHostility and trigger.hostility
 
       if trigger.unit == "multi" then
         BuffTrigger.InitMultiAura()
@@ -2221,6 +2231,7 @@ function BuffTrigger.Add(data)
         groupSubType = groupSubType,
         groupCountFunc = groupCountFunc,
         class = effectiveClass,
+        hostility = effectiveHostility,
         matchCountFunc = matchCountFunc,
         useAffected = unit == "group" and trigger.useAffected,
         isMulti = trigger.unit == "multi",
