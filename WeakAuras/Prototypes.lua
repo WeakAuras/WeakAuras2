@@ -970,6 +970,11 @@ function WeakAuras.GetNumSetItemsEquipped(setID)
   end
 end
 
+function WeakAuras.GetEffectiveAttackPower()
+  local base, pos, neg = UnitAttackPower("player")
+  return base + pos + neg
+end
+
 local function valuesForTalentFunction(trigger)
   return function()
     local single_class;
@@ -6058,7 +6063,7 @@ WeakAuras.event_prototypes = {
         "PLAYER_TARGET_CHANGED"
       },
       ["unit_events"] = {
-        ["player"] = {"UNIT_STATS"}
+        ["player"] = {"UNIT_STATS", "UNIT_ATTACK_POWER"}
       }
     },
     internal_events = function(trigger, untrigger)
@@ -6209,6 +6214,14 @@ WeakAuras.event_prototypes = {
         enable = not WeakAuras.IsClassic(),
         conditionType = "number",
         hidden = WeakAuras.IsClassic()
+      },
+      {
+        name = "attackpower",
+        display = L["Attack Power"],
+        type = "number",
+        init = "WeakAuras.GetEffectiveAttackPower()",
+        store = true,
+        conditionType = "number"
       },
       {
         name = "resistanceholy",
