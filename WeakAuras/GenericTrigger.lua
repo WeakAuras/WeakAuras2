@@ -2578,8 +2578,11 @@ end
 local watchUnitChange
 
 -- Nameplates only distinguish between friends and everyone else
-function WeakAuras.GetPlayerReaciton(unit)
-  return UnitIsEnemy('player', unit) and 'hostile' or 'friendly'
+function WeakAuras.GetPlayerReaction(unit)
+  local r = UnitReaction("player", unit)
+  if r then
+    return r < 5 and "hostile" or "friendly"
+  end
 end
 
 function WeakAuras.WatchUnitChange(unit)
@@ -2612,11 +2615,11 @@ function WeakAuras.WatchUnitChange(unit)
           watchUnitChange.unitChangeGUIDS[unit] = newGuid
         end
         if event == "NAME_PLATE_UNIT_ADDED" then
-          watchUnitChange.nameplateFaction[unit] = WeakAuras.GetPlayerReaciton(unit)
+          watchUnitChange.nameplateFaction[unit] = WeakAuras.GetPlayerReaction(unit)
         end
       elseif event == "UNIT_FACTION" then
         if unit:sub(1, 9) == "nameplate" then
-          local reaction = WeakAuras.GetPlayerReaciton(unit)
+          local reaction = WeakAuras.GetPlayerReaction(unit)
           if reaction ~= watchUnitChange.nameplateFaction[unit] then
             watchUnitChange.nameplateFaction[unit] = reaction
             WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
