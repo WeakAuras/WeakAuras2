@@ -674,7 +674,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       name = L["Ignore Self"],
       order = 67.3,
       width = WeakAuras.doubleWidth,
-      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party" or trigger.unit == "nameplate")) end
     },
 
     useClass = {

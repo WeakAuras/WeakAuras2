@@ -1579,6 +1579,16 @@ WeakAuras.event_prototypes = {
          end
       },
       {
+        name = "ignoreSelf",
+        display = L["Ignore Self"],
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        enable = function(trigger)
+          return trigger.unit == "nameplate"
+        end,
+        init = "not UnitIsUnit(\"player\", unit)"
+      },
+      {
         name = "hostility",
         display = L["Hostility"],
         type = "select",
@@ -1797,6 +1807,16 @@ WeakAuras.event_prototypes = {
         enable = function(trigger)
           return not WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
+      },
+      {
+        name = "ignoreSelf",
+        display = L["Ignore Self"],
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        enable = function(trigger)
+          return trigger.unit == "nameplate"
+        end,
+        init = "not UnitIsUnit(\"player\", unit)"
       },
       {
         name = "nameplateType",
@@ -2097,6 +2117,16 @@ WeakAuras.event_prototypes = {
         end
       },
       {
+        name = "ignoreSelf",
+        display = L["Ignore Self"],
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        enable = function(trigger)
+          return trigger.unit == "nameplate"
+        end,
+        init = "not UnitIsUnit(\"player\", unit)"
+      },
+      {
         name = "nameplateType",
         display = L["Nameplate Type"],
         type = "select",
@@ -2236,6 +2266,16 @@ WeakAuras.event_prototypes = {
         enable = function(trigger)
           return not WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
+      },
+      {
+        name = "ignoreSelf",
+        display = L["Ignore Self"],
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        enable = function(trigger)
+          return trigger.unit == "nameplate"
+        end,
+        init = "not UnitIsUnit(\"player\", unit)"
       },
       {
         name = "nameplateType",
@@ -5834,6 +5874,16 @@ WeakAuras.event_prototypes = {
                   and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
                   and not trigger.use_inverse
          end
+      },
+      {
+        name = "ignoreSelf",
+        display = L["Ignore Self"],
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        enable = function(trigger)
+          return trigger.unit == "nameplate"
+        end,
+        init = "not UnitIsUnit(\"player\", unit)"
       },
       {
         name = "nameplateType",
