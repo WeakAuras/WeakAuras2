@@ -894,6 +894,14 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
+  if triggerInfo.ignoreDead and UnitIsDeadOrGhost(unit) then
+    return false
+  end
+
+  if triggerInfo.ignoreDisconnected and not UnitIsConnected(unit) then
+    return false
+  end
+
   if triggerInfo.groupRole and triggerInfo.groupRole ~= UnitGroupRolesAssigned(unit) then
     return false
   end
@@ -1558,6 +1566,14 @@ local function EventHandler(frame, event, arg1, arg2, ...)
         tinsert(unitsToRemove, unit)
       end
     end
+  elseif event == "UNIT_FLAGS" then
+    if arg1:sub(1,4) == "raid" or arg1:sub(1, 5) == "party" or arg1 == "player" then
+      RecheckActiveForUnitType("group", arg1, deactivatedTriggerInfos)
+    end
+  elseif event == "PLAYER_FLAGS_CHANGED" then
+    if arg1:sub(1,4) == "raid" or arg1:sub(1, 5) == "party" or arg1 == "player" then
+      RecheckActiveForUnitType("group", arg1, deactivatedTriggerInfos)
+    end
   elseif event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" then
     if arg1 == "player" then
       ScanGroupUnit(time, matchDataChanged, nil, "vehicle")
@@ -1586,6 +1602,8 @@ end
 
 frame:RegisterEvent("UNIT_AURA")
 frame:RegisterEvent("UNIT_FACTION")
+frame:RegisterEvent("UNIT_FLAGS")
+frame:RegisterEvent("PLAYER_FLAGS_CHANGED")
 frame:RegisterUnitEvent("UNIT_PET", "player")
 if not WeakAuras.IsClassic() then
   frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
@@ -2177,6 +2195,8 @@ function BuffTrigger.Add(data)
       local effectiveGroupRole = groupTrigger and trigger.useGroupRole and trigger.group_role
       local effectiveClass = groupTrigger and trigger.useClass and trigger.class
       local effectiveHostility = trigger.unit == "nameplate" and trigger.useHostility and trigger.hostility
+      local effectiveIgnoreDead = groupTrigger and trigger.ignoreDead
+      local effectiveIgnoreDisconnected = groupTrigger and trigger.ignoreDisconnected
 
       if trigger.unit == "multi" then
         BuffTrigger.InitMultiAura()
@@ -2227,6 +2247,8 @@ function BuffTrigger.Add(data)
         fetchTooltip = not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip,
         groupTrigger = IsGroupTrigger(trigger),
         ignoreSelf = effectiveIgnoreSelf,
+        ignoreDead = effectiveIgnoreDead,
+        ignoreDisconnected = effectiveIgnoreDisconnected,
         groupRole = effectiveGroupRole,
         groupSubType = groupSubType,
         groupCountFunc = groupCountFunc,

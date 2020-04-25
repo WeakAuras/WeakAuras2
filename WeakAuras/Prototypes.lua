@@ -1500,6 +1500,9 @@ WeakAuras.event_prototypes = {
       local result = {}
       AddUnitEventForEvents(result, unit, "UNIT_LEVEL")
       AddUnitEventForEvents(result, unit, "UNIT_FACTION")
+      if trigger.use_ignoreDead or trigger.use_ignoreDisconnected then
+        AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
+      end
       return result;
     end,
     internal_events = function(trigger)
@@ -1589,6 +1592,26 @@ WeakAuras.event_prototypes = {
         init = "not UnitIsUnit(\"player\", unit)"
       },
       {
+        name = "ignoreDead",
+        display = L["Ignore Dead"],
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        enable = function(trigger)
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end,
+        init = "not UnitIsDeadOrGhost(unit)"
+      },
+      {
+        name = "ignoreDisconnected",
+        display = L["Ignore Disconnected"],
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        enable = function(trigger)
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end,
+        init = "UnitIsConnected(unit)"
+      },
+      {
         name = "hostility",
         display = L["Hostility"],
         type = "select",
@@ -1651,6 +1674,9 @@ WeakAuras.event_prototypes = {
         if trigger.use_showIncomingHeal then
           AddUnitEventForEvents(result, unit, "UNIT_HEAL_PREDICTION")
         end
+      end
+      if trigger.use_ignoreDead or trigger.use_ignoreDisconnected then
+        AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
       end
       return result
     end,
@@ -1819,6 +1845,26 @@ WeakAuras.event_prototypes = {
         init = "not UnitIsUnit(\"player\", unit)"
       },
       {
+        name = "ignoreDead",
+        display = L["Ignore Dead"],
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        enable = function(trigger)
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end,
+        init = "not UnitIsDeadOrGhost(unit)"
+      },
+      {
+        name = "ignoreDisconnected",
+        display = L["Ignore Disconnected"],
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        enable = function(trigger)
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end,
+        init = "UnitIsConnected(unit)"
+      },
+      {
         name = "nameplateType",
         display = L["Nameplate Type"],
         type = "select",
@@ -1891,7 +1937,9 @@ WeakAuras.event_prototypes = {
       if trigger.use_powertype and trigger.powertype == 99 then
         AddUnitEventForEvents(result, unit, "UNIT_ABSORB_AMOUNT_CHANGED")
       end
-
+      if trigger.use_ignoreDead or trigger.use_ignoreDisconnected then
+        AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
+      end
       return result;
     end,
     internal_events = function(trigger)
@@ -2127,6 +2175,26 @@ WeakAuras.event_prototypes = {
         init = "not UnitIsUnit(\"player\", unit)"
       },
       {
+        name = "ignoreDead",
+        display = L["Ignore Dead"],
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        enable = function(trigger)
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end,
+        init = "not UnitIsDeadOrGhost(unit)"
+      },
+      {
+        name = "ignoreDisconnected",
+        display = L["Ignore Disconnected"],
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        enable = function(trigger)
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end,
+        init = "UnitIsConnected(unit)"
+      },
+      {
         name = "nameplateType",
         display = L["Nameplate Type"],
         type = "select",
@@ -2163,6 +2231,9 @@ WeakAuras.event_prototypes = {
       local unit = trigger.unit
       local result = {}
       AddUnitEventForEvents(result, unit, "UNIT_POWER_FREQUENT")
+      if trigger.use_ignoreDead or trigger.use_ignoreDisconnected then
+        AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
+      end
       return result
     end,
     internal_events = function(trigger)
@@ -2276,6 +2347,26 @@ WeakAuras.event_prototypes = {
           return trigger.unit == "nameplate"
         end,
         init = "not UnitIsUnit(\"player\", unit)"
+      },
+      {
+        name = "ignoreDead",
+        display = L["Ignore Dead"],
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        enable = function(trigger)
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end,
+        init = "not UnitIsDeadOrGhost(unit)"
+      },
+      {
+        name = "ignoreDisconnected",
+        display = L["Ignore Disconnected"],
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        enable = function(trigger)
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end,
+        init = "UnitIsConnected(unit)"
       },
       {
         name = "nameplateType",
