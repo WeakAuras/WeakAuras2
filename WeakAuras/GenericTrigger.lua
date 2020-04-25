@@ -780,6 +780,11 @@ function GenericTrigger.ScanWithFakeEvent(id, fake)
           end
           updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, eventName) or updateTriggerState;
         end
+        for unit, unitData in pairs(event.unit_events) do
+          for _, event in ipairs(unitData) do
+            updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, event, unit) or updateTriggerState
+          end
+        end
       end
     end
   end
