@@ -2164,7 +2164,7 @@ function BuffTrigger.Add(data)
       end
 
       local groupTrigger = trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
-      local effectiveIgnoreSelf = groupTrigger  and trigger.ignoreSelf
+      local effectiveIgnoreSelf = (groupTrigger or trigger.unit == "nameplate") and trigger.ignoreSelf
       local effectiveGroupRole = groupTrigger and trigger.useGroupRole and trigger.group_role
       local effectiveClass = groupTrigger and trigger.useClass and trigger.class
 
