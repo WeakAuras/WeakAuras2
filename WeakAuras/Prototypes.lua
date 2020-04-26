@@ -1614,7 +1614,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "ignoreDead",
-        display = L["Ignore Dead"],
+        display = WeakAuras.newFeatureString .. L["Ignore Dead"],
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
@@ -1624,7 +1624,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "ignoreDisconnected",
-        display = L["Ignore Disconnected"],
+        display = WeakAuras.newFeatureString .. L["Ignore Disconnected"],
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
@@ -1857,7 +1857,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "ignoreSelf",
-        display = L["Ignore Self"],
+        display = WeakAuras.newFeatureString .. L["Ignore Self"],
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
@@ -1867,7 +1867,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "ignoreDead",
-        display = L["Ignore Dead"],
+        display = WeakAuras.newFeatureString .. L["Ignore Dead"],
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
@@ -1877,7 +1877,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "ignoreDisconnected",
-        display = L["Ignore Disconnected"],
+        display = WeakAuras.newFeatureString .. L["Ignore Disconnected"],
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
@@ -2187,7 +2187,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "ignoreSelf",
-        display = L["Ignore Self"],
+        display = WeakAuras.newFeatureString .. L["Ignore Self"],
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
@@ -2197,7 +2197,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "ignoreDead",
-        display = L["Ignore Dead"],
+        display = WeakAuras.newFeatureString .. L["Ignore Dead"],
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
@@ -2207,7 +2207,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "ignoreDisconnected",
-        display = L["Ignore Disconnected"],
+        display = WeakAuras.newFeatureString .. L["Ignore Disconnected"],
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
@@ -2361,7 +2361,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "ignoreSelf",
-        display = L["Ignore Self"],
+        display = WeakAuras.newFeatureString .. L["Ignore Self"],
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
@@ -2371,7 +2371,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "ignoreDead",
-        display = L["Ignore Dead"],
+        display = WeakAuras.newFeatureString .. L["Ignore Dead"],
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
@@ -2381,7 +2381,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "ignoreDisconnected",
-        display = L["Ignore Disconnected"],
+        display = WeakAuras.newFeatureString .. L["Ignore Disconnected"],
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
@@ -6235,7 +6235,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "attackpower",
-        display = L["Attack Power"],
+        display = WeakAuras.newFeatureString .. L["Attack Power"],
         type = "number",
         init = "WeakAuras.GetEffectiveAttackPower()",
         store = true,

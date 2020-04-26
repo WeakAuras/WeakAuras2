@@ -705,7 +705,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     useHostility = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Filter by Hostility"],
+      name = WeakAuras.newFeatureString .. L["Filter by Hostility"],
       order = 68.4,
       hidden = function() return
         not (trigger.type == "aura2" and trigger.unit == "nameplate")
@@ -729,7 +729,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
 
     ignoreDead = {
       type = "toggle",
-      name = L["Ignore Dead"],
+      name = WeakAuras.newFeatureString .. L["Ignore Dead"],
       order = 68.7,
       width = WeakAuras.doubleWidth,
       hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
@@ -737,7 +737,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
 
     ignoreDisconnected = {
       type = "toggle",
-      name = L["Ignore Disconnected"],
+      name = WeakAuras.newFeatureString .. L["Ignore Disconnected"],
       order = 68.8,
       width = WeakAuras.doubleWidth,
       hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
