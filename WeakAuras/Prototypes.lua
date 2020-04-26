@@ -802,6 +802,20 @@ function WeakAuras.CheckNumericIds(loadids, currentId)
   return false;
 end
 
+function WeakAuras.CheckString(ids, currentId)
+  if (not ids or not currentId) then
+    return false;
+  end
+
+  for id in ids:gmatch('([^,]+)') do
+    if id:trim() == currentId then
+      return true
+    end
+  end
+
+  return false;
+end
+
 function WeakAuras.ValidateNumeric(info, val)
   if val ~= nil and val ~= "" and (not tonumber(val) or tonumber(val) >= 2^31) then
     return false;
@@ -1331,7 +1345,9 @@ WeakAuras.load_prototype = {
       display = L["Zone Name"],
       type = "string",
       init = "arg",
-      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"}
+      test = "WeakAuras.CheckString(%q, zone)",
+      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
+      desc = L["Supports multiple entries, separated by commas"]
     },
     {
       name = "zoneId",
