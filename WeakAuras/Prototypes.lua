@@ -5852,6 +5852,7 @@ WeakAuras.event_prototypes = {
         type = "string",
         enable = function(trigger) return not trigger.use_inverse end,
         conditionType = "string",
+        store = true,
       },
       {
         name = "spellId",
@@ -5860,7 +5861,8 @@ WeakAuras.event_prototypes = {
         enable = function(trigger) return not trigger.use_inverse end,
         conditionType = "number",
         forceExactOption = true,
-        test = "GetSpellInfo(%s) == spell"
+        test = "GetSpellInfo(%s) == spell",
+        store = true,
       },
       {
         name = "castType",
