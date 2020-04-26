@@ -7068,6 +7068,7 @@ function WeakAuras.AnchorFrame(data, region, parent)
     else
       region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
     end
+    WeakAuras.ApplyFrameLevel(region)
     anchorFrameDeferred[data.id] = nil
   end
 end
