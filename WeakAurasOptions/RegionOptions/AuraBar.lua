@@ -116,6 +116,7 @@ local function createOptions(id, data)
       name = L["Gradient Color"],
       type = "color",
       width = WeakAuras.halfWidth,
+      disabled = function() return not data.gradient end,
       order = 39.4,
     },
     gradientDirection = {
@@ -123,6 +124,7 @@ local function createOptions(id, data)
       type = "select",
       width = WeakAuras.normalWidth,
       values = WeakAuras.gradient_direction_types,
+      disabled = function() return not data.gradient end,
       get = function()
         return data.gradientDirection
       end,
