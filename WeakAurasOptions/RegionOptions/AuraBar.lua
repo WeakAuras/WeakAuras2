@@ -106,35 +106,63 @@ local function createOptions(id, data)
       hasAlpha = true,
       order = 39.2
     },
-    gradient = {
-      name = L["Gradient"],
+    gradientFG = {
+      name = L["Foreground Gradient"],
       type = "toggle",
-      width = WeakAuras.halfWidth,
+      width = WeakAuras.doubleWidth,
       order = 39.3,
     },
-    gradientColor = {
-      name = L["Gradient Color"],
+    gradientColorFG = {
+      name = L["Foreground Gradient Color"],
       type = "color",
-      width = WeakAuras.halfWidth,
-      disabled = function() return not data.gradient end,
+      width = WeakAuras.singleWidth,
+      disabled = function() return not data.gradientFG end,
+      hidden = function() return not data.gradientFG end,
       order = 39.4,
     },
-    gradientDirection = {
-      name = L["Gradient Direction"],
+    gradientDirectionFG = {
+      name = L["Foregorund Gradient Direction"],
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.singleWidth,
       values = WeakAuras.gradient_direction_types,
-      disabled = function() return not data.gradient end,
+      disabled = function() return not data.gradientFG end,
+      hidden = function() return not data.gradientFG end,
       get = function()
-        return data.gradientDirection
+        return data.gradientDirectionFG
       end,
       order = 39.5,
+    },
+    gradientBG = {
+      name = L["Background Gradient"],
+      type = "toggle",
+      width = WeakAuras.doubleWidth,
+      order = 39.6,
+    },
+    gradientColorBG = {
+      name = L["Background Gradient Color"],
+      type = "color",
+      width = WeakAuras.singleWidth,
+      disabled = function() return not data.gradientBG end,
+      hidden = function() return not data.gradientBG end,
+      order = 39.7,
+    },
+    gradientDirectionBG = {
+      name = L["Background Gradient Direction"],
+      type = "select",
+      width = WeakAuras.singleWidth,
+      values = WeakAuras.gradient_direction_types,
+      disabled = function() return not data.gradientBG end,
+      hidden = function() return not data.gradientBG end,
+      get = function()
+        return data.gradientDirectionBG
+      end,
+      order = 39.8,
     },
     alpha = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Bar Alpha"],
-      order = 39.8,
+      order = 39.9,
       min = 0,
       max = 1,
       bigStep = 0.01,
