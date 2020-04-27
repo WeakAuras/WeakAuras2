@@ -1256,6 +1256,8 @@ local function modify(parent, region, data)
 
   function region:SetOrientation(orientation)
     orient(region, data, orientation);
+    region.bar.updateGradient = region.bar.gradient and region.bar.orientation:match(region.bar.gradientDirection)
+    region:Color(region:GetColor())
     if (data.smoothProgress) then
       if region.bar.targetValue then
         region.bar:SetSmoothedValue(region.bar.targetValue);
