@@ -587,7 +587,7 @@ local barPrototype = {
   end,
 
   ["GetBackgroundColor"] = function(self)
-    return unpack(region.backgroundColor)
+    return unpack(self:GetParent().backgroundColor)
   end,
 
   -- Convenience methods
