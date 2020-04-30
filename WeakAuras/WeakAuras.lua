@@ -4787,6 +4787,22 @@ do
         end
         if new_frame and new_frame ~= data_frame then
           regionData.controlPoint:ReAnchor(new_frame)
+          regionData.controlPoint:SetShown(regionData.shown)
+          WeakAuras.dyngroup_unitframe_monitor[regionData] = new_frame
+        end
+      end
+    end
+  end)
+
+  LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_REMOVED", function(event, frame, unit)
+    for regionData, data_frame in pairs(WeakAuras.dyngroup_unitframe_monitor) do
+      if regionData.region and regionData.region.state and regionData.region.state.unit == unit
+      and data_frame == frame
+      then
+        local new_frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
+        if new_frame and new_frame ~= data_frame then
+          regionData.controlPoint:ReAnchor(new_frame)
+          regionData.controlPoint:SetShown(regionData.shown and new_frame ~= WeakAuras.HiddenFrames)
           WeakAuras.dyngroup_unitframe_monitor[regionData] = new_frame
         end
       end
@@ -6948,6 +6964,7 @@ end
 
 local HiddenFrames = CreateFrame("FRAME", "WeakAurasHiddenFrames")
 HiddenFrames:Hide()
+WeakAuras.HiddenFrames = HiddenFrames
 
 local function GetAnchorFrame(data, region, parent)
   local id = region.id
