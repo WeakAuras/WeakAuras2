@@ -367,7 +367,7 @@ local anchorers = {
       for _, regionData in ipairs(activeRegions) do
         local unit = regionData.region.state and regionData.region.state.unit
         if unit then
-          local frame = WeakAuras.GetUnitFrame(unit)
+          local frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
           if frame then
             frames[frame] = frames[frame] or {}
             tinsert(frames[frame], regionData)
@@ -1045,7 +1045,7 @@ local function modify(parent, region, data)
         data.anchorPoint,
         x + data.xOffset, y + data.yOffset
       )
-      controlPoint:SetShown(show)
+      controlPoint:SetShown(show and frame ~= WeakAuras.HiddenFrames)
       controlPoint:SetWidth(regionData.dimensions.width)
       controlPoint:SetHeight(regionData.dimensions.height)
       if self.anchorPerUnit == "UNITFRAME" then
