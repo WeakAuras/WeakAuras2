@@ -844,7 +844,9 @@ end
 function HandleUnitEvent(frame, event, unit, ...)
   WeakAuras.StartProfileSystem("generictrigger " .. event .. " " .. unit);
   if not(WeakAuras.IsPaused()) then
-    WeakAuras.ScanUnitEvents(event, unit, ...);
+    if (UnitIsUnit(unit, frame.unit)) then
+      WeakAuras.ScanUnitEvents(event, frame.unit, ...);
+    end
   end
   WeakAuras.StopProfileSystem("generictrigger " .. event .. " " .. unit);
 end
@@ -947,7 +949,7 @@ local function MultiUnitLoop(Func, unit, ...)
     for i = 1, 40 do
       Func("raid"..i, ...)
     end
-  elseif WeakAuras.baseUnitId[unit] then
+  else
     Func(unit, ...)
   end
 end
@@ -1060,6 +1062,7 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
     for event in pairs(events) do
       if not frame.unitFrames[unit] then
         frame.unitFrames[unit] = CreateFrame("FRAME")
+        frame.unitFrames[unit].unit = unit
         frame.unitFrames[unit]:SetScript("OnEvent", HandleUnitEvent);
       end
       xpcall(frame.unitFrames[unit].RegisterUnitEvent, trueFunction, frame.unitFrames[unit], event, unit)
