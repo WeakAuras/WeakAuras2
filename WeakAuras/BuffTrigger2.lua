@@ -859,7 +859,7 @@ local function GetAllUnits(unit, allUnits)
     end
     return function()
       local ret = unit .. i
-      while allUnits or not UnitExistsFixed(ret) do
+      while not allUnits and not UnitExistsFixed(ret) do
         i = i + 1
         if i > max then
           i = 1
@@ -868,6 +868,10 @@ local function GetAllUnits(unit, allUnits)
         ret = unit .. i
       end
       i = i + 1
+      if i > max then
+        i = 1
+        return nil
+      end
       return ret
     end
   else
