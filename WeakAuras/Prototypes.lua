@@ -1467,12 +1467,7 @@ local function AddUnitRoleChangeInternalEvents(triggerUnit, t)
 end
 
 local function AddUnitEventForEvents(result, unit, event)
-  if not unit or not (WeakAuras.baseUnitId[unit] or WeakAuras.multiUnitId[unit]) then
-    if not result.events then
-      result.events = {}
-    end
-    tinsert(result.events, event)
-  else
+  if unit then
     if not result.unit_events then
       result.unit_events = {}
     end
@@ -1480,6 +1475,11 @@ local function AddUnitEventForEvents(result, unit, event)
       result.unit_events[unit] = {}
     end
     tinsert(result.unit_events[unit], event)
+  else
+    if not result.events then
+      result.events = {}
+    end
+    tinsert(result.events, event)
   end
 end
 
