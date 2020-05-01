@@ -745,9 +745,9 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
                   local changeIndex = reference.changeIndex;
                   multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
                 end
-                WeakAuras.OpenTextEditor(data, multipath, nil, true);
+                WeakAuras.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code-1");
               else
-                WeakAuras.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"});
+                WeakAuras.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"}, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code-1");
               end
             end
           }
@@ -824,10 +824,10 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
                   childData.conditions[conditionIndex].changes[changeIndex].value = childData.conditions[conditionIndex].changes[changeIndex].value or {};
                   multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
                 end
-                WeakAuras.OpenTextEditor(data, multipath, true, true);
+                WeakAuras.OpenTextEditor(data, multipath, true, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#run-custom-code");
               else
                 data.conditions[i].changes[j].value = data.conditions[i].changes[j].value or {};
-                WeakAuras.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"}, true);
+                WeakAuras.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"}, true, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#run-custom-code");
               end
             end
           }
