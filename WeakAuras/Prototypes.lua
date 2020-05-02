@@ -1571,7 +1571,8 @@ WeakAuras.event_prototypes = {
         test = "unitisunit",
         store = true,
         conditionType = "bool",
-        desc = function() return L["Can be used for e.g. checking if \"boss1target\" is the same as \"player\"."] end
+        desc = function() return L["Can be used for e.g. checking if \"boss1target\" is the same as \"player\"."] end,
+        enable = function(trigger) return not WeakAuras.multiUnitUnits[trigger.unit] end
       },
       {
         name = "name",

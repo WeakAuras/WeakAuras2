@@ -555,10 +555,17 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       end
     elseif (data.statesParameter == "unit") then
       if arg1 then
-        local cloneId = WeakAuras.multiUnitUnits[data.trigger.unit] and arg1 or ""
+        local unit, cloneId
+        if WeakAuras.multiUnitUnits[data.trigger.unit] then
+          unit = arg1
+          cloneId = arg1
+        else
+          unit = data.trigger.unit
+          cloneId = ""
+        end
         allStates[cloneId] = allStates[cloneId] or {};
         local state = allStates[cloneId];
-        local ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, arg1, arg2, ...);
+        local ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, unit, arg1, arg2, ...);
         if (ok and returnValue) or optionsEvent then
           if(WeakAuras.ActivateEvent(id, triggernum, data, state, errorHandler)) then
             updateTriggerState = true;
