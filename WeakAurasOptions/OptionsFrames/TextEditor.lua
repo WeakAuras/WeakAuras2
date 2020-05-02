@@ -92,6 +92,70 @@ local function set_scheme()
   color_scheme["not"] = theme["Logical"]
 end
 
+local snippets = {
+  ["test snippet"] = [=[
+function()
+  -- Your code here
+end]=],
+  ["Another Test Snippet, with a longer name"] = [=[
+function() end]=],
+}
+
+local function snippets_menu_initialize(frame, level, menu)
+  WeakAurasOptionsSaved.savedSnippets = WeakAurasOptionsSaved.savedSnippets or {}
+  local savedSnippets = WeakAurasOptionsSaved.savedSnippets
+  local info = UIDropDownMenu_CreateInfo()
+  info.notCheckable = true
+  if level == 1 then
+    for name, snippet in pairs(snippets) do
+      info.text = name
+      info.func = function()
+        WeakAuras.editor.editBox:Insert(snippet)
+      end
+      UIDropDownMenu_AddButton(info)
+    end
+    for name, snippet in pairs(savedSnippets) do
+      info.text = name
+      info.hasArrow = true
+      info.value = name
+      info.func = function()
+        WeakAuras.editor.editBox:Insert(snippet)
+      end
+      UIDropDownMenu_AddButton(info)
+    end
+    UIDropDownMenu_AddButton({text = "", disabled = true})
+    info.text = "Save to snippet"
+    info.hasArrow = false
+    info.value = newLine
+    info.func = function()
+      local snippet = WeakAuras.editor.editBox:GetText()
+      if snippet and #snippet > 0 then
+        table.insert(savedSnippets, snippet)
+        CloseDropDownMenus()
+      end
+    end
+    UIDropDownMenu_AddButton(info)
+    info.text = "Close"
+    info.hasArrow = false
+    info.value = nil
+    info.func = function()
+      CloseDropDownMenus()
+    end
+    UIDropDownMenu_AddButton(info)
+  else
+    local item = {
+      text = "Delete",
+      func = function()
+        if savedSnippets[UIDROPDOWNMENU_MENU_VALUE] then
+          savedSnippets[UIDROPDOWNMENU_MENU_VALUE] = nil
+          CloseDropDownMenus()
+        end
+      end,
+    }
+    UIDropDownMenu_AddButton(item,2)
+  end
+end
+
 local function settings_dropdown_initialize(frame, level, menu)
   for k, v in pairs(editor_themes) do
     local item = {
@@ -160,6 +224,13 @@ local function ConstructTextEditor(frame)
   close:SetWidth(100);
   close:SetText(L["Done"]);
 
+  local snippets_button = CreateFrame("Button", "WASnippetsButton", group.frame, "UIPanelButtonTemplate")
+  snippets_button:SetPoint("BOTTOMRIGHT", editor.frame, "TOPRIGHT", 0, -15)
+  snippets_button:SetHeight(20)
+  snippets_button:SetWidth(100)
+  snippets_button:SetText(L["Snippets"])
+  snippets_button:RegisterForClicks("LeftButtonUp")
+
   local settings_frame = CreateFrame("Button", "WASettingsButton", close, "UIPanelButtonTemplate")
   settings_frame:SetPoint("RIGHT", close, "LEFT", -10, 0)
   settings_frame:SetHeight(20)
@@ -195,6 +266,14 @@ local function ConstructTextEditor(frame)
 
   settings_frame:SetScript("OnClick", function(self, button, down)
     ToggleDropDownMenu(1, nil, dropdown, settings_frame, 0, 0)
+  end)
+
+  local snippets_menu = CreateFrame("Frame", "SnippetsMenuFrame", group.frame, "UIDropDownMenuTemplate")
+  UIDropDownMenu_Initialize(snippets_menu, snippets_menu_initialize, "MENU")
+  UIDropDownMenu_SetAnchor(snippets_menu, 20, 0, "TOPLEFT", group.frame, "TOPRIGHT") 
+
+  snippets_button:SetScript("OnClick", function(self, button, down)
+    ToggleDropDownMenu(1, nil, snippets_menu, snippets_button)
   end)
 
   -- CTRL + S saves and closes, ESC cancels and closes
@@ -233,7 +312,7 @@ local function ConstructTextEditor(frame)
 
   local editorLine = CreateFrame("Editbox", nil, group.frame);
   -- Set script on enter pressed..
-  editorLine:SetPoint("BOTTOMRIGHT", editor.frame, "TOPRIGHT", -10, -15);
+  editorLine:SetPoint("BOTTOMRIGHT", snippets_button, "BOTTOMLEFT", -10, 0);
   editorLine:SetFont(STANDARD_TEXT_FONT, 10)
   editorLine:SetJustifyH("RIGHT");
   editorLine:SetWidth(80);
