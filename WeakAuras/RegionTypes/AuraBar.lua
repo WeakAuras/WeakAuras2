@@ -690,6 +690,7 @@ local funcs = {
     else
       self.bar:SetValue(1 - self.bar:GetValue());
     end
+    self.subRegionEvents:Notify("InverseChanged")
   end,
   SetOrientation = function(self, orientation)
     self.orientation = orientation
@@ -704,8 +705,13 @@ local funcs = {
   end,
   SetOverlayColor = function(self, id, r, g, b, a)
     self.bar:SetAdditionalBarColor(id, { r, g, b, a});
+  end,
+  GetEffectiveOrientation = function(self)
+    return self.effectiveOrientation
+  end,
+  GetInverse = function(self)
+    return self.inverseDirection
   end
-
 }
 
 -- Called when first creating a new region/display

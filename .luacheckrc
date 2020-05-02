@@ -61,6 +61,7 @@ globals = {
 	-- FrameXML misc
 	"C_Timer",
 	"ChatFrame_AddMessageEventFilter",
+	"Clamp",
 	"COMBAT_TEXT_SCROLL_FUNCTION",
 	"CombatLogGetCurrentEventInfo",
 	"CombatText_AddMessage",

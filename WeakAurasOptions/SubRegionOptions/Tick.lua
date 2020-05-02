@@ -3,15 +3,9 @@ if not WeakAuras.IsCorrectVersion() then return end
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
 
-local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
-
-
 local indentWidth = WeakAuras.normalWidth * 0.06
 
-
 local function createOptions(parentData, data, index, subIndex)
-
-  local order = 9
   local options = {
     __title = L["Tick %s"]:format(subIndex),
     __order = 1,
@@ -39,28 +33,29 @@ local function createOptions(parentData, data, index, subIndex)
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Show Tick"],
-      order = order + 0.01,
+      order = 1,
     },
     tick_color = {
       type = "color",
       width = WeakAuras.normalWidth,
       name = L["Color"],
-      order = order + 0.02,
+      order = 2,
       hasAlpha = true,
     },
     tick_placement_mode = {
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Tick Mode"],
-      order = order + 0.10,
+      order = 3,
       values = WeakAuras.tick_placement_modes,
-      desc = L["Automatic mode moves the tick as the bar progresses"],
+      desc = L["Relative mode positions the tick at the position relative to the total width of the progress bar.\n" ..
+               "Absolute mode positions the tick at a fixed value."],
     },
     tick_placement = {
       type = "input",
       width = WeakAuras.normalWidth,
       name = L["Tick Placement"],
-      order = order + 0.11,
+      order = 4,
       validate = WeakAuras.ValidateNumeric,
       desc = L["Enter in a value for the tick's placement."],
     },
@@ -68,20 +63,20 @@ local function createOptions(parentData, data, index, subIndex)
       type = "description",
       width = WeakAuras.normalWidth,
       name = "",
-      order = order + 0.20,
+      order = 5,
     },
     automatic_length = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Automatic length"],
-      order = order + 0.21,
+      order = 6,
       desc = L["Matches the height setting of a horizontal bar or width for a vertical bar."],
     },
     tick_thickness = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Thickness"],
-      order = order + 0.30,
+      order = 7,
       min = 0,
       softMax = 20,
       step = 1,
@@ -90,7 +85,7 @@ local function createOptions(parentData, data, index, subIndex)
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Length"],
-      order = order + 0.31,
+      order = 8,
       min = 0,
       softMax = 50,
       step = 1,
