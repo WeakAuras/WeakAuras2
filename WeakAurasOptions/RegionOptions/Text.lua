@@ -5,6 +5,11 @@ local L = WeakAuras.L;
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
+local indentWidth = 0.15
+local hiddenFontExtra = function()
+  return WeakAuras.IsCollapsed("text", "text", "fontflags", true)
+end
+
 local function createOptions(id, data)
   local options = {
     __title = L["Text Settings"],
@@ -65,20 +70,7 @@ local function createOptions(id, data)
         return not WeakAuras.ContainsPlaceHolders(data.displayText, "t");
       end
     },
-    color = {
-      type = "color",
-      width = WeakAuras.normalWidth,
-      name = L["Text Color"],
-      hasAlpha = true,
-      order = 40
-    },
-    justify = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Justify"],
-      order = 43,
-      values = WeakAuras.justify_types
-    },
+
     font = {
       type = "select",
       width = WeakAuras.normalWidth,
@@ -91,43 +83,182 @@ local function createOptions(id, data)
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Size"],
-      order = 47,
+      order = 46,
       min = 6,
       softMax = 72,
       step = 1
     },
+    color = {
+      type = "color",
+      width = WeakAuras.normalWidth,
+      name = L["Text Color"],
+      hasAlpha = true,
+      order = 47
+    },
+
+    fontFlagsDescription = {
+      order = 48,
+      width = WeakAuras.doubleWidth,
+      type = "execute",
+      control = "WeakAurasExpandSmall",
+      name = function()
+        local textFlags = WeakAuras.font_flags[data.outline]
+        local color = format("%02x%02x%02x%02x",
+                             data.shadowColor[4] * 255, data.shadowColor[1] * 255,
+                             data.shadowColor[2] * 255, data.shadowColor[3]*255)
+
+        local textJustify = ""
+        if data.justify == "CENTER" then
+
+        elseif data.justify == "LEFT" then
+          textJustify = " " .. L["and aligned left"]
+        elseif data.justify == "RIGHT" then
+          textJustify = " " ..  L["and aligned right"]
+        end
+
+        local textWidth = ""
+        if data.automaticWidth == "Fixed" then
+          local wordWarp = ""
+          if data.wordWrap == "WordWrap" then
+            wordWarp = L["wrapping"]
+          else
+            wordWarp = L["eliding"]
+          end
+          textWidth = " "..L["and with width |cFFFF0000%s|r and %s"]:format(data.fixedWidth, wordWarp)
+        end
+
+        local secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s"]:format(textFlags, color, data.shadowXOffset, data.shadowYOffset, textJustify, textWidth)
+
+        return secondline
+      end,
+      func = function()
+        local collapsed = WeakAuras.IsCollapsed("text", "text", "fontflags", true)
+        WeakAuras.SetCollapsed("text", "text", "fontflags", not collapsed)
+      end,
+      image = function()
+        local collapsed = WeakAuras.IsCollapsed("text", "text", "fontflags", true)
+        return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+      end,
+      imageWidth = 24,
+      imageHeight = 24
+    },
+
+    text_font_space = {
+      type = "description",
+      name = "",
+      order = 48.1,
+      hidden = hiddenFontExtra,
+      width = indentWidth
+    },
+    outline = {
+      type = "select",
+      width = WeakAuras.normalWidth - indentWidth,
+      name = L["Outline"],
+      order = 48.2,
+      values = WeakAuras.font_flags,
+      hidden = hiddenFontExtra
+    },
+    shadowColor = {
+      type = "color",
+      hasAlpha = true,
+      width = WeakAuras.normalWidth,
+      name = L["Shadow Color"],
+      order = 48.3,
+      hidden = hiddenFontExtra
+    },
+
+    text_font_space3 = {
+      type = "description",
+      name = "",
+      order = 48.4,
+      hidden = hiddenFontExtra,
+      width = indentWidth
+    },
+    shadowXOffset = {
+      type = "range",
+      width = WeakAuras.normalWidth - indentWidth,
+      name = L["Shadow X Offset"],
+      softMin = -15,
+      softMax = 15,
+      bigStep = 1,
+      order = 48.5,
+      hidden = hiddenFontExtra
+    },
+    shadowYOffset = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Shadow Y Offset"],
+      softMin = -15,
+      softMax = 15,
+      bigStep = 1,
+      order = 48.6,
+      hidden = hiddenFontExtra
+    },
+
+    text_font_space4 = {
+      type = "description",
+      name = "",
+      order = 48.7,
+      hidden = hiddenFontExtra,
+      width = indentWidth
+    },
+    justify = {
+      type = "select",
+      width = WeakAuras.normalWidth - indentWidth,
+      name = L["Justify"],
+      order = 48.8,
+      values = WeakAuras.justify_types,
+      hidden = hiddenFontExtra,
+    },
+    text_font_space55 = {
+      type = "description",
+      name = "",
+      order = 48.85,
+      hidden = hiddenFontExtra,
+      width = WeakAuras.normalWidth
+    },
+
+    text_font_space5 = {
+      type = "description",
+      name = "",
+      order = 48.9,
+      hidden = hiddenFontExtra,
+      width = indentWidth
+    },
     automaticWidth = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.normalWidth - indentWidth,
       name = L["Width"],
-      order = 47.1,
-      values = WeakAuras.text_automatic_width
+      order = 49,
+      values = WeakAuras.text_automatic_width,
+      hidden = hiddenFontExtra,
     },
     fixedWidth = {
       name = L["Width"],
       width = WeakAuras.normalWidth,
-      order = 47.2,
+      order = 49.1,
       type = "range",
       min = 1,
       softMax = screenWidth,
       bigStep = 1,
-      hidden = function() return data.automaticWidth  ~= "Fixed" end
+      hidden = function() return hiddenFontExtra() or data.automaticWidth ~= "Fixed" end
+    },
+    text_font_space7 = {
+      type = "description",
+      name = "",
+      order = 49.3,
+      width = indentWidth,
+      hidden = function() return hiddenFontExtra() or data.automaticWidth ~= "Fixed" end
     },
     wordWrap = {
       type = "select",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.normalWidth - indentWidth,
       name = L["Overflow"],
-      order = 47.2,
+      order = 49.4,
       values = WeakAuras.text_word_wrap,
-      hidden = function() return data.automaticWidth  ~= "Fixed" end
+      hidden = function() return hiddenFontExtra() or data.automaticWidth ~= "Fixed" end
     },
-    outline = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Outline"],
-      order = 48,
-      values = WeakAuras.font_flags
-    },
+
     endHeader = {
       type = "header",
       order = 100,
