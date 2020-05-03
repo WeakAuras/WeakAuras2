@@ -22,7 +22,11 @@ local default = {
   customTextUpdate = "event",
   automaticWidth = "Auto",
   fixedWidth = 200,
-  wordWrap = "WordWrap"
+  wordWrap = "WordWrap",
+
+  shadowColor = { 0, 0, 0, 1},
+  shadowXOffset = 1,
+  shadowYOffset = -1,
 };
 
 local properties = {
@@ -95,6 +99,8 @@ local function modify(parent, region, data)
   region:SetHeight(region.height);
 
   text:SetTextHeight(data.fontSize);
+  text:SetShadowColor(unpack(data.shadowColor))
+  text:SetShadowOffset(data.shadowXOffset, data.shadowYOffset)
 
   text:ClearAllPoints();
   text:SetPoint(data.justify, region, data.justify);
