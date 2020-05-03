@@ -254,7 +254,7 @@ local function modify(parent, region, parentData, data, first)
       textStr = WeakAuras.ReplacePlaceHolders(textStr, parent, nil)
 
       if text:GetFont() then
-        WeakAuras.regionPrototype.SetTextOnText(text, WeakAuras.ReplaceRaidMarkerSymbols(textStr))
+        text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(textStr))
       end
       region:UpdateAnchor()
     end
@@ -319,7 +319,7 @@ local function modify(parent, region, parentData, data, first)
 
   if not UpdateText then
     if text:GetFont() then
-      WeakAuras.regionPrototype.SetTextOnText(text, WeakAuras.ReplaceRaidMarkerSymbols(data.text_text))
+      text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(data.text_text))
     end
   end
 
