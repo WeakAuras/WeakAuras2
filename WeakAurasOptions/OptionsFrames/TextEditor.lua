@@ -92,69 +92,15 @@ local function set_scheme()
   color_scheme["not"] = theme["Logical"]
 end
 
+-- Define the premade snippets
 local snippets = {
-  ["test snippet"] = [=[
+  ["Test snippet"] = [=[
 function()
   -- Your code here
 end]=],
-  ["Another Test Snippet, with a longer name"] = [=[
+  ["Another Test Snippet"] = [=[
 function() end]=],
 }
-
-local function snippets_menu_initialize(frame, level, menu)
-  WeakAurasOptionsSaved.savedSnippets = WeakAurasOptionsSaved.savedSnippets or {}
-  local savedSnippets = WeakAurasOptionsSaved.savedSnippets
-  local info = UIDropDownMenu_CreateInfo()
-  info.notCheckable = true
-  if level == 1 then
-    for name, snippet in pairs(snippets) do
-      info.text = name
-      info.func = function()
-        WeakAuras.editor.editBox:Insert(snippet)
-      end
-      UIDropDownMenu_AddButton(info)
-    end
-    for name, snippet in pairs(savedSnippets) do
-      info.text = name
-      info.hasArrow = true
-      info.value = name
-      info.func = function()
-        WeakAuras.editor.editBox:Insert(snippet)
-      end
-      UIDropDownMenu_AddButton(info)
-    end
-    UIDropDownMenu_AddButton({text = "", disabled = true})
-    info.text = "Save to snippet"
-    info.hasArrow = false
-    info.value = newLine
-    info.func = function()
-      local snippet = WeakAuras.editor.editBox:GetText()
-      if snippet and #snippet > 0 then
-        table.insert(savedSnippets, snippet)
-        CloseDropDownMenus()
-      end
-    end
-    UIDropDownMenu_AddButton(info)
-    info.text = "Close"
-    info.hasArrow = false
-    info.value = nil
-    info.func = function()
-      CloseDropDownMenus()
-    end
-    UIDropDownMenu_AddButton(info)
-  else
-    local item = {
-      text = "Delete",
-      func = function()
-        if savedSnippets[UIDROPDOWNMENU_MENU_VALUE] then
-          savedSnippets[UIDROPDOWNMENU_MENU_VALUE] = nil
-          CloseDropDownMenus()
-        end
-      end,
-    }
-    UIDropDownMenu_AddButton(item,2)
-  end
-end
 
 local function settings_dropdown_initialize(frame, level, menu)
   for k, v in pairs(editor_themes) do
@@ -224,13 +170,6 @@ local function ConstructTextEditor(frame)
   close:SetWidth(100);
   close:SetText(L["Done"]);
 
-  local snippets_button = CreateFrame("Button", "WASnippetsButton", group.frame, "UIPanelButtonTemplate")
-  snippets_button:SetPoint("BOTTOMRIGHT", editor.frame, "TOPRIGHT", 0, -15)
-  snippets_button:SetHeight(20)
-  snippets_button:SetWidth(100)
-  snippets_button:SetText(L["Snippets"])
-  snippets_button:RegisterForClicks("LeftButtonUp")
-
   local settings_frame = CreateFrame("Button", "WASettingsButton", close, "UIPanelButtonTemplate")
   settings_frame:SetPoint("RIGHT", close, "LEFT", -10, 0)
   settings_frame:SetHeight(20)
@@ -268,12 +207,128 @@ local function ConstructTextEditor(frame)
     ToggleDropDownMenu(1, nil, dropdown, settings_frame, 0, 0)
   end)
 
-  local snippets_menu = CreateFrame("Frame", "SnippetsMenuFrame", group.frame, "UIDropDownMenuTemplate")
-  UIDropDownMenu_Initialize(snippets_menu, snippets_menu_initialize, "MENU")
-  UIDropDownMenu_SetAnchor(snippets_menu, 20, 0, "TOPLEFT", group.frame, "TOPRIGHT") 
+  -- Make Snippets button (top right, near the line number)
+  local snippetsButton = CreateFrame("Button", "WASnippetsButton", group.frame, "UIPanelButtonTemplate")
+  snippetsButton:SetPoint("BOTTOMRIGHT", editor.frame, "TOPRIGHT", 0, -15)
+  snippetsButton:SetFrameLevel(group.frame:GetFrameLevel() + 2)
+  snippetsButton:SetHeight(20)
+  snippetsButton:SetWidth(100)
+  snippetsButton:SetText(L["Snippets"])
+  snippetsButton:RegisterForClicks("LeftButtonUp")
+  
+  -- Get the saved snippets from SavedVars
+  WeakAurasOptionsSaved.savedSnippets = WeakAurasOptionsSaved.savedSnippets or {}
+  local savedSnippets = WeakAurasOptionsSaved.savedSnippets
 
-  snippets_button:SetScript("OnClick", function(self, button, down)
-    ToggleDropDownMenu(1, nil, snippets_menu, snippets_button)
+  -- function to build snippet selection list
+  local function UpdateSnippets(frame)
+    -- release first before rebuilding
+    frame:ReleaseChildren()
+
+    local heading1 = AceGUI:Create("Heading")
+    heading1:SetText("Premade Snippets")
+    heading1.frame:SetWidth(200)
+    frame:AddChild(heading1)
+
+    -- Iterate remade snippets and make buttons for them
+    for name, snippet in pairs(snippets) do
+      local button = AceGUI:Create("WeakAurasSnippetButton")
+      button:SetTitle("[WA] "..name)
+      button:SetDescription(snippet)
+      button:SetCallback("OnClick", function() 
+        WeakAuras.editor.editBox:Insert(snippet) 
+        WeakAuras.editor:SetFocus()
+      end)
+      frame:AddChild(button)
+    end
+
+    local heading2 = AceGUI:Create("Heading")
+    heading2:SetText("Your Saved Snippets")
+    heading2.frame:SetWidth(200)
+    frame:AddChild(heading2)
+    -- iterate saved snippets and make buttons
+    for name, snippet in pairs(savedSnippets) do
+      local button = AceGUI:Create("WeakAurasSnippetButton")
+      button:SetTitle(name)
+      button:SetDescription(snippet)
+      button:SetDeletable(true)
+      button:SetCallback("OnClick", function() 
+        WeakAuras.editor.editBox:Insert(snippet) 
+        WeakAuras.editor:SetFocus()
+      end)
+      button.deleteButton:SetScript("OnClick", function()
+        savedSnippets[name] = nil
+        UpdateSnippets(frame)
+      end)
+      frame:AddChild(button)
+    end
+  end
+
+  -- Make sidebar for snippets
+  local snippetsFrame = CreateFrame("FRAME", "WeakAurasSnippets", group.frame)
+  snippetsFrame:SetPoint("TOPLEFT", group.frame, "TOPRIGHT", 20, 0)
+  snippetsFrame:SetPoint("BOTTOMLEFT", group.frame, "BOTTOMRIGHT", 20, 0)
+  snippetsFrame:SetWidth(250)
+  snippetsFrame:SetBackdrop({
+    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
+    tile = true,
+    tileSize = 32,
+    edgeSize = 32,
+    insets = { left = 8, right = 8, top = 8, bottom = 8 }
+  })
+  snippetsFrame:SetBackdropColor(0, 0, 0, 1)
+
+  -- Add button to save new snippet
+  local AddSnippetTextBox = CreateFrame("EditBox", nil, snippetsFrame, "InputBoxTemplate")
+  AddSnippetTextBox:SetPoint("TOPLEFT", snippetsFrame, "TOPLEFT", 25, -15)
+  AddSnippetTextBox:SetHeight(20)
+  AddSnippetTextBox:SetWidth(100)
+  local AddSnippetButton = CreateFrame("Button", nil, snippetsFrame, "UIPanelButtonTemplate")
+  AddSnippetButton:SetPoint("TOPLEFT", AddSnippetTextBox, "TOPRIGHT")
+  AddSnippetButton:SetHeight(20)
+  AddSnippetButton:SetWidth(100)
+  AddSnippetButton:SetText(L["Add Snippet"])
+  AddSnippetButton:RegisterForClicks("LeftButtonUp")
+
+  -- house the buttons in a scroll frame, just in case
+  local snippetsScroll = AceGUI:Create("ScrollFrame")
+  snippetsScroll.frame:SetParent(snippetsFrame)
+  snippetsScroll.frame:SetPoint("TOPLEFT", snippetsFrame, "TOPLEFT", 17, -35)
+  snippetsScroll.frame:SetPoint("BOTTOMRIGHT", snippetsFrame, "BOTTOMRIGHT", -10, 10)
+  snippetsScroll:SetLayout("List")
+
+  snippetsFrame:Hide()
+
+  -- add buttons
+  UpdateSnippets(snippetsScroll)
+
+  -- Toggle the side bar on click
+  snippetsButton:SetScript("OnClick", function(self, button, down)
+    if not snippetsFrame:IsShown() then
+      snippetsFrame:Show()
+      UpdateSnippets(snippetsScroll)
+    else
+      snippetsFrame:Hide()
+    end
+  end)
+  AddSnippetTextBox:SetScript("OnEnterPressed", function(self)
+    local snippet = WeakAuras.editor.editBox:GetText()
+    local name = AddSnippetTextBox:GetText()
+    if snippet and #snippet > 0 and name and #name > 0 and not savedSnippets[name] then
+      savedSnippets[name] = snippet
+      AddSnippetTextBox:SetText("")
+      UpdateSnippets(snippetsScroll)
+    end
+  end)
+  AddSnippetButton:SetScript("OnClick", function(self)
+    local snippet = WeakAuras.editor.editBox:GetText()
+    local name = AddSnippetTextBox:GetText()
+    if snippet and #snippet > 0 and name and #name > 0 and not savedSnippets[name] then
+      savedSnippets[name] = snippet
+      AddSnippetTextBox:SetText("")
+      UpdateSnippets(snippetsScroll)
+    end
   end)
 
   -- CTRL + S saves and closes, ESC cancels and closes
@@ -312,14 +367,14 @@ local function ConstructTextEditor(frame)
 
   local editorLine = CreateFrame("Editbox", nil, group.frame);
   -- Set script on enter pressed..
-  editorLine:SetPoint("BOTTOMRIGHT", snippets_button, "BOTTOMLEFT", -10, 0);
+  editorLine:SetPoint("BOTTOMRIGHT", editor.frame, "TOPRIGHT", -100, -15)
   editorLine:SetFont(STANDARD_TEXT_FONT, 10)
   editorLine:SetJustifyH("RIGHT");
   editorLine:SetWidth(80);
   editorLine:SetHeight(20);
   editorLine:SetNumeric(true);
   editorLine:SetTextInsets(10, 10, 0, 0);
-
+  editorLine:SetAutoFocus(false)
 
   urlText:SetScript("OnChar", function(self) self:SetText(group.url); self:HighlightText(); end);
   urlText:SetScript("OnEscapePressed", function()
