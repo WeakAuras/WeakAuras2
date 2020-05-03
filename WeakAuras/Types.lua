@@ -1418,6 +1418,16 @@ WeakAuras.role_types = {
   HEALER = INLINE_HEALER_ICON.." "..HEALER
 }
 
+WeakAuras.classification_types = {
+  worldboss = L["World Boss"],
+  rareelite = L["Rare Elite"],
+  elite = L["Elite"],
+  rare = L["Rare"],
+  normal = L["Normal"],
+  trivial = L["Trivial (Low Level)"],
+  minus = L["Minus (Small Nameplate)"]
+}
+
 WeakAuras.anim_start_preset_types = {
   slidetop = L["Slide from Top"],
   slideleft = L["Slide from Left"],
