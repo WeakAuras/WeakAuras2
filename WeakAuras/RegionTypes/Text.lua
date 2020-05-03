@@ -3,6 +3,9 @@ if not WeakAuras.IsCorrectVersion() then return end
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
 
+local defaultFont = WeakAuras.defaultFont
+local defaultFontSize = WeakAuras.defaultFontSize
+
 local default = {
   displayText = "%p",
   outline = "OUTLINE",
@@ -13,8 +16,8 @@ local default = {
   anchorFrameType = "SCREEN",
   xOffset = 0,
   yOffset = 0,
-  font = "Friz Quadrata TT",
-  fontSize = 12,
+  font = defaultFont,
+  fontSize = defaultFontSize,
   frameStrata = 1,
   customTextUpdate = "event",
   automaticWidth = "Auto",
