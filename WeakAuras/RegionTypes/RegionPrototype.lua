@@ -867,15 +867,6 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
   end
 end
 
--- WORKAROUND Texts don't get the right size by default in WoW 7.3
-function WeakAuras.regionPrototype.SetTextOnText(text, str)
-  if (text:GetText() == str) then
-    return
-  end
-
-  text:SetText(str);
-end
-
 function WeakAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
   if type(path) == "string" and GetAtlasInfo(path) then
     texture:SetAtlas(path);
