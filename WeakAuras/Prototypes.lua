@@ -1592,6 +1592,15 @@ WeakAuras.event_prototypes = {
         conditionType = "select"
       },
       {
+        name = "classification",
+        display = L["Classification"],
+        type = "multiselect",
+        init = "UnitClassification(unit)",
+        values = "classification_types",
+        store = true,
+        conditionType = "select"
+      },
+      {
         name = "role",
         display = L["Assigned Role"],
         type = "select",
