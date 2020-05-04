@@ -2,7 +2,6 @@ if not WeakAuras.IsCorrectVersion() then return end
 
 local L = WeakAuras.L
 
-
 local send_chat_message_types = WeakAuras.send_chat_message_types;
 local sound_types = WeakAuras.sound_types;
 

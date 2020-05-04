@@ -2,6 +2,10 @@ if not WeakAuras.IsCorrectVersion() then return end
 
 local L = WeakAuras.L;
 local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
+
+local defaultFont = WeakAuras.defaultFont
+local defaultFontSize = WeakAuras.defaultFontSize
+
 -- Credit to CommanderSirow for taking the time to properly craft the TransformPoint function
 -- to the enhance the abilities of Progress Textures.
 -- Also Credit to Semlar for explaining how circular progress can be shown
@@ -45,8 +49,8 @@ local default = {
   anchorFrameType = "SCREEN",
   xOffset = 0,
   yOffset = 0,
-  font = "Friz Quadrata TT",
-  fontSize = 12,
+  font = defaultFont,
+  fontSize = defaultFontSize,
   mirror = false,
   frameStrata = 1,
   slantMode = "INSIDE"
