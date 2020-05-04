@@ -351,6 +351,10 @@ local function createAbilityTrigger(triggers, position, item, genericShowOn)
       genericShowOn = genericShowOn,
     }
   };
+  if genericShowOn == "showOnReady" then
+    triggers[position].trigger.use_track = true
+    triggers[position].trigger.track = "cooldown"
+  end
 end
 
 local function createItemTrigger(triggers, position, item, genericShowOn)
@@ -482,6 +486,20 @@ local function subTypesFor(item, regionType)
       description = L["Only shows the aura when the ability is on cooldown."],
       createTriggers = function(triggers, item)
         createAbilityTrigger(triggers, 1, item, "showOnCooldown");
+      end,
+      createConditions = function(conditions, item, regionType)
+        isNotUsableBlue(conditions, 1, regionType)
+      end,
+    });
+    tinsert(types, {
+      icon = icon.cd,
+      title = L["Basic Show On Ready"],
+      description = L["Only shows the aura when the ability is ready to use."],
+      createTriggers = function(triggers, item)
+        createAbilityTrigger(triggers, 1, item, "showOnReady");
+      end,
+      createConditions = function(conditions, item, regionType)
+        isNotUsableBlue(conditions, 1, regionType)
       end,
     });
     if (item.charges) then
@@ -971,6 +989,14 @@ local function subTypesFor(item, regionType)
       description = L["Only show the aura when the item is on cooldown."],
       createTriggers = function(triggers, item)
         createItemTrigger(triggers, 1, item, "showOnCooldown");
+      end,
+    });
+    tinsert(types, {
+      icon = icon.cd,
+      title = L["Show on Ready"],
+      description = L["Only shows the aura when the ability is ready to use."],
+      createTriggers = function(triggers, item)
+        createItemTrigger(triggers, 1, item, "showOnReady");
       end,
     });
     tinsert(types, {
