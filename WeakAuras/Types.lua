@@ -67,12 +67,36 @@ WeakAuras.group_hybrid_sort_types = {
 }
 
 WeakAuras.precision_types = {
-  [0] = "12",
-  [1] = "12.3",
-  [2] = "12.34",
-  [3] = "12.345",
-  [4] = "Dynamic 12.3", -- will show 1 digit precision when time is lower than 3 seconds, hardcoded
-  [5] = "Dynamic 12.34" -- will show 2 digits precision when time is lower than 3 seconds, hardcoded
+  -- 63:42 | 3:07 | 42 | 9
+  [0] = "63:42 |cff424242|||r 3:07 |cff424242|||r 42 |cff424242|||r 9",
+
+  -- 63:42 | 3:07 | 42.1 | 9.5
+  [1] = "63:42 |cff424242|||r 3:07 |cff424242|||r 42|cffffff00.1|r |cff424242|||r 9|cffffff00.5|r",
+
+  -- 63:42 | 3:07 | 42.12 | 9.47
+  [2] = "63:42 |cff424242|||r 3:07 |cff424242|||r 42|cffffff00.12|r |cff424242|||r 9|cffffff00.47|r",
+
+  -- 63:42 | 3:07 | 42.123 | 9.469
+  [3] = "63:42 |cff424242|||r 3:07 |cff424242|||r 42|cffffff00.123|r |cff424242|||r 9|cffffff00.469|r",
+
+  -- 63:42 | 3:07 | 42 | 9 | 2.9
+  [4] = "63:42 |cff424242|||r 3:07 |cff424242|||r 42 |cff424242|||r 9 |cff424242|||r 2|cffffff00.9|r",
+
+  -- 63:42 | 3:07 | 42 | 9 | 2.93
+  [5] = "63:42 |cff424242|||r 3:07 |cff424242|||r 42 |cff424242|||r 9 |cff424242|||r 2|cffffff00.93|r",
+
+  -- 2h | 11m | 3:07 | 42 | 9 | 3
+  [6] = "|cffffff002h|r |cff424242|||r |cffffff0011m|r |cff424242|||r 3:07 |cff424242|||r 42 |cff424242|||r 9 |cff424242|||r 3",
+
+  -- 2h | 11m | 3:07 | 42 | 9 | 2.9
+  [7] = "|cffffff002h|r |cff424242|||r |cffffff0011m|r |cff424242|||r 3:07 |cff424242|||r 42 |cff424242|||r 9 |cff424242|||r 2|cffffff00.9|r",
+
+  -- 1h 3m | 3m 7s | 43s | 10s | 3s
+  [8] = "|cffffff001h 3m|r |cff424242|||r |cffffff003m 7s|r |cff424242|||r 42|cffffff00s|r |cff424242|||r 10|cffffff00s|r |cff424242|||r 3|cffffff00s|r",
+
+  -- 1h 3m | 3m 7s | 43s | 9.5 | 2.9
+  [9] = "|cffffff001h 3m|r |cff424242|||r |cffffff003m 7s|r |cff424242|||r 42s |cff424242|||r 9|cffffff00.5|r |cff424242|||r 1|cffffff00.9|r",
+
 }
 
 WeakAuras.sound_channel_types = {

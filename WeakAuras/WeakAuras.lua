@@ -7223,3 +7223,65 @@ end
 function WeakAuras.UntrackableUnit(unit)
   return not trackableUnits[unit]
 end
+
+do
+  local timeFormatter = {}
+  Mixin(timeFormatter, SecondsFormatterMixin)
+  timeFormatter:Init(0, SecondsFormatter.Abbreviation.OneLetter)
+  timeFormatter:SetStripIntervalWhitespace(true)
+
+  --- Formats a positive duration
+  -- @param seconds the seconds to format
+  -- @param[opt] precision precision or id from WeakAuras.precision_types, default 1
+  function WeakAuras.SecondsToTime(seconds, precision)
+    if seconds == math.huge or tostring(seconds) == "nan" then
+      -- This is the original behaviour, no idea why a space
+      return " "
+    end
+    if seconds < 0 then
+      -- If we'd return a space like above, all the fake timers in the options get stuck at 0, without restarting
+      return ""
+    end
+
+    precision = precision or 1
+
+    -- Use Blizzard style above 10 minutes
+    if precision == 6 or precision == 7 then
+      if seconds < 600 then
+        precision = precision == 6 and 0 or 4
+      else
+        local fmt, time = SecondsToTimeAbbrev(seconds)
+
+        -- Remove the space between the value and unit
+        return fmt:gsub(" ", ""):format(time)
+      end
+    end
+
+    -- "Modern" Blizzard style using the mixin
+    if precision == 8 or precision == 9 then
+      if precision == 9 and seconds < 10 then
+        -- Additional precision on style 9
+        precision = 1
+      else
+        return timeFormatter:Format(seconds)
+      end
+    end
+
+    if seconds > 60 then
+      -- Format as mm:ss
+      local remainingStr = string.format("%i:", math.floor(seconds / 60))
+      seconds = seconds % 60
+      return remainingStr .. string.format("%02i", seconds)
+    end
+
+    if precision == 4 or precision == 5 then
+      -- Add precision below 3s
+      if seconds < 3 then
+        return string.format(precision == 5 and "%.2f" or "%.1f", seconds)
+      end
+      return string.format("%d", seconds)
+    end
+
+    return string.format("%.".. precision .."f", seconds)
+  end
+end

@@ -3223,6 +3223,8 @@ globals = {
 	"SearchLFGJoin",
 	"SearchLFGLeave",
 	"SearchLFGSort",
+	"SecondsFormatter", -- from SecondsFormatterMixin
+	"SecondsFormatterMixin",
 	"SecureCmdOptionParse",
 	"SelectActiveQuest",
 	"SelectAvailableQuest",
