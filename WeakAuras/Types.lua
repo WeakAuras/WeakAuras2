@@ -96,7 +96,6 @@ WeakAuras.precision_types = {
 
   -- 1h 3m | 3m 7s | 43s | 9.5 | 2.9
   [9] = "|cffffff001h 3m|r |cff424242|||r |cffffff003m 7s|r |cff424242|||r 42s |cff424242|||r 9|cffffff00.5|r |cff424242|||r 1|cffffff00.9|r",
-
 }
 
 WeakAuras.sound_channel_types = {
