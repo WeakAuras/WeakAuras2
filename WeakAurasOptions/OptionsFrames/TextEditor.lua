@@ -430,7 +430,7 @@ local function ConstructTextEditor(frame)
   end
 
   editor.editBox:HookScript("OnKeyDown", function(_, key)
-    if IsControlKeyDown() and IsShiftKeyDown() and key == "D" then
+    if IsControlKeyDown() and IsShiftKeyDown() and key == "Q" then
       local snippet = PullSelectedTextFromEditor()
       local name = "Snippet From Selection"
       if snippet and #snippet > 0 and name and #name > 0 and not savedSnippets[name] then
