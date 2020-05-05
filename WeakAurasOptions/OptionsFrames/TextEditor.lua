@@ -93,13 +93,83 @@ local function set_scheme()
 end
 
 -- Define the premade snippets
-local snippets = {
-  ["Test snippet"] = [=[
+local premadeSnippets = {
+  {
+    name = "Basic function", 
+    snippet = [=[
 function()
-  -- Your code here
-end]=],
-  ["Another Test Snippet"] = [=[
-function() end]=],
+    
+    return
+end]=]
+  },
+  {
+    name = "Custom Activation",
+    snippet = [=[
+function(trigger)
+  return trigger[1] and (trigger[2] or trigger[3])
+end]=]
+  },
+  {
+    name = "Trigger: CLEU",
+    snippet = [=[
+function(event, timestamp, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, ...)
+    
+    return
+end]=]
+  },
+  {
+    name = "Simple throttle",
+    snippet = [=[
+if not aura_env.last or aura_env.last < GetTime() - 1 then
+  aura_env.last = GetTime()
+  
+end]=]
+  },
+  {
+    name = "Trigger State Updater",
+    snippet = [=[
+function(allstates, event, ...)
+    allstates[""] = {
+        show = true,
+        changed = true,
+        progressType = "static"||"timed",
+        value = ,
+        total = ,
+        duration = ,
+        expirationTime = ,
+        autoHide = true,
+        name = ,
+        icon = ,
+        stacks = ,
+        index = ,
+    }
+    return true
+end]=]
+  },
+  {
+    name = "Text: Decimals (percentage)",
+    snippet = [=[
+function()
+    -- Change percentpower as needed 
+    -- Change [1] to other your trigger number
+    -- The 0 in `"%.0f"` controls how many decimal places it will round to
+    if aura_env.states[1] and aura_env.states[1].percentpower then
+        return string.format("%.0f", aura_env.states[1].percentpower)
+    end
+end]=]
+  },
+  {
+    name = "Text: Abbreviate numbers",
+    snippet = [=[
+function()
+    -- Change tooltip1 to your value 
+    -- Change [1] to other your trigger number
+    -- If using a tooltip value, be sure to tick Use Tooltip Values in the trigger
+    if aura_env.states[1] and aura_env.states[1].tooltip1 then
+        return AbbreviateNumbers(aura_env.states[1].tooltip1)
+    end
+end]=]
+  },
 }
 
 local function settings_dropdown_initialize(frame, level, menu)
@@ -226,25 +296,26 @@ local function ConstructTextEditor(frame)
     frame:ReleaseChildren()
 
     local heading1 = AceGUI:Create("Heading")
-    heading1:SetText("Premade Snippets")
-    heading1.frame:SetWidth(200)
+    heading1:SetText(L["Premade Snippets"])
+    heading1:SetRelativeWidth(1)
     frame:AddChild(heading1)
 
     -- Iterate remade snippets and make buttons for them
-    for name, snippet in pairs(snippets) do
+    for order, snippet in ipairs(premadeSnippets) do
       local button = AceGUI:Create("WeakAurasSnippetButton")
-      button:SetTitle("[WA] "..name)
-      button:SetDescription(snippet)
+      button:SetTitle(snippet.name)
+      button:SetDescription(snippet.snippet)
       button:SetCallback("OnClick", function()
-        WeakAuras.editor.editBox:Insert(snippet) 
-        WeakAuras.editor:SetFocus()
+        editor.editBox:Insert(snippet.snippet) 
+        editor:SetFocus()
       end)
+      button:SetRelativeWidth(1)
       frame:AddChild(button)
     end
 
     local heading2 = AceGUI:Create("Heading")
-    heading2:SetText("Your Saved Snippets")
-    heading2.frame:SetWidth(200)
+    heading2:SetText(L["Your Saved Snippets"])
+    heading2:SetRelativeWidth(1)
     frame:AddChild(heading2)
 
     -- iterate saved snippets and make buttons
@@ -253,6 +324,7 @@ local function ConstructTextEditor(frame)
       button:SetTitle(name)
       button:SetDescription(snippet)
       button:SetEditable(true)
+      button:SetRelativeWidth(1)
       button:SetCallback("OnClick", function()
         WeakAuras.editor.editBox:Insert(snippet) 
         WeakAuras.editor:SetFocus()
@@ -301,16 +373,26 @@ local function ConstructTextEditor(frame)
   AddSnippetButton:SetText(L["Add Snippet"])
   AddSnippetButton:RegisterForClicks("LeftButtonUp")
 
-  -- house the buttons in a scroll frame, just in case
+  -- house the buttons in a scroll frame
+  -- All AceGUI from this point, so that buttons can be released and reused
+  local snippetsScrollContainer = AceGUI:Create("SimpleGroup")
+  snippetsScrollContainer:SetFullWidth(true)
+  snippetsScrollContainer:SetFullHeight(true)
+  snippetsScrollContainer:SetLayout("Fill")
+  snippetsScrollContainer.frame:SetParent(snippetsFrame)
+  snippetsScrollContainer.frame:SetPoint("TOPLEFT", snippetsFrame, "TOPLEFT", 17, -35)
+  snippetsScrollContainer.frame:SetPoint("BOTTOMRIGHT", snippetsFrame, "BOTTOMRIGHT", -10, 10)
   local snippetsScroll = AceGUI:Create("ScrollFrame")
-  snippetsScroll.frame:SetParent(snippetsFrame)
-  snippetsScroll.frame:SetPoint("TOPLEFT", snippetsFrame, "TOPLEFT", 17, -35)
-  snippetsScroll.frame:SetPoint("BOTTOMRIGHT", snippetsFrame, "BOTTOMRIGHT", -10, 10)
   snippetsScroll:SetLayout("List")
+  snippetsScrollContainer:AddChild(snippetsScroll)
+  snippetsScroll:FixScroll(true)
+  snippetsScroll.scrollframe:SetScript("OnScrollRangeChanged", function(frame)
+    frame.obj:DoLayout()
+  end)
 
   snippetsFrame:Hide()
 
-  -- add buttons
+  -- add buttons to the list
   UpdateSnippets(snippetsScroll)
 
   -- Toggle the side bar on click
@@ -322,8 +404,45 @@ local function ConstructTextEditor(frame)
       snippetsFrame:Hide()
     end
   end)
+
+  --[[local GetMissingString = function(s1, s2)
+    for i = 1, #s1 do
+      if s1:sub(i,i) ~= s2:sub(i,i) then
+        s2 = s2:sub(i)
+        s1 = s1:sub(i)
+        return(s1:match("(.+)"..s2))
+      end
+    end
+  end
+  local PullSelectedTextFromEditor = function()
+    local wholeString = editor.editBox:GetText()
+    editor.editBox:Insert("")
+    local minusSelection = editor.editBox:GetText()
+    print(wholeString, minusSelection)
+    if wholeString == minusSelection then
+      return wholeString
+    else
+      local selectedText = GetMissingString(wholeString, minusSelection)
+      print(selectedText)
+      editor.editBox:SetText(wholeString)
+      return selectedText
+    end
+  end
+
+  editor.editBox:HookScript("OnKeyDown", function(_, key)
+    if IsControlKeyDown() and IsShiftKeyDown() and key == "D" then
+      local snippet = PullSelectedTextFromEditor()
+      local name = "Snippet From Selection"
+      if snippet and #snippet > 0 and name and #name > 0 and not savedSnippets[name] then
+        savedSnippets[name] = snippet
+        AddSnippetTextBox:SetText("")
+        UpdateSnippets(snippetsScroll)
+      end
+    end
+  end)]]
+
   AddSnippetTextBox:SetScript("OnEnterPressed", function(self)
-    local snippet = WeakAuras.editor.editBox:GetText()
+    local snippet = editor.editBox:GetText()
     local name = AddSnippetTextBox:GetText()
     if snippet and #snippet > 0 and name and #name > 0 and not savedSnippets[name] then
       savedSnippets[name] = snippet
@@ -337,7 +456,7 @@ local function ConstructTextEditor(frame)
     AceGUI:ClearFocus()
   end)
   AddSnippetButton:SetScript("OnClick", function(self)
-    local snippet = WeakAuras.editor.editBox:GetText()
+    local snippet = editor.editBox:GetText()
     local name = AddSnippetTextBox:GetText()
     if snippet and #snippet > 0 and name and #name > 0 and not savedSnippets[name] then
       savedSnippets[name] = snippet
