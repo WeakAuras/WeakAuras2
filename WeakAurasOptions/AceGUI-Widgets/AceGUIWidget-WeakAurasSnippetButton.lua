@@ -15,6 +15,8 @@ local pairs = pairs
 local _G = _G
 local PlaySound, CreateFrame, UIParent = PlaySound, CreateFrame, UIParent
 
+local L = WeakAuras.L
+
 --[[-----------------------------------------------------------------------------
 Scripts
 -------------------------------------------------------------------------------]]
@@ -39,8 +41,12 @@ local function Control_OnEnter(frame)
 	--frame.tooltip:Show()
 	local tooltip = GameTooltip;
 	tooltip:SetOwner(frame, "ANCHOR_RIGHT")
-  	tooltip:ClearLines();
+	tooltip:ClearLines();
+	if frame.editable then
+		tooltip:AddDoubleLine(frame.titleText, L["(Right click to rename)"], nil,nil,nil, 0.6,0.6,0.6)
+	else
 	tooltip:AddLine(frame.titleText)
+	end
 	tooltip:AddLine("   ")
 	tooltip:AddLine(frame.descriptionText, 0.8, 0.8, 0.8)
 	tooltip:Show()
@@ -48,7 +54,6 @@ local function Control_OnEnter(frame)
 end
 
 local function Control_OnLeave(frame)
-	--frame.tooltip:Hide()
 	GameTooltip:Hide()
 	frame.obj:Fire("OnLeave")
 end
@@ -58,7 +63,6 @@ local function rename_complete(self, ...)
 	AceGUI:ClearFocus()
 	self:Disable()
 	self:Hide()
-	--frame.title:Show()
 	self:GetParent().obj:Fire("OnEnterPressed", ...)
 end
 --[[-----------------------------------------------------------------------------
@@ -67,8 +71,6 @@ Methods
 local methods = {
 	["OnAcquire"] = function(self)
 		-- restore default values
-		--self:SetHeight(16)
-		--self:SetWidth(200)
 		self:SetDisabled(false)
         self:SetTitle()
         self:SetEditable(false)
@@ -80,7 +82,7 @@ local methods = {
 		self.frame.titleText = text
 		self.title:SetText(text)
     end,
-    
+
 	["SetDescription"] = function(self, text)
 		self.frame.descriptionText = text
 	end,
@@ -109,10 +111,10 @@ local methods = {
         else
             self.frame.editable = false
 			self.deleteButton:Hide()
-			self.title:SetPoint("LEFT", self.deleteButton, "LEFT")
+			self.title:SetPoint("LEFT", self.deleteButton, "LEFT", 4, 0)
         end
 	end,
-	
+
 }
 
 --[[-----------------------------------------------------------------------------
@@ -127,15 +129,14 @@ local function Constructor()
 	button:SetScript("OnClick", Button_OnClick)
 	button:SetScript("OnEnter", Control_OnEnter)
     button:SetScript("OnLeave", Control_OnLeave)
-    
+
     button:SetHeight(24)
     button:SetWidth(170)
-    --button:SetClipsChildren(true)
 
     local deleteButton = CreateFrame("BUTTON", nil, button)
     deleteButton:SetPoint("LEFT", button, "LEFT")
 	deleteButton:SetSize(20, 20)
-	deleteTex = deleteButton:CreateTexture()
+	local deleteTex = deleteButton:CreateTexture()
 	deleteTex:SetAllPoints()
 	deleteTex:SetTexture([[Interface\Buttons\CancelButton-Up]])
 	deleteTex:SetTexCoord(0.1, 0.9, 0.1, 0.9)
@@ -144,7 +145,6 @@ local function Constructor()
 	button.deleteButton = deleteButton
 
 	local title = button:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge");
-    --frame.title = title;
     title:SetHeight(14);
     title:SetJustifyH("LEFT");
     title:SetPoint("LEFT", deleteButton, "RIGHT");
@@ -154,16 +154,14 @@ local function Constructor()
 
 	local ntex = button:CreateTexture()
 	ntex:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp")
-	--ntex:SetTexCoord(0, 0.625, 0, 0.6875)
-	ntex:SetVertexColor(0.6,0.8,1,0.3)
+	ntex:SetVertexColor(0.8,0.8,0.8,0.25)
 	ntex:SetPoint("TOPLEFT", 1,-1)
 	ntex:SetPoint("BOTTOMRIGHT", -1, 1)
 	button:SetNormalTexture(ntex)
 
     local htex = button:CreateTexture()
-    --htex:SetColorTexture(1,1,1,0.2)
 	htex:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp")
-	htex:SetVertexColor(0.6, 0.8, 1, 0.5)
+	htex:SetVertexColor(0.3, 0.5, 1, 0.5)
 	htex:SetBlendMode("ADD")
 	htex:SetPoint("TOPLEFT", button, "TOPLEFT", 1, -1)
 	htex:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 1)
@@ -172,26 +170,24 @@ local function Constructor()
 
     local ptex = button:CreateTexture()
     ptex:SetColorTexture(1,1,1,0.2)
-	--ptex:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite")
-	--ptex:SetVertexColor(1, 1, 1, 0.2)
 	ptex:SetPoint("TOPLEFT", button, "TOPLEFT", 2, -1)
 	ptex:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 1)
     button:SetPushedTexture(ptex)
-	button.ptext = ptext
-	
-    delHighlight = deleteButton:CreateTexture()
+	button.ptext = ptex
+
+    local delHighlight = deleteButton:CreateTexture()
 	delHighlight:SetTexture([[Interface\Buttons\CancelButton-Highlight]])
 	delHighlight:SetTexCoord(0.1, 0.9, 0.1, 0.9)
     delHighlight:SetAllPoints()
     deleteButton:SetHighlightTexture(delHighlight)
-    delPushed = deleteButton:CreateTexture()
+    local delPushed = deleteButton:CreateTexture()
 	delPushed:SetTexture([[Interface\Buttons\CancelButton-Down]])
 	delPushed:SetTexCoord(0.1, 0.9, 0.1, 0.9)
     delPushed:SetAllPoints()
 	deleteButton:SetPushedTexture(delPushed)
-	button.deleteHighlight = deleteHighlight
+	button.deleteHighlight = delHighlight
 
-	renameEditBox = CreateFrame("EditBox", nil, button, "InputBoxTemplate")
+	local renameEditBox = CreateFrame("EditBox", nil, button, "InputBoxTemplate")
 	renameEditBox:SetHeight(14)
     renameEditBox:SetPoint("TOPLEFT", title, "TOPLEFT")
 	renameEditBox:SetPoint("BOTTOMRIGHT", title, "BOTTOMRIGHT")
@@ -216,7 +212,7 @@ local function Constructor()
 
 	local widget = {
         title  = title,
-    	frame = button,
+		frame = button,
 		type  = Type,
         htex = htex,
         ptex = ptex,

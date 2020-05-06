@@ -1,7 +1,7 @@
 if not WeakAuras.IsCorrectVersion() then return end
 
 -- Lua APIs
-local pairs, type = pairs, type
+local pairs, type, ipairs = pairs, type, ipairs
 local loadstring = loadstring
 
 -- WoW APIs
@@ -95,10 +95,10 @@ end
 -- Define the premade snippets
 local premadeSnippets = {
   {
-    name = "Basic function", 
+    name = "Basic function",
     snippet = [=[
 function()
-    
+
     return
 end]=]
   },
@@ -113,7 +113,7 @@ end]=]
     name = "Trigger: CLEU",
     snippet = [=[
 function(event, timestamp, subEvent, hideCaster, sourceGUID, sourceName, sourceFlags, sourceRaidFlags, destGUID, destName, destFlags, destRaidFlags, ...)
-    
+
     return
 end]=]
   },
@@ -122,7 +122,7 @@ end]=]
     snippet = [=[
 if not aura_env.last or aura_env.last < GetTime() - 1 then
   aura_env.last = GetTime()
-  
+
 end]=]
   },
   {
@@ -150,7 +150,7 @@ end]=]
     name = "Text: Decimals (percentage)",
     snippet = [=[
 function()
-    -- Change percentpower as needed 
+    -- Change percentpower as needed
     -- Change [1] to other your trigger number
     -- The 0 in `"%.0f"` controls how many decimal places it will round to
     if aura_env.states[1] and aura_env.states[1].percentpower then
@@ -162,7 +162,7 @@ end]=]
     name = "Text: Abbreviate numbers",
     snippet = [=[
 function()
-    -- Change tooltip1 to your value 
+    -- Change tooltip1 to your value
     -- Change [1] to other your trigger number
     -- If using a tooltip value, be sure to tick Use Tooltip Values in the trigger
     if aura_env.states[1] and aura_env.states[1].tooltip1 then
@@ -285,7 +285,7 @@ local function ConstructTextEditor(frame)
   snippetsButton:SetWidth(100)
   snippetsButton:SetText(L["Snippets"])
   snippetsButton:RegisterForClicks("LeftButtonUp")
-  
+
   -- Get the saved snippets from SavedVars
   WeakAurasOptionsSaved.savedSnippets = WeakAurasOptionsSaved.savedSnippets or {}
   local savedSnippets = WeakAurasOptionsSaved.savedSnippets
@@ -294,19 +294,20 @@ local function ConstructTextEditor(frame)
   local function UpdateSnippets(frame)
     -- release first before rebuilding
     frame:ReleaseChildren()
+    table.sort(savedSnippets, function(a,b) return a.name < b.name end)
 
     local heading1 = AceGUI:Create("Heading")
     heading1:SetText(L["Premade Snippets"])
     heading1:SetRelativeWidth(1)
     frame:AddChild(heading1)
 
-    -- Iterate remade snippets and make buttons for them
+    -- Iterate premade snippets and make buttons for them
     for order, snippet in ipairs(premadeSnippets) do
       local button = AceGUI:Create("WeakAurasSnippetButton")
       button:SetTitle(snippet.name)
       button:SetDescription(snippet.snippet)
       button:SetCallback("OnClick", function()
-        editor.editBox:Insert(snippet.snippet) 
+        editor.editBox:Insert(snippet.snippet)
         editor:SetFocus()
       end)
       button:SetRelativeWidth(1)
@@ -319,26 +320,34 @@ local function ConstructTextEditor(frame)
     frame:AddChild(heading2)
 
     -- iterate saved snippets and make buttons
-    for name, snippet in pairs(savedSnippets) do
+    for order, snippet in ipairs(savedSnippets) do
       local button = AceGUI:Create("WeakAurasSnippetButton")
-      button:SetTitle(name)
-      button:SetDescription(snippet)
+      button:SetTitle(snippet.name)
+      button:SetDescription(snippet.snippet)
       button:SetEditable(true)
       button:SetRelativeWidth(1)
       button:SetCallback("OnClick", function()
-        WeakAuras.editor.editBox:Insert(snippet) 
+        WeakAuras.editor.editBox:Insert(snippet.snippet)
         WeakAuras.editor:SetFocus()
       end)
       button.deleteButton:SetScript("OnClick", function()
-        savedSnippets[name] = nil
+        table.remove(savedSnippets, order)
         UpdateSnippets(frame)
       end)
       button:SetCallback("OnEnterPressed", function()
         local newName = button.renameEditBox:GetText()
-        if newName and #newName > 0 and not savedSnippets[newName] then
-          savedSnippets[name] = nil
-          savedSnippets[newName] = snippet
-          UpdateSnippets(frame)
+        if newName and #newName > 0 then
+          local found = false
+          for _, snippet in ipairs(savedSnippets) do
+            if snippet.name == newName then
+              found = true
+              break
+            end
+          end
+          if not found then
+            savedSnippets[order].name = newName
+            UpdateSnippets(frame)
+          end
         end
       end)
       frame:AddChild(button)
@@ -405,49 +414,22 @@ local function ConstructTextEditor(frame)
     end
   end)
 
-  --[[local GetMissingString = function(s1, s2)
-    for i = 1, #s1 do
-      if s1:sub(i,i) ~= s2:sub(i,i) then
-        s2 = s2:sub(i)
-        s1 = s1:sub(i)
-        return(s1:match("(.+)"..s2))
-      end
-    end
-  end
-  local PullSelectedTextFromEditor = function()
-    local wholeString = editor.editBox:GetText()
-    editor.editBox:Insert("")
-    local minusSelection = editor.editBox:GetText()
-    print(wholeString, minusSelection)
-    if wholeString == minusSelection then
-      return wholeString
-    else
-      local selectedText = GetMissingString(wholeString, minusSelection)
-      print(selectedText)
-      editor.editBox:SetText(wholeString)
-      return selectedText
-    end
-  end
-
-  editor.editBox:HookScript("OnKeyDown", function(_, key)
-    if IsControlKeyDown() and IsShiftKeyDown() and key == "Q" then
-      local snippet = PullSelectedTextFromEditor()
-      local name = "Snippet From Selection"
-      if snippet and #snippet > 0 and name and #name > 0 and not savedSnippets[name] then
-        savedSnippets[name] = snippet
-        AddSnippetTextBox:SetText("")
-        UpdateSnippets(snippetsScroll)
-      end
-    end
-  end)]]
-
   AddSnippetTextBox:SetScript("OnEnterPressed", function(self)
     local snippet = editor.editBox:GetText()
     local name = AddSnippetTextBox:GetText()
-    if snippet and #snippet > 0 and name and #name > 0 and not savedSnippets[name] then
-      savedSnippets[name] = snippet
-      AddSnippetTextBox:SetText("")
-      UpdateSnippets(snippetsScroll)
+    if snippet and #snippet > 0 and name and #name > 0 then
+      local found = false
+      for _, snippet in ipairs(savedSnippets) do
+        if snippet.name == name then
+          found = true
+          break
+        end
+      end
+      if not found then
+        table.insert(savedSnippets, {name = name, snippet = snippet})
+        AddSnippetTextBox:SetText("")
+        UpdateSnippets(snippetsScroll)
+      end
     end
   end)
   AddSnippetTextBox:SetScript("OnEscapePressed", function(self)
@@ -458,10 +440,19 @@ local function ConstructTextEditor(frame)
   AddSnippetButton:SetScript("OnClick", function(self)
     local snippet = editor.editBox:GetText()
     local name = AddSnippetTextBox:GetText()
-    if snippet and #snippet > 0 and name and #name > 0 and not savedSnippets[name] then
-      savedSnippets[name] = snippet
-      AddSnippetTextBox:SetText("")
-      UpdateSnippets(snippetsScroll)
+    if snippet and #snippet > 0 and name and #name > 0 then
+      local found = false
+      for _, snippet in ipairs(savedSnippets) do
+        if snippet.name == name then
+          found = true
+          break
+        end
+      end
+      if not found then
+        table.insert(savedSnippets, {name = name, snippet = snippet})
+        AddSnippetTextBox:SetText("")
+        UpdateSnippets(snippetsScroll)
+      end
     end
   end)
 
