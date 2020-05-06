@@ -229,7 +229,7 @@ local function ConstructTextEditor(frame)
   editorError:SetJustifyV("TOP");
   editorError:SetTextColor(1, 0, 0);
   editorError:SetPoint("LEFT", helpButton, "RIGHT", 0, 4);
-  editorError:SetPoint("RIGHT", close, "LEFT");
+  editorError:SetPoint("RIGHT", settings_frame, "LEFT");
 
   local editorLine = CreateFrame("Editbox", nil, group.frame);
   -- Set script on enter pressed..
