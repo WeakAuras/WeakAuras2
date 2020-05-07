@@ -108,7 +108,7 @@ end]=]
     name = "Custom Activation",
     snippet = [=[
 function(trigger)
-  return trigger[1] and (trigger[2] or trigger[3])
+    return trigger[1] and (trigger[2] or trigger[3])
 end]=]
   },
   {
@@ -123,7 +123,7 @@ end]=]
     name = "Simple throttle",
     snippet = [=[
 if not aura_env.last or aura_env.last < GetTime() - 1 then
-  aura_env.last = GetTime()
+    aura_env.last = GetTime()
 
 end]=]
   },
@@ -171,6 +171,23 @@ function()
         return AbbreviateNumbers(aura_env.states[1].tooltip1)
     end
 end]=]
+  },
+  {
+    name = "Text: Colored Name",
+    snippet = [=[
+function()
+    if aura_env.states[1] and aura_env.states[1].unit then
+        return WA_ClassColorName(aura_env.states[1].unit)
+    end
+end]=]
+  },
+  {
+    name = "Utility: Dump",
+    snippet = IsAddOnLoaded("ViragDevTool") and [[
+ViragDevTool_AddData()]] or
+      [[
+if not IsAddOnLoaded("Blizzard_DebugTools") then LoadAddOn("Blizzard_DebugTools") end
+DevTools_Dump()]]
   }
 }
 
