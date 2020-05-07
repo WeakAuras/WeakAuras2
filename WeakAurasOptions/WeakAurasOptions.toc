@@ -54,7 +54,6 @@ WeakAurasOptions.lua
 ExternalAddons.lua
 ConditionOptions.lua
 AuthorOptions.lua
-DefaultOptions.lua
 
 OptionsFrames\OptionsFrame.lua
 # -- Groups
