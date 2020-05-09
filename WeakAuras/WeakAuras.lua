@@ -4737,15 +4737,16 @@ local glow_frame_monitor
 local anchor_unitframe_monitor
 WeakAuras.dyngroup_unitframe_monitor = {}
 do
-  LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_UPDATE", function(event, frame, unit)
+  local function frame_monitor_callback(event, frame, unit)
     local new_frame
+    local update_frame = event == "FRAME_UNIT_UPDATE"
     if type(glow_frame_monitor) == "table" then
       for region, data in pairs(glow_frame_monitor) do
         if region.state and region.state.unit == unit
-        and data.frame ~= frame
+        and (data.frame ~= frame) == update_frame
         then
           if not new_frame then
-            new_frame = WeakAuras.GetUnitFrame(unit)
+            new_frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
           end
           if new_frame and new_frame ~= data.frame then
             local id = region.id .. (region.cloneId or "")
@@ -4767,10 +4768,10 @@ do
     if type(anchor_unitframe_monitor) == "table" then
       for region, data in pairs(anchor_unitframe_monitor) do
         if region.state and region.state.unit == unit
-        and data.frame ~= frame
+        and (data.frame ~= frame) == update_frame
         then
           if not new_frame then
-            new_frame = WeakAuras.GetUnitFrame(unit)
+            new_frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
           end
           if new_frame and new_frame ~= data.frame then
             WeakAuras.AnchorFrame(data.data, region, data.parent)
@@ -4780,26 +4781,11 @@ do
     end
     for regionData, data_frame in pairs(WeakAuras.dyngroup_unitframe_monitor) do
       if regionData.region and regionData.region.state and regionData.region.state.unit == unit
-      and data_frame ~= frame
+      and (data_frame ~= frame) == update_frame
       then
         if not new_frame then
-          new_frame = WeakAuras.GetUnitFrame(unit)
+          new_frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
         end
-        if new_frame and new_frame ~= data_frame then
-          regionData.controlPoint:ReAnchor(new_frame)
-          regionData.controlPoint:SetShown(regionData.shown)
-          WeakAuras.dyngroup_unitframe_monitor[regionData] = new_frame
-        end
-      end
-    end
-  end)
-
-  LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_REMOVED", function(event, frame, unit)
-    for regionData, data_frame in pairs(WeakAuras.dyngroup_unitframe_monitor) do
-      if regionData.region and regionData.region.state and regionData.region.state.unit == unit
-      and data_frame == frame
-      then
-        local new_frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
         if new_frame and new_frame ~= data_frame then
           regionData.controlPoint:ReAnchor(new_frame)
           regionData.controlPoint:SetShown(regionData.shown and new_frame ~= WeakAuras.HiddenFrames)
@@ -4807,7 +4793,10 @@ do
         end
       end
     end
-  end)
+  end
+
+  LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_UPDATE", frame_monitor_callback)
+  LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_REMOVED", frame_monitor_callback)
 end
 
 function WeakAuras.HandleGlowAction(actions, region)
@@ -7003,7 +6992,7 @@ local function GetAnchorFrame(data, region, parent)
   if (anchorFrameType == "UNITFRAME") then
     local unit = region.state.unit
     if unit then
-      local frame = WeakAuras.GetUnitFrame(unit)
+      local frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
       if frame then
         anchor_unitframe_monitor = anchor_unitframe_monitor or {}
         anchor_unitframe_monitor[region] = {
