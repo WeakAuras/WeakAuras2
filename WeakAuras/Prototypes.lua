@@ -1434,7 +1434,7 @@ local function AddUnitChangeInternalEvents(triggerUnit, t)
   if (triggerUnit == nil) then
     return
   end
-  if (triggerUnit == "player" or triggerUnit == "multi") then
+  if (triggerUnit == "multi") then
     -- Handled by normal events"
   elseif triggerUnit == "pet" then
     WeakAuras.WatchForPetDeath();
@@ -2265,6 +2265,7 @@ WeakAuras.event_prototypes = {
       if trigger.use_ignoreDead or trigger.use_ignoreDisconnected then
         AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
       end
+      AddUnitEventForEvents(result, unit, "UNIT_POWER_BAR_SHOW")
       return result
     end,
     internal_events = function(trigger)

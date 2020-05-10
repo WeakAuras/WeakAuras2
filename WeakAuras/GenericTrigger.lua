@@ -1209,7 +1209,6 @@ function GenericTrigger.Add(data, region)
               local trigger_all_events = prototype.events;
               internal_events = prototype.internal_events;
               force_events = prototype.force_events;
-              trigger_unit_events = prototype.unit_events;
               if prototype.subevents then
                 trigger_subevents = prototype.subevents
                 if trigger_subevents and type(trigger_subevents) == "function" then
@@ -2622,6 +2621,7 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange:RegisterEvent("NAME_PLATE_UNIT_ADDED")
     watchUnitChange:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
     watchUnitChange:RegisterEvent("UNIT_FACTION")
+    watchUnitChange:RegisterEvent("PLAYER_ENTERING_WORLD")
 
     watchUnitChange:SetScript("OnEvent", function(self, event, unit)
       WeakAuras.StartProfileSystem("generictrigger unit change");
@@ -2649,7 +2649,7 @@ function WeakAuras.WatchUnitChange(unit)
 
         for unit, guid in pairs(watchUnitChange.unitChangeGUIDS) do
           local newGuid = WeakAuras.UnitExistsFixed(unit) and UnitGUID(unit) or ""
-          if guid ~= newGuid then
+          if guid ~= newGuid or event == "PLAYER_ENTERING_WORLD" then
             WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
             watchUnitChange.unitChangeGUIDS[unit] = newGuid
           elseif WeakAuras.multiUnitUnits.group[unit] then
@@ -2665,9 +2665,7 @@ function WeakAuras.WatchUnitChange(unit)
             end
           end
         end
-
         watchUnitChange.inRaid = inRaid
-
       end
       WeakAuras.StopProfileSystem("generictrigger unit change");
     end)
