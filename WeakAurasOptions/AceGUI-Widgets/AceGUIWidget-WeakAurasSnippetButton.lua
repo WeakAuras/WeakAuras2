@@ -97,15 +97,26 @@ local methods = {
   ["UnlockHighlight"] = function(self)
     self.frame:UnlockHighlight()
   end,
-  ["SetEditable"] = function(self, bool)
-    if bool then
+  ["SetEditable"] = function(self, editable)
+    if editable then
       self.frame.editable = true
       self.deleteButton:Show()
-      self.title:SetPoint("LEFT", self.deleteButton, "RIGHT")
+      self.title:SetPoint("RIGHT", self.deleteButton, "LEFT")
     else
       self.frame.editable = false
       self.deleteButton:Hide()
-      self.title:SetPoint("LEFT", self.deleteButton, "LEFT", 4, 0)
+      self.title:SetPoint("RIGHT", self.deleteButton, "RIGHT", 4, 0)
+    end
+  end,
+  ["SetNew"] = function(self, new)
+    if new then
+      AceGUI:ClearFocus()
+      self.title:Hide()
+      self.renameEditBox:Show()
+      self.renameEditBox:Enable()
+      self.renameEditBox:SetText(self.title:GetText())
+      self.renameEditBox:HighlightText()
+      self.renameEditBox:SetFocus()
     end
   end
 }
@@ -127,7 +138,7 @@ local function Constructor()
   button:SetWidth(170)
 
   local deleteButton = CreateFrame("BUTTON", nil, button)
-  deleteButton:SetPoint("LEFT", button, "LEFT")
+  deleteButton:SetPoint("RIGHT", button, "RIGHT", -3, 0)
   deleteButton:SetSize(20, 20)
   local deleteTex = deleteButton:CreateTexture()
   deleteTex:SetAllPoints()
@@ -140,31 +151,29 @@ local function Constructor()
   local title = button:CreateFontString(nil, "OVERLAY", "GameFontHighlightLarge")
   title:SetHeight(14)
   title:SetJustifyH("LEFT")
-  title:SetPoint("LEFT", deleteButton, "RIGHT")
-  title:SetPoint("RIGHT", button, "RIGHT")
+  title:SetPoint("LEFT", button, "LEFT", 3, 0)
+  title:SetPoint("RIGHT", deleteButton, "LEFT")
   title:SetTextColor(1, 1, 1, 1)
   button.title = title
 
   local ntex = button:CreateTexture()
   ntex:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp")
   ntex:SetVertexColor(0.8, 0.8, 0.8, 0.25)
-  ntex:SetPoint("TOPLEFT", 1, -1)
-  ntex:SetPoint("BOTTOMRIGHT", -1, 1)
+  ntex:SetPoint("TOPLEFT", 0, -1)
+  ntex:SetPoint("BOTTOMRIGHT", 0, 1)
   button:SetNormalTexture(ntex)
 
   local htex = button:CreateTexture()
   htex:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp")
   htex:SetVertexColor(0.3, 0.5, 1, 0.5)
   htex:SetBlendMode("ADD")
-  htex:SetPoint("TOPLEFT", button, "TOPLEFT", 1, -1)
-  htex:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 1)
+  htex:SetAllPoints(ntex)
   button:SetHighlightTexture(htex)
   button.htex = htex
 
   local ptex = button:CreateTexture()
   ptex:SetColorTexture(1, 1, 1, 0.2)
-  ptex:SetPoint("TOPLEFT", button, "TOPLEFT", 2, -1)
-  ptex:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 1)
+  htex:SetAllPoints(ntex)
   button:SetPushedTexture(ptex)
   button.ptext = ptex
 

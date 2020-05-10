@@ -181,14 +181,6 @@ function()
     end
 end]=]
   },
-  {
-    name = "Utility: Dump",
-    snippet = IsAddOnLoaded("ViragDevTool") and [[
-ViragDevTool_AddData()]] or
-      [[
-if not IsAddOnLoaded("Blizzard_DebugTools") then LoadAddOn("Blizzard_DebugTools") end
-DevTools_Dump()]]
-  }
 }
 
 local function settings_dropdown_initialize(frame, level, menu)
@@ -368,6 +360,8 @@ local function ConstructTextEditor(frame)
       button:SetDescription(snippet.snippet)
       button:SetEditable(true)
       button:SetRelativeWidth(1)
+      button:SetNew(snippet.new)
+      snippet.new = false
       button:SetCallback(
         "OnClick",
         function()
@@ -423,15 +417,10 @@ local function ConstructTextEditor(frame)
   snippetsFrame:SetBackdropColor(0, 0, 0, 1)
 
   -- Add button to save new snippet
-  local AddSnippetTextBox = CreateFrame("EditBox", nil, snippetsFrame, "InputBoxTemplate")
-  AddSnippetTextBox:SetPoint("TOPLEFT", snippetsFrame, "TOPLEFT", 25, -15)
-  AddSnippetTextBox:SetHeight(20)
-  AddSnippetTextBox:SetWidth(100)
-  AddSnippetTextBox:SetAutoFocus(false)
   local AddSnippetButton = CreateFrame("Button", nil, snippetsFrame, "UIPanelButtonTemplate")
-  AddSnippetButton:SetPoint("TOPLEFT", AddSnippetTextBox, "TOPRIGHT")
+  AddSnippetButton:SetPoint("TOPLEFT", snippetsFrame, "TOPLEFT", 13, -10)
+  AddSnippetButton:SetPoint("TOPRIGHT", snippetsFrame, "TOPRIGHT", -13, -10)
   AddSnippetButton:SetHeight(20)
-  AddSnippetButton:SetWidth(100)
   AddSnippetButton:SetText(L["Add Snippet"])
   AddSnippetButton:RegisterForClicks("LeftButtonUp")
 
@@ -457,9 +446,6 @@ local function ConstructTextEditor(frame)
 
   snippetsFrame:Hide()
 
-  -- add buttons to the list
-  UpdateSnippets(snippetsScroll)
-
   -- Toggle the side bar on click
   snippetsButton:SetScript(
     "OnClick",
@@ -473,55 +459,27 @@ local function ConstructTextEditor(frame)
     end
   )
 
-  AddSnippetTextBox:SetScript(
-    "OnEnterPressed",
-    function(self)
-      local snippet = editor.editBox:GetText()
-      local name = AddSnippetTextBox:GetText()
-      if snippet and #snippet > 0 and name and #name > 0 then
-        local found = false
-        for _, snippet in ipairs(savedSnippets) do
-          if snippet.name == name then
-            found = true
-            break
-          end
-        end
-        if not found then
-          table.insert(savedSnippets, {name = name, snippet = snippet})
-          AddSnippetTextBox:SetText("")
-          UpdateSnippets(snippetsScroll)
-        end
-      end
-    end
-  )
-  AddSnippetTextBox:SetScript(
-    "OnEscapePressed",
-    function(self)
-      self:SetText("")
-      self:ClearFocus()
-      AceGUI:ClearFocus()
-    end
-  )
   AddSnippetButton:SetScript(
     "OnClick",
     function(self)
       local snippet = editor.editBox:GetText()
-      local name = AddSnippetTextBox:GetText()
-      if snippet and #snippet > 0 and name and #name > 0 then
-        local found = false
-        for _, snippet in ipairs(savedSnippets) do
-          if snippet.name == name then
-            found = true
-            break
+      if snippet and #snippet > 0 then
+        local baseName, name, index = "New Snippet", "New Snippet", 0
+        local snippetExists = function(name)
+          for _, snippet in ipairs(savedSnippets) do
+            if snippet.name == name then
+              return true
+            end
           end
         end
-        if not found then
-          table.insert(savedSnippets, {name = name, snippet = snippet})
-          AddSnippetTextBox:SetText("")
-          UpdateSnippets(snippetsScroll)
+        while snippetExists(name) do
+          index = index + 1
+          name = format("%s %d", baseName, index)
+        end
+        table.insert(savedSnippets, {name = name, snippet = snippet, new = true})
+        UpdateSnippets(snippetsScroll)
         end
       end
-    end
   )
 
   -- CTRL + S saves and closes, ESC cancels and closes
