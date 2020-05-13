@@ -424,7 +424,8 @@ local function TotalProfileTime(map)
   return total
 end
 
-function WeakAuras.PrintProfile(popup)
+function WeakAuras.PrintProfile()
+  local popup = ProfilePopup()
   if not profileData.systems.time then
     prettyPrint(L["No Profiling information saved."])
     return
@@ -685,7 +686,7 @@ function RealTimeProfilingWindow:Init()
   reportButton:SetWidth(width)
   reportButton:SetText(L["Report Summary"])
   reportButton:SetScript("OnClick", function(self)
-    WeakAuras.PrintProfile(ProfilePopup())
+    WeakAuras.PrintProfile()
   end)
   reportButton:Hide()
 
