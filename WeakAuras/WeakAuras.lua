@@ -116,7 +116,7 @@ function SlashCmdList.WEAKAURAS(input)
   elseif msg == "pstop" then
     WeakAuras.StopProfile();
   elseif msg == "pprint" then
-    WeakAuras.PrintProfile(args[1]);
+    WeakAuras.PrintProfile();
   elseif msg == "pcancel" then
     WeakAuras.CancelScheduledProfile()
   elseif msg == "minimap" then
