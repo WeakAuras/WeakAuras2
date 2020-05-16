@@ -705,7 +705,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     useHostility = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = WeakAuras.newFeatureString .. L["Filter by Hostility"],
+      name = WeakAuras.newFeatureString .. L["Filter by Nameplate Type"],
       order = 68.4,
       hidden = function() return
         not (trigger.type == "aura2" and trigger.unit == "nameplate")
