@@ -849,7 +849,7 @@ local function GetAllUnits(unit, allUnits)
     local i = 1
     local max
     if unit == "boss" then
-      max = 4
+      max = MAX_BOSS_FRAMES
     elseif unit == "arena" then
       max = 5
     elseif unit == "nameplate" then
