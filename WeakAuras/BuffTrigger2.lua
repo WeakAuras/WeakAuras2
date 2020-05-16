@@ -730,6 +730,11 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
       changed = true
     end
 
+    if state.tooltip or state.tooltip1 or state.tooltip2 or state.tooltip3 then
+      state.tooltip, state.tooltip1, state.tooltip2, state.tooltip3 = nil, nil, nil, nil
+      changed = true
+    end
+
     if state.matchCount ~= matchCount then
       state.matchCount = matchCount
       changed = true
