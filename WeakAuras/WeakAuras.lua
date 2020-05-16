@@ -4632,9 +4632,10 @@ function WeakAuras.ReleaseClone(id, cloneId, regionType)
   clonePool[regionType][#clonePool[regionType] + 1] = region;
 end
 
-function WeakAuras.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region, customFunc)
+function WeakAuras.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region, customFunc, when)
+  local useHiddenStates = when == "finish"
   if (message:find('%%')) then
-    message = WeakAuras.ReplacePlaceHolders(message, region, customFunc);
+    message = WeakAuras.ReplacePlaceHolders(message, region, customFunc, useHiddenStates);
   end
   if(message_type == "PRINT") then
     DEFAULT_CHAT_FRAME:AddMessage(message, r or 1, g or 1, b or 1);
@@ -4880,7 +4881,7 @@ function WeakAuras.PerformActions(data, when, region)
 
   if(actions.do_message and actions.message_type and actions.message) then
     local customFunc = WeakAuras.customActionsFunctions[data.id][when .. "_message"];
-    WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc);
+    WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc, when);
   end
 
   if (actions.stop_sound) then
@@ -6410,31 +6411,33 @@ function WeakAuras.ContainsAnyPlaceHolders(textStr)
   return ContainsPlaceHolders(textStr, function(symbol) return true end)
 end
 
-local function ValueForSymbol(symbol, region, customFunc, regionState, regionStates)
+local function ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates)
   local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
   triggerNum = triggerNum and tonumber(triggerNum)
   if triggerNum and sym then
-    if regionStates and regionStates[triggerNum] then
-      if regionStates[triggerNum][sym] then
-        return tostring(regionStates[triggerNum][sym]) or ""
-      else
-        local value = ReplaceValuePlaceHolders(sym, region, customFunc, regionStates[triggerNum]);
-        return value or ""
+    if regionStates[triggerNum] then
+      if (useHiddenStates or regionStates[triggerNum].show) then
+        if regionStates[triggerNum][sym] then
+          return tostring(regionStates[triggerNum][sym]) or ""
+        else
+          local value = ReplaceValuePlaceHolders(sym, region, customFunc, regionStates[triggerNum]);
+          return value or ""
+        end
       end
     end
     return ""
-  elseif regionState and regionState[symbol] then
-    return regionState.show and tostring(regionState[symbol]) or ""
+  elseif regionState[symbol] then
+    return (useHiddenStates or regionState.show) and tostring(regionState[symbol]) or ""
   else
-    local value = regionState and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState);
+    local value = (useHiddenStates or regionState.show) and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState);
     return value or ""
   end
 end
 
-function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
+function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc, useHiddenStates)
   local regionValues = region.values;
-  local regionState = region.state;
-  local regionStates = region.states;
+  local regionState = region.state or {};
+  local regionStates = region.states or {};
   if (not regionState and not regionValues) then
     return;
   end
@@ -6446,7 +6449,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
 
   if (endPos == 2) then
     if string.byte(textStr, 1) == 37 then
-      local value = ReplaceValuePlaceHolders(string.sub(textStr, 2), region, customFunc, regionState);
+      local value = (regionState.show or useHiddenStates) and ReplaceValuePlaceHolders(string.sub(textStr, 2), region, customFunc, regionState);
       if (value) then
         textStr = tostring(value);
       end
@@ -6484,7 +6487,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
         -- 0-9a-zA-Z or dot character
       else -- End of variable
         local symbol = string.sub(textStr, start, currentPos - 1)
-        result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates)
+        result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates)
 
         if char == 37 then
         else
@@ -6494,7 +6497,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
     elseif state == 3 then
       if char == 125 then -- } closing brace
         local symbol = string.sub(textStr, start, currentPos - 1)
-        result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates)
+        result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates)
         start = currentPos + 1
       end
     end
@@ -6506,7 +6509,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc)
     result = result .. string.sub(textStr, start, currentPos - 1)
   elseif state == 2 and currentPos > start then
     local symbol = string.sub(textStr, start, currentPos - 1)
-    result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates)
+    result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates)
   elseif state == 1 then
     result = result .. "%"
   end
