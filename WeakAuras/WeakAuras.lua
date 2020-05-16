@@ -7200,9 +7200,12 @@ for i = 1, 5 do
 end
 
 for i = 1, 4 do
-  trackableUnits["boss" .. i] = true
   trackableUnits["party" .. i] = true
   trackableUnits["partypet" .. i] = true
+end
+
+for i = 1, MAX_BOSS_FRAMES do
+  trackableUnits["boss" .. i] = true
 end
 
 for i = 1, 40 do

@@ -932,7 +932,7 @@ end
 local function MultiUnitLoop(Func, unit, ...)
   unit = string.lower(unit)
   if unit == "boss" or unit == "arena" then
-    for i = 1, 5 do
+    for i = 1, MAX_BOSS_FRAMES do
       Func(unit..i, ...)
     end
   elseif unit == "nameplate" then

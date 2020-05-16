@@ -329,7 +329,7 @@ local function ConstructTextEditor(frame)
 
     local heading1 = AceGUI:Create("Heading")
     heading1:SetText(L["Premade Snippets"])
-    heading1:SetRelativeWidth(1)
+    heading1:SetRelativeWidth(0.7)
     frame:AddChild(heading1)
 
     -- Iterate premade snippets and make buttons for them
