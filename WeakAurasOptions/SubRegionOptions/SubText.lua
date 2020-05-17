@@ -82,14 +82,14 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth,
       dialogControl = "LSM30_Font",
       name = L["Font"],
-      order = 12,
+      order = 13,
       values = AceGUIWidgetLSMlists.font,
     },
     text_fontSize = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Size"],
-      order = 13,
+      order = 14,
       min = 6,
       softMax = 72,
       step = 1,
@@ -423,11 +423,9 @@ local function createOptions(parentData, data, index, subIndex)
     end
   end
 
-  local CheckForTimePlaceHolders = CheckTextOptions("pt")
-
   local commonTextOptions = {
     __title = L["Common Text"],
-    __hidden = function() return hideCustomTextOption() and CheckForTimePlaceHolders() end,
+    __hidden = function() return hideCustomTextOption() end,
     text_customTextUpdate = {
       type = "select",
       width = WeakAuras.doubleWidth,
@@ -442,41 +440,47 @@ local function createOptions(parentData, data, index, subIndex)
         WeakAuras.ReloadOptions2(parentData.id, parentData)
       end
     },
-    -- Code Editor added below
-    text_progressPrecision = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      hidden = CheckForTimePlaceHolders,
-      disabled = CheckTextOptions("p"),
-      order = 5,
-      name = L["Remaining Time Precision"],
-      values = WeakAuras.precision_types,
-      get = function() return parentData.progressPrecision or 1 end,
-      set = function(info, v)
-        parentData.progressPrecision = v
-        WeakAuras.Add(parentData)
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
-      end,
-    },
-    text_totalPrecision = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      hidden = CheckForTimePlaceHolders,
-      disabled = CheckTextOptions("t"),
-      order = 6,
-      name = L["Total Time Precision"],
-      values = WeakAuras.precision_types,
-      get = function() return parentData.totalPrecision or 1 end,
-      set = function(info, v)
-        parentData.totalPrecision = v
-        WeakAuras.Add(parentData)
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
-      end,
-    },
   }
 
   WeakAuras.AddCodeOption(commonTextOptions, parentData, L["Custom Function"], "customText", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text",
                           4,  hideCustomTextOption, {"customText"}, false)
+
+  -- Add Text Format Options
+  local input = data["text_text"]
+  local hidden = function()
+    return WeakAuras.IsCollapsed("format_option", "text", "text_text", true)
+  end
+
+  local setHidden = function(hidden)
+    WeakAuras.SetCollapsed("format_option", "text", "text_text", hidden)
+  end
+
+  local get = function(key)
+    return data["text_text_format_" .. key]
+  end
+
+  local order = 12
+  local function addOption(key, option)
+    option.order = order
+    order = order + 0.01
+    if option.reloadOptions then
+      option.reloadOptions = nil
+      option.set = function(info, v)
+        data["text_text_format_" .. key] = v
+        WeakAuras.Add(parentData)
+        WeakAuras.ReloadOptions2(parentData.id, parentData)
+      end
+    end
+    options["text_text_format_" .. key] = option
+  end
+
+  WeakAuras.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
+  addOption("footer", {
+    type = "description",
+    name = "",
+    width = WeakAuras.doubleWidth,
+    hidden = hidden
+  })
 
   return options, commonTextOptions
 end

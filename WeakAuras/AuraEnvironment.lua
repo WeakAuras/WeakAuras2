@@ -84,12 +84,55 @@ local WA_ClassColorName = function(unit)
   end
 end
 
+WeakAuras.WA_ClassColorName = WA_ClassColorName
+
+-- UTF-8 Sub is pretty commonly needed
+local WA_Utf8Sub = function(input, size)
+  local output = ""
+  local i = 1
+  while (size > 0) do
+    local byte = input:byte(i)
+    if not byte then
+      return output
+    end
+    if byte < 128 then
+      -- ASCII byte
+      output = output .. input:sub(i, i)
+      size = size - 1
+    elseif byte < 192 then
+      -- Continuation bytes
+      output = output .. input:sub(i, i)
+    elseif byte < 244 then
+      -- Start bytes
+      output = output .. input:sub(i, i)
+      size = size - 1
+    end
+    i = i + 1
+  end
+
+  -- Add any bytes that are part of the sequence
+  while (true) do
+    local byte = input:byte(i)
+    if byte >= 128 and byte < 192 then
+      output = output .. input:sub(i, i)
+    else
+      break
+    end
+    i = i + 1
+  end
+
+  return output
+end
+
+WeakAuras.WA_Utf8Sub = WA_Utf8Sub
+
 local helperFunctions = {
   WA_GetUnitAura = WA_GetUnitAura,
   WA_GetUnitBuff = WA_GetUnitBuff,
   WA_GetUnitDebuff = WA_GetUnitDebuff,
   WA_IterateGroupMembers = WA_IterateGroupMembers,
   WA_ClassColorName = WA_ClassColorName,
+  WA_Utf8Sub = WA_Utf8Sub,
 }
 
 local LCG = LibStub("LibCustomGlow-1.0")

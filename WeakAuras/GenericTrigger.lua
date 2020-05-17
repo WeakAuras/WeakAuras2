@@ -554,6 +554,13 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         untriggerCheck = true;
       end
     elseif (data.statesParameter == "unit") then
+      if optionsEvent then
+        if WeakAuras.multiUnitUnits[data.trigger.unit] then
+          arg1 = next(WeakAuras.multiUnitUnits[data.trigger.unit])
+        else
+          arg1 = data.trigger.unit
+        end
+      end
       if arg1 then
         local unit, cloneId
         if WeakAuras.multiUnitUnits[data.trigger.unit] then
@@ -3886,6 +3893,40 @@ function GenericTrigger.GetTriggerDescription(data, triggernum, namestable)
   end
 end
 
+do
+  -- Based on Code by DejaCharacterStats. Ugly code to figure out the GCD
+  local class = select(2, UnitClass("player"))
+  if class == "DEMONHUNTER"
+    or class == "HUNTER" or class == "SHAMAN"
+    or class == "MAGE" or class == "PRIEST" or class == "WARLOCK"
+    or class == "DEATHKNIGHT" or class == "PALADIN" or class == "WARRIOR"
+  then
+    function WeakAuras.CalculatedGcdDuration()
+      local haste = GetHaste()
+      return max(0.75, 1.5 * 100 / (100+haste))
+    end
+  elseif class == "DRUID" then
+    function WeakAuras.CalculatedGcdDuration()
+      local id = GetShapeshiftFormID()
+      local haste = GetHaste()
+      return id == 1 and 1 or max(0.75, 1.5 * 100 / (100+haste))
+    end
+  elseif class == "MONK" then
+    function WeakAuras.CalculatedGcdDuration()
+      local spec = GetSpecialization()
+      local primaryStat = select(6, GetSpecializationInfo(spec))
+      if primaryStat == LE_UNIT_STAT_AGILITY then
+        return 1
+      end
+      local haste = GetHaste()
+      return max(0.75, 1.5 * 100 / (100+haste))
+    end
+  elseif class == "ROGUE" then
+    function WeakAuras.CalculatedGcdDuration()
+      return 1
+    end
+  end
+end
 
 
 WeakAuras.RegisterTriggerSystem({"event", "status", "custom"}, GenericTrigger);

@@ -2451,7 +2451,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         hidden = "true",
         test = "true",
-        store = true
+        store = true,
+        display = L["Source GUID"]
       },
       {
         name = "sourceUnit",
@@ -2538,7 +2539,8 @@ WeakAuras.event_prototypes = {
         init = "arg",
         hidden = "true",
         test = "true",
-        store = true
+        store = true,
+        display = L["Destination GUID"]
       },
       {
         name = "destUnit",
@@ -7003,97 +7005,121 @@ end
 
 WeakAuras.dynamic_texts = {
   ["p"] = {
-    func = function(state, region)
-      if not state then return "" end
+    get = function(state)
+      if not state then return nil end
       if state.progressType == "static" then
-        return state.value or ""
+        return state.value or nil
       end
       if state.progressType == "timed" then
         if not state.expirationTime or not state.duration then
-          return ""
+          return nil
         end
         local remaining  = state.expirationTime - GetTime();
-        local duration  = state.duration;
-
-        local remainingStr     = "";
-        if remaining == math.huge then
-          remainingStr     = " ";
-        elseif remaining > 60 then
-          remainingStr     = string.format("%i:", math.floor(remaining / 60));
-          remaining        = remaining % 60;
-          remainingStr     = remainingStr..string.format("%02i", remaining);
-        elseif remaining > 0 then
-          local progressPrecision = region.progressPrecision and math.abs(region.progressPrecision) or 1
-          -- remainingStr = remainingStr..string.format("%."..(data.progressPrecision or 1).."f", remaining);
-          if progressPrecision == 4 and remaining <= 3 then
-            remainingStr = remainingStr..string.format("%.1f", remaining);
-          elseif progressPrecision == 5 and remaining <= 3 then
-            remainingStr = remainingStr..string.format("%.2f", remaining);
-          elseif (progressPrecision == 4 or progressPrecision == 5) and remaining > 3 then
-            remainingStr = remainingStr..string.format("%d", remaining);
-          else
-            remainingStr = remainingStr..string.format("%.".. progressPrecision .."f", remaining);
-          end
-        else
-          remainingStr     = " ";
-        end
-        return remainingStr
+        return remaining >= 0 and remaining or nil
       end
+    end,
+    func = function(remaining, state, progressPrecision)
+      progressPrecision = progressPrecision or 1
+      if not state or state.progressType ~= "timed" then
+        return remaining
+      end
+      if type(remaining) ~= "number" then
+        return ""
+      end
+
+      local remainingStr     = "";
+      if remaining == math.huge then
+        remainingStr     = " ";
+      elseif remaining > 60 then
+        remainingStr     = string.format("%i:", math.floor(remaining / 60));
+        remaining        = remaining % 60;
+        remainingStr     = remainingStr..string.format("%02i", remaining);
+      elseif remaining > 0 then
+        if progressPrecision == 4 and remaining <= 3 then
+          remainingStr = remainingStr..string.format("%.1f", remaining);
+        elseif progressPrecision == 5 and remaining <= 3 then
+          remainingStr = remainingStr..string.format("%.2f", remaining);
+        elseif progressPrecision == 6 and remaining <= 3 then
+          remainingStr = remainingStr..string.format("%.3f", remaining);
+        elseif (progressPrecision == 4 or progressPrecision == 5 or progressPrecision == 6) and remaining > 3 then
+          remainingStr = remainingStr..string.format("%d", remaining);
+        else
+          remainingStr = remainingStr..string.format("%.".. progressPrecision .."f", remaining);
+        end
+      else
+        remainingStr     = " ";
+      end
+      return remainingStr
     end
   },
   ["t"] = {
-    func = function(state, region)
+    get = function(state)
       if not state then return "" end
       if state.progressType == "static" then
-        return state.total or ""
+        return state.total, false
       end
       if state.progressType == "timed" then
         if not state.duration then
-          return ""
+          return nil
         end
-        -- Format a duration time string
-        local durationStr     = "";
-        local duration = state.duration
-        if math.abs(duration) == math.huge or tostring(duration) == "nan" then
-          durationStr = " ";
-        elseif duration > 60 then
-          durationStr     = string.format("%i:", math.floor(duration / 60));
-          duration       = duration % 60;
-          durationStr     = durationStr..string.format("%02i", duration);
-        elseif duration > 0 then
-          local totalPrecision = region.totalPrecision and math.abs(region.totalPrecision) or 1
-          if totalPrecision == 4 and duration <= 3 then
-            durationStr = durationStr..string.format("%.1f", duration);
-          elseif totalPrecision == 5 and duration <= 3 then
-            durationStr = durationStr..string.format("%.2f", duration);
-          elseif (totalPrecision == 4 or totalPrecision == 5) and duration > 3 then
-            durationStr = durationStr..string.format("%d", duration);
-          else
-            durationStr = durationStr..string.format("%."..totalPrecision.."f", duration);
-          end
-        else
-          durationStr     = " ";
-        end
-        return durationStr
+        return state.duration, true
       end
+    end,
+    func = function(duration, state, totalPrecision)
+      if state.progressType ~= "timed" then
+        return duration
+      end
+      if type(duration) ~= "number" then
+        return ""
+      end
+      local durationStr     = "";
+      if math.abs(duration) == math.huge or tostring(duration) == "nan" then
+        durationStr = " ";
+      elseif duration > 60 then
+        durationStr     = string.format("%i:", math.floor(duration / 60));
+        duration       = duration % 60;
+        durationStr     = durationStr..string.format("%02i", duration);
+      elseif duration > 0 then
+        if totalPrecision == 4 and duration <= 3 then
+          durationStr = durationStr..string.format("%.1f", duration);
+        elseif totalPrecision == 5 and duration <= 3 then
+          durationStr = durationStr..string.format("%.2f", duration);
+        elseif totalPrecision == 6 and duration <= 3 then
+          durationStr = durationStr..string.format("%.3f", duration);
+        elseif (totalPrecision == 4 or totalPrecision == 5 or totalPrecision == 6) and duration > 3 then
+          durationStr = durationStr..string.format("%d", duration);
+        else
+          durationStr = durationStr..string.format("%."..totalPrecision.."f", duration);
+        end
+      else
+        durationStr     = " ";
+      end
+      return durationStr
     end
   },
   ["n"] = {
-    func = function(state)
-      if not state then return "" end
-      return state.name or state.id
+    get = function(state)
+      return state.name or state.id or "", true
+    end,
+    func = function(v)
+      return v
     end
   },
   ["i"] = {
-    func = function(state)
-      if not state or not state.icon then return "|TInterface\\Icons\\INV_Misc_QuestionMark:12:12:0:0:64:64:4:60:4:60|t" end
-      return "|T".. state.icon ..":12:12:0:0:64:64:4:60:4:60|t"
+    get = function(state)
+      return state.icon or "Interface\\Icons\\INV_Misc_QuestionMark"
+    end,
+    func = function(v)
+      return "|T".. v ..":12:12:0:0:64:64:4:60:4:60|t"
     end
   },
   ["s"] = {
-    func = function(state)
+    get = function(state)
       if not state or state.stacks == 0 then return "" end
       return state.stacks
+    end,
+    func = function(v)
+      return v
     end
   }
 };

@@ -1,4 +1,4 @@
-local internalVersion = 29;
+local internalVersion = 30;
 
 -- Lua APIs
 local insert = table.insert
@@ -321,6 +321,8 @@ WeakAuras.customActionsFunctions = {};
 
 -- Custom Functions used in conditions, keyed on id, condition number, "changes", property number
 WeakAuras.customConditionsFunctions = {};
+-- Text format functions for chat messages, keyed on id, condition number, changes, property number
+WeakAuras.conditionTextFormatters = {}
 
 local anim_function_strings = WeakAuras.anim_function_strings;
 local anim_presets = WeakAuras.anim_presets;
@@ -723,7 +725,7 @@ function WeakAuras.GetActiveConditions(id, cloneId)
   return triggerState[id].activatedConditions[cloneId];
 end
 
-local function formatValueForAssignment(vType, value, pathToCustomFunction)
+local function formatValueForAssignment(vType, value, pathToCustomFunction, pathToFormatters)
   if (value == nil) then
     value = false;
   end
@@ -740,10 +742,12 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction)
     return "{1, 1, 1, 1}";
   elseif(vType == "chat") then
     if (value and type(value) == "table") then
-      return string.format("{message_type = %q, message = %q, message_dest = %q, message_channel = %q, message_custom = %s}",
+      local serialized = string.format("{message_type = %q, message = %q, message_dest = %q, message_channel = %q, message_custom = %s, message_formaters = %s}",
         tostring(value.message_type), tostring(value.message or ""),
         tostring(value.message_dest), tostring(value.message_channel),
-        pathToCustomFunction);
+        pathToCustomFunction,
+        pathToFormatters)
+      return serialized
     end
   elseif(vType == "sound") then
     if (value and type(value) == "table") then
@@ -1004,14 +1008,21 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
             if (debug) then ret = ret .. "      print('- " .. change.property .. " " .. formatValueForAssignment(propertyData.type, change.value) .. "')\n"; end
           elseif (propertyData.action) then
             local pathToCustomFunction = "nil";
+            local pathToFormatter = "nil"
             if (WeakAuras.customConditionsFunctions[id]
               and WeakAuras.customConditionsFunctions[id][conditionNumber]
               and  WeakAuras.customConditionsFunctions[id][conditionNumber].changes
               and WeakAuras.customConditionsFunctions[id][conditionNumber].changes[changeNum]) then
               pathToCustomFunction = string.format("WeakAuras.customConditionsFunctions[%q][%s].changes[%s]", id, conditionNumber, changeNum);
             end
-            ret = ret .. "     region:" .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction) .. ")" .. "\n";
-            if (debug) then ret = ret .. "     print('# " .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction) .. "')\n"; end
+            if WeakAuras.conditionTextFormatters[id]
+              and WeakAuras.conditionTextFormatters[id][conditionNumber]
+              and WeakAuras.conditionTextFormatters[id][conditionNumber].changes
+              and WeakAuras.conditionTextFormatters[id][conditionNumber].changes[changeNum] then
+              pathToFormatter = string.format("WeakAuras.conditionTextFormatters[%q][%s].changes[%s]", id, conditionNumber, changeNum);
+            end
+            ret = ret .. "     region:" .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction, pathToFormatter) .. ")" .. "\n";
+            if (debug) then ret = ret .. "     print('# " .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction, pathToFormatter) .. "')\n"; end
           end
         end
       end
@@ -1131,6 +1142,20 @@ function WeakAuras.LoadConditionPropertyFunctions(data)
               WeakAuras.customConditionsFunctions[id][conditionNumber].changes = WeakAuras.customConditionsFunctions[id][conditionNumber].changes or {};
               WeakAuras.customConditionsFunctions[id][conditionNumber].changes[changeIndex] = customFunc;
             end
+          end
+          if change.property == "chat" then
+            local getter = function(key, default)
+              local fullKey = "message_format_" .. key
+              if change.value[fullKey] == nil then
+                change.value[fullKey] = default
+              end
+              return change.value[fullKey]
+            end
+            local formatters = change.value and WeakAuras.CreateFormatters(change.value.message, getter)
+            WeakAuras.conditionTextFormatters[id] = WeakAuras.conditionTextFormatters[id] or {}
+            WeakAuras.conditionTextFormatters[id][conditionNumber] = WeakAuras.conditionTextFormatters[id][conditionNumber] or {};
+            WeakAuras.conditionTextFormatters[id][conditionNumber].changes = WeakAuras.conditionTextFormatters[id][conditionNumber].changes or {};
+            WeakAuras.conditionTextFormatters[id][conditionNumber].changes[changeIndex] = formatters;
           end
         end
       end
@@ -2480,6 +2505,7 @@ function WeakAuras.Delete(data)
 
   WeakAuras.customActionsFunctions[id] = nil;
   WeakAuras.customConditionsFunctions[id] = nil;
+  WeakAuras.conditionTextFormatters[id] = nil
 
   for event, funcs in pairs(dynamicConditions) do
     funcs[id] = nil;
@@ -2594,6 +2620,9 @@ function WeakAuras.Rename(data, newid)
 
   WeakAuras.customConditionsFunctions[newid] = WeakAuras.customConditionsFunctions[oldid];
   WeakAuras.customConditionsFunctions[oldid] = nil;
+
+  WeakAuras.conditionTextFormatters[newid] = WeakAuras.conditionTextFormatters[oldid]
+  WeakAuras.conditionTextFormatters[oldid] = nil
 
   for event, funcs in pairs(dynamicConditions) do
     funcs[newid] = funcs[oldid]
@@ -3857,6 +3886,105 @@ function WeakAuras.Modernize(data)
     end
   end
 
+  if data.internalVersion < 30 then
+    local convertLegacyPrecision = function(precision)
+      if not precision then
+        return 1
+      end
+      if precision < 4 then
+        return precision, false
+      else
+        return precision - 3, true
+      end
+    end
+
+    local progressPrecision = data.progressPrecision
+    local totalPrecision = data.totalPrecision
+    if data.regionType == "text" then
+      local seenSymbols = {}
+      WeakAuras.ParseTextStr(data.displayText, function(symbol)
+        if not seenSymbols[symbol] then
+          local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
+          sym = sym or symbol
+          if sym == "p" or sym == "t" then
+            data["displayText_format_" .. symbol .. "_format"] = "timed"
+            data["displayText_format_" .. symbol .. "_time_precision"],  data["displayText_format_" .. symbol .. "_time_dynamic"]
+               = convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
+          end
+        end
+        seenSymbols[symbol] = symbol
+      end)
+    end
+
+    if data.subRegions then
+      for index, subRegionData in ipairs(data.subRegions) do
+        if subRegionData.type == "subtext" then
+          local seenSymbols = {}
+          WeakAuras.ParseTextStr(subRegionData.text_text, function(symbol)
+            if not seenSymbols[symbol] then
+              local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
+              sym = sym or symbol
+              if sym == "p" or sym == "t" then
+                subRegionData["text_text_format_" .. symbol .. "_format"] = "timed"
+                subRegionData["text_text_format_" .. symbol .. "_time_precision"],  subRegionData["text_text_format_" .. symbol .. "_time_dynamic"]
+                   = convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
+              end
+            end
+            seenSymbols[symbol] = symbol
+          end)
+        end
+      end
+    end
+
+    if data.actions then
+      for _, when in ipairs{ "start", "finish" } do
+        if data.actions[when] then
+          local seenSymbols = {}
+          WeakAuras.ParseTextStr(data.actions[when].message, function(symbol)
+            if not seenSymbols[symbol] then
+              local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
+              sym = sym or symbol
+              if sym == "p" or sym == "t" then
+                data.actions[when]["message_format_" .. symbol .. "_format"] = "timed"
+                data.actions[when]["message_format_" .. symbol .. "_time_precision"],  data.actions[when]["message_format_" .. symbol .. "_time_dynamic"]
+                   = convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
+              end
+            end
+            seenSymbols[symbol] = symbol
+          end)
+        end
+      end
+    end
+
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        for changeIndex, change in ipairs(condition.changes) do
+          if change.property == "chat" and change.value then
+            local seenSymbols = {}
+            WeakAuras.ParseTextStr(change.value.message, function(symbol)
+              if not seenSymbols[symbol] then
+                local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
+                sym = sym or symbol
+                if sym == "p" or sym == "t" then
+                  change.value["message_format_" .. symbol .. "_format"] = "timed"
+                  change.value["message_format_" .. symbol .. "_time_precision"],  change.value["message_format_" .. symbol .. "_time_dynamic"]
+                     = convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
+                end
+              end
+              seenSymbols[symbol] = symbol
+            end)
+          end
+        end
+      end
+    end
+
+    -- To convert:
+    -- * actions
+    -- * conditions
+    data.progressPrecision = nil
+    data.totalPrecision = nil
+  end
+
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
   end
@@ -4632,10 +4760,10 @@ function WeakAuras.ReleaseClone(id, cloneId, regionType)
   clonePool[regionType][#clonePool[regionType] + 1] = region;
 end
 
-function WeakAuras.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region, customFunc, when)
+function WeakAuras.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region, customFunc, when, formatters)
   local useHiddenStates = when == "finish"
   if (message:find('%%')) then
-    message = WeakAuras.ReplacePlaceHolders(message, region, customFunc, useHiddenStates);
+    message = WeakAuras.ReplacePlaceHolders(message, region, customFunc, useHiddenStates, formatters);
   end
   if(message_type == "PRINT") then
     DEFAULT_CHAT_FRAME:AddMessage(message, r or 1, g or 1, b or 1);
@@ -4866,17 +4994,20 @@ function WeakAuras.PerformActions(data, when, region)
     return;
   end;
   local actions;
+  local formatters
   if(when == "start") then
     actions = data.actions.start;
+    formatters = region.startFormatters
   elseif(when == "finish") then
     actions = data.actions.finish;
+    formatters = region.finishFormatters
   else
     return;
   end
 
   if(actions.do_message and actions.message_type and actions.message) then
     local customFunc = WeakAuras.customActionsFunctions[data.id][when .. "_message"];
-    WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc, when);
+    WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc, when, formatters);
   end
 
   if (actions.stop_sound) then
@@ -6245,11 +6376,12 @@ function WeakAuras.RunCustomTextFunc(region, customFunc)
   end
   local state = region.state
   WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state, region.states);
-  local progress = WeakAuras.dynamic_texts.p.func(state, region)
-  local dur = WeakAuras.dynamic_texts.t.func(state, region)
-  local name = WeakAuras.dynamic_texts.n.func(state, region)
-  local icon = WeakAuras.dynamic_texts.i.func(state, region)
-  local stacks = WeakAuras.dynamic_texts.s.func(state, region)
+
+  local progress = WeakAuras.dynamic_texts.p.func(WeakAuras.dynamic_texts.p.get(state), state, 1)
+  local dur = WeakAuras.dynamic_texts.t.func( WeakAuras.dynamic_texts.t.get(state), state, 1)
+  local name = WeakAuras.dynamic_texts.n.func(WeakAuras.dynamic_texts.n.get(state))
+  local icon = WeakAuras.dynamic_texts.i.func(WeakAuras.dynamic_texts.i.get(state))
+  local stacks = WeakAuras.dynamic_texts.s.func(WeakAuras.dynamic_texts.s.get(state))
 
   local expirationTime
   local duration
@@ -6268,7 +6400,7 @@ function WeakAuras.RunCustomTextFunc(region, customFunc)
   return custom
 end
 
-local function ReplaceValuePlaceHolders(textStr, region, customFunc, state)
+local function ReplaceValuePlaceHolders(textStr, region, customFunc, state, formatter)
   local regionValues = region.values;
   local value;
   if string.sub(textStr, 1, 1) == "c" then
@@ -6288,7 +6420,10 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc, state)
     if (not variable) then
       return nil;
     end
-    value = variable.func(state, region)
+    value = variable.get(state)
+    if formatter then
+      value = formatter(value, state)
+    end
   end
   return value or "";
 end
@@ -6406,30 +6541,42 @@ function WeakAuras.ContainsAnyPlaceHolders(textStr)
   return ContainsPlaceHolders(textStr, function(symbol) return true end)
 end
 
-local function ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates)
+local function ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates, formatters)
   local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
   triggerNum = triggerNum and tonumber(triggerNum)
   if triggerNum and sym then
     if regionStates[triggerNum] then
       if (useHiddenStates or regionStates[triggerNum].show) then
         if regionStates[triggerNum][sym] then
-          return tostring(regionStates[triggerNum][sym]) or ""
+          local value = regionStates[triggerNum][sym]
+          if formatters[symbol] then
+            return tostring(formatters[symbol](value, regionStates[triggerNum])) or ""
+          else
+            return tostring(value) or ""
+          end
         else
-          local value = ReplaceValuePlaceHolders(sym, region, customFunc, regionStates[triggerNum]);
+          local value = ReplaceValuePlaceHolders(sym, region, customFunc, regionStates[triggerNum], formatters[symbol]);
           return value or ""
         end
       end
     end
     return ""
   elseif regionState[symbol] then
-    return (useHiddenStates or regionState.show) and tostring(regionState[symbol]) or ""
+    if(useHiddenStates or regionState.show) then
+      local value = regionState[symbol]
+      if formatters[symbol] then
+        return tostring(formatters[symbol](value, regionState) or "") or ""
+      else
+        return tostring(value) or ""
+      end
+    end
   else
-    local value = (useHiddenStates or regionState.show) and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState);
+    local value = (useHiddenStates or regionState.show) and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState, formatters[symbol]);
     return value or ""
   end
 end
 
-function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc, useHiddenStates)
+function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc, useHiddenStates, formatters)
   local regionValues = region.values;
   local regionState = region.state or {};
   local regionStates = region.states or {};
@@ -6444,7 +6591,8 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc, useHiddenSta
 
   if (endPos == 2) then
     if string.byte(textStr, 1) == 37 then
-      local value = (regionState.show or useHiddenStates) and ReplaceValuePlaceHolders(string.sub(textStr, 2), region, customFunc, regionState);
+      local symbol = string.sub(textStr, 2)
+      local value = (regionState.show or useHiddenStates) and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState, formatters[symbol]);
       if (value) then
         textStr = tostring(value);
       end
@@ -6482,7 +6630,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc, useHiddenSta
         -- 0-9a-zA-Z or dot character
       else -- End of variable
         local symbol = string.sub(textStr, start, currentPos - 1)
-        result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates)
+        result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates, formatters)
 
         if char == 37 then
         else
@@ -6492,7 +6640,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc, useHiddenSta
     elseif state == 3 then
       if char == 125 then -- } closing brace
         local symbol = string.sub(textStr, start, currentPos - 1)
-        result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates)
+        result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates, formatters)
         start = currentPos + 1
       end
     end
@@ -6504,13 +6652,86 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc, useHiddenSta
     result = result .. string.sub(textStr, start, currentPos - 1)
   elseif state == 2 and currentPos > start then
     local symbol = string.sub(textStr, start, currentPos - 1)
-    result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates)
+    result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates, formatters)
   elseif state == 1 then
     result = result .. "%"
   end
 
   textStr = result:gsub("\\n", "\n");
   return textStr;
+end
+
+function WeakAuras.ParseTextStr(textStr, symbolCallback)
+  if not textStr then
+    return
+  end
+  local endPos = textStr:len();
+  local currentPos = 1 -- Position of the "cursor"
+  local state = 0
+  local start = 1 -- Start of whatever "word" we are currently considering, doesn't include % or {} symbols
+
+  while currentPos <= endPos do
+    local char = string.byte(textStr, currentPos);
+    if state == 0 then -- Normal State
+    elseif state == 1 then -- Percent Start State
+      if char == 37 then
+        start = currentPos
+      elseif char == 123 then
+        start = currentPos + 1
+      elseif (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) or char == 46 then
+          -- 0-9a-zA-Z or dot character
+        start = currentPos
+      else
+        start = currentPos
+      end
+    elseif state == 2 then -- Percent Rest State
+      if (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) or char == 46 then
+        -- 0-9a-zA-Z or dot character
+      else -- End of variable
+        local symbol = string.sub(textStr, start, currentPos - 1)
+        symbolCallback(symbol)
+        if char == 37 then
+        else
+          start = currentPos
+        end
+      end
+    elseif state == 3 then
+      if char == 125 then -- } closing brace
+        local symbol = string.sub(textStr, start, currentPos - 1)
+        symbolCallback(symbol)
+        start = currentPos + 1
+      end
+    end
+    state = nextState(char, state)
+    currentPos = currentPos + 1
+  end
+
+  if state == 2 and currentPos > start then
+    local symbol = string.sub(textStr, start, currentPos - 1)
+    symbolCallback(symbol)
+  end
+end
+
+function WeakAuras.CreateFormatters(input, getter)
+  local seenSymbols = {}
+  local formatters = {}
+  WeakAuras.ParseTextStr(input, function(symbol)
+    if not seenSymbols[symbol] then
+      local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
+      sym = sym or symbol
+      if sym == "c" or sym == "i" then
+        -- Do nothing
+      else
+        local default = (sym == "p" or sym == "t") and "timed" or "none"
+        local selectedFormat = getter(symbol ..  "_format", default)
+        if (WeakAuras.format_types[selectedFormat]) then
+          formatters[symbol] = WeakAuras.format_types[selectedFormat].CreateFormatter(symbol, getter)
+        end
+      end
+    end
+    seenSymbols[symbol] = true
+  end)
+  return formatters
 end
 
 function WeakAuras.IsTriggerActive(id)

@@ -148,39 +148,6 @@ function(allstates, event, ...)
     return true
 end]=]
   },
-  {
-    name = "Text: Decimals (percentage)",
-    snippet = [=[
-function()
-    -- Change percentpower as needed
-    -- Change [1] to other your trigger number
-    -- The 0 in `"%.0f"` controls how many decimal places it will round to
-    if aura_env.states[1] and aura_env.states[1].percentpower then
-        return string.format("%.0f", aura_env.states[1].percentpower)
-    end
-end]=]
-  },
-  {
-    name = "Text: Abbreviate numbers",
-    snippet = [=[
-function()
-    -- Change tooltip1 to your value
-    -- Change [1] to other your trigger number
-    -- If using a tooltip value, be sure to tick Use Tooltip Values in the trigger
-    if aura_env.states[1] and aura_env.states[1].tooltip1 then
-        return AbbreviateNumbers(aura_env.states[1].tooltip1)
-    end
-end]=]
-  },
-  {
-    name = "Text: Colored Name",
-    snippet = [=[
-function()
-    if aura_env.states[1] and aura_env.states[1].unit then
-        return WA_ClassColorName(aura_env.states[1].unit)
-    end
-end]=]
-  },
 }
 
 local function settings_dropdown_initialize(frame, level, menu)
