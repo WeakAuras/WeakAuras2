@@ -2554,7 +2554,7 @@ local function flattenRegionOptions(allOptions, isGroupTab)
 end
 
 local function parsePrefix(input, data, create)
-  local subRegionIndex, property = string.match(input, "^sub%.(%d+)%..+%.(.+)")
+  local subRegionIndex, property = string.match(input, "^sub%.(%d+)%..-%.(.+)")
   subRegionIndex = tonumber(subRegionIndex)
   if subRegionIndex then
     if create then
@@ -4840,4 +4840,77 @@ end
 
 function WeakAuras.DeleteCollapsedData(id)
   collapsedOptions[id] = nil
+end
+
+function WeakAuras.AddTextFormatOption(input, withHeader, get, addOption, hidden, setHidden)
+  local headerOption
+  if withHeader then
+    headerOption =  {
+      type = "execute",
+      control = "WeakAurasExpandSmall",
+      name = function()
+        return L["|cFFffcc00Format Options|r"]
+      end,
+      width = WeakAuras.doubleWidth,
+      func = function()
+        setHidden(not hidden())
+      end,
+      image = function()
+        return hidden() and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+      end,
+      imageWidth = 24,
+      imageHeight = 24
+    }
+    addOption("header", headerOption)
+  else
+    hidden = false
+  end
+
+
+  local seenSymbols = {}
+  WeakAuras.ParseTextStr(input, function(symbol)
+    if not seenSymbols[symbol] then
+      local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
+      sym = sym or symbol
+
+      addOption(symbol .. "desc", {
+        type = "description",
+        name = L["Format for %s"]:format("%" .. symbol),
+        width = WeakAuras.normalWidth,
+        hidden = hidden
+      })
+
+      if sym == "c" or sym == "i" then
+        -- No special options for these
+      else
+        addOption(symbol .. "_format", {
+          type = "select",
+          name = L["Format"],
+          width = WeakAuras.normalWidth,
+          values = WeakAuras.format_types_display,
+          hidden = hidden,
+          reloadOptions = true
+        })
+
+        local selectedFormat = get(symbol .. "_format")
+        if (WeakAuras.format_types[selectedFormat]) then
+          WeakAuras.format_types[selectedFormat].AddOptions(symbol, hidden, addOption, get)
+        end
+
+      end
+    end
+    seenSymbols[symbol] = true
+  end)
+
+  if next(seenSymbols) then
+    local footerOption = {
+      type = "header",
+      name = "",
+    }
+    addOption("footer", footerOption)
+  end
+
+  if not next(seenSymbols) and withHeader then
+    headerOption.hidden = true
+  end
 end

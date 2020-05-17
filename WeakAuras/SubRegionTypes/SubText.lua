@@ -225,12 +225,6 @@ local function modify(parent, region, parentData, data, first)
   end
 
   if first then
-    -- Certain data is stored directly on the parent, because it's shared between multiple texts
-    -- And shared by other code paths e.g. SendChatMessage
-    -- That is partly for legacy reasons
-    parent.progressPrecision = parentData.progressPrecision
-    parent.totalPrecision = parentData.totalPrecision
-
     local containsCustomText = false
     for index, subRegion in ipairs(parentData.subRegions) do
       if subRegion.type == "subtext" and WeakAuras.ContainsCustomPlaceHolder(subRegion.text_text) then
@@ -249,9 +243,17 @@ local function modify(parent, region, parentData, data, first)
 
   local UpdateText
   if data.text_text and WeakAuras.ContainsAnyPlaceHolders(data.text_text) then
+    local getter = function(key, default)
+      local fullKey = "text_text_format_" .. key
+      if data[fullKey] == nil then
+        data[fullKey] = default
+      end
+      return data[fullKey]
+    end
+    local formatters = WeakAuras.CreateFormatters(data.text_text, getter)
     UpdateText = function()
       local textStr = data.text_text or ""
-      textStr = WeakAuras.ReplacePlaceHolders(textStr, parent, nil)
+      textStr = WeakAuras.ReplacePlaceHolders(textStr, parent, nil, false, formatters)
 
       if text:GetFont() then
         text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(textStr))

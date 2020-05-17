@@ -72,6 +72,7 @@ globals = {
 	"GameTooltip_Hide",
 	"GameTooltip_SetDefaultAnchor",
 	"GameTooltip_UnitColor",
+	"GetClassColoredTextForUnit",
 	"Lerp",
 	"Mixin",
 	"Round",
@@ -3901,6 +3902,7 @@ globals = {
 
 	-- framexml functions
 	"AbbreviateLargeNumbers",
+	"AbbreviateNumbers",
 	"ActionButtonDown",
 	"ActionButtonUp",
 	"AddFrameLock",

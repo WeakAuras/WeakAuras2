@@ -29,10 +29,11 @@ local function createOptions(id, data)
       set = function(info, v)
         data.displayText = WeakAuras.ReplaceLocalizedRaidMarkers(v);
         WeakAuras.Add(data);
+        WeakAuras.ReloadOptions2(data.id, data)
         WeakAuras.UpdateThumbnail(data);
         WeakAuras.SetIconNames(data);
         WeakAuras.ResetMoverSizer();
-      end
+      end,
     },
     customTextUpdate = {
       type = "select",
@@ -43,33 +44,6 @@ local function createOptions(id, data)
       order = 36
     },
     -- code editor added below
-    progressPrecision = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      order = 39,
-      name = L["Remaining Time Precision"],
-      values = WeakAuras.precision_types,
-      get = function() return data.progressPrecision or 1 end,
-      hidden = function() return not (WeakAuras.ContainsPlaceHolders(data.displayText, "pt"));
-      end,
-      disabled = function()
-        return not WeakAuras.ContainsPlaceHolders(data.displayText, "p");
-      end
-    },
-    totalPrecision = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      order = 39.5,
-      name = L["Total Time Precision"],
-      values = WeakAuras.precision_types,
-      get = function() return data.totalPrecision or 1 end,
-      hidden = function()
-        return not (WeakAuras.ContainsPlaceHolders(data.displayText, "pt"));
-      end,
-      disabled = function()
-        return not WeakAuras.ContainsPlaceHolders(data.displayText, "t");
-      end
-    },
 
     font = {
       type = "select",
@@ -269,6 +243,43 @@ local function createOptions(id, data)
   WeakAuras.AddCodeOption(options, data, L["Custom Function"], "customText", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text",
                           37, function() return not WeakAuras.ContainsCustomPlaceHolder(data.displayText) end, {"customText"}, false);
 
+  -- Add Text Format Options
+  local input = data.displayText
+  local hidden = function()
+    return WeakAuras.IsCollapsed("format_option", "text", "displayText", true)
+  end
+
+  local setHidden = function(hidden)
+    WeakAuras.SetCollapsed("format_option", "text", "displayText", hidden)
+  end
+
+  local get = function(key)
+    return data["displayText_format_" .. key]
+  end
+
+  local order = 12
+  local function addOption(key, option)
+    option.order = order
+    order = order + 0.01
+    if option.reloadOptions then
+      option.reloadOptions = nil
+      option.set = function(info, v)
+        data["displayText_format_" .. key] = v
+        WeakAuras.Add(data)
+        WeakAuras.ReloadOptions2(data.id, data)
+      end
+    end
+    options["displayText_format_" .. key] = option
+  end
+
+  WeakAuras.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
+  addOption("footer", {
+    type = "description",
+    name = "",
+    width = WeakAuras.doubleWidth,
+    hidden = hidden
+  })
+
   return {
     text = options;
     position = WeakAuras.PositionOptions(id, data, nil, true);
@@ -341,7 +352,6 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
 
   local function UpdateText()
     local textStr = data.displayText;
-    textStr = WeakAuras.ReplacePlaceHolders(textStr, borderframe);
     text:SetText(textStr);
     rescroll();
   end
