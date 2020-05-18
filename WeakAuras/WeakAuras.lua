@@ -1140,12 +1140,12 @@ end
 
 local globalConditions =
 {
-  ["inCombat"] = {
+  ["incombat"] = {
     display = L["In Combat"],
     type = "bool",
     events = {"PLAYER_REGEN_ENABLED", "PLAYER_REGEN_DISABLED"},
     globalStateUpdate = function(state)
-      state.inCombat = UnitAffectingCombat("player");
+      state.incombat = UnitAffectingCombat("player");
     end
   },
   ["hastarget"] = {

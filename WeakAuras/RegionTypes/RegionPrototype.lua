@@ -72,7 +72,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
     width = WeakAuras.normalWidth,
     order = order + 0.01,
     name = L["Minimum"],
-    hidden = function() return not data.useAdjustedMin end,
+    hidden = function() return not data.useAdjustededMin end,
     desc = L["Enter static or relative values with %"]
   };
 
@@ -81,7 +81,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
     width = WeakAuras.normalWidth,
     name = "",
     order = order + 0.02,
-    hidden = function() return not (not data.useAdjustedMin and data.useAdjustedMax) end,
+    hidden = function() return not (not data.useAdjustededMin and data.useAdjustededMax) end,
   };
 
   options.useAdjustedMax = {
@@ -98,7 +98,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
     validate = WeakAuras.ValidateNumericOrPercent,
     order = order + 0.04,
     name = L["Maximum"],
-    hidden = function() return not data.useAdjustedMax end,
+    hidden = function() return not data.useAdjustededMax end,
     desc = L["Enter static or relative values with %"]
   };
 
@@ -107,7 +107,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
     width = WeakAuras.normalWidth,
     name = "",
     order = order + 0.05,
-    hidden = function() return not (data.useAdjustedMin and not data.useAdjustedMax) end,
+    hidden = function() return not (data.useAdjustededMin and not data.useAdjustededMax) end,
   };
 
   return options;
@@ -500,9 +500,9 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
   if (defaultsForRegion and defaultsForRegion.alpha) then
     region:SetRegionAlpha(data.alpha);
   end
-  local hasAdjustedMin = defaultsForRegion and defaultsForRegion.useAdjustedMin ~= nil and data.useAdjustedMin
+  local hasAdjustedMin = defaultsForRegion and defaultsForRegion.useAdjustedMin ~= nil and data.useAdjustededMin
         and data.adjustedMin;
-  local hasAdjustedMax = defaultsForRegion and defaultsForRegion.useAdjustedMax ~= nil and data.useAdjustedMax
+  local hasAdjustedMax = defaultsForRegion and defaultsForRegion.useAdjustedMax ~= nil and data.useAdjustededMax
         and data.adjustedMax;
 
   region.adjustedMin = nil
