@@ -440,7 +440,7 @@ function WeakAuras.CreateFrame()
   container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -83 - WeakAuras.normalWidth * 340, -14)
   container.frame:Show()
   container.frame:SetClipsChildren(true)
-  container.titleText:Hide()
+  container.titletext:Hide()
   frame.container = container
 
   frame.texturePicker = WeakAuras.TexturePicker(frame)
