@@ -4651,11 +4651,6 @@ function WeakAuras.HandleChatAction(message_type, message, message_dest, message
         pcall(function() SendChatMessage(message, "WHISPER", nil, message_dest) end);
       end
     end
-  elseif(message_type == "CHANNEL") then
-    local channel = message_channel and tonumber(message_channel);
-    if(GetChannelName(channel)) then
-      pcall(function() SendChatMessage(message, "CHANNEL", nil, channel) end);
-    end
   elseif(message_type == "SMARTRAID") then
     local isInstanceGroup = IsInGroup(LE_PARTY_CATEGORY_INSTANCE)
     if UnitInBattleground("player") then

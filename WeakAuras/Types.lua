@@ -1496,7 +1496,6 @@ WeakAuras.chat_message_types = {
 
 WeakAuras.send_chat_message_types = {
   WHISPER = L["Whisper"],
-  CHANNEL = L["Channel"],
   SAY = L["Say"],
   EMOTE = L["Emote"],
   YELL = L["Yell"],
