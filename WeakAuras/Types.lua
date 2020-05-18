@@ -2291,7 +2291,9 @@ if WeakAuras.IsClassic() then
   WeakAuras.baseUnitId.focus = nil
   WeakAuras.baseUnitId.vehicle = nil
   WeakAuras.multiUnitId.boss = nil
-  WeakAuras.multiUnitUnits.boss = nil
+  WeakAuras.multiUnitId.arena = nil
+  wipe(WeakAuras.multiUnitUnits.boss)
+  wipe(WeakAuras.multiUnitUnits.arena)
   WeakAuras.unit_types.focus = nil
   WeakAuras.unit_types_bufftrigger_2.focus = nil
   WeakAuras.unit_types_bufftrigger_2.boss = nil
