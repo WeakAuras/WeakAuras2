@@ -108,7 +108,7 @@ function WeakAuras.AddActionOption(id, data)
         name = "",
         order = 3,
         image = function() return "", 0, 0 end,
-        hidden = function() return not(data.actions.start.message_type == "WHISPER" or data.actions.start.message_type == "CHANNEL" or data.actions.start.message_type == "COMBAT" or data.actions.start.message_type == "PRINT") end
+        hidden = function() return not(data.actions.start.message_type == "WHISPER" or data.actions.start.message_type == "COMBAT" or data.actions.start.message_type == "PRINT") end
       },
       start_message_color = {
         type = "color",
@@ -132,14 +132,6 @@ function WeakAuras.AddActionOption(id, data)
         order = 4,
         disabled = function() return not data.actions.start.do_message end,
         hidden = function() return data.actions.start.message_type ~= "WHISPER" end
-      },
-      start_message_channel = {
-        type = "input",
-        width = WeakAuras.normalWidth,
-        name = L["Channel Number"],
-        order = 4,
-        disabled = function() return not data.actions.start.do_message end,
-        hidden = function() return data.actions.start.message_type ~= "CHANNEL" end
       },
       start_message = {
         type = "input",
@@ -499,7 +491,7 @@ function WeakAuras.AddActionOption(id, data)
         name = "",
         order = 23,
         image = function() return "", 0, 0 end,
-        hidden = function() return not(data.actions.finish.message_type == "WHISPER" or data.actions.finish.message_type == "CHANNEL") end
+        hidden = function() return data.actions.finish.message_type ~= "WHISPER" end
       },
       finish_message_color = {
         type = "color",
@@ -523,14 +515,6 @@ function WeakAuras.AddActionOption(id, data)
         order = 24,
         disabled = function() return not data.actions.finish.do_message end,
         hidden = function() return data.actions.finish.message_type ~= "WHISPER" end
-      },
-      finish_message_channel = {
-        type = "input",
-        width = WeakAuras.normalWidth,
-        name = L["Channel Number"],
-        order = 24,
-        disabled = function() return not data.actions.finish.do_message end,
-        hidden = function() return data.actions.finish.message_type ~= "CHANNEL" end
       },
       finish_message = {
         type = "input",

@@ -679,22 +679,6 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     }
     order = order + 1;
 
-    args["condition" .. i .. "value" .. j .. "message channel"] = {
-      type = "input",
-      width = WeakAuras.normalWidth,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_channel", L["Channel Number"], L["Channel Number"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_channel", propertyType),
-      order = order,
-      get = function()
-        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_channel;
-      end,
-      set = setValueComplex("message_channel"),
-      hidden = function()
-        return not anyMessageType("CHANNEL");
-      end
-    }
-    order = order + 1;
-
     local descMessage = descIfNoValue2(data, conditions[i].changes[j], "value", "message", propertyType);
     if (not descMessage and data ~= WeakAuras.tempGroup) then
       descMessage = L["Dynamic text tooltip"] .. WeakAuras.GetAdditionalProperties(data)
