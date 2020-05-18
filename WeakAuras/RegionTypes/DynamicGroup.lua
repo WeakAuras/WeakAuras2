@@ -163,7 +163,7 @@ end
 local sortNilFirst = WeakAuras.InvertSort(WeakAuras.SortNilLast)
 function WeakAuras.SortNilFirst(a, b)
   if a == nil and b == nil then
-    -- we want SortNil to always prevent nils from propogating
+    -- we want SortNil to always prevent nils from propagating
     -- as well as to sort nils onto one side
     -- to maintain stability, we need SortNil(nil, nil) to always be false
     -- hence this special case
@@ -789,8 +789,8 @@ local function modify(parent, region, data)
   end
 
   function region:Suspend()
-    -- Stops group from repositioning and reindexing children
-    -- Calls to Activate, Deactivate, and Reindex will cache the relevant children
+    -- Stops group from repositioning and re-indexing children
+    -- Calls to Activate, Deactivate, and Re-index will cache the relevant children
     -- Similarly, Sort, Position, and Resize will be stopped
     -- to be called on the next Resume
     -- for when the group is resumed

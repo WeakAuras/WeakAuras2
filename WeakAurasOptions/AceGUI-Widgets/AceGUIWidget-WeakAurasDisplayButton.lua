@@ -4,7 +4,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 53
+local Type, Version = "WeakAurasDisplayButton", 54
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -494,7 +494,7 @@ end
 -- Blizzard in its infinite wisdom did:
 -- * Force enable the profanity filter for the chinese region
 -- * Add a realm name's part to the profanity filter
-function WeakAuras.ObsfuscateName(name)
+function WeakAuras.ObfuscateName(name)
   if (GetCurrentRegion() == 5) then
     local result = ""
     for i = 1, #name do
@@ -539,7 +539,7 @@ local methods = {
           if (not fullName) then
             local name, realm = UnitFullName("player")
             if realm then
-              fullName = name.."-".. WeakAuras.ObsfuscateName(realm)
+              fullName = name.."-".. WeakAuras.ObfuscateName(realm)
             else
               fullName = name
             end
@@ -1692,7 +1692,7 @@ local methods = {
     return self.frame:IsEnabled();
   end,
   ["OnRelease"] = function(self)
-    self:ReleaseThumnail()
+    self:ReleaseThumbnail()
     self:SetViewRegion();
     self:Enable();
     self:SetGroup();
@@ -1717,8 +1717,8 @@ local methods = {
     end
 
     if self.data.regionType ~= self.thumbnailType then
-      self:ReleaseThumnail()
-      self:AcquireThumnail()
+      self:ReleaseThumbnail()
+      self:AcquireThumbnail()
     else
       local option = WeakAuras.regionOptions[self.thumbnailType]
       if option and option.modifyThumbnail then
@@ -1726,7 +1726,7 @@ local methods = {
       end
     end
   end,
-  ["ReleaseThumnail"] = function(self)
+  ["ReleaseThumbnail"] = function(self)
     if not self.hasThumbnail then
       return
     end
@@ -1739,7 +1739,7 @@ local methods = {
       self.thumbnail = nil
     end
   end,
-  ["AcquireThumnail"] = function(self)
+  ["AcquireThumbnail"] = function(self)
     if self.hasThumbnail then
       return
     end
@@ -2072,9 +2072,9 @@ local function Constructor()
     -- Update in group icon
     groupUpdate = CreateFrame("Frame", nil, button)
     button.groupUpdate = groupUpdate
-    local gtex = groupUpdate:CreateTexture(nil, "OVERLAY")
-    gtex:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]])
-    gtex:SetAllPoints()
+    local gTex = groupUpdate:CreateTexture(nil, "OVERLAY")
+    gTex:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]])
+    gTex:SetAllPoints()
     groupUpdate:SetSize(16, 16)
     groupUpdate:SetPoint("BOTTOM", button, "BOTTOM")
     groupUpdate:SetPoint("LEFT", icon, "RIGHT", 20, 0)

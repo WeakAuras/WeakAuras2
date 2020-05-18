@@ -15,8 +15,9 @@ assignees: ''
 Note that if the error looks like `[string "--[[ Error in ' my awesome aura' ]` then the bug is in the aura that got mentioned, not in WeakAuras itself -->
 
 ### To Reproduce
-<!-- Describe what you clicked or did when the problem occured -->
+<!-- Describe what you clicked or did when the problem occurred -->
 Steps to reproduce the behavior:
+
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
@@ -32,6 +33,7 @@ Steps to reproduce the behavior:
 <!-- You can see the current version in the title bar of the options window, if the options do not open, check the Twitch app or the `## Version:` field in the WeakAuras.toc file -->
 
 **Are you on World of Warcraft Classic or Retail?**
+
 - [ ] Classic
 - [ ] Retail
 
@@ -39,6 +41,7 @@ Steps to reproduce the behavior:
 <!-- You can always find older versions of WeakAuras to test with at https://www.wowace.com/projects/weakauras-2/files -->
 
 ### Additional Info
+
 <!--
 If you do not know which aura is causing issues for you, please attach a ZIP archive of your WeakAuras SavedVariables file, it's the `WeakAuras.lua` file in `World of Warcraft\_retail_\WTF\Account\YOUR_ACCOUNT\SavedVariables\`. In case you do, please export the string and paste it below.
 -->

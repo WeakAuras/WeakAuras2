@@ -2830,7 +2830,7 @@ end
 scheduleRefillFrame.ids = {}
 
 
--- TODO replace older ReloadOptions, SchduleReloadOptions, ReloadTriggerOptions, ReloadGroupRegionOptions
+-- TODO replace older ReloadOptions, ScheduleReloadOptions, ReloadTriggerOptions, ReloadGroupRegionOptions
 -- automatically clear parent/tempGroup ?
 function WeakAuras.ReloadOptions2(id, data)
   displayOptions[id] = nil
@@ -2841,7 +2841,7 @@ function WeakAuras.RefillOptions()
   frame:RefillOptions()
 end
 
-function WeakAuras.SchduleRefillOptions()
+function WeakAuras.ScheduleRefillOptions()
    scheduleRefillFrame:ScheduleRefillOnly()
 end
 
@@ -3852,7 +3852,7 @@ function WeakAuras.PositionOptions(id, data, _, hideWidthHeight, disableSelfPoin
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Set Parent to Anchor"],
-      desc = L["Sets the anchored frame as the aura's parent, causing the aura to inherit attributes such as visiblility and scale."],
+      desc = L["Sets the anchored frame as the aura's parent, causing the aura to inherit attributes such as visibility and scale."],
       order = 77,
       get = function()
         return data.anchorFrameParent or data.anchorFrameParent == nil;
@@ -4138,8 +4138,8 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
 
   for _, child in ipairs(to_sort) do
     child.frame:Show();
-    if child.AcquireThumnail then
-      child:AcquireThumnail()
+    if child.AcquireThumbnail then
+      child:AcquireThumbnail()
     end
     tinsert(frame.buttonsScroll.children, child);
     local controlledChildren = children[child:GetTitle()];
@@ -4148,8 +4148,8 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
       for _, groupchild in ipairs(controlledChildren) do
         if(child:GetExpanded() and visible[groupchild]) then
           displayButtons[groupchild].frame:Show();
-          if displayButtons[groupchild].AcquireThumnail then
-            displayButtons[groupchild]:AcquireThumnail()
+          if displayButtons[groupchild].AcquireThumbnail then
+            displayButtons[groupchild]:AcquireThumbnail()
           end
           tinsert(frame.buttonsScroll.children, displayButtons[groupchild]);
         end
@@ -4203,8 +4203,8 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
 
   for _, child in ipairs(to_sort) do
     child.frame:Show();
-    if child.AcquireThumnail then
-      child:AcquireThumnail()
+    if child.AcquireThumbnail then
+      child:AcquireThumbnail()
     end
     tinsert(frame.buttonsScroll.children, child);
     local controlledChildren = children[child:GetTitle()];
@@ -4213,8 +4213,8 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
       for _, groupchild in ipairs(controlledChildren) do
         if(child:GetExpanded() and visible[groupchild]) then
           displayButtons[groupchild].frame:Show();
-          if displayButtons[groupchild].AcquireThumnail then
-            displayButtons[groupchild]:AcquireThumnail()
+          if displayButtons[groupchild].AcquireThumbnail then
+            displayButtons[groupchild]:AcquireThumbnail()
           end
           tinsert(frame.buttonsScroll.children, displayButtons[groupchild]);
         end
@@ -4228,8 +4228,8 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
     local groupVisible = not group or visible[group] and displayButtons[group]:GetExpanded()
     if(not groupVisible or not visible[id]) then
       child.frame:Hide();
-      if child.ReleaseThumnail then
-        child:ReleaseThumnail()
+      if child.ReleaseThumbnail then
+        child:ReleaseThumbnail()
       end
     end
   end

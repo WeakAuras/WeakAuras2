@@ -230,13 +230,13 @@ function WeakAuras.CreateFrame()
 
   local title = CreateFrame("Frame", nil, frame)
 
-  local titletext = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+  local titleText = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 
-  titletext:SetText("WeakAuras " .. WeakAuras.versionString)
+  titleText:SetText("WeakAuras " .. WeakAuras.versionString)
 
-  local titlebg = CreateDecorationWide(frame, max(120, titletext:GetWidth()))
-  titlebg:SetPoint("TOP", 0, 24)
-  titletext:SetPoint("TOP", titlebg, "TOP", 0, -14)
+  local titleBG = CreateDecorationWide(frame, max(120, titleText:GetWidth()))
+  titleBG:SetPoint("TOP", 0, 24)
+  titleText:SetPoint("TOP", titleBG, "TOP", 0, -14)
 
 
   local function commitWindowChanges()
@@ -269,8 +269,8 @@ function WeakAuras.CreateFrame()
     frame:StopMovingOrSizing()
     commitWindowChanges()
   end)
-  title:SetPoint("BOTTOMLEFT", titlebg, "BOTTOMLEFT", -25, 0)
-  title:SetPoint("TOPRIGHT", titlebg, "TOPRIGHT", 25, 0)
+  title:SetPoint("BOTTOMLEFT", titleBG, "BOTTOMLEFT", -25, 0)
+  title:SetPoint("TOPRIGHT", titleBG, "TOPRIGHT", 25, 0)
 
   CreateFrameSizer(frame, commitWindowChanges, "BOTTOMLEFT")
   CreateFrameSizer(frame, commitWindowChanges, "BOTTOMRIGHT")
@@ -440,7 +440,7 @@ function WeakAuras.CreateFrame()
   container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -83 - WeakAuras.normalWidth * 340, -14)
   container.frame:Show()
   container.frame:SetClipsChildren(true)
-  container.titletext:Hide()
+  container.titleText:Hide()
   frame.container = container
 
   frame.texturePicker = WeakAuras.TexturePicker(frame)
@@ -572,7 +572,7 @@ function WeakAuras.CreateFrame()
     return status.offset, status.offset + self.scrollframe:GetHeight()
   end
 
-  -- override SetScroll to make childrens visible as needed
+  -- override SetScroll to make children visible as needed
   local oldSetScroll = buttonsScroll.SetScroll
   buttonsScroll.SetScroll = function(self, value)
     if self:GetScrollPos() ~= value then

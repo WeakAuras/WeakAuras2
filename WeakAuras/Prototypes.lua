@@ -932,7 +932,7 @@ function WeakAuras.IsSpellKnownIncludingPet(spell)
     return true;
   end
   -- WORKAROUND brain damage around void eruption
-  -- In shadow form void eruption is overriden by void bolt, yet IsSpellKnown for void bolt
+  -- In shadow form void eruption is overridden by void bolt, yet IsSpellKnown for void bolt
   -- returns false, whereas it returns true for void eruption
   local baseSpell = FindBaseSpellByID(spell);
   if (not baseSpell) then
@@ -6344,7 +6344,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "moveSpeed",
-        display = L["Continously update Movement Speed"],
+        display = L["Continuously update Movement Speed"],
         type = "boolean",
         test = true,
         width = WeakAuras.doubleWidth

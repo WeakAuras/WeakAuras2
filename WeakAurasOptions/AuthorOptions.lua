@@ -16,7 +16,7 @@
     width (required) -> number between 0.1 and 2 (softMin of 0.5). Determines the width of the option.
     useDesc (optional) -> bool. If false, then the tooltip will not be used.
     desc (optional) -> string to be displayed in the option tooltip
-  When options are merged together (i.e. when the user multiselects and then opens the custom options tab), there is one additonal field:
+  When options are merged together (i.e. when the user multiselects and then opens the custom options tab), there is one additional field:
     references -> childID <=> optionID map, used to dereference to the proper option table in setters
   Supported option types, and additional fields that each type supports/requires:
     group -> represents a group of options.

@@ -20,7 +20,7 @@
 --      - variable: Variable inside the trigger state to check
 --      - op: Operator to use for check
 --      - value: Value to check
---      - checks: Sub Checks for Combinations, each containg trigger, variable, op, value or checks
+--      - checks: Sub Checks for Combinations, each containing trigger, variable, op, value or checks
 --      - (for merged) references
 --          - id => conditionIndex
 --               => op
@@ -1960,7 +1960,7 @@ local function createConditionTemplates(data)
   return conditionTemplates, conditionTemplateWithoutCombinations;
 end
 
-local function buildAllPotentialProperies(data, category)
+local function buildAllPotentialProperties(data, category)
   local allProperties = {};
   allProperties.propertyMap = {};
   if (data.controlledChildren) then
@@ -2279,7 +2279,7 @@ function WeakAuras.GetConditionOptions(data, args, conditionVariable, startorder
   local conditionTemplates, conditionTemplateWithoutCombinations = createConditionTemplates(data);
 
   -- Build potential properties structure
-  local allProperties = buildAllPotentialProperies(data, category);
+  local allProperties = buildAllPotentialProperties(data, category);
 
   -- Build currently selected conditions
   local conditions;

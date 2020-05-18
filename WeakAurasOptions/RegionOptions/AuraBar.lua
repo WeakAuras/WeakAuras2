@@ -459,7 +459,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, width, hei
 
   borderframe:SetParent(parent)
 
-  -- Defaut size
+  -- Default size
   width  = width or 26;
   height = height or 15;
 

@@ -1,6 +1,6 @@
 if not WeakAuras.IsCorrectVersion() then return end
 
-local Type, Version = "WeakAurasNewButton", 23
+local Type, Version = "WeakAurasNewButton", 24
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -39,7 +39,7 @@ local methods = {
     self.frame:SetScript("OnClick", func);
   end,
   ["SetIcon"] = function(self, icon)
-    self:ReleaseThumnail()
+    self:ReleaseThumbnail()
     if(type(icon) == "string" or type(icon) == "number") then
       self.icon:SetTexture(icon);
       self.icon:Show();
@@ -63,7 +63,7 @@ local methods = {
       self.thumbnailType = regionType
     end
   end,
-  ["ReleaseThumnail"] = function(self)
+  ["ReleaseThumbnail"] = function(self)
     if self.thumbnail then
       local regionData = WeakAuras.regionOptions[self.thumbnailType]
       if regionData and regionData.releaseThumbnail then
@@ -74,7 +74,7 @@ local methods = {
     self.thumbnailType = nil
   end,
   ["OnRelease"] = function(self)
-    self:ReleaseThumnail()
+    self:ReleaseThumbnail()
     if(self.iconRegion and self.iconRegion.Hide) then
       self.iconRegion:Hide();
     end

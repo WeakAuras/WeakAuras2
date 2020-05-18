@@ -27,7 +27,7 @@ local colorScheme = {
   [IndentationLib.tokens.TOKEN_COMMENT_LONG] = "|c0000aa00",
   [IndentationLib.tokens.TOKEN_NUMBER] = "|c00ff9900",
   [IndentationLib.tokens.TOKEN_STRING] = "|c00999999",
-  -- ellipsis, curly braces, table acces
+  -- ellipsis, curly braces, table access
   ["..."] = tableColor,
   ["{"] = tableColor,
   ["}"] = tableColor,

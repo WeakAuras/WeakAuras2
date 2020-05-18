@@ -748,25 +748,25 @@ local function recurseStringify(data, level, lines)
   for k, v in pairs(data) do
     local lineFormat = strrep("    ", level) .. "[%s] = %s"
     local form1, form2, value
-    local ktype, vtype = type(k), type(v)
-    if ktype == "string" then
+    local kType, vType = type(k), type(v)
+    if kType == "string" then
       form1 = "%q"
-    elseif ktype == "number" then
+    elseif kType == "number" then
       form1 = "%d"
     else
       form1 = "%s"
     end
-    if vtype == "string" then
+    if vType == "string" then
       form2 = "%q"
       v = v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\"")
-    elseif vtype == "boolean" then
+    elseif vType == "boolean" then
       v = tostring(v)
       form2 = "%s"
     else
       form2 = "%s"
     end
     lineFormat = lineFormat:format(form1, form2)
-    if vtype == "table" then
+    if vType == "table" then
       tinsert(lines, lineFormat:format(k, "{"))
       recurseStringify(v, level + 1, lines)
       tinsert(lines, strrep("    ", level) .. "},")

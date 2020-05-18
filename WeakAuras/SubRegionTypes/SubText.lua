@@ -91,7 +91,7 @@ local function animRotate(object, degrees, anchor)
   end
   -- Something to rotate
   if object.animationGroup or degrees ~= 0 then
-    -- Create AnimatioGroup and rotation animation
+    -- Create AnimationGroup and rotation animation
     object.animationGroup = object.animationGroup or object:CreateAnimationGroup();
     local group = object.animationGroup;
     group.rotate = group.rotate or group:CreateAnimation("rotation");
@@ -150,8 +150,8 @@ local function create()
   -- WOW's layout system works best if frames and all their parents are anchored
   -- In this case, it appears that a text doesn't get the right size on the initial
   -- load with a custom font. (Though it works if the font is non-custom or after
-  -- a reloadui). Just moving the normal AnchorSubRegion to the start of modify was not enough
-  -- But anchoring the text to UIParent before reanchoring it correctly does seem to fix
+  -- a ReloadUI). Just moving the normal AnchorSubRegion to the start of modify was not enough
+  -- But anchoring the text to UIParent before re-anchoring it correctly does seem to fix
   -- the issue. Also see #1778
   text:SetPoint("CENTER", UIParent, "CENTER")
 

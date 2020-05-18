@@ -96,7 +96,7 @@ local properties = {
     min = 1,
     softMax = screenWidth,
     bigStep = 1,
-    defautl = 32,
+    default = 32,
   },
   height = {
     display = L["Height"],

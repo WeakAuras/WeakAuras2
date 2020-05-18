@@ -53,12 +53,12 @@ end
 -- Adjusted Duration
 
 function WeakAuras.regionPrototype.AddAdjustedDurationToDefault(default)
-  default.useAdjustededMax = false;
-  default.useAdjustededMin = false;
+  default.useAdjustedMax = false;
+  default.useAdjustedMin = false;
 end
 
 function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, order)
-  options.useAdjustededMin = {
+  options.useAdjustedMin = {
     type = "toggle",
     width = WeakAuras.normalWidth,
     name = L["Set Minimum Progress"],
@@ -72,7 +72,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
     width = WeakAuras.normalWidth,
     order = order + 0.01,
     name = L["Minimum"],
-    hidden = function() return not data.useAdjustededMin end,
+    hidden = function() return not data.useAdjustedMin end,
     desc = L["Enter static or relative values with %"]
   };
 
@@ -81,10 +81,10 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
     width = WeakAuras.normalWidth,
     name = "",
     order = order + 0.02,
-    hidden = function() return not (not data.useAdjustededMin and data.useAdjustededMax) end,
+    hidden = function() return not (not data.useAdjustedMin and data.useAdjustedMax) end,
   };
 
-  options.useAdjustededMax = {
+  options.useAdjustedMax = {
     type = "toggle",
     width = WeakAuras.normalWidth,
     name = L["Set Maximum Progress"],
@@ -98,7 +98,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
     validate = WeakAuras.ValidateNumericOrPercent,
     order = order + 0.04,
     name = L["Maximum"],
-    hidden = function() return not data.useAdjustededMax end,
+    hidden = function() return not data.useAdjustedMax end,
     desc = L["Enter static or relative values with %"]
   };
 
@@ -107,7 +107,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
     width = WeakAuras.normalWidth,
     name = "",
     order = order + 0.05,
-    hidden = function() return not (data.useAdjustededMin and not data.useAdjustededMax) end,
+    hidden = function() return not (data.useAdjustedMin and not data.useAdjustedMax) end,
   };
 
   return options;
@@ -500,9 +500,9 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
   if (defaultsForRegion and defaultsForRegion.alpha) then
     region:SetRegionAlpha(data.alpha);
   end
-  local hasAdjustedMin = defaultsForRegion and defaultsForRegion.useAdjustededMin ~= nil and data.useAdjustededMin
+  local hasAdjustedMin = defaultsForRegion and defaultsForRegion.useAdjustedMin ~= nil and data.useAdjustedMin
         and data.adjustedMin;
-  local hasAdjustedMax = defaultsForRegion and defaultsForRegion.useAdjustededMax ~= nil and data.useAdjustededMax
+  local hasAdjustedMax = defaultsForRegion and defaultsForRegion.useAdjustedMax ~= nil and data.useAdjustedMax
         and data.adjustedMax;
 
   region.adjustedMin = nil
@@ -703,8 +703,8 @@ end
 -- Expand/Collapse function
 function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, parent, parentRegionType)
   local id = data.id
-  local indynamicgroup = parentRegionType == "dynamicgroup";
-  local ingroup = parentRegionType == "group";
+  local inDynamicGroup = parentRegionType == "dynamicgroup";
+  local inGroup = parentRegionType == "group";
 
   local startMainAnimation = function()
     WeakAuras.Animate("display", data, "main", data.animation.main, region, false, nil, true, cloneId);
@@ -726,7 +726,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
   end
 
   local hideRegion;
-  if(indynamicgroup) then
+  if(inDynamicGroup) then
     hideRegion = function()
       if region.PreHide then
         region:PreHide()
@@ -757,7 +757,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
     end
   end
 
-  if(indynamicgroup) then
+  if(inDynamicGroup) then
     function region:Collapse()
       if (not region.toShow) then
         return;
@@ -812,7 +812,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
         hideRegion();
       end
 
-      if ingroup then
+      if inGroup then
         parent:UpdateBorder(region);
       end
 
@@ -850,7 +850,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
         startMainAnimation();
       end
 
-      if ingroup then
+      if inGroup then
         parent:UpdateBorder(region);
       end
 

@@ -2,7 +2,7 @@
 ToolbarButton Widget, based on AceGUI Button
 Graphical Button.
 -------------------------------------------------------------------------------]]
-local Type, Version = "WeakAurasToolbarButton", 3
+local Type, Version = "WeakAurasToolbarButton", 4
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -40,7 +40,7 @@ local methods = {
 		self:SetWidth(32)
 		self:SetDisabled(false)
 		self:SetText()
-		self.htex:SetVertexColor(1, 1, 1, 0.1)
+		self.hTex:SetVertexColor(1, 1, 1, 0.1)
 	end,
 
 	-- ["OnRelease"] = nil,
@@ -70,9 +70,9 @@ local methods = {
 	end,
 	["SetStrongHighlight"] = function(self, enable)
 		if enable then
-			self.htex:SetVertexColor(1, 1, 1, 0.3)
+			self.hTex:SetVertexColor(1, 1, 1, 0.3)
 		else
-			self.htex:SetVertexColor(1, 1, 1, 0.1)
+			self.hTex:SetVertexColor(1, 1, 1, 0.1)
 		end
 	end
 
@@ -105,24 +105,24 @@ local function Constructor()
 	text:SetPoint("BOTTOMRIGHT", -4, 1)
 	text:SetJustifyV("MIDDLE")
 
-	--local ntex = frame:CreateTexture()
-	--ntex:SetTexture("Interface/Buttons/UI-Panel-Button-Up")
-	--ntex:SetTexCoord(0, 0.625, 0, 0.6875)
-	--ntex:SetAllPoints()
-	--frame:SetNormalTexture(ntex)
+	--local nTex = frame:CreateTexture()
+	--nTex:SetTexture("Interface/Buttons/UI-Panel-Button-Up")
+	--nTex:SetTexCoord(0, 0.625, 0, 0.6875)
+	--nTex:SetAllPoints()
+	--frame:SetNormalTexture(nTex)
 
-	local htex = frame:CreateTexture()
-	htex:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite")
-	htex:SetVertexColor(1, 1, 1, 0.1)
+	local hTex = frame:CreateTexture()
+	hTex:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite")
+	hTex:SetVertexColor(1, 1, 1, 0.1)
 
-	htex:SetAllPoints()
-	frame:SetHighlightTexture(htex)
+	hTex:SetAllPoints()
+	frame:SetHighlightTexture(hTex)
 
-	local ptex = frame:CreateTexture()
-	ptex:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite")
-	ptex:SetVertexColor(1, 1, 1, 0.2)
-	ptex:SetAllPoints()
-	frame:SetPushedTexture(ptex)
+	local pTex = frame:CreateTexture()
+	pTex:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite")
+	pTex:SetVertexColor(1, 1, 1, 0.2)
+	pTex:SetAllPoints()
+	frame:SetPushedTexture(pTex)
 
 
 	local widget = {
@@ -130,7 +130,7 @@ local function Constructor()
 		icon = icon,
 		frame = frame,
 		type  = Type,
-		htex = htex
+		hTex = hTex
 	}
 	for method, func in pairs(methods) do
 		widget[method] = func

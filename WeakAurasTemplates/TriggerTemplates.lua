@@ -1283,12 +1283,12 @@ function WeakAuras.CreateTemplateView(frame)
   local function batchModeToggler(value)
     if (not value) then
       -- clean selection
-      for k in pairs(newView.choosenItemBatch) do
-        newView.choosenItemBatch[k] = nil;
+      for k in pairs(newView.chosenItemBatch) do
+        newView.chosenItemBatch[k] = nil;
       end
-      for k, f in pairs(newView.choosenItemButtonsBatch) do
+      for k, f in pairs(newView.chosenItemButtonsBatch) do
         f.frame:UnlockHighlight();
-        newView.choosenItemButtonsBatch[k] = nil;
+        newView.chosenItemButtonsBatch[k] = nil;
       end
       newView.batchButton:Hide();
     end
@@ -1297,8 +1297,8 @@ function WeakAuras.CreateTemplateView(frame)
   local function createTriggerFlyout(section, fullWidth)
     local group = AceGUI:Create("WeakAurasTemplateGroup");
     group:SetFullWidth(true);
-    newView.choosenItemBatch = {};
-    newView.choosenItemButtonsBatch = {};
+    newView.chosenItemBatch = {};
+    newView.chosenItemButtonsBatch = {};
     group:SetLayout("WATemplateTriggerLayoutFlyout");
     if (section) then
       for j, item in sortedPairs(section, createSortFunctionFor(section)) do
@@ -1313,17 +1313,17 @@ function WeakAuras.CreateTemplateView(frame)
         end
         button:SetClick(function()
           if (IsControlKeyDown() and not newView.existingAura) then
-            if newView.choosenItemBatch[item] then
+            if newView.chosenItemBatch[item] then
               button.frame:UnlockHighlight();
-              newView.choosenItemBatch[item] = nil;
-              newView.choosenItemButtonsBatch[j] = nil;
+              newView.chosenItemBatch[item] = nil;
+              newView.chosenItemButtonsBatch[j] = nil;
             else
               button.frame:LockHighlight();
-              newView.choosenItemBatch[item] = true;
-              newView.choosenItemButtonsBatch[j] = button;
+              newView.chosenItemBatch[item] = true;
+              newView.chosenItemButtonsBatch[j] = button;
             end
             local count = 0;
-            for _ in pairs(newView.choosenItemBatch) do
+            for _ in pairs(newView.chosenItemBatch) do
               count = count + 1;
             end
             if count == 0 then
@@ -1342,8 +1342,8 @@ function WeakAuras.CreateTemplateView(frame)
             if #subTypes < 2 then
               local subType = subTypes[1] or {}
               if (newView.existingAura) then
-                newView.choosenItem = item;
-                newView.choosenSubType = subType;
+                newView.chosenItem = item;
+                newView.chosenSubType = subType;
                 createButtons();
               else
                 replaceTrigger(newView.data, item, subType);
@@ -1361,7 +1361,7 @@ function WeakAuras.CreateTemplateView(frame)
               end
             else
               -- create trigger type selection
-              newView.choosenItem = item;
+              newView.chosenItem = item;
               createButtons();
             end
           end
@@ -1373,7 +1373,7 @@ function WeakAuras.CreateTemplateView(frame)
   end
 
   local function createTriggerTypeButtons()
-    local item = newView.choosenItem;
+    local item = newView.chosenItem;
     local group = AceGUI:Create("WeakAurasTemplateGroup");
     group:SetFullWidth(true);
     local subTypes = subTypesFor(item, newView.data.regionType);
@@ -1401,10 +1401,10 @@ function WeakAuras.CreateTemplateView(frame)
               subTypesButton.frame:UnlockHighlight();
             end
           end
-          newView.choosenItemBatchSubType[item] = subType;
+          newView.chosenItemBatchSubType[item] = subType;
         elseif (newView.existingAura) then
-          newView.choosenItem = item;
-          newView.choosenSubType = subType;
+          newView.chosenItem = item;
+          newView.chosenSubType = subType;
           createButtons();
         else
           replaceTrigger(newView.data, item, subType);
@@ -1423,7 +1423,7 @@ function WeakAuras.CreateTemplateView(frame)
       end);
       if newView.batchStep then
         button.frame:LockHighlight();
-        newView.choosenItemBatchSubType[item] = subType;
+        newView.chosenItemBatchSubType[item] = subType;
         if lastButton then
           lastButton.frame:UnlockHighlight();
         end
@@ -1519,7 +1519,7 @@ function WeakAuras.CreateTemplateView(frame)
     replaceButton:SetIcon("Interface\\Icons\\Spell_ChargeNegative");
     replaceButton:SetFullWidth(true);
     replaceButton:SetClick(function()
-      replaceTriggers(newView.data, newView.choosenItem, newView.choosenSubType);
+      replaceTriggers(newView.data, newView.chosenItem, newView.chosenSubType);
       for _,v in pairs({"class","spec","talent","pvptalent","race"}) do
         newView.data.load[v] = nil;
         newView.data.load["use_"..v] = nil;
@@ -1528,8 +1528,8 @@ function WeakAuras.CreateTemplateView(frame)
       newView.data.load.spec = {};
       WeakAuras.DeepCopy(WeakAuras.data_stub.load.class, newView.data.load.class);
       WeakAuras.DeepCopy(WeakAuras.data_stub.load.spec, newView.data.load.spec);
-      if (newView.choosenItem.load) then
-        WeakAuras.DeepCopy(newView.choosenItem.load, newView.data.load);
+      if (newView.chosenItem.load) then
+        WeakAuras.DeepCopy(newView.chosenItem.load, newView.data.load);
       end
     end);
     newViewScroll:AddChild(replaceButton);
@@ -1540,7 +1540,7 @@ function WeakAuras.CreateTemplateView(frame)
     addButton:SetIcon("Interface\\Icons\\Spell_ChargePositive");
     addButton:SetFullWidth(true);
     addButton:SetClick(function()
-      addTriggers(newView.data, newView.choosenItem, newView.choosenSubType);
+      addTriggers(newView.data, newView.chosenItem, newView.chosenSubType);
     end);
     newViewScroll:AddChild(addButton);
   end
@@ -1566,8 +1566,8 @@ function WeakAuras.CreateTemplateView(frame)
     elseif (newView.data and newView.batchStep) then
       -- Batch
       if (newView.batchStep) then
-        newView.choosenItemBatchSubType = {};
-        for item in pairs(newView.choosenItemBatch) do
+        newView.chosenItemBatchSubType = {};
+        for item in pairs(newView.chosenItemBatch) do
           local classHeader = AceGUI:Create("Heading");
           classHeader:SetFullWidth(true);
           newViewScroll:AddChild(classHeader);
@@ -1581,7 +1581,7 @@ function WeakAuras.CreateTemplateView(frame)
           end
           newViewScroll:AddChild(button);
 
-          newView.choosenItem = item;
+          newView.chosenItem = item;
           local typesButtons = createTriggerTypeButtons();
           newViewScroll:AddChild(typesButtons);
         end
@@ -1590,7 +1590,7 @@ function WeakAuras.CreateTemplateView(frame)
         newView.backButton:SetPoint("BOTTOMRIGHT", -267, -23);
       end
       newView.batchModeLabel:Hide();
-    elseif (newView.data and not newView.choosenItem) then
+    elseif (newView.data and not newView.chosenItem) then
       -- Second step: Trigger selection screen
 
       -- Class
@@ -1648,11 +1648,11 @@ function WeakAuras.CreateTemplateView(frame)
       end
 
       -- batchButton
-      newView.choosenItemBatch = {};
+      newView.chosenItemBatch = {};
       if not newView.existingAura then
         newView.batchModeLabel:Show();
       end
-    elseif (newView.data and newView.choosenItem and not newView.choosenSubType) then
+    elseif (newView.data and newView.chosenItem and not newView.chosenSubType) then
       -- Multi-Type template
       local typeHeader = AceGUI:Create("Heading");
       typeHeader:SetFullWidth(true);
@@ -1682,12 +1682,12 @@ function WeakAuras.CreateTemplateView(frame)
   newViewMakeBatch:SetScript("OnClick", function()
     local saveData = {};
     WeakAuras.DeepCopy(newView.data, saveData);
-    for item in pairs(newView.choosenItemBatch) do
+    for item in pairs(newView.chosenItemBatch) do
       -- clean data
       newView.data = {};
       WeakAuras.DeepCopy(saveData, newView.data);
       -- copy data
-      local subType = newView.choosenItemBatchSubType[item]
+      local subType = newView.chosenItemBatchSubType[item]
       replaceTrigger(newView.data, item, subType);
       replaceCondition(newView.data, item, subType);
       newView.data.id = WeakAuras.FindUnusedId(item.title);
@@ -1726,28 +1726,28 @@ function WeakAuras.CreateTemplateView(frame)
   local newViewBack = CreateFrame("Button", nil, newView.frame, "UIPanelButtonTemplate");
   newViewBack:SetScript("OnClick", function()
     if (newView.existingAura) then
-      if newView.choosenSubType then
-        newView.choosenSubType = nil;
-        local subTypes = subTypesFor(newView.choosenItem, newView.data.regionType);
+      if newView.chosenSubType then
+        newView.chosenSubType = nil;
+        local subTypes = subTypesFor(newView.chosenItem, newView.data.regionType);
         if #subTypes < 2 then -- No subtype selection, go back twice
-          newView.choosenItem = nil;
+          newView.chosenItem = nil;
         end
       else
-        newView.choosenItem = nil;
+        newView.chosenItem = nil;
       end
     else
-      if newView.choosenSubType then
-        newView.choosenSubType = nil;
+      if newView.chosenSubType then
+        newView.chosenSubType = nil;
       else
-        if newView.choosenItem then
-          newView.choosenItem = nil;
+        if newView.chosenItem then
+          newView.chosenItem = nil;
         else
           newView.data = nil;
         end
       end
     end
     newView.batchButton:Hide();
-    newView.choosenItemBatch = {};
+    newView.chosenItemBatch = {};
     newView.batchStep = nil;
     newView.backButton:ClearAllPoints()
     newView.backButton:SetPoint("BOTTOMRIGHT", -147, -23);
@@ -1772,15 +1772,15 @@ function WeakAuras.CreateTemplateView(frame)
     if (data) then
       self.data = data;
       newView.existingAura = true;
-      newView.choosenItem = nil;
-      newView.choosenSubType = nil;
+      newView.chosenItem = nil;
+      newView.chosenSubType = nil;
     else
       self.data = nil; -- Data is cloned from display template
       newView.existingAura = false;
-      newView.choosenItem = nil;
-      newView.choosenSubType = nil;
+      newView.chosenItem = nil;
+      newView.chosenSubType = nil;
       newView.batchStep = nil;
-      newView.choosenItemBatch = {};
+      newView.chosenItemBatch = {};
     end
     newView.class = select(2, UnitClass("player"));
     if not WeakAuras.IsClassic() then

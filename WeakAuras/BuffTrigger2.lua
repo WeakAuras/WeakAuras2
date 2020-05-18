@@ -89,7 +89,7 @@ local scanFuncNameGroup = {}
 local scanFuncSpellIdGroup = {}
 local scanFuncGeneralGroup = {}
 
--- Contains all scanFuncs that should be check if the exitance of a unit changed
+-- Contains all scanFuncs that should be check if the existence of a unit changed
 local unitExistScanFunc = {}
 -- Which units exist
 local existingUnits = {}
@@ -369,12 +369,12 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name
   return changed or data.lastChanged == time
 end
 
-local function calculateNextCheck(triggerInfoRemaing, auraDataRemaing, auraDataExpirationTime,  nextCheck)
-  if auraDataRemaing > 0 and auraDataRemaing >= triggerInfoRemaing then
+local function calculateNextCheck(triggerInfoRemaining, auraDataRemaining, auraDataExpirationTime,  nextCheck)
+  if auraDataRemaining > 0 and auraDataRemaining >= triggerInfoRemaining then
     if not nextCheck then
-      return auraDataExpirationTime - triggerInfoRemaing
+      return auraDataExpirationTime - triggerInfoRemaining
     else
-      return min(auraDataExpirationTime - triggerInfoRemaing, nextCheck)
+      return min(auraDataExpirationTime - triggerInfoRemaining, nextCheck)
     end
   end
   return nextCheck

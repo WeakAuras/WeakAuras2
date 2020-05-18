@@ -875,20 +875,20 @@ local function ConstructMoverSizer(parent)
     end
     local regionScale = self.moving.region:GetScale()
     self.text:SetText(("(%.2f, %.2f)"):format(dX*1/regionScale, dY*1/regionScale))
-    local midx = (distance / 2) * cos(angle)
-    local midy = (distance / 2) * sin(angle)
-    self.text:SetPoint("CENTER", self.anchorPointIcon, "CENTER", midx, midy)
+    local midX = (distance / 2) * cos(angle)
+    local midY = (distance / 2) * sin(angle)
+    self.text:SetPoint("CENTER", self.anchorPointIcon, "CENTER", midX, midY)
     local left, right, top, bottom, centerX, centerY = frame:GetLeft(), frame:GetRight(), frame:GetTop(), frame:GetBottom(), frame:GetCenter()
-    if (midx > 0 and (self.text:GetRight() or 0) > (left or 0))
-    or (midx < 0 and (self.text:GetLeft() or 0) < (right or 0))
+    if (midX > 0 and (self.text:GetRight() or 0) > (left or 0))
+    or (midX < 0 and (self.text:GetLeft() or 0) < (right or 0))
     then
-      if midy > 0 and (self.text:GetTop() or 0) > (top or 0) then
-        midy = midy - ((self.text:GetTop() or 0) - (bottom or 0))
-      elseif midy < 0 and (self.text:GetBottom() or 0) < (top or 0) then
-        midy = midy + ((top or 0) - (self.text:GetBottom() or 0))
+      if midY > 0 and (self.text:GetTop() or 0) > (top or 0) then
+        midY = midY - ((self.text:GetTop() or 0) - (bottom or 0))
+      elseif midY < 0 and (self.text:GetBottom() or 0) < (top or 0) then
+        midY = midY + ((top or 0) - (self.text:GetBottom() or 0))
       end
     end
-    self.text:SetPoint("CENTER", self.anchorPointIcon, "CENTER", midx, midy)
+    self.text:SetPoint("CENTER", self.anchorPointIcon, "CENTER", midX, midY)
     if self.isMoving then
       if mover.align then
         local ctrlDown = IsControlKeyDown()
