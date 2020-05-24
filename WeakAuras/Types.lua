@@ -373,8 +373,10 @@ WeakAuras.spark_hide_types = {
 }
 
 WeakAuras.tick_placement_modes = {
-  ABSOLUTE = L["Absolute"],
-  RELATIVE = L["Relative"],
+  AtValue = L["At Value"],
+  AtMissingValue = L["At missing Value"],
+  AtPercent = L["At Percent"],
+  ValueOffset = L["Offset from progress"]
 }
 
 WeakAuras.containment_types = {

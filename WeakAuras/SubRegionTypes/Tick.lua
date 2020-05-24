@@ -96,6 +96,7 @@ end
 local funcs = {
   Update = function(self, state)
     self.trigger_inverse = state.inverse
+    self.state = state
     if state.progressType == "timed" then
       self.trigger_total = state.duration
     elseif state.progressType == "static" then
@@ -105,6 +106,7 @@ local funcs = {
     end
     self:UpdateVisible()
     self:UpdateTickPlacement();
+    self:UpdateTimerTick()
   end,
   OrientationChanged = function(self)
     self.orientation = self.parent:GetEffectiveOrientation()
@@ -150,9 +152,26 @@ local funcs = {
       self.tick_placement_mode = placement_mode
       self:UpdateTickPlacement()
       self:UpdateVisible()
+      self:UpdateTimerTick()
+    end
+  end,
+  UpdateTimerTick = function(self)
+    if self.tick_placement_mode == "ValueOffset" and self.state and self.state.progressType == "timed" then
+      if not self.TimerTick then
+        self.TimerTick = self.UpdateTickPlacement
+        self.parent:UpdateRegionHasTimerTick()
+        self.parent.subRegionEvents:AddSubscriber("TimerTick", self)
+      end
+    else
+      if self.TimerTick then
+        self.TimerTick = nil
+        self.parent:UpdateRegionHasTimerTick()
+        self.parent.subRegionEvents:RemoveSubscriber("TimerTick", self)
+      end
     end
   end,
   SetTickPlacement = function(self, placement)
+    placement = tonumber(placement)
     if self.tick_placement ~= placement then
       self.tick_placement = placement
       self:UpdateTickPlacement()
@@ -161,20 +180,62 @@ local funcs = {
   UpdateTickPlacement = function(self)
     local offset, offsetx, offsety = self.tick_placement, 0, 0
     local width = self.parentMajorSize
-    if self.tick_placement_mode == "ABSOLUTE" then
+
+    local hide = false
+    if self.tick_placement_mode == "AtValue" then
       local percent = self.trigger_total and self.trigger_total ~= 0 and self.tick_placement / self.trigger_total
 
       if not self.trigger_total or percent < 0 or percent > 1 then
+        hide = true
         offset = 0
-        self.texture:Hide()
       else
         offset = percent * width
-        self.texture:Show()
       end
-    elseif self.tick_placement_mode == "RELATIVE" then
-      offset = (self.tick_placement / 100) * width
+    elseif self.tick_placement_mode == "AtMissingValue" then
+      local percent = self.trigger_total and self.trigger_total ~= 0 and self.tick_placement / self.trigger_total
+      percent = 1 - percent
+      if not self.trigger_total or percent < 0 or percent > 1 then
+        hide = true
+        offset = 0
+      else
+        offset = percent * width
+      end
+    elseif self.tick_placement_mode == "AtPercent" then
+      if self.tick_placement >= 0 and self.tick_placement <= 100 then
+        offset = (self.tick_placement / 100) * width
+      else
+        hide = true
+        offset = 0
+      end
+    elseif self.tick_placement_mode == "ValueOffset" then
+      if self.trigger_total and self.trigger_total ~= 0 then
+        local atValue
+        if self.state.progressType == "timed" then
+          atValue = self.state.expirationTime - GetTime() + self.tick_placement
+        else
+          atValue = self.state.value + self.tick_placement
+        end
+
+        local percent = atValue / self.trigger_total
+        if not self.trigger_total or percent < 0 or percent > 1 then
+          hide = true
+          offset = 0
+        else
+          offset = percent * width
+        end
+      else
+        hide = true
+        offset = 0
+      end
+    end
+
+    if hide then
+      self.texture:Hide()
+    else
       self.texture:Show()
     end
+
+
 
     local inverse = self.inverse
     if self.trigger_inverse then
@@ -250,7 +311,7 @@ local function modify(parent, region, parentData, data, first)
   region.tick_visible = data.tick_visible
   region.tick_color = data.tick_color
   region.tick_placement_mode = data.tick_placement_mode
-  region.tick_placement = data.tick_placement
+  region.tick_placement = tonumber(data.tick_placement)
   region.automatic_length = data.automatic_length
   region.tick_thickness = data.tick_thickness
   region.tick_length = data.tick_length
@@ -268,6 +329,8 @@ local function modify(parent, region, parentData, data, first)
   parent.subRegionEvents:AddSubscriber("OrientationChanged", region)
   parent.subRegionEvents:AddSubscriber("InverseChanged", region)
   parent:SetScript("OnSizeChanged", function() region:OnSizeChanged() end)
+
+  region.TimerTick = nil
 end
 
 local function supports(regionType)
