@@ -32,7 +32,7 @@ local ignoreForCopyingDisplay = {
   semver = true,
   version = true,
   internalVersion = true,
-  tocbuild = true
+  tocversion = true
 }
 
 local function copyAuraPart(source, destination, part)
