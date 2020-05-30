@@ -48,27 +48,40 @@ local function ConstructIconPicker(frame)
     end
 
     local usedIcons = {};
+    local AddButton = function(name, icon)
+      local button = AceGUI:Create("WeakAurasIconButton");
+      button:SetName(name);
+      button:SetTexture(icon);
+      button:SetClick(function()
+        group:Pick(icon);
+      end);
+      scroll:AddChild(button);
+
+      usedIcons[icon] = true;
+    end
+
     local num = 0;
     if(subname and subname ~= "") then
       for name, icons in pairs(spellCache.Get()) do
-        local bestDistance = math.huge;
-        local bestName;
         if(name:lower():find(subname, 1, true)) then
-
-          for spellId, icon in pairs(icons) do
-            if (not usedIcons[icon]) then
-              local button = AceGUI:Create("WeakAurasIconButton");
-              button:SetName(name);
-              button:SetTexture(icon);
-              button:SetClick(function()
-                group:Pick(icon);
-              end);
-              scroll:AddChild(button);
-
-              usedIcons[icon] = true;
-              num = num + 1;
-              if(num >= 500) then
-                break;
+          if icons.spells then
+            for spellId, icon in pairs(icons.spells) do
+              if (not usedIcons[icon]) then
+                AddButton(name, icon)
+                num = num + 1;
+                if(num >= 500) then
+                  break;
+                end
+              end
+            end
+          elseif icons.achievements then
+            for _, icon in pairs(icons.achievements) do
+              if (not usedIcons[icon]) then
+                AddButton(name, icon)
+                num = num + 1;
+                if(num >= 500) then
+                  break;
+                end
               end
             end
           end

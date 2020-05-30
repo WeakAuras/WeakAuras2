@@ -6,10 +6,8 @@ local operator_types = WeakAuras.operator_types
 local debuff_types = WeakAuras.debuff_types
 
 local function getAuraMatchesLabel(name)
-  local iconCache = WeakAuras.spellCache.Get()
-  local ids = iconCache[name]
+  local ids = WeakAuras.spellCache.GetSpellsMatching(name)
   if ids then
-    local descText = ""
     local numMatches = 0
     for id, _ in pairs(ids) do
       numMatches = numMatches + 1
@@ -21,8 +19,7 @@ local function getAuraMatchesLabel(name)
 end
 
 local function getAuraMatchesList(name)
-  local iconCache = WeakAuras.spellCache.Get()
-  local ids = iconCache[name]
+  local ids = WeakAuras.spellCache.GetSpellsMatching(name)
   if ids then
     local descText = ""
     for id, _ in pairs(ids) do

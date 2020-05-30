@@ -1076,12 +1076,13 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         num = num + 1;
       end
 
-      if(num < 39000 or odb.locale ~= locale or odb.build ~= build or odb.version ~= version) then
+      if(num < 39000 or odb.locale ~= locale or odb.build ~= build or odb.version ~= version or not odb.spellCacheAchivements) then
         spellCache.Build();
 
         odb.build = build;
         odb.locale = locale;
         odb.version = version;
+        odb.spellCacheAchivements = true
       end
 
       -- Updates the icon cache with whatever icons WeakAuras core has actually used.
