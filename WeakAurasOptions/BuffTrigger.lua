@@ -11,8 +11,7 @@ local group_aura_name_info_types = WeakAuras.group_aura_name_info_types;
 local group_aura_stack_info_types = WeakAuras.group_aura_stack_info_types;
 
 local function getAuraMatchesLabel(name)
-  local iconCache = WeakAuras.spellCache.Get();
-  local ids = iconCache[name]
+  local ids = WeakAuras.spellCache.GetSpellsMatching(name)
   if(ids) then
     local descText = "";
     local numMatches = 0;
@@ -37,8 +36,7 @@ local function spellId_tremove(tbl, pos)
 end
 
 local function getAuraMatchesList(name)
-  local iconCache = WeakAuras.spellCache.Get();
-  local ids = iconCache[name]
+  local ids = WeakAuras.spellCache.GetSpellsMatching(name)
   if(ids) then
     local descText = "";
     for id, _ in pairs(ids) do
