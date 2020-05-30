@@ -2093,7 +2093,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   else
     inPetBattle = C_PetBattles.IsInBattle()
     vehicle = UnitInVehicle('player') or UnitOnTaxi('player')
-    vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar()
+    vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar() or HasVehicleActionBar()
   end
 
   local size, difficulty, instanceType, ZoneMapID = GetInstanceTypeAndSize()
