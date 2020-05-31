@@ -1,4 +1,4 @@
-local internalVersion = 31;
+local internalVersion = 32;
 
 -- Lua APIs
 local insert = table.insert
@@ -323,6 +323,10 @@ WeakAuras.customActionsFunctions = {};
 WeakAuras.customConditionsFunctions = {};
 -- Text format functions for chat messages, keyed on id, condition number, changes, property number
 WeakAuras.conditionTextFormatters = {}
+
+-- Helpers for conditions, that is custom run functions and preamble objects for built in checks
+-- keyed on UID not on id!
+WeakAuras.conditionHelpers = {}
 
 local anim_function_strings = WeakAuras.anim_function_strings;
 local anim_presets = WeakAuras.anim_presets;
@@ -834,16 +838,16 @@ function WeakAuras.scheduleConditionCheck(time, id, cloneId)
   end
 end
 
-local customConditionTestFunctions = {};
 
-function WeakAuras.CallCustomConditionTest(testFunctionNumber, ...)
-  local ok, result = xpcall(customConditionTestFunctions[testFunctionNumber], geterrorhandler(), ...)
+
+function WeakAuras.CallCustomConditionTest(uid, testFunctionNumber, ...)
+  local ok, result = xpcall(WeakAuras.conditionHelpers[uid].customTestFunctions[testFunctionNumber], geterrorhandler(), ...)
   if (ok) then
     return result
   end
 end
 
-local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
+local function CreateTestForCondition(uid, input, allConditionsTemplate, usedStates)
   local trigger = input and input.trigger;
   local variable = input and input.variable;
   local op = input and input.op;
@@ -856,7 +860,7 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
     local test = {};
     if (input.checks) then
       for i, subcheck in ipairs(input.checks) do
-        local subtest, subrecheckCode = CreateTestForCondition(subcheck, allConditionsTemplate, usedStates);
+        local subtest, subrecheckCode = CreateTestForCondition(uid, subcheck, allConditionsTemplate, usedStates);
         if (subtest) then
           tinsert(test, "(" .. subtest .. ")");
         end
@@ -881,16 +885,31 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
     local conditionTemplate = allConditionsTemplate[trigger] and allConditionsTemplate[trigger][variable];
     local cType = conditionTemplate and conditionTemplate.type;
     local test = conditionTemplate and conditionTemplate.test;
+    local preamble = conditionTemplate and conditionTemplate.preamble;
 
     local stateCheck = "state[" .. trigger .. "] and state[" .. trigger .. "].show and ";
     local stateVariableCheck = "state[" .. trigger .. "]." .. variable .. "~= nil and ";
+
+    local preambleString
+
+    if preamble then
+      WeakAuras.conditionHelpers[uid] = WeakAuras.conditionHelpers[uid] or {}
+      WeakAuras.conditionHelpers[uid].preambles = WeakAuras.conditionHelpers[uid].preambles or {}
+      tinsert(WeakAuras.conditionHelpers[uid].preambles, preamble(value));
+      local preambleNumber = #WeakAuras.conditionHelpers[uid].preambles
+      preambleString = string.format("WeakAuras.conditionHelpers[%q].preambles[%s]", uid, preambleNumber)
+    end
+
     if (test) then
       if (value) then
-        tinsert(customConditionTestFunctions, test);
-        local testFunctionNumber = #(customConditionTestFunctions);
-        local valueString = type(value) == "string" and "[[" .. value .. "]]" or value;
-        local opString = type(op) == "string" and  "[[" .. op .. "]]" or op;
-        check = "state and WeakAuras.CallCustomConditionTest(" .. testFunctionNumber .. ", state[" .. trigger .. "], " .. valueString .. ", " .. (opString or "nil") .. ")";
+        WeakAuras.conditionHelpers[uid] = WeakAuras.conditionHelpers[uid] or {}
+        WeakAuras.conditionHelpers[uid].customTestFunctions = WeakAuras.conditionHelpers[uid].customTestFunctions or {}
+        tinsert(WeakAuras.conditionHelpers[uid].customTestFunctions, test);
+        local testFunctionNumber = #(WeakAuras.conditionHelpers[uid].customTestFunctions);
+        local valueString = type(value) == "string" and string.format("%q", value) or value;
+        local opString = type(op) == "string" and string.format("%q", op) or op;
+        check = string.format("state and WeakAuras.CallCustomConditionTest(%q, %s, state[%s], %s, %s, %s)",
+                              uid, testFunctionNumber, trigger, valueString, (opString or "nil"), preambleString or "nil");
       end
     elseif (cType == "number" and op) then
       local v = tonumber(value)
@@ -933,9 +952,9 @@ local function CreateTestForCondition(input, allConditionsTemplate, usedStates)
   return check, recheckCode;
 end
 
-local function CreateCheckCondition(ret, condition, conditionNumber, allConditionsTemplate, debug)
+local function CreateCheckCondition(uid, ret, condition, conditionNumber, allConditionsTemplate, debug)
   local usedStates = {};
-  local check, recheckCode = CreateTestForCondition(condition.check, allConditionsTemplate, usedStates);
+  local check, recheckCode = CreateTestForCondition(uid, condition.check, allConditionsTemplate, usedStates);
   if (check) then
     ret = ret .. "    state = region.states\n"
     ret = ret .. "    if (" .. check .. ") then\n";
@@ -1230,8 +1249,9 @@ function WeakAuras.ConstructConditionFunction(data)
   -- First Loop gather which conditions are active
   ret = ret .. " if (not hideRegion) then\n"
   if (data.conditions) then
+    WeakAuras.conditionHelpers[data.uid] = nil
     for conditionNumber, condition in ipairs(data.conditions) do
-      ret = CreateCheckCondition(ret, condition, conditionNumber, allConditionsTemplate, debug)
+      ret = CreateCheckCondition(data.uid, ret, condition, conditionNumber, allConditionsTemplate, debug)
     end
   end
   ret = ret .. "  end\n";
@@ -2519,6 +2539,8 @@ function WeakAuras.Delete(data)
   end
 
   WeakAuras.frameLevels[id] = nil;
+
+  WeakAuras.conditionHelpers[data.uid] = nil
 
   WeakAuras.DeleteCollapsedData(id)
 end
@@ -4022,6 +4044,62 @@ function WeakAuras.Modernize(data)
     data.load.name = nil
     data.load.use_realm = nil
     data.load.realm = nil
+  end
+
+-- Introduced in June 2020 in Bfa
+  if data.internalVersion < 32 then
+    local replacements = {}
+    local function repairCheck(replacements, check)
+      if check and check.trigger then
+        if replacements[check.trigger] then
+          if replacements[check.trigger][check.variable] then
+            check.variable = replacements[check.trigger][check.variable]
+          end
+        end
+      end
+    end
+
+    if data.triggers then
+      for triggerId, triggerData in ipairs(data.triggers) do
+        if triggerData.trigger.type == "status" then
+          local event = triggerData.trigger.event
+          if event == "Unit Characteristics" or event == "Health" or event == "Power" then
+            replacements[triggerId] = {}
+            replacements[triggerId]["use_name"] = "use_namerealm"
+            replacements[triggerId]["name"] = "namerealm"
+          elseif event == "Alternate Power" then
+            replacements[triggerId] = {}
+            replacements[triggerId]["use_unitname"] = "use_namerealm"
+            replacements[triggerId]["unitname"] = "namerealm"
+          elseif event == "Cast" then
+            replacements[triggerId] = {}
+            replacements[triggerId]["use_sourceName"] = "use_sourceNameRealm"
+            replacements[triggerId]["sourceName"] = "sourceNameRealm"
+            replacements[triggerId]["use_destName"] = "use_destNameRealm"
+            replacements[triggerId]["destName"] = "destNameRealm"
+          end
+
+          if replacements[triggerId] then
+            for old, new in pairs(replacements[triggerId]) do
+              triggerData.trigger[new] = triggerData.trigger[old]
+              triggerData.trigger[old] = nil
+            end
+
+            local function recurseRepairChecks(replacements, checks)
+              if not checks then return end
+              for _, check in pairs(checks) do
+                repairCheck(replacements, check);
+                recurseRepairChecks(replacements, check.checks);
+              end
+            end
+            for _, condition in pairs(data.conditions) do
+              repairCheck(replacements, condition.check);
+              recurseRepairChecks(replacements, condition.check.checks);
+            end
+          end
+        end
+      end
+    end
   end
 
   for _, triggerSystem in pairs(triggerSystems) do
@@ -7472,6 +7550,12 @@ end
 
 function WeakAuras.UntrackableUnit(unit)
   return not trackableUnits[unit]
+end
+
+local ownRealm = select(2, UnitFullName("player"))
+function WeakAuras.UnitNameWithRealm(unit)
+  local name, realm = UnitFullName(unit)
+  return name or "", realm or ownRealm or ""
 end
 
 function WeakAuras.ParseNameCheck(name)
