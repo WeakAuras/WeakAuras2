@@ -2467,7 +2467,7 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
   result["spellId"] = {
     display = L["Spell Id"],
     type = "number",
-    operator_types_only_equal = true
+    operator_types = "only_equal"
   }
 
   result["matchCount"] = {

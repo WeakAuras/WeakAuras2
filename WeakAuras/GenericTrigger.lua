@@ -204,7 +204,8 @@ function TestForMultiSelect(trigger, arg)
 end
 
 function ConstructTest(trigger, arg)
-  local test;
+  local test
+  local preamble
   local name = arg.name;
   if(arg.hidden or arg.type == "tristate" or arg.type == "toggle" or (arg.type == "multiselect" and trigger["use_"..name] ~= nil) or ((trigger["use_"..name] or arg.required) and trigger[name])) then
     local number = tonumber(trigger[name]);
@@ -229,11 +230,15 @@ function ConstructTest(trigger, arg)
     end
   end
 
-  if (test == "(true)") then
-    return nil;
+  if arg.preamble then
+    preamble = arg.preamble:format(trigger[name] or "")
   end
 
-  return test;
+  if (test == "(true)") then
+    return nil, preamble
+  end
+
+  return test, preamble
 end
 
 function ConstructFunction(prototype, trigger, inverse)
@@ -257,6 +262,7 @@ function ConstructFunction(prototype, trigger, inverse)
   local debug = {};
   local store = {};
   local init;
+  local preambles = ""
   if(prototype.init) then
     init = prototype.init(trigger);
   else
@@ -282,7 +288,7 @@ function ConstructFunction(prototype, trigger, inverse)
         if (arg.store) then
           tinsert(store, name);
         end
-        local test = ConstructTest(trigger, arg);
+        local test, preamble = ConstructTest(trigger, arg);
         if (test) then
           if(arg.required) then
             tinsert(required, test);
@@ -293,10 +299,13 @@ function ConstructFunction(prototype, trigger, inverse)
             tinsert(debug, arg.debug:format(trigger[name]));
           end
         end
+        if (preamble) then
+          preambles = preambles .. "\n" .. preamble
+        end
       end
     end
   end
-  local ret = "return function("..tconcat(input, ", ")..")\n";
+  local ret = preambles .. "return function("..tconcat(input, ", ")..")\n";
   ret = ret..(init or "");
 
   ret = ret..(#debug > 0 and tconcat(debug, "\n") or "");
@@ -3697,16 +3706,17 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
                 end
               end
             end
+            if (v.conditionPreamble) then
+              result[v.name].preamble = v.conditionPreamble;
+            end
             if (v.conditionTest) then
               result[v.name].test = v.conditionTest;
             end
             if (v.conditionEvents) then
               result[v.name].events = v.conditionEvents;
             end
-            if (v.operator_types_without_equal) then
-              result[v.name].operator_types_without_equal = true;
-            elseif (v.operator_types_only_equal) then
-              result[v.name].operator_types_only_equal = true;
+            if (v.operator_types) then
+              result[v.name].operator_types = v.operator_types;
             end
           end
         end

@@ -112,7 +112,9 @@ function WeakAuras.UnitChannelInfo(unit)
   end
 end
 
-
+local constants = {
+  nameRealmFilterDesc = L[" Filter formats: 'Name', 'Name-Realm', '-Realm'. \n\nSupports multiple entries, separated by commas\n"],
+}
 
 local encounter_list = ""
 local zoneId_list = ""
@@ -216,7 +218,6 @@ function WeakAuras.InitializeEncounterAndZoneLists()
     for _, inRaid in ipairs({false, true}) do
       local instance_index = 1
       local instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
-
       local title = inRaid and L["Raids"] or L["Dungeons"]
       zoneId_list = ("%s|cffffd200%s|r\n"):format(zoneId_list, title)
       zoneGroupId_list = ("%s|cffffd200%s|r\n"):format(zoneGroupId_list, title)
@@ -1153,7 +1154,7 @@ WeakAuras.load_prototype = {
       type = "string",
       test = "nameRealmChecker:Check(player, realm)",
       preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
-      desc = L["Filter formats: 'Name', 'Name-Realm', '-Realm'. Multiple Filters can be separated by ','."],
+      desc = constants.nameRealmFilterDesc,
     },
     {
       name = "namerealmblack",
@@ -1161,7 +1162,7 @@ WeakAuras.load_prototype = {
       type = "string",
       test = "not nameRealmBlacklistChecker:Check(player, realm)",
       preamble = "local nameRealmBlacklistChecker = WeakAuras.ParseNameCheck(%q)",
-      desc = L["Filter formats: 'Name', 'Name-Realm', '-Realm'. Multiple Filters can be separated by ','."],
+      desc = constants.nameRealmFilterDesc,
     },
     {
       name = "class",
@@ -1545,6 +1546,7 @@ WeakAuras.event_prototypes = {
       local result = {}
       AddUnitEventForEvents(result, unit, "UNIT_LEVEL")
       AddUnitEventForEvents(result, unit, "UNIT_FACTION")
+      AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
       if trigger.use_ignoreDead or trigger.use_ignoreDisconnected then
         AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
       end
@@ -1568,6 +1570,7 @@ WeakAuras.event_prototypes = {
         unit = string.lower(unit)
         local smart = %s
         local extraUnit = %q;
+        local name, realm = WeakAuras.UnitNameWithRealm(unit)
       ]=];
 
       ret = ret .. unitHelperFunctions.SpecificUnitCheck(trigger)
@@ -1602,9 +1605,32 @@ WeakAuras.event_prototypes = {
         name = "name",
         display = L["Name"],
         type = "string",
-        init = "UnitName(unit)",
         store = true,
-        conditionType = "string"
+        hidden = true,
+        test = "true"
+      },
+      {
+        name = "realm",
+        display = L["Realm"],
+        type = "string",
+        store = true,
+        hidden = true,
+        test = "true"
+      },
+      {
+        name = "namerealm",
+        display = L["Unit Name/Realm"],
+        type = "string",
+        preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        test = "nameRealmChecker:Check(name, realm)",
+        conditionType = "string",
+        conditionPreamble = function(input)
+          return WeakAuras.ParseNameCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.name, state.realm)
+        end,
+        operator_types = "none",
       },
       {
         name = "class",
@@ -1722,6 +1748,7 @@ WeakAuras.event_prototypes = {
       local unit = trigger.unit
       local result = {}
       AddUnitEventForEvents(result, unit, "UNIT_HEALTH_FREQUENT")
+      AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
       if not WeakAuras.IsClassic() then
         if trigger.use_showAbsorb then
           AddUnitEventForEvents(result, unit, "UNIT_ABSORB_AMOUNT_CHANGED")
@@ -1748,6 +1775,7 @@ WeakAuras.event_prototypes = {
       trigger.unit = trigger.unit or "player";
       local ret = [=[
         unit = string.lower(unit)
+        local name, realm = WeakAuras.UnitNameWithRealm(unit)
         local smart = %s
       ]=];
 
@@ -1856,9 +1884,33 @@ WeakAuras.event_prototypes = {
         name = "name",
         display = L["Unit Name"],
         type = "string",
-        init = "UnitName(unit)",
         store = true,
-        conditionType = "string"
+        hidden = true,
+        test = "true"
+      },
+      {
+        name = "realm",
+        display = L["Realm"],
+        type = "string",
+        store = true,
+        hidden = true,
+        test = "true"
+      },
+      {
+        name = "namerealm",
+        display = L["Unit Name/Realm"],
+        type = "string",
+        preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        test = "nameRealmChecker:Check(name, realm)",
+        conditionType = "string",
+        conditionPreamble = function(input)
+          return WeakAuras.ParseNameCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.name, state.realm)
+        end,
+        operator_types = "none",
+        desc = constants.nameRealmFilterDesc,
       },
       {
         name = "npcId",
@@ -1981,6 +2033,7 @@ WeakAuras.event_prototypes = {
       AddUnitEventForEvents(result, unit, "UNIT_POWER_FREQUENT")
       AddUnitEventForEvents(result, unit, "UNIT_MAXPOWER")
       AddUnitEventForEvents(result, unit, "UNIT_DISPLAYPOWER")
+      AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
 
       -- The api for spell power costs is not meant to be for other units
       if trigger.use_showCost and trigger.unit == "player" then
@@ -2011,6 +2064,7 @@ WeakAuras.event_prototypes = {
       trigger.unit = trigger.unit or "player";
       local ret = [=[
         unit = string.lower(unit)
+        local name, realm = WeakAuras.UnitNameWithRealm(unit)
         local smart = %s
         local powerType = %s;
         local unitPowerType = UnitPowerType(unit);
@@ -2186,9 +2240,33 @@ WeakAuras.event_prototypes = {
         name = "name",
         display = L["Unit Name"],
         type = "string",
-        init = "UnitName(unit)",
         store = true,
-        conditionType = "string"
+        hidden = true,
+        test = "true"
+      },
+      {
+        name = "realm",
+        display = L["Realm"],
+        type = "string",
+        store = true,
+        hidden = true,
+        test = "true"
+      },
+      {
+        name = "namerealm",
+        display = L["Unit Name/Realm"],
+        type = "string",
+        preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        test = "nameRealmChecker:Check(name, realm)",
+        conditionType = "string",
+        conditionPreamble = function(input)
+          return WeakAuras.ParseNameCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.name, state.realm)
+        end,
+        operator_types = "none",
+        desc = constants.nameRealmFilterDesc,
       },
       {
         name = "npcId",
@@ -2286,6 +2364,7 @@ WeakAuras.event_prototypes = {
       local unit = trigger.unit
       local result = {}
       AddUnitEventForEvents(result, unit, "UNIT_POWER_FREQUENT")
+      AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
       if trigger.use_ignoreDead or trigger.use_ignoreDisconnected then
         AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
       end
@@ -2305,6 +2384,7 @@ WeakAuras.event_prototypes = {
       trigger.unit = trigger.unit or "player";
       local ret = [=[
         unit = string.lower(unit)
+        local unitname, realm = WeakAuras.UnitNameWithRealm(unit)
         local smart = %s
       ]=]
 
@@ -2362,9 +2442,33 @@ WeakAuras.event_prototypes = {
         name = "unitname",
         display = L["Unit Name"],
         type = "string",
-        init = "UnitName(unit)",
         store = true,
-        conditionType = "string"
+        hidden = true,
+        test = "true"
+      },
+      {
+        name = "unitrealm",
+        display = L["Realm"],
+        type = "string",
+        store = true,
+        hidden = true,
+        test = "true"
+      },
+      {
+        name = "namerealm",
+        display = L["Unit Name/Realm"],
+        type = "string",
+        preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        test = "nameRealmChecker:Check(unitname, unitrealm)",
+        conditionType = "string",
+        conditionPreamble = function(input)
+          return WeakAuras.ParseNameCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.unitname, state.unitrealm)
+        end,
+        operator_types = "none",
+        desc = constants.nameRealmFilterDesc,
       },
       {
         name = "icon",
@@ -5881,6 +5985,7 @@ WeakAuras.event_prototypes = {
       AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_INTERRUPTIBLE")
       AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
       AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_INTERRUPTED")
+      AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
       if WeakAuras.IsClassic() and unit ~= "player" then
         LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_START", WeakAuras.ScanUnitEvents)
         LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_DELAYED", WeakAuras.ScanUnitEvents) -- only for player
@@ -5913,6 +6018,11 @@ WeakAuras.event_prototypes = {
       trigger.unit = trigger.unit or "player";
       local ret = [=[
         unit = string.lower(unit)
+        local destUnit = unit .. '-target'
+        local sourceName, sourceRealm = WeakAuras.UnitNameWithRealm(unit)
+        local destName, destRealm = WeakAuras.UnitNameWithRealm(destUnit)
+        destName = destName or ""
+        destRealm = destRealm or ""
         local smart = %s
         local remainingCheck = %s
         local inverseTrigger = %s
@@ -6128,18 +6238,43 @@ WeakAuras.event_prototypes = {
       {
         name = "sourceName",
         display = L["Caster Name"],
+        type = "string",
         store = true,
         hidden = true,
         test = "true",
-        init = "UnitName(unit)",
         enable = function(trigger) return not trigger.use_inverse end,
+      },
+      {
+        name = "sourceRealm",
+        display = L["Caster Realm"],
+        type = "string",
+        store = true,
+        hidden = true,
+        test = "true",
+        enable = function(trigger) return not trigger.use_inverse end,
+      },
+      {
+        name = "sourceNameRealm",
+        display = L["Source Unit Name/Realm"],
+        type = "string",
+        preamble = "local sourceNameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        test = "sourceNameRealmChecker:Check(sourceName, sourceRealm)",
+        conditionType = "string",
+        conditionPreamble = function(input)
+          return WeakAuras.ParseNameCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.sourceName, state.sourceRealm)
+        end,
+        operator_types = "none",
+        enable = function(trigger) return not trigger.use_inverse end,
+        desc = constants.nameRealmFilterDesc,
       },
       {
         name = "destUnit",
         display = L["Caster's Target "],
         type = "unit",
         values = "actual_unit_types_with_specific",
-        init = "unit .. '-target'",
         conditionType = "unit",
         conditionTest = function(state, unit, op)
           return state and state.show and state.destUnit and (UnitIsUnit(state.destUnit, unit) == (op == "=="))
@@ -6151,11 +6286,37 @@ WeakAuras.event_prototypes = {
       {
         name = "destName",
         display = L["Name of Caster's Target"],
+        type = "string",
         store = true,
         hidden = true,
         test = "true",
-        init = "UnitName(destUnit)",
         enable = function(trigger) return not trigger.use_inverse end,
+      },
+      {
+        name = "destRealm",
+        display = L["Realm of Caster's Target"],
+        type = "string",
+        store = true,
+        hidden = true,
+        test = "true",
+        enable = function(trigger) return not trigger.use_inverse end,
+      },
+      {
+        name = "destNameRealm",
+        display = L["Name/Realm of Caster's Target"],
+        type = "string",
+        preamble = "local destNameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        test = "destNameRealmChecker:Check(destName, destRealm)",
+        conditionType = "string",
+        conditionPreamble = function(input)
+          return WeakAuras.ParseNameCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.destName, state.destRealm)
+        end,
+        operator_types = "none",
+        enable = function(trigger) return not trigger.use_inverse end,
+        desc = constants.nameRealmFilterDesc,
       },
       {
         name = "inverse",
@@ -6989,7 +7150,7 @@ WeakAuras.event_prototypes = {
         name = "range",
         display = L["Distance"],
         type = "number",
-        operator_types_without_equal = true,
+        operator_types = "without_equal",
         test = "triggerResult",
         conditionType = "number",
         conditionTest = function(state, needle, needle2)

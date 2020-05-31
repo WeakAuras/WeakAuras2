@@ -1494,9 +1494,9 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
 
     if (currentConditionTemplate.type == "number" or currentConditionTemplate.type == "timer") then
       local opTypes = WeakAuras.operator_types
-      if currentConditionTemplate.operator_types_without_equal then
+      if currentConditionTemplate.operator_types == "without_equal" then
         opTypes = WeakAuras.operator_types_without_equal
-      elseif currentConditionTemplate.operator_types_only_equal then
+      elseif currentConditionTemplate.operator_types == "only_equal" then
         opTypes = WeakAuras.equality_operator_types
       end
 
@@ -1606,21 +1606,22 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
       }
       order = order + 1;
     elseif (currentConditionTemplate.type == "string") then
-      args["condition" .. i .. tostring(path) .. "_op"] = {
-        name = blueIfNoValue(data, conditions[i].check, "op", L["Differences"]),
-        desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type),
-        type = "select",
-        width = WeakAuras.normalWidth,
-        order = order,
-        values = WeakAuras.string_operator_types,
-        get = function()
-          return check and check.op;
-        end,
-        set = setOp
-      }
-      order = order + 1;
-
-      order = addSpace(args, order);
+      if currentConditionTemplate.operator_types ~= "none" then
+        args["condition" .. i .. tostring(path) .. "_op"] = {
+          name = blueIfNoValue(data, conditions[i].check, "op", L["Differences"]),
+          desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type),
+          type = "select",
+          width = WeakAuras.normalWidth,
+          order = order,
+          values = WeakAuras.string_operator_types,
+          get = function()
+            return check and check.op;
+          end,
+          set = setOp
+        }
+        order = order + 1;
+        order = addSpace(args, order);
+      end
 
       args["condition" .. i .. tostring(path) .. "_value"] = {
         type = "input",
