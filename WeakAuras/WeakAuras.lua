@@ -1,4 +1,4 @@
-local internalVersion = 30;
+local internalVersion = 31;
 
 -- Lua APIs
 local insert = table.insert
@@ -583,6 +583,7 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
   local debug = {};
   local events = {}
   local init;
+  local preambles = ""
   if(prototype.init) then
     init = prototype.init(trigger);
   else
@@ -685,10 +686,16 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
             end
             test = "("..name..(trigger[name.."_operator"] or "==")..(number or "[["..(trigger[name] or "").."]]")..")";
           end
-          if(arg.required) then
-            tinsert(required, test);
-          else
-            tinsert(tests, test);
+          if (arg.preamble) then
+            preambles = preambles .. arg.preamble:format(trigger[name]) .. "\n"
+          end
+
+          if test ~= "(test)" then
+            if(arg.required) then
+              tinsert(required, test);
+            else
+              tinsert(tests, test);
+            end
           end
 
           if test and arg.events then
@@ -705,7 +712,7 @@ function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
     end
   end
 
-  local ret = "return function("..table.concat(input, ", ")..")\n";
+  local ret = preambles .. "return function("..table.concat(input, ", ")..")\n";
   ret = ret..(init or "");
   ret = ret..(#debug > 0 and table.concat(debug, "\n") or "");
   ret = ret.."if(";
@@ -3983,6 +3990,38 @@ function WeakAuras.Modernize(data)
     -- * conditions
     data.progressPrecision = nil
     data.totalPrecision = nil
+  end
+
+  -- Introduced in June 2020 in Bfa
+  if data.internalVersion < 31 then
+    local whitelist
+    local blacklist
+    if data.load.use_name == true and data.load.name then
+      whitelist = data.load.name
+    elseif data.load.use_name == false and data.load.name then
+      blacklist = data.load.name
+    end
+
+    if data.load.use_realm == true and data.load.realm then
+      whitelist = (whitelist or "") .. "-" .. data.load.realm
+    elseif data.load.use_realm == false and data.load.realm then
+      blacklist = (blacklist or "") .. "-" .. data.load.realm
+    end
+
+    if whitelist then
+      data.load.use_namerealm = true
+      data.load.namerealm = whitelist
+    end
+
+    if blacklist then
+      data.load.use_namerealmblack = true
+      data.load.namerealmblack = blacklist
+    end
+
+    data.load.use_name = nil
+    data.load.name = nil
+    data.load.use_realm = nil
+    data.load.realm = nil
   end
 
   for _, triggerSystem in pairs(triggerSystems) do
@@ -7433,4 +7472,43 @@ end
 
 function WeakAuras.UntrackableUnit(unit)
   return not trackableUnits[unit]
+end
+
+function WeakAuras.ParseNameCheck(name)
+  local matches = {
+    name = {},
+    realm = {},
+    full = {},
+    AddMatch = function(self, name, start, last)
+      local match = strtrim(name:sub(start, last))
+
+      if (match:sub(1, 1) == "-") then
+        self.realm[match:sub(2)] = true
+      elseif match:find("-", 1, true) then
+        self.full[match] = true
+      else
+        self.name[match] = true
+      end
+    end,
+    Check = function(self, name, realm)
+      if not name or not realm then
+        return false
+      end
+      return self.name[name] or self.realm[realm] or self.full[name .. "-" .. realm]
+    end
+  }
+
+  local start = 1
+  local last = name:find(',', start, true)
+
+  while (last) do
+    matches:AddMatch(name, start, last - 1)
+    start = last + 1
+    last = name:find(',', start, true)
+  end
+
+  last = #name
+  matches:AddMatch(name, start, last)
+
+  return matches
 end
