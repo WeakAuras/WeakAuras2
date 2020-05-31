@@ -1136,16 +1136,32 @@ WeakAuras.load_prototype = {
       events = {"GROUP_ROSTER_UPDATE"}
     },
     {
-      name = "name",
-      display = L["Player Name"],
-      type = "tristatestring",
-      init = "arg"
+      name = "player",
+      hidden = true,
+      init = "arg",
+      test = "true"
     },
     {
       name = "realm",
-      display = L["Realm"],
-      type = "tristatestring",
-      init = "arg"
+      hidden = true,
+      init = "arg",
+      test = "true"
+    },
+    {
+      name = "namerealm",
+      display = L["Player Name/Realm"],
+      type = "string",
+      test = "nameRealmChecker:Check(player, realm)",
+      preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+      desc = L["Filter formats: 'Name', 'Name-Realm', '-Realm'. Multiple Filters can be separated by ','."],
+    },
+    {
+      name = "namerealmblack",
+      display = L["Blacklisted Player Name/Realm"],
+      type = "string",
+      test = "not nameRealmBlacklistChecker:Check(player, realm)",
+      preamble = "local nameRealmBlacklistChecker = WeakAuras.ParseNameCheck(%q)",
+      desc = L["Filter formats: 'Name', 'Name-Realm', '-Realm'. Multiple Filters can be separated by ','."],
     },
     {
       name = "class",
