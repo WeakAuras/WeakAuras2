@@ -740,6 +740,38 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
       hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
     },
 
+    useUnitName = {
+      type = "toggle",
+      width = "WeakAuras.normalWidth",
+      name = L["UnitName Filter"],
+      order = 68.4,
+      hidden = function() return
+        not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
+      end
+    },
+    unitName = {
+      type = "input",
+      width = WeakAuras.normalWidth,
+      name = L["Unit Name Filter"],
+      desc = L["Filter formats: 'Name', 'Name-Realm', '-Realm'.\n\nSupports multiple entries, separated by commas\n"],
+      order = 68.5,
+      hidden = function()
+        return not (trigger.type == "aura2"
+                    and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useUnitName)
+      end
+    },
+    unitNameSpace = {
+      type = "description",
+      name = "",
+      order = 68.6,
+      width = WeakAuras.normalWidth,
+      hidden = function()
+        return not (trigger.type == "aura2"
+                    and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useUnitName)
+      end
+    },
+
+
     useGroup_count = {
       type = "toggle",
       width = WeakAuras.normalWidth,
