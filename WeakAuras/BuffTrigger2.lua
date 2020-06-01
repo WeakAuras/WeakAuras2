@@ -944,6 +944,11 @@ local function TriggerInfoApplies(triggerInfo, unit)
   if triggerInfo.class and not triggerInfo.class[select(2, UnitClass(unit))] then
     return false
   end
+
+  if triggerInfo.nameChecker and not triggerInfo.nameChecker:Check(WeakAuras.UnitNameWithRealm(unit)) then
+    return false
+  end
+
   return true
 end
 
@@ -1575,7 +1580,7 @@ local function EventHandler(frame, event, arg1, arg2, ...)
         tinsert(unitsToRemove, unit)
       end
     end
-  elseif event == "UNIT_FLAGS" then
+  elseif event == "UNIT_FLAGS" or event == "UNIT_NAME_UPDATE" then
     if WeakAuras.multiUnitUnits.group[arg1] then
       RecheckActiveForUnitType("group", arg1, deactivatedTriggerInfos)
     end
@@ -1611,6 +1616,7 @@ end
 
 frame:RegisterEvent("UNIT_AURA")
 frame:RegisterEvent("UNIT_FACTION")
+frame:RegisterEvent("UNIT_NAME_UPDATE")
 frame:RegisterEvent("UNIT_FLAGS")
 frame:RegisterEvent("PLAYER_FLAGS_CHANGED")
 frame:RegisterUnitEvent("UNIT_PET", "player")
@@ -2206,6 +2212,7 @@ function BuffTrigger.Add(data)
       local effectiveHostility = trigger.unit == "nameplate" and trigger.useHostility and trigger.hostility
       local effectiveIgnoreDead = groupTrigger and trigger.ignoreDead
       local effectiveIgnoreDisconnected = groupTrigger and trigger.ignoreDisconnected
+      local effectiveNameCheck = groupTrigger and trigger.useUnitName and trigger.unitName
 
       if trigger.unit == "multi" then
         BuffTrigger.InitMultiAura()
@@ -2238,6 +2245,8 @@ function BuffTrigger.Add(data)
         unit = trigger.unit
       end
 
+
+
       local triggerInformation = {
         auranames = names,
         auraspellids = auraspellids,
@@ -2266,6 +2275,7 @@ function BuffTrigger.Add(data)
         matchCountFunc = matchCountFunc,
         useAffected = unit == "group" and trigger.useAffected,
         isMulti = trigger.unit == "multi",
+        nameChecker = effectiveNameCheck and WeakAuras.ParseNameCheck(trigger.unitName)
       }
       triggerInfos[id] = triggerInfos[id] or {}
       triggerInfos[id][triggernum] = triggerInformation
