@@ -12,36 +12,45 @@ local spellCache = {}
 WeakAuras.spellCache = spellCache
 
 local cache
+local metaData
 local bestIcon = {}
 local dynFrame = WeakAuras.dynFrame
 
 -- Builds a cache of name/icon pairs from existing spell data
 -- This is a rather slow operation, so it's only done once, and the result is subsequently saved
-function spellCache.Build(callback)
-  if cache then
-    wipe(cache)
-    local co = coroutine.create(function()
-      local id = 0
-      local misses = 0
+function spellCache.Build()
+  if not cache  then
+    error("spellCache has not been loaded. Call WeakAuras.spellCache.Load(...) first.")
+  end
 
-      while misses < 400 do
-        id = id + 1
-        local name, _, icon = GetSpellInfo(id)
+  if not metaData.needsRebuild then
+    return
+  end
 
-        if(icon == 136243) then -- 136243 is the a gear icon, we can ignore those spells
-          misses = 0;
-        elseif name and name ~= "" then
-          cache[name] = cache[name] or {}
-          cache[name].spells = cache[name].spells or {}
-          cache[name].spells[id] = icon
-          misses = 0
-        else
-          misses = misses + 1
-        end
+  wipe(cache)
+  local co = coroutine.create(function()
+    local id = 0
+    local misses = 0
 
-        coroutine.yield()
+    while misses < 400 do
+      id = id + 1
+      local name, _, icon = GetSpellInfo(id)
+
+      if(icon == 136243) then -- 136243 is the a gear icon, we can ignore those spells
+        misses = 0;
+      elseif name and name ~= "" then
+        cache[name] = cache[name] or {}
+        cache[name].spells = cache[name].spells or {}
+        cache[name].spells[id] = icon
+        misses = 0
+      else
+        misses = misses + 1
       end
 
+      coroutine.yield()
+    end
+
+    if not WeakAuras.IsClassic() then
       for _, category in pairs(GetCategoryList()) do
         local total = GetCategoryNumAchievements(category, true)
         for i = 1, total do
@@ -51,18 +60,24 @@ function spellCache.Build(callback)
             cache[name].achievements = cache[name].achievements or {}
             cache[name].achievements[id] = iconID
           end
-          coroutine.yield()
-       end
-     end
-
-      if callback then
-        callback()
+        end
+        coroutine.yield()
       end
-    end)
-    dynFrame:AddAction(callback, co)
-  else
-    error("spellCache has not been loaded. Call WeakAuras.spellCache.Load(...) first.")
-  end
+    end
+
+    -- Updates the icon cache with whatever icons WeakAuras core has actually used.
+    -- This helps keep name<->icon matches relevant.
+    for name, icons in pairs(WeakAurasSaved.dynamicIconCache) do
+      if WeakAurasSaved.dynamicIconCache[name] then
+        for spellId, icon in pairs(WeakAurasSaved.dynamicIconCache[name]) do
+          spellCache.AddIcon(name, spellId, icon)
+        end
+      end
+    end
+
+    metaData.needsRebuild = false
+  end)
+  dynFrame:AddAction("spellCache", co)
 end
 
 function spellCache.GetIcon(name)
@@ -124,7 +139,26 @@ function spellCache.Get()
 end
 
 function spellCache.Load(data)
-  cache = data
+  metaData = data
+  cache = metaData.spellCache
+
+  local _, build = GetBuildInfo();
+  local locale = GetLocale();
+  local version = WeakAuras.versionString
+
+  local num = 0;
+  for i,v in pairs(cache) do
+    num = num + 1;
+  end
+
+  if(num < 39000 or metaData.locale ~= locale or metaData.build ~= build or metaData.version ~= version or not metaData.spellCacheAchivements) then
+    metaData.build = build;
+    metaData.locale = locale;
+    metaData.version = version;
+    metaData.spellCacheAchivements = true
+    metaData.needsRebuild = true
+    wipe(cache)
+  end
 end
 
 -- This function computes the Levenshtein distance between two strings
