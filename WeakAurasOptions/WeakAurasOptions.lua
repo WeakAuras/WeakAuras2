@@ -1064,36 +1064,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         odb.idCache = nil;
       end
       odb.spellCache = odb.spellCache or {};
-      spellCache.Load(odb.spellCache);
-
-      local _, build = GetBuildInfo();
-      local locale = GetLocale();
-      local version = WeakAuras.versionString
-
-      local num = 0;
-
-      for i,v in pairs(odb.spellCache) do
-        num = num + 1;
-      end
-
-      if(num < 39000 or odb.locale ~= locale or odb.build ~= build or odb.version ~= version or not odb.spellCacheAchivements) then
-        spellCache.Build();
-
-        odb.build = build;
-        odb.locale = locale;
-        odb.version = version;
-        odb.spellCacheAchivements = true
-      end
-
-      -- Updates the icon cache with whatever icons WeakAuras core has actually used.
-      -- This helps keep name<->icon matches relevant.
-      for name, icons in pairs(db.dynamicIconCache) do
-        if db.dynamicIconCache[name] then
-          for spellId, icon in pairs(db.dynamicIconCache[name]) do
-            spellCache.AddIcon(name, spellId, icon)
-          end
-        end
-      end
+      spellCache.Load(odb);
 
       if odb.magnetAlign == nil then
         odb.magnetAlign = true
@@ -1391,6 +1362,8 @@ function WeakAuras.ShowOptions(msg)
   local firstLoad = not(frame);
   WeakAuras.Pause();
   WeakAuras.SetFakeStates()
+
+  WeakAuras.spellCache.Build()
 
   if (firstLoad) then
     frame = WeakAuras.CreateFrame();
