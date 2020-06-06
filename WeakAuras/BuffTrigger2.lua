@@ -117,12 +117,20 @@ local matchDataByTrigger = {}
 local matchDataChanged = {}
 
 local nameplateExists = {}
+local unitVisible = {}
 
 local function UnitExistsFixed(unit)
   if #unit > 9 and unit:sub(1, 9) == "nameplate" then
     return nameplateExists[unit]
   end
   return UnitExists(unit)
+end
+
+local function UnitIsVisibleFixed(unit)
+  if unitVisible[unit] == nil then
+    unitVisible[unit] = UnitIsVisible(unit)
+  end
+  return unitVisible[unit]
 end
 
 local function UnitInSubgroupOrPlayer(unit)
@@ -911,6 +919,10 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
+  if triggerInfo.ignoreInvisible and not UnitIsVisibleFixed(unit) then
+    return false
+  end
+
   if triggerInfo.groupRole and triggerInfo.groupRole ~= UnitGroupRolesAssigned(unit) then
     return false
   end
@@ -1580,11 +1592,14 @@ local function EventHandler(frame, event, arg1, arg2, ...)
         tinsert(unitsToRemove, unit)
       end
     end
-  elseif event == "UNIT_FLAGS" or event == "UNIT_NAME_UPDATE" then
-    if WeakAuras.multiUnitUnits.group[arg1] then
-      RecheckActiveForUnitType("group", arg1, deactivatedTriggerInfos)
+  elseif event == "UNIT_FLAGS" or event == "UNIT_NAME_UPDATE" or event == "PLAYER_FLAGS_CHANGED"
+      or event == "PARTY_MEMBER_ENABLE" or event == "PARTY_MEMBER_DISABLE"
+  then
+    if event == "PARTY_MEMBER_ENABLE" then
+      unitVisible[arg1] = true
+    elseif event == "PARTY_MEMBER_DISABLE" then
+      unitVisible[arg1] = false
     end
-  elseif event == "PLAYER_FLAGS_CHANGED" then
     if WeakAuras.multiUnitUnits.group[arg1] then
       RecheckActiveForUnitType("group", arg1, deactivatedTriggerInfos)
     end
@@ -1638,6 +1653,8 @@ frame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
 frame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
 frame:RegisterEvent("GROUP_ROSTER_UPDATE")
 frame:RegisterEvent("PLAYER_ENTERING_WORLD")
+frame:RegisterEvent("PARTY_MEMBER_DISABLE")
+frame:RegisterEvent("PARTY_MEMBER_ENABLE")
 frame:SetScript("OnEvent", EventHandler)
 
 frame:SetScript("OnUpdate", function()
@@ -2212,6 +2229,7 @@ function BuffTrigger.Add(data)
       local effectiveHostility = trigger.unit == "nameplate" and trigger.useHostility and trigger.hostility
       local effectiveIgnoreDead = groupTrigger and trigger.ignoreDead
       local effectiveIgnoreDisconnected = groupTrigger and trigger.ignoreDisconnected
+      local effectiveIgnoreInvisible = groupTrigger and trigger.ignoreInvisible
       local effectiveNameCheck = groupTrigger and trigger.useUnitName and trigger.unitName
 
       if trigger.unit == "multi" then
@@ -2245,8 +2263,6 @@ function BuffTrigger.Add(data)
         unit = trigger.unit
       end
 
-
-
       local triggerInformation = {
         auranames = names,
         auraspellids = auraspellids,
@@ -2267,6 +2283,7 @@ function BuffTrigger.Add(data)
         ignoreSelf = effectiveIgnoreSelf,
         ignoreDead = effectiveIgnoreDead,
         ignoreDisconnected = effectiveIgnoreDisconnected,
+        ignoreInvisible = effectiveIgnoreInvisible,
         groupRole = effectiveGroupRole,
         groupSubType = groupSubType,
         groupCountFunc = groupCountFunc,
