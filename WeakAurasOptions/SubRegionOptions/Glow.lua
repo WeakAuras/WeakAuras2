@@ -20,22 +20,22 @@ local function createOptions(parentData, data, index, subIndex)
     __order = 1,
     __up = function()
       if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionUp, index, "subglow")) then
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     __down = function()
       if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionDown, index, "subglow")) then
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     __duplicate = function()
       if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.DuplicateSubRegion, index, "subglow")) then
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     __delete = function()
       if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.DeleteSubRegion, index, "subglow")) then
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     glow = {
@@ -112,7 +112,7 @@ local function createOptions(parentData, data, index, subIndex)
       end,
       imageWidth = 24,
       imageHeight = 24,
-      func = function()
+      func = function(info, button)
         local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra" .. index, true);
         WeakAuras.SetCollapsed("glow", "glow", "glowextra" .. index, not collapsed);
       end,

@@ -55,7 +55,6 @@ local function createOptions(id, data)
         data.groupIcon = v
         WeakAuras.Add(data)
         WeakAuras.UpdateThumbnail(data)
-        WeakAuras.SetIconNames(data)
       end
     },
     chooseIcon = {
@@ -557,13 +556,13 @@ local function createOptions(id, data)
     },
   };
 
-  for k, v in pairs(WeakAuras.BorderOptions(id, data, nil, nil, 70)) do
+  for k, v in pairs(WeakAuras.commonOptions.BorderOptions(id, data, nil, nil, 70)) do
     options[k] = v
   end
 
   return {
     group = options,
-    position = WeakAuras.PositionOptions(id, data, nil, true, true),
+    position = WeakAuras.commonOptions.PositionOptions(id, data, nil, true, true),
   };
 end
 

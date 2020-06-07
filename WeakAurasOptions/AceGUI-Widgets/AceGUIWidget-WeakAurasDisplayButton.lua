@@ -4,7 +4,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 54
+local Type, Version = "WeakAurasDisplayButton", 55
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -95,18 +95,21 @@ clipboard.pasteMenuEntry = {
       for index, childId in pairs(clipboard.current.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         copyAuraPart(clipboard.source, childData, clipboard.part);
-        WeakAuras.Add(childData);
+        WeakAuras.Add(childData)
+        WeakAuras.ClearAndUpdateOptions(childData.id)
       end
     else
       copyAuraPart(clipboard.source, clipboard.current, clipboard.part);
-      WeakAuras.Add(clipboard.current);
+      WeakAuras.Add(clipboard.current)
+      WeakAuras.ClearAndUpdateOptions(clipboard.current.id)
     end
 
+    WeakAuras.FillOptions()
     WeakAuras.ScanForLoads({[clipboard.current.id] = true});
     WeakAuras.SortDisplayButtons();
     WeakAuras.PickDisplay(clipboard.current.id);
     WeakAuras.UpdateDisplayButton(clipboard.current.id);
-    WeakAuras.ReloadOptions2(clipboard.current.id, clipboard.current);
+    WeakAuras.ClearAndUpdateOptions(clipboard.current.id);
   end
 }
 
@@ -304,16 +307,22 @@ local Actions = {
           WeakAuras.Add(source.data)
           WeakAuras.Add(group.data)
           WeakAuras.UpdateGroupOrders(group.data)
-          WeakAuras.ReloadGroupRegionOptions(group.data)
+          WeakAuras.ClearAndUpdateOptions(group.data.id)
+          WeakAuras.ClearAndUpdateOptions(source.data.id)
           WeakAuras.UpdateDisplayButton(group.data)
+          WeakAuras.FillOptions()
           group.callbacks.UpdateExpandButton();
           group:ReloadTooltip()
         else
           WeakAuras.Add(source.data)
+          WeakAuras.ClearAndUpdateOptions(source.data.id)
+          WeakAuras.FillOptions()
         end
       else
         -- move source into the top-level list
         WeakAuras.Add(source.data)
+        WeakAuras.ClearAndUpdateOptions(source.data.id)
+        WeakAuras.FillOptions()
       end
     else
       error("Calling 'Group' with invalid source. Reload your UI to fix the display list.")
@@ -331,7 +340,7 @@ local Actions = {
         source.data.parent = nil
         WeakAuras.Add(parent);
         WeakAuras.UpdateGroupOrders(parent);
-        WeakAuras.ReloadGroupRegionOptions(parent);
+        WeakAuras.ClearAndUpdateOptions(parent.id);
         WeakAuras.UpdateDisplayButton(parent);
         local group = WeakAuras.GetDisplayButton(parent.id)
         group.callbacks.UpdateExpandButton();
@@ -367,6 +376,8 @@ local Actions = {
           tinsert(children, 1, source.data.id)
         end
         WeakAuras.Add(parent)
+        WeakAuras.ClearAndUpdateOptions(parent.id)
+        WeakAuras.FillOptions()
         WeakAuras.UpdateGroupOrders(parent)
         WeakAuras.UpdateDisplayButton(parent)
       else
@@ -594,6 +605,7 @@ local methods = {
           childButton:SetGroupOrder(#data.controlledChildren, #data.controlledChildren);
           childData.parent = data.id;
           WeakAuras.Add(childData);
+          WeakAuras.ClearAndUpdateOptions(childData.id)
         end
       else
         tinsert(data.controlledChildren, self.grouping.id);
@@ -602,16 +614,19 @@ local methods = {
         childButton:SetGroupOrder(#data.controlledChildren, #data.controlledChildren);
         self.grouping.parent = data.id;
         WeakAuras.Add(self.grouping);
+        WeakAuras.ClearAndUpdateOptions(self.grouping.id);
       end
       if (data.regionType == "dynamicgroup") then
         self.grouping.xOffset = 0;
         self.grouping.yOffset = 0;
       end
       WeakAuras.Add(data);
+      WeakAuras.ClearAndUpdateOptions(data.id)
       self.callbacks.UpdateExpandButton();
       WeakAuras.SetGrouping();
       WeakAuras.UpdateDisplayButton(data);
-      WeakAuras.ReloadGroupRegionOptions(data);
+      WeakAuras.ClearAndUpdateOptions(data.id);
+      WeakAuras.FillOptions();
       WeakAuras.UpdateGroupOrders(data);
       WeakAuras.SortDisplayButtons();
       self:ReloadTooltip();
@@ -692,6 +707,7 @@ local methods = {
             tremove(parentData.controlledChildren, index);
             tinsert(parentData.controlledChildren, index - 1, id);
             WeakAuras.Add(parentData);
+            WeakAuras.ClearAndUpdateOptions(parentData.id)
             self:SetGroupOrder(index - 1, #parentData.controlledChildren);
             local otherbutton = WeakAuras.GetDisplayButton(parentData.controlledChildren[index]);
             otherbutton:SetGroupOrder(index, #parentData.controlledChildren);
@@ -701,6 +717,7 @@ local methods = {
             WeakAuras.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index-1]), "main", updata, self.frame, true, function() WeakAuras.SortDisplayButtons() end);
             WeakAuras.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index]), "main", downdata, otherbutton.frame, true, function() WeakAuras.SortDisplayButtons() end);
             WeakAuras.UpdateDisplayButton(parentData);
+            WeakAuras.FillOptions()
           end
         else
           error("Display thinks it is a member of a group which does not control it");
@@ -729,6 +746,7 @@ local methods = {
             tremove(parentData.controlledChildren, index);
             tinsert(parentData.controlledChildren, index + 1, id);
             WeakAuras.Add(parentData);
+            WeakAuras.ClearAndUpdateOptions(parentData.id)
             self:SetGroupOrder(index + 1, #parentData.controlledChildren);
             local otherbutton = WeakAuras.GetDisplayButton(parentData.controlledChildren[index]);
             otherbutton:SetGroupOrder(index, #parentData.controlledChildren);
@@ -738,6 +756,7 @@ local methods = {
             WeakAuras.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index+1]), "main", downdata, self.frame, true, function() WeakAuras.SortDisplayButtons() end);
             WeakAuras.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index]), "main", updata, otherbutton.frame, true, function() WeakAuras.SortDisplayButtons() end);
             WeakAuras.UpdateDisplayButton(parentData);
+            WeakAuras.FillOptions()
           end
         else
           error("Display thinks it is a member of a group which does not control it");
@@ -810,13 +829,12 @@ local methods = {
       if not(newid == oldid) then
 
         WeakAuras.Rename(data, newid);
-        WeakAuras.Add(data);
+        WeakAuras.Add(data)
 
         WeakAuras.displayButtons[newid] = WeakAuras.displayButtons[oldid];
         WeakAuras.displayButtons[newid]:SetData(data)
         WeakAuras.displayButtons[oldid] = nil;
-        WeakAuras.displayOptions[oldid] = nil;
-        WeakAuras.AddOption(newid, data);
+        WeakAuras.ClearOptions(oldid)
 
         WeakAuras.displayButtons[newid]:SetTitle(newid);
 
@@ -1178,13 +1196,14 @@ local methods = {
     if(index) then
       tremove(parentData.controlledChildren, index);
       WeakAuras.Add(parentData);
-      WeakAuras.ReloadGroupRegionOptions(parentData);
+      WeakAuras.ClearAndUpdateOptions(parentData.id);
     else
       error("Display thinks it is a member of a group which does not control it");
     end
     self:SetGroup();
     self.data.parent = nil;
     WeakAuras.Add(self.data);
+    WeakAuras.ClearAndUpdateOptions(self.data.id);
     WeakAuras.UpdateGroupOrders(parentData);
     WeakAuras.UpdateDisplayButton(parentData);
     WeakAuras.SortDisplayButtons();
@@ -1543,13 +1562,11 @@ local methods = {
     -- no addon, or no data, or ignore flag
     return false, false, nil, nil
   end,
-  -- TODO: remove this once legacy aura trigger is removed
   ["RefreshBT2UpgradeIcon"] = function(self)
     if not self.data.controlledChildren and self.data.triggers then
       for index, t in ipairs(self.data.triggers) do
         if t.trigger and t.trigger.type == "aura" then
           self.bt2upgrade:SetScript("OnClick", function()
-            WeakAuras.optionTriggerChoices[self.data.id] = index
             WeakAuras.PickDisplay(self.data.id, "trigger")
           end)
           self.bt2upgrade:Show()

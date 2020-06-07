@@ -69,7 +69,7 @@ function WeakAuras.CreateImportButtons()
               local button = WeakAuras.GetDisplayButton(groupId);
               button.callbacks.UpdateExpandButton();
               WeakAuras.UpdateDisplayButton(data);
-              WeakAuras.ReloadGroupRegionOptions(data);
+              WeakAuras.ClearAndUpdateOptions(data.id);
             end
           end
         end
@@ -171,7 +171,7 @@ function WeakAuras.CreateImportButtons()
               local button = WeakAuras.GetDisplayButton(id);
               button.callbacks.UpdateExpandButton();
               WeakAuras.UpdateDisplayButton(data);
-              WeakAuras.ReloadGroupRegionOptions(data);
+              WeakAuras.ClearAndUpdateOptions(data.id);
             end
 
             WeakAuras.ScanForLoads();
@@ -331,7 +331,7 @@ function WeakAuras.DisableAddonDisplay(id)
         end
       end
       WeakAuras.Add(parentData);
-      WeakAuras.ReloadGroupRegionOptions(parentData);
+      WeakAuras.ClearAndUpdateOptions(parentData.id);
       WeakAuras.UpdateDisplayButton(parentData);
     end
   end

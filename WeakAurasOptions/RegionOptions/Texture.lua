@@ -100,7 +100,7 @@ local function createOptions(id, data)
 
   return {
     texture = options,
-    position = WeakAuras.PositionOptions(id, data),
+    position = WeakAuras.commonOptions.PositionOptions(id, data),
   };
 end
 

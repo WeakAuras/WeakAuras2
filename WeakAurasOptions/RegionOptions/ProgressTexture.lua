@@ -168,7 +168,6 @@ local function createOptions(id, data)
         data.crop_x = v;
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
-        WeakAuras.SetIconNames(data);
         if(data.parent) then
           local parentData = WeakAuras.GetData(data.parent);
           if(parentData) then
@@ -192,7 +191,6 @@ local function createOptions(id, data)
         data.crop_y = v;
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
-        WeakAuras.SetIconNames(data);
         if(data.parent) then
           local parentData = WeakAuras.GetData(data.parent);
           if(parentData) then
@@ -322,7 +320,7 @@ local function createOptions(id, data)
 
   return {
     progresstexture = options,
-    position = WeakAuras.PositionOptions(id, data),
+    position = WeakAuras.commonOptions.PositionOptions(id, data),
   };
 end
 

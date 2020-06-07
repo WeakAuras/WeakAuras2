@@ -126,14 +126,12 @@ local function ConstructIconPicker(frame)
           childData[self.field] = texturePath;
           WeakAuras.Add(childData);
           WeakAuras.UpdateThumbnail(childData);
-          WeakAuras.SetIconNames(childData);
         end
       end
     else
       self.data[self.field] = texturePath;
       WeakAuras.Add(self.data);
       WeakAuras.UpdateThumbnail(self.data);
-      WeakAuras.SetIconNames(self.data);
     end
     local success = icon:SetTexture(texturePath) and texturePath;
     if(success) then
@@ -167,7 +165,7 @@ local function ConstructIconPicker(frame)
   function group.Close()
     frame.window = "default";
     frame:UpdateFrameVisible()
-    AceConfigDialog:Open("WeakAuras", frame.container);
+    WeakAuras.FillOptions()
   end
 
   function group.CancelClose()
@@ -178,7 +176,6 @@ local function ConstructIconPicker(frame)
           childData[group.field] = group.givenPath[childId] or childData[group.field];
           WeakAuras.Add(childData);
           WeakAuras.UpdateThumbnail(childData);
-          WeakAuras.SetIconNames(childData);
         end
       end
     else

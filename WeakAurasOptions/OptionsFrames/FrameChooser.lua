@@ -39,8 +39,8 @@ function WeakAuras.StartFrameChooser(data, path)
   frameChooserFrame:SetScript("OnUpdate", function()
     if(IsMouseButtonDown("RightButton")) then
       valueToPath(data, path, givenValue);
-      AceConfigDialog:Open("WeakAuras", frame.container);
       WeakAuras.StopFrameChooser(data);
+      WeakAuras.FillOptions()
     elseif(IsMouseButtonDown("LeftButton") and oldFocusName) then
       WeakAuras.StopFrameChooser(data);
     else
@@ -76,7 +76,7 @@ function WeakAuras.StartFrameChooser(data, path)
           if(focusName ~= oldFocusName) then
             valueToPath(data, path, focusName);
             oldFocusName = focusName;
-            AceConfigDialog:Open("WeakAuras", frame.container);
+            WeakAuras.FillOptions()
           end
           oldFocus = focus;
         end

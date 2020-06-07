@@ -32,22 +32,22 @@ local function createOptions(parentData, data, index, subIndex)
     __order = 1,
     __up = function()
       if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionUp, index, "subtext")) then
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     __down = function()
       if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionDown, index, "subtext")) then
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     __duplicate = function()
       if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.DuplicateSubRegion, index, "subtext")) then
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     __delete = function()
       if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.DeleteSubRegion, index, "subtext")) then
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     text_visible = {
@@ -74,7 +74,7 @@ local function createOptions(parentData, data, index, subIndex)
       set = function(info, v)
         data.text_text = WeakAuras.ReplaceLocalizedRaidMarkers(v)
         WeakAuras.Add(parentData)
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     },
     text_font = {
@@ -136,7 +136,7 @@ local function createOptions(parentData, data, index, subIndex)
       end,
       width = WeakAuras.doubleWidth,
       order = 44,
-      func = function()
+      func = function(info, button)
         local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
         WeakAuras.SetCollapsed("subtext", "subtext", "fontflags" .. index, not collapsed)
       end,
@@ -325,7 +325,7 @@ local function createOptions(parentData, data, index, subIndex)
     end,
     imageWidth = 24,
     imageHeight = 24,
-    func = function()
+    func = function(info, button)
       local collapsed = WeakAuras.IsCollapsed("subregion", "text_anchors", tostring(index), true)
       WeakAuras.SetCollapsed("subregion", "text_anchors", tostring(index), not collapsed)
     end
@@ -408,21 +408,6 @@ local function createOptions(parentData, data, index, subIndex)
     return true
   end
 
-  local function CheckTextOptions(placeholders)
-    return function()
-      if not parentData.subRegions then
-        return true
-      end
-
-      for index, subRegion in ipairs(parentData.subRegions) do
-        if subRegion.type == "subtext" and WeakAuras.ContainsPlaceHolders(subRegion.text_text, placeholders) then
-          return false
-        end
-      end
-      return true
-    end
-  end
-
   local commonTextOptions = {
     __title = L["Common Text"],
     __hidden = function() return hideCustomTextOption() end,
@@ -437,26 +422,21 @@ local function createOptions(parentData, data, index, subIndex)
       set = function(info, v)
         parentData.customTextUpdate = v
         WeakAuras.Add(parentData)
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     },
   }
 
-  WeakAuras.AddCodeOption(commonTextOptions, parentData, L["Custom Function"], "customText", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text",
+  WeakAuras.commonOptions.AddCodeOption(commonTextOptions, parentData, L["Custom Function"], "customText", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text",
                           4,  hideCustomTextOption, {"customText"}, false)
 
   -- Add Text Format Options
-  local input = data["text_text"]
   local hidden = function()
     return WeakAuras.IsCollapsed("format_option", "text", "text_text", true)
   end
 
   local setHidden = function(hidden)
     WeakAuras.SetCollapsed("format_option", "text", "text_text", hidden)
-  end
-
-  local get = function(key)
-    return data["text_text_format_" .. key]
   end
 
   local order = 12
@@ -468,13 +448,35 @@ local function createOptions(parentData, data, index, subIndex)
       option.set = function(info, v)
         data["text_text_format_" .. key] = v
         WeakAuras.Add(parentData)
-        WeakAuras.ReloadOptions2(parentData.id, parentData)
+        WeakAuras.ClearAndUpdateOptions(parentData.id, true)
       end
     end
     options["text_text_format_" .. key] = option
   end
 
-  WeakAuras.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
+  if parentData.controlledChildren then
+    for _, childId in pairs(parentData.controlledChildren) do
+      local parentChildData = WeakAuras.GetData(childId)
+
+      if parentChildData.subRegions then
+        local childData = parentChildData.subRegions[index]
+        if childData then
+          local get = function(key)
+            return childData["text_text_format_" .. key]
+          end
+          local input = childData["text_text"]
+          WeakAuras.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
+        end
+      end
+    end
+  else
+    local get = function(key)
+      return data["text_text_format_" .. key]
+    end
+    local input = data["text_text"]
+    WeakAuras.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
+  end
+
   addOption("footer", {
     type = "description",
     name = "",

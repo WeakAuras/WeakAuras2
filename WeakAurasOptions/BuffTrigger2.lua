@@ -46,21 +46,11 @@ local function shiftTable(tbl, pos)
 end
 
 -- Counts the Names or SpellIds in a aura, recursively.
-local function CountNames(data, optionTriggerChoices, name)
+local function CountNames(data, triggernum, name)
   local result = 0
-  if data.controlledChildren then
-    for index, childId in ipairs(data.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
-      local trigger = optionTriggerChoices[childId] and childData.triggers[optionTriggerChoices[childId]].trigger
-      if trigger and trigger[name]  then
-        result = max(result, #trigger[name])
-      end
-    end
-  else
-    local trigger = optionTriggerChoices[data.id] and data.triggers[optionTriggerChoices[data.id]].trigger
-    if trigger[name] then
-      result = #trigger[name]
-    end
+  local trigger = data.triggers[triggernum].trigger
+  if trigger[name] then
+    result = #trigger[name]
   end
   return result
 end
@@ -186,9 +176,8 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
 
         WeakAuras.Add(data)
         WeakAuras.UpdateThumbnail(data)
-        WeakAuras.SetIconNames(data)
         WeakAuras.UpdateDisplayButton(data)
-        WeakAuras.ReloadTriggerOptions(data)
+        WeakAuras.ClearAndUpdateOptions(data.id)
       end,
       validate = isExactSpellId and WeakAuras.ValidateNumeric or nil
     }
@@ -196,16 +185,8 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
   -- VALIDATE ?
 end
 
-local function GetBuffTriggerOptions(data, optionTriggerChoices)
-  local trigger
-  if not data.controlledChildren then
-    local triggernum = optionTriggerChoices[data.id]
-    if triggernum then
-      trigger = data.triggers[triggernum].trigger
-    end
-  end
-
-
+local function GetBuffTriggerOptions(data, triggernum)
+  local trigger = data.triggers[triggernum].trigger
 
   local function HasMatchCount(trigger)
     if IsGroupTrigger(trigger) then
@@ -597,7 +578,6 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
           else trigger.use_stealable = false end
         end
         WeakAuras.Add(data)
-        WeakAuras.SetIconNames(data)
       end
     },
     useAffected = {
@@ -990,10 +970,10 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
   }
 
   -- Names
-  local nameOptionSize = CountNames(data, optionTriggerChoices, "auranames") + 1
-  local spellOptionsSize = CountNames(data, optionTriggerChoices, "auraspellids") + 1
-  local ignoreNameOptionSize = CountNames(data, optionTriggerChoices, "ignoreAuraNames") + 1
-  local ignoreSpellOptionsSize = CountNames(data, optionTriggerChoices, "ignoreAuraSpellids") + 1
+  local nameOptionSize = CountNames(data, triggernum, "auranames") + 1
+  local spellOptionsSize = CountNames(data, triggernum, "auraspellids") + 1
+  local ignoreNameOptionSize = CountNames(data, triggernum, "ignoreAuraNames") + 1
+  local ignoreSpellOptionsSize = CountNames(data, triggernum, "ignoreAuraSpellids") + 1
 
   CreateNameOptions(aura_options, data, trigger, nameOptionSize,
                     false, false, "name", 12, "useName", "auranames",
@@ -1014,8 +994,14 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
                     true, true, "ignorespellid", 42, "useIgnoreExactSpellId", "ignoreAuraSpellids",
                     L["Ignored Spell ID"], L["Enter a Spell ID"])
 
+  WeakAuras.commonOptions.AddCommonTriggerOptions(aura_options, data, triggernum)
+  WeakAuras.commonOptions.AddTriggerGetterSetter(aura_options, data, triggernum)
+  WeakAuras.AddTriggerMetaFunctions(aura_options, data, triggernum)
 
-  return aura_options
+
+  return {
+    ["trigger." .. triggernum .. ".aura_options"] = aura_options
+  }
 end
 
 WeakAuras.RegisterTriggerSystemOptions({"aura2"}, GetBuffTriggerOptions)
