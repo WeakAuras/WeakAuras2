@@ -197,7 +197,6 @@ local function ConstructModelPicker(frame)
           childData.model_st_us = model_us;
           WeakAuras.Add(childData);
           WeakAuras.UpdateThumbnail(childData);
-          WeakAuras.SetIconNames(childData);
         end
       end
     else
@@ -215,7 +214,6 @@ local function ConstructModelPicker(frame)
       else
         WeakAuras.Add(self.data);
         WeakAuras.UpdateThumbnail(self.data);
-        WeakAuras.SetIconNames(self.data);
       end
     end
   end
@@ -245,7 +243,6 @@ local function ConstructModelPicker(frame)
           childData.model_y = model_y;
           WeakAuras.Add(childData);
           WeakAuras.UpdateThumbnail(childData);
-          WeakAuras.SetIconNames(childData);
         end
       end
     else
@@ -260,7 +257,6 @@ local function ConstructModelPicker(frame)
       else
         WeakAuras.Add(self.data);
         WeakAuras.UpdateThumbnail(self.data);
-        WeakAuras.SetIconNames(self.data);
       end
     end
   end
@@ -386,7 +382,7 @@ local function ConstructModelPicker(frame)
   function group.Close()
     frame.window = "default"
     frame:UpdateFrameVisible()
-    AceConfigDialog:Open("WeakAuras", frame.container);
+    WeakAuras.FillOptions()
   end
 
   function group.CancelClose(self)
@@ -412,7 +408,6 @@ local function ConstructModelPicker(frame)
           end
           WeakAuras.Add(childData);
           WeakAuras.UpdateThumbnail(childData);
-          WeakAuras.SetIconNames(childData);
         end
       end
     else

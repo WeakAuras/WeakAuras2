@@ -2,6 +2,15 @@ if not WeakAuras.IsCorrectVersion() then return end
 
 local L = WeakAuras.L
 
+local removeFuncs = WeakAuras.commonOptions.removeFuncs
+local replaceNameDescFuncs = WeakAuras.commonOptions.replaceNameDescFuncs
+local replaceImageFuncs = WeakAuras.commonOptions.replaceImageFuncs
+local replaceValuesFuncs = WeakAuras.commonOptions.replaceValuesFuncs
+local disabledAll = WeakAuras.commonOptions.CreateDisabledAll("action")
+local hiddenAll = WeakAuras.commonOptions.CreateHiddenAll("action")
+local getAll = WeakAuras.commonOptions.CreateGetAll("action")
+local setAll = WeakAuras.commonOptions.CreateSetAll("action", getAll)
+
 local send_chat_message_types = WeakAuras.send_chat_message_types;
 local sound_types = WeakAuras.sound_types;
 
@@ -16,7 +25,7 @@ else
   end
 end
 
-function WeakAuras.AddActionOption(id, data)
+function WeakAuras.GetActionOptions(data)
   local action = {
     type = "group",
     name = L["Actions"],
@@ -62,7 +71,7 @@ function WeakAuras.AddActionOption(id, data)
       end
       WeakAuras.Add(data);
       if(value == "message") then
-        WeakAuras.ReloadOptions(data.id)
+        WeakAuras.ClearAndUpdateOptions(data.id)
       end
     end,
     args = {
@@ -839,10 +848,10 @@ function WeakAuras.AddActionOption(id, data)
 
   -- Text format option helpers
 
-  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "init", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-init",
+  WeakAuras.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "init", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-init",
                           0.011, function() return not data.actions.init.do_custom end, {"actions", "init", "custom"}, true);
 
-  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "start_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code",
+  WeakAuras.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "start_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code",
                           5, function() return not (data.actions.start.do_message and WeakAuras.ContainsCustomPlaceHolder(data.actions.start.message)) end, {"actions", "start", "message_custom"}, false);
 
   local startHidden = function()
@@ -872,7 +881,7 @@ function WeakAuras.AddActionOption(id, data)
       data.actions.start["message_format_" .. key] = v
       WeakAuras.Add(data)
       if reload then
-        WeakAuras.ReloadOptions2(data.id, data)
+        WeakAuras.ClearAndUpdateOptions(data.id)
       end
     end
 
@@ -899,10 +908,10 @@ function WeakAuras.AddActionOption(id, data)
   end
 
 
-  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "start", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-show",
+  WeakAuras.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "start", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-show",
                           13, function() return not data.actions.start.do_custom end, {"actions", "start", "custom"}, true);
 
-  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "finish_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code",
+  WeakAuras.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "finish_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code",
                           25, function() return not (data.actions.finish.do_message and WeakAuras.ContainsCustomPlaceHolder(data.actions.finish.message)) end, {"actions", "finish", "message_custom"}, false);
 
   local finishHidden = function()
@@ -931,7 +940,7 @@ function WeakAuras.AddActionOption(id, data)
       data.actions.finish["message_format_" .. key] = v
       WeakAuras.Add(data)
       if reload then
-        WeakAuras.ReloadOptions2(data.id, data)
+        WeakAuras.ClearAndUpdateOptions(data.id)
       end
     end
 
@@ -957,8 +966,27 @@ function WeakAuras.AddActionOption(id, data)
     WeakAuras.AddTextFormatOption(data.actions and data.actions.finish.message, true, finishGet, finishAddOption, finishHidden, finishSetHidden)
   end
 
-  WeakAuras.AddCodeOption(action.args, data, L["Custom Code"], "finish", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-hide",
+  WeakAuras.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "finish", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-hide",
                           32, function() return not data.actions.finish.do_custom end, {"actions", "finish", "custom"}, true);
+
+  if data.controlledChildren then
+    removeFuncs(action)
+    replaceNameDescFuncs(action, data, "action")
+    replaceImageFuncs(action, data, "action")
+    replaceValuesFuncs(action, data, "action")
+
+    action.get = function(info, ...) return getAll(data, info, ...); end;
+    action.set = function(info, ...)
+      setAll(data, info, ...);
+      if(type(data.id) == "string") then
+        WeakAuras.Add(data);
+        WeakAuras.UpdateThumbnail(data);
+        WeakAuras.ResetMoverSizer();
+      end
+    end
+    action.hidden = function(info, ...) return hiddenAll(data, info, ...); end;
+    action.disabled = function(info, ...) return disabledAll(data, info, ...); end;
+  end
 
   return action;
 end

@@ -40,7 +40,6 @@ local function createOptions(id, data)
         data.displayIcon = v;
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
-        WeakAuras.SetIconNames(data);
       end
     },
     chooseIcon = {
@@ -99,7 +98,7 @@ local function createOptions(id, data)
       end,
       imageWidth = 24,
       imageHeight = 24,
-      func = function()
+      func = function(info, button)
         local collapsed = WeakAuras.IsCollapsed("icon", "icon", "iconextra", true);
         WeakAuras.SetCollapsed("icon", "icon", "iconextra", not collapsed);
       end,
@@ -215,7 +214,7 @@ local function createOptions(id, data)
 
   return {
     icon = options,
-    position = WeakAuras.PositionOptions(id, data),
+    position = WeakAuras.commonOptions.PositionOptions(id, data),
   };
 end
 

@@ -17,12 +17,12 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
 local displayButtons = WeakAuras.displayButtons
-local displayOptions = WeakAuras.displayOptions
 local loaded = WeakAuras.loaded
 local regionOptions = WeakAuras.regionOptions
 local savedVars = WeakAuras.savedVars
 local tempGroup = WeakAuras.tempGroup
 local prettyPrint = WeakAuras.prettyPrint
+local aceOptions = WeakAuras.aceOptions
 
 local function CreateDecoration(frame)
   local deco = CreateFrame("Frame", nil, frame)
@@ -736,14 +736,144 @@ function WeakAuras.CreateFrame()
   unloadedButton:SetViewDescription(L["Toggle the visibility of all non-loaded displays"])
   frame.unloadedButton = unloadedButton
 
-  frame.FillOptions = function(self, optionTable, selected)
-    AceConfig:RegisterOptionsTable("WeakAuras", optionTable)
-    AceConfigDialog:Open("WeakAuras", container)
-    -- TODO: remove this once legacy aura trigger is removed
-    if selected then
-      container.content.obj.children[1]:SelectTab(selected)
+
+  frame.ClearOptions = function(self, id)
+    aceOptions[id] = nil
+    if type(id) == "string" then
+      local data = WeakAuras.GetData(id)
+      if data and data.parent then
+        frame:ClearOptions(data.parent)
+      end
+      for _, tmpId in ipairs(tempGroup.controlledChildren) do
+        if (id == tmpId) then
+          frame:ClearOptions(tempGroup.id)
+        end
+      end
     end
-    container:SetTitle("")
+  end
+
+  frame.ClearAndUpdateOptions = function(self, id, clearChildren)
+    frame:ClearOptions(id)
+
+    if clearChildren then
+      local data
+      if type(id) == "string" then
+        data = WeakAuras.GetData(id)
+      elseif self.pickedDisplay then
+        data = tempGroup
+      end
+
+      if data.controlledChildren then
+        for _, id in ipairs(data.controlledChildren) do
+          frame:ClearOptions(id)
+        end
+      end
+    end
+    if (type(self.pickedDisplay) == "string" and self.pickedDisplay == id)
+       or (type(self.pickedDisplay == "table") and id == tempGroup.id)
+    then
+      frame:UpdateOptions()
+    end
+  end
+
+  frame.UpdateOptions = function(self)
+    self.selectedTab = self.selectedTab or "region"
+    local data
+    if type(self.pickedDisplay) == "string" then
+      data = WeakAuras.GetData(frame.pickedDisplay)
+    elseif self.pickedDisplay then
+      data = tempGroup
+    end
+
+    if not data.controlledChildren or data == tempGroup then
+      if self.selectedTab == "group" then
+        self.selectedTab = "region"
+      end
+    end
+
+    local optionTable = self:EnsureOptions(data, self.selectedTab)
+    if optionTable then
+      AceConfig:RegisterOptionsTable("WeakAuras", optionTable)
+    end
+  end
+
+  frame.GetSubOptions = function(self, id, tab)
+    return aceOptions[id] and aceOptions[id][tab]
+  end
+
+  frame.EnsureOptions = function(self, data, tab)
+    local id = data.id
+    aceOptions[id] = aceOptions[id] or {}
+    if not aceOptions[id][tab] then
+      local optionsGenerator =
+      {
+        group = WeakAuras.GetGroupOptions,
+        region =  WeakAuras.GetDisplayOptions,
+        trigger = WeakAuras.GetTriggerOptions,
+        conditions = WeakAuras.GetConditionOptions,
+        load = WeakAuras.GetLoadOptions,
+        action = WeakAuras.GetActionOptions,
+        animation = WeakAuras.GetAnimationOptions,
+        authorOptions = WeakAuras.GetAuthorOptions
+      }
+      if optionsGenerator[tab] then
+        aceOptions[id][tab] = optionsGenerator[tab](data)
+      end
+    end
+    return aceOptions[id][tab]
+  end
+
+  -- This function refills the options pane
+  -- This is ONLY necessary if AceOptions doesn't know that it should do
+  -- that automatically. That is any change that goes through the AceOptions
+  -- doesn't need to call this
+  -- Any changes to the options that go around that, e.g. drag/drop, group,
+  -- texture pick, etc should call this
+  frame.FillOptions = function(self)
+    frame:UpdateOptions()
+
+    local data
+    if type(self.pickedDisplay) == "string" then
+      data = WeakAuras.GetData(frame.pickedDisplay)
+    elseif self.pickedDisplay then
+      data = tempGroup
+    end
+
+    local tabsWidget
+
+    container:ReleaseChildren()
+    container:SetLayout("Fill")
+    tabsWidget = AceGUI:Create("TabGroup")
+
+    local tabs = {
+      { value = "region", text = L["Display"]},
+      { value = "trigger", text = L["Trigger"]},
+      { value = "conditions", text = L["Conditions"]},
+      { value = "load", text = L["Load"]},
+      { value = "action", text = L["Actions"]},
+      { value = "animation", text = L["Animations"]},
+      { value = "authorOptions", text = L["Custom Options"]}
+    }
+    -- Check if group and not the temp group
+    if data.controlledChildren and type(data.id) == "string" then
+      tinsert(tabs, 1, { value = "group", text = L["Group"]})
+    end
+
+    tabsWidget:SetTabs(tabs)
+    tabsWidget:SelectTab(self.selectedTab)
+    tabsWidget:SetLayout("Fill")
+    container:AddChild(tabsWidget)
+
+    local group = AceGUI:Create("WeakAurasInlineGroup")
+    tabsWidget:AddChild(group)
+
+    tabsWidget:SetCallback("OnGroupSelected", function(self, event, tab)
+        frame.selectedTab = tab
+        frame:FillOptions()
+      end)
+
+    AceConfigDialog:Open("WeakAuras", group)
+    tabsWidget:SetTitle("")
   end
 
   frame.ClearPick = function(self, id)
@@ -758,8 +888,8 @@ function WeakAuras.CreateFrame()
     tremove(tempGroup.controlledChildren, index)
     displayButtons[id]:ClearPick()
 
-    WeakAuras.AddOption(tempGroup.id, tempGroup)
-    self:FillOptions(displayOptions[tempGroup.id])
+    self:ClearOptions(tempGroup.id)
+    self:FillOptions()
   end
 
   frame.ClearPicks = function(self, noHide)
@@ -945,73 +1075,55 @@ function WeakAuras.CreateFrame()
     end
   end
 
-  frame.PickDisplay = function(self, id, tab, noHide) -- TODO: remove tab parametter once legacy aura trigger is removed
+  frame.PickDisplay = function(self, id, tab, noHide)
+    if self.pickedDisplay == id then
+      return
+    end
     self:ClearPicks(noHide)
     local data = WeakAuras.GetData(id)
 
-    local function finishPicking()
-      displayButtons[id]:Pick()
-      self.pickedDisplay = id
-      local data = db.displays[id]
-      -- Expand parent + loaded/unloaded if needed
-      if data.parent then
-        if not displayButtons[data.parent]:GetExpanded() then
-          displayButtons[data.parent]:Expand()
-        end
-      end
-      if loaded[id] ~= nil then
-        -- Under loaded
-        if not loadedButton:GetExpanded() then
-          loadedButton:Expand()
-        end
-      else
-        -- Under Unloaded
-        if not unloadedButton:GetExpanded() then
-          unloadedButton:Expand()
-        end
-      end
+    displayButtons[id]:Pick()
+    self.pickedDisplay = id
 
-      WeakAuras.AddOption(data.id, data)
-      self:FillOptions(displayOptions[id], tab) -- TODO: remove tab parametter once legacy aura trigger is removed
-
-      WeakAuras.SetMoverSizer(id)
-
-      local _, _, _, _, yOffset = displayButtons[id].frame:GetPoint(1)
-      if not yOffset then
-        yOffset = displayButtons[id].frame.yOffset
+    if data.parent then
+      if not displayButtons[data.parent]:GetExpanded() then
+        displayButtons[data.parent]:Expand()
       end
-      if yOffset then
-        self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32)
+    end
+    if loaded[id] ~= nil then
+      -- Under loaded
+      if not loadedButton:GetExpanded() then
+        loadedButton:Expand()
       end
-      if data.controlledChildren then
-        for index, childId in pairs(data.controlledChildren) do
-          displayButtons[childId]:PriorityShow(1)
-        end
+    else
+      -- Under Unloaded
+      if not unloadedButton:GetExpanded() then
+        unloadedButton:Expand()
       end
-
-      WeakAuras.ResumeAllDynamicGroups()
     end
 
-    local list = {}
-    local num = 0
+    if tab then
+      self.selectedTab = tab
+    end
+    self:FillOptions()
+
+    WeakAuras.SetMoverSizer(id)
+
+    local _, _, _, _, yOffset = displayButtons[id].frame:GetPoint(1)
+    if not yOffset then
+      yOffset = displayButtons[id].frame.yOffset
+    end
+    if yOffset then
+      self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32)
+    end
     if data.controlledChildren then
       for index, childId in pairs(data.controlledChildren) do
-        if not displayOptions[childId] then
-          list[childId] = WeakAuras.GetData(childId)
-          num = num + 1
-        end
+        displayButtons[childId]:PriorityShow(1)
       end
     end
-    WeakAuras.EnsureOptions(id)
-    if num > 1 then
-      WeakAuras.PauseAllDynamicGroups()
-      WeakAuras.BuildOptions(list, finishPicking)
-    else
-      WeakAuras.PauseAllDynamicGroups()
-      finishPicking()
-      if data.controlledChildren and #data.controlledChildren == 0 then
-        WeakAurasOptions:NewAura(true)
-      end
+
+    if data.controlledChildren and #data.controlledChildren == 0 then
+      WeakAurasOptions:NewAura(true)
     end
   end
 
@@ -1047,11 +1159,10 @@ function WeakAuras.CreateFrame()
         self:PickDisplay(id)
       elseif not WeakAuras.IsDisplayPicked(id) then
         self.pickedDisplay = tempGroup
-        WeakAuras.EnsureOptions(id)
         displayButtons[id]:Pick()
         tinsert(tempGroup.controlledChildren, id)
-        WeakAuras.AddOption(tempGroup.id, tempGroup)
-        self:FillOptions(displayOptions[tempGroup.id])
+        WeakAuras.ClearOptions(tempGroup.id)
+        self:FillOptions()
       end
     end
   end
@@ -1066,32 +1177,13 @@ function WeakAuras.CreateFrame()
         end
       end
       if not alreadySelected then
-        WeakAuras.EnsureOptions(id)
         displayButtons[id]:Pick()
         tinsert(tempGroup.controlledChildren, id)
       end
     end
-    WeakAuras.AddOption(tempGroup.id, tempGroup)
-    self:FillOptions(displayOptions[tempGroup.id])
+    frame:ClearOptions(tempGroup.id)
     self.pickedDisplay = tempGroup
-  end
-
-  frame.RefreshPick = function(self)
-    if type(self.pickedDisplay) == "string" then
-      WeakAuras.EnsureOptions(self.pickedDisplay)
-      self:FillOptions(displayOptions[self.pickedDisplay])
-    else
-      WeakAuras.EnsureOptions(tempGroup.id)
-      self:FillOptions(displayOptions[tempGroup.id])
-    end
-  end
-
-  frame.RefillOptions = function(self)
-    if type(self.pickedDisplay) == "string" then
-      self:FillOptions(displayOptions[frame.pickedDisplay])
-    elseif self.pickedDisplay then
-      self:FillOptions(displayOptions[frame.pickedDisplay.id])
-    end
+    self:FillOptions()
   end
 
   frame:SetClampedToScreen(true)

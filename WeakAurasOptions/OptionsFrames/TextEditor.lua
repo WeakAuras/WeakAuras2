@@ -727,22 +727,20 @@ local function ConstructTextEditor(frame)
     if (self.reloadOptions) then
       if (self.data.controlledChildren) then
         for index, childId in pairs(self.data.controlledChildren) do
-          WeakAuras.ScheduleReloadOptions(WeakAuras.GetData(childId))
+          WeakAuras.ClearAndUpdateOptions(childId)
         end
-        WeakAuras.ScheduleReloadOptions(self.data)
+        WeakAuras.ClearAndUpdateOptions(self.data.id)
       else
-        WeakAuras.ScheduleReloadOptions(self.data)
+        WeakAuras.ClearAndUpdateOptions(self.data.id)
       end
     else
-      WeakAuras.ScheduleReloadOptions(self.data)
+      WeakAuras.ClearAndUpdateOptions(self.data.id)
     end
 
     editor.editBox:SetScript("OnTextChanged", self.oldOnTextChanged)
     editor:ClearFocus()
     frame.window = "default"
     frame:UpdateFrameVisible()
-
-    frame:RefreshPick()
   end
   WeakAuras.editor = editor
 

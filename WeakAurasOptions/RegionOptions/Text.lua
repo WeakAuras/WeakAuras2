@@ -29,9 +29,8 @@ local function createOptions(id, data)
       set = function(info, v)
         data.displayText = WeakAuras.ReplaceLocalizedRaidMarkers(v);
         WeakAuras.Add(data);
-        WeakAuras.ReloadOptions2(data.id, data)
+        WeakAuras.ClearAndUpdateOptions(data.id)
         WeakAuras.UpdateThumbnail(data);
-        WeakAuras.SetIconNames(data);
         WeakAuras.ResetMoverSizer();
       end,
     },
@@ -105,7 +104,7 @@ local function createOptions(id, data)
 
         return secondline
       end,
-      func = function()
+      func = function(info, button)
         local collapsed = WeakAuras.IsCollapsed("text", "text", "fontflags", true)
         WeakAuras.SetCollapsed("text", "text", "fontflags", not collapsed)
       end,
@@ -240,7 +239,7 @@ local function createOptions(id, data)
     },
   };
 
-  WeakAuras.AddCodeOption(options, data, L["Custom Function"], "customText", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text",
+  WeakAuras.commonOptions.AddCodeOption(options, data, L["Custom Function"], "customText", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text",
                           37, function() return not WeakAuras.ContainsCustomPlaceHolder(data.displayText) end, {"customText"}, false);
 
   -- Add Text Format Options
@@ -266,7 +265,7 @@ local function createOptions(id, data)
       option.set = function(info, v)
         data["displayText_format_" .. key] = v
         WeakAuras.Add(data)
-        WeakAuras.ReloadOptions2(data.id, data)
+        WeakAuras.ClearAndUpdateOptions(data.id)
       end
     end
     options["displayText_format_" .. key] = option
@@ -282,7 +281,7 @@ local function createOptions(id, data)
 
   return {
     text = options;
-    position = WeakAuras.PositionOptions(id, data, nil, true);
+    position = WeakAuras.commonOptions.PositionOptions(id, data, nil, true);
   };
 end
 
