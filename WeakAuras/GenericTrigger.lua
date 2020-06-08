@@ -1338,7 +1338,7 @@ function GenericTrigger.Add(data, region)
           automaticAutoHide = true;
         end
 
-        if trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix then
+        if triggerType == "event" and  trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix then
           tinsert(trigger_subevents, trigger.subeventPrefix .. trigger.subeventSuffix)
         end
 
