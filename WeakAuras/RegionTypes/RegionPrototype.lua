@@ -53,12 +53,12 @@ end
 -- Adjusted Duration
 
 function WeakAuras.regionPrototype.AddAdjustedDurationToDefault(default)
-  default.useAdjustedMax = false;
-  default.useAdjustedMin = false;
+  default.useAdjustededMax = false;
+  default.useAdjustededMin = false;
 end
 
 function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, order)
-  options.useAdjustedMin = {
+  options.useAdjustededMin = {
     type = "toggle",
     width = WeakAuras.normalWidth,
     name = L["Set Minimum Progress"],
@@ -84,7 +84,7 @@ function WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, ord
     hidden = function() return not (not data.useAdjustededMin and data.useAdjustededMax) end,
   };
 
-  options.useAdjustedMax = {
+  options.useAdjustededMax = {
     type = "toggle",
     width = WeakAuras.normalWidth,
     name = L["Set Maximum Progress"],
@@ -500,9 +500,9 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
   if (defaultsForRegion and defaultsForRegion.alpha) then
     region:SetRegionAlpha(data.alpha);
   end
-  local hasAdjustedMin = defaultsForRegion and defaultsForRegion.useAdjustedMin ~= nil and data.useAdjustededMin
+  local hasAdjustedMin = defaultsForRegion and defaultsForRegion.useAdjustededMin ~= nil and data.useAdjustededMin
         and data.adjustedMin;
-  local hasAdjustedMax = defaultsForRegion and defaultsForRegion.useAdjustedMax ~= nil and data.useAdjustededMax
+  local hasAdjustedMax = defaultsForRegion and defaultsForRegion.useAdjustededMax ~= nil and data.useAdjustededMax
         and data.adjustedMax;
 
   region.adjustedMin = nil
