@@ -422,7 +422,10 @@ WeakAuras.subevent_prefix_types = {
   DAMAGE_SHIELD_MISSED = L["Damage Shield Missed"],
   PARTY_KILL = L["Party Kill"],
   UNIT_DIED = L["Unit Died"],
-  UNIT_DESTROYED = L["Unit Destroyed"]
+  UNIT_DESTROYED = L["Unit Destroyed"],
+  UNIT_DISSIPATES = L["Unit Dissipates"],
+  ENCHANT_APPLIED = L["Enchant Applied"],
+  ENCHANT_REMOVED = L["Enchant Removed"]
 }
 
 WeakAuras.subevent_actual_prefix_types = {
