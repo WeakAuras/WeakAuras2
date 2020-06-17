@@ -112,7 +112,12 @@ local prototype = {
   end,
   Close = function(self, store)
     return store
-  end
+  end,
+  Delete = function(self, image)
+    for id in pairs(image.stores) do
+      Archivist:Delete("ReadOnly", id)
+    end
+  end,
 }
 
 Archivist:RegisterStoreType(prototype)

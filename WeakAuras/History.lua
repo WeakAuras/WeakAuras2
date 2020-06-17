@@ -73,4 +73,3 @@ end
 function WeakAuras.GetMigrationSnapshot(uid)
   return loadMigrations():GetData(uid)
 end
-
