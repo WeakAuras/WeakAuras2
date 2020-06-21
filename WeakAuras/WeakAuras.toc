@@ -60,6 +60,7 @@ RegionTypes\Model.lua
 SubRegionTypes\SubText.lua
 SubRegionTypes\Border.lua
 SubRegionTypes\Glow.lua
+SubRegionTypes\Tick.lua
 #@retail@
 SubRegionTypes\BarModel.lua
 #@end-retail@

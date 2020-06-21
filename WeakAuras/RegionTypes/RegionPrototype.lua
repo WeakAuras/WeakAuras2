@@ -24,7 +24,7 @@ local SubRegionEventSystem =
   end,
 
   RemoveSubscriber = function(self, event, subRegion)
-    tremove(self.events[event], subRegion)
+    tremove(self.events[event], tIndexOf(self.events[event], subRegion))
   end,
 
   Notify = function(self, event, ...)
