@@ -22,7 +22,7 @@ local function ConstructIconPicker(frame)
   group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 30); -- 12
   group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -50);
   group.frame:Hide();
-  group:SetLayout("flow");
+  group:SetLayout("fill");
 
   local scroll = AceGUI:Create("ScrollFrame");
   scroll:SetLayout("flow");
@@ -201,7 +201,6 @@ local function ConstructIconPicker(frame)
   close:SetWidth(100);
   close:SetText(L["Okay"]);
 
-  scroll.frame:SetPoint("BOTTOM", close, "TOP", 0, 10);
   return group
 end
 
