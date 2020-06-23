@@ -101,7 +101,6 @@ local function ConstructIconPicker(frame)
   input:SetWidth(170);
   input:SetHeight(15);
   input:SetPoint("BOTTOMRIGHT", group.frame, "TOPRIGHT", -12, -5);
-  WeakAuras.input = input;
 
   local inputLabel = input:CreateFontString(nil, "OVERLAY", "GameFontNormal");
   inputLabel:SetText(L["Search"]);
