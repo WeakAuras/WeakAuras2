@@ -78,6 +78,13 @@ end
 
 LibRangeCheck:RegisterCallback(LibRangeCheck.CHECKERS_CHANGED, RangeCacheUpdate)
 
+function WeakAuras.UnitDetailedThreatSituation(unit1, unit2)
+  local ok, aggro, status, threatpct, rawthreatpct, threatvalue = pcall(UnitDetailedThreatSituation, unit1, unit2)
+  if ok then
+    return aggro, status, threatpct, rawthreatpct, threatvalue
+  end
+end
+
 local LibClassicCasterino
 if WeakAuras.IsClassic() then
   LibClassicCasterino = LibStub("LibClassicCasterino")
@@ -5724,7 +5731,9 @@ WeakAuras.event_prototypes = {
     end,
     internal_events = function(trigger)
       local result = {}
-      AddUnitChangeInternalEvents(trigger.threatUnit, result)
+      if trigger.threatUnit and trigger.threatUnit ~= "none" then
+        AddUnitChangeInternalEvents(trigger.threatUnit, result)
+      end
       return result
     end,
     force_events = "UNIT_THREAT_LIST_UPDATE",
@@ -5732,9 +5741,10 @@ WeakAuras.event_prototypes = {
     init = function(trigger)
       local ret = [[
         local unit = %s
+        local ok = true
         local aggro, status, threatpct, rawthreatpct, threatvalue
         if unit then
-          aggro, status, threatpct, rawthreatpct, threatvalue = UnitDetailedThreatSituation('player', unit)
+          aggro, status, threatpct, rawthreatpct, threatvalue = WeakAuras.UnitDetailedThreatSituation('player', unit)
         else
           status = UnitThreatSituation('player')
           aggro = status == 2 or status == 3
@@ -5743,7 +5753,7 @@ WeakAuras.event_prototypes = {
       ]];
       return ret:format(trigger.threatUnit and trigger.threatUnit ~= "none" and "[["..trigger.threatUnit.."]]" or "nil");
     end,
-    statesParameter = "unit",
+    statesParameter = "one",
     args = {
       {
         name = "threatUnit",
@@ -5793,18 +5803,31 @@ WeakAuras.event_prototypes = {
         enable = function(trigger) return trigger.threatUnit ~= "none" end,
       },
       {
+        name = "value",
         hidden = true,
-        test = "status ~= nil"
+        init = "threatpct",
+        store = true,
+        test = "true"
+      },
+      {
+        name = "total",
+        hidden = true,
+        init = "100",
+        store = true,
+        test = "true"
+      },
+      {
+        name = "progressType",
+        hidden = true,
+        init = "'static'",
+        store = true,
+        test = "true"
+      },
+      {
+        hidden = true,
+        test = "status ~= nil and ok"
       }
     },
-    durationFunc = function(trigger)
-      if trigger.threatUnit and trigger.threatUnit ~= "none" then
-        local _, _, threatpct = UnitDetailedThreatSituation("player", trigger.threatUnit)
-        return threatpct, 100, true;
-      else
-        return 100, 100, true
-      end
-    end,
     automaticrequired = true
   },
   ["Crowd Controlled"] = {
