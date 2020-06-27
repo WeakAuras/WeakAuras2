@@ -417,10 +417,10 @@ local function ConstructModelPicker(frame)
       end
     else
       if (group.givenApi) then
-        group:PickSt(group.givenPath, group.givenPathId, group.givenTX, group.givenTY, group.givenTZ,
+        group:PickSt(group.givenModel, group.givenModelId, group.givenTX, group.givenTY, group.givenTZ,
           group.givenRX, group.givenRY, group.givenRZ, group.givenUS );
       else
-        group:Pick(group.givenPath, group.givenPathId, group.givenZ, group.givenX, group.givenY);
+        group:Pick(group.givenModel, group.givenModelId, group.givenZ, group.givenX, group.givenY);
       end
     end
     group.Close();
