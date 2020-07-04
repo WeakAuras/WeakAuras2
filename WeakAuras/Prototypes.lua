@@ -14,6 +14,7 @@ local UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo = UnitAlternatePower
 local GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon = GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon
 local GetShapeshiftFormInfo, GetShapeshiftForm = GetShapeshiftFormInfo, GetShapeshiftForm
 local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitCastingInfo, UnitChannelInfo
+local UnitDetailedThreatSituation, UnitThreatSituation = UnitDetailedThreatSituation, UnitThreatSituation
 local CastingInfo, ChannelInfo = CastingInfo, ChannelInfo
 
 local WeakAuras = WeakAuras
@@ -76,6 +77,13 @@ local function RangeCacheUpdate()
 end
 
 LibRangeCheck:RegisterCallback(LibRangeCheck.CHECKERS_CHANGED, RangeCacheUpdate)
+
+function WeakAuras.UnitDetailedThreatSituation(unit1, unit2)
+  local ok, aggro, status, threatpct, rawthreatpct, threatvalue = pcall(UnitDetailedThreatSituation, unit1, unit2)
+  if ok then
+    return aggro, status, threatpct, rawthreatpct, threatvalue
+  end
+end
 
 local LibClassicCasterino
 if WeakAuras.IsClassic() then
@@ -5712,26 +5720,40 @@ WeakAuras.event_prototypes = {
   },
   ["Threat Situation"] = {
     type = "status",
-    events = {
-      ["unit_events"] = {
-        ["player"] = {"UNIT_THREAT_SITUATION_UPDATE"}
-      }
-    },
-    internal_events = function(trigger)
+    events = function(trigger)
       local result = {}
-      AddUnitChangeInternalEvents(trigger.unit, result)
+      if trigger.threatUnit and trigger.threatUnit ~= "none" then
+        AddUnitEventForEvents(result, trigger.threatUnit, "UNIT_THREAT_LIST_UPDATE")
+      else
+        AddUnitEventForEvents(result, "player", "UNIT_THREAT_SITUATION_UPDATE")
+      end
       return result
     end,
-    force_events = "UNIT_THREAT_SITUATION_UPDATE",
+    internal_events = function(trigger)
+      local result = {}
+      if trigger.threatUnit and trigger.threatUnit ~= "none" then
+        AddUnitChangeInternalEvents(trigger.threatUnit, result)
+      end
+      return result
+    end,
+    force_events = "UNIT_THREAT_LIST_UPDATE",
     name = L["Threat Situation"],
     init = function(trigger)
       local ret = [[
-        local status = UnitThreatSituation('player', %s) or -1;
-        local aggro = status == 2 or status == 3;
+        local unit = %s
+        local ok = true
+        local aggro, status, threatpct, rawthreatpct, threatvalue
+        if unit then
+          aggro, status, threatpct, rawthreatpct, threatvalue = WeakAuras.UnitDetailedThreatSituation('player', unit)
+        else
+          status = UnitThreatSituation('player')
+          aggro = status == 2 or status == 3
+          threatpct, rawthreatpct, threatvalue = 100, 100, 0
+        end
       ]];
-
       return ret:format(trigger.threatUnit and trigger.threatUnit ~= "none" and "[["..trigger.threatUnit.."]]" or "nil");
     end,
+    statesParameter = "one",
     args = {
       {
         name = "threatUnit",
@@ -5754,9 +5776,57 @@ WeakAuras.event_prototypes = {
         type = "tristate"
       },
       {
-        hidden = true,
-        test = "status ~= -1"
+        name = "threatpct",
+        display = L["Threat Percent"],
+        desc = L["Your threat on the mob as a percentage of the amount required to pull aggro. Will pull aggro at 100."],
+        type = "number",
+        store = true,
+        conditionType = "number",
+        enable = function(trigger) return trigger.threatUnit ~= "none" end,
       },
+      {
+        name = "rawthreatpct",
+        display = L["Raw Threat Percent"],
+        desc = L["Your threat as a percentage of the tank's current threat."],
+        type = "number",
+        store = true,
+        conditionType = "number",
+        enable = function(trigger) return trigger.threatUnit ~= "none" end,
+      },
+      {
+        name = "threatvalue",
+        display = L["Threat Value"],
+        desc = L["Your total threat on the mob."],
+        type = "number",
+        store = true,
+        conditionType = "number",
+        enable = function(trigger) return trigger.threatUnit ~= "none" end,
+      },
+      {
+        name = "value",
+        hidden = true,
+        init = "threatpct",
+        store = true,
+        test = "true"
+      },
+      {
+        name = "total",
+        hidden = true,
+        init = "100",
+        store = true,
+        test = "true"
+      },
+      {
+        name = "progressType",
+        hidden = true,
+        init = "'static'",
+        store = true,
+        test = "true"
+      },
+      {
+        hidden = true,
+        test = "status ~= nil and ok"
+      }
     },
     automaticrequired = true
   },
@@ -6919,7 +6989,9 @@ WeakAuras.event_prototypes = {
 };
 
 if WeakAuras.IsClassic() then
-  WeakAuras.event_prototypes["Threat Situation"] = nil
+  if not UnitDetailedThreatSituation then
+    WeakAuras.event_prototypes["Threat Situation"] = nil
+  end
   WeakAuras.event_prototypes["Death Knight Rune"] = nil
   WeakAuras.event_prototypes["Alternate Power"] = nil
   WeakAuras.event_prototypes["Equipment Set"] = nil

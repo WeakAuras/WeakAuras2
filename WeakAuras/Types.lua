@@ -2313,6 +2313,7 @@ if WeakAuras.IsClassic() then
   WeakAuras.actual_unit_types_cast.focus = nil
   WeakAuras.actual_unit_types.focus = nil
   WeakAuras.unit_types_range_check.focus = nil
+  WeakAuras.threat_unit_types.focus = nil
   WeakAuras.item_slot_types[0] = AMMOSLOT
   WeakAuras.item_slot_types[18] = RANGEDSLOT
 
