@@ -48,7 +48,6 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Tick Mode"],
       order = 3,
       values = WeakAuras.tick_placement_modes,
-      desc = L["Relative mode positions the tick at the position relative to the total width of the progress bar.\nAbsolute mode positions the tick at a fixed value."],
     },
     tick_placement = {
       type = "input",
