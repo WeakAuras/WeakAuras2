@@ -7,7 +7,7 @@ local default = function(parentType)
   return {
     tick_visible = true,
     tick_color = {1, 1, 1, 1},
-    tick_placement_mode = "ABSOLUTE",
+    tick_placement_mode = "AtValue",
     tick_placement = "50",
     automatic_length = true,
     tick_thickness = 2,
@@ -136,7 +136,7 @@ local funcs = {
     end
   end,
   UpdateVisible = function(self)
-    local missingProgress = self.tick_placement_mode == "ABSOLUTE" and not self.trigger_total
+    local missingProgress = self.tick_placement_mode ~= "AtPercent" and not self.trigger_total
     if self.tick_visible and not missingProgress then
       self:Show()
     else
@@ -185,16 +185,15 @@ local funcs = {
     if self.tick_placement_mode == "AtValue" then
       local percent = self.trigger_total and self.trigger_total ~= 0 and self.tick_placement / self.trigger_total
 
-      if not self.trigger_total or percent < 0 or percent > 1 then
+      if not self.trigger_total or percent and percent < 0 or percent > 1 then
         hide = true
         offset = 0
       else
         offset = percent * width
       end
     elseif self.tick_placement_mode == "AtMissingValue" then
-      local percent = self.trigger_total and self.trigger_total ~= 0 and self.tick_placement / self.trigger_total
-      percent = 1 - percent
-      if not self.trigger_total or percent < 0 or percent > 1 then
+      local percent = self.trigger_total and self.trigger_total ~= 0 and 1 - (self.tick_placement / self.trigger_total)
+      if not self.trigger_total or percent and percent < 0 or percent > 1 then
         hide = true
         offset = 0
       else
