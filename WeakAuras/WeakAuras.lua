@@ -6540,6 +6540,8 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc, state, form
     value = variable.get(state)
     if formatter then
       value = formatter(value, state)
+    elseif variable.func then
+      value = variable.func(value)
     end
   end
   return value or "";
