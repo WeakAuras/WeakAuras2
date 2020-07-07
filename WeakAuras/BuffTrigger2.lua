@@ -1078,8 +1078,8 @@ local function UpdateTriggerState(time, id, triggernum)
       useMatches = SatisfiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
     end
 
+    local cloneIds = {}
     if useMatches then
-
       table.sort(auraDatas, SortMatchDataByUnitIndex)
 
       local affected, unaffected
@@ -1088,7 +1088,6 @@ local function UpdateTriggerState(time, id, triggernum)
       end
 
       local usedCloneIds = {};
-
       for index, auraData in ipairs(auraDatas) do
         local cloneId = (auraData.GUID or auraData.unit or "unknown") .. " " .. auraData.spellId
         if usedCloneIds[cloneId] then
@@ -1099,15 +1098,17 @@ local function UpdateTriggerState(time, id, triggernum)
         end
 
         updated = UpdateStateWithMatch(time, auraData, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, matchCountPerUnit[auraData.unit], totalStacks, affected, unaffected) or updated
+        cloneIds[cloneId] = true
       end
 
       if matchCount == 0 then
         updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, "", nil, 0, 0, maxUnitCount, 0, totalStacks, affected, unaffected) or updated
+        cloneIds[""] = true
       end
     end
 
     for cloneId, state in pairs(triggerStates) do
-      if state.show and state.time < time then
+      if not cloneIds[cloneId] then
         updated = RemoveState(triggerStates, cloneId) or updated
       end
     end
@@ -1135,6 +1136,7 @@ local function UpdateTriggerState(time, id, triggernum)
 
     local useMatches = SatisfiesGroupMatchCount(triggerInfo, unitCount, maxUnitCount, matchCount)
 
+    local cloneIds = {}
     if useMatches then
       local affected, unaffected
       if triggerInfo.useAffected then
@@ -1155,9 +1157,11 @@ local function UpdateTriggerState(time, id, triggernum)
             if bestMatch then
               if triggerInfo.perUnitMode == "all" then
                 updated = UpdateStateWithMatch(time, bestMatch, triggerStates, unit, matchCount, unitCount, maxUnitCount, matchCountPerUnit[unit], totalStacks, affected, unaffected) or updated
+                cloneIds[unit] = true
               end
             else
               updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, unit, unit, matchCount, unitCount, maxUnitCount, matchCountPerUnit[unit], totalStacks, affected, unaffected) or updated
+              cloneIds[unit] = true
             end
           end
         end
@@ -1165,7 +1169,7 @@ local function UpdateTriggerState(time, id, triggernum)
     end
 
     for cloneId, state in pairs(triggerStates) do
-      if state.show and state.time < time then
+      if not cloneIds[cloneId] then
         updated = RemoveState(triggerStates, cloneId) or updated
       end
     end
@@ -1222,11 +1226,12 @@ local function PrepareMatchData(unit, filter)
   end
 end
 
-local function CleanUpOutdatedMatchData(time, unit, filter)
+local function CleanUpOutdatedMatchData(removeIndex, unit, filter)
   -- Figure out if any matchData is outdated
   if matchData[unit] and matchData[unit][filter] then
-    for index, data in pairs(matchData[unit][filter]) do
-      if data.time < time or not UnitExistsFixed(unit) then
+    for index = removeIndex, #matchData[unit][filter] do
+      local data = matchData[unit][filter][index]
+      if data.index >= removeIndex or not UnitExistsFixed(unit) then
          matchData[unit][filter][index] = nil
          for id, triggerData in pairs(data.auras) do
            for triggernum in pairs(triggerData) do
@@ -1299,7 +1304,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
     if matchDataUpToDate[unit] then
       matchDataUpToDate[unit][filter] = nil
     end
-    CleanUpOutdatedMatchData(time, unit, filter)
+    CleanUpOutdatedMatchData(1, unit, filter)
     return
   end
 
@@ -1334,7 +1339,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
     end
   end
 
-  CleanUpOutdatedMatchData(time, unit, filter)
+  CleanUpOutdatedMatchData(index, unit, filter)
 
   matchDataUpToDate[unit] = matchDataUpToDate[unit] or {}
   matchDataUpToDate[unit][filter] = true
