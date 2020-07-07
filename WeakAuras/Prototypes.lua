@@ -6720,7 +6720,7 @@ WeakAuras.event_prototypes = {
         tinsert(events, "PLAYER_REGEN_DISABLED")
         tinsert(events, "PLAYER_ENTERING_WORLD")
       end
-      if trigger.use_pvpflagged ~= nil then
+      if trigger.use_pvpflagged ~= nil or trigger.use_afk ~= nil then
         tinsert(events, "PLAYER_FLAGS_CHANGED")
       end
       if trigger.use_alive ~= nil then
@@ -6854,6 +6854,12 @@ WeakAuras.event_prototypes = {
         display = L["Is Moving"],
         type = "tristate",
         init = "IsPlayerMoving()"
+      },
+      {
+        name = "afk",
+        display = L["Is Away from Keyboard"],
+        type = "tristate",
+        init = "UnitIsAFK('player')"
       },
       {
         name = "ingroup",
