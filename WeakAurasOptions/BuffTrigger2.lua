@@ -741,7 +741,7 @@ local function GetBuffTriggerOptions(data, optionTriggerChoices)
     },
     ignoreInvisible = {
       type = "toggle",
-      name = WeakAuras.newFeatureString .. L["Ignore out of checking range."],
+      name = WeakAuras.newFeatureString .. L["Ignore out of checking range"],
       desc = L["Uses UnitIsVisible() to check if in range. This is polled every second."],
       order = 68.9,
       width = WeakAuras.doubleWidth,

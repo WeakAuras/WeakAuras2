@@ -1147,6 +1147,7 @@ local function UpdateTriggerState(time, id, triggernum)
         for unit, bestMatch in pairs(matches) do
           if bestMatch then
             updated = UpdateStateWithMatch(time, bestMatch, triggerStates, unit, matchCount, unitCount, maxUnitCount, matchCountPerUnit[unit], totalStacks, affected, unaffected) or updated
+            cloneIds[unit] = true
           end
         end
       else
