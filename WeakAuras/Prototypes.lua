@@ -5864,17 +5864,19 @@ WeakAuras.event_prototypes = {
       local ret = [[
         local unit = %s
         local ok = true
-        local aggro, status, threatpct, rawthreatpct, threatvalue
+        local aggro, status, threatpct, rawthreatpct, threatvalue, threattotal
         if unit then
           aggro, status, threatpct, rawthreatpct, threatvalue = WeakAuras.UnitDetailedThreatSituation('player', unit)
+          threattotal = (threatvalue or 0) * 100 / (threatpct or 1)
         else
           status = UnitThreatSituation('player')
           aggro = status == 2 or status == 3
-          threatpct, rawthreatpct, threatvalue = 100, 100, 0
+          threatpct, rawthreatpct, threatvalue, threattotal = 100, 100, 0, 100
         end
       ]];
       return ret:format(trigger.threatUnit and trigger.threatUnit ~= "none" and "[["..trigger.threatUnit.."]]" or "nil");
     end,
+    canHaveDuration = true,
     statesParameter = "one",
     args = {
       {
@@ -5890,12 +5892,16 @@ WeakAuras.event_prototypes = {
         name = "status",
         display = L["Status"],
         type = "select",
-        values = "unit_threat_situation_types"
+        values = "unit_threat_situation_types",
+        store = true,
+        conditionType = "select"
       },
       {
         name = "aggro",
         display = L["Aggro"],
-        type = "tristate"
+        type = "tristate",
+        store = true,
+        conditionType = "bool",
       },
       {
         name = "threatpct",
@@ -5927,14 +5933,14 @@ WeakAuras.event_prototypes = {
       {
         name = "value",
         hidden = true,
-        init = "threatpct",
+        init = "threatvalue",
         store = true,
         test = "true"
       },
       {
         name = "total",
         hidden = true,
-        init = "100",
+        init = "threattotal",
         store = true,
         test = "true"
       },
