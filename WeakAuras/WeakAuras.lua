@@ -1,4 +1,4 @@
-local internalVersion = 32;
+local internalVersion = 33;
 
 -- Lua APIs
 local insert = table.insert
@@ -4016,28 +4016,28 @@ function WeakAuras.Modernize(data)
 
   -- Introduced in June 2020 in Bfa
   if data.internalVersion < 31 then
-    local whitelist
-    local blacklist
+    local allowedNames
+    local ignoredNames
     if data.load.use_name == true and data.load.name then
-      whitelist = data.load.name
+      allowedNames = data.load.name
     elseif data.load.use_name == false and data.load.name then
-      blacklist = data.load.name
+      ignoredNames = data.load.name
     end
 
     if data.load.use_realm == true and data.load.realm then
-      whitelist = (whitelist or "") .. "-" .. data.load.realm
+      allowedNames = (allowedNames or "") .. "-" .. data.load.realm
     elseif data.load.use_realm == false and data.load.realm then
-      blacklist = (blacklist or "") .. "-" .. data.load.realm
+      ignoredNames = (ignoredNames or "") .. "-" .. data.load.realm
     end
 
-    if whitelist then
+    if allowedNames then
       data.load.use_namerealm = true
-      data.load.namerealm = whitelist
+      data.load.namerealm = allowedNames
     end
 
-    if blacklist then
+    if ignoredNames then
       data.load.use_namerealmblack = true
-      data.load.namerealmblack = blacklist
+      data.load.namerealmblack = ignoredNames
     end
 
     data.load.use_name = nil
@@ -4101,6 +4101,31 @@ function WeakAuras.Modernize(data)
       end
     end
   end
+
+  -- Introduced in July 2020 in Bfa
+  if data.internalVersion < 33 then
+    data.load.use_ignoreNameRealm = data.load.use_namerealmblack
+    data.load.ignoreNameRealm = data.load.namerealmblack
+    data.load.use_namerealmblack = nil
+    data.load.namerealmblack = nil
+
+    -- trigger.useBlackExactSpellId and trigger.blackauraspellids
+    if data.triggers then
+      for triggerId, triggerData in ipairs(data.triggers) do
+        triggerData.trigger.useIgnoreName = triggerData.trigger.useBlackName
+        triggerData.trigger.ignoreAuraNames = triggerData.trigger.blackauranames
+        triggerData.trigger.useIgnoreExactSpellId = triggerData.trigger.useBlackExactSpellId
+        triggerData.trigger.ignoreAuraSpellids = triggerData.trigger.blackauraspellids
+
+        triggerData.trigger.useBlackName = nil
+        triggerData.trigger.blackauranames = nil
+        triggerData.trigger.useBlackExactSpellId = nil
+        triggerData.trigger.blackauraspellids = nil
+      end
+    end
+
+  end
+
 
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Modernize(data);
