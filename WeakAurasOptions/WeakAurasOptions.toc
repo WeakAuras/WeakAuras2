@@ -5,7 +5,7 @@
 # ## Interface: 11305
 #@end-non-retail@
 ## Title: WeakAuras Options
-## Author: Mirrored and the WeakAuras Team
+## Author: The WeakAuras Team
 ## Version: @project-version@
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
