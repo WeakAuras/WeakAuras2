@@ -1158,7 +1158,7 @@ WeakAuras.load_prototype = {
     },
     {
       name = "ignoreNameRealm",
-      display = "|cFFFF0000 " .. L["Not"] .. "|r " .. L["Player Name/Realm"],
+      display = L["|cFFFF0000Not|r Player Name/Realm"],
       type = "string",
       test = "not nameRealmIgnoreChecker:Check(player, realm)",
       preamble = "local nameRealmIgnoreChecker = WeakAuras.ParseNameCheck(%q)",
