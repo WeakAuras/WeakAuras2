@@ -113,7 +113,7 @@ local WA_Utf8Sub = function(input, size)
   -- Add any bytes that are part of the sequence
   while (true) do
     local byte = input:byte(i)
-    if byte >= 128 and byte < 192 then
+    if byte and byte >= 128 and byte < 192 then
       output = output .. input:sub(i, i)
     else
       break
