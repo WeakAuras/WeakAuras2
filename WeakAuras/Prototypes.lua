@@ -7067,15 +7067,23 @@ WeakAuras.event_prototypes = {
     },
     name = L["Queued Action"],
     init = function(trigger)
+      trigger.spellName = trigger.spellName or 0
+      local spellName
+      if trigger.use_exact_spellName then
+        spellName = trigger.spellName
+      else
+        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName
+      end
       local ret = [=[
-        local spellid = select(7, GetSpellInfo(%q))
+        local spellname = %q
+        local spellid = select(7, GetSpellInfo(spellname))
         local button
         if spellid then
             local slotList = C_ActionBar.FindSpellActionButtons(spellid)
             button = slotList and slotList[1]
         end
       ]=]
-      return ret:format(trigger.spellName or "")
+      return ret:format(spellName)
     end,
     args = {
       {
@@ -7084,6 +7092,7 @@ WeakAuras.event_prototypes = {
         display = L["Spell"],
         type = "spell",
         test = "true",
+        showExactOption = true,
       },
       {
         hidden = true,
