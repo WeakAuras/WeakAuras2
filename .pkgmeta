@@ -1,23 +1,23 @@
 package-as: WeakAuras
 
 externals:
-  WeakAuras/Libs/LibStub: https://repos.wowace.com/wow/libstub/trunk
-  WeakAuras/Libs/CallbackHandler-1.0: https://repos.wowace.com/wow/callbackhandler/trunk/CallbackHandler-1.0
-  WeakAuras/Libs/AceConfig-3.0: https://repos.wowace.com/wow/ace3/trunk/AceConfig-3.0
-  WeakAuras/Libs/AceConsole-3.0: https://repos.wowace.com/wow/ace3/trunk/AceConsole-3.0
-  WeakAuras/Libs/AceGUI-3.0: https://repos.wowace.com/wow/ace3/trunk/AceGUI-3.0
-  WeakAuras/Libs/AceEvent-3.0: https://repos.wowace.com/wow/ace3/trunk/AceEvent-3.0
-  WeakAuras/Libs/AceGUI-3.0-SharedMediaWidgets: https://repos.wowace.com/wow/ace-gui-3-0-shared-media-widgets/trunk/AceGUI-3.0-SharedMediaWidgets
-  WeakAuras/Libs/AceTimer-3.0: https://repos.wowace.com/wow/ace3/trunk/AceTimer-3.0
-  WeakAuras/Libs/AceSerializer-3.0: https://repos.wowace.com/wow/ace3/trunk/AceSerializer-3.0
-  WeakAuras/Libs/AceComm-3.0: https://repos.wowace.com/wow/ace3/trunk/AceComm-3.0
-  WeakAuras/Libs/LibSharedMedia-3.0: https://repos.wowace.com/wow/libsharedmedia-3-0/trunk/LibSharedMedia-3.0
+  WeakAuras/Libs/LibStub: https://repos.curseforge.com/wow/libstub/trunk
+  WeakAuras/Libs/CallbackHandler-1.0: https://repos.curseforge.com/wow/callbackhandler/trunk/CallbackHandler-1.0
+  WeakAuras/Libs/AceConfig-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceConfig-3.0
+  WeakAuras/Libs/AceConsole-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceConsole-3.0
+  WeakAuras/Libs/AceGUI-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceGUI-3.0
+  WeakAuras/Libs/AceEvent-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceEvent-3.0
+  WeakAuras/Libs/AceGUI-3.0-SharedMediaWidgets: https://repos.curseforge.com/wow/ace-gui-3-0-shared-media-widgets/trunk/AceGUI-3.0-SharedMediaWidgets
+  WeakAuras/Libs/AceTimer-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceTimer-3.0
+  WeakAuras/Libs/AceSerializer-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceSerializer-3.0
+  WeakAuras/Libs/AceComm-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceComm-3.0
+  WeakAuras/Libs/LibSharedMedia-3.0: https://repos.curseforge.com/wow/libsharedmedia-3-0/trunk/LibSharedMedia-3.0
   WeakAuras/Libs/LibDataBroker-1.1: https://github.com/tekkub/libdatabroker-1-1
-  WeakAuras/Libs/LibCompress: https://repos.wowace.com/wow/libcompress/trunk
+  WeakAuras/Libs/LibCompress: https://repos.curseforge.com/wow/libcompress/trunk
   WeakAuras/Libs/LibSpellRange-1.0: https://github.com/ascott18/LibSpellRange-1.0
-  WeakAuras/Libs/LibRangeCheck-2.0: https://repos.wowace.com/wow/librangecheck-2-0/trunk/LibRangeCheck-2.0
+  WeakAuras/Libs/LibRangeCheck-2.0: https://repos.curseforge.com/wow/librangecheck-2-0/trunk/LibRangeCheck-2.0
   WeakAuras/Libs/LibCustomGlow-1.0: https://github.com/Stanzilla/LibCustomGlow
-  WeakAuras/Libs/LibDBIcon-1.0: https://repos.wowace.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
+  WeakAuras/Libs/LibDBIcon-1.0: https://repos.curseforge.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
   WeakAuras/Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
   WeakAuras/Libs/Archivist: https://github.com/emptyrivers/Archivist
   WeakAuras/Libs/LibSerialize:
@@ -34,7 +34,7 @@ ignore:
   - README.md
   - CONTRIBUTING.md
   - babelfish.lua
-  - wowace_translations.sh
+  - update_translations.sh
   - generate_changelog.sh
   - WeakAurasModelPaths/ModelPathsClassic.lua
 

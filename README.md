@@ -24,10 +24,10 @@ To open the options window, type `/wa` or `/weakauras` into your chat and hit en
 ## Extensions
 
 * [WeakAuras Companion](https://weakauras.wtf): This application adds the missing link between Wago.io and the World of Warcraft addon, enabling you to update your auras in a convenient fashion.
-* [WeakAuras_StopMotion](https://www.wowace.com/addons/weakauras-stop-motion): This addon adds a new region type to WeakAuras that allows for stop motion animations. Stop Motion textures contain each frame of the animation as a separate image. The addon ships with a number of animations and it supports custom textures.
-* [SharedMedia](https://www.wowace.com/addons/sharedmedia) for more bar textures.
-* [SharedMediaAdditionalFonts](https://www.wowace.com/addons/shared-media-additional-fonts) for more fonts.
-* [ColorPickerPlus](https://mods.curse.com/addons/wow/colorpickerplus) for a better version of the WoW color picker that includes class color templates and a copy and paste function.
+* [WeakAuras_StopMotion](https://www.curseforge.com/addons/weakauras-stop-motion): This addon adds a new region type to WeakAuras that allows for stop motion animations. Stop Motion textures contain each frame of the animation as a separate image. The addon ships with a number of animations and it supports custom textures.
+* [SharedMedia](https://www.curseforge.com/addons/sharedmedia) for more bar textures.
+* [SharedMediaAdditionalFonts](https://www.curseforge.com/addons/shared-media-additional-fonts) for more fonts.
+* [ColorPickerPlus](https://www.curseforge.com/wow/addons/colorpickerplus) for a better version of the WoW color picker that includes class color templates and a copy and paste function.
 
 ## Documentation
 
@@ -40,8 +40,7 @@ For some examples of what WeakAuras can do, take a look at [wago.io](https://wag
 ## Problems
 
 * Please see the [wiki](https://github.com/WeakAuras/WeakAuras2/wiki) page.
-* If you've discovered something that's clearly wrong, or if you get an error, [post](https://www.wowace.com/addons/weakauras-2/create-ticket/) a [ticket](https://www.wowace.com/addons/weakauras-2/tickets/).
-* If you have a general comment or concern, feel free to comment on the main page!
+* If you've discovered something that's clearly wrong, or if you get an error, please create a [ticket](https://www.curseforge.com/addons/weakauras-2/tickets/).
 * You're a programmer yourself and want to contribute? Check out our [contributing guidelines](https://github.com/WeakAuras/WeakAuras2/blob/master/CONTRIBUTING.md) to get started!
 * Feel free to join our [Discord Community](https://discord.gg/wa2) to talk, get help and discuss everything WeakAuras!
 
