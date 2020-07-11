@@ -1,10 +1,10 @@
 #@retail@
-## Interface: 90000
+## Interface: 90100
 #@end-retail@
 #@non-retail@
 # ## Interface: 11305
 #@end-non-retail@
-## Title: WeakAuras 2
+## Title: WeakAuras
 ## Author: Mirrored and the WeakAuras Team
 ## Version: @project-version@
 ## Notes: A powerful, comprehensive utility for displaying graphics and information based on buffs, debuffs, and other triggers.
@@ -14,7 +14,7 @@
 ## Notes-zhTW: 一個強大且全面實用的顯示圖形和訊息基於增益，減益和其它觸發。
 ## X-Category: Interface Enhancements
 ## Globe-Post: WeakAurasOptions, WeakAurasModelPaths, WeakAurasTemplates
-## X-Website: https://www.curseforge.com/wow/addons/weakauras-2
+## X-Website: https://www.curseforge.com/wow/addons/weakauras
 ## X-Curse-Project-ID: 65387
 ## X-WoWI-ID: 24910
 ## DefaultState: Enabled
