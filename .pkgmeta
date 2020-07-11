@@ -20,6 +20,9 @@ externals:
   WeakAuras/Libs/LibDBIcon-1.0: https://repos.wowace.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
   WeakAuras/Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
   WeakAuras/Libs/Archivist: https://github.com/emptyrivers/Archivist
+  WeakAuras/Libs/LibSerialize:
+    url: https://github.com/rossnichols/LibSerialize
+    tag: v1.0.0
 
 enable-nolib-creation: no
 

@@ -581,9 +581,13 @@ end)
 
 local Compresser = LibStub:GetLibrary("LibCompress")
 local LibDeflate = LibStub:GetLibrary("LibDeflate")
+local Serializer = LibStub:GetLibrary("AceSerializer-3.0")
+local LibSerialize = LibStub("LibSerialize")
+local Comm = LibStub:GetLibrary("AceComm-3.0")
 local configForDeflate = {level = 9} -- the biggest bottleneck by far is in transmission and printing; so use maximal compression
-local Serializer = LibStub:GetLibrary("AceSerializer-3.0");
-local Comm = LibStub:GetLibrary("AceComm-3.0");
+local configForLS = {
+  errorOnUnserializableType =  false
+}
 
 local tooltipLoading;
 local receivedData;
@@ -632,7 +636,7 @@ end);
 local compressedTablesCache = {}
 
 function TableToString(inTable, forChat)
-  local serialized = Serializer:Serialize(inTable)
+  local serialized = LibSerialize:SerializeEx(configForLS, inTable)
   local compressed
   -- get from / add to cache
   if compressedTablesCache[serialized] then
@@ -651,9 +655,7 @@ function TableToString(inTable, forChat)
       compressedTablesCache[k] = nil
     end
   end
-  -- prepend with "!" so that we know that it is not a legacy compression
-  -- also this way, old versions of weakauras will error out due to the "bad" encoding
-  local encoded = "!"
+  local encoded = "!WA:2!"
   if(forChat) then
     encoded = encoded .. LibDeflate:EncodeForPrint(compressed)
   else
@@ -663,11 +665,21 @@ function TableToString(inTable, forChat)
 end
 
 function StringToTable(inString, fromChat)
-  -- if gsub strips off a ! at the beginning then we know that this is not a legacy encoding
-  local encoded, usesDeflate = inString:gsub("^%!", "")
+  -- encoding format:
+  -- version 0: simple b64 string, compressed with LC and serialized with AS
+  -- version 1: b64 string prepended with "!", compressed with LD and serialized with AS
+  -- version 2+: b64 string prepended with !WA:N! (where N is encode version)
+  --   compressed with LD and serialized with LS
+  local _, _, encodeVersion, encoded = inString:find("^(!WA:%d+!)(.+)$")
+  if encodeVersion then
+    encodeVersion = tonumber(encodeVersion:match("%d+"))
+  else
+    encoded, encodeVersion = inString:gsub("^%!", "")
+  end
+
   local decoded
   if(fromChat) then
-    if usesDeflate == 1 then
+    if encodeVersion > 0 then
       decoded = LibDeflate:DecodeForPrint(encoded)
     else
       decoded = decodeB64(encoded)
@@ -681,7 +693,7 @@ function StringToTable(inString, fromChat)
   end
 
   local decompressed, errorMsg = nil, "unknown compression method"
-  if usesDeflate == 1 then
+  if encodeVersion > 0 then
     decompressed = LibDeflate:DecompressDeflate(decoded)
   else
     decompressed, errorMsg = Compresser:Decompress(decoded)
@@ -690,11 +702,16 @@ function StringToTable(inString, fromChat)
     return "Error decompressing: " .. errorMsg
   end
 
-  local success, deserialized = Serializer:Deserialize(decompressed);
-  if not(success) then
-    return "Error deserializing "..deserialized;
+  local success, deserialized
+  if encodeVersion < 2 then
+    success, deserialized = Serializer:Deserialize(decompressed)
+  else
+    success, deserialized = LibSerialize:Deserialize(decompressed)
   end
-  return deserialized;
+  if not(success) then
+    return "Error deserializing "..deserialized
+  end
+  return deserialized
 end
 
 function WeakAuras.DisplayToString(id, forChat)
