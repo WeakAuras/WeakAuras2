@@ -5867,7 +5867,7 @@ WeakAuras.event_prototypes = {
         local aggro, status, threatpct, rawthreatpct, threatvalue, threattotal
         if unit then
           aggro, status, threatpct, rawthreatpct, threatvalue = WeakAuras.UnitDetailedThreatSituation('player', unit)
-          threattotal = (threatvalue or 0) * 100 / (threatpct or 1)
+          threattotal = (threatvalue or 0) * 100 / (threatpct ~= 0 and threatpct or 1)
         else
           status = UnitThreatSituation('player')
           aggro = status == 2 or status == 3
