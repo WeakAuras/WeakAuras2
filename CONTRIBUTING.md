@@ -1,4 +1,4 @@
-# Contributing to WeakAuras 2
+# Contributing to WeakAuras
 
 ## Code Standards
 
@@ -9,8 +9,8 @@ There are a few things which we require in any contribution:
   - Files end with a newline.
   - Line endings in addon files must be Windows-Style (CRLF). This is a WoW AddOn, pretty much everyone is going to be running Windows when using or developing WeakAuras.
   - No trailing whitespace at the end of a line.
-- All user-facing strings (names and desc fields in AceConfig tables, mostly) must be localized:
-  - We use a locale scraper to find translation phrases and automatically export them to WoWAce for translation. This scraper parses the addon files, looking for tokens that look like: `L["some translation phrase"]`. You must use double quoted strings, and name the localization table (found at `WeakAuras.L`) `L` in your code for this to work properly.
+- All user-facing strings (`names` and `desc` fields in AceConfig tables, mostly) must be localized:
+  - We use a locale scraper to find translation phrases and automatically export them to CurseForge for translation. This scraper parses the addon files, looking for tokens that look like: `L["some translation phrase"]`. You must use double quoted strings, and name the localization table (found at `WeakAuras.L`) `L` in your code for this to work properly.
 - When writing a new file, avoid using semicolons. When modifying code in an existing file, try to be consistent, but err on the side of no semicolons.
 - New features should be indicated by concatenating `WeakAuras.newFeatureString` onto the associated translation phrase. We will remove the new feature indicator approximately 3 months after the first release.
 
@@ -22,16 +22,19 @@ If you want to help, here's what you need to do:
 1. [Fork](https://github.com/WeakAuras/WeakAuras2/fork) our repository.
 
 1. Create a new topic branch (based on the `master` branch) to contain your feature, change, or fix.
+
     ```bash
     > git checkout -b my-topic-branch
     ```
 
 1. Set `core.autocrlf` to true.
+
     ```bash
     > git config core.autocrlf true
     ```
 
 1. Set `pull.rebase`to true.
+
     ```bash
     > git config pull.rebase true
     ```
@@ -43,6 +46,7 @@ If you want to help, here's what you need to do:
 1. Install an [EditorConfig](https://editorconfig.org/) plugin for your text editor to automatically follow our indenting rules.
 
 1. Commit and push your changes to your new branch.
+
     ```bash
     > git commit -a -m "commit-description"
     > git push
@@ -58,7 +62,7 @@ If you want to help, here's what you need to do:
   > git remote add upstream https://github.com/WeakAuras/WeakAuras2.git
   ```
 
-- In order to sync your fork with the upstream WeakAuras 2 repository you would do
+- In order to sync your fork with the upstream WeakAuras repository you would do
 
   ```bash
   > git fetch upstream
@@ -91,7 +95,7 @@ If you want to help, here's what you need to do:
 
 ## Reporting Issues and Requesting Features
 
-1. Please search our [WowAce](https://www.wowace.com/projects/weakauras-2/issues) and [GitHub](https://github.com/WeakAuras/WeakAuras2/issues) issue trackers for your problem since there's a good
+1. Please check our [issue tracker](https://github.com/WeakAuras/WeakAuras2/issues) for your problem since there's a good
    chance that someone has already reported it.
 1. If you find a match, please try to provide as much info as you can,
    so that we have a better picture about what the real problem is and how to fix it ASAP.
