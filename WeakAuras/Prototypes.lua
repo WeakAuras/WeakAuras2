@@ -7264,7 +7264,7 @@ WeakAuras.dynamic_texts = {
       end
     end,
     func = function(duration, state, totalPrecision)
-      if state.progressType ~= "timed" then
+      if not state or state.progressType ~= "timed" then
         return duration
       end
       if type(duration) ~= "number" then
@@ -7297,6 +7297,7 @@ WeakAuras.dynamic_texts = {
   },
   ["n"] = {
     get = function(state)
+      if not state then return "" end
       return state.name or state.id or "", true
     end,
     func = function(v)
@@ -7305,6 +7306,7 @@ WeakAuras.dynamic_texts = {
   },
   ["i"] = {
     get = function(state)
+      if not state then return "" end
       return state.icon or "Interface\\Icons\\INV_Misc_QuestionMark"
     end,
     func = function(v)
