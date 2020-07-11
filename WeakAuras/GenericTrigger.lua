@@ -2221,7 +2221,7 @@ do
     startTimeCharges = startTimeCharges or 0;
     durationCharges = durationCharges or 0;
 
-    -- WORKAROUND Sometimes the API returns very high bogus numbers causing client freezes, discard them here. WowAce issue #1008
+    -- WORKAROUND Sometimes the API returns very high bogus numbers causing client freezes, discard them here. CurseForge issue #1008
     if (durationCooldown > 604800) then
       durationCooldown = 0;
       startTimeCooldown = 0;
