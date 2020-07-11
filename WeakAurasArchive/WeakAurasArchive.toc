@@ -5,6 +5,7 @@
 # ## Interface: 11305
 #@end-non-retail@
 ## Title: WeakAuras Archive
+## Author: The WeakAuras Team
 ## LoadOnDemand: 1
 ## SavedVariables: WeakAurasArchive
 ## Dependencies: WeakAuras
