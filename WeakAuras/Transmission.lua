@@ -670,16 +670,11 @@ function StringToTable(inString, fromChat)
   -- version 1: b64 string prepended with "!", compressed with LD and serialized with AS
   -- version 2+: b64 string prepended with !WA:N! (where N is encode version)
   --   compressed with LD and serialized with LS
-  local encodeVersion = 0
-  local encoded = ""
-  if inString:find("^%!") then
-    local header
-    inString:gsub("^%!WA%:%d+!", function(m) header = m return "" end)
-    if not header then
-      encodeVersion = 1
-    else
-      encodeVersion = tonumber(header:match("%d+"))
-    end
+  local _, _, encodeVersion, encoded = inString:find("^(!WA:%d+!)(.+)$")
+  if encodeVersion then
+    encodeVersion = tonumber(encodeVersion:match("%d+"))
+  else
+    encoded, encodeVersion = inString:gsub("^%!", "")
   end
 
   local decoded
