@@ -1945,12 +1945,12 @@ local function createScanFunc(trigger)
   local use_tooltip = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltip
   local use_tooltipValue = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltipValue
   local use_total = not isSingleMissing and not isMulti and trigger.useTotal and trigger.total
-  local use_blacklist_name = not isSingleMissing and not isMulti and trigger.useBlackName and trigger.blackauranames
-  local use_blacklist_spellId = not isSingleMissing and not isMulti and trigger.useBlackExactSpellId and trigger.blackauraspellids
+  local use_ignore_name = not isSingleMissing and not isMulti and trigger.useIgnoreName and trigger.ignoreAuraNames
+  local use_ignore_spellId = not isSingleMissing and not isMulti and trigger.useIgnoreExactSpellId and trigger.ignoreAuraSpellids
 
   if not useStacks and use_stealable == nil and not use_debuffClass and trigger.ownOnly == nil
        and not use_tooltip and not use_tooltipValue and not trigger.useNamePattern and not use_total
-       and not use_blacklist_name and not use_blacklist_spellId then
+       and not use_ignore_name and not use_ignore_spellId then
     return nil
   end
 
@@ -2075,29 +2075,29 @@ local function createScanFunc(trigger)
     end
   end
 
-  if use_blacklist_name then
+  if use_ignore_name then
     local names = {}
-    for index, spellName in ipairs(trigger.blackauranames) do
+    for index, spellName in ipairs(trigger.ignoreAuraNames) do
       local spellId = WeakAuras.SafeToNumber(spellName)
       local name = GetSpellInfo(spellId) or spellName
       tinsert(names, name)
     end
 
-    preamble = preamble .. "local blacklistNames = {\n"
+    preamble = preamble .. "local ignoreNames = {\n"
     for index, name in ipairs(names) do
       preamble = preamble .. string.format("  [%q] = true,\n", name)
     end
     preamble = preamble .. "}\n"
     ret = ret .. [[
-      if blacklistNames[matchData.name] then
+      if ignoreNames[matchData.name] then
         return false
       end
     ]]
   end
 
-  if use_blacklist_spellId then
-    preamble = preamble .. "local blacklistSpellId = {\n"
-    for index, spellId in ipairs(trigger.blackauraspellids) do
+  if use_ignore_spellId then
+    preamble = preamble .. "local ignoreSpellId = {\n"
+    for index, spellId in ipairs(trigger.ignoreAuraSpellids) do
       local spell = WeakAuras.SafeToNumber(spellId)
       if spell then
         preamble = preamble .. string.format("  [%s]  = true,\n", spell)
@@ -2105,7 +2105,7 @@ local function createScanFunc(trigger)
     end
     preamble = preamble .. "}\n"
     ret = ret .. [[
-      if blacklistSpellId[matchData.spellId] then
+      if ignoreSpellId[matchData.spellId] then
         return false
       end
     ]]

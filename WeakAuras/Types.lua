@@ -2262,14 +2262,14 @@ WeakAuras.absorb_modes = {
 
 WeakAuras.mythic_plus_affixes = {}
 
-local mythic_plus_blacklist = {
+local mythic_plus_ignorelist = {
   [1] = true,
   [15] = true
 }
 
 if not WeakAuras.IsClassic() then
   for i = 1, 255 do
-    local r = not mythic_plus_blacklist[i] and C_ChallengeMode.GetAffixInfo(i)
+    local r = not mythic_plus_ignorelist[i] and C_ChallengeMode.GetAffixInfo(i)
     if r then
       WeakAuras.mythic_plus_affixes[i] = r
     end

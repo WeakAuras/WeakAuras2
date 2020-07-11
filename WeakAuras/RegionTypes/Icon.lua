@@ -218,7 +218,7 @@ local function create(parent, data)
   icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
 
   --This section creates a unique frame id for the cooldown frame so that it can be created with a global reference
-  --The reason is so that WeakAuras cooldown frames can interact properly with OmniCC (i.e., put on its blacklist for timer overlays)
+  --The reason is so that WeakAuras cooldown frames can interact properly with OmniCC (i.e., put on its ignore list for timer overlays)
   local id = data.id;
   local frameId = id:lower():gsub(" ", "_");
   if(_G["WeakAurasCooldown"..frameId]) then
