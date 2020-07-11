@@ -39,7 +39,7 @@ jobs:
         WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
 
     - name: Create Classic Package
-      run: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -g 1.13.3 -m .pkgmeta-classic
+      run: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -g 1.13.5 -m .pkgmeta-classic
       env:
         CF_API_KEY: ${{ secrets.CF_API_KEY }}
         GITHUB_OAUTH: ${{ secrets.GITHUB_OAUTH }}
