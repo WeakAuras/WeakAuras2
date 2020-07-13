@@ -164,6 +164,12 @@ WeakAuras.format_types = {
         values = WeakAuras.big_number_types,
         hidden = hidden
       })
+      addOption(symbol .. "_big_number_space", {
+        type = "description",
+        name = "",
+        width = WeakAuras.normalWidth,
+        hidden = hidden
+      })
     end,
     CreateFormatter = function(symbol, get)
       local format = get(symbol .. "_big_number_format", "AbbreviateNumbers")
