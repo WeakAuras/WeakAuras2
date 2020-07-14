@@ -244,6 +244,7 @@ WeakAuras.format_types = {
         min = 1,
         max = 20,
         hidden = hidden,
+        step = 1,
         disabled = function()
           return not get(symbol .. "_abbreviate")
         end
