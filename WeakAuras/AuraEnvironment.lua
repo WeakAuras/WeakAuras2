@@ -89,6 +89,9 @@ WeakAuras.WA_ClassColorName = WA_ClassColorName
 -- UTF-8 Sub is pretty commonly needed
 local WA_Utf8Sub = function(input, size)
   local output = ""
+  if not input then
+    return output
+  end
   local i = 1
   while (size > 0) do
     local byte = input:byte(i)
