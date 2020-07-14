@@ -260,7 +260,7 @@ WeakAuras.format_types = {
       local abbreviateFunc
       if color == "class" then
         colorFunc = function(unit, text)
-          if UnitPlayerControlled(unit) then
+          if unit and UnitPlayerControlled(unit) then
             return GetClassColoredTextForUnit(unit, text)
           end
           return text
@@ -268,9 +268,14 @@ WeakAuras.format_types = {
       end
 
       if realm == "never" then
-        nameFunc = UnitName
+        nameFunc = function(unit)
+          return unit and UnitName(unit)
+        end
       elseif realm == "star" then
         nameFunc = function(unit)
+          if not unit then
+            return ""
+          end
           local name, realm = UnitName(unit)
           if realm then
             return name .. "*"
@@ -279,6 +284,9 @@ WeakAuras.format_types = {
         end
       elseif realm == "differentServer" then
         nameFunc = function(unit)
+          if not unit then
+            return ""
+          end
           local name, realm = UnitName(unit)
           if realm then
             return name .. "-" .. realm
@@ -287,6 +295,9 @@ WeakAuras.format_types = {
         end
       elseif realm == "always" then
         nameFunc = function(unit)
+          if not unit then
+            return ""
+          end
           local name, realm = WeakAuras.UnitNameWithRealm(unit)
           return name .. "-" .. realm
         end
@@ -371,7 +382,11 @@ WeakAuras.format_types = {
       local abbreviateFunc
       if color == "class" then
         colorFunc = function(class, text)
-          return RAID_CLASS_COLORS[class]:WrapTextInColorCode(text)
+          if class then
+            return RAID_CLASS_COLORS[class]:WrapTextInColorCode(text)
+          else
+            return text
+          end
         end
       end
 
