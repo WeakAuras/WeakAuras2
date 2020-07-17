@@ -45,7 +45,7 @@ local function createOptions(id, data)
     groupIcon = {
       type = "input",
       width = WeakAuras.normalWidth,
-      name = WeakAuras.newFeatureString..L["Group Icon"],
+      name = L["Group Icon"],
       desc = L["Set Thumbnail Icon"],
       order = 0.50,
       get = function()
