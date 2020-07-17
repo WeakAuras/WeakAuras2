@@ -1322,7 +1322,7 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
 end
 
 local function AddCommonTriggerOptions(options, data, triggernum)
-  local trigger= data.triggers[triggernum].trigger
+  local trigger = data.triggers[triggernum].trigger
 
   local trigger_types = {};
   for type, triggerSystem in pairs(WeakAuras.triggerTypes) do
@@ -1349,15 +1349,11 @@ local function AddCommonTriggerOptions(options, data, triggernum)
     end,
     set = function(info, v)
       trigger.type = v;
-      if(trigger.event) then
-        local prototype = WeakAuras.event_prototypes[trigger.event];
-        if(prototype) then
-          if(v == "status" and prototype.type == "event") then
-            trigger.event = "Cooldown Progress (Spell)"
-          elseif(v == "event" and prototype.type == "status") then
-            trigger.event = "Combat Log"
-          end
-        end
+      local prototype = trigger.event and WeakAuras.event_prototypes[trigger.event];
+      if v == "status" and (not prototype or prototype.type == "event") then
+        trigger.event = "Cooldown Progress (Spell)"
+      elseif v == "event" and (not prototype or prototype.type == "status") then
+        trigger.event = "Combat Log"
       end
       WeakAuras.Add(data);
       WeakAuras.UpdateThumbnail(data);
