@@ -408,7 +408,11 @@ local function GetGenericTriggerOptions(data, triggernum)
       control = "WeakAurasSortedDropdown",
       hidden = function() return not (trigger.type == "event" and trigger.event == "Combat Log" and subevent_actual_prefix_types[trigger.subeventPrefix]); end,
       get = function(info)
-        return trigger.subevent
+        return trigger.subeventSuffix
+      end,
+      set = function(info, v)
+        trigger.subeventSuffix = v
+        WeakAuras.Add(data)
       end
     },
     spacer_suffix = {
