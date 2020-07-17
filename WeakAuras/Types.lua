@@ -849,9 +849,9 @@ WeakAuras.anchor_frame_types = {
   PRD = L["Personal Resource Display"],
   MOUSE = L["Mouse Cursor"],
   SELECTFRAME = L["Select Frame"],
-  NAMEPLATE = WeakAuras.newFeatureString..L["Nameplates"],
-  UNITFRAME = WeakAuras.newFeatureString..L["Unit Frames"],
-  CUSTOM = WeakAuras.newFeatureString..L["Custom"]
+  NAMEPLATE = L["Nameplates"],
+  UNITFRAME = L["Unit Frames"],
+  CUSTOM = L["Custom"]
 }
 
 WeakAuras.anchor_frame_types_group = {
@@ -859,7 +859,7 @@ WeakAuras.anchor_frame_types_group = {
   PRD = L["Personal Resource Display"],
   MOUSE = L["Mouse Cursor"],
   SELECTFRAME = L["Select Frame"],
-  CUSTOM = WeakAuras.newFeatureString..L["Custom"]
+  CUSTOM = L["Custom"]
 }
 
 WeakAuras.spark_rotation_types = {
@@ -2523,7 +2523,7 @@ WeakAuras.author_option_types = {
   space = L["Space"],
   multiselect = L["Toggle List"],
   header = L["Separator"],
-  group = WeakAuras.newFeatureString .. L["Option Group"],
+  group = L["Option Group"],
 }
 
 WeakAuras.author_option_fields = {
