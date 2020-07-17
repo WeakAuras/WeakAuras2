@@ -777,6 +777,9 @@ function WeakAuras.CreateFrame()
   end
 
   frame.UpdateOptions = function(self)
+    if not self.pickedDisplay then
+      return
+    end
     self.selectedTab = self.selectedTab or "region"
     local data
     if type(self.pickedDisplay) == "string" then
@@ -830,6 +833,10 @@ function WeakAuras.CreateFrame()
   -- Any changes to the options that go around that, e.g. drag/drop, group,
   -- texture pick, etc should call this
   frame.FillOptions = function(self)
+    if not self.pickedDisplay then
+      return
+    end
+
     frame:UpdateOptions()
 
     local data
