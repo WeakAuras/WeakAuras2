@@ -80,7 +80,7 @@ local function createOptions(id, data)
     groupIcon = {
       type = "input",
       width = WeakAuras.normalWidth,
-      name = WeakAuras.newFeatureString..L["Group Icon"],
+      name = L["Group Icon"],
       desc = L["Set Thumbnail Icon"],
       order = 0.5,
       get = function()
@@ -122,7 +122,7 @@ local function createOptions(id, data)
       type = "toggle",
       order = 1.5,
       width = WeakAuras.normalWidth,
-      name = WeakAuras.newFeatureString..L["Group by Frame"],
+      name = L["Group by Frame"],
       desc = L[
 [[Group and anchor each auras by frame.
 
@@ -135,7 +135,7 @@ local function createOptions(id, data)
     anchorPerUnit = {
       type = "select",
       width = WeakAuras.normalWidth,
-      name = WeakAuras.newFeatureString..L["Group by Frame"],
+      name = L["Group by Frame"],
       order = 1.6,
       values = {
         ["UNITFRAME"] = L["Unit Frames"],
