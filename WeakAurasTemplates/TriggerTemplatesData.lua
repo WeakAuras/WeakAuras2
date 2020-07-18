@@ -2041,9 +2041,11 @@ else
           { spell = 527, type = "ability"}, -- Purify
           { spell = 586, type = "ability", buff = true}, -- Fade
           { spell = 2061, type = "ability", overlayGlow = true}, -- Flash Heal
+          { spell = 8092, type = "ability", requiresTarget = true}, -- Mind Blast
           { spell = 8122, type = "ability"}, -- Psychic Scream
           { spell = 19236, type = "ability", buff = true}, -- Desperate Prayer
           { spell = 32375, type = "ability"}, -- Mass Dispel
+          { spell = 32379, type = "ability", charges = true, usable = true, requiresTarget = true}, -- Shadow Word: Death
           { spell = 33206, type = "ability"}, -- Pain Suppression
           { spell = 34433, type = "ability", totem = true, requiresTarget = true}, -- Shadowfiend
           { spell = 47536, type = "ability", buff = true}, -- Rapture
@@ -2059,7 +2061,7 @@ else
           { spell = 204065, type = "ability", talent = 15}, -- Shadow Covenant
           { spell = 204263, type = "ability", talent = 12}, -- Shining Force
           { spell = 214621, type = "ability", requiresTarget = true, debuff = true, talent = 3}, -- Schism
-          { spell = 246287, type = "ability"}, -- Evangelism
+          { spell = 246287, type = "ability", talent = 21}, -- Evangelism
           { spell = 271466, type = "ability", talent = 20}, -- Luminous Barrier
 
         },
@@ -2071,11 +2073,10 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
-          { spell = 197871, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Dark Archangel
-          { spell = 197871, type="buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"]},-- Dark Archangel
-          { spell = 305498, type="ability", pvptalent = 12},-- Premonition
-          { spell = 197862, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Archangel
-          { spell = 197862, type="buff", unit = "player", pvptalent = 13, titleSuffix = L["buff"]},-- Archangel
+          { spell = 197862, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Archangel
+          { spell = 197862, type="buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"]},-- Archangel
+          { spell = 197871, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Dark Archangel
+          { spell = 197871, type="buff", unit = "player", pvptalent = 6, titleSuffix = L["buff"]},-- Dark Archangel
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
@@ -2090,6 +2091,7 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
+          { spell = 17, type = "buff", unit = "player"}, -- Power Word: Shield
           { spell = 47788, type = "buff", unit = "target"}, -- Guardian Spirit
           { spell = 64901, type = "buff", unit = "player"}, -- Symbol of Hope
           { spell = 139, type = "buff", unit = "target"}, -- Renew
@@ -2119,6 +2121,7 @@ else
           { spell = 204263, type = "debuff", unit = "target"}, -- Shining Force
           { spell = 200200, type = "debuff", unit = "target"}, -- Holy Word: Chastise
           { spell = 9484, type = "debuff", unit = "multi" }, -- Shackle Undead
+          { spell = 589, type = "debuff", unit = "target"}, -- Shadow Word: Pain
         },
         icon = 135972
       },
@@ -2129,10 +2132,12 @@ else
           { spell = 586, type = "ability", buff = true}, -- Fade
           { spell = 2050, type = "ability"}, -- Holy Word: Serenity
           { spell = 2061, type = "ability"}, -- Flash Heal
+          { spell = 8092, type = "ability", requiresTarget = true}, -- Mind Blast
           { spell = 8122, type = "ability"}, -- Psychic Scream
           { spell = 14914, type = "ability", requiresTarget = true}, -- Holy Fire
           { spell = 19236, type = "ability", buff = true}, -- Desperate Prayer
           { spell = 32375, type = "ability"}, -- Mass Dispel
+          { spell = 32379, type = "ability", charges = true, usable = true, requiresTarget = true}, -- Shadow Word: Death
           { spell = 33076, type = "ability"}, -- Prayer of Mending
           { spell = 34861, type = "ability"}, -- Holy Word: Sanctify
           { spell = 47788, type = "ability"}, -- Guardian Spirit
@@ -2145,7 +2150,7 @@ else
           { spell = 121536, type = "ability", charges = true, buff = true, talent = 6}, -- Angelic Feather
           { spell = 200183, type = "ability", buff = true, talent = 20}, -- Apotheosis
           { spell = 204263, type = "ability", talent = 12}, -- Shining Force
-          { spell = 204883, type = "ability", talent = 15}, -- Circle of Healing
+          { spell = 204883, type = "ability"}, -- Circle of Healing
           { spell = 265202, type = "ability", talent = 21}, -- Holy Word: Salvation
 
         },
@@ -2180,6 +2185,7 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
+          { spell = 19236, type = "buff", unit = "player"}, -- Desperate Prayer
           { spell = 193223, type = "buff", unit = "player", talent = 21}, -- Surrender to Madness
           { spell = 263165, type = "buff", unit = "player", talent = 18}, -- Void Torrent
           { spell = 586, type = "buff", unit = "player"}, -- Fade
@@ -2211,6 +2217,7 @@ else
           { spell = 589, type = "debuff", unit = "target"}, -- Shadow Word: Pain
           { spell = 8122, type = "debuff", unit = "target"}, -- Psychic Scream
           { spell = 34914, type = "debuff", unit = "target"}, -- Vampiric Touch
+          { spell = 335467, type = "debuff", unit = "target"}, -- Devouring Plague
           { spell = 9484, type = "debuff", unit = "multi" }, -- Shackle Undead
         },
         icon = 136207
@@ -2224,8 +2231,9 @@ else
           { spell = 8122, type = "ability"}, -- Psychic Scream
           { spell = 15286, type = "ability", buff = true}, -- Vampiric Embrace
           { spell = 15487, type = "ability", requiresTarget = true}, -- Silence
+          { spell = 19236, type = "ability", buff = true}, -- Desperate Prayer
           { spell = 32375, type = "ability"}, -- Mass Dispel
-          { spell = 32379, type = "ability", charges = true, usable = true, requiresTarget = true, talent = 14}, -- Shadow Word: Death
+          { spell = 32379, type = "ability", charges = true, usable = true, requiresTarget = true}, -- Shadow Word: Death
           { spell = 34433, type = "ability", totem = true, requiresTarget = true}, -- Shadowfiend
           { spell = 47585, type = "ability", buff = true}, -- Dispersion
           { spell = 64044, type = "ability", requiresTarget = true, talent = 12}, -- Psychic Horror
@@ -2241,7 +2249,7 @@ else
           { spell = 263165, type = "ability", usable = true, requiresTarget = true, talent = 18}, -- Void Torrent
           { spell = 263346, type = "ability", requiresTarget = true, talent = 9}, -- Dark Void
           { spell = 280711, type = "ability", requiresTarget = true, talent = 20}, -- Dark Ascension
-
+          { spell = 335467, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Devouring Plague
         },
         icon = 136230
       },
@@ -5186,18 +5194,18 @@ if not WeakAuras.IsClassic() then
       for specIndex, spec in pairs(class) do
         for _, section in pairs(spec) do
           if section.args then
-          for _, item in pairs(section.args) do
-            if (item.spell and (not item.type ~= "item")) then
-              local icon = select(3, GetSpellInfo(item.spell));
-              if (icon) then
-                item.icon = icon;
+            for _, item in pairs(section.args) do
+              if (item.spell and (not item.type ~= "item")) then
+                local icon = select(3, GetSpellInfo(item.spell));
+                if (icon) then
+                  item.icon = icon;
+                end
               end
             end
           end
         end
       end
     end
-  end
   end
 
   local fixupIconsFrame = CreateFrame("frame");
