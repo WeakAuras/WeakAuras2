@@ -1,6 +1,6 @@
 if not WeakAuras.IsCorrectVersion() then return end
 
-local Type, Version = "WeakAurasMultiLineEditBox", 34
+local Type, Version = "WeakAurasMultiLineEditBox", 35
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -319,6 +319,7 @@ local function Constructor()
   extraButtons[0] = button;
 
   local scrollBG = CreateFrame("Frame", nil, frame)
+  Mixin(scrollBG, BackdropTemplateMixin)
   scrollBG:SetBackdrop(backdrop)
   scrollBG:SetBackdropColor(0, 0, 0)
   scrollBG:SetBackdropBorderColor(0.4, 0.4, 0.4)
