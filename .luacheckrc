@@ -60,6 +60,7 @@ globals = {
 	"KuiNameplatesPlayerAnchor",
 
 	-- FrameXML misc
+	"BackdropTemplateMixin",
 	"C_Timer",
 	"ChatFrame_AddMessageEventFilter",
 	"Clamp",
