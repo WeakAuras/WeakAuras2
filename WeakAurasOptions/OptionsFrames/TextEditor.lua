@@ -741,6 +741,7 @@ local function ConstructTextEditor(frame)
     editor:ClearFocus()
     frame.window = "default"
     frame:UpdateFrameVisible()
+    WeakAuras.FillOptions()
   end
   WeakAuras.editor = editor
 
