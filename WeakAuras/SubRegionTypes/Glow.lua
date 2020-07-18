@@ -26,6 +26,7 @@ local default = function(parentType)
     glowYOffset = 0,
   }
   if parentType == "aurabar" then
+    options["glowType"] = "Pixel"
     options["glow_anchor"] = "bar"
   end
   return options
@@ -345,6 +346,7 @@ local function modify(parent, region, parentData, data, first)
   region:SetScript("OnSizeChanged", region.UpdateSize)
 end
 
+-- This is used by the templates to add glow
 function WeakAuras.getDefaultGlow(regionType)
   if regionType == "aurabar" then
     return {
@@ -387,4 +389,24 @@ local function supports(regionType)
          or regionType == "aurabar"
 end
 
-WeakAuras.RegisterSubRegionType("subglow", L["Glow"], supports, create, modify, onAcquire, onRelease, default, nil, properties);
+local function addDefaultsForNewAura(data)
+  if data.regionType == "icon" then
+    tinsert(data.subRegions, {
+      ["type"] = "subglow",
+      glow = false,
+      useGlowColor = false,
+      glowColor = {1, 1, 1, 1},
+      glowType = "buttonOverlay",
+      glowLines = 8,
+      glowFrequency = 0.25,
+      glowLength = 10,
+      glowThickness = 1,
+      glowScale = 1,
+      glowBorder = false,
+      glowXOffset = 0,
+      glowYOffset = 0,
+    })
+  end
+end
+
+WeakAuras.RegisterSubRegionType("subglow", L["Glow"], supports, create, modify, onAcquire, onRelease, default, addDefaultsForNewAura, properties);
