@@ -319,7 +319,7 @@ local function Constructor()
   extraButtons[0] = button;
 
   local scrollBG = CreateFrame("Frame", nil, frame)
-  Mixin(scrollBG, BackdropTemplateMixin)
+  WeakAuras.BackdropTemplateMixin(scrollBG)
   scrollBG:SetBackdrop(backdrop)
   scrollBG:SetBackdropColor(0, 0, 0)
   scrollBG:SetBackdropBorderColor(0.4, 0.4, 0.4)
