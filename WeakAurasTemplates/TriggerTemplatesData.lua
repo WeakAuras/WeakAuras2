@@ -54,70 +54,6 @@ local powerTypes =
     [99] = {name = STAGGER, icon = "Interface\\Icons\\monk_stance_drunkenox"}
   }
 
-local generalAzeriteTraits = {
-  { spell = 279928, type = "buff", unit = "player"}, --Earthlink
-  { spell = 271543, type = "buff", unit = "player"}, --Ablative Shielding
-  { spell = 268435, type = "buff", unit = "player"}, --Azerite Fortification
-  { spell = 264108, type = "buff", unit = "player"}, --Blood Siphon
-  { spell = 270657, type = "buff", unit = "player"}, --Bulwark of the Masses
-  { spell = 270586, type = "buff", unit = "player"}, --Champion of Azeroth
-  { spell = 271538, type = "buff", unit = "player"}, --Crystalline Carapace
-  { spell = 272572, type = "buff", unit = "player"}, --Ephemeral Recovery
-  { spell = 270576, type = "buff", unit = "player"}, --Gemhide
-  { spell = 268437, type = "buff", unit = "player"}, --Impassive Visage
-  { spell = 270621, type = "buff", unit = "player"}, --Lifespeed
-  { spell = 267879, type = "buff", unit = "player"}, --On My Way
-  { spell = 270568, type = "buff", unit = "player"}, --Resounding Protection
-  { spell = 270661, type = "buff", unit = "player"}, --Self Reliance
-  { spell = 272090, type = "buff", unit = "player"}, --Synergistic Growth
-  { spell = 269239, type = "buff", unit = "player"}, --Vampiric Speed
-  { spell = 269214, type = "buff", unit = "player"}, --Winds of War
-  { spell = 281516, type = "buff", unit = "player"}, --Unstable Catalyst
-  { spell = 279902, type = "buff", unit = "player"}, --Unstable Flames
-  { spell = 279956, type = "debuff", unit = "multi"}, --Azerite Globules
-  { spell = 270674, type = "buff", unit = "player"}, --Azerite Veins
-  { spell = 271843, type = "buff", unit = "player"}, --Blessed Portents
-  { spell = 272276, type = "buff", unit = "target"}, --Bracing Chill
-  { spell = 272260, type = "buff", unit = "target"}, --Concentrated Mending
-  { spell = 268955, type = "buff", unit = "player"}, --Elemental Whirl
-  { spell = 263987, type = "buff", unit = "player"}, --Heed My Call
-  { spell = 271711, type = "buff", unit = "player"}, --Overwhelming Power
-  { spell = 271550, type = "buff", unit = "player"}, --Strength in Numbers
-  { spell = 271559, type = "buff", unit = "player"}, --Shimmering Haven
-  { spell = 269085, type = "buff", unit = "player"}, --Woundbinder
-  { spell = 273685, type = "buff", unit = "player"}, --Meticulous Scheming
-  { spell = 273714, type = "buff", unit = "player"}, --Seize the Moment!
-  { spell = 273870, type = "buff", unit = "player"}, --Sandstorm
-  { spell = 280204, type = "buff", unit = "player"}, --Wandering Soul
-  { spell = 280409, type = "buff", unit = "player"}, --Blood Rite
-  { spell = 273836, type = "buff", unit = "player"}, --Filthy Transfusion
-  { spell = 280413, type = "buff", unit = "player"}, --Incite the Pack
-  { spell = 273794, type = "debuff", unit = "multi"}, --Rezan's Fury
-  { spell = 280433, type = "buff", unit = "player"}, --Swirling Sands
-  { spell = 280385, type = "debuff", unit = "multi"}, --Thunderous Blast
-  { spell = 280404, type = "buff", unit = "target"}, --Tidal Surge
-  { spell = 273842, type = "buff", unit = "player"}, --Secrets of the Deep
-  { spell = 280286, type = "debuff", unit = "target"}, --Dagger in the Back
-  { spell = 281843, type = "buff", unit = "player"}, --Tradewinds
-  { spell = 280709, type = "buff", unit = "player"}, --Archive of the Titans
-  { spell = 280573, type = "buff", unit = "player"}, --Reorigination Array
-  { spell = 287471, type = "buff", unit = "player"}, --Shadow of Elune
-  { spell = 287610, type = "buff", unit = "player"}, --Ancient's Bulwark (Deep Roots)
-  { spell = 287608, type = "buff", unit = "player"}, --Ancient's Bulwark (Uproot)
-}
-
-local pvpAzeriteTraits = {
-  { spell = 280876, type = "buff", unit = "player"}, --Anduin's Dedication
-  { spell = 280809, type = "buff", unit = "player"}, --Sylvanas' Resolve
-  { spell = 280855, type = "debuff", unit = "target"}, --Battlefield Precision
-  { spell = 280817, type = "debuff", unit = "target"}, --Battlefield Focus
-  { spell = 280858, type = "buff", unit = "player"}, --Stand As One
-  { spell = 280830, type = "buff", unit = "player"}, --Liberator's Might
-  { spell = 280780, type = "buff", unit = "player"}, --Glory in Battle
-  { spell = 280861, type = "buff", unit = "player"}, --Last Gift
-  { spell = 280787, type = "buff", unit = "player"}, --Retaliatory Fury
-}
-
 -- Collected by WeakAurasTemplateCollector:
 if WeakAuras.IsClassic() then
   templates.class.WARRIOR = {
@@ -888,19 +824,7 @@ else
         icon = 132355
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 280212, type = "buff", unit = "player"}, --Bury the Hatchet
-          { spell = 280210, type = "buff", unit = "group"}, --Moment of Glory
-          { spell = 278826, type = "buff", unit = "player"}, --Crushing Assault
-          { spell = 288455, type = "buff", unit = "player"}, --Striking the Anvil
-          { spell = 273415, type = "buff", unit = "player"}, --Gathering Storm
-          { spell = 275540, type = "buff", unit = "player"}, --Test of Might
-          { spell = 288653, type = "debuff", unit = "target"}, --Intimidating Presence
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -989,18 +913,7 @@ else
         icon = 136012
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 280212, type = "buff", unit = "player"}, --Bury the Hatchet
-          { spell = 280210, type = "buff", unit = "group"}, --Moment of Glory
-          { spell = 288091, type = "buff", unit = "player"}, --Cold Steel, Hot Blood
-          { spell = 278134, type = "buff", unit = "player"}, --Infinite Fury
-          { spell = 275672, type = "buff", unit = "player"}, --Pulverizing Blows
-          { spell = 288653, type = "debuff", unit = "target"}, --Intimidating Presence
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -1098,19 +1011,7 @@ else
         icon = 134951
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 280212, type = "buff", unit = "player"}, --Bury the Hatchet
-          { spell = 280210, type = "buff", unit = "group"}, --Moment of Glory
-          { spell = 279194, type = "buff", unit = "player"}, --Bloodsport
-          { spell = 278124, type = "buff", unit = "player"}, --Brace for Impact
-          { spell = 278999, type = "buff", unit = "player"}, --Callous Reprisal
-          { spell = 287379, type = "buff", unit = "player"}, --Bastion of Might
-          { spell = 273445, type = "buff", unit = "player"}, --Sword and Board
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -1208,19 +1109,7 @@ else
         icon = 135972
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 275468, type = "buff", unit = "player"}, --Divine Revelations
-          { spell = 280191, type = "buff", unit = "player"}, --Gallant Steed
-          { spell = 278785, type = "buff", unit = "player"}, --Grace of the Justicar
-          { spell = 287280, type = "buff", unit = "multi"}, --Glimmer of Light
-          { spell = 278145, type = "debuff", unit = "target"}, --Radiant Incandescence
-          { spell = 274395, type = "buff", unit = "group"}, --Stalwart Protector
-          { spell = 287731, type = "buff", unit = "player"}, --Empyreal Ward
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -1313,21 +1202,7 @@ else
         icon = 135874
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 272979, type = "buff", unit = "player"}, --Bulwark of Light
-          { spell = 280191, type = "buff", unit = "player"}, --Gallant Steed
-          { spell = 278785, type = "buff", unit = "group"}, --Grace of the Justicar
-          { spell = 275481, type = "buff", unit = "player"}, --Inner Light
-          { spell = 279397, type = "buff", unit = "player"}, --Inspiring Vanguard
-          { spell = 278574, type = "buff", unit = "player"}, --Judicious Defense
-          { spell = 278954, type = "buff", unit = "player"}, --Soaring Shield
-          { spell = 274395, type = "buff", unit = "group"}, --Stalwart Protector
-          { spell = 287731, type = "buff", unit = "player"}, --Empyreal Ward
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -1421,21 +1296,7 @@ else
         icon = 135891
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 272903, type = "buff", unit = "player"}, --Avenger's Might
-          { spell = 286393, type = "buff", unit = "player"}, --Empyrean Power
-          { spell = 273481, type = "buff", unit = "player"}, --Expurgation
-          { spell = 280191, type = "buff", unit = "player"}, --Gallant Steed
-          { spell = 278785, type = "buff", unit = "group"}, --Grace of the Justicar
-          { spell = 279204, type = "buff", unit = "player"}, --Relentless Inquisitor
-          { spell = 286232, type = "buff", unit = "player"}, --Light's Decree
-          { spell = 274395, type = "buff", unit = "group"}, --Stalwart Protector
-          { spell = 287731, type = "buff", unit = "player"}, --Empyreal Ward
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -1539,21 +1400,7 @@ else
         icon = 135130
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 277916, type = "debuff", unit = "target"}, --Cobra's Bite
-          { spell = 274443, type = "buff", unit = "player"}, --Dance of Death
-          { spell = 280170, type = "buff", unit = "player"}, --Duck and Cover
-          { spell = 269625, type = "buff", unit = "player"}, --Flashing Fangs
-          { spell = 273264, type = "buff", unit = "player"}, --Haze of Rage
-          { spell = 279810, type = "buff", unit = "player"}, --Primal Instincts
-          { spell = 263821, type = "buff", unit = "player"}, --Ride the Lightning
-          { spell = 264195, type = "buff", unit = "player"}, --Rotting Jaws
-          { spell = 274357, type = "buff", unit = "player"}, --Shellshock
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -1658,19 +1505,7 @@ else
         icon = 132329
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 263814, type = "buff", unit = "player"}, --Arrowstorm
-          { spell = 280170, type = "buff", unit = "player"}, --Duck and Cover
-          { spell = 272733, type = "buff", unit = "player"}, --In The Rhythm
-          { spell = 263821, type = "buff", unit = "player"}, --Ride the Lightning
-          { spell = 274357, type = "buff", unit = "player"}, --Shellshock
-          { spell = 277959, type = "debuff", unit = "target"}, --Steady Aim
-          { spell = 274447, type = "buff", unit = "player"}, --Unerring Vision
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -1798,21 +1633,7 @@ else
         icon = 236184
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 277969, type = "buff", unit = "player"}, --Blur of Talons
-          { spell = 280170, type = "buff", unit = "player"}, --Duck and Cover
-          { spell = 273286, type = "buff", unit = "player"}, --Latent Poison
-          { spell = 263821, type = "buff", unit = "player"}, --Ride the Lightning
-          { spell = 274357, type = "buff", unit = "player"}, --Shellshock
-          { spell = 288573, type = "buff", unit = "player"}, --Prime Intuition
-          { spell = 263818, type = "buff", unit = "player"}, --Vigorous Wings
-          { spell = 264199, type = "buff", unit = "player"}, --Whirling Rebound
-
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -1929,18 +1750,7 @@ else
         icon = 132350
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 274695, type = "buff", unit = "group"}, --Footpad
-          { spell = 280200, type = "buff", unit = "player"}, --Shrouded Mantle
-          { spell = 286581, type = "debuff", unit = "target"}, --Nothing Personal
-          { spell = 277731, type = "buff", unit = "player"}, --Scent of Blood
-          { spell = 279703, type = "buff", unit = "player"}, --Shrouded Suffocation
-          { spell = 288158, type = "buff", unit = "player"}, --Lying in Wait
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -2047,20 +1857,7 @@ else
         icon = 135610
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 277725, type = "buff", unit = "player"}, --Brigand's Blitz
-          { spell = 272940, type = "buff", unit = "player"}, --Deadshot
-          { spell = 274695, type = "buff", unit = "group"}, --Footpad
-          { spell = 278962, type = "buff", unit = "player"}, --Paradise Lost
-          { spell = 280200, type = "buff", unit = "player"}, --Shrouded Mantle
-          { spell = 275863, type = "buff", unit = "player"}, --Snake Eyes
-          { spell = 288988, type = "buff", unit = "player"}, --Keep Your Wits About You
-          { spell = 288158, type = "buff", unit = "player"}, --Lying in Wait
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -2171,19 +1968,7 @@ else
         icon = 236279
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 279754, type = "buff", unit = "player"}, --Blade In The Shadows
-          { spell = 272940, type = "buff", unit = "player"}, --Deadshot
-          { spell = 273424, type = "buff", unit = "player"}, --Night's Vengeance
-          { spell = 277720, type = "buff", unit = "player"}, --Perforate
-          { spell = 280200, type = "buff", unit = "player"}, --Shrouded Mantle
-          { spell = 278981, type = "buff", unit = "player"}, --The First Dance
-          { spell = 288158, type = "buff", unit = "player"}, --Lying in Wait
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -2281,16 +2066,7 @@ else
         icon = 136224
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 275544, type = "buff", unit = "player"}, --Depth of the Shadows
-          { spell = 274369, type = "buff", unit = "player"}, --Sanctum
-          { spell = 287723, type = "buff", unit = "player"}, --Death Denied
-          { spell = 287360, type = "buff", unit = "player"}, --Sudden Revelation
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -2376,16 +2152,7 @@ else
         icon = 135937
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 272783, type = "buff", unit = "target"}, --Permeating Glow
-          { spell = 274369, type = "buff", unit = "player"}, --Sanctum
-          { spell = 287723, type = "buff", unit = "player"}, --Death Denied
-          { spell = 287340, type = "buff", unit = "player"}, --Promise of Deliverance
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -2479,18 +2246,7 @@ else
         icon = 136230
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 279572, type = "buff", unit = "player"}, --Chorus of Insanity
-          { spell = 275544, type = "buff", unit = "player"}, --Depth of the Shadows
-          { spell = 273321, type = "buff", unit = "player"}, --Harvested Thoughts
-          { spell = 274369, type = "buff", unit = "player"}, --Sanctum
-          { spell = 275726, type = "buff", unit = "player"}, --Whispers of the Damned
-          { spell = 287723, type = "buff", unit = "player"}, --Death Denied
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -2593,24 +2349,7 @@ else
         icon = 135963
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 277942, type = "buff", unit = "player"}, --Ancestral Resonance
-          { spell = 263786, type = "buff", unit = "player"}, --Astral Shift
-          { spell = 264113, type = "buff", unit = "player"}, --Flames of the Forefathers
-          { spell = 263792, type = "buff", unit = "player"}, --Lightningburn
-          { spell = 279028, type = "buff", unit = "player"}, --Natural Harmony (Fire)
-          { spell = 279029, type = "buff", unit = "player"}, --Natural Harmony (Frost)
-          { spell = 279033, type = "buff", unit = "player"}, --Natural Harmony (Nature)
-          { spell = 280205, type = "buff", unit = "player"}, --Pack Spirit
-          { spell = 286976, type = "buff", unit = "player"}, --Tectonic Thunder
-          { spell = 277960, type = "buff", unit = "player"}, --Synapse Shock
-          { spell = 272981, type = "buff", unit = "player"}, --Volcanic Lightning
-          { spell = 287786, type = "buff", unit = "player"}, --Ancient Ankh Talisman
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -2713,24 +2452,7 @@ else
         icon = 1370984
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 277942, type = "buff", unit = "player"}, --Ancestral Resonance
-          { spell = 263786, type = "buff", unit = "player"}, --Astral Shift
-          { spell = 264121, type = "buff", unit = "player"}, --Electropotence
-          { spell = 275391, type = "buff", unit = "target"}, --Lightning Conduit
-          { spell = 280205, type = "buff", unit = "player"}, --Pack Spirit
-          { spell = 273006, type = "buff", unit = "player"}, --Primal Primer
-          { spell = 279515, type = "buff", unit = "player"}, --Roiling Storm
-          { spell = 263795, type = "buff", unit = "player"}, --Storm's Eye
-          { spell = 273465, type = "buff", unit = "player"}, --Strength of Earth
-          { spell = 277960, type = "buff", unit = "player"}, --Synapse Shock
-          { spell = 287786, type = "buff", unit = "player"}, --Ancient Ankh Talisman
-          { spell = 287802, type = "buff", unit = "player"}, --Thunderaan's Fury
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -2829,23 +2551,7 @@ else
         icon = 135127
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 263786, type = "buff", unit = "player"}, --Astral Shift
-          { spell = 263790, type = "buff", unit = "player"}, --Ancestral Reach
-          { spell = 277942, type = "buff", unit = "player"}, --Ancestral Resonance
-          { spell = 264113, type = "buff", unit = "player"}, --Flames of the Forefathers
-          { spell = 278095, type = "buff", unit = "group"}, --Overflowing Shores
-          { spell = 280205, type = "buff", unit = "player"}, --Pack Spirit
-          { spell = 279505, type = "buff", unit = "group"}, --Spouting Spirits
-          { spell = 279187, type = "buff", unit = "target"}, --Surging Tides
-          { spell = 272981, type = "debuff", unit = "target"}, --Volcanic Lightning
-          { spell = 273019, type = "buff", unit = "player"}, --Soothing Waters
-          { spell = 287786, type = "buff", unit = "player"}, --Ancient Ankh Talisman
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -2941,16 +2647,7 @@ else
         icon = 136075
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 270670, type = "buff", unit = "player"}, --Arcane Pumeling
-          { spell = 273330, type = "buff", unit = "player"}, --Brain Storm
-          { spell = 280177, type = "buff", unit = "player"}, --Cauterizing Blink
-          { spell = 264353, type = "buff", unit = "player"}, --Equipoise
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -3036,17 +2733,7 @@ else
         icon = 610633
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 274598, type = "buff", unit = "player"}, --Blaster Master
-          { spell = 280177, type = "buff", unit = "player"}, --Cauterizing Blink
-          { spell = 279715, type = "buff", unit = "player"}, --Firemind
-          { spell = 288800, type = "buff", unit = "player"}, --Wildfire
-          { spell = 277703, type = "debuff", unit = "multi"}, --Trailing Embers
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -3139,17 +2826,7 @@ else
         icon = 629077
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 280177, type = "buff", unit = "player"}, --Cauterizing Blink
-          { spell = 279684, type = "buff", unit = "player"}, --Frigid Grasp
-          { spell = 275517, type = "buff", unit = "player"}, --Orbital Precision
-          { spell = 277904, type = "buff", unit = "player"}, --Tunnel of Ice
-          { spell = 273347, type = "buff", unit = "player"}, --Winter's Reach
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -3270,18 +2947,7 @@ else
         icon = 135808
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 275378, type = "buff", unit = "player"}, --Cascading Calamity
-          { spell = 280208, type = "buff", unit = "player"}, --Desperate Power
-          { spell = 273525, type = "buff", unit = "player"}, --Inevitable Demise
-          { spell = 274420, type = "buff", unit = "player"}, --Lifeblood
-          { spell = 272893, type = "buff", unit = "player"}, --Wracking Brilliance
-          { spell = 287828, type = "buff", unit = "player"}, --Terror of the Mind
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -3408,20 +3074,7 @@ else
         icon = 1378282
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 280208, type = "buff", unit = "player"}, --Desperate Power
-          { spell = 276027, type = "buff", unit = "player"}, --Excoriate
-          { spell = 275398, type = "buff", unit = "player"}, --Explosive Potential
-          { spell = 274420, type = "buff", unit = "player"}, --Lifeblood
-          { spell = 272945, type = "buff", unit = "player"}, --Shadow's Bite
-          { spell = 279885, type = "buff", unit = "player"}, --Supreme Commander
-          { spell = 273526, type = "debuff", unit = "target"}, --Umbral Blaze
-          { spell = 287828, type = "buff", unit = "player"}, --Terror of the Mind
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -3544,21 +3197,7 @@ else
         icon = 135807
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 287660, type = "buff", unit = "player"}, --Chaos Shards
-          { spell = 279913, type = "buff", unit = "player"}, --Bursting Flare
-          { spell = 279673, type = "buff", unit = "player"}, --Chaotic Inferno
-          { spell = 280208, type = "buff", unit = "player"}, --Desperate Power
-          { spell = 275429, type = "buff", unit = "player"}, --Flashpoint
-          { spell = 274420, type = "buff", unit = "player"}, --Lifeblood
-          { spell = 278931, type = "buff", unit = "player"}, --Rolling Havoc
-          { spell = 277706, type = "buff", unit = "player"}, --Crashing Chaos
-          { spell = 287828, type = "buff", unit = "player"}, --Terror of the Mind
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -3666,19 +3305,7 @@ else
         icon = 133701
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 275893, type = "buff", unit = "player"}, --Fit to Burst
-          { spell = 285959, type = "buff", unit = "player"}, --Straight, No Chaser
-          { spell = 273469, type = "buff", unit = "player"}, --Staggering Strikes
-          { spell = 274774, type = "buff", unit = "player"}, --Strength of Spirit
-          { spell = 280187, type = "buff", unit = "player"}, --Sweep the Leg
-          { spell = 278767, type = "buff", unit = "player"}, --Training of Niuzao
-          { spell = 289324, type = "buff", unit = "player"}, --Exit Strategy
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -3776,19 +3403,7 @@ else
         icon = 627485
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 276025, type = "buff", unit = "player"}, --Misty Peaks
-          { spell = 273348, type = "buff", unit = "target"}, --Overflowing Mists
-          { spell = 274774, type = "buff", unit = "player"}, --Strength of Spirit
-          { spell = 273299, type = "debuff", unit = "target"}, --Sunrise Technique
-          { spell = 280187, type = "buff", unit = "player"}, --Sweep the Leg
-          { spell = 289324, type = "buff", unit = "player"}, --Exit Strategy
-          { spell = 287837, type = "buff", unit = "player"}, --Secret Infusion
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -3890,17 +3505,7 @@ else
         icon = 627606
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 287062, type = "buff", unit = "player"}, --Fury of Xuen
-          { spell = 279922, type = "buff", unit = "player"}, --Open Palm Strikes
-          { spell = 273299, type = "debuff", unit = "target"}, --Sunrise Technique
-          { spell = 286587, type = "buff", unit = "player"}, --Dance of Chi-Ji
-          { spell = 289324, type = "buff", unit = "player"}, --Exit Strategy
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -4027,20 +3632,7 @@ else
         icon = 132134
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 276154, type = "buff", unit = "player"}, --Dawning Sun
-          { spell = 279648, type = "buff", unit = "player"}, --Lively Spirit
-          { spell = 269380, type = "buff", unit = "player"}, --Long Night
-          { spell = 274814, type = "buff", unit = "player"}, --Reawakening
-          { spell = 272871, type = "buff", unit = "player"}, --Streaking Stars
-          { spell = 287790, type = "buff", unit = "player"}, --Arcanic Pulsar
-          { spell = 280165, type = "buff", unit = "player"}, --Ursoc's Endurance
-          { spell = 287809, type = "buff", unit = "player"}, --Switch Hitter
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -4165,18 +3757,7 @@ else
         icon = 236149
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 276026, type = "buff", unit = "player"}, --Iron Jaws
-          { spell = 272753, type = "buff", unit = "player"}, --Primordial Rage
-          { spell = 274814, type = "buff", unit = "player"}, --Reawakening
-          { spell = 274426, type = "buff", unit = "player"}, --Jungle Fury
-          { spell = 280165, type = "buff", unit = "player"}, --Ursoc's Endurance
-          { spell = 287809, type = "buff", unit = "player"}, --Switch Hitter
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -4296,22 +3877,7 @@ else
         icon = 236169
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 289315, type = "buff", unit = "player"}, --Burst of Savagery
-          { spell = 279793, type = "buff", unit = "player"}, --Grove Tending
-          { spell = 279541, type = "buff", unit = "player"}, --Guardian's Wrath
-          { spell = 272764, type = "buff", unit = "player"}, --Heartblood
-          { spell = 279555, type = "buff", unit = "player"}, --Layered Mane
-          { spell = 273349, type = "buff", unit = "player"}, --Masterful Instincts
-          { spell = 274814, type = "buff", unit = "player"}, --Reawakening
-          { spell = 275909, type = "buff", unit = "player"}, --Twisted Claws
-          { spell = 280165, type = "buff", unit = "player"}, --Ursoc's Endurance
-          { spell = 287809, type = "buff", unit = "player"}, --Switch Hitter
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -4430,18 +3996,7 @@ else
         icon = 236153
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 279793, type = "buff", unit = "target"}, --Grove Tending
-          { spell = 279648, type = "buff", unit = "player"}, --Lively Spirit
-          { spell = 274814, type = "buff", unit = "player"}, --Reawakening
-          { spell = 269498, type = "buff", unit = "player"}, --Rejuvenating Breath
-          { spell = 280165, type = "buff", unit = "player"}, --Ursoc's Endurance
-          { spell = 287809, type = "buff", unit = "player"}, --Switch Hitter
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -4537,18 +4092,7 @@ else
         icon = 1305156
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 272794, type = "buff", unit = "player"}, --Devour
-          { spell = 273232, type = "buff", unit = "player"}, --Furious Gaze
-          { spell = 279584, type = "buff", unit = "player"}, --Revolving Blades
-          { spell = 274346, type = "buff", unit = "player"}, --Soulmonger
-          { spell = 278736, type = "buff", unit = "player"}, --Thirsting Blades
-          { spell = 275936, type = "buff", unit = "player"}, --Seething Power
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -4636,20 +4180,7 @@ else
         icon = 1344650
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 278769, type = "buff", unit = "player"}, --Cycle of Binding
-          { spell = 272794, type = "buff", unit = "player"}, --Devour
-          { spell = 288882, type = "buff", unit = "player"}, --Hour of Reaping
-          { spell = 273238, type = "buff", unit = "player"}, --Infernal Armor
-          { spell = 272987, type = "buff", unit = "player"}, --Revel in Pain
-          { spell = 275351, type = "buff", unit = "player"}, --Rigid Carapace
-          { spell = 275936, type = "buff", unit = "player"}, --Seething Power
-          { spell = 274346, type = "buff", unit = "player"}, --Soulmonger
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -4747,16 +4278,7 @@ else
         icon = 136120
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 289349, type = "buff", unit = "player"}, -- Bloody Runeblade
-          { spell = 279503, type = "buff", unit = "player"}, -- Bones of the Damned
-          { spell = 278543, type = "buff", unit = "player"}, -- Eternal Rune Weapon
-          { spell = 288426, type = "buff", unit = "player"}, -- Cold Hearted
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -4855,14 +4377,7 @@ else
         icon = 135372
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 272723, type = "buff", unit = "player"}, -- Icy Citadel
-          { spell = 287338, type = "buff", unit = "player"}, -- Frostwhelp's Indignation
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -4970,16 +4485,7 @@ else
         icon = 136144
       },
       [4] = {},
-      [5] = {
-        title = L["Specific Azerite Traits"],
-        args = {
-          { spell = 272738, type = "buff", unit = "player"}, -- Festering Doom
-          { spell = 274373, type = "buff", unit = "player"}, -- Festermight
-          { spell = 275931, type = "debuff", unit = "target"}, -- Harrowing Decay
-          { spell = 286979, type = "buff", unit = "player"}, -- Helchains
-        },
-        icon = 135349
-      },
+      [5] = {},
       [6] = {},
       [7] = {
         title = L["PvP Talents"],
@@ -5246,21 +4752,6 @@ if not WeakAuras.IsClassic() then
       if spec[7] and spec[7].args then
         tinsert(spec[7].args, { spell = 208683, type = "ability", pvptalent = 1}) -- Gladiator's Medallion
       end
-    end
-  end
-
-  for _, class in pairs(templates.class) do
-    for _, spec in pairs(class) do
-      spec[4] = {
-        title = L["General Azerite Traits"],
-        args = CopyTable(generalAzeriteTraits),
-        icon = 2065624
-      }
-      spec[6] = {
-        title = L["PvP Azerite Traits"],
-        args = CopyTable(pvpAzeriteTraits),
-        icon = 236396
-      }
     end
   end
 end
@@ -5759,8 +5250,6 @@ if WeakAuras.IsClassic() then
   powerTypes[8] = nil
   powerTypes[7] = nil
   powerTypes[6] = nil
-  wipe(generalAzeriteTraits)
-  wipe(pvpAzeriteTraits)
 end
 
 WeakAuras.triggerTemplates = templates;
