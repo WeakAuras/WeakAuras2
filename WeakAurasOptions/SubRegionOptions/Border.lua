@@ -64,7 +64,7 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth,
       name = L["Border Size"],
       order = 6,
-      softMin = 1,
+      min = 1,
       softMax = 64,
       bigStep = 1,
     },
