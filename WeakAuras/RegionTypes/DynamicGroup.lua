@@ -108,7 +108,7 @@ local function create(parent)
   region.controlledChildren = {}
   region.updatedChildren = {}
   local background = CreateFrame("frame", nil, region)
-  Mixin(background, BackdropTemplateMixin)
+  WeakAuras.BackdropTemplateMixin(background)
   region.background = background
   region.selfPoint = "TOPLEFT"
   region.controlPoints = CreateObjectPool(createControlPoint, releaseControlPoint)
