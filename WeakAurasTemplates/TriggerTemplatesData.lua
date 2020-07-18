@@ -5185,6 +5185,7 @@ if not WeakAuras.IsClassic() then
     for className, class in pairs(templates.class) do
       for specIndex, spec in pairs(class) do
         for _, section in pairs(spec) do
+          if section.args then
           for _, item in pairs(section.args) do
             if (item.spell and (not item.type ~= "item")) then
               local icon = select(3, GetSpellInfo(item.spell));
@@ -5196,6 +5197,7 @@ if not WeakAuras.IsClassic() then
         end
       end
     end
+  end
   end
 
   local fixupIconsFrame = CreateFrame("frame");
