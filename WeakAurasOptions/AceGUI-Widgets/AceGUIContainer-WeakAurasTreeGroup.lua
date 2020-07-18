@@ -5,7 +5,7 @@ This file was forked from AceGUIContainer-TreeGroup.lua version 41
 -------------------------------------------------------------------------------]]
 if not WeakAuras.IsCorrectVersion() then return end
 
-local Type, Version = "WeakAurasTreeGroup", 1
+local Type, Version = "WeakAurasTreeGroup", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -636,7 +636,7 @@ local PaneBackdrop  = {
 local DraggerBackdrop  = {
 	bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
 	edgeFile = nil,
-	tile = true, tileSize = 16, edgeSize = 0,
+	tile = true, tileSize = 16,
 	insets = { left = 3, right = 3, top = 7, bottom = 7 }
 }
 
@@ -649,9 +649,7 @@ local function Constructor()
 	treeframe:SetPoint("BOTTOMLEFT")
 	treeframe:SetWidth(DEFAULT_TREE_WIDTH)
 	treeframe:EnableMouseWheel(true)
-	treeframe:SetBackdrop(PaneBackdrop)
-	treeframe:SetBackdropColor(0.1, 0.1, 0.1, 0.5)
-	treeframe:SetBackdropBorderColor(0.4, 0.4, 0.4)
+
 	treeframe:SetResizable(true)
 	treeframe:SetMinResize(100, 1)
 	treeframe:SetMaxResize(400, 1600)
@@ -659,7 +657,15 @@ local function Constructor()
 	treeframe:SetScript("OnSizeChanged", Tree_OnSizeChanged)
 	treeframe:SetScript("OnMouseWheel", Tree_OnMouseWheel)
 
+	local treeframeBG = CreateFrame("Frame", nil, treeframe)
+	Mixin(treeframeBG, BackdropTemplateMixin)
+	treeframeBG:SetBackdrop(PaneBackdrop)
+	treeframeBG:SetBackdropColor(0.1, 0.1, 0.1, 0.5)
+	treeframeBG:SetBackdropBorderColor(0.4, 0.4, 0.4)
+	treeframeBG:SetAllPoints(treeframe)
+
 	local dragger = CreateFrame("Frame", nil, treeframe)
+	Mixin(dragger, BackdropTemplateMixin)
 	dragger:SetWidth(8)
 	dragger:SetPoint("TOP", treeframe, "TOPRIGHT")
 	dragger:SetPoint("BOTTOM", treeframe, "BOTTOMRIGHT")
@@ -685,6 +691,7 @@ local function Constructor()
 	scrollbg:SetColorTexture(0, 0, 0, 0.4)
 
 	local border = CreateFrame("Frame", nil, frame)
+	Mixin(border, BackdropTemplateMixin)
 	border:SetPoint("TOPLEFT", treeframe, "TOPRIGHT")
 	border:SetPoint("BOTTOMRIGHT")
 	border:SetBackdrop(PaneBackdrop)

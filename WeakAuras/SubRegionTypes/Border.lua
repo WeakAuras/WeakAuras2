@@ -33,7 +33,9 @@ local properties = {
 
 
 local function create()
-  return CreateFrame("FRAME", nil, UIParent)
+  local region = CreateFrame("FRAME", nil, UIParent)
+  Mixin(region, BackdropTemplateMixin)
+  return region
 end
 
 local function onAcquire(subRegion)
