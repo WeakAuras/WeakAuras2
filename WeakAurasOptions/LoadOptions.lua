@@ -809,7 +809,13 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       type = "select",
       width = WeakAuras.doubleWidth,
       name = L["Hide"],
-      order = order
+      order = order,
+      get = function()
+        return trigger.unevent
+      end,
+      set = function(info, v)
+        trigger.unevent = v
+      end
     };
     order = order + 1;
     if(unevent == "timed") then
@@ -818,7 +824,13 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         type = "input",
         width = WeakAuras.normalWidth,
         name = L["Duration (s)"],
-        order = order
+        order = order,
+        get = function()
+          return trigger.duration
+        end,
+        set = function(info, v)
+          trigger.duration = v
+        end
       }
       order = order + 1;
     else
