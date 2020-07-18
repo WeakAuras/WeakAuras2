@@ -379,8 +379,7 @@ local function BuildAlignLines(mover)
 end
 
 local function ConstructMoverSizer(parent)
-  local frame = CreateFrame("FRAME", nil, parent)
-  WeakAuras.BackdropTemplateMixin(frame)
+  local frame = CreateFrame("FRAME", nil, parent, BackdropTemplateMixin and "BackdropTemplate")
   frame:SetBackdrop({
     edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
     edgeSize = 12,

@@ -367,11 +367,10 @@ local function ConstructTextEditor(frame)
   end
 
   -- Make sidebar for snippets
-  local snippetsFrame = CreateFrame("FRAME", "WeakAurasSnippets", group.frame)
+  local snippetsFrame = CreateFrame("FRAME", "WeakAurasSnippets", group.frame, BackdropTemplateMixin and "BackdropTemplate")
   snippetsFrame:SetPoint("TOPLEFT", group.frame, "TOPRIGHT", 20, 0)
   snippetsFrame:SetPoint("BOTTOMLEFT", group.frame, "BOTTOMRIGHT", 20, 0)
   snippetsFrame:SetWidth(250)
-  WeakAuras.BackdropTemplateMixin(snippetsFrame)
   snippetsFrame:SetBackdrop(
     {
       bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
