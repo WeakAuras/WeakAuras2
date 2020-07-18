@@ -84,8 +84,7 @@ local function create(parent)
   region:SetMinResize(1, 1);
 
   -- Border region
-  local border = CreateFrame("frame", nil, region);
-  WeakAuras.BackdropTemplateMixin(border)
+  local border = CreateFrame("frame", nil, region, BackdropTemplateMixin and "BackdropTemplate");
   region.border = border;
 
   WeakAuras.regionPrototype.create(region);
