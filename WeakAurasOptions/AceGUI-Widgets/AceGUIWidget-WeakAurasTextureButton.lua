@@ -93,7 +93,9 @@ Constructor
 local function Constructor()
   local name = "WeakAurasTextureButton"..AceGUI:GetNextWidgetNum(Type);
   local button = CreateFrame("BUTTON", name, UIParent, "OptionsListButtonTemplate");
-  WeakAuras.BackdropTemplateMixin(button)
+  if BackdropTemplateMixin then
+    Mixin(button, BackdropTemplateMixin)
+  end
   button:SetHeight(128);
   button:SetWidth(128);
   button:SetBackdrop({
