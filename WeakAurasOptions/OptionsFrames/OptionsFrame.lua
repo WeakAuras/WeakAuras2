@@ -140,8 +140,7 @@ function WeakAuras.CreateFrame()
   local db = savedVars.db
   local odb = savedVars.odb
   -------- Mostly Copied from AceGUIContainer-Frame--------
-  frame = CreateFrame("FRAME", "WeakAurasOptions", UIParent)
-  WeakAuras.BackdropTemplateMixin(frame)
+  frame = CreateFrame("FRAME", "WeakAurasOptions", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 
   tinsert(UISpecialFrames, frame:GetName())
   frame:SetBackdrop({
