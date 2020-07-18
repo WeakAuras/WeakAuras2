@@ -141,6 +141,8 @@ function WeakAuras.CreateFrame()
   local odb = savedVars.odb
   -------- Mostly Copied from AceGUIContainer-Frame--------
   frame = CreateFrame("FRAME", "WeakAurasOptions", UIParent)
+  Mixin(frame, BackdropTemplateMixin)
+
   tinsert(UISpecialFrames, frame:GetName())
   frame:SetBackdrop({
     bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
