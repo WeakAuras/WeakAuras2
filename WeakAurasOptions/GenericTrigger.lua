@@ -204,6 +204,9 @@ local function GetCustomTriggerOptions(data, triggernum)
       name = L["Dynamic Duration"],
       order = 12.5,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom") end,
+      get = function()
+        return trigger.dynamicDuration
+      end,
       set = function(info, v)
         trigger.dynamicDuration = v;
         WeakAuras.Add(data);
@@ -217,6 +220,12 @@ local function GetCustomTriggerOptions(data, triggernum)
       name = L["Duration (s)"],
       order = 13,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom" and not trigger.dynamicDuration) end,
+      get = function()
+        return trigger.duration
+      end,
+      set = function(info, v)
+        trigger.duration = v
+      end
     },
     addOverlayFunction = {
       type = "execute",
@@ -306,6 +315,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       end
       WeakAuras.Add(data);
       WeakAuras.ClearAndUpdateOptions(data.id)
+      WeakAuras.FillOptions()
     end
 
     local extraFunctions = {
