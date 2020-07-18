@@ -33,8 +33,7 @@ local properties = {
 
 
 local function create()
-  local region = CreateFrame("FRAME", nil, UIParent)
-  WeakAuras.BackdropTemplateMixin(region)
+  local region = CreateFrame("FRAME", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
   return region
 end
 
