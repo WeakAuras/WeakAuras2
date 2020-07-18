@@ -1188,7 +1188,7 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
       width = WeakAuras.normalWidth,
       name = L["Border Size"],
       order = order + 0.4,
-      softMin = 1,
+      min = 1,
       softMax = 64,
       bigStep = 1,
       hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
