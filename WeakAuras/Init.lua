@@ -34,6 +34,13 @@ function WeakAuras.IsClassic()
   return WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 end
 
+local BackdropTemplateMixinExists = BackdropTemplateMixin ~= nil
+function WeakAuras.BackdropTemplateMixin(frame)
+  if BackdropTemplateMixinExists then
+    Mixin(frame, BackdropTemplateMixin)
+  end
+end
+
 function WeakAuras.IsCorrectVersion()
   return isDevVersion or intendedWoWProject == WOW_PROJECT_ID
 end

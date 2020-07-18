@@ -25,7 +25,7 @@ function WeakAuras.StartFrameChooser(data, path)
   if not(frameChooserFrame) then
     frameChooserFrame = CreateFrame("frame");
     frameChooserBox = CreateFrame("frame", nil, frameChooserFrame);
-    Mixin(frameChooserBox, BackdropTemplateMixin)
+    WeakAuras.BackdropTemplateMixin(frameChooserBox)
     frameChooserBox:SetFrameStrata("TOOLTIP");
     frameChooserBox:SetBackdrop({
       edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
