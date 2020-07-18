@@ -86,7 +86,7 @@ local function create(parent)
 
   -- Border region
   local border = CreateFrame("frame", nil, region);
-  Mixin(border, BackdropTemplateMixin)
+  WeakAuras.BackdropTemplateMixin(border)
   region.border = border;
 
   WeakAuras.regionPrototype.create(region);
