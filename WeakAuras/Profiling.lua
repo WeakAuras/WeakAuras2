@@ -155,7 +155,7 @@ local function CreateProfilePopup()
   scrollFrame:Hide()
 
   local bg = CreateFrame("Frame", nil, UIParent)
-  Mixin(bg, BackdropTemplateMixin)
+  WeakAuras.BackdropTemplateMixin(bg)
   bg:SetFrameStrata("DIALOG")
   bg:SetBackdrop({
     bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
