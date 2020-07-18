@@ -493,7 +493,8 @@ function WeakAuras.ShowOptions(msg)
   WeakAuras.Pause();
   WeakAuras.SetFakeStates()
 
-  WeakAuras.spellCache.Build()
+  -- TODO: uncomment/fix for 9.0
+  -- WeakAuras.spellCache.Build()
 
   if (firstLoad) then
     frame = WeakAuras.CreateFrame();
