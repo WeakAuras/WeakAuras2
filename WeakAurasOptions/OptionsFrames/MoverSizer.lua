@@ -380,6 +380,7 @@ end
 
 local function ConstructMoverSizer(parent)
   local frame = CreateFrame("FRAME", nil, parent)
+  Mixin(frame, BackdropTemplateMixin)
   frame:SetBackdrop({
     edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
     edgeSize = 12,
