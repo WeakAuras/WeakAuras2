@@ -1,4 +1,4 @@
-local internalVersion = 34;
+local internalVersion = 35
 
 -- Lua APIs
 local insert = table.insert
@@ -4166,6 +4166,12 @@ function WeakAuras.Modernize(data)
       else
         data.fullCircle = false
       end
+    end
+  end
+
+  if data.internalVersion < 35 then
+    if data.regionType == 'texture' then
+      data.textureWrapMode = "CLAMP"
     end
   end
 
