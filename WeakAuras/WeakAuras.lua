@@ -1,4 +1,4 @@
-local internalVersion = 33;
+local internalVersion = 34;
 
 -- Lua APIs
 local insert = table.insert
@@ -4128,6 +4128,18 @@ function WeakAuras.Modernize(data)
       end
     end
 
+  end
+
+  -- Introduced in July 2020 in Shadolands
+  if data.internalVersion < 34 then
+    if data.regionType == 'dynamicgroup'
+    and (data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") then
+      if data.arcLength == 360 then
+        data.fullCircle = true
+      else
+        data.fullCircle = false
+      end
+    end
   end
 
 
