@@ -782,7 +782,8 @@ WeakAuras.blend_types = {
 WeakAuras.texture_wrap_types = {
   CLAMP = L["Clamp"],
   MIRROR = L["Mirror"],
-  REPEAT = L["Repeat"]
+  REPEAT = L["Repeat"],
+  CLAMPTOBLACKADDITIVE = L["No Extend"]
 }
 
 WeakAuras.slant_mode = {
