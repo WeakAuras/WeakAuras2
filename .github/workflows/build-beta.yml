@@ -1,0 +1,44 @@
+name: CI-Beta
+
+on:
+  push:
+    branches:
+      - shadowlands
+    tags:
+      - '**-alpha'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install and run Luacheck
+      run: |
+        sudo apt-get install luarocks
+        luarocks install --local luacheck
+        /home/runner/.luarocks/bin/luacheck . --no-color -q
+
+    - name: Generate Changelog
+      run: ./generate_changelog.sh
+
+    - name: Update Build Date
+      run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
+
+    - name: Create Package
+      run: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash
+      env:
+        GITHUB_OAUTH: ${{ secrets.GITHUB_OAUTH }}
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: WeakAuras-SL
+        path: .release/
+
+    - name: Notify on Failure
+      if: failure()
+      env:
+        BUILD_STATUS: ${{ job.status }}
+        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+      run: curl -s https://raw.githubusercontent.com/nebularg/actions-discord-webhook/master/send.sh | bash
