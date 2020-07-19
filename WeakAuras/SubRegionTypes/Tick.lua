@@ -12,6 +12,9 @@ local default = function(parentType)
     automatic_length = true,
     tick_thickness = 2,
     tick_length = 30,
+    use_texture = false,
+    tick_texture = [[Interface\CastingBar\UI-CastingBar-Spark]],
+    tick_blend_mode = "ADD",
   }
 end
 
@@ -145,7 +148,11 @@ local funcs = {
   end,
   SetTickColor = function(self, r, g, b, a)
     self.tick_color[1], self.tick_color[2], self.tick_color[3], self.tick_color[4] = r, g, b, a or 1
-    self.texture:SetColorTexture(r, g, b, a or 1)
+    if self.use_texture then
+      self.texture:SetVertexColor(r, g, b, a or 1)
+    else
+      self.texture:SetColorTexture(r, g, b, a or 1)
+    end
   end,
   SetTickPlacementMode = function(self, placement_mode)
     if self.tick_placement_mode ~= placement_mode then
@@ -290,6 +297,15 @@ local function modify(parent, region, parentData, data, first)
   region.automatic_length = data.automatic_length
   region.tick_thickness = data.tick_thickness
   region.tick_length = data.tick_length
+  region.use_texture = data.use_texture
+  region.tick_texture = data.tick_texture
+  region.tick_blend_mode = data.tick_blend_mode
+
+
+  if data.use_texture then
+    WeakAuras.SetTextureOrAtlas(region.texture, data.tick_texture)
+    region.texture:SetBlendMode(data.tick_blend_mode)
+  end
 
   for k, v in pairs(funcs) do
     region[k] = v
