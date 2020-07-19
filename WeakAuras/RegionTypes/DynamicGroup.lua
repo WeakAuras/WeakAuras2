@@ -26,6 +26,7 @@ local default = {
   yOffset = 0,
   radius = 200,
   rotation = 0,
+  fullCircle = true,
   arcLength = 360,
   constantFactor = "RADIUS",
   frameStrata = 1,
@@ -582,7 +583,7 @@ local growers = {
     local radius = data.radius or 0
     local limit = data.useLimit and data.limit or math.huge
     local sAngle = (data.rotation or 0) * math.pi / 180
-    local arc = (data.arcLength or 0) * math.pi / 180
+    local arc = (data.fullCircle and 360 or data.arcLength or 0) * math.pi / 180
     local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
       local frames = {}
@@ -604,7 +605,14 @@ local growers = {
           end
         end
         local theta = sAngle
-        local dAngle = arc / numVisible
+        local dAngle
+        if numVisible == 1 then
+          dAngle = 0
+        elseif not data.fullCircle then
+          dAngle = arc / (numVisible - 1)
+        else
+          dAngle = arc / numVisible
+        end
         newPositions[frame] = {}
         for i, regionData in ipairs(regionDatas) do
           if i <= numVisible then
@@ -623,7 +631,7 @@ local growers = {
     local radius = data.radius or 0
     local limit = data.useLimit and data.limit or math.huge
     local sAngle = (data.rotation or 0) * math.pi / 180
-    local arc = (data.arcLength or 0) * math.pi / 180
+    local arc = (data.fullCircle and 360 or data.arcLength or 0) * math.pi / 180
     local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
       local frames = {}
@@ -645,7 +653,14 @@ local growers = {
           end
         end
         local theta = sAngle
-        local dAngle = arc / -numVisible
+        local dAngle
+        if numVisible == 1 then
+          dAngle = 0
+        elseif not data.fullCircle then
+          dAngle = arc / (1 - numVisible)
+        else
+          dAngle = arc / -numVisible
+        end
         newPositions[frame] = {}
         for i, regionData in ipairs(regionDatas) do
           if i <= numVisible then
