@@ -9,8 +9,8 @@ WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
 local versionString = "@project-version@"
 local buildTime = "@build-time@"
-
 local isDevVersion = false
+
 --@debug@
 if versionStringFromToc == "@project-version@" then
   versionStringFromToc = "Dev"
@@ -42,10 +42,6 @@ WeakAuras.prettyPrint = function(msg)
   print(WeakAuras.printPrefix .. msg)
 end
 
-WeakAuras.versionMismatchPrint = function()
-  WeakAuras.prettyPrint("You need to restart your game client to complete the WeakAuras update!")
-end
-
 WeakAuras.wrongTargetMessage = "This version of WeakAuras was packaged for World of Warcraft " ..
                               (intendedWoWProject == WOW_PROJECT_MAINLINE and "Retail" or "Classic") ..
                               ". Please install the " .. (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "Retail" or "Classic") ..
@@ -54,10 +50,6 @@ WeakAuras.wrongTargetMessage = "This version of WeakAuras was packaged for World
 
 if not WeakAuras.IsCorrectVersion() then
   C_Timer.After(1, function() WeakAuras.prettyPrint(WeakAuras.wrongTargetMessage) end)
-end
-
-if versionString ~= versionStringFromToc and versionStringFromToc ~= "Dev" then
-  C_Timer.After(1, WeakAuras.versionMismatchPrint)
 end
 
 WeakAuras.PowerAurasPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\"
