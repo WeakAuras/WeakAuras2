@@ -29,7 +29,7 @@ local default = {
   sameTexture = true,
   compress = false,
   blendMode = "BLEND",
-  textureWrapMode = "CLAMP",
+  textureWrapMode = "CLAMPTOBLACKADDITIVE",
   backgroundOffset = 2,
   width = 200,
   height = 200,
@@ -695,22 +695,6 @@ local function createTexture(region, layer, drawlayer)
     texture[k] = v;
   end
 
-  local  OrgSetTexture = texture.SetTexture;
-  -- WORKAROUND, setting the same texture with a different wrap mode does not change the wrap mode
-  texture.SetTexture = function(self, texture, horWrapMode, verWrapMode)
-    if (GetAtlasInfo(texture)) then
-      self:SetAtlas(texture);
-    else
-      local needToClear = (self.horWrapMode and self.horWrapMode ~= horWrapMode) or (self.verWrapMode and self.verWrapMode ~= verWrapMode);
-      self.horWrapMode = horWrapMode;
-      self.verWrapMode = verWrapMode;
-      if (needToClear) then
-        OrgSetTexture(self, nil);
-      end
-      OrgSetTexture(self, texture, horWrapMode, verWrapMode);
-    end
-  end
-
   texture.coord  = createTexCoord(texture);
   texture.region = region;
   texture.startProgress = 0;
@@ -775,7 +759,7 @@ end
 local function ensureExtraTextures(region, count)
   for i = #region.extraTextures + 1, count do
     local extraTexture = createTexture(region, "ARTWORK", min(i, 7));
-    extraTexture:SetTexture(region.currentTexture, region.textureWrapMode, region.textureWrapMode)
+    WeakAuras.SetTextureOrAtlas(extraTexture, region.currentTexture, region.textureWrapMode, region.textureWrapMode)
     extraTexture:SetBlendMode(region.foreground:GetBlendMode());
     extraTexture:SetOrientation(region.orientation, region.compress, region.slanted, region.slant, region.slantFirst, region.slantMode);
     region.extraTextures[i] = extraTexture;
@@ -786,7 +770,7 @@ local function ensureExtraSpinners(region, count)
   local parent = region:GetParent();
   for i = #region.extraSpinners + 1, count do
     local extraSpinner = createSpinner(region, "OVERLAY", min(i, 7));
-    extraSpinner:SetTexture(region.currentTexture);
+    WeakAuras.SetTextureOrAtlas(extraSpinner, region.currentTexture);
     extraSpinner:SetBlendMode(region.foreground:GetBlendMode());
     region.extraSpinners[i] = extraSpinner;
   end
@@ -1043,32 +1027,32 @@ local function modify(parent, region, data)
   region.textureWrapMode = data.textureWrapMode;
 
   background:SetBackgroundOffset(data.backgroundOffset);
-  background:SetTexture(data.sameTexture and data.foregroundTexture or data.backgroundTexture, region.textureWrapMode, region.textureWrapMode);
+  WeakAuras.SetTextureOrAtlas(background, data.sameTexture and data.foregroundTexture or data.backgroundTexture, region.textureWrapMode, region.textureWrapMode);
   background:SetDesaturated(data.desaturateBackground)
   background:SetVertexColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
   background:SetBlendMode(data.blendMode);
 
-  backgroundSpinner:SetTexture(data.sameTexture and data.foregroundTexture or data.backgroundTexture);
+  WeakAuras.SetTextureOrAtlas(backgroundSpinner, data.sameTexture and data.foregroundTexture or data.backgroundTexture);
   backgroundSpinner:SetDesaturated(data.desaturateBackground)
   backgroundSpinner:Color(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
   backgroundSpinner:SetBlendMode(data.blendMode);
 
   region.currentTexture = data.foregroundTexture;
-  foreground:SetTexture(data.foregroundTexture, region.textureWrapMode, region.textureWrapMode);
+  WeakAuras.SetTextureOrAtlas(foreground, data.foregroundTexture, region.textureWrapMode, region.textureWrapMode);
   foreground:SetDesaturated(data.desaturateForeground)
   foreground:SetBlendMode(data.blendMode);
 
-  foregroundSpinner:SetTexture(data.foregroundTexture);
+  WeakAuras.SetTextureOrAtlas(foregroundSpinner, data.foregroundTexture);
   foregroundSpinner:SetDesaturated(data.desaturateForeground);
   foregroundSpinner:SetBlendMode(data.blendMode);
 
   for _, extraTexture in ipairs(region.extraTextures) do
-    extraTexture:SetTexture(data.foregroundTexture, region.textureWrapMode, region.textureWrapMode)
+    WeakAuras.SetTextureOrAtlas(extraTexture, data.foregroundTexture, region.textureWrapMode, region.textureWrapMode)
     extraTexture:SetBlendMode(data.blendMode);
   end
 
   for _, extraSpinner in ipairs(region.extraSpinners) do
-    extraSpinner:SetTexture(data.foregroundTexture);
+    WeakAuras.SetTextureOrAtlas(extraSpinner, data.foregroundTexture);
     extraSpinner:SetBlendMode(data.blendMode);
   end
 
@@ -1337,19 +1321,19 @@ local function modify(parent, region, data)
 
   function region:SetTexture(texture)
     region.currentTexture = texture;
-    region.foreground:SetTexture(texture, region.textureWrapMode, region.textureWrapMode);
-    foregroundSpinner:SetTexture(texture);
+    WeakAuras.SetTextureOrAtlas(region.foreground, texture, region.textureWrapMode, region.textureWrapMode);
+    WeakAuras.SetTextureOrAtlas(foregroundSpinner, texture);
     if (data.sameTexture) then
-      background:SetTexture(texture, region.textureWrapMode, region.textureWrapMode);
-      backgroundSpinner:SetTexture(texture);
+      WeakAuras.SetTextureOrAtlas(background, texture, region.textureWrapMode, region.textureWrapMode);
+      WeakAuras.SetTextureOrAtlas(backgroundSpinner, texture);
     end
 
     for _, extraTexture in ipairs(region.extraTextures) do
-      extraTexture:SetTexture(texture, region.textureWrapMode, region.textureWrapMode)
+      WeakAuras.SetTextureOrAtlas(extraTexture, texture, region.textureWrapMode, region.textureWrapMode)
     end
 
     for _, extraSpinner in ipairs(region.extraSpinners) do
-      extraSpinner:SetTexture(texture);
+      WeakAuras.SetTextureOrAtlas(extraSpinner, texture);
     end
   end
 
