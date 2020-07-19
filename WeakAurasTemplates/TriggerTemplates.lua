@@ -1171,6 +1171,7 @@ function WeakAuras.CreateTemplateView(frame)
       triggers = createTriggersFor(item, subType);
     end
 
+    data.triggers = {}
     for i, v in pairs(triggers) do
       data.triggers[i] = data.triggers[i] or {};
       data.triggers[i].trigger = {};
@@ -1467,6 +1468,8 @@ function WeakAuras.CreateTemplateView(frame)
       replaceCondition(data, item, subType);
       newView:CancelClose();
       WeakAuras.Add(data);
+      WeakAuras.ClearAndUpdateOptions(data.id)
+      WeakAuras.FillOptions()
       WeakAuras.NewDisplayButton(data);
       WeakAuras.UpdateThumbnail(data);
       WeakAuras.UpdateDisplayButton(data);
@@ -1491,6 +1494,8 @@ function WeakAuras.CreateTemplateView(frame)
       addCondition(data, item, subType, prevNumTriggers);
       newView:CancelClose();
       WeakAuras.Add(data);
+      WeakAuras.ClearAndUpdateOptions(data.id)
+      WeakAuras.FillOptions()
       WeakAuras.NewDisplayButton(data);
       WeakAuras.UpdateThumbnail(data);
       WeakAuras.UpdateDisplayButton(data);
