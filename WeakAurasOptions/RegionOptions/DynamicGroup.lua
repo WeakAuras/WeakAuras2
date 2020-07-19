@@ -205,21 +205,29 @@ local function createOptions(id, data)
       bigStep = 3,
       hidden = function() return data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE" end
     },
+    fullCircle = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Full Circle"],
+      order = 7,
+      hidden = function() return data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE" end
+    },
     arcLength = {
       type = "range",
       width = WeakAuras.normalWidth,
-      name = L["Arc Length"],
-      order = 7,
+      name = L["Total Angle"],
+      order = 8,
       min = 0,
       max = 360,
       bigStep = 3,
+      disabled = function() return data.fullCircle end,
       hidden = function() return data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE" end
     },
     radius = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Radius"],
-      order = 6,
+      order = 9,
       softMin = 0,
       softMax = 500,
       bigStep = 1,
