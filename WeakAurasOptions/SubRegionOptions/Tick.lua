@@ -82,13 +82,21 @@ local function createOptions(parentData, data, index, subIndex)
 
         local texturetext = ""
         if data.use_texture then
+          local desaturatetext = data.tick_desaturate and L["|cFFFF0000desaturated|r "] or ""
           local blendtext = WeakAuras.blend_types[data.tick_blend_mode]
-          texturetext = L["|cFFFF0000custom|r texture with |cFFFF0000%s|r blend mode"]:format(blendtext)
+          local rotationtext = data.tick_rotation ~= 0 and L[" rotated |cFFFF0000%s|r degrees"]:format(data.tick_rotation) or ""
+          local mirrortext = data.tick_mirror and L[" and |cFFFF0000mirrored|r"] or ""
+          texturetext = L["%s|cFFFF0000custom|r texture with |cFFFF0000%s|r blend mode%s%s"]:format(desaturatetext, blendtext, rotationtext, mirrortext)
         else
           texturetext = L["|cFFFF0000default|r texture"]
         end
 
-        local description = L["|cFFffcc00Extra:|r %s and %s"]:format(lengthtext, texturetext)
+        local offsettext = ""
+        if data.tick_xOffset ~=0 or data.tick_yOffset ~=0 then
+          offsettext = L["Offset by |cFFFF0000%s|r/|cFFFF0000%s|r"]:format(data.tick_xOffset, data.tick_yOffset)
+        end
+
+        local description = L["|cFFffcc00Extra:|r %s and %s %s"]:format(lengthtext, texturetext, offsettext)
 
         return description
       end,
@@ -131,11 +139,12 @@ local function createOptions(parentData, data, index, subIndex)
       order = 9,
       hidden = hiddentickextras,
     },
-    tick_space1 = {
-      type = "description",
+    tick_desaturate = {
+      type = "toggle",
       width = WeakAuras.normalWidth,
-      name = "",
+      name = L["Desaturate"],
       order = 10,
+      hidden = hiddentickextras,
     },
     tick_texture = {
       type = "input",
@@ -163,6 +172,41 @@ local function createOptions(parentData, data, index, subIndex)
         WeakAuras.OpenTexturePicker(data, "tick_texture", WeakAuras.texture_types);
       end,
       disabled = function() return not data.use_texture end,
+      hidden = hiddentickextras,
+    },
+    tick_rotation = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Rotation"],
+      min = 0,
+      max = 360,
+      order = 14,
+      hidden = hiddentickextras,
+    },
+    tick_mirror = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Mirror"],
+      order = 15,
+      disabled = function() return not data.use_texture end,
+      hidden = hiddentickextras,
+    },
+    tick_xOffset = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["x-Offset"],
+      order = 16,
+      softMin = -200,
+      softMax = 200,
+      hidden = hiddentickextras,
+    },
+    tick_yOffset = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["y-Offset"],
+      order = 17,
+      softMin = -200,
+      softMax = 200,
       hidden = hiddentickextras,
     },
   }
