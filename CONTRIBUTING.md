@@ -74,7 +74,7 @@ If you want to help, here's what you need to do:
 
 ### Keeping your pull request updated
 
-- In order to sync your pull request with the upstream WeakAuras 2 repository in case there are any conflicts you would do
+- In order to sync your pull request with the upstream WeakAuras repository in case there are any conflicts you would do
 
   ```bash
   > git fetch upstream
