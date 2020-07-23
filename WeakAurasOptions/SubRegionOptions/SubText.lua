@@ -105,7 +105,7 @@ local function createOptions(parentData, data, index, subIndex)
 
         local textJustify = ""
         if data.text_justify == "CENTER" then
-
+          -- CENTER is default
         elseif data.text_justify == "LEFT" then
           textJustify = " " .. L["and aligned left"]
         elseif data.text_justify == "RIGHT" then
