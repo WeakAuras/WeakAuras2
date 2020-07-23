@@ -1362,7 +1362,6 @@ function WeakAuras.MatchInfo(data, children, target)
         if childDiff then
           info.modified = info.modified + 1
           info.diffs[newIndex] = childDiff
-        else
         end
       end
     end
