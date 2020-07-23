@@ -82,7 +82,7 @@ local function createOptions(id, data)
 
         local textJustify = ""
         if data.justify == "CENTER" then
-
+          -- CENTER is default
         elseif data.justify == "LEFT" then
           textJustify = " " .. L["and aligned left"]
         elseif data.justify == "RIGHT" then
