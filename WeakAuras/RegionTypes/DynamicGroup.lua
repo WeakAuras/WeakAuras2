@@ -804,6 +804,7 @@ local function modify(parent, region, data)
       self.suspended = self.suspended - 1
     end
     if not self:IsSuspended() then
+      WeakAuras.AnchorFrame(data, self, self.parent)
       if self.needToReload then
         self:ReloadControlledChildren()
       end
