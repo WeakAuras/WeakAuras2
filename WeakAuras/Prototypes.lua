@@ -7225,13 +7225,13 @@ WeakAuras.dynamic_texts = {
         return ""
       end
 
-      local remainingStr     = "";
+      local remainingStr = "";
       if remaining == math.huge then
-        remainingStr     = " ";
+        remainingStr = " ";
       elseif remaining > 60 then
-        remainingStr     = string.format("%i:", math.floor(remaining / 60));
-        remaining        = remaining % 60;
-        remainingStr     = remainingStr..string.format("%02i", remaining);
+        remainingStr = string.format("%i:", math.floor(remaining / 60));
+        remaining = remaining % 60;
+        remainingStr = remainingStr..string.format("%02i", remaining);
       elseif remaining > 0 then
         if progressPrecision == 4 and remaining <= 3 then
           remainingStr = remainingStr..string.format("%.1f", remaining);
@@ -7245,7 +7245,7 @@ WeakAuras.dynamic_texts = {
           remainingStr = remainingStr..string.format("%.".. progressPrecision .."f", remaining);
         end
       else
-        remainingStr     = " ";
+        remainingStr = " ";
       end
       return remainingStr
     end
@@ -7270,13 +7270,13 @@ WeakAuras.dynamic_texts = {
       if type(duration) ~= "number" then
         return ""
       end
-      local durationStr     = "";
+      local durationStr = "";
       if math.abs(duration) == math.huge or tostring(duration) == "nan" then
         durationStr = " ";
       elseif duration > 60 then
-        durationStr     = string.format("%i:", math.floor(duration / 60));
-        duration       = duration % 60;
-        durationStr     = durationStr..string.format("%02i", duration);
+        durationStr = string.format("%i:", math.floor(duration / 60));
+        duration = duration % 60;
+        durationStr = durationStr..string.format("%02i", duration);
       elseif duration > 0 then
         if totalPrecision == 4 and duration <= 3 then
           durationStr = durationStr..string.format("%.1f", duration);
@@ -7290,7 +7290,7 @@ WeakAuras.dynamic_texts = {
           durationStr = durationStr..string.format("%."..totalPrecision.."f", duration);
         end
       else
-        durationStr     = " ";
+        durationStr = " ";
       end
       return durationStr
     end
