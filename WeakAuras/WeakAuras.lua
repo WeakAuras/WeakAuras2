@@ -103,7 +103,7 @@ function SlashCmdList.WEAKAURAS(input)
     prettyPrint(WeakAuras.wrongTargetMessage)
     return
   end
-  local args, msg = {}
+  local args, msg = {}, nil
   for v in string.gmatch(input, "%S+") do
     if not msg then
       msg = v
@@ -352,9 +352,7 @@ function WeakAuras.validate(input, default)
   for field, defaultValue in pairs(default) do
     if(type(defaultValue) == "table" and type(input[field]) ~= "table") then
       input[field] = {};
-    elseif(input[field] == nil) then
-      input[field] = defaultValue;
-    elseif(type(input[field]) ~= type(defaultValue)) then
+    elseif(input[field] == nil) or (type(input[field]) ~= type(defaultValue)) then
       input[field] = defaultValue;
     end
     if(type(input[field]) == "table") then
@@ -6772,13 +6770,8 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc, useHiddenSta
         end
       end
     elseif state == 1 then -- Percent Start State
-      if char == 37 then
-        start = currentPos
-      elseif char == 123 then
+      if char == 123 then
         start = currentPos + 1
-      elseif (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) or char == 46 then
-          -- 0-9a-zA-Z or dot character
-        start = currentPos
       else
         start = currentPos
       end
@@ -6790,6 +6783,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc, useHiddenSta
         result = result .. ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates, formatters)
 
         if char == 37 then
+          -- Do nothing
         else
           start = currentPos
         end
@@ -6831,13 +6825,8 @@ function WeakAuras.ParseTextStr(textStr, symbolCallback)
     local char = string.byte(textStr, currentPos);
     if state == 0 then -- Normal State
     elseif state == 1 then -- Percent Start State
-      if char == 37 then
-        start = currentPos
-      elseif char == 123 then
+      if char == 123 then
         start = currentPos + 1
-      elseif (char >= 48 and char <= 57) or (char >= 65 and char <= 90) or (char >= 97 and char <= 122) or char == 46 then
-          -- 0-9a-zA-Z or dot character
-        start = currentPos
       else
         start = currentPos
       end
@@ -6848,6 +6837,7 @@ function WeakAuras.ParseTextStr(textStr, symbolCallback)
         local symbol = string.sub(textStr, start, currentPos - 1)
         symbolCallback(symbol)
         if char == 37 then
+          -- Do nothing
         else
           start = currentPos
         end
