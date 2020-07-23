@@ -441,7 +441,7 @@ local function subTypesFor(item, regionType)
         elseif(self.elapsed < 1.5) then
           t1:SetVertexColor(1,1,1,1);
         elseif(self.elapsed < 3) then
-        -- do nothing
+          -- Do nothing
         else
           self.elapsed = self.elapsed - 3;
         end
