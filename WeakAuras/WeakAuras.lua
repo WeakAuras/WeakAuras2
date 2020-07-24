@@ -7582,6 +7582,7 @@ end
 
 local ownRealm = select(2, UnitFullName("player"))
 function WeakAuras.UnitNameWithRealm(unit)
+  ownRealm = ownRealm or select(2, UnitFullName("player"))
   local name, realm = UnitFullName(unit)
   return name or "", realm or ownRealm or ""
 end
