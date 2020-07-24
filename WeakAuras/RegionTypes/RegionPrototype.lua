@@ -541,11 +541,19 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
   end
 
   if not parent or parent.regionType ~= "dynamicgroup" then
-    if not (
-      data.anchorFrameType == "CUSTOM"
-      or data.anchorFrameType == "UNITFRAME"
-      or data.anchorFrameType == "NAMEPLATE"
-    ) then
+    if
+      -- Don't anchor single Auras that with custom anchoring,
+      -- these will be anchored in expand
+      not (
+        data.anchorFrameType == "CUSTOM"
+        or data.anchorFrameType == "UNITFRAME"
+        or data.anchorFrameType == "NAMEPLATE"
+      )
+      -- Group Auras that will never be expanded, so those need
+      -- to be always anchored here
+      or data.regionType == "dynamicgroup"
+      or data.regionType == "group"
+    then
       WeakAuras.AnchorFrame(data, region, parent);
     end
   end
