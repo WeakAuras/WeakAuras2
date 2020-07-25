@@ -1193,6 +1193,13 @@ function WeakAuras.CreateFrame()
     self:FillOptions()
   end
 
+  frame.GetPickedDisplay = function(self)
+    if type(self.pickedDisplay) == "string" then
+      return WeakAuras.GetData(self.pickedDisplay)
+    end
+    return self.pickedDisplay
+  end
+
   frame:SetClampedToScreen(true)
   local w, h = frame:GetSize()
   local left, right, top, bottom = w/2,-w/2, 0, h-25
