@@ -730,6 +730,10 @@ function WeakAuras.EnsureOptions(data, subOption)
   return frame:EnsureOptions(data, subOption)
 end
 
+function WeakAuras.GetPickedDisplay()
+  return frame:GetPickedDisplay()
+end
+
 function WeakAuras.GetSpellTooltipText(id)
   local tooltip = WeakAuras.GetHiddenTooltip();
   tooltip:SetSpellByID(id);

@@ -262,7 +262,7 @@ local function removeFuncs(intable, removeFunc)
       intable[i] = nil;
     elseif (i == "func" and removeFunc) then
       intable[i] = nil
-    elseif(type(v) == "table" and i ~= "values") then
+    elseif(type(v) == "table" and i ~= "values" and i ~= "extraFunctions") then
       removeFuncs(v, removeFunc)
     end
   end
@@ -1233,8 +1233,8 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
   extraFunctions = extraFunctions or {};
   tinsert(extraFunctions, 1, {
     buttonLabel = L["Expand"],
-    func = function()
-      WeakAuras.OpenTextEditor(data, path, encloseInFunction, multipath, reloadOptions, setOnParent, url)
+    func = function(info)
+      WeakAuras.OpenTextEditor(WeakAuras.GetPickedDisplay(), path, encloseInFunction, multipath, reloadOptions, setOnParent, url)
     end
   });
 
