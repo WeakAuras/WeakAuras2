@@ -1139,18 +1139,17 @@ local function modify(parent, region, data)
     region.tooltipFrame:EnableMouse(false);
   end
 
-  function region:Update()
+  function region:UpdateMinMax()
     local state = region.state
+    local min
     local max
     if state.progressType == "timed" then
-      local expirationTime = state.expirationTime and state.expirationTime > 0 and state.expirationTime or math.huge;
       local duration = state.duration or 0
-
       if region.adjustedMinRelPercent then
         region.adjustedMinRel = region.adjustedMinRelPercent * duration
       end
 
-      local adjustMin = region.adjustedMin or region.adjustedMinRel or 0;
+      min = region.adjustedMin or region.adjustedMinRel or 0;
 
       if duration == 0 then
         max = 0
@@ -1162,20 +1161,13 @@ local function modify(parent, region, data)
       else
         max = duration
       end
-
-      region:SetTime(max - adjustMin, expirationTime - adjustMin, state.inverse);
-      if not region.TimerTick then
-        region.TimerTick = TimerTick
-        region:UpdateRegionHasTimerTick()
-      end
     elseif state.progressType == "static" then
-      local value = state.value or 0;
       local total = state.total or 0;
-
       if region.adjustedMinRelPercent then
         region.adjustedMinRel = region.adjustedMinRelPercent * total
       end
-      local adjustMin = region.adjustedMin or region.adjustedMinRel or 0;
+      min = region.adjustedMin or region.adjustedMinRel or 0;
+
       if region.adjustedMax then
         max = region.adjustedMax
       elseif region.adjustedMaxRelPercent then
@@ -1184,7 +1176,31 @@ local function modify(parent, region, data)
       else
         max = total
       end
-      region:SetValue(value - adjustMin, max - adjustMin);
+    end
+    region.currentMin, region.currentMax = min, max
+  end
+
+  function region:GetMinMax()
+    return region.currentMin or 0, region.currentMax or 0
+  end
+
+  function region:Update()
+    local state = region.state
+    region:UpdateMinMax()
+    if state.progressType == "timed" then
+      local expirationTime = state.expirationTime and state.expirationTime > 0 and state.expirationTime or math.huge;
+      local duration = state.duration or 0
+
+      region:SetTime(region.currentMax - region.currentMin, expirationTime - region.currentMin, state.inverse);
+      if not region.TimerTick then
+        region.TimerTick = TimerTick
+        region:UpdateRegionHasTimerTick()
+      end
+    elseif state.progressType == "static" then
+      local value = state.value or 0;
+      local total = state.total or 0;
+
+      region:SetValue(value - region.currentMin, region.currentMax - region.currentMin);
       if region.TimerTick then
         region.TimerTick = nil
         region:UpdateRegionHasTimerTick()
@@ -1210,9 +1226,8 @@ local function modify(parent, region, data)
     self.icon:SetTexture(iconPath);
 
     local duration = state.duration or 0
-    local min = region.adjustMin or 0
     local effectiveInverse = (state.inverse and not region.inverseDirection) or (not state.inverse and region.inverseDirection);
-    region.bar:SetAdditionalBars(state.additionalProgress, region.overlays, min, max, effectiveInverse, region.overlayclip);
+    region.bar:SetAdditionalBars(state.additionalProgress, region.overlays, region.currentMin, region.currentMax, effectiveInverse, region.overlayclip);
   end
 
   -- Scale update function
