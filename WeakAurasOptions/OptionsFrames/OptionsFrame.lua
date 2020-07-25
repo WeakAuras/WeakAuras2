@@ -770,7 +770,7 @@ function WeakAuras.CreateFrame()
       end
     end
     if (type(self.pickedDisplay) == "string" and self.pickedDisplay == id)
-       or (type(self.pickedDisplay == "table") and id == tempGroup.id)
+       or (type(self.pickedDisplay) == "table" and id == tempGroup.id)
     then
       frame:UpdateOptions()
     end
