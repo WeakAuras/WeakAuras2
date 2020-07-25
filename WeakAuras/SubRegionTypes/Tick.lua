@@ -181,60 +181,36 @@ local funcs = {
     local offset, offsetx, offsety = self.tick_placement, 0, 0
     local width = self.parentMajorSize
 
-    local hide = false
-    if self.tick_placement_mode == "AtValue" then
-      local percent = self.trigger_total and self.trigger_total ~= 0 and self.tick_placement / self.trigger_total
+    local minValue, maxValue = self.parent:GetMinMax()
+    local valueRange = maxValue - minValue
 
-      if not self.trigger_total or percent and percent < 0 or percent > 1 then
-        hide = true
-        offset = 0
-      else
-        offset = percent * width
-      end
+    local tick_placement
+    if self.tick_placement_mode == "AtValue" then
+      tick_placement = self.tick_placement
     elseif self.tick_placement_mode == "AtMissingValue" then
-      local percent = self.trigger_total and self.trigger_total ~= 0 and 1 - (self.tick_placement / self.trigger_total)
-      if not self.trigger_total or percent and percent < 0 or percent > 1 then
-        hide = true
-        offset = 0
-      else
-        offset = percent * width
-      end
+      tick_placement = self.trigger_total and self.trigger_total - self.tick_placement
     elseif self.tick_placement_mode == "AtPercent" then
-      if self.tick_placement >= 0 and self.tick_placement <= 100 then
-        offset = (self.tick_placement / 100) * width
-      else
-        hide = true
-        offset = 0
+      if self.tick_placement >= 0 and self.tick_placement <= 100 and self.trigger_total then
+        tick_placement = self.tick_placement * self.trigger_total / 100
       end
     elseif self.tick_placement_mode == "ValueOffset" then
       if self.trigger_total and self.trigger_total ~= 0 then
-        local atValue
         if self.state.progressType == "timed" then
-          atValue = self.state.expirationTime - GetTime() + self.tick_placement
+          tick_placement = self.state.expirationTime - GetTime() + self.tick_placement
         else
-          atValue = self.state.value + self.tick_placement
+          tick_placement = self.state.value + self.tick_placement
         end
-
-        local percent = atValue / self.trigger_total
-        if not self.trigger_total or percent < 0 or percent > 1 then
-          hide = true
-          offset = 0
-        else
-          offset = percent * width
-        end
-      else
-        hide = true
-        offset = 0
       end
     end
 
-    if hide then
+    local percent = valueRange ~= 0 and tick_placement and (tick_placement - minValue) / valueRange
+    if not percent or (percent and percent < 0 or percent > 1) then
       self.texture:Hide()
+      offset = 0
     else
       self.texture:Show()
+      offset = percent * width
     end
-
-
 
     local inverse = self.inverse
     if self.trigger_inverse then
