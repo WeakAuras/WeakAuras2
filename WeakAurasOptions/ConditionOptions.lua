@@ -96,7 +96,8 @@ local function valueToString(a, propertytype)
     else
       return "";
     end
-  elseif (propertytype == "chat" or propertytype == "sound" or propertytype == "customcode" or propertytype == "glowexternal") then
+  elseif (propertytype == "chat" or propertytype == "sound" or propertytype == "customcode"
+          or propertytype == "glowexternal" or propertytype == "customcheck") then
     return tostring(a);
   elseif (propertytype == "bool") then
     return (a == 1 or a == true) and L["True"] or L["False"];
@@ -795,9 +796,9 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
                   local changeIndex = reference.changeIndex;
                   multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
                 end
-                WeakAuras.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code-1");
+                WeakAuras.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
               else
-                WeakAuras.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"}, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code-1");
+                WeakAuras.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"}, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
               end
             end
           }
@@ -1657,6 +1658,98 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
         set = setValue
       }
       order = order + 1;
+    elseif currentConditionTemplate.type == "customcheck" then
+      args["condition" .. i .. tostring(path) .. "_op"] = {
+        name = blueIfNoValue(data, conditions[i].check, "op", L["Events"], L["Events"]),
+        desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type) or "",
+        type = "input",
+        width = WeakAuras.doubleWidth,
+        order = order,
+        get = function()
+          return check and check.op;
+        end,
+        set = setOp
+      }
+      order = order + 1;
+
+      local multipath = {}
+
+      args["condition" .. i .. tostring(path) .. "_value"] = {
+        type = "input",
+        width = WeakAuras.doubleWidth,
+        name = blueIfNoValue(data, conditions[i].check, "value", L["Custom Check"], L["Custom Check"]),
+        desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type) or "",
+        order = order,
+        get = function()
+          return check and check.value;
+        end,
+        set = setValue,
+        multiline = true,
+        control = "WeakAurasMultiLineEditBox",
+        arg = {
+          extraFunctions = {
+            {
+              buttonLabel = L["Expand"],
+              func = function()
+                if (data.controlledChildren) then
+                  -- Collect multi paths
+                  local multipath = {};
+                  for id, reference in pairs(conditions[i].check.references) do
+                    local conditionIndex = conditions[i].check.references[id].conditionIndex;
+                    multipath[id] ={ "conditions", i, "check" }
+                    for i, v in ipairs(path) do
+                      tinsert(multipath[id], "checks")
+                      tinsert(multipath[id], v)
+                    end
+                    tinsert(multipath[id], "value")
+                  end
+                  WeakAuras.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code-1");
+                else
+                  for i, v in ipairs(path) do
+                    print(i, v)
+                  end
+
+                  local fullPath = { "conditions", i, "check" }
+                  for i, v in ipairs(path) do
+                    tinsert(fullPath, "checks")
+                    tinsert(fullPath, v)
+                  end
+                  tinsert(fullPath, "value")
+
+                  WeakAuras.OpenTextEditor(data, fullPath, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code-1");
+                end
+              end
+            }
+          }
+        }
+      }
+      order = order + 1
+
+      args["condition" .. i .. tostring(path) .. "_value_error"] = {
+        type = "description",
+        name = function()
+          if (not check.value) then
+            return ""
+          end
+          local _, errorString = loadstring("return " .. check.value);
+          return errorString and "|cFFFF0000"..errorString or "";
+        end,
+        width = WeakAuras.doubleWidth,
+        order = order,
+        hidden = function()
+          if (not check.value) then
+            return true;
+          end
+
+          local loadedFunction, errorString = loadstring("return " .. check.value);
+          if(errorString and not loadedFunction) then
+            return false;
+          else
+            return true;
+          end
+        end
+      }
+      order = order + 1
     elseif (currentConditionTemplate.type == "combination") then
       -- Do nothing
     else
@@ -2122,7 +2215,7 @@ local function compareSubChecks(a, b, allConditionTemplates)
       end
 
       local type = currentConditionTemplate.type;
-      if (type == "number" or type == "timer" or type == "select" or type == "string") then
+      if (type == "number" or type == "timer" or type == "select" or type == "string" or type == "customcheck") then
         if (a[i].op ~= b[i].op or a[i].value ~= b[i].value) then
           return false;
         end
@@ -2144,7 +2237,12 @@ local function findMatchingCondition(all, needle, start, allConditionTemplates)
     end
 
     if (condition.check.trigger == needle.check.trigger and condition.check.variable == needle.check.variable) then
-      if (condition.check.trigger == -2) then
+      if condition.check.variable == "customcheck" then
+        -- Be a bit more strict for custom checks, there's little benefit in merging them
+        if condition.check.op == needle.check.op and condition.check.value == needle.check.value then
+          return start
+        end
+      elseif (condition.check.trigger == -2) then
         if (compareSubChecks(condition.check.checks, needle.check.checks, allConditionTemplates)) then
           return start;
         end
