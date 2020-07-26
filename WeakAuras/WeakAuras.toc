@@ -52,11 +52,16 @@ RegionTypes\Icon.lua
 RegionTypes\Text.lua
 RegionTypes\Group.lua
 RegionTypes\DynamicGroup.lua
+RegionTypes\StopMotion.lua
+#@retail@
 RegionTypes\Model.lua
+#@end-retail@
 
 # sub region support
 SubRegionTypes\SubText.lua
 SubRegionTypes\Border.lua
 SubRegionTypes\Glow.lua
 SubRegionTypes\Tick.lua
+#@retail@
 SubRegionTypes\BarModel.lua
+#@end-retail@
