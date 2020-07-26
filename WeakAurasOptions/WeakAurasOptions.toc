@@ -29,6 +29,7 @@ RegionOptions\Icon.lua
 RegionOptions\Text.lua
 RegionOptions\Group.lua
 RegionOptions\DynamicGroup.lua
+RegionOptions\StopMotion.lua
 #@retail@
 RegionOptions\Model.lua
 #@end-retail@
