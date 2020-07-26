@@ -909,6 +909,19 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
         check = string.format("state and WeakAuras.CallCustomConditionTest(%q, %s, state[%s], %s, %s, %s)",
                               uid, testFunctionNumber, trigger, valueString, (opString or "nil"), preambleString or "nil");
       end
+    elseif (cType == "customcheck") then
+      if value then
+        local customCheck = WeakAuras.LoadFunction("return " .. value, "custom check")
+        if customCheck then
+          WeakAuras.conditionHelpers[uid] = WeakAuras.conditionHelpers[uid] or {}
+          WeakAuras.conditionHelpers[uid].customTestFunctions = WeakAuras.conditionHelpers[uid].customTestFunctions or {}
+          tinsert(WeakAuras.conditionHelpers[uid].customTestFunctions, customCheck);
+          local testFunctionNumber = #(WeakAuras.conditionHelpers[uid].customTestFunctions);
+
+          check = string.format("state and WeakAuras.CallCustomConditionTest(%q, %s, state)",
+                                uid, testFunctionNumber, trigger);
+        end
+      end
     elseif (cType == "number" and op) then
       local v = tonumber(value)
       if (v) then
@@ -1213,6 +1226,10 @@ local globalConditions =
       state.attackabletarget = UnitCanAttack("player", "target");
     end
   },
+  ["customcheck"] = {
+    display = L["Custom Check"],
+    type = "customcheck"
+  }
 }
 
 function WeakAuras.GetGlobalConditions()
@@ -1363,6 +1380,18 @@ local function EvaluateCheckForRegisterForGlobalConditions(id, check, allConditi
         EvaluateCheckForRegisterForGlobalConditions(id, subcheck, allConditionsTemplate, register);
       end
     end
+  elseif trigger == -1 then
+    if variable == "customcheck" then
+      if check.op then
+        for event in string.gmatch(check.op, "[%w_]+") do
+          if (not dynamicConditions[event]) then
+            register[event] = true;
+            dynamicConditions[event] = {};
+          end
+          dynamicConditions[event][id] = true;
+        end
+      end
+    end
   elseif (trigger and variable) then
     local conditionTemplate = allConditionsTemplate[trigger] and allConditionsTemplate[trigger][variable];
     if (conditionTemplate and conditionTemplate.events) then
@@ -1415,7 +1444,7 @@ function WeakAuras.RegisterForGlobalConditions(id)
         dynamicConditionsFrame.onUpdate = true;
       end
     else
-      dynamicConditionsFrame:RegisterEvent(event);
+      pcall(dynamicConditionsFrame.RegisterEvent, dynamicConditionsFrame, event);
     end
   end
 end
