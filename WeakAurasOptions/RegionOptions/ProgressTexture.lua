@@ -33,7 +33,7 @@ local function createOptions(id, data)
       width = WeakAuras.halfWidth,
       order = 12,
       func = function()
-        WeakAuras.OpenTexturePicker(data, "foregroundTexture", WeakAuras.texture_types);
+        WeakAuras.OpenTexturePicker(data, data, "foregroundTexture", WeakAuras.texture_types);
       end
     },
     sameTexture = {
@@ -48,7 +48,7 @@ local function createOptions(id, data)
       width = WeakAuras.halfWidth,
       order = 17,
       func = function()
-        WeakAuras.OpenTexturePicker(data, "backgroundTexture", WeakAuras.texture_types);
+        WeakAuras.OpenTexturePicker(data, data, "backgroundTexture", WeakAuras.texture_types);
       end,
       disabled = function() return data.sameTexture; end
     },

@@ -161,17 +161,18 @@ local function ConstructTexturePicker(frame)
     end
 
     SetAll(self.data, self.field, texturePath);
-    if(type(self.data.id) == "string") then
-      WeakAuras.Add(self.data);
-      WeakAuras.UpdateThumbnail(self.data);
+    if(type(self.parentData.id) == "string") then
+      WeakAuras.Add(self.parentData);
+      WeakAuras.UpdateThumbnail(self.parentData);
     end
     group:UpdateList();
     local status = dropdown.status or dropdown.localstatus
     dropdown.dropdown:SetText(dropdown.list[status.selected]);
   end
 
-  function group.Open(self, data, field, textures, SetTextureFunc)
-    self.data = data;
+  function group.Open(self, data, parentData, field, textures, SetTextureFunc)
+    self.data = data
+    self.parentData = parentData
     self.field = field;
     self.textures = textures;
     self.SetTextureFunc = SetTextureFunc
@@ -247,8 +248,8 @@ local function ConstructTexturePicker(frame)
   end
 
   function group.CancelClose()
-    if(group.data.controlledChildren) then
-      for index, childId in pairs(group.data.controlledChildren) do
+    if(group.parentData.controlledChildren) then
+      for index, childId in pairs(group.parentData.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
           childData[group.field] = group.givenPath[childId];
