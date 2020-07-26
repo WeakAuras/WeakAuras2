@@ -67,7 +67,7 @@ local function createOptions(id, data)
             name = L["Choose"],
             order = 12,
             func = function()
-                WeakAuras.OpenTexturePicker(data, "foregroundTexture", texture_types, setTextureFunc);
+                WeakAuras.OpenTexturePicker(data, data, "foregroundTexture", texture_types, setTextureFunc);
             end
         },
         sameTexture = {
@@ -83,7 +83,7 @@ local function createOptions(id, data)
             name = L["Choose"],
             order = 17,
             func = function()
-                WeakAuras.OpenTexturePick(data, "backgroundTexture", texture_types, setTextureFunc);
+                WeakAuras.OpenTexturePick(data, data, "backgroundTexture", texture_types, setTextureFunc);
             end,
             disabled = function() return data.sameTexture or data.hideBackground; end
         },
