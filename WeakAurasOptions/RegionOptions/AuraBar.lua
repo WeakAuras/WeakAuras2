@@ -253,7 +253,7 @@ local function createOptions(id, data)
       width = WeakAuras.halfWidth,
       order = 44.3,
       func = function()
-        WeakAuras.OpenTexturePicker(data, "sparkTexture", WeakAuras.texture_types);
+        WeakAuras.OpenTexturePicker(data, data, "sparkTexture", WeakAuras.texture_types);
       end,
       disabled = function() return not data.spark end,
       hidden = function() return not data.spark end,
