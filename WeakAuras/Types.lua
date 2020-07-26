@@ -2806,6 +2806,31 @@ WeakAuras.reset_ranged_swing_spells = {
   [75] = true, -- Auto Shot
 }
 
+WeakAuras.StopMotion = {}
+WeakAuras.StopMotion.texture_types = {
+}
+
+WeakAuras.StopMotion.texture_types.Basic = {
+  ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion"] = "Example",
+}
+
+WeakAuras.StopMotion.texture_data = {
+}
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion"] = {
+     ["count"] = 64,
+     ["rows"] = 8,
+     ["columns"] = 8
+  }
+
+WeakAuras.StopMotion.animation_types = {
+  loop = L["Loop"],
+  bounce = L["Forward, Reverse Loop"],
+  once = L["Forward"],
+  progress = L["Progress"]
+}
+
+
 if WeakAuras.IsClassic() then
   WeakAuras.baseUnitId.focus = nil
   WeakAuras.baseUnitId.vehicle = nil
