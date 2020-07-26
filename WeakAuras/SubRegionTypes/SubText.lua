@@ -405,7 +405,7 @@ local function modify(parent, region, parentData, data, first)
 
   region.UpdateAnchor = function(self)
     local xo, yo = getRotateOffset(text, textDegrees, selfPoint)
-    parent:AnchorSubRegion(text, "point", selfPoint, self.text_anchorPoint, (self.text_anchorXOffset or 0) + xo, (self.text_anchorYOffset or 0) + yo)
+    parent:AnchorSubRegion(text, "point", selfPoint, data.text_anchorPoint, (self.text_anchorXOffset or 0) + xo, (self.text_anchorYOffset or 0) + yo)
   end
 
   region:UpdateAnchor()
@@ -426,10 +426,10 @@ local function modify(parent, region, parentData, data, first)
   end
 
   region.SetYOffset = function(self, yOffset)
-    if self.text_anchorXOffset == yOffset then
+    if self.text_anchorYOffset == yOffset then
       return
     end
-    self.text_anchorXOffset = yOffset
+    self.text_anchorYOffset = yOffset
     self:UpdateAnchor()
   end
 end
