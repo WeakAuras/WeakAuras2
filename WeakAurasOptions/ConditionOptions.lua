@@ -1495,11 +1495,13 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
         check = getOrCreateSubCheck(conditions[i].check, path);
         check.op = v;
         WeakAuras.Add(data);
+        WeakAuras.ClearAndUpdateOptions(data.id)
       end
       setValue = function(info, v)
         check = getOrCreateSubCheck(conditions[i].check, path);
         check.value = v;
-        WeakAuras.Add(data);
+        WeakAuras.Add(data)
+        WeakAuras.ClearAndUpdateOptions(data.id)
       end
     end
 
