@@ -406,7 +406,7 @@ local function createThumbnail()
   local background = region:CreateTexture(nil, "BACKGROUND");
   borderframe.background = background;
 
-  local foreground = region:CreateTexture(nil, "ART");
+  local foreground = region:CreateTexture(nil, "ARTWORK");
   borderframe.foreground = foreground;
 
   local OrgSetTexture = foreground.SetTexture;

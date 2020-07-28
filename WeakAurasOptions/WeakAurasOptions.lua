@@ -1218,7 +1218,7 @@ function WeakAuras.DropIndicator()
     indicator:SetHeight(4)
     indicator:SetFrameStrata("FULLSCREEN")
 
-    local texture = indicator:CreateTexture(nil, "FULLSCREEN")
+    local texture = indicator:CreateTexture(nil, "HIGHLIGHT")
     texture:SetBlendMode("ADD")
     texture:SetAllPoints(indicator)
     texture:SetTexture("Interface\\PaperDollInfoFrame\\UI-Character-Tab-Highlight")
