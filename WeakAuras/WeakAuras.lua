@@ -2691,6 +2691,9 @@ function WeakAuras.Rename(data, newid)
   WeakAuras.ProfileRenameAura(oldid, newid);
 
   WeakAuras.RenameCollapsedData(oldid, newid)
+
+  -- This should not be necessary
+  WeakAuras.Add(data)
 end
 
 function WeakAuras.Convert(data, newType)
