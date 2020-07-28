@@ -204,26 +204,17 @@ local globalDynamicConditionFuncs = {};
 -- All regions keyed on id, has properties: region, regionType, also see clones
 WeakAuras.regions = {};
 local regions = WeakAuras.regions;
-WeakAuras.auras = {};
-local auras = WeakAuras.auras;
-WeakAuras.events = {};
-local events = WeakAuras.events;
 
 -- keyed on id, contains bool indicating whether the aura is loaded
 WeakAuras.loaded = {};
 local loaded = WeakAuras.loaded;
-
-WeakAuras.specificBosses = {};
-local specificBosses = WeakAuras.specificBosses;
-WeakAuras.specificUnits = {};
-local specificUnits = WeakAuras.specificUnits;
 
 -- contains regions for clones
 WeakAuras.clones = {};
 local clones = WeakAuras.clones;
 
 -- Unused regions that are kept around for clones
-WeakAuras.clonePool = {};
+Private.clonePool = {};
 local clonePool = WeakAuras.clonePool;
 
 -- One table per regionType, see RegisterRegionType, notable properties: create, modify and default
@@ -270,33 +261,22 @@ WeakAuras.triggerTypesOptions = {};
 --  index: The index of the buff/debuff for the buff trigger system, used to set the tooltip
 --  spellId: spellId of the buff/debuff, used to set the tooltip
 
-WeakAuras.triggerState = {}
-local triggerState = WeakAuras.triggerState;
+local triggerState = {}
 
 -- Fallback states
 local fallbacksStates = {};
 
 -- List of all trigger systems, contains each system once
-WeakAuras.triggerSystems = {}
-local triggerSystems = WeakAuras.triggerSystems;
-
-WeakAuras.forceable_events = {};
+local triggerSystems = {}
 
 local from_files = {};
 
 local timers = {}; -- Timers for autohiding, keyed on id, triggernum, cloneid
 WeakAuras.timers = timers;
 
-local loaded_events = {};
-WeakAuras.loaded_events = loaded_events;
-local loaded_auras = {};
-WeakAuras.loaded_auras = loaded_auras;
-
 -- Animations
-WeakAuras.animations = {};
-local animations = WeakAuras.animations;
-WeakAuras.pending_controls = {};
-local pending_controls = WeakAuras.pending_controls;
+local animations = {}
+local pending_controls = {}
 
 WeakAuras.raidUnits = {};
 WeakAuras.partyUnits = {};
@@ -310,7 +290,7 @@ do
 end
 local playerLevel = UnitLevel("player");
 
-WeakAuras.currentInstanceType = "none"
+local currentInstanceType = "none"
 
 -- Custom Action Functions, keyed on id, "init" / "start" / "finish"
 WeakAuras.customActionsFunctions = {};
@@ -2028,7 +2008,7 @@ end
 
 local encounterScriptsDeferred = {}
 local function LoadEncounterInitScriptsImpl(id)
-  if (WeakAuras.currentInstanceType ~= "raid") then
+  if (currentInstanceType ~= "raid") then
     return
   end
   if (id) then
@@ -2062,9 +2042,9 @@ end
 
 function WeakAuras.UpdateCurrentInstanceType(instanceType)
   if (not IsInInstance()) then
-    WeakAuras.currentInstanceType = "none"
+    currentInstanceType = "none"
   else
-    WeakAuras.currentInstanceType = instanceType or select (2, GetInstanceInfo())
+    currentInstanceType = instanceType or select (2, GetInstanceInfo())
   end
 end
 
