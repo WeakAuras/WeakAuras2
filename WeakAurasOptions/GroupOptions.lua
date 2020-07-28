@@ -1,3 +1,6 @@
+if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
+
 local L = WeakAuras.L
 local regionOptions = WeakAuras.regionOptions;
 local parsePrefix = WeakAuras.commonOptions.parsePrefix
