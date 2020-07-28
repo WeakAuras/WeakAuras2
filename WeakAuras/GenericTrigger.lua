@@ -3443,7 +3443,7 @@ function GenericTrigger.GetOverlayInfo(data, triggernum)
         WeakAuras.ActivateAuraEnvironment(nil);
         local count = 0;
         for id, state in pairs(allStates) do
-          if (state.additionalProgress) then
+          if (type(state.additionalProgress) == "table") then
             count = max(count, #state.additionalProgress);
           end
         end
