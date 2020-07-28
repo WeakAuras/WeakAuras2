@@ -72,7 +72,7 @@ function Private.LoadOptions(msg)
       local loaded, reason = LoadAddOn("WeakAurasOptions");
       if not(loaded) then
         reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
-        print(WeakAuras.printPrefix .. "Options could not be loaded, the addon is " .. reason);
+        WeakAuras.prettyPrint("Options could not be loaded, the addon is " .. reason);
         return false;
       end
     end
@@ -102,7 +102,7 @@ end
 SLASH_WEAKAURAS1, SLASH_WEAKAURAS2 = "/weakauras", "/wa";
 function SlashCmdList.WEAKAURAS(input)
   if not WeakAuras.IsCorrectVersion() then
-    prettyPrint(WeakAuras.wrongTargetMessage)
+    prettyPrint(Private.wrongTargetMessage)
     return
   end
   local args, msg = {}, nil
