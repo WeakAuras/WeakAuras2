@@ -72,10 +72,10 @@ local BuffTrigger = {};
 
 local timer = WeakAuras.timer;
 local function_strings = WeakAuras.function_strings;
-local auras = WeakAuras.auras;
-local specificBosses = WeakAuras.specificBosses;
-local specificUnits = WeakAuras.specificUnits;
-local loaded_auras = WeakAuras.loaded_auras;
+local specificBosses = {}
+local specificUnits = {}
+local auras = {}
+local loaded_auras = {}
 
 WeakAuras.me = GetUnitName("player", true)
 WeakAuras.myGUID = nil

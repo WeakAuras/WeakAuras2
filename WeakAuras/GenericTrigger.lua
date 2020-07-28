@@ -84,12 +84,11 @@ local event_prototypes = WeakAuras.event_prototypes;
 local timer = WeakAuras.timer;
 local debug = WeakAuras.debug;
 
-local events = WeakAuras.events;
-local loaded_events = WeakAuras.loaded_events;
+local events = {}
+local loaded_events = {}
 local loaded_unit_events = {};
 local loaded_auras = {}; -- id to bool map
 local timers = WeakAuras.timers;
-local specificBosses = WeakAuras.specificBosses;
 
 -- Local functions
 local LoadEvent, HandleEvent, HandleUnitEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
@@ -1129,7 +1128,6 @@ end
 function GenericTrigger.Add(data, region)
   local id = data.id;
   events[id] = nil;
-  WeakAuras.forceable_events[id] = {};
 
   for triggernum, triggerData in ipairs(data.triggers) do
     local trigger, untrigger = triggerData.trigger, triggerData.untrigger
