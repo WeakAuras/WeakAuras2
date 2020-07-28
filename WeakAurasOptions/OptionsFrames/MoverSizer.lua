@@ -945,7 +945,7 @@ local function ConstructMoverSizer(parent)
               frame.lineX:SetStartPoint("BOTTOMLEFT", UIParent, 0, v)
               frame.lineX:SetEndPoint("BOTTOMRIGHT", UIParent, 0, v)
               frame.lineX:Show()
-              mover.alignYFrom = ctrlDown and "CENTER" or (top >= v - 5 and top <= v + 5) and "TOP" or "BOTTOM"
+              mover.alignYFrom = (ctrlDown and "CENTER" or (top >= v - 5 and top <= v + 5) and "TOP" or "BOTTOM")
                 or (reverse and ((top >= v - 5 and top <= v + 5) and "TOP" or "BOTTOM")) -- top side first
                 or (not reverse and ((bottom >= v - 5 and bottom <= v + 5) and "BOTTOM" or "TOP")) -- bottom side first
               mover.alignYOf = v
