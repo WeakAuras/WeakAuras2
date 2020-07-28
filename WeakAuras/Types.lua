@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
