@@ -34,6 +34,59 @@ local function union(table1, table2)
   return meta;
 end
 
+local function CorrectSpellName(input)
+  local inputId = tonumber(input);
+  if(inputId) then
+    local name = GetSpellInfo(inputId);
+    if(name) then
+      return inputId;
+    else
+      return nil;
+    end
+  elseif WeakAuras.IsClassic() and input then
+    local name, _, _, _, _, _, spellId = GetSpellInfo(input)
+    if spellId then
+      return spellId
+    end
+  elseif(input) then
+    local link;
+    if(input:sub(1,1) == "\124") then
+      link = input;
+    else
+      link = GetSpellLink(input);
+    end
+    if(link) and link ~= "" then
+      local itemId = link:match("spell:(%d+)");
+      return tonumber(itemId);
+    elseif not WeakAuras.IsClassic() then
+      for tier = 1, MAX_TALENT_TIERS do
+        for column = 1, NUM_TALENT_COLUMNS do
+          local _, _, _, _, _, spellId = GetTalentInfo(tier, column, 1)
+          local name = GetSpellInfo(spellId);
+          if name == input then
+            return spellId;
+          end
+        end
+      end
+    end
+  end
+end
+
+local function CorrectItemName(input)
+  local inputId = tonumber(input);
+  if(inputId) then
+    return inputId;
+  elseif(input) then
+    local _, link = GetItemInfo(input);
+    if(link) then
+      local itemId = link:match("item:(%d+)");
+      return tonumber(itemId);
+    else
+      return nil;
+    end
+  end
+end
+
 -- Also used by the GenericTrigger
 function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, triggertype, unevent)
   local trigger, untrigger;
@@ -564,9 +617,9 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
               if(arg.type == "aura") then
                 fixedInput = WeakAuras.spellCache.CorrectAuraName(v);
               elseif(arg.type == "spell") then
-                fixedInput = WeakAuras.CorrectSpellName(v);
+                fixedInput = CorrectSpellName(v);
               elseif(arg.type == "item") then
-                fixedInput = WeakAuras.CorrectItemName(v);
+                fixedInput = CorrectItemName(v);
               end
               trigger[realname] = fixedInput;
               WeakAuras.Add(data);
