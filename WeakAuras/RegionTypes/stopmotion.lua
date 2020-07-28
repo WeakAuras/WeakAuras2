@@ -1,3 +1,6 @@
+if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
+
 local texture_types = WeakAuras.StopMotion.texture_types;
 local texture_data = WeakAuras.StopMotion.texture_data;
 local animation_types = WeakAuras.StopMotion.animation_types;

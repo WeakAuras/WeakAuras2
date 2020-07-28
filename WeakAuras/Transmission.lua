@@ -22,6 +22,7 @@ If target is installed data, or is a uid which points to installed data, then th
 
 ]]--
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
 
 -- Lua APIs
 local tinsert = table.insert
@@ -376,7 +377,7 @@ local function importPendingData()
     regionOptions[thumbnailAnchor.currentThumbnailType].releaseThumbnail(thumbnailAnchor.currentThumbnail)
     thumbnailAnchor.currentThumbnail = nil
   end
-  if imports and WeakAuras.LoadOptions() then
+  if imports and Private.LoadOptions() then
     WeakAuras.ShowOptions()
   else
     return

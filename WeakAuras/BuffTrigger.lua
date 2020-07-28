@@ -57,6 +57,7 @@ Returns the potential conditions for a trigger
 ]]--
 
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
 
 -- Lua APIs
 local tinsert, wipe = table.insert, wipe

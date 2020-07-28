@@ -1,3 +1,4 @@
+local AddonName, Private = ...
 WeakAuras = {}
 WeakAuras.L = {}
 WeakAuras.frames = {}
