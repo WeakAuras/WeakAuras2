@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
 local pairs, error, coroutine = pairs, error, coroutine

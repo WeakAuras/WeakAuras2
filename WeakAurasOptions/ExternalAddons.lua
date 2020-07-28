@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
 local tinsert, wipe = table.insert, wipe

@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
