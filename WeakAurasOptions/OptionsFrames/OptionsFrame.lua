@@ -812,7 +812,8 @@ function WeakAuras.CreateFrame()
         load = WeakAuras.GetLoadOptions,
         action = WeakAuras.GetActionOptions,
         animation = WeakAuras.GetAnimationOptions,
-        authorOptions = WeakAuras.GetAuthorOptions
+        authorOptions = WeakAuras.GetAuthorOptions,
+        information = WeakAuras.GetInformationOptions,
       }
       if optionsGenerator[tab] then
         aceOptions[id][tab] = optionsGenerator[tab](data)
@@ -854,7 +855,8 @@ function WeakAuras.CreateFrame()
       { value = "load", text = L["Load"]},
       { value = "action", text = L["Actions"]},
       { value = "animation", text = L["Animations"]},
-      { value = "authorOptions", text = L["Custom Options"]}
+      { value = "authorOptions", text = L["Custom Options"]},
+      { value = "information", text = L["Information"]},
     }
     -- Check if group and not the temp group
     if data.controlledChildren and type(data.id) == "string" then
