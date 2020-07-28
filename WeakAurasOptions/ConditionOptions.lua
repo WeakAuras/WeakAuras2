@@ -45,6 +45,7 @@
 ---  - action: The action function, called on activating a condition
 --   - type: The type
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
