@@ -293,7 +293,7 @@ local playerLevel = UnitLevel("player");
 local currentInstanceType = "none"
 
 -- Custom Action Functions, keyed on id, "init" / "start" / "finish"
-WeakAuras.customActionsFunctions = {};
+Private.customActionsFunctions = {};
 
 -- Custom Functions used in conditions, keyed on id, condition number, "changes", property number
 WeakAuras.customConditionsFunctions = {};
@@ -1062,37 +1062,37 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
   return ret;
 end
 
-function WeakAuras.LoadCustomActionFunctions(data)
+local function LoadCustomActionFunctions(data)
   local id = data.id;
-  WeakAuras.customActionsFunctions[id] = {};
+  Private.customActionsFunctions[id] = {};
 
   if (data.actions) then
     if (data.actions.init and data.actions.init.do_custom and data.actions.init.custom) then
       local func = WeakAuras.LoadFunction("return function() "..(data.actions.init.custom).."\n end", id, "initialization");
-      WeakAuras.customActionsFunctions[id]["init"] = func;
+      Private.customActionsFunctions[id]["init"] = func;
     end
 
     if (data.actions.start) then
       if (data.actions.start.do_custom and data.actions.start.custom) then
         local func = WeakAuras.LoadFunction("return function() "..(data.actions.start.custom).."\n end", id, "show action");
-        WeakAuras.customActionsFunctions[id]["start"] = func;
+        Private.customActionsFunctions[id]["start"] = func;
       end
 
       if (data.actions.start.do_message and data.actions.start.message_custom) then
         local func = WeakAuras.LoadFunction("return "..(data.actions.start.message_custom), id, "show message");
-        WeakAuras.customActionsFunctions[id]["start_message"] = func;
+        Private.customActionsFunctions[id]["start_message"] = func;
       end
     end
 
     if (data.actions.finish) then
       if (data.actions.finish.do_custom and data.actions.finish.custom) then
         local func = WeakAuras.LoadFunction("return function() "..(data.actions.finish.custom).."\n end", id, "hide action");
-        WeakAuras.customActionsFunctions[id]["finish"] = func;
+        Private.customActionsFunctions[id]["finish"] = func;
       end
 
       if (data.actions.finish.do_message and data.actions.finish.message_custom) then
         local func = WeakAuras.LoadFunction("return "..(data.actions.finish.message_custom), id, "hide message");
-        WeakAuras.customActionsFunctions[id]["finish_message"] = func;
+        Private.customActionsFunctions[id]["finish_message"] = func;
       end
     end
   end
@@ -1134,7 +1134,7 @@ function WeakAuras.GetProperties(data)
   return properties;
 end
 
-function WeakAuras.LoadConditionPropertyFunctions(data)
+local function LoadConditionPropertyFunctions(data)
   local id = data.id;
   if (data.conditions) then
     WeakAuras.customConditionsFunctions[id] = {};
@@ -2530,7 +2530,7 @@ function WeakAuras.Delete(data)
     WeakAuras.mouseFrame:delete(id);
   end
 
-  WeakAuras.customActionsFunctions[id] = nil;
+  Private.customActionsFunctions[id] = nil;
   WeakAuras.customConditionsFunctions[id] = nil;
   WeakAuras.conditionTextFormatters[id] = nil
 
@@ -2644,8 +2644,8 @@ function WeakAuras.Rename(data, newid)
     WeakAuras.mouseFrame:rename(oldid, newid);
   end
 
-  WeakAuras.customActionsFunctions[newid] = WeakAuras.customActionsFunctions[oldid];
-  WeakAuras.customActionsFunctions[oldid] = nil;
+  Private.customActionsFunctions[newid] = Private.customActionsFunctions[oldid];
+  Private.customActionsFunctions[oldid] = nil;
 
   WeakAuras.customConditionsFunctions[newid] = WeakAuras.customConditionsFunctions[oldid];
   WeakAuras.customConditionsFunctions[oldid] = nil;
@@ -4710,8 +4710,8 @@ local function pAdd(data, simpleChange)
       if data.triggers.disjunctive == "custom" then
         triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.triggers.customTriggerLogic or ""), id, "trigger combination");
       end
-      WeakAuras.LoadCustomActionFunctions(data);
-      WeakAuras.LoadConditionPropertyFunctions(data);
+      LoadCustomActionFunctions(data);
+      LoadConditionPropertyFunctions(data);
       local checkConditionsFuncStr = WeakAuras.ConstructConditionFunction(data);
       local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr, id, "condition checks");
       debug(id.." - Load", 1);
@@ -4893,7 +4893,7 @@ function WeakAuras.CollapseAllClones(id, triggernum)
   end
 end
 
-function WeakAuras.SetAllStatesHidden(id, triggernum)
+function Private.SetAllStatesHidden(id, triggernum)
   local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
   local changed = false
   for id, state in pairs(triggerState) do
@@ -4904,7 +4904,7 @@ function WeakAuras.SetAllStatesHidden(id, triggernum)
   return changed
 end
 
-function WeakAuras.SetAllStatesHiddenExcept(id, triggernum, list)
+function Private.SetAllStatesHiddenExcept(id, triggernum, list)
   local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
   for cloneId, state in  pairs(triggerState) do
     if (not (list[cloneId])) then
@@ -4914,7 +4914,7 @@ function WeakAuras.SetAllStatesHiddenExcept(id, triggernum, list)
   end
 end
 
-function WeakAuras.ReleaseClone(id, cloneId, regionType)
+function Private.ReleaseClone(id, cloneId, regionType)
   if (not clones[id]) then
     return;
   end
@@ -5175,7 +5175,7 @@ function WeakAuras.PerformActions(data, when, region)
   end
 
   if(actions.do_message and actions.message_type and actions.message) then
-    local customFunc = WeakAuras.customActionsFunctions[data.id][when .. "_message"];
+    local customFunc = Private.customActionsFunctions[data.id][when .. "_message"];
     WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc, when, formatters);
   end
 
@@ -5192,7 +5192,7 @@ function WeakAuras.PerformActions(data, when, region)
   end
 
   if(actions.do_custom and actions.custom) then
-    local func = WeakAuras.customActionsFunctions[data.id][when]
+    local func = Private.customActionsFunctions[data.id][when]
     if func then
       WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state, region.states);
       xpcall(func, geterrorhandler());
@@ -6218,7 +6218,7 @@ do
     for id, states in pairs(triggerState) do
       local changed
       for triggernum in ipairs(states) do
-        changed = WeakAuras.SetAllStatesHidden(id, triggernum) or changed
+        changed = Private.SetAllStatesHidden(id, triggernum) or changed
       end
       if changed then
         WeakAuras.UpdatedTriggerState(id)
@@ -6246,7 +6246,7 @@ do
       if triggerState[id] then
         local changed = false
         for triggernum, state in ipairs(triggerState[id]) do
-          changed = WeakAuras.SetAllStatesHidden(id, triggernum) or changed
+          changed = Private.SetAllStatesHidden(id, triggernum) or changed
         end
         if changed then
           WeakAuras.UpdatedTriggerState(id)
@@ -6261,7 +6261,7 @@ do
       local data = WeakAuras.GetData(id)
       if (data) then
         for triggernum, trigger in ipairs(data.triggers) do
-          WeakAuras.SetAllStatesHidden(id, triggernum)
+          Private.SetAllStatesHidden(id, triggernum)
           local triggerSystem = WeakAuras.GetTriggerSystem(data, triggernum)
           if triggerSystem and triggerSystem.CreateFakeStates then
             triggerSystem.CreateFakeStates(id, triggernum)
