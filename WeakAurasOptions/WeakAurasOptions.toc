@@ -53,6 +53,7 @@ TriggerOptions.lua
 LoadOptions.lua
 ActionOptions.lua
 AnimationOptions.lua
+InformationOptions.lua
 
 BuffTrigger.lua
 BuffTrigger2.lua
