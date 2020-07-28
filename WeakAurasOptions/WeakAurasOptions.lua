@@ -1668,3 +1668,22 @@ function WeakAuras.AddTextFormatOption(input, withHeader, get, addOption, hidden
 
   return next(seenSymbols) ~= nil
 end
+
+function WeakAuras.HandleRename(data, oldid, newid)
+  WeakAuras.displayButtons[newid] = WeakAuras.displayButtons[oldid];
+  WeakAuras.displayButtons[newid]:SetData(data)
+  WeakAuras.displayButtons[oldid] = nil;
+  WeakAuras.ClearOptions(oldid)
+
+  WeakAuras.displayButtons[newid]:SetTitle(newid);
+
+  if(data.controlledChildren) then
+    for index, childId in pairs(data.controlledChildren) do
+      WeakAuras.displayButtons[childId]:SetGroup(newid)
+    end
+  end
+
+  WeakAuras.SetGrouping()
+  WeakAuras.SortDisplayButtons()
+  WeakAuras.PickDisplay(newid)
+end
