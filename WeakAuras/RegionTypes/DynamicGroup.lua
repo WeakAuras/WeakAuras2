@@ -1035,7 +1035,7 @@ local function modify(parent, region, data)
       self.needToPosition = false
       if #self.sortedChildren > 0 then
         if animate then
-          WeakAuras.RegisterGroupForPositioning(data.id, self)
+          Private.RegisterGroupForPositioning(data.id, self)
         else
           self:DoPositionChildren()
         end
