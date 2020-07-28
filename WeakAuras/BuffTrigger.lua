@@ -23,8 +23,6 @@ function BuffTrigger.Rename(oldid, newid) end
 
 function BuffTrigger.Add(data) end
 
-function BuffTrigger.Modernize(data) end
-
 function BuffTrigger.CanHaveDuration(data, triggernum)
   return false
 end
