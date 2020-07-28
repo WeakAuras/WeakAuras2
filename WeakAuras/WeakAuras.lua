@@ -171,10 +171,6 @@ local registeredFromAddons;
 WeakAuras.addons = {};
 local addons = WeakAuras.addons;
 
--- A list of tutorials, filled in by the WeakAuras_Tutorials addon by calling RegisterTutorial
-WeakAuras.tutorials = {};
-local tutorials = WeakAuras.tutorials;
-
 -- used if an addon tries to register a display under an id that the user already has a display with that id
 WeakAuras.collisions = {};
 local collisions = WeakAuras.collisions;
@@ -6027,17 +6023,6 @@ function WeakAuras.ProfileDisplays(all)
     end
     DisplayTimes[id] = DisplayTime;
   end
-end
-
-function WeakAuras.RegisterTutorial(name, displayName, description, icon, steps, order)
-  tutorials[name] = {
-    name = name,
-    displayName = displayName,
-    description = description,
-    icon = icon,
-    steps = steps,
-    order = order
-  };
 end
 
 function WeakAuras.ValueFromPath(data, path)
