@@ -1271,7 +1271,7 @@ function WeakAuras.OpenModelPicker(data, field, parentData)
     local loaded, reason = LoadAddOn("WeakAurasModelPaths");
     if not(loaded) then
       reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
-      print(WeakAuras.printPrefix .. "ModelPaths could not be loaded, the addon is " .. reason);
+      WeakAuras.prettyPrint("ModelPaths could not be loaded, the addon is " .. reason);
       WeakAuras.ModelPaths = {};
     end
     frame.modelPicker.modelTree:SetTree(WeakAuras.ModelPaths);
@@ -1292,7 +1292,7 @@ function WeakAuras.OpenTriggerTemplate(data, targetId)
     local loaded, reason = LoadAddOn("WeakAurasTemplates");
     if not(loaded) then
       reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
-      print(WeakAuras.printPrefix .. "Templates could not be loaded, the addon is " .. reason);
+      WeakAuras.prettyPrint("Templates could not be loaded, the addon is " .. reason);
       return;
     end
     frame.newView = WeakAuras.CreateTemplateView(frame);
