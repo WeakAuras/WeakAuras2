@@ -1547,163 +1547,162 @@ if WeakAuras.IsClassic() then -- Classic
   end
 end
 
-if(WeakAuras.PowerAurasPath ~= "") then
-  WeakAuras.texture_types["PowerAuras Heads-Up"] = {
-    [WeakAuras.PowerAurasPath.."Aura1"] = "Runed Text",
-    [WeakAuras.PowerAurasPath.."Aura2"] = "Runed Text On Ring",
-    [WeakAuras.PowerAurasPath.."Aura3"] = "Power Waves",
-    [WeakAuras.PowerAurasPath.."Aura4"] = "Majesty",
-    [WeakAuras.PowerAurasPath.."Aura5"] = "Runed Ends",
-    [WeakAuras.PowerAurasPath.."Aura6"] = "Extra Majesty",
-    [WeakAuras.PowerAurasPath.."Aura7"] = "Triangular Highlights",
-    [WeakAuras.PowerAurasPath.."Aura11"] = "Oblong Highlights",
-    [WeakAuras.PowerAurasPath.."Aura16"] = "Thin Crescents",
-    [WeakAuras.PowerAurasPath.."Aura17"] = "Crescent Highlights",
-    [WeakAuras.PowerAurasPath.."Aura18"] = "Dense Runed Text",
-    [WeakAuras.PowerAurasPath.."Aura23"] = "Runed Spiked Ring",
-    [WeakAuras.PowerAurasPath.."Aura24"] = "Smoke",
-    [WeakAuras.PowerAurasPath.."Aura28"] = "Flourished Text",
-    [WeakAuras.PowerAurasPath.."Aura33"] = "Droplet Highlights"
-  }
-  WeakAuras.texture_types["PowerAuras Icons"] = {
-    [WeakAuras.PowerAurasPath.."Aura8"] = "Rune",
-    [WeakAuras.PowerAurasPath.."Aura9"] = "Stylized Ghost",
-    [WeakAuras.PowerAurasPath.."Aura10"] = "Skull and Crossbones",
-    [WeakAuras.PowerAurasPath.."Aura12"] = "Snowflake",
-    [WeakAuras.PowerAurasPath.."Aura13"] = "Flame",
-    [WeakAuras.PowerAurasPath.."Aura14"] = "Holy Rune",
-    [WeakAuras.PowerAurasPath.."Aura15"] = "Zig-Zag Exclamation Point",
-    [WeakAuras.PowerAurasPath.."Aura19"] = "Crossed Swords",
-    [WeakAuras.PowerAurasPath.."Aura21"] = "Shield",
-    [WeakAuras.PowerAurasPath.."Aura22"] = "Glow",
-    [WeakAuras.PowerAurasPath.."Aura25"] = "Cross",
-    [WeakAuras.PowerAurasPath.."Aura26"] = "Droplet",
-    [WeakAuras.PowerAurasPath.."Aura27"] = "Alert",
-    [WeakAuras.PowerAurasPath.."Aura29"] = "Paw",
-    [WeakAuras.PowerAurasPath.."Aura30"] = "Bull",
-    --   [WeakAuras.PowerAurasPath.."Aura31"] = "Hieroglyphics Horizontal",
-    [WeakAuras.PowerAurasPath.."Aura32"] = "Hieroglyphics",
-    [WeakAuras.PowerAurasPath.."Aura34"] = "Circled Arrow",
-    [WeakAuras.PowerAurasPath.."Aura35"] = "Short Sword",
-    --   [WeakAuras.PowerAurasPath.."Aura36"] = "Short Sword Horizontal",
-    [WeakAuras.PowerAurasPath.."Aura45"] = "Circular Glow",
-    [WeakAuras.PowerAurasPath.."Aura48"] = "Totem",
-    [WeakAuras.PowerAurasPath.."Aura49"] = "Dragon Blade",
-    [WeakAuras.PowerAurasPath.."Aura50"] = "Ornate Design",
-    [WeakAuras.PowerAurasPath.."Aura51"] = "Inverted Holy Rune",
-    [WeakAuras.PowerAurasPath.."Aura52"] = "Stylized Skull",
-    [WeakAuras.PowerAurasPath.."Aura53"] = "Exclamation Point",
-    [WeakAuras.PowerAurasPath.."Aura54"] = "Nonagon",
-    [WeakAuras.PowerAurasPath.."Aura68"] = "Wings",
-    [WeakAuras.PowerAurasPath.."Aura69"] = "Rectangle",
-    [WeakAuras.PowerAurasPath.."Aura70"] = "Low Mana",
-    [WeakAuras.PowerAurasPath.."Aura71"] = "Ghostly Eye",
-    [WeakAuras.PowerAurasPath.."Aura72"] = "Circle",
-    [WeakAuras.PowerAurasPath.."Aura73"] = "Ring",
-    [WeakAuras.PowerAurasPath.."Aura74"] = "Square",
-    [WeakAuras.PowerAurasPath.."Aura75"] = "Square Brackets",
-    [WeakAuras.PowerAurasPath.."Aura76"] = "Bob-omb",
-    [WeakAuras.PowerAurasPath.."Aura77"] = "Goldfish",
-    [WeakAuras.PowerAurasPath.."Aura78"] = "Check",
-    [WeakAuras.PowerAurasPath.."Aura79"] = "Ghostly Face",
-    [WeakAuras.PowerAurasPath.."Aura84"] = "Overlapping Boxes",
-    --   [WeakAuras.PowerAurasPath.."Aura85"] = "Overlapping Boxes 45°",
-    --   [WeakAuras.PowerAurasPath.."Aura86"] = "Overlapping Boxes 270°",
-    [WeakAuras.PowerAurasPath.."Aura87"] = "Fairy",
-    [WeakAuras.PowerAurasPath.."Aura88"] = "Comet",
-    [WeakAuras.PowerAurasPath.."Aura95"] = "Dual Spiral",
-    [WeakAuras.PowerAurasPath.."Aura96"] = "Japanese Character",
-    [WeakAuras.PowerAurasPath.."Aura97"] = "Japanese Character",
-    [WeakAuras.PowerAurasPath.."Aura98"] = "Japanese Character",
-    [WeakAuras.PowerAurasPath.."Aura99"] = "Japanese Character",
-    [WeakAuras.PowerAurasPath.."Aura100"] = "Japanese Character",
-    [WeakAuras.PowerAurasPath.."Aura101"] = "Ball of Flame",
-    [WeakAuras.PowerAurasPath.."Aura102"] = "Zig-Zag",
-    [WeakAuras.PowerAurasPath.."Aura103"] = "Thorny Ring",
-    [WeakAuras.PowerAurasPath.."Aura110"] = "Hunter's Mark",
-    --   [WeakAuras.PowerAurasPath.."Aura111"] = "Hunter's Mark Horizontal",
-    [WeakAuras.PowerAurasPath.."Aura112"] = "Kaleidoscope",
-    [WeakAuras.PowerAurasPath.."Aura113"] = "Jesus Face",
-    [WeakAuras.PowerAurasPath.."Aura114"] = "Green Mushroom",
-    [WeakAuras.PowerAurasPath.."Aura115"] = "Red Mushroom",
-    [WeakAuras.PowerAurasPath.."Aura116"] = "Fire Flower",
-    [WeakAuras.PowerAurasPath.."Aura117"] = "Radioactive",
-    [WeakAuras.PowerAurasPath.."Aura118"] = "X",
-    [WeakAuras.PowerAurasPath.."Aura119"] = "Flower",
-    [WeakAuras.PowerAurasPath.."Aura120"] = "Petal",
-    [WeakAuras.PowerAurasPath.."Aura130"] = "Shoop Da Woop",
-    [WeakAuras.PowerAurasPath.."Aura131"] = "8-Bit Symbol",
-    [WeakAuras.PowerAurasPath.."Aura132"] = "Cartoon Skull",
-    [WeakAuras.PowerAurasPath.."Aura138"] = "Stop",
-    [WeakAuras.PowerAurasPath.."Aura139"] = "Thumbs Up",
-    [WeakAuras.PowerAurasPath.."Aura140"] = "Palette",
-    [WeakAuras.PowerAurasPath.."Aura141"] = "Blue Ring",
-    [WeakAuras.PowerAurasPath.."Aura142"] = "Ornate Ring",
-    [WeakAuras.PowerAurasPath.."Aura143"] = "Ghostly Skull"
-  }
-  WeakAuras.texture_types["PowerAuras Separated"] = {
-    [WeakAuras.PowerAurasPath.."Aura46"] = "8-Part Ring 1",
-    [WeakAuras.PowerAurasPath.."Aura47"] = "8-Part Ring 2",
-    [WeakAuras.PowerAurasPath.."Aura55"] = "Skull on Gear 1",
-    [WeakAuras.PowerAurasPath.."Aura56"] = "Skull on Gear 2",
-    [WeakAuras.PowerAurasPath.."Aura57"] = "Skull on Gear 3",
-    [WeakAuras.PowerAurasPath.."Aura58"] = "Skull on Gear 4",
-    [WeakAuras.PowerAurasPath.."Aura59"] = "Rune Ring Full",
-    [WeakAuras.PowerAurasPath.."Aura60"] = "Rune Ring Empty",
-    [WeakAuras.PowerAurasPath.."Aura61"] = "Rune Ring Left",
-    [WeakAuras.PowerAurasPath.."Aura62"] = "Rune Ring Right",
-    [WeakAuras.PowerAurasPath.."Aura63"] = "Spiked Rune Ring Full",
-    [WeakAuras.PowerAurasPath.."Aura64"] = "Spiked Rune Ring Empty",
-    [WeakAuras.PowerAurasPath.."Aura65"] = "Spiked Rune Ring Left",
-    [WeakAuras.PowerAurasPath.."Aura66"] = "Spiked Rune Ring Bottom",
-    [WeakAuras.PowerAurasPath.."Aura67"] = "Spiked Rune Ring Right",
-    [WeakAuras.PowerAurasPath.."Aura80"] = "Spiked Helm Background",
-    [WeakAuras.PowerAurasPath.."Aura81"] = "Spiked Helm Full",
-    [WeakAuras.PowerAurasPath.."Aura82"] = "Spiked Helm Bottom",
-    [WeakAuras.PowerAurasPath.."Aura83"] = "Spiked Helm Top",
-    [WeakAuras.PowerAurasPath.."Aura89"] = "5-Part Ring 1",
-    [WeakAuras.PowerAurasPath.."Aura90"] = "5-Part Ring 2",
-    [WeakAuras.PowerAurasPath.."Aura91"] = "5-Part Ring 3",
-    [WeakAuras.PowerAurasPath.."Aura92"] = "5-Part Ring 4",
-    [WeakAuras.PowerAurasPath.."Aura93"] = "5-Part Ring 5",
-    [WeakAuras.PowerAurasPath.."Aura94"] = "5-Part Ring Full",
-    [WeakAuras.PowerAurasPath.."Aura104"] = "Shield Center",
-    [WeakAuras.PowerAurasPath.."Aura105"] = "Shield Full",
-    [WeakAuras.PowerAurasPath.."Aura106"] = "Shield Top Right",
-    [WeakAuras.PowerAurasPath.."Aura107"] = "Shiled Top Left",
-    [WeakAuras.PowerAurasPath.."Aura108"] = "Shield Bottom Right",
-    [WeakAuras.PowerAurasPath.."Aura109"] = "Shield Bottom Left",
-    [WeakAuras.PowerAurasPath.."Aura121"] = "Vine Top Right Leaf",
-    [WeakAuras.PowerAurasPath.."Aura122"] = "Vine Left Leaf",
-    [WeakAuras.PowerAurasPath.."Aura123"] = "Vine Bottom Right Leaf",
-    [WeakAuras.PowerAurasPath.."Aura124"] = "Vine Stem",
-    [WeakAuras.PowerAurasPath.."Aura125"] = "Vine Thorns",
-    [WeakAuras.PowerAurasPath.."Aura126"] = "3-Part Circle 1",
-    [WeakAuras.PowerAurasPath.."Aura127"] = "3-Part Circle 2",
-    [WeakAuras.PowerAurasPath.."Aura128"] = "3-Part Circle 3",
-    [WeakAuras.PowerAurasPath.."Aura129"] = "3-Part Circle Full",
-    [WeakAuras.PowerAurasPath.."Aura133"] = "Sliced Orb 1",
-    [WeakAuras.PowerAurasPath.."Aura134"] = "Sliced Orb 2",
-    [WeakAuras.PowerAurasPath.."Aura135"] = "Sliced Orb 3",
-    [WeakAuras.PowerAurasPath.."Aura136"] = "Sliced Orb 4",
-    [WeakAuras.PowerAurasPath.."Aura137"] = "Sliced Orb 5",
-    [WeakAuras.PowerAurasPath.."Aura144"] = "Taijitu Bottom",
-    [WeakAuras.PowerAurasPath.."Aura145"] = "Taijitu Top"
-  }
-  WeakAuras.texture_types["PowerAuras Words"] = {
-    [WeakAuras.PowerAurasPath.."Aura20"] = "Power",
-    [WeakAuras.PowerAurasPath.."Aura37"] = "Slow",
-    [WeakAuras.PowerAurasPath.."Aura38"] = "Stun",
-    [WeakAuras.PowerAurasPath.."Aura39"] = "Silence",
-    [WeakAuras.PowerAurasPath.."Aura40"] = "Root",
-    [WeakAuras.PowerAurasPath.."Aura41"] = "Disorient",
-    [WeakAuras.PowerAurasPath.."Aura42"] = "Dispel",
-    [WeakAuras.PowerAurasPath.."Aura43"] = "Danger",
-    [WeakAuras.PowerAurasPath.."Aura44"] = "Buff",
-    [WeakAuras.PowerAurasPath.."Aura44"] = "Buff",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\interrupt"] = "Interrupt"
-  }
-end
+local PowerAurasPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\"
+WeakAuras.texture_types["PowerAuras Heads-Up"] = {
+  [PowerAurasPath.."Aura1"] = "Runed Text",
+  [PowerAurasPath.."Aura2"] = "Runed Text On Ring",
+  [PowerAurasPath.."Aura3"] = "Power Waves",
+  [PowerAurasPath.."Aura4"] = "Majesty",
+  [PowerAurasPath.."Aura5"] = "Runed Ends",
+  [PowerAurasPath.."Aura6"] = "Extra Majesty",
+  [PowerAurasPath.."Aura7"] = "Triangular Highlights",
+  [PowerAurasPath.."Aura11"] = "Oblong Highlights",
+  [PowerAurasPath.."Aura16"] = "Thin Crescents",
+  [PowerAurasPath.."Aura17"] = "Crescent Highlights",
+  [PowerAurasPath.."Aura18"] = "Dense Runed Text",
+  [PowerAurasPath.."Aura23"] = "Runed Spiked Ring",
+  [PowerAurasPath.."Aura24"] = "Smoke",
+  [PowerAurasPath.."Aura28"] = "Flourished Text",
+  [PowerAurasPath.."Aura33"] = "Droplet Highlights"
+}
+WeakAuras.texture_types["PowerAuras Icons"] = {
+  [PowerAurasPath.."Aura8"] = "Rune",
+  [PowerAurasPath.."Aura9"] = "Stylized Ghost",
+  [PowerAurasPath.."Aura10"] = "Skull and Crossbones",
+  [PowerAurasPath.."Aura12"] = "Snowflake",
+  [PowerAurasPath.."Aura13"] = "Flame",
+  [PowerAurasPath.."Aura14"] = "Holy Rune",
+  [PowerAurasPath.."Aura15"] = "Zig-Zag Exclamation Point",
+  [PowerAurasPath.."Aura19"] = "Crossed Swords",
+  [PowerAurasPath.."Aura21"] = "Shield",
+  [PowerAurasPath.."Aura22"] = "Glow",
+  [PowerAurasPath.."Aura25"] = "Cross",
+  [PowerAurasPath.."Aura26"] = "Droplet",
+  [PowerAurasPath.."Aura27"] = "Alert",
+  [PowerAurasPath.."Aura29"] = "Paw",
+  [PowerAurasPath.."Aura30"] = "Bull",
+  --   [PowerAurasPath.."Aura31"] = "Hieroglyphics Horizontal",
+  [PowerAurasPath.."Aura32"] = "Hieroglyphics",
+  [PowerAurasPath.."Aura34"] = "Circled Arrow",
+  [PowerAurasPath.."Aura35"] = "Short Sword",
+  --   [PowerAurasPath.."Aura36"] = "Short Sword Horizontal",
+  [PowerAurasPath.."Aura45"] = "Circular Glow",
+  [PowerAurasPath.."Aura48"] = "Totem",
+  [PowerAurasPath.."Aura49"] = "Dragon Blade",
+  [PowerAurasPath.."Aura50"] = "Ornate Design",
+  [PowerAurasPath.."Aura51"] = "Inverted Holy Rune",
+  [PowerAurasPath.."Aura52"] = "Stylized Skull",
+  [PowerAurasPath.."Aura53"] = "Exclamation Point",
+  [PowerAurasPath.."Aura54"] = "Nonagon",
+  [PowerAurasPath.."Aura68"] = "Wings",
+  [PowerAurasPath.."Aura69"] = "Rectangle",
+  [PowerAurasPath.."Aura70"] = "Low Mana",
+  [PowerAurasPath.."Aura71"] = "Ghostly Eye",
+  [PowerAurasPath.."Aura72"] = "Circle",
+  [PowerAurasPath.."Aura73"] = "Ring",
+  [PowerAurasPath.."Aura74"] = "Square",
+  [PowerAurasPath.."Aura75"] = "Square Brackets",
+  [PowerAurasPath.."Aura76"] = "Bob-omb",
+  [PowerAurasPath.."Aura77"] = "Goldfish",
+  [PowerAurasPath.."Aura78"] = "Check",
+  [PowerAurasPath.."Aura79"] = "Ghostly Face",
+  [PowerAurasPath.."Aura84"] = "Overlapping Boxes",
+  --   [PowerAurasPath.."Aura85"] = "Overlapping Boxes 45°",
+  --   [PowerAurasPath.."Aura86"] = "Overlapping Boxes 270°",
+  [PowerAurasPath.."Aura87"] = "Fairy",
+  [PowerAurasPath.."Aura88"] = "Comet",
+  [PowerAurasPath.."Aura95"] = "Dual Spiral",
+  [PowerAurasPath.."Aura96"] = "Japanese Character",
+  [PowerAurasPath.."Aura97"] = "Japanese Character",
+  [PowerAurasPath.."Aura98"] = "Japanese Character",
+  [PowerAurasPath.."Aura99"] = "Japanese Character",
+  [PowerAurasPath.."Aura100"] = "Japanese Character",
+  [PowerAurasPath.."Aura101"] = "Ball of Flame",
+  [PowerAurasPath.."Aura102"] = "Zig-Zag",
+  [PowerAurasPath.."Aura103"] = "Thorny Ring",
+  [PowerAurasPath.."Aura110"] = "Hunter's Mark",
+  --   [PowerAurasPath.."Aura111"] = "Hunter's Mark Horizontal",
+  [PowerAurasPath.."Aura112"] = "Kaleidoscope",
+  [PowerAurasPath.."Aura113"] = "Jesus Face",
+  [PowerAurasPath.."Aura114"] = "Green Mushroom",
+  [PowerAurasPath.."Aura115"] = "Red Mushroom",
+  [PowerAurasPath.."Aura116"] = "Fire Flower",
+  [PowerAurasPath.."Aura117"] = "Radioactive",
+  [PowerAurasPath.."Aura118"] = "X",
+  [PowerAurasPath.."Aura119"] = "Flower",
+  [PowerAurasPath.."Aura120"] = "Petal",
+  [PowerAurasPath.."Aura130"] = "Shoop Da Woop",
+  [PowerAurasPath.."Aura131"] = "8-Bit Symbol",
+  [PowerAurasPath.."Aura132"] = "Cartoon Skull",
+  [PowerAurasPath.."Aura138"] = "Stop",
+  [PowerAurasPath.."Aura139"] = "Thumbs Up",
+  [PowerAurasPath.."Aura140"] = "Palette",
+  [PowerAurasPath.."Aura141"] = "Blue Ring",
+  [PowerAurasPath.."Aura142"] = "Ornate Ring",
+  [PowerAurasPath.."Aura143"] = "Ghostly Skull"
+}
+WeakAuras.texture_types["PowerAuras Separated"] = {
+  [PowerAurasPath.."Aura46"] = "8-Part Ring 1",
+  [PowerAurasPath.."Aura47"] = "8-Part Ring 2",
+  [PowerAurasPath.."Aura55"] = "Skull on Gear 1",
+  [PowerAurasPath.."Aura56"] = "Skull on Gear 2",
+  [PowerAurasPath.."Aura57"] = "Skull on Gear 3",
+  [PowerAurasPath.."Aura58"] = "Skull on Gear 4",
+  [PowerAurasPath.."Aura59"] = "Rune Ring Full",
+  [PowerAurasPath.."Aura60"] = "Rune Ring Empty",
+  [PowerAurasPath.."Aura61"] = "Rune Ring Left",
+  [PowerAurasPath.."Aura62"] = "Rune Ring Right",
+  [PowerAurasPath.."Aura63"] = "Spiked Rune Ring Full",
+  [PowerAurasPath.."Aura64"] = "Spiked Rune Ring Empty",
+  [PowerAurasPath.."Aura65"] = "Spiked Rune Ring Left",
+  [PowerAurasPath.."Aura66"] = "Spiked Rune Ring Bottom",
+  [PowerAurasPath.."Aura67"] = "Spiked Rune Ring Right",
+  [PowerAurasPath.."Aura80"] = "Spiked Helm Background",
+  [PowerAurasPath.."Aura81"] = "Spiked Helm Full",
+  [PowerAurasPath.."Aura82"] = "Spiked Helm Bottom",
+  [PowerAurasPath.."Aura83"] = "Spiked Helm Top",
+  [PowerAurasPath.."Aura89"] = "5-Part Ring 1",
+  [PowerAurasPath.."Aura90"] = "5-Part Ring 2",
+  [PowerAurasPath.."Aura91"] = "5-Part Ring 3",
+  [PowerAurasPath.."Aura92"] = "5-Part Ring 4",
+  [PowerAurasPath.."Aura93"] = "5-Part Ring 5",
+  [PowerAurasPath.."Aura94"] = "5-Part Ring Full",
+  [PowerAurasPath.."Aura104"] = "Shield Center",
+  [PowerAurasPath.."Aura105"] = "Shield Full",
+  [PowerAurasPath.."Aura106"] = "Shield Top Right",
+  [PowerAurasPath.."Aura107"] = "Shiled Top Left",
+  [PowerAurasPath.."Aura108"] = "Shield Bottom Right",
+  [PowerAurasPath.."Aura109"] = "Shield Bottom Left",
+  [PowerAurasPath.."Aura121"] = "Vine Top Right Leaf",
+  [PowerAurasPath.."Aura122"] = "Vine Left Leaf",
+  [PowerAurasPath.."Aura123"] = "Vine Bottom Right Leaf",
+  [PowerAurasPath.."Aura124"] = "Vine Stem",
+  [PowerAurasPath.."Aura125"] = "Vine Thorns",
+  [PowerAurasPath.."Aura126"] = "3-Part Circle 1",
+  [PowerAurasPath.."Aura127"] = "3-Part Circle 2",
+  [PowerAurasPath.."Aura128"] = "3-Part Circle 3",
+  [PowerAurasPath.."Aura129"] = "3-Part Circle Full",
+  [PowerAurasPath.."Aura133"] = "Sliced Orb 1",
+  [PowerAurasPath.."Aura134"] = "Sliced Orb 2",
+  [PowerAurasPath.."Aura135"] = "Sliced Orb 3",
+  [PowerAurasPath.."Aura136"] = "Sliced Orb 4",
+  [PowerAurasPath.."Aura137"] = "Sliced Orb 5",
+  [PowerAurasPath.."Aura144"] = "Taijitu Bottom",
+  [PowerAurasPath.."Aura145"] = "Taijitu Top"
+}
+WeakAuras.texture_types["PowerAuras Words"] = {
+  [PowerAurasPath.."Aura20"] = "Power",
+  [PowerAurasPath.."Aura37"] = "Slow",
+  [PowerAurasPath.."Aura38"] = "Stun",
+  [PowerAurasPath.."Aura39"] = "Silence",
+  [PowerAurasPath.."Aura40"] = "Root",
+  [PowerAurasPath.."Aura41"] = "Disorient",
+  [PowerAurasPath.."Aura42"] = "Dispel",
+  [PowerAurasPath.."Aura43"] = "Danger",
+  [PowerAurasPath.."Aura44"] = "Buff",
+  [PowerAurasPath.."Aura44"] = "Buff",
+  ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\interrupt"] = "Interrupt"
+}
 
 WeakAuras.operator_types = {
   ["=="] = "=",
@@ -2100,50 +2099,49 @@ LSM:Register("sound", "Voice: Taunt", "Interface\\AddOns\\WeakAuras\\Media\\Soun
 LSM:Register("sound", "Voice: Triangle", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Triangle.ogg")
 
 
-if(WeakAuras.PowerAurasSoundPath ~= "") then
-  LSM:Register("sound", "Aggro", WeakAuras.PowerAurasSoundPath.."aggro.ogg")
-  LSM:Register("sound", "Arrow Swoosh", WeakAuras.PowerAurasSoundPath.."Arrow_swoosh.ogg")
-  LSM:Register("sound", "Bam", WeakAuras.PowerAurasSoundPath.."bam.ogg")
-  LSM:Register("sound", "Polar Bear", WeakAuras.PowerAurasSoundPath.."bear_polar.ogg")
-  LSM:Register("sound", "Big Kiss", WeakAuras.PowerAurasSoundPath.."bigkiss.ogg")
-  LSM:Register("sound", "Bite", WeakAuras.PowerAurasSoundPath.."BITE.ogg")
-  LSM:Register("sound", "Burp", WeakAuras.PowerAurasSoundPath.."burp4.ogg")
-  LSM:Register("sound", "Cat", WeakAuras.PowerAurasSoundPath.."cat2.ogg")
-  LSM:Register("sound", "Chant Major 2nd", WeakAuras.PowerAurasSoundPath.."chant2.ogg")
-  LSM:Register("sound", "Chant Minor 3rd", WeakAuras.PowerAurasSoundPath.."chant4.ogg")
-  LSM:Register("sound", "Chimes", WeakAuras.PowerAurasSoundPath.."chimes.ogg")
-  LSM:Register("sound", "Cookie Monster", WeakAuras.PowerAurasSoundPath.."cookie.ogg")
-  LSM:Register("sound", "Electrical Spark", WeakAuras.PowerAurasSoundPath.."ESPARK1.ogg")
-  LSM:Register("sound", "Fireball", WeakAuras.PowerAurasSoundPath.."Fireball.ogg")
-  LSM:Register("sound", "Gasp", WeakAuras.PowerAurasSoundPath.."Gasp.ogg")
-  LSM:Register("sound", "Heartbeat", WeakAuras.PowerAurasSoundPath.."heartbeat.ogg")
-  LSM:Register("sound", "Hiccup", WeakAuras.PowerAurasSoundPath.."hic3.ogg")
-  LSM:Register("sound", "Huh?", WeakAuras.PowerAurasSoundPath.."huh_1.ogg")
-  LSM:Register("sound", "Hurricane", WeakAuras.PowerAurasSoundPath.."hurricane.ogg")
-  LSM:Register("sound", "Hyena", WeakAuras.PowerAurasSoundPath.."hyena.ogg")
-  LSM:Register("sound", "Kaching", WeakAuras.PowerAurasSoundPath.."kaching.ogg")
-  LSM:Register("sound", "Moan", WeakAuras.PowerAurasSoundPath.."moan.ogg")
-  LSM:Register("sound", "Panther", WeakAuras.PowerAurasSoundPath.."panther1.ogg")
-  LSM:Register("sound", "Phone", WeakAuras.PowerAurasSoundPath.."phone.ogg")
-  LSM:Register("sound", "Punch", WeakAuras.PowerAurasSoundPath.."PUNCH.ogg")
-  LSM:Register("sound", "Rain", WeakAuras.PowerAurasSoundPath.."rainroof.ogg")
-  LSM:Register("sound", "Rocket", WeakAuras.PowerAurasSoundPath.."rocket.ogg")
-  LSM:Register("sound", "Ship's Whistle", WeakAuras.PowerAurasSoundPath.."shipswhistle.ogg")
-  LSM:Register("sound", "Gunshot", WeakAuras.PowerAurasSoundPath.."shot.ogg")
-  LSM:Register("sound", "Snake Attack", WeakAuras.PowerAurasSoundPath.."snakeatt.ogg")
-  LSM:Register("sound", "Sneeze", WeakAuras.PowerAurasSoundPath.."sneeze.ogg")
-  LSM:Register("sound", "Sonar", WeakAuras.PowerAurasSoundPath.."sonar.ogg")
-  LSM:Register("sound", "Splash", WeakAuras.PowerAurasSoundPath.."splash.ogg")
-  LSM:Register("sound", "Squeaky Toy", WeakAuras.PowerAurasSoundPath.."Squeakypig.ogg")
-  LSM:Register("sound", "Sword Ring", WeakAuras.PowerAurasSoundPath.."swordecho.ogg")
-  LSM:Register("sound", "Throwing Knife", WeakAuras.PowerAurasSoundPath.."throwknife.ogg")
-  LSM:Register("sound", "Thunder", WeakAuras.PowerAurasSoundPath.."thunder.ogg")
-  LSM:Register("sound", "Wicked Male Laugh", WeakAuras.PowerAurasSoundPath.."wickedmalelaugh1.ogg")
-  LSM:Register("sound", "Wilhelm Scream", WeakAuras.PowerAurasSoundPath.."wilhelm.ogg")
-  LSM:Register("sound", "Wicked Female Laugh", WeakAuras.PowerAurasSoundPath.."wlaugh.ogg")
-  LSM:Register("sound", "Wolf Howl", WeakAuras.PowerAurasSoundPath.."wolf5.ogg")
-  LSM:Register("sound", "Yeehaw", WeakAuras.PowerAurasSoundPath.."yeehaw.ogg")
-end
+local PowerAurasSoundPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Sounds\\"
+LSM:Register("sound", "Aggro", PowerAurasSoundPath.."aggro.ogg")
+LSM:Register("sound", "Arrow Swoosh", PowerAurasSoundPath.."Arrow_swoosh.ogg")
+LSM:Register("sound", "Bam", PowerAurasSoundPath.."bam.ogg")
+LSM:Register("sound", "Polar Bear", PowerAurasSoundPath.."bear_polar.ogg")
+LSM:Register("sound", "Big Kiss", PowerAurasSoundPath.."bigkiss.ogg")
+LSM:Register("sound", "Bite", PowerAurasSoundPath.."BITE.ogg")
+LSM:Register("sound", "Burp", PowerAurasSoundPath.."burp4.ogg")
+LSM:Register("sound", "Cat", PowerAurasSoundPath.."cat2.ogg")
+LSM:Register("sound", "Chant Major 2nd", PowerAurasSoundPath.."chant2.ogg")
+LSM:Register("sound", "Chant Minor 3rd", PowerAurasSoundPath.."chant4.ogg")
+LSM:Register("sound", "Chimes", PowerAurasSoundPath.."chimes.ogg")
+LSM:Register("sound", "Cookie Monster", PowerAurasSoundPath.."cookie.ogg")
+LSM:Register("sound", "Electrical Spark", PowerAurasSoundPath.."ESPARK1.ogg")
+LSM:Register("sound", "Fireball", PowerAurasSoundPath.."Fireball.ogg")
+LSM:Register("sound", "Gasp", PowerAurasSoundPath.."Gasp.ogg")
+LSM:Register("sound", "Heartbeat", PowerAurasSoundPath.."heartbeat.ogg")
+LSM:Register("sound", "Hiccup", PowerAurasSoundPath.."hic3.ogg")
+LSM:Register("sound", "Huh?", PowerAurasSoundPath.."huh_1.ogg")
+LSM:Register("sound", "Hurricane", PowerAurasSoundPath.."hurricane.ogg")
+LSM:Register("sound", "Hyena", PowerAurasSoundPath.."hyena.ogg")
+LSM:Register("sound", "Kaching", PowerAurasSoundPath.."kaching.ogg")
+LSM:Register("sound", "Moan", PowerAurasSoundPath.."moan.ogg")
+LSM:Register("sound", "Panther", PowerAurasSoundPath.."panther1.ogg")
+LSM:Register("sound", "Phone", PowerAurasSoundPath.."phone.ogg")
+LSM:Register("sound", "Punch", PowerAurasSoundPath.."PUNCH.ogg")
+LSM:Register("sound", "Rain", PowerAurasSoundPath.."rainroof.ogg")
+LSM:Register("sound", "Rocket", PowerAurasSoundPath.."rocket.ogg")
+LSM:Register("sound", "Ship's Whistle", PowerAurasSoundPath.."shipswhistle.ogg")
+LSM:Register("sound", "Gunshot", PowerAurasSoundPath.."shot.ogg")
+LSM:Register("sound", "Snake Attack", PowerAurasSoundPath.."snakeatt.ogg")
+LSM:Register("sound", "Sneeze", PowerAurasSoundPath.."sneeze.ogg")
+LSM:Register("sound", "Sonar", PowerAurasSoundPath.."sonar.ogg")
+LSM:Register("sound", "Splash", PowerAurasSoundPath.."splash.ogg")
+LSM:Register("sound", "Squeaky Toy", PowerAurasSoundPath.."Squeakypig.ogg")
+LSM:Register("sound", "Sword Ring", PowerAurasSoundPath.."swordecho.ogg")
+LSM:Register("sound", "Throwing Knife", PowerAurasSoundPath.."throwknife.ogg")
+LSM:Register("sound", "Thunder", PowerAurasSoundPath.."thunder.ogg")
+LSM:Register("sound", "Wicked Male Laugh", PowerAurasSoundPath.."wickedmalelaugh1.ogg")
+LSM:Register("sound", "Wilhelm Scream", PowerAurasSoundPath.."wilhelm.ogg")
+LSM:Register("sound", "Wicked Female Laugh", PowerAurasSoundPath.."wlaugh.ogg")
+LSM:Register("sound", "Wolf Howl", PowerAurasSoundPath.."wolf5.ogg")
+LSM:Register("sound", "Yeehaw", PowerAurasSoundPath.."yeehaw.ogg")
 
 WeakAuras.sound_types = {
   [" custom"] = " " .. L["Custom"],

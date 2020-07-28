@@ -52,9 +52,6 @@ if not WeakAuras.IsCorrectVersion() then
   C_Timer.After(1, function() WeakAuras.prettyPrint(Private.wrongTargetMessage) end)
 end
 
-WeakAuras.PowerAurasPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\"
-WeakAuras.PowerAurasSoundPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Sounds\\"
-
 -- Force enable WeakAurasCompanion and Archive because some addon managers interfere with it
 EnableAddOn("WeakAurasCompanion")
 EnableAddOn("WeakAurasArchive")
