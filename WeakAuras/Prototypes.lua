@@ -10,7 +10,6 @@ local ceil, min = ceil, min
 local GetTalentInfo = GetTalentInfo
 local GetNumSpecializationsForClassID, GetSpecialization = GetNumSpecializationsForClassID, GetSpecialization
 local UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax = UnitClass, UnitHealth, UnitHealthMax, UnitName, UnitStagger, UnitPower, UnitPowerMax
-local UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo = UnitAlternatePowerInfo, UnitAlternatePowerTextureInfo
 local GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon = GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon
 local GetShapeshiftFormInfo, GetShapeshiftForm = GetShapeshiftFormInfo, GetShapeshiftForm
 local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitCastingInfo, UnitChannelInfo
@@ -2420,7 +2419,7 @@ WeakAuras.event_prototypes = {
       {
         name = "name",
         hidden = true,
-        init = "select(11, UnitAlternatePowerInfo(unit))",
+        init = "select(11, GetAlternatePowerInfoByID(UnitPowerBarID(unit)))",
         store = true,
         test = "true"
       },
@@ -2459,7 +2458,7 @@ WeakAuras.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "UnitAlternatePowerInfo(unit)",
+        init = "GetAlternatePowerInfoByID(UnitPowerBarID(unit))",
         store = true,
         test = "true"
       },
