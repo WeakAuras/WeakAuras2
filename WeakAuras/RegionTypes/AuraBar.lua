@@ -301,7 +301,7 @@ local barPrototype = {
   end,
 
   ["UpdateAdditionalBars"] = function(self)
-    if (self.additionalBars) then
+    if (type(self.additionalBars) == "table") then
       for index, additionalBar in ipairs(self.additionalBars) do
         if (not self.extraTextures[index]) then
           local extraTexture = self:CreateTexture(nil, "ARTWORK");
