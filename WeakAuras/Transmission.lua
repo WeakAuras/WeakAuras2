@@ -13,7 +13,7 @@ Converts the display id to a formatted table
 SerializeTable(data)
 Converts the table data to a formatted table
 
-ShowDisplayTooltip(data, children, icon, icons, import, compressed, alterdesc)
+ShowDisplayTooltip(data, children, icon, icons, import, compressed)
 Shows a tooltip frame for an aura, which allows for importing if import is true
 
 Import(str, [target])
@@ -1424,7 +1424,7 @@ function WeakAuras.Update(data, diff)
 end
 
 
-function WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, import, compressed, alterdesc)
+function WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, import, compressed)
   -- since we have new data, wipe the old pending data
   wipe(pendingData)
 
@@ -1623,105 +1623,6 @@ function WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, im
 
   end
 
-  if alterdesc then -- TODO: simplify this. The frame doesn't need to be a field of ItemRefTooltip, for one.
-    if not(ItemRefTooltip.WeakAuras_Desc_Box) then
-      ItemRefTooltip.WeakAuras_Desc_Box = CreateFrame("frame", nil, ItemRefTooltip);
-    end
-    local descboxframe = ItemRefTooltip.WeakAuras_Desc_Box;
-    descboxframe:SetBackdrop({
-      bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-      edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-      edgeSize = 16,
-      insets = {
-        left = 4,
-        right = 3,
-        top = 4,
-        bottom = 3
-      }
-    });
-    descboxframe:SetBackdropColor(0, 0, 0);
-    descboxframe:SetBackdropBorderColor(0.4, 0.4, 0.4);
-    if (alterdesc == "desc") then
-      descboxframe:SetHeight(80);
-    else
-      descboxframe:SetHeight(20);
-    end
-    descboxframe:SetWidth(260);
-    descboxframe:SetPoint("TOP", ItemRefTooltip, "BOTTOM");
-    descboxframe:Show();
-
-    local descbox = descboxframe.descbox;
-    if not(descbox) then
-      descbox = CreateFrame("editbox", nil, descboxframe);
-      descboxframe.descbox = descbox;
-    end
-    descbox:SetPoint("BOTTOMLEFT", descboxframe, "BOTTOMLEFT", 8, 8);
-    descbox:SetPoint("TOPRIGHT", descboxframe, "TOPRIGHT", -8, -8);
-    descbox:SetFont(STANDARD_TEXT_FONT, 12);
-    descbox:EnableMouse(true);
-    descbox:SetAutoFocus(false);
-    descbox:SetCountInvisibleLetters(false);
-    descbox:SetMultiLine(alterdesc == "desc");
-
-    if (alterdesc == "url") then
-      if (not descbox.label) then
-        local label = descbox:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall");
-        label:SetPoint("TOPLEFT", descboxframe, "BOTTOMLEFT", 8, 0);
-        label:SetText(L["Press Ctrl+C to copy"]);
-        descbox.label = label;
-      end
-      descbox.label:Show();
-    else
-      if (descbox.label) then
-        descbox.label:Hide();
-      end
-    end
-
-    local text = data[alterdesc] and data[alterdesc] ~= "" and data[alterdesc] or "";
-    descbox:SetText(text);
-
-    descbox:SetScript("OnEscapePressed", function()
-      descbox:ClearFocus();
-      if (alterdesc == "url") then
-        return;
-      end
-      if(data.desc and data.desc ~= "") then
-        descbox:SetText(data.desc);
-      else
-        descbox:SetText("");
-      end
-    end);
-    descbox:SetScript("OnEnterPressed", function()
-      descbox:ClearFocus();
-      if (alterdesc == "url") then
-        return;
-      end
-      if(descbox:GetText() ~= "") then
-        data.desc = descbox:GetText();
-      else
-        data.desc = nil;
-      end
-      WeakAuras.ShowDisplayTooltip(data, children, nil, nil, nil, import, nil, "desc");
-      if(WeakAuras.GetDisplayButton) then
-        local button = WeakAuras.GetDisplayButton(data.id);
-        if(button) then
-          button:SetNormalTooltip();
-        end
-      end
-    end);
-    if (alterdesc == "url") then
-      descbox:SetScript("OnChar", function() descbox:SetText(text); descbox:HighlightText(); end);
-      descbox:SetScript("OnMouseUp", function() descbox:HighlightText(); end);
-    else
-      descbox:SetScript("OnChar", nil);
-      descbox:SetScript("OnMouseUp", nil);
-    end
-
-    descbox:Show();
-  elseif ItemRefTooltip.WeakAuras_Desc_Box then
-    ItemRefTooltip.WeakAuras_Desc_Box:Hide()
-  end
-
   if not IsAddOnLoaded('WeakAurasOptions') then
     LoadAddOn('WeakAurasOptions')
   end
@@ -1754,13 +1655,6 @@ function WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, im
   end
   WeakAuras.GetData = RegularGetData or WeakAuras.GetData
   ShowTooltip(tooltip, linesFromTop, matchInfo and matchInfo.activeCategories)
-
-  if alterdesc then
-    ItemRefTooltip.WeakAuras_Desc_Box.descbox:SetFocus();
-    if (alterdesc == "url") then
-      ItemRefTooltip.WeakAuras_Desc_Box.descbox:HighlightText();
-    end
-  end
 end
 
 function WeakAuras.Import(inData, target)

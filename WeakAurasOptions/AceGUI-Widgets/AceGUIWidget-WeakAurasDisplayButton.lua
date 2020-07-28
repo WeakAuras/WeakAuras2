@@ -827,26 +827,8 @@ local methods = {
       if (WeakAuras.IsImporting()) then return end;
       local oldid = data.id;
       if not(newid == oldid) then
-
         WeakAuras.Rename(data, newid);
-        WeakAuras.Add(data)
-
-        WeakAuras.displayButtons[newid] = WeakAuras.displayButtons[oldid];
-        WeakAuras.displayButtons[newid]:SetData(data)
-        WeakAuras.displayButtons[oldid] = nil;
-        WeakAuras.ClearOptions(oldid)
-
-        WeakAuras.displayButtons[newid]:SetTitle(newid);
-
-        if(data.controlledChildren) then
-          for index, childId in pairs(data.controlledChildren) do
-            WeakAuras.displayButtons[childId]:SetGroup(newid);
-          end
-        end
-
-        WeakAuras.SetGrouping();
-        WeakAuras.SortDisplayButtons();
-        WeakAuras.PickDisplay(newid);
+        WeakAuras.HandleRename(data, oldid, newid)
       end
     end
 
@@ -964,21 +946,6 @@ local methods = {
       notCheckable = true,
       func = self.callbacks.OnDuplicateClick
     });
-
-    tinsert(self.menu, {
-      text = L["Set tooltip description"],
-      notCheckable = true,
-      func = function() WeakAuras.ShowDisplayTooltip(data, nil, nil, nil, nil, nil, nil, "desc") end
-    });
-
-
-    if (data.url and data.url ~= "") then
-      tinsert(self.menu, {
-        text = L["Copy URL"],
-        notCheckable = true,
-        func = function() WeakAuras.ShowDisplayTooltip(data, nil, nil, nil, nil, nil, nil, "url") end
-      });
-    end
 
     tinsert(self.menu, {
       text = L["Export to string..."],
