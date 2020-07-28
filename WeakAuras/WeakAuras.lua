@@ -4158,59 +4158,6 @@ function WeakAuras.CanShowStackInfo(data)
   end
 end
 
-function WeakAuras.CorrectSpellName(input)
-  local inputId = tonumber(input);
-  if(inputId) then
-    local name = GetSpellInfo(inputId);
-    if(name) then
-      return inputId;
-    else
-      return nil;
-    end
-  elseif WeakAuras.IsClassic() and input then
-    local name, _, _, _, _, _, spellId = GetSpellInfo(input)
-    if spellId then
-      return spellId
-    end
-  elseif(input) then
-    local link;
-    if(input:sub(1,1) == "\124") then
-      link = input;
-    else
-      link = GetSpellLink(input);
-    end
-    if(link) and link ~= "" then
-      local itemId = link:match("spell:(%d+)");
-      return tonumber(itemId);
-    elseif not WeakAuras.IsClassic() then
-      for tier = 1, MAX_TALENT_TIERS do
-        for column = 1, NUM_TALENT_COLUMNS do
-          local _, _, _, _, _, spellId = GetTalentInfo(tier, column, 1)
-          local name = GetSpellInfo(spellId);
-          if name == input then
-            return spellId;
-          end
-        end
-      end
-    end
-  end
-end
-
-function WeakAuras.CorrectItemName(input)
-  local inputId = tonumber(input);
-  if(inputId) then
-    return inputId;
-  elseif(input) then
-    local _, link = GetItemInfo(input);
-    if(link) then
-      local itemId = link:match("item:(%d+)");
-      return tonumber(itemId);
-    else
-      return nil;
-    end
-  end
-end
-
 local currentTooltipRegion;
 local currentTooltipOwner;
 function WeakAuras.UpdateMouseoverTooltip(region)
