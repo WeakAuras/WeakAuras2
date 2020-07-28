@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
 local SharedMedia = LibStub("LibSharedMedia-3.0")
@@ -800,7 +801,7 @@ local function modify(parent, region, data)
   end
 
   function region:IsSuspended()
-    return not WeakAuras.IsLoginFinished() or self.suspended > 0
+    return not Private.IsLoginFinished() or self.suspended > 0
   end
 
   function region:Suspend()

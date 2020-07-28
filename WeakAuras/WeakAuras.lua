@@ -1,3 +1,5 @@
+local AddonName, Private = ...
+
 local internalVersion = 35
 
 -- Lua APIs
@@ -55,9 +57,9 @@ function WeakAuras.InternalVersion()
   return internalVersion;
 end
 
-function WeakAuras.LoadOptions(msg)
+function Private.LoadOptions(msg)
   if not(IsAddOnLoaded("WeakAurasOptions")) then
-    if not WeakAuras.IsLoginFinished() then
+    if not Private.IsLoginFinished() then
       prettyPrint(WeakAuras.LoginMessage())
       loginQueue[#loginQueue + 1] = WeakAuras.OpenOptions
     elseif InCombatLockdown() then
@@ -81,12 +83,12 @@ end
 function WeakAuras.OpenOptions(msg)
   if WeakAuras.NeedToRepairDatabase() then
     StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "downgrade"})
-  elseif (WeakAuras.IsLoginFinished() and WeakAuras.LoadOptions(msg)) then
+  elseif (Private.IsLoginFinished() and Private.LoadOptions(msg)) then
     WeakAuras.ToggleOptions(msg);
   end
 end
 
-function WeakAuras.PrintHelp()
+function Private.PrintHelp()
   print(L["Usage:"])
   print(L["/wa help - Show this message"])
   print(L["/wa minimap - Toggle the minimap icon"])
@@ -120,9 +122,9 @@ function SlashCmdList.WEAKAURAS(input)
   elseif msg == "pcancel" then
     WeakAuras.CancelScheduledProfile()
   elseif msg == "minimap" then
-    WeakAuras.ToggleMinimap();
+    Private.ToggleMinimap();
   elseif msg == "help" then
-    WeakAuras.PrintHelp();
+    Private.PrintHelp();
   elseif msg == "repair" then
     StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "user"})
   else
@@ -143,7 +145,7 @@ function WeakAuras.ApplyToDataOrChildData(data, func, ...)
   end
 end
 
-function WeakAuras.ToggleMinimap()
+function Private.ToggleMinimap()
   WeakAurasSaved.minimap.hide = not WeakAurasSaved.minimap.hide
   if WeakAurasSaved.minimap.hide then
     LDBIcon:Hide("WeakAuras");
@@ -248,8 +250,6 @@ local triggerTypes = WeakAuras.triggerTypes;
 
 -- Maps from trigger type to a functin that can create options for the trigger
 WeakAuras.triggerTypesOptions = {};
-local triggerTypesOptions = WeakAuras.triggerTypesOptions;
-
 
 -- Trigger State, updated by trigger systems, then applied to regions by UpdatedTriggerState
 -- keyed on id, triggernum, cloneid
@@ -1618,7 +1618,7 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
         WeakAuras.OpenOptions();
       end
     elseif(button == 'MiddleButton') then
-      WeakAuras.ToggleMinimap();
+      Private.ToggleMinimap();
     else
       WeakAuras.RealTimeProfilingWindow:Toggle()
     end
@@ -1685,7 +1685,7 @@ end
 
 local loginFinished, loginMessage = false, L["Options will open after the login process has completed."]
 
-function WeakAuras.IsLoginFinished()
+function Private.IsLoginFinished()
   return loginFinished
 end
 
@@ -1887,7 +1887,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         end
       end
     end
-    if WeakAuras.IsLoginFinished() then
+    if Private.IsLoginFinished() then
       callback()
     else
       loginQueue[#loginQueue + 1] = callback
@@ -2060,7 +2060,7 @@ local function LoadEncounterInitScriptsImpl(id)
 end
 
 function WeakAuras.LoadEncounterInitScripts(id)
-  if not WeakAuras.IsLoginFinished() then
+  if not Private.IsLoginFinished() then
     if encounterScriptsDeferred[id] then
       return
     end
@@ -2270,7 +2270,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
 end
 
 function WeakAuras.ScanForLoads(toCheck, event, arg1, ...)
-  if not WeakAuras.IsLoginFinished() then
+  if not Private.IsLoginFinished() then
     return
   end
   scanForLoadsImpl(toCheck, event, arg1, ...)
@@ -4863,7 +4863,7 @@ function WeakAuras.SetRegion(data, cloneId)
           data.parent = nil;
         end
       end
-      local loginFinished = WeakAuras.IsLoginFinished();
+      local loginFinished = Private.IsLoginFinished();
       local anim_cancelled = loginFinished and WeakAuras.CancelAnimation(region, true, true, true, true, true, true);
 
       regionTypes[regionType].modify(parent, region, data);
@@ -6212,7 +6212,7 @@ end
 
 function WeakAuras.RegisterTriggerSystemOptions(types, func)
   for _, v in ipairs(types) do
-    triggerTypesOptions[v] = func;
+    WeakAuras.triggerTypesOptions[v] = func;
   end
 end
 
@@ -7459,7 +7459,7 @@ local anchorFrameDeferred = {}
 function WeakAuras.AnchorFrame(data, region, parent)
   if data.anchorFrameType == "CUSTOM"
   and (data.regionType == "group" or data.regionType == "dynamicgroup")
-  and not WeakAuras.IsLoginFinished()
+  and not Private.IsLoginFinished()
   and not anchorFrameDeferred[data.id]
   then
     loginQueue[#loginQueue + 1] = {WeakAuras.AnchorFrame, {data, region, parent}}
@@ -7615,43 +7615,46 @@ function WeakAuras.ReplaceLocalizedRaidMarkers(txt)
   end
 end
 
-local trackableUnits = {}
-trackableUnits["player"] = true
-trackableUnits["target"] = true
-trackableUnits["focus"] = true
-trackableUnits["pet"] = true
-trackableUnits["vehicle"] = true
+do
+  local trackableUnits = {}
+  trackableUnits["player"] = true
+  trackableUnits["target"] = true
+  trackableUnits["focus"] = true
+  trackableUnits["pet"] = true
+  trackableUnits["vehicle"] = true
 
-for i = 1, 5 do
-  trackableUnits["arena" .. i] = true
-  trackableUnits["arenapet" .. i] = true
+  for i = 1, 5 do
+    trackableUnits["arena" .. i] = true
+    trackableUnits["arenapet" .. i] = true
+  end
+
+  for i = 1, 4 do
+    trackableUnits["party" .. i] = true
+    trackableUnits["partypet" .. i] = true
+  end
+
+  for i = 1, MAX_BOSS_FRAMES do
+    trackableUnits["boss" .. i] = true
+  end
+
+  for i = 1, 40 do
+    trackableUnits["raid" .. i] = true
+    trackableUnits["raidpet" .. i] = true
+    trackableUnits["nameplate" .. i] = true
+  end
+
+  function WeakAuras.UntrackableUnit(unit)
+    return not trackableUnits[unit]
+  end
 end
 
-for i = 1, 4 do
-  trackableUnits["party" .. i] = true
-  trackableUnits["partypet" .. i] = true
-end
-
-for i = 1, MAX_BOSS_FRAMES do
-  trackableUnits["boss" .. i] = true
-end
-
-for i = 1, 40 do
-  trackableUnits["raid" .. i] = true
-  trackableUnits["raidpet" .. i] = true
-  trackableUnits["nameplate" .. i] = true
-end
-
-
-function WeakAuras.UntrackableUnit(unit)
-  return not trackableUnits[unit]
-end
-
-local ownRealm = select(2, UnitFullName("player"))
-function WeakAuras.UnitNameWithRealm(unit)
-  ownRealm = ownRealm or select(2, UnitFullName("player"))
-  local name, realm = UnitFullName(unit)
-  return name or "", realm or ownRealm or ""
+do
+  local ownRealm = select(2, UnitFullName("player"))
+  function WeakAuras.UnitNameWithRealm(unit)
+    ownRealm = ownRealm or select(2, UnitFullName("player"))
+    local name, realm = UnitFullName(unit)
+    return name or "", realm or ownRealm or ""
+  end
 end
 
 function WeakAuras.ParseNameCheck(name)
