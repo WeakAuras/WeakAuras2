@@ -37,6 +37,7 @@ WeakAuras.lua
 History.lua
 Transmission.lua
 Modernize.lua
+Animations.lua
 
 # trigger systems
 BuffTrigger.lua
