@@ -1213,8 +1213,6 @@ local function modify(parent, region, data)
       end
     end
 
-    max = max or 0
-
     local path = state.icon or "Interface\\Icons\\INV_Misc_QuestionMark"
     local iconPath = (
       region.useAuto
