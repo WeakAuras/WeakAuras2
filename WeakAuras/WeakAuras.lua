@@ -1504,19 +1504,14 @@ function WeakAuras.CreatePvPTalentCache()
     return "|T"..icon..":0|t "..name
   end
 
-  local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(2);
+  local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1);
   if (slotInfo) then
 
-    WeakAuras.pvp_talent_types_specific[player_class][spec] = {
-      formatTalent(3589),
-      formatTalent(3588),
-      formatTalent(3587),
-      nil
-    };
+    WeakAuras.pvp_talent_types_specific[player_class][spec] = {};
 
     local pvpSpecTalents = slotInfo.availableTalentIDs;
     for i, talentId in ipairs(pvpSpecTalents) do
-      WeakAuras.pvp_talent_types_specific[player_class][spec][i + 3] = formatTalent(talentId);
+      WeakAuras.pvp_talent_types_specific[player_class][spec][i] = formatTalent(talentId);
     end
 
     pvpTalentsInitialized = true;
