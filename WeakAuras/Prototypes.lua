@@ -766,29 +766,18 @@ function WeakAuras.CheckTalentByIndex(index)
   end
 end
 
--- The one true order of the first 3 talents, see the setup of WeakAuras.pvp_talent_types
-local pvpTalentId = { 3589, 3588, 3587 };
-
 function WeakAuras.CheckPvpTalentByIndex(index)
-  if (index <= 3) then
-    local talentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1);
-    if (not talentSlotInfo or not talentSlotInfo.selectedTalentID) then
-      return false;
-    end
-    return select(3, GetPvpTalentInfoByID(pvpTalentId[index])) == select(3, GetPvpTalentInfoByID(talentSlotInfo.selectedTalentID));
-  else
-    local checkTalentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(2)
-    if checkTalentSlotInfo then
-      local checkTalentId = checkTalentSlotInfo.availableTalentIDs[index - 3];
-      for i = 2, 4 do
-        local talentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(i);
-        if talentSlotInfo and (talentSlotInfo.selectedTalentID == checkTalentId) then
-          return true;
-        end
+  local checkTalentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1)
+  if checkTalentSlotInfo then
+    local checkTalentId = checkTalentSlotInfo.availableTalentIDs[index]
+    for i = 1, 3 do
+      local talentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(i)
+      if talentSlotInfo and (talentSlotInfo.selectedTalentID == checkTalentId) then
+        return true
       end
     end
-    return false;
   end
+  return false
 end
 
 function WeakAuras.CheckNumericIds(loadids, currentId)
