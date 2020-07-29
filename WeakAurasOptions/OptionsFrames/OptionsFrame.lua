@@ -852,9 +852,9 @@ function WeakAuras.CreateFrame()
       { value = "region", text = L["Display"]},
       { value = "trigger", text = L["Trigger"]},
       { value = "conditions", text = L["Conditions"]},
-      { value = "load", text = L["Load"]},
       { value = "action", text = L["Actions"]},
       { value = "animation", text = L["Animations"]},
+      { value = "load", text = L["Load"]},
       { value = "authorOptions", text = L["Custom Options"]},
       { value = "information", text = L["Information"]},
     }
