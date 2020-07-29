@@ -5,7 +5,7 @@ on:
     branches:
       - shadowlands
     tags:
-      - '**-alpha'
+      - '**-alpha**'
 
 jobs:
   build:
