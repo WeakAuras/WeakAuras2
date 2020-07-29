@@ -1151,18 +1151,11 @@ else
   end
 end
 
+WeakAuras.pvp_talent_types = {}
 if not WeakAuras.IsClassic() then
-  WeakAuras.pvp_talent_types = {
-    select(2, GetPvpTalentInfoByID(3589)),
-    select(2, GetPvpTalentInfoByID(3588)),
-    select(2, GetPvpTalentInfoByID(3587)),
-    nil
-  };
   for i = 1,10 do
     tinsert(WeakAuras.pvp_talent_types, string.format(L["PvP Talent %i"], i));
   end
-else
-  WeakAuras.pvp_talent_types = {}
 end
 
 -- GetTotemInfo() only works for the first 5 totems
