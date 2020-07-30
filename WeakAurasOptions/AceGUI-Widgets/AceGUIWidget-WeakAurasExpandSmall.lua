@@ -129,8 +129,45 @@ local methods = {
 			self:SetHeight(self.image:GetHeight())
     end
     self.expandedBackground:SetHeight(self.frame:GetHeight()*2)
+	end,
+
+	["SetAnchor"] = function(self, otherWidget)
+		local expandedBackground = self.expandedBackground
+		if otherWidget then
+			expandedBackground:SetPoint("BOTTOMLEFT", otherWidget.frame, "TOPLEFT", -1, -1)
+		  expandedBackground:SetPoint("BOTTOMRIGHT", otherWidget.frame, "TOPRIGHT", 1, 1)
+		end
 	end
 }
+
+local function OnFrameShow(frame)
+  local self = frame.obj
+  local option = self.userdata.option
+  if option and option.arg and option.arg.expanderName then
+    WeakAuras.expanderButtons[option.arg.expanderName] = self
+
+    local otherWidget = WeakAuras.expanderAnchors[option.arg.expanderName]
+    if otherWidget then
+      self:SetAnchor(otherWidget)
+    end
+  end
+end
+
+local function OnFrameHide(frame)
+  local self = frame.obj
+  local option = self.userdata.option
+  if option and option.arg and option.arg.expanderName then
+    WeakAuras.expanderButtons[option.arg.expanderName] = nil
+
+    local otherWidget = WeakAuras.expanderAnchors[option.arg.expanderName]
+    if otherWidget then
+      self:SetAnchor(nil)
+    end
+  end
+end
+
+
+
 
 --[[-----------------------------------------------------------------------------
 Constructor
@@ -143,6 +180,8 @@ local function Constructor()
 	frame:SetScript("OnEnter", Control_OnEnter)
 	frame:SetScript("OnLeave", Control_OnLeave)
 	frame:SetScript("OnClick", Button_OnClick)
+	frame:SetScript("OnShow", OnFrameShow)
+	frame:SetScript("OnHide", OnFrameHide)
 
 	local image = frame:CreateTexture(nil, "BACKGROUND")
 	image:SetWidth(64)
@@ -167,7 +206,7 @@ local function Constructor()
   expandedBackground:SetTexCoord(0,1, 1,1, 0,0, 1,0)
   expandedBackground:SetPoint("TOPLEFT", frame, "TOPLEFT", -1, -1)
   expandedBackground:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 1, 1)
-  expandedBackground:SetHeight(40)
+  --expandedBackground:SetHeight(40)
   expandedBackground:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_AlphaGradient")
 	expandedBackground:SetVertexColor(0.6, 0.7, 0.9, 0.15)
   expandedBackground:SetBlendMode("ADD")

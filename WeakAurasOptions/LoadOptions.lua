@@ -108,6 +108,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
   local order = startorder or 10;
 
   local isCollapsedFunctions;
+  local positionsForCollapseAnchor = {}
   for index, arg in pairs(prototype.args) do
     local hidden = nil;
     if(arg.collapse and isCollapsedFunctions[arg.collapse] and type(arg.enable) == "function") then
@@ -119,6 +120,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       hidden = function() return not arg.enable(trigger) end;
     elseif(arg.collapse and isCollapsedFunctions[arg.collapse]) then
       hidden = isCollapsedFunctions[arg.collapse]
+      positionsForCollapseAnchor[arg.collapse] = order
     end
     local name = arg.name;
     local validate = arg.validate;
@@ -142,6 +144,9 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             WeakAuras.SetCollapsed("trigger", name, "", not collapsed)
           end
         end,
+        arg = {
+          expanderName = triggernum .. "#" .. tostring(prototype) .. "#"  .. name
+        }
       }
       order = order + 1;
 
@@ -917,7 +922,19 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
     end
   end
 
-  WeakAuras.option = options;
+  for name, order in pairs(positionsForCollapseAnchor) do
+    options[name .. "anchor"] = {
+      type = "description",
+      name = "",
+      control = "WeakAurasExpandAnchor",
+      order = order + 0.5,
+      arg = {
+        expanderName = triggernum .. "#" .. tostring(prototype) .. "#"  .. name
+      },
+      hidden = isCollapsedFunctions[name]
+    }
+  end
+
   return options;
 end
 

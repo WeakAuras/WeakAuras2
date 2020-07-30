@@ -116,6 +116,9 @@ local function createOptions(parentData, data, index, subIndex)
         local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra" .. index, true);
         WeakAuras.SetCollapsed("glow", "glow", "glowextra" .. index, not collapsed);
       end,
+      arg = {
+        expanderName = "glow" .. index .. "#" .. subIndex
+      }
     },
     glow_space1 = {
       type = "description",
@@ -245,6 +248,17 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Border"],
       order = 19,
       hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
+    },
+
+    glow_anchor = {
+      type = "description",
+      name = "",
+      order = 20,
+      hidden = hiddenGlowExtra,
+      control = "WeakAurasExpandAnchor",
+      arg = {
+        expanderName = "glow" .. index .. "#" .. subIndex
+      }
     }
   }
   return options
