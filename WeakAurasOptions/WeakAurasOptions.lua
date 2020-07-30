@@ -1620,10 +1620,10 @@ function WeakAuras.AddTextFormatOption(input, withHeader, get, addOption, hidden
         setHidden(not hidden())
       end,
       image = function()
-        return hidden() and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+        return hidden() and "collapsed" or "expanded"
       end,
-      imageWidth = 24,
-      imageHeight = 24
+      imageWidth = 15,
+      imageHeight = 15
     }
     addOption("header", headerOption)
   else

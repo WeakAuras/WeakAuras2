@@ -57,8 +57,17 @@ local methods = {
 	end,
 
 	["SetImage"] = function(self, path, ...)
-		local image = self.image
-		image:SetTexture(path)
+    local image = self.image
+    if path == "collapsed" then
+      self:SetExpandedState(false)
+      path = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\gear"
+    elseif path == "expanded" then
+      self:SetExpandedState(true)
+      path = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\geardown"
+    else
+      self:SetExpandedState(false)
+    end
+    image:SetTexture(path)
 
 		if image:GetTexture() then
 			local n = select("#", ...)
@@ -68,9 +77,22 @@ local methods = {
 				image:SetTexCoord(0, 1, 0, 1)
 			end
 		end
-	end,
+  end,
 
-	["SetImageSize"] = function(self, width, height)
+  ["SetExpandedState"] = function(self, state)
+    self.expanded = state
+    if state then
+      self.expandedBackground:Show()
+    else
+      self.expandedBackground:Hide()
+    end
+  end,
+
+  ["GetExpandedState"] = function(self)
+    return self.expanded
+  end,
+
+  ["SetImageSize"] = function(self, width, height)
 		self.image:SetWidth(width)
 		self.image:SetHeight(height)
 		--self.frame:SetWidth(width + 30)
@@ -102,10 +124,11 @@ local methods = {
 	["UpdateWidth"] = function(self)
 		self.label:SetWidth(self.frame:GetWidth() - self.image:GetWidth())
 		if self.label:IsShown() then
-			self:SetHeight(max(self.label:GetStringHeight(), self.image:GetHeight()))
+      self:SetHeight(max(self.label:GetStringHeight(), self.image:GetHeight(), 20))
 		else
 			self:SetHeight(self.image:GetHeight())
-		end
+    end
+    self.expandedBackground:SetHeight(self.frame:GetHeight()*2)
 	end
 }
 
@@ -124,27 +147,39 @@ local function Constructor()
 	local image = frame:CreateTexture(nil, "BACKGROUND")
 	image:SetWidth(64)
 	image:SetHeight(64)
-	image:SetPoint("RIGHT", 0, 0)
+	image:SetPoint("LEFT", 2, 0)
 
 	local label = frame:CreateFontString(nil, "BACKGROUND", "GameFontHighlight")
 	label:SetJustifyH("LEFT")
 	label:SetJustifyV("CENTER")
-	label:SetPoint("RIGHT", image, "LEFT", -5, 0)
+	label:SetPoint("RIGHT")
 	label:SetPoint("TOP")
 	label:SetPoint("BOTTOM")
-	label:SetPoint("LEFT")
+  label:SetPoint("LEFT", image, "RIGHT", 5, 0)
 
 	local highlight = frame:CreateTexture(nil, "HIGHLIGHT")
 	highlight:SetAllPoints(frame)
 	highlight:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White")
 	highlight:SetVertexColor(0.2, 0.4, 0.8, 0.2)
-	highlight:SetBlendMode("ADD")
+  highlight:SetBlendMode("ADD")
+
+  local expandedBackground = frame:CreateTexture(nil, "BACKGROUND")
+  expandedBackground:SetTexCoord(0,1, 1,1, 0,0, 1,0)
+  expandedBackground:SetPoint("TOPLEFT", frame, "TOPLEFT", -1, -1)
+  expandedBackground:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 1, 1)
+  expandedBackground:SetHeight(40)
+  expandedBackground:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_AlphaGradient")
+	expandedBackground:SetVertexColor(0.6, 0.7, 0.9, 0.15)
+  expandedBackground:SetBlendMode("ADD")
+  expandedBackground:Hide()
 
 	local widget = {
 		label = label,
 		image = image,
 		frame = frame,
-		type  = Type
+    type  = Type,
+    expanded = false,
+    expandedBackground = expandedBackground,
 	}
 	for method, func in pairs(methods) do
 		widget[method] = func

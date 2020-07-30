@@ -108,10 +108,10 @@ local function createOptions(parentData, data, index, subIndex)
       order = 4,
       image = function()
         local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra" .. index, true);
-        return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+        return collapsed and "collapsed" or "expanded"
       end,
-      imageWidth = 24,
-      imageHeight = 24,
+      imageWidth = 15,
+      imageHeight = 15,
       func = function(info, button)
         local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra" .. index, true);
         WeakAuras.SetCollapsed("glow", "glow", "glowextra" .. index, not collapsed);

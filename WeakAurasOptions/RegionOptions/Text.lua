@@ -110,10 +110,10 @@ local function createOptions(id, data)
       end,
       image = function()
         local collapsed = WeakAuras.IsCollapsed("text", "text", "fontflags", true)
-        return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+        return collapsed and "collapsed" or "expanded"
       end,
-      imageWidth = 24,
-      imageHeight = 24
+      imageWidth = 15,
+      imageHeight = 15
     },
 
     text_font_space = {

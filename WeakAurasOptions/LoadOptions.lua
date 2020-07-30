@@ -132,10 +132,10 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         order = order,
         image = function()
           local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
-          return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+          return collapsed and "collapsed" or "expanded"
         end,
-        imageWidth = 24,
-        imageHeight = 24,
+        imageWidth = 15,
+        imageHeight = 15,
         func = function(info, button, secondCall)
           if not secondCall then
             local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
