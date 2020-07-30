@@ -399,37 +399,6 @@ function WeakAuras.CreateFrame()
     frame:UpdateFrameVisible()
   end)
 
-  local _, _, _, enabled, loadable = GetAddOnInfo("WeakAurasTutorials")
-  if enabled and loadable then
-    local tutorial = CreateDecoration(frame)
-    tutorial:SetPoint("TOPRIGHT", -140, 12)
-
-    local tutorialbutton = CreateFrame("BUTTON", nil, tutorial)
-    tutorialbutton:SetWidth(30)
-    tutorialbutton:SetHeight(30)
-    tutorialbutton:SetPoint("CENTER", tutorial, "CENTER", 1, -1)
-    tutorialbutton:SetNormalTexture("Interface\\GossipFrame\\DailyActiveQuestIcon")
-    tutorialbutton:GetNormalTexture():ClearAllPoints()
-    tutorialbutton:GetNormalTexture():SetSize(16, 16)
-    tutorialbutton:GetNormalTexture():SetPoint("center", -2, 0)
-    tutorialbutton:SetPushedTexture("Interface\\GossipFrame\\DailyActiveQuestIcon")
-    tutorialbutton:GetPushedTexture():ClearAllPoints()
-    tutorialbutton:GetPushedTexture():SetSize(16, 16)
-    tutorialbutton:GetPushedTexture():SetPoint("center", -2, -2)
-    tutorialbutton:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp")
-    tutorialbutton:SetScript("OnClick", function()
-      if not IsAddOnLoaded("WeakAurasTutorials") then
-        local loaded, reason = LoadAddOn("WeakAurasTutorials")
-        if not loaded then
-          reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
-          prettyPrint("Tutorials could not be loaded, the addon is " .. reason)
-          return
-        end
-      end
-      WeakAuras.ToggleTutorials()
-    end)
-  end
-
   -- Right Side Container
   local container = AceGUI:Create("InlineGroup")
   container.frame:SetParent(frame)
