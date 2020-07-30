@@ -433,11 +433,15 @@ function WeakAuras.CreateFrame()
   -- Right Side Container
   local container = AceGUI:Create("InlineGroup")
   container.frame:SetParent(frame)
-  container.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 12)
-  container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -83 - WeakAuras.normalWidth * 340, -14)
+  container.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 10)
+  container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -63 - WeakAuras.normalWidth * 340, -6)
   container.frame:Show()
   container.frame:SetClipsChildren(true)
   container.titletext:Hide()
+  -- Hide the border
+  container.content:GetParent():SetBackdrop(nil)
+  container.content:SetPoint("TOPLEFT", 0, 0)
+  container.content:SetPoint("BOTTOMRIGHT", 0, 0)
   frame.container = container
 
   frame.texturePicker = WeakAuras.TexturePicker(frame)
@@ -941,10 +945,14 @@ function WeakAuras.CreateFrame()
     self.moversizer:Hide()
     self.pickedOption = "New"
 
+    container:SetLayout("fill")
+    local border = AceGUI:Create("InlineGroup")
+    border:SetLayout("Fill")
+    container:AddChild(border)
+
     local containerScroll = AceGUI:Create("ScrollFrame")
     containerScroll:SetLayout("flow")
-    container:SetLayout("fill")
-    container:AddChild(containerScroll)
+    border:AddChild(containerScroll)
 
     if GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") ~= 0 then
       local simpleLabel = AceGUI:Create("Label")
