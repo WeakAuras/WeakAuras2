@@ -59,7 +59,7 @@ end
 
 function Private.LoadOptions(msg)
   if not(IsAddOnLoaded("WeakAurasOptions")) then
-    if not Private.IsLoginFinished() then
+    if not WeakAuras.IsLoginFinished() then
       prettyPrint(WeakAuras.LoginMessage())
       loginQueue[#loginQueue + 1] = WeakAuras.OpenOptions
     elseif InCombatLockdown() then
@@ -83,7 +83,7 @@ end
 function WeakAuras.OpenOptions(msg)
   if WeakAuras.NeedToRepairDatabase() then
     StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "downgrade"})
-  elseif (Private.IsLoginFinished() and Private.LoadOptions(msg)) then
+  elseif (WeakAuras.IsLoginFinished() and Private.LoadOptions(msg)) then
     WeakAuras.ToggleOptions(msg);
   end
 end
@@ -1676,7 +1676,7 @@ end
 
 local loginFinished, loginMessage = false, L["Options will open after the login process has completed."]
 
-function Private.IsLoginFinished()
+function WeakAuras.IsLoginFinished()
   return loginFinished
 end
 
@@ -1878,7 +1878,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         end
       end
     end
-    if Private.IsLoginFinished() then
+    if WeakAuras.IsLoginFinished() then
       callback()
     else
       loginQueue[#loginQueue + 1] = callback
@@ -2051,7 +2051,7 @@ local function LoadEncounterInitScriptsImpl(id)
 end
 
 function WeakAuras.LoadEncounterInitScripts(id)
-  if not Private.IsLoginFinished() then
+  if not WeakAuras.IsLoginFinished() then
     if encounterScriptsDeferred[id] then
       return
     end
@@ -2261,7 +2261,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
 end
 
 function WeakAuras.ScanForLoads(toCheck, event, arg1, ...)
-  if not Private.IsLoginFinished() then
+  if not WeakAuras.IsLoginFinished() then
     return
   end
   scanForLoadsImpl(toCheck, event, arg1, ...)
@@ -4857,7 +4857,7 @@ function WeakAuras.SetRegion(data, cloneId)
           data.parent = nil;
         end
       end
-      local loginFinished = Private.IsLoginFinished();
+      local loginFinished = WeakAuras.IsLoginFinished();
       local anim_cancelled = loginFinished and WeakAuras.CancelAnimation(region, true, true, true, true, true, true);
 
       regionTypes[regionType].modify(parent, region, data);
@@ -7442,7 +7442,7 @@ local anchorFrameDeferred = {}
 function WeakAuras.AnchorFrame(data, region, parent)
   if data.anchorFrameType == "CUSTOM"
   and (data.regionType == "group" or data.regionType == "dynamicgroup")
-  and not Private.IsLoginFinished()
+  and not WeakAuras.IsLoginFinished()
   and not anchorFrameDeferred[data.id]
   then
     loginQueue[#loginQueue + 1] = {WeakAuras.AnchorFrame, {data, region, parent}}
