@@ -273,8 +273,8 @@ function WeakAuras.CreateFrame()
   title:SetPoint("BOTTOMLEFT", titleBG, "BOTTOMLEFT", -25, 0)
   title:SetPoint("TOPRIGHT", titleBG, "TOPRIGHT", 25, 0)
 
-  CreateFrameSizer(frame, commitWindowChanges, "BOTTOMLEFT")
-  CreateFrameSizer(frame, commitWindowChanges, "BOTTOMRIGHT")
+  frame.bottomLeftResizer = CreateFrameSizer(frame, commitWindowChanges, "BOTTOMLEFT")
+  frame.bottomRightResizer = CreateFrameSizer(frame, commitWindowChanges, "BOTTOMRIGHT")
 
   local minimize = CreateDecoration(frame)
   minimize:SetPoint("TOPRIGHT", -65, 12)
@@ -297,13 +297,27 @@ function WeakAuras.CreateFrame()
       self.toolbarContainer.frame:Hide()
       self.filterInput:Hide();
       self.filterInputClear:Hide();
+      self.tipFrame.frame:Hide()
+      self.bottomLeftResizer:Hide()
+      self.bottomRightResizer:Hide()
     else
+      if self.tipFrameIsVisible then
+        self.tipFrame.frame:Show()
+      end
+      self.bottomLeftResizer:Show()
+      self.bottomRightResizer:Show()
       if self.window == "default" then
         self.buttonsContainer.frame:Show()
         self.container.frame:Show()
+        if self.tipFrameIsVisible then
+          self.tipFrame.frame:Show()
+        else
+          self.tipFrame.frame:Hide()
+        end
       else
         self.buttonsContainer.frame:Hide()
         self.container.frame:Hide()
+        self.tipFrame.frame:Hide()
       end
 
       if self.window == "texture" then
@@ -398,6 +412,120 @@ function WeakAuras.CreateFrame()
     end
     frame:UpdateFrameVisible()
   end)
+
+  local tipFrame = AceGUI:Create("SimpleGroup")
+  tipFrame.frame:SetParent(frame)
+  tipFrame:SetLayout("Flow")
+  tipFrame.frame:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 22, 15)
+  tipFrame.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 15)
+  tipFrame.frame:Hide()
+  frame.tipFrame = tipFrame
+
+  local tipPopup = CreateFrame("Frame", nil, frame, BackdropTemplateMixin and "BackdropTemplate")
+  tipPopup:SetFrameStrata("FULLSCREEN")
+  tipPopup:SetBackdrop({
+    bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
+    edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
+    tile = true,
+    tileSize = 16,
+    edgeSize = 16,
+    insets = { left = 4, right = 4, top = 4, bottom = 4 }
+  })
+  tipPopup:SetBackdropColor(0, 0, 0, 0.8)
+  --tipPopup:SetHeight(100)
+  tipPopup:Hide()
+
+  local tipPopupTitle = tipPopup:CreateFontString(nil, "BACKGROUND", "GameFontNormalLarge")
+  tipPopupTitle:SetPoint("TOPLEFT", tipPopup, "TOPLEFT", 10, -10)
+  tipPopupTitle:SetPoint("TOPRIGHT", tipPopup, "TOPRIGHT", -10, -10)
+  tipPopupTitle:SetJustifyH("LEFT")
+  tipPopupTitle:SetJustifyV("TOP")
+
+  local tipPopupLabel = tipPopup:CreateFontString(nil, "BACKGROUND", "GameFontWhite")
+  tipPopupLabel:SetPoint("TOPLEFT", tipPopupTitle, "BOTTOMLEFT", 0, -6)
+  tipPopupLabel:SetPoint("TOPRIGHT", tipPopupTitle, "BOTTOMRIGHT", 0, -6)
+  tipPopupLabel:SetJustifyH("LEFT")
+  tipPopupLabel:SetJustifyV("TOP")
+
+  local urlWidget = CreateFrame("EDITBOX", nil, tipPopup, "InputBoxTemplate")
+  urlWidget:SetFont(STANDARD_TEXT_FONT, 12)
+  urlWidget:SetPoint("TOPLEFT", tipPopupLabel, "BOTTOMLEFT", 6, 0)
+  urlWidget:SetPoint("TOPRIGHT", tipPopupLabel, "BOTTOMRIGHT", 0, 0)
+  urlWidget:SetScript("OnChar", function() urlWidget:SetText(urlWidget.text); urlWidget:HighlightText(); end);
+  urlWidget:SetScript("OnMouseUp", function() urlWidget:HighlightText(); end);
+  urlWidget:SetScript("OnEscapePressed", function() tipPopup:Hide() end)
+  urlWidget:SetHeight(34)
+
+  local tipPopupCtrlC = tipPopup:CreateFontString(nil, "BACKGROUND", "GameFontWhite")
+  tipPopupCtrlC:SetPoint("TOPLEFT", urlWidget, "BOTTOMLEFT", -6, 0)
+  tipPopupCtrlC:SetPoint("TOPRIGHT", urlWidget, "BOTTOMRIGHT", 0, 0)
+  tipPopupCtrlC:SetJustifyH("LEFT")
+  tipPopupCtrlC:SetJustifyV("TOP")
+  tipPopupCtrlC:SetText("Press Ctrl+C to copy the URL")
+
+  local function ToggleTip(referenceWidget, url, title, description)
+    if tipPopup:IsVisible() and urlWidget.text == url then
+      tipPopup:Hide()
+      return
+    end
+    urlWidget.text = url
+    urlWidget:SetText(url)
+    tipPopupTitle:SetText(title)
+    tipPopupLabel:SetText(description)
+    urlWidget:HighlightText()
+
+    tipPopup:SetWidth(400)
+    tipPopup:SetHeight(26 + tipPopupTitle:GetHeight() + tipPopupLabel:GetHeight() + urlWidget:GetHeight() + tipPopupCtrlC:GetHeight())
+
+    tipPopup:SetPoint("BOTTOMLEFT", referenceWidget.frame, "TOPLEFT", -6, 4)
+    tipPopup:Show()
+  end
+
+  local addFooter = function(title, texture, url, description)
+    local button = AceGUI:Create("WeakAurasToolbarButton")
+    button:SetText(title)
+    button:SetTexture(texture)
+    button:SetCallback("OnClick", function()
+      ToggleTip(button, url, title, description)
+    end)
+    tipFrame:AddChild(button)
+  end
+
+  addFooter(L["Get Help"], [[Interface\AddOns\WeakAuras\Media\Textures\discord.tga]], "https://discord.gg/wa2",
+            L["Chat with WeakAuras experts on our Discord server."])
+  addFooter(L["Documentation"], [[Interface\AddOns\WeakAuras\Media\Textures\GitHub.tga]], "https://github.com/WeakAuras/WeakAuras2/wiki",
+            L["Check out our wiki for a large collection of examples and snippets."])
+  addFooter(L["Find Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]], "https://wago.io",
+            L["Browse Wago, the largest collection of auras."])
+
+  if not WeakAurasCompanion then
+    addFooter(L["Update Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]], "https://weakauras.wtf",
+            L["Keep your Wago imports up to date with the Companion App."])
+  end
+  addFooter(L["Found a Bug?"], [[Interface\AddOns\WeakAuras\Media\Textures\bug_report.tga]], "https://github.com/WeakAuras/WeakAuras2/issues/new",
+            L["Report bugs our our issue tracker."])
+
+  -- Disable for now
+  --local closeTipButton = CreateFrame("Button", nil, tipFrame.frame, "UIPanelCloseButton")
+  --closeTipButton:SetScript("OnClick", function()
+  --  frame:HideTip()
+  --end)
+  --closeTipButton:SetPoint("TOPRIGHT", tipFrame.frame, "TOPRIGHT", 0, 6)
+  --closeTipButton:Show()
+
+  frame.ShowTip = function(self)
+    self.tipFrameIsVisible = true
+    self.tipFrame.frame:Show()
+    self.buttonsContainer.frame:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 17, 30)
+    self.container.frame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -17, 28)
+  end
+
+  frame.HideTip = function(self)
+    self.tipFrameIsVisible = false
+    self.tipFrame.frame:Hide()
+    self.buttonsContainer.frame:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 17, 12)
+    self.container.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 10)
+  end
 
   -- Right Side Container
   local container = AceGUI:Create("InlineGroup")
