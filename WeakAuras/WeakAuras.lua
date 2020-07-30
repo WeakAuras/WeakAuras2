@@ -1376,16 +1376,14 @@ local function EvaluateCheckForRegisterForGlobalConditions(id, check, allConditi
         EvaluateCheckForRegisterForGlobalConditions(id, subcheck, allConditionsTemplate, register);
       end
     end
-  elseif trigger == -1 then
-    if variable == "customcheck" then
-      if check.op then
-        for event in string.gmatch(check.op, "[%w_]+") do
-          if (not dynamicConditions[event]) then
-            register[event] = true;
-            dynamicConditions[event] = {};
-          end
-          dynamicConditions[event][id] = true;
+  elseif trigger == -1  and variable == "customcheck" then
+    if check.op then
+      for event in string.gmatch(check.op, "[%w_]+") do
+        if (not dynamicConditions[event]) then
+          register[event] = true;
+          dynamicConditions[event] = {};
         end
+        dynamicConditions[event][id] = true;
       end
     end
   elseif (trigger and variable) then
