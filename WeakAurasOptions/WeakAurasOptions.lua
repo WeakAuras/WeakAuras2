@@ -547,6 +547,9 @@ function WeakAuras.ShowOptions(msg)
   if (frame.window == "codereview") then
     frame.codereview:Close();
   end
+
+  -- TODO check if it should be shown
+  frame:ShowTip()
 end
 
 function WeakAuras.HideOptions()
