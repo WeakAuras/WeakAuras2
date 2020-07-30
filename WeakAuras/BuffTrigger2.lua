@@ -2760,7 +2760,7 @@ local function TrackUid(unit)
   unit = unit.."target"
   GUID = UnitGUID(unit)
   if GUID then
-    WeakAuras.SetUID(GUID, unit)
+    SetUID(GUID, unit)
     BuffTrigger.HandlePendingTracks(unit, GUID)
   else
     ReleaseUID(unit)
