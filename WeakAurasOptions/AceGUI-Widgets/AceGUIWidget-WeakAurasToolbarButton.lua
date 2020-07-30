@@ -37,7 +37,7 @@ local methods = {
 	["OnAcquire"] = function(self)
 		-- restore default values
 		self:SetHeight(16)
-		self:SetWidth(32)
+		self:SetWidth(16)
 		self:SetDisabled(false)
 		self:SetText()
 		self.hTex:SetVertexColor(1, 1, 1, 0.1)
@@ -47,7 +47,11 @@ local methods = {
 
 	["SetText"] = function(self, text)
 		self.text:SetText(text)
-		self:SetWidth(self.text:GetStringWidth() + 24)
+		if text ~= "" then
+			self:SetWidth(self.text:GetStringWidth() + 24)
+		else
+			self:SetWidth(16)
+		end
 	end,
 
 	["SetDisabled"] = function(self, disabled)
