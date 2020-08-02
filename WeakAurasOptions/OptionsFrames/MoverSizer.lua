@@ -616,7 +616,7 @@ local function ConstructMoverSizer(parent)
         end
       end
       WeakAuras.FillOptions()
-      WeakAuras.Animate("display", data, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true)
+      WeakAuras.Animate("display", data.uid, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true)
       -- hide alignment lines
       frame.lineY:Hide()
       frame.lineX:Hide()
@@ -736,7 +736,7 @@ local function ConstructMoverSizer(parent)
         frame.text:Hide()
         frame:SetScript("OnUpdate", nil)
         WeakAuras.FillOptions()
-        WeakAuras.Animate("display", data, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true)
+        WeakAuras.Animate("display", data.uid, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true)
         -- hide alignment lines
         frame.lineY:Hide()
         frame.lineX:Hide()

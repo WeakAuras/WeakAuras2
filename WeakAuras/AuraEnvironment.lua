@@ -217,6 +217,10 @@ function WeakAuras.ClearAuraEnvironment(id)
   environment_initialized[id] = nil;
 end
 
+function WeakAuras.ActivateAuraEnvironmentForRegion(region, onlyConfig)
+  WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state, region.states, onlyConfig)
+end
+
 function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
   local data = WeakAuras.GetData(id)
   local region = WeakAuras.GetRegion(id, cloneId)
