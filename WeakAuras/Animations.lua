@@ -380,16 +380,6 @@ function WeakAuras.Animate(namespace, uid, type, anim, region, inverse, onFinish
   end
 end
 
-function WeakAuras.IsAnimating(region)
-  local key = tostring(region);
-  local anim = animations[key];
-  if(anim) then
-    return anim.type;
-  else
-    return nil;
-  end
-end
-
 function WeakAuras.CancelAnimation(region, resetPos, resetAlpha, resetScale, resetRotation, resetColor, doOnFinished)
   local key = tostring(region);
   local anim = animations[key];
