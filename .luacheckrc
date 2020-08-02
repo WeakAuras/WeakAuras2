@@ -81,6 +81,7 @@ globals = {
 	"Saturate",
 	"SecureButton_GetModifiedUnit",
 	"SlashCmdList",
+	"SearchBoxTemplate_OnTextChanged",
 	"SmoothStatusBarMixin",
 	"STATICPOPUP_NUMDIALOGS",
 	"StaticPopup_Show",
