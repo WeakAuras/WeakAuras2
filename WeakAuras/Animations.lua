@@ -16,16 +16,17 @@ local last_update = GetTime();
 local function UpdateAnimations()
   WeakAuras.StartProfileSystem("animations");
   local errorHandler = WeakAuras.IsOptionsOpen() and noopErrorHandler or geterrorhandler()
-  for groupId, groupRegion in pairs(pending_controls) do
-    pending_controls[groupId] = nil;
+  for groupUid, groupRegion in pairs(pending_controls) do
+    pending_controls[groupUid] = nil;
     groupRegion:DoPositionChildren();
   end
+
   local time = GetTime();
   local elapsed = time - last_update;
   last_update = time;
   local num = 0;
-  for id, anim in pairs(animations) do
-    WeakAuras.StartProfileAura(anim.name);
+  for key, anim in pairs(animations) do
+    WeakAuras.StartProfileUID(anim.auraUID);
     num = num + 1;
     local finished = false;
     if(anim.duration_type == "seconds") then
@@ -70,7 +71,7 @@ local function UpdateAnimations()
     end
     local progress = anim.inverse and (1 - anim.progress) or anim.progress;
     progress = anim.easeFunc(progress, anim.easeStrength or 3)
-    WeakAuras.ActivateAuraEnvironment(anim.name, anim.cloneId, anim.region.state, anim.region.states);
+    WeakAuras.ActivateAuraEnvironment(anim.region)
     if(anim.translateFunc) then
       if (anim.region.SetOffsetAnim) then
         local ok, x, y = xpcall(anim.translateFunc, errorHandler, progress, 0, 0, anim.dX, anim.dY);
@@ -149,40 +150,29 @@ local function UpdateAnimations()
         if(anim.region.ColorAnim) then
           anim.region:ColorAnim(nil);
         end
-        animations[id] = nil;
+        animations[key] = nil;
       end
 
       if(anim.loop) then
-        WeakAuras.Animate(anim.namespace, anim.data, anim.type, anim.anim, anim.region, anim.inverse, anim.onFinished, anim.loop, anim.cloneId);
+        WeakAuras.Animate(anim.namespace, anim.auraUID, anim.type, anim.anim, anim.region, anim.inverse, anim.onFinished, anim.loop, anim.region.cloneId);
       elseif(anim.onFinished) then
         anim.onFinished();
       end
     end
-    WeakAuras.StopProfileAura(anim.name);
+    WeakAuras.StopProfileUID(anim.auraUID);
   end
-  -- XXX: I tried to have animations only update if there are actually animation data to animate upon.
-  -- This caused all start animations to break, and I couldn't figure out why.
-  -- May revisit at a later time.
-  --[[
-  if(num == 0) then
-  WeakAuras.debug("Animation stopped", 3);
-  frame:SetScript("OnUpdate", nil);
-  updatingAnimations = nil;
-  updatingAnimations = nil;
-  end
-  ]]--
 
   WeakAuras.StopProfileSystem("animations");
 end
 
-function Private.RegisterGroupForPositioning(id, region)
-  pending_controls[id] = region
+function Private.RegisterGroupForPositioning(uid, region)
+  pending_controls[uid] = region
   updatingAnimations = true
   frame:SetScript("OnUpdate", UpdateAnimations)
 end
 
-function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinished, loop, cloneId)
-  local id = data.id;
+function WeakAuras.Animate(namespace, uid, type, anim, region, inverse, onFinished, loop, cloneId)
+  local auraDisplayName = WeakAuras.UIDtoID(uid)
   local key = tostring(region);
   local valid;
   if(anim and anim.type == "custom" and (anim.use_translate or anim.use_alpha or (anim.use_scale and region.Scale) or (anim.use_rotate and region.Rotate) or (anim.use_color and region.Color))) then
@@ -237,7 +227,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.translateFunc = anim_function_strings[anim.translateType]
       end
       if (anim.translateFunc) then
-        translateFunc = WeakAuras.LoadFunction("return " .. anim.translateFunc, id, "translate animation");
+        translateFunc = WeakAuras.LoadFunction("return " .. anim.translateFunc, auraDisplayName, "translate animation");
       else
         if (region.SetOffsetAnim) then
           region:SetOffsetAnim(0, 0);
@@ -258,7 +248,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.alphaFunc = anim_function_strings[anim.alphaType]
       end
       if (anim.alphaFunc) then
-        alphaFunc = WeakAuras.LoadFunction("return " .. anim.alphaFunc, id, "alpha animation");
+        alphaFunc = WeakAuras.LoadFunction("return " .. anim.alphaFunc, auraDisplayName, "alpha animation");
       else
         if (region.SetAnimAlpha) then
           region:SetAnimAlpha(nil);
@@ -279,7 +269,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.scaleFunc = anim_function_strings[anim.scaleType]
       end
       if (anim.scaleFunc) then
-        scaleFunc = WeakAuras.LoadFunction("return " .. anim.scaleFunc, id, "scale animation");
+        scaleFunc = WeakAuras.LoadFunction("return " .. anim.scaleFunc, auraDisplayName, "scale animation");
       else
         region:Scale(1, 1);
       end
@@ -292,7 +282,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.rotateFunc = anim_function_strings[anim.rotateType]
       end
       if (anim.rotateFunc) then
-        rotateFunc = WeakAuras.LoadFunction("return " .. anim.rotateFunc, id, "rotate animation");
+        rotateFunc = WeakAuras.LoadFunction("return " .. anim.rotateFunc, auraDisplayName, "rotate animation");
       else
         region:Rotate(startRotation);
       end
@@ -305,7 +295,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
         anim.colorFunc = anim_function_strings[anim.colorType]
       end
       if (anim.colorFunc) then
-        colorFunc = WeakAuras.LoadFunction("return " .. anim.colorFunc, id, "color animation");
+        colorFunc = WeakAuras.LoadFunction("return " .. anim.colorFunc, auraDisplayName, "color animation");
       else
         region:ColorAnim(nil);
       end
@@ -317,7 +307,7 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     duration = WeakAuras.ParseNumber(anim.duration) or 0;
     progress = 0;
     if(namespace == "display" and type == "main" and not onFinished and not anim.duration_type == "relative") then
-      local data = WeakAuras.GetData(id);
+      local data = WeakAuras.GetDataByUID(uid);
       if(data and data.parent) then
         local parentRegion = WeakAuras.regions[data.parent].region;
         if(parentRegion and parentRegion.controlledRegions) then
@@ -371,11 +361,9 @@ function WeakAuras.Animate(namespace, data, type, anim, region, inverse, onFinis
     animation.type = type
     animation.loop = loop
     animation.onFinished = onFinished
-    animation.name = id
-    animation.cloneId = cloneId or ""
     animation.namespace = namespace;
-    animation.data = data;
     animation.anim = anim;
+    animation.auraUID = uid
 
     if not(updatingAnimations) then
       frame:SetScript("OnUpdate", UpdateAnimations);
@@ -444,13 +432,5 @@ function WeakAuras.CancelAnimation(region, resetPos, resetAlpha, resetScale, res
     return true;
   else
     return false;
-  end
-end
-
-function Private.RenameAnimations(oldid, newid)
-  for key, animation in pairs(animations) do
-    if animation.name == oldid then
-      animation.name = newid;
-    end
   end
 end
