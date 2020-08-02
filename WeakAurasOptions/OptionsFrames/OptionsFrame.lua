@@ -296,7 +296,6 @@ function WeakAuras.CreateFrame()
       self.loadProgress:Hide()
       self.toolbarContainer.frame:Hide()
       self.filterInput:Hide();
-      self.filterInputClear:Hide();
       self.tipFrame.frame:Hide()
       self.bottomLeftResizer:Hide()
       self.bottomRightResizer:Hide()
@@ -368,18 +367,16 @@ function WeakAuras.CreateFrame()
           self.loadProgress:Show()
           self.toolbarContainer.frame:Hide()
           self.filterInput:Hide();
-          self.filterInputClear:Hide();
         else
           self.loadProgress:Hide()
           self.toolbarContainer.frame:Show()
           self.filterInput:Show();
-          self.filterInputClear:Show();
+          --self.filterInputClear:Show();
         end
       else
         self.loadProgress:Hide()
         self.toolbarContainer.frame:Hide()
         self.filterInput:Hide();
-        self.filterInputClear:Hide();
       end
     end
   end
@@ -551,36 +548,18 @@ function WeakAuras.CreateFrame()
   frame.moversizer, frame.mover = WeakAuras.MoverSizer(frame)
 
   -- filter line
-  local filterInput = CreateFrame("editbox", "WeakAurasFilterInput", frame, "InputBoxTemplate")
-  filterInput:SetAutoFocus(false)
-  filterInput:SetScript("OnTextChanged", function(...) WeakAuras.SortDisplayButtons(filterInput:GetText()) end)
-  filterInput:SetScript("OnEnterPressed", function(...) filterInput:ClearFocus() end)
-  filterInput:SetScript("OnEscapePressed", function(...) filterInput:SetText("") filterInput:ClearFocus() end)
+  local filterInput = CreateFrame("editbox", "WeakAurasFilterInput", frame, "SearchBoxTemplate")
+  filterInput:SetScript("OnTextChanged", function(self)
+    SearchBoxTemplate_OnTextChanged(self)
+    WeakAuras.SortDisplayButtons(filterInput:GetText())
+  end)
   filterInput:SetHeight(15)
   filterInput:SetPoint("TOP", frame, "TOP", 0, -44)
   filterInput:SetPoint("LEFT", frame, "LEFT", 24, 0)
   filterInput:SetPoint("RIGHT", container.frame, "LEFT", -5, 0)
-  filterInput:SetTextInsets(16, 16, 0, 0)
-
-  local searchIcon = filterInput:CreateTexture(nil, "overlay")
-  searchIcon:SetTexture("Interface\\Common\\UI-Searchbox-Icon")
-  searchIcon:SetVertexColor(0.6, 0.6, 0.6)
-  searchIcon:SetWidth(14)
-  searchIcon:SetHeight(14)
-  searchIcon:SetPoint("left", filterInput, "left", 2, -2)
   filterInput:SetFont(STANDARD_TEXT_FONT, 10)
   frame.filterInput = filterInput
   filterInput:Hide()
-
-  local filterInputClear = CreateFrame("BUTTON", nil, filterInput)
-  frame.filterInputClear = filterInputClear
-  filterInputClear:SetWidth(12)
-  filterInputClear:SetHeight(12)
-  filterInputClear:SetPoint("RIGHT", filterInput, "RIGHT", -4, -1)
-  filterInputClear:SetNormalTexture("Interface\\Common\\VoiceChat-Muted")
-  filterInputClear:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp")
-  filterInputClear:SetScript("OnClick", function() filterInput:SetText("") filterInput:ClearFocus() end)
-  filterInputClear:Hide()
 
   -- Left Side Container
   local buttonsContainer = AceGUI:Create("InlineGroup")
