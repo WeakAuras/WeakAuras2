@@ -275,10 +275,25 @@ function WeakAuras.AddTriggerMetaFunctions(options, data, triggernum)
     end,
     func = function()
       if #data.triggers > 1 then
-        tremove(data.triggers, triggernum)
-        DeleteConditionsForTrigger(data, triggernum);
-        WeakAuras.Add(data)
-        WeakAuras.ClearAndUpdateOptions(data.id)
+        StaticPopupDialogs["WEAKAURAS_CONFIRM_TRIGGER_DELETE"] = {
+          text = L["You are about to delete a trigger. |cFFFF0000This cannot be undone!|r Would you like to continue?"],
+          button1 = L["Delete"],
+          button2 = L["Cancel"],
+          OnAccept = function()
+            tremove(data.triggers, triggernum)
+            DeleteConditionsForTrigger(data, triggernum)
+            WeakAuras.Add(data)
+            WeakAuras.ClearAndUpdateOptions(data.id)
+            WeakAuras.FillOptions()
+          end,
+          OnCancel = function()
+            -- no-op
+          end,
+          showAlert = true,
+          whileDead = true,
+          preferredindex = STATICPOPUP_NUMDIALOGS,
+        }
+        StaticPopup_Show("WEAKAURAS_CONFIRM_TRIGGER_DELETE")
       end
     end
   }
