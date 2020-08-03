@@ -327,7 +327,7 @@ WeakAuras.function_strings = {
   ]],
   count_fraction = [[
     return function(count, max)
-      local fraction = count/max
+      local fraction = count/(max ~= 0 and max or math.huge) -- because PTR always complains about div/0
       if(fraction %s %s) then
         return true
       else
