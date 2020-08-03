@@ -1054,7 +1054,10 @@ local function modify(parent, region, data)
                           type(pos[2]) == "number" and pos[2] or 0,
                           type(pos[3]) ~= "boolean" and true or pos[3]
 
-      local controlPoint = regionData.controlPoint
+      local controlPoint = type(regionData) == "table" and regionData.controlPoint
+      if not controlPoint then
+        break
+      end
       controlPoint:ClearAnchorPoint()
       controlPoint:SetAnchorPoint(
         data.selfPoint,
