@@ -1800,7 +1800,6 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
     name = L["Condition %i"]:format(i),
     order = order,
     width = WeakAuras.doubleWidth - 0.45,
-    --fontSize = "large",
     func = function()
       if data.controlledChildren then
         for id, reference in pairs(conditions[i].check.references) do

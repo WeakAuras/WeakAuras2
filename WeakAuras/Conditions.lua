@@ -531,9 +531,6 @@ local function ConstructConditionFunction(data)
   ret = ret .. "    WeakAuras.scheduleConditionCheck(recheckTime, id, cloneId);\n"
   ret = ret .. "  end\n"
 
-  print("####")
-  print(ret)
-
   local properties = WeakAuras.GetProperties(data);
 
   -- Now build a property + change list
@@ -577,8 +574,6 @@ local function ConstructConditionFunction(data)
   end
   ret = ret .. "end\n";
 
-
-
   return ret;
 end
 
@@ -590,7 +585,6 @@ function Private.LoadConditionFunction(data)
 end
 
 function Private.RunConditions(region, id, hideRegion)
-  -- TODO rename show
   if (checkConditions[id]) then
     checkConditions[id](region, hideRegion);
   end
