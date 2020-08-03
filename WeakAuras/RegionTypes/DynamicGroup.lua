@@ -1158,9 +1158,8 @@ local function modify(parent, region, data)
     local newPositions = {}
     self.growFunc(newPositions, self.sortedChildren)
     if #newPositions > 0 then
-      local max = #newPositions
-      for index = 1, max do
-        if newPositions[index] then
+      for index = 1, #newPositions do
+        if type(newPositions[index]) == "table" then
           local data = self.sortedChildren[index]
           if data then
             newPositions[data] = newPositions[index]
