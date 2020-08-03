@@ -1670,7 +1670,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
       order = addSpace(args, order)
     elseif currentConditionTemplate.type == "customcheck" then
       args["condition" .. i .. tostring(path) .. "_op"] = {
-        name = blueIfNoValue(data, conditions[i].check, "op", L["Events"], L["Events"]),
+        name = blueIfNoValue(data, conditions[i].check, "op", L["Additional Events"], L["Additional Events"]),
         desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type) or "",
         type = "input",
         width = WeakAuras.doubleWidth,
