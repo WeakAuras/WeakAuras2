@@ -327,6 +327,9 @@ WeakAuras.function_strings = {
   ]],
   count_fraction = [[
     return function(count, max)
+      if max == 0 then
+        return false
+      end
       local fraction = count/max
       if(fraction %s %s) then
         return true
