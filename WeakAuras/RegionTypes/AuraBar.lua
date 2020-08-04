@@ -453,8 +453,8 @@ local barPrototype = {
   ["SetAdditionalBars"] = function(self, additionalBars, colors, min, max, inverse, overlayclip)
     self.additionalBars = additionalBars;
     self.additionalBarsColors = colors;
-    self.additionalBarsMin = min;
-    self.additionalBarsMax = max;
+    self.additionalBarsMin = min or 0;
+    self.additionalBarsMax = max or 0;
     self.additionalBarsInverse = inverse;
     self.additionalBarsClip = overlayclip;
     self:UpdateAdditionalBars();
