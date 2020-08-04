@@ -422,26 +422,26 @@ local function GetAction(target, area, source)
           Actions["Group"](_source)
         end,
         Icons["Ungroup"]
-    else -- area == "BOTTOM"
-      if source.data.parent == target.data.id then
-        return Actions["Move"], Icons["Move"]
-    else
-      return function(_source, _target)
-        Actions["Ungroup"](_source)
-        Actions["Group"](_source, _target.data.id)
-      end,
-      Icons["Group"]
-    end
-    end
+      else -- area == "BOTTOM"
+        if source.data.parent == target.data.id then
+          return Actions["Move"], Icons["Move"]
+        else
+          return function(_source, _target)
+            Actions["Ungroup"](_source)
+            Actions["Group"](_source, _target.data.id)
+          end,
+          Icons["Group"]
+        end
+      end
     else -- not target.data.parent and not source.data.parent
       if target:IsGroup() and area == "BOTTOM" then
         return function(_source, _target)
           Actions["Group"](_source, _target.data.id)
         end,
         Icons["Group"]
-    else
-      return nil
-    end
+      else
+        return nil
+      end
     end
   end
 end
