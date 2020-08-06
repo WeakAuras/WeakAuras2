@@ -1049,15 +1049,15 @@ local function modify(parent, region, data)
 
   function region:DoPositionChildrenPerFrame(frame, positions, handledRegionData)
     for regionData, pos in pairs(positions) do
+      if type(regionData) ~= "table" then
+        break;
+      end
       handledRegionData[regionData] = true
       local x, y, show =  type(pos[1]) == "number" and pos[1] or 0,
                           type(pos[2]) == "number" and pos[2] or 0,
                           type(pos[3]) ~= "boolean" and true or pos[3]
 
-      local controlPoint = type(regionData) == "table" and regionData.controlPoint
-      if not controlPoint then
-        break
-      end
+      local controlPoint = regionData.controlPoint
       controlPoint:ClearAnchorPoint()
       controlPoint:SetAnchorPoint(
         data.selfPoint,
