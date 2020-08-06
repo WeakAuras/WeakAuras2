@@ -205,7 +205,7 @@ local clones = WeakAuras.clones;
 
 -- Unused regions that are kept around for clones
 Private.clonePool = {};
-local clonePool = WeakAuras.clonePool;
+local clonePool = Private.clonePool;
 
 -- One table per regionType, see RegisterRegionType, notable properties: create, modify and default
 WeakAuras.regionTypes = {};
