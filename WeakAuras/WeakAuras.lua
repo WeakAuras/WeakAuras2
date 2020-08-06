@@ -3724,6 +3724,9 @@ function WeakAuras.GetTriggerStateForTrigger(id, triggernum)
   return triggerState[id][triggernum];
 end
 
+function WeakAuras.GetActiveTriggers(id)
+  return triggerState[id].triggers
+end
 
 do
   local visibleFakeStates = {}
