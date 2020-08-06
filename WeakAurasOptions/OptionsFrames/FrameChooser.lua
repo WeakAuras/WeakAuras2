@@ -68,6 +68,7 @@ function WeakAuras.StartFrameChooser(data, path)
 
         if(focus ~= oldFocus) then
           if(focusName) then
+            frameChooserBox:ClearAllPoints();
             frameChooserBox:SetPoint("bottomleft", focus, "bottomleft", -4, -4);
             frameChooserBox:SetPoint("topright", focus, "topright", 4, 4);
             frameChooserBox:Show();
