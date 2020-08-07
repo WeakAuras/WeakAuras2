@@ -108,10 +108,13 @@ local function createOptions(parentData, data, index, subIndex)
       end,
       image = function()
         local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "tickextras" .. index, true)
-        return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+        return collapsed and "collapsed" or "expanded"
       end,
-      imageWidth = 24,
-      imageHeight = 24
+      imageWidth = 15,
+      imageHeight = 15,
+      arg = {
+        expanderName = "tick" .. index .. "#" .. subIndex
+      }
     },
     automatic_length = {
       type = "toggle",
@@ -209,6 +212,17 @@ local function createOptions(parentData, data, index, subIndex)
       softMax = 200,
       hidden = hiddentickextras,
     },
+
+    tick_anchor = {
+      type = "description",
+      name = "",
+      order = 18,
+      hidden = hiddentickextras,
+      control = "WeakAurasExpandAnchor",
+      arg = {
+        expanderName = "tick" .. index .. "#" .. subIndex
+      }
+    }
   }
   return options
 end

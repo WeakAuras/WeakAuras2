@@ -96,3 +96,4 @@ AceGUI-Widgets\AceGUIWidget-WeakAurasSnippetButton.lua
 AceGUI-Widgets\AceGUIContainer-WeakAurasTreeGroup.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasSnippetButton.lua
 AceGUI-Widgets\AceGUIContainer-WeakAurasInlineGroup.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasExpandAnchor.lua
