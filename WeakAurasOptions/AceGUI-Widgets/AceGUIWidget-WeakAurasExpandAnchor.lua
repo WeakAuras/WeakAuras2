@@ -6,18 +6,18 @@ local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
 local methods = {
-	["OnAcquire"] = function(self)
+  ["OnAcquire"] = function(self)
     self:SetHeight(1)
     self:SetWidth(1)
-	end,
+  end,
 
-	-- ["OnRelease"] = nil,
+  -- ["OnRelease"] = nil,
 
-	["OnWidthSet"] = function(self, width)
-	end,
+  ["OnWidthSet"] = function(self, width)
+  end,
 
-	["SetText"] = function(self, text)
-	end,
+  ["SetText"] = function(self, text)
+  end,
 
   ["SetFontObject"] = function(self, font)
   end,
@@ -50,22 +50,22 @@ end
 
 
 local function Constructor()
-	local frame = CreateFrame("Frame", nil, UIParent)
-	frame:Hide()
+  local frame = CreateFrame("Frame", nil, UIParent)
+  frame:Hide()
 
   frame:SetScript("OnShow", OnFrameShow)
   frame:SetScript("OnHide", OnFrameHide)
 
-	-- create widget
-	local widget = {
-		frame = frame,
-		type  = Type
-	}
-	for method, func in pairs(methods) do
-		widget[method] = func
-	end
+  -- create widget
+  local widget = {
+    frame = frame,
+    type  = Type
+  }
+  for method, func in pairs(methods) do
+    widget[method] = func
+  end
 
-	return AceGUI:RegisterAsWidget(widget)
+  return AceGUI:RegisterAsWidget(widget)
 end
 
 AceGUI:RegisterWidgetType(Type, Constructor, Version)
