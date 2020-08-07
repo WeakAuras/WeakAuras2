@@ -136,7 +136,6 @@ local methods = {
     local expandedBackground = self.expandedBackground
     if otherWidget then
       expandedBackground:SetPoint("BOTTOMLEFT", otherWidget.frame, "TOPLEFT", -4, -2)
-      --expandedBackground:SetPoint("BOTTOMRIGHT", otherWidget.frame, "TOPRIGHT", 1, 1)
     end
   end
 }
@@ -216,10 +215,6 @@ local function Constructor()
   expandedBackground:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_AlphaGradient")
   expandedBackground:SetVertexColor(1, 0.8, 0, 0.15)
   expandedBackground:SetBlendMode("ADD")
-
-  --expandedBackground:SetTexCoord(0,1, 0.7,1, 0,0, 0.7,0) -- rotate and offset the gradient
-  --expandedBackground:SetVertexColor(0.2, 0.4, 0.8, 0.2) -- dark blue
-  --expandedBackground:SetVertexColor(0.6, 0.7, 0.9, 0.15) -- light blue
 
   local widget = {
     label = label,
