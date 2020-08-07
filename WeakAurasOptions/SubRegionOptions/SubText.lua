@@ -142,10 +142,13 @@ local function createOptions(parentData, data, index, subIndex)
       end,
       image = function()
         local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
-        return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+        return collapsed and "collapsed" or "expanded"
       end,
-      imageWidth = 24,
-      imageHeight = 24
+      imageWidth = 15,
+      imageHeight = 15,
+      arg = {
+        expanderName = "subtext" .. index .. "#" .. subIndex
+      }
     },
 
     text_font_space = {
@@ -271,6 +274,17 @@ local function createOptions(parentData, data, index, subIndex)
       values = WeakAuras.text_word_wrap,
       hidden = function() return hiddenFontExtra() or data.text_automaticWidth ~= "Fixed" end
     },
+
+    text_anchor = {
+      type = "description",
+      name = "",
+      order = 55,
+      hidden = hiddenFontExtra,
+      control = "WeakAurasExpandAnchor",
+      arg = {
+        expanderName = "subtext" .. index .. "#" .. subIndex
+      }
+    }
   }
 
   -- Note: Anchor Options need to be generalized once there are multiple sub regions
@@ -321,14 +335,17 @@ local function createOptions(parentData, data, index, subIndex)
     order = 60,
     image = function()
       local collapsed = WeakAuras.IsCollapsed("subregion", "text_anchors", tostring(index), true)
-      return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+      return collapsed and "collapsed" or "expanded"
     end,
-    imageWidth = 24,
-    imageHeight = 24,
+    imageWidth = 15,
+    imageHeight = 15,
     func = function(info, button)
       local collapsed = WeakAuras.IsCollapsed("subregion", "text_anchors", tostring(index), true)
       WeakAuras.SetCollapsed("subregion", "text_anchors", tostring(index), not collapsed)
-    end
+    end,
+    arg = {
+      expanderName = "subtext_anchor" .. index .. "#" .. subIndex
+    }
   }
 
 
@@ -393,6 +410,17 @@ local function createOptions(parentData, data, index, subIndex)
     softMax = screenHeight,
     bigStep = 10,
     hidden = hiddenFunction
+  }
+
+  options.text_anchor_anchor = {
+    type = "description",
+    name = "",
+    order = 61,
+    hidden = hiddenFontExtra,
+    control = "WeakAurasExpandAnchor",
+    arg = {
+      expanderName = "subtext_anchor" .. index .. "#" .. subIndex
+    }
   }
 
   local function hideCustomTextOption()
