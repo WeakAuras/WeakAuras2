@@ -32,6 +32,9 @@ local spellCache = WeakAuras.spellCache;
 local savedVars = {};
 WeakAuras.savedVars = savedVars;
 
+WeakAuras.expanderAnchors = {}
+WeakAuras.expanderButtons = {}
+
 local tempGroup = {
   id = {"tempGroup"},
   regionType = "group",
@@ -1620,10 +1623,13 @@ function WeakAuras.AddTextFormatOption(input, withHeader, get, addOption, hidden
         setHidden(not hidden())
       end,
       image = function()
-        return hidden() and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+        return hidden() and "collapsed" or "expanded"
       end,
-      imageWidth = 24,
-      imageHeight = 24
+      imageWidth = 15,
+      imageHeight = 15,
+      arg = {
+        expanderName = tostring(addOption)
+      }
     }
     addOption("header", headerOption)
   else
@@ -1663,6 +1669,20 @@ function WeakAuras.AddTextFormatOption(input, withHeader, get, addOption, hidden
       end
     end
   end)
+
+  if withHeader then
+    addOption("header_anchor",
+    {
+      type = "description",
+      name = "",
+      control = "WeakAurasExpandAnchor",
+      arg = {
+        expanderName = tostring(addOption)
+      }
+    }
+
+  )
+  end
 
   if not next(seenSymbols) and withHeader then
     headerOption.hidden = true
