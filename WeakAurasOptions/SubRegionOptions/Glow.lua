@@ -108,14 +108,17 @@ local function createOptions(parentData, data, index, subIndex)
       order = 4,
       image = function()
         local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra" .. index, true);
-        return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+        return collapsed and "collapsed" or "expanded"
       end,
-      imageWidth = 24,
-      imageHeight = 24,
+      imageWidth = 15,
+      imageHeight = 15,
       func = function(info, button)
         local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra" .. index, true);
         WeakAuras.SetCollapsed("glow", "glow", "glowextra" .. index, not collapsed);
       end,
+      arg = {
+        expanderName = "glow" .. index .. "#" .. subIndex
+      }
     },
     glow_space1 = {
       type = "description",
@@ -245,6 +248,17 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Border"],
       order = 19,
       hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
+    },
+
+    glow_anchor = {
+      type = "description",
+      name = "",
+      order = 20,
+      hidden = hiddenGlowExtra,
+      control = "WeakAurasExpandAnchor",
+      arg = {
+        expanderName = "glow" .. index .. "#" .. subIndex
+      }
     }
   }
   return options
