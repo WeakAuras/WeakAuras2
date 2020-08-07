@@ -94,14 +94,17 @@ local function createOptions(id, data)
       order = 7,
       image = function()
         local collapsed = WeakAuras.IsCollapsed("icon", "icon", "iconextra", true);
-        return collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\edit" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\editdown"
+        return collapsed and "collapsed" or "expanded"
       end,
-      imageWidth = 24,
-      imageHeight = 24,
+      imageWidth = 15,
+      imageHeight = 15,
       func = function(info, button)
         local collapsed = WeakAuras.IsCollapsed("icon", "icon", "iconextra", true);
         WeakAuras.SetCollapsed("icon", "icon", "iconextra", not collapsed);
       end,
+      arg = {
+        expanderName = "icon"
+      }
     },
     iconExtra_space1 = {
       type = "description",
@@ -158,6 +161,16 @@ local function createOptions(id, data)
       name = L["Keep Aspect Ratio"],
       order = 7.07,
       hidden = hiddenIconExtra,
+    },
+    iconExtraAnchor = {
+      type = "description",
+      name = "",
+      order = 8,
+      hidden = hiddenIconExtra,
+      control = "WeakAurasExpandAnchor",
+      arg = {
+        expanderName = "icon"
+      }
     },
     cooldownHeader = {
       type = "header",
