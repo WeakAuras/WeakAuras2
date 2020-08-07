@@ -83,8 +83,10 @@ local methods = {
     self.expanded = state
     if state then
       self.expandedBackground:Show()
+      self.expandedHighlight:Show()
     else
       self.expandedBackground:Hide()
+      self.expandedHighlight:Hide()
     end
   end,
 
@@ -95,7 +97,6 @@ local methods = {
   ["SetImageSize"] = function(self, width, height)
 		self.image:SetWidth(width)
 		self.image:SetHeight(height)
-		--self.frame:SetWidth(width + 30)
 		self:UpdateWidth()
 		if self.label:IsShown() then
 			self:SetHeight(max(self.label:GetStringHeight(), self.image:GetHeight()))
@@ -134,8 +135,8 @@ local methods = {
 	["SetAnchor"] = function(self, otherWidget)
 		local expandedBackground = self.expandedBackground
 		if otherWidget then
-			expandedBackground:SetPoint("BOTTOMLEFT", otherWidget.frame, "TOPLEFT", -1, -1)
-		  expandedBackground:SetPoint("BOTTOMRIGHT", otherWidget.frame, "TOPRIGHT", 1, 1)
+			expandedBackground:SetPoint("BOTTOMLEFT", otherWidget.frame, "TOPLEFT", -4, -2)
+		  --expandedBackground:SetPoint("BOTTOMRIGHT", otherWidget.frame, "TOPRIGHT", 1, 1)
 		end
 	end
 }
@@ -202,15 +203,23 @@ local function Constructor()
 	highlight:SetVertexColor(0.2, 0.4, 0.8, 0.2)
   highlight:SetBlendMode("ADD")
 
+  local expandedHighlight = frame:CreateTexture(nil, "BACKGROUND")
+	expandedHighlight:SetPoint("TOPLEFT", frame, -2, 0)
+	expandedHighlight:SetPoint("BOTTOMRIGHT", frame, 0, 0)
+	expandedHighlight:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White")
+  expandedHighlight:SetVertexColor(1, 0.8, 0, 0.1)
+  expandedHighlight:SetBlendMode("ADD")
+
   local expandedBackground = frame:CreateTexture(nil, "BACKGROUND")
-  expandedBackground:SetTexCoord(0,1, 1,1, 0,0, 1,0)
-  expandedBackground:SetPoint("TOPLEFT", frame, "TOPLEFT", -1, -1)
-  expandedBackground:SetPoint("TOPRIGHT", frame, "TOPRIGHT", 1, 1)
-  --expandedBackground:SetHeight(40)
+  expandedBackground:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", -1, -1)
+  expandedBackground:SetWidth(128)
   expandedBackground:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_AlphaGradient")
-	expandedBackground:SetVertexColor(0.6, 0.7, 0.9, 0.15)
+  expandedBackground:SetVertexColor(1, 0.8, 0, 0.15)
   expandedBackground:SetBlendMode("ADD")
-  expandedBackground:Hide()
+
+  --expandedBackground:SetTexCoord(0,1, 0.7,1, 0,0, 0.7,0) -- rotate and offset the gradient
+  --expandedBackground:SetVertexColor(0.2, 0.4, 0.8, 0.2) -- dark blue
+  --expandedBackground:SetVertexColor(0.6, 0.7, 0.9, 0.15) -- light blue
 
 	local widget = {
 		label = label,
@@ -219,6 +228,7 @@ local function Constructor()
     type  = Type,
     expanded = false,
     expandedBackground = expandedBackground,
+    expandedHighlight = expandedHighlight,
 	}
 	for method, func in pairs(methods) do
 		widget[method] = func
