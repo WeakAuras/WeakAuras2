@@ -104,6 +104,13 @@ local function AddOptions(allOptions, data)
     local triggerSystemOptionsFunction = trigger.trigger.type and WeakAuras.triggerTypesOptions[trigger.trigger.type]
     if (triggerSystemOptionsFunction) then
       triggerOptions = union(triggerOptions, triggerSystemOptionsFunction(data, index))
+    else
+      local options = {};
+      WeakAuras.commonOptions.AddCommonTriggerOptions(options, data, index)
+      WeakAuras.AddTriggerMetaFunctions(options, data, index)
+      triggerOptions = union(triggerOptions, {
+          ["trigger." .. index .. ".unknown"] = options
+      })
     end
   end
 
