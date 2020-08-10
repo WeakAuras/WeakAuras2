@@ -36,6 +36,7 @@ ignore:
   - babelfish.lua
   - wowace_translations.sh
   - generate_changelog.sh
+  - WeakAurasModelPaths/ModelPathsClassic.lua
 
 move-folders:
   WeakAuras/WeakAuras: WeakAuras

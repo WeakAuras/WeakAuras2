@@ -1,7 +1,6 @@
 if not WeakAuras.IsCorrectVersion() then return end
 
 local L = WeakAuras.L;
-if WeakAuras.IsClassic() then return end -- Models disabled for classic
 
 local function createOptions(id, data)
   local options = {
@@ -281,7 +280,7 @@ end
 
 local function createIcon()
   local data = {
-    model_path = "Creature/Arthaslichking/arthaslichking.m2",
+    model_path = "spells/arcanepower_state_chest.m2", -- arthas is not a thing on classic
     model_fileId = "122968", -- Creature/Arthaslichking/arthaslichking.m2
     modelIsUnit = false,
     model_x = 0,

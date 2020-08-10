@@ -18,4 +18,9 @@
 ## LoadOnDemand: 1
 ## Dependencies: WeakAuras, WeakAurasOptions
 
+#@retail@
 ModelPaths.lua
+#@end-retail@
+#@non-retail@
+# ModelPathsClassic.lua
+#@end-non-retail@
