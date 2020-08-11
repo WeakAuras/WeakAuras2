@@ -370,7 +370,7 @@ local function CreateDisabledAll(subOption)
   end
 end
 
-local function disabeldOrHiddenChild(childOptionTable, info)
+local function disabledOrHiddenChild(childOptionTable, info)
   return hiddenChild(childOptionTable, info) or disabledChild(childOptionTable, info);
 end
 
@@ -404,7 +404,7 @@ local function replaceNameDescFuncs(intable, data, subOption)
       childOptionTable[i] = options;
     end
 
-    if (hiddenChild(childOptionTable, info)) then
+    if (disabledOrHiddenChild(childOptionTable, info)) then
       return nil;
     end
 
@@ -776,12 +776,54 @@ local function replaceValuesFuncs(intable, data, subOption)
   recurse(intable);
 end
 
+local getHelper = {
+  first = true,
+  combinedValues = {},
+  same = true,
+  Set = function(self, values)
+    if self.same == false then
+      return false
+    end
+    if(self.first) then
+      self.combinedValues = values;
+      self.first = false;
+      return true
+    else
+      if(#self.combinedValues == #values) then
+        for j=1,#self.combinedValues do
+          if(type(self.combinedValues[j]) == "number" and type(values[j]) == "number") then
+            if((math.floor(self.combinedValues[j] * 100) / 100) ~= (math.floor(values[j] * 100) / 100)) then
+              self.same = false;
+              break;
+            end
+          else
+            if(self.combinedValues[j] ~= values[j]) then
+              self.same = false;
+              break;
+            end
+          end
+        end
+      else
+        self.same = false;
+      end
+      return self.same
+    end
+  end,
+  Get = function(self)
+    return self.combinedValues
+  end,
+  HasValue = function(self)
+    return not self.first
+  end
+}
+
 local function CreateGetAll(subOption)
   return function(data, info, ...)
-    local combinedValues = {};
-    local first = true;
-    local debug = false;
     local isToggle = nil
+
+    local allChildren = CopyTable(getHelper)
+    local enabledChildren = CopyTable(getHelper)
+
     for index, childId in ipairs(data.controlledChildren) do
       if isToggle == nil then
         local childData = WeakAuras.GetData(childId)
@@ -800,38 +842,19 @@ local function CreateGetAll(subOption)
           childOptionTable[i] = childOption;
         end
 
-        if (childOption and not hiddenChild(childOptionTable, info)) then
+        if (childOption and not disabledOrHiddenChild(childOptionTable, info)) then
           for i=#childOptionTable,0,-1 do
             if(childOptionTable[i].get) then
               local values = {childOptionTable[i].get(info, ...)};
               if isToggle and values[1] == nil then
                 values[1] = false
               end
-              if(first) then
-                combinedValues = values;
-                first = false;
-              else
-                local same = true;
-                if(#combinedValues == #values) then
-                  for j=1,#combinedValues do
-                    if(type(combinedValues[j]) == "number" and type(values[j]) == "number") then
-                      if((math.floor(combinedValues[j] * 100) / 100) ~= (math.floor(values[j] * 100) / 100)) then
-                        same = false;
-                        break;
-                      end
-                    else
-                      if(combinedValues[j] ~= values[j]) then
-                        same = false;
-                        break;
-                      end
-                    end
-                  end
-                else
-                  same = false;
-                end
-                if not(same) then
-                  return nil;
-                end
+
+              local sameAllChildren = allChildren:Set(values)
+              local sameEnabledChildren = enabledChildren:Set(values)
+
+              if not sameAllChildren and not sameEnabledChildren then
+                return nil;
               end
               break;
             end
@@ -839,7 +862,13 @@ local function CreateGetAll(subOption)
         end
       end
     end
-    return unpack(combinedValues);
+
+    if enabledChildren:HasValue() then
+      return unpack(enabledChildren:Get())
+    else
+      -- This can happen if all children are disabled
+      return unpack(allChildren:Get())
+    end
   end
 end
 
@@ -859,7 +888,7 @@ local function CreateSetAll(subOption, getAll)
           childOptionTable[i] = childOption;
         end
 
-        if (childOption and not disabeldOrHiddenChild(childOptionTable, info)) then
+        if (childOption and not disabledOrHiddenChild(childOptionTable, info)) then
           for i=#childOptionTable,0,-1 do
             if(childOptionTable[i].set) then
               if (childOptionTable[i].type == "multiselect") then
@@ -896,7 +925,7 @@ local function CreateExecuteAll(subOption)
           childOptionTable[i] = childOption;
         end
 
-        if (childOption and not disabeldOrHiddenChild(childOptionTable, info)) then
+        if (childOption and not disabledOrHiddenChild(childOptionTable, info)) then
           -- Some functions, that is the expand/collapse functions need to be
           -- effectively called only once. Passing in the secondCall parameter allows
           -- them to distinguish between the first and every other call
