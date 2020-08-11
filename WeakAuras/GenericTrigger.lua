@@ -764,12 +764,17 @@ function GenericTrigger.CreateFakeStates(id, triggernum)
   local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
   RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, "OPTIONS")
 
+  local canHaveDuration = events[id][triggernum].prototype and events[id][triggernum].prototype.canHaveDuration == "timed"
+
   local shown = 0
   for id, state in pairs(allStates) do
     if state.show then
       shown = shown + 1
     end
     state.autoHide = false
+    if canHaveDuration and state.expirationTime == nil then
+      state.progressType = "timed"
+    end
     AddFakeTime(state)
   end
 
@@ -778,6 +783,9 @@ function GenericTrigger.CreateFakeStates(id, triggernum)
     GenericTrigger.CreateFallbackState(data, triggernum, state)
     allStates[""] = state
     state.autoHide = false
+    if canHaveDuration and state.expirationTime == nil then
+      state.progressType = "timed"
+    end
     AddFakeTime(state)
   end
 
@@ -1136,6 +1144,7 @@ function GenericTrigger.Add(data, region)
         local force_events = false;
         local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc, loadFunc;
         local tsuConditionVariables;
+        local prototype = nil
         if(triggerType == "status" or triggerType == "event") then
           if not(trigger.event) then
             error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
@@ -1158,24 +1167,25 @@ function GenericTrigger.Add(data, region)
               end
             end
 
-            triggerFuncStr = ConstructFunction(event_prototypes[trigger.event], trigger);
+            prototype = event_prototypes[trigger.event]
+            triggerFuncStr = ConstructFunction(prototype, trigger);
 
-            statesParameter = event_prototypes[trigger.event].statesParameter;
+            statesParameter = prototype.statesParameter;
             WeakAuras.debug(id.." - "..triggernum.." - Trigger", 1);
             WeakAuras.debug(triggerFuncStr);
             triggerFunc = WeakAuras.LoadFunction(triggerFuncStr, id);
 
-            durationFunc = event_prototypes[trigger.event].durationFunc;
-            nameFunc = event_prototypes[trigger.event].nameFunc;
-            iconFunc = event_prototypes[trigger.event].iconFunc;
-            textureFunc = event_prototypes[trigger.event].textureFunc;
-            stacksFunc = event_prototypes[trigger.event].stacksFunc;
-            loadFunc = event_prototypes[trigger.event].loadFunc;
+            durationFunc = prototype.durationFunc;
+            nameFunc = prototype.nameFunc;
+            iconFunc = prototype.iconFunc;
+            textureFunc = prototype.textureFunc;
+            stacksFunc = prototype.stacksFunc;
+            loadFunc = prototype.loadFunc;
 
-            if (event_prototypes[trigger.event].overlayFuncs) then
+            if (prototype.overlayFuncs) then
               overlayFuncs = {};
               local dest = 1;
-              for i, v in ipairs(event_prototypes[trigger.event].overlayFuncs) do
+              for i, v in ipairs(prototype.overlayFuncs) do
                 if (v.enable(trigger)) then
                   overlayFuncs[dest] = v.func;
                   dest = dest + 1;
@@ -1183,11 +1193,11 @@ function GenericTrigger.Add(data, region)
               end
             end
 
-            if (event_prototypes[trigger.event].automaticrequired) then
+            if (prototype.automaticrequired) then
               trigger.unevent = "auto";
-            elseif event_prototypes[trigger.event].timedrequired then
-              if type(event_prototypes[trigger.event].timedrequired) == "function" then
-                if event_prototypes[trigger.event].timedrequired(trigger) then
+            elseif prototype.timedrequired then
+              if type(prototype.timedrequired) == "function" then
+                if prototype.timedrequired(trigger) then
                   trigger.unevent = "timed"
                 else
                   if not(WeakAuras.eventend_types[trigger.unevent]) then
@@ -1197,7 +1207,7 @@ function GenericTrigger.Add(data, region)
               else
                 trigger.unevent = "timed"
               end
-            elseif event_prototypes[trigger.event].automatic then
+            elseif prototype.automatic then
               if not(WeakAuras.autoeventend_types[trigger.unevent]) then
                 trigger.unevent = "auto"
               end
@@ -1209,9 +1219,9 @@ function GenericTrigger.Add(data, region)
             trigger.duration = trigger.duration or "1"
 
             if(trigger.unevent == "custom") then
-              untriggerFuncStr = ConstructFunction(event_prototypes[trigger.event], untrigger);
+              untriggerFuncStr = ConstructFunction(prototype, untrigger);
             elseif(trigger.unevent == "auto") then
-              untriggerFuncStr = ConstructFunction(event_prototypes[trigger.event], trigger, true);
+              untriggerFuncStr = ConstructFunction(prototype, trigger, true);
             end
 
             if(untriggerFuncStr) then
@@ -1220,7 +1230,7 @@ function GenericTrigger.Add(data, region)
               untriggerFunc = WeakAuras.LoadFunction(untriggerFuncStr, id);
             end
 
-            local prototype = event_prototypes[trigger.event];
+
             if(prototype) then
               local trigger_all_events = prototype.events;
               internal_events = prototype.internal_events;
@@ -1381,7 +1391,8 @@ function GenericTrigger.Add(data, region)
           loadFunc = loadFunc,
           duration = duration,
           automaticAutoHide = automaticAutoHide,
-          tsuConditionVariables = tsuConditionVariables
+          tsuConditionVariables = tsuConditionVariables,
+          prototype = prototype
         };
       end
     end
