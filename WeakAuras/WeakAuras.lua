@@ -1501,6 +1501,9 @@ function WeakAuras.CreatePvPTalentCache()
 end
 
 function WeakAuras.CountWagoUpdates()
+  if not (WeakAurasCompanion and WeakAurasCompanion.slugs) then
+    return 0
+  end
   local WeakAurasSaved = WeakAurasSaved
   local updatedSlugs, updatedSlugsCount = {}, 0
   for id, aura in pairs(WeakAurasSaved.displays) do
