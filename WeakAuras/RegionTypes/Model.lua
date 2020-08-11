@@ -2,11 +2,10 @@ if not WeakAuras.IsCorrectVersion() then return end
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
-if WeakAuras.IsClassic() then return end -- Models disabled for classic
 
 -- Default settings
 local default = {
-  model_path = "Creature/Arthaslichking/arthaslichking.m2",
+  model_path = "spells/arcanepower_state_chest.m2", -- arthas is not a thing on classic
   model_fileId = "122968", -- Creature/Arthaslichking/arthaslichking.m2
   modelIsUnit = false,
   api = false, -- false ==> SetPosition + SetFacing; true ==> SetTransform
@@ -134,7 +133,7 @@ local function AcquireModel(region, data)
     model:RegisterEvent("UNIT_MODEL_CHANGED");
     if (data.model_fileId == "target") then
       model:RegisterEvent("PLAYER_TARGET_CHANGED");
-    elseif (data.model_fileId == "focus") then
+    elseif not WeakAuras.IsClassic() and data.model_fileId == "focus" then
       model:RegisterEvent("PLAYER_FOCUS_CHANGED");
     end
     model:SetScript("OnEvent", function(self, event, unitId)
@@ -148,7 +147,9 @@ local function AcquireModel(region, data)
   else
     model:UnregisterEvent("UNIT_MODEL_CHANGED");
     model:UnregisterEvent("PLAYER_TARGET_CHANGED");
-    model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
+    if not WeakAuras.IsClassic() then
+      model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
+    end
     model:SetScript("OnEvent", nil);
   end
 
@@ -172,7 +173,9 @@ local function ReleaseModel(model)
   model:Hide()
   model:UnregisterEvent("UNIT_MODEL_CHANGED");
   model:UnregisterEvent("PLAYER_TARGET_CHANGED");
-  model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
+  if not WeakAuras.IsClassic() then
+    model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
+  end
   model:SetScript("OnEvent", nil);
   local pool = model.api and poolNewApi or poolOldApi
   pool:Release(model)

@@ -39,12 +39,11 @@ ignore:
   - babelfish.lua
   - wowace_translations.sh
   - generate_changelog.sh
-  - WeakAuras/RegionTypes/Model.lua
-  - WeakAurasOptions/RegionOptions/Model.lua
-  - WeakAurasModelPaths
+  - WeakAurasModelPaths/ModelPaths.lua
 
 move-folders:
   WeakAuras/WeakAuras: WeakAuras
   WeakAuras/WeakAurasOptions: WeakAurasOptions
+  WeakAuras/WeakAurasModelPaths: WeakAurasModelPaths
   WeakAuras/WeakAurasTemplates: WeakAurasTemplates
   WeakAuras/WeakAurasArchive: WeakAurasArchive

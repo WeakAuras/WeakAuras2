@@ -1501,6 +1501,9 @@ function WeakAuras.CreatePvPTalentCache()
 end
 
 function WeakAuras.CountWagoUpdates()
+  if not (WeakAurasCompanion and WeakAurasCompanion.slugs) then
+    return 0
+  end
   local WeakAurasSaved = WeakAurasSaved
   local updatedSlugs, updatedSlugsCount = {}, 0
   for id, aura in pairs(WeakAurasSaved.displays) do
@@ -7455,12 +7458,22 @@ function WeakAuras.FindUnusedId(prefix)
 end
 
 function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayInfo)
-  if isDisplayInfo then
-    pcall(frame.SetDisplayInfo, frame, tonumber(model_fileId))
-  elseif isUnit then
-    pcall(frame.SetUnit, frame, model_fileId)
+  if WeakAuras.IsClassic() then
+    if isDisplayInfo then
+      pcall(frame.SetDisplayInfo, frame, tonumber(model_path))
+    elseif isUnit then
+      pcall(frame.SetUnit, frame, model_path)
+    else
+      pcall(frame.SetModel, frame, model_path)
+    end
   else
-    pcall(frame.SetModel, frame, tonumber(model_fileId))
+    if isDisplayInfo then
+      pcall(frame.SetDisplayInfo, frame, tonumber(model_fileId))
+    elseif isUnit then
+      pcall(frame.SetUnit, frame, model_fileId)
+    else
+      pcall(frame.SetModel, frame, tonumber(model_fileId))
+    end
   end
 end
 
