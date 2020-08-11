@@ -225,6 +225,8 @@ local function GetCustomTriggerOptions(data, triggernum)
       end,
       set = function(info, v)
         trigger.duration = v
+        WeakAuras.Add(data)
+        WeakAuras.ClearAndUpdateOptions(data.id)
       end
     },
     addOverlayFunction = {
