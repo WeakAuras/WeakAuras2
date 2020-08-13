@@ -26,7 +26,7 @@ url=$( git remote get-url origin | sed -e 's/^git@\(.*\):/https:\/\/\1\//' -e 's
 echo -ne "# [${version}](${url}/tree/${current}) ($date)\n\n[Full Changelog](${url}/compare/${previous}...${current})\n\n" > "CHANGELOG.md"
 
 if [ "$version" = "$tag" ]; then # on a tag
-  highlights=$( git cat-file -p "$tag" | sed -e '1,5d' )
+  highlights=$( git cat-file -p "$tag" | sed -e '1,5d' -e '/^-----BEGIN PGP/,/^-----END PGP/d' )
   echo -ne "## Highlights\n\n ${highlights} \n\n## Commits\n\n" >> "CHANGELOG.md"
 fi
 
