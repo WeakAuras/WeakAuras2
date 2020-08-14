@@ -776,9 +776,10 @@ function WeakAuras.CheckPvpTalentByIndex(index)
     for i = 1, 3 do
       local talentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(i)
       if talentSlotInfo and (talentSlotInfo.selectedTalentID == checkTalentId) then
-        return true
+        return true, checkTalentId
       end
     end
+    return false, checkTalentId
   end
   return false
 end
@@ -4855,6 +4856,107 @@ WeakAuras.event_prototypes = {
             return WeakAuras.talent_types_specific[class];
           else
             return WeakAuras.talent_types;
+          end
+        end,
+        test = "active",
+      },
+      {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true"
+      },
+      {
+        hidden = true,
+        name = "icon",
+        init = "activeIcon",
+        store = "true",
+        test = "true"
+      },
+      {
+        hidden = true,
+        name = "name",
+        init = "activeName",
+        store = "true",
+        test = "true"
+      },
+    },
+    automaticrequired = true,
+    statesParameter = "one",
+    canHaveAuto = true
+  },
+  ["PvP Talent Selected"] = {
+    type = "status",
+    events = function()
+      return {
+        ["events"] = { "PLAYER_PVP_TALENT_UPDATE" }
+      }
+    end,
+    force_events = "PLAYER_PVP_TALENT_UPDATE",
+    name = L["PvP Talent Selected"],
+    init = function(trigger)
+      local inverse = trigger.use_inverse;
+      if (trigger.use_talent) then
+        -- Single selection
+        local index = trigger.talent and trigger.talent.single;
+        local ret = [[
+          local index = %s
+          local activeName, activeIcon, _
+
+          local active, talentId = WeakAuras.CheckPvpTalentByIndex(index)
+          if talentId then
+            _, activeName, activeIcon = GetPvpTalentInfoByID(talentId)
+          end
+        ]]
+        if (inverse) then
+          ret = ret .. [[
+          active = not (active);
+          ]]
+        end
+        return ret:format(index)
+      elseif (trigger.use_talent == false) then
+        if (trigger.talent.multi) then
+          local ret = [[
+            local active = false;
+            local activeIcon;
+            local activeName
+            local talentId
+            local _
+          ]]
+          for index in pairs(trigger.talent.multi) do
+            local ret2 = [[
+              if (not active) then
+                local index = %s
+                active, talentId = WeakAuras.CheckPvpTalentByIndex(index)
+                if active and talentId then
+                  _, activeName, activeIcon = GetPvpTalentInfoByID(talentId)
+                end
+              end
+            ]]
+            ret = ret .. ret2:format(index)
+          end
+          if (inverse) then
+            ret = ret .. [[
+            active = not (active);
+            ]]
+          end
+          return ret;
+        end
+      end
+      return "";
+    end,
+    args = {
+      {
+        name = "talent",
+        display = L["Talent selected"],
+        type = "multiselect",
+        values = function()
+          local class = select(2, UnitClass("player"));
+          local spec =  GetSpecialization();
+          if(WeakAuras.pvp_talent_types_specific[class] and  WeakAuras.pvp_talent_types_specific[class][spec]) then
+            return WeakAuras.pvp_talent_types_specific[class][spec];
+          else
+            return WeakAuras.pvp_talent_types;
           end
         end,
         test = "active",
