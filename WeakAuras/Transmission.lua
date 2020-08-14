@@ -1231,7 +1231,7 @@ end
 
 function WeakAuras.MatchInfo(data, children, target)
   -- match the parent/single aura (if no children)
-  local oldParent = target or findMatch(data)
+  local oldParent = target or findMatch(data, children)
   if not oldParent then return nil end
   -- setup
   local info = {
