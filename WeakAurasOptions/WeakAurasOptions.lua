@@ -1655,10 +1655,9 @@ function WeakAuras.AddTextFormatOption(input, withHeader, get, addOption, hidden
         if (WeakAuras.format_types[selectedFormat]) then
           WeakAuras.format_types[selectedFormat].AddOptions(symbol, hidden, addOption, get)
         end
-
+        seenSymbols[symbol] = true
       end
     end
-    seenSymbols[symbol] = true
   end)
 
   if not next(seenSymbols) and withHeader then
