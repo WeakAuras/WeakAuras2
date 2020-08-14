@@ -247,17 +247,19 @@ end
 local function CreateCheckCondition(uid, ret, condition, conditionNumber, allConditionsTemplate, nextIsLinked, debug)
   local usedStates = {};
   local check, recheckCode = CreateTestForCondition(uid, condition.check, allConditionsTemplate, usedStates);
-  if (check) then
-    if condition.linked and conditionNumber > 1 then
-      ret = ret .. "      elseif (" .. check .. ") then\n";
-    else
-      ret = ret .. "      if (" .. check .. ") then\n";
-    end
-    ret = ret .. "        newActiveConditions[" .. conditionNumber .. "] = true;\n";
-    if not nextIsLinked then
-      ret = ret .. "      end\n";
-    end
+  if not check then
+    check = "false"
   end
+  if condition.linked and conditionNumber > 1 then
+    ret = ret .. "      elseif (" .. check .. ") then\n";
+  else
+    ret = ret .. "      if (" .. check .. ") then\n";
+  end
+  ret = ret .. "        newActiveConditions[" .. conditionNumber .. "] = true;\n";
+  if not nextIsLinked then
+    ret = ret .. "      end\n";
+  end
+
   if (recheckCode) then
     ret = ret .. recheckCode;
   end
