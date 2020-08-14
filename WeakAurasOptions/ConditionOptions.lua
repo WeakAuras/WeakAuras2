@@ -735,14 +735,23 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     end
 
     local hasTextFormatOption
+
+    local hidden = function()
+      return WeakAuras.IsCollapsed("format_option", "conditions", i .. "#" .. j , true)
+    end
+
+    local setHidden = function(hidden)
+      WeakAuras.SetCollapsed("format_option", "conditions", i .. "#" .. j, hidden)
+    end
+
     if data.controlledChildren then
       for id, reference in pairs(conditions[i].changes[j].references) do
         local input = reference.value and reference.value.message
-        hasTextFormatOption = WeakAuras.AddTextFormatOption(input, true, formatGet, addOption)
+        hasTextFormatOption = WeakAuras.AddTextFormatOption(input, true, formatGet, addOption, hidden, setHidden)
       end
     else
       local input = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value["message"]
-      hasTextFormatOption = WeakAuras.AddTextFormatOption(input, true, formatGet, addOption)
+      hasTextFormatOption = WeakAuras.AddTextFormatOption(input, true, formatGet, addOption, hidden, setHidden)
     end
 
     if hasTextFormatOption then
