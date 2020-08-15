@@ -71,7 +71,7 @@ local function UpdateAnimations()
     end
     local progress = anim.inverse and (1 - anim.progress) or anim.progress;
     progress = anim.easeFunc(progress, anim.easeStrength or 3)
-    WeakAuras.ActivateAuraEnvironmentForRegion(anim.region)
+    Private.ActivateAuraEnvironmentForRegion(anim.region)
     if(anim.translateFunc) then
       if (anim.region.SetOffsetAnim) then
         local ok, x, y = xpcall(anim.translateFunc, errorHandler, progress, 0, 0, anim.dX, anim.dY);
@@ -119,7 +119,7 @@ local function UpdateAnimations()
         anim.region:ColorAnim(r, g, b, a);
       end
     end
-    WeakAuras.ActivateAuraEnvironment(nil);
+    Private.ActivateAuraEnvironment(nil);
     if(finished) then
       if not(anim.loop) then
         if (anim.region.SetOffsetAnim) then
