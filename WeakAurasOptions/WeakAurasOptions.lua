@@ -471,7 +471,22 @@ function WeakAuras.OptionsFrame()
   end
 end
 
-function WeakAuras.ToggleOptions(msg)
+function WeakAuras.ToggleOptions(msg, Private)
+  if not Private then
+    return
+  end
+  if not OptionsPrivate.Private then
+    OptionsPrivate.Private = Private
+    OptionsPrivate.Private:RegisterCallback("AuraWarningsUpdated", function(event, uid)
+      local id = WeakAuras.UIDtoID(uid)
+      if displayButtons[id] then
+        -- The button does not yet exists if a new aura is created
+        displayButtons[id]:UpdateWarning()
+      end
+    end)
+  end
+
+
   if(frame and frame:IsVisible()) then
     WeakAuras.HideOptions();
   elseif (InCombatLockdown()) then
@@ -1151,6 +1166,7 @@ function WeakAuras.EnsureDisplayButton(data)
     if(displayButtons[id]) then
       displayButtons[id]:SetData(data);
       displayButtons[id]:Initialize();
+      displayButtons[id]:UpdateWarning()
     else
       print("|cFF8800FFWeakAuras|r: Error creating button for", id);
     end
@@ -1249,8 +1265,6 @@ function WeakAuras.UpdateDisplayButton(data)
     if WeakAurasCompanion and button:IsGroup() then
       button:RefreshUpdate()
     end
-    -- TODO: remove this once legacy aura trigger is removed
-    button:RefreshBT2UpgradeIcon()
   end
 end
 
