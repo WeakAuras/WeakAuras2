@@ -285,9 +285,9 @@ end
 
 local function RunCode(self, func)
   if func and not WeakAuras.IsOptionsOpen() then
-    WeakAuras.ActivateAuraEnvironment(self.id, self.cloneId, self.state, self.states);
+    Private.ActivateAuraEnvironment(self.id, self.cloneId, self.state, self.states);
     xpcall(func, geterrorhandler());
-    WeakAuras.ActivateAuraEnvironment(nil);
+    Private.ActivateAuraEnvironment(nil);
   end
 end
 
