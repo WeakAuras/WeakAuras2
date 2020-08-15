@@ -31,6 +31,8 @@ LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 WeakAuras.maxTimerDuration = 604800; -- A week, in seconds
 WeakAuras.maxUpTime = 4294967; -- 2^32 / 1000
 
+Private.callbacks = LibStub("CallbackHandler-1.0"):New(Private)
+
 function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
   if (delay < WeakAuras.maxTimerDuration) then
     if delay + GetTime() > WeakAuras.maxUpTime then
@@ -84,7 +86,7 @@ function WeakAuras.OpenOptions(msg)
   if WeakAuras.NeedToRepairDatabase() then
     StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "downgrade"})
   elseif (WeakAuras.IsLoginFinished() and Private.LoadOptions(msg)) then
-    WeakAuras.ToggleOptions(msg);
+    WeakAuras.ToggleOptions(msg, Private);
   end
 end
 
@@ -1728,7 +1730,7 @@ end
 -- this cache is loaded lazily via pAdd()
 local UIDtoID = {}
 
-function WeakAuras.GetDataByUID(uid)
+function Private.GetDataByUID(uid)
   return WeakAuras.GetData(UIDtoID[uid])
 end
 
@@ -1827,6 +1829,8 @@ function WeakAuras.Delete(data)
   WeakAuras.conditionHelpers[data.uid] = nil
 
   WeakAuras.DeleteCollapsedData(id)
+
+  Private.callbacks:Fire("Delete", data.uid)
 end
 
 function WeakAuras.Rename(data, newid)

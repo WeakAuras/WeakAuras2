@@ -21,7 +21,22 @@ function BuffTrigger.Delete(id) end
 
 function BuffTrigger.Rename(oldid, newid) end
 
-function BuffTrigger.Add(data) end
+function BuffTrigger.Add(data)
+  if data.triggers then
+    local hasLegacyAuraTrigger = false
+    for index, t in ipairs(data.triggers) do
+      if t.trigger.type == "aura" then
+        hasLegacyAuraTrigger = true
+        break
+      end
+    end
+    if hasLegacyAuraTrigger then
+      Private.AuraWarnings.UpdateWarning(data.uid, "legacy", "warning", "This aura has legacy aura trigger(s), which are no longer supported.")
+    else
+      Private.AuraWarnings.UpdateWarning(data.uid, "legacy")
+    end
+  end
+end
 
 function BuffTrigger.CanHaveDuration(data, triggernum)
   return false

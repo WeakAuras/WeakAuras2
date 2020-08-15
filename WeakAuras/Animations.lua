@@ -307,7 +307,7 @@ function WeakAuras.Animate(namespace, uid, type, anim, region, inverse, onFinish
     duration = WeakAuras.ParseNumber(anim.duration) or 0;
     progress = 0;
     if(namespace == "display" and type == "main" and not onFinished and not anim.duration_type == "relative") then
-      local data = WeakAuras.GetDataByUID(uid);
+      local data = Private.GetDataByUID(uid);
       if(data and data.parent) then
         local parentRegion = WeakAuras.regions[data.parent].region;
         if(parentRegion and parentRegion.controlledRegions) then
