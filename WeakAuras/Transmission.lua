@@ -332,7 +332,7 @@ local function install(data, oldData, patch, mode, isParent)
       return
     else
       -- user has chosen to not delete obsolete auras, so do nothing
-      return WeakAuras.GetDataByUID(oldData.uid)
+      return Private.GetDataByUID(oldData.uid)
     end
   else
     -- something to update
@@ -360,7 +360,7 @@ local function install(data, oldData, patch, mode, isParent)
   end
   -- if at this point, then some change has been made in the db. Update History to reflect the change
   WeakAuras.SetHistory(installedUID, imported, "import")
-  return WeakAuras.GetDataByUID(installedUID)
+  return Private.GetDataByUID(installedUID)
 end
 
 local function importPendingData()

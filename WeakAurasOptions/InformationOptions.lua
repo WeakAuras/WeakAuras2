@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
 
@@ -138,6 +139,29 @@ function WeakAuras.GetInformationOptions(data)
         name = string.format(L["|cFFE0E000Note:|r This sets the description only on '%s'"], data.id),
         width = WeakAuras.doubleWidth,
         order = order,
+      }
+      order = order + 1
+    end
+  end
+
+  -- Show warnings onyl for single selection for now
+  if not isGroup then
+    local icon, title, message = OptionsPrivate.Private.AuraWarnings.FormatWarnings(data.uid)
+    if title and message then
+      args.warningTitle = {
+        type = "header",
+        name = title,
+        width = WeakAuras.doubleWidth,
+        order = order,
+      }
+      order = order + 1
+
+      args.warnings = {
+        type = "description",
+        name = message,
+        width = WeakAuras.doubleWidth,
+        order = order,
+        fontSize = "medium"
       }
       order = order + 1
     end
