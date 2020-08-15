@@ -25,7 +25,7 @@ function WeakAuras.CleanArchive(historyCutoff, migrationCutoff)
     for uid, subStore in pairs(repo.stores) do
       -- Ideally we would just use Clean and not access the stores list directly,
       -- but that'd mean having Clean take a predicate which seems like overkill for the moment
-      if not WeakAuras.GetDataByUID(uid) and subStore.timestamp < cutoffTime then
+      if not Private.GetDataByUID(uid) and subStore.timestamp < cutoffTime then
         repo:Drop(uid)
       end
     end

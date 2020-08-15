@@ -44,6 +44,7 @@ Conditions.lua
 BuffTrigger.lua
 BuffTrigger2.lua
 GenericTrigger.lua
+AuraWarnings.lua
 AuraEnvironment.lua
 
 # region support
