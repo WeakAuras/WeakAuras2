@@ -1,10 +1,11 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
 
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 55
+local Type, Version = "WeakAurasDisplayButton", 56
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -1529,19 +1530,24 @@ local methods = {
     -- no addon, or no data, or ignore flag
     return false, false, nil, nil
   end,
-  ["RefreshBT2UpgradeIcon"] = function(self)
-    if not self.data.controlledChildren and self.data.triggers then
-      for index, t in ipairs(self.data.triggers) do
-        if t.trigger and t.trigger.type == "aura" then
-          self.bt2upgrade:SetScript("OnClick", function()
-            WeakAuras.PickDisplay(self.data.id, "trigger")
-          end)
-          self.bt2upgrade:Show()
-          return
-        end
-      end
+  ["UpdateWarning"] = function(self)
+    local icon, title, warningText = OptionsPrivate.Private.AuraWarnings.FormatWarnings(self.data.uid)
+    if warningText then
+      self.warning:Show()
+      self.warning:SetNormalTexture(icon)
+      self.warning:SetScript("OnEnter", function()
+        Show_Tooltip(
+          self.frame,
+          title,
+          warningText
+        )
+      end)
+      self.warning:SetScript("OnClick", function()
+        WeakAuras.PickDisplay(self.data.id, "information")
+      end)
+    else
+      self.warning:Hide()
     end
-    self.bt2upgrade:Hide()
   end,
   ["RefreshUpdate"] = function(self, actionFunc)
     if self.data.parent then
@@ -2070,23 +2076,13 @@ local function Constructor()
     groupUpdate:Hide()
   end
 
-  -- TODO: remove this once legacy aura trigger is removed
-  local bt2upgrade = CreateFrame("BUTTON", nil, button);
-  button.bt2upgrade = bt2upgrade
-  bt2upgrade.func = function() end
-  bt2upgrade:SetNormalTexture([[Interface\DialogFrame\UI-Dialog-Icon-AlertNew]])
-  bt2upgrade:SetWidth(16)
-  bt2upgrade:SetHeight(16)
-  bt2upgrade:SetPoint("RIGHT", button, "RIGHT", -60, 0)
-  bt2upgrade:SetScript("OnEnter", function()
-    Show_Tooltip(
-      button,
-      L["Legacy Aura Trigger"],
-      L["This aura has legacy aura trigger(s). Convert them to the new system to benefit from enhanced performance and features"]
-    )
-  end)
-  bt2upgrade:SetScript("OnLeave", Hide_Tooltip)
-  bt2upgrade:Hide()
+  local warning = CreateFrame("BUTTON", nil, button);
+  button.warning = warning
+  warning:SetWidth(16)
+  warning:SetHeight(16)
+  warning:SetPoint("RIGHT", button, "RIGHT", -60, 0)
+  warning:SetScript("OnLeave", Hide_Tooltip)
+  warning:Hide()
 
   local widget = {
     frame = button,
@@ -2102,7 +2098,7 @@ local function Constructor()
     background = background,
     expand = expand,
     update = update,
-    bt2upgrade = bt2upgrade,
+    warning = warning,
     groupUpdate = groupUpdate,
     updateLogo = updateLogo,
     type = Type
