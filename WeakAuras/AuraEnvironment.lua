@@ -196,16 +196,16 @@ local aura_environments = {}
 -- 2 == fully initialized
 local environment_initialized = {}
 
-function WeakAuras.IsEnvironmentInitialized(id)
+function Private.IsEnvironmentInitialized(id)
   return environment_initialized[id] == 2
 end
 
-function WeakAuras.DeleteAuraEnvironment(id)
+function Private.DeleteAuraEnvironment(id)
   aura_environments[id] = nil
   environment_initialized[id] = nil
 end
 
-function WeakAuras.RenameAuraEnvironment(oldid, newid)
+function Private.RenameAuraEnvironment(oldid, newid)
   aura_environments[oldid], aura_environments[newid] = nil, aura_environments[oldid]
   environment_initialized[oldid], environment_initialized[newid] = nil, environment_initialized[oldid]
 end
@@ -213,15 +213,15 @@ end
 local current_aura_env = nil
 local aura_env_stack = {} -- Stack of of aura environments, allows use of recursive aura activations through calls to WeakAuras.ScanEvents().
 
-function WeakAuras.ClearAuraEnvironment(id)
+function Private.ClearAuraEnvironment(id)
   environment_initialized[id] = nil;
 end
 
-function WeakAuras.ActivateAuraEnvironmentForRegion(region, onlyConfig)
-  WeakAuras.ActivateAuraEnvironment(region.id, region.cloneId, region.state, region.states, onlyConfig)
+function Private.ActivateAuraEnvironmentForRegion(region, onlyConfig)
+  Private.ActivateAuraEnvironment(region.id, region.cloneId, region.state, region.states, onlyConfig)
 end
 
-function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
+function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
   local data = WeakAuras.GetData(id)
   local region = WeakAuras.GetRegion(id, cloneId)
   if not data then
@@ -273,8 +273,8 @@ function WeakAuras.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfi
           local childData = WeakAuras.GetData(childID)
           if childData then
             if not environment_initialized[childID] then
-              WeakAuras.ActivateAuraEnvironment(childID)
-              WeakAuras.ActivateAuraEnvironment()
+              Private.ActivateAuraEnvironment(childID)
+              Private.ActivateAuraEnvironment()
             end
             current_aura_env.child_envs[dataIndex] = aura_environments[childID]
           end
@@ -342,6 +342,6 @@ function WeakAuras.LoadFunction(string, id, inTrigger)
   end
 end
 
-function WeakAuras.GetSanitizedGlobal(key)
+function Private.GetSanitizedGlobal(key)
   return exec_env[key]
 end
