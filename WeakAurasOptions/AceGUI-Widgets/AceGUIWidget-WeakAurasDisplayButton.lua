@@ -948,7 +948,7 @@ local methods = {
     tinsert(self.menu, {
       text = L["Export to Lua table..."],
       notCheckable = true,
-      func = function() WeakAuras.ExportToTable(data.id) end
+      func = function() OptionsPrivate.ExportToTable(data.id) end
     });
 
     if WeakAurasCompanion then
