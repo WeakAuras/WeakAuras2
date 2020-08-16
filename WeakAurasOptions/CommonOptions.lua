@@ -1058,7 +1058,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint)
         return not (data.anchorFrameType == "SELECTFRAME")
       end,
       func = function()
-        WeakAuras.StartFrameChooser(data, {"anchorFrameFrame"});
+        OptionsPrivate.StartFrameChooser(data, {"anchorFrameFrame"});
       end
     },
     anchorPoint = {

@@ -296,9 +296,9 @@ function WeakAuras.GetActionOptions(data)
         func = function()
           if(data.controlledChildren and data.controlledChildren[1]) then
             WeakAuras.PickDisplay(data.controlledChildren[1]);
-            WeakAuras.StartFrameChooser(WeakAuras.GetData(data.controlledChildren[1]), {"actions", "start", "glow_frame"});
+            OptionsPrivate.StartFrameChooser(WeakAuras.GetData(data.controlledChildren[1]), {"actions", "start", "glow_frame"});
           else
-            WeakAuras.StartFrameChooser(data, {"actions", "start", "glow_frame"});
+            OptionsPrivate.StartFrameChooser(data, {"actions", "start", "glow_frame"});
           end
         end
       },
