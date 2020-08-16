@@ -140,8 +140,7 @@ function CompressDisplay(data)
     end
   end
 
-  local copiedData = {}
-  WeakAuras.DeepCopy(data, copiedData)
+  local copiedData = CopyTable(data)
   stripNonTransmissableFields(copiedData, WeakAuras.non_transmissable_fields)
   copiedData.tocversion = WeakAuras.BuildInfo
   return copiedData;

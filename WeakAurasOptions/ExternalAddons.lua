@@ -268,8 +268,7 @@ function WeakAuras.EnableAddonDisplay(id)
     for addonName, addonData in pairs(WeakAuras.addons) do
       if(addonData.displays[id]) then
         addon = addonName;
-        data = {}
-        WeakAuras.DeepCopy(addonData.displays[id], data);
+        data = CopyTable(addonData.displays[id]);
         break;
       end
     end
