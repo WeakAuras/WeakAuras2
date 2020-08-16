@@ -1253,7 +1253,7 @@ function WeakAuras.ScanAll()
   end
 
   Private.ResumeAllDynamicGroups();
-  WeakAuras.ReloadAll();
+  Private.ReloadAll();
 end
 
 -- encounter stuff
@@ -1619,7 +1619,7 @@ function WeakAuras.RegisterLoadEvents()
   end);
 end
 
-function WeakAuras.ReloadAll()
+function Private.ReloadAll()
   WeakAuras.UnloadAll();
   scanForLoadsImpl();
 end
