@@ -106,7 +106,7 @@ local function ConstructImportExport(frame)
   return group
 end
 
-function WeakAuras.ImportExport(frame)
+function OptionsPrivate.ImportExport(frame)
   importexport = importexport or ConstructImportExport(frame)
   return importexport
 end
