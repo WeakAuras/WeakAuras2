@@ -830,17 +830,17 @@ local methods = {
       if #WeakAuras.tempGroup.controlledChildren == 0 then
         WeakAuras.PickDisplay(data.id);
       end
-      WeakAuras.SetDragging(data);
+      OptionsPrivate.SetDragging(data);
     end
 
     function self.callbacks.OnDragStop()
       if not self.dragging then return end
-      WeakAuras.SetDragging(data, true)
+      OptionsPrivate.SetDragging(data, true)
     end
 
     function self.callbacks.OnKeyDown(self, key)
       if (key == "ESCAPE") then
-        WeakAuras.SetDragging();
+        OptionsPrivate.SetDragging();
       end
     end
 
