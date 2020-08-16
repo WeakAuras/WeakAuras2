@@ -28,7 +28,7 @@ local function createOptions(id, data)
         return data.displayText;
       end,
       set = function(info, v)
-        data.displayText = WeakAuras.ReplaceLocalizedRaidMarkers(v);
+        data.displayText = OptionsPrivate.Private.ReplaceLocalizedRaidMarkers(v);
         WeakAuras.Add(data);
         WeakAuras.ClearAndUpdateOptions(data.id)
         WeakAuras.UpdateThumbnail(data);

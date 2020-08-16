@@ -5055,7 +5055,7 @@ function WeakAuras.ReplaceRaidMarkerSymbols(txt)
   end
 end
 
-function WeakAuras.ReplaceLocalizedRaidMarkers(txt)
+function Private.ReplaceLocalizedRaidMarkers(txt)
   local start = 1
 
   while true do

@@ -73,7 +73,7 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Display Text"],
       order = 11,
       set = function(info, v)
-        data.text_text = WeakAuras.ReplaceLocalizedRaidMarkers(v)
+        data.text_text = OptionsPrivate.Private.ReplaceLocalizedRaidMarkers(v)
         WeakAuras.Add(parentData)
         WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
