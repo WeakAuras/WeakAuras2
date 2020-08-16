@@ -83,7 +83,7 @@ function OptionsPrivate.MoveSubRegionDown(data, index, regionType)
   end
 end
 
-function WeakAuras.DuplicateSubRegion(data, index, regionType)
+function OptionsPrivate.DuplicateSubRegion(data, index, regionType)
   if not data.subRegions then
     return
   end
