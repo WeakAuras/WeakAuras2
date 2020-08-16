@@ -1144,7 +1144,7 @@ typeControlAdders = {
           local childOption = optionData.options[optionData.index]
           local childData = optionData.data
           childOption.collapse = value
-          WeakAuras.SetCollapsed(id, "config", optionData.path, value)
+          OptionsPrivate.SetCollapsed(id, "config", optionData.path, value)
           WeakAuras.Add(childData)
         end
         WeakAuras.ClearAndUpdateOptions(data.id, true)
@@ -1320,7 +1320,7 @@ typeControlAdders = {
             width = 1,
             useDesc = false,
           }
-          WeakAuras.SetCollapsed(id, "author", path, false)
+          OptionsPrivate.SetCollapsed(id, "author", path, false)
           WeakAuras.Add(childData)
         end
         WeakAuras.ClearAndUpdateOptions(data.id, true)
@@ -1471,7 +1471,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
     width = WeakAuras.doubleWidth - buttonWidth,
     func = function()
       for id, optionData in pairs(option.references) do
-        WeakAuras.SetCollapsed(id, "author", optionData.path, not collapsed)
+        OptionsPrivate.SetCollapsed(id, "author", optionData.path, not collapsed)
       end
       WeakAuras.ClearAndUpdateOptions(data.id, true)
     end,
@@ -1879,7 +1879,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
         width = WeakAuras.doubleWidth,
         func = function()
           for id, optionData in pairs(option.references) do
-            WeakAuras.SetCollapsed(id, "config", optionData.path, not collapsed)
+            OptionsPrivate.SetCollapsed(id, "config", optionData.path, not collapsed)
           end
           WeakAuras.ClearAndUpdateOptions(data.id, true)
         end,
@@ -2519,7 +2519,7 @@ function WeakAuras.GetAuthorOptions(data)
               width = 1,
               useDesc = false,
             }
-            WeakAuras.SetCollapsed(childData.id, "author", i, false)
+            OptionsPrivate.SetCollapsed(childData.id, "author", i, false)
             WeakAuras.Add(childData)
           end
         else
@@ -2532,7 +2532,7 @@ function WeakAuras.GetAuthorOptions(data)
             width = 1,
             useDesc = false,
           }
-          WeakAuras.SetCollapsed(data.id, "author", i, false)
+          OptionsPrivate.SetCollapsed(data.id, "author", i, false)
           WeakAuras.Add(data)
         end
         WeakAuras.ClearAndUpdateOptions(data.id, true)

@@ -1384,7 +1384,7 @@ local methods = {
   end,
   ["Expand"] = function(self, reloadTooltip)
     self.expand:Enable();
-    WeakAuras.SetCollapsed(self.data.id, "displayButton", "", false)
+    OptionsPrivate.SetCollapsed(self.data.id, "displayButton", "", false)
     self.expand:SetNormalTexture("Interface\\BUTTONS\\UI-MinusButton-Up.blp");
     self.expand:SetPushedTexture("Interface\\BUTTONS\\UI-MinusButton-Down.blp");
     self.expand.title = L["Collapse"];
@@ -1398,7 +1398,7 @@ local methods = {
   end,
   ["Collapse"] = function(self, reloadTooltip)
     self.expand:Enable();
-    WeakAuras.SetCollapsed(self.data.id, "displayButton", "", true)
+    OptionsPrivate.SetCollapsed(self.data.id, "displayButton", "", true)
     self.expand:SetNormalTexture("Interface\\BUTTONS\\UI-PlusButton-Up.blp");
     self.expand:SetPushedTexture("Interface\\BUTTONS\\UI-PlusButton-Down.blp");
     self.expand.title = L["Expand"];
