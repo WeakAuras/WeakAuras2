@@ -1032,7 +1032,7 @@ function WeakAuras.Login(initialTime, takeNewSnapshots)
     end
 
     loginFinished = true
-    WeakAuras.ResumeAllDynamicGroups();
+    Private.ResumeAllDynamicGroups();
   end)
 
   if initialTime then
@@ -1223,7 +1223,7 @@ function WeakAuras.InLoadingScreen()
   return in_loading_screen;
 end
 
-function WeakAuras.PauseAllDynamicGroups()
+function Private.PauseAllDynamicGroups()
   for id, region in pairs(regions) do
     if (region.region.Suspend) then
       region.region:Suspend();
@@ -1231,7 +1231,7 @@ function WeakAuras.PauseAllDynamicGroups()
   end
 end
 
-function WeakAuras.ResumeAllDynamicGroups()
+function Private.ResumeAllDynamicGroups()
   for id, region in pairs(regions) do
     if (region.region.Resume) then
       region.region:Resume();
@@ -1240,7 +1240,7 @@ function WeakAuras.ResumeAllDynamicGroups()
 end
 
 function WeakAuras.ScanAll()
-  WeakAuras.PauseAllDynamicGroups();
+  Private.PauseAllDynamicGroups();
 
   for id, region in pairs(regions) do
     region.region:Collapse();
@@ -1252,7 +1252,7 @@ function WeakAuras.ScanAll()
     end
   end
 
-  WeakAuras.ResumeAllDynamicGroups();
+  Private.ResumeAllDynamicGroups();
   WeakAuras.ReloadAll();
 end
 
