@@ -496,16 +496,6 @@ function WeakAuras.ToggleOptions(msg, Private)
   end
 end
 
-function WeakAuras.UpdateCloneConfig(data)
-  if(WeakAuras.CanHaveClones(data)) then
-    local cloneRegion = WeakAuras.EnsureClone(data.id, 1);
-    cloneRegion:Expand();
-
-    cloneRegion = WeakAuras.EnsureClone(data.id, 2);
-    cloneRegion:Expand();
-  end
-end
-
 function WeakAuras.ShowOptions(msg)
   local firstLoad = not(frame);
   WeakAuras.Pause();
