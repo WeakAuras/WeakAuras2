@@ -678,7 +678,7 @@ local methods = {
     end
 
     function self.callbacks.OnUngroupClick()
-      WeakAuras.Ungroup(data);
+      OptionsPrivate.Ungroup(data);
     end
 
     function self.callbacks.OnUpGroupClick()
