@@ -40,7 +40,7 @@ local properties = {
     display = L["Placement Mode"],
     setter = "SetTickPlacementMode",
     type = "list",
-    values = WeakAuras.tick_placement_modes,
+    values = Private.tick_placement_modes,
   },
   tick_placement = {
     display = L["Placement"],

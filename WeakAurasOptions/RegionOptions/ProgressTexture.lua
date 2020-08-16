@@ -34,7 +34,7 @@ local function createOptions(id, data)
       width = WeakAuras.halfWidth,
       order = 12,
       func = function()
-        WeakAuras.OpenTexturePicker(data, data, "foregroundTexture", WeakAuras.texture_types);
+        WeakAuras.OpenTexturePicker(data, data, "foregroundTexture", OptionsPrivate.Private.texture_types);
       end
     },
     sameTexture = {
@@ -49,7 +49,7 @@ local function createOptions(id, data)
       width = WeakAuras.halfWidth,
       order = 17,
       func = function()
-        WeakAuras.OpenTexturePicker(data, data, "backgroundTexture", WeakAuras.texture_types);
+        WeakAuras.OpenTexturePicker(data, data, "backgroundTexture", OptionsPrivate.Private.texture_types);
       end,
       disabled = function() return data.sameTexture; end
     },
@@ -70,7 +70,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Blend Mode"],
       order = 20,
-      values = WeakAuras.blend_types
+      values = OptionsPrivate.Private.blend_types
     },
     backgroundOffset = {
       type = "range",
@@ -86,7 +86,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Orientation"],
       order = 35,
-      values = WeakAuras.orientation_with_circle_types
+      values = OptionsPrivate.Private.orientation_with_circle_types
     },
     compress = {
       type = "toggle",
@@ -232,7 +232,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Texture Wrap"],
       order = 55.2,
-      values = WeakAuras.texture_wrap_types
+      values = OptionsPrivate.Private.texture_wrap_types
     },
     slanted = {
       type = "toggle",
@@ -264,7 +264,7 @@ local function createOptions(id, data)
       name = L["Slant Mode"],
       order = 55.6,
       hidden = function() return not data.slanted or data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE" end,
-      values = WeakAuras.slant_mode
+      values = OptionsPrivate.Private.slant_mode
     },
     spacer = {
       type = "header",
@@ -820,7 +820,7 @@ if WeakAuras.IsClassic() then
 end
 
 local function GetAnchors(data)
-  return WeakAuras.default_types_for_anchor
+  return OptionsPrivate.Private.default_types_for_anchor
 end
 
 WeakAuras.RegisterRegionOptions("progresstexture", createOptions, createIcon, L["Progress Texture"], createThumbnail, modifyThumbnail, L["Shows a texture that changes based on duration"], templates, GetAnchors);

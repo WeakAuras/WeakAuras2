@@ -1266,7 +1266,7 @@ function WeakAuras.OpenTexturePicker(data, parentData, field, textures, stopMoti
   frame.texturePicker:Open(data, parentData, field, textures, stopMotion);
 end
 
-function WeakAuras.OpenIconPicker(data, field, groupIcon)
+function OptionsPrivate.OpenIconPicker(data, field, groupIcon)
   frame.iconPicker:Open(data, field, groupIcon);
 end
 
@@ -1467,7 +1467,7 @@ function WeakAuras.ResetCollapsed(id, namespace)
   end
 end
 
-function WeakAuras.IsCollapsed(id, namespace, path, default)
+function OptionsPrivate.IsCollapsed(id, namespace, path, default)
   local tmp = collapsedOptions[id]
   if tmp == nil then return default end
 
@@ -1655,14 +1655,14 @@ function WeakAuras.AddTextFormatOption(input, withHeader, get, addOption, hidden
           type = "select",
           name = L["Format"],
           width = WeakAuras.normalWidth,
-          values = WeakAuras.format_types_display,
+          values = OptionsPrivate.Private.format_types_display,
           hidden = hidden,
           reloadOptions = true
         })
 
         local selectedFormat = get(symbol .. "_format")
-        if (WeakAuras.format_types[selectedFormat]) then
-          WeakAuras.format_types[selectedFormat].AddOptions(symbol, hidden, addOption, get)
+        if (OptionsPrivate.Private.format_types[selectedFormat]) then
+          OptionsPrivate.Private.format_types[selectedFormat].AddOptions(symbol, hidden, addOption, get)
         end
         seenSymbols[symbol] = true
       end

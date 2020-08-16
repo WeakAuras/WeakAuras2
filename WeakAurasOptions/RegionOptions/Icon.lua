@@ -6,7 +6,7 @@ local L = WeakAuras.L
 
 local function createOptions(id, data)
   local hiddenIconExtra = function()
-    return WeakAuras.IsCollapsed("icon", "icon", "iconextra", true);
+    return OptionsPrivate.IsCollapsed("icon", "icon", "iconextra", true);
   end
   local indentWidth = 0.15
 
@@ -25,14 +25,14 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Automatic Icon"],
       order = 2,
-      disabled = function() return not WeakAuras.CanHaveAuto(data); end,
-      get = function() return WeakAuras.CanHaveAuto(data) and data.auto; end
+      disabled = function() return not OptionsPrivate.Private.CanHaveAuto(data); end,
+      get = function() return OptionsPrivate.Private.CanHaveAuto(data) and data.auto; end
     },
     displayIcon = {
       type = "input",
       width = WeakAuras.normalWidth,
       name = L["Display Icon"],
-      hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
+      hidden = function() return OptionsPrivate.Private.CanHaveAuto(data) and data.auto; end,
       order = 3,
       get = function()
         return data.displayIcon and tostring(data.displayIcon) or "";
@@ -47,9 +47,9 @@ local function createOptions(id, data)
       type = "execute",
       width = WeakAuras.normalWidth,
       name = L["Choose"],
-      hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto; end,
+      hidden = function() return OptionsPrivate.Private.CanHaveAuto(data) and data.auto; end,
       order = 4,
-      func = function() WeakAuras.OpenIconPicker(data, "displayIcon"); end
+      func = function() OptionsPrivate.OpenIconPicker(data, "displayIcon"); end
     },
     desaturate = {
       type = "toggle",
@@ -61,7 +61,7 @@ local function createOptions(id, data)
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Tooltip on Mouseover"],
-      hidden = function() return not WeakAuras.CanHaveTooltip(data) end,
+      hidden = function() return not OptionsPrivate.Private.CanHaveTooltip(data) end,
       order = 6
     },
     iconExtraDescription = {
@@ -94,13 +94,13 @@ local function createOptions(id, data)
       width = WeakAuras.doubleWidth,
       order = 7,
       image = function()
-        local collapsed = WeakAuras.IsCollapsed("icon", "icon", "iconextra", true);
+        local collapsed = OptionsPrivate.IsCollapsed("icon", "icon", "iconextra", true);
         return collapsed and "collapsed" or "expanded"
       end,
       imageWidth = 15,
       imageHeight = 15,
       func = function(info, button)
-        local collapsed = WeakAuras.IsCollapsed("icon", "icon", "iconextra", true);
+        local collapsed = OptionsPrivate.IsCollapsed("icon", "icon", "iconextra", true);
         OptionsPrivate.SetCollapsed("icon", "icon", "iconextra", not collapsed);
       end,
       arg = {
@@ -183,16 +183,16 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Show Cooldown"],
       order = 11.1,
-      disabled = function() return not WeakAuras.CanHaveDuration(data); end,
-      get = function() return WeakAuras.CanHaveDuration(data) and data.cooldown; end
+      disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data); end,
+      get = function() return OptionsPrivate.Private.CanHaveDuration(data) and data.cooldown; end
     },
     inverse = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Inverse"],
       order = 11.2,
-      disabled = function() return not (WeakAuras.CanHaveDuration(data) and data.cooldown); end,
-      get = function() return data.inverse and WeakAuras.CanHaveDuration(data) and data.cooldown; end,
+      disabled = function() return not (OptionsPrivate.Private.CanHaveDuration(data) and data.cooldown); end,
+      get = function() return data.inverse and OptionsPrivate.Private.CanHaveDuration(data) and data.cooldown; end,
       hidden = function() return not data.cooldown end
     },
     cooldownSwipe = {
@@ -200,7 +200,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Cooldown Swipe"],
       order = 11.3,
-      disabled = function() return not WeakAuras.CanHaveDuration(data) end,
+      disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data) end,
       hidden = function() return not data.cooldown end,
     },
     cooldownEdge = {
@@ -208,7 +208,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Cooldown Edge"],
       order = 11.4,
-      disabled = function() return not WeakAuras.CanHaveDuration(data) end,
+      disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data) end,
       hidden = function() return not data.cooldown end,
     },
     cooldownTextDisabled = {
@@ -216,7 +216,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Hide Cooldown Text"],
       order = 11.5,
-      disabled = function() return not WeakAuras.CanHaveDuration(data); end,
+      disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data); end,
       hidden = function() return not data.cooldown end,
     },
     endHeader = {
@@ -252,7 +252,7 @@ local function modifyThumbnail(parent, frame, data)
   end
 
   if data then
-    local name, icon = WeakAuras.GetNameAndIcon(data);
+    local name, icon = OptionsPrivate.Private.GetNameAndIcon(data);
     frame:SetIcon(icon)
   end
 end

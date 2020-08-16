@@ -24,7 +24,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Orientation"],
       order = 25,
-      values = WeakAuras.orientation_types,
+      values = OptionsPrivate.Private.orientation_types,
       set = function(info, v)
         if(
           (
@@ -84,7 +84,7 @@ local function createOptions(id, data)
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Tooltip on Mouseover"],
-      hidden = function() return not WeakAuras.CanHaveTooltip(data) end,
+      hidden = function() return not OptionsPrivate.Private.CanHaveTooltip(data) end,
       order = 38
     },
     bar_header = {
@@ -133,15 +133,15 @@ local function createOptions(id, data)
       name = L["Auto"],
       desc = L["Choose whether the displayed icon is automatic or defined manually"],
       order = 40.3,
-      disabled = function() return not WeakAuras.CanHaveAuto(data); end,
-      get = function() return WeakAuras.CanHaveAuto(data) and data.auto end,
+      disabled = function() return not OptionsPrivate.Private.CanHaveAuto(data); end,
+      get = function() return OptionsPrivate.Private.CanHaveAuto(data) and data.auto end,
       hidden = function() return not data.icon end,
     },
     displayIcon = {
       type = "input",
       width = WeakAuras.normalWidth,
       name = L["Display Icon"],
-      hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto or not data.icon; end,
+      hidden = function() return OptionsPrivate.Private.CanHaveAuto(data) and data.auto or not data.icon; end,
       disabled = function() return not data.icon end,
       order = 40.4,
       get = function()
@@ -157,16 +157,16 @@ local function createOptions(id, data)
       type = "execute",
       width = WeakAuras.normalWidth,
       name = L["Choose"],
-      hidden = function() return WeakAuras.CanHaveAuto(data) and data.auto or not data.icon; end,
+      hidden = function() return OptionsPrivate.Private.CanHaveAuto(data) and data.auto or not data.icon; end,
       disabled = function() return not data.icon end,
       order = 40.5,
-      func = function() WeakAuras.OpenIconPicker(data, "displayIcon"); end
+      func = function() OptionsPrivate.OpenIconPicker(data, "displayIcon"); end
     },
     icon_side = {
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Icon Position"],
-      values = WeakAuras.icon_side_types,
+      values = OptionsPrivate.Private.icon_side_types,
       hidden = function() return data.orientation:find("VERTICAL") or not data.icon end,
       order = 40.6,
     },
@@ -174,7 +174,7 @@ local function createOptions(id, data)
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Icon Position"],
-      values = WeakAuras.rotated_icon_side_types,
+      values = OptionsPrivate.Private.rotated_icon_side_types,
       hidden = function() return data.orientation:find("HORIZONTAL") or not data.icon end,
       order = 40.7,
       get = function()
@@ -254,7 +254,7 @@ local function createOptions(id, data)
       width = WeakAuras.halfWidth,
       order = 44.3,
       func = function()
-        WeakAuras.OpenTexturePicker(data, data, "sparkTexture", WeakAuras.texture_types);
+        WeakAuras.OpenTexturePicker(data, data, "sparkTexture", OptionsPrivate.Private.texture_types);
       end,
       disabled = function() return not data.spark end,
       hidden = function() return not data.spark end,
@@ -273,7 +273,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Blend Mode"],
       order = 44.5,
-      values = WeakAuras.blend_types,
+      values = OptionsPrivate.Private.blend_types,
       disabled = function() return not data.spark end,
       hidden = function() return not data.spark end,
     },
@@ -324,7 +324,7 @@ local function createOptions(id, data)
     sparkRotationMode = {
       type = "select",
       width = WeakAuras.normalWidth,
-      values = WeakAuras.spark_rotation_types,
+      values = OptionsPrivate.Private.spark_rotation_types,
       name = L["Rotation Mode"],
       order = 45,
       disabled = function() return not data.spark end,
@@ -352,7 +352,7 @@ local function createOptions(id, data)
     sparkHidden = {
       type = "select",
       width = WeakAuras.normalWidth,
-      values = WeakAuras.spark_hide_types,
+      values = OptionsPrivate.Private.spark_hide_types,
       name = L["Hide on"],
       order = 45.3,
       disabled = function() return not data.spark end,

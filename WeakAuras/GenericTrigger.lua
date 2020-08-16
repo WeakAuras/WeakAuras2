@@ -563,15 +563,15 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       end
     elseif (data.statesParameter == "unit") then
       if optionsEvent then
-        if WeakAuras.multiUnitUnits[data.trigger.unit] then
-          arg1 = next(WeakAuras.multiUnitUnits[data.trigger.unit])
+        if Private.multiUnitUnits[data.trigger.unit] then
+          arg1 = next(Private.multiUnitUnits[data.trigger.unit])
         else
           arg1 = data.trigger.unit
         end
       end
       if arg1 then
         local unit, cloneId
-        if WeakAuras.multiUnitUnits[data.trigger.unit] then
+        if Private.multiUnitUnits[data.trigger.unit] then
           unit = arg1
           cloneId = arg1
         else
@@ -629,7 +629,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       elseif data.statesParameter == "unit" then
         if data.untriggerFunc then
           if arg1 then
-            local cloneId = WeakAuras.multiUnitUnits[data.trigger.unit] and arg1 or ""
+            local cloneId = Private.multiUnitUnits[data.trigger.unit] and arg1 or ""
             local state = allStates[cloneId]
             if state then
               local ok, returnValue =  xpcall(data.untriggerFunc, errorHandler, state, event, arg1, arg2, ...);
@@ -1160,7 +1160,7 @@ function GenericTrigger.Add(data, region)
               if (not trigger.subeventSuffix) then
                 trigger.subeventSuffix = "";
               end
-              if not(WeakAuras.subevent_actual_prefix_types[trigger.subeventPrefix]) then
+              if not(Private.subevent_actual_prefix_types[trigger.subeventPrefix]) then
                 trigger.subeventSuffix = "";
               end
             end
@@ -1196,7 +1196,7 @@ function GenericTrigger.Add(data, region)
                 if prototype.timedrequired(trigger) then
                   trigger.unevent = "timed"
                 else
-                  if not(WeakAuras.eventend_types[trigger.unevent]) then
+                  if not(Private.eventend_types[trigger.unevent]) then
                     trigger.unevent = "timed"
                   end
                 end
@@ -1204,11 +1204,11 @@ function GenericTrigger.Add(data, region)
                 trigger.unevent = "timed"
               end
             elseif prototype.automatic then
-              if not(WeakAuras.autoeventend_types[trigger.unevent]) then
+              if not(Private.autoeventend_types[trigger.unevent]) then
                 trigger.unevent = "auto"
               end
             else
-              if not(WeakAuras.eventend_types[trigger.unevent]) then
+              if not(Private.eventend_types[trigger.unevent]) then
                 trigger.unevent = "timed"
               end
             end
@@ -1635,7 +1635,7 @@ do
     elseif casting and (event == "UNIT_SPELLCAST_INTERRUPTED" or event == "UNIT_SPELLCAST_FAILED") then
       casting = false
     elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
-      if WeakAuras.reset_swing_spells[spell] or casting then
+      if Private.reset_swing_spells[spell] or casting then
         if casting then
           casting = false
         end
@@ -1652,7 +1652,7 @@ do
         end
         mainTimer = timer:ScheduleTimerFixed(swingEnd, mainSpeed, "main");
         WeakAuras.ScanEvents(event);
-      elseif WeakAuras.reset_ranged_swing_spells[spell] then
+      elseif Private.reset_ranged_swing_spells[spell] then
         local event;
         local currentTime = GetTime();
         local speed = UnitRangedDamage("player");
@@ -2579,7 +2579,7 @@ function WeakAuras.WatchUnitChange(unit)
           if guid ~= newGuid or event == "PLAYER_ENTERING_WORLD" then
             WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
             watchUnitChange.unitChangeGUIDS[unit] = newGuid
-          elseif WeakAuras.multiUnitUnits.group[unit] then
+          elseif Private.multiUnitUnits.group[unit] then
             -- If in raid changed we send a UNIT_CHANGED for the group units
             if inRaidChanged then
               WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
@@ -3791,12 +3791,12 @@ function GenericTrigger.GetTriggerDescription(data, triggernum, namestable)
   local trigger = data.triggers[triggernum].trigger
   if(trigger.type == "event" or trigger.type == "status") then
     if(trigger.type == "event") then
-      tinsert(namestable, {L["Trigger:"], (WeakAuras.event_types[trigger.event] or L["Undefined"])});
+      tinsert(namestable, {L["Trigger:"], (Private.event_types[trigger.event] or L["Undefined"])});
     else
-      tinsert(namestable, {L["Trigger:"], (WeakAuras.status_types[trigger.event] or L["Undefined"])});
+      tinsert(namestable, {L["Trigger:"], (Private.status_types[trigger.event] or L["Undefined"])});
     end
     if(trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix) then
-      tinsert(namestable, {L["Message type:"], (WeakAuras.subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]).." "..(WeakAuras.subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"])});
+      tinsert(namestable, {L["Message type:"], (Private.subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]).." "..(Private.subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"])});
     end
   else
     tinsert(namestable, {L["Trigger:"], L["Custom"]});
