@@ -150,7 +150,7 @@ function OptionsPrivate.GetActionOptions(data)
         order = 4,
         disabled = function() return not data.actions.start.do_message end,
         desc = function()
-          return L["Dynamic text tooltip"] .. WeakAuras.GetAdditionalProperties(data)
+          return L["Dynamic text tooltip"] .. OptionsPrivate.Private.GetAdditionalProperties(data)
         end,
       },
       -- texteditor added later
@@ -533,7 +533,7 @@ function OptionsPrivate.GetActionOptions(data)
         order = 24,
         disabled = function() return not data.actions.finish.do_message end,
         desc = function()
-          return L["Dynamic text tooltip"] .. WeakAuras.GetAdditionalProperties(data)
+          return L["Dynamic text tooltip"] .. OptionsPrivate.Private.GetAdditionalProperties(data)
         end,
       },
       -- texteditor added below
