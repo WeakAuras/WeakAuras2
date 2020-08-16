@@ -19,7 +19,6 @@ local L = WeakAuras.L
 
 local displayButtons = WeakAuras.displayButtons
 local regionOptions = WeakAuras.regionOptions
-local savedVars = WeakAuras.savedVars
 local tempGroup = OptionsPrivate.tempGroup
 local prettyPrint = WeakAuras.prettyPrint
 local aceOptions = WeakAuras.aceOptions
@@ -137,8 +136,8 @@ local minHeight = 240
 function WeakAuras.CreateFrame()
   local WeakAuras_DropDownMenu = CreateFrame("frame", "WeakAuras_DropDownMenu", nil, "UIDropDownMenuTemplate")
   local frame
-  local db = savedVars.db
-  local odb = savedVars.odb
+  local db = OptionsPrivate.savedVars.db
+  local odb = OptionsPrivate.savedVars.odb
   -------- Mostly Copied from AceGUIContainer-Frame--------
   frame = CreateFrame("FRAME", "WeakAurasOptions", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 

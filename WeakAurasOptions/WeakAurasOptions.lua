@@ -29,7 +29,7 @@ WeakAuras.aceOptions = aceOptions
 
 local spellCache = WeakAuras.spellCache;
 local savedVars = {};
-WeakAuras.savedVars = savedVars;
+OptionsPrivate.savedVars = savedVars;
 
 OptionsPrivate.expanderAnchors = {}
 OptionsPrivate.expanderButtons = {}
