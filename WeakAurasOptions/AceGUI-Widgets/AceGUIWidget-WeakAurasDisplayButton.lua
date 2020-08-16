@@ -1117,7 +1117,7 @@ local methods = {
   end,
   ["ReloadTooltip"] = function(self)if(
     OptionsPrivate.IsPickedMultiple() and OptionsPrivate.IsDisplayPicked(self.data.id)) then
-    Show_Long_Tooltip(self.frame, WeakAuras.MultipleDisplayTooltipDesc());
+    Show_Long_Tooltip(self.frame, OptionsPrivate.MultipleDisplayTooltipDesc());
   else
     Show_Long_Tooltip(self.frame, self.frame.description);
   end
@@ -1813,7 +1813,7 @@ local function Constructor()
 
   button:SetScript("OnEnter", function()
     if(OptionsPrivate.IsPickedMultiple() and OptionsPrivate.IsDisplayPicked(button.id)) then
-      Show_Long_Tooltip(button, WeakAuras.MultipleDisplayTooltipDesc());
+      Show_Long_Tooltip(button, OptionsPrivate.MultipleDisplayTooltipDesc());
     else
       if not(button.terribleCodeOrganizationHackTable.IsGroupingOrCopying()) then
         button.terribleCodeOrganizationHackTable.SetNormalTooltip();
