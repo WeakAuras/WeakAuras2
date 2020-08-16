@@ -997,14 +997,7 @@ function WeakAuras.Login(initialTime, takeNewSnapshots)
     WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
     coroutine.yield();
 
-    for _, triggerSystem in pairs(triggerSystems) do
-      if (triggerSystem.AllAdded) then
-        triggerSystem.AllAdded();
-        coroutine.yield();
-      end
-    end
-
-    -- check in case of a disconnect during an encounter.
+  -- check in case of a disconnect during an encounter.
     if (db.CurrentEncounter) then
       WeakAuras.CheckForPreviousEncounter()
     end

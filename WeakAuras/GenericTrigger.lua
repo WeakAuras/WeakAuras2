@@ -1467,38 +1467,6 @@ local oldPowerTriggers = {
   ["Shards"] = 7,
 }
 
-function GenericTrigger.AllAdded()
-  -- Remove GTFO options if GTFO isn't enabled and there are no saved GTFO auras
-  local hideGTFO = true;
-  local hideDBM = true;
-
-  if (GTFO) then
-    hideGTFO = false;
-  end
-
-  if (DBM) then
-    hideDBM = false;
-  end
-
-  for id, event in pairs(events) do
-    for triggernum, data in pairs(event) do
-      if (data.trigger.event == "GTFO") then
-        hideGTFO = false;
-      end
-      if (data.trigger.event == "DBM Announce" or data.trigger.event == "DBM Timer") then
-        hideDBM = false;
-      end
-    end
-  end
-  if (hideGTFO) then
-    WeakAuras.event_types["GTFO"] = nil;
-  end
-  if (hideDBM) then
-    WeakAuras.event_types["DBM Announce"] = nil;
-    WeakAuras.status_types["DBM Timer"] = nil;
-  end
-end
-
 --#############################
 --# Support code for triggers #
 --#############################
