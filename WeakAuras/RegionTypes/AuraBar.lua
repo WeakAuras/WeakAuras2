@@ -131,8 +131,7 @@ WeakAuras.regionPrototype.AddProperties(properties, default);
 local function GetProperties(data)
   local overlayInfo = WeakAuras.GetOverlayInfo(data);
   if (overlayInfo and next(overlayInfo)) then
-    local auraProperties = {};
-    WeakAuras.DeepCopy(properties, auraProperties);
+    local auraProperties = CopyTable(properties)
 
     for id, display in ipairs(overlayInfo) do
       auraProperties["overlays." .. id] = {
@@ -1049,9 +1048,10 @@ local function modify(parent, region, data)
   region.desaturateIcon = data.desaturate
   region.zoom = data.zoom
 
-  region.overlays = {};
   if (data.overlays) then
-    WeakAuras.DeepCopy(data.overlays, region.overlays);
+    region.overlays = CopyTable(data.overlays);
+  else
+    region.overlays = {}
   end
 
   -- Update texture settings
