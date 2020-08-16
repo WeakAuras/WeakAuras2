@@ -498,7 +498,7 @@ end
 -- Blizzard in its infinite wisdom did:
 -- * Force enable the profanity filter for the chinese region
 -- * Add a realm name's part to the profanity filter
-function WeakAuras.ObfuscateName(name)
+local function ObfuscateName(name)
   if (GetCurrentRegion() == 5) then
     local result = ""
     for i = 1, #name do
@@ -543,7 +543,7 @@ local methods = {
           if (not fullName) then
             local name, realm = UnitFullName("player")
             if realm then
-              fullName = name.."-".. WeakAuras.ObfuscateName(realm)
+              fullName = name.."-".. ObfuscateName(realm)
             else
               fullName = name
             end
