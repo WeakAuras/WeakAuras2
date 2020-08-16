@@ -639,7 +639,7 @@ local methods = {
       if (WeakAuras.IsImporting()) then return end;
       local toDelete = {data}
       local parents = data.parent and {[data.parent] = true}
-      WeakAuras.ConfirmDelete(toDelete, parents)
+      OptionsPrivate.ConfirmDelete(toDelete, parents)
     end
 
     function self.callbacks.OnDuplicateClick()
@@ -674,7 +674,7 @@ local methods = {
         end
       end
       tinsert(toDelete, data)
-      WeakAuras.ConfirmDelete(toDelete);
+      OptionsPrivate.ConfirmDelete(toDelete);
     end
 
     function self.callbacks.OnUngroupClick()
