@@ -19,7 +19,7 @@ local function createOptions(parentData, data, index, subIndex)
       end
     end,
     __duplicate = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.DuplicateSubRegion, index, "subbarmodel")) then
+      if (WeakAuras.ApplyToDataOrChildData(parentData, OptionsPrivate.DuplicateSubRegion, index, "subbarmodel")) then
         WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
