@@ -1060,7 +1060,7 @@ function WeakAuras.PickDisplay(id, tab, noHide)
   WeakAuras.UpdateButtonsScroll()
 end
 
-function WeakAuras.PickAndEditDisplay(id)
+function OptionsPrivate.PickAndEditDisplay(id)
   frame:PickDisplay(id);
   displayButtons[id].callbacks.OnRenameClick();
   WeakAuras.UpdateButtonsScroll()
@@ -1450,12 +1450,12 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
         group.callbacks.UpdateExpandButton();
         group:Expand();
         group:ReloadTooltip();
-        WeakAuras.PickAndEditDisplay(data.id);
+        OptionsPrivate.PickAndEditDisplay(data.id);
       else
         -- move source into the top-level list
         WeakAuras.Add(data);
         WeakAuras.NewDisplayButton(data);
-        WeakAuras.PickAndEditDisplay(data.id);
+        OptionsPrivate.PickAndEditDisplay(data.id);
       end
     else
       error("Calling 'WeakAuras.NewAura' with invalid groupId. Reload your UI to fix the display list.")
@@ -1464,7 +1464,7 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
     -- move source into the top-level list
     WeakAuras.Add(data);
     WeakAuras.NewDisplayButton(data);
-    WeakAuras.PickAndEditDisplay(data.id);
+    OptionsPrivate.PickAndEditDisplay(data.id);
   end
 end
 
