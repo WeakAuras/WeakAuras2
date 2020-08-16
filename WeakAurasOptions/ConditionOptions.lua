@@ -1016,7 +1016,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame", propertyType),
       order = order,
       func = function()
-        WeakAuras.StartFrameChooser(data, {"conditions", i, "changes", j, "value", "glow_frame"});
+        OptionsPrivate.StartFrameChooser(data, {"conditions", i, "changes", j, "value", "glow_frame"});
       end,
       hidden = function()
         return not anyGlowExternal("glow_frame_type", "FRAMESELECTOR")
