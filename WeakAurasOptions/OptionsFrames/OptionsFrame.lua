@@ -1153,7 +1153,7 @@ function OptionsPrivate.CreateFrame()
       container:SetLayout("fill")
       container:AddChild(containerScroll)
 
-      WeakAuras.CreateImportButtons()
+      OptionsPrivate.CreateImportButtons()
       WeakAuras.SortImportButtons(containerScroll)
     else
       error("An options button other than New or Addons was selected... but there are no other options buttons!")
