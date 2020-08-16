@@ -54,7 +54,7 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Choose"],
       order =  11,
       func = function()
-        WeakAuras.OpenModelPicker(data, parentData);
+        OptionsPrivate.OpenModelPicker(data, parentData);
       end,
     },
     bar_model_clip = {
