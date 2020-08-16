@@ -198,8 +198,8 @@ WeakAuras.regions = {};
 local regions = WeakAuras.regions;
 
 -- keyed on id, contains bool indicating whether the aura is loaded
-WeakAuras.loaded = {};
-local loaded = WeakAuras.loaded;
+Private.loaded = {};
+local loaded = Private.loaded;
 
 -- contains regions for clones
 WeakAuras.clones = {};
