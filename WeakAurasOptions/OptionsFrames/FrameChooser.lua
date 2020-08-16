@@ -13,9 +13,6 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
-local valueFromPath = WeakAuras.ValueFromPath
-local valueToPath = WeakAuras.ValueToPath
-
 local frameChooserFrame
 local frameChooserBox
 
@@ -35,11 +32,11 @@ function WeakAuras.StartFrameChooser(data, path)
     frameChooserBox:SetBackdropBorderColor(0, 1, 0);
     frameChooserBox:Hide();
   end
-  local givenValue = valueFromPath(data, path);
+  local givenValue = OptionsPrivate.Private.ValueFromPath(data, path);
 
   frameChooserFrame:SetScript("OnUpdate", function()
     if(IsMouseButtonDown("RightButton")) then
-      valueToPath(data, path, givenValue);
+      OptionsPrivate.Private.ValueToPath(data, path, givenValue);
       WeakAuras.StopFrameChooser(data);
       WeakAuras.FillOptions()
     elseif(IsMouseButtonDown("LeftButton") and oldFocusName) then
@@ -76,7 +73,7 @@ function WeakAuras.StartFrameChooser(data, path)
           end
 
           if(focusName ~= oldFocusName) then
-            valueToPath(data, path, focusName);
+            OptionsPrivate.Private.ValueToPath(data, path, focusName);
             oldFocusName = focusName;
             WeakAuras.FillOptions()
           end
