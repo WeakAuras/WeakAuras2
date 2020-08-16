@@ -547,7 +547,7 @@ function WeakAuras.ShowOptions(msg)
   end
 
   if (frame.pickedDisplay) then
-    if (WeakAuras.IsPickedMultiple()) then
+    if (OptionsPrivate.IsPickedMultiple()) then
       local children = {}
       for k,v in pairs(tempGroup.controlledChildren) do
         children[k] = v
@@ -1034,7 +1034,7 @@ WeakAuras.afterScanForLoads = function()
   end
 end
 
-function WeakAuras.IsPickedMultiple()
+function OptionsPrivate.IsPickedMultiple()
   if(frame.pickedDisplay == tempGroup) then
     return true;
   else
@@ -1082,7 +1082,7 @@ function OptionsPrivate.PickDisplayMultipleShift(target)
   if (frame.pickedDisplay) then
     -- get first aura selected
     local first;
-    if (WeakAuras.IsPickedMultiple()) then
+    if (OptionsPrivate.IsPickedMultiple()) then
       first = tempGroup.controlledChildren[#tempGroup.controlledChildren];
     else
       first = frame.pickedDisplay;
