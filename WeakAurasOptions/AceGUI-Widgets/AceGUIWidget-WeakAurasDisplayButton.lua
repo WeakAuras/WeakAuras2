@@ -943,7 +943,7 @@ local methods = {
     tinsert(self.menu, {
       text = L["Export to string..."],
       notCheckable = true,
-      func = function() WeakAuras.ExportToString(data.id) end
+      func = function() OptionsPrivate.ExportToString(data.id) end
     });
     tinsert(self.menu, {
       text = L["Export to Lua table..."],

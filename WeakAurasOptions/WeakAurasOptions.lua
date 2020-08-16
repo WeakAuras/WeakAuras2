@@ -781,7 +781,7 @@ function WeakAuras.OpenTextEditor(...)
   frame.texteditor:Open(...);
 end
 
-function WeakAuras.ExportToString(id)
+function OptionsPrivate.ExportToString(id)
   frame.importexport:Open("export", id);
 end
 
