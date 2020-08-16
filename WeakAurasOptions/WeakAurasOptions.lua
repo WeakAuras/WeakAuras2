@@ -1078,7 +1078,7 @@ function WeakAuras.PickDisplayMultiple(id)
   frame:PickDisplayMultiple(id);
 end
 
-function WeakAuras.PickDisplayMultipleShift(target)
+function OptionsPrivate.PickDisplayMultipleShift(target)
   if (frame.pickedDisplay) then
     -- get first aura selected
     local first;
