@@ -50,32 +50,25 @@ local function copyAuraPart(source, destination, part)
     end
   end
   if (part == "trigger" or all) and not IsRegionAGroup(source) then
-    destination.triggers = {};
-    WeakAuras.DeepCopy(source.triggers, destination.triggers);
+    destination.triggers = CopyTable(source.triggers);
   end
   if (part == "condition" or all) and not IsRegionAGroup(source) then
-    destination.conditions = {};
-    WeakAuras.DeepCopy(source.conditions, destination.conditions);
+    destination.conditions = CopyTable(source.conditions);
   end
   if (part == "load" or all) and not IsRegionAGroup(source) then
-    destination.load = {};
-    WeakAuras.DeepCopy(source.load, destination.load);
+    destination.load = CopyTable(source.load);
   end
   if (part == "action" or all) and not IsRegionAGroup(source) then
-    destination.actions = {};
-    WeakAuras.DeepCopy(source.actions, destination.actions);
+    destination.actions = CopyTable(source.actions);
   end
   if (part == "animation" or all) and not IsRegionAGroup(source) then
-    destination.animation = {};
-    WeakAuras.DeepCopy(source.animation, destination.animation);
+    destination.animation = CopyTable(source.animation);
   end
   if (part == "authorOptions" or all) and not IsRegionAGroup(source) then
-    destination.authorOptions = {};
-    WeakAuras.DeepCopy(source.authorOptions, destination.authorOptions);
+    destination.authorOptions = CopyTable(source.authorOptions);
   end
   if (part == "config" or all) and not IsRegionAGroup(source) then
-    destination.config = {};
-    WeakAuras.DeepCopy(source.config, destination.config);
+    destination.config = CopyTable(source.config);
   end
 
 end
@@ -83,8 +76,7 @@ end
 local function CopyToClipboard(part, description)
   clipboard.part = part;
   clipboard.pasteText = description;
-  clipboard.source = {};
-  WeakAuras.DeepCopy(clipboard.current, clipboard.source);
+  clipboard.source = CopyTable(clipboard.current);
 end
 
 clipboard.pasteMenuEntry = {

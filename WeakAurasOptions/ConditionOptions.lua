@@ -249,8 +249,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
             local change = {};
             change.property = conditions[i].changes[j].property;
             if (type(conditions[i].changes[j].value) == "table") then
-              change.value = {};
-              WeakAuras.DeepCopy(conditions[i].changes[j].value, change.value)
+              change.value = CopyTable(conditions[i].changes[j].value)
             else
               change.value = conditions[i].changes[j].value;
             end
@@ -1382,8 +1381,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
                 local copy = {};
                 copy.property = change.property;
                 if (type(change.value) == "table") then
-                  copy.value = {};
-                  WeakAuras.DeepCopy(change.value, copy.value);
+                  copy.value = CopyTable(change.value);
                 else
                   copy.value = change.value;
                 end
@@ -2055,8 +2053,7 @@ local function mergeConditionTemplates(allConditionTemplates, auraConditionsTemp
       allConditionTemplates[triggernum] = allConditionTemplates[triggernum] or {};
       for conditionName in pairs(auraTemplatesForTrigger) do
         if not allConditionTemplates[triggernum][conditionName] then
-          allConditionTemplates[triggernum][conditionName] = {};
-          WeakAuras.DeepCopy(auraTemplatesForTrigger[conditionName], allConditionTemplates[triggernum][conditionName]);
+          allConditionTemplates[triggernum][conditionName] = CopyTable(auraTemplatesForTrigger[conditionName]);
         else
           if (allConditionTemplates[triggernum][conditionName].type ~= auraTemplatesForTrigger[conditionName].type) then
             -- Two different trigger types have a condition of the same name, with incompatible types
@@ -2163,8 +2160,7 @@ local function createConditionTemplates(data)
   local conditionTemplates = createConditionTemplatesValueList(allConditionTemplates, numTriggers);
 
   if (data.controlledChildren) then
-    conditionTemplates.displayWithCopy = {};
-    WeakAuras.DeepCopy(conditionTemplates.display, conditionTemplates.displayWithCopy);
+    conditionTemplates.displayWithCopy = CopyTable(conditionTemplates.display);
 
     conditionTemplates.displayWithCopy[9998] = "•" .. L["Copy to all auras"] .. "•";
     conditionTemplates.indexToTrigger[9998] = "COPY";
@@ -2200,8 +2196,7 @@ local function buildAllPotentialProperties(data, category)
                 end
               end
             else
-              allProperties.propertyMap[k] = {};
-              WeakAuras.DeepCopy(v, allProperties.propertyMap[k])
+              allProperties.propertyMap[k] = CopyTable(v)
             end
           end
         end
@@ -2245,8 +2240,7 @@ local function buildAllPotentialProperties(data, category)
   allProperties.indexToProperty[9999] = "DELETE";
 
   if (data.controlledChildren) then
-    allProperties.displayWithCopy = {};
-    WeakAuras.DeepCopy(allProperties.display, allProperties.displayWithCopy);
+    allProperties.displayWithCopy = CopyTable(allProperties.display);
 
     allProperties.displayWithCopy[9998] = "•" .. L["Copy to all auras"] .. "•";
     allProperties.indexToProperty[9998] = "COPY";
@@ -2440,8 +2434,7 @@ local function mergeCondition(all, aura, id, conditionIndex, allProperties)
   for changeIndex, change in ipairs(aura.changes) do
     local matchIndex = findMatchingProperty(all.changes, change, id);
     if (not matchIndex) then
-      local copy = {};
-      WeakAuras.DeepCopy(change, copy);
+      local copy = CopyTable(change);
 
       local propertyType = change.property and allProperties.propertyMap[change.property] and allProperties.propertyMap[change.property].type;
       if (propertyType == "chat" or propertyType == "sound" or propertyType == "customcode" or propertyType == "glowexternal") then
@@ -2477,8 +2470,7 @@ local function mergeConditions(all, aura, id, allConditionTemplates, propertyTyp
   for conditionIndex, condition in ipairs(aura) do
     local match = findMatchingCondition(all, condition, currentInsertPoint, allConditionTemplates);
     if (not match) then
-      local copy = {};
-      WeakAuras.DeepCopy(condition, copy);
+      local copy = CopyTable(condition);
       copy.check.samevalue = true;
       copy.check.sameop = true;
       copy.check.references = {};
