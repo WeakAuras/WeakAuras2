@@ -11,12 +11,12 @@ local function createOptions(parentData, data, index, subIndex)
     __title = L["Border %s"]:format(subIndex),
     __order = 1,
     __up = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionUp, index, "subborder")) then
+      if (WeakAuras.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionUp, index, "subborder")) then
         WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     __down = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionDown, index, "subborder")) then
+      if (WeakAuras.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionDown, index, "subborder")) then
         WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
