@@ -544,7 +544,7 @@ function WeakAuras.CreateFrame()
   frame.modelPicker = WeakAuras.ModelPicker(frame)
   frame.importexport = WeakAuras.ImportExport(frame)
   frame.texteditor = WeakAuras.TextEditor(frame)
-  frame.codereview = WeakAuras.CodeReview(frame)
+  frame.codereview = OptionsPrivate.CodeReview(frame)
 
   frame.moversizer, frame.mover = WeakAuras.MoverSizer(frame)
 
