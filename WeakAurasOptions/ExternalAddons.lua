@@ -14,7 +14,7 @@ local importAddonButtons = {}
 local importDisplayButtons = {}
 WeakAuras.importDisplayButtons = importDisplayButtons
 
-function WeakAuras.CreateImportButtons()
+function OptionsPrivate.CreateImportButtons()
   wipe(importAddonButtons);
   wipe(importDisplayButtons);
   for addonName, addonData in pairs(WeakAuras.addons) do
