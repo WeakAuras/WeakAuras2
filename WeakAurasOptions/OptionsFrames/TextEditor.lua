@@ -146,36 +146,6 @@ end]=]
   },
 }
 
-local function settings_dropdown_initialize(frame, level, menu)
-  for k, v in pairs(editor_themes) do
-    local item = {
-      text = k,
-      isNotRadio = false,
-      checked = function()
-        return WeakAurasSaved.editor_theme == k
-      end,
-      func = function()
-        WeakAurasSaved.editor_theme = k
-        set_scheme()
-        WeakAuras.editor.editBox:SetText(WeakAuras.editor.editBox:GetText())
-      end
-    }
-    UIDropDownMenu_AddButton(item)
-  end
-  UIDropDownMenu_AddButton(
-    {
-      text = L["Bracket Matching"],
-      isNotRadio = true,
-      checked = function()
-        return WeakAurasSaved.editor_bracket_matching
-      end,
-      func = function()
-        WeakAurasSaved.editor_bracket_matching = not WeakAurasSaved.editor_bracket_matching
-      end
-    }
-  )
-end
-
 local function ConstructTextEditor(frame)
   local group = AceGUI:Create("InlineGroup")
   group.frame:SetParent(frame)
@@ -257,6 +227,36 @@ local function ConstructTextEditor(frame)
   urlText:SetPoint("RIGHT", settings_frame, "LEFT")
 
   local dropdown = CreateFrame("Frame", "SettingsMenuFrame", settings_frame, "UIDropDownMenuTemplate")
+
+  local function settings_dropdown_initialize(frame, level, menu)
+    for k, v in pairs(editor_themes) do
+      local item = {
+        text = k,
+        isNotRadio = false,
+        checked = function()
+          return WeakAurasSaved.editor_theme == k
+        end,
+        func = function()
+          WeakAurasSaved.editor_theme = k
+          set_scheme()
+          editor.editBox:SetText(editor.editBox:GetText())
+        end
+      }
+      UIDropDownMenu_AddButton(item)
+    end
+    UIDropDownMenu_AddButton(
+      {
+        text = L["Bracket Matching"],
+        isNotRadio = true,
+        checked = function()
+          return WeakAurasSaved.editor_bracket_matching
+        end,
+        func = function()
+          WeakAurasSaved.editor_bracket_matching = not WeakAurasSaved.editor_bracket_matching
+        end
+      }
+    )
+  end
   UIDropDownMenu_Initialize(dropdown, settings_dropdown_initialize, "MENU")
 
   settings_frame:SetScript(
@@ -328,8 +328,8 @@ local function ConstructTextEditor(frame)
       button:SetCallback(
         "OnClick",
         function()
-          WeakAuras.editor.editBox:Insert(snippet.snippet)
-          WeakAuras.editor:SetFocus()
+          editor.editBox:Insert(snippet.snippet)
+          editor:SetFocus()
         end
       )
       button.deleteButton:SetScript(
@@ -739,7 +739,6 @@ local function ConstructTextEditor(frame)
     frame:UpdateFrameVisible()
     WeakAuras.FillOptions()
   end
-  WeakAuras.editor = editor
 
   return group
 end
