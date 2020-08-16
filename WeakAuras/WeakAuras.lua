@@ -3751,7 +3751,7 @@ do
     UpdateFakeTimesHandle = timer:ScheduleRepeatingTimer(UpdateFakeTimers, 1)
   end
 
-  function WeakAuras.ClearFakeStates()
+  function Private.ClearFakeStates()
     timer:CancelTimer(UpdateFakeTimesHandle)
     for id in pairs(triggerState) do
       Private.FakeStatesFor(id, false)
