@@ -3,8 +3,8 @@ local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
 local regionOptions = WeakAuras.regionOptions;
-local parsePrefix = WeakAuras.commonOptions.parsePrefix
-local flattenRegionOptions = WeakAuras.commonOptions.flattenRegionOptions
+local parsePrefix = OptionsPrivate.commonOptions.parsePrefix
+local flattenRegionOptions = OptionsPrivate.commonOptions.flattenRegionOptions
 
 function OptionsPrivate.GetGroupOptions(data)
   local regionOption;

@@ -886,8 +886,8 @@ local function GetBuffTriggerOptions(data, triggernum)
 
   };
 
-  WeakAuras.commonOptions.AddCommonTriggerOptions(aura_options, data, triggernum)
-  WeakAuras.commonOptions.AddTriggerGetterSetter(aura_options, data, triggernum)
+  OptionsPrivate.commonOptions.AddCommonTriggerOptions(aura_options, data, triggernum)
+  OptionsPrivate.commonOptions.AddTriggerGetterSetter(aura_options, data, triggernum)
   WeakAuras.AddTriggerMetaFunctions(aura_options, data, triggernum)
 
   return {

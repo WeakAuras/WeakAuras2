@@ -3,18 +3,18 @@ local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
 
-local removeFuncs = WeakAuras.commonOptions.removeFuncs
-local replaceNameDescFuncs = WeakAuras.commonOptions.replaceNameDescFuncs
-local replaceImageFuncs = WeakAuras.commonOptions.replaceImageFuncs
-local replaceValuesFuncs = WeakAuras.commonOptions.replaceValuesFuncs
-local disabledAll = WeakAuras.commonOptions.CreateDisabledAll("trigger")
-local hiddenAll = WeakAuras.commonOptions.CreateHiddenAll("trigger")
-local getAll = WeakAuras.commonOptions.CreateGetAll("trigger")
-local setAll = WeakAuras.commonOptions.CreateSetAll("trigger", getAll)
-local executeAll = WeakAuras.commonOptions.CreateExecuteAll("trigger")
+local removeFuncs = OptionsPrivate.commonOptions.removeFuncs
+local replaceNameDescFuncs = OptionsPrivate.commonOptions.replaceNameDescFuncs
+local replaceImageFuncs = OptionsPrivate.commonOptions.replaceImageFuncs
+local replaceValuesFuncs = OptionsPrivate.commonOptions.replaceValuesFuncs
+local disabledAll = OptionsPrivate.commonOptions.CreateDisabledAll("trigger")
+local hiddenAll = OptionsPrivate.commonOptions.CreateHiddenAll("trigger")
+local getAll = OptionsPrivate.commonOptions.CreateGetAll("trigger")
+local setAll = OptionsPrivate.commonOptions.CreateSetAll("trigger", getAll)
+local executeAll = OptionsPrivate.commonOptions.CreateExecuteAll("trigger")
 
-local flattenRegionOptions = WeakAuras.commonOptions.flattenRegionOptions
-local fixMetaOrders = WeakAuras.commonOptions.fixMetaOrders
+local flattenRegionOptions = OptionsPrivate.commonOptions.flattenRegionOptions
+local fixMetaOrders = OptionsPrivate.commonOptions.fixMetaOrders
 
 local spellCache = WeakAuras.spellCache
 
@@ -89,7 +89,7 @@ local function GetGlobalOptions(data)
   local function hideTriggerCombiner()
     return not (data.triggers.disjunctive == "custom")
   end
-  WeakAuras.commonOptions.AddCodeOption(globalTriggerOptions, data, L["Custom"], "custom_trigger_combination", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-activation",
+  OptionsPrivate.commonOptions.AddCodeOption(globalTriggerOptions, data, L["Custom"], "custom_trigger_combination", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-activation",
                           2.4, hideTriggerCombiner, {"triggers", "customTriggerLogic"}, false);
 
   return {
@@ -107,7 +107,7 @@ local function AddOptions(allOptions, data)
       triggerOptions = union(triggerOptions, triggerSystemOptionsFunction(data, index))
     else
       local options = {};
-      WeakAuras.commonOptions.AddCommonTriggerOptions(options, data, index)
+      OptionsPrivate.commonOptions.AddCommonTriggerOptions(options, data, index)
       WeakAuras.AddTriggerMetaFunctions(options, data, index)
       triggerOptions = union(triggerOptions, {
           ["trigger." .. index .. ".unknown"] = options

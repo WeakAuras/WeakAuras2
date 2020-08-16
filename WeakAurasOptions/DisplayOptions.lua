@@ -3,17 +3,17 @@ local AddonName, OptionsPrivate = ...
 local L = WeakAuras.L
 local regionOptions = WeakAuras.regionOptions
 
-local flattenRegionOptions = WeakAuras.commonOptions.flattenRegionOptions
-local fixMetaOrders = WeakAuras.commonOptions.fixMetaOrders
-local parsePrefix = WeakAuras.commonOptions.parsePrefix
-local removeFuncs = WeakAuras.commonOptions.removeFuncs
-local replaceNameDescFuncs = WeakAuras.commonOptions.replaceNameDescFuncs
-local replaceImageFuncs = WeakAuras.commonOptions.replaceImageFuncs
-local replaceValuesFuncs = WeakAuras.commonOptions.replaceValuesFuncs
-local disabledAll = WeakAuras.commonOptions.CreateDisabledAll("region")
-local hiddenAll = WeakAuras.commonOptions.CreateHiddenAll("region")
-local getAll = WeakAuras.commonOptions.CreateGetAll("region")
-local setAll = WeakAuras.commonOptions.CreateSetAll("region", getAll)
+local flattenRegionOptions = OptionsPrivate.commonOptions.flattenRegionOptions
+local fixMetaOrders = OptionsPrivate.commonOptions.fixMetaOrders
+local parsePrefix = OptionsPrivate.commonOptions.parsePrefix
+local removeFuncs = OptionsPrivate.commonOptions.removeFuncs
+local replaceNameDescFuncs = OptionsPrivate.commonOptions.replaceNameDescFuncs
+local replaceImageFuncs = OptionsPrivate.commonOptions.replaceImageFuncs
+local replaceValuesFuncs = OptionsPrivate.commonOptions.replaceValuesFuncs
+local disabledAll = OptionsPrivate.commonOptions.CreateDisabledAll("region")
+local hiddenAll = OptionsPrivate.commonOptions.CreateHiddenAll("region")
+local getAll = OptionsPrivate.commonOptions.CreateGetAll("region")
+local setAll = OptionsPrivate.commonOptions.CreateSetAll("region", getAll)
 
 local function AddSubRegionImpl(data, subRegionName)
   data.subRegions = data.subRegions or {}
