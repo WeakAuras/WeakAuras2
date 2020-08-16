@@ -27,7 +27,6 @@ WeakAuras.displayButtons = displayButtons;
 local aceOptions = {}
 WeakAuras.aceOptions = aceOptions
 
-local loaded = WeakAuras.loaded;
 local spellCache = WeakAuras.spellCache;
 local savedVars = {};
 WeakAuras.savedVars = savedVars;
@@ -578,7 +577,7 @@ function WeakAuras.GetSortedOptionsLists()
   for id, data in pairs(db.displays) do
     if(data.parent) then
     -- Do nothing; children will be added later
-    elseif(loaded[id]) then
+  elseif(OptionsPrivate.Private.loaded[id]) then
       tinsert(to_sort, id);
     end
   end
@@ -598,7 +597,7 @@ function WeakAuras.GetSortedOptionsLists()
   for id, data in pairs(db.displays) do
     if(data.parent) then
     -- Do nothing; children will be added later
-    elseif not(loaded[id]) then
+    elseif not(OptionsPrivate.Private.loaded[id]) then
       tinsert(to_sort, id);
     end
   end
@@ -666,7 +665,7 @@ function WeakAuras.LayoutDisplayButtons(msg)
     OptionsPrivate.Private.PauseAllDynamicGroups();
     if (WeakAuras.IsOptionsOpen()) then
       for id, button in pairs(displayButtons) do
-        if(loaded[id] ~= nil) then
+        if(OptionsPrivate.Private.loaded[id] ~= nil) then
           button:PriorityShow(1);
         end
         if WeakAurasCompanion and not button.data.parent then
@@ -883,8 +882,8 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
         local group = child:GetGroup();
         if(group) then
           -- In a Group
-          if(loaded[group]) then
-            if(loaded[id]) then
+          if(OptionsPrivate.Private.loaded[group]) then
+            if(OptionsPrivate.Private.loaded[id]) then
               child:EnableLoaded();
             else
               child:DisableLoaded();
@@ -895,8 +894,8 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
           end
         else
           -- Top Level
-          if(loaded[id] ~= nil) then
-            if(loaded[id]) then
+          if(OptionsPrivate.Private.loaded[id] ~= nil) then
+            if(OptionsPrivate.Private.loaded[id]) then
               child:EnableLoaded();
             else
               child:DisableLoaded();
@@ -954,8 +953,8 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
       ) then
       local group = child:GetGroup();
       if(group) then
-        if not(loaded[group]) then
-          if(loaded[id]) then
+        if not(OptionsPrivate.Private.loaded[group]) then
+          if(OptionsPrivate.Private.loaded[id]) then
             child:EnableLoaded();
           else
             child:DisableLoaded();
@@ -965,7 +964,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
           tinsert(children[group], id);
         end
       else
-        if(loaded[id] == nil) then
+        if(OptionsPrivate.Private.loaded[id] == nil) then
           child:DisableLoaded();
           visible[id] = true
           tinsert(to_sort, child);
