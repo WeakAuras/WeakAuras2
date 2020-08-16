@@ -798,7 +798,7 @@ function WeakAuras.CloseImportExport()
   frame.importexport:Close();
 end
 
-function WeakAuras.ConvertDisplay(data, newType)
+function OptionsPrivate.ConvertDisplay(data, newType)
   local id = data.id;
   local visibility = displayButtons[id]:GetVisibility();
   displayButtons[id]:PriorityHide(0);
