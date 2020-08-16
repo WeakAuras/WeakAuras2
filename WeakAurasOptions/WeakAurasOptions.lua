@@ -225,7 +225,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
   end
 end);
 
-function WeakAuras.MultipleDisplayTooltipMenu()
+function OptionsPrivate.MultipleDisplayTooltipMenu()
   local frame = frame;
   local menu = {
     {
