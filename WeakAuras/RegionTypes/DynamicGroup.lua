@@ -1150,7 +1150,7 @@ local function modify(parent, region, data)
             }
           end
           -- update animated expand & collapse for this child
-          WeakAuras.Animate("controlPoint", data.uid, "controlPoint", anim, regionData.controlPoint, true)
+          Private.Animate("controlPoint", data.uid, "controlPoint", anim, regionData.controlPoint, true)
         end
       end
       regionData.xOffset = x

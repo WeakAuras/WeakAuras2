@@ -707,8 +707,8 @@ local methods = {
             WeakAuras.SortDisplayButtons();
             local updata = {duration = 0.15, type = "custom", use_translate = true, x = 0, y = -32};
             local downdata = {duration = 0.15, type = "custom", use_translate = true, x = 0, y = 32};
-            WeakAuras.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index-1]).uid, "main", updata, self.frame, true, function() WeakAuras.SortDisplayButtons() end);
-            WeakAuras.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index]).uid, "main", downdata, otherbutton.frame, true, function() WeakAuras.SortDisplayButtons() end);
+            OptionsPrivate.Private.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index-1]).uid, "main", updata, self.frame, true, function() WeakAuras.SortDisplayButtons() end);
+            OptionsPrivate.Private.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index]).uid, "main", downdata, otherbutton.frame, true, function() WeakAuras.SortDisplayButtons() end);
             WeakAuras.UpdateDisplayButton(parentData);
             WeakAuras.FillOptions()
           end
@@ -746,8 +746,8 @@ local methods = {
             WeakAuras.SortDisplayButtons()
             local updata = {duration = 0.15, type = "custom", use_translate = true, x = 0, y = -32};
             local downdata = {duration = 0.15, type = "custom", use_translate = true, x = 0, y = 32};
-            WeakAuras.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index+1]).uid, "main", downdata, self.frame, true, function() WeakAuras.SortDisplayButtons() end);
-            WeakAuras.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index]).uid, "main", updata, otherbutton.frame, true, function() WeakAuras.SortDisplayButtons() end);
+            OptionsPrivate.Private.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index+1]).uid, "main", downdata, self.frame, true, function() WeakAuras.SortDisplayButtons() end);
+            OptionsPrivate.Private.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index]).uid, "main", updata, otherbutton.frame, true, function() WeakAuras.SortDisplayButtons() end);
             WeakAuras.UpdateDisplayButton(parentData);
             WeakAuras.FillOptions()
           end
