@@ -64,7 +64,7 @@ local function createOptions(id, data)
         data.orientation = v;
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
       end
     },
     inverse = {

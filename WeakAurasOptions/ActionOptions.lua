@@ -982,7 +982,7 @@ function WeakAuras.GetActionOptions(data)
       if(type(data.id) == "string") then
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
       end
     end
     action.hidden = function(info, ...) return hiddenAll(data, info, ...); end;

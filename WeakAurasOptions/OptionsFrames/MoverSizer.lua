@@ -45,7 +45,7 @@ local function moveOnePxl(direction)
       end
       WeakAuras.Add(data, nil, true)
       WeakAuras.UpdateThumbnail(data)
-      WeakAuras.ResetMoverSizer()
+      OptionsPrivate.ResetMoverSizer()
       if data.parent then
         local parentData = WeakAuras.GetData(data.parent)
         if parentData then

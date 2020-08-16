@@ -175,7 +175,7 @@ local function createOptions(id, data)
             WeakAuras.Add(parentData);
           end
         end
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
       end,
     },
     crop_y = {
@@ -198,7 +198,7 @@ local function createOptions(id, data)
             WeakAuras.Add(parentData);
           end
         end
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
       end,
     },
     rotation = {

@@ -188,7 +188,7 @@ function WeakAuras.GetDisplayOptions(data)
             WeakAuras.Add(parentData);
           end
         end
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
       end,
       args = options
     };
@@ -294,7 +294,7 @@ function WeakAuras.GetDisplayOptions(data)
       if(type(data.id) == "string") then
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
       end
     end
     region.hidden = function(info, ...) return hiddenAll(data, info, ...); end;

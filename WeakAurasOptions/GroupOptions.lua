@@ -54,7 +54,7 @@ function WeakAuras.GetGroupOptions(data)
       end
       WeakAuras.Add(data);
       WeakAuras.UpdateThumbnail(data);
-      WeakAuras.ResetMoverSizer();
+      OptionsPrivate.ResetMoverSizer();
     end,
     hidden = function() return false end,
     disabled = function() return false end,
