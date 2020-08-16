@@ -18,7 +18,6 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
 local displayButtons = WeakAuras.displayButtons
-local loaded = WeakAuras.loaded
 local regionOptions = WeakAuras.regionOptions
 local savedVars = WeakAuras.savedVars
 local tempGroup = WeakAuras.tempGroup
@@ -720,13 +719,13 @@ function WeakAuras.CreateFrame()
     OptionsPrivate.Private.PauseAllDynamicGroups()
     if loadedButton.view.func() == 2 then
       for id, child in pairs(displayButtons) do
-        if loaded[id] ~= nil then
+        if OptionsPrivate.Private.loaded[id] ~= nil then
           child:PriorityHide(2)
         end
       end
     else
       for id, child in pairs(displayButtons) do
-        if loaded[id] ~= nil then
+        if OptionsPrivate.Private.loaded[id] ~= nil then
           child:PriorityShow(2)
         end
       end
@@ -736,7 +735,7 @@ function WeakAuras.CreateFrame()
   loadedButton:SetViewTest(function()
     local none, all = true, true
     for id, child in pairs(displayButtons) do
-      if loaded[id] ~= nil then
+      if OptionsPrivate.Private.loaded[id] ~= nil then
         if child:GetVisibility() ~= 2 then
           all = false
         end
@@ -778,13 +777,13 @@ function WeakAuras.CreateFrame()
   unloadedButton:SetViewClick(function()
     if unloadedButton.view.func() == 2 then
       for id, child in pairs(displayButtons) do
-        if loaded[id] == nil then
+        if OptionsPrivate.Private.loaded[id] == nil then
           child:PriorityHide(2)
         end
       end
     else
       for id, child in pairs(displayButtons) do
-        if loaded[id] == nil then
+        if OptionsPrivate.Private.loaded[id] == nil then
           child:PriorityShow(2)
         end
       end
@@ -793,7 +792,7 @@ function WeakAuras.CreateFrame()
   unloadedButton:SetViewTest(function()
     local none, all = true, true
     for id, child in pairs(displayButtons) do
-      if loaded[id] == nil then
+      if OptionsPrivate.Private.loaded[id] == nil then
         if child:GetVisibility() ~= 2 then
           all = false
         end
@@ -1182,7 +1181,7 @@ function WeakAuras.CreateFrame()
         displayButtons[data.parent]:Expand()
       end
     end
-    if loaded[id] ~= nil then
+    if OptionsPrivate.Private.loaded[id] ~= nil then
       -- Under loaded
       if not loadedButton:GetExpanded() then
         loadedButton:Expand()
