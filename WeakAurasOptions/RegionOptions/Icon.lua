@@ -101,7 +101,7 @@ local function createOptions(id, data)
       imageHeight = 15,
       func = function(info, button)
         local collapsed = WeakAuras.IsCollapsed("icon", "icon", "iconextra", true);
-        WeakAuras.SetCollapsed("icon", "icon", "iconextra", not collapsed);
+        OptionsPrivate.SetCollapsed("icon", "icon", "iconextra", not collapsed);
       end,
       arg = {
         expanderName = "icon"

@@ -138,7 +138,7 @@ local function createOptions(parentData, data, index, subIndex)
       order = 44,
       func = function(info, button)
         local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
-        WeakAuras.SetCollapsed("subtext", "subtext", "fontflags" .. index, not collapsed)
+        OptionsPrivate.SetCollapsed("subtext", "subtext", "fontflags" .. index, not collapsed)
       end,
       image = function()
         local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
@@ -341,7 +341,7 @@ local function createOptions(parentData, data, index, subIndex)
     imageHeight = 15,
     func = function(info, button)
       local collapsed = WeakAuras.IsCollapsed("subregion", "text_anchors", tostring(index), true)
-      WeakAuras.SetCollapsed("subregion", "text_anchors", tostring(index), not collapsed)
+      OptionsPrivate.SetCollapsed("subregion", "text_anchors", tostring(index), not collapsed)
     end,
     arg = {
       expanderName = "subtext_anchor" .. index .. "#" .. subIndex
@@ -464,7 +464,7 @@ local function createOptions(parentData, data, index, subIndex)
   end
 
   local setHidden = function(hidden)
-    WeakAuras.SetCollapsed("format_option", "text", "text_text", hidden)
+    OptionsPrivate.SetCollapsed("format_option", "text", "text_text", hidden)
   end
 
   local order = 12

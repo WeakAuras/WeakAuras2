@@ -114,7 +114,7 @@ local function createOptions(parentData, data, index, subIndex)
       imageHeight = 15,
       func = function(info, button)
         local collapsed = WeakAuras.IsCollapsed("glow", "glow", "glowextra" .. index, true);
-        WeakAuras.SetCollapsed("glow", "glow", "glowextra" .. index, not collapsed);
+        OptionsPrivate.SetCollapsed("glow", "glow", "glowextra" .. index, not collapsed);
       end,
       arg = {
         expanderName = "glow" .. index .. "#" .. subIndex
