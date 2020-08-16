@@ -21,7 +21,7 @@ local displayButtons = WeakAuras.displayButtons
 local regionOptions = WeakAuras.regionOptions
 local tempGroup = OptionsPrivate.tempGroup
 local prettyPrint = WeakAuras.prettyPrint
-local aceOptions = WeakAuras.aceOptions
+local aceOptions = {}
 
 local function CreateDecoration(frame)
   local deco = CreateFrame("Frame", nil, frame)
