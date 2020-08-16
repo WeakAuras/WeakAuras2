@@ -430,7 +430,7 @@ local function createOptions(parentData, data, index, subIndex)
     end
 
     for index, subRegion in ipairs(parentData.subRegions) do
-      if subRegion.type == "subtext" and WeakAuras.ContainsCustomPlaceHolder(subRegion.text_text) then
+      if subRegion.type == "subtext" and OptionsPrivate.Private.ContainsCustomPlaceHolder(subRegion.text_text) then
         return false
       end
     end

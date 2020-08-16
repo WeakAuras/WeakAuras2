@@ -38,7 +38,7 @@ local function createOptions(id, data)
     customTextUpdate = {
       type = "select",
       width = WeakAuras.doubleWidth,
-      hidden = function() return not WeakAuras.ContainsCustomPlaceHolder(data.displayText); end,
+      hidden = function() return not OptionsPrivate.Private.ContainsCustomPlaceHolder(data.displayText); end,
       name = L["Update Custom Text On..."],
       values = OptionsPrivate.Private.text_check_types,
       order = 36
@@ -255,7 +255,7 @@ local function createOptions(id, data)
   };
 
   OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Function"], "customText", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text",
-                          37, function() return not WeakAuras.ContainsCustomPlaceHolder(data.displayText) end, {"customText"}, false);
+                          37, function() return not OptionsPrivate.Private.ContainsCustomPlaceHolder(data.displayText) end, {"customText"}, false);
 
   -- Add Text Format Options
   local input = data.displayText

@@ -769,7 +769,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     local function customHidden()
       local message = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message;
       if (not message) then return true; end
-      return not WeakAuras.ContainsCustomPlaceHolder(message);
+      return not OptionsPrivate.Private.ContainsCustomPlaceHolder(message);
     end
 
     args["condition" .. i .. "value" .. j .. "custom"] = {
