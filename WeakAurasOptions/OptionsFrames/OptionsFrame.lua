@@ -175,7 +175,7 @@ function WeakAuras.CreateFrame()
 
   frame:SetScript("OnHide", function()
     WeakAuras.ClearFakeStates()
-    WeakAuras.SetDragging()
+    OptionsPrivate.SetDragging()
 
     local tutFrame = WeakAuras.TutorialsFrame and WeakAuras.TutorialsFrame()
     if tutFrame and tutFrame:IsVisible() then
