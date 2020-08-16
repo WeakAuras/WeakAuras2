@@ -18,7 +18,7 @@ local frameChooserBox
 
 local oldFocus
 local oldFocusName
-function WeakAuras.StartFrameChooser(data, path)
+function OptionsPrivate.StartFrameChooser(data, path)
   local frame = WeakAuras.OptionsFrame();
   if not(frameChooserFrame) then
     frameChooserFrame = CreateFrame("frame");
@@ -37,10 +37,10 @@ function WeakAuras.StartFrameChooser(data, path)
   frameChooserFrame:SetScript("OnUpdate", function()
     if(IsMouseButtonDown("RightButton")) then
       OptionsPrivate.Private.ValueToPath(data, path, givenValue);
-      WeakAuras.StopFrameChooser(data);
+      OptionsPrivate.StopFrameChooser(data);
       WeakAuras.FillOptions()
     elseif(IsMouseButtonDown("LeftButton") and oldFocusName) then
-      WeakAuras.StopFrameChooser(data);
+      OptionsPrivate.StopFrameChooser(data);
     else
       SetCursor("CAST_CURSOR");
 
@@ -88,7 +88,7 @@ function WeakAuras.StartFrameChooser(data, path)
   end);
 end
 
-function WeakAuras.StopFrameChooser(data)
+function OptionsPrivate.StopFrameChooser(data)
   if(frameChooserFrame) then
     frameChooserFrame:SetScript("OnUpdate", nil);
     frameChooserBox:Hide();
