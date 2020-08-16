@@ -1232,7 +1232,7 @@ function WeakAuras.SetDragging(data, drop)
   end
 end
 
-function WeakAuras.DropIndicator()
+function OptionsPrivate.DropIndicator()
   local indicator = frame.dropIndicator
   if not indicator then
     indicator = CreateFrame("Frame", "WeakAuras_DropIndicator")

@@ -458,7 +458,7 @@ local function GetDropTarget()
 end
 
 local function Show_DropIndicator(id)
-  local indicator = WeakAuras.DropIndicator()
+  local indicator = OptionsPrivate.DropIndicator()
   local source = WeakAuras.GetDisplayButton(id)
   local target, pos
   if source then
