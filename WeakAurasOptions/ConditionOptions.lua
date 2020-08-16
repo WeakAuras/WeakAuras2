@@ -2510,7 +2510,7 @@ local function mergeConditions(all, aura, id, allConditionTemplates, propertyTyp
   end
 end
 
-function WeakAuras.GetConditionOptions(data)
+function OptionsPrivate.GetConditionOptions(data)
   local  options = {
     type = "group",
     name = L["Conditions"],

@@ -26,7 +26,7 @@ else
   end
 end
 
-function WeakAuras.GetActionOptions(data)
+function OptionsPrivate.GetActionOptions(data)
   local action = {
     type = "group",
     name = L["Actions"],
