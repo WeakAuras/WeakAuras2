@@ -1243,13 +1243,13 @@ function WeakAuras.CreateFrame()
       if type(self.pickedDisplay) == "string" then
         if WeakAuras.GetData(self.pickedDisplay).controlledChildren then
           wasGroup = true
-        elseif not WeakAuras.IsDisplayPicked(id) then
+        elseif not OptionsPrivate.IsDisplayPicked(id) then
           tinsert(tempGroup.controlledChildren, self.pickedDisplay)
         end
       end
       if wasGroup then
         self:PickDisplay(id)
-      elseif not WeakAuras.IsDisplayPicked(id) then
+      elseif not OptionsPrivate.IsDisplayPicked(id) then
         self.pickedDisplay = tempGroup
         displayButtons[id]:Pick()
         tinsert(tempGroup.controlledChildren, id)
