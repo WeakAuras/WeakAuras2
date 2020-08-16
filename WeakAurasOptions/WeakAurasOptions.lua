@@ -820,7 +820,7 @@ end
 
 function WeakAuras.NewDisplayButton(data)
   local id = data.id;
-  WeakAuras.ScanForLoads({[id] = true});
+  OptionsPrivate.Private.ScanForLoads({[id] = true});
   WeakAuras.EnsureDisplayButton(db.displays[id]);
   WeakAuras.UpdateDisplayButton(db.displays[id]);
   frame.buttonsScroll:AddChild(displayButtons[id]);

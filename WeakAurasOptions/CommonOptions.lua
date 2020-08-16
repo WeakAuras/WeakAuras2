@@ -905,7 +905,7 @@ local function CreateSetAll(subOption, getAll)
 
     WeakAuras.ResumeAllDynamicGroups()
     WeakAuras.pauseOptionsProcessing(false);
-    WeakAuras.ScanForLoads();
+    OptionsPrivate.Private.ScanForLoads();
     WeakAuras.SortDisplayButtons();
     WeakAuras.UpdateOptions()
   end
