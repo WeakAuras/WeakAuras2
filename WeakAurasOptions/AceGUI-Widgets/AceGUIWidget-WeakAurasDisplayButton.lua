@@ -827,7 +827,7 @@ local methods = {
 
     function self.callbacks.OnDragStart()
       if WeakAuras.IsImporting() or self:IsGroup() then return end;
-      if #WeakAuras.tempGroup.controlledChildren == 0 then
+      if #OptionsPrivate.tempGroup.controlledChildren == 0 then
         WeakAuras.PickDisplay(data.id);
       end
       OptionsPrivate.SetDragging(data);
