@@ -1810,8 +1810,8 @@ function WeakAuras.Delete(data)
   Private.DeleteAuraEnvironment(id)
   triggerState[id] = nil;
 
-  if (WeakAuras.personalRessourceDisplayFrame) then
-    WeakAuras.personalRessourceDisplayFrame:delete(id);
+  if (Private.personalRessourceDisplayFrame) then
+    Private.personalRessourceDisplayFrame:delete(id);
   end
 
   if (WeakAuras.mouseFrame) then
@@ -1909,8 +1909,8 @@ function WeakAuras.Rename(data, newid)
     end
   end
 
-  if (WeakAuras.personalRessourceDisplayFrame) then
-    WeakAuras.personalRessourceDisplayFrame:rename(oldid, newid);
+  if (Private.personalRessourceDisplayFrame) then
+    Private.personalRessourceDisplayFrame:rename(oldid, newid);
   end
 
   if (WeakAuras.mouseFrame) then
@@ -4612,7 +4612,7 @@ function Private.ensurePRDFrame()
   personalRessourceDisplayFrame = CreateFrame("FRAME", "WeakAurasAttachToPRD", UIParent);
   personalRessourceDisplayFrame:Hide();
   personalRessourceDisplayFrame.attachedVisibleFrames = {};
-  WeakAuras.personalRessourceDisplayFrame = personalRessourceDisplayFrame;
+  Private.personalRessourceDisplayFrame = personalRessourceDisplayFrame;
 
   local moverFrame = CreateFrame("FRAME", "WeakAurasPRDMoverFrame", personalRessourceDisplayFrame);
   personalRessourceDisplayFrame.moverFrame = moverFrame;
