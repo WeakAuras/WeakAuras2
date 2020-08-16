@@ -785,7 +785,7 @@ function OptionsPrivate.ExportToString(id)
   frame.importexport:Open("export", id);
 end
 
-function WeakAuras.ExportToTable(id)
+function OptionsPrivate.ExportToTable(id)
   frame.importexport:Open("table", id);
 end
 
