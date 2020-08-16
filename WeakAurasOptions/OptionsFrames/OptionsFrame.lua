@@ -1246,7 +1246,7 @@ function OptionsPrivate.CreateFrame()
         self.pickedDisplay = tempGroup
         displayButtons[id]:Pick()
         tinsert(tempGroup.controlledChildren, id)
-        WeakAuras.ClearOptions(tempGroup.id)
+        OptionsPrivate.ClearOptions(tempGroup.id)
         self:FillOptions()
       end
     end
