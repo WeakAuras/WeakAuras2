@@ -17,9 +17,6 @@ local L = WeakAuras.L
 
 local textEditor
 
-local valueFromPath = WeakAuras.ValueFromPath
-local valueToPath = WeakAuras.ValueToPath
-
 local editor_themes = {
   ["Standard"] = {
     ["Table"] = "|c00ff3333",
@@ -635,7 +632,7 @@ local function ConstructTextEditor(frame)
       local combinedText = ""
       for index, childId in pairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId)
-        local text = valueFromPath(childData, multipath and path[childId] or path)
+        local text = OptionsPrivate.Private.ValueFromPath(childData, multipath and path[childId] or path)
         if text then
           if not (singleText) then
             singleText = text
@@ -661,7 +658,7 @@ local function ConstructTextEditor(frame)
         editor.combinedText = true
       end
     else
-      editor:SetText(valueFromPath(data, path) or "")
+      editor:SetText(OptionsPrivate.Private.ValueFromPath(data, path) or "")
     end
     editor:SetFocus()
   end
@@ -716,11 +713,11 @@ local function ConstructTextEditor(frame)
       for index, childId in pairs(self.data.controlledChildren) do
         local text = editor.combinedText and (textById[childId] or "") or editor:GetText()
         local childData = WeakAuras.GetData(childId)
-        valueToPath(childData, self.multipath and self.path[childId] or self.path, text)
+        OptionsPrivate.Private.ValueToPath(childData, self.multipath and self.path[childId] or self.path, text)
         WeakAuras.Add(childData)
       end
     else
-      valueToPath(self.data, self.path, editor:GetText())
+      OptionsPrivate.Private.ValueToPath(self.data, self.path, editor:GetText())
       WeakAuras.Add(self.data)
     end
     if (self.reloadOptions) then
