@@ -556,7 +556,7 @@ local methods = {
       else
         if(mouseButton == "RightButton") then
           Hide_Tooltip();
-          if(OptionsPrivate.IsDisplayPicked(data.id) and WeakAuras.IsPickedMultiple()) then
+          if(OptionsPrivate.IsDisplayPicked(data.id) and OptionsPrivate.IsPickedMultiple()) then
             EasyMenu(WeakAuras.MultipleDisplayTooltipMenu(), WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
           else
             UpdateClipboardMenuEntry(data);
@@ -1116,7 +1116,7 @@ local methods = {
     self:SetDescription({data.id, displayName}, unpack(namestable));
   end,
   ["ReloadTooltip"] = function(self)if(
-    WeakAuras.IsPickedMultiple() and OptionsPrivate.IsDisplayPicked(self.data.id)) then
+    OptionsPrivate.IsPickedMultiple() and OptionsPrivate.IsDisplayPicked(self.data.id)) then
     Show_Long_Tooltip(self.frame, WeakAuras.MultipleDisplayTooltipDesc());
   else
     Show_Long_Tooltip(self.frame, self.frame.description);
@@ -1812,7 +1812,7 @@ local function Constructor()
   button.description = {};
 
   button:SetScript("OnEnter", function()
-    if(WeakAuras.IsPickedMultiple() and OptionsPrivate.IsDisplayPicked(button.id)) then
+    if(OptionsPrivate.IsPickedMultiple() and OptionsPrivate.IsDisplayPicked(button.id)) then
       Show_Long_Tooltip(button, WeakAuras.MultipleDisplayTooltipDesc());
     else
       if not(button.terribleCodeOrganizationHackTable.IsGroupingOrCopying()) then
