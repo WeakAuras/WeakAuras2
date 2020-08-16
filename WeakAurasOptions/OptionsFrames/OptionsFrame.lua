@@ -546,7 +546,7 @@ function WeakAuras.CreateFrame()
   frame.texteditor = WeakAuras.TextEditor(frame)
   frame.codereview = OptionsPrivate.CodeReview(frame)
 
-  frame.moversizer, frame.mover = WeakAuras.MoverSizer(frame)
+  frame.moversizer, frame.mover = OptionsPrivate.MoverSizer(frame)
 
   -- filter line
   local filterInput = CreateFrame("editbox", "WeakAurasFilterInput", frame, "SearchBoxTemplate")
