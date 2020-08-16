@@ -421,23 +421,23 @@ local function createOptions(id, data)
     },
   };
 
-  WeakAuras.commonOptions.AddCodeOption(options, data, L["Custom Grow"], "custom_grow", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#grow",
+  OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Grow"], "custom_grow", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#grow",
                           2, function() return data.grow ~= "CUSTOM" end, {"customGrow"}, nil, nil, nil, nil, nil, true)
-  WeakAuras.commonOptions.AddCodeOption(options, data, L["Custom Sort"], "custom_sort", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-sort",
+  OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Sort"], "custom_sort", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-sort",
                           21, function() return data.sort ~= "custom" end, {"customSort"}, nil, nil, nil, nil, nil, true)
-  WeakAuras.commonOptions.AddCodeOption(options, data, L["Custom Anchor"], "custom_anchor_per_unit", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#group-by-frame",
+  OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Anchor"], "custom_anchor_per_unit", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#group-by-frame",
                           1.7, function() return not(data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM") end, {"customAnchorPerUnit"}, nil, nil, nil, nil, nil, true)
 
   local borderHideFunc = function() return data.useAnchorPerUnit or data.grow == "CUSTOM" end
   local disableSelfPoint = function() return data.grow ~= "CUSTOM" and data.grow ~= "GRID" and not data.useAnchorPerUnit end
 
-  for k, v in pairs(WeakAuras.commonOptions.BorderOptions(id, data, nil, borderHideFunc, 70)) do
+  for k, v in pairs(OptionsPrivate.commonOptions.BorderOptions(id, data, nil, borderHideFunc, 70)) do
     options[k] = v
   end
 
   return {
     dynamicgroup = options,
-    position = WeakAuras.commonOptions.PositionOptions(id, data, nil, true, disableSelfPoint),
+    position = OptionsPrivate.commonOptions.PositionOptions(id, data, nil, true, disableSelfPoint),
   };
 end
 

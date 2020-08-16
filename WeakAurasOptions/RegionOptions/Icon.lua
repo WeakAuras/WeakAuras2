@@ -228,7 +228,7 @@ local function createOptions(id, data)
 
   return {
     icon = options,
-    position = WeakAuras.commonOptions.PositionOptions(id, data),
+    position = OptionsPrivate.commonOptions.PositionOptions(id, data),
   };
 end
 

@@ -34,7 +34,7 @@ local function createOptions(id, data)
       width = WeakAuras.halfWidth,
       order = 12,
       func = function()
-        WeakAuras.OpenTexturePicker(data, data, "foregroundTexture", OptionsPrivate.Private.texture_types);
+        OptionsPrivate.OpenTexturePicker(data, data, "foregroundTexture", OptionsPrivate.Private.texture_types);
       end
     },
     sameTexture = {
@@ -49,7 +49,7 @@ local function createOptions(id, data)
       width = WeakAuras.halfWidth,
       order = 17,
       func = function()
-        WeakAuras.OpenTexturePicker(data, data, "backgroundTexture", OptionsPrivate.Private.texture_types);
+        OptionsPrivate.OpenTexturePicker(data, data, "backgroundTexture", OptionsPrivate.Private.texture_types);
       end,
       disabled = function() return data.sameTexture; end
     },
@@ -321,7 +321,7 @@ local function createOptions(id, data)
 
   return {
     progresstexture = options,
-    position = WeakAuras.commonOptions.PositionOptions(id, data),
+    position = OptionsPrivate.commonOptions.PositionOptions(id, data),
   };
 end
 

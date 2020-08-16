@@ -32,7 +32,7 @@ local function createOptions(id, data)
       width = WeakAuras.halfWidth,
       order = 7,
       func = function()
-        WeakAuras.OpenTexturePicker(data, data, "texture", OptionsPrivate.Private.texture_types);
+        OptionsPrivate.OpenTexturePicker(data, data, "texture", OptionsPrivate.Private.texture_types);
       end
     },
     color = {
@@ -108,7 +108,7 @@ local function createOptions(id, data)
 
   return {
     texture = options,
-    position = WeakAuras.commonOptions.PositionOptions(id, data),
+    position = OptionsPrivate.commonOptions.PositionOptions(id, data),
   };
 end
 

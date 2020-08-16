@@ -574,13 +574,13 @@ local function createOptions(id, data)
     },
   };
 
-  for k, v in pairs(WeakAuras.commonOptions.BorderOptions(id, data, nil, nil, 70)) do
+  for k, v in pairs(OptionsPrivate.commonOptions.BorderOptions(id, data, nil, nil, 70)) do
     options[k] = v
   end
 
   return {
     group = options,
-    position = WeakAuras.commonOptions.PositionOptions(id, data, nil, true, true),
+    position = OptionsPrivate.commonOptions.PositionOptions(id, data, nil, true, true),
   };
 end
 
