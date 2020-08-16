@@ -47,7 +47,7 @@ local tempGroup = {
   xOffset = 0,
   yOffset = 0
 };
-WeakAuras.tempGroup = tempGroup;
+OptionsPrivate.tempGroup = tempGroup;
 
 function OptionsPrivate.DuplicateAura(data, newParent)
   local base_id = data.id .. " "
