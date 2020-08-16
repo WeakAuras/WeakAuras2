@@ -14,8 +14,6 @@ local WeakAuras = WeakAuras
 local moversizer
 local mover
 
-local savedVars = WeakAuras.savedVars
-
 local function EnsureTexture(self, texture)
   if texture then
     return texture
@@ -498,7 +496,7 @@ local function ConstructMoverSizer(parent)
       mover:SetFrameStrata(WeakAuras.frame_strata_types[strata])
     end
 
-    local db = savedVars.db
+    local db = OptionsPrivate.savedVars.db
     mover.startMoving = function()
       OptionsPrivate.Private.CancelAnimation(region, true, true, true, true, true)
       mover:ClearAllPoints()
@@ -834,7 +832,7 @@ local function ConstructMoverSizer(parent)
       self.alignCurrentAlpha = newAlpha
     end
 
-    local db = savedVars.db
+    local db = OptionsPrivate.savedVars.db
     local region = self.moving.region
     local data = self.moving.data
     if not self.isMoving then
