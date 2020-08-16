@@ -537,13 +537,13 @@ function WeakAuras.ShowOptions(msg)
 
   if not(firstLoad) then
     -- Show what was last shown
-    WeakAuras.PauseAllDynamicGroups();
+    OptionsPrivate.Private.PauseAllDynamicGroups();
     for id, button in pairs(displayButtons) do
       if (button:GetVisibility() > 0) then
         button:PriorityShow(button:GetVisibility());
       end
     end
-    WeakAuras.ResumeAllDynamicGroups();
+    OptionsPrivate.Private.ResumeAllDynamicGroups();
   end
 
   if (frame.pickedDisplay) then
@@ -673,7 +673,7 @@ function WeakAuras.LayoutDisplayButtons(msg)
     frame.buttonsScroll:PerformLayout()
     WeakAuras.SortDisplayButtons(msg);
 
-    WeakAuras.PauseAllDynamicGroups();
+    OptionsPrivate.Private.PauseAllDynamicGroups();
     if (WeakAuras.IsOptionsOpen()) then
       for id, button in pairs(displayButtons) do
         if(loaded[id] ~= nil) then
@@ -685,7 +685,7 @@ function WeakAuras.LayoutDisplayButtons(msg)
         end
       end
     end
-    WeakAuras.ResumeAllDynamicGroups();
+    OptionsPrivate.Private.ResumeAllDynamicGroups();
 
     frame:SetLoadProgressVisible(false)
   end
@@ -1074,7 +1074,7 @@ function OptionsPrivate.ClearPicks()
   frame:ClearPicks();
 end
 
-function WeakAuras.PickDisplayMultiple(id)
+function OptionsPrivate.PickDisplayMultiple(id)
   frame:PickDisplayMultiple(id);
 end
 

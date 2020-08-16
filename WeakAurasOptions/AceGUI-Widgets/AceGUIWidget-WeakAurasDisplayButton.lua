@@ -534,7 +534,7 @@ local methods = {
         if (OptionsPrivate.IsDisplayPicked(data.id)) then
           OptionsPrivate.ClearPick(data.id);
         else
-          WeakAuras.PickDisplayMultiple(data.id);
+          OptionsPrivate.PickDisplayMultiple(data.id);
         end
         self:ReloadTooltip();
       elseif(IsShiftKeyDown()) then
@@ -760,7 +760,7 @@ local methods = {
     end
 
     function self.callbacks.OnViewClick()
-      WeakAuras.PauseAllDynamicGroups();
+      OptionsPrivate.Private.PauseAllDynamicGroups();
 
       if(self.view.func() == 2) then
         for index, childId in ipairs(data.controlledChildren) do
@@ -772,7 +772,7 @@ local methods = {
         end
       end
 
-      WeakAuras.ResumeAllDynamicGroups();
+        OptionsPrivate.Private.ResumeAllDynamicGroups();
     end
 
     function self.callbacks.ViewTest()
