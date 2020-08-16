@@ -116,7 +116,7 @@ end
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
-function WeakAuras.GetAnchorsForData(parentData, type)
+function Private.GetAnchorsForData(parentData, type)
   local result
   if not parentData.controlledChildren then
     if not WeakAuras.regionOptions[parentData.regionType] or not WeakAuras.regionOptions[parentData.regionType].getAnchors then
