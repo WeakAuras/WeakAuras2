@@ -875,7 +875,7 @@ end
 local function CreateSetAll(subOption, getAll)
   return function(data, info, ...)
     WeakAuras.pauseOptionsProcessing(true);
-    WeakAuras.PauseAllDynamicGroups()
+    OptionsPrivate.Private.PauseAllDynamicGroups()
     local before = getAll(data, info, ...)
     for index, childId in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId);
@@ -903,7 +903,7 @@ local function CreateSetAll(subOption, getAll)
       end
     end
 
-    WeakAuras.ResumeAllDynamicGroups()
+    OptionsPrivate.Private.ResumeAllDynamicGroups()
     WeakAuras.pauseOptionsProcessing(false);
     OptionsPrivate.Private.ScanForLoads();
     WeakAuras.SortDisplayButtons();
