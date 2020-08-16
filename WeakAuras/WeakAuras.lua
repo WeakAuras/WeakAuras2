@@ -3528,7 +3528,7 @@ function WeakAuras.ProfileDisplays(all)
   end
 end
 
-function WeakAuras.ValueFromPath(data, path)
+function Private.ValueFromPath(data, path)
   if not data then
     return nil
   end
@@ -3539,11 +3539,11 @@ function WeakAuras.ValueFromPath(data, path)
     for i=2,#path do
       reducedPath[i-1] = path[i];
     end
-    return WeakAuras.ValueFromPath(data[path[1]], reducedPath);
+    return Private.ValueFromPath(data[path[1]], reducedPath);
   end
 end
 
-function WeakAuras.ValueToPath(data, path, value)
+function Private.ValueToPath(data, path, value)
   if not data then
     return
   end
@@ -3554,7 +3554,7 @@ function WeakAuras.ValueToPath(data, path, value)
     for i=2,#path do
       reducedPath[i-1] = path[i];
     end
-    WeakAuras.ValueToPath(data[path[1]], reducedPath, value);
+    Private.ValueToPath(data[path[1]], reducedPath, value);
   end
 end
 
