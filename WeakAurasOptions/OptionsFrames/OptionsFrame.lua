@@ -199,8 +199,8 @@ function WeakAuras.CreateFrame()
     WeakAuras.ReloadAll()
     WeakAuras.Resume()
 
-    if WeakAuras.mouseFrame then
-      WeakAuras.mouseFrame:OptionsClosed()
+    if OptionsPrivate.Private.mouseFrame then
+      OptionsPrivate.Private.mouseFrame:OptionsClosed()
     end
 
     if OptionsPrivate.Private.personalRessourceDisplayFrame then
