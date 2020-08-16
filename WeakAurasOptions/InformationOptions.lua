@@ -3,7 +3,7 @@ local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
 
-function WeakAuras.GetInformationOptions(data)
+function OptionsPrivate.GetInformationOptions(data)
   local isGroup = data.controlledChildren
   local isTmpGroup = type(data.id) == "table"
 

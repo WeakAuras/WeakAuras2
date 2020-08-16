@@ -880,15 +880,15 @@ function OptionsPrivate.CreateFrame()
     if not aceOptions[id][tab] then
       local optionsGenerator =
       {
-        group = WeakAuras.GetGroupOptions,
-        region =  WeakAuras.GetDisplayOptions,
-        trigger = WeakAuras.GetTriggerOptions,
-        conditions = WeakAuras.GetConditionOptions,
-        load = WeakAuras.GetLoadOptions,
-        action = WeakAuras.GetActionOptions,
-        animation = WeakAuras.GetAnimationOptions,
-        authorOptions = WeakAuras.GetAuthorOptions,
-        information = WeakAuras.GetInformationOptions,
+        group = OptionsPrivate.GetGroupOptions,
+        region =  OptionsPrivate.GetDisplayOptions,
+        trigger = OptionsPrivate.GetTriggerOptions,
+        conditions = OptionsPrivate.GetConditionOptions,
+        load = OptionsPrivate.GetLoadOptions,
+        action = OptionsPrivate.GetActionOptions,
+        animation = OptionsPrivate.GetAnimationOptions,
+        authorOptions = OptionsPrivate.GetAuthorOptions,
+        information = OptionsPrivate.GetInformationOptions,
       }
       if optionsGenerator[tab] then
         aceOptions[id][tab] = optionsGenerator[tab](data)

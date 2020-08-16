@@ -2449,7 +2449,7 @@ local function createorder(startorder)
   end
 end
 
-function WeakAuras.GetAuthorOptions(data)
+function OptionsPrivate.GetAuthorOptions(data)
   -- initialize the process
   local authorOptions = {
     type = "group",

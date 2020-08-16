@@ -56,7 +56,7 @@ local function filterAnimPresetTypes(intable, id)
   return ret;
 end
 
-function WeakAuras.GetAnimationOptions(data)
+function OptionsPrivate.GetAnimationOptions(data)
   local id = data.id
   local animation = {
     type = "group",

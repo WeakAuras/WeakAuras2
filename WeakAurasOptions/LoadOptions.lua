@@ -941,7 +941,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
   return options;
 end
 
-function WeakAuras.GetLoadOptions(data)
+function OptionsPrivate.GetLoadOptions(data)
   local load = {
     type = "group",
     name = L["Load"],
