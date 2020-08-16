@@ -50,7 +50,7 @@ local tempGroup = {
 };
 WeakAuras.tempGroup = tempGroup;
 
-function WeakAuras.DuplicateAura(data, newParent)
+function OptionsPrivate.DuplicateAura(data, newParent)
   local base_id = data.id .. " "
   local num = 2
 
@@ -310,7 +310,7 @@ function OptionsPrivate.MultipleDisplayTooltipMenu()
 
         for index, id in ipairs(toDuplicate) do
           local childData = WeakAuras.GetData(id);
-          duplicated[index] = WeakAuras.DuplicateAura(childData);
+          duplicated[index] = OptionsPrivate.DuplicateAura(childData);
         end
 
         OptionsPrivate.ClearPicks();

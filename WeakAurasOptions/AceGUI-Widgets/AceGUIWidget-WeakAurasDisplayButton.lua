@@ -645,15 +645,15 @@ local methods = {
     function self.callbacks.OnDuplicateClick()
       if (WeakAuras.IsImporting()) then return end;
       if data.controlledChildren then
-        local new_idGroup = WeakAuras.DuplicateAura(data)
+        local new_idGroup = OptionsPrivate.DuplicateAura(data)
         for index, childId in pairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childId)
-          WeakAuras.DuplicateAura(childData, new_idGroup)
+          OptionsPrivate.DuplicateAura(childData, new_idGroup)
         end
         WeakAuras.SortDisplayButtons()
         OptionsPrivate.PickAndEditDisplay(new_idGroup)
       else
-        local new_id = WeakAuras.DuplicateAura(data)
+        local new_id = OptionsPrivate.DuplicateAura(data)
         WeakAuras.SortDisplayButtons()
         OptionsPrivate.PickAndEditDisplay(new_id)
       end
