@@ -9,7 +9,6 @@ local AceGUI = LibStub("AceGUI-3.0")
 
 local collisions = WeakAuras.collisions
 local displayButtons = WeakAuras.displayButtons
-local savedVars = WeakAuras.savedVars
 
 local importAddonButtons = {}
 local importDisplayButtons = {}
@@ -262,7 +261,7 @@ function WeakAuras.SortImportButtons(newContainer)
 end
 
 function WeakAuras.EnableAddonDisplay(id)
-  local db = savedVars.db
+  local db = OptionsPrivate.savedVars.db
   if not(db.registered[id]) then
     local addon, data;
     for addonName, addonData in pairs(WeakAuras.addons) do
@@ -296,7 +295,7 @@ end
 
 function WeakAuras.DisableAddonDisplay(id)
   local frame = WeakAuras.OptionsFrame()
-  local db = savedVars.db
+  local db = OptionsPrivate.savedVars.db
   db.registered[id] = false;
   local data = WeakAuras.GetData(id);
   if(data) then
