@@ -1849,8 +1849,8 @@ local function Constructor()
         if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
           OptionsPrivate.Private.personalRessourceDisplayFrame:expand(self.region.id);
         end
-        if (WeakAuras.mouseFrame) then
-          WeakAuras.mouseFrame:expand(self.region.id);
+        if (OptionsPrivate.Private.mouseFrame) then
+          OptionsPrivate.Private.mouseFrame:expand(self.region.id);
         end
       end
     end
@@ -1869,8 +1869,8 @@ local function Constructor()
         if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
           OptionsPrivate.Private.personalRessourceDisplayFrame:collapse(self.region.id);
         end
-        if (WeakAuras.mouseFrame) then
-          WeakAuras.mouseFrame:collapse(self.region.id);
+        if (OptionsPrivate.Private.mouseFrame) then
+          OptionsPrivate.Private.mouseFrame:collapse(self.region.id);
         end
       end
     end

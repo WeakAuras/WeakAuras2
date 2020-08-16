@@ -1814,8 +1814,8 @@ function WeakAuras.Delete(data)
     Private.personalRessourceDisplayFrame:delete(id);
   end
 
-  if (WeakAuras.mouseFrame) then
-    WeakAuras.mouseFrame:delete(id);
+  if (Private.mouseFrame) then
+    Private.mouseFrame:delete(id);
   end
 
   Private.customActionsFunctions[id] = nil;
@@ -1913,8 +1913,8 @@ function WeakAuras.Rename(data, newid)
     Private.personalRessourceDisplayFrame:rename(oldid, newid);
   end
 
-  if (WeakAuras.mouseFrame) then
-    WeakAuras.mouseFrame:rename(oldid, newid);
+  if (Private.mouseFrame) then
+    Private.mouseFrame:rename(oldid, newid);
   end
 
   Private.customActionsFunctions[newid] = Private.customActionsFunctions[oldid];
@@ -4601,7 +4601,7 @@ local function ensureMouseFrame()
     mouseFrame:OptionsClosed();
   end
 
-  WeakAuras.mouseFrame = mouseFrame;
+  Private.mouseFrame = mouseFrame;
 end
 
 local personalRessourceDisplayFrame;
