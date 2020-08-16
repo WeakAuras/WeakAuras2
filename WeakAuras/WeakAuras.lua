@@ -1543,7 +1543,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   wipe(toUnload)
 end
 
-function WeakAuras.ScanForLoads(toCheck, event, arg1, ...)
+function Private.ScanForLoads(toCheck, event, arg1, ...)
   if not WeakAuras.IsLoginFinished() then
     return
   end
@@ -1596,7 +1596,7 @@ end
 function WeakAuras.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", function(frame, ...)
     WeakAuras.StartProfileSystem("load");
-    WeakAuras.ScanForLoads(nil, ...)
+    Private.ScanForLoads(nil, ...)
     WeakAuras.StopProfileSystem("load");
   end);
 
@@ -1604,7 +1604,7 @@ function WeakAuras.RegisterLoadEvents()
     WeakAuras.StartProfileSystem("load");
     local zoneId = C_Map.GetBestMapForUnit("player");
     if loadFrame.zoneId ~= zoneId then
-      WeakAuras.ScanForLoads(nil, "ZONE_CHANGED")
+      Private.ScanForLoads(nil, "ZONE_CHANGED")
       loadFrame.zoneId = zoneId;
     end
     WeakAuras.StopProfileSystem("load");
@@ -1613,7 +1613,7 @@ function WeakAuras.RegisterLoadEvents()
   unitLoadFrame:SetScript("OnEvent", function(frame, e, arg1, ...)
     WeakAuras.StartProfileSystem("load");
     if (arg1 == "player") then
-      WeakAuras.ScanForLoads(nil, e, arg1, ...)
+      Private.ScanForLoads(nil, e, arg1, ...)
     end
     WeakAuras.StopProfileSystem("load");
   end);
@@ -2770,7 +2770,7 @@ local function pAdd(data, simpleChange)
       end
 
       if not(paused) then
-        WeakAuras.ScanForLoads({[id] = true});
+        Private.ScanForLoads({[id] = true});
       end
     end
   end

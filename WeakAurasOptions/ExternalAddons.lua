@@ -75,7 +75,7 @@ function WeakAuras.CreateImportButtons()
           end
         end
 
-        WeakAuras.ScanForLoads();
+        OptionsPrivate.Private.ScanForLoads();
         WeakAuras.SortDisplayButtons();
       end);
     end);
@@ -135,7 +135,7 @@ function WeakAuras.CreateImportButtons()
               WeakAuras.DisableAddonDisplay(childId);
             end
             WeakAuras.ResolveCollisions(function()
-              WeakAuras.ScanForLoads();
+              OptionsPrivate.Private.ScanForLoads();
               WeakAuras.SortDisplayButtons();
               UpdateGroupChecked();
             end);
@@ -175,7 +175,7 @@ function WeakAuras.CreateImportButtons()
               WeakAuras.ClearAndUpdateOptions(data.id);
             end
 
-            WeakAuras.ScanForLoads();
+            OptionsPrivate.Private.ScanForLoads();
             WeakAuras.SortDisplayButtons();
             UpdateAddonChecked();
           end);
