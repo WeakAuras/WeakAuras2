@@ -3306,7 +3306,7 @@ end
 
 WeakAuras.CanHaveDuration = wrapTriggerSystemFunction("CanHaveDuration", "firstValue");
 WeakAuras.CanHaveAuto = wrapTriggerSystemFunction("CanHaveAuto", "or");
-WeakAuras.CanHaveClones = wrapTriggerSystemFunction("CanHaveClones", "or");
+Private.CanHaveClones = wrapTriggerSystemFunction("CanHaveClones", "or");
 WeakAuras.CanHaveTooltip = wrapTriggerSystemFunction("CanHaveTooltip", "or");
 WeakAuras.GetNameAndIcon = wrapTriggerSystemFunction("GetNameAndIcon", "nameAndIcon");
 Private.GetTriggerDescription = wrapTriggerSystemFunction("GetTriggerDescription", "call");
