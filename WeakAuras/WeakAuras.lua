@@ -1016,7 +1016,7 @@ function WeakAuras.Login(initialTime, takeNewSnapshots)
     end
     coroutine.yield();
     WeakAuras.RegisterLoadEvents();
-    WeakAuras.Resume();
+    Private.Resume();
     coroutine.yield();
 
     local nextCallback = loginQueue[1];
@@ -1197,7 +1197,7 @@ function WeakAuras.Pause()
   paused = true;
 end
 
-function WeakAuras.Resume()
+function Private.Resume()
   paused = false;
   WeakAuras.ScanAll();
   for _, regionData in pairs(regions) do
@@ -1209,7 +1209,7 @@ end
 
 function WeakAuras.Toggle()
   if(paused) then
-    WeakAuras.Resume();
+    Private.Resume();
   else
     WeakAuras.Pause();
   end

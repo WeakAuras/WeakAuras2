@@ -190,7 +190,7 @@ function OptionsPrivate.CreateFrame()
 
     OptionsPrivate.Private.ResumeAllDynamicGroups()
     OptionsPrivate.Private.ReloadAll()
-    WeakAuras.Resume()
+    OptionsPrivate.Private.Resume()
 
     if OptionsPrivate.Private.mouseFrame then
       OptionsPrivate.Private.mouseFrame:OptionsClosed()
