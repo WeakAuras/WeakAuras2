@@ -313,7 +313,7 @@ function WeakAuras.MultipleDisplayTooltipMenu()
           duplicated[index] = WeakAuras.DuplicateAura(childData);
         end
 
-        WeakAuras.ClearPicks();
+        OptionsPrivate.ClearPicks();
         frame:PickDisplayBatch(duplicated);
       end
     },
@@ -1066,11 +1066,11 @@ function WeakAuras.PickAndEditDisplay(id)
   WeakAuras.UpdateButtonsScroll()
 end
 
-function WeakAuras.ClearPick(id)
+function OptionsPrivate.ClearPick(id)
   frame:ClearPick(id);
 end
 
-function WeakAuras.ClearPicks()
+function OptionsPrivate.ClearPicks()
   frame:ClearPicks();
 end
 
