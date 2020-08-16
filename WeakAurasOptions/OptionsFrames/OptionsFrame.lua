@@ -532,7 +532,7 @@ function OptionsPrivate.CreateFrame()
   container.content:SetPoint("BOTTOMRIGHT", 0, 0)
   frame.container = container
 
-  frame.texturePicker = WeakAuras.TexturePicker(frame)
+  frame.texturePicker = OptionsPrivate.TexturePicker(frame)
   frame.iconPicker = WeakAuras.IconPicker(frame)
   frame.modelPicker = WeakAuras.ModelPicker(frame)
   frame.importexport = WeakAuras.ImportExport(frame)
