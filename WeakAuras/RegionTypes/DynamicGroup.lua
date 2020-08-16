@@ -1080,7 +1080,7 @@ local function modify(parent, region, data)
         WeakAuras.dyngroup_unitframe_monitor[regionData] = frame
       end
       if animate then
-        WeakAuras.CancelAnimation(regionData.controlPoint, true)
+        Private.CancelAnimation(regionData.controlPoint, true)
         local xPrev = regionData.xOffset or x
         local yPrev = regionData.yOffset or y
         local xDelta = xPrev - x
