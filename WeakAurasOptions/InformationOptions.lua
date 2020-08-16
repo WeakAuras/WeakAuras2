@@ -35,7 +35,7 @@ function WeakAuras.GetInformationOptions(data)
         if data.id ~= newid and not WeakAuras.GetData(newid) then
           local oldid = data.id
           WeakAuras.Rename(data, newid);
-          WeakAuras.HandleRename(data, oldid, newid)
+          OptionsPrivate.HandleRename(data, oldid, newid)
         end
       end
     }
