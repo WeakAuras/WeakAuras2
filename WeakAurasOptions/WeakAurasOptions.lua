@@ -335,7 +335,7 @@ function OptionsPrivate.MultipleDisplayTooltipMenu()
             parents[childData.parent] = true;
           end
         end
-        WeakAuras.ConfirmDelete(toDelete, parents)
+        OptionsPrivate.ConfirmDelete(toDelete, parents)
       end
     },
     {
@@ -454,7 +454,7 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"] = {
   preferredindex = STATICPOPUP_NUMDIALOGS,
 }
 
-function WeakAuras.ConfirmDelete(toDelete, parents)
+function OptionsPrivate.ConfirmDelete(toDelete, parents)
   if toDelete then
     local warningForm = L["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"]
     StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"].text = warningForm:format(#toDelete)
