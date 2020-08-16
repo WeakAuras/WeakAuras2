@@ -1076,7 +1076,7 @@ local methods = {
     else
       OptionsPrivate.Private.GetTriggerDescription(data, -1, namestable)
     end
-    if(WeakAuras.CanHaveClones(data)) then
+    if(OptionsPrivate.Private.CanHaveClones(data)) then
       tinsert(namestable, {" ", "|cFF00FF00"..L["Auto-cloning enabled"]})
     end
     if(WeakAuras.IsDefinedByAddon(data.id)) then
