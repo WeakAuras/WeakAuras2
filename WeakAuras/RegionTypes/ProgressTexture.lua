@@ -106,7 +106,7 @@ local properties = {
     display = L["Orientation"],
     setter = "SetOrientation",
     type = "list",
-    values = WeakAuras.orientation_with_circle_types
+    values = Private.orientation_with_circle_types
   },
   inverse = {
     display = L["Inverse"],

@@ -935,7 +935,7 @@ local function TriggerInfoApplies(triggerInfo, unit)
   if triggerInfo.unit == "group" and triggerInfo.groupSubType == "party" then
     if IsInRaid() then
       -- Filter our player/party# while in raid and keep only raid units that are correct
-      if not WeakAuras.multiUnitUnits.raid[unit] or not UnitInSubgroupOrPlayer(unit) then
+      if not Private.multiUnitUnits.raid[unit] or not UnitInSubgroupOrPlayer(unit) then
         return false
       end
     else
@@ -946,11 +946,11 @@ local function TriggerInfoApplies(triggerInfo, unit)
   end
 
   -- Filter our player/party# while in raid
-  if (triggerInfo.unit == "group" and triggerInfo.groupSubType == "group" and IsInRaid() and not WeakAuras.multiUnitUnits.raid[unit]) then
+  if (triggerInfo.unit == "group" and triggerInfo.groupSubType == "group" and IsInRaid() and not Private.multiUnitUnits.raid[unit]) then
     return false
   end
 
-  if triggerInfo.unit == "group" and triggerInfo.groupSubType == "raid" and not WeakAuras.multiUnitUnits.raid[unit] then
+  if triggerInfo.unit == "group" and triggerInfo.groupSubType == "raid" and not Private.multiUnitUnits.raid[unit] then
     return false
   end
 
@@ -1428,13 +1428,13 @@ local function ScanAllBoss(time, matchDataChanged)
 end
 
 local function ScanUnit(time, arg1)
-  if (WeakAuras.multiUnitUnits.raid[arg1] and IsInRaid()) then
+  if (Private.multiUnitUnits.raid[arg1] and IsInRaid()) then
     ScanGroupUnit(time, matchDataChanged, "group", arg1)
-  elseif (WeakAuras.multiUnitUnits.party[arg1] and not IsInRaid()) then
+  elseif (Private.multiUnitUnits.party[arg1] and not IsInRaid()) then
     ScanGroupUnit(time, matchDataChanged, "group", arg1)
-  elseif WeakAuras.multiUnitUnits.boss[arg1] then
+  elseif Private.multiUnitUnits.boss[arg1] then
     ScanGroupUnit(time, matchDataChanged, "boss", arg1)
-  elseif WeakAuras.multiUnitUnits.arena[arg1] then
+  elseif Private.multiUnitUnits.arena[arg1] then
     ScanGroupUnit(time, matchDataChanged, "arena", arg1)
   elseif arg1:sub(1, 9) == "nameplate" then
     ScanGroupUnit(time, matchDataChanged, "nameplate", arg1)
@@ -1607,7 +1607,7 @@ local function EventHandler(frame, event, arg1, arg2, ...)
     elseif event == "PARTY_MEMBER_DISABLE" then
       unitVisible[arg1] = false
     end
-    if WeakAuras.multiUnitUnits.group[arg1] then
+    if Private.multiUnitUnits.group[arg1] then
       RecheckActiveForUnitType("group", arg1, deactivatedTriggerInfos)
     end
   elseif event == "UNIT_ENTERED_VEHICLE" or event == "UNIT_EXITED_VEHICLE" then
@@ -2464,7 +2464,7 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
   result["debuffClass"] = {
     display = L["Debuff Type"],
     type = "select",
-    values = WeakAuras.debuff_class_types
+    values = Private.debuff_class_types
   }
 
   result["unitCaster"] = {

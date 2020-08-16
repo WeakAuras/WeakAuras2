@@ -492,9 +492,9 @@ local function ConstructMoverSizer(parent)
     frame:ScaleCorners(region:GetWidth(), region:GetHeight())
     local regionStrata = region:GetFrameStrata()
     if regionStrata then
-      local strata = math.min(tIndexOf(WeakAuras.frame_strata_types, regionStrata) + 1, 9)
-      frame:SetFrameStrata(WeakAuras.frame_strata_types[strata])
-      mover:SetFrameStrata(WeakAuras.frame_strata_types[strata])
+      local strata = math.min(tIndexOf(OptionsPrivate.Private.frame_strata_types, regionStrata) + 1, 9)
+      frame:SetFrameStrata(OptionsPrivate.Private.frame_strata_types[strata])
+      mover:SetFrameStrata(OptionsPrivate.Private.frame_strata_types[strata])
     end
 
     local db = OptionsPrivate.savedVars.db

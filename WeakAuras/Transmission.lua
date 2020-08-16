@@ -39,8 +39,6 @@ local versionString = WeakAuras.versionString;
 
 local regionOptions = WeakAuras.regionOptions;
 local regionTypes = WeakAuras.regionTypes;
-local event_types = WeakAuras.event_types;
-local status_types = WeakAuras.status_types;
 
 -- Local functions
 local decodeB64, GenerateUniqueID
@@ -141,7 +139,7 @@ function CompressDisplay(data)
   end
 
   local copiedData = CopyTable(data)
-  stripNonTransmissableFields(copiedData, WeakAuras.non_transmissable_fields)
+  stripNonTransmissableFields(copiedData, Private.non_transmissable_fields)
   copiedData.tocversion = WeakAuras.BuildInfo
   return copiedData;
 end
@@ -233,11 +231,11 @@ showCodeButton:SetWidth(90)
 
 local checkButtons, radioButtons, keyToButton, pendingData = {}, {}, {}, {}
 
-for _, key in pairs(WeakAuras.internal_fields) do
+for _, key in pairs(Private.internal_fields) do
   keyToButton[key] = false
 end
 
-for index,category in pairs(WeakAuras.update_categories) do
+for index,category in pairs(Private.update_categories) do
   local button = CreateFrame("checkButton", "WeakAurasTooltipCheckButton"..index, buttonAnchor, "ChatConfigCheckButtonTemplate")
   for k, v in pairs(category) do
     button[k] = v
@@ -1114,7 +1112,7 @@ local function scamCheck(codes, data)
   end
 end
 
-local ignoredForDiffChecking = CreateFromMixins(WeakAuras.internal_fields, WeakAuras.non_transmissable_fields)
+local ignoredForDiffChecking = CreateFromMixins(Private.internal_fields, Private.non_transmissable_fields)
 local deleted = {} -- magic value
 local function recurseDiff(ours, theirs)
   local diff, seen, same = {}, {}, true
@@ -1562,12 +1560,12 @@ function WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, im
               tinsert(tooltip, {2, L["Trigger:"], L["Aura"], 1, 1, 1, 1, 1, 1});
             elseif(trigger.type == "event" or trigger.type == "status") then
               if(trigger.type == "event") then
-                tinsert(tooltip, {2, L["Trigger:"], (event_types[trigger.event] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
+                tinsert(tooltip, {2, L["Trigger:"], (Private.event_types[trigger.event] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
               else
-                tinsert(tooltip, {2, L["Trigger:"], (status_types[trigger.event] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
+                tinsert(tooltip, {2, L["Trigger:"], (Private.status_types[trigger.event] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
               end
               if(trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix) then
-                tinsert(tooltip, {2, L["Message type:"], (WeakAuras.subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]).." "..(WeakAuras.subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
+                tinsert(tooltip, {2, L["Message type:"], (Private.subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]).." "..(Private.subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
               end
             else
               tinsert(tooltip, {2, L["Trigger:"], L["Custom"], 1, 1, 1, 1, 1, 1});

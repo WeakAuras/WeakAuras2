@@ -12,9 +12,6 @@ local hiddenAll = WeakAuras.commonOptions.CreateHiddenAll("action")
 local getAll = WeakAuras.commonOptions.CreateGetAll("action")
 local setAll = WeakAuras.commonOptions.CreateSetAll("action", getAll)
 
-local send_chat_message_types = WeakAuras.send_chat_message_types;
-local sound_types = WeakAuras.sound_types;
-
 local RestrictedChannelCheck
 if WeakAuras.IsClassic() then
   RestrictedChannelCheck = function()
@@ -104,7 +101,7 @@ function OptionsPrivate.GetActionOptions(data)
         width = WeakAuras.normalWidth,
         name = L["Message Type"],
         order = 2,
-        values = send_chat_message_types,
+        values = OptionsPrivate.Private.send_chat_message_types,
         disabled = function() return not data.actions.start.do_message end,
         control = "WeakAurasSortedDropdown"
       },
@@ -190,7 +187,7 @@ function OptionsPrivate.GetActionOptions(data)
         width = WeakAuras.normalWidth,
         name = L["Sound"],
         order = 8.4,
-        values = sound_types,
+        values = OptionsPrivate.Private.sound_types,
         disabled = function() return not data.actions.start.do_sound end,
         control = "WeakAurasSortedDropdown"
       },
@@ -199,7 +196,7 @@ function OptionsPrivate.GetActionOptions(data)
         width = WeakAuras.normalWidth,
         name = L["Sound Channel"],
         order = 8.5,
-        values = WeakAuras.sound_channel_types,
+        values = OptionsPrivate.Private.sound_channel_types,
         disabled = function() return not data.actions.start.do_sound end,
         get = function() return data.actions.start.sound_channel or "Master" end
       },
@@ -230,7 +227,7 @@ function OptionsPrivate.GetActionOptions(data)
         width = WeakAuras.normalWidth,
         name = L["Glow Action"],
         order = 10.2,
-        values = WeakAuras.glow_action_types,
+        values = OptionsPrivate.Private.glow_action_types,
         disabled = function() return not data.actions.start.do_glow end
       },
       start_glow_frame_type = {
@@ -270,7 +267,7 @@ function OptionsPrivate.GetActionOptions(data)
         width = WeakAuras.normalWidth,
         name = L["Glow Type"],
         order = 10.4,
-        values = WeakAuras.glow_types,
+        values = OptionsPrivate.Private.glow_types,
         hidden = function()
           return not data.actions.start.do_glow
           or data.actions.start.glow_action ~= "show"
@@ -487,7 +484,7 @@ function OptionsPrivate.GetActionOptions(data)
         width = WeakAuras.normalWidth,
         name = L["Message Type"],
         order = 22,
-        values = send_chat_message_types,
+        values = OptionsPrivate.Private.send_chat_message_types,
         disabled = function() return not data.actions.finish.do_message end,
         control = "WeakAurasSortedDropdown"
       },
@@ -551,7 +548,7 @@ function OptionsPrivate.GetActionOptions(data)
         width = WeakAuras.normalWidth,
         name = L["Sound"],
         order = 28.1,
-        values = sound_types,
+        values = OptionsPrivate.Private.sound_types,
         disabled = function() return not data.actions.finish.do_sound end,
         control = "WeakAurasSortedDropdown"
       },
@@ -560,7 +557,7 @@ function OptionsPrivate.GetActionOptions(data)
         width = WeakAuras.normalWidth,
         name = L["Sound Channel"],
         order = 28.5,
-        values = WeakAuras.sound_channel_types,
+        values = OptionsPrivate.Private.sound_channel_types,
         disabled = function() return not data.actions.finish.do_sound end,
         get = function() return data.actions.finish.sound_channel or "Master" end
       },
@@ -597,7 +594,7 @@ function OptionsPrivate.GetActionOptions(data)
         width = WeakAuras.normalWidth,
         name = L["Glow Action"],
         order = 30.2,
-        values = WeakAuras.glow_action_types,
+        values = OptionsPrivate.Private.glow_action_types,
         disabled = function() return not data.actions.finish.do_glow end
       },
       finish_glow_frame_type = {
@@ -637,7 +634,7 @@ function OptionsPrivate.GetActionOptions(data)
         width = WeakAuras.normalWidth,
         name = L["Glow Type"],
         order = 30.4,
-        values = WeakAuras.glow_types,
+        values = OptionsPrivate.Private.glow_types,
         hidden = function()
           return not data.actions.finish.do_glow
           or data.actions.finish.glow_action ~= "show"
@@ -856,7 +853,7 @@ function OptionsPrivate.GetActionOptions(data)
                           5, function() return not (data.actions.start.do_message and WeakAuras.ContainsCustomPlaceHolder(data.actions.start.message)) end, {"actions", "start", "message_custom"}, false);
 
   local startHidden = function()
-    return WeakAuras.IsCollapsed("format_option", "actions", "start_message", true)
+    return OptionsPrivate.IsCollapsed("format_option", "actions", "start_message", true)
   end
 
   local startSetHidden = function(hidden)
@@ -916,7 +913,7 @@ function OptionsPrivate.GetActionOptions(data)
                           25, function() return not (data.actions.finish.do_message and WeakAuras.ContainsCustomPlaceHolder(data.actions.finish.message)) end, {"actions", "finish", "message_custom"}, false);
 
   local finishHidden = function()
-    return WeakAuras.IsCollapsed("format_option", "actions", "finish_message", true)
+    return OptionsPrivate.IsCollapsed("format_option", "actions", "finish_message", true)
   end
 
   local finishSetHidden = function(hidden)

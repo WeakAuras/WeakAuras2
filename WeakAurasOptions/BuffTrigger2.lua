@@ -3,9 +3,6 @@ local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
 
-local operator_types = WeakAuras.operator_types
-local debuff_types = WeakAuras.debuff_types
-
 local function getAuraMatchesLabel(name)
   local ids = WeakAuras.spellCache.GetSpellsMatching(name)
   if ids then
@@ -214,7 +211,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Unit"],
       order = 10.1,
       values = function()
-        return WeakAuras.unit_types_bufftrigger_2
+        return OptionsPrivate.Private.unit_types_bufftrigger_2
       end,
       hidden = function() return not trigger.type == "aura2" end
     },
@@ -258,7 +255,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       width = WeakAuras.normalWidth,
       name = L["Aura Type"],
       order = 11.1,
-      values = debuff_types,
+      values = OptionsPrivate.Private.debuff_types,
       hidden = function() return not trigger.type == "aura2" end
     },
     use_debuffClass = {
@@ -278,7 +275,7 @@ local function GetBuffTriggerOptions(data, triggernum)
           and not IsSingleMissing(trigger)
           and trigger.use_debuffClass)
       end,
-      values = WeakAuras.debuff_class_types,
+      values = OptionsPrivate.Private.debuff_class_types,
     },
     debuffClassSpace = {
       type = "description",
@@ -368,7 +365,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Operator"],
       order = 55.1,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and trigger.useNamePattern) end,
-      values = WeakAuras.string_operator_types
+      values = OptionsPrivate.Private.string_operator_types
     },
     namePattern_name = {
       type = "input",
@@ -389,7 +386,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Operator"],
       order = 60.1,
       width = WeakAuras.halfWidth,
-      values = operator_types,
+      values = OptionsPrivate.Private.operator_types,
       disabled = function() return not trigger.useStacks end,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useStacks) end,
       get = function() return trigger.useStacks and trigger.stacksOperator or nil end
@@ -422,7 +419,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Operator"],
       order = 61.1,
       width = WeakAuras.halfWidth,
-      values = operator_types,
+      values = OptionsPrivate.Private.operator_types,
       disabled = function() return not trigger.useRem end,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useRem) end,
       get = function() return trigger.useRem and trigger.remOperator or nil end
@@ -455,7 +452,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Operator"],
       order = 61.5,
       width = WeakAuras.halfWidth,
-      values = operator_types,
+      values = OptionsPrivate.Private.operator_types,
       disabled = function() return not trigger.useTotal end,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useTotal) end,
       get = function() return trigger.useTotal and trigger.totalOperator or nil end
@@ -505,7 +502,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       order = 62.3,
       disabled = function() return not trigger.use_tooltip end,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.use_tooltip and trigger.fetchTooltip) end,
-      values = WeakAuras.string_operator_types
+      values = OptionsPrivate.Private.string_operator_types
     },
     tooltip = {
       type = "input",
@@ -528,7 +525,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Tooltip Value #"],
       order = 63.2,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip) end,
-      values = WeakAuras.tooltip_count
+      values = OptionsPrivate.Private.tooltip_count
     },
     use_tooltipValueSpace = {
       type = "description",
@@ -543,7 +540,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Operator"],
       order = 63.3,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip) end,
-      values = WeakAuras.operator_types
+      values = OptionsPrivate.Private.operator_types
     },
     tooltipValue = {
       type = "input",
@@ -636,7 +633,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Group Role"],
-      values = WeakAuras.role_types,
+      values = OptionsPrivate.Private.role_types,
       hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useGroupRole) end,
       order = 67.2
     },
@@ -693,7 +690,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Hostility"],
-      values = WeakAuras.hostility_types,
+      values = OptionsPrivate.Private.hostility_types,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and trigger.useHostility) end,
       order = 68.5
     },
@@ -782,13 +779,13 @@ local function GetBuffTriggerOptions(data, triggernum)
         if (trigger.unit == "multi") then
           return L["Compare against the number of units affected."]
         else
-          local groupType = WeakAuras.unit_types_bufftrigger_2[trigger.unit or "group"] or "|cFFFF0000Error|r"
+          local groupType = OptionsPrivate.Private.unit_types_bufftrigger_2[trigger.unit or "group"] or "|cFFFF0000Error|r"
           return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType)
         end
       end,
       order = 70.2,
       width = WeakAuras.halfWidth,
-      values = operator_types,
+      values = OptionsPrivate.Private.operator_types,
       hidden = function() return not (trigger.type == "aura2" and IsGroupTrigger(trigger) and trigger.useGroup_count) end,
       get = function() return trigger.group_countOperator end
     },
@@ -799,7 +796,7 @@ local function GetBuffTriggerOptions(data, triggernum)
         if (trigger.unit == "multi") then
           return L["Compare against the number of units affected."]
         else
-          local groupType = WeakAuras.unit_types_bufftrigger_2[trigger.unit or "group"] or "|cFFFF0000Error|r"
+          local groupType = OptionsPrivate.Private.unit_types_bufftrigger_2[trigger.unit or "group"] or "|cFFFF0000Error|r"
           return L["Group aura count description"]:format(groupType, groupType, groupType, groupType, groupType, groupType, groupType)
         end
       end,
@@ -821,7 +818,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Show On"],
-      values = WeakAuras.bufftrigger_2_progress_behavior_types,
+      values = OptionsPrivate.Private.bufftrigger_2_progress_behavior_types,
       order = 71.1,
       hidden = function() return not (trigger.type == "aura2" and not IsGroupTrigger(trigger)) end,
       get = function()
@@ -856,7 +853,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Operator"],
       order = 71.4,
       width = WeakAuras.halfWidth,
-      values = operator_types,
+      values = OptionsPrivate.Private.operator_types,
       hidden = function() return not (trigger.type == "aura2" and HasMatchCount(trigger)) end,
       desc = L["Counts the number of matches over all units."]
     },
@@ -903,7 +900,7 @@ local function GetBuffTriggerOptions(data, triggernum)
     perUnitMode = {
       type = "select",
       name = L["Show Matches for"],
-      values = WeakAuras.bufftrigger_2_per_unit_mode,
+      values = OptionsPrivate.Private.bufftrigger_2_per_unit_mode,
       order = 72.4,
       width = WeakAuras.normalWidth,
       hidden = function()
@@ -938,7 +935,7 @@ local function GetBuffTriggerOptions(data, triggernum)
     combineMode = {
       type = "select",
       name = L["Preferred Match"],
-      values = WeakAuras.bufftrigger_2_preferred_match_types,
+      values = OptionsPrivate.Private.bufftrigger_2_preferred_match_types,
       order = 72.6,
       width = WeakAuras.normalWidth,
       hidden = function()

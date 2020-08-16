@@ -80,14 +80,14 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Choose"],
       order = 0.51,
-      func = function() WeakAuras.OpenIconPicker(data, "groupIcon", true) end
+      func = function() OptionsPrivate.OpenIconPicker(data, "groupIcon", true) end
     },
     align_h = {
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Horizontal Align"],
       order = 10,
-      values = WeakAuras.align_types,
+      values = OptionsPrivate.Private.align_types,
       get = function()
         if(#data.controlledChildren < 1) then
           return nil;
@@ -153,7 +153,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Vertical Align"],
       order = 15,
-      values = WeakAuras.rotated_align_types,
+      values = OptionsPrivate.Private.rotated_align_types,
       get = function()
         if(#data.controlledChildren < 1) then
           return nil;

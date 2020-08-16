@@ -16,7 +16,6 @@ local executeAll = WeakAuras.commonOptions.CreateExecuteAll("trigger")
 local flattenRegionOptions = WeakAuras.commonOptions.flattenRegionOptions
 local fixMetaOrders = WeakAuras.commonOptions.fixMetaOrders
 
-local subevent_actual_prefix_types = WeakAuras.subevent_actual_prefix_types;
 local spellCache = WeakAuras.spellCache
 
 local function union(table1, table2)
@@ -43,9 +42,9 @@ local function GetGlobalOptions(data)
       order = 2,
       values = function()
         if #data.triggers > 1 then
-          return WeakAuras.trigger_require_types;
+          return OptionsPrivate.Private.trigger_require_types;
         else
-          return  WeakAuras.trigger_require_types_one;
+          return  OptionsPrivate.Private.trigger_require_types_one;
         end
       end,
       get = function()
@@ -68,14 +67,14 @@ local function GetGlobalOptions(data)
       order = 2.3,
       values = function()
         local vals = {};
-        vals[WeakAuras.trigger_modes.first_active] = L["Dynamic information from first active trigger"];
+        vals[OptionsPrivate.Private.trigger_modes.first_active] = L["Dynamic information from first active trigger"];
         for i = 1, #data.triggers do
           vals[i] = L["Dynamic information from Trigger %i"]:format(i);
         end
         return vals;
       end,
       get = function()
-        return data.triggers.activeTriggerMode or WeakAuras.trigger_modes.first_active;
+        return data.triggers.activeTriggerMode or OptionsPrivate.Private.trigger_modes.first_active;
       end,
       set = function(info, v)
         data.triggers.activeTriggerMode = v;

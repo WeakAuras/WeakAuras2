@@ -140,8 +140,8 @@ function WeakAuras.regionPrototype:AnchorSubRegion(subRegion, anchorType, selfPo
   if anchorType == "point" then
     local xOffset = anchorXOffset or 0
     local yOffset = anchorYOffset or 0
-    subRegion:SetPoint(WeakAuras.point_types[selfPoint] and selfPoint or "CENTER",
-                       self, WeakAuras.point_types[anchorPoint] and anchorPoint or "CENTER",
+    subRegion:SetPoint(Private.point_types[selfPoint] and selfPoint or "CENTER",
+                       self, Private.point_types[anchorPoint] and anchorPoint or "CENTER",
                        xOffset, yOffset)
   else
     anchorXOffset = anchorXOffset or 0
