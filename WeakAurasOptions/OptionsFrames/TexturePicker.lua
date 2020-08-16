@@ -221,7 +221,6 @@ local function ConstructTexturePicker(frame)
     else
       _, givenPath = next(self.givenPath);
     end
-    WeakAuras.debug(givenPath, 3);
     for categoryName, category in pairs(self.textures) do
       if not(picked) then
         for texturePath, textureName in pairs(category) do

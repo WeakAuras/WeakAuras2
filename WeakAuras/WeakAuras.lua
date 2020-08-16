@@ -302,14 +302,6 @@ local levelColors = {
   [3] = "|cFFFF4040"
 };
 
-function WeakAuras.debug(msg, level)
-  if(db.debug) then
-    level = (level and levelColors[level] and level) or 2;
-    msg = (type(msg) == "string" and msg) or (msg and "Invalid debug message of type "..type(msg)) or "Debug message not specified";
-    DEFAULT_CHAT_FRAME:AddMessage(levelColors[level]..msg);
-  end
-end
-local debug = WeakAuras.debug;
 
 function WeakAuras.validate(input, default)
   for field, defaultValue in pairs(default) do
@@ -2733,8 +2725,6 @@ local function pAdd(data, simpleChange)
       Private.LoadConditionPropertyFunctions(data);
 
       Private.LoadConditionFunction(data)
-      debug(id.." - Load", 1);
-      debug(loadFuncStr);
 
       loadFuncs[id] = loadFunc;
       loadFuncsForOptions[id] = loadForOptionsFunc;

@@ -82,7 +82,6 @@ end
 local event_prototypes = WeakAuras.event_prototypes;
 
 local timer = WeakAuras.timer;
-local debug = WeakAuras.debug;
 
 local events = {}
 local loaded_events = {}
@@ -1170,8 +1169,6 @@ function GenericTrigger.Add(data, region)
             triggerFuncStr = ConstructFunction(prototype, trigger);
 
             statesParameter = prototype.statesParameter;
-            WeakAuras.debug(id.." - "..triggernum.." - Trigger", 1);
-            WeakAuras.debug(triggerFuncStr);
             triggerFunc = WeakAuras.LoadFunction(triggerFuncStr, id);
 
             durationFunc = prototype.durationFunc;
@@ -1224,8 +1221,6 @@ function GenericTrigger.Add(data, region)
             end
 
             if(untriggerFuncStr) then
-              WeakAuras.debug(id.." - "..triggernum.." - Untrigger", 1)
-              WeakAuras.debug(untriggerFuncStr);
               untriggerFunc = WeakAuras.LoadFunction(untriggerFuncStr, id);
             end
 
@@ -2829,14 +2824,12 @@ do
   local scheduled_scans = {}
 
   local function doDbmScan(fireTime)
-    WeakAuras.debug("Performing dbm scan at "..fireTime.." ("..GetTime()..")")
     scheduled_scans[fireTime] = nil
     WeakAuras.ScanEvents("DBM_TimerUpdate")
   end
   function WeakAuras.ScheduleDbmCheck(fireTime)
     if not scheduled_scans[fireTime] then
       scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doDbmScan, fireTime - GetTime() + 0.1, fireTime)
-      WeakAuras.debug("Scheduled dbm scan at "..fireTime)
     end
   end
 end
@@ -3027,7 +3020,6 @@ do
   local scheduled_scans = {}
 
   local function doBigWigsScan(fireTime)
-    WeakAuras.debug("Performing BigWigs scan at "..fireTime.." ("..GetTime()..")")
     scheduled_scans[fireTime] = nil
     WeakAuras.ScanEvents("BigWigs_Timer_Update")
   end
@@ -3035,7 +3027,6 @@ do
   function WeakAuras.ScheduleBigWigsCheck(fireTime)
     if not scheduled_scans[fireTime] then
       scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doBigWigsScan, fireTime - GetTime() + 0.1, fireTime)
-      WeakAuras.debug("Scheduled BigWigs scan at "..fireTime)
     end
   end
 end
@@ -3247,7 +3238,6 @@ do
   local scheduled_scans = {};
 
   local function doScan(fireTime, event)
-    WeakAuras.debug("Performing scan at "..fireTime.." ("..GetTime()..") " .. event);
     scheduled_scans[event][fireTime] = nil;
     WeakAuras.ScanEvents(event);
   end
@@ -3255,7 +3245,6 @@ do
     event = event or "COOLDOWN_REMAINING_CHECK"
     scheduled_scans[event] = scheduled_scans[event] or {}
     if not(scheduled_scans[event][fireTime]) then
-      WeakAuras.debug("Scheduled scan at " .. fireTime .. " for event " .. event);
       scheduled_scans[event][fireTime] = timer:ScheduleTimerFixed(doScan, fireTime - GetTime() + 0.1, fireTime, event);
     end
   end
@@ -3265,14 +3254,12 @@ do
   local scheduled_scans = {};
 
   local function doCastScan(firetime, unit)
-    WeakAuras.debug("Performing cast scan at "..firetime.." ("..GetTime()..")");
     scheduled_scans[unit][firetime] = nil;
     WeakAuras.ScanEvents("CAST_REMAINING_CHECK", unit);
   end
   function WeakAuras.ScheduleCastCheck(fireTime, unit)
     scheduled_scans[unit] = scheduled_scans[unit] or {}
     if not(scheduled_scans[unit][fireTime]) then
-      WeakAuras.debug("Scheduled cast scan at "..fireTime);
       scheduled_scans[unit][fireTime] = timer:ScheduleTimerFixed(doCastScan, fireTime - GetTime() + 0.1, fireTime, unit);
     end
   end
