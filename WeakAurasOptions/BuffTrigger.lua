@@ -59,7 +59,9 @@ end
 local noop = function() end
 
 local function GetBuffTriggerOptions(data, triggernum)
-  local trigger= data.triggers[triggernum].trigger
+  local trigger = data.triggers[triggernum].trigger
+  trigger.names = trigger.names or {}
+  trigger.spellIds = trigger.spellIds or {}
   local spellCache = WeakAuras.spellCache;
   local ValidateNumeric = WeakAuras.ValidateNumeric;
   local aura_options = {
