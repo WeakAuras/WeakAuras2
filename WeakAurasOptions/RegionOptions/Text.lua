@@ -107,7 +107,7 @@ local function createOptions(id, data)
       end,
       func = function(info, button)
         local collapsed = WeakAuras.IsCollapsed("text", "text", "fontflags", true)
-        WeakAuras.SetCollapsed("text", "text", "fontflags", not collapsed)
+        OptionsPrivate.SetCollapsed("text", "text", "fontflags", not collapsed)
       end,
       image = function()
         local collapsed = WeakAuras.IsCollapsed("text", "text", "fontflags", true)
@@ -264,7 +264,7 @@ local function createOptions(id, data)
   end
 
   local setHidden = function(hidden)
-    WeakAuras.SetCollapsed("format_option", "text", "displayText", hidden)
+    OptionsPrivate.SetCollapsed("format_option", "text", "displayText", hidden)
   end
 
   local get = function(key)
