@@ -586,7 +586,7 @@ function OptionsPrivate.CreateFrame()
   local importButton = AceGUI:Create("WeakAurasToolbarButton")
   importButton:SetText(L["Import"])
   importButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\importsmall")
-  importButton:SetCallback("OnClick", WeakAuras.ImportFromString)
+  importButton:SetCallback("OnClick", OptionsPrivate.ImportFromString)
   toolbarContainer:AddChild(importButton)
 
   local magnetButton = AceGUI:Create("WeakAurasToolbarButton")
@@ -1130,7 +1130,7 @@ function OptionsPrivate.CreateFrame()
 
     importButton:SetIcon(frame.importThumbnail)
     importButton:SetDescription(L["Import a display from an encoded string"])
-    importButton:SetClick(WeakAuras.ImportFromString)
+    importButton:SetClick(OptionsPrivate.ImportFromString)
     containerScroll:AddChild(importButton)
   end
 
