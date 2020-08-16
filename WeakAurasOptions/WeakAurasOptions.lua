@@ -1207,7 +1207,7 @@ function OptionsPrivate.Ungroup(data)
   WeakAuras.FillOptions()
 end
 
-function WeakAuras.SetDragging(data, drop)
+function OptionsPrivate.SetDragging(data, drop)
   WeakAuras_DropDownMenu:Hide()
   if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0) then
     local children = {};
