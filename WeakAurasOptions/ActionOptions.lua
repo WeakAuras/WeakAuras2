@@ -860,7 +860,7 @@ function WeakAuras.GetActionOptions(data)
   end
 
   local startSetHidden = function(hidden)
-    WeakAuras.SetCollapsed("format_option", "actions", "start_message", hidden)
+    OptionsPrivate.SetCollapsed("format_option", "actions", "start_message", hidden)
   end
 
   local startGet = function(key)
@@ -920,7 +920,7 @@ function WeakAuras.GetActionOptions(data)
   end
 
   local finishSetHidden = function(hidden)
-    WeakAuras.SetCollapsed("format_option", "actions", "finish_message", hidden)
+    OptionsPrivate.SetCollapsed("format_option", "actions", "finish_message", hidden)
   end
 
   local finishGet = function(key)

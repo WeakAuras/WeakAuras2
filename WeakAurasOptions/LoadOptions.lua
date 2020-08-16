@@ -141,7 +141,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         func = function(info, button, secondCall)
           if not secondCall then
             local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
-            WeakAuras.SetCollapsed("trigger", name, "", not collapsed)
+            OptionsPrivate.SetCollapsed("trigger", name, "", not collapsed)
           end
         end,
         arg = {

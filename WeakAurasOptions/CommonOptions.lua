@@ -68,7 +68,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
     func = function(info, button, secondCall)
       if not nooptions and not secondCall then
         local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
-        WeakAuras.SetCollapsed("collapse", "region", key, not isCollapsed)
+        OptionsPrivate.SetCollapsed("collapse", "region", key, not isCollapsed)
       end
     end,
     image = function()

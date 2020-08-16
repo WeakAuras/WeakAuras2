@@ -744,7 +744,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     end
 
     local setHidden = function(hidden)
-      WeakAuras.SetCollapsed("format_option", "conditions", i .. "#" .. j, hidden)
+      OptionsPrivate.SetCollapsed("format_option", "conditions", i .. "#" .. j, hidden)
     end
 
     if data.controlledChildren then
@@ -1802,10 +1802,10 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
       if data.controlledChildren then
         for id, reference in pairs(conditions[i].check.references) do
           local index = reference.conditionIndex
-          WeakAuras.SetCollapsed(id, "condition", index, not collapsed);
+          OptionsPrivate.SetCollapsed(id, "condition", index, not collapsed);
         end
       else
-        WeakAuras.SetCollapsed(data.id, "condition", i, not collapsed);
+        OptionsPrivate.SetCollapsed(data.id, "condition", i, not collapsed);
       end
       WeakAuras.ClearAndUpdateOptions(data.id, true)
     end,
@@ -2563,7 +2563,7 @@ function WeakAuras.GetConditionOptions(data)
           aura[conditionVariable][#aura[conditionVariable]].changes = {};
           aura[conditionVariable][#aura[conditionVariable]].changes[1] = {}
           aura[conditionVariable][#aura[conditionVariable]].category = category;
-          WeakAuras.SetCollapsed(id, "condition", #aura[conditionVariable], false);
+          OptionsPrivate.SetCollapsed(id, "condition", #aura[conditionVariable], false);
           WeakAuras.Add(aura);
         end
         WeakAuras.ClearAndUpdateOptions(data.id, true)
@@ -2573,7 +2573,7 @@ function WeakAuras.GetConditionOptions(data)
         conditions[#conditions].changes = {};
         conditions[#conditions].changes[1] = {}
         conditions[#conditions].category = category;
-        WeakAuras.SetCollapsed(data.id, "condition", #conditions, false);
+        OptionsPrivate.SetCollapsed(data.id, "condition", #conditions, false);
         WeakAuras.Add(data);
         WeakAuras.ClearAndUpdateOptions(data.id, true)
       end

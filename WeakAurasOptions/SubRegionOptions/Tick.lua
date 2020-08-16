@@ -104,7 +104,7 @@ local function createOptions(parentData, data, index, subIndex)
       order = 6,
       func = function(info, button)
         local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "tickextras" .. index, true)
-        WeakAuras.SetCollapsed("subtext", "subtext", "tickextras" .. index, not collapsed)
+        OptionsPrivate.SetCollapsed("subtext", "subtext", "tickextras" .. index, not collapsed)
       end,
       image = function()
         local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "tickextras" .. index, true)
