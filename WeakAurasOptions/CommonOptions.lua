@@ -1292,7 +1292,7 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
         extraSetFunction();
       end
       if (reloadOptions) then
-        WeakAuras.ClearOptions(data.id)
+        OptionsPrivate.ClearOptions(data.id)
       end
     end,
     get = function(info)

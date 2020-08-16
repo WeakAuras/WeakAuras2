@@ -85,7 +85,7 @@ function OptionsPrivate.GetInformationOptions(data)
           local childData = WeakAuras.GetData(childId)
           childData.url = v
           WeakAuras.Add(childData)
-          WeakAuras.ClearOptions(childData.id)
+          OptionsPrivate.ClearOptions(childData.id)
         end
       end
 
