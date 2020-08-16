@@ -5,12 +5,7 @@ local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L
 local MSQ, MSQ_Version = LibStub("Masque", true);
 if MSQ then
-  if MSQ_Version <= 80100 then
-    MSQ = nil
-    WeakAuras.prettyPrint(L["Please upgrade your Masque version"])
-  else
-    MSQ:AddType("WA_Aura", {"Icon", "Cooldown"})
-  end
+  MSQ:AddType("WA_Aura", {"Icon", "Cooldown"})
 end
 
 -- WoW API
