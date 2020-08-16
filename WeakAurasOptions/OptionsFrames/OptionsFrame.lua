@@ -20,7 +20,7 @@ local L = WeakAuras.L
 local displayButtons = WeakAuras.displayButtons
 local regionOptions = WeakAuras.regionOptions
 local savedVars = WeakAuras.savedVars
-local tempGroup = WeakAuras.tempGroup
+local tempGroup = OptionsPrivate.tempGroup
 local prettyPrint = WeakAuras.prettyPrint
 local aceOptions = WeakAuras.aceOptions
 
