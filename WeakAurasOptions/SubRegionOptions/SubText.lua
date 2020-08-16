@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0")
 local L = WeakAuras.L
@@ -22,7 +23,7 @@ local function createOptions(parentData, data, index, subIndex)
   -- The toggles for font flags is intentionally not keyed on the id
   -- So that all auras share the state of that toggle
   local hiddenFontExtra = function()
-    return WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
+    return OptionsPrivate.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
   end
 
   local indentWidth = 0.15
@@ -98,7 +99,7 @@ local function createOptions(parentData, data, index, subIndex)
       type = "execute",
       control = "WeakAurasExpandSmall",
       name = function()
-        local textFlags = WeakAuras.font_flags[data.text_fontType]
+        local textFlags = OptionsPrivate.Private.font_flags[data.text_fontType]
         local color = format("%02x%02x%02x%02x",
                              data.text_shadowColor[4] * 255, data.text_shadowColor[1] * 255,
                              data.text_shadowColor[2] * 255, data.text_shadowColor[3]*255)
@@ -137,11 +138,11 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.doubleWidth,
       order = 44,
       func = function(info, button)
-        local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
+        local collapsed = OptionsPrivate.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
         OptionsPrivate.SetCollapsed("subtext", "subtext", "fontflags" .. index, not collapsed)
       end,
       image = function()
-        local collapsed = WeakAuras.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
+        local collapsed = OptionsPrivate.IsCollapsed("subtext", "subtext", "fontflags" .. index, true)
         return collapsed and "collapsed" or "expanded"
       end,
       imageWidth = 15,
@@ -164,7 +165,7 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth - indentWidth,
       name = L["Outline"],
       order = 46,
-      values = WeakAuras.font_flags,
+      values = OptionsPrivate.Private.font_flags,
       hidden = hiddenFontExtra
     },
     text_shadowColor = {
@@ -215,7 +216,7 @@ local function createOptions(parentData, data, index, subIndex)
       type = "select",
       width = WeakAuras.normalWidth - indentWidth,
       name = L["Rotate Text"],
-      values = WeakAuras.text_rotate_types,
+      values = OptionsPrivate.Private.text_rotate_types,
       order = 50,
       hidden = hiddenFontExtra
     },
@@ -223,7 +224,7 @@ local function createOptions(parentData, data, index, subIndex)
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Alignment"],
-      values = WeakAuras.justify_types,
+      values = OptionsPrivate.Private.justify_types,
       order = 50.5,
       hidden = hiddenFontExtra
     },
@@ -239,7 +240,7 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth - indentWidth,
       name = L["Width"],
       order = 51.5,
-      values = WeakAuras.text_automatic_width,
+      values = OptionsPrivate.Private.text_automatic_width,
       hidden = hiddenFontExtra
     },
     text_font_space6 = {
@@ -271,7 +272,7 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth,
       name = L["Overflow"],
       order = 54,
-      values = WeakAuras.text_word_wrap,
+      values = OptionsPrivate.Private.text_word_wrap,
       hidden = function() return hiddenFontExtra() or data.text_automaticWidth ~= "Fixed" end
     },
 
@@ -334,13 +335,13 @@ local function createOptions(parentData, data, index, subIndex)
     width = WeakAuras.doubleWidth,
     order = 60,
     image = function()
-      local collapsed = WeakAuras.IsCollapsed("subregion", "text_anchors", tostring(index), true)
+      local collapsed = OptionsPrivate.IsCollapsed("subregion", "text_anchors", tostring(index), true)
       return collapsed and "collapsed" or "expanded"
     end,
     imageWidth = 15,
     imageHeight = 15,
     func = function(info, button)
-      local collapsed = WeakAuras.IsCollapsed("subregion", "text_anchors", tostring(index), true)
+      local collapsed = OptionsPrivate.IsCollapsed("subregion", "text_anchors", tostring(index), true)
       OptionsPrivate.SetCollapsed("subregion", "text_anchors", tostring(index), not collapsed)
     end,
     arg = {
@@ -350,7 +351,7 @@ local function createOptions(parentData, data, index, subIndex)
 
 
   local hiddenFunction = function()
-    return WeakAuras.IsCollapsed("subregion", "text_anchors", tostring(index), true)
+    return OptionsPrivate.IsCollapsed("subregion", "text_anchors", tostring(index), true)
   end
 
   options.text_anchor_space = {
@@ -444,7 +445,7 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.doubleWidth,
       hidden = hideCustomTextOption,
       name = L["Update Custom Text On..."],
-      values = WeakAuras.text_check_types,
+      values = OptionsPrivate.Private.text_check_types,
       order = 3,
       get = function() return parentData.customTextUpdate or "event" end,
       set = function(info, v)
@@ -460,7 +461,7 @@ local function createOptions(parentData, data, index, subIndex)
 
   -- Add Text Format Options
   local hidden = function()
-    return WeakAuras.IsCollapsed("format_option", "text", "text_text", true)
+    return OptionsPrivate.IsCollapsed("format_option", "text", "text_text", true)
   end
 
   local setHidden = function(hidden)

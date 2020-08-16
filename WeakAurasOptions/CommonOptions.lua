@@ -3,7 +3,6 @@ local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
 local regionOptions = WeakAuras.regionOptions
-local point_types = WeakAuras.point_types;
 
 local parsePrefix = function(input, data, create)
   local subRegionIndex, property = string.match(input, "^sub%.(%d+)%..-%.(.+)")
@@ -67,7 +66,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
     width = titleWidth,
     func = function(info, button, secondCall)
       if not nooptions and not secondCall then
-        local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
+        local isCollapsed = OptionsPrivate.IsCollapsed("collapse", "region", key, false)
         OptionsPrivate.SetCollapsed("collapse", "region", key, not isCollapsed)
       end
     end,
@@ -75,7 +74,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
       if nooptions then
         return "Interface\\AddOns\\WeakAuras\\Media\\Textures\\bullet1", 18, 18
       else
-        local isCollapsed = WeakAuras.IsCollapsed("collapse", "region", key, false)
+        local isCollapsed = OptionsPrivate.IsCollapsed("collapse", "region", key, false)
         return isCollapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse", 18, 18
       end
     end,
@@ -175,11 +174,11 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
 
   if hiddenFunc then
     return function()
-      return hiddenFunc() or WeakAuras.IsCollapsed("collapse", "region", key, false)
+      return hiddenFunc() or OptionsPrivate.IsCollapsed("collapse", "region", key, false)
     end
   else
     return function()
-      return WeakAuras.IsCollapsed("collapse", "region", key, false)
+      return OptionsPrivate.IsCollapsed("collapse", "region", key, false)
     end
   end
 end
@@ -1021,7 +1020,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint)
       name = L["Anchor"],
       order = 70,
       hidden = IsParentDynamicGroup,
-      values = point_types,
+      values = OptionsPrivate.Private.point_types,
       disabled = disableSelfPoint,
     },
     anchorFrameType = {
@@ -1030,7 +1029,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint)
       name = L["Anchored To"],
       order = 72,
       hidden = IsParentDynamicGroup,
-      values = (data.regionType == "group" or data.regionType == "dynamicgroup") and WeakAuras.anchor_frame_types_group or WeakAuras.anchor_frame_types,
+      values = (data.regionType == "group" or data.regionType == "dynamicgroup") and OptionsPrivate.Private.anchor_frame_types_group or OptionsPrivate.Private.anchor_frame_types,
     },
     -- Input field to select frame to anchor on
     anchorFrameFrame = {
@@ -1084,7 +1083,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint)
           return data.anchorFrameType == "MOUSE";
         end
       end,
-      values = point_types
+      values = OptionsPrivate.Private.point_types
     },
     anchorPointGroup = {
       type = "select",
@@ -1122,7 +1121,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint)
       width = WeakAuras.normalWidth,
       name = L["Frame Strata"],
       order = 78,
-      values = WeakAuras.frame_strata_types
+      values = OptionsPrivate.Private.frame_strata_types
     },
     anchorFrameSpace = {
       type = "execute",

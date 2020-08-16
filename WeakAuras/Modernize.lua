@@ -102,8 +102,8 @@ function Private.Modernize(data)
     data.numTriggers = nil
     data.triggers.customTriggerLogic = data.customTriggerLogic
     data.customTriggerLogic = nil
-    local activeTriggerMode = data.activeTriggerMode or WeakAuras.trigger_modes.first_active
-    if activeTriggerMode ~= WeakAuras.trigger_modes.first_active then
+    local activeTriggerMode = data.activeTriggerMode or Private.trigger_modes.first_active
+    if activeTriggerMode ~= Private.trigger_modes.first_active then
       activeTriggerMode = activeTriggerMode + 1
     end
     data.triggers.activeTriggerMode = activeTriggerMode

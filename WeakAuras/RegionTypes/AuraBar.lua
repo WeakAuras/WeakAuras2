@@ -117,7 +117,7 @@ local properties = {
     display = L["Orientation"],
     setter = "SetOrientation",
     type = "list",
-    values = WeakAuras.orientation_types
+    values = Private.orientation_types
   },
   inverse = {
     display = L["Inverse"],
@@ -759,11 +759,11 @@ local funcs = {
 
       selfPoint = selfPoint or "CENTER"
 
-      if not WeakAuras.point_types[selfPoint] then
+      if not Private.point_types[selfPoint] then
         selfPoint = "CENTER"
       end
 
-      if not WeakAuras.point_types[anchorPoint] then
+      if not Private.point_types[anchorPoint] then
         anchorPoint = "CENTER"
       end
 
@@ -1024,7 +1024,7 @@ local function modify(parent, region, data)
   -- Localize
   local bar, iconFrame, icon = region.bar, region.iconFrame, region.icon;
 
-  region.useAuto = data.auto and WeakAuras.CanHaveAuto(data);
+  region.useAuto = data.auto and Private.CanHaveAuto(data);
 
   -- Adjust region size
   region:SetWidth(data.width);
@@ -1125,7 +1125,7 @@ local function modify(parent, region, data)
   region:UpdateEffectiveOrientation()
 
   -- Update tooltip availability
-  local tooltipType = WeakAuras.CanHaveTooltip(data);
+  local tooltipType = Private.CanHaveTooltip(data);
   if tooltipType and data.useTooltip then
     -- Create and enable tooltip-hover frame
     if not region.tooltipFrame then

@@ -1024,14 +1024,14 @@ local function valuesForTalentFunction(trigger)
     end
 
     -- If a single specific class was found, load the specific list for it
-    if(single_class and WeakAuras.talent_types_specific[single_class]
-      and single_spec and WeakAuras.talent_types_specific[single_class][single_spec]) then
-      return WeakAuras.talent_types_specific[single_class][single_spec];
-    elseif(WeakAuras.IsClassic() and single_class and WeakAuras.talent_types_specific[single_class]
-      and WeakAuras.talent_types_specific[single_class]) then
-      return WeakAuras.talent_types_specific[single_class];
+    if(single_class and Private.talent_types_specific[single_class]
+      and single_spec and Private.talent_types_specific[single_class][single_spec]) then
+      return Private.talent_types_specific[single_class][single_spec];
+    elseif(WeakAuras.IsClassic() and single_class and Private.talent_types_specific[single_class]
+      and Private.talent_types_specific[single_class]) then
+      return Private.talent_types_specific[single_class];
     else
-      return WeakAuras.talent_types;
+      return Private.talent_types;
     end
   end
 end
@@ -1292,11 +1292,11 @@ WeakAuras.load_prototype = {
 
           -- print ("Using talent cache", single_class, single_spec);
           -- If a single specific class was found, load the specific list for it
-          if(single_class and WeakAuras.pvp_talent_types_specific[single_class]
-            and single_spec and WeakAuras.pvp_talent_types_specific[single_class][single_spec]) then
-            return WeakAuras.pvp_talent_types_specific[single_class][single_spec];
+          if(single_class and Private.pvp_talent_types_specific[single_class]
+            and single_spec and Private.pvp_talent_types_specific[single_class][single_spec]) then
+            return Private.pvp_talent_types_specific[single_class][single_spec];
           else
-            return WeakAuras.pvp_talent_types;
+            return Private.pvp_talent_types;
           end
         end
       end,
@@ -1444,8 +1444,8 @@ local function AddUnitChangeInternalEvents(triggerUnit, t)
     WeakAuras.WatchForPetDeath();
     tinsert(t, "PET_UPDATE")
   else
-    if WeakAuras.multiUnitUnits[triggerUnit] then
-      for unit in pairs(WeakAuras.multiUnitUnits[triggerUnit]) do
+    if Private.multiUnitUnits[triggerUnit] then
+      for unit in pairs(Private.multiUnitUnits[triggerUnit]) do
         tinsert(t, "UNIT_CHANGED_" .. string.lower(unit))
         WeakAuras.WatchUnitChange(unit)
       end
@@ -1461,8 +1461,8 @@ local function AddUnitRoleChangeInternalEvents(triggerUnit, t)
     return
   end
 
-  if WeakAuras.multiUnitUnits[triggerUnit] then
-    for unit in pairs(WeakAuras.multiUnitUnits[triggerUnit]) do
+  if Private.multiUnitUnits[triggerUnit] then
+    for unit in pairs(Private.multiUnitUnits[triggerUnit]) do
       tinsert(t, "UNIT_ROLE_CHANGED_" .. string.lower(unit))
     end
   else
@@ -1490,8 +1490,8 @@ end
 local unitHelperFunctions = {
   UnitChangedForceEvents = function(trigger)
     local events = {}
-    if WeakAuras.multiUnitUnits[trigger.unit] then
-      for unit in pairs(WeakAuras.multiUnitUnits[trigger.unit]) do
+    if Private.multiUnitUnits[trigger.unit] then
+      for unit in pairs(Private.multiUnitUnits[trigger.unit]) do
         tinsert(events, {"UNIT_CHANGED_" .. unit, unit})
       end
     else
@@ -1578,7 +1578,7 @@ WeakAuras.event_prototypes = {
         store = true,
         conditionType = "bool",
         desc = function() return L["Can be used for e.g. checking if \"boss1target\" is the same as \"player\"."] end,
-        enable = function(trigger) return not WeakAuras.multiUnitUnits[trigger.unit] end
+        enable = function(trigger) return not Private.multiUnitUnits[trigger.unit] end
       },
       {
         name = "name",
@@ -2348,7 +2348,7 @@ WeakAuras.event_prototypes = {
         name = "powertype",
         display = L["Power Type"],
         type = "select",
-        values = function() return WeakAuras.IsClassic() and WeakAuras.power_types or WeakAuras.power_types_with_stagger end,
+        values = function() return WeakAuras.IsClassic() and Private.power_types or Private.power_types_with_stagger end,
         init = "unitPowerType",
         test = "true",
         store = true,
@@ -5064,12 +5064,12 @@ WeakAuras.event_prototypes = {
         values = function()
           local class = select(2, UnitClass("player"));
           local spec =  not WeakAuras.IsClassic() and GetSpecialization();
-          if(WeakAuras.talent_types_specific[class] and  WeakAuras.talent_types_specific[class][spec]) then
-            return WeakAuras.talent_types_specific[class][spec];
-          elseif WeakAuras.IsClassic() and WeakAuras.talent_types_specific[class] then
-            return WeakAuras.talent_types_specific[class];
+          if(Private.talent_types_specific[class] and  Private.talent_types_specific[class][spec]) then
+            return Private.talent_types_specific[class][spec];
+          elseif WeakAuras.IsClassic() and Private.talent_types_specific[class] then
+            return Private.talent_types_specific[class];
           else
-            return WeakAuras.talent_types;
+            return Private.talent_types;
           end
         end,
         test = "active",
@@ -5167,10 +5167,10 @@ WeakAuras.event_prototypes = {
         values = function()
           local class = select(2, UnitClass("player"));
           local spec =  GetSpecialization();
-          if(WeakAuras.pvp_talent_types_specific[class] and  WeakAuras.pvp_talent_types_specific[class][spec]) then
-            return WeakAuras.pvp_talent_types_specific[class][spec];
+          if(Private.pvp_talent_types_specific[class] and  Private.pvp_talent_types_specific[class][spec]) then
+            return Private.pvp_talent_types_specific[class][spec];
           else
-            return WeakAuras.pvp_talent_types;
+            return Private.pvp_talent_types;
           end
         end,
         test = "active",
@@ -6344,9 +6344,9 @@ WeakAuras.event_prototypes = {
         init = "arg",
         values = function(trigger)
           if trigger.use_inverse then
-            return WeakAuras.actual_unit_types_with_specific
+            return Private.actual_unit_types_with_specific
           else
-            return WeakAuras.actual_unit_types_cast
+            return Private.actual_unit_types_cast
           end
         end,
         test = "true",
@@ -7476,7 +7476,7 @@ else
   WeakAuras.event_prototypes["Queued Action"] = nil
 end
 
-WeakAuras.dynamic_texts = {
+Private.dynamic_texts = {
   ["p"] = {
     get = function(state)
       if not state then return nil end

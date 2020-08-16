@@ -203,7 +203,7 @@ local function createOptions(id, data)
             width = WeakAuras.normalWidth,
             name = L["Blend Mode"],
             order = 20,
-            values = WeakAuras.blend_types
+            values = OptionsPrivate.Private.blend_types
         },
         animationType = {
             type = "select",

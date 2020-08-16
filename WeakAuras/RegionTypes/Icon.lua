@@ -147,11 +147,11 @@ local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoi
     anchorXOffset = anchorXOffset or 0
     anchorYOffset = anchorYOffset or 0
 
-    if not WeakAuras.point_types[selfPoint] then
+    if not Private.point_types[selfPoint] then
       selfPoint = "CENTER"
     end
 
-    if not WeakAuras.point_types[anchorPoint] then
+    if not Private.point_types[anchorPoint] then
       anchorPoint = "CENTER"
     end
 
@@ -261,7 +261,7 @@ local function modify(parent, region, data)
 
   local button, icon, cooldown = region.button, region.icon, region.cooldown;
 
-  region.useAuto = data.auto and WeakAuras.CanHaveAuto(data);
+  region.useAuto = data.auto and Private.CanHaveAuto(data);
 
   if MSQ then
     local masqueId = data.id:lower():gsub(" ", "_");
@@ -338,7 +338,7 @@ local function modify(parent, region, data)
 
   icon:SetDesaturated(data.desaturate);
 
-  local tooltipType = WeakAuras.CanHaveTooltip(data);
+  local tooltipType = Private.CanHaveTooltip(data);
   if(tooltipType and data.useTooltip) then
     if not region.tooltipFrame then
       region.tooltipFrame = CreateFrame("frame", nil, region);

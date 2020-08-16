@@ -12,18 +12,7 @@ local hiddenAll = WeakAuras.commonOptions.CreateHiddenAll("animation")
 local getAll = WeakAuras.commonOptions.CreateGetAll("animation")
 local setAll = WeakAuras.commonOptions.CreateSetAll("animation", getAll)
 
-local anim_types = WeakAuras.anim_types;
-local anim_translate_types = WeakAuras.anim_translate_types;
-local anim_scale_types = WeakAuras.anim_scale_types;
-local anim_alpha_types = WeakAuras.anim_alpha_types;
-local anim_rotate_types = WeakAuras.anim_rotate_types;
-local anim_color_types = WeakAuras.anim_color_types;
-local anim_start_preset_types = WeakAuras.anim_start_preset_types;
-local anim_main_preset_types = WeakAuras.anim_main_preset_types;
-local anim_finish_preset_types = WeakAuras.anim_finish_preset_types;
-local duration_types = WeakAuras.duration_types;
-local duration_types_no_choice = WeakAuras.duration_types_no_choice;
-local anim_ease_types = WeakAuras.anim_ease_types;
+
 
 local function filterAnimPresetTypes(intable, id)
   local ret = {};
@@ -57,6 +46,19 @@ local function filterAnimPresetTypes(intable, id)
 end
 
 function OptionsPrivate.GetAnimationOptions(data)
+  local anim_types = OptionsPrivate.Private.anim_types
+  local anim_translate_types = OptionsPrivate.Private.anim_translate_types;
+  local anim_scale_types = OptionsPrivate.Private.anim_scale_types;
+  local anim_alpha_types = OptionsPrivate.Private.anim_alpha_types;
+  local anim_rotate_types = OptionsPrivate.Private.anim_rotate_types;
+  local anim_color_types = OptionsPrivate.Private.anim_color_types;
+  local anim_start_preset_types = OptionsPrivate.Private.anim_start_preset_types;
+  local anim_main_preset_types = OptionsPrivate.Private.anim_main_preset_types;
+  local anim_finish_preset_types = OptionsPrivate.Private.anim_finish_preset_types;
+  local duration_types = OptionsPrivate.Private.duration_types;
+  local duration_types_no_choice = OptionsPrivate.Private.duration_types_no_choice;
+  local anim_ease_types = OptionsPrivate.Private.anim_ease_types;
+
   local id = data.id
   local animation = {
     type = "group",
@@ -154,7 +156,7 @@ function OptionsPrivate.GetAnimationOptions(data)
         order = 33,
         values = duration_types_no_choice,
         disabled = true,
-        hidden = function() return data.animation.start.type ~= "custom" or WeakAuras.CanHaveDuration(data) end,
+        hidden = function() return data.animation.start.type ~= "custom" or OptionsPrivate.Private.CanHaveDuration(data) end,
         get = function() return "seconds" end
       },
       start_duration_type = {
@@ -163,7 +165,7 @@ function OptionsPrivate.GetAnimationOptions(data)
         name = L["Time in"],
         order = 33,
         values = duration_types,
-        hidden = function() return data.animation.start.type ~= "custom" or not WeakAuras.CanHaveDuration(data) end
+        hidden = function() return data.animation.start.type ~= "custom" or not OptionsPrivate.Private.CanHaveDuration(data) end
       },
       start_duration = {
         type = "input",
@@ -400,7 +402,7 @@ function OptionsPrivate.GetAnimationOptions(data)
         order = 53,
         values = duration_types_no_choice,
         disabled = true,
-        hidden = function() return data.animation.main.type ~= "custom" or WeakAuras.CanHaveDuration(data) end,
+        hidden = function() return data.animation.main.type ~= "custom" or OptionsPrivate.Private.CanHaveDuration(data) end,
         get = function() return "seconds" end
       },
       main_duration_type = {
@@ -409,7 +411,7 @@ function OptionsPrivate.GetAnimationOptions(data)
         name = L["Time in"],
         order = 53,
         values = duration_types,
-        hidden = function() return data.animation.main.type ~= "custom" or not WeakAuras.CanHaveDuration(data) end
+        hidden = function() return data.animation.main.type ~= "custom" or not OptionsPrivate.Private.CanHaveDuration(data) end
       },
       main_duration = {
         type = "input",

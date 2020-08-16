@@ -725,12 +725,14 @@ local function LoadCustomActionFunctions(data)
   end
 end
 
-WeakAuras.talent_types_specific = {}
-WeakAuras.pvp_talent_types_specific = {}
+
+
+Private.talent_types_specific = {}
+Private.pvp_talent_types_specific = {}
 function WeakAuras.CreateTalentCache()
   local _, player_class = UnitClass("player")
 
-  WeakAuras.talent_types_specific[player_class] = WeakAuras.talent_types_specific[player_class] or {};
+  Private.talent_types_specific[player_class] = Private.talent_types_specific[player_class] or {};
 
   if WeakAuras.IsClassic() then
     for tab = 1, GetNumTalentTabs() do
@@ -738,13 +740,13 @@ function WeakAuras.CreateTalentCache()
         local talentName, talentIcon = GetTalentInfo(tab, num_talent);
         local talentId = (tab - 1)*20+num_talent
         if (talentName and talentIcon) then
-          WeakAuras.talent_types_specific[player_class][talentId] = "|T"..talentIcon..":0|t "..talentName
+          Private.talent_types_specific[player_class][talentId] = "|T"..talentIcon..":0|t "..talentName
         end
       end
    end
   else
     local spec = GetSpecialization()
-    WeakAuras.talent_types_specific[player_class][spec] = WeakAuras.talent_types_specific[player_class][spec] or {};
+    Private.talent_types_specific[player_class][spec] = Private.talent_types_specific[player_class][spec] or {};
 
     for tier = 1, MAX_TALENT_TIERS do
       for column = 1, NUM_TALENT_COLUMNS do
@@ -753,7 +755,7 @@ function WeakAuras.CreateTalentCache()
         local talentId = (tier-1)*3+column
         -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
         if (talentName and talentIcon) then
-          WeakAuras.talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
+          Private.talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
         end
       end
     end
@@ -770,8 +772,8 @@ function WeakAuras.CreatePvPTalentCache()
     return;
   end
 
-  WeakAuras.pvp_talent_types_specific[player_class] = WeakAuras.pvp_talent_types_specific[player_class] or {};
-  WeakAuras.pvp_talent_types_specific[player_class][spec] = WeakAuras.pvp_talent_types_specific[player_class][spec] or {};
+  Private.pvp_talent_types_specific[player_class] = Private.pvp_talent_types_specific[player_class] or {};
+  Private.pvp_talent_types_specific[player_class][spec] = Private.pvp_talent_types_specific[player_class][spec] or {};
 
   local function formatTalent(talentId)
     local _, name, icon = GetPvpTalentInfoByID(talentId);
@@ -781,11 +783,11 @@ function WeakAuras.CreatePvPTalentCache()
   local slotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1);
   if (slotInfo) then
 
-    WeakAuras.pvp_talent_types_specific[player_class][spec] = {};
+    Private.pvp_talent_types_specific[player_class][spec] = {};
 
     local pvpSpecTalents = slotInfo.availableTalentIDs;
     for i, talentId in ipairs(pvpSpecTalents) do
-      WeakAuras.pvp_talent_types_specific[player_class][spec][i] = formatTalent(talentId);
+      Private.pvp_talent_types_specific[player_class][spec][i] = formatTalent(talentId);
     end
 
     pvpTalentsInitialized = true;
@@ -1370,7 +1372,7 @@ local function GetInstanceTypeAndSize()
   local _, instanceType, difficultyIndex, _, _, _, _, ZoneMapID = GetInstanceInfo()
   if (inInstance) then
     size = Type
-    local difficultyInfo = WeakAuras.difficulty_info[difficultyIndex]
+    local difficultyInfo = Private.difficulty_info[difficultyIndex]
     if difficultyInfo then
       size, difficulty = difficultyInfo.size, difficultyInfo.difficulty
     end
@@ -2332,13 +2334,13 @@ end
 local function customOptionIsValid(option)
   if not option.type then
     return false
-  elseif WeakAuras.author_option_classes[option.type] == "simple" then
+  elseif Private.author_option_classes[option.type] == "simple" then
     if not option.key
     or not option.name
     or not option.default == nil then
       return false
     end
-  elseif WeakAuras.author_option_classes[option.type] == "group" then
+  elseif Private.author_option_classes[option.type] == "group" then
     if not option.key
     or not option.name
     or not option.default == nil
@@ -2356,7 +2358,7 @@ local function validateUserConfig(data, options, config)
       prettyPrint(data.id .. " Custom Option #" .. index .. " in " .. data.id .. " has been detected as corrupt, and has been deleted.")
       corruptOptions[index] = true
     else
-      local optionClass = WeakAuras.author_option_classes[option.type]
+      local optionClass = Private.author_option_classes[option.type]
       if optionClass == "simple" then
         if not option.key then
           option.key = WeakAuras.GenerateUniqueID()
@@ -2696,7 +2698,7 @@ local function pAdd(data, simpleChange)
       db.displays[id] = data;
 
       if (not data.triggers.activeTriggerMode or data.triggers.activeTriggerMode > #data.triggers) then
-        data.triggers.activeTriggerMode = WeakAuras.trigger_modes.first_active;
+        data.triggers.activeTriggerMode = Private.trigger_modes.first_active;
       end
 
       for _, triggerSystem in pairs(triggerSystems) do
@@ -2746,7 +2748,7 @@ local function pAdd(data, simpleChange)
       triggerState[id] = {
         disjunctive = data.triggers.disjunctive or "all",
         numTriggers = #data.triggers,
-        activeTriggerMode = data.triggers.activeTriggerMode or WeakAuras.trigger_modes.first_active,
+        activeTriggerMode = data.triggers.activeTriggerMode or Private.trigger_modes.first_active,
         triggerLogicFunc = triggerLogicFunc,
         triggers = {},
         triggerCount = 0,
@@ -2855,7 +2857,7 @@ function WeakAuras.SetRegion(data, cloneId)
       data.animation.start = data.animation.start or {type = "none"};
       data.animation.main = data.animation.main or {type = "none"};
       data.animation.finish = data.animation.finish or {type = "none"};
-      if(WeakAuras.CanHaveDuration(data)) then
+      if(Private.CanHaveDuration(data)) then
         data.animation.start.duration_type = data.animation.start.duration_type or "seconds";
         data.animation.main.duration_type = data.animation.main.duration_type or "seconds";
         data.animation.finish.duration_type = data.animation.finish.duration_type or "seconds";
@@ -3294,11 +3296,11 @@ local function wrapTriggerSystemFunction(functionName, mode)
   return func;
 end
 
-WeakAuras.CanHaveDuration = wrapTriggerSystemFunction("CanHaveDuration", "firstValue");
-WeakAuras.CanHaveAuto = wrapTriggerSystemFunction("CanHaveAuto", "or");
+Private.CanHaveDuration = wrapTriggerSystemFunction("CanHaveDuration", "firstValue");
+Private.CanHaveAuto = wrapTriggerSystemFunction("CanHaveAuto", "or");
 Private.CanHaveClones = wrapTriggerSystemFunction("CanHaveClones", "or");
-WeakAuras.CanHaveTooltip = wrapTriggerSystemFunction("CanHaveTooltip", "or");
-WeakAuras.GetNameAndIcon = wrapTriggerSystemFunction("GetNameAndIcon", "nameAndIcon");
+Private.CanHaveTooltip = wrapTriggerSystemFunction("CanHaveTooltip", "or");
+Private.GetNameAndIcon = wrapTriggerSystemFunction("GetNameAndIcon", "nameAndIcon");
 Private.GetTriggerDescription = wrapTriggerSystemFunction("GetTriggerDescription", "call");
 
 local wrappedGetOverlayInfo = wrapTriggerSystemFunction("GetOverlayInfo", "table");
@@ -3978,7 +3980,7 @@ function WeakAuras.UpdatedTriggerState(id)
 
   -- Figure out which subtrigger is active, and if it changed
   local newActiveTrigger = triggerState[id].activeTriggerMode;
-  if (newActiveTrigger == WeakAuras.trigger_modes.first_active) then
+  if (newActiveTrigger == Private.trigger_modes.first_active) then
     -- Mode is first active trigger, so find a active trigger
     for i = 1, triggerState[id].numTriggers do
       if (triggerState[id].triggers[i]) then
@@ -4053,11 +4055,11 @@ function WeakAuras.RunCustomTextFunc(region, customFunc)
   local state = region.state
   Private.ActivateAuraEnvironment(region.id, region.cloneId, region.state, region.states);
 
-  local progress = WeakAuras.dynamic_texts.p.func(WeakAuras.dynamic_texts.p.get(state), state, 1)
-  local dur = WeakAuras.dynamic_texts.t.func( WeakAuras.dynamic_texts.t.get(state), state, 1)
-  local name = WeakAuras.dynamic_texts.n.func(WeakAuras.dynamic_texts.n.get(state))
-  local icon = WeakAuras.dynamic_texts.i.func(WeakAuras.dynamic_texts.i.get(state))
-  local stacks = WeakAuras.dynamic_texts.s.func(WeakAuras.dynamic_texts.s.get(state))
+  local progress = Private.dynamic_texts.p.func(Private.dynamic_texts.p.get(state), state, 1)
+  local dur = Private.dynamic_texts.t.func(Private.dynamic_texts.t.get(state), state, 1)
+  local name = Private.dynamic_texts.n.func(Private.dynamic_texts.n.get(state))
+  local icon = Private.dynamic_texts.i.func(Private.dynamic_texts.i.get(state))
+  local stacks = Private.dynamic_texts.s.func(Private.dynamic_texts.s.get(state))
 
   local expirationTime
   local duration
@@ -4092,7 +4094,7 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc, state, form
       value = WeakAuras.EnsureString(custom[index])
     end
   else
-    local variable = WeakAuras.dynamic_texts[textStr];
+    local variable = Private.dynamic_texts[textStr];
     if (not variable) then
       return nil;
     end
@@ -4394,8 +4396,8 @@ function WeakAuras.CreateFormatters(input, getter)
       else
         local default = (sym == "p" or sym == "t") and "timed" or "none"
         local selectedFormat = getter(symbol ..  "_format", default)
-        if (WeakAuras.format_types[selectedFormat]) then
-          formatters[symbol] = WeakAuras.format_types[selectedFormat].CreateFormatter(symbol, getter)
+        if (Private.format_types[selectedFormat]) then
+          formatters[symbol] = Private.format_types[selectedFormat].CreateFormatter(symbol, getter)
         end
       end
     end
@@ -4983,7 +4985,7 @@ function WeakAuras.AnchorFrame(data, region, parent)
     if(data.frameStrata == 1) then
       region:SetFrameStrata(region:GetParent():GetFrameStrata());
     else
-      region:SetFrameStrata(WeakAuras.frame_strata_types[data.frameStrata]);
+      region:SetFrameStrata(Private.frame_strata_types[data.frameStrata]);
     end
     WeakAuras.ApplyFrameLevel(region)
     anchorFrameDeferred[data.id] = nil
@@ -5022,13 +5024,13 @@ function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayIn
 end
 
 function WeakAuras.IsCLEUSubevent(subevent)
-  if WeakAuras.subevent_prefix_types[subevent] then
+  if Private.subevent_prefix_types[subevent] then
      return true
   else
-    for prefix in pairs(WeakAuras.subevent_prefix_types) do
+    for prefix in pairs(Private.subevent_prefix_types) do
       if subevent:match(prefix) then
         local suffix = subevent:sub(#prefix + 1)
-        if WeakAuras.subevent_suffix_types[suffix] then
+        if Private.subevent_suffix_types[suffix] then
           return true
         end
       end

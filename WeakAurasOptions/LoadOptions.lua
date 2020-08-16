@@ -12,14 +12,7 @@ local hiddenAll = WeakAuras.commonOptions.CreateHiddenAll("load")
 local getAll = WeakAuras.commonOptions.CreateGetAll("load")
 local setAll = WeakAuras.commonOptions.CreateSetAll("load", getAll)
 
-local operator_types = WeakAuras.operator_types;
-local operator_types_without_equal = WeakAuras.operator_types_without_equal;
-local string_operator_types = WeakAuras.string_operator_types;
 local ValidateNumeric = WeakAuras.ValidateNumeric;
-local eventend_types = WeakAuras.eventend_types;
-local timedeventend_types = WeakAuras.timedeventend_types;
-local autoeventend_types = WeakAuras.autoeventend_types;
-
 
 local spellCache = WeakAuras.spellCache;
 
@@ -133,14 +126,14 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         name = type(arg.display) == "function" and arg.display(trigger) or arg.display,
         order = order,
         image = function()
-          local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
+          local collapsed = OptionsPrivate.IsCollapsed("trigger", name, "", true)
           return collapsed and "collapsed" or "expanded"
         end,
         imageWidth = 15,
         imageHeight = 15,
         func = function(info, button, secondCall)
           if not secondCall then
-            local collapsed = WeakAuras.IsCollapsed("trigger", name, "", true)
+            local collapsed = OptionsPrivate.IsCollapsed("trigger", name, "", true)
             OptionsPrivate.SetCollapsed("trigger", name, "", not collapsed)
           end
         end,
@@ -152,7 +145,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
 
       isCollapsedFunctions = isCollapsedFunctions or {};
       isCollapsedFunctions[name] = function()
-        return WeakAuras.IsCollapsed("trigger", name, "", true);
+        return OptionsPrivate.IsCollapsed("trigger", name, "", true);
       end
     elseif(name and not arg.hidden) then
       local realname = name;
@@ -330,7 +323,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             name = L["Operator"],
             order = order,
             hidden = hidden,
-            values = arg.operator_types == "without_equal" and operator_types_without_equal or operator_types,
+            values = arg.operator_types == "without_equal" and OptionsPrivate.Private.operator_types_without_equal or OptionsPrivate.Private.operator_types,
             disabled = function() return not trigger["use_"..realname]; end,
             get = function() return trigger["use_"..realname] and trigger[realname.."_operator"] or nil; end,
             set = function(info, v)
@@ -453,7 +446,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
           name = L["Operator"],
           order = order,
           hidden = hidden,
-          values = string_operator_types,
+          values = OptionsPrivate.Private.string_operator_types,
           disabled = function() return not trigger["use_"..realname]; end,
           get = function() return trigger["use_"..realname] and trigger[realname.."_operator"] or nil; end,
           set = function(info, v)
@@ -644,7 +637,11 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         if(type(arg.values) == "function") then
           values = arg.values(trigger);
         else
-          values = WeakAuras[arg.values];
+          if OptionsPrivate.Private[arg.values] then
+            values = OptionsPrivate.Private[arg.values]
+          else
+            values = WeakAuras[arg.values];
+          end
         end
         options[name] = {
           type = "select",
@@ -760,7 +757,11 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         if(type(arg.values) == "function") then
           values = arg.values(trigger);
         else
-          values = WeakAuras[arg.values];
+          if OptionsPrivate.Private[arg.values] then
+            values = OptionsPrivate.Private[arg.values]
+          else
+            values = WeakAuras[arg.values];
+          end
         end
         options[name] = {
           type = "select",
@@ -910,18 +911,18 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         local func = prototype.timedrequired
         options.unevent.values = function()
           if func(trigger) then
-            return timedeventend_types
+            return OptionsPrivate.Private.timedeventend_types
           else
-            return eventend_types
+            return OptionsPrivate.Private.eventend_types
           end
         end
       else
-        options.unevent.values = timedeventend_types;
+        options.unevent.values = OptionsPrivate.Private.timedeventend_types;
       end
     elseif (prototype.automatic) then
-      options.unevent.values = autoeventend_types;
+      options.unevent.values = OptionsPrivate.Private.autoeventend_types;
     else
-      options.unevent.values = eventend_types;
+      options.unevent.values = OptionsPrivate.Private.eventend_types;
     end
   end
 

@@ -44,7 +44,7 @@ local properties = {
     display =L["Type"],
     setter = "SetGlowType",
     type = "list",
-    values = WeakAuras.glow_types,
+    values = Private.glow_types,
   },
   useGlowColor = {
     display = L["Use Custom Color"],

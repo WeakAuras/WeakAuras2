@@ -872,7 +872,7 @@ local function modify(parent, region, data)
     if(childData.frameStrata == 1) then
       childRegion:SetFrameStrata(region:GetFrameStrata());
     else
-      childRegion:SetFrameStrata(WeakAuras.frame_strata_types[childData.frameStrata]);
+      childRegion:SetFrameStrata(Private.frame_strata_types[childData.frameStrata]);
     end
     return regionData
   end

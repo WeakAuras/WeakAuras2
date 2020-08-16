@@ -1414,7 +1414,7 @@ local methods = {
     self.expand.func = func;
   end,
   ["GetExpanded"] = function(self)
-    return not WeakAuras.IsCollapsed(self.data.id, "displayButton", "", true)
+    return not OptionsPrivate.IsCollapsed(self.data.id, "displayButton", "", true)
   end,
   ["DisableExpand"] = function(self)
     self.expand:Disable();
