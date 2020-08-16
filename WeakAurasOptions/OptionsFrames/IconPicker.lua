@@ -202,7 +202,7 @@ local function ConstructIconPicker(frame)
   return group
 end
 
-function WeakAuras.IconPicker(frame)
+function OptionsPrivate.IconPicker(frame)
   iconPicker = iconPicker or ConstructIconPicker(frame)
   return iconPicker
 end

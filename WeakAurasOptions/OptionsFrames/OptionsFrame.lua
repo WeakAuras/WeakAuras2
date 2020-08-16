@@ -533,7 +533,7 @@ function OptionsPrivate.CreateFrame()
   frame.container = container
 
   frame.texturePicker = OptionsPrivate.TexturePicker(frame)
-  frame.iconPicker = WeakAuras.IconPicker(frame)
+  frame.iconPicker = OptionsPrivate.IconPicker(frame)
   frame.modelPicker = WeakAuras.ModelPicker(frame)
   frame.importexport = WeakAuras.ImportExport(frame)
   frame.texteditor = WeakAuras.TextEditor(frame)
