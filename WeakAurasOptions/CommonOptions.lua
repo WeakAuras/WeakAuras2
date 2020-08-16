@@ -984,7 +984,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint)
         data.xOffset = v;
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
         if(data.parent) then
           local parentData = WeakAuras.GetData(data.parent);
           if(parentData) then
@@ -1006,7 +1006,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint)
         data.yOffset = v;
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
         if(data.parent) then
           local parentData = WeakAuras.GetData(data.parent);
           if(parentData) then

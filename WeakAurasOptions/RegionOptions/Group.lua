@@ -128,7 +128,7 @@ local function createOptions(id, data)
           end
         end
         WeakAuras.Add(data);
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
       end
     },
     align_v = {
@@ -194,7 +194,7 @@ local function createOptions(id, data)
           end
         end
         WeakAuras.Add(data);
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
       end
     },
     distribute_h = {
@@ -277,7 +277,7 @@ local function createOptions(id, data)
         end
 
         WeakAuras.Add(data);
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
       end
     },
     distribute_v = {
@@ -360,7 +360,7 @@ local function createOptions(id, data)
         end
 
         WeakAuras.Add(data);
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
       end
     },
     space_h = {
@@ -443,7 +443,7 @@ local function createOptions(id, data)
         end
 
         WeakAuras.Add(data);
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
       end
     },
     space_v = {
@@ -526,7 +526,7 @@ local function createOptions(id, data)
         end
 
         WeakAuras.Add(data);
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
       end
     },
     scale = {
@@ -547,7 +547,7 @@ local function createOptions(id, data)
         data.yOffset = data.yOffset/(1-change)
         data.scale = v
         WeakAuras.Add(data);
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
       end
     },
     endHeader = {
