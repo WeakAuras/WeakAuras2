@@ -173,7 +173,7 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth,
       order = 13,
       func = function()
-        WeakAuras.OpenTexturePicker(data, "tick_texture", OptionsPrivate.Private.texture_types);
+        OptionsPrivate.OpenTexturePicker(data, "tick_texture", OptionsPrivate.Private.texture_types);
       end,
       disabled = function() return not data.use_texture end,
       hidden = hiddentickextras,
