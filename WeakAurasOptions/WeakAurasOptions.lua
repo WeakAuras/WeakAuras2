@@ -814,7 +814,7 @@ function WeakAuras.ConvertDisplay(data, newType)
   frame:FillOptions();
   WeakAuras.UpdateDisplayButton(data);
   WeakAuras.SetMoverSizer(id)
-  WeakAuras.ResetMoverSizer();
+  OptionsPrivate.ResetMoverSizer();
   WeakAuras.SortDisplayButtons()
 end
 
@@ -1319,7 +1319,7 @@ function WeakAuras.OpenTriggerTemplate(data, targetId)
   frame.newView:Open(data);
 end
 
-function WeakAuras.ResetMoverSizer()
+function OptionsPrivate.ResetMoverSizer()
   if(frame and frame.mover and frame.moversizer and frame.mover.moving.region and frame.mover.moving.data) then
     frame.moversizer:SetToRegion(frame.mover.moving.region, frame.mover.moving.data);
   end

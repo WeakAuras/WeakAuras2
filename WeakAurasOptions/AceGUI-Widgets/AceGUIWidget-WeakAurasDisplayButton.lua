@@ -623,7 +623,7 @@ local methods = {
       WeakAuras.UpdateGroupOrders(data);
       WeakAuras.SortDisplayButtons();
       self:ReloadTooltip();
-      WeakAuras.ResetMoverSizer();
+      OptionsPrivate.ResetMoverSizer();
     end
 
     function self.callbacks.OnClickGroupingSelf()
