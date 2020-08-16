@@ -4,7 +4,6 @@ local AddonName, Private = ...
 -- Animations
 local animations = {}
 local pending_controls = {}
-local anim_presets = WeakAuras.anim_presets;
 local anim_function_strings = WeakAuras.anim_function_strings;
 
 local function noopErrorHandler() end
@@ -177,8 +176,8 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
   local valid;
   if(anim and anim.type == "custom" and (anim.use_translate or anim.use_alpha or (anim.use_scale and region.Scale) or (anim.use_rotate and region.Rotate) or (anim.use_color and region.Color))) then
     valid = true;
-  elseif(anim and anim.type == "preset" and anim.preset and anim_presets[anim.preset]) then
-    anim = anim_presets[anim.preset];
+  elseif(anim and anim.type == "preset" and anim.preset and Private.anim_presets[anim.preset]) then
+    anim = Private.anim_presets[anim.preset];
     valid = true;
   end
   if(valid) then
