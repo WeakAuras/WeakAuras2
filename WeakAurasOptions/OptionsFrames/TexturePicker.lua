@@ -279,7 +279,7 @@ local function ConstructTexturePicker(frame)
   return group
 end
 
-function WeakAuras.TexturePicker(frame)
+function OptionsPrivate.TexturePicker(frame)
   texturePicker = texturePicker or ConstructTexturePicker(frame)
   return texturePicker
 end
