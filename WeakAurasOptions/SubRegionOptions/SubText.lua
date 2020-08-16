@@ -32,12 +32,12 @@ local function createOptions(parentData, data, index, subIndex)
     __title = L["Text %s"]:format(subIndex),
     __order = 1,
     __up = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionUp, index, "subtext")) then
+      if (WeakAuras.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionUp, index, "subtext")) then
         WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     __down = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionDown, index, "subtext")) then
+      if (WeakAuras.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionDown, index, "subtext")) then
         WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,

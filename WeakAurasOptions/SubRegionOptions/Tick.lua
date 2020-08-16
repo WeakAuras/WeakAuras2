@@ -14,12 +14,12 @@ local function createOptions(parentData, data, index, subIndex)
     __title = L["Tick %s"]:format(subIndex),
     __order = 1,
     __up = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionUp, index, "subtick")) then
+      if (WeakAuras.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionUp, index, "subtick")) then
         WeakAuras.ReloadOptions2(parentData.id, parentData)
       end
     end,
     __down = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, WeakAuras.MoveSubRegionDown, index, "subtick")) then
+      if (WeakAuras.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionDown, index, "subtick")) then
         WeakAuras.ReloadOptions2(parentData.id, parentData)
       end
     end,
