@@ -175,11 +175,6 @@ function OptionsPrivate.CreateFrame()
     OptionsPrivate.Private.ClearFakeStates()
     OptionsPrivate.SetDragging()
 
-    local tutFrame = WeakAuras.TutorialsFrame and WeakAuras.TutorialsFrame()
-    if tutFrame and tutFrame:IsVisible() then
-      tutFrame:Hide()
-    end
-
     OptionsPrivate.Private.PauseAllDynamicGroups()
 
     for id, data in pairs(WeakAuras.regions) do
