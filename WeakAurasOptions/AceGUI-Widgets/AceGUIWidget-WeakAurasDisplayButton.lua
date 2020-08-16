@@ -920,7 +920,7 @@ local methods = {
             text = regionData.displayName,
             notCheckable = true,
             func = function()
-              WeakAuras.ConvertDisplay(data, regionType);
+              OptionsPrivate.ConvertDisplay(data, regionType);
               WeakAuras_DropDownMenu:Hide();
             end
           });
