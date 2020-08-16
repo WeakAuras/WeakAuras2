@@ -439,7 +439,7 @@ local function ConstructModelPicker(frame)
   return group
 end
 
-function WeakAuras.ModelPicker(frame)
+function OptionsPrivate.ModelPicker(frame)
   modelPicker = modelPicker or ConstructModelPicker(frame)
   return modelPicker
 end

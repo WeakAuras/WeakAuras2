@@ -744,7 +744,7 @@ local function ConstructTextEditor(frame)
   return group
 end
 
-function WeakAuras.TextEditor(frame)
+function OptionsPrivate.TextEditor(frame)
   textEditor = textEditor or ConstructTextEditor(frame)
   return textEditor
 end
