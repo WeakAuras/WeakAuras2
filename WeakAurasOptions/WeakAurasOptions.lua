@@ -1042,7 +1042,7 @@ function WeakAuras.IsPickedMultiple()
   end
 end
 
-function WeakAuras.IsDisplayPicked(id)
+function OptionsPrivate.IsDisplayPicked(id)
   if(frame.pickedDisplay == tempGroup) then
     for index, childId in pairs(tempGroup.controlledChildren) do
       if(id == childId) then

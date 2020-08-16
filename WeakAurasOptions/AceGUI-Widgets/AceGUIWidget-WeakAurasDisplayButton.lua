@@ -531,7 +531,7 @@ local methods = {
 
     function self.callbacks.OnClickNormal(_, mouseButton)
       if(IsControlKeyDown() and not data.controlledChildren) then
-        if (WeakAuras.IsDisplayPicked(data.id)) then
+        if (OptionsPrivate.IsDisplayPicked(data.id)) then
           WeakAuras.ClearPick(data.id);
         else
           WeakAuras.PickDisplayMultiple(data.id);
@@ -556,17 +556,17 @@ local methods = {
       else
         if(mouseButton == "RightButton") then
           Hide_Tooltip();
-          if(WeakAuras.IsDisplayPicked(data.id) and WeakAuras.IsPickedMultiple()) then
+          if(OptionsPrivate.IsDisplayPicked(data.id) and WeakAuras.IsPickedMultiple()) then
             EasyMenu(WeakAuras.MultipleDisplayTooltipMenu(), WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
           else
             UpdateClipboardMenuEntry(data);
             EasyMenu(self.menu, WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
-            if not(WeakAuras.IsDisplayPicked(data.id)) then
+            if not(OptionsPrivate.IsDisplayPicked(data.id)) then
               WeakAuras.PickDisplay(data.id);
             end
           end
         else
-          if (WeakAuras.IsDisplayPicked(data.id)) then
+          if (OptionsPrivate.IsDisplayPicked(data.id)) then
             WeakAuras.ClearPicks();
           else
             WeakAuras.PickDisplay(data.id);
@@ -1116,7 +1116,7 @@ local methods = {
     self:SetDescription({data.id, displayName}, unpack(namestable));
   end,
   ["ReloadTooltip"] = function(self)if(
-    WeakAuras.IsPickedMultiple() and WeakAuras.IsDisplayPicked(self.data.id)) then
+    WeakAuras.IsPickedMultiple() and OptionsPrivate.IsDisplayPicked(self.data.id)) then
     Show_Long_Tooltip(self.frame, WeakAuras.MultipleDisplayTooltipDesc());
   else
     Show_Long_Tooltip(self.frame, self.frame.description);
@@ -1812,7 +1812,7 @@ local function Constructor()
   button.description = {};
 
   button:SetScript("OnEnter", function()
-    if(WeakAuras.IsPickedMultiple() and WeakAuras.IsDisplayPicked(button.id)) then
+    if(WeakAuras.IsPickedMultiple() and OptionsPrivate.IsDisplayPicked(button.id)) then
       Show_Long_Tooltip(button, WeakAuras.MultipleDisplayTooltipDesc());
     else
       if not(button.terribleCodeOrganizationHackTable.IsGroupingOrCopying()) then
