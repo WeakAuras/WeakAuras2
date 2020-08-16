@@ -974,7 +974,7 @@ local function ConstructMoverSizer(parent)
   return frame, mover
 end
 
-function WeakAuras.MoverSizer(parent)
+function OptionsPrivate.MoverSizer(parent)
   if not moversizer or not mover then
     moversizer, mover = ConstructMoverSizer(parent)
   end
