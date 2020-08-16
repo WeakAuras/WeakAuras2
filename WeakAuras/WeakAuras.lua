@@ -1627,10 +1627,10 @@ end
 function WeakAuras.UnloadAll()
   -- Even though auras are collapsed, their finish animation can be running
   for id in pairs(loaded) do
-    WeakAuras.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
+    Private.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
     if clones[id] then
       for cloneId, region in pairs(clones[id]) do
-        WeakAuras.CancelAnimation(region, true, true, true, true, true, true)
+        Private.CancelAnimation(region, true, true, true, true, true, true)
       end
     end
   end
@@ -1683,10 +1683,10 @@ function WeakAuras.UnloadDisplays(toUnload, ...)
 
   for id in pairs(toUnload) do
     -- Even though auras are collapsed, their finish animation can be running
-    WeakAuras.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
+    Private.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
     if clones[id] then
       for cloneId, region in pairs(clones[id]) do
-        WeakAuras.CancelAnimation(region, true, true, true, true, true, true)
+        Private.CancelAnimation(region, true, true, true, true, true, true)
       end
     end
 
@@ -1768,11 +1768,11 @@ function WeakAuras.Delete(data)
   regions[id].region:Collapse()
   WeakAuras.CollapseAllClones(id);
 
-  WeakAuras.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
+  Private.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
 
   if clones[id] then
     for cloneId, region in pairs(clones[id]) do
-      WeakAuras.CancelAnimation(region, true, true, true, true, true, true)
+      Private.CancelAnimation(region, true, true, true, true, true, true)
     end
   end
 
@@ -2854,7 +2854,7 @@ function WeakAuras.SetRegion(data, cloneId)
         end
       end
       local loginFinished = WeakAuras.IsLoginFinished();
-      local anim_cancelled = loginFinished and WeakAuras.CancelAnimation(region, true, true, true, true, true, true);
+      local anim_cancelled = loginFinished and Private.CancelAnimation(region, true, true, true, true, true, true);
 
       regionTypes[regionType].modify(parent, region, data);
       WeakAuras.regionPrototype.AddSetDurationInfo(region);

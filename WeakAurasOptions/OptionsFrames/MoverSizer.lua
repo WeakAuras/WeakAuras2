@@ -500,7 +500,7 @@ local function ConstructMoverSizer(parent)
 
     local db = savedVars.db
     mover.startMoving = function()
-      WeakAuras.CancelAnimation(region, true, true, true, true, true)
+      OptionsPrivate.Private.CancelAnimation(region, true, true, true, true, true)
       mover:ClearAllPoints()
       if data.regionType == "group" then
         mover:SetPoint(mover.selfPoint, region, mover.anchorPoint, region.blx * scale, region.bly * scale)
@@ -638,7 +638,7 @@ local function ConstructMoverSizer(parent)
     if region:IsResizable() then
       frame.startSizing = function(point)
         mover.isMoving = true
-        WeakAuras.CancelAnimation(region, true, true, true, true, true)
+        OptionsPrivate.Private.CancelAnimation(region, true, true, true, true, true)
         local rSelfPoint, rAnchor, rAnchorPoint, rXOffset, rYOffset = region:GetPoint(1)
         region:StartSizing(point)
         frame.text:ClearAllPoints()
