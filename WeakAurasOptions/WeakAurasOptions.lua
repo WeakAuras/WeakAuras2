@@ -517,8 +517,8 @@ function WeakAuras.ShowOptions(msg)
 
   frame:Show();
 
-  if (WeakAuras.mouseFrame) then
-    WeakAuras.mouseFrame:OptionsOpened();
+  if (OptionsPrivate.Private.mouseFrame) then
+    OptionsPrivate.Private.mouseFrame:OptionsOpened();
   end
 
   if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
