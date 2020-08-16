@@ -827,7 +827,7 @@ function WeakAuras.UpdateGroupOrders(data)
   end
 end
 
-function WeakAuras.UpdateButtonsScroll()
+function OptionsPrivate.UpdateButtonsScroll()
   if WeakAuras.IsOptionsProcessingPaused() then return end
   frame.buttonsScroll:DoLayout()
 end
@@ -1047,13 +1047,13 @@ end
 
 function WeakAuras.PickDisplay(id, tab, noHide)
   frame:PickDisplay(id, tab, noHide)
-  WeakAuras.UpdateButtonsScroll()
+  OptionsPrivate.UpdateButtonsScroll()
 end
 
 function OptionsPrivate.PickAndEditDisplay(id)
   frame:PickDisplay(id);
   displayButtons[id].callbacks.OnRenameClick();
-  WeakAuras.UpdateButtonsScroll()
+  OptionsPrivate.UpdateButtonsScroll()
 end
 
 function OptionsPrivate.ClearPick(id)

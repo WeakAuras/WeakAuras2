@@ -1264,7 +1264,7 @@ local methods = {
       end)
       Show_DropIndicator(id)
     end
-    WeakAuras.UpdateButtonsScroll()
+    OptionsPrivate.UpdateButtonsScroll()
   end,
   ["Drop"] = function(self, reset)
     Show_DropIndicator()
@@ -1295,7 +1295,7 @@ local methods = {
     -- exit if we have no target or only want to reset
     self.multi = nil
     if reset or not target then
-      return WeakAuras.UpdateButtonsScroll()
+      return OptionsPrivate.UpdateButtonsScroll()
     end
     local action = GetAction(target, area, self)
     if action then
