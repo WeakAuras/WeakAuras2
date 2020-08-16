@@ -85,10 +85,10 @@ function WeakAuras.GetAnimationOptions(data)
       data.animation[field] = data.animation[field] or {};
       data.animation[field][value] = v;
       if(field == "main") then
-        WeakAuras.Animate("display", data.uid, "main", data.animation.main, WeakAuras.regions[id].region, false, nil, true);
+        OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, WeakAuras.regions[id].region, false, nil, true);
         if(WeakAuras.clones[id]) then
           for cloneId, cloneRegion in pairs(WeakAuras.clones[id]) do
-            WeakAuras.Animate("display", data.uid, "main", data.animation.main, cloneRegion, false, nil, true, cloneId);
+            OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, cloneRegion, false, nil, true, cloneId);
           end
         end
       end
@@ -843,10 +843,10 @@ function WeakAuras.GetAnimationOptions(data)
   }
 
   local function extraSetFunction()
-    WeakAuras.Animate("display", data.uid, "main", data.animation.main, WeakAuras.regions[id].region, false, nil, true);
+    OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, WeakAuras.regions[id].region, false, nil, true);
     if(WeakAuras.clones[id]) then
       for cloneId, cloneRegion in pairs(WeakAuras.clones[id]) do
-        WeakAuras.Animate("display", data.uid, "main", data.animation.main, cloneRegion, false, nil, true, cloneId);
+        OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, cloneRegion, false, nil, true, cloneId);
       end
     end
   end

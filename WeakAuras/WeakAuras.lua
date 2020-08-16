@@ -2879,7 +2879,7 @@ function WeakAuras.SetRegion(data, cloneId)
         clonePool[regionType] = clonePool[regionType] or {};
       end
       if(anim_cancelled) then
-        WeakAuras.Animate("display", data.uid, "main", data.animation.main, region, false, nil, true, cloneId);
+        Private.Animate("display", data.uid, "main", data.animation.main, region, false, nil, true, cloneId);
       end
       return region;
     end
