@@ -3298,7 +3298,7 @@ Private.GetTriggerDescription = wrapTriggerSystemFunction("GetTriggerDescription
 
 local wrappedGetOverlayInfo = wrapTriggerSystemFunction("GetOverlayInfo", "table");
 
-WeakAuras.GetAdditionalProperties = function(data, triggernum, ...)
+Private.GetAdditionalProperties = function(data, triggernum, ...)
   local additionalProperties = ""
   for i = 1, #data.triggers do
     local triggerSystem = WeakAuras.GetTriggerSystem(data, i);
