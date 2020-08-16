@@ -298,10 +298,10 @@ local function createOptions(parentData, data, index, subIndex)
     anchors = {}
     for index, childId in ipairs(parentData.controlledChildren) do
       local childData = WeakAuras.GetData(childId)
-      Mixin(anchors, WeakAuras.GetAnchorsForData(childData, "point"))
+      Mixin(anchors, OptionsPrivate.Private.GetAnchorsForData(childData, "point"))
     end
   else
-     anchors = WeakAuras.GetAnchorsForData(parentData, "point")
+     anchors = OptionsPrivate.Private.GetAnchorsForData(parentData, "point")
   end
   -- Anchor Options
   options.text_anchorsDescription = {
