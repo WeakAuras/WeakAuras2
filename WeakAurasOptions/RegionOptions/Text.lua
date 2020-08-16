@@ -32,7 +32,7 @@ local function createOptions(id, data)
         WeakAuras.Add(data);
         WeakAuras.ClearAndUpdateOptions(data.id)
         WeakAuras.UpdateThumbnail(data);
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
       end,
     },
     customTextUpdate = {

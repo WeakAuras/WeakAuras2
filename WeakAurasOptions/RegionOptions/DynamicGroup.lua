@@ -116,7 +116,7 @@ local function createOptions(id, data)
         data.selfPoint = selfPoint
         WeakAuras.Add(data)
         WeakAuras.ClearAndUpdateOptions(data.id)
-        WeakAuras.ResetMoverSizer()
+        OptionsPrivate.ResetMoverSizer()
       end,
     },
     useAnchorPerUnit = {
@@ -162,7 +162,7 @@ local function createOptions(id, data)
         data.selfPoint = selfPoint
         WeakAuras.Add(data)
         WeakAuras.ClearAndUpdateOptions(data.id)
-        WeakAuras.ResetMoverSizer()
+        OptionsPrivate.ResetMoverSizer()
       end,
       hidden = function() return (data.grow == "CUSTOM" or data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" or data.grow == "GRID") end,
       disabled = function() return data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" end
@@ -184,7 +184,7 @@ local function createOptions(id, data)
         data.selfPoint = selfPoint
         WeakAuras.Add(data)
         WeakAuras.ClearAndUpdateOptions(data.id)
-        WeakAuras.ResetMoverSizer()
+        OptionsPrivate.ResetMoverSizer()
       end,
     },
     -- circle grow options
@@ -246,7 +246,7 @@ local function createOptions(id, data)
         data.selfPoint = gridSelfPoints[value]
         data.gridType = value
         WeakAuras.Add(data)
-        WeakAuras.ResetMoverSizer()
+        OptionsPrivate.ResetMoverSizer()
       end,
     },
     gridWidth = {
@@ -411,7 +411,7 @@ local function createOptions(id, data)
         data.yOffset = data.yOffset/(1-change)
         data.scale = v
         WeakAuras.Add(data);
-        WeakAuras.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer();
       end
     },
     endHeader = {

@@ -971,7 +971,7 @@ function WeakAuras.GetLoadOptions(data)
         if(type(data.id) == "string") then
           WeakAuras.Add(data);
           WeakAuras.UpdateThumbnail(data);
-          WeakAuras.ResetMoverSizer();
+          OptionsPrivate.ResetMoverSizer();
         end
       end
       load.hidden = function(info, ...) return hiddenAll(data, info, ...); end;
