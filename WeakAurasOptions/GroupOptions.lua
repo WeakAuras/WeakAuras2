@@ -6,7 +6,7 @@ local regionOptions = WeakAuras.regionOptions;
 local parsePrefix = WeakAuras.commonOptions.parsePrefix
 local flattenRegionOptions = WeakAuras.commonOptions.flattenRegionOptions
 
-function WeakAuras.GetGroupOptions(data)
+function OptionsPrivate.GetGroupOptions(data)
   local regionOption;
   local id = data.id
   if (regionOptions[data.regionType]) then

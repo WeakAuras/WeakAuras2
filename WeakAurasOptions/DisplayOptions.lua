@@ -83,7 +83,7 @@ local function union(table1, table2)
   return meta;
 end
 
-function WeakAuras.GetDisplayOptions(data)
+function OptionsPrivate.GetDisplayOptions(data)
   local id = data.id
 
   if not data.controlledChildren then

@@ -119,7 +119,7 @@ local function AddOptions(allOptions, data)
   return union(allOptions, triggerOptions)
 end
 
-function WeakAuras.GetTriggerOptions(data)
+function OptionsPrivate.GetTriggerOptions(data)
   local allOptions = {}
   if data.controlledChildren then
     for index, childId in pairs(data.controlledChildren) do
