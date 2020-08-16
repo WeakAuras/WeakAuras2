@@ -775,7 +775,7 @@ function OptionsPrivate.ExportToTable(id)
   frame.importexport:Open("table", id);
 end
 
-function WeakAuras.ImportFromString()
+function OptionsPrivate.ImportFromString()
   frame.importexport:Open("import");
 end
 
