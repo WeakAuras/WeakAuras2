@@ -286,7 +286,7 @@ local function createOptions(id, data)
     options["displayText_format_" .. key] = option
   end
 
-  WeakAuras.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
+  OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
   addOption("footer", {
     type = "description",
     name = "",

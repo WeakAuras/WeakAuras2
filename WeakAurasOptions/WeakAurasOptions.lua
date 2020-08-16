@@ -1610,7 +1610,7 @@ function WeakAuras.DeleteCollapsedData(id)
   collapsedOptions[id] = nil
 end
 
-function WeakAuras.AddTextFormatOption(input, withHeader, get, addOption, hidden, setHidden)
+function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, hidden, setHidden)
   local headerOption
   if withHeader then
     headerOption =  {
