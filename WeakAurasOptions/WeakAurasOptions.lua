@@ -97,7 +97,7 @@ function OptionsPrivate.DuplicateAura(data, newParent)
       local button = WeakAuras.GetDisplayButton(parentData.id)
       button.callbacks.UpdateExpandButton()
       WeakAuras.UpdateDisplayButton(parentData)
-      WeakAuras.ClearOptions(parentData.id)
+      OptionsPrivate.ClearOptions(parentData.id)
     end
   end
   return newData.id
@@ -241,7 +241,7 @@ function OptionsPrivate.MultipleDisplayTooltipMenu()
           childData.parent = data.id;
           WeakAuras.Add(data);
           WeakAuras.Add(childData);
-          WeakAuras.ClearOptions(childData.id)
+          OptionsPrivate.ClearOptions(childData.id)
         end
 
         for index, id in pairs(data.controlledChildren) do
@@ -383,7 +383,7 @@ function WeakAuras.DeleteOption(data, massDelete)
   end
 
   WeakAuras.CollapseAllClones(id);
-  WeakAuras.ClearOptions(id)
+  OptionsPrivate.ClearOptions(id)
 
   frame:ClearPicks();
   WeakAuras.Delete(data);
@@ -721,7 +721,7 @@ function WeakAuras.ClearAndUpdateOptions(id, clearChildren)
   frame:ClearAndUpdateOptions(id, clearChildren)
 end
 
-function WeakAuras.ClearOptions(id)
+function OptionsPrivate.ClearOptions(id)
   frame:ClearOptions(id)
 end
 
@@ -1431,7 +1431,7 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
         WeakAuras.Add(group.data);
         WeakAuras.NewDisplayButton(data);
         WeakAuras.UpdateGroupOrders(group.data);
-        WeakAuras.ClearOptions(group.data.id);
+        OptionsPrivate.ClearOptions(group.data.id);
         WeakAuras.UpdateDisplayButton(group.data);
         group.callbacks.UpdateExpandButton();
         group:Expand();
@@ -1694,7 +1694,7 @@ function OptionsPrivate.HandleRename(data, oldid, newid)
   WeakAuras.displayButtons[newid] = WeakAuras.displayButtons[oldid];
   WeakAuras.displayButtons[newid]:SetData(data)
   WeakAuras.displayButtons[oldid] = nil;
-  WeakAuras.ClearOptions(oldid)
+  OptionsPrivate.ClearOptions(oldid)
 
   WeakAuras.displayButtons[newid]:SetTitle(newid);
 
