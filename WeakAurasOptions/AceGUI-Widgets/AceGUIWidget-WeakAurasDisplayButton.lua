@@ -1074,7 +1074,7 @@ local methods = {
         namestable[1] = L["No Children"];
       end
     else
-      WeakAuras.GetTriggerDescription(data, -1, namestable)
+      OptionsPrivate.Private.GetTriggerDescription(data, -1, namestable)
     end
     if(WeakAuras.CanHaveClones(data)) then
       tinsert(namestable, {" ", "|cFF00FF00"..L["Auto-cloning enabled"]})
