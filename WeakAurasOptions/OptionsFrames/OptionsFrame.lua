@@ -203,8 +203,8 @@ function WeakAuras.CreateFrame()
       WeakAuras.mouseFrame:OptionsClosed()
     end
 
-    if WeakAuras.personalRessourceDisplayFrame then
-      WeakAuras.personalRessourceDisplayFrame:OptionsClosed()
+    if OptionsPrivate.Private.personalRessourceDisplayFrame then
+      OptionsPrivate.Private.personalRessourceDisplayFrame:OptionsClosed()
     end
   end)
 
