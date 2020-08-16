@@ -532,7 +532,7 @@ local methods = {
     function self.callbacks.OnClickNormal(_, mouseButton)
       if(IsControlKeyDown() and not data.controlledChildren) then
         if (OptionsPrivate.IsDisplayPicked(data.id)) then
-          WeakAuras.ClearPick(data.id);
+          OptionsPrivate.ClearPick(data.id);
         else
           WeakAuras.PickDisplayMultiple(data.id);
         end
@@ -567,7 +567,7 @@ local methods = {
           end
         else
           if (OptionsPrivate.IsDisplayPicked(data.id)) then
-            WeakAuras.ClearPicks();
+            OptionsPrivate.ClearPicks();
           else
             WeakAuras.PickDisplay(data.id);
           end
