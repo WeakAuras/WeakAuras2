@@ -185,8 +185,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
 end
 
 local function copyOptionTable(input, orderAdjustment, collapsedFunc)
-  local resultOption = {};
-  WeakAuras.DeepCopy(input, resultOption);
+  local resultOption = CopyTable(input);
   resultOption.order = orderAdjustment + resultOption.order;
   if collapsedFunc then
     local oldHidden = resultOption.hidden;

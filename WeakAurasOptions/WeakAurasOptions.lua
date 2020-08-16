@@ -68,8 +68,7 @@ function WeakAuras.DuplicateAura(data, newParent)
     num = num + 1
   end
 
-  local newData = {}
-  WeakAuras.DeepCopy(data, newData)
+  local newData = CopyTable(data)
   newData.id = new_id
   newData.parent = nil
   newData.uid = WeakAuras.GenerateUniqueID()
@@ -1412,9 +1411,9 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
   end
   local new_id = WeakAuras.FindUnusedId("New")
   local data = {id = new_id, regionType = regionType, uid = WeakAuras.GenerateUniqueID()}
-  WeakAuras.DeepCopy(WeakAuras.data_stub, data);
+  Mixin(data, WeakAuras.data_stub);
   if (sourceData) then
-    WeakAuras.DeepCopy(sourceData, data);
+    Mixin(data, sourceData)
   end
   data.internalVersion = WeakAuras.InternalVersion();
   WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default);
