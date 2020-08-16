@@ -500,7 +500,7 @@ function WeakAuras.ShowOptions(msg)
   WeakAuras.spellCache.Build()
 
   if (firstLoad) then
-    frame = WeakAuras.CreateFrame();
+    frame = OptionsPrivate.CreateFrame();
     frame.buttonsScroll.frame:Show();
     WeakAuras.LayoutDisplayButtons(msg);
   end

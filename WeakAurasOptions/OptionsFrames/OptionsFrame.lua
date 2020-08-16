@@ -133,7 +133,7 @@ local defaultHeight = 665
 local minWidth = 750
 local minHeight = 240
 
-function WeakAuras.CreateFrame()
+function OptionsPrivate.CreateFrame()
   local WeakAuras_DropDownMenu = CreateFrame("frame", "WeakAuras_DropDownMenu", nil, "UIDropDownMenuTemplate")
   local frame
   local db = OptionsPrivate.savedVars.db
