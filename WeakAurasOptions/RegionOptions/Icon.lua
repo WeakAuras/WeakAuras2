@@ -1,4 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
 
 local Masque = LibStub("Masque", true)
 local L = WeakAuras.L
