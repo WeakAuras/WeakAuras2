@@ -154,7 +154,7 @@ local function UpdateAnimations()
       end
 
       if(anim.loop) then
-        WeakAuras.Animate(anim.namespace, anim.auraUID, anim.type, anim.anim, anim.region, anim.inverse, anim.onFinished, anim.loop, anim.region.cloneId);
+        Private.Animate(anim.namespace, anim.auraUID, anim.type, anim.anim, anim.region, anim.inverse, anim.onFinished, anim.loop, anim.region.cloneId);
       elseif(anim.onFinished) then
         anim.onFinished();
       end
@@ -171,7 +171,7 @@ function Private.RegisterGroupForPositioning(uid, region)
   frame:SetScript("OnUpdate", UpdateAnimations)
 end
 
-function WeakAuras.Animate(namespace, uid, type, anim, region, inverse, onFinished, loop, cloneId)
+function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished, loop, cloneId)
   local auraDisplayName = WeakAuras.UIDtoID(uid)
   local key = tostring(region);
   local valid;
