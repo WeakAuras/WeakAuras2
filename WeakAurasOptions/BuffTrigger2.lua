@@ -992,8 +992,8 @@ local function GetBuffTriggerOptions(data, triggernum)
                     true, true, "ignorespellid", 42, "useIgnoreExactSpellId", "ignoreAuraSpellids",
                     L["Ignored Spell ID"], L["Enter a Spell ID"])
 
-  WeakAuras.commonOptions.AddCommonTriggerOptions(aura_options, data, triggernum)
-  WeakAuras.commonOptions.AddTriggerGetterSetter(aura_options, data, triggernum)
+  OptionsPrivate.commonOptions.AddCommonTriggerOptions(aura_options, data, triggernum)
+  OptionsPrivate.commonOptions.AddTriggerGetterSetter(aura_options, data, triggernum)
   WeakAuras.AddTriggerMetaFunctions(aura_options, data, triggernum)
 
 

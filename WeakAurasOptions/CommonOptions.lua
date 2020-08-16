@@ -1134,7 +1134,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint)
       end
     },
   };
-  WeakAuras.commonOptions.AddCodeOption(positionOptions, data, L["Custom Anchor"], "custom_anchor", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-anchor-function",
+  OptionsPrivate.commonOptions.AddCodeOption(positionOptions, data, L["Custom Anchor"], "custom_anchor", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-anchor-function",
                           72.1, function() return not(data.anchorFrameType == "CUSTOM" and not IsParentDynamicGroup()) end, {"customAnchor"}, nil, nil, nil, nil, nil, true)
   return positionOptions;
 end
@@ -1445,23 +1445,23 @@ local function AddTriggerGetterSetter(options, data, triggernum)
 end
 
 
-WeakAuras.commonOptions = {}
-WeakAuras.commonOptions.parsePrefix = parsePrefix
-WeakAuras.commonOptions.flattenRegionOptions = flattenRegionOptions
-WeakAuras.commonOptions.fixMetaOrders = fixMetaOrders
-WeakAuras.commonOptions.removeFuncs = removeFuncs
-WeakAuras.commonOptions.CreateHiddenAll = CreateHiddenAll
-WeakAuras.commonOptions.CreateDisabledAll = CreateDisabledAll
-WeakAuras.commonOptions.replaceNameDescFuncs = replaceNameDescFuncs
-WeakAuras.commonOptions.replaceImageFuncs = replaceImageFuncs
-WeakAuras.commonOptions.replaceValuesFuncs = replaceValuesFuncs
-WeakAuras.commonOptions.CreateGetAll = CreateGetAll
-WeakAuras.commonOptions.CreateSetAll = CreateSetAll
-WeakAuras.commonOptions.CreateExecuteAll = CreateExecuteAll
+OptionsPrivate.commonOptions = {}
+OptionsPrivate.commonOptions.parsePrefix = parsePrefix
+OptionsPrivate.commonOptions.flattenRegionOptions = flattenRegionOptions
+OptionsPrivate.commonOptions.fixMetaOrders = fixMetaOrders
+OptionsPrivate.commonOptions.removeFuncs = removeFuncs
+OptionsPrivate.commonOptions.CreateHiddenAll = CreateHiddenAll
+OptionsPrivate.commonOptions.CreateDisabledAll = CreateDisabledAll
+OptionsPrivate.commonOptions.replaceNameDescFuncs = replaceNameDescFuncs
+OptionsPrivate.commonOptions.replaceImageFuncs = replaceImageFuncs
+OptionsPrivate.commonOptions.replaceValuesFuncs = replaceValuesFuncs
+OptionsPrivate.commonOptions.CreateGetAll = CreateGetAll
+OptionsPrivate.commonOptions.CreateSetAll = CreateSetAll
+OptionsPrivate.commonOptions.CreateExecuteAll = CreateExecuteAll
 
-WeakAuras.commonOptions.PositionOptions = PositionOptions
-WeakAuras.commonOptions.BorderOptions = BorderOptions
-WeakAuras.commonOptions.AddCodeOption = AddCodeOption
+OptionsPrivate.commonOptions.PositionOptions = PositionOptions
+OptionsPrivate.commonOptions.BorderOptions = BorderOptions
+OptionsPrivate.commonOptions.AddCodeOption = AddCodeOption
 
-WeakAuras.commonOptions.AddCommonTriggerOptions = AddCommonTriggerOptions
-WeakAuras.commonOptions.AddTriggerGetterSetter = AddTriggerGetterSetter
+OptionsPrivate.commonOptions.AddCommonTriggerOptions = AddCommonTriggerOptions
+OptionsPrivate.commonOptions.AddTriggerGetterSetter = AddTriggerGetterSetter

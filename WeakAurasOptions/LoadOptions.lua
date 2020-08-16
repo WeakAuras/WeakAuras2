@@ -3,14 +3,14 @@ local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
 
-local removeFuncs = WeakAuras.commonOptions.removeFuncs
-local replaceNameDescFuncs = WeakAuras.commonOptions.replaceNameDescFuncs
-local replaceImageFuncs = WeakAuras.commonOptions.replaceImageFuncs
-local replaceValuesFuncs = WeakAuras.commonOptions.replaceValuesFuncs
-local disabledAll = WeakAuras.commonOptions.CreateDisabledAll("load")
-local hiddenAll = WeakAuras.commonOptions.CreateHiddenAll("load")
-local getAll = WeakAuras.commonOptions.CreateGetAll("load")
-local setAll = WeakAuras.commonOptions.CreateSetAll("load", getAll)
+local removeFuncs = OptionsPrivate.commonOptions.removeFuncs
+local replaceNameDescFuncs = OptionsPrivate.commonOptions.replaceNameDescFuncs
+local replaceImageFuncs = OptionsPrivate.commonOptions.replaceImageFuncs
+local replaceValuesFuncs = OptionsPrivate.commonOptions.replaceValuesFuncs
+local disabledAll = OptionsPrivate.commonOptions.CreateDisabledAll("load")
+local hiddenAll = OptionsPrivate.commonOptions.CreateHiddenAll("load")
+local getAll = OptionsPrivate.commonOptions.CreateGetAll("load")
+local setAll = OptionsPrivate.commonOptions.CreateSetAll("load", getAll)
 
 local ValidateNumeric = WeakAuras.ValidateNumeric;
 

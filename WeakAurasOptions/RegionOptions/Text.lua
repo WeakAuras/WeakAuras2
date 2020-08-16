@@ -254,7 +254,7 @@ local function createOptions(id, data)
     },
   };
 
-  WeakAuras.commonOptions.AddCodeOption(options, data, L["Custom Function"], "customText", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text",
+  OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Function"], "customText", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text",
                           37, function() return not WeakAuras.ContainsCustomPlaceHolder(data.displayText) end, {"customText"}, false);
 
   -- Add Text Format Options
@@ -296,7 +296,7 @@ local function createOptions(id, data)
 
   return {
     text = options;
-    position = WeakAuras.commonOptions.PositionOptions(id, data, nil, true);
+    position = OptionsPrivate.commonOptions.PositionOptions(id, data, nil, true);
   };
 end
 
