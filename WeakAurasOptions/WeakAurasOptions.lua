@@ -1704,7 +1704,7 @@ function WeakAuras.AddTextFormatOption(input, withHeader, get, addOption, hidden
   return next(seenSymbols) ~= nil
 end
 
-function WeakAuras.HandleRename(data, oldid, newid)
+function OptionsPrivate.HandleRename(data, oldid, newid)
   WeakAuras.displayButtons[newid] = WeakAuras.displayButtons[oldid];
   WeakAuras.displayButtons[newid]:SetData(data)
   WeakAuras.displayButtons[oldid] = nil;
