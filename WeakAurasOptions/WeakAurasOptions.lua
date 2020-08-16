@@ -163,7 +163,7 @@ AceGUI:RegisterLayout("ButtonsScrollLayout", function(content, children, skipLay
   end
 end)
 
-function WeakAuras.MultipleDisplayTooltipDesc()
+function OptionsPrivate.MultipleDisplayTooltipDesc()
   local desc = {{L["Multiple Displays"], L["Temporary Group"]}};
   for index, id in pairs(tempGroup.controlledChildren) do
     desc[index + 1] = {" ", id};
