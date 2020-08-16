@@ -1943,7 +1943,7 @@ function WeakAuras.Convert(data, newType)
   regions[id].region:Hide();
   WeakAuras.EndEvent(id, 0, true);
 
-  WeakAuras.FakeStatesFor(id, false)
+  Private.FakeStatesFor(id, false)
 
   regions[id].region = nil;
   regions[id] = nil;
@@ -1952,7 +1952,7 @@ function WeakAuras.Convert(data, newType)
   WeakAuras.Add(data);
   WeakAuras.ResetCollapsed(id)
 
-  WeakAuras.FakeStatesFor(id, true)
+  Private.FakeStatesFor(id, true)
 
   local parentRegion = WeakAuras.GetRegion(data.parent)
   if parentRegion and parentRegion.ReloadControlledChildren then
@@ -2687,7 +2687,7 @@ local function pAdd(data, simpleChange)
     else
       local visible
       if (WeakAuras.IsOptionsOpen()) then
-        visible = WeakAuras.FakeStatesFor(id, false)
+        visible = Private.FakeStatesFor(id, false)
       else
         if (WeakAuras.regions[id] and WeakAuras.regions[id].region) then
           WeakAuras.regions[id].region:Collapse()
@@ -2766,7 +2766,7 @@ local function pAdd(data, simpleChange)
       WeakAuras.LoadEncounterInitScripts(id);
 
       if (WeakAuras.IsOptionsOpen()) then
-        WeakAuras.FakeStatesFor(id, visible)
+        Private.FakeStatesFor(id, visible)
       end
 
       if not(paused) then
@@ -3760,11 +3760,11 @@ do
   function WeakAuras.ClearFakeStates()
     timer:CancelTimer(UpdateFakeTimesHandle)
     for id in pairs(triggerState) do
-      WeakAuras.FakeStatesFor(id, false)
+      Private.FakeStatesFor(id, false)
     end
   end
 
-  function WeakAuras.FakeStatesFor(id, visible)
+  function Private.FakeStatesFor(id, visible)
     if visibleFakeStates[id] == visible then
       return visibleFakeStates[id]
     end

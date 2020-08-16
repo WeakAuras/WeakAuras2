@@ -1845,7 +1845,7 @@ local function Constructor()
     if(priority >= self.visibility) then
       self.visibility = priority;
       if(self.region and self.region.Expand) then
-        WeakAuras.FakeStatesFor(self.region.id, true)
+        OptionsPrivate.Private.FakeStatesFor(self.region.id, true)
         if (WeakAuras.personalRessourceDisplayFrame) then
           WeakAuras.personalRessourceDisplayFrame:expand(self.region.id);
         end
@@ -1865,7 +1865,7 @@ local function Constructor()
     if(priority >= self.visibility) then
       self.visibility = 0;
       if(self.region and self.region.Collapse) then
-        WeakAuras.FakeStatesFor(self.region.id, false)
+        OptionsPrivate.Private.FakeStatesFor(self.region.id, false)
         if (WeakAuras.personalRessourceDisplayFrame) then
           WeakAuras.personalRessourceDisplayFrame:collapse(self.region.id);
         end
