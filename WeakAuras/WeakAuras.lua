@@ -3322,7 +3322,7 @@ WeakAuras.GetAdditionalProperties = function(data, triggernum, ...)
   return additionalProperties
 end
 
-function WeakAuras.GetOverlayInfo(data, triggernum)
+function Private.GetOverlayInfo(data, triggernum)
   local overlayInfo;
   if (data.controlledChildren) then
     overlayInfo = {};
