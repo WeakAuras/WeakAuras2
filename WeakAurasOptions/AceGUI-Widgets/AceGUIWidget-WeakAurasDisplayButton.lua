@@ -616,7 +616,7 @@ local methods = {
       WeakAuras.Add(data);
       WeakAuras.ClearAndUpdateOptions(data.id)
       self.callbacks.UpdateExpandButton();
-      WeakAuras.SetGrouping();
+      OptionsPrivate.SetGrouping();
       WeakAuras.UpdateDisplayButton(data);
       WeakAuras.ClearAndUpdateOptions(data.id);
       WeakAuras.FillOptions();
@@ -627,12 +627,12 @@ local methods = {
     end
 
     function self.callbacks.OnClickGroupingSelf()
-      WeakAuras.SetGrouping();
+      OptionsPrivate.SetGrouping();
       self:ReloadTooltip();
     end
 
     function self.callbacks.OnGroupClick()
-      WeakAuras.SetGrouping(data);
+      OptionsPrivate.SetGrouping(data);
     end
 
     function self.callbacks.OnDeleteClick()

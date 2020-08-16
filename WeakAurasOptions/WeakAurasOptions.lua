@@ -1172,7 +1172,7 @@ function WeakAuras.EnsureDisplayButton(data)
   end
 end
 
-function WeakAuras.SetGrouping(data)
+function OptionsPrivate.SetGrouping(data)
   if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0 and data) then
     local children = {};
     -- set grouping for selected buttons
@@ -1718,7 +1718,7 @@ function WeakAuras.HandleRename(data, oldid, newid)
     end
   end
 
-  WeakAuras.SetGrouping()
+  OptionsPrivate.SetGrouping()
   WeakAuras.SortDisplayButtons()
   WeakAuras.PickDisplay(newid)
 end
