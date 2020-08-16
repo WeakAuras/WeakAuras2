@@ -367,7 +367,7 @@ local function createOptions(id, data)
 
   options = WeakAuras.regionPrototype.AddAdjustedDurationOptions(options, data, 36.5);
 
-  local overlayInfo = WeakAuras.GetOverlayInfo(data);
+  local overlayInfo = OptionsPrivate.Private.GetOverlayInfo(data);
   if (overlayInfo and next(overlayInfo)) then
     options["overlayheader"] = {
       type = "header",

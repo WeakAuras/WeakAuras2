@@ -129,7 +129,7 @@ local properties = {
 WeakAuras.regionPrototype.AddProperties(properties, default);
 
 local function GetProperties(data)
-  local overlayInfo = WeakAuras.GetOverlayInfo(data);
+  local overlayInfo = Private.GetOverlayInfo(data);
   if (overlayInfo and next(overlayInfo)) then
     local auraProperties = CopyTable(properties)
 
