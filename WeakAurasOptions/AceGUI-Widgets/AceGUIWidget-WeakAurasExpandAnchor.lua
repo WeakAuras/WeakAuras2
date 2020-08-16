@@ -1,7 +1,9 @@
 --[[-----------------------------------------------------------------------------
 Anchor for a Expandable section
 -------------------------------------------------------------------------------]]
-local Type, Version = "WeakAurasExpandAnchor", 1
+if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, OptionsPrivate = ...
+local Type, Version = "WeakAurasExpandAnchor", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -27,8 +29,8 @@ local function OnFrameShow(frame)
   local self = frame.obj
   local option = self.userdata.option
   if option and option.arg and option.arg.expanderName then
-    WeakAuras.expanderAnchors[option.arg.expanderName] = self
-    local otherWidget = WeakAuras.expanderButtons[option.arg.expanderName]
+    OptionsPrivate.expanderAnchors[option.arg.expanderName] = self
+    local otherWidget = OptionsPrivate.expanderButtons[option.arg.expanderName]
     if otherWidget then
       otherWidget:SetAnchor(self)
     end
@@ -39,9 +41,9 @@ local function OnFrameHide(frame)
   local self = frame.obj
   local option = self.userdata.option
   if option and option.arg and option.arg.expanderName then
-    WeakAuras.expanderAnchors[option.arg.expanderName] = nil
+    OptionsPrivate.expanderAnchors[option.arg.expanderName] = nil
 
-    local otherWidget = WeakAuras.expanderButtons[option.arg.expanderName]
+    local otherWidget = OptionsPrivate.expanderButtons[option.arg.expanderName]
     if otherWidget then
       otherWidget:SetAnchor(nil)
     end

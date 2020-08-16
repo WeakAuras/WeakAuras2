@@ -32,8 +32,8 @@ local spellCache = WeakAuras.spellCache;
 local savedVars = {};
 WeakAuras.savedVars = savedVars;
 
-WeakAuras.expanderAnchors = {}
-WeakAuras.expanderButtons = {}
+OptionsPrivate.expanderAnchors = {}
+OptionsPrivate.expanderButtons = {}
 
 local tempGroup = {
   id = {"tempGroup"},
