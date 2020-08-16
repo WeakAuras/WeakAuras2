@@ -373,14 +373,14 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
   else
     if(animations[key]) then
       if(animations[key].type ~= type or loop) then
-        WeakAuras.CancelAnimation(region, true, true, true, true, true);
+        Private.CancelAnimation(region, true, true, true, true, true);
       end
     end
     return false;
   end
 end
 
-function WeakAuras.CancelAnimation(region, resetPos, resetAlpha, resetScale, resetRotation, resetColor, doOnFinished)
+function Private.CancelAnimation(region, resetPos, resetAlpha, resetScale, resetRotation, resetColor, doOnFinished)
   local key = tostring(region);
   local anim = animations[key];
 
