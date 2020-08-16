@@ -1270,7 +1270,7 @@ function OptionsPrivate.OpenIconPicker(data, field, groupIcon)
   frame.iconPicker:Open(data, field, groupIcon);
 end
 
-function WeakAuras.OpenModelPicker(data, field, parentData)
+function OptionsPrivate.OpenModelPicker(data, field, parentData)
   if not(IsAddOnLoaded("WeakAurasModelPaths")) then
     local loaded, reason = LoadAddOn("WeakAurasModelPaths");
     if not(loaded) then
