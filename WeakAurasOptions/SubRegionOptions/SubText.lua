@@ -494,7 +494,7 @@ local function createOptions(parentData, data, index, subIndex)
             return childData["text_text_format_" .. key]
           end
           local input = childData["text_text"]
-          WeakAuras.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
+          OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
         end
       end
     end
@@ -503,7 +503,7 @@ local function createOptions(parentData, data, index, subIndex)
       return data["text_text_format_" .. key]
     end
     local input = data["text_text"]
-    WeakAuras.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
+    OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
   end
 
   addOption("footer", {
