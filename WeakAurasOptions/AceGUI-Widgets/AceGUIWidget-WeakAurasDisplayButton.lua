@@ -1846,8 +1846,8 @@ local function Constructor()
       self.visibility = priority;
       if(self.region and self.region.Expand) then
         OptionsPrivate.Private.FakeStatesFor(self.region.id, true)
-        if (WeakAuras.personalRessourceDisplayFrame) then
-          WeakAuras.personalRessourceDisplayFrame:expand(self.region.id);
+        if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
+          OptionsPrivate.Private.personalRessourceDisplayFrame:expand(self.region.id);
         end
         if (WeakAuras.mouseFrame) then
           WeakAuras.mouseFrame:expand(self.region.id);
@@ -1866,8 +1866,8 @@ local function Constructor()
       self.visibility = 0;
       if(self.region and self.region.Collapse) then
         OptionsPrivate.Private.FakeStatesFor(self.region.id, false)
-        if (WeakAuras.personalRessourceDisplayFrame) then
-          WeakAuras.personalRessourceDisplayFrame:collapse(self.region.id);
+        if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
+          OptionsPrivate.Private.personalRessourceDisplayFrame:collapse(self.region.id);
         end
         if (WeakAuras.mouseFrame) then
           WeakAuras.mouseFrame:collapse(self.region.id);
