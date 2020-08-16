@@ -24,9 +24,6 @@ WeakAuras.transmitCache = {};
 local displayButtons = {};
 WeakAuras.displayButtons = displayButtons;
 
-local aceOptions = {}
-WeakAuras.aceOptions = aceOptions
-
 local spellCache = WeakAuras.spellCache;
 local savedVars = {};
 OptionsPrivate.savedVars = savedVars;
