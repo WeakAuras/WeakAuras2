@@ -246,7 +246,7 @@ local function modify(parent, region, parentData, data, first)
   if first then
     local containsCustomText = false
     for index, subRegion in ipairs(parentData.subRegions) do
-      if subRegion.type == "subtext" and WeakAuras.ContainsCustomPlaceHolder(subRegion.text_text) then
+      if subRegion.type == "subtext" and Private.ContainsCustomPlaceHolder(subRegion.text_text) then
         containsCustomText = true
         break
       end
@@ -305,7 +305,7 @@ local function modify(parent, region, parentData, data, first)
   local FrameTick
   if parent.customTextFunc and parentData.customTextUpdate == "update" then
     if first then
-      if WeakAuras.ContainsCustomPlaceHolder(data.text_text) then
+      if Private.ContainsCustomPlaceHolder(data.text_text) then
         FrameTick = function()
           parent.values.custom = WeakAuras.RunCustomTextFunc(parent, parent.customTextFunc)
           UpdateText()
@@ -316,7 +316,7 @@ local function modify(parent, region, parentData, data, first)
         end
       end
     else
-      if WeakAuras.ContainsCustomPlaceHolder(data.text_text) then
+      if Private.ContainsCustomPlaceHolder(data.text_text) then
         FrameTick = UpdateText
       end
     end

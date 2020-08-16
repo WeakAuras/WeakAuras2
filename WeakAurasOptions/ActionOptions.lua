@@ -850,7 +850,7 @@ function OptionsPrivate.GetActionOptions(data)
                           0.011, function() return not data.actions.init.do_custom end, {"actions", "init", "custom"}, true);
 
   OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "start_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code",
-                          5, function() return not (data.actions.start.do_message and WeakAuras.ContainsCustomPlaceHolder(data.actions.start.message)) end, {"actions", "start", "message_custom"}, false);
+                          5, function() return not (data.actions.start.do_message and OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.start.message)) end, {"actions", "start", "message_custom"}, false);
 
   local startHidden = function()
     return OptionsPrivate.IsCollapsed("format_option", "actions", "start_message", true)
@@ -910,7 +910,7 @@ function OptionsPrivate.GetActionOptions(data)
                           13, function() return not data.actions.start.do_custom end, {"actions", "start", "custom"}, true);
 
   OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "finish_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code",
-                          25, function() return not (data.actions.finish.do_message and WeakAuras.ContainsCustomPlaceHolder(data.actions.finish.message)) end, {"actions", "finish", "message_custom"}, false);
+                          25, function() return not (data.actions.finish.do_message and OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.finish.message)) end, {"actions", "finish", "message_custom"}, false);
 
   local finishHidden = function()
     return OptionsPrivate.IsCollapsed("format_option", "actions", "finish_message", true)

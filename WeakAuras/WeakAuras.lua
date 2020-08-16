@@ -4186,7 +4186,7 @@ local function ContainsPlaceHolders(textStr, symbolFunc)
   return false
 end
 
-function WeakAuras.ContainsCustomPlaceHolder(textStr)
+function Private.ContainsCustomPlaceHolder(textStr)
   return ContainsPlaceHolders(textStr, function(symbol)
     return string.match(symbol, "^c%d*$")
   end)
