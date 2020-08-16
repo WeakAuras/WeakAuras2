@@ -651,11 +651,11 @@ local methods = {
           WeakAuras.DuplicateAura(childData, new_idGroup)
         end
         WeakAuras.SortDisplayButtons()
-        WeakAuras.PickAndEditDisplay(new_idGroup)
+        OptionsPrivate.PickAndEditDisplay(new_idGroup)
       else
         local new_id = WeakAuras.DuplicateAura(data)
         WeakAuras.SortDisplayButtons()
-        WeakAuras.PickAndEditDisplay(new_id)
+        OptionsPrivate.PickAndEditDisplay(new_id)
       end
     end
 
