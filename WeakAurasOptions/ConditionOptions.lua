@@ -750,11 +750,11 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     if data.controlledChildren then
       for id, reference in pairs(conditions[i].changes[j].references) do
         local input = reference.value and reference.value.message
-        hasTextFormatOption = WeakAuras.AddTextFormatOption(input, true, formatGet, addOption, hidden, setHidden)
+        hasTextFormatOption = OptionsPrivate.AddTextFormatOption(input, true, formatGet, addOption, hidden, setHidden)
       end
     else
       local input = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value["message"]
-      hasTextFormatOption = WeakAuras.AddTextFormatOption(input, true, formatGet, addOption, hidden, setHidden)
+      hasTextFormatOption = OptionsPrivate.AddTextFormatOption(input, true, formatGet, addOption, hidden, setHidden)
     end
 
     if hasTextFormatOption then
@@ -2354,7 +2354,7 @@ local function SubPropertiesForChange(change)
       local getter = function(key)
         return change.value["message_format_" .. key]
       end
-      WeakAuras.AddTextFormatOption(input, false, getter, function(key)
+      OptionsPrivate.AddTextFormatOption(input, false, getter, function(key)
         tinsert(result, "message_format_" .. key)
       end)
     end

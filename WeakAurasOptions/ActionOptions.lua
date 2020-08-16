@@ -899,10 +899,10 @@ function OptionsPrivate.GetActionOptions(data)
       local startGet = function(key)
         return childData.actions.start["message_format_" .. key]
       end
-      WeakAuras.AddTextFormatOption(childData.actions and childData.actions.start.message, true, startGet, startAddOption, startHidden, startSetHidden)
+      OptionsPrivate.AddTextFormatOption(childData.actions and childData.actions.start.message, true, startGet, startAddOption, startHidden, startSetHidden)
     end
   else
-    WeakAuras.AddTextFormatOption(data.actions and data.actions.start.message, true, startGet, startAddOption, startHidden, startSetHidden)
+    OptionsPrivate.AddTextFormatOption(data.actions and data.actions.start.message, true, startGet, startAddOption, startHidden, startSetHidden)
   end
 
 
@@ -958,10 +958,10 @@ function OptionsPrivate.GetActionOptions(data)
       local finishGet = function(key)
         return childData.actions.finish["message_format_" .. key]
       end
-      WeakAuras.AddTextFormatOption(childData.actions and childData.actions.finish.message, true, finishGet, finishAddOption, finishHidden, finishSetHidden)
+      OptionsPrivate.AddTextFormatOption(childData.actions and childData.actions.finish.message, true, finishGet, finishAddOption, finishHidden, finishSetHidden)
     end
   else
-    WeakAuras.AddTextFormatOption(data.actions and data.actions.finish.message, true, finishGet, finishAddOption, finishHidden, finishSetHidden)
+    OptionsPrivate.AddTextFormatOption(data.actions and data.actions.finish.message, true, finishGet, finishAddOption, finishHidden, finishSetHidden)
   end
 
   OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "finish", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-hide",
