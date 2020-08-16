@@ -75,7 +75,7 @@ local function modify(parent, region, data)
   WeakAuras.regionPrototype.modify(parent, region, data);
   local text = region.text;
 
-  region.useAuto = WeakAuras.CanHaveAuto(data);
+  region.useAuto = Private.CanHaveAuto(data);
 
   local fontPath = SharedMedia:Fetch("font", data.font);
   text:SetFont(fontPath, data.fontSize, data.outline);

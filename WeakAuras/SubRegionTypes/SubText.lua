@@ -382,7 +382,7 @@ local function modify(parent, region, parentData, data, first)
         selfPoint = anchorPoint:sub(7)
       elseif anchorPoint:sub(1, 6) == "OUTER_" then
         anchorPoint = anchorPoint:sub(7)
-        selfPoint = WeakAuras.inverse_point_types[anchorPoint] or "CENTER"
+        selfPoint = Private.inverse_point_types[anchorPoint] or "CENTER"
       else
         selfPoint = "CENTER"
       end
@@ -393,9 +393,9 @@ local function modify(parent, region, parentData, data, first)
       elseif selfPoint:sub(1, 6) == "INNER_" then
         selfPoint = selfPoint:sub(7)
       end
-      selfPoint = WeakAuras.point_types[selfPoint] and selfPoint or "CENTER"
+      selfPoint = Private.point_types[selfPoint] and selfPoint or "CENTER"
     else
-      selfPoint = WeakAuras.inverse_point_types[data.text_anchorPoint or "CENTER"] or "CENTER"
+      selfPoint = Private.inverse_point_types[data.text_anchorPoint or "CENTER"] or "CENTER"
     end
   end
 

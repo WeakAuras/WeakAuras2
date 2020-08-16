@@ -302,7 +302,7 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
     elseif(region.ColorAnim) then
       region:ColorAnim(nil);
     end
-    easeFunc = WeakAuras.anim_ease_functions[anim.easeType or "none"]
+    easeFunc = Private.anim_ease_functions[anim.easeType or "none"]
 
     duration = WeakAuras.ParseNumber(anim.duration) or 0;
     progress = 0;

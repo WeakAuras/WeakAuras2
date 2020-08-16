@@ -500,9 +500,9 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     args["condition" .. i .. "value" .. j .. "sound_type"] = {
       type = "select",
       width = WeakAuras.normalWidth,
-      values = WeakAuras.sound_condition_types,
+      values = OptionsPrivate.Private.sound_condition_types,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_type", L["Differences"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_type", propertyType, WeakAuras.sound_condition_types),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_type", propertyType, OptionsPrivate.Private.sound_condition_types),
       order = order,
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.sound_type;
@@ -529,9 +529,9 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     args["condition" .. i .. "value" .. j .. "sound"] = {
       type = "select",
       width = WeakAuras.normalWidth,
-      values = WeakAuras.sound_types,
+      values = OptionsPrivate.Private.sound_types,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound", L["Differences"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound", propertyType, WeakAuras.sound_types),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound", propertyType, OptionsPrivate.Private.sound_types),
       order = order,
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.sound;
@@ -545,9 +545,9 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     args["condition" .. i .. "value" .. j .. "sound_channel"] = {
       type = "select",
       width = WeakAuras.normalWidth,
-      values = WeakAuras.sound_channel_types,
+      values = OptionsPrivate.Private.sound_channel_types,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound_channel", L["Sound Channel"], L["Sound Channel"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_channel", propertyType, WeakAuras.sound_channel_types),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound_channel", propertyType, OptionsPrivate.Private.sound_channel_types),
       order = order,
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.sound_channel;
@@ -632,9 +632,9 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     args["condition" .. i .. "value" .. j .. "message type"] = {
       type = "select",
       width = WeakAuras.normalWidth,
-      values = WeakAuras.send_chat_message_types,
+      values = OptionsPrivate.Private.send_chat_message_types,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_type", L["Differences"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_type", propertyType, WeakAuras.send_chat_message_types),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_type", propertyType, OptionsPrivate.Private.send_chat_message_types),
       order = order,
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_type;
@@ -740,7 +740,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     local hasTextFormatOption
 
     local hidden = function()
-      return WeakAuras.IsCollapsed("format_option", "conditions", i .. "#" .. j , true)
+      return OptionsPrivate.IsCollapsed("format_option", "conditions", i .. "#" .. j , true)
     end
 
     local setHidden = function(hidden)
@@ -944,15 +944,15 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       return false
     end
 
-    local glowTypesExcepButtonOverlay = CopyTable(WeakAuras.glow_types)
+    local glowTypesExcepButtonOverlay = CopyTable(OptionsPrivate.Private.glow_types)
     glowTypesExcepButtonOverlay["buttonOverlay"] = nil
 
     args["condition" .. i .. "value" .. j .. "glow_action"] = {
       type = "select",
-      values = WeakAuras.glow_action_types,
+      values = OptionsPrivate.Private.glow_action_types,
       width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_action", L["Glow Action"], L["Glow Action"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_action", propertyType, WeakAuras.glow_action_types),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_action", propertyType, OptionsPrivate.Private.glow_action_types),
       order = order,
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_action;
@@ -962,7 +962,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_frame_type"] = {
       type = "select",
-      values = WeakAuras.glow_frame_types,
+      values = OptionsPrivate.Private.glow_frame_types,
       width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame_type", L["Glow Frame Type"], L["Glow Frame Type"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame_type", propertyType, {
@@ -974,23 +974,23 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_frame_type;
       end,
-      hidden = function() return not anyGlowExternal("glow_action", WeakAuras.glow_action_types) end,
+      hidden = function() return not anyGlowExternal("glow_action", OptionsPrivate.Private.glow_action_types) end,
       set = setValueComplex("glow_frame_type")
     }
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_type"] = {
       type = "select",
-      values = WeakAuras.glow_types,
+      values = OptionsPrivate.Private.glow_types,
       width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_type", L["Glow Type"], L["Glow Type"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_type", propertyType, WeakAuras.glow_types),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_type", propertyType, OptionsPrivate.Private.glow_types),
       order = order,
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_type;
       end,
       set = setValueComplex("glow_type"),
       hidden = function()
-        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_frame_type", WeakAuras.glow_frame_types))
+        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_frame_type", OptionsPrivate.Private.glow_frame_types))
       end
     }
     order = order + 1
@@ -1034,7 +1034,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       end,
       set = setValueComplex("use_glow_color"),
       hidden = function()
-        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", WeakAuras.glow_types))
+        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", OptionsPrivate.Private.glow_types))
       end
     }
     order = order + 1
@@ -1053,8 +1053,8 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       set = setValueColorComplex("glow_color"),
       hidden = function()
         return not (anyGlowExternal("glow_action", "show")
-                    and anyGlowExternal("glow_frame_type", WeakAuras.glow_frame_types)
-                    and anyGlowExternal("glow_type", WeakAuras.glow_types))
+                    and anyGlowExternal("glow_frame_type", OptionsPrivate.Private.glow_frame_types)
+                    and anyGlowExternal("glow_type", OptionsPrivate.Private.glow_types))
       end,
       disabled = function() return not anyGlowExternal("use_glow_color", true) end
     }
@@ -1522,11 +1522,11 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
     end
 
     if (currentConditionTemplate.type == "number" or currentConditionTemplate.type == "timer") then
-      local opTypes = WeakAuras.operator_types
+      local opTypes = OptionsPrivate.Private.operator_types
       if currentConditionTemplate.operator_types == "without_equal" then
-        opTypes = WeakAuras.operator_types_without_equal
+        opTypes = OptionsPrivate.Private.operator_types_without_equal
       elseif currentConditionTemplate.operator_types == "only_equal" then
-        opTypes = WeakAuras.equality_operator_types
+        opTypes = OptionsPrivate.Private.equality_operator_types
       end
 
       args["condition" .. i .. tostring(path) .. "_op"] = {
@@ -1564,7 +1564,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
           type = "select",
           width = WeakAuras.normalWidth,
           order = order,
-          values = WeakAuras.equality_operator_types,
+          values = OptionsPrivate.Private.equality_operator_types,
           get = function()
             return check.op;
           end,
@@ -1627,7 +1627,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
         name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
         desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
         order = order,
-        values = WeakAuras.bool_types,
+        values = OptionsPrivate.Private.bool_types,
         get = function()
           return check and check.value;
         end,
@@ -1642,7 +1642,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
           type = "select",
           width = WeakAuras.normalWidth,
           order = order,
-          values = WeakAuras.string_operator_types,
+          values = OptionsPrivate.Private.string_operator_types,
           get = function()
             return check and check.op;
           end,
@@ -1784,13 +1784,13 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
   if data.controlledChildren then
     for id, reference in pairs(conditions[i].check.references) do
       local index = reference.conditionIndex;
-      if WeakAuras.IsCollapsed(id, "condition", index, false) then
+      if OptionsPrivate.IsCollapsed(id, "condition", index, false) then
         collapsed = true;
         break;
       end
     end
   else
-    collapsed = WeakAuras.IsCollapsed(data.id, "condition", i, false);
+    collapsed = OptionsPrivate.IsCollapsed(data.id, "condition", i, false);
   end
 
   args["condition" .. i .. "header"] = {

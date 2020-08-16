@@ -137,7 +137,7 @@ WeakAuras.HideOverlayGlow = LCG.ButtonGlow_Stop
 local LGF = LibStub("LibGetFrame-1.0")
 WeakAuras.GetUnitFrame = LGF.GetUnitFrame
 WeakAuras.GetUnitNameplate =  function(unit)
-  if WeakAuras.multiUnitUnits.nameplate[unit] then
+  if Private.multiUnitUnits.nameplate[unit] then
     return LGF.GetUnitNameplate(unit)
   end
 end

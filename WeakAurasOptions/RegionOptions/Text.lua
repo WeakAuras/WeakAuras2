@@ -8,7 +8,7 @@ local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ce
 
 local indentWidth = 0.15
 local hiddenFontExtra = function()
-  return WeakAuras.IsCollapsed("text", "text", "fontflags", true)
+  return OptionsPrivate.IsCollapsed("text", "text", "fontflags", true)
 end
 
 local function createOptions(id, data)
@@ -40,7 +40,7 @@ local function createOptions(id, data)
       width = WeakAuras.doubleWidth,
       hidden = function() return not WeakAuras.ContainsCustomPlaceHolder(data.displayText); end,
       name = L["Update Custom Text On..."],
-      values = WeakAuras.text_check_types,
+      values = OptionsPrivate.Private.text_check_types,
       order = 36
     },
     -- code editor added below
@@ -76,7 +76,7 @@ local function createOptions(id, data)
       type = "execute",
       control = "WeakAurasExpandSmall",
       name = function()
-        local textFlags = WeakAuras.font_flags[data.outline]
+        local textFlags = OptionsPrivate.Private.font_flags[data.outline]
         local color = format("%02x%02x%02x%02x",
                              data.shadowColor[4] * 255, data.shadowColor[1] * 255,
                              data.shadowColor[2] * 255, data.shadowColor[3]*255)
@@ -106,11 +106,11 @@ local function createOptions(id, data)
         return secondline
       end,
       func = function(info, button)
-        local collapsed = WeakAuras.IsCollapsed("text", "text", "fontflags", true)
+        local collapsed = OptionsPrivate.IsCollapsed("text", "text", "fontflags", true)
         OptionsPrivate.SetCollapsed("text", "text", "fontflags", not collapsed)
       end,
       image = function()
-        local collapsed = WeakAuras.IsCollapsed("text", "text", "fontflags", true)
+        local collapsed = OptionsPrivate.IsCollapsed("text", "text", "fontflags", true)
         return collapsed and "collapsed" or "expanded"
       end,
       imageWidth = 15,
@@ -132,7 +132,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth - indentWidth,
       name = L["Outline"],
       order = 48.2,
-      values = WeakAuras.font_flags,
+      values = OptionsPrivate.Private.font_flags,
       hidden = hiddenFontExtra
     },
     shadowColor = {
@@ -184,7 +184,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth - indentWidth,
       name = L["Justify"],
       order = 48.8,
-      values = WeakAuras.justify_types,
+      values = OptionsPrivate.Private.justify_types,
       hidden = hiddenFontExtra,
     },
     text_font_space55 = {
@@ -207,7 +207,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth - indentWidth,
       name = L["Width"],
       order = 49,
-      values = WeakAuras.text_automatic_width,
+      values = OptionsPrivate.Private.text_automatic_width,
       hidden = hiddenFontExtra,
     },
     fixedWidth = {
@@ -232,7 +232,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth - indentWidth,
       name = L["Overflow"],
       order = 49.4,
-      values = WeakAuras.text_word_wrap,
+      values = OptionsPrivate.Private.text_word_wrap,
       hidden = function() return hiddenFontExtra() or data.automaticWidth ~= "Fixed" end
     },
 
@@ -260,7 +260,7 @@ local function createOptions(id, data)
   -- Add Text Format Options
   local input = data.displayText
   local hidden = function()
-    return WeakAuras.IsCollapsed("format_option", "text", "displayText", true)
+    return OptionsPrivate.IsCollapsed("format_option", "text", "displayText", true)
   end
 
   local setHidden = function(hidden)

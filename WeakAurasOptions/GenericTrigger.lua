@@ -3,15 +3,6 @@ local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L;
 
-local event_types = WeakAuras.event_types;
-local status_types = WeakAuras.status_types;
-local check_types = WeakAuras.check_types;
-local subevent_prefix_types = WeakAuras.subevent_prefix_types;
-local subevent_actual_prefix_types = WeakAuras.subevent_actual_prefix_types;
-local subevent_suffix_types = WeakAuras.subevent_suffix_types;
-local custom_trigger_types = WeakAuras.custom_trigger_types;
-local eventend_types = WeakAuras.eventend_types;
-
 local function GetCustomTriggerOptions(data, triggernum)
   local id = data.id;
   local trigger = data.triggers[triggernum].trigger
@@ -38,7 +29,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       name = L["Event Type"],
       order = 7,
       width = WeakAuras.doubleWidth,
-      values = custom_trigger_types,
+      values = OptionsPrivate.Private.custom_trigger_types,
       hidden = function() return not (trigger.type == "custom") end,
       get = function(info)
         return trigger.custom_type
@@ -55,7 +46,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       name = L["Check On..."],
       width = WeakAuras.doubleWidth / 3,
       order = 8,
-      values = check_types,
+      values = OptionsPrivate.Private.check_types,
       hidden = function() return not (trigger.type == "custom"
         and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
         and trigger.check ~= "update")
@@ -72,7 +63,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       name = L["Check On..."],
       order = 9,
       width = WeakAuras.doubleWidth,
-      values = check_types,
+      values = OptionsPrivate.Private.check_types,
       hidden = function() return not (trigger.type == "custom"
         and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
         and trigger.check == "update")
@@ -130,7 +121,7 @@ local function GetCustomTriggerOptions(data, triggernum)
               end
             elseif trueEvent:match("^UNIT_") then
               local unit = string.lower(i)
-              if not WeakAuras.baseUnitId[unit] and not WeakAuras.multiUnitId[unit] then
+              if not OptionsPrivate.Private.baseUnitId[unit] and not OptionsPrivate.Private.multiUnitId[unit] then
                 return "|cFFFF0000"..L["Unit %s is not a valid unit for RegisterUnitEvent"]:format(unit)
               end
             end
@@ -161,7 +152,7 @@ local function GetCustomTriggerOptions(data, triggernum)
               end
             elseif trueEvent:match("^UNIT_") then
               local unit = string.lower(i)
-              if not WeakAuras.baseUnitId[unit] then
+              if not OptionsPrivate.Private.baseUnitId[unit] then
                 return false
               end
             end
@@ -177,7 +168,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       name = L["Hide"],
       order = 12,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom") end,
-      values = eventend_types,
+      values = OptionsPrivate.Private.eventend_types,
       get = function() trigger.custom_hide = trigger.custom_hide or "timed"; return trigger.custom_hide end,
       set = function(info, v)
         trigger.custom_hide = v;
@@ -191,7 +182,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       order = 12,
       width = WeakAuras.doubleWidth,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide == "custom") end,
-      values = eventend_types,
+      values = OptionsPrivate.Private.eventend_types,
       get = function() return trigger.custom_hide end,
       set = function(info, v)
         trigger.custom_hide = v;
@@ -365,9 +356,9 @@ local function GetGenericTriggerOptions(data, triggernum)
       values = function()
         local type= trigger.type;
         if(type == "event") then
-          return event_types;
+          return OptionsPrivate.Private.event_types;
         elseif(type == "status") then
-          return status_types;
+          return OptionsPrivate.Private.status_types;
         end
       end,
       get = function(info)
@@ -401,7 +392,7 @@ local function GetGenericTriggerOptions(data, triggernum)
       name = L["Message Prefix"],
       width = WeakAuras.normalWidth,
       order = 8,
-      values = subevent_prefix_types,
+      values = OptionsPrivate.Private.subevent_prefix_types,
       control = "WeakAurasSortedDropdown",
       hidden = function() return not (trigger.type == "event" and trigger.event == "Combat Log"); end,
       get = function(info)
@@ -417,9 +408,9 @@ local function GetGenericTriggerOptions(data, triggernum)
       width = WeakAuras.normalWidth,
       name = L["Message Suffix"],
       order = 9,
-      values = subevent_suffix_types,
+      values = OptionsPrivate.Private.subevent_suffix_types,
       control = "WeakAurasSortedDropdown",
-      hidden = function() return not (trigger.type == "event" and trigger.event == "Combat Log" and subevent_actual_prefix_types[trigger.subeventPrefix]); end,
+      hidden = function() return not (trigger.type == "event" and trigger.event == "Combat Log" and OptionsPrivate.Private.subevent_actual_prefix_types[trigger.subeventPrefix]); end,
       get = function(info)
         return trigger.subeventSuffix
       end,
