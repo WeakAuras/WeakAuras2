@@ -182,7 +182,7 @@ function WeakAuras.CreateFrame()
       tutFrame:Hide()
     end
 
-    WeakAuras.PauseAllDynamicGroups()
+    OptionsPrivate.Private.PauseAllDynamicGroups()
 
     for id, data in pairs(WeakAuras.regions) do
       data.region:Collapse()
@@ -195,7 +195,7 @@ function WeakAuras.CreateFrame()
       end
     end
 
-    WeakAuras.ResumeAllDynamicGroups()
+    OptionsPrivate.Private.ResumeAllDynamicGroups()
     WeakAuras.ReloadAll()
     WeakAuras.Resume()
 
@@ -717,7 +717,7 @@ function WeakAuras.CreateFrame()
   loadedButton:SetExpandDescription(L["Expand all loaded displays"])
   loadedButton:SetCollapseDescription(L["Collapse all loaded displays"])
   loadedButton:SetViewClick(function()
-    WeakAuras.PauseAllDynamicGroups()
+    OptionsPrivate.Private.PauseAllDynamicGroups()
     if loadedButton.view.func() == 2 then
       for id, child in pairs(displayButtons) do
         if loaded[id] ~= nil then
@@ -731,7 +731,7 @@ function WeakAuras.CreateFrame()
         end
       end
     end
-    WeakAuras.ResumeAllDynamicGroups()
+    OptionsPrivate.Private.ResumeAllDynamicGroups()
   end)
   loadedButton:SetViewTest(function()
     local none, all = true, true
@@ -980,7 +980,7 @@ function WeakAuras.CreateFrame()
   end
 
   frame.ClearPicks = function(self, noHide)
-    WeakAuras.PauseAllDynamicGroups()
+    OptionsPrivate.Private.PauseAllDynamicGroups()
 
     frame.pickedDisplay = nil
     frame.pickedOption = nil
@@ -997,7 +997,7 @@ function WeakAuras.CreateFrame()
     container:ReleaseChildren()
     self.moversizer:Hide()
 
-    WeakAuras.ResumeAllDynamicGroups()
+    OptionsPrivate.Private.ResumeAllDynamicGroups()
   end
 
   local function GetTarget(pickedDisplay)
