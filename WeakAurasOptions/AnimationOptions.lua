@@ -21,7 +21,7 @@ local function filterAnimPresetTypes(intable, id)
   local data = WeakAuras.GetData(id);
   if(region and regionType and data) then
     for key, value in pairs(intable) do
-      local preset = WeakAuras.anim_presets[key];
+      local preset = OptionsPrivate.Private.anim_presets[key];
       if(preset) then
         if(regionType == "group" or regionType == "dynamicgroup") then
           local valid = true;

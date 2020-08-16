@@ -561,7 +561,7 @@ WeakAuras.anim_function_strings = {
   ]]
 };
 
-WeakAuras.anim_presets = {
+Private.anim_presets = {
   -- Start and Finish
   slidetop = {
     type = "custom",
