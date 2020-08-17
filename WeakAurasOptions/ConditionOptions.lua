@@ -798,9 +798,9 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
                   local changeIndex = reference.changeIndex;
                   multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
                 end
-                WeakAuras.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
+                OptionsPrivate.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
               else
-                WeakAuras.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"}, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
+                OptionsPrivate.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"}, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
               end
             end
           }
@@ -877,10 +877,10 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
                   childData.conditions[conditionIndex].changes[changeIndex].value = childData.conditions[conditionIndex].changes[changeIndex].value or {};
                   multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
                 end
-                WeakAuras.OpenTextEditor(data, multipath, true, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#run-custom-code");
+                OptionsPrivate.OpenTextEditor(data, multipath, true, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#run-custom-code");
               else
                 data.conditions[i].changes[j].value = data.conditions[i].changes[j].value or {};
-                WeakAuras.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"}, true, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#run-custom-code");
+                OptionsPrivate.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"}, true, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#run-custom-code");
               end
             end
           }
@@ -1711,7 +1711,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
                     end
                     tinsert(multipath[id], "value")
                   end
-                  WeakAuras.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
+                  OptionsPrivate.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
                 else
                   for i, v in ipairs(path) do
                     print(i, v)
@@ -1724,7 +1724,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
                   end
                   tinsert(fullPath, "value")
 
-                  WeakAuras.OpenTextEditor(data, fullPath, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
+                  OptionsPrivate.OpenTextEditor(data, fullPath, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
                 end
               end
             }
