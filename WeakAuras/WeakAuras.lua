@@ -223,11 +223,11 @@ WeakAuras.subRegionOptions = {}
 local subRegionOptions = WeakAuras.subRegionOptions
 
 -- Maps from trigger type to trigger system
-WeakAuras.triggerTypes = {};
-local triggerTypes = WeakAuras.triggerTypes;
+Private.triggerTypes = {};
+local triggerTypes = Private.triggerTypes;
 
 -- Maps from trigger type to a function that can create options for the trigger
-WeakAuras.triggerTypesOptions = {};
+Private.triggerTypesOptions = {};
 
 -- Trigger State, updated by trigger systems, then applied to regions by UpdatedTriggerState
 -- keyed on id, triggernum, cloneid
@@ -3684,7 +3684,7 @@ end
 
 function WeakAuras.RegisterTriggerSystemOptions(types, func)
   for _, v in ipairs(types) do
-    WeakAuras.triggerTypesOptions[v] = func;
+    Private.triggerTypesOptions[v] = func;
   end
 end
 

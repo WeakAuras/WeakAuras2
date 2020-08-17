@@ -102,7 +102,7 @@ local function AddOptions(allOptions, data)
 
   local triggerOptions = {}
   for index, trigger in ipairs(data.triggers) do
-    local triggerSystemOptionsFunction = trigger.trigger.type and WeakAuras.triggerTypesOptions[trigger.trigger.type]
+    local triggerSystemOptionsFunction = trigger.trigger.type and OptionsPrivate.Private.triggerTypesOptions[trigger.trigger.type]
     if (triggerSystemOptionsFunction) then
       triggerOptions = union(triggerOptions, triggerSystemOptionsFunction(data, index))
     else

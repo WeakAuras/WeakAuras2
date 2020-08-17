@@ -1353,7 +1353,7 @@ local function AddCommonTriggerOptions(options, data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
   local trigger_types = {};
-  for type, triggerSystem in pairs(WeakAuras.triggerTypes) do
+  for type, triggerSystem in pairs(OptionsPrivate.Private.triggerTypes) do
     trigger_types[type] = triggerSystem.GetName(type);
   end
 
