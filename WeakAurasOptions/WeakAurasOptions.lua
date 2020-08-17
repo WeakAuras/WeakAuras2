@@ -1539,7 +1539,7 @@ function WeakAuras.MoveCollapseDataDown(id, namespace, path)
   end
 end
 
-function WeakAuras.RemoveCollapsed(id, namespace, path)
+function OptionsPrivate.RemoveCollapsed(id, namespace, path)
   local data = collapsedOptions[id] and collapsedOptions[id][namespace]
   if not data then
     return
