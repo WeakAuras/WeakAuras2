@@ -1347,7 +1347,7 @@ local function up(data, options, index)
       local optionID = optionData.index
       local childData = optionData.data
       local childOptions = optionData.options
-      WeakAuras.MoveCollapseDataUp(id, "author", path)
+      OptionsPrivate.MoveCollapseDataUp(id, "author", path)
       childOptions[optionID], childOptions[optionID - 1] = childOptions[optionID - 1], childOptions[optionID]
       WeakAuras.Add(childData)
     end
@@ -1370,7 +1370,7 @@ local function down(data, options, index)
       local optionID = optionData.index
       local childData = optionData.data
       local childOptions = optionData.options
-      WeakAuras.MoveCollapseDataUp(id, "author", path)
+      OptionsPrivate.MoveCollapseDataUp(id, "author", path)
       childOptions[optionID], childOptions[optionID + 1] = childOptions[optionID + 1], childOptions[optionID]
       WeakAuras.Add(childData)
     end
