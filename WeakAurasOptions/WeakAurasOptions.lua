@@ -1568,7 +1568,7 @@ function WeakAuras.RemoveCollapsed(id, namespace, path)
   end
 end
 
-function WeakAuras.InsertCollapsed(id, namespace, path, value)
+function OptionsPrivate.InsertCollapsed(id, namespace, path, value)
   local data = collapsedOptions[id] and collapsedOptions[id][namespace]
   if not data then
     return
