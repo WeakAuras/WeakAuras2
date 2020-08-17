@@ -2555,13 +2555,13 @@ function OptionsPrivate.GetAuthorOptions(data)
         if data.controlledChildren then
           for _, id in pairs(data.controlledChildren) do
             local childData = WeakAuras.GetData(id)
-            WeakAuras.ResetCollapsed(id, "config")
+            OptionsPrivate.ResetCollapsed(id, "config")
             childData.config = {} -- config validation in Add() will set all the needed keys to their defaults
             WeakAuras.Add(childData)
           end
         else
           data.config = {}
-          WeakAuras.ResetCollapsed(data.id, "config")
+          OptionsPrivate.ResetCollapsed(data.id, "config")
           WeakAuras.Add(data)
         end
         WeakAuras.ClearAndUpdateOptions(data.id, true)

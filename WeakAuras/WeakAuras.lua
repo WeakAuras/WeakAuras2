@@ -1937,7 +1937,6 @@ function WeakAuras.Convert(data, newType)
 
   data.regionType = newType;
   WeakAuras.Add(data);
-  WeakAuras.ResetCollapsed(id)
 
   Private.FakeStatesFor(id, true)
 
