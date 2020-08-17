@@ -568,7 +568,7 @@ ItemRefTooltip:HookScript("OnHide", function(self)
 end)
 
 importButton:SetScript("OnClick", function()
-  WeakAuras.dynFrame:AddAction("import", coroutine.create(importPendingData))
+  Private.dynFrame:AddAction("import", coroutine.create(importPendingData))
 end)
 
 showCodeButton:SetScript("OnClick", function()
