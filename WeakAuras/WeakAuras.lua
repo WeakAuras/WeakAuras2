@@ -1341,11 +1341,11 @@ function WeakAuras.UpdateCurrentInstanceType(instanceType)
 end
 
 local pausedOptionsProcessing = false;
-function WeakAuras.pauseOptionsProcessing(enable)
+function Private.pauseOptionsProcessing(enable)
   pausedOptionsProcessing = enable;
 end
 
-function WeakAuras.IsOptionsProcessingPaused()
+function Private.IsOptionsProcessingPaused()
   return pausedOptionsProcessing;
 end
 
@@ -1385,7 +1385,7 @@ end
 local toLoad = {}
 local toUnload = {};
 local function scanForLoadsImpl(toCheck, event, arg1, ...)
-  if (WeakAuras.IsOptionsProcessingPaused()) then
+  if (Private.IsOptionsProcessingPaused()) then
     return;
   end
 

@@ -823,13 +823,13 @@ function WeakAuras.UpdateGroupOrders(data)
 end
 
 function OptionsPrivate.UpdateButtonsScroll()
-  if WeakAuras.IsOptionsProcessingPaused() then return end
+  if OptionsPrivate.Private.IsOptionsProcessingPaused() then return end
   frame.buttonsScroll:DoLayout()
 end
 
 local previousFilter;
 function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
-  if (WeakAuras.IsOptionsProcessingPaused()) then
+  if (OptionsPrivate.Private.IsOptionsProcessingPaused()) then
     return;
   end
   local recenter = false;
