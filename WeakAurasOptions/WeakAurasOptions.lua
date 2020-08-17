@@ -18,7 +18,6 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local ADDON_NAME = "WeakAurasOptions";
 
-local dynFrame = WeakAuras.dynFrame;
 WeakAuras.transmitCache = {};
 
 local displayButtons = {};
@@ -706,11 +705,11 @@ function WeakAuras.LayoutDisplayButtons(msg)
     end
 
     local co2 = coroutine.create(func2);
-    dynFrame:AddAction("LayoutDisplayButtons2", co2);
+    OptionsPrivate.Private.dynFrame:AddAction("LayoutDisplayButtons2", co2);
   end
 
   local co1 = coroutine.create(func1);
-  dynFrame:AddAction("LayoutDisplayButtons1", co1);
+  OptionsPrivate.Private.dynFrame:AddAction("LayoutDisplayButtons1", co1);
 end
 
 function WeakAuras.UpdateOptions()

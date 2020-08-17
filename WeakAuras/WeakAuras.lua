@@ -1032,7 +1032,7 @@ function WeakAuras.Login(initialTime, takeNewSnapshots)
       finishTime = debugprofilestop()
     end
     if coroutine.status(loginThread) ~= 'dead' then
-      WeakAuras.dynFrame:AddAction('login', loginThread)
+      Private.dynFrame:AddAction('login', loginThread)
     end
     if not ok then
       loginMessage = L["WeakAuras has encountered an error during the login process. Please report this issue at https://github.com/WeakAuras/Weakauras2/issues/new."]
@@ -1040,7 +1040,7 @@ function WeakAuras.Login(initialTime, takeNewSnapshots)
         geterrorhandler()(msg .. '\n' .. debugstack(loginThread))
     end
   else
-    WeakAuras.dynFrame:AddAction('login', loginThread)
+    Private.dynFrame:AddAction('login', loginThread)
   end
 end
 
@@ -2157,7 +2157,7 @@ function WeakAuras.RepairDatabase(loginAfter)
     -- finally, login
     WeakAuras.Login()
   end)
-  WeakAuras.dynFrame:AddAction("repair", coro)
+  Private.dynFrame:AddAction("repair", coro)
 end
 
 function WeakAuras.ValidateUniqueDataIds(silent)
@@ -3650,7 +3650,7 @@ do
   end);
 end
 
-WeakAuras.dynFrame = dynFrame;
+Private.dynFrame = dynFrame;
 
 function WeakAuras.SetDynamicIconCache(name, spellId, icon)
   db.dynamicIconCache[name] = db.dynamicIconCache[name] or {};
