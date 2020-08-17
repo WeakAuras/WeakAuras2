@@ -762,7 +762,7 @@ function WeakAuras.GetSpellTooltipText(id)
   return tooltipText;
 end
 
-function WeakAuras.OpenTextEditor(...)
+function OptionsPrivate.OpenTextEditor(...)
   frame.texteditor:Open(...);
 end
 
