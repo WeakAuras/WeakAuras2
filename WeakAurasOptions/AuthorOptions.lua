@@ -1492,7 +1492,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
         if groupData then
           local childGroup = groupData.options[groupData.index]
           local childCollapsed = OptionsPrivate.IsCollapsed(id, "author", optionData.path, true)
-          WeakAuras.RemoveCollapsed(id, "author", optionData.path)
+          OptionsPrivate.RemoveCollapsed(id, "author", optionData.path)
           local newPath = groupData.path
           tinsert(newPath, #childGroup.subOptions + 1)
           OptionsPrivate.InsertCollapsed(id, "author", newPath, childCollapsed)
@@ -1521,7 +1521,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
         if groupData then
           local childGroup = groupData.options[groupData.index]
           local childCollapsed = OptionsPrivate.IsCollapsed(id, "author", optionData.path, true)
-          WeakAuras.RemoveCollapsed(id, "author", optionData.path)
+          OptionsPrivate.RemoveCollapsed(id, "author", optionData.path)
           local newPath = groupData.path
           tinsert(newPath, 1)
           OptionsPrivate.InsertCollapsed(id, "author", newPath, childCollapsed)
@@ -1552,7 +1552,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
         local parentOptions = parent and parent.references[id].options or optionData.data.authorOptions
         local childOption = tremove(optionData.options, optionData.index)
         local childCollapsed = OptionsPrivate.IsCollapsed(id, "author", optionData.path, true)
-        WeakAuras.RemoveCollapsed(id, "author", optionData.path)
+        OptionsPrivate.RemoveCollapsed(id, "author", optionData.path)
         tinsert(parentOptions, path[#path - 1], childOption)
         path[#path] = nil
         OptionsPrivate.InsertCollapsed(id, "author", path)
@@ -1578,7 +1578,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
         local parentOptions = parent and parent.references[id].options or optionData.data.authorOptions
         local childOption = tremove(optionData.options, optionData.index)
         local childCollapsed = OptionsPrivate.IsCollapsed(id, "author", optionData.path, true)
-        WeakAuras.RemoveCollapsed(id, "author", optionData.path)
+        OptionsPrivate.RemoveCollapsed(id, "author", optionData.path)
         tinsert(parentOptions, path[#path - 1] + 1, childOption)
         path[#path] = nil
         path[#path] = path[#path] + 1
@@ -1643,7 +1643,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
         local optionIndex = optionData.index
         local childData = optionData.data
         local parentOption = optionData.parent
-        WeakAuras.RemoveCollapsed(id, "author", optionData.path)
+        OptionsPrivate.RemoveCollapsed(id, "author", optionData.path)
         tremove(childOptions, optionIndex)
         if parentOption and parentOption.groupType == "array" then
           local dereferencedParent = parentOption.references[id]
