@@ -1387,7 +1387,7 @@ local function duplicate(data, options, index)
       local childData = optionData.data
       local path = optionData.path
       path[#path] = path[#path] + 1 -- this data is being regenerated very soon
-      WeakAuras.InsertCollapsed(id, "author", optionData.path, false)
+      OptionsPrivate.InsertCollapsed(id, "author", optionData.path, false)
       local newOption = CopyTable(childOptions[optionID])
       if newOption.key then
         local existingKeys = {}
@@ -1495,7 +1495,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
           WeakAuras.RemoveCollapsed(id, "author", optionData.path)
           local newPath = groupData.path
           tinsert(newPath, #childGroup.subOptions + 1)
-          WeakAuras.InsertCollapsed(id, "author", newPath, childCollapsed)
+          OptionsPrivate.InsertCollapsed(id, "author", newPath, childCollapsed)
           local childOption = tremove(optionData.options, optionData.index)
           local childData = optionData.data
           tinsert(childGroup.subOptions, childOption)
@@ -1524,7 +1524,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
           WeakAuras.RemoveCollapsed(id, "author", optionData.path)
           local newPath = groupData.path
           tinsert(newPath, 1)
-          WeakAuras.InsertCollapsed(id, "author", newPath, childCollapsed)
+          OptionsPrivate.InsertCollapsed(id, "author", newPath, childCollapsed)
           local childOption = tremove(optionData.options, optionData.index)
           local childData = optionData.data
           tinsert(childGroup.subOptions, 1, childOption)
@@ -1555,7 +1555,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
         WeakAuras.RemoveCollapsed(id, "author", optionData.path)
         tinsert(parentOptions, path[#path - 1], childOption)
         path[#path] = nil
-        WeakAuras.InsertCollapsed(id, "author", path)
+        OptionsPrivate.InsertCollapsed(id, "author", path)
         WeakAuras.Add(optionData.data)
       end
       WeakAuras.ClearAndUpdateOptions(data.id, true)
@@ -1582,7 +1582,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
         tinsert(parentOptions, path[#path - 1] + 1, childOption)
         path[#path] = nil
         path[#path] = path[#path] + 1
-        WeakAuras.InsertCollapsed(id, "author", path)
+        OptionsPrivate.InsertCollapsed(id, "author", path)
         WeakAuras.Add(optionData.data)
       end
       WeakAuras.ClearAndUpdateOptions(data.id, true)
