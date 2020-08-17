@@ -383,7 +383,7 @@ local function GetGenericTriggerOptions(data, triggernum)
   }
 
   OptionsPrivate.commonOptions.AddCommonTriggerOptions(options, data, triggernum)
-  WeakAuras.AddTriggerMetaFunctions(options, data, triggernum)
+  OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
 
   local combatLogOptions =
   {
