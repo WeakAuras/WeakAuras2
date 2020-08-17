@@ -15,7 +15,6 @@ WeakAuras.spellCache = spellCache
 local cache
 local metaData
 local bestIcon = {}
-local dynFrame = WeakAuras.dynFrame
 
 -- Builds a cache of name/icon pairs from existing spell data
 -- This is a rather slow operation, so it's only done once, and the result is subsequently saved
@@ -78,7 +77,7 @@ function spellCache.Build()
 
     metaData.needsRebuild = false
   end)
-  dynFrame:AddAction("spellCache", co)
+  OptionsPrivate.Private.dynFrame:AddAction("spellCache", co)
 end
 
 function spellCache.GetIcon(name)
