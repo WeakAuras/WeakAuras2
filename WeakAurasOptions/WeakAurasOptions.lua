@@ -732,7 +732,7 @@ function WeakAuras.GetSubOptions(id, subOption)
   return frame:GetSubOptions(id, subOption)
 end
 
-function WeakAuras.EnsureOptions(data, subOption)
+function OptionsPrivate.EnsureOptions(data, subOption)
   return frame:EnsureOptions(data, subOption)
 end
 
