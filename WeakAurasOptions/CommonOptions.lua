@@ -313,7 +313,7 @@ local function CreateHiddenAll(subOption)
     for index, childId in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId);
       if(childData) then
-        local childOptions = WeakAuras.EnsureOptions(childData, subOption)
+        local childOptions = OptionsPrivate.EnsureOptions(childData, subOption)
         local childOption = childOptions;
         local childOptionTable = {[0] = childOption};
         for i=1,#info do
@@ -350,7 +350,7 @@ local function CreateDisabledAll(subOption)
     for index, childId in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId);
       if(childData) then
-        local childOptions = WeakAuras.EnsureOptions(childData, subOption);
+        local childOptions = OptionsPrivate.EnsureOptions(childData, subOption);
         local childOption = childOptions;
         local childOptionTable = {[0] = childOption};
         for i=1,#info do
@@ -420,7 +420,7 @@ local function replaceNameDescFuncs(intable, data, subOption)
     for index, childId in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId);
       if(childData) then
-        local values = getValueFor(WeakAuras.EnsureOptions(childData, subOption), info, "values");
+        local values = getValueFor(OptionsPrivate.EnsureOptions(childData, subOption), info, "values");
         if (values) then
           if (type(values) == "function") then
             values = values(info);
@@ -456,7 +456,7 @@ local function replaceNameDescFuncs(intable, data, subOption)
     for index, childId in ipairs(data.controlledChildren) do
       if isToggle == nil then
         local childData = WeakAuras.GetData(childId)
-        local childOption = getChildOption(WeakAuras.EnsureOptions(childData, subOption), info)
+        local childOption = getChildOption(OptionsPrivate.EnsureOptions(childData, subOption), info)
         isToggle = childOption and childOption.type == "toggle"
       end
 
@@ -464,7 +464,7 @@ local function replaceNameDescFuncs(intable, data, subOption)
 
       local regionType = regionPrefix(info[#info]);
       if(childData and (not regionType or childData.regionType == regionType or regionType == "sub")) then
-        local childOptions = WeakAuras.EnsureOptions(childData, subOption)
+        local childOptions = OptionsPrivate.EnsureOptions(childData, subOption)
         local get = getValueFor(childOptions, info, "get");
         if (combinedKeys) then
           for key, _ in pairs(combinedKeys) do
@@ -511,7 +511,7 @@ local function replaceNameDescFuncs(intable, data, subOption)
     for index, childId in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId);
       if(childData) then
-        local childOption = getChildOption(WeakAuras.EnsureOptions(childData, subOption), info);
+        local childOption = getChildOption(OptionsPrivate.EnsureOptions(childData, subOption), info);
         if (childOption) then
           local name;
           if(type(childOption.name) == "function") then
@@ -550,7 +550,7 @@ local function replaceNameDescFuncs(intable, data, subOption)
     for index, childId in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId);
       if(childData) then
-        local childOption = getChildOption(WeakAuras.EnsureOptions(childData, subOption), info);
+        local childOption = getChildOption(OptionsPrivate.EnsureOptions(childData, subOption), info);
         if (childOption) then
           local desc;
           if(type(childOption.desc) == "function") then
@@ -598,7 +598,7 @@ local function replaceNameDescFuncs(intable, data, subOption)
             for index, childId in ipairs(data.controlledChildren) do
               local childData = WeakAuras.GetData(childId);
               if(childData) then
-                local childOptions = WeakAuras.EnsureOptions(childData, subOption)
+                local childOptions = OptionsPrivate.EnsureOptions(childData, subOption)
                 local childOption = childOptions;
                 local childOptionTable = {[0] = childOption};
                 for i=1,#info do
@@ -681,7 +681,7 @@ local function replaceImageFuncs(intable, data, subOption)
     for index, childId in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId);
       if(childData) then
-        local childOption = WeakAuras.EnsureOptions(childData, subOption)
+        local childOption = OptionsPrivate.EnsureOptions(childData, subOption)
         if not(childOption) then
           return "error"
         end
@@ -723,7 +723,7 @@ local function replaceValuesFuncs(intable, data, subOption)
     for index, childId in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId);
       if(childData) then
-        local childOption = WeakAuras.EnsureOptions(childData, subOption)
+        local childOption = OptionsPrivate.EnsureOptions(childData, subOption)
         if not(childOption) then
           return "error"
         end
@@ -826,14 +826,14 @@ local function CreateGetAll(subOption)
     for index, childId in ipairs(data.controlledChildren) do
       if isToggle == nil then
         local childData = WeakAuras.GetData(childId)
-        local childOptions = getChildOption(WeakAuras.EnsureOptions(childData, subOption), info)
+        local childOptions = getChildOption(OptionsPrivate.EnsureOptions(childData, subOption), info)
         isToggle = childOptions and childOptions.type == "toggle"
       end
 
       local childData = WeakAuras.GetData(childId);
 
       if(childData) then
-        local childOptions = WeakAuras.EnsureOptions(childData, subOption)
+        local childOptions = OptionsPrivate.EnsureOptions(childData, subOption)
         local childOption = childOptions;
         local childOptionTable = {[0] = childOption};
         for i=1,#info do
@@ -879,7 +879,7 @@ local function CreateSetAll(subOption, getAll)
     for index, childId in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId);
       if(childData) then
-        local childOptions = WeakAuras.EnsureOptions(childData, subOption)
+        local childOptions = OptionsPrivate.EnsureOptions(childData, subOption)
         local childOption = childOptions;
         local childOptionTable = {[0] = childOption};
         for i=1,#info do
@@ -916,7 +916,7 @@ local function CreateExecuteAll(subOption)
     for index, childId in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId);
       if(childData) then
-        local childOptions = WeakAuras.EnsureOptions(childData, subOption)
+        local childOptions = OptionsPrivate.EnsureOptions(childData, subOption)
         local childOption = childOptions;
         local childOptionTable = {[0] = childOption};
         for i=1,#info do
