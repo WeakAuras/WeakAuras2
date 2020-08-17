@@ -108,7 +108,7 @@ local function AddOptions(allOptions, data)
     else
       local options = {};
       OptionsPrivate.commonOptions.AddCommonTriggerOptions(options, data, index)
-      WeakAuras.AddTriggerMetaFunctions(options, data, index)
+      OptionsPrivate.AddTriggerMetaFunctions(options, data, index)
       triggerOptions = union(triggerOptions, {
           ["trigger." .. index .. ".unknown"] = options
       })
@@ -222,7 +222,7 @@ local function moveTriggerDownImpl(data, i)
   return true;
 end
 
-function WeakAuras.AddTriggerMetaFunctions(options, data, triggernum)
+function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
   options.__title = L["Trigger %s"]:format(triggernum)
   options.__order = triggernum * 10
   options.__add = function()
