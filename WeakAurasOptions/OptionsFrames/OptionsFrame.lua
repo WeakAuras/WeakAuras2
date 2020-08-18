@@ -870,10 +870,6 @@ function OptionsPrivate.CreateFrame()
     end
   end
 
-  frame.GetSubOptions = function(self, id, tab)
-    return aceOptions[id] and aceOptions[id][tab]
-  end
-
   frame.EnsureOptions = function(self, data, tab)
     local id = data.id
     aceOptions[id] = aceOptions[id] or {}
