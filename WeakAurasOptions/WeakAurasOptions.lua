@@ -1569,7 +1569,7 @@ function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, h
 
 
   local seenSymbols = {}
-  WeakAuras.ParseTextStr(input, function(symbol)
+  OptionsPrivate.Private.ParseTextStr(input, function(symbol)
     if not seenSymbols[symbol] then
       local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
       sym = sym or symbol
