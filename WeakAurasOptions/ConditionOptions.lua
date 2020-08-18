@@ -2178,7 +2178,7 @@ local function buildAllPotentialProperties(data, category)
   if (data.controlledChildren) then
     for _, id in ipairs(data.controlledChildren) do
       local auradata = WeakAuras.GetData(id);
-      local regionProperties = WeakAuras.GetProperties(auradata);
+      local regionProperties = OptionsPrivate.Private.GetProperties(auradata);
       if (regionProperties) then
         for k, v in pairs(regionProperties) do
           if (v.category == category) then
@@ -2203,7 +2203,7 @@ local function buildAllPotentialProperties(data, category)
       end
     end
   else
-    local regionProperties = WeakAuras.GetProperties(data);
+    local regionProperties = OptionsPrivate.Private.GetProperties(data);
     if (regionProperties) then
       for k, v in pairs(regionProperties) do
         if (v.category == category) then
