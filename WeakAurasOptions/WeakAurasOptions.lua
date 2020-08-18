@@ -1389,7 +1389,6 @@ end
 
 local collapsedOptions = {}
 local collapsed = {} -- magic value
-WeakAuras.collapsedOptions = collapsedOptions
 function OptionsPrivate.ResetCollapsed(id, namespace)
   if id then
     if namespace and collapsedOptions[id] then
