@@ -3405,11 +3405,11 @@ local currentTooltipRegion;
 local currentTooltipOwner;
 function WeakAuras.UpdateMouseoverTooltip(region)
   if(region == currentTooltipRegion) then
-    WeakAuras.ShowMouseoverTooltip(currentTooltipRegion, currentTooltipOwner);
+    Private.ShowMouseoverTooltip(currentTooltipRegion, currentTooltipOwner);
   end
 end
 
-function WeakAuras.ShowMouseoverTooltip(region, owner)
+function Private.ShowMouseoverTooltip(region, owner)
   currentTooltipRegion = region;
   currentTooltipOwner = owner;
 
