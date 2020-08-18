@@ -2137,11 +2137,11 @@ local function createConditionTemplates(data)
       local data = WeakAuras.GetData(id);
       numTriggers = max(numTriggers, #data.triggers);
 
-      local auraConditionsTemplate = WeakAuras.GetTriggerConditions(data);
+      local auraConditionsTemplate = OptionsPrivate.Private.GetTriggerConditions(data);
       mergeConditionTemplates(allConditionTemplates, auraConditionsTemplate, numTriggers)
     end
   else
-    allConditionTemplates = WeakAuras.GetTriggerConditions(data);
+    allConditionTemplates = OptionsPrivate.Private.GetTriggerConditions(data);
     numTriggers = #data.triggers;
   end
 

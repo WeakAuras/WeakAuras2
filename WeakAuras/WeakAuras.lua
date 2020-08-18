@@ -3334,7 +3334,7 @@ function Private.GetOverlayInfo(data, triggernum)
   return overlayInfo;
 end
 
-function WeakAuras.GetTriggerConditions(data)
+function Private.GetTriggerConditions(data)
   local conditions = {};
   for i = 1, #data.triggers do
     local triggerSystem = WeakAuras.GetTriggerSystem(data, i);
