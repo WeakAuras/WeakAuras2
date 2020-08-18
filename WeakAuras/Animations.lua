@@ -161,7 +161,7 @@ local function UpdateAnimations()
     WeakAuras.StopProfileUID(anim.auraUID);
   end
 
-  WeakAuras.StopProfileSystem("animations");
+  Private.StopProfileSystem("animations");
 end
 
 function Private.RegisterGroupForPositioning(uid, region)
