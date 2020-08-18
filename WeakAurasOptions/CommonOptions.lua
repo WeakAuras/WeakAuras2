@@ -1262,7 +1262,7 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
   tinsert(extraFunctions, 1, {
     buttonLabel = L["Expand"],
     func = function(info)
-      OptionsPrivate.OpenTextEditor(WeakAuras.GetPickedDisplay(), path, encloseInFunction, multipath, reloadOptions, setOnParent, url)
+      OptionsPrivate.OpenTextEditor(OptionsPrivate.GetPickedDisplay(), path, encloseInFunction, multipath, reloadOptions, setOnParent, url)
     end
   });
 
