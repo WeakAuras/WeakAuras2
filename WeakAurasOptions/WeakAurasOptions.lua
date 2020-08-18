@@ -587,9 +587,6 @@ local function LayoutDisplayButtons(msg)
         WeakAuras.UpdateDisplayButton(data);
 
         frame.buttonsScroll:AddChild(displayButtons[data.id]);
-        if(WeakAuras.regions[data.id].region.SetStacks) then
-          WeakAuras.regions[data.id].region:SetStacks(1);
-        end
 
         if (num % 50 == 0) then
           frame.buttonsScroll:ResumeLayout()
@@ -636,10 +633,6 @@ local function LayoutDisplayButtons(msg)
 
         local button = displayButtons[data.id]
         frame.buttonsScroll:AddChild(button);
-        if(WeakAuras.regions[data.id].region.SetStacks) then
-          WeakAuras.regions[data.id].region:SetStacks(1);
-        end
-
         num = num + 1;
       end
 
