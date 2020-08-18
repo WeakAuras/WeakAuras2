@@ -344,7 +344,7 @@ local function modify(parent, region, data)
       region.tooltipFrame = CreateFrame("frame", nil, region);
       region.tooltipFrame:SetAllPoints(region);
       region.tooltipFrame:SetScript("OnEnter", function()
-        WeakAuras.ShowMouseoverTooltip(region, region);
+        Private.ShowMouseoverTooltip(region, region);
       end);
       region.tooltipFrame:SetScript("OnLeave", WeakAuras.HideTooltip);
     end
