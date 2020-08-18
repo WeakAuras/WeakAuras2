@@ -79,7 +79,7 @@ if WeakAuras.IsClassic() then
   LCSA = LibStub("LibClassicSpellActionCount-1.0")
 end
 
-local event_prototypes = WeakAuras.event_prototypes;
+local event_prototypes = Private.event_prototypes;
 
 local timer = WeakAuras.timer;
 
@@ -3243,12 +3243,12 @@ function GenericTrigger.CanHaveDuration(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
   if (trigger.type == "event" or trigger.type == "status") then
-    if trigger.event and WeakAuras.event_prototypes[trigger.event] then
-      if WeakAuras.event_prototypes[trigger.event].durationFunc then
-        if(type(WeakAuras.event_prototypes[trigger.event].init) == "function") then
-          WeakAuras.event_prototypes[trigger.event].init(trigger);
+    if trigger.event and Private.event_prototypes[trigger.event] then
+      if Private.event_prototypes[trigger.event].durationFunc then
+        if(type(Private.event_prototypes[trigger.event].init) == "function") then
+          Private.event_prototypes[trigger.event].init(trigger);
         end
-        local current, maximum, custom = WeakAuras.event_prototypes[trigger.event].durationFunc(trigger);
+        local current, maximum, custom = Private.event_prototypes[trigger.event].durationFunc(trigger);
         current = type(current) ~= "number" and current or 0
         maximum = type(maximum) ~= "number" and maximum or 0
         if(custom) then
@@ -3256,8 +3256,8 @@ function GenericTrigger.CanHaveDuration(data, triggernum)
         else
           return "timed";
         end
-      elseif WeakAuras.event_prototypes[trigger.event].canHaveDuration then
-        return WeakAuras.event_prototypes[trigger.event].canHaveDuration
+      elseif Private.event_prototypes[trigger.event].canHaveDuration then
+        return Private.event_prototypes[trigger.event].canHaveDuration
       end
     end
     if trigger.unevent == "timed" and trigger.duration then
@@ -3283,10 +3283,10 @@ function GenericTrigger.GetOverlayInfo(data, triggernum)
 
   local trigger = data.triggers[triggernum].trigger
 
-  if (trigger.type ~= "custom" and trigger.event and WeakAuras.event_prototypes[trigger.event] and WeakAuras.event_prototypes[trigger.event].overlayFuncs) then
+  if (trigger.type ~= "custom" and trigger.event and Private.event_prototypes[trigger.event] and Private.event_prototypes[trigger.event].overlayFuncs) then
     result = {};
     local dest = 1;
-    for i, v in ipairs(WeakAuras.event_prototypes[trigger.event].overlayFuncs) do
+    for i, v in ipairs(Private.event_prototypes[trigger.event].overlayFuncs) do
       if (v.enable(trigger)) then
         result[dest] = v.name;
         dest = dest + 1;
@@ -3350,10 +3350,10 @@ function GenericTrigger.CanHaveAuto(data, triggernum)
     or trigger.type == "status"
     )
     and trigger.event
-    and WeakAuras.event_prototypes[trigger.event]
+    and Private.event_prototypes[trigger.event]
     and (
-    WeakAuras.event_prototypes[trigger.event].iconFunc
-    or WeakAuras.event_prototypes[trigger.event].canHaveAuto
+    Private.event_prototypes[trigger.event].iconFunc
+    or Private.event_prototypes[trigger.event].canHaveAuto
     )
     )
     or (
@@ -3378,12 +3378,12 @@ function GenericTrigger.GetNameAndIcon(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   local icon, name
   if (trigger.type == "event" or trigger.type == "status") then
-    if(trigger.event and WeakAuras.event_prototypes[trigger.event]) then
-      if(WeakAuras.event_prototypes[trigger.event].iconFunc) then
-        icon = WeakAuras.event_prototypes[trigger.event].iconFunc(trigger);
+    if(trigger.event and Private.event_prototypes[trigger.event]) then
+      if(Private.event_prototypes[trigger.event].iconFunc) then
+        icon = Private.event_prototypes[trigger.event].iconFunc(trigger);
       end
-      if(WeakAuras.event_prototypes[trigger.event].nameFunc) then
-        name = WeakAuras.event_prototypes[trigger.event].nameFunc(trigger);
+      if(Private.event_prototypes[trigger.event].nameFunc) then
+        name = Private.event_prototypes[trigger.event].nameFunc(trigger);
       end
     end
   end
@@ -3398,10 +3398,10 @@ end
 function GenericTrigger.CanHaveTooltip(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   if (trigger.type == "event" or trigger.type == "status") then
-    if (trigger.event and WeakAuras.event_prototypes[trigger.event]) then
-      if(WeakAuras.event_prototypes[trigger.event].hasSpellID) then
+    if (trigger.event and Private.event_prototypes[trigger.event]) then
+      if(Private.event_prototypes[trigger.event].hasSpellID) then
         return "spell";
-      elseif(WeakAuras.event_prototypes[trigger.event].hasItemID) then
+      elseif(Private.event_prototypes[trigger.event].hasItemID) then
         return "item";
       end
     end
@@ -3444,11 +3444,11 @@ function GenericTrigger.SetToolTip(trigger, state)
   end
 
   if (trigger.type == "event" or trigger.type == "status") then
-    if (trigger.event and WeakAuras.event_prototypes[trigger.event]) then
-      if(WeakAuras.event_prototypes[trigger.event].hasSpellID) then
+    if (trigger.event and Private.event_prototypes[trigger.event]) then
+      if(Private.event_prototypes[trigger.event].hasSpellID) then
         GameTooltip:SetSpellByID(trigger.spellName);
         return true
-      elseif(WeakAuras.event_prototypes[trigger.event].hasItemID) then
+      elseif(Private.event_prototypes[trigger.event].hasItemID) then
         GameTooltip:SetHyperlink("item:"..trigger.itemName..":0:0:0:0:0:0:0")
         return true
       end
@@ -3461,10 +3461,10 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   local ret = "";
   if (trigger.type == "event" or trigger.type == "status") then
-    if (trigger.event and WeakAuras.event_prototypes[trigger.event]) then
+    if (trigger.event and Private.event_prototypes[trigger.event]) then
       local found = false;
       local additional = ""
-      for _, v in pairs(WeakAuras.event_prototypes[trigger.event].args) do
+      for _, v in pairs(Private.event_prototypes[trigger.event].args) do
         local enable = true
         if(type(v.enable) == "function") then
           enable = v.enable(trigger)
@@ -3517,7 +3517,7 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
   if (trigger.type == "event" or trigger.type == "status") then
-    if (trigger.event and WeakAuras.event_prototypes[trigger.event]) then
+    if (trigger.event and Private.event_prototypes[trigger.event]) then
       local result = {};
 
       local canHaveDuration = GenericTrigger.CanHaveDuration(data, triggernum);
@@ -3539,15 +3539,15 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
         result.total = commonConditions.total;
       end
 
-      if (WeakAuras.event_prototypes[trigger.event].stacksFunc) then
+      if (Private.event_prototypes[trigger.event].stacksFunc) then
         result.stacks = commonConditions.stacks;
       end
 
-      if (WeakAuras.event_prototypes[trigger.event].nameFunc) then
+      if (Private.event_prototypes[trigger.event].nameFunc) then
         result.name = commonConditions.name;
       end
 
-      for _, v in pairs(WeakAuras.event_prototypes[trigger.event].args) do
+      for _, v in pairs(Private.event_prototypes[trigger.event].args) do
         if (v.conditionType and v.name and v.display) then
           local enable = true;
           if (v.enable) then

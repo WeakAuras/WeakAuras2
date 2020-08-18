@@ -1377,7 +1377,7 @@ local function AddCommonTriggerOptions(options, data, triggernum)
     end,
     set = function(info, v)
       trigger.type = v;
-      local prototype = trigger.event and WeakAuras.event_prototypes[trigger.event];
+      local prototype = trigger.event and OptionsPrivate.Private.event_prototypes[trigger.event];
       if v == "status" and (not prototype or prototype.type == "event") then
         trigger.event = "Cooldown Progress (Spell)"
       elseif v == "event" and (not prototype or prototype.type == "status") then
