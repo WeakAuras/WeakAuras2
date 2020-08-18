@@ -761,7 +761,7 @@ function Private.Modernize(data)
     local totalPrecision = data.totalPrecision
     if data.regionType == "text" then
       local seenSymbols = {}
-      WeakAuras.ParseTextStr(data.displayText, function(symbol)
+      Private.ParseTextStr(data.displayText, function(symbol)
         if not seenSymbols[symbol] then
           local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
           sym = sym or symbol
@@ -779,7 +779,7 @@ function Private.Modernize(data)
       for index, subRegionData in ipairs(data.subRegions) do
         if subRegionData.type == "subtext" then
           local seenSymbols = {}
-          WeakAuras.ParseTextStr(subRegionData.text_text, function(symbol)
+          Private.ParseTextStr(subRegionData.text_text, function(symbol)
             if not seenSymbols[symbol] then
               local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
               sym = sym or symbol
@@ -799,7 +799,7 @@ function Private.Modernize(data)
       for _, when in ipairs{ "start", "finish" } do
         if data.actions[when] then
           local seenSymbols = {}
-          WeakAuras.ParseTextStr(data.actions[when].message, function(symbol)
+          Private.ParseTextStr(data.actions[when].message, function(symbol)
             if not seenSymbols[symbol] then
               local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
               sym = sym or symbol
@@ -820,7 +820,7 @@ function Private.Modernize(data)
         for changeIndex, change in ipairs(condition.changes) do
           if change.property == "chat" and change.value then
             local seenSymbols = {}
-            WeakAuras.ParseTextStr(change.value.message, function(symbol)
+            Private.ParseTextStr(change.value.message, function(symbol)
               if not seenSymbols[symbol] then
                 local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
                 sym = sym or symbol

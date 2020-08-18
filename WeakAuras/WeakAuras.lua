@@ -4328,7 +4328,7 @@ function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc, useHiddenSta
   return textStr;
 end
 
-function WeakAuras.ParseTextStr(textStr, symbolCallback)
+function Private.ParseTextStr(textStr, symbolCallback)
   if not textStr then
     return
   end
@@ -4378,7 +4378,7 @@ end
 function WeakAuras.CreateFormatters(input, getter)
   local seenSymbols = {}
   local formatters = {}
-  WeakAuras.ParseTextStr(input, function(symbol)
+  Private.ParseTextStr(input, function(symbol)
     if not seenSymbols[symbol] then
       local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
       sym = sym or symbol
