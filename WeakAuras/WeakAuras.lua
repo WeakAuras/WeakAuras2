@@ -1699,7 +1699,7 @@ function WeakAuras.UnloadDisplays(toUnload, ...)
     Private.UnloadConditions(id)
 
     WeakAuras.regions[id].region:Collapse();
-    WeakAuras.CollapseAllClones(id);
+    Private.CollapseAllClones(id);
   end
 end
 
@@ -1753,7 +1753,7 @@ function WeakAuras.Delete(data)
 
 
   regions[id].region:Collapse()
-  WeakAuras.CollapseAllClones(id);
+  Private.CollapseAllClones(id);
 
   Private.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
 
@@ -2678,7 +2678,7 @@ local function pAdd(data, simpleChange)
         if (WeakAuras.regions[id] and WeakAuras.regions[id].region) then
           WeakAuras.regions[id].region:Collapse()
         else
-          WeakAuras.CollapseAllClones(id)
+          Private.CollapseAllClones(id)
         end
       end
 
@@ -2887,7 +2887,7 @@ function WeakAuras.GetRegion(id, cloneId)
   return WeakAuras.regions[id] and WeakAuras.regions[id].region;
 end
 
-function WeakAuras.CollapseAllClones(id, triggernum)
+function Private.CollapseAllClones(id, triggernum)
   if(clones[id]) then
     for i,v in pairs(clones[id]) do
       v:Collapse();
