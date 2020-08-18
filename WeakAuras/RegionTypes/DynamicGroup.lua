@@ -895,7 +895,7 @@ local function modify(parent, region, data)
   function region:ReloadControlledChildren()
     -- 'forgets' about regions it controls and starts from scratch. Mostly useful when Add()ing the group
     if not self:IsSuspended() then
-      WeakAuras.StartProfileSystem("dynamicgroup")
+      Private.StartProfileSystem("dynamicgroup")
       WeakAuras.StartProfileAura(data.id)
       self.needToReload = false
       self.sortedChildren = {}
@@ -994,7 +994,7 @@ local function modify(parent, region, data)
     -- Called when the Group is Resume()d
     -- uses sort data to determine the correct spot
     if not self:IsSuspended() then
-      WeakAuras.StartProfileSystem("dynamicgroup")
+      Private.StartProfileSystem("dynamicgroup")
       WeakAuras.StartProfileAura(data.id)
       self.needToSort = false
       local i = 1
@@ -1161,7 +1161,7 @@ local function modify(parent, region, data)
   end
 
   function region:DoPositionChildren()
-    WeakAuras.StartProfileSystem("dynamicgroup")
+    Private.StartProfileSystem("dynamicgroup")
     WeakAuras.StartProfileAura(data.id)
 
     local handledRegionData = {}
@@ -1204,7 +1204,7 @@ local function modify(parent, region, data)
     if not self:IsSuspended() then
       self.needToResize = false
       -- if self.dynamicAnchor then self:UpdateBorder(); return end
-      WeakAuras.StartProfileSystem("dynamicgroup")
+      Private.StartProfileSystem("dynamicgroup")
       WeakAuras.StartProfileAura(data.id)
       local numVisible, minX, maxX, maxY, minY, minLevel = 0
       for active, regionData in ipairs(self.sortedChildren) do

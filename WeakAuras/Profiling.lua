@@ -337,7 +337,7 @@ function WeakAuras.StartProfile(startType)
   profileData.systems.time.start = debugprofilestop()
   profileData.systems.time.count = 1
 
-  WeakAuras.StartProfileSystem = StartProfileSystem
+  Private.StartProfileSystem = StartProfileSystem
   WeakAuras.StartProfileAura = StartProfileAura
   WeakAuras.StartProfileUID = StartProfileUID
   WeakAuras.StopProfileSystem = StopProfileSystem
@@ -359,7 +359,7 @@ function WeakAuras.StopProfile()
   profileData.systems.time.elapsed = debugprofilestop() - profileData.systems.time.start
   profileData.systems.time.count = 0
 
-  WeakAuras.StartProfileSystem = doNothing
+  Private.StartProfileSystem = doNothing
   WeakAuras.StartProfileAura = doNothing
   WeakAuras.StartProfileUID = doNothing
   WeakAuras.StopProfileSystem = doNothing
