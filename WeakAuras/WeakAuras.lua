@@ -5015,7 +5015,7 @@ function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayIn
   end
 end
 
-function WeakAuras.IsCLEUSubevent(subevent)
+function Private.IsCLEUSubevent(subevent)
   if Private.subevent_prefix_types[subevent] then
      return true
   else
