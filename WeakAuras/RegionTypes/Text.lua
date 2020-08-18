@@ -196,7 +196,7 @@ local function modify(parent, region, data)
   end
 
   local TimerTick
-  if WeakAuras.ContainsPlaceHolders(data.displayText, "p") then
+  if Private.ContainsPlaceHolders(data.displayText, "p") then
     TimerTick = UpdateText
   end
 

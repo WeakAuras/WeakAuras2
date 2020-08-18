@@ -4191,7 +4191,7 @@ function Private.ContainsCustomPlaceHolder(textStr)
   end)
 end
 
-function WeakAuras.ContainsPlaceHolders(textStr, toCheck)
+function Private.ContainsPlaceHolders(textStr, toCheck)
   return ContainsPlaceHolders(textStr, function(symbol)
     if symbol:len() == 1 and toCheck:find(symbol, 1, true) then
      return true
