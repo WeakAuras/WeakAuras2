@@ -1523,9 +1523,8 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   end
 
 
-  if (WeakAuras.afterScanForLoads) then -- Hook for Options
-    WeakAuras.afterScanForLoads();
-  end
+  Private.callbacks:Fire("ScanForLoads")
+
   wipe(toLoad);
   wipe(toUnload)
 end
