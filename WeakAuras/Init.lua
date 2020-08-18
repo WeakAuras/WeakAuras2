@@ -69,7 +69,7 @@ end
 function WeakAuras.StartProfileAura()
 end
 
-function WeakAuras.StopProfileSystem()
+function Private.StopProfileSystem()
 end
 
 function WeakAuras.StopProfileAura()

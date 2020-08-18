@@ -1633,7 +1633,7 @@ local function EventHandler(frame, event, arg1, arg2, ...)
     matchDataUpToDate[unit] = nil
   end
 
-  WeakAuras.StopProfileSystem("bufftrigger2")
+  Private.StopProfileSystem("bufftrigger2")
 end
 
 frame:RegisterEvent("UNIT_AURA")
@@ -1674,7 +1674,7 @@ frame:SetScript("OnUpdate", function()
     UpdateStates(matchDataChanged, time)
     wipe(matchDataChanged)
   end
-  WeakAuras.StopProfileSystem("bufftrigger2")
+  Private.StopProfileSystem("bufftrigger2")
 end)
 
 function BuffTrigger.ScanAll()
@@ -3160,7 +3160,7 @@ function BuffTrigger.HandleMultiEvent(frame, event, ...)
     end
     wipe(matchDataMulti)
   end
-  WeakAuras.StopProfileSystem("bufftrigger2 - multi")
+  Private.StopProfileSystem("bufftrigger2 - multi")
 end
 
 function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)

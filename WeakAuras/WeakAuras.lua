@@ -1257,7 +1257,7 @@ function WeakAuras.StoreBossGUIDs()
     end
     db.CurrentEncounter = WeakAuras.CurrentEncounter
   end
-  WeakAuras.StopProfileSystem("boss_guids")
+  Private.StopProfileSystem("boss_guids")
 end
 
 function WeakAuras.CheckForPreviousEncounter()
@@ -1583,7 +1583,7 @@ function WeakAuras.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", function(frame, ...)
     Private.StartProfileSystem("load");
     Private.ScanForLoads(nil, ...)
-    WeakAuras.StopProfileSystem("load");
+    Private.StopProfileSystem("load");
   end);
 
   C_Timer.NewTicker(0.5, function()
@@ -1593,7 +1593,7 @@ function WeakAuras.RegisterLoadEvents()
       Private.ScanForLoads(nil, "ZONE_CHANGED")
       loadFrame.zoneId = zoneId;
     end
-    WeakAuras.StopProfileSystem("load");
+    Private.StopProfileSystem("load");
   end)
 
   unitLoadFrame:SetScript("OnEvent", function(frame, e, arg1, ...)
@@ -1601,7 +1601,7 @@ function WeakAuras.RegisterLoadEvents()
     if (arg1 == "player") then
       Private.ScanForLoads(nil, e, arg1, ...)
     end
-    WeakAuras.StopProfileSystem("load");
+    Private.StopProfileSystem("load");
   end);
 end
 
@@ -4750,7 +4750,7 @@ function Private.ensurePRDFrame()
         personalRessourceDisplayFrame:Hide();
       end
     end
-    WeakAuras.StopProfileSystem("prd");
+    Private.StopProfileSystem("prd");
   end
 
   personalRessourceDisplayFrame.expand = function(self, id)
@@ -4923,7 +4923,7 @@ local function GetAnchorFrame(data, region, parent)
     Private.ActivateAuraEnvironment(region.id, region.cloneId, region.state)
     local ok, frame = xpcall(region.customAnchorFunc, geterrorhandler())
     Private.ActivateAuraEnvironment()
-    WeakAuras.StopProfileSystem("custom region anchor")
+    Private.StopProfileSystem("custom region anchor")
     WeakAuras.StopProfileAura(region.id)
     if ok and frame then
       return frame
