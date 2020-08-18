@@ -488,7 +488,7 @@ local globalConditions =
   }
 }
 
-function WeakAuras.GetGlobalConditions()
+function Private.GetGlobalConditions()
   return globalConditions;
 end
 
@@ -501,7 +501,7 @@ local function ConstructConditionFunction(data)
   local usedProperties = {};
 
   local allConditionsTemplate = Private.GetTriggerConditions(data);
-  allConditionsTemplate[-1] = WeakAuras.GetGlobalConditions();
+  allConditionsTemplate[-1] = Private.GetGlobalConditions();
 
   local ret = "";
   ret = ret .. "local newActiveConditions = {};\n"
@@ -693,7 +693,7 @@ function Private.RegisterForGlobalConditions(id)
   local register = {};
   if (data.conditions) then
     local allConditionsTemplate = Private.GetTriggerConditions(data);
-    allConditionsTemplate[-1] = WeakAuras.GetGlobalConditions();
+    allConditionsTemplate[-1] = Private.GetGlobalConditions();
 
     for conditionNumber, condition in ipairs(data.conditions) do
       EvaluateCheckForRegisterForGlobalConditions(id, condition.check, allConditionsTemplate, register);

@@ -2155,7 +2155,7 @@ local function createConditionTemplates(data)
       type = "combination"
     }
   }
-  allConditionTemplates[-1] = WeakAuras.GetGlobalConditions();
+  allConditionTemplates[-1] = OptionsPrivate.Private.GetGlobalConditions();
 
   local conditionTemplates = createConditionTemplatesValueList(allConditionTemplates, numTriggers);
 
