@@ -792,7 +792,7 @@ function OptionsPrivate.ConvertDisplay(data, newType)
   WeakAuras.regions[id].region:Collapse();
   OptionsPrivate.Private.CollapseAllClones(id);
 
-  WeakAuras.Convert(data, newType);
+  OptionsPrivate.Private.Convert(data, newType);
   displayButtons[id]:SetViewRegion(WeakAuras.regions[id].region);
   displayButtons[id]:Initialize();
   displayButtons[id]:PriorityShow(visibility);
