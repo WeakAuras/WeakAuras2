@@ -920,7 +920,7 @@ local function modify(parent, region, data)
           end
         end
       end
-      WeakAuras.StopProfileSystem("dynamicgroup")
+      Private.StopProfileSystem("dynamicgroup")
       WeakAuras.StopProfileAura(data.id)
       self:SortUpdatedChildren()
     else
@@ -1023,7 +1023,7 @@ local function modify(parent, region, data)
         end
       end
       self.updatedChildren = {}
-      WeakAuras.StopProfileSystem("dynamicgroup")
+      Private.StopProfileSystem("dynamicgroup")
       WeakAuras.StopProfileAura(data.id)
       self:PositionChildren()
     else
@@ -1192,7 +1192,7 @@ local function modify(parent, region, data)
       end
     end
 
-    WeakAuras.StopProfileSystem("dynamicgroup")
+    Private.StopProfileSystem("dynamicgroup")
     WeakAuras.StopProfileAura(data.id)
     self:Resize()
   end
@@ -1244,7 +1244,7 @@ local function modify(parent, region, data)
       if WeakAuras.IsOptionsOpen() then
         WeakAuras.OptionsFrame().moversizer:ReAnchor()
       end
-      WeakAuras.StopProfileSystem("dynamicgroup")
+      Private.StopProfileSystem("dynamicgroup")
       WeakAuras.StopProfileAura(data.id)
     else
       self.needToResize = true

@@ -209,7 +209,7 @@ local function SoundRepeatStop(self)
     WeakAuras.timer:CancelTimer(self.soundRepeatTimer);
     self.soundRepeatTimer = nil;
   end
-  WeakAuras.StopProfileSystem("sound");
+  Private.StopProfileSystem("sound");
 end
 
 local function SoundStop(self)
@@ -217,7 +217,7 @@ local function SoundStop(self)
   if (self.soundHandle) then
     StopSound(self.soundHandle);
   end
-  WeakAuras.StopProfileSystem("sound");
+  Private.StopProfileSystem("sound");
 end
 
 local function SoundPlayHelper(self)
@@ -225,12 +225,12 @@ local function SoundPlayHelper(self)
   local options = self.soundOptions;
   self.soundHandle = nil;
   if (not options or options.sound_type == "Stop") then
-    WeakAuras.StopProfileSystem("sound");
+    Private.StopProfileSystem("sound");
     return;
   end
 
   if (WeakAuras.IsOptionsOpen() or WeakAuras.SquelchingActions() or WeakAuras.InLoadingScreen()) then
-    WeakAuras.StopProfileSystem("sound");
+    Private.StopProfileSystem("sound");
     return;
   end
 
@@ -254,7 +254,7 @@ local function SoundPlayHelper(self)
       self.soundHandle = handle;
     end
   end
-  WeakAuras.StopProfileSystem("sound");
+  Private.StopProfileSystem("sound");
 end
 
 local function SoundPlay(self, options)
@@ -272,7 +272,7 @@ local function SoundPlay(self, options)
   if (loop and options.sound_repeat and options.sound_repeat < WeakAuras.maxTimerDuration) then
     self.soundRepeatTimer = WeakAuras.timer:ScheduleRepeatingTimer(SoundPlayHelper, options.sound_repeat, self);
   end
-  WeakAuras.StopProfileSystem("sound");
+  Private.StopProfileSystem("sound");
 end
 
 local function SendChat(self, options)
@@ -626,7 +626,7 @@ function WeakAuras.TimerTick(region)
 
   region.subRegionEvents:Notify("TimerTick")
   WeakAuras.StopProfileAura(region.id);
-  WeakAuras.StopProfileSystem("timer tick")
+  Private.StopProfileSystem("timer tick")
 end
 
 local regionsForFrameTick = {}
@@ -679,7 +679,7 @@ function WeakAuras.FrameTick()
     region.subRegionEvents:Notify("FrameTick")
     WeakAuras.StopProfileAura(region.id);
   end
-  WeakAuras.StopProfileSystem("frame tick")
+  Private.StopProfileSystem("frame tick")
 end
 
 local function TimerTick(self)
