@@ -13,7 +13,7 @@ local frame = WeakAuras.frames["WeakAuras Main Frame"]
 local updatingAnimations;
 local last_update = GetTime();
 local function UpdateAnimations()
-  WeakAuras.StartProfileSystem("animations");
+  Private.StartProfileSystem("animations");
   local errorHandler = WeakAuras.IsOptionsOpen() and noopErrorHandler or geterrorhandler()
   for groupUid, groupRegion in pairs(pending_controls) do
     pending_controls[groupUid] = nil;
