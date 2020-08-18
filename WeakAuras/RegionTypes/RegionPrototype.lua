@@ -581,7 +581,7 @@ function WeakAuras.regionPrototype.modifyFinish(parent, region, data)
   -- Sync subRegions
   if region.subRegions then
     for index, subRegion in pairs(region.subRegions) do
-      WeakAuras.subRegionTypes[subRegion.type].release(subRegion)
+      Private.subRegionTypes[subRegion.type].release(subRegion)
     end
 
     wipe(region.subRegions)
@@ -591,12 +591,12 @@ function WeakAuras.regionPrototype.modifyFinish(parent, region, data)
     region.subRegions = region.subRegions or {}
     local subRegionTypes = {}
     for index, subRegionData in pairs(data.subRegions) do
-      if WeakAuras.subRegionTypes[subRegionData.type] then
-        local subRegion = WeakAuras.subRegionTypes[subRegionData.type].acquire()
+      if Private.subRegionTypes[subRegionData.type] then
+        local subRegion = Private.subRegionTypes[subRegionData.type].acquire()
         subRegion.type = subRegionData.type
 
         if subRegion then
-          WeakAuras.subRegionTypes[subRegionData.type].modify(region, subRegion, data, subRegionData, not subRegionTypes[subRegionData.type])
+          Private.subRegionTypes[subRegionData.type].modify(region, subRegion, data, subRegionData, not subRegionTypes[subRegionData.type])
           subRegionTypes[subRegionData.type] = true
         end
 
