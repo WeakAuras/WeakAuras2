@@ -1036,7 +1036,7 @@ local function valuesForTalentFunction(trigger)
   end
 end
 
-WeakAuras.load_prototype = {
+Private.load_prototype = {
   args = {
     {
       name = "combat",

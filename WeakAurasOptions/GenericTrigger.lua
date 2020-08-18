@@ -433,7 +433,7 @@ local function GetGenericTriggerOptions(data, triggernum)
     local prototypeOptions;
     local trigger, untrigger = data.triggers[triggernum].trigger, data.triggers[triggernum].untrigger;
     if(OptionsPrivate.Private.event_prototypes[trigger.event]) then
-      prototypeOptions = WeakAuras.ConstructOptions(OptionsPrivate.Private.event_prototypes[trigger.event], data, 10, triggernum);
+      prototypeOptions = OptionsPrivate.ConstructOptions(OptionsPrivate.Private.event_prototypes[trigger.event], data, 10, triggernum);
       if (trigger.event == "Combat Log") then
         Mixin(prototypeOptions, combatLogOptions);
       end
