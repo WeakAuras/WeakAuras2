@@ -1383,7 +1383,7 @@ end
 
 local function AddDefaultSubRegions(data)
   data.subRegions = data.subRegions or {}
-  for type, subRegionData in pairs(WeakAuras.subRegionTypes) do
+  for type, subRegionData in pairs(OptionsPrivate.Private.subRegionTypes) do
     if subRegionData.addDefaultsForNewAura then
       subRegionData.addDefaultsForNewAura(data)
     end
