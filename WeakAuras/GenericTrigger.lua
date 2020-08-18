@@ -674,7 +674,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   Private.StartProfileSystem("generictrigger " .. orgEvent )
   local event_list = loaded_events[event];
   if (not event_list) then
-    WeakAuras.StopProfileSystem("generictrigger " .. orgEvent )
+    Private.StopProfileSystem("generictrigger " .. orgEvent )
     return
   end
   if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
@@ -682,7 +682,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
 
     event_list = event_list[arg2];
     if (not event_list) then
-      WeakAuras.StopProfileSystem("generictrigger " .. orgEvent )
+      Private.StopProfileSystem("generictrigger " .. orgEvent )
       return;
     end
     WeakAuras.ScanEventsInternal(event_list, event, CombatLogGetCurrentEventInfo());
@@ -696,7 +696,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   else
     WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ...);
   end
-  WeakAuras.StopProfileSystem("generictrigger " .. orgEvent )
+  Private.StopProfileSystem("generictrigger " .. orgEvent )
 end
 
 function WeakAuras.ScanUnitEvents(event, unit, ...)
@@ -723,7 +723,7 @@ function WeakAuras.ScanUnitEvents(event, unit, ...)
       end
     end
   end
-  WeakAuras.StopProfileSystem("generictrigger " .. event .. " " .. unit)
+  Private.StopProfileSystem("generictrigger " .. event .. " " .. unit)
 end
 
 function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
@@ -854,7 +854,7 @@ function HandleEvent(frame, event, arg1, arg2, ...)
       Private.StartProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
       HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD");
       WeakAuras.CheckCooldownReady();
-      WeakAuras.StopProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
+      Private.StopProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
       if not WeakAuras.IsClassic() then
         WeakAuras.PreShowModels() -- models are disabled for classic
       end
@@ -868,7 +868,7 @@ function HandleEvent(frame, event, arg1, arg2, ...)
       4);  -- Data not available
     end
   end
-  WeakAuras.StopProfileSystem("generictrigger " .. event);
+  Private.StopProfileSystem("generictrigger " .. event);
 end
 
 function HandleUnitEvent(frame, event, unit, ...)
@@ -878,7 +878,7 @@ function HandleUnitEvent(frame, event, unit, ...)
       WeakAuras.ScanUnitEvents(event, frame.unit, ...);
     end
   end
-  WeakAuras.StopProfileSystem("generictrigger " .. event .. " " .. unit);
+  Private.StopProfileSystem("generictrigger " .. event .. " " .. unit);
 end
 
 function GenericTrigger.UnloadAll()
@@ -1570,7 +1570,7 @@ do
         end
       end
     end
-    WeakAuras.StopProfileSystem("generictrigger swing");
+    Private.StopProfileSystem("generictrigger swing");
   end
 
   local function swingTimerCheck(event, unit, guid, spell)
@@ -1650,7 +1650,7 @@ do
       lastSwingOff, swingDurationOff = nil, nil
       WeakAuras.ScanEvents("SWING_TIMER_END")
     end
-    WeakAuras.StopProfileSystem("generictrigger swing");
+    Private.StopProfileSystem("generictrigger swing");
   end
 
   function WeakAuras.InitSwingTimer()
@@ -1904,7 +1904,7 @@ do
           WeakAuras.CheckItemSlotCooldowns();
         end
       end
-      WeakAuras.StopProfileSystem("generictrigger cd tracking");
+      Private.StopProfileSystem("generictrigger cd tracking");
     end);
   end
 
@@ -2467,7 +2467,7 @@ do
         spellActivationSpellsCurrent[spell] = (event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
         WeakAuras.ScanEvents("WA_UPDATE_OVERLAY_GLOW", spell);
       end
-      WeakAuras.StopProfileSystem("generictrigger");
+      Private.StopProfileSystem("generictrigger");
     end);
   end
 
@@ -2562,7 +2562,7 @@ function WeakAuras.WatchUnitChange(unit)
         end
         watchUnitChange.inRaid = inRaid
       end
-      WeakAuras.StopProfileSystem("generictrigger unit change");
+      Private.StopProfileSystem("generictrigger unit change");
     end)
   end
   watchUnitChange.unitChangeGUIDS = watchUnitChange.unitChangeGUIDS or {}
@@ -3095,7 +3095,7 @@ do
           oh_icon = GetInventoryItemTexture("player", oh)
         end
         WeakAuras.ScanEvents("TENCH_UPDATE");
-        WeakAuras.StopProfileSystem("generictrigger");
+        Private.StopProfileSystem("generictrigger");
       end
 
       tenchFrame:SetScript("OnEvent", function(self, event, arg1)
@@ -3103,7 +3103,7 @@ do
         if (event == "UNIT_INVENTORY_CHANGED" and arg1 == "player") then
           timer:ScheduleTimer(tenchUpdate, 0.1);
         end
-        WeakAuras.StopProfileSystem("generictrigger");
+        Private.StopProfileSystem("generictrigger");
       end);
 
       tenchUpdate();
@@ -3130,7 +3130,7 @@ do
       petFrame:SetScript("OnEvent", function(event, unit)
         Private.StartProfileSystem("generictrigger")
         WeakAuras.ScanEvents("PET_UPDATE", "pet")
-        WeakAuras.StopProfileSystem("generictrigger")
+        Private.StopProfileSystem("generictrigger")
       end)
     end
   end
@@ -3152,9 +3152,9 @@ do
         moving = IsPlayerMoving();
         WeakAuras.ScanEvents("PLAYER_MOVING_UPDATE")
       end
-      WeakAuras.StopProfileSystem("generictrigger");
+      Private.StopProfileSystem("generictrigger");
     end, 0.01);
-    WeakAuras.StopProfileSystem("generictrigger");
+    Private.StopProfileSystem("generictrigger");
   end
 
   local function PlayerMoveSpeedUpdate()
@@ -3164,7 +3164,7 @@ do
       playerMovingFrame.speed = speed
       WeakAuras.ScanEvents("PLAYER_MOVE_SPEED_UPDATE")
     end
-    WeakAuras.StopProfileSystem("generictrigger");
+    Private.StopProfileSystem("generictrigger");
   end
 
   function WeakAuras.WatchForPlayerMoving()
@@ -3197,7 +3197,7 @@ function WeakAuras.RegisterItemCountWatch()
       Private.StartProfileSystem("generictrigger");
       timer:ScheduleTimer(WeakAuras.ScanEvents, 0.2, "ITEM_COUNT_UPDATE");
       timer:ScheduleTimer(WeakAuras.ScanEvents, 0.5, "ITEM_COUNT_UPDATE");
-      WeakAuras.StopProfileSystem("generictrigger");
+      Private.StopProfileSystem("generictrigger");
     end);
   end
 end

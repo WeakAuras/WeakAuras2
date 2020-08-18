@@ -150,7 +150,7 @@ local function AcquireModel(region, data)
       if (event ~= "UNIT_MODEL_CHANGED" or UnitIsUnit(unitId, unit)) then
         WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
       end
-      WeakAuras.StopProfileSystem("model");
+      Private.StopProfileSystem("model");
     end
     );
   else
@@ -169,7 +169,7 @@ local function AcquireModel(region, data)
       Private.StartProfileSystem("model");
       elapsed = elapsed + (elaps * 1000);
       model:SetSequenceTime(data.sequence, elapsed);
-      WeakAuras.StopProfileSystem("model");
+      Private.StopProfileSystem("model");
     end)
   else
     model:SetScript("OnUpdate", nil)
@@ -313,7 +313,7 @@ do
       end
       WeakAuras.StopProfileAura(id);
     end
-    WeakAuras.StopProfileSystem("model");
+    Private.StopProfileSystem("model");
   end
  end
 

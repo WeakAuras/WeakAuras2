@@ -340,7 +340,7 @@ function WeakAuras.StartProfile(startType)
   Private.StartProfileSystem = StartProfileSystem
   WeakAuras.StartProfileAura = StartProfileAura
   WeakAuras.StartProfileUID = StartProfileUID
-  WeakAuras.StopProfileSystem = StopProfileSystem
+  Private.StopProfileSystem = StopProfileSystem
   WeakAuras.StopProfileAura = StopProfileAura
   WeakAuras.StopProfileUID = StopProfileUID
 end
@@ -362,7 +362,7 @@ function WeakAuras.StopProfile()
   Private.StartProfileSystem = doNothing
   WeakAuras.StartProfileAura = doNothing
   WeakAuras.StartProfileUID = doNothing
-  WeakAuras.StopProfileSystem = doNothing
+  Private.StopProfileSystem = doNothing
   WeakAuras.StopProfileAura = doNothing
   WeakAuras.StopProfileUID = doNothing
 
