@@ -374,7 +374,7 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
   return ret;
 end
 
-function WeakAuras.GetProperties(data)
+function Private.GetProperties(data)
   local properties;
   local propertiesFunction = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].properties;
   if (type(propertiesFunction) == "function") then
@@ -533,7 +533,7 @@ local function ConstructConditionFunction(data)
   ret = ret .. "    WeakAuras.scheduleConditionCheck(recheckTime, id, cloneId);\n"
   ret = ret .. "  end\n"
 
-  local properties = WeakAuras.GetProperties(data);
+  local properties = Private.GetProperties(data);
 
   -- Now build a property + change list
   -- Second Loop deals with conditions that are no longer active
