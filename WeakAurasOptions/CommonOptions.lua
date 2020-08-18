@@ -906,7 +906,7 @@ local function CreateSetAll(subOption, getAll)
     OptionsPrivate.Private.pauseOptionsProcessing(false);
     OptionsPrivate.Private.ScanForLoads();
     WeakAuras.SortDisplayButtons();
-    WeakAuras.UpdateOptions()
+    OptionsPrivate.UpdateOptions()
   end
 end
 
