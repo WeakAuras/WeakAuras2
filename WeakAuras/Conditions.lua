@@ -500,7 +500,7 @@ local function ConstructConditionFunction(data)
 
   local usedProperties = {};
 
-  local allConditionsTemplate = WeakAuras.GetTriggerConditions(data);
+  local allConditionsTemplate = Private.GetTriggerConditions(data);
   allConditionsTemplate[-1] = WeakAuras.GetGlobalConditions();
 
   local ret = "";
@@ -692,7 +692,7 @@ function Private.RegisterForGlobalConditions(id)
 
   local register = {};
   if (data.conditions) then
-    local allConditionsTemplate = WeakAuras.GetTriggerConditions(data);
+    local allConditionsTemplate = Private.GetTriggerConditions(data);
     allConditionsTemplate[-1] = WeakAuras.GetGlobalConditions();
 
     for conditionNumber, condition in ipairs(data.conditions) do
