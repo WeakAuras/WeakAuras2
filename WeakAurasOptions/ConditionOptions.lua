@@ -827,7 +827,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         if (not message) then
           return true;
         end
-        if (not WeakAuras.ContainsPlaceHolders(message, "c")) then
+        if (not OptionsPrivate.Private.ContainsPlaceHolders(message, "c")) then
           return true;
         end
 
