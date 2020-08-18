@@ -204,7 +204,7 @@ function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
 end
 
 local function SoundRepeatStop(self)
-  WeakAuras.StartProfileSystem("sound");
+  Private.StartProfileSystem("sound");
   if (self.soundRepeatTimer) then
     WeakAuras.timer:CancelTimer(self.soundRepeatTimer);
     self.soundRepeatTimer = nil;
@@ -213,7 +213,7 @@ local function SoundRepeatStop(self)
 end
 
 local function SoundStop(self)
-  WeakAuras.StartProfileSystem("sound");
+  Private.StartProfileSystem("sound");
   if (self.soundHandle) then
     StopSound(self.soundHandle);
   end
@@ -221,7 +221,7 @@ local function SoundStop(self)
 end
 
 local function SoundPlayHelper(self)
-  WeakAuras.StartProfileSystem("sound");
+  Private.StartProfileSystem("sound");
   local options = self.soundOptions;
   self.soundHandle = nil;
   if (not options or options.sound_type == "Stop") then
@@ -261,7 +261,7 @@ local function SoundPlay(self, options)
   if (not options or WeakAuras.IsOptionsOpen()) then
     return
   end
-  WeakAuras.StartProfileSystem("sound");
+  Private.StartProfileSystem("sound");
   self:SoundStop();
   self:SoundRepeatStop();
 
@@ -618,7 +618,7 @@ local function SetProgressValue(region, value, total)
 end
 
 function WeakAuras.TimerTick(region)
-  WeakAuras.StartProfileSystem("timer tick")
+  Private.StartProfileSystem("timer tick")
   WeakAuras.StartProfileAura(region.id);
   if region.TimerTick then
     region:TimerTick();
@@ -670,7 +670,7 @@ function WeakAuras.FrameTick()
   if WeakAuras.IsOptionsOpen() then
     return
   end
-  WeakAuras.StartProfileSystem("frame tick")
+  Private.StartProfileSystem("frame tick")
   for region in pairs(regionsForFrameTick) do
     WeakAuras.StartProfileAura(region.id);
     if region.FrameTick then

@@ -1543,7 +1543,7 @@ WeakAuras.frames["WeakAuras Buff2 Frame"] = frame
 
 local function EventHandler(frame, event, arg1, arg2, ...)
 
-  WeakAuras.StartProfileSystem("bufftrigger2")
+  Private.StartProfileSystem("bufftrigger2")
 
   local deactivatedTriggerInfos = {}
   local unitsToRemove = {}
@@ -1668,7 +1668,7 @@ frame:SetScript("OnUpdate", function()
   if WeakAuras.IsPaused() then
     return
   end
-  WeakAuras.StartProfileSystem("bufftrigger2")
+  Private.StartProfileSystem("bufftrigger2")
   if next(matchDataChanged) then
     local time = GetTime()
     UpdateStates(matchDataChanged, time)
@@ -3128,7 +3128,7 @@ function BuffTrigger.InitMultiAura()
 end
 
 function BuffTrigger.HandleMultiEvent(frame, event, ...)
-  WeakAuras.StartProfileSystem("bufftrigger2 - multi")
+  Private.StartProfileSystem("bufftrigger2 - multi")
   if event == "COMBAT_LOG_EVENT_UNFILTERED" then
     CombatLog(CombatLogGetCurrentEventInfo())
   elseif event == "UNIT_TARGET" then
