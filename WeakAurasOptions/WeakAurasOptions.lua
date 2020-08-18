@@ -492,7 +492,7 @@ end
 function WeakAuras.ShowOptions(msg)
   local firstLoad = not(frame);
   OptionsPrivate.Private.Pause();
-  WeakAuras.SetFakeStates()
+  OptionsPrivate.Private.SetFakeStates()
 
   WeakAuras.spellCache.Build()
 
