@@ -282,7 +282,7 @@ function WeakAuras.EnableAddonDisplay(id)
       end
       WeakAuras.Add(data);
       WeakAuras.SyncParentChildRelationships(true);
-      WeakAuras.AddDisplayButton(data);
+      OptionsPrivate.AddDisplayButton(data);
     end
   end
 end

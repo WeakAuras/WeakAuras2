@@ -1021,7 +1021,6 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
 end
 
 
-
 function OptionsPrivate.IsPickedMultiple()
   if(frame.pickedDisplay == tempGroup) then
     return true;
@@ -1137,7 +1136,7 @@ function WeakAuras.GetDisplayButton(id)
   end
 end
 
-function WeakAuras.AddDisplayButton(data)
+function OptionsPrivate.AddDisplayButton(data)
   EnsureDisplayButton(data);
   WeakAuras.UpdateDisplayButton(data);
   frame.buttonsScroll:AddChild(displayButtons[data.id]);
