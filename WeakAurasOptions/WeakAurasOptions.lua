@@ -503,6 +503,20 @@ function WeakAuras.IsOptionsOpen()
   end
 end
 
+local function EnsureDisplayButton(data)
+  local id = data.id;
+  if not(displayButtons[id]) then
+    displayButtons[id] = AceGUI:Create("WeakAurasDisplayButton");
+    if(displayButtons[id]) then
+      displayButtons[id]:SetData(data);
+      displayButtons[id]:Initialize();
+      displayButtons[id]:UpdateWarning()
+    else
+      print("|cFF8800FFWeakAuras|r: Error creating button for", id);
+    end
+  end
+end
+
 local function GetSortedOptionsLists()
   local loadedSorted, unloadedSorted = {}, {};
   local to_sort = {};
@@ -569,7 +583,7 @@ local function LayoutDisplayButtons(msg)
     for index, id in pairs(unloadedSorted) do
       local data = WeakAuras.GetData(id);
       if(data) then
-        WeakAuras.EnsureDisplayButton(data);
+        EnsureDisplayButton(data);
         WeakAuras.UpdateDisplayButton(data);
 
         frame.buttonsScroll:AddChild(displayButtons[data.id]);
@@ -617,7 +631,7 @@ local function LayoutDisplayButtons(msg)
     for index, id in pairs(loadedSorted) do
       local data = WeakAuras.GetData(id);
       if(data) then
-        WeakAuras.EnsureDisplayButton(data);
+        EnsureDisplayButton(data);
         WeakAuras.UpdateDisplayButton(data);
 
         local button = displayButtons[data.id]
@@ -804,7 +818,7 @@ end
 function WeakAuras.NewDisplayButton(data)
   local id = data.id;
   OptionsPrivate.Private.ScanForLoads({[id] = true});
-  WeakAuras.EnsureDisplayButton(db.displays[id]);
+  EnsureDisplayButton(db.displays[id]);
   WeakAuras.UpdateDisplayButton(db.displays[id]);
   frame.buttonsScroll:AddChild(displayButtons[id]);
   WeakAuras.SortDisplayButtons();
@@ -1133,25 +1147,11 @@ function WeakAuras.GetDisplayButton(id)
 end
 
 function WeakAuras.AddDisplayButton(data)
-  WeakAuras.EnsureDisplayButton(data);
+  EnsureDisplayButton(data);
   WeakAuras.UpdateDisplayButton(data);
   frame.buttonsScroll:AddChild(displayButtons[data.id]);
   if(WeakAuras.regions[data.id] and WeakAuras.regions[data.id].region.SetStacks) then
     WeakAuras.regions[data.id].region:SetStacks(1);
-  end
-end
-
-function WeakAuras.EnsureDisplayButton(data)
-  local id = data.id;
-  if not(displayButtons[id]) then
-    displayButtons[id] = AceGUI:Create("WeakAurasDisplayButton");
-    if(displayButtons[id]) then
-      displayButtons[id]:SetData(data);
-      displayButtons[id]:Initialize();
-      displayButtons[id]:UpdateWarning()
-    else
-      print("|cFF8800FFWeakAuras|r: Error creating button for", id);
-    end
   end
 end
 
