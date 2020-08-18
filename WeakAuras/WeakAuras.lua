@@ -1924,7 +1924,7 @@ function WeakAuras.Rename(data, newid)
   WeakAuras.Add(data)
 end
 
-function WeakAuras.Convert(data, newType)
+function Private.Convert(data, newType)
   local id = data.id;
   regions[id].region:SetScript("OnUpdate", nil);
   regions[id].region:Hide();
