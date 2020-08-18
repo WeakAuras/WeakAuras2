@@ -18,8 +18,6 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local ADDON_NAME = "WeakAurasOptions";
 
-WeakAuras.transmitCache = {};
-
 local displayButtons = {};
 WeakAuras.displayButtons = displayButtons;
 
