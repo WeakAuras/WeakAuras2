@@ -17,9 +17,9 @@ local setAll = OptionsPrivate.commonOptions.CreateSetAll("region", getAll)
 
 local function AddSubRegionImpl(data, subRegionName)
   data.subRegions = data.subRegions or {}
-  if WeakAuras.subRegionTypes[subRegionName] and WeakAuras.subRegionTypes[subRegionName] then
-    if WeakAuras.subRegionTypes[subRegionName].supports(data.regionType) then
-      local default = WeakAuras.subRegionTypes[subRegionName].default
+  if OptionsPrivate.Private.subRegionTypes[subRegionName] and OptionsPrivate.Private.subRegionTypes[subRegionName] then
+    if OptionsPrivate.Private.subRegionTypes[subRegionName].supports(data.regionType) then
+      local default = OptionsPrivate.Private.subRegionTypes[subRegionName].default
       local subRegionData = type(default) == "function" and default(data.regionType) or CopyTable(default)
       subRegionData.type = subRegionName
       tinsert(data.subRegions, subRegionData)
@@ -47,7 +47,7 @@ local function AddOptionsForSupportedSubRegion(regionOption, data, supported)
   result.__title = L["Add Extra Elements"]
   result.__topLine = true
   for subRegionType in pairs(supported) do
-    if WeakAuras.subRegionTypes[subRegionType].supportsAdd then
+    if OptionsPrivate.Private.subRegionTypes[subRegionType].supportsAdd then
       hasSubRegions = true
       result[subRegionType .. "space"] = {
         type = "description",
@@ -59,7 +59,7 @@ local function AddOptionsForSupportedSubRegion(regionOption, data, supported)
       result[subRegionType] = {
         type = "execute",
         width = WeakAuras.normalWidth,
-        name = string.format(L["Add %s"], WeakAuras.subRegionTypes[subRegionType].displayName),
+        name = string.format(L["Add %s"], OptionsPrivate.Private.subRegionTypes[subRegionType].displayName),
         order = order,
         func = function()
           AddSubRegion(data, subRegionType)
@@ -118,7 +118,7 @@ function OptionsPrivate.GetDisplayOptions(data)
       end
 
       local supported = {}
-      for subRegionName, subRegionType in pairs(WeakAuras.subRegionTypes) do
+      for subRegionName, subRegionType in pairs(OptionsPrivate.Private.subRegionTypes) do
         if subRegionType.supports(data.regionType) then
           supported[subRegionName] = true
         end
@@ -226,7 +226,7 @@ function OptionsPrivate.GetDisplayOptions(data)
             },
           }
         end
-        for subRegionName, subRegionType in pairs(WeakAuras.subRegionTypes) do
+        for subRegionName, subRegionType in pairs(OptionsPrivate.Private.subRegionTypes) do
           if subRegionType.supports(childData.regionType) then
             supportedSubRegions[subRegionName] = true
           end

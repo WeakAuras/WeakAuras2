@@ -388,7 +388,7 @@ function Private.GetProperties(data)
   if data.subRegions then
     local subIndex = {}
     for index, subRegion in ipairs(data.subRegions) do
-      local subRegionTypeData = WeakAuras.subRegionTypes[subRegion.type];
+      local subRegionTypeData = Private.subRegionTypes[subRegion.type];
       local propertiesFunction = subRegionTypeData and subRegionTypeData.properties
       local subProperties;
       if (type(propertiesFunction) == "function") then
