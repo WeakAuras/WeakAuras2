@@ -1455,7 +1455,7 @@ function OptionsPrivate.MoveCollapseDataUp(id, namespace, path)
   end
 end
 
-function WeakAuras.MoveCollapseDataDown(id, namespace, path)
+function OptionsPrivate.MoveCollapseDataDown(id, namespace, path)
   collapsedOptions[id] = collapsedOptions[id] or {}
   collapsedOptions[id][namespace] = collapsedOptions[id][namespace] or {}
   if type(path) ~= "table" then
