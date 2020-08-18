@@ -81,7 +81,7 @@ local function CorrectItemName(input)
 end
 
 -- Also used by the GenericTrigger
-function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, triggertype, unevent)
+function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum, triggertype, unevent)
   local trigger, untrigger;
   if(data.controlledChildren) then
     trigger, untrigger = {}, {};
@@ -903,7 +903,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
     end
 
     if(unevent == "custom") then
-      local unevent_options = WeakAuras.ConstructOptions(prototype, data, order, triggernum, "untrigger");
+      local unevent_options = OptionsPrivate.ConstructOptions(prototype, data, order, triggernum, "untrigger");
       options = union(options, unevent_options);
     end
     if (prototype.timedrequired) then
@@ -958,7 +958,7 @@ function OptionsPrivate.GetLoadOptions(data)
       args = {}
     }
 
-    load.args = WeakAuras.ConstructOptions(WeakAuras.load_prototype, data, 10, nil, "load");
+    load.args = OptionsPrivate.ConstructOptions(OptionsPrivate.Private.load_prototype, data, 10, nil, "load");
 
     if(data.controlledChildren) then
       removeFuncs(load);
