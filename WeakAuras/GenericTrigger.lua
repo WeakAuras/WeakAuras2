@@ -1305,7 +1305,7 @@ function GenericTrigger.Add(data, region)
                   isCLEU = trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED"
                 elseif isCLEU then
                   local subevent = string.upper(i)
-                  if WeakAuras.IsCLEUSubevent(subevent) then
+                  if Private.IsCLEUSubevent(subevent) then
                     tinsert(trigger_subevents, subevent)
                     hasParam = true
                   end
