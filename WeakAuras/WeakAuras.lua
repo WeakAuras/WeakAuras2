@@ -3435,7 +3435,7 @@ function Private.ShowMouseoverTooltip(region, owner)
   end
 end
 
-function WeakAuras.HideTooltip()
+function Private.HideTooltip()
   currentTooltipRegion = nil;
   currentTooltipOwner = nil;
   GameTooltip:Hide();

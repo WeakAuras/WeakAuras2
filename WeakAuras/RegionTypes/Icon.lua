@@ -346,7 +346,7 @@ local function modify(parent, region, data)
       region.tooltipFrame:SetScript("OnEnter", function()
         Private.ShowMouseoverTooltip(region, region);
       end);
-      region.tooltipFrame:SetScript("OnLeave", WeakAuras.HideTooltip);
+      region.tooltipFrame:SetScript("OnLeave", Private.HideTooltip);
     end
     region.tooltipFrame:EnableMouse(true);
   elseif region.tooltipFrame then
