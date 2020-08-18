@@ -275,7 +275,7 @@ local function modify(parent, region, data)
       if (not region.startTime) then return end
 
       WeakAuras.StartProfileAura(region.id);
-      WeakAuras.StartProfileSystem("stopmotion")
+      Private.StartProfileSystem("stopmotion")
       local timeSinceStart = (GetTime() - region.startTime);
       local newCurrentFrame = floor(timeSinceStart * (data.frameRate or 15));
       if (newCurrentFrame == region.currentFrame) then

@@ -146,7 +146,7 @@ local function AcquireModel(region, data)
       model:RegisterEvent("PLAYER_FOCUS_CHANGED");
     end
     model:SetScript("OnEvent", function(self, event, unitId)
-      WeakAuras.StartProfileSystem("model");
+      Private.StartProfileSystem("model");
       if (event ~= "UNIT_MODEL_CHANGED" or UnitIsUnit(unitId, unit)) then
         WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
       end
@@ -166,7 +166,7 @@ local function AcquireModel(region, data)
   if(data.advance) then
     local elapsed = 0;
     model:SetScript("OnUpdate", function(self, elaps)
-      WeakAuras.StartProfileSystem("model");
+      Private.StartProfileSystem("model");
       elapsed = elapsed + (elaps * 1000);
       model:SetSequenceTime(data.sequence, elapsed);
       WeakAuras.StopProfileSystem("model");
@@ -303,7 +303,7 @@ end
 -- Work around for movies and world map hiding all models
 do
   function WeakAuras.PreShowModels(self, event)
-    WeakAuras.StartProfileSystem("model");
+    Private.StartProfileSystem("model");
     for id, data in pairs(WeakAuras.regions) do
       WeakAuras.StartProfileAura(id);
       if data.region.toShow then

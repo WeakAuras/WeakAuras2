@@ -1245,7 +1245,7 @@ end
 
 -- encounter stuff
 function WeakAuras.StoreBossGUIDs()
-  WeakAuras.StartProfileSystem("boss_guids")
+  Private.StartProfileSystem("boss_guids")
   if (WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.boss_guids) then
     for i = 1, 5 do
       if (UnitExists ("boss" .. i)) then
@@ -1581,13 +1581,13 @@ end
 
 function WeakAuras.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", function(frame, ...)
-    WeakAuras.StartProfileSystem("load");
+    Private.StartProfileSystem("load");
     Private.ScanForLoads(nil, ...)
     WeakAuras.StopProfileSystem("load");
   end);
 
   C_Timer.NewTicker(0.5, function()
-    WeakAuras.StartProfileSystem("load");
+    Private.StartProfileSystem("load");
     local zoneId = C_Map.GetBestMapForUnit("player");
     if loadFrame.zoneId ~= zoneId then
       Private.ScanForLoads(nil, "ZONE_CHANGED")
@@ -1597,7 +1597,7 @@ function WeakAuras.RegisterLoadEvents()
   end)
 
   unitLoadFrame:SetScript("OnEvent", function(frame, e, arg1, ...)
-    WeakAuras.StartProfileSystem("load");
+    Private.StartProfileSystem("load");
     if (arg1 == "player") then
       Private.ScanForLoads(nil, e, arg1, ...)
     end
@@ -4725,7 +4725,7 @@ function Private.ensurePRDFrame()
   end
 
   personalRessourceDisplayFrame.eventHandler = function(self, event, nameplate)
-    WeakAuras.StartProfileSystem("prd");
+    Private.StartProfileSystem("prd");
     if (event == "NAME_PLATE_UNIT_ADDED") then
       if (UnitIsUnit(nameplate, "player")) then
         local frame = C_NamePlate.GetNamePlateForUnit("player");
@@ -4918,7 +4918,7 @@ local function GetAnchorFrame(data, region, parent)
   end
 
   if (anchorFrameType == "CUSTOM" and region.customAnchorFunc) then
-    WeakAuras.StartProfileSystem("custom region anchor")
+    Private.StartProfileSystem("custom region anchor")
     WeakAuras.StartProfileAura(region.id)
     Private.ActivateAuraEnvironment(region.id, region.cloneId, region.state)
     local ok, frame = xpcall(region.customAnchorFunc, geterrorhandler())

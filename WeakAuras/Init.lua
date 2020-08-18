@@ -63,7 +63,7 @@ end
 function WeakAuras.RegisterRegionOptions()
 end
 
-function WeakAuras.StartProfileSystem()
+function Private.StartProfileSystem()
 end
 
 function WeakAuras.StartProfileAura()
