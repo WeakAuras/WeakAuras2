@@ -463,6 +463,16 @@ function WeakAuras.OptionsFrame()
   end
 end
 
+local function AfterScanForLoads()
+  if(frame) then
+    if (frame:IsVisible()) then
+      WeakAuras.SortDisplayButtons(nil, true);
+    else
+      frame.needsSort = true;
+    end
+  end
+end
+
 function WeakAuras.ToggleOptions(msg, Private)
   if not Private then
     return
@@ -476,8 +486,8 @@ function WeakAuras.ToggleOptions(msg, Private)
         displayButtons[id]:UpdateWarning()
       end
     end)
+    OptionsPrivate.Private:RegisterCallback("ScanForLoads", AfterScanForLoads)
   end
-
 
   if(frame and frame:IsVisible()) then
     WeakAuras.HideOptions();
@@ -1010,15 +1020,7 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
   end
 end
 
-WeakAuras.afterScanForLoads = function()
-  if(frame) then
-    if (frame:IsVisible()) then
-      WeakAuras.SortDisplayButtons(nil, true);
-    else
-      frame.needsSort = true;
-    end
-  end
-end
+
 
 function OptionsPrivate.IsPickedMultiple()
   if(frame.pickedDisplay == tempGroup) then
