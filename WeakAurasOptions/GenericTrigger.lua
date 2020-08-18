@@ -116,7 +116,7 @@ local function GetCustomTriggerOptions(data, triggernum)
               trueEvent = string.upper(i)
             elseif trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED" then
               local subevent = string.upper(i)
-              if not WeakAuras.IsCLEUSubevent(subevent) then
+              if not OptionsPrivate.Private.IsCLEUSubevent(subevent) then
                 return "|cFFFF0000"..L["%s is not a valid SubEvent for COMBAT_LOG_EVENT_UNFILTERED"]:format(subevent)
               end
             elseif trueEvent:match("^UNIT_") then
@@ -147,7 +147,7 @@ local function GetCustomTriggerOptions(data, triggernum)
             if not trueEvent then
               trueEvent = string.upper(i)
             elseif trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED" then
-              if not WeakAuras.IsCLEUSubevent(string.upper(i)) then
+              if not OptionsPrivate.Private.IsCLEUSubevent(string.upper(i)) then
                 return false
               end
             elseif trueEvent:match("^UNIT_") then
