@@ -379,7 +379,7 @@ function WeakAuras.DeleteOption(data, massDelete)
     end
   end
 
-  WeakAuras.CollapseAllClones(id);
+  OptionsPrivate.Private.CollapseAllClones(id);
   OptionsPrivate.ClearOptions(id)
 
   frame:ClearPicks();
@@ -787,7 +787,7 @@ function OptionsPrivate.ConvertDisplay(data, newType)
   displayButtons[id]:PriorityHide(0);
 
   WeakAuras.regions[id].region:Collapse();
-  WeakAuras.CollapseAllClones(id);
+  OptionsPrivate.Private.CollapseAllClones(id);
 
   WeakAuras.Convert(data, newType);
   displayButtons[id]:SetViewRegion(WeakAuras.regions[id].region);
