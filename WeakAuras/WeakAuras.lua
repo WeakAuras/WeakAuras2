@@ -219,8 +219,8 @@ local subRegionTypes = Private.subRegionTypes
 WeakAuras.regionOptions = {};
 local regionOptions = WeakAuras.regionOptions;
 
-WeakAuras.subRegionOptions = {}
-local subRegionOptions = WeakAuras.subRegionOptions
+Private.subRegionOptions = {}
+local subRegionOptions = Private.subRegionOptions
 
 -- Maps from trigger type to trigger system
 Private.triggerTypes = {};
