@@ -724,9 +724,6 @@ function WeakAuras.DisplayToString(id, forChat)
       v = 1421, -- Version of Transmisson, won't change anymore.
       s = versionString
     };
-    if(WeakAuras.transmitCache and WeakAuras.transmitCache[id]) then
-      transmit.i = WeakAuras.transmitCache[id];
-    end
     local firstTrigger = data.triggers[1].trigger
     if(firstTrigger.type == "aura" and WeakAurasOptionsSaved and WeakAurasOptionsSaved.spellCache) then
       transmit.a = {};
