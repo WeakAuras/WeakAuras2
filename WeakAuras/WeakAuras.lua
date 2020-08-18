@@ -3724,7 +3724,7 @@ do
     end
   end
 
-  function WeakAuras.SetFakeStates()
+  function Private.SetFakeStates()
     if UpdateFakeTimesHandle then
       return
     end
