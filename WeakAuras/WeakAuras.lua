@@ -212,8 +212,8 @@ local clonePool = {}
 WeakAuras.regionTypes = {};
 local regionTypes = WeakAuras.regionTypes;
 
-WeakAuras.subRegionTypes = {}
-local subRegionTypes = WeakAuras.subRegionTypes
+Private.subRegionTypes = {}
+local subRegionTypes = Private.subRegionTypes
 
 -- One table per regionType, see RegisterRegionOptions
 WeakAuras.regionOptions = {};
@@ -2610,10 +2610,10 @@ function WeakAuras.PreAdd(data)
     local result = {}
     for index, subRegionData in ipairs(data.subRegions) do
       local subType = subRegionData.type
-      if subType and WeakAuras.subRegionTypes[subType] then
+      if subType and Private.subRegionTypes[subType] then
         -- If it is not supported, then drop it
-        if WeakAuras.subRegionTypes[subType].supports(data.regionType) then
-          local default = WeakAuras.subRegionTypes[subType].default
+        if Private.subRegionTypes[subType].supports(data.regionType) then
+          local default = Private.subRegionTypes[subType].default
           if type(default) == "function" then
             default = default(data.regionType)
           end
