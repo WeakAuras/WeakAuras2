@@ -366,7 +366,7 @@ local function GetGenericTriggerOptions(data, triggernum)
       end,
       set = function(info, v)
         trigger.event = v
-        local prototype = WeakAuras.event_prototypes[v];
+        local prototype = OptionsPrivate.Private.event_prototypes[v];
         if(prototype) then
           if(prototype.automaticrequired) then
             trigger.unevent = "auto";
@@ -432,8 +432,8 @@ local function GetGenericTriggerOptions(data, triggernum)
   elseif (triggerType == "status" or triggerType == "event") then
     local prototypeOptions;
     local trigger, untrigger = data.triggers[triggernum].trigger, data.triggers[triggernum].untrigger;
-    if(WeakAuras.event_prototypes[trigger.event]) then
-      prototypeOptions = WeakAuras.ConstructOptions(WeakAuras.event_prototypes[trigger.event], data, 10, triggernum);
+    if(OptionsPrivate.Private.event_prototypes[trigger.event]) then
+      prototypeOptions = WeakAuras.ConstructOptions(OptionsPrivate.Private.event_prototypes[trigger.event], data, 10, triggernum);
       if (trigger.event == "Combat Log") then
         Mixin(prototypeOptions, combatLogOptions);
       end
