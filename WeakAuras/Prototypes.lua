@@ -1517,7 +1517,7 @@ local unitHelperFunctions = {
   end
 }
 
-WeakAuras.event_prototypes = {
+Private.event_prototypes = {
   ["Unit Characteristics"] = {
     type = "status",
     events = function(trigger)
@@ -7465,15 +7465,15 @@ WeakAuras.event_prototypes = {
 
 if WeakAuras.IsClassic() then
   if not UnitDetailedThreatSituation then
-    WeakAuras.event_prototypes["Threat Situation"] = nil
+    Private.event_prototypes["Threat Situation"] = nil
   end
-  WeakAuras.event_prototypes["Death Knight Rune"] = nil
-  WeakAuras.event_prototypes["Alternate Power"] = nil
-  WeakAuras.event_prototypes["Equipment Set"] = nil
-  WeakAuras.event_prototypes["Spell Activation Overlay"] = nil
-  WeakAuras.event_prototypes["Crowd Controlled"] = nil
+  Private.event_prototypes["Death Knight Rune"] = nil
+  Private.event_prototypes["Alternate Power"] = nil
+  Private.event_prototypes["Equipment Set"] = nil
+  Private.event_prototypes["Spell Activation Overlay"] = nil
+  Private.event_prototypes["Crowd Controlled"] = nil
 else
-  WeakAuras.event_prototypes["Queued Action"] = nil
+  Private.event_prototypes["Queued Action"] = nil
 end
 
 Private.dynamic_texts = {

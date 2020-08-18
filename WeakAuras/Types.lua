@@ -928,14 +928,14 @@ Private.text_word_wrap = {
 }
 
 Private.event_types = {};
-for name, prototype in pairs(WeakAuras.event_prototypes) do
+for name, prototype in pairs(Private.event_prototypes) do
   if(prototype.type == "event") then
     Private.event_types[name] = prototype.name;
   end
 end
 
 Private.status_types = {};
-for name, prototype in pairs(WeakAuras.event_prototypes) do
+for name, prototype in pairs(Private.event_prototypes) do
   if(prototype.type == "status") then
     Private.status_types[name] = prototype.name;
   end
