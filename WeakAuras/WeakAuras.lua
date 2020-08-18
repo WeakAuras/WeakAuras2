@@ -293,7 +293,7 @@ WeakAuras.conditionTextFormatters = {}
 -- keyed on UID not on id!
 WeakAuras.conditionHelpers = {}
 
-local load_prototype = WeakAuras.load_prototype;
+local load_prototype = Private.load_prototype;
 
 local levelColors = {
   [0] = "|cFFFFFFFF",
