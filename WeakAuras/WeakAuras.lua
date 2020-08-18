@@ -962,7 +962,7 @@ end
 
 function WeakAuras.Login(initialTime, takeNewSnapshots)
   local loginThread = coroutine.create(function()
-    WeakAuras.Pause();
+    Private.Pause();
 
     if db.history then
       local histRepo = WeakAuras.LoadFromArchive("Repository", "history")
@@ -1169,7 +1169,7 @@ function WeakAuras.IsPaused()
   return paused;
 end
 
-function WeakAuras.Pause()
+function Private.Pause()
   -- Forcibly hide all displays, and clear all trigger information (it will be restored on .Resume() due to forced events)
   for id, region in pairs(regions) do
     region.region:Collapse(); -- ticket 366
@@ -1198,7 +1198,7 @@ function WeakAuras.Toggle()
   if(paused) then
     Private.Resume();
   else
-    WeakAuras.Pause();
+    Private.Pause();
   end
 end
 
