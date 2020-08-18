@@ -489,68 +489,6 @@ function WeakAuras.ToggleOptions(msg, Private)
   end
 end
 
-function WeakAuras.ShowOptions(msg)
-  local firstLoad = not(frame);
-  OptionsPrivate.Private.Pause();
-  OptionsPrivate.Private.SetFakeStates()
-
-  WeakAuras.spellCache.Build()
-
-  if (firstLoad) then
-    frame = OptionsPrivate.CreateFrame();
-    frame.buttonsScroll.frame:Show();
-    WeakAuras.LayoutDisplayButtons(msg);
-  end
-  frame.buttonsScroll.frame:Show();
-
-  if (frame.needsSort) then
-    WeakAuras.SortDisplayButtons();
-    frame.needsSort = nil;
-  end
-
-  frame:Show();
-
-  if (OptionsPrivate.Private.mouseFrame) then
-    OptionsPrivate.Private.mouseFrame:OptionsOpened();
-  end
-
-  if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
-    OptionsPrivate.Private.personalRessourceDisplayFrame:OptionsOpened();
-  end
-
-  if not(firstLoad) then
-    -- Show what was last shown
-    OptionsPrivate.Private.PauseAllDynamicGroups();
-    for id, button in pairs(displayButtons) do
-      if (button:GetVisibility() > 0) then
-        button:PriorityShow(button:GetVisibility());
-      end
-    end
-    OptionsPrivate.Private.ResumeAllDynamicGroups();
-  end
-
-  if (frame.pickedDisplay) then
-    if (OptionsPrivate.IsPickedMultiple()) then
-      local children = {}
-      for k,v in pairs(tempGroup.controlledChildren) do
-        children[k] = v
-      end
-      frame:PickDisplayBatch(children);
-    else
-      WeakAuras.PickDisplay(frame.pickedDisplay);
-    end
-  else
-    frame:NewAura();
-  end
-
-  if (frame.window == "codereview") then
-    frame.codereview:Close();
-  end
-
-  -- TODO check if it should be shown
-  frame:ShowTip()
-end
-
 function WeakAuras.HideOptions()
   if(frame) then
     frame:Hide()
@@ -610,7 +548,7 @@ function WeakAuras.GetSortedOptionsLists()
   return loadedSorted, unloadedSorted;
 end
 
-function WeakAuras.LayoutDisplayButtons(msg)
+local function LayoutDisplayButtons(msg)
   local total = 0;
   for _,_ in pairs(db.displays) do
     total = total + 1;
@@ -708,6 +646,68 @@ function WeakAuras.LayoutDisplayButtons(msg)
 
   local co1 = coroutine.create(func1);
   OptionsPrivate.Private.dynFrame:AddAction("LayoutDisplayButtons1", co1);
+end
+
+function WeakAuras.ShowOptions(msg)
+  local firstLoad = not(frame);
+  OptionsPrivate.Private.Pause();
+  OptionsPrivate.Private.SetFakeStates()
+
+  WeakAuras.spellCache.Build()
+
+  if (firstLoad) then
+    frame = OptionsPrivate.CreateFrame();
+    frame.buttonsScroll.frame:Show();
+    LayoutDisplayButtons(msg);
+  end
+  frame.buttonsScroll.frame:Show();
+
+  if (frame.needsSort) then
+    WeakAuras.SortDisplayButtons();
+    frame.needsSort = nil;
+  end
+
+  frame:Show();
+
+  if (OptionsPrivate.Private.mouseFrame) then
+    OptionsPrivate.Private.mouseFrame:OptionsOpened();
+  end
+
+  if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
+    OptionsPrivate.Private.personalRessourceDisplayFrame:OptionsOpened();
+  end
+
+  if not(firstLoad) then
+    -- Show what was last shown
+    OptionsPrivate.Private.PauseAllDynamicGroups();
+    for id, button in pairs(displayButtons) do
+      if (button:GetVisibility() > 0) then
+        button:PriorityShow(button:GetVisibility());
+      end
+    end
+    OptionsPrivate.Private.ResumeAllDynamicGroups();
+  end
+
+  if (frame.pickedDisplay) then
+    if (OptionsPrivate.IsPickedMultiple()) then
+      local children = {}
+      for k,v in pairs(tempGroup.controlledChildren) do
+        children[k] = v
+      end
+      frame:PickDisplayBatch(children);
+    else
+      WeakAuras.PickDisplay(frame.pickedDisplay);
+    end
+  else
+    frame:NewAura();
+  end
+
+  if (frame.window == "codereview") then
+    frame.codereview:Close();
+  end
+
+  -- TODO check if it should be shown
+  frame:ShowTip()
 end
 
 function WeakAuras.UpdateOptions()
