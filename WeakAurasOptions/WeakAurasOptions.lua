@@ -1315,60 +1315,6 @@ function WeakAuras.GetMoverSizerId()
   return frame.moversizer:GetCurrentId()
 end
 
-function WeakAuras.ShowCloneDialog(data)
-  if(
-    not(
-    data.parent
-    and WeakAuras.GetData(data.parent)
-    and WeakAuras.GetData(data.parent).regionType == "dynamicgroup"
-    )
-    and not(odb.preventCloneDialog)
-    ) then
-    StaticPopupDialogs["WEAKAURAS_CLONE_OPTION_ENABLED"] = {
-      text = L["Clone option enabled dialog"],
-      button1 = L["Yes"],
-      button2 = L["No"],
-      button3 = L["Never"],
-      OnAccept = function()
-        local parentData = {
-          id = WeakAuras.FindUnusedId(data.id.." Group"),
-          regionType = "dynamicgroup",
-        };
-        WeakAuras.Add(parentData);
-        WeakAuras.NewDisplayButton(parentData);
-
-        tinsert(parentData.controlledChildren, data.id);
-        data.parent = parentData.id;
-        WeakAuras.Add(parentData);
-        WeakAuras.Add(data);
-
-        local button = WeakAuras.GetDisplayButton(data.id);
-        button:SetGroup(parentData.id, true);
-        button:SetGroupOrder(1, #parentData.controlledChildren);
-
-        local parentButton = WeakAuras.GetDisplayButton(parentData.id);
-        parentButton.callbacks.UpdateExpandButton();
-        WeakAuras.UpdateDisplayButton(parentData);
-        WeakAuras.ClearAndUpdateOptions(parentData.id);
-        WeakAuras.SortDisplayButtons();
-        parentButton:Expand();
-      end,
-      OnCancel = function()
-      -- do nothing
-      end,
-      OnAlt = function()
-        odb.preventCloneDialog = true
-      end,
-      hideOnEscape = true,
-      whileDead = true,
-      timeout = 0,
-      preferredindex = STATICPOPUP_NUMDIALOGS
-    };
-
-    StaticPopup_Show("WEAKAURAS_CLONE_OPTION_ENABLED");
-  end
-end
-
 local function AddDefaultSubRegions(data)
   data.subRegions = data.subRegions or {}
   for type, subRegionData in pairs(OptionsPrivate.Private.subRegionTypes) do
