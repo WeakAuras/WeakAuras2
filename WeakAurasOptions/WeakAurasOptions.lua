@@ -737,7 +737,7 @@ function OptionsPrivate.EnsureOptions(data, subOption)
   return frame:EnsureOptions(data, subOption)
 end
 
-function WeakAuras.GetPickedDisplay()
+function OptionsPrivate.GetPickedDisplay()
   return frame:GetPickedDisplay()
 end
 
