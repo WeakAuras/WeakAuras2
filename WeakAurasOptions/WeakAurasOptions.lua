@@ -717,7 +717,7 @@ function WeakAuras.ShowOptions(msg)
   frame:ShowTip()
 end
 
-function WeakAuras.UpdateOptions()
+function OptionsPrivate.UpdateOptions()
   frame:UpdateOptions()
 end
 
