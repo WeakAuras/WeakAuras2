@@ -503,7 +503,7 @@ function WeakAuras.IsOptionsOpen()
   end
 end
 
-function WeakAuras.GetSortedOptionsLists()
+local function GetSortedOptionsLists()
   local loadedSorted, unloadedSorted = {}, {};
   local to_sort = {};
   for id, data in pairs(db.displays) do
@@ -554,7 +554,7 @@ local function LayoutDisplayButtons(msg)
     total = total + 1;
   end
 
-  local loadedSorted, unloadedSorted = WeakAuras.GetSortedOptionsLists();
+  local loadedSorted, unloadedSorted = GetSortedOptionsLists();
 
   frame:SetLoadProgressVisible(true)
   --frame.buttonsScroll:AddChild(frame.newButton);
