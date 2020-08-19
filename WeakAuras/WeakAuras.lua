@@ -4039,7 +4039,7 @@ function WeakAuras.UpdatedTriggerState(id)
   end
 end
 
-function WeakAuras.RunCustomTextFunc(region, customFunc)
+function Private.RunCustomTextFunc(region, customFunc)
   if not customFunc then
     return nil
   end
@@ -4075,7 +4075,7 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc, state, form
   if string.sub(textStr, 1, 1) == "c" then
     local custom
     if customFunc then
-      custom = WeakAuras.RunCustomTextFunc(region, customFunc)
+      custom = Private.RunCustomTextFunc(region, customFunc)
     else
       custom = region.values.custom
     end

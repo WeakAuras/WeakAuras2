@@ -187,7 +187,7 @@ local function modify(parent, region, data)
   if customTextFunc then
     if UpdateText then
       Update = function()
-        region.values.custom = WeakAuras.RunCustomTextFunc(region, customTextFunc)
+        region.values.custom = Private.RunCustomTextFunc(region, customTextFunc)
         UpdateText()
       end
     end
@@ -203,7 +203,7 @@ local function modify(parent, region, data)
   local FrameTick
   if customTextFunc and data.customTextUpdate == "update" then
     FrameTick = function()
-      region.values.custom = WeakAuras.RunCustomTextFunc(region, customTextFunc)
+      region.values.custom = Private.RunCustomTextFunc(region, customTextFunc)
       UpdateText()
     end
   end
