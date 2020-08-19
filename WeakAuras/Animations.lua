@@ -4,7 +4,7 @@ local AddonName, Private = ...
 -- Animations
 local animations = {}
 local pending_controls = {}
-local anim_function_strings = WeakAuras.anim_function_strings;
+local anim_function_strings = Private.anim_function_strings;
 
 local function noopErrorHandler() end
 
