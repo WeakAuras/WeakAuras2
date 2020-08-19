@@ -2924,7 +2924,7 @@ function Private.ReleaseClone(id, cloneId, regionType)
   clonePool[regionType][#clonePool[regionType] + 1] = region;
 end
 
-function WeakAuras.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region, customFunc, when, formatters)
+function Private.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region, customFunc, when, formatters)
   local useHiddenStates = when == "finish"
   if (message:find('%%')) then
     message = WeakAuras.ReplacePlaceHolders(message, region, customFunc, useHiddenStates, formatters);
@@ -3177,7 +3177,7 @@ function WeakAuras.PerformActions(data, when, region)
 
   if(actions.do_message and actions.message_type and actions.message) then
     local customFunc = Private.customActionsFunctions[data.id][when .. "_message"];
-    WeakAuras.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc, when, formatters);
+    Private.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc, when, formatters);
   end
 
   if (actions.stop_sound) then
