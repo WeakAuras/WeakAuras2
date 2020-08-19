@@ -4375,7 +4375,7 @@ function Private.ParseTextStr(textStr, symbolCallback)
   end
 end
 
-function WeakAuras.CreateFormatters(input, getter)
+function Private.CreateFormatters(input, getter)
   local seenSymbols = {}
   local formatters = {}
   Private.ParseTextStr(input, function(symbol)
