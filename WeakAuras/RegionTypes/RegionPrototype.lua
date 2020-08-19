@@ -295,7 +295,7 @@ local function GlowExternal(self, options)
   if (not options or WeakAuras.IsOptionsOpen()) then
     return
   end
-  WeakAuras.HandleGlowAction(options, self)
+  Private.HandleGlowAction(options, self)
 end
 
 local function UpdatePosition(self)
