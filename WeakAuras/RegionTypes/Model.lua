@@ -302,7 +302,7 @@ end
 
 -- Work around for movies and world map hiding all models
 do
-  function WeakAuras.PreShowModels(self, event)
+  function Private.PreShowModels(self, event)
     Private.StartProfileSystem("model");
     for id, data in pairs(WeakAuras.regions) do
       WeakAuras.StartProfileAura(id);
