@@ -158,7 +158,7 @@ local function modify(parent, region, data)
   end
 
   local UpdateText
-  if WeakAuras.ContainsAnyPlaceHolders(data.displayText) then
+  if Private.ContainsAnyPlaceHolders(data.displayText) then
     local getter = function(key, default)
       local fullKey = "displayText_format_" .. key
       if (data[fullKey] == nil) then
