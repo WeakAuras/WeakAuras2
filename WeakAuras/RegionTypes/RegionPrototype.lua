@@ -635,6 +635,22 @@ local frameForFrameTick = CreateFrame("FRAME");
 
 WeakAuras.frames["Frame Tick Frame"] = frameForFrameTick
 
+local function FrameTick()
+  if WeakAuras.IsOptionsOpen() then
+    return
+  end
+  Private.StartProfileSystem("frame tick")
+  for region in pairs(regionsForFrameTick) do
+    Private.StartProfileAura(region.id);
+    if region.FrameTick then
+      region.FrameTick()
+    end
+    region.subRegionEvents:Notify("FrameTick")
+    Private.StopProfileAura(region.id);
+  end
+  Private.StopProfileSystem("frame tick")
+end
+
 local function RegisterForFrameTick(region)
   -- Check for a Frame Tick function
   local hasFrameTick = region.FrameTick
@@ -666,21 +682,7 @@ local function UnRegisterForFrameTick(region)
   end
 end
 
-function WeakAuras.FrameTick()
-  if WeakAuras.IsOptionsOpen() then
-    return
-  end
-  Private.StartProfileSystem("frame tick")
-  for region in pairs(regionsForFrameTick) do
-    Private.StartProfileAura(region.id);
-    if region.FrameTick then
-      region.FrameTick()
-    end
-    region.subRegionEvents:Notify("FrameTick")
-    Private.StopProfileAura(region.id);
-  end
-  Private.StopProfileSystem("frame tick")
-end
+
 
 local function TimerTickForSetDuration(self)
   local duration = self.duration
