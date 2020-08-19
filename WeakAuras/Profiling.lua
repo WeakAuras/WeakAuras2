@@ -339,10 +339,10 @@ function WeakAuras.StartProfile(startType)
 
   Private.StartProfileSystem = StartProfileSystem
   Private.StartProfileAura = StartProfileAura
-  WeakAuras.StartProfileUID = StartProfileUID
+  Private.StartProfileUID = StartProfileUID
   Private.StopProfileSystem = StopProfileSystem
   Private.StopProfileAura = StopProfileAura
-  WeakAuras.StopProfileUID = StopProfileUID
+  Private.StopProfileUID = StopProfileUID
 end
 
 local function doNothing()
@@ -361,10 +361,10 @@ function WeakAuras.StopProfile()
 
   Private.StartProfileSystem = doNothing
   Private.StartProfileAura = doNothing
-  WeakAuras.StartProfileUID = doNothing
+  Private.StartProfileUID = doNothing
   Private.StopProfileSystem = doNothing
   Private.StopProfileAura = doNothing
-  WeakAuras.StopProfileUID = doNothing
+  Private.StopProfileUID = doNothing
 
   currentProfileState = nil
   RealTimeProfilingWindow:UnregisterAllEvents()

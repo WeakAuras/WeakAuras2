@@ -75,10 +75,10 @@ end
 function Private.StopProfileAura()
 end
 
-function WeakAuras.StartProfileUID()
+function Private.StartProfileUID()
 end
 
-function WeakAuras.StopProfileUID()
+function Private.StopProfileUID()
 end
 
 -- If WeakAuras shuts down due to being installed on the wrong target, keep the bindings from erroring
