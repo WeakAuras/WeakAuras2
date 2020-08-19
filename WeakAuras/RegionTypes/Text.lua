@@ -169,7 +169,7 @@ local function modify(parent, region, data)
     local formatters = Private.CreateFormatters(data.displayText, getter)
     UpdateText = function()
       local textStr = data.displayText;
-      textStr = WeakAuras.ReplacePlaceHolders(textStr, region, nil, false, formatters);
+      textStr = Private.ReplacePlaceHolders(textStr, region, nil, false, formatters);
       if (textStr == nil or textStr == "") then
         textStr = " ";
       end
