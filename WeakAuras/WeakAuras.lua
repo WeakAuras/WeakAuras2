@@ -2927,7 +2927,7 @@ end
 function Private.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region, customFunc, when, formatters)
   local useHiddenStates = when == "finish"
   if (message:find('%%')) then
-    message = WeakAuras.ReplacePlaceHolders(message, region, customFunc, useHiddenStates, formatters);
+    message = Private.ReplacePlaceHolders(message, region, customFunc, useHiddenStates, formatters);
   end
   if(message_type == "PRINT") then
     DEFAULT_CHAT_FRAME:AddMessage(message, r or 1, g or 1, b or 1);
@@ -4247,7 +4247,7 @@ local function ValueForSymbol(symbol, region, customFunc, regionState, regionSta
   end
 end
 
-function WeakAuras.ReplacePlaceHolders(textStr, region, customFunc, useHiddenStates, formatters)
+function Private.ReplacePlaceHolders(textStr, region, customFunc, useHiddenStates, formatters)
   local regionValues = region.values;
   local regionState = region.state or {};
   local regionStates = region.states or {};
