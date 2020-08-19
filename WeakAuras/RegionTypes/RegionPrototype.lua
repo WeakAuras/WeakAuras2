@@ -635,7 +635,7 @@ local frameForFrameTick = CreateFrame("FRAME");
 
 WeakAuras.frames["Frame Tick Frame"] = frameForFrameTick
 
-function WeakAuras.RegisterForFrameTick(region)
+local function RegisterForFrameTick(region)
   -- Check for a Frame Tick function
   local hasFrameTick = region.FrameTick
   if not hasFrameTick then
@@ -659,7 +659,7 @@ function WeakAuras.RegisterForFrameTick(region)
   end
 end
 
-function WeakAuras.UnRegisterForFrameTick(region)
+local function UnRegisterForFrameTick(region)
   regionsForFrameTick[region] = nil
   if not next(regionsForFrameTick) then
     frameForFrameTick:SetScript("OnUpdate", nil)
@@ -798,7 +798,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
         region:SoundRepeatStop();
       end
 
-      WeakAuras.UnRegisterForFrameTick(region)
+      UnRegisterForFrameTick(region)
     end
     function region:Expand()
       if (region.toShow) then
@@ -820,7 +820,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       end
       parent:ActivateChild(data.id, cloneId);
 
-      WeakAuras.RegisterForFrameTick(region)
+      RegisterForFrameTick(region)
       region:UpdateTimerTick()
     end
   elseif not(data.controlledChildren) then
@@ -844,7 +844,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
         region:SoundRepeatStop();
       end
 
-      WeakAuras.UnRegisterForFrameTick(region)
+      UnRegisterForFrameTick(region)
     end
     function region:Expand()
       if data.anchorFrameType == "SELECTFRAME"
@@ -878,7 +878,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
         parent:UpdateBorder(region);
       end
 
-      WeakAuras.RegisterForFrameTick(region)
+      RegisterForFrameTick(region)
       region:UpdateTimerTick()
     end
   end
