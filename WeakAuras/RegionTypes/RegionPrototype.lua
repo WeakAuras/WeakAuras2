@@ -440,11 +440,23 @@ local function UpdateRegionHasTimerTick(self)
   self:UpdateTimerTick()
 end
 
+local function TimerTickForRegion(region)
+  Private.StartProfileSystem("timer tick")
+  Private.StartProfileAura(region.id);
+  if region.TimerTick then
+    region:TimerTick();
+  end
+
+  region.subRegionEvents:Notify("TimerTick")
+  Private.StopProfileAura(region.id);
+  Private.StopProfileSystem("timer tick")
+end
+
 local function UpdateTimerTick(self)
   if self.triggerProvidesTimer and self.regionHasTimer then
     if not self:GetScript("OnUpdate") then
       self:SetScript("OnUpdate", function()
-        WeakAuras.TimerTick(self)
+        TimerTickForRegion(self)
       end);
     end
   else
@@ -617,18 +629,6 @@ local function SetProgressValue(region, value, total)
   region:SetValue(value - adjustMin, max - adjustMin);
 end
 
-function WeakAuras.TimerTick(region)
-  Private.StartProfileSystem("timer tick")
-  Private.StartProfileAura(region.id);
-  if region.TimerTick then
-    region:TimerTick();
-  end
-
-  region.subRegionEvents:Notify("TimerTick")
-  Private.StopProfileAura(region.id);
-  Private.StopProfileSystem("timer tick")
-end
-
 local regionsForFrameTick = {}
 
 local frameForFrameTick = CreateFrame("FRAME");
@@ -682,7 +682,7 @@ function WeakAuras.FrameTick()
   Private.StopProfileSystem("frame tick")
 end
 
-local function TimerTick(self)
+local function TimerTickForSetDuration(self)
   local duration = self.duration
   local adjustMin = self.adjustedMin or 0;
 
@@ -717,7 +717,7 @@ function WeakAuras.regionPrototype.AddSetDurationInfo(region)
         local adjustMin = region.adjustedMin or 0;
         region:SetTime((duration ~= 0 and region.adjustedMax or duration) - adjustMin, expirationTime - adjustMin, inverse);
 
-        region.TimerTick = TimerTick
+        region.TimerTick = TimerTickForSetDuration
         region:UpdateRegionHasTimerTick()
       end
     end
