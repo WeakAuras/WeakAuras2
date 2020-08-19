@@ -2660,7 +2660,7 @@ local function pAdd(data, simpleChange)
   if simpleChange then
     db.displays[id] = data
     WeakAuras.SetRegion(data)
-    WeakAuras.UpdatedTriggerState(id)
+    Private.UpdatedTriggerState(id)
   else
     if (data.controlledChildren) then
       Private.ClearAuraEnvironment(id);
@@ -3712,7 +3712,7 @@ do
         end
       end
       if changed then
-        WeakAuras.UpdatedTriggerState(id)
+        Private.UpdatedTriggerState(id)
       end
     end
   end
@@ -3728,7 +3728,7 @@ do
         changed = Private.SetAllStatesHidden(id, triggernum) or changed
       end
       if changed then
-        WeakAuras.UpdatedTriggerState(id)
+        Private.UpdatedTriggerState(id)
       end
     end
     UpdateFakeTimesHandle = timer:ScheduleRepeatingTimer(UpdateFakeTimers, 1)
@@ -3756,7 +3756,7 @@ do
           changed = Private.SetAllStatesHidden(id, triggernum) or changed
         end
         if changed then
-          WeakAuras.UpdatedTriggerState(id)
+          Private.UpdatedTriggerState(id)
         end
       end
     end
@@ -3774,7 +3774,7 @@ do
             triggerSystem.CreateFakeStates(id, triggernum)
           end
         end
-        WeakAuras.UpdatedTriggerState(id)
+        Private.UpdatedTriggerState(id)
         if WeakAuras.GetMoverSizerId() == id then
           WeakAuras.SetMoverSizer(id)
         end
@@ -3803,7 +3803,7 @@ local function startStopTimers(id, cloneId, triggernum, state)
             if (state.show ~= false and state.show ~= nil) then
               state.show = false;
               state.changed = true;
-              WeakAuras.UpdatedTriggerState(id);
+              Private.UpdatedTriggerState(id);
             end
           end,
           state.expirationTime - GetTime());
@@ -3930,7 +3930,7 @@ local function ApplyStatesToRegions(id, activeTrigger, states)
   end
 end
 
-function WeakAuras.UpdatedTriggerState(id)
+function Private.UpdatedTriggerState(id)
   if (not triggerState[id]) then
     return;
   end

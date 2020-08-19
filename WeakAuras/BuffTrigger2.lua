@@ -1355,7 +1355,7 @@ local function UpdateStates(matchDataChanged, time)
       updated = UpdateTriggerState(time, id, triggernum) or updated
     end
     if updated then
-      WeakAuras.UpdatedTriggerState(id)
+      Private.UpdatedTriggerState(id)
     end
     Private.StopProfileAura(id)
   end
