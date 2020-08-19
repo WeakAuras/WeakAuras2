@@ -682,8 +682,6 @@ local function UnRegisterForFrameTick(region)
   end
 end
 
-
-
 local function TimerTickForSetDuration(self)
   local duration = self.duration
   local adjustMin = self.adjustedMin or 0;
