@@ -1202,7 +1202,7 @@ function WeakAuras.Toggle()
   end
 end
 
-function WeakAuras.SquelchingActions()
+function Private.SquelchingActions()
   return squelch_actions;
 end
 
