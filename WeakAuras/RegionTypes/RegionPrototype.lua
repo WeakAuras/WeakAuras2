@@ -619,7 +619,7 @@ function WeakAuras.regionPrototype.modifyFinish(parent, region, data)
 
   region:UpdateRegionHasTimerTick()
 
-  WeakAuras.ApplyFrameLevel(region)
+  Private.ApplyFrameLevel(region)
 end
 
 local function SetProgressValue(region, value, total)
@@ -812,7 +812,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       region.subRegionEvents:Notify("PreShow")
 
       region.justCreated = nil;
-      WeakAuras.ApplyFrameLevel(region)
+      Private.ApplyFrameLevel(region)
       region:Show();
       WeakAuras.PerformActions(data, "start", region);
       if not(Private.Animate("display", data.uid, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
@@ -867,7 +867,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
 
       region.subRegionEvents:Notify("PreShow")
 
-      WeakAuras.ApplyFrameLevel(region)
+      Private.ApplyFrameLevel(region)
       region:Show();
       WeakAuras.PerformActions(data, "start", region);
       if not(Private.Animate("display", data.uid, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
