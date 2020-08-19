@@ -896,7 +896,7 @@ local function modify(parent, region, data)
     -- 'forgets' about regions it controls and starts from scratch. Mostly useful when Add()ing the group
     if not self:IsSuspended() then
       Private.StartProfileSystem("dynamicgroup")
-      WeakAuras.StartProfileAura(data.id)
+      Private.StartProfileAura(data.id)
       self.needToReload = false
       self.sortedChildren = {}
       self.controlledChildren = {}
@@ -922,7 +922,7 @@ local function modify(parent, region, data)
         end
       end
       Private.StopProfileSystem("dynamicgroup")
-      WeakAuras.StopProfileAura(data.id)
+      Private.StopProfileAura(data.id)
       self:SortUpdatedChildren()
     else
       self.needToReload = true
@@ -995,7 +995,7 @@ local function modify(parent, region, data)
     -- uses sort data to determine the correct spot
     if not self:IsSuspended() then
       Private.StartProfileSystem("dynamicgroup")
-      WeakAuras.StartProfileAura(data.id)
+      Private.StartProfileAura(data.id)
       self.needToSort = false
       local i = 1
       while self.sortedChildren[i] do
@@ -1025,7 +1025,7 @@ local function modify(parent, region, data)
       end
       self.updatedChildren = {}
       Private.StopProfileSystem("dynamicgroup")
-      WeakAuras.StopProfileAura(data.id)
+      Private.StopProfileAura(data.id)
       self:PositionChildren()
     else
       self.needToSort = true
@@ -1162,7 +1162,7 @@ local function modify(parent, region, data)
 
   function region:DoPositionChildren()
     Private.StartProfileSystem("dynamicgroup")
-    WeakAuras.StartProfileAura(data.id)
+    Private.StartProfileAura(data.id)
 
     local handledRegionData = {}
 
@@ -1194,7 +1194,7 @@ local function modify(parent, region, data)
     end
 
     Private.StopProfileSystem("dynamicgroup")
-    WeakAuras.StopProfileAura(data.id)
+    Private.StopProfileAura(data.id)
     self:Resize()
   end
 
@@ -1205,7 +1205,7 @@ local function modify(parent, region, data)
       self.needToResize = false
       -- if self.dynamicAnchor then self:UpdateBorder(); return end
       Private.StartProfileSystem("dynamicgroup")
-      WeakAuras.StartProfileAura(data.id)
+      Private.StartProfileAura(data.id)
       local numVisible, minX, maxX, maxY, minY, minLevel = 0
       for active, regionData in ipairs(self.sortedChildren) do
         if regionData.shown then
@@ -1246,7 +1246,7 @@ local function modify(parent, region, data)
         WeakAuras.OptionsFrame().moversizer:ReAnchor()
       end
       Private.StopProfileSystem("dynamicgroup")
-      WeakAuras.StopProfileAura(data.id)
+      Private.StopProfileAura(data.id)
     else
       self.needToResize = true
     end

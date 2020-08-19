@@ -4919,12 +4919,12 @@ local function GetAnchorFrame(data, region, parent)
 
   if (anchorFrameType == "CUSTOM" and region.customAnchorFunc) then
     Private.StartProfileSystem("custom region anchor")
-    WeakAuras.StartProfileAura(region.id)
+    Private.StartProfileAura(region.id)
     Private.ActivateAuraEnvironment(region.id, region.cloneId, region.state)
     local ok, frame = xpcall(region.customAnchorFunc, geterrorhandler())
     Private.ActivateAuraEnvironment()
     Private.StopProfileSystem("custom region anchor")
-    WeakAuras.StopProfileAura(region.id)
+    Private.StopProfileAura(region.id)
     if ok and frame then
       return frame
     elseif WeakAuras.IsOptionsOpen() then

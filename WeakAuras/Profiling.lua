@@ -338,10 +338,10 @@ function WeakAuras.StartProfile(startType)
   profileData.systems.time.count = 1
 
   Private.StartProfileSystem = StartProfileSystem
-  WeakAuras.StartProfileAura = StartProfileAura
+  Private.StartProfileAura = StartProfileAura
   WeakAuras.StartProfileUID = StartProfileUID
   Private.StopProfileSystem = StopProfileSystem
-  WeakAuras.StopProfileAura = StopProfileAura
+  Private.StopProfileAura = StopProfileAura
   WeakAuras.StopProfileUID = StopProfileUID
 end
 
@@ -360,10 +360,10 @@ function WeakAuras.StopProfile()
   profileData.systems.time.count = 0
 
   Private.StartProfileSystem = doNothing
-  WeakAuras.StartProfileAura = doNothing
+  Private.StartProfileAura = doNothing
   WeakAuras.StartProfileUID = doNothing
   Private.StopProfileSystem = doNothing
-  WeakAuras.StopProfileAura = doNothing
+  Private.StopProfileAura = doNothing
   WeakAuras.StopProfileUID = doNothing
 
   currentProfileState = nil

@@ -706,7 +706,7 @@ function WeakAuras.ScanUnitEvents(event, unit, ...)
     local event_list = unit_list[event]
     if event_list then
       for id, triggers in pairs(event_list) do
-        WeakAuras.StartProfileAura(id);
+        Private.StartProfileAura(id);
         Private.ActivateAuraEnvironment(id);
         local updateTriggerState = false;
         for triggernum, data in pairs(triggers) do
@@ -718,7 +718,7 @@ function WeakAuras.ScanUnitEvents(event, unit, ...)
         if (updateTriggerState) then
           WeakAuras.UpdatedTriggerState(id);
         end
-        WeakAuras.StopProfileAura(id);
+        Private.StopProfileAura(id);
         Private.ActivateAuraEnvironment(nil);
       end
     end
@@ -728,7 +728,7 @@ end
 
 function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
   for id, triggers in pairs(event_list) do
-    WeakAuras.StartProfileAura(id);
+    Private.StartProfileAura(id);
     Private.ActivateAuraEnvironment(id);
     local updateTriggerState = false;
     for triggernum, data in pairs(triggers) do
@@ -740,7 +740,7 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
     if (updateTriggerState) then
       WeakAuras.UpdatedTriggerState(id);
     end
-    WeakAuras.StopProfileAura(id);
+    Private.StopProfileAura(id);
     Private.ActivateAuraEnvironment(nil);
   end
 end
