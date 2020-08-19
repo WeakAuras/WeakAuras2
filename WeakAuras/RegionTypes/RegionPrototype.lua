@@ -567,7 +567,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
       or data.regionType == "dynamicgroup"
       or data.regionType == "group"
     then
-      WeakAuras.AnchorFrame(data, region, parent);
+      Private.AnchorFrame(data, region, parent);
     end
   end
 
@@ -852,7 +852,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       or data.anchorFrameType == "UNITFRAME"
       or data.anchorFrameType == "NAMEPLATE"
       then
-        WeakAuras.AnchorFrame(data, region, parent);
+        Private.AnchorFrame(data, region, parent);
       end
 
       if (region.toShow) then

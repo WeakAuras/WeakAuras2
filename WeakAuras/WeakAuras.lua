@@ -3065,7 +3065,7 @@ do
             new_frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
           end
           if new_frame and new_frame ~= data.frame then
-            WeakAuras.AnchorFrame(data.data, region, data.parent)
+            Private.AnchorFrame(data.data, region, data.parent)
           end
         end
       end
@@ -4826,7 +4826,7 @@ local function tryAnchorAgain()
       if (data.parent and regions[data.parent]) then
         parent = regions[data.parent].region;
       end
-      WeakAuras.AnchorFrame(data, region, parent);
+      Private.AnchorFrame(data, region, parent);
     end
   end
 end
@@ -4939,13 +4939,13 @@ end
 
 local anchorFrameDeferred = {}
 
-function WeakAuras.AnchorFrame(data, region, parent)
+function Private.AnchorFrame(data, region, parent)
   if data.anchorFrameType == "CUSTOM"
   and (data.regionType == "group" or data.regionType == "dynamicgroup")
   and not WeakAuras.IsLoginFinished()
   and not anchorFrameDeferred[data.id]
   then
-    loginQueue[#loginQueue + 1] = {WeakAuras.AnchorFrame, {data, region, parent}}
+    loginQueue[#loginQueue + 1] = {Private.AnchorFrame, {data, region, parent}}
     anchorFrameDeferred[data.id] = true
   else
     local anchorParent = GetAnchorFrame(data, region, parent);
