@@ -4202,7 +4202,7 @@ function Private.ContainsPlaceHolders(textStr, toCheck)
   end)
 end
 
-function WeakAuras.ContainsAnyPlaceHolders(textStr)
+function Private.ContainsAnyPlaceHolders(textStr)
   return ContainsPlaceHolders(textStr, function(symbol) return true end)
 end
 
