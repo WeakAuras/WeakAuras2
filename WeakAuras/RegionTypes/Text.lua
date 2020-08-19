@@ -166,7 +166,7 @@ local function modify(parent, region, data)
       end
       return data[fullKey]
     end
-    local formatters = WeakAuras.CreateFormatters(data.displayText, getter)
+    local formatters = Private.CreateFormatters(data.displayText, getter)
     UpdateText = function()
       local textStr = data.displayText;
       textStr = WeakAuras.ReplacePlaceHolders(textStr, region, nil, false, formatters);
