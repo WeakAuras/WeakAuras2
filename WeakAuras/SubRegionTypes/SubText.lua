@@ -285,12 +285,12 @@ local function modify(parent, region, parentData, data, first)
   if first and parent.customTextFunc then
     if UpdateText then
       Update = function()
-        parent.values.custom = WeakAuras.RunCustomTextFunc(parent, parent.customTextFunc)
+        parent.values.custom = Private.RunCustomTextFunc(parent, parent.customTextFunc)
         UpdateText()
       end
     else
       Update = function()
-        parent.values.custom = WeakAuras.RunCustomTextFunc(parent, parent.customTextFunc)
+        parent.values.custom = Private.RunCustomTextFunc(parent, parent.customTextFunc)
       end
     end
   else
@@ -307,12 +307,12 @@ local function modify(parent, region, parentData, data, first)
     if first then
       if Private.ContainsCustomPlaceHolder(data.text_text) then
         FrameTick = function()
-          parent.values.custom = WeakAuras.RunCustomTextFunc(parent, parent.customTextFunc)
+          parent.values.custom = Private.RunCustomTextFunc(parent, parent.customTextFunc)
           UpdateText()
         end
       else
         FrameTick = function()
-          parent.values.custom = WeakAuras.RunCustomTextFunc(parent, parent.customTextFunc)
+          parent.values.custom = Private.RunCustomTextFunc(parent, parent.customTextFunc)
         end
       end
     else
