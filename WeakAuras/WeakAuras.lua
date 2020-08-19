@@ -3159,7 +3159,7 @@ function Private.HandleGlowAction(actions, region)
   end
 end
 
-function WeakAuras.PerformActions(data, when, region)
+function Private.PerformActions(data, when, region)
   if (paused or WeakAuras.IsOptionsOpen()) then
     return;
   end;
