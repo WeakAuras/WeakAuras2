@@ -303,7 +303,7 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
     end
     easeFunc = Private.anim_ease_functions[anim.easeType or "none"]
 
-    duration = WeakAuras.ParseNumber(anim.duration) or 0;
+    duration = Private.ParseNumber(anim.duration) or 0;
     progress = 0;
     if(namespace == "display" and type == "main" and not onFinished and not anim.duration_type == "relative") then
       local data = Private.GetDataByUID(uid);

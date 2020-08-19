@@ -491,7 +491,7 @@ function WeakAuras.IsOptionsOpen()
   return false;
 end
 
-function WeakAuras.ParseNumber(numString)
+function Private.ParseNumber(numString)
   if not(numString and type(numString) == "string") then
     if(type(numString) == "number") then
       return numString, "notastring";
