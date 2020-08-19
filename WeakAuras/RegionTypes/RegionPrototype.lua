@@ -619,13 +619,13 @@ end
 
 function WeakAuras.TimerTick(region)
   Private.StartProfileSystem("timer tick")
-  WeakAuras.StartProfileAura(region.id);
+  Private.StartProfileAura(region.id);
   if region.TimerTick then
     region:TimerTick();
   end
 
   region.subRegionEvents:Notify("TimerTick")
-  WeakAuras.StopProfileAura(region.id);
+  Private.StopProfileAura(region.id);
   Private.StopProfileSystem("timer tick")
 end
 
@@ -672,12 +672,12 @@ function WeakAuras.FrameTick()
   end
   Private.StartProfileSystem("frame tick")
   for region in pairs(regionsForFrameTick) do
-    WeakAuras.StartProfileAura(region.id);
+    Private.StartProfileAura(region.id);
     if region.FrameTick then
       region.FrameTick()
     end
     region.subRegionEvents:Notify("FrameTick")
-    WeakAuras.StopProfileAura(region.id);
+    Private.StopProfileAura(region.id);
   end
   Private.StopProfileSystem("frame tick")
 end
