@@ -480,7 +480,7 @@ function WeakAuras.ToggleOptions(msg, Private)
   if not OptionsPrivate.Private then
     OptionsPrivate.Private = Private
     OptionsPrivate.Private:RegisterCallback("AuraWarningsUpdated", function(event, uid)
-      local id = WeakAuras.UIDtoID(uid)
+      local id = OptionsPrivate.Private.UIDtoID(uid)
       if displayButtons[id] then
         -- The button does not yet exists if a new aura is created
         displayButtons[id]:UpdateWarning()

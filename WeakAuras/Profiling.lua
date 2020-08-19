@@ -273,11 +273,11 @@ local function StopProfileAura(id)
 end
 
 local function StartProfileUID(uid)
-  StartProfiling(profileData.auras, WeakAuras.UIDtoID(uid))
+  StartProfiling(profileData.auras, Private.UIDtoID(uid))
 end
 
 local function StopProfileUID(uid)
-  StopProfiling(profileData.auras, WeakAuras.UIDtoID(uid))
+  StopProfiling(profileData.auras, Private.UIDtoID(uid))
 end
 
 function WeakAuras.ProfileRenameAura(oldid, id)
