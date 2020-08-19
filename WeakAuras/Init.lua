@@ -66,13 +66,13 @@ end
 function Private.StartProfileSystem()
 end
 
-function WeakAuras.StartProfileAura()
+function Private.StartProfileAura()
 end
 
 function Private.StopProfileSystem()
 end
 
-function WeakAuras.StopProfileAura()
+function Private.StopProfileAura()
 end
 
 function WeakAuras.StartProfileUID()

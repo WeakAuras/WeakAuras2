@@ -1349,7 +1349,7 @@ end
 
 local function UpdateStates(matchDataChanged, time)
   for id, auraData in pairs(matchDataChanged) do
-    WeakAuras.StartProfileAura(id)
+    Private.StartProfileAura(id)
     local updated = false
     for triggernum in pairs(auraData) do
       updated = UpdateTriggerState(time, id, triggernum) or updated
@@ -1357,7 +1357,7 @@ local function UpdateStates(matchDataChanged, time)
     if updated then
       WeakAuras.UpdatedTriggerState(id)
     end
-    WeakAuras.StopProfileAura(id)
+    Private.StopProfileAura(id)
   end
 end
 
