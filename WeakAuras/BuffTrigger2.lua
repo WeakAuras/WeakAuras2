@@ -2199,7 +2199,7 @@ function BuffTrigger.Add(data)
       local groupCountFunc
       if effectiveUseGroupCount then
         local group_countFuncStr
-        local count, countType = WeakAuras.ParseNumber(trigger.group_count)
+        local count, countType = Private.ParseNumber(trigger.group_count)
         if trigger.group_countOperator and count and countType then
           if countType == "whole" then
             group_countFuncStr = WeakAuras.function_strings.count:format(trigger.group_countOperator, count)
