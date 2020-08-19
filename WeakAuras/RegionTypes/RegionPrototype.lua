@@ -571,7 +571,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
     end
   end
 
-  region.startFormatters = WeakAuras.CreateFormatters(data.actions.start.message, function(key, default)
+  region.startFormatters = Private.CreateFormatters(data.actions.start.message, function(key, default)
     local fullKey = "message_format_" .. key
     if data.actions.start[fullKey] == nil then
       data.actions.start[fullKey] = default
@@ -579,7 +579,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
     return data.actions.start[fullKey]
   end)
 
-  region.finishFormatters = WeakAuras.CreateFormatters(data.actions.finish.message, function(key, default)
+  region.finishFormatters = Private.CreateFormatters(data.actions.finish.message, function(key, default)
     local fullKey = "message_format_" .. key
     if data.actions.finish[fullKey] == nil then
       data.actions.finish[fullKey] = default
