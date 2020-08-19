@@ -25,7 +25,7 @@ local function UpdateAnimations()
   last_update = time;
   local num = 0;
   for key, anim in pairs(animations) do
-    WeakAuras.StartProfileUID(anim.auraUID);
+    Private.StartProfileUID(anim.auraUID);
     num = num + 1;
     local finished = false;
     if(anim.duration_type == "seconds") then
@@ -158,7 +158,7 @@ local function UpdateAnimations()
         anim.onFinished();
       end
     end
-    WeakAuras.StopProfileUID(anim.auraUID);
+    Private.StopProfileUID(anim.auraUID);
   end
 
   Private.StopProfileSystem("animations");
