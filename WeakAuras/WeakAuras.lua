@@ -3087,7 +3087,7 @@ do
   LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_REMOVED", frame_monitor_callback)
 end
 
-function WeakAuras.HandleGlowAction(actions, region)
+function Private.HandleGlowAction(actions, region)
   if actions.glow_action
   and (
     (
@@ -3197,7 +3197,7 @@ function WeakAuras.PerformActions(data, when, region)
 
   -- Apply start glow actions even if squelch_actions is true, but don't apply finish glow actions
   if actions.do_glow then
-    WeakAuras.HandleGlowAction(actions, region)
+    Private.HandleGlowAction(actions, region)
   end
 
   -- remove all glows on finish
