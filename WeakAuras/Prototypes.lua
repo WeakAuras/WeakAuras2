@@ -378,7 +378,7 @@ function WeakAuras.GetHSVTransition(perc, r1, g1, b1, a1, r2, g2, b2, a2)
 end
 
 
-WeakAuras.anim_function_strings = {
+Private.anim_function_strings = {
   straight = [[
     function(progress, start, delta)
       return start + (progress * delta)
