@@ -856,14 +856,14 @@ function HandleEvent(frame, event, arg1, arg2, ...)
       WeakAuras.CheckCooldownReady();
       Private.StopProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
       if not WeakAuras.IsClassic() then
-        WeakAuras.PreShowModels() -- models are disabled for classic
+        Private.PreShowModels() -- models are disabled for classic
       end
     end,
     0.8);  -- Data not available
 
     if not WeakAuras.IsClassic() then
       timer:ScheduleTimer(function()
-        WeakAuras.PreShowModels()
+        Private.PreShowModels()
       end,
       4);  -- Data not available
     end
