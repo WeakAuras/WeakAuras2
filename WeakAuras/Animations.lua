@@ -171,7 +171,7 @@ function Private.RegisterGroupForPositioning(uid, region)
 end
 
 function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished, loop, cloneId)
-  local auraDisplayName = WeakAuras.UIDtoID(uid)
+  local auraDisplayName = Private.UIDtoID(uid)
   local key = tostring(region);
   local valid;
   if(anim and anim.type == "custom" and (anim.use_translate or anim.use_alpha or (anim.use_scale and region.Scale) or (anim.use_rotate and region.Rotate) or (anim.use_color and region.Color))) then

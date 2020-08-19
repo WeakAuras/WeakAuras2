@@ -22,7 +22,7 @@ local function UpdateWarning(uid, key, severity, message, printOnConsole)
   if printOnConsole then
     printedWarnings[uid] = printedWarnings[uid] or {}
     if printedWarnings[uid][key] == nil then
-      WeakAuras.prettyPrint(string.format(L["Aura '%s': %s"], WeakAuras.UIDtoID(uid), message))
+      WeakAuras.prettyPrint(string.format(L["Aura '%s': %s"], Private.UIDtoID(uid), message))
       printedWarnings[uid][key] = true
     end
   end

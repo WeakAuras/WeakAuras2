@@ -1718,7 +1718,7 @@ function Private.GetDataByUID(uid)
   return WeakAuras.GetData(UIDtoID[uid])
 end
 
-function WeakAuras.UIDtoID(uid)
+function Private.UIDtoID(uid)
   return UIDtoID[uid]
 end
 
