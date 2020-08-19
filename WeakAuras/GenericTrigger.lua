@@ -716,7 +716,7 @@ function WeakAuras.ScanUnitEvents(event, unit, ...)
           end
         end
         if (updateTriggerState) then
-          WeakAuras.UpdatedTriggerState(id);
+          Private.UpdatedTriggerState(id);
         end
         Private.StopProfileAura(id);
         Private.ActivateAuraEnvironment(nil);
@@ -738,7 +738,7 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
       end
     end
     if (updateTriggerState) then
-      WeakAuras.UpdatedTriggerState(id);
+      Private.UpdatedTriggerState(id);
     end
     Private.StopProfileAura(id);
     Private.ActivateAuraEnvironment(nil);
@@ -820,7 +820,7 @@ function GenericTrigger.ScanWithFakeEvent(id, fake)
   end
 
   if (updateTriggerState) then
-    WeakAuras.UpdatedTriggerState(id);
+    Private.UpdatedTriggerState(id);
   end
   Private.ActivateAuraEnvironment(nil);
 end
