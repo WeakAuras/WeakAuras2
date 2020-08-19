@@ -3555,11 +3555,11 @@ function WeakAuras.SetFrameLevel(id, frameLevel)
     return;
   end
   if (WeakAuras.regions[id] and WeakAuras.regions[id].region) then
-    WeakAuras.ApplyFrameLevel(WeakAuras.regions[id].region, frameLevel)
+    Private.ApplyFrameLevel(WeakAuras.regions[id].region, frameLevel)
   end
   if (clones[id]) then
     for i,v in pairs(clones[id]) do
-      WeakAuras.ApplyFrameLevel(v, frameLevel)
+      Private.ApplyFrameLevel(v, frameLevel)
     end
   end
   WeakAuras.frameLevels[id] = frameLevel;
@@ -3569,7 +3569,7 @@ function WeakAuras.GetFrameLevelFor(id)
   return WeakAuras.frameLevels[id] or 5;
 end
 
-function WeakAuras.ApplyFrameLevel(region, frameLevel)
+function Private.ApplyFrameLevel(region, frameLevel)
   frameLevel = frameLevel or WeakAuras.GetFrameLevelFor(region.id)
   region:SetFrameLevel(frameLevel)
   if region.subRegions then
@@ -4978,7 +4978,7 @@ function Private.AnchorFrame(data, region, parent)
     else
       region:SetFrameStrata(Private.frame_strata_types[data.frameStrata]);
     end
-    WeakAuras.ApplyFrameLevel(region)
+    Private.ApplyFrameLevel(region)
     anchorFrameDeferred[data.id] = nil
   end
 end
