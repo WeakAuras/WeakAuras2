@@ -603,7 +603,7 @@ local globalConditionAllState = {
 
 local globalConditionState = globalConditionAllState[""];
 
-function WeakAuras.GetGlobalConditionState()
+function Private.GetGlobalConditionState()
   return globalConditionAllState;
 end
 
