@@ -1999,7 +1999,7 @@ local function createScanFunc(trigger)
         return false
       end
     ]]
-    ret = ret .. ret2:format(trigger.debuffClass and type(trigger.debuffClass) == "table" and WeakAuras.SerializeTable(trigger.debuffClass) or "{}")
+    ret = ret .. ret2:format(trigger.debuffClass and type(trigger.debuffClass) == "table" and Private.SerializeTable(trigger.debuffClass) or "{}")
   end
 
   if trigger.ownOnly then
