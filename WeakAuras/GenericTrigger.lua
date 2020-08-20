@@ -949,7 +949,7 @@ function GenericTrigger.Rename(oldid, newid)
     end
   end
 
-  WeakAuras.EveryFrameUpdateRename(oldid, newid)
+  Private.EveryFrameUpdateRename(oldid, newid)
 end
 
 local function MultiUnitLoop(Func, unit, ...)
@@ -1420,7 +1420,7 @@ do
     end
   end
 
-  function WeakAuras.EveryFrameUpdateRename(oldid, newid)
+  function Private.EveryFrameUpdateRename(oldid, newid)
     update_clients[newid] = update_clients[oldid];
     update_clients[oldid] = nil;
   end
