@@ -885,7 +885,7 @@ function GenericTrigger.UnloadAll()
   wipe(loaded_auras);
   wipe(loaded_events);
   wipe(loaded_unit_events);
-  WeakAuras.UnregisterAllEveryFrameUpdate();
+  Private.UnregisterAllEveryFrameUpdate();
 end
 
 function GenericTrigger.UnloadDisplays(toUnload)
@@ -1436,7 +1436,7 @@ do
     end
   end
 
-  function WeakAuras.UnregisterAllEveryFrameUpdate()
+  function Private.UnregisterAllEveryFrameUpdate()
     if (not update_frame) then
       return;
     end
