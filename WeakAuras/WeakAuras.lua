@@ -3689,7 +3689,7 @@ end
 
 function WeakAuras.GetTriggerStateForTrigger(id, triggernum)
   if (triggernum == -1) then
-    return WeakAuras.GetGlobalConditionState();
+    return Private.GetGlobalConditionState();
   end
   triggerState[id][triggernum] = triggerState[id][triggernum] or {}
   return triggerState[id][triggernum];
