@@ -2570,7 +2570,7 @@ function BuffTrigger.GetName(triggerType)
   end
 end
 
-function WeakAuras.CanConvertBuffTrigger2(trigger)
+function Private.CanConvertBuffTrigger2(trigger)
   if trigger.type ~= "aura" then
     return false
   end
@@ -2600,8 +2600,8 @@ function WeakAuras.CanConvertBuffTrigger2(trigger)
   return true
 end
 
-function WeakAuras.ConvertBuffTrigger2(trigger)
-  if not WeakAuras.CanConvertBuffTrigger2(trigger) then
+function Private.ConvertBuffTrigger2(trigger)
+  if not Private.CanConvertBuffTrigger2(trigger) then
     return
   end
   trigger.type = "aura2"
