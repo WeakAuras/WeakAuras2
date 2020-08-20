@@ -2178,7 +2178,7 @@ function BuffTrigger.Add(data)
 
       local remFunc
       if trigger.unit ~= "multi" and not IsSingleMissing(trigger) and trigger.useRem then
-        local remFuncStr = WeakAuras.function_strings.count:format(trigger.remOperator or ">=", tonumber(trigger.rem) or 0)
+        local remFuncStr = Private.function_strings.count:format(trigger.remOperator or ">=", tonumber(trigger.rem) or 0)
         remFunc = WeakAuras.LoadFunction(remFuncStr)
       end
 
@@ -2202,12 +2202,12 @@ function BuffTrigger.Add(data)
         local count, countType = Private.ParseNumber(trigger.group_count)
         if trigger.group_countOperator and count and countType then
           if countType == "whole" then
-            group_countFuncStr = WeakAuras.function_strings.count:format(trigger.group_countOperator, count)
+            group_countFuncStr = Private.function_strings.count:format(trigger.group_countOperator, count)
           else
-            group_countFuncStr = WeakAuras.function_strings.count_fraction:format(trigger.group_countOperator, count)
+            group_countFuncStr = Private.function_strings.count_fraction:format(trigger.group_countOperator, count)
           end
         else
-          group_countFuncStr = WeakAuras.function_strings.count:format(">", 0)
+          group_countFuncStr = Private.function_strings.count:format(">", 0)
         end
         groupCountFunc = WeakAuras.LoadFunction(group_countFuncStr)
       end
@@ -2215,7 +2215,7 @@ function BuffTrigger.Add(data)
       local matchCountFunc
       if HasMatchCount(trigger) and trigger.match_countOperator and trigger.match_count then
         local count = tonumber(trigger.match_count)
-        local match_countFuncStr = WeakAuras.function_strings.count:format(trigger.match_countOperator, count)
+        local match_countFuncStr = Private.function_strings.count:format(trigger.match_countOperator, count)
         matchCountFunc = WeakAuras.LoadFunction(match_countFuncStr)
       elseif IsGroupTrigger(trigger) then
         if trigger.showClones and not trigger.combinePerUnit then
