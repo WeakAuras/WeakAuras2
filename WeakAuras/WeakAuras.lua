@@ -1927,7 +1927,7 @@ function Private.Convert(data, newType)
   local id = data.id;
   regions[id].region:SetScript("OnUpdate", nil);
   regions[id].region:Hide();
-  WeakAuras.EndEvent(id, 0, true);
+  Private.EndEvent(id, 0, true);
 
   Private.FakeStatesFor(id, false)
 
