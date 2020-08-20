@@ -905,7 +905,7 @@ function GenericTrigger.UnloadDisplays(toUnload)
         auras[id] = nil;
       end
     end
-    WeakAuras.UnregisterEveryFrameUpdate(id);
+    Private.UnregisterEveryFrameUpdate(id);
   end
 end
 
@@ -1077,9 +1077,9 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
     end
 
     if(register_for_frame_updates) then
-      WeakAuras.RegisterEveryFrameUpdate(id);
+      Private.RegisterEveryFrameUpdate(id);
     else
-      WeakAuras.UnregisterEveryFrameUpdate(id);
+      Private.UnregisterEveryFrameUpdate(id);
     end
   end
 
@@ -1402,7 +1402,7 @@ do
   WeakAuras.frames["Custom Trigger Every Frame Updater"] = update_frame;
   local updating = false;
 
-  function WeakAuras.RegisterEveryFrameUpdate(id)
+  function Private.RegisterEveryFrameUpdate(id)
     if not(update_clients[id]) then
       update_clients[id] = true;
       update_clients_num = update_clients_num + 1;
@@ -1425,7 +1425,7 @@ do
     update_clients[oldid] = nil;
   end
 
-  function WeakAuras.UnregisterEveryFrameUpdate(id)
+  function Private.UnregisterEveryFrameUpdate(id)
     if(update_clients[id]) then
       update_clients[id] = nil;
       update_clients_num = update_clients_num - 1;
