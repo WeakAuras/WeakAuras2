@@ -409,7 +409,7 @@ local function callFunctionForActivateEvent(func, trigger, fallback, errorHandle
   return ok and value or fallback
 end
 
-function WeakAuras.ActivateEvent(id, triggernum, data, state, errorHandler)
+function Private.ActivateEvent(id, triggernum, data, state, errorHandler)
   local changed = state.changed or false;
   if (state.show ~= true) then
     state.show = true;
@@ -553,7 +553,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       if( (ok and returnValue) or optionsEvent) then
         for id, state in pairs(allStates) do
           if (state.changed) then
-            if (WeakAuras.ActivateEvent(id, triggernum, data, state, errorHandler)) then
+            if (Private.ActivateEvent(id, triggernum, data, state, errorHandler)) then
               updateTriggerState = true;
             end
           end
@@ -582,7 +582,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         local state = allStates[cloneId];
         local ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, unit, arg1, arg2, ...);
         if (ok and returnValue) or optionsEvent then
-          if(WeakAuras.ActivateEvent(id, triggernum, data, state, errorHandler)) then
+          if(Private.ActivateEvent(id, triggernum, data, state, errorHandler)) then
             updateTriggerState = true;
           end
         else
@@ -594,7 +594,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       local state = allStates[""];
       local ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, arg1, arg2, ...);
       if (ok and returnValue) or optionsEvent then
-        if(WeakAuras.ActivateEvent(id, triggernum, data, state, errorHandler)) then
+        if(Private.ActivateEvent(id, triggernum, data, state, errorHandler)) then
           updateTriggerState = true;
         end
       else
@@ -605,7 +605,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       if (ok and returnValue) or optionsEvent then
         allStates[""] = allStates[""] or {};
         local state = allStates[""];
-        if(WeakAuras.ActivateEvent(id, triggernum, data, state, errorHandler)) then
+        if(Private.ActivateEvent(id, triggernum, data, state, errorHandler)) then
           updateTriggerState = true;
         end
       else
