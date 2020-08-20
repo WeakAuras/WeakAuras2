@@ -853,7 +853,7 @@ function HandleEvent(frame, event, arg1, arg2, ...)
     timer:ScheduleTimer(function()
       Private.StartProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
       HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD");
-      WeakAuras.CheckCooldownReady();
+      Private.CheckCooldownReady();
       Private.StopProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
       if not WeakAuras.IsClassic() then
         Private.PreShowModels() -- models are disabled for classic
@@ -1766,7 +1766,7 @@ do
       self.handles[id] = nil
       self.expirationTime[id] = nil
       CheckGCD();
-      WeakAuras.CheckSpellCooldown(id, GetRuneDuration())
+      Private.CheckSpellCooldown(id, GetRuneDuration())
     end,
     Schedule = function(self, expirationTime, id)
       if (not self.expirationTime[id] or expirationTime < self.expirationTime[id]) and expirationTime > 0 then
@@ -1885,10 +1885,10 @@ do
           or event == "RUNE_POWER_UPDATE" or event == "ACTIONBAR_UPDATE_COOLDOWN"
           or event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_PVP_TALENT_UPDATE"
           or event == "CHARACTER_POINTS_CHANGED") then
-          WeakAuras.CheckCooldownReady();
+          Private.CheckCooldownReady();
         elseif(event == "SPELLS_CHANGED") then
-          WeakAuras.CheckSpellKnown();
-          WeakAuras.CheckCooldownReady();
+          Private.CheckSpellKnown();
+          Private.CheckCooldownReady();
         elseif(event == "UNIT_SPELLCAST_SENT") then
           local unit, guid, castGUID, name = ...;
           if(unit == "player") then
@@ -1901,7 +1901,7 @@ do
             end
           end
         elseif(event == "UNIT_INVENTORY_CHANGED" or event == "BAG_UPDATE_COOLDOWN" or event == "PLAYER_EQUIPMENT_CHANGED") then
-          WeakAuras.CheckItemSlotCooldowns();
+          Private.CheckItemSlotCooldowns();
         end
       end
       Private.StopProfileSystem("generictrigger cd tracking");
@@ -2026,7 +2026,7 @@ do
     WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_READY", id);
   end
 
-  function WeakAuras.CheckRuneCooldown()
+  function Private.CheckRuneCooldown()
     local runeDuration = -100;
     for id, _ in pairs(runes) do
       local startTime, duration = GetRuneCooldown(id);
@@ -2143,7 +2143,7 @@ do
            count;
   end
 
-  function WeakAuras.CheckSpellKnown()
+  function Private.CheckSpellKnown()
     for id, _ in pairs(spells) do
       local known = WeakAuras.IsSpellKnownIncludingPet(id);
       if (known ~= spellKnown[id]) then
@@ -2153,7 +2153,7 @@ do
     end
   end
 
-  function WeakAuras.CheckSpellCooldown(id, runeDuration)
+  function Private.CheckSpellCooldown(id, runeDuration)
     local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
           startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
           spellCount
@@ -2202,13 +2202,13 @@ do
     end
   end
 
-  function WeakAuras.CheckSpellCooldows(runeDuration)
+  function Private.CheckSpellCooldows(runeDuration)
     for id, _ in pairs(spells) do
-      WeakAuras.CheckSpellCooldown(id, runeDuration)
+      Private.CheckSpellCooldown(id, runeDuration)
     end
   end
 
-  function WeakAuras.CheckItemCooldowns()
+  function Private.CheckItemCooldowns()
     for id, _ in pairs(items) do
       local startTime, duration, enabled = GetItemCooldown(id);
       if (duration == 0) then
@@ -2267,7 +2267,7 @@ do
     end
   end
 
-  function WeakAuras.CheckItemSlotCooldowns()
+  function Private.CheckItemSlotCooldowns()
     for id, itemId in pairs(itemSlots) do
       local startTime, duration, enable = GetInventoryItemCooldown("player", id);
       itemSlotsEnable[id] = enable;
@@ -2318,12 +2318,12 @@ do
     end
   end
 
-  function WeakAuras.CheckCooldownReady()
+  function Private.CheckCooldownReady()
     CheckGCD();
-    local runeDuration = WeakAuras.CheckRuneCooldown();
-    WeakAuras.CheckSpellCooldows(runeDuration);
-    WeakAuras.CheckItemCooldowns();
-    WeakAuras.CheckItemSlotCooldowns();
+    local runeDuration = Private.CheckRuneCooldown();
+    Private.CheckSpellCooldows(runeDuration);
+    Private.CheckItemCooldowns();
+    Private.CheckItemSlotCooldowns();
   end
 
   function WeakAuras.WatchGCD()
