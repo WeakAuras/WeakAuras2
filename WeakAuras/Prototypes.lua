@@ -315,7 +315,7 @@ local function get_zoneGroupId_list()
   )
 end
 
-WeakAuras.function_strings = {
+Private.function_strings = {
   count = [[
     return function(count)
       if(count %s %s) then
