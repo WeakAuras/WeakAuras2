@@ -74,10 +74,10 @@ local function GetBuffTriggerOptions(data, triggernum)
       width = WeakAuras.doubleWidth - 0.8,
       order = 8.2,
       name = function()
-        if (not WeakAuras.CanConvertBuffTrigger2) then
+        if (not OptionsPrivate.Private.CanConvertBuffTrigger2) then
           return "";
         end
-        local _, err = WeakAuras.CanConvertBuffTrigger2(trigger);
+        local _, err = OptionsPrivate.Private.CanConvertBuffTrigger2(trigger);
         return err or "";
       end,
     },
@@ -99,20 +99,20 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Convert to New Aura Trigger"],
       order = 8.5,
       disabled = function()
-        if (not WeakAuras.CanConvertBuffTrigger2) then
+        if (not OptionsPrivate.Private.CanConvertBuffTrigger2) then
           return true;
         end
-        if (not WeakAuras.CanConvertBuffTrigger2(trigger)) then
+        if (not OptionsPrivate.Private.CanConvertBuffTrigger2(trigger)) then
           return true;
         end
         return false;
       end,
       desc = function()
-        local _, err = WeakAuras.CanConvertBuffTrigger2(trigger);
+        local _, err = OptionsPrivate.Private.CanConvertBuffTrigger2(trigger);
         return err or ""
       end,
       func = function()
-        WeakAuras.ConvertBuffTrigger2(trigger);
+        OptionsPrivate.Private.ConvertBuffTrigger2(trigger);
         WeakAuras.Add(data);
         WeakAuras.UpdateDisplayButton(data)
         WeakAuras.ClearAndUpdateOptions(data.id);
@@ -880,7 +880,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = "",
       hidden = function()
         -- For those that update without restarting
-        return not WeakAuras.CanConvertBuffTrigger2
+        return not OptionsPrivate.Private.CanConvertBuffTrigger2
       end,
     },
 
