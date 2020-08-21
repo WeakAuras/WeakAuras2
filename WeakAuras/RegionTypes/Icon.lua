@@ -405,7 +405,7 @@ local function modify(parent, region, data)
       or data.displayIcon
       or "Interface\\Icons\\INV_Misc_QuestionMark"
       );
-    icon:SetTexture(iconPath);
+    WeakAuras.SetTextureOrAtlas(icon, iconPath)
   end
 
   function region:Scale(scalex, scaley)
