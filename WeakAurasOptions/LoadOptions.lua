@@ -669,6 +669,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             set = function(info, v)
               trigger["use_specific_"..realname] = nil;
               options[name].set(info, "player");
+              WeakAuras.Add(data)
             end
           }
           order = order + 1;
@@ -815,6 +816,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
       end,
       set = function(info, v)
         trigger.unevent = v
+        WeakAuras.Add(data)
       end
     };
     order = order + 1;
@@ -830,6 +832,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
         end,
         set = function(info, v)
           trigger.duration = v
+          WeakAuras.Add(data)
         end
       }
       order = order + 1;
