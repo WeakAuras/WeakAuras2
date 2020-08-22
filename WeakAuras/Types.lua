@@ -2039,6 +2039,11 @@ WeakAuras.cast_types = {
   channel = L["Channel (Spell)"]
 }
 
+WeakAuras.combat_types = {
+  encounter = L["Encounter"],
+  combat = L["Combat"]
+}
+
 -- register sounds
 LSM:Register("sound", "Batman Punch", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BatmanPunch.ogg")
 LSM:Register("sound", "Bike Horn", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\BikeHorn.ogg")

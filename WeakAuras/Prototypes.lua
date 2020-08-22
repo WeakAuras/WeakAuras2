@@ -5977,6 +5977,82 @@ WeakAuras.event_prototypes = {
     },
     automaticrequired = true
   },
+  ["Combat Timer"] = {
+    type = "status",
+    name = L["Combat Timer"],
+    events = {
+      ["events"] = {
+        "PLAYER_REGEN_DISABLED",
+        "PLAYER_REGEN_ENABLED",
+        "ENCOUNTER_START",
+        "ENCOUNTER_END",
+        "FRAME_UPDATE",
+      },
+    },
+    init = function(trigger)
+      local ret = [[
+        if event == "PLAYER_REGEN_DISABLED" then
+          WeakAuras.CurrentCombatStart = GetTime()
+        elseif event == "ENCOUNTER_START" then
+          WeakAuras.CurrentEncounterStart = GetTime()
+        elseif event == "PLAYER_REGEN_ENABLED" then
+          WeakAuras.CurrentCombatStart = nil
+        elseif event == "ENCOUNTER_END" then
+          WeakAuras.CurrentEncounterStart = nil
+        end
+        local timerType = %s
+        local duration = %f
+        local start = timerType == "encounter" and WeakAuras.CurrentEncounterStart or WeakAuras.CurrentCombatStart
+        local timer = start and GetTime() - start or 0
+        local show = timer %s duration
+      ]]
+      return ret:format(trigger.timerType or "combat", trigger.duration or "0", trigger.duration_operator or ">")
+    end,
+    args = {
+      {
+        name = "timerType",
+        type = "select",
+        required = true,
+        display = L["Timer Type"],
+        values = "combat_types",
+        test ="true",
+        default = "combat",
+      },
+      {
+        name = "timer",
+        display = "Timer",
+        type = "number",
+        conditionType = "number",
+        store = true,
+        init = "timer",
+        test = "true",
+        hidden = true,
+      },
+      {
+        name = "duration",
+        display = L["Combat Duration"],
+        type = "number",
+        conditionType = "number",
+        test = "show",
+      },
+      {
+        name = "progressType",
+        hidden = true,
+        init = "'static'",
+        test = "true",
+        store = true
+      },
+      {
+        name = "value",
+        init = "timer",
+        hidden = true,
+        test = "true",
+        store = true
+      },
+    },
+    automaticrequired = true,
+    statesParameter = "one",
+  },
   ["Cast"] = {
     type = "status",
     events = function(trigger)
