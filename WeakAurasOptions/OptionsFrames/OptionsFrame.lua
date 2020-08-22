@@ -599,12 +599,13 @@ function WeakAuras.CreateFrame()
   local magnetButton = AceGUI:Create("WeakAurasToolbarButton")
   magnetButton:SetText(L["Magnetically Align"])
   magnetButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\magnetic")
-  magnetButton:SetStrongHighlight(true)
   magnetButton:SetCallback("OnClick", function(self)
     if WeakAurasOptionsSaved.magnetAlign then
+      magnetButton:SetStrongHighlight(false)
       magnetButton:UnlockHighlight()
       WeakAurasOptionsSaved.magnetAlign = false
     else
+      magnetButton:SetStrongHighlight(true)
       magnetButton:LockHighlight()
       WeakAurasOptionsSaved.magnetAlign = true
     end
