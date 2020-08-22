@@ -1835,7 +1835,7 @@ WeakAuras.event_prototypes = {
     },
     internal_events = {"WA_DELAYED_PLAYER_ENTERING_WORLD"},
     force_events = "PLAYER_XP_UPDATE",
-    name = L["Player XP"],
+    name = L["Player Experience"],
     init = function(trigger)
       return ""
     end,
@@ -1852,7 +1852,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "currentXP",
-        display = L["Current XP"],
+        display = L["Current Experience"],
         type = "number",
         store = true,
         init = [[UnitXP("player")]],
@@ -1860,7 +1860,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "totalXP",
-        display = L["total XP"],
+        display = L["total Experience"],
         type = "number",
         store = true,
         init = [[UnitXPMax("player")]],
@@ -1891,7 +1891,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "percentXP",
-        display = L["XP (%)"],
+        display = L["Experience (%)"],
         type = "number",
         init = "total ~= 0 and (value / total) * 100",
         store = true,
@@ -1906,7 +1906,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "restedXP",
-        display = L["Rested XP"],
+        display = L["Rested Experience"],
         init = [[GetXPExhaustion() or 0]],
         type = "number",
         store = true,
@@ -1914,7 +1914,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "percentrested",
-        display = "Rested (%)",
+        display = L["Rested Experience (%)"],
         init = "total ~= 0 and (restedXP / total) * 100",
         type = "number",
         store = true,
