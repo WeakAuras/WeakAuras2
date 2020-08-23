@@ -5980,33 +5980,28 @@ WeakAuras.event_prototypes = {
   ["Combat Timer"] = {
     type = "status",
     name = L["Combat Timer"],
-    events = {
-      ["events"] = {
-        "PLAYER_REGEN_DISABLED",
-        "PLAYER_REGEN_ENABLED",
-        "ENCOUNTER_START",
-        "ENCOUNTER_END",
-        "FRAME_UPDATE",
-      },
-    },
+    events = {},
+    internal_events = function(trigger, untrigger)
+      local events = {}
+      if trigger.timerType == "combat" then
+        tinsert(events, "COMBAT_TIMER_UPDATE")
+      elseif trigger.timerType == "encounter" then
+        tinsert(events, "ENCOUNTER_TIMER_UPDATE")
+      end
+      return events
+    end,
+    loadFunc = function(trigger)
+      WeakAuras.WatchCombatTimer(trigger.timerType)
+    end,
     init = function(trigger)
       local ret = [[
-        if event == "PLAYER_REGEN_DISABLED" then
-          WeakAuras.CurrentCombatStart = GetTime()
-        elseif event == "ENCOUNTER_START" then
-          WeakAuras.CurrentEncounterStart = GetTime()
-        elseif event == "PLAYER_REGEN_ENABLED" then
-          WeakAuras.CurrentCombatStart = nil
-        elseif event == "ENCOUNTER_END" then
-          WeakAuras.CurrentEncounterStart = nil
-        end
-        local timerType = %s
+        local show = false
+        local timerType = "%s"
         local duration = %f
-        local start = timerType == "encounter" and WeakAuras.CurrentEncounterStart or WeakAuras.CurrentCombatStart
-        local timer = start and GetTime() - start or 0
-        local show = timer %s duration
+        local timer = WeakAuras.GetCombatTimer(timerType)
+        show = timer and timer %s duration or false
       ]]
-      return ret:format(trigger.timerType or "combat", trigger.duration or "0", trigger.duration_operator or ">")
+      return ret:format(trigger.timerType or "", trigger.use_duration and trigger.duration or 0, trigger.use_duration and trigger.duration_operator or ">")
     end,
     args = {
       {
@@ -6017,6 +6012,7 @@ WeakAuras.event_prototypes = {
         values = "combat_types",
         test ="true",
         default = "combat",
+        init = "timerType",
       },
       {
         name = "timer",
@@ -6025,7 +6021,7 @@ WeakAuras.event_prototypes = {
         conditionType = "number",
         store = true,
         init = "timer",
-        test = "true",
+        test = "show",
         hidden = true,
       },
       {

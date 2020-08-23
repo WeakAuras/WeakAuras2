@@ -3376,6 +3376,64 @@ do
   end
 end
 
+-- Combat Timer
+local combatTimerWatchFrame
+function WeakAuras.WatchCombatTimer(timerType)
+  if not combatTimerWatchFrame then
+    combatTimerWatchFrame = CreateFrame("frame")
+    combatTimerWatchFrame:SetScript("OnEvent",
+      function(self, event, ...)
+        if event == "PLAYER_REGEN_DISABLED" then
+          self.combatStart = GetTime()
+        elseif event == "PLAYER_REGEN_ENABLED" then
+          self.combatStart = nil
+          self.combatTimer = nil
+          WeakAuras.ScanEvents("COMBAT_TIMER_UPDATE")
+        elseif event == "ENCOUNTER_START" then
+          self.encounterStart = GetTime()
+        elseif event == "ENCOUNTER_END" then
+          self.encounterStart = nil
+          self.encounterTimer = nil
+          WeakAuras.ScanEvents("ENCOUNTER_TIMER_UPDATE")
+        end
+      end
+    )
+    combatTimerWatchFrame:SetScript("OnUpdate",
+      function(self, event, ...)
+        if self.combatStart then
+          self.combatTimer = GetTime() - self.combatStart
+          WeakAuras.ScanEvents("COMBAT_TIMER_UPDATE")
+        end
+        if self.encounterStart then
+          self.encounterTimer = GetTime() - self.encounterStart
+          WeakAuras.ScanEvents("ENCOUNTER_TIMER_UPDATE")
+        end
+      end
+    )
+  end
+  if timerType == "combat" then
+    if not combatTimerWatchFrame.watchingCombat then
+      combatTimerWatchFrame:RegisterEvent("PLAYER_REGEN_DISABLED")
+      combatTimerWatchFrame:RegisterEvent("PLAYER_REGEN_ENABLED")
+      combatTimerWatchFrame.watchingCombat = true
+    end
+  elseif timerType == "encounter" then
+    if not combatTimerWatchFrame.watchingEncounter then
+      combatTimerWatchFrame:RegisterEvent("ENCOUNTER_START")
+      combatTimerWatchFrame:RegisterEvent("ENCOUNTER_END")
+      combatTimerWatchFrame.watchingEncounter = true
+    end
+  end
+end
+
+function WeakAuras.GetCombatTimer(timerType)
+  if timerType == "combat" then
+    return combatTimerWatchFrame.combatTimer
+  elseif timerType == "encounter" then
+    return combatTimerWatchFrame.encounterTimer
+  end
+end
+
 local uniqueId = 0;
 function WeakAuras.GetUniqueCloneId()
   uniqueId = (uniqueId + 1) % 1000000;
