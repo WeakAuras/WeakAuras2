@@ -6016,7 +6016,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "timer",
-        display = "Timer",
+        display = L["Timer"],
         type = "number",
         conditionType = "number",
         store = true,
@@ -6028,7 +6028,6 @@ WeakAuras.event_prototypes = {
         name = "duration",
         display = L["Combat Duration"],
         type = "number",
-        conditionType = "number",
         test = "show",
       },
       {
