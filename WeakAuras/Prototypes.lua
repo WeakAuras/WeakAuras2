@@ -5330,7 +5330,7 @@ WeakAuras.event_prototypes = {
       return count, 0, true;
     end,
     nameFunc = function(trigger)
-      return trigger.itemName;
+      return C_Item.GetItemNameByID(trigger.itemName) or trigger.itemName;
     end,
     iconFunc = function(trigger)
       return GetItemIcon(trigger.itemName);
