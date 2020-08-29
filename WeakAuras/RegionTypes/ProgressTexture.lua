@@ -798,7 +798,7 @@ local function convertToProgress(rprogress, additionalProgress, adjustMin, total
 
   if (additionalProgress.min and additionalProgress.max) then
     if (totalWidth ~= 0) then
-      startProgress = max( (additionalProgress.min - adjustMin) / totalWidth, 0);
+      startProgress = (additionalProgress.min - adjustMin) / totalWidth;
       endProgress = (additionalProgress.max - adjustMin) / totalWidth;
 
       if (inverse) then
