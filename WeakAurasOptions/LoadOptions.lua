@@ -269,7 +269,7 @@ function WeakAuras.ConstructOptions(prototype, data, startorder, triggernum, tri
             name = L["Operator"],
             order = order,
             hidden = hidden,
-            values = arg.operator_types_without_equal and operator_types_without_equal or operator_types,
+            values = arg.operator_types == "without_equal" and operator_types_without_equal or operator_types,
             disabled = function() return not trigger["use_"..realname]; end,
             get = function() return trigger["use_"..realname] and trigger[realname.."_operator"] or nil; end,
             set = function(info, v)
