@@ -515,4 +515,57 @@ local function createOptions(parentData, data, index, subIndex)
   return options, commonTextOptions
 end
 
+local function createDefaultsOptions()
+  local options = {
+    __title = L["Sub Text"],
+    __order = 2,
+    subtext_font = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      dialogControl = "LSM30_Font",
+      get = function()
+        return WeakAuras.GetDefault('subtext', 'font', true)
+      end,
+      set = function(_, value)
+        WeakAuras.SetDefault('subtext', 'font', value)
+      end,
+      name = L["Font"],
+      order = 1,
+      values = AceGUIWidgetLSMlists.font,
+    },
+    subtext_fontSize = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Size"],
+      get = function()
+        return WeakAuras.GetDefault('subtext', 'fontSize', true)
+      end,
+      set = function(_, value)
+        WeakAuras.SetDefault('subtext', 'fontSize', value)
+      end,
+      order = 2,
+      min = 6,
+      softMax = 72,
+      step = 1,
+    },
+    subtext_fontType = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Outline"],
+      get = function()
+        return WeakAuras.GetDefault('subtext', 'fontType', true)
+      end,
+      set = function(_, value)
+        -- Need to figure out this
+        WeakAuras.SetDefault('subtext', 'fontType', value)
+        WeakAuras.SetDefault('subtext', 'outline', value)
+      end,
+      order = 3,
+      values = WeakAuras.font_flags,
+    }
+  }
+  return options
+end
+
+WeakAuras.RegisterDefaultsOptions('subtext', createDefaultsOptions)
 WeakAuras.RegisterSubRegionOptions("subtext", createOptions, L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"])

@@ -939,7 +939,7 @@ function WeakAuras.CreateFrame()
 
     local tabsWidget
 
-    container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -63 - WeakAuras.normalWidth * 340, needTabs and -204 or -14)
+    container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -63 - WeakAuras.normalWidth * 340 , needsTabs and -14 or -48)
     container:ReleaseChildren()
     container:SetLayout("Fill")
 

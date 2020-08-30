@@ -222,6 +222,9 @@ local regionOptions = WeakAuras.regionOptions;
 WeakAuras.subRegionOptions = {}
 local subRegionOptions = WeakAuras.subRegionOptions
 
+WeakAuras.extraDefaultsOptions = {}
+local extraDefaultsOptions = WeakAuras.extraDefaultsOptions
+
 -- Maps from trigger type to trigger system
 WeakAuras.triggerTypes = {};
 local triggerTypes = WeakAuras.triggerTypes;
@@ -491,6 +494,20 @@ function WeakAuras.RegisterSubRegionOptions(name, createFunction, description)
       create = createFunction,
       description = description,
     };
+  end
+end
+
+function WeakAuras.RegisterDefaultsOptions(name, createFunction)
+  if not(name) then
+    error("Improper arguments to WeakAuras.RegisterDefaultsOptions - name is not defined", 2);
+  elseif(type(name) ~= "string") then
+    error("Improper arguments to WeakAuras.RegisterDefaultsOptions - name is not a string", 2);
+  elseif not(createFunction) then
+    error("Improper arguments to WeakAuras.RegisterDefaultsOptions - creation function is not defined", 2);
+  elseif(type(createFunction) ~= "function") then
+    error("Improper arguments to WeakAuras.RegisterDefaultsOptions - creation function is not a function", 2);
+  else
+    extraDefaultsOptions[name] = createFunction
   end
 end
 

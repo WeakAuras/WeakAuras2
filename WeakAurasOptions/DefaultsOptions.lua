@@ -56,12 +56,18 @@ local function GlobalOptions()
   return options
 end
 
-function WeakAuras.GetDefaultsOptions()
-  local additionalOptions = {
-    global = GlobalOptions()
-  }
+local function GetExtraOptions()
+  local extraOptions = {}
+  for name, createOptions in pairs(WeakAuras.extraDefaultsOptions) do
+    extraOptions[name] = createOptions() -- function if we want to pass something to it later
+  end
+  return extraOptions
+end
 
-  local options = {type = "group", name = L["Settings"], order = 1, args = flattenRegionOptions(additionalOptions)}
+function WeakAuras.GetDefaultsOptions()
+  local extraOptions = GetExtraOptions()
+  extraOptions.global = GlobalOptions()
+  local options = {type = "group", name = L["Settings"], order = 1, args = flattenRegionOptions(extraOptions)}
 
   return options
 end

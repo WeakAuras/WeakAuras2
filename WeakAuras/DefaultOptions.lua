@@ -21,9 +21,10 @@ local function AddMissingTableEntries(data, DEFAULT)
 end
 
 local function GetDefaults(key)
-  if WeakAurasSaved then
-    local defaults = WeakAurasSaved.defaults
-    return defaults[key]
+  if WeakAurasSaved and WeakAurasSaved.defaults[key] then
+    local defaults = {}
+    WeakAuras.DeepCopy(WeakAurasSaved.defaults[key], defaults)
+    return defaults
   end
 end
 
@@ -61,10 +62,14 @@ function WeakAuras.SetDefault(region, param, value)
   end
 end
 
-function WeakAuras.GetDefault(region, param)
+function WeakAuras.GetDefault(region, param, useFallback)
   if WeakAurasSaved then
     local defaults = WeakAurasSaved.defaults
-    return defaults[region] and defaults[region][param]
+    local value = defaults[region] and defaults[region][param]
+    if not value and useFallback then
+      value = defaults.global[param]
+    end
+    return value
   end
 end
 
@@ -74,7 +79,9 @@ function WeakAuras.MergeDefaultsForRegion(region, defaults)
     local dbDefaults = WeakAuras.GetDefaultsForRegion(region)
     if dbDefaults then
       for k,v in pairs(dbDefaults) do
-        defaults[k] = v
+        if (v ~= nil) then
+          defaults[k] = v
+        end
       end
     end
 
@@ -91,11 +98,13 @@ function WeakAuras.MergeDefaultsForSubregion(subregion, defaults)
     local dbDefaults = WeakAuras.GetDefaultsForRegion(subregion)
     if dbDefaults then
       local prefix = ""
-      if subregion == 'subtext' then
-        prefix = "text"
+      if subregion == "subtext" then
+        prefix = "text_"
       end
       for k,v in pairs(dbDefaults) do
-        defaults[prefix .. '_' .. k] = v
+        if (v ~= nil) then
+          defaults[(prefix or "") .. k] = v
+        end
       end
     end
     return defaults
