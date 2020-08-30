@@ -1860,7 +1860,7 @@ WeakAuras.event_prototypes = {
       },
       {
         name = "totalXP",
-        display = L["total Experience"],
+        display = L["Total Experience"],
         type = "number",
         store = true,
         init = [[UnitXPMax("player")]],
