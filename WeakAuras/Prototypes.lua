@@ -1720,7 +1720,6 @@ WeakAuras.event_prototypes = {
     },
     automaticrequired = true
   },
-
   ["Faction Reputation"] = {
     type = "status",
     canHaveDuration = false,
@@ -1826,7 +1825,115 @@ WeakAuras.event_prototypes = {
     },
     automaticrequired = true
   },
-
+  ["Experience"] = {
+    type = "status",
+    canHaveDuration = false,
+    events = {
+      ["events"] = {
+        "PLAYER_XP_UPDATE",
+      }
+    },
+    internal_events = {"WA_DELAYED_PLAYER_ENTERING_WORLD"},
+    force_events = "PLAYER_XP_UPDATE",
+    name = L["Player Experience"],
+    init = function(trigger)
+      return ""
+    end,
+    statesParameter = "one",
+    args = {
+      {
+        name = "level",
+        display = L["Level"],
+        required = false,
+        type = "number",
+        store = true,
+        init = [[UnitLevel("player")]],
+        conditionType = "number",
+      },
+      {
+        name = "currentXP",
+        display = L["Current Experience"],
+        type = "number",
+        store = true,
+        init = [[UnitXP("player")]],
+        conditionType = "number",
+      },
+      {
+        name = "totalXP",
+        display = L["Total Experience"],
+        type = "number",
+        store = true,
+        init = [[UnitXPMax("player")]],
+        conditionType = "number",
+      },
+      {
+        name = "value",
+        type = "number",
+        store = true,
+        init = "currentXP",
+        hidden = true,
+        test = "true",
+      },
+      {
+        name = "total",
+        type = "number",
+        store = true,
+        init = "totalXP",
+        hidden = true,
+        test = "true",
+      },
+      {
+        name = "progressType",
+        hidden = true,
+        init = "'static'",
+        store = true,
+        test = "true"
+      },
+      {
+        name = "percentXP",
+        display = L["Experience (%)"],
+        type = "number",
+        init = "total ~= 0 and (value / total) * 100",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "showRested",
+        display = L["Show Rested Overlay"],
+        type = "toggle",
+        test = "true",
+        reloadOptions = true,
+      },
+      {
+        name = "restedXP",
+        display = L["Rested Experience"],
+        init = [[GetXPExhaustion() or 0]],
+        type = "number",
+        store = true,
+        conditionType = "number",
+      },
+      {
+        name = "percentrested",
+        display = L["Rested Experience (%)"],
+        init = "total ~= 0 and (restedXP / total) * 100",
+        type = "number",
+        store = true,
+        conditionType = "number",
+      },
+    },
+    overlayFuncs = {
+      {
+        name = L["Rested"],
+        func = function(trigger, state)
+          return "forward", state.restedXP
+        end,
+        enable = function(trigger)
+          return trigger.use_showRested
+        end
+      },
+    },
+    automaticrequired = true
+  },
   ["Health"] = {
     type = "status",
     canHaveDuration = true,
