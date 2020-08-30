@@ -1713,7 +1713,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
                     end
                     tinsert(multipath[id], "value")
                   end
-                  WeakAuras.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code-1");
+                  WeakAuras.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
                 else
                   for i, v in ipairs(path) do
                     print(i, v)
@@ -1726,7 +1726,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
                   end
                   tinsert(fullPath, "value")
 
-                  WeakAuras.OpenTextEditor(data, fullPath, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code-1");
+                  WeakAuras.OpenTextEditor(data, fullPath, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
                 end
               end
             }
