@@ -498,7 +498,7 @@ end
 function WeakAuras.regionPrototype.modify(parent, region, data)
   region.subRegionEvents:ClearSubscribers()
 
-  local defaultsForRegion = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default;
+  local defaultsForRegion = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default and WeakAuras.regionTypes[data.regionType].default();
   if (defaultsForRegion and defaultsForRegion.alpha) then
     region:SetRegionAlpha(data.alpha);
   end

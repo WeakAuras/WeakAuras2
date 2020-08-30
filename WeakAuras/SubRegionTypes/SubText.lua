@@ -436,13 +436,14 @@ local function modify(parent, region, parentData, data, first)
 end
 
 local function addDefaultsForNewAura(data)
+  local defaults = WeakAuras.GetDefaultsForRegion('subtext')
   if data.regionType == "aurabar" then
     tinsert(data.subRegions, {
       ["type"] = "subtext",
       text_text = "%p",
       text_color = {1, 1, 1, 1},
-      text_font = defaultFont,
-      text_fontSize = defaultFontSize,
+      text_font = defaults.font,
+      text_fontSize = defaults.fontSize,
       text_fontType = "None",
       text_justify = "CENTER",
       text_visible = true,
@@ -463,8 +464,8 @@ local function addDefaultsForNewAura(data)
       ["type"] = "subtext",
       text_text = "%n",
       text_color = {1, 1, 1, 1},
-      text_font = defaultFont,
-      text_fontSize = defaultFontSize,
+      text_font = defaults.font,
+      text_fontSize = defaults.fontSize,
       text_fontType = "None",
       text_justify = "CENTER",
       text_visible = true,
@@ -485,8 +486,8 @@ local function addDefaultsForNewAura(data)
       ["type"] = "subtext",
       text_text = "%s",
       text_color = {1, 1, 1, 1},
-      text_font = defaultFont,
-      text_fontSize = defaultFontSize,
+      text_font = defaults.font,
+      text_fontSize = defaults.fontSize,
       text_fontType = "OUTLINE",
       text_justify = "CENTER",
       text_visible = true,

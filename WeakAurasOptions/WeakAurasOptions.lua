@@ -1417,7 +1417,7 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
     WeakAuras.DeepCopy(sourceData, data);
   end
   data.internalVersion = WeakAuras.InternalVersion();
-  WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default);
+  WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default and WeakAuras.regionTypes[regionType].default());
 
   AddDefaultSubRegions(data)
 

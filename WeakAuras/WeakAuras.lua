@@ -349,7 +349,7 @@ function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, defa
     regionTypes[name] = {
       create = createFunction,
       modify = modifyFunction,
-      default = default,
+      default = WeakAuras.MergeDefaultsForRegion(name, default),
       validate = validate,
       properties = properties,
     };
@@ -400,7 +400,7 @@ function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, cre
       displayName = displayName,
       supports = supportFunction,
       modify = modifyFunction,
-      default = default,
+      default = WeakAuras.MergeDefaultsForSubregion(name,default),
       addDefaultsForNewAura = addDefaultsForNewAura,
       properties = properties,
       supportsAdd = supportsAdd == nil or supportsAdd,
@@ -1095,12 +1095,11 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       db.displays = db.displays or {};
       db.registered = db.registered or {};
-
+      db.defaults = WeakAuras.InitialDefaultsValues(db.defaults);
       WeakAuras.UpdateCurrentInstanceType();
       WeakAuras.SyncParentChildRelationships();
       local isFirstUIDValidation = db.dbVersion == nil or db.dbVersion < 26;
       WeakAuras.ValidateUniqueDataIds(isFirstUIDValidation);
-
       if db.lastArchiveClear == nil then
         db.lastArchiveClear = time();
       elseif db.lastArchiveClear < time() - 86400 then
@@ -2626,7 +2625,7 @@ function WeakAuras.PreAdd(data)
     WeakAuras.validate(data, oldDataStub2)
   end
 
-  local default = data.regionType and WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default
+  local default = data.regionType and WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default and WeakAuras.regionTypes[data.regionType].default()
   if default then
     WeakAuras.validate(data, default)
   end
@@ -2859,7 +2858,7 @@ function WeakAuras.SetRegion(data, cloneId)
       end
       region.id = id;
       region.cloneId = cloneId or "";
-      WeakAuras.validate(data, regionTypes[regionType].default);
+      WeakAuras.validate(data, regionTypes[regionType].default and regionTypes[regionType].default());
 
       local parent = frame;
       if(data.parent) then

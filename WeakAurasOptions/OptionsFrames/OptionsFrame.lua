@@ -596,6 +596,16 @@ function WeakAuras.CreateFrame()
   importButton:SetCallback("OnClick", WeakAuras.ImportFromString)
   toolbarContainer:AddChild(importButton)
 
+  local defaultsButton = AceGUI:Create("WeakAurasToolbarButton")
+  defaultsButton:SetText(L["Settings"])
+  defaultsButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\gear")
+  toolbarContainer:AddChild(defaultsButton)
+  frame.toolbarContainer = toolbarContainer
+
+  defaultsButton:SetCallback("OnClick", function()
+    frame:PickDefaultOptions()
+  end)
+
   local magnetButton = AceGUI:Create("WeakAurasToolbarButton")
   magnetButton:SetText(L["Magnetically Align"])
   magnetButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\magnetic")
@@ -895,6 +905,7 @@ function WeakAuras.CreateFrame()
         animation = WeakAuras.GetAnimationOptions,
         authorOptions = WeakAuras.GetAuthorOptions,
         information = WeakAuras.GetInformationOptions,
+        defaultsOptions = WeakAuras.GetDefaultsOptions,
       }
       if optionsGenerator[tab] then
         aceOptions[id][tab] = optionsGenerator[tab](data)
@@ -915,51 +926,61 @@ function WeakAuras.CreateFrame()
     end
 
     frame:UpdateOptions()
-
+    local needsTabs = true
     local data
     if type(self.pickedDisplay) == "string" then
       data = WeakAuras.GetData(frame.pickedDisplay)
     elseif self.pickedDisplay then
       data = tempGroup
+      if (self.pickedDisplay.disableTabs) then
+        needsTabs = false
+      end
     end
 
     local tabsWidget
 
-    container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -63 - WeakAuras.normalWidth * 340, -14)
+    container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -63 - WeakAuras.normalWidth * 340, needTabs and -204 or -14)
     container:ReleaseChildren()
     container:SetLayout("Fill")
-    tabsWidget = AceGUI:Create("TabGroup")
 
-    local tabs = {
-      { value = "region", text = L["Display"]},
-      { value = "trigger", text = L["Trigger"]},
-      { value = "conditions", text = L["Conditions"]},
-      { value = "action", text = L["Actions"]},
-      { value = "animation", text = L["Animations"]},
-      { value = "load", text = L["Load"]},
-      { value = "authorOptions", text = L["Custom Options"]},
-      { value = "information", text = L["Information"]},
-    }
-    -- Check if group and not the temp group
-    if data.controlledChildren and type(data.id) == "string" then
-      tinsert(tabs, 1, { value = "group", text = L["Group"]})
-    end
-
-    tabsWidget:SetTabs(tabs)
-    tabsWidget:SelectTab(self.selectedTab)
-    tabsWidget:SetLayout("Fill")
-    container:AddChild(tabsWidget)
 
     local group = AceGUI:Create("WeakAurasInlineGroup")
-    tabsWidget:AddChild(group)
 
-    tabsWidget:SetCallback("OnGroupSelected", function(self, event, tab)
-        frame.selectedTab = tab
-        frame:FillOptions()
-      end)
+    if needsTabs then
+      tabsWidget = AceGUI:Create("TabGroup")
+
+      local tabs = {
+        { value = "region", text = L["Display"]},
+        { value = "trigger", text = L["Trigger"]},
+        { value = "conditions", text = L["Conditions"]},
+        { value = "action", text = L["Actions"]},
+        { value = "animation", text = L["Animations"]},
+        { value = "load", text = L["Load"]},
+        { value = "authorOptions", text = L["Custom Options"]},
+        { value = "information", text = L["Information"]},
+      }
+      -- Check if group and not the temp group
+      if data.controlledChildren and type(data.id) == "string" then
+        tinsert(tabs, 1, { value = "group", text = L["Group"]})
+      end
+
+      tabsWidget:SetTabs(tabs)
+      tabsWidget:SelectTab(self.selectedTab)
+      tabsWidget:SetLayout("Fill")
+      container:AddChild(tabsWidget)
+
+      tabsWidget:AddChild(group)
+
+      tabsWidget:SetCallback("OnGroupSelected", function(self, event, tab)
+          frame.selectedTab = tab
+          frame:FillOptions()
+        end)
+      tabsWidget:SetTitle("")
+    else
+      container:AddChild(group)
+    end
 
     AceConfigDialog:Open("WeakAuras", group)
-    tabsWidget:SetTitle("")
   end
 
   frame.ClearPick = function(self, id)
@@ -1194,7 +1215,9 @@ function WeakAuras.CreateFrame()
     end
 
     if tab then
-      self.selectedTab = tab
+        self.selectedTab = tab
+    else
+      self.selectedTab = self.selectedTab ~= 'defaultsOptions' and self.selectedTab
     end
     self:FillOptions()
 
@@ -1256,6 +1279,18 @@ function WeakAuras.CreateFrame()
         self:FillOptions()
       end
     end
+  end
+
+  frame.PickDefaultOptions = function(self)
+    if self.pickedDisplay then
+      self:ClearOptions(self.pickedDisplay)
+    end
+    local displayTemp = tempGroup
+    displayTemp.disableTabs = true
+    aceOptions[displayTemp.id] = aceOptions[displayTemp.id] or {}
+    self.pickedDisplay = displayTemp
+    self.selectedTab = 'defaultsOptions'
+    self:FillOptions()
   end
 
   frame.PickDisplayBatch = function(self, batchSelection)
