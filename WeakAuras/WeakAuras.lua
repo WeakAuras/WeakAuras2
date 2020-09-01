@@ -4613,7 +4613,7 @@ local function ensureMouseFrame()
 end
 
 local personalRessourceDisplayFrame;
-local function ensurePRDFrame()
+function Private.ensurePRDFrame()
   if (personalRessourceDisplayFrame) then
     return;
   end
@@ -4803,7 +4803,7 @@ local function ensurePRDFrame()
   end
 
   personalRessourceDisplayFrame.anchorFrame = function(self, id, anchorFrameType)
-    if (anchorFrameType == "PRD") then
+    if (anchorFrameType == "PRD" or anchorFrameType == "NAMEPLATE") then
       self.attachedVisibleFrames[id] = true;
     else
       self.attachedVisibleFrames[id] = nil;
@@ -4832,6 +4832,7 @@ local function ensurePRDFrame()
   else
     personalRessourceDisplayFrame.OptionsClosed();
   end
+  Private.personalRessourceDisplayFrame = personalRessourceDisplayFrame
 end
 
 local postPonedAnchors = {};
@@ -4884,7 +4885,7 @@ local function GetAnchorFrame(data, region, parent)
   end
 
   if (anchorFrameType == "PRD") then
-    ensurePRDFrame();
+    Private.ensurePRDFrame();
     personalRessourceDisplayFrame:anchorFrame(id, anchorFrameType);
     return personalRessourceDisplayFrame;
   end
@@ -4897,7 +4898,13 @@ local function GetAnchorFrame(data, region, parent)
 
   if (anchorFrameType == "NAMEPLATE") then
     local unit = region.state.unit
-    return unit and WeakAuras.GetUnitNameplate(unit)
+    local frame = unit and WeakAuras.GetUnitNameplate(unit)
+    if frame then return frame end
+    if WeakAuras.IsOptionsOpen() then
+      Private.ensurePRDFrame()
+      personalRessourceDisplayFrame:anchorFrame(id, anchorFrameType)
+      return personalRessourceDisplayFrame
+    end
   end
 
   if (anchorFrameType == "UNITFRAME") then
