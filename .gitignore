@@ -7,3 +7,4 @@ WeakAuras/Libs/*
 format.bat
 **/desktop.ini
 .DS_Store
+.release
