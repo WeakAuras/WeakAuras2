@@ -6,3 +6,4 @@ WeakAuras/Libs/*
 !WeakAuras/Libs/LibDeflate
 format.bat
 **/desktop.ini
+.DS_Store
