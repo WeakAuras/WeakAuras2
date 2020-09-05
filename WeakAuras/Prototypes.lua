@@ -1647,7 +1647,7 @@ WeakAuras.event_prototypes = {
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
-          return trigger.unit == "nameplate"
+          return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end,
         init = "not UnitIsUnit(\"player\", unit)"
       },
@@ -2140,7 +2140,7 @@ WeakAuras.event_prototypes = {
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
-          return trigger.unit == "nameplate"
+          return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end,
         init = "not UnitIsUnit(\"player\", unit)"
       },
@@ -2496,7 +2496,7 @@ WeakAuras.event_prototypes = {
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
-          return trigger.unit == "nameplate"
+          return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end,
         init = "not UnitIsUnit(\"player\", unit)"
       },
@@ -2697,7 +2697,7 @@ WeakAuras.event_prototypes = {
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
-          return trigger.unit == "nameplate"
+          return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end,
         init = "not UnitIsUnit(\"player\", unit)"
       },
@@ -6485,7 +6485,7 @@ WeakAuras.event_prototypes = {
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
-          return trigger.unit == "nameplate"
+          return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end,
         init = "not UnitIsUnit(\"player\", unit)"
       },
