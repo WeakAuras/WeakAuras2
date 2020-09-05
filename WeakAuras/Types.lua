@@ -130,6 +130,39 @@ WeakAuras.format_types = {
     AddOptions = function() end,
     CreateFormatter = function() end
   },
+  string = {
+    display = L["String"],
+    AddOptions = function(symbol, hidden, addOption, get)
+      addOption(symbol .. "_abbreviate", {
+        type = "toggle",
+        name = L["Abbreviate"],
+        width = WeakAuras.normalWidth,
+        hidden = hidden,
+      })
+      addOption(symbol .. "_abbreviate_max", {
+        type = "range",
+        name = L["Max Char "],
+        width = WeakAuras.normalWidth,
+        min = 1,
+        max = 20,
+        hidden = hidden,
+        step = 1,
+        disabled = function()
+          return not get(symbol .. "_abbreviate")
+        end
+      })
+    end,
+    CreateFormatter = function(symbol, get)
+      local abbreviate = get(symbol .. "_abbreviate", false)
+      local abbreviateMax = get(symbol .. "_abbreviate_max", 8)
+      if abbreviate then
+        return function(input)
+          return WeakAuras.WA_Utf8Sub(input, abbreviateMax)
+        end
+      end
+      return nil
+    end
+  },
   timed = {
     display = L["Time Format"],
     AddOptions = function(symbol, hidden, addOption, get)
