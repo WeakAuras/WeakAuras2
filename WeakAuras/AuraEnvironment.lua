@@ -142,8 +142,6 @@ WeakAuras.GetUnitNameplate =  function(unit)
   end
 end
 
-
-
 local blockedFunctions = {
   -- Lua functions that may allow breaking out of the environment
   getfenv = true,

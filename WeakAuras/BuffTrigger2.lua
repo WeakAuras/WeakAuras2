@@ -101,7 +101,7 @@ local groupScanFuncs = {}
 local activeGroupScanFuncs = {}
 
 
--- Mutli Target tracking
+-- Multi Target tracking
 local scanFuncNameMulti = {}
 local scanFuncSpellIdMulti = {}
 local cleanupTimerMulti = {}
@@ -1415,7 +1415,7 @@ end
 
 local function ScanAllGroup(time, matchDataChanged)
   -- We iterate over all raid/player unit ids here because ScanGroupUnit also
-  -- handles the cases where a unit existance changes.
+  -- handles the cases where a unit existence changes.
   for unit in GetAllUnits("group") do
     ScanGroupUnit(time, matchDataChanged, "group", unit)
   end
