@@ -226,7 +226,7 @@ local subRegionOptions = WeakAuras.subRegionOptions
 WeakAuras.triggerTypes = {};
 local triggerTypes = WeakAuras.triggerTypes;
 
--- Maps from trigger type to a functin that can create options for the trigger
+-- Maps from trigger type to a function that can create options for the trigger
 WeakAuras.triggerTypesOptions = {};
 
 -- Trigger State, updated by trigger systems, then applied to regions by UpdatedTriggerState
@@ -732,8 +732,6 @@ local function LoadCustomActionFunctions(data)
     end
   end
 end
-
-
 
 WeakAuras.talent_types_specific = {}
 WeakAuras.pvp_talent_types_specific = {}
@@ -2383,7 +2381,7 @@ local function validateUserConfig(data, options, config)
       local optionClass = WeakAuras.author_option_classes[option.type]
       if optionClass == "simple" then
         if not option.key then
-          option.key = WeakAuras.GenerateUniqeID()
+          option.key = WeakAuras.GenerateUniqueID()
         end
         authorOptionKeys[option.key] = index
         if config[option.key] == nil then
