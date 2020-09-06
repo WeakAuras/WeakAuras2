@@ -1020,7 +1020,7 @@ function Private.Login(initialTime, takeNewSnapshots)
       CheckForPreviousEncounter()
     end
     coroutine.yield();
-    WeakAuras.RegisterLoadEvents();
+    Private.RegisterLoadEvents();
     Private.Resume();
     coroutine.yield();
 
@@ -1579,7 +1579,7 @@ if not WeakAuras.IsClassic() then
   unitLoadFrame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
 end
 
-function WeakAuras.RegisterLoadEvents()
+function Private.RegisterLoadEvents()
   loadFrame:SetScript("OnEvent", function(frame, ...)
     Private.StartProfileSystem("load");
     Private.ScanForLoads(nil, ...)
