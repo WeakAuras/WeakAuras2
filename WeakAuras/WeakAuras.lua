@@ -1917,7 +1917,7 @@ function WeakAuras.Rename(data, newid)
   WeakAuras.frameLevels[newid] = WeakAuras.frameLevels[oldid];
   WeakAuras.frameLevels[oldid] = nil;
 
-  WeakAuras.ProfileRenameAura(oldid, newid);
+  Private.ProfileRenameAura(oldid, newid);
 
   WeakAuras.RenameCollapsedData(oldid, newid)
 

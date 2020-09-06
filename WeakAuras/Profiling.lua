@@ -279,7 +279,7 @@ local function StopProfileUID(uid)
   StopProfiling(profileData.auras, Private.UIDtoID(uid))
 end
 
-function WeakAuras.ProfileRenameAura(oldid, id)
+function Private.ProfileRenameAura(oldid, id)
   profileData.auras[id] = profileData.auras[id]
   profileData.auras[oldid] = nil
 end
