@@ -1099,7 +1099,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       db.displays = db.displays or {};
       db.registered = db.registered or {};
 
-      WeakAuras.UpdateCurrentInstanceType();
+      Private.UpdateCurrentInstanceType();
       WeakAuras.SyncParentChildRelationships();
       local isFirstUIDValidation = db.dbVersion == nil or db.dbVersion < 26;
       WeakAuras.ValidateUniqueDataIds(isFirstUIDValidation);
@@ -1150,7 +1150,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
           timer:ScheduleTimer(function() squelch_actions = false; end, remainingSquelch);      -- No sounds while loading
         end
         CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
-        WeakAuras.UpdateCurrentInstanceType();
+        Private.UpdateCurrentInstanceType();
         Private.InitializeEncounterAndZoneLists()
       end
     elseif(event == "PLAYER_PVP_TALENT_UPDATE") then
@@ -1332,7 +1332,7 @@ function WeakAuras.LoadEncounterInitScripts(id)
   LoadEncounterInitScriptsImpl(id)
 end
 
-function WeakAuras.UpdateCurrentInstanceType(instanceType)
+function Private.UpdateCurrentInstanceType(instanceType)
   if (not IsInInstance()) then
     currentInstanceType = "none"
   else
@@ -1440,7 +1440,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   end
 
   local size, difficulty, instanceType, ZoneMapID = GetInstanceTypeAndSize()
-  WeakAuras.UpdateCurrentInstanceType(instanceType)
+  Private.UpdateCurrentInstanceType(instanceType)
 
   if (WeakAuras.CurrentEncounter) then
     if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id and not inCombat) then
