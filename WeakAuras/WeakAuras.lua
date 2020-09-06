@@ -1100,7 +1100,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       db.registered = db.registered or {};
 
       Private.UpdateCurrentInstanceType();
-      WeakAuras.SyncParentChildRelationships();
+      Private.SyncParentChildRelationships();
       local isFirstUIDValidation = db.dbVersion == nil or db.dbVersion < 26;
       WeakAuras.ValidateUniqueDataIds(isFirstUIDValidation);
 
@@ -2188,7 +2188,7 @@ function WeakAuras.ValidateUniqueDataIds(silent)
   end
 end
 
-function WeakAuras.SyncParentChildRelationships(silent)
+function Private.SyncParentChildRelationships(silent)
   -- 1. Find all auras where data.parent ~= nil or data.controlledChildren ~= nil
   --    If an aura has both, then remove data.parent
   --    If an aura has data.parent which doesn't exist, then remove data.parent
