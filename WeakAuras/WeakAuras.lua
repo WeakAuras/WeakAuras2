@@ -1322,7 +1322,7 @@ local function LoadEncounterInitScriptsImpl(id)
   end
 end
 
-function WeakAuras.LoadEncounterInitScripts(id)
+local function LoadEncounterInitScripts(id)
   if not WeakAuras.IsLoginFinished() then
     if encounterScriptsDeferred[id] then
       return
@@ -1452,7 +1452,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   end
 
   if (event == "ZONE_CHANGED_NEW_AREA") then
-    WeakAuras.LoadEncounterInitScripts();
+    LoadEncounterInitScripts();
   end
 
   local group = WeakAuras.GroupType()
@@ -2750,7 +2750,7 @@ local function pAdd(data, simpleChange)
         activatedConditions = {},
       };
 
-      WeakAuras.LoadEncounterInitScripts(id);
+      LoadEncounterInitScripts(id);
 
       if (WeakAuras.IsOptionsOpen()) then
         Private.FakeStatesFor(id, visible)
