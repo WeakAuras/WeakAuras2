@@ -174,8 +174,8 @@ WeakAuras.addons = {};
 local addons = WeakAuras.addons;
 
 -- used if an addon tries to register a display under an id that the user already has a display with that id
-WeakAuras.collisions = {};
-local collisions = WeakAuras.collisions;
+Private.collisions = {};
+local collisions = Private.collisions;
 
 -- While true no events are handled. E.g. WeakAuras is paused while the Options dialog is open
 local paused = true;

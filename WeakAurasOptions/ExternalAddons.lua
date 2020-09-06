@@ -7,7 +7,6 @@ local pairs = pairs
 
 local AceGUI = LibStub("AceGUI-3.0")
 
-local collisions = WeakAuras.collisions
 local displayButtons = WeakAuras.displayButtons
 
 local importAddonButtons = {}
@@ -274,7 +273,7 @@ function WeakAuras.EnableAddonDisplay(id)
 
     if(db.displays[id]) then
       -- ID collision
-      collisions[id] = {addon, data};
+      OptionsPrivate.Private.collisions[id] = {addon, data};
     else
       db.registered[id] = addon;
       if(data.controlledChildren) then
