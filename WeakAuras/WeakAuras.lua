@@ -960,7 +960,7 @@ function Private.LoginMessage()
   return loginMessage
 end
 
-function WeakAuras.Login(initialTime, takeNewSnapshots)
+function Private.Login(initialTime, takeNewSnapshots)
   local loginThread = coroutine.create(function()
     Private.Pause();
 
@@ -1111,7 +1111,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     end
     if dbIsValid then
       -- run login thread for up to 15 seconds, then defer to dynFrame
-      WeakAuras.Login(15000, takeNewSnapshots)
+      Private.Login(15000, takeNewSnapshots)
     else
       -- db isn't valid. Request permission to run repair tool before logging in
       StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "downgrade"})
@@ -2120,7 +2120,7 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_REPAIR"] = {
   end,
   OnCancel = function(self)
     if self.data.reason ~= "user" then
-      WeakAuras.Login()
+      Private.Login()
     end
   end,
   whileDead = true,
@@ -2156,7 +2156,7 @@ function WeakAuras.RepairDatabase(loginAfter)
     db.displays = newDB
     WeakAuras.SetImporting(false)
     -- finally, login
-    WeakAuras.Login()
+    Private.Login()
   end)
   Private.dynFrame:AddAction("repair", coro)
 end
