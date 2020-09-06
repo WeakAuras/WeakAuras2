@@ -3385,7 +3385,7 @@ end
 
 local currentTooltipRegion;
 local currentTooltipOwner;
-function WeakAuras.UpdateMouseoverTooltip(region)
+local function UpdateMouseoverTooltip(region)
   if(region == currentTooltipRegion) then
     Private.ShowMouseoverTooltip(currentTooltipRegion, currentTooltipOwner);
   end
@@ -3827,7 +3827,7 @@ local function ApplyStateToRegion(id, cloneId, region, parent)
 
   region.subRegionEvents:Notify("Update", region.state, region.states)
 
-  WeakAuras.UpdateMouseoverTooltip(region);
+  UpdateMouseoverTooltip(region);
   region:Expand();
   if parent and parent.ActivateChild then
     parent:ActivateChild(id, cloneId)
