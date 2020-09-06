@@ -3523,16 +3523,8 @@ function Private.ValueToPath(data, path, value)
   end
 end
 
-function Private.FixGroupChildrenOrderForGroup(data)
-  local frameLevel = 5;
-  for i=1, #data.controlledChildren do
-    WeakAuras.SetFrameLevel(data.controlledChildren[i], frameLevel);
-    frameLevel = frameLevel + 4;
-  end
-end
-
 WeakAuras.frameLevels = {};
-function WeakAuras.SetFrameLevel(id, frameLevel)
+local function SetFrameLevel(id, frameLevel)
   if (WeakAuras.frameLevels[id] == frameLevel) then
     return;
   end
@@ -3545,6 +3537,14 @@ function WeakAuras.SetFrameLevel(id, frameLevel)
     end
   end
   WeakAuras.frameLevels[id] = frameLevel;
+end
+
+function Private.FixGroupChildrenOrderForGroup(data)
+  local frameLevel = 5;
+  for i=1, #data.controlledChildren do
+    SetFrameLevel(data.controlledChildren[i], frameLevel);
+    frameLevel = frameLevel + 4;
+  end
 end
 
 function WeakAuras.GetFrameLevelFor(id)
