@@ -1502,7 +1502,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   end
 
   if(changed > 0 and not paused) then
-    WeakAuras.LoadDisplays(toLoad, event, arg1, ...);
+    Private.LoadDisplays(toLoad, event, arg1, ...);
     WeakAuras.UnloadDisplays(toUnload, event, arg1, ...);
     WeakAuras.FinishLoadUnload();
   end
@@ -1650,7 +1650,7 @@ function WeakAuras.UnloadAll()
   wipe(loaded);
 end
 
-function WeakAuras.LoadDisplays(toLoad, ...)
+function Private.LoadDisplays(toLoad, ...)
   for id in pairs(toLoad) do
     Private.RegisterForGlobalConditions(id);
     triggerState[id].triggers = {};
