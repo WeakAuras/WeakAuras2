@@ -95,7 +95,7 @@ local function releaseControlPoint(self, controlPoint)
   local regionData = controlPoint.regionData
   if regionData then
     if self.parent.anchorPerUnit == "UNITFRAME" then
-      WeakAuras.dyngroup_unitframe_monitor[regionData] = nil
+      Private.dyngroup_unitframe_monitor[regionData] = nil
     end
     controlPoint.regionData = nil
     regionData.controlPoint = nil
@@ -1077,7 +1077,7 @@ local function modify(parent, region, data)
       controlPoint:SetWidth(regionData.dimensions.width)
       controlPoint:SetHeight(regionData.dimensions.height)
       if self.anchorPerUnit == "UNITFRAME" then
-        WeakAuras.dyngroup_unitframe_monitor[regionData] = frame
+        Private.dyngroup_unitframe_monitor[regionData] = frame
       end
       if animate then
         Private.CancelAnimation(regionData.controlPoint, true)
