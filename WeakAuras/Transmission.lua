@@ -818,7 +818,7 @@ local function recurseStringify(data, level, lines)
   end
 end
 
-function WeakAuras.DataToString(id)
+function Private.DataToString(id)
   local data = WeakAuras.GetData(id)
   if data then
     return Private.SerializeTable(data):gsub("|", "||")
