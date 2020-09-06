@@ -1996,7 +1996,7 @@ function WeakAuras.CollisionResolved(addon, data, force)
   WeakAuras.AddFromAddon(addon, data, force);
 end
 
-function WeakAuras.IsDefinedByAddon(id)
+function Private.IsDefinedByAddon(id)
   return db.registered[id];
 end
 
