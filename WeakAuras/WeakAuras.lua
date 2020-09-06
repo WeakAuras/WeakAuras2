@@ -729,7 +729,7 @@ end
 
 Private.talent_types_specific = {}
 Private.pvp_talent_types_specific = {}
-function WeakAuras.CreateTalentCache()
+local function CreateTalentCache()
   local _, player_class = UnitClass("player")
 
   Private.talent_types_specific[player_class] = Private.talent_types_specific[player_class] or {};
@@ -1131,14 +1131,14 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         if remainingSquelch > 0 then
           timer:ScheduleTimer(function() squelch_actions = false; end, remainingSquelch);      -- No sounds while loading
         end
-        WeakAuras.CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
+        CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
         WeakAuras.UpdateCurrentInstanceType();
         Private.InitializeEncounterAndZoneLists()
       end
     elseif(event == "PLAYER_PVP_TALENT_UPDATE") then
       callback = WeakAuras.CreatePvPTalentCache;
     elseif(event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "CHARACTER_POINTS_CHANGED" or event == "SPELLS_CHANGED") then
-      callback = WeakAuras.CreateTalentCache;
+      callback = CreateTalentCache;
     elseif(event == "PLAYER_REGEN_ENABLED") then
       callback = function()
         if (queueshowooc) then
