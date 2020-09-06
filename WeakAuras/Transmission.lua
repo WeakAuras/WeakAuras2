@@ -1636,8 +1636,6 @@ local function ShowDisplayTooltip(data, children, matchInfo, icon, icons, import
       local i;
       if(icon) then
         i = icon;
-      elseif(WeakAuras.transmitCache and WeakAuras.transmitCache[data.id]) then
-        i = WeakAuras.transmitCache[data.id];
       end
       if (i) then
         thumbnail:SetIcon(i);
