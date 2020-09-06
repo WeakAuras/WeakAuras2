@@ -3226,7 +3226,7 @@ function WeakAuras.GetData(id)
   return id and db.displays[id];
 end
 
-function WeakAuras.GetTriggerSystem(data, triggernum)
+local function GetTriggerSystem(data, triggernum)
   local triggerType = data.triggers[triggernum] and data.triggers[triggernum].trigger.type
   return triggerType and triggerTypes[triggerType]
 end
@@ -3281,7 +3281,7 @@ local function wrapTriggerSystemFunction(functionName, mode)
       end
       return result;
     else -- triggernum >= 1
-      local triggerSystem = WeakAuras.GetTriggerSystem(data, triggernum);
+      local triggerSystem = GetTriggerSystem(data, triggernum);
       if (not triggerSystem) then
         return false
       end
@@ -3303,7 +3303,7 @@ local wrappedGetOverlayInfo = wrapTriggerSystemFunction("GetOverlayInfo", "table
 Private.GetAdditionalProperties = function(data, triggernum, ...)
   local additionalProperties = ""
   for i = 1, #data.triggers do
-    local triggerSystem = WeakAuras.GetTriggerSystem(data, i);
+    local triggerSystem = GetTriggerSystem(data, i);
     if (triggerSystem) then
       local add = triggerSystem.GetAdditionalProperties(data, i)
       if (add and add ~= "") then
@@ -3346,7 +3346,7 @@ end
 function Private.GetTriggerConditions(data)
   local conditions = {};
   for i = 1, #data.triggers do
-    local triggerSystem = WeakAuras.GetTriggerSystem(data, i);
+    local triggerSystem = GetTriggerSystem(data, i);
     if (triggerSystem) then
       conditions[i] = triggerSystem.GetTriggerConditions(data, i);
       conditions[i] = conditions[i] or {};
@@ -3371,7 +3371,7 @@ function WeakAuras.CreateFallbackState(id, triggernum)
   local state = states[""];
 
   local data = db.displays[id];
-  local triggerSystem = WeakAuras.GetTriggerSystem(data, triggernum);
+  local triggerSystem = GetTriggerSystem(data, triggernum);
   if (triggerSystem) then
     triggerSystem.CreateFallbackState(data, triggernum, state)
     state.trigger = data.triggers[triggernum].trigger
@@ -3779,7 +3779,7 @@ do
       if (data) then
         for triggernum, trigger in ipairs(data.triggers) do
           Private.SetAllStatesHidden(id, triggernum)
-          local triggerSystem = WeakAuras.GetTriggerSystem(data, triggernum)
+          local triggerSystem = GetTriggerSystem(data, triggernum)
           if triggerSystem and triggerSystem.CreateFakeStates then
             triggerSystem.CreateFakeStates(id, triggernum)
           end
