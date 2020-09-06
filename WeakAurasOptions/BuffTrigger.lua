@@ -58,6 +58,14 @@ local function CanShowNameInfo(data)
   end
 end
 
+local function CanShowStackInfo(data)
+  if(data.regionType == "aurabar" or data.regionType == "icon" or data.regionType == "text") then
+    return true;
+  else
+    return false;
+  end
+end
+
 local function GetBuffTriggerOptions(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   trigger.names = trigger.names or {}
@@ -703,9 +711,9 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Stack Info"],
       order = 47.6,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group" and not trigger.groupclone); end,
-      disabled = function() return not WeakAuras.CanShowStackInfo(data); end,
+      disabled = function() return not CanShowStackInfo(data); end,
       get = function()
-        if(WeakAuras.CanShowStackInfo(data)) then
+        if(CanShowStackInfo(data)) then
           return trigger.stack_info;
         else
           return nil;
