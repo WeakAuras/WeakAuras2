@@ -3529,7 +3529,7 @@ function Private.ValueToPath(data, path, value)
   end
 end
 
-function WeakAuras.FixGroupChildrenOrderForGroup(data)
+function Private.FixGroupChildrenOrderForGroup(data)
   local frameLevel = 5;
   for i=1, #data.controlledChildren do
     WeakAuras.SetFrameLevel(data.controlledChildren[i], frameLevel);
