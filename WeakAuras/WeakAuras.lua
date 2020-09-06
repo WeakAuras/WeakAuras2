@@ -3718,7 +3718,7 @@ do
     end
     if visible then
       visibleFakeStates[id] = true
-      WeakAuras.UpdateFakeStatesFor(id)
+      Private.UpdateFakeStatesFor(id)
     else
       visibleFakeStates[id] = false
       if triggerState[id] then
@@ -3734,7 +3734,7 @@ do
     return not visibleFakeStates[id]
   end
 
-  function WeakAuras.UpdateFakeStatesFor(id)
+  function Private.UpdateFakeStatesFor(id)
     if (WeakAuras.IsOptionsOpen() and visibleFakeStates[id]) then
       local data = WeakAuras.GetData(id)
       if (data) then
