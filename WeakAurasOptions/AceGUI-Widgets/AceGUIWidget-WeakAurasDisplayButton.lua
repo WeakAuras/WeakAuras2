@@ -1079,9 +1079,9 @@ local methods = {
     if(OptionsPrivate.Private.CanHaveClones(data)) then
       tinsert(namestable, {" ", "|cFF00FF00"..L["Auto-cloning enabled"]})
     end
-    if(WeakAuras.IsDefinedByAddon(data.id)) then
+    if(OptionsPrivate.Private.IsDefinedByAddon(data.id)) then
       tinsert(namestable, " ");
-      tinsert(namestable, {" ", "|cFF00FFFF"..L["Addon"]..": "..WeakAuras.IsDefinedByAddon(data.id)});
+      tinsert(namestable, {" ", "|cFF00FFFF"..L["Addon"]..": "..OptionsPrivate.Private.IsDefinedByAddon(data.id)});
     end
 
     local hasDescription = data.desc and data.desc ~= "";

@@ -81,7 +81,7 @@ function OptionsPrivate.CreateImportButtons()
     local function UpdateAddonChecked()
       local shouldBeChecked = true;
       for id, data in pairs(addonData.displays) do
-        if not(WeakAuras.IsDefinedByAddon(id)) then
+        if not(OptionsPrivate.Private.IsDefinedByAddon(id)) then
           shouldBeChecked = false;
           break;
         end
@@ -104,7 +104,7 @@ function OptionsPrivate.CreateImportButtons()
         local function UpdateGroupChecked()
           local shouldBeChecked = true;
           for index, childId in pairs(data.controlledChildren) do
-            if not(WeakAuras.IsDefinedByAddon(childId)) then
+            if not(OptionsPrivate.Private.IsDefinedByAddon(childId)) then
               shouldBeChecked = false;
               break;
             end
@@ -139,7 +139,7 @@ function OptionsPrivate.CreateImportButtons()
             end);
           end);
           childButton.updateChecked = UpdateGroupChecked;
-          childButton.checkbox:SetChecked(WeakAuras.IsDefinedByAddon(childId));
+          childButton.checkbox:SetChecked(OptionsPrivate.Private.IsDefinedByAddon(childId));
         end
 
         groupButton:SetClick(function()
@@ -208,7 +208,7 @@ function OptionsPrivate.CreateImportButtons()
           end);
         end);
         displayButton.updateChecked = UpdateAddonChecked;
-        displayButton.checkbox:SetChecked(WeakAuras.IsDefinedByAddon(id));
+        displayButton.checkbox:SetChecked(OptionsPrivate.Private.IsDefinedByAddon(id));
       end
     end
 
