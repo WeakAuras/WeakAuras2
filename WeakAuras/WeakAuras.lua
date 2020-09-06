@@ -3383,14 +3383,6 @@ local function CreateFallbackState(id, triggernum)
   return states;
 end
 
-function WeakAuras.CanShowStackInfo(data)
-  if(data.regionType == "aurabar" or data.regionType == "icon" or data.regionType == "text") then
-    return true;
-  else
-    return false;
-  end
-end
-
 local currentTooltipRegion;
 local currentTooltipOwner;
 function WeakAuras.UpdateMouseoverTooltip(region)
