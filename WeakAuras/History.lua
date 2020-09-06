@@ -62,13 +62,13 @@ function Private.RestoreFromHistory(uid)
   end
 end
 
-function WeakAuras.SetMigrationSnapshot(uid, oldData)
+function Private.SetMigrationSnapshot(uid, oldData)
   if type(oldData) == "table" then
     local repo = loadMigrations()
     repo:Set(uid, oldData)
   end
 end
 
-function WeakAuras.GetMigrationSnapshot(uid)
+function Private.GetMigrationSnapshot(uid)
   return loadMigrations():GetData(uid)
 end
