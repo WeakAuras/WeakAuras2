@@ -1089,7 +1089,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       if db.lastArchiveClear == nil then
         db.lastArchiveClear = time();
       elseif db.lastArchiveClear < time() - 86400 then
-        WeakAuras.CleanArchive(db.historyCutoff, db.migrationCutoff);
+        Private.CleanArchive(db.historyCutoff, db.migrationCutoff);
       end
       db.minimap = db.minimap or { hide = false };
       LDBIcon:Register("WeakAuras", Broker_WeakAuras, db.minimap);

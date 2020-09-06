@@ -18,7 +18,7 @@ local function loadMigrations()
   return migrationRepo
 end
 
-function WeakAuras.CleanArchive(historyCutoff, migrationCutoff)
+function Private.CleanArchive(historyCutoff, migrationCutoff)
   if type(historyCutoff) == "number" then
     local repo = loadHistory()
     local cutoffTime = time() - (historyCutoff * 86400)
