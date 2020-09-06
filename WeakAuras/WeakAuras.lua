@@ -135,7 +135,7 @@ function SlashCmdList.WEAKAURAS(input)
 end
 if not WeakAuras.IsCorrectVersion() then return end
 
-function WeakAuras.ApplyToDataOrChildData(data, func, ...)
+function Private.ApplyToDataOrChildData(data, func, ...)
   if data.controlledChildren then
     for index, childId in ipairs(data.controlledChildren) do
       local childData = WeakAuras.GetData(childId)

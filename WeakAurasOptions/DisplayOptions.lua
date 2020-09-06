@@ -30,7 +30,7 @@ local function AddSubRegionImpl(data, subRegionName)
 end
 
 local function AddSubRegion(data, subRegionName)
-  if (WeakAuras.ApplyToDataOrChildData(data, AddSubRegionImpl, subRegionName)) then
+  if (OptionsPrivate.Private.ApplyToDataOrChildData(data, AddSubRegionImpl, subRegionName)) then
     WeakAuras.ClearAndUpdateOptions(data.id)
   end
 end
