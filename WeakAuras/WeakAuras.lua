@@ -1607,12 +1607,7 @@ function Private.RegisterLoadEvents()
   end);
 end
 
-function Private.ReloadAll()
-  WeakAuras.UnloadAll();
-  scanForLoadsImpl();
-end
-
-function WeakAuras.UnloadAll()
+local function UnloadAll()
   -- Even though auras are collapsed, their finish animation can be running
   for id in pairs(loaded) do
     Private.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
@@ -1648,6 +1643,11 @@ function WeakAuras.UnloadAll()
     triggerSystem.UnloadAll();
   end
   wipe(loaded);
+end
+
+function Private.ReloadAll()
+  UnloadAll();
+  scanForLoadsImpl();
 end
 
 function Private.LoadDisplays(toLoad, ...)
