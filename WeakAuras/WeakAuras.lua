@@ -2873,7 +2873,7 @@ function Private.SetRegion(data, cloneId)
   end
 end
 
-function WeakAuras.EnsureClone(id, cloneId)
+local function EnsureClone(id, cloneId)
   clones[id] = clones[id] or {};
   if not(clones[id][cloneId]) then
     local data = WeakAuras.GetData(id);
@@ -2885,7 +2885,7 @@ end
 
 function WeakAuras.GetRegion(id, cloneId)
   if(cloneId and cloneId ~= "") then
-    return WeakAuras.EnsureClone(id, cloneId);
+    return EnsureClone(id, cloneId);
   end
   return WeakAuras.regions[id] and WeakAuras.regions[id].region;
 end
