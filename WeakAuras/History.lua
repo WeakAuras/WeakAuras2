@@ -55,7 +55,7 @@ function Private.RemoveHistory(uid)
   return loadHistory():Drop(uid)
 end
 
-function WeakAuras.RestoreFromHistory(uid)
+function Private.RestoreFromHistory(uid)
   local _, histData = GetHistory(uid, true)
   if histData then
     WeakAuras.Add(histData)
