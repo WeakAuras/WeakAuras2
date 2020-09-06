@@ -47,7 +47,7 @@ function Private.SetHistory(uid, data, source, addon)
   end
 end
 
-function WeakAuras.GetHistory(uid, load)
+local function GetHistory(uid, load)
   return loadHistory():Get(uid, load)
 end
 
@@ -56,7 +56,7 @@ function WeakAuras.RemoveHistory(uid)
 end
 
 function WeakAuras.RestoreFromHistory(uid)
-  local _, histData = WeakAuras.GetHistory(uid, true)
+  local _, histData = GetHistory(uid, true)
   if histData then
     WeakAuras.Add(histData)
   end
