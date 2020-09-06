@@ -929,7 +929,7 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
 
 do -- Archive stuff
   local Archivist = select(2, ...).Archivist
-  function WeakAuras.OpenArchive()
+  local function OpenArchive()
     if Archivist:IsInitialized() then
       return Archivist
     else
@@ -945,7 +945,7 @@ do -- Archive stuff
   end
 
   function WeakAuras.LoadFromArchive(storeType, storeID)
-    local Archivist = WeakAuras.OpenArchive()
+    local Archivist = OpenArchive()
     return Archivist:Load(storeType, storeID)
   end
 end
