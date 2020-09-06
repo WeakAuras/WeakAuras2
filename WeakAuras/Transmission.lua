@@ -1417,7 +1417,7 @@ function WeakAuras.MatchInfo(data, children, target)
   return modified and info or false
 end
 
-function WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, import, compressed)
+local function ShowDisplayTooltip(data, children, matchInfo, icon, icons, import, compressed)
   -- since we have new data, wipe the old pending data
   wipe(pendingData)
 
@@ -1705,7 +1705,7 @@ function WeakAuras.Import(inData, target)
   end
   tooltipLoading = nil;
   local matchInfo = WeakAuras.MatchInfo(data, children, target)
-  WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, "unknown")
+  ShowDisplayTooltip(data, children, matchInfo, icon, icons, "unknown")
   return status, msg
 end
 
@@ -1812,7 +1812,7 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
         end
       end
       local matchInfo = WeakAuras.MatchInfo(data, children)
-      WeakAuras.ShowDisplayTooltip(data, children, matchInfo, icon, icons, sender, true)
+      ShowDisplayTooltip(data, children, matchInfo, icon, icons, sender, true)
     elseif(received.m == "dR") then
       --if(WeakAuras.linked[received.d]) then
       TransmitDisplay(received.d, sender);
