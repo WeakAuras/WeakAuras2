@@ -1814,6 +1814,8 @@ function WeakAuras.Delete(data)
 
   WeakAuras.DeleteCollapsedData(id)
 
+  Private.RemoveHistory(data.uid)
+
   Private.callbacks:Fire("Delete", data.uid)
 end
 

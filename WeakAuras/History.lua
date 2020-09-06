@@ -51,7 +51,7 @@ local function GetHistory(uid, load)
   return loadHistory():Get(uid, load)
 end
 
-function WeakAuras.RemoveHistory(uid)
+function Private.RemoveHistory(uid)
   return loadHistory():Drop(uid)
 end
 
