@@ -1288,7 +1288,7 @@ local function DestroyEncounterTable()
   db.CurrentEncounter = nil
 end
 
-function WeakAuras.CreateEncounterTable(encounter_id)
+local function CreateEncounterTable(encounter_id)
   local _, _, _, _, _, _, _, ZoneMapID = GetInstanceInfo()
   WeakAuras.CurrentEncounter = {
     id = encounter_id,
@@ -1409,7 +1409,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
 
   if (event == "ENCOUNTER_START") then
     encounter_id = tonumber (arg1)
-    WeakAuras.CreateEncounterTable (encounter_id)
+    CreateEncounterTable (encounter_id)
   elseif (event == "ENCOUNTER_END") then
     encounter_id = 0
     DestroyEncounterTable()
