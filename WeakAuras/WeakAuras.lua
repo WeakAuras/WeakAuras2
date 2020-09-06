@@ -763,7 +763,7 @@ local function CreateTalentCache()
 end
 
 local pvpTalentsInitialized = false;
-function WeakAuras.CreatePvPTalentCache()
+local function CreatePvPTalentCache()
   if (pvpTalentsInitialized) then return end;
   local _, player_class = UnitClass("player")
   local spec = GetSpecialization()
@@ -1136,7 +1136,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         Private.InitializeEncounterAndZoneLists()
       end
     elseif(event == "PLAYER_PVP_TALENT_UPDATE") then
-      callback = WeakAuras.CreatePvPTalentCache;
+      callback = CreatePvPTalentCache;
     elseif(event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "CHARACTER_POINTS_CHANGED" or event == "SPELLS_CHANGED") then
       callback = CreateTalentCache;
     elseif(event == "PLAYER_REGEN_ENABLED") then
