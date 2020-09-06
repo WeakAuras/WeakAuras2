@@ -751,28 +751,6 @@ function OptionsPrivate.GetPickedDisplay()
   return frame:GetPickedDisplay()
 end
 
-function WeakAuras.GetSpellTooltipText(id)
-  local tooltip = WeakAuras.GetHiddenTooltip();
-  tooltip:SetSpellByID(id);
-  local lines = { tooltip:GetRegions() };
-  local i = 1;
-  local tooltipText = "";
-  while(lines[i]) do
-    if(lines[i]:GetObjectType() == "FontString") then
-      if(lines[i]:GetText()) then
-        if(tooltipText == "") then
-          tooltipText = lines[i]:GetText();
-        else
-          tooltipText = tooltipText.." - "..lines[i]:GetText();
-        end
-      end
-    end
-    i = i + 1;
-  end
-  tooltipText = tooltipText or L["No tooltip text"];
-  return tooltipText;
-end
-
 function OptionsPrivate.OpenTextEditor(...)
   frame.texteditor:Open(...);
 end
