@@ -3553,12 +3553,12 @@ function Private.FixGroupChildrenOrderForGroup(data)
   end
 end
 
-function WeakAuras.GetFrameLevelFor(id)
+local function GetFrameLevelFor(id)
   return WeakAuras.frameLevels[id] or 5;
 end
 
 function Private.ApplyFrameLevel(region, frameLevel)
-  frameLevel = frameLevel or WeakAuras.GetFrameLevelFor(region.id)
+  frameLevel = frameLevel or GetFrameLevelFor(region.id)
   region:SetFrameLevel(frameLevel)
   if region.subRegions then
     for index, subRegion in pairs(region.subRegions) do
