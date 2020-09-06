@@ -1106,26 +1106,26 @@ Private.orientation_with_circle_types = {
   ANTICLOCKWISE = L["Anticlockwise"]
 }
 
-WeakAuras.spec_types = {
+Private.spec_types = {
   [1] = SPECIALIZATION.." 1",
   [2] = SPECIALIZATION.." 2",
   [3] = SPECIALIZATION.." 3",
   [4] = SPECIALIZATION.." 4"
 }
 
-WeakAuras.spec_types_3 = {
+Private.spec_types_3 = {
   [1] = SPECIALIZATION.." 1",
   [2] = SPECIALIZATION.." 2",
   [3] = SPECIALIZATION.." 3"
 }
 
-WeakAuras.spec_types_2 = {
+Private.spec_types_2 = {
   [1] = SPECIALIZATION.." 1",
   [2] = SPECIALIZATION.." 2"
 }
 
 WeakAuras.spec_types_specific = {}
-WeakAuras.spec_types_all = {}
+Private.spec_types_all = {}
 local function update_specs()
   for classFileName, classID in pairs(WeakAuras.class_ids) do
     WeakAuras.spec_types_specific[classFileName] = {}
@@ -1135,7 +1135,7 @@ local function update_specs()
       local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i);
       if tabName then
         tinsert(WeakAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
-        WeakAuras.spec_types_all[specId] = "|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:0:0:0:0:256:256:"
+        Private.spec_types_all[specId] = "|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:0:0:0:0:256:256:"
          .. classTexcoords[1] * 256 .. ":" .. classTexcoords[2] * 256 .. ":" .. classTexcoords[3] * 256 .. ":" .. classTexcoords[4] * 256
          .. ":0|t"
          .. "|T"..(icon or "error")..":0|t "..(tabName or "error");
