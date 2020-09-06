@@ -1253,7 +1253,7 @@ local function findMatch(data, children)
   return oldParent
 end
 
-function WeakAuras.MatchInfo(data, children, target)
+local function MatchInfo(data, children, target)
   -- match the parent/single aura (if no children)
   local oldParent = target or findMatch(data, children)
   if not oldParent then return nil end
@@ -1704,7 +1704,7 @@ function WeakAuras.Import(inData, target)
     end
   end
   tooltipLoading = nil;
-  local matchInfo = WeakAuras.MatchInfo(data, children, target)
+  local matchInfo = MatchInfo(data, children, target)
   ShowDisplayTooltip(data, children, matchInfo, icon, icons, "unknown")
   return status, msg
 end
@@ -1811,7 +1811,7 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
           WeakAuras.PreAdd(child)
         end
       end
-      local matchInfo = WeakAuras.MatchInfo(data, children)
+      local matchInfo = MatchInfo(data, children)
       ShowDisplayTooltip(data, children, matchInfo, icon, icons, sender, true)
     elseif(received.m == "dR") then
       --if(WeakAuras.linked[received.d]) then
