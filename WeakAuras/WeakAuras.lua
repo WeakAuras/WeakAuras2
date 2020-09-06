@@ -1810,7 +1810,7 @@ function WeakAuras.Delete(data)
   WeakAuras.customConditionsFunctions[id] = nil;
   WeakAuras.conditionTextFormatters[id] = nil
 
-  WeakAuras.frameLevels[id] = nil;
+  Private.frameLevels[id] = nil;
 
   WeakAuras.conditionHelpers[data.uid] = nil
 
@@ -1916,8 +1916,8 @@ function WeakAuras.Rename(data, newid)
   WeakAuras.conditionTextFormatters[newid] = WeakAuras.conditionTextFormatters[oldid]
   WeakAuras.conditionTextFormatters[oldid] = nil
 
-  WeakAuras.frameLevels[newid] = WeakAuras.frameLevels[oldid];
-  WeakAuras.frameLevels[oldid] = nil;
+  Private.frameLevels[newid] = Private.frameLevels[oldid];
+  Private.frameLevels[oldid] = nil;
 
   Private.ProfileRenameAura(oldid, newid);
 
@@ -3529,9 +3529,9 @@ function Private.ValueToPath(data, path, value)
   end
 end
 
-WeakAuras.frameLevels = {};
+Private.frameLevels = {};
 local function SetFrameLevel(id, frameLevel)
-  if (WeakAuras.frameLevels[id] == frameLevel) then
+  if (Private.frameLevels[id] == frameLevel) then
     return;
   end
   if (WeakAuras.regions[id] and WeakAuras.regions[id].region) then
@@ -3542,7 +3542,7 @@ local function SetFrameLevel(id, frameLevel)
       Private.ApplyFrameLevel(v, frameLevel)
     end
   end
-  WeakAuras.frameLevels[id] = frameLevel;
+  Private.frameLevels[id] = frameLevel;
 end
 
 function Private.FixGroupChildrenOrderForGroup(data)
@@ -3554,7 +3554,7 @@ function Private.FixGroupChildrenOrderForGroup(data)
 end
 
 local function GetFrameLevelFor(id)
-  return WeakAuras.frameLevels[id] or 5;
+  return Private.frameLevels[id] or 5;
 end
 
 function Private.ApplyFrameLevel(region, frameLevel)
