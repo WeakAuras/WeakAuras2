@@ -54,7 +54,7 @@ function OptionsPrivate.CreateImportButtons()
           end
         end
       end
-      WeakAuras.ResolveCollisions(function()
+      OptionsPrivate.Private.ResolveCollisions(function()
         for groupId, dataFromAddon in pairs(addonData.displays) do
           if(dataFromAddon.controlledChildren) then
             local data = WeakAuras.GetData(groupId);
@@ -132,7 +132,7 @@ function OptionsPrivate.CreateImportButtons()
             else
               WeakAuras.DisableAddonDisplay(childId);
             end
-            WeakAuras.ResolveCollisions(function()
+            OptionsPrivate.Private.ResolveCollisions(function()
               OptionsPrivate.Private.ScanForLoads();
               WeakAuras.SortDisplayButtons();
               UpdateGroupChecked();
@@ -158,7 +158,7 @@ function OptionsPrivate.CreateImportButtons()
               WeakAuras.DisableAddonDisplay(childId);
             end
           end
-          WeakAuras.ResolveCollisions(function()
+          OptionsPrivate.Private.ResolveCollisions(function()
             local data = WeakAuras.GetData(id);
             if(data) then
               for index, childId in pairs(data.controlledChildren) do
@@ -202,7 +202,7 @@ function OptionsPrivate.CreateImportButtons()
           else
             WeakAuras.DisableAddonDisplay(id);
           end
-          WeakAuras.ResolveCollisions(function()
+          OptionsPrivate.Private.ResolveCollisions(function()
             WeakAuras.SortDisplayButtons()
             UpdateAddonChecked();
           end);
