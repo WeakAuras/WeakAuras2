@@ -119,7 +119,7 @@ local constants = {
 local encounter_list = ""
 local zoneId_list = ""
 local zoneGroupId_list = ""
-function WeakAuras.InitializeEncounterAndZoneLists()
+function Private.InitializeEncounterAndZoneLists()
   if encounter_list ~= "" then
     return
   end
