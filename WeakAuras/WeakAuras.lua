@@ -1503,8 +1503,8 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
 
   if(changed > 0 and not paused) then
     Private.LoadDisplays(toLoad, event, arg1, ...);
-    WeakAuras.UnloadDisplays(toUnload, event, arg1, ...);
-    WeakAuras.FinishLoadUnload();
+    Private.UnloadDisplays(toUnload, event, arg1, ...);
+    Private.FinishLoadUnload();
   end
 
   for id, data in pairs(db.displays) do
@@ -1664,7 +1664,7 @@ function Private.LoadDisplays(toLoad, ...)
   end
 end
 
-function WeakAuras.UnloadDisplays(toUnload, ...)
+function Private.UnloadDisplays(toUnload, ...)
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.UnloadDisplays(toUnload, ...);
   end
@@ -1704,7 +1704,7 @@ function WeakAuras.UnloadDisplays(toUnload, ...)
   end
 end
 
-function WeakAuras.FinishLoadUnload()
+function Private.FinishLoadUnload()
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.FinishLoadUnload();
   end
