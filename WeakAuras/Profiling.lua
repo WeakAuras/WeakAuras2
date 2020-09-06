@@ -24,8 +24,6 @@ RealTimeProfilingWindow:SetMovable(true)
 RealTimeProfilingWindow:Hide()
 WeakAuras.RealTimeProfilingWindow = RealTimeProfilingWindow
 
-WeakAuras.profileData = profileData
-
 WeakAuras.table_to_string = function(tbl, depth)
   if depth and depth >= 3 then
     return "{ ... }"
