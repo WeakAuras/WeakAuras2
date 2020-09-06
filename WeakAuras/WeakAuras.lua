@@ -1158,7 +1158,7 @@ end);
 
 function WeakAuras.SetImporting(b)
   importing = b;
-  WeakAuras.RefreshTooltipButtons()
+  Private.RefreshTooltipButtons()
 end
 
 function WeakAuras.IsImporting()
