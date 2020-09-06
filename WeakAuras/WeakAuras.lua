@@ -1102,7 +1102,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       Private.UpdateCurrentInstanceType();
       Private.SyncParentChildRelationships();
       local isFirstUIDValidation = db.dbVersion == nil or db.dbVersion < 26;
-      WeakAuras.ValidateUniqueDataIds(isFirstUIDValidation);
+      Private.ValidateUniqueDataIds(isFirstUIDValidation);
 
       if db.lastArchiveClear == nil then
         db.lastArchiveClear = time();
@@ -2161,7 +2161,7 @@ function WeakAuras.RepairDatabase(loginAfter)
   Private.dynFrame:AddAction("repair", coro)
 end
 
-function WeakAuras.ValidateUniqueDataIds(silent)
+function Private.ValidateUniqueDataIds(silent)
   -- ensure that there are no duplicated uids anywhere in the database
   local seenUIDs = {}
   for _, data in pairs(db.displays) do
