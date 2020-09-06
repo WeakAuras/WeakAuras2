@@ -50,6 +50,14 @@ end
 
 local noop = function() end
 
+local function CanShowNameInfo(data)
+  if(data.regionType == "aurabar" or data.regionType == "icon" or data.regionType == "text") then
+    return true;
+  else
+    return false;
+  end
+end
+
 local function GetBuffTriggerOptions(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   trigger.names = trigger.names or {}
@@ -678,9 +686,9 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Name Info"],
       order = 47.5,
       hidden = function() return not (trigger.type == "aura" and trigger.unit == "group" and not trigger.groupclone); end,
-      disabled = function() return not WeakAuras.CanShowNameInfo(data); end,
+      disabled = function() return not CanShowNameInfo(data); end,
       get = function()
-        if(WeakAuras.CanShowNameInfo(data)) then
+        if(CanShowNameInfo(data)) then
           return trigger.name_info;
         else
           return nil;
