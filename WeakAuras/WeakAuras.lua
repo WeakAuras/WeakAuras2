@@ -1280,7 +1280,7 @@ local function StoreBossGUIDs()
   Private.StopProfileSystem("boss_guids")
 end
 
-function WeakAuras.DestroyEncounterTable()
+local function DestroyEncounterTable()
   if (WeakAuras.CurrentEncounter) then
     wipe(WeakAuras.CurrentEncounter)
   end
@@ -1412,7 +1412,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     WeakAuras.CreateEncounterTable (encounter_id)
   elseif (event == "ENCOUNTER_END") then
     encounter_id = 0
-    WeakAuras.DestroyEncounterTable()
+    DestroyEncounterTable()
   end
 
   if toCheck == nil or next(toCheck) == nil then
@@ -1447,7 +1447,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   if (WeakAuras.CurrentEncounter) then
     if (ZoneMapID ~= WeakAuras.CurrentEncounter.zone_id and not inCombat) then
       encounter_id = 0
-      WeakAuras.DestroyEncounterTable()
+      DestroyEncounterTable()
     end
   end
 
