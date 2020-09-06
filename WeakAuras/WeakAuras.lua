@@ -994,7 +994,7 @@ function Private.Login(initialTime, takeNewSnapshots)
     WeakAuras.AddManyFromAddons(from_files);
     WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
     coroutine.yield();
-    WeakAuras.ResolveCollisions(function() registeredFromAddons = true; end);
+    Private.ResolveCollisions(function() registeredFromAddons = true; end);
     coroutine.yield();
 
   -- check in case of a disconnect during an encounter.
@@ -2000,7 +2000,7 @@ function WeakAuras.IsDefinedByAddon(id)
   return db.registered[id];
 end
 
-function WeakAuras.ResolveCollisions(onFinished)
+function Private.ResolveCollisions(onFinished)
   local num = 0;
   for id, _ in pairs(collisions) do
     num = num + 1;
