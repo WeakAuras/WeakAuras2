@@ -3027,7 +3027,7 @@ end
 
 local glow_frame_monitor
 local anchor_unitframe_monitor
-WeakAuras.dyngroup_unitframe_monitor = {}
+Private.dyngroup_unitframe_monitor = {}
 do
   local function frame_monitor_callback(event, frame, unit)
     local new_frame
@@ -3071,7 +3071,7 @@ do
         end
       end
     end
-    for regionData, data_frame in pairs(WeakAuras.dyngroup_unitframe_monitor) do
+    for regionData, data_frame in pairs(Private.dyngroup_unitframe_monitor) do
       if regionData.region and regionData.region.state and regionData.region.state.unit == unit
       and (data_frame ~= frame) == update_frame
       then
@@ -3081,7 +3081,7 @@ do
         if new_frame and new_frame ~= data_frame then
           regionData.controlPoint:ReAnchor(new_frame)
           regionData.controlPoint:SetShown(regionData.shown and new_frame ~= WeakAuras.HiddenFrames)
-          WeakAuras.dyngroup_unitframe_monitor[regionData] = new_frame
+          Private.dyngroup_unitframe_monitor[regionData] = new_frame
         end
       end
     end
