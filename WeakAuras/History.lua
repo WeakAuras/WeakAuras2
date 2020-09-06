@@ -37,7 +37,7 @@ function Private.CleanArchive(historyCutoff, migrationCutoff)
   end
 end
 
-function WeakAuras.SetHistory(uid, data, source, addon)
+function Private.SetHistory(uid, data, source, addon)
   if uid and data then
     local repo = loadHistory()
     data.source = source
