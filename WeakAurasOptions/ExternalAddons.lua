@@ -280,7 +280,7 @@ function WeakAuras.EnableAddonDisplay(id)
         wipe(data.controlledChildren);
       end
       WeakAuras.Add(data);
-      WeakAuras.SyncParentChildRelationships(true);
+      OptionsPrivate.Private.SyncParentChildRelationships(true);
       OptionsPrivate.AddDisplayButton(data);
     end
   end
@@ -317,7 +317,7 @@ function WeakAuras.DisableAddonDisplay(id)
     end
 
     WeakAuras.Delete(data);
-    WeakAuras.SyncParentChildRelationships(true);
+    OptionsPrivate.Private.SyncParentChildRelationships(true);
     frame.buttonsScroll:DeleteChild(displayButtons[id]);
     displayButtons[id] = nil;
 
