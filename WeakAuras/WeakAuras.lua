@@ -2146,7 +2146,7 @@ function WeakAuras.RepairDatabase(loginAfter)
     local newDB = Mixin({}, db.displays)
     coroutine.yield()
     for id, data in pairs(db.displays) do
-      local snapshot = WeakAuras.GetMigrationSnapshot(data.uid)
+      local snapshot = Private.GetMigrationSnapshot(data.uid)
       if snapshot then
         newDB[id] = nil
         newDB[snapshot.id] = snapshot
@@ -2767,7 +2767,7 @@ function WeakAuras.Add(data, takeSnapshot, simpleChange)
     snapshot = CopyTable(data)
   end
   if takeSnapshot then
-    WeakAuras.SetMigrationSnapshot(data.uid, snapshot)
+    Private.SetMigrationSnapshot(data.uid, snapshot)
   end
   local ok = xpcall(WeakAuras.PreAdd, geterrorhandler(), data)
   if ok then
