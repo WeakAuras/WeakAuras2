@@ -678,7 +678,7 @@ function OptionsPrivate.CreateFrame()
 
   local numAddons = 0
 
-  for addon, addonData in pairs(WeakAuras.addons) do
+  for addon, addonData in pairs(OptionsPrivate.Private) do
     numAddons = numAddons + 1
   end
 
