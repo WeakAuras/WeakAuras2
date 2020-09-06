@@ -170,8 +170,8 @@ local db;
 
 local registeredFromAddons;
 -- List of addons that registered displays
-WeakAuras.addons = {};
-local addons = WeakAuras.addons;
+Private.addons = {};
+local addons = Private.addons;
 
 -- used if an addon tries to register a display under an id that the user already has a display with that id
 Private.collisions = {};

@@ -16,7 +16,7 @@ WeakAuras.importDisplayButtons = importDisplayButtons
 function OptionsPrivate.CreateImportButtons()
   wipe(importAddonButtons);
   wipe(importDisplayButtons);
-  for addonName, addonData in pairs(WeakAuras.addons) do
+  for addonName, addonData in pairs(OptionsPrivate.Private) do
     local addonButton = AceGUI:Create("WeakAurasImportButton");
     importAddonButtons[addonName] = addonButton;
     addonButton:SetTitle(addonData.displayName);
@@ -119,7 +119,7 @@ function OptionsPrivate.CreateImportButtons()
           local childButton = AceGUI:Create("WeakAurasImportButton");
           importDisplayButtons[childId] = childButton;
 
-          local data = WeakAuras.addons[addonName].displays[childId];
+          local data = OptionsPrivate.Private[addonName].displays[childId];
 
           childButton:SetTitle(childId);
           childButton:SetDescription(data.desc);
@@ -227,7 +227,7 @@ function WeakAuras.SortImportButtons(newContainer)
   container = newContainer or container;
   wipe(container.children);
   local toSort = {};
-  for addon, addonData in pairs(WeakAuras.addons) do
+  for addon, addonData in pairs(OptionsPrivate.Private) do
     container:AddChild(importAddonButtons[addon]);
     wipe(toSort);
     for id, data in pairs(addonData.displays) do
@@ -263,7 +263,7 @@ function WeakAuras.EnableAddonDisplay(id)
   local db = OptionsPrivate.savedVars.db
   if not(db.registered[id]) then
     local addon, data;
-    for addonName, addonData in pairs(WeakAuras.addons) do
+    for addonName, addonData in pairs(OptionsPrivate.Private) do
       if(addonData.displays[id]) then
         addon = addonName;
         data = CopyTable(addonData.displays[id]);
