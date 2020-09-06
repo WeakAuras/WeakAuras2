@@ -750,12 +750,12 @@ local function subCreateOptions(parentData, data, index, subIndex)
     __title = L["Foreground"],
     __order = 1,
     __up = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionUp, index, "aurabar_bar")) then
+      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionUp, index, "aurabar_bar")) then
         WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     __down = function()
-      if (WeakAuras.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionDown, index, "aurabar_bar")) then
+      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionDown, index, "aurabar_bar")) then
         WeakAuras.ClearAndUpdateOptions(parentData.id, parentData)
       end
     end,
