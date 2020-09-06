@@ -282,7 +282,7 @@ for index, button in ipairs(radioButtons) do
       button:SetChecked(button == self)
     end
     pendingData.mode = index
-    WeakAuras.RefreshTooltipButtons()
+    Private.RefreshTooltipButtons()
   end)
 end
 
@@ -802,7 +802,7 @@ function Private.SerializeTable(data)
   return table.concat(lines, "\n")
 end
 
-function WeakAuras.RefreshTooltipButtons()
+function Private.RefreshTooltipButtons()
   importButton:Disable()
   importButton.tooltipText = nil
   showCodeButton:Enable()
@@ -853,7 +853,7 @@ function WeakAuras.RefreshTooltipButtons()
   local importWidth = importButton.Text:GetStringWidth()
   importButton:SetWidth(importWidth + 30)
 end
-buttonAnchor:SetScript("OnEvent", WeakAuras.RefreshTooltipButtons)
+buttonAnchor:SetScript("OnEvent", Private.RefreshTooltipButtons)
 
 local function SetCheckButtonStates(radioButtonAnchor, activeCategories)
   if activeCategories then
@@ -909,7 +909,7 @@ function ShowTooltip(lines, linesFromTop, activeCategories)
   if pendingData.newData then
     local checkButtonAnchor = _G["ItemRefTooltipTextLeft" .. (linesFromTop or 1)]
     SetCheckButtonStates(checkButtonAnchor, activeCategories)
-    WeakAuras.RefreshTooltipButtons()
+    Private.RefreshTooltipButtons()
     buttonAnchor:Show()
   else
     buttonAnchor:Hide()
