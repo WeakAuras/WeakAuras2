@@ -960,6 +960,24 @@ function Private.LoginMessage()
   return loginMessage
 end
 
+local function CheckForPreviousEncounter()
+  if (UnitAffectingCombat ("player") or InCombatLockdown()) then
+    for i = 1, 5 do
+      if (UnitExists ("boss" .. i)) then
+        local guid = UnitGUID ("boss" .. i)
+        if (guid and db.CurrentEncounter.boss_guids [guid]) then
+          -- we are in the same encounter
+          WeakAuras.CurrentEncounter = db.CurrentEncounter
+          return true
+        end
+      end
+    end
+    db.CurrentEncounter = nil
+  else
+    db.CurrentEncounter = nil
+  end
+end
+
 function Private.Login(initialTime, takeNewSnapshots)
   local loginThread = coroutine.create(function()
     Private.Pause();
@@ -999,7 +1017,7 @@ function Private.Login(initialTime, takeNewSnapshots)
 
   -- check in case of a disconnect during an encounter.
     if (db.CurrentEncounter) then
-      WeakAuras.CheckForPreviousEncounter()
+      CheckForPreviousEncounter()
     end
     coroutine.yield();
     WeakAuras.RegisterLoadEvents();
@@ -1258,24 +1276,6 @@ function WeakAuras.StoreBossGUIDs()
     db.CurrentEncounter = WeakAuras.CurrentEncounter
   end
   Private.StopProfileSystem("boss_guids")
-end
-
-function WeakAuras.CheckForPreviousEncounter()
-  if (UnitAffectingCombat ("player") or InCombatLockdown()) then
-    for i = 1, 5 do
-      if (UnitExists ("boss" .. i)) then
-        local guid = UnitGUID ("boss" .. i)
-        if (guid and db.CurrentEncounter.boss_guids [guid]) then
-          -- we are in the same encounter
-          WeakAuras.CurrentEncounter = db.CurrentEncounter
-          return true
-        end
-      end
-    end
-    db.CurrentEncounter = nil
-  else
-    db.CurrentEncounter = nil
-  end
 end
 
 function WeakAuras.DestroyEncounterTable()
