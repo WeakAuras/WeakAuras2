@@ -356,7 +356,7 @@ local function install(data, oldData, patch, mode, isParent)
     imported = data
   end
   -- if at this point, then some change has been made in the db. Update History to reflect the change
-  WeakAuras.SetHistory(installedUID, imported, "import")
+  Private.SetHistory(installedUID, imported, "import")
   return Private.GetDataByUID(installedUID)
 end
 
