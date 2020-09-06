@@ -2106,7 +2106,7 @@ function Private.ResolveCollisions(onFinished)
   end
 end
 
-function WeakAuras.LastUpgrade()
+local function LastUpgrade()
   return db.lastUpgrade and date(nil, db.lastUpgrade) or "unknown"
 end
 
@@ -2147,9 +2147,9 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_REPAIR"] = {
   end,
   OnShow = function(self)
     if self.data.reason == "user" then
-      self.text:SetText(L["Manual Repair Confirmation Dialog"]:format(WeakAuras.LastUpgrade()))
+      self.text:SetText(L["Manual Repair Confirmation Dialog"]:format(LastUpgrade()))
     else
-      self.text:SetText(L["Automatic Repair Confirmation Dialog"]:format(WeakAuras.LastUpgrade()))
+      self.text:SetText(L["Automatic Repair Confirmation Dialog"]:format(LastUpgrade()))
     end
   end,
   OnCancel = function(self)
