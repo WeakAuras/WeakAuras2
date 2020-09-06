@@ -1188,11 +1188,11 @@ Private.load_prototype = {
           else
             -- List 4 specs if no class is specified, but if any multi-selected classes have less than 4 specs, list 3 instead
             if (min_specs < 3) then
-              return WeakAuras.spec_types_2;
+              return Private.spec_types_2;
             elseif(min_specs < 4) then
-              return WeakAuras.spec_types_3;
+              return Private.spec_types_3;
             else
-              return WeakAuras.spec_types;
+              return Private.spec_types;
             end
           end
         end
