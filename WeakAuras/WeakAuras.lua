@@ -3356,7 +3356,7 @@ function Private.GetTriggerConditions(data)
   return conditions;
 end
 
-function WeakAuras.CreateFallbackState(id, triggernum)
+local function CreateFallbackState(id, triggernum)
   fallbacksStates[id] = fallbacksStates[id] or {};
   fallbacksStates[id][triggernum] = fallbacksStates[id][triggernum] or {};
 
@@ -3986,7 +3986,7 @@ function Private.UpdatedTriggerState(id)
   local activeTriggerState = WeakAuras.GetTriggerStateForTrigger(id, newActiveTrigger);
   if (not next(activeTriggerState)) then
     if (show) then
-      activeTriggerState = WeakAuras.CreateFallbackState(id, newActiveTrigger)
+      activeTriggerState = CreateFallbackState(id, newActiveTrigger)
     else
       activeTriggerState = emptyState;
     end
@@ -3999,7 +3999,7 @@ function Private.UpdatedTriggerState(id)
       end
     end
     if (needsFallback) then
-      activeTriggerState = WeakAuras.CreateFallbackState(id, newActiveTrigger);
+      activeTriggerState = CreateFallbackState(id, newActiveTrigger);
     end
   end
 
