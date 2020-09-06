@@ -1264,7 +1264,7 @@ end
 
 
 -- encounter stuff
-function WeakAuras.StoreBossGUIDs()
+local function StoreBossGUIDs()
   Private.StartProfileSystem("boss_guids")
   if (WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.boss_guids) then
     for i = 1, 5 do
@@ -1295,7 +1295,7 @@ function WeakAuras.CreateEncounterTable(encounter_id)
     zone_id = ZoneMapID,
     boss_guids = {},
   }
-  timer:ScheduleTimer(WeakAuras.StoreBossGUIDs, 2)
+  timer:ScheduleTimer(StoreBossGUIDs, 2)
 
   return WeakAuras.CurrentEncounter
 end
