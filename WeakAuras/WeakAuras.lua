@@ -2106,31 +2106,6 @@ function Private.ResolveCollisions(onFinished)
   end
 end
 
-StaticPopupDialogs["WEAKAURAS_CONFIRM_REPAIR"] = {
-  text = "",
-  button1 = L["Repair"],
-  button2 = L["Cancel"],
-  OnAccept = function(self)
-     WeakAuras.RepairDatabase()
-  end,
-  OnShow = function(self)
-    if self.data.reason == "user" then
-      self.text:SetText(L["Manual Repair Confirmation Dialog"]:format(WeakAuras.LastUpgrade()))
-    else
-      self.text:SetText(L["Automatic Repair Confirmation Dialog"]:format(WeakAuras.LastUpgrade()))
-    end
-  end,
-  OnCancel = function(self)
-    if self.data.reason ~= "user" then
-      Private.Login()
-    end
-  end,
-  whileDead = true,
-  showAlert = true,
-  timeout = 0,
-  preferredindex = STATICPOPUP_NUMDIALOGS
-}
-
 function WeakAuras.LastUpgrade()
   return db.lastUpgrade and date(nil, db.lastUpgrade) or "unknown"
 end
@@ -2139,7 +2114,7 @@ function Private.NeedToRepairDatabase()
   return db.dbVersion and db.dbVersion > WeakAuras.InternalVersion()
 end
 
-function WeakAuras.RepairDatabase(loginAfter)
+local function RepairDatabase(loginAfter)
   local coro = coroutine.create(function()
     WeakAuras.SetImporting(true)
     -- set db version to current code version
@@ -2162,6 +2137,31 @@ function WeakAuras.RepairDatabase(loginAfter)
   end)
   Private.dynFrame:AddAction("repair", coro)
 end
+
+StaticPopupDialogs["WEAKAURAS_CONFIRM_REPAIR"] = {
+  text = "",
+  button1 = L["Repair"],
+  button2 = L["Cancel"],
+  OnAccept = function(self)
+     RepairDatabase()
+  end,
+  OnShow = function(self)
+    if self.data.reason == "user" then
+      self.text:SetText(L["Manual Repair Confirmation Dialog"]:format(WeakAuras.LastUpgrade()))
+    else
+      self.text:SetText(L["Automatic Repair Confirmation Dialog"]:format(WeakAuras.LastUpgrade()))
+    end
+  end,
+  OnCancel = function(self)
+    if self.data.reason ~= "user" then
+      Private.Login()
+    end
+  end,
+  whileDead = true,
+  showAlert = true,
+  timeout = 0,
+  preferredindex = STATICPOPUP_NUMDIALOGS
+}
 
 function Private.ValidateUniqueDataIds(silent)
   -- ensure that there are no duplicated uids anywhere in the database
