@@ -83,7 +83,7 @@ function Private.LoadOptions(msg)
 end
 
 function WeakAuras.OpenOptions(msg)
-  if WeakAuras.NeedToRepairDatabase() then
+  if Private.NeedToRepairDatabase() then
     StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "downgrade"})
   elseif (WeakAuras.IsLoginFinished() and Private.LoadOptions(msg)) then
     WeakAuras.ToggleOptions(msg, Private);
@@ -2133,7 +2133,7 @@ function WeakAuras.LastUpgrade()
   return db.lastUpgrade and date(nil, db.lastUpgrade) or "unknown"
 end
 
-function WeakAuras.NeedToRepairDatabase()
+function Private.NeedToRepairDatabase()
   return db.dbVersion and db.dbVersion > WeakAuras.InternalVersion()
 end
 
