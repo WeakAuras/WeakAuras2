@@ -533,7 +533,7 @@ end
 
 -- Used for the load function, could be simplified a bit
 -- It used to be also used for the generic trigger system
-function WeakAuras.ConstructFunction(prototype, trigger, skipOptional)
+local function ConstructFunction(prototype, trigger, skipOptional)
   local input = {"event"};
   local required = {};
   local tests = {};
@@ -2698,7 +2698,7 @@ local function pAdd(data, simpleChange)
         triggerSystem.Add(data);
       end
 
-      local loadFuncStr, events = WeakAuras.ConstructFunction(load_prototype, data.load);
+      local loadFuncStr, events = ConstructFunction(load_prototype, data.load);
       for event, eventData in pairs(loadEvents) do
         eventData[id] = nil
       end
@@ -2709,7 +2709,7 @@ local function pAdd(data, simpleChange)
       loadEvents["SCAN_ALL"] = loadEvents["SCAN_ALL"] or {}
       loadEvents["SCAN_ALL"][id] = true
 
-      local loadForOptionsFuncStr = WeakAuras.ConstructFunction(load_prototype, data.load, true);
+      local loadForOptionsFuncStr = ConstructFunction(load_prototype, data.load, true);
       local loadFunc = WeakAuras.LoadFunction(loadFuncStr, id, "load");
       local loadForOptionsFunc = WeakAuras.LoadFunction(loadForOptionsFuncStr, id, "options load");
       local triggerLogicFunc;
