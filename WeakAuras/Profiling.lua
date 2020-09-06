@@ -24,7 +24,8 @@ RealTimeProfilingWindow:SetMovable(true)
 RealTimeProfilingWindow:Hide()
 WeakAuras.RealTimeProfilingWindow = RealTimeProfilingWindow
 
-WeakAuras.table_to_string = function(tbl, depth)
+local table_to_string
+table_to_string = function(tbl, depth)
   if depth and depth >= 3 then
     return "{ ... }"
   end
@@ -32,7 +33,7 @@ WeakAuras.table_to_string = function(tbl, depth)
   for k, v in pairs(tbl) do
     if type(v) ~= "userdata" then
       if type(v) == "table" then
-        v = WeakAuras.table_to_string(v, (depth and depth + 1 or 1))
+        v = table_to_string(v, (depth and depth + 1 or 1))
       elseif type(v) == "function" then
         v = "function"
       elseif type(v) == "string" then
@@ -127,7 +128,7 @@ local function CreateProfilePopup()
       m = m .. "|n"
     end
     if type(v) == "table" then
-      v = WeakAuras.table_to_string(v)
+      v = table_to_string(v)
     end
     popupFrame.originalText = m .. v
     popupFrame:SetText(popupFrame.originalText)
