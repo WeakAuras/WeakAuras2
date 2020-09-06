@@ -1202,9 +1202,26 @@ function Private.Pause()
   paused = true;
 end
 
+local function ScanAll()
+  Private.PauseAllDynamicGroups();
+
+  for id, region in pairs(regions) do
+    region.region:Collapse();
+  end
+
+  for id, cloneList in pairs(clones) do
+    for cloneId, clone in pairs(cloneList) do
+      clone:Collapse();
+    end
+  end
+
+  Private.ResumeAllDynamicGroups();
+  Private.ReloadAll();
+end
+
 function Private.Resume()
   paused = false;
-  WeakAuras.ScanAll();
+  ScanAll();
   for _, regionData in pairs(regions) do
     if regionData.region.Resume then
       regionData.region:Resume(true)
@@ -1244,22 +1261,7 @@ function Private.ResumeAllDynamicGroups()
   end
 end
 
-function WeakAuras.ScanAll()
-  Private.PauseAllDynamicGroups();
 
-  for id, region in pairs(regions) do
-    region.region:Collapse();
-  end
-
-  for id, cloneList in pairs(clones) do
-    for cloneId, clone in pairs(cloneList) do
-      clone:Collapse();
-    end
-  end
-
-  Private.ResumeAllDynamicGroups();
-  Private.ReloadAll();
-end
 
 -- encounter stuff
 function WeakAuras.StoreBossGUIDs()
