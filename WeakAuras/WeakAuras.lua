@@ -3639,29 +3639,6 @@ end
 
 Private.dynFrame = dynFrame;
 
-function WeakAuras.SetDynamicIconCache(name, spellId, icon)
-  db.dynamicIconCache[name] = db.dynamicIconCache[name] or {};
-  db.dynamicIconCache[name][spellId] = icon;
-end
-
-function WeakAuras.GetDynamicIconCache(name)
-  if (db.dynamicIconCache[name]) then
-    local fallback = nil;
-    for spellId, icon in pairs(db.dynamicIconCache[name]) do
-      fallback = icon;
-      if (type(spellId) == "number" and IsSpellKnown(spellId)) then -- TODO save this information?
-        return db.dynamicIconCache[name][spellId];
-      end
-    end
-    return fallback;
-  end
-
-  if WeakAuras.spellCache then
-    return WeakAuras.spellCache.GetIcon(name);
-  end
-  return nil;
-end
-
 function WeakAuras.RegisterTriggerSystem(types, triggerSystem)
   for _, v in ipairs(types) do
     triggerTypes[v] = triggerSystem;
