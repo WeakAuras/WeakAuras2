@@ -779,7 +779,7 @@ local function SafeGetPos(region, func)
 end
 
 local function modify(parent, region, data)
-  WeakAuras.FixGroupChildrenOrderForGroup(data)
+  Private.FixGroupChildrenOrderForGroup(data)
   -- Scale
   region:SetScale(data.scale and data.scale > 0 and data.scale or 1)
   WeakAuras.regionPrototype.modify(parent, region, data)
