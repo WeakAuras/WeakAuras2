@@ -62,7 +62,7 @@ end
 function Private.LoadOptions(msg)
   if not(IsAddOnLoaded("WeakAurasOptions")) then
     if not WeakAuras.IsLoginFinished() then
-      prettyPrint(WeakAuras.LoginMessage())
+      prettyPrint(Private.LoginMessage())
       loginQueue[#loginQueue + 1] = WeakAuras.OpenOptions
     elseif InCombatLockdown() then
       -- inform the user and queue ooc
@@ -956,7 +956,7 @@ function WeakAuras.IsLoginFinished()
   return loginFinished
 end
 
-function WeakAuras.LoginMessage()
+function Private.LoginMessage()
   return loginMessage
 end
 
