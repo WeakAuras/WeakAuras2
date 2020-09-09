@@ -75,7 +75,7 @@ local WA_ClassColorName = function(unit)
     if not class then
       return name
     else
-      local classData = RAID_CLASS_COLORS[class]
+      local classData = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]
       local coloredName = ("|c%s%s|r"):format(classData.colorStr, name)
       return coloredName
     end

@@ -51,6 +51,7 @@ globals = {
 	-- Third Party Addons/Libs
 	"BigWigs",
 	"BigWigsLoader",
+	"CUSTOM_CLASS_COLORS",
 	"DBM",
 	"ElvUIPlayerNamePlateAnchor",
 	"GTFO",

@@ -8,7 +8,16 @@ local LSM = LibStub("LibSharedMedia-3.0");
 local wipe, tinsert = wipe, tinsert
 local GetNumShapeshiftForms, GetShapeshiftFormInfo = GetNumShapeshiftForms, GetShapeshiftFormInfo
 local GetNumSpecializationsForClassID, GetSpecializationInfoForClassID = GetNumSpecializationsForClassID, GetSpecializationInfoForClassID
-local WrapTextInColorCode, GetClassColor = WrapTextInColorCode, GetClassColor -- for Classic
+local WrapTextInColorCode = WrapTextInColorCode
+
+local function WA_GetClassColor(classFilename)
+  local color = (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[classFilename]
+  if color then
+    return color.colorStr
+  end
+
+  return "ffffffff"
+end
 
 WeakAuras.glow_action_types = {
   show = L["Show"],
@@ -262,7 +271,10 @@ WeakAuras.format_types = {
       if color == "class" then
         colorFunc = function(unit, text)
           if unit and UnitPlayerControlled(unit) then
-            return GetClassColoredTextForUnit(unit, text)
+            local classFilename = select(2, UnitClass(unit))
+            if classFilename then
+              return WrapTextInColorCode(text, WA_GetClassColor(classFilename))
+            end
           end
           return text
         end
@@ -384,7 +396,7 @@ WeakAuras.format_types = {
       if color == "class" then
         colorFunc = function(class, text)
           if class then
-            return RAID_CLASS_COLORS[class]:WrapTextInColorCode(text)
+            return (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]:WrapTextInColorCode(text)
           else
             return text
           end
@@ -701,17 +713,12 @@ WeakAuras.unit_threat_situation_types = {
 }
 
 WeakAuras.class_types = {}
-WeakAuras.class_color_types = {} -- TODO: it should be removed together with Bufftrigger (unused)
+WeakAuras.class_color_types = {}
 for classID = 1, 20 do -- 20 is for GetNumClasses() but that function doesn't exists on Classic
   local classInfo = C_CreatureInfo.GetClassInfo(classID)
   if classInfo then
-    if WeakAuras.IsClassic() then
-      WeakAuras.class_types[classInfo.classFile] = WrapTextInColorCode(classInfo.className, select(4, GetClassColor(classInfo.classFile)))
-      WeakAuras.class_color_types[classInfo.classFile] = select(4, GetClassColor(classInfo.classFile))
-    else
-      WeakAuras.class_types[classInfo.classFile] = C_ClassColor.GetClassColor(classInfo.classFile):WrapTextInColorCode(classInfo.className)
-      WeakAuras.class_color_types[classInfo.classFile] = C_ClassColor.GetClassColor(classInfo.classFile):GenerateHexColorMarkup()
-    end
+    WeakAuras.class_types[classInfo.classFile] = WrapTextInColorCode(classInfo.className, WA_GetClassColor(classInfo.classFile))
+    WeakAuras.class_color_types[classInfo.classFile] = WA_GetClassColor(classInfo.classFile)
   end
 end
 
