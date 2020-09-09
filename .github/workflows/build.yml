@@ -47,9 +47,9 @@ jobs:
         GITHUB_OAUTH: ${{ secrets.GITHUB_OAUTH }}
         WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
 
-    - name: Notify on Failure
+    - name: Send status to Discord
+      uses: nebularg/actions-discord-webhook@v1
+      with:
+        webhook_url: ${{ secrets.WEBHOOK_URL }}
+        status: ${{ job.status }}
       if: failure()
-      env:
-        BUILD_STATUS: ${{ job.status }}
-        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-      run: curl -s https://raw.githubusercontent.com/nebularg/actions-discord-webhook/master/send.sh | bash
