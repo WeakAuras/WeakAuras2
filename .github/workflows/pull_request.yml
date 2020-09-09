@@ -25,9 +25,9 @@ jobs:
         GITHUB_OAUTH: ${{ secrets.GITHUB_OAUTH }}
         WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
 
-    - uses: actions/upload-artifact@master
+    - uses: actions/upload-artifact@v2
       with:
-        name: WeakAuras-PR
+        name: WeakAuras-PR${{ github.event.number }}
         path: .release/
 
     - name: Create Classic Package
@@ -39,13 +39,12 @@ jobs:
 
     - uses: actions/upload-artifact@v2
       with:
-        name: WeakAuras-PR-classic
+        name: WeakAuras-PR${{ github.event.number }}-classic
         path: .release/
 
-    - name: Notify on Failure
+    - name: Send status to Discord
+      uses: nebularg/actions-discord-webhook@v1
+      with:
+        webhook_url: ${{ secrets.WEBHOOK_URL }}
+        status: ${{ job.status }}
       if: failure()
-      env:
-        BUILD_STATUS: ${{ job.status }}
-        WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-      run: curl -s https://raw.githubusercontent.com/nebularg/actions-discord-webhook/master/send.sh | bash
-
