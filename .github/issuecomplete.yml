@@ -9,7 +9,7 @@ commentText: >
   Thanks for opening an issue. I see you haven't provided all of the information in the list. Please update the issue to include more information
 
 # Whether or not to ensure all checkboxes are checked
-checkCheckboxes: true
+checkCheckboxes: false
 
 # Keywords to look for in the body of the issue
 keywords:
