@@ -2818,6 +2818,7 @@ WeakAuras.EJIcons = {
   poison =    "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:39:57:39:57|t",
   disease =   "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:71:89:39:57|t",
   enrage =    "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:103:121:39:57|t",
+  bleed =     "|TInterface\\EncounterJournal\\UI-EJ-Icons:::::256:64:158:192:32:64|t",
 }
 
 WeakAuras.reset_swing_spells = {}
