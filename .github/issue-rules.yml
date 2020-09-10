@@ -6,5 +6,5 @@ nomatches:
   addLabels: ["\U0001F3A8 Feature Request"]
 
 tags:
-- noneIn: ["\U0001F41B Bug", "\U0001F3A8 Feature Request"] # If no bug, enhancement, or question labels are added, label with 'triage'
-  addLabels: ['triage']
+- noneIn: ["\U0001F41B Bug", "\U0001F3A8 Feature Request"] # If no bug or feature request labels are added, label with 'Awaiting Response'
+  addLabels: ["\U000023F1 Awaiting Response"]
