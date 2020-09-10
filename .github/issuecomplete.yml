@@ -1,5 +1,5 @@
 # The name of the label to apply when an issue does not have all tasks checked
-labelName: "\U00023F1 Awaiting Response"
+labelName: "⏱ Awaiting Response"
 
 # The color of the label in hex format (without #)
 #labelColor:
