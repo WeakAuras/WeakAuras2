@@ -1,0 +1,17 @@
+# The name of the label to apply when an issue does not have all tasks checked
+labelName: "\U00023F1 Awaiting Response"
+
+# The color of the label in hex format (without #)
+#labelColor:
+
+# The text of the comment to add to the issue in addition to the label
+commentText: >
+  Thanks for opening an issue. I see you haven't provided all of the information in the list. Please update the issue to include more information
+
+# Whether or not to ensure all checkboxes are checked
+checkCheckboxes: true
+
+# Keywords to look for in the body of the issue
+keywords:
+  - version
+  - Retail
