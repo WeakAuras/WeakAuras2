@@ -20,6 +20,7 @@ local default = {
   space = 2,
   stagger = 0,
   sort = "none",
+  distribute = "none",
   animate = false,
   anchorPoint = "CENTER",
   anchorFrameType = "SCREEN",
@@ -94,9 +95,6 @@ local function releaseControlPoint(self, controlPoint)
   controlPoint:ClearAnchorPoint()
   local regionData = controlPoint.regionData
   if regionData then
-    if self.parent.anchorPerUnit == "UNITFRAME" then
-      Private.dyngroup_unitframe_monitor[regionData] = nil
-    end
     controlPoint.regionData = nil
     regionData.controlPoint = nil
   end
@@ -392,22 +390,8 @@ local anchorers = {
         end
       end
     end
-  end,
-  ["CUSTOM"] = function(data)
-    local anchorStr = data.customAnchorPerUnit or ""
-    local anchorFunc = WeakAuras.LoadFunction("return " .. anchorStr, data.id, "custom frame anchor") or noop
-    return function(frames, activeRegions)
-      Private.ActivateAuraEnvironment(data.id)
-      xpcall(anchorFunc, geterrorhandler(), frames, activeRegions)
-      Private.ActivateAuraEnvironment()
-    end
   end
 }
-
-local function createAnchorPerUnitFunc(data)
-  local anchorer = anchorers[data.anchorPerUnit] or anchorers.NAMEPLATE
-  return anchorer(data)
-end
 
 local function getDimension(regionData, dim)
   return regionData.dimensions[dim]
@@ -420,24 +404,14 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = staggerCoefficient(data.align, data.stagger)
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local frames = {}
-      if anchorPerUnitFunc then
-        anchorPerUnitFunc(frames, activeRegions)
-      else
-        frames[""] = activeRegions
-      end
-      for frame, regionDatas in pairs(frames) do
-        local numVisible = min(limit, #regionDatas)
-        local x, y = startX, startY + (numVisible - 1) * stagger * coeff
-        newPositions[frame] = {}
-        for i, regionData in ipairs(regionDatas) do
-          if i <= numVisible then
-            newPositions[frame][regionData] = { x, y, true }
-            x = x - regionData.dimensions.width - space
-            y = y - stagger
-          end
+      local numVisible = min(limit, #activeRegions)
+      local x, y = startX, startY + (numVisible - 1) * stagger * coeff
+      for i, regionData in ipairs(activeRegions) do
+        if i <= numVisible then
+          newPositions[i] = { x, y, true }
+          x = x - regionData.dimensions.width - space
+          y = y - stagger
         end
       end
     end
@@ -448,24 +422,14 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = 1 - staggerCoefficient(data.align, stagger)
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local frames = {}
-      if anchorPerUnitFunc then
-        anchorPerUnitFunc(frames, activeRegions)
-      else
-        frames[""] = activeRegions
-      end
-      for frame, regionDatas in pairs(frames) do
-        local numVisible = min(limit, #regionDatas)
-        local x, y = startX, startY - (numVisible - 1) * stagger * coeff
-        newPositions[frame] = {}
-        for i, regionData in ipairs(regionDatas) do
-          if i <= numVisible then
-            newPositions[frame][regionData] = { x, y, true }
-            x = x + (regionData.dimensions.width) + space
-            y = y + stagger
-          end
+      local numVisible = min(limit, #activeRegions)
+      local x, y = startX, startY - (numVisible - 1) * stagger * coeff
+      for i, regionData in ipairs(activeRegions) do
+        if i <= numVisible then
+          newPositions[i] = { x, y, true }
+          x = x + (regionData.dimensions.width) + space
+          y = y + stagger
         end
       end
     end
@@ -476,24 +440,14 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = 1 - staggerCoefficient(data.align, stagger)
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local frames = {}
-      if anchorPerUnitFunc then
-        anchorPerUnitFunc(frames, activeRegions)
-      else
-        frames[""] = activeRegions
-      end
-      for frame, regionDatas in pairs(frames) do
-        local numVisible = min(limit, #regionDatas)
-        local x, y = startX - (numVisible - 1) * stagger * coeff, startY
-        newPositions[frame] = {}
-        for i, regionData in ipairs(regionDatas) do
-          if i <= numVisible then
-            newPositions[frame][regionData] = { x, y, true }
-            x = x + stagger
-            y = y + (regionData.dimensions.height) + space
-          end
+      local numVisible = min(limit, #activeRegions)
+      local x, y = startX - (numVisible - 1) * stagger * coeff, startY
+      for i, regionData in ipairs(activeRegions) do
+        if i <= numVisible then
+          newPositions[i] = { x, y, true }
+          x = x + stagger
+          y = y + (regionData.dimensions.height) + space
         end
       end
     end
@@ -504,24 +458,14 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = staggerCoefficient(data.align, stagger)
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local frames = {}
-      if anchorPerUnitFunc then
-        anchorPerUnitFunc(frames, activeRegions)
-      else
-        frames[""] = activeRegions
-      end
-      for frame, regionDatas in pairs(frames) do
-        local numVisible = min(limit, #regionDatas)
-        local x, y = startX - (numVisible - 1) * stagger * coeff, startY
-        newPositions[frame] = {}
-        for i, regionData in ipairs(regionDatas) do
-          if i <= numVisible then
-            newPositions[frame][regionData] = { x, y, true }
-            x = x + stagger
-            y = y - (regionData.dimensions.height) - space
-          end
+      local numVisible = min(limit, #activeRegions)
+      local x, y = startX - (numVisible - 1) * stagger * coeff, startY
+      for i, regionData in ipairs(activeRegions) do
+        if i <= numVisible then
+          newPositions[i] = { x, y, true }
+          x = x + stagger
+          y = y - (regionData.dimensions.height) - space
         end
       end
     end
@@ -531,30 +475,20 @@ local growers = {
     local space = data.space or 0
     local limit = data.useLimit and data.limit or math.huge
     local midX, midY = 0, 0
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local frames = {}
-      if anchorPerUnitFunc then
-        anchorPerUnitFunc(frames, activeRegions)
-      else
-        frames[""] = activeRegions
+      local numVisible = min(limit, #activeRegions)
+      local totalWidth = (numVisible - 1) * space
+      for i = 1, numVisible do
+        local regionData = activeRegions[i]
+        totalWidth = totalWidth + (regionData.dimensions.width)
       end
-      for frame, regionDatas in pairs(frames) do
-        local numVisible = min(limit, #regionDatas)
-        local totalWidth = (numVisible - 1) * space
-        for i = 1, numVisible do
-          local regionData = regionDatas[i]
-          totalWidth = totalWidth + (regionData.dimensions.width)
-        end
-        local x, y = midX - totalWidth/2, midY - (stagger * (numVisible - 1)/2)
-        newPositions[frame] = {}
-        for i, regionData in ipairs(regionDatas) do
-          if i <= numVisible then
-            x = x + (regionData.dimensions.width) / 2
-            newPositions[frame][regionData] = { x, y, true }
-            x = x + (regionData.dimensions.width) / 2 + space
-            y = y + stagger
-          end
+      local x, y = midX - totalWidth/2, midY - (stagger * (numVisible - 1)/2)
+      for i, regionData in ipairs(activeRegions) do
+        if i <= numVisible then
+          x = x + (regionData.dimensions.width) / 2
+          newPositions[i] = { x, y, true }
+          x = x + (regionData.dimensions.width) / 2 + space
+          y = y + stagger
         end
       end
     end
@@ -564,30 +498,20 @@ local growers = {
     local space = data.space or 0
     local limit = data.useLimit and data.limit or math.huge
     local midX, midY = 0, 0
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local frames = {}
-      if anchorPerUnitFunc then
-        anchorPerUnitFunc(frames, activeRegions)
-      else
-        frames[""] = activeRegions
+      local numVisible = min(limit, #activeRegions)
+      local totalHeight = (numVisible - 1) * space
+      for i = 1, numVisible do
+        local regionData = activeRegions[i]
+        totalHeight = totalHeight + (regionData.dimensions.height)
       end
-      for frame, regionDatas in pairs(frames) do
-        local numVisible = min(limit, #regionDatas)
-        local totalHeight = (numVisible - 1) * space
-        for i = 1, numVisible do
-          local regionData = regionDatas[i]
-          totalHeight = totalHeight + (regionData.dimensions.height)
-        end
-        local x, y = midX - (stagger * (numVisible - 1)/2), midY - totalHeight/2
-        newPositions[frame] = {}
-        for i, regionData in ipairs(regionDatas) do
-          if i <= numVisible then
-            y = y + (regionData.dimensions.height) / 2
-            newPositions[frame][regionData] = { x, y, true }
-            x = x + stagger
-            y = y + (regionData.dimensions.height) / 2 + space
-          end
+      local x, y = midX - (stagger * (numVisible - 1)/2), midY - totalHeight/2
+      for i, regionData in ipairs(activeRegions) do
+        if i <= numVisible then
+          y = y + (regionData.dimensions.height) / 2
+          newPositions[i] = { x, y, true }
+          x = x + stagger
+          y = y + (regionData.dimensions.height) / 2 + space
         end
       end
     end
@@ -600,42 +524,32 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local sAngle = (data.rotation or 0) * math.pi / 180
     local arc = (data.fullCircle and 360 or data.arcLength or 0) * math.pi / 180
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local frames = {}
-      if anchorPerUnitFunc then
-        anchorPerUnitFunc(frames, activeRegions)
+      local numVisible = min(limit, #activeRegions)
+      local r
+      if constantFactor == "RADIUS" then
+        r = radius
       else
-        frames[""] = activeRegions
+        if numVisible <= 1 then
+          r = 0
+        else
+          r = (numVisible * space) / (2 * math.pi)
+        end
       end
-      for frame, regionDatas in pairs(frames) do
-        local numVisible = min(limit, #regionDatas)
-        local r
-        if constantFactor == "RADIUS" then
-          r = radius
-        else
-          if numVisible <= 1 then
-            r = 0
-          else
-            r = (numVisible * space) / (2 * math.pi)
-          end
-        end
-        local theta = sAngle
-        local dAngle
-        if numVisible == 1 then
-          dAngle = 0
-        elseif not data.fullCircle then
-          dAngle = arc / (numVisible - 1)
-        else
-          dAngle = arc / numVisible
-        end
-        newPositions[frame] = {}
-        for i, regionData in ipairs(regionDatas) do
-          if i <= numVisible then
-            local x, y = polarToRect(r, theta)
-            newPositions[frame][regionData] = { x, y, true }
-            theta = theta + dAngle
-          end
+      local theta = sAngle
+      local dAngle
+      if numVisible == 1 then
+        dAngle = 0
+      elseif not data.fullCircle then
+        dAngle = arc / (numVisible - 1)
+      else
+        dAngle = arc / numVisible
+      end
+      for i, regionData in ipairs(activeRegions) do
+        if i <= numVisible then
+          local x, y = polarToRect(r, theta)
+          newPositions[i] = { x, y, true }
+          theta = theta + dAngle
         end
       end
     end
@@ -648,42 +562,32 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local sAngle = (data.rotation or 0) * math.pi / 180
     local arc = (data.fullCircle and 360 or data.arcLength or 0) * math.pi / 180
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local frames = {}
-      if anchorPerUnitFunc then
-        anchorPerUnitFunc(frames, activeRegions)
+      local numVisible = min(limit, #activeRegions)
+      local r
+      if constantFactor == "RADIUS" then
+        r = radius
       else
-        frames[""] = activeRegions
+        if numVisible <= 1 then
+          r = 0
+        else
+          r = (numVisible * space) / (2 * math.pi)
+        end
       end
-      for frame, regionDatas in pairs(frames) do
-        local numVisible = min(limit, #regionDatas)
-        local r
-        if constantFactor == "RADIUS" then
-          r = radius
-        else
-          if numVisible <= 1 then
-            r = 0
-          else
-            r = (numVisible * space) / (2 * math.pi)
-          end
-        end
-        local theta = sAngle
-        local dAngle
-        if numVisible == 1 then
-          dAngle = 0
-        elseif not data.fullCircle then
-          dAngle = arc / (1 - numVisible)
-        else
-          dAngle = arc / -numVisible
-        end
-        newPositions[frame] = {}
-        for i, regionData in ipairs(regionDatas) do
-          if i <= numVisible then
-            local x, y = polarToRect(r, theta)
-            newPositions[frame][regionData] = { x, y, true }
-            theta = theta + dAngle
-          end
+      local theta = sAngle
+      local dAngle
+      if numVisible == 1 then
+        dAngle = 0
+      elseif not data.fullCircle then
+        dAngle = arc / (numVisible - 1)
+      else
+        dAngle = arc / numVisible
+      end
+      for i, regionData in ipairs(activeRegions) do
+        if i <= numVisible then
+          local x, y = polarToRect(r, theta)
+          newPositions[i] = { x, y, true }
+          theta = theta - dAngle
         end
       end
     end
@@ -725,31 +629,21 @@ local growers = {
     if not rowFirst then
       primary, secondary = secondary, primary
     end
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local frames = {}
-      if anchorPerUnitFunc then
-        anchorPerUnitFunc(frames, activeRegions)
-      else
-        frames[""] = activeRegions
-      end
-      for frame, regionDatas in pairs(frames) do
-        local numVisible = min(limit, #regionDatas)
-        primary.current = 0
-        secondary.current = 0
-        secondary.max = 0
-        newPositions[frame] = {}
-        for i, regionData in ipairs(regionDatas) do
-          if i <= numVisible then
-            newPositions[frame][regionData] = { [primary.coord] = primary.current, [secondary.coord] = secondary.current, [3] = true }
-            secondary.max = max(secondary.max, getDimension(regionData, secondary.dim))
-            if i % gridWidth == 0 then
-              primary.current = 0
-              secondary.current = secondary.current + (secondary.space + secondary.max) * secondary.mul
-              secondary.max = 0
-            else
-              primary.current = primary.current + (primary.space + getDimension(regionData, primary.dim)) * primary.mul
-            end
+      local numVisible = min(limit, #activeRegions)
+      primary.current = 0
+      secondary.current = 0
+      secondary.max = 0
+      for i, regionData in ipairs(activeRegions) do
+        if i <= numVisible then
+          newPositions[i] = { [primary.coord] = primary.current, [secondary.coord] = secondary.current, [3] = true }
+          secondary.max = max(secondary.max, getDimension(regionData, secondary.dim))
+          if i % gridWidth == 0 then
+            primary.current = 0
+            secondary.current = secondary.current + (secondary.space + secondary.max) * secondary.mul
+            secondary.max = 0
+          else
+            primary.current = primary.current + (primary.space + getDimension(regionData, primary.dim)) * primary.mul
           end
         end
       end
@@ -775,11 +669,8 @@ local function createGrowFunc(data)
   return grower(data)
 end
 
-local nullErrorHandler = function()
-end
-
 local function SafeGetPos(region, func)
-  local ok, value1, value2 = xpcall(func, nullErrorHandler, region)
+  local ok, value1, value2 = xpcall(func, noop, region)
   if ok then
     return value1, value2
   end
@@ -790,7 +681,7 @@ local function modify(parent, region, data)
   region:SetScale(data.scale and data.scale > 0 and data.scale <= 10 and data.scale or 1)
   WeakAuras.regionPrototype.modify(parent, region, data)
 
-  if data.border and (data.grow ~= "CUSTOM" and not data.useAnchorPerUnit) then
+  if data.border then
     local background = region.background
     background:SetBackdrop({
       edgeFile = data.borderEdge ~= "None" and SharedMedia:Fetch("border", data.borderEdge) or "",
@@ -836,6 +727,9 @@ local function modify(parent, region, data)
     if not self:IsSuspended() then
       if self.needToReload then
         self:ReloadControlledChildren()
+      end
+      if self.needToDistribute then
+        self:RedistributeChildren()
       end
       if self.needToSort then
         self:SortUpdatedChildren()
@@ -901,7 +795,7 @@ local function modify(parent, region, data)
   function region:ReloadControlledChildren()
     -- 'forgets' about regions it controls and starts from scratch. Mostly useful when Add()ing the group
     if not self:IsSuspended() then
-      Private.StartProfileSystem("dynamicgroup")
+      Private.StartProfileSystem("dynamicgroup2")
       Private.StartProfileAura(data.id)
       self.needToReload = false
       self.sortedChildren = {}
@@ -927,7 +821,7 @@ local function modify(parent, region, data)
           end
         end
       end
-      Private.StopProfileSystem("dynamicgroup")
+      Private.StopProfileSystem("dynamicgroup2")
       Private.StopProfileAura(data.id)
       self:SortUpdatedChildren()
     else
@@ -970,7 +864,7 @@ local function modify(parent, region, data)
       tinsert(self.sortedChildren, regionData)
     end
     self.updatedChildren[regionData] = true
-    self:SortUpdatedChildren()
+    self:RedistributeChildren()
   end
 
   function region:RemoveChild(childID, cloneID)
@@ -993,6 +887,20 @@ local function modify(parent, region, data)
     self:SortUpdatedChildren()
   end
 
+  function region:RedistributeChildren()
+    -- redistributes updated children
+    if not self:IsSuspended() then
+      WeakAuras.StartProfileSystem("dynamicgroup2")
+      WeakAuras.StartProfileAura(data.id)
+      self.needToDistribute = false
+      WeakAuras.StopProfileAura(data.id)
+      WeakAuras.StopProfileSystem("dynamicgroup2")
+      self:SortUpdatedChildren()
+    else
+      self.needToDistribute = true
+    end
+  end
+
   region.sortFunc = createSortFunc(data)
 
   function region:SortUpdatedChildren()
@@ -1000,7 +908,7 @@ local function modify(parent, region, data)
     -- Called when the Group is Resume()d
     -- uses sort data to determine the correct spot
     if not self:IsSuspended() then
-      Private.StartProfileSystem("dynamicgroup")
+      Private.StartProfileSystem("dynamicgroup2")
       Private.StartProfileAura(data.id)
       self.needToSort = false
       local i = 1
@@ -1030,7 +938,7 @@ local function modify(parent, region, data)
         end
       end
       self.updatedChildren = {}
-      Private.StopProfileSystem("dynamicgroup")
+      Private.StopProfileSystem("dynamicgroup2")
       Private.StopProfileAura(data.id)
       self:PositionChildren()
     else
@@ -1039,7 +947,6 @@ local function modify(parent, region, data)
   end
 
   region.growFunc = createGrowFunc(data)
-  region.anchorPerUnit = data.useAnchorPerUnit and data.anchorPerUnit
 
   local animate = data.animate
   function region:PositionChildren()
@@ -1082,9 +989,6 @@ local function modify(parent, region, data)
       controlPoint:SetShown(show and frame ~= WeakAuras.HiddenFrames)
       controlPoint:SetWidth(regionData.dimensions.width)
       controlPoint:SetHeight(regionData.dimensions.height)
-      if self.anchorPerUnit == "UNITFRAME" then
-        Private.dyngroup_unitframe_monitor[regionData] = frame
-      end
       if animate then
         Private.CancelAnimation(regionData.controlPoint, true)
         local xPrev = regionData.xOffset or x
@@ -1167,7 +1071,7 @@ local function modify(parent, region, data)
   end
 
   function region:DoPositionChildren()
-    Private.StartProfileSystem("dynamicgroup")
+    Private.StartProfileSystem("dynamicgroup2")
     Private.StartProfileAura(data.id)
 
     local handledRegionData = {}
@@ -1188,9 +1092,6 @@ local function modify(parent, region, data)
       end
       region:DoPositionChildrenPerFrame("", newPositions, handledRegionData)
     else
-      for frame, positions in pairs(newPositions) do
-        region:DoPositionChildrenPerFrame(frame, positions, handledRegionData)
-      end
     end
 
     for index, child in ipairs(self.sortedChildren) do
@@ -1199,7 +1100,7 @@ local function modify(parent, region, data)
       end
     end
 
-    Private.StopProfileSystem("dynamicgroup")
+    Private.StopProfileSystem("dynamicgroup2")
     Private.StopProfileAura(data.id)
     self:Resize()
   end
@@ -1209,8 +1110,7 @@ local function modify(parent, region, data)
     -- Resizes the dynamic group, for background and border purposes
     if not self:IsSuspended() then
       self.needToResize = false
-      -- if self.dynamicAnchor then self:UpdateBorder(); return end
-      Private.StartProfileSystem("dynamicgroup")
+      Private.StartProfileSystem("dynamicgroup2")
       Private.StartProfileAura(data.id)
       local numVisible, minX, maxX, maxY, minY = 0
       for active, regionData in ipairs(self.sortedChildren) do
@@ -1248,7 +1148,7 @@ local function modify(parent, region, data)
       if WeakAuras.IsOptionsOpen() then
         WeakAuras.OptionsFrame().moversizer:ReAnchor()
       end
-      Private.StopProfileSystem("dynamicgroup")
+      Private.StopProfileSystem("dynamicgroup2")
       Private.StopProfileAura(data.id)
     else
       self.needToResize = true
@@ -1260,4 +1160,4 @@ local function modify(parent, region, data)
   WeakAuras.regionPrototype.modifyFinish(parent, region, data)
 end
 
-WeakAuras.RegisterRegionType("dynamicgroup", create, modify, default)
+WeakAuras.RegisterRegionType("dynamicgroup2", create, modify, default)
