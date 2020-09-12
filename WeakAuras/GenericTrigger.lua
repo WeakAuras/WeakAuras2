@@ -21,9 +21,6 @@ Unloads all triggers.
 UnloadDisplays(id)
 Unloads all triggers of the display ids.
 
-ScanAll
-Resets the trigger state for all triggers.
-
 Modernize(data)
 Modernizes all generic triggers in data.
 
@@ -823,12 +820,6 @@ function GenericTrigger.ScanWithFakeEvent(id, fake)
     Private.UpdatedTriggerState(id);
   end
   Private.ActivateAuraEnvironment(nil);
-end
-
-function GenericTrigger.ScanAll()
-  for id, _ in pairs(loaded_auras) do
-    GenericTrigger.ScanWithFakeEvent(id);
-  end
 end
 
 function HandleEvent(frame, event, arg1, arg2, ...)
