@@ -1202,33 +1202,6 @@ function Private.Pause()
   paused = true;
 end
 
-local function ScanAll()
-  Private.PauseAllDynamicGroups();
-
-  for id, region in pairs(regions) do
-    region.region:Collapse();
-  end
-
-  for id, cloneList in pairs(clones) do
-    for cloneId, clone in pairs(cloneList) do
-      clone:Collapse();
-    end
-  end
-
-  Private.ResumeAllDynamicGroups();
-  Private.ReloadAll();
-end
-
-function Private.Resume()
-  paused = false;
-  ScanAll();
-  for _, regionData in pairs(regions) do
-    if regionData.region.Resume then
-      regionData.region:Resume(true)
-    end
-  end
-end
-
 function WeakAuras.Toggle()
   if(paused) then
     Private.Resume();
@@ -1645,9 +1618,31 @@ local function UnloadAll()
   wipe(loaded);
 end
 
-function Private.ReloadAll()
+function Private.Resume()
+  paused = false;
+
+  Private.PauseAllDynamicGroups();
+
+  for id, region in pairs(regions) do
+    region.region:Collapse();
+  end
+
+  for id, cloneList in pairs(clones) do
+    for cloneId, clone in pairs(cloneList) do
+      clone:Collapse();
+    end
+  end
+
+  Private.ResumeAllDynamicGroups();
+
   UnloadAll();
   scanForLoadsImpl();
+
+  for _, regionData in pairs(regions) do
+    if regionData.region.Resume then
+      regionData.region:Resume(true)
+    end
+  end
 end
 
 function Private.LoadDisplays(toLoad, ...)

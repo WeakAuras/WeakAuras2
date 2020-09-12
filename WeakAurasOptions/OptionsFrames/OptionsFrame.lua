@@ -189,7 +189,6 @@ function OptionsPrivate.CreateFrame()
     end
 
     OptionsPrivate.Private.ResumeAllDynamicGroups()
-    OptionsPrivate.Private.ReloadAll()
     OptionsPrivate.Private.Resume()
 
     if OptionsPrivate.Private.mouseFrame then

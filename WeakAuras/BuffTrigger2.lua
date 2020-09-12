@@ -16,9 +16,6 @@ Unloads the aura ids, disabling all buff triggers in the aura.
 UnloadAll()
 Unloads all auras, disabling all buff triggers.
 
-ScanAll()
-Updates all triggers by checking all triggers.
-
 Delete(id)
 Removes all data for aura id.
 
@@ -1676,38 +1673,6 @@ frame:SetScript("OnUpdate", function()
   end
   Private.StopProfileSystem("bufftrigger2")
 end)
-
-function BuffTrigger.ScanAll()
-  local units = {}
-  local time = GetTime()
-
-  for unit in pairs(scanFuncName) do
-    units[unit] = true
-  end
-
-  for unit in pairs(scanFuncSpellId) do
-    units[unit] = true
-  end
-
-  for unit in pairs(scanFuncGeneral) do
-    units[unit] = true
-  end
-
-  for unit in pairs(units) do
-    if unit == "group" then
-      ScanAllGroup(time, matchDataChanged)
-    elseif unit == "boss" then
-      ScanAllBoss(time, matchDataChanged)
-    elseif unit == "nameplate" then
-      local time = GetTime()
-      for i = 1, 40 do
-        ScanGroupUnit(time, matchDataChanged, "nameplate", "nameplate" .. i)
-      end
-    else
-      ScanGroupUnit(time, matchDataChanged, nil, unit)
-    end
-  end
-end
 
 local function UnloadAura(scanFuncName, id)
   for unit, unitData in pairs(scanFuncName) do
