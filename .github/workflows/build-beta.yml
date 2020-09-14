@@ -5,43 +5,43 @@ on:
     branches:
       - shadowlands
     tags:
-      - '**-alpha**'
-      - '**-beta**'
+      - "**-alpha**"
+      - "**-beta**"
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        fetch-depth: 250
-    - name: Install and run Luacheck
-      run: |
-        sudo apt-get install luarocks
-        luarocks install --local luacheck
-        /home/runner/.luarocks/bin/luacheck . --no-color -q
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 500
 
-    - name: Generate Changelog
-      run: ./generate_changelog.sh
+      - name: Install and run Luacheck
+        run: |
+          sudo apt-get install luarocks
+          luarocks install --local luacheck
+          /home/runner/.luarocks/bin/luacheck . --no-color -q
 
-    - name: Update Build Date
-      run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
+      - name: Generate Changelog
+        run: ./generate_changelog.sh
 
-    - name: Create Package
-      run: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash
-      env:
-        GITHUB_OAUTH: ${{ secrets.GITHUB_OAUTH }}
+      - name: Update Build Date
+        run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
 
-    - uses: actions/upload-artifact@v2
-      with:
-        name: WeakAuras-SL
-        path: .release/
+      - name: Create Package
+        uses: BigWigsMods/packager@master
+        env:
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Send status to Discord
-      uses: nebularg/actions-discord-webhook@v1
-      with:
-        webhook_url: ${{ secrets.WEBHOOK_URL }}
-        status: ${{ job.status }}
-      if: failure()
+      - uses: actions/upload-artifact@v2
+        with:
+          name: WeakAuras-SL
+          path: .release/
+
+      - name: Send status to Discord
+        uses: nebularg/actions-discord-webhook@v1
+        with:
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
+          status: ${{ job.status }}
+        if: failure()
