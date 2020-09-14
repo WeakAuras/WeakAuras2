@@ -471,6 +471,7 @@ local function ConstructMoverSizer(parent)
     if not ok then
       return
     end
+    self:Show()
 
     mover.selfPoint, mover.anchor, mover.anchorPoint = selfPoint, anchor, anchorPoint
 
@@ -837,7 +838,12 @@ local function ConstructMoverSizer(parent)
     local region = self.moving.region
     local data = self.moving.data
     if not self.isMoving then
-      self.selfPoint, self.anchor, self.anchorPoint = region:GetPoint(1)
+      local ok, selfPoint, anchor, anchorPoint = pcall(region.GetPoint, region, 1)
+      if not ok then
+        self:Hide()
+        return
+      end
+      self.selfPoint, self.anchor, self.anchorPoint = selfPoint, anchor, anchorPoint
     end
     self.selfPointIcon:ClearAllPoints()
     self.selfPointIcon:SetPoint("CENTER", region, self.selfPoint)
