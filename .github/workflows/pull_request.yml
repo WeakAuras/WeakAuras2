@@ -1,50 +1,48 @@
-name: PR-CI
+name: CI-PR
 
 on: [pull_request]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Install and run Luacheck
-      run: |
-        sudo apt-get install luarocks
-        luarocks install --local luacheck
-        /home/runner/.luarocks/bin/luacheck . --no-color -q
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 500
 
-    - name: Update Build Date
-      run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
+      - name: Install and run Luacheck
+        run: |
+          sudo apt-get install luarocks
+          luarocks install --local luacheck
+          /home/runner/.luarocks/bin/luacheck . --no-color -q
 
-    - name: Create Retail Package
-      run: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -d -z
-      env:
-        CF_API_KEY: ${{ secrets.CF_API_KEY }}
-        GITHUB_OAUTH: ${{ secrets.GITHUB_OAUTH }}
-        WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
+      - name: Update Build Date
+        run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
 
-    - uses: actions/upload-artifact@v2
-      with:
-        name: WeakAuras-PR${{ github.event.number }}
-        path: .release/
+      - name: Create Retail Package
+        uses: BigWigsMods/packager@master
+        with:
+          args: -d -z
 
-    - name: Create Classic Package
-      run: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -d -z -g 1.13.5 -m .pkgmeta-classic
-      env:
-        CF_API_KEY: ${{ secrets.CF_API_KEY }}
-        GITHUB_OAUTH: ${{ secrets.GITHUB_OAUTH }}
-        WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: WeakAuras-PR${{ github.event.number }}
+          path: .release/
 
-    - uses: actions/upload-artifact@v2
-      with:
-        name: WeakAuras-PR${{ github.event.number }}-classic
-        path: .release/
+      - name: Create Classic Package
+        uses: BigWigsMods/packager@master
+        with:
+          args: -d -z -g 1.13.5 -m .pkgmeta-classic
 
-    - name: Send status to Discord
-      uses: nebularg/actions-discord-webhook@v1
-      with:
-        webhook_url: ${{ secrets.WEBHOOK_URL }}
-        status: ${{ job.status }}
-      if: failure()
+      - uses: actions/upload-artifact@v2
+        with:
+          name: WeakAuras-PR${{ github.event.number }}-classic
+          path: .release/
+
+      - name: Send status to Discord
+        uses: nebularg/actions-discord-webhook@v1
+        with:
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
+          status: ${{ job.status }}
+        if: failure()
