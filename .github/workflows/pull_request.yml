@@ -40,7 +40,7 @@ jobs:
           name: WeakAuras-PR${{ github.event.number }}-classic
           path: .release/
 
-      - name: Send status to Discord
+      - name: Send Status to Discord
         uses: nebularg/actions-discord-webhook@v1
         with:
           webhook_url: ${{ secrets.WEBHOOK_URL }}
