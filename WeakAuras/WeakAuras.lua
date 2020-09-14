@@ -7434,7 +7434,18 @@ function WeakAuras.AnchorFrame(data, region, parent)
       region:SetParent(frame);
     end
 
-    region:SetAnchor(data.selfPoint, anchorParent, data.anchorPoint);
+    local anchorPoint = data.anchorPoint
+    if data.parent then
+      if data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE" then
+        anchorPoint = "CENTER"
+      end
+    else
+      if data.anchorFrameType == "MOUSE" then
+        anchorPoint = "CENTER"
+      end
+    end
+
+    region:SetAnchor(data.selfPoint, anchorParent, anchorPoint);
 
     if(data.frameStrata == 1) then
       region:SetFrameStrata(region:GetParent():GetFrameStrata());
