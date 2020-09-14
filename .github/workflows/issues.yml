@@ -10,6 +10,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
+
       - name: "Automatically close issues that don't follow the issue template"
         uses: damccorm/tag-ur-it@master
         with:

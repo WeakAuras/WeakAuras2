@@ -5,51 +5,55 @@ on:
     branches:
       - master
     tags:
-      - '*'
-      - '!**-alpha**'
-      - '!**-beta**' # Revert when SL is out
+      - "*"
+      - "!**-alpha**"
+      - "!**-beta**" # Revert when SL is out
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Install and run Luacheck
-      run: |
-        sudo apt-get install luarocks
-        luarocks install --local luacheck
-        /home/runner/.luarocks/bin/luacheck . --no-color -q
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 500
 
-    - name: Update CurseForge Translations
-      run: ./update_translations.sh
-      env:
-        CF_API_KEY: ${{ secrets.CF_API_KEY }}
+      - name: Install and run Luacheck
+        run: |
+          sudo apt-get install luarocks
+          luarocks install --local luacheck
+          /home/runner/.luarocks/bin/luacheck . --no-color -q
 
-    - name: Generate Changelog
-      run: ./generate_changelog.sh
+      - name: Update CurseForge Translations
+        run: ./update_translations.sh
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
 
-    - name: Update Build Date
-      run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
+      - name: Generate Changelog
+        run: ./generate_changelog.sh
 
-    - name: Create Retail Package
-      run: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash
-      env:
-        CF_API_KEY: ${{ secrets.CF_API_KEY }}
-        GITHUB_OAUTH: ${{ secrets.GITHUB_OAUTH }}
-        WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
+      - name: Update Build Date
+        run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
 
-    - name: Create Classic Package
-      run: curl -s https://raw.githubusercontent.com/BigWigsMods/packager/master/release.sh | bash -s -- -g 1.13.5 -m .pkgmeta-classic
-      env:
-        CF_API_KEY: ${{ secrets.CF_API_KEY }}
-        GITHUB_OAUTH: ${{ secrets.GITHUB_OAUTH }}
-        WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
+      - name: Create Retail Package
+        uses: BigWigsMods/packager@master
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+          WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
 
-    - name: Send status to Discord
-      uses: nebularg/actions-discord-webhook@v1
-      with:
-        webhook_url: ${{ secrets.WEBHOOK_URL }}
-        status: ${{ job.status }}
-      if: failure()
+      - name: Create Classic Package
+        uses: BigWigsMods/packager@master
+        with:
+          args: -g 1.13.5 -m .pkgmeta-classic
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+          WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
+
+      - name: Send status to Discord
+        uses: nebularg/actions-discord-webhook@v1
+        with:
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
+          status: ${{ job.status }}
+        if: failure()
