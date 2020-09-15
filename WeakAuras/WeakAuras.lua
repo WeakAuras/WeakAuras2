@@ -5010,6 +5010,9 @@ do
   local function frame_monitor_callback(event, frame, unit)
     local new_frame
     local update_frame = event == "FRAME_UNIT_UPDATE"
+
+    local dynamicGroupsToUpdate = {}
+
     if type(glow_frame_monitor) == "table" then
       for region, data in pairs(glow_frame_monitor) do
         if region.state and region.state.unit == unit
@@ -5057,12 +5060,15 @@ do
           new_frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
         end
         if new_frame and new_frame ~= data_frame then
-          regionData.controlPoint:ReAnchor(new_frame)
-          regionData.controlPoint:SetShown(regionData.shown and new_frame ~= WeakAuras.HiddenFrames)
-          WeakAuras.dyngroup_unitframe_monitor[regionData] = new_frame
+          dynamicGroupsToUpdate[regionData.parent] = true
         end
       end
     end
+
+    for frame in pairs(dynamicGroupsToUpdate) do
+      frame:DoPositionChildren()
+    end
+
   end
 
   LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_UPDATE", frame_monitor_callback)

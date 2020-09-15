@@ -831,6 +831,7 @@ local function modify(parent, region, data)
       cloneId = cloneID,
       dataIndex = dataIndex,
       controlPoint = controlPoint,
+      parent = region
     }
 
     if childData.regionType == "text" then
