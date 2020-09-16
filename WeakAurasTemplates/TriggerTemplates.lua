@@ -1350,7 +1350,7 @@ function WeakAuras.CreateTemplateView(frame)
                   newView.data.load = CopyTable(item.load);
                 end
                 if (subType.data) then
-                  Mixin(newView.data, subType.data)
+                  WeakAuras.DeepMixin(newView.data, subType.data)
                 end
                 newView:CancelClose();
                 WeakAuras.NewAura(newView.data, newView.data.regionType, newView.targetId);
@@ -1411,7 +1411,7 @@ function WeakAuras.CreateTemplateView(frame)
             newView.data.load = CopyTable(item.load);
           end
           if (subType.data) then
-            Mixin(newView.data, subType.data)
+            WeakAuras.DeepMixin(newView.data, subType.data)
           end
           newView:CancelClose();
           WeakAuras.NewAura(newView.data, newView.data.regionType, newView.targetId);
@@ -1523,7 +1523,7 @@ function WeakAuras.CreateTemplateView(frame)
       newView.data.load.class = CopyTable(WeakAuras.data_stub.load.class);
       newView.data.load.spec = CopyTable(WeakAuras.data_stub.load.spec);
       if (newView.chosenItem.load) then
-        Mixin(newView.data.load, newView.chosenItem.load)
+        WeakAuras.DeepMixin(newView.data.load, newView.chosenItem.load)
       end
     end);
     newViewScroll:AddChild(replaceButton);
@@ -1688,7 +1688,7 @@ function WeakAuras.CreateTemplateView(frame)
         newView.data.load = CopyTable(item.load);
       end
       if (subType.data) then
-        Mixin(newView.data, subType.data)
+        WeakAuras.DeepMixin(newView.data, subType.data)
       end
       -- create aura
       WeakAuras.NewAura(newView.data, newView.data.regionType, newView.targetId);
