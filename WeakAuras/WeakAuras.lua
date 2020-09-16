@@ -1944,6 +1944,21 @@ function Private.Convert(data, newType)
   end
 end
 
+-- The default mixin doesn't recurse, this does
+function WeakAuras.DeepMixin(dest, source)
+  local function recurse(source, dest)
+    for i,v in pairs(source) do
+      if(type(v) == "table") then
+        dest[i] = type(dest[i]) == "table" and dest[i] or {};
+        recurse(v, dest[i]);
+      else
+        dest[i] = v;
+      end
+    end
+  end
+  recurse(source, dest);
+end
+
 function WeakAuras.RegisterAddon(addon, displayName, description, icon)
   if(addons[addon]) then
     addons[addon].displayName = displayName;

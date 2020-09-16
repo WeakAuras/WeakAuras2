@@ -1308,9 +1308,9 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
   end
   local new_id = WeakAuras.FindUnusedId("New")
   local data = {id = new_id, regionType = regionType, uid = WeakAuras.GenerateUniqueID()}
-  Mixin(data, WeakAuras.data_stub);
+  WeakAuras.DeepMixin(data, WeakAuras.data_stub);
   if (sourceData) then
-    Mixin(data, sourceData)
+    WeakAuras.DeepMixin(data, sourceData);
   end
   data.internalVersion = WeakAuras.InternalVersion();
   WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default);
