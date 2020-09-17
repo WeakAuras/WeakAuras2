@@ -2627,7 +2627,7 @@ Private.event_prototypes = {
       {
         name = "name",
         hidden = true,
-        init = "select(11, GetAlternatePowerInfoByID(UnitPowerBarID(unit)))",
+        init = "GetUnitPowerBarStrings(unit)",
         store = true,
         test = "true"
       },
@@ -2666,7 +2666,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "GetAlternatePowerInfoByID(UnitPowerBarID(unit))",
+        init = "GetUnitPowerBarTextureInfo(unit, 1)",
         store = true,
         test = "true"
       },
