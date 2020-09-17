@@ -21,7 +21,7 @@ local function createOptions(parentData, data, index, subIndex)
       end
     end,
     __duplicate = function()
-      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.DuplicateSubRegion, index, "subtext")) then
+      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.DuplicateSubRegion, index, "subborder")) then
         WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
