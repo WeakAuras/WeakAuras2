@@ -83,6 +83,7 @@ local timer = WeakAuras.timer;
 local events = {}
 local loaded_events = {}
 local loaded_unit_events = {};
+local loaded_periodic_updates = {}; -- keyed by uid
 local loaded_auras = {}; -- id to bool map
 local timers = WeakAuras.timers;
 
@@ -812,6 +813,9 @@ function GenericTrigger.ScanWithFakeEvent(id, fake)
             updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, event, unit) or updateTriggerState
           end
         end
+        if event.periodic_update then
+          updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, "PERIODIC_UPDATE") or updateTriggerState
+        end
       end
     end
   end
@@ -868,15 +872,96 @@ function HandleUnitEvent(frame, event, unit, ...)
   Private.StopProfileSystem("generictrigger " .. event .. " " .. unit);
 end
 
+-- Periodic updates
+
+local function PeriodicStopCallback(data)
+  if data.periodic_context then
+    data.periodic_context.cancelled = true
+  end
+  data.periodic_context = nil
+end
+
+local function PeriodicStartCallback(uid, triggernum, data)
+  -- tolerance is the maximum random delay for staggering updates
+  -- default will be +/- 5% of interval but no more than 50ms
+  local meanInterval = data.periodic_update.interval
+  local tolerance = data.periodic_update.tolerance or min(0.05, 0.05 * data.periodic_update.interval)
+  local delayMin = meanInterval - tolerance
+  local delayRange = 2 * tolerance
+
+  local WeakAuras, Private, C_TimerAfter, random = WeakAuras, Private, C_Timer.After, random
+  local periodic_context = {cancelled = false}
+
+  periodic_context.callback = function()
+    Private.StartProfileSystem("generictrigger PERIODIC_UPDATE")
+    if periodic_context.cancelled then
+      Private.StopProfileSystem("generictrigger PERIODIC_UPDATE")
+      return
+    end
+    local delay
+    if WeakAuras.IsPaused() then
+      -- we will probably get cancelled when unpaused but let's keep going anyways
+      delay = 0.9 + 0.2 * random()
+    else
+      -- data and id should always exist if we weren't cancelled
+      local id = Private.GetDataByUID(uid).id
+      Private.StartProfileAura(id)
+      Private.ActivateAuraEnvironment(id)
+      local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
+      if RunTriggerFunc(allStates, data, id, triggernum, "PERIODIC_UPDATE") then
+        Private.UpdatedTriggerState(id)
+      end
+      Private.StopProfileAura(id)
+      Private.ActivateAuraEnvironment(nil)
+      delay = delayMin + delayRange * random()
+    end
+    -- skip 2nd cancelled check (we shouldn't be getting cancelled mid-trigger)
+    C_TimerAfter(delay, periodic_context.callback)
+    Private.StopProfileSystem("generictrigger PERIODIC_UPDATE")
+  end
+
+  PeriodicStopCallback(data) -- just in case old callback wasn't unloaded
+  data.periodic_context = periodic_context
+
+  local delay = delayMin + delayRange * random()
+  C_TimerAfter(delay, periodic_context.callback)
+end
+
+local function PeriodicLoadTrigger(uid, triggernum, data)
+  loaded_periodic_updates[uid] = loaded_periodic_updates[uid] or {}
+  loaded_periodic_updates[uid][triggernum] = data
+  PeriodicStartCallback(uid, triggernum, data)
+end
+
+local function PeriodicUnloadAura(uid)
+  if loaded_periodic_updates[uid] then
+    for triggernum, data in pairs(loaded_periodic_updates[uid]) do
+      PeriodicStopCallback(data)
+    end
+    loaded_periodic_updates[uid] = nil
+  end
+end
+
+local function PeriodicUnloadAll()
+  for uid, triggers in pairs(loaded_periodic_updates) do
+    for triggernum, data in pairs(triggers) do
+      PeriodicStopCallback(data)
+    end
+  end
+  wipe(loaded_periodic_updates)
+end
+
 function GenericTrigger.UnloadAll()
   wipe(loaded_auras);
   wipe(loaded_events);
   wipe(loaded_unit_events);
+  PeriodicUnloadAll()
   Private.UnregisterAllEveryFrameUpdate();
 end
 
 function GenericTrigger.UnloadDisplays(toUnload)
   for id in pairs(toUnload) do
+    local uid = WeakAuras.GetData(id).uid
     loaded_auras[id] = false;
     for eventname, events in pairs(loaded_events) do
       if(eventname == "COMBAT_LOG_EVENT_UNFILTERED") then
@@ -892,6 +977,7 @@ function GenericTrigger.UnloadDisplays(toUnload)
         auras[id] = nil;
       end
     end
+    PeriodicUnloadAura(uid)
     Private.UnregisterEveryFrameUpdate(id);
   end
 end
@@ -972,6 +1058,7 @@ local function MultiUnitLoop(Func, unit, ...)
 end
 
 function LoadEvent(id, triggernum, data)
+  local uid = WeakAuras.GetData(id).uid
   if data.events then
     for index, event in pairs(data.events) do
       loaded_events[event] = loaded_events[event] or {};
@@ -1008,6 +1095,9 @@ function LoadEvent(id, triggernum, data)
         )
       end
     end
+  end
+  if data.periodic_update then
+    PeriodicLoadTrigger(uid, triggernum, data)
   end
 
   if (data.loadFunc) then
@@ -1126,6 +1216,7 @@ function GenericTrigger.Add(data, region)
         local internal_events = {};
         local trigger_unit_events = {};
         local trigger_subevents = {};
+        local trigger_periodic_update = nil;
         local force_events = false;
         local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc, loadFunc;
         local tsuConditionVariables;
@@ -1283,15 +1374,18 @@ function GenericTrigger.Add(data, region)
             for index, event in pairs(rawEvents) do
               -- custom events in the form of event:unit1:unit2:unitX are registered with RegisterUnitEvent
               local trueEvent
+              local i = 0
               local hasParam = false
               local isCLEU = false
               local isUnitEvent = false
-              for i in event:gmatch("[^:]+") do
+              local isPeriodic = false
+              for token in event:gmatch("[^:]+") do
+                i = i + 1
                 if not trueEvent then
-                  trueEvent = string.upper(i)
+                  trueEvent = string.upper(token)
                   isCLEU = trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED"
                 elseif isCLEU then
-                  local subevent = string.upper(i)
+                  local subevent = string.upper(token)
                   if Private.IsCLEUSubevent(subevent) then
                     tinsert(trigger_subevents, subevent)
                     hasParam = true
@@ -1302,8 +1396,18 @@ function GenericTrigger.Add(data, region)
                       trigger_unit_events[unit] = trigger_unit_events[unit] or {}
                       tinsert(trigger_unit_events[unit], trueEvent)
                       isUnitEvent = true
-                    end, i
+                    end, token
                   )
+                elseif trueEvent == "PERIODIC_UPDATE" then
+                  if i == 2 then
+                    local interval = tonumber(token)
+                    if interval then
+                      isPeriodic = true
+                      trigger_periodic_update = {interval = interval}
+                    end
+                  elseif i == 3 and isPeriodic then
+                    trigger_periodic_update.tolerance = tonumber(token)
+                  end
                 end
               end
               if isCLEU then
@@ -1316,7 +1420,7 @@ function GenericTrigger.Add(data, region)
                   -- that are already in place. Replacing all those checks would be a pain in the ass.
                   tinsert(trigger_events, "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM")
                 end
-              elseif isUnitEvent then
+              elseif isUnitEvent or isPeriodic then
                 -- not added to trigger_events
               else
                 tinsert(trigger_events, event)
@@ -1360,6 +1464,7 @@ function GenericTrigger.Add(data, region)
           internal_events = internal_events,
           force_events = force_events,
           unit_events = trigger_unit_events,
+          periodic_update = trigger_periodic_update,
           inverse = trigger.use_inverse,
           subevents = trigger_subevents,
           unevent = trigger.unevent,
