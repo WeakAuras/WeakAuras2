@@ -2673,7 +2673,7 @@ local function pAdd(data, simpleChange)
 
   if simpleChange then
     db.displays[id] = data
-    Private.SetRegion(data)
+    WeakAuras.SetRegion(data)
     Private.UpdatedTriggerState(id)
   else
     if (data.controlledChildren) then
@@ -2682,7 +2682,7 @@ local function pAdd(data, simpleChange)
         Private.ClearAuraEnvironment(data.parent);
       end
       db.displays[id] = data;
-      Private.SetRegion(data);
+      WeakAuras.SetRegion(data);
     else
       local visible
       if (WeakAuras.IsOptionsOpen()) then
@@ -2748,7 +2748,7 @@ local function pAdd(data, simpleChange)
         timers[id] = nil;
       end
 
-      local region = Private.SetRegion(data);
+      local region = WeakAuras.SetRegion(data);
 
       triggerState[id] = {
         disjunctive = data.triggers.disjunctive or "all",
@@ -2787,10 +2787,10 @@ function WeakAuras.Add(data, takeSnapshot, simpleChange)
   end
 end
 
-function Private.SetRegion(data, cloneId)
+function WeakAuras.SetRegion(data, cloneId)
   local regionType = data.regionType;
   if not(regionType) then
-    error("Improper arguments to Private.SetRegion - regionType not defined");
+    error("Improper arguments to WeakAuras.SetRegion - regionType not defined");
   else
     if(not regionTypes[regionType]) then
       regionType = "fallback";
@@ -2799,7 +2799,7 @@ function Private.SetRegion(data, cloneId)
 
     local id = data.id;
     if not(id) then
-      error("Improper arguments to Private.SetRegion - id not defined");
+      error("Improper arguments to WeakAuras.SetRegion - id not defined");
     else
       local region;
       if(cloneId) then
@@ -2887,7 +2887,7 @@ local function EnsureClone(id, cloneId)
   clones[id] = clones[id] or {};
   if not(clones[id][cloneId]) then
     local data = WeakAuras.GetData(id);
-    Private.SetRegion(data, cloneId);
+    WeakAuras.SetRegion(data, cloneId);
     clones[id][cloneId].justCreated = true;
   end
   return clones[id][cloneId];
