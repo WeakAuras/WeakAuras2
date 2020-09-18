@@ -671,7 +671,7 @@ local function RegisterForFrameTick(region)
 
   regionsForFrameTick[region] = true
   if not frameForFrameTick:GetScript("OnUpdate") then
-    frameForFrameTick:SetScript("OnUpdate", WeakAuras.FrameTick);
+    frameForFrameTick:SetScript("OnUpdate", FrameTick);
   end
 end
 
