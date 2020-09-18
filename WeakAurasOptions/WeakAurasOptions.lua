@@ -723,8 +723,9 @@ function WeakAuras.ShowOptions(msg)
     frame.codereview:Close();
   end
 
-  -- TODO check if it should be shown
-  frame:ShowTip()
+  if firstLoad then
+    frame:ShowTip()
+  end
 end
 
 function OptionsPrivate.UpdateOptions()
