@@ -823,7 +823,7 @@ Private.text_check_types = {
 }
 
 Private.check_types = {
-  update = L["Every Frame"],
+  update = L["Every Frame (High CPU usage)"],
   event = L["Event(s)"]
 }
 
