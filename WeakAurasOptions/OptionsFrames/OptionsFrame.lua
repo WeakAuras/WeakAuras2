@@ -293,9 +293,6 @@ function OptionsPrivate.CreateFrame()
       self.bottomLeftResizer:Hide()
       self.bottomRightResizer:Hide()
     else
-      if self.tipFrameIsVisible then
-        self.tipFrame.frame:Show()
-      end
       self.bottomLeftResizer:Show()
       self.bottomRightResizer:Show()
       if self.window == "default" then
