@@ -6,7 +6,7 @@ local L = WeakAuras.L;
 
 -- Default settings
 local default = {
-  icon = true,
+  icon = false,
   desaturate = false,
   auto = true,
   texture = "Blizzard",
