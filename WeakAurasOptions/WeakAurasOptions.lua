@@ -229,6 +229,9 @@ function OptionsPrivate.MultipleDisplayTooltipMenu()
           id = WeakAuras.FindUnusedId(tempGroup.controlledChildren[1].." Group"),
           regionType = "group",
         };
+
+        WeakAuras.DeepMixin(data, WeakAuras.data_stub)
+        data.internalVersion = WeakAuras.InternalVersion()
         WeakAuras.Add(data);
         WeakAuras.NewDisplayButton(data);
 
@@ -263,6 +266,8 @@ function OptionsPrivate.MultipleDisplayTooltipMenu()
           regionType = "dynamicgroup",
         };
 
+        WeakAuras.DeepMixin(data, WeakAuras.data_stub)
+        data.internalVersion = WeakAuras.InternalVersion()
         WeakAuras.Add(data);
         WeakAuras.NewDisplayButton(data);
 
