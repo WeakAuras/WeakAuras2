@@ -97,6 +97,9 @@ local function GetGlobalOptions(data)
   }
 end
 
+local collapsedId = {}
+local maxTriggerNumForExpand = 0
+
 local function AddOptions(allOptions, data)
   allOptions = union(allOptions, GetGlobalOptions(data))
 
@@ -114,6 +117,35 @@ local function AddOptions(allOptions, data)
       })
     end
   end
+
+  triggerOptions["addTriggerOption"] = {
+    __title = L["Add Trigger"],
+    __order = 5000,
+    __withoutheader = true,
+    __topLine = true,
+    __collapsed = false,
+    addTrigger = {
+      type = "execute",
+      width = WeakAuras.normalWidth,
+      name = L["Add Trigger"],
+      order = 1,
+      func = function()
+        tinsert(data.triggers,
+          {
+            trigger =
+            {
+              type = "aura2"
+            },
+            untrigger = {
+            }
+          })
+        WeakAuras.Add(data)
+        OptionsPrivate.SetCollapsed(collapsedId, "trigger", #data.triggers, false)
+        maxTriggerNumForExpand = max(maxTriggerNumForExpand, #data.triggers)
+        WeakAuras.ClearAndUpdateOptions(data.id)
+      end
+    }
+  }
 
   return union(allOptions, triggerOptions)
 end
@@ -222,21 +254,26 @@ local function moveTriggerDownImpl(data, i)
   return true;
 end
 
+function OptionsPrivate.ClearTriggerExpandState()
+  for i = 1, maxTriggerNumForExpand do
+    OptionsPrivate.SetCollapsed(collapsedId, "trigger", i, nil)
+  end
+  maxTriggerNumForExpand = 0
+end
+
 function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
   options.__title = L["Trigger %s"]:format(triggernum)
   options.__order = triggernum * 10
-  options.__add = function()
-    tinsert(data.triggers,
-      {
-        trigger =
-        {
-          type = "aura2"
-        },
-        untrigger = {
-        }
-      })
-    WeakAuras.Add(data)
-    WeakAuras.ClearAndUpdateOptions(data.id)
+  options.__collapsed = #data.triggers > 1
+  options.__isCollapsed = function()
+    return OptionsPrivate.IsCollapsed(collapsedId, "trigger", triggernum, #data.triggers > 1)
+  end
+  options.__setCollapsed = function(info, button, secondCall)
+    if not secondCall then
+      local isCollapsed = OptionsPrivate.IsCollapsed(collapsedId, "trigger", triggernum, #data.triggers > 1)
+      OptionsPrivate.SetCollapsed(collapsedId, "trigger", triggernum, not isCollapsed)
+      maxTriggerNumForExpand = max(maxTriggerNumForExpand, triggernum)
+    end
   end
   options.__up =
   {
@@ -246,6 +283,7 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
     func = function()
       if (moveTriggerDownImpl(data, triggernum - 1)) then
         WeakAuras.Add(data);
+        OptionsPrivate.MoveCollapseDataUp(collapsedId, "trigger", {triggernum})
         WeakAuras.ClearAndUpdateOptions(data.id);
       end
     end
@@ -258,6 +296,7 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
     func = function()
       if (moveTriggerDownImpl(data, triggernum)) then
         WeakAuras.Add(data);
+        OptionsPrivate.MoveCollapseDataDown(collapsedId, "trigger", {triggernum})
         WeakAuras.ClearAndUpdateOptions(data.id);
       end
     end
@@ -282,6 +321,7 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
             tremove(data.triggers, triggernum)
             DeleteConditionsForTrigger(data, triggernum)
             WeakAuras.Add(data)
+            OptionsPrivate.RemoveCollapsed(collapsedId, "trigger", {triggernum})
             WeakAuras.ClearAndUpdateOptions(data.id)
             WeakAuras.FillOptions()
           end,
