@@ -120,19 +120,22 @@ local function ConstructIconPicker(frame)
   iconLabel:SetPoint("RIGHT", input, "LEFT", -50, 0);
 
   function group.Pick(self, texturePath)
-    if(not self.groupIcon and self.data.controlledChildren) then
-      for index, childId in pairs(self.data.controlledChildren) do
+    local valueToPath = OptionsPrivate.Private.ValueToPath
+    if(not self.groupIcon and self.baseObject.controlledChildren) then
+      for index, childId in pairs(self.baseObject.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
-          childData[self.field] = texturePath;
-          WeakAuras.Add(childData);
+          valueToPath(childData, self.paths[childId], texturePath)
+          WeakAuras.Add(childData)
+          WeakAuras.ClearAndUpdateOptions(childData.id)
           WeakAuras.UpdateThumbnail(childData);
         end
       end
     else
-      self.data[self.field] = texturePath;
-      WeakAuras.Add(self.data);
-      WeakAuras.UpdateThumbnail(self.data);
+      valueToPath(self.baseObject, self.paths[self.baseObject.id], texturePath)
+      WeakAuras.Add(self.baseObject)
+      WeakAuras.ClearAndUpdateOptions(self.baseObject.id)
+      WeakAuras.UpdateThumbnail(self.baseObject)
     end
     local success = icon:SetTexture(texturePath) and texturePath;
     if(success) then
@@ -142,20 +145,23 @@ local function ConstructIconPicker(frame)
     end
   end
 
-  function group.Open(self, data, field, groupIcon)
-    self.data = data;
-    self.field = field;
+  function group.Open(self, baseObject, paths, groupIcon)
+    local valueFromPath = OptionsPrivate.Private.ValueFromPath
+    self.baseObject = baseObject
+    self.paths = paths
     self.groupIcon = groupIcon
-    if(not groupIcon and data.controlledChildren) then
+    if(not groupIcon and baseObject.controlledChildren) then
       self.givenPath = {};
-      for index, childId in pairs(data.controlledChildren) do
+      for index, childId in pairs(baseObject.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
-          self.givenPath[childId] = childData[field];
+          local value = valueFromPath(childData, paths[childId])
+          self.givenPath[childId] = value;
         end
       end
     else
-      self.givenPath = self.data[self.field];
+      local value = valueFromPath(self.baseObject, paths[self.baseObject.id])
+      self.givenPath = value
     end
     -- group:Pick(self.givenPath);
     frame.window = "icon";
@@ -170,17 +176,24 @@ local function ConstructIconPicker(frame)
   end
 
   function group.CancelClose()
-    if(not group.groupIcon and group.data.controlledChildren) then
-      for index, childId in pairs(group.data.controlledChildren) do
+    local valueToPath = OptionsPrivate.Private.ValueToPath
+    if(not group.groupIcon and group.baseObject.controlledChildren) then
+      for index, childId in pairs(group.baseObject.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
-          childData[group.field] = group.givenPath[childId] or childData[group.field];
-          WeakAuras.Add(childData);
-          WeakAuras.UpdateThumbnail(childData);
+          if (group.givenPath[childId]) then
+            valueToPath(childData, group.paths[childId], group.givenPath[childId])
+            WeakAuras.Add(childData);
+            WeakAuras.ClearAndUpdateOptions(childData.id)
+            WeakAuras.UpdateThumbnail(childData);
+          end
         end
       end
     else
-      group:Pick(group.givenPath);
+      valueToPath(group.baseObject, group.paths[group.baseObject.id], group.givenPath)
+      WeakAuras.Add(group.baseObject)
+      WeakAuras.ClearAndUpdateOptions(group.baseObject.id)
+      WeakAuras.UpdateThumbnail(group.baseObject)
     end
     group.Close();
   end

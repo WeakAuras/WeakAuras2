@@ -3320,7 +3320,6 @@ local function wrapTriggerSystemFunction(functionName, mode)
 end
 
 Private.CanHaveDuration = wrapTriggerSystemFunction("CanHaveDuration", "firstValue");
-Private.CanHaveAuto = wrapTriggerSystemFunction("CanHaveAuto", "or");
 Private.CanHaveClones = wrapTriggerSystemFunction("CanHaveClones", "or");
 Private.CanHaveTooltip = wrapTriggerSystemFunction("CanHaveTooltip", "or");
 -- This has to be in WeakAuras for now, because GetNameAndIcon can be called from the options
@@ -5199,4 +5198,16 @@ end
 
 function WeakAuras.IsAuraLoaded(id)
   return Private.loaded[id]
+end
+
+function Private.IconSources(data)
+  local values = {
+    [-1] = L["Dynamic Information"],
+    [0] = L["Fallback Icon"],
+  }
+
+  for i = 1, #data.triggers do
+    values[i] = string.format(L["Trigger %i"], i)
+  end
+  return values
 end

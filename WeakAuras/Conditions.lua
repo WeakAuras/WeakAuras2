@@ -43,7 +43,19 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
   elseif(vType == "number") then
     return value and tostring(value) or "0";
   elseif (vType == "list") then
-    return type(value) == "string" and string.format("%q", value) or "nil";
+    if type(value) == "string" then
+      return string.format("%q", value)
+    elseif type(value) == "number" then
+      return tostring(value)
+    end
+    return "nil"
+  elseif (vType == "icon") then
+    if type(value) == "string" then
+      return string.format("%q", value)
+    elseif type(value) == "number" then
+      return tostring(value)
+    end
+    return "nil"
   elseif(vType == "color") then
     if (value and type(value) == "table") then
       return string.format("{%s, %s, %s, %s}", tostring(value[1]), tostring(value[2]), tostring(value[3]), tostring(value[4]));
@@ -97,7 +109,7 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
 end
 
 local function formatValueForCall(type, property)
-  if (type == "bool" or type == "number" or type == "list") then
+  if (type == "bool" or type == "number" or type == "list" or type == "icon") then
     return "propertyChanges['" .. property .. "']";
   elseif (type == "color") then
     local pcp = "propertyChanges['" .. property .. "']";

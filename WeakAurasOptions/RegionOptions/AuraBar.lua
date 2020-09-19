@@ -127,48 +127,13 @@ local function createOptions(id, data)
       name = L["Show Icon"],
       order = 40.2,
     },
-    auto = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Auto"],
-      desc = L["Choose whether the displayed icon is automatic or defined manually"],
-      order = 40.3,
-      disabled = function() return not OptionsPrivate.Private.CanHaveAuto(data); end,
-      get = function() return OptionsPrivate.Private.CanHaveAuto(data) and data.auto end,
-      hidden = function() return not data.icon end,
-    },
-    displayIcon = {
-      type = "input",
-      width = WeakAuras.normalWidth,
-      name = L["Display Icon"],
-      hidden = function() return OptionsPrivate.Private.CanHaveAuto(data) and data.auto or not data.icon; end,
-      disabled = function() return not data.icon end,
-      order = 40.4,
-      get = function()
-        return data.displayIcon and tostring(data.displayIcon) or "";
-      end,
-      set = function(info, v)
-        data.displayIcon = v;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
-      end
-    },
-    chooseIcon = {
-      type = "execute",
-      width = WeakAuras.normalWidth,
-      name = L["Choose"],
-      hidden = function() return OptionsPrivate.Private.CanHaveAuto(data) and data.auto or not data.icon; end,
-      disabled = function() return not data.icon end,
-      order = 40.5,
-      func = function() OptionsPrivate.OpenIconPicker(data, "displayIcon"); end
-    },
     icon_side = {
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Icon Position"],
       values = OptionsPrivate.Private.icon_side_types,
       hidden = function() return data.orientation:find("VERTICAL") or not data.icon end,
-      order = 40.6,
+      order = 40.3,
     },
     icon_side2 = {
       type = "select",
@@ -176,7 +141,7 @@ local function createOptions(id, data)
       name = L["Icon Position"],
       values = OptionsPrivate.Private.rotated_icon_side_types,
       hidden = function() return data.orientation:find("HORIZONTAL") or not data.icon end,
-      order = 40.7,
+      order = 40.3,
       get = function()
         return data.icon_side;
       end,
@@ -185,6 +150,54 @@ local function createOptions(id, data)
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
       end
+    },
+    iconSource = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Source"],
+      order = 40.4,
+      values = OptionsPrivate.Private.IconSources(data),
+      hidden = function() return not data.icon end,
+    },
+    displayIcon = {
+      type = "input",
+      width = WeakAuras.normalWidth - 0.15,
+      name = L["Fallback"],
+      disabled = function() return not data.icon end,
+      order = 40.5,
+      get = function()
+        return data.displayIcon and tostring(data.displayIcon) or "";
+      end,
+      set = function(info, v)
+        data.displayIcon = v;
+        WeakAuras.Add(data);
+        WeakAuras.UpdateThumbnail(data);
+      end,
+      hidden = function() return not data.icon end,
+    },
+    chooseIcon = {
+      type = "execute",
+      width = 0.15,
+      name = L["Choose"],
+      disabled = function() return not data.icon end,
+      order = 40.6,
+      func = function()
+        local path = {"displayIcon"}
+        local paths = {}
+        if data.controlledChildren then
+          for i, childId in pairs(data.controlledChildren) do
+            paths[childId] = path
+          end
+        else
+          paths[data.id] = path
+        end
+        OptionsPrivate.OpenIconPicker(data, paths)
+      end,
+      imageWidth = 24,
+      imageHeight = 24,
+      control = "WeakAurasIcon",
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+      hidden = function() return not data.icon end,
     },
     desaturate = {
       type = "toggle",
@@ -227,32 +240,15 @@ local function createOptions(id, data)
       type = "input",
       name = L["Spark Texture"],
       order = 44,
-      width = WeakAuras.doubleWidth,
-      disabled = function() return not data.spark end,
-      hidden = function() return not data.spark end,
-    },
-    sparkDesaturate = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Desaturate"],
-      order = 44.1,
-      disabled = function() return not data.spark end,
-      hidden = function() return not data.spark end,
-    },
-    spaceSpark = {
-      type = "execute",
-      name = "",
-      width = WeakAuras.halfWidth,
-      order = 44.2,
-      image = function() return "", 0, 0 end,
+      width = WeakAuras.doubleWidth - 0.15,
       disabled = function() return not data.spark end,
       hidden = function() return not data.spark end,
     },
     sparkChooseTexture = {
       type = "execute",
       name = L["Choose"],
-      width = WeakAuras.halfWidth,
-      order = 44.3,
+      width = 0.15,
+      order = 44.1,
       func = function()
         OptionsPrivate.OpenTexturePicker(data, {}, {
           texture = "sparkTexture",
@@ -262,6 +258,27 @@ local function createOptions(id, data)
           blendMode = "sparkBlendMode"
         }, OptionsPrivate.Private.texture_types)
       end,
+      disabled = function() return not data.spark end,
+      hidden = function() return not data.spark end,
+      imageWidth = 24,
+      imageHeight = 24,
+      control = "WeakAurasIcon",
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+    },
+    sparkDesaturate = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Desaturate"],
+      order = 44.2,
+      disabled = function() return not data.spark end,
+      hidden = function() return not data.spark end,
+    },
+    spaceSpark = {
+      type = "execute",
+      name = "",
+      width = WeakAuras.normalWidth,
+      order = 44.3,
+      image = function() return "", 0, 0 end,
       disabled = function() return not data.spark end,
       hidden = function() return not data.spark end,
     },

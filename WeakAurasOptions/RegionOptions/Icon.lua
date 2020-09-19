@@ -20,20 +20,24 @@ local function createOptions(id, data)
       hasAlpha = true,
       order = 1
     },
-    auto = {
+    desaturate = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Automatic Icon"],
+      name = L["Desaturate"],
       order = 2,
-      disabled = function() return not OptionsPrivate.Private.CanHaveAuto(data); end,
-      get = function() return OptionsPrivate.Private.CanHaveAuto(data) and data.auto; end
+    },
+    iconSource = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Icon Source"],
+      order = 3,
+      values = OptionsPrivate.Private.IconSources(data)
     },
     displayIcon = {
       type = "input",
-      width = WeakAuras.normalWidth,
-      name = L["Display Icon"],
-      hidden = function() return OptionsPrivate.Private.CanHaveAuto(data) and data.auto; end,
-      order = 3,
+      width = WeakAuras.normalWidth - 0.15,
+      name = L["Fallback Icon"],
+      order = 4,
       get = function()
         return data.displayIcon and tostring(data.displayIcon) or "";
       end,
@@ -45,17 +49,25 @@ local function createOptions(id, data)
     },
     chooseIcon = {
       type = "execute",
-      width = WeakAuras.normalWidth,
+      width = 0.15,
       name = L["Choose"],
-      hidden = function() return OptionsPrivate.Private.CanHaveAuto(data) and data.auto; end,
-      order = 4,
-      func = function() OptionsPrivate.OpenIconPicker(data, "displayIcon"); end
-    },
-    desaturate = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Desaturate"],
       order = 5,
+      func = function()
+        local path = {"displayIcon"}
+        local paths = {}
+        if data.controlledChildren then
+          for i, childId in pairs(data.controlledChildren) do
+            paths[childId] = path
+          end
+        else
+          paths[data.id] = path
+        end
+        OptionsPrivate.OpenIconPicker(data, paths)
+      end,
+      imageWidth = 24,
+      imageHeight = 24,
+      control = "WeakAurasIcon",
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
     },
     useTooltip = {
       type = "toggle",
