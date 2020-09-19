@@ -759,7 +759,7 @@ local function subCreateOptions(parentData, data, index, subIndex)
         WeakAuras.ClearAndUpdateOptions(parentData.id, parentData)
       end
     end,
-    __nooptions = true
+    __notcollapsable = true
   }
   return options
 end
