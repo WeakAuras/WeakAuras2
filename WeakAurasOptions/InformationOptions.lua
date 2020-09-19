@@ -144,7 +144,7 @@ function OptionsPrivate.GetInformationOptions(data)
     end
   end
 
-  -- Show warnings onyl for single selection for now
+  -- Show warnings only for single selection for now
   if not isGroup then
     local icon, title, message = OptionsPrivate.Private.AuraWarnings.FormatWarnings(data.uid)
     if title and message then
@@ -166,6 +166,62 @@ function OptionsPrivate.GetInformationOptions(data)
       order = order + 1
     end
   end
+
+  -- Compability Options
+  args.compabilityTitle = {
+    type = "header",
+    name = L["Compability Options"],
+    width = WeakAuras.doubleWidth,
+    order = order,
+  }
+  order = order + 1
+
+  local sameIgnoreOptionsEvents = true
+  local commonIgnoreOptionsEvents
+  local ignoreOptionsEventDesc = ""
+  if data.controlledChildren then
+    for _, childId in ipairs(data.controlledChildren) do
+      local childData = WeakAuras.GetData(childId)
+      ignoreOptionsEventDesc = ignoreOptionsEventDesc .. "|cFFE0E000"..childData.id..": |r".. (childData.ignoreOptionsEventErrors and "true" or "false") .. "\n"
+      if commonIgnoreOptionsEvents == nil then
+        commonIgnoreOptionsEvents = childData.ignoreOptionsEventErrors ~= nil and childData.ignoreOptionsEventErrors or false
+      elseif childData.ignoreOptionsEventErrors ~= commonIgnoreOptionsEvents then
+        sameIgnoreOptionsEvents = false
+      end
+    end
+  end
+
+  args.ignoreOptionsEventErrors = {
+    type = "toggle",
+    name = sameIgnoreOptionsEvents and L["Ignore Lua Errors on OPTIONS event"] or "|cFF4080FF" .. L["Ignore Lua Errors on OPTIONS event"],
+    width = WeakAuras.doubleWidth,
+    get = function()
+      if data.controlledChildren then
+        return sameIgnoreOptionsEvents and commonIgnoreOptionsEvents or false
+      else
+        return data.ignoreOptionsEventErrors
+      end
+    end,
+    set = function(info, v)
+      if data.controlledChildren then
+        for _, childId in ipairs(data.controlledChildren) do
+          local childData = WeakAuras.GetData(childId)
+          childData.ignoreOptionsEventErrors = v
+          WeakAuras.Add(childData)
+          OptionsPrivate.ClearOptions(childData.id)
+        end
+      else
+        data.ignoreOptionsEventErrors = v
+        WeakAuras.Add(data)
+        OptionsPrivate.ClearOptions(data.id)
+      end
+      WeakAuras.ClearAndUpdateOptions(data.id)
+    end,
+    desc = sameIgnoreOptionsEvents and "" or ignoreOptionsEventDesc,
+    order = order
+  }
+  order = order + 1
+
 
   return options
 end
