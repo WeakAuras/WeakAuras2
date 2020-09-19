@@ -536,7 +536,7 @@ end
 
 local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)
   local optionsEvent = event == "OPTIONS";
-  local errorHandler = optionsEvent and ignoreErrorHandler or geterrorhandler()
+  local errorHandler = (optionsEvent and data.ignoreOptionsEventErrors) and ignoreErrorHandler or geterrorhandler()
   local updateTriggerState = false;
   if(data.triggerFunc) then
     local untriggerCheck = false;
@@ -1373,7 +1373,8 @@ function GenericTrigger.Add(data, region)
           duration = duration,
           automaticAutoHide = automaticAutoHide,
           tsuConditionVariables = tsuConditionVariables,
-          prototype = prototype
+          prototype = prototype,
+          ignoreOptionsEventErrors = data.ignoreOptionsEventErrors
         };
       end
     end
