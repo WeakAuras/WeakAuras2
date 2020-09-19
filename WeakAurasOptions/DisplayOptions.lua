@@ -46,16 +46,17 @@ local function AddOptionsForSupportedSubRegion(regionOption, data, supported)
   result.__order = 300
   result.__title = L["Add Extra Elements"]
   result.__topLine = true
+  result.__withoutheader = true
+  result["subregiontypespace"] = {
+    type = "description",
+    width = WeakAuras.doubleWidth,
+    name = "",
+    order = order,
+  }
+  order = order + 1
   for subRegionType in pairs(supported) do
     if OptionsPrivate.Private.subRegionTypes[subRegionType].supportsAdd then
       hasSubRegions = true
-      result[subRegionType .. "space"] = {
-        type = "description",
-        width = WeakAuras.doubleWidth,
-        name = "",
-        order = order,
-      }
-      order = order + 1
       result[subRegionType] = {
         type = "execute",
         width = WeakAuras.normalWidth,

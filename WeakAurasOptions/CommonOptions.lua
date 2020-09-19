@@ -45,9 +45,28 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
   local hasDown = input.__down
   local hasDuplicate = input.__duplicate
   local hasApplyTemplate = input.__applyTemplate
+  local defaultCollapsed = input.__collapsed
   local hiddenFunc = input.__hidden
-  local nooptions = input.__nooptions
+  local notcollapsable = input.__notcollapsable
   local marginTop = input.__topLine
+  local withoutheader = input.__withoutheader
+  local isCollapsed = input.__isCollapsed
+  local setCollapsed = input.__setCollapsed
+
+  if not isCollapsed then
+    isCollapsed = function()
+      return OptionsPrivate.IsCollapsed("collapse", "region", key, defaultCollapsed)
+    end
+  end
+
+  if not setCollapsed then
+    setCollapsed = function(info, button, secondCall)
+      if not notcollapsable and not secondCall then
+        local isCollapsed = OptionsPrivate.IsCollapsed("collapse", "region", key, defaultCollapsed)
+        OptionsPrivate.SetCollapsed("collapse", "region", key, not isCollapsed)
+      end
+    end
+  end
 
   local titleWidth = WeakAuras.doubleWidth - (hasAdd and 0.15 or 0) - (hasDelete and 0.15 or 0)  - (hasUp and 0.15 or 0)
                      - (hasDown and 0.15 or 0) - (hasDuplicate and 0.15 or 0) - (hasApplyTemplate and 0.15 or 0)
@@ -59,127 +78,122 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
     width = "full",
     hidden = hiddenFunc,
   }
-  options[key .. "collapseButton"] = {
-    type = "execute",
-    name = title,
-    order = order + 0.1,
-    width = titleWidth,
-    func = function(info, button, secondCall)
-      if not nooptions and not secondCall then
-        local isCollapsed = OptionsPrivate.IsCollapsed("collapse", "region", key, false)
-        OptionsPrivate.SetCollapsed("collapse", "region", key, not isCollapsed)
-      end
-    end,
-    image = function()
-      if nooptions then
-        return "Interface\\AddOns\\WeakAuras\\Media\\Textures\\bullet1", 18, 18
-      else
-        local isCollapsed = OptionsPrivate.IsCollapsed("collapse", "region", key, false)
-        return isCollapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse", 18, 18
-      end
-    end,
-    control = "WeakAurasExpand",
-    hidden = hiddenFunc
-  }
 
-  if hasAdd then
-    options[key .. "addButton"] = {
+  if not withoutheader then
+    options[key .. "collapseButton"] = {
       type = "execute",
-      name = L["Add"],
-      order = order + 0.2,
-      width = 0.15,
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\add",
-      imageWidth = 24,
-      imageHeight = 24,
-      control = "WeakAurasIcon",
+      name = title,
+      order = order + 0.1,
+      width = titleWidth,
+      func = setCollapsed,
+      image = function()
+        if notcollapsable then
+          return "Interface\\AddOns\\WeakAuras\\Media\\Textures\\bullet1", 18, 18
+        else
+          return isCollapsed() and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse", 18, 18
+        end
+      end,
+      control = "WeakAurasExpand",
       hidden = hiddenFunc
     }
-    setFuncs(options[key .. "addButton"], input.__add)
-  end
 
-  if hasUp then
-    options[key .. "upButton"] = {
-      type = "execute",
-      name = L["Move Up"],
-      order = order + 0.3,
-      width = 0.15,
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\moveup",
-      imageWidth = 24,
-      imageHeight = 24,
-      control = "WeakAurasIcon",
-      hidden = hiddenFunc
-    }
-    setFuncs(options[key .. "upButton"], input.__up)
-  end
+    if hasAdd then
+      options[key .. "addButton"] = {
+        type = "execute",
+        name = L["Add"],
+        order = order + 0.2,
+        width = 0.15,
+        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\add",
+        imageWidth = 24,
+        imageHeight = 24,
+        control = "WeakAurasIcon",
+        hidden = hiddenFunc
+      }
+      setFuncs(options[key .. "addButton"], input.__add)
+    end
 
-  if hasDown then
-    options[key .. "downButton"] = {
-      type = "execute",
-      name = L["Move Down"],
-      order = order + 0.4,
-      width = 0.15,
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\movedown",
-      imageWidth = 24,
-      imageHeight = 24,
-      control = "WeakAurasIcon",
-      hidden = hiddenFunc
-    }
-    setFuncs(options[key .. "downButton"], input.__down)
-  end
+    if hasUp then
+      options[key .. "upButton"] = {
+        type = "execute",
+        name = L["Move Up"],
+        order = order + 0.3,
+        width = 0.15,
+        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\moveup",
+        imageWidth = 24,
+        imageHeight = 24,
+        control = "WeakAurasIcon",
+        hidden = hiddenFunc
+      }
+      setFuncs(options[key .. "upButton"], input.__up)
+    end
 
-  if hasDuplicate then
-    options[key .. "duplicateButton"] = {
-      type = "execute",
-      name = L["Duplicate"],
-      order = order + 0.5,
-      width = 0.15,
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\duplicate",
-      imageWidth = 24,
-      imageHeight = 24,
-      control = "WeakAurasIcon",
-      hidden = hiddenFunc
-    }
-    setFuncs(options[key .. "duplicateButton"], input.__duplicate)
-  end
+    if hasDown then
+      options[key .. "downButton"] = {
+        type = "execute",
+        name = L["Move Down"],
+        order = order + 0.4,
+        width = 0.15,
+        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\movedown",
+        imageWidth = 24,
+        imageHeight = 24,
+        control = "WeakAurasIcon",
+        hidden = hiddenFunc
+      }
+      setFuncs(options[key .. "downButton"], input.__down)
+    end
 
-  if hasDelete then
-    options[key .. "deleteButton"] = {
-      type = "execute",
-      name = L["Delete"],
-      order = order + 0.6,
-      width = 0.15,
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
-      imageWidth = 24,
-      imageHeight = 24,
-      control = "WeakAurasIcon",
-      hidden = hiddenFunc
-    }
-    setFuncs(options[key .. "deleteButton"], input.__delete)
-  end
+    if hasDuplicate then
+      options[key .. "duplicateButton"] = {
+        type = "execute",
+        name = L["Duplicate"],
+        order = order + 0.5,
+        width = 0.15,
+        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\duplicate",
+        imageWidth = 24,
+        imageHeight = 24,
+        control = "WeakAurasIcon",
+        hidden = hiddenFunc
+      }
+      setFuncs(options[key .. "duplicateButton"], input.__duplicate)
+    end
 
-  if hasApplyTemplate then
-    options[key .. "applyTemplate"] = {
-      type = "execute",
-      name = L["Apply Template"],
-      order = order + 0.7,
-      width = 0.15,
-      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\template",
-      imageWidth = 24,
-      imageHeight = 24,
-      control = "WeakAurasIcon",
-      hidden = hiddenFunc
-    }
-    setFuncs(options[key .. "applyTemplate"], input.__applyTemplate)
+    if hasDelete then
+      options[key .. "deleteButton"] = {
+        type = "execute",
+        name = L["Delete"],
+        order = order + 0.6,
+        width = 0.15,
+        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\delete",
+        imageWidth = 24,
+        imageHeight = 24,
+        control = "WeakAurasIcon",
+        hidden = hiddenFunc
+      }
+      setFuncs(options[key .. "deleteButton"], input.__delete)
+    end
+
+    if hasApplyTemplate then
+      options[key .. "applyTemplate"] = {
+        type = "execute",
+        name = L["Apply Template"],
+        order = order + 0.7,
+        width = 0.15,
+        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\template",
+        imageWidth = 24,
+        imageHeight = 24,
+        control = "WeakAurasIcon",
+        hidden = hiddenFunc
+      }
+      setFuncs(options[key .. "applyTemplate"], input.__applyTemplate)
+    end
   end
 
   if hiddenFunc then
     return function()
-      return hiddenFunc() or OptionsPrivate.IsCollapsed("collapse", "region", key, false)
+      return hiddenFunc() or isCollapsed()
     end
   else
-    return function()
-      return OptionsPrivate.IsCollapsed("collapse", "region", key, false)
-    end
+    return isCollapsed
   end
 end
 
