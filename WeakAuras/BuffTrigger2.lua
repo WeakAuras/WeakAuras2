@@ -35,9 +35,6 @@ Returns whether the trigger can have a duration.
 GetOverlayInfo(data, triggernum)
 Returns a table containing all overlays. Currently there aren't any
 
-CanHaveAuto(data, triggernum)
-Returns whether the icon can be automatically selected.
-
 CanHaveClones(data, triggernum)
 Returns whether the trigger can have clones.
 
@@ -2290,14 +2287,6 @@ end
 -- @param triggernum
 function BuffTrigger.GetOverlayInfo(data, triggernum)
   return {}
-end
-
---- Returns whether the icon can be automatically selected.
--- @param data
--- @param triggernum
--- @return boolean
-function BuffTrigger.CanHaveAuto(data, triggernum)
-  return true
 end
 
 --- Returns whether the trigger can have clones.

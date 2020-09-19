@@ -80,7 +80,9 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Choose"],
       order = 0.51,
-      func = function() OptionsPrivate.OpenIconPicker(data, "groupIcon", true) end
+      func = function()
+         OptionsPrivate.OpenIconPicker(data, { [data.id] = {"groupIcon"} }, true)
+       end
     },
     align_h = {
       type = "select",

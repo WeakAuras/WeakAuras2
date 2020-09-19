@@ -14,7 +14,7 @@ local _G = _G
 local default = {
   icon = true,
   desaturate = false,
-  auto = true,
+  iconSource = -1,
   inverse = false,
   width = 64,
   height = 64,
@@ -92,9 +92,26 @@ local properties = {
     default = 0,
     isPercent = true
   },
+  iconSource = {
+    display = {L["Icon"], L["Source"]},
+    setter = "SetIconSource",
+    type = "list",
+    values = {}
+  },
+  displayIcon = {
+    display = {L["Icon"], L["Fallback"]},
+    setter = "SetIcon",
+    type = "icon",
+  }
 };
 
 WeakAuras.regionPrototype.AddProperties(properties, default);
+
+local function GetProperties(data)
+  local result = CopyTable(properties)
+  result.iconSource.values = Private.IconSources(data)
+  return result
+end
 
 local function GetTexCoord(region, texWidth, aspectRatio)
   region.currentCoord = region.currentCoord or {}
@@ -263,7 +280,8 @@ local function modify(parent, region, data)
 
   local button, icon, cooldown = region.button, region.icon, region.cooldown;
 
-  region.useAuto = data.auto and Private.CanHaveAuto(data);
+  region.iconSource = data.iconSource
+  region.displayIcon = data.displayIcon
 
   if MSQ then
     local masqueId = data.id:lower():gsub(" ", "_");
@@ -396,15 +414,38 @@ local function modify(parent, region, data)
 
   region:Color(data.color[1], data.color[2], data.color[3], data.color[4]);
 
-  function region:SetIcon(path)
-    local iconPath = (
-      region.useAuto
-      and path ~= ""
-      and path
-      or data.displayIcon
-      or "Interface\\Icons\\INV_Misc_QuestionMark"
-      );
-    WeakAuras.SetTextureOrAtlas(icon, iconPath)
+  function region:SetIcon(iconPath)
+    if self.displayIcon == iconPath then
+      return
+    end
+    self.displayIcon = iconPath
+    self:UpdateIcon()
+  end
+
+  function region:SetIconSource(source)
+    if self.iconSource == source then
+      return
+    end
+
+    self.iconSource = source
+    self:UpdateIcon()
+  end
+
+  function region:UpdateIcon()
+    local iconPath
+    if self.iconSource == -1 then
+      iconPath = self.state.icon
+    elseif self.iconSource == 0 then
+      iconPath = self.displayIcon
+    else
+      local triggernumber = self.iconSource
+      if triggernumber and self.states[triggernumber] then
+        iconPath = self.states[triggernumber].icon
+      end
+    end
+
+    iconPath = iconPath or self.displayIcon or "Interface\\Icons\\INV_Misc_QuestionMark"
+    WeakAuras.SetTextureOrAtlas(self.icon, iconPath)
   end
 
   function region:Scale(scalex, scaley)
@@ -531,7 +572,7 @@ local function modify(parent, region, data)
         region:SetTime(0, math.huge)
       end
 
-      region:SetIcon(state.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
+      region:UpdateIcon()
     end
   else
     region.SetValue = nil
@@ -539,7 +580,7 @@ local function modify(parent, region, data)
 
     function region:Update()
       local state = region.state
-      region:SetIcon(state.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
+      region:UpdateIcon()
     end
   end
 
@@ -561,4 +602,4 @@ local function modify(parent, region, data)
   region:SetHeight(region:GetHeight())
 end
 
-WeakAuras.RegisterRegionType("icon", create, modify, default, properties);
+WeakAuras.RegisterRegionType("icon", create, modify, default, GetProperties)

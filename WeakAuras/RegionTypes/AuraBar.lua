@@ -8,7 +8,7 @@ local L = WeakAuras.L;
 local default = {
   icon = false,
   desaturate = false,
-  auto = true,
+  iconSource = -1,
   texture = "Blizzard",
   width = 200,
   height = 15,
@@ -55,17 +55,28 @@ local properties = {
     type = "color",
   },
   icon_visible = {
-    display = L["Icon Visible"],
+    display = {L["Icon"], L["Visible"]},
     setter = "SetIconVisible",
     type = "bool"
   },
   icon_color = {
-    display = L["Icon Color"],
+    display = {L["Icon"], L["Color"]},
     setter = "SetIconColor",
     type = "color"
   },
+  iconSource = {
+    display = {L["Icon"], L["Source"]},
+    setter = "SetIconSource",
+    type = "list",
+    values = {}
+  },
+  displayIcon = {
+    display = {L["Icon"], L["Fallback"]},
+    setter = "SetIcon",
+    type = "icon",
+  },
   desaturate = {
-    display = L["Icon Desaturate"],
+    display = {L["Icon"], L["Desaturate"]},
     setter = "SetIconDesaturated",
     type = "bool",
   },
@@ -75,12 +86,12 @@ local properties = {
     type = "color"
   },
   sparkColor = {
-    display = L["Spark Color"],
+    display = {L["Spark"], L["Color"]},
     setter = "SetSparkColor",
     type = "color"
   },
   sparkHeight = {
-    display = L["Spark Height"],
+    display = {L["Spark"], L["Height"]},
     setter = "SetSparkHeight",
     type = "number",
     min = 1,
@@ -88,7 +99,7 @@ local properties = {
     bigStep = 1
   },
   sparkWidth = {
-    display = L["Spark Width"],
+    display = {L["Spark"], L["Width"]},
     setter = "SetSparkWidth",
     type = "number",
     min = 1,
@@ -123,16 +134,15 @@ local properties = {
     display = L["Inverse"],
     setter = "SetInverse",
     type = "bool"
-  }
+  },
 };
 
 WeakAuras.regionPrototype.AddProperties(properties, default);
 
 local function GetProperties(data)
   local overlayInfo = Private.GetOverlayInfo(data);
+  local auraProperties = CopyTable(properties)
   if (overlayInfo and next(overlayInfo)) then
-    local auraProperties = CopyTable(properties)
-
     for id, display in ipairs(overlayInfo) do
       auraProperties["overlays." .. id] = {
         display = string.format(L["%s Overlay Color"], display),
@@ -141,11 +151,10 @@ local function GetProperties(data)
         type = "color",
       }
     end
-
-    return auraProperties;
-  else
-    return CopyTable(properties);
   end
+
+  auraProperties.iconSource.values = Private.IconSources(data)
+  return auraProperties;
 end
 
 -- Returns tex Coord for 90° rotations + x or y flip
@@ -892,6 +901,37 @@ local funcs = {
     self:ReOrient()
     self.subRegionEvents:Notify("OrientationChanged")
   end,
+  SetIcon = function(self, iconPath)
+    if self.displayIcon == iconPath then
+      return
+    end
+    self.displayIcon = iconPath
+    self:UpdateIcon()
+  end,
+  SetIconSource = function(self, source)
+    if self.iconSource == source then
+      return
+    end
+
+    self.iconSource = source
+    self:UpdateIcon()
+  end,
+  UpdateIcon = function(self)
+    local iconPath
+    if self.iconSource == -1 then
+      iconPath = self.state.icon
+    elseif self.iconSource == 0 then
+      iconPath = self.displayIcon
+    else
+      local triggernumber = self.iconSource
+      if triggernumber and self.states[triggernumber] then
+        iconPath = self.states[triggernumber].icon
+      end
+    end
+
+    iconPath = iconPath or self.displayIcon or "Interface\\Icons\\INV_Misc_QuestionMark"
+    WeakAuras.SetTextureOrAtlas(self.icon, iconPath)
+  end,
   SetOverlayColor = function(self, id, r, g, b, a)
     self.bar:SetAdditionalBarColor(id, { r, g, b, a});
   end,
@@ -1025,7 +1065,8 @@ local function modify(parent, region, data)
   -- Localize
   local bar, iconFrame, icon = region.bar, region.iconFrame, region.icon;
 
-  region.useAuto = data.auto and Private.CanHaveAuto(data);
+  region.iconSource = data.iconSource
+  region.displayIcon = data.displayIcon
 
   -- Adjust region size
   region:SetWidth(data.width);
@@ -1218,15 +1259,7 @@ local function modify(parent, region, data)
       end
     end
 
-    local path = state.icon or "Interface\\Icons\\INV_Misc_QuestionMark"
-    local iconPath = (
-      region.useAuto
-      and path ~= ""
-      and path
-      or data.displayIcon
-      or "Interface\\Icons\\INV_Misc_QuestionMark"
-      );
-    self.icon:SetTexture(iconPath);
+    region:UpdateIcon()
 
     local duration = state.duration or 0
     local effectiveInverse = (state.inverse and not region.inverseDirection) or (not state.inverse and region.inverseDirection);

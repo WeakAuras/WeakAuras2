@@ -44,8 +44,6 @@ end
 
 function BuffTrigger.GetOverlayInfo(data, triggernum) return {} end
 
-function BuffTrigger.CanHaveAuto(data, triggernum) return false end
-
 function BuffTrigger.CanHaveClones(data, triggernum) return false end
 
 function BuffTrigger.CanHaveTooltip(data, triggernum) end

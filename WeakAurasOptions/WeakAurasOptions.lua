@@ -1278,8 +1278,8 @@ function OptionsPrivate.OpenTexturePicker(baseObject, path, properties, textures
   frame.texturePicker:Open(baseObject, path, properties, textures, SetTextureFunc)
 end
 
-function OptionsPrivate.OpenIconPicker(data, field, groupIcon)
-  frame.iconPicker:Open(data, field, groupIcon);
+function OptionsPrivate.OpenIconPicker(baseObject, paths, groupIcon)
+  frame.iconPicker:Open(baseObject, paths, groupIcon)
 end
 
 function OptionsPrivate.OpenModelPicker(baseObject, path)

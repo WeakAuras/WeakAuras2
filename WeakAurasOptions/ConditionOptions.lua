@@ -464,6 +464,41 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         args["condition" .. i .. "value" .. j].validate = WeakAuras.ValidateNumeric;
       end
     end
+  elseif (propertyType == "icon") then
+    args["condition" .. i .. "value" .. j] = {
+      type = "input",
+      width = WeakAuras.normalWidth - 0.15,
+      name = blueIfNoValue(data, conditions[i].changes[j], "value", L["Differences"]),
+      desc = descIfNoValue(data, conditions[i].changes[j], "value", propertyType),
+      order = order,
+      get = function()
+        local v = conditions[i].changes[j].value
+        return v and tostring(v)
+      end,
+      set = setValue
+    }
+    order = order + 1
+    args["condition" .. i .. "value_browse" .. j] = {
+      type = "execute",
+      width = 0.15,
+      name = "",
+      order = order,
+      func = function()
+        if data.controlledChildren then
+          local paths = {}
+          for id, reference in pairs(conditions[i].changes[j].references) do
+            paths[id] = {"conditions", conditions[i].check.references[id].conditionIndex, "changes", reference.changeIndex, "value"}
+          end
+          OptionsPrivate.OpenIconPicker(data, paths)
+        else
+          OptionsPrivate.OpenIconPicker(data, {[data.id] = { "conditions", i, "changes", j, "value" } })
+        end
+      end,
+      imageWidth = 24,
+      imageHeight = 24,
+      control = "WeakAurasIcon",
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+    }
   elseif (propertyType == "color") then
     args["condition" .. i .. "value" .. j] = {
       type = "color",

@@ -34,9 +34,6 @@ Returns whether the trigger can have a duration.
 GetOverlayInfo(data, triggernum)
 Returns a table containing the names of all overlays
 
-CanHaveAuto(data, triggernum)
-Returns whether the icon can be automatically selected.
-
 CanHaveClones(data)
 Returns whether the trigger can have clones.
 
@@ -3348,40 +3345,6 @@ function GenericTrigger.GetOverlayInfo(data, triggernum)
   end
 
   return result;
-end
-
-function GenericTrigger.CanHaveAuto(data, triggernum)
-  -- Is also called on importing before conversion, so do a few checks
-  local trigger = data.triggers[triggernum].trigger
-
-  if (not trigger) then
-    return false;
-  end
-  if(
-    (
-    (
-    trigger.type == "event"
-    or trigger.type == "status"
-    )
-    and trigger.event
-    and Private.event_prototypes[trigger.event]
-    and (
-    Private.event_prototypes[trigger.event].iconFunc
-    or Private.event_prototypes[trigger.event].canHaveAuto
-    )
-    )
-    or (
-    trigger.type == "custom"
-    and ((
-    trigger.customIcon
-    and trigger.customIcon ~= ""
-    ) or trigger.custom_type == "stateupdate")
-    )
-    ) then
-    return true;
-  else
-    return false;
-  end
 end
 
 function GenericTrigger.CanHaveClones(data)
