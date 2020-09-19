@@ -5153,3 +5153,7 @@ function WeakAuras.ParseNameCheck(name)
 
   return matches
 end
+
+function WeakAuras.IsAuraLoaded(id)
+  return Private.loaded[id]
+end
