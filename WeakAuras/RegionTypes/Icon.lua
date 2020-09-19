@@ -231,6 +231,8 @@ local function create(parent, data)
   region.cooldown = cooldown;
   cooldown:SetAllPoints(icon);
   cooldown:SetDrawBling(false)
+  cooldown.SetDrawSwipeOrg = cooldown.SetDrawSwipe
+  cooldown.SetDrawSwipe = function() end
 
   region.values = {};
 
@@ -437,7 +439,7 @@ local function modify(parent, region, data)
 
   function region:SetCooldownSwipe(cooldownSwipe)
     region.cooldownSwipe = cooldownSwipe;
-    cooldown:SetDrawSwipe(cooldownSwipe);
+    cooldown:SetDrawSwipeOrg(cooldownSwipe);
   end
 
   function region:SetCooldownEdge(cooldownEdge)
