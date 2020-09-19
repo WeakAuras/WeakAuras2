@@ -1605,25 +1605,6 @@ function WeakAuras.CreateTemplateView(frame)
 
       createTriggerButton(WeakAuras.triggerTemplates.general, selectedItem);
 
-      -- Items
-      if not WeakAuras.IsClassic() then
-        local itemHeader = AceGUI:Create("Heading");
-        itemHeader:SetFullWidth(true);
-        newViewScroll:AddChild(itemHeader);
-        local itemTypes = {};
-        for _, section in pairs(WeakAuras.triggerTemplates.items) do
-          tinsert(itemTypes, section.title);
-        end
-        newView.item = newView.item or 1;
-        local itemSelector = createDropdown("item", itemTypes);
-        newViewScroll:AddChild(itemSelector);
-        newViewScroll:AddChild(createSpacer());
-        if (WeakAuras.triggerTemplates.items[newView.item]) then
-          local group = createTriggerFlyout(WeakAuras.triggerTemplates.items[newView.item].args, true);
-          newViewScroll:AddChild(group);
-        end
-      end
-
       -- Race
       local raceHeader = AceGUI:Create("Heading");
       raceHeader:SetFullWidth(true);
