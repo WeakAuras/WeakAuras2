@@ -328,7 +328,6 @@ local FakeWeakAurasMixin = {
     AddManyFromAddons = true,
     Delete = true,
     DeleteOption = true,
-    GetData = true,
     HideOptions = true,
     Rename = true,
     NewAura = true,
