@@ -1086,37 +1086,41 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
+          { spell = 465, type = "buff", unit = "player"}, -- Devotion Aura
+          { spell = 498, type = "buff", unit = "player"}, -- Divine Protection
+          { spell = 642, type = "buff", unit = "player"}, -- Divine Shield
           { spell = 1022, type = "buff", unit = "group"}, -- Blessing of Protection
-          { spell = 53563, type = "buff", unit = "group"}, -- Beacon of Light
+          { spell = 1044, type = "buff", unit = "group"}, -- Blessing of Freedom
           { spell = 6940, type = "buff", unit = "group"}, -- Blessing of Sacrifice
           { spell = 31821, type = "buff", unit = "player"}, -- Aura Mastery
-          { spell = 183415, type = "buff", unit = "player", talent = 12}, -- Aura of Mercy
           { spell = 31884, type = "buff", unit = "player"}, -- Avenging Wrath
-          { spell = 498, type = "buff", unit = "player"}, -- Divine Protection
-          { spell = 210320, type = "buff", unit = "player", talent = 10}, -- Devotion Aura
-          { spell = 642, type = "buff", unit = "player"}, -- Divine Shield
-          { spell = 200025, type = "buff", unit = "group", talent = 21}, -- Beacon of Virtue
-          { spell = 156910, type = "buff", unit = "group", talent = 20}, -- Beacon of Faith
+          { spell = 32223, type = "buff", unit = "player"}, -- Crusader Aura
+          { spell = 53563, type = "buff", unit = "group"}, -- Beacon of Light
           { spell = 54149, type = "buff", unit = "player"}, -- Infusion of Light
           { spell = 105809, type = "buff", unit = "player"}, -- Holy Avenger
-          { spell = 216331, type = "buff", unit = "player", talent = 17}, -- Avenging Crusader
+          { spell = 156910, type = "buff", unit = "group", talent = 20}, -- Beacon of Faith
+          { spell = 183435, type = "buff", unit = "player"}, -- Retribution Aura
+          { spell = 200025, type = "buff", unit = "group", talent = 21}, -- Beacon of Virtue
           { spell = 214202, type = "buff", unit = "player"}, -- Rule of Law
-          { spell = 183416, type = "buff", unit = "player", talent = 11}, -- Aura of Sacrifice
-          { spell = 1044, type = "buff", unit = "group"}, -- Blessing of Freedom
-          { spell = 221883, type = "buff", unit = "player"}, -- Divine Steed
+          { spell = 216331, type = "buff", unit = "player", talent = 17}, -- Avenging Crusader
+          { spell = 221885, type = "buff", unit = "player"}, -- Divine Steed
           { spell = 223306, type = "buff", unit = "target", talent = 2}, -- Bestow Faith
+          { spell = 287280, type = "buff", unit = "group", talent = 19}, -- Glimmer of Light
+          { spell = 317920, type = "buff", unit = "player"}, -- Concentration Aura
         },
         icon = 135964
       },
       [2] = {
         title = L["Debuffs"],
         args = {
-          { spell = 204242, type = "debuff", unit = "target"}, -- Consecration
-          { spell = 105421, type = "debuff", unit = "target", talent = 9}, -- Blinding Light
           { spell = 853, type = "debuff", unit = "target"}, -- Hammer of Justice
-          { spell = 214222, type = "debuff", unit = "target"}, -- Judgment
-          { spell = 196941, type = "debuff", unit = "target", talent = 13}, -- Judgment of Light
+          { spell = 10326, type = "debuff", unit = "target"}, -- Turn Evil
+          { spell = 62124, type = "debuff", unit = "target"}, -- Hammer of Justice
           { spell = 20066, type = "debuff", unit = "multi", talent = 8}, -- Repentance
+          { spell = 105421, type = "debuff", unit = "target", talent = 9}, -- Blinding Light
+          { spell = 196941, type = "debuff", unit = "target", talent = 5}, -- Judgment of Light
+          { spell = 204242, type = "debuff", unit = "target"}, -- Consecration
+          { spell = 214222, type = "debuff", unit = "target"}, -- Judgment
         },
         icon = 135952
       },
@@ -1131,20 +1135,29 @@ else
           { spell = 1044, type = "ability"}, -- Blessing of Freedom
           { spell = 4987, type = "ability"}, -- Cleanse
           { spell = 6940, type = "ability"}, -- Blessing of Sacrifice
+          { spell = 10326, type = "ability"}, -- Turn Evil
           { spell = 20066, type = "ability", requiresTarget = true, talent = 8}, -- Repentance
+          { spell = 20271, type = "ability", requiresTarget = true}, -- Hammer of Wrath
           { spell = 20473, type = "ability", overlayGlow = true}, -- Holy Shock
+          { spell = 24275, type = "ability"}, -- Hammer of Wrath
           { spell = 26573, type = "ability", totem = true}, -- Consecration
           { spell = 31821, type = "ability", buff = true}, -- Aura Mastery
+          { spell = 31821, type = "ability"}, -- Aura Mastery
           { spell = 31884, type = "ability", buff = true, talent = {16, 18}}, -- Avenging Wrath
           { spell = 35395, type = "ability", charges = true, requiresTarget = true}, -- Crusader Strike
+          { spell = 53600, type = "ability"}, -- Shield of the Righteous
+          { spell = 62124, type = "ability"}, -- Hand of Reckoning
           { spell = 85222, type = "ability", overlayGlow = true}, -- Light of Dawn
-          { spell = 105809, type = "ability", buff = true, talent = 15}, -- Holy Avenger
+          { spell = 85673, type = "ability"}, -- Word of Glory
+          { spell = 105809, type = "ability", buff = true, talent = 14}, -- Holy Avenger
           { spell = 114158, type = "ability", talent = 3}, -- Light's Hammer
-          { spell = 114165, type = "ability", talent = 14}, -- Holy Prism
+          { spell = 114165, type = "ability", talent = 6}, -- Holy Prism
           { spell = 115750, type = "ability", talent = 9}, -- Blinding Light
+          { spell = 152262, type = "ability", buff = true, talent = 15}, -- Seraphim
+          { spell = 183998, type = "ability"}, -- Light of the Martyr
           { spell = 190784, type = "ability"}, -- Divine Steed
           { spell = 200025, type = "ability", talent = 21}, -- Beacon of Virtue
-          { spell = 214202, type = "ability", charges = true, buff = true}, -- Rule of Law
+          { spell = 214202, type = "ability", charges = true, buff = true, talent = 12}, -- Rule of Law
           { spell = 216331, type = "ability", buff = true, talent = 17}, -- Avenging Crusader
           { spell = 223306, type = "ability", talent = 2}, -- Bestow Faith
           { spell = 275773, type = "ability", debuff = true, requiresTarget = true}, -- Judgment
@@ -1157,11 +1170,11 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
-          { spell = 199507, type="buff", unit = "group", pvptalent = 4},-- Spreading the Word
-          { spell = 216328, type="buff", unit = "target", pvptalent = 5},-- Light's Grace
-          { spell = 210294, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Divine Favor
-          { spell = 210294, type="buff", unit = "player", pvptalent = 9, titleSuffix = L["buff"]},-- Divine Favor
-          { spell = 210391, type="buff", unit = "player", pvptalent = 13},-- Darkest before the Dawn
+          { spell = 199507, type="buff", unit = "group", pvptalent = 9},-- Spreading the Word
+          { spell = 210294, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Divine Favor
+          { spell = 210294, type="buff", unit = "player", pvptalent = 8, titleSuffix = L["buff"]},-- Divine Favor
+          { spell = 210391, type="buff", unit = "player", pvptalent = 5},-- Darkest before the Dawn
+          { spell = 216328, type="buff", unit = "target", pvptalent = 10},-- Light's Grace
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
@@ -1176,71 +1189,77 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
-          { spell = 203797, type = "buff", unit = "player", talent = 10}, -- Retribution Aura
-          { spell = 132403, type = "buff", unit = "player"}, -- Shield of the Righteous
-          { spell = 197561, type = "buff", unit = "player"}, -- Avenger's Valor
+          { spell = 465, type = "buff", unit = "player"}, -- Devotion Aura
+          { spell = 642, type = "buff", unit = "player"}, -- Divine Shield
+          { spell = 1022, type = "buff", unit = "group"}, -- Blessing of Protection
           { spell = 1044, type = "buff", unit = "group"}, -- Blessing of Freedom
           { spell = 6940, type = "buff", unit = "group"}, -- Blessing of Sacrifice
-          { spell = 188370, type = "buff", unit = "player"}, -- Consecration
-          { spell = 204150, type = "buff", unit = "player", talent = 18}, -- Aegis of Light
           { spell = 31850, type = "buff", unit = "player"}, -- Ardent Defender
           { spell = 31884, type = "buff", unit = "player"}, -- Avenging Wrath
-          { spell = 204018, type = "buff", unit = "player", talent = 12}, -- Blessing of Spellwarding
-          { spell = 152262, type = "buff", unit = "player", talent = 21}, -- Seraphim
+          { spell = 32223, type = "buff", unit = "player"}, -- Crusader Aura
           { spell = 86659, type = "buff", unit = "player"}, -- Guardian of Ancient Kings
-          { spell = 1022, type = "buff", unit = "group"}, -- Blessing of Protection
+          { spell = 132403, type = "buff", unit = "player"}, -- Shield of the Righteous
+          { spell = 152262, type = "buff", unit = "player", talent = 15}, -- Seraphim
+          { spell = 182104, type = "buff", unit = "player"}, -- Shining Light
+          { spell = 188370, type = "buff", unit = "player"}, -- Consecration
+          { spell = 183435, type = "buff", unit = "player"}, -- Retribution Aura
+          { spell = 197561, type = "buff", unit = "player"}, -- Avenger's Valor
+          { spell = 204018, type = "buff", unit = "player", talent = 12}, -- Blessing of Spellwarding
           { spell = 221883, type = "buff", unit = "player"}, -- Divine Steed
-          { spell = 204335, type = "buff", unit = "player"}, -- Aegis of Light
-          { spell = 642, type = "buff", unit = "player"}, -- Divine Shield
-          { spell = 280375, type = "buff", unit = "player"}, -- Redoubt
+          { spell = 280375, type = "buff", unit = "player", talent = 2}, -- Redoubt
+          { spell = 317920, type = "buff", unit = "player"}, -- Concentration Aura
+          { spell = 327225, type = "buff", unit = "player", talent = 4}, -- First Avenger
         },
         icon = 236265
       },
       [2] = {
         title = L["Debuffs"],
         args = {
-          { spell = 62124, type = "debuff", unit = "target"}, -- Hand of Reckoning
-          { spell = 204242, type = "debuff", unit = "target"}, -- Consecration
-          { spell = 196941, type = "debuff", unit = "target", talent = 16}, -- Judgment of Light
-          { spell = 105421, type = "debuff", unit = "target", talent = 9}, -- Blinding Light
           { spell = 853, type = "debuff", unit = "target"}, -- Hammer of Justice
-          { spell = 204301, type = "debuff", unit = "target"}, -- Blessed Hammer
-          { spell = 204079, type = "debuff", unit = "target", talent = 13}, -- Final Stand
-          { spell = 31935, type = "debuff", unit = "target"}, -- Avenger's Shield
           { spell = 20066, type = "debuff", unit = "multi", talent = 8}, -- Repentance
+          { spell = 31935, type = "debuff", unit = "target"}, -- Avenger's Shield
+          { spell = 62124, type = "debuff", unit = "target"}, -- Hand of Reckoning
+          { spell = 105421, type = "debuff", unit = "target", talent = 9}, -- Blinding Light
+          { spell = 196941, type = "debuff", unit = "target", talent = 18}, -- Judgment of Light
+          { spell = 204079, type = "debuff", unit = "target", talent = 21}, -- Final Stand
+          { spell = 204242, type = "debuff", unit = "target"}, -- Consecration
+          { spell = 204301, type = "debuff", unit = "target", talent = 3}, -- Blessed Hammer
         },
         icon = 135952
       },
       [3] = {
         title = L["Abilities"],
         args = {
+          { spell = 498, type = "ability"}, -- Ardent Defender
           { spell = 633, type = "ability"}, -- Lay on Hands
           { spell = 642, type = "ability", buff = true}, -- Divine Shield
           { spell = 853, type = "ability", requiresTarget = true}, -- Hammer of Justice
           { spell = 1022, type = "ability", buff = true}, -- Blessing of Protection
           { spell = 1044, type = "ability", buff = true}, -- Blessing of Freedom
           { spell = 6940, type = "ability", debuff = true, requiresTarget = true, unit="player"}, -- Blessing of Sacrifice
+          { spell = 10326, type = "ability"}, -- Turn Evil
           { spell = 20066, type = "ability", requiresTarget = true, talent = 8}, -- Repentance
+          { spell = 20271, type = "ability"}, -- Judgment
+          { spell = 24275, type = "ability"}, -- Hammer of Wrath
           { spell = 26573, type = "ability", buff = true}, -- Consecration
           { spell = 31850, type = "ability", buff = true}, -- Ardent Defender
           { spell = 31884, type = "ability", buff = true}, -- Avenging Wrath
           { spell = 31935, type = "ability", requiresTarget = true, overlayGlow = true}, -- Avenger's Shield
-          { spell = 53595, type = "ability"}, -- Hammer of the Righteous                  Couldn't find this spell
+          { spell = 35395, type = "ability"}, -- Hammer of the Righteous
           { spell = 53600, type = "ability", charges = true, buff = true}, -- Shield of the Righteous
           { spell = 62124, type = "ability", debuff = true, requiresTarget = true}, -- Hand of Reckoning
+          { spell = 85673, type = "ability"}, -- Word of Glory
           { spell = 86659, type = "ability", buff = true}, -- Guardian of Ancient Kings
           { spell = 96231, type = "ability", requiresTarget = true}, -- Rebuke
+          { spell = 105809, type = "ability", talent = 14}, -- Holy Avenger
           { spell = 115750, type = "ability", talent = 9}, -- Blinding Light
-          { spell = 152262, type = "ability", buff = true, talent = 21}, -- Seraphim
-          { spell = 184092, type = "ability"}, -- Light of the Protector
+          { spell = 152262, type = "ability", buff = true, talent = 15}, -- Seraphim
           { spell = 190784, type = "ability"}, -- Divine Steed
           { spell = 204018, type = "ability", talent = 12}, -- Blessing of Spellwarding
-          { spell = 204019, type = "ability", charges = true, debuff = true}, -- Blessed Hammer
-          { spell = 204035, type = "ability"}, -- Bastion of Light
-          { spell = 204150, type = "ability", buff = true}, -- Aegis of Light
+          { spell = 204019, type = "ability", charges = true, debuff = true, talent = 3}, -- Blessed Hammer
           { spell = 213644, type = "ability"}, -- Cleanse Toxins
-          { spell = 213652, type = "ability"}, -- Hand of the Protector
           { spell = 275779, type = "ability", debuff = true, requiresTarget = true}, -- Judgment
+          { spell = 327193, type = "ability", buff = true, talent = 6}, -- Moment of Glory
         },
         icon = 135874
       },
@@ -1250,14 +1269,14 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
-          { spell = 228049, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Guardian of the Forgotten Queen
-          { spell = 228050, type="buff", unit = "group", pvptalent = 5, titleSuffix = L["buff"]},-- Guardian of the Forgotten Queen
-          { spell = 216857, type="buff", unit = "target", pvptalent = 6},-- Guarded by the Light
-          { spell = 236186, type="ability", pvptalent = 9},-- Cleansing Light
-          { spell = 215652, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Shield of Virtue
-          { spell = 217824, type="debuff", unit = "target", pvptalent = 11, titleSuffix = L["debuff"]},-- Shield of Virtue
-          { spell = 207028, type="ability", pvptalent = 15, titleSuffix = L["cooldown"]},-- Inquisition
-          { spell = 206891, type="debuff", unit = "target", pvptalent = 15, titleSuffix = L["buff"]},-- Inquisition
+          { spell = 206891, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["buff"]},-- Inquisition
+          { spell = 207028, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Inquisition
+          { spell = 215652, type="ability", pvptalent = 4, titleSuffix = L["cooldown"]},-- Shield of Virtue
+          { spell = 216857, type="buff", unit = "target", pvptalent = 1},-- Guarded by the Light
+          { spell = 217824, type="debuff", unit = "target", pvptalent = 4, titleSuffix = L["debuff"]},-- Shield of Virtue
+          { spell = 228049, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Guardian of the Forgotten Queen
+          { spell = 228050, type="buff", unit = "group", pvptalent = 12, titleSuffix = L["buff"]},-- Guardian of the Forgotten Queen
+          { spell = 236186, type="ability", pvptalent = 7},-- Cleansing Light
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
@@ -1272,39 +1291,39 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
-          { spell = 267611, type = "buff", unit = "player", talent = 2}, -- Righteous Verdict
-          { spell = 205191, type = "buff", unit = "player", talent = 15}, -- Eye for an Eye
-          { spell = 1022, type = "buff", unit = "group"}, -- Blessing of Protection
-          { spell = 184662, type = "buff", unit = "player"}, -- Shield of Vengeance
-          { spell = 271581, type = "buff", unit = "player", talent = 10}, -- Divine Judgment
-          { spell = 84963, type = "buff", unit = "player", talent = 21}, -- Inquisition
-          { spell = 203538, type = "buff", unit = "group"}, -- Greater Blessing of Kings
-          { spell = 221883, type = "buff", unit = "player"}, -- Divine Steed
+          { spell = 465, type = "buff", unit = "player"}, -- Devotion Aura
           { spell = 642, type = "buff", unit = "player"}, -- Divine Shield
-          { spell = 203539, type = "buff", unit = "group"}, -- Greater Blessing of Wisdom
-          { spell = 114250, type = "buff", unit = "player", talent = 16}, -- Selfless Healer
+          { spell = 1022, type = "buff", unit = "group"}, -- Blessing of Protection
+          { spell = 1044, type = "buff", unit = "group"}, -- Blessing of Freedom
           { spell = 31884, type = "buff", unit = "player"}, -- Avenging Wrath
+          { spell = 32223, type = "buff", unit = "player"}, -- Crusader Aura
+          { spell = 114250, type = "buff", unit = "player", talent = 16}, -- Selfless Healer
+          { spell = 183435, type = "buff", unit = "player"}, -- Retribution Aura
+          { spell = 184662, type = "buff", unit = "player"}, -- Shield of Vengeance
+          { spell = 205191, type = "buff", unit = "player", talent = 12}, -- Eye for an Eye
+          { spell = 209785, type = "buff", unit = "player", talent = 4}, -- Fires of Justice
+          { spell = 221883, type = "buff", unit = "player"}, -- Divine Steed
+          { spell = 223819, type = "buff", unit = "player", talent = 13}, -- Divine Purpose
+          { spell = 267611, type = "buff", unit = "player", talent = 2}, -- Righteous Verdict
           { spell = 269571, type = "buff", unit = "player", talent = 1}, -- Zeal
           { spell = 281178, type = "buff", unit = "player", talent = 5}, -- Blade of Wrath
-          { spell = 1044, type = "buff", unit = "group"}, -- Blessing of Freedom
-          { spell = 209785, type = "buff", unit = "player", talent = 4}, -- Fires of Justice
-          { spell = 223819, type = "buff", unit = "player", talent = 19}, -- Divine Purpose
-          { spell = 183436, type = "buff", unit = "player"}, -- Retribution
+          { spell = 317920, type = "buff", unit = "player"}, -- Concentration Aura
+          { spell = 326733, type = "buff", unit = "player", talent = 6}, -- Empyrean Power
         },
         icon = 135993
       },
       [2] = {
         title = L["Debuffs"],
         args = {
-          { spell = 62124, type = "debuff", unit = "target"}, -- Hand of Reckoning
-          { spell = 197277, type = "debuff", unit = "target"}, -- Judgment
-          { spell = 267799, type = "debuff", unit = "target", talent = 3}, -- Execution Sentence
-          { spell = 105421, type = "debuff", unit = "target"}, -- Blinding Light
           { spell = 853, type = "debuff", unit = "target"}, -- Hammer of Justice
-          { spell = 183218, type = "debuff", unit = "target"}, -- Hand of Hindrance
           { spell = 20066, type = "debuff", unit = "multi", talent = 8}, -- Repentance
-          { spell = 255937, type = "debuff", unit = "target", talent = 12}, -- Wake of Ashes
-
+          { spell = 62124, type = "debuff", unit = "target"}, -- Hand of Reckoning
+          { spell = 105421, type = "debuff", unit = "target"}, -- Blinding Light
+          { spell = 183218, type = "debuff", unit = "target"}, -- Hand of Hindrance
+          { spell = 197277, type = "debuff", unit = "target"}, -- Judgment
+          { spell = 255937, type = "debuff", unit = "target"}, -- Wake of Ashes
+          { spell = 343527, type = "debuff", unit = "target", talent = 3}, -- Execution Sentence
+          { spell = 343724, type = "debuff", unit = "target", talent = 21}, -- Reckoning
         },
         icon = 135952
       },
@@ -1316,25 +1335,34 @@ else
           { spell = 853, type = "ability", requiresTarget = true}, -- Hammer of Justice
           { spell = 1022, type = "ability", buff = true}, -- Blessing of Protection
           { spell = 1044, type = "ability", buff = true}, -- Blessing of Freedom
+          { spell = 6940, type = "ability", buff = true}, -- Blessing of Sacrifice
+          { spell = 10326, type = "ability"}, -- Turn Evil
           { spell = 20066, type = "ability", requiresTarget = true, talent = 8}, -- Repentance
           { spell = 20271, type = "ability", debuff = true, requiresTarget = true}, -- Judgment
-          { spell = 24275, type = "ability", talent = 6}, -- Hammer of Wrath
+          { spell = 24275, type = "ability"}, -- Hammer of Wrath
+          { spell = 26573, type = "ability"}, -- Consecration
           { spell = 31884, type = "ability", buff = true}, -- Avenging Wrath
           { spell = 35395, type = "ability", charges = true, requiresTarget = true}, -- Crusader Strike
+          { spell = 53600, type = "ability", buff = true, requiresTarget = true}, -- Shield of the Righteous
+          { spell = 53385, type = "ability"}, -- Divine Storm
           { spell = 62124, type = "ability", debuff = true, requiresTarget = true}, -- Hand of Reckoning
+          { spell = 85256, type = "ability"}, -- Templar's Verdict
+          { spell = 85673, type = "ability"}, -- Word of Glory
           { spell = 96231, type = "ability", requiresTarget = true}, -- Rebuke
+          { spell = 105809, type = "ability", talent = 14}, -- Holy Avenger
           { spell = 115750, type = "ability", talent = 9}, -- Blinding Light
+          { spell = 152262, type = "ability", talent = 15, buff = true}, -- Seraphim
           { spell = 183218, type = "ability", debuff = true, requiresTarget = true}, -- Hand of Hindrance
           { spell = 184575, type = "ability", requiresTarget = true, overlayGlow = true}, -- Blade of Justice
           { spell = 184662, type = "ability", buff = true}, -- Shield of Vengeance
           { spell = 190784, type = "ability"}, -- Divine Steed
-          { spell = 205191, type = "ability", buff = true, talent = 15}, -- Eye for an Eye
-          { spell = 205228, type = "ability", totem = true, talent = 11}, -- Consecration
-          { spell = 210191, type = "ability", charges = true, talent = 18}, -- Word of Glory
+          { spell = 205191, type = "ability", buff = true, talent = 12}, -- Eye for an Eye
+          { spell = 205228, type = "ability", totem = true}, -- Consecration
           { spell = 213644, type = "ability"}, -- Cleanse Toxins
           { spell = 215661, type = "ability", requiresTarget = true, talent = 17}, -- Justiciar's Vengeance
-          { spell = 255937, type = "ability", debuff = true, requiresTarget = true, talent = 11}, -- Wake of Ashes
-          { spell = 267798, type = "ability", debuff = true, requiresTarget = true, talent = 3}, -- Execution Sentence
+          { spell = 231895, type = "ability", buff = true, talent = 20}, -- Crusade
+          { spell = 255937, type = "ability", debuff = true, requiresTarget = true}, -- Wake of Ashes
+          { spell = 343527, type = "ability", debuff = true, requiresTarget = true, talent = 3}, -- Execution Sentence
         },
         icon = 135891
       },
@@ -1344,14 +1372,12 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
-          { spell = 236186, type="ability", pvptalent = 4},-- Cleansing Light
-          { spell = 247675, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Hammer of Reckoning
-          { spell = 247675, type="buff", unit = "player", pvptalent = 8, titleSuffix = L["buff"]},-- Hammer of Reckoning
-          { spell = 210323, type="buff", unit = "target", pvptalent = 9},-- Vengeance Aura
-          { spell = 210256, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Blessing of Sanctuary
-          { spell = 210256, type="buff", unit = "target", pvptalent = 10, titleSuffix = L["buff"]},-- Blessing of Sanctuary
+          { spell = 210256, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Blessing of Sanctuary
+          { spell = 210256, type="buff", unit = "target", pvptalent = 5, titleSuffix = L["buff"]},-- Blessing of Sanctuary
+          { spell = 210323, type="buff", unit = "target", pvptalent = 4},-- Vengeance Aura
+          { spell = 236186, type="ability", pvptalent = 2},-- Cleansing Light
+          { spell = 246807, type="buff", unit = "target", pvptalent = 10},-- Lawbringer
           { spell = 287947, type="buff", unit = "player", pvptalent = 11},-- Ultimate Retribution
-          { spell = 246807, type="buff", unit = "target", pvptalent = 12},-- Lawbringer
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
@@ -4645,8 +4671,8 @@ if not WeakAuras.IsClassic() then
   end
 
   -- Paladin
-  tinsert(templates.class.PALADIN[3][8].args, createSimplePowerTemplate(9));
   for i = 1, 3 do
+    tinsert(templates.class.PALADIN[i][8].args, createSimplePowerTemplate(9));
     tinsert(templates.class.PALADIN[i][8].args, createSimplePowerTemplate(0));
   end
 
