@@ -1395,39 +1395,40 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
-          { spell = 246851, type = "buff", unit = "player"}, -- Barbed Shot
-          { spell = 35079, type = "buff", unit = "player"}, -- Misdirection
-          { spell = 231390, type = "buff", unit = "player", talent = 7}, -- Trailblazer
-          { spell = 186258, type = "buff", unit = "player"}, -- Aspect of the Cheetah
-          { spell = 264667, type = "buff", unit = "player"}, -- Primal Rage
-          { spell = 257946, type = "buff", unit = "player"}, -- Thrill of the Hunt
-          { spell = 19574, type = "buff", unit = "player"}, -- Bestial Wrath
-          { spell = 268877, type = "buff", unit = "player"}, -- Beast Cleave
-          { spell = 264663, type = "buff", unit = "player"}, -- Predator's Thirst
-          { spell = 118922, type = "buff", unit = "player", talent = 14}, -- Posthaste
-          { spell = 193530, type = "buff", unit = "player"}, -- Aspect of the Wild
-          { spell = 5384, type = "buff", unit = "player"}, -- Feign Death
-          { spell = 199483, type = "buff", unit = "player"}, -- Camouflage
-          { spell = 281036, type = "buff", unit = "player", talent = 3}, -- Dire Beast
-          { spell = 186265, type = "buff", unit = "player"}, -- Aspect of the Turtle
-          { spell = 6197, type = "buff", unit = "player"}, -- Eagle Eye
-          { spell = 246152, type = "buff", unit = "player"}, -- Barbed Shot
-          { spell = 24450, type = "buff", unit = "pet"}, -- Prowl
-          { spell = 272790, type = "buff", unit = "pet"}, -- Frenzy
           { spell = 136, type = "buff", unit = "pet"}, -- Mend Pet
+          { spell = 5384, type = "buff", unit = "player"}, -- Feign Death
+          { spell = 6197, type = "buff", unit = "player"}, -- Eagle Eye
+          { spell = 19574, type = "buff", unit = "player"}, -- Bestial Wrath
+          { spell = 24450, type = "buff", unit = "pet"}, -- Prowl
+          { spell = 35079, type = "buff", unit = "player"}, -- Misdirection
+          { spell = 118922, type = "buff", unit = "player", talent = 14}, -- Posthaste
+          { spell = 186258, type = "buff", unit = "player"}, -- Aspect of the Cheetah
+          { spell = 186265, type = "buff", unit = "player"}, -- Aspect of the Turtle
+          { spell = 193530, type = "buff", unit = "player"}, -- Aspect of the Wild
+          { spell = 199483, type = "buff", unit = "player"}, -- Camouflage
+          { spell = 231390, type = "buff", unit = "player", talent = 7}, -- Trailblazer
+          { spell = 217200, type = "buff", unit = "player"}, -- Barbed Shot
+          { spell = 257946, type = "buff", unit = "player", talent = 11}, -- Thrill of the Hunt
+          { spell = 264663, type = "buff", unit = "player"}, -- Predator's Thirst
+          { spell = 264667, type = "buff", unit = "player"}, -- Primal Rage
+          { spell = 268877, type = "buff", unit = "player"}, -- Beast Cleave
+          { spell = 272790, type = "buff", unit = "pet"}, -- Frenzy
+          { spell = 281036, type = "buff", unit = "player", talent = 3}, -- Dire Beast
         },
         icon = 132242
       },
       [2] = {
         title = L["Debuffs"],
         args = {
+          { spell = 2649, type = "debuff", unit = "target"}, -- Growl
+          { spell = 3355, type = "debuff", unit = "multi"}, -- Freezing Trap
+          { spell = 5116, type = "debuff", unit = "target"}, -- Concussive Shot
+          { spell = 24394, type = "debuff", unit = "target"}, -- Intimidation
+          { spell = 117405, type = "debuff", unit = "target", talent = 15}, -- Binding Shot
+          { spell = 131894, type = "debuff", unit = "target"}, -- A Murder of Crows
           { spell = 135299, type = "debuff", unit = "target"}, -- Tar Trap
           { spell = 217200, type = "debuff", unit = "target"}, -- Barbed Shot
-          { spell = 117405, type = "debuff", unit = "target", talent = 15}, -- Binding Shot
-          { spell = 3355, type = "debuff", unit = "multi"}, -- Freezing Trap
-          { spell = 2649, type = "debuff", unit = "target"}, -- Growl
-          { spell = 24394, type = "debuff", unit = "target"}, -- Intimidation
-          { spell = 5116, type = "debuff", unit = "target"}, -- Concussive Shot
+          { spell = 257284, type = "debuff", unit = "target"}, -- Hunter's Mark
         },
         icon = 135860
       },
@@ -1435,36 +1436,47 @@ else
         title = L["Abilities"],
         args = {
           { spell = 781, type = "ability"}, -- Disengage
+          { spell = 1513, type = "ability"}, -- Scare Beast
           { spell = 1543, type = "ability"}, -- Flare
+          { spell = 2643, type = "ability", requiresTarget = true}, -- Multi-Shot
           { spell = 2649, type = "ability", requiresTarget = true, debuff = true}, -- Growl
           { spell = 5116, type = "ability", requiresTarget = true}, -- Concussive Shot
           { spell = 5384, type = "ability", buff = true}, -- Feign Death
+          { spell = 6197, type = "ability", buff = true}, -- Eagle Eye
           { spell = 16827, type = "ability", requiresTarget = true}, -- Claw
           { spell = 19574, type = "ability", buff = true}, -- Bestial Wrath
           { spell = 19577, type = "ability", requiresTarget = true, debuff = true}, -- Intimidation
+          { spell = 19801, type = "ability", requiresTarget = true}, -- Tranquilizing Shot
           { spell = 24450, type = "ability"}, -- Prowl
-          { spell = 34026, type = "ability"}, -- Kill Command
+          { spell = 34026, type = "ability", requiresTarget = true}, -- Kill Command
           { spell = 34477, type = "ability", requiresTarget = true}, -- Misdirection
           { spell = 53209, type = "ability", requiresTarget = true, talent = 6}, -- Chimaera Shot
+          { spell = 53351, type = "ability", requiresTarget = true}, -- Kill Shot
+          { spell = 56641, type = "ability", requiresTarget = true}, -- Cobra Shot
+          { spell = 58875, type = "ability",  unit = "pet", buff = true}, -- Spirit Walk
+          { spell = 90361, type = "ability",  unit = "pet", buff = true}, -- Spirit Mend
           { spell = 109248, type = "ability", requiresTarget = true, talent = 15}, -- Binding Shot
           { spell = 109304, type = "ability"}, -- Exhilaration
           { spell = 120360, type = "ability", talent = 17}, -- Barrage
           { spell = 120679, type = "ability", requiresTarget = true, buff = true, talent = 3}, -- Dire Beast
           { spell = 131894, type = "ability", requiresTarget = true, talent = 12}, -- A Murder of Crows
           { spell = 147362, type = "ability", requiresTarget = true}, -- Counter Shot
+          { spell = 185358, type = "ability"}, -- Arcane Shot
           { spell = 186257, type = "ability", buff = true}, -- Aspect of the Cheetah
           { spell = 186265, type = "ability", buff = true}, -- Aspect of the Turtle
           { spell = 187650, type = "ability"}, -- Freezing Trap
           { spell = 187698, type = "ability"}, -- Tar Trap
           { spell = 193530, type = "ability", buff = true}, -- Aspect of the Wild
+          { spell = 195645, type = "ability", debuff = true}, -- Concussive Shot
           { spell = 199483, type = "ability", talent = 9}, -- Camouflage
           { spell = 201430, type = "ability", talent = 18}, -- Stampede
           { spell = 217200, type = "ability", charges = true, requiresTarget = true, overlayGlow = true}, -- Barbed Shot
+          { spell = 272651, type = "ability"}, -- Command Pet Ability
+          { spell = 257284, type = "ability", debuff = true, requiresTarget = true}, -- Hunter's Mark
           { spell = 264667, type = "ability", buff = true}, -- Primal Rage
           { spell = 264735, type = "ability", unit = "pet", buff = true}, -- Survival of the Fittest
-          { spell = 90361, type = "ability",  unit = "pet", buff = true}, -- Spirit Mend
-          { spell = 58875, type = "ability",  unit = "pet", buff = true}, -- Spirit Walk
-          { spell = 264265, type = "ability"}, -- Spirit Shock
+          { spell = 321297, type = "ability", buff = true}, -- Eyes of the Beast
+          { spell = 321530, type = "ability", debuff = true}, -- Bloodshedew
         },
         icon = 135130
       },
@@ -1474,20 +1486,20 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
-          { spell = 204205, type="buff", unit = "player", pvptalent = 4},-- Wild Protector
-          { spell = 208652, type="ability", pvptalent = 5},-- Dire Beast: Hawk
-          { spell = 205691, type="ability", pvptalent = 6},-- Dire Beast: Basilisk
-          { spell = 248518, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Interlope
-          { spell = 248519, type="buff", unit = "group", pvptalent = 7, titleSuffix = L["buff"]},-- Interlope
-          { spell = 53480, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Roar of Sacrifice
-          { spell = 53480, type="buff", unit = "group", pvptalent = 10, titleSuffix = L["buff"]},-- Roar of Sacrifice
+          { spell = 53480, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Roar of Sacrifice
+          { spell = 53480, type="buff", unit = "group", pvptalent = 7, titleSuffix = L["buff"]},-- Roar of Sacrifice
+          { spell = 202797, type="ability", pvptalent = 4, titleSuffix = L["cooldown"]},-- Viper Sting
+          { spell = 202797, type="debuff", unit = "target", pvptalent = 4, titleSuffix = L["debuff"]},-- Viper Sting
+          { spell = 202900, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Scorpid Sting
+          { spell = 202900, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuff"]},-- Scorpid Sting
+          { spell = 202914, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Spider Sting
+          { spell = 202914, type="debuff", unit = "target", pvptalent = 5, titleSuffix = L["debuff"]},-- Spider Sting
+          { spell = 204205, type="buff", unit = "player", pvptalent = 10},-- Wild Protector
+          { spell = 205691, type="ability", pvptalent = 8},-- Dire Beast: Basilisk
+          { spell = 208652, type="ability", pvptalent = 1},-- Dire Beast: Hawk
           { spell = 236776, type="ability", pvptalent = 11},-- Hi-Explosive Trap
-          { spell = 202900, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Scorpid Sting
-          { spell = 202900, type="debuff", unit = "target", pvptalent = 12, titleSuffix = L["debuff"]},-- Scorpid Sting
-          { spell = 202914, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Spider Sting
-          { spell = 202914, type="debuff", unit = "target", pvptalent = 13, titleSuffix = L["debuff"]},-- Spider Sting
-          { spell = 202797, type="ability", pvptalent = 14, titleSuffix = L["cooldown"]},-- Viper Sting
-          { spell = 202797, type="debuff", unit = "target", pvptalent = 14, titleSuffix = L["debuff"]},-- Viper Sting
+          { spell = 248518, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Interlope
+          { spell = 248519, type="buff", unit = "group", pvptalent = 13, titleSuffix = L["buff"]},-- Interlope
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
@@ -1502,42 +1514,44 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
-          { spell = 35079, type = "buff", unit = "player"}, -- Misdirection
-          { spell = 231390, type = "buff", unit = "player", talent = 7}, -- Trailblazer
-          { spell = 186258, type = "buff", unit = "player"}, -- Aspect of the Cheetah
-          { spell = 264667, type = "buff", unit = "player"}, -- Primal Rage
-          { spell = 260395, type = "buff", unit = "player", talent = 16}, -- Lethal Shots
-          { spell = 194594, type = "buff", unit = "player", talent = 20}, -- Lock and Load
-          { spell = 257044, type = "buff", unit = "player"}, -- Rapid Fire
-          { spell = 164273, type = "buff", unit = "player"}, -- Lone Wolf
-          { spell = 6197, type = "buff", unit = "player"}, -- Eagle Eye
-          { spell = 257622, type = "buff", unit = "player"}, -- Trick Shots
-          { spell = 193526, type = "buff", unit = "player"}, -- Trueshot
-          { spell = 260242, type = "buff", unit = "player"}, -- Precise Shots
+          { spell = 136, type = "buff", unit = "pet"}, -- Mend Pet
           { spell = 5384, type = "buff", unit = "player"}, -- Feign Death
-          { spell = 260402, type = "buff", unit = "player", talent = 18}, -- Double Tap
+          { spell = 6197, type = "buff", unit = "player"}, -- Eagle Eye
+          { spell = 24450, type = "buff", unit = "pet"}, -- Prowl
+          { spell = 35079, type = "buff", unit = "player"}, -- Misdirection
           { spell = 118922, type = "buff", unit = "player", talent = 14}, -- Posthaste
+          { spell = 164273, type = "buff", unit = "player"}, -- Lone Wolf
+          { spell = 186258, type = "buff", unit = "player"}, -- Aspect of the Cheetah
           { spell = 186265, type = "buff", unit = "player"}, -- Aspect of the Turtle
           { spell = 193534, type = "buff", unit = "player", talent = 10}, -- Steady Focus
-          { spell = 264663, type = "buff", unit = "player"}, -- Predator's Thirst
+          { spell = 194594, type = "buff", unit = "player", talent = 20}, -- Lock and Load
           { spell = 199483, type = "buff", unit = "player", talent = 9}, -- Camouflage
-          { spell = 24450, type = "buff", unit = "pet"}, -- Prowl
-          { spell = 136, type = "buff", unit = "pet"}, -- Mend Pet
+          { spell = 231390, type = "buff", unit = "player", talent = 7}, -- Trailblazer
+          { spell = 257044, type = "buff", unit = "player"}, -- Rapid Fire
+          { spell = 257622, type = "buff", unit = "player"}, -- Trick Shots
+          { spell = 260242, type = "buff", unit = "player"}, -- Precise Shots
+          { spell = 260395, type = "buff", unit = "player", talent = 16}, -- Lethal Shots
+          { spell = 260402, type = "buff", unit = "player", talent = 18}, -- Double Tap
+          { spell = 264663, type = "buff", unit = "player"}, -- Predator's Thirst
+          { spell = 264667, type = "buff", unit = "player"}, -- Primal Rage
           { spell = 264735, type = "ability", unit = "pet", buff = true}, -- Survival of the Fittest
+          { spell = 288613, type = "buff", unit = "player"}, -- Trueshot
+          { spell = 321461, type = "buff", unit = "player", talent = 17}, -- Dead Eye
         },
         icon = 461846
       },
       [2] = {
         title = L["Debuffs"],
         args = {
-          { spell = 135299, type = "debuff", unit = "target"}, -- Tar Trap
-          { spell = 5116, type = "debuff", unit = "target"}, -- Concussive Shot
-          { spell = 186387, type = "debuff", unit = "target"}, -- Bursting Shot
           { spell = 3355, type = "debuff", unit = "multi"}, -- Freezing Trap
-          { spell = 271788, type = "debuff", unit = "target"}, -- Serpent Sting
-          { spell = 257284, type = "debuff", unit = "target", talent = 12}, -- Hunter's Mark
+          { spell = 5116, type = "debuff", unit = "target"}, -- Concussive Shot
           { spell = 131894, type = "debuff", unit = "target", talent = 3}, -- A Murder of Crows
-
+          { spell = 135299, type = "debuff", unit = "target"}, -- Tar Trap
+          { spell = 186387, type = "debuff", unit = "target"}, -- Bursting Shot
+          { spell = 257284, type = "debuff", unit = "target", talent = 12}, -- Hunter's Mark
+          { spell = 269576, type = "debuff", unit = "target", talent = 1}, -- Master Marksman
+          { spell = 271788, type = "debuff", unit = "target", talent = 2}, -- Serpent Sting
+          { spell = 321469, type = "debuff", unit = "target", talent = 15}, -- Binding Shackles
         },
         icon = 236188
       },
@@ -1545,31 +1559,42 @@ else
         title = L["Abilities"],
         args = {
           { spell = 781, type = "ability"}, -- Disengage
+          { spell = 1513, type = "ability", debuff = true}, -- Scare Beast
           { spell = 1543, type = "ability"}, -- Flare
           { spell = 5116, type = "ability", requiresTarget = true}, -- Concussive Shot
           { spell = 5384, type = "ability", buff = true}, -- Feign Death
+          { spell = 6197, type = "ability", buff = true}, -- Eagle Eye
           { spell = 19434, type = "ability", requiresTarget = true, charges = true, overlayGlow = true}, -- Aimed Shot
+          { spell = 19801, type = "ability", requiresTarget = true}, -- Tranquilizing Shot
           { spell = 34477, type = "ability", requiresTarget = true}, -- Misdirection
-          { spell = 109248, type = "ability", requiresTarget = true, talent = 15}, -- Binding Shot
+          { spell = 53351, type = "ability", requiresTarget = true}, -- Kill Shot
+          { spell = 56641, type = "ability", requiresTarget = true}, -- Steady Shot
+          { spell = 109248, type = "ability", requiresTarget = true}, -- Binding Shot
           { spell = 109304, type = "ability"}, -- Exhilaration
-          { spell = 120360, type = "ability", talent = 17}, -- Barrage
+          { spell = 120360, type = "ability", talent = 5}, -- Barrage
           { spell = 131894, type = "ability", talent = 3}, -- A Murder of Crows
           { spell = 147362, type = "ability", requiresTarget = true}, -- Counter Shot
           { spell = 185358, type = "ability", requiresTarget = true, overlayGlow = true}, -- Arcane Shot
           { spell = 186257, type = "ability", buff = true}, -- Aspect of the Cheetah
           { spell = 186265, type = "ability", buff = true}, -- Aspect of the Turtle
-          { spell = 186387, type = "ability"}, -- Bursting Shot
+          { spell = 186387, type = "ability", debuff = true}, -- Bursting Shot
           { spell = 187650, type = "ability"}, -- Freezing Trap
           { spell = 187698, type = "ability"}, -- Tar Trap
-          { spell = 193526, type = "ability", buff = true}, -- Trueshot
-          { spell = 198670, type = "ability", talent = 21}, -- Piercing Shot
+          { spell = 195645, type = "ability", debuff = true}, -- Concussive Shot
           { spell = 199483, type = "ability", talent = 9}, -- Camouflage
           { spell = 212431, type = "ability", talent = 6}, -- Explosive Shot
           { spell = 257044, type = "ability", requiresTarget = true, overlayGlow = true}, -- Rapid Fire
+          { spell = 257284, type = "ability", requiresTarget = true}, -- Hunter's Mark
           { spell = 257620, type = "ability", requiresTarget = true}, -- Multi-Shot
+          { spell = 260243, type = "ability", talent = 21}, -- Volley
           { spell = 260402, type = "ability", buff = true, talent = 18}, -- Double Tap
           { spell = 264667, type = "ability", buff = true}, -- Primal Rage
           { spell = 264735, type = "ability", unit = "pet", buff = true}, -- Survival of the Fittest
+          { spell = 271788, type = "ability", debuff = true, talent = 2}, -- Serpent Sting
+          { spell = 272651, type = "ability"}, -- Command Pet Ability
+          { spell = 288613, type = "ability", buff = true}, -- Trueshot
+          { spell = 321297, type = "ability"}, -- Eyes of the Beast
+          { spell = 342049, type = "ability", talent = 12}, -- Chimaera Shot
         },
         icon = 132329
       },
@@ -1579,19 +1604,19 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
-          { spell = 202797, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Viper Sting
-          { spell = 202797, type="debuff", unit = "target", pvptalent = 5, titleSuffix = L["debuff"]},-- Viper Sting
-          { spell = 202900, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Scorpid Sting
-          { spell = 202900, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuff"]},-- Scorpid Sting
-          { spell = 202914, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Spider Sting
-          { spell = 202914, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Spider Sting
-          { spell = 53480, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Roar of Sacrifice
-          { spell = 53480, type="buff", unit = "group", pvptalent = 9, titleSuffix = L["buff"]},-- Roar of Sacrifice
+          { spell = 53480, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Roar of Sacrifice
+          { spell = 53480, type="buff", unit = "group", pvptalent = 7, titleSuffix = L["buff"]},-- Roar of Sacrifice
+          { spell = 202797, type="ability", pvptalent = 3, titleSuffix = L["cooldown"]},-- Viper Sting
+          { spell = 202797, type="debuff", unit = "target", pvptalent = 3, titleSuffix = L["debuff"]},-- Viper Sting
+          { spell = 202900, type="ability", pvptalent = 4, titleSuffix = L["cooldown"]},-- Scorpid Sting
+          { spell = 202900, type="debuff", unit = "target", pvptalent = 4, titleSuffix = L["debuff"]},-- Scorpid Sting
+          { spell = 202914, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Spider Sting
+          { spell = 202914, type="debuff", unit = "target", pvptalent = 5, titleSuffix = L["debuff"]},-- Spider Sting
           { spell = 203155, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Sniper Shot
           { spell = 203155, type="buff", unit = "player", pvptalent = 12, titleSuffix = L["buff"]},-- Sniper Shot
-          { spell = 213691, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Scatter Shot
-          { spell = 213691, type="debuff", unit = "target", pvptalent = 13, titleSuffix = L["debuff"]},-- Scatter Shot
-          { spell = 236776, type="ability", pvptalent = 15},-- Hi-Explosive Trap
+          { spell = 213691, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Scatter Shot
+          { spell = 213691, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuff"]},-- Scatter Shot
+          { spell = 236776, type="ability", pvptalent = 8},-- Hi-Explosive Trap
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
@@ -1606,31 +1631,31 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
-          { spell = 199483, type = "buff", unit = "player", talent = 9}, -- Camouflage
-          { spell = 35079, type = "buff", unit = "player"}, -- Misdirection
-          { spell = 231390, type = "buff", unit = "player", talent = 7 }, -- Trailblazer
-          { spell = 186258, type = "buff", unit = "player"}, -- Aspect of the Cheetah
-          { spell = 264667, type = "buff", unit = "player"}, -- Primal Rage
-          { spell = 259388, type = "buff", unit = "player", talent = 17 }, -- Mongoose Fury
-          { spell = 225788, type = "buff", unit = "player"}, -- Sign of the Emissary
-          { spell = 268552, type = "buff", unit = "player", talent = 1 }, -- Viper's Venom
-          { spell = 260249, type = "buff", unit = "player"}, -- Predator
-          { spell = 6197, type = "buff", unit = "player"}, -- Eagle Eye
-          { spell = 264663, type = "buff", unit = "player"}, -- Predator's Thirst
-          { spell = 266779, type = "buff", unit = "player"}, -- Coordinated Assault
-          { spell = 5384, type = "buff", unit = "player"}, -- Feign Death
-          { spell = 260286, type = "buff", unit = "player", talent = 16 }, -- Tip of the Spear
-          { spell = 186265, type = "buff", unit = "player"}, -- Aspect of the Turtle
-          { spell = 118922, type = "buff", unit = "player", talent = 14 }, -- Posthaste
-          { spell = 265898, type = "buff", unit = "player", talent = 2 }, -- Terms of Engagement
-          { spell = 186289, type = "buff", unit = "player"}, -- Aspect of the Eagle
-          { spell = 264663, type = "buff", unit = "pet"}, -- Predator's Thirst
-          { spell = 266779, type = "buff", unit = "pet"}, -- Coordinated Assault
-          { spell = 263892, type = "buff", unit = "pet"}, -- Catlike Reflexes
-          { spell = 61684, type = "buff", unit = "pet"}, -- Dash
           { spell = 136, type = "buff", unit = "pet"}, -- Mend Pet
-          { spell = 260249, type = "buff", unit = "pet"}, -- Predator
+          { spell = 5384, type = "buff", unit = "player"}, -- Feign Death
+          { spell = 6197, type = "buff", unit = "player"}, -- Eagle Eye
           { spell = 24450, type = "buff", unit = "pet"}, -- Prowl
+          { spell = 35079, type = "buff", unit = "player"}, -- Misdirection
+          { spell = 61684, type = "buff", unit = "pet"}, -- Dash
+          { spell = 118922, type = "buff", unit = "player", talent = 14 }, -- Posthaste
+          { spell = 186258, type = "buff", unit = "player"}, -- Aspect of the Cheetah
+          { spell = 186265, type = "buff", unit = "player"}, -- Aspect of the Turtle
+          { spell = 186289, type = "buff", unit = "player"}, -- Aspect of the Eagle
+          { spell = 199483, type = "buff", unit = "player", talent = 9}, -- Camouflage
+          { spell = 225788, type = "buff", unit = "player"}, -- Sign of the Emissary
+          { spell = 231390, type = "buff", unit = "player", talent = 7 }, -- Trailblazer
+          { spell = 259388, type = "buff", unit = "player", talent = 17 }, -- Mongoose Fury
+          { spell = 260249, type = "buff", unit = "pet"}, -- Predator
+          { spell = 260249, type = "buff", unit = "player"}, -- Predator
+          { spell = 260286, type = "buff", unit = "player", talent = 16 }, -- Tip of the Spear
+          { spell = 263892, type = "buff", unit = "pet"}, -- Catlike Reflexes
+          { spell = 264663, type = "buff", unit = "pet"}, -- Predator's Thirst
+          { spell = 264663, type = "buff", unit = "player"}, -- Predator's Thirst
+          { spell = 264667, type = "buff", unit = "player"}, -- Primal Rage
+          { spell = 265898, type = "buff", unit = "player", talent = 2 }, -- Terms of Engagement
+          { spell = 266779, type = "buff", unit = "pet"}, -- Coordinated Assault
+          { spell = 266779, type = "buff", unit = "player"}, -- Coordinated Assault
+          { spell = 268552, type = "buff", unit = "player", talent = 1 }, -- Viper's Venom
 
         },
         icon = 1376044
@@ -1638,23 +1663,23 @@ else
       [2] = {
         title = L["Debuffs"],
         args = {
-          { spell = 270339, type = "debuff", unit = "target", talent = 20 }, -- Shrapnel Bomb
-          { spell = 270332, type = "debuff", unit = "target", talent = 20 }, -- Pheromone Bomb
-          { spell = 24394, type = "debuff", unit = "target"}, -- Intimidation
-          { spell = 135299, type = "debuff", unit = "target"}, -- Tar Trap
-          { spell = 270343, type = "debuff", unit = "target"}, -- Internal Bleeding
-          { spell = 195645, type = "debuff", unit = "target"}, -- Wing Clip
-          { spell = 269747, type = "debuff", unit = "target"}, -- Wildfire Bomb
-          { spell = 162487, type = "debuff", unit = "target", talent = 11 }, -- Steel Trap
-          { spell = 131894, type = "debuff", unit = "target", talent = 12 }, -- A Murder of Crows
-          { spell = 259277, type = "debuff", unit = "target", talent = 10 }, -- Kill Command
-          { spell = 190927, type = "debuff", unit = "target"}, -- Harpoon
-          { spell = 162480, type = "debuff", unit = "target"}, -- Steel Trap
           { spell = 2649, type = "debuff", unit = "target"}, -- Growl
           { spell = 3355, type = "debuff", unit = "multi"}, -- Freezing Trap
-          { spell = 259491, type = "debuff", unit = "target"}, -- Serpent Sting
-          { spell = 271049, type = "debuff", unit = "target"}, -- Volatile Bomb
+          { spell = 24394, type = "debuff", unit = "target"}, -- Intimidation
           { spell = 117405, type = "debuff", unit = "target", talent = 15 }, -- Binding Shot
+          { spell = 131894, type = "debuff", unit = "target", talent = 12 }, -- A Murder of Crows
+          { spell = 135299, type = "debuff", unit = "target"}, -- Tar Trap
+          { spell = 162480, type = "debuff", unit = "target"}, -- Steel Trap
+          { spell = 162487, type = "debuff", unit = "target", talent = 11 }, -- Steel Trap
+          { spell = 190927, type = "debuff", unit = "target"}, -- Harpoon
+          { spell = 195645, type = "debuff", unit = "target"}, -- Wing Clip
+          { spell = 259277, type = "debuff", unit = "target", talent = 10 }, -- Kill Command
+          { spell = 259491, type = "debuff", unit = "target"}, -- Serpent Sting
+          { spell = 269747, type = "debuff", unit = "target"}, -- Wildfire Bomb
+          { spell = 270332, type = "debuff", unit = "target", talent = 20 }, -- Pheromone Bomb
+          { spell = 270339, type = "debuff", unit = "target", talent = 20 }, -- Shrapnel Bomb
+          { spell = 270343, type = "debuff", unit = "target"}, -- Internal Bleeding
+          { spell = 271049, type = "debuff", unit = "target"}, -- Volatile Bomb
 
         },
         icon = 132309
@@ -1663,29 +1688,37 @@ else
         title = L["Abilities"],
         args = {
           { spell = 781, type = "ability"}, -- Disengage
+          { spell = 1513, type = "ability", debuff = true}, -- Scare Beast
           { spell = 1543, type = "ability"}, -- Flare
           { spell = 2649, type = "ability", requiresTarget = true, debuff = true}, -- Growl
           { spell = 5384, type = "ability", buff = true}, -- Feign Death
+          { spell = 6197, type = "ability", buff = true}, -- Eagle Eye
           { spell = 16827, type = "ability", requiresTarget = true}, -- Claw
           { spell = 19434, type = "ability", requiresTarget = true}, -- Aimed Shot
           { spell = 19577, type = "ability", requiresTarget = true, debuff = true}, -- Intimidation
+          { spell = 19801, type = "ability", requiresTarget = true}, -- Tranquilizing Shot
           { spell = 24450, type = "ability"}, -- Prowl
           { spell = 34477, type = "ability", requiresTarget = true}, -- Misdirection
+          { spell = 56641, type = "ability", requiresTarget = true}, -- Steady Shot
           { spell = 61684, type = "ability"}, -- Dash
-          { spell = 109248, type = "ability", requiresTarget = true}, -- Binding Shot
+          { spell = 109248, type = "ability"}, -- Binding Shot
           { spell = 109304, type = "ability"}, -- Exhilaration
           { spell = 131894, type = "ability", talent = 12}, -- A Murder of Crows
           { spell = 162488, type = "ability", talent = 11}, -- Steel Trap
+          { spell = 185358, type = "ability"}, -- Arcane Shot
           { spell = 186257, type = "ability", buff = true}, -- Aspect of the Cheetah
           { spell = 186265, type = "ability", buff = true}, -- Aspect of the Turtle
+          { spell = 186270, type = "ability"}, -- Raptor Strike
           { spell = 186289, type = "ability", buff = true}, -- Aspect of the Eagle
           { spell = 187650, type = "ability"}, -- Freezing Trap
           { spell = 187698, type = "ability"}, -- Tar Trap
           { spell = 187707, type = "ability", requiresTarget = true}, -- Muzzle
           { spell = 187708, type = "ability"}, -- Carve
           { spell = 190925, type = "ability", requiresTarget = true}, -- Harpoon
+          { spell = 195645, type = "ability", requiresTarget = true}, -- Wing Clip
           { spell = 199483, type = "ability", talent = 9}, -- Camouflage
           { spell = 212436, type = "ability", charges = true, talent = 6 }, -- Butchery
+          { spell = 257284, type = "ability", debuff = true}, -- Hunter's Mark
           { spell = 259391, type = "ability", requiresTarget = true, talent = 21 }, -- Chakrams
           { spell = 259489, type = "ability", requiresTarget = true, overlayGlow = true}, -- Kill Command
           { spell = 259491, type = "ability", requiresTarget = true, overlayGlow = true}, -- Serpent Sting
@@ -1697,7 +1730,9 @@ else
           { spell = 270323, type = "ability", talent = 20 }, -- Pheromone Bomb
           { spell = 270335, type = "ability", talent = 20}, -- Shrapnel Bomb
           { spell = 271045, type = "ability", talent = 20}, -- Volatile Bomb
-          { spell = 272678, type = "ability", buff = true}, -- Primal Rage
+          { spell = 272651, type = "ability"}, -- Command Pet
+          { spell = 321297, type = "ability"}, -- Eyes of the Beast
+          { spell = 320976, type = "ability", requiresTarget = true}, -- Kill Shot
         },
         icon = 236184
       },
@@ -1707,19 +1742,19 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
-          { spell = 202914, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Spider Sting
-          { spell = 202914, type="debuff", unit = "target", pvptalent = 5, titleSuffix = L["debuff"]},-- Spider Sting
-          { spell = 202900, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Scorpid Sting
-          { spell = 202900, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuff"]},-- Scorpid Sting
-          { spell = 212638, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Tracker's Net
-          { spell = 212638, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Tracker's Net
+          { spell = 53480, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Roar of Sacrifice
+          { spell = 53480, type="buff", unit = "group", pvptalent = 11, titleSuffix = L["buff"]},-- Roar of Sacrifice
           { spell = 202797, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Viper Sting
           { spell = 202797, type="debuff", unit = "target", pvptalent = 9, titleSuffix = L["debuff"]},-- Viper Sting
-          { spell = 212640, type="ability", pvptalent = 11},-- Mending Bandage
-          { spell = 53480, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Roar of Sacrifice
-          { spell = 53480, type="buff", unit = "group", pvptalent = 12, titleSuffix = L["buff"]},-- Roar of Sacrifice
-          { spell = 203268, type="debuff", unit = "target", pvptalent = 13},-- Sticky Tar
-          { spell = 236776, type="ability", pvptalent = 15},-- Hi-Explosive Trap
+          { spell = 202900, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Scorpid Sting
+          { spell = 202900, type="debuff", unit = "target", pvptalent = 7, titleSuffix = L["debuff"]},-- Scorpid Sting
+          { spell = 202914, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Spider Sting
+          { spell = 202914, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuff"]},-- Spider Sting
+          { spell = 203268, type="debuff", unit = "target", pvptalent = 3},-- Sticky Tar
+          { spell = 212638, type="ability", pvptalent = 1, titleSuffix = L["cooldown"]},-- Tracker's Net
+          { spell = 212638, type="debuff", unit = "target", pvptalent = 1, titleSuffix = L["debuff"]},-- Tracker's Net
+          { spell = 212640, type="ability", pvptalent = 10},-- Mending Bandage
+          { spell = 236776, type="ability", pvptalent = 4},-- Hi-Explosive Trap
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
