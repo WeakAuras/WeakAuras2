@@ -1347,6 +1347,13 @@ local function up(data, options, index)
       local optionID = optionData.index
       local childData = optionData.data
       local childOptions = optionData.options
+      local parent = optionData.parent
+      if parent and parent.groupType == "array" then
+        local dereferencedParent = parent.references[id].options[parent.references[id].index]
+        if dereferencedParent.nameSource == optionID then
+          dereferencedParent.nameSource = optionID - 1
+        end
+      end
       OptionsPrivate.MoveCollapseDataUp(id, "author", path)
       childOptions[optionID], childOptions[optionID - 1] = childOptions[optionID - 1], childOptions[optionID]
       WeakAuras.Add(childData)
@@ -1365,10 +1372,17 @@ local function down(data, options, index)
     end
   end, function()
     for id, optionData in pairs(option.references) do
-      -- move the option up in the subOptions
+      -- move the option down in the subOptions
       local path = optionData.path
       local optionID = optionData.index
       local childData = optionData.data
+      local parent = optionData.parent
+      if parent and parent.groupType == "array" then
+        local dereferencedParent = parent.references[id].options[parent.references[id].index]
+        if dereferencedParent.nameSource == optionID then
+          dereferencedParent.nameSource = optionID + 1
+        end
+      end
       local childOptions = optionData.options
       OptionsPrivate.MoveCollapseDataDown(id, "author", path)
       childOptions[optionID], childOptions[optionID + 1] = childOptions[optionID + 1], childOptions[optionID]
@@ -1552,6 +1566,14 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
         local parentOptions = parent and parent.references[id].options or optionData.data.authorOptions
         local childOption = tremove(optionData.options, optionData.index)
         local childCollapsed = OptionsPrivate.IsCollapsed(id, "author", optionData.path, true)
+        if parent and parent.groupType == "array" then
+          local dereferencedParent = parent.references[id].options[parent.references[id].index]
+          if dereferencedParent.nameSource == optionData.index then
+            dereferencedParent.nameSource = 0
+          elseif dereferencedParent.nameSource > optionData.index then
+            dereferencedParent.nameSource = dereferencedParent.nameSource - 1
+          end
+        end
         OptionsPrivate.RemoveCollapsed(id, "author", optionData.path)
         tinsert(parentOptions, path[#path - 1], childOption)
         path[#path] = nil
@@ -1578,6 +1600,14 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
         local parentOptions = parent and parent.references[id].options or optionData.data.authorOptions
         local childOption = tremove(optionData.options, optionData.index)
         local childCollapsed = OptionsPrivate.IsCollapsed(id, "author", optionData.path, true)
+        if parent and parent.groupType == "array" then
+          local dereferencedParent = parent.references[id].options[parent.references[id].index]
+          if dereferencedParent.nameSource == optionData.index then
+            dereferencedParent.nameSource = 0
+          elseif dereferencedParent.nameSource > optionData.index then
+            dereferencedParent.nameSource = dereferencedParent.nameSource - 1
+          end
+        end
         OptionsPrivate.RemoveCollapsed(id, "author", optionData.path)
         tinsert(parentOptions, path[#path - 1] + 1, childOption)
         path[#path] = nil
@@ -1642,11 +1672,11 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
         local childOptions = optionData.options
         local optionIndex = optionData.index
         local childData = optionData.data
-        local parentOption = optionData.parent
+        local parent = optionData.parent
         OptionsPrivate.RemoveCollapsed(id, "author", optionData.path)
         tremove(childOptions, optionIndex)
-        if parentOption and parentOption.groupType == "array" then
-          local dereferencedParent = parentOption.references[id]
+        if parent and parent.groupType == "array" then
+          local dereferencedParent = parent.references[id].options[parent.references[id].index]
           if dereferencedParent.nameSource == optionData.index then
             dereferencedParent.nameSource = 0
           end
