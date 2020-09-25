@@ -6672,7 +6672,7 @@ Private.event_prototypes = {
         "PLAYER_TARGET_CHANGED"
       },
       ["unit_events"] = {
-        ["player"] = {"UNIT_STATS", "UNIT_ATTACK_POWER"}
+        ["player"] = {"UNIT_STATS", "UNIT_ATTACK_POWER", "UNIT_AURA"}
       }
     },
     internal_events = function(trigger, untrigger)
