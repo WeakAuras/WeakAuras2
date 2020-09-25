@@ -2133,48 +2133,60 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
-          { spell = 586, type = "buff", unit = "player"}, -- Fade
-          { spell = 198069, type = "buff", unit = "player"}, -- Power of the Dark Side
-          { spell = 194384, type = "buff", unit = "player"}, -- Atonement
           { spell = 17, type = "buff", unit = "target"}, -- Power Word: Shield
-          { spell = 265258, type = "buff", unit = "player", talent = 2}, -- Twist of Fate
-          { spell = 271466, type = "buff", unit = "player", talent = 20}, -- Luminous Barrier
+          { spell = 586, type = "buff", unit = "player"}, -- Fade
+          { spell = 2096, type = "buff", unit = "player"}, -- Mind Vision
+          { spell = 10060, type = "buff", unit = "player"}, -- Power Infusion
           { spell = 19236, type = "buff", unit = "player"}, -- Desperate Prayer
           { spell = 21562, type = "buff", unit = "player", forceOwnOnly = true, ownOnly = nil }, -- Power Word: Fortitude
-          { spell = 81782, type = "buff", unit = "target"}, -- Power Word: Barrier
           { spell = 33206, type = "buff", unit = "group"}, -- Pain Suppression
-          { spell = 193065, type = "buff", unit = "player", talent = 5}, -- Masochism
-          { spell = 65081, type = "buff", unit = "player", talent = 4}, -- Body and Soul
           { spell = 47536, type = "buff", unit = "player"}, -- Rapture
-          { spell = 121557, type = "buff", unit = "player", talent = 6}, -- Angelic Feather
-          { spell = 2096, type = "buff", unit = "player"}, -- Mind Vision
-          { spell = 111759, type = "buff", unit = "player"}, -- Levitate
           { spell = 45243, type = "buff", unit = "player" }, -- Focused Will
+          { spell = 65081, type = "buff", unit = "player", talent = 4}, -- Body and Soul
+          { spell = 81782, type = "buff", unit = "target"}, -- Power Word: Barrier
+          { spell = 109964, type = "buff", unit = "player"}, -- Spirit Shell
+          { spell = 111759, type = "buff", unit = "player"}, -- Levitate
+          { spell = 121557, type = "buff", unit = "player", talent = 6}, -- Angelic Feather
+          { spell = 193065, type = "buff", unit = "player", talent = 5}, -- Masochism
+          { spell = 194384, type = "buff", unit = "group"}, -- Atonement
+          { spell = 198069, type = "buff", unit = "player"}, -- Power of the Dark Side
+          { spell = 265258, type = "buff", unit = "player", talent = 2}, -- Twist of Fate
+          { spell = 280398, type = "buff", unit = "player", talent = 13}, -- Sins of the Many
         },
         icon = 135940
       },
       [2] = {
         title = L["Debuffs"],
         args = {
+          { spell = 589, type = "debuff", unit = "target"}, -- Shadow Word: Pain
+          { spell = 2096, type = "debuff", unit = "target"}, -- Mind Vision
           { spell = 8122, type = "debuff", unit = "target"}, -- Psychic Scream
+          { spell = 9484, type = "debuff", unit = "multi" }, -- Shackle Undead
           { spell = 204263, type = "debuff", unit = "target", talent = 12}, -- Shining Force
           { spell = 208772, type = "debuff", unit = "target"}, -- Smite
           { spell = 204213, type = "debuff", unit = "target", talent = 16}, -- Purge the Wicked
-          { spell = 2096, type = "debuff", unit = "target"}, -- Mind Vision
           { spell = 214621, type = "debuff", unit = "target", talent = 3}, -- Schism
-          { spell = 589, type = "debuff", unit = "target"}, -- Shadow Word: Pain
-          { spell = 9484, type = "debuff", unit = "multi" }, -- Shackle Undead
         },
         icon = 136207
       },
       [3] = {
         title = L["Abilities"],
         args = {
+          { spell = 17, type = "ability"}, -- Power Word: Shield
+          { spell = 453, type = "ability"}, -- Mind Soothe
           { spell = 527, type = "ability"}, -- Purify
+          { spell = 528, type = "ability"}, -- Dispel Magic
+          { spell = 585, type = "ability"}, -- Smite
           { spell = 586, type = "ability", buff = true}, -- Fade
-          { spell = 2061, type = "ability", overlayGlow = true}, -- Flash Heal
+          { spell = 605, type = "ability"}, -- Mind Control
+          { spell = 1706, type = "ability", buff = true}, -- Levitate
+          { spell = 2061, type = "ability", overlayGlow = true}, -- Shadow Mend
+          { spell = 2096, type = "ability"}, -- Mind Vision
+          { spell = 2006, type = "ability"}, -- Resurrection
           { spell = 8092, type = "ability", requiresTarget = true}, -- Mind Blast
           { spell = 8122, type = "ability"}, -- Psychic Scream
+          { spell = 9484, type = "ability", debuff = true}, -- Shackle Undead
+          { spell = 10060, type = "ability"}, -- Power Infusion
           { spell = 19236, type = "ability", buff = true}, -- Desperate Prayer
           { spell = 32375, type = "ability"}, -- Mass Dispel
           { spell = 32379, type = "ability", charges = true, usable = true, requiresTarget = true}, -- Shadow Word: Death
@@ -2182,20 +2194,23 @@ else
           { spell = 34433, type = "ability", totem = true, requiresTarget = true}, -- Shadowfiend
           { spell = 47536, type = "ability", buff = true}, -- Rapture
           { spell = 47540, type = "ability", requiresTarget = true}, -- Penance
+          { spell = 48045, type = "ability", requiresTarget = true}, -- Mind Sear
           { spell = 62618, type = "ability"}, -- Power Word: Barrier
           { spell = 73325, type = "ability"}, -- Leap of Faith
+          { spell = 109964, type = "ability", buff = true, talent = 20}, -- Divine Star
           { spell = 110744, type = "ability", talent = 17}, -- Divine Star
           { spell = 120517, type = "ability", talent = 18}, -- Halo
           { spell = 121536, type = "ability", charges = true, buff = true, talent = 6}, -- Angelic Feather
           { spell = 123040, type = "ability", totem = true, requiresTarget = true, talent = 8}, -- Mindbender
           { spell = 129250, type = "ability", requiresTarget = true, talent = 9}, -- Power Word: Solace
+          { spell = 132157, type = "ability"}, -- Holy Nova
           { spell = 194509, type = "ability", charges = true}, -- Power Word: Radiance
-          { spell = 204065, type = "ability", talent = 15}, -- Shadow Covenant
+          { spell = 204197, type = "ability", talent = 16}, -- Purge the Wicked
           { spell = 204263, type = "ability", talent = 12}, -- Shining Force
+          { spell = 212036, type = "ability"}, -- Mass Resurrection
           { spell = 214621, type = "ability", requiresTarget = true, debuff = true, talent = 3}, -- Schism
           { spell = 246287, type = "ability", talent = 21}, -- Evangelism
-          { spell = 271466, type = "ability", talent = 20}, -- Luminous Barrier
-
+          { spell = 314867, type = "ability", talent = 15}, -- Shadow Covenant
         },
         icon = 136224
       },
@@ -2209,6 +2224,7 @@ else
           { spell = 197862, type="buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"]},-- Archangel
           { spell = 197871, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Dark Archangel
           { spell = 197871, type="buff", unit = "player", pvptalent = 6, titleSuffix = L["buff"]},-- Dark Archangel
+          { spell = 316262, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Thoughtsteal
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
@@ -2224,52 +2240,71 @@ else
         title = L["Buffs"],
         args = {
           { spell = 17, type = "buff", unit = "player"}, -- Power Word: Shield
-          { spell = 47788, type = "buff", unit = "target"}, -- Guardian Spirit
-          { spell = 64901, type = "buff", unit = "player"}, -- Symbol of Hope
           { spell = 139, type = "buff", unit = "target"}, -- Renew
+          { spell = 586, type = "buff", unit = "player"}, -- Fade
           { spell = 2096, type = "buff", unit = "player"}, -- Mind Vision
-          { spell = 64843, type = "buff", unit = "player"}, -- Divine Hymn
+          { spell = 10060, type = "buff", unit = "player"}, -- Power Infusion
           { spell = 19236, type = "buff", unit = "player"}, -- Desperate Prayer
           { spell = 21562, type = "buff", unit = "player", forceOwnOnly = true, ownOnly = nil }, -- Power Word: Fortitude
-          { spell = 111759, type = "buff", unit = "player"}, -- Levitate
-          { spell = 200183, type = "buff", unit = "player", talent = 20}, -- Apotheosis
           { spell = 27827, type = "buff", unit = "player"}, -- Spirit of Redemption
-          { spell = 77489, type = "buff", unit = "target"}, -- Echo of Light
-          { spell = 114255, type = "buff", unit = "player", talent = 13}, -- Surge of Light
-          { spell = 121557, type = "buff", unit = "player", talent = 6}, -- Angelic Feather
-          { spell = 586, type = "buff", unit = "player"}, -- Fade
           { spell = 41635, type = "buff", unit = "group"}, -- Prayer of Mending
           { spell = 45243, type = "buff", unit = "player" }, -- Focused Will
+          { spell = 47788, type = "buff", unit = "target"}, -- Guardian Spirit
+          { spell = 64843, type = "buff", unit = "player"}, -- Divine Hymn
+          { spell = 64901, type = "buff", unit = "player"}, -- Symbol of Hope
+          { spell = 65081, type = "buff", unit = "player"}, -- Body and Soul
+          { spell = 77489, type = "buff", unit = "target"}, -- Echo of Light
+          { spell = 111759, type = "buff", unit = "player"}, -- Levitate
+          { spell = 114255, type = "buff", unit = "player", talent = 13}, -- Surge of Light
+          { spell = 121557, type = "buff", unit = "player", talent = 6}, -- Angelic Feather
+          { spell = 200183, type = "buff", unit = "player", talent = 20}, -- Apotheosis
+          { spell = 321379, type = "buff", unit = "player", talent = 15}, -- Prayer Circle
         },
         icon = 135953
       },
       [2] = {
         title = L["Debuffs"],
         args = {
-          { spell = 8122, type = "debuff", unit = "target"}, -- Psychic Scream
-          { spell = 200196, type = "debuff", unit = "target"}, -- Holy Word: Chastise
-          { spell = 14914, type = "debuff", unit = "target"}, -- Holy Fire
-          { spell = 2096, type = "debuff", unit = "target"}, -- Mind Vision
-          { spell = 204263, type = "debuff", unit = "target"}, -- Shining Force
-          { spell = 200200, type = "debuff", unit = "target"}, -- Holy Word: Chastise
-          { spell = 9484, type = "debuff", unit = "multi" }, -- Shackle Undead
           { spell = 589, type = "debuff", unit = "target"}, -- Shadow Word: Pain
+          { spell = 2096, type = "debuff", unit = "target"}, -- Mind Vision
+          { spell = 8122, type = "debuff", unit = "target"}, -- Psychic Scream
+          { spell = 9484, type = "debuff", unit = "multi" }, -- Shackle Undead
+          { spell = 14914, type = "debuff", unit = "target"}, -- Holy Fire
+          { spell = 200200, type = "debuff", unit = "target"}, -- Holy Word: Chastise
+          { spell = 200196, type = "debuff", unit = "target"}, -- Holy Word: Chastise
+          { spell = 204263, type = "debuff", unit = "target"}, -- Shining Force
         },
         icon = 135972
       },
       [3] = {
         title = L["Abilities"],
         args = {
+          { spell = 17, type = "ability"}, -- Power Word: Shield
+          { spell = 139, type = "ability"}, -- Renew
           { spell = 527, type = "ability"}, -- Purify
+          { spell = 453, type = "ability"}, -- Mind Soothe
+          { spell = 528, type = "ability"}, -- Dispel Magic
+          { spell = 585, type = "ability"}, -- Smite
           { spell = 586, type = "ability", buff = true}, -- Fade
+          { spell = 589, type = "ability"}, -- Shadow Word: Pain
+          { spell = 596, type = "ability"}, -- Prayer of Healing
+          { spell = 605, type = "ability"}, -- Mind Control
+          { spell = 1706, type = "ability"}, -- Levitate
+          { spell = 2006, type = "ability"}, -- Resurrection
           { spell = 2050, type = "ability"}, -- Holy Word: Serenity
+          { spell = 2060, type = "ability"}, -- Heal
           { spell = 2061, type = "ability"}, -- Flash Heal
-          { spell = 8092, type = "ability", requiresTarget = true}, -- Mind Blast
+          { spell = 2096, type = "ability"}, -- Mind Vision
+          { spell = 8092, type = "ability", requiresTarget = true}, -- Holy Fire
           { spell = 8122, type = "ability"}, -- Psychic Scream
+          { spell = 9484, type = "ability"}, -- Shackle Undead
+          { spell = 10060, type = "ability", buff = true}, -- Power Infusion
           { spell = 14914, type = "ability", requiresTarget = true}, -- Holy Fire
           { spell = 19236, type = "ability", buff = true}, -- Desperate Prayer
           { spell = 32375, type = "ability"}, -- Mass Dispel
+          { spell = 32379, type = "ability"}, -- Shadow Word: Death
           { spell = 32379, type = "ability", charges = true, usable = true, requiresTarget = true}, -- Shadow Word: Death
+          { spell = 32546, type = "ability"}, -- Binding Heal
           { spell = 33076, type = "ability"}, -- Prayer of Mending
           { spell = 34861, type = "ability"}, -- Holy Word: Sanctify
           { spell = 47788, type = "ability"}, -- Guardian Spirit
@@ -2280,9 +2315,11 @@ else
           { spell = 110744, type = "ability", talent = 17}, -- Divine Star
           { spell = 120517, type = "ability", talent = 18}, -- Halo
           { spell = 121536, type = "ability", charges = true, buff = true, talent = 6}, -- Angelic Feather
+          { spell = 132157, type = "ability"}, -- Holy Nova
           { spell = 200183, type = "ability", buff = true, talent = 20}, -- Apotheosis
           { spell = 204263, type = "ability", talent = 12}, -- Shining Force
           { spell = 204883, type = "ability"}, -- Circle of Healing
+          { spell = 212036, type = "ability"}, -- Mass Resurrection
           { spell = 265202, type = "ability", talent = 21}, -- Holy Word: Salvation
 
         },
@@ -2294,15 +2331,18 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
+          { spell = 197268, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Ray of Hope
+          { spell = 213602, type="ability", pvptalent = 4, titleSuffix = L["cooldown"]},-- Greater Fade
+          { spell = 213602, type="buff", unit = "player", pvptalent = 4, titleSuffix = L["buff"]},-- Greater Fade
+          { spell = 213610, type="ability", pvptalent = 3, titleSuffix = L["cooldown"]},-- Holy Ward
+          { spell = 213610, type="buff", unit = "target", pvptalent = 3, titleSuffix = L["buff"]},-- Holy Ward
           { spell = 215982, type="ability", pvptalent = 6},-- Spirit of the Redeemer
-          { spell = 197268, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Ray of Hope
-          { spell = 232707, type="buff", unit = "target", pvptalent = 7, titleSuffix = L["buff"]},-- Ray of Hope
-          { spell = 213610, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Holy Ward
-          { spell = 213610, type="buff", unit = "target", pvptalent = 9, titleSuffix = L["buff"]},-- Holy Ward
-          { spell = 289657, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Holy Word: Concentration
-          { spell = 289655, type="buff", unit = "player", pvptalent = 10, titleSuffix = L["buff"]},-- Holy Word: Concentration
-          { spell = 213602, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Greater Fade
-          { spell = 213602, type="buff", unit = "player", pvptalent = 11, titleSuffix = L["buff"]},-- Greater Fade
+          { spell = 232707, type="buff", unit = "target", pvptalent = 5, titleSuffix = L["buff"]},-- Ray of Hope
+          { spell = 289657, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Holy Word: Concentration
+          { spell = 289655, type="buff", unit = "player", pvptalent = 9, titleSuffix = L["buff"]},-- Holy Word: Concentration
+          { spell = 289666, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Greater Heal
+          { spell = 316262, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Thoughtsteal
+          { spell = 328530, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Divine Ascension
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
@@ -2317,40 +2357,48 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
-          { spell = 19236, type = "buff", unit = "player"}, -- Desperate Prayer
-          { spell = 193223, type = "buff", unit = "player", talent = 21}, -- Surrender to Madness
-          { spell = 263165, type = "buff", unit = "player", talent = 18}, -- Void Torrent
+          { spell = 17, type = "buff", unit = "player"}, -- Power Word: Shield
           { spell = 586, type = "buff", unit = "player"}, -- Fade
           { spell = 2096, type = "buff", unit = "player"}, -- Mind Vision
+          { spell = 10060, type = "buff", unit = "player"}, -- Power Infusion
           { spell = 15286, type = "buff", unit = "player"}, -- Vampiric Embrace
-          { spell = 124430, type = "buff", unit = "player", talent = 2}, -- Shadowy Insight
-          { spell = 17, type = "buff", unit = "player"}, -- Power Word: Shield
-          { spell = 65081, type = "buff", unit = "player", talent = 4}, -- Body and Soul
-          { spell = 197937, type = "buff", unit = "player", talent = 16}, -- Lingering Insanity
-          { spell = 194249, type = "buff", unit = "player"}, -- Voidform
-          { spell = 47585, type = "buff", unit = "player"}, -- Dispersion
-          { spell = 232698, type = "buff", unit = "player"}, -- Shadowform
+          { spell = 19236, type = "buff", unit = "player"}, -- Desperate Prayer
           { spell = 21562, type = "buff", unit = "player", forceOwnOnly = true, ownOnly = nil }, -- Power Word: Fortitude
+          { spell = 45243, type = "buff", unit = "player" }, -- Focused Will
+          { spell = 47585, type = "buff", unit = "player"}, -- Dispersion
+          { spell = 65081, type = "buff", unit = "player", talent = 4}, -- Body and Soul
           { spell = 111759, type = "buff", unit = "player"}, -- Levitate
-          { spell = 123254, type = "buff", unit = "player", talent = 7 }, -- Twist of Fate
+          { spell = 124430, type = "buff", unit = "player", talent = 2}, -- Shadowy Insight
+          { spell = 123254, type = "buff", unit = "player", talent = 7}, -- Twist of Fate
+          { spell = 193223, type = "buff", unit = "player", talent = 21}, -- Surrender to Madness
+          { spell = 194249, type = "buff", unit = "player"}, -- Voidform
+          { spell = 197937, type = "buff", unit = "player", talent = 16}, -- Lingering Insanity
+          { spell = 232698, type = "buff", unit = "player"}, -- Shadowform
+          { spell = 263165, type = "buff", unit = "player", talent = 18}, -- Void Torrent
+          { spell = 319952, type = "buff", unit = "player", talent = 21}, -- Surrender to Madness
+          { spell = 321973, type = "buff", unit = "player", talent = 2}, -- Death and Madness
+          { spell = 341207, type = "buff", unit = "player"}, -- Dark Thoughts
+          { spell = 341282, type = "buff", unit = "player", talent = 3}, -- Unfurling Darkness
         },
         icon = 237566
       },
       [2] = {
         title = L["Debuffs"],
         args = {
-          { spell = 15407, type = "debuff", unit = "target"}, -- Mind Flay
-          { spell = 48045, type = "debuff", unit = "target"}, -- Mind Sear
+          { spell = 589, type = "debuff", unit = "target"}, -- Shadow Word: Pain
           { spell = 2096, type = "debuff", unit = "target"}, -- Mind Vision
+          { spell = 8122, type = "debuff", unit = "target"}, -- Psychic Scream
+          { spell = 9484, type = "debuff", unit = "multi" }, -- Shackle Undead
+          { spell = 15407, type = "debuff", unit = "target"}, -- Mind Flay
+          { spell = 15487, type = "debuff", unit = "target"}, -- Silence
+          { spell = 34914, type = "debuff", unit = "target"}, -- Vampiric Touch
+          { spell = 48045, type = "debuff", unit = "target"}, -- Mind Sear
+          { spell = 64044, type = "debuff", unit = "target"}, -- Psychic Horror
           { spell = 205369, type = "debuff", unit = "target", talent = 11}, -- Mind Bomb
           { spell = 226943, type = "debuff", unit = "target", talent = 11}, -- Mind Bomb
           { spell = 263165, type = "debuff", unit = "target", talent = 18}, -- Void Torrent
-          { spell = 15487, type = "debuff", unit = "target"}, -- Silence
-          { spell = 589, type = "debuff", unit = "target"}, -- Shadow Word: Pain
-          { spell = 8122, type = "debuff", unit = "target"}, -- Psychic Scream
-          { spell = 34914, type = "debuff", unit = "target"}, -- Vampiric Touch
           { spell = 335467, type = "debuff", unit = "target"}, -- Devouring Plague
-          { spell = 9484, type = "debuff", unit = "multi" }, -- Shackle Undead
+          { spell = 341291, type = "debuff", unit = "player", talent = 3}, -- Unfurling Darkness
         },
         icon = 136207
       },
@@ -2358,29 +2406,44 @@ else
         title = L["Abilities"],
         args = {
           { spell = 17, type = "ability", buff = true}, -- Power Word: Shield
+          { spell = 453, type = "ability"}, -- Mind Soothe
+          { spell = 528, type = "ability"}, -- Dispel Magic
+          { spell = 585, type = "ability"}, -- Mind Flay
           { spell = 586, type = "ability", buff = true}, -- Fade
+          { spell = 589, type = "ability", debuff = true}, -- Shadow Word: Pain
+          { spell = 605, type = "ability", buff = true}, -- Mind Control
+          { spell = 1706, type = "ability", buff = true}, -- Levitate
+          { spell = 2006, type = "ability"}, -- Resurrection
+          { spell = 2096, type = "ability"}, -- Mind Vision
+          { spell = 2061, type = "ability"}, -- Shadow Mend
           { spell = 8092, type = "ability", requiresTarget = true}, -- Mind Blast
           { spell = 8122, type = "ability"}, -- Psychic Scream
+          { spell = 9484, type = "ability"}, -- Shackle Undead
+          { spell = 10060, type = "ability", buff = true}, -- Power Infusion
           { spell = 15286, type = "ability", buff = true}, -- Vampiric Embrace
           { spell = 15487, type = "ability", requiresTarget = true}, -- Silence
           { spell = 19236, type = "ability", buff = true}, -- Desperate Prayer
+          { spell = 32379, type = "ability"}, -- Shadow Word: Death
           { spell = 32375, type = "ability"}, -- Mass Dispel
+          { spell = 34915, type = "ability", debuff = true}, -- Vampiric Touch
           { spell = 32379, type = "ability", charges = true, usable = true, requiresTarget = true}, -- Shadow Word: Death
           { spell = 34433, type = "ability", totem = true, requiresTarget = true}, -- Shadowfiend
           { spell = 47585, type = "ability", buff = true}, -- Dispersion
+          { spell = 48045, type = "ability"}, -- Mind Sear
           { spell = 64044, type = "ability", requiresTarget = true, talent = 12}, -- Psychic Horror
           { spell = 73325, type = "ability"}, -- Leap of Faith
-          { spell = 193223, type = "ability", usable = true, buff = true, talent = 21}, -- Surrender to Madness
           { spell = 200174, type = "ability", totem = true, requiresTarget = true, talent = 17}, -- Mindbender
           { spell = 205351, type = "ability", charges = true, requiresTarget = true, talent = 3}, -- Shadow Word: Void
           { spell = 205369, type = "ability", requiresTarget = true, talent = 11}, -- Mind Bomb
-          { spell = 205385, type = "ability", talent = 15}, -- Shadow Crash
           { spell = 205448, type = "ability", usable = true, requiresTarget = true}, -- Void Bolt
           { spell = 213634, type = "ability"}, -- Purify Disease
-          { spell = 228260, type = "ability", usable = true, requiresTarget = true}, -- Void Eruption
-          { spell = 263165, type = "ability", usable = true, requiresTarget = true, talent = 18}, -- Void Torrent
+          { spell = 228260, type = "ability", requiresTarget = true}, -- Void Eruption
+          { spell = 263165, type = "ability", requiresTarget = true, talent = 18}, -- Void Torrent
           { spell = 263346, type = "ability", requiresTarget = true, talent = 9}, -- Dark Void
-          { spell = 280711, type = "ability", requiresTarget = true, talent = 20}, -- Dark Ascension
+          { spell = 319952, type = "ability", talent = 21}, -- Surrender to Madness
+          { spell = 341374, type = "ability", talent = 16}, -- Damnation
+          { spell = 341385, type = "ability", requiresTarget = true, usable = true, talent = 9}, -- Searing Nightmares
+          { spell = 342834, type = "ability", talent = 15}, -- Shadow Crash
           { spell = 335467, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Devouring Plague
         },
         icon = 136230
@@ -2391,12 +2454,12 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
-          { spell = 211522, type="ability", pvptalent = 7},-- Psyfiend
-          { spell = 199412, type="buff", unit = "player", pvptalent = 8},-- Edge of Insanity
-          { spell = 108968, type="ability", pvptalent = 11},-- Void Shift
-          { spell = 247776, type="buff", unit = "player", pvptalent = 12, titleSuffix = L["buff"]},-- Mind Trauma
-          { spell = 247777, type="debuff", unit = "target", pvptalent = 12, titleSuffix = L["debuff"]},-- Mind Trauma
-          { spell = 213602, type="buff", unit = "target", pvptalent = 13},-- Greater Fade
+          { spell = 108968, type="ability", pvptalent = 3},-- Void Shift
+          { spell = 213602, type="buff", unit = "target", pvptalent = 7},-- Greater Fade
+          { spell = 211522, type="ability", pvptalent = 4},-- Psyfiend
+          { spell = 247776, type="buff", unit = "player", pvptalent = 1, titleSuffix = L["buff"]},-- Mind Trauma
+          { spell = 247777, type="debuff", unit = "target", pvptalent = 1, titleSuffix = L["debuff"]},-- Mind Trauma
+          { spell = 316262, type="ability", pvptalent = 2, titleSuffix = L["cooldown"]},-- Thoughtsteal
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
