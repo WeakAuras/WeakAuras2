@@ -129,7 +129,11 @@ local checks = {
   uninterruptible = {
     variable = "interruptible",
     value = 0,
-  };
+  },
+  enchantMissing = {
+    variable = "enchanted",
+    value = 0
+  }
 }
 
 local function buildCondition(trigger, check, properties)
@@ -202,6 +206,10 @@ end
 
 local function totemActiveGlow(conditions, trigger, regionType)
   GenericGlow(conditions, trigger, regionType, checks.totem)
+end
+
+local function isMissingEnchantGlow(conditions, trigger, regionType)
+  tinsert(conditions, buildCondition(trigger, checks.enchantMissing, {changes("glow", regionType)}));
 end
 
 local function overlayGlow(conditions, trigger, regionType)
@@ -378,6 +386,20 @@ local function createOverlayGlowTrigger(triggers, position, item)
       spellName = item.spell,
     }
   };
+end
+
+
+local function createWeaponEnchantTrigger(triggers, position, item, showOn)
+  triggers[position] = {
+    trigger = {
+      type = "status",
+      event = "Weapon Enchant",
+      use_enchant = true,
+      enchant = tostring(item.enchant),
+      weapon = item.weapon,
+      showOn = showOn
+    }
+  }
 end
 
 local function createAbilityAndDurationTrigger(triggers, item)
@@ -1059,6 +1081,38 @@ local function subTypesFor(item, regionType)
         uninterruptibleRed(conditions, 1, regionType);
       end,
       data = data,
+    });
+  elseif (item.type == "weaponenchant") then
+    data.inverse = false
+    tinsert(types, {
+      icon = icon.cd,
+      title = L["Show Only if Enchanted"],
+      description = L["Only shows if the weapon is enchanted."],
+      createTriggers = function(triggers, item)
+        createWeaponEnchantTrigger(triggers, 1, item, "showOnActive");
+      end,
+      data = data,
+    });
+    tinsert(types, {
+      icon = icon.cd,
+      title = L["Show if Enchant Missing"],
+      description = L["Only shows if the weapon is not enchanted."],
+      createTriggers = function(triggers, item)
+        createWeaponEnchantTrigger(triggers, 1, item, "showOnMissing");
+      end,
+      data = data,
+    });
+    tinsert(types, {
+      icon = icon.glow,
+      title = L["Show Always, Glow on Missing"],
+      description = L["Always shows highlights if enchant missing."],
+      createTriggers = function(triggers, item)
+        createWeaponEnchantTrigger(triggers, 1, item, "showAlways");
+      end,
+      createConditions = function(conditions, item, regionType)
+        isMissingEnchantGlow(conditions, 1, regionType);
+      end,
+      data = dataGlow,
     });
   end
 

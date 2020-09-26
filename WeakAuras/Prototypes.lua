@@ -5702,6 +5702,18 @@ Private.event_prototypes = {
         store = true
       },
       {
+        name = "enchanted",
+        display = L["Enchanted"],
+        hidden = true,
+        init = "found ~= nil",
+        test = "true",
+        store = true,
+        conditionType = "bool",
+        conditionTest = function(state, needle)
+          return state and state.show and state.enchanted == (needle == 1)
+        end,
+      },
+      {
         name = "remaining",
         display = L["Remaining Time"],
         type = "number",
