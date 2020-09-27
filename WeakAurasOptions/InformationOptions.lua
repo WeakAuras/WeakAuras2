@@ -167,10 +167,10 @@ function OptionsPrivate.GetInformationOptions(data)
     end
   end
 
-  -- Compability Options
+  -- compatibility Options
   args.compabilityTitle = {
     type = "header",
-    name = L["Compability Options"],
+    name = L["Compatibility Options"],
     width = WeakAuras.doubleWidth,
     order = order,
   }
