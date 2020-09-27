@@ -3568,42 +3568,45 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
-          { spell = 116847, type = "buff", unit = "player", talent = 17 }, -- Rushing Jade Wind
-          { spell = 122278, type = "buff", unit = "player", talent = 15 }, -- Dampen Harm
-          { spell = 119085, type = "buff", unit = "player", talent = 5 }, -- Chi Torpedo
-          { spell = 195630, type = "buff", unit = "player"}, -- Elusive Brawler
-          { spell = 228563, type = "buff", unit = "player", talent = 21 }, -- Blackout Combo
-          { spell = 215479, type = "buff", unit = "player"}, -- Ironskin Brew
-          { spell = 115176, type = "buff", unit = "player"}, -- Zen Meditation
-          { spell = 115295, type = "buff", unit = "player", talent = 20 }, -- Guard
-          { spell = 116841, type = "buff", unit = "player", talent = 6 }, -- Tiger's Lust
-          { spell = 120954, type = "buff", unit = "player"}, -- Fortifying Brew
-          { spell = 196608, type = "buff", unit = "player", talent = 1 }, -- Eye of the Tiger
           { spell = 101643, type = "buff", unit = "player"}, -- Transcendence
-          { spell = 2479, type = "buff", unit = "player"}, -- Honorless Target
-
+          { spell = 115176, type = "buff", unit = "player"}, -- Zen Meditation
+          { spell = 116841, type = "buff", unit = "player", talent = 6 }, -- Tiger's Lust
+          { spell = 116847, type = "buff", unit = "player", talent = 17 }, -- Rushing Jade Wind
+          { spell = 119085, type = "buff", unit = "player", talent = 5 }, -- Chi Torpedo
+          { spell = 120954, type = "buff", unit = "player"}, -- Fortifying Brew
+          { spell = 122278, type = "buff", unit = "player", talent = 15 }, -- Dampen Harm
+          { spell = 132578, type = "buff", unit = "player" }, -- Invoke Niuzao, the Black Ox
+          { spell = 195630, type = "buff", unit = "player"}, -- Elusive Brawler
+          { spell = 196608, type = "buff", unit = "player", talent = 1 }, -- Eye of the Tiger
+          { spell = 215479, type = "buff", unit = "player" }, -- Shuffle
+          { spell = 228563, type = "buff", unit = "player", talent = 21 }, -- Blackout Combo
+          { spell = 325190, type = "buff", unit = "player"}, -- Celestial Flames
         },
         icon = 613398
       },
       [2] = {
         title = L["Debuffs"],
         args = {
-          { spell = 119381, type = "debuff", unit = "target"}, -- Leg Sweep
-          { spell = 196608, type = "debuff", unit = "target", talent = 1 }, -- Eye of the Tiger
-          { spell = 113746, type = "debuff", unit = "target"}, -- Mystic Touch
+          { spell = 113746, type = "debuff", unit = "target", forceOwnOnly = true, ownOnly = nil}, -- Mystic Touch
           { spell = 115078, type = "debuff", unit = "multi"}, -- Paralysis
+          { spell = 116189, type = "debuff", unit = "target"}, -- Provoke
           { spell = 117952, type = "debuff", unit = "target"}, -- Crackling Jade Lightning
           { spell = 121253, type = "debuff", unit = "target"}, -- Keg Smash
-          { spell = 116189, type = "debuff", unit = "target"}, -- Provoke
           { spell = 124273, type = "debuff", unit = "player" }, -- Heavy Stagger
           { spell = 124274, type = "debuff", unit = "player" }, -- Moderate Stagger
           { spell = 124275, type = "debuff", unit = "player" }, -- Light Stagger
+          { spell = 119381, type = "debuff", unit = "target"}, -- Leg Sweep
+          { spell = 196608, type = "debuff", unit = "target", talent = 1 }, -- Eye of the Tiger
+          { spell = 325153, type = "debuff", unit = "target"}, -- Exploding Keg
         },
         icon = 611419
       },
       [3] = {
         title = L["Abilities"],
         args = {
+          { spell = 100780, type = "ability"}, -- Tiger Palm
+          { spell = 100784, type = "ability"}, -- Blackout Kick
+          { spell = 101546, type = "ability"}, -- Spinning Crane Kick
           { spell = 101643, type = "ability"}, -- Transcendence
           { spell = 107079, type = "ability"}, -- Quaking Palm
           { spell = 109132, type = "ability", charges = true}, -- Roll
@@ -3611,28 +3614,33 @@ else
           { spell = 115078, type = "ability", requiresTarget = true}, -- Paralysis
           { spell = 115098, type = "ability", talent = 2 }, -- Chi Wave
           { spell = 115176, type = "ability", buff = true}, -- Zen Meditation
-          { spell = 115181, type = "ability"}, -- Breath of Fire
+          { spell = 115181, type = "ability", debuff = true, overlayGlow = true}, -- Breath of Fire
           { spell = 115203, type = "ability", buff = true}, -- Fortifying Brew
-          { spell = 115295, type = "ability", talent = 20 }, -- Guard
-          { spell = 115308, type = "ability", charges = true, buff = true}, -- Ironskin Brew
           { spell = 115315, type = "ability", totem = true, totemNumber = 1, talent = 11 }, -- Summon Black Ox Statue
-          { spell = 115399, type = "ability", talent = 9 }, -- Black Ox Brew
+          { spell = 115399, type = "ability", talent = 9 }, -- Blackw Ox Brew
           { spell = 115546, type = "ability", debuff = true, requiresTarget = true}, -- Provoke
+          { spell = 116670, type = "ability"}, -- Vivify
           { spell = 116705, type = "ability"}, -- Spear Hand Strike
-          { spell = 116841, type = "ability", talent = 3 }, -- Tiger's Lust
+          { spell = 116841, type = "ability", talent = 6 }, -- Tiger's Lust
           { spell = 116844, type = "ability", talent = 12 }, -- Ring of Peace
           { spell = 116847, type = "ability", buff = true, talent = 17 }, -- Rushing Jade Wind
+          { spell = 117952, type = "ability"}, -- Crackling Jade Lightning
           { spell = 119381, type = "ability"}, -- Leg Sweep
           { spell = 119582, type = "ability", charges = true}, -- Purifying Brew
           { spell = 119996, type = "ability"}, -- Transcendence: Transfer
-          { spell = 121253, type = "ability", requiresTarget = true}, -- Keg Smash
+          { spell = 121253, type = "ability", requiresTarget = true, debuff = true}, -- Keg Smash
           { spell = 122278, type = "ability", buff = true, talent = 15 }, -- Dampen Harm
           { spell = 122281, type = "ability", charges = true, buff = true, talent = 14 }, -- Healing Elixir
-          { spell = 123986, type = "ability", talent = 3 }, -- Chi Burst
+          { spell = 123986, tyqpe = "ability", talent = 3 }, -- Chi Burst
           { spell = 126892, type = "ability"}, -- Zen Pilgrimage
-          { spell = 132578, type = "ability", requiresTarget = true, talent = 18 }, -- Invoke Niuzao, the Black Ox
+          { spell = 132578, type = "ability", buff = true, requiresTarget = true }, -- Invoke Niuzao, the Black Ox
           { spell = 205523, type = "ability", requiresTarget = true}, -- Blackout Strike
           { spell = 218164, type = "ability"}, -- Detox
+          { spell = 322101, type = "ability"}, -- Expel Harm
+          { spell = 322109, type = "ability"}, -- Touch of Death
+          { spell = 325153, type = "ability", debuff = true}, -- Exploding Keg
+          { spell = 322507, type = "ability", buff = true}, -- Celestial Brew
+          { spell = 324312, type = "ability"}, -- Clash
 
         },
         icon = 133701
@@ -3643,16 +3651,16 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
-          { spell = 202370, type="ability", pvptalent = 5},-- Mighty Ox Kick
-          { spell = 202335, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Double Barrel
-          { spell = 202335, type="buff", unit = "player", pvptalent = 6, titleSuffix = L["buff"]},-- Double Barrel
-          { spell = 213658, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Craft: Nimble Brew
-          { spell = 213664, type="buff", unit = "player", pvptalent = 7, titleSuffix = L["buff"]},-- Craft: Nimble Brew
-          { spell = 202162, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Avert Harm
-          { spell = 202162, type="buff", unit = "group", pvptalent = 8, titleSuffix = L["buff"]},-- Avert Harm
-          { spell = 207025, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Admonishment
-          { spell = 206891, type="debuff", unit = "target", pvptalent = 13, titleSuffix = L["debuff"]},-- Admonishment
-          { spell = 202274, type="debuff", unit = "target", pvptalent = 14},-- Incendiary Breath
+          { spell = 202335, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Double Barrel
+          { spell = 202335, type="buff", unit = "player", pvptalent = 8, titleSuffix = L["buff"]},-- Double Barrel
+          { spell = 202162, type="ability", pvptalent = 1, titleSuffix = L["cooldown"]},-- Avert Harm
+          { spell = 202162, type="buff", unit = "group", pvptalent = 1, titleSuffix = L["buff"]},-- Avert Harm
+          { spell = 202274, type="debuff", unit = "target", pvptalent = 7},-- Incendiary Breath
+          { spell = 202370, type="ability", pvptalent = 9},-- Mighty Ox Kick
+          { spell = 206891, type="debuff", unit = "target", pvptalent = 11, titleSuffix = L["debuff"]},-- Admonishment
+          { spell = 207025, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Admonishment
+          { spell = 213658, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Craft: Nimble Brew
+          { spell = 213664, type="buff", unit = "player", pvptalent = 6, titleSuffix = L["buff"]},-- Craft: Nimble Brew
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
@@ -3667,23 +3675,23 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
-          { spell = 119611, type = "buff", unit = "target"}, -- Renewing Mist
-          { spell = 196725, type = "buff", unit = "player", talent = 17 }, -- Refreshing Jade Wind
-          { spell = 122783, type = "buff", unit = "player", talent = 14 }, -- Diffuse Magic
-          { spell = 116680, type = "buff", unit = "player"}, -- Thunder Focus Tea
-          { spell = 243435, type = "buff", unit = "player"}, -- Fortifying Brew
-          { spell = 124682, type = "buff", unit = "target"}, -- Enveloping Mist
-          { spell = 116841, type = "buff", unit = "player", talent = 6 }, -- Tiger's Lust
-          { spell = 197908, type = "buff", unit = "player", talent = 9 }, -- Mana Tea
-          { spell = 191840, type = "buff", unit = "player"}, -- Essence Font
-          { spell = 115175, type = "buff", unit = "target"}, -- Soothing Mist
-          { spell = 119085, type = "buff", unit = "player", talent = 5 }, -- Chi Torpedo
-          { spell = 202090, type = "buff", unit = "player"}, -- Teachings of the Monastery
-          { spell = 122278, type = "buff", unit = "player", talent = 15 }, -- Dampen Harm
-          { spell = 197919, type = "buff", unit = "player", talent = 7 }, -- Lifecycles (Enveloping Mist)
-          { spell = 116849, type = "buff", unit = "target"}, -- Life Cocoon
           { spell = 101643, type = "buff", unit = "player"}, -- Transcendence
+          { spell = 116680, type = "buff", unit = "player"}, -- Thunder Focus Tea
+          { spell = 115175, type = "buff", unit = "target"}, -- Soothing Mist
+          { spell = 116841, type = "buff", unit = "player", talent = 6 }, -- Tiger's Lust
+          { spell = 116849, type = "buff", unit = "target"}, -- Life Cocoon
+          { spell = 119085, type = "buff", unit = "player", talent = 5 }, -- Chi Torpedo
+          { spell = 119611, type = "buff", unit = "target"}, -- Renewing Mist
+          { spell = 122278, type = "buff", unit = "player", talent = 15 }, -- Dampen Harm
+          { spell = 122783, type = "buff", unit = "player", talent = 14 }, -- Diffuse Magic
+          { spell = 124682, type = "buff", unit = "target"}, -- Enveloping Mist
+          { spell = 191840, type = "buff", unit = "player"}, -- Essence Font
+          { spell = 196725, type = "buff", unit = "player", talent = 17 }, -- Refreshing Jade Wind
+          { spell = 197908, type = "buff", unit = "player", talent = 9 }, -- Mana Tea
           { spell = 197916, type = "buff", unit = "player", talent = 7 }, -- Lifecycles (Vivify)
+          { spell = 197919, type = "buff", unit = "player", talent = 7 }, -- Lifecycles (Enveloping Mist)
+          { spell = 243435, type = "buff", unit = "player"}, -- Fortifying Brew
+          { spell = 202090, type = "buff", unit = "player"}, -- Teachings of the Monastery
 
         },
         icon = 627487
@@ -3691,18 +3699,21 @@ else
       [2] = {
         title = L["Debuffs"],
         args = {
-          { spell = 119381, type = "debuff", unit = "target"}, -- Leg Sweep
+          { spell = 113746, type = "debuff", unit = "target", forceOwnOnly = true, ownOnly = nil}, -- Mystic Touch
           { spell = 115078, type = "debuff", unit = "multi"}, -- Paralysis
-          { spell = 117952, type = "debuff", unit = "target"}, -- Crackling Jade Lightning
           { spell = 116189, type = "debuff", unit = "target"}, -- Provoke
-          { spell = 113746, type = "debuff", unit = "target"}, -- Mystic Touch
+          { spell = 117952, type = "debuff", unit = "target"}, -- Crackling Jade Lightning
+          { spell = 119381, type = "debuff", unit = "target"}, -- Leg Sweep
+          { spell = 198909, type = "debuff", unit = "target", talent = 11}, -- Song of Chi-Ji
         },
         icon = 629534
       },
       [3] = {
         title = L["Abilities"],
         args = {
+          { spell = 100780, type = "ability", requiresTarget = true}, -- Tiger Palm
           { spell = 100784, type = "ability", requiresTarget = true}, -- Blackout Kick
+          { spell = 101546, type = "ability"}, -- Spinning Crane Kick
           { spell = 101643, type = "ability"}, -- Transcendence
           { spell = 107079, type = "ability"}, -- Quaking Palm
           { spell = 107428, type = "ability", requiresTarget = true}, -- Rising Sun Kick
@@ -3710,28 +3721,37 @@ else
           { spell = 115008, type = "ability", charges = true, talent = 5 }, -- Chi Torpedo
           { spell = 115078, type = "ability", requiresTarget = true}, -- Paralysis
           { spell = 115098, type = "ability", talent = 2 }, -- Chi Wave
-          { spell = 115151, type = "ability", charges = true}, -- Renewing Mist
+          { spell = 115175, type = "ability"}, -- Soothing Mist
+          { spell = 115203, type = "ability", buff = true}, -- Fortifying Brew
+          { spell = 115151, type = "ability", charges = true, buff = true}, -- Renewing Mist
           { spell = 115310, type = "ability"}, -- Revival
           { spell = 115313, type = "ability", totem = true, totemNumber = 1, talent = 16 }, -- Summon Jade Serpent Statue
           { spell = 115540, type = "ability"}, -- Detox
           { spell = 115546, type = "ability", debuff = true, requiresTarget = true}, -- Provoke
-          { spell = 116680, type = "ability", buff = true}, -- Thunder Focus Tea                    -- add talent = 19 abilityChargeBuff
+          { spell = 116670, type = "ability"}, -- Vivify
+          { spell = 116680, type = "ability", buff = true, charges = true}, -- Thunder Focus Tea
           { spell = 116841, type = "ability", talent = 6 }, -- Tiger's Lust
           { spell = 116844, type = "ability", talent = 12 }, -- Ring of Peace
-          { spell = 116849, type = "ability"}, -- Life Cocoon
-          { spell = 119381, type = "ability"}, -- Leg Sweep
+          { spell = 116849, type = "ability", buff = true, requiresTarget = true}, -- Life Cocoon
+          { spell = 117952, type = "ability"}, -- Crackling Jade Lightning
+          { spell = 119381, type = "ability", debuff = true}, -- Leg Sweep
           { spell = 119996, type = "ability"}, -- Transcendence: Transfer
           { spell = 122278, type = "ability", buff = true, talent = 15 }, -- Dampen Harm
           { spell = 122281, type = "ability", charges = true, buff = true, talent = 13 }, -- Healing Elixir
           { spell = 122783, type = "ability", buff = true, talent = 14 }, -- Diffuse Magic
           { spell = 123986, type = "ability", talent = 3 }, -- Chi Burst
+          { spell = 124682, type = "ability", buff = true, requiresTarget = true }, -- Enveloping Mist
           { spell = 126892, type = "ability"}, -- Zen Pilgrimage
           { spell = 191837, type = "ability"}, -- Essence Font
           { spell = 196725, type = "ability", buff = true, talent = 17 }, -- Refreshing Jade Wind
           { spell = 197908, type = "ability", buff = true, talent = 9 }, -- Mana Tea
-          { spell = 198664, type = "ability", talent = 18 }, -- Invoke Chi-Ji, the Red Crane
           { spell = 198898, type = "ability", talent = 11 }, -- Song of Chi-Ji
+          { spell = 218164, type = "ability"}, -- Detox
           { spell = 243435, type = "ability", buff = true}, -- Fortifying Brew
+          { spell = 322101, type = "ability"}, -- Expel Harm
+          { spell = 322109, type = "ability", usable = true}, -- Touch of Death
+          { spell = 322118, type = "ability", duration = 25}, -- Invoke Yu'lon, the Jade Serpent
+          { spell = 325197, type = "ability", talent = 18 }, -- Invoke Chi-Ji, the Red Crane
         },
         icon = 627485
       },
@@ -3741,14 +3761,13 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
-          { spell = 216113, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Way of the Crane
-          { spell = 216113, type="buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"]},-- Way of the Crane
-          { spell = 233759, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Grapple Weapon
-          { spell = 233759, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuff"]},-- Grapple Weapon
-          { spell = 205234, type="ability", pvptalent = 8},-- Healing Sphere
-          { spell = 227344, type="buff", unit = "target", pvptalent = 9},-- Surging Mist
-          { spell = 209584, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Zen Focus Tea
-          { spell = 209584, type="buff", unit = "player", pvptalent = 11, titleSuffix = L["buff"]},-- Zen Focus Tea
+          { spell = 205234, type="ability", pvptalent = 6},-- Healing Sphere
+          { spell = 209584, type="ability", pvptalent = 2, titleSuffix = L["cooldown"]},-- Zen Focus Tea
+          { spell = 209584, type="buff", unit = "player", pvptalent = 2, titleSuffix = L["buff"]},-- Zen Focus Tea
+          { spell = 227344, type="buff", unit = "target", pvptalent = 7},-- Surging Mist
+          { spell = 205655, type="buff", unit = "target", pvptalent = 5},-- Dome of Mist
+          { spell = 233759, type="ability", pvptalent = 1, titleSuffix = L["cooldown"]},-- Grapple Weapon
+          { spell = 233759, type="debuff", unit = "target", pvptalent = 1, titleSuffix = L["debuff"]},-- Grapple Weapon
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
@@ -3763,38 +3782,41 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
+          { spell = 101643, type = "buff", unit = "player"}, -- Transcendence
+          { spell = 115288, type = "buff", unit = "player", talent = 9}, -- Energizing Brew
+          { spell = 116768, type = "buff", unit = "player"}, -- Blackout Kick!
+          { spell = 116841, type = "buff", unit = "player", talent = 6 }, -- Tiger's Lust
+          { spell = 119085, type = "buff", unit = "player", talent = 5 }, -- Chi Torpedo
+          { spell = 122783, type = "buff", unit = "player", talent = 14 }, -- Diffuse Magic
           { spell = 122278, type = "buff", unit = "player", talent = 15 }, -- Dampen Harm
           { spell = 125174, type = "buff", unit = "player"}, -- Touch of Karma
-          { spell = 119085, type = "buff", unit = "player", talent = 5 }, -- Chi Torpedo
-          { spell = 152173, type = "buff", unit = "player", talent = 21 }, -- Serenity
-          { spell = 261715, type = "buff", unit = "player", talent = 17 }, -- Rushing Jade Wind
-          { spell = 101643, type = "buff", unit = "player"}, -- Transcendence
-          { spell = 261769, type = "buff", unit = "player", talent = 13 }, -- Inner Strength
-          { spell = 116841, type = "buff", unit = "player", talent = 6 }, -- Tiger's Lust
-          { spell = 122783, type = "buff", unit = "player", talent = 14 }, -- Diffuse Magic
           { spell = 137639, type = "buff", unit = "player"}, -- Storm, Earth, and Fire
-          { spell = 196741, type = "buff", unit = "player", talent = 16 }, -- Hit Combo
-          { spell = 196608, type = "buff", unit = "player", talent = 1 }, -- Eye of the Tiger
+          { spell = 152173, type = "buff", unit = "player", talent = 21 }, -- Serenity
           { spell = 166646, type = "buff", unit = "player" }, -- Windwalking
-          { spell = 116768, type = "buff", unit = "player"}, -- Blackout Kick!
+          { spell = 196608, type = "buff", unit = "player", talent = 1 }, -- Eye of the Tiger
+          { spell = 196741, type = "buff", unit = "player", talent = 16 }, -- Hit Combo
+          { spell = 243435, type = "buff", unit = "player" }, -- Fortifying Brew
+          { spell = 261715, type = "buff", unit = "player", talent = 17 }, -- Rushing Jade Wind
+          { spell = 261769, type = "buff", unit = "player", talent = 13 }, -- Inner Strength
+          { spell = 325202, type = "buff", unit = "player", talent = 18 }, -- Dance of Chi-Ji
         },
         icon = 611420
       },
       [2] = {
         title = L["Debuffs"],
         args = {
+          { spell = 113746, type = "debuff", unit = "target", forceOwnOnly = true, ownOnly = nil}, -- Mystic Touch
           { spell = 115078, type = "debuff", unit = "multi"}, -- Paralysis
-          { spell = 116189, type = "debuff", unit = "target"}, -- Provoke
           { spell = 115080, type = "debuff", unit = "target"}, -- Touch of Death
-          { spell = 113746, type = "debuff", unit = "target"}, -- Mystic Touch
-          { spell = 228287, type = "debuff", unit = "target"}, -- Mark of the Crane
           { spell = 115804, type = "debuff", unit = "target"}, -- Mortal Wounds
+          { spell = 116189, type = "debuff", unit = "target"}, -- Provoke
           { spell = 116706, type = "debuff", unit = "target"}, -- Disable
           { spell = 117952, type = "debuff", unit = "target"}, -- Crackling Jade Lightning
-          { spell = 196608, type = "debuff", unit = "target", talent = 1 }, -- Eye of the Tiger
-          { spell = 122470, type = "debuff", unit = "target"}, -- Touch of Karma
           { spell = 119381, type = "debuff", unit = "target"}, -- Leg Sweep
+          { spell = 122470, type = "debuff", unit = "target"}, -- Touch of Karma
           { spell = 123586, type = "debuff", unit = "target"}, -- Flying Serpent Kick
+          { spell = 196608, type = "debuff", unit = "target", talent = 1 }, -- Eye of the Tiger
+          { spell = 228287, type = "debuff", unit = "target"}, -- Mark of the Crane
 
         },
         icon = 629534
@@ -3805,27 +3827,30 @@ else
           { spell = 100780, type = "ability", requiresTarget = true}, -- Tiger Palm
           { spell = 100784, type = "ability", requiresTarget = true, overlayGlow = true}, -- Blackout Kick
           { spell = 101545, type = "ability"}, -- Flying Serpent Kick
-          { spell = 101546, type = "ability"}, -- Spinning Crane Kick
+          { spell = 101546, type = "ability", overlayGlow = true}, -- Spinning Crane Kick
           { spell = 101643, type = "ability"}, -- Transcendence
           { spell = 107428, type = "ability", requiresTarget = true}, -- Rising Sun Kick
           { spell = 109132, type = "ability", charges = true}, -- Roll
           { spell = 113656, type = "ability", requiresTarget = true}, -- Fists of Fury
           { spell = 115008, type = "ability", charges = true, talent = 5 }, -- Chi Torpedo
           { spell = 115078, type = "ability", requiresTarget = true}, -- Paralysis
-          { spell = 115080, type = "ability", debuff = true, requiresTarget = true}, -- Touch of Death
           { spell = 115098, type = "ability", talent = 2 }, -- Chi Wave
+          { spell = 115203, type = "ability", buff = true }, -- Fortifying Brew
           { spell = 115288, type = "ability", talent = 9 }, -- Energizing Elixir
           { spell = 115546, type = "ability", debuff = true, requiresTarget = true}, -- Provoke
           { spell = 116095, type = "ability", requiresTarget = true}, -- Disable
           { spell = 116705, type = "ability", requiresTarget = true}, -- Spear Hand Strike
+          { spell = 116670, type = "ability"}, -- Vivify
           { spell = 116841, type = "ability", talent = 6 }, -- Tiger's Lust
           { spell = 116844, type = "ability", talent = 12 }, -- Ring of Peace
+          { spell = 116847, type = "ability", talent = 17 }, -- Rushing Jade Wind
+          { spell = 117952, type = "ability"}, -- Crackling Jade Lightning
           { spell = 119381, type = "ability"}, -- Leg Sweep
           { spell = 119996, type = "ability"}, -- Transcendence: Transfer
           { spell = 122278, type = "ability", buff = true, talent = 15 }, -- Dampen Harm
           { spell = 122470, type = "ability", debuff = true, requiresTarget = true}, -- Touch of Karma
           { spell = 122783, type = "ability", buff = true, talent = 14 }, -- Diffuse Magic
-          { spell = 123904, type = "ability", requiresTarget = true, talent = 18 }, -- Invoke Xuen, the White Tiger
+          { spell = 123904, type = "ability", requiresTarget = true }, -- Invoke Xuen, the White Tiger
           { spell = 123986, type = "ability", talent = 3 }, -- Chi Burst
           { spell = 126892, type = "ability"}, -- Zen Pilgrimage
           { spell = 137639, type = "ability", charges = true, buff = true}, -- Storm, Earth, and Fire
@@ -3834,6 +3859,8 @@ else
           { spell = 218164, type = "ability"}, -- Detox
           { spell = 261715, type = "ability", buff = true, talent = 17 }, -- Rushing Jade Wind
           { spell = 261947, type = "ability", talent = 8 }, -- Fist of the White Tiger
+          { spell = 322101, type = "ability"}, -- Expel Harm
+          { spell = 322109, type = "ability", usable = true, requiresTarget = true}, -- Touch of Death
         },
         icon = 627606
       },
@@ -3843,18 +3870,16 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
-          { spell = 233759, type="ability", pvptalent = 4, titleSuffix = L["cooldown"]},-- Grapple Weapon
-          { spell = 233759, type="debuff", unit = "target", pvptalent = 4, titleSuffix = L["debuff"]},-- Grapple Weapon
-          { spell = 287504, type="buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"]},-- Alpha Tiger
-          { spell = 290512, type="debuff", unit = "target", pvptalent = 5, titleSuffix = L["debuff"]},-- Alpha Tiger
-          { spell = 201787, type="debuff", unit = "target", pvptalent = 7},-- Turbo Fists
-          { spell = 287771, type="ability", pvptalent = 9},-- Reverse Harm
-          { spell = 201447, type="buff", unit = "player", pvptalent = 11},-- Ride the Wind
-          { spell = 201318, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Fortifying Brew
-          { spell = 201318, type="buff", unit = "player", pvptalent = 12, titleSuffix = L["buff"]},-- Fortifying Brew
-          { spell = 247483, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Tigereye Brew
-          { spell = 248646, type="buff", unit = "player", pvptalent = 13, titleSuffix = L["buff"]},-- Tigereye Brew
-          { spell = 247483, type="buff", unit = "player", pvptalent = 13, titleSuffix = L["buff"]},-- Tigereye Brew
+          { spell = 201447, type="buff", unit = "player", pvptalent = 4},-- Ride the Wind
+          { spell = 201787, type="debuff", unit = "target", pvptalent = 1},-- Turbo Fists
+          { spell = 233759, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Grapple Weapon
+          { spell = 233759, type="debuff", unit = "target", pvptalent = 7, titleSuffix = L["debuff"]},-- Grapple Weapon
+          { spell = 247483, type="ability", pvptalent = 2, titleSuffix = L["cooldown"]},-- Tigereye Brew
+          { spell = 247483, type="buff", unit = "player", pvptalent = 2, titleSuffix = L["buff"]},-- Tigereye Brew
+          { spell = 248646, type="buff", unit = "player", pvptalent = 2, titleSuffix = L["buff"]},-- Tigereye Brew
+          { spell = 287504, type="buff", unit = "player", pvptalent = 8, titleSuffix = L["buff"]},-- Alpha Tiger
+          { spell = 287771, type="ability", pvptalent = 3},-- Reverse Harm
+          { spell = 290512, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Alpha Tiger
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
