@@ -3151,62 +3151,71 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
-          { spell = 196099, type = "buff", unit = "player", talent = 18 }, -- Grimoire of Sacrifice
-          { spell = 104773, type = "buff", unit = "player"}, -- Unending Resolve
           { spell = 126, type = "buff", unit = "player"}, -- Eye of Kilrogg
-          { spell = 113860, type = "buff", unit = "player", talent = 21 }, -- Dark Soul: Misery
-          { spell = 48018, type = "buff", unit = "player", talent = 15 }, -- Demonic Circle
-          { spell = 108416, type = "buff", unit = "player", talent = 9 }, -- Dark Pact
-          { spell = 108366, type = "buff", unit = "player"}, -- Soul Leech
-          { spell = 5697, type = "buff", unit = "player"}, -- Unending Breath
-          { spell = 264571, type = "buff", unit = "player", talent = 1 }, -- Nightfall
-          { spell = 111400, type = "buff", unit = "player", talent = 8 }, -- Burning Rush
-          { spell = 20707, type = "buff", unit = "group"}, -- Soulstone
-          { spell = 7870, type = "buff", unit = "pet"}, -- Lesser Invisibility
-          { spell = 112042, type = "buff", unit = "pet"}, -- Threatening Presence
-          { spell = 17767, type = "buff", unit = "pet"}, -- Shadow Bulwark
           { spell = 755, type = "buff", unit = "pet"}, -- Health Funnel
+          { spell = 5697, type = "buff", unit = "player"}, -- Unending Breath
+          { spell = 7870, type = "buff", unit = "pet"}, -- Lesser Invisibility
+          { spell = 17767, type = "buff", unit = "pet"}, -- Shadow Bulwark
+          { spell = 20707, type = "buff", unit = "group"}, -- Soulstone
+          { spell = 48018, type = "buff", unit = "player"}, -- Demonic Circle
+          { spell = 104773, type = "buff", unit = "player"}, -- Unending Resolve
+          { spell = 108366, type = "buff", unit = "player"}, -- Soul Leech
+          { spell = 108416, type = "buff", unit = "player", talent = 9 }, -- Dark Pact
+          { spell = 112042, type = "buff", unit = "pet"}, -- Threatening Presence
+          { spell = 113860, type = "buff", unit = "player", talent = 21 }, -- Dark Soul: Misery
+          { spell = 111400, type = "buff", unit = "player", talent = 8 }, -- Burning Rush
+          { spell = 196099, type = "buff", unit = "player", talent = 18 }, -- Grimoire of Sacrifice
+          { spell = 264571, type = "buff", unit = "player", talent = 1 }, -- Nightfall
+          { spell = 334320, type = "buff", unit = "player", talent = 2 }, -- Inevitable Demise
         },
         icon = 136210
       },
       [2] = {
         title = L["Debuffs"],
         args = {
-          { spell = 233490, type = "debuff", unit = "target"}, -- Unstable Affliction
-          { spell = 27243, type = "debuff", unit = "target"}, -- Seed of Corruption
+          { spell = 702, type = "debuff", unit = "target"}, -- Curse of Weakness
           { spell = 710, type = "debuff", unit = "multi"}, -- Banish
-          { spell = 234153, type = "debuff", unit = "target"}, -- Drain Life
-          { spell = 6358, type = "debuff", unit = "target"}, -- Seduction
-          { spell = 30283, type = "debuff", unit = "target"}, -- Shadowfury
-          { spell = 6789, type = "debuff", unit = "target", talent = 14 }, -- Mortal Coil
-          { spell = 118699, type = "debuff", unit = "target"}, -- Fear
-          { spell = 198590, type = "debuff", unit = "target", talent = 2 }, -- Drain Soul
-          { spell = 17735, type = "debuff", unit = "target"}, -- Suffering
-          { spell = 6360, type = "debuff", unit = "target"}, -- Whiplash
-          { spell = 278350, type = "debuff", unit = "target", talent = 12 }, -- Vile Taint
-          { spell = 1098, type = "debuff", unit = "multi"}, -- Enslave Demon
-          { spell = 48181, type = "debuff", unit = "target", talent = 17 }, -- Haunt
-          { spell = 32390, type = "debuff", unit = "target", talent = 16 }, -- Shadow Embrace
-          { spell = 146739, type = "debuff", unit = "target"}, -- Corruption
-          { spell = 205179, type = "debuff", unit = "target", talent = 11 }, -- Phantom Singularity
-          { spell = 63106, type = "debuff", unit = "target", talent = 6 }, -- Siphon Life
           { spell = 980, type = "debuff", unit = "target"}, -- Agony
+          { spell = 1098, type = "debuff", unit = "multi"}, -- Enslave Demon
+          { spell = 1714, type = "debuff", unit = "target"}, -- Curse of Tongues
+          { spell = 6358, type = "debuff", unit = "target"}, -- Seduction
+          { spell = 6360, type = "debuff", unit = "target"}, -- Whiplash
+          { spell = 6789, type = "debuff", unit = "target", talent = 14 }, -- Mortal Coil
+          { spell = 17735, type = "debuff", unit = "target"}, -- Suffering
+          { spell = 27243, type = "debuff", unit = "target"}, -- Seed of Corruption
+          { spell = 30283, type = "debuff", unit = "target"}, -- Shadowfury
+          { spell = 48181, type = "debuff", unit = "target", talent = 17 }, -- Haunt
+          { spell = 63106, type = "debuff", unit = "target", talent = 6 }, -- Siphon Life
+          { spell = 118699, type = "debuff", unit = "target"}, -- Fear
+          { spell = 146739, type = "debuff", unit = "target"}, -- Corruption
+          { spell = 198590, type = "debuff", unit = "target", talent = 2 }, -- Drain Soul
+          { spell = 205179, type = "debuff", unit = "target", talent = 11 }, -- Phantom Singularity
+          { spell = 234153, type = "debuff", unit = "target"}, -- Drain Life
+          { spell = 233490, type = "debuff", unit = "target"}, -- Unstable Affliction
+          { spell = 278350, type = "debuff", unit = "target", talent = 12 }, -- Vile Taint
+          { spell = 334275, type = "debuff", unit = "target"}, -- Curse of Exhaustion
         },
         icon = 136139
       },
       [3] = {
         title = L["Abilities"],
         args = {
+          { spell = 126, type = "ability"}, -- Eye of Kilrogg
           { spell = 172, type = "ability", requiresTarget = true, debuff = true}, -- Corruption
+          { spell = 686, type = "ability", requiresTarget = true}, -- Shadow Bolt
           { spell = 698, type = "ability"}, -- Ritual of Summoning
+          { spell = 702, type = "ability", requiresTarget = true, debuff = true}, -- Curse of Weakness
           { spell = 710, type = "ability", requiresTarget = true, debuff = true}, -- Banish
+          { spell = 755, type = "ability"}, -- Health Funnel
           { spell = 980, type = "ability", requiresTarget = true, debuff = true}, -- Agony
+          { spell = 1714, type = "ability", requiresTarget = true, debuff = true}, -- Curse of Tongues
           { spell = 3110, type = "ability", requiresTarget = true}, -- Firebolt
           { spell = 3716, type = "ability", requiresTarget = true}, -- Consuming Shadows
+          { spell = 5484, type = "ability"}, -- Howl of Terror
           { spell = 5782, type = "ability", requiresTarget = true, debuff = true}, -- Fear
           { spell = 6358, type = "ability", requiresTarget = true}, -- Seduction
           { spell = 6360, type = "ability", requiresTarget = true}, -- Whiplash
-          { spell = 6789, type = "ability", requiresTarget = true, talent = 15 }, -- Mortal Coil
+          { spell = 6789, type = "ability", requiresTarget = true, talent = 14 }, -- Mortal Coil
           { spell = 7814, type = "ability", requiresTarget = true}, -- Lash of Pain
           { spell = 7870, type = "ability"}, -- Lesser Invisibility
           { spell = 17735, type = "ability", requiresTarget = true, debuff = true}, -- Suffering
@@ -3218,8 +3227,8 @@ else
           { spell = 29893, type = "ability"}, -- Create Soulwell
           { spell = 30108, type = "ability", requiresTarget = true}, -- Unstable Affliction
           { spell = 30283, type = "ability"}, -- Shadowfury
-          { spell = 48018, type = "ability", talent = 15 }, -- Demonic Circle
-          { spell = 48020, type = "ability", talent = 15 }, -- Demonic Circle: Teleport
+          { spell = 48018, type = "ability"}, -- Demonic Circle
+          { spell = 48020, type = "ability", usable = true }, -- Demonic Circle: Teleport
           { spell = 48181, type = "ability", requiresTarget = true, debuff = true, talent = 17 }, -- Haunt
           { spell = 54049, type = "ability", requiresTarget = true}, -- Shadow Bite
           { spell = 63106, type = "ability", requiresTarget = true, debuff = true, talent = 6}, -- Siphon Life
@@ -3231,7 +3240,8 @@ else
           { spell = 111771, type = "ability"}, -- Demonic Gateway
           { spell = 112042, type = "ability"}, -- Threatening Presence
           { spell = 113860, type = "ability", buff = true, talent = 21 }, -- Dark Soul: Misery
-          { spell = 119910, type = "ability", requiresTarget = true}, -- Spell Lock
+          { spell = 119910, type = "ability", requiresTarget = true}, -- Command Demon
+          { spell = 198590, type = "ability", requiresTarget = true}, -- Drain Soul
           { spell = 205179, type = "ability", requiresTarget = true, debuff = true, talent = 11 }, -- Phantom Singularity
           { spell = 205180, type = "ability", totem = true}, -- Summon Darkglare
           { spell = 232670, type = "ability", requiresTarget = true, overlayGlow = true}, -- Shadow Bolt
@@ -3239,6 +3249,11 @@ else
           { spell = 264106, type = "ability", requiresTarget = true, talent = 3 }, -- Deathbolt
           { spell = 264993, type = "ability"}, -- Shadow Shield
           { spell = 278350, type = "ability", requiresTarget = true, talent = 12 }, -- Vile Taint
+          { spell = 316099, type = "ability", requiresTarget = true }, -- Unstable Affliction
+          { spell = 333889, type = "ability" }, -- Fel Domination
+          { spell = 334275, type = "ability", debuff = true, requiresTarget = true }, -- Curse of Exhaustion
+          { spell = 342601, type = "ability" }, -- Ritual of Doom
+          { spell = 324536, type = "ability" }, -- Malefic Rapture
         },
         icon = 135808
       },
@@ -3248,23 +3263,18 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
-          { spell = 199890, type="ability", pvptalent = 4, titleSuffix = L["cooldown"]},-- Curse of Tongues
-          { spell = 199890, type="debuff", unit = "target", pvptalent = 4, titleSuffix = L["debuff"]},-- Curse of Tongues
-          { spell = 285933, type="buff", unit = "player", pvptalent = 5},-- Demon Armor
-          { spell = 221715, type="debuff", unit = "target", pvptalent = 6},-- Essence Drain
+          { spell = 199954, type="ability", debuff = true, pvptalent = 9, titleSuffix = L["cooldown"]},-- Bane of Fragility
+          { spell = 199954, type="debuff", unit = "target", pvptalent = 9, titleSuffix = L["debuff"]},-- Bane of Fragility
+          { spell = 212295, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Nether Ward
+          { spell = 212295, type="buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"]},-- Nether Ward
+          { spell = 212356, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Soulshatter
           { spell = 221703, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Casting Circle
           { spell = 221705, type="buff", unit = "player", pvptalent = 7, titleSuffix = L["buff"]},-- Casting Circle
-          { spell = 212356, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Soulshatter
-          { spell = 236471, type="buff", unit = "player", pvptalent = 8, titleSuffix = L["buff"]},-- Soulshatter
-          { spell = 199892, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Curse of Weakness
-          { spell = 199892, type="debuff", unit = "target", pvptalent = 9, titleSuffix = L["debuff"]},-- Curse of Weakness
-          { spell = 199954, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Curse of Fragility
-          { spell = 199954, type="debuff", unit = "target", pvptalent = 10, titleSuffix = L["debuff"]},-- Curse of Fragility
-          { spell = 305388, type="debuff", unit = "target", pvptalent = 11},-- Endless Affliction
-          { spell = 212295, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Nether Ward
-          { spell = 212295, type="buff", unit = "player", pvptalent = 12, titleSuffix = L["buff"]},-- Nether Ward
-          { spell = 234877, type="ability", pvptalent = 13, titleSuffix = L["cooldown"]},-- Curse of Shadows
-          { spell = 234877, type="debuff", unit = "target", pvptalent = 13, titleSuffix = L["debuff"]},-- Curse of Shadows
+          { spell = 221715, type="debuff", unit = "target", pvptalent = 6},-- Essence Drain
+          { spell = 264106, type="ability", pvptalent = 4},-- Deathbolt
+          { spell = 285933, type="buff", unit = "player", pvptalent = 13},-- Demon Armor
+          { spell = 234877, type="ability", pvptalent = 4},-- Bane of Shadows
+          { spell = 328774, type="ability", buff = true, pvptalent = 8},-- Amplify Curse
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
@@ -3279,55 +3289,69 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
-          { spell = 104773, type = "buff", unit = "player"}, -- Unending Resolve
           { spell = 126, type = "buff", unit = "player"}, -- Eye of Kilrogg
-          { spell = 267218, type = "buff", unit = "player", talent = 21 }, -- Nether Portal
-          { spell = 48018, type = "buff", unit = "player", talent = 15 }, -- Demonic Circle
-          { spell = 108416, type = "buff", unit = "player", talent = 9 }, -- Dark Pact
-          { spell = 108366, type = "buff", unit = "player"}, -- Soul Leech
-          { spell = 205146, type = "buff", unit = "player", talent = 4 }, -- Demonic Calling
-          { spell = 5697, type = "buff", unit = "player"}, -- Unending Breath
-          { spell = 265273, type = "buff", unit = "player"}, -- Demonic Power
-          { spell = 111400, type = "buff", unit = "player", talent = 8 }, -- Burning Rush
-          { spell = 20707, type = "buff", unit = "group"}, -- Soulstone
-          { spell = 264173, type = "buff", unit = "player"}, -- Demonic Core
-          { spell = 134477, type = "buff", unit = "pet"}, -- Threatening Presence
-          { spell = 30151, type = "buff", unit = "pet"}, -- Pursuit
-          { spell = 267171, type = "buff", unit = "pet", talent = 2 }, -- Demonic Strength
-          { spell = 17767, type = "buff", unit = "pet"}, -- Shadow Bulwark
-          { spell = 89751, type = "buff", unit = "pet"}, -- Felstorm
           { spell = 755, type = "buff", unit = "pet"}, -- Health Funnel
+          { spell = 5697, type = "buff", unit = "player"}, -- Unending Breath
+          { spell = 17767, type = "buff", unit = "pet"}, -- Shadow Bulwark
+          { spell = 20707, type = "buff", unit = "group"}, -- Soulstone
+          { spell = 30151, type = "buff", unit = "pet"}, -- Pursuit
+          { spell = 48018, type = "buff", unit = "player"}, -- Demonic Circle
+          { spell = 89751, type = "buff", unit = "pet"}, -- Felstorm
+          { spell = 104773, type = "buff", unit = "player"}, -- Unending Resolve
+          { spell = 108366, type = "buff", unit = "player"}, -- Soul Leech
+          { spell = 108416, type = "buff", unit = "player", talent = 9 }, -- Dark Pact
+          { spell = 111400, type = "buff", unit = "player", talent = 8 }, -- Burning Rush
+          { spell = 134477, type = "buff", unit = "pet"}, -- Threatening Presence
+          { spell = 205146, type = "buff", unit = "player", talent = 4 }, -- Demonic Calling
+          { spell = 265273, type = "buff", unit = "player"}, -- Demonic Power
+          { spell = 267218, type = "buff", unit = "player", talent = 21 }, -- Nether Portal
+          { spell = 264173, type = "buff", unit = "player"}, -- Demonic Core
+          { spell = 267171, type = "buff", unit = "pet", talent = 3 }, -- Demonic Strength
         },
         icon = 1378284
       },
       [2] = {
         title = L["Debuffs"],
         args = {
-          { spell = 270569, type = "debuff", unit = "target", talent = 10 }, -- From the Shadows
-          { spell = 267997, type = "debuff", unit = "target", talent = 3 }, -- Bile Spit
-          { spell = 17735, type = "debuff", unit = "target"}, -- Suffering
-          { spell = 118699, type = "debuff", unit = "target"}, -- Fear
-          { spell = 30283, type = "debuff", unit = "target"}, -- Shadowfury
-          { spell = 89766, type = "debuff", unit = "target"}, -- Axe Toss
-          { spell = 6789, type = "debuff", unit = "target", talent = 14 }, -- Mortal Coil
-          { spell = 234153, type = "debuff", unit = "target"}, -- Drain Life
-          { spell = 30213, type = "debuff", unit = "target"}, -- Legion Strike
-          { spell = 6360, type = "debuff", unit = "target"}, -- Whiplash
-          { spell = 265412, type = "debuff", unit = "target", talent = 6 }, -- Doom
+          { spell = 603, type = "debuff", unit = "target"}, -- Doom
+          { spell = 702, type = "debuff", unit = "target"}, -- Curse of Weakness
           { spell = 710, type = "debuff", unit = "multi"}, -- Banish
           { spell = 1098, type = "debuff", unit = "multi"}, -- Enslave Demon
+          { spell = 1714, type = "debuff", unit = "target"}, -- Curse of Tongues
           { spell = 6358, type = "debuff", unit = "target"}, -- Seduction
+          { spell = 6360, type = "debuff", unit = "target"}, -- Whiplash
+          { spell = 6789, type = "debuff", unit = "target", talent = 14 }, -- Mortal Coil
+          { spell = 17735, type = "debuff", unit = "target"}, -- Suffering
+          { spell = 30213, type = "debuff", unit = "target"}, -- Legion Strike
+          { spell = 30283, type = "debuff", unit = "target"}, -- Shadowfury
+          { spell = 89766, type = "debuff", unit = "target"}, -- Axe Toss
+          { spell = 118699, type = "debuff", unit = "target"}, -- Fear
+          { spell = 146739, type = "debuff", unit = "target"}, -- Corruption
+          { spell = 267997, type = "debuff", unit = "target", talent = 2 }, -- Bile Spit
+          { spell = 270569, type = "debuff", unit = "target", talent = 10 }, -- From the Shadows
+          { spell = 234153, type = "debuff", unit = "target"}, -- Drain Life
+          { spell = 265412, type = "debuff", unit = "target", talent = 6 }, -- Doom
+          { spell = 334275, type = "debuff", unit = "target"}, -- Curse of Exhaustion
         },
         icon = 136122
       },
       [3] = {
         title = L["Abilities"],
         args = {
+          { spell = 126, type = "ability" }, -- Eyew of Kilrogg
+          { spell = 172, type = "ability" }, -- Corruption
+          { spell = 603, type = "ability", requiresTarget = true, debuff = true, talent = 6}, -- Doom
           { spell = 686, type = "ability", requiresTarget = true}, -- Shadow Bolt
           { spell = 698, type = "ability"}, -- Ritual of Summoning
+          { spell = 702, type = "ability", requiresTarget = true, debuff = true}, -- Curse of Weakness
           { spell = 710, type = "ability", requiresTarget = true, debuff = true}, -- Banish
+          { spell = 755, type = "ability"}, -- Health Funnel
+          { spell = 1098, type = "ability"}, -- Subjugate Demon
+          { spell = 1714, type = "ability", requiresTarget = true, debuff = true}, -- Curse of Tongues
           { spell = 3716, type = "ability", requiresTarget = true}, -- Consuming Shadows
+          { spell = 5484, type = "ability", debuff = true, talent = 15}, -- Howl of Terror
           { spell = 5782, type = "ability", requiresTarget = true, debuff = true}, -- Fear
+          { spell = 6358, type = "ability", requiresTarget = true}, -- Seduction
           { spell = 6360, type = "ability", requiresTarget = true}, -- Whiplash
           { spell = 6789, type = "ability", requiresTarget = true, talent = 14 }, -- Mortal Coil
           { spell = 7814, type = "ability", requiresTarget = true}, -- Lash of Pain
@@ -3341,8 +3365,8 @@ else
           { spell = 30151, type = "ability", requiresTarget = true}, -- Pursuit
           { spell = 30213, type = "ability", requiresTarget = true}, -- Legion Strike
           { spell = 30283, type = "ability"}, -- Shadowfury
-          { spell = 48018, type = "ability", talent = 15 }, -- Demonic Circle
-          { spell = 48020, type = "ability", talent = 15 }, -- Demonic Circle: Teleport
+          { spell = 48018, type = "ability" }, -- Demonic Circle
+          { spell = 48020, type = "ability" }, -- Demonic Circle: Teleport
           { spell = 54049, type = "ability", requiresTarget = true}, -- Shadow Bite
           { spell = 89751, type = "ability"}, -- Felstorm
           { spell = 89766, type = "ability", requiresTarget = true, debuff = true}, -- Axe Toss
@@ -3355,6 +3379,9 @@ else
           { spell = 111771, type = "ability"}, -- Demonic Gateway
           { spell = 111898, type = "ability", requiresTarget = true, talent = 18 }, -- Grimoire: Felguard
           { spell = 112042, type = "ability"}, -- Threatening Presence
+          { spell = 119898, type = "ability" }, -- Command Demon
+          { spell = 196277, type = "ability" }, -- Implosion
+          { spell = 234153, type = "ability", requiresTarget = true }, -- Drain Life
           { spell = 264057, type = "ability", requiresTarget = true, talent = 11 }, -- Soul Strike
           { spell = 264119, type = "ability", talent = 12 }, -- Summon Vilefiend
           { spell = 264130, type = "ability", usable = true, talent = 5 }, -- Power Siphon
@@ -3362,10 +3389,12 @@ else
           { spell = 264993, type = "ability"}, -- Shadow Shield
           { spell = 265187, type = "ability"}, -- Summon Demonic Tyrant
           { spell = 265412, type = "ability", requiresTarget = true, debuff = true, talent = 6}, -- Doom
-          { spell = 267171, type = "ability", requiresTarget = true, talent = 2 }, -- Demonic Strength
-          { spell = 267211, type = "ability", talent = 3 }, -- Bilescourge Bombers
+          { spell = 267171, type = "ability", requiresTarget = true, talent = 3 }, -- Demonic Strength
+          { spell = 267211, type = "ability", talent = 2 }, -- Bilescourge Bombers
           { spell = 267217, type = "ability", buff = true, talent = 21 }, -- Nether Portal
-          { spell = 6358, type = "ability", requiresTarget = true}, -- Seduction
+          { spell = 333889, type = "ability" }, -- Fel Domination
+          { spell = 334275, type = "ability", debuff = true }, -- Curse of Exhaustion
+          { spell = 342601, type = "ability" }, -- Ritual of Doom
         },
         icon = 1378282
       },
@@ -3375,21 +3404,18 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
-          { spell = 201996, type="ability", pvptalent = 4},-- Call Observer
-          { spell = 212295, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Nether Ward
-          { spell = 212295, type="buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"]},-- Nether Ward
-          { spell = 221715, type="debuff", unit = "target", pvptalent = 6},-- Essence Drain
-          { spell = 221703, type="ability", pvptalent = 7, titleSuffix = L["cooldown"]},-- Casting Circle
-          { spell = 221705, type="buff", unit = "target", pvptalent = 7, titleSuffix = L["buff"]},-- Casting Circle
-          { spell = 199890, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Curse of Tongues
-          { spell = 199890, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Curse of Tongues
-          { spell = 199954, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Curse of Fragility
-          { spell = 199954, type="debuff", unit = "target", pvptalent = 9, titleSuffix = L["debuff"]},-- Curse of Fragility
-          { spell = 199892, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Curse of Weakness
-          { spell = 199892, type="debuff", unit = "target", pvptalent = 10, titleSuffix = L["debuff"]},-- Curse of Weakness
-          { spell = 212623, type="ability", pvptalent = 11},-- Singe Magic
-          { spell = 212619, type="ability", pvptalent = 12},-- Call Felhunter
-          { spell = 212459, type="ability", pvptalent = 14},-- Call Fel Lord
+          { spell = 199954, type="ability", debuff = true, pvptalent = 3, titleSuffix = L["cooldown"]},-- Bane of Fragility
+          { spell = 199954, type="debuff", unit = "target", pvptalent = 3, titleSuffix = L["debuff"]},-- Bane of Fragility
+          { spell = 201996, type="ability", pvptalent = 9},-- Call Observer
+          { spell = 212295, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Nether Ward
+          { spell = 212295, type="buff", unit = "player", pvptalent = 12, titleSuffix = L["buff"]},-- Nether Ward
+          { spell = 212459, type="ability", pvptalent = 2},-- Call Fel Lord
+          { spell = 212619, type="ability", pvptalent = 6},-- Call Felhunter
+          { spell = 212623, type="ability", pvptalent = 7},-- Singe Magic
+          { spell = 221703, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Casting Circle
+          { spell = 221705, type="buff", unit = "target", pvptalent = 10, titleSuffix = L["buff"]},-- Casting Circle
+          { spell = 221715, type="debuff", unit = "target", pvptalent = 11},-- Essence Drain
+          { spell = 328774, type="ability", buff = true, pvptalent = 8},-- Amplify Curse
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
@@ -3404,60 +3430,72 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
-          { spell = 104773, type = "buff", unit = "player"}, -- Unending Resolve
           { spell = 126, type = "buff", unit = "player"}, -- Eye of Kilrogg
-          { spell = 113858, type = "buff", unit = "player", talent = 21 }, -- Dark Soul: Instability
-          { spell = 196099, type = "buff", unit = "player", talent = 18 }, -- Grimoire of Sacrifice
-          { spell = 266091, type = "buff", unit = "player", talent = 17 }, -- Grimoire of Supremacy
-          { spell = 108366, type = "buff", unit = "player"}, -- Soul Leech
-          { spell = 266030, type = "buff", unit = "player", talent = 4 }, -- Reverse Entropy
-          { spell = 5697, type = "buff", unit = "player"}, -- Unending Breath
-          { spell = 48018, type = "buff", unit = "player", talent = 15 }, -- Demonic Circle
-          { spell = 111400, type = "buff", unit = "player", talent = 8 }, -- Burning Rush
-          { spell = 20707, type = "buff", unit = "group"}, -- Soulstone
-          { spell = 108416, type = "buff", unit = "player", talent = 9 }, -- Dark Pact
-          { spell = 117828, type = "buff", unit = "player"}, -- Backdraft
-          { spell = 7870, type = "buff", unit = "pet"}, -- Lesser Invisibility
-          { spell = 112042, type = "buff", unit = "pet"}, -- Threatening Presence
-          { spell = 17767, type = "buff", unit = "pet"}, -- Shadow Bulwark
-          { spell = 108366, type = "buff", unit = "pet"}, -- Soul Leech
           { spell = 755, type = "buff", unit = "pet"}, -- Health Funnel
+          { spell = 5697, type = "buff", unit = "player"}, -- Unending Breath
+          { spell = 7870, type = "buff", unit = "pet"}, -- Lesser Invisibility
+          { spell = 17767, type = "buff", unit = "pet"}, -- Shadow Bulwark
+          { spell = 20707, type = "buff", unit = "group"}, -- Soulstone
+          { spell = 48018, type = "buff", unit = "player"}, -- Demonic Circle
+          { spell = 104773, type = "buff", unit = "player"}, -- Unending Resolve
+          { spell = 108366, type = "buff", unit = "player"}, -- Soul Leech
+          { spell = 108366, type = "buff", unit = "pet"}, -- Soul Leech
+          { spell = 108416, type = "buff", unit = "player", talent = 9 }, -- Dark Pact
+          { spell = 111400, type = "buff", unit = "player", talent = 8 }, -- Burning Rush
+          { spell = 112042, type = "buff", unit = "pet"}, -- Threatening Presence
+          { spell = 113858, type = "buff", unit = "player", talent = 21 }, -- Dark Soul: Instability
+          { spell = 117828, type = "buff", unit = "player"}, -- Backdraft
+          { spell = 196099, type = "buff", unit = "player", talent = 18 }, -- Grimoire of Sacrifice
+          { spell = 266030, type = "buff", unit = "player", talent = 4 }, -- Reverse Entropy
         },
         icon = 136150
       },
       [2] = {
         title = L["Debuffs"],
         args = {
-          { spell = 157736, type = "debuff", unit = "target"}, -- Immolate
-          { spell = 22703, type = "debuff", unit = "target"}, -- Infernal Awakening
-          { spell = 265931, type = "debuff", unit = "target"}, -- Conflagrate
-          { spell = 17735, type = "debuff", unit = "target"}, -- Suffering
-          { spell = 118699, type = "debuff", unit = "target"}, -- Fear
-          { spell = 80240, type = "debuff", unit = "target"}, -- Havoc
+          { spell = 172, type = "debuff", unit = "target"}, -- Coruption
+          { spell = 348, type = "debuff", unit = "target"}, -- Immolate
+          { spell = 702, type = "debuff", unit = "target"}, -- Curse of Weakness
+          { spell = 710, type = "debuff", unit = "multi"}, -- Banish
+          { spell = 1714, type = "debuff", unit = "target"}, -- Curse of Tongues
+          { spell = 1098, type = "debuff", unit = "multi"}, -- Enslave Demon
+          { spell = 5782, type = "debuff", unit = "target"}, -- Fear
+          { spell = 6358, type = "debuff", unit = "target"}, -- Seduction
+          { spell = 6360, type = "debuff", unit = "target"}, -- Whiplash
           { spell = 6789, type = "debuff", unit = "target", talent = 14 }, -- Mortal Coil
+          { spell = 17735, type = "debuff", unit = "target"}, -- Suffering
+          { spell = 22703, type = "debuff", unit = "target"}, -- Infernal Awakening
+          { spell = 30283, type = "debuff", unit = "target"}, -- Shadowfury
+          { spell = 80240, type = "debuff", unit = "target"}, -- Havoc
+          { spell = 118699, type = "debuff", unit = "target"}, -- Fear
+          { spell = 157736, type = "debuff", unit = "target"}, -- Immolate
           { spell = 196414, type = "debuff", unit = "target", talent = 2 }, -- Eradication
           { spell = 234153, type = "debuff", unit = "target"}, -- Drain Life
-          { spell = 6360, type = "debuff", unit = "target"}, -- Whiplash
-          { spell = 30283, type = "debuff", unit = "target"}, -- Shadowfury
-          { spell = 710, type = "debuff", unit = "multi"}, -- Banish
-          { spell = 1098, type = "debuff", unit = "multi"}, -- Enslave Demon
-          { spell = 6358, type = "debuff", unit = "target"}, -- Seduction
-
+          { spell = 265931, type = "debuff", unit = "target"}, -- Conflagrate
+          { spell = 334275, type = "debuff", unit = "target"}, -- Curse of Exhaustion
         },
         icon = 135817
       },
       [3] = {
         title = L["Abilities"],
         args = {
+          { spell = 126, type = "ability"}, -- Eye of Kilrogg
+          { spell = 172, type = "ability", requiresTarget = true, debuff = true}, -- Corruption
           { spell = 348, type = "ability", requiresTarget = true, debuff = true}, -- Immolate
+          { spell = 686, type = "ability"}, -- Incinerate
           { spell = 698, type = "ability"}, -- Ritual of Summoning
+          { spell = 702, type = "ability", requiresTarget = true, debuff = true}, -- Curse of Weakness
           { spell = 710, type = "ability", requiresTarget = true, debuff = true}, -- Banish
+          { spell = 1098, type = "ability"}, -- Subjugate Demon
           { spell = 1122, type = "ability", duration = 30}, -- Summon Infernal
+          { spell = 1714, type = "ability", requiresTarget = true, debuff = true}, -- Curse of Tongues
           { spell = 3110, type = "ability", requiresTarget = true}, -- Firebolt
           { spell = 3716, type = "ability", requiresTarget = true}, -- Consuming Shadows
+          { spell = 5484, type = "ability"}, -- Howl of Terror
           { spell = 5740, type = "ability"}, -- Rain of Fire
           { spell = 5782, type = "ability", requiresTarget = true, debuff = true}, -- Fear
           { spell = 6353, type = "ability", talent = 3 }, -- Soul Fire
+          { spell = 6358, type = "ability", requiresTarget = true}, -- Seduction
           { spell = 6360, type = "ability", requiresTarget = true}, -- Whiplash
           { spell = 6789, type = "ability", requiresTarget = true, talent = 14 }, -- Mortal Coil
           { spell = 7814, type = "ability", requiresTarget = true}, -- Lash of Pain
@@ -3471,8 +3509,8 @@ else
           { spell = 29722, type = "ability", requiresTarget = true}, -- Incinerate
           { spell = 29893, type = "ability"}, -- Create Soulwell
           { spell = 30283, type = "ability"}, -- Shadowfury
-          { spell = 48018, type = "ability", talent = 15 }, -- Demonic Circle
-          { spell = 48020, type = "ability", talent = 15 }, -- Demonic Circle: Teleport
+          { spell = 48018, type = "ability"}, -- Demonic Circle
+          { spell = 48020, type = "ability"}, -- Demonic Circle: Teleport
           { spell = 54049, type = "ability", requiresTarget = true}, -- Shadow Bite
           { spell = 80240, type = "ability", requiresTarget = true, debuff = true}, -- Havoc
           { spell = 89792, type = "ability"}, -- Flee
@@ -3483,12 +3521,15 @@ else
           { spell = 111771, type = "ability"}, -- Demonic Gateway
           { spell = 112042, type = "ability"}, -- Threatening Presence
           { spell = 113858, type = "ability", buff = true, talent = 21 }, -- Dark Soul: Instability
+          { spell = 116858, type = "ability" }, -- Chaos Bolt
+          { spell = 119898, type = "ability" }, -- Dark Command Demon
           { spell = 152108, type = "ability", talent = 12 }, -- Cataclysm
           { spell = 116858, type = "ability", requiresTarget = true}, -- Chaos Bolt
           { spell = 196447, type = "ability", usable = true, talent = 20 }, -- Channel Demonfire
           { spell = 234153, type = "ability", requiresTarget = true}, -- Drain Life
           { spell = 264993, type = "ability"}, -- Shadow Shield
-          { spell = 6358, type = "ability", requiresTarget = true}, -- Seduction
+          { spell = 333889, type = "ability" }, -- Fel Domination
+          { spell = 334275, type = "ability", debuff = true, requiresTarget = true }, -- Curse of Exhaustion
         },
         icon = 135807
       },
@@ -3498,22 +3539,18 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
-          { spell = 200587, type="debuff", unit = "target", pvptalent = 5},-- Fel Fissure
-          { spell = 233582, type="debuff", unit = "target", pvptalent = 6},-- Entrenched in Flame
-          { spell = 285933, type="buff", unit = "target", pvptalent = 7},-- Demon Armor
-          { spell = 200546, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Bane of Havoc
-          { spell = 200548, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Bane of Havoc
-          { spell = 199954, type="ability", pvptalent = 9, titleSuffix = L["cooldown"]},-- Curse of Fragility
-          { spell = 199954, type="debuff", unit = "target", pvptalent = 9, titleSuffix = L["debuff"]},-- Curse of Fragility
-          { spell = 199890, type="ability", pvptalent = 10, titleSuffix = L["cooldown"]},-- Curse of Tongues
-          { spell = 199890, type="debuff", unit = "target", pvptalent = 10, titleSuffix = L["debuff"]},-- Curse of Tongues
-          { spell = 199892, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Curse of Weakness
-          { spell = 199892, type="buff", unit = "target", pvptalent = 11, titleSuffix = L["debuff"]},-- Curse of Weakness
-          { spell = 212295, type="ability", pvptalent = 12, titleSuffix = L["cooldown"]},-- Nether Ward
-          { spell = 212295, type="buff", unit = "player", pvptalent = 12, titleSuffix = L["buff"]},-- Nether Ward
-          { spell = 221715, type="debuff", unit = "target", pvptalent = 13},-- Essence Drain
-          { spell = 221703, type="ability", pvptalent = 14, titleSuffix = L["cooldown"]},-- Casting Circle
-          { spell = 221705, type="buff", unit = "target", pvptalent = 14, titleSuffix = L["buff"]},-- Casting Circle
+          { spell = 199954, type="ability", debuff = true, pvptalent = 4, titleSuffix = L["cooldown"]},-- Bane of Fragility
+          { spell = 199954, type="debuff", unit = "target", pvptalent = 4, titleSuffix = L["debuff"]},-- Bane of Fragility
+          { spell = 200546, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Bane of Havoc
+          { spell = 200548, type="debuff", unit = "target", pvptalent = 5, titleSuffix = L["debuff"]},-- Bane of Havoc
+          { spell = 200587, type="debuff", unit = "target", pvptalent = 10},-- Fel Fissure
+          { spell = 212295, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Nether Ward
+          { spell = 212295, type="buff", unit = "player", pvptalent = 6, titleSuffix = L["buff"]},-- Nether Ward
+          { spell = 221703, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Casting Circle
+          { spell = 221705, type="buff", unit = "target", pvptalent = 8, titleSuffix = L["buff"]},-- Casting Circle
+          { spell = 221715, type="debuff", unit = "target", pvptalent = 7},-- Essence Drain
+          { spell = 285933, type="buff", unit = "target", pvptalent = 2},-- Demon Armor
+          { spell = 328774, type="ability", buff = true, pvptalent = 3},-- Amplify Curse
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
