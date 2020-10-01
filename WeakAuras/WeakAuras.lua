@@ -5139,6 +5139,7 @@ function WeakAuras.ParseNameCheck(name)
     end
   }
 
+  if not name then return end
   local start = 1
   local last = name:find(',', start, true)
 
