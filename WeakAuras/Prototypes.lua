@@ -6603,7 +6603,7 @@ Private.event_prototypes = {
       },
       {
         name = "destUnit",
-        display = L["Caster's Target "],
+        display = L["Caster's Target"],
         type = "unit",
         values = "actual_unit_types_with_specific",
         conditionType = "unit",
