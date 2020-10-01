@@ -4756,20 +4756,33 @@ Private.event_prototypes = {
     internal_events = {
       "SWING_TIMER_START",
       "SWING_TIMER_CHANGE",
-      "SWING_TIMER_END"
+      "SWING_TIMER_END",
+      "SWING_TIMER_UPDATE"
     },
+    force_events = "SWING_TIMER_UPDATE",
     name = L["Swing Timer"],
-    loadFunc = function(trigger)
+    loadFunc = function()
       WeakAuras.InitSwingTimer();
     end,
     init = function(trigger)
-      trigger.hand = trigger.hand or "main";
       local ret = [=[
         local inverse = %s;
         local hand = %q;
-        local duration, expirationTime = WeakAuras.GetSwingTimerInfo(hand);
+        local triggerRemaining = %s
+        local duration, expirationTime, name, icon = WeakAuras.GetSwingTimerInfo(hand)
+        local remaining = expirationTime and expirationTime - GetTime()
+        local remainingCheck = not triggerRemaining or remaining and remaining %s triggerRemaining
+
+        if triggerRemaining and remaining and remaining >= triggerRemaining and remaining > 0 then
+          WeakAuras.ScheduleScan(expirationTime - triggerRemaining, "SWING_TIMER_UPDATE")
+        end
       ]=];
-      return ret:format((trigger.use_inverse and "true" or "false"), trigger.hand);
+      return ret:format(
+        (trigger.use_inverse and "true" or "false"),
+        trigger.hand or "main",
+        trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
+        trigger.remaining_operator or "<"
+      );
     end,
     args = {
       {
@@ -4778,6 +4791,48 @@ Private.event_prototypes = {
         display = L["Weapon"],
         type = "select",
         values = "swing_types",
+        test = "true"
+      },
+      {
+        name = "duration",
+        hidden = true,
+        init = "duration",
+        test = "true",
+        store = true
+      },
+      {
+        name = "expirationTime",
+        init = "expirationTime",
+        hidden = true,
+        test = "true",
+        store = true
+      },
+      {
+        name = "progressType",
+        hidden = true,
+        init = "'timed'",
+        test = "true",
+        store = true
+      },
+      {
+        name = "name",
+        hidden = true,
+        init = "spell",
+        test = "true",
+        store = true
+      },
+      {
+        name = "icon",
+        hidden = true,
+        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        test = "true",
+        store = true
+      },
+      {
+        name = "remaining",
+        display = L["Remaining Time"],
+        type = "number",
+        enable = function(trigger) return not trigger.use_inverse end,
         test = "true"
       },
       {
@@ -4791,19 +4846,10 @@ Private.event_prototypes = {
         test = "(inverse and duration == 0) or (not inverse and duration > 0)"
       }
     },
-    durationFunc = function(trigger)
-      local duration, expirationTime = WeakAuras.GetSwingTimerInfo(trigger.hand);
-      return duration, expirationTime;
-    end,
-    nameFunc = function(trigger)
-      local _, _, name = WeakAuras.GetSwingTimerInfo(trigger.hand);
-      return name;
-    end,
-    iconFunc = function(trigger)
-      local _, _, _, icon = WeakAuras.GetSwingTimerInfo(trigger.hand);
-      return icon;
-    end,
-    automaticrequired = true
+    automaticrequired = true,
+    canHaveDuration = true,
+    canHaveAuto = true,
+    statesParameter = "one"
   },
   ["Action Usable"] = {
     type = "status",
