@@ -772,7 +772,7 @@ local methods = {
         end
       end
 
-        OptionsPrivate.Private.ResumeAllDynamicGroups();
+      OptionsPrivate.Private.ResumeAllDynamicGroups();
     end
 
     function self.callbacks.ViewTest()

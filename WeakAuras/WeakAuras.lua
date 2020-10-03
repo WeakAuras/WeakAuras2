@@ -3680,6 +3680,7 @@ do
   local UpdateFakeTimesHandle
 
   local function UpdateFakeTimers()
+    Private.PauseAllDynamicGroups()
     local t = GetTime()
     for id, triggers in pairs(triggerState) do
       local changed = false
@@ -3696,6 +3697,7 @@ do
         Private.UpdatedTriggerState(id)
       end
     end
+    Private.ResumeAllDynamicGroups()
   end
 
   function Private.SetFakeStates()
