@@ -5035,20 +5035,6 @@ local function createSimplePowerTemplate(powertype)
   return power;
 end
 
-------------------------------
--- PVP Talents
--------------------------------
-
-if not WeakAuras.IsClassic() then
-  for _, class in pairs(templates.class) do
-    for _, spec in pairs(class) do
-      if spec[7] and spec[7].args then
-        tinsert(spec[7].args, { spell = 208683, type = "ability", pvptalent = 1}) -- Gladiator's Medallion
-      end
-    end
-  end
-end
-
 -------------------------------
 -- Hardcoded trigger templates
 -------------------------------
