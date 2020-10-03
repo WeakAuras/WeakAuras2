@@ -55,7 +55,7 @@ local function UpdateAnimations()
           relativeProgress = 1 - ((state.expirationTime - time) / state.duration);
         end
         relativeProgress = state.inverse and (1 - relativeProgress) or relativeProgress;
-        anim.progress = relativeProgress / anim.duration
+        anim.progress = anim.duration > 0 and  relativeProgress / anim.duration or 0
         local iteration = math.floor(anim.progress);
         --anim.progress = anim.progress - iteration;
         if not(anim.iteration) then
