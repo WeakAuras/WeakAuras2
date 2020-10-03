@@ -4,6 +4,48 @@ local AddonName, OptionsPrivate = ...
 local L = WeakAuras.L
 local regionOptions = WeakAuras.regionOptions
 
+local commonOptionsCache = {}
+OptionsPrivate.commonOptionsCache = commonOptionsCache
+commonOptionsCache.data = {}
+
+commonOptionsCache.GetOrCreateData = function(self, info)
+  local base = self.data
+  for i, key in ipairs(info) do
+    base[key] = base[key] or {}
+    base = base[key]
+  end
+  return base
+end
+
+commonOptionsCache.GetData = function(self, info)
+  local base = self.data
+  for i, key in ipairs(info) do
+    if base[key] and type(base[key]) == "table" then
+      base = base[key]
+    else
+      return nil
+    end
+  end
+  return base
+end
+
+commonOptionsCache.SetSameAll = function(self, info, value)
+  local base = self:GetOrCreateData(info)
+  base.sameAll = value
+end
+
+commonOptionsCache.GetSameAll = function(self, info)
+  local base = self:GetData(info)
+  if base then
+    return base.sameAll
+  end
+end
+
+commonOptionsCache.Clear = function(self)
+  self.data = {}
+end
+
+
 local parsePrefix = function(input, data, create)
   local subRegionIndex, property = string.match(input, "^sub%.(%d+)%..-%.(.+)")
   subRegionIndex = tonumber(subRegionIndex)
@@ -387,6 +429,7 @@ local function disabledOrHiddenChild(childOptionTable, info)
   return hiddenChild(childOptionTable, info) or disabledChild(childOptionTable, info);
 end
 
+
 local function replaceNameDescFuncs(intable, data, subOption)
   local function compareTables(tableA, tableB)
     if(#tableA == #tableB) then
@@ -461,6 +504,11 @@ local function replaceNameDescFuncs(intable, data, subOption)
   end
 
   local function sameAll(info)
+    local cached = commonOptionsCache:GetSameAll(info)
+    if (cached ~= nil) then
+      return cached
+    end
+
     local combinedValues = {};
     local first = true;
     local combinedKeys = combineKeys(info);
@@ -490,6 +538,7 @@ local function replaceNameDescFuncs(intable, data, subOption)
               combinedValues[key] = values;
             else
               if (not compareTables(combinedValues[key], values)) then
+                commonOptionsCache:SetSameAll(info, false)
                 return nil;
               end
             end
@@ -508,6 +557,7 @@ local function replaceNameDescFuncs(intable, data, subOption)
             first = false;
           else
             if (not compareTables(combinedValues, values)) then
+              commonOptionsCache:SetSameAll(info, false)
               return nil;
             end
           end
@@ -515,6 +565,7 @@ local function replaceNameDescFuncs(intable, data, subOption)
       end
     end
 
+    commonOptionsCache:SetSameAll(info, true)
     return true;
   end
 
@@ -554,7 +605,6 @@ local function replaceNameDescFuncs(intable, data, subOption)
         end
       end
     end
-
     return combinedName;
   end
 
@@ -829,6 +879,7 @@ local getHelper = {
     return not self.first
   end
 }
+
 
 local function CreateGetAll(subOption)
   return function(data, info, ...)

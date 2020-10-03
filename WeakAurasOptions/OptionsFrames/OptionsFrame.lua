@@ -808,6 +808,7 @@ function OptionsPrivate.CreateFrame()
 
   frame.ClearOptions = function(self, id)
     aceOptions[id] = nil
+    OptionsPrivate.commonOptionsCache:Clear()
     if type(id) == "string" then
       local data = WeakAuras.GetData(id)
       if data and data.parent then
@@ -849,6 +850,7 @@ function OptionsPrivate.CreateFrame()
     if not self.pickedDisplay then
       return
     end
+    OptionsPrivate.commonOptionsCache:Clear()
     self.selectedTab = self.selectedTab or "region"
     local data
     if type(self.pickedDisplay) == "string" then
@@ -902,6 +904,8 @@ function OptionsPrivate.CreateFrame()
     if not self.pickedDisplay then
       return
     end
+
+    OptionsPrivate.commonOptionsCache:Clear()
 
     frame:UpdateOptions()
 
@@ -1195,7 +1199,6 @@ function OptionsPrivate.CreateFrame()
       self.selectedTab = tab
     end
     self:FillOptions()
-
     WeakAuras.SetMoverSizer(id)
 
     local _, _, _, _, yOffset = displayButtons[id].frame:GetPoint(1)
@@ -1205,6 +1208,7 @@ function OptionsPrivate.CreateFrame()
     if yOffset then
       self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32)
     end
+
     if data.controlledChildren then
       for index, childId in pairs(data.controlledChildren) do
         displayButtons[childId]:PriorityShow(1)
