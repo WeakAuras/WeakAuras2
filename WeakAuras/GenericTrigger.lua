@@ -3553,12 +3553,12 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
             }
             if (result[v.name].type == "select" or result[v.name].type == "unit") then
               if (v.conditionValues) then
-                result[v.name].values = WeakAuras[v.conditionValues];
+                result[v.name].values = Private[v.conditionValues] or WeakAuras[v.conditionValues];
               else
                 if type(v.values) == "function" then
                   result[v.name].values = v.values()
                 else
-                  result[v.name].values = WeakAuras[v.values];
+                  result[v.name].values = Private[v.values] or WeakAuras[v.values];
                 end
               end
             end
