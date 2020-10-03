@@ -4459,33 +4459,35 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
-          { spell = 208628, type = "buff", unit = "player", talent = 20 }, -- Momentum
-          { spell = 162264, type = "buff", unit = "player"}, -- Metamorphosis
-          { spell = 203650, type = "buff", unit = "player", talent = 20 }, -- Prepared
-          { spell = 188499, type = "buff", unit = "player"}, -- Blade Dance
-          { spell = 212800, type = "buff", unit = "player"}, -- Blur
-          { spell = 196555, type = "buff", unit = "player", talent = 12 }, -- Netherwalk
-          { spell = 258920, type = "buff", unit = "player", talent = 6 }, -- Immolation Aura
           { spell = 131347, type = "buff", unit = "player"}, -- Glide
+          { spell = 162264, type = "buff", unit = "player"}, -- Metamorphosis
+          { spell = 188499, type = "buff", unit = "player"}, -- Blade Dance
           { spell = 188501, type = "buff", unit = "player"}, -- Spectral Sight
+          { spell = 196555, type = "buff", unit = "player", talent = 12 }, -- Netherwalk
+          { spell = 203650, type = "buff", unit = "player", talent = 20 }, -- Prepared
+          { spell = 208628, type = "buff", unit = "player", talent = 20 }, -- Momentum
           { spell = 209426, type = "buff", unit = "player"}, -- Darkness
+          { spell = 212800, type = "buff", unit = "player"}, -- Blur
+          { spell = 258920, type = "buff", unit = "player"}, -- Immolation Aura
+          { spell = 337313, type = "buff", unit = "player" }, -- Inner Demon
+          { spell = 343312, type = "buff", unit = "player" }, -- Eye Beam
         },
         icon = 1247266
       },
       [2] = {
         title = L["Debuffs"],
         args = {
-          { spell = 1490, type = "debuff", unit = "target"}, -- Chaos Brand
-          { spell = 258883, type = "debuff", unit = "target", talent = 7}, -- Trail of Ruin
-          { spell = 213405, type = "debuff", unit = "target", talent = 17 }, -- Master of the Glaive
+          { spell = 1490, type = "debuff", unit = "target", forceOwnOnly = true, ownOnly = true}, -- Chaos Brand
           { spell = 179057, type = "debuff", unit = "target"}, -- Chaos Nova
-          { spell = 281854, type = "debuff", unit = "target"}, -- Torment
+          { spell = 185245, type = "debuff", unit = "target"}, -- Torment
+          { spell = 198813, type = "debuff", unit = "target"}, -- Vengeful Retreat
           { spell = 200166, type = "debuff", unit = "target"}, -- Metamorphosis
           { spell = 206491, type = "debuff", unit = "target", talent = 21 }, -- Nemesis
-          { spell = 198813, type = "debuff", unit = "target"}, -- Vengeful Retreat
-          { spell = 258860, type = "debuff", unit = "target", talent = 15 }, -- Dark Slash
           { spell = 211881, type = "debuff", unit = "target", talent = 18 }, -- Fel Eruption
+          { spell = 213405, type = "debuff", unit = "target", talent = 17 }, -- Master of the Glaive
           { spell = 217832, type = "debuff", unit = "multi" }, -- Imprison
+          { spell = 258883, type = "debuff", unit = "target", talent = 7}, -- Trail of Ruin
+          { spell = 320338, type = "debuff", unit = "target", talent = 15 }, -- Essence Break
         },
         icon = 1392554
       },
@@ -4493,10 +4495,9 @@ else
         title = L["Abilities"],
         args = {
           { spell = 131347, type = "ability"}, -- Glide
-          { spell = 162794, type = "ability", requiresTarget = true, usable = true}, -- Chaos Strike
-          { spell = 179057, type = "ability"}, -- Chaos Nova
           { spell = 183752, type = "ability", requiresTarget = true}, -- Disrupt
           { spell = 185123, type = "ability", requiresTarget = true}, -- Throw Glaive
+          { spell = 185245, type = "ability", requiresTarget = true, debuff = true}, -- Torment
           { spell = 188499, type = "ability"}, -- Blade Dance
           { spell = 188501, type = "ability"}, -- Spectral Sight
           { spell = 191427, type = "ability", buff = true}, -- Metamorphosis
@@ -4511,11 +4512,16 @@ else
           { spell = 211881, type = "ability", talent = 18 }, -- Fel Eruption
           { spell = 217832, type = "ability", requiresTarget = true}, -- Imprison
           { spell = 232893, type = "ability", requiresTarget = true, overlayGlow = true, talent = 3 }, -- Felblade
-          { spell = 258860, type = "ability", debuff = true, requiresTarget = true, talent = 15 }, -- Dark Slash
-          { spell = 258920, type = "ability", buff = true, talent = 6 }, -- Immolation Aura
-          { spell = 258925, type = "ability", talent = 9 }, -- Fel Barrage
+          { spell = 258860, type = "ability", debuff = true, requiresTarget = true, talent = 15 }, -- Essence Break
+          { spell = 258920, type = "ability", buff = true }, -- Immolation Aura
+          { spell = 258925, type = "ability", talent = 21 }, -- Fel Barrage
           { spell = 278326, type = "ability", requiresTarget = true}, -- Consume Magic
-          { spell = 281854, type = "ability", debuff = true, requiresTarget = true}, -- Torment
+          { spell = 342817, type = "ability", requiresTarget = true, talent = 9}, -- Glaive Tempest
+          { spell = 344859, type = "ability", requiresTarget = true}, -- Demon's Bite
+          { spell = 344862, type = "ability"}, -- Chaos Strike
+          { spell = 344865, type = "ability", overlayGlow = true}, -- Fel Rush
+          { spell = 344866, type = "ability"}, -- Vengeful Retreat
+          { spell = 344867, type = "ability", debuff = true}, -- Chaos Nova
         },
         icon = 1305156
       },
@@ -4525,15 +4531,15 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
+          { spell = 115804, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Mortal Rush
+          { spell = 203704, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Mana Break
+          { spell = 203704, type="debuff", unit = "target", pvptalent = 11, titleSuffix = L["debuff"]},-- Mana Break
           { spell = 205604, type="ability", pvptalent = 5},-- Reverse Magic
           { spell = 206649, type="ability", pvptalent = 6, titleSuffix = L["cooldown"]},-- Eye of Leotheras
           { spell = 206649, type="debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuff"]},-- Eye of Leotheras
+          { spell = 206803, type="buff", unit = "player", pvptalent = 4, titleSuffix = L["buff"]},-- Rain from Above
+          { spell = 206803, type="ability", pvptalent = 4, titleSuffix = L["cooldown"]},-- Rain from Above
           { spell = 235903, type="ability", pvptalent = 7},-- Mana Rift
-          { spell = 203704, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Mana Break
-          { spell = 203704, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Mana Break
-          { spell = 211510, type="buff", unit = "target", pvptalent = 13},-- Solitude
-          { spell = 206803, type="ability", pvptalent = 14, titleSuffix = L["cooldown"]},-- Rain from Above
-          { spell = 206803, type="buff", unit = "player", pvptalent = 14, titleSuffix = L["buff"]},-- Rain from Above
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
@@ -4548,33 +4554,33 @@ else
       [1] = {
         title = L["Buffs"],
         args = {
-          { spell = 187827, type = "buff", unit = "player"}, -- Metamorphosis
-          { spell = 263648, type = "buff", unit = "player", talent = 21 }, -- Soul Barrier
-          { spell = 207693, type = "buff", unit = "player", talent = 4}, -- Feast of Souls
           { spell = 131347, type = "buff", unit = "player"}, -- Glide
-          { spell = 203981, type = "buff", unit = "player"}, -- Soul Fragments
-          { spell = 188501, type = "buff", unit = "player"}, -- Spectral Sight
-          { spell = 203819, type = "buff", unit = "player"}, -- Demon Spikes
           { spell = 178740, type = "buff", unit = "player"}, -- Immolation Aura
-
+          { spell = 188501, type = "buff", unit = "player"}, -- Spectral Sight
+          { spell = 203981, type = "buff", unit = "player"}, -- Soul Fragments
+          { spell = 203819, type = "buff", unit = "player"}, -- Demon Spikes
+          { spell = 207693, type = "buff", unit = "player", talent = 4}, -- Feast of Souls
+          { spell = 258920, type = "buff", unit = "player"}, -- Metamorphosis
+          { spell = 263648, type = "buff", unit = "player", talent = 18 }, -- Soul Barrier
+          { spell = 326863, type = "buff", unit = "player", talent = 20 }, -- Ruinous Bulwark
+          { spell = 343013, type = "buff", unit = "player" }, -- Revel in Pain
         },
         icon = 1247263
       },
       [2] = {
         title = L["Debuffs"],
         args = {
-          { spell = 207744, type = "debuff", unit = "target"}, -- Fiery Brand
-          { spell = 1490, type = "debuff", unit = "target"}, -- Chaos Brand
-          { spell = 204598, type = "debuff", unit = "target"}, -- Sigil of Flame
-          { spell = 268178, type = "debuff", unit = "target", talent = 20 }, -- Void Reaver
-          { spell = 204490, type = "debuff", unit = "target"}, -- Sigil of Silence
-          { spell = 204843, type = "debuff", unit = "target", talent = 15 }, -- Sigil of Chains
-          { spell = 207771, type = "debuff", unit = "target", talent = 6 }, -- Fiery Brand
-          { spell = 247456, type = "debuff", unit = "target", talent = 17 }, -- Frailty
-          { spell = 210003, type = "debuff", unit = "target", talent = 3 }, -- Razor Spikes
-          { spell = 207685, type = "debuff", unit = "target"}, -- Sigil of Misery
+          { spell = 1490, type = "debuff", unit = "target", forceOwnOnly = true, ownOnly = nil}, -- Chaos Brand
           { spell = 185245, type = "debuff", unit = "target"}, -- Torment
+          { spell = 204490, type = "debuff", unit = "target"}, -- Sigil of Silence
+          { spell = 204598, type = "debuff", unit = "target"}, -- Sigil of Flame
+          { spell = 204843, type = "debuff", unit = "target", talent = 15 }, -- Sigil of Chains
+          { spell = 207685, type = "debuff", unit = "target"}, -- Sigil of Misery
+          { spell = 207771, type = "debuff", unit = "target" }, -- Fiery Brand
+          { spell = 209261, type = "debuff", unit = "player" }, -- Uncontained Fel
           { spell = 217832, type = "debuff", unit = "multi" }, -- Imprison
+          { spell = 247456, type = "debuff", unit = "target", talent = 9 }, -- Frailty
+          { spell = 268178, type = "debuff", unit = "target", talent = 16 }, -- Void Reaver
         },
         icon = 1344647
       },
@@ -4582,28 +4588,34 @@ else
         title = L["Abilities"],
         args = {
           { spell = 131347, type = "ability"}, -- Glide
-          { spell = 178740, type = "ability", buff = true}, -- Immolation Aura
           { spell = 183752, type = "ability", requiresTarget = true}, -- Disrupt
+          { spell = 185123, type = "ability"}, -- Throw Glaive
           { spell = 185245, type = "ability", debuff = true, requiresTarget = true}, -- Torment
+          { spell = 188501, type = "ability", buff = true}, -- Spectral Sight
           { spell = 187827, type = "ability", buff = true}, -- Metamorphosis
-          { spell = 188501, type = "ability"}, -- Spectral Sight
           { spell = 189110, type = "ability", charges = true}, -- Infernal Strike
-          { spell = 202137, type = "ability"}, -- Sigil of Silence
+          { spell = 191427, type = "ability", buff = true}, -- Metamorphosis
+          { spell = 202137, type = "ability", debuff = true}, -- Sigil of Silence
           { spell = 202138, type = "ability", talent = 15 }, -- Sigil of Chains
           { spell = 202140, type = "ability"}, -- Sigil of Misery
-          { spell = 203720, type = "ability", charges = true, buff = true}, -- Demon Spikes
-          { spell = 204021, type = "ability", debuff = true, requiresTarget = true}, -- Fiery Brand
           { spell = 204157, type = "ability", requiresTarget = true}, -- Throw Glaive
-          { spell = 204513, type = "ability"}, -- Sigil of Flame
-          { spell = 212084, type = "ability", talent = 18 }, -- Fel Devastation
+          { spell = 204596, type = "ability", debuff = true}, -- Sigil of Flame
+          { spell = 207684, type = "ability", debuff = true}, -- Sigil of Misery
+          { spell = 212084, type = "ability" }, -- Fel Devastation
           { spell = 217832, type = "ability", requiresTarget = true}, -- Imprison
           { spell = 228477, type = "ability", requiresTarget = true}, -- Soul Cleave
-          { spell = 232893, type = "ability", requiresTarget = true, overlayGlow = true, talent = 9 }, -- Felblade
-          { spell = 247454, type = "ability", usable = true, talent = 17 }, -- Spirit Bomb
+          { spell = 232893, type = "ability", requiresTarget = true, overlayGlow = true, talent = 3 }, -- Felblade
+          { spell = 247454, type = "ability", usable = true, talent = 9 }, -- Spirit Bomb
+          { spell = 258920, type = "ability", buff = true}, -- Immolation Aura
           { spell = 263642, type = "ability", charges = true, talent = 12 }, -- Fracture
-          { spell = 263648, type = "ability", buff = true, talent = 21 }, -- Soul Barrier
+          { spell = 263648, type = "ability", buff = true, talent = 18 }, -- Soul Barrier
           { spell = 278326, type = "ability", requiresTarget = true}, -- Consume Magic
-
+          { spell = 320341, type = "ability"}, -- Bulk Extraction
+          { spell = 344859, type = "ability"}, -- Shear
+          { spell = 344862, type = "ability"}, -- Soul Cleave
+          { spell = 344865, type = "ability", charges = true}, -- Infernal Strike
+          { spell = 344866, type = "ability", charges = true, buff = true}, -- Demon Spikes
+          { spell = 344867, type = "ability", debuff = true, requiresTarget = true}, -- Fiery Brand
         },
         icon = 1344650
       },
@@ -4613,14 +4625,14 @@ else
       [7] = {
         title = L["PvP Talents"],
         args = {
-          { spell = 205629, type="ability", pvptalent = 5, titleSuffix = L["cooldown"]},-- Demonic Trample
-          { spell = 213491, type="debuff", unit = "target", pvptalent = 5, titleSuffix = L["debuff"]},-- Demonic Trample
-          { spell = 208769, type="buff", unit = "player", pvptalent = 7},-- Everlasting Hunt
-          { spell = 207029, type="ability", pvptalent = 11, titleSuffix = L["cooldown"]},-- Tormentor
-          { spell = 206891, type="debuff", unit = "target", pvptalent = 11, titleSuffix = L["debuff"]},-- Tormentor
-          { spell = 211510, type="buff", unit = "target", pvptalent = 12},-- Solitude
-          { spell = 205630, type="ability", pvptalent = 14, titleSuffix = L["cooldown"]},-- Illidan's Grasp
-          { spell = 205630, type="debuff", unit = "target", pvptalent = 14, titleSuffix = L["debuff"]},-- Illidan's Grasp
+          { spell = 205629, type="ability", pvptalent = 2, titleSuffix = L["cooldown"]},-- Demonic Trample
+          { spell = 205604, type="ability", pvptalent = 4}, -- Reverse Magic
+          { spell = 205630, type="ability", pvptalent = 8, titleSuffix = L["cooldown"]},-- Illidan's Grasp
+          { spell = 205630, type="debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"]},-- Illidan's Grasp
+          { spell = 206891, type="debuff", unit = "target", pvptalent = 3, titleSuffix = L["debuff"]},-- Tormentor
+          { spell = 207029, type="ability", pvptalent = 3, titleSuffix = L["cooldown"]},-- Tormentor
+          { spell = 208769, type="buff", unit = "player", pvptalent = 6},-- Everlasting Hunt
+          { spell = 213491, type="debuff", unit = "target", pvptalent = 2, titleSuffix = L["debuff"]},-- Demonic Trample
         },
         icon = "Interface\\Icons\\Achievement_BG_winWSG",
       },
@@ -5139,7 +5151,7 @@ if not WeakAuras.IsClassic() then
 
   -- Demon Hunter
   tinsert(templates.class.DEMONHUNTER[1][8].args, createSimplePowerTemplate(17));
-  tinsert(templates.class.DEMONHUNTER[2][8].args, createSimplePowerTemplate(18));
+  tinsert(templates.class.DEMONHUNTER[2][8].args, createSimplePowerTemplate(17));
 
   -- Death Knight
   for i = 1, 3 do
