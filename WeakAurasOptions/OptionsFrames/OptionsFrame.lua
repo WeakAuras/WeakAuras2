@@ -172,10 +172,11 @@ function OptionsPrivate.CreateFrame()
   frame:Hide()
 
   frame:SetScript("OnHide", function()
+    OptionsPrivate.Private.PauseAllDynamicGroups()
+
     OptionsPrivate.Private.ClearFakeStates()
     OptionsPrivate.SetDragging()
 
-    OptionsPrivate.Private.PauseAllDynamicGroups()
 
     for id, data in pairs(WeakAuras.regions) do
       data.region:Collapse()
@@ -765,6 +766,7 @@ function OptionsPrivate.CreateFrame()
   unloadedButton:SetExpandDescription(L["Expand all non-loaded displays"])
   unloadedButton:SetCollapseDescription(L["Collapse all non-loaded displays"])
   unloadedButton:SetViewClick(function()
+    OptionsPrivate.Private.PauseAllDynamicGroups()
     if unloadedButton.view.func() == 2 then
       for id, child in pairs(displayButtons) do
         if OptionsPrivate.Private.loaded[id] == nil then
@@ -778,6 +780,7 @@ function OptionsPrivate.CreateFrame()
         end
       end
     end
+    OptionsPrivate.Private.ResumeAllDynamicGroups()
   end)
   unloadedButton:SetViewTest(function()
     local none, all = true, true
@@ -1162,6 +1165,9 @@ function OptionsPrivate.CreateFrame()
     if self.pickedDisplay == id then
       return
     end
+
+    OptionsPrivate.Private.PauseAllDynamicGroups()
+
     self:ClearPicks(noHide)
     local data = WeakAuras.GetData(id)
 
@@ -1208,6 +1214,8 @@ function OptionsPrivate.CreateFrame()
     if data.controlledChildren and #data.controlledChildren == 0 then
       WeakAurasOptions:NewAura(true)
     end
+
+    OptionsPrivate.Private.ResumeAllDynamicGroups()
   end
 
   frame.CenterOnPicked = function(self)
