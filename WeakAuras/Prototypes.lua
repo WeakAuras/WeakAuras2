@@ -5173,7 +5173,7 @@ Private.event_prototypes = {
           active = not (active);
           ]]
         end
-        return ret:format(index)
+        return ret:format(index or 0)
       elseif (trigger.use_talent == false) then
         if (trigger.talent.multi) then
           local ret = [[
