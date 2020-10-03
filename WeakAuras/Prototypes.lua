@@ -5625,6 +5625,7 @@ Private.event_prototypes = {
         if not found then
           expirationTime = nil
           duration = nil
+          remaining = nil
         end
 
         if(triggerRemaining and remaining and remaining >= triggerRemaining and remaining > 0) then
