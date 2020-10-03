@@ -23,7 +23,13 @@ local templates =
       Nightborne = {},
       LightforgedDraenei = {},
       HighmountainTauren = {},
-      VoidElf = {}
+      VoidElf = {},
+      ZandalariTroll = {},
+      KulTiran = {},
+      DarkIronDwarf = {},
+      Vulpera = {},
+      MagharOrc = {},
+      Mechagnome = {}
     },
     general = {
       title = L["General"],
@@ -5305,6 +5311,34 @@ tinsert(templates.race.LightforgedDraenei, { spell = 259930, type = "ability" })
 tinsert(templates.race.HighmountainTauren, { spell = 255654, type = "ability" });
 --Spatial Rift
 tinsert(templates.race.VoidElf, { spell = 256948, type = "ability" });
+-- Fireblood
+tinsert(templates.race.DarkIronDwarf, { spell = 265221, type = "ability" });
+-- Mole Machine
+tinsert(templates.race.DarkIronDwarf, { spell = 265225, type = "ability" });
+--Haymaker
+tinsert(templates.race.KulTiran, { spell = 287712, type = "ability", requiresTarget = true });
+-- Brush it Off
+tinsert(templates.race.KulTiran, { spell = 291843, type = "buff"});
+-- Hyper Organic Light Originator
+tinsert(templates.race.Mechagnome, { spell = 312924, type = "ability" });
+-- Combat Anlysis
+tinsert(templates.race.Mechagnome, { spell = 313424, type = "buff" });
+-- Recently Failed
+tinsert(templates.race.Mechagnome, { spell = 313015, type = "debuff" });
+-- Ancestral Call
+tinsert(templates.race.MagharOrc, { spell = 274738, type = "ability" });
+-- ZandalariTroll = {}
+-- Pterrordax Swoop
+tinsert(templates.race.ZandalariTroll, { spell = 281954, type = "ability" });
+-- Regenratin'
+tinsert(templates.race.ZandalariTroll, { spell = 291944, type = "ability" });
+-- Embrace of the Loa
+tinsert(templates.race.ZandalariTroll, { spell = 292752, type = "ability" });
+-- Vulpera = {}
+-- Bag of Tricks
+tinsert(templates.race.Vulpera, { spell = 312411, type = "ability" });
+-- Make Camp
+tinsert(templates.race.Vulpera, { spell = 312370, type = "ability" });
 
 ------------------------------
 -- Helper code for options
@@ -5517,6 +5551,12 @@ if WeakAuras.IsClassic() then
   templates.race.LightforgedDraenei = nil
   templates.race.HighmountainTauren = nil
   templates.race.VoidElf = nil
+  templates.race.ZandalariTroll = nil
+  templates.race.KulTiran = nil
+  templates.race.DarkIronDwarf = nil
+  templates.race.Vulpera = nil
+  templates.race.MagharOrc = nil
+  templates.race.Mechagnome = nil
   powerTypes[99] = nil
   powerTypes[18] = nil
   powerTypes[17] = nil
