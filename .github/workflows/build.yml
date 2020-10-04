@@ -19,10 +19,9 @@ jobs:
           fetch-depth: 500
 
       - name: Install and run Luacheck
-        run: |
-          sudo apt-get install luarocks
-          luarocks install --local luacheck
-          /home/runner/.luarocks/bin/luacheck . --no-color -q
+        uses: nebularg/actions-luacheck@v1
+        with:
+          args: "--no-color -q"
 
       - name: Update CurseForge Translations
         run: ./update_translations.sh
@@ -45,7 +44,7 @@ jobs:
       - name: Create Classic Package
         uses: BigWigsMods/packager@master
         with:
-          args: -g 1.13.5 -m .pkgmeta-classic
+          args: -g classic -m .pkgmeta-classic
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}

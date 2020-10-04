@@ -18,10 +18,9 @@ jobs:
           fetch-depth: 500
 
       - name: Install and run Luacheck
-        run: |
-          sudo apt-get install luarocks
-          luarocks install --local luacheck
-          /home/runner/.luarocks/bin/luacheck . --no-color -q
+        uses: nebularg/actions-luacheck@v1
+        with:
+          args: "--no-color -q"
 
       - name: Generate Changelog
         run: ./generate_changelog.sh

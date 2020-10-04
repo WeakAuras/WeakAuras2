@@ -12,10 +12,9 @@ jobs:
           fetch-depth: 500
 
       - name: Install and run Luacheck
-        run: |
-          sudo apt-get install luarocks
-          luarocks install --local luacheck
-          /home/runner/.luarocks/bin/luacheck . --no-color -q
+        uses: nebularg/actions-luacheck@v1
+        with:
+          args: "--no-color -q"
 
       - name: Update Build Date
         run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
@@ -33,7 +32,7 @@ jobs:
       - name: Create Classic Package
         uses: BigWigsMods/packager@master
         with:
-          args: -d -z -g 1.13.5 -m .pkgmeta-classic
+          args: -d -z -g classic -m .pkgmeta-classic
 
       - uses: actions/upload-artifact@v2
         with:
