@@ -875,6 +875,9 @@ local getHelper = {
   Get = function(self)
     return self.combinedValues
   end,
+  GetSame = function(self)
+    return self.same
+  end,
   HasValue = function(self)
     return not self.first
   end
@@ -906,7 +909,7 @@ local function CreateGetAll(subOption)
           childOptionTable[i] = childOption;
         end
 
-        if (childOption and not disabledOrHiddenChild(childOptionTable, info)) then
+        if (childOption) then
           for i=#childOptionTable,0,-1 do
             if(childOptionTable[i].get) then
               local values = {childOptionTable[i].get(info, ...)};
@@ -914,10 +917,12 @@ local function CreateGetAll(subOption)
                 values[1] = false
               end
 
-              local sameAllChildren = allChildren:Set(values)
-              local sameEnabledChildren = enabledChildren:Set(values)
+              allChildren:Set(values)
+              if not disabledOrHiddenChild(childOptionTable, info) then
+                 enabledChildren:Set(values)
+              end
 
-              if not sameAllChildren and not sameEnabledChildren then
+              if not allChildren:GetSame() and not enabledChildren:GetSame() then
                 return nil;
               end
               break;
