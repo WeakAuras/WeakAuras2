@@ -388,7 +388,8 @@ local FakeWeakAurasMixin = {
     frames = true,
     loadFrame = true,
     unitLoadFrame = true,
-    importDisplayButtons = true
+    importDisplayButtons = true,
+    loaded = true
 
   },
   override = {
