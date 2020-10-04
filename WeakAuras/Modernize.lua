@@ -978,5 +978,15 @@ function Private.Modernize(data)
     data.ignoreOptionsEventErrors = true
   end
 
+  if data.internalVersion < 37 then
+    for triggerId, triggerData in ipairs(data.triggers) do
+      if triggerData.trigger.type == "aura2" then
+        local group_role = triggerData.trigger.group_role
+        triggerData.trigger.group_role = {}
+        triggerData.trigger.group_role[group_role] = true
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
 end
