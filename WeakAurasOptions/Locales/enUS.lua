@@ -209,7 +209,6 @@ If the entered number is a decimal (e.g. 0.5), fraction (e.g. 1/2), or percentag
 |cFF00CC00!= 2|r will trigger when the number of units of type '%s' affected is not exactly 2
 |cFF00CC00<= 0.8|r will trigger when less than 80%% of the units of type '%s' is affected (4 of 5 party members, 8 of 10 or 20 of 25 raid members)
 |cFF00CC00> 1/2|r will trigger when more than half of the units of type '%s' is affected
-|cFF00CC00>= 0|r will always trigger, no matter what
 ]=]
 L["Group Member Count"] = "Group Member Count"
 L["Group (verb)"] = "Group"
