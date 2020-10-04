@@ -821,7 +821,6 @@ local methods = {
       local oldid = data.id;
       if not(newid == oldid) then
         WeakAuras.Rename(data, newid);
-        OptionsPrivate.HandleRename(data, oldid, newid)
       end
     end
 

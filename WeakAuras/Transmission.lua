@@ -313,7 +313,7 @@ local function Update(data, diff)
     return
   end
   if data then
-    WeakAuras.DeleteOption(data)
+    WeakAuras.Delete(data)
   else
     return
   end
@@ -355,7 +355,7 @@ local function install(data, oldData, patch, mode, isParent)
   elseif not data then
     -- this is an old thing
     if checkButtons.oldchildren:GetChecked() then
-      WeakAuras.DeleteOption(oldData)
+      WeakAuras.Delete(oldData)
       return
     else
       -- user has chosen to not delete obsolete auras, so do nothing
@@ -557,7 +557,7 @@ local function importPendingData()
           local oldToNew = indexMap.oldToNew
           for oldIndex, oldData in ipairs(old) do
             if not oldToNew[oldIndex] and WeakAuras.GetData(oldData.id) then
-              WeakAuras.DeleteOption(oldData)
+              WeakAuras.Delete(oldData)
               coroutine.yield()
             end
           end
