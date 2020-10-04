@@ -630,7 +630,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       end
     },
     group_role = {
-      type = "select",
+      type = "multiselect",
       width = WeakAuras.normalWidth,
       name = L["Group Role"],
       values = OptionsPrivate.Private.role_types,

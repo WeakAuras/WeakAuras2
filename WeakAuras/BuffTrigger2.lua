@@ -921,7 +921,7 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
-  if triggerInfo.groupRole and triggerInfo.groupRole ~= UnitGroupRolesAssigned(unit) then
+  if triggerInfo.groupRole and not triggerInfo.groupRole[UnitGroupRolesAssigned(unit)] then
     return false
   end
 
