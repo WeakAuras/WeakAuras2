@@ -982,8 +982,10 @@ function Private.Modernize(data)
     for triggerId, triggerData in ipairs(data.triggers) do
       if triggerData.trigger.type == "aura2" then
         local group_role = triggerData.trigger.group_role
-        triggerData.trigger.group_role = {}
-        triggerData.trigger.group_role[group_role] = true
+        if group_role then
+          triggerData.trigger.group_role = {}
+          triggerData.trigger.group_role[group_role] = true
+        end
       end
     end
   end
