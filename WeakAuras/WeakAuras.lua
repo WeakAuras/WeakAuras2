@@ -1721,6 +1721,12 @@ end
 
 function WeakAuras.Delete(data)
   local id = data.id;
+  local uid = data.uid
+  local parentId = data.parent
+  local parentUid = data.parent and db.displays[data.parent].uid
+
+  Private.callbacks:Fire("AboutToDelete", uid, id, parentUid, parentId)
+
   if(data.parent) then
     local parentData = db.displays[data.parent];
     if(parentData and parentData.controlledChildren) then
@@ -1809,15 +1815,18 @@ function WeakAuras.Delete(data)
 
   WeakAuras.conditionHelpers[data.uid] = nil
 
-  WeakAuras.DeleteCollapsedData(id)
-
   Private.RemoveHistory(data.uid)
 
-  Private.callbacks:Fire("Delete", data.uid)
+  -- Add the parent
+  if parentUid then
+    WeakAuras.Add(Private.GetDataByUID(parentUid))
+  end
+
+  Private.callbacks:Fire("Delete", uid, id, parentUid, parentId)
 end
 
 function WeakAuras.Rename(data, newid)
-  local oldid = data.id;
+  local oldid = data.id
   if(data.parent) then
     local parentData = db.displays[data.parent];
     if(parentData.controlledChildren) then
@@ -1916,10 +1925,10 @@ function WeakAuras.Rename(data, newid)
 
   Private.ProfileRenameAura(oldid, newid);
 
-  WeakAuras.RenameCollapsedData(oldid, newid)
-
   -- This should not be necessary
   WeakAuras.Add(data)
+
+  Private.callbacks:Fire("Rename", data.uid, oldid, newid)
 end
 
 function Private.Convert(data, newType)
