@@ -138,6 +138,40 @@ local function create(parent)
   return region
 end
 
+local function noop() end
+
+local distributers = {
+  static = function(data)
+    return function(regionData) return "self" end
+  end,
+  nameplate = function(data)
+    return function(regionData)
+      return "nameplate", regionData.region.state and regionData.region.state.unit
+    end
+  end,
+  unit = function(data)
+    return function(regionData)
+      return "unit", regionData.region.state and regionData.region.state.unit
+    end
+  end,
+  custom = function(data)
+    local distributeStr = data.customDistribute or ""
+    local distributeFunc = WeakAuras.LoadFunction("return " .. distributeStr, data.id, "custom distribute") or noop
+    return function(regionData)
+      Private.ActivateAuraEnvironment(data.id)
+      local ok, result1, result2, result3 = xpcall(distributeFunc, geterrorhandler(), regionData)
+      Private.ActivateAuraEnvironment()
+      if ok then
+        return result1, result2, result3
+      end
+    end
+  end
+}
+local function createDistributeFunc(data)
+  local distributor = distributers[data.distribute] or distributers["static"]
+  return distributor(data)
+end
+
 function WeakAuras.GetPolarCoordinates(x, y, originX, originY)
   local dX, dY = x - originX, y - originY;
 
@@ -274,8 +308,6 @@ function WeakAuras.ComposeSorts(...)
   end
 end
 
-local function noop() end
-
 local sorters = {
   none = function(data)
     return WeakAuras.ComposeSorts(
@@ -339,7 +371,6 @@ local sorters = {
     end
   end
 }
-WeakAuras.SortFunctions = sorters
 
 local function createSortFunc(data)
   local sorter = sorters[data.sort] or sorters.none
@@ -367,45 +398,6 @@ local function staggerCoefficient(alignment, stagger)
     return 0.5
   end
 end
-
-local anchorers = {
-  ["NAMEPLATE"] = function(data)
-    return function(frames, activeRegions)
-      for _, regionData in ipairs(activeRegions) do
-        local unit = regionData.region.state and regionData.region.state.unit
-        local found
-        if unit then
-          local frame = WeakAuras.GetUnitNameplate(unit)
-          if frame then
-            frames[frame] = frames[frame] or {}
-            tinsert(frames[frame], regionData)
-            found = true
-          end
-        end
-        if not found and WeakAuras.IsOptionsOpen() then
-          Private.ensurePRDFrame()
-          Private.personalRessourceDisplayFrame:anchorFrame(regionData.region.state.id, "NAMEPLATE")
-          frames[Private.personalRessourceDisplayFrame] = frames[Private.personalRessourceDisplayFrame] or {}
-          tinsert(frames[Private.personalRessourceDisplayFrame], regionData)
-        end
-      end
-    end
-  end,
-  ["UNITFRAME"] = function(data)
-    return function(frames, activeRegions)
-      for _, regionData in ipairs(activeRegions) do
-        local unit = regionData.region.state and regionData.region.state.unit
-        if unit then
-          local frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
-          if frame then
-            frames[frame] = frames[frame] or {}
-            tinsert(frames[frame], regionData)
-          end
-        end
-      end
-    end
-  end
-}
 
 local function getDimension(regionData, dim)
   return regionData.dimensions[dim]
@@ -676,7 +668,6 @@ local growers = {
     end
   end
 }
-WeakAuras.GrowFunctions = growers
 
 local function createGrowFunc(data)
   local grower = growers[data.grow] or growers.DOWN
