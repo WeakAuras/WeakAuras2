@@ -104,9 +104,23 @@ local function create(parent)
   local region = CreateFrame("FRAME", nil, parent)
   region:SetSize(16, 16)
   region:SetMovable(true)
-  region.sortedChildren = {}
+
+  -- 2-dimensional table of children, indexed by id, cloneId
   region.controlledChildren = {}
+  -- regionData -> updates map.
   region.updatedChildren = {}
+  -- types of frames to attach a child's control point to
+  -- 3-dimensional table, indexed by type, groupId, sort index
+  -- DistributeChildren assigns type & groupId, sort assigns sort index
+  region.anchors = {
+    self      = {}, -- attach to self (default behavior)
+    -- TODO: bikeshed on whether or not distinguishing 'screen' from 'none' is a good thing
+    screen    = {}, -- attach to screen (non-dynamic group behavior)
+    none      = {}, -- don't attach to anything (error case)
+    unit      = {}, -- attach to unit frames via LibGetFrame
+    nameplate = {}, -- attach to nameplate
+    frame     = {}, -- attach to external frame
+  }
   local background = CreateFrame("frame", nil, region, BackdropTemplateMixin and "BackdropTemplate")
   region.background = background
   region.selfPoint = "TOPLEFT"
