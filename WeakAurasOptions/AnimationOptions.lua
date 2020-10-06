@@ -23,7 +23,7 @@ local function filterAnimPresetTypes(intable, id)
     for key, value in pairs(intable) do
       local preset = OptionsPrivate.Private.anim_presets[key];
       if(preset) then
-        if(regionType == "group" or regionType == "dynamicgroup") then
+        if(regionType:find("group")) then
           local valid = true;
           for index, childId in pairs(data.controlledChildren) do
             local childRegion = WeakAuras.regions[childId] and WeakAuras.regions[childId].region

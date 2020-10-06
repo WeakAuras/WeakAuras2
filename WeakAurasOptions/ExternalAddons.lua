@@ -61,7 +61,7 @@ function OptionsPrivate.CreateImportButtons()
             if(data) then
               for index, childId in pairs(data.controlledChildren) do
                 local childButton = WeakAuras.GetDisplayButton(childId);
-                childButton:SetGroup(groupId, data.regionType == "dynamicgroup");
+                childButton:SetGroup(groupId, data.regionType:find("dynamicgroup"));
                 childButton:SetGroupOrder(index, #data.controlledChildren);
               end
 
@@ -163,7 +163,7 @@ function OptionsPrivate.CreateImportButtons()
             if(data) then
               for index, childId in pairs(data.controlledChildren) do
                 local childButton = WeakAuras.GetDisplayButton(childId);
-                childButton:SetGroup(id, data.regionType == "dynamicgroup");
+                childButton:SetGroup(id, data.regionType:find("dynamicgroup"));
                 childButton:SetGroupOrder(index, #data.controlledChildren);
               end
 

@@ -669,7 +669,7 @@ local function ConstructMoverSizer(parent)
       frame.lineX:Hide()
     end
 
-    if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup" then
+    if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType:find("dynamicgroup") then
       mover:SetScript("OnMouseDown", nil)
       mover:SetScript("OnMouseUp", nil)
       mover:SetScript("OnEvent", nil)
@@ -903,7 +903,7 @@ local function ConstructMoverSizer(parent)
     self.anchorPointIcon:SetPoint("CENTER", self.anchor, self.anchorPoint)
     local anchorX, anchorY = self.anchorPointIcon:GetCenter()
     anchorX, anchorY = anchorX or 0, anchorY or 0
-    if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType == "dynamicgroup" then
+    if data.parent and db.displays[data.parent] and db.displays[data.parent].regionType:find("dynamicgroup") then
       self.selfPointIcon:Hide()
       self.anchorPointIcon:Hide()
     else

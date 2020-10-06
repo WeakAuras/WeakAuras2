@@ -14,7 +14,7 @@ local fullName;
 local clipboard = {};
 
 local function IsRegionAGroup(data)
-  return data and (data.regionType == "group" or data.regionType == "dynamicgroup");
+  return data and (data.regionType:find("group"));
 end
 
 local ignoreForCopyingDisplay = {
@@ -599,7 +599,7 @@ local methods = {
           if childData.parent then
             childButton:Ungroup();
           end
-          childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
+          childButton:SetGroup(data.id, data.regionType:find("dynamicgroup"));
           childButton:SetGroupOrder(#data.controlledChildren, #data.controlledChildren);
           childData.parent = data.id;
           WeakAuras.Add(childData);
@@ -608,13 +608,13 @@ local methods = {
       else
         tinsert(data.controlledChildren, self.grouping.id);
         local childButton = WeakAuras.GetDisplayButton(self.grouping.id);
-        childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
+        childButton:SetGroup(data.id, data.regionType:find("dynamicgroup"));
         childButton:SetGroupOrder(#data.controlledChildren, #data.controlledChildren);
         self.grouping.parent = data.id;
         WeakAuras.Add(self.grouping);
         WeakAuras.ClearAndUpdateOptions(self.grouping.id);
       end
-      if (data.regionType == "dynamicgroup") then
+      if (data.regionType:find("dynamicgroup")) then
         self.grouping.xOffset = 0;
         self.grouping.yOffset = 0;
       end
@@ -910,7 +910,7 @@ local methods = {
     if (not data.controlledChildren) then
       local convertMenu = {};
       for regionType, regionData in pairs(WeakAuras.regionOptions) do
-        if(regionType ~= "group" and regionType ~= "dynamicgroup" and regionType ~= "timer" and regionType ~= data.regionType) then
+        if(not regionType:find("group") and regionType ~= "timer" and regionType ~= data.regionType) then
           tinsert(convertMenu, {
             text = regionData.displayName,
             notCheckable = true,
@@ -1107,7 +1107,7 @@ local methods = {
         self.frame:SetScript("OnClick", self.callbacks.OnClickGroupingSelf);
         self:SetDescription(L["Cancel"], L["Do not group this display"]);
       else
-        if(self.data.regionType == "group" or self.data.regionType == "dynamicgroup") then
+        if(self.data.regionType:find("group")) then
           self.frame:SetScript("OnClick", self.callbacks.OnClickGrouping);
           self:SetDescription(self.data.id, L["Add to group %s"]:format(self.data.id));
         else
@@ -1359,7 +1359,7 @@ local methods = {
     return self.frame.dgroup;
   end,
   ["IsGroup"] = function(self)
-    return self.data.regionType == "group" or self.data.regionType == "dynamicgroup"
+    return self.data.regionType:find("group")
   end,
   ["SetData"] = function(self, data)
     self.data = data;

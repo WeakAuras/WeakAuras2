@@ -542,4 +542,4 @@ local function createIcon()
   return thumbnail
 end
 
-WeakAuras.RegisterRegionOptions("dynamicgroup2", createOptions, createIcon, L["Dynamic Group (Legacy)"], createThumbnail, modifyThumbnail, L["A group that dynamically controls the positioning of its children"]);
+WeakAuras.RegisterRegionOptions("dynamicgroup", createOptions, createIcon, L["Dynamic Group (Legacy)"], createThumbnail, modifyThumbnail, L["A group that dynamically controls the positioning of its children"]);
