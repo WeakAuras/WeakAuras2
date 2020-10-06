@@ -3015,6 +3015,18 @@ function WeakAuras.CheckTotemName(totemName, triggerTotemName, triggerTotemPatte
   return true
 end
 
+function WeakAuras.GetSpellCost(powerTypeToCheck)
+  local spellID = select(9, WeakAuras.UnitCastingInfo("player"))
+  if spellID then
+    local costTable = GetSpellPowerCost(spellID);
+    for _, costInfo in pairs(costTable) do
+      if costInfo.type == powerTypeToCheck then
+        return costInfo.cost;
+      end
+    end
+  end
+end
+
 -- Weapon Enchants
 do
   local mh = GetInventorySlotInfo("MainHandSlot")

@@ -2289,43 +2289,18 @@ Private.event_prototypes = {
       local canEnableShowCost = (not trigger.use_powertype or trigger.powertype ~= 99) and trigger.unit == "player";
       if (canEnableShowCost and trigger.use_showCost) then
         ret = ret .. [[
-          if (event == "UNIT_SPELLCAST_START" and unit == "player") then
-            local spellID = select(9, WeakAuras.UnitCastingInfo("player"))
-            if spellID then
-              local costTable = GetSpellPowerCost(spellID);
-              for _, costInfo in pairs(costTable) do
-                if costInfo.type == powerTypeToCheck then
-                  state.cost = costInfo.cost;
-                  break;
-                end
-              end
+          if (event == "UNIT_DISPLAYPOWER") then
+            local cost = WeakAuras.GetSpellCost(powerTypeToCheck)
+            if state.cost ~= cost then
+              state.cost = cost
+              state.changed = true
             end
-            state.changed = true;
-          elseif (event == "UNIT_DISPLAYPOWER") then
-            local spellID;
-            if WeakAuras.IsClassic() then
-              spellID = select(9, CastingInfo());
-            else
-              spellID = select(9, UnitCastingInfo("player"));
+          elseif ( (event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_SUCCEEDED") and unit == "player") then
+            local cost = WeakAuras.GetSpellCost(powerTypeToCheck)
+            if state.cost ~= cost then
+              state.cost = cost
+              state.changed = true
             end
-            if spellID then
-              local costTable = GetSpellPowerCost(spellID);
-              local cost;
-              for _, costInfo in pairs(costTable) do
-                if costInfo.type == powerTypeToCheck then
-                  cost = costInfo.cost;
-                  break;
-                end
-              end
-              if (state.cost ~= cost) then
-                state.cost = cost;
-                state.changed = true;
-              end
-            end
-            state.changed = true;
-          elseif ( (event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_SUCCEEDED") and unit == "player") then
-            state.cost = "";
-            state.changed = true;
           end
         ]]
       end
