@@ -39,13 +39,13 @@ local methods = {
     self.frame:SetScript("OnClick", func);
   end,
   ["SetIcon"] = function(self, icon)
-    self:ReleaseThumbnail()
     if(type(icon) == "string" or type(icon) == "number") then
       self.icon:SetTexture(icon);
       self.icon:Show();
       if(self.iconRegion and self.iconRegion.Hide) then
         self.iconRegion:Hide();
       end
+      self.iconRegion = nil
     else
       self.iconRegion = icon;
       icon:SetAllPoints(self.icon);
@@ -78,6 +78,7 @@ local methods = {
     if(self.iconRegion and self.iconRegion.Hide) then
       self.iconRegion:Hide();
     end
+    self.iconRegion = nil
     self.icon:Hide();
     self.frame:UnlockHighlight();
   end
