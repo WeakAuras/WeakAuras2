@@ -46,7 +46,6 @@ local severityLevel = {
   error = 2
 }
 
--- TODO proper icons
 local icons = {
   info = [[Interface/friendsframe/informationicon.blp]],
   warning = [[Interface/buttons/adventureguidemicrobuttonalert.blp]],

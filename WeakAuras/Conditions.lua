@@ -4,16 +4,35 @@ local AddonName, Private = ...
 local L = WeakAuras.L
 local timer = WeakAuras.timer
 
--- Dynamic Condition functions to run. keyed on event and id
+-- Dynamic Condition functions to run. keyed on event and uid
 local dynamicConditions = {};
 
 -- Global Dynamic Condition Funcs, keyed on the event
 local globalDynamicConditionFuncs = {};
 
--- Check Conditions Functions, keyed on id
+-- Check Conditions Functions, keyed on uid
 local checkConditions = {};
 
-local clones = WeakAuras.clones;
+local conditionChecksTimers = {};
+conditionChecksTimers.recheckTime = {};
+conditionChecksTimers.recheckHandle = {};
+
+local function OnDelete(event, uid)
+  checkConditions[uid] = nil
+  conditionChecksTimers.recheckTime[uid] = nil
+  if (conditionChecksTimers.recheckHandle[uid]) then
+    for cloneId, v in pairs(conditionChecksTimers.recheckHandle[uid]) do
+      timer:CancelTimer(v)
+    end
+  end
+  conditionChecksTimers.recheckHandle[uid] = nil
+
+  for event, funcs in pairs(dynamicConditions) do
+    funcs[uid] = nil
+  end
+end
+
+Private:RegisterCallback("Delete", OnDelete)
 
 local function formatValueForAssignment(vType, value, pathToCustomFunction, pathToFormatters)
   if (value == nil) then
@@ -87,33 +106,26 @@ local function formatValueForCall(type, property)
   return "nil";
 end
 
-local conditionChecksTimers = {};
-conditionChecksTimers.recheckTime = {};
-conditionChecksTimers.recheckHandle = {};
 
-function WeakAuras.scheduleConditionCheck(time, id, cloneId)
-  conditionChecksTimers.recheckTime[id] = conditionChecksTimers.recheckTime[id] or {}
-  conditionChecksTimers.recheckHandle[id] = conditionChecksTimers.recheckHandle[id] or {};
 
-  if (conditionChecksTimers.recheckTime[id][cloneId] and conditionChecksTimers.recheckTime[id][cloneId] > time) then
-    timer:CancelTimer(conditionChecksTimers.recheckHandle[id][cloneId]);
-    conditionChecksTimers.recheckHandle[id][cloneId] = nil;
+function WeakAuras.scheduleConditionCheck(time, uid, cloneId)
+  conditionChecksTimers.recheckTime[uid] = conditionChecksTimers.recheckTime[uid] or {}
+  conditionChecksTimers.recheckHandle[uid] = conditionChecksTimers.recheckHandle[uid] or {};
+
+  if (conditionChecksTimers.recheckTime[uid][cloneId] and conditionChecksTimers.recheckTime[uid][cloneId] > time) then
+    timer:CancelTimer(conditionChecksTimers.recheckHandle[uid][cloneId]);
+    conditionChecksTimers.recheckHandle[uid][cloneId] = nil;
   end
 
-  if (conditionChecksTimers.recheckHandle[id][cloneId] == nil) then
-    conditionChecksTimers.recheckHandle[id][cloneId] = timer:ScheduleTimerFixed(function()
-      conditionChecksTimers.recheckHandle[id][cloneId] = nil;
-      local region;
-      if(cloneId and cloneId ~= "") then
-        region = clones[id] and clones[id][cloneId];
-      else
-        region = WeakAuras.regions[id].region;
-      end
+  if (conditionChecksTimers.recheckHandle[uid][cloneId] == nil) then
+    conditionChecksTimers.recheckHandle[uid][cloneId] = timer:ScheduleTimerFixed(function()
+      conditionChecksTimers.recheckHandle[uid][cloneId] = nil;
+      local region = Private.GetRegionByUID(uid)
       if (region and region.toShow) then
-        checkConditions[id](region);
+        checkConditions[uid](region);
       end
     end, time - GetTime())
-    conditionChecksTimers.recheckTime[id][cloneId] = time;
+    conditionChecksTimers.recheckTime[uid][cloneId] = time;
   end
 end
 
@@ -507,6 +519,7 @@ local function ConstructConditionFunction(data)
   ret = ret .. "local newActiveConditions = {};\n"
   ret = ret .. "local propertyChanges = {};\n"
   ret = ret .. "local nextTime;\n"
+  ret = ret .. string.format("local uid = %q\n", data.uid)
   ret = ret .. "return function(region, hideRegion)\n";
   if (debug) then ret = ret .. "  print('check conditions for:', region.id, region.cloneId)\n"; end
   ret = ret .. "  local id = region.id\n";
@@ -530,7 +543,7 @@ local function ConstructConditionFunction(data)
   ret = ret .. "  end\n";
 
   ret = ret .. "  if (recheckTime) then\n"
-  ret = ret .. "    WeakAuras.scheduleConditionCheck(recheckTime, id, cloneId);\n"
+  ret = ret .. "    WeakAuras.scheduleConditionCheck(recheckTime, uid, cloneId);\n"
   ret = ret .. "  end\n"
 
   local properties = Private.GetProperties(data);
@@ -583,12 +596,12 @@ function Private.LoadConditionFunction(data)
   local checkConditionsFuncStr = ConstructConditionFunction(data);
   local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr, data.id, "condition checks");
 
-  checkConditions[data.id] = checkCondtionsFunc;
+  checkConditions[data.uid] = checkCondtionsFunc;
 end
 
-function Private.RunConditions(region, id, hideRegion)
-  if (checkConditions[id]) then
-    checkConditions[id](region, hideRegion);
+function Private.RunConditions(region, uid, hideRegion)
+  if (checkConditions[uid]) then
+    checkConditions[uid](region, hideRegion);
   end
 end
 
@@ -608,12 +621,13 @@ function Private.GetGlobalConditionState()
 end
 
 local function runDynamicConditionFunctions(funcs)
-  for id in pairs(funcs) do
-    if (Private.IsAuraActive(id) and checkConditions[id]) then
-      local activeTriggerState = WeakAuras.GetTriggerStateForTrigger(id, Private.ActiveTrigger(id));
+  for uid in pairs(funcs) do
+    local id = Private.UIDtoID(uid)
+    if (Private.IsAuraActive(uid) and checkConditions[uid]) then
+      local activeTriggerState = WeakAuras.GetTriggerStateForTrigger(id, Private.ActiveTrigger(uid));
       for cloneId, state in pairs(activeTriggerState) do
         local region = WeakAuras.GetRegion(id, cloneId);
-        checkConditions[id](region, false);
+        checkConditions[uid](region, false);
       end
     end
   end
@@ -641,14 +655,14 @@ end
 
 local registeredGlobalFunctions = {};
 
-local function EvaluateCheckForRegisterForGlobalConditions(id, check, allConditionsTemplate, register)
+local function EvaluateCheckForRegisterForGlobalConditions(uid, check, allConditionsTemplate, register)
   local trigger = check and check.trigger;
   local variable = check and check.variable;
 
   if (trigger == -2) then
     if (check.checks) then
       for _, subcheck in ipairs(check.checks) do
-        EvaluateCheckForRegisterForGlobalConditions(id, subcheck, allConditionsTemplate, register);
+        EvaluateCheckForRegisterForGlobalConditions(uid, subcheck, allConditionsTemplate, register);
       end
     end
   elseif trigger == -1 and variable == "customcheck" then
@@ -658,7 +672,7 @@ local function EvaluateCheckForRegisterForGlobalConditions(id, check, allConditi
           register[event] = true;
           dynamicConditions[event] = {};
         end
-        dynamicConditions[event][id] = true;
+        dynamicConditions[event][uid] = true;
       end
     end
   elseif (trigger and variable) then
@@ -669,7 +683,7 @@ local function EvaluateCheckForRegisterForGlobalConditions(id, check, allConditi
           register[event] = true;
           dynamicConditions[event] = {};
         end
-        dynamicConditions[event][id] = true;
+        dynamicConditions[event][uid] = true;
       end
 
       if (conditionTemplate.globalStateUpdate and not registeredGlobalFunctions[variable]) then
@@ -684,10 +698,10 @@ local function EvaluateCheckForRegisterForGlobalConditions(id, check, allConditi
   end
 end
 
-function Private.RegisterForGlobalConditions(id)
-  local data = WeakAuras.GetData(id);
+function Private.RegisterForGlobalConditions(uid)
+  local data = Private.GetDataByUID(uid);
   for event, conditionFunctions in pairs(dynamicConditions) do
-    conditionFunctions.id = nil;
+    conditionFunctions[uid] = nil;
   end
 
   local register = {};
@@ -696,7 +710,7 @@ function Private.RegisterForGlobalConditions(id)
     allConditionsTemplate[-1] = Private.GetGlobalConditions();
 
     for conditionNumber, condition in ipairs(data.conditions) do
-      EvaluateCheckForRegisterForGlobalConditions(id, condition.check, allConditionsTemplate, register);
+      EvaluateCheckForRegisterForGlobalConditions(uid, condition.check, allConditionsTemplate, register);
     end
   end
 
@@ -718,17 +732,17 @@ function Private.RegisterForGlobalConditions(id)
   end
 end
 
-function Private.UnregisterForGlobalConditions(id)
+function Private.UnregisterForGlobalConditions(uid)
   for event, condFuncs in pairs(dynamicConditions) do
-    condFuncs[id] = nil;
+    condFuncs[uid] = nil;
   end
 end
 
 
 function Private.UnloadAllConditions()
-  for id in pairs(conditionChecksTimers.recheckTime) do
-    if (conditionChecksTimers.recheckHandle[id]) then
-      for _, v in pairs(conditionChecksTimers.recheckHandle[id]) do
+  for uid in pairs(conditionChecksTimers.recheckTime) do
+    if (conditionChecksTimers.recheckHandle[uid]) then
+      for _, v in pairs(conditionChecksTimers.recheckHandle[uid]) do
         timer:CancelTimer(v)
       end
     end
@@ -739,44 +753,13 @@ function Private.UnloadAllConditions()
   dynamicConditions = {}
 end
 
-function Private.UnloadConditions(id)
-  conditionChecksTimers.recheckTime[id] = nil;
-  if (conditionChecksTimers.recheckHandle[id]) then
-    for _, v in pairs(conditionChecksTimers.recheckHandle[id]) do
+function Private.UnloadConditions(uid)
+  conditionChecksTimers.recheckTime[uid] = nil;
+  if (conditionChecksTimers.recheckHandle[uid]) then
+    for _, v in pairs(conditionChecksTimers.recheckHandle[uid]) do
       timer:CancelTimer(v);
     end
   end
-  conditionChecksTimers.recheckHandle[id] = nil;
-  Private.UnregisterForGlobalConditions(id);
-end
-
-function Private.DeleteConditions(id)
-  checkConditions[id] = nil
-  conditionChecksTimers.recheckTime[id] = nil
-  if (conditionChecksTimers.recheckHandle[id]) then
-    for cloneId, v in pairs(conditionChecksTimers.recheckHandle[id]) do
-      timer:CancelTimer(v)
-    end
-  end
-  conditionChecksTimers.recheckHandle[id] = nil
-
-  for event, funcs in pairs(dynamicConditions) do
-    funcs[id] = nil
-  end
-end
-
-function Private.RenameConditions(oldid, newid)
-  checkConditions[newid] = checkConditions[oldid];
-  checkConditions[oldid] = nil;
-
-  conditionChecksTimers.recheckTime[newid] = conditionChecksTimers.recheckTime[oldid];
-  conditionChecksTimers.recheckTime[oldid] = nil;
-
-  conditionChecksTimers.recheckHandle[newid] = conditionChecksTimers.recheckHandle[oldid];
-  conditionChecksTimers.recheckHandle[oldid] = nil;
-
-  for event, funcs in pairs(dynamicConditions) do
-    funcs[newid] = funcs[oldid]
-    funcs[oldid] = nil;
-  end
+  conditionChecksTimers.recheckHandle[uid] = nil;
+  Private.UnregisterForGlobalConditions(uid);
 end

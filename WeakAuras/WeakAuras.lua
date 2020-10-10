@@ -1647,7 +1647,8 @@ end
 
 function Private.LoadDisplays(toLoad, ...)
   for id in pairs(toLoad) do
-    Private.RegisterForGlobalConditions(id);
+    local uid = WeakAuras.GetData(id).uid
+    Private.RegisterForGlobalConditions(uid);
     triggerState[id].triggers = {};
     triggerState[id].triggerCount = 0;
     triggerState[id].show = false;
@@ -1692,7 +1693,8 @@ function Private.UnloadDisplays(toUnload, ...)
       timers[id] = nil;
     end
 
-    Private.UnloadConditions(id)
+    local uid = WeakAuras.GetData(id).uid
+    Private.UnloadConditions(uid)
 
     WeakAuras.regions[id].region:Collapse();
     Private.CollapseAllClones(id);
@@ -1792,8 +1794,6 @@ function WeakAuras.Delete(data)
     eventData[id] = nil
   end
 
-  Private.DeleteConditions(id)
-
   db.displays[id] = nil;
 
   Private.DeleteAuraEnvironment(id)
@@ -1867,8 +1867,6 @@ function WeakAuras.Rename(data, newid)
     eventData[newid] = eventData[oldid]
     eventData[oldid] = nil
   end
-
-  Private.RenameConditions(oldid, newid)
 
   timers[newid] = timers[oldid];
   timers[oldid] = nil;
@@ -2909,6 +2907,15 @@ function WeakAuras.GetRegion(id, cloneId)
   return WeakAuras.regions[id] and WeakAuras.regions[id].region;
 end
 
+-- Note, does not create a clone!
+function Private.GetRegionByUID(uid, cloneId)
+  local id = Private.UIDtoID(uid)
+  if(cloneId and cloneId ~= "") then
+    return id and clones[id] and clones[id][cloneId];
+  end
+  return id and WeakAuras.regions[id] and WeakAuras.regions[id].region
+end
+
 function Private.CollapseAllClones(id, triggernum)
   if(clones[id]) then
     for i,v in pairs(clones[id]) do
@@ -3913,7 +3920,7 @@ local function ApplyStatesToRegions(id, activeTrigger, states)
 
       if (applyChanges) then
         ApplyStateToRegion(id, cloneId, region, parent);
-        Private.RunConditions(region, id, not state.show)
+        Private.RunConditions(region, data.uid, not state.show)
       end
     end
   end
@@ -4383,12 +4390,14 @@ function Private.CreateFormatters(input, getter)
   return formatters
 end
 
-function Private.IsAuraActive(id)
+function Private.IsAuraActive(uid)
+  local id = Private.UIDtoID(uid)
   local active = triggerState[id];
   return active and active.show;
 end
 
-function Private.ActiveTrigger(id)
+function Private.ActiveTrigger(uid)
+  local id = Private.UIDtoID(uid)
   return triggerState[id] and triggerState[id].activeTrigger
 end
 
