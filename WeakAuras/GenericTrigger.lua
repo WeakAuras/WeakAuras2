@@ -3806,5 +3806,16 @@ do
   end
 end
 
+WeakAuras.CheckForItemBonusId = function(id)
+  id = ":" .. tostring(id) .. ":"
+  for slot in pairs(Private.item_slot_types) do
+    local itemLink = GetInventoryItemLink('player', slot)
+    if itemLink and itemLink:find(id, 1, true) then
+      return true
+    end
+  end
+  return false
+end
+
 
 WeakAuras.RegisterTriggerSystem({"event", "status", "custom"}, GenericTrigger);

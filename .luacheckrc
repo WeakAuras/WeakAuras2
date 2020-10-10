@@ -654,6 +654,7 @@ globals = {
 	"C_Heirloom.ShouldShowHeirloomHelp",
 	"C_Heirloom.UpgradeHeirloom",
 	"C_Item",
+	"C_LegendaryCrafting",
 	"C_LFGList",
 	"C_LFGList.AcceptInvite",
 	"C_LFGList.ApplyToGroup",
