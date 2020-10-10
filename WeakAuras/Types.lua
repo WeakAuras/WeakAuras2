@@ -2820,6 +2820,21 @@ Private.reset_ranged_swing_spells = {
   [75] = true, -- Auto Shot
 }
 
+
+Private.item_weapon_types = {}
+for i = 1, 20 do
+  Private.item_weapon_types[i] = GetItemSubClassInfo(2, i)
+end
+
+Private.item_weapon_types[11] = nil
+Private.item_weapon_types[12] = nil
+Private.item_weapon_types[14] = nil
+Private.item_weapon_types[17] = nil
+
+if not WeakAuras.IsClassic() then
+  Private.item_weapon_types[16] = nil
+end
+
 WeakAuras.StopMotion = {}
 WeakAuras.StopMotion.texture_types = {
 }
