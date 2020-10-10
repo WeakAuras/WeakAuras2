@@ -1430,6 +1430,14 @@ Private.load_prototype = {
       type = "item",
       test = "IsEquippedItem(%s)",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"}
+    },
+    {
+      name = "itemtypeequipped",
+      display = L["Item Type Equipped"],
+      type = "multiselect",
+      test = "IsEquippedItemType(GetItemSubClassInfo(2, %s))",
+      events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
+      values = "item_weapon_types"
     }
   }
 };
@@ -6036,6 +6044,28 @@ Private.event_prototypes = {
       end
     end,
     hasItemID = true,
+    automaticrequired = true
+  },
+  ["Item Type Equipped"] = {
+    type = "status",
+    events = {
+      ["events"] = {
+        "UNIT_INVENTORY_CHANGED",
+        "PLAYER_EQUIPMENT_CHANGED",
+      }
+    },
+    internal_events = { "WA_DELAYED_PLAYER_ENTERING_WORLD", },
+    force_events = "UNIT_INVENTORY_CHANGED",
+    name = L["Item Type Equipped"],
+    args = {
+      {
+        name = "itemTypeName",
+        display = L["Item Type"],
+        type = "multiselect",
+        values = "item_weapon_types",
+        test = "IsEquippedItemType(GetItemSubClassInfo(2, %s))"
+      },
+    },
     automaticrequired = true
   },
   ["Item Set"] = {
