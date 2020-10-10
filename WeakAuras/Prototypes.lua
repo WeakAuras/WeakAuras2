@@ -1438,6 +1438,14 @@ Private.load_prototype = {
       test = "IsEquippedItemType(GetItemSubClassInfo(2, %s))",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
       values = "item_weapon_types"
+    },
+    {
+      name = "item_bonusid_equipped",
+      display = L["Item Bonus Id Equipped"],
+      type = "string",
+      test = "WeakAuras.CheckForItemBonusId(%s)",
+      events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
+      desc = function() return WeakAuras.GetLegendariesBonusIds() end
     }
   }
 };
@@ -6064,6 +6072,29 @@ Private.event_prototypes = {
         type = "multiselect",
         values = "item_weapon_types",
         test = "IsEquippedItemType(GetItemSubClassInfo(2, %s))"
+      },
+    },
+    automaticrequired = true
+  },
+  ["Item Bonus Id Equipped"] = {
+    type = "status",
+    events = {
+      ["events"] = {
+        "UNIT_INVENTORY_CHANGED",
+        "PLAYER_EQUIPMENT_CHANGED",
+      }
+    },
+    internal_events = { "WA_DELAYED_PLAYER_ENTERING_WORLD", },
+    force_events = "UNIT_INVENTORY_CHANGED",
+    name = L["Item Bonus Id Equipped"],
+    args = {
+      {
+        name = "itemBonusId",
+        display = L["Item Bonus Id"],
+        type = "string",
+        test = "WeakAuras.CheckForItemBonusId(%s)",
+        required = true,
+        desc = function() return WeakAuras.GetLegendariesBonusIds() end
       },
     },
     automaticrequired = true
