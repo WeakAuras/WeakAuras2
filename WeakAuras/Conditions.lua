@@ -184,7 +184,7 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
     if preamble then
       WeakAuras.conditionHelpers[uid] = WeakAuras.conditionHelpers[uid] or {}
       WeakAuras.conditionHelpers[uid].preambles = WeakAuras.conditionHelpers[uid].preambles or {}
-      tinsert(WeakAuras.conditionHelpers[uid].preambles, preamble(value));
+      tinsert(WeakAuras.conditionHelpers[uid].preambles, preamble(value) or "");
       local preambleNumber = #WeakAuras.conditionHelpers[uid].preambles
       preambleString = string.format("WeakAuras.conditionHelpers[%q].preambles[%s]", uid, preambleNumber)
     end
