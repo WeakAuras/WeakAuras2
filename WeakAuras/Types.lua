@@ -2852,6 +2852,119 @@ WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAuras\\Media\\Textures
      ["columns"] = 8
   }
 
+  WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\circle"] = {
+     ["count"] = 256,
+     ["rows"] = 16,
+     ["columns"] = 16
+  }
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\checkmark"] = {
+     ["count"] = 64,
+     ["rows"] = 8,
+     ["columns"] = 8
+  }
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\redx"] = {
+     ["count"] = 64,
+     ["rows"] = 8,
+     ["columns"] = 8
+  }
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\leftarc"] = {
+     ["count"] = 256,
+     ["rows"] = 16,
+     ["columns"] = 16
+  }
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\rightarc"] = {
+     ["count"] = 256,
+     ["rows"] = 16,
+     ["columns"] = 16
+  }
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\fireball"] = {
+     ["count"] = 7,
+     ["rows"] = 5,
+     ["columns"] = 5
+  }
+
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Runes\\AURARUNE8"] = {
+     ["count"] = 256,
+     ["rows"] = 16,
+     ["columns"] = 16
+  }
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Runes\\legionv"] = {
+     ["count"] = 64,
+     ["rows"] = 8,
+     ["columns"] = 8
+  }
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Runes\\legionw"] = {
+     ["count"] = 64,
+     ["rows"] = 8,
+     ["columns"] = 8
+  }
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Runes\\legionf"] = {
+     ["count"] = 64,
+     ["rows"] = 8,
+     ["columns"] = 8
+  }
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Runes\\legionword"] = {
+     ["count"] = 64,
+     ["rows"] = 8,
+     ["columns"] = 8
+  }
+
+WeakAuras.StopMotion.texture_types.Kaitan = {
+    ["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\CellRing"] = "CellRing",
+    ["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Gadget"] = "Gadget",
+    ["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Radar"] = "Radar",
+    ["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\RadarComplex"] = "RadarComplex",
+    ["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Saber"] = "Saber",
+    ["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Waveform"] = "Waveform",
+}
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\CellRing"] = {
+      ["count"] = 32,
+      ["rows"] = 8,
+      ["columns"] = 4
+  }
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Gadget"] = {
+     ["count"] = 32,
+     ["rows"] = 8,
+     ["columns"] = 4
+  }
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Radar"] = {
+     ["count"] = 32,
+     ["rows"] = 8,
+     ["columns"] = 4
+  }
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\RadarComplex"] = {
+     ["count"] = 32,
+     ["rows"] = 8,
+     ["columns"] = 4
+  }
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Saber"] = {
+     ["count"] = 32,
+     ["rows"] = 8,
+     ["columns"] = 4
+  }
+
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Waveform"] = {
+     ["count"] = 32,
+     ["rows"] = 8,
+     ["columns"] = 4
+  }
+
+
 WeakAuras.StopMotion.animation_types = {
   loop = L["Loop"],
   bounce = L["Forward, Reverse Loop"],
