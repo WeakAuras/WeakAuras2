@@ -2257,6 +2257,12 @@ Private.event_prototypes = {
       if trigger.use_ignoreDead or trigger.use_ignoreDisconnected then
         AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
       end
+
+      if not WeakAuras.IsClassic()
+          and trigger.use_powertype and trigger.powertype == 4
+      then
+        AddUnitEventForEvents(result, unit, "UNIT_POWER_POINT_CHARGE")
+      end
       return result;
     end,
     internal_events = function(trigger)
@@ -2320,6 +2326,18 @@ Private.event_prototypes = {
           end
         ]]
       end
+      if not WeakAuras.IsClassic()
+          and trigger.unit == 'player' and trigger.use_powertype and trigger.powertype == 4
+      then
+        ret = ret .. [[
+          local chargedComboPoint = GetUnitChargedPowerPoints('player')
+          chargedComboPoint = chargedComboPoint and chargedComboPoint[1]
+          if state.chargedComboPoint ~= chargedComboPoint then
+            state.chargedComboPoint = chargedComboPoint
+            state.changed = true
+          end
+        ]]
+      end
 
       return ret
     end,
@@ -2343,7 +2361,8 @@ Private.event_prototypes = {
         init = "unitPowerType",
         test = "true",
         store = true,
-        conditionType = "select"
+        conditionType = "select",
+        reloadOptions = true
       },
       {
         name = "requirePowerType",
@@ -2363,6 +2382,29 @@ Private.event_prototypes = {
           return (not trigger.use_powertype or trigger.powertype ~= 99) and trigger.unit == "player";
         end,
         reloadOptions = true
+      },
+      {
+        name = "showChargedComboPoints",
+        display = L["Overlay Charged Combo Points"],
+        type = "toggle",
+        test = "true",
+        reloadOptions = true,
+        enable = function(trigger)
+          return not WeakAuras.IsClassic() and trigger.unit == 'player' and trigger.use_powertype and trigger.powertype == 4
+        end,
+        hidden = WeakAuras.IsClassic()
+      },
+      {
+        name = "chargedComboPoint",
+        type = "number",
+        display = L["Charged Combo Point"],
+        store = true,
+        conditionType = "number",
+        enable = function(trigger)
+          return not WeakAuras.IsClassic() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
+        end,
+        hidden = true,
+        test = "true"
       },
       {
         name = "scaleStagger",
@@ -2537,6 +2579,18 @@ Private.event_prototypes = {
         enable = function(trigger)
           return trigger.use_showCost and (not trigger.use_powertype or trigger.powertype ~= 99) and trigger.unit == "player";
         end
+      },
+      {
+        name = L["Charged Combo Point"],
+        func = function(trigger, state)
+          if type(state.chargedComboPoint) == "number" then
+            return state.chargedComboPoint - 1, state.chargedComboPoint
+          end
+          return 0, 0
+        end,
+        enable = function(trigger)
+          return not WeakAuras.IsClassic() and trigger.unit == 'player' and trigger.use_powertype and trigger.powertype == 4 and trigger.use_showChargedComboPoints
+        end,
       }
     },
     automaticrequired = true
