@@ -5729,7 +5729,7 @@ Private.event_prototypes = {
       {
         name = "progressType",
         hidden = true,
-        init = "'timed'",
+        init = "duration and 'timed'",
         test = "true",
         store = true
       },
