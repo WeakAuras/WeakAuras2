@@ -144,7 +144,7 @@ end
 
 local spinnerFunctions = {};
 
-function spinnerFunctions.SetTexture(self, texture)
+function spinnerFunctions.SetTextureOrAtlas(self, texture)
   for i = 1, 3 do
     WeakAuras.SetTextureOrAtlas(self.textures[i], texture)
   end
@@ -770,7 +770,7 @@ local function ensureExtraSpinners(region, count)
   local parent = region:GetParent();
   for i = #region.extraSpinners + 1, count do
     local extraSpinner = createSpinner(region, "OVERLAY", min(i, 7));
-    WeakAuras.SetTextureOrAtlas(extraSpinner, region.currentTexture);
+    extraSpinner:SetTextureOrAtlas(region.currentTexture);
     extraSpinner:SetBlendMode(region.foreground:GetBlendMode());
     region.extraSpinners[i] = extraSpinner;
   end
@@ -1032,7 +1032,7 @@ local function modify(parent, region, data)
   background:SetVertexColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
   background:SetBlendMode(data.blendMode);
 
-  WeakAuras.SetTextureOrAtlas(backgroundSpinner, data.sameTexture and data.foregroundTexture or data.backgroundTexture);
+  backgroundSpinner:SetTextureOrAtlas(data.sameTexture and data.foregroundTexture or data.backgroundTexture);
   backgroundSpinner:SetDesaturated(data.desaturateBackground)
   backgroundSpinner:Color(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
   backgroundSpinner:SetBlendMode(data.blendMode);
@@ -1042,7 +1042,7 @@ local function modify(parent, region, data)
   foreground:SetDesaturated(data.desaturateForeground)
   foreground:SetBlendMode(data.blendMode);
 
-  WeakAuras.SetTextureOrAtlas(foregroundSpinner, data.foregroundTexture);
+  foregroundSpinner:SetTextureOrAtlas(data.foregroundTexture);
   foregroundSpinner:SetDesaturated(data.desaturateForeground);
   foregroundSpinner:SetBlendMode(data.blendMode);
 
@@ -1052,7 +1052,7 @@ local function modify(parent, region, data)
   end
 
   for _, extraSpinner in ipairs(region.extraSpinners) do
-    WeakAuras.SetTextureOrAtlas(extraSpinner, data.foregroundTexture);
+    extraSpinner:SetTextureOrAtlas(data.foregroundTexture);
     extraSpinner:SetBlendMode(data.blendMode);
   end
 
@@ -1323,10 +1323,10 @@ local function modify(parent, region, data)
   function region:SetTexture(texture)
     region.currentTexture = texture;
     WeakAuras.SetTextureOrAtlas(region.foreground, texture, region.textureWrapMode, region.textureWrapMode);
-    WeakAuras.SetTextureOrAtlas(foregroundSpinner, texture);
+    foregroundSpinner:SetTextureOrAtlas(texture);
     if (data.sameTexture) then
       WeakAuras.SetTextureOrAtlas(background, texture, region.textureWrapMode, region.textureWrapMode);
-      WeakAuras.SetTextureOrAtlas(backgroundSpinner, texture);
+      backgroundSpinner:SetTextureOrAtlas(texture);
     end
 
     for _, extraTexture in ipairs(region.extraTextures) do
@@ -1334,7 +1334,7 @@ local function modify(parent, region, data)
     end
 
     for _, extraSpinner in ipairs(region.extraSpinners) do
-      WeakAuras.SetTextureOrAtlas(extraSpinner, texture);
+      extraSpinner:SetTextureOrAtlas(texture);
     end
   end
 
