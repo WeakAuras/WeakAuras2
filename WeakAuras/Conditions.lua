@@ -120,7 +120,7 @@ function WeakAuras.scheduleConditionCheck(time, uid, cloneId)
   if (conditionChecksTimers.recheckHandle[uid][cloneId] == nil) then
     conditionChecksTimers.recheckHandle[uid][cloneId] = timer:ScheduleTimerFixed(function()
       conditionChecksTimers.recheckHandle[uid][cloneId] = nil;
-      local region = Private.GetRegionByUID(uid)
+      local region = Private.GetRegionByUID(uid, cloneId)
       if (region and region.toShow) then
         checkConditions[uid](region);
       end
