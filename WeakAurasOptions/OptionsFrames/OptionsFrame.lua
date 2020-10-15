@@ -494,7 +494,7 @@ function OptionsPrivate.CreateFrame()
   end
 
   addFooter(L["Found a Bug?"], [[Interface\AddOns\WeakAuras\Media\Textures\bug_report.tga]], "https://github.com/WeakAuras/WeakAuras2/issues/new?assignees=&labels=%F0%9F%90%9B+Bug&template=bug_report.md&title=",
-            L["Report bugs our our issue tracker."])
+            L["Report bugs on our issue tracker."])
 
   -- Disable for now
   --local closeTipButton = CreateFrame("Button", nil, tipFrame.frame, "UIPanelCloseButton")
