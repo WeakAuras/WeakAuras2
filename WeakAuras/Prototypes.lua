@@ -5652,18 +5652,18 @@ Private.event_prototypes = {
         local triggerStack = %s
         local triggerRemaining = %s
         local triggerShowOn = %q
-        local _, expirationTime, duration, name, icon, stack, enchantID
+        local _, expirationTime, duration, name, icon, stacks, enchantID
 
         if triggerWeaponType == "main" then
-          expirationTime, duration, name, shortenedName, icon, stack, enchantID = WeakAuras.GetMHTenchInfo()
+          expirationTime, duration, name, shortenedName, icon, stacks, enchantID = WeakAuras.GetMHTenchInfo()
         else
-          expirationTime, duration, name, shortenedName, icon, stack, enchantID = WeakAuras.GetOHTenchInfo()
+          expirationTime, duration, name, shortenedName, icon, stacks, enchantID = WeakAuras.GetOHTenchInfo()
         end
 
         local remaining = expirationTime and expirationTime - GetTime()
 
         local nameCheck = triggerName == "" or name and triggerName == name or shortenedName and triggerName == shortenedName or tonumber(triggerName) and enchantID and tonumber(triggerName) == enchantID
-        local stackCheck = not triggerStack or stack and stack %s triggerStack
+        local stackCheck = not triggerStack or stacks and stacks %s triggerStack
         local remainingCheck = not triggerRemaining or remaining and remaining %s triggerRemaining
         local found = expirationTime and nameCheck and stackCheck and remainingCheck
 
@@ -5704,7 +5704,7 @@ Private.event_prototypes = {
         test = "true"
       },
       {
-        name = "stack",
+        name = "stacks",
         display = L["Stack Count"],
         type = "number",
         test = "true",
