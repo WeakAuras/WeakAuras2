@@ -144,7 +144,7 @@ local funcs = {
     self:UpdateTickPlacement()
     self:UpdateTickSize()
   end,
-  OnSizeChanged = function(self)
+  OnRegionSizeChanged = function(self)
     if self.vertical then
       self.parentMinorSize, self.parentMajorSize = self.parent.bar:GetRealSize()
     else
@@ -395,7 +395,7 @@ local function modify(parent, region, parentData, data, first)
   parent.subRegionEvents:AddSubscriber("Update", region)
   parent.subRegionEvents:AddSubscriber("OrientationChanged", region)
   parent.subRegionEvents:AddSubscriber("InverseChanged", region)
-  parent:SetScript("OnSizeChanged", function() region:OnSizeChanged() end)
+  parent.subRegionEvents:AddSubscriber("OnRegionSizeChanged", region)
 
   region.TimerTick = nil
 end
