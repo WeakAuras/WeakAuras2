@@ -419,6 +419,7 @@ local barPrototype = {
   ["OnSizeChanged"] = function(self, width, height)
     self:UpdateProgress();
     self:UpdateAdditionalBars();
+    self:GetParent().subRegionEvents:Notify("OnRegionSizeChanged")
   end,
 
   -- Blizzard like SetMinMaxValues
