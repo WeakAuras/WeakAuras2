@@ -175,7 +175,6 @@ function OptionsPrivate.CreateFrame()
     OptionsPrivate.Private.PauseAllDynamicGroups()
 
     OptionsPrivate.Private.ClearFakeStates()
-    OptionsPrivate.SetDragging()
 
 
     for id, data in pairs(WeakAuras.regions) do
