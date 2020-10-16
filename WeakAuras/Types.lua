@@ -2822,18 +2822,25 @@ Private.reset_ranged_swing_spells = {
 
 
 Private.item_weapon_types = {}
-for i = 1, 20 do
-  Private.item_weapon_types[i] = GetItemSubClassInfo(2, i)
-end
 
-Private.item_weapon_types[11] = nil
-Private.item_weapon_types[12] = nil
-Private.item_weapon_types[14] = nil
-Private.item_weapon_types[17] = nil
-
+local skippedWeaponTypes = {}
+skippedWeaponTypes[11] = true -- Bear Claws
+skippedWeaponTypes[12] = true -- Cat Claws
+skippedWeaponTypes[14] = true -- Misc
+skippedWeaponTypes[17] = true -- Spears
 if not WeakAuras.IsClassic() then
-  Private.item_weapon_types[16] = nil
+  skippedWeaponTypes[16] = true -- Thrown
 end
+
+for i = 1, 20 do
+  if not skippedWeaponTypes[i] then
+    Private.item_weapon_types[2 * 256 + i] = GetItemSubClassInfo(2, i)
+  end
+end
+
+-- Shields
+Private.item_weapon_types[4 * 256 + 6] = GetItemSubClassInfo(4, 6)
+WeakAuras.item_weapon_types = Private.item_weapon_types
 
 WeakAuras.StopMotion = {}
 WeakAuras.StopMotion.texture_types = {

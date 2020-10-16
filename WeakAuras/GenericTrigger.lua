@@ -3817,5 +3817,11 @@ WeakAuras.CheckForItemBonusId = function(id)
   return false
 end
 
+WeakAuras.GetItemSubClassInfo = function(i)
+  local subClassId = i % 256
+  local classId = (i - subClassId) / 256
+  return GetItemSubClassInfo(classId, subClassId)
+end
+
 
 WeakAuras.RegisterTriggerSystem({"event", "status", "custom"}, GenericTrigger);

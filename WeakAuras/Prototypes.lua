@@ -1435,7 +1435,7 @@ Private.load_prototype = {
       name = "itemtypeequipped",
       display = L["Item Type Equipped"],
       type = "multiselect",
-      test = "IsEquippedItemType(GetItemSubClassInfo(2, %s))",
+      test = "IsEquippedItemType(WeakAuras.GetItemSubClassInfo(%s))",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
       values = "item_weapon_types"
     },
@@ -6125,7 +6125,7 @@ Private.event_prototypes = {
         display = L["Item Type"],
         type = "multiselect",
         values = "item_weapon_types",
-        test = "IsEquippedItemType(GetItemSubClassInfo(2, %s))"
+        test = "IsEquippedItemType(WeakAuras.GetItemSubClassInfo(%s))"
       },
     },
     automaticrequired = true
