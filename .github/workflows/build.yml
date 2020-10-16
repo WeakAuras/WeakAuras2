@@ -22,6 +22,7 @@ jobs:
         uses: nebularg/actions-luacheck@v1
         with:
           args: "--no-color -q"
+          annotate: warning
 
       - name: Update CurseForge Translations
         run: ./update_translations.sh

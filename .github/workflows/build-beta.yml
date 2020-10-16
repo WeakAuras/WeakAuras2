@@ -21,6 +21,7 @@ jobs:
         uses: nebularg/actions-luacheck@v1
         with:
           args: "--no-color -q"
+          annotate: warning
 
       - name: Generate Changelog
         run: ./generate_changelog.sh

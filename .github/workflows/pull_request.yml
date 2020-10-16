@@ -15,6 +15,7 @@ jobs:
         uses: nebularg/actions-luacheck@v1
         with:
           args: "--no-color -q"
+          annotate: warning
 
       - name: Update Build Date
         run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
