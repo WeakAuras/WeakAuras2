@@ -34,6 +34,7 @@ globals = {
 	"AceGUIWidgetLSMlists",
 	"CUSTOM_CLASS_COLORS",
 	"LibStub",
+	"OmniCC",
 
 	-- WeakAuras
 	"WeakAuras_DropDownMenu",

@@ -357,7 +357,9 @@ local function modify(parent, region, data)
 
   cooldown:SetReverse(not data.inverse);
   cooldown:SetHideCountdownNumbers(data.cooldownTextDisabled);
-  cooldown.noCooldownCount = data.cooldownTextDisabled;
+  if OmniCC then
+    OmniCC.Cooldown.SetNoCooldownCount(cooldown, data.cooldownTextDisabled)
+  end
 
   function region:Color(r, g, b, a)
     region.color_r = r;
