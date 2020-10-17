@@ -312,9 +312,7 @@ local function Update(data, diff)
     WeakAuras.Add(data)
     return
   end
-  if data then
-    WeakAuras.Delete(data)
-  else
+  if not data then
     return
   end
   recurseUpdate(data, diff)
@@ -377,6 +375,7 @@ local function install(data, oldData, patch, mode, isParent)
         patch.id = WeakAuras.FindUnusedId(patch.id)
       end
     end
+    WeakAuras.Delete(oldData)
     if data.uid and data.uid ~= oldData.uid then
       oldData.uid = data.uid
     end
