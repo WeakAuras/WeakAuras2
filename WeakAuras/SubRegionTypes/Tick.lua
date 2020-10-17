@@ -363,7 +363,7 @@ local function modify(parent, region, parentData, data, first)
   region.parent = parent
   region.parentData = parentData
   region.tick_visible = data.tick_visible
-  region.tick_color = data.tick_color
+  region.tick_color = CopyTable(data.tick_color)
   region.tick_placement_mode = data.tick_placement_mode
   region.tick_placement = tonumber(data.tick_placement)
   region.automatic_length = data.automatic_length
