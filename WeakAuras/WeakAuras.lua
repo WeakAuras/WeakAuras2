@@ -4396,6 +4396,11 @@ function Private.IsAuraActive(uid)
   return active and active.show;
 end
 
+function WeakAuras.IsAuraActive(id)
+  local active = triggerState[id]
+  return active and active.show
+end
+
 function Private.ActiveTrigger(uid)
   local id = Private.UIDtoID(uid)
   return triggerState[id] and triggerState[id].activeTrigger
