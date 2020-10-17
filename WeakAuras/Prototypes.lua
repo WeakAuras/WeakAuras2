@@ -5990,7 +5990,8 @@ Private.event_prototypes = {
         type = "select",
         values = "cooldown_progress_behavior_types",
         test = "true",
-        enable = function(trigger) return trigger.use_rune end
+        enable = function(trigger) return trigger.use_rune end,
+        required = true
       },
       {
         name = "runesCount",
