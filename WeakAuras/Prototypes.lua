@@ -7189,13 +7189,13 @@ Private.event_prototypes = {
         tinsert(events, "GROUP_ROSTER_UPDATE")
       end
 
-      if trigger.use_instance_size then
+      if trigger.use_instance_size ~= nil then
         tinsert(events, "ZONE_CHANGED")
         tinsert(events, "ZONE_CHANGED_INDOORS")
         tinsert(events, "ZONE_CHANGED_NEW_AREA")
       end
 
-      if trigger.use_instance_difficulty then
+      if trigger.use_instance_difficulty ~= nil then
         tinsert(events, "PLAYER_DIFFICULTY_CHANGED")
         tinsert(events, "ZONE_CHANGED")
         tinsert(events, "ZONE_CHANGED_INDOORS")
@@ -7302,7 +7302,6 @@ Private.event_prototypes = {
         type = "multiselect",
         values = "group_types",
         init = "WeakAuras.GroupType()",
-        events = {"GROUP_ROSTER_UPDATE"}
       },
       {
         name = "instance_size",
@@ -7311,7 +7310,6 @@ Private.event_prototypes = {
         values = "instance_types",
         init = "WeakAuras.InstanceType()",
         control = "WeakAurasSortedDropdown",
-        events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
       },
       {
         name = "instance_difficulty",
