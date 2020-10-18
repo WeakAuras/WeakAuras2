@@ -313,6 +313,9 @@ do
       end
       Private.StopProfileAura(id);
     end
+    for model in pairs(Private.barmodels) do
+      model:PreShow()
+    end
     Private.StopProfileSystem("model");
   end
  end
