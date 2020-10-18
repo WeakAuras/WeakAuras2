@@ -448,7 +448,7 @@ function OptionsPrivate.CreateFrame()
   tipPopupCtrlC:SetPoint("TOPRIGHT", urlWidget, "BOTTOMRIGHT", 0, 0)
   tipPopupCtrlC:SetJustifyH("LEFT")
   tipPopupCtrlC:SetJustifyV("TOP")
-  tipPopupCtrlC:SetText("Press Ctrl+C to copy the URL")
+  tipPopupCtrlC:SetText(L["Press Ctrl+C to copy the URL"])
 
   local function ToggleTip(referenceWidget, url, title, description)
     if tipPopup:IsVisible() and urlWidget.text == url then
