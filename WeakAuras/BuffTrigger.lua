@@ -31,7 +31,7 @@ function BuffTrigger.Add(data)
       end
     end
     if hasLegacyAuraTrigger then
-      Private.AuraWarnings.UpdateWarning(data.uid, "legacy", "warning", "This aura has legacy aura trigger(s), which are no longer supported.")
+      Private.AuraWarnings.UpdateWarning(data.uid, "legacy", "warning", L["This aura has legacy aura trigger(s), which are no longer supported."])
     else
       Private.AuraWarnings.UpdateWarning(data.uid, "legacy")
     end
