@@ -4,6 +4,8 @@ local AddonName, Private = ...
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
 
+Private.barmodels = {}
+
 local default = function(parentType)
   return {
     bar_model_visible = true,
@@ -45,8 +47,38 @@ local properties = {
   }
 }
 
+local function PreShow(self)
+  local data = self.data
+  self:SetKeepModelOnHide(true)
+  self:Show()
+
+  -- Adjust model
+  local modelId
+  if WeakAuras.IsClassic() then
+    modelId = data.model_path
+  else
+    modelId = tonumber(data.model_fileId)
+  end
+  if modelId then
+    self:SetModel(modelId)
+  end
+
+  self:ClearTransform()
+  if (data.api) then
+    self:MakeCurrentCameraCustom()
+    self:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+      rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
+      data.model_st_us / 1000);
+  else
+    self:SetPosition(data.model_z, data.model_x, data.model_y);
+    self:SetFacing(0);
+  end
+end
+
 local function CreateModel()
-  return CreateFrame("PlayerModel", nil, UIParent)
+  local model =  CreateFrame("PlayerModel", nil, UIParent)
+  model.PreShow = PreShow;
+  return model
 end
 
 -- Keep the two model apis separate
@@ -56,6 +88,8 @@ local poolNewApi = CreateObjectPool(CreateModel)
 local function AcquireModel(region, data)
   local pool = data.api and poolNewApi or poolOldApi
   local model = pool:Acquire()
+  model.data = data
+  Private.barmodels[model] = true
   model.api = data.api
 
   model:ClearAllPoints()
@@ -98,6 +132,7 @@ local function ReleaseModel(model)
   model:Hide()
   local pool = model.api and poolNewApi or poolOldApi
   pool:Release(model)
+  Private.barmodels[model] = false
 end
 
 local function create()
