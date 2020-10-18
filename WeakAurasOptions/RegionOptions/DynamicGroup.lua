@@ -109,11 +109,15 @@ local function createOptions(id, data)
       values = OptionsPrivate.Private.grow_types,
       set = function(info, v)
         data.grow = v
-        local selfPoint = selfPoints[data.grow] or selfPoints.default
-        if type(selfPoint) == "function" then
-          selfPoint = selfPoint(data)
+        if v == "GRID" then
+          data.selfPoint = gridSelfPoints[data.gridType]
+        else
+          local selfPoint = selfPoints[data.grow] or selfPoints.default
+          if type(selfPoint) == "function" then
+            selfPoint = selfPoint(data)
+          end
+          data.selfPoint = selfPoint
         end
-        data.selfPoint = selfPoint
         WeakAuras.Add(data)
         WeakAuras.ClearAndUpdateOptions(data.id)
         OptionsPrivate.ResetMoverSizer()
