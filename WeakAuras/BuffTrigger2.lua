@@ -446,7 +446,7 @@ local function FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
 
     if remCheck then
       matchCount = matchCount + 1
-      stackCount = stackCount + auraData.stacks
+      stackCount = stackCount + (auraData.stacks or 0)
       if not bestMatch or triggerInfo.compareFunc(bestMatch, auraData) then
         bestMatch = auraData
       end
