@@ -6,7 +6,6 @@ on:
       - shadowlands
     tags:
       - "**-alpha**"
-      - "**-beta**"
 
 jobs:
   build:
