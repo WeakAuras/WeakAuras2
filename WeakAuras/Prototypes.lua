@@ -3303,10 +3303,21 @@ Private.event_prototypes = {
     force_events = "WA_UPDATE_OVERLAY_GLOW",
     name = L["Spell Activation Overlay Glow"],
     loadFunc = function(trigger)
-      WeakAuras.WatchSpellActivation(tonumber(trigger.spellName));
+      if (trigger.use_exact_spellName) then
+        WeakAuras.WatchSpellActivation(tonumber(trigger.spellName));
+      else
+        WeakAuras.WatchSpellActivation(type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName);
+      end
     end,
     init = function(trigger)
-      return string.format("local spellName = tonumber(%q)", trigger.spellName or "");
+      local spellName
+      if (trigger.use_exact_spellName) then
+        spellName = trigger.spellName
+        return string.format("local spellName = %s\n", tonumber(spellName) or "nil");
+      else
+        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        return string.format("local spellName = %q\n", spellName or "");
+      end
     end,
     args = {
       {
@@ -3314,7 +3325,8 @@ Private.event_prototypes = {
         required = true,
         display = L["Spell"],
         type = "spell",
-        test = "true"
+        test = "true",
+        showExactOption = true
       },
       {
         hidden = true,
