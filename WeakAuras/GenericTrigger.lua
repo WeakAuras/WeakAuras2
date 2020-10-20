@@ -2451,10 +2451,14 @@ do
     spellActivationFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
     spellActivationFrame:SetScript("OnEvent", function(self, event, spell)
       Private.StartProfileSystem("generictrigger");
-      if (spellActivationSpells[spell]) then
-        spellActivationSpellsCurrent[spell] = (event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
+      local spellName = GetSpellInfo(spell)
+      if (spellActivationSpells[spell] or spellActivationSpells[spellName]) then
+        local active = (event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
+        spellActivationSpellsCurrent[spell] = active
+        spellActivationSpellsCurrent[spellName] = active
         WeakAuras.ScanEvents("WA_UPDATE_OVERLAY_GLOW", spell);
       end
+
       Private.StopProfileSystem("generictrigger");
     end);
   end
