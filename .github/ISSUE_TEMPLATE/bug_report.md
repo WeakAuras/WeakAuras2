@@ -42,7 +42,6 @@ Steps to reproduce the behavior:
 
 - [ ] Classic
 - [ ] Retail
-- [ ] Shadowlands
 
 **Was it working in a previous version? If yes, which was the last good one?**
 <!-- You can always find older versions of WeakAuras to test with at https://www.curseforge.com/projects/weakauras-2/files -->
