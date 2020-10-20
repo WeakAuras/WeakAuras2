@@ -620,76 +620,76 @@ local templates = {
 
 local anchorPoints = {
   BOTTOMLEFT = {
-    display = { L["Bar"], L["Bottom Left"] },
+    display = { L["Background"], L["Bottom Left"] },
     type = "point"
   },
   BOTTOM = {
-    display = { L["Bar"], L["Bottom"] },
+    display = { L["Background"], L["Bottom"] },
     type = "point"
   },
   BOTTOMRIGHT = {
-    display = { L["Bar"], L["Bottom Right"] },
+    display = { L["Background"], L["Bottom Right"] },
     type = "point"
   },
   RIGHT = {
-    display = { L["Bar"], L["Right"] },
+    display = { L["Background"], L["Right"] },
     type = "point"
   },
   TOPRIGHT = {
-    display = { L["Bar"], L["Top Right"] },
+    display = { L["Background"], L["Top Right"] },
     type = "point"
   },
   TOP = {
-    display = { L["Bar"], L["Top"] },
+    display = { L["Background"], L["Top"] },
     type = "point"
   },
   TOPLEFT = {
-    display = { L["Bar"], L["Top Left"] },
+    display = { L["Background"], L["Top Left"] },
     type = "point"
   },
   LEFT = {
-    display = { L["Bar"], L["Left"] },
+    display = { L["Background"], L["Left"] },
     type = "point"
   },
   CENTER = {
-    display = { L["Bar"], L["Center"] },
+    display = { L["Background"], L["Center"] },
     type = "point"
   },
 
   INNER_BOTTOMLEFT = {
-    display = { L["Bar Inner"], L["Bottom Left"] },
+    display = { L["Background Inner"], L["Bottom Left"] },
     type = "point"
   },
   INNER_BOTTOM = {
-    display = { L["Bar Inner"], L["Bottom"] },
+    display = { L["Background Inner"], L["Bottom"] },
     type = "point"
   },
   INNER_BOTTOMRIGHT = {
-    display = { L["Bar Inner"], L["Bottom Right"] },
+    display = { L["Background Inner"], L["Bottom Right"] },
     type = "point"
   },
   INNER_RIGHT = {
-    display = { L["Bar Inner"], L["Right"] },
+    display = { L["Background Inner"], L["Right"] },
     type = "point"
   },
   INNER_TOPRIGHT = {
-    display = { L["Bar Inner"], L["Top Right"] },
+    display = { L["Background Inner"], L["Top Right"] },
     type = "point"
   },
   INNER_TOP = {
-    display = { L["Bar Inner"], L["Top"] },
+    display = { L["Background Inner"], L["Top"] },
     type = "point"
   },
   INNER_TOPLEFT = {
-    display = { L["Bar Inner"], L["Top Left"] },
+    display = { L["Background Inner"], L["Top Left"] },
     type = "point"
   },
   INNER_LEFT = {
-    display = { L["Bar Inner"], L["Left"] },
+    display = { L["Background Inner"], L["Left"] },
     type = "point"
   },
   INNER_CENTER = {
-    display = { L["Bar Inner"], L["Center"] },
+    display = { L["Background Inner"], L["Center"] },
     type = "point"
   },
 

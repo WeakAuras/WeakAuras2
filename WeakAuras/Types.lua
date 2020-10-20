@@ -856,7 +856,7 @@ Private.aurabar_anchor_areas = {
   icon = L["Icon"],
   fg = L["Foreground"],
   bg = L["Background"],
-  bar = L["Bar"],
+  bar = L["Full Bar"],
 }
 
 Private.inverse_point_types = {
