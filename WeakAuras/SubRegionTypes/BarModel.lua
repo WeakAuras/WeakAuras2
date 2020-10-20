@@ -73,6 +73,7 @@ local function PreShow(self)
     self:SetPosition(data.model_z, data.model_x, data.model_y);
     self:SetFacing(0);
   end
+  self:SetModelAlpha(self.region.alpha)
 end
 
 local function CreateModel()
@@ -165,6 +166,7 @@ local funcs = {
       if not self.model then
         self.model = AcquireModel(self, self.data)
         self.model:SetModelAlpha(self.alpha)
+        self.model.region = self
       end
       self:Show()
     else
