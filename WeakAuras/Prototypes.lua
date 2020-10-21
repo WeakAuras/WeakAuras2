@@ -3593,7 +3593,7 @@ Private.event_prototypes = {
       },
       {
         name = "charges",
-        display = L["Stacks"],
+        display = L["Charges"],
         type = "number",
         store = true,
         conditionType = "number"
