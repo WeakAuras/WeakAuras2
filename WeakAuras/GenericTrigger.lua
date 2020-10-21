@@ -3554,7 +3554,7 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
       for _, v in pairs(Private.event_prototypes[trigger.event].args) do
         if (v.conditionType and v.name and v.display) then
           local enable = true;
-          if (v.enable) then
+          if (v.enable ~= nil) then
             if type(v.enable) == "function" then
               enable = v.enable(trigger);
             elseif type(v.enable) == "boolean" then
