@@ -7352,9 +7352,12 @@ Private.event_prototypes = {
     init = function(trigger)
       local spellName;
       if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName or "";
+        spellName = tonumber(trigger.spellName) or "nil";
+        if spellName == 0 then
+          spellName = "nil"
+        end
         local ret = [[
-          local spellName = tonumber(%q);
+          local spellName = %s;
           local usePet = %s;
         ]]
         return ret:format(spellName, trigger.use_petspell and "true" or "false");
