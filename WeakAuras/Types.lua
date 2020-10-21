@@ -2828,11 +2828,13 @@ skippedWeaponTypes[11] = true -- Bear Claws
 skippedWeaponTypes[12] = true -- Cat Claws
 skippedWeaponTypes[14] = true -- Misc
 skippedWeaponTypes[17] = true -- Spears
-if not WeakAuras.IsClassic() then
+if WeakAuras.IsClassic() then
+  skippedWeaponTypes[9] = true -- Glaives
+else
   skippedWeaponTypes[16] = true -- Thrown
 end
 
-for i = 1, 20 do
+for i = 0, 20 do
   if not skippedWeaponTypes[i] then
     Private.item_weapon_types[2 * 256 + i] = GetItemSubClassInfo(2, i)
   end
