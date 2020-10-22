@@ -426,6 +426,8 @@ globals = {
 	"C_Commentator.UpdatePlayerInfo",
 	"C_Commentator.ZoomIn",
 	"C_Commentator.ZoomOut",
+	"C_Covenants.GetCovenantData",
+	"C_Covenants.GetActiveCovenantID",
 	"C_CreatureInfo",
 	"C_CreatureInfo.GetClassInfo",
 	"C_CreatureInfo.GetFactionInfo",
