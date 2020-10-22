@@ -429,7 +429,7 @@ Private.format_types = {
       if color == "class" then
         colorFunc = function(class, text)
           if class then
-            return (CUSTOM_CLASS_COLORS or RAID_CLASS_COLORS)[class]:WrapTextInColorCode(text)
+            return WrapTextInColorCode(text, WA_GetClassColor(class))
           else
             return text
           end
