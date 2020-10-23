@@ -6806,7 +6806,7 @@ Private.event_prototypes = {
     end,
     init = function()
       local ret = [[
-        local main_stat
+        local main_stat, _
         if not WeakAuras.IsClassic() then
           _, _, _, _, _, main_stat = GetSpecializationInfo(GetSpecialization() or 0)
         end
