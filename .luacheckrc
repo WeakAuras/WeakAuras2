@@ -59,6 +59,7 @@ globals = {
 	"IndentationLib",
 	"KuiNameplatesCore",
 	"KuiNameplatesPlayerAnchor",
+	"Plater",
 
 	-- FrameXML misc
 	"BackdropTemplateMixin",
