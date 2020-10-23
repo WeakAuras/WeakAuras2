@@ -44,6 +44,12 @@ local function setTextureFunc(textureWidget, texturePath, textureName)
   end
 end
 
+local function textureNameHasData(textureName)
+  local pattern = "%.x(%d+)y(%d+)f(%d+)%.[tb][gl][ap]"
+  local rows, columns, frames = textureName:lower():match(pattern)
+  return rows and columns and frames
+end
+
 local function createOptions(id, data)
     local options = {
         __title = L["Stop Motion Settings"],
@@ -112,7 +118,7 @@ local function createOptions(id, data)
             type = "header",
             name = L["Custom Foreground"],
             order = 17.70,
-            hidden = function() return texture_data[data.foregroundTexture] end
+            hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
         },
         customForegroundRows = {
             type = "range",
@@ -121,7 +127,7 @@ local function createOptions(id, data)
             min = 1,
             max = 64,
             order = 17.71,
-            hidden = function() return texture_data[data.foregroundTexture] end
+            hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
         },
         customForegroundColumns = {
             type = "range",
@@ -130,7 +136,7 @@ local function createOptions(id, data)
             min = 1,
             max = 64,
             order = 17.72,
-            hidden = function() return texture_data[data.foregroundTexture] end
+            hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
         },
         customForegroundFrames = {
             type = "range",
@@ -140,7 +146,7 @@ local function createOptions(id, data)
             max = 4096,
             --bigStep = 0.01,
             order = 17.73,
-            hidden = function() return texture_data[data.foregroundTexture] end
+            hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
         },
         customForegroundSpace = {
             type = "execute",
@@ -148,14 +154,14 @@ local function createOptions(id, data)
             name = "",
             order = 17.74,
             image = function() return "", 0, 0 end,
-            hidden = function() return texture_data[data.foregroundTexture] end
+            hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
         },
         -- Background options for custom textures
         customBackgroundHeader = {
             type = "header",
             name = L["Custom Background"],
             order = 18.00,
-            hidden = function() return data.sameTexture or texture_data[data.backgroundTexture]
+            hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture)
                                        or data.hideBackground end
         },
         customBackgroundRows = {
@@ -165,7 +171,7 @@ local function createOptions(id, data)
             min = 1,
             max = 64,
             order = 18.01,
-            hidden = function() return data.sameTexture or texture_data[data.backgroundTexture]
+            hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture)
                                        or data.hideBackground end
         },
         customBackgroundColumns = {
@@ -175,7 +181,7 @@ local function createOptions(id, data)
             min = 1,
             max = 64,
             order = 18.02,
-            hidden = function() return data.sameTexture or texture_data[data.backgroundTexture]
+            hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture)
                                        or data.hideBackground end
         },
         customBackgroundFrames = {
@@ -186,7 +192,7 @@ local function createOptions(id, data)
             max = 4096,
             step = 1,
             order = 18.03,
-            hidden = function() return data.sameTexture or texture_data[data.backgroundTexture]
+            hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture)
                                        or data.hideBackground end
         },
         customBackgroundSpace = {
@@ -195,7 +201,7 @@ local function createOptions(id, data)
             name = "",
             order = 18.04,
             image = function() return "", 0, 0 end,
-            hidden = function() return data.sameTexture or texture_data[data.backgroundTexture]
+            hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture)
                                        or data.hideBackground end
         },
         blendMode = {
@@ -338,11 +344,21 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
       region.foregroundRows = tdata.rows;
       region.foregroundColumns = tdata.columns;
     else
-      local lastFrame = data.customForegroundFrames - 1;
-      region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
-      region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
-      region.foregroundRows = data.customForegroundRows;
-      region.foregroundColumns = data.customForegroundColumns;
+      local pattern = "%.x(%d+)y(%d+)f(%d+)%.[tb][gl][ap]"
+      local rows, columns, frames = data.foregroundTexture:lower():match(pattern)
+      if rows and columns and frames then
+        local lastFrame = frames - 1;
+        region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
+        region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
+        region.foregroundRows = rows;
+        region.foregroundColumns = columns;
+      else
+        local lastFrame = data.customForegroundFrames - 1;
+        region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
+        region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
+        region.foregroundRows = data.customForegroundRows;
+        region.foregroundColumns = data.customForegroundColumns;
+      end
     end
 
     if (region.startFrame and region.endFrame) then
