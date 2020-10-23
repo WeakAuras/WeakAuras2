@@ -5679,14 +5679,15 @@ Private.event_prototypes = {
         local remainingCheck = not triggerRemaining or remaining and remaining %s triggerRemaining
         local found = expirationTime and nameCheck and stackCheck and remainingCheck
 
+        if(triggerRemaining and remaining and remaining >= triggerRemaining and remaining > 0) then
+          print("WeakAuras.ScheduleScan")
+          WeakAuras.ScheduleScan(expirationTime - triggerRemaining, "TENCH_UPDATE");
+        end
+
         if not found then
           expirationTime = nil
           duration = nil
           remaining = nil
-        end
-
-        if(triggerRemaining and remaining and remaining >= triggerRemaining and remaining > 0) then
-          WeakAuras.ScheduleScan(expirationTime - triggerRemaining, "TENCH_UPDATE");
         end
       ]];
 
