@@ -143,6 +143,7 @@ end
 local function modify(parent, region, data)
     WeakAuras.regionPrototype.modify(parent, region, data);
 
+    local pattern = "%.x(%d+)y(%d+)f(%d+)%.[tb][gl][ap]"
     local tdata = texture_data[data.foregroundTexture];
     if (tdata) then
       local lastFrame = tdata.count - 1;
@@ -151,11 +152,20 @@ local function modify(parent, region, data)
       region.foreground.rows = tdata.rows;
       region.foreground.columns = tdata.columns;
     else
-      local lastFrame = (data.customForegroundFrames or 256) - 1;
-      region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
-      region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
-      region.foreground.rows = data.customForegroundRows;
-      region.foreground.columns = data.customForegroundColumns;
+      local rows, columns, frames = data.foregroundTexture:lower():match(pattern)
+      if rows and columns and frames then
+        local lastFrame = frames - 1;
+        region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
+        region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
+        region.foreground.rows = rows;
+        region.foreground.columns = columns;
+      else
+        local lastFrame = (data.customForegroundFrames or 256) - 1;
+        region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
+        region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
+        region.foreground.rows = data.customForegroundRows;
+        region.foreground.columns = data.customForegroundColumns;
+      end
     end
 
     local backgroundTexture = data.sameTexture
@@ -169,13 +179,21 @@ local function modify(parent, region, data)
       region.background.rows = tbdata.rows;
       region.background.columns = tbdata.columns;
     else
-      local lastFrame = (data.sameTexture and data.customForegroundFrames
-                                          or data.customBackgroundFrames or 256) - 1;
-      region.backgroundFrame = floor( (data.backgroundPercent or 1) * lastFrame + 1);
-      region.background.rows = data.sameTexture and data.customForegroundRows
-                                                 or data.customBackgroundRows;
-      region.background.columns = data.sameTexture and data.customForegroundColumns
-                                                   or data.customBackgroundColumns;
+      local rows, columns, frames = backgroundTexture:lower():match(pattern)
+      if rows and columns and frames then
+        local lastFrame = frames - 1;
+        region.backgroundFrame = floor( (data.backgroundPercent or 1) * lastFrame + 1);
+        region.background.rows = rows;
+        region.background.columns = columns;
+      else
+        local lastFrame = (data.sameTexture and data.customForegroundFrames
+                                            or data.customBackgroundFrames or 256) - 1;
+        region.backgroundFrame = floor( (data.backgroundPercent or 1) * lastFrame + 1);
+        region.background.rows = data.sameTexture and data.customForegroundRows
+                                                  or data.customBackgroundRows;
+        region.background.columns = data.sameTexture and data.customForegroundColumns
+                                                    or data.customBackgroundColumns;
+      end
     end
 
     if (region.foreground.rows and region.foreground.columns) then
