@@ -1452,8 +1452,8 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size);
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size);
       else
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes, covenant);
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes, covenant);
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
       end
 
       if(shouldBeLoaded and not loaded[id]) then
@@ -1530,6 +1530,7 @@ if not WeakAuras.IsClassic() then
   loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR");
   loadFrame:RegisterEvent("CHALLENGE_MODE_COMPLETED")
   loadFrame:RegisterEvent("CHALLENGE_MODE_START")
+  loadFrame:RegisterEvent("COVENANT_CHOSEN")
 else
   loadFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
 end

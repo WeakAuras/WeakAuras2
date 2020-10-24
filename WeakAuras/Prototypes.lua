@@ -923,12 +923,6 @@ function WeakAuras.IsSpellKnown(spell, pet)
   return IsPlayerSpell(spell) or IsSpellKnown(spell);
 end
 
-function WeakAuras.IsCovenantKnown(id)
-  if C_Covenants.GetActiveCovenantID() == id then -- Will return 0 during "trying" Covenants
-    return true
-  end
-end
-
 function WeakAuras.IsSpellKnownIncludingPet(spell)
   if (not tonumber(spell)) then
     spell = select(7, GetSpellInfo(spell));
@@ -1325,7 +1319,6 @@ Private.load_prototype = {
       type = "multiselect",
       values = "covenant_types",
       init = "arg",
-      test = "WeakAuras.IsCovenantKnown(%s)",
       enable = not WeakAuras.IsClassic(),
       hidden = WeakAuras.IsClassic(),
       events = {"COVENANT_CHOSEN"}

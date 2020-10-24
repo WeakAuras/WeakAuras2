@@ -776,16 +776,9 @@ do
 end
 
 Private.covenant_types = {}
-local function update_covenants()
-  wipe(Private.covenant_types)
-  for i = 1, 4 do
-    Private.covenant_types[i] = C_Covenants.GetCovenantData(i).name
-  end
+for i = 1, 4 do
+  Private.covenant_types[i] = C_Covenants.GetCovenantData(i).name
 end
-
-local covenant_frame = CreateFrame("frame")
-covenant_frame:RegisterEvent("PLAYER_LOGIN")
-covenant_frame:SetScript("OnEvent", update_covenants)
 
 Private.faction_group = {
   Alliance = L["Alliance"],
