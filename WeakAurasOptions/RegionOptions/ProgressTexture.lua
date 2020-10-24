@@ -34,7 +34,13 @@ local function createOptions(id, data)
       width = WeakAuras.halfWidth,
       order = 12,
       func = function()
-        OptionsPrivate.OpenTexturePicker(data, data, "foregroundTexture", OptionsPrivate.Private.texture_types);
+        OptionsPrivate.OpenTexturePicker(data, {}, {
+          texture = "foregroundTexture",
+          color = "foregroundColor",
+          rotation = "rotation",
+          mirror = "mirror",
+          blendMode = "blendMode"
+        }, OptionsPrivate.Private.texture_types);
       end
     },
     sameTexture = {
@@ -49,7 +55,13 @@ local function createOptions(id, data)
       width = WeakAuras.halfWidth,
       order = 17,
       func = function()
-        OptionsPrivate.OpenTexturePicker(data, data, "backgroundTexture", OptionsPrivate.Private.texture_types);
+        OptionsPrivate.OpenTexturePicker(data, {}, {
+          texture = "backgroundTexture",
+          color = "backgroundColor",
+          rotation = "rotation",
+          mirror = "mirror",
+          blendMode = "blendMode"
+        }, OptionsPrivate.Private.texture_types);
       end,
       disabled = function() return data.sameTexture; end
     },

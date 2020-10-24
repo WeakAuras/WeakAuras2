@@ -37,18 +37,23 @@ local function CompareValues(a, b)
   end
 end
 
-local function GetAll(data, property, default)
-  if data.controlledChildren then
+local function GetAll(baseObject, path, property, default)
+  local valueFromPath = OptionsPrivate.Private.ValueFromPath
+  if not property then
+    return default
+  end
+  if baseObject.controlledChildren then
     local result
     local first = true
-    for index, childId in pairs(data.controlledChildren) do
+    for index, childId in pairs(baseObject.controlledChildren) do
       local childData = WeakAuras.GetData(childId)
-      if childData[property] ~= nil then
+      local childObject = valueFromPath(childData, path)
+      if childObject and childObject[property] then
         if first then
-          result = childData[property]
+          result = childObject[property]
           first = false
         else
-          if not CompareValues(result, childData[property]) then
+          if not CompareValues(result, childObject[property]) then
             return default
           end
         end
@@ -56,23 +61,34 @@ local function GetAll(data, property, default)
     end
     return result
   else
-    if data[property] ~= nil then
-      return data[property]
+    local object = valueFromPath(baseObject, path)
+    if object and object[property] then
+      return object[property]
     end
     return default
   end
 
 end
 
-local function SetAll(data, property, value)
-  if data.controlledChildren then
-    for index, childId in pairs(data.controlledChildren) do
+local function SetAll(baseObject, path, property, value)
+  local valueFromPath = OptionsPrivate.Private.ValueFromPath
+  if baseObject.controlledChildren then
+    for index, childId in pairs(baseObject.controlledChildren) do
       local childData = WeakAuras.GetData(childId)
-      childData[property] = value
-      WeakAuras.Add(childData)
+      local object = valueFromPath(childData, path)
+      if object then
+        object[property] = value
+        WeakAuras.Add(childData)
+        WeakAuras.UpdateThumbnail(childData)
+      end
     end
   else
-    data[property] = value
+    local object = valueFromPath(baseObject, path)
+    if object then
+      object[property] = value
+      WeakAuras.Add(baseObject)
+      WeakAuras.UpdateThumbnail(baseObject)
+    end
   end
 end
 
@@ -114,6 +130,10 @@ local function ConstructTexturePicker(frame)
         textureWidget:ChangeTexture(d.r, d.g, d.b, d.a, d.rotate, d.discrete_rotation, d.rotation, d.mirror, d.blendMode);
       end
 
+      if group.selectedTextures[texturePath] then
+        textureWidget:Pick()
+      end
+
       textureWidget:SetClick(function()
         group:Pick(texturePath);
       end);
@@ -129,7 +149,6 @@ local function ConstructTexturePicker(frame)
         end
       end);
     end
-    group:Pick(group.data[group.field]);
   end
 
   dropdown:SetCallback("OnGroupSelected", texturePickerGroupSelected)
@@ -139,7 +158,7 @@ local function ConstructTexturePicker(frame)
     for categoryName, category in pairs(self.textures) do
       local match = false;
       for texturePath, textureName in pairs(category) do
-        if(texturePath == self.data[self.field]) then
+        if(self.selectedTextures[texturePath]) then
           match = true;
           break;
         end
@@ -161,72 +180,66 @@ local function ConstructTexturePicker(frame)
       pickedwidget:Pick();
     end
 
-    SetAll(self.data, self.field, texturePath);
-    if(type(self.parentData.id) == "string") then
-      WeakAuras.Add(self.parentData);
-      WeakAuras.UpdateThumbnail(self.parentData);
-    end
+    wipe(group.selectedTextures)
+    group.selectedTextures[texturePath] = true
+
+    SetAll(self.baseObject, self.path, self.properties.texture, texturePath)
+
     group:UpdateList();
     local status = dropdown.status or dropdown.localstatus
     dropdown.dropdown:SetText(dropdown.list[status.selected]);
   end
 
-  function group.Open(self, data, parentData, field, textures, SetTextureFunc)
-    self.data = data
-    self.parentData = parentData
-    self.field = field;
+  function group.Open(self, baseObject, path, properties, textures, SetTextureFunc)
+    local valueFromPath = OptionsPrivate.Private.ValueFromPath
+    self.baseObject = baseObject
+    self.path = path
+    self.properties = properties
     self.textures = textures;
     self.SetTextureFunc = SetTextureFunc
-    if(data.controlledChildren) then
-      self.givenPath = {};
-      for index, childId in pairs(data.controlledChildren) do
+    self.givenPath = {};
+    self.selectedTextures = {}
+    if(baseObject.controlledChildren) then
+      for index, childId in pairs(baseObject.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
-          self.givenPath[childId] = childData[field];
+          local childObject = valueFromPath(childData, path)
+          if childObject and childObject[properties.texture] then
+            self.givenPath[childId] = childObject[properties.texture]
+            self.selectedTextures[childObject[properties.texture]] = true
+          end
         end
       end
-      local colorAll = GetAll(data, "color", {1, 1, 1, 1});
-      self.textureData = {
-        r = colorAll[1] or 1,
-        g = colorAll[2] or 1,
-        b = colorAll[3] or 1,
-        a = colorAll[4] or 1,
-        rotate = GetAll(data, "rotate", false),
-        discrete_rotation = GetAll(data, "discrete_rotation", 0),
-        rotation = GetAll(data, "rotation", 0),
-        mirror = GetAll(data, "mirror", false),
-        blendMode = GetAll(data, "blendMode", "ADD")
-      };
     else
-      self.givenPath = data[field];
-      data.color = data.color or {};
-      self.textureData = {
-        r = data.color[1] or 1,
-        g = data.color[2] or 1,
-        b = data.color[3] or 1,
-        a = data.color[4] or 1,
-        rotate = data.rotate,
-        discrete_rotation = data.discrete_rotation or 0,
-        rotation = data.rotation or 0,
-        mirror = data.mirror,
-        blendMode = data.blendMode or "ADD"
-      };
+      local object = valueFromPath(baseObject, path)
+      if object and object[properties.texture] then
+        self.givenPath[baseObject.id] = object[properties.texture]
+        self.selectedTextures[object[properties.texture]] = true
+      end
     end
+
+    local colorAll = GetAll(baseObject, path, properties.color, {1, 1, 1, 1});
+    self.textureData = {
+      r = colorAll[1] or 1,
+      g = colorAll[2] or 1,
+      b = colorAll[3] or 1,
+      a = colorAll[4] or 1,
+      rotate = GetAll(baseObject, path, properties.rotate, true),
+      discrete_rotation = GetAll(baseObject, path, properties.discrete_rotation, 0),
+      rotation = GetAll(baseObject, path, properties.rotation, 0),
+      mirror = GetAll(baseObject, path, properties.mirror, false),
+      blendMode = GetAll(baseObject, path, properties.blendMode, "ADD")
+    }
+
     frame.window = "texture";
     frame:UpdateFrameVisible()
+    local _, givenPath = next(self.givenPath)
     local picked = false;
-    local _, givenPath
-    if type(self.givenPath) == "string" then
-      givenPath = self.givenPath;
-    else
-      _, givenPath = next(self.givenPath);
-    end
     for categoryName, category in pairs(self.textures) do
       if not(picked) then
         for texturePath, textureName in pairs(category) do
-          if(texturePath == givenPath) then
+          if(self.selectedTextures[texturePath]) then
             dropdown:SetGroup(categoryName);
-            self:Pick(givenPath);
             picked = true;
             break;
           end
@@ -248,17 +261,26 @@ local function ConstructTexturePicker(frame)
   end
 
   function group.CancelClose()
-    if(group.parentData.controlledChildren) then
-      for index, childId in pairs(group.parentData.controlledChildren) do
+    local valueFromPath = OptionsPrivate.Private.ValueFromPath
+    if(group.baseObject.controlledChildren) then
+      for index, childId in pairs(group.baseObject.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
         if(childData) then
-          childData[group.field] = group.givenPath[childId];
-          WeakAuras.Add(childData);
-          WeakAuras.UpdateThumbnail(childData);
+          local childObject = valueFromPath(childData, group.path)
+          if childObject then
+            childObject[group.properties.texture] = group.givenPath[childId]
+            WeakAuras.Add(childData);
+            WeakAuras.UpdateThumbnail(childData);
+          end
         end
       end
     else
-      group:Pick(group.givenPath);
+      local object = valueFromPath(group.baseObject, group.path)
+      if object then
+        object[group.properties.texture] = group.givenPath[group.baseObject.id]
+        WeakAuras.Add(group.baseObject)
+        WeakAuras.UpdateThumbnail(group.baseObject)
+      end
     end
     group.Close();
   end

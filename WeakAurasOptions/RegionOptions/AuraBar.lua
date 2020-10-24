@@ -254,7 +254,13 @@ local function createOptions(id, data)
       width = WeakAuras.halfWidth,
       order = 44.3,
       func = function()
-        OptionsPrivate.OpenTexturePicker(data, data, "sparkTexture", OptionsPrivate.Private.texture_types);
+        OptionsPrivate.OpenTexturePicker(data, {}, {
+          texture = "sparkTexture",
+          color = "sparkColor",
+          rotation = "sparkRotation",
+          mirror = "sparkMirror",
+          blendMode = "sparkBlendMode"
+        }, OptionsPrivate.Private.texture_types)
       end,
       disabled = function() return not data.spark end,
       hidden = function() return not data.spark end,
