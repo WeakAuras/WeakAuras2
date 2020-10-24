@@ -272,13 +272,10 @@ local function CreateCheckCondition(uid, ret, condition, conditionNumber, allCon
     ret = ret .. "      end\n";
   end
 
-  if (recheckCode) then
-    ret = ret .. recheckCode;
-  end
-  if (check or recheckCode) then
+  if (check) then
     ret = ret .. "\n";
   end
-  return ret;
+  return ret, recheckCode;
 end
 
 local function ParseProperty(property)
@@ -533,14 +530,20 @@ local function ConstructConditionFunction(data)
   local normalConditionCount = data.conditions and #data.conditions;
   -- First Loop gather which conditions are active
   ret = ret .. "  if (not hideRegion) then\n"
+  local recheckCode = ""
   if (data.conditions) then
     WeakAuras.conditionHelpers[data.uid] = nil
     for conditionNumber, condition in ipairs(data.conditions) do
       local nextIsLinked = data.conditions[conditionNumber + 1] and data.conditions[conditionNumber + 1].linked
-      ret = CreateCheckCondition(data.uid, ret, condition, conditionNumber, allConditionsTemplate, nextIsLinked, debug)
+      local additionalRecheckCode
+      ret, additionalRecheckCode = CreateCheckCondition(data.uid, ret, condition, conditionNumber, allConditionsTemplate, nextIsLinked, debug)
+      if additionalRecheckCode then
+        recheckCode = recheckCode .. "\n" .. additionalRecheckCode
+      end
     end
   end
   ret = ret .. "  end\n";
+  ret = ret .. recheckCode
 
   ret = ret .. "  if (recheckTime) then\n"
   ret = ret .. "    WeakAuras.scheduleConditionCheck(recheckTime, uid, cloneId);\n"
