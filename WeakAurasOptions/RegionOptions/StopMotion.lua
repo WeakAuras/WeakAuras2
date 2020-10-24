@@ -74,7 +74,13 @@ local function createOptions(id, data)
             name = L["Choose"],
             order = 12,
             func = function()
-                OptionsPrivate.OpenTexturePicker(data, data, "foregroundTexture", texture_types, setTextureFunc);
+                OptionsPrivate.OpenTexturePicker(data, {}, {
+                  texture = "foregroundTexture",
+                  color = "foregroundColor",
+                  rotation = "rotation",
+                  mirror = "mirror",
+                  blendMode = "blendMode"
+                }, texture_types, setTextureFunc);
             end
         },
         sameTexture = {
@@ -90,7 +96,13 @@ local function createOptions(id, data)
             name = L["Choose"],
             order = 17,
             func = function()
-                OptionsPrivate.OpenTexturePicker(data, data, "backgroundTexture", texture_types, setTextureFunc);
+                OptionsPrivate.OpenTexturePicker(data, {}, {
+                  texture = "backgroundTexture",
+                  color = "backgroundColor",
+                  rotation = "rotation",
+                  mirror = "mirror",
+                  blendMode = "blendMode"
+                }, texture_types, setTextureFunc);
             end,
             disabled = function() return data.sameTexture or data.hideBackground; end
         },

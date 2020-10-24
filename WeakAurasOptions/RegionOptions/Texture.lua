@@ -32,7 +32,15 @@ local function createOptions(id, data)
       width = WeakAuras.halfWidth,
       order = 7,
       func = function()
-        OptionsPrivate.OpenTexturePicker(data, data, "texture", OptionsPrivate.Private.texture_types);
+        OptionsPrivate.OpenTexturePicker(data, {}, {
+          texture = "texture",
+          color = "color",
+          rotate = "rotate",
+          discrete_rotation = "discrete_rotation",
+          rotation = "rotation",
+          mirror = "mirror",
+          blendMode = "blendMode"
+        }, OptionsPrivate.Private.texture_types);
       end
     },
     color = {

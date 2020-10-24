@@ -3531,7 +3531,9 @@ function Private.ValueFromPath(data, path)
   if not data then
     return nil
   end
-  if(#path == 1) then
+  if (#path == 0) then
+    return data
+  elseif(#path == 1) then
     return data[path[1]];
   else
     local reducedPath = {};
