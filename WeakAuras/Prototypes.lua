@@ -1314,6 +1314,16 @@ Private.load_prototype = {
       showExactOption = true
     },
     {
+      name = "covenant",
+      display = L["Player Covenant"],
+      type = "multiselect",
+      values = "covenant_types",
+      init = "arg",
+      enable = not WeakAuras.IsClassic(),
+      hidden = WeakAuras.IsClassic(),
+      events = {"COVENANT_CHOSEN"}
+    },
+    {
       name = "race",
       display = L["Player Race"],
       type = "multiselect",

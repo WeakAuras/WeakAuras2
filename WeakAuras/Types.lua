@@ -775,6 +775,11 @@ do
   end
 end
 
+Private.covenant_types = {}
+for i = 1, 4 do
+  Private.covenant_types[i] = C_Covenants.GetCovenantData(i).name
+end
+
 Private.faction_group = {
   Alliance = L["Alliance"],
   Horde = L["Horde"],
