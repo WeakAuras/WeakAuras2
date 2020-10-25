@@ -775,9 +775,11 @@ do
   end
 end
 
-Private.covenant_types = {}
-for i = 1, 4 do
-  Private.covenant_types[i] = C_Covenants.GetCovenantData(i).name
+if not WeakAuras.IsClassic() then
+  Private.covenant_types = {}
+  for i = 1, 4 do
+    Private.covenant_types[i] = C_Covenants.GetCovenantData(i).name
+  end
 end
 
 Private.faction_group = {
