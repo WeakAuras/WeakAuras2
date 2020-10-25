@@ -54,7 +54,7 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Choose"],
       order =  11,
       func = function()
-        OptionsPrivate.OpenModelPicker(data, parentData);
+        OptionsPrivate.OpenModelPicker(parentData, {"subRegions", index});
       end,
     },
     bar_model_clip = {
