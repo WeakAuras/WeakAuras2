@@ -2395,7 +2395,7 @@ Private.event_prototypes = {
       },
       {
         name = "showChargedComboPoints",
-        display = L["Overlay Charged Combo Points"],
+        display = WeakAuras.newFeatureString .. L["Overlay Charged Combo Points"],
         type = "toggle",
         test = "true",
         reloadOptions = true,
@@ -2407,7 +2407,7 @@ Private.event_prototypes = {
       {
         name = "chargedComboPoint",
         type = "number",
-        display = L["Charged Combo Point"],
+        display = WeakAuras.newFeatureString .. L["Charged Combo Point"],
         store = true,
         conditionType = "number",
         enable = function(trigger)
