@@ -1315,7 +1315,7 @@ Private.load_prototype = {
     },
     {
       name = "covenant",
-      display = L["Player Covenant"],
+      display = WeakAuras.newFeatureString .. L["Player Covenant"],
       type = "multiselect",
       values = "covenant_types",
       init = "arg",
