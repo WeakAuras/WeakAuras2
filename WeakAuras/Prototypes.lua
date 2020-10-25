@@ -1443,7 +1443,7 @@ Private.load_prototype = {
     },
     {
       name = "itemtypeequipped",
-      display = L["Item Type Equipped"],
+      display = WeakAuras.newFeatureString .. L["Item Type Equipped"],
       type = "multiselect",
       test = "IsEquippedItemType(WeakAuras.GetItemSubClassInfo(%s))",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
