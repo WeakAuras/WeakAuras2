@@ -761,6 +761,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       end
 
       Private.RunConditions(region, uid, true)
+      region.subRegionEvents:Notify("PreHide")
       region:Hide();
       if (cloneId) then
         Private.ReleaseClone(region.id, cloneId, data.regionType);
@@ -775,6 +776,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
         region:PreHide()
       end
       Private.RunConditions(region, uid, true)
+      region.subRegionEvents:Notify("PreHide")
       region:Hide();
       if (cloneId) then
         Private.ReleaseClone(region.id, cloneId, data.regionType);
