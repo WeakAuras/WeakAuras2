@@ -31,7 +31,7 @@ local function createOptions(id, data)
       name = L["Choose"],
       order = 2,
       func = function()
-        OptionsPrivate.OpenModelPicker(data);
+        OptionsPrivate.OpenModelPicker(data, {});
       end,
       hidden = function() return data.modelIsUnit end
     },

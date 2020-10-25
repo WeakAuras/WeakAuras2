@@ -67,7 +67,6 @@ local function GetAll(baseObject, path, property, default)
     end
     return default
   end
-
 end
 
 local function SetAll(baseObject, path, property, value)
