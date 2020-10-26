@@ -2501,6 +2501,8 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange:RegisterEvent("PLAYER_TARGET_CHANGED")
     if not WeakAuras.IsClassic() then
       watchUnitChange:RegisterEvent("PLAYER_FOCUS_CHANGED");
+    else
+      watchUnitChange:RegisterEvent("PLAYER_ROLES_ASSIGNED")
     end
     watchUnitChange:RegisterEvent("UNIT_TARGET");
     watchUnitChange:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
@@ -2532,7 +2534,6 @@ function WeakAuras.WatchUnitChange(unit)
       else
         local inRaid = IsInRaid()
         local inRaidChanged = inRaid ~= watchUnitChange.inRaid
-        local UnitGroupRolesAssigned = not WeakAuras.IsClassic() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 
         for unit, guid in pairs(watchUnitChange.unitChangeGUIDS) do
           local newGuid = WeakAuras.UnitExistsFixed(unit) and UnitGUID(unit) or ""
@@ -2544,7 +2545,7 @@ function WeakAuras.WatchUnitChange(unit)
             if inRaidChanged then
               WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
             else
-              local newRole = UnitGroupRolesAssigned(unit)
+              local newRole = WeakAuras.UnitGroupRolesAssigned(unit)
               if watchUnitChange.unitRoles[unit] ~= newRole then
                 watchUnitChange.unitRoles[unit] = newRole
                 WeakAuras.ScanEvents("UNIT_ROLE_CHANGED_" .. unit, unit)

@@ -74,8 +74,6 @@ local timer = WeakAuras.timer
 local BuffTrigger = {}
 local triggerInfos = {}
 
-local UnitGroupRolesAssigned = not WeakAuras.IsClassic() and UnitGroupRolesAssigned or function() return "DAMAGER" end
-
 -- keyed on unit, debuffType, spellname, with a scan object value
 -- scan object: id, triggernum, scanFunc
 local scanFuncName = {}
@@ -921,7 +919,7 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
-  if triggerInfo.groupRole and not triggerInfo.groupRole[UnitGroupRolesAssigned(unit)] then
+  if triggerInfo.groupRole and not triggerInfo.groupRole[WeakAuras.UnitGroupRolesAssigned(unit) or ""] then
     return false
   end
 
