@@ -116,6 +116,15 @@ local constants = {
   nameRealmFilterDesc = L[" Filter formats: 'Name', 'Name-Realm', '-Realm'. \n\nSupports multiple entries, separated by commas\n"],
 }
 
+if WeakAuras.IsClassic() then
+  WeakAuras.UnitRaidRole = function(unit)
+    local raidID = UnitInRaid(unit)
+    if raidID then
+      return select(10, GetRaidRosterInfo(raidID))
+    end
+  end
+end
+
 local encounter_list = ""
 local zoneId_list = ""
 local zoneGroupId_list = ""
@@ -1424,6 +1433,16 @@ Private.load_prototype = {
       events = {"PLAYER_ROLES_ASSIGNED", "PLAYER_TALENT_UPDATE"}
     },
     {
+      name = "raid_role",
+      display = WeakAuras.newFeatureString .. L["Raid Role"],
+      type = "multiselect",
+      values = "raid_role_types",
+      init = "arg",
+      enable = WeakAuras.IsClassic(),
+      hidden = not WeakAuras.IsClassic(),
+      events = {"PLAYER_ROLES_ASSIGNED"}
+    },
+    {
       name = "affixes",
       display = L["Mythic+ Affix"],
       type = "multiselect",
@@ -1664,8 +1683,20 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-           return not WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
-         end
+          return not WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+        end
+      },
+      {
+        name = "raid_role",
+        display = L["Assigned Role"],
+        type = "select",
+        init = "WeakAuras.UnitRaidRole(unit)",
+        values = "raid_role_types",
+        store = true,
+        conditionType = "select",
+        enable = function(trigger)
+          return WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+        end
       },
       {
         name = "ignoreSelf",
@@ -2161,6 +2192,18 @@ Private.event_prototypes = {
         end
       },
       {
+        name = "raid_role",
+        display = L["Assigned Role"],
+        type = "select",
+        init = "WeakAuras.UnitRaidRole(unit)",
+        values = "raid_role_types",
+        store = true,
+        conditionType = "select",
+        enable = function(trigger)
+          return WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+        end
+      },
+      {
         name = "ignoreSelf",
         display = L["Ignore Self"],
         type = "toggle",
@@ -2534,6 +2577,18 @@ Private.event_prototypes = {
         end
       },
       {
+        name = "raid_role",
+        display = L["Assigned Role"],
+        type = "select",
+        init = "WeakAuras.UnitRaidRole(unit)",
+        values = "raid_role_types",
+        store = true,
+        conditionType = "select",
+        enable = function(trigger)
+          return WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+        end
+      },
+      {
         name = "ignoreSelf",
         display = L["Ignore Self"],
         type = "toggle",
@@ -2744,6 +2799,18 @@ Private.event_prototypes = {
         conditionType = "select",
         enable = function(trigger)
           return not WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+        end
+      },
+      {
+        name = "raid_role",
+        display = L["Assigned Role"],
+        type = "select",
+        init = "WeakAuras.UnitRaidRole(unit)",
+        values = "raid_role_types",
+        store = true,
+        conditionType = "select",
+        enable = function(trigger)
+          return WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
@@ -6650,10 +6717,22 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-           return not WeakAuras.IsClassic()
-                  and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
-                  and not trigger.use_inverse
-         end
+          return not WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+                 and not trigger.use_inverse
+        end
+      },
+      {
+        name = "raid_role",
+        display = L["Assigned Role"],
+        type = "select",
+        init = "WeakAuras.UnitRaidRole(unit)",
+        values = "raid_role_types",
+        store = true,
+        conditionType = "select",
+        enable = function(trigger)
+          return WeakAuras.IsClassic() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+                 and not trigger.use_inverse
+        end
       },
       {
         name = "ignoreSelf",

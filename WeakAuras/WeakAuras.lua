@@ -1400,7 +1400,15 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   local covenant = not WeakAuras.IsClassic() and C_Covenants.GetActiveCovenantID()
   local faction = UnitFactionGroup("player")
 
-  local role = WeakAuras.IsClassic() and "none" or select(5, GetSpecializationInfo(spec));
+  local role, raid_role
+  if WeakAuras.IsClassic() then
+    local raidID = UnitInRaid("player")
+    if raidID then
+      raid_role = select(10, GetRaidRosterInfo(raidID))
+    end
+  else
+    role = select(5, GetSpecializationInfo(spec))
+  end
 
   local _, class = UnitClass("player");
 
@@ -1449,8 +1457,8 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
       local loadFunc = loadFuncs[id];
       local loadOpt = loadFuncsForOptions[id];
       if WeakAuras.IsClassic() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size);
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size);
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raid_role);
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raid_role);
       else
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);

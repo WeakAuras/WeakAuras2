@@ -644,6 +644,31 @@ local function GetBuffTriggerOptions(data, triggernum)
       width = WeakAuras.normalWidth,
       hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useGroupRole) end
     },
+    useRaidRole = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = WeakAuras.newFeatureString .. L["Filter by Raid Role"],
+      order = 67.1,
+      hidden = function() return
+        not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
+        or not WeakAuras.IsClassic()
+      end
+    },
+    raid_role = {
+      type = "multiselect",
+      width = WeakAuras.normalWidth,
+      name = L["Raid Role"],
+      values = OptionsPrivate.Private.raid_role_types,
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useRaidRole) end,
+      order = 67.2
+    },
+    raid_roleSpace = {
+      type = "description",
+      name = "",
+      order = 67.2,
+      width = WeakAuras.normalWidth,
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useRaidRole) end
+    },
     ignoreSelf = {
       type = "toggle",
       name = L["Ignore Self"],

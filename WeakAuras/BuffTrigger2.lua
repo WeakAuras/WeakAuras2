@@ -921,7 +921,11 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
-  if triggerInfo.groupRole and not triggerInfo.groupRole[UnitGroupRolesAssigned(unit)] then
+  if triggerInfo.groupRole and not triggerInfo.groupRole[UnitGroupRolesAssigned(unit) or ""] then
+    return false
+  end
+
+  if triggerInfo.raidRole and not triggerInfo.raidRole[WeakAuras.UnitRaidRole(unit) or ""] then
     return false
   end
 
@@ -2197,6 +2201,7 @@ function BuffTrigger.Add(data)
       local groupTrigger = trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
       local effectiveIgnoreSelf = (groupTrigger or trigger.unit == "nameplate") and trigger.ignoreSelf
       local effectiveGroupRole = groupTrigger and trigger.useGroupRole and trigger.group_role
+      local effectiveRaidRole = groupTrigger and trigger.useRaidRole and trigger.raid_role
       local effectiveClass = groupTrigger and trigger.useClass and trigger.class
       local effectiveHostility = trigger.unit == "nameplate" and trigger.useHostility and trigger.hostility
       local effectiveIgnoreDead = groupTrigger and trigger.ignoreDead
@@ -2257,6 +2262,7 @@ function BuffTrigger.Add(data)
         ignoreDisconnected = effectiveIgnoreDisconnected,
         ignoreInvisible = effectiveIgnoreInvisible,
         groupRole = effectiveGroupRole,
+        raidRole = effectiveRaidRole,
         groupSubType = groupSubType,
         groupCountFunc = groupCountFunc,
         class = effectiveClass,

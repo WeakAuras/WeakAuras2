@@ -2494,6 +2494,7 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange = CreateFrame("FRAME");
     watchUnitChange.unitChangeGUIDS = {}
     watchUnitChange.unitRoles = {}
+    watchUnitChange.unitRaidRole = {}
     watchUnitChange.inRaid = IsInRaid()
     watchUnitChange.nameplateFaction = {}
 
@@ -2501,6 +2502,8 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange:RegisterEvent("PLAYER_TARGET_CHANGED")
     if not WeakAuras.IsClassic() then
       watchUnitChange:RegisterEvent("PLAYER_FOCUS_CHANGED");
+    else
+      watchUnitChange:RegisterEvent("PLAYER_ROLES_ASSIGNED")
     end
     watchUnitChange:RegisterEvent("UNIT_TARGET");
     watchUnitChange:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT");
@@ -2532,7 +2535,6 @@ function WeakAuras.WatchUnitChange(unit)
       else
         local inRaid = IsInRaid()
         local inRaidChanged = inRaid ~= watchUnitChange.inRaid
-        local UnitGroupRolesAssigned = not WeakAuras.IsClassic() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 
         for unit, guid in pairs(watchUnitChange.unitChangeGUIDS) do
           local newGuid = WeakAuras.UnitExistsFixed(unit) and UnitGUID(unit) or ""
@@ -2544,10 +2546,18 @@ function WeakAuras.WatchUnitChange(unit)
             if inRaidChanged then
               WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
             else
-              local newRole = UnitGroupRolesAssigned(unit)
-              if watchUnitChange.unitRoles[unit] ~= newRole then
-                watchUnitChange.unitRoles[unit] = newRole
-                WeakAuras.ScanEvents("UNIT_ROLE_CHANGED_" .. unit, unit)
+              if WeakAuras.IsClassic() then
+                local newRaidRole = WeakAuras.UnitRaidRole(unit)
+                if watchUnitChange.unitRaidRole[unit] ~= newRaidRole then
+                  watchUnitChange.unitRaidRole[unit] = newRaidRole
+                  WeakAuras.ScanEvents("UNIT_ROLE_CHANGED_" .. unit, unit)
+                end
+              else
+                local newRole = UnitGroupRolesAssigned(unit)
+                if watchUnitChange.unitRoles[unit] ~= newRole then
+                  watchUnitChange.unitRoles[unit] = newRole
+                  WeakAuras.ScanEvents("UNIT_ROLE_CHANGED_" .. unit, unit)
+                end
               end
             end
           end

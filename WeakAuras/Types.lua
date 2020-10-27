@@ -1957,11 +1957,18 @@ Private.difficulty_types = {
   challenge = PLAYER_DIFFICULTY5
 }
 
-Private.role_types = {
-  TANK = INLINE_TANK_ICON.." "..TANK,
-  DAMAGER = INLINE_DAMAGER_ICON.." "..DAMAGER,
-  HEALER = INLINE_HEALER_ICON.." "..HEALER
-}
+if WeakAuras.IsClassic() then
+  Private.raid_role_types = {
+    MAINTANK = "|TInterface\\GroupFrame\\UI-Group-maintankIcon:16:16|t "..MAINTANK,
+    MAINASSIST = "|TInterface\\GroupFrame\\UI-Group-mainassistIcon:16:16|t "..MAINASSIST
+  }
+else
+  Private.role_types = {
+    TANK = INLINE_TANK_ICON.." "..TANK,
+    DAMAGER = INLINE_DAMAGER_ICON.." "..DAMAGER,
+    HEALER = INLINE_HEALER_ICON.." "..HEALER
+  }
+end
 
 Private.classification_types = {
   worldboss = L["World Boss"],
