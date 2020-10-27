@@ -1,7 +1,7 @@
 # WeakAuras
 
 [![Build Status](https://github.com/WeakAuras/WeakAuras2/workflows/CI/badge.svg)](https://github.com/WeakAuras/WeakAuras2/actions?workflow=CI)
-[![WeakAuras on Discord](https://img.shields.io/badge/discord-weakauras-738bd7.svg?style=flat)](https://discord.gg/wa2) [![Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://www.patreon.com/weakauras)
+[![WeakAuras on Discord](https://img.shields.io/badge/discord-weakauras-738bd7.svg?style=flat)](https://discord.gg/weakauras) [![Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://www.patreon.com/weakauras)
 
 WeakAuras is a powerful and flexible framework that allows the display of highly customizable graphics on World of Warcraft's user interface to indicate buffs, debuffs, and other relevant information. This addon was created to be a lightweight replacement for Power Auras but has since introduced more functionalities while remaining efficient and easy to use.
 
@@ -42,7 +42,7 @@ For some examples of what WeakAuras can do, take a look at [wago.io](https://wag
 * Please see the [wiki](https://github.com/WeakAuras/WeakAuras2/wiki) page.
 * If you've discovered something that's clearly wrong, or if you get an error, please create a [ticket](https://github.com/WeakAuras/WeakAuras2/issues).
 * You're a programmer yourself and want to contribute? Check out our [contributing guidelines](https://github.com/WeakAuras/WeakAuras2/blob/master/CONTRIBUTING.md) to get started!
-* Feel free to join our [Discord Community](https://discord.gg/wa2) to talk, get help and discuss everything WeakAuras!
+* Feel free to join our [Discord Community](https://discord.gg/weakauras) to talk, get help and discuss everything WeakAuras!
 
 ## Support
 
