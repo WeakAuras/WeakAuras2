@@ -2494,6 +2494,7 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange = CreateFrame("FRAME");
     watchUnitChange.unitChangeGUIDS = {}
     watchUnitChange.unitRoles = {}
+    watchUnitChange.unitRaidRole = {}
     watchUnitChange.inRaid = IsInRaid()
     watchUnitChange.nameplateFaction = {}
 
@@ -2545,10 +2546,18 @@ function WeakAuras.WatchUnitChange(unit)
             if inRaidChanged then
               WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
             else
-              local newRole = WeakAuras.UnitGroupRolesAssigned(unit)
-              if watchUnitChange.unitRoles[unit] ~= newRole then
-                watchUnitChange.unitRoles[unit] = newRole
-                WeakAuras.ScanEvents("UNIT_ROLE_CHANGED_" .. unit, unit)
+              if WeakAuras.IsClassic() then
+                local newRaidRole = WeakAuras.UnitRaidRole(unit)
+                if watchUnitChange.unitRaidRole[unit] ~= newRaidRole then
+                  watchUnitChange.unitRaidRole[unit] = newRaidRole
+                  WeakAuras.ScanEvents("UNIT_ROLE_CHANGED_" .. unit, unit)
+                end
+              else
+                local newRole = UnitGroupRolesAssigned(unit)
+                if watchUnitChange.unitRoles[unit] ~= newRole then
+                  watchUnitChange.unitRoles[unit] = newRole
+                  WeakAuras.ScanEvents("UNIT_ROLE_CHANGED_" .. unit, unit)
+                end
               end
             end
           end
