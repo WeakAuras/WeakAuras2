@@ -2731,11 +2731,20 @@ Private.difficulty_info = {
   },
 }
 
-Private.glow_types = {
-  ACShine = L["Autocast Shine"],
-  Pixel = L["Pixel Glow"],
-  buttonOverlay = L["Action Button Glow"],
-}
+Private.glow_types = {}
+local LCG = LibStub("LibCustomGlow-1.0")
+for key, args in pairs(LCG:GetGlows()) do
+  Private.glow_types[key] = args.name
+end
+
+--[[
+Migration needed for keys, or change keys LibCustomGlow-1.0 to match what weakauras use(d)
+
+ACShine => "AutoCast Glow"
+Pixel => "Pixel Glow"
+buttonOverlay => "Button Glow"
+
+]]--
 
 Private.font_sizes = {
   small = L["Small"],

@@ -11,6 +11,8 @@ if MSQ then
 end
 local L = WeakAuras.L;
 
+local glows = LCG:GetGlows()
+
 local default = function(parentType)
   local options = {
     glow = false,
@@ -134,9 +136,9 @@ local function glowStart(self, frame, color)
     return
   end
 
-  if self.glowType == "buttonOverlay" then
+  if self.glowType == "Button Glow" then
     self.glowStart(frame, color, self.glowFrequency, 0)
-  elseif self.glowType == "Pixel" then
+  elseif self.glowType == "Pixel Glow" then
     self.glowStart(
       frame,
       color,
@@ -150,7 +152,7 @@ local function glowStart(self, frame, color)
       nil,
       0
     )
-  elseif self.glowType == "ACShine" then
+  elseif self.glowType == "AutoCast Glow" then
     self.glowStart(
       frame,
       color,
@@ -193,7 +195,8 @@ local funcs = {
     end
   end,
   SetGlowType = function(self, newType)
-    newType = newType or "buttonOverlay"
+    newType = glows[newType] and newType or "Button Glow"
+    local glowSettings = glows[newType]
     if newType == self.glowType then
       return
     end
@@ -203,21 +206,17 @@ local funcs = {
       self:SetVisible(false)
     end
 
-    if newType == "buttonOverlay" then
-      self.glowStart = LCG.ButtonGlow_Start
-      self.glowStop = LCG.ButtonGlow_Stop
+    self.glowStart = glowSettings.start
+    self.glowStop = glowSettings.stop
+    if newType == "Button Glow" then
       if self.parentRegionType ~= "aurabar" then
         self.parent:AnchorSubRegion(self, "area", "region")
       end
-    elseif newType == "ACShine" then
-      self.glowStart = LCG.AutoCastGlow_Start
-      self.glowStop = LCG.AutoCastGlow_Stop
+    elseif newType == "AutoCast Glow" then
       if self.parentRegionType ~= "aurabar" then
         self.parent:AnchorSubRegion(self, "area")
       end
-    elseif newType == "Pixel" then
-      self.glowStart = LCG.PixelGlow_Start
-      self.glowStop = LCG.PixelGlow_Stop
+    elseif newType == "Pixel Glow" then
       if self.parentRegionType ~= "aurabar" then
         self.parent:AnchorSubRegion(self, "area")
       end
@@ -242,7 +241,7 @@ local funcs = {
   SetGlowLines = function(self, lines)
     self.glowLines = lines
     if self.glow then
-      if self.glowType == "ACShine" then -- workaround ACShine not updating numbers of dots
+      if self.glowType == "AutoCast Glow" then -- workaround ACShine not updating numbers of dots
         self:SetVisible(false)
       end
       self:SetVisible(true)
@@ -324,7 +323,7 @@ local function modify(parent, region, parentData, data, first)
   if parentData.regionType == "aurabar" then
     parent:AnchorSubRegion(region, "area", data.glow_anchor)
   else
-    parent:AnchorSubRegion(region, "area", data.glowType == "buttonOverlay" and "region")
+    parent:AnchorSubRegion(region, "area", data.glowType == "Button Glow" and "region")
   end
 
   region.parent = parent
@@ -355,7 +354,7 @@ function WeakAuras.getDefaultGlow(regionType)
       glow = false,
       useGlowColor = false,
       glowColor = {1, 1, 1, 1},
-      glowType = "Pixel",
+      glowType = "Pixel Glow",
       glowLines = 8,
       glowFrequency = 0.25,
       glowLength = 10,
@@ -372,7 +371,7 @@ function WeakAuras.getDefaultGlow(regionType)
       glow = false,
       useGlowColor = false,
       glowColor = {1, 1, 1, 1},
-      glowType = "buttonOverlay",
+      glowType = "Button Glow",
       glowLines = 8,
       glowFrequency = 0.25,
       glowLength = 10,
@@ -397,7 +396,7 @@ local function addDefaultsForNewAura(data)
       glow = false,
       useGlowColor = false,
       glowColor = {1, 1, 1, 1},
-      glowType = "buttonOverlay",
+      glowType = "Button Glow",
       glowLines = 8,
       glowFrequency = 0.25,
       glowLength = 10,

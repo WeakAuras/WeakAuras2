@@ -3,17 +3,71 @@ local AddonName, OptionsPrivate = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
+local LCG = LibStub("LibCustomGlow-1.0")
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
 
 local indentWidth = 0.15
 
-
 local function createOptions(parentData, data, index, subIndex)
 
   local hiddenGlowExtra = function()
     return OptionsPrivate.IsCollapsed("glow", "glow", "glowextra" .. index, true);
+  end
+
+  local addOptionsFromLCG = function(options, order)
+    --local subindex = 0
+    local function MyCopyTable(settings, glowType, level)
+      local copy = {}
+      if settings.type == "gradient" then -- TODO: not a valid ace3 type
+        return nil
+      end
+      for k, v in pairs(settings) do
+        if ( type(v) == "table" ) then
+          --[[
+          if v.desc then
+            if subindex % 2 == 0 then
+              copy[(level==1 and glowType or "")..k.."space"] = {
+                type = "description",
+                name = "",
+                width = indentWidth,
+                order = order,
+                hidden = function() return hiddenGlowExtra() or data.glowType ~= glowType end
+              }
+              order = order + 1
+              print("add space")
+            end
+          end
+          subindex = 0
+          ]]--
+          copy[(level==1 and glowType or "")..k] = MyCopyTable(v, glowType, level + 1)
+        else
+          copy[k] = v
+          if k == "desc" then
+            copy.order = order
+            --copy.width = v.type == "group" and WeakAuras.normalWidth or (subindex % 2 == 0) and WeakAuras.normalWidth - indentWidth or WeakAuras.normalWidth
+            copy.width = WeakAuras.normalWidth
+            local glowType = glowType
+            copy.hidden = function() return hiddenGlowExtra() or data.glowType ~= glowType end
+            copy.default = nil
+            copy.start = nil
+            copy.stop = nil
+            order = order + 1
+            --subindex = subindex + 1 -- (v.type == "group" and subindex % 2 == 0 and 2 or 1)
+          end
+        end
+      end
+      --subindex = 0
+      return copy
+    end
+
+    for glowType, glowTable in pairs(LCG:GetGlows()) do
+      WeakAuras.DeepMixin(options, MyCopyTable(glowTable.args, glowType, 1))
+      --ViragDevTool_AddData(MyCopyTable(glowTable.args, glowType), glowType)
+    end
+    ViragDevTool_AddData(options, "options")
+    return order
   end
 
   local options = {
@@ -120,146 +174,19 @@ local function createOptions(parentData, data, index, subIndex)
       arg = {
         expanderName = "glow" .. index .. "#" .. subIndex
       }
-    },
-    glow_space1 = {
-      type = "description",
-      name = "",
-      width = indentWidth,
-      order = 5,
-      hidden = hiddenGlowExtra,
-    },
-    useGlowColor = {
-      type = "toggle",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["Use Custom Color"],
-      desc = L["If unchecked, then a default color will be used (usually yellow)"],
-      order = 6,
-      hidden = hiddenGlowExtra
-    },
-    glowColor = {
-      type = "color",
-      width = WeakAuras.normalWidth,
-      name = L["Custom Color"],
-      order = 7,
-      disabled = function() return not data.useGlowColor end,
-      hidden = hiddenGlowExtra
-    },
-    glow_space2 = {
-      type = "description",
-      name = "",
-      width = indentWidth,
-      order = 8,
-      hidden = hiddenGlowExtra,
-    },
-    glowLines = {
-      type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["Lines & Particles"],
-      order = 9,
-      min = 1,
-      softMax = 30,
-      step = 1,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
-    },
-    glowFrequency = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Frequency"],
-      order = 10,
-      softMin = -2,
-      softMax = 2,
-      step = 0.05,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
-    },
-    glow_space3 = {
-      type = "description",
-      name = "",
-      width = indentWidth,
-      order = 11,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
-    },
-    glowLength = {
-      type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["Length"],
-      order = 12,
-      min = 1,
-      softMax = 20,
-      step = 0.05,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
-    },
-    glowThickness = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Thickness"],
-      order = 13,
-      min = 0.05,
-      softMax = 20,
-      step = 0.05,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
-    },
-    glow_space4 = {
-      type = "description",
-      name = "",
-      width = indentWidth,
-      order = 14,
-      hidden = hiddenGlowExtra,
-    },
-    glowXOffset = {
-      type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["X-Offset"],
-      order = 15,
-      softMin = -100,
-      softMax = 100,
-      step = 0.5,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
-    },
-    glowYOffset = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Y-Offset"],
-      order = 16,
-      softMin = -100,
-      softMax = 100,
-      step = 0.5,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
-    },
-    glow_space5 = {
-      type = "description",
-      name = "",
-      width = indentWidth,
-      order = 17,
-      hidden = hiddenGlowExtra,
-    },
-    glowScale = {
-      type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["Scale"],
-      order = 18,
-      min = 0.05,
-      softMax = 10,
-      step = 0.05,
-      isPercent = true,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "ACShine" end,
-    },
-    glowBorder = {
-      type = "toggle",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["Border"],
-      order = 19,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
-    },
+    }
+  }
 
-    glow_anchor = {
-      type = "description",
-      name = "",
-      order = 20,
-      hidden = hiddenGlowExtra,
-      control = "WeakAurasExpandAnchor",
-      arg = {
-        expanderName = "glow" .. index .. "#" .. subIndex
-      }
+  local order = addOptionsFromLCG(options, 6)
+
+  options.glow_anchor_anchor = {
+    type = "description",
+    name = "",
+    order = order,
+    hidden = hiddenGlowExtra,
+    control = "WeakAurasExpandAnchor",
+    arg = {
+      expanderName = "glow" .. index .. "#" .. subIndex
     }
   }
   return options
