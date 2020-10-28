@@ -4971,7 +4971,7 @@ function Private.AnchorFrame(data, region, parent)
       end
       xpcall(region.SetParent, errorhandler, region, anchorParent);
     else
-      region:SetParent(frame);
+      region:SetParent(parent or frame);
     end
 
     local anchorPoint = data.anchorPoint
