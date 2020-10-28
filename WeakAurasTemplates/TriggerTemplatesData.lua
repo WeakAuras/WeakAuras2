@@ -1801,6 +1801,7 @@ else
           { spell = 193641, type = "buff", unit = "player", talent = 2}, -- Elaborate Planning
           { spell = 256735, type = "buff", unit = "player", talent = 6}, -- Master Assassin
           { spell = 270070, type = "buff", unit = "player", talent = 20}, -- Hidden Blades
+          { spell = 315496, type = "buff"}, -- Slice and Dice
         },
         icon = 132290
       },
@@ -1896,7 +1897,6 @@ else
           { spell = 1966, type = "buff", unit = "player"}, -- Feint
           { spell = 2983, type = "buff", unit = "player"}, -- Sprint
           { spell = 3408, type = "buff", unit = "player"}, -- Crippling Poison
-          { spell = 5171, type = "buff", unit = "player"}, -- Slice and Dice
           { spell = 5277, type = "buff", unit = "player"}, -- Evasion
           { spell = 5761, type = "buff", unit = "player"}, -- Numbing Poison
           { spell = 8679, type = "buff", unit = "player"}, -- Wound Poison
