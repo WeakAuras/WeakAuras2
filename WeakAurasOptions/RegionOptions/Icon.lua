@@ -252,7 +252,7 @@ local function modifyThumbnail(parent, frame, data)
   end
 
   if data then
-    local name, icon = OptionsPrivate.Private.GetNameAndIcon(data);
+    local name, icon = WeakAuras.GetNameAndIcon(data);
     frame:SetIcon(icon)
   end
 end

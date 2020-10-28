@@ -3323,7 +3323,8 @@ Private.CanHaveDuration = wrapTriggerSystemFunction("CanHaveDuration", "firstVal
 Private.CanHaveAuto = wrapTriggerSystemFunction("CanHaveAuto", "or");
 Private.CanHaveClones = wrapTriggerSystemFunction("CanHaveClones", "or");
 Private.CanHaveTooltip = wrapTriggerSystemFunction("CanHaveTooltip", "or");
-Private.GetNameAndIcon = wrapTriggerSystemFunction("GetNameAndIcon", "nameAndIcon");
+-- This has to be in WeakAuras for now, because GetNameAndIcon can be called from the options
+WeakAuras.GetNameAndIcon = wrapTriggerSystemFunction("GetNameAndIcon", "nameAndIcon");
 Private.GetTriggerDescription = wrapTriggerSystemFunction("GetTriggerDescription", "call");
 
 local wrappedGetOverlayInfo = wrapTriggerSystemFunction("GetOverlayInfo", "table");

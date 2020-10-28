@@ -1625,7 +1625,7 @@ local function ShowDisplayTooltip(data, children, matchInfo, icon, icons, import
   if regionOptions[regionType] then
     local ok, thumbnail = pcall(regionOptions[regionType].acquireThumbnail, thumbnailAnchor, data);
     if not ok then
-      error("Error creating thumbnail", 2)
+      error(string.format("Error creating thumbnail for %s %s", regionType, thumbnail), 2)
     end
     thumbnailAnchor.currentThumbnail = thumbnail
     thumbnailAnchor.currentThumbnailType = regionType
