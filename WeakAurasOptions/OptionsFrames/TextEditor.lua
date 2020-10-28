@@ -632,7 +632,12 @@ local function ConstructTextEditor(frame)
       local combinedText = ""
       for index, childId in pairs(data.controlledChildren) do
         local childData = WeakAuras.GetData(childId)
-        local text = OptionsPrivate.Private.ValueFromPath(childData, multipath and path[childId] or path)
+        local text
+        if multipath then
+          text = path[childId] and OptionsPrivate.Private.ValueFromPath(childData, path[childId])
+        else
+          text = OptionsPrivate.Private.ValueFromPath(childData, path)
+        end
         if text then
           if not (singleText) then
             singleText = text

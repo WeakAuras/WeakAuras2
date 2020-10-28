@@ -1704,7 +1704,7 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
                   local multipath = {};
                   for id, reference in pairs(conditions[i].check.references) do
                     local conditionIndex = conditions[i].check.references[id].conditionIndex;
-                    multipath[id] ={ "conditions", i, "check" }
+                    multipath[id] ={ "conditions", conditionIndex, "check" }
                     for i, v in ipairs(path) do
                       tinsert(multipath[id], "checks")
                       tinsert(multipath[id], v)
@@ -1713,10 +1713,6 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
                   end
                   OptionsPrivate.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
                 else
-                  for i, v in ipairs(path) do
-                    print(i, v)
-                  end
-
                   local fullPath = { "conditions", i, "check" }
                   for i, v in ipairs(path) do
                     tinsert(fullPath, "checks")
