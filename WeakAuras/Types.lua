@@ -2059,7 +2059,8 @@ Private.send_chat_message_types = {
   RAID_WARNING = L["Raid Warning"],
   INSTANCE_CHAT = L["Instance"],
   COMBAT = L["Blizzard Combat Text"],
-  PRINT = L["Chat Frame"]
+  PRINT = L["Chat Frame"],
+  ERROR = L["Error Frame"]
 }
 
 Private.group_aura_name_info_types = {
