@@ -711,8 +711,18 @@ function WeakAuras.ShowOptions(msg)
   if (firstLoad) then
     frame = OptionsPrivate.CreateFrame();
     frame.buttonsScroll.frame:Show();
+
     LayoutDisplayButtons(msg);
   end
+
+  if (frame:GetWidth() > GetScreenWidth()) then
+    frame:SetWidth(GetScreenWidth())
+  end
+
+  if (frame:GetHeight() > GetScreenHeight() - 50) then
+    frame:SetHeight(GetScreenHeight() - 50)
+  end
+
   frame.buttonsScroll.frame:Show();
 
   if (frame.needsSort) then
