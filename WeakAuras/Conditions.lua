@@ -595,7 +595,19 @@ local function ConstructConditionFunction(data)
   return ret;
 end
 
+local function CancelTimers(uid)
+  conditionChecksTimers.recheckTime[uid] = nil;
+  if (conditionChecksTimers.recheckHandle[uid]) then
+    for _, v in pairs(conditionChecksTimers.recheckHandle[uid]) do
+      timer:CancelTimer(v);
+    end
+  end
+  conditionChecksTimers.recheckHandle[uid] = nil;
+end
+
 function Private.LoadConditionFunction(data)
+  CancelTimers(data.uid)
+
   local checkConditionsFuncStr = ConstructConditionFunction(data);
   local checkCondtionsFunc = checkConditionsFuncStr and WeakAuras.LoadFunction(checkConditionsFuncStr, data.id, "condition checks");
 
@@ -757,12 +769,6 @@ function Private.UnloadAllConditions()
 end
 
 function Private.UnloadConditions(uid)
-  conditionChecksTimers.recheckTime[uid] = nil;
-  if (conditionChecksTimers.recheckHandle[uid]) then
-    for _, v in pairs(conditionChecksTimers.recheckHandle[uid]) do
-      timer:CancelTimer(v);
-    end
-  end
-  conditionChecksTimers.recheckHandle[uid] = nil;
+  CancelTimers(uid)
   Private.UnregisterForGlobalConditions(uid);
 end
