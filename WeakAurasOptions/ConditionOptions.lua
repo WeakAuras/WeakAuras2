@@ -1403,11 +1403,14 @@ local function addControlsForIfLine(args, order, data, conditionVariable, condit
           for id, reference in pairs(conditions[i].check.references) do
             local auraData = WeakAuras.GetData(id);
             removeSubCheck(auraData[conditionVariable][reference.conditionIndex].check, path);
+            WeakAuras.Add(auraData)
+            WeakAuras.ClearAndUpdateOptions(auraData.id)
           end
         else
           removeSubCheck(conditions[i].check, path);
+          WeakAuras.Add(data)
+          WeakAuras.ClearAndUpdateOptions(data.id)
         end
-        WeakAuras.ClearAndUpdateOptions(data.id, true)
         return;
       end
 
