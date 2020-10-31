@@ -137,29 +137,6 @@ local function ReleaseModel(model)
   Private.barmodels[model] = false
 end
 
-local function create()
-  local subRegion = CreateFrame("FRAME", nil, UIParent)
-  subRegion:SetClipsChildren(true)
-  subRegion:SetScript("OnSizeChanged", function(self, w,h )
-    -- WORKAROUND clipping being broken on the SL beta with some setups with bars of zero width
-    if self:GetWidth() < 1 or self:GetHeight() < 1 then
-      self:Hide()
-    else
-      self:Show()
-    end
-  end)
-
-  return subRegion
-end
-
-local function onAcquire(subRegion)
-  subRegion:Show()
-end
-
-local function onRelease(subRegion)
-  subRegion:Hide()
-end
-
 local funcs = {
   SetVisible = function(self, visible)
     self.visible = visible
@@ -182,6 +159,7 @@ local funcs = {
         self.model:SetModelAlpha(self.alpha)
         self.model.region = self
       end
+      self:OnSizeChanged()
       self:Show()
     else
       self:Hide()
@@ -198,8 +176,38 @@ local funcs = {
   PreHide = function(self)
     self.parent_visible = false
     self:UpdateVisible()
+  end,
+  OnSizeChanged = function(self)
+    -- WORKAROUND clipping being broken on the SL beta with some setups with bars of zero width
+    if self:GetWidth() < 1 or self:GetHeight() < 1 then
+      self:Hide()
+    else
+      self:Show()
+    end
   end
 }
+
+local function create()
+  local subRegion = CreateFrame("FRAME", nil, UIParent)
+  subRegion:SetClipsChildren(true)
+
+  for k, v in pairs(funcs) do
+    subRegion[k] = v
+  end
+
+  subRegion:SetScript("OnSizeChanged", subRegion.OnSizeChanged)
+  return subRegion
+end
+
+local function onAcquire(subRegion)
+  subRegion:Show()
+end
+
+local function onRelease(subRegion)
+  subRegion:Hide()
+end
+
+
 
 local function modify(parent, region, parentData, data, first)
   if region.model then
@@ -221,10 +229,6 @@ local function modify(parent, region, parentData, data, first)
     end
   else
     region:SetAllPoints(parent)
-  end
-
-  for k, v in pairs(funcs) do
-    region[k] = v
   end
 
   region:SetAlpha(data.bar_model_alpha)
