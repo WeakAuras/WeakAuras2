@@ -762,7 +762,7 @@ local function subCreateOptions(parentData, data, index, subIndex)
     end,
     __down = function()
       if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionDown, index, "aurabar_bar")) then
-        WeakAuras.ClearAndUpdateOptions(parentData.id, parentData)
+        WeakAuras.ClearAndUpdateOptions(parentData.id)
       end
     end,
     __notcollapsable = true
