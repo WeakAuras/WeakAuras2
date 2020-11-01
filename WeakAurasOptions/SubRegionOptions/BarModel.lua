@@ -36,26 +36,30 @@ local function createOptions(parentData, data, index, subIndex)
     },
     model_fileId = {
       type = "input",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.doubleWidth - 0.15,
       name = L["Model"],
       order =  10,
       hidden = WeakAuras.IsClassic()
     },
     model_path = {
       type = "input",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.doubleWidth - 0.15,
       name = L["Model"],
       order =  10.5,
       hidden = not WeakAuras.IsClassic()
     },
     chooseModel = {
       type = "execute",
-      width = WeakAuras.normalWidth,
+      width = 0.15,
       name = L["Choose"],
       order =  11,
       func = function()
         OptionsPrivate.OpenModelPicker(parentData, {"subRegions", index});
       end,
+      imageWidth = 24,
+      imageHeight = 24,
+      control = "WeakAurasIcon",
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
     },
     bar_model_clip = {
       type = "toggle",

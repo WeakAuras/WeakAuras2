@@ -8,31 +8,16 @@ local function createOptions(id, data)
     __title = L["Progress Texture Settings"],
     __order = 1,
     foregroundTexture = {
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.normalWidth - 0.15,
       type = "input",
       name = L["Foreground Texture"],
       order = 1
     },
-    backgroundTexture = {
-      type = "input",
-      width = WeakAuras.normalWidth,
-      name = L["Background Texture"],
-      order = 5,
-      disabled = function() return data.sameTexture; end,
-      get = function() return data.sameTexture and data.foregroundTexture or data.backgroundTexture; end
-    },
-    mirror = {
-      type = "toggle",
-      width = WeakAuras.halfWidth,
-      name = L["Mirror"],
-      order = 10,
-      disabled = function() return data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE"; end
-    },
     chooseForegroundTexture = {
       type = "execute",
       name = L["Choose"],
-      width = WeakAuras.halfWidth,
-      order = 12,
+      width = 0.15,
+      order = 2,
       func = function()
         OptionsPrivate.OpenTexturePicker(data, {}, {
           texture = "foregroundTexture",
@@ -41,19 +26,25 @@ local function createOptions(id, data)
           mirror = "mirror",
           blendMode = "blendMode"
         }, OptionsPrivate.Private.texture_types);
-      end
+      end,
+      imageWidth = 24,
+      imageHeight = 24,
+      control = "WeakAurasIcon",
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
     },
-    sameTexture = {
-      type = "toggle",
-      name = L["Same"],
-      width = WeakAuras.halfWidth,
-      order = 15
+    backgroundTexture = {
+      type = "input",
+      width = WeakAuras.normalWidth - 0.15,
+      name = L["Background Texture"],
+      order = 5,
+      disabled = function() return data.sameTexture; end,
+      get = function() return data.sameTexture and data.foregroundTexture or data.backgroundTexture; end
     },
     chooseBackgroundTexture = {
       type = "execute",
       name = L["Choose"],
-      width = WeakAuras.halfWidth,
-      order = 17,
+      width = 0.15,
+      order = 6,
       func = function()
         OptionsPrivate.OpenTexturePicker(data, {}, {
           texture = "backgroundTexture",
@@ -63,7 +54,24 @@ local function createOptions(id, data)
           blendMode = "blendMode"
         }, OptionsPrivate.Private.texture_types);
       end,
-      disabled = function() return data.sameTexture; end
+      disabled = function() return data.sameTexture; end,
+      imageWidth = 24,
+      imageHeight = 24,
+      control = "WeakAurasIcon",
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+    },
+    mirror = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Mirror"],
+      order = 10,
+      disabled = function() return data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE"; end
+    },
+    sameTexture = {
+      type = "toggle",
+      name = L["Same"],
+      width = WeakAuras.normalWidth,
+      order = 15
     },
     desaturateForeground = {
       type = "toggle",
