@@ -56,23 +56,15 @@ local function createOptions(id, data)
         __order = 1,
         foregroundTexture = {
             type = "input",
-            width = WeakAuras.normalWidth,
+            width = WeakAuras.normalWidth - 0.15,
             name = L["Texture"],
             order = 1,
         },
-        backgroundTexture = {
-            type = "input",
-            width = WeakAuras.normalWidth,
-            name = L["Background Texture"],
-            order = 5,
-            disabled = function() return data.sameTexture or data.hideBackground  end,
-            get = function() return data.sameTexture and data.foregroundTexture or data.backgroundTexture; end,
-        },
         chooseForegroundTexture = {
             type = "execute",
-            width = WeakAuras.normalWidth,
+            width = 0.15,
             name = L["Choose"],
-            order = 12,
+            order = 2,
             func = function()
                 OptionsPrivate.OpenTexturePicker(data, {}, {
                   texture = "foregroundTexture",
@@ -81,20 +73,25 @@ local function createOptions(id, data)
                   mirror = "mirror",
                   blendMode = "blendMode"
                 }, texture_types, setTextureFunc);
-            end
+            end,
+            imageWidth = 24,
+            imageHeight = 24,
+            control = "WeakAurasIcon",
+            image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
         },
-        sameTexture = {
-            type = "toggle",
-            width = WeakAuras.halfWidth,
-            name = L["Same"],
-            order = 15,
-            disabled = function() return data.hideBackground; end
+        backgroundTexture = {
+            type = "input",
+            width = WeakAuras.normalWidth - 0.15,
+            name = L["Background Texture"],
+            order = 5,
+            disabled = function() return data.sameTexture or data.hideBackground  end,
+            get = function() return data.sameTexture and data.foregroundTexture or data.backgroundTexture; end,
         },
         chooseBackgroundTexture = {
             type = "execute",
-            width = WeakAuras.halfWidth,
+            width = 0.15,
             name = L["Choose"],
-            order = 17,
+            order = 6,
             func = function()
                 OptionsPrivate.OpenTexturePicker(data, {}, {
                   texture = "backgroundTexture",
@@ -104,7 +101,30 @@ local function createOptions(id, data)
                   blendMode = "blendMode"
                 }, texture_types, setTextureFunc);
             end,
-            disabled = function() return data.sameTexture or data.hideBackground; end
+            disabled = function() return data.sameTexture or data.hideBackground; end,
+            imageWidth = 24,
+            imageHeight = 24,
+            control = "WeakAurasIcon",
+            image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+        },
+        sameTextureSpace = {
+            type = "description",
+            width = WeakAuras.normalWidth,
+            name = "",
+            order = 13,
+        },
+        hideBackground = {
+          type = "toggle",
+          name = L["Hide"],
+          order = 14,
+          width = WeakAuras.halfWidth,
+        },
+        sameTexture = {
+            type = "toggle",
+            width = WeakAuras.halfWidth,
+            name = L["Same"],
+            order = 15,
+            disabled = function() return data.hideBackground; end
         },
         desaturateForeground = {
             type = "toggle",
@@ -116,14 +136,8 @@ local function createOptions(id, data)
             type = "toggle",
             name = L["Desaturate"],
             order = 17.6,
-            width = WeakAuras.halfWidth,
+            width = WeakAuras.normalWidth,
             disabled = function() return data.hideBackground; end
-        },
-        hideBackground = {
-          type = "toggle",
-          name = L["Hide"],
-          order = 17.65,
-          width = WeakAuras.halfWidth,
         },
         -- Foreground options for custom textures
         customForegroundHeader = {

@@ -17,23 +17,19 @@ local function createOptions(id, data)
     -- Option for modelIsDisplayInfo added below
 
     -- Option for path/id added below
-    space2 = {
-      type = "execute",
-      width = WeakAuras.normalWidth,
-      name = "",
-      order = 1.5,
-      image = function() return "", 0, 0 end,
-      hidden = function() return data.modelIsUnit end
-    },
     chooseModel = {
       type = "execute",
-      width = WeakAuras.normalWidth,
+      width = 0.15,
       name = L["Choose"],
       order = 2,
       func = function()
         OptionsPrivate.OpenModelPicker(data, {});
       end,
-      hidden = function() return data.modelIsUnit end
+      disabled = function() return data.modelIsUnit end,
+      imageWidth = 24,
+      imageHeight = 24,
+      control = "WeakAurasIcon",
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
     },
     advance = {
       type = "toggle",
@@ -204,14 +200,14 @@ local function createOptions(id, data)
     }
     options.model_fileId = {
       type = "input",
-      width = WeakAuras.doubleWidth,
+      width = WeakAuras.doubleWidth - 0.15,
       name = L["Model"],
       order = 1
     }
   else
     options.model_path = {
       type = "input",
-      width = WeakAuras.doubleWidth,
+      width = WeakAuras.doubleWidth - 0.15,
       name = L["Model"],
       order = 1
     }

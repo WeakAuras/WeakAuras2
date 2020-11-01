@@ -9,28 +9,15 @@ local function createOptions(id, data)
     __order = 1,
     texture = {
       type = "input",
-      width = WeakAuras.doubleWidth,
+      width = WeakAuras.doubleWidth - 0.15,
       name = L["Texture"],
       order = 1
-    },
-    desaturate = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Desaturate"],
-      order = 2,
-    },
-    space2 = {
-      type = "execute",
-      name = "",
-      width = WeakAuras.halfWidth,
-      order = 5,
-      image = function() return "", 0, 0 end,
     },
     chooseTexture = {
       type = "execute",
       name = L["Choose"],
-      width = WeakAuras.halfWidth,
-      order = 7,
+      width = 0.15,
+      order = 1.1,
       func = function()
         OptionsPrivate.OpenTexturePicker(data, {}, {
           texture = "texture",
@@ -41,7 +28,24 @@ local function createOptions(id, data)
           mirror = "mirror",
           blendMode = "blendMode"
         }, OptionsPrivate.Private.texture_types);
-      end
+      end,
+      imageWidth = 24,
+      imageHeight = 24,
+      control = "WeakAurasIcon",
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+    },
+    desaturate = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Desaturate"],
+      order = 2,
+    },
+    space2 = {
+      type = "execute",
+      name = "",
+      width = WeakAuras.normalWidth,
+      order = 5,
+      image = function() return "", 0, 0 end,
     },
     color = {
       type = "color",
