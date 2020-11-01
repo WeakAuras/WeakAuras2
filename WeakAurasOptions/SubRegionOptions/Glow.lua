@@ -18,41 +18,44 @@ local function createOptions(parentData, data, index, subIndex)
   local addOptionsFromLCG = function(options, order)
     local maxOrder = 0
 
-    local function MyCopyTable(settings, level, glowType)
+    local function MyCopyTable(settings, level, glowType, prefix)
       local copy = {}
       if settings.type == "gradient" then -- TODO: not a valid ace3 type
         return nil
       end
       for k, v in pairs(settings) do
-        if ( type(v) == "table" ) then
-          copy[(level==1 and glowType or "")..k] = MyCopyTable(v, level + 1, glowType or k) --, glowType, level + 1)
-        else
-          copy[k] = v
-          if k == "desc" then
-            copy.width = WeakAuras.normalWidth - (level < 4 and indentWidth or indentWidth * 1.5)
-            local glowType = glowType
-            copy.hidden = function() return hiddenGlowExtra() or data.glowType ~= glowType end
-            copy.default = nil
-            copy.start = nil
-            copy.stop = nil
-          end
-          if k == "type" and v == "group" then
-            copy.inline = true
-          end
-          if k == "order" and level == 2 then
-            copy[k] = copy[k] + order
-            maxOrder = max(maxOrder, copy[k])
+        if k ~= "default"
+        and k ~= "start"
+        and k ~= "stop"
+        then
+          if ( type(v) == "table" ) then
+            local key = v.name and ("sub."..index..".subglow."..(prefix or ""))..k or k
+            copy[key] = MyCopyTable(
+              v,
+              level + 1,
+              glowType or k,
+              (prefix or "")..(v.args and k.."_" or "")
+            )
+          else
+            copy[k] = v
+            if k == "desc" then
+              copy.width = WeakAuras.normalWidth - (level < 4 and indentWidth or indentWidth * 1.5)
+              local glowType = glowType
+              copy.hidden = function() return hiddenGlowExtra() or data.glowType ~= glowType end
+            elseif k == "type" and v == "group" then
+              copy.inline = true
+            elseif k == "order" and level == 2 then
+              copy[k] = v + order
+              maxOrder = max(maxOrder, copy[k])
+            end
           end
         end
       end
       return copy
     end
 
-    --for glowType, glowTable in pairs(LCG:GetGlows()) do
-    --  WeakAuras.DeepMixin(options, MyCopyTable(glowTable.args, glowType, 1))
-    --end
     WeakAuras.DeepMixin(options, MyCopyTable(LCG:GetGlows(), 1))
-    ViragDevTool_AddData(options, "options")
+    --ViragDevTool_AddData(options, "options")
     return maxOrder + 1
   end
 
@@ -164,7 +167,6 @@ local function createOptions(parentData, data, index, subIndex)
   }
 
   local order = addOptionsFromLCG(options, 6)
-  print("order", order)
   options.glow_anchor_anchor = {
     type = "description",
     name = "",
@@ -175,6 +177,7 @@ local function createOptions(parentData, data, index, subIndex)
       expanderName = "glow" .. index .. "#" .. subIndex
     }
   }
+  --ViragDevTool_AddData(options, "createOptions")
   return options
 end
 

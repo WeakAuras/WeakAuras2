@@ -13,25 +13,36 @@ local L = WeakAuras.L;
 
 local glows = LCG:GetGlows()
 
-local default = function(parentType)
-  local options = {
-    glow = false,
-    useGlowColor = false,
-    glowColor = {1, 1, 1, 1},
-    glowType = "buttonOverlay",
-    glowLines = 8,
-    glowFrequency = 0.25,
-    glowLength = 10,
-    glowThickness = 1,
-    glowScale = 1,
-    glowBorder = false,
-    glowXOffset = 0,
-    glowYOffset = 0,
-  }
-  if parentType == "aurabar" then
-    options["glowType"] = "Pixel"
-    options["glow_anchor"] = "bar"
+local function getDefaults()
+  local options = {}
+  local function recurse(settings, prefix, parent)
+     for k, v in pairs(settings) do
+        if ( type(v) == "table" ) then
+           recurse(
+              v,
+              (prefix or "")..(v.args and k.."_" or ""),
+              k
+           )
+        end
+        if settings.type ~= "group" and k == "default" then
+          options[prefix..parent] = v
+        end
+     end
   end
+  recurse(glows)
+  return options
+end
+
+local default = function(parentType)
+  local options = getDefaults()
+  options.glow = false
+  if parentType == "aurabar" then
+    options["glowType"] = "Pixel Glow"
+    options["glow_anchor"] = "bar"
+  else
+    options.glowType = "Button Glow"
+  end
+  --ViragDevTool_AddData(options, "default")
   return options
 end
 
@@ -129,62 +140,63 @@ local properties = {
   },
 }
 
-local function glowStart(self, frame, color)
+local function glowStart(self, frame)
 
   if frame:GetWidth() < 1 or frame:GetHeight() < 1 then
     self.glowStop(frame)
     return
   end
 
-  if self.glowType == "Button Glow" then
-    self.glowStart(frame, color, self.glowFrequency, 0)
-  elseif self.glowType == "Pixel Glow" then
-    self.glowStart(
-      frame,
-      color,
-      self.glowLines,
-      self.glowFrequency,
-      self.glowLength,
-      self.glowThickness,
-      self.glowXOffset,
-      self.glowYOffset,
-      self.glowBorder,
-      nil,
-      0
-    )
-  elseif self.glowType == "AutoCast Glow" then
-    self.glowStart(
-      frame,
-      color,
-      self.glowLines,
-      self.glowFrequency,
-      self.glowScale,
-      self.glowXOffset,
-      self.glowYOffset,
-      nil,
-      0
-    )
+  local options = {}
+  for k, v in pairs(self) do
+    if type(k) == "string" then
+      local key1, key2, key3, more
+      key1, more = k:match("^"..self.glowType.."_([^_]+)(.*)")
+      if more then
+        key2, more = more:match("_([^_]+)(.*)")
+        if more then
+            key3 = more:match("_([^_]+)(.*)")
+        end
+      end
+      if key1 then
+        if key2 then
+          if key3 then
+            options[key1] = options[key1] or {}
+            options[key1][key2] = options[key1][key2] or {}
+            options[key1][key2][key3] = v
+            --print("options["..key1.."]["..key2.."]["..key3.."] =", v)
+          else
+            options[key1] = options[key1] or {}
+            options[key1][key2] = v
+            --print("options["..key1.."]["..key2.."] =", v)
+          end
+        else
+          options[key1] = v
+          --print("options["..key1.."] =", v)
+        end
+      end
+    end
   end
+  --ViragDevTool_AddData(self, "self")
+  --ViragDevTool_AddData(options, "options")
+
+  self.glowStart(frame, options)
 end
 
 local funcs = {
   SetVisible = function(self, visible)
-    local color
+    --ViragDevTool_AddData(self, "SetVisible")
     self.glow = visible
-
-    if self.useGlowColor then
-      color = self.glowColor
-    end
 
     if MSQ and self.parentType == "icon" then
       if (visible) then
         self.__MSQ_Shape = self:GetParent().button.__MSQ_Shape
-        glowStart(self, self, color);
+        glowStart(self, self);
       else
         self.glowStop(self);
       end
     elseif (visible) then
-      glowStart(self, self, color);
+      glowStart(self, self);
     else
       self.glowStop(self);
     end
@@ -212,11 +224,7 @@ local funcs = {
       if self.parentRegionType ~= "aurabar" then
         self.parent:AnchorSubRegion(self, "area", "region")
       end
-    elseif newType == "AutoCast Glow" then
-      if self.parentRegionType ~= "aurabar" then
-        self.parent:AnchorSubRegion(self, "area")
-      end
-    elseif newType == "Pixel Glow" then
+    else
       if self.parentRegionType ~= "aurabar" then
         self.parent:AnchorSubRegion(self, "area")
       end
@@ -329,6 +337,7 @@ local function modify(parent, region, parentData, data, first)
   region.parent = parent
 
   region.parentType = parentData.regionType
+  --[[
   region.useGlowColor = data.useGlowColor
   region.glowColor = data.glowColor
   region.glowLines = data.glowLines
@@ -339,6 +348,13 @@ local function modify(parent, region, parentData, data, first)
   region.glowBorder = data.glowBorder
   region.glowXOffset = data.glowXOffset
   region.glowYOffset = data.glowYOffset
+  ]]--
+  --ViragDevTool_AddData(data, "data")
+  --region.glowData = {}
+  for k in pairs(getDefaults()) do
+    region[k] = data[k]
+  end
+  --ViragDevTool_AddData(region, "region")
 
   region:SetGlowType(data.glowType)
   region:SetVisible(data.glow)
@@ -348,40 +364,10 @@ end
 
 -- This is used by the templates to add glow
 function WeakAuras.getDefaultGlow(regionType)
-  if regionType == "aurabar" then
-    return {
-      ["type"] = "subglow",
-      glow = false,
-      useGlowColor = false,
-      glowColor = {1, 1, 1, 1},
-      glowType = "Pixel Glow",
-      glowLines = 8,
-      glowFrequency = 0.25,
-      glowLength = 10,
-      glowThickness = 1,
-      glowScale = 1,
-      glowBorder = false,
-      glowXOffset = 0,
-      glowYOffset = 0,
-      glow_anchor = "bar"
-    }
-  elseif regionType == "icon" then
-    return {
-      ["type"] = "subglow",
-      glow = false,
-      useGlowColor = false,
-      glowColor = {1, 1, 1, 1},
-      glowType = "Button Glow",
-      glowLines = 8,
-      glowFrequency = 0.25,
-      glowLength = 10,
-      glowThickness = 1,
-      glowScale = 1,
-      glowBorder = false,
-      glowXOffset = 0,
-      glowYOffset = 0,
-    }
-  end
+  local options = getDefaults(regionType)
+  options.type = "subglow"
+  options.glow = false
+  return options
 end
 
 local function supports(regionType)
@@ -391,21 +377,10 @@ end
 
 local function addDefaultsForNewAura(data)
   if data.regionType == "icon" then
-    tinsert(data.subRegions, {
-      ["type"] = "subglow",
-      glow = false,
-      useGlowColor = false,
-      glowColor = {1, 1, 1, 1},
-      glowType = "Button Glow",
-      glowLines = 8,
-      glowFrequency = 0.25,
-      glowLength = 10,
-      glowThickness = 1,
-      glowScale = 1,
-      glowBorder = false,
-      glowXOffset = 0,
-      glowYOffset = 0,
-    })
+    local options = getDefaults(data.regionType)
+    options.type = "subglow"
+    options.glow = false
+    tinsert(data.subRegions, options)
   end
 end
 
