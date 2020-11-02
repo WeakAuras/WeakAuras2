@@ -3690,6 +3690,10 @@ function WeakAuras.GetTriggerStateForTrigger(id, triggernum)
   return triggerState[id][triggernum];
 end
 
+function WeakAuras.GetActiveStates(id)
+  return triggerState[id].activeStates
+end
+
 function WeakAuras.GetActiveTriggers(id)
   return triggerState[id].triggers
 end
@@ -3983,6 +3987,7 @@ function Private.UpdatedTriggerState(id)
   local oldShow = triggerState[id].show;
   triggerState[id].activeTrigger = newActiveTrigger;
   triggerState[id].show = show;
+  triggerState[id].fallbackStates = nil
 
   local activeTriggerState = WeakAuras.GetTriggerStateForTrigger(id, newActiveTrigger);
   if (not next(activeTriggerState)) then
@@ -4000,9 +4005,10 @@ function Private.UpdatedTriggerState(id)
       end
     end
     if (needsFallback) then
-      activeTriggerState = CreateFallbackState(id, newActiveTrigger);
+      activeTriggerState = CreateFallbackState(id, newActiveTrigger)
     end
   end
+  triggerState[id].activeStates = activeTriggerState
 
   local region;
   -- Now apply
