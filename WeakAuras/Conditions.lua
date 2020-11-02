@@ -651,8 +651,8 @@ local function runDynamicConditionFunctions(funcs)
   for uid in pairs(funcs) do
     local id = Private.UIDtoID(uid)
     if (Private.IsAuraActive(uid) and checkConditions[uid]) then
-      local activeTriggerState = WeakAuras.GetTriggerStateForTrigger(id, Private.ActiveTrigger(uid));
-      for cloneId, state in pairs(activeTriggerState) do
+      local activeStates = WeakAuras.GetActiveStates(id)
+      for cloneId, state in pairs(activeStates) do
         local region = WeakAuras.GetRegion(id, cloneId);
         checkConditions[uid](region, false);
       end
