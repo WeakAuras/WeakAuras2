@@ -1210,8 +1210,9 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint)
       end
     },
   };
+
   OptionsPrivate.commonOptions.AddCodeOption(positionOptions, data, L["Custom Anchor"], "custom_anchor", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-anchor-function",
-                          72.1, function() return not(data.anchorFrameType == "CUSTOM" and not IsParentDynamicGroup()) end, {"customAnchor"}, nil, nil, nil, nil, nil, true)
+                          72.1, function() return not(data.anchorFrameType == "CUSTOM" and not IsParentDynamicGroup()) end, {"customAnchor"}, false)
   return positionOptions;
 end
 
@@ -1330,15 +1331,13 @@ local function GetCustomCode(data, path)
   return data;
 end
 
--- TODO: find a paradigm which doesn't have five million flags for AddCodeOption so that calls to it don't always go off the screen
--- a table of settings is the obvious option to pack the flags.
--- alternatively, we could create a "code" type option which then gets processed before sending to AceConfig
-local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, path, encloseInFunction, multipath, extraSetFunction, extraFunctions, reloadOptions, setOnParent)
-  extraFunctions = extraFunctions or {};
-  tinsert(extraFunctions, 1, {
+local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, path, encloseInFunction, options)
+  options = options and CopyTable(options) or {}
+  options.extraFunctions = options.extraFunctions or {};
+  tinsert(options.extraFunctions, 1, {
     buttonLabel = L["Expand"],
     func = function(info)
-      OptionsPrivate.OpenTextEditor(OptionsPrivate.GetPickedDisplay(), path, encloseInFunction, multipath, reloadOptions, setOnParent, url)
+      OptionsPrivate.OpenTextEditor(OptionsPrivate.GetPickedDisplay(), path, encloseInFunction, options.multipath, options.reloadOptions, options.setOnParent, url)
     end
   });
 
@@ -1351,7 +1350,7 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
     hidden = hiddenFunc,
     control = "WeakAurasMultiLineEditBox",
     arg = {
-      extraFunctions = extraFunctions,
+      extraFunctions = options.extraFunctions,
     },
     set = function(info, v)
       local subdata = data;
@@ -1363,10 +1362,10 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
 
       subdata[path[#path]] = v;
       WeakAuras.Add(data);
-      if (extraSetFunction) then
-        extraSetFunction();
+      if (options.extraSetFunction) then
+        options.extraSetFunction();
       end
-      if (reloadOptions) then
+      if (options.reloadOptions) then
         OptionsPrivate.ClearOptions(data.id)
       end
     end,
