@@ -2453,7 +2453,9 @@ do
         local active = (event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
         spellActivationSpellsCurrent[spell] = active
         spellActivationSpellsCurrent[spellName] = active
-        WeakAuras.ScanEvents("WA_UPDATE_OVERLAY_GLOW", spell);
+        if not WeakAuras.IsPaused() then
+          WeakAuras.ScanEvents("WA_UPDATE_OVERLAY_GLOW", spell)
+        end
       end
 
       Private.StopProfileSystem("generictrigger");
