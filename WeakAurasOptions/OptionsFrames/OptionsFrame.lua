@@ -588,6 +588,25 @@ function OptionsPrivate.CreateFrame()
   importButton:SetCallback("OnClick", OptionsPrivate.ImportFromString)
   toolbarContainer:AddChild(importButton)
 
+  local lockButton = AceGUI:Create("WeakAurasToolbarButton")
+  lockButton:SetText(L["Lock Positions"])
+  lockButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\lockPosition")
+  lockButton:SetCallback("OnClick", function(self)
+    if WeakAurasOptionsSaved.lockPositions then
+      lockButton:SetStrongHighlight(false)
+      lockButton:UnlockHighlight()
+      WeakAurasOptionsSaved.lockPositions = false
+    else
+      lockButton:SetStrongHighlight(true)
+      lockButton:LockHighlight()
+      WeakAurasOptionsSaved.lockPositions = true
+    end
+  end)
+  if WeakAurasOptionsSaved.lockPositions then
+    lockButton:LockHighlight()
+  end
+  toolbarContainer:AddChild(lockButton)
+
   local magnetButton = AceGUI:Create("WeakAurasToolbarButton")
   magnetButton:SetText(L["Magnetically Align"])
   magnetButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\magnetic")
