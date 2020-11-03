@@ -777,6 +777,7 @@ end
 
 if not WeakAuras.IsClassic() then
   Private.covenant_types = {}
+  Private.covenant_types[0] = L["None"]
   for i = 1, 4 do
     Private.covenant_types[i] = C_Covenants.GetCovenantData(i).name
   end
