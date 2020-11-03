@@ -212,7 +212,7 @@ WeakAuras.GetLegendariesBonusIds = function()
   end
 
   local classId = select(3, UnitClass('player'))
-  local specId = GetSpecializationInfo(1)
+  local specId = GetSpecializationInfo(GetSpecialization())
 
   local powers = C_LegendaryCrafting.GetRuneforgePowersByClassAndSpec(classId, specId)
   local abilities = {}
