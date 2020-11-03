@@ -1470,11 +1470,25 @@ Private.load_prototype = {
     },
     {
       name = "item_bonusid_equipped",
-      display = L["Item Bonus Id Equipped"],
+      display =  WeakAuras.newFeatureString .. L["Item Bonus Id Equipped"],
       type = "string",
-      test = "WeakAuras.CheckForItemBonusId(%s)",
+      test = "WeakAuras.CheckForItemBonusId(%q)",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
-      desc = function() return WeakAuras.GetLegendariesBonusIds() end
+      desc = function()
+        return WeakAuras.GetLegendariesBonusIds()
+               .. L["\n\nSupports multiple entries, separated by commas"]
+      end
+    },
+    {
+      name = "not_item_bonusid_equipped",
+      display =  WeakAuras.newFeatureString .. L["|cFFFF0000Not|r Item Bonus Id Equipped"],
+      type = "string",
+      test = "not WeakAuras.CheckForItemBonusId(%q)",
+      events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
+      desc = function()
+        return WeakAuras.GetLegendariesBonusIds()
+               .. L["\n\nSupports multiple entries, separated by commas"]
+      end
     }
   }
 };
@@ -6226,9 +6240,12 @@ Private.event_prototypes = {
         name = "itemBonusId",
         display = L["Item Bonus Id"],
         type = "string",
-        test = "WeakAuras.CheckForItemBonusId(%s)",
+        test = "WeakAuras.CheckForItemBonusId(%q)",
         required = true,
-        desc = function() return WeakAuras.GetLegendariesBonusIds() end
+        desc = function()
+          return WeakAuras.GetLegendariesBonusIds()
+          .. L["\n\nSupports multiple entries, separated by commas"]
+        end
       },
     },
     automaticrequired = true
