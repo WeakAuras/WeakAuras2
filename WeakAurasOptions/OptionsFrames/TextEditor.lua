@@ -602,7 +602,7 @@ local function ConstructTextEditor(frame)
       "OnTextChanged",
       function(...)
         local str = editor.editBox:GetText()
-        if not (str) or editor.combinedText == true then
+        if not str or str:trim() == "" or editor.combinedText == true then
           editorError:SetText("")
         else
           local func, errorString

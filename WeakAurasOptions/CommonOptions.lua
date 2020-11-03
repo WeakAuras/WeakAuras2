@@ -1383,7 +1383,7 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
 
       local code = GetCustomCode(data, path);
 
-      if (not code) then
+      if (not code or code:trim() == "") then
         return ""
       end
 
@@ -1410,7 +1410,7 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
       end
 
       local code = GetCustomCode(data, path);
-      if (not code) then
+      if (not code or code:trim() == "") then
         return true;
       end
 
