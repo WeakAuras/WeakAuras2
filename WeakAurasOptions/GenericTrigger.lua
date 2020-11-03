@@ -273,8 +273,54 @@ local function GetCustomTriggerOptions(data, triggernum)
     return not (trigger.type == "custom" and trigger.custom_type == "stateupdate");
   end
 
+  local validTypes = {
+    bool = true,
+    number = true,
+    timer = true,
+    select = true,
+    string = true,
+  }
+
+  local validProperties = {
+    display = "string",
+    type = "string",
+    test = "function",
+    events = "table",
+    values = "table"
+  }
+
+  local function validateCustomVariables(variables)
+    if (type(variables) ~= "table") then
+      return L["Not a table"]
+    end
+
+    OptionsPrivate.Private.ExpandCustomVariables(variables)
+
+    for k, v in pairs(variables) do
+      if type(v) ~= "table" then
+        return string.format(L["Could not parse '%s'. Expected a table."], k)
+      end
+      if not validTypes[v.type] then
+        return string.format(L["Invalid type for '%s'. Expected 'bool', 'number', 'select', 'string' or 'timer'."], k)
+      end
+      if v.type == "select" and not v.values then
+        return string.format(L["Type 'select' for '%s' requires a values member'"], k)
+      end
+
+      for property, propertyValue in pairs(v) do
+        if not validProperties[property] then
+          return string.format(L["Unknown property '%s' found in '%s'"], property, k)
+        end
+        if type(propertyValue) ~= validProperties[property] then
+          return string.format(L["Invalid type for property '%s' in 's'. Expected '%s'"], property, k, validProperties[property])
+        end
+      end
+    end
+  end
+
   OptionsPrivate.commonOptions.AddCodeOption(customOptions, data, L["Custom Variables"], "custom_variables", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-variables",
-                          11, hideCustomVariables, appendToTriggerPath("customVariables"), false, {multipath = true, extraSetFunction = extraSetFunctionReload, reloadOptions = true});
+                          11, hideCustomVariables, appendToTriggerPath("customVariables"), false,
+                          {multipath = true, extraSetFunction = extraSetFunctionReload, reloadOptions = true, validator = validateCustomVariables });
 
   local function hideCustomUntrigger()
     return not (trigger.type == "custom"

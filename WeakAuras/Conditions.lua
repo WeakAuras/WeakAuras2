@@ -256,6 +256,7 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. ":match([[" .. value .. "]], 1, true)";
       end
     end
+    -- If adding a new condition type, don't forget to adjust the validator in the options code
 
     if (cType == "timer" and value) then
       recheckCode = "  nextTime = state[" .. trigger .. "] and state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. " and (state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. " -" .. value .. ")\n";

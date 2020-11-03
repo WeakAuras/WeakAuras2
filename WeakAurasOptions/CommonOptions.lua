@@ -1337,7 +1337,7 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
   tinsert(options.extraFunctions, 1, {
     buttonLabel = L["Expand"],
     func = function(info)
-      OptionsPrivate.OpenTextEditor(OptionsPrivate.GetPickedDisplay(), path, encloseInFunction, options.multipath, options.reloadOptions, options.setOnParent, url)
+      OptionsPrivate.OpenTextEditor(OptionsPrivate.GetPickedDisplay(), path, encloseInFunction, options.multipath, options.reloadOptions, options.setOnParent, url, options.validator)
     end
   });
 
@@ -1393,7 +1393,13 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
 
       code = "return " .. code;
 
-      local _, errorString = loadstring(code);
+      local loadedFunction, errorString = loadstring(code);
+
+      if not errorString then
+        if options.validator then
+          errorString = options.validator(loadedFunction())
+        end
+      end
       return errorString and "|cFFFF0000"..errorString or "";
     end,
     width = WeakAuras.doubleWidth,
@@ -1418,6 +1424,12 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
       if(errorString and not loadedFunction) then
         return false;
       else
+        if options.validator then
+          errorString = options.validator(loadedFunction())
+          if errorString then
+            return false
+          end
+        end
         return true;
       end
     end
