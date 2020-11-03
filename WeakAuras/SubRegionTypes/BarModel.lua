@@ -152,17 +152,14 @@ local funcs = {
     self:SetAlpha(self.alpha)
   end,
   UpdateVisible = function(self)
-    local effectiveVisible = self.parent_visible and self.visible
+    local effectiveVisible = self.parent_visible and self.visible and not self.toosmall
     if effectiveVisible then
       if not self.model then
         self.model = AcquireModel(self, self.data)
         self.model:SetModelAlpha(self.alpha)
         self.model.region = self
       end
-      self:OnSizeChanged()
-      self:Show()
     else
-      self:Hide()
       if self.model then
         ReleaseModel(self.model)
         self.model = nil
@@ -180,10 +177,11 @@ local funcs = {
   OnSizeChanged = function(self)
     -- WORKAROUND clipping being broken on the SL beta with some setups with bars of zero width
     if self:GetWidth() < 1 or self:GetHeight() < 1 then
-      self:Hide()
+      self.toosmall = true
     else
-      self:Show()
+      self.toosmall = false
     end
+    self:UpdateVisible()
   end
 }
 
