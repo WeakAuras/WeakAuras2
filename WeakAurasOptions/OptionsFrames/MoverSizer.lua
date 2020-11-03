@@ -150,6 +150,9 @@ local function ConstructSizer(frame)
   texTR2:SetPoint("BOTTOMLEFT", topright, "LEFT")
 
   topright.Highlight = function()
+    if WeakAurasOptionsSaved.lockPositions then
+      return
+    end
     texTR1:Show()
     texTR2:Show()
   end
@@ -179,6 +182,9 @@ local function ConstructSizer(frame)
   texBR2:SetPoint("TOPLEFT", bottomright, "LEFT")
 
   bottomright.Highlight = function()
+    if WeakAurasOptionsSaved.lockPositions then
+      return
+    end
     texBR1:Show()
     texBR2:Show()
   end
@@ -208,6 +214,9 @@ local function ConstructSizer(frame)
   texBL2:SetPoint("TOPRIGHT", bottomleft, "RIGHT")
 
   bottomleft.Highlight = function()
+    if WeakAurasOptionsSaved.lockPositions then
+      return
+    end
     texBL1:Show()
     texBL2:Show()
   end
@@ -237,6 +246,9 @@ local function ConstructSizer(frame)
   texTL2:SetPoint("BOTTOMRIGHT", topleft, "RIGHT")
 
   topleft.Highlight = function()
+    if WeakAurasOptionsSaved.lockPositions then
+      return
+    end
     texTL1:Show()
     texTL2:Show()
   end
@@ -260,6 +272,9 @@ local function ConstructSizer(frame)
   texT:SetPoint("BOTTOMLEFT", topleft, "LEFT", 3, 0)
 
   top.Highlight = function()
+    if WeakAurasOptionsSaved.lockPositions then
+      return
+    end
     texT:Show()
   end
   top.Clear = function()
@@ -279,6 +294,9 @@ local function ConstructSizer(frame)
   texR:SetPoint("TOPLEFT", topright, "TOP", 0, -3)
 
   right.Highlight = function()
+    if WeakAurasOptionsSaved.lockPositions then
+      return
+    end
     texR:Show()
   end
   right.Clear = function()
@@ -299,6 +317,9 @@ local function ConstructSizer(frame)
   texB:SetPoint("TOPRIGHT", bottomright, "RIGHT", -3, 0)
 
   bottom.Highlight = function()
+    if WeakAurasOptionsSaved.lockPositions then
+      return
+    end
     texB:Show()
   end
   bottom.Clear = function()
@@ -319,6 +340,9 @@ local function ConstructSizer(frame)
   texL:SetPoint("TOPRIGHT", topleft, "TOP", 0, -3)
 
   left.Highlight = function()
+    if WeakAurasOptionsSaved.lockPositions then
+      return
+    end
     texL:Show()
   end
   left.Clear = function()
@@ -499,6 +523,9 @@ local function ConstructMoverSizer(parent)
 
     local db = OptionsPrivate.savedVars.db
     mover.startMoving = function()
+      if WeakAurasOptionsSaved.lockPositions then
+        return
+      end
       OptionsPrivate.Private.CancelAnimation(region, true, true, true, true, true)
       mover:ClearAllPoints()
       if data.regionType == "group" then
@@ -636,6 +663,9 @@ local function ConstructMoverSizer(parent)
 
     if region:IsResizable() then
       frame.startSizing = function(point)
+        if WeakAurasOptionsSaved.lockPositions then
+          return
+        end
         mover.isMoving = true
         OptionsPrivate.Private.CancelAnimation(region, true, true, true, true, true)
         local rSelfPoint, rAnchor, rAnchorPoint, rXOffset, rYOffset = region:GetPoint(1)
