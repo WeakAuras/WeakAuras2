@@ -3492,6 +3492,27 @@ local commonConditions = {
   }
 }
 
+function Private.ExpandCustomVariables(variables)
+  -- Make the life of tsu authors easier, by automatically filling in the details for
+  -- expirationTime, duration, value, total, stacks, if those exists but aren't a table value
+  -- By allowing a short-hand notation of just variable = type
+  -- In addition to the long form of variable = { type = xyz, display = "desc"}
+  for k, v in pairs(commonConditions) do
+    if (variables[k] and type(variables[k]) ~= "table") then
+      variables[k] = v;
+    end
+  end
+
+  for k, v in pairs(variables) do
+    if (type(v) == "string") then
+      variables[k] = {
+        display = k,
+        type = v,
+      };
+    end
+  end
+end
+
 function GenericTrigger.GetTriggerConditions(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
@@ -3607,25 +3628,7 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
         if (type(result)) ~= "table" then
           return nil;
         end
-        -- Make the life of tsu authors easier, by automatically filling in the details for
-        -- expirationTime, duration, value, total, stacks, if those exists but aren't a table value
-        -- By allowing a short-hand notation of just variable = type
-        -- In addition to the long form of variable = { type = xyz, display = "desc"}
-        for k, v in pairs(commonConditions) do
-          if (result[k] and type(result[k]) ~= "table") then
-            result[k] = v;
-          end
-        end
-
-        for k, v in pairs(result) do
-          if (type(v) == "string") then
-            result[k] = {
-              display = k,
-              type = v,
-            };
-          end
-        end
-
+        Private.ExpandCustomVariables(result)
         for k, v in pairs(result) do
           if (type(v) ~= "table") then
             result[k] = nil;

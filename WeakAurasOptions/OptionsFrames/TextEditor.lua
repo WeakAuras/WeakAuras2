@@ -559,7 +559,7 @@ local function ConstructTextEditor(frame)
     end
   )
 
-  function group.Open(self, data, path, enclose, multipath, reloadOptions, setOnParent, url)
+  function group.Open(self, data, path, enclose, multipath, reloadOptions, setOnParent, url, validator)
     self.data = data
     self.path = path
     self.multipath = multipath
@@ -605,11 +605,14 @@ local function ConstructTextEditor(frame)
         if not (str) or editor.combinedText == true then
           editorError:SetText("")
         else
-          local _, errorString
+          local func, errorString
           if (enclose) then
-            _, errorString = loadstring("return function() " .. str .. "\n end")
+            func, errorString = loadstring("return function() " .. str .. "\n end")
           else
-            _, errorString = loadstring("return " .. str)
+            func, errorString = loadstring("return " .. str)
+          end
+          if not errorString and validator then
+            errorString = validator(func())
           end
           if errorString then
             urlText:Hide()
