@@ -367,6 +367,9 @@ function WeakAuras.getDefaultGlow(regionType)
   local options = getDefaults(regionType)
   options.type = "subglow"
   options.glow = false
+  if regionType == "aurabar" then
+    options.glow_anchor = "bar"
+  end
   return options
 end
 
