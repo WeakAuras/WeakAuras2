@@ -232,6 +232,7 @@ local function ConstructTexturePicker(frame)
 
     frame.window = "texture";
     frame:UpdateFrameVisible()
+    group:UpdateList()
     local _, givenPath = next(self.givenPath)
     local picked = false;
     for categoryName, category in pairs(self.textures) do
