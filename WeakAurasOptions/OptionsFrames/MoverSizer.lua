@@ -505,7 +505,7 @@ local function ConstructMoverSizer(parent)
     if data.regionType == "group" then
       mover:SetWidth((region.trx - region.blx) * scale)
       mover:SetHeight((region.try - region.bly) * scale)
-      mover:SetPoint(mover.selfPoint or "CENTER", mover.anchor or UIParent, mover.anchorPoint or "CENTER", (xOff + region.blx) * scale, (yOff + region.bly) * scale)
+      mover:SetPoint("BOTTOMLEFT", mover.anchor or UIParent, mover.anchorPoint or "CENTER", (xOff + region.blx) * scale, (yOff + region.bly) * scale)
     else
       mover:SetWidth(region:GetWidth() * scale)
       mover:SetHeight(region:GetHeight() * scale)
@@ -529,7 +529,7 @@ local function ConstructMoverSizer(parent)
       OptionsPrivate.Private.CancelAnimation(region, true, true, true, true, true)
       mover:ClearAllPoints()
       if data.regionType == "group" then
-        mover:SetPoint(mover.selfPoint, region, mover.anchorPoint, region.blx * scale, region.bly * scale)
+        mover:SetPoint("BOTTOMLEFT", region, mover.anchorPoint, region.blx * scale, region.bly * scale)
       else
         mover:SetPoint(mover.selfPoint, region, mover.selfPoint)
       end
@@ -629,7 +629,7 @@ local function ConstructMoverSizer(parent)
       if data.regionType == "group" then
         mover:SetWidth((region.trx - region.blx) * scale)
         mover:SetHeight((region.try - region.bly) * scale)
-        mover:SetPoint(mover.selfPoint, mover.anchor, mover.anchorPoint, (xOff + region.blx) * scale, (yOff + region.bly) * scale)
+        mover:SetPoint("BOTTOMLEFT", mover.anchor, mover.anchorPoint, (xOff + region.blx) * scale, (yOff + region.bly) * scale)
       else
         mover:SetWidth(region:GetWidth() * scale)
         mover:SetHeight(region:GetHeight() * scale)
@@ -756,7 +756,7 @@ local function ConstructMoverSizer(parent)
         if data.regionType == "group" then
           mover:SetWidth((region.trx - region.blx) * scale)
           mover:SetHeight((region.try - region.bly) * scale)
-          mover:SetPoint(mover.selfPoint, mover.anchor, mover.anchorPoint, (xOff + region.blx) * scale, (yOff + region.bly) * scale)
+          mover:SetPoint("BOTTOMLEFT", mover.anchor, mover.anchorPoint, (xOff + region.blx) * scale, (yOff + region.bly) * scale)
         else
           mover:SetWidth(region:GetWidth() * scale)
           mover:SetHeight(region:GetHeight() * scale)
