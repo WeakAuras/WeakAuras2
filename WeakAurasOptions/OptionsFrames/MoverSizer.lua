@@ -1,6 +1,7 @@
 if not WeakAuras.IsCorrectVersion() then return end
 local AddonName, OptionsPrivate = ...
 
+
 -- Lua APIs
 local pairs = pairs
 
@@ -10,6 +11,7 @@ local IsShiftKeyDown, CreateFrame =  IsShiftKeyDown, CreateFrame
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local WeakAuras = WeakAuras
+local L = WeakAuras.L
 
 local moversizer
 local mover
@@ -63,9 +65,11 @@ local function ConstructMover(frame)
   local top = CreateFrame("BUTTON", nil, topAndBottom)
   top:SetSize(25, 25)
   top:SetPoint("TOP", topAndBottom)
+  top:SetFrameStrata("BACKGROUND")
   local bottom = CreateFrame("BUTTON", nil, topAndBottom)
   bottom:SetSize(25, 25)
   bottom:SetPoint("BOTTOM", topAndBottom)
+  bottom:SetFrameStrata("BACKGROUND")
 
   local leftAndRight = CreateFrame("Frame", nil, frame)
   leftAndRight:SetClampedToScreen(true)
@@ -74,9 +78,11 @@ local function ConstructMover(frame)
   local left = CreateFrame("BUTTON", nil, leftAndRight)
   left:SetSize(25, 25)
   left:SetPoint("LEFT", leftAndRight)
+  left:SetFrameStrata("BACKGROUND")
   local right = CreateFrame("BUTTON", nil, leftAndRight)
   right:SetSize(25, 25)
   right:SetPoint("RIGHT", leftAndRight)
+  right:SetFrameStrata("BACKGROUND")
 
   top:SetNormalTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-up.blp")
   top:SetHighlightTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-highlight.blp")
@@ -107,6 +113,23 @@ local function ConstructMover(frame)
   right:GetPushedTexture():SetRotation(-math.pi/2)
   right:SetScript("OnClick", function() moveOnePxl("right") end)
 
+  local arrow = CreateFrame("frame", nil, frame)
+  arrow:SetClampedToScreen(true)
+  arrow:SetSize(196, 196)
+  arrow:SetPoint("CENTER", frame, "CENTER")
+  arrow:SetFrameStrata("HIGH")
+  local arrowTexture = arrow:CreateTexture()
+  arrowTexture:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\\offscreen.tga")
+  arrowTexture:SetSize(128, 128)
+  arrowTexture:SetPoint("CENTER", arrow, "CENTER")
+  arrowTexture:SetVertexColor(0.8, 0.8, 0.2)
+  arrowTexture:Hide()
+  local offscreenText = arrow:CreateFontString(nil, "OVERLAY")
+  offscreenText:SetFont(STANDARD_TEXT_FONT, 14, "THICKOUTLINE");
+  offscreenText:SetText(L["Aura is\nOff Screen"])
+  offscreenText:Hide()
+  offscreenText:SetPoint("CENTER", arrow, "CENTER")
+
   local lineX = frame:CreateLine(nil, "OVERLAY", 7)
   lineX:SetThickness(2)
   lineX:SetColorTexture(1,1,0)
@@ -123,7 +146,7 @@ local function ConstructMover(frame)
   lineY:SetIgnoreParentAlpha(true)
   lineY:Hide()
 
-  return lineX, lineY
+  return lineX, lineY, arrowTexture, offscreenText
 end
 
 local function ConstructSizer(frame)
@@ -413,7 +436,7 @@ local function ConstructMoverSizer(parent)
   frame.top, frame.topright, frame.right, frame.bottomright, frame.bottom, frame.bottomleft, frame.left, frame.topleft
   = ConstructSizer(frame)
 
-  frame.lineX, frame.lineY = ConstructMover(frame)
+  frame.lineX, frame.lineY, frame.arrowTexture, frame.offscreenText = ConstructMover(frame)
 
   frame.top.Clear()
   frame.topright.Clear()
@@ -908,6 +931,21 @@ local function ConstructMoverSizer(parent)
       self.interims[i]:SetPoint("CENTER", self.anchorPointIcon, "CENTER", x, y)
       self.interims[i]:Show()
     end
+
+    -- HERE
+    frame.arrowTexture:Hide()
+    frame.offscreenText:Hide()
+
+    -- Check if the center is offscreen
+    local x, y = mover:GetCenter()
+    if x < 0 or x > GetScreenWidth() or y < 0 or y > GetScreenHeight() then
+      local arrowX, arrowY = frame.arrowTexture:GetCenter()
+      local arrowAngle = atan2(selfY - arrowY, selfX - arrowX)
+      frame.offscreenText:Show()
+      frame.arrowTexture:Show()
+      frame.arrowTexture:SetRotation( (arrowAngle - 90) / 180 * math.pi)
+    end
+
     local regionScale = self.moving.region:GetScale()
     self.text:SetText(("(%.2f, %.2f)"):format(dX*1/regionScale, dY*1/regionScale))
     local midX = (distance / 2) * cos(angle)
