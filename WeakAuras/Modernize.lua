@@ -1023,5 +1023,15 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 39 then
+    if data.regionType == 'icon' or data.regionType == 'aurabar' then
+      if data.auto then
+        data.iconSource = -1
+      else
+        data.iconSource = 0
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
 end
