@@ -55,7 +55,6 @@ local function createOptions(parentData, data, index, subIndex)
     end
 
     WeakAuras.DeepMixin(options, MyCopyTable(LCG:GetGlows(), 1))
-    --ViragDevTool_AddData(options, "options")
     return maxOrder + 1
   end
 

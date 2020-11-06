@@ -42,7 +42,6 @@ local default = function(parentType)
   else
     options.glowType = "Button Glow"
   end
-  --ViragDevTool_AddData(options, "default")
   return options
 end
 
@@ -150,35 +149,40 @@ local function glowStart(self, frame)
   local options = {}
   for k, v in pairs(self) do
     if type(k) == "string" then
-      local key1, key2, key3, more
-      key1, more = k:match("^"..self.glowType.."_([^_]+)(.*)")
+      local key1, key2, key3, key4, more
+      key1, more = k:match("^"..self.glowType.."_(%w+)(.*)")
       if more then
-        key2, more = more:match("_([^_]+)(.*)")
+        key2, more = more:match("_(%w+)(.*)")
         if more then
-            key3 = more:match("_([^_]+)(.*)")
+            key3, more = more:match("_(%w+)(.*)")
+            if more then
+              key4 = more:match("_(%w+)(.*)")
+          end
         end
       end
       if key1 then
         if key2 then
           if key3 then
-            options[key1] = options[key1] or {}
-            options[key1][key2] = options[key1][key2] or {}
-            options[key1][key2][key3] = v
-            --print("options["..key1.."]["..key2.."]["..key3.."] =", v)
+            if key4 then
+              options[key1] = options[key1] or {}
+              options[key1][key2] = options[key1][key2] or {}
+              options[key1][key2][key3] = options[key1][key2][key3] or {}
+              options[key1][key2][key4] = v
+            else
+              options[key1] = options[key1] or {}
+              options[key1][key2] = options[key1][key2] or {}
+              options[key1][key2][key3] = v
+            end
           else
             options[key1] = options[key1] or {}
             options[key1][key2] = v
-            --print("options["..key1.."]["..key2.."] =", v)
           end
         else
           options[key1] = v
-          --print("options["..key1.."] =", v)
         end
       end
     end
   end
-  --ViragDevTool_AddData(self, "self")
-  --ViragDevTool_AddData(options, "options")
 
   self.glowStart(frame, options)
 end
@@ -337,24 +341,9 @@ local function modify(parent, region, parentData, data, first)
   region.parent = parent
 
   region.parentType = parentData.regionType
-  --[[
-  region.useGlowColor = data.useGlowColor
-  region.glowColor = data.glowColor
-  region.glowLines = data.glowLines
-  region.glowFrequency = data.glowFrequency
-  region.glowLength = data.glowLength
-  region.glowThickness = data.glowThickness
-  region.glowScale = data.glowScale
-  region.glowBorder = data.glowBorder
-  region.glowXOffset = data.glowXOffset
-  region.glowYOffset = data.glowYOffset
-  ]]--
-  --ViragDevTool_AddData(data, "data")
-  --region.glowData = {}
   for k in pairs(getDefaults()) do
     region[k] = data[k]
   end
-  --ViragDevTool_AddData(region, "region")
 
   region:SetGlowType(data.glowType)
   region:SetVisible(data.glow)
