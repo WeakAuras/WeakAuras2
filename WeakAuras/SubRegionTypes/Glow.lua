@@ -150,13 +150,13 @@ local function glowStart(self, frame)
   for k, v in pairs(self) do
     if type(k) == "string" then
       local key1, key2, key3, key4, more
-      key1, more = k:match("^"..self.glowType.."_(%w+)(.*)")
+      key1, more = k:match("^"..self.glowType.."_([^_]+)(.*)")
       if more then
-        key2, more = more:match("_(%w+)(.*)")
+        key2, more = more:match("_([^_]+)(.*)")
         if more then
-            key3, more = more:match("_(%w+)(.*)")
+            key3, more = more:match("_([^_]+)(.*)")
             if more then
-              key4 = more:match("_(%w+)(.*)")
+              key4 = more:match("_([^_]+)(.*)")
           end
         end
       end

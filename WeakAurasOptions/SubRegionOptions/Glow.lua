@@ -10,6 +10,54 @@ local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ce
 
 local indentWidth = 0.15
 
+local glows = LCG:GetGlows()
+local function getDefaults()
+  local options = {}
+  local function recurse(settings, prefix, parent)
+    for k, v in pairs(settings) do
+        if ( type(v) == "table" ) then
+          recurse(
+              v,
+              (prefix or "")..(v.args and k.."_" or ""),
+              k
+          )
+        end
+        if settings.type ~= "group" and k == "default" then
+          options[prefix..parent] = v
+        end
+    end
+  end
+  recurse(glows)
+  return options
+end
+
+local function LCGkeyToData(key)
+  local key1, key2, key3, key4, more
+  key1, more = key:match("^([^_]+)(.*)")
+  if more then
+    key2, more = more:match("_([^_]+)(.*)")
+    if more then
+        key3, more = more:match("_([^_]+)(.*)")
+        if more then
+          key4 = more:match("_([^_]+)(.*)")
+      end
+    end
+  end
+  if key1 then
+    if key2 then
+      if key3 then
+        if key4 then
+          return glows[key1].args[key2].args[key3].args[key4]
+        else
+          return glows[key1].args[key2].args[key3]
+        end
+      else
+        return glows[key1].args[key2]
+      end
+    end
+  end
+end
+
 local function createOptions(parentData, data, index, subIndex)
   local hiddenGlowExtra = function()
     return OptionsPrivate.IsCollapsed("glow", "glow", "glowextra" .. index, true);
@@ -107,45 +155,33 @@ local function createOptions(parentData, data, index, subIndex)
       control = "WeakAurasExpandSmall",
       name = function()
         local line = L["|cFFffcc00Extra Options:|r"]
-        local color = L["Default Color"]
-        if data.useGlowColor then
-          color = L["|c%02x%02x%02x%02xCustom Color|r"]:format(
-            data.glowColor[4] * 255,
-            data.glowColor[1] * 255,
-            data.glowColor[2] * 255,
-            data.glowColor[3] * 255
-          )
-        end
-        if data.glowType == "buttonOverlay" then
-          line = ("%s %s"):format(line, color)
-        elseif data.glowType == "ACShine" then
-          line = L["%s %s, Particles: %d, Frequency: %0.2f, Scale: %0.2f"]:format(
-            line,
-            color,
-            data.glowLines,
-            data.glowFrequency,
-            data.glowScale
-          )
-          if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
-            line = L["%s, offset: %0.2f;%0.2f"]:format(line, data.glowXOffset, data.glowYOffset)
-          end
-        elseif data.glowType == "Pixel" then
-          line = L["%s %s, Lines: %d, Frequency: %0.2f, Length: %d, Thickness: %d"]:format(
-            line,
-            color,
-            data.glowLines,
-            data.glowFrequency,
-            data.glowLength,
-            data.glowThickness
-          )
-          if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
-            line = L["%s, Offset: %0.2f;%0.2f"]:format(line, data.glowXOffset, data.glowYOffset)
-          end
-          if data.glowBorder then
-            line = L["%s, Border"]:format(line)
+        local defaults = getDefaults()
+        for k, v in pairs(data) do
+          if k:match("^([^_]+)(.*)") == data.glowType then
+            local keyData = LCGkeyToData(k)
+            local default = keyData and keyData.default
+            if type(v) ~= "table" then
+              if default ~= v then
+                if type(v) == "boolean" then
+                  line = ("%s %s,"):format(line, WrapTextInColorCode(keyData.name, v and "ff00ff00" or "ffff0000"))
+                else
+                  line = ("%s %s: %s,"):format(line, keyData.name, tostring(v))
+                end
+              end
+            else
+              if keyData.type == "color"
+                and (
+                  v[1] ~= default[1]
+                  or v[2] ~= default[2]
+                  or v[3] ~= default[3]
+                )
+              then
+                line = ("%s %s,"):format(line, WrapTextInColorCode(keyData.name, CreateColor(v[1], v[2], v[3], 1):GenerateHexColor()))
+              end
+            end
           end
         end
-        return line
+        return line:match("(.*),$") or line
       end,
       width = WeakAuras.doubleWidth,
       order = 4,
