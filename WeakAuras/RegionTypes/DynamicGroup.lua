@@ -20,7 +20,7 @@ local default = {
   space = 2,
   stagger = 0,
   sort = "none",
-  distribute = "none",
+  distribute = "self",
   animate = false,
   anchorPoint = "CENTER",
   anchorFrameType = "SCREEN",
@@ -107,20 +107,16 @@ local function create(parent)
 
   -- 2-dimensional table of children, indexed by id, cloneId
   region.controlledChildren = {}
-  -- regionData -> updates map.
+  -- regionData -> boolean map. Entries in this table will be checked to see if their position needs modifying
   region.updatedChildren = {}
+  -- Set of sorted lists. Entries in this set are added by RedistributeChildren when an updated child is assigned to a sortedList,
+  -- or when a sortedList loses a child
+  -- Repositioning happens only on lists which are flagged as having any updates to their children.
+  region.updatedGroups = {}
   -- types of frames to attach a child's control point to
   -- 3-dimensional table, indexed by type, groupId, sort index
   -- DistributeChildren assigns type & groupId, sort assigns sort index
-  region.anchors = {
-    self      = {}, -- attach to self (default behavior)
-    -- TODO: bikeshed on whether or not distinguishing 'screen' from 'none' is a good thing
-    screen    = {}, -- attach to screen (non-dynamic group behavior)
-    none      = {}, -- don't attach to anything (error case)
-    unit      = {}, -- attach to unit frames via LibGetFrame
-    nameplate = {}, -- attach to nameplate
-    frame     = {}, -- attach to external frame
-  }
+  region.groups = {}
   local background = CreateFrame("frame", nil, region, BackdropTemplateMixin and "BackdropTemplate")
   region.background = background
   region.selfPoint = "TOPLEFT"
@@ -140,8 +136,16 @@ end
 
 local function noop() end
 
+local anchorers = {
+  self = function(self, anchorLocation) return self end,
+  nameplate = function(self, anchorLocation) return WeakAuras.GetUnitNameplate(anchorLocation) end,
+  unit = function(self, anchorLocation) return WeakAuras.GetUnitFrame(anchorLocation) end,
+  frame = function(self, anchorLocation) return Private.GetSanitizedGlobal(anchorLocation) end,
+  aura = function(self, anchorLocation) return WeakAuras.GetRegion(anchorLocation) end, --? do we actually want this?
+}
+
 local distributers = {
-  static = function(data)
+  self = function(data)
     return function(regionData) return "self" end
   end,
   nameplate = function(data)
@@ -168,7 +172,7 @@ local distributers = {
   end
 }
 local function createDistributeFunc(data)
-  local distributor = distributers[data.distribute] or distributers["static"]
+  local distributor = distributers[data.distribute] or distributers["self"]
   return distributor(data)
 end
 
@@ -681,6 +685,15 @@ local function SafeGetPos(region, func)
   end
 end
 
+local function resolvePath(tbl, ...)
+  for i = 1, select("#", ...) do
+    local index = select(i, ...)
+    tbl[index] = tbl[index] or {}
+    tbl = tbl[index]
+  end
+  return tbl
+end
+
 local function modify(parent, region, data)
   Private.FixGroupChildrenOrderForGroup(data)
   region:SetScale(data.scale and data.scale > 0 and data.scale <= 10 and data.scale or 1)
@@ -784,8 +797,7 @@ local function modify(parent, region, data)
 
   local function getRegionData(childID, cloneID)
     cloneID = cloneID or ""
-    local controlPoint
-    controlPoint = region.controlledChildren[childID] and region.controlledChildren[childID][cloneID]
+    local controlPoint = region.controlledChildren[childID] and region.controlledChildren[childID][cloneID]
     if not controlPoint then return end
     return controlPoint.regionData
   end
@@ -803,16 +815,16 @@ local function modify(parent, region, data)
       Private.StartProfileSystem("dynamicgroup2")
       Private.StartProfileAura(data.id)
       self.needToReload = false
-      self.sortedChildren = {}
       self.controlledChildren = {}
       self.updatedChildren = {}
+      self.groups = {}
+      self.updatedGroups = {}
       self.controlPoints:ReleaseAll()
       for dataIndex, childID in ipairs(data.controlledChildren) do
         local childRegion, childData = WeakAuras.GetRegion(childID), WeakAuras.GetData(childID)
         if childRegion and childData then
           local regionData = createRegionData(childData, childRegion, childID, nil, dataIndex)
           if childRegion.toShow then
-            tinsert(self.sortedChildren, regionData)
             self.updatedChildren[regionData] = true
           end
         end
@@ -820,7 +832,6 @@ local function modify(parent, region, data)
           for cloneID, cloneRegion in pairs(WeakAuras.clones[childID]) do
             local regionData = createRegionData(childData, cloneRegion, childID, cloneID, dataIndex)
             if cloneRegion.toShow then
-              tinsert(self.sortedChildren, regionData)
               self.updatedChildren[regionData] = true
             end
           end
@@ -828,7 +839,7 @@ local function modify(parent, region, data)
       end
       Private.StopProfileSystem("dynamicgroup2")
       Private.StopProfileAura(data.id)
-      self:SortUpdatedChildren()
+      self:RedistributeChildren()
     else
       self.needToReload = true
     end
@@ -848,10 +859,9 @@ local function modify(parent, region, data)
     if not childData or not childRegion then return end
     local regionData = createRegionData(childData, childRegion, childID, cloneID, dataIndex)
     if childRegion.toShow then
-      tinsert(self.sortedChildren, regionData)
       self.updatedChildren[regionData] = true
     end
-    self:SortUpdatedChildren()
+    self:RedistributeChildren()
   end
 
   function region:ActivateChild(childID, cloneID)
@@ -865,9 +875,6 @@ local function modify(parent, region, data)
     -- it's possible that while paused, we might get Activate, Deactivate, Activate on the same child
     -- so we need to check if this child has been updated since the last Sort
     -- if it has been, then don't insert it again
-    if not regionData.active and self.updatedChildren[regionData] == nil then
-      tinsert(self.sortedChildren, regionData)
-    end
     self.updatedChildren[regionData] = true
     self:RedistributeChildren()
   end
@@ -879,7 +886,7 @@ local function modify(parent, region, data)
     if not regionData then return end
     releaseRegionData(regionData)
     self.updatedChildren[regionData] = false
-    self:SortUpdatedChildren()
+    self:RedistributeChildren()
   end
 
   function region:DeactivateChild(childID, cloneID)
@@ -889,17 +896,67 @@ local function modify(parent, region, data)
     if regionData and not regionData.region.toShow then
       self.updatedChildren[regionData] = false
     end
-    self:SortUpdatedChildren()
+    self:RedistributeChildren()
   end
 
+  local function getOrCreateGroup(anchorType, anchorLocation, anchorId)
+    local tbl = resolvePath(region.groups, anchorType, anchorLocation)
+    if not tbl[anchorId] then
+      tbl[anchorId] = {
+        type = anchorType,
+        location = anchorLocation,
+        id = anchorId,
+        children = {}
+      }
+    end
+    return tbl[anchorId]
+  end
+
+  region.distributeFunc = createDistributeFunc(data)
   function region:RedistributeChildren()
-    -- redistributes updated children
+    -- redistributes updated children to the correct groups
     if not self:IsSuspended() then
-      WeakAuras.StartProfileSystem("dynamicgroup2")
-      WeakAuras.StartProfileAura(data.id)
+      Private.StartProfileSystem("dynamicgroup2")
+      Private.StartProfileAura(data.id)
       self.needToDistribute = false
-      WeakAuras.StopProfileAura(data.id)
-      WeakAuras.StopProfileSystem("dynamicgroup2")
+      for regionData, active in pairs(self.updatedChildren) do
+        if active then
+          -- child wants to be visible, find an appropriate group
+          local anchorType, anchorLocation, anchorId do -- interpret results of distributeFunc into anchor data
+            local temp1, temp2
+            anchorType, temp1, temp2 = region.distributeFunc(regionData)
+            if not anchorers[anchorType] then
+              anchorType = "self"
+            end
+            regionData.anchorType = anchorType
+            if anchorType == "self" then
+              anchorId = type(temp1) == "string" and temp1 or ""
+              anchorLocation = ""
+            else
+              anchorLocation = (type(temp1) == "string" or (type(temp1) == "table" and type(temp1[0]) == "userdata")) and temp1 or ""
+              anchorId = type(temp2) == "string" and temp2 or ""
+            end
+          end
+          local group = getOrCreateGroup(anchorType, anchorLocation, anchorId)
+          self.updatedGroups[group] = true
+          if regionData.group ~= group then
+            -- either this child wasn't previously assigned to a group, or its group has changed
+            -- either way, we need to insert it into the new group
+            if regionData.group then
+              self.updatedGroups[regionData.group] = true
+            end
+            tinsert(group.children, regionData)
+          end
+          regionData.group = group
+        elseif regionData.group then
+          -- child wants to hide, find the group it was in and flag as updated
+          self.updatedGroups[regionData.group] = true
+          -- set to nil, so that Sort knows to remove the child from group.children
+          regionData.group = nil
+        end
+      end
+      Private.StopProfileAura(data.id)
+      Private.StopProfileSystem("dynamicgroup2")
       self:SortUpdatedChildren()
     else
       self.needToDistribute = true
@@ -916,32 +973,35 @@ local function modify(parent, region, data)
       Private.StartProfileSystem("dynamicgroup2")
       Private.StartProfileAura(data.id)
       self.needToSort = false
-      local i = 1
-      while self.sortedChildren[i] do
-        local regionData = self.sortedChildren[i]
-        local active = self.updatedChildren[regionData]
-        if active ~= nil then
-          regionData.active = active
-        end
-        if active == false then
-          -- i now refers to what was i + 1, so don't increment
-          tremove(self.sortedChildren, i)
-        else
-          local j = i
-          while j > 1 do
-            local otherRegionData = self.sortedChildren[j - 1]
-            if not (active or self.updatedChildren[otherRegionData])
-            or not self.sortFunc(regionData, otherRegionData) then
-              break
-            else
-              self.sortedChildren[j] = otherRegionData
-              j = j - 1
-              self.sortedChildren[j] = regionData
-            end
+      for group in pairs(self.updatedGroups) do
+        local i = 1
+        while group.children[i] do
+          local regionData = group.children[i]
+          local active = self.updatedChildren[regionData]
+          if active ~= nil then
+            regionData.active = active
           end
-          i = i + 1
+          if active == false or regionData.group ~= group then
+            -- i now refers to what was i + 1, so don't increment
+            tremove(group.children, i)
+          else
+            local j = i
+            while j > 1 do
+              local otherRegionData = group.children[j - 1]
+              if not (active or group.children[otherRegionData])
+              or not self.sortFunc(regionData, otherRegionData) then
+                break
+              else
+                group.children[j] = otherRegionData
+                j = j - 1
+                group.children[j] = regionData
+              end
+            end
+            i = i + 1
+          end
         end
       end
+      -- all children are in their correct places now, we can wipe updatedChildren
       self.updatedChildren = {}
       Private.StopProfileSystem("dynamicgroup2")
       Private.StopProfileAura(data.id)
@@ -959,149 +1019,123 @@ local function modify(parent, region, data)
     -- Positioning is based on grow information from the data
     if not self:IsSuspended() then
       self.needToPosition = false
-      if #self.sortedChildren > 0 then
-        if animate then
-          Private.RegisterGroupForPositioning(data.uid, self)
-        else
-          self:DoPositionChildren()
-        end
+      if animate then
+        Private.RegisterGroupForPositioning(data.uid, self)
       else
-        self:Resize()
+        self:DoPositionChildren()
       end
     else
       self.needToPosition = true
     end
   end
 
-  function region:DoPositionChildrenPerFrame(frame, positions, handledRegionData)
-    for regionData, pos in pairs(positions) do
-      if type(regionData) ~= "table" then
-        break;
-      end
-      handledRegionData[regionData] = true
-      local x, y, show =  type(pos[1]) == "number" and pos[1] or 0,
-                          type(pos[2]) == "number" and pos[2] or 0,
-                          type(pos[3]) ~= "boolean" and true or pos[3]
-
-      local controlPoint = regionData.controlPoint
-      controlPoint:ClearAnchorPoint()
-      controlPoint:SetAnchorPoint(
-        data.selfPoint,
-        frame == "" and self.relativeTo or frame,
-        data.anchorPoint,
-        x + data.xOffset, y + data.yOffset
-      )
-      controlPoint:SetShown(show and frame ~= WeakAuras.HiddenFrames)
-      controlPoint:SetWidth(regionData.dimensions.width)
-      controlPoint:SetHeight(regionData.dimensions.height)
-      if animate then
-        Private.CancelAnimation(regionData.controlPoint, true)
-        local xPrev = regionData.xOffset or x
-        local yPrev = regionData.yOffset or y
-        local xDelta = xPrev - x
-        local yDelta = yPrev - y
-        if show and (abs(xDelta) > 0.01 or abs(yDelta) > 0.01) then
-          local anim
-          if data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" then
-            local originX, originY = 0,0
-            local radius1, previousAngle = WeakAuras.GetPolarCoordinates(xPrev, yPrev, originX, originY)
-            local radius2, newAngle = WeakAuras.GetPolarCoordinates(x, y, originX, originY)
-            local dAngle = newAngle - previousAngle
-            dAngle = ((dAngle > 180 and dAngle - 360) or (dAngle < -180 and dAngle + 360) or dAngle)
-            if(math.abs(radius1 - radius2) > 0.1) then
-              local translateFunc = [[
-                                function(progress, _, _, previousAngle, dAngle)
-                                    local previousRadius, dRadius = %f, %f;
-                                    local targetX, targetY = %f, %f
-                                    local radius = previousRadius + (1 - progress) * dRadius;
-                                    local angle = previousAngle + (1 - progress) * dAngle;
-                                    return cos(angle) * radius - targetX, sin(angle) * radius - targetY;
-                                end
-                            ]]
-              anim = {
-                type = "custom",
-                duration = 0.2,
-                use_translate = true,
-                translateType = "custom",
-                translateFunc = translateFunc:format(radius1, radius2 - radius1, x, y),
-                x = previousAngle,
-                y = dAngle,
-                selfPoint = data.selfPoint,
-                anchor = self,
-                anchorPoint = data.selfPoint,
-              }
-            else
-              local translateFunc = [[
-                                function(progress, _, _, previousAngle, dAngle)
-                                    local radius = %f;
-                                    local targetX, targetY = %f, %f
-                                    local angle = previousAngle + (1 - progress) * dAngle;
-                                    return cos(angle) * radius - targetX, sin(angle) * radius - targetY;
-                                end
-                            ]]
-              anim = {
-                type = "custom",
-                duration = 0.2,
-                use_translate = true,
-                translateType = "custom",
-                translateFunc = translateFunc:format(radius1, x, y),
-                x = previousAngle,
-                y = dAngle,
-                selfPoint = data.selfPoint,
-                anchor = self,
-                anchorPoint = data.selfPoint,
-              }
-            end
-          end
-          if not(anim) then
-            anim = {
-              type = "custom",
-              duration = 0.2,
-              use_translate = true,
-              x = xDelta,
-              y = yDelta,
-              selfPoint = data.selfPoint,
-              anchor = self,
-              anchorPoint = data.selfPoint,
-            }
-          end
-          -- update animated expand & collapse for this child
-          Private.Animate("controlPoint", data.uid, "controlPoint", anim, regionData.controlPoint, true)
-        end
-      end
-      regionData.xOffset = x
-      regionData.yOffset = y
-      regionData.shown = show
-    end
-  end
-
   function region:DoPositionChildren()
     Private.StartProfileSystem("dynamicgroup2")
     Private.StartProfileAura(data.id)
+    for group in pairs(self.updatedGroups) do
+      local frame = anchorers[group.type](self, group.location)
+      local newPositions = {}
+      self.growFunc(newPositions, group.children)
+      if #newPositions > 0 then
+        for index, pos in ipairs(newPositions) do
+          local regionData = group.children[index]
+          local x, y, point, relativePoint, show =
+              type(pos.x) == "number" and pos.x or 0,
+              type(pos.y) == "number" and pos.x or 0,
+              Private.point_types[pos.point] and pos.point or data.selfPoint or "CENTER",
+              Private.point_types[pos.relativePoint] and pos.relativePoint or data.anchorPoint,
+              type(pos.show) ~= "boolean" and true or pos.show
 
-    local handledRegionData = {}
-
-    local newPositions = {}
-    self.growFunc(newPositions, self.sortedChildren)
-    if #newPositions > 0 then
-      for index = 1, #newPositions do
-        if type(newPositions[index]) == "table" then
-          local data = self.sortedChildren[index]
-          if data then
-            newPositions[data] = newPositions[index]
-          else
-            geterrorhandler()(("Error in '%s', Grow function return position for an invalid region"):format(region.id))
+          local controlPoint = regionData.controlPoint
+          controlPoint:ClearAnchorPoint()
+          controlPoint:SetAnchorPoint(
+            data.selfPoint,
+            self.relativeTo,
+            data.anchorPoint,
+            x + data.xOffset, y + data.yOffset
+          )
+          controlPoint:SetShown(show)
+          controlPoint:SetWidth(regionData.dimensions.width)
+          controlPoint:SetHeight(regionData.dimensions.height)
+          if animate then
+            Private.CancelAnimation(regionData.controlPoint, true)
+            local xPrev = regionData.xOffset or x
+            local yPrev = regionData.yOffset or y
+            local xDelta = xPrev - x
+            local yDelta = yPrev - y
+            if show and (abs(xDelta) > 0.01 or abs(yDelta) > 0.01) then
+              local anim
+              if data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" then
+                local originX, originY = 0,0
+                local radius1, previousAngle = WeakAuras.GetPolarCoordinates(xPrev, yPrev, originX, originY)
+                local radius2, newAngle = WeakAuras.GetPolarCoordinates(x, y, originX, originY)
+                local dAngle = newAngle - previousAngle
+                dAngle = ((dAngle > 180 and dAngle - 360) or (dAngle < -180 and dAngle + 360) or dAngle)
+                if(math.abs(radius1 - radius2) > 0.1) then
+                  local translateFunc = [[
+                                    function(progress, _, _, previousAngle, dAngle)
+                                        local previousRadius, dRadius = %f, %f;
+                                        local targetX, targetY = %f, %f
+                                        local radius = previousRadius + (1 - progress) * dRadius;
+                                        local angle = previousAngle + (1 - progress) * dAngle;
+                                        return cos(angle) * radius - targetX, sin(angle) * radius - targetY;
+                                    end
+                                ]]
+                  anim = {
+                    type = "custom",
+                    duration = 0.2,
+                    use_translate = true,
+                    translateType = "custom",
+                    translateFunc = translateFunc:format(radius1, radius2 - radius1, x, y),
+                    x = previousAngle,
+                    y = dAngle,
+                    selfPoint = data.selfPoint,
+                    anchor = self,
+                    anchorPoint = data.selfPoint,
+                  }
+                else
+                  local translateFunc = [[
+                                    function(progress, _, _, previousAngle, dAngle)
+                                        local radius = %f;
+                                        local targetX, targetY = %f, %f
+                                        local angle = previousAngle + (1 - progress) * dAngle;
+                                        return cos(angle) * radius - targetX, sin(angle) * radius - targetY;
+                                    end
+                                ]]
+                  anim = {
+                    type = "custom",
+                    duration = 0.2,
+                    use_translate = true,
+                    translateType = "custom",
+                    translateFunc = translateFunc:format(radius1, x, y),
+                    x = previousAngle,
+                    y = dAngle,
+                    selfPoint = data.selfPoint,
+                    anchor = self,
+                    anchorPoint = data.selfPoint,
+                  }
+                end
+              end
+              if not(anim) then
+                anim = {
+                  type = "custom",
+                  duration = 0.2,
+                  use_translate = true,
+                  x = xDelta,
+                  y = yDelta,
+                  selfPoint = data.selfPoint,
+                  anchor = self,
+                  anchorPoint = data.selfPoint,
+                }
+              end
+              -- update animated expand & collapse for this child
+              Private.Animate("controlPoint", data.uid, "controlPoint", anim, regionData.controlPoint, true)
+            end
           end
-          newPositions[index] = nil
+          regionData.xOffset = x
+          regionData.yOffset = y
+          regionData.shown = show
         end
-      end
-      region:DoPositionChildrenPerFrame("", newPositions, handledRegionData)
-    else
-    end
-
-    for index, child in ipairs(self.sortedChildren) do
-      if not handledRegionData[child] then
-        child.controlPoint:SetShown(false)
       end
     end
 
@@ -1110,10 +1144,13 @@ local function modify(parent, region, data)
     self:Resize()
   end
 
+  function region:ApplyUpdates()
+  end
 
   function region:Resize()
     -- Resizes the dynamic group, for background and border purposes
-    if not self:IsSuspended() then
+    if not self:IsSuspended() and false then
+      -- TODO: fix this - but how? create borders on every subgroup? On just the "default" one?
       self.needToResize = false
       Private.StartProfileSystem("dynamicgroup2")
       Private.StartProfileAura(data.id)

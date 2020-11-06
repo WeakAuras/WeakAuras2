@@ -70,10 +70,10 @@ Private.group_sort_types = {
 
 Private.group_distribute_types = {
   -- TODO: bikeshed these strings
-  none = L["None"],
+  self = L["None"],
   nameplate = L["Nameplate Unit"],
   unit = L["Unit Frames"],
-  custom = L["Custom"],
+  -- custom = L["Custom"],
 }
 
 Private.group_hybrid_position_types = {

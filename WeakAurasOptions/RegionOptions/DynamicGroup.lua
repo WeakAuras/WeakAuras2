@@ -129,33 +129,6 @@ local function createOptions(id, data)
         OptionsPrivate.ResetMoverSizer()
       end,
     },
-    useAnchorPerUnit = {
-      type = "toggle",
-      order = 1.5,
-      width = WeakAuras.normalWidth,
-      name = L["Group by Frame"],
-      desc = L[
-[[Group and anchor each auras by frame.
-
-- Nameplates: attach to nameplates per unit.
-- Unit Frames: attach to unit frame buttons per unit.
-- Custom Frames: choose which frame each region should be anchored to.]]
-      ],
-      hidden = function() return data.grow == "CUSTOM" end,
-    },
-    anchorPerUnit = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Group by Frame"],
-      order = 1.6,
-      values = {
-        ["UNITFRAME"] = L["Unit Frames"],
-        ["NAMEPLATE"] = L["Nameplates"],
-        ["CUSTOM"] = L["Custom Frames"],
-      },
-      hidden = function() return data.grow == "CUSTOM" end,
-      disabled = function() return not data.useAnchorPerUnit end
-    },
     -- custom grow option added below
     align = {
       type = "select",
@@ -397,17 +370,24 @@ local function createOptions(id, data)
       disabled = function() return not data.useLimit end,
       hidden = function() return data.grow == "CUSTOM" end,
     },
+    distribute = {
+      type = "select",
+      width = WeakAuras.doubleWidth,
+      name = L["Distribute"], -- TODO: bikeshed
+      order = 27,
+      values = OptionsPrivate.Private.group_distribute_types
+    },
     animate = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Animated Expand and Collapse"],
-      order = 27
+      order = 28
     },
     scale = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Group Scale"],
-      order = 28,
+      order = 29,
       min = 0.05,
       softMax = 2,
       max = 10,
