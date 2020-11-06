@@ -3959,6 +3959,7 @@ globals = {
 	"ConvertRGBtoColorString",
 	"CopyTable",
 	"CreateChatChannelList",
+	"CreateColor",
 	"CursorOnUpdate",
 	"CursorUpdate",
 	"DeathKnniggetThrobFunction",
