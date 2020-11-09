@@ -298,22 +298,22 @@ local function GetCustomTriggerOptions(data, triggernum)
     OptionsPrivate.Private.ExpandCustomVariables(variables)
 
     for k, v in pairs(variables) do
-      if type(v) ~= "table" then
+      if k == "additionalProgress" then
+        -- Skip over additionalProgress
+      elseif type(v) ~= "table" then
         return string.format(L["Could not parse '%s'. Expected a table."], k)
-      end
-      if not validTypes[v.type] then
+      elseif not validTypes[v.type] then
         return string.format(L["Invalid type for '%s'. Expected 'bool', 'number', 'select', 'string', 'timer' or 'elapsedTimer'."], k)
-      end
-      if v.type == "select" and not v.values then
+      elseif v.type == "select" and not v.values then
         return string.format(L["Type 'select' for '%s' requires a values member'"], k)
-      end
-
-      for property, propertyValue in pairs(v) do
-        if not validProperties[property] then
-          return string.format(L["Unknown property '%s' found in '%s'"], property, k)
-        end
-        if type(propertyValue) ~= validProperties[property] then
-          return string.format(L["Invalid type for property '%s' in 's'. Expected '%s'"], property, k, validProperties[property])
+      else
+        for property, propertyValue in pairs(v) do
+          if not validProperties[property] then
+            return string.format(L["Unknown property '%s' found in '%s'"], property, k)
+          end
+          if type(propertyValue) ~= validProperties[property] then
+            return string.format(L["Invalid type for property '%s' in 's'. Expected '%s'"], property, k, validProperties[property])
+          end
         end
       end
     end
