@@ -938,12 +938,14 @@ local function ConstructMoverSizer(parent)
 
     -- Check if the center is offscreen
     local x, y = mover:GetCenter()
-    if x < 0 or x > GetScreenWidth() or y < 0 or y > GetScreenHeight() then
-      local arrowX, arrowY = frame.arrowTexture:GetCenter()
-      local arrowAngle = atan2(selfY - arrowY, selfX - arrowX)
-      frame.offscreenText:Show()
-      frame.arrowTexture:Show()
-      frame.arrowTexture:SetRotation( (arrowAngle - 90) / 180 * math.pi)
+    if x and y then
+      if x < 0 or x > GetScreenWidth() or y < 0 or y > GetScreenHeight() then
+        local arrowX, arrowY = frame.arrowTexture:GetCenter()
+        local arrowAngle = atan2(selfY - arrowY, selfX - arrowX)
+        frame.offscreenText:Show()
+        frame.arrowTexture:Show()
+        frame.arrowTexture:SetRotation( (arrowAngle - 90) / 180 * math.pi)
+      end
     end
 
     local regionScale = self.moving.region:GetScale()
