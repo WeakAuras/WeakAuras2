@@ -404,7 +404,9 @@ local function importPendingData()
     thumbnailAnchor.currentThumbnail = nil
   end
   if imports and Private.LoadOptions() then
-    WeakAuras.OpenOptions()
+    if not WeakAuras.IsOptionsOpen() then
+      WeakAuras.OpenOptions()
+    end
   else
     return
   end
