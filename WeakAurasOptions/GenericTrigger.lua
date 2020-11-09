@@ -277,6 +277,7 @@ local function GetCustomTriggerOptions(data, triggernum)
     bool = true,
     number = true,
     timer = true,
+    elapsedTimer = true,
     select = true,
     string = true,
   }
@@ -301,7 +302,7 @@ local function GetCustomTriggerOptions(data, triggernum)
         return string.format(L["Could not parse '%s'. Expected a table."], k)
       end
       if not validTypes[v.type] then
-        return string.format(L["Invalid type for '%s'. Expected 'bool', 'number', 'select', 'string' or 'timer'."], k)
+        return string.format(L["Invalid type for '%s'. Expected 'bool', 'number', 'select', 'string', 'timer' or 'elapsedTimer'."], k)
       end
       if v.type == "select" and not v.values then
         return string.format(L["Type 'select' for '%s' requires a values member'"], k)
