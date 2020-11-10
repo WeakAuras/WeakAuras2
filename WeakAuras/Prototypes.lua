@@ -388,186 +388,208 @@ end
 
 
 Private.anim_function_strings = {
-  straight = [[
-    function(progress, start, delta)
-      return start + (progress * delta)
-    end
-  ]],
-  straightTranslate = [[
-    function(progress, startX, startY, deltaX, deltaY)
-      return startX + (progress * deltaX), startY + (progress * deltaY)
-    end
-  ]],
-  straightScale = [[
-    function(progress, startX, startY, scaleX, scaleY)
-      return startX + (progress * (scaleX - startX)), startY + (progress * (scaleY - startY))
-    end
-  ]],
-  straightColor = [[
-    function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
-      return r1 + (progress * (r2 - r1)), g1 + (progress * (g2 - g1)), b1 + (progress * (b2 - b1)), a1 + (progress * (a2 - a1))
-    end
-  ]],
-  straightHSV = [[
-    function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
-      return WeakAuras.GetHSVTransition(progress, r1, g1, b1, a1, r2, g2, b2, a2)
-    end
-  ]],
-  circle = [[
-    function(progress, startX, startY, deltaX, deltaY)
-      local angle = progress * 2 * math.pi
-      return startX + (deltaX * math.cos(angle)), startY + (deltaY * math.sin(angle))
-    end
-  ]],
-  circle2 = [[
-    function(progress, startX, startY, deltaX, deltaY)
-      local angle = progress * 2 * math.pi
-      return startX + (deltaX * math.sin(angle)), startY + (deltaY * math.cos(angle))
-    end
-  ]],
-  spiral = [[
-    function(progress, startX, startY, deltaX, deltaY)
-      local angle = progress * 2 * math.pi
-      return startX + (progress * deltaX * math.cos(angle)), startY + (progress * deltaY * math.sin(angle))
-    end
-  ]],
-  spiralandpulse = [[
-    function(progress, startX, startY, deltaX, deltaY)
-      local angle = (progress + 0.25) * 2 * math.pi
-      return startX + (math.cos(angle) * deltaX * math.cos(angle*2)), startY + (math.abs(math.cos(angle)) * deltaY * math.sin(angle*2))
-    end
-  ]],
-  shake = [[
-    function(progress, startX, startY, deltaX, deltaY)
-      local prog
-      if(progress < 0.25) then
-        prog = progress * 4
-      elseif(progress < .75) then
-        prog = 2 - (progress * 4)
-      else
-        prog = (progress - 1) * 4
-      end
-      return startX + (prog * deltaX), startY + (prog * deltaY)
-    end
-  ]],
-  starShakeDecay = [[
-    function(progress, startX, startY, deltaX, deltaY)
-      local spokes = 10
-      local fullCircles = 4
+straight = [[
+function(progress, start, delta)
+    return start + (progress * delta)
+end
+]],
 
-      local r = min(abs(deltaX), abs(deltaY))
-      local xScale = deltaX / r
-      local yScale = deltaY / r
+straightTranslate = [[
+function(progress, startX, startY, deltaX, deltaY)
+    return startX + (progress * deltaX), startY + (progress * deltaY)
+end
+]],
 
-      local deltaAngle = fullCircles *2 / spokes * math.pi
-      local p = progress * spokes
-      local i1 = floor(p)
-      p = p - i1
+straightScale = [[
+function(progress, startX, startY, scaleX, scaleY)
+    return startX + (progress * (scaleX - startX)), startY + (progress * (scaleY - startY))
+end
+]],
 
-      local angle1 = i1 * deltaAngle
-      local angle2 = angle1 + deltaAngle
+straightColor = [[
+function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
+    return r1 + (progress * (r2 - r1)), g1 + (progress * (g2 - g1)), b1 + (progress * (b2 - b1)), a1 + (progress * (a2 - a1))
+end
+]],
 
-      local x1 = r * math.cos(angle1)
-      local y1 = r * math.sin(angle1)
+straightHSV = [[
+function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
+    return WeakAuras.GetHSVTransition(progress, r1, g1, b1, a1, r2, g2, b2, a2)
+end
+]],
 
-      local x2 = r * math.cos(angle2)
-      local y2 = r * math.sin(angle2)
+circle = [[
+function(progress, startX, startY, deltaX, deltaY)
+    local angle = progress * 2 * math.pi
+    return startX + (deltaX * math.cos(angle)), startY + (deltaY * math.sin(angle))
+end
+]],
 
-      local x, y = p * x2 + (1-p) * x1, p * y2 + (1-p) * y1
-      local ease = math.sin(progress * math.pi / 2)
-      return ease * x * xScale, ease * y * yScale
-    end
-  ]],
-  bounceDecay = [[
-    function(progress, startX, startY, deltaX, deltaY)
-      local prog = (progress * 3.5) % 1
-      local bounce = math.ceil(progress * 3.5)
-      local bounceDistance = math.sin(prog * math.pi) * (bounce / 4)
-    return startX + (bounceDistance * deltaX), startY + (bounceDistance * deltaY)
-  end
-  ]],
-  bounce = [[
-    function(progress, startX, startY, deltaX, deltaY)
-      local bounceDistance = math.sin(progress * math.pi)
-      return startX + (bounceDistance * deltaX), startY + (bounceDistance * deltaY)
-    end
-  ]],
-  flash = [[
-    function(progress, start, delta)
-      local prog
-      if(progress < 0.5) then
-        prog = progress * 2
-      else
-        prog = (progress - 1) * 2
-      end
-      return start + (prog * delta)
-    end
-  ]],
-  pulse = [[
-    function(progress, startX, startY, scaleX, scaleY)
-      local angle = (progress * 2 * math.pi) - (math.pi / 2)
-      return startX + (((math.sin(angle) + 1)/2) * (scaleX - 1)), startY + (((math.sin(angle) + 1)/2) * (scaleY - 1))
-    end
-  ]],
-  alphaPulse = [[
-    function(progress, start, delta)
-      local angle = (progress * 2 * math.pi) - (math.pi / 2)
-      return start + (((math.sin(angle) + 1)/2) * delta)
-    end
-  ]],
-  pulseColor = [[
-    function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
-      local angle = (progress * 2 * math.pi) - (math.pi / 2)
-      local newProgress = ((math.sin(angle) + 1)/2);
-      return r1 + (newProgress * (r2 - r1)),
-           g1 + (newProgress * (g2 - g1)),
-           b1 + (newProgress * (b2 - b1)),
-           a1 + (newProgress * (a2 - a1))
-    end
-  ]],
-  pulseHSV = [[
-    function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
-      local angle = (progress * 2 * math.pi) - (math.pi / 2)
-      local newProgress = ((math.sin(angle) + 1)/2);
-      return WeakAuras.GetHSVTransition(newProgress, r1, g1, b1, a1, r2, g2, b2, a2)
-    end
-  ]],
-  fauxspin = [[
-    function(progress, startX, startY, scaleX, scaleY)
-      local angle = progress * 2 * math.pi
-      return math.cos(angle) * scaleX, startY + (progress * (scaleY - startY))
-    end
-  ]],
-  fauxflip = [[
-    function(progress, startX, startY, scaleX, scaleY)
-      local angle = progress * 2 * math.pi
-      return startX + (progress * (scaleX - startX)), math.cos(angle) * scaleY
-    end
-  ]],
-  backandforth = [[
-    function(progress, start, delta)
+circle2 = [[
+function(progress, startX, startY, deltaX, deltaY)
+    local angle = progress * 2 * math.pi
+    return startX + (deltaX * math.sin(angle)), startY + (deltaY * math.cos(angle))
+end
+]],
+
+spiral = [[
+function(progress, startX, startY, deltaX, deltaY)
+    local angle = progress * 2 * math.pi
+    return startX + (progress * deltaX * math.cos(angle)), startY + (progress * deltaY * math.sin(angle))
+end
+]],
+
+spiralandpulse = [[
+function(progress, startX, startY, deltaX, deltaY)
+    local angle = (progress + 0.25) * 2 * math.pi
+    return startX + (math.cos(angle) * deltaX * math.cos(angle*2)), startY + (math.abs(math.cos(angle)) * deltaY * math.sin(angle*2))
+end
+]],
+
+shake = [[
+function(progress, startX, startY, deltaX, deltaY)
     local prog
     if(progress < 0.25) then
-      prog = progress * 4
-      elseif(progress < .75) then
-      prog = 2 - (progress * 4)
+        prog = progress * 4
+    elseif(progress < .75) then
+        prog = 2 - (progress * 4)
     else
-      prog = (progress - 1) * 4
+        prog = (progress - 1) * 4
+    end
+    return startX + (prog * deltaX), startY + (prog * deltaY)
+end
+]],
+
+starShakeDecay = [[
+function(progress, startX, startY, deltaX, deltaY)
+    local spokes = 10
+    local fullCircles = 4
+
+    local r = min(abs(deltaX), abs(deltaY))
+    local xScale = deltaX / r
+    local yScale = deltaY / r
+
+    local deltaAngle = fullCircles *2 / spokes * math.pi
+    local p = progress * spokes
+    local i1 = floor(p)
+    p = p - i1
+
+    local angle1 = i1 * deltaAngle
+    local angle2 = angle1 + deltaAngle
+
+    local x1 = r * math.cos(angle1)
+    local y1 = r * math.sin(angle1)
+
+    local x2 = r * math.cos(angle2)
+    local y2 = r * math.sin(angle2)
+
+    local x, y = p * x2 + (1-p) * x1, p * y2 + (1-p) * y1
+    local ease = math.sin(progress * math.pi / 2)
+    return ease * x * xScale, ease * y * yScale
+end
+]],
+
+bounceDecay = [[
+function(progress, startX, startY, deltaX, deltaY)
+    local prog = (progress * 3.5) % 1
+    local bounce = math.ceil(progress * 3.5)
+    local bounceDistance = math.sin(prog * math.pi) * (bounce / 4)
+    return startX + (bounceDistance * deltaX), startY + (bounceDistance * deltaY)
+end
+]],
+
+bounce = [[
+function(progress, startX, startY, deltaX, deltaY)
+    local bounceDistance = math.sin(progress * math.pi)
+    return startX + (bounceDistance * deltaX), startY + (bounceDistance * deltaY)
+end
+]],
+
+flash = [[
+function(progress, start, delta)
+    local prog
+    if(progress < 0.5) then
+        prog = progress * 2
+    else
+        prog = (progress - 1) * 2
     end
     return start + (prog * delta)
+end
+]],
+
+pulse = [[
+function(progress, startX, startY, scaleX, scaleY)
+    local angle = (progress * 2 * math.pi) - (math.pi / 2)
+    return startX + (((math.sin(angle) + 1)/2) * (scaleX - 1)), startY + (((math.sin(angle) + 1)/2) * (scaleY - 1))
+end
+]],
+
+alphaPulse = [[
+function(progress, start, delta)
+    local angle = (progress * 2 * math.pi) - (math.pi / 2)
+    return start + (((math.sin(angle) + 1)/2) * delta)
+end
+]],
+
+pulseColor = [[
+function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
+    local angle = (progress * 2 * math.pi) - (math.pi / 2)
+    local newProgress = ((math.sin(angle) + 1)/2);
+    return r1 + (newProgress * (r2 - r1)),
+         g1 + (newProgress * (g2 - g1)),
+         b1 + (newProgress * (b2 - b1)),
+         a1 + (newProgress * (a2 - a1))
+end
+]],
+
+pulseHSV = [[
+function(progress, r1, g1, b1, a1, r2, g2, b2, a2)
+    local angle = (progress * 2 * math.pi) - (math.pi / 2)
+    local newProgress = ((math.sin(angle) + 1)/2);
+    return WeakAuras.GetHSVTransition(newProgress, r1, g1, b1, a1, r2, g2, b2, a2)
+end
+]],
+
+fauxspin = [[
+function(progress, startX, startY, scaleX, scaleY)
+    local angle = progress * 2 * math.pi
+    return math.cos(angle) * scaleX, startY + (progress * (scaleY - startY))
+end
+]],
+
+fauxflip = [[
+function(progress, startX, startY, scaleX, scaleY)
+    local angle = progress * 2 * math.pi
+    return startX + (progress * (scaleX - startX)), math.cos(angle) * scaleY
+end
+]],
+
+backandforth = [[
+function(progress, start, delta)
+    local prog
+    if(progress < 0.25) then
+        prog = progress * 4
+    elseif(progress < .75) then
+        prog = 2 - (progress * 4)
+    else
+        prog = (progress - 1) * 4
     end
-  ]],
-  wobble = [[
-    function(progress, start, delta)
+    return start + (prog * delta)
+end
+]],
+
+wobble = [[
+function(progress, start, delta)
     local angle = progress * 2 * math.pi
     return start + math.sin(angle) * delta
-    end
-  ]],
-  hide = [[
-    function()
+end
+]],
+
+hide = [[
+function()
     return 0
-    end
-  ]]
+end
+]]
 };
 
 Private.anim_presets = {
