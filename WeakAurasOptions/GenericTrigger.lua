@@ -312,7 +312,7 @@ local function GetCustomTriggerOptions(data, triggernum)
             return string.format(L["Unknown property '%s' found in '%s'"], property, k)
           end
           if type(propertyValue) ~= validProperties[property] then
-            return string.format(L["Invalid type for property '%s' in 's'. Expected '%s'"], property, k, validProperties[property])
+            return string.format(L["Invalid type for property '%s' in '%s'. Expected '%s'"], property, k, validProperties[property])
           end
         end
       end
