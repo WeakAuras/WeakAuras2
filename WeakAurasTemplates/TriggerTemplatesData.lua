@@ -2488,6 +2488,7 @@ else
           { spell = 2645, type = "buff", unit = "player"}, -- Ghost Wolf
           { spell = 6196, type = "buff", unit = "player"}, -- Far Sight
           { spell = 77762, type = "buff", unit = "player"}, -- Lava Surge
+          { spell = 79206, type = "buff", unit = "player"}, -- Spiritwalker's Grace
           { spell = 108271, type = "buff", unit = "player"}, -- Astral Shift
           { spell = 108281, type = "buff", unit = "player", talent = 14}, -- Ancestral Guidance
           { spell = 114050, type = "buff", unit = "player", talent = 21}, -- Ascendance
