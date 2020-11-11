@@ -175,51 +175,92 @@ function OptionsPrivate.GetInformationOptions(data)
   }
   order = order + 1
 
-  local sameIgnoreOptionsEvents = true
-  local commonIgnoreOptionsEvents
-  local ignoreOptionsEventDesc = ""
-  if data.controlledChildren then
-    for _, childId in ipairs(data.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
-      ignoreOptionsEventDesc = ignoreOptionsEventDesc .. "|cFFE0E000"..childData.id..": |r".. (childData.ignoreOptionsEventErrors and "true" or "false") .. "\n"
-      if commonIgnoreOptionsEvents == nil then
-        commonIgnoreOptionsEvents = childData.ignoreOptionsEventErrors ~= nil and childData.ignoreOptionsEventErrors or false
-      elseif childData.ignoreOptionsEventErrors ~= commonIgnoreOptionsEvents then
-        sameIgnoreOptionsEvents = false
+  local properties = {
+    ignoreOptionsEventErrors = {
+      name = L["Ignore Lua Errors on OPTIONS event"]
+    },
+    groupOffset = {
+      name = L["Offset by 1px"],
+      onParent = true,
+      regionType = "group"
+    }
+  }
+
+  local same = {
+    ignoreOptionsEventErrors = true,
+    groupOffset = true
+  }
+
+  local common = {
+
+  }
+
+  local mergedDesc = {
+
+  }
+
+  for property, propertyData in pairs(properties) do
+    if not propertyData.onParent and data.controlledChildren then
+      for _, childId in ipairs(data.controlledChildren) do
+        local childData = WeakAuras.GetData(childId)
+        if not propertyData.regionType or propertyData.regionType == childData.regionType then
+          mergedDesc[property] = (mergedDesc[property] or "") .. "|cFFE0E000"..childData.id..": |r".. (childData.information[property] and "true" or "false") .. "\n"
+          if common[property] == nil then
+            if childData.information[property] ~= nil then
+              common[property] = childData.information[property]
+            else
+              common[property] = false
+            end
+          elseif childData.information[property] ~= common[property] then
+            same[property] = false
+          end
+        end
+      end
+    else
+      if not propertyData.regionType or propertyData.regionType == data.regionType then
+        if data.information[property] ~= nil then
+          common[property] = data.information[property]
+        else
+          common[property] = false
+        end
       end
     end
-  end
 
-  args.ignoreOptionsEventErrors = {
-    type = "toggle",
-    name = sameIgnoreOptionsEvents and L["Ignore Lua Errors on OPTIONS event"] or "|cFF4080FF" .. L["Ignore Lua Errors on OPTIONS event"],
-    width = WeakAuras.doubleWidth,
-    get = function()
-      if data.controlledChildren then
-        return sameIgnoreOptionsEvents and commonIgnoreOptionsEvents or false
-      else
-        return data.ignoreOptionsEventErrors
-      end
-    end,
-    set = function(info, v)
-      if data.controlledChildren then
-        for _, childId in ipairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId)
-          childData.ignoreOptionsEventErrors = v
-          WeakAuras.Add(childData)
-          OptionsPrivate.ClearOptions(childData.id)
-        end
-      else
-        data.ignoreOptionsEventErrors = v
-        WeakAuras.Add(data)
-        OptionsPrivate.ClearOptions(data.id)
-      end
-      WeakAuras.ClearAndUpdateOptions(data.id)
-    end,
-    desc = sameIgnoreOptionsEvents and "" or ignoreOptionsEventDesc,
-    order = order
-  }
-  order = order + 1
+    if common[property] ~= nil then
+      args["compatibility_" .. property] = {
+        type = "toggle",
+        name = same[property] and propertyData.name or "|cFF4080FF" .. propertyData.name,
+        width = WeakAuras.doubleWidth,
+        get = function()
+          if not propertyData.onParent and data.controlledChildren then
+            return same[property] and common[property] or false
+          else
+            return data.information[property]
+          end
+        end,
+        set = function(info, v)
+          if not propertyData.onParent and data.controlledChildren then
+            for _, childId in ipairs(data.controlledChildren) do
+              local childData = WeakAuras.GetData(childId)
+              if not propertyData.regionType or propertyData.regionType == childData.regionType then
+                childData.information[property] = v
+                WeakAuras.Add(childData)
+                OptionsPrivate.ClearOptions(childData.id)
+              end
+            end
+          else
+            data.information[property] = v
+            WeakAuras.Add(data)
+            OptionsPrivate.ClearOptions(data.id)
+          end
+          WeakAuras.ClearAndUpdateOptions(data.id)
+        end,
+        desc = same[property] and "" or mergedDesc[property],
+        order = order
+      }
+      order = order + 1
+    end
+  end
 
 
   return options

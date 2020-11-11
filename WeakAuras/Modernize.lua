@@ -1033,5 +1033,14 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 40 then
+    data.information = data.information or {}
+    if data.regionType == 'group' then
+      data.information.groupOffset = true
+    end
+    data.information.ignoreOptionsEventErrors = data.ignoreOptionsEventErrors
+    data.ignoreOptionsEventErrors = nil
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
 end

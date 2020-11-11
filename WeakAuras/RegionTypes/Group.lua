@@ -78,7 +78,11 @@ end
 
 -- Modify a given region/display
 local function modify(parent, region, data)
-  data.selfPoint = "CENTER";
+  if data.information.groupOffset then
+    data.selfPoint = "BOTTOMLEFT";
+  else
+    data.selfPoint = "CENTER";
+  end
   WeakAuras.regionPrototype.modify(parent, region, data);
   -- Localize
   local border = region.border;
