@@ -1607,9 +1607,7 @@ Private.event_prototypes = {
       AddUnitEventForEvents(result, unit, "UNIT_LEVEL")
       AddUnitEventForEvents(result, unit, "UNIT_FACTION")
       AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
-      if trigger.use_ignoreDead or trigger.use_ignoreDisconnected then
-        AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
-      end
+      AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
       return result;
     end,
     internal_events = function(trigger)
@@ -1803,6 +1801,14 @@ Private.event_prototypes = {
         display = L["Attackable"],
         type = "tristate",
         init = "UnitCanAttack('player', unit)",
+        store = true,
+        conditionType = "bool"
+      },
+      {
+        name = "inCombat",
+        display = L["In Combat"],
+        type = "tristate",
+        init = "UnitAffectingCombat(unit)",
         store = true,
         conditionType = "bool"
       },
