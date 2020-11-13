@@ -578,6 +578,63 @@ local function GetBuffTriggerOptions(data, triggernum)
         WeakAuras.Add(data)
       end
     },
+    use_isBossDebuff = {
+      type = "toggle",
+      name = function(input)
+        local value = trigger.use_isBossDebuff
+        if value == nil then return L["Is Boss Debuff"]
+        elseif value == false then return "|cFFFF0000 "..L["Negator"].." "..L["Is Boss Debuff"]
+        else return "|cFF00FF00"..L["Is Boss Debuff"] end
+      end,
+      width = WeakAuras.doubleWidth,
+      order = 64.1,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end,
+      get = function()
+        local value = trigger.use_isBossDebuff
+        if value == nil then return false
+        elseif value == false then return "false"
+        else return "true" end
+      end,
+      set = function(info, v)
+        if v then
+          trigger.use_isBossDebuff = true
+        else
+          local value = trigger.use_isBossDebuff
+          if value == false then trigger.use_isBossDebuff = nil
+          else trigger.use_isBossDebuff = false end
+        end
+        WeakAuras.Add(data)
+      end
+    },
+    use_castByPlayer = {
+      type = "toggle",
+      name = function(input)
+        local value = trigger.use_castByPlayer
+        if value == nil then return L["Cast by Players"]
+        elseif value == false then return "|cFFFF0000 "..L["Negator"].." "..L["Cast by Players"]
+        else return "|cFF00FF00"..L["Cast by Player Character"] end
+      end,
+      desc = L["Only Match auras cast by a player (not an npc)"],
+      width = WeakAuras.doubleWidth,
+      order = 64.2,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end,
+      get = function()
+        local value = trigger.use_castByPlayer
+        if value == nil then return false
+        elseif value == false then return "false"
+        else return "true" end
+      end,
+      set = function(info, v)
+        if v then
+          trigger.use_castByPlayer = true
+        else
+          local value = trigger.use_castByPlayer
+          if value == false then trigger.use_castByPlayer = nil
+          else trigger.use_castByPlayer = false end
+        end
+        WeakAuras.Add(data)
+      end
+    },
     useAffected = {
       type = "toggle",
       name = L["Fetch Affected/Unaffected Names"],
