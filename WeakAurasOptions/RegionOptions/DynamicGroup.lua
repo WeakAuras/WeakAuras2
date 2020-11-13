@@ -447,7 +447,7 @@ local function createOptions(id, data)
 
   return {
     dynamicgroup = options,
-    position = OptionsPrivate.commonOptions.PositionOptions(id, data, nil, true, disableSelfPoint),
+    position = OptionsPrivate.commonOptions.PositionOptions(id, data, nil, true, disableSelfPoint, true),
   };
 end
 

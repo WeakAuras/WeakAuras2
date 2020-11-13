@@ -586,7 +586,7 @@ local function createOptions(id, data)
 
   return {
     group = options,
-    position = OptionsPrivate.commonOptions.PositionOptions(id, data, nil, true, true),
+    position = OptionsPrivate.commonOptions.PositionOptions(id, data, nil, true, true, true),
   };
 end
 
