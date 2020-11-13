@@ -612,7 +612,10 @@ local function ConstructTextEditor(frame)
             func, errorString = loadstring("return " .. str)
           end
           if not errorString and validator then
-            errorString = validator(func())
+            local ok, validate = xpcall(func, function(err) errorString = err end)
+            if ok then
+              errorString = validator(validate)
+            end
           end
           if errorString then
             urlText:Hide()
