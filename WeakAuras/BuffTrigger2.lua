@@ -245,7 +245,7 @@ local function UpdateToolTipDataInMatchData(matchData, time)
   return changed
 end
 
-local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, isBossDebuff, isCastByPlayer, spellId)
   if not matchData[unit] then
     matchData[unit] = {}
   end
@@ -268,6 +268,8 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name
       unit = unit,
       unitName = GetUnitName(unit, false) or "",
       isStealable = isStealable,
+      isBossDebuff = isBossDebuff,
+      isCastByPlayer = isCastByPlayer,
       time = time,
       lastChanged = time,
       filter = filter,
@@ -334,6 +336,16 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name
 
   if data.isStealable ~= isStealable then
     data.isStealable = isStealable
+    changed = true
+  end
+
+  if data.isBossDebuff ~= isBossDebuff then
+    data.isBossDebuff = isBossDebuff
+    changed = true
+  end
+
+  if data.isCastByPlayer ~= isCastByPlayer then
+    data.isCastByPlayer = isCastByPlayer
     changed = true
   end
 
@@ -1219,7 +1231,7 @@ local function PrepareMatchData(unit, filter)
     local time = GetTime()
     local index = 1
     while true do
-      local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter)
+      local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, isBossDebuff, isCastByPlayer = UnitAura(unit, index, filter)
       if not name then
         break
       end
@@ -1232,7 +1244,7 @@ local function PrepareMatchData(unit, filter)
         debuffClass = string.lower(debuffClass)
       end
 
-      local updatedMatchData = UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+      local updatedMatchData = UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, isBossDebuff, isCastByPlayer, spellId)
       index = index + 1
     end
 
@@ -1327,7 +1339,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
 
   if UnitExistsFixed(unit) then
     while true do
-      local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter)
+      local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, isBossDebuff, isCastByPlayer = UnitAura(unit, index, filter)
       if not name then
         break
       end
@@ -1340,7 +1352,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
         debuffClass = string.lower(debuffClass)
       end
 
-      local updatedMatchData = UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+      local updatedMatchData = UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, isBossDebuff, isCastByPlayer, spellId)
 
       if updatedMatchData then -- Aura data changed, check against triggerInfos
         CheckScanFuncs(scanFuncName and scanFuncName[name], unit, filter, index)
@@ -1923,6 +1935,8 @@ local function createScanFunc(trigger)
   local isMulti = trigger.unit == "multi"
   local useStacks = not isSingleMissing and not isMulti and trigger.useStacks
   local use_stealable = not isSingleMissing and not isMulti and trigger.use_stealable
+  local use_isBossDebuff = not isSingleMissing and not isMulti and trigger.use_isBossDebuff
+  local use_castByPlayer = not isSingleMissing and not isMulti and trigger.use_castByPlayer
   local use_debuffClass = not isSingleMissing and not isMulti and trigger.use_debuffClass
   local use_tooltip = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltip
   local use_tooltipValue = not isSingleMissing and not isMulti and trigger.fetchTooltip and trigger.use_tooltipValue
@@ -1930,7 +1944,8 @@ local function createScanFunc(trigger)
   local use_ignore_name = not isSingleMissing and not isMulti and trigger.useIgnoreName and trigger.ignoreAuraNames
   local use_ignore_spellId = not isSingleMissing and not isMulti and trigger.useIgnoreExactSpellId and trigger.ignoreAuraSpellids
 
-  if not useStacks and use_stealable == nil and not use_debuffClass and trigger.ownOnly == nil
+  if not useStacks and use_stealable == nil and use_isBossDebuff == nil and use_castByPlayer == nil
+       and not use_debuffClass and trigger.ownOnly == nil
        and not use_tooltip and not use_tooltipValue and not trigger.useNamePattern and not use_total
        and not use_ignore_name and not use_ignore_spellId then
     return nil
@@ -1973,6 +1988,35 @@ local function createScanFunc(trigger)
       end
     ]]
   end
+
+  if use_isBossDebuff then
+    ret = ret .. [[
+      if not matchData.isBossDebuff then
+        return false
+      end
+    ]]
+  elseif use_isBossDebuff == false then
+    ret = ret .. [[
+      if matchData.isBossDebuff then
+        return false
+      end
+    ]]
+  end
+
+  if use_castByPlayer then
+    ret = ret .. [[
+      if not matchData.isCastByPlayer then
+        return false
+      end
+    ]]
+  elseif use_castByPlayer == false then
+    ret = ret .. [[
+      if matchData.isCastByPlayer then
+        return false
+      end
+    ]]
+  end
+
   if use_debuffClass then
     local ret2 = [[
       local tDebuffClass = %s;
