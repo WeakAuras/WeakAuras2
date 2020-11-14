@@ -805,9 +805,9 @@ else
       [3] = {
         title = L["Abilities"],
         args = {
-          { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}, titleSuffix=" (1 Charge)" }, -- Charge
+          { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}, titleSuffix =" (1 Charge)" }, -- Charge
           { spell = 100, type = "ability", requiresTarget = true}, -- Charge
-          { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, titleSuffix=" (2 Charges)"}, -- Charge
+          { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, titleSuffix =" (2 Charges)"}, -- Charge
           { spell = 355, type = "ability", debuff = true, requiresTarget = true}, -- Taunt
           { spell = 772, type = "ability", debuff = true, requiresTarget = true, talent = 9}, -- Rend
           { spell = 845, type = "ability", talent = 15}, -- Cleave
@@ -821,8 +821,8 @@ else
           { spell = 6544, type = "ability"}, -- Heroic Leap
           { spell = 6552, type = "ability", requiresTarget = true}, -- Pummel
           { spell = 6673, type = "ability"}, -- Battle Shout
-          { spell = 7384, type = "ability", requiresTarget = true, overlayGlow = true, talent = {19,21}, titleSuffix=" (1 Charge)"}, -- Overpower
-          { spell = 7384, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 20, titleSuffix=" (2 Charges)"}, -- Overpower
+          { spell = 7384, type = "ability", requiresTarget = true, overlayGlow = true, talent = {19,21}, titleSuffix =" (1 Charge)"}, -- Overpower
+          { spell = 7384, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 20, titleSuffix =" (2 Charges)"}, -- Overpower
           { spell = 12294, type = "ability", requiresTarget = true}, -- Mortal Strike
           { spell = 12323, type = "ability", debuff = true}, -- Piercing Howl
           { spell = 18499, type = "ability", buff = true}, -- Berserker Rage
@@ -913,9 +913,9 @@ else
       [3] = {
         title = L["Abilities"],
         args = {
-          { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}, titleSuffix=" (1 Charge)" }, -- Charge
+          { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}, titleSuffix =" (1 Charge)" }, -- Charge
           { spell = 100, type = "ability", requiresTarget = true}, -- Charge
-          { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, titleSuffix=" (2 Charges)"}, -- Charge
+          { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, titleSuffix =" (2 Charges)"}, -- Charge
           { spell = 355, type = "ability", debuff = true, requiresTarget = true}, -- Taunt
           { spell = 1161, type = "ability"}, -- Challenging Shout
           { spell = 1464, type = "ability", requiresTarget = true}, -- Slam
@@ -1019,9 +1019,9 @@ else
       [3] = {
         title = L["Abilities"],
         args = {
-          { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}, titleSuffix=" (1 Charge)" }, -- Charge
+          { spell = 100, type = "ability", requiresTarget = true, talent = {5,6}, titleSuffix =" (1 Charge)" }, -- Charge
           { spell = 100, type = "ability", requiresTarget = true}, -- Charge
-          { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, titleSuffix=" (2 Charges)"}, -- Charge
+          { spell = 100, type = "ability", charges = true, requiresTarget = true, talent = 4, titleSuffix =" (2 Charges)"}, -- Charge
           { spell = 355, type = "ability", debuff = true, requiresTarget = true}, -- Taunt
           { spell = 871, type = "ability", buff = true}, -- Shield Wall
           { spell = 1160, type = "ability", debuff = true}, -- Demoralizing Shout
