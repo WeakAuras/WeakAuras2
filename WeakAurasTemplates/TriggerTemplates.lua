@@ -237,16 +237,36 @@ local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
     trigger = {
       unit = item.unit or isBuff and "player" or "target",
       type = "aura2",
-      useName = true,
-      auranames = {
-        tostring(item.buffId or item.spell)
-      },
       matchesShowOn = buffShowOn,
       debuffType = isBuff and "HELPFUL" or "HARMFUL",
       ownOnly = not item.forceOwnOnly and true or item.ownOnly,
       unitExists = false,
     }
   };
+
+  if item.spellIds then
+    if item.exactSpellId then
+      triggers[position].trigger.useExactSpellId = true
+      triggers[position].trigger.auraspellids = {}
+      for index, spell in ipairs(item.spellIds) do
+        triggers[position].trigger.auraspellids[index] = tostring(spell)
+      end
+    else
+      triggers[position].trigger.useName = true
+      triggers[position].trigger.auranames = {}
+      for index, spell in ipairs(item.spellIds) do
+        triggers[position].trigger.auranames[index] = tostring(spell)
+      end
+    end
+  else
+    if item.exactSpellId then
+      triggers[position].trigger.useExactSpellId = true
+      triggers[position].trigger.auraspellids = { tostring(item.buffId or item.spell) }
+    else
+      triggers[position].trigger.useName = true
+      triggers[position].trigger.auranames = { tostring(item.buffId or item.spell) }
+    end
+  end
 
   if triggers[position].trigger.unit == "multi" and buffShowOn == "showOnActive"  then
     local trigger = triggers[position].trigger
@@ -255,17 +275,6 @@ local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
     trigger.group_count = "1"
   end
 
-  if (item.spellIds) then
-    triggers[position].trigger.auranames = {}
-    for index, spell in ipairs(item.spellIds) do
-      triggers[position].trigger.auranames[index] = tostring(spell)
-    end
-  end
-  if (item.fullscan) then
-    triggers[position].trigger.use_spellId = true;
-    triggers[position].trigger.fullscan = true;
-    triggers[position].trigger.spellId = tostring(item.buffId or item.spell);
-  end
   if (item.unit == "group") then
     triggers[position].trigger.name_info = "players";
   end
@@ -1570,7 +1579,7 @@ function WeakAuras.CreateTemplateView(frame)
     replaceButton:SetFullWidth(true);
     replaceButton:SetClick(function()
       replaceTriggers(newView.data, newView.chosenItem, newView.chosenSubType);
-      for _,v in pairs({"class","spec","talent","pvptalent","race"}) do
+      for _,v in pairs({"class", "spec", "talent", "pvptalent", "race", "covenant"}) do
         newView.data.load[v] = nil;
         newView.data.load["use_"..v] = nil;
       end
