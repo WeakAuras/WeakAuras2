@@ -247,6 +247,14 @@ local function createOptions(id, data)
       }
     },
 
+    useTooltip = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Tooltip on Mouseover"],
+      hidden = function() return not OptionsPrivate.Private.CanHaveTooltip(data) end,
+      order = 51
+    },
+
     endHeader = {
       type = "header",
       order = 100,
