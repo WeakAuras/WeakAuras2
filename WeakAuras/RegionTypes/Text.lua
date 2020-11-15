@@ -95,6 +95,21 @@ local function modify(parent, region, data)
   region:SetWidth(region.width);
   region:SetHeight(region.height);
 
+  local tooltipType = Private.CanHaveTooltip(data);
+  if(tooltipType and data.useTooltip) then
+    if not region.tooltipFrame then
+      region.tooltipFrame = CreateFrame("frame", nil, region);
+      region.tooltipFrame:SetAllPoints(region);
+      region.tooltipFrame:SetScript("OnEnter", function()
+        Private.ShowMouseoverTooltip(region, region);
+      end);
+      region.tooltipFrame:SetScript("OnLeave", Private.HideTooltip);
+    end
+    region.tooltipFrame:EnableMouse(true);
+  elseif region.tooltipFrame then
+    region.tooltipFrame:EnableMouse(false);
+  end
+
   text:SetTextHeight(data.fontSize);
   text:SetShadowColor(unpack(data.shadowColor))
   text:SetShadowOffset(data.shadowXOffset, data.shadowYOffset)
