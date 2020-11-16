@@ -208,7 +208,7 @@ local legendariesToBonusId = {
 
 WeakAuras.GetLegendariesBonusIds = function()
   if WeakAuras.IsClassic() then
-    return
+    return ""
   end
 
   local classId = select(3, UnitClass('player'))
