@@ -20,13 +20,13 @@ end
 
 local properties = {
   border_visible = {
-    display = L["Show Border"],
+    display = L["Visibility"],
     setter = "SetVisible",
     type = "bool",
     defaultProperty = true
   },
   border_color = {
-    display = L["Border Color"],
+    display = L["Color"],
     setter = "SetBorderColor",
     type = "color"
   },

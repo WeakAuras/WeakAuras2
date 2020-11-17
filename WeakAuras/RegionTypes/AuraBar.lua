@@ -55,7 +55,7 @@ local properties = {
     type = "color",
   },
   icon_visible = {
-    display = {L["Icon"], L["Visible"]},
+    display = {L["Icon"], L["Visibility"]},
     setter = "SetIconVisible",
     type = "bool"
   },
