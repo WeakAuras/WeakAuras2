@@ -35,7 +35,7 @@ end
 
 local properties = {
   glow = {
-    display = L["Show Glow"],
+    display = L["Visibility"],
     setter = "SetVisible",
     type = "bool",
     defaultProperty = true
