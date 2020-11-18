@@ -5157,7 +5157,7 @@ end
 -- Retail starts here
 --------------------------------------------------------------------------------
 if not WeakAuras.IsClassic() then
-  local resourceSection = 10
+  local resourceSection = 11
   -- Warrior
   for i = 1, 3 do
     tinsert(templates.class.WARRIOR[i][resourceSection].args, createSimplePowerTemplate(1));
