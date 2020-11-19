@@ -45,6 +45,50 @@ local default = function(parentType)
   return options
 end
 
+local funcs = {}
+
+local function getProperties()
+  local options = {}
+  for glowType, glowData in pairs(glows) do
+    for property, propertyData in pairs(glowData.args) do
+      if propertyData.type ~= "gradient" -- not supported by ace3
+      and propertyData.type ~= "group" -- no recurse (for now)
+      then
+        local key = glowType.."_"..property
+        options[key] = {}
+        for k, v in pairs(propertyData) do
+          if k == "name" then
+            options[key].display = glowType.." "..v
+          elseif k == "type" and v == "range" then
+            options[key][k] = "number"
+          elseif k == "type" and v == "select" then
+            options[key][k] = "list"
+          elseif k == "type" and v == "toggle" then
+            options[key][k] = "bool"
+          elseif k ~= "desc"
+          and k ~= "order"
+          then
+            options[key][k] = v
+          end
+        end
+        local setterKey = ("Set"..key):gsub("%s+", "_")
+        options[key].setter = setterKey
+        funcs[setterKey] = function(self, a, b, c, d)
+          if d then -- multi args
+            self[key] = { a, b, c, d }
+          else
+            self[key] = a
+          end
+          if self.glow then
+            self:SetVisible(true)
+          end
+        end
+      end
+    end
+  end
+  return options
+end
+
 local properties = {
   glow = {
     display = L["Visibility"],
@@ -53,94 +97,18 @@ local properties = {
     defaultProperty = true
   },
   glowType = {
-    display =L["Type"],
+    display = L["Type"],
     setter = "SetGlowType",
     type = "list",
     values = Private.glow_types,
   },
-  useGlowColor = {
-    display = L["Use Custom Color"],
-    setter = "SetUseGlowColor",
-    type = "bool"
-  },
-  glowColor = {
-    display = L["Custom Color"],
-    setter = "SetGlowColor",
-    type = "color"
-  },
-  glowLines = {
-    display = L["Lines & Particles"],
-    setter = "SetGlowLines",
-    type = "number",
-    min = 1,
-    softMax = 30,
-    bigStep = 1,
-    default = 4
-  },
-  glowFrequency = {
-    display = L["Frequency"],
-    setter = "SetGlowFrequency",
-    type = "number",
-    softMin = -2,
-    softMax = 2,
-    bigStep = 0.1,
-    default = 0.25
-  },
-  glowLength = {
-    display = L["Length"],
-    setter = "SetGlowLength",
-    type = "number",
-    min = 1,
-    softMax = 20,
-    bigStep = 1,
-    default = 10
-  },
-  glowThickness = {
-    display = L["Thickness"],
-    setter = "SetGlowThickness",
-    type = "number",
-    min = 1,
-    softMax = 20,
-    bigStep = 1,
-    default = 1
-  },
-  glowScale = {
-    display = L["Scale"],
-    setter = "SetGlowScale",
-    type = "number",
-    min = 0.05,
-    softMax = 10,
-    bigStep = 0.05,
-    default = 1,
-    isPercent = true
-  },
-  glowBorder = {
-    display = L["Border"],
-    setter = "SetGlowBorder",
-    type = "bool"
-  },
-  glowXOffset = {
-    display = L["X-Offset"],
-    setter = "SetGlowXOffset",
-    type = "number",
-    softMin = -100,
-    softMax = 100,
-    bigStep = 1,
-    default = 0
-  },
-  glowYOffset = {
-    display = L["Y-Offset"],
-    setter = "SetGlowYOffset",
-    type = "number",
-    softMin = -100,
-    softMax = 100,
-    bigStep = 1,
-    default = 0
-  },
 }
 
-local function glowStart(self, frame)
+for k, v in pairs(getProperties()) do
+  properties[k] = v
+end
 
+local function glowStart(self, frame)
   if frame:GetWidth() < 1 or frame:GetHeight() < 1 then
     self.glowStop(frame)
     return
@@ -187,126 +155,62 @@ local function glowStart(self, frame)
   self.glowStart(frame, options)
 end
 
-local funcs = {
-  SetVisible = function(self, visible)
-    --ViragDevTool_AddData(self, "SetVisible")
-    self.glow = visible
+funcs["SetVisible"] = function(self, visible)
+  self.glow = visible
 
-    if MSQ and self.parentType == "icon" then
-      if (visible) then
-        self.__MSQ_Shape = self:GetParent().button.__MSQ_Shape
-        glowStart(self, self);
-      else
-        self.glowStop(self);
-      end
-    elseif (visible) then
+  if MSQ and self.parentType == "icon" then
+    if (visible) then
+      self.__MSQ_Shape = self:GetParent().button.__MSQ_Shape
       glowStart(self, self);
     else
       self.glowStop(self);
     end
-    if visible then
-      self:Show()
-    else
-      self:Hide()
-    end
-  end,
-  SetGlowType = function(self, newType)
-    newType = glows[newType] and newType or "Button Glow"
-    local glowSettings = glows[newType]
-    if newType == self.glowType then
-      return
-    end
+  elseif (visible) then
+    glowStart(self, self);
+  else
+    self.glowStop(self);
+  end
+  if visible then
+    self:Show()
+  else
+    self:Hide()
+  end
+end
 
-    local isGlowing = self.glow
-    if isGlowing then
-      self:SetVisible(false)
-    end
+funcs["SetGlowType"] = function(self, newType)
+  newType = glows[newType] and newType or "Button Glow"
+  local glowSettings = glows[newType]
+  if newType == self.glowType then
+    return
+  end
 
-    self.glowStart = glowSettings.start
-    self.glowStop = glowSettings.stop
-    if newType == "Button Glow" then
-      if self.parentRegionType ~= "aurabar" then
-        self.parent:AnchorSubRegion(self, "area", "region")
-      end
-    else
-      if self.parentRegionType ~= "aurabar" then
-        self.parent:AnchorSubRegion(self, "area")
-      end
+  local isGlowing = self.glow
+  if isGlowing then
+    self:SetVisible(false)
+  end
+
+  self.glowStart = glowSettings.start
+  self.glowStop = glowSettings.stop
+  if newType == "Button Glow" then
+    if self.parentRegionType ~= "aurabar" then
+      self.parent:AnchorSubRegion(self, "area", "region")
     end
-    self.glowType = newType
-    if isGlowing then
-      self:SetVisible(true)
-    end
-  end,
-  SetUseGlowColor = function(self, useGlowColor)
-    self.useGlowColor = useGlowColor
-    if self.glow then
-      self:SetVisible(true)
-    end
-  end,
-  SetGlowColor = function(self, r, g, b, a)
-    self.glowColor = {r, g, b, a}
-    if self.glow then
-      self:SetVisible(true)
-    end
-  end,
-  SetGlowLines = function(self, lines)
-    self.glowLines = lines
-    if self.glow then
-      if self.glowType == "AutoCast Glow" then -- workaround ACShine not updating numbers of dots
-        self:SetVisible(false)
-      end
-      self:SetVisible(true)
-    end
-  end,
-  SetGlowFrequency = function(self, frequency)
-    self.glowFrequency = frequency
-    if self.glow then
-      self:SetVisible(true)
-    end
-  end,
-  SetGlowLength = function(self, length)
-    self.glowLength = length
-    if self.glow then
-      self:SetVisible(true)
-    end
-  end,
-  SetGlowThickness = function(self, thickness)
-    self.glowThickness = thickness
-    if self.glow then
-      self:SetVisible(true)
-    end
-  end,
-  SetGlowScale = function(self, scale)
-    self.glowScale = scale
-    if self.glow then
-      self:SetVisible(true)
-    end
-  end,
-  SetGlowBorder = function(self, border)
-    self.glowBorder = border
-    if self.glow then
-      self:SetVisible(true)
-    end
-  end,
-  SetGlowXOffset = function(self, xoffset)
-    self.glowXOffset = xoffset
-    if self.glow then
-      self:SetVisible(true)
-    end
-  end,
-  SetGlowYOffset = function(self, yoffset)
-    self.glowYOffset = yoffset
-    if self.glow then
-      self:SetVisible(true)
-    end
-  end,
-  UpdateSize = function(self, ...)
-    if self.glow then
-      self:SetVisible(true)
+  else
+    if self.parentRegionType ~= "aurabar" then
+      self.parent:AnchorSubRegion(self, "area")
     end
   end
-}
+  self.glowType = newType
+  if isGlowing then
+    self:SetVisible(true)
+  end
+end
+
+funcs["UpdateSize"] = function(self, ...)
+  if self.glow then
+    self:SetVisible(true)
+  end
+end
 
 local function create()
   local region = CreateFrame("FRAME", nil, UIParent)
