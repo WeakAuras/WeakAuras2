@@ -15,12 +15,13 @@ local glows = LCG:GetGlows()
 
 local function getDefaults()
   local options = {}
-  local function recurse(settings, prefix, parent)
+  local function recurse(settings, level, prefix, parent)
      for k, v in pairs(settings) do
         if ( type(v) == "table" ) then
            recurse(
               v,
-              (prefix or "")..(v.args and k.."_" or ""),
+              level + 1,
+              (level > 2 and prefix or "")..(v.args and k.."_" or ""),
               k
            )
         end
@@ -29,7 +30,7 @@ local function getDefaults()
         end
      end
   end
-  recurse(glows)
+  recurse(glows, 1)
   return options
 end
 
@@ -54,30 +55,29 @@ local function getProperties()
       if propertyData.type ~= "gradient" -- not supported by ace3
       and propertyData.type ~= "group" -- no recurse (for now)
       then
-        local key = glowType.."_"..property
-        options[key] = {}
+        options[property] = {}
         for k, v in pairs(propertyData) do
           if k == "name" then
-            options[key].display = glowType.." "..v
+            options[property].display = v
           elseif k == "type" and v == "range" then
-            options[key][k] = "number"
+            options[property][k] = "number"
           elseif k == "type" and v == "select" then
-            options[key][k] = "list"
+            options[property][k] = "list"
           elseif k == "type" and v == "toggle" then
-            options[key][k] = "bool"
+            options[property][k] = "bool"
           elseif k ~= "desc"
           and k ~= "order"
           then
-            options[key][k] = v
+            options[property][k] = v
           end
         end
-        local setterKey = ("Set"..key):gsub("%s+", "_")
-        options[key].setter = setterKey
+        local setterKey = ("Set"..property):gsub("%s+", "_")
+        options[property].setter = setterKey
         funcs[setterKey] = function(self, a, b, c, d)
           if d then -- multi args
-            self[key] = { a, b, c, d }
+            self.glowOptions[property] = { a, b, c, d }
           else
-            self[key] = a
+            self.glowOptions[property] = a
           end
           if self.glow then
             self:SetVisible(true)
@@ -115,10 +115,10 @@ local function glowStart(self, frame)
   end
 
   local options = {}
-  for k, v in pairs(self) do
+  for k, v in pairs(self.glowOptions) do
     if type(k) == "string" then
       local key1, key2, key3, key4, more
-      key1, more = k:match("^"..self.glowType.."_([^_]+)(.*)")
+      key1, more = k:match("^([^_]+)(.*)")
       if more then
         key2, more = more:match("_([^_]+)(.*)")
         if more then
@@ -245,8 +245,9 @@ local function modify(parent, region, parentData, data, first)
   region.parent = parent
 
   region.parentType = parentData.regionType
+  region.glowOptions = region.glowOptions or {}
   for k in pairs(getDefaults()) do
-    region[k] = data[k]
+    region.glowOptions[k] = data[k]
   end
 
   region:SetGlowType(data.glowType)

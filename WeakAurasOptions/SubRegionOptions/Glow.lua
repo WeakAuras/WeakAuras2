@@ -13,12 +13,13 @@ local indentWidth = 0.15
 local glows = LCG:GetGlows()
 local function getDefaults()
   local options = {}
-  local function recurse(settings, prefix, parent)
+  local function recurse(settings, level, prefix, parent)
     for k, v in pairs(settings) do
         if ( type(v) == "table" ) then
           recurse(
               v,
-              (prefix or "")..(v.args and k.."_" or ""),
+              level + 1,
+              (level > 2 and prefix or "")..(v.args and k.."_" or ""),
               k
           )
         end
@@ -27,11 +28,11 @@ local function getDefaults()
         end
     end
   end
-  recurse(glows)
+  recurse(glows, 1)
   return options
 end
 
-local function LCGkeyToData(key)
+local function LCGkeyToData(glowType, key)
   local key1, key2, key3, key4, more
   key1, more = key:match("^([^_]+)(.*)")
   if more then
@@ -47,12 +48,12 @@ local function LCGkeyToData(key)
     if key2 then
       if key3 then
         if key4 then
-          return glows[key1].args[key2].args[key3].args[key4]
+          return glows[glowType].args[key2].args[key3].args[key4]
         else
-          return glows[key1].args[key2].args[key3]
+          return glows[glowType].args[key2].args[key3]
         end
       else
-        return glows[key1].args[key2]
+        return glows[glowType].args[key2]
       end
     end
   end
@@ -77,12 +78,12 @@ local function createOptions(parentData, data, index, subIndex)
         and k ~= "stop"
         then
           if ( type(v) == "table" ) then
-            local key = v.name and ("sub."..index..".subglow."..(prefix or ""))..k or k
+            local key = v.name and ("sub."..index..".subglow."..(level > 2 and prefix or ""))..k or k
             copy[key] = MyCopyTable(
               v,
               level + 1,
               glowType or k,
-              (prefix or "")..(v.args and k.."_" or "")
+              (level > 2 and prefix or "")..(v.args and k.."_" or "")
             )
           else
             copy[k] = v
@@ -158,7 +159,7 @@ local function createOptions(parentData, data, index, subIndex)
         local defaults = getDefaults()
         for k, v in pairs(data) do
           if k:match("^([^_]+)(.*)") == data.glowType then
-            local keyData = LCGkeyToData(k)
+            local keyData = LCGkeyToData(data.glowType, k)
             local default = keyData and keyData.default
             if type(v) ~= "table" then
               if default ~= v then
