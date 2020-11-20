@@ -217,7 +217,7 @@ function OptionsPrivate.GetInformationOptions(data)
         end
       end
     else
-      if not propertyData.regionType or propertyData.regionType == data.regionType then
+      if not isTmpGroup and (not propertyData.regionType or propertyData.regionType == data.regionType) then
         if data.information[property] ~= nil then
           common[property] = data.information[property]
         else
