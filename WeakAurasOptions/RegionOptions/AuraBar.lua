@@ -587,7 +587,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, width, hei
       if data.iconSource == 0 then
         iconPath = data.displayIcon or "Interface\\Icons\\INV_Misc_QuestionMark"
       else
-        iconPath = path or "Interface\\Icons\\INV_Misc_QuestionMark"
+        iconPath = path or data.displayIcon or "Interface\\Icons\\INV_Misc_QuestionMark"
       end
       local success = icon:SetTexture(data.auto and path or data.displayIcon) and (data.auto and path or data.displayIcon);
       icon:SetTexture(iconPath)

@@ -263,7 +263,7 @@ local function modifyThumbnail(parent, frame, data)
     if data.iconSource == 0 then
       iconPath = data.displayIcon or "Interface\\Icons\\INV_Misc_QuestionMark"
     else
-      iconPath = path or "Interface\\Icons\\INV_Misc_QuestionMark"
+      iconPath = path or data.displayIcon or "Interface\\Icons\\INV_Misc_QuestionMark"
     end
     WeakAuras.SetTextureOrAtlas(self.icon, iconPath)
   end
