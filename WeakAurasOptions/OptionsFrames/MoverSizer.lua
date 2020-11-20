@@ -937,11 +937,13 @@ local function ConstructMoverSizer(parent)
     frame.offscreenText:Hide()
 
     -- Check if the center is offscreen
+    -- How many pixels of the aura need to be visible
+    local margin = 30
     local x, y = mover:GetCenter()
     if x and y then
-      if x < 0 or x > GetScreenWidth() or y < 0 or y > GetScreenHeight() then
+      if mover:GetRight() < margin or mover:GetLeft() + margin > GetScreenWidth() or mover:GetTop() < 20 or mover:GetBottom() + margin > GetScreenHeight() then
         local arrowX, arrowY = frame.arrowTexture:GetCenter()
-        local arrowAngle = atan2(selfY - arrowY, selfX - arrowX)
+        local arrowAngle = atan2(y - arrowY, x - arrowX)
         frame.offscreenText:Show()
         frame.arrowTexture:Show()
         frame.arrowTexture:SetRotation( (arrowAngle - 90) / 180 * math.pi)
