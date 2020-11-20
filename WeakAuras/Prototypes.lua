@@ -5462,6 +5462,47 @@ Private.event_prototypes = {
     automaticrequired = true,
     statesParameter = "one",
   },
+  ["Class/Spec"] = {
+    type = "status",
+    events = function()
+      local events = { "PLAYER_TALENT_UPDATE" }
+      return {
+        ["events"] = events
+      }
+    end,
+    force_events = "PLAYER_TALENT_UPDATE",
+    name = L["Class and Specialization"],
+    init = function(trigger)
+      return [[
+         local specId, specName, _, specIcon = GetSpecializationInfo(GetSpecialization())
+      ]]
+    end,
+    args = {
+      {
+        name = "specId",
+        display = L["Class and Specialization"],
+        type = "multiselect",
+        values = "spec_types_all",
+        required = true
+      },
+      {
+        hidden = true,
+        name = "icon",
+        init = "specIcon",
+        store = "true",
+        test = "true"
+      },
+      {
+        hidden = true,
+        name = "name",
+        init = "specName",
+        store = "true",
+        test = "true"
+      },
+    },
+    automaticrequired = true,
+    statesParameter = "one",
+  },
   ["Totem"] = {
     type = "status",
     events = {
@@ -7809,6 +7850,7 @@ if WeakAuras.IsClassic() then
   Private.event_prototypes["Equipment Set"] = nil
   Private.event_prototypes["Spell Activation Overlay"] = nil
   Private.event_prototypes["Crowd Controlled"] = nil
+  Private.event_prototypes["Class/Spec"] = nil
 else
   Private.event_prototypes["Queued Action"] = nil
 end
