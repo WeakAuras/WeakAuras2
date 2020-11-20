@@ -2086,6 +2086,7 @@ else
         args = {
           { spell = 408, type = "debuff", unit = "target"}, -- Kidney Shot
           { spell = 1833, type = "debuff", unit = "target"}, -- Cheap Shot
+          { spell = 1943, type = "debuff", unit = "target"}, -- Rupture
           { spell = 2094, type = "debuff", unit = "multi"}, -- Blind
           { spell = 6770, type = "debuff", unit = "multi"}, -- Sap
           { spell = 45181, type = "debuff", unit = "player", talent = 11 }, -- Cheated Death
