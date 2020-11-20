@@ -646,12 +646,21 @@ local methods = {
       if (WeakAuras.IsImporting()) then return end;
       if data.controlledChildren then
         local new_idGroup = OptionsPrivate.DuplicateAura(data)
+        -- Do this after duplicating the parent!
+        OptionsPrivate.Private.PauseAllDynamicGroups()
         for index, childId in pairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childId)
-          OptionsPrivate.DuplicateAura(childData, new_idGroup)
+          OptionsPrivate.DuplicateAura(childData, new_idGroup, true)
         end
+
+        local button = WeakAuras.GetDisplayButton(new_idGroup)
+        button.callbacks.UpdateExpandButton()
+        WeakAuras.UpdateDisplayButton(WeakAuras.GetData(new_idGroup))
+
         WeakAuras.SortDisplayButtons()
         OptionsPrivate.PickAndEditDisplay(new_idGroup)
+
+        OptionsPrivate.Private.ResumeAllDynamicGroups()
       else
         local new_id = OptionsPrivate.DuplicateAura(data)
         WeakAuras.SortDisplayButtons()
