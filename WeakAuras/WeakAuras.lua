@@ -4728,7 +4728,9 @@ function Private.ensurePRDFrame()
     personalRessourceDisplayFrame:SetScale(1);
     local frame = C_NamePlate.GetNamePlateForUnit("player");
     if (frame) then
-      if (frame.kui and frame.kui.bg and frame.kui:IsShown()) then
+      if (Plater and frame.Plater and frame.unitFrame.Plater) then
+        personalRessourceDisplayFrame:Attach(frame, frame.unitFrame.healthBar, frame.unitFrame.powerBar);
+      elseif (frame.kui and frame.kui.bg and frame.kui:IsShown()) then
         personalRessourceDisplayFrame:Attach(frame.kui, frame.kui.bg, frame.kui.bg);
       elseif (ElvUIPlayerNamePlateAnchor) then
         personalRessourceDisplayFrame:Attach(ElvUIPlayerNamePlateAnchor, ElvUIPlayerNamePlateAnchor, ElvUIPlayerNamePlateAnchor);
@@ -4752,7 +4754,9 @@ function Private.ensurePRDFrame()
       if (UnitIsUnit(nameplate, "player")) then
         local frame = C_NamePlate.GetNamePlateForUnit("player");
         if (frame) then
-          if (frame.kui and frame.kui.bg and frame.kui:IsShown()) then
+          if (Plater and frame.Plater and frame.unitFrame.Plater) then
+            personalRessourceDisplayFrame:Attach(frame, frame.unitFrame.healthBar, frame.unitFrame.powerBar);
+          elseif (frame.kui and frame.kui.bg and frame.kui:IsShown()) then
             personalRessourceDisplayFrame:Attach(frame.kui, KuiNameplatesPlayerAnchor, KuiNameplatesPlayerAnchor);
           elseif (ElvUIPlayerNamePlateAnchor) then
             personalRessourceDisplayFrame:Attach(ElvUIPlayerNamePlateAnchor, ElvUIPlayerNamePlateAnchor, ElvUIPlayerNamePlateAnchor);
