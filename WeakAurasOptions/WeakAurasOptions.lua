@@ -46,7 +46,7 @@ local tempGroup = {
 };
 OptionsPrivate.tempGroup = tempGroup;
 
-function OptionsPrivate.DuplicateAura(data, newParent)
+function OptionsPrivate.DuplicateAura(data, newParent, massEdit)
   local base_id = data.id .. " "
   local num = 2
 
@@ -72,7 +72,7 @@ function OptionsPrivate.DuplicateAura(data, newParent)
     newData.controlledChildren = {}
   end
   WeakAuras.Add(newData)
-  WeakAuras.NewDisplayButton(newData)
+  WeakAuras.NewDisplayButton(newData, massEdit)
   if(newParent or data.parent) then
     local parentId = newParent or data.parent
     local parentData = WeakAuras.GetData(parentId)
@@ -94,9 +94,11 @@ function OptionsPrivate.DuplicateAura(data, newParent)
         childButton:SetGroupOrder(index, #parentData.controlledChildren)
       end
 
-      local button = WeakAuras.GetDisplayButton(parentData.id)
-      button.callbacks.UpdateExpandButton()
-      WeakAuras.UpdateDisplayButton(parentData)
+      if not massEdit then
+        local button = WeakAuras.GetDisplayButton(parentData.id)
+        button.callbacks.UpdateExpandButton()
+        WeakAuras.UpdateDisplayButton(parentData)
+      end
       OptionsPrivate.ClearOptions(parentData.id)
     end
   end
@@ -839,13 +841,15 @@ function OptionsPrivate.ConvertDisplay(data, newType)
   WeakAuras.SortDisplayButtons()
 end
 
-function WeakAuras.NewDisplayButton(data)
+function WeakAuras.NewDisplayButton(data, massEdit)
   local id = data.id;
   OptionsPrivate.Private.ScanForLoads({[id] = true});
   EnsureDisplayButton(db.displays[id]);
   WeakAuras.UpdateDisplayButton(db.displays[id]);
   frame.buttonsScroll:AddChild(displayButtons[id]);
-  WeakAuras.SortDisplayButtons();
+  if not massEdit then
+    WeakAuras.SortDisplayButtons()
+  end
 end
 
 function WeakAuras.UpdateGroupOrders(data)
