@@ -11,15 +11,14 @@ local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ce
 local indentWidth = 0.15
 
 local glows = LCG:GetGlows()
-local function getDefaults()
+local function getDefaults(glowType)
   local options = {}
-  local function recurse(settings, level, prefix, parent)
+  local function recurse(settings, prefix, parent)
     for k, v in pairs(settings) do
         if ( type(v) == "table" ) then
           recurse(
               v,
-              level + 1,
-              (level > 2 and prefix or "")..(v.args and k.."_" or ""),
+              (prefix or "")..(v.args and k.."_" or ""),
               k
           )
         end
@@ -28,7 +27,7 @@ local function getDefaults()
         end
     end
   end
-  recurse(glows, 1)
+  recurse(glows[glowType])
   return options
 end
 
@@ -48,13 +47,15 @@ local function LCGkeyToData(glowType, key)
     if key2 then
       if key3 then
         if key4 then
-          return glows[glowType].args[key2].args[key3].args[key4]
+          return glows[glowType].args[key1].args[key2].args[key3].args[key4]
         else
-          return glows[glowType].args[key2].args[key3]
+          return glows[glowType].args[key1].args[key2].args[key3]
         end
       else
-        return glows[glowType].args[key2]
+        return glows[glowType].args[key1].args[key2]
       end
+    else
+      return glows[glowType].args[key1]
     end
   end
 end
@@ -156,28 +157,28 @@ local function createOptions(parentData, data, index, subIndex)
       control = "WeakAurasExpandSmall",
       name = function()
         local line = L["|cFFffcc00Extra Options:|r"]
-        local defaults = getDefaults()
-        for k, v in pairs(data) do
-          if k:match("^([^_]+)(.*)") == data.glowType then
+        local defaults = getDefaults(data.glowType)
+        for k, v in pairs(defaults) do
+          if data[k] then
             local keyData = LCGkeyToData(data.glowType, k)
             local default = keyData and keyData.default
             if type(v) ~= "table" then
-              if default ~= v then
+              if data[k] ~= v then
                 if type(v) == "boolean" then
-                  line = ("%s %s,"):format(line, WrapTextInColorCode(keyData.name, v and "ff00ff00" or "ffff0000"))
+                  line = ("%s %s,"):format(line, WrapTextInColorCode(keyData.name, data[k] and "ff00ff00" or "ffff0000"))
                 else
-                  line = ("%s %s: %s,"):format(line, keyData.name, tostring(v))
+                  line = ("%s %s: %s,"):format(line, keyData.name, tostring(data[k]))
                 end
               end
             else
               if keyData.type == "color"
                 and (
-                  v[1] ~= default[1]
-                  or v[2] ~= default[2]
-                  or v[3] ~= default[3]
+                  data[k][1] ~= v[1]
+                  or data[k][2] ~= v[2]
+                  or data[k][3] ~= v[3]
                 )
               then
-                line = ("%s %s,"):format(line, WrapTextInColorCode(keyData.name, CreateColor(v[1], v[2], v[3], 1):GenerateHexColor()))
+                line = ("%s %s,"):format(line, WrapTextInColorCode(keyData.name, CreateColor(data[k][1], data[k][2], data[k][3], 1):GenerateHexColor()))
               end
             end
           end
