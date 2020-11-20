@@ -461,11 +461,11 @@ local function createOptions(parentData, data, index, subIndex)
 
   -- Add Text Format Options
   local hidden = function()
-    return OptionsPrivate.IsCollapsed("format_option", "text", "text_text", true)
+    return OptionsPrivate.IsCollapsed("format_option", "text", "text_text" .. index, true)
   end
 
   local setHidden = function(hidden)
-    OptionsPrivate.SetCollapsed("format_option", "text", "text_text", hidden)
+    OptionsPrivate.SetCollapsed("format_option", "text", "text_text" .. index, hidden)
   end
 
   local order = 12
