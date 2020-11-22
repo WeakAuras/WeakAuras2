@@ -177,8 +177,6 @@ end
 local function AcquireModel(region, data)
   local pool = data.api and poolNewApi or poolOldApi
   local model = pool:Acquire()
-  _G.mmm = model
-
   ConfigureModel(region, model, data)
   return model
 end
