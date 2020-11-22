@@ -2,6 +2,7 @@ if not WeakAuras.IsCorrectVersion() then return end
 local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
+local LCG = LibStub("LibCustomGlow-1.0")
 
 local removeFuncs = OptionsPrivate.commonOptions.removeFuncs
 local replaceNameDescFuncs = OptionsPrivate.commonOptions.replaceNameDescFuncs
@@ -21,6 +22,63 @@ else
   RestrictedChannelCheck = function(data)
     return data.message_type == "SAY" or data.message_type == "YELL" or data.message_type == "SMARTRAID"
   end
+end
+
+local addOptionsFromLCG = function(options, actionPrefix, order, data)
+  local function MyCopyTable(settings, level, glowType, prefix)
+    local copy = {}
+    if settings.type == "gradient" then -- TODO: not a valid ace3 type
+      return nil
+    end
+    for k, v in pairs(settings) do
+      if k ~= "default"
+      and k ~= "start"
+      and k ~= "stop"
+      then
+        if ( type(v) == "table" ) then
+          local key = v.name and (actionPrefix.."_"..(level > 2 and prefix or ""))..k or k
+          copy[key] = MyCopyTable(
+            v,
+            level + 1,
+            glowType or k,
+            (level > 2 and prefix or "")..(v.args and k.."_" or "")
+          )
+          if v.default then
+            local actionPrefix = actionPrefix
+            copy[key].get = function()
+              return 2 --data and data.actions and data.actions[actionPrefix] and data.actions[actionPrefix][(level > 2 and prefix or "")..k] or v.default
+            end
+          end
+        else
+          copy[k] = v
+          if k == "desc" then
+            copy.width = WeakAuras.normalWidth - 0.15 --    - (level < 4 and indentWidth or indentWidth * 1.5)
+            local glowType = glowType
+            copy.hidden = function()
+              return not data.actions[actionPrefix].do_glow
+              or data.actions[actionPrefix].glow_action ~= "show"
+              or not data.actions[actionPrefix].glow_type
+              or data.actions[actionPrefix].glow_type ~= glowType
+              or data.actions[actionPrefix].glow_frame_type == nil
+            end
+          elseif k == "type" and v == "group" then
+            copy.inline = true
+          elseif k == "order" and level == 2 then
+            copy[k] = v / 100 + order
+          --elseif k == "default" then
+          --  copy.get = function()
+          --    return data.actions[actionPrefix].glow_length or 10
+          --  end
+          end
+        end
+      end
+    end
+    return copy
+  end
+  local res = MyCopyTable(LCG:GetGlows(), 1)
+  ViragDevTool_AddData(res, "copy")
+  WeakAuras.DeepMixin(options, res)
+  return
 end
 
 function OptionsPrivate.GetActionOptions(data)
@@ -306,168 +364,7 @@ function OptionsPrivate.GetActionOptions(data)
           end
         end
       },
-      start_use_glow_color = {
-        type = "toggle",
-        width = WeakAuras.normalWidth,
-        name = L["Glow Color"],
-        order = 10.7,
-        hidden = function()
-          return not data.actions.start.do_glow
-          or data.actions.start.glow_action ~= "show"
-          or data.actions.start.glow_frame_type == nil
-          or data.actions.start.glow_type == nil
-        end,
-      },
-      start_glow_color = {
-        type = "color",
-        width = WeakAuras.normalWidth,
-        name = L["Glow Color"],
-        order = 10.8,
-        hidden = function()
-          return not data.actions.start.do_glow
-          or data.actions.start.glow_action ~= "show"
-          or data.actions.start.glow_frame_type == nil
-          or data.actions.start.glow_type == nil
-        end,
-        disabled = function() return not data.actions.start.use_glow_color end,
-      },
-      start_glow_lines = {
-        type = "range",
-        width = WeakAuras.normalWidth,
-        name = L["Lines & Particles"],
-        order = 10.81,
-        min = 1,
-        softMax = 30,
-        step = 1,
-        get = function()
-          return data.actions.start.glow_lines or 8
-        end,
-        hidden = function()
-          return not data.actions.start.do_glow
-          or data.actions.start.glow_action ~= "show"
-          or not data.actions.start.glow_type
-          or data.actions.start.glow_type == "buttonOverlay"
-          or data.actions.start.glow_frame_type == nil
-        end,
-      },
-      start_glow_frequency = {
-        type = "range",
-        width = WeakAuras.normalWidth,
-        name = L["Frequency"],
-        order = 10.82,
-        softMin = -2,
-        softMax = 2,
-        step = 0.05,
-        get = function()
-          return data.actions.start.glow_frequency or 0.25
-        end,
-        hidden = function()
-          return not data.actions.start.do_glow
-          or data.actions.start.glow_action ~= "show"
-          or not data.actions.start.glow_type
-          or data.actions.start.glow_type == "buttonOverlay"
-          or data.actions.start.glow_frame_type == nil
-        end,
-      },
-      start_glow_length = {
-        type = "range",
-        width = WeakAuras.normalWidth,
-        name = L["Length"],
-        order = 10.83,
-        min = 0.05,
-        softMax = 20,
-        step = 0.05,
-        get = function()
-          return data.actions.start.glow_length or 10
-        end,
-        hidden = function()
-          return not data.actions.start.do_glow
-          or data.actions.start.glow_action ~= "show"
-          or data.actions.start.glow_type ~= "Pixel"
-          or data.actions.start.glow_frame_type == nil
-        end,
-      },
-      start_glow_thickness = {
-        type = "range",
-        width = WeakAuras.normalWidth,
-        name = L["Thickness"],
-        order = 10.84,
-        min = 0.05,
-        softMax = 20,
-        step = 0.05,
-        get = function()
-          return data.actions.start.glow_thickness or 1
-        end,
-        hidden = function()
-          return not data.actions.start.do_glow
-          or data.actions.start.glow_action ~= "show"
-          or data.actions.start.glow_type ~= "Pixel"
-          or data.actions.start.glow_frame_type == nil
-        end,
-      },
-      start_glow_XOffset = {
-        type = "range",
-        width = WeakAuras.normalWidth,
-        name = L["X-Offset"],
-        order = 10.85,
-        softMin = -100,
-        softMax = 100,
-        step = 0.5,
-        hidden = function()
-          return not data.actions.start.do_glow
-          or data.actions.start.glow_action ~= "show"
-          or not data.actions.start.glow_type
-          or data.actions.start.glow_type == "buttonOverlay"
-          or data.actions.start.glow_frame_type == nil
-        end,
-      },
-      start_glow_YOffset = {
-        type = "range",
-        width = WeakAuras.normalWidth,
-        name = L["Y-Offset"],
-        order = 10.86,
-        softMin = -100,
-        softMax = 100,
-        step = 0.5,
-        hidden = function()
-          return not data.actions.start.do_glow
-          or data.actions.start.glow_action ~= "show"
-          or not data.actions.start.glow_type
-          or data.actions.start.glow_type == "buttonOverlay"
-          or data.actions.start.glow_frame_type == nil
-        end,
-      },
-      start_glow_scale = {
-        type = "range",
-        width = WeakAuras.normalWidth,
-        name = L["Scale"],
-        order = 10.87,
-        min = 0.05,
-        softMax = 10,
-        step = 0.05,
-        isPercent = true,
-        get = function()
-          return data.actions.start.glow_scale or 1
-        end,
-        hidden = function()
-          return not data.actions.start.do_glow
-          or data.actions.start.glow_action ~= "show"
-          or data.actions.start.glow_type ~= "ACShine"
-          or data.actions.start.glow_frame_type == nil
-        end,
-      },
-      start_glow_border = {
-        type = "toggle",
-        width = WeakAuras.normalWidth,
-        name = L["Border"],
-        order = 10.88,
-        hidden = function()
-          return not data.actions.start.do_glow
-          or data.actions.start.glow_action ~= "show"
-          or data.actions.start.glow_type ~= "Pixel"
-          or data.actions.start.glow_frame_type == nil
-        end,
-      },
+      --[[ start glow options here ]]--
       start_do_custom = {
         type = "toggle",
         width = WeakAuras.doubleWidth,
@@ -854,6 +751,8 @@ function OptionsPrivate.GetActionOptions(data)
     -- Text editor added below
     },
   }
+
+  addOptionsFromLCG(action.args, "start", 10.55, data)
 
   -- Text format option helpers
 
