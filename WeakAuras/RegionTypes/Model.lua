@@ -106,9 +106,7 @@ end
 local poolOldApi = CreateObjectPool(CreateModel)
 local poolNewApi = CreateObjectPool(CreateModel)
 
-local function AcquireModel(region, data)
-  local pool = data.api and poolNewApi or poolOldApi
-  local model = pool:Acquire()
+local function ConfigureModel(region, model, data)
   model.api = data.api
 
   model:ClearAllPoints()
@@ -174,6 +172,14 @@ local function AcquireModel(region, data)
   else
     model:SetScript("OnUpdate", nil)
   end
+end
+
+local function AcquireModel(region, data)
+  local pool = data.api and poolNewApi or poolOldApi
+  local model = pool:Acquire()
+  _G.mmm = model
+
+  ConfigureModel(region, model, data)
   return model
 end
 
@@ -287,6 +293,8 @@ local function modify(parent, region, data)
   function region:PreShow()
     if not region.model then
       region.model = AcquireModel(self, data)
+    else
+      ConfigureModel(region, region.model, data)
     end
   end
 
