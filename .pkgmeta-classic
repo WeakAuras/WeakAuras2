@@ -37,7 +37,7 @@ ignore:
   - README.md
   - CONTRIBUTING.md
   - babelfish.lua
-  - curseforge_translations.sh
+  - update_translations.sh
   - generate_changelog.sh
   - WeakAurasModelPaths/ModelPaths.lua
 
