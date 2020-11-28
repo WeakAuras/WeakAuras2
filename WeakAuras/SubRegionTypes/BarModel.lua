@@ -134,7 +134,7 @@ local function ReleaseModel(model)
   model:Hide()
   local pool = model.api and poolNewApi or poolOldApi
   pool:Release(model)
-  Private.barmodels[model] = false
+  Private.barmodels[model] = nil
 end
 
 local funcs = {
