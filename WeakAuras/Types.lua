@@ -764,6 +764,10 @@ do
     [23] = true,
     [33] = true
   }
+  if WeakAuras.IsClassic() then
+    unplayableRace[9] = true
+  end
+
   local raceID = 1
   local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
   while raceInfo do

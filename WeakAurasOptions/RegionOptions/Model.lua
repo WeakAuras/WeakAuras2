@@ -302,8 +302,11 @@ local templates = {
     title = L["Default"],
     data = {
     };
-  },
-  {
+  }
+}
+
+if not WeakAuras.IsClassic() then
+  tinsert(templates, {
     title = L["Fire Orb"],
     description = "",
     data = {
@@ -315,8 +318,8 @@ local templates = {
       model_y = -0.5,
       model_z = -1.5
     },
-  },
-  {
+  })
+  tinsert(templates, {
     title = L["Blue Sparkle Orb"],
     description = "",
     data = {
@@ -330,8 +333,8 @@ local templates = {
       model_y = 0.7,
       model_z = 1.5
     },
-  },
-  {
+  })
+  tinsert(templates, {
     title = L["Arcane Orb"],
     description = "",
     data = {
@@ -345,8 +348,8 @@ local templates = {
       model_y = 0.8,
       model_z = 2
     },
-  },
-  {
+  })
+  tinsert(templates, {
     title = L["Orange Rune"],
     description = "",
     data = {
@@ -357,8 +360,8 @@ local templates = {
       model_path = "spells/7fx_godking_orangerune_state.m2",
       model_fileId = "1307356", -- spells/7fx_godking_orangerune_state.m2
     },
-  },
-  {
+  })
+  tinsert(templates, {
     title = L["Blue Rune"],
     description = "",
     data = {
@@ -369,8 +372,8 @@ local templates = {
       model_path = "spells/7fx_godking_bluerune_state.m2",
       model_fileId = "1307354", -- spells/7fx_godking_bluerune_state.m2
     }
-  },
-  {
+  })
+  tinsert(templates, {
     title = L["Yellow Rune"],
     description = "",
     data = {
@@ -381,8 +384,8 @@ local templates = {
       model_path = "spells/7fx_godking_yellowrune_state.m2",
       model_fileId = "1307358", -- spells/7fx_godking_yellowrune_state.m2
     }
-  },
-  {
+  })
+  tinsert(templates, {
     title = L["Purple Rune"],
     description = "",
     data = {
@@ -393,8 +396,8 @@ local templates = {
       model_path = "spells/7fx_godking_purplerune_state.m2",
       model_fileId = "1307355", -- spells/7fx_godking_purplerune_state.m2
     }
-  },
-  {
+  })
+  tinsert(templates, {
     title = L["Green Rune"],
     description = "",
     data = {
@@ -405,7 +408,7 @@ local templates = {
       model_path = "spells/7fx_godking_greenrune_state.m2",
       model_fileId = "1307357", -- spells/7fx_godking_greenrune_state.m2
     }
-  },
-}
+  })
+end
 
 WeakAuras.RegisterRegionOptions("model", createOptions, createIcon, L["Model"], createThumbnail, modifyThumbnail, L["Shows a 3D model from the game files"], templates);
