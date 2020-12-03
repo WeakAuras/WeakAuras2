@@ -1,5 +1,5 @@
 if not WeakAuras.IsCorrectVersion() then return end
-local AddonName, OptionsPrivate = ...
+local AddonName, Private = ...
 
 -- Legendaries based on https://wow.tools/dbc/?dbc=runeforgelegendaryability
 -- mapping legendary id to bonus id
@@ -206,6 +206,11 @@ local legendariesToBonusId = {
   [206] = 7159,
 }
 
+local bonusIdToLegendary = {}
+for k, v in pairs(legendariesToBonusId) do
+  bonusIdToLegendary[v] = k
+end
+
 WeakAuras.GetLegendariesBonusIds = function()
   if WeakAuras.IsClassic() then
     return ""
@@ -232,4 +237,14 @@ WeakAuras.GetLegendariesBonusIds = function()
     result = result .. "|T".. abilities[name][2] .. ":16|t  " ..  name .. ": " .. abilities[name][1] .. "\n"
   end
   return result
+end
+
+WeakAuras.GetLegendaryIcon = function(id)
+  if WeakAuras.IsClassic() then
+    return ""
+  end
+  local legendaryID = bonusIdToLegendary[tonumber(id)]
+  if legendaryID then
+    return C_LegendaryCrafting.GetRuneforgePowerInfo(legendaryID).iconFileID
+  end
 end

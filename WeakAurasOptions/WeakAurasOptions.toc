@@ -72,8 +72,6 @@ OptionsFrames\TexturePicker.lua
 OptionsFrames\MoverSizer.lua
 OptionsFrames\FrameChooser.lua
 
-Legendaries.lua
-
 AceGUI-Widgets\AceGUIWidget-WeakAurasExpand.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasExpandSmall.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasIcon.lua
