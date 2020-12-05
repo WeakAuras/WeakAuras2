@@ -2538,10 +2538,10 @@ else
           { spell = 108271, type = "buff", unit = "player"}, -- Astral Shift
           { spell = 108281, type = "buff", unit = "player", talent = 14}, -- Ancestral Guidance
           { spell = 114050, type = "buff", unit = "player", talent = 21}, -- Ascendance
-          { spell = 118522, type = "buff", unit = "player", talent = 3}, -- Elemental Blast: Critical Strike
+          { spell = 118522, type = "buff", unit = "player", talent = 6}, -- Elemental Blast: Critical Strike
           { spell = 157348, type = "buff", unit = "pet", talent = {11,17}}, -- Call Lightning
-          { spell = 173183, type = "buff", unit = "player", talent = 3}, -- Elemental Blast: Haste
-          { spell = 173184, type = "buff", unit = "player", talent = 3}, -- Elemental Blast: Mastery
+          { spell = 173183, type = "buff", unit = "player", talent = 6}, -- Elemental Blast: Haste
+          { spell = 173184, type = "buff", unit = "player", talent = 6}, -- Elemental Blast: Mastery
           { spell = 191634, type = "buff", unit = "player", talent = 20}, -- Stormkeeper
           { spell = 192082, type = "buff", unit = "player", talent = 15}, -- Wind Rush
           { spell = 202192, type = "buff", unit = "player", talent = 6}, -- Resonance Totem
@@ -2660,9 +2660,9 @@ else
           { spell = 58875, type = "buff", unit = "player"}, -- Spirit Walk
           { spell = 108271, type = "buff", unit = "player"}, -- Astral Shift
           { spell = 114051, type = "buff", unit = "player", talent = 21 }, -- Ascendance
-          { spell = 118522, type = "buff", unit = "player", talent = 3 }, -- Elemnental Blast: Crit
-          { spell = 173183, type = "buff", unit = "player", talent = 3 }, -- Elemnental Blast: Haste
-          { spell = 173184, type = "buff", unit = "player", talent = 3 }, -- Elemnental Blast: Mastery
+          { spell = 118522, type = "buff", unit = "player", talent = 3 }, -- Elemental Blast: Crit
+          { spell = 173183, type = "buff", unit = "player", talent = 3 }, -- Elemental Blast: Haste
+          { spell = 173184, type = "buff", unit = "player", talent = 3 }, -- Elemental Blast: Mastery
           { spell = 187878, type = "buff", unit = "player"}, -- Crash Lightning
           { spell = 192082, type = "buff", unit = "player", talent = 15 }, -- Wind Rush
           { spell = 192106, type = "buff", unit = "player", talent = 3 }, -- Lightning Shield
@@ -2738,7 +2738,7 @@ else
           { spell = 108271, type = "ability", buff = true}, -- Astral Shift
           { spell = 114051, type = "ability", buff = true, talent = 21 }, -- Ascendance
           { spell = 115356, type = "ability", talent = 21 }, -- Windstrike
-          { spell = 117014, type = "ability", talent = 6 }, -- Elemntal Blast
+          { spell = 117014, type = "ability", talent = 3 }, -- Elemental Blast
           { spell = 188196, type = "ability"}, -- Lightning Bolt
           { spell = 187874, type = "ability"}, -- Crash Lightning
           { spell = 188089, type = "ability", debuff = true, requiresTarget = true, talent = 20 }, -- Earthen Spike
