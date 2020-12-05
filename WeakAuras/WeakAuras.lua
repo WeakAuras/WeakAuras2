@@ -1036,6 +1036,7 @@ function Private.Login(initialTime, takeNewSnapshots)
     end
 
     loginFinished = true
+    Private.ResumeAllDynamicGroups();
   end)
 
   if initialTime then
