@@ -65,3 +65,6 @@ SubRegionTypes\Border.lua
 SubRegionTypes\Glow.lua
 SubRegionTypes\Tick.lua
 SubRegionTypes\BarModel.lua
+
+# misc
+Legendaries.lua

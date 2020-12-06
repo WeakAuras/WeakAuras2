@@ -3834,6 +3834,23 @@ WeakAuras.CheckForItemBonusId = function(ids)
   return false
 end
 
+WeakAuras.GetBonusIdInfo = function(ids)
+  if WeakAuras.IsClassic() then
+    return
+  end
+  for id in tostring(ids):gmatch('([^,]+)') do
+    local findID = ":" .. tostring(id:trim()) .. ":"
+    for slot in pairs(Private.item_slot_types) do
+      local itemLink = GetInventoryItemLink('player', slot)
+      if itemLink and itemLink:find(findID, 1, true) then
+        local itemID, _, _, _, icon = GetItemInfoInstant(itemLink)
+        local itemName = itemLink:match("%[(.*)%]")
+        return id, itemID, itemName, icon, slot, Private.item_slot_types[slot]
+      end
+    end
+  end
+end
+
 WeakAuras.GetItemSubClassInfo = function(i)
   local subClassId = i % 256
   local classId = (i - subClassId) / 256

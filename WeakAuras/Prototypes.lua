@@ -6352,17 +6352,75 @@ Private.event_prototypes = {
     internal_events = { "WA_DELAYED_PLAYER_ENTERING_WORLD", },
     force_events = "UNIT_INVENTORY_CHANGED",
     name = L["Item Bonus Id Equipped"],
+    statesParameter = "one",
+    init = function(trigger)
+      local ret = [=[
+        local useLegendaryIcon = %s
+        local itemBonusId, itemId, itemName, itemIcon, itemSlot, itemSlotString = WeakAuras.GetBonusIdInfo(%q)
+        local itemBonusId = tonumber(itemBonusId)
+        local icon = useLegendaryIcon and WeakAuras.GetLegendaryIcon(itemBonusId) or itemIcon
+      ]=]
+      return ret:format(trigger.use_legendaryIcon and "true" or "false", trigger.itemBonusId)
+    end,
     args = {
       {
         name = "itemBonusId",
         display = L["Item Bonus Id"],
         type = "string",
-        test = "WeakAuras.CheckForItemBonusId(%q)",
+        store = "true",
+        test = "itemBonusId",
         required = true,
         desc = function()
           return WeakAuras.GetLegendariesBonusIds()
           .. L["\n\nSupports multiple entries, separated by commas"]
-        end
+        end,
+        conditionType = "number",
+      },
+      {
+        name = "legendaryIcon",
+        display = L["Use Legendary Power Icon"],
+        type = "toggle",
+        test = "true",
+        desc = L["Displays the icon for the Legendary Power that matches this bonus id."],
+      },
+      {
+        name = "name",
+        display = L["Item Name"],
+        hidden = "true",
+        init = "itemName",
+        store = "true",
+        test = "true",
+      },
+      {
+        name = "icon",
+        hidden = "true",
+        init = "icon or 'Interface\\Icons\\INV_Misc_QuestionMark'",
+        store = "true",
+        test = "true",
+      },
+      {
+        name = "itemId",
+        display = L["Item Id"],
+        hidden = "true",
+        store = "true",
+        test = "true",
+        conditionType = "number",
+        operator_types = "only_equal",
+      },
+      {
+        name = "itemSlot",
+        display = L["Item Slot"],
+        type = "select",
+        store = "true",
+        conditionType = "select",
+        values = "item_slot_types",
+      },
+      {
+        name = "itemSlotString",
+        display = L["Item Slot String"],
+        hidden = "true",
+        store = "true",
+        test = "true",
       },
     },
     automaticrequired = true
