@@ -4905,6 +4905,7 @@ Private.event_prototypes = {
       "GCD_UPDATE",
       "WA_DELAYED_PLAYER_ENTERING_WORLD"
     },
+    force_events = "GCD_UPDATE",
     name = L["Global Cooldown"],
     loadFunc = function(trigger)
       WeakAuras.WatchGCD();
