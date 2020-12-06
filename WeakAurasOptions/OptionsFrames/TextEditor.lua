@@ -260,14 +260,14 @@ local function ConstructTextEditor(frame)
       level)
       UIDropDownMenu_AddButton(
         {
-          text = L["Tab Spaces"],
+          text = L["Indent Size"],
           hasArrow = true,
           notCheckable = true,
           menuList = "spaces"
         },
       level)
     elseif menu == "spaces" then
-      local spaces = {2,4,6}
+      local spaces = {2,3,4}
       for _, i in pairs(spaces) do
         UIDropDownMenu_AddButton(
           {
