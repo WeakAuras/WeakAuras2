@@ -267,7 +267,7 @@ local function ConstructTextEditor(frame)
         },
       level)
     elseif menu == "spaces" then
-      local spaces = {2,3,4}
+      local spaces = {2,4}
       for _, i in pairs(spaces) do
         UIDropDownMenu_AddButton(
           {
