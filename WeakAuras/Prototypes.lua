@@ -6621,14 +6621,14 @@ Private.event_prototypes = {
           local inverse = %s
           local use_interruptSchool = %s
           local interruptSchool = tonumber(%q)
-          local duration, expirationTime, spellName, icon, spellName, spellId, locType, lockoutSchool, controlText, _
+          local duration, expirationTime, spellName, icon, spellName, spellId, locType, lockoutSchool, name, _
           for i = 1, C_LossOfControl.GetActiveLossOfControlDataCount() do
             local data = C_LossOfControl.GetActiveLossOfControlData(i)
             if data then
               if (not use_controlType)
               or (data.locType == "PACIFYSILENCE" and (controlType == "SILENCE" or controlType == "PACIFY"))
               or (data.locType == "STUN_MECHANIC" and controlType == "STUN")
-              or (data.locType == controlType and (controlType ~= "SCHOOL_INTERRUPT" or ((not use_interruptSchool) or data.lockoutSchool == interruptSchool)))
+              or (data.locType == controlType and (controlType ~= "SCHOOL_INTERRUPT" or ((not use_interruptSchool) or bit.band(data.lockoutSchool, interruptSchool) > 0)))
               then
                 spellId = data.spellID
                 spellName, _, icon = GetSpellInfo(data.spellID)
@@ -6636,7 +6636,7 @@ Private.event_prototypes = {
                 expirationTime = data.startTime + data.duration
                 locType = data.locType
                 lockoutSchool = data.lockoutSchool
-                controlText = data.displayText
+                name = data.displayText
                 show = true
                 break
               end
@@ -6657,7 +6657,7 @@ Private.event_prototypes = {
         name = "controlType",
         display = L["Specific CC Type"],
         type = "select",
-        values = "loss_of_control_Types",
+        values = "loss_of_control_types",
         conditionType = "select",
         test = "true",
         default = "STUN",
@@ -6669,7 +6669,6 @@ Private.event_prototypes = {
         values = "main_spell_schools",
         conditionType = "select",
         default = 1,
-        conditionType = "select",
         test = "true",
         enable = function(trigger) return trigger.controlType == "SCHOOL_INTERRUPT" end,
       },
@@ -6681,37 +6680,33 @@ Private.event_prototypes = {
       },
       {
         name = "name",
-        display = L["CC Name"],
+        display = L["Name"],
         hidden = true,
         conditionType = "string",
-        init = "controlText",
         store = true,
         test = "true",
       },
       {
         name = "spellName",
-        display = L["CC Spell Name"],
+        display = L["Spell Name"],
         hidden = true,
         conditionType = "string",
-        init = "spellName",
         store = true,
         test = "true",
       },
       {
         name = "locType",
-        display = L["CC Type"],
+        display = L["Type"],
         hidden = true,
-        conditionType = "string",
-        init = "locType",
         store = true,
         test = "true",
       },
       {
         name = "spellId",
-        display = L["CC Spell Id"],
+        display = L["Spell Id"],
         hidden = true,
         conditionType = "number",
-        init = "spellId",
+        operator_types = "only_equal",
         store = true,
         test = "true",
       },
@@ -6719,7 +6714,6 @@ Private.event_prototypes = {
         name = "lockoutSchool",
         display = L["Interrupted School"],
         hidden = true,
-        conditionType = "string",
         init = "lockoutSchool and lockoutSchool > 0 and GetSchoolString(lockoutSchool) or nil",
         store = true,
         test = "true",
@@ -6727,20 +6721,17 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon",
         store = true,
         test = "true",
       },
       {
         name = "duration",
         hidden = true,
-        init = "duration",
         store = true,
         test = "true",
       },
       {
         name = "expirationTime",
-        init = "expirationTime",
         hidden = true,
         store = true,
         test = "true",
@@ -6754,7 +6745,7 @@ Private.event_prototypes = {
       },
       {
         hidden = true,
-        test = "(inverse and not show) or (not inverse and show)",
+        test = "inverse ~= show",
       },
     },
     automaticrequired = true,

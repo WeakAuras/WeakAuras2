@@ -1199,7 +1199,7 @@ for i = 1, 5 do
   Private.totem_types[i] = totemString:format(i);
 end
 
-Private.loss_of_control_Types = {
+Private.loss_of_control_types = {
   CHARM = L["Charm"],
   CONFUSE = L["Confuse"],
   DISARM = L["Disarm"],
