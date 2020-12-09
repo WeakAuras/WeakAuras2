@@ -2,7 +2,7 @@
 ## Interface: 90002
 #@end-retail@
 #@non-retail@
-# ## Interface: 11305
+# ## Interface: 11306
 #@end-non-retail@
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
