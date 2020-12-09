@@ -3001,15 +3001,12 @@ function Private.HandleChatAction(message_type, message, message_dest, message_c
   end
 end
 
+local glows = LCG:GetGlows()
+
 local function actionGlowStop(actions, frame, id)
   if not frame.__WAGlowFrame then return end
-  if actions.glow_type == "buttonOverlay" then
-    LCG.ButtonGlow_Stop(frame.__WAGlowFrame)
-  elseif actions.glow_type == "Pixel" then
-    LCG.PixelGlow_Stop(frame.__WAGlowFrame, id)
-  elseif actions.glow_type == "ACShine" then
-    LCG.AutoCastGlow_Stop(frame.__WAGlowFrame, id)
-  end
+  local glowType = glows[actions.glow_type] and actions.glow_type or "Button Glow"
+  glows[glowType].stop(frame.__WAGlowFrame, id)
 end
 
 local function actionGlowStart(actions, frame, id)
@@ -3020,36 +3017,16 @@ local function actionGlowStart(actions, frame, id)
   end
   local glow_frame = frame.__WAGlowFrame
   if glow_frame:GetWidth() < 1 or glow_frame:GetHeight() < 1 then
-    actionGlowStop(actions, frame)
+    actionGlowStop(actions, frame, id)
     return
   end
-  local color = actions.use_glow_color and actions.glow_color or nil
-  if actions.glow_type == "buttonOverlay" then
-    LCG.ButtonGlow_Start(glow_frame, color)
-  elseif actions.glow_type == "Pixel" then
-    LCG.PixelGlow_Start(
-      glow_frame,
-      color,
-      actions.glow_lines,
-      actions.glow_frequency,
-      actions.glow_length,
-      actions.glow_thickness,
-      actions.glow_XOffset,
-      actions.glow_YOffset,
-      actions.glow_border,
-      id
-    )
-  elseif actions.glow_type == "ACShine" then
-    LCG.AutoCastGlow_Start(
-      glow_frame,
-      color,
-      actions.glow_lines,
-      actions.glow_frequency,
-      actions.glow_scale,
-      actions.glow_XOffset,
-      actions.glow_YOffset,
-      id
-    )
+  local glowType = glows[actions.glow_type] and actions.glow_type or "Button Glow"
+  local glowOptions = actions[glowType]
+  if glowOptions then
+    glowOptions.key = id
+    glows[glowType].start(glow_frame, glowOptions)
+  else
+    print("glowOptions is nil")
   end
 end
 
@@ -3235,6 +3212,7 @@ function Private.PerformActions(data, when, region)
 
   -- Apply start glow actions even if squelch_actions is true, but don't apply finish glow actions
   if actions.do_glow then
+    ViragDevTool_AddData(actions, "actions")
     Private.HandleGlowAction(actions, region)
   end
 

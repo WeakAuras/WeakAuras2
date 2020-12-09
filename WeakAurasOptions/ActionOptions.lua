@@ -24,64 +24,74 @@ else
   end
 end
 
-local addOptionsFromLCG = function(options, actionPrefix, order, data)
-  local function MyCopyTable(settings, level, glowType, prefix)
-    local copy = {}
-    if settings.type == "gradient" then -- TODO: not a valid ace3 type
-      return nil
-    end
-    for k, v in pairs(settings) do
-      if k ~= "default"
-      and k ~= "start"
-      and k ~= "stop"
-      then
-        if ( type(v) == "table" ) then
-          local key = v.name and (actionPrefix.."_"..(level > 2 and prefix or ""))..k or k
-          copy[key] = MyCopyTable(
-            v,
-            level + 1,
-            glowType or k,
-            (level > 2 and prefix or "")..(v.args and k.."_" or "")
-          )
-          if v.default then
-            local actionPrefix = actionPrefix
-            copy[key].get = function()
-              return 2 --data and data.actions and data.actions[actionPrefix] and data.actions[actionPrefix][(level > 2 and prefix or "")..k] or v.default
+function OptionsPrivate.GetActionOptions(data)
+  local addOptionsFromLCG = function(options, actionPrefix, order)
+    local function MyCopyTable(settings, level, glowType, prefix)
+      local copy = {}
+      if settings.type == "gradient" then -- TODO: not a valid ace3 type
+        return nil
+      end
+      for k, v in pairs(settings) do
+        if k ~= "default"
+        and k ~= "start"
+        and k ~= "stop"
+        then
+          if ( type(v) == "table" ) then
+            local key = v.name and (level > 2 and prefix or "")..k or k
+            copy[key] = MyCopyTable(
+              v,
+              level + 1,
+              glowType or k,
+              (level > 2 and prefix or "")..(v.args and k.."_" or "")
+            )
+            if copy[key] and v.default then
+              local actionPrefix = actionPrefix
+              copy[key].get = function()
+                print("get", key, data.actions[actionPrefix].glowData[key], v.default)
+                local ret = data
+                and data.actions
+                and data.actions[actionPrefix]
+                and data.actions[actionPrefix].glowData
+                and data.actions[actionPrefix].glowData[key]
+                if type(ret) == "table" then
+                  return unpack(ret)
+                else
+                  return ret or v.default
+                end
+              end
+              copy[key].set = function(info, v, g, b, a)
+                print("set", info[#info])
+                data.actions[actionPrefix].glowData = data.actions[actionPrefix].glowData or {}
+                data.actions[actionPrefix].glowData[info[#info]] = info.type == "color" and {v, g, b, a} or v
+              end
             end
-          end
-        else
-          copy[k] = v
-          if k == "desc" then
-            copy.width = WeakAuras.normalWidth - 0.15 --    - (level < 4 and indentWidth or indentWidth * 1.5)
-            local glowType = glowType
-            copy.hidden = function()
-              return not data.actions[actionPrefix].do_glow
-              or data.actions[actionPrefix].glow_action ~= "show"
-              or not data.actions[actionPrefix].glow_type
-              or data.actions[actionPrefix].glow_type ~= glowType
-              or data.actions[actionPrefix].glow_frame_type == nil
+          else
+            copy[k] = v
+            if k == "desc" then
+              copy.width = WeakAuras.normalWidth - ((level - 1) * 0.03)
+              local glowType = glowType
+              copy.hidden = function()
+                return not data.actions[actionPrefix].do_glow
+                or data.actions[actionPrefix].glow_action ~= "show"
+                or not data.actions[actionPrefix].glow_type
+                or data.actions[actionPrefix].glow_type ~= glowType
+                or data.actions[actionPrefix].glow_frame_type == nil
+              end
+            elseif k == "type" and v == "group" then
+              copy.inline = true
+            elseif k == "order" and level == 2 then
+              copy[k] = v / 100 + order
             end
-          elseif k == "type" and v == "group" then
-            copy.inline = true
-          elseif k == "order" and level == 2 then
-            copy[k] = v / 100 + order
-          --elseif k == "default" then
-          --  copy.get = function()
-          --    return data.actions[actionPrefix].glow_length or 10
-          --  end
           end
         end
       end
+      return copy
     end
-    return copy
+    local res = MyCopyTable(LCG:GetGlows(), 1)
+    WeakAuras.DeepMixin(options, res)
+    return
   end
-  local res = MyCopyTable(LCG:GetGlows(), 1)
-  ViragDevTool_AddData(res, "copy")
-  WeakAuras.DeepMixin(options, res)
-  return
-end
 
-function OptionsPrivate.GetActionOptions(data)
   local action = {
     type = "group",
     name = L["Actions"],
@@ -752,7 +762,9 @@ function OptionsPrivate.GetActionOptions(data)
     },
   }
 
-  addOptionsFromLCG(action.args, "start", 10.55, data)
+  addOptionsFromLCG(action.args, "start", 10.55)
+
+  ViragDevTool_AddData(action, "action_postaddoption")
 
   -- Text format option helpers
 

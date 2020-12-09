@@ -27,11 +27,13 @@ local function getDefaults(glowType)
         end
     end
   end
+  glowType = glows[glowType] and glowType or "Button Glow" -- TODO: remove after migration is done
   recurse(glows[glowType])
   return options
 end
 
 local function LCGkeyToData(glowType, key)
+  glowType = glows[glowType] and glowType or "Button Glow" -- TODO: remove after migration is done
   local key1, key2, key3, key4, more
   key1, more = key:match("^([^_]+)(.*)")
   if more then
@@ -89,7 +91,7 @@ local function createOptions(parentData, data, index, subIndex)
           else
             copy[k] = v
             if k == "desc" then
-              copy.width = WeakAuras.normalWidth - (level < 4 and indentWidth or indentWidth * 1.5)
+              copy.width = WeakAuras.normalWidth - ((level - 1) * 0.03)
               local glowType = glowType
               copy.hidden = function() return hiddenGlowExtra() or data.glowType ~= glowType end
             elseif k == "type" and v == "group" then
