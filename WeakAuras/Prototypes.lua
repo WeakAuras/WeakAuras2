@@ -6394,7 +6394,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = "true",
-        init = "icon or 'Interface\\Icons\\INV_Misc_QuestionMark'",
+        init = "icon or 'Interface/Icons/INV_Misc_QuestionMark'",
         store = "true",
         test = "true",
       },
