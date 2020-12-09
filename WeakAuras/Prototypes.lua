@@ -6360,7 +6360,7 @@ Private.event_prototypes = {
         local itemBonusId = tonumber(itemBonusId)
         local icon = useLegendaryIcon and WeakAuras.GetLegendaryIcon(itemBonusId) or itemIcon
       ]=]
-      return ret:format(trigger.use_legendaryIcon and "true" or "false", trigger.itemBonusId)
+      return ret:format(trigger.use_legendaryIcon and "true" or "false", trigger.itemBonusId or "")
     end,
     args = {
       {
