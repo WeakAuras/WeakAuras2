@@ -1200,16 +1200,19 @@ for i = 1, 5 do
 end
 
 Private.loss_of_control_types = {
-  CHARM = L["Charm"],
-  CONFUSE = L["Confuse"],
-  DISARM = L["Disarm"],
-  FEAR = L["Fear"],
-  PACIFY = L["Pacify"],
-  POSSESS = L["Possess"],
-  ROOT = L["Root"],
-  SCHOOL_INTERRUPT = L["Interrupt"],
-  SILENCE = L["Silence"],
-  STUN = L["Stun"],
+  CHARM = "CHARM",
+  CONFUSE = "CONFUSE",
+  DISARM = "DISARM",
+  FEAR = "FEAR",
+  FEAR_MECHANIC = "FEAR_MECHANIC",
+  PACIFY = "PACIFY",
+  SILENCE = "SILENCE",
+  PACIFYSILENCE = "PACIFYSILENCE",
+  POSSESS = "POSSESS",
+  ROOT = "ROOT",
+  SCHOOL_INTERRUPT = "SCHOOL_INTERRUPT",
+  STUN = "STUN",
+  STUN_MECHANIC = "STUN_MECHANIC",
 }
 
 Private.main_spell_schools = {

@@ -6603,9 +6603,6 @@ Private.event_prototypes = {
     type = "status",
     events = {
       ["events"] = {
-        --"PLAYER_CONTROL_LOST",
-        --"PLAYER_CONTROL_GAINED",
-        --"LOSS_OF_CONTROL_ADDED",
         "LOSS_OF_CONTROL_UPDATE"
       }
     },
@@ -6626,8 +6623,6 @@ Private.event_prototypes = {
             local data = C_LossOfControl.GetActiveLossOfControlData(i)
             if data then
               if (not use_controlType)
-              or (data.locType == "PACIFYSILENCE" and (controlType == "SILENCE" or controlType == "PACIFY"))
-              or (data.locType == "STUN_MECHANIC" and controlType == "STUN")
               or (data.locType == controlType and (controlType ~= "SCHOOL_INTERRUPT" or ((not use_interruptSchool) or bit.band(data.lockoutSchool, interruptSchool) > 0)))
               then
                 spellId = data.spellID
@@ -6661,6 +6656,8 @@ Private.event_prototypes = {
         conditionType = "select",
         test = "true",
         default = "STUN",
+        init = "locType",
+        store = true,
       },
       {
         name = "interruptSchool",
@@ -6671,6 +6668,8 @@ Private.event_prototypes = {
         default = 1,
         test = "true",
         enable = function(trigger) return trigger.controlType == "SCHOOL_INTERRUPT" end,
+        init = "lockoutSchool",
+        store = true,
       },
       {
         name = "inverse",
@@ -6695,13 +6694,6 @@ Private.event_prototypes = {
         test = "true",
       },
       {
-        name = "locType",
-        display = L["Type"],
-        hidden = true,
-        store = true,
-        test = "true",
-      },
-      {
         name = "spellId",
         display = L["Spell Id"],
         hidden = true,
@@ -6712,7 +6704,7 @@ Private.event_prototypes = {
       },
       {
         name = "lockoutSchool",
-        display = L["Interrupted School"],
+        display = L["Interrupted School Text"],
         hidden = true,
         init = "lockoutSchool and lockoutSchool > 0 and GetSchoolString(lockoutSchool) or nil",
         store = true,
