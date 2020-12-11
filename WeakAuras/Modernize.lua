@@ -400,6 +400,7 @@ function Private.Modernize(data)
         text2FontSize = "sub.2.text_fontSize"
       }
 
+      data.subRegions = data.subRegions or {}
       tinsert(data.subRegions, text1)
       if (usetext2) then
         tinsert(data.subRegions, text2)
