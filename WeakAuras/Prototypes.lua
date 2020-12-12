@@ -6650,7 +6650,7 @@ Private.event_prototypes = {
     args = {
       {
         name = "controlType",
-        display = L["Specific CC Type"],
+        display = L["Specific Type"],
         type = "select",
         values = "loss_of_control_types",
         conditionType = "select",
