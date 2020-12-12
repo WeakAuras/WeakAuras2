@@ -5256,7 +5256,7 @@ Private.event_prototypes = {
       }
     end,
     force_events = WeakAuras.IsClassic() and "CHARACTER_POINTS_CHANGED" or "PLAYER_TALENT_UPDATE",
-    name = L["Talent Selected"],
+    name = L["Talent Known"],
     init = function(trigger)
       local inverse = trigger.use_inverse;
       if (trigger.use_talent) then
@@ -5274,15 +5274,28 @@ Private.event_prototypes = {
         local ret = [[
           local tier = %s;
           local column = %s;
-          local active, _, activeName, activeIcon, selected, known, rank
-          if WeakAuras.IsClassic() then
-            _, _, _, _, rank  = GetTalentInfo(tier, column)
-            active = rank > 0
-          else
-            _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
-            active = selected or known;
-          end
         ]]
+        if WeakAuras.IsClassic() then
+          ret = ret .. [[
+          local active, _, rank
+          _, _, _, _, rank  = GetTalentInfo(tier, column)
+          active = rank > 0
+          ]]
+        else
+          if trigger.use_onlySelected then
+            ret = ret .. [[
+            local active, _, activeName, activeIcon, selected, known
+            _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
+            active = selected
+            ]]
+          else
+            ret = ret .. [[
+            local active, _, activeName, activeIcon, selected, known
+            _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
+            active = selected or known
+            ]]
+          end
+        end
         if (inverse) then
           ret = ret .. [[
           active = not (active);
@@ -5311,21 +5324,38 @@ Private.event_prototypes = {
               if (not active) then
                 tier = %s
                 column = %s
-                if WeakAuras.IsClassic() then
-                  local name, icon, _, _, rank  = GetTalentInfo(tier, column)
-                  if rank > 0 then
+            ]]
+            if WeakAuras.IsClassic() then
+              ret2 = ret2 .. [[
+                local name, icon, _, _, rank  = GetTalentInfo(tier, column)
+                if rank > 0 then
+                  active = true;
+                  activeName = name;
+                  activeIcon = icon;
+                end
+              ]]
+            else
+              if trigger.use_onlySelected then
+                ret2 = ret2 .. [[
+                  local _, name, icon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
+                  if (selected) then
                     active = true;
                     activeName = name;
                     activeIcon = icon;
                   end
-                else
+                ]]
+              else
+                ret2 = ret2 .. [[
                   local _, name, icon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
                   if (selected or known) then
                     active = true;
                     activeName = name;
                     activeIcon = icon;
                   end
-                end
+                ]]
+              end
+            end
+            ret2 = ret2 .. [[
               end
             ]]
             ret = ret .. ret2:format(tier, column);
@@ -5343,7 +5373,7 @@ Private.event_prototypes = {
     args = {
       {
         name = "talent",
-        display = L["Talent selected"],
+        display = L["Talent"],
         type = "multiselect",
         values = function()
           local class = select(2, UnitClass("player"));
@@ -5357,6 +5387,14 @@ Private.event_prototypes = {
           end
         end,
         test = "active",
+      },
+      {
+        name = "onlySelected",
+        display = L["Only if selected"],
+        type = "boolean",
+        test = "true",
+        enable = not WeakAuras.IsClassic(),
+        hidden = WeakAuras.IsClassic(),
       },
       {
         name = "inverse",
