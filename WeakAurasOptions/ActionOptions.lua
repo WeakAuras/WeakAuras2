@@ -181,6 +181,8 @@ function OptionsPrivate.GetActionOptions(data)
         order = 8.2,
         hidden = function() return not data.actions.start.do_loop end,
         disabled = function() return not data.actions.start.do_sound end,
+        min = 0,
+        softMax = 100,
       },
       start_sound_repeat_space = {
         type = "description",
