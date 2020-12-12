@@ -214,7 +214,7 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
       end
     elseif (cType == "customcheck") then
       if value then
-        local customCheck = WeakAuras.LoadFunction("return " .. value, "custom check")
+        local customCheck = WeakAuras.LoadFunction("return " .. value, Private.UIDtoID(uid), "conditions custom check")
         if customCheck then
           WeakAuras.conditionHelpers[uid] = WeakAuras.conditionHelpers[uid] or {}
           WeakAuras.conditionHelpers[uid].customTestFunctions = WeakAuras.conditionHelpers[uid].customTestFunctions or {}
@@ -640,7 +640,9 @@ end
 
 function Private.RunConditions(region, uid, hideRegion)
   if (checkConditions[uid]) then
+    Private.ActivateAuraEnvironmentForRegion(region)
     checkConditions[uid](region, hideRegion);
+    Private.ActivateAuraEnvironment()
   end
 end
 
