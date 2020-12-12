@@ -1129,7 +1129,7 @@ local function scamCheck(codes, data)
 
   if (data.conditions) then
     for _, condition in ipairs(data.conditions) do
-      if (condition) then
+      if (condition and condition.changes) then
         for _, property in ipairs(condition.changes) do
           if ((property.property == "chat" or property.property == "customcode") and type(property.value) == "table" and property.value.custom) then
             checkCustomCondition(codes, L["%s - Condition Custom Chat"]:format(data.id), property.value.custom);
