@@ -3021,7 +3021,7 @@ local function actionGlowStart(actions, frame, id)
     return
   end
   local glowType = glows[actions.glow_type] and actions.glow_type or "Button Glow"
-  local glowOptions = actions[glowType]
+  local glowOptions = actions.glowData or {}
   if glowOptions then
     glowOptions.key = id
     glows[glowType].start(glow_frame, glowOptions)

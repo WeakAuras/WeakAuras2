@@ -44,25 +44,45 @@ function OptionsPrivate.GetActionOptions(data)
               glowType or k,
               (level > 2 and prefix or "")..(v.args and k.."_" or "")
             )
-            if copy[key] and v.default then
+            if copy[key] and v.default ~= nil then
               local actionPrefix = actionPrefix
               copy[key].get = function()
-                print("get", key, data.actions[actionPrefix].glowData[key], v.default)
-                local ret = data
-                and data.actions
-                and data.actions[actionPrefix]
-                and data.actions[actionPrefix].glowData
-                and data.actions[actionPrefix].glowData[key]
+                local function recurseGet(var, key)
+                  if var == nil then return end
+                  local subkey, _, todo = key:match("^([^_]*)(_(.*))")
+                  if subkey == nil then
+                    return var[key]
+                  elseif todo == nil then
+                    return var[subkey]
+                  else
+                    return recurseGet(var[subkey], todo)
+                  end
+                end
+                local ret = recurseGet(data.actions[actionPrefix].glowData or {}, key)
                 if type(ret) == "table" then
                   return unpack(ret)
                 else
-                  return ret or v.default
+                  if ret ~= nil then
+                    return ret
+                  else
+                    return v.default
+                  end
                 end
               end
               copy[key].set = function(info, v, g, b, a)
-                print("set", info[#info])
+                local function recurseSet(var, key, value)
+                  local subkey, _, todo = key:match("^([^_]*)(_(.*))")
+                  if subkey == nil then
+                    var[key] = value
+                  elseif todo == nil then
+                    var[subkey] = value
+                  else
+                    var[subkey] = var[subkey] or {}
+                    recurseSet(var[subkey], todo, value)
+                  end
+                end
                 data.actions[actionPrefix].glowData = data.actions[actionPrefix].glowData or {}
-                data.actions[actionPrefix].glowData[info[#info]] = info.type == "color" and {v, g, b, a} or v
+                recurseSet(data.actions[actionPrefix].glowData, info[#info], info.type == "color" and {v, g, b, a} or v)
               end
             end
           else
