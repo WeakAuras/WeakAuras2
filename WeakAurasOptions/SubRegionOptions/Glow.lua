@@ -3,17 +3,111 @@ local AddonName, OptionsPrivate = ...
 
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
+local LCG = LibStub("LibCustomGlow-1.0")
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
 
 local indentWidth = 0.15
 
+local glows = LCG:GetGlows()
+local function getDefaults(glowType)
+  local options = {}
+  local function recurse(settings, prefix, parent)
+    for k, v in pairs(settings) do
+        if ( type(v) == "table" ) then
+          recurse(
+              v,
+              (prefix or "")..(v.args and k.."_" or ""),
+              k
+          )
+        end
+        if settings.type ~= "group" and k == "default" then
+          options[prefix..parent] = v
+        end
+    end
+  end
+  glowType = glows[glowType] and glowType or "Button Glow" -- TODO: remove after migration is done
+  recurse(glows[glowType])
+  return options
+end
+
+local function LCGkeyToData(glowType, key)
+  glowType = glows[glowType] and glowType or "Button Glow" -- TODO: remove after migration is done
+  local key1, key2, key3, key4, more
+  key1, more = key:match("^([^_]+)(.*)")
+  if more then
+    key2, more = more:match("_([^_]+)(.*)")
+    if more then
+        key3, more = more:match("_([^_]+)(.*)")
+        if more then
+          key4 = more:match("_([^_]+)(.*)")
+      end
+    end
+  end
+  if key1 then
+    if key2 then
+      if key3 then
+        if key4 then
+          return glows[glowType].args[key1].args[key2].args[key3].args[key4]
+        else
+          return glows[glowType].args[key1].args[key2].args[key3]
+        end
+      else
+        return glows[glowType].args[key1].args[key2]
+      end
+    else
+      return glows[glowType].args[key1]
+    end
+  end
+end
 
 local function createOptions(parentData, data, index, subIndex)
-
   local hiddenGlowExtra = function()
     return OptionsPrivate.IsCollapsed("glow", "glow", "glowextra" .. index, true);
+  end
+
+  local addOptionsFromLCG = function(options, order)
+    local maxOrder = 0
+
+    local function MyCopyTable(settings, level, glowType, prefix)
+      local copy = {}
+      if settings.type == "gradient" then -- TODO: not a valid ace3 type
+        return nil
+      end
+      for k, v in pairs(settings) do
+        if k ~= "default"
+        and k ~= "start"
+        and k ~= "stop"
+        then
+          if ( type(v) == "table" ) then
+            local key = v.name and ("sub."..index..".subglow."..(level > 2 and prefix or ""))..k or k
+            copy[key] = MyCopyTable(
+              v,
+              level + 1,
+              glowType or k,
+              (level > 2 and prefix or "")..(v.args and k.."_" or "")
+            )
+          else
+            copy[k] = v
+            if k == "desc" then
+              copy.width = WeakAuras.normalWidth - ((level - 1) * 0.03)
+              local glowType = glowType
+              copy.hidden = function() return hiddenGlowExtra() or data.glowType ~= glowType end
+            elseif k == "type" and v == "group" then
+              copy.inline = true
+            elseif k == "order" and level == 2 then
+              copy[k] = v + order
+              maxOrder = max(maxOrder, copy[k])
+            end
+          end
+        end
+      end
+      return copy
+    end
+
+    WeakAuras.DeepMixin(options, MyCopyTable(LCG:GetGlows(), 1))
+    return maxOrder + 1
   end
 
   local options = {
@@ -65,45 +159,33 @@ local function createOptions(parentData, data, index, subIndex)
       control = "WeakAurasExpandSmall",
       name = function()
         local line = L["|cFFffcc00Extra Options:|r"]
-        local color = L["Default Color"]
-        if data.useGlowColor then
-          color = L["|c%02x%02x%02x%02xCustom Color|r"]:format(
-            data.glowColor[4] * 255,
-            data.glowColor[1] * 255,
-            data.glowColor[2] * 255,
-            data.glowColor[3] * 255
-          )
-        end
-        if data.glowType == "buttonOverlay" then
-          line = ("%s %s"):format(line, color)
-        elseif data.glowType == "ACShine" then
-          line = L["%s %s, Particles: %d, Frequency: %0.2f, Scale: %0.2f"]:format(
-            line,
-            color,
-            data.glowLines,
-            data.glowFrequency,
-            data.glowScale
-          )
-          if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
-            line = L["%s, offset: %0.2f;%0.2f"]:format(line, data.glowXOffset, data.glowYOffset)
-          end
-        elseif data.glowType == "Pixel" then
-          line = L["%s %s, Lines: %d, Frequency: %0.2f, Length: %d, Thickness: %d"]:format(
-            line,
-            color,
-            data.glowLines,
-            data.glowFrequency,
-            data.glowLength,
-            data.glowThickness
-          )
-          if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
-            line = L["%s, Offset: %0.2f;%0.2f"]:format(line, data.glowXOffset, data.glowYOffset)
-          end
-          if data.glowBorder then
-            line = L["%s, Border"]:format(line)
+        local defaults = getDefaults(data.glowType)
+        for k, v in pairs(defaults) do
+          if data[k] then
+            local keyData = LCGkeyToData(data.glowType, k)
+            local default = keyData and keyData.default
+            if type(v) ~= "table" then
+              if data[k] ~= v then
+                if type(v) == "boolean" then
+                  line = ("%s %s,"):format(line, WrapTextInColorCode(keyData.name, data[k] and "ff00ff00" or "ffff0000"))
+                else
+                  line = ("%s %s: %s,"):format(line, keyData.name, tostring(data[k]))
+                end
+              end
+            else
+              if keyData.type == "color"
+                and (
+                  data[k][1] ~= v[1]
+                  or data[k][2] ~= v[2]
+                  or data[k][3] ~= v[3]
+                )
+              then
+                line = ("%s %s,"):format(line, WrapTextInColorCode(keyData.name, CreateColor(data[k][1], data[k][2], data[k][3], 1):GenerateHexColor()))
+              end
+            end
           end
         end
-        return line
+        return line:match("(.*),$") or line
       end,
       width = WeakAuras.doubleWidth,
       order = 4,
@@ -120,148 +202,21 @@ local function createOptions(parentData, data, index, subIndex)
       arg = {
         expanderName = "glow" .. index .. "#" .. subIndex
       }
-    },
-    glow_space1 = {
-      type = "description",
-      name = "",
-      width = indentWidth,
-      order = 5,
-      hidden = hiddenGlowExtra,
-    },
-    useGlowColor = {
-      type = "toggle",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["Use Custom Color"],
-      desc = L["If unchecked, then a default color will be used (usually yellow)"],
-      order = 6,
-      hidden = hiddenGlowExtra
-    },
-    glowColor = {
-      type = "color",
-      width = WeakAuras.normalWidth,
-      name = L["Custom Color"],
-      order = 7,
-      disabled = function() return not data.useGlowColor end,
-      hidden = hiddenGlowExtra
-    },
-    glow_space2 = {
-      type = "description",
-      name = "",
-      width = indentWidth,
-      order = 8,
-      hidden = hiddenGlowExtra,
-    },
-    glowLines = {
-      type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["Lines & Particles"],
-      order = 9,
-      min = 1,
-      softMax = 30,
-      step = 1,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
-    },
-    glowFrequency = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Frequency"],
-      order = 10,
-      softMin = -2,
-      softMax = 2,
-      step = 0.05,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
-    },
-    glow_space3 = {
-      type = "description",
-      name = "",
-      width = indentWidth,
-      order = 11,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
-    },
-    glowLength = {
-      type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["Length"],
-      order = 12,
-      min = 1,
-      softMax = 20,
-      step = 0.05,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
-    },
-    glowThickness = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Thickness"],
-      order = 13,
-      min = 0.05,
-      softMax = 20,
-      step = 0.05,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
-    },
-    glow_space4 = {
-      type = "description",
-      name = "",
-      width = indentWidth,
-      order = 14,
-      hidden = hiddenGlowExtra,
-    },
-    glowXOffset = {
-      type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["X-Offset"],
-      order = 15,
-      softMin = -100,
-      softMax = 100,
-      step = 0.5,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
-    },
-    glowYOffset = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = L["Y-Offset"],
-      order = 16,
-      softMin = -100,
-      softMax = 100,
-      step = 0.5,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
-    },
-    glow_space5 = {
-      type = "description",
-      name = "",
-      width = indentWidth,
-      order = 17,
-      hidden = hiddenGlowExtra,
-    },
-    glowScale = {
-      type = "range",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["Scale"],
-      order = 18,
-      min = 0.05,
-      softMax = 10,
-      step = 0.05,
-      isPercent = true,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "ACShine" end,
-    },
-    glowBorder = {
-      type = "toggle",
-      width = WeakAuras.normalWidth - indentWidth,
-      name = L["Border"],
-      order = 19,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
-    },
-
-    glow_anchor = {
-      type = "description",
-      name = "",
-      order = 20,
-      hidden = hiddenGlowExtra,
-      control = "WeakAurasExpandAnchor",
-      arg = {
-        expanderName = "glow" .. index .. "#" .. subIndex
-      }
     }
   }
+
+  local order = addOptionsFromLCG(options, 6)
+  options.glow_anchor_anchor = {
+    type = "description",
+    name = "",
+    order = order,
+    hidden = hiddenGlowExtra,
+    control = "WeakAurasExpandAnchor",
+    arg = {
+      expanderName = "glow" .. index .. "#" .. subIndex
+    }
+  }
+  --ViragDevTool_AddData(options, "createOptions")
   return options
 end
 
