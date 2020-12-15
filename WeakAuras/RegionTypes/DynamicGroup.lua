@@ -780,8 +780,7 @@ end
 
 local function modify(parent, region, data)
   Private.FixGroupChildrenOrderForGroup(data)
-  -- Scale
-  region:SetScale(data.scale and data.scale > 0 and data.scale or 1)
+  region:SetScale(data.scale and data.scale > 0 and data.scale <= 10 and data.scale or 1)
   WeakAuras.regionPrototype.modify(parent, region, data)
 
   if data.border and (data.grow ~= "CUSTOM" and not data.useAnchorPerUnit) then

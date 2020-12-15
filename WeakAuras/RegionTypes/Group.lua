@@ -88,7 +88,7 @@ local function modify(parent, region, data)
   local border = region.border;
 
   -- Scale
-  region:SetScale(data.scale and data.scale > 0 and data.scale or 1)
+  region:SetScale(data.scale and data.scale > 0 and data.scale <= 10 and data.scale or 1)
 
   -- Get overall bounding box
   local leftest, rightest, lowest, highest = 0, 0, 0, 0;
