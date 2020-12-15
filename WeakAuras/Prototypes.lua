@@ -7897,6 +7897,129 @@ Private.event_prototypes = {
     automaticrequired = true
   },
 
+  ["Spell in Range"] = {
+    type = "status",
+    events = {
+      ["events"] = {
+        "PLAYER_TARGET_CHANGED",
+        "WA_SPELL_RANGECHECK",
+      }
+    },
+    name = L["Spell in Range"],
+    init = function(trigger)
+      trigger.unit = trigger.unit or "target"
+      trigger.spellName = trigger.spellName or 0
+      local spellName
+      if (trigger.use_exact_spell) then
+        spellName = trigger.spellName
+      else
+        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName
+      end
+      trigger.realSpell = spellName
+      -- IsSpellInRange returns nil for no target, 0 for out of range, and 1 for in range.
+      local ret = [=[
+          local unit = %q
+          local spell = %q
+          local inverse = %s
+          local targetRequired = %s
+
+          local range = WeakAuras.IsSpellInRange(spell, unit)
+          if range then
+            inRange = (range == 1) == not inverse
+          else
+            inRange = inverse and not targetRequired
+          end
+
+          local name, rank, icon, _, minRange, maxRange = GetSpellInfo(spell)
+      ]=]
+      return ret:format(trigger.unit, spellName, trigger.use_inverse and "true" or "false", trigger.use_targetRequired and "true" or "false")
+    end,
+    statesParameter = "one",
+    args = {
+      {
+        name = "unit",
+        display = L["Unit"],
+        required = true,
+        type = "unit",
+        values = "unit_types_range_check",
+        test = "true",
+        store = true
+      },
+      {
+        name = "spellName",
+        display = L["Spell"],
+        required = true,
+        type = "spell",
+        test = "true",
+        showExactOption = true,
+      },
+      {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true",
+      },
+      {
+        name = "targetRequired",
+        display = L["Require Valid Target"],
+        type = "toggle",
+        enable = function(trigger)
+          return trigger.use_inverse
+        end,
+        test = "true",
+      },
+      {
+        name = "minRange",
+        display = L["Spell Min Range"],
+        hidden = "true",
+        store = "true",
+        test = "true",
+      },
+      {
+        name = "maxRange",
+        display = L["Spell Max Range"],
+        hidden = "true",
+        store = "true",
+        test = "true",
+      },
+      {
+        name = "unitName",
+        display = L["Unit Name"],
+        hidden = "true",
+        store = "true",
+        test = "true",
+        init = "GetUnitName(unit)",
+      },
+      {
+        name = "icon",
+        hidden = "true",
+        init = "icon or 'Interface/Icons/INV_Misc_QuestionMark'",
+        store = "true",
+        test = "true",
+      },
+      {
+        name = "rank",
+        display = L["Spell Rank"],
+        hidden = "true",
+        store = "true",
+        test = "true",
+      },
+      {
+        name = "name",
+        display = L["Spell Name"],
+        hidden = "true",
+        store = "true",
+        test = "true",
+        init = "name"
+      },
+      {
+        hidden = true,
+        test = "inRange",
+      }
+    },
+    hasSpellID = true,
+    automaticrequired = true
+  },
 };
 
 if WeakAuras.IsClassic() then

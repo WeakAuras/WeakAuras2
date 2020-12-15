@@ -728,7 +728,8 @@ Private.unit_types_range_check = {
   target = L["Target"],
   focus = L["Focus"],
   pet = L["Pet"],
-  member = L["Specific Unit"]
+  mouseover = L["Mouseover"],
+  member = L["Specific Unit"],
 }
 
 Private.unit_threat_situation_types = {
