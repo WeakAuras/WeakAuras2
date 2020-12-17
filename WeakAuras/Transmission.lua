@@ -1827,11 +1827,9 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
       local matchInfo = MatchInfo(data, children)
       ShowDisplayTooltip(data, children, matchInfo, icon, icons, sender, true)
     elseif(received.m == "dR") then
-      --if(WeakAuras.linked[received.d]) then
-      TransmitDisplay(received.d, sender);
-    --else
-    --    TransmitError("not authorized", sender);
-    --end
+      if(Private.linked and Private.linked[received.d]) then
+        TransmitDisplay(received.d, sender);
+      end
     elseif(received.m == "dE") then
       tooltipLoading = nil;
       if(received.eM == "dne") then
