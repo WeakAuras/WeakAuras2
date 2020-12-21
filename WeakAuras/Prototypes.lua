@@ -6354,13 +6354,14 @@ Private.event_prototypes = {
     name = L["Item Bonus Id Equipped"],
     statesParameter = "one",
     init = function(trigger)
+      trigger.itemBonusId = trigger.itemBonusId or ""
       local ret = [=[
         local useLegendaryIcon = %s
         local itemBonusId, itemId, itemName, itemIcon, itemSlot, itemSlotString = WeakAuras.GetBonusIdInfo(%q)
         local itemBonusId = tonumber(itemBonusId)
         local icon = useLegendaryIcon and WeakAuras.GetLegendaryIcon(itemBonusId) or itemIcon
       ]=]
-      return ret:format(trigger.use_legendaryIcon and "true" or "false", trigger.itemBonusId or "")
+      return ret:format(trigger.use_legendaryIcon and "true" or "false", trigger.itemBonusId)
     end,
     args = {
       {
