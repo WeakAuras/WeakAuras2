@@ -239,12 +239,14 @@ WeakAuras.GetLegendariesBonusIds = function()
   return result
 end
 
-WeakAuras.GetLegendaryIcon = function(id)
+WeakAuras.GetLegendaryData = function(id)
   if WeakAuras.IsClassic() then
     return ""
   end
   local legendaryID = bonusIdToLegendary[tonumber(id)]
   if legendaryID then
-    return C_LegendaryCrafting.GetRuneforgePowerInfo(legendaryID).iconFileID
+    local data = C_LegendaryCrafting.GetRuneforgePowerInfo(legendaryID)
+    return data.name, data.iconFileID
   end
 end
+
