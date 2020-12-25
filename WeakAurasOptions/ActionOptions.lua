@@ -784,8 +784,6 @@ function OptionsPrivate.GetActionOptions(data)
 
   addOptionsFromLCG(action.args, "start", 10.55)
 
-  ViragDevTool_AddData(action, "action_postaddoption")
-
   -- Text format option helpers
 
   OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "init", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-init",
