@@ -1,0 +1,27 @@
+name: Create WeakAurasModelPaths update pull request
+
+on:
+  schedule:
+    - cron:  '0 10 * * *'
+  workflow_dispatch:
+
+jobs:
+  modelPathsUpdate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: leafo/gh-actions-lua@v8.0.0
+
+      - name: Update WeakAurasModelPaths from wow.tools
+        run: |
+          cd .github/scripts/
+          ./wowtools.sh
+        shell: bash
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          branch: update-modelpaths
+          commit-message: Update WeakAurasModelPaths from wow.tools
+          title: Update WeakAurasModelPaths from wow.tools
+          body: Update WeakAurasModelPaths from wow.tools
