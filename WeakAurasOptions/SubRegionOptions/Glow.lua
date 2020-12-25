@@ -10,7 +10,7 @@ local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ce
 
 local indentWidth = 0.15
 
--- local glows = LCG:GetGlows()
+local glows = LCG:GetGlows()
 
 local parsePrefix = function(input, data)
   local subRegionIndex, property = string.match(input, "^sub%.(%d+)%..-%.(.+)")
@@ -133,41 +133,38 @@ local function createOptions(parentData, data, index, subIndex)
       values = OptionsPrivate.Private.aurabar_anchor_areas,
       hidden = function() return parentData.regionType ~= "aurabar" end
     },
-    glowExtraDescription = { -- TODO rewrite
+    glowExtraDescription = {
       type = "execute",
       control = "WeakAurasExpandSmall",
       name = function()
-        --[[
         local line = L["|cFFffcc00Extra Options:|r"]
-        local defaults = getDefaults(data.glowType)
-        for k, v in pairs(defaults) do
-          if data[k] then
-            local keyData = LCGkeyToData(data.glowType, k)
-            local default = keyData and keyData.default
-            if type(v) ~= "table" then
-              if data[k] ~= v then
-                if type(v) == "boolean" then
-                  line = ("%s %s,"):format(line, WrapTextInColorCode(keyData.name, data[k] and "ff00ff00" or "ffff0000"))
-                else
-                  line = ("%s %s: %s,"):format(line, keyData.name, tostring(data[k]))
-                end
-              end
+        local defaults = glows[data.glowType]
+        local function compareTables(ref, myData)
+          if ref == nil or myData == nil then return "" end
+          if ref.type == "group" then
+            local out = ""
+            for k, v in pairs(ref.args) do
+              out = out .. compareTables(v, myData[k])
+            end
+            return out
+          elseif ref.type == "color" and (
+            myData[1] ~= ref.default[1]
+            or myData[2] ~= ref.default[2]
+            or myData[3] ~= ref.default[3]
+          )
+          then
+            return (" %s,"):format(WrapTextInColorCode(ref.name, CreateColor(myData[1], myData[2], myData[3], 1):GenerateHexColor()))
+          elseif myData ~= ref.default then
+            if type(myData) == "boolean" then
+              return (" %s,"):format(WrapTextInColorCode(ref.name, myData and "ff00ff00" or "ffff0000"))
             else
-              if keyData.type == "color"
-                and (
-                  data[k][1] ~= v[1]
-                  or data[k][2] ~= v[2]
-                  or data[k][3] ~= v[3]
-                )
-              then
-                line = ("%s %s,"):format(line, WrapTextInColorCode(keyData.name, CreateColor(data[k][1], data[k][2], data[k][3], 1):GenerateHexColor()))
-              end
+              return (" %s: %s,"):format(ref.name, tostring(myData))
             end
           end
+          return ""
         end
+        line = ("%s %s"):format(line, compareTables(glows[data.glowType], data))
         return line:match("(.*),$") or line
-        ]]--
-        return ""
       end,
       width = WeakAuras.doubleWidth,
       order = 4,
