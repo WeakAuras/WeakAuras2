@@ -10,56 +10,19 @@ local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ce
 
 local indentWidth = 0.15
 
-local glows = LCG:GetGlows()
-local function getDefaults(glowType)
-  local options = {}
-  local function recurse(settings, prefix, parent)
-    for k, v in pairs(settings) do
-        if ( type(v) == "table" ) then
-          recurse(
-              v,
-              (prefix or "")..(v.args and k.."_" or ""),
-              k
-          )
-        end
-        if settings.type ~= "group" and k == "default" then
-          options[prefix..parent] = v
-        end
-    end
-  end
-  glowType = glows[glowType] and glowType or "Button Glow" -- TODO: remove after migration is done
-  recurse(glows[glowType])
-  return options
-end
+-- local glows = LCG:GetGlows()
 
-local function LCGkeyToData(glowType, key)
-  glowType = glows[glowType] and glowType or "Button Glow" -- TODO: remove after migration is done
-  local key1, key2, key3, key4, more
-  key1, more = key:match("^([^_]+)(.*)")
-  if more then
-    key2, more = more:match("_([^_]+)(.*)")
-    if more then
-        key3, more = more:match("_([^_]+)(.*)")
-        if more then
-          key4 = more:match("_([^_]+)(.*)")
-      end
-    end
+local parsePrefix = function(input, data)
+  local subRegionIndex, property = string.match(input, "^sub%.(%d+)%..-%.(.+)")
+  local tab = data
+  while property:find("%.") do
+    local pos = property:find("%.")
+    local prefixTab = property:sub(1, pos - 1)
+    if tab[prefixTab] == nil then break end
+    tab = tab[prefixTab]
+    property = property:sub(pos + 1)
   end
-  if key1 then
-    if key2 then
-      if key3 then
-        if key4 then
-          return glows[glowType].args[key1].args[key2].args[key3].args[key4]
-        else
-          return glows[glowType].args[key1].args[key2].args[key3]
-        end
-      else
-        return glows[glowType].args[key1].args[key2]
-      end
-    else
-      return glows[glowType].args[key1]
-    end
-  end
+  return tab, property
 end
 
 local function createOptions(parentData, data, index, subIndex)
@@ -86,7 +49,7 @@ local function createOptions(parentData, data, index, subIndex)
               v,
               level + 1,
               glowType or k,
-              (level > 2 and prefix or "")..(v.args and k.."_" or "")
+              (level > 2 and prefix or "")..(v.args and k.."." or "")
             )
           else
             copy[k] = v
@@ -94,6 +57,22 @@ local function createOptions(parentData, data, index, subIndex)
               copy.width = WeakAuras.normalWidth - ((level - 1) * 0.03)
               local glowType = glowType
               copy.hidden = function() return hiddenGlowExtra() or data.glowType ~= glowType end
+              local default = settings.default
+              copy.get = function(info)
+                local base, property = parsePrefix(info[#info], data);
+                if base == nil then
+                  return default
+                end
+                if base[property] == nil then
+                  return default
+                elseif info.type == "color" then
+                  base[property] = base[property] or {};
+                  local c = base[property];
+                  return c[1], c[2], c[3], c[4];
+                else
+                  return base[property]
+                end
+              end
             elseif k == "type" and v == "group" then
               copy.inline = true
             elseif k == "order" and level == 2 then
@@ -154,10 +133,11 @@ local function createOptions(parentData, data, index, subIndex)
       values = OptionsPrivate.Private.aurabar_anchor_areas,
       hidden = function() return parentData.regionType ~= "aurabar" end
     },
-    glowExtraDescription = {
+    glowExtraDescription = { -- TODO rewrite
       type = "execute",
       control = "WeakAurasExpandSmall",
       name = function()
+        --[[
         local line = L["|cFFffcc00Extra Options:|r"]
         local defaults = getDefaults(data.glowType)
         for k, v in pairs(defaults) do
@@ -186,6 +166,8 @@ local function createOptions(parentData, data, index, subIndex)
           end
         end
         return line:match("(.*),$") or line
+        ]]--
+        return ""
       end,
       width = WeakAuras.doubleWidth,
       order = 4,
@@ -216,7 +198,6 @@ local function createOptions(parentData, data, index, subIndex)
       expanderName = "glow" .. index .. "#" .. subIndex
     }
   }
-  --ViragDevTool_AddData(options, "createOptions")
   return options
 end
 

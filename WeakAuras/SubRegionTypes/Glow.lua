@@ -12,37 +12,22 @@ end
 local L = WeakAuras.L;
 
 local glows = LCG:GetGlows()
-
-local function getDefaults()
-  local options = {}
-  local function recurse(settings, level, prefix, parent)
-     for k, v in pairs(settings) do
-        if ( type(v) == "table" ) then
-           recurse(
-              v,
-              level + 1,
-              (level > 2 and prefix or "")..(v.args and k.."_" or ""),
-              k
-           )
-        end
-        if settings.type ~= "group" and k == "default" then
-          options[prefix..parent] = v
-        end
-     end
-  end
-  recurse(glows, 1)
-  return options
+local defaults = {}
+for k, v in pairs(glows) do
+  defaults[k] = v.default
 end
 
 local default = function(parentType)
-  local options = getDefaults()
-  options.glow = false
+  local options
   if parentType == "aurabar" then
+    options = defaults["Pixel Glow"]
     options["glowType"] = "Pixel Glow"
     options["glow_anchor"] = "bar"
   else
+    options = defaults["Button Glow"]
     options.glowType = "Button Glow"
   end
+  options.glow = false
   return options
 end
 
@@ -114,45 +99,7 @@ local function glowStart(self, frame)
     return
   end
 
-  local options = {}
-  for k, v in pairs(self.glowOptions) do
-    if type(k) == "string" then
-      local key1, key2, key3, key4, more
-      key1, more = k:match("^([^_]+)(.*)")
-      if more then
-        key2, more = more:match("_([^_]+)(.*)")
-        if more then
-            key3, more = more:match("_([^_]+)(.*)")
-            if more then
-              key4 = more:match("_([^_]+)(.*)")
-          end
-        end
-      end
-      if key1 then
-        if key2 then
-          if key3 then
-            if key4 then
-              options[key1] = options[key1] or {}
-              options[key1][key2] = options[key1][key2] or {}
-              options[key1][key2][key3] = options[key1][key2][key3] or {}
-              options[key1][key2][key4] = v
-            else
-              options[key1] = options[key1] or {}
-              options[key1][key2] = options[key1][key2] or {}
-              options[key1][key2][key3] = v
-            end
-          else
-            options[key1] = options[key1] or {}
-            options[key1][key2] = v
-          end
-        else
-          options[key1] = v
-        end
-      end
-    end
-  end
-
-  self.glowStart(frame, options)
+  self.glowStart(frame, self.glowOptions)
 end
 
 funcs["SetVisible"] = function(self, visible)
@@ -245,10 +192,7 @@ local function modify(parent, region, parentData, data, first)
   region.parent = parent
 
   region.parentType = parentData.regionType
-  region.glowOptions = region.glowOptions or {}
-  for k in pairs(getDefaults()) do
-    region.glowOptions[k] = data[k]
-  end
+  region.glowOptions = data
 
   region:SetGlowType(data.glowType)
   region:SetVisible(data.glow)
@@ -258,7 +202,7 @@ end
 
 -- This is used by the templates to add glow
 function WeakAuras.getDefaultGlow(regionType)
-  local options = getDefaults(regionType)
+  local options = {}
   options.type = "subglow"
   options.glow = false
   if regionType == "aurabar" then
@@ -274,7 +218,7 @@ end
 
 local function addDefaultsForNewAura(data)
   if data.regionType == "icon" then
-    local options = getDefaults(data.regionType)
+    local options = {}
     options.type = "subglow"
     options.glow = false
     tinsert(data.subRegions, options)

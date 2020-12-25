@@ -58,7 +58,15 @@ local parsePrefix = function(input, data, create)
         return nil
       end
     end
-    return data.subRegions[subRegionIndex], property
+    local tab = data.subRegions[subRegionIndex]
+    while property:find("%.") do
+      local pos = property:find("%.")
+      local prefixTab = property:sub(1, pos - 1)
+      tab[prefixTab] = tab[prefixTab] or {}
+      tab = tab[prefixTab]
+      property = property:sub(pos + 1)
+    end
+    return tab, property
   end
   local index = string.find(input, ".", 1, true);
   if (index) then
