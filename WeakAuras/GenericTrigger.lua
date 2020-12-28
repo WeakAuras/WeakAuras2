@@ -3441,10 +3441,13 @@ function GenericTrigger.SetToolTip(trigger, state)
       GameTooltip:SetHyperlink("item:"..state.itemId..":0:0:0:0:0:0:0");
       return true
     elseif (state.unit and state.unitBuffIndex) then
-      GameTooltip:SetUnitBuff(state.unit, state.unitBuffIndex);
+      GameTooltip:SetUnitBuff(state.unit, state.unitBuffIndex, state.unitBuffFilter);
       return true
     elseif (state.unit and state.unitDebuffIndex) then
-      GameTooltip:SetUnitDebuff(state.unit, state.unitDebuffIndex);
+      GameTooltip:SetUnitDebuff(state.unit, state.unitDebuffIndex, state.unitDebuffFilter);
+      return true
+    elseif (state.unit and state.unitAuraIndex) then
+      GameTooltip:SetUnitAura(state.unit, state.unitAuraIndex, state.unitAuraFilter)
       return true
     end
   end
