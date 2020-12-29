@@ -2883,8 +2883,6 @@ do
       bar.bwBarColor = BWColorModule:GetColorTable("barColor", addon, spellId)
       bar.bwTextColor = BWColorModule:GetColorTable("barText", addon, spellId)
       bar.bwBackgroundColor = BWColorModule:GetColorTable("barBackground", addon, spellId)
-      local BWEmphasizedModule = BigWigs:GetPlugin("Super Emphasize")
-      bar.emphasized = BWEmphasizedModule:IsSuperEmphasized(addon, spellId) and true or false
       bar.count = text:match("(%d+)") or "0"
       bar.cast = not(text:match("^[^<]") and true)
 
@@ -2950,7 +2948,6 @@ do
     state.bwBarColor = bar.bwBarColor
     state.bwTextColor = bar.bwTextColor
     state.bwBackgroundColor = bar.bwBackgroundColor
-    state.emphasized = bar.emphasized
     state.count = bar.count
     state.cast = bar.cast
     state.progressType = "timed"
@@ -2961,7 +2958,7 @@ do
     end
   end
 
-  function WeakAuras.BigWigsTimerMatches(id, message, operator, spellId, emphasized, count, cast)
+  function WeakAuras.BigWigsTimerMatches(id, message, operator, spellId, count, cast)
     if not bars[id] then
       return false
     end
@@ -2986,9 +2983,6 @@ do
         end
       end
     end
-    if emphasized ~= nil and v.emphasized ~= emphasized then
-      return false
-    end
     if count and count ~= "" and count ~= v.count then
       return false
     end
@@ -3006,10 +3000,10 @@ do
     return bars[id]
   end
 
-  function WeakAuras.GetBigWigsTimer(text, operator, spellId, extendTimer, emphasized, count, cast)
+  function WeakAuras.GetBigWigsTimer(text, operator, spellId, extendTimer, count, cast)
     local bestMatch
     for id, bar in pairs(bars) do
-      if WeakAuras.BigWigsTimerMatches(id, text, operator, spellId, emphasized, count, cast)
+      if WeakAuras.BigWigsTimerMatches(id, text, operator, spellId, count, cast)
       and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
       and bar.expirationTime + extendTimer > GetTime()
       then

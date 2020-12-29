@@ -4737,7 +4737,6 @@ Private.event_prototypes = {
           local extendTimer = %s
           local triggerUseRemaining = %s
           local triggerRemaining = %s
-          local triggerEmphasized = %s
           local triggerCount = %q
           local triggerCast = %s
           local cloneId = useClone and id or ""
@@ -4765,7 +4764,7 @@ Private.event_prototypes = {
 
           if useClone then
             if event == "BigWigs_StartBar" then
-              if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized, triggerCount, triggerCast) then
+              if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                 local bar = WeakAuras.GetBigWigsTimerById(id)
                 if bar then
                   copyOrSchedule(bar, cloneId)
@@ -4779,14 +4778,14 @@ Private.event_prototypes = {
               end
             elseif event == "BigWigs_Timer_Update" then
               for id, bar in pairs(WeakAuras.GetAllBigWigsTimers()) do
-                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized, triggerCount, triggerCast) then
+                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                   copyOrSchedule(bar, id)
                 end
               end
             elseif event == "BigWigs_Timer_Force" then
               wipe(states)
               for id, bar in pairs(WeakAuras.GetAllBigWigsTimers()) do
-                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized, triggerCount, triggerCast) then
+                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                   copyOrSchedule(bar, id)
                 end
               end
@@ -4794,13 +4793,13 @@ Private.event_prototypes = {
           else
             if event == "BigWigs_StartBar" then
               if extendTimer ~= 0 then
-                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerEmphasized, triggerCount, triggerCast) then
+                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                   local bar = WeakAuras.GetBigWigsTimerById(id)
                   WeakAuras.ScheduleBigWigsCheck(bar.expirationTime + extendTimer)
                 end
               end
             end
-            local bar = WeakAuras.GetBigWigsTimer(triggerText, triggerTextOperator, triggerSpellId, extendTimer, triggerEmphasized, triggerCount, triggerCast)
+            local bar = WeakAuras.GetBigWigsTimer(triggerText, triggerTextOperator, triggerSpellId, extendTimer, triggerCount, triggerCast)
             if bar then
               if extendTimer == 0
                 or not (state and state.show)
@@ -4829,7 +4828,6 @@ Private.event_prototypes = {
         trigger.use_extend and tonumber(trigger.extend or 0) or 0,
         trigger.use_remaining and "true" or "false",
         trigger.remaining or 0,
-        trigger.use_emphasized == nil and "nil" or trigger.use_emphasized and "true" or "false",
         trigger.use_count and trigger.count or "",
         trigger.use_cast == nil and "nil" or trigger.use_cast and "true" or "false",
         trigger.remaining_operator or "<"
@@ -4866,15 +4864,6 @@ Private.event_prototypes = {
         desc = L["Only if BigWigs shows it on it's bar"],
         type = "string",
         conditionType = "string",
-      },
-      {
-        name = "emphasized",
-        display = L["Emphasized"],
-        type = "tristate",
-        desc = L["Emphasized option checked in BigWigs's spell options"],
-        test = "true",
-        init = "false",
-        conditionType = "bool"
       },
       {
         name = "cast",
