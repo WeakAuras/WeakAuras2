@@ -1274,6 +1274,14 @@ Private.load_prototype = {
       events = WeakAuras.IsClassic() and {"CHARACTER_POINTS_CHANGED"} or {"PLAYER_TALENT_UPDATE"}
     },
     {
+      name = "ignoretalent",
+      display = L["|cFFFF0000Not|r Talent selected"],
+      type = "multiselect",
+      values = valuesForTalentFunction,
+      test = "(not WeakAuras.CheckTalentByIndex(%d))",
+      events = WeakAuras.IsClassic() and {"CHARACTER_POINTS_CHANGED"} or {"PLAYER_TALENT_UPDATE"}
+    },
+    {
       name = "pvptalent",
       display = L["PvP Talent selected"],
       type = "multiselect",
