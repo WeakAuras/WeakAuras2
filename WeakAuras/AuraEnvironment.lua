@@ -173,6 +173,9 @@ local blockedFunctions = {
 
 local blockedTables = {
   SlashCmdList = true,
+  SendMailMailButton = true,
+  SendMailMoneyGold = true,
+  MailFrameTab2 = true,
 }
 
 local aura_environments = {}
