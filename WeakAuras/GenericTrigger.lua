@@ -3832,9 +3832,6 @@ WeakAuras.CheckForItemBonusId = function(ids)
 end
 
 WeakAuras.GetBonusIdInfo = function(ids)
-  if WeakAuras.IsClassic() then
-    return
-  end
   for id in tostring(ids):gmatch('([^,]+)') do
     local findID = ":" .. tostring(id:trim()) .. ":"
     for slot in pairs(Private.item_slot_types) do
