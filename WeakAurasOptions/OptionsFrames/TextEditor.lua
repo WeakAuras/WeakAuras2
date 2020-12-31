@@ -615,7 +615,7 @@ local function ConstructTextEditor(frame)
     if (not multipath) then
       for index, field in pairs(path) do
         if (type(field) == "number") then
-          field = "Trigger " .. field + 1
+          field = "Trigger " .. field
         end
         title = title .. " " .. field:sub(1, 1):upper() .. field:sub(2)
       end
