@@ -6354,7 +6354,6 @@ Private.event_prototypes = {
     name = L["Item Bonus Id Equipped"],
     statesParameter = "one",
     init = function(trigger)
-      trigger.itemBonusId = trigger.itemBonusId or ""
       local ret = [=[
         local fetchLegendaryPower = %s
         local item = %q
@@ -6369,7 +6368,7 @@ Private.event_prototypes = {
 
         local slotValidation = (useItemSlot and itemSlot == slotSelected) or (not useItemSlot)
       ]=]
-      return ret:format(trigger.use_legendaryIcon and "true" or "false", trigger.itemBonusId, trigger.use_inverse and "true" or "false",
+      return ret:format(trigger.use_legendaryIcon and "true" or "false", trigger.itemBonusId or "", trigger.use_inverse and "true" or "false",
                         trigger.use_itemSlot and "true" or "false", trigger.itemSlot)
     end,
     args = {
