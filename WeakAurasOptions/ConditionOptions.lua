@@ -783,9 +783,13 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     end
 
     if data.controlledChildren then
+      local ordered = {}
       for id, reference in pairs(conditions[i].changes[j].references) do
+        tinsert(ordered, reference)
+      end
+      for index, reference in ipairs(ordered) do
         local input = reference.value and reference.value.message
-        hasTextFormatOption = OptionsPrivate.AddTextFormatOption(input, true, formatGet, addOption, hidden, setHidden)
+        hasTextFormatOption = OptionsPrivate.AddTextFormatOption(input, true, formatGet, addOption, hidden, setHidden, index, #ordered)
       end
     else
       local input = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value["message"]

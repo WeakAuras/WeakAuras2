@@ -266,17 +266,12 @@ local function createOptions(id, data)
                           37, function() return not OptionsPrivate.Private.ContainsCustomPlaceHolder(data.displayText) end, {"customText"}, false);
 
   -- Add Text Format Options
-  local input = data.displayText
   local hidden = function()
     return OptionsPrivate.IsCollapsed("format_option", "text", "displayText", true)
   end
 
   local setHidden = function(hidden)
     OptionsPrivate.SetCollapsed("format_option", "text", "displayText", hidden)
-  end
-
-  local get = function(key)
-    return data["displayText_format_" .. key]
   end
 
   local order = 12
@@ -294,7 +289,22 @@ local function createOptions(id, data)
     options["displayText_format_" .. key] = option
   end
 
-  OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
+  if data.controlledChildren then
+    for index, childId in pairs(data.controlledChildren) do
+      local childData = WeakAuras.GetData(childId)
+      local get = function(key)
+        return childData["displayText_format_" .. key]
+      end
+      local input = childData.displayText
+      OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden, index, #data.controlledChildren)
+    end
+  else
+    local get = function(key)
+      return data["displayText_format_" .. key]
+    end
+    local input = data.displayText
+    OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
+  end
   addOption("footer", {
     type = "description",
     name = "",
