@@ -484,9 +484,8 @@ local function createOptions(parentData, data, index, subIndex)
   end
 
   if parentData.controlledChildren then
-    for _, childId in pairs(parentData.controlledChildren) do
+    for childIndex, childId in pairs(parentData.controlledChildren) do
       local parentChildData = WeakAuras.GetData(childId)
-
       if parentChildData.subRegions then
         local childData = parentChildData.subRegions[index]
         if childData then
@@ -494,7 +493,7 @@ local function createOptions(parentData, data, index, subIndex)
             return childData["text_text_format_" .. key]
           end
           local input = childData["text_text"]
-          OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
+          OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden, childIndex, #parentData.controlledChildren)
         end
       end
     end
