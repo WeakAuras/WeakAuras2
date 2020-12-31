@@ -6349,7 +6349,7 @@ Private.event_prototypes = {
         local inverse = %s
         local useItemSlot, slotSelected = %s, %d
 
-        local itemBonusId, itemId, itemName, icon, itemSlot, itemSlotString = WeakAuras.GetBonusIdInfo(item)
+        local itemBonusId, itemId, itemName, icon, itemSlot, itemSlotString = WeakAuras.GetBonusIdInfo(item, useItemSlot and slotSelected)
         local itemBonusId = tonumber(itemBonusId)
         if fetchLegendaryPower then
           itemName, icon = WeakAuras.GetLegendaryData(itemBonusId or item)
