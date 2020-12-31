@@ -1199,6 +1199,32 @@ for i = 1, 5 do
   Private.totem_types[i] = totemString:format(i);
 end
 
+Private.loss_of_control_types = {
+  CHARM = "CHARM",
+  CONFUSE = "CONFUSE",
+  DISARM = "DISARM",
+  FEAR = "FEAR",
+  FEAR_MECHANIC = "FEAR_MECHANIC",
+  PACIFY = "PACIFY",
+  SILENCE = "SILENCE",
+  PACIFYSILENCE = "PACIFYSILENCE",
+  POSSESS = "POSSESS",
+  ROOT = "ROOT",
+  SCHOOL_INTERRUPT = "SCHOOL_INTERRUPT",
+  STUN = "STUN",
+  STUN_MECHANIC = "STUN_MECHANIC",
+}
+
+Private.main_spell_schools = {
+  [1] = GetSchoolString(1),
+  [2] = GetSchoolString(2),
+  [4] = GetSchoolString(4),
+  [8] = GetSchoolString(8),
+  [16] = GetSchoolString(16),
+  [32] = GetSchoolString(32),
+  [64] = GetSchoolString(64),
+}
+
 Private.texture_types = {
   ["Blizzard Alerts"] = {
     ["1027131"]	= "Arcane Missiles 1",

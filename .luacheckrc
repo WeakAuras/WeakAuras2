@@ -720,6 +720,8 @@ globals = {
 	"C_LossOfControl",
 	"C_LossOfControl.GetEventInfo",
 	"C_LossOfControl.GetNumEvents",
+	"C_LossOfControl.GetActiveLossOfControlDataCount",
+	"C_LossOfControl.GetActiveLossOfControlData",
 	"C_Map",
 	"C_Map.GetBestMapForUnit",
 	"C_Map.GetMapGroupID",

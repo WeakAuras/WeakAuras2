@@ -6670,21 +6670,145 @@ Private.event_prototypes = {
   ["Crowd Controlled"] = {
     type = "status",
     events = {
-      ["unit_events"] = {
-        ["player"] = {"UNIT_AURA"}
+      ["events"] = {
+        "LOSS_OF_CONTROL_UPDATE"
       }
     },
-    force_events = "UNIT_AURA",
+    force_events = "LOSS_OF_CONTROL_UPDATE",
     name = L["Crowd Controlled"],
+    canHaveDuration = true,
+    statesParameter = "one",
+    init = function(trigger)
+      local ret = [=[
+          local show = false
+          local use_controlType = %s
+          local controlType = %s
+          local inverse = %s
+          local use_interruptSchool = %s
+          local interruptSchool = tonumber(%q)
+          local duration, expirationTime, spellName, icon, spellName, spellId, locType, lockoutSchool, name, _
+          for i = 1, C_LossOfControl.GetActiveLossOfControlDataCount() do
+            local data = C_LossOfControl.GetActiveLossOfControlData(i)
+            if data then
+              if (not use_controlType)
+              or (data.locType == controlType and (controlType ~= "SCHOOL_INTERRUPT" or ((not use_interruptSchool) or bit.band(data.lockoutSchool, interruptSchool) > 0)))
+              then
+                spellId = data.spellID
+                spellName, _, icon = GetSpellInfo(data.spellID)
+                duration = data.duration
+                expirationTime = data.startTime + data.duration
+                locType = data.locType
+                lockoutSchool = data.lockoutSchool
+                name = data.displayText
+                show = true
+                break
+              end
+            end
+          end
+      ]=]
+      ret = ret:format(
+        trigger.use_controlType and "true" or "false",
+        type(trigger.controlType) == "string" and "[["..trigger.controlType.."]]" or [["STUN"]],
+        trigger.use_inverse and "true" or "false",
+        trigger.use_interruptSchool and "true" or "false",
+        trigger.interruptSchool or 0
+      )
+      return ret
+    end,
     args = {
       {
-        name = "controlled",
-        display = L["Crowd Controlled"],
-        type = "tristate",
-        init = "not HasFullControl()"
-      }
+        name = "controlType",
+        display = L["Specific Type"],
+        type = "select",
+        values = "loss_of_control_types",
+        conditionType = "select",
+        test = "true",
+        default = "STUN",
+        init = "locType",
+        store = true,
+      },
+      {
+        name = "interruptSchool",
+        display = L["Interrupt School"],
+        type = "select",
+        values = "main_spell_schools",
+        conditionType = "select",
+        default = 1,
+        test = "true",
+        enable = function(trigger) return trigger.controlType == "SCHOOL_INTERRUPT" end,
+        init = "lockoutSchool",
+        store = true,
+      },
+      {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true",
+      },
+      {
+        name = "name",
+        display = L["Name"],
+        hidden = true,
+        conditionType = "string",
+        store = true,
+        test = "true",
+      },
+      {
+        name = "spellName",
+        display = L["Spell Name"],
+        hidden = true,
+        conditionType = "string",
+        store = true,
+        test = "true",
+      },
+      {
+        name = "spellId",
+        display = L["Spell Id"],
+        hidden = true,
+        conditionType = "number",
+        operator_types = "only_equal",
+        store = true,
+        test = "true",
+      },
+      {
+        name = "lockoutSchool",
+        display = L["Interrupted School Text"],
+        hidden = true,
+        init = "lockoutSchool and lockoutSchool > 0 and GetSchoolString(lockoutSchool) or nil",
+        store = true,
+        test = "true",
+      },
+      {
+        name = "icon",
+        hidden = true,
+        store = true,
+        test = "true",
+      },
+      {
+        name = "duration",
+        hidden = true,
+        store = true,
+        test = "true",
+      },
+      {
+        name = "expirationTime",
+        hidden = true,
+        store = true,
+        test = "true",
+      },
+      {
+        name = "progressType",
+        hidden = true,
+        init = "'timed'",
+        store = true,
+        test = "true",
+      },
+      {
+        hidden = true,
+        test = "inverse ~= show",
+      },
     },
-    automaticrequired = true
+    automaticrequired = true,
   },
   ["Cast"] = {
     type = "status",
