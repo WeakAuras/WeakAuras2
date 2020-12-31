@@ -6344,12 +6344,21 @@ Private.event_prototypes = {
     statesParameter = "one",
     init = function(trigger)
       local ret = [=[
-        local useLegendaryIcon = %s
-        local itemBonusId, itemId, itemName, itemIcon, itemSlot, itemSlotString = WeakAuras.GetBonusIdInfo(%q)
+        local fetchLegendaryPower = %s
+        local item = %q
+        local inverse = %s
+        local useItemSlot, slotSelected = %s, %d
+
+        local itemBonusId, itemId, itemName, icon, itemSlot, itemSlotString = WeakAuras.GetBonusIdInfo(item)
         local itemBonusId = tonumber(itemBonusId)
-        local icon = useLegendaryIcon and WeakAuras.GetLegendaryIcon(itemBonusId) or itemIcon
+        if fetchLegendaryPower then
+          itemName, icon = WeakAuras.GetLegendaryData(itemBonusId or item)
+        end
+
+        local slotValidation = (useItemSlot and itemSlot == slotSelected) or (not useItemSlot)
       ]=]
-      return ret:format(trigger.use_legendaryIcon and "true" or "false", trigger.itemBonusId or "")
+      return ret:format(trigger.use_legendaryIcon and "true" or "false", trigger.itemBonusId or "", trigger.use_inverse and "true" or "false",
+                        trigger.use_itemSlot and "true" or "false", trigger.itemSlot)
     end,
     args = {
       {
@@ -6357,7 +6366,7 @@ Private.event_prototypes = {
         display = L["Item Bonus Id"],
         type = "string",
         store = "true",
-        test = "itemBonusId",
+        test = "true",
         required = true,
         desc = function()
           return WeakAuras.GetLegendariesBonusIds()
@@ -6367,10 +6376,10 @@ Private.event_prototypes = {
       },
       {
         name = "legendaryIcon",
-        display = L["Use Legendary Power Icon"],
+        display = L["Fetch Legendary Power"],
         type = "toggle",
         test = "true",
-        desc = L["Displays the icon for the Legendary Power that matches this bonus id."],
+        desc = L["Fetches the name and icon of the Legendary Power that matches this bonus id."],
       },
       {
         name = "name",
@@ -6383,7 +6392,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = "true",
-        init = "icon or 'Interface\\Icons\\INV_Misc_QuestionMark'",
+        init = "icon or 'Interface/Icons/INV_Misc_QuestionMark'",
         store = "true",
         test = "true",
       },
@@ -6403,6 +6412,13 @@ Private.event_prototypes = {
         store = "true",
         conditionType = "select",
         values = "item_slot_types",
+        test = "true",
+      },
+      {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true",
       },
       {
         name = "itemSlotString",
@@ -6411,6 +6427,10 @@ Private.event_prototypes = {
         store = "true",
         test = "true",
       },
+      {
+        hidden = true,
+        test = "not inverse == (itemBonusId and slotValidation or false)",
+      }
     },
     automaticrequired = true
   },
