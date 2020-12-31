@@ -6380,6 +6380,8 @@ Private.event_prototypes = {
         type = "toggle",
         test = "true",
         desc = L["Fetches the name and icon of the Legendary Power that matches this bonus id."],
+        enable = not WeakAuras.IsClassic(),
+        hidden = WeakAuras.IsClassic(),
       },
       {
         name = "name",
