@@ -3831,10 +3831,12 @@ WeakAuras.CheckForItemBonusId = function(ids)
   return false
 end
 
-WeakAuras.GetBonusIdInfo = function(ids)
+
+WeakAuras.GetBonusIdInfo = function(ids, specificSlot)
+  local checkSlots = specificSlot and {[specificSlot] = true} or Private.item_slot_types
   for id in tostring(ids):gmatch('([^,]+)') do
     local findID = ":" .. tostring(id:trim()) .. ":"
-    for slot in pairs(Private.item_slot_types) do
+    for slot in pairs(checkSlots) do
       local itemLink = GetInventoryItemLink('player', slot)
       if itemLink and itemLink:find(findID, 1, true) then
         local itemID, _, _, _, icon = GetItemInfoInstant(itemLink)
