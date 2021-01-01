@@ -1972,6 +1972,53 @@ Private.instance_types = {
   arena = L["Arena"]
 }
 
+Private.instance_difficulty_types = {
+
+}
+
+if not WeakAuras.IsClassic() then
+  -- Fill out instance_difficulty_types automatically.
+  -- Unfourtunately the names BLizzard gives are not entirely unique,
+  -- so try hard to disambiguate them via the type, and if nothing works by
+  -- including the plain id.
+  local instance_difficulty_types_strings = {
+    party = L["%s (party)"],
+    raid = L["%s (raid)"],
+    scenario = L["%s (scenario)"],
+    pvp = "%s"
+  }
+
+  local names = {}
+  local ids = {}
+
+  for i = 1, 200 do
+    local name, type = GetDifficultyInfo(i)
+    if name then
+      tinsert(ids, i)
+      if type and instance_difficulty_types_strings[type] then
+        local key = instance_difficulty_types_strings[type]:format(name)
+        names[key] = (names[key] or 0) + 1
+      end
+      names[name] = (names[name] or 0) +1
+    end
+  end
+
+  for _, id in ipairs(ids) do
+    local name, type = GetDifficultyInfo(id)
+    if name then
+      local fullName = instance_difficulty_types_strings[type] and instance_difficulty_types_strings[type]:format(name)
+      if names[name] == 1 then
+        Private.instance_difficulty_types[id] = name
+      elseif names[fullName] == 1 then
+        Private.instance_difficulty_types[id] = fullName
+      else
+        Private.instance_difficulty_types[id] = L["%s Id: %s"]:format(fullName or name, id)
+      end
+    end
+  end
+end
+
+
 Private.group_types = {
   solo = L["Not in Group"],
   group = L["In Group"],
