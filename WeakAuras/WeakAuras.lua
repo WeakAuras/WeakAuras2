@@ -1341,9 +1341,9 @@ local function GetInstanceTypeAndSize()
     if difficultyInfo then
       size, difficulty = difficultyInfo.size, difficultyInfo.difficulty
     end
-    return size, difficulty, instanceType, ZoneMapID
+    return size, difficulty, instanceType, ZoneMapID, difficultyIndex
   end
-  return "none", "none", nil, nil
+  return "none", "none", nil, nil, nil
 end
 
 function WeakAuras.InstanceType()
@@ -1352,6 +1352,10 @@ end
 
 function WeakAuras.InstanceDifficulty()
   return select(2, GetInstanceTypeAndSize())
+end
+
+function WeakAuras.InstanceTypeRaw()
+  return select(5, GetInstanceTypeAndSize())
 end
 
 local toLoad = {}
@@ -1418,7 +1422,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar() or HasVehicleActionBar()
   end
 
-  local size, difficulty, instanceType, ZoneMapID = GetInstanceTypeAndSize()
+  local size, difficulty, instanceType, ZoneMapID, difficultyIndex = GetInstanceTypeAndSize()
   Private.UpdateCurrentInstanceType(instanceType)
 
   if (WeakAuras.CurrentEncounter) then
@@ -1455,8 +1459,8 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole);
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole);
       else
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, role, affixes);
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, affixes);
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, affixes);
       end
 
       if(shouldBeLoaded and not loaded[id]) then
