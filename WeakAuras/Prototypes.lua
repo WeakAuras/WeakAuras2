@@ -6709,7 +6709,9 @@ Private.event_prototypes = {
                 spellId = data.spellID
                 spellName, _, icon = GetSpellInfo(data.spellID)
                 duration = data.duration
-                expirationTime = data.startTime + data.duration
+                if data.startTime and data.duration then
+                  expirationTime = data.startTime + data.duration
+                end
                 locType = data.locType
                 lockoutSchool = data.lockoutSchool
                 name = data.displayText
