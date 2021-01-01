@@ -40,7 +40,7 @@ function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
       WeakAuras.prettyPrint(WeakAuras.L["Can't schedule timer with %i, due to a World of Warcraft bug with high computer uptime. (Uptime: %i). Please restart your computer."]:format(delay, GetTime()))
       return
     end
-    return self:ScheduleTimer(func, delay, ...);
+    return self:ScheduleTimer(func, delay, ...)
   end
 end
 
