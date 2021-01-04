@@ -152,9 +152,11 @@ function TestForLongString(trigger, arg)
   local name = arg.name;
   local test;
   if(trigger[name.."_operator"] == "==") then
-    test = "("..name.."==\""..trigger[name].."\")";
-  else
-    test = "("..name.." and "..name..":"..trigger[name.."_operator"]:format(trigger[name])..")";
+    test = "(" .. name .." == %q)"
+  elseif(trigger[name.."_operator"] == "find('%s')") then
+    test = "(" .. name .. " and " .. name .. string.format(":find(%q)", trigger[name]) .. ")"
+  elseif(trigger[name.."_operator"] == "match('%s')") then
+    test = "(" .. name .. " and " .. name .. string.format(":match(%q)", trigger[name]) .. ")"
   end
   return test;
 end
