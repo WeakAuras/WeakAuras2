@@ -261,6 +261,8 @@ function OptionsPrivate.ClearTriggerExpandState()
   maxTriggerNumForExpand = 0
 end
 
+local triggerDeleteDialogOpen = false
+
 function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
   options.__title = L["Trigger %s"]:format(triggernum)
   options.__order = triggernum * 10
@@ -311,27 +313,47 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
     disabled = function()
       return #data.triggers == 1
     end,
-    func = function()
-      if #data.triggers > 1 then
+    func = function(...)
+      if triggerDeleteDialogOpen then
+        -- This function is called multiple times if multiple auras are selected
+        return
+      end
+
+      local canDelete = false
+      -- Since we want to handle all selected auras in one dialog, we have to iterate over GetPickedDisplay
+      local picked = OptionsPrivate.GetPickedDisplay()
+      OptionsPrivate.Private.ApplyToDataOrChildData(picked, function(childData)
+        if #childData.triggers > 1 and #childData.triggers >= triggernum then
+          canDelete = true
+        end
+      end)
+
+      if canDelete then
         StaticPopupDialogs["WEAKAURAS_CONFIRM_TRIGGER_DELETE"] = {
           text = L["You are about to delete a trigger. |cFFFF0000This cannot be undone!|r Would you like to continue?"],
           button1 = L["Delete"],
           button2 = L["Cancel"],
           OnAccept = function()
-            tremove(data.triggers, triggernum)
-            DeleteConditionsForTrigger(data, triggernum)
-            WeakAuras.Add(data)
-            OptionsPrivate.RemoveCollapsed(collapsedId, "trigger", {triggernum})
-            WeakAuras.ClearAndUpdateOptions(data.id)
+            OptionsPrivate.Private.ApplyToDataOrChildData(picked, function(childData)
+              if #childData.triggers > 1 and #childData.triggers >= triggernum then
+                tremove(childData.triggers, triggernum)
+                DeleteConditionsForTrigger(childData, triggernum)
+                WeakAuras.Add(childData)
+                OptionsPrivate.RemoveCollapsed(collapsedId, "trigger", {triggernum})
+                WeakAuras.ClearAndUpdateOptions(childData.id)
+              end
+            end)
             WeakAuras.FillOptions()
+            triggerDeleteDialogOpen = false
           end,
           OnCancel = function()
-            -- no-op
+            triggerDeleteDialogOpen = false
           end,
           showAlert = true,
           whileDead = true,
           preferredindex = STATICPOPUP_NUMDIALOGS,
         }
+        triggerDeleteDialogOpen = true
         StaticPopup_Show("WEAKAURAS_CONFIRM_TRIGGER_DELETE")
       end
     end
