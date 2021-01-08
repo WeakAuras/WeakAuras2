@@ -7,10 +7,8 @@ local prettyPrint = WeakAuras.prettyPrint
 
 local GetFrameHandle, GetFrameHandleFrame
 
-local LOCAL_FrameHandle_Protected_Frames = {};
 local LOCAL_FrameHandle_Other_Frames = {};
 local LOCAL_FrameHandle_Lookup = {};
-setmetatable(LOCAL_FrameHandle_Protected_Frames, { __mode = "k" });
 setmetatable(LOCAL_FrameHandle_Other_Frames, { __mode = "k" });
 
 -- Setup metatable for prototype object
@@ -46,17 +44,8 @@ do
     meta.__metatable = false;
 end
 
-local function GetPossiblyForbiddenHandleFrame(handle)
-  local frame, isProtected = GetFrameHandleFrame(handle);
-  if (frame and (isProtected
-                 or (frame:IsProtected() or not InCombatLockdown()))) then
-      return frame;
-  end
-  error("Invalid frame handle");
-end
-
 function GetHandleFrame(handle)
-  local frame = GetPossiblyForbiddenHandleFrame(handle);
+  local frame = GetFrameHandleFrame(handle);
   if (frame) then
     return frame;
   end
@@ -67,48 +56,28 @@ local function FrameHandleLookup_index(t, frame)
   -- Create a 'surrogate' frame object
   local surrogate = { [0] = frame[0], [1] = frame };
   setmetatable(surrogate, getmetatable(frame));
-  -- Test whether the frame is explcitly protected
-  local _, protected = surrogate:IsProtected();
-  
+
   local handle = newproxy(LOCAL_FrameHandle_Prototype);
   LOCAL_FrameHandle_Lookup[frame] = handle;
-  if (protected) then
-      LOCAL_FrameHandle_Protected_Frames[handle] = surrogate;
-  else
-      LOCAL_FrameHandle_Other_Frames[handle] = surrogate;
-  end
+  LOCAL_FrameHandle_Other_Frames[handle] = surrogate;
   return handle;
 end
 setmetatable(LOCAL_FrameHandle_Lookup, { __index = FrameHandleLookup_index; });
 
 
-function GetFrameHandle(frame, protected)
+function GetFrameHandle(frame)
   local handle = LOCAL_FrameHandle_Lookup[frame];
-  if (protected and (frame ~= nil)) then
-      if (not LOCAL_FrameHandle_Protected_Frames[handle]) then
-          return nil;
-      end
-  end
   return handle;
 end
 
-function GetFrameHandleFrame(handle, protected, onlyProtected)
-  local surrogate = LOCAL_FrameHandle_Protected_Frames[handle];
-  local protectedSurrogate = true;
-  if ((surrogate == nil)
-      and (not protected or (not (onlyProtected or InCombatLockdown())))) then
-      surrogate = LOCAL_FrameHandle_Other_Frames[handle];
-      protectedSurrogate = false;
-  end
+function GetFrameHandleFrame(handle)
+  local surrogate = LOCAL_FrameHandle_Other_Frames[handle];
   if (surrogate ~= nil) then
-      return surrogate[1], protectedSurrogate;
+      return surrogate[1];
   end
 end
 
-
-
 function HANDLE:GetName()   return GetHandleFrame(self):GetName() end
-
 function HANDLE:GetID()     return GetHandleFrame(self):GetID()     end
 function HANDLE:IsShown()   return GetHandleFrame(self):IsShown()   end
 function HANDLE:IsVisible() return GetHandleFrame(self):IsVisible() end
@@ -177,20 +146,16 @@ function HANDLE:IsProtected()
 end
 
 
-local function ShouldAllowAccessToFrame(nolockdown, frame)
+local function ShouldAllowAccessToFrame(frame)
 	if frame:IsForbidden() then
 		return false;
 	end
 
-	if not nolockdown then
-        return frame:IsProtected();
-    end
-
     return nolockdown;
 end
 
-local function GetValidatedFrameHandle(nolockdown, frame)
-	if ShouldAllowAccessToFrame(nolockdown, frame) then
+local function GetValidatedFrameHandle(frame)
+	if ShouldAllowAccessToFrame(frame) then
 		return GetFrameHandle(frame);
 	end
 
@@ -198,30 +163,30 @@ local function GetValidatedFrameHandle(nolockdown, frame)
 end
 
 
-local function FrameHandleMapper(nolockdown, frame, nextFrame, ...)
+local function FrameHandleMapper(frame, nextFrame, ...)
     if (not frame) then
         return;
     end
 
-    frame = GetValidatedFrameHandle(nolockdown, frame);
+    frame = GetValidatedFrameHandle(frame);
 
     if frame then
         if (nextFrame) then
-            return frame, FrameHandleMapper(nolockdown, nextFrame, ...);
+            return frame, FrameHandleMapper(nextFrame, ...);
         else
             return frame;
         end
     end
 
     if (nextFrame) then
-        return FrameHandleMapper(nolockdown, nextFrame, ...);
+        return FrameHandleMapper(nextFrame, ...);
     end
 end
 
-local function FrameHandleInserter(nolockdown, result, ...)
+local function FrameHandleInserter(result, ...)
     local idx = #result;
     for i = 1, select('#', ...) do
-        local frame = GetValidatedFrameHandle(nolockdown, select(i, ...));
+        local frame = GetValidatedFrameHandle(select(i, ...));
         if frame then
 			idx = idx + 1;
 			result[idx] = frame;
@@ -232,15 +197,15 @@ local function FrameHandleInserter(nolockdown, result, ...)
 end
 
 function HANDLE:GetChildren()
-    return FrameHandleMapper(not InCombatLockdown(), GetHandleFrame(self):GetChildren());
+    return FrameHandleMapper(GetHandleFrame(self):GetChildren());
 end
 
 function HANDLE:GetChildList(tbl)
-    return FrameHandleInserter(not InCombatLockdown(), tbl, GetHandleFrame(self):GetChildren());
+    return FrameHandleInserter(tbl, GetHandleFrame(self):GetChildren());
 end
 
 function HANDLE:GetParent()
-    return FrameHandleMapper(not InCombatLockdown(), GetHandleFrame(self):GetParent());
+    return FrameHandleMapper(GetHandleFrame(self):GetParent());
 end
 
 function HANDLE:GetNumPoints()
@@ -256,7 +221,7 @@ function HANDLE:GetPoint(i)
     local point, frame, relative, dx, dy = thisFrame:GetPoint(i);
     local handle;
     if (frame) then
-        handle = FrameHandleMapper(not InCombatLockdown(), frame);
+        handle = FrameHandleMapper(frame);
     end
     if (handle or not frame) then
         return point, handle, relative, dx, dy;
@@ -334,7 +299,7 @@ function HANDLE:SetPoint(point, relframe, relpoint, xofs, yofs)
     local realrelframe = nil;
     if (type(relframe) == "userdata") then
         -- **MUST** be protected
-        realrelframe = GetFrameHandleFrame(relframe, true, true);
+        realrelframe = GetFrameHandleFrame(relframe);
         if (not realrelframe) then
             error("Invalid relative frame handle");
             return;
@@ -354,7 +319,7 @@ function HANDLE:SetAllPoints(relframe)
 
     local realrelframe = nil;
     if (type(relframe) == "userdata") then
-        realrelframe = GetFrameHandleFrame(relframe, true, true);
+        realrelframe = GetFrameHandleFrame(relframe);
         if (not realrelframe) then
             error("Invalid relative frame handle");
             return;
@@ -390,7 +355,7 @@ function HANDLE:SetParent(handle)
     local parent = nil;
     if (handle ~= nil) then
         if (type(handle) == "userdata") then
-            parent = GetFrameHandleFrame(handle, true, true);
+            parent = GetFrameHandleFrame(handle);
             if (not parent) then
                 error("Invalid frame handle for SetParent");
                 return;
@@ -550,5 +515,38 @@ end
 ---------------------------------------------------------------------------
 -- Backdrop
 
+local backdropMethods = {
+    'SetBackdrop', 'GetBackdrop',
+    'GetBackdropColor', 'SetBackdropColor',
+    'GetBackdropBorderColor', 'SetBackdropBorderColor'
+}
+
+for k,v in pairs(backdropMethods) do
+    HANDLE[v] = function (self, ...)
+        local frame = GetHandleFrame(self);
+
+        if ( not frame[v] ) then 
+            error('Invalid frame method "'..v..'"')
+        end 
+
+        return frame[v](frame, ...)
+    end
+end 
+
 Private.GetFrameHandle = GetFrameHandle
 Private.GetFrameHandleFrame = GetFrameHandleFrame
+Private.AddToFrameHandle = function(name)
+    if ( HANDLE[name] ) then
+        error('Private.AddToFrameHandle "'..name..'" already exists')
+    end
+    
+    HANDLE[name] = function (self, ...)
+        local frame = GetHandleFrame(self);
+
+        if ( not frame[name] ) then 
+            error('Invalid frame method "'..name..'"')
+        end 
+
+        return frame[name](frame, ...)
+    end
+end

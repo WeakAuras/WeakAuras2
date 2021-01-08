@@ -178,6 +178,10 @@ local blockedTables = {
   MailFrameTab2 = true,
 }
 
+
+local regionsProxyCache = {}
+
+
 local aura_environments = {}
 -- nil == Not initiliazed
 -- 1 == config initialized
@@ -245,7 +249,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
       current_aura_env.states = states
-      current_aura_env.region = region
+      current_aura_env.region = region and Private.GetFrameHandle(region) or region
       -- Push the new environment onto the stack
       tinsert(aura_env_stack, {current_aura_env, data.uid})
     elseif onlyConfig then
@@ -257,7 +261,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
       current_aura_env.states = states
-      current_aura_env.region = region
+      current_aura_env.region = region and Private.GetFrameHandle(region) or region
       tinsert(aura_env_stack, {current_aura_env, data.uid})
 
       if not data.controlledChildren then
@@ -273,7 +277,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
       current_aura_env.cloneId = cloneId
       current_aura_env.state = state
       current_aura_env.states = states
-      current_aura_env.region = region
+      current_aura_env.region = region and Private.GetFrameHandle(region) or region
       -- push new environment onto the stack
       tinsert(aura_env_stack, {current_aura_env, data.uid})
 
@@ -405,7 +409,47 @@ local FakeWeakAurasMixin = {
   },
   override = {
     me = GetUnitName("player", true),
-    myGUID = UnitGUID("player")
+    myGUID = UnitGUID("player"),
+    regions = setmetatable({},{
+      __index = function(t,k)
+        --print('Looking for ', k, WeakAuras.regions[k])
+        if (WeakAuras.regions[k]) then
+          if not regionsProxyCache[WeakAuras.regions[k]] then 
+            --print('T', 'Create region proxy', k)
+            regionsProxyCache[WeakAuras.regions[k]] = setmetatable({}, {
+              __index = function(tbl, key)
+                --print('regionsProxyCache', key, WeakAuras.regions[k][key])
+                if key == 'region' then
+                  --print('region exists', WeakAuras.regions[k].region)
+                  if ( WeakAuras.regions[k].region ) then
+                    local handle = Private.GetFrameHandle(WeakAuras.regions[k].region)
+                    --print('return handle', handle)
+                    return handle
+                  end 
+                  return nil
+                else
+                  return WeakAuras.regions[k][key]
+                end
+              end,
+              __newindex = function()end,
+              __metatable = false,
+            })
+          end 
+          return regionsProxyCache[WeakAuras.regions[k]]
+        end
+        return nil
+      end,
+      __newindex = function()end,
+      __metatable = false
+    }),
+    GetRegion = function (id, cloneId)
+      local region = WeakAuras.GetRegion(id, cloneId)
+      if ( region ) then
+        --print('GetRegion region=', region, region.region)
+        return Private.GetFrameHandle(region)
+      end 
+      return nil
+    end
   },
   blocked = blocked,
   setBlocked = function()
@@ -522,7 +566,6 @@ function WeakAuras.LoadFunction(string, id, inTrigger)
 
         if not function_cache[id] then
           function_cache[id] = {}
-
           --print('WeakAuras.LoadFunction. New function_cache for id=', id)
         end 
         
