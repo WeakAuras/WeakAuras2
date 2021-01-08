@@ -1,0 +1,554 @@
+if not WeakAuras.IsCorrectVersion() then return end
+local AddonName, Private = ...
+
+local WeakAuras = WeakAuras
+local L = WeakAuras.L
+local prettyPrint = WeakAuras.prettyPrint
+
+local GetFrameHandle, GetFrameHandleFrame
+
+local LOCAL_FrameHandle_Protected_Frames = {};
+local LOCAL_FrameHandle_Other_Frames = {};
+local LOCAL_FrameHandle_Lookup = {};
+setmetatable(LOCAL_FrameHandle_Protected_Frames, { __mode = "k" });
+setmetatable(LOCAL_FrameHandle_Other_Frames, { __mode = "k" });
+
+-- Setup metatable for prototype object
+local LOCAL_FrameHandle_Prototype = newproxy(true);
+-- HANDLE is the frame handle method namespace (populated later)
+
+local HANDLE = {}
+
+local GetHandleFrame
+
+do
+    local meta = getmetatable(LOCAL_FrameHandle_Prototype);
+    meta.__index = function(table, key)
+        --print(table, key)
+
+        if (HANDLE[key]) then
+            return HANDLE[key]
+        else
+            local realFrame = GetHandleFrame(table)
+
+            if ( realFrame ) then 
+                return realFrame[key]
+            end
+        end
+    end;
+    meta.__newindex = function(table, key, value)
+        --print('__newindex', table, key, value)
+
+        local realFrame = GetHandleFrame(table)
+
+        realFrame[key] = value
+    end
+    meta.__metatable = false;
+end
+
+local function GetPossiblyForbiddenHandleFrame(handle)
+  local frame, isProtected = GetFrameHandleFrame(handle);
+  if (frame and (isProtected
+                 or (frame:IsProtected() or not InCombatLockdown()))) then
+      return frame;
+  end
+  error("Invalid frame handle");
+end
+
+function GetHandleFrame(handle)
+  local frame = GetPossiblyForbiddenHandleFrame(handle);
+  if (frame) then
+    return frame;
+  end
+  error("Invalid frame handle");
+end
+
+local function FrameHandleLookup_index(t, frame)
+  -- Create a 'surrogate' frame object
+  local surrogate = { [0] = frame[0], [1] = frame };
+  setmetatable(surrogate, getmetatable(frame));
+  -- Test whether the frame is explcitly protected
+  local _, protected = surrogate:IsProtected();
+  
+  local handle = newproxy(LOCAL_FrameHandle_Prototype);
+  LOCAL_FrameHandle_Lookup[frame] = handle;
+  if (protected) then
+      LOCAL_FrameHandle_Protected_Frames[handle] = surrogate;
+  else
+      LOCAL_FrameHandle_Other_Frames[handle] = surrogate;
+  end
+  return handle;
+end
+setmetatable(LOCAL_FrameHandle_Lookup, { __index = FrameHandleLookup_index; });
+
+
+function GetFrameHandle(frame, protected)
+  local handle = LOCAL_FrameHandle_Lookup[frame];
+  if (protected and (frame ~= nil)) then
+      if (not LOCAL_FrameHandle_Protected_Frames[handle]) then
+          return nil;
+      end
+  end
+  return handle;
+end
+
+function GetFrameHandleFrame(handle, protected, onlyProtected)
+  local surrogate = LOCAL_FrameHandle_Protected_Frames[handle];
+  local protectedSurrogate = true;
+  if ((surrogate == nil)
+      and (not protected or (not (onlyProtected or InCombatLockdown())))) then
+      surrogate = LOCAL_FrameHandle_Other_Frames[handle];
+      protectedSurrogate = false;
+  end
+  if (surrogate ~= nil) then
+      return surrogate[1], protectedSurrogate;
+  end
+end
+
+
+
+function HANDLE:GetName()   return GetHandleFrame(self):GetName() end
+
+function HANDLE:GetID()     return GetHandleFrame(self):GetID()     end
+function HANDLE:IsShown()   return GetHandleFrame(self):IsShown()   end
+function HANDLE:IsVisible() return GetHandleFrame(self):IsVisible() end
+function HANDLE:GetWidth()  return GetHandleFrame(self):GetWidth()  end
+function HANDLE:GetHeight() return GetHandleFrame(self):GetHeight() end
+function HANDLE:GetScale()  return GetHandleFrame(self):GetScale()  end
+function HANDLE:GetEffectiveScale()
+    return GetHandleFrame(self):GetEffectiveScale()
+end
+
+function HANDLE:GetRect()
+	local frame = GetHandleFrame(self);
+	if frame:IsAnchoringRestricted() then
+		return nil;
+	end
+
+	return frame:GetRect();
+end
+
+function HANDLE:GetAlpha()
+    return GetHandleFrame(self):GetAlpha();
+end
+
+function HANDLE:GetFrameLevel()
+    return GetHandleFrame(self):GetFrameLevel();
+end
+
+function HANDLE:GetFrameStrata()
+    return GetHandleFrame(self):GetFrameStrata();
+end
+
+function HANDLE:IsMouseEnabled()
+    return GetHandleFrame(self):IsMouseEnabled();
+end
+
+function HANDLE:IsMouseClickEnabled()
+    return GetHandleFrame(self):IsMouseClickEnabled();
+end
+
+function HANDLE:IsMouseMotionEnabled()
+    return GetHandleFrame(self):IsMouseMotionEnabled();
+end
+
+function HANDLE:IsKeyboardEnabled()
+    return GetHandleFrame(self):IsKeyboardEnabled();
+end
+
+function HANDLE:IsGamePadButtonEnabled()
+    return GetHandleFrame(self):IsGamePadButtonEnabled();
+end
+
+function HANDLE:IsGamePadStickEnabled()
+    return GetHandleFrame(self):IsGamePadStickEnabled();
+end
+
+function HANDLE:GetObjectType()
+    return GetHandleFrame(self):GetObjectType()
+end
+
+function HANDLE:IsObjectType(ot)
+    return GetHandleFrame(self):IsObjectType(tostring(ot))
+end
+
+function HANDLE:IsProtected()
+    return GetHandleFrame(self):IsProtected();
+end
+
+
+local function ShouldAllowAccessToFrame(nolockdown, frame)
+	if frame:IsForbidden() then
+		return false;
+	end
+
+	if not nolockdown then
+        return frame:IsProtected();
+    end
+
+    return nolockdown;
+end
+
+local function GetValidatedFrameHandle(nolockdown, frame)
+	if ShouldAllowAccessToFrame(nolockdown, frame) then
+		return GetFrameHandle(frame);
+	end
+
+	return nil;
+end
+
+
+local function FrameHandleMapper(nolockdown, frame, nextFrame, ...)
+    if (not frame) then
+        return;
+    end
+
+    frame = GetValidatedFrameHandle(nolockdown, frame);
+
+    if frame then
+        if (nextFrame) then
+            return frame, FrameHandleMapper(nolockdown, nextFrame, ...);
+        else
+            return frame;
+        end
+    end
+
+    if (nextFrame) then
+        return FrameHandleMapper(nolockdown, nextFrame, ...);
+    end
+end
+
+local function FrameHandleInserter(nolockdown, result, ...)
+    local idx = #result;
+    for i = 1, select('#', ...) do
+        local frame = GetValidatedFrameHandle(nolockdown, select(i, ...));
+        if frame then
+			idx = idx + 1;
+			result[idx] = frame;
+        end
+    end
+
+    return result;
+end
+
+function HANDLE:GetChildren()
+    return FrameHandleMapper(not InCombatLockdown(), GetHandleFrame(self):GetChildren());
+end
+
+function HANDLE:GetChildList(tbl)
+    return FrameHandleInserter(not InCombatLockdown(), tbl, GetHandleFrame(self):GetChildren());
+end
+
+function HANDLE:GetParent()
+    return FrameHandleMapper(not InCombatLockdown(), GetHandleFrame(self):GetParent());
+end
+
+function HANDLE:GetNumPoints()
+    return GetHandleFrame(self):GetNumPoints();
+end
+
+function HANDLE:GetPoint(i)
+	local thisFrame = GetHandleFrame(self);
+	if thisFrame:IsAnchoringRestricted() then
+		return nil;
+	end
+
+    local point, frame, relative, dx, dy = thisFrame:GetPoint(i);
+    local handle;
+    if (frame) then
+        handle = FrameHandleMapper(not InCombatLockdown(), frame);
+    end
+    if (handle or not frame) then
+        return point, handle, relative, dx, dy;
+    end
+end
+
+
+---------------------------------------------------------------------------
+-- "SETTER" methods and actions
+
+function HANDLE:Show()
+    GetHandleFrame(self):Show();
+end
+
+function HANDLE:Hide()
+    GetHandleFrame(self):Hide();
+end
+
+function HANDLE:SetID(id)
+    GetHandleFrame(self):SetID(tonumber(id) or 0);
+end
+
+function HANDLE:SetWidth(width)
+    GetHandleFrame(self):SetWidth(tonumber(width));
+end
+
+function HANDLE:SetHeight(height)
+    GetHandleFrame(self):SetHeight(tonumber(height));
+end
+
+function HANDLE:SetScale(scale)
+    GetHandleFrame(self):SetScale(tonumber(scale));
+end
+
+function HANDLE:SetAlpha(alpha)
+    GetHandleFrame(self):SetAlpha(tonumber(alpha));
+end
+
+local _set_points = {
+    TOP=true; BOTTOM=true; LEFT=true; RIGHT=true; CENTER=true;
+    TOPLEFT=true; BOTTOMLEFT=true; TOPRIGHT=true; BOTTOMRIGHT=true;
+};
+
+function HANDLE:ClearAllPoints()
+    GetHandleFrame(self):ClearAllPoints();
+end
+
+function HANDLE:SetPoint(point, relframe, relpoint, xofs, yofs)
+    if (type(relpoint) == "number") then
+        relpoint, xofs, yofs = nil, relpoint, xofs;
+    end
+    if (relpoint == nil) then
+        relpoint = point;
+    end
+    if ((xofs == nil) and (yofs == nil)) then
+        xofs, yofs = 0, 0;
+    else
+        xofs, yofs = tonumber(xofs), tonumber(yofs);
+    end
+    if (not _set_points[point]) then
+        error("Invalid point '" .. tostring(point) .. "'");
+        return;
+    end
+    if (not _set_points[relpoint]) then
+        error("Invalid relative point '" .. tostring(relpoint) .. "'");
+        return;
+    end
+    if (not (xofs and yofs)) then
+        error("Invalid offset");
+        return
+    end
+
+    local frame = GetHandleFrame(self);
+
+    local realrelframe = nil;
+    if (type(relframe) == "userdata") then
+        -- **MUST** be protected
+        realrelframe = GetFrameHandleFrame(relframe, true, true);
+        if (not realrelframe) then
+            error("Invalid relative frame handle");
+            return;
+        end
+    else
+        -- from wa envy
+        realrelframe = relframe
+        -- error("Invalid relative frame id '" .. tostring(relframe) .. "'");
+        -- return;
+    end
+
+    frame:SetPoint(point, realrelframe, relpoint, xofs, yofs);
+end
+
+function HANDLE:SetAllPoints(relframe)
+    local frame = GetHandleFrame(self);
+
+    local realrelframe = nil;
+    if (type(relframe) == "userdata") then
+        realrelframe = GetFrameHandleFrame(relframe, true, true);
+        if (not realrelframe) then
+            error("Invalid relative frame handle");
+            return;
+        end
+    else
+        -- from wa envy
+        realrelframe = relframe
+        -- error("Invalid relative frame id '" .. tostring(relframe) .. "'");
+        -- return;
+    end
+
+    frame:SetAllPoints(realrelframe);
+end
+
+
+function HANDLE:Raise()
+    GetHandleFrame(self):Raise();
+end
+
+function HANDLE:Lower()
+    GetHandleFrame(self):Lower();
+end
+
+function HANDLE:SetFrameLevel(level)
+    GetHandleFrame(self):SetFrameLevel(tonumber(level));
+end
+
+function HANDLE:SetFrameStrata(strata)
+    GetHandleFrame(self):SetFrameStrata(tostring(strata));
+end
+
+function HANDLE:SetParent(handle)
+    local parent = nil;
+    if (handle ~= nil) then
+        if (type(handle) == "userdata") then
+            parent = GetFrameHandleFrame(handle, true, true);
+            if (not parent) then
+                error("Invalid frame handle for SetParent");
+                return;
+            end
+        else       
+            parent = handle
+        end
+    end
+
+    GetHandleFrame(self):SetParent(parent);
+end
+
+function HANDLE:EnableMouse(isEnabled)
+    GetHandleFrame(self):EnableMouse((isEnabled and true) or false);
+end
+
+function HANDLE:EnableKeyboard(isEnabled)
+    GetHandleFrame(self):EnableKeyboard((isEnabled and true) or false);
+end
+
+function HANDLE:EnableGamePadButton(isEnabled)
+    GetHandleFrame(self):EnableGamePadButton((isEnabled and true) or false);
+end
+
+function HANDLE:EnableGamePadStick(isEnabled)
+    GetHandleFrame(self):EnableGamePadStick((isEnabled and true) or false);
+end
+
+
+---------------------------------------------------------------------------
+-- Type specific methods
+
+function HANDLE:Click() 
+    local frame = GetHandleFrame(self);
+    if (not frame:IsObjectType("Button")) then
+        error("Frame is not a Button");
+        return;
+    end
+
+    return false
+end 
+
+function HANDLE:Disable()
+    local frame = GetHandleFrame(self);
+    if (not frame:IsObjectType("Button")) then
+        error("Frame is not a Button");
+        return;
+    end
+    frame:Disable();
+end
+
+function HANDLE:Enable()
+    local frame = GetHandleFrame(self);
+    if (not frame:IsObjectType("Button")) then
+        error("Frame is not a Button");
+        return;
+    end
+    frame:Enable();
+end
+
+function HANDLE:RegisterForClicks(...)
+    local frame = GetHandleFrame(self);
+    if (not frame:IsObjectType("Button")) then
+        error("Frame is not a Button");
+        return;
+    end
+    frame:RegisterForClicks(...);
+end 
+
+---------------------------------------------------------------------------
+-- Events methods
+
+function HANDLE:RegisterEvent(...)
+    local frame = GetHandleFrame(self);
+
+    frame:RegisterEvent(...)
+end
+
+function HANDLE:UnregisterEvent(...)
+    local frame = GetHandleFrame(self);
+
+    frame:UnregisterEvent(...)
+end
+
+function HANDLE:UnregisterAllEvent()
+    local frame = GetHandleFrame(self);
+
+    frame:UnregisterAllEvent()
+end
+
+function HANDLE:RegisterUnitEvent(...)
+    local frame = GetHandleFrame(self);
+
+    frame:RegisterUnitEvent(...)
+end
+
+---------------------------------------------------------------------------
+-- Script methods
+
+local __GetScriptMapper = {}
+
+function HANDLE:GetScript(event, handler)
+    local frame = GetHandleFrame(self);
+
+    return __GetScriptMapper[frame]
+end
+
+
+function HANDLE:SetScript(event, handler)
+    local frame = GetHandleFrame(self);
+
+    if ( type(handler) == 'function' ) then
+
+        __GetScriptMapper[frame] = handler
+
+        frame:SetScript(event, function(_, ...)
+            handler(self,  ...)
+        end)
+    else
+        __GetScriptMapper[frame] = nil
+
+        frame:SetScript(event, nil)
+    end
+end
+
+---------------------------------------------------------------------------
+-- FontString
+
+function HANDLE:CreateFontString(...)
+    local frame = GetHandleFrame(self);
+
+    return frame:CreateFontString(...)
+end
+
+---------------------------------------------------------------------------
+-- Texture
+
+function HANDLE:CreateTexture(...)
+    local frame = GetHandleFrame(self);
+
+    return frame:CreateTexture(...)
+end
+
+-- local object = CreateFrame("Frame")
+-- local mt = getmetatable(object).__index
+
+-- for k,v in pairs(mt) do 
+--     if ( not HANDLE[k] ) then 
+--         HANDLE[k] = function(self, ...)
+--             local frame = GetHandleFrame(self);
+        
+--             return frame[k](frame, ...)
+--         end
+--     end
+-- end 
+
+---------------------------------------------------------------------------
+-- Backdrop
+
+Private.GetFrameHandle = GetFrameHandle
+Private.GetFrameHandleFrame = GetFrameHandleFrame

@@ -191,11 +191,21 @@ end
 function Private.DeleteAuraEnvironment(id)
   aura_environments[id] = nil
   environment_initialized[id] = nil
+
+  --print('Private.DeleteAuraEnvironment', id)
+
+  Private.RemoveFunctionCache(id)
 end
 
 function Private.RenameAuraEnvironment(oldid, newid)
+
+  --print('Private.RenameAuraEnvironment', oldid, newid)
+
   aura_environments[oldid], aura_environments[newid] = nil, aura_environments[oldid]
   environment_initialized[oldid], environment_initialized[newid] = nil, environment_initialized[oldid]
+
+  Private.RemoveFunctionCache(oldid)
+  Private.RemoveFunctionCache(newid)
 end
 
 local current_uid = nil
@@ -205,6 +215,8 @@ local aura_env_stack = {}
 
 function Private.ClearAuraEnvironment(id)
   environment_initialized[id] = nil;
+
+  --print('Private.ClearAuraEnvironment', id)
 end
 
 function Private.ActivateAuraEnvironmentForRegion(region, onlyConfig)
@@ -404,6 +416,22 @@ local FakeWeakAurasMixin = {
 
 local FakeWeakAuras = MakeReadOnly(WeakAuras, FakeWeakAurasMixin)
 
+local FakeCreateFrame = function(frameType, ...)
+  if type(frameType) ~= 'string' then error('Usage: CreateFrame("frameType" [, "name"] [, parent] [, "template"] [, id])') end
+
+  local CreateFramePayload = { ... }
+
+  for i=0, #CreateFramePayload do
+    if (type(CreateFramePayload[i]) == 'userdata' ) then 
+      CreateFramePayload[i] = Private.GetFrameHandleFrame(CreateFramePayload[i])
+      break
+    end
+  end
+
+  local frame = CreateFrame(frameType, unpack(CreateFramePayload)); 
+  return Private.GetFrameHandle(frame)
+end
+
 local overridden = {
   WA_GetUnitAura = WA_GetUnitAura,
   WA_GetUnitBuff = WA_GetUnitBuff,
@@ -413,8 +441,11 @@ local overridden = {
   WA_Utf8Sub = WA_Utf8Sub,
   ActionButton_ShowOverlayGlow = WeakAuras.ShowOverlayGlow,
   ActionButton_HideOverlayGlow = WeakAuras.HideOverlayGlow,
-  WeakAuras = FakeWeakAuras
+  WeakAuras = FakeWeakAuras,
+  CreateFrame = FakeCreateFrame
 }
+
+
 
 local env_getglobal
 local exec_env = setmetatable({},
@@ -424,8 +455,8 @@ local exec_env = setmetatable({},
       return t
     elseif k == "getglobal" then
       return env_getglobal
-    elseif k == "aura_env" then
-      return current_aura_env
+    -- elseif k == "aura_env" then
+    --   return current_aura_env
     elseif blockedFunctions[k] then
       blocked(k)
       return function() end
@@ -435,6 +466,10 @@ local exec_env = setmetatable({},
     elseif overridden[k] then
       return overridden[k]
     else
+      if( _G[k] and type(_G[k]) == 'table' and type(_G[k][0]) == 'userdata' ) then 
+        return Private.GetFrameHandle(_G[k])
+      end 
+
       return _G[k]
     end
   end,
@@ -452,24 +487,55 @@ function env_getglobal(k)
   return exec_env[k]
 end
 
+function env_createnew(id)
+  return setmetatable({},{
+    __index = function(t, k)
+      if k == "aura_env" then
+        return aura_environments[id]
+      else 
+        return exec_env[k]
+      end
+    end,
+    __metatable = false
+  })
+end 
+
 local function_cache = {}
 function WeakAuras.LoadFunction(string, id, inTrigger)
-  if function_cache[string] then
-    return function_cache[string]
+
+  if not id then
+    error('Unable to find id in WeakAuras.LoadFunction')
+  elseif aura_environments[id] then 
+    --print('Auraenv exists for id=', id)
+  end 
+
+  if function_cache[id] and function_cache[id][string] then
+    return function_cache[id][string]
   else
     local loadedFunction, errorString = loadstring("--[==[ Error in '" .. (id or "Unknown") .. (inTrigger and ("':'".. inTrigger) or "") .."' ]==] " .. string)
     if errorString then
       print(errorString)
     else
-      setfenv(loadedFunction, exec_env)
+      setfenv(loadedFunction, env_createnew(id))
       local success, func = pcall(assert(loadedFunction))
       if success then
-        function_cache[string] = func
+
+        if not function_cache[id] then
+          function_cache[id] = {}
+
+          --print('WeakAuras.LoadFunction. New function_cache for id=', id)
+        end 
+        
+        function_cache[id][string] = func
         return func
       end
     end
   end
 end
+
+function Private.RemoveFunctionCache(id)
+  function_cache[id] = nil 
+end 
 
 function Private.GetSanitizedGlobal(key)
   return exec_env[key]
