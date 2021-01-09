@@ -429,7 +429,7 @@ local FakeWeakAurasMixin = {
       __newindex = function()end,
       __metatable = false
     }),
-    GetRegion = function (id, cloneId)
+    GetRegion = function(id, cloneId)
       local region = WeakAuras.GetRegion(id, cloneId)
       if ( region ) then
         return Private.GetFrameHandle(region)
@@ -477,26 +477,28 @@ local overridden = {
 
 
 local env_getglobal
-local proxifierCache = {}
+local proxifier
+do
+  local pairs, ipairs, next, unpack = pairs, ipairs, next, unpack
 
-local function proxifier(var, key, ...)
-  if ( not var ) then
-    return;
-  end
+  local proxifierCache = {}
 
-  if ( type(var) == 'table' ) then
-    if ( var == WeakAuras ) then
-      return FakeWeakAuras
-    elseif ( var == _G ) then
-      return env_getglobal('_G')
-    end
+  local ignoreProxy = {
+    [ipairs] = true,
+    [pairs] = true,
+    [next] = true,
+    [unpack] = true,
+  }
 
-    if ( type(var[0]) == 'userdata' ) then
-      return Private.GetFrameHandle(var)
-    else
-      local __proxy = proxifierCache[var] or setmetatable({}, {
+  local function proxifier_proxy(var)
+    if not proxifierCache[var] then
+      proxifierCache[var] = setmetatable({}, {
         __index = function(t, k)
-          return proxifier(var[k], k)
+          if ( type(var) == 'function' ) then
+            return var
+          else
+            return proxifier(var[k])
+          end
         end,
         __call = function(t, ...)
           local success, result = pcall(var, ...)
@@ -507,24 +509,36 @@ local function proxifier(var, key, ...)
           end
         end,
       })
-      proxifierCache[var] = __proxy
-      return __proxy
     end
-  elseif ( type(var) == 'function' ) then
-    local __proxy = proxifierCache[var] or setmetatable({}, {
-      __call = function(t, ...)
-        local success, result = pcall(var, ...)
-        if ( success ) then
-          return proxifier(result)
-        else
-          error(result)
-        end
-      end,
-    })
-    proxifierCache[var] = __proxy
-    return __proxy
-  else
-    return var
+
+    return proxifierCache[var]
+  end
+
+  function proxifier(var)
+    if ( not var ) then
+      return;
+    end
+
+    if ( type(var) == 'table' ) then
+      if ( var == WeakAuras ) then
+        return FakeWeakAuras
+      elseif ( var == _G ) then
+        return env_getglobal('_G')
+      end
+
+      if ( type(var[0]) == 'userdata' ) then
+        return Private.GetFrameHandle(var)
+      else
+        return proxifier_proxy(var)
+      end
+    elseif ( type(var) == 'function' ) then
+      if ( ignoreProxy[var] ) then
+        return var
+      end
+      return proxifier_proxy(var)
+    else
+      return var
+    end
   end
 end
 
@@ -561,17 +575,39 @@ function env_getglobal(k)
   return exec_env[k]
 end
 
+local function_env_cache = {}
+
 local function env_createnew(id)
-  return setmetatable({},{
+  if ( function_env_cache[id] ) then
+    return function_env_cache[id]
+  end
+
+  local __LoadFunction = function(code)
+    return WeakAuras.LoadFunction(code, id)
+  end
+
+  function_env_cache[id] = setmetatable({},{
     __index = function(t, k)
       if k == "aura_env" then
         return aura_environments[id]
+      elseif k == 'WeakAuras' then
+        return setmetatable({}, {
+          __index = function(t1, k1)
+            if ( k1 == 'LoadFunction' ) then
+              return __LoadFunction
+            else
+              return exec_env[k][k1]
+            end
+          end
+        })
       else
         return exec_env[k]
       end
     end,
     __metatable = false
   })
+
+  return function_env_cache[id]
 end
 
 local function_cache = {}
@@ -603,6 +639,7 @@ end
 
 function Private.RemoveFunctionCache(id)
   function_cache[id] = nil
+  function_env_cache[id] = nil
 end
 
 function Private.GetSanitizedGlobal(key)
