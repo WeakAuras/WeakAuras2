@@ -490,8 +490,98 @@ local overridden = {
 }
 
 
-
 local env_getglobal
+local proxifierCache = {}
+local ___mt = {}
+local print_log = false 
+
+--LibStub("AceDB-3.0"):New("WeakAuras").sv
+local function proxifier(var, key, ...)
+  if ( not var ) then 
+    return;
+  end 
+
+  -- if ( key == 'LibStub' or key == 'New' or key == 'sv' ) then 
+  --   print_log = true 
+  --   print('Log', var, key, ...)
+  -- elseif key then 
+  --   if ( print_log ) then 
+  --     print('Disable log on ', key)
+  --   end 
+  --   print_log = false
+  -- end 
+
+
+  if ( type(var) == 'table' ) then 
+    if ( var == WeakAuras ) then 
+      print('Find variable WeakAuras :2')
+
+      return FakeWeakAuras
+    elseif ( var == _G ) then 
+      print('Find variable _G :2')
+
+      return env_getglobal('_G')
+    end
+
+    if ( type(var[0]) == 'userdata' ) then 
+      -- print('Find lookup for frame')
+      return Private.GetFrameHandle(var)
+    else
+      local __proxy = proxifierCache[var] or setmetatable({}, {
+        __index = function(t, k)
+          return proxifier(var[k], k)
+        end,
+        __call = function(t, ...)
+          -- if (print_log) then
+          --   print('__call:0', t, var, ...)
+          -- end 
+
+          local success, result = pcall(var, ...)
+
+          if ( success ) then
+            return proxifier(result)
+          else 
+            error('ERROR:0 '+result)
+          end 
+        end,
+      })
+
+      proxifierCache[var] = __proxy
+
+      return __proxy
+    end
+  elseif ( type(var) == 'function' ) then 
+    if (print_log) then
+      print('Call function', var, ...)
+    end 
+    local __proxy = proxifierCache[var] or setmetatable({}, {
+      __call = function(t, ...)
+        -- if (print_log) then
+        --   print('__call:1', t, var, ...)
+        -- end 
+
+        local success, result = pcall(var, ...)
+
+        if ( success ) then
+          -- if (print_log) then
+          --   print('Result:1 = ', result)
+          -- end 
+
+          return proxifier(result)
+        else 
+          error('ERROR:1 '+result)
+        end 
+      end,
+    })
+
+    proxifierCache[var] = __proxy
+
+    return __proxy
+  else 
+    return var
+  end
+end
+
 local exec_env = setmetatable({},
 {
   __index = function(t, k)
@@ -510,11 +600,11 @@ local exec_env = setmetatable({},
     elseif overridden[k] then
       return overridden[k]
     else
-      if( _G[k] and type(_G[k]) == 'table' and type(_G[k][0]) == 'userdata' ) then 
-        return Private.GetFrameHandle(_G[k])
-      end 
+      -- if( _G[k] and type(_G[k]) == 'table' and type(_G[k][0]) == 'userdata' ) then 
+      --   return Private.GetFrameHandle(_G[k])
+      -- end 
 
-      return _G[k]
+      return proxifier(_G[k], k)
     end
   end,
   __newindex = function(table, key, value)
