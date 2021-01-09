@@ -478,8 +478,6 @@ local overridden = {
 
 local env_getglobal
 local proxifierCache = {}
-local ___mt = {}
-local print_log = false
 
 local function proxifier(var, key, ...)
   if ( not var ) then
@@ -505,7 +503,7 @@ local function proxifier(var, key, ...)
           if ( success ) then
             return proxifier(result)
           else
-            error('ERROR:0 '+result)
+            error(result)
           end
         end,
       })
@@ -513,16 +511,13 @@ local function proxifier(var, key, ...)
       return __proxy
     end
   elseif ( type(var) == 'function' ) then
-    if (print_log) then
-      print('Call function', var, ...)
-    end
     local __proxy = proxifierCache[var] or setmetatable({}, {
       __call = function(t, ...)
         local success, result = pcall(var, ...)
         if ( success ) then
           return proxifier(result)
         else
-          error('ERROR:1 '+result)
+          error(result)
         end
       end,
     })
