@@ -22,21 +22,17 @@ local GetHandleFrame
 do
     local meta = getmetatable(LOCAL_FrameHandle_Prototype);
     meta.__index = function(table, key)
-        --print(table, key)
-
         if (HANDLE[key]) then
             return HANDLE[key]
         else
             local realFrame = GetHandleFrame(table)
 
-            if ( realFrame ) then 
+            if ( realFrame ) then
                 return realFrame[key]
             end
         end
     end;
     meta.__newindex = function(table, key, value)
-        --print('__newindex', table, key, value)
-
         local realFrame = GetHandleFrame(table)
 
         realFrame[key] = value
@@ -151,7 +147,7 @@ local function ShouldAllowAccessToFrame(frame)
 		return false;
 	end
 
-    return nolockdown;
+    return true;
 end
 
 local function GetValidatedFrameHandle(frame)
@@ -360,7 +356,7 @@ function HANDLE:SetParent(handle)
                 error("Invalid frame handle for SetParent");
                 return;
             end
-        else       
+        else
             parent = handle
         end
     end
@@ -388,7 +384,7 @@ end
 ---------------------------------------------------------------------------
 -- Type specific methods
 
-function HANDLE:Click() 
+function HANDLE:Click()
     local frame = GetHandleFrame(self);
     if (not frame:IsObjectType("Button")) then
         error("Frame is not a Button");
@@ -396,7 +392,7 @@ function HANDLE:Click()
     end
 
     return false
-end 
+end
 
 function HANDLE:Disable()
     local frame = GetHandleFrame(self);
@@ -423,7 +419,7 @@ function HANDLE:RegisterForClicks(...)
         return;
     end
     frame:RegisterForClicks(...);
-end 
+end
 
 ---------------------------------------------------------------------------
 -- Events methods
@@ -499,19 +495,6 @@ function HANDLE:CreateTexture(...)
     return frame:CreateTexture(...)
 end
 
--- local object = CreateFrame("Frame")
--- local mt = getmetatable(object).__index
-
--- for k,v in pairs(mt) do 
---     if ( not HANDLE[k] ) then 
---         HANDLE[k] = function(self, ...)
---             local frame = GetHandleFrame(self);
-        
---             return frame[k](frame, ...)
---         end
---     end
--- end 
-
 ---------------------------------------------------------------------------
 -- Backdrop
 
@@ -525,13 +508,13 @@ for k,v in pairs(backdropMethods) do
     HANDLE[v] = function (self, ...)
         local frame = GetHandleFrame(self);
 
-        if ( not frame[v] ) then 
+        if ( not frame[v] ) then
             error('Invalid frame method "'..v..'"')
-        end 
+        end
 
         return frame[v](frame, ...)
     end
-end 
+end
 
 Private.GetFrameHandle = GetFrameHandle
 Private.GetFrameHandleFrame = GetFrameHandleFrame
@@ -539,13 +522,13 @@ Private.AddToFrameHandle = function(name)
     if ( HANDLE[name] ) then
         error('Private.AddToFrameHandle "'..name..'" already exists')
     end
-    
+
     HANDLE[name] = function (self, ...)
         local frame = GetHandleFrame(self);
 
-        if ( not frame[name] ) then 
+        if ( not frame[name] ) then
             error('Invalid frame method "'..name..'"')
-        end 
+        end
 
         return frame[name](frame, ...)
     end

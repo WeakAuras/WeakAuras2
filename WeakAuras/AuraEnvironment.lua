@@ -196,15 +196,10 @@ function Private.DeleteAuraEnvironment(id)
   aura_environments[id] = nil
   environment_initialized[id] = nil
 
-  --print('Private.DeleteAuraEnvironment', id)
-
   Private.RemoveFunctionCache(id)
 end
 
 function Private.RenameAuraEnvironment(oldid, newid)
-
-  --print('Private.RenameAuraEnvironment', oldid, newid)
-
   aura_environments[oldid], aura_environments[newid] = nil, aura_environments[oldid]
   environment_initialized[oldid], environment_initialized[newid] = nil, environment_initialized[oldid]
 
@@ -219,8 +214,6 @@ local aura_env_stack = {}
 
 function Private.ClearAuraEnvironment(id)
   environment_initialized[id] = nil;
-
-  --print('Private.ClearAuraEnvironment', id)
 end
 
 function Private.ActivateAuraEnvironmentForRegion(region, onlyConfig)
@@ -412,20 +405,14 @@ local FakeWeakAurasMixin = {
     myGUID = UnitGUID("player"),
     regions = setmetatable({},{
       __index = function(t,k)
-        --print('Looking for ', k, WeakAuras.regions[k])
         if (WeakAuras.regions[k]) then
-          if not regionsProxyCache[WeakAuras.regions[k]] then 
-            --print('T', 'Create region proxy', k)
+          if not regionsProxyCache[WeakAuras.regions[k]] then
             regionsProxyCache[WeakAuras.regions[k]] = setmetatable({}, {
               __index = function(tbl, key)
-                --print('regionsProxyCache', key, WeakAuras.regions[k][key])
                 if key == 'region' then
-                  --print('region exists', WeakAuras.regions[k].region)
                   if ( WeakAuras.regions[k].region ) then
-                    local handle = Private.GetFrameHandle(WeakAuras.regions[k].region)
-                    --print('return handle', handle)
-                    return handle
-                  end 
+                    return Private.GetFrameHandle(WeakAuras.regions[k].region)
+                  end
                   return nil
                 else
                   return WeakAuras.regions[k][key]
@@ -434,7 +421,7 @@ local FakeWeakAurasMixin = {
               __newindex = function()end,
               __metatable = false,
             })
-          end 
+          end
           return regionsProxyCache[WeakAuras.regions[k]]
         end
         return nil
@@ -445,9 +432,8 @@ local FakeWeakAurasMixin = {
     GetRegion = function (id, cloneId)
       local region = WeakAuras.GetRegion(id, cloneId)
       if ( region ) then
-        --print('GetRegion region=', region, region.region)
         return Private.GetFrameHandle(region)
-      end 
+      end
       return nil
     end
   },
@@ -466,13 +452,13 @@ local FakeCreateFrame = function(frameType, ...)
   local CreateFramePayload = { ... }
 
   for i=0, #CreateFramePayload do
-    if (type(CreateFramePayload[i]) == 'userdata' ) then 
+    if (type(CreateFramePayload[i]) == 'userdata' ) then
       CreateFramePayload[i] = Private.GetFrameHandleFrame(CreateFramePayload[i])
       break
     end
   end
 
-  local frame = CreateFrame(frameType, unpack(CreateFramePayload)); 
+  local frame = CreateFrame(frameType, unpack(CreateFramePayload));
   return Private.GetFrameHandle(frame)
 end
 
@@ -493,38 +479,21 @@ local overridden = {
 local env_getglobal
 local proxifierCache = {}
 local ___mt = {}
-local print_log = false 
+local print_log = false
 
---LibStub("AceDB-3.0"):New("WeakAuras").sv
 local function proxifier(var, key, ...)
-  if ( not var ) then 
+  if ( not var ) then
     return;
-  end 
+  end
 
-  -- if ( key == 'LibStub' or key == 'New' or key == 'sv' ) then 
-  --   print_log = true 
-  --   print('Log', var, key, ...)
-  -- elseif key then 
-  --   if ( print_log ) then 
-  --     print('Disable log on ', key)
-  --   end 
-  --   print_log = false
-  -- end 
-
-
-  if ( type(var) == 'table' ) then 
-    if ( var == WeakAuras ) then 
-      print('Find variable WeakAuras :2')
-
+  if ( type(var) == 'table' ) then
+    if ( var == WeakAuras ) then
       return FakeWeakAuras
-    elseif ( var == _G ) then 
-      print('Find variable _G :2')
-
+    elseif ( var == _G ) then
       return env_getglobal('_G')
     end
 
-    if ( type(var[0]) == 'userdata' ) then 
-      -- print('Find lookup for frame')
+    if ( type(var[0]) == 'userdata' ) then
       return Private.GetFrameHandle(var)
     else
       local __proxy = proxifierCache[var] or setmetatable({}, {
@@ -532,52 +501,34 @@ local function proxifier(var, key, ...)
           return proxifier(var[k], k)
         end,
         __call = function(t, ...)
-          -- if (print_log) then
-          --   print('__call:0', t, var, ...)
-          -- end 
-
           local success, result = pcall(var, ...)
-
           if ( success ) then
             return proxifier(result)
-          else 
+          else
             error('ERROR:0 '+result)
-          end 
+          end
         end,
       })
-
       proxifierCache[var] = __proxy
-
       return __proxy
     end
-  elseif ( type(var) == 'function' ) then 
+  elseif ( type(var) == 'function' ) then
     if (print_log) then
       print('Call function', var, ...)
-    end 
+    end
     local __proxy = proxifierCache[var] or setmetatable({}, {
       __call = function(t, ...)
-        -- if (print_log) then
-        --   print('__call:1', t, var, ...)
-        -- end 
-
         local success, result = pcall(var, ...)
-
         if ( success ) then
-          -- if (print_log) then
-          --   print('Result:1 = ', result)
-          -- end 
-
           return proxifier(result)
-        else 
+        else
           error('ERROR:1 '+result)
-        end 
+        end
       end,
     })
-
     proxifierCache[var] = __proxy
-
     return __proxy
-  else 
+  else
     return var
   end
 end
@@ -589,8 +540,6 @@ local exec_env = setmetatable({},
       return t
     elseif k == "getglobal" then
       return env_getglobal
-    -- elseif k == "aura_env" then
-    --   return current_aura_env
     elseif blockedFunctions[k] then
       blocked(k)
       return function() end
@@ -600,10 +549,6 @@ local exec_env = setmetatable({},
     elseif overridden[k] then
       return overridden[k]
     else
-      -- if( _G[k] and type(_G[k]) == 'table' and type(_G[k][0]) == 'userdata' ) then 
-      --   return Private.GetFrameHandle(_G[k])
-      -- end 
-
       return proxifier(_G[k], k)
     end
   end,
@@ -621,27 +566,25 @@ function env_getglobal(k)
   return exec_env[k]
 end
 
-function env_createnew(id)
+local function env_createnew(id)
   return setmetatable({},{
     __index = function(t, k)
       if k == "aura_env" then
         return aura_environments[id]
-      else 
+      else
         return exec_env[k]
       end
     end,
     __metatable = false
   })
-end 
+end
 
 local function_cache = {}
 function WeakAuras.LoadFunction(string, id, inTrigger)
 
   if not id then
     error('Unable to find id in WeakAuras.LoadFunction')
-  elseif aura_environments[id] then 
-    --print('Auraenv exists for id=', id)
-  end 
+  end
 
   if function_cache[id] and function_cache[id][string] then
     return function_cache[id][string]
@@ -653,12 +596,9 @@ function WeakAuras.LoadFunction(string, id, inTrigger)
       setfenv(loadedFunction, env_createnew(id))
       local success, func = pcall(assert(loadedFunction))
       if success then
-
         if not function_cache[id] then
           function_cache[id] = {}
-          --print('WeakAuras.LoadFunction. New function_cache for id=', id)
-        end 
-        
+        end
         function_cache[id][string] = func
         return func
       end
@@ -667,8 +607,8 @@ function WeakAuras.LoadFunction(string, id, inTrigger)
 end
 
 function Private.RemoveFunctionCache(id)
-  function_cache[id] = nil 
-end 
+  function_cache[id] = nil
+end
 
 function Private.GetSanitizedGlobal(key)
   return exec_env[key]
