@@ -480,6 +480,7 @@ local env_getglobal
 local proxifier
 do
   local pairs, ipairs, next, unpack = pairs, ipairs, next, unpack
+  local pcall = pcall
 
   local proxifierCache = {}
 
@@ -490,17 +491,18 @@ do
     [unpack] = true,
   }
 
-  local function proxifier_proxy(var)
+  local doOutput = true
+  local output = function(...)
+    if doOutput then print(...) end
+  end
+
+  local function proxifier_proxy_table(var)
     if not proxifierCache[var] then
       proxifierCache[var] = setmetatable({}, {
         __index = function(t, k)
-          if ( type(var) == 'function' ) then
-            return var
-          else
-            return proxifier(var[k])
-          end
+          return proxifier(var[k])
         end,
-        __call = function(t, ...)
+        __call = function(t, ...) -- this for LibStud() __call
           local success, result = pcall(var, ...)
           if ( success ) then
             return proxifier(result)
@@ -511,6 +513,20 @@ do
       })
     end
 
+    return proxifierCache[var]
+  end
+
+  local function proxifier_proxy_function(var)
+    if not proxifierCache[var] then
+      proxifierCache[var] = function(...)
+        local success, result = pcall(var, ...)
+        if ( success ) then
+          return proxifier(result)
+        else
+          error(result)
+        end
+      end
+    end
     return proxifierCache[var]
   end
 
@@ -529,13 +545,13 @@ do
       if ( type(var[0]) == 'userdata' ) then
         return Private.GetFrameHandle(var)
       else
-        return proxifier_proxy(var)
+        return proxifier_proxy_table(var)
       end
     elseif ( type(var) == 'function' ) then
-      if ( ignoreProxy[var] ) then
+      if ( ignoreProxy[var] ) then -- ipairs, pairs doesnt work without it
         return var
       end
-      return proxifier_proxy(var)
+      return proxifier_proxy_function(var)
     else
       return var
     end
@@ -558,7 +574,7 @@ local exec_env = setmetatable({},
     elseif overridden[k] then
       return overridden[k]
     else
-      return proxifier(_G[k], k)
+      return proxifier(_G[k])
     end
   end,
   __newindex = function(table, key, value)
