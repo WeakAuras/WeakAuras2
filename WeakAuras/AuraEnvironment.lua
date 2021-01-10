@@ -179,6 +179,7 @@ local blockedTables = {
 }
 
 
+
 local regionsProxyCache = {}
 
 
@@ -446,23 +447,64 @@ local FakeWeakAurasMixin = {
 
 local FakeWeakAuras = MakeReadOnly(WeakAuras, FakeWeakAurasMixin)
 
-local FakeCreateFrame = function(frameType, ...)
+local FakeCreateFrame = function(frameType, name, parent, ...)
+
   if type(frameType) ~= 'string' then error('Usage: CreateFrame("frameType" [, "name"] [, parent] [, "template"] [, id])') end
 
   local CreateFramePayload = { ... }
 
-  for i=0, #CreateFramePayload do
-    if (type(CreateFramePayload[i]) == 'userdata' ) then
-      CreateFramePayload[i] = Private.GetFrameHandleFrame(CreateFramePayload[i])
-      break
+  if ( parent ) then
+    if ( type(parent) == 'userdata' ) then
+      parent = Private.GetFrameHandleFrame(parent)
+    else
+      error('Error: CreateFrame - Unknown parent')
     end
   end
 
-  local frame = CreateFrame(frameType, unpack(CreateFramePayload));
+  local frame = CreateFrame(frameType, name, parent, ...);
   return Private.GetFrameHandle(frame)
 end
 
-local overridden = {
+local overridden
+local Fakehooksecurefunc = function(...)
+  local numArgs = select('#', ...)
+  local _table, _funcName, _hook
+
+  if numArgs == 3 then
+    _table, _funcName, _hook = ...
+  else
+    _funcName, _hook = ...
+  end
+
+  if (blockedFunctions[_funcName]) then
+    error('Attept to use forbidden value ', _funcName)
+  end
+
+  if ( _table ) then
+    if ( type(_table) == 'userdata' ) then
+      local frame = Private.GetFrameHandleFrame(_table)
+
+      if ( not _table[_funcName] ) then
+        error('Unknown funcName "'.._funcName..'"')
+      end
+
+      hooksecurefunc(frame, _funcName, function(self, ...)
+        local handle = Private.GetFrameHandle(self)
+        _hook(handle, ...)
+      end)
+    else
+      hooksecurefunc(_table, _funcName, function(self, ...)
+        _hook(self, ...)
+      end)
+    end
+  else
+    hooksecurefunc(_funcName, function(self, ...)
+      _hook(self, ...)
+    end)
+  end
+end
+
+overridden = {
   WA_GetUnitAura = WA_GetUnitAura,
   WA_GetUnitBuff = WA_GetUnitBuff,
   WA_GetUnitDebuff = WA_GetUnitDebuff,
@@ -472,7 +514,8 @@ local overridden = {
   ActionButton_ShowOverlayGlow = WeakAuras.ShowOverlayGlow,
   ActionButton_HideOverlayGlow = WeakAuras.HideOverlayGlow,
   WeakAuras = FakeWeakAuras,
-  CreateFrame = FakeCreateFrame
+  CreateFrame = FakeCreateFrame,
+  hooksecurefunc = Fakehooksecurefunc, -- is it realy needed?
 }
 
 
@@ -491,7 +534,24 @@ do
     [unpack] = true,
   }
 
-  local doOutput = true
+  local function MakeTableReference(from)
+    local t = {}
+
+    for k,v in pairs(from) do
+      if ( _G[k]) then
+        t[ _G[k] ] = k
+      else
+        print('Unable to find reference for', k)
+      end
+    end
+
+    return t
+  end
+
+  local blockedFunctionsReference = MakeTableReference(blockedFunctions)
+  local blockedTablesReference = MakeTableReference(blockedTables)
+
+  local doOutput = false
   local output = function(...)
     if doOutput then print(...) end
   end
@@ -518,8 +578,8 @@ do
 
   local function proxifier_proxy_function(var)
     if not proxifierCache[var] then
-      proxifierCache[var] = function(...)
-        local success, result = pcall(var, ...)
+      proxifierCache[var] = function(t, ...)
+        local success, result = pcall(var, t, ...)
         if ( success ) then
           return proxifier(result)
         else
@@ -540,6 +600,9 @@ do
         return FakeWeakAuras
       elseif ( var == _G ) then
         return env_getglobal('_G')
+      elseif ( blockedTablesReference[var] ) then
+        blocked( blockedTablesReference[var] )
+        return {}
       end
 
       if ( type(var[0]) == 'userdata' ) then
@@ -548,9 +611,14 @@ do
         return proxifier_proxy_table(var)
       end
     elseif ( type(var) == 'function' ) then
-      if ( ignoreProxy[var] ) then -- ipairs, pairs doesnt work without it
+
+      if ( blockedFunctionsReference[var] ) then
+        blocked( blockedFunctionsReference[var] )
+        return function() end
+      elseif ( ignoreProxy[var] ) then -- ipairs, pairs doesnt work without it
         return var
       end
+
       return proxifier_proxy_function(var)
     else
       return var

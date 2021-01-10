@@ -5,10 +5,12 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local prettyPrint = WeakAuras.prettyPrint
 
-local GetFrameHandle, GetFrameHandleFrame
+local GetFrameHandle, GetFrameHandleFrame, IsFrameHandle
 
 local LOCAL_FrameHandle_Other_Frames = {};
 local LOCAL_FrameHandle_Lookup = {};
+local LOCAL_FrameHandle_Args = {};
+
 setmetatable(LOCAL_FrameHandle_Other_Frames, { __mode = "k" });
 
 -- Setup metatable for prototype object
@@ -21,23 +23,36 @@ local GetHandleFrame
 
 do
     local meta = getmetatable(LOCAL_FrameHandle_Prototype);
-    meta.__index = function(table, key)
+    meta.__index = function(tbl, key)
         if (HANDLE[key]) then
             return HANDLE[key]
         else
-            local realFrame = GetHandleFrame(table)
+            local privateData = LOCAL_FrameHandle_Args[tbl]
 
-            if ( realFrame ) then
-                return realFrame[key]
+            if ( privateData ) then
+                return privateData[key]
+            end
+        end
+
+        error('Unable to find value "'..key..'"')
+    end;
+    meta.__newindex = function(tbl, key, value)
+        if (HANDLE[key]) then
+            error('Attept to override handle function "'..key..'"')
+        else
+            local privateData = LOCAL_FrameHandle_Args[tbl]
+
+            if ( privateData ) then
+                privateData[key] = value
             end
         end
     end;
-    meta.__newindex = function(table, key, value)
-        local realFrame = GetHandleFrame(table)
-
-        realFrame[key] = value
-    end
     meta.__metatable = false;
+end
+
+function IsFrameHandle(handle)
+    local surrogate = LOCAL_FrameHandle_Other_Frames[handle];
+    return (surrogate ~= nil);
 end
 
 function GetHandleFrame(handle)
@@ -56,6 +71,8 @@ local function FrameHandleLookup_index(t, frame)
   local handle = newproxy(LOCAL_FrameHandle_Prototype);
   LOCAL_FrameHandle_Lookup[frame] = handle;
   LOCAL_FrameHandle_Other_Frames[handle] = surrogate;
+  LOCAL_FrameHandle_Args[handle] = {};
+
   return handle;
 end
 setmetatable(LOCAL_FrameHandle_Lookup, { __index = FrameHandleLookup_index; });
@@ -141,6 +158,20 @@ function HANDLE:IsProtected()
     return GetHandleFrame(self):IsProtected();
 end
 
+function HANDLE:GetAttribute(name)
+    if (type(name) ~= "string" or name:match("^_")) then
+        return;
+    end
+    local val = GetHandleFrame(self):GetAttribute(name)
+    local tv = type(val);
+    if (tv == "string" or tv == "number" or tv == "boolean" or val == nil) then
+        return val;
+    end
+    if (tv == "userdata" and IsFrameHandle(val)) then
+        return val;
+    end
+    return nil;
+end
 
 local function ShouldAllowAccessToFrame(frame)
 	if frame:IsForbidden() then
@@ -248,6 +279,17 @@ function HANDLE:SetHeight(height)
     GetHandleFrame(self):SetHeight(tonumber(height));
 end
 
+function HANDLE:SetSize(width, height)
+    if ((width == nil) and (height == nil)) then
+        width, height = 0, 0;
+    else
+        width, height = tonumber(width), tonumber(height);
+    end
+
+
+    GetHandleFrame(self):SetSize(width, height)
+end
+
 function HANDLE:SetScale(scale)
     GetHandleFrame(self):SetScale(tonumber(scale));
 end
@@ -302,9 +344,9 @@ function HANDLE:SetPoint(point, relframe, relpoint, xofs, yofs)
         end
     else
         -- from wa envy
-        realrelframe = relframe
-        -- error("Invalid relative frame id '" .. tostring(relframe) .. "'");
-        -- return;
+        --realrelframe = relframe
+        error("Invalid relative frame id '" .. tostring(relframe) .. "'");
+        return;
     end
 
     frame:SetPoint(point, realrelframe, relpoint, xofs, yofs);
@@ -322,9 +364,9 @@ function HANDLE:SetAllPoints(relframe)
         end
     else
         -- from wa envy
-        realrelframe = relframe
-        -- error("Invalid relative frame id '" .. tostring(relframe) .. "'");
-        -- return;
+        --realrelframe = relframe
+        error("Invalid relative frame id '" .. tostring(relframe) .. "'");
+        return;
     end
 
     frame:SetAllPoints(realrelframe);
@@ -380,6 +422,21 @@ function HANDLE:EnableGamePadStick(isEnabled)
     GetHandleFrame(self):EnableGamePadStick((isEnabled and true) or false);
 end
 
+function HANDLE:SetAttribute(name, value)
+    if (type(name) ~= "string" or name:match("^_")) then
+        error("Invalid attribute name");
+        return;
+    end
+    local tv = type(value);
+    if (tv ~= "string" and tv ~= "nil" and tv ~= "number"
+        and tv ~= "boolean") then
+        if (not (tv == "userdata" and IsFrameHandle(value))) then
+            error("Invalid attribute value");
+            return;
+        end
+    end
+    GetHandleFrame(self):SetAttribute(name, value);
+end
 
 ---------------------------------------------------------------------------
 -- Type specific methods
@@ -533,3 +590,6 @@ Private.AddToFrameHandle = function(name)
         return frame[name](frame, ...)
     end
 end
+
+
+Private.AddToFrameHandle('Collapse') -- group function
