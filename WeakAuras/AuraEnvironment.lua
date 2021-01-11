@@ -556,6 +556,25 @@ do
     if doOutput then print(...) end
   end
 
+  local function modificateArg(arg)
+    if ( not arg ) then return end
+    return proxifier(arg)
+  end
+
+  local function nextArgs(arg, ...)
+    local numPayload = select('#', ...)
+    if numPayload == 0 and not arg then return end
+    return modificateArg(arg), nextArgs(...)
+  end
+
+  local function captureReturn(success, result, ...)
+    if not success then
+      error(result)
+    end
+
+    return modificateArg(result), nextArgs(...)
+  end
+
   local function proxifier_proxy_table(var)
     if not proxifierCache[var] then
       proxifierCache[var] = setmetatable({}, {
@@ -563,12 +582,7 @@ do
           return proxifier(var[k])
         end,
         __call = function(t, ...) -- this for LibStud() __call
-          local success, result = pcall(var, ...)
-          if ( success ) then
-            return proxifier(result)
-          else
-            error(result)
-          end
+          return captureReturn(pcall(var, ...))
         end,
       })
     end
@@ -579,12 +593,7 @@ do
   local function proxifier_proxy_function(var)
     if not proxifierCache[var] then
       proxifierCache[var] = function(t, ...)
-        local success, result = pcall(var, t, ...)
-        if ( success ) then
-          return proxifier(result)
-        else
-          error(result)
-        end
+        return captureReturn(pcall(var, t, ...))
       end
     end
     return proxifierCache[var]
