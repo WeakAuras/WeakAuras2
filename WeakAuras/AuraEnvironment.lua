@@ -556,15 +556,10 @@ do
     if doOutput then print(...) end
   end
 
-  local function modificateArg(arg)
-    if ( not arg ) then return end
-    return proxifier(arg)
-  end
-
   local function nextArgs(arg, ...)
     local numPayload = select('#', ...)
     if numPayload == 0 and not arg then return end
-    return modificateArg(arg), nextArgs(...)
+    return proxifier(arg), nextArgs(...)
   end
 
   local function captureReturn(success, result, ...)
@@ -572,7 +567,7 @@ do
       error(result)
     end
 
-    return modificateArg(result), nextArgs(...)
+    return proxifier(result), nextArgs(...)
   end
 
   local function proxifier_proxy_table(var)
