@@ -523,7 +523,7 @@ local env_getglobal
 local proxifier
 do
   local pairs, ipairs, next, unpack = pairs, ipairs, next, unpack
-  local pcall = pcall
+  local pcall, type = pcall, type
 
   local proxifierCache = {}
 
@@ -532,6 +532,7 @@ do
     [pairs] = true,
     [next] = true,
     [unpack] = true,
+    [type] = true,
   }
 
   local function MakeTableReference(from)
@@ -556,28 +557,21 @@ do
     if doOutput then print(...) end
   end
 
-  local function nextArgs(arg, ...)
+  local function captureReturn(handle, arg, ...)
     local numPayload = select('#', ...)
-    if numPayload == 0 and not arg then return end
-    return proxifier(arg), nextArgs(...)
+    if numPayload == 0 and arg == nil then return end
+    return handle(arg), captureReturn(handle, ...)
   end
 
-  local function captureReturn(success, result, ...)
-    if not success then
-      error(result)
-    end
-
-    return proxifier(result), nextArgs(...)
-  end
 
   local function proxifier_proxy_table(var)
     if not proxifierCache[var] then
       proxifierCache[var] = setmetatable({}, {
         __index = function(t, k)
-          return proxifier(var[k])
+          return proxifier(var[k], k)
         end,
         __call = function(t, ...) -- this for LibStud() __call
-          return captureReturn(pcall(var, ...))
+          return captureReturn(proxifier, var(...))
         end,
       })
     end
@@ -585,18 +579,18 @@ do
     return proxifierCache[var]
   end
 
-  local function proxifier_proxy_function(var)
+  local function proxifier_proxy_function(var, __k)
     if not proxifierCache[var] then
-      proxifierCache[var] = function(t, ...)
-        return captureReturn(pcall(var, t, ...))
+      proxifierCache[var] = function(...)
+        return captureReturn(proxifier, var(captureReturn(checkPayload, ...)))
       end
     end
     return proxifierCache[var]
   end
 
-  function proxifier(var)
+  function checkPayload(var)
     if ( not var ) then
-      return;
+      return var;
     end
 
     if ( type(var) == 'table' ) then
@@ -607,6 +601,36 @@ do
       elseif ( blockedTablesReference[var] ) then
         blocked( blockedTablesReference[var] )
         return {}
+      elseif ( var == string or var == table ) then
+        return var
+      end
+    elseif ( type(var) == 'function' ) then
+      if ( blockedFunctionsReference[var] ) then
+        blocked( blockedFunctionsReference[var] )
+        return function() end
+      elseif ( ignoreProxy[var] ) then -- type doesnt work without it
+        return var
+      end
+    end
+
+    return var
+  end
+
+  function proxifier(var)
+    if ( not var ) then
+      return var;
+    end
+
+    if ( type(var) == 'table' ) then
+      if ( var == WeakAuras ) then
+        return FakeWeakAuras
+      elseif ( var == _G ) then
+        return env_getglobal('_G')
+      elseif ( blockedTablesReference[var] ) then
+        blocked( blockedTablesReference[var] )
+        return {}
+      elseif ( var == string or var == table ) then
+        return var
       end
 
       if ( type(var[0]) == 'userdata' ) then
@@ -624,9 +648,9 @@ do
       end
 
       return proxifier_proxy_function(var)
-    else
-      return var
     end
+
+    return var
   end
 end
 
@@ -646,7 +670,7 @@ local exec_env = setmetatable({},
     elseif overridden[k] then
       return overridden[k]
     else
-      return proxifier(_G[k])
+      return proxifier(_G[k], k)
     end
   end,
   __newindex = function(table, key, value)
