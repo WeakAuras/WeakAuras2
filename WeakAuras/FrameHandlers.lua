@@ -5,12 +5,9 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local prettyPrint = WeakAuras.prettyPrint
 
-local GetFrameHandle, GetFrameHandleFrame, IsFrameHandle
-
 local LOCAL_FrameHandle_Other_Frames = {};
 local LOCAL_FrameHandle_Lookup = {};
 local LOCAL_FrameHandle_Args = {};
-
 setmetatable(LOCAL_FrameHandle_Other_Frames, { __mode = "k" });
 
 -- Setup metatable for prototype object
@@ -20,6 +17,7 @@ local LOCAL_FrameHandle_Prototype = newproxy(true);
 local HANDLE = {}
 
 local GetHandleFrame
+local GetFrameHandle, GetFrameHandleFrame, IsFrameHandle
 
 do
     local meta = getmetatable(LOCAL_FrameHandle_Prototype);
@@ -29,8 +27,13 @@ do
         else
             local privateData = LOCAL_FrameHandle_Args[tbl]
 
-            if ( privateData ) then
+            if ( privateData and privateData[key] ) then
                 return privateData[key]
+            end
+
+            local frame = GetHandleFrame(tbl)
+            if(frame) then
+                return frame[key]
             end
         end
 
@@ -40,10 +43,21 @@ do
         if (HANDLE[key]) then
             error('Attept to override handle function "'..key..'"')
         else
-            local privateData = LOCAL_FrameHandle_Args[tbl]
+            local frame = GetHandleFrame(tbl)
 
-            if ( privateData ) then
-                privateData[key] = value
+            if ( type(value) == 'function' ) then
+                if(frame) and frame[key] then
+                    error('Attept to override handle function "'..key..'"')
+                end
+
+                local privateData = LOCAL_FrameHandle_Args[tbl]
+                if ( privateData ) then
+                    privateData[key] = value
+                end
+            else
+                if(frame) then
+                    frame[key] = value
+                end
             end
         end
     end;
