@@ -557,6 +557,7 @@ do
     if doOutput then print(...) end
   end
 
+  local checkPayload
   local function captureReturn(handle, arg, ...)
     local numPayload = select('#', ...)
     if numPayload == 0 and arg == nil then return end
