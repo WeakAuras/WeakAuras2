@@ -600,6 +600,7 @@ do
     return proxifierCache[var]
   end
 
+  local deepCheckTable
   function deepCheckTable(tbl, dept, real, from, checked)
     checked[tbl] = true
 
