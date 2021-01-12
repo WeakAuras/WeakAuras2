@@ -526,6 +526,7 @@ do
   local pcall, type = pcall, type
 
   local proxifierCache = {}
+  local proxyList = {}
 
   local ignoreProxy = {
     [ipairs] = true,
@@ -533,6 +534,9 @@ do
     [next] = true,
     [unpack] = true,
     [type] = true,
+    [table.sort] = true,
+    [table.insert] = true,
+    [table.remove] = true,
   }
 
   local function MakeTableReference(from)
@@ -567,26 +571,66 @@ do
 
   local function proxifier_proxy_table(var)
     if not proxifierCache[var] then
-      proxifierCache[var] = setmetatable({}, {
+      local mt = getmetatable(var)
+      local proxy = setmetatable({}, {
         __index = function(t, k)
-          return proxifier(var[k], k)
+          return proxifier(var[k])
         end,
-        __call = function(t, ...) -- this for LibStud() __call
+        __call = ( mt and mt.__call ) and function(t, ...) -- this for LibStud() __call
           return captureReturn(proxifier, var(...))
         end,
       })
+      proxifierCache[var] = proxy
+      proxyList[proxy] = var
+    end
+
+    if ( proxyList[var] ) then
+      print('Attept to proxify proxy', var, proxyList[var] )
     end
 
     return proxifierCache[var]
   end
 
-  local function proxifier_proxy_function(var, __k)
+  local function proxifier_proxy_function(var)
     if not proxifierCache[var] then
       proxifierCache[var] = function(...)
-        return captureReturn(proxifier, var(captureReturn(checkPayload, ...)))
+        return captureReturn(checkPayload, var(captureReturn(checkPayload, ...)))
       end
     end
     return proxifierCache[var]
+  end
+
+  function deepCheckTable(tbl, dept, real, from, checked)
+    checked[tbl] = true
+
+    if ( dept > 10 ) then
+      print('High dept found??', dept, from)
+      return false
+    end
+
+    for k,v in pairs(tbl) do
+      if ( v == WeakAuras ) then
+        return false
+      elseif ( v == _G ) then
+        return false
+      elseif ( blockedTablesReference[v] ) then
+        return false
+      end
+    end
+
+    for k,v in pairs(tbl) do
+      if ( type(v) == 'table' ) then
+        if ( checked[v]) then
+          --print('Circular reference:0 ??', k, dept)
+        elseif ( tbl == v) then
+          --print('Circular reference:1 ??', k, dept)
+        elseif ( not deepCheckTable(v, dept+1, real, from..'.'..k, checked) ) then
+          return false
+        end
+      end
+    end
+
+    return true
   end
 
   function checkPayload(var)
@@ -595,15 +639,9 @@ do
     end
 
     if ( type(var) == 'table' ) then
-      if ( var == WeakAuras ) then
-        return FakeWeakAuras
-      elseif ( var == _G ) then
-        return env_getglobal('_G')
-      elseif ( blockedTablesReference[var] ) then
-        blocked( blockedTablesReference[var] )
+      if not deepCheckTable(var, 0, var, 'FROM', {}) then
+        print('Invalid table value')
         return {}
-      elseif ( var == string or var == table ) then
-        return var
       end
     elseif ( type(var) == 'function' ) then
       if ( blockedFunctionsReference[var] ) then
@@ -640,7 +678,6 @@ do
         return proxifier_proxy_table(var)
       end
     elseif ( type(var) == 'function' ) then
-
       if ( blockedFunctionsReference[var] ) then
         blocked( blockedFunctionsReference[var] )
         return function() end
@@ -671,7 +708,7 @@ local exec_env = setmetatable({},
     elseif overridden[k] then
       return overridden[k]
     else
-      return proxifier(_G[k], k)
+      return proxifier(_G[k])
     end
   end,
   __newindex = function(table, key, value)
