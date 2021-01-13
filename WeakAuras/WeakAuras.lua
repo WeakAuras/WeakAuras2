@@ -3452,7 +3452,15 @@ end
 function Private.HideTooltip()
   currentTooltipRegion = nil;
   currentTooltipOwner = nil;
-  GameTooltip:Hide();
+  -- If a tooltip was shown for a "restricted" frame, that is e.g. for a aura
+  -- anchored to a nameplate, then that frame is no longer clamped to the screen,
+  -- because restricted frames can't be clamped. So dance to make the tooltip
+  -- unrestricted and then clamp it again.
+  GameTooltip:ClearAllPoints()
+  GameTooltip:SetPoint("RIGHT", UIParent, "LEFT");
+  GameTooltip:SetClampedToScreen(true)
+
+  GameTooltip:Hide()
 end
 
 do
