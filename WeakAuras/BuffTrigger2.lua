@@ -461,7 +461,7 @@ local function FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
       end
     end
   end
-  return bestMatch, matchCount, nextCheck
+  return bestMatch, matchCount, stackCount, nextCheck
 end
 
 local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, matchCountPerUnit, totalStacks, affected, unaffected)
@@ -1144,8 +1144,8 @@ local function UpdateTriggerState(time, id, triggernum)
       for unit, unitData in pairs(matchDataByTrigger[id][triggernum]) do
         local bestMatch, countPerUnit, stacks, nextCheckForMatch = FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
         matchCount = matchCount + countPerUnit
+        totalStacks = totalStacks + (stacks or 0)
         if bestMatch then
-          totalStacks = totalStacks + (bestMatch.stacks or 0)
           unitCount = unitCount + 1
           matchedUnits[unit] = true
         end
