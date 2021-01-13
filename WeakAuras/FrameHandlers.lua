@@ -9,6 +9,7 @@ local LOCAL_FrameHandle_Other_Frames = {};
 local LOCAL_FrameHandle_Lookup = {};
 local LOCAL_FrameHandle_Args = {};
 setmetatable(LOCAL_FrameHandle_Other_Frames, { __mode = "k" });
+setmetatable(LOCAL_FrameHandle_Args, { __mode = "k" });
 
 -- Setup metatable for prototype object
 local LOCAL_FrameHandle_Prototype = newproxy(true);
@@ -16,7 +17,6 @@ local LOCAL_FrameHandle_Prototype = newproxy(true);
 
 local HANDLE = {}
 
-local GetHandleFrame
 local GetFrameHandle, GetFrameHandleFrame, IsFrameHandle
 
 do
@@ -31,7 +31,7 @@ do
                 return privateData[key]
             end
 
-            local frame = GetHandleFrame(tbl)
+            local frame = GetFrameHandleFrame(tbl)
             if(frame) then
                 return frame[key]
             end
@@ -43,7 +43,7 @@ do
         if (HANDLE[key]) then
             error('Attept to override handle function "'..key..'"')
         else
-            local frame = GetHandleFrame(tbl)
+            local frame = GetFrameHandleFrame(tbl)
 
             if ( type(value) == 'function' ) then
                 if(frame) and frame[key] then
@@ -69,13 +69,18 @@ function IsFrameHandle(handle)
     return (surrogate ~= nil);
 end
 
-function GetHandleFrame(handle)
-  local frame = GetFrameHandleFrame(handle);
-  if (frame) then
-    return frame;
-  end
-  error("Invalid frame handle");
+function GetFrameHandle(frame)
+    local handle = LOCAL_FrameHandle_Lookup[frame];
+    return handle;
 end
+
+function GetFrameHandleFrame(handle)
+    local surrogate = LOCAL_FrameHandle_Other_Frames[handle];
+    if (surrogate ~= nil) then
+        return surrogate[1];
+    end
+end
+
 
 local function FrameHandleLookup_index(t, frame)
   -- Create a 'surrogate' frame object
@@ -92,16 +97,12 @@ end
 setmetatable(LOCAL_FrameHandle_Lookup, { __index = FrameHandleLookup_index; });
 
 
-function GetFrameHandle(frame)
-  local handle = LOCAL_FrameHandle_Lookup[frame];
-  return handle;
-end
-
-function GetFrameHandleFrame(handle)
-  local surrogate = LOCAL_FrameHandle_Other_Frames[handle];
-  if (surrogate ~= nil) then
-      return surrogate[1];
-  end
+local function GetHandleFrame(handle)
+    local frame = GetFrameHandleFrame(handle);
+    if (frame) then
+        return frame;
+    end
+    error("Invalid frame handle");
 end
 
 function HANDLE:GetName()   return GetHandleFrame(self):GetName() end

@@ -448,10 +448,7 @@ local FakeWeakAurasMixin = {
 local FakeWeakAuras = MakeReadOnly(WeakAuras, FakeWeakAurasMixin)
 
 local FakeCreateFrame = function(frameType, name, parent, ...)
-
   if type(frameType) ~= 'string' then error('Usage: CreateFrame("frameType" [, "name"] [, parent] [, "template"] [, id])') end
-
-  local CreateFramePayload = { ... }
 
   if ( parent ) then
     if ( type(parent) == 'userdata' ) then
@@ -522,22 +519,36 @@ overridden = {
 local env_getglobal
 local proxifier
 do
-  local pairs, ipairs, next, unpack = pairs, ipairs, next, unpack
-  local pcall, type = pcall, type
+  local _G = _G
+
+  local pairs, ipairs, next, unpack = _G.pairs, _G.ipairs, _G.next, _G.unpack
+  local pcall, type = _G.pcall, _G.type
+  local string = _G.string
+  local table = _G.table
 
   local proxifierCache = {}
   local proxyList = {}
+  setmetatable(proxifierCache, { __mode = "k" });
+  setmetatable(proxyList, { __mode = "k" });
 
   local ignoreProxy = {
-    [ipairs] = true,
-    [pairs] = true,
-    [next] = true,
-    [unpack] = true,
-    [type] = true,
-    [table.sort] = true,
-    [table.insert] = true,
-    [table.remove] = true,
+    [ipairs] = 'ipairs',
+    [pairs] = 'pairs',
+    [next] = 'next',
+    [unpack] = 'unpack',
+    [type] = 'type',
+    [setmetatable] = 'setmetatable',
+    [rawset] = 'rawset',
+    [rawget] = 'rawget',
   }
+
+  local function addReferencesToIgnore(root)
+    for k,v in pairs(root) do
+      ignoreProxy[ root[k] ] = k
+    end
+  end
+  addReferencesToIgnore(string)
+  addReferencesToIgnore(table)
 
   local function MakeTableReference(from)
     local t = {}
@@ -556,7 +567,7 @@ do
   local blockedFunctionsReference = MakeTableReference(blockedFunctions)
   local blockedTablesReference = MakeTableReference(blockedTables)
 
-  local doOutput = false
+  local doOutput = true
   local output = function(...)
     if doOutput then print(...) end
   end
@@ -568,7 +579,6 @@ do
     return handle(arg), captureReturn(handle, ...)
   end
 
-
   local function proxifier_proxy_table(var)
     if not proxifierCache[var] then
       local mt = getmetatable(var)
@@ -576,16 +586,17 @@ do
         __index = function(t, k)
           return proxifier(var[k])
         end,
-        __call = ( mt and mt.__call ) and function(t, ...) -- this for LibStud() __call
-          return captureReturn(proxifier, var(...))
+        __newindex = function(t, k, v)
+          rawset(var, k, v)
         end,
+        __call = ( mt and mt.__call ) and function(t, ...) -- this for LibStud() __call
+          return captureReturn(proxifier,var(...))
+        end,
+        __metatable = false,
       })
-      proxifierCache[var] = proxy
-      proxyList[proxy] = var
-    end
 
-    if ( proxyList[var] ) then
-      print('Attept to proxify proxy', var, proxyList[var] )
+      proxifierCache[var] = proxy
+      proxifierCache[proxy] = proxy
     end
 
     return proxifierCache[var]
@@ -593,30 +604,38 @@ do
 
   local function proxifier_proxy_function(var)
     if not proxifierCache[var] then
-      proxifierCache[var] = function(...)
-        return captureReturn(checkPayload, var(captureReturn(checkPayload, ...)))
+      local proxy = function(...)
+        return captureReturn(proxifier, var(captureReturn(checkPayload,...)))
       end
+      proxifierCache[var] = proxy
+      proxifierCache[proxy] = proxy
     end
     return proxifierCache[var]
   end
 
   local deepCheckTable
   function deepCheckTable(tbl, dept, real, from, checked)
+    checked = checked or {}
+
+    if ( checked[tbl] ) then
+      return true
+    end
+
     checked[tbl] = true
 
     if ( dept > 10 ) then
-      print('High dept found??', dept, from)
+      -- print('High dept found??', dept, from)
       return false
     end
 
+    if ( tbl == WeakAuras ) then return false end
+    if ( tbl == _G ) then return false end
+    if ( blockedTablesReference[tbl] ) then return false end
+
     for k,v in pairs(tbl) do
-      if ( v == WeakAuras ) then
-        return false
-      elseif ( v == _G ) then
-        return false
-      elseif ( blockedTablesReference[v] ) then
-        return false
-      end
+      if ( v == WeakAuras ) then return false end
+      if ( v == _G ) then return false end
+      if ( blockedTablesReference[v] ) then return false end
     end
 
     for k,v in pairs(tbl) do
@@ -640,8 +659,8 @@ do
     end
 
     if ( type(var) == 'table' ) then
-      if not deepCheckTable(var, 0, var, 'FROM', {}) then
-        print('Invalid table value')
+      if not deepCheckTable(var, 0, var, 'FROM') then
+        output('Invalid table value', 'FROM')
         return {}
       end
     elseif ( type(var) == 'function' ) then
