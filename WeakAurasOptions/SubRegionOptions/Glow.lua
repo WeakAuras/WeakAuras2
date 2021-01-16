@@ -33,16 +33,17 @@ local function createOptions(parentData, data, index, subIndex)
   local addOptionsFromLCG = function(options, order)
     local maxOrder = 0
 
+    local ignoreKeys = {
+      default = true,
+      start = true,
+      stop = true,
+      gradient = true, -- not supported yet
+      gradientFrequency = true -- not supported yet
+    }
     local function MyCopyTable(settings, level, glowType, prefix)
       local copy = {}
-      if settings.type == "gradient" then -- TODO: not a valid ace3 type
-        return nil
-      end
       for k, v in pairs(settings) do
-        if k ~= "default"
-        and k ~= "start"
-        and k ~= "stop"
-        then
+        if not ignoreKeys[k] then
           if ( type(v) == "table" ) then
             local key = v.name and ("sub."..index..".subglow."..(level > 2 and prefix or ""))..k or k
             copy[key] = MyCopyTable(
@@ -64,7 +65,11 @@ local function createOptions(parentData, data, index, subIndex)
                   return default
                 end
                 if base[property] == nil then
-                  return type(default) == "table" and unpack(default) or default
+                  if type(default) == "table" then
+                    return unpack(default)
+                  else
+                    return default
+                  end
                 elseif info.type == "color" then
                   base[property] = base[property] or {};
                   local c = base[property];
@@ -85,7 +90,7 @@ local function createOptions(parentData, data, index, subIndex)
       return copy
     end
 
-    WeakAuras.DeepMixin(options, MyCopyTable(LCG:GetGlows(), 1))
+    WeakAuras.DeepMixin(options, MyCopyTable(glows, 1))
     return maxOrder + 1
   end
 
@@ -138,22 +143,24 @@ local function createOptions(parentData, data, index, subIndex)
       control = "WeakAurasExpandSmall",
       name = function()
         local line = L["|cFFffcc00Extra Options:|r"]
-        local defaults = glows[data.glowType]
         local function compareTables(ref, myData)
           if ref == nil or myData == nil then return "" end
           if ref.type == "group" then
             local out = ""
             for k, v in pairs(ref.args) do
-              out = out .. compareTables(v, myData[k])
+              if k ~= "gradient" and k ~= "gradientFrequency" then
+                out = out .. compareTables(v, myData[k])
+              end
             end
             return out
-          elseif ref.type == "color" and (
-            myData[1] ~= ref.default[1]
+          elseif ref.type == "color" then
+            if myData[1] ~= ref.default[1]
             or myData[2] ~= ref.default[2]
             or myData[3] ~= ref.default[3]
-          )
-          then
-            return (" %s,"):format(WrapTextInColorCode(ref.name, CreateColor(myData[1], myData[2], myData[3], 1):GenerateHexColor()))
+            or myData[4] ~= ref.default[4]
+            then
+              return (" %s,"):format(WrapTextInColorCode(ref.name, CreateColor(myData[1], myData[2], myData[3], 1):GenerateHexColor()))
+            end
           elseif myData ~= ref.default then
             if type(myData) == "boolean" then
               return (" %s,"):format(WrapTextInColorCode(ref.name, myData and "ff00ff00" or "ffff0000"))

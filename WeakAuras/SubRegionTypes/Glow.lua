@@ -28,6 +28,8 @@ local default = function(parentType)
     options.glowType = "Button Glow"
   end
   options.glow = false
+  options.gradient = nil -- not yet supported
+  options.gradientFrequency = nil -- not yet supported
   return options
 end
 

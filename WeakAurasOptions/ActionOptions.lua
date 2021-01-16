@@ -26,16 +26,17 @@ end
 
 function OptionsPrivate.GetActionOptions(data)
   local addOptionsFromLCG = function(options, actionPrefix, order)
+    local ignoreKeys = {
+      default = true,
+      start = true,
+      stop = true,
+      gradient = true, -- not supported yet
+      gradientFrequency = true -- not supported yet
+    }
     local function MyCopyTable(settings, level, glowType, prefix)
       local copy = {}
-      if settings.type == "gradient" then -- TODO: not a valid ace3 type
-        return nil
-      end
       for k, v in pairs(settings) do
-        if k ~= "default"
-        and k ~= "start"
-        and k ~= "stop"
-        then
+        if not ignoreKeys[k] then
           if ( type(v) == "table" ) then
             local key = v.name and (level > 2 and prefix or "")..k or k
             copy[key] = MyCopyTable(
@@ -59,14 +60,13 @@ function OptionsPrivate.GetActionOptions(data)
                   end
                 end
                 local ret = recurseGet(data.actions[actionPrefix].glowData or {}, key)
+                if ret == nil then
+                  ret = v.default
+                end
                 if type(ret) == "table" then
                   return unpack(ret)
                 else
-                  if ret ~= nil then
-                    return ret
-                  else
-                    return v.default
-                  end
+                  return ret
                 end
               end
               copy[key].set = function(info, v, g, b, a)
