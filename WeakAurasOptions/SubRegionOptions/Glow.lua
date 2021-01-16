@@ -64,7 +64,7 @@ local function createOptions(parentData, data, index, subIndex)
                   return default
                 end
                 if base[property] == nil then
-                  return default
+                  return type(default) == "table" and unpack(default) or default
                 elseif info.type == "color" then
                   base[property] = base[property] or {};
                   local c = base[property];
