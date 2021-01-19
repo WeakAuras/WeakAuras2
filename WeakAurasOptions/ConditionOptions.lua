@@ -49,6 +49,8 @@ local AddonName, OptionsPrivate = ...
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
+local LCG = LibStub("LibCustomGlow-1.0")
+local glows = LCG:GetGlows()
 
 local debug = false;
 
@@ -428,6 +430,107 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         WeakAuras.Add(data);
       end
     end
+  end
+
+  local function anyGlowExternal(property, needle)
+    local ref = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value[property]
+    if ref then
+      if type(needle) == "table" then
+        return needle[ref]
+      else
+        return ref == needle
+      end
+    end
+    if conditions[i].changes[j].references then
+      for id, reference in pairs(conditions[i].changes[j].references) do
+        if type(reference.value) == "table" then
+          if type(needle) == "table" then
+            if needle[reference.value[property]] then
+              return true
+            end
+          else
+            if reference.value[property] == needle then
+              return true
+            end
+          end
+        end
+      end
+    end
+    return false
+  end
+
+
+  local addOptionsFromLCG = function(options, i, j, order)
+    local maxOrder = 0
+    local glowTypesExcept = {}
+    for k, _ in pairs(OptionsPrivate.Private.glow_types) do
+      glowTypesExcept[k] = {}
+      for kk, _ in pairs(OptionsPrivate.Private.glow_types) do
+        if k ~= kk then
+          glowTypesExcept[k][kk] = true
+        end
+      end
+    end
+
+    local ignoreKeys = {
+      default = true,
+      start = true,
+      stop = true,
+      gradient = true, -- not supported yet
+      gradientFrequency = true -- not supported yet
+    }
+    local function MyCopyTable(settings, level, glowType, prefix)
+      local copy = {}
+      for k, v in pairs(settings) do
+        if not ignoreKeys[k] then
+          if ( type(v) == "table" ) then
+            local key = v.name and ("condition"..i.."value"..j..(level > 2 and prefix or ""))..k or k
+            copy[key] = MyCopyTable(
+              v,
+              level + 1,
+              glowType or k,
+              (level > 2 and prefix or "")..(v.args and k.."." or "")
+            )
+          else
+            copy[k] = v
+            if k == "desc" then
+              copy.width = WeakAuras.normalWidth - ((level - 1) * 0.03)
+              local glowType = glowType
+              local default = settings.default
+              local conditions = conditions
+              local key = prefix
+              copy.get = function()
+                local default = settings.default
+                if type(default) == "table" then
+                  if type(conditions[i].changes[j].value) == "table"
+                  and type(conditions[i].changes[j].value[key]) == "table"
+                  then
+                      return unpack(conditions[i].changes[j].value[key])
+                  else
+                      return unpack(default)
+                  end
+                else
+                  return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value[key] or default
+                end
+              end
+              copy.set = type(settings.default) == "table" and setValueColorComplex(key) or setValueComplex(key)
+              copy.hidden = function()
+                return not (anyGlowExternal("glow_action", "show") and not anyGlowExternal("glow_type", glowTypesExcept[glowType]))
+              end
+            elseif k == "type" and v == "group" then
+              copy.inline = true
+            elseif k == "order" and level == 2 then
+              copy[k] = v + order
+              maxOrder = max(maxOrder, copy[k])
+            end
+          end
+        end
+      end
+      return copy
+    end
+
+    WeakAuras.DeepMixin(options, MyCopyTable(glows, 1))
+    return maxOrder + 1
   end
 
   local propertyType;
@@ -952,36 +1055,6 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
     }
     order = order + 1;
   elseif (propertyType == "glowexternal") then
-    local function anyGlowExternal(property, needle)
-      local ref = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value[property]
-      if ref then
-        if type(needle) == "table" then
-          return needle[ref]
-        else
-          return ref == needle
-        end
-      end
-      if conditions[i].changes[j].references then
-        for id, reference in pairs(conditions[i].changes[j].references) do
-          if type(reference.value) == "table" then
-            if type(needle) == "table" then
-              if needle[reference.value[property]] then
-                return true
-              end
-            else
-              if reference.value[property] == needle then
-                return true
-              end
-            end
-          end
-        end
-      end
-      return false
-    end
-
-    local glowTypesExcepButtonOverlay = CopyTable(OptionsPrivate.Private.glow_types)
-    glowTypesExcepButtonOverlay["buttonOverlay"] = nil
-
     args["condition" .. i .. "value" .. j .. "glow_action"] = {
       type = "select",
       values = OptionsPrivate.Private.glow_action_types,
@@ -1058,184 +1131,9 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       end
     }
     order = order + 1
-    args["condition" .. i .. "value" .. j .. "use_glow_color"] = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "use_glow_color", L["Glow Color"], L["Glow Color"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "use_glow_color", propertyType),
-      order = order,
-      get = function()
-        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.use_glow_color;
-      end,
-      set = setValueComplex("use_glow_color"),
-      hidden = function()
-        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", OptionsPrivate.Private.glow_types))
-      end
-    }
-    order = order + 1
-    args["condition" .. i .. "value" .. j .. "glow_color"] = {
-      type = "color",
-      width = WeakAuras.normalWidth,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_color", L["Glow Color"], L["Glow Color"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_color", "color"),
-      order = order,
-      get = function()
-        if (conditions[i].changes[j].value and type(conditions[i].changes[j].value) == "table") and type(conditions[i].changes[j].value.glow_color) == "table" then
-          return conditions[i].changes[j].value.glow_color[1], conditions[i].changes[j].value.glow_color[2], conditions[i].changes[j].value.glow_color[3], conditions[i].changes[j].value.glow_color[4];
-        end
-        return 1, 1, 1, 1;
-      end,
-      set = setValueColorComplex("glow_color"),
-      hidden = function()
-        return not (anyGlowExternal("glow_action", "show")
-                    and anyGlowExternal("glow_frame_type", OptionsPrivate.Private.glow_frame_types)
-                    and anyGlowExternal("glow_type", OptionsPrivate.Private.glow_types))
-      end,
-      disabled = function() return not anyGlowExternal("use_glow_color", true) end
-    }
-    order = order + 1
-    args["condition" .. i .. "value" .. j .. "glow_lines"] = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_lines", L["Lines & Particles"], L["Lines & Particles"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_lines", propertyType),
-      order = order,
-      min = 1,
-      softMax = 30,
-      step = 1,
-      get = function()
-        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_lines or 8;
-      end,
-      set = setValueComplex("glow_lines"),
-      hidden = function()
-        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", glowTypesExcepButtonOverlay))
-      end,
-    }
-    order = order + 1
-    args["condition" .. i .. "value" .. j .. "glow_frequency"] = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_frequency", L["Frequency"], L["Frequency"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frequency", propertyType),
-      order = order,
-      softMin = -2,
-      softMax = 2,
-      step = 0.05,
-      get = function()
-        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_frequency or 0.25;
-      end,
-      set = setValueComplex("glow_frequency"),
-      hidden = function()
-        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", glowTypesExcepButtonOverlay))
-      end,
-    }
-    order = order + 1
-    args["condition" .. i .. "value" .. j .. "glow_length"] = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_length", L["Length"], L["Length"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_length", propertyType),
-      order = order,
-      min = 0.05,
-      softMax = 20,
-      step = 0.05,
-      get = function()
-        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_length or 10;
-      end,
-      set = setValueComplex("glow_length"),
-      hidden = function()
-        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", "Pixel"))
-      end,
-    }
-    order = order + 1
-    args["condition" .. i .. "value" .. j .. "glow_thickness"] = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_thickness", L["Thickness"], L["Thickness"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_thickness", propertyType),
-      order = order,
-      min = 0.05,
-      softMax = 20,
-      step = 0.05,
-      get = function()
-        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_thickness or 1;
-      end,
-      set = setValueComplex("glow_thickness"),
-      hidden = function()
-        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", "Pixel"))
-      end,
-    }
-    order = order + 1
-    args["condition" .. i .. "value" .. j .. "glow_XOffset"] = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_XOffset", L["X-Offset"], L["X-Offset"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_XOffset", propertyType),
-      order = order,
-      softMin = -100,
-      softMax = 100,
-      step = 0.5,
-      get = function()
-        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_XOffset or 0;
-      end,
-      set = setValueComplex("glow_XOffset"),
-      hidden = function()
-        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", glowTypesExcepButtonOverlay))
-      end,
-    }
-    order = order + 1
-    args["condition" .. i .. "value" .. j .. "glow_YOffset"] = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_YOffset", L["Y-Offset"], L["Y-Offset"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_YOffset", propertyType),
-      order = order,
-      softMin = -100,
-      softMax = 100,
-      step = 0.5,
-      get = function()
-        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_YOffset or 0;
-      end,
-      set = setValueComplex("glow_YOffset"),
-      hidden = function()
-        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", "Pixel"))
-      end,
-    }
-    order = order + 1
-    args["condition" .. i .. "value" .. j .. "glow_scale"] = {
-      type = "range",
-      width = WeakAuras.normalWidth,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_scale", L["Scale"], L["Scale"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_scale", propertyType),
-      order = order,
-      min = 0.05,
-      softMax = 10,
-      step = 0.05,
-      isPercent = true,
-      get = function()
-        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_scale or 1;
-      end,
-      set = setValueComplex("glow_scale"),
-      hidden = function()
-        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", "ACShine"))
-      end,
-    }
-    order = order + 1
-    args["condition" .. i .. "value" .. j .. "glow_border"] = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_border", L["Border"], L["Border"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_border", propertyType),
-      order = order,
-      get = function()
-        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_border;
-      end,
-      set = setValueComplex("glow_border"),
-      hidden = function() return
-        not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", "Pixel"))
-      end,
-    }
-    order = order + 1
+
+    order = addOptionsFromLCG(args, i, j, order)
+
     args["condition" .. i .. "value" .. j .. "glow_spacer"] = {
       type = "description",
       width = WeakAuras.doubleWidth,
