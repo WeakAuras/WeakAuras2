@@ -151,12 +151,13 @@ end
 function TestForLongString(trigger, arg)
   local name = arg.name;
   local test;
+  local needle = trigger[name]
   if(trigger[name.."_operator"] == "==") then
-    test = ("(%s == %q)"):format(name, trigger[name])
+    test = ("(%s == %s)"):format(name, Private.QuotedString(needle))
   elseif(trigger[name.."_operator"] == "find('%s')") then
-    test = "(" .. name .. " and " .. name .. string.format(":find(%q)", trigger[name]) .. ")"
+    test = "(" .. name .. " and " .. name .. string.format(":find(%s, 1, true)", Private.QuotedString(needle)) .. ")"
   elseif(trigger[name.."_operator"] == "match('%s')") then
-    test = "(" .. name .. " and " .. name .. string.format(":match(%q)", trigger[name]) .. ")"
+    test = "(" .. name .. " and " .. name .. string.format(":match(%s)", Private.QuotedString(needle)) .. ")"
   end
   return test;
 end
