@@ -44,14 +44,14 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
     return value and tostring(value) or "0";
   elseif (vType == "list") then
     if type(value) == "string" then
-      return string.format("%q", value)
+      return string.format("%s", Private.QuotedString(value))
     elseif type(value) == "number" then
       return tostring(value)
     end
     return "nil"
   elseif (vType == "icon") then
     if type(value) == "string" then
-      return string.format("%q", value)
+      return string.format("%s", Private.QuotedString(value))
     elseif type(value) == "number" then
       return tostring(value)
     end
@@ -63,18 +63,19 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
     return "{1, 1, 1, 1}";
   elseif(vType == "chat") then
     if (value and type(value) == "table") then
-      local serialized = string.format("{message_type = %q, message = %q, message_dest = %q, message_channel = %q, message_custom = %s, message_formaters = %s}",
-        tostring(value.message_type), tostring(value.message or ""),
-        tostring(value.message_dest), tostring(value.message_channel),
+      local serialized = string.format("{message_type = %s, message = %s, message_dest = %s, message_channel = %s, message_custom = %s, message_formaters = %s}",
+        Private.QuotedString(tostring(value.message_type)), Private.QuotedString(tostring(value.message or "")),
+        Private.QuotedString(tostring(value.message_dest)), Private.QuotedString(tostring(value.message_channel)),
         pathToCustomFunction,
         pathToFormatters)
       return serialized
     end
   elseif(vType == "sound") then
     if (value and type(value) == "table") then
-      return string.format("{ sound = %q, sound_channel = %q, sound_path = %q, sound_kit_id = %q, sound_type = %q, %s}",
-        tostring(value.sound or ""), tostring(value.sound_channel or ""), tostring(value.sound_path or ""),
-        tostring(value.sound_kit_id or ""), tostring(value.sound_type or ""),
+      return string.format("{ sound = %s, sound_channel = %s, sound_path = %s, sound_kit_id = %s, sound_type = %s, %s}",
+        Private.QuotedString(tostring(value.sound or "")), Private.QuotedString(tostring(value.sound_channel or "")),
+        Private.QuotedString(tostring(value.sound_path or "")), Private.QuotedString(tostring(value.sound_kit_id or "")),
+        Private.QuotedString(tostring(value.sound_type or "")),
         value.sound_repeat and "sound_repeat = " .. tostring(value.sound_repeat) or "nil");
     end
   elseif(vType == "customcode") then

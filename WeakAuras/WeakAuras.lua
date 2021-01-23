@@ -584,9 +584,9 @@ local function ConstructFunction(prototype, trigger, skipOptional)
             end
           elseif(arg.type == "tristatestring") then
             if(trigger["use_"..name] == false) then
-              test = "("..name.. "~=".. (number or string.format("%q", trigger[name] or "")) .. ")"
+              test = "("..name.. "~=".. (number or string.format("%s", Private.QuotedString(trigger[name] or ""))) .. ")"
             elseif(trigger["use_"..name]) then
-              test = "("..name.. "==".. (number or string.format("%q", trigger[name] or "")) .. ")"
+              test = "("..name.. "==".. (number or string.format("%s", Private.QuotedString(trigger[name] or ""))) .. ")"
             end
           elseif(arg.type == "multiselect") then
             if(trigger["use_"..name] == false) then -- multi selection
@@ -5226,4 +5226,13 @@ function Private.IconSources(data)
     values[i] = string.format(L["Trigger %i"], i)
   end
   return values
+end
+
+-- This should be used instead of string.format("...%q...", input)
+-- e.g. string.format("...%s...", Private.QuotedString(input))
+-- If the string is passed to loadstring.
+-- It escapes --, which loadstring would otherwise interpret as comment starts
+function Private.QuotedString(input)
+  local str = string.format("%q", input)
+  return (str:gsub("%-%-", "-\\-"))
 end

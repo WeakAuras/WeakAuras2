@@ -2048,25 +2048,25 @@ local function createScanFunc(trigger)
   if use_tooltip and trigger.tooltip_operator and trigger.tooltip then
     if trigger.tooltip_operator == "==" then
       local ret2 = [[
-      if not matchData.tooltip or not matchData.tooltip == %q then
+      if not matchData.tooltip or not matchData.tooltip == %s then
         return false
       end
       ]]
-      ret = ret .. ret2:format(trigger.tooltip)
+      ret = ret .. ret2:format(Private.QuotedString(trigger.tooltip))
     elseif trigger.tooltip_operator == "find('%s')" then
       local ret2 = [[
-      if not matchData.tooltip or not matchData.tooltip:find(%q) then
+      if not matchData.tooltip or not matchData.tooltip:find(%s, 1, true) then
         return false
       end
       ]]
-      ret = ret .. ret2:format(trigger.tooltip)
+      ret = ret .. ret2:format(Private.QuotedString(trigger.tooltip))
     elseif trigger.tooltip_operator == "match('%s')" then
       local ret2 = [[
-      if not matchData.tooltip or not matchData.tooltip:match(%q) then
+      if not matchData.tooltip or not matchData.tooltip:match(%s) then
         return false
       end
       ]]
-      ret = ret .. ret2:format(trigger.tooltip)
+      ret = ret .. ret2:format(Private.QuotedString(trigger.tooltip))
     end
   end
 
@@ -2083,25 +2083,25 @@ local function createScanFunc(trigger)
   if trigger.useNamePattern and trigger.namePattern_operator and trigger.namePattern_name then
     if trigger.namePattern_operator == "==" then
       local ret2 = [[
-      if not matchData.name == %q then
+      if not matchData.name == %s then
         return false
       end
       ]]
-      ret = ret .. ret2:format(trigger.namePattern_name)
+      ret = ret .. ret2:format(Private.QuotedString(trigger.namePattern_name))
     elseif trigger.namePattern_operator == "find('%s')" then
       local ret2 = [[
-      if not matchData.name:find(%q) then
+      if not matchData.name:find(%s, 1, true) then
         return false
       end
       ]]
-      ret = ret .. ret2:format(trigger.namePattern_name)
+      ret = ret .. ret2:format(Private.QuotedString(trigger.namePattern_name))
     elseif trigger.namePattern_operator == "match('%s')" then
       local ret2 = [[
-      if not matchData.name:match(%q) then
+      if not matchData.name:match(%s) then
         return false
       end
       ]]
-      ret = ret .. ret2:format(trigger.namePattern_name)
+      ret = ret .. ret2:format(Private.QuotedString(trigger.namePattern_name))
     end
   end
 
