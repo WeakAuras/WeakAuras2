@@ -729,9 +729,6 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
     local updateTriggerState = false;
     for triggernum, data in pairs(triggers) do
       local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-      if event == "CURRENT_SPELL_CAST_CHANGED" then -- hack for Cast trigger latency
-        arg1 = "player"
-      end
       if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
         updateTriggerState = true;
       end
@@ -3175,6 +3172,23 @@ do
       petFrame:SetScript("OnEvent", function(event, unit)
         Private.StartProfileSystem("generictrigger")
         WeakAuras.ScanEvents("PET_UPDATE", "pet")
+        Private.StopProfileSystem("generictrigger")
+      end)
+    end
+  end
+end
+
+-- Cast Latency
+do
+  local castLatencyFrame
+  WeakAuras.frames["Cast Latency Handler"] = castLatencyFrame
+  function WeakAuras.WatchForCastLatency()
+    if not castLatencyFrame then
+      castLatencyFrame = CreateFrame("Frame")
+      castLatencyFrame:RegisterEvent("CURRENT_SPELL_CAST_CHANGED")
+      castLatencyFrame:SetScript("OnEvent", function(event)
+        Private.StartProfileSystem("generictrigger")
+        WeakAuras.ScanEvents("CAST_LATENCY_UPDATE", "player")
         Private.StopProfileSystem("generictrigger")
       end)
     end

@@ -6851,8 +6851,9 @@ Private.event_prototypes = {
       end
       AddUnitEventForEvents(result, unit, "UNIT_TARGET")
       if trigger.use_showLatency and unit == "player" then
+        WeakAuras.WatchForCastLatency()
         result.events = result.events or {}
-        tinsert(result.events, "CURRENT_SPELL_CAST_CHANGED")
+        tinsert(result.events, "CAST_LATENCY_UPDATE")
       end
       return result
     end,
@@ -6910,7 +6911,7 @@ Private.event_prototypes = {
 
       if trigger.unit == "player" and trigger.use_showLatency then
         ret = ret .. [[
-          if event == "CURRENT_SPELL_CAST_CHANGED" then
+          if event == "CAST_LATENCY_UPDATE" then
             state.sendTime = GetTime()
           elseif event == "UNIT_SPELLCAST_START" and tonumber(state.sendTime) then
             state.latency = GetTime() - state.sendTime
