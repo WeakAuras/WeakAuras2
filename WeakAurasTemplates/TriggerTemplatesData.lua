@@ -5117,19 +5117,29 @@ tinsert(templates.general.args, {
 tinsert(templates.general.args, {
   title = L["Always Active"],
   icon = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura78",
-  triggers = {[1] = { trigger = { type = "status", event = "Conditions", unevent = "auto", use_alwaystrue = true}}}
+  triggers = {[1] = { trigger = {
+    type = WeakAuras.GetTriggerCategoryFor("Conditions"),
+    event = "Conditions",
+    use_alwaystrue = true}}}
 });
 
 tinsert(templates.general.args, {
   title = L["Pet alive"],
   icon = "Interface\\Icons\\ability_hunter_pet_raptor",
-  triggers = {[1] = { trigger = { type = "status", event = "Conditions", unevent = "auto", use_HasPet = true}}}
+  triggers = {[1] = { trigger = {
+    type = WeakAuras.GetTriggerCategoryFor("Conditions"),
+    event = "Conditions",
+    use_HasPet = true}}}
 });
 
 tinsert(templates.general.args, {
   title = L["Pet Behavior"],
   icon = "Interface\\Icons\\Ability_hunter_pet_assist",
-  triggers = {[1] = { trigger = { type = "status", event = "Pet Behavior", unevent = "auto", use_behavior = true, behavior = "assist"}}}
+  triggers = {[1] = { trigger = {
+    type = WeakAuras.GetTriggerCategoryFor("Pet Behavior"),
+    event = "Pet Behavior",
+    use_behavior = true,
+    behavior = "assist"}}}
 });
 
 tinsert(templates.general.args, {
@@ -5219,7 +5229,10 @@ if not WeakAuras.IsClassic() then
     tinsert(templates.class.DRUID[i][resourceSection].args, {
       title = L["Shapeshift Form"],
       icon = 132276,
-      triggers = {[1] = { trigger = { type = "status", event = "Stance/Form/Aura", unevent = "auto"}}}
+      triggers = {[1] = { trigger = {
+        type = WeakAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
+        event = "Stance/Form/Aura",
+        }}}
     });
   end
   for j, id in ipairs({5487, 768, 783, 114282, 1394966}) do
@@ -5232,9 +5245,8 @@ if not WeakAuras.IsClassic() then
           triggers = {
             [1] = {
               trigger = {
-                type = "status",
+                type = WeakAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
                 event = "Stance/Form/Aura",
-                unevent = "auto",
                 use_form = true,
                 form = { single = j }
               }
@@ -5269,7 +5281,9 @@ if not WeakAuras.IsClassic() then
     tinsert(templates.class.DEATHKNIGHT[i][resourceSection].args, {
       title = L["Runes"],
       icon = "Interface\\Icons\\spell_deathknight_frozenruneweapon",
-      triggers = {[1] = { trigger = { type = "status", event = "Death Knight Rune", unevent = "auto"}}}
+      triggers = {[1] = { trigger = {
+        type = WeakAuras.GetTriggerCategoryFor("Death Knight Rune"),
+        event = "Death Knight Rune"}}}
     });
   end
 else
@@ -5280,7 +5294,9 @@ else
   tinsert(templates.class.WARRIOR[1][8].args, {
     title = L["Stance"],
     icon = 132349,
-    triggers = {[1] = { trigger = { type = "status", event = "Stance/Form/Aura", unevent = "auto"}}}
+    triggers = {[1] = { trigger = {
+      type = WeakAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
+      event = "Stance/Form/Aura"}}}
   })
   for j, id in ipairs({2457, 71, 2458}) do
     local title, _, icon = GetSpellInfo(id)
@@ -5291,9 +5307,8 @@ else
         triggers = {
           [1] = {
             trigger = {
-              type = "status",
+              type = WeakAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
               event = "Stance/Form/Aura",
-              unevent = "auto",
               use_form = true,
               form = { single = j }
             }
@@ -5321,7 +5336,9 @@ else
   tinsert(templates.class.DRUID[1][8].args, {
     title = L["Shapeshift Form"],
     icon = 132276,
-    triggers = {[1] = { trigger = { type = "status", event = "Stance/Form/Aura", unevent = "auto"}}}
+    triggers = {[1] = { trigger = {
+      type = WeakAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
+      event = "Stance/Form/Aura"}}}
   });
   for j, id in ipairs({5487, 768, 783, 114282, 1394966}) do
     local title, _, icon = GetSpellInfo(id)
@@ -5332,9 +5349,8 @@ else
         triggers = {
           [1] = {
             trigger = {
-              type = "status",
+              type = WeakAuras.GetTriggerCategoryFor("Stance/Form/Aura"),
               event = "Stance/Form/Aura",
-              unevent = "auto",
               use_form = true,
               form = { single = j }
             }

@@ -109,9 +109,10 @@ local function AddOptions(allOptions, data)
     if (triggerSystemOptionsFunction) then
       triggerOptions = union(triggerOptions, triggerSystemOptionsFunction(data, index))
     else
+      -- Unknown trigger system, empty options
       local options = {};
       OptionsPrivate.commonOptions.AddCommonTriggerOptions(options, data, index)
-      OptionsPrivate.AddTriggerMetaFunctions(options, data, index)
+      OptionsPrivate.AddTriggerMetaFunctions(options, data, index, true)
       triggerOptions = union(triggerOptions, {
           ["trigger." .. index .. ".unknown"] = options
       })
