@@ -3180,7 +3180,7 @@ end
 
 -- Cast Latency
 do
-  local castLatencyFrame
+  local castLatencyFrame = nil
   WeakAuras.frames["Cast Latency Handler"] = castLatencyFrame
   function WeakAuras.WatchForCastLatency()
     if not castLatencyFrame then
