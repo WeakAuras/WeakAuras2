@@ -1566,12 +1566,8 @@ local function ShowDisplayTooltip(data, children, matchInfo, icon, icons, import
               end
             elseif(trigger.type == "aura2") then
               tinsert(tooltip, {2, L["Trigger:"], L["Aura"], 1, 1, 1, 1, 1, 1});
-            elseif(trigger.type == "event" or trigger.type == "status") then
-              if(trigger.type == "event") then
-                tinsert(tooltip, {2, L["Trigger:"], (Private.event_types[trigger.event] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
-              else
-                tinsert(tooltip, {2, L["Trigger:"], (Private.status_types[trigger.event] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
-              end
+            elseif(Private.category_event_prototype[trigger.type]) then
+              tinsert(tooltip, {2, L["Trigger:"], (Private.event_prototypes[trigger.event].name or L["Undefined"]), 1, 1, 1, 1, 1, 1});
               if(trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix) then
                 tinsert(tooltip, {2, L["Message type:"], (Private.subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]).." "..(Private.subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"]), 1, 1, 1, 1, 1, 1});
               end

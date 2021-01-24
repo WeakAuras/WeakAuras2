@@ -286,14 +286,13 @@ end
 local function createDurationTrigger(triggers, position, item)
   triggers[position] = {
     trigger = {
-      type = "event",
+      type = WeakAuras.GetTriggerCategoryFor("Combat Log"),
       event = "Combat Log",
       subeventSuffix = "_CAST_SUCCESS",
       use_sourceUnit = true,
       sourceUnit = item.unit or "player",
       use_spellId = true,
       spellId = tostring(item.spell),
-      unevent = "timed",
       duration = tostring(item.duration),
     }
   };
@@ -302,11 +301,10 @@ end
 local function createTotemTrigger(triggers, position, item)
   triggers[position] = {
     trigger = {
-      type = "status",
+      type = WeakAuras.GetTriggerCategoryFor("Totem"),
       event = "Totem",
       use_totemName = item.totemNumber == nil,
       totemName = GetSpellInfo(item.spell),
-      unevent = "auto",
     }
   };
   if (item.totemNumber) then
@@ -318,9 +316,8 @@ end
 local function createPowerTrigger(triggers, position, item)
   triggers[position] = {
     trigger = {
-      type = "status",
+      type = WeakAuras.GetTriggerCategoryFor("Power"),
       event = "Power",
-      unevent = "auto",
       use_unit = true,
       unit = "player",
       use_powertype = true,
@@ -333,11 +330,10 @@ end
 local function createHealthTrigger(triggers, position, item)
   triggers[position] = {
     trigger = {
-      type = "status",
+      type = WeakAuras.GetTriggerCategoryFor("Health"),
       event = "Health",
       unit = "player",
       use_unit = true,
-      unevent = "auto",
       use_absorbMode = true,
       use_showAbsorb = true,
       use_showIncomingHeal = true,
@@ -348,9 +344,8 @@ end
 local function createCastTrigger(triggers, position, item)
   triggers[position] = {
     trigger = {
-      type = "status",
+      type = WeakAuras.GetTriggerCategoryFor("Cast"),
       event = "Cast",
-      unevent = "auto",
       use_unit = true,
       unit = item.unit or "player",
     },
@@ -360,10 +355,9 @@ end
 local function createAbilityTrigger(triggers, position, item, genericShowOn)
   triggers[position] = {
     trigger = {
+      type = WeakAuras.GetTriggerCategoryFor("Cooldown Progress (Spell)"),
       event = "Cooldown Progress (Spell)",
       spellName = item.spell,
-      type = "status",
-      unevent = "auto",
       use_genericShowOn = true,
       genericShowOn = genericShowOn,
     }
@@ -377,9 +371,8 @@ end
 local function createItemTrigger(triggers, position, item, genericShowOn)
   triggers[position] = {
     trigger = {
-      type = "status",
+      type = WeakAuras.GetTriggerCategoryFor("Cooldown Progress (Item)"),
       event = "Cooldown Progress (Item)",
-      unevent = "auto",
       use_genericShowOn = true,
       genericShowOn = genericShowOn,
       itemName = item.spell,
@@ -390,7 +383,7 @@ end
 local function createOverlayGlowTrigger(triggers, position, item)
   triggers[position] = {
     trigger = {
-      type = "status",
+      type = WeakAuras.GetTriggerCategoryFor("Spell Activation Overlay"),
       event = "Spell Activation Overlay",
       spellName = item.spell,
     }
@@ -401,7 +394,7 @@ end
 local function createWeaponEnchantTrigger(triggers, position, item, showOn)
   triggers[position] = {
     trigger = {
-      type = "status",
+      type = WeakAuras.GetTriggerCategoryFor("Weapon Enchant"),
       event = "Weapon Enchant",
       use_enchant = true,
       enchant = tostring(item.enchant),

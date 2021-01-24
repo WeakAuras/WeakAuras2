@@ -1043,5 +1043,69 @@ function Private.Modernize(data)
     data.ignoreOptionsEventErrors = nil
   end
 
+  if data.internalVersion < 41 then
+    local newTypes = {
+      ["Cooldown Ready (Spell)"] = "spell",
+      ["Queued Action"] = "spell",
+      ["Charges Changed"] = "spell",
+      ["Action Usable"] = "spell",
+      ["Chat Message"] = "event",
+      ["Unit Characteristics"] = "unit",
+      ["Cooldown Progress (Spell)"] = "spell",
+      ["Power"] = "unit",
+      ["PvP Talent Selected"] = "unit",
+      ["Combat Log"] = "combatlog",
+      ["Item Set"] = "item",
+      ["Health"] = "unit",
+      ["Cooldown Progress (Item)"] = "item",
+      ["Conditions"] = "unit",
+      ["Spell Known"] = "spell",
+      ["Cooldown Ready (Item)"] = "item",
+      ["Faction Reputation"] = "unit",
+      ["Pet Behavior"] = "unit",
+      ["Range Check"] = "unit",
+      ["Character Stats"] = "unit",
+      ["Talent Known"] = "unit",
+      ["Threat Situation"] = "unit",
+      ["Equipment Set"] = "item",
+      ["Death Knight Rune"] = "unit",
+      ["Cast"] = "unit",
+      ["Item Count"] = "item",
+      ["BigWigs Timer"] = "addons",
+      ["Spell Activation Overlay"] = "spell",
+      ["DBM Timer"] = "addons",
+      ["Item Type Equipped"] = "item",
+      ["Alternate Power"] = "unit",
+      ["Item Equipped"] = "item",
+      ["Item Bonus Id Equipped"] = "item",
+      ["DBM Announce"] = "addons",
+      ["Swing Timer"] = "unit",
+      ["Totem"] = "spell",
+      ["Ready Check"] = "event",
+      ["BigWigs Message"] = "addons",
+      ["Class/Spec"] = "unit",
+      ["Stance/Form/Aura"] = "unit",
+      ["Weapon Enchant"] = "item",
+      ["Global Cooldown"] = "spell",
+      ["Experience"] = "unit",
+      ["GTFO"] = "addons",
+      ["Cooldown Ready (Equipment Slot)"] = "item",
+      ["Crowd Controlled"] = "unit",
+      ["Cooldown Progress (Equipment Slot)"] = "item",
+      ["Combat Events"] = "event",
+    }
+
+    for triggerId, triggerData in ipairs(data.triggers) do
+      if triggerData.trigger.type == "status" or triggerData.trigger.type == "event" then
+        local newType = newTypes[triggerData.trigger.event]
+        if newType then
+          triggerData.trigger.type = newType
+        else
+          WeakAuras.prettyPrint("Unknown trigger type found in, please report: ", data.id, triggerData.trigger.event)
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
 end

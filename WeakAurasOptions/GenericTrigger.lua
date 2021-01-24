@@ -388,50 +388,37 @@ local function GetGenericTriggerOptions(data, triggernum)
   local trigger = data.triggers[triggernum].trigger;
   local triggerType = trigger.type;
 
-  local options = {
-    event = {
+  local subtypes = OptionsPrivate.Private.category_event_prototype[trigger.type]
+
+  local needsTypeSelection = subtypes and next(subtypes, next(subtypes))
+
+  local options = {}
+
+  if needsTypeSelection then
+    options.event = {
       type = "select",
-      name = function()
-        if(trigger.type == "event") then
-          return L["Event"];
-        elseif(trigger.type == "status") then
-          return L["Status"];
-        end
-      end,
-      order = 7,
-      width = WeakAuras.doubleWidth,
+      name = "",
+      order = 7.1,
+      width = WeakAuras.normalWidth,
       values = function()
-        local type= trigger.type;
-        if(type == "event") then
-          return OptionsPrivate.Private.event_types;
-        elseif(type == "status") then
-          return OptionsPrivate.Private.status_types;
-        end
+        return subtypes
       end,
       get = function(info)
         return trigger.event
       end,
       set = function(info, v)
         trigger.event = v
-        local prototype = OptionsPrivate.Private.event_prototypes[v];
-        if(prototype) then
-          if(prototype.automaticrequired) then
-            trigger.unevent = "auto";
-          else
-            trigger.unevent = "timed";
-          end
-        end
         WeakAuras.Add(data)
         WeakAuras.ClearAndUpdateOptions(data.id)
       end,
       control = "WeakAurasSortedDropdown",
-      hidden = function() return not (trigger.type == "event" or trigger.type == "status"); end
-    },
-  }
+    }
+  end
 
-  OptionsPrivate.commonOptions.AddCommonTriggerOptions(options, data, triggernum)
+  OptionsPrivate.commonOptions.AddCommonTriggerOptions(options, data, triggernum, not needsTypeSelection)
   OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
 
+  local combatLogCategory = WeakAuras.GetTriggerCategoryFor("Combat Log")
   local combatLogOptions =
   {
     subeventPrefix = {
@@ -441,7 +428,7 @@ local function GetGenericTriggerOptions(data, triggernum)
       order = 8,
       values = OptionsPrivate.Private.subevent_prefix_types,
       control = "WeakAurasSortedDropdown",
-      hidden = function() return not (trigger.type == "event" and trigger.event == "Combat Log"); end,
+      hidden = function() return not (trigger.type == combatLogCategory and trigger.event == "Combat Log"); end,
       get = function(info)
         return trigger.subeventPrefix
       end,
@@ -457,7 +444,7 @@ local function GetGenericTriggerOptions(data, triggernum)
       order = 9,
       values = OptionsPrivate.Private.subevent_suffix_types,
       control = "WeakAurasSortedDropdown",
-      hidden = function() return not (trigger.type == "event" and trigger.event == "Combat Log" and OptionsPrivate.Private.subevent_actual_prefix_types[trigger.subeventPrefix]); end,
+      hidden = function() return not (trigger.type == combatLogCategory and trigger.event == "Combat Log" and OptionsPrivate.Private.subevent_actual_prefix_types[trigger.subeventPrefix]); end,
       get = function(info)
         return trigger.subeventSuffix
       end,
@@ -470,13 +457,13 @@ local function GetGenericTriggerOptions(data, triggernum)
       type = "description",
       name = "",
       order = 9.1,
-      hidden = function() return not (trigger.type == "event" and trigger.event == "Combat Log"); end
+      hidden = function() return not (trigger.type == combatLogCategory and trigger.event == "Combat Log"); end
     },
   }
 
   if (triggerType == "custom") then
     Mixin(options, GetCustomTriggerOptions(data, triggernum, trigger));
-  elseif (triggerType == "status" or triggerType == "event") then
+  elseif (OptionsPrivate.Private.category_event_prototype[triggerType]) then
     local prototypeOptions;
     local trigger, untrigger = data.triggers[triggernum].trigger, data.triggers[triggernum].untrigger;
     if(OptionsPrivate.Private.event_prototypes[trigger.event]) then
@@ -498,4 +485,4 @@ local function GetGenericTriggerOptions(data, triggernum)
   }
 end
 
-WeakAuras.RegisterTriggerSystemOptions({"event", "status", "custom"}, GetGenericTriggerOptions);
+WeakAuras.RegisterTriggerSystemOptions(WeakAuras.genericTriggerTypes, GetGenericTriggerOptions);

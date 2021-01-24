@@ -81,22 +81,17 @@ local function CorrectItemName(input)
 end
 
 -- Also used by the GenericTrigger
-function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum, triggertype, unevent)
-  local trigger, untrigger;
+function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum, triggertype)
+  local trigger
   if(data.controlledChildren) then
-    trigger, untrigger = {}, {};
+    trigger = {}
   elseif(triggertype == "load") then
     trigger = data.load;
   elseif data.triggers[triggernum] then
-    if(triggertype == "untrigger") then
-      trigger = data.triggers[triggernum].untrigger
-    else
-      trigger, untrigger = data.triggers[triggernum].trigger, data.triggers[triggernum].untrigger
-    end
+    trigger = data.triggers[triggernum].trigger
   else
     error("Improper argument to WeakAuras.ConstructOptions - trigger number not in range");
   end
-  unevent = unevent or trigger.unevent;
   local options = {};
   local order = startorder or 10;
 
@@ -149,9 +144,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       end
     elseif(name and not arg.hidden) then
       local realname = name;
-      if(triggertype == "untrigger") then
-        name = "untrigger_"..name;
-      end
       if (arg.type == "multiselect") then
         -- Ensure new line for non-toggle options
         options["spacer_"..name] = {
@@ -341,7 +333,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           if(arg.required and not triggertype) then
             options[name.."_operator"].set = function(info, v)
               trigger[realname.."_operator"] = v;
-              untrigger[realname.."_operator"] = v;
               WeakAuras.Add(data);
               if (reloadOptions) then
                 WeakAuras.ClearAndUpdateOptions(data.id)
@@ -349,9 +340,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               OptionsPrivate.Private.ScanForLoads({[data.id] = true});
               WeakAuras.SortDisplayButtons();
             end
-          elseif(arg.required and triggertype == "untrigger") then
-            options[name.."_operator"] = nil;
-            order = order - 1;
           end
           order = order + 1;
         end
@@ -380,7 +368,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         if(arg.required and not triggertype) then
           options[name].set = function(info, v)
             trigger[realname] = v;
-            untrigger[realname] = v;
             WeakAuras.Add(data);
             if (reloadOptions) then
               WeakAuras.ClearAndUpdateOptions(data.id)
@@ -388,9 +375,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.SortDisplayButtons();
           end
-        elseif(arg.required and triggertype == "untrigger") then
-          options[name] = nil;
-          order = order - 1;
         end
         order = order + 1;
       elseif(arg.type == "string" or arg.type == "tristatestring") then
@@ -426,7 +410,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         if(arg.required and not triggertype) then
           options[name].set = function(info, v)
             trigger[realname] = v;
-            untrigger[realname] = v;
             WeakAuras.Add(data);
             if (reloadOptions) then
               WeakAuras.ClearAndUpdateOptions(data.id)
@@ -434,9 +417,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.SortDisplayButtons();
           end
-        elseif(arg.required and triggertype == "untrigger") then
-          options[name] = nil;
-          order = order - 1;
         end
         order = order + 1;
       elseif(arg.type == "longstring") then
@@ -464,7 +444,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         if(arg.required and not triggertype) then
           options[name.."_operator"].set = function(info, v)
             trigger[realname.."_operator"] = v;
-            untrigger[realname.."_operator"] = v;
             WeakAuras.Add(data);
             if (reloadOptions) then
               WeakAuras.ClearAndUpdateOptions(data.id)
@@ -472,9 +451,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.SortDisplayButtons();
           end
-        elseif(arg.required and triggertype == "untrigger") then
-          options[name.."_operator"] = nil;
-          order = order - 1;
         end
         order = order + 1;
         options[name] = {
@@ -501,7 +477,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         if(arg.required and not triggertype) then
           options[name].set = function(info, v)
             trigger[realname] = v;
-            untrigger[realname] = v;
             WeakAuras.Add(data);
             if (reloadOptions) then
               WeakAuras.ClearAndUpdateOptions(data.id)
@@ -509,129 +484,124 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.SortDisplayButtons();
           end
-        elseif(arg.required and triggertype == "untrigger") then
-          options[name] = nil;
-          order = order - 1;
         end
         order = order + 1;
       elseif(arg.type == "spell" or arg.type == "aura" or arg.type == "item") then
-        if(not arg.required or triggertype ~= "untrigger") then
-          if (arg.showExactOption) then
-            options["exact"..name] = {
-              type = "toggle",
-              width = WeakAuras.normalWidth - 0.1,
-              name = L["Exact Spell Match"],
-              order = order,
-              hidden = hidden,
-              get = function()
-                return trigger["use_exact_"..realname];
-              end,
-              set = function(info, v)
-                trigger["use_exact_"..realname] = v;
-                WeakAuras.Add(data);
-                OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-                WeakAuras.UpdateThumbnail(data);
-                WeakAuras.UpdateDisplayButton(data);
-                WeakAuras.SortDisplayButtons();
-              end,
-            };
-            order = order + 1;
-          end
-          options["icon"..name] = {
-            type = "execute",
-            width = 0.1,
-            name = "",
+        if (arg.showExactOption) then
+          options["exact"..name] = {
+            type = "toggle",
+            width = WeakAuras.normalWidth - 0.1,
+            name = L["Exact Spell Match"],
             order = order,
             hidden = hidden,
-            image = function()
-              if(trigger["use_"..realname] and trigger[realname]) then
-                if(arg.type == "aura") then
-                  local icon = spellCache.GetIcon(trigger[realname]);
-                  return icon and tostring(icon) or "", 18, 18;
-                elseif(arg.type == "spell") then
-                  local _, _, icon = GetSpellInfo(trigger[realname]);
-                  return icon and tostring(icon) or "", 18, 18;
-                elseif(arg.type == "item") then
-                  local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger[realname]);
-                  return icon and tostring(icon) or "", 18, 18;
-                end
-              else
-                return "", 18, 18;
-              end
-            end,
-            disabled = function() return not ((arg.type == "aura" and trigger[realname] and spellCache.GetIcon(trigger[realname])) or (arg.type == "spell" and trigger[realname] and GetSpellInfo(trigger[realname])) or (arg.type == "item" and trigger[realname] and GetItemIcon(trigger[realname]))) end
-          };
-          order = order + 1;
-          options[name] = {
-            type = "input",
-            width = WeakAuras.doubleWidth,
-            name = arg.display,
-            order = order,
-            hidden = hidden,
-            validate = validate,
-            disabled = function() return not trigger["use_"..realname]; end,
             get = function()
-              if(arg.type == "item") then
-                if(trigger["use_"..realname] and trigger[realname] and trigger[realname] ~= "") then
-                  local name = GetItemInfo(trigger[realname]);
-                  if(name) then
-                    return name;
-                  else
-                    local itemId = tonumber(trigger[realname])
-                    if itemId and itemId ~= 0 then
-                      return tostring(trigger[realname])
-                    end
-                    return L["Invalid Item Name/ID/Link"];
-                  end
-                else
-                  return nil;
-                end
-              elseif(arg.type == "spell") then
-                local useExactSpellId = (arg.showExactOption and trigger["use_exact_"..realname]) or arg.forceExactOption
-                if(trigger["use_"..realname]) then
-                  if (trigger[realname] and trigger[realname] ~= "") then
-                    if useExactSpellId then
-                      local spellId = tonumber(trigger[realname])
-                      if (spellId and spellId ~= 0) then
-                        return tostring(spellId);
-                      end
-                    else
-                      local name = GetSpellInfo(trigger[realname]);
-                      if(name) then
-                        return name;
-                      end
-                    end
-                  end
-                  return useExactSpellId and L["Invalid Spell ID"] or L["Invalid Spell Name/ID/Link"];
-                else
-                  return nil;
-                end
-              else
-                return trigger["use_"..realname] and trigger[realname] or nil;
-              end
+              return trigger["use_exact_"..realname];
             end,
             set = function(info, v)
-              local fixedInput = v;
-              if(arg.type == "aura") then
-                fixedInput = WeakAuras.spellCache.CorrectAuraName(v);
-              elseif(arg.type == "spell") then
-                fixedInput = CorrectSpellName(v);
-              elseif(arg.type == "item") then
-                fixedInput = CorrectItemName(v);
-              end
-              trigger[realname] = fixedInput;
+              trigger["use_exact_"..realname] = v;
               WeakAuras.Add(data);
-              if (reloadOptions) then
-                WeakAuras.ClearAndUpdateOptions(data.id)
-              end
               OptionsPrivate.Private.ScanForLoads({[data.id] = true});
               WeakAuras.UpdateThumbnail(data);
               WeakAuras.UpdateDisplayButton(data);
               WeakAuras.SortDisplayButtons();
-            end
+            end,
           };
           order = order + 1;
         end
+        options["icon"..name] = {
+          type = "execute",
+          width = 0.1,
+          name = "",
+          order = order,
+          hidden = hidden,
+          image = function()
+            if(trigger["use_"..realname] and trigger[realname]) then
+              if(arg.type == "aura") then
+                local icon = spellCache.GetIcon(trigger[realname]);
+                return icon and tostring(icon) or "", 18, 18;
+              elseif(arg.type == "spell") then
+                local _, _, icon = GetSpellInfo(trigger[realname]);
+                return icon and tostring(icon) or "", 18, 18;
+              elseif(arg.type == "item") then
+                local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(trigger[realname]);
+                return icon and tostring(icon) or "", 18, 18;
+              end
+            else
+              return "", 18, 18;
+            end
+          end,
+          disabled = function() return not ((arg.type == "aura" and trigger[realname] and spellCache.GetIcon(trigger[realname])) or (arg.type == "spell" and trigger[realname] and GetSpellInfo(trigger[realname])) or (arg.type == "item" and trigger[realname] and GetItemIcon(trigger[realname]))) end
+        };
+        order = order + 1;
+        options[name] = {
+          type = "input",
+          width = arg.showExactOption and WeakAuras.doubleWidth or (WeakAuras.normalWidth - 0.1),
+          name = arg.display,
+          order = order,
+          hidden = hidden,
+          validate = validate,
+          disabled = function() return not trigger["use_"..realname]; end,
+          get = function()
+            if(arg.type == "item") then
+              if(trigger["use_"..realname] and trigger[realname] and trigger[realname] ~= "") then
+                local name = GetItemInfo(trigger[realname]);
+                if(name) then
+                  return name;
+                else
+                  local itemId = tonumber(trigger[realname])
+                  if itemId and itemId ~= 0 then
+                    return tostring(trigger[realname])
+                  end
+                  return L["Invalid Item Name/ID/Link"];
+                end
+              else
+                return nil;
+              end
+            elseif(arg.type == "spell") then
+              local useExactSpellId = (arg.showExactOption and trigger["use_exact_"..realname]) or arg.forceExactOption
+              if(trigger["use_"..realname]) then
+                if (trigger[realname] and trigger[realname] ~= "") then
+                  if useExactSpellId then
+                    local spellId = tonumber(trigger[realname])
+                    if (spellId and spellId ~= 0) then
+                      return tostring(spellId);
+                    end
+                  else
+                    local name = GetSpellInfo(trigger[realname]);
+                    if(name) then
+                      return name;
+                    end
+                  end
+                end
+                return useExactSpellId and L["Invalid Spell ID"] or L["Invalid Spell Name/ID/Link"];
+              else
+                return nil;
+              end
+            else
+              return trigger["use_"..realname] and trigger[realname] or nil;
+            end
+          end,
+          set = function(info, v)
+            local fixedInput = v;
+            if(arg.type == "aura") then
+              fixedInput = WeakAuras.spellCache.CorrectAuraName(v);
+            elseif(arg.type == "spell") then
+              fixedInput = CorrectSpellName(v);
+            elseif(arg.type == "item") then
+              fixedInput = CorrectItemName(v);
+            end
+            trigger[realname] = fixedInput;
+            WeakAuras.Add(data);
+            if (reloadOptions) then
+              WeakAuras.ClearAndUpdateOptions(data.id)
+            end
+            OptionsPrivate.Private.ScanForLoads({[data.id] = true});
+            WeakAuras.UpdateThumbnail(data);
+            WeakAuras.UpdateDisplayButton(data);
+            WeakAuras.SortDisplayButtons();
+          end
+        };
+        order = order + 1;
       elseif(arg.type == "select" or arg.type == "unit") then
         local values;
         if(type(arg.values) == "function") then
@@ -693,12 +663,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             else
               trigger["use_specific_"..realname] = nil;
             end
-            untrigger[realname] = v;
-            if(arg.type == "unit" and v == "member") then
-              untrigger["use_specific_"..realname] = true;
-            else
-              untrigger["use_specific_"..realname] = nil;
-            end
             WeakAuras.Add(data);
             if (reloadOptions) then
               WeakAuras.ClearAndUpdateOptions(data.id)
@@ -708,15 +672,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             WeakAuras.UpdateDisplayButton(data);
             WeakAuras.SortDisplayButtons();
           end
-        elseif(arg.required and triggertype == "untrigger") then
-          options[name] = nil;
-          order = order - 1;
         end
         if (arg.control) then
           options[name].control = arg.control;
         end
         order = order + 1;
-        if(arg.type == "unit" and not (arg.required and triggertype == "untrigger")) then
+        if(arg.type == "unit") then
           options["use_specific_"..name] = {
             type = "toggle",
             width = WeakAuras.normalWidth,
@@ -741,9 +702,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             get = function() return trigger[realname] end,
             set = function(info, v)
               trigger[realname] = v;
-              if(arg.required and not triggertype) then
-                untrigger[realname] = v;
-              end
               WeakAuras.Add(data);
               if (reloadOptions) then
                 WeakAuras.ClearAndUpdateOptions(data.id)
@@ -791,7 +749,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         if(arg.required and not triggertype) then
           options[name].set = function(info, v)
             trigger[realname].single = v;
-            untrigger[realname].single = v;
             WeakAuras.Add(data);
             if (reloadOptions) then
               WeakAuras.ClearAndUpdateOptions(data.id)
@@ -841,11 +798,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             else
               trigger[realname].multi[v] = true;
             end
-            if(untrigger[realname].multi[v]) then
-              untrigger[realname].multi[v] = nil;
-            else
-              untrigger[realname].multi[v] = true;
-            end
             WeakAuras.Add(data);
             if (reloadOptions) then
               WeakAuras.ClearAndUpdateOptions(data.id)
@@ -857,73 +809,41 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           end
         end
 
-        if(arg.required and triggertype == "untrigger") then
-          options[name] = nil;
-          options["multiselect_"..name] = nil;
-        else
-          order = order + 1;
-        end
+        order = order + 1;
       end
     end
   end
 
-  if not(triggertype or prototype.automaticrequired) then
+  if prototype.timedrequired then
     options.unevent = {
       type = "select",
-      width = WeakAuras.doubleWidth,
+      width = WeakAuras.normalWidth,
       name = L["Hide"],
       order = order,
+      values = OptionsPrivate.Private.timedeventend_types,
       get = function()
-        return trigger.unevent
+        return "timed"
       end,
       set = function(info, v)
-        trigger.unevent = v
-        WeakAuras.Add(data)
+        -- unevent is no longer used
       end
     };
     order = order + 1;
-    if(unevent == "timed") then
-      options.unevent.width = WeakAuras.normalWidth;
-      options.duration = {
-        type = "input",
-        width = WeakAuras.normalWidth,
-        name = L["Duration (s)"],
-        order = order,
-        get = function()
-          return trigger.duration
-        end,
-        set = function(info, v)
-          trigger.duration = v
-          WeakAuras.Add(data)
-        end
-      }
-      order = order + 1;
-    else
-      options.unevent.width = WeakAuras.doubleWidth;
-    end
 
-    if(unevent == "custom") then
-      local unevent_options = OptionsPrivate.ConstructOptions(prototype, data, order, triggernum, "untrigger");
-      options = union(options, unevent_options);
-    end
-    if (prototype.timedrequired) then
-      if (type(prototype.timedrequired) == "function") then
-        local func = prototype.timedrequired
-        options.unevent.values = function()
-          if func(trigger) then
-            return OptionsPrivate.Private.timedeventend_types
-          else
-            return OptionsPrivate.Private.eventend_types
-          end
-        end
-      else
-        options.unevent.values = OptionsPrivate.Private.timedeventend_types;
-      end
-    elseif (prototype.automatic) then
-      options.unevent.values = OptionsPrivate.Private.autoeventend_types;
-    else
-      options.unevent.values = OptionsPrivate.Private.eventend_types;
-    end
+    options.duration = {
+      type = "input",
+      width = WeakAuras.normalWidth,
+      name = L["Duration (s)"],
+      order = order,
+      get = function()
+        return trigger.duration
+      end,
+      set = function(info, v)
+        trigger.duration = v
+        WeakAuras.Add(data)
+      end,
+    }
+    order = order + 1;
   end
 
   for name, order in pairs(positionsForCollapseAnchor) do

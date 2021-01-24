@@ -1,6 +1,6 @@
 local AddonName, Private = ...
 
-local internalVersion = 40
+local internalVersion = 41
 
 -- Lua APIs
 local insert = table.insert
@@ -5235,4 +5235,11 @@ end
 function Private.QuotedString(input)
   local str = string.format("%q", input)
   return (str:gsub("%-%-", "-\\-"))
+end
+
+-- Helper function to make the templates not care, how the generic triggers
+-- are categorized
+function WeakAuras.GetTriggerCategoryFor(triggerType)
+  local prototype = Private.event_prototypes[triggerType]
+  return prototype and prototype.type
 end

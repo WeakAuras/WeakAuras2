@@ -939,18 +939,10 @@ Private.text_word_wrap = {
   Elide = L["Elide"]
 }
 
-Private.event_types = {};
+Private.category_event_prototype = {}
 for name, prototype in pairs(Private.event_prototypes) do
-  if(prototype.type == "event") then
-    Private.event_types[name] = prototype.name;
-  end
-end
-
-Private.status_types = {};
-for name, prototype in pairs(Private.event_prototypes) do
-  if(prototype.type == "status") then
-    Private.status_types[name] = prototype.name;
-  end
+  Private.category_event_prototype[prototype.type] = Private.category_event_prototype[prototype.type] or {}
+  Private.category_event_prototype[prototype.type][name] = prototype.name
 end
 
 Private.subevent_prefix_types = {
@@ -1817,11 +1809,6 @@ Private.custom_trigger_types = {
 
 Private.eventend_types = {
   ["timed"] = L["Timed"],
-  ["custom"] = L["Custom"]
-}
-
-Private.autoeventend_types = {
-  ["auto"] = L["Automatic"],
   ["custom"] = L["Custom"]
 }
 

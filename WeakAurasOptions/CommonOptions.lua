@@ -1443,7 +1443,7 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
   };
 end
 
-local function AddCommonTriggerOptions(options, data, triggernum)
+local function AddCommonTriggerOptions(options, data, triggernum, doubleWidth)
   local trigger = data.triggers[triggernum].trigger
 
   local trigger_types = {};
@@ -1451,17 +1451,9 @@ local function AddCommonTriggerOptions(options, data, triggernum)
     trigger_types[type] = triggerSystem.GetName(type);
   end
 
-  options.typedesc = {
-    type = "description",
-    width = WeakAuras.normalWidth,
-    name = L["Type"],
-    order = 1,
-    disabled = true,
-    get = function() return true end
-  }
   options.type = {
     type = "select",
-    width = WeakAuras.normalWidth,
+    width = doubleWidth and WeakAuras.doubleWidth or WeakAuras.normalWidth,
     name = L["Type"],
     desc = L["The type of trigger"],
     order = 1.1,
@@ -1472,16 +1464,17 @@ local function AddCommonTriggerOptions(options, data, triggernum)
     set = function(info, v)
       trigger.type = v;
       local prototype = trigger.event and OptionsPrivate.Private.event_prototypes[trigger.event];
-      if v == "status" and (not prototype or prototype.type == "event") then
-        trigger.event = "Cooldown Progress (Spell)"
-      elseif v == "event" and (not prototype or prototype.type == "status") then
-        trigger.event = "Combat Log"
+      if OptionsPrivate.Private.event_categories[v] and OptionsPrivate.Private.event_categories[v].default then
+        if not prototype or prototype.type ~= v then
+          trigger.event = OptionsPrivate.Private.event_categories[v].default
+        end
       end
       WeakAuras.Add(data);
       WeakAuras.UpdateThumbnail(data);
       WeakAuras.UpdateDisplayButton(data);
       WeakAuras.ClearAndUpdateOptions(data.id);
-    end
+    end,
+    control = "WeakAurasSortedDropdown"
   }
 end
 

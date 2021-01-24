@@ -902,7 +902,7 @@ local function GetBuffTriggerOptions(data, triggernum)
 
   };
 
-  OptionsPrivate.commonOptions.AddCommonTriggerOptions(aura_options, data, triggernum)
+  OptionsPrivate.commonOptions.AddCommonTriggerOptions(aura_options, data, triggernum, true)
   OptionsPrivate.commonOptions.AddTriggerGetterSetter(aura_options, data, triggernum)
   OptionsPrivate.AddTriggerMetaFunctions(aura_options, data, triggernum)
 
