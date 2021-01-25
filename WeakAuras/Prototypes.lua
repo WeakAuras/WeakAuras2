@@ -6851,7 +6851,6 @@ Private.event_prototypes = {
       end
       AddUnitEventForEvents(result, unit, "UNIT_TARGET")
       if trigger.use_showLatency and unit == "player" then
-        WeakAuras.WatchForCastLatency()
         result.events = result.events or {}
         tinsert(result.events, "CAST_LATENCY_UPDATE")
       end
@@ -6868,6 +6867,11 @@ Private.event_prototypes = {
       AddUnitChangeInternalEvents(unit, result)
       AddUnitRoleChangeInternalEvents(unit, result)
       return result
+    end,
+    loadFunc = function(trigger)
+      if trigger.use_showLatency and trigger.unit == "player" then
+        WeakAuras.WatchForCastLatency()
+      end
     end,
     force_events = unitHelperFunctions.UnitChangedForceEvents,
     canHaveDuration = "timed",
