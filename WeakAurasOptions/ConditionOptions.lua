@@ -407,6 +407,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         if (type (conditions[i].changes[j].value) ~= "table") then
           conditions[i].changes[j].value = {};
         end
+        print("setValueComplex", i, j, property, "value", v)
         conditions[i].changes[j].value[property] = v;
         WeakAuras.Add(data);
         if reloadOptions then
@@ -489,7 +490,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
               v,
               level + 1,
               glowType or k,
-              (level > 2 and prefix or "")..(v.args and k.."." or "")
+              (level > 2 and prefix or "")..(v.args and k.."." or (k ~= "args" and k or ""))
             )
           else
             copy[k] = v
@@ -500,22 +501,48 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
               local conditions = conditions
               local key = prefix
               copy.get = function()
-                local default = settings.default
-                if type(default) == "table" then
-                  if type(conditions[i].changes[j].value) == "table"
-                  and type(conditions[i].changes[j].value[key]) == "table"
-                  then
-                      return unpack(conditions[i].changes[j].value[key])
+                local function recurseGet(var, key)
+                  if var == nil then return end
+                  local subkey, _, todo = key:match("^([^%.]*)(%.(.*))")
+                  if subkey == nil then
+                    return var[key]
+                  elseif todo == nil then
+                    return var[subkey]
                   else
-                      return unpack(default)
+                    return recurseGet(var[subkey], todo)
                   end
+                end
+                local ret = recurseGet(conditions[i].changes[j].value or {}, key)
+                local default = settings.default
+                if ret == nil then
+                  ret = default
+                end
+                if type(ret) == "table" then
+                  return unpack(ret)
                 else
-                  return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value[key] or default
+                  return ret
                 end
               end
-              copy.set = type(settings.default) == "table" and setValueColorComplex(key) or setValueComplex(key)
+              copy.set = function(info, v, g, b, a)
+                local function recurseSet(var, key, value)
+                  local subkey, _, todo = key:match("^([^%.]*)(%.(.*))")
+                  if subkey == nil then
+                    var[key] = value
+                  elseif todo == nil then
+                    var[subkey] = value
+                  else
+                    var[subkey] = var[subkey] or {}
+                    recurseSet(var[subkey], todo, value)
+                  end
+                end
+                conditions[i].changes[j].value = conditions[i].changes[j].value or {}
+                recurseSet(conditions[i].changes[j].value, key, type(settings.default) == "table" and {v, g, b, a} or v)
+                WeakAuras.Add(data)
+                WeakAuras.ClearAndUpdateOptions(data.id, true)
+                -- TODO: work on multi selection
+              end
               copy.hidden = function()
-                return not (anyGlowExternal("glow_action", "show") and not anyGlowExternal("glow_type", glowTypesExcept[glowType]))
+                return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", glowType))
               end
             elseif k == "type" and v == "group" then
               copy.inline = true
