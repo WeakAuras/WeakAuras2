@@ -21,7 +21,7 @@ If you want to help, here's what you need to do:
 1. Make sure you have a [GitHub account](https://github.com/signup/free).
 1. [Fork](https://github.com/WeakAuras/WeakAuras2/fork) our repository.
 
-1. Create a new topic branch (based on the `master` branch) to contain your feature, change, or fix.
+1. Create a new topic branch (based on the `main` branch) to contain your feature, change, or fix.
 
     ```bash
     > git checkout -b my-topic-branch
@@ -66,8 +66,8 @@ If you want to help, here's what you need to do:
 
   ```bash
   > git fetch upstream
-  > git checkout master
-  > git rebase upstream/master
+  > git checkout main
+  > git rebase upstream/main
   ```
 
 - You are now all synced up.
@@ -79,7 +79,7 @@ If you want to help, here's what you need to do:
   ```bash
   > git fetch upstream
   > git checkout my-topic-branch
-  > git rebase upstream/master
+  > git rebase upstream/main
   ```
 
 - In case there are any conflicts, you will now have to [fix them manually](https://help.github.com/articles/resolving-merge-conflicts-after-a-git-rebase/).

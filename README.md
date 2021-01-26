@@ -1,5 +1,5 @@
 <div align="center">
-  
+
 # WeakAuras
 
 [![Build Status](https://github.com/WeakAuras/WeakAuras2/workflows/CI/badge.svg)](https://github.com/WeakAuras/WeakAuras2/actions?workflow=CI)
@@ -46,7 +46,7 @@ For some examples of what WeakAuras can do, take a look at [wago.io](https://wag
 
 * Please see the [wiki](https://github.com/WeakAuras/WeakAuras2/wiki) page.
 * If you've discovered something that's clearly wrong, or if you get an error, please create a [ticket](https://github.com/WeakAuras/WeakAuras2/issues).
-* You're a programmer yourself and want to contribute? Check out our [contributing guidelines](https://github.com/WeakAuras/WeakAuras2/blob/master/CONTRIBUTING.md) to get started!
+* You're a programmer yourself and want to contribute? Check out our [contributing guidelines](CONTRIBUTING.md) to get started!
 * Feel free to join our [Discord Community](https://discord.gg/weakauras) to talk, get help and discuss everything WeakAuras!
 
 ## Support
