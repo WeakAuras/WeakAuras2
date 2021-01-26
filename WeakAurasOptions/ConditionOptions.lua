@@ -407,7 +407,6 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         if (type (conditions[i].changes[j].value) ~= "table") then
           conditions[i].changes[j].value = {};
         end
-        print("setValueComplex", i, j, property, "value", v)
         conditions[i].changes[j].value[property] = v;
         WeakAuras.Add(data);
         if reloadOptions then
@@ -463,16 +462,6 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
 
   local addOptionsFromLCG = function(options, i, j, order)
     local maxOrder = 0
-    local glowTypesExcept = {}
-    for k, _ in pairs(OptionsPrivate.Private.glow_types) do
-      glowTypesExcept[k] = {}
-      for kk, _ in pairs(OptionsPrivate.Private.glow_types) do
-        if k ~= kk then
-          glowTypesExcept[k][kk] = true
-        end
-      end
-    end
-
     local ignoreKeys = {
       default = true,
       start = true,
@@ -512,7 +501,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
                     return recurseGet(var[subkey], todo)
                   end
                 end
-                local ret = recurseGet(conditions[i].changes[j].value or {}, key)
+                local ret = recurseGet(conditions[i].changes[j].value and conditions[i].changes[j].value.glowData or {}, key)
                 local default = settings.default
                 if ret == nil then
                   ret = default
@@ -536,7 +525,8 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
                   end
                 end
                 conditions[i].changes[j].value = conditions[i].changes[j].value or {}
-                recurseSet(conditions[i].changes[j].value, key, type(settings.default) == "table" and {v, g, b, a} or v)
+                conditions[i].changes[j].value.glowData = conditions[i].changes[j].value.glowData or {}
+                recurseSet(conditions[i].changes[j].value.glowData, key, type(settings.default) == "table" and {v, g, b, a} or v)
                 WeakAuras.Add(data)
                 WeakAuras.ClearAndUpdateOptions(data.id, true)
                 -- TODO: work on multi selection
@@ -2306,12 +2296,13 @@ local function SubPropertiesForChange(change)
   elseif change.property == "customcode" then
     return { "custom" }
   elseif change.property == "glowexternal" then
+    -- TODO: fix
     return {
       "glow_action", "glow_frame_type", "glow_type",
       "glow_frame", "choose_glow_frame",
-      "use_glow_color", "glow_color",
-      "glow_lines", "glow_frequency", "glow_length", "glow_thickness", "glow_XOffset", "glow_YOffset",
-      "glow_scale", "glow_border"
+      "useGlowColor", "color",
+      "lines", "frequency", "length", "thickness", "XOffset", "YOffset",
+      "scale", "border"
     }
   elseif change.property == "chat" then
     local result = { "message_type", "message_dest", "message_channel", "message", "custom" }

@@ -81,28 +81,7 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
     return string.format("%s", pathToCustomFunction);
   elseif vType == "glowexternal" then
     if (value and type(value) == "table") then
-      return ([[{ glow_action = %q, glow_frame_type = %q, glow_type = %q,
-      glow_frame = %q, use_glow_color = %s, glow_color = {%s, %s, %s, %s},
-      glow_lines = %d, glow_frequency = %f, glow_length = %f, glow_thickness = %f, glow_XOffset = %f, glow_YOffset = %f,
-      glow_scale = %f, glow_border = %s }]]):format(
-        value.glow_action or "",
-        value.glow_frame_type or "",
-        value.glow_type or "",
-        value.glow_frame or "",
-        value.use_glow_color and "true" or "false",
-        type(value.glow_color) == "table" and tostring(value.glow_color[1]) or "1",
-        type(value.glow_color) == "table" and tostring(value.glow_color[2]) or "1",
-        type(value.glow_color) == "table" and tostring(value.glow_color[3]) or "1",
-        type(value.glow_color) == "table" and tostring(value.glow_color[4]) or "1",
-        value.glow_lines or 8,
-        value.glow_frequency or 0.25,
-        value.glow_length or 10,
-        value.glow_thickness or 1,
-        value.glow_XOffset or 0,
-        value.glow_YOffset or 0,
-        value.glow_scale or 1,
-        value.glow_border and "true" or "false"
-      )
+      return Private.SerializeTable(value)
     end
   end
   return "nil";

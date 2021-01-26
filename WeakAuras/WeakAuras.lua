@@ -3212,7 +3212,6 @@ function Private.PerformActions(data, when, region)
 
   -- Apply start glow actions even if squelch_actions is true, but don't apply finish glow actions
   if actions.do_glow then
-    ViragDevTool_AddData(actions, "actions")
     Private.HandleGlowAction(actions, region)
   end
 
