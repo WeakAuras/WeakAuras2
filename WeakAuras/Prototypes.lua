@@ -2428,9 +2428,8 @@ Private.event_prototypes = {
       ret = ret .. unitHelperFunctions.SpecificUnitCheck(trigger)
 
       if (trigger.use_powertype and trigger.powertype == 99 and not WeakAuras.IsClassic()) then
-        ret = ret .. [[
-          local UnitPower = UnitStagger;
-          local UnitPowerMax = UnitHealthMax;
+        ret = ret ..[[
+          local UnitPower = WeakAuras.UnitStagger
         ]]
         if (trigger.use_scaleStagger and trigger.scaleStagger) then
           ret = ret .. string.format([[
@@ -2440,8 +2439,8 @@ Private.event_prototypes = {
           ]], trigger.scaleStagger)
         else
           ret = ret .. [[
-          local UnitPowerMax = UnitHealthMax;
-        ]]
+            local UnitPowerMax = UnitHealthMax;
+          ]]
         end
       end
       local canEnableShowCost = (not trigger.use_powertype or trigger.powertype ~= 99) and trigger.unit == "player";
