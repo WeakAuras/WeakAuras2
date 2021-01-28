@@ -3178,6 +3178,23 @@ do
   end
 end
 
+-- Cast Latency
+do
+  local castLatencyFrame = nil
+  WeakAuras.frames["Cast Latency Handler"] = castLatencyFrame
+  function WeakAuras.WatchForCastLatency()
+    if not castLatencyFrame then
+      castLatencyFrame = CreateFrame("Frame")
+      castLatencyFrame:RegisterEvent("CURRENT_SPELL_CAST_CHANGED")
+      castLatencyFrame:SetScript("OnEvent", function(event)
+        Private.StartProfileSystem("generictrigger")
+        WeakAuras.ScanEvents("CAST_LATENCY_UPDATE", "player")
+        Private.StopProfileSystem("generictrigger")
+      end)
+    end
+  end
+end
+
 -- Player Moving
 do
   local playerMovingFrame = nil

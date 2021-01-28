@@ -6850,6 +6850,10 @@ Private.event_prototypes = {
         LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_INTERRUPTED", WeakAuras.ScanUnitEvents)
       end
       AddUnitEventForEvents(result, unit, "UNIT_TARGET")
+      if trigger.use_showLatency and unit == "player" then
+        result.events = result.events or {}
+        tinsert(result.events, "CAST_LATENCY_UPDATE")
+      end
       return result
     end,
     internal_events = function(trigger)
@@ -6863,6 +6867,11 @@ Private.event_prototypes = {
       AddUnitChangeInternalEvents(unit, result)
       AddUnitRoleChangeInternalEvents(unit, result)
       return result
+    end,
+    loadFunc = function(trigger)
+      if trigger.use_showLatency and trigger.unit == "player" then
+        WeakAuras.WatchForCastLatency()
+      end
     end,
     force_events = unitHelperFunctions.UnitChangedForceEvents,
     canHaveDuration = "timed",
@@ -6903,8 +6912,20 @@ Private.event_prototypes = {
       ret = ret:format(trigger.unit == "group" and "true" or "false",
                         trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
                         trigger.use_inverse and "true" or "false");
-     ret = ret .. unitHelperFunctions.SpecificUnitCheck(trigger)
-     return ret
+
+      if trigger.unit == "player" and trigger.use_showLatency then
+        ret = ret .. [[
+          if event == "CAST_LATENCY_UPDATE" then
+            state.sendTime = GetTime()
+          elseif event == "UNIT_SPELLCAST_START" and tonumber(state.sendTime) then
+            state.latency = GetTime() - state.sendTime
+            state.changed = true
+          end
+        ]]
+      end
+      ret = ret .. unitHelperFunctions.SpecificUnitCheck(trigger)
+
+      return ret
     end,
     statesParameter = "unit",
     args = {
@@ -7184,6 +7205,16 @@ Private.event_prototypes = {
         desc = constants.nameRealmFilterDesc,
       },
       {
+        name = "showLatency",
+        display = L["Overlay Latency"],
+        type = "toggle",
+        test = "true",
+        enable = function(trigger)
+          return trigger.unit == "player"
+        end,
+        reloadOptions = true
+      },
+      {
         name = "inverse",
         display = L["Inverse"],
         type = "toggle",
@@ -7194,6 +7225,17 @@ Private.event_prototypes = {
         hidden = true,
         test = "WeakAuras.UnitExistsFixed(unit, smart) and ((not inverseTrigger and spell) or (inverseTrigger and not spell)) and specificUnitCheck"
       }
+    },
+    overlayFuncs = {
+      {
+        name = L["Latency"],
+        func = function(trigger, state)
+          return 0, type(state.latency) == "number" and state.latency
+        end,
+        enable = function(trigger)
+          return trigger.use_showLatency and trigger.unit == "player"
+        end
+      },
     },
     automaticrequired = true,
   },
