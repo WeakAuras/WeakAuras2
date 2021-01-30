@@ -1,6 +1,6 @@
 local AddonName, Private = ...
 
-local internalVersion = 41
+local internalVersion = 42
 
 -- Lua APIs
 local insert = table.insert
@@ -5210,6 +5210,35 @@ function WeakAuras.ParseNameCheck(name)
   matches:AddMatch(name, start, last)
 
   return matches
+end
+
+function WeakAuras.ParseZoneCheck(input)
+  if not input then return end
+
+  local matcher = {
+    Check = function(self, zoneId, zonegroupId)
+      return self.zoneIds[zoneId] or self.zoneIds[zonegroupId]
+    end,
+    AddId = function(self, input, start, last)
+      local id = tonumber(strtrim(input:sub(start, last)))
+      if id then
+        self.zoneIds[id] = true
+      end
+    end,
+    zoneIds = {}
+  }
+
+  local start = input:find('%d', 1)
+  local last = input:find('%D', start)
+  while (last) do
+    matcher:AddId(input, start, last - 1)
+    start = input:find('%d', last + 1)
+    last = input:find('%D', start)
+  end
+
+  last = #input
+  matcher:AddId(input, start, last)
+  return matcher
 end
 
 function WeakAuras.IsAuraLoaded(id)

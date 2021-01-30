@@ -127,7 +127,6 @@ end
 
 local encounter_list = ""
 local zoneId_list = ""
-local zoneGroupId_list = ""
 function Private.InitializeEncounterAndZoneLists()
   if encounter_list ~= "" then
     return
@@ -229,7 +228,6 @@ function Private.InitializeEncounterAndZoneLists()
       local instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
       local title = inRaid and L["Raids"] or L["Dungeons"]
       zoneId_list = ("%s|cffffd200%s|r\n"):format(zoneId_list, title)
-      zoneGroupId_list = ("%s|cffffd200%s|r\n"):format(zoneGroupId_list, title)
 
       while instance_id do
         EJ_SelectInstance(instance_id)
@@ -237,19 +235,11 @@ function Private.InitializeEncounterAndZoneLists()
         local ej_index = 1
         local boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
 
-        -- zone ids and zone group ids
+        -- zone ids
         if dungeonAreaMapID and dungeonAreaMapID ~= 0 then
           local mapGroupId = C_Map.GetMapGroupID(dungeonAreaMapID)
-          if mapGroupId then
-            zoneGroupId_list = ("%s%s: %d\n"):format(zoneGroupId_list, instance_name, mapGroupId)
-            local maps = ""
-            for k, map in ipairs(C_Map.GetMapGroupMembersInfo(mapGroupId)) do
-              if map.mapID then
-                maps = maps .. map.mapID .. ", "
-              end
-            end
-            maps = maps:match "^(.*), \n?$" or "" -- trim last ", "
-            zoneId_list = ("%s%s: %s\n"):format(zoneId_list, instance_name, maps)
+          if mapGroupId then -- If there's a group id, only list that one
+            zoneId_list = ("%s%s: %d\n"):format(zoneId_list, instance_name, mapGroupId)
           else
             zoneId_list = ("%s%s: %d\n"):format(zoneId_list, instance_name, dungeonAreaMapID)
           end
@@ -274,7 +264,6 @@ function Private.InitializeEncounterAndZoneLists()
         instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
       end
       zoneId_list = zoneId_list .. "\n"
-      zoneGroupId_list = zoneGroupId_list .. "\n"
     end
   end
 
@@ -290,8 +279,12 @@ local function get_zoneId_list()
   local currentmap_id = C_Map.GetBestMapForUnit("player")
   local currentmap_info = C_Map.GetMapInfo(currentmap_id)
   local currentmap_name = currentmap_info and currentmap_info.name or ""
+  local currentmap_zone_name = ""
   local mapGroupId = C_Map.GetMapGroupID(currentmap_id)
   if mapGroupId then
+    currentmap_zone_name = string.format("|cffffd200%s|r%s: %d\n\n",
+                                         L["Current Zone Group\n"], currentmap_name, mapGroupId)
+
     -- if map is in a group, its real name is (or should be?) found in GetMapGroupMembersInfo
     for k, map in ipairs(C_Map.GetMapGroupMembersInfo(mapGroupId)) do
       if map.mapID and map.mapID == currentmap_id and map.name then
@@ -300,26 +293,13 @@ local function get_zoneId_list()
       end
     end
   end
-  return ("%s|cffffd200%s|r%s: %d\n\n%s"):format(
+
+  return ("%s|cffffd200%s|r%s: %d\n\n%s%s"):format(
     zoneId_list,
     L["Current Zone\n"],
     currentmap_name,
     currentmap_id,
-    L["Supports multiple entries, separated by commas"]
-  )
-end
-
-local function get_zoneGroupId_list()
-  if WeakAuras.IsClassic() then return "" end
-  local currentmap_id = C_Map.GetBestMapForUnit("player")
-  local currentmap_info = C_Map.GetMapInfo(currentmap_id)
-  local currentmap_name = currentmap_info and currentmap_info.name
-  local currentmapgroup_id = C_Map.GetMapGroupID(currentmap_id)
-  return ("%s|cffffd200%s|r\n%s%s\n\n%s"):format(
-    zoneGroupId_list,
-    L["Current Zone Group"],
-    currentmapgroup_id and currentmap_name and currentmap_name..": " or "",
-    currentmapgroup_id or L["None"],
+    currentmap_zone_name,
     L["Supports multiple entries, separated by commas"]
   )
 end
@@ -1396,25 +1376,28 @@ Private.load_prototype = {
     },
     {
       name = "zoneId",
-      display = L["Zone ID(s)"],
-      type = "string",
+      hidden = true,
       init = "arg",
-      desc = get_zoneId_list,
-      test = "WeakAuras.CheckNumericIds(%q, zoneId)",
+      test = "true",
       enable = not WeakAuras.IsClassic(),
-      hidden = WeakAuras.IsClassic(),
-      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"}
     },
     {
       name = "zonegroupId",
-      display = L["Zone Group ID(s)"],
-      type = "string",
+      hidden = true,
       init = "arg",
-      desc = get_zoneGroupId_list,
-      test = "WeakAuras.CheckNumericIds(%q, zonegroupId)",
+      test = "true",
+      enable = not WeakAuras.IsClassic(),
+    },
+    {
+      name = "zoneIds",
+      display = L["Zone ID(s)"],
+      type = "string",
       enable = not WeakAuras.IsClassic(),
       hidden = WeakAuras.IsClassic(),
-      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"}
+      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
+      desc = get_zoneId_list,
+      preamble = "local zoneChecker = WeakAuras.ParseZoneCheck(%q)",
+      test = "zoneChecker:Check(zoneId, zonegroupId)"
     },
     {
       name = "encounterid",

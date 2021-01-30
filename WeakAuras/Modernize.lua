@@ -1107,5 +1107,30 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 42 then
+    if data.load.use_zoneId == data.load.use_zonegroupId then
+      data.load.use_zoneIds = data.load.use_zoneId
+
+      local zoneIds = strtrim(data.load.zoneId or "")
+      local zoneGroupIds = strtrim(data.load.zonegroupId or "")
+      if zoneIds ~= "" or zoneGroupIds ~= "" then
+        data.load.zoneIds = zoneIds .. ", " .. zoneGroupIds
+      else
+        -- One of them is empty
+        data.load.zoneIds = zoneIds .. zoneGroupIds
+      end
+    elseif data.load.use_zoneId then
+      data.load.use_zoneIds = true
+      data.load.zoneIds = data.load.zoneId
+    elseif data.load.use_zonegroupId then
+      data.load.use_zoneIds = true
+      data.load.zoneIds = data.load.zonegroupId
+    end
+    data.load.use_zoneId = nil
+    data.load.use_zonegroupId = nil
+    data.load.zoneId = nil
+    data.load.zonegroupId = nil
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
 end
