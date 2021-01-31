@@ -1563,6 +1563,27 @@ function OptionsPrivate.InsertCollapsed(id, namespace, path, value)
   data[insertPoint] = {[collapsed] = value}
 end
 
+function OptionsPrivate.DuplicateCollapseData(id, namespace, path)
+  collapsedOptions[id] = collapsedOptions[id] or {}
+  collapsedOptions[id][namespace] = collapsedOptions[id][namespace] or {}
+  if type(path) ~= "table" then
+    if (collapsedOptions[id][namespace][path]) then
+      tinsert(collapsedOptions[id][namespace], path + 1, CopyTable(collapsedOptions[id][namespace][path]))
+    end
+  else
+    local tmp = collapsedOptions[id][namespace]
+    local lastKey = tremove(path)
+    for _, key in ipairs(path) do
+      print(" key: ", key)
+      tmp[key] = tmp[key] or {}
+      tmp = tmp[key]
+    end
+
+    if (tmp[lastKey]) then
+      tinsert(tmp, lastKey + 1, CopyTable(tmp[lastKey]))
+    end
+  end
+end
 
 function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, hidden, setHidden, index, total)
   local headerOption

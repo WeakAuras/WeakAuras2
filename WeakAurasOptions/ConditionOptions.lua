@@ -1836,7 +1836,7 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
     type = "execute",
     name = L["Condition %i"]:format(i),
     order = order,
-    width = WeakAuras.doubleWidth - 0.45,
+    width = WeakAuras.doubleWidth - 0.6,
     func = function()
       if data.controlledChildren then
         for id, reference in pairs(conditions[i].check.references) do
@@ -1956,6 +1956,38 @@ local function addControlsForCondition(args, order, data, conditionVariable, con
     end,
     width = 0.15,
     image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\movedown",
+    imageWidth = 24,
+    imageHeight = 24,
+    control = "WeakAurasIcon"
+  };
+  order = order + 1;
+
+  args["condition" .. i .. "duplicate"] = {
+    type = "execute",
+    name = L["Duplicate"],
+    order = order,
+    func = function()
+      if (data.controlledChildren) then
+        for id, reference in pairs(conditions[i].check.references) do
+          local auraData = WeakAuras.GetData(id);
+          local clone = CopyTable(auraData[conditionVariable][reference.conditionIndex])
+          tinsert(auraData[conditionVariable], reference.conditionIndex + 1, clone);
+          WeakAuras.Add(auraData);
+          OptionsPrivate.DuplicateCollapseData(auraData.id, "condition", {reference.conditionIndex})
+        end
+        WeakAuras.ClearAndUpdateOptions(data.id, true)
+        return;
+      else
+        local clone = CopyTable(conditions[i])
+        tinsert(conditions, i + 1, clone);
+        WeakAuras.Add(data);
+        OptionsPrivate.DuplicateCollapseData(data.id, "condition", {i})
+        WeakAuras.ClearAndUpdateOptions(data.id, true)
+        return;
+      end
+    end,
+    width = 0.15,
+    image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\duplicate",
     imageWidth = 24,
     imageHeight = 24,
     control = "WeakAurasIcon"
