@@ -1032,7 +1032,7 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
               if not genericTriggerRegisteredEvents["COMBAT_LOG_EVENT_UNFILTERED"] then
                 eventsToRegister["COMBAT_LOG_EVENT_UNFILTERED"] = true;
               end
-            elseif (event == "FRAME_UPDATE") then
+            elseif (event == "FRAME_UPDATE") or (event == "WA_SPELL_RANGECHECK") then
               register_for_frame_updates = true;
             else
               if (genericTriggerRegisteredEvents[event]) then
@@ -1388,6 +1388,7 @@ do
   local update_frame = nil
   WeakAuras.frames["Custom Trigger Every Frame Updater"] = update_frame;
   local updating = false;
+  local rangeThrottle = 0
 
   function Private.RegisterEveryFrameUpdate(id)
     if not(update_clients[id]) then
@@ -1401,6 +1402,10 @@ do
       update_frame:SetScript("OnUpdate", function()
         if not(WeakAuras.IsPaused()) then
           WeakAuras.ScanEvents("FRAME_UPDATE");
+          if (not rangeThrottle or GetTime() - rangeThrottle > 0.2) then
+            rangeThrottle = GetTime()
+            WeakAuras.ScanEvents("WA_SPELL_RANGECHECK")
+          end
         end
       end);
       updating = true;
