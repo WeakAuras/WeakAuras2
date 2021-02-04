@@ -48,12 +48,37 @@ local function GetAll(baseObject, path, property, default)
 end
 
 local function ConstructModelPicker(frame)
+  local function RecurseSetFilter(tree, filter)
+    for k, v in ipairs(tree) do
+      if v.children == nil and v.text then
+        v.visible = not filter or filter == "" or v.text:find(filter, 1, true) ~= nil
+      else
+        RecurseSetFilter(v.children, filter)
+      end
+    end
+  end
+
   local group = AceGUI:Create("InlineGroup");
   group.frame:SetParent(frame);
   group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 87);
-  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -10);
+  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -15);
   group.frame:Hide();
   group:SetLayout("flow");
+
+  local filterInput = CreateFrame("editbox", "WeakAurasFilterInput", group.frame, "SearchBoxTemplate")
+  filterInput:SetScript("OnTextChanged", function(self)
+    SearchBoxTemplate_OnTextChanged(self)
+    local filterText = filterInput:GetText()
+    RecurseSetFilter(group.modelTree.tree, filterText)
+    group.modelTree.filter = filterText ~= nil and filterText ~= ""
+    group.modelTree:RefreshTree()
+  end)
+  filterInput:SetHeight(15)
+  filterInput:SetPoint("TOP", group.frame, "TOP", 0, 1)
+  filterInput:SetPoint("LEFT", group.frame, "LEFT", 7, 0)
+  filterInput:SetWidth(200)
+  filterInput:SetFont(STANDARD_TEXT_FONT, 10)
+  group.frame.filterInput = filterInput
 
   -- Old X Y Z controls
   local modelPickerZ = AceGUI:Create("Slider");
