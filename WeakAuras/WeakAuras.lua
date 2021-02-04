@@ -638,6 +638,10 @@ local function ConstructFunction(prototype, trigger, skipOptional)
             else
               test = "("..name..":"..trigger[name.."_operator"]:format(trigger[name])..")";
             end
+          elseif(arg.type == "number") then
+            if number then
+              test = "("..name..(trigger[name.."_operator"] or "==").. number ..")";
+            end
           else
             if(type(trigger[name]) == "table") then
               trigger[name] = "error";
