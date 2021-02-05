@@ -541,12 +541,12 @@ local function ConstructModelPicker(frame)
     WeakAuras.FillOptions()
   end
 
-  function group.CancelClose(self)
+  function group.CancelClose()
     local valueFromPath = OptionsPrivate.Private.ValueFromPath
     if(group.baseObject.controlledChildren) then
       for index, childId in pairs(group.baseObject.controlledChildren) do
         local childData = WeakAuras.GetData(childId);
-        local object = valueFromPath(childData, self.path)
+        local object = valueFromPath(childData, group.path)
         if(object) then
           object.model_path = group.givenModel[childId];
           object.model_fileId = group.givenModelId[childId];
@@ -570,7 +570,7 @@ local function ConstructModelPicker(frame)
         end
       end
     else
-      local object = valueFromPath(self.baseObject, self.path)
+      local object = valueFromPath(group.baseObject, group.path)
 
       if(object) then
         object.model_path = group.givenModel
@@ -590,8 +590,8 @@ local function ConstructModelPicker(frame)
           object.model_y = group.givenY
           object.rotation = group.givenRotation
         end
-        WeakAuras.Add(self.baseObject);
-        WeakAuras.UpdateThumbnail(self.baseObject);
+        WeakAuras.Add(group.baseObject);
+        WeakAuras.UpdateThumbnail(group.baseObject);
       end
     end
     group.Close();
