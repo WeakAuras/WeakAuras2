@@ -294,6 +294,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       if(arg.type == "toggle" or arg.type == "tristate") then
         options["use_"..name].width = arg.width or WeakAuras.doubleWidth;
       end
+      if(arg.type == "spell" or arg.type == "aura" or arg.type == "item") then
+        if not arg.showExactOption then
+          options["use_"..name].width = arg.width or WeakAuras.normalWidth - 0.1;
+        end
+      end
+
       if(arg.type == "toggle") then
         options["use_"..name].desc = arg.desc;
       end
@@ -535,7 +541,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         order = order + 1;
         options[name] = {
           type = "input",
-          width = arg.showExactOption and WeakAuras.doubleWidth or (WeakAuras.normalWidth - 0.1),
+          width = arg.showExactOption and WeakAuras.doubleWidth or WeakAuras.normalWidth,
           name = arg.display,
           order = order,
           hidden = hidden,
