@@ -239,7 +239,7 @@ function Private.InitializeEncounterAndZoneLists()
         if dungeonAreaMapID and dungeonAreaMapID ~= 0 then
           local mapGroupId = C_Map.GetMapGroupID(dungeonAreaMapID)
           if mapGroupId then -- If there's a group id, only list that one
-            zoneId_list = ("%s%s: %d\n"):format(zoneId_list, instance_name, mapGroupId)
+            zoneId_list = ("%s%s: g%d\n"):format(zoneId_list, instance_name, mapGroupId)
           else
             zoneId_list = ("%s%s: %d\n"):format(zoneId_list, instance_name, dungeonAreaMapID)
           end
@@ -282,7 +282,7 @@ local function get_zoneId_list()
   local currentmap_zone_name = ""
   local mapGroupId = C_Map.GetMapGroupID(currentmap_id)
   if mapGroupId then
-    currentmap_zone_name = string.format("|cffffd200%s|r%s: %d\n\n",
+    currentmap_zone_name = string.format("|cffffd200%s|r%s: g%d\n\n",
                                          L["Current Zone Group\n"], currentmap_name, mapGroupId)
 
     -- if map is in a group, its real name is (or should be?) found in GetMapGroupMembersInfo
@@ -300,7 +300,7 @@ local function get_zoneId_list()
     currentmap_name,
     currentmap_id,
     currentmap_zone_name,
-    L["Supports multiple entries, separated by commas"]
+    L["Supports multiple entries, separated by commas. Group Zone IDs must be prefixed with 'g', e.g. g277."]
   )
 end
 
