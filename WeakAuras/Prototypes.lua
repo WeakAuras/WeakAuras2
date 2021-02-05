@@ -766,17 +766,23 @@ for classID = 1, 20 do -- GetNumClasses not supported by wow classic
   end
 end
 
-function WeakAuras.CheckTalentByIndex(index)
-  if WeakAuras.IsClassic() then
+if WeakAuras.IsClassic() then
+  function WeakAuras.CheckTalentByIndex(index, extraOption)
     local tab = ceil(index / 20)
     local num_talent = (index - 1) % 20 + 1
     local _, _, _, _, rank  = GetTalentInfo(tab, num_talent)
     return rank and rank > 0;
-  else
+  end
+else
+  function WeakAuras.CheckTalentByIndex(index, extraOption)
     local tier = ceil(index / 3)
     local column = (index - 1) % 3 + 1
     local _, _, _, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
-    return selected or known;
+    if extraOption == 0 or extraOption == 2 then
+      return selected or known
+    else
+      return selected
+    end
   end
 end
 
@@ -1236,33 +1242,61 @@ Private.load_prototype = {
     },
     {
       name = "talent",
-      display = L["Talent selected"],
+      display = L["Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = "WeakAuras.CheckTalentByIndex(%d)",
-      events = WeakAuras.IsClassic() and {"CHARACTER_POINTS_CHANGED"} or {"PLAYER_TALENT_UPDATE"}
+      test = "WeakAuras.CheckTalentByIndex(%d, %d)",
+      events = WeakAuras.IsClassic() and {"CHARACTER_POINTS_CHANGED"} or {"PLAYER_TALENT_UPDATE"},
+      inverse = function(load)
+        -- Check for multi select!
+        return load.talent_extraOption == 2 or load.talent_extraOption == 3
+      end,
+      extraOption = {
+        display = "",
+        values = function()
+          return Private.talent_extra_option_types
+        end
+      },
     },
     {
       name = "talent2",
-      display = L["And Talent selected"],
+      display = L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = "WeakAuras.CheckTalentByIndex(%d)",
+      test = "WeakAuras.CheckTalentByIndex(%d, %d)",
       enable = function(trigger)
         return trigger.use_talent ~= nil or trigger.use_talent2 ~= nil;
       end,
-      events = WeakAuras.IsClassic() and {"CHARACTER_POINTS_CHANGED"} or {"PLAYER_TALENT_UPDATE"}
+      events = WeakAuras.IsClassic() and {"CHARACTER_POINTS_CHANGED"} or {"PLAYER_TALENT_UPDATE"},
+      inverse = function(load)
+        return load.talent2_extraOption == 2 or load.talent2_extraOption == 3
+      end,
+      extraOption = {
+        display = "",
+        values = function()
+          return Private.talent_extra_option_types
+        end,
+      }
     },
     {
       name = "talent3",
-      display = L["And Talent selected"],
+      display = L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = "WeakAuras.CheckTalentByIndex(%d)",
+      test = "WeakAuras.CheckTalentByIndex(%d, %d)",
       enable = function(trigger)
         return (trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil;
       end,
-      events = WeakAuras.IsClassic() and {"CHARACTER_POINTS_CHANGED"} or {"PLAYER_TALENT_UPDATE"}
+      events = WeakAuras.IsClassic() and {"CHARACTER_POINTS_CHANGED"} or {"PLAYER_TALENT_UPDATE"},
+      inverse = function(load)
+        return load.talent3_extraOption == 2 or load.talent3_extraOption == 3
+      end,
+      extraOption = {
+        display = "",
+        values = function()
+          return Private.talent_extra_option_types
+        end,
+      },
     },
     {
       name = "pvptalent",

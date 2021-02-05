@@ -766,6 +766,28 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           end
         end
 
+        if arg.extraOption then
+          options["multiselect_extraOption_" .. name] =
+          {
+            name = arg.extraOption.display,
+            type = "select",
+            values = arg.extraOption.values,
+            order = order,
+            width = WeakAuras.normalWidth,
+            hidden = function() return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] ~= false; end,
+            get = function(info, v)
+              return trigger[realname .. "_extraOption"] or 0
+            end,
+            set = function(info, v)
+              trigger[realname .. "_extraOption"] = v
+              WeakAuras.Add(data)
+              OptionsPrivate.Private.ScanForLoads({[data.id] = true})
+              WeakAuras.SortDisplayButtons()
+            end
+          }
+          order = order + 1
+        end
+
         options["multiselect_"..name] = {
           type = "multiselect",
           name = arg.display,
