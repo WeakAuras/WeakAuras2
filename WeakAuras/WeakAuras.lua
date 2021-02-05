@@ -597,7 +597,11 @@ local function ConstructFunction(prototype, trigger, skipOptional)
                   if not arg.test then
                     test = test..name.."=="..(tonumber(value) or "[["..value.."]]").." or ";
                   else
-                    test = test..arg.test:format(tonumber(value) or "[["..value.."]]").." or ";
+                    if arg.extraOption then
+                      test = test..arg.test:format(tonumber(value) or "[["..value.."]]", trigger[name .. "_extraOption"] or 0).." or ";
+                    else
+                      test = test..arg.test:format(tonumber(value) or "[["..value.."]]").." or ";
+                    end
                   end
                   any = true;
                 end
@@ -606,7 +610,16 @@ local function ConstructFunction(prototype, trigger, skipOptional)
                 else
                   test = "(false";
                 end
-                test = test..")";
+                test = test..")"
+                if arg.inverse then
+                  if type(arg.inverse) == "boolean" then
+                    test = "not " .. test
+                  elseif type(arg.inverse) == "function" then
+                    if arg.inverse(trigger) then
+                      test = "not " .. test
+                    end
+                  end
+                end
               end
             elseif(trigger["use_"..name]) then -- single selection
               local value = trigger[name] and trigger[name].single;

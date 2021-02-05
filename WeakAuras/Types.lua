@@ -1185,6 +1185,13 @@ if not WeakAuras.IsClassic() then
   end
 end
 
+Private.talent_extra_option_types = {
+    [0] = L["Talent Known"],
+    [1] = L["Talent Selected"],
+    [2] = L["Talent |cFFFF0000Not|r Known"],
+    [3] = L["Talent |cFFFF0000Not|r Selected"],
+}
+
 -- GetTotemInfo() only works for the first 5 totems
 Private.totem_types = {};
 local totemString = L["Totem #%i"];
@@ -3120,6 +3127,8 @@ if WeakAuras.IsClassic() then
   Private.threat_unit_types.focus = nil
   Private.item_slot_types[0] = AMMOSLOT
   Private.item_slot_types[18] = RANGEDSLOT
+  Private.talent_extra_option_types[0] = nil
+  Private.talent_extra_option_types[2] = nil
 
   local reset_swing_spell_list = {
     1464, 8820, 11604, 11605, -- Slam
