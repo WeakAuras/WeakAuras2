@@ -25,3 +25,4 @@ jobs:
           commit-message: Update WeakAurasModelPaths from wow.tools
           title: Update WeakAurasModelPaths from wow.tools
           body: Update WeakAurasModelPaths from wow.tools
+          delete-branch: true
