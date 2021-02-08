@@ -1070,11 +1070,20 @@ Private.load_prototype = {
       events = {"ENCOUNTER_START", "ENCOUNTER_END"}
     },
     {
+      name = "alive",
+      display = L["Alive"],
+      type = "tristate",
+      init = "arg",
+      width = WeakAuras.normalWidth,
+      optional = true,
+      events = {"PLAYER_DEAD", "PLAYER_ALIVE", "PLAYER_UNGHOST"}
+    },
+    {
       name = "warmode",
       display = L["War Mode Active"],
       type = "tristate",
       init = "arg",
-      width = WeakAuras.doubleWidth,
+      width = WeakAuras.normalWidth,
       optional = true,
       enable = not WeakAuras.IsClassic(),
       hidden = WeakAuras.IsClassic(),
