@@ -867,7 +867,9 @@ end
 
 function WeakAuras.CheckCombatLogFlags(flags, flagToCheck)
   if type(flags) ~= "number" then return end
-  if (flagToCheck == "InGroup") then
+  if(flagToCheck == "Mine") then
+    return bit.band(flags, 1) == 1;
+  elseif (flagToCheck == "InGroup") then
     return bit.band(flags, 7) > 0;
   elseif (flagToCheck == "NotInGroup") then
     return bit.band(flags, 7) == 0;
@@ -2986,7 +2988,7 @@ Private.event_prototypes = {
       },
       {
         name = "sourceFlags",
-        display = L["Source In Group"],
+        display = L["Source Affiliation"],
         type = "select",
         values = "combatlog_flags_check_type",
         init = "arg",
@@ -3082,7 +3084,7 @@ Private.event_prototypes = {
       },
       {
         name = "destFlags",
-        display = L["Destination In Group"],
+        display = L["Destination Affiliation"],
         type = "select",
         values = "combatlog_flags_check_type",
         init = "arg",

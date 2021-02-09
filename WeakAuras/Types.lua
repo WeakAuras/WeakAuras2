@@ -1063,6 +1063,7 @@ Private.environmental_types = {
 }
 
 Private.combatlog_flags_check_type = {
+  Mine = L["Mine"],
   InGroup = L["In Group"],
   NotInGroup = L["Not in Group"]
 }
