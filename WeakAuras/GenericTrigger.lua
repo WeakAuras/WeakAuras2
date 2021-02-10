@@ -3817,6 +3817,21 @@ WeakAuras.GetItemSubClassInfo = function(i)
   return GetItemSubClassInfo(classId, subClassId)
 end
 
+if WeakAuras.IsClassic() then
+  WeakAuras.GetCritChance = function()
+    return max(GetRangedCritChance(), GetCritChance())
+  end
+else
+  WeakAuras.GetCritChance = function()
+    -- Based on what the wow paper doll does
+    local spellCrit = GetSpellCritChance(2)
+    for i = 3, MAX_SPELL_SCHOOLS do
+      spellCrit = min(spellCrit, GetSpellCritChance(i))
+    end
+    return max(spellCrit, GetRangedCritChance(), GetCritChance())
+  end
+end
+
 local types = {}
 tinsert(types, "custom")
 for type in pairs(Private.category_event_prototype) do
