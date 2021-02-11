@@ -3240,7 +3240,7 @@ do
 
   local function doCastScan(firetime, unit)
     scheduled_scans[unit][firetime] = nil;
-    WeakAuras.ScanEvents("CAST_REMAINING_CHECK", unit);
+    WeakAuras.ScanEvents("CAST_REMAINING_CHECK_" .. string.lower(unit), unit);
   end
   function WeakAuras.ScheduleCastCheck(fireTime, unit)
     scheduled_scans[unit] = scheduled_scans[unit] or {}
