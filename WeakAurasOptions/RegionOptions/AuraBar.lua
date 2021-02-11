@@ -585,15 +585,19 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, width, hei
     function borderframe:SetIcon(path)
       local iconPath
       if data.iconSource == 0 then
-        iconPath = data.displayIcon or "Interface\\Icons\\INV_Misc_QuestionMark"
+        iconPath = data.displayIcon
       else
-        iconPath = path or data.displayIcon or "Interface\\Icons\\INV_Misc_QuestionMark"
+        iconPath = path or data.displayIcon
       end
-      local success = icon:SetTexture(data.auto and path or data.displayIcon) and (data.auto and path or data.displayIcon);
-      icon:SetTexture(iconPath)
+
+      if iconPath and iconPath ~= "" then
+        WeakAuras.SetTextureOrAtlas(self.icon, iconPath)
+      else
+        WeakAuras.SetTextureOrAtlas(self.icon, "Interface\\Icons\\INV_Misc_QuestionMark")
+      end
     end
 
-    if data and data.iconSource ~= 0 then
+    if data then
       local name, icon = WeakAuras.GetNameAndIcon(data)
       borderframe:SetIcon(icon)
     end
@@ -613,7 +617,8 @@ local function createIcon()
     texture = "Runes",
     orientation = "HORIZONTAL",
     alpha = 1.0,
-    barColor = {1, 0, 0, 1}
+    barColor = {1, 0, 0, 1},
+    triggers = {}
   };
 
   -- Create and configure thumbnail
