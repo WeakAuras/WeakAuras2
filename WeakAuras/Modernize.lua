@@ -838,9 +838,6 @@ function Private.Modernize(data)
       end
     end
 
-    -- To convert:
-    -- * actions
-    -- * conditions
     data.progressPrecision = nil
     data.totalPrecision = nil
   end
@@ -1158,6 +1155,57 @@ function Private.Modernize(data)
       data.load.use_zonegroupId = nil
       data.load.zoneId = nil
       data.load.zonegroupId = nil
+    end
+  end
+
+  if data.internalVersion < 44 then
+    local function fixUp(data, prefix)
+      local pattern = prefix .. "(.*)_format"
+      for property in pairs(data) do
+        local symbol = property:match(pattern)
+        if symbol then
+          if data[property] == "timed" then
+            data[prefix .. symbol .. "_time_format"] = 0
+
+            local oldDynamic = data[prefix .. symbol .. "_time_dynamic"]
+            data[prefix .. symbol .. "_time_dynamic_threshold"] = oldDynamic and 3 or 0
+          end
+          data[prefix .. symbol .. "_time_dynamic"] = nil
+          if data[prefix .. symbol .. "_time_precision"] == 0 then
+            data[prefix .. symbol .. "_time_precision"] = 1
+          end
+        end
+      end
+    end
+
+    if data.regionType == "text" then
+      fixUp(data, "displayText_format_")
+    end
+
+    if data.subRegions then
+      for index, subRegionData in ipairs(data.subRegions) do
+        if subRegionData.type == "subtext" then
+          fixUp(subRegionData, "text_text_format_")
+        end
+      end
+    end
+
+    if data.actions then
+      for _, when in ipairs{ "start", "finish" } do
+        if data.actions[when] then
+          fixUp(data.actions[when], "message_format_")
+        end
+      end
+    end
+
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        for changeIndex, change in ipairs(condition.changes) do
+          if change.property == "chat" and change.value then
+            fixUp(change.value, "message_format_")
+          end
+        end
+      end
     end
   end
 

@@ -81,6 +81,8 @@ globals = {
 	"Mixin",
 	"Round",
 	"Saturate",
+	"SecondsFormatter",
+	"SecondsFormatterMixin",
 	"SecureButton_GetModifiedUnit",
 	"SlashCmdList",
 	"SearchBoxTemplate_OnTextChanged",
