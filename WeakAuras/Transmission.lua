@@ -1684,7 +1684,7 @@ function WeakAuras.Import(inData, target)
     return nil, "Invalid import data."
   end
   local status, msg = true, ""
-  if type(target) ~= nil then
+  if type(target) ~= 'nil' then
     local targetData
     local uid = type(target) == 'table' and target.uid or target
     if type(uid) == 'string' then
