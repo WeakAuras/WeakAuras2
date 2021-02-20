@@ -340,7 +340,9 @@ local function modify(parent, region, parentData, data, first)
 
   if not UpdateText then
     if text:GetFont() then
-      text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(data.text_text))
+      local textStr = data.text_text
+      textStr = textStr:gsub("\\n", "\n");
+      text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(textStr))
     end
   end
 
