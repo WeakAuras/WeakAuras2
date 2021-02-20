@@ -866,7 +866,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
         if (not message) then
           return true;
         end
-        if (not OptionsPrivate.Private.ContainsPlaceHolders(message, "c")) then
+        if (not OptionsPrivate.Private.ContainsCustomPlaceHolder(message)) then
           return true;
         end
 
