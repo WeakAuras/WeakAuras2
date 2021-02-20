@@ -814,7 +814,6 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
 
       region.subRegionEvents:Notify("PreShow")
 
-      region.justCreated = nil;
       Private.ApplyFrameLevel(region)
       region:Show();
       Private.PerformActions(data, "start", region);
@@ -863,7 +862,6 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       end
       region.toShow = true;
 
-      region.justCreated = nil;
       if(region.PreShow) then
         region:PreShow();
       end
