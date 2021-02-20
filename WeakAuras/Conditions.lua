@@ -567,8 +567,8 @@ local function ConstructConditionFunction(data)
       end
     end
   end
-  ret = ret .. "  end\n";
   ret = ret .. recheckCode
+  ret = ret .. "  end\n";
 
   ret = ret .. "  if (recheckTime) then\n"
   ret = ret .. "    WeakAuras.scheduleConditionCheck(recheckTime, uid, cloneId);\n"
@@ -665,17 +665,22 @@ end
 local function runDynamicConditionFunctions(funcs)
   for uid in pairs(funcs) do
     local id = Private.UIDtoID(uid)
+    Private.StartProfileAura(id)
     if (Private.IsAuraActive(uid) and checkConditions[uid]) then
       local activeStates = WeakAuras.GetActiveStates(id)
       for cloneId, state in pairs(activeStates) do
-        local region = WeakAuras.GetRegion(id, cloneId);
-        checkConditions[uid](region, false);
+        local region = WeakAuras.GetRegion(id, cloneId)
+        Private.ActivateAuraEnvironmentForRegion(region)
+        checkConditions[uid](region, false)
+        Private.ActivateAuraEnvironment()
       end
     end
+    Private.StopProfileAura(id)
   end
 end
 
 local function handleDynamicConditions(self, event)
+  Private.StartProfileSystem("dynamic conditions")
   if (globalDynamicConditionFuncs[event]) then
     for i, func in ipairs(globalDynamicConditionFuncs[event]) do
       func(globalConditionState);
@@ -684,6 +689,7 @@ local function handleDynamicConditions(self, event)
   if (dynamicConditions[event]) then
     runDynamicConditionFunctions(dynamicConditions[event]);
   end
+  Private.StopProfileSystem("dynamic conditions")
 end
 
 local lastDynamicConditionsUpdateCheck;
