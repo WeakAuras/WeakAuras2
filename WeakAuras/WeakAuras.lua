@@ -2914,7 +2914,6 @@ local function EnsureClone(id, cloneId)
   if not(clones[id][cloneId]) then
     local data = WeakAuras.GetData(id);
     WeakAuras.SetRegion(data, cloneId);
-    clones[id][cloneId].justCreated = true;
   end
   return clones[id][cloneId];
 end
