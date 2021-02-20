@@ -280,6 +280,7 @@ function OptionsPrivate.CreateFrame()
       self.importexport.frame:Hide()
       self.texteditor.frame:Hide()
       self.codereview.frame:Hide()
+      self.settingsview:Hide()
       if self.newView then
         self.newView.frame:Hide()
       end
@@ -343,12 +344,19 @@ function OptionsPrivate.CreateFrame()
       else
         self.codereview.frame:Hide()
       end
+
       if self.window == "newView" then
         self.newView.frame:Show()
       else
         if self.newView then
           self.newView.frame:Hide()
         end
+      end
+
+      if self.window == "settingsview" then
+        self.settingsview:Show()
+      else
+        self.settingsview:Hide()
       end
 
       if self.window == "default" then
@@ -536,6 +544,7 @@ function OptionsPrivate.CreateFrame()
   frame.importexport = OptionsPrivate.ImportExport(frame)
   frame.texteditor = OptionsPrivate.TextEditor(frame)
   frame.codereview = OptionsPrivate.CodeReview(frame)
+  frame.settingsview = OptionsPrivate.Settings(frame)
 
   frame.moversizer, frame.mover = OptionsPrivate.MoverSizer(frame)
 
@@ -625,6 +634,17 @@ function OptionsPrivate.CreateFrame()
     magnetButton:LockHighlight()
   end
   toolbarContainer:AddChild(magnetButton)
+
+  local defaultsButton = AceGUI:Create("WeakAurasToolbarButton")
+  defaultsButton:SetText(L["Settings"])
+  defaultsButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\gear")
+  toolbarContainer:AddChild(defaultsButton)
+
+  defaultsButton:SetCallback("OnClick", function()
+    OptionsPrivate.OpenSettings()
+  end)
+
+  frame.toolbarContainer = toolbarContainer
 
   local loadProgress = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
   loadProgress:SetPoint("TOP", buttonsContainer.frame, "TOP", 0, -4)
@@ -974,7 +994,6 @@ function OptionsPrivate.CreateFrame()
     OptionsPrivate.commonOptionsCache:Clear()
 
     frame:UpdateOptions()
-
     local data
     if type(self.pickedDisplay) == "string" then
       data = WeakAuras.GetData(frame.pickedDisplay)
@@ -987,6 +1006,10 @@ function OptionsPrivate.CreateFrame()
     container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -63 - WeakAuras.normalWidth * 340, -14)
     container:ReleaseChildren()
     container:SetLayout("Fill")
+
+
+    local group = AceGUI:Create("WeakAurasInlineGroup")
+
     tabsWidget = AceGUI:Create("TabGroup")
 
     local tabs = {
@@ -1009,16 +1032,15 @@ function OptionsPrivate.CreateFrame()
     tabsWidget:SetLayout("Fill")
     container:AddChild(tabsWidget)
 
-    local group = AceGUI:Create("WeakAurasInlineGroup")
     tabsWidget:AddChild(group)
 
     tabsWidget:SetCallback("OnGroupSelected", function(self, event, tab)
         frame.selectedTab = tab
         frame:FillOptions()
       end)
+    tabsWidget:SetTitle("")
 
     AceConfigDialog:Open("WeakAuras", group)
-    tabsWidget:SetTitle("")
   end
 
   frame.ClearPick = function(self, id)
@@ -1111,7 +1133,7 @@ function OptionsPrivate.CreateFrame()
       button:SetDescription(L["Offer a guided way to create auras for your character"])
       button:SetIcon("Interface\\Icons\\INV_Misc_Book_06")
       button:SetClick(function()
-        WeakAuras.OpenTriggerTemplate(nil, targetId)
+        OptionsPrivate.OpenTriggerTemplate(nil, targetId)
       end)
       containerScroll:AddChild(button)
 

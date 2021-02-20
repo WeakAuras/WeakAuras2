@@ -4,7 +4,7 @@ local AddonName, Private = ...
 local WeakAuras = WeakAuras
 local SharedMedia = LibStub("LibSharedMedia-3.0")
 
-local default = {
+local pristineDefault = {
   controlledChildren = {},
   border = false,
   borderColor = {0, 0, 0, 1},
@@ -39,6 +39,10 @@ local default = {
   rowSpace = 1,
   columnSpace = 1
 }
+
+local function default()
+  return pristineDefault
+end
 
 local controlPointFunctions = {
   ["SetAnchorPoint"] = function(self, point, relativeFrame, relativePoint, offsetX, offsetY)

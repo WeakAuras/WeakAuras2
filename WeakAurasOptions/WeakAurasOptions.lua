@@ -838,6 +838,10 @@ function OptionsPrivate.ImportFromString()
   frame.importexport:Open("import");
 end
 
+function OptionsPrivate.OpenSettings()
+  frame.settingsview:Open()
+end
+
 function WeakAuras.CloseImportExport()
   frame.codereview:Close();
   frame.importexport:Close();
@@ -1439,7 +1443,7 @@ function WeakAuras.CloseCodeReview(data)
   frame.codereview:Close();
 end
 
-function WeakAuras.OpenTriggerTemplate(data, targetId)
+function OptionsPrivate.OpenTriggerTemplate(data, targetId)
   if not(IsAddOnLoaded("WeakAurasTemplates")) then
     local loaded, reason = LoadAddOn("WeakAurasTemplates");
     if not(loaded) then
@@ -1447,7 +1451,7 @@ function WeakAuras.OpenTriggerTemplate(data, targetId)
       WeakAuras.prettyPrint("Templates could not be loaded, the addon is " .. reason);
       return;
     end
-    frame.newView = WeakAuras.CreateTemplateView(frame);
+    frame.newView = WeakAuras.CreateTemplateView(OptionsPrivate.Private, frame);
   end
   frame.newView.targetId = targetId;
   frame.newView:Open(data);
@@ -1496,7 +1500,7 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
     WeakAuras.DeepMixin(data, sourceData);
   end
   data.internalVersion = WeakAuras.InternalVersion();
-  WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default);
+  WeakAuras.validate(data, OptionsPrivate.Private.GetDefaultsForRegion(regionType, "new"))
 
   AddDefaultSubRegions(data)
 

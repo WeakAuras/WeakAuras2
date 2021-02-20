@@ -6,7 +6,7 @@ local texture_data = WeakAuras.StopMotion.texture_data;
 local animation_types = WeakAuras.StopMotion.animation_types;
 local L = WeakAuras.L;
 
-local default = {
+local pristineDefault = {
     foregroundTexture = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion",
     backgroundTexture = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion",
     desaturateBackground = false,
@@ -83,7 +83,11 @@ local properties = {
   },
 }
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+WeakAuras.regionPrototype.AddProperties(properties, pristineDefault);
+
+local function default()
+  return pristineDefault
+end
 
 local function create(parent)
     local frame = CreateFrame("FRAME", nil, UIParent);

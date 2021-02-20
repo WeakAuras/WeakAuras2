@@ -1,5 +1,7 @@
 -- Special layout for the New Aura Trigger template page
 
+local AddonName, TemplatePrivate = ...
+
 local AceGUI = LibStub("AceGUI-3.0");
 local floor, ceil, tinsert = floor, ceil, tinsert;
 local CreateFrame, UnitClass, UnitRace, GetSpecialization = CreateFrame, UnitClass, UnitRace, GetSpecialization;
@@ -51,7 +53,11 @@ local function changes(property, regionType)
       value = true,
       property = regionType == "icon" and "sub.1.glow" or "sub.2.glow",
     };
-  elseif WeakAuras.regionTypes[regionType].default[property] == nil then
+  end
+
+  -- TODO check that templates filtering condition changes work
+  local defaults = TemplatePrivate.Private.GetDefaultsForRegion(regionType, "template")
+  if defaults[property] == nil then
     return nil;
   elseif property == "cooldownSwipe" then
     return {
@@ -517,7 +523,8 @@ local function subTypesFor(item, regionType)
     cd = 134377,
     cd2 = 134376,
   };
-  local subglow = WeakAuras.getDefaultGlow(regionType)
+  local subglow = TemplatePrivate.Private.GetDefaultsForSubRegion("glow", regionType, "template")
+  -- TODO how the glow for templates is added looks hacky
   local subglowindex = (regionType == "icon" or regionType == "aurabar") and 1
   local data = {}
   local dataGlow = {
@@ -1202,7 +1209,9 @@ local function subTypesFor(item, regionType)
   return fallbacks
 end
 
-function WeakAuras.CreateTemplateView(frame)
+function WeakAuras.CreateTemplateView(Private, frame)
+  TemplatePrivate.Private = Private
+
   local newView = AceGUI:Create("InlineGroup");
   newView.frame:SetParent(frame);
   newView.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 42);
@@ -1897,11 +1906,6 @@ function WeakAuras.CreateTemplateView(frame)
     if (not self.data) then
       frame:NewAura();
     end
-  end
-
-  function WeakAuras.OpenTriggerTemplate(data, targetId)
-    frame.newView.targetId = targetId;
-    frame.newView:Open(data);
   end
 
   return newView;
