@@ -6,7 +6,7 @@ local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
 
 -- Default settings
-local default = {
+local baseDefault = {
   model_path = "spells/arcanepower_state_chest.m2", -- arthas is not a thing on classic
   model_fileId = "122968", -- Creature/Arthaslichking/arthaslichking.m2
   modelIsUnit = false,
@@ -67,7 +67,11 @@ local properties = {
   },
 }
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+WeakAuras.regionPrototype.AddProperties(properties, baseDefault);
+
+local function default()
+  return baseDefault
+end
 
 local function GetProperties(data)
   return properties;

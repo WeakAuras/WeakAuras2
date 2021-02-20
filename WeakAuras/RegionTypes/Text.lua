@@ -5,10 +5,8 @@ local AddonName, Private = ...
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
 
-local defaultFont = WeakAuras.defaultFont
-local defaultFontSize = WeakAuras.defaultFontSize
 
-local default = {
+local baseDefault = {
   displayText = "%p",
   outline = "OUTLINE",
   color = {1, 1, 1, 1},
@@ -18,8 +16,8 @@ local default = {
   anchorFrameType = "SCREEN",
   xOffset = 0,
   yOffset = 0,
-  font = defaultFont,
-  fontSize = defaultFontSize,
+  font = "Friz Quadrata TT",
+  fontSize = 12,
   frameStrata = 1,
   customTextUpdate = "event",
   automaticWidth = "Auto",
@@ -48,7 +46,24 @@ local properties = {
   }
 }
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+WeakAuras.regionPrototype.AddProperties(properties, baseDefault);
+
+local mappings = {
+  normal = {
+    base = baseDefault,
+    map = {
+      [{'region', 'text', 'font'}] = "font",
+      [{'region', 'text', 'fontSize'}] = "fontSize",
+      [{'region', 'text', 'outline'}] = "outline",
+    }
+  }
+}
+
+local defaultsCache = Private.CreateDefaultsCache(mappings)
+
+local function default(action)
+  return defaultsCache:GetDefault(action, "normal")
+end
 
 local function GetProperties(data)
   return properties;

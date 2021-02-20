@@ -237,6 +237,7 @@ function OptionsPrivate.CreateFrame()
       self.texteditor.frame:Hide()
       self.codereview.frame:Hide()
       self.debugLog.frame:Hide()
+      self.settingsview:Hide()
       if self.newView then
         self.newView.frame:Hide()
       end
@@ -306,6 +307,7 @@ function OptionsPrivate.CreateFrame()
       else
         self.codereview.frame:Hide()
       end
+
       if self.window == "newView" then
         OptionsPrivate.SetTitle(L["New Template"])
         self.newView.frame:Show()
@@ -314,18 +316,27 @@ function OptionsPrivate.CreateFrame()
           self.newView.frame:Hide()
         end
       end
+
       if self.window == "update" then
         OptionsPrivate.SetTitle(L["Update"])
         self.update.frame:Show()
       else
         self.update.frame:Hide()
       end
+
       if self.window == "debuglog" then
         OptionsPrivate.SetTitle(L["Debug Log"])
         self.debugLog.frame:Show()
       else
         self.debugLog.frame:Hide()
       end
+
+      if self.window == "settingsview" then
+        self.settingsview:Show()
+      else
+        self.settingsview:Hide()
+      end
+
       if self.window == "default" then
         if self.loadProgessVisible then
           self.loadProgress:Show()
@@ -518,6 +529,7 @@ function OptionsPrivate.CreateFrame()
   frame.codereview = OptionsPrivate.CodeReview(frame)
   frame.update = OptionsPrivate.UpdateFrame(frame)
   frame.debugLog = OptionsPrivate.DebugLog(frame)
+  frame.settingsview = OptionsPrivate.Settings(frame)
 
   frame.moversizer, frame.mover = OptionsPrivate.MoverSizer(frame)
 
@@ -613,6 +625,19 @@ function OptionsPrivate.CreateFrame()
   lockButton.frame:SetParent(toolbarContainer)
   lockButton.frame:Show()
   lockButton:SetPoint("RIGHT", magnetButton.frame, "LEFT", -10, 0)
+
+  local defaultsButton = AceGUI:Create("WeakAurasToolbarButton")
+  defaultsButton:SetText(L["Settings"])
+  defaultsButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\gear")
+  defaultsButton.frame:SetParent(toolbarContainer)
+  defaultsButton.frame:Show()
+  defaultsButton.frame:SetPoint("RIGHT", lockButton.frame, "LEFT", -10, 0)
+
+  defaultsButton:SetCallback("OnClick", function()
+    OptionsPrivate.OpenSettings()
+  end)
+
+  frame.toolbarContainer = toolbarContainer
 
   local loadProgress = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
   loadProgress:SetPoint("TOP", buttonsContainer.frame, "TOP", 0, -4)
@@ -960,7 +985,6 @@ function OptionsPrivate.CreateFrame()
     OptionsPrivate.commonOptionsCache:Clear()
 
     frame:UpdateOptions()
-
     local data
     if type(self.pickedDisplay) == "string" then
       data = WeakAuras.GetData(frame.pickedDisplay)
@@ -973,6 +997,10 @@ function OptionsPrivate.CreateFrame()
     container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -63 - WeakAuras.normalWidth * 340, -10)
     container:ReleaseChildren()
     container:SetLayout("Fill")
+
+
+    local group = AceGUI:Create("WeakAurasInlineGroup")
+
     tabsWidget = AceGUI:Create("TabGroup")
 
     local tabs = {
@@ -995,16 +1023,15 @@ function OptionsPrivate.CreateFrame()
     tabsWidget:SetLayout("Fill")
     container:AddChild(tabsWidget)
 
-    local group = AceGUI:Create("WeakAurasInlineGroup")
     tabsWidget:AddChild(group)
 
     tabsWidget:SetCallback("OnGroupSelected", function(self, event, tab)
         frame.selectedTab = tab
         frame:FillOptions()
       end)
+    tabsWidget:SetTitle("")
 
     AceConfigDialog:Open("WeakAuras", group)
-    tabsWidget:SetTitle("")
 
     if data.controlledChildren and #data.controlledChildren == 0 then
       WeakAurasOptions:NewAura()

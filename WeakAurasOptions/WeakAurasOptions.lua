@@ -892,6 +892,10 @@ function OptionsPrivate.OpenUpdate(data, children, target, sender, callbackFunc)
   return frame.update:Open(data, children, target, sender, callbackFunc)
 end
 
+function OptionsPrivate.OpenSettings()
+  frame.settingsview:Open()
+end
+
 function OptionsPrivate.ConvertDisplay(data, newType)
   local id = data.id;
   local visibility = displayButtons[id]:GetVisibility();
@@ -1655,7 +1659,7 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
     WeakAuras.DeepMixin(data, sourceData);
   end
   data.internalVersion = WeakAuras.InternalVersion();
-  OptionsPrivate.Private.validate(data, OptionsPrivate.Private.regionTypes[regionType].default);
+  OptionsPrivate.Private.validate(data, OptionsPrivate.Private.GetDefaultsForRegion(regionType, "new"))
 
   AddDefaultSubRegions(data)
 

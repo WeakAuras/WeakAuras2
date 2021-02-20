@@ -19,8 +19,7 @@ local function AddSubRegion(data, subRegionName)
     data.subRegions = data.subRegions or {}
     if OptionsPrivate.Private.subRegionTypes[subRegionName] and OptionsPrivate.Private.subRegionTypes[subRegionName] then
       if OptionsPrivate.Private.subRegionTypes[subRegionName].supports(data.regionType) then
-        local default = OptionsPrivate.Private.subRegionTypes[subRegionName].default
-        local subRegionData = type(default) == "function" and default(data.regionType) or CopyTable(default)
+        local subRegionData = CopyTable(OptionsPrivate.Private.GetDefaultsForSubRegion(subRegionName, data.regionType, "new"))
         subRegionData.type = subRegionName
         tinsert(data.subRegions, subRegionData)
         WeakAuras.Add(data)

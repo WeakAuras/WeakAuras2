@@ -6,8 +6,8 @@ local L = WeakAuras.L;
 
 Private.barmodels = {}
 
-local default = function(parentType)
-  return {
+local baseDefaults = {
+    ["type"] = "subbarmodel",
     model_visible = true,
     model_alpha = 1,
     api = false,
@@ -27,7 +27,10 @@ local default = function(parentType)
     model_fileId = "235338",
     model_path = "spells/arcanepower_state_chest.m2",
     bar_model_clip = true
-  }
+}
+
+local default = function(parentType, action)
+  return baseDefaults
 end
 
 local properties = {

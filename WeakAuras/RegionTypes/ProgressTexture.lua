@@ -4,9 +4,6 @@ local AddonName, Private = ...
 
 local L = WeakAuras.L;
 
-local defaultFont = WeakAuras.defaultFont
-local defaultFontSize = WeakAuras.defaultFontSize
-
 -- Credit to CommanderSirow for taking the time to properly craft the TransformPoint function
 -- to the enhance the abilities of Progress Textures.
 -- Also Credit to Semlar for explaining how circular progress can be shown
@@ -22,7 +19,7 @@ local defaultFontSize = WeakAuras.defaultFontSize
 --   region.scale (1.0) - user defined scaling [1, INF]
 --   region.full_rotation (false) - Allow full rotation [bool]
 
-local default = {
+local baseDefault = {
   foregroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
   backgroundTexture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
   desaturateBackground = false,
@@ -51,16 +48,14 @@ local default = {
   anchorFrameType = "SCREEN",
   xOffset = 0,
   yOffset = 0,
-  font = defaultFont,
-  fontSize = defaultFontSize,
   mirror = false,
   frameStrata = 1,
   slantMode = "INSIDE"
 };
 
-WeakAuras.regionPrototype.AddAlphaToDefault(default);
+WeakAuras.regionPrototype.AddAlphaToDefault(baseDefault);
 
-WeakAuras.regionPrototype.AddAdjustedDurationToDefault(default);
+WeakAuras.regionPrototype.AddAdjustedDurationToDefault(baseDefault);
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
@@ -139,7 +134,11 @@ local properties = {
   }
 }
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+WeakAuras.regionPrototype.AddProperties(properties, baseDefault);
+
+local function default()
+  return baseDefault
+end
 
 local function GetProperties(data)
   local overlayInfo = Private.GetOverlayInfo(data);

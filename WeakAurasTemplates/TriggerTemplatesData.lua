@@ -5448,4 +5448,5 @@ itemInfoReceived:SetScript("OnEvent", function()
   end
 end);
 
+
 TemplatePrivate.triggerTemplates = templates

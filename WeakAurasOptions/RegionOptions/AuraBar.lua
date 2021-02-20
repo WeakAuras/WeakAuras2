@@ -824,5 +824,36 @@ local function GetAnchors(data)
   return anchorPoints;
 end
 
+local function createDefaultOptions(width)
+  local options = {
+    __title = L["Progress Bar Default Options"],
+
+    icon = {
+      name = L["Show Icon"],
+      path = {'region', 'aurabar', 'icon'},
+      applyType = "newregion",
+      default = false,
+      type = "toggle",
+      width = width,
+      order = 2,
+    },
+    texture = {
+      name = L["Bar Texture"],
+      path = {'region', 'aurabar', 'texture'},
+      applyType = "region",
+      default = "Blizzard",
+
+      type = "select",
+      dialogControl = "LSM30_Statusbar",
+      width = width,
+      order = 3,
+      values = AceGUIWidgetLSMlists.statusbar
+    },
+  }
+  return options
+end
+
+WeakAuras.RegisterDefaultsOptions(createDefaultOptions)
+
 -- Register new region type options with WeakAuras
 WeakAuras.RegisterRegionOptions("aurabar", createOptions, createIcon, L["Progress Bar"], createThumbnail, modifyThumbnail, L["Shows a progress bar with name, timer, and icon"], templates, GetAnchors);

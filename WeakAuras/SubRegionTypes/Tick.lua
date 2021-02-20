@@ -4,24 +4,27 @@ local AddonName, Private = ...
 
 local L = WeakAuras.L;
 
-local default = function()
-  return {
-    tick_visible = true,
-    tick_color = {1, 1, 1, 1},
-    tick_placement_mode = "AtValue",
-    tick_placement = "50",
-    automatic_length = true,
-    tick_thickness = 2,
-    tick_length = 30,
-    use_texture = false,
-    tick_texture = [[Interface\CastingBar\UI-CastingBar-Spark]],
-    tick_blend_mode = "ADD",
-    tick_desaturate = false,
-    tick_rotation = 0,
-    tick_xOffset = 0,
-    tick_yOffset = 0,
-    tick_mirror = false,
-  }
+local baseDefaults =  {
+  ["type"] = "subtick",
+  tick_visible = true,
+  tick_color = {1, 1, 1, 1},
+  tick_placement_mode = "AtValue",
+  tick_placement = "50",
+  automatic_length = true,
+  tick_thickness = 2,
+  tick_length = 30,
+  use_texture = false,
+  tick_texture = [[Interface\CastingBar\UI-CastingBar-Spark]],
+  tick_blend_mode = "ADD",
+  tick_desaturate = false,
+  tick_rotation = 0,
+  tick_xOffset = 0,
+  tick_yOffset = 0,
+  tick_mirror = false,
+}
+
+local default = function(parentType, action)
+  return baseDefaults
 end
 
 local properties = {

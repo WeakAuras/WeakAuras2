@@ -5,18 +5,72 @@ local AddonName, Private = ...
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
 
-local default = function(parentType)
-  local options = {
+local baseDefaults = {
+  icon = {
+    ["type"] = "subborder",
     border_visible = true,
     border_color = {1, 1, 1, 1},
     border_edge = "Square Full White",
     border_offset = 0,
     border_size = 2,
+  },
+  aurabar = {
+    ["type"] = "subborder",
+    border_visible = true,
+    border_color = {1, 1, 1, 1},
+    border_edge = "Square Full White",
+    border_offset = 0,
+    border_size = 2,
+    border_anchor = "bar"
+  },
+  other = {
+    ["type"] = "subborder",
+    border_visible = true,
+    border_color = {1, 1, 1, 1},
+    border_edge = "Square Full White",
+    border_offset = 0,
+    border_size = 2,
+  },
+}
+
+local mappings = {
+  icon = {
+    base = baseDefaults.icon,
+    map = {
+      [{'subRegion', 'border', 'icon_border_color'}] = "border_color",
+      [{'subRegion', 'border', 'icon_border_edge'}] = "border_edge",
+      [{'subRegion', 'border', 'icon_border_offset'}] = "border_offset",
+      [{'subRegion', 'border', 'icon_border_size'}] = "border_size",
+    }
+  },
+  aurabar = {
+    base = baseDefaults.aurabar,
+    map = {
+      [{'subRegion', 'border', 'aurabar_border_color'}] = "border_color",
+      [{'subRegion', 'border', 'aurabar_border_edge'}] = "border_edge",
+      [{'subRegion', 'border', 'aurabar_border_offset'}] = "border_offset",
+      [{'subRegion', 'border', 'aurabar_border_size'}] = "border_size",
+    }
+  },
+  other = {
+    base = baseDefaults.other,
+    map = {
+      [{'subRegion', 'border', 'other_border_color'}] = "border_color",
+      [{'subRegion', 'border', 'other_border_edge'}] = "border_edge",
+      [{'subRegion', 'border', 'other_border_offset'}] = "border_offset",
+      [{'subRegion', 'border', 'other_border_size'}] = "border_size",
+    }
   }
-  if parentType == "aurabar" then
-    options["border_anchor"] = "bar"
+}
+
+local defaultsCache = Private.CreateDefaultsCache(mappings)
+
+local default = function(parentType, action)
+  if parentType == "icon" or parentType == "aurabar" then
+    return defaultsCache:GetDefault(action, parentType)
+  else
+    return defaultsCache:GetDefault(action, "other")
   end
-  return options
 end
 
 local properties = {
@@ -82,6 +136,21 @@ local function modify(parent, region, parentData, data, first)
   region:SetVisible(data.border_visible)
 end
 
+local function addDefaultsForNewAura(data)
+  local add = false
+  if data.regionType == "aurabar" then
+    add = select(2, Private.GetDefault('subRegion', 'border', 'aurabar_add'))
+  elseif data.regionType == "icon" then
+    add = select(2, Private.GetDefault('subRegion', 'border', 'icon_add'))
+  else
+    add = select(2, Private.GetDefault('subRegion', 'border', 'other_add'))
+  end
+  if add then
+    local border = CopyTable(default(data.regionType, "new"))
+    tinsert(data.subRegions, border)
+  end
+end
+
 local function supports(regionType)
   return regionType == "texture"
          or regionType == "progresstexture"
@@ -90,4 +159,4 @@ local function supports(regionType)
 end
 
 WeakAuras.RegisterSubRegionType("subborder", L["Border"], supports, create, modify, onAcquire, onRelease,
-                                default, nil, properties)
+                                default, addDefaultsForNewAura, properties);

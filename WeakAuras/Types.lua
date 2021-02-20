@@ -3516,6 +3516,29 @@ end
 Private.item_weapon_types[4 * 256 + 6] = GetItemSubClassInfo(4, 6)
 WeakAuras.item_weapon_types = Private.item_weapon_types
 
+Private.DefaultsApplyTypes = {
+  region = {
+    [0] = "Disabled",
+    [1] = "New Auras",
+    [2] = "Imported Auras",
+    [3] = "New/Imported Auras"
+  },
+  newregion = {
+    [0] = "Disabled",
+    [1] = "New Auras",
+  },
+  subregion = {
+    [0] = "Disabled",
+    [1] = "New Auras and Sub Elements",
+    [2] = "Imported Auras and Sub Elements",
+    [3] = "New/Imported Auras and Sub Elements"
+  },
+  newsubregion = {
+    [0] = "Disabled",
+    [1] = "New Auras and Sub Elements",
+  }
+}
+
 WeakAuras.StopMotion = {}
 WeakAuras.StopMotion.texture_types = {
 }
