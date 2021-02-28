@@ -1161,7 +1161,22 @@ function Private.Modernize(data)
   if data.internalVersion < 44 then
     local function fixUp(data, prefix)
       local pattern = prefix .. "(.*)_format"
+
+      local found = false
       for property in pairs(data) do
+        local symbol = property:match(pattern)
+        if symbol then
+          found = true
+          break
+        end
+      end
+
+      if not found then
+        return
+      end
+
+      local old = CopyTable(data)
+      for property in pairs(old) do
         local symbol = property:match(pattern)
         if symbol then
           if data[property] == "timed" then
