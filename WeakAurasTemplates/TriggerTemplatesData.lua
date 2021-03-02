@@ -467,7 +467,6 @@ if WeakAuras.IsClassic() then
           { spell = 2008, type = "ability"}, -- Ancestral Spirit
           { spell = 2484, type = "ability", totem = true}, -- Earthbind Totem
           { spell = 2645, type = "ability", buff = true}, -- Ghost Wolf
-          { spell = 2825, type = "ability", buff = true}, -- Bloodlust
           { spell = 3599, type = "ability", totem = true}, -- Searing Totem
           { spell = 5394, type = "ability", totem = true}, -- Healing Stream Totem
           { spell = 5675, type = "ability", totem = true}, -- Mana Spring Totem
@@ -5955,8 +5954,8 @@ if WeakAuras.IsClassic() then
   tinsert(templates.race.Tauren, { spell = 20549, type = "ability", titleSuffix = L["cooldown"]});
   tinsert(templates.race.Tauren, { spell = 20549, type = "debuff", titleSuffix = L["debuff"]});
   --Beserking
-  tinsert(templates.race.Troll, { spell = 26927, type = "ability", titleSuffix = L["Rogue cooldown"]});
-  tinsert(templates.race.Troll, { spell = 26926, type = "ability", titleSuffix = L["Warrior cooldown"]});
+  tinsert(templates.race.Troll, { spell = 26297, type = "ability", titleSuffix = L["Rogue cooldown"]});
+  tinsert(templates.race.Troll, { spell = 26296, type = "ability", titleSuffix = L["Warrior cooldown"]});
   tinsert(templates.race.Troll, { spell = 20554, type = "ability", titleSuffix = L["Other cooldown"]});
   tinsert(templates.race.Troll, { spell = 26635, type = "buff", unit = "player", titleSuffix = L["buff"]});
 else
