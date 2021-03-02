@@ -134,8 +134,8 @@ local function modify(parent, region, data)
       local height = text:GetStringHeight();
 
       if(region.height ~= height) then
-        region.height = text:GetStringHeight();
-        region:SetHeight(region.height);
+        region.height = height
+        region:SetHeight(height)
         if(data.parent and WeakAuras.regions[data.parent].region.PositionChildren) then
           WeakAuras.regions[data.parent].region:PositionChildren();
         end
