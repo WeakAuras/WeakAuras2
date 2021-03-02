@@ -69,7 +69,7 @@ local function CanHaveMatchCheck(trigger)
   if trigger.matchesShowOn == "showOnMissing" then
     return false
   end
-  if trigger.matchesShowOn == "showOnActive" or trigger.matchesShowOn == "showOnMatches" then
+  if trigger.matchesShowOn == "showOnActive" or trigger.matchesShowOn == "showOnMatches" or not trigger.matchesShowOn then
     return true
   end
   -- Always: If clones are shown
