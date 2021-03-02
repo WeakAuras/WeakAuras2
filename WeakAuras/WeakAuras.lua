@@ -4179,10 +4179,6 @@ local function ContainsPlaceHolders(textStr, symbolFunc)
     return false
   end
 
-  if textStr:find("\\n") then
-    return true
-  end
-
   local endPos = textStr:len();
   local state = 0
   local currentPos = 1
