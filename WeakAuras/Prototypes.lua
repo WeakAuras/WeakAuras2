@@ -3471,7 +3471,7 @@ Private.event_prototypes = {
       {
         hidden = true,
         name = "icon",
-        init = "spellId and select(3, GetSpellInfo(spellId)) or 'Interface\\\\Icons\\\\INV_Misc_QuestionMark'",
+        init = "(WeakAuras.IsClassic() and spellName and select(3, GetSpellInfo(spellName))) or (not WeakAuras.IsClassic() and spellId and select(3, GetSpellInfo(spellId))) or 'Interface\\\\Icons\\\\INV_Misc_QuestionMark'",
         store = true,
         test = "true"
       }
