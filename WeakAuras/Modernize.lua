@@ -1183,11 +1183,12 @@ function Private.Modernize(data)
             data[prefix .. symbol .. "_time_format"] = 0
 
             local oldDynamic = data[prefix .. symbol .. "_time_dynamic"]
-            data[prefix .. symbol .. "_time_dynamic_threshold"] = oldDynamic and 3 or 0
+            data[prefix .. symbol .. "_time_dynamic_threshold"] = oldDynamic and 3 or 60
           end
           data[prefix .. symbol .. "_time_dynamic"] = nil
           if data[prefix .. symbol .. "_time_precision"] == 0 then
             data[prefix .. symbol .. "_time_precision"] = 1
+            data[prefix .. symbol .. "_time_dynamic_threshold"] = 0
           end
         end
       end
