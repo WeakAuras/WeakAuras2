@@ -2846,13 +2846,15 @@ do
     local now = GetTime()
     nextExpire = nil
     for id, bar in pairs(bars) do
-      if bar.expirationTime < now then
-        bars[id] = nil
-        WeakAuras.ScanEvents("BigWigs_StopBar", id)
-      elseif nextExpire == nil then
-        nextExpire = bar.expirationTime
-      elseif bar.expirationTime < nextExpire then
-        nextExpire = bar.expirationTime
+      if not bar.paused then
+        if bar.expirationTime < now then
+          bars[id] = nil
+          WeakAuras.ScanEvents("BigWigs_StopBar", id)
+        elseif nextExpire == nil then
+          nextExpire = bar.expirationTime
+        elseif bar.expirationTime < nextExpire then
+          nextExpire = bar.expirationTime
+        end
       end
     end
 
@@ -2900,6 +2902,34 @@ do
         bars[text] = nil
         WeakAuras.ScanEvents("BigWigs_StopBar", text)
       end
+    elseif event == "BigWigs_PauseBar" then
+      local addon, text = ...
+      local bar = bars[text]
+      if bar then
+        bar.paused = true
+        bar.remaining = bar.expirationTime - GetTime()
+        WeakAuras.ScanEvents("BigWigs_PauseBar", text)
+        if recheckTimer then
+          timer:CancelTimer(recheckTimer)
+        end
+        recheckTimers()
+      end
+    elseif event == "BigWigs_ResumeBar" then
+      local addon, text = ...
+      local bar = bars[text]
+      if bar then
+        bar.paused = nil
+        bar.expirationTime = GetTime() + bar.remaining
+        bar.remaining = nil
+        WeakAuras.ScanEvents("BigWigs_ResumeBar", text)
+        if nextExpire == nil then
+          recheckTimer = timer:ScheduleTimerFixed(recheckTimers, bar.expirationTime - GetTime())
+        elseif bar.expirationTime < nextExpire then
+          timer:CancelTimer(recheckTimer)
+          recheckTimer = timer:ScheduleTimerFixed(recheckTimers, bar.expirationTime - GetTime())
+          nextExpire = bar.expirationTime
+        end
+      end
     elseif event == "BigWigs_StopBars"
     or event == "BigWigs_OnBossDisable"
     or event == "BigWigs_OnPluginDisable"
@@ -2929,6 +2959,8 @@ do
     WeakAuras.RegisterBigWigsCallback("BigWigs_StopBar")
     WeakAuras.RegisterBigWigsCallback("BigWigs_StopBars")
     WeakAuras.RegisterBigWigsCallback("BigWigs_OnBossDisable")
+    WeakAuras.RegisterBigWigsCallback("BigWigs_PauseBar")
+    WeakAuras.RegisterBigWigsCallback("BigWigs_ResumeBar")
   end
 
   function WeakAuras.CopyBigWigsTimerToState(bar, states, id, extendTimer)
@@ -2955,6 +2987,8 @@ do
     if extendTimer ~= 0 then
       state.autoHide = true
     end
+    state.paused = bar.paused
+    state.remaining = bar.remaining
   end
 
   function WeakAuras.BigWigsTimerMatches(id, message, operator, spellId, count, cast)
