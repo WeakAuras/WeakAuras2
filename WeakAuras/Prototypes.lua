@@ -4539,7 +4539,7 @@ Private.event_prototypes = {
     type = "addons",
     events = {},
     internal_events = {
-      "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerStopAll", "DBM_TimerUpdate", "DBM_TimerForce"
+      "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerStopAll", "DBM_TimerUpdate", "DBM_TimerForce", "DBM_TimerResume", "DBM_TimerPause"
     },
     force_events = "DBM_TimerForce",
     name = L["DBM Timer"],
@@ -4547,6 +4547,8 @@ Private.event_prototypes = {
     triggerFunction = function(trigger)
       WeakAuras.RegisterDBMCallback("DBM_TimerStart")
       WeakAuras.RegisterDBMCallback("DBM_TimerStop")
+      WeakAuras.RegisterDBMCallback("DBM_TimerPause")
+      WeakAuras.RegisterDBMCallback("DBM_TimerResume")
       WeakAuras.RegisterDBMCallback("DBM_TimerUpdate")
       WeakAuras.RegisterDBMCallback("wipe")
       WeakAuras.RegisterDBMCallback("kill")
@@ -4587,7 +4589,10 @@ Private.event_prototypes = {
           end
 
           if useClone then
-            if event == "DBM_TimerStart" then
+            if event == "DBM_TimerStart"
+            or event == "DBM_TimerPause"
+            or event == "DBM_TimerResume"
+            then
               if WeakAuras.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
                 local bar = WeakAuras.GetDBMTimerById(id)
                 if bar then
