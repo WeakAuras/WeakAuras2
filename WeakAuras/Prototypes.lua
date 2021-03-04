@@ -4791,7 +4791,7 @@ Private.event_prototypes = {
     type = "addons",
     events = {},
     internal_events = {
-      "BigWigs_StartBar", "BigWigs_StopBar", "BigWigs_Timer_Update",
+      "BigWigs_StartBar", "BigWigs_StopBar", "BigWigs_Timer_Update", "BigWigs_PauseBar", "BigWigs_ResumeBar"
     },
     force_events = "BigWigs_Timer_Force",
     name = L["BigWigs Timer"],
@@ -4833,7 +4833,10 @@ Private.event_prototypes = {
           end
 
           if useClone then
-            if event == "BigWigs_StartBar" then
+            if event == "BigWigs_StartBar"
+            or event == "BigWigs_PauseBar"
+            or event == "BigWigs_ResumeBar"
+            then
               if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                 local bar = WeakAuras.GetBigWigsTimerById(id)
                 if bar then
