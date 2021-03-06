@@ -505,6 +505,15 @@ local function subTypesFor(item, regionType)
   }
   if (item.type == "ability") then
     tinsert(types, {
+      fallback = true,
+      icon = icon.cd,
+      title = L["Basic Show On Cooldown"],
+      description = L["Only shows the aura when the ability is on cooldown."],
+      createTriggers = function(triggers, item)
+        createAbilityTrigger(triggers, 1, item, "showOnCooldown");
+      end,
+    });
+    tinsert(types, {
       icon = icon.cd,
       title = L["Basic Show On Cooldown"],
       description = L["Only shows the aura when the ability is on cooldown."],
@@ -1036,6 +1045,15 @@ local function subTypesFor(item, regionType)
     });
   elseif(item.type == "totem") then
     tinsert(types, {
+      fallback = true,
+      icon = icon.cd2,
+      title = L["Always Show"],
+      description = L["Always shows the aura."],
+      createTriggers = function(triggers, item)
+        createTotemTrigger(triggers, 1, item);
+      end,
+    });
+    tinsert(types, {
       icon = icon.cd2,
       title = L["Always Show"],
       description = L["Always shows the aura, turns grey if on cooldown."],
@@ -1073,6 +1091,15 @@ local function subTypesFor(item, regionType)
     });
   elseif(item.type == "cast") then
     data.inverse = false
+    tinsert(types, {
+      fallback = true,
+      icon = item.icon,
+      title = item.title,
+      createTriggers = function(triggers, item)
+        createCastTrigger(triggers, 1, item);
+      end,
+      data = data,
+    });
     tinsert(types, {
       icon = item.icon,
       title = item.title,
@@ -1119,6 +1146,7 @@ local function subTypesFor(item, regionType)
   end
 
   -- filter when createConditions return nothing for this regionType
+  local fallbacks = {}
   for index = #types, 1, -1 do
     local type = types[index];
     if type.createConditions then
@@ -1127,10 +1155,16 @@ local function subTypesFor(item, regionType)
       if #conditions == 0 then
         tremove(types, index);
       end
+    elseif type.fallback then
+      tremove(types, index);
+      tinsert(fallbacks, type)
     end
   end
 
-  return types;
+  if #types > 0 then
+    return types
+  end
+  return fallbacks
 end
 
 function WeakAuras.CreateTemplateView(frame)
