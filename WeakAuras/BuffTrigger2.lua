@@ -2956,7 +2956,11 @@ local function UpdateMatchDataMulti(time, base, key, event, sourceGUID, sourceNa
 end
 
 local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
-  ScheduleMultiCleanUp(matchData.GUID, expirationTime)
+  if expirationTime == 0 then
+    expirationTime = math.huge
+  else
+    ScheduleMultiCleanUp(matchData.GUID, expirationTime)
+  end
   local changed = false
   if matchData.name ~= name then
     matchData.name = name
