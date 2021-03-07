@@ -1046,30 +1046,35 @@ function OptionsPrivate.CreateFrame()
     OptionsPrivate.ClearTriggerExpandState()
   end
 
-  local function GetTarget(pickedDisplay)
+  frame.NewAura = function(self)
     local targetId
-    if pickedDisplay then
-      if type(pickedDisplay) == "table" and tempGroup.controlledChildren and tempGroup.controlledChildren[1] then
+    local targetIsDynamicGroup
+
+    if self.pickedDisplay then
+      if type(self.pickedDisplay) == "table" and tempGroup.controlledChildren and tempGroup.controlledChildren[1] then
         targetId = tempGroup.controlledChildren[1]
-      elseif type(pickedDisplay) == "string" then
-        targetId = pickedDisplay
+        WeakAuras.PickDisplay(targetId)
+      elseif type(self.pickedDisplay) == "string" then
+        targetId = self.pickedDisplay
+      else
+        self:ClearPicks()
       end
     end
-    return targetId
-  end
 
-  frame.NewAura = function(self, fromGroup)
-    local targetId = GetTarget(self.pickedDisplay)
-    self:ClearPicks()
     if targetId then
       local pickedButton = WeakAuras.GetDisplayButton(targetId)
-      if pickedButton then
-        pickedButton:Pick()
+      if pickedButton.data.controlledChildren then
+        targetIsDynamicGroup = pickedButton.data.regionType == "dynamicgroup"
+      else
+        local parent = pickedButton.data.parent
+        local parentData = parent and WeakAuras.GetData(parent)
+        targetIsDynamicGroup = parentData and parentData.regionType == "dynamicgroup"
       end
     end
     self.moversizer:Hide()
     self.pickedOption = "New"
 
+    container:ReleaseChildren()
     container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -63 - WeakAuras.normalWidth * 340, -8)
     container:SetLayout("fill")
     local border = AceGUI:Create("InlineGroup")
@@ -1114,13 +1119,31 @@ function OptionsPrivate.CreateFrame()
       tinsert(regionTypesSorted, regionType)
     end
 
+    -- Sort group + dynamic group first, then the others alphabeticaly
     table.sort(regionTypesSorted, function(a, b)
+      if (a == "group") then
+        return true
+      end
+
+      if (b == "group") then
+        return false
+      end
+
+      if (a == "dynamicgroup") then
+        return true
+      end
+      if (b == "dynamicgroup") then
+        return false
+      end
+
       return regionOptions[a].displayName < regionOptions[b].displayName
     end)
 
     for index, regionType in ipairs(regionTypesSorted) do
-      local regionData = regionOptions[regionType]
-      if (not (fromGroup and (regionType == "group" or regionType == "dynamicgroup"))) then
+      if (targetIsDynamicGroup and (regionType == "group" or regionType == "dynamicgroup")) then
+        -- Dynamic groups can't contain group/dynamic groups
+      else
+        local regionData = regionOptions[regionType]
         local button = AceGUI:Create("WeakAurasNewButton")
         button:SetTitle(regionData.displayName)
         if(type(regionData.icon) == "string" or type(regionData.icon) == "table") then
@@ -1246,7 +1269,7 @@ function OptionsPrivate.CreateFrame()
     end
 
     if data.controlledChildren and #data.controlledChildren == 0 then
-      WeakAurasOptions:NewAura(true)
+      WeakAurasOptions:NewAura()
     end
 
     OptionsPrivate.Private.ResumeAllDynamicGroups()
