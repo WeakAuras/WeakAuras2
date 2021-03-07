@@ -758,8 +758,7 @@ function Private.DisplayToString(id, forChat)
   if(data) then
     data.uid = data.uid or GenerateUniqueID()
     local transmitData = CompressDisplay(data);
-    local children = data.controlledChildren;
-       local transmit = {
+    local transmit = {
       m = "d",
       d = transmitData,
       v = 1421, -- Version of Transmisson, won't change anymore.
@@ -772,22 +771,24 @@ function Private.DisplayToString(id, forChat)
         transmit.a[v] = WeakAuras.spellCache.GetIcon(v);
       end
     end
-    if(children) then
+    if(data.controlledChildren) then
       transmit.c = {};
       local uids = {}
-      for index,childID in pairs(children) do
-        local childData = WeakAuras.GetData(childID);
-        if(childData) then
-          if childData.uid then
-            if uids[childData.uid] then
-              childData.uid = GenerateUniqueID()
-            else
-              uids[childData.uid] = true
-            end
+      local index = 1
+      for child in Private.TraverseAllChildren(data) do
+        if child.uid then
+          if uids[child.uid] then
+            child.uid = GenerateUniqueID()
           else
-            childData.uid = GenerateUniqueID()
+            uids[child.uid] = true
           end
-          transmit.c[index] = CompressDisplay(childData);
+        else
+          child.uid = GenerateUniqueID()
+        end
+        transmit.c[index] = CompressDisplay(child);
+        index = index + 1
+        if child.controlledChildren then
+          transmit.v = 2000
         end
       end
     end
@@ -1585,7 +1586,7 @@ local function ShowDisplayTooltip(data, children, matchInfo, icon, icons, import
 end
 
 function WeakAuras.Import(inData, target)
-  local data, children, icon, icons
+  local data, children, icon, icons, version
   if type(inData) == 'string' then
     -- encoded data
     local received = StringToTable(inData, true)
@@ -1601,16 +1602,26 @@ function WeakAuras.Import(inData, target)
       children = received.c
       icon = received.i
       icons = received.a
+      version = received.v
     end
   elseif type(inData.d) == 'table' then
     data = inData.d
     children = inData.c
     icon = inData.i
     icons = inData.a
+    version = inData.v
   end
   if type(data) ~= "table" then
     return nil, "Invalid import data."
   end
+  if version > 1999 then
+    ShowTooltip{
+      {1, "WeakAuras", 0.5333, 0, 1},
+      {1, L["This import requires a newer WeakAuras version."], 1, 0, 0, 1}
+    }
+    return nil, "Invalid import data. This import requires a newer WeakAuras version."
+  end
+
   local status, msg = true, ""
   if type(target) ~= 'nil' then
     local targetData
