@@ -3816,7 +3816,7 @@ end
 
 local function startStopTimers(id, cloneId, triggernum, state)
   if (state.show) then
-    if (state.autoHide and state.duration and state.duration > 0) then -- autohide, update timer
+    if (state.autoHide and state.duration and state.duration > 0 and not state.paused) then -- autohide, update timer
       timers[id] = timers[id] or {};
       timers[id][triggernum] = timers[id][triggernum] or {};
       timers[id][triggernum][cloneId] = timers[id][triggernum][cloneId] or {};
