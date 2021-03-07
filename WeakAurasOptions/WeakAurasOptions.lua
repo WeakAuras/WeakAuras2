@@ -238,6 +238,108 @@ local function addParents(hash, data)
   end
 end
 
+local function commonParent(controlledChildren)
+  local allSame = true
+  local parent = nil
+  local targetIndex = math.huge
+  for index, id in ipairs(controlledChildren) do
+    local childData = WeakAuras.GetData(id);
+    local childButton = WeakAuras.GetDisplayButton(id)
+    targetIndex = min(targetIndex, childButton:GetGroupOrder() or math.huge)
+
+    if (parent == nil) then
+      parent = childData.parent
+    elseif not childData.parent then
+      allSame = false
+    elseif childData.parent ~= parent then
+      allSame = false
+    end
+  end
+  if allSame then
+    return parent, targetIndex
+  end
+end
+
+local function CreateNewGroupFromSelection(regionType, resetChildPositions)
+  local data = {
+    id = WeakAuras.FindUnusedId(tempGroup.controlledChildren[1].." Group"),
+    regionType = regionType,
+  };
+
+  WeakAuras.DeepMixin(data, WeakAuras.data_stub)
+  data.internalVersion = WeakAuras.InternalVersion()
+  WeakAuras.validate(data, WeakAuras.regionTypes[regionType].default);
+
+  local parent, targetIndex = commonParent(tempGroup.controlledChildren)
+
+  if (parent) then
+    local parentData = WeakAuras.GetData(parent)
+    tinsert(parentData.controlledChildren, targetIndex, data.id)
+    data.parent = parent
+    WeakAuras.Add(data);
+    WeakAuras.Add(parentData);
+    OptionsPrivate.Private.AddParents(parentData)
+    WeakAuras.NewDisplayButton(data);
+    WeakAuras.UpdateGroupOrders(parentData);
+    OptionsPrivate.ClearOptions(parentData.id);
+    WeakAuras.UpdateDisplayButton(parentData);
+
+    local parentButton = WeakAuras.GetDisplayButton(parent)
+    parentButton.callbacks.UpdateExpandButton();
+    parentButton:Expand();
+    parentButton:ReloadTooltip();
+  else
+    WeakAuras.Add(data);
+    WeakAuras.NewDisplayButton(data);
+  end
+
+  for index, childId in pairs(tempGroup.controlledChildren) do
+    local childData = WeakAuras.GetData(childId);
+    local childButton = WeakAuras.GetDisplayButton(childId)
+    local oldParent = childData.parent
+    local oldParentData = WeakAuras.GetData(oldParent)
+    if (oldParent) then
+      local oldIndex = childButton:GetGroupOrder()
+      print("CHILD ID", childId, "OLD PARENT", oldParent, "OLD INDEX", oldIndex)
+      print("###", oldParentData.controlledChildren[oldIndex])
+
+      tremove(oldParentData.controlledChildren, oldIndex)
+      WeakAuras.Add(oldParentData)
+      OptionsPrivate.Private.AddParents(oldParentData)
+      WeakAuras.UpdateGroupOrders(oldParentData);
+      WeakAuras.ClearAndUpdateOptions(oldParent);
+      WeakAuras.UpdateDisplayButton(oldParentData);
+      local oldParentButton = WeakAuras.GetDisplayButton(oldParent)
+      oldParentButton.callbacks.UpdateExpandButton();
+      oldParentButton:ReloadTooltip()
+    end
+
+    tinsert(data.controlledChildren, childId);
+    childData.parent = data.id;
+    if resetChildPositions then
+      childData.xOffset = 0;
+        childData.yOffset = 0;
+    end
+    WeakAuras.Add(data);
+    WeakAuras.Add(childData);
+    OptionsPrivate.ClearOptions(childData.id)
+
+    childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
+    childButton:SetGroupOrder(index, #data.controlledChildren);
+  end
+
+
+  local button = WeakAuras.GetDisplayButton(data.id);
+  button.callbacks.UpdateExpandButton();
+  WeakAuras.UpdateDisplayButton(data);
+  OptionsPrivate.SortDisplayButtons();
+  button:Expand();
+
+  if data.parent then
+    OptionsPrivate.Private.AddParents(data)
+  end
+end
+
 function OptionsPrivate.MultipleDisplayTooltipMenu()
   local frame = frame;
   local menu = {
@@ -245,74 +347,14 @@ function OptionsPrivate.MultipleDisplayTooltipMenu()
       text = L["Add to new Group"],
       notCheckable = 1,
       func = function()
-        local data = {
-          id = WeakAuras.FindUnusedId(tempGroup.controlledChildren[1].." Group"),
-          regionType = "group",
-        };
-
-        WeakAuras.DeepMixin(data, WeakAuras.data_stub)
-        data.internalVersion = WeakAuras.InternalVersion()
-        WeakAuras.Add(data);
-        WeakAuras.NewDisplayButton(data);
-
-        for index, childId in pairs(tempGroup.controlledChildren) do
-          local childData = WeakAuras.GetData(childId);
-          tinsert(data.controlledChildren, childId);
-          childData.parent = data.id;
-          WeakAuras.Add(data);
-          WeakAuras.Add(childData);
-          OptionsPrivate.ClearOptions(childData.id)
-        end
-
-        for index, id in pairs(data.controlledChildren) do
-          local childButton = WeakAuras.GetDisplayButton(id);
-          childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
-          childButton:SetGroupOrder(index, #data.controlledChildren);
-        end
-
-        local button = WeakAuras.GetDisplayButton(data.id);
-        button.callbacks.UpdateExpandButton();
-        WeakAuras.UpdateDisplayButton(data);
-        OptionsPrivate.SortDisplayButtons();
-        button:Expand();
+        CreateNewGroupFromSelection("group")
       end
     },
     {
       text = L["Add to new Dynamic Group"],
       notCheckable = 1,
       func = function()
-        local data = {
-          id = WeakAuras.FindUnusedId(tempGroup.controlledChildren[1].." Group"),
-          regionType = "dynamicgroup",
-        };
-
-        WeakAuras.DeepMixin(data, WeakAuras.data_stub)
-        data.internalVersion = WeakAuras.InternalVersion()
-        WeakAuras.Add(data);
-        WeakAuras.NewDisplayButton(data);
-
-        for index, childId in pairs(tempGroup.controlledChildren) do
-          local childData = WeakAuras.GetData(childId);
-          tinsert(data.controlledChildren, childId);
-          childData.parent = data.id;
-          childData.xOffset = 0;
-          childData.yOffset = 0;
-          WeakAuras.Add(data);
-          WeakAuras.Add(childData);
-        end
-
-        for index, id in pairs(data.controlledChildren) do
-          local childButton = WeakAuras.GetDisplayButton(id);
-          childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
-          childButton:SetGroupOrder(index, #data.controlledChildren);
-        end
-
-        local button = WeakAuras.GetDisplayButton(data.id);
-        button.callbacks.UpdateExpandButton();
-        WeakAuras.UpdateDisplayButton(data);
-        OptionsPrivate.SortDisplayButtons();
-        button:Expand();
-        WeakAuras.PickDisplay(data.id);
+        CreateNewGroupFromSelection("dynamicgroup", true)
       end
     },
     {
@@ -358,20 +400,43 @@ function OptionsPrivate.MultipleDisplayTooltipMenu()
       func = function() WeakAuras_DropDownMenu:Hide() end
     }
   };
-  local anyGrouped = false;
+
+  local anyGroup = false;
+  local allSameParent = true
+  local commonParent = nil
+  local first = true
   for index, id in pairs(tempGroup.controlledChildren) do
     local childData = WeakAuras.GetData(id);
-    if(childData and childData.parent) then
-      anyGrouped = true;
-      break;
+    if(childData and childData.controlledChildren) then
+      anyGroup = true;
+    end
+
+    if (first) then
+      commonParent = childData.parent
+      first = false
+    elseif childData.parent ~= commonParent then
+      allSameParent = false
     end
   end
-  if(anyGrouped) then
-    menu[1].notClickable = 1;
-    menu[1].text = "|cFF777777"..menu[1].text;
+
+  if(anyGroup) then
+    -- Disable "Add to New Dynamic Group"
     menu[2].notClickable = 1;
     menu[2].text = "|cFF777777"..menu[2].text;
   end
+
+  -- Also disable Add to New Dynamic Group/Group if that would create
+  -- a group inside a dynamic group
+  if (allSameParent and commonParent) then
+    local parentData = WeakAuras.GetData(commonParent);
+    if (parentData and parentData.regionType == "dynamicgroup") then
+      menu[1].notClickable = 1;
+      menu[1].text = "|cFF777777"..menu[1].text;
+      menu[2].notClickable = 1;
+      menu[2].text = "|cFF777777"..menu[1].text;
+    end
+  end
+
   return menu;
 end
 
@@ -1132,8 +1197,8 @@ end
 
 function OptionsPrivate.PickAndEditDisplay(id)
   frame:PickDisplay(id);
-  displayButtons[id].callbacks.OnRenameClick();
   OptionsPrivate.UpdateButtonsScroll()
+  displayButtons[id].callbacks.OnRenameClick();
 end
 
 function OptionsPrivate.ClearPick(id)
@@ -1486,7 +1551,7 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
 
   AddDefaultSubRegions(data)
 
-  if (data.regionType ~= "group" and data.regionType ~= "dynamicgroup" and targetId) then
+  if targetId then
     local target = WeakAuras.GetDisplayButton(targetId);
     local group
     if (target) then
@@ -1496,6 +1561,11 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
         group = WeakAuras.GetDisplayButton(target.data.parent);
       end
       if (group) then
+        -- Sanity check so that we don't create a group/dynamic group in a group
+        if (regionType == "group" or regionType == "dynamicgroup") and group.data.regionType == "dynamicgroup" then
+          return
+        end
+
         local children = group.data.controlledChildren;
         local index = target:GetGroupOrder();
         if (ensure(children, index, target.data.id)) then

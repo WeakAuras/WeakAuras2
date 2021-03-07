@@ -1052,30 +1052,46 @@ function OptionsPrivate.CreateFrame()
     OptionsPrivate.ClearTriggerExpandState()
   end
 
-  local function GetTarget(pickedDisplay)
-    local targetId
-    if pickedDisplay then
-      if type(pickedDisplay) == "table" and tempGroup.controlledChildren and tempGroup.controlledChildren[1] then
-        targetId = tempGroup.controlledChildren[1]
-      elseif type(pickedDisplay) == "string" then
-        targetId = pickedDisplay
+  frame.GetTargetAura = function(self)
+    if self.pickedDisplay then
+      if type(self.pickedDisplay) == "table" and tempGroup.controlledChildren and tempGroup.controlledChildren[1] then
+        return tempGroup.controlledChildren[1]
+      elseif type(self.pickedDisplay) == "string" then
+        return self.pickedDisplay
       end
     end
-    return targetId
+    return nil
   end
 
-  frame.NewAura = function(self, fromGroup)
-    local targetId = GetTarget(self.pickedDisplay)
-    self:ClearPicks()
+  frame.NewAura = function(self)
+    local targetId
+    local targetIsDynamicGroup
+
+    if self.pickedDisplay then
+      if type(self.pickedDisplay) == "table" and tempGroup.controlledChildren and tempGroup.controlledChildren[1] then
+        targetId = tempGroup.controlledChildren[1]
+        WeakAuras.PickDisplay(targetId)
+      elseif type(self.pickedDisplay) == "string" then
+        targetId = self.pickedDisplay
+      else
+        self:ClearPicks()
+      end
+    end
+
     if targetId then
       local pickedButton = WeakAuras.GetDisplayButton(targetId)
-      if pickedButton then
-        pickedButton:Pick()
+      if pickedButton.data.controlledChildren then
+        targetIsDynamicGroup = pickedButton.data.regionType == "dynamicgroup"
+      else
+        local parent = pickedButton.data.parent
+        local parentData = parent and WeakAuras.GetData(parent)
+        targetIsDynamicGroup = parentData and parentData.regionType == "dynamicgroup"
       end
     end
     self.moversizer:Hide()
     self.pickedOption = "New"
 
+    container:ReleaseChildren()
     container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -63 - WeakAuras.normalWidth * 340, -8)
     container:SetLayout("fill")
     local border = AceGUI:Create("InlineGroup")
@@ -1099,7 +1115,7 @@ function OptionsPrivate.CreateFrame()
       button:SetDescription(L["Offer a guided way to create auras for your character"])
       button:SetIcon("Interface\\Icons\\INV_Misc_Book_06")
       button:SetClick(function()
-        OptionsPrivate.OpenTriggerTemplate(nil, targetId)
+        OptionsPrivate.OpenTriggerTemplate(nil, self:GetTargetAura())
       end)
       containerScroll:AddChild(button)
 
@@ -1120,13 +1136,31 @@ function OptionsPrivate.CreateFrame()
       tinsert(regionTypesSorted, regionType)
     end
 
+    -- Sort group + dynamic group first, then the others alphabeticaly
     table.sort(regionTypesSorted, function(a, b)
+      if (a == "group") then
+        return true
+      end
+
+      if (b == "group") then
+        return false
+      end
+
+      if (a == "dynamicgroup") then
+        return true
+      end
+      if (b == "dynamicgroup") then
+        return false
+      end
+
       return regionOptions[a].displayName < regionOptions[b].displayName
     end)
 
     for index, regionType in ipairs(regionTypesSorted) do
-      local regionData = regionOptions[regionType]
-      if (not (fromGroup and (regionType == "group" or regionType == "dynamicgroup"))) then
+      if (targetIsDynamicGroup and (regionType == "group" or regionType == "dynamicgroup")) then
+        -- Dynamic groups can't contain group/dynamic groups
+      else
+        local regionData = regionOptions[regionType]
         local button = AceGUI:Create("WeakAurasNewButton")
         button:SetTitle(regionData.displayName)
         if(type(regionData.icon) == "string" or type(regionData.icon) == "table") then
@@ -1134,7 +1168,7 @@ function OptionsPrivate.CreateFrame()
         end
         button:SetDescription(regionData.description)
         button:SetClick(function()
-          WeakAuras.NewAura(nil, regionType, targetId)
+          WeakAuras.NewAura(nil, regionType, self:GetTargetAura())
         end)
         containerScroll:AddChild(button)
       end
@@ -1252,7 +1286,7 @@ function OptionsPrivate.CreateFrame()
     end
 
     if data.controlledChildren and #data.controlledChildren == 0 then
-      WeakAurasOptions:NewAura(true)
+      WeakAurasOptions:NewAura()
     end
 
     OptionsPrivate.Private.ResumeAllDynamicGroups()
