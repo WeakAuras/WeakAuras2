@@ -5309,3 +5309,81 @@ end
 function WeakAuras.UnitStagger(unit)
   return UnitStagger(unit) or 0
 end
+
+do
+  local function shouldInclude(data, includeGroups, includeLeafs)
+    if data.controlledChildren then
+      return includeGroups
+    else
+      return includeLeafs
+    end
+  end
+
+  local function Traverse(data, includeSelf, includeGroups, includeLeafs)
+    if includeSelf and shouldInclude(data, includeGroups, includeLeafs) then
+      coroutine.yield(data)
+    end
+
+    if data.controlledChildren then
+      for _, children in ipairs(data.controlledChildren) do
+        Traverse(WeakAuras.GetData(children), true, includeGroups, includeLeafs)
+      end
+    end
+  end
+
+  local function TraverseLeafs(data)
+    return Traverse(data, false, false, true)
+  end
+
+  local function TraverseLeafsOrAura(data)
+    return Traverse(data, true, false, true)
+  end
+
+  local function TraverseGroups(data)
+    return Traverse(data, true, true, false)
+  end
+
+  local function TraverseSubGroups(data)
+    return Traverse(data, false, true, false)
+  end
+
+  local function TraverseAllChildren(data)
+    return Traverse(data, false, true, true)
+  end
+
+  local function TraverseAll(data)
+    return Traverse(data, true, true, true)
+  end
+
+  -- Only non-group auras, not include self
+  function Private.TraverseLeafs(data)
+    return coroutine.wrap(TraverseLeafs), data
+  end
+
+  -- The root if it is a non-group, otherwise non-group childrens
+  function Private.TraverseLeafsOrAura(data)
+    return coroutine.wrap(TraverseLeafsOrAura), data
+  end
+
+  -- All groups, includes self
+  function Private.TraverseGroups(data)
+    return coroutine.wrap(TraverseGroups), data
+  end
+
+  -- All groups, excludes self
+  function Private.TraverseSubGroups(data)
+    return coroutine.wrap(TraverseSubGroups), data
+  end
+
+  -- All Children, excludes self
+  function Private.TraverseAllChildren(data)
+    return coroutine.wrap(TraverseAllChildren), data
+  end
+
+  -- All Children and self
+  function Private.TraverseAll(data)
+    return coroutine.wrap(TraverseAll), data
+  end
+end
+
+
