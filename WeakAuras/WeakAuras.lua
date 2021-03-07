@@ -2135,13 +2135,13 @@ end
 
 function Private.SyncParentChildRelationships(silent)
   -- 1. Find all auras where data.parent ~= nil or data.controlledChildren ~= nil
-  --    If an aura has both, then remove data.parent
   --    If an aura has data.parent which doesn't exist, then remove data.parent
   --    If an aura has data.parent which doesn't have data.controlledChildren, then remove data.parent
   -- 2. For each aura with data.controlledChildren, iterate through the list of children and remove entries where:
   --    The child doesn't exist in the database
   --    The child ID is duplicated in data.controlledChildren (only the first will be kept)
   --    The child's data.parent points to a different parent
+  --    The parent is a dynamic group and the child is a group/dynamic group
   --    Otherwise, mark the child as having a valid parent relationship
   -- 3. For each aura with data.parent, remove data.parent if it was not marked to have a valid relationship in 2.
   local parents = {}
@@ -2149,14 +2149,7 @@ function Private.SyncParentChildRelationships(silent)
   local childHasParent = {}
   for id, data in pairs(db.displays) do
     if data.parent then
-      if data.controlledChildren then
-        if not silent then
-          prettyPrint("Detected corruption in saved variables: "..id.." is a group that thinks it's a parent.")
-        end
-        -- A display cannot have both children and a parent
-        data.parent = nil
-        parents[id] = data
-      elseif not db.displays[data.parent] then
+      if not db.displays[data.parent] then
         if not(silent) then
           prettyPrint("Detected corruption in saved variables: "..id.." has a nonexistent parent.")
         end
@@ -2170,7 +2163,8 @@ function Private.SyncParentChildRelationships(silent)
       else
         children[id] = data
       end
-    elseif data.controlledChildren then
+    end
+    if data.controlledChildren then
       parents[id] = data
     end
   end
@@ -2178,6 +2172,7 @@ function Private.SyncParentChildRelationships(silent)
   for id, data in pairs(parents) do
     local groupChildren = {}
     local childrenToRemove = {}
+    local dynamicGroup = data.regionType == "dynamicgroup"
     for index, childID in ipairs(data.controlledChildren) do
       local child = children[childID]
       if not child then
@@ -2189,6 +2184,13 @@ function Private.SyncParentChildRelationships(silent)
         if not silent then
           prettyPrint("Detected corruption in saved variables: "..id.." thinks it controls "..childID.." which it does not.")
         end
+        childrenToRemove[index] = true
+      elseif dynamicGroup and child.controlledChildren then
+        if not silent then
+          prettyPrint("Detected corruption in saved variables: "..id.." is a dynamic group and controls "..childID.." which is a group/dynamicgroup.")
+        end
+        child.parent = nil
+        children[child.id] = nil
         childrenToRemove[index] = true
       elseif groupChildren[childID] then
         if not silent then
