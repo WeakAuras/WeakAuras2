@@ -1305,13 +1305,20 @@ local methods = {
   ["SetGroup"] = function(self, group)
     self.frame.dgroup = group;
     if(group) then
+      local depth = 0
+      while(group) do
+        depth = depth + 1
+        group = WeakAuras.GetData(group).parent
+      end
+      self.offset:SetWidth(depth * 8 + 1)
       self.icon:SetPoint("LEFT", self.ungroup, "RIGHT");
-      self.background:SetPoint("LEFT", self.ungroup, "RIGHT");
+      self.background:SetPoint("LEFT", self.offset, "RIGHT");
       self.ungroup:Show();
       self.group:Hide();
       self.upgroup:Show();
       self.downgroup:Show();
     else
+      self.offset:SetWidth(1)
       self.icon:SetPoint("LEFT", self.frame, "LEFT");
       self.background:SetPoint("LEFT", self.frame, "LEFT");
       self.ungroup:Hide();
@@ -1600,6 +1607,13 @@ local function Constructor()
   button.dgroup = nil;
   button.data = {};
 
+  local offset = CreateFrame("Frame", nil, button)
+  button.offset = offset
+  offset:SetPoint("TOP", button, "TOP");
+  offset:SetPoint("BOTTOM", button, "BOTTOM");
+  offset:SetPoint("LEFT", button, "LEFT");
+  offset:SetWidth(1)
+
   local background = button:CreateTexture(nil, "BACKGROUND");
   button.background = background;
   background:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp");
@@ -1607,14 +1621,14 @@ local function Constructor()
   background:SetVertexColor(0.5, 0.5, 0.5, 0.25);
   background:SetPoint("TOP", button, "TOP");
   background:SetPoint("BOTTOM", button, "BOTTOM");
-  background:SetPoint("LEFT", button, "LEFT");
+  background:SetPoint("LEFT", button, "LEFT")
   background:SetPoint("RIGHT", button, "RIGHT");
 
   local icon = button:CreateTexture(nil, "OVERLAY");
   button.icon = icon;
   icon:SetWidth(32);
   icon:SetHeight(32);
-  icon:SetPoint("LEFT", button, "LEFT");
+  icon:SetPoint("LEFT", offset, "RIGHT");
 
   local title = button:CreateFontString(nil, "OVERLAY", "GameFontNormal");
   button.title = title;
@@ -1749,7 +1763,7 @@ local function Constructor()
   button.ungroup = ungroup;
   ungroup:SetWidth(11);
   ungroup:SetHeight(11);
-  ungroup:SetPoint("LEFT", button, "LEFT", 0, 0);
+  ungroup:SetPoint("LEFT", offset, "RIGHT", 0, 0);
   local ungrouptexture = group:CreateTexture(nil, "OVERLAY");
   ungrouptexture:SetTexture("Interface\\MoneyFrame\\Arrow-Left-Down.blp");
   ungrouptexture:SetTexCoord(0.5, 0, 0.5, 1, 1, 0, 1, 1);
@@ -1764,7 +1778,7 @@ local function Constructor()
   button.upgroup = upgroup;
   upgroup:SetWidth(11);
   upgroup:SetHeight(11);
-  upgroup:SetPoint("TOPLEFT", button, "TOPLEFT", 0, 0);
+  upgroup:SetPoint("TOPLEFT", offset, "TOPRIGHT", 0, 0);
   local upgrouptexture = group:CreateTexture(nil, "OVERLAY");
   upgroup.texture = upgrouptexture;
   upgrouptexture:SetTexture("Interface\\MoneyFrame\\Arrow-Left-Down.blp");
@@ -1781,7 +1795,7 @@ local function Constructor()
   button.downgroup = downgroup;
   downgroup:SetWidth(11);
   downgroup:SetHeight(11);
-  downgroup:SetPoint("BOTTOMLEFT", button, "BOTTOMLEFT", 0, 0);
+  downgroup:SetPoint("BOTTOMLEFT", offset, "BOTTOMRIGHT", 0, 0);
   local downgrouptexture = group:CreateTexture(nil, "OVERLAY");
   downgroup.texture = downgrouptexture;
   downgrouptexture:SetTexture("Interface\\MoneyFrame\\Arrow-Left-Down.blp");
@@ -1832,7 +1846,8 @@ local function Constructor()
     background = background,
     expand = expand,
     warning = warning,
-    type = Type
+    type = Type,
+    offset = offset
   }
   for method, func in pairs(methods) do
     widget[method] = func
