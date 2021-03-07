@@ -339,7 +339,12 @@ local function modify(parent, region, data)
           local total = region.state.total ~= 0 and region.state.total or 1
           frame = floor((frames - 1) * value / total) + startFrame;
         else
-          local remaining = region.state.expirationTime and (region.state.expirationTime - GetTime()) or 0;
+          local remaining
+          if region.state.paused then
+            remaining = region.state.remaining or 0;
+          else
+            remaining = region.state.expirationTime and (region.state.expirationTime - GetTime()) or 0;
+          end
           local progress = region.state.duration and region.state.duration > 0 and (1 - (remaining / region.state.duration)) or 0;
           frame = floor( (frames - 1) * progress) + startFrame;
         end
@@ -364,6 +369,15 @@ local function modify(parent, region, data)
     region.FrameTick = onUpdate;
 
     function region:Update()
+      if region.state.paused then
+        if not region.paused then
+          region:Pause()
+        end
+      else
+        if region.paused then
+          region:Resume()
+        end
+      end
       onUpdate();
     end
 

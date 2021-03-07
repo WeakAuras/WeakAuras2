@@ -190,7 +190,7 @@ local funcs = {
     end
   end,
   UpdateTimerTick = function(self)
-    if self.tick_placement_mode == "ValueOffset" and self.state and self.state.progressType == "timed" then
+    if self.tick_placement_mode == "ValueOffset" and self.state and self.state.progressType == "timed" and not self.paused then
       if not self.TimerTick then
         self.TimerTick = self.UpdateTickPlacement
         self.parent:UpdateRegionHasTimerTick()
@@ -230,7 +230,13 @@ local funcs = {
     elseif self.tick_placement_mode == "ValueOffset" then
       if self.trigger_total and self.trigger_total ~= 0 then
         if self.state.progressType == "timed" then
-          tick_placement = self.state.expirationTime - GetTime() + self.tick_placement
+          if self.state.paused then
+            if self.state.remaining then
+              tick_placement = self.state.remaining + self.tick_placement
+            end
+          else
+            tick_placement = self.state.expirationTime - GetTime() + self.tick_placement
+          end
         else
           tick_placement = self.state.value + self.tick_placement
         end

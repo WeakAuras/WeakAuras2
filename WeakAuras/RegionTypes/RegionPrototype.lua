@@ -894,6 +894,16 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
   if not region.Expand then
     function region:Expand() end
   end
+  if not region.Pause then
+    function region:Pause()
+      self.paused = true
+    end
+  end
+  if not region.Resume then
+    function region:Resume()
+      self.paused = nil
+    end
+  end
 end
 
 function WeakAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
