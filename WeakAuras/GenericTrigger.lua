@@ -2639,7 +2639,7 @@ do
       bar.count = msg:match("(%d+)") or "0"
       bar.dbmType = dbmType
 
-      local barOptions = DBM.Bars.options
+      local barOptions = DBT.Options or DBM.Bars.options
       local r, g, b = 0, 0, 0
       if dbmType == 1 then
         r, g, b = barOptions.StartColorAR, barOptions.StartColorAG, barOptions.StartColorAB
