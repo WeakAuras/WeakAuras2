@@ -54,6 +54,7 @@ globals = {
 	"BigWigsLoader",
 	"CUSTOM_CLASS_COLORS",
 	"DBM",
+	"DBT",
 	"ElvUIPlayerNamePlateAnchor",
 	"GTFO",
 	"IndentationLib",
