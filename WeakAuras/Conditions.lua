@@ -135,7 +135,9 @@ function WeakAuras.scheduleConditionCheck(time, uid, cloneId)
       conditionChecksTimers.recheckHandle[uid][cloneId] = nil;
       local region = Private.GetRegionByUID(uid, cloneId)
       if (region and region.toShow) then
+        Private.ActivateAuraEnvironmentForRegion(region)
         checkConditions[uid](region);
+        Private.ActivateAuraEnvironment()
       end
     end, time - GetTime())
     conditionChecksTimers.recheckTime[uid][cloneId] = time;
