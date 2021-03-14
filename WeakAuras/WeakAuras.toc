@@ -17,6 +17,7 @@
 ## X-Website: https://www.curseforge.com/wow/addons/weakauras
 ## X-Curse-Project-ID: 65387
 ## X-WoWI-ID: 24910
+## X-Wago-ID: VBNBxKx5
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WeakAurasSaved
