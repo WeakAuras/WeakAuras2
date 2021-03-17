@@ -2694,7 +2694,7 @@ do
       local bar = bars[id]
       if bar then
         bar.paused = nil
-        bar.expirationTime = GetTime() + bar.remaining
+        bar.expirationTime = GetTime() + (bar.remaining or 0)
         bar.remaining = nil
         WeakAuras.ScanEvents("DBM_TimerResume", id)
         if nextExpire == nil then
@@ -2919,7 +2919,7 @@ do
       local bar = bars[text]
       if bar then
         bar.paused = nil
-        bar.expirationTime = GetTime() + bar.remaining
+        bar.expirationTime = GetTime() + (bar.remaining or 0)
         bar.remaining = nil
         WeakAuras.ScanEvents("BigWigs_ResumeBar", text)
         if nextExpire == nil then
