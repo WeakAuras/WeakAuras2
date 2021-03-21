@@ -1691,7 +1691,7 @@ do
     if(duration and duration > 0) then
       if not(gcdStart) then
         event = "GCD_START";
-      elseif(gcdStart ~= startTime) then
+      elseif(gcdStart ~= startTime or gcdDuration ~= duration) then
         event = "GCD_CHANGE";
       end
       gcdStart, gcdDuration = startTime, duration;
