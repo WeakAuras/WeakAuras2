@@ -1,6 +1,6 @@
 local AddonName, Private = ...
 
-local internalVersion = 44
+local internalVersion = 45
 
 -- Lua APIs
 local insert = table.insert
@@ -1356,6 +1356,18 @@ local function GetInstanceTypeAndSize()
     local difficultyInfo = Private.difficulty_info[difficultyIndex]
     if difficultyInfo then
       size, difficulty = difficultyInfo.size, difficultyInfo.difficulty
+    else
+      if not WeakAuras.IsClassic() then
+        if size == "arena" then
+          if C_PvP.IsRatedArena() and not IsArenaSkirmish() then
+            size = "ratedarena"
+          end
+        elseif size == "pvp" then
+          if C_PvP.IsRatedBattleground() then
+            size = "ratedpvp"
+          end
+        end
+      end
     end
     return size, difficulty, instanceType, ZoneMapID, difficultyIndex
   end

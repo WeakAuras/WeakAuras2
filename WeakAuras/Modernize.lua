@@ -1225,5 +1225,67 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 45 then
+    for triggerId, triggerData in ipairs(data.triggers) do
+      local trigger = triggerData.trigger
+      if trigger.type == "unit" and trigger.event == "Conditions" then
+        if trigger.use_instance_size then
+          -- Single Selection
+          if trigger.instance_size.single then
+            if trigger.instance_size.single == "arena" then
+              trigger.use_instance_size = false
+              trigger.instance_size.multi = {
+                arena = true,
+                ratedarena = true
+              }
+            elseif trigger.instance_size.single == "pvp" then
+              trigger.use_instance_size = false
+              trigger.instance_size.multi = {
+                pvp = true,
+                ratedpvp = true
+              }
+            end
+          end
+        elseif trigger.use_instance_size == false then
+          -- Multi selection
+          if trigger.instance_size.multi then
+            if trigger.instance_size.multi.arena then
+              trigger.instance_size.multi.ratedarena = true
+            end
+            if trigger.instance_size.multi.pvp then
+              trigger.instance_size.multi.ratedpvp = true
+            end
+          end
+        end
+      end
+    end
+
+    if data.load.use_size == true then
+      if data.load.size.single == "arena" then
+        data.load.use_size = false
+        data.load.size.multi = {
+          arena = true,
+          ratedarena = true
+        }
+      elseif data.load.size.single == "pvp" then
+        data.load.use_size = false
+        data.load.size.multi = {
+          pvp = true,
+          ratedpvp = true
+        }
+      end
+    elseif data.load.use_size == false then
+      if data.load.size.multi then
+        if data.load.size.multi.arena then
+          data.load.size.multi.ratedarena = true
+        end
+        if data.load.size.multi.pvp then
+          data.load.size.multi.ratedpvp = true
+        end
+      end
+    end
+
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
 end
