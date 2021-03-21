@@ -107,17 +107,17 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
       type = "execute",
       width = 0.2,
       order = baseOrder + i / 100 + 0.0002,
-      hidden = hiddenFunction
+      hidden = hiddenFunction,
+      control = "WeakAurasIcon"
     }
 
     if isExactSpellId then
-      aura_options[iconOption].name = ""
-      aura_options[iconOption].desc = function()
-        local name = GetSpellInfo(trigger[optionKey] and trigger[optionKey][i])
+      aura_options[iconOption].name = function()
+        local name = GetSpellInfo(WeakAuras.SafeToNumber(trigger[optionKey] and trigger[optionKey][i]))
         return name
       end
       aura_options[iconOption].image = function()
-        local icon = select(3, GetSpellInfo(trigger.auraspellids and trigger.auraspellids[i]))
+        local icon = select(3, GetSpellInfo(trigger[optionKey] and trigger[optionKey][i]))
         return icon and tostring(icon) or "", 18, 18
       end
       aura_options[iconOption].disabled = function()
