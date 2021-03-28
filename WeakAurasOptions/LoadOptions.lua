@@ -190,7 +190,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
             WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end,
           hidden = hidden,
           order = order
@@ -239,7 +239,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
             WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end,
           hidden = hidden,
           order = order
@@ -287,7 +287,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
             WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         };
       end
@@ -333,7 +333,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               OptionsPrivate.Private.ScanForLoads({[data.id] = true});
               WeakAuras.UpdateThumbnail(data);
               WeakAuras.UpdateDisplayButton(data);
-              WeakAuras.SortDisplayButtons();
+              WeakAuras.SortDisplayButtons(nil, true);
             end
           };
           if(arg.required and not triggertype) then
@@ -344,7 +344,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                 WeakAuras.ClearAndUpdateOptions(data.id)
               end
               OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-              WeakAuras.SortDisplayButtons();
+              WeakAuras.SortDisplayButtons(nil, true);
             end
           end
           order = order + 1;
@@ -368,7 +368,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
             WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         };
         if(arg.required and not triggertype) then
@@ -379,7 +379,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               WeakAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         end
         order = order + 1;
@@ -401,7 +401,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
             WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         };
 
@@ -421,7 +421,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               WeakAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         end
         order = order + 1;
@@ -444,7 +444,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
             WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         };
         if(arg.required and not triggertype) then
@@ -455,7 +455,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               WeakAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         end
         order = order + 1;
@@ -477,7 +477,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
             WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         };
         if(arg.required and not triggertype) then
@@ -488,7 +488,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               WeakAuras.ClearAndUpdateOptions(data.id)
             end
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         end
         order = order + 1;
@@ -509,7 +509,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               OptionsPrivate.Private.ScanForLoads({[data.id] = true});
               WeakAuras.UpdateThumbnail(data);
               WeakAuras.UpdateDisplayButton(data);
-              WeakAuras.SortDisplayButtons();
+              WeakAuras.SortDisplayButtons(nil, true);
             end,
           };
           order = order + 1;
@@ -604,7 +604,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
             WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         };
         order = order + 1;
@@ -658,7 +658,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
             WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         };
         if(arg.required and not triggertype) then
@@ -676,7 +676,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
             WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         end
         if (arg.control) then
@@ -749,7 +749,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
             WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         };
         if(arg.required and not triggertype) then
@@ -762,7 +762,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
             WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         end
 
@@ -782,7 +782,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               trigger[realname .. "_extraOption"] = v
               WeakAuras.Add(data)
               OptionsPrivate.Private.ScanForLoads({[data.id] = true})
-              WeakAuras.SortDisplayButtons()
+              WeakAuras.SortDisplayButtons(nil, true)
             end
           }
           order = order + 1
@@ -816,7 +816,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
             WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         };
         if(arg.required and not triggertype) then
@@ -833,7 +833,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
             WeakAuras.UpdateDisplayButton(data);
-            WeakAuras.SortDisplayButtons();
+            WeakAuras.SortDisplayButtons(nil, true);
           end
         end
 
@@ -901,7 +901,7 @@ function OptionsPrivate.GetLoadOptions(data)
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
         OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-        WeakAuras.SortDisplayButtons();
+        WeakAuras.SortDisplayButtons(nil, true);
       end,
       args = {}
     }

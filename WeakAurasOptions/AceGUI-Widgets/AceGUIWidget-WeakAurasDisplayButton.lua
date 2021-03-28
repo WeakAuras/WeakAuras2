@@ -99,7 +99,7 @@ clipboard.pasteMenuEntry = {
 
     WeakAuras.FillOptions()
     OptionsPrivate.Private.ScanForLoads({[clipboard.current.id] = true});
-    WeakAuras.SortDisplayButtons();
+    WeakAuras.SortDisplayButtons(nil, true);
     WeakAuras.PickDisplay(clipboard.current.id);
     WeakAuras.UpdateDisplayButton(clipboard.current.id);
     WeakAuras.ClearAndUpdateOptions(clipboard.current.id);
@@ -659,13 +659,13 @@ local methods = {
         button.callbacks.UpdateExpandButton()
         WeakAuras.UpdateDisplayButton(WeakAuras.GetData(new_idGroup))
 
-        WeakAuras.SortDisplayButtons()
+        WeakAuras.SortDisplayButtons(nil, true)
         OptionsPrivate.PickAndEditDisplay(new_idGroup)
 
         OptionsPrivate.Private.ResumeAllDynamicGroups()
       else
         local new_id = OptionsPrivate.DuplicateAura(data)
-        WeakAuras.SortDisplayButtons()
+        WeakAuras.SortDisplayButtons(nil, true)
         OptionsPrivate.PickAndEditDisplay(new_id)
       end
     end
