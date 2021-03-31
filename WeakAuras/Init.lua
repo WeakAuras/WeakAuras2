@@ -22,7 +22,7 @@ end
 
 local intendedWoWProject = WOW_PROJECT_MAINLINE
 
---[===[@non--version-retail@
+--[===[@non-version-retail@
 -- @version-classic@
 intendedWoWProject = WOW_PROJECT_CLASSIC
 -- @end-version-classic@
