@@ -37,7 +37,7 @@ Steps to reproduce the behavior:
 **Which version of WeakAuras are you using?**
 <!-- You can see the current version in the title bar of the options window, if the options do not open, check the CurseForge app or the `## Version:` field in the WeakAuras.toc file -->
 
-**Are you on World of Warcraft Classic or Retail?**
+**Are you on World of Warcraft BC, Classic or Retail?**
 <!-- Put an X between the brackets below to select your WoW flavor -->
 
 - [ ] Burning Crusade
@@ -45,7 +45,7 @@ Steps to reproduce the behavior:
 - [ ] Retail
 
 **Was it working in a previous version? If yes, which was the last good one?**
-<!-- You can always find older versions of WeakAuras to test with at https://www.curseforge.com/projects/weakauras-2/files -->
+<!-- You can always find older versions of WeakAuras to test with at https://www.curseforge.com/wow/addons/weakauras-2/files -->
 
 ### Additional Info
 
