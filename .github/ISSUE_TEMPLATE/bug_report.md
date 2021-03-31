@@ -40,6 +40,7 @@ Steps to reproduce the behavior:
 **Are you on World of Warcraft Classic or Retail?**
 <!-- Put an X between the brackets below to select your WoW flavor -->
 
+- [ ] Burning Crusade
 - [ ] Classic
 - [ ] Retail
 
