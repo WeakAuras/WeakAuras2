@@ -21,9 +21,12 @@ end
 --@end-debug@
 
 local intendedWoWProject = WOW_PROJECT_MAINLINE
---[===[@non-retail@
+--[===[@classic@
 intendedWoWProject = WOW_PROJECT_CLASSIC
---@end-non-retail@]===]
+--@end-classic@]===]
+--[===[@bc@
+intendedWoWProject = WOW_PROJECT_BC
+--@end-bc@]===]
 
 WeakAuras.versionString = versionStringFromToc
 WeakAuras.buildTime = buildTime
@@ -32,6 +35,10 @@ WeakAuras.BuildInfo = select(4, GetBuildInfo())
 
 function WeakAuras.IsClassic()
   return WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+end
+
+function WeakAuras.IsBC()
+  return WOW_PROJECT_ID == WOW_PROJECT_BC
 end
 
 function WeakAuras.IsCorrectVersion()

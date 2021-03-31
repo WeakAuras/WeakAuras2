@@ -40,6 +40,16 @@ jobs:
           name: WeakAuras-PR${{ github.event.number }}-classic
           path: .release/
 
+      - name: Create BC Package
+        uses: BigWigsMods/packager@master
+        with:
+          args: -d -z -g BC -m .pkgmeta-classic
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: WeakAuras-PR${{ github.event.number }}-bc
+          path: .release/
+
       - name: Send Status to Discord
         uses: nebularg/actions-discord-webhook@v1
         with:
