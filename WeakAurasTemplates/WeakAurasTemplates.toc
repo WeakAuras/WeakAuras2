@@ -1,5 +1,6 @@
 ## Interface: 90005
 ## Interface-Classic: 11306
+## Interface-BC: 20501
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
 ## Version: @project-version@
