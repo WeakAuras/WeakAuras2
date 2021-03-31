@@ -10,3 +10,4 @@ format.bat
 .release
 .install
 .lua/*
+.vscode
