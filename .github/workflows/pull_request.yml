@@ -43,7 +43,7 @@ jobs:
       - name: Create BC Package
         uses: BigWigsMods/packager@master
         with:
-          args: -d -z -g BC -m .pkgmeta-classic
+          args: -d -z -g bc -m .pkgmeta-classic
 
       - uses: actions/upload-artifact@v2
         with:
