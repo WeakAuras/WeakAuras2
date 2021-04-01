@@ -41,7 +41,7 @@ function WeakAuras.IsClassic()
 end
 
 function WeakAuras.IsBC()
-  return WOW_PROJECT_ID == 2
+  return BackdropTemplateMixin and WOW_PROJECT_ID == 2
 end
 
 function WeakAuras.IsCorrectVersion()
