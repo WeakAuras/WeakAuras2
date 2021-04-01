@@ -7845,9 +7845,9 @@ Private.event_prototypes = {
       },
       {
         name = "vehicle",
-        display = WeakAuras.IsClassic() and L["On Taxi"] or L["In Vehicle"],
+        display = not WeakAuras.IsRetail() and L["On Taxi"] or L["In Vehicle"],
         type = "tristate",
-        init = WeakAuras.IsClassic() and "UnitOnTaxi('player')" or "UnitInVehicle('player')",
+        init = not WeakAuras.IsRetail() and "UnitOnTaxi('player')" or "UnitInVehicle('player')",
       },
       {
         name = "resting",
