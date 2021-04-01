@@ -31,7 +31,7 @@ jobs:
       - name: Create Package
         uses: BigWigsMods/packager@master
         with:
-          args: -g bc -m .pkgmeta-classic
+          args: -g bc
         env:
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
           WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
