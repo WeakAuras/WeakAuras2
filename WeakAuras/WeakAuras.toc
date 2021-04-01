@@ -22,6 +22,16 @@
 
 # external code + initialization
 embeds.xml
+
+# Classic Specific Libs
+# @non-version-retail@
+# @non-version-bc@
+# Libs\LibClassicDurations\LibClassicDurations.xml
+# Libs\LibClassicCasterino\LibClassicCasterino.lua
+# Libs\LibClassicSpellActionCount-1.0\LibClassicSpellActionCount-1.0.lua
+# @end-non-version-bc@
+# @end-non-version-retail@
+
 Init.lua
 locales.xml
 ArchiveTypes\Repository.lua
