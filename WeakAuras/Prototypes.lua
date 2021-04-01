@@ -90,7 +90,7 @@ if WeakAuras.IsClassic() then
   LibClassicCasterino = LibStub("LibClassicCasterino")
 end
 
-if not WeakAuras.IsClassic() then
+if WeakAuras.IsRetail() then
   WeakAuras.UnitCastingInfo = UnitCastingInfo
 else
   WeakAuras.UnitCastingInfo = function(unit)
@@ -103,7 +103,7 @@ else
 end
 
 function WeakAuras.UnitChannelInfo(unit)
-  if not WeakAuras.IsClassic() then
+  if WeakAuras.IsRetail() then
     return UnitChannelInfo(unit)
   elseif UnitIsUnit(unit, "player") then
     return ChannelInfo()
@@ -1020,7 +1020,7 @@ local function valuesForTalentFunction(trigger)
     end
 
     local single_spec;
-    if not WeakAuras.IsClassic() then
+    if WeakAuras.IsRetail() then
       if single_class then
         if(trigger.use_spec == false and trigger.spec and trigger.spec.multi) then
           local num_specs = 0;
@@ -2110,7 +2110,7 @@ Private.event_prototypes = {
       local result = {}
       AddUnitEventForEvents(result, unit, "UNIT_HEALTH")
       AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
-      if not WeakAuras.IsClassic() then
+      if WeakAuras.IsRetail() then
         if trigger.use_showAbsorb then
           AddUnitEventForEvents(result, unit, "UNIT_ABSORB_AMOUNT_CHANGED")
         end
@@ -2422,7 +2422,7 @@ Private.event_prototypes = {
         AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
       end
 
-      if not WeakAuras.IsClassic()
+      if WeakAuras.IsRetail()
           and trigger.use_powertype and trigger.powertype == 4
       then
         AddUnitEventForEvents(result, unit, "UNIT_POWER_POINT_CHARGE")
@@ -2489,7 +2489,7 @@ Private.event_prototypes = {
           end
         ]]
       end
-      if not WeakAuras.IsClassic()
+      if WeakAuras.IsRetail()
           and trigger.unit == 'player' and trigger.use_powertype and trigger.powertype == 4
       then
         ret = ret .. [[
@@ -6578,7 +6578,7 @@ Private.event_prototypes = {
         required = true,
         validate = WeakAuras.ValidateNumeric,
         desc = function()
-          if not WeakAuras.IsClassic() then
+          if WeakAuras.IsRetail() then
             return L["Set IDs can be found on websites such as wowhead.com/item-sets"]
           else
             return L["Set IDs can be found on websites such as classic.wowhead.com/item-sets"]
@@ -7376,7 +7376,7 @@ Private.event_prototypes = {
     init = function()
       local ret = [[
         local main_stat, _
-        if not WeakAuras.IsClassic() then
+        if WeakAuras.IsRetail() then
           _, _, _, _, _, main_stat = GetSpecializationInfo(GetSpecialization() or 0)
         end
       ]]
