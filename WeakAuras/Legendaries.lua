@@ -212,7 +212,7 @@ for k, v in pairs(legendariesToBonusId) do
 end
 
 WeakAuras.GetLegendariesBonusIds = function()
-  if WeakAuras.IsClassic() then
+  if not WeakAuras.IsRetail() then
     return ""
   end
 
@@ -240,7 +240,7 @@ WeakAuras.GetLegendariesBonusIds = function()
 end
 
 WeakAuras.GetLegendaryData = function(id)
-  if WeakAuras.IsClassic() then
+  if not WeakAuras.IsRetail() then
     return ""
   end
   local legendaryID = bonusIdToLegendary[tonumber(id)]
