@@ -1682,7 +1682,7 @@ do
   local function CheckGCD()
     local event;
     local startTime, duration
-    if WeakAuras.IsClassic() then
+    if WeakAuras.IsClassic() or WeakAuras.IsBC() then
       startTime, duration = GetSpellCooldown(29515);
       shootStart, shootDuration = GetSpellCooldown(5019)
     else
