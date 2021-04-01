@@ -305,7 +305,7 @@ local templates = {
   }
 }
 
-if not WeakAuras.IsClassic() then
+if WeakAuras.IsRetail() then
   tinsert(templates, {
     title = L["Fire Orb"],
     description = "",

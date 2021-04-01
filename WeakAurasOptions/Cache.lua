@@ -50,7 +50,7 @@ function spellCache.Build()
       coroutine.yield()
     end
 
-    if not WeakAuras.IsClassic() then
+    if WeakAuras.IsRetail() then
       for _, category in pairs(GetCategoryList()) do
         local total = GetCategoryNumAchievements(category, true)
         for i = 1, total do

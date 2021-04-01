@@ -49,7 +49,7 @@ function WeakAuras.IsRetail()
 end
 
 function WeakAuras.IsCorrectVersion()
-  return isDevVersion or intendedWoWProject == WOW_PROJECT_ID
+  return isDevVersion or true -- fix later
 end
 
 WeakAuras.prettyPrint = function(...)
