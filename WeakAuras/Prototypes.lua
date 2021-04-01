@@ -90,8 +90,13 @@ if WeakAuras.IsClassic() then
   LibClassicCasterino = LibStub("LibClassicCasterino")
 end
 
-if WeakAuras.IsRetail() or WeakAuras.IsBC() then
+if WeakAuras.IsRetail() then
   WeakAuras.UnitCastingInfo = UnitCastingInfo
+elseif WeakAuras.IsBC() then
+  WeakAuras.UnitCastingInfo = function(unit)
+    local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, castID, spellId = UnitCastingInfo(unit)
+    return name, text, texture, startTimeMS, endTimeMS, isTradeSkill, castID, nil, spellId
+  end
 else
   WeakAuras.UnitCastingInfo = function(unit)
     if UnitIsUnit(unit, "player") then
@@ -103,8 +108,11 @@ else
 end
 
 function WeakAuras.UnitChannelInfo(unit)
-  if WeakAuras.IsRetail() or WeakAuras.IsBC() then
+  if WeakAuras.IsRetail() then
     return UnitChannelInfo(unit)
+  elseif WeakAuras.IsBC() then
+    local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, spellId  = UnitChannelInfo(unit)
+    return name, text, texture, startTimeMS, endTimeMS, isTradeSkill, nil, spellId
   elseif UnitIsUnit(unit, "player") then
     return ChannelInfo()
   else
@@ -7087,9 +7095,10 @@ Private.event_prototypes = {
         name = "interruptible",
         display = L["Interruptible"],
         type = "tristate",
-        enable = function(trigger) return not trigger.use_inverse end,
+        enable = function(trigger) return not WeakAuras.IsBC() and not trigger.use_inverse end,
         store = true,
-        conditionType = "bool"
+        conditionType = "bool",
+        hidden = WeakAuras.IsBC()
       },
       {
         name = "remaining",
