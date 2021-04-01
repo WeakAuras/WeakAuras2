@@ -2499,7 +2499,7 @@ function WeakAuras.WatchUnitChange(unit)
 
     WeakAuras.frames["Unit Change Frame"] = watchUnitChange;
     watchUnitChange:RegisterEvent("PLAYER_TARGET_CHANGED")
-    if WeakAuras.IsRetail() then
+    if not WeakAuras.IsClassic() then
       watchUnitChange:RegisterEvent("PLAYER_FOCUS_CHANGED");
     else
       watchUnitChange:RegisterEvent("PLAYER_ROLES_ASSIGNED")
