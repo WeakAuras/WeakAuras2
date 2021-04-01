@@ -27,7 +27,7 @@ local intendedWoWProject = WOW_PROJECT_MAINLINE
 intendedWoWProject = WOW_PROJECT_CLASSIC
 -- @end-version-classic@
 -- @version-bc@
-intendedWoWProject = WOW_PROJECT_BC
+intendedWoWProject = 2
 -- @end-version-bc@
 --@end-non-version-retail@]===]
 
@@ -41,7 +41,7 @@ function WeakAuras.IsClassic()
 end
 
 function WeakAuras.IsBC()
-  return WOW_PROJECT_ID == WOW_PROJECT_BC
+  return WOW_PROJECT_ID == 2
 end
 
 function WeakAuras.IsCorrectVersion()
