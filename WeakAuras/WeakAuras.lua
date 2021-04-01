@@ -1345,7 +1345,7 @@ local function GetInstanceTypeAndSize()
     if difficultyInfo then
       size, difficulty = difficultyInfo.size, difficultyInfo.difficulty
     else
-      if not WeakAuras.IsClassic() then
+      if WeakAuras.IsRetail() then
         if size == "arena" then
           if C_PvP.IsRatedArena() and not IsArenaSkirmish() then
             size = "ratedarena"
@@ -1456,7 +1456,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   local group = WeakAuras.GroupType()
 
   local affixes, warmodeActive, effectiveLevel = 0, false, 0
-  if not WeakAuras.IsClassic() then
+  if WeakAuras.IsRetail() then
     effectiveLevel = UnitEffectiveLevel("player")
     affixes = C_ChallengeMode.IsChallengeModeActive() and select(2, C_ChallengeMode.GetActiveKeystoneInfo())
     warmodeActive = C_PvP.IsWarModeDesired();
@@ -1577,7 +1577,7 @@ WeakAuras.unitLoadFrame = unitLoadFrame;
 WeakAuras.frames["Display Load Handling 2"] = unitLoadFrame;
 
 unitLoadFrame:RegisterUnitEvent("UNIT_FLAGS", "player");
-if not WeakAuras.IsClassic() then
+if WeakAuras.IsRetail() then
   unitLoadFrame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
   unitLoadFrame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
 end
