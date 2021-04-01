@@ -131,7 +131,7 @@ function Private.InitializeEncounterAndZoneLists()
   if encounter_list ~= "" then
     return
   end
-  if WeakAuras.IsClassic() then
+  if not WeakAuras.IsRetail() then
 
     local classic_raids = {
       [L["Black Wing Lair"]] = {
