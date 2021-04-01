@@ -25,11 +25,11 @@ embeds.xml
 
 # Classic Specific Libs
 #@non-version-retail@
-#@version-classic@
+# #@version-classic@
 # Libs\LibClassicDurations\LibClassicDurations.xml
 # Libs\LibClassicCasterino\LibClassicCasterino.lua
 # Libs\LibClassicSpellActionCount-1.0\LibClassicSpellActionCount-1.0.lua
-#@end-version-classic@
+# #@end-version-classic@
 #@end-non-version-retail@
 
 Init.lua
