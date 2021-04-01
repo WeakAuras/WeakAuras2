@@ -90,7 +90,7 @@ if WeakAuras.IsClassic() then
   LibClassicCasterino = LibStub("LibClassicCasterino")
 end
 
-if WeakAuras.IsRetail() then
+if WeakAuras.IsRetail() or WeakAuras.IsBC() then
   WeakAuras.UnitCastingInfo = UnitCastingInfo
 else
   WeakAuras.UnitCastingInfo = function(unit)
@@ -103,7 +103,7 @@ else
 end
 
 function WeakAuras.UnitChannelInfo(unit)
-  if WeakAuras.IsRetail() then
+  if WeakAuras.IsRetail() or WeakAuras.IsBC() then
     return UnitChannelInfo(unit)
   elseif UnitIsUnit(unit, "player") then
     return ChannelInfo()
