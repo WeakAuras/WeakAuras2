@@ -132,7 +132,7 @@ local function ConfigureModel(region, model, data)
     model:RegisterEvent("UNIT_MODEL_CHANGED");
 
     local unit
-    if WeakAuras.IsClassic() then
+    if not WeakAuras.IsRetail() then
       unit = data.model_path
     else
       unit = data.model_fileId
