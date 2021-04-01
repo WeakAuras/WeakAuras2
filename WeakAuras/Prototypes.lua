@@ -8208,7 +8208,7 @@ Private.event_prototypes = {
   },
 };
 
-if WeakAuras.IsClassic() then
+if WeakAuras.IsClassic() or WeakAuras.IsBC() then
   if not UnitDetailedThreatSituation then
     Private.event_prototypes["Threat Situation"] = nil
   end
