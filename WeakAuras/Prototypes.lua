@@ -6580,8 +6580,10 @@ Private.event_prototypes = {
         desc = function()
           if WeakAuras.IsRetail() then
             return L["Set IDs can be found on websites such as wowhead.com/item-sets"]
-          else
+          elseif WeakAuras.IsClassic() then
             return L["Set IDs can be found on websites such as classic.wowhead.com/item-sets"]
+          elseif WeakAuras.IsBC() then
+            return L["Set IDs can be found on websites such as tbc.wowhead.com/item-sets"]
           end
         end
       },
