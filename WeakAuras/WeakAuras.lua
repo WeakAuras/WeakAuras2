@@ -738,7 +738,7 @@ local function CreateTalentCache()
 
   Private.talent_types_specific[player_class] = Private.talent_types_specific[player_class] or {};
 
-  if WeakAuras.IsClassic() then
+  if WeakAuras.IsClassic() or WeakAuras.IsBC() then
     for tab = 1, GetNumTalentTabs() do
       for num_talent = 1, GetNumTalents(tab) do
         local talentName, talentIcon = GetTalentInfo(tab, num_talent);
@@ -1077,7 +1077,7 @@ loadedFrame:RegisterEvent("PLAYER_LOGIN");
 loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 loadedFrame:RegisterEvent("LOADING_SCREEN_ENABLED");
 loadedFrame:RegisterEvent("LOADING_SCREEN_DISABLED");
-if not WeakAuras.IsClassic() then
+if WeakAuras.IsRetail() then
   loadedFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
   loadedFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
 else
@@ -1542,7 +1542,7 @@ WeakAuras.frames["Display Load Handling"] = loadFrame;
 loadFrame:RegisterEvent("ENCOUNTER_START");
 loadFrame:RegisterEvent("ENCOUNTER_END");
 
-if not WeakAuras.IsClassic() then
+if WeakAuras.IsRetail() then
   loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
   loadFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
   loadFrame:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");

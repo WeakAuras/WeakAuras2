@@ -71,7 +71,7 @@ local timer = WeakAuras.timer
 local BuffTrigger = {}
 local triggerInfos = {}
 
-local UnitGroupRolesAssigned = not WeakAuras.IsClassic() and UnitGroupRolesAssigned or function() return "DAMAGER" end
+local UnitGroupRolesAssigned = WeakAuras.IsRetail() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 
 -- keyed on unit, debuffType, spellname, with a scan object value
 -- scan object: id, triggernum, scanFunc
@@ -1684,7 +1684,9 @@ frame:RegisterEvent("PLAYER_FLAGS_CHANGED")
 frame:RegisterUnitEvent("UNIT_PET", "player")
 if not WeakAuras.IsClassic() then
   frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
-  frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
+  if WeakAuras.IsRetail() then
+    frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
+  end
   frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
   frame:RegisterEvent("UNIT_EXITED_VEHICLE")
 else
