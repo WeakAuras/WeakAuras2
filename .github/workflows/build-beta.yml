@@ -29,6 +29,16 @@ jobs:
         run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
 
       - name: Create Package
+        if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
+        uses: BigWigsMods/packager@master
+        with:
+          args: -g bc
+        env:
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+
+      - name: Create Artifact
+        if: github.event_name == 'push' && !contains(github.ref, 'refs/tags/')
         uses: BigWigsMods/packager@master
         with:
           args: -z -g bc
