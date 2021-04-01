@@ -5147,7 +5147,7 @@ tinsert(templates.general.args, {
     behavior = "assist"}}}
 });
 
-if not WeakAuras.IsClassic() then
+if WeakAuras.IsRetail() then
   tinsert(templates.general.args, {
     spell = 2825, type = "buff", unit = "player",
     forceOwnOnly = true,
@@ -5174,7 +5174,7 @@ end
 --------------------------------------------------------------------------------
 -- Retail starts here
 --------------------------------------------------------------------------------
-if not WeakAuras.IsClassic() then
+if WeakAuras.IsRetail() then
   local resourceSection = 11
   -- Warrior
   for i = 1, 3 do
@@ -5371,7 +5371,7 @@ end
 ---------------------------
 --- Covenants
 ---------------------------
-if not WeakAuras.IsClassic() then
+if WeakAuras.IsRetail() then
   local covenants = {
     [4] = { -- Kyrian
       title = C_Covenants.GetCovenantData(1).name,
@@ -6204,7 +6204,7 @@ local function enrichDatabase()
   end
 end
 
-if not WeakAuras.IsClassic() then
+if WeakAuras.IsRetail() then
   local function fixupIcons()
     for className, class in pairs(templates.class) do
       for specIndex, spec in pairs(class) do

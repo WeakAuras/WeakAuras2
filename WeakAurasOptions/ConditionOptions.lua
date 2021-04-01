@@ -694,7 +694,7 @@ local function addControlsForChange(args, order, data, conditionVariable, condit
       return false;
     end
 
-    if not WeakAuras.IsClassic() then
+    if WeakAuras.IsRetail() then
       args["condition" .. i .. "value" .. j .. "message type warning"] = {
         type = "description",
         width = WeakAuras.doubleWidth,
