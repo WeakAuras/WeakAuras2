@@ -1915,7 +1915,7 @@ Private.swing_types = {
   ["off"] = SECONDARYHANDSLOT
 }
 
-if WeakAuras.IsClassic() then
+if WeakAuras.IsClassic() or WeakAuras.IsBC() then
   Private.swing_types["ranged"] = RANGEDSLOT
 end
 
@@ -3281,16 +3281,19 @@ if WeakAuras.IsBC() then
   Private.talent_extra_option_types[2] = nil
 
   local reset_swing_spell_list = {
-    1464, 8820, 11604, 11605, -- Slam
-    78, 284, 285, 1608, 11564, 11565, 11566, 11567, 25286, -- Heroic Strike
-    845, 7369, 11608, 11609, 20569, -- Cleave
-    2973, 14260, 14261, 14262, 14263, 14264, 14265, 14266, -- Raptor Strike
-    6807, 6808, 6809, 8972, 9745, 9880, 9881, -- Maul
+    1464, 8820, 11604, 11605, 25242, -- Slam
+    78, 284, 285, 1608, 11564, 11565, 11566, 11567, 25286, 29707, 30324, -- Heroic Strike
+    845, 7369, 11608, 11609, 20569, 25231, -- Cleave
+    2973, 14260, 14261, 14262, 14263, 14264, 14265, 14266, 27014, -- Raptor Strike
+    6807, 6808, 6809, 8972, 9745, 9880, 9881, 26996, -- Maul
     20549, -- War Stomp
   }
   for i, spellid in ipairs(reset_swing_spell_list) do
     Private.reset_swing_spells[spellid] = true
   end
+  Private.reset_ranged_swing_spells[2764] = true -- Throw
+  Private.reset_ranged_swing_spells[3018] = true -- Shoot
+  Private.reset_ranged_swing_spells[34120] = true -- Steady Shot
 
   Private.glow_types.ACShine = nil
 end
