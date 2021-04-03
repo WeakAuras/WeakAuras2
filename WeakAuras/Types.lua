@@ -3075,6 +3075,9 @@ Private.reset_ranged_swing_spells = {
   [75] = true, -- Auto Shot
 }
 
+Private.noreset_swing_spells = {
+  [23063] = true, -- Dense Dynamite
+}
 
 Private.item_weapon_types = {}
 
@@ -3266,6 +3269,7 @@ if WeakAuras.IsClassic() then
     2973, 14260, 14261, 14262, 14263, 14264, 14265, 14266, -- Raptor Strike
     6807, 6808, 6809, 8972, 9745, 9880, 9881, -- Maul
     20549, -- War Stomp
+    2480, 7919, 7918, 2764, 5019, -- Shoots
   }
   for i, spellid in ipairs(reset_swing_spell_list) do
     Private.reset_swing_spells[spellid] = true
@@ -3287,6 +3291,7 @@ if WeakAuras.IsBC() then
     2973, 14260, 14261, 14262, 14263, 14264, 14265, 14266, 27014, -- Raptor Strike
     6807, 6808, 6809, 8972, 9745, 9880, 9881, 26996, -- Maul
     20549, -- War Stomp
+    2764, 3018, -- Shoots
   }
   for i, spellid in ipairs(reset_swing_spell_list) do
     Private.reset_swing_spells[spellid] = true
