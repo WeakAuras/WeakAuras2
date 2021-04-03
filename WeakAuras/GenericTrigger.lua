@@ -1596,11 +1596,13 @@ do
         WeakAuras.ScanEvents(event);
       end
     elseif event == "UNIT_SPELLCAST_START" then
-      -- pause swing timer
-      casting = true
-      lastSwingMain, swingDurationMain, mainSwingOffset = nil, nil, nil
-      lastSwingOff, swingDurationOff = nil, nil
-      WeakAuras.ScanEvents("SWING_TIMER_END")
+      if not Private.noreset_swing_spells[spell] then
+        -- pause swing timer
+        casting = true
+        lastSwingMain, swingDurationMain, mainSwingOffset = nil, nil, nil
+        lastSwingOff, swingDurationOff = nil, nil
+        WeakAuras.ScanEvents("SWING_TIMER_END")
+      end
     end
     Private.StopProfileSystem("generictrigger swing");
   end
