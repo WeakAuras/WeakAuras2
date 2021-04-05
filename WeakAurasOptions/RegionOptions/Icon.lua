@@ -55,12 +55,8 @@ local function createOptions(id, data)
       func = function()
         local path = {"displayIcon"}
         local paths = {}
-        if data.controlledChildren then
-          for i, childId in pairs(data.controlledChildren) do
-            paths[childId] = path
-          end
-        else
-          paths[data.id] = path
+        for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+          paths[child.id] = path
         end
         OptionsPrivate.OpenIconPicker(data, paths)
       end,
