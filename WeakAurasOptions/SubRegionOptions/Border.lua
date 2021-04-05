@@ -10,26 +10,6 @@ local function createOptions(parentData, data, index, subIndex)
   local options = {
     __title = L["Border %s"]:format(subIndex),
     __order = 1,
-    __up = function()
-      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionUp, index, "subborder")) then
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
-      end
-    end,
-    __down = function()
-      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionDown, index, "subborder")) then
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
-      end
-    end,
-    __duplicate = function()
-      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.DuplicateSubRegion, index, "subborder")) then
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
-      end
-    end,
-    __delete = function()
-      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, WeakAuras.DeleteSubRegion, index, "subborder")) then
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
-      end
-    end,
     border_visible = {
       type = "toggle",
       width = WeakAuras.doubleWidth,
@@ -78,6 +58,8 @@ local function createOptions(parentData, data, index, subIndex)
       hidden = function() return parentData.regionType ~= "aurabar" end
     }
   }
+
+  OptionsPrivate.AddUpDownDeleteDuplicate(options, parentData, index, "subborder")
 
   return options
 end

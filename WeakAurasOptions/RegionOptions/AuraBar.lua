@@ -787,14 +787,16 @@ local function subCreateOptions(parentData, data, index, subIndex)
     __title = L["Foreground"],
     __order = 1,
     __up = function()
-      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionUp, index, "aurabar_bar")) then
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
+      for child in OptionsPrivate.Private.TraverseLeafsOrAura(parentData) do
+        OptionsPrivate.MoveSubRegionUp(child, index, "aurabar_bar")
       end
+      WeakAuras.ClearAndUpdateOptions(parentData.id)
     end,
     __down = function()
-      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionDown, index, "aurabar_bar")) then
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
+      for child in OptionsPrivate.Private.TraverseLeafsOrAura(parentData) do
+        OptionsPrivate.MoveSubRegionDown(child, index, "aurabar_bar")
       end
+      WeakAuras.ClearAndUpdateOptions(parentData.id)
     end,
     __notcollapsable = true
   }

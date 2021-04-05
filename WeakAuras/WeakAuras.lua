@@ -139,18 +139,6 @@ end
 
 if not WeakAuras.IsCorrectVersion() then return end
 
-function Private.ApplyToDataOrChildData(data, func, ...)
-  if data.controlledChildren then
-    for index, childId in ipairs(data.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
-      func(childData, ...)
-    end
-    return true
-  else
-    func(data, ...)
-  end
-end
-
 function Private.ToggleMinimap()
   WeakAurasSaved.minimap.hide = not WeakAurasSaved.minimap.hide
   if WeakAurasSaved.minimap.hide then
