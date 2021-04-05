@@ -3077,6 +3077,27 @@ Private.reset_ranged_swing_spells = {
 
 Private.noreset_swing_spells = {
   [23063] = true, -- Dense Dynamite
+  [4054] = true, -- Rough Dynamite
+  [4064] = true, -- Rough Copper Bomb
+  [4061] = true, -- Coarse Dynamite
+  [8331] = true, -- Ez-Thro Dynamite
+  [4065] = true, -- Large Copper Bomb
+  [4066] = true, -- Small Bronze Bomb
+  [4062] = true, -- Heavy Dynamite
+  [4067] = true, -- Big Bronze Bomb
+  [4068] = true, -- Iron Grenade
+  [23000] = true, -- Ez-Thro Dynamite II
+  [12421] = true, -- Mithril Frag Bomb
+  [4069] = true, -- Big Iron Bomb
+  [12562] = true, -- The Big One
+  [12543] = true, -- Hi-Explosive Bomb
+  [19769] = true, -- Thorium Grenade
+  [19784] = true, -- Dark Iron Bomb
+  [30216] = true, -- Fel Iron Bomb
+  [19821] = true, -- Arcane Bomb
+  [39965] = true, -- Frost Grenade
+  [30461] = true, -- The Bigger One
+  [30217] = true, -- Adamantite Grenade
 }
 
 Private.item_weapon_types = {}
