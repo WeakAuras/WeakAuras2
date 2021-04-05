@@ -853,10 +853,8 @@ function OptionsPrivate.CreateFrame()
         data = tempGroup
       end
 
-      if data.controlledChildren then
-        for _, id in ipairs(data.controlledChildren) do
-          frame:ClearOptions(id)
-        end
+      for child in OptionsPrivate.Private.TraverseAllChildren(data) do
+        frame:ClearOptions(child.id)
       end
     end
     if (type(self.pickedDisplay) == "string" and self.pickedDisplay == id)
