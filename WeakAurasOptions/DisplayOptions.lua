@@ -15,24 +15,21 @@ local hiddenAll = OptionsPrivate.commonOptions.CreateHiddenAll("region")
 local getAll = OptionsPrivate.commonOptions.CreateGetAll("region")
 local setAll = OptionsPrivate.commonOptions.CreateSetAll("region", getAll)
 
-local function AddSubRegionImpl(data, subRegionName)
-  data.subRegions = data.subRegions or {}
-  if OptionsPrivate.Private.subRegionTypes[subRegionName] and OptionsPrivate.Private.subRegionTypes[subRegionName] then
-    if OptionsPrivate.Private.subRegionTypes[subRegionName].supports(data.regionType) then
-      local default = OptionsPrivate.Private.subRegionTypes[subRegionName].default
-      local subRegionData = type(default) == "function" and default(data.regionType) or CopyTable(default)
-      subRegionData.type = subRegionName
-      tinsert(data.subRegions, subRegionData)
-      WeakAuras.Add(data)
-      WeakAuras.ClearAndUpdateOptions(data.id)
+local function AddSubRegion(data, subRegionName)
+  for data in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+    data.subRegions = data.subRegions or {}
+    if OptionsPrivate.Private.subRegionTypes[subRegionName] and OptionsPrivate.Private.subRegionTypes[subRegionName] then
+      if OptionsPrivate.Private.subRegionTypes[subRegionName].supports(data.regionType) then
+        local default = OptionsPrivate.Private.subRegionTypes[subRegionName].default
+        local subRegionData = type(default) == "function" and default(data.regionType) or CopyTable(default)
+        subRegionData.type = subRegionName
+        tinsert(data.subRegions, subRegionData)
+        WeakAuras.Add(data)
+        OptionsPrivate.ClearOptions(data.id)
+      end
     end
   end
-end
-
-local function AddSubRegion(data, subRegionName)
-  if (OptionsPrivate.Private.ApplyToDataOrChildData(data, AddSubRegionImpl, subRegionName)) then
-    WeakAuras.ClearAndUpdateOptions(data.id)
-  end
+  WeakAuras.ClearAndUpdateOptions(data.id)
 end
 
 local function AddOptionsForSupportedSubRegion(regionOption, data, supported)

@@ -31,26 +31,6 @@ local function createOptions(parentData, data, index, subIndex)
   local options = {
     __title = L["Text %s"]:format(subIndex),
     __order = 1,
-    __up = function()
-      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionUp, index, "subtext")) then
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
-      end
-    end,
-    __down = function()
-      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.MoveSubRegionDown, index, "subtext")) then
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
-      end
-    end,
-    __duplicate = function()
-      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, OptionsPrivate.DuplicateSubRegion, index, "subtext")) then
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
-      end
-    end,
-    __delete = function()
-      if (OptionsPrivate.Private.ApplyToDataOrChildData(parentData, WeakAuras.DeleteSubRegion, index, "subtext")) then
-        WeakAuras.ClearAndUpdateOptions(parentData.id)
-      end
-    end,
     text_visible = {
       type = "toggle",
       width = WeakAuras.halfWidth,
@@ -511,6 +491,8 @@ local function createOptions(parentData, data, index, subIndex)
     width = WeakAuras.doubleWidth,
     hidden = hidden
   })
+
+  OptionsPrivate.AddUpDownDeleteDuplicate(options, parentData, index, "subtext")
 
   return options, commonTextOptions
 end
