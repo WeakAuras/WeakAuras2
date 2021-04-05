@@ -109,8 +109,8 @@ local function nameHead(data, option, phrase)
   if not data.controlledChildren then
     return phrase
   else
-    for _, id in ipairs(data.controlledChildren) do
-      if not option.references[id] then
+    for child in OptionsPrivate.Private.TraverseLeafs(data) do
+      if not option.references[child.id] then
         return conflictBlue .. phrase
       end
     end
@@ -2489,18 +2489,12 @@ function OptionsPrivate.GetAuthorOptions(data)
   local isAuthorMode = true
   local options = {}
   local order = createorder(1)
-  if data.controlledChildren then
-    -- merge options together
-    for i = 1, #data.controlledChildren do
-      local childData = WeakAuras.GetData(data.controlledChildren[i])
-      mergeOptions(options, childData, childData.authorOptions, childData.config, {})
-      isAuthorMode = isAuthorMode and childData.authorMode
-    end
-  else
-    -- pretend that this is a group with one child
-    isAuthorMode = data.authorMode
-    mergeOptions(options, data, data.authorOptions, data.config, {})
+
+  for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+    mergeOptions(options, child, child.authorOptions, child.config, {})
+    isAuthorMode = isAuthorMode and child.authorMode
   end
+
   if isAuthorMode then
     args["enterUserMode"] = {
       type = "execute",
@@ -2509,14 +2503,9 @@ function OptionsPrivate.GetAuthorOptions(data)
       desc = L["Enter user mode."],
       order = order(),
       func = function()
-        if data.controlledChildren then
-          for _, id in ipairs(data.controlledChildren) do
-            local childData = WeakAuras.GetData(id)
-            childData.authorMode = nil
-            -- no need to add, author mode is picked up by ClearAndUpdateOptions
-          end
-        else
-          data.authorMode = nil
+        for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+          child.authorMode = nil
+          -- no need to add, author mode is picked up by ClearAndUpdateOptions
         end
         WeakAuras.ClearAndUpdateOptions(data.id, true)
       end
@@ -2535,24 +2524,9 @@ function OptionsPrivate.GetAuthorOptions(data)
       name = L["Add Option"],
       order = order(),
       func = function()
-        if data.controlledChildren then
-          for _, id in pairs(data.controlledChildren) do
-            local childData = WeakAuras.GetData(id)
-            local i = #childData.authorOptions + 1
-            childData.authorOptions[i] = {
-              type = "toggle",
-              key = "option" .. i,
-              name = L["Option %i"]:format(i),
-              default = false,
-              width = 1,
-              useDesc = false,
-            }
-            OptionsPrivate.SetCollapsed(childData.id, "author", i, false)
-            WeakAuras.Add(childData)
-          end
-        else
-          local i = #data.authorOptions + 1
-          data.authorOptions[i] = {
+        for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+          local i = #child.authorOptions + 1
+          child.authorOptions[i] = {
             type = "toggle",
             key = "option" .. i,
             name = L["Option %i"]:format(i),
@@ -2560,8 +2534,8 @@ function OptionsPrivate.GetAuthorOptions(data)
             width = 1,
             useDesc = false,
           }
-          OptionsPrivate.SetCollapsed(data.id, "author", i, false)
-          WeakAuras.Add(data)
+          OptionsPrivate.SetCollapsed(child.id, "author", i, false)
+          WeakAuras.Add(child)
         end
         WeakAuras.ClearAndUpdateOptions(data.id, true)
       end
@@ -2582,43 +2556,24 @@ function OptionsPrivate.GetAuthorOptions(data)
       desc = L["Reset all options to their default values."],
       order = order(),
       func = function()
-        if data.controlledChildren then
-          for _, id in pairs(data.controlledChildren) do
-            local childData = WeakAuras.GetData(id)
-            OptionsPrivate.ResetCollapsed(id, "config")
-            childData.config = {} -- config validation in Add() will set all the needed keys to their defaults
-            WeakAuras.Add(childData)
-          end
-        else
-          data.config = {}
-          OptionsPrivate.ResetCollapsed(data.id, "config")
-          WeakAuras.Add(data)
+        for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+          child.config = {} -- config validation in Add() will set all the needed keys to their defaults
+          OptionsPrivate.ResetCollapsed(child.id, "config")
+          WeakAuras.Add(child)
         end
         WeakAuras.ClearAndUpdateOptions(data.id, true)
       end,
       disabled = function()
         local path = {}
-        if data.controlledChildren then
-          for _, id in pairs(data.controlledChildren) do
-            local childData = WeakAuras.GetData(id)
-            local childConfig = childData.config
-            for i, childOption in ipairs(childData.authorOptions) do
+        for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+          local config = child.config
+            for i, option in ipairs(child.authorOptions) do
               path[1] = i
-              local result = allChoicesAreDefault(childOption, childConfig, id, path)
+              local result = allChoicesAreDefault(option, config, child.id, path)
               if result == false then
                 return false
               end
             end
-          end
-        else
-          local config = data.config
-          for i, option in ipairs(data.authorOptions) do
-            path[1] = i
-            local result = allChoicesAreDefault(option, config, data.id, path)
-            if result == false then
-              return false
-            end
-          end
         end
         return true
       end
@@ -2630,13 +2585,8 @@ function OptionsPrivate.GetAuthorOptions(data)
       desc = L["Configure what options appear on this panel."],
       order = order(),
       func = function()
-        if data.controlledChildren then
-          for _, id in ipairs(data.controlledChildren) do
-            local childData = WeakAuras.GetData(id)
-            childData.authorMode = true
-            -- no need to add, author mode is picked up by ClearAndUpdateOptions
-          end
-        else
+        for data in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+          -- no need to add, author mode is picked up by ClearAndUpdateOptions
           data.authorMode = true
         end
         WeakAuras.ClearAndUpdateOptions(data.id, true)
