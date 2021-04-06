@@ -3211,7 +3211,7 @@ Private.event_prototypes = {
         enable = function(trigger)
           return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
         end,
-        test = not WeakAuras.IsRetail() and "GetSpellInfo(%q) == spellName" or nil,
+        test = WeakAuras.IsClassic() and "GetSpellInfo(%q) == spellName" or nil,
         store = true,
         conditionType = "number"
       },
