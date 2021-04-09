@@ -36,7 +36,7 @@ local function CorrectSpellName(input)
     else
       return nil;
     end
-  elseif WeakAuras.IsClassic() and input then
+  elseif (WeakAuras.IsClassic() or WeakAuras.IsBC()) and input then
     local name, _, _, _, _, _, spellId = GetSpellInfo(input)
     if spellId then
       return spellId
