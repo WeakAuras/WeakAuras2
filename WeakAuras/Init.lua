@@ -27,7 +27,7 @@ local intendedWoWProject = WOW_PROJECT_MAINLINE
 intendedWoWProject = WOW_PROJECT_CLASSIC
 -- @end-version-classic@
 -- @version-bc@
-intendedWoWProject = 2
+intendedWoWProject = WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 -- @end-version-bc@
 --@end-non-version-retail@]===]
 
@@ -49,7 +49,7 @@ function WeakAuras.IsRetail()
 end
 
 function WeakAuras.IsCorrectVersion()
-  return isDevVersion or true -- fix later
+  return isDevVersion or intendedWoWProject == WOW_PROJECT_ID
 end
 
 WeakAuras.prettyPrint = function(...)
