@@ -37,11 +37,11 @@ WeakAuras.newFeatureString = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeat
 WeakAuras.BuildInfo = select(4, GetBuildInfo())
 
 function WeakAuras.IsClassic()
-  return BackdropTemplateMixin == nil and WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+  return WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 end
 
 function WeakAuras.IsBC()
-  return BackdropTemplateMixin and WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+  return WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 end
 
 function WeakAuras.IsRetail()
