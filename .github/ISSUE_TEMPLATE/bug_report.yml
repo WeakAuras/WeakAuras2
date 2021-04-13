@@ -1,0 +1,80 @@
+---
+name: "Bug Report"
+description: Create a report to help us improve
+title: ''
+labels: '\U0001F41B Bug'
+assignees: ''
+issue_body: true
+body:
+- type: markdown
+  attributes:
+    value: |
+      Please [search for existing issues](https://github.com/WeakAuras/WeakAuras2/issues) before creating a new one.
+
+- type: input
+  attributes:
+    label: WeakAuras Version
+    description: |
+      You can see the current version in the title bar of the options window, if the options do not open, check the CurseForge app or the `## Version:` field in the WeakAuras.toc file.
+    placeholder: "WeakAuras 2.2.0"
+  validations:
+    required: true
+
+- type: dropdown
+  id: flavor
+  attributes:
+    label: WoW Flavor
+    description: What version of WoW are are you running?
+    options:
+    - Retail (Default)
+    - Classic
+    - The Burning Crusade
+  validations:
+    required: true
+
+- type: checkboxes
+  id: testing
+  attributes:
+    label: Tested with only WeakAuras
+    description: Did you try having WeakAuras as the only enabled addon and everything else (especially something like ElvUI) disabled?
+    options:
+    - label: Yes
+    - label: No
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Lua Error
+    description: Do you have an error log of what happened?
+  validations:
+    required: false
+
+- type: textarea
+  attributes:
+    label: Repro Steps
+    description: Please list out the steps to reproduce your bug.
+    placeholder: Your steps go here.
+  validations:
+    required: true
+
+- type: input
+  attributes:
+    label: Last Good Version
+    description: |
+      Was it working in a previous version? If yes, which was the last good one?
+    placeholder: "WeakAuras 2.1.0"
+  validations:
+    required: false
+
+- type: markdown
+  attributes:
+    value: "**Screenshots** If applicable, add screenshots to help explain your problem."
+
+- type: textarea
+  attributes:
+    label: Additional Info
+    description: If you do not know which aura is causing issues for you, please attach a ZIP archive of your WeakAuras SavedVariables file, it's the `WeakAuras.lua` file in `World of Warcraft\_retail_\WTF\Account\YOUR_ACCOUNT\SavedVariables\`. In case you do, please export the string and paste it below.
+    placeholder: Export String
+  validations:
+    required: false
