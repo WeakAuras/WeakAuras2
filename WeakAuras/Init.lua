@@ -61,10 +61,11 @@ local intendedWoWProjectName = {
   [WOW_PROJECT_CLASSIC] = "Classic",
   [WOW_PROJECT_BURNING_CRUSADE_CLASSIC] = "The Burning Crusade"
 }
+
 Private.wrongTargetMessage = "This version of WeakAuras was packaged for World of Warcraft " .. intendedWoWProjectName[intendedWoWProject] ..
                               ". Please install the " .. intendedWoWProjectName[intendedWoWProject] ..
-                              " version instead.\nIf you are using the CurseForge Client, then " ..
-                              " contact CurseForge support for further assistance and reinstall WeakAuras manually."
+                              " version instead.\nIf you are using and addon manager, then " ..
+                              " contact their support for further assistance and reinstall WeakAuras manually."
 
 if not WeakAuras.IsCorrectVersion() then
   C_Timer.After(1, function() WeakAuras.prettyPrint(Private.wrongTargetMessage) end)
