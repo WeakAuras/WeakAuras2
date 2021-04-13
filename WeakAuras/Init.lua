@@ -63,7 +63,7 @@ local intendedWoWProjectName = {
 }
 
 Private.wrongTargetMessage = "This version of WeakAuras was packaged for World of Warcraft " .. intendedWoWProjectName[intendedWoWProject] ..
-                              ". Please install the " .. intendedWoWProjectName[intendedWoWProject] ..
+                              ". Please install the " .. intendedWoWProjectName[WOW_PROJECT_ID] ..
                               " version instead.\nIf you are using and addon manager, then " ..
                               " contact their support for further assistance and reinstall WeakAuras manually."
 
