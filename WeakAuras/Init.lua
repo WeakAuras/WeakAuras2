@@ -56,9 +56,13 @@ WeakAuras.prettyPrint = function(...)
   print("|cff9900ffWeakAuras:|r ", ...)
 end
 
-Private.wrongTargetMessage = "This version of WeakAuras was packaged for World of Warcraft " ..
-                              (intendedWoWProject == WOW_PROJECT_MAINLINE and "Retail" or "Classic") ..
-                              ". Please install the " .. (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE and "Retail" or "Classic") ..
+local intendedWoWProjectName = {
+  [WOW_PROJECT_MAINLINE] = "Retail",
+  [WOW_PROJECT_CLASSIC] = "Classic",
+  [WOW_PROJECT_BURNING_CRUSADE_CLASSIC] = "The Burning Crusade"
+}
+Private.wrongTargetMessage = "This version of WeakAuras was packaged for World of Warcraft " .. intendedWoWProjectName[intendedWoWProject] ..
+                              ". Please install the " .. intendedWoWProjectName[intendedWoWProject] ..
                               " version instead.\nIf you are using the CurseForge Client, then " ..
                               " contact CurseForge support for further assistance and reinstall WeakAuras manually."
 
