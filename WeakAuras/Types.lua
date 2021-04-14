@@ -3319,7 +3319,6 @@ if WeakAuras.IsBC() then
   end
   Private.reset_ranged_swing_spells[2764] = true -- Throw
   Private.reset_ranged_swing_spells[3018] = true -- Shoot
-  Private.reset_ranged_swing_spells[34120] = true -- Steady Shot
 
   Private.glow_types.ACShine = nil
 end
