@@ -36,7 +36,7 @@ local function CorrectSpellName(input)
     else
       return nil;
     end
-  elseif WeakAuras.IsClassic() and input then
+  elseif (WeakAuras.IsClassic() or WeakAuras.IsBC()) and input then
     local name, _, _, _, _, _, spellId = GetSpellInfo(input)
     if spellId then
       return spellId
@@ -51,7 +51,7 @@ local function CorrectSpellName(input)
     if(link) and link ~= "" then
       local itemId = link:match("spell:(%d+)");
       return tonumber(itemId);
-    elseif not WeakAuras.IsClassic() then
+    elseif WeakAuras.IsRetail() then
       for tier = 1, MAX_TALENT_TIERS do
         for column = 1, NUM_TALENT_COLUMNS do
           local _, _, _, _, _, spellId = GetTalentInfo(tier, column, 1)

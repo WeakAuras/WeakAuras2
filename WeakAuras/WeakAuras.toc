@@ -1,5 +1,6 @@
 ## Interface: 90005
 ## Interface-Classic: 11306
+## Interface-BC: 20501
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
 ## Version: @project-version@
@@ -21,6 +22,16 @@
 
 # external code + initialization
 embeds.xml
+
+# Classic Specific Libs
+#@non-version-retail@
+# #@version-classic@
+# Libs\LibClassicDurations\LibClassicDurations.xml
+# Libs\LibClassicCasterino\LibClassicCasterino.lua
+# Libs\LibClassicSpellActionCount-1.0\LibClassicSpellActionCount-1.0.lua
+# #@end-version-classic@
+#@end-non-version-retail@
+
 Init.lua
 locales.xml
 ArchiveTypes\Repository.lua
