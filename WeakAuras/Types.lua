@@ -184,7 +184,7 @@ local simpleFormatters = {
       return fmt:gsub(" ", ""):format(time)
     end,
     -- Modern Blizzard
-    [2] = not WeakAuras.IsClassic() and function(value)
+    [2] = WeakAuras.IsRetail() and function(value)
       return timeFormatter:Format(value)
     end
   }
