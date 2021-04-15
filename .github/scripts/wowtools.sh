@@ -5,13 +5,13 @@ wget -O ".wowtools.json" "https://wow.tools/api.php?type=currentbc"
 if [[ $? -ne 0 ]]; then
     echo "error while downloading .wowtools.json"
 else
-    wowbuild=`cat .wowtools.json | jq -r '.wow'`
-    classicwowbuild=`cat .wowtools.json | jq -r '.wow_classic'`
+    wowbuild=$(cat .wowtools.json | jq -r '.wow')
+    classicwowbuild=$(cat .wowtools.json | jq -r '.wow_classic')
 
     if [ -z "${wowbuild}" ]; then
         echo "\$wowbuild build not found"
     else
-        if [[ ${wowbuild} == `cat .lastwowbuild` ]]; then
+        if [[ ${wowbuild} == $(cat .lastwowbuild) ]]; then
             echo "wow build has not changed"
         else
             echo "new wow build detected"
@@ -19,7 +19,7 @@ else
             if [ $? -ne 0 ]; then
                 echo "error while downloading retail_list.csv"
             else
-                echo ${wowbuild} > .lastwowbuild
+                echo "${wowbuild}" > .lastwowbuild
                 lua ./csv_to_lua.lua retail
                 if [ $? -ne 0 ]; then
                   echo "error while creating classic lua file"
@@ -33,7 +33,7 @@ else
     if [ -z "${classicwowbuild}" ]; then
         echo "\$classicwow build not found"
     else
-        if [[ ${classicwowbuild} == `cat .lastclassicwowbuild` ]]; then
+        if [[ ${classicwowbuild} == $(cat .lastclassicwowbuild) ]]; then
             echo "classicwow build has not changed"
         else
             echo "new classicwow build detected"
@@ -41,7 +41,7 @@ else
             if [ $? -ne 0 ]; then
                 echo "error while downloading classic_list.csv"
             else
-                echo ${classicwowbuild} > .lastclassicwowbuild
+                echo "${classicwowbuild}" > .lastclassicwowbuild
                 lua ./csv_to_lua.lua classic
                 if [ $? -ne 0 ]; then
                   echo "error while creating classic lua file"

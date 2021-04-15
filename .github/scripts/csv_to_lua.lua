@@ -107,7 +107,7 @@ local function serializeTable(val, name, skipnewlines, depth)
   elseif type(val) == "boolean" then
       tmp = tmp .. (val and "true" or "false")
   else
-      tmp = tmp .. "\"[inserializeable datatype:" .. type(val) .. "]\""
+      tmp = tmp .. "\"[unserializable datatype:" .. type(val) .. "]\""
   end
 
   return tmp
