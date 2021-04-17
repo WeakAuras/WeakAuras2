@@ -107,16 +107,22 @@ else
   end
 end
 
-function WeakAuras.UnitChannelInfo(unit)
-  if WeakAuras.IsRetail() then
-    return UnitChannelInfo(unit)
-  elseif WeakAuras.IsBC() then
+if WeakAuras.IsRetail() then
+  WeakAuras.UnitChannelInfo = UnitChannelInfo
+elseif WeakAuras.IsBC() then
+  WeakAuras.UnitChannelInfo = function(unit)
     local name, text, texture, startTimeMS, endTimeMS, isTradeSkill, spellId  = UnitChannelInfo(unit)
     return name, text, texture, startTimeMS, endTimeMS, isTradeSkill, nil, spellId
-  elseif UnitIsUnit(unit, "player") then
-    return ChannelInfo()
-  else
-    return LibClassicCasterino:UnitChannelInfo(unit)
+  end
+elseif UnitIsUnit(unit, "player") then
+  return ChannelInfo()
+else
+  WeakAuras.UnitCastingInfo = function(unit)
+    if UnitIsUnit(unit, "player") then
+      return ChannelInfo()
+    else
+      return LibClassicCasterino:UnitChannelInfo(unit)
+    end
   end
 end
 
