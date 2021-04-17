@@ -120,7 +120,7 @@ if WeakAuras.IsClassic() then
   WeakAuras.UnitRaidRole = function(unit)
     local raidID = UnitInRaid(unit)
     if raidID then
-      return select(10, GetRaidRosterInfo(raidID))
+      return select(10, GetRaidRosterInfo(raidID)) or "NONE"
     end
   end
 end
