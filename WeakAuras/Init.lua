@@ -27,7 +27,7 @@ local intendedWoWProject = WOW_PROJECT_MAINLINE
 intendedWoWProject = WOW_PROJECT_CLASSIC
 -- @end-version-classic@
 -- @version-bc@
-intendedWoWProject = WOW_PROJECT_BURNING_CRUSADE_CLASSIC or "TBC"
+intendedWoWProject = WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5
 -- @end-version-bc@
 --@end-non-version-retail@]===]
 
@@ -59,7 +59,7 @@ end
 local intendedWoWProjectName = {
   [WOW_PROJECT_MAINLINE] = "Retail",
   [WOW_PROJECT_CLASSIC] = "Classic",
-  [WOW_PROJECT_BURNING_CRUSADE_CLASSIC] = "The Burning Crusade"
+  [WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5] = "The Burning Crusade"
 }
 
 Private.wrongTargetMessage = "This version of WeakAuras was packaged for World of Warcraft " .. intendedWoWProjectName[intendedWoWProject] ..
