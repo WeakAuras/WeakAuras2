@@ -1054,7 +1054,7 @@ local function valuesForTalentFunction(trigger)
     if(single_class and Private.talent_types_specific[single_class]
       and single_spec and Private.talent_types_specific[single_class][single_spec]) then
       return Private.talent_types_specific[single_class][single_spec];
-    elseif(WeakAuras.IsClassic() or WeakAuras.IsBC() and single_class and Private.talent_types_specific[single_class]
+    elseif((WeakAuras.IsClassic() or WeakAuras.IsBC()) and single_class and Private.talent_types_specific[single_class]
       and Private.talent_types_specific[single_class]) then
       return Private.talent_types_specific[single_class];
     else
