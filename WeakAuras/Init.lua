@@ -38,8 +38,8 @@ function WeakAuras.IsCorrectVersion()
   return isDevVersion or intendedWoWProject == WOW_PROJECT_ID
 end
 
-WeakAuras.prettyPrint = function(msg)
-  print("|cff9900ffWeakAuras:|r " .. msg)
+WeakAuras.prettyPrint = function(...)
+  print("|cff9900ffWeakAuras:|r ", ...)
 end
 
 Private.wrongTargetMessage = "This version of WeakAuras was packaged for World of Warcraft " ..
