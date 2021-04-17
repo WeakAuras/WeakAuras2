@@ -3098,6 +3098,11 @@ Private.noreset_swing_spells = {
   [39965] = true, -- Frost Grenade
   [30461] = true, -- The Bigger One
   [30217] = true, -- Adamantite Grenade
+  [35476] = true, -- Drums of Battle
+  [35475] = true, -- Drums of War
+  [35477] = true, -- Drums of Speed
+  [35478] = true, -- Drums of Restoration
+  --35474 Drums of Panic DO reset the swing timer, do not add
 }
 
 Private.item_weapon_types = {}
