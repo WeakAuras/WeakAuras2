@@ -27,7 +27,7 @@ local intendedWoWProject = WOW_PROJECT_MAINLINE
 intendedWoWProject = WOW_PROJECT_CLASSIC
 -- @end-version-classic@
 -- @version-bc@
-intendedWoWProject = WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+intendedWoWProject = WOW_PROJECT_BURNING_CRUSADE_CLASSIC or "TBC"
 -- @end-version-bc@
 --@end-non-version-retail@]===]
 
