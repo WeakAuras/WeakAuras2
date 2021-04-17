@@ -1127,12 +1127,12 @@ Private.load_prototype = {
     },
     {
       name = "vehicle",
-      display = WeakAuras.IsClassic() or WeakAuras.IsBC() and L["On Taxi"] or L["In Vehicle"],
+      display = (WeakAuras.IsClassic() or WeakAuras.IsBC()) and L["On Taxi"] or L["In Vehicle"],
       type = "tristate",
       init = "arg",
       width = WeakAuras.normalWidth,
       optional = true,
-      events = WeakAuras.IsClassic() or WeakAuras.IsBC() and {"UNIT_FLAGS"}
+      events = (WeakAuras.IsClassic() or WeakAuras.IsBC()) and {"UNIT_FLAGS"}
                or {"VEHICLE_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "UPDATE_OVERRIDE_ACTIONBAR", "UNIT_FLAGS"}
     },
     {
