@@ -81,6 +81,13 @@ local methods = {
     self:Enable()
     self.frame:Hide()
   end,
+  ["SetLogo"] = function(self, path)
+    ViragDevTool_AddData(self.frame, "SetLogo")
+    self.frame.updateLogo.tex:SetTexture(path)
+  end,
+  ["SetRefreshLogo"] = function(self, path)
+    self.frame.update:SetNormalTexture(path)
+  end,
   ["Disable"] = function(self)
     self.background:Hide()
     self.frame:Disable()
@@ -296,6 +303,7 @@ local function Constructor()
   local tex = updateLogo:CreateTexture(nil, "OVERLAY")
   tex:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]])
   tex:SetAllPoints()
+  updateLogo.tex = tex
   updateLogo:SetSize(24, 24)
   updateLogo:SetPoint("CENTER", update)
 

@@ -903,6 +903,12 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
         if not(pendingUpdateButtons[id]) then
           pendingUpdateButtons[id] = AceGUI:Create("WeakAurasPendingUpdateButton")
           pendingUpdateButtons[id]:Initialize(id, data)
+          if data.logo then
+            pendingUpdateButtons[id]:SetLogo(data.logo)
+          end
+          if data.refreshLogo then
+            pendingUpdateButtons[id]:SetRefreshLogo(data.logo)
+          end
         end
         pendingUpdateButtons[id].frame:Show()
         pendingUpdateButtons[id]:AcquireThumbnail()
