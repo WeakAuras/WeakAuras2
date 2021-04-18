@@ -132,6 +132,19 @@ local methods = {
 
     firstDropdown:SetCallback("OnValueChanged", OnFirstDropdownValueChanged)
     secondDropDown:SetCallback("OnValueChanged", OnSecondDropdownValueChanged)
+
+    local function FireOnEnter(self, event)
+      widget:Fire("OnEnter")
+    end
+
+    local function FireOnLeave(self, event)
+      widget:Fire("OnLeave")
+    end
+
+    firstDropdown:SetCallback("OnEnter", FireOnEnter)
+    firstDropdown:SetCallback("OnLeave", FireOnLeave)
+    secondDropDown:SetCallback("OnEnter", FireOnEnter)
+    secondDropDown:SetCallback("OnLeave", FireOnLeave)
   end,
   ["OnRelease"] = function(self)
   end,
