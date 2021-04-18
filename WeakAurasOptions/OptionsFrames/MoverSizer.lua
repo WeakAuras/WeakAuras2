@@ -383,11 +383,9 @@ local function BuildAlignLines(mover)
     y = {}
   }
   local x, y = {}, {}
-  local skipIds = { [data.id] =  true }
-  if data.controlledChildren then
-    for _, id in pairs(data.controlledChildren) do
-      skipIds[id] = true
-    end
+  local skipIds = {}
+  for child in OptionsPrivate.Private.TraverseAll(data) do
+    skipIds[child.id] = true
   end
 
   for k, v in pairs(WeakAuras.displayButtons) do
