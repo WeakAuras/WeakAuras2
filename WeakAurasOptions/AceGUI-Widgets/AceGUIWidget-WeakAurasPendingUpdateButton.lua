@@ -109,6 +109,9 @@ local methods = {
     self.titletext = title;
     self.title:SetText(title);
   end,
+  ["SetClick"] = function(self, func)
+    self.frame:SetScript("OnClick", func);
+  end,
   ["UpdateThumbnail"] = function(self)
     if not self.hasThumbnail then
       return
@@ -244,7 +247,7 @@ Constructor
 
 local function Constructor()
   local name = "WeakAurasPendingUpdateButton"..AceGUI:GetNextWidgetNum(Type);
-  local button = CreateFrame("BUTTON", name, UIParent, "OptionsListButtonTemplate");
+  local button = CreateFrame("BUTTON", name, UIParent);
   button:SetHeight(32);
   button:SetWidth(1000);
   button.dgroup = nil;
