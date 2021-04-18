@@ -27,34 +27,6 @@ local function Show_Tooltip(owner, line1, line2)
   GameTooltip:Show()
 end
 
-local function Show_Long_Tooltip(owner, description)
-  GameTooltip:SetOwner(owner, "ANCHOR_NONE")
-  GameTooltip:SetPoint("LEFT", owner, "RIGHT")
-  GameTooltip:ClearLines()
-  local line = 1
-  for i, v in pairs(description) do
-    if (type(v) == "string") then
-      if (line > 1) then
-        GameTooltip:AddLine(v, 1, 1, 1, 1)
-      else
-        GameTooltip:AddLine(v)
-      end
-    elseif (type(v) == "table") then
-      if (i == 1) then
-        GameTooltip:AddDoubleLine(v[1], v[2] .. (v[3] and (" |T" .. v[3] .. ":12:12:0:0:64:64:4:60:4:60|t") or ""))
-      else
-        GameTooltip:AddDoubleLine(v[1], v[2] .. (v[3] and (" |T" .. v[3] .. ":12:12:0:0:64:64:4:60:4:60|t") or ""), 1, 1, 1, 1, 1, 1, 1, 1)
-      end
-    end
-    line = line + 1
-  end
-  GameTooltip:Show()
-end
-
-local function ensure(t, k, v)
-  return t and k and v and t[k] == v
-end
-
 --[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
@@ -82,7 +54,6 @@ local methods = {
     self.frame:Hide()
   end,
   ["SetLogo"] = function(self, path)
-    ViragDevTool_AddData(self.frame, "SetLogo")
     self.frame.updateLogo.tex:SetTexture(path)
   end,
   ["SetRefreshLogo"] = function(self, path)
@@ -257,7 +228,6 @@ local function Constructor()
   local button = CreateFrame("BUTTON", name, UIParent)
   button:SetHeight(32)
   button:SetWidth(1000)
-  button.dgroup = nil
   button.data = {}
 
   local background = button:CreateTexture(nil, "BACKGROUND")
