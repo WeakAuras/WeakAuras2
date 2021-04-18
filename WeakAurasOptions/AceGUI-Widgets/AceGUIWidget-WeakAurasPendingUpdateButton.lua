@@ -257,7 +257,7 @@ local function Constructor()
   button.background = background;
   background:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp");
   background:SetBlendMode("ADD");
-  background:SetVertexColor(0.5, 0.5, 0.5, 0.1);
+  background:SetVertexColor(0.5, 1, 0.5, 0.3);
   background:SetPoint("TOP", button, "TOP");
   background:SetPoint("BOTTOM", button, "BOTTOM");
   background:SetPoint("LEFT", button, "LEFT");
