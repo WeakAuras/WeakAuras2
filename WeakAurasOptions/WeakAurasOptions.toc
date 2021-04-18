@@ -58,14 +58,16 @@ ConditionOptions.lua
 AuthorOptions.lua
 
 OptionsFrames\OptionsFrame.lua
-# -- Groups
+
+# Groups
 OptionsFrames\CodeReview.lua
 OptionsFrames\IconPicker.lua
 OptionsFrames\ImportExport.lua
 OptionsFrames\ModelPicker.lua
 OptionsFrames\TextEditor.lua
 OptionsFrames\TexturePicker.lua
-# -- misc Frames
+
+# Misc frames
 OptionsFrames\MoverSizer.lua
 OptionsFrames\FrameChooser.lua
 
