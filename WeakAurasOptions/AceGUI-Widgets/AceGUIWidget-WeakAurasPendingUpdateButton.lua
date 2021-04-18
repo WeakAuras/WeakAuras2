@@ -176,6 +176,7 @@ local methods = {
       self.iconRegion:Show();
       self.icon:Hide();
     end
+    self.thumbnail.icon:SetDesaturated(true)
   end,
   ["OverrideIcon"] = function(self)
     self.icon:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\\icon.blp")
