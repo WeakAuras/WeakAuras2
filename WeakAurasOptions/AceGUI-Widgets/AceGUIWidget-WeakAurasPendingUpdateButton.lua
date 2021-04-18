@@ -282,43 +282,40 @@ local function Constructor()
   button:SetScript("OnLeave", Hide_Tooltip);
   ]]--
 
-  local update, updateLogo
-  if WeakAurasCompanion then
-    update = CreateFrame("BUTTON", nil, button);
-    button.update = update
-    update.disabled = true
-    update.func = function() end
-    update:SetNormalTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]])
-    update:Disable()
-    update:SetWidth(24)
-    update:SetHeight(24)
-    update:SetPoint("RIGHT", button, "RIGHT", -35, 0)
+  local update = CreateFrame("BUTTON", nil, button);
+  button.update = update
+  update.disabled = true
+  update.func = function() end
+  update:SetNormalTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]])
+  update:Disable()
+  update:SetWidth(24)
+  update:SetHeight(24)
+  update:SetPoint("RIGHT", button, "RIGHT", -2, 0)
 
-    -- Add logo
-    updateLogo = CreateFrame("Frame", nil, button)
-    button.updateLogo = updateLogo
-    local tex = updateLogo:CreateTexture(nil, "OVERLAY")
-    tex:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]])
-    tex:SetAllPoints()
-    updateLogo:SetSize(24,24)
-    updateLogo:SetPoint("CENTER",update)
+  -- Add logo
+  local updateLogo = CreateFrame("Frame", nil, button)
+  button.updateLogo = updateLogo
+  local tex = updateLogo:CreateTexture(nil, "OVERLAY")
+  tex:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]])
+  tex:SetAllPoints()
+  updateLogo:SetSize(24,24)
+  updateLogo:SetPoint("CENTER",update)
 
-    -- Animation On Hover
-    local animGroup = update:CreateAnimationGroup()
-    update.animGroup = animGroup
-    local animRotate = animGroup:CreateAnimation("rotation")
-    animRotate:SetDegrees(-360)
-    animRotate:SetDuration(1)
-    animRotate:SetSmoothing("OUT")
-    animGroup:SetScript("OnFinished",function() if (MouseIsOver(update)) then animGroup:Play() end end)
-    update:SetScript("OnEnter", function()
-      animGroup:Play()
-      --Show_Tooltip(button, update.title, update.desc)
-    end);
-    -- update:SetScript("OnLeave", Hide_Tooltip)
-    update:Hide()
-    updateLogo:Hide()
-  end
+  -- Animation On Hover
+  local animGroup = update:CreateAnimationGroup()
+  update.animGroup = animGroup
+  local animRotate = animGroup:CreateAnimation("rotation")
+  animRotate:SetDegrees(-360)
+  animRotate:SetDuration(1)
+  animRotate:SetSmoothing("OUT")
+  animGroup:SetScript("OnFinished",function() if (MouseIsOver(update)) then animGroup:Play() end end)
+  update:SetScript("OnEnter", function()
+    animGroup:Play()
+    --Show_Tooltip(button, update.title, update.desc)
+  end);
+  -- update:SetScript("OnLeave", Hide_Tooltip)
+  update:Hide()
+  updateLogo:Hide()
 
   local widget = {
     frame = button,
