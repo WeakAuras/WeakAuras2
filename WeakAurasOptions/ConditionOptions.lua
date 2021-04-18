@@ -251,10 +251,13 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
               change.value = conditions[i].changes[j].value;
             end
 
-            local conditionIndex = conditions[i].check.references[child.id].conditionIndex;
-            tinsert(child[conditionVariable][conditionIndex].changes, insertPoint, change);
-            WeakAuras.Add(child);
-            OptionsPrivate.ClearOptions(child.id)
+            local reference = conditions[i].check.references[child.id]
+            if reference then
+              local conditionIndex = reference.conditionIndex;
+              tinsert(child[conditionVariable][conditionIndex].changes, insertPoint, change);
+              WeakAuras.Add(child);
+              OptionsPrivate.ClearOptions(child.id)
+            end
           end
         end
         WeakAuras.ClearAndUpdateOptions(data.id)
