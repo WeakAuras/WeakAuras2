@@ -625,6 +625,9 @@ local function LayoutDisplayButtons(msg)
   --if(frame.addonsButton) then
   --  frame.buttonsScroll:AddChild(frame.addonsButton);
   --end
+  if WeakAurasCompanion and WeakAurasCompanion.stash and next(WeakAurasCompanion.stash) then
+    frame.buttonsScroll:AddChild(frame.pendingImportButton);
+  end
   frame.buttonsScroll:AddChild(frame.loadedButton);
   frame.buttonsScroll:AddChild(frame.unloadedButton);
 
@@ -870,6 +873,7 @@ function OptionsPrivate.UpdateButtonsScroll()
 end
 
 local previousFilter;
+local pendingUpdateButtons = {}
 function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
   if (OptionsPrivate.Private.IsOptionsProcessingPaused()) then
     return;
@@ -887,10 +891,37 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
   filter = filter:lower();
 
   wipe(frame.buttonsScroll.children);
-  --tinsert(frame.buttonsScroll.children, frame.newButton);
-  --if(frame.addonsButton) then
-  --  tinsert(frame.buttonsScroll.children, frame.addonsButton);
-  --end
+
+  if WeakAurasCompanion and WeakAurasCompanion.stash then
+    local pendingImportButtonShown = false
+    for id, data in pairs(WeakAurasCompanion.stash) do
+      if not pendingImportButtonShown then
+        tinsert(frame.buttonsScroll.children, frame.pendingImportButton)
+        pendingImportButtonShown = true
+      end
+      if frame.pendingImportButton:GetExpanded() then
+        if not(pendingUpdateButtons[id]) then
+          pendingUpdateButtons[id] = AceGUI:Create("WeakAurasPendingUpdateButton")
+          pendingUpdateButtons[id]:Initialize(id, data)
+          if data.logo then
+            pendingUpdateButtons[id]:SetLogo(data.logo)
+          end
+          if data.refreshLogo then
+            pendingUpdateButtons[id]:SetRefreshLogo(data.logo)
+          end
+        end
+        pendingUpdateButtons[id].frame:Show()
+        pendingUpdateButtons[id]:AcquireThumbnail()
+        frame.buttonsScroll:AddChild(pendingUpdateButtons[id])
+      elseif pendingUpdateButtons[id] then
+        pendingUpdateButtons[id].frame:Hide()
+        if pendingUpdateButtons[id].ReleaseThumbnail then
+          pendingUpdateButtons[id]:ReleaseThumbnail()
+        end
+      end
+    end
+  end
+
   tinsert(frame.buttonsScroll.children, frame.loadedButton);
   local numLoaded = 0;
   local to_sort = {};

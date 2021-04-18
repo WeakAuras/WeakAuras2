@@ -742,6 +742,7 @@ function StringToTable(inString, fromChat)
   end
   return deserialized
 end
+Private.StringToTable = StringToTable
 
 function WeakAuras.DisplayToString(id, forChat)
   local data = WeakAuras.GetData(id);
