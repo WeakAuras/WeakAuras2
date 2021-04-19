@@ -84,10 +84,6 @@ body:
   attributes:
     value: "If applicable, add screenshots to help explain your problem."
     
-- type: markdown
-  attributes:
-    value: "## Additional Info"
-
 - type: textarea
   attributes:
     label: Export String
