@@ -7,6 +7,13 @@ body:
     value: |
       Please [search for existing issues](https://github.com/WeakAuras/WeakAuras2/issues) before creating a new one.
 
+- type: textarea
+  attributes:
+    label: Description
+    description: What did you expect to happen and what happened instead?
+  validations:
+    required: true
+
 - type: input
   attributes:
     label: WeakAuras Version
@@ -19,8 +26,8 @@ body:
 - type: dropdown
   id: flavor
   attributes:
-    label: WoW Flavor
-    description: What version of WoW are are you running?
+    label: World of Warcraft Flavor
+    description: What version of World of Warcraft are are you running?
     options:
       - Retail (Default)
       - Classic
@@ -42,15 +49,21 @@ body:
 - type: textarea
   attributes:
     label: Lua Error
-    description: Do you have an error log of what happened?
+    description: |
+      Do you have an error log of what happened? If you don't see any errors, make sure that error reporting is enabled (`/console scriptErrors 1`) or install [BugSack](https://www.curseforge.com/wow/addons/bugsack) & [BugGrabber](https://www.curseforge.com/wow/addons/bug-grabber), yes both are needed.
+      Note that if the error looks like `[string "--[[ Error in ' my awesome aura' ]` then the bug is in the aura that got mentioned, not in WeakAuras itself.
   validations:
     required: false
 
 - type: textarea
   attributes:
-    label: Repro Steps
+    label: Reproduction Steps
     description: Please list out the steps to reproduce your bug.
-    placeholder: Your steps go here.
+    placeholder: |
+      1. Go to '...'
+      2. Click on '....'
+      3. Scroll down to '....'
+      4. See error
   validations:
     required: true
 
@@ -65,16 +78,22 @@ body:
 
 - type: markdown
   attributes:
-    value: "### Screenshots"
+    value: "## Screenshots"
   
 - type: markdown
   attributes:
     value: "If applicable, add screenshots to help explain your problem."
+    
+- type: markdown
+  attributes:
+    value: "## Additional Info"
 
 - type: textarea
   attributes:
-    label: Additional Info
+    label: Export String
     description: If you do not know which aura is causing issues for you, please attach a ZIP archive of your WeakAuras SavedVariables file, it's the `WeakAuras.lua` file in `World of Warcraft\_retail_\WTF\Account\YOUR_ACCOUNT\SavedVariables\`. In case you do, please export the string and paste it below.
     placeholder: Export String
   validations:
     required: false
+    
+   
