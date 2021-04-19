@@ -64,7 +64,8 @@ body:
     required: false
 
 - type: markdown
-  value: "### Screenshots"
+  attributes:
+    value: "### Screenshots"
   
 - type: markdown
   attributes:
