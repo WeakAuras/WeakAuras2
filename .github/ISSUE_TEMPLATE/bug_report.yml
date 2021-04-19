@@ -76,19 +76,19 @@ body:
   validations:
     required: false
 
-- type: markdown
+- type: textarea
   attributes:
-    value: "## Screenshots"
-  
-- type: markdown
-  attributes:
-    value: "If applicable, add screenshots to help explain your problem."
+    label: Screenshots
+    description: If applicable, add screenshots to help explain your problem.
+    placeholder: Click here to attach your screenshots via the editor button in the top right.
+  validations:
+    required: false
     
 - type: textarea
   attributes:
     label: Export String
     description: If you do not know which aura is causing issues for you, please attach a ZIP archive of your WeakAuras SavedVariables file, it's the `WeakAuras.lua` file in `World of Warcraft\_retail_\WTF\Account\YOUR_ACCOUNT\SavedVariables\`. In case you do, please export the string and paste it below.
-    placeholder: Export String
+    placeholder: Paste your exported WeakAuras string here.
   validations:
     required: false
     
