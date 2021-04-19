@@ -34,8 +34,8 @@ body:
     label: Tested with only WeakAuras
     description: Did you try having WeakAuras as the only enabled addon and everything else (especially something like ElvUI) disabled?
     options:
-      - label: Yes
-      - label: No
+      - label: "Yes"
+      - label: "No"
   validations:
     required: true
 
