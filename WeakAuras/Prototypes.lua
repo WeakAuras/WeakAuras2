@@ -115,7 +115,7 @@ elseif WeakAuras.IsBC() then
     return name, text, texture, startTimeMS, endTimeMS, isTradeSkill, nil, spellId
   end
 else
-  WeakAuras.UnitCastingInfo = function(unit)
+  WeakAuras.UnitChannelInfo = function(unit)
     if UnitIsUnit(unit, "player") then
       return ChannelInfo()
     else
