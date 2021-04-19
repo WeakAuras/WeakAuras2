@@ -64,8 +64,11 @@ body:
     required: false
 
 - type: markdown
+  value: "### Screenshots"
+  
+- type: markdown
   attributes:
-    value: "**Screenshots** If applicable, add screenshots to help explain your problem."
+    value: "If applicable, add screenshots to help explain your problem."
 
 - type: textarea
   attributes:
