@@ -815,11 +815,7 @@ function WeakAuras.CountWagoUpdates()
       end
       if slug and version then
         local wago = CompanionData.slugs and CompanionData.slugs[slug]
-        if wago and wago.wagoVersion
-        and tonumber(wago.wagoVersion) > (
-          aura.skipWagoUpdate and tonumber(aura.skipWagoUpdate) or tonumber(version)
-        )
-        then
+        if wago and wago.wagoVersion and tonumber(wago.wagoVersion) > tonumber(version) then
           if not updatedSlugs[slug] then
             updatedSlugs[slug] = true
             updatedSlugsCount = updatedSlugsCount + 1

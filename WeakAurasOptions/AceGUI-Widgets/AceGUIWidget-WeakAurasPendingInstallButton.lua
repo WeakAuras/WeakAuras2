@@ -7,39 +7,11 @@ local L = WeakAuras.L
 
 local pairs, next, type, unpack = pairs, next, type, unpack
 
-local Type, Version = "WeakAurasPendingUpdateButton", 1
+local Type, Version = "WeakAurasPendingInstallButton", 1
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then
   return
-end
-
-local function Hide_Tooltip()
-  GameTooltip:Hide()
-end
-
-local function Show_Long_Tooltip(owner, description)
-  GameTooltip:SetOwner(owner, "ANCHOR_NONE");
-  GameTooltip:SetPoint("LEFT", owner, "RIGHT");
-  GameTooltip:ClearLines();
-  local line = 1;
-  for i,v in pairs(description) do
-    if(type(v) == "string") then
-      if(line > 1) then
-        GameTooltip:AddLine(v, 1, 1, 1, 1);
-      else
-        GameTooltip:AddLine(v);
-      end
-    elseif(type(v) == "table") then
-      if(i == 1) then
-        GameTooltip:AddDoubleLine(v[1], v[2]..(v[3] and (" |T"..v[3]..":12:12:0:0:64:64:4:60:4:60|t") or ""));
-      else
-        GameTooltip:AddDoubleLine(v[1], v[2]..(v[3] and (" |T"..v[3]..":12:12:0:0:64:64:4:60:4:60|t") or ""), 1, 1, 1, 1, 1, 1, 1, 1);
-      end
-    end
-    line = line + 1;
-  end
-  GameTooltip:Show();
 end
 
 --[[-----------------------------------------------------------------------------
@@ -55,8 +27,6 @@ local methods = {
     self.callbacks = {}
     self.id = id
     self.companionData = companionData
-    self.linkedAuras = {}
-    self.linkedChildren = {}
 
     function self.callbacks.OnUpdateClick()
       WeakAuras.Import(self.companionData.encoded)
@@ -69,53 +39,6 @@ local methods = {
     self.frame:EnableKeyboard(false)
     self:Enable()
     self.frame:Hide()
-
-    self.menu = {}
-
-    self.frame:SetScript("OnMouseUp", function()
-      Hide_Tooltip()
-      self:SetMenu()
-      EasyMenu(self.menu, WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU")
-    end)
-
-    self.frame:SetScript("OnEnter", function()
-      self:SetNormalTooltip()
-      Show_Long_Tooltip(self.frame, self.frame.description)
-    end)
-    self.frame:SetScript("OnLeave", Hide_Tooltip)
-  end,
-  ["SetMenu"] = function(self)
-    wipe(self.menu)
-    for auraId in pairs(self.linkedAuras) do
-      if not self.linkedChildren[auraId] then
-        tinsert(self.menu,
-          {
-            text = auraId,
-            notCheckable = true,
-            hasArrow = true,
-            menuList = {
-              {
-                text = L["Update"],
-                notCheckable = true,
-                func = function()
-                  local auraData = WeakAuras.GetData(auraId)
-                  if auraData then
-                    WeakAuras.Import(self.companionData.encoded, auraData)
-                  end
-                end
-              },
-              {
-                text = L["Ignore updates"],
-                notCheckable = true,
-                func = function()
-                  StaticPopup_Show("WEAKAURAS_CONFIRM_IGNORE_UPDATES", "", "", auraId)
-                end
-              }
-            }
-          }
-        )
-      end
-    end
   end,
   ["SetLogo"] = function(self, path)
     self.frame.updateLogo.tex:SetTexture(path)
@@ -147,64 +70,12 @@ local methods = {
     self.frame = nil
     self.data = nil
   end,
-  ["SetNormalTooltip"] = function(self)
-    local data = self.data;
-    local namestable = {};
-
-    local hasDescription = data.desc and data.desc ~= "";
-    local hasUrl = data.url and data.url ~= "";
-    local hasVersion = (data.semver and data.semver ~= "") or (data.version and data.version ~= "");
-    local hasVersionNote = self.companionData.versionNote and self.companionData.versionNote ~= ""
-
-    if(hasDescription or hasUrl or hasVersion or hasVersionNote) then
-      tinsert(namestable, " ")
-    end
-
-    if hasVersionNote then
-      tinsert(namestable, "|cFFFFD100"..self.companionData.versionNote)
-      tinsert(namestable, " ")
-    end
-
-    for auraId in pairs(self.linkedAuras) do
-      if not self.linkedChildren[auraId] then
-        tinsert(namestable, "|cFFFFD100" .. L["Linked aura: "]  .. auraId .. "|r")
-      end
-    end
-    tinsert(namestable, " ")
-
-    if(hasDescription) then
-      tinsert(namestable, "|cFFFFD100"..data.desc)
-    end
-
-    if (hasUrl) then
-      tinsert(namestable, "|cFFFFD100" .. data.url .. "|r")
-    end
-
-    if (hasVersion) then
-      tinsert(namestable, "|cFFFFD100" .. L["Version: "]  .. (data.semver or data.version) .. "|r")
-    end
-
-    self:SetDescription({self.companionData.name or self.data.id, self.companionData.author or ""}, unpack(namestable))
-  end,
-  ["SetDescription"] = function(self, ...)
-    self.frame.description = {...};
-  end,
   ["SetTitle"] = function(self, title)
     self.titletext = title
     self.title:SetText(title)
   end,
   ["SetClick"] = function(self, func)
     self.frame:SetScript("OnClick", func)
-  end,
-  ["ResetLinkedAuras"] = function(self)
-    wipe(self.linkedAuras)
-    wipe(self.linkedChildren)
-  end,
-  ["MarkLinkedAura"] = function(self, auraId)
-    self.linkedAuras[auraId] = true
-  end,
-  ["MarkLinkedChildren"] = function(self, auraId)
-    self.linkedChildren[auraId] = true
   end,
   ["UpdateThumbnail"] = function(self)
     if not self.hasThumbnail then
@@ -297,7 +168,7 @@ local function Constructor()
   button.background = background
   background:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp")
   background:SetBlendMode("ADD")
-  background:SetVertexColor(0.88, 0.88, 0, 0.3)
+  background:SetVertexColor(0.5, 1, 0.5, 0.3)
   background:SetPoint("TOP", button, "TOP")
   background:SetPoint("BOTTOM", button, "BOTTOM")
   background:SetPoint("LEFT", button, "LEFT")

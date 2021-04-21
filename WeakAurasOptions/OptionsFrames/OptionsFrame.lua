@@ -707,27 +707,53 @@ function OptionsPrivate.CreateFrame()
     frame.addonsButton = addonsButton
   end
 
-  local pendingImportButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
-  pendingImportButton:SetText(L["Ready to Import"])
-  pendingImportButton:Disable()
-  pendingImportButton:EnableExpand()
+  -- Ready to Install section
+  local pendingInstallButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
+  pendingInstallButton:SetText(L["Ready for Install"])
+  pendingInstallButton:Disable()
+  pendingInstallButton:EnableExpand()
+  pendingInstallButton.frame.view:Hide()
   if odb.pendingImportCollapse then
-    pendingImportButton:Collapse()
+    pendingInstallButton:Collapse()
   else
-    pendingImportButton:Expand()
+    pendingInstallButton:Expand()
   end
-  pendingImportButton:SetOnExpandCollapse(function()
-    if pendingImportButton:GetExpanded() then
+  pendingInstallButton:SetOnExpandCollapse(function()
+    if pendingInstallButton:GetExpanded() then
       odb.pendingImportCollapse = nil
     else
       odb.pendingImportCollapse = true
     end
     WeakAuras.SortDisplayButtons()
   end)
-  pendingImportButton:SetExpandDescription(L["Expand all Pending Import"])
-  pendingImportButton:SetCollapseDescription(L["Collapse all Pending Import"])
-  frame.pendingImportButton = pendingImportButton
+  pendingInstallButton:SetExpandDescription(L["Expand all pending Import"])
+  pendingInstallButton:SetCollapseDescription(L["Collapse all pending Import"])
+  frame.pendingInstallButton = pendingInstallButton
 
+  -- Ready for update section
+  local pendingUpdateButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
+  pendingUpdateButton:SetText(L["Ready for Update"])
+  pendingUpdateButton:Disable()
+  pendingUpdateButton:EnableExpand()
+  pendingUpdateButton.frame.view:Hide()
+  if odb.pendingUpdateCollapse then
+    pendingUpdateButton:Collapse()
+  else
+    pendingUpdateButton:Expand()
+  end
+  pendingUpdateButton:SetOnExpandCollapse(function()
+    if pendingUpdateButton:GetExpanded() then
+      odb.pendingUpdateCollapse = nil
+    else
+      odb.pendingUpdateCollapse = true
+    end
+    WeakAuras.SortDisplayButtons()
+  end)
+  pendingUpdateButton:SetExpandDescription(L["Expand all pending Import"])
+  pendingUpdateButton:SetCollapseDescription(L["Collapse all pending Import"])
+  frame.pendingUpdateButton = pendingUpdateButton
+
+  -- Loaded section
   local loadedButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
   loadedButton:SetText(L["Loaded"])
   loadedButton:Disable()
@@ -787,6 +813,7 @@ function OptionsPrivate.CreateFrame()
   loadedButton:SetViewDescription(L["Toggle the visibility of all loaded displays"])
   frame.loadedButton = loadedButton
 
+  -- Not Loaded section
   local unloadedButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
   unloadedButton:SetText(L["Not Loaded"])
   unloadedButton:Disable()

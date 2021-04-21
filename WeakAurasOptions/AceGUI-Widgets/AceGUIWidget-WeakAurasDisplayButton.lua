@@ -820,13 +820,6 @@ local methods = {
       end
     end
 
-    function self.callbacks.OnUpdateClick()
-      local _,_,updateData = self:HasUpdate()
-      if updateData then
-        WeakAuras.Import(updateData.encoded, self.data)
-      end
-    end
-
     function self.callbacks.OnRenameAction(newid)
       if (WeakAuras.IsImporting()) then return end;
       local oldid = data.id;
@@ -854,44 +847,17 @@ local methods = {
       end
     end
 
-    function self.callbacks.wagoStopIgnoreAll(_, skipUpdateIcon)
-      self.data.ignoreWagoUpdate = nil
-      self.data.skipWagoUpdate = nil
-      if not skipUpdateIcon then
-        self:RefreshUpdate("wagoStopIgnoreAll")
+    self.frame:SetScript("OnEnter", function()
+      if(OptionsPrivate.IsPickedMultiple() and OptionsPrivate.IsDisplayPicked(self.frame.id)) then
+        Show_Long_Tooltip(self.frame, OptionsPrivate.MultipleDisplayTooltipDesc());
+      else
+        if not self.grouping then
+          self:SetNormalTooltip();
+        end
+        Show_Long_Tooltip(self.frame, self.frame.description);
       end
-    end
-
-    function self.callbacks.wagoIgnoreAll(_, skipUpdateIcon)
-      self.data.ignoreWagoUpdate = true
-      if not skipUpdateIcon then
-        self:RefreshUpdate("wagoIgnoreAll")
-      end
-    end
-
-    function self.callbacks.wagoStopIgnoreNext(_, skipUpdateIcon)
-      self.data.skipWagoUpdate = nil
-      if not skipUpdateIcon then
-        self:RefreshUpdate("wagoStopIgnoreNext")
-      end
-    end
-
-    function self.callbacks.wagoIgnoreNext(_, skipUpdateIcon)
-      self.data.skipWagoUpdate = self.update.version
-      if not skipUpdateIcon then
-        self:RefreshUpdate("wagoIgnoreNext")
-      end
-    end
-
-    self.frame.terribleCodeOrganizationHackTable = {};
-
-    function self.frame.terribleCodeOrganizationHackTable.IsGroupingOrCopying()
-      return self.grouping;
-    end
-
-    function self.frame.terribleCodeOrganizationHackTable.SetNormalTooltip()
-      self:SetNormalTooltip();
-    end
+    end);
+    self.frame:SetScript("OnLeave", Hide_Tooltip);
 
     local copyEntries = {};
     tinsert(copyEntries, clipboard.copyEverythingEntry);
@@ -961,15 +927,6 @@ local methods = {
       func = function() OptionsPrivate.ExportToTable(data.id) end
     });
 
-    if WeakAurasCompanion then
-      tinsert(self.menu, {
-        text = '|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t' .. L["Wago Update"],
-        notCheckable = true,
-        hasArrow = true,
-        menuList = { }
-      });
-    end
-
     tinsert(self.menu, {
       text = " ",
       notClickable = true,
@@ -1025,22 +982,6 @@ local methods = {
     self.ungroup:SetScript("OnClick", self.callbacks.OnUngroupClick);
     self.upgroup:SetScript("OnClick", self.callbacks.OnUpGroupClick);
     self.downgroup:SetScript("OnClick", self.callbacks.OnDownGroupClick);
-
-    if WeakAurasCompanion then
-      local hasUpdate, _, updateData = self:HasUpdate()
-      if hasUpdate then
-        self.update.hasUpdate = hasUpdate
-        self.update.version = updateData.wagoVersion
-        local showVersion = self.data.semver or self.data.version or 0
-        local showCompanionVersion = updateData.wagoSemver or updateData.wagoVersion
-        self.update.title = L["Update %s by %s"]:format(updateData.name, updateData.author)
-        self.update.desc = L["From version %s to version %s"]:format(showVersion, showCompanionVersion)
-        if updateData.versionNote then
-          self.update.desc = ("%s\n\n%s"):format(self.update.desc, updateData.versionNote)
-        end
-        self.update:SetScript("OnClick", self.callbacks.OnUpdateClick);
-      end
-    end
 
     if data.parent then
       local parentData = WeakAuras.GetData(data.parent);
@@ -1440,98 +1381,6 @@ local methods = {
       self:Collapse();
     end
   end,
-  ["ShowGroupUpdate"] = function(self)
-    if self.groupUpdate and self.groupUpdate.disabled then
-      self.groupUpdate:Show()
-      self.groupUpdate.disabled = false
-    end
-  end,
-  ["HideGroupUpdate"] = function(self)
-    if self.groupUpdate and not self.groupUpdate.disabled then
-      self.groupUpdate:Hide()
-      self.groupUpdate.disabled = true
-    end
-  end,
-  ["RefreshUpdateMenu"] = function(self)
-    local pos
-    for k, menu in pairs(self.menu) do
-      if menu.text and menu.text:find(L["Wago Update"]) then
-        pos = k
-        break
-      end
-    end
-    if pos then
-      local wagoMenu = self.menu[pos].menuList
-      for i=1,#wagoMenu do tremove(wagoMenu, 1) end
-      tinsert(wagoMenu, {
-        text = self.data.ignoreWagoUpdate and L["Stop ignoring Updates"] or L["Ignore all Updates"],
-        notCheckable = true,
-        func = self.data.ignoreWagoUpdate and self.callbacks.wagoStopIgnoreAll or self.callbacks.wagoIgnoreAll
-      })
-      if not self.data.ignoreWagoUpdate and self.update.hasUpdate then
-        if self.data.skipWagoUpdate and self.update.version == self.data.skipWagoUpdate then
-          tinsert(wagoMenu, {
-            text =  L["Don't skip this Version"],
-            notCheckable = true,
-            func = self.callbacks.wagoStopIgnoreNext
-          });
-        else
-          tinsert(wagoMenu, {
-            text = L["Skip this Version"],
-            notCheckable = true,
-            func = self.callbacks.wagoIgnoreNext
-          });
-          tinsert(wagoMenu, {
-            text = " ",
-            notClickable = true,
-            notCheckable = true,
-          });
-          tinsert(wagoMenu, {
-            text = L["Update this Aura"],
-            notCheckable = true,
-            func = self.callbacks.OnUpdateClick
-          });
-        end
-      end
-    end
-  end,
-  ["ShowUpdateIcon"] = function(self)
-    if self.update and self.update.disabled then
-      self.update:Show()
-      self.update:Enable()
-      self.updateLogo:Show()
-      self.update.disabled = false
-    end
-  end,
-  ["HideUpdateIcon"] = function(self)
-    if self.update and not self.update.disabled then
-      self.update:Hide()
-      self.update:Disable()
-      self.updateLogo:Hide()
-      self.update.disabled = true
-    end
-  end,
-  ["HasUpdate"] = function(self)
-    local CompanionData = WeakAurasCompanion and WeakAurasCompanion.WeakAuras or WeakAurasCompanion
-    if not (CompanionData and CompanionData.uids and CompanionData.ids) or self.data.ignoreWagoUpdate then return end
-    local slug = self.data.uid and CompanionData.uids[self.data.uid] or CompanionData.ids[self.data.id]
-    if slug then
-      local updateData = CompanionData.slugs and CompanionData.slugs[slug]
-      if updateData then
-        if not (self.data.skipWagoUpdate and self.data.skipWagoUpdate == updateData.wagoVersion) then
-          if not self.data.version or tonumber(updateData.wagoVersion) > tonumber(self.data.version) then
-            -- got update
-            return true, false, updateData, slug
-          end
-        else
-          -- version skip flag
-          return true, true, updateData, slug
-        end
-      end
-    end
-    -- no addon, or no data, or ignore flag
-    return false, false, nil, nil
-  end,
   ["UpdateWarning"] = function(self)
     local icon, title, warningText = OptionsPrivate.Private.AuraWarnings.FormatWarnings(self.data.uid)
     if warningText then
@@ -1549,50 +1398,6 @@ local methods = {
       end)
     else
       self.warning:Hide()
-    end
-  end,
-  ["RefreshUpdate"] = function(self, actionFunc)
-    if self.data.parent then
-      -- is in a group
-      local parentButton = WeakAuras.GetDisplayButton(self.data.parent)
-      if parentButton then
-        parentButton:RefreshUpdate(actionFunc)
-      end
-    else
-      -- is top level
-      local hasUpdate, skipVersion, _, slug = self:HasUpdate()
-      self:RefreshUpdateMenu()
-      if hasUpdate and not skipVersion then
-        self:ShowUpdateIcon()
-      else
-        self:HideUpdateIcon()
-      end
-      if self.data.controlledChildren then
-        -- is a group
-        local hasUpdate, skipVersion, _, slug = self:HasUpdate()
-        local showGroupUpdateIcon = false
-        for childIndex, childId in pairs(self.data.controlledChildren) do
-          local childButton = WeakAuras.GetDisplayButton(childId);
-          if childButton then
-            if actionFunc then
-              childButton.callbacks[actionFunc](nil, true)
-            end
-            childButton:RefreshUpdateMenu()
-            local childHasUpdate, childSkipVersion, _, childSlug = childButton:HasUpdate()
-            if childHasUpdate and slug ~= childSlug and not childSkipVersion then
-              showGroupUpdateIcon = true
-              childButton:ShowUpdateIcon()
-            else
-              childButton:HideUpdateIcon()
-            end
-          end
-        end
-        if showGroupUpdateIcon then
-          self:ShowGroupUpdate()
-        else
-          self:HideGroupUpdate()
-        end
-      end
     end
   end,
   ["SetGroupOrder"] = function(self, order, max)
@@ -1821,18 +1626,6 @@ local function Constructor()
 
   button.description = {};
 
-  button:SetScript("OnEnter", function()
-    if(OptionsPrivate.IsPickedMultiple() and OptionsPrivate.IsDisplayPicked(button.id)) then
-      Show_Long_Tooltip(button, OptionsPrivate.MultipleDisplayTooltipDesc());
-    else
-      if not(button.terribleCodeOrganizationHackTable.IsGroupingOrCopying()) then
-        button.terribleCodeOrganizationHackTable.SetNormalTooltip();
-      end
-      Show_Long_Tooltip(button, button.description);
-    end
-  end);
-  button:SetScript("OnLeave", Hide_Tooltip);
-
   local view = CreateFrame("BUTTON", nil, button);
   button.view = view;
   view:SetWidth(16);
@@ -2017,67 +1810,6 @@ local function Constructor()
   expand:SetScript("OnEnter", function() Show_Tooltip(button, expand.title, expand.desc) end);
   expand:SetScript("OnLeave", Hide_Tooltip);
 
-  local update, updateLogo
-  local groupUpdate
-  if WeakAurasCompanion then
-    update = CreateFrame("BUTTON", nil, button);
-    button.update = update
-    update.disabled = true
-    update.func = function() end
-    update:SetNormalTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]])
-    update:Disable()
-    update:SetWidth(24)
-    update:SetHeight(24)
-    update:SetPoint("RIGHT", button, "RIGHT", -35, 0)
-    update.title = ""
-    update.desc = ""
-    update.hasUpdate = false
-    update.version = nil
-    update.menuDisabled = true
-
-    -- Add logo
-    updateLogo = CreateFrame("Frame", nil, button)
-    button.updateLogo = updateLogo
-    local tex = updateLogo:CreateTexture(nil, "OVERLAY")
-    tex:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]])
-    tex:SetAllPoints()
-    updateLogo:SetSize(24,24)
-    updateLogo:SetPoint("CENTER",update)
-
-    -- Animation On Hover
-    local animGroup = update:CreateAnimationGroup()
-    update.animGroup = animGroup
-    local animRotate = animGroup:CreateAnimation("rotation")
-    animRotate:SetDegrees(-360)
-    animRotate:SetDuration(1)
-    animRotate:SetSmoothing("OUT")
-
-    animGroup:SetScript("OnFinished",function() if (MouseIsOver(update)) then animGroup:Play() end end)
-    update:SetScript("OnEnter", function()
-      animGroup:Play()
-      Show_Tooltip(button, update.title, update.desc)
-    end);
-    update:SetScript("OnLeave", Hide_Tooltip)
-    update:Hide()
-    updateLogo:Hide()
-
-    -- Update in group icon
-    groupUpdate = CreateFrame("Frame", nil, button)
-    button.groupUpdate = groupUpdate
-    local gTex = groupUpdate:CreateTexture(nil, "OVERLAY")
-    gTex:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]])
-    gTex:SetAllPoints()
-    groupUpdate:SetSize(16, 16)
-    groupUpdate:SetPoint("BOTTOM", button, "BOTTOM")
-    groupUpdate:SetPoint("LEFT", icon, "RIGHT", 20, 0)
-    groupUpdate.disabled = true
-    groupUpdate.title = L["Update in Group"]
-    groupUpdate.desc = L["Group contains updates from Wago"]
-    groupUpdate:SetScript("OnEnter", function() Show_Tooltip(button, groupUpdate.title, groupUpdate.desc) end)
-    groupUpdate:SetScript("OnLeave", Hide_Tooltip)
-    groupUpdate:Hide()
-  end
-
   local warning = CreateFrame("BUTTON", nil, button);
   button.warning = warning
   warning:SetWidth(16)
@@ -2099,10 +1831,7 @@ local function Constructor()
     loaded = loaded,
     background = background,
     expand = expand,
-    update = update,
     warning = warning,
-    groupUpdate = groupUpdate,
-    updateLogo = updateLogo,
     type = Type
   }
   for method, func in pairs(methods) do
