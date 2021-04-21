@@ -1,5 +1,5 @@
 ## Interface: 90005
-## Interface-Classic: 11306
+## Interface-Classic: 11307
 ## Interface-BC: 20501
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
