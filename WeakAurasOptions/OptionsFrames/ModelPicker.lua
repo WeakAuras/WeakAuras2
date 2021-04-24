@@ -448,6 +448,7 @@ local function ConstructModelPicker(frame)
 
     if(baseObject.controlledChildren) then
       self.givenModel = {};
+      self.givenModelId = {};
       self.givenApi = {};
       self.givenZ = {};
       self.givenX = {};
@@ -465,6 +466,7 @@ local function ConstructModelPicker(frame)
         local object = valueFromPath(child, path)
         if(object) then
           self.givenModel[childId] = object.model_path;
+          self.givenModelId[childId] = object.model_fileId;
           self.givenApi[childId] = object.api;
           if (object.api) then
             self.givenTX[childId] = object.model_st_tx;
