@@ -42,52 +42,34 @@ local function GetAll(baseObject, path, property, default)
   if not property then
     return default
   end
-  if baseObject.controlledChildren then
-    local result
-    local first = true
-    for index, childId in pairs(baseObject.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
-      local childObject = valueFromPath(childData, path)
-      if childObject and childObject[property] then
-        if first then
-          result = childObject[property]
-          first = false
-        else
-          if not CompareValues(result, childObject[property]) then
-            return default
-          end
+
+  local result = default
+  local first = true
+  for child in OptionsPrivate.Private.TraverseLeafsOrAura(baseObject) do
+    local childObject = valueFromPath(child, path)
+    if childObject and childObject[property] then
+      if first then
+        result = childObject[property]
+        first = false
+      else
+        if not CompareValues(result, childObject[property]) then
+          return default
         end
       end
     end
-    return result
-  else
-    local object = valueFromPath(baseObject, path)
-    if object and object[property] then
-      return object[property]
-    end
-    return default
   end
+  return result
 end
 
 local function SetAll(baseObject, path, property, value)
   local valueFromPath = OptionsPrivate.Private.ValueFromPath
-  if baseObject.controlledChildren then
-    for index, childId in pairs(baseObject.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
-      local object = valueFromPath(childData, path)
+  for child in OptionsPrivate.Private.TraverseLeafsOrAura(baseObject) do
+    local object = valueFromPath(child, path)
       if object then
         object[property] = value
-        WeakAuras.Add(childData)
-        WeakAuras.UpdateThumbnail(childData)
+        WeakAuras.Add(child)
+        WeakAuras.UpdateThumbnail(child)
       end
-    end
-  else
-    local object = valueFromPath(baseObject, path)
-    if object then
-      object[property] = value
-      WeakAuras.Add(baseObject)
-      WeakAuras.UpdateThumbnail(baseObject)
-    end
   end
 end
 
@@ -198,21 +180,11 @@ local function ConstructTexturePicker(frame)
     self.SetTextureFunc = SetTextureFunc
     self.givenPath = {};
     self.selectedTextures = {}
-    if(baseObject.controlledChildren) then
-      for index, childId in pairs(baseObject.controlledChildren) do
-        local childData = WeakAuras.GetData(childId);
-        if(childData) then
-          local childObject = valueFromPath(childData, path)
-          if childObject and childObject[properties.texture] then
-            self.givenPath[childId] = childObject[properties.texture]
-            self.selectedTextures[childObject[properties.texture]] = true
-          end
-        end
-      end
-    else
-      local object = valueFromPath(baseObject, path)
+
+    for child in OptionsPrivate.Private.TraverseLeafsOrAura(baseObject) do
+      local object = valueFromPath(child, path)
       if object and object[properties.texture] then
-        self.givenPath[baseObject.id] = object[properties.texture]
+        self.givenPath[child.id] = object[properties.texture]
         self.selectedTextures[object[properties.texture]] = true
       end
     end
@@ -262,24 +234,12 @@ local function ConstructTexturePicker(frame)
 
   function group.CancelClose()
     local valueFromPath = OptionsPrivate.Private.ValueFromPath
-    if(group.baseObject.controlledChildren) then
-      for index, childId in pairs(group.baseObject.controlledChildren) do
-        local childData = WeakAuras.GetData(childId);
-        if(childData) then
-          local childObject = valueFromPath(childData, group.path)
-          if childObject then
-            childObject[group.properties.texture] = group.givenPath[childId]
-            WeakAuras.Add(childData);
-            WeakAuras.UpdateThumbnail(childData);
-          end
-        end
-      end
-    else
-      local object = valueFromPath(group.baseObject, group.path)
-      if object then
-        object[group.properties.texture] = group.givenPath[group.baseObject.id]
-        WeakAuras.Add(group.baseObject)
-        WeakAuras.UpdateThumbnail(group.baseObject)
+    for child in OptionsPrivate.Private.TraverseLeafsOrAura(group.baseObject) do
+      local childObject = valueFromPath(child, group.path)
+      if childObject then
+        childObject[group.properties.texture] = group.givenPath[child.id]
+        WeakAuras.Add(child);
+        WeakAuras.UpdateThumbnail(child);
       end
     end
     group.Close();
