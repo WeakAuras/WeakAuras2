@@ -20,31 +20,23 @@ local function GetAll(baseObject, path, property, default)
   if not property then
     return default
   end
-  if baseObject.controlledChildren then
-    local result
-    local first = true
-    for index, childId in pairs(baseObject.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
-      local childObject = valueFromPath(childData, path)
-      if childObject and childObject[property] then
-        if first then
-          result = childObject[property]
-          first = false
-        else
-          if result ~= childObject[property] then
-            return default
-          end
+
+  local result = default
+  local first = true
+  for child in OptionsPrivate.Private.TraverseLeafsOrAura(baseObject) do
+    local childObject = valueFromPath(child, path)
+    if childObject and childObject[property] then
+      if first then
+        result = childObject[property]
+        first = false
+      else
+        if result ~= childObject[property] then
+          return default
         end
       end
     end
-    return result
-  else
-    local object = valueFromPath(baseObject, path)
-    if object and object[property] then
-      return object[property]
-    end
-    return default
   end
+  return result
 end
 
 local function ConstructModelPicker(frame)
@@ -305,22 +297,13 @@ local function ConstructModelPicker(frame)
     self.model:SetTransform(self.selectedValues.model_st_tx / 1000, self.selectedValues.model_st_ty / 1000, self.selectedValues.model_st_tz / 1000,
       rad(self.selectedValues.model_st_rx), rad(self.selectedValues.model_st_ry), rad(self.selectedValues.model_st_rz),
       self.selectedValues.model_st_us / 1000);
-    if(self.baseObject.controlledChildren) then
-      for index, childId in pairs(self.baseObject.controlledChildren) do
-        local childData = WeakAuras.GetData(childId)
-        local object = valueFromPath(childData, self.path)
-        if(object) then
-          SetStOnObject(object, model_path, model_fileId, model_tx, model_ty, model_tz, model_rx, model_ry, model_rz, model_us)
-          WeakAuras.Add(childData);
-          WeakAuras.UpdateThumbnail(childData);
-        end
-      end
-    else
-      local object = valueFromPath(self.baseObject, self.path)
-      if object then
+
+    for child in OptionsPrivate.Private.TraverseLeafsOrAura(self.baseObject) do
+      local object = valueFromPath(child, self.path)
+      if(object) then
         SetStOnObject(object, model_path, model_fileId, model_tx, model_ty, model_tz, model_rx, model_ry, model_rz, model_us)
-        WeakAuras.Add(self.baseObject)
-        WeakAuras.UpdateThumbnail(self.baseObject)
+        WeakAuras.Add(child);
+        WeakAuras.UpdateThumbnail(child);
       end
     end
   end
@@ -362,22 +345,12 @@ local function ConstructModelPicker(frame)
     self.model:SetPosition(self.selectedValues.model_z, self.selectedValues.model_x, self.selectedValues.model_y);
     self.model:SetFacing(rad(self.selectedValues.rotation));
 
-    if(self.baseObject.controlledChildren) then
-      for index, childId in pairs(self.baseObject.controlledChildren) do
-        local childData = WeakAuras.GetData(childId)
-        local object = valueFromPath(childData, self.path)
-        if(object) then
-          SetOnObject(object, model_path, model_fileId, model_z, model_x, model_y, rotation)
-          WeakAuras.Add(childData)
-          WeakAuras.UpdateThumbnail(childData)
-        end
-      end
-    else
-      local object = valueFromPath(self.baseObject, self.path)
-      if object then
+    for child in OptionsPrivate.Private.TraverseLeafsOrAura(self.baseObject) do
+      local object = valueFromPath(child, self.path)
+      if(object) then
         SetOnObject(object, model_path, model_fileId, model_z, model_x, model_y, rotation)
-        WeakAuras.Add(self.baseObject)
-        WeakAuras.UpdateThumbnail(self.baseObject)
+        WeakAuras.Add(child)
+        WeakAuras.UpdateThumbnail(child)
       end
     end
   end
@@ -487,9 +460,9 @@ local function ConstructModelPicker(frame)
       self.givenRY = {};
       self.givenRZ = {};
       self.givenUS = {};
-      for index, childId in pairs(baseObject.controlledChildren) do
-        local childData = WeakAuras.GetData(childId)
-        local object = valueFromPath(childData, path)
+      for child in OptionsPrivate.Private.TraverseLeafs(baseObject) do
+        local childId = child.id
+        local object = valueFromPath(child, path)
         if(object) then
           self.givenModel[childId] = object.model_path;
           self.givenApi[childId] = object.api;
@@ -544,9 +517,9 @@ local function ConstructModelPicker(frame)
   function group.CancelClose()
     local valueFromPath = OptionsPrivate.Private.ValueFromPath
     if(group.baseObject.controlledChildren) then
-      for index, childId in pairs(group.baseObject.controlledChildren) do
-        local childData = WeakAuras.GetData(childId);
-        local object = valueFromPath(childData, group.path)
+      for child in OptionsPrivate.Private.TraverseLeafs(group.baseObject) do
+        local childId = child.id
+        local object = valueFromPath(child, group.path)
         if(object) then
           object.model_path = group.givenModel[childId];
           object.model_fileId = group.givenModelId[childId];
@@ -565,8 +538,8 @@ local function ConstructModelPicker(frame)
             object.model_y = group.givenY[childId];
             object.rotation = group.givenRotation[childId];
           end
-          WeakAuras.Add(childData);
-          WeakAuras.UpdateThumbnail(childData);
+          WeakAuras.Add(child);
+          WeakAuras.UpdateThumbnail(child);
         end
       end
     else
