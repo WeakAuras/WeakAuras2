@@ -12,7 +12,7 @@ local function OnDelete(event, uid)
   warnings[uid] = nil
 end
 
-Private:RegisterCallback("Delete", OnDelete)
+Private.callbacks:RegisterCallback("Delete", OnDelete)
 
 local function UpdateWarning(uid, key, severity, message, printOnConsole)
   if not uid then

@@ -539,7 +539,7 @@ function WeakAuras.ToggleOptions(msg, Private)
   end
   if not OptionsPrivate.Private then
     OptionsPrivate.Private = Private
-    OptionsPrivate.Private:RegisterCallback("AuraWarningsUpdated", function(event, uid)
+    OptionsPrivate.Private.callbacks:RegisterCallback("AuraWarningsUpdated", function(event, uid)
       local id = OptionsPrivate.Private.UIDtoID(uid)
       if displayButtons[id] then
         -- The button does not yet exists if a new aura is created
@@ -547,9 +547,9 @@ function WeakAuras.ToggleOptions(msg, Private)
       end
     end)
 
-    OptionsPrivate.Private:RegisterCallback("ScanForLoads", AfterScanForLoads)
-    OptionsPrivate.Private:RegisterCallback("AboutToDelete", OnAboutToDelete)
-    OptionsPrivate.Private:RegisterCallback("Rename", OnRename)
+    OptionsPrivate.Private.callbacks:RegisterCallback("ScanForLoads", AfterScanForLoads)
+    OptionsPrivate.Private.callbacks:RegisterCallback("AboutToDelete", OnAboutToDelete)
+    OptionsPrivate.Private.callbacks:RegisterCallback("Rename", OnRename)
   end
 
   if(frame and frame:IsVisible()) then
