@@ -1092,6 +1092,7 @@ Private.subevent_suffix_types = {
   _DAMAGE = L["Damage"],
   _MISSED = L["Missed"],
   _HEAL = L["Heal"],
+  _HEAL_ABSORBED = L["Heal Absorbed"],
   _ENERGIZE = L["Energize"],
   _DRAIN = L["Drain"],
   _LEECH = L["Leech"],
