@@ -32,7 +32,7 @@ local function OnDelete(event, uid)
   end
 end
 
-Private:RegisterCallback("Delete", OnDelete)
+Private.callbacks:RegisterCallback("Delete", OnDelete)
 
 local function formatValueForAssignment(vType, value, pathToCustomFunction, pathToFormatters)
   if (value == nil) then
