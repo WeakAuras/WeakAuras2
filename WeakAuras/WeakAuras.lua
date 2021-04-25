@@ -33,7 +33,23 @@ LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 Private.maxTimerDuration = 604800; -- A week, in seconds
 local maxUpTime = 4294967; -- 2^32 / 1000
 
-Private.callbacks = LibStub("CallbackHandler-1.0"):New(Private)
+-- The worlds simplest callback system
+-- That supports 1:N, but no deregistration and breaks if registrating in a callback
+Private.callbacks = {}
+Private.callbacks.events = {}
+
+function Private.callbacks:RegisterCallback(event, handler)
+  self.events[event] = self.events[event] or {}
+  tinsert(self.events[event], handler)
+end
+
+function Private.callbacks:Fire(event, ...)
+  if self.events[event] then
+    for index, f in ipairs(self.events[event]) do
+      f(event, ...)
+    end
+  end
+end
 
 function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
   if (delay < Private.maxTimerDuration) then
