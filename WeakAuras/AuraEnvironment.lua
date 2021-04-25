@@ -168,7 +168,6 @@ local blockedFunctions = {
   GuildDisband = true,
   GuildUninvite = true,
   securecall = true,
-  PickupInventoryItem = true,
   DeleteCursorItem = true,
 }
 
