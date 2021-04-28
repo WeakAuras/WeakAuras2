@@ -37,6 +37,8 @@ ignore:
   - update_translations.sh
   - generate_changelog.sh
   - WeakAurasModelPaths/ModelPathsClassic.lua
+  - WeakAurasTemplates/TriggerTemplatesDataClassic.lua
+  - WeakAurasTemplates/TriggerTemplatesDataTBC.lua
 
 move-folders:
   WeakAuras/WeakAuras: WeakAuras
