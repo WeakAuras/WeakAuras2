@@ -892,9 +892,10 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
 
   wipe(frame.buttonsScroll.children);
 
-  if WeakAurasCompanion and WeakAurasCompanion.stash then
-    local pendingImportButtonShown = false
-    for id, data in pairs(WeakAurasCompanion.stash) do
+  local pendingImportButtonShown = false
+  local CompanionData = WeakAurasCompanion and WeakAurasCompanion.WeakAuras or WeakAurasCompanion
+  if CompanionData and CompanionData.stash then
+    for id, companionData in pairs(CompanionData.stash) do
       if not pendingImportButtonShown then
         tinsert(frame.buttonsScroll.children, frame.pendingImportButton)
         pendingImportButtonShown = true
@@ -902,12 +903,12 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
       if frame.pendingImportButton:GetExpanded() then
         if not(pendingUpdateButtons[id]) then
           pendingUpdateButtons[id] = AceGUI:Create("WeakAurasPendingUpdateButton")
-          pendingUpdateButtons[id]:Initialize(id, data)
-          if data.logo then
-            pendingUpdateButtons[id]:SetLogo(data.logo)
+          pendingUpdateButtons[id]:Initialize(id, companionData)
+          if companionData.logo then
+            pendingUpdateButtons[id]:SetLogo(companionData.logo)
           end
-          if data.refreshLogo then
-            pendingUpdateButtons[id]:SetRefreshLogo(data.logo)
+          if companionData.refreshLogo then
+            pendingUpdateButtons[id]:SetRefreshLogo(companionData.refreshLogo)
           end
         end
         pendingUpdateButtons[id].frame:Show()
@@ -920,6 +921,9 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
         end
       end
     end
+  end
+  if not pendingImportButtonShown and frame.pendingImportButton then
+    frame.pendingImportButton.frame:Hide()
   end
 
   tinsert(frame.buttonsScroll.children, frame.loadedButton);

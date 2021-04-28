@@ -799,7 +799,8 @@ local function CreatePvPTalentCache()
 end
 
 function WeakAuras.CountWagoUpdates()
-  if not (WeakAurasCompanion and WeakAurasCompanion.slugs) then
+  local CompanionData = WeakAurasCompanion and WeakAurasCompanion.WeakAuras or WeakAurasCompanion
+  if not (CompanionData and CompanionData.slugs) then
     return 0
   end
   local WeakAurasSaved = WeakAurasSaved
@@ -812,7 +813,7 @@ function WeakAuras.CountWagoUpdates()
         version = 1
       end
       if slug and version then
-        local wago = WeakAurasCompanion.slugs[slug]
+        local wago = CompanionData.slugs and CompanionData.slugs[slug]
         if wago and wago.wagoVersion
         and tonumber(wago.wagoVersion) > (
           aura.skipWagoUpdate and tonumber(aura.skipWagoUpdate) or tonumber(version)
