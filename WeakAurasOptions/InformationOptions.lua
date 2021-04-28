@@ -143,27 +143,73 @@ function OptionsPrivate.GetInformationOptions(data)
     end
   end
 
-  -- Show warnings only for single selection for now
-  if not isGroup then
-    local icon, title, message = OptionsPrivate.Private.AuraWarnings.FormatWarnings(data.uid)
-    if title and message then
-      args.warningTitle = {
-        type = "header",
-        name = title,
-        width = WeakAuras.doubleWidth,
-        order = order,
-      }
-      order = order + 1
-
-      args.warnings = {
-        type = "description",
-        name = message,
-        width = WeakAuras.doubleWidth,
-        order = order,
-        fontSize = "medium"
-      }
-      order = order + 1
+  -- Version
+  -- One Aura: Edit version of the aura
+  -- Group/Multi-selection: Edit version of both parent and children
+  local sameVersion = true
+  local commonVersion
+  desc = ""
+  if not isTmpGroup then
+    commonVersion = data.semver
+    if data.semver then
+      desc = "|cFFE0E000"..data.id..": |r".. data.semver .. "\n"
     end
+  end
+  if data.controlledChildren then
+    for _, childId in ipairs(data.controlledChildren) do
+      local childData = WeakAuras.GetData(childId)
+      if childData.semver then
+        desc = desc .. "|cFFE0E000"..childData.id..": |r"..childData.semver .. "\n"
+      end
+      if not commonVersion then
+        commonVersion = childData.semver or ""
+      elseif childData.semver ~= commonVersion then
+        sameVersion = false
+      end
+    end
+  end
+
+  args.version = {
+    type = "input",
+    name = sameVersion and L["Version"] or "|cFF4080FF" .. L["Version"],
+    width = WeakAuras.doubleWidth,
+    get = function()
+      if data.controlledChildren then
+        return sameVersion and commonVersion or ""
+      else
+        return data.semver
+      end
+    end,
+    set = function(info, v)
+      if data.controlledChildren then
+        for _, childId in ipairs(data.controlledChildren) do
+          local childData = WeakAuras.GetData(childId)
+          childData.semver = v
+          WeakAuras.Add(childData)
+          OptionsPrivate.ClearOptions(childData.id)
+        end
+      end
+
+      if not isTmpGroup then
+        data.semver = v
+        WeakAuras.Add(data)
+      end
+      WeakAuras.ClearAndUpdateOptions(data.id)
+    end,
+    desc = sameVersion and "" or desc,
+    order = order
+  }
+  order = order + 1
+
+  if isGroup then
+    args.version_note = {
+      type = "description",
+      name = isTmpGroup and L["|cFFE0E000Note:|r This sets the version on all selected auras"]
+                         or L["|cFFE0E000Note:|r This sets the version on this group and all its members."],
+      width = WeakAuras.doubleWidth,
+      order = order
+    }
+    order = order + 1
   end
 
   -- compatibility Options
