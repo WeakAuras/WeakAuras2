@@ -5,7 +5,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 56
+local Type, Version = "WeakAurasDisplayButton", 57
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -1512,11 +1512,11 @@ local methods = {
     end
   end,
   ["HasUpdate"] = function(self)
-    -- return hasUpdate, skipVersion, updateData, key
-    if not WeakAurasCompanion or self.data.ignoreWagoUpdate then return end
-    local slug = self.data.uid and WeakAurasCompanion.uids[self.data.uid] or WeakAurasCompanion.ids[self.data.id]
+    local CompanionData = WeakAurasCompanion and WeakAurasCompanion.WeakAuras or WeakAurasCompanion
+    if not (CompanionData and CompanionData.uids and CompanionData.ids) or self.data.ignoreWagoUpdate then return end
+    local slug = self.data.uid and CompanionData.uids[self.data.uid] or CompanionData.ids[self.data.id]
     if slug then
-      local updateData = WeakAurasCompanion.slugs[slug]
+      local updateData = CompanionData.slugs and CompanionData.slugs[slug]
       if updateData then
         if not (self.data.skipWagoUpdate and self.data.skipWagoUpdate == updateData.wagoVersion) then
           if not self.data.version or tonumber(updateData.wagoVersion) > tonumber(self.data.version) then
