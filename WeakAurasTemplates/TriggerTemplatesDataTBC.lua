@@ -376,6 +376,7 @@ templates.class.PRIEST = {
         { spell = 2096, type = "debuff", unit = "target"}, -- Mind Vision
         { spell = 589, type = "debuff", unit = "target"}, -- Shadow Word: Pain
         { spell = 9484, type = "debuff", unit = "multi" }, -- Shackle Undead
+        { spell = 34914, type = "debuff", unit = "target", talent = 101}, -- Vampiric Touch
       },
       icon = 136207
     },
@@ -387,20 +388,29 @@ templates.class.PRIEST = {
         { spell = 552, type = "ability"}, -- Abolish Disease
         { spell = 585, type = "ability", requireTarget = true}, -- Smite
         { spell = 586, type = "ability", buff = true}, -- Fade
-        { spell = 589, type = "ability", debuff = true}, -- Shadow Word: Pain
+        { spell = 589, type = "ability", requireTarget = true, debuff = true}, -- Shadow Word: Pain
         { spell = 2060, type = "ability"}, -- Greater Heal
         { spell = 2061, type = "ability"}, -- Flash Heal
         { spell = 6064, type = "ability"}, -- Heal
+        { spell = 6346, type = "ability", buff = true}, -- Fear Ward
         { spell = 8092, type = "ability", requireTarget = true}, -- Mind Blast
         { spell = 8122, type = "ability"}, -- Psychic Scream
-        { spell = 10060, type = "ability", buff = true, talent = 15}, -- Power Infusion
+        { spell = 8129, type = "ability", requireTarget = true}, -- Mana Burn
+        { spell = 10060, type = "ability", buff = true, talent = 19}, -- Power Infusion
         { spell = 10876, type = "ability", requireTarget = true}, -- Mana Burn
         { spell = 10947, type = "ability", requireTarget = true}, -- Mind Flay
         { spell = 10951, type = "ability", buff = true}, -- Inner Fire
-        { spell = 14751, type = "ability", buff = true, talent = 7}, -- Inner Focus
+        { spell = 14751, type = "ability", buff = true, talent = 8}, -- Inner Focus
         { spell = 14914, type = "ability", debuff = true, requireTarget = true}, -- Holy Fire
-        { spell = 15487, type = "ability", debuff = true, requireTarget = true, talnet = 52}, -- Silence
-
+        { spell = 15487, type = "ability", debuff = true, requireTarget = true, talent = 92}, -- Silence
+        { spell = 33206, type = "ability", buff = true, talent = 22}, -- Pain Suppression
+        { spell = 32375, type = "ability"}, -- Mass Dispel
+        { spell = 32379, type = "ability", requireTarget = true}, -- Shadow Word: Death
+        { spell = 32546, type = "ability"}, -- Binding Heal
+        { spell = 33076, type = "ability"}, -- Prayer of Mending
+        { spell = 34433, type = "ability", totem = true}, -- Shadowfiend
+        { spell = 34861, type = "ability", talent = 61}, -- Circle of Healing
+        { spell = 34914, type = "ability", debuff = true, requireTarget = true, talent = 101}, -- Vampiric Touch
       },
       icon = 136224
     },
