@@ -508,9 +508,9 @@ templates.class.MAGE = {
         { spell = 1459, type = "buff", unit = "player"}, -- Arcane Intellect
         { spell = 1463, type = "buff", unit = "player"}, -- Mana Shield
         { spell = 6143, type = "buff", unit = "player"}, -- Frost Ward
-        { spell = 11958, type = "buff", unit = "player"}, -- Ice Block
         { spell = 12042, type = "buff", unit = "player"}, -- Arcane Power
         { spell = 12536, type = "buff", unit = "player"}, -- Clearcasting
+        { spell = 45438, type = "buff", unit = "player"}, -- Ice Block
       },
       icon = 136096
     },
@@ -528,10 +528,13 @@ templates.class.MAGE = {
     [3] = {
       title = L["Abilities"],
       args = {
+        { spell = 66, type = "ability", buff = true, buffId = 32612}, -- Invisibility
+        { spell = 116, type = "ability", requiresTarget = true}, -- Frostbolt
         { spell = 118, type = "ability", debuff = true, requireTarget = true}, -- Polymorph
         { spell = 120, type = "ability"}, -- Cone of Cold
         { spell = 122, type = "ability"}, -- Frost Nova
         { spell = 130, type = "ability", buff = true}, -- Slow Fall
+        { spell = 168, type = "ability", buff = true}, -- Frost Armor
         { spell = 475, type = "ability"}, -- Remove Curse
         { spell = 543, type = "ability", buff = true}, -- Fire Ward
         { spell = 1449, type = "ability"}, -- Arcane Explosion
@@ -543,18 +546,26 @@ templates.class.MAGE = {
         { spell = 2855, type = "ability", debuff = true, requireTarget = true}, -- Detect Magic
         { spell = 2948, type = "ability", requiresTarget = true}, -- Scorch
         { spell = 5143, type = "ability", requiresTarget = true}, -- Arcane Missiles
+        { spell = 6117, type = "ability", buff = true}, -- Mage Armor
         { spell = 6143, type = "ability", buff = true}, -- Frost Ward
         { spell = 10187, type = "ability"}, -- Blizzard
-        { spell = 11113, type = "ability", debuff = true, talent = 34}, -- Blast Wave
-        { spell = 11129, type = "ability", buff = true, talent = 36}, -- Combustion
-        { spell = 11426, type = "ability", buff = true, talent = 57}, --ice Barrier
-        { spell = 11958, type = "ability", buff = true, talent = 54}, -- Ice Block
+        { spell = 11113, type = "ability", debuff = true, talent = 55}, -- Blast Wave
+        { spell = 11129, type = "ability", buff = true, talent = 59}, -- Combustion
+        { spell = 11426, type = "ability", buff = true, talent = 99}, -- ice Barrier
+        { spell = 11958, type = "ability", talent = 95}, -- Cold Snap
         { spell = 12042, type = "ability", buff = true, talent = 16}, -- Arcane Power
         { spell = 12043, type = "ability", buff = true, talent = 13}, -- Presence of Mind
         { spell = 12051, type = "ability"}, -- Evocation
-        { spell = 12472, type = "ability", buff = true, talent = 49}, -- Cold Snap
+        { spell = 14272, type = "ability", buff = true, talent = 89}, -- Icy Veins
         { spell = 18809, type = "ability", requiresTarget = true}, -- Pyroblast
         { spell = 25304, type = "ability", requiresTarget = true}, -- Frostbolt
+        { spell = 30449, type = "ability", requiresTarget = true}, -- Spellsteal
+        { spell = 30451, type = "ability", requiresTarget = true}, -- Arcane Blast
+        { spell = 30482, type = "ability", buff = true}, -- Molten Armor
+        { spell = 31661, type = "ability", buff = true}, -- Dragon's Breath
+        { spell = 31687, type = "ability", totem = true, talent = 102}, -- Summon Water Elemental
+        { spell = 34589, type = "ability", requireTarget = true, debuff = true, talent = 23}, -- Slow
+        { spell = 45438, type = "ability", buff = true}, -- Ice Block
       },
       icon = 136075
     },
