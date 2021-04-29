@@ -251,14 +251,19 @@ templates.class.HUNTER = {
         { spell = 13813, type = "ability"}, -- Explosive Trap
         { spell = 16827, type = "ability", requiresTarget = true}, -- Claw
         { spell = 19263, type = "ability", buff = true}, -- Deterrence -TODO
-        { spell = 19306, type = "ability", requiresTarget = true, usable = true}, -- Counterattack -TODO
-        { spell = 19434, type = "ability", requiresTarget = true}, -- Aimed Shot -TODO
-        { spell = 19386, type = "ability", requiresTarget = true, debuff = true}, -- Wyvern Sting -TODO
-        { spell = 19503, type = "ability", requiresTarget = true, debuff = true}, -- Scatter Shot -TODO
-        { spell = 19574, type = "ability", buff = true}, -- Bestial Wrath -TODO
-        { spell = 19577, type = "ability", requiresTarget = true, debuff = true}, -- Intimidation -TODO
+        { spell = 19306, type = "ability", requiresTarget = true, usable = true, talent = 96}, -- Counterattack
+        { spell = 19434, type = "ability", requiresTarget = true, talent = 47}, -- Aimed Shot
+        { spell = 19386, type = "ability", requiresTarget = true, debuff = true, talent = 100}, -- Wyvern Sting
+        { spell = 19503, type = "ability", requiresTarget = true, debuff = true, talent = 52}, -- Scatter Shot
+        { spell = 19574, type = "ability", buff = true, talent = 18}, -- Bestial Wrath
+        { spell = 19577, type = "ability", requiresTarget = true, debuff = true, talent = 13}, -- Intimidation
         { spell = 19801, type = "ability", requiresTarget = true}, -- Tranquilizing Shot
         { spell = 20736, type = "ability", requiresTarget = true}, -- Distracting Shot
+        { spell = 23989, type = "ability", talent = 103}, -- Readiness
+        { spell = 34120, type = "ability", requiresTarget = true}, -- Steady Shot
+        { spell = 34477, type = "ability", requiresTarget = true, debuff = true}, -- Misdirection
+        { spell = 34490, type = "ability", requiresTarget = true, debuff = true, talent = 60}, -- Silencing Shot
+        { spell = 34600, type = "ability"}, -- Snake Trap
       },
       icon = 135130
     },
