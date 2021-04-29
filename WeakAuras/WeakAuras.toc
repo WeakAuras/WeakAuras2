@@ -30,9 +30,6 @@ embeds.xml
 # Libs\LibClassicCasterino\LibClassicCasterino.lua
 # Libs\LibClassicSpellActionCount-1.0\LibClassicSpellActionCount-1.0.lua
 # #@end-version-classic@
-# #@version-bc@
-# Libs\LibClassicSpellActionCount-1.0\LibClassicSpellActionCount-1.0.lua
-# #@end-version-bc@
 #@end-non-version-retail@
 
 Init.lua

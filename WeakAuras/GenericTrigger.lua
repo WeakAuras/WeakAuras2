@@ -69,7 +69,7 @@ local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 local GenericTrigger = {};
 local LCSA
-if WeakAuras.IsClassic() or WeakAuras.IsBC() then
+if WeakAuras.IsClassic() then
   LCSA = LibStub("LibClassicSpellActionCount-1.0")
 end
 
@@ -2096,7 +2096,7 @@ do
     end
 
     local count
-    if WeakAuras.IsClassic() or WeakAuras.IsBC() then
+    if WeakAuras.IsClassic() then
       count = LCSA:GetSpellReagentCount(id)
     else
       count = GetSpellCount(id)
