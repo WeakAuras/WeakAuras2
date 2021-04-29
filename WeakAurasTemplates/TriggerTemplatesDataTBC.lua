@@ -165,6 +165,7 @@ templates.class.PALADIN = {
         { spell = 498, type = "ability", buff = true}, -- Divine Protection
         { spell = 633, type = "ability"}, -- Lay on Hands
         { spell = 642, type = "ability", buff = true}, -- Divine Shield
+        { spell = 709, type = "ability", buff = true}, -- Righteous Fury
         { spell = 853, type = "ability", requiresTarget = true, debuff = true}, -- Hammer of Justice
         { spell = 879, type = "ability", requiresTarget = true, usable = true}, -- Exorcism
         { spell = 1022, type = "ability", buff = true}, -- Blessing of Protection
@@ -173,20 +174,29 @@ templates.class.PALADIN = {
         { spell = 2812, type = "ability"}, -- Holy Wrath
         { spell = 4987, type = "ability"}, -- Cleanse
         { spell = 6940, type = "ability"}, -- Blessing of Sacrifice
+        { spell = 10326, type = "ability", debuff = true, requiresTarget = true, usable = true}, -- Turn Evil
         { spell = 19876, type = "ability", buff = true}, -- Shadow Resistance Aura
         { spell = 19888, type = "ability", buff = true}, -- Frost Resistance Aura
         { spell = 19891, type = "ability", buff = true}, -- Fire Resistance Aura
-        { spell = 20066, type = "ability", requiresTarget = true, debuff = true, talent = 55}, -- Repentance
-        { spell = 20165, type = "ability", buff = true}, -- Seal of Justice
+        { spell = 20066, type = "ability", requiresTarget = true, debuff = true, talent = 99}, -- Repentance
+        { spell = 20164, type = "ability", buff = true}, -- Seal of Justice
         { spell = 20165, type = "ability", buff = true}, -- Seal of Light
         { spell = 20166, type = "ability", buff = true}, -- Seal of Wisdom
-        { spell = 20182, type = "ability", buff = true}, -- Seal of the Crusader
         { spell = 20271, type = "ability", buff = true, requiresTarget = true}, -- Judgement
-        { spell = 20375, type = "ability", buff = true, talent = 48}, -- Seal of Command
-        { spell = 20925, type = "ability", charges = true, buff = true, talent = 35}, -- Holy Shield
+        { spell = 20375, type = "ability", buff = true, talent = 88}, -- Seal of Command
+        { spell = 20473, type = "ability", talent = 17}, -- Holy Shock
+        { spell = 20925, type = "ability", charges = true, buff = true, talent = 59}, -- Holy Shield
+        { spell = 21082, type = "ability", buff = true}, -- Seal of the Crusader
         { spell = 21084, type = "ability", buff = true}, -- Seal of Righteousness
         { spell = 24275, type = "ability", requiresTarget = true, usable = true}, -- Hammer of Wrath
-        { spell = 26573, type = "ability", talent = 6}, -- Consecration
+        { spell = 26573, type = "ability"}, -- Consecration
+        { spell = 31789, type = "ability"}, -- Righteous Defense
+        { spell = 31842, type = "ability", buff = true, talent = 20}, -- Divine Illumination
+        { spell = 31884, type = "ability", buff = true}, -- Avenging Wrath
+        { spell = 31892, type = "ability", buff = true}, -- Seal of Blood
+        { spell = 31935, type = "ability", talent = 62}, -- Avenger's Shield
+        { spell = 35395, type = "ability", requiresTarget = true, talent = 102}, -- Crusader Strike
+        { spell = 348704, type = "ability", buff = true}, -- Seal of Vengeance
       },
       icon = 135972
     },
