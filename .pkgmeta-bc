@@ -19,7 +19,6 @@ externals:
   WeakAuras/Libs/LibDBIcon-1.0: https://repos.curseforge.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
   WeakAuras/Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
   WeakAuras/Libs/LibRangeCheck-2.0: https://github.com/WeakAuras/LibRangeCheck-2.0/
-  WeakAuras/Libs/LibClassicSpellActionCount-1.0: https://github.com/Ennea/LibClassicSpellActionCount-1.0
   WeakAuras/Libs/Archivist: https://github.com/emptyrivers/Archivist
   WeakAuras/Libs/LibSerialize:
     url: https://github.com/rossnichols/LibSerialize
