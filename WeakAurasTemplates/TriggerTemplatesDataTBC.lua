@@ -300,6 +300,7 @@ templates.class.ROGUE = {
       title = L["Debuffs"],
       args = {
         { spell = 703, type = "debuff", unit = "target"}, -- Garrote
+        { spell = 8643, type = "debuff", unit = "target"}, -- Kidney SHot
         { spell = 14251, type = "debuff", unit = "target"}, -- Riposte
         { spell = 11198, type = "debuff", unit = "target"}, -- Expose Armor
         { spell = 18425, type = "debuff", unit = "target"}, -- Kick - Silenced
@@ -314,27 +315,31 @@ templates.class.ROGUE = {
         { spell = 53, type = "ability", requiresTarget = true, usable = true}, -- Backstab
         { spell = 703, type = "ability", requiresTarget = true, debuff = true}, -- Garrote
         { spell = 921, type = "ability", requiresTarget = true, usable = true}, -- Pick Pocket
-        { spell = 1725, type = "ability", usable = true}, -- Distract
+        { spell = 1329, type = "ability", requiresTarget = true, usable = true, talent = 21}, -- Mutilate
+        { spell = 1725, type = "ability"}, -- Distract
         { spell = 1752, type = "ability", requiresTarget = true}, -- Sinister Strike
         { spell = 1766, type = "ability", requiresTarget = true}, -- Kick
         { spell = 1776, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Gouge
         { spell = 1784, type = "ability", buff = true}, -- Stealth
         { spell = 1856, type = "ability", buff = true}, -- Vanish
-        { spell = 2094, type = "ability", requiresTarget = true}, -- Blind
+        { spell = 2094, type = "ability", requiresTarget = true, debuff = true}, -- Blind
         { spell = 2098, type = "ability", requiresTarget = true}, -- Eviscerate
         { spell = 2983, type = "ability", buff = true}, -- Sprint
         { spell = 5171, type = "ability", requiresTarget = true, buff = true}, -- Slice and Dice
         { spell = 5277, type = "ability", buff = true}, -- Evasion
         { spell = 6770, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Sap
+        { spell = 8643, type = "ability", requiresTarget = true, usable = true, debuff = true}, -- Kidney Shot
         { spell = 8647, type = "ability", requiresTarget = true, debuff = true}, -- Expose Armor
-        { spell = 13750, type = "ability", buff = true, talent = 39}, -- Adrenaline Rush
-        { spell = 13877, type = "ability", buff = true, talent = 34}, -- Blade Fury
-        { spell = 14177, type = "ability", buff = true, talent = 12}, -- Cold Blood
-        { spell = 14183, type = "ability", requiresTarget = true, debuff = true, talent = 57}, -- Premeditation
+        { spell = 13750, type = "ability", buff = true, talent = 61}, -- Adrenaline Rush
+        { spell = 13877, type = "ability", buff = true, talent = 54}, -- Blade Fury
+        { spell = 14177, type = "ability", buff = true, talent = 13}, -- Cold Blood
+        { spell = 14183, type = "ability", requiresTarget = true, debuff = true, talent = 99}, -- Premeditation
         { spell = 14185, type = "ability"}, -- Preparation
-        { spell = 14251, type = "ability", requiresTarget = true, usable = true, debuff = true, talent = 28}, -- Riposte
-        { spell = 14271, type = "ability", requiresTarget = true, buff = true, talent = 47}, -- Ghostly Strike
-        { spell = 16511, type = "ability", requiresTarget = true, debuff = true, talent = 55}, -- Hemorrhage
+        { spell = 14251, type = "ability", requiresTarget = true, usable = true, debuff = true, talent = 48}, -- Riposte
+        { spell = 14271, type = "ability", requiresTarget = true, buff = true, talent = 87}, -- Ghostly Strike
+        { spell = 16511, type = "ability", requiresTarget = true, debuff = true, talent = 95}, -- Hemorrhage
+        { spell = 31224, type = "ability", buff = true}, -- Cloak of Shadows
+        { spell = 36554, type = "ability", requiresTarget = true, talent = 102}, -- Shadowstep
       },
       icon = 132350
     },
