@@ -413,7 +413,7 @@ templates.class.SHAMAN = {
       title = L["Buffs"],
       args = {
         { spell = 546, type = "buff", unit = "player"}, -- Water Walking
-        { spell = 16256, type = "buff", unit = "player", talent = 30}, -- Flurry
+        { spell = 16256, type = "buff", unit = "player", talent = 50}, -- Flurry
       },
       icon = 135863
     },
@@ -434,12 +434,17 @@ templates.class.SHAMAN = {
         { spell = 421, type = "ability", requireTarget = true}, -- Chain Lightning
         { spell = 546, type = "ability", buff = true, usable = true}, -- Water Walking
         { spell = 556, type = "ability"}, -- Astral Recall
+        { spell = 974, type = "ability", buff = true, talent = 100}, -- Earth Shield
         { spell = 1064, type = "ability"}, -- Chain Heal
         { spell = 1535, type = "ability", totem = true}, -- Fire Nova Totem
         { spell = 2008, type = "ability"}, -- Ancestral Spirit
+        { spell = 2062, type = "ability", totem = true}, -- Earth Elemental Totem
         { spell = 2484, type = "ability", totem = true}, -- Earthbind Totem
         { spell = 2645, type = "ability", buff = true}, -- Ghost Wolf
+        { spell = 2825, type = "ability", buff = true}, -- Bloodlust
+        { spell = 2894, type = "ability", totem = true}, -- Fire Elemental Totem
         { spell = 3599, type = "ability", totem = true}, -- Searing Totem
+        { spell = 3738, type = "ability", totem = true}, -- Wrath of Air Totem
         { spell = 5394, type = "ability", totem = true}, -- Healing Stream Totem
         { spell = 5675, type = "ability", totem = true}, -- Mana Spring Totem
         { spell = 5730, type = "ability", totem = true}, -- Stoneclaw Totem
@@ -464,11 +469,17 @@ templates.class.SHAMAN = {
         { spell = 8835, type = "ability", totem = true}, -- Grace of Air Totem
         { spell = 10595, type = "ability", totem = true}, -- Nature Resistance Totem
         { spell = 15107, type = "ability", totem = true}, -- Windwall Totem
-        { spell = 16188, type = "ability", buff = true, talent = 53}, -- Nature Swiftness
-        { spell = 16190, type = "ability", totem = true, talent = 55}, -- Mana Tide Totem
-        { spell = 17364, type = "ability", debuff = true, talent = 36}, -- Stormstrike
+        { spell = 16246, type = "ability", buff = true, talent = 6}, -- Clearcasting
+        { spell = 16166, type = "ability", buff = true, talent = 17}, -- Elemental Mastery
+        { spell = 16188, type = "ability", buff = true, talent = 93}, -- Nature Swiftness
+        { spell = 16190, type = "ability", totem = true, talent = 96}, -- Mana Tide Totem
+        { spell = 17364, type = "ability", debuff = true, talent = 59}, -- Stormstrike
         { spell = 20608, type = "ability"}, -- Reincarnation
+        { spell = 24398, type = "ability", buff = true}, -- Water Shield
         { spell = 25908, type = "ability", totem = true}, -- Tranquil Air Totem
+        { spell = 30706, type = "ability", totem = true, talent = 20}, -- Totem of Wrath
+        { spell = 30823, type = "buff", talent = 61}, -- Shamanistic Rage
+        { spell = 32182, type = "ability", buff = true}, -- Heroism
       },
       icon = 135963
     },
@@ -775,7 +786,7 @@ tinsert(templates.general.args, {
   forceOwnOnly = true,
   ownOnly = nil,
   overideTitle = L["Bloodlust/Heroism"],
-  spellIds = {2825, 32182, 80353, 264667}} -- TODO check spellids for TBC
+  spellIds = {2825, 32182}}
 );
 
 -- Meta template for Power triggers
