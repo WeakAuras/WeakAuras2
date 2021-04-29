@@ -709,6 +709,7 @@ templates.class.DRUID = {
         { spell = 1850, type = "buff", unit = "player"}, -- Dash
         { spell = 5215, type = "buff", unit = "player"}, -- Prowl
         { spell = 29166, type = "buff", unit = "group"}, -- Innervate
+        { spell = 33763, type = "buff", unit = "player"}, -- Lifebloom
       },
       icon = 136097
     },
@@ -716,10 +717,13 @@ templates.class.DRUID = {
       title = L["Debuffs"],
       args = {
         { spell = 339, type = "debuff", unit = "multi"}, -- Entangling Roots
+        { spell = 770, type = "debuff", unit = "target"}, -- Faerie Fire
         { spell = 5211, type = "debuff", unit = "target", talent = 10 }, -- Mighty Bash
         { spell = 1079, type = "debuff", unit = "target", talent = 7 }, -- Rip
         { spell = 6795, type = "debuff", unit = "target"}, -- Growl
         { spell = 2637, type = "debuff", unit = "multi"}, -- Hibernate
+        { spell = 5570, type = "debuff", unit = "target", talent = 8}, -- Insect Swarm
+        { spell = 8921, type = "debuff", unit = "target"}, -- Moonfire
       },
       icon = 132114
     },
@@ -731,7 +735,6 @@ templates.class.DRUID = {
         { spell = 740, type = "ability", duration = 10}, -- Tranquility
         { spell = 768, type = "ability"}, -- Cat Form
         { spell = 770, type = "ability", requiresTarget = true, debuff = true}, -- Faerie Fire
-        { spell = 779, type = "ability", form = 3}, -- Swipe
         { spell = 783, type = "ability"}, -- Travel Form
         { spell = 1066, type = "ability"}, -- Aquatic Form
         { spell = 1079, type = "ability", requiresTarget = true, form = 3}, -- Rip
@@ -747,27 +750,34 @@ templates.class.DRUID = {
         { spell = 5209, type = "ability", form = 1}, -- Challenging Roar
         { spell = 5211, type = "ability", requiresTarget = true, talent = 6, form = 1}, -- Mighty Bash
         { spell = 5215, type = "ability", buff = true}, -- Prowl
-        { spell = 5217, type = "ability", buff = true, form = 3}, -- Tiger's Fury
         { spell = 5221, type = "ability", requiresTarget = true, form = 3}, -- Shred
         { spell = 5229, type = "ability", buff = true, form = 1}, -- Enrage
         { spell = 5487, type = "ability"}, -- Bear Form
-        { spell = 5570, type = "ability", requiresTarget = true, debuff = true, talent = 47}, -- Insect Swarm
-        { spell = 6785, type = "ability", requiresTarget = true, form = 1}, -- Ravage
+        { spell = 5570, type = "ability", requiresTarget = true, debuff = true, talent = 8}, -- Insect Swarm
+        { spell = 6785, type = "ability", requiresTarget = true, form = 3}, -- Ravage
         { spell = 6795, type = "ability", debuff = true, requiresTarget = true, form = 1}, -- Growl
         { spell = 6807, type = "ability", form = 1}, -- Maul
         { spell = 8921, type = "ability", requiresTarget = true, debuff = true}, -- Moonfire
         { spell = 8946, type = "ability"}, -- Cure Poison
-        { spell = 9005, type = "ability", requiresTarget = true, debuff = true, form = 3}, -- Pounce
+        { spell = 8983, type = "ability", requiresTarget = true, debuff = true, form = 1}, -- Buff
         { spell = 9634, type = "ability"}, -- Dire Bear Form
+        { spell = 9846, type = "ability", buff = true, form = 3}, -- Tiger's Fury
         { spell = 16689, type = "ability", buff = true, talent = 2}, -- Nature's Grasp
         { spell = 16914, type = "ability"}, -- Hurricane
-        { spell = 16979, type = "ability", form = 1, talent = 27}, -- Feral Charge
-        { spell = 17116, type = "ability", buff = true, talent = 51}, -- Nature's Swiftness
-        { spell = 18562, type = "ability", talent = 55}, -- Swiftmend
+        { spell = 16979, type = "ability", form = 1, talent = 47}, -- Feral Charge
+        { spell = 17116, type = "ability", buff = true, talent = 91}, -- Nature's Swiftness
+        { spell = 18562, type = "ability", talent = 97}, -- Swiftmend
+        { spell = 20484, type = "ability"}, -- Rebirth
         { spell = 22568, type = "ability", form = 3}, -- Ferocious Bite
+        { spell = 22570, type = "ability", debuff = true, form = 3}, -- Maim
         { spell = 22812, type = "ability", buff = true}, -- Barkskin
-        { spell = 22842, type = "ability", buff = true}, -- Frenzied Regeneration
-        { spell = 24858, type = "ability", talent = 16}, -- Moonkin Form
+        { spell = 22842, type = "ability", buff = true, form = 1}, -- Frenzied Regeneration
+        { spell = 24858, type = "ability", talent = 18}, -- Moonkin Form
+        { spell = 26997, type = "ability", form = 1}, -- Swipe
+        { spell = 27006, type = "ability", requiresTarget = true, debuff = true, form = 3}, -- Pounce
+        { spell = 33831, type = "ability", talent = 21}, -- Force of Nature
+        { spell = 42389, type = "ability", talent = 61, form = {1, 3}}, -- Mangle
+
       },
       icon = 132134
     },
