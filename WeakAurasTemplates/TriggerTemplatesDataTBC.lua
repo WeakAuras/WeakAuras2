@@ -594,7 +594,7 @@ templates.class.WARLOCK = {
         { spell = 6229, type = "buff", unit = "player"}, -- Shadow Ward
         { spell = 7870, type = "buff", unit = "pet"}, -- Lesser Invisibility
         { spell = 18094, type = "buff", unit = "player"}, -- Nightfall
-        { spell = 19028, type = "buff", unit = "player"}, -- Soul Link
+        { spell = 19028, type = "buff", unit = "player", talent = 59}, -- Soul Link
         { spell = 20707, type = "buff", unit = "group"}, -- Soulstone
       },
       icon = 136210
@@ -612,11 +612,12 @@ templates.class.WARLOCK = {
         { spell = 1490, type = "debuff", unit = "target"}, -- Curse of the Elements
         { spell = 1714, type = "debuff", unit = "target"}, -- Curse of Tongues
         { spell = 6358, type = "debuff", unit = "target"}, -- Seduction
-        { spell = 6789, type = "debuff", unit = "target", talent = 14 }, -- Mortal Coil
+        { spell = 6789, type = "debuff", unit = "target" }, -- Death Coil
         { spell = 6360, type = "debuff", unit = "target"}, -- Whiplash
         { spell = 17862, type = "debuff", unit = "target"}, -- Curse of Shadow
-        { spell = 18223, type = "debuff", unit = "target"}, -- Curse of Exhaustion
-        { spell = 18265, type = "debuff", unit = "target", talent = 6 }, -- Siphon Life
+        { spell = 18223, type = "debuff", unit = "target", talent = 15}, -- Curse of Exhaustion
+        { spell = 18265, type = "debuff", unit = "target", talent = 14}, -- Siphon Life
+        { spell = 30108, type = "debuff", unit = "target", talent = 21}, -- Unstable Afflication
       },
       icon = 136139
     },
@@ -640,14 +641,16 @@ templates.class.WARLOCK = {
         { spell = 6353, type = "ability", requiresTarget = true}, -- Soul Fire
         { spell = 6358, type = "ability", requiresTarget = true}, -- Seduction
         { spell = 6360, type = "ability", requiresTarget = true}, -- Whiplash
-        { spell = 6789, type = "ability", requiresTarget = true, talent = 15 }, -- Mortal Coil
+        { spell = 6789, type = "ability", requiresTarget = true}, -- Death Coil
         { spell = 7814, type = "ability", requiresTarget = true}, -- Lash of Pain
         { spell = 7870, type = "ability"}, -- Lesser Invisibility
-        { spell = 17962, type = "ability", requiresTarget = true, usable = true, talent = 56}, -- Conflagrate
+        { spell = 17962, type = "ability", requiresTarget = true, usable = true, talent = 98}, -- Conflagrate
         { spell = 17926, type = "ability", requiresTarget = true}, -- Death Coil
         { spell = 18288, type = "ability", buff = true, talent = 9}, -- Amplify Curse
         { spell = 18708, type = "ability", talent = 28}, -- Fel Domination
-        { spell = 18877, type = "ability", requiresTarget = true, debuff = true, talent = 48}, -- Shadowburn
+        { spell = 18877, type = "ability", requiresTarget = true, debuff = true, talent = 88}, -- Shadowburn
+        { spell = 30108, ability = "ability", debuff = true, requiresTarget = true, talent = 21}, -- Unstable Afflication
+        { spell = 30283, type = "ability", debuff = true, talent = 101}, -- Fel Domination
       },
       icon = 135808
     },
