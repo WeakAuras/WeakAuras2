@@ -1286,9 +1286,9 @@ if WeakAuras.IsRetail() then
     tier = 1
   end
 else
-  for tab = 1, 5 do
-    for num_talent = 1, 20 do
-      local talentId = (tab - 1)*20+num_talent
+  for tab = 1, GetNumTalentTabs() do
+    for num_talent = 1, GetNumTalents(tab) do
+      local talentId = (tab - 1) * MAX_NUM_TALENTS + num_talent
       Private.talent_types[talentId] = L["Tab "]..tab.." - "..num_talent
     end
   end
