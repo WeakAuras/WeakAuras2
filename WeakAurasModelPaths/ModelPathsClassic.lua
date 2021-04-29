@@ -1,6 +1,7 @@
 WeakAuras.ModelPaths = {
  {
   text = "cameras",
+  value = "cameras",
   children = {
    {
     text = "flybydwarf.m2",
@@ -83,16 +84,18 @@ WeakAuras.ModelPaths = {
     fileId = "116920",
    },
   },
-  value = "cameras",
  },
  {
   text = "character",
+  value = "character",
   children = {
    {
     text = "dwarf",
+    value = "dwarf",
     children = {
      {
       text = "female",
+      value = "female",
       children = {
        {
         text = "dwarffemale.m2",
@@ -100,10 +103,10 @@ WeakAuras.ModelPaths = {
         fileId = "118135",
        },
       },
-      value = "female",
      },
      {
       text = "male",
+      value = "male",
       children = {
        {
         text = "dwarfmale.m2",
@@ -111,16 +114,16 @@ WeakAuras.ModelPaths = {
         fileId = "118355",
        },
       },
-      value = "male",
      },
     },
-    value = "dwarf",
    },
    {
     text = "gnome",
+    value = "gnome",
     children = {
      {
       text = "female",
+      value = "female",
       children = {
        {
         text = "gnomefemale.m2",
@@ -128,10 +131,10 @@ WeakAuras.ModelPaths = {
         fileId = "119063",
        },
       },
-      value = "female",
      },
      {
       text = "male",
+      value = "male",
       children = {
        {
         text = "gnomemale.m2",
@@ -139,16 +142,16 @@ WeakAuras.ModelPaths = {
         fileId = "119159",
        },
       },
-      value = "male",
      },
     },
-    value = "gnome",
    },
    {
     text = "goblin",
+    value = "goblin",
     children = {
      {
       text = "female",
+      value = "female",
       children = {
        {
         text = "goblinfemale.m2",
@@ -156,10 +159,10 @@ WeakAuras.ModelPaths = {
         fileId = "119369",
        },
       },
-      value = "female",
      },
      {
       text = "male",
+      value = "male",
       children = {
        {
         text = "goblinmale.m2",
@@ -167,16 +170,16 @@ WeakAuras.ModelPaths = {
         fileId = "119376",
        },
       },
-      value = "male",
      },
     },
-    value = "goblin",
    },
    {
     text = "human",
+    value = "human",
     children = {
      {
       text = "female",
+      value = "female",
       children = {
        {
         text = "humanfemale.m2",
@@ -184,10 +187,10 @@ WeakAuras.ModelPaths = {
         fileId = "119563",
        },
       },
-      value = "female",
      },
      {
       text = "male",
+      value = "male",
       children = {
        {
         text = "humanmale.m2",
@@ -195,16 +198,16 @@ WeakAuras.ModelPaths = {
         fileId = "119940",
        },
       },
-      value = "male",
      },
     },
-    value = "human",
    },
    {
     text = "nightelf",
+    value = "nightelf",
     children = {
      {
       text = "female",
+      value = "female",
       children = {
        {
         text = "nightelffemale.m2",
@@ -212,10 +215,10 @@ WeakAuras.ModelPaths = {
         fileId = "120590",
        },
       },
-      value = "female",
      },
      {
       text = "male",
+      value = "male",
       children = {
        {
         text = "nightelfmale.m2",
@@ -223,16 +226,16 @@ WeakAuras.ModelPaths = {
         fileId = "120791",
        },
       },
-      value = "male",
      },
     },
-    value = "nightelf",
    },
    {
     text = "orc",
+    value = "orc",
     children = {
      {
       text = "female",
+      value = "female",
       children = {
        {
         text = "orcfemale.m2",
@@ -240,10 +243,10 @@ WeakAuras.ModelPaths = {
         fileId = "121087",
        },
       },
-      value = "female",
      },
      {
       text = "male",
+      value = "male",
       children = {
        {
         text = "orcmale.m2",
@@ -251,16 +254,16 @@ WeakAuras.ModelPaths = {
         fileId = "121287",
        },
       },
-      value = "male",
      },
     },
-    value = "orc",
    },
    {
     text = "scourge",
+    value = "scourge",
     children = {
      {
       text = "female",
+      value = "female",
       children = {
        {
         text = "scourgefemale.m2",
@@ -268,10 +271,10 @@ WeakAuras.ModelPaths = {
         fileId = "121608",
        },
       },
-      value = "female",
      },
      {
       text = "male",
+      value = "male",
       children = {
        {
         text = "scourgemale.m2",
@@ -279,16 +282,16 @@ WeakAuras.ModelPaths = {
         fileId = "121768",
        },
       },
-      value = "male",
      },
     },
-    value = "scourge",
    },
    {
     text = "tauren",
+    value = "tauren",
     children = {
      {
       text = "female",
+      value = "female",
       children = {
        {
         text = "taurenfemale.m2",
@@ -296,10 +299,10 @@ WeakAuras.ModelPaths = {
         fileId = "121961",
        },
       },
-      value = "female",
      },
      {
       text = "male",
+      value = "male",
       children = {
        {
         text = "taurenmale.m2",
@@ -307,16 +310,16 @@ WeakAuras.ModelPaths = {
         fileId = "122055",
        },
       },
-      value = "male",
      },
     },
-    value = "tauren",
    },
    {
     text = "troll",
+    value = "troll",
     children = {
      {
       text = "female",
+      value = "female",
       children = {
        {
         text = "trollfemale.m2",
@@ -324,10 +327,10 @@ WeakAuras.ModelPaths = {
         fileId = "122414",
        },
       },
-      value = "female",
      },
      {
       text = "male",
+      value = "male",
       children = {
        {
         text = "trollmale.m2",
@@ -335,19 +338,18 @@ WeakAuras.ModelPaths = {
         fileId = "122560",
        },
       },
-      value = "male",
      },
     },
-    value = "troll",
    },
   },
-  value = "character",
  },
  {
   text = "creature",
+  value = "creature",
   children = {
    {
     text = "airelemental",
+    value = "airelemental",
     children = {
      {
       text = "airelemental.m2",
@@ -355,10 +357,10 @@ WeakAuras.ModelPaths = {
       fileId = "122877",
      },
     },
-    value = "airelemental",
    },
    {
     text = "alliancerider",
+    value = "alliancerider",
     children = {
      {
       text = "alliancerider.m2",
@@ -366,10 +368,10 @@ WeakAuras.ModelPaths = {
       fileId = "122886",
      },
     },
-    value = "alliancerider",
    },
    {
     text = "ancientoflore",
+    value = "ancientoflore",
     children = {
      {
       text = "ancientoflore.m2",
@@ -377,10 +379,10 @@ WeakAuras.ModelPaths = {
       fileId = "122893",
      },
     },
-    value = "ancientoflore",
    },
    {
     text = "ancientofwar",
+    value = "ancientofwar",
     children = {
      {
       text = "ancientofwar.m2",
@@ -388,10 +390,10 @@ WeakAuras.ModelPaths = {
       fileId = "122895",
      },
     },
-    value = "ancientofwar",
    },
    {
     text = "ancientprotector",
+    value = "ancientprotector",
     children = {
      {
       text = "ancientprotector.m2",
@@ -399,10 +401,10 @@ WeakAuras.ModelPaths = {
       fileId = "122899",
      },
     },
-    value = "ancientprotector",
    },
    {
     text = "anubisath",
+    value = "anubisath",
     children = {
      {
       text = "anubisath.m2",
@@ -410,10 +412,10 @@ WeakAuras.ModelPaths = {
       fileId = "122906",
      },
     },
-    value = "anubisath",
    },
    {
     text = "banshee",
+    value = "banshee",
     children = {
      {
       text = "banshee.m2",
@@ -421,10 +423,10 @@ WeakAuras.ModelPaths = {
       fileId = "123014",
      },
     },
-    value = "banshee",
    },
    {
     text = "basilisk",
+    value = "basilisk",
     children = {
      {
       text = "basilisk.m2",
@@ -432,10 +434,10 @@ WeakAuras.ModelPaths = {
       fileId = "123020",
      },
     },
-    value = "basilisk",
    },
    {
     text = "bear",
+    value = "bear",
     children = {
      {
       text = "bear.m2",
@@ -448,10 +450,10 @@ WeakAuras.ModelPaths = {
       fileId = "123051",
      },
     },
-    value = "bear",
    },
    {
     text = "bearcub",
+    value = "bearcub",
     children = {
      {
       text = "bearcub.m2",
@@ -459,10 +461,10 @@ WeakAuras.ModelPaths = {
       fileId = "123053",
      },
     },
-    value = "bearcub",
    },
    {
     text = "boar",
+    value = "boar",
     children = {
      {
       text = "boar.m2",
@@ -470,10 +472,10 @@ WeakAuras.ModelPaths = {
       fileId = "123090",
      },
     },
-    value = "boar",
    },
    {
     text = "bodyofkathune",
+    value = "bodyofkathune",
     children = {
      {
       text = "bodyofkathune.m2",
@@ -481,10 +483,10 @@ WeakAuras.ModelPaths = {
       fileId = "123101",
      },
     },
-    value = "bodyofkathune",
    },
    {
     text = "bogbeast",
+    value = "bogbeast",
     children = {
      {
       text = "bogbeast.m2",
@@ -492,10 +494,10 @@ WeakAuras.ModelPaths = {
       fileId = "123105",
      },
     },
-    value = "bogbeast",
    },
    {
     text = "bonegolem",
+    value = "bonegolem",
     children = {
      {
       text = "bonegolem.m2",
@@ -503,10 +505,10 @@ WeakAuras.ModelPaths = {
       fileId = "123120",
      },
     },
-    value = "bonegolem",
    },
    {
     text = "carrionbird",
+    value = "carrionbird",
     children = {
      {
       text = "carrionbird.m2",
@@ -514,10 +516,10 @@ WeakAuras.ModelPaths = {
       fileId = "123137",
      },
     },
-    value = "carrionbird",
    },
    {
     text = "cat",
+    value = "cat",
     children = {
      {
       text = "cat.m2",
@@ -525,10 +527,10 @@ WeakAuras.ModelPaths = {
       fileId = "123162",
      },
     },
-    value = "cat",
    },
    {
     text = "centaur",
+    value = "centaur",
     children = {
      {
       text = "centaur.m2",
@@ -551,10 +553,10 @@ WeakAuras.ModelPaths = {
       fileId = "123194",
      },
     },
-    value = "centaur",
    },
    {
     text = "chicken",
+    value = "chicken",
     children = {
      {
       text = "chicken.m2",
@@ -562,10 +564,10 @@ WeakAuras.ModelPaths = {
       fileId = "123200",
      },
     },
-    value = "chicken",
    },
    {
     text = "chimera",
+    value = "chimera",
     children = {
      {
       text = "chimera.m2",
@@ -573,10 +575,10 @@ WeakAuras.ModelPaths = {
       fileId = "123205",
      },
     },
-    value = "chimera",
    },
    {
     text = "chinesedragon",
+    value = "chinesedragon",
     children = {
      {
       text = "chinesedragon.m2",
@@ -584,10 +586,10 @@ WeakAuras.ModelPaths = {
       fileId = "123225",
      },
     },
-    value = "chinesedragon",
    },
    {
     text = "clawofkathune",
+    value = "clawofkathune",
     children = {
      {
       text = "clawofkathune.m2",
@@ -595,10 +597,10 @@ WeakAuras.ModelPaths = {
       fileId = "123235",
      },
     },
-    value = "clawofkathune",
    },
    {
     text = "cloud",
+    value = "cloud",
     children = {
      {
       text = "cloudfire.m2",
@@ -616,10 +618,10 @@ WeakAuras.ModelPaths = {
       fileId = "123265",
      },
     },
-    value = "cloud",
    },
    {
     text = "cockroach",
+    value = "cockroach",
     children = {
      {
       text = "cockroach.m2",
@@ -627,10 +629,10 @@ WeakAuras.ModelPaths = {
       fileId = "123284",
      },
     },
-    value = "cockroach",
    },
    {
     text = "cocoon",
+    value = "cocoon",
     children = {
      {
       text = "cocoon.m2",
@@ -638,10 +640,10 @@ WeakAuras.ModelPaths = {
       fileId = "123285",
      },
     },
-    value = "cocoon",
    },
    {
     text = "cow",
+    value = "cow",
     children = {
      {
       text = "cow.m2",
@@ -649,10 +651,10 @@ WeakAuras.ModelPaths = {
       fileId = "123288",
      },
     },
-    value = "cow",
    },
    {
     text = "crab",
+    value = "crab",
     children = {
      {
       text = "crab.m2",
@@ -660,10 +662,10 @@ WeakAuras.ModelPaths = {
       fileId = "123291",
      },
     },
-    value = "crab",
    },
    {
     text = "cratecreature",
+    value = "cratecreature",
     children = {
      {
       text = "cratecreature.m2",
@@ -671,10 +673,10 @@ WeakAuras.ModelPaths = {
       fileId = "123304",
      },
     },
-    value = "cratecreature",
    },
    {
     text = "crocodile",
+    value = "crocodile",
     children = {
      {
       text = "crocodile.m2",
@@ -682,10 +684,10 @@ WeakAuras.ModelPaths = {
       fileId = "123324",
      },
     },
-    value = "crocodile",
    },
    {
     text = "cryptfiend",
+    value = "cryptfiend",
     children = {
      {
       text = "cryptfiend.m2",
@@ -693,10 +695,10 @@ WeakAuras.ModelPaths = {
       fileId = "123329",
      },
     },
-    value = "cryptfiend",
    },
    {
     text = "cryptlord",
+    value = "cryptlord",
     children = {
      {
       text = "cryptlord.m2",
@@ -709,10 +711,10 @@ WeakAuras.ModelPaths = {
       fileId = "123337",
      },
     },
-    value = "cryptlord",
    },
    {
     text = "cryptscarab",
+    value = "cryptscarab",
     children = {
      {
       text = "crypt_scarab.m2",
@@ -720,10 +722,10 @@ WeakAuras.ModelPaths = {
       fileId = "123343",
      },
     },
-    value = "cryptscarab",
    },
    {
     text = "crystalportal",
+    value = "crystalportal",
     children = {
      {
       text = "crystalportal.m2",
@@ -731,10 +733,10 @@ WeakAuras.ModelPaths = {
       fileId = "123344",
      },
     },
-    value = "crystalportal",
    },
    {
     text = "cupid",
+    value = "cupid",
     children = {
      {
       text = "cupid.m2",
@@ -742,10 +744,10 @@ WeakAuras.ModelPaths = {
       fileId = "123345",
      },
     },
-    value = "cupid",
    },
    {
     text = "darkhound",
+    value = "darkhound",
     children = {
      {
       text = "darkhound.m2",
@@ -753,10 +755,10 @@ WeakAuras.ModelPaths = {
       fileId = "123348",
      },
     },
-    value = "darkhound",
    },
    {
     text = "deer",
+    value = "deer",
     children = {
      {
       text = "deer.m2",
@@ -764,10 +766,10 @@ WeakAuras.ModelPaths = {
       fileId = "123362",
      },
     },
-    value = "deer",
    },
    {
     text = "demonhunter",
+    value = "demonhunter",
     children = {
      {
       text = "demonhunter.m2",
@@ -775,10 +777,10 @@ WeakAuras.ModelPaths = {
       fileId = "123372",
      },
     },
-    value = "demonhunter",
    },
    {
     text = "diablo",
+    value = "diablo",
     children = {
      {
       text = "diablofunsized.m2",
@@ -786,10 +788,10 @@ WeakAuras.ModelPaths = {
       fileId = "123375",
      },
     },
-    value = "diablo",
    },
    {
     text = "diemetradon",
+    value = "diemetradon",
     children = {
      {
       text = "diemetradon.m2",
@@ -797,10 +799,10 @@ WeakAuras.ModelPaths = {
       fileId = "123377",
      },
     },
-    value = "diemetradon",
    },
    {
     text = "direwolf",
+    value = "direwolf",
     children = {
      {
       text = "direwolf.m2",
@@ -818,10 +820,10 @@ WeakAuras.ModelPaths = {
       fileId = "123418",
      },
     },
-    value = "direwolf",
    },
    {
     text = "doomguard",
+    value = "doomguard",
     children = {
      {
       text = "doomguard.m2",
@@ -829,10 +831,10 @@ WeakAuras.ModelPaths = {
       fileId = "123441",
      },
     },
-    value = "doomguard",
    },
    {
     text = "dragon",
+    value = "dragon",
     children = {
      {
       text = "dragon.m2",
@@ -865,10 +867,10 @@ WeakAuras.ModelPaths = {
       fileId = "123498",
      },
     },
-    value = "dragon",
    },
    {
     text = "dragonfootsoldier",
+    value = "dragonfootsoldier",
     children = {
      {
       text = "dragonfootsoldier.m2",
@@ -876,10 +878,10 @@ WeakAuras.ModelPaths = {
       fileId = "123507",
      },
     },
-    value = "dragonfootsoldier",
    },
    {
     text = "dragonspawn",
+    value = "dragonspawn",
     children = {
      {
       text = "dragonspawn.m2",
@@ -902,10 +904,10 @@ WeakAuras.ModelPaths = {
       fileId = "123554",
      },
     },
-    value = "dragonspawn",
    },
    {
     text = "dragonspawncaster",
+    value = "dragonspawncaster",
     children = {
      {
       text = "dragonspawncaster.m2",
@@ -913,10 +915,10 @@ WeakAuras.ModelPaths = {
       fileId = "123577",
      },
     },
-    value = "dragonspawncaster",
    },
    {
     text = "dragonwhelp",
+    value = "dragonwhelp",
     children = {
      {
       text = "dragonwhelp.m2",
@@ -924,10 +926,10 @@ WeakAuras.ModelPaths = {
       fileId = "123610",
      },
     },
-    value = "dragonwhelp",
    },
    {
     text = "drake",
+    value = "drake",
     children = {
      {
       text = "drake.m2",
@@ -940,10 +942,10 @@ WeakAuras.ModelPaths = {
       fileId = "123661",
      },
     },
-    value = "drake",
    },
    {
     text = "drakeadon",
+    value = "drakeadon",
     children = {
      {
       text = "drakeadon.m2",
@@ -951,10 +953,10 @@ WeakAuras.ModelPaths = {
       fileId = "123664",
      },
     },
-    value = "drakeadon",
    },
    {
     text = "dreadlord",
+    value = "dreadlord",
     children = {
      {
       text = "dreadlord.m2",
@@ -962,10 +964,10 @@ WeakAuras.ModelPaths = {
       fileId = "123673",
      },
     },
-    value = "dreadlord",
    },
    {
     text = "druidbear",
+    value = "druidbear",
     children = {
      {
       text = "druidbear.m2",
@@ -978,10 +980,10 @@ WeakAuras.ModelPaths = {
       fileId = "123680",
      },
     },
-    value = "druidbear",
    },
    {
     text = "druidcat",
+    value = "druidcat",
     children = {
      {
       text = "druidcat.m2",
@@ -989,10 +991,10 @@ WeakAuras.ModelPaths = {
       fileId = "123682",
      },
     },
-    value = "druidcat",
    },
    {
     text = "druidcattauren",
+    value = "druidcattauren",
     children = {
      {
       text = "druidcattauren.m2",
@@ -1000,10 +1002,10 @@ WeakAuras.ModelPaths = {
       fileId = "123688",
      },
     },
-    value = "druidcattauren",
    },
    {
     text = "druidowlbear",
+    value = "druidowlbear",
     children = {
      {
       text = "druidowlbear.m2",
@@ -1016,10 +1018,10 @@ WeakAuras.ModelPaths = {
       fileId = "123695",
      },
     },
-    value = "druidowlbear",
    },
    {
     text = "dryad",
+    value = "dryad",
     children = {
      {
       text = "dryad.m2",
@@ -1027,10 +1029,10 @@ WeakAuras.ModelPaths = {
       fileId = "123698",
      },
     },
-    value = "dryad",
    },
    {
     text = "dryder",
+    value = "dryder",
     children = {
      {
       text = "dryder.m2",
@@ -1038,10 +1040,10 @@ WeakAuras.ModelPaths = {
       fileId = "123705",
      },
     },
-    value = "dryder",
    },
    {
     text = "dwarfmalewarriorlight",
+    value = "dwarfmalewarriorlight",
     children = {
      {
       text = "dwarfmalewarriorlight.m2",
@@ -1054,10 +1056,10 @@ WeakAuras.ModelPaths = {
       fileId = "123709",
      },
     },
-    value = "dwarfmalewarriorlight",
    },
    {
     text = "egg",
+    value = "egg",
     children = {
      {
       text = "eggcreature.m2",
@@ -1065,10 +1067,10 @@ WeakAuras.ModelPaths = {
       fileId = "123722",
      },
     },
-    value = "egg",
    },
    {
     text = "elementalearth",
+    value = "elementalearth",
     children = {
      {
       text = "elementalearth.m2",
@@ -1076,10 +1078,10 @@ WeakAuras.ModelPaths = {
       fileId = "123747",
      },
     },
-    value = "elementalearth",
    },
    {
     text = "elementalpoison",
+    value = "elementalpoison",
     children = {
      {
       text = "poisonelemental.m2",
@@ -1087,10 +1089,10 @@ WeakAuras.ModelPaths = {
       fileId = "2199352",
      },
     },
-    value = "elementalpoison",
    },
    {
     text = "ent",
+    value = "ent",
     children = {
      {
       text = "ent.m2",
@@ -1098,10 +1100,10 @@ WeakAuras.ModelPaths = {
       fileId = "123756",
      },
     },
-    value = "ent",
    },
    {
     text = "eyeofkathune",
+    value = "eyeofkathune",
     children = {
      {
       text = "eyeofkathune.m2",
@@ -1109,10 +1111,10 @@ WeakAuras.ModelPaths = {
       fileId = "123808",
      },
     },
-    value = "eyeofkathune",
    },
    {
     text = "eyestalkofkathune",
+    value = "eyestalkofkathune",
     children = {
      {
       text = "eyestalkofkathune.m2",
@@ -1120,10 +1122,10 @@ WeakAuras.ModelPaths = {
       fileId = "123814",
      },
     },
-    value = "eyestalkofkathune",
    },
    {
     text = "faeriedragon",
+    value = "faeriedragon",
     children = {
      {
       text = "faeriedragon.m2",
@@ -1136,10 +1138,10 @@ WeakAuras.ModelPaths = {
       fileId = "123818",
      },
     },
-    value = "faeriedragon",
    },
    {
     text = "felbat",
+    value = "felbat",
     children = {
      {
       text = "batrider.m2",
@@ -1157,10 +1159,10 @@ WeakAuras.ModelPaths = {
       fileId = "123831",
      },
     },
-    value = "felbat",
    },
    {
     text = "felbeast",
+    value = "felbeast",
     children = {
      {
       text = "felbeast.m2",
@@ -1168,10 +1170,10 @@ WeakAuras.ModelPaths = {
       fileId = "123834",
      },
     },
-    value = "felbeast",
    },
    {
     text = "felboar",
+    value = "felboar",
     children = {
      {
       text = "felboar.m2",
@@ -1179,10 +1181,10 @@ WeakAuras.ModelPaths = {
       fileId = "123839",
      },
     },
-    value = "felboar",
    },
    {
     text = "felguard",
+    value = "felguard",
     children = {
      {
       text = "felguard.m2",
@@ -1190,10 +1192,10 @@ WeakAuras.ModelPaths = {
       fileId = "123870",
      },
     },
-    value = "felguard",
    },
    {
     text = "felhound",
+    value = "felhound",
     children = {
      {
       text = "felhound.m2",
@@ -1201,10 +1203,10 @@ WeakAuras.ModelPaths = {
       fileId = "123878",
      },
     },
-    value = "felhound",
    },
    {
     text = "fireelemental",
+    value = "fireelemental",
     children = {
      {
       text = "fireelemental.m2",
@@ -1217,10 +1219,10 @@ WeakAuras.ModelPaths = {
       fileId = "2199522",
      },
     },
-    value = "fireelemental",
    },
    {
     text = "firesprite",
+    value = "firesprite",
     children = {
      {
       text = "firesprite.m2",
@@ -1228,10 +1230,10 @@ WeakAuras.ModelPaths = {
       fileId = "123944",
      },
     },
-    value = "firesprite",
    },
    {
     text = "fish",
+    value = "fish",
     children = {
      {
       text = "fish.m2",
@@ -1239,10 +1241,10 @@ WeakAuras.ModelPaths = {
       fileId = "123947",
      },
     },
-    value = "fish",
    },
    {
     text = "fleshbeast",
+    value = "fleshbeast",
     children = {
      {
       text = "fleshbeast.m2",
@@ -1250,10 +1252,10 @@ WeakAuras.ModelPaths = {
       fileId = "123949",
      },
     },
-    value = "fleshbeast",
    },
    {
     text = "fleshgiant",
+    value = "fleshgiant",
     children = {
      {
       text = "fleshgiant.m2",
@@ -1261,10 +1263,10 @@ WeakAuras.ModelPaths = {
       fileId = "123952",
      },
     },
-    value = "fleshgiant",
    },
    {
     text = "fleshgolem",
+    value = "fleshgolem",
     children = {
      {
       text = "fleshgolem.m2",
@@ -1272,10 +1274,10 @@ WeakAuras.ModelPaths = {
       fileId = "123961",
      },
     },
-    value = "fleshgolem",
    },
    {
     text = "fleshtitan",
+    value = "fleshtitan",
     children = {
      {
       text = "fleshtitan.m2",
@@ -1283,10 +1285,10 @@ WeakAuras.ModelPaths = {
       fileId = "123972",
      },
     },
-    value = "fleshtitan",
    },
    {
     text = "flyingmachinecreature",
+    value = "flyingmachinecreature",
     children = {
      {
       text = "flyingmachinecreature.m2",
@@ -1294,10 +1296,10 @@ WeakAuras.ModelPaths = {
       fileId = "123977",
      },
     },
-    value = "flyingmachinecreature",
    },
    {
     text = "forceofnature",
+    value = "forceofnature",
     children = {
      {
       text = "forceofnature.m2",
@@ -1305,10 +1307,10 @@ WeakAuras.ModelPaths = {
       fileId = "123990",
      },
     },
-    value = "forceofnature",
    },
    {
     text = "frenzy",
+    value = "frenzy",
     children = {
      {
       text = "frenzy.m2",
@@ -1316,10 +1318,10 @@ WeakAuras.ModelPaths = {
       fileId = "124004",
      },
     },
-    value = "frenzy",
    },
    {
     text = "frog",
+    value = "frog",
     children = {
      {
       text = "frog.m2",
@@ -1327,10 +1329,10 @@ WeakAuras.ModelPaths = {
       fileId = "124008",
      },
     },
-    value = "frog",
    },
    {
     text = "frostsabre",
+    value = "frostsabre",
     children = {
      {
       text = "frostsabre.m2",
@@ -1348,10 +1350,10 @@ WeakAuras.ModelPaths = {
       fileId = "124052",
      },
     },
-    value = "frostsabre",
    },
    {
     text = "frostwurm",
+    value = "frostwurm",
     children = {
      {
       text = "frostwurm.m2",
@@ -1359,10 +1361,10 @@ WeakAuras.ModelPaths = {
       fileId = "124077",
      },
     },
-    value = "frostwurm",
    },
    {
     text = "fungalmonster",
+    value = "fungalmonster",
     children = {
      {
       text = "fungalmonster.m2",
@@ -1370,10 +1372,10 @@ WeakAuras.ModelPaths = {
       fileId = "124110",
      },
     },
-    value = "fungalmonster",
    },
    {
     text = "furbolg",
+    value = "furbolg",
     children = {
      {
       text = "furbolg.m2",
@@ -1381,10 +1383,10 @@ WeakAuras.ModelPaths = {
       fileId = "124118",
      },
     },
-    value = "furbolg",
    },
    {
     text = "gargoyle",
+    value = "gargoyle",
     children = {
      {
       text = "gargoyle.m2",
@@ -1392,10 +1394,10 @@ WeakAuras.ModelPaths = {
       fileId = "124131",
      },
     },
-    value = "gargoyle",
    },
    {
     text = "gazelle",
+    value = "gazelle",
     children = {
      {
       text = "gazelle.m2",
@@ -1403,10 +1405,10 @@ WeakAuras.ModelPaths = {
       fileId = "124148",
      },
     },
-    value = "gazelle",
    },
    {
     text = "ghost",
+    value = "ghost",
     children = {
      {
       text = "ghost.m2",
@@ -1414,10 +1416,10 @@ WeakAuras.ModelPaths = {
       fileId = "124155",
      },
     },
-    value = "ghost",
    },
    {
     text = "ghoul",
+    value = "ghoul",
     children = {
      {
       text = "ghoul.m2",
@@ -1425,10 +1427,10 @@ WeakAuras.ModelPaths = {
       fileId = "124160",
      },
     },
-    value = "ghoul",
    },
    {
     text = "giantspider",
+    value = "giantspider",
     children = {
      {
       text = "giantspider.m2",
@@ -1436,10 +1438,10 @@ WeakAuras.ModelPaths = {
       fileId = "124166",
      },
     },
-    value = "giantspider",
    },
    {
     text = "giraffe",
+    value = "giraffe",
     children = {
      {
       text = "giraffe.m2",
@@ -1447,10 +1449,10 @@ WeakAuras.ModelPaths = {
       fileId = "124169",
      },
     },
-    value = "giraffe",
    },
    {
     text = "gnoll",
+    value = "gnoll",
     children = {
      {
       text = "gnoll.m2",
@@ -1458,10 +1460,10 @@ WeakAuras.ModelPaths = {
       fileId = "124173",
      },
     },
-    value = "gnoll",
    },
    {
     text = "gnollcaster",
+    value = "gnollcaster",
     children = {
      {
       text = "gnollcaster.m2",
@@ -1469,10 +1471,10 @@ WeakAuras.ModelPaths = {
       fileId = "124186",
      },
     },
-    value = "gnollcaster",
    },
    {
     text = "gnollmelee",
+    value = "gnollmelee",
     children = {
      {
       text = "gnollmelee.m2",
@@ -1480,10 +1482,10 @@ WeakAuras.ModelPaths = {
       fileId = "124192",
      },
     },
-    value = "gnollmelee",
    },
    {
     text = "gnome",
+    value = "gnome",
     children = {
      {
       text = "gnome.m2",
@@ -1491,10 +1493,10 @@ WeakAuras.ModelPaths = {
       fileId = "124198",
      },
     },
-    value = "gnome",
    },
    {
     text = "gnomerocketcar",
+    value = "gnomerocketcar",
     children = {
      {
       text = "gnomerocketcar.m2",
@@ -1502,10 +1504,10 @@ WeakAuras.ModelPaths = {
       fileId = "124203",
      },
     },
-    value = "gnomerocketcar",
    },
    {
     text = "gnomespidertank",
+    value = "gnomespidertank",
     children = {
      {
       text = "gnomealertbot.m2",
@@ -1533,10 +1535,10 @@ WeakAuras.ModelPaths = {
       fileId = "124210",
      },
     },
-    value = "gnomespidertank",
    },
    {
     text = "goblin",
+    value = "goblin",
     children = {
      {
       text = "goblin.m2",
@@ -1549,10 +1551,10 @@ WeakAuras.ModelPaths = {
       fileId = "124225",
      },
     },
-    value = "goblin",
    },
    {
     text = "goblinrocketcar",
+    value = "goblinrocketcar",
     children = {
      {
       text = "goblinrocketcar.m2",
@@ -1560,10 +1562,10 @@ WeakAuras.ModelPaths = {
       fileId = "124234",
      },
     },
-    value = "goblinrocketcar",
    },
    {
     text = "golemharvest",
+    value = "golemharvest",
     children = {
      {
       text = "golemharvest.m2",
@@ -1571,10 +1573,10 @@ WeakAuras.ModelPaths = {
       fileId = "124235",
      },
     },
-    value = "golemharvest",
    },
    {
     text = "golemharveststage2",
+    value = "golemharveststage2",
     children = {
      {
       text = "golemharveststage2.m2",
@@ -1582,10 +1584,10 @@ WeakAuras.ModelPaths = {
       fileId = "124243",
      },
     },
-    value = "golemharveststage2",
    },
    {
     text = "golemstone",
+    value = "golemstone",
     children = {
      {
       text = "golemcannonstone.m2",
@@ -1598,10 +1600,10 @@ WeakAuras.ModelPaths = {
       fileId = "124248",
      },
     },
-    value = "golemstone",
    },
    {
     text = "gorilla",
+    value = "gorilla",
     children = {
      {
       text = "gorilla.m2",
@@ -1609,10 +1611,10 @@ WeakAuras.ModelPaths = {
       fileId = "124263",
      },
     },
-    value = "gorilla",
    },
    {
     text = "grell",
+    value = "grell",
     children = {
      {
       text = "grell.m2",
@@ -1620,10 +1622,10 @@ WeakAuras.ModelPaths = {
       fileId = "124272",
      },
     },
-    value = "grell",
    },
    {
     text = "gryphon",
+    value = "gryphon",
     children = {
      {
       text = "gryphon.m2",
@@ -1641,10 +1643,10 @@ WeakAuras.ModelPaths = {
       fileId = "124299",
      },
     },
-    value = "gryphon",
    },
    {
     text = "hakkar",
+    value = "hakkar",
     children = {
      {
       text = "hakkar.m2",
@@ -1652,10 +1654,10 @@ WeakAuras.ModelPaths = {
       fileId = "124317",
      },
     },
-    value = "hakkar",
    },
    {
     text = "halfbodyofkathune",
+    value = "halfbodyofkathune",
     children = {
      {
       text = "halfbodyofkathune.m2",
@@ -1663,10 +1665,10 @@ WeakAuras.ModelPaths = {
       fileId = "124324",
      },
     },
-    value = "halfbodyofkathune",
    },
    {
     text = "harpy",
+    value = "harpy",
     children = {
      {
       text = "harpy.m2",
@@ -1674,10 +1676,10 @@ WeakAuras.ModelPaths = {
       fileId = "124329",
      },
     },
-    value = "harpy",
    },
    {
     text = "highelf",
+    value = "highelf",
     children = {
      {
       text = "highelffemale_hunter.m2",
@@ -1720,10 +1722,10 @@ WeakAuras.ModelPaths = {
       fileId = "124380",
      },
     },
-    value = "highelf",
    },
    {
     text = "hippogryph",
+    value = "hippogryph",
     children = {
      {
       text = "hippogryph.m2",
@@ -1736,10 +1738,10 @@ WeakAuras.ModelPaths = {
       fileId = "124393",
      },
     },
-    value = "hippogryph",
    },
    {
     text = "horderider",
+    value = "horderider",
     children = {
      {
       text = "horderider.m2",
@@ -1747,10 +1749,10 @@ WeakAuras.ModelPaths = {
       fileId = "124421",
      },
     },
-    value = "horderider",
    },
    {
     text = "horisath",
+    value = "horisath",
     children = {
      {
       text = "horisath.m2",
@@ -1758,10 +1760,10 @@ WeakAuras.ModelPaths = {
       fileId = "124424",
      },
     },
-    value = "horisath",
    },
    {
     text = "horse",
+    value = "horse",
     children = {
      {
       text = "horse.m2",
@@ -1769,10 +1771,10 @@ WeakAuras.ModelPaths = {
       fileId = "124427",
      },
     },
-    value = "horse",
    },
    {
     text = "hufmcitizenlow",
+    value = "hufmcitizenlow",
     children = {
      {
       text = "hufmcitizenlow.m2",
@@ -1780,10 +1782,10 @@ WeakAuras.ModelPaths = {
       fileId = "124437",
      },
     },
-    value = "hufmcitizenlow",
    },
    {
     text = "hufmcitizenmid",
+    value = "hufmcitizenmid",
     children = {
      {
       text = "hufmcitizenmid.m2",
@@ -1791,10 +1793,10 @@ WeakAuras.ModelPaths = {
       fileId = "124440",
      },
     },
-    value = "hufmcitizenmid",
    },
    {
     text = "hufmmerchant",
+    value = "hufmmerchant",
     children = {
      {
       text = "hufmmerchant.m2",
@@ -1802,10 +1804,10 @@ WeakAuras.ModelPaths = {
       fileId = "124442",
      },
     },
-    value = "hufmmerchant",
    },
    {
     text = "humanfemaleblacksmith",
+    value = "humanfemaleblacksmith",
     children = {
      {
       text = "humanfemaleblacksmith.m2",
@@ -1813,10 +1815,10 @@ WeakAuras.ModelPaths = {
       fileId = "124444",
      },
     },
-    value = "humanfemaleblacksmith",
    },
    {
     text = "humanfemalecaster",
+    value = "humanfemalecaster",
     children = {
      {
       text = "humanfemalecaster.m2",
@@ -1824,10 +1826,10 @@ WeakAuras.ModelPaths = {
       fileId = "124448",
      },
     },
-    value = "humanfemalecaster",
    },
    {
     text = "humanfemalefarmer",
+    value = "humanfemalefarmer",
     children = {
      {
       text = "humanfemalefarmer.m2",
@@ -1835,10 +1837,10 @@ WeakAuras.ModelPaths = {
       fileId = "124452",
      },
     },
-    value = "humanfemalefarmer",
    },
    {
     text = "humanfemalekid",
+    value = "humanfemalekid",
     children = {
      {
       text = "humanfemalekid.m2",
@@ -1846,10 +1848,10 @@ WeakAuras.ModelPaths = {
       fileId = "124456",
      },
     },
-    value = "humanfemalekid",
    },
    {
     text = "humanfemalemerchantfat",
+    value = "humanfemalemerchantfat",
     children = {
      {
       text = "humanfemalemerchantfat.m2",
@@ -1857,10 +1859,10 @@ WeakAuras.ModelPaths = {
       fileId = "124463",
      },
     },
-    value = "humanfemalemerchantfat",
    },
    {
     text = "humanfemalemerchantthin",
+    value = "humanfemalemerchantthin",
     children = {
      {
       text = "humanfemalemerchantthin.m2",
@@ -1868,10 +1870,10 @@ WeakAuras.ModelPaths = {
       fileId = "124467",
      },
     },
-    value = "humanfemalemerchantthin",
    },
    {
     text = "humanfemalepeasant",
+    value = "humanfemalepeasant",
     children = {
      {
       text = "humanfemalepeasant.m2",
@@ -1879,10 +1881,10 @@ WeakAuras.ModelPaths = {
       fileId = "124468",
      },
     },
-    value = "humanfemalepeasant",
    },
    {
     text = "humanfemalewarriorheavy",
+    value = "humanfemalewarriorheavy",
     children = {
      {
       text = "humanfemalewarriorheavy.m2",
@@ -1890,10 +1892,10 @@ WeakAuras.ModelPaths = {
       fileId = "124472",
      },
     },
-    value = "humanfemalewarriorheavy",
    },
    {
     text = "humanfemalewarriorlight",
+    value = "humanfemalewarriorlight",
     children = {
      {
       text = "humanfemalewarriorlight.m2",
@@ -1901,10 +1903,10 @@ WeakAuras.ModelPaths = {
       fileId = "124475",
      },
     },
-    value = "humanfemalewarriorlight",
    },
    {
     text = "humanfemalewarriormedium",
+    value = "humanfemalewarriormedium",
     children = {
      {
       text = "humanfemalewarriormedium.m2",
@@ -1912,10 +1914,10 @@ WeakAuras.ModelPaths = {
       fileId = "124478",
      },
     },
-    value = "humanfemalewarriormedium",
    },
    {
     text = "humanmaleblacksmith",
+    value = "humanmaleblacksmith",
     children = {
      {
       text = "humanmaleblacksmith.m2",
@@ -1923,10 +1925,10 @@ WeakAuras.ModelPaths = {
       fileId = "124482",
      },
     },
-    value = "humanmaleblacksmith",
    },
    {
     text = "humanmalecaster",
+    value = "humanmalecaster",
     children = {
      {
       text = "humanmalecaster.m2",
@@ -1934,10 +1936,10 @@ WeakAuras.ModelPaths = {
       fileId = "124485",
      },
     },
-    value = "humanmalecaster",
    },
    {
     text = "humanmalefarmer",
+    value = "humanmalefarmer",
     children = {
      {
       text = "humanmalefarmer.m2",
@@ -1945,10 +1947,10 @@ WeakAuras.ModelPaths = {
       fileId = "124490",
      },
     },
-    value = "humanmalefarmer",
    },
    {
     text = "humanmaleguard",
+    value = "humanmaleguard",
     children = {
      {
       text = "humanmaleguard.m2",
@@ -1956,10 +1958,10 @@ WeakAuras.ModelPaths = {
       fileId = "124494",
      },
     },
-    value = "humanmaleguard",
    },
    {
     text = "humanmalekid",
+    value = "humanmalekid",
     children = {
      {
       text = "humanmalekid.m2",
@@ -1967,10 +1969,10 @@ WeakAuras.ModelPaths = {
       fileId = "124495",
      },
     },
-    value = "humanmalekid",
    },
    {
     text = "humanmalemarshal",
+    value = "humanmalemarshal",
     children = {
      {
       text = "humanmalemarshal.m2",
@@ -1978,10 +1980,10 @@ WeakAuras.ModelPaths = {
       fileId = "124500",
      },
     },
-    value = "humanmalemarshal",
    },
    {
     text = "humanmalenoble",
+    value = "humanmalenoble",
     children = {
      {
       text = "humanmalenoble.m2",
@@ -1989,10 +1991,10 @@ WeakAuras.ModelPaths = {
       fileId = "124506",
      },
     },
-    value = "humanmalenoble",
    },
    {
     text = "humanmalepeasant",
+    value = "humanmalepeasant",
     children = {
      {
       text = "humanmalepeasant.m2",
@@ -2020,10 +2022,10 @@ WeakAuras.ModelPaths = {
       fileId = "124515",
      },
     },
-    value = "humanmalepeasant",
    },
    {
     text = "humanmalepiratecaptain",
+    value = "humanmalepiratecaptain",
     children = {
      {
       text = "humanmalepiratecaptain.m2",
@@ -2036,10 +2038,10 @@ WeakAuras.ModelPaths = {
       fileId = "124517",
      },
     },
-    value = "humanmalepiratecaptain",
    },
    {
     text = "humanmalepiratecrewman",
+    value = "humanmalepiratecrewman",
     children = {
      {
       text = "humanmalepiratecrewman.m2",
@@ -2052,10 +2054,10 @@ WeakAuras.ModelPaths = {
       fileId = "124522",
      },
     },
-    value = "humanmalepiratecrewman",
    },
    {
     text = "humanmalepirateswashbuckler",
+    value = "humanmalepirateswashbuckler",
     children = {
      {
       text = "humanmalepirateswashbuckler.m2",
@@ -2068,10 +2070,10 @@ WeakAuras.ModelPaths = {
       fileId = "124534",
      },
     },
-    value = "humanmalepirateswashbuckler",
    },
    {
     text = "humanmalewarriorheavy",
+    value = "humanmalewarriorheavy",
     children = {
      {
       text = "humanmalewarriorheavy.m2",
@@ -2084,10 +2086,10 @@ WeakAuras.ModelPaths = {
       fileId = "124541",
      },
     },
-    value = "humanmalewarriorheavy",
    },
    {
     text = "humanmalewarriorlight",
+    value = "humanmalewarriorlight",
     children = {
      {
       text = "humanmalewarriorlight.m2",
@@ -2095,10 +2097,10 @@ WeakAuras.ModelPaths = {
       fileId = "124544",
      },
     },
-    value = "humanmalewarriorlight",
    },
    {
     text = "humanmalewarriormedium",
+    value = "humanmalewarriormedium",
     children = {
      {
       text = "humanmalewarriormedium.m2",
@@ -2106,10 +2108,10 @@ WeakAuras.ModelPaths = {
       fileId = "124547",
      },
     },
-    value = "humanmalewarriormedium",
    },
    {
     text = "humanmalewizard",
+    value = "humanmalewizard",
     children = {
      {
       text = "humanmalewizard.m2",
@@ -2117,10 +2119,10 @@ WeakAuras.ModelPaths = {
       fileId = "124552",
      },
     },
-    value = "humanmalewizard",
    },
    {
     text = "humanthief",
+    value = "humanthief",
     children = {
      {
       text = "humanthief.m2",
@@ -2128,10 +2130,10 @@ WeakAuras.ModelPaths = {
       fileId = "124553",
      },
     },
-    value = "humanthief",
    },
    {
     text = "humlblacksmith",
+    value = "humlblacksmith",
     children = {
      {
       text = "humlblacksmith.m2",
@@ -2139,10 +2141,10 @@ WeakAuras.ModelPaths = {
       fileId = "124565",
      },
     },
-    value = "humlblacksmith",
    },
    {
     text = "humlcitizenmid",
+    value = "humlcitizenmid",
     children = {
      {
       text = "humlcitizenmid.m2",
@@ -2150,10 +2152,10 @@ WeakAuras.ModelPaths = {
       fileId = "124566",
      },
     },
-    value = "humlcitizenmid",
    },
    {
     text = "humlmagicsmith",
+    value = "humlmagicsmith",
     children = {
      {
       text = "humlmagicsmith.m2",
@@ -2161,10 +2163,10 @@ WeakAuras.ModelPaths = {
       fileId = "124569",
      },
     },
-    value = "humlmagicsmith",
    },
    {
     text = "humlmerchant",
+    value = "humlmerchant",
     children = {
      {
       text = "humlmerchant.m2",
@@ -2172,10 +2174,10 @@ WeakAuras.ModelPaths = {
       fileId = "124571",
      },
     },
-    value = "humlmerchant",
    },
    {
     text = "humluppercitizen",
+    value = "humluppercitizen",
     children = {
      {
       text = "humluppercitizen.m2",
@@ -2183,10 +2185,10 @@ WeakAuras.ModelPaths = {
       fileId = "124572",
      },
     },
-    value = "humluppercitizen",
    },
    {
     text = "humnguardbig",
+    value = "humnguardbig",
     children = {
      {
       text = "humnguardbig.m2",
@@ -2194,10 +2196,10 @@ WeakAuras.ModelPaths = {
       fileId = "124576",
      },
     },
-    value = "humnguardbig",
    },
    {
     text = "humscitizenmid",
+    value = "humscitizenmid",
     children = {
      {
       text = "humscitizenmid.m2",
@@ -2205,10 +2207,10 @@ WeakAuras.ModelPaths = {
       fileId = "124578",
      },
     },
-    value = "humscitizenmid",
    },
    {
     text = "humsguardbig",
+    value = "humsguardbig",
     children = {
      {
       text = "humsguardbig.m2",
@@ -2216,10 +2218,10 @@ WeakAuras.ModelPaths = {
       fileId = "124579",
      },
     },
-    value = "humsguardbig",
    },
    {
     text = "humsmerchant",
+    value = "humsmerchant",
     children = {
      {
       text = "humsmerchant.m2",
@@ -2227,10 +2229,10 @@ WeakAuras.ModelPaths = {
       fileId = "124580",
      },
     },
-    value = "humsmerchant",
    },
    {
     text = "hydra",
+    value = "hydra",
     children = {
      {
       text = "hydra.m2",
@@ -2238,10 +2240,10 @@ WeakAuras.ModelPaths = {
       fileId = "124581",
      },
     },
-    value = "hydra",
    },
    {
     text = "hyena",
+    value = "hyena",
     children = {
      {
       text = "hyena.m2",
@@ -2249,10 +2251,10 @@ WeakAuras.ModelPaths = {
       fileId = "124601",
      },
     },
-    value = "hyena",
    },
    {
     text = "imp",
+    value = "imp",
     children = {
      {
       text = "fireimp.m2",
@@ -2265,10 +2267,10 @@ WeakAuras.ModelPaths = {
       fileId = "124622",
      },
     },
-    value = "imp",
    },
    {
     text = "infernal",
+    value = "infernal",
     children = {
      {
       text = "infernal.m2",
@@ -2276,10 +2278,10 @@ WeakAuras.ModelPaths = {
       fileId = "124637",
      },
     },
-    value = "infernal",
    },
    {
     text = "invisibleman",
+    value = "invisibleman",
     children = {
      {
       text = "invisibleman.m2",
@@ -2287,10 +2289,10 @@ WeakAuras.ModelPaths = {
       fileId = "124639",
      },
     },
-    value = "invisibleman",
    },
    {
     text = "invisiblestalker",
+    value = "invisiblestalker",
     children = {
      {
       text = "invisiblestalker.m2",
@@ -2303,10 +2305,10 @@ WeakAuras.ModelPaths = {
       fileId = "124642",
      },
     },
-    value = "invisiblestalker",
    },
    {
     text = "keeperofthegrove",
+    value = "keeperofthegrove",
     children = {
      {
       text = "keeperofthegrove.m2",
@@ -2314,10 +2316,10 @@ WeakAuras.ModelPaths = {
       fileId = "124670",
      },
     },
-    value = "keeperofthegrove",
    },
    {
     text = "kelthuzad",
+    value = "kelthuzad",
     children = {
      {
       text = "kelthuzad.m2",
@@ -2325,10 +2327,10 @@ WeakAuras.ModelPaths = {
       fileId = "124677",
      },
     },
-    value = "kelthuzad",
    },
    {
     text = "kobold",
+    value = "kobold",
     children = {
      {
       text = "kobold.m2",
@@ -2336,10 +2338,10 @@ WeakAuras.ModelPaths = {
       fileId = "124691",
      },
     },
-    value = "kobold",
    },
    {
     text = "kodobeast",
+    value = "kodobeast",
     children = {
      {
       text = "kodobeast.m2",
@@ -2367,10 +2369,10 @@ WeakAuras.ModelPaths = {
       fileId = "124711",
      },
     },
-    value = "kodobeast",
    },
    {
     text = "kodobeastpack",
+    value = "kodobeastpack",
     children = {
      {
       text = "kodobeastpack.m2",
@@ -2378,10 +2380,10 @@ WeakAuras.ModelPaths = {
       fileId = "2198638",
      },
     },
-    value = "kodobeastpack",
    },
    {
     text = "kodobeasttame",
+    value = "kodobeasttame",
     children = {
      {
       text = "kodobeasttame.m2",
@@ -2389,10 +2391,10 @@ WeakAuras.ModelPaths = {
       fileId = "2198601",
      },
     },
-    value = "kodobeasttame",
    },
    {
     text = "landro",
+    value = "landro",
     children = {
      {
       text = "landro.m2",
@@ -2400,10 +2402,10 @@ WeakAuras.ModelPaths = {
       fileId = "124738",
      },
     },
-    value = "landro",
    },
    {
     text = "larva",
+    value = "larva",
     children = {
      {
       text = "larva.m2",
@@ -2411,10 +2413,10 @@ WeakAuras.ModelPaths = {
       fileId = "124739",
      },
     },
-    value = "larva",
    },
    {
     text = "lasher",
+    value = "lasher",
     children = {
      {
       text = "lasher.m2",
@@ -2422,10 +2424,10 @@ WeakAuras.ModelPaths = {
       fileId = "124753",
      },
     },
-    value = "lasher",
    },
    {
     text = "lessermanafiend",
+    value = "lessermanafiend",
     children = {
      {
       text = "lessermanafiend_blue.m2",
@@ -2448,10 +2450,10 @@ WeakAuras.ModelPaths = {
       fileId = "2199348",
      },
     },
-    value = "lessermanafiend",
    },
    {
     text = "lich",
+    value = "lich",
     children = {
      {
       text = "lich.m2",
@@ -2459,10 +2461,10 @@ WeakAuras.ModelPaths = {
       fileId = "124779",
      },
     },
-    value = "lich",
    },
    {
     text = "lion",
+    value = "lion",
     children = {
      {
       text = "lion.m2",
@@ -2470,10 +2472,10 @@ WeakAuras.ModelPaths = {
       fileId = "124781",
      },
     },
-    value = "lion",
    },
    {
     text = "lobstrok",
+    value = "lobstrok",
     children = {
      {
       text = "lobstrok.m2",
@@ -2481,10 +2483,10 @@ WeakAuras.ModelPaths = {
       fileId = "124790",
      },
     },
-    value = "lobstrok",
    },
    {
     text = "lord kezzak",
+    value = "lord kezzak",
     children = {
      {
       text = "lordkezzak.m2",
@@ -2492,10 +2494,10 @@ WeakAuras.ModelPaths = {
       fileId = "124802",
      },
     },
-    value = "lord kezzak",
    },
    {
     text = "lostone",
+    value = "lostone",
     children = {
      {
       text = "lostone.m2",
@@ -2503,10 +2505,10 @@ WeakAuras.ModelPaths = {
       fileId = "124809",
      },
     },
-    value = "lostone",
    },
    {
     text = "madscientist",
+    value = "madscientist",
     children = {
      {
       text = "madscientist.m2",
@@ -2514,10 +2516,10 @@ WeakAuras.ModelPaths = {
       fileId = "124827",
      },
     },
-    value = "madscientist",
    },
    {
     text = "manafiend",
+    value = "manafiend",
     children = {
      {
       text = "manafiend.m2",
@@ -2525,10 +2527,10 @@ WeakAuras.ModelPaths = {
       fileId = "124850",
      },
     },
-    value = "manafiend",
    },
    {
     text = "mechastrider",
+    value = "mechastrider",
     children = {
      {
       text = "gnomemechastrider.m2",
@@ -2546,10 +2548,10 @@ WeakAuras.ModelPaths = {
       fileId = "124880",
      },
     },
-    value = "mechastrider",
    },
    {
     text = "minespider",
+    value = "minespider",
     children = {
      {
       text = "minespider.m2",
@@ -2562,10 +2564,10 @@ WeakAuras.ModelPaths = {
       fileId = "124904",
      },
     },
-    value = "minespider",
    },
    {
     text = "mobat",
+    value = "mobat",
     children = {
      {
       text = "mobat.m2",
@@ -2573,10 +2575,10 @@ WeakAuras.ModelPaths = {
       fileId = "124928",
      },
     },
-    value = "mobat",
    },
    {
     text = "mountaingiant",
+    value = "mountaingiant",
     children = {
      {
       text = "mountaingiant.m2",
@@ -2584,10 +2586,10 @@ WeakAuras.ModelPaths = {
       fileId = "124952",
      },
     },
-    value = "mountaingiant",
    },
    {
     text = "mounteddeathknight",
+    value = "mounteddeathknight",
     children = {
      {
       text = "mounteddeathknight.m2",
@@ -2620,10 +2622,10 @@ WeakAuras.ModelPaths = {
       fileId = "125009",
      },
     },
-    value = "mounteddeathknight",
    },
    {
     text = "mounteddemonknight",
+    value = "mounteddemonknight",
     children = {
      {
       text = "mounteddemonknight.m2",
@@ -2631,10 +2633,10 @@ WeakAuras.ModelPaths = {
       fileId = "125013",
      },
     },
-    value = "mounteddemonknight",
    },
    {
     text = "mountedknight",
+    value = "mountedknight",
     children = {
      {
       text = "mountedknight.m2",
@@ -2642,10 +2644,10 @@ WeakAuras.ModelPaths = {
       fileId = "125017",
      },
     },
-    value = "mountedknight",
    },
    {
     text = "mouthofkathune01",
+    value = "mouthofkathune01",
     children = {
      {
       text = "mouthofkathune01.m2",
@@ -2653,10 +2655,10 @@ WeakAuras.ModelPaths = {
       fileId = "125021",
      },
     },
-    value = "mouthofkathune01",
    },
    {
     text = "murloc",
+    value = "murloc",
     children = {
      {
       text = "babymurloc.m2",
@@ -2669,10 +2671,10 @@ WeakAuras.ModelPaths = {
       fileId = "125024",
      },
     },
-    value = "murloc",
    },
    {
     text = "nagafemale",
+    value = "nagafemale",
     children = {
      {
       text = "siren.m2",
@@ -2680,10 +2682,10 @@ WeakAuras.ModelPaths = {
       fileId = "125069",
      },
     },
-    value = "nagafemale",
    },
    {
     text = "nagamale",
+    value = "nagamale",
     children = {
      {
       text = "nagamale.m2",
@@ -2691,10 +2693,10 @@ WeakAuras.ModelPaths = {
       fileId = "125078",
      },
     },
-    value = "nagamale",
    },
    {
     text = "necromancer",
+    value = "necromancer",
     children = {
      {
       text = "necromancer.m2",
@@ -2702,10 +2704,10 @@ WeakAuras.ModelPaths = {
       fileId = "125092",
      },
     },
-    value = "necromancer",
    },
    {
     text = "nefarian",
+    value = "nefarian",
     children = {
      {
       text = "dragonnefarian.m2",
@@ -2713,10 +2715,10 @@ WeakAuras.ModelPaths = {
       fileId = "2198559",
      },
     },
-    value = "nefarian",
    },
    {
     text = "nian",
+    value = "nian",
     children = {
      {
       text = "nian.m2",
@@ -2724,10 +2726,10 @@ WeakAuras.ModelPaths = {
       fileId = "125217",
      },
     },
-    value = "nian",
    },
    {
     text = "nightmare",
+    value = "nightmare",
     children = {
      {
       text = "gorgon101.m2",
@@ -2740,10 +2742,10 @@ WeakAuras.ModelPaths = {
       fileId = "125227",
      },
     },
-    value = "nightmare",
    },
    {
     text = "object",
+    value = "object",
     children = {
      {
       text = "archerytarget.m2",
@@ -2761,10 +2763,10 @@ WeakAuras.ModelPaths = {
       fileId = "125259",
      },
     },
-    value = "object",
    },
    {
     text = "obsidiandestroyer",
+    value = "obsidiandestroyer",
     children = {
      {
       text = "obsidiandestroyer.m2",
@@ -2772,10 +2774,10 @@ WeakAuras.ModelPaths = {
       fileId = "125260",
      },
     },
-    value = "obsidiandestroyer",
    },
    {
     text = "ogre",
+    value = "ogre",
     children = {
      {
       text = "ogre.m2",
@@ -2793,10 +2795,10 @@ WeakAuras.ModelPaths = {
       fileId = "125293",
      },
     },
-    value = "ogre",
    },
    {
     text = "orca",
+    value = "orca",
     children = {
      {
       text = "orca.m2",
@@ -2804,10 +2806,10 @@ WeakAuras.ModelPaths = {
       fileId = "125358",
      },
     },
-    value = "orca",
    },
    {
     text = "orcfemalekid",
+    value = "orcfemalekid",
     children = {
      {
       text = "orcfemalekid.m2",
@@ -2815,10 +2817,10 @@ WeakAuras.ModelPaths = {
       fileId = "125362",
      },
     },
-    value = "orcfemalekid",
    },
    {
     text = "orcfemalewarriorlight",
+    value = "orcfemalewarriorlight",
     children = {
      {
       text = "orcfemale.m2",
@@ -2826,10 +2828,10 @@ WeakAuras.ModelPaths = {
       fileId = "2198642",
      },
     },
-    value = "orcfemalewarriorlight",
    },
    {
     text = "orcmalekid",
+    value = "orcmalekid",
     children = {
      {
       text = "orcmalekid.m2",
@@ -2837,10 +2839,10 @@ WeakAuras.ModelPaths = {
       fileId = "125367",
      },
     },
-    value = "orcmalekid",
    },
    {
     text = "orcmalemerchantlight",
+    value = "orcmalemerchantlight",
     children = {
      {
       text = "orcmalemerchantlight.m2",
@@ -2848,10 +2850,10 @@ WeakAuras.ModelPaths = {
       fileId = "125372",
      },
     },
-    value = "orcmalemerchantlight",
    },
    {
     text = "orcmalewarriorheavy",
+    value = "orcmalewarriorheavy",
     children = {
      {
       text = "orcmalewarriorheavy.m2",
@@ -2859,10 +2861,10 @@ WeakAuras.ModelPaths = {
       fileId = "125374",
      },
     },
-    value = "orcmalewarriorheavy",
    },
    {
     text = "orcmalewarriorlight",
+    value = "orcmalewarriorlight",
     children = {
      {
       text = "orcmalewarriorlight.m2",
@@ -2870,10 +2872,10 @@ WeakAuras.ModelPaths = {
       fileId = "125377",
      },
     },
-    value = "orcmalewarriorlight",
    },
    {
     text = "owl",
+    value = "owl",
     children = {
      {
       text = "owl.m2",
@@ -2881,10 +2883,10 @@ WeakAuras.ModelPaths = {
       fileId = "125378",
      },
     },
-    value = "owl",
    },
    {
     text = "panda",
+    value = "panda",
     children = {
      {
       text = "pandacub.m2",
@@ -2892,10 +2894,10 @@ WeakAuras.ModelPaths = {
       fileId = "125389",
      },
     },
-    value = "panda",
    },
    {
     text = "parrot",
+    value = "parrot",
     children = {
      {
       text = "parrot.m2",
@@ -2903,10 +2905,10 @@ WeakAuras.ModelPaths = {
       fileId = "125395",
      },
     },
-    value = "parrot",
    },
    {
     text = "pig",
+    value = "pig",
     children = {
      {
       text = "pig.m2",
@@ -2914,10 +2916,10 @@ WeakAuras.ModelPaths = {
       fileId = "125420",
      },
     },
-    value = "pig",
    },
    {
     text = "portalofkathune",
+    value = "portalofkathune",
     children = {
      {
       text = "portalofkathune.m2",
@@ -2925,10 +2927,10 @@ WeakAuras.ModelPaths = {
       fileId = "125432",
      },
     },
-    value = "portalofkathune",
    },
    {
     text = "prariedog",
+    value = "prariedog",
     children = {
      {
       text = "prariedog.m2",
@@ -2936,10 +2938,10 @@ WeakAuras.ModelPaths = {
       fileId = "125434",
      },
     },
-    value = "prariedog",
    },
    {
     text = "pterrordax",
+    value = "pterrordax",
     children = {
      {
       text = "pterrordax.m2",
@@ -2947,10 +2949,10 @@ WeakAuras.ModelPaths = {
       fileId = "125437",
      },
     },
-    value = "pterrordax",
    },
    {
     text = "questobjects",
+    value = "questobjects",
     children = {
      {
       text = "creature_scourgecrystal.m2",
@@ -2963,10 +2965,10 @@ WeakAuras.ModelPaths = {
       fileId = "125454",
      },
     },
-    value = "questobjects",
    },
    {
     text = "quillboar",
+    value = "quillboar",
     children = {
      {
       text = "quillboar.m2",
@@ -2984,10 +2986,10 @@ WeakAuras.ModelPaths = {
       fileId = "125499",
      },
     },
-    value = "quillboar",
    },
    {
     text = "quirajbattleguard",
+    value = "quirajbattleguard",
     children = {
      {
       text = "battleguard.m2",
@@ -2995,10 +2997,10 @@ WeakAuras.ModelPaths = {
       fileId = "125500",
      },
     },
-    value = "quirajbattleguard",
    },
    {
     text = "quirajgladiator",
+    value = "quirajgladiator",
     children = {
      {
       text = "quirajgladiator.m2",
@@ -3006,10 +3008,10 @@ WeakAuras.ModelPaths = {
       fileId = "125504",
      },
     },
-    value = "quirajgladiator",
    },
    {
     text = "quirajprophet",
+    value = "quirajprophet",
     children = {
      {
       text = "quirajprophet.m2",
@@ -3017,10 +3019,10 @@ WeakAuras.ModelPaths = {
       fileId = "125508",
      },
     },
-    value = "quirajprophet",
    },
    {
     text = "rabbit",
+    value = "rabbit",
     children = {
      {
       text = "rabbit.m2",
@@ -3028,10 +3030,10 @@ WeakAuras.ModelPaths = {
       fileId = "125512",
      },
     },
-    value = "rabbit",
    },
    {
     text = "ragnaros",
+    value = "ragnaros",
     children = {
      {
       text = "ragnaros.m2",
@@ -3039,10 +3041,10 @@ WeakAuras.ModelPaths = {
       fileId = "125519",
      },
     },
-    value = "ragnaros",
    },
    {
     text = "ram",
+    value = "ram",
     children = {
      {
       text = "pvpridingram.m2",
@@ -3060,10 +3062,10 @@ WeakAuras.ModelPaths = {
       fileId = "125546",
      },
     },
-    value = "ram",
    },
    {
     text = "raptor",
+    value = "raptor",
     children = {
      {
       text = "raptor.m2",
@@ -3071,10 +3073,10 @@ WeakAuras.ModelPaths = {
       fileId = "125559",
      },
     },
-    value = "raptor",
    },
    {
     text = "rat",
+    value = "rat",
     children = {
      {
       text = "rat.m2",
@@ -3082,10 +3084,10 @@ WeakAuras.ModelPaths = {
       fileId = "125576",
      },
     },
-    value = "rat",
    },
    {
     text = "reindeer",
+    value = "reindeer",
     children = {
      {
       text = "reindeer.m2",
@@ -3098,10 +3100,10 @@ WeakAuras.ModelPaths = {
       fileId = "125583",
      },
     },
-    value = "reindeer",
    },
    {
     text = "ridinghorse",
+    value = "ridinghorse",
     children = {
      {
       text = "packmule.m2",
@@ -3119,10 +3121,10 @@ WeakAuras.ModelPaths = {
       fileId = "125620",
      },
     },
-    value = "ridinghorse",
    },
    {
     text = "ridingraptor",
+    value = "ridingraptor",
     children = {
      {
       text = "pvpridingraptor.m2",
@@ -3135,10 +3137,10 @@ WeakAuras.ModelPaths = {
       fileId = "125680",
      },
     },
-    value = "ridingraptor",
    },
    {
     text = "ridingsilithid",
+    value = "ridingsilithid",
     children = {
      {
       text = "ridingsilithid.m2",
@@ -3146,10 +3148,10 @@ WeakAuras.ModelPaths = {
       fileId = "125687",
      },
     },
-    value = "ridingsilithid",
    },
    {
     text = "ridingturtle",
+    value = "ridingturtle",
     children = {
      {
       text = "ridingturtle.m2",
@@ -3157,10 +3159,10 @@ WeakAuras.ModelPaths = {
       fileId = "125715",
      },
     },
-    value = "ridingturtle",
    },
    {
     text = "salamander",
+    value = "salamander",
     children = {
      {
       text = "salamandermale.m2",
@@ -3168,10 +3170,10 @@ WeakAuras.ModelPaths = {
       fileId = "125777",
      },
     },
-    value = "salamander",
    },
    {
     text = "sandreaver",
+    value = "sandreaver",
     children = {
      {
       text = "sandreaver.m2",
@@ -3179,10 +3181,10 @@ WeakAuras.ModelPaths = {
       fileId = "125782",
      },
     },
-    value = "sandreaver",
    },
    {
     text = "sandworm",
+    value = "sandworm",
     children = {
      {
       text = "sandworm.m2",
@@ -3190,10 +3192,10 @@ WeakAuras.ModelPaths = {
       fileId = "125795",
      },
     },
-    value = "sandworm",
    },
    {
     text = "satyr",
+    value = "satyr",
     children = {
      {
       text = "satyr.m2",
@@ -3201,10 +3203,10 @@ WeakAuras.ModelPaths = {
       fileId = "125796",
      },
     },
-    value = "satyr",
    },
    {
     text = "scorpion",
+    value = "scorpion",
     children = {
      {
       text = "scorpion.m2",
@@ -3212,10 +3214,10 @@ WeakAuras.ModelPaths = {
       fileId = "125815",
      },
     },
-    value = "scorpion",
    },
    {
     text = "seagiant",
+    value = "seagiant",
     children = {
      {
       text = "seagiant.m2",
@@ -3223,10 +3225,10 @@ WeakAuras.ModelPaths = {
       fileId = "125830",
      },
     },
-    value = "seagiant",
    },
    {
     text = "sealion",
+    value = "sealion",
     children = {
      {
       text = "sealion.m2",
@@ -3234,10 +3236,10 @@ WeakAuras.ModelPaths = {
       fileId = "125835",
      },
     },
-    value = "sealion",
    },
    {
     text = "seaturtle",
+    value = "seaturtle",
     children = {
      {
       text = "seaturtle.m2",
@@ -3245,10 +3247,10 @@ WeakAuras.ModelPaths = {
       fileId = "125837",
      },
     },
-    value = "seaturtle",
    },
    {
     text = "serpent",
+    value = "serpent",
     children = {
      {
       text = "serpent.m2",
@@ -3256,10 +3258,10 @@ WeakAuras.ModelPaths = {
       fileId = "125851",
      },
     },
-    value = "serpent",
    },
    {
     text = "shade",
+    value = "shade",
     children = {
      {
       text = "shade.m2",
@@ -3272,10 +3274,10 @@ WeakAuras.ModelPaths = {
       fileId = "2199329",
      },
     },
-    value = "shade",
    },
    {
     text = "shark",
+    value = "shark",
     children = {
      {
       text = "hammerhead.m2",
@@ -3288,10 +3290,10 @@ WeakAuras.ModelPaths = {
       fileId = "125860",
      },
     },
-    value = "shark",
    },
    {
     text = "sheep",
+    value = "sheep",
     children = {
      {
       text = "sheep.m2",
@@ -3299,10 +3301,10 @@ WeakAuras.ModelPaths = {
       fileId = "125865",
      },
     },
-    value = "sheep",
    },
    {
     text = "silithid",
+    value = "silithid",
     children = {
      {
       text = "silithid.m2",
@@ -3310,10 +3312,10 @@ WeakAuras.ModelPaths = {
       fileId = "125891",
      },
     },
-    value = "silithid",
    },
    {
     text = "silithidscarab",
+    value = "silithidscarab",
     children = {
      {
       text = "silithidscarab.m2",
@@ -3321,10 +3323,10 @@ WeakAuras.ModelPaths = {
       fileId = "125892",
      },
     },
-    value = "silithidscarab",
    },
    {
     text = "silithidtank",
+    value = "silithidtank",
     children = {
      {
       text = "silithidtank.m2",
@@ -3332,10 +3334,10 @@ WeakAuras.ModelPaths = {
       fileId = "125902",
      },
     },
-    value = "silithidtank",
    },
    {
     text = "silithidtankboss",
+    value = "silithidtankboss",
     children = {
      {
       text = "silithidtankboss.m2",
@@ -3348,10 +3350,10 @@ WeakAuras.ModelPaths = {
       fileId = "125913",
      },
     },
-    value = "silithidtankboss",
    },
    {
     text = "silithidwasp",
+    value = "silithidwasp",
     children = {
      {
       text = "silithidwasp.m2",
@@ -3359,10 +3361,10 @@ WeakAuras.ModelPaths = {
       fileId = "125931",
      },
     },
-    value = "silithidwasp",
    },
    {
     text = "silithidwaspboss",
+    value = "silithidwaspboss",
     children = {
      {
       text = "silithidwaspboss.m2",
@@ -3370,10 +3372,10 @@ WeakAuras.ModelPaths = {
       fileId = "125932",
      },
     },
-    value = "silithidwaspboss",
    },
    {
     text = "skeletalserpent",
+    value = "skeletalserpent",
     children = {
      {
       text = "skeletalserpent.m2",
@@ -3381,10 +3383,10 @@ WeakAuras.ModelPaths = {
       fileId = "125938",
      },
     },
-    value = "skeletalserpent",
    },
    {
     text = "skeleton",
+    value = "skeleton",
     children = {
      {
       text = "skeleton.m2",
@@ -3392,10 +3394,10 @@ WeakAuras.ModelPaths = {
       fileId = "125942",
      },
     },
-    value = "skeleton",
    },
    {
     text = "skeletonmage",
+    value = "skeletonmage",
     children = {
      {
       text = "skeletonmage.m2",
@@ -3403,10 +3405,10 @@ WeakAuras.ModelPaths = {
       fileId = "125947",
      },
     },
-    value = "skeletonmage",
    },
    {
     text = "skeletonnaked",
+    value = "skeletonnaked",
     children = {
      {
       text = "skeletonnaked.m2",
@@ -3414,10 +3416,10 @@ WeakAuras.ModelPaths = {
       fileId = "125948",
      },
     },
-    value = "skeletonnaked",
    },
    {
     text = "slime",
+    value = "slime",
     children = {
      {
       text = "slime.m2",
@@ -3430,10 +3432,10 @@ WeakAuras.ModelPaths = {
       fileId = "125958",
      },
     },
-    value = "slime",
    },
    {
     text = "slimegiant",
+    value = "slimegiant",
     children = {
      {
       text = "giantslime.m2",
@@ -3441,10 +3443,10 @@ WeakAuras.ModelPaths = {
       fileId = "125965",
      },
     },
-    value = "slimegiant",
    },
    {
     text = "slith",
+    value = "slith",
     children = {
      {
       text = "slith.m2",
@@ -3452,10 +3454,10 @@ WeakAuras.ModelPaths = {
       fileId = "125967",
      },
     },
-    value = "slith",
    },
    {
     text = "snake",
+    value = "snake",
     children = {
      {
       text = "snake.m2",
@@ -3463,10 +3465,10 @@ WeakAuras.ModelPaths = {
       fileId = "125969",
      },
     },
-    value = "snake",
    },
    {
     text = "snowman",
+    value = "snowman",
     children = {
      {
       text = "snowman.m2",
@@ -3474,10 +3476,10 @@ WeakAuras.ModelPaths = {
       fileId = "125984",
      },
     },
-    value = "snowman",
    },
    {
     text = "spells",
+    value = "spells",
     children = {
      {
       text = "airelementaltotem.m2",
@@ -3575,10 +3577,10 @@ WeakAuras.ModelPaths = {
       fileId = "126041",
      },
     },
-    value = "spells",
    },
    {
     text = "spirithealer",
+    value = "spirithealer",
     children = {
      {
       text = "spirithealer.m2",
@@ -3586,10 +3588,10 @@ WeakAuras.ModelPaths = {
       fileId = "126042",
      },
     },
-    value = "spirithealer",
    },
    {
     text = "spiritofredemption",
+    value = "spiritofredemption",
     children = {
      {
       text = "spiritofredemption.m2",
@@ -3597,10 +3599,10 @@ WeakAuras.ModelPaths = {
       fileId = "126045",
      },
     },
-    value = "spiritofredemption",
    },
    {
     text = "sporecreature",
+    value = "sporecreature",
     children = {
      {
       text = "sporecreature.m2",
@@ -3608,10 +3610,10 @@ WeakAuras.ModelPaths = {
       fileId = "126052",
      },
     },
-    value = "sporecreature",
    },
    {
     text = "squirrel",
+    value = "squirrel",
     children = {
      {
       text = "squirrel.m2",
@@ -3619,10 +3621,10 @@ WeakAuras.ModelPaths = {
       fileId = "126061",
      },
     },
-    value = "squirrel",
    },
    {
     text = "stag",
+    value = "stag",
     children = {
      {
       text = "stag.m2",
@@ -3630,10 +3632,10 @@ WeakAuras.ModelPaths = {
       fileId = "126065",
      },
     },
-    value = "stag",
    },
    {
     text = "steamtonk",
+    value = "steamtonk",
     children = {
      {
       text = "steamtonk.m2",
@@ -3641,10 +3643,10 @@ WeakAuras.ModelPaths = {
       fileId = "126069",
      },
     },
-    value = "steamtonk",
    },
    {
     text = "stonekeeper",
+    value = "stonekeeper",
     children = {
      {
       text = "stonekeeper.m2",
@@ -3652,10 +3654,10 @@ WeakAuras.ModelPaths = {
       fileId = "126072",
      },
     },
-    value = "stonekeeper",
    },
    {
     text = "stormcrow",
+    value = "stormcrow",
     children = {
      {
       text = "stormcrow.m2",
@@ -3663,10 +3665,10 @@ WeakAuras.ModelPaths = {
       fileId = "126075",
      },
     },
-    value = "stormcrow",
    },
    {
     text = "succubus",
+    value = "succubus",
     children = {
      {
       text = "succubus.m2",
@@ -3674,10 +3676,10 @@ WeakAuras.ModelPaths = {
       fileId = "126081",
      },
     },
-    value = "succubus",
    },
    {
     text = "tallstrider",
+    value = "tallstrider",
     children = {
      {
       text = "tallstrider.m2",
@@ -3685,10 +3687,10 @@ WeakAuras.ModelPaths = {
       fileId = "126117",
      },
     },
-    value = "tallstrider",
    },
    {
     text = "tarantula",
+    value = "tarantula",
     children = {
      {
       text = "tarantula.m2",
@@ -3696,10 +3698,10 @@ WeakAuras.ModelPaths = {
       fileId = "126124",
      },
     },
-    value = "tarantula",
    },
    {
     text = "tempdeathguard",
+    value = "tempdeathguard",
     children = {
      {
       text = "deathguard.m2",
@@ -3707,10 +3709,10 @@ WeakAuras.ModelPaths = {
       fileId = "126131",
      },
     },
-    value = "tempdeathguard",
    },
    {
     text = "tempscarletcrusaderheavy",
+    value = "tempscarletcrusaderheavy",
     children = {
      {
       text = "scarletcrusaderheavy.m2",
@@ -3718,10 +3720,10 @@ WeakAuras.ModelPaths = {
       fileId = "126133",
      },
     },
-    value = "tempscarletcrusaderheavy",
    },
    {
     text = "tempscarletcrusaderlight",
+    value = "tempscarletcrusaderlight",
     children = {
      {
       text = "scarletcrusaderlight.m2",
@@ -3729,10 +3731,10 @@ WeakAuras.ModelPaths = {
       fileId = "126136",
      },
     },
-    value = "tempscarletcrusaderlight",
    },
    {
     text = "tempscourgemalenpc",
+    value = "tempscourgemalenpc",
     children = {
      {
       text = "scourgemalenpc.m2",
@@ -3740,10 +3742,10 @@ WeakAuras.ModelPaths = {
       fileId = "126137",
      },
     },
-    value = "tempscourgemalenpc",
    },
    {
     text = "tharazun",
+    value = "tharazun",
     children = {
      {
       text = "tharazun.m2",
@@ -3751,10 +3753,10 @@ WeakAuras.ModelPaths = {
       fileId = "126150",
      },
     },
-    value = "tharazun",
    },
    {
     text = "threshadon",
+    value = "threshadon",
     children = {
      {
       text = "threshadon.m2",
@@ -3762,10 +3764,10 @@ WeakAuras.ModelPaths = {
       fileId = "126153",
      },
     },
-    value = "threshadon",
    },
    {
     text = "thunderaan",
+    value = "thunderaan",
     children = {
      {
       text = "thunderaan.m2",
@@ -3773,10 +3775,10 @@ WeakAuras.ModelPaths = {
       fileId = "126158",
      },
     },
-    value = "thunderaan",
    },
    {
     text = "thunderlizard",
+    value = "thunderlizard",
     children = {
      {
       text = "thunderlizard.m2",
@@ -3784,10 +3786,10 @@ WeakAuras.ModelPaths = {
       fileId = "126169",
      },
     },
-    value = "thunderlizard",
    },
    {
     text = "tiger",
+    value = "tiger",
     children = {
      {
       text = "tiger.m2",
@@ -3805,10 +3807,10 @@ WeakAuras.ModelPaths = {
       fileId = "126173",
      },
     },
-    value = "tiger",
    },
    {
     text = "tigon",
+    value = "tigon",
     children = {
      {
       text = "tigon.m2",
@@ -3826,10 +3828,10 @@ WeakAuras.ModelPaths = {
       fileId = "126195",
      },
     },
-    value = "tigon",
    },
    {
     text = "titanfemale",
+    value = "titanfemale",
     children = {
      {
       text = "titanfemale.m2",
@@ -3837,10 +3839,10 @@ WeakAuras.ModelPaths = {
       fileId = "126199",
      },
     },
-    value = "titanfemale",
    },
    {
     text = "titanmale",
+    value = "titanmale",
     children = {
      {
       text = "titanmale.m2",
@@ -3853,10 +3855,10 @@ WeakAuras.ModelPaths = {
       fileId = "126215",
      },
     },
-    value = "titanmale",
    },
    {
     text = "tree",
+    value = "tree",
     children = {
      {
       text = "ashenvaletreefalling01.m2",
@@ -3864,10 +3866,10 @@ WeakAuras.ModelPaths = {
       fileId = "126223",
      },
     },
-    value = "tree",
    },
    {
     text = "trex",
+    value = "trex",
     children = {
      {
       text = "trex.m2",
@@ -3875,10 +3877,10 @@ WeakAuras.ModelPaths = {
       fileId = "126225",
      },
     },
-    value = "trex",
    },
    {
     text = "troglodyte",
+    value = "troglodyte",
     children = {
      {
       text = "troglodyte.m2",
@@ -3886,10 +3888,10 @@ WeakAuras.ModelPaths = {
       fileId = "126239",
      },
     },
-    value = "troglodyte",
    },
    {
     text = "troll",
+    value = "troll",
     children = {
      {
       text = "troll.m2",
@@ -3927,10 +3929,10 @@ WeakAuras.ModelPaths = {
       fileId = "126267",
      },
     },
-    value = "troll",
    },
    {
     text = "trolldire",
+    value = "trolldire",
     children = {
      {
       text = "trolldire.m2",
@@ -3938,10 +3940,10 @@ WeakAuras.ModelPaths = {
       fileId = "126277",
      },
     },
-    value = "trolldire",
    },
    {
     text = "turkey",
+    value = "turkey",
     children = {
      {
       text = "turkey.m2",
@@ -3949,10 +3951,10 @@ WeakAuras.ModelPaths = {
       fileId = "126278",
      },
     },
-    value = "turkey",
    },
    {
     text = "turtle",
+    value = "turtle",
     children = {
      {
       text = "turtle.m2",
@@ -3960,10 +3962,10 @@ WeakAuras.ModelPaths = {
       fileId = "126281",
      },
     },
-    value = "turtle",
    },
    {
     text = "twinemperor",
+    value = "twinemperor",
     children = {
      {
       text = "twinemperor.m2",
@@ -3971,10 +3973,10 @@ WeakAuras.ModelPaths = {
       fileId = "126289",
      },
     },
-    value = "twinemperor",
    },
    {
     text = "undeadbeast",
+    value = "undeadbeast",
     children = {
      {
       text = "undeadbeast.m2",
@@ -3982,10 +3984,10 @@ WeakAuras.ModelPaths = {
       fileId = "126302",
      },
     },
-    value = "undeadbeast",
    },
    {
     text = "undeadhorse",
+    value = "undeadhorse",
     children = {
      {
       text = "ridingundeadhorse.m2",
@@ -3998,10 +4000,10 @@ WeakAuras.ModelPaths = {
       fileId = "126306",
      },
     },
-    value = "undeadhorse",
    },
    {
     text = "unicorn",
+    value = "unicorn",
     children = {
      {
       text = "unicorn.m2",
@@ -4009,10 +4011,10 @@ WeakAuras.ModelPaths = {
       fileId = "126320",
      },
     },
-    value = "unicorn",
    },
    {
     text = "voidterror",
+    value = "voidterror",
     children = {
      {
       text = "voidterror.m2",
@@ -4020,10 +4022,10 @@ WeakAuras.ModelPaths = {
       fileId = "126363",
      },
     },
-    value = "voidterror",
    },
    {
     text = "voidwalker",
+    value = "voidwalker",
     children = {
      {
       text = "voidwalker.m2",
@@ -4031,10 +4033,10 @@ WeakAuras.ModelPaths = {
       fileId = "126369",
      },
     },
-    value = "voidwalker",
    },
    {
     text = "warhorse",
+    value = "warhorse",
     children = {
      {
       text = "pvpwarhorse.m2",
@@ -4047,10 +4049,10 @@ WeakAuras.ModelPaths = {
       fileId = "126407",
      },
     },
-    value = "warhorse",
    },
    {
     text = "waterelemental",
+    value = "waterelemental",
     children = {
      {
       text = "waterelemental.m2",
@@ -4058,10 +4060,10 @@ WeakAuras.ModelPaths = {
       fileId = "126426",
      },
     },
-    value = "waterelemental",
    },
    {
     text = "wendigo",
+    value = "wendigo",
     children = {
      {
       text = "wendigo.m2",
@@ -4069,10 +4071,10 @@ WeakAuras.ModelPaths = {
       fileId = "126444",
      },
     },
-    value = "wendigo",
    },
    {
     text = "wight",
+    value = "wight",
     children = {
      {
       text = "wight.m2",
@@ -4080,10 +4082,10 @@ WeakAuras.ModelPaths = {
       fileId = "126449",
      },
     },
-    value = "wight",
    },
    {
     text = "windserpent",
+    value = "windserpent",
     children = {
      {
       text = "windserpent.m2",
@@ -4091,10 +4093,10 @@ WeakAuras.ModelPaths = {
       fileId = "126452",
      },
     },
-    value = "windserpent",
    },
    {
     text = "wisp",
+    value = "wisp",
     children = {
      {
       text = "wisp.m2",
@@ -4107,10 +4109,10 @@ WeakAuras.ModelPaths = {
       fileId = "2199512",
      },
     },
-    value = "wisp",
    },
    {
     text = "wolf",
+    value = "wolf",
     children = {
      {
       text = "wolf.m2",
@@ -4123,10 +4125,10 @@ WeakAuras.ModelPaths = {
       fileId = "126488",
      },
     },
-    value = "wolf",
    },
    {
     text = "worgen",
+    value = "worgen",
     children = {
      {
       text = "worgen.m2",
@@ -4134,10 +4136,10 @@ WeakAuras.ModelPaths = {
       fileId = "126511",
      },
     },
-    value = "worgen",
    },
    {
     text = "worm",
+    value = "worm",
     children = {
      {
       text = "worm.m2",
@@ -4145,10 +4147,10 @@ WeakAuras.ModelPaths = {
       fileId = "126512",
      },
     },
-    value = "worm",
    },
    {
     text = "wyvern",
+    value = "wyvern",
     children = {
      {
       text = "wyvern.m2",
@@ -4156,10 +4158,10 @@ WeakAuras.ModelPaths = {
       fileId = "126530",
      },
     },
-    value = "wyvern",
    },
    {
     text = "zergling",
+    value = "zergling",
     children = {
      {
       text = "zerglingpet.m2",
@@ -4167,10 +4169,10 @@ WeakAuras.ModelPaths = {
       fileId = "126561",
      },
     },
-    value = "zergling",
    },
    {
     text = "zigguratcrystal",
+    value = "zigguratcrystal",
     children = {
      {
       text = "zigguratcrystal.m2",
@@ -4178,10 +4180,10 @@ WeakAuras.ModelPaths = {
       fileId = "126565",
      },
     },
-    value = "zigguratcrystal",
    },
    {
     text = "zippelin",
+    value = "zippelin",
     children = {
      {
       text = "zippelin.m2",
@@ -4189,10 +4191,10 @@ WeakAuras.ModelPaths = {
       fileId = "126568",
      },
     },
-    value = "zippelin",
    },
    {
     text = "zombie",
+    value = "zombie",
     children = {
      {
       text = "zombie.m2",
@@ -4210,16 +4212,16 @@ WeakAuras.ModelPaths = {
       fileId = "126575",
      },
     },
-    value = "zombie",
    },
   },
-  value = "creature",
  },
  {
   text = "environments",
+  value = "environments",
   children = {
    {
     text = "stars",
+    value = "stars",
     children = {
      {
       text = "cavernsoftimesky.m2",
@@ -4252,16 +4254,16 @@ WeakAuras.ModelPaths = {
       fileId = "130636",
      },
     },
-    value = "stars",
    },
   },
-  value = "environments",
  },
  {
   text = "interface",
+  value = "interface",
   children = {
    {
     text = "buttons",
+    value = "buttons",
     children = {
      {
       text = "talktome.m2",
@@ -4369,10 +4371,10 @@ WeakAuras.ModelPaths = {
       fileId = "130746",
      },
     },
-    value = "buttons",
    },
    {
     text = "cooldown",
+    value = "cooldown",
     children = {
      {
       text = "ui-cooldown-indicator.m2",
@@ -4380,16 +4382,18 @@ WeakAuras.ModelPaths = {
       fileId = "131012",
      },
     },
-    value = "cooldown",
    },
    {
     text = "glues",
+    value = "glues",
     children = {
      {
       text = "models",
+      value = "models",
       children = {
        {
         text = "ui_alliance",
+        value = "ui_alliance",
         children = {
          {
           text = "ui_alliance.m2",
@@ -4397,10 +4401,10 @@ WeakAuras.ModelPaths = {
           fileId = "623712",
          },
         },
-        value = "ui_alliance",
        },
        {
         text = "ui_alliance_lowres",
+        value = "ui_alliance_lowres",
         children = {
          {
           text = "ui_alliance_lowres.m2",
@@ -4408,10 +4412,10 @@ WeakAuras.ModelPaths = {
           fileId = "651555",
          },
         },
-        value = "ui_alliance_lowres",
        },
        {
         text = "ui_bloodelf",
+        value = "ui_bloodelf",
         children = {
          {
           text = "ui_bloodelf.m2",
@@ -4419,10 +4423,10 @@ WeakAuras.ModelPaths = {
           fileId = "131921",
          },
         },
-        value = "ui_bloodelf",
        },
        {
         text = "ui_characterselect",
+        value = "ui_characterselect",
         children = {
          {
           text = "ui_characterselect.m2",
@@ -4430,10 +4434,10 @@ WeakAuras.ModelPaths = {
           fileId = "343630",
          },
         },
-        value = "ui_characterselect",
        },
        {
         text = "ui_deathknight",
+        value = "ui_deathknight",
         children = {
          {
           text = "ui_deathknight.m2",
@@ -4446,10 +4450,10 @@ WeakAuras.ModelPaths = {
           fileId = "1560617",
          },
         },
-        value = "ui_deathknight",
        },
        {
         text = "ui_demonhunter",
+        value = "ui_demonhunter",
         children = {
          {
           text = "ui_demonhunter.m2",
@@ -4462,10 +4466,10 @@ WeakAuras.ModelPaths = {
           fileId = "1560446",
          },
         },
-        value = "ui_demonhunter",
        },
        {
         text = "ui_draenei",
+        value = "ui_draenei",
         children = {
          {
           text = "ui_draenei.m2",
@@ -4473,10 +4477,10 @@ WeakAuras.ModelPaths = {
           fileId = "131934",
          },
         },
-        value = "ui_draenei",
        },
        {
         text = "ui_dwarf",
+        value = "ui_dwarf",
         children = {
          {
           text = "ui_dwarf.m2",
@@ -4484,10 +4488,10 @@ WeakAuras.ModelPaths = {
           fileId = "131940",
          },
         },
-        value = "ui_dwarf",
        },
        {
         text = "ui_gnome",
+        value = "ui_gnome",
         children = {
          {
           text = "ui_gnome.m2",
@@ -4495,10 +4499,10 @@ WeakAuras.ModelPaths = {
           fileId = "430171",
          },
         },
-        value = "ui_gnome",
        },
        {
         text = "ui_goblin",
+        value = "ui_goblin",
         children = {
          {
           text = "ui_goblin.m2",
@@ -4506,10 +4510,10 @@ WeakAuras.ModelPaths = {
           fileId = "319097",
          },
         },
-        value = "ui_goblin",
        },
        {
         text = "ui_highmountaintauren",
+        value = "ui_highmountaintauren",
         children = {
          {
           text = "ui_highmountaintauren.m2",
@@ -4517,10 +4521,10 @@ WeakAuras.ModelPaths = {
           fileId = "1662239",
          },
         },
-        value = "ui_highmountaintauren",
        },
        {
         text = "ui_horde",
+        value = "ui_horde",
         children = {
          {
           text = "ui_horde.m2",
@@ -4528,10 +4532,10 @@ WeakAuras.ModelPaths = {
           fileId = "623714",
          },
         },
-        value = "ui_horde",
        },
        {
         text = "ui_horde_lowres",
+        value = "ui_horde_lowres",
         children = {
          {
           text = "ui_horde_lowres.m2",
@@ -4539,10 +4543,10 @@ WeakAuras.ModelPaths = {
           fileId = "651558",
          },
         },
-        value = "ui_horde_lowres",
        },
        {
         text = "ui_human",
+        value = "ui_human",
         children = {
          {
           text = "ui_human.m2",
@@ -4550,10 +4554,10 @@ WeakAuras.ModelPaths = {
           fileId = "131948",
          },
         },
-        value = "ui_human",
        },
        {
         text = "ui_lightforgeddraenei",
+        value = "ui_lightforgeddraenei",
         children = {
          {
           text = "ui_lightforgeddraenei.m2",
@@ -4561,10 +4565,10 @@ WeakAuras.ModelPaths = {
           fileId = "1662241",
          },
         },
-        value = "ui_lightforgeddraenei",
        },
        {
         text = "ui_mainmenu",
+        value = "ui_mainmenu",
         children = {
          {
           text = "ui_mainmenu.m2",
@@ -4572,10 +4576,10 @@ WeakAuras.ModelPaths = {
           fileId = "131970",
          },
         },
-        value = "ui_mainmenu",
        },
        {
         text = "ui_mainmenu_burningcrusade",
+        value = "ui_mainmenu_burningcrusade",
         children = {
          {
           text = "ui_mainmenu_burningcrusade.m2",
@@ -4583,10 +4587,10 @@ WeakAuras.ModelPaths = {
           fileId = "131982",
          },
         },
-        value = "ui_mainmenu_burningcrusade",
        },
        {
         text = "ui_mainmenu_cata_lowbandwidth",
+        value = "ui_mainmenu_cata_lowbandwidth",
         children = {
          {
           text = "ui_mainmenu_cata_lowbandwidth.m2",
@@ -4594,10 +4598,10 @@ WeakAuras.ModelPaths = {
           fileId = "653518",
          },
         },
-        value = "ui_mainmenu_cata_lowbandwidth",
        },
        {
         text = "ui_mainmenu_cataclysm",
+        value = "ui_mainmenu_cataclysm",
         children = {
          {
           text = "ui_mainmenu_cataclysm.m2",
@@ -4605,10 +4609,10 @@ WeakAuras.ModelPaths = {
           fileId = "466614",
          },
         },
-        value = "ui_mainmenu_cataclysm",
        },
        {
         text = "ui_mainmenu_legion",
+        value = "ui_mainmenu_legion",
         children = {
          {
           text = "ui_mainmenu_legion.m2",
@@ -4621,10 +4625,10 @@ WeakAuras.ModelPaths = {
           fileId = "1396283",
          },
         },
-        value = "ui_mainmenu_legion",
        },
        {
         text = "ui_mainmenu_lowbandwidth",
+        value = "ui_mainmenu_lowbandwidth",
         children = {
          {
           text = "ui_mainmenu_lowbandwidth.m2",
@@ -4632,10 +4636,10 @@ WeakAuras.ModelPaths = {
           fileId = "467804",
          },
         },
-        value = "ui_mainmenu_lowbandwidth",
        },
        {
         text = "ui_mainmenu_northrend",
+        value = "ui_mainmenu_northrend",
         children = {
          {
           text = "ui_mainmenu_northrend.m2",
@@ -4643,10 +4647,10 @@ WeakAuras.ModelPaths = {
           fileId = "236122",
          },
         },
-        value = "ui_mainmenu_northrend",
        },
        {
         text = "ui_mainmenu_pandaria",
+        value = "ui_mainmenu_pandaria",
         children = {
          {
           text = "ui_mainmenu_pandaria.m2",
@@ -4654,10 +4658,10 @@ WeakAuras.ModelPaths = {
           fileId = "631713",
          },
         },
-        value = "ui_mainmenu_pandaria",
        },
        {
         text = "ui_mainmenu_warlords",
+        value = "ui_mainmenu_warlords",
         children = {
          {
           text = "ui_mainmenu_warlords.m2",
@@ -4670,10 +4674,10 @@ WeakAuras.ModelPaths = {
           fileId = "1067658",
          },
         },
-        value = "ui_mainmenu_warlords",
        },
        {
         text = "ui_nightborneelf",
+        value = "ui_nightborneelf",
         children = {
          {
           text = "ui_nightborneelf.m2",
@@ -4681,10 +4685,10 @@ WeakAuras.ModelPaths = {
           fileId = "1662240",
          },
         },
-        value = "ui_nightborneelf",
        },
        {
         text = "ui_nightelf",
+        value = "ui_nightelf",
         children = {
          {
           text = "ui_nightelf.m2",
@@ -4692,10 +4696,10 @@ WeakAuras.ModelPaths = {
           fileId = "131993",
          },
         },
-        value = "ui_nightelf",
        },
        {
         text = "ui_orc",
+        value = "ui_orc",
         children = {
          {
           text = "ui_orc.m2",
@@ -4703,10 +4707,10 @@ WeakAuras.ModelPaths = {
           fileId = "132003",
          },
         },
-        value = "ui_orc",
        },
        {
         text = "ui_pandaren",
+        value = "ui_pandaren",
         children = {
          {
           text = "ui_pandaren.m2",
@@ -4714,10 +4718,10 @@ WeakAuras.ModelPaths = {
           fileId = "574549",
          },
         },
-        value = "ui_pandaren",
        },
        {
         text = "ui_pandarencharacterselect",
+        value = "ui_pandarencharacterselect",
         children = {
          {
           text = "ui_pandarencharacterselect.m2",
@@ -4725,10 +4729,10 @@ WeakAuras.ModelPaths = {
           fileId = "623716",
          },
         },
-        value = "ui_pandarencharacterselect",
        },
        {
         text = "ui_pandarencharacterselect_lowres",
+        value = "ui_pandarencharacterselect_lowres",
         children = {
          {
           text = "ui_pandarencharacterselect_lowres.m2",
@@ -4736,10 +4740,10 @@ WeakAuras.ModelPaths = {
           fileId = "651561",
          },
         },
-        value = "ui_pandarencharacterselect_lowres",
        },
        {
         text = "ui_rs_dwarf",
+        value = "ui_rs_dwarf",
         children = {
          {
           text = "ui_rs_dwarf.m2",
@@ -4747,10 +4751,10 @@ WeakAuras.ModelPaths = {
           fileId = "132005",
          },
         },
-        value = "ui_rs_dwarf",
        },
        {
         text = "ui_rs_human",
+        value = "ui_rs_human",
         children = {
          {
           text = "ui_rs_human.m2",
@@ -4758,10 +4762,10 @@ WeakAuras.ModelPaths = {
           fileId = "132007",
          },
         },
-        value = "ui_rs_human",
        },
        {
         text = "ui_rs_nightelf",
+        value = "ui_rs_nightelf",
         children = {
          {
           text = "ui_rs_nightelf.m2",
@@ -4769,10 +4773,10 @@ WeakAuras.ModelPaths = {
           fileId = "132010",
          },
         },
-        value = "ui_rs_nightelf",
        },
        {
         text = "ui_rs_orc",
+        value = "ui_rs_orc",
         children = {
          {
           text = "ui_rs_orc.m2",
@@ -4780,10 +4784,10 @@ WeakAuras.ModelPaths = {
           fileId = "132016",
          },
         },
-        value = "ui_rs_orc",
        },
        {
         text = "ui_rs_scourge",
+        value = "ui_rs_scourge",
         children = {
          {
           text = "ui_rs_scourge.m2",
@@ -4791,10 +4795,10 @@ WeakAuras.ModelPaths = {
           fileId = "132020",
          },
         },
-        value = "ui_rs_scourge",
        },
        {
         text = "ui_rs_tauren",
+        value = "ui_rs_tauren",
         children = {
          {
           text = "ui_rs_tauren.m2",
@@ -4802,10 +4806,10 @@ WeakAuras.ModelPaths = {
           fileId = "132025",
          },
         },
-        value = "ui_rs_tauren",
        },
        {
         text = "ui_scourge",
+        value = "ui_scourge",
         children = {
          {
           text = "ui_scourge.m2",
@@ -4813,10 +4817,10 @@ WeakAuras.ModelPaths = {
           fileId = "132035",
          },
         },
-        value = "ui_scourge",
        },
        {
         text = "ui_tauren",
+        value = "ui_tauren",
         children = {
          {
           text = "ui_tauren.m2",
@@ -4824,10 +4828,10 @@ WeakAuras.ModelPaths = {
           fileId = "132046",
          },
         },
-        value = "ui_tauren",
        },
        {
         text = "ui_troll",
+        value = "ui_troll",
         children = {
          {
           text = "ui_troll.m2",
@@ -4835,10 +4839,10 @@ WeakAuras.ModelPaths = {
           fileId = "429097",
          },
         },
-        value = "ui_troll",
        },
        {
         text = "ui_voidelf",
+        value = "ui_voidelf",
         children = {
          {
           text = "ui_voidelf.m2",
@@ -4846,10 +4850,10 @@ WeakAuras.ModelPaths = {
           fileId = "1662242",
          },
         },
-        value = "ui_voidelf",
        },
        {
         text = "ui_worgen",
+        value = "ui_worgen",
         children = {
          {
           text = "ui_worgen.m2",
@@ -4857,16 +4861,14 @@ WeakAuras.ModelPaths = {
           fileId = "313254",
          },
         },
-        value = "ui_worgen",
        },
       },
-      value = "models",
      },
     },
-    value = "glues",
    },
    {
     text = "inventoryitems",
+    value = "inventoryitems",
     children = {
      {
       text = "inventoryartgeometry.m2",
@@ -4884,10 +4886,10 @@ WeakAuras.ModelPaths = {
       fileId = "2198512",
      },
     },
-    value = "inventoryitems",
    },
    {
     text = "itemanimations",
+    value = "itemanimations",
     children = {
      {
       text = "forcedbackpackitem.m2",
@@ -4895,10 +4897,10 @@ WeakAuras.ModelPaths = {
       fileId = "136255",
      },
     },
-    value = "itemanimations",
    },
    {
     text = "minimap",
+    value = "minimap",
     children = {
      {
       text = "minimaparrow.m2",
@@ -4912,6 +4914,7 @@ WeakAuras.ModelPaths = {
      },
      {
       text = "ping",
+      value = "ping",
       children = {
        {
         text = "minimapping.m2",
@@ -4919,7 +4922,6 @@ WeakAuras.ModelPaths = {
         fileId = "136436",
        },
       },
-      value = "ping",
      },
      {
       text = "rotating-minimaparrow.m2",
@@ -4932,10 +4934,10 @@ WeakAuras.ModelPaths = {
       fileId = "136447",
      },
     },
-    value = "minimap",
    },
    {
     text = "titlecards",
+    value = "titlecards",
     children = {
      {
       text = "6hu_title_garrison.m2",
@@ -4973,10 +4975,10 @@ WeakAuras.ModelPaths = {
       fileId = "1068227",
      },
     },
-    value = "titlecards",
    },
    {
     text = "vehicles",
+    value = "vehicles",
     children = {
      {
       text = "vehicle_target_01.m2",
@@ -4989,19 +4991,20 @@ WeakAuras.ModelPaths = {
       fileId = "237715",
      },
     },
-    value = "vehicles",
    },
   },
-  value = "interface",
  },
  {
   text = "item",
+  value = "item",
   children = {
    {
     text = "objectcomponents",
+    value = "objectcomponents",
     children = {
      {
       text = "ammo",
+      value = "ammo",
       children = {
        {
         text = "arrowacidflight_01.m2",
@@ -5034,13 +5037,14 @@ WeakAuras.ModelPaths = {
         fileId = "137245",
        },
       },
-      value = "ammo",
      },
      {
       text = "battlestandards",
+      value = "battlestandards",
       children = {
        {
         text = "battlestandard_alliance_a_01",
+        value = "battlestandard_alliance_a_01",
         children = {
          {
           text = "battlestandard_alliance_a_01.m2",
@@ -5053,10 +5057,10 @@ WeakAuras.ModelPaths = {
           fileId = "2198613",
          },
         },
-        value = "battlestandard_alliance_a_01",
        },
        {
         text = "battlestandard_horde_a_01",
+        value = "battlestandard_horde_a_01",
         children = {
          {
           text = "battlestandard_frostwolf_a_01.m2",
@@ -5069,13 +5073,12 @@ WeakAuras.ModelPaths = {
           fileId = "137253",
          },
         },
-        value = "battlestandard_horde_a_01",
        },
       },
-      value = "battlestandards",
      },
      {
       text = "head",
+      value = "head",
       children = {
        {
         text = "helm_blindfold_a_01_dwf.m2",
@@ -14083,10 +14086,10 @@ WeakAuras.ModelPaths = {
         fileId = "142567",
        },
       },
-      value = "head",
      },
      {
       text = "pouch",
+      value = "pouch",
       children = {
        {
         text = "pouch_alliance_a_01.m2",
@@ -14109,10 +14112,10 @@ WeakAuras.ModelPaths = {
         fileId = "2351703",
        },
       },
-      value = "pouch",
      },
      {
       text = "quiver",
+      value = "quiver",
       children = {
        {
         text = "quiver_a.m2",
@@ -14130,10 +14133,10 @@ WeakAuras.ModelPaths = {
         fileId = "142693",
        },
       },
-      value = "quiver",
      },
      {
       text = "shield",
+      value = "shield",
       children = {
        {
         text = "buckler_damaged_a_01.m2",
@@ -14366,10 +14369,10 @@ WeakAuras.ModelPaths = {
         fileId = "143077",
        },
       },
-      value = "shield",
      },
      {
       text = "shoulder",
+      value = "shoulder",
       children = {
        {
         text = "lshoulder_leather_a_01.m2",
@@ -15602,10 +15605,10 @@ WeakAuras.ModelPaths = {
         fileId = "143642",
        },
       },
-      value = "shoulder",
      },
      {
       text = "weapon",
+      value = "weapon",
       children = {
        {
         text = "1htrollspear01.m2",
@@ -18463,19 +18466,18 @@ WeakAuras.ModelPaths = {
         fileId = "148736",
        },
       },
-      value = "weapon",
      },
     },
-    value = "objectcomponents",
    },
   },
-  value = "item",
  },
  {
   text = "particles",
+  value = "particles",
   children = {
    {
     text = "bloodspurts",
+    value = "bloodspurts",
     children = {
      {
       text = "bloodspurt.m2",
@@ -18508,7 +18510,6 @@ WeakAuras.ModelPaths = {
       fileId = "165407",
      },
     },
-    value = "bloodspurts",
    },
    {
     text = "bubbles.m2",
@@ -18586,10 +18587,10 @@ WeakAuras.ModelPaths = {
     fileId = "2198578",
    },
   },
-  value = "particles",
  },
  {
   text = "spells",
+  value = "spells",
   children = {
    {
     text = "abolishmagic_base.m2",
@@ -19503,6 +19504,7 @@ WeakAuras.ModelPaths = {
    },
    {
     text = "enchantments",
+    value = "enchantments",
     children = {
      {
       text = "blackflame_low.m2",
@@ -19680,7 +19682,6 @@ WeakAuras.ModelPaths = {
       fileId = "166035",
      },
     },
-    value = "enchantments",
    },
    {
     text = "enslavedemon_impact_base.m2",
@@ -20219,6 +20220,7 @@ WeakAuras.ModelPaths = {
    },
    {
     text = "holidays",
+    value = "holidays",
     children = {
      {
       text = "valentines_brokenheart.m2",
@@ -20251,7 +20253,6 @@ WeakAuras.ModelPaths = {
       fileId = "166318",
      },
     },
-    value = "holidays",
    },
    {
     text = "holy_hammer_missile.m2",
@@ -20665,6 +20666,7 @@ WeakAuras.ModelPaths = {
    },
    {
     text = "levelup",
+    value = "levelup",
     children = {
      {
       text = "levelup.m2",
@@ -20672,10 +20674,10 @@ WeakAuras.ModelPaths = {
       fileId = "166464",
      },
     },
-    value = "levelup",
    },
    {
     text = "levelupspell",
+    value = "levelupspell",
     children = {
      {
       text = "levelupspell.m2",
@@ -20683,7 +20685,6 @@ WeakAuras.ModelPaths = {
       fileId = "166465",
      },
     },
-    value = "levelupspell",
    },
    {
     text = "levitate_impact_base.m2",
@@ -22081,13 +22082,14 @@ WeakAuras.ModelPaths = {
     fileId = "167229",
    },
   },
-  value = "spells",
  },
  {
   text = "test",
+  value = "test",
   children = {
    {
     text = "boartest",
+    value = "boartest",
     children = {
      {
       text = "boartest.m2",
@@ -22095,19 +22097,20 @@ WeakAuras.ModelPaths = {
       fileId = "2353357",
      },
     },
-    value = "boartest",
    },
   },
-  value = "test",
  },
  {
   text = "world",
+  value = "world",
   children = {
    {
     text = "arttest",
+    value = "arttest",
     children = {
      {
       text = "boxtest",
+      value = "boxtest",
       children = {
        {
         text = "xyz.m2",
@@ -22115,22 +22118,24 @@ WeakAuras.ModelPaths = {
         fileId = "189077",
        },
       },
-      value = "boxtest",
      },
     },
-    value = "arttest",
    },
    {
     text = "azeroth",
+    value = "azeroth",
     children = {
      {
       text = "bootybay",
+      value = "bootybay",
       children = {
        {
         text = "passivedoodad",
+        value = "passivedoodad",
         children = {
          {
           text = "bootyentrance",
+          value = "bootyentrance",
           children = {
            {
             text = "bootybayentrance_02.m2",
@@ -22138,10 +22143,10 @@ WeakAuras.ModelPaths = {
             fileId = "189079",
            },
           },
-          value = "bootyentrance",
          },
          {
           text = "deadfish",
+          value = "deadfish",
           children = {
            {
             text = "fishdeadblue.m2",
@@ -22179,10 +22184,10 @@ WeakAuras.ModelPaths = {
             fileId = "189091",
            },
           },
-          value = "deadfish",
          },
          {
           text = "fishingbox",
+          value = "fishingbox",
           children = {
            {
             text = "fishingbox.m2",
@@ -22190,10 +22195,10 @@ WeakAuras.ModelPaths = {
             fileId = "189092",
            },
           },
-          value = "fishingbox",
          },
          {
           text = "fishingpoles",
+          value = "fishingpoles",
           children = {
            {
             text = "fishingpole01.m2",
@@ -22206,10 +22211,10 @@ WeakAuras.ModelPaths = {
             fileId = "189094",
            },
           },
-          value = "fishingpoles",
          },
          {
           text = "goblinstatue",
+          value = "goblinstatue",
           children = {
            {
             text = "goblinstatuebooty.m2",
@@ -22217,10 +22222,10 @@ WeakAuras.ModelPaths = {
             fileId = "189095",
            },
           },
-          value = "goblinstatue",
          },
          {
           text = "harpoons",
+          value = "harpoons",
           children = {
            {
             text = "harpoon01.m2",
@@ -22228,10 +22233,10 @@ WeakAuras.ModelPaths = {
             fileId = "189097",
            },
           },
-          value = "harpoons",
          },
          {
           text = "sharkmodels",
+          value = "sharkmodels",
           children = {
            {
             text = "sharkmodel01.m2",
@@ -22239,22 +22244,22 @@ WeakAuras.ModelPaths = {
             fileId = "189099",
            },
           },
-          value = "sharkmodels",
          },
         },
-        value = "passivedoodad",
        },
       },
-      value = "bootybay",
      },
      {
       text = "burningsteppes",
+      value = "burningsteppes",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "darkironnode",
+          value = "darkironnode",
           children = {
            {
             text = "darkironnode.m2",
@@ -22267,16 +22272,16 @@ WeakAuras.ModelPaths = {
             fileId = "189104",
            },
           },
-          value = "darkironnode",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "animalheads",
+          value = "animalheads",
           children = {
            {
             text = "deadheadboar.m2",
@@ -22289,10 +22294,10 @@ WeakAuras.ModelPaths = {
             fileId = "189106",
            },
           },
-          value = "animalheads",
          },
          {
           text = "ashpeople",
+          value = "ashpeople",
           children = {
            {
             text = "ashpeople01.m2",
@@ -22320,10 +22325,10 @@ WeakAuras.ModelPaths = {
             fileId = "189115",
            },
           },
-          value = "ashpeople",
          },
          {
           text = "bonfire",
+          value = "bonfire",
           children = {
            {
             text = "orcbonfire.m2",
@@ -22341,10 +22346,10 @@ WeakAuras.ModelPaths = {
             fileId = "189120",
            },
           },
-          value = "bonfire",
          },
          {
           text = "bridges",
+          value = "bridges",
           children = {
            {
             text = "burningropebridge.m2",
@@ -22352,10 +22357,10 @@ WeakAuras.ModelPaths = {
             fileId = "189124",
            },
           },
-          value = "bridges",
          },
          {
           text = "burninggiantwheel",
+          value = "burninggiantwheel",
           children = {
            {
             text = "burninggiantwheel.m2",
@@ -22363,10 +22368,10 @@ WeakAuras.ModelPaths = {
             fileId = "189126",
            },
           },
-          value = "burninggiantwheel",
          },
          {
           text = "cliffrocks",
+          value = "cliffrocks",
           children = {
            {
             text = "burningsteppscliffrock01.m2",
@@ -22399,10 +22404,10 @@ WeakAuras.ModelPaths = {
             fileId = "189132",
            },
           },
-          value = "cliffrocks",
          },
          {
           text = "fallingembers",
+          value = "fallingembers",
           children = {
            {
             text = "fallingembers.m2",
@@ -22410,10 +22415,10 @@ WeakAuras.ModelPaths = {
             fileId = "189134",
            },
           },
-          value = "fallingembers",
          },
          {
           text = "fences",
+          value = "fences",
           children = {
            {
             text = "burningsteppesfence.m2",
@@ -22431,10 +22436,10 @@ WeakAuras.ModelPaths = {
             fileId = "189137",
            },
           },
-          value = "fences",
          },
          {
           text = "lavaaltar",
+          value = "lavaaltar",
           children = {
            {
             text = "lavaaltar.m2",
@@ -22442,10 +22447,10 @@ WeakAuras.ModelPaths = {
             fileId = "189141",
            },
           },
-          value = "lavaaltar",
          },
          {
           text = "lavabridge",
+          value = "lavabridge",
           children = {
            {
             text = "lavabridge.m2",
@@ -22453,10 +22458,10 @@ WeakAuras.ModelPaths = {
             fileId = "189147",
            },
           },
-          value = "lavabridge",
          },
          {
           text = "lavafalls",
+          value = "lavafalls",
           children = {
            {
             text = "lavafallsblackrock01.m2",
@@ -22479,10 +22484,10 @@ WeakAuras.ModelPaths = {
             fileId = "189154",
            },
           },
-          value = "lavafalls",
          },
          {
           text = "lavapillar",
+          value = "lavapillar",
           children = {
            {
             text = "lavapillar01.m2",
@@ -22505,10 +22510,10 @@ WeakAuras.ModelPaths = {
             fileId = "189161",
            },
           },
-          value = "lavapillar",
          },
          {
           text = "lavaplugs",
+          value = "lavaplugs",
           children = {
            {
             text = "lavaplug01.m2",
@@ -22521,10 +22526,10 @@ WeakAuras.ModelPaths = {
             fileId = "189166",
            },
           },
-          value = "lavaplugs",
          },
          {
           text = "lavashrine",
+          value = "lavashrine",
           children = {
            {
             text = "lavashrine01.m2",
@@ -22552,10 +22557,10 @@ WeakAuras.ModelPaths = {
             fileId = "189178",
            },
           },
-          value = "lavashrine",
          },
          {
           text = "lotharstatue",
+          value = "lotharstatue",
           children = {
            {
             text = "lotharstatue.m2",
@@ -22563,10 +22568,10 @@ WeakAuras.ModelPaths = {
             fileId = "189179",
            },
           },
-          value = "lotharstatue",
          },
          {
           text = "ogreheadpike",
+          value = "ogreheadpike",
           children = {
            {
             text = "ogreheadpike.m2",
@@ -22574,10 +22579,10 @@ WeakAuras.ModelPaths = {
             fileId = "189180",
            },
           },
-          value = "ogreheadpike",
          },
          {
           text = "orcanvilstoneburningsteppes",
+          value = "orcanvilstoneburningsteppes",
           children = {
            {
             text = "orcanvilstoneburningsteppes.m2",
@@ -22585,10 +22590,10 @@ WeakAuras.ModelPaths = {
             fileId = "189186",
            },
           },
-          value = "orcanvilstoneburningsteppes",
          },
          {
           text = "orcburialpyres",
+          value = "orcburialpyres",
           children = {
            {
             text = "orcstoneburialpyre.m2",
@@ -22601,10 +22606,10 @@ WeakAuras.ModelPaths = {
             fileId = "189188",
            },
           },
-          value = "orcburialpyres",
          },
          {
           text = "orcfoundrypit",
+          value = "orcfoundrypit",
           children = {
            {
             text = "orcsmallfoundrypit.m2",
@@ -22612,10 +22617,10 @@ WeakAuras.ModelPaths = {
             fileId = "189193",
            },
           },
-          value = "orcfoundrypit",
          },
          {
           text = "orcsleepmats",
+          value = "orcsleepmats",
           children = {
            {
             text = "orcsleepmat01.m2",
@@ -22633,10 +22638,10 @@ WeakAuras.ModelPaths = {
             fileId = "189198",
            },
           },
-          value = "orcsleepmats",
          },
          {
           text = "orctents",
+          value = "orctents",
           children = {
            {
             text = "orctent.m2",
@@ -22644,10 +22649,10 @@ WeakAuras.ModelPaths = {
             fileId = "189200",
            },
           },
-          value = "orctents",
          },
          {
           text = "orctoolrackburningsteppes",
+          value = "orctoolrackburningsteppes",
           children = {
            {
             text = "orctoolrackburningsteppes.m2",
@@ -22655,10 +22660,10 @@ WeakAuras.ModelPaths = {
             fileId = "189204",
            },
           },
-          value = "orctoolrackburningsteppes",
          },
          {
           text = "pentagramdirt",
+          value = "pentagramdirt",
           children = {
            {
             text = "pentagramdirt.m2",
@@ -22666,10 +22671,10 @@ WeakAuras.ModelPaths = {
             fileId = "189208",
            },
           },
-          value = "pentagramdirt",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "burningsteppesboulders01.m2",
@@ -22732,10 +22737,10 @@ WeakAuras.ModelPaths = {
             fileId = "189223",
            },
           },
-          value = "rocks",
          },
          {
           text = "ruins",
+          value = "ruins",
           children = {
            {
             text = "burnedbeam.m2",
@@ -22743,10 +22748,10 @@ WeakAuras.ModelPaths = {
             fileId = "189226",
            },
           },
-          value = "ruins",
          },
          {
           text = "smeltingcauldron",
+          value = "smeltingcauldron",
           children = {
            {
             text = "smeltingcauldron.m2",
@@ -22754,10 +22759,10 @@ WeakAuras.ModelPaths = {
             fileId = "189229",
            },
           },
-          value = "smeltingcauldron",
          },
          {
           text = "smeltingweapons",
+          value = "smeltingweapons",
           children = {
            {
             text = "smeltingweapons.m2",
@@ -22765,10 +22770,10 @@ WeakAuras.ModelPaths = {
             fileId = "189232",
            },
           },
-          value = "smeltingweapons",
          },
          {
           text = "smoke",
+          value = "smoke",
           children = {
            {
             text = "ashtreesmoke01.m2",
@@ -22776,10 +22781,10 @@ WeakAuras.ModelPaths = {
             fileId = "189233",
            },
           },
-          value = "smoke",
          },
          {
           text = "stonebrackets",
+          value = "stonebrackets",
           children = {
            {
             text = "stoneblock01.m2",
@@ -22802,10 +22807,10 @@ WeakAuras.ModelPaths = {
             fileId = "189239",
            },
           },
-          value = "stonebrackets",
          },
          {
           text = "stonegolemstatue",
+          value = "stonegolemstatue",
           children = {
            {
             text = "stonegolemstatue1-9.m2",
@@ -22853,10 +22858,10 @@ WeakAuras.ModelPaths = {
             fileId = "189248",
            },
           },
-          value = "stonegolemstatue",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "ashtree01.m2",
@@ -22904,10 +22909,10 @@ WeakAuras.ModelPaths = {
             fileId = "189265",
            },
           },
-          value = "trees",
          },
          {
           text = "volcanicvents",
+          value = "volcanicvents",
           children = {
            {
             text = "volcanicventlarge01.m2",
@@ -22940,10 +22945,10 @@ WeakAuras.ModelPaths = {
             fileId = "189275",
            },
           },
-          value = "volcanicvents",
          },
          {
           text = "warlockshrine",
+          value = "warlockshrine",
           children = {
            {
             text = "warlockshrine.m2",
@@ -22951,22 +22956,22 @@ WeakAuras.ModelPaths = {
             fileId = "189280",
            },
           },
-          value = "warlockshrine",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "burningsteppes",
      },
      {
       text = "deadmines",
+      value = "deadmines",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "goblinmeltingpot",
+          value = "goblinmeltingpot",
           children = {
            {
             text = "goblinmeltingpot.m2",
@@ -22974,7 +22979,6 @@ WeakAuras.ModelPaths = {
             fileId = "189282",
            },
           },
-          value = "goblinmeltingpot",
          },
          {
           text = "lavasink.m2",
@@ -22982,19 +22986,20 @@ WeakAuras.ModelPaths = {
           fileId = "189287",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "deadmines",
      },
      {
       text = "deadwindpass",
+      value = "deadwindpass",
       children = {
        {
         text = "buildings",
+        value = "buildings",
         children = {
          {
           text = "abandonedguardtower",
+          value = "abandonedguardtower",
           children = {
            {
             text = "abandonedhumanguardtower.m2",
@@ -23002,10 +23007,10 @@ WeakAuras.ModelPaths = {
             fileId = "189288",
            },
           },
-          value = "abandonedguardtower",
          },
          {
           text = "rockbridge",
+          value = "rockbridge",
           children = {
            {
             text = "deadwindrockbridge.m2",
@@ -23013,16 +23018,16 @@ WeakAuras.ModelPaths = {
             fileId = "189292",
            },
           },
-          value = "rockbridge",
          },
         },
-        value = "buildings",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "deadwindtotems",
+          value = "deadwindtotems",
           children = {
            {
             text = "deadwindtotem01.m2",
@@ -23045,10 +23050,10 @@ WeakAuras.ModelPaths = {
             fileId = "189297",
            },
           },
-          value = "deadwindtotems",
          },
          {
           text = "hangingbodies",
+          value = "hangingbodies",
           children = {
            {
             text = "deadwindhangingbody01.m2",
@@ -23061,10 +23066,10 @@ WeakAuras.ModelPaths = {
             fileId = "189300",
            },
           },
-          value = "hangingbodies",
          },
          {
           text = "hangingtree",
+          value = "hangingtree",
           children = {
            {
             text = "deadwindhangingtree.m2",
@@ -23072,10 +23077,10 @@ WeakAuras.ModelPaths = {
             fileId = "189304",
            },
           },
-          value = "hangingtree",
          },
          {
           text = "kharazan_brick",
+          value = "kharazan_brick",
           children = {
            {
             text = "kharazan_brick.m2",
@@ -23083,10 +23088,10 @@ WeakAuras.ModelPaths = {
             fileId = "189307",
            },
           },
-          value = "kharazan_brick",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "deadwindpasscliffrock01dnr.m2",
@@ -23144,10 +23149,10 @@ WeakAuras.ModelPaths = {
             fileId = "189318",
            },
           },
-          value = "rocks",
          },
          {
           text = "rocktrees",
+          value = "rocktrees",
           children = {
            {
             text = "deadwindpassrocktree01.m2",
@@ -23195,10 +23200,10 @@ WeakAuras.ModelPaths = {
             fileId = "189330",
            },
           },
-          value = "rocktrees",
          },
          {
           text = "roots",
+          value = "roots",
           children = {
            {
             text = "deadwindpassroot01.m2",
@@ -23206,10 +23211,10 @@ WeakAuras.ModelPaths = {
             fileId = "189335",
            },
           },
-          value = "roots",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "deadwindpassmidtree01.m2",
@@ -23222,10 +23227,10 @@ WeakAuras.ModelPaths = {
             fileId = "189337",
            },
           },
-          value = "trees",
          },
          {
           text = "weeds",
+          value = "weeds",
           children = {
            {
             text = "deadwindhangingweedsgroup01.m2",
@@ -23273,22 +23278,22 @@ WeakAuras.ModelPaths = {
             fileId = "189352",
            },
           },
-          value = "weeds",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "deadwindpass",
      },
      {
       text = "duskwood",
+      value = "duskwood",
       children = {
        {
         text = "buildings",
+        value = "buildings",
         children = {
          {
           text = "gnolltent",
+          value = "gnolltent",
           children = {
            {
             text = "gnolltent02.m2",
@@ -23301,10 +23306,10 @@ WeakAuras.ModelPaths = {
             fileId = "189361",
            },
           },
-          value = "gnolltent",
          },
          {
           text = "gypsywagon",
+          value = "gypsywagon",
           children = {
            {
             text = "gypsywagon.m2",
@@ -23312,10 +23317,10 @@ WeakAuras.ModelPaths = {
             fileId = "189375",
            },
           },
-          value = "gypsywagon",
          },
          {
           text = "ogremound",
+          value = "ogremound",
           children = {
            {
             text = "ogremound.m2",
@@ -23323,16 +23328,16 @@ WeakAuras.ModelPaths = {
             fileId = "189386",
            },
           },
-          value = "ogremound",
          },
         },
-        value = "buildings",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "bush",
+          value = "bush",
           children = {
            {
             text = "duskwoodbush01.m2",
@@ -23400,10 +23405,10 @@ WeakAuras.ModelPaths = {
             fileId = "189410",
            },
           },
-          value = "bush",
          },
          {
           text = "chasmbridge",
+          value = "chasmbridge",
           children = {
            {
             text = "duskwoodchasmbridge.m2",
@@ -23411,10 +23416,10 @@ WeakAuras.ModelPaths = {
             fileId = "189411",
            },
           },
-          value = "chasmbridge",
          },
          {
           text = "coffin",
+          value = "coffin",
           children = {
            {
             text = "coffin.m2",
@@ -23422,10 +23427,10 @@ WeakAuras.ModelPaths = {
             fileId = "189415",
            },
           },
-          value = "coffin",
          },
          {
           text = "coffinlid",
+          value = "coffinlid",
           children = {
            {
             text = "coffinlid.m2",
@@ -23433,10 +23438,10 @@ WeakAuras.ModelPaths = {
             fileId = "189416",
            },
           },
-          value = "coffinlid",
          },
          {
           text = "coveredbridge",
+          value = "coveredbridge",
           children = {
            {
             text = "duskwoodcoveredbridge.m2",
@@ -23444,10 +23449,10 @@ WeakAuras.ModelPaths = {
             fileId = "189417",
            },
           },
-          value = "coveredbridge",
          },
          {
           text = "darkshireentrance",
+          value = "darkshireentrance",
           children = {
            {
             text = "darkshireentrance01.m2",
@@ -23455,13 +23460,14 @@ WeakAuras.ModelPaths = {
             fileId = "189423",
            },
           },
-          value = "darkshireentrance",
          },
          {
           text = "detail",
+          value = "detail",
           children = {
            {
             text = "duskwoodcatails01",
+            value = "duskwoodcatails01",
             children = {
              {
               text = "duskwoodcatails01.m2",
@@ -23469,10 +23475,10 @@ WeakAuras.ModelPaths = {
               fileId = "189426",
              },
             },
-            value = "duskwoodcatails01",
            },
            {
             text = "duskwoodgrass01",
+            value = "duskwoodgrass01",
             children = {
              {
               text = "duskwoodgrass01.m2",
@@ -23480,10 +23486,10 @@ WeakAuras.ModelPaths = {
               fileId = "189427",
              },
             },
-            value = "duskwoodgrass01",
            },
            {
             text = "duskwoodlillypad01",
+            value = "duskwoodlillypad01",
             children = {
              {
               text = "duskwoodlillypad01.m2",
@@ -23491,10 +23497,10 @@ WeakAuras.ModelPaths = {
               fileId = "189429",
              },
             },
-            value = "duskwoodlillypad01",
            },
            {
             text = "duskwoodmushroom01",
+            value = "duskwoodmushroom01",
             children = {
              {
               text = "duskwoodmushroom01.m2",
@@ -23502,10 +23508,10 @@ WeakAuras.ModelPaths = {
               fileId = "189432",
              },
             },
-            value = "duskwoodmushroom01",
            },
            {
             text = "duskwoodseaweed01",
+            value = "duskwoodseaweed01",
             children = {
              {
               text = "duskwoodseaweed01.m2",
@@ -23513,10 +23519,10 @@ WeakAuras.ModelPaths = {
               fileId = "189434",
              },
             },
-            value = "duskwoodseaweed01",
            },
            {
             text = "duskwoodthornbush01",
+            value = "duskwoodthornbush01",
             children = {
              {
               text = "duskwoodthornbush01.m2",
@@ -23524,10 +23530,10 @@ WeakAuras.ModelPaths = {
               fileId = "189437",
              },
             },
-            value = "duskwoodthornbush01",
            },
            {
             text = "duskwoodthornbush02",
+            value = "duskwoodthornbush02",
             children = {
              {
               text = "duskwoodthornbush02.m2",
@@ -23535,10 +23541,10 @@ WeakAuras.ModelPaths = {
               fileId = "189438",
              },
             },
-            value = "duskwoodthornbush02",
            },
            {
             text = "duskwoodvine01",
+            value = "duskwoodvine01",
             children = {
              {
               text = "duskwoodvine01.m2",
@@ -23546,10 +23552,10 @@ WeakAuras.ModelPaths = {
               fileId = "189440",
              },
             },
-            value = "duskwoodvine01",
            },
            {
             text = "duskwoodvine02",
+            value = "duskwoodvine02",
             children = {
              {
               text = "duskwoodvine02.m2",
@@ -23557,13 +23563,12 @@ WeakAuras.ModelPaths = {
               fileId = "189442",
              },
             },
-            value = "duskwoodvine02",
            },
           },
-          value = "detail",
          },
          {
           text = "duskwoodbarn",
+          value = "duskwoodbarn",
           children = {
            {
             text = "barnduskwood.m2",
@@ -23571,10 +23576,10 @@ WeakAuras.ModelPaths = {
             fileId = "189445",
            },
           },
-          value = "duskwoodbarn",
          },
          {
           text = "duskwoodhaystack",
+          value = "duskwoodhaystack",
           children = {
            {
             text = "duskwoodhaystack.m2",
@@ -23582,10 +23587,10 @@ WeakAuras.ModelPaths = {
             fileId = "189452",
            },
           },
-          value = "duskwoodhaystack",
          },
          {
           text = "duskwoodhaywagon",
+          value = "duskwoodhaywagon",
           children = {
            {
             text = "duskwoodhaywagon.m2",
@@ -23593,10 +23598,10 @@ WeakAuras.ModelPaths = {
             fileId = "189455",
            },
           },
-          value = "duskwoodhaywagon",
          },
          {
           text = "duskwoodhearse",
+          value = "duskwoodhearse",
           children = {
            {
             text = "duskwoodhearse.m2",
@@ -23604,10 +23609,10 @@ WeakAuras.ModelPaths = {
             fileId = "189457",
            },
           },
-          value = "duskwoodhearse",
          },
          {
           text = "duskwoodscarecrow",
+          value = "duskwoodscarecrow",
           children = {
            {
             text = "duskscarecrow.m2",
@@ -23615,10 +23620,10 @@ WeakAuras.ModelPaths = {
             fileId = "189458",
            },
           },
-          value = "duskwoodscarecrow",
          },
          {
           text = "duskwoodstraw",
+          value = "duskwoodstraw",
           children = {
            {
             text = "duskwoodstraw.m2",
@@ -23626,10 +23631,10 @@ WeakAuras.ModelPaths = {
             fileId = "189461",
            },
           },
-          value = "duskwoodstraw",
          },
          {
           text = "duskwoodwheat",
+          value = "duskwoodwheat",
           children = {
            {
             text = "duskwoodwheat.m2",
@@ -23637,10 +23642,10 @@ WeakAuras.ModelPaths = {
             fileId = "189462",
            },
           },
-          value = "duskwoodwheat",
          },
          {
           text = "fence",
+          value = "fence",
           children = {
            {
             text = "duskwoodfencebottom.m2",
@@ -23698,10 +23703,10 @@ WeakAuras.ModelPaths = {
             fileId = "189478",
            },
           },
-          value = "fence",
          },
          {
           text = "gates",
+          value = "gates",
           children = {
            {
             text = "duskwoodgate01.m2",
@@ -23714,10 +23719,10 @@ WeakAuras.ModelPaths = {
             fileId = "189481",
            },
           },
-          value = "gates",
          },
          {
           text = "graveframe",
+          value = "graveframe",
           children = {
            {
             text = "duskwoodgraveframe.m2",
@@ -23725,10 +23730,10 @@ WeakAuras.ModelPaths = {
             fileId = "189485",
            },
           },
-          value = "graveframe",
          },
          {
           text = "irongate",
+          value = "irongate",
           children = {
            {
             text = "cemetarygate01.m2",
@@ -23756,10 +23761,10 @@ WeakAuras.ModelPaths = {
             fileId = "189494",
            },
           },
-          value = "irongate",
          },
          {
           text = "mausoleum",
+          value = "mausoleum",
           children = {
            {
             text = "duskwoodmausoleum.m2",
@@ -23772,10 +23777,10 @@ WeakAuras.ModelPaths = {
             fileId = "189498",
            },
           },
-          value = "mausoleum",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "duskwoodboulder01.m2",
@@ -23793,10 +23798,10 @@ WeakAuras.ModelPaths = {
             fileId = "189501",
            },
           },
-          value = "rocks",
          },
          {
           text = "ruins",
+          value = "ruins",
           children = {
            {
             text = "duskwoodchimney01.m2",
@@ -23844,10 +23849,10 @@ WeakAuras.ModelPaths = {
             fileId = "189513",
            },
           },
-          value = "ruins",
          },
          {
           text = "spooklesstrees",
+          value = "spooklesstrees",
           children = {
            {
             text = "duskwoodcs01.m2",
@@ -23870,10 +23875,10 @@ WeakAuras.ModelPaths = {
             fileId = "189522",
            },
           },
-          value = "spooklesstrees",
          },
          {
           text = "stoneframes",
+          value = "stoneframes",
           children = {
            {
             text = "duskwoodstoneframecorner.m2",
@@ -23891,10 +23896,10 @@ WeakAuras.ModelPaths = {
             fileId = "189525",
            },
           },
-          value = "stoneframes",
          },
          {
           text = "straw",
+          value = "straw",
           children = {
            {
             text = "duskwoodstraw02.m2",
@@ -23902,10 +23907,10 @@ WeakAuras.ModelPaths = {
             fileId = "189527",
            },
           },
-          value = "straw",
          },
          {
           text = "tombs",
+          value = "tombs",
           children = {
            {
             text = "dirtmound01.m2",
@@ -23953,10 +23958,10 @@ WeakAuras.ModelPaths = {
             fileId = "189541",
            },
           },
-          value = "tombs",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "duskwoodbrowntree.m2",
@@ -24039,10 +24044,10 @@ WeakAuras.ModelPaths = {
             fileId = "189575",
            },
           },
-          value = "trees",
          },
          {
           text = "walls",
+          value = "walls",
           children = {
            {
             text = "duskwoodrockwall.m2",
@@ -24050,10 +24055,10 @@ WeakAuras.ModelPaths = {
             fileId = "189580",
            },
           },
-          value = "walls",
          },
          {
           text = "warningtree",
+          value = "warningtree",
           children = {
            {
             text = "warningtree.m2",
@@ -24061,10 +24066,10 @@ WeakAuras.ModelPaths = {
             fileId = "189581",
            },
           },
-          value = "warningtree",
          },
          {
           text = "warpgate",
+          value = "warpgate",
           children = {
            {
             text = "duskwoodwarpgate.m2",
@@ -24072,10 +24077,10 @@ WeakAuras.ModelPaths = {
             fileId = "189589",
            },
           },
-          value = "warpgate",
          },
          {
           text = "webs",
+          value = "webs",
           children = {
            {
             text = "webdangle01.m2",
@@ -24093,22 +24098,22 @@ WeakAuras.ModelPaths = {
             fileId = "189597",
            },
           },
-          value = "webs",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "duskwood",
      },
      {
       text = "elwynn",
+      value = "elwynn",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "abbeybell",
+          value = "abbeybell",
           children = {
            {
             text = "nsabbeybell.m2",
@@ -24116,16 +24121,16 @@ WeakAuras.ModelPaths = {
             fileId = "189599",
            },
           },
-          value = "abbeybell",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "buildings",
+        value = "buildings",
         children = {
          {
           text = "blacksmith",
+          value = "blacksmith",
           children = {
            {
             text = "blacksmith.m2",
@@ -24133,10 +24138,10 @@ WeakAuras.ModelPaths = {
             fileId = "189601",
            },
           },
-          value = "blacksmith",
          },
          {
           text = "bridges",
+          value = "bridges",
           children = {
            {
             text = "elwynnfootbridge.m2",
@@ -24144,10 +24149,10 @@ WeakAuras.ModelPaths = {
             fileId = "189610",
            },
           },
-          value = "bridges",
          },
          {
           text = "distillery",
+          value = "distillery",
           children = {
            {
             text = "distillery.m2",
@@ -24155,10 +24160,10 @@ WeakAuras.ModelPaths = {
             fileId = "189611",
            },
           },
-          value = "distillery",
          },
          {
           text = "goldmine",
+          value = "goldmine",
           children = {
            {
             text = "goldmine.m2",
@@ -24176,10 +24181,10 @@ WeakAuras.ModelPaths = {
             fileId = "189622",
            },
           },
-          value = "goldmine",
          },
          {
           text = "humanguardtower",
+          value = "humanguardtower",
           children = {
            {
             text = "humanguardtower.m2",
@@ -24187,10 +24192,10 @@ WeakAuras.ModelPaths = {
             fileId = "189629",
            },
           },
-          value = "humanguardtower",
          },
          {
           text = "humanwatchtower",
+          value = "humanwatchtower",
           children = {
            {
             text = "humanwatchtower.m2",
@@ -24198,10 +24203,10 @@ WeakAuras.ModelPaths = {
             fileId = "189632",
            },
           },
-          value = "humanwatchtower",
          },
          {
           text = "stormwindentrance",
+          value = "stormwindentrance",
           children = {
            {
             text = "stormwindgate.m2",
@@ -24209,16 +24214,16 @@ WeakAuras.ModelPaths = {
             fileId = "189641",
            },
           },
-          value = "stormwindentrance",
          },
         },
-        value = "buildings",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "anvil",
+          value = "anvil",
           children = {
            {
             text = "anvil.m2",
@@ -24226,10 +24231,10 @@ WeakAuras.ModelPaths = {
             fileId = "189642",
            },
           },
-          value = "anvil",
          },
          {
           text = "ballista",
+          value = "ballista",
           children = {
            {
             text = "ballista.m2",
@@ -24237,10 +24242,10 @@ WeakAuras.ModelPaths = {
             fileId = "189652",
            },
           },
-          value = "ballista",
          },
          {
           text = "ballistaruined",
+          value = "ballistaruined",
           children = {
            {
             text = "ballistaruined.m2",
@@ -24248,10 +24253,10 @@ WeakAuras.ModelPaths = {
             fileId = "189657",
            },
           },
-          value = "ballistaruined",
          },
          {
           text = "battlegladebanner1",
+          value = "battlegladebanner1",
           children = {
            {
             text = "battlegladebanner1.m2",
@@ -24259,10 +24264,10 @@ WeakAuras.ModelPaths = {
             fileId = "189666",
            },
           },
-          value = "battlegladebanner1",
          },
          {
           text = "battlegladebanner2",
+          value = "battlegladebanner2",
           children = {
            {
             text = "battlegladebanner2.m2",
@@ -24270,10 +24275,10 @@ WeakAuras.ModelPaths = {
             fileId = "189670",
            },
           },
-          value = "battlegladebanner2",
          },
          {
           text = "battlegladepolearmskull",
+          value = "battlegladepolearmskull",
           children = {
            {
             text = "battlegladepolearmskull.m2",
@@ -24281,10 +24286,10 @@ WeakAuras.ModelPaths = {
             fileId = "189674",
            },
           },
-          value = "battlegladepolearmskull",
          },
          {
           text = "battlegladeshield1",
+          value = "battlegladeshield1",
           children = {
            {
             text = "battlegladeshield1.m2",
@@ -24292,10 +24297,10 @@ WeakAuras.ModelPaths = {
             fileId = "189676",
            },
           },
-          value = "battlegladeshield1",
          },
          {
           text = "battlegladeshield2",
+          value = "battlegladeshield2",
           children = {
            {
             text = "battlegladeshield2.m2",
@@ -24303,10 +24308,10 @@ WeakAuras.ModelPaths = {
             fileId = "189678",
            },
           },
-          value = "battlegladeshield2",
          },
          {
           text = "battlegladeshield3",
+          value = "battlegladeshield3",
           children = {
            {
             text = "battlegladeshield3.m2",
@@ -24314,10 +24319,10 @@ WeakAuras.ModelPaths = {
             fileId = "189680",
            },
           },
-          value = "battlegladeshield3",
          },
          {
           text = "battlegladeskullhuman1",
+          value = "battlegladeskullhuman1",
           children = {
            {
             text = "battlegladeskullhuman1.m2",
@@ -24325,10 +24330,10 @@ WeakAuras.ModelPaths = {
             fileId = "189682",
            },
           },
-          value = "battlegladeskullhuman1",
          },
          {
           text = "battlegladeskullhuman2",
+          value = "battlegladeskullhuman2",
           children = {
            {
             text = "battlegladeskullhuman2.m2",
@@ -24336,10 +24341,10 @@ WeakAuras.ModelPaths = {
             fileId = "189684",
            },
           },
-          value = "battlegladeskullhuman2",
          },
          {
           text = "battlegladeskullorc1",
+          value = "battlegladeskullorc1",
           children = {
            {
             text = "battlegladeskullorc1.m2",
@@ -24347,10 +24352,10 @@ WeakAuras.ModelPaths = {
             fileId = "189685",
            },
           },
-          value = "battlegladeskullorc1",
          },
          {
           text = "battlegladeskullorc2",
+          value = "battlegladeskullorc2",
           children = {
            {
             text = "battlegladeskullorc2.m2",
@@ -24358,10 +24363,10 @@ WeakAuras.ModelPaths = {
             fileId = "189686",
            },
           },
-          value = "battlegladeskullorc2",
          },
          {
           text = "battlegladesword",
+          value = "battlegladesword",
           children = {
            {
             text = "battlegladesword.m2",
@@ -24369,10 +24374,10 @@ WeakAuras.ModelPaths = {
             fileId = "189687",
            },
           },
-          value = "battlegladesword",
          },
          {
           text = "battlegladeswordskull",
+          value = "battlegladeswordskull",
           children = {
            {
             text = "battlegladeswordskull.m2",
@@ -24380,10 +24385,10 @@ WeakAuras.ModelPaths = {
             fileId = "189689",
            },
           },
-          value = "battlegladeswordskull",
          },
          {
           text = "battlegladewoodspikes",
+          value = "battlegladewoodspikes",
           children = {
            {
             text = "battlegladewoodspikes.m2",
@@ -24391,10 +24396,10 @@ WeakAuras.ModelPaths = {
             fileId = "189690",
            },
           },
-          value = "battlegladewoodspikes",
          },
          {
           text = "bellow",
+          value = "bellow",
           children = {
            {
             text = "bellow.m2",
@@ -24402,10 +24407,10 @@ WeakAuras.ModelPaths = {
             fileId = "189691",
            },
           },
-          value = "bellow",
          },
          {
           text = "bush",
+          value = "bush",
           children = {
            {
             text = "elwynnbush01.m2",
@@ -24453,10 +24458,10 @@ WeakAuras.ModelPaths = {
             fileId = "189700",
            },
           },
-          value = "bush",
          },
          {
           text = "campfire",
+          value = "campfire",
           children = {
            {
             text = "elwynncampfire.m2",
@@ -24469,10 +24474,10 @@ WeakAuras.ModelPaths = {
             fileId = "189706",
            },
           },
-          value = "campfire",
          },
          {
           text = "catapult",
+          value = "catapult",
           children = {
            {
             text = "catapult.m2",
@@ -24480,10 +24485,10 @@ WeakAuras.ModelPaths = {
             fileId = "189709",
            },
           },
-          value = "catapult",
          },
          {
           text = "cliffrocks",
+          value = "cliffrocks",
           children = {
            {
             text = "elwynncliffrock01.m2",
@@ -24511,10 +24516,10 @@ WeakAuras.ModelPaths = {
             fileId = "189719",
            },
           },
-          value = "cliffrocks",
          },
          {
           text = "corncrop",
+          value = "corncrop",
           children = {
            {
             text = "corn.m2",
@@ -24562,13 +24567,14 @@ WeakAuras.ModelPaths = {
             fileId = "189734",
            },
           },
-          value = "corncrop",
          },
          {
           text = "detail",
+          value = "detail",
           children = {
            {
             text = "elwynncatails01",
+            value = "elwynncatails01",
             children = {
              {
               text = "elwynncatails01.m2",
@@ -24576,10 +24582,10 @@ WeakAuras.ModelPaths = {
               fileId = "189739",
              },
             },
-            value = "elwynncatails01",
            },
            {
             text = "elwynncatails02",
+            value = "elwynncatails02",
             children = {
              {
               text = "elwynncatails02.m2",
@@ -24587,10 +24593,10 @@ WeakAuras.ModelPaths = {
               fileId = "189740",
              },
             },
-            value = "elwynncatails02",
            },
            {
             text = "elwynndetailflowers",
+            value = "elwynndetailflowers",
             children = {
              {
               text = "elwynndetailflowers01.m2",
@@ -24603,10 +24609,10 @@ WeakAuras.ModelPaths = {
               fileId = "189743",
              },
             },
-            value = "elwynndetailflowers",
            },
            {
             text = "elwynndetailgrass",
+            value = "elwynndetailgrass",
             children = {
              {
               text = "elwynndetailgrass01.m2",
@@ -24629,10 +24635,10 @@ WeakAuras.ModelPaths = {
               fileId = "189747",
              },
             },
-            value = "elwynndetailgrass",
            },
            {
             text = "elwynndetailrocks",
+            value = "elwynndetailrocks",
             children = {
              {
               text = "elwynndetailrock01.m2",
@@ -24645,7 +24651,6 @@ WeakAuras.ModelPaths = {
               fileId = "189750",
              },
             },
-            value = "elwynndetailrocks",
            },
            {
             text = "elwynnflower01.m2",
@@ -24664,6 +24669,7 @@ WeakAuras.ModelPaths = {
            },
            {
             text = "elwynngrass02",
+            value = "elwynngrass02",
             children = {
              {
               text = "elwynngrass02.m2",
@@ -24671,10 +24677,10 @@ WeakAuras.ModelPaths = {
               fileId = "189755",
              },
             },
-            value = "elwynngrass02",
            },
            {
             text = "elwynngrass1",
+            value = "elwynngrass1",
             children = {
              {
               text = "elwynngrass1.m2",
@@ -24682,10 +24688,10 @@ WeakAuras.ModelPaths = {
               fileId = "189757",
              },
             },
-            value = "elwynngrass1",
            },
            {
             text = "elwynnlillypad01",
+            value = "elwynnlillypad01",
             children = {
              {
               text = "elwynnlillypad01.m2",
@@ -24693,7 +24699,6 @@ WeakAuras.ModelPaths = {
               fileId = "189759",
              },
             },
-            value = "elwynnlillypad01",
            },
            {
             text = "elwynnmelon01.m2",
@@ -24702,6 +24707,7 @@ WeakAuras.ModelPaths = {
            },
            {
             text = "elwynnmushroom01",
+            value = "elwynnmushroom01",
             children = {
              {
               text = "elwynnmushroom01.m2",
@@ -24709,10 +24715,10 @@ WeakAuras.ModelPaths = {
               fileId = "189761",
              },
             },
-            value = "elwynnmushroom01",
            },
            {
             text = "elwynnpoppy1",
+            value = "elwynnpoppy1",
             children = {
              {
               text = "elwynnpoppy1.m2",
@@ -24720,10 +24726,10 @@ WeakAuras.ModelPaths = {
               fileId = "189763",
              },
             },
-            value = "elwynnpoppy1",
            },
            {
             text = "elwynnpoppy2",
+            value = "elwynnpoppy2",
             children = {
              {
               text = "elwynnpoppy2.m2",
@@ -24731,10 +24737,10 @@ WeakAuras.ModelPaths = {
               fileId = "189765",
              },
             },
-            value = "elwynnpoppy2",
            },
            {
             text = "elwynnreeds01",
+            value = "elwynnreeds01",
             children = {
              {
               text = "elwynnreeds01.m2",
@@ -24742,10 +24748,10 @@ WeakAuras.ModelPaths = {
               fileId = "189767",
              },
             },
-            value = "elwynnreeds01",
            },
            {
             text = "elwynnrock1",
+            value = "elwynnrock1",
             children = {
              {
               text = "elwynnrock1.m2",
@@ -24753,10 +24759,10 @@ WeakAuras.ModelPaths = {
               fileId = "189768",
              },
             },
-            value = "elwynnrock1",
            },
            {
             text = "elwynnrock2",
+            value = "elwynnrock2",
             children = {
              {
               text = "elwynnrock2.m2",
@@ -24764,10 +24770,10 @@ WeakAuras.ModelPaths = {
               fileId = "189770",
              },
             },
-            value = "elwynnrock2",
            },
            {
             text = "elwynnseaweed01",
+            value = "elwynnseaweed01",
             children = {
              {
               text = "elwynnseaweed01.m2",
@@ -24775,10 +24781,10 @@ WeakAuras.ModelPaths = {
               fileId = "189772",
              },
             },
-            value = "elwynnseaweed01",
            },
            {
             text = "elwynnshrub1",
+            value = "elwynnshrub1",
             children = {
              {
               text = "elwynnshrub1.m2",
@@ -24786,10 +24792,10 @@ WeakAuras.ModelPaths = {
               fileId = "189774",
              },
             },
-            value = "elwynnshrub1",
            },
            {
             text = "elwynnthornbush01",
+            value = "elwynnthornbush01",
             children = {
              {
               text = "elwynnthornbush01.m2",
@@ -24797,10 +24803,10 @@ WeakAuras.ModelPaths = {
               fileId = "189777",
              },
             },
-            value = "elwynnthornbush01",
            },
            {
             text = "elwynnthornbush02",
+            value = "elwynnthornbush02",
             children = {
              {
               text = "elwynnthornbush02.m2",
@@ -24808,10 +24814,10 @@ WeakAuras.ModelPaths = {
               fileId = "189778",
              },
             },
-            value = "elwynnthornbush02",
            },
            {
             text = "elwynnvines01",
+            value = "elwynnvines01",
             children = {
              {
               text = "elwynnvines01.m2",
@@ -24819,10 +24825,10 @@ WeakAuras.ModelPaths = {
               fileId = "189779",
              },
             },
-            value = "elwynnvines01",
            },
            {
             text = "elwynnvines02",
+            value = "elwynnvines02",
             children = {
              {
               text = "elwynnvines02.m2",
@@ -24830,10 +24836,10 @@ WeakAuras.ModelPaths = {
               fileId = "189781",
              },
             },
-            value = "elwynnvines02",
            },
            {
             text = "elwynnvineyard",
+            value = "elwynnvineyard",
             children = {
              {
               text = "elwynnvineyard01.m2",
@@ -24841,10 +24847,10 @@ WeakAuras.ModelPaths = {
               fileId = "189784",
              },
             },
-            value = "elwynnvineyard",
            },
            {
             text = "elwynnwheat",
+            value = "elwynnwheat",
             children = {
              {
               text = "elwynnwheat01.m2",
@@ -24852,13 +24858,12 @@ WeakAuras.ModelPaths = {
               fileId = "189788",
              },
             },
-            value = "elwynnwheat",
            },
           },
-          value = "detail",
          },
          {
           text = "elwynnfences",
+          value = "elwynnfences",
           children = {
            {
             text = "elwynnfencesimple.m2",
@@ -24896,10 +24901,10 @@ WeakAuras.ModelPaths = {
             fileId = "189796",
            },
           },
-          value = "elwynnfences",
          },
          {
           text = "eyeofazora",
+          value = "eyeofazora",
           children = {
            {
             text = "eyeofazora.m2",
@@ -24907,10 +24912,10 @@ WeakAuras.ModelPaths = {
             fileId = "189802",
            },
           },
-          value = "eyeofazora",
          },
          {
           text = "grapebuckets",
+          value = "grapebuckets",
           children = {
            {
             text = "grapebucket01.m2",
@@ -24923,10 +24928,10 @@ WeakAuras.ModelPaths = {
             fileId = "189806",
            },
           },
-          value = "grapebuckets",
          },
          {
           text = "haystacks",
+          value = "haystacks",
           children = {
            {
             text = "haystack01.m2",
@@ -24939,10 +24944,10 @@ WeakAuras.ModelPaths = {
             fileId = "189811",
            },
           },
-          value = "haystacks",
          },
          {
           text = "jars",
+          value = "jars",
           children = {
            {
             text = "jar01.m2",
@@ -24960,10 +24965,10 @@ WeakAuras.ModelPaths = {
             fileId = "189817",
            },
           },
-          value = "jars",
          },
          {
           text = "jugs",
+          value = "jugs",
           children = {
            {
             text = "jug01.m2",
@@ -24976,10 +24981,10 @@ WeakAuras.ModelPaths = {
             fileId = "189821",
            },
           },
-          value = "jugs",
          },
          {
           text = "lamppost",
+          value = "lamppost",
           children = {
            {
             text = "lamppost.m2",
@@ -24987,10 +24992,10 @@ WeakAuras.ModelPaths = {
             fileId = "189825",
            },
           },
-          value = "lamppost",
          },
          {
           text = "minecart",
+          value = "minecart",
           children = {
            {
             text = "elwynnminecart.m2",
@@ -24998,10 +25003,10 @@ WeakAuras.ModelPaths = {
             fileId = "189827",
            },
           },
-          value = "minecart",
          },
          {
           text = "monumentrock",
+          value = "monumentrock",
           children = {
            {
             text = "monumentrock.m2",
@@ -25009,10 +25014,10 @@ WeakAuras.ModelPaths = {
             fileId = "189830",
            },
           },
-          value = "monumentrock",
          },
          {
           text = "pick",
+          value = "pick",
           children = {
            {
             text = "pick.m2",
@@ -25020,10 +25025,10 @@ WeakAuras.ModelPaths = {
             fileId = "189834",
            },
           },
-          value = "pick",
          },
          {
           text = "ruinedcatapult",
+          value = "ruinedcatapult",
           children = {
            {
             text = "ruinedcatapult.m2",
@@ -25031,10 +25036,10 @@ WeakAuras.ModelPaths = {
             fileId = "189840",
            },
           },
-          value = "ruinedcatapult",
          },
          {
           text = "ruinedfountain",
+          value = "ruinedfountain",
           children = {
            {
             text = "ruinedfountain.m2",
@@ -25042,10 +25047,10 @@ WeakAuras.ModelPaths = {
             fileId = "189852",
            },
           },
-          value = "ruinedfountain",
          },
          {
           text = "shovel",
+          value = "shovel",
           children = {
            {
             text = "shovel.m2",
@@ -25053,13 +25058,14 @@ WeakAuras.ModelPaths = {
             fileId = "189854",
            },
           },
-          value = "shovel",
          },
          {
           text = "signs",
+          value = "signs",
           children = {
            {
             text = "directional",
+            value = "directional",
             children = {
              {
               text = "duskwooddirectionalsign.m2",
@@ -25092,10 +25098,10 @@ WeakAuras.ModelPaths = {
               fileId = "189866",
              },
             },
-            value = "directional",
            },
            {
             text = "genericposts",
+            value = "genericposts",
             children = {
              {
               text = "genericsmallsignpost01.m2",
@@ -25103,10 +25109,10 @@ WeakAuras.ModelPaths = {
               fileId = "189868",
              },
             },
-            value = "genericposts",
            },
            {
             text = "shop",
+            value = "shop",
             children = {
              {
               text = "humanalchemistsign.m2",
@@ -25154,13 +25160,12 @@ WeakAuras.ModelPaths = {
               fileId = "189886",
              },
             },
-            value = "shop",
            },
           },
-          value = "signs",
          },
          {
           text = "skeleton",
+          value = "skeleton",
           children = {
            {
             text = "battlegladeboneshumandark.m2",
@@ -25183,10 +25188,10 @@ WeakAuras.ModelPaths = {
             fileId = "189898",
            },
           },
-          value = "skeleton",
          },
          {
           text = "smalldock",
+          value = "smalldock",
           children = {
            {
             text = "smalldock.m2",
@@ -25194,10 +25199,10 @@ WeakAuras.ModelPaths = {
             fileId = "189904",
            },
           },
-          value = "smalldock",
          },
          {
           text = "spike",
+          value = "spike",
           children = {
            {
             text = "spike.m2",
@@ -25205,10 +25210,10 @@ WeakAuras.ModelPaths = {
             fileId = "189906",
            },
           },
-          value = "spike",
          },
          {
           text = "statue",
+          value = "statue",
           children = {
            {
             text = "lionstatue.m2",
@@ -25216,10 +25221,10 @@ WeakAuras.ModelPaths = {
             fileId = "189908",
            },
           },
-          value = "statue",
          },
          {
           text = "stonepyre",
+          value = "stonepyre",
           children = {
            {
             text = "stonepyre.m2",
@@ -25227,13 +25232,14 @@ WeakAuras.ModelPaths = {
             fileId = "189910",
            },
           },
-          value = "stonepyre",
          },
          {
           text = "tables",
+          value = "tables",
           children = {
            {
             text = "roundtable",
+            value = "roundtable",
             children = {
              {
               text = "roundtable.m2",
@@ -25241,13 +25247,12 @@ WeakAuras.ModelPaths = {
               fileId = "189914",
              },
             },
-            value = "roundtable",
            },
           },
-          value = "tables",
          },
          {
           text = "tree",
+          value = "tree",
           children = {
            {
             text = "elwynnlog01.m2",
@@ -25260,10 +25265,10 @@ WeakAuras.ModelPaths = {
             fileId = "189916",
            },
           },
-          value = "tree",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "canopylesstree01.m2",
@@ -25292,6 +25297,7 @@ WeakAuras.ModelPaths = {
            },
            {
             text = "elwynntree01",
+            value = "elwynntree01",
             children = {
              {
               text = "elwynnpine01.m2",
@@ -25304,7 +25310,6 @@ WeakAuras.ModelPaths = {
               fileId = "189925",
              },
             },
-            value = "elwynntree01",
            },
            {
             text = "elwynntreecanopy01.m2",
@@ -25333,6 +25338,7 @@ WeakAuras.ModelPaths = {
            },
            {
             text = "stumps",
+            value = "stumps",
             children = {
              {
               text = "elwynntreestump01.m2",
@@ -25345,13 +25351,12 @@ WeakAuras.ModelPaths = {
               fileId = "189940",
              },
             },
-            value = "stumps",
            },
           },
-          value = "trees",
          },
          {
           text = "vineyard",
+          value = "vineyard",
           children = {
            {
             text = "vineyard.m2",
@@ -25379,10 +25384,10 @@ WeakAuras.ModelPaths = {
             fileId = "189953",
            },
           },
-          value = "vineyard",
          },
          {
           text = "waterbasin",
+          value = "waterbasin",
           children = {
            {
             text = "waterbasin.m2",
@@ -25390,10 +25395,10 @@ WeakAuras.ModelPaths = {
             fileId = "189956",
            },
           },
-          value = "waterbasin",
          },
          {
           text = "waterfall",
+          value = "waterfall",
           children = {
            {
             text = "elwynnmediumwaterfall01.m2",
@@ -25406,19 +25411,18 @@ WeakAuras.ModelPaths = {
             fileId = "189959",
            },
           },
-          value = "waterfall",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "elwynn",
      },
      {
       text = "karazahn",
+      value = "karazahn",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "karazahnportcullis.m2",
@@ -25426,13 +25430,14 @@ WeakAuras.ModelPaths = {
           fileId = "189972",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "barrel",
+          value = "barrel",
           children = {
            {
             text = "karazahnbarrel01.m2",
@@ -25445,10 +25450,10 @@ WeakAuras.ModelPaths = {
             fileId = "189981",
            },
           },
-          value = "barrel",
          },
          {
           text = "bonfire",
+          value = "bonfire",
           children = {
            {
             text = "karazahnbonfire01.m2",
@@ -25461,10 +25466,10 @@ WeakAuras.ModelPaths = {
             fileId = "189984",
            },
           },
-          value = "bonfire",
          },
          {
           text = "bookshelves",
+          value = "bookshelves",
           children = {
            {
             text = "karazahnbookshelflarge.m2",
@@ -25477,10 +25482,10 @@ WeakAuras.ModelPaths = {
             fileId = "189993",
            },
           },
-          value = "bookshelves",
          },
          {
           text = "brokencart",
+          value = "brokencart",
           children = {
            {
             text = "kn_brokencart.m2",
@@ -25493,10 +25498,10 @@ WeakAuras.ModelPaths = {
             fileId = "189998",
            },
           },
-          value = "brokencart",
          },
          {
           text = "chandeliers",
+          value = "chandeliers",
           children = {
            {
             text = "karazanchandelier_01.m2",
@@ -25509,10 +25514,10 @@ WeakAuras.ModelPaths = {
             fileId = "190007",
            },
           },
-          value = "chandeliers",
          },
          {
           text = "crates",
+          value = "crates",
           children = {
            {
             text = "karazahncrate01.m2",
@@ -25525,10 +25530,10 @@ WeakAuras.ModelPaths = {
             fileId = "190013",
            },
           },
-          value = "crates",
          },
          {
           text = "grainsacks",
+          value = "grainsacks",
           children = {
            {
             text = "kn_grainsack01.m2",
@@ -25551,10 +25556,10 @@ WeakAuras.ModelPaths = {
             fileId = "190018",
            },
           },
-          value = "grainsacks",
          },
          {
           text = "karazahnwebs",
+          value = "karazahnwebs",
           children = {
            {
             text = "karazahnweb01.m2",
@@ -25572,10 +25577,10 @@ WeakAuras.ModelPaths = {
             fileId = "190021",
            },
           },
-          value = "karazahnwebs",
          },
          {
           text = "pedestals",
+          value = "pedestals",
           children = {
            {
             text = "karazahnpedestals01.m2",
@@ -25588,10 +25593,10 @@ WeakAuras.ModelPaths = {
             fileId = "190025",
            },
           },
-          value = "pedestals",
          },
          {
           text = "rubble",
+          value = "rubble",
           children = {
            {
             text = "karazahnrockrubble01.m2",
@@ -25604,10 +25609,10 @@ WeakAuras.ModelPaths = {
             fileId = "190028",
            },
           },
-          value = "rubble",
          },
          {
           text = "sconces",
+          value = "sconces",
           children = {
            {
             text = "karazahnsconce01.m2",
@@ -25645,10 +25650,10 @@ WeakAuras.ModelPaths = {
             fileId = "190036",
            },
           },
-          value = "sconces",
          },
          {
           text = "starlab",
+          value = "starlab",
           children = {
            {
             text = "karazahnstarlab.m2",
@@ -25656,10 +25661,10 @@ WeakAuras.ModelPaths = {
             fileId = "190039",
            },
           },
-          value = "starlab",
          },
          {
           text = "tables",
+          value = "tables",
           children = {
            {
             text = "karazahntablebig.m2",
@@ -25672,10 +25677,10 @@ WeakAuras.ModelPaths = {
             fileId = "190043",
            },
           },
-          value = "tables",
          },
          {
           text = "tapestries",
+          value = "tapestries",
           children = {
            {
             text = "karazantapestry01.m2",
@@ -25688,10 +25693,10 @@ WeakAuras.ModelPaths = {
             fileId = "190045",
            },
           },
-          value = "tapestries",
          },
          {
           text = "throne",
+          value = "throne",
           children = {
            {
             text = "karazahnthrone01.m2",
@@ -25699,10 +25704,10 @@ WeakAuras.ModelPaths = {
             fileId = "190064",
            },
           },
-          value = "throne",
          },
          {
           text = "volumetriclights",
+          value = "volumetriclights",
           children = {
            {
             text = "karazahndiningrays.m2",
@@ -25710,22 +25715,22 @@ WeakAuras.ModelPaths = {
             fileId = "2198647",
            },
           },
-          value = "volumetriclights",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "karazahn",
      },
      {
       text = "pvp",
+      value = "pvp",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "bridgeruins",
+          value = "bridgeruins",
           children = {
            {
             text = "pvp_bridge_parts01.m2",
@@ -25753,22 +25758,22 @@ WeakAuras.ModelPaths = {
             fileId = "190073",
            },
           },
-          value = "bridgeruins",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "pvp",
      },
      {
       text = "redridge",
+      value = "redridge",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "bricks",
+          value = "bricks",
           children = {
            {
             text = "redridgebridgebrick01.m2",
@@ -25786,10 +25791,10 @@ WeakAuras.ModelPaths = {
             fileId = "190078",
            },
           },
-          value = "bricks",
          },
          {
           text = "bush",
+          value = "bush",
           children = {
            {
             text = "redridgebush01.m2",
@@ -25807,13 +25812,14 @@ WeakAuras.ModelPaths = {
             fileId = "190082",
            },
           },
-          value = "bush",
          },
          {
           text = "detail",
+          value = "detail",
           children = {
            {
             text = "catailpatch",
+            value = "catailpatch",
             children = {
              {
               text = "catailpatch01.m2",
@@ -25821,13 +25827,12 @@ WeakAuras.ModelPaths = {
               fileId = "190084",
              },
             },
-            value = "catailpatch",
            },
           },
-          value = "detail",
          },
          {
           text = "dockpieces",
+          value = "dockpieces",
           children = {
            {
             text = "redridgedocksbeam01.m2",
@@ -25860,10 +25865,10 @@ WeakAuras.ModelPaths = {
             fileId = "190093",
            },
           },
-          value = "dockpieces",
          },
          {
           text = "docks",
+          value = "docks",
           children = {
            {
             text = "redridgedocks01.m2",
@@ -25876,10 +25881,10 @@ WeakAuras.ModelPaths = {
             fileId = "190096",
            },
           },
-          value = "docks",
          },
          {
           text = "misc",
+          value = "misc",
           children = {
            {
             text = "insectmound.m2",
@@ -25887,10 +25892,10 @@ WeakAuras.ModelPaths = {
             fileId = "190097",
            },
           },
-          value = "misc",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "redridgerock01.m2",
@@ -25908,10 +25913,10 @@ WeakAuras.ModelPaths = {
             fileId = "190103",
            },
           },
-          value = "rocks",
          },
          {
           text = "rowboat",
+          value = "rowboat",
           children = {
            {
             text = "rowboat01.m2",
@@ -25919,10 +25924,10 @@ WeakAuras.ModelPaths = {
             fileId = "190104",
            },
           },
-          value = "rowboat",
          },
          {
           text = "spikewall",
+          value = "spikewall",
           children = {
            {
             text = "battlegladewoodspikeslongrow.m2",
@@ -25935,10 +25940,10 @@ WeakAuras.ModelPaths = {
             fileId = "190107",
            },
           },
-          value = "spikewall",
          },
          {
           text = "stumps",
+          value = "stumps",
           children = {
            {
             text = "redridgestump02.m2",
@@ -25946,10 +25951,10 @@ WeakAuras.ModelPaths = {
             fileId = "190108",
            },
           },
-          value = "stumps",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "redridgefallentree01.m2",
@@ -26017,22 +26022,22 @@ WeakAuras.ModelPaths = {
             fileId = "190128",
            },
           },
-          value = "trees",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "redridge",
      },
      {
       text = "stranglethorn",
+      value = "stranglethorn",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "cages",
+          value = "cages",
           children = {
            {
             text = "cage01.m2",
@@ -26050,10 +26055,10 @@ WeakAuras.ModelPaths = {
             fileId = "190143",
            },
           },
-          value = "cages",
          },
          {
           text = "holdingpen",
+          value = "holdingpen",
           children = {
            {
             text = "holdingpen.m2",
@@ -26061,16 +26066,16 @@ WeakAuras.ModelPaths = {
             fileId = "190153",
            },
           },
-          value = "holdingpen",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "buildings",
+        value = "buildings",
         children = {
          {
           text = "crashzeppelin",
+          value = "crashzeppelin",
           children = {
            {
             text = "crashzeppelin.m2",
@@ -26078,10 +26083,10 @@ WeakAuras.ModelPaths = {
             fileId = "190160",
            },
           },
-          value = "crashzeppelin",
          },
          {
           text = "oilrig",
+          value = "oilrig",
           children = {
            {
             text = "oilrig.m2",
@@ -26089,10 +26094,10 @@ WeakAuras.ModelPaths = {
             fileId = "190165",
            },
           },
-          value = "oilrig",
          },
          {
           text = "runestonemoss_01",
+          value = "runestonemoss_01",
           children = {
            {
             text = "runestonemoss_01.m2",
@@ -26100,10 +26105,10 @@ WeakAuras.ModelPaths = {
             fileId = "190169",
            },
           },
-          value = "runestonemoss_01",
          },
          {
           text = "trollwatchtower",
+          value = "trollwatchtower",
           children = {
            {
             text = "trollwatchtower.m2",
@@ -26111,16 +26116,16 @@ WeakAuras.ModelPaths = {
             fileId = "190175",
            },
           },
-          value = "trollwatchtower",
          },
         },
-        value = "buildings",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "aquaduct",
+          value = "aquaduct",
           children = {
            {
             text = "aquaductstone_corner1.m2",
@@ -26168,10 +26173,10 @@ WeakAuras.ModelPaths = {
             fileId = "190186",
            },
           },
-          value = "aquaduct",
          },
          {
           text = "bridge",
+          value = "bridge",
           children = {
            {
             text = "jaguarstatue.m2",
@@ -26199,10 +26204,10 @@ WeakAuras.ModelPaths = {
             fileId = "190196",
            },
           },
-          value = "bridge",
          },
          {
           text = "crystalcreatures",
+          value = "crystalcreatures",
           children = {
            {
             text = "crystallizedhuman01.m2",
@@ -26235,10 +26240,10 @@ WeakAuras.ModelPaths = {
             fileId = "190207",
            },
           },
-          value = "crystalcreatures",
          },
          {
           text = "detail",
+          value = "detail",
           children = {
            {
             text = "strangleplant06.m2",
@@ -26321,10 +26326,10 @@ WeakAuras.ModelPaths = {
             fileId = "190241",
            },
           },
-          value = "detail",
          },
          {
           text = "diamondminewalllantern",
+          value = "diamondminewalllantern",
           children = {
            {
             text = "diamondminewalllantern.m2",
@@ -26332,10 +26337,10 @@ WeakAuras.ModelPaths = {
             fileId = "190246",
            },
           },
-          value = "diamondminewalllantern",
          },
          {
           text = "gemminecar01",
+          value = "gemminecar01",
           children = {
            {
             text = "gemminecar01.m2",
@@ -26343,10 +26348,10 @@ WeakAuras.ModelPaths = {
             fileId = "190252",
            },
           },
-          value = "gemminecar01",
          },
          {
           text = "gemminecar02",
+          value = "gemminecar02",
           children = {
            {
             text = "gemminecar02.m2",
@@ -26354,10 +26359,10 @@ WeakAuras.ModelPaths = {
             fileId = "190256",
            },
           },
-          value = "gemminecar02",
          },
          {
           text = "holyspringwell",
+          value = "holyspringwell",
           children = {
            {
             text = "holyspringwell.m2",
@@ -26365,10 +26370,10 @@ WeakAuras.ModelPaths = {
             fileId = "190260",
            },
           },
-          value = "holyspringwell",
          },
          {
           text = "overgrowth02",
+          value = "overgrowth02",
           children = {
            {
             text = "overgrowth02.m2",
@@ -26376,10 +26381,10 @@ WeakAuras.ModelPaths = {
             fileId = "190262",
            },
           },
-          value = "overgrowth02",
          },
          {
           text = "post",
+          value = "post",
           children = {
            {
             text = "bootybaypost.m2",
@@ -26387,10 +26392,10 @@ WeakAuras.ModelPaths = {
             fileId = "190263",
            },
           },
-          value = "post",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "stranglethorncliffrock01.m2",
@@ -26408,10 +26413,10 @@ WeakAuras.ModelPaths = {
             fileId = "190267",
            },
           },
-          value = "rocks",
          },
          {
           text = "ruins",
+          value = "ruins",
           children = {
            {
             text = "stranglethornruins01.m2",
@@ -26524,10 +26529,10 @@ WeakAuras.ModelPaths = {
             fileId = "190292",
            },
           },
-          value = "ruins",
          },
          {
           text = "sack01_01",
+          value = "sack01_01",
           children = {
            {
             text = "sack01_01.m2",
@@ -26535,10 +26540,10 @@ WeakAuras.ModelPaths = {
             fileId = "190300",
            },
           },
-          value = "sack01_01",
          },
          {
           text = "serpentstatue02",
+          value = "serpentstatue02",
           children = {
            {
             text = "serpentstatue02.m2",
@@ -26546,10 +26551,10 @@ WeakAuras.ModelPaths = {
             fileId = "190304",
            },
           },
-          value = "serpentstatue02",
          },
          {
           text = "strangledeadtrees",
+          value = "strangledeadtrees",
           children = {
            {
             text = "strangledeadtree01.m2",
@@ -26557,10 +26562,10 @@ WeakAuras.ModelPaths = {
             fileId = "190308",
            },
           },
-          value = "strangledeadtrees",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "bootybaytree01.m2",
@@ -26589,6 +26594,7 @@ WeakAuras.ModelPaths = {
            },
            {
             text = "stranglethorntree01",
+            value = "stranglethorntree01",
             children = {
              {
               text = "stranglethorntree01.m2",
@@ -26596,10 +26602,10 @@ WeakAuras.ModelPaths = {
               fileId = "190316",
              },
             },
-            value = "stranglethorntree01",
            },
            {
             text = "stranglethorntree02",
+            value = "stranglethorntree02",
             children = {
              {
               text = "stranglethorntree02.m2",
@@ -26607,10 +26613,10 @@ WeakAuras.ModelPaths = {
               fileId = "190319",
              },
             },
-            value = "stranglethorntree02",
            },
            {
             text = "stranglethorntree04",
+            value = "stranglethorntree04",
             children = {
              {
               text = "stranglethorntree04.m2",
@@ -26618,13 +26624,12 @@ WeakAuras.ModelPaths = {
               fileId = "190322",
              },
             },
-            value = "stranglethorntree04",
            },
           },
-          value = "trees",
          },
          {
           text = "trolldrum",
+          value = "trolldrum",
           children = {
            {
             text = "trolldrumsoundobj.m2",
@@ -26642,10 +26647,10 @@ WeakAuras.ModelPaths = {
             fileId = "190333",
            },
           },
-          value = "trolldrum",
          },
          {
           text = "trolldungeonbasin wall",
+          value = "trolldungeonbasin wall",
           children = {
            {
             text = "trolldungeonbasinwall.m2",
@@ -26653,10 +26658,10 @@ WeakAuras.ModelPaths = {
             fileId = "190335",
            },
           },
-          value = "trolldungeonbasin wall",
          },
          {
           text = "trolldungeonfountain",
+          value = "trolldungeonfountain",
           children = {
            {
             text = "trolldungeonfountain.m2",
@@ -26664,10 +26669,10 @@ WeakAuras.ModelPaths = {
             fileId = "190337",
            },
           },
-          value = "trolldungeonfountain",
          },
          {
           text = "trolldungeonpottery",
+          value = "trolldungeonpottery",
           children = {
            {
             text = "trolldungeonpottery01.m2",
@@ -26685,10 +26690,10 @@ WeakAuras.ModelPaths = {
             fileId = "190343",
            },
           },
-          value = "trolldungeonpottery",
          },
          {
           text = "trolldungeonring",
+          value = "trolldungeonring",
           children = {
            {
             text = "trolldungeonring.m2",
@@ -26696,7 +26701,6 @@ WeakAuras.ModelPaths = {
             fileId = "190345",
            },
           },
-          value = "trolldungeonring",
          },
          {
           text = "trolldungeonring.m2",
@@ -26705,6 +26709,7 @@ WeakAuras.ModelPaths = {
          },
          {
           text = "trolldungeonsacks",
+          value = "trolldungeonsacks",
           children = {
            {
             text = "trolldungeonsacks.m2",
@@ -26712,10 +26717,10 @@ WeakAuras.ModelPaths = {
             fileId = "190347",
            },
           },
-          value = "trolldungeonsacks",
          },
          {
           text = "trolldungeonserpentstatue",
+          value = "trolldungeonserpentstatue",
           children = {
            {
             text = "trolldungeonserpentstatue.m2",
@@ -26723,10 +26728,10 @@ WeakAuras.ModelPaths = {
             fileId = "190348",
            },
           },
-          value = "trolldungeonserpentstatue",
          },
          {
           text = "trollruinsgong",
+          value = "trollruinsgong",
           children = {
            {
             text = "trollruinsgong03.m2",
@@ -26734,10 +26739,10 @@ WeakAuras.ModelPaths = {
             fileId = "190353",
            },
           },
-          value = "trollruinsgong",
          },
          {
           text = "trollshrine",
+          value = "trollshrine",
           children = {
            {
             text = "stranglethorntikihead.m2",
@@ -26750,10 +26755,10 @@ WeakAuras.ModelPaths = {
             fileId = "190358",
            },
           },
-          value = "trollshrine",
          },
          {
           text = "waterfall",
+          value = "waterfall",
           children = {
            {
             text = "stranglethornwaterfall01.m2",
@@ -26761,22 +26766,22 @@ WeakAuras.ModelPaths = {
             fileId = "190361",
            },
           },
-          value = "waterfall",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "stranglethorn",
      },
      {
       text = "sunkentemple",
+      value = "sunkentemple",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "serpentaltar",
+          value = "serpentaltar",
           children = {
            {
             text = "serpentaltar.m2",
@@ -26784,22 +26789,22 @@ WeakAuras.ModelPaths = {
             fileId = "190363",
            },
           },
-          value = "serpentaltar",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "sunkentemple",
      },
      {
       text = "swamposorrow",
+      value = "swamposorrow",
       children = {
        {
         text = "buildings",
+        value = "buildings",
         children = {
          {
           text = "runestonecrud_01",
+          value = "runestonecrud_01",
           children = {
            {
             text = "runestonecrud_01.m2",
@@ -26807,16 +26812,16 @@ WeakAuras.ModelPaths = {
             fileId = "190364",
            },
           },
-          value = "runestonecrud_01",
          },
         },
-        value = "buildings",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "plants",
+          value = "plants",
           children = {
            {
             text = "swampofsorrowlilypad01.m2",
@@ -26869,10 +26874,10 @@ WeakAuras.ModelPaths = {
             fileId = "190384",
            },
           },
-          value = "plants",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "swampsorrowrock01.m2",
@@ -26890,10 +26895,10 @@ WeakAuras.ModelPaths = {
             fileId = "190390",
            },
           },
-          value = "rocks",
          },
          {
           text = "swampbeastbones",
+          value = "swampbeastbones",
           children = {
            {
             text = "swampbeastbone01.m2",
@@ -26901,10 +26906,10 @@ WeakAuras.ModelPaths = {
             fileId = "190393",
            },
           },
-          value = "swampbeastbones",
          },
          {
           text = "swampboats",
+          value = "swampboats",
           children = {
            {
             text = "swampboat01.m2",
@@ -26912,10 +26917,10 @@ WeakAuras.ModelPaths = {
             fileId = "190398",
            },
           },
-          value = "swampboats",
          },
          {
           text = "swampskulls",
+          value = "swampskulls",
           children = {
            {
             text = "swampskulls01.m2",
@@ -26928,10 +26933,10 @@ WeakAuras.ModelPaths = {
             fileId = "190401",
            },
           },
-          value = "swampskulls",
          },
          {
           text = "swampsnakestatue",
+          value = "swampsnakestatue",
           children = {
            {
             text = "swampsnakestatue01.m2",
@@ -26939,10 +26944,10 @@ WeakAuras.ModelPaths = {
             fileId = "190404",
            },
           },
-          value = "swampsnakestatue",
          },
          {
           text = "swampwagon",
+          value = "swampwagon",
           children = {
            {
             text = "swampwagon01.m2",
@@ -26950,10 +26955,10 @@ WeakAuras.ModelPaths = {
             fileId = "190405",
            },
           },
-          value = "swampwagon",
          },
          {
           text = "treehuts",
+          value = "treehuts",
           children = {
            {
             text = "losttreehuts01.m2",
@@ -26971,10 +26976,10 @@ WeakAuras.ModelPaths = {
             fileId = "190410",
            },
           },
-          value = "treehuts",
          },
          {
           text = "treelogs",
+          value = "treelogs",
           children = {
            {
             text = "swamptreelog01.m2",
@@ -26997,10 +27002,10 @@ WeakAuras.ModelPaths = {
             fileId = "190414",
            },
           },
-          value = "treelogs",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "swampsorrowcanopytree01.m2",
@@ -27043,10 +27048,10 @@ WeakAuras.ModelPaths = {
             fileId = "190425",
            },
           },
-          value = "trees",
          },
          {
           text = "vines",
+          value = "vines",
           children = {
            {
             text = "swamphangingvines01.m2",
@@ -27059,10 +27064,10 @@ WeakAuras.ModelPaths = {
             fileId = "190429",
            },
           },
-          value = "vines",
          },
          {
           text = "waterhuts",
+          value = "waterhuts",
           children = {
            {
             text = "waterhut01.m2",
@@ -27075,22 +27080,22 @@ WeakAuras.ModelPaths = {
             fileId = "190431",
            },
           },
-          value = "waterhuts",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "swamposorrow",
      },
      {
       text = "theblastedlands",
+      value = "theblastedlands",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "bones",
+          value = "bones",
           children = {
            {
             text = "blastedlandsblastedcow.m2",
@@ -27133,10 +27138,10 @@ WeakAuras.ModelPaths = {
             fileId = "190441",
            },
           },
-          value = "bones",
          },
          {
           text = "column",
+          value = "column",
           children = {
            {
             text = "blastedlandsbrokencolumn01.m2",
@@ -27149,10 +27154,10 @@ WeakAuras.ModelPaths = {
             fileId = "190445",
            },
           },
-          value = "column",
          },
          {
           text = "detail",
+          value = "detail",
           children = {
            {
             text = "blastedlandsrock01.m2",
@@ -27160,10 +27165,10 @@ WeakAuras.ModelPaths = {
             fileId = "190447",
            },
           },
-          value = "detail",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "blastedlandsportalrock01.m2",
@@ -27191,10 +27196,10 @@ WeakAuras.ModelPaths = {
             fileId = "190454",
            },
           },
-          value = "rocks",
          },
          {
           text = "roots",
+          value = "roots",
           children = {
            {
             text = "blastedlandsroot01.m2",
@@ -27207,10 +27212,10 @@ WeakAuras.ModelPaths = {
             fileId = "190457",
            },
           },
-          value = "roots",
          },
          {
           text = "ruins",
+          value = "ruins",
           children = {
            {
             text = "blastedlandsportalruins01.m2",
@@ -27293,10 +27298,10 @@ WeakAuras.ModelPaths = {
             fileId = "190479",
            },
           },
-          value = "ruins",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "blastedlandsashtree02.m2",
@@ -27329,22 +27334,22 @@ WeakAuras.ModelPaths = {
             fileId = "190489",
            },
           },
-          value = "trees",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "theblastedlands",
      },
      {
       text = "westfall",
+      value = "westfall",
       children = {
        {
         text = "buildings",
+        value = "buildings",
         children = {
          {
           text = "church",
+          value = "church",
           children = {
            {
             text = "westfallchurch.m2",
@@ -27352,10 +27357,10 @@ WeakAuras.ModelPaths = {
             fileId = "190505",
            },
           },
-          value = "church",
          },
          {
           text = "grainsilo",
+          value = "grainsilo",
           children = {
            {
             text = "westfallgrainsilo01.m2",
@@ -27363,10 +27368,10 @@ WeakAuras.ModelPaths = {
             fileId = "190508",
            },
           },
-          value = "grainsilo",
          },
          {
           text = "lighthouse",
+          value = "lighthouse",
           children = {
            {
             text = "westfalllighthouse.m2",
@@ -27374,10 +27379,10 @@ WeakAuras.ModelPaths = {
             fileId = "190515",
            },
           },
-          value = "lighthouse",
          },
          {
           text = "shed",
+          value = "shed",
           children = {
            {
             text = "westfallshed.m2",
@@ -27385,10 +27390,10 @@ WeakAuras.ModelPaths = {
             fileId = "190517",
            },
           },
-          value = "shed",
          },
          {
           text = "windmill",
+          value = "windmill",
           children = {
            {
             text = "westfallwindmill.m2",
@@ -27396,16 +27401,16 @@ WeakAuras.ModelPaths = {
             fileId = "190519",
            },
           },
-          value = "windmill",
          },
         },
-        value = "buildings",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "aquaduct",
+          value = "aquaduct",
           children = {
            {
             text = "aquaduct_corner1.m2",
@@ -27458,10 +27463,10 @@ WeakAuras.ModelPaths = {
             fileId = "190529",
            },
           },
-          value = "aquaduct",
          },
          {
           text = "barrel",
+          value = "barrel",
           children = {
            {
             text = "westfallbarrel01.m2",
@@ -27469,10 +27474,10 @@ WeakAuras.ModelPaths = {
             fileId = "190535",
            },
           },
-          value = "barrel",
          },
          {
           text = "brokencart",
+          value = "brokencart",
           children = {
            {
             text = "brokencart.m2",
@@ -27480,10 +27485,10 @@ WeakAuras.ModelPaths = {
             fileId = "190536",
            },
           },
-          value = "brokencart",
          },
          {
           text = "butterchurner",
+          value = "butterchurner",
           children = {
            {
             text = "butterchurner.m2",
@@ -27491,10 +27496,10 @@ WeakAuras.ModelPaths = {
             fileId = "190537",
            },
           },
-          value = "butterchurner",
          },
          {
           text = "cages",
+          value = "cages",
           children = {
            {
             text = "hangingcage01.m2",
@@ -27507,10 +27512,10 @@ WeakAuras.ModelPaths = {
             fileId = "190542",
            },
           },
-          value = "cages",
          },
          {
           text = "crate",
+          value = "crate",
           children = {
            {
             text = "westfallcrate.m2",
@@ -27518,10 +27523,10 @@ WeakAuras.ModelPaths = {
             fileId = "190543",
            },
           },
-          value = "crate",
          },
          {
           text = "deadcow",
+          value = "deadcow",
           children = {
            {
             text = "deadcow.m2",
@@ -27529,10 +27534,10 @@ WeakAuras.ModelPaths = {
             fileId = "190545",
            },
           },
-          value = "deadcow",
          },
          {
           text = "deadmule",
+          value = "deadmule",
           children = {
            {
             text = "deadmule.m2",
@@ -27540,10 +27545,10 @@ WeakAuras.ModelPaths = {
             fileId = "190546",
            },
           },
-          value = "deadmule",
          },
          {
           text = "deadseamonster",
+          value = "deadseamonster",
           children = {
            {
             text = "deadseamonster.m2",
@@ -27556,10 +27561,10 @@ WeakAuras.ModelPaths = {
             fileId = "190549",
            },
           },
-          value = "deadseamonster",
          },
          {
           text = "detail",
+          value = "detail",
           children = {
            {
             text = "westfallberrybush.m2",
@@ -27632,10 +27637,10 @@ WeakAuras.ModelPaths = {
             fileId = "190581",
            },
           },
-          value = "detail",
          },
          {
           text = "furniture",
+          value = "furniture",
           children = {
            {
             text = "westfallbed01.m2",
@@ -27643,10 +27648,10 @@ WeakAuras.ModelPaths = {
             fileId = "190586",
            },
           },
-          value = "furniture",
          },
          {
           text = "grindstone",
+          value = "grindstone",
           children = {
            {
             text = "grindstone.m2",
@@ -27654,10 +27659,10 @@ WeakAuras.ModelPaths = {
             fileId = "190587",
            },
           },
-          value = "grindstone",
          },
          {
           text = "harempillow01",
+          value = "harempillow01",
           children = {
            {
             text = "harempillow01.m2",
@@ -27665,10 +27670,10 @@ WeakAuras.ModelPaths = {
             fileId = "190592",
            },
           },
-          value = "harempillow01",
          },
          {
           text = "harempillow02",
+          value = "harempillow02",
           children = {
            {
             text = "harempillow02.m2",
@@ -27676,10 +27681,10 @@ WeakAuras.ModelPaths = {
             fileId = "190595",
            },
           },
-          value = "harempillow02",
          },
          {
           text = "harness",
+          value = "harness",
           children = {
            {
             text = "harness.m2",
@@ -27687,10 +27692,10 @@ WeakAuras.ModelPaths = {
             fileId = "190596",
            },
           },
-          value = "harness",
          },
          {
           text = "haystack",
+          value = "haystack",
           children = {
            {
             text = "westfallhaystack01.m2",
@@ -27703,10 +27708,10 @@ WeakAuras.ModelPaths = {
             fileId = "190598",
            },
           },
-          value = "haystack",
          },
          {
           text = "haywagon",
+          value = "haywagon",
           children = {
            {
             text = "westfallhaywagon.m2",
@@ -27714,10 +27719,10 @@ WeakAuras.ModelPaths = {
             fileId = "190599",
            },
           },
-          value = "haywagon",
          },
          {
           text = "lampdeadmines",
+          value = "lampdeadmines",
           children = {
            {
             text = "lampdeadmines.m2",
@@ -27725,10 +27730,10 @@ WeakAuras.ModelPaths = {
             fileId = "190608",
            },
           },
-          value = "lampdeadmines",
          },
          {
           text = "lamppost",
+          value = "lamppost",
           children = {
            {
             text = "westfalllamppost.m2",
@@ -27746,10 +27751,10 @@ WeakAuras.ModelPaths = {
             fileId = "190614",
            },
           },
-          value = "lamppost",
          },
          {
           text = "lighthousebeam",
+          value = "lighthousebeam",
           children = {
            {
             text = "lighthouseeffect.m2",
@@ -27757,10 +27762,10 @@ WeakAuras.ModelPaths = {
             fileId = "190615",
            },
           },
-          value = "lighthousebeam",
          },
          {
           text = "outhouse",
+          value = "outhouse",
           children = {
            {
             text = "outhouse.m2",
@@ -27768,10 +27773,10 @@ WeakAuras.ModelPaths = {
             fileId = "190617",
            },
           },
-          value = "outhouse",
          },
          {
           text = "plow",
+          value = "plow",
           children = {
            {
             text = "plow.m2",
@@ -27779,10 +27784,10 @@ WeakAuras.ModelPaths = {
             fileId = "190619",
            },
           },
-          value = "plow",
          },
          {
           text = "rakecart",
+          value = "rakecart",
           children = {
            {
             text = "rakecart.m2",
@@ -27790,10 +27795,10 @@ WeakAuras.ModelPaths = {
             fileId = "190620",
            },
           },
-          value = "rakecart",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "westfallboulder01.m2",
@@ -27806,10 +27811,10 @@ WeakAuras.ModelPaths = {
             fileId = "190624",
            },
           },
-          value = "rocks",
          },
          {
           text = "rugracks",
+          value = "rugracks",
           children = {
            {
             text = "rugrack01.m2",
@@ -27822,10 +27827,10 @@ WeakAuras.ModelPaths = {
             fileId = "190627",
            },
           },
-          value = "rugracks",
          },
          {
           text = "scarecrow",
+          value = "scarecrow",
           children = {
            {
             text = "westfallscarecrow.m2",
@@ -27833,10 +27838,10 @@ WeakAuras.ModelPaths = {
             fileId = "190629",
            },
           },
-          value = "scarecrow",
          },
          {
           text = "sunkenanchor",
+          value = "sunkenanchor",
           children = {
            {
             text = "sunkenanchor.m2",
@@ -27844,10 +27849,10 @@ WeakAuras.ModelPaths = {
             fileId = "190632",
            },
           },
-          value = "sunkenanchor",
          },
          {
           text = "tombstones",
+          value = "tombstones",
           children = {
            {
             text = "tombstone01.m2",
@@ -27870,10 +27875,10 @@ WeakAuras.ModelPaths = {
             fileId = "190636",
            },
           },
-          value = "tombstones",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "westfalltree01.m2",
@@ -27901,10 +27906,10 @@ WeakAuras.ModelPaths = {
             fileId = "190642",
            },
           },
-          value = "trees",
          },
          {
           text = "treestumps",
+          value = "treestumps",
           children = {
            {
             text = "westfalltreestump01.m2",
@@ -27917,10 +27922,10 @@ WeakAuras.ModelPaths = {
             fileId = "190648",
            },
           },
-          value = "treestumps",
          },
          {
           text = "utensils",
+          value = "utensils",
           children = {
            {
             text = "bowl.m2",
@@ -27938,10 +27943,10 @@ WeakAuras.ModelPaths = {
             fileId = "190654",
            },
           },
-          value = "utensils",
          },
          {
           text = "westfall stable",
+          value = "westfall stable",
           children = {
            {
             text = "westfallstable01.m2",
@@ -27949,10 +27954,10 @@ WeakAuras.ModelPaths = {
             fileId = "190655",
            },
           },
-          value = "westfall stable",
          },
          {
           text = "westfall wagon",
+          value = "westfall wagon",
           children = {
            {
             text = "westfallwagon01.m2",
@@ -27960,10 +27965,10 @@ WeakAuras.ModelPaths = {
             fileId = "190657",
            },
           },
-          value = "westfall wagon",
          },
          {
           text = "westfallchair",
+          value = "westfallchair",
           children = {
            {
             text = "westfallchair.m2",
@@ -27971,10 +27976,10 @@ WeakAuras.ModelPaths = {
             fileId = "190658",
            },
           },
-          value = "westfallchair",
          },
          {
           text = "westfallfence",
+          value = "westfallfence",
           children = {
            {
             text = "westfallfence.m2",
@@ -27992,10 +27997,10 @@ WeakAuras.ModelPaths = {
             fileId = "190661",
            },
           },
-          value = "westfallfence",
          },
          {
           text = "westfallfountain",
+          value = "westfallfountain",
           children = {
            {
             text = "westfallfountain.m2",
@@ -28003,10 +28008,10 @@ WeakAuras.ModelPaths = {
             fileId = "190662",
            },
           },
-          value = "westfallfountain",
          },
          {
           text = "westfallruins",
+          value = "westfallruins",
           children = {
            {
             text = "westfallruins01.m2",
@@ -28029,10 +28034,10 @@ WeakAuras.ModelPaths = {
             fileId = "190669",
            },
           },
-          value = "westfallruins",
          },
          {
           text = "westfallskeleton",
+          value = "westfallskeleton",
           children = {
            {
             text = "westfallskeleton.m2",
@@ -28040,10 +28045,10 @@ WeakAuras.ModelPaths = {
             fileId = "190671",
            },
           },
-          value = "westfallskeleton",
          },
          {
           text = "westfalltable",
+          value = "westfalltable",
           children = {
            {
             text = "westfalltable.m2",
@@ -28051,10 +28056,10 @@ WeakAuras.ModelPaths = {
             fileId = "190673",
            },
           },
-          value = "westfalltable",
          },
          {
           text = "westfallvineyards",
+          value = "westfallvineyards",
           children = {
            {
             text = "westfallvineyard01.m2",
@@ -28062,10 +28067,10 @@ WeakAuras.ModelPaths = {
             fileId = "190675",
            },
           },
-          value = "westfallvineyards",
          },
          {
           text = "wreckedrowboat",
+          value = "wreckedrowboat",
           children = {
            {
             text = "wreckedrowboat.m2",
@@ -28073,22 +28078,22 @@ WeakAuras.ModelPaths = {
             fileId = "190677",
            },
           },
-          value = "wreckedrowboat",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "westfall",
      },
      {
       text = "zulgurub",
+      value = "zulgurub",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "doors",
+          value = "doors",
           children = {
            {
             text = "collisionwallpendoor01.m2",
@@ -28106,10 +28111,10 @@ WeakAuras.ModelPaths = {
             fileId = "190681",
            },
           },
-          value = "doors",
          },
          {
           text = "maindoor",
+          value = "maindoor",
           children = {
            {
             text = "zulgurubmaindoor.m2",
@@ -28117,10 +28122,10 @@ WeakAuras.ModelPaths = {
             fileId = "190683",
            },
           },
-          value = "maindoor",
          },
          {
           text = "spiderarea",
+          value = "spiderarea",
           children = {
            {
             text = "nastyspideregg.m2",
@@ -28128,10 +28133,10 @@ WeakAuras.ModelPaths = {
             fileId = "190685",
            },
           },
-          value = "spiderarea",
          },
          {
           text = "voodoopile",
+          value = "voodoopile",
           children = {
            {
             text = "voodoopile01.m2",
@@ -28139,16 +28144,16 @@ WeakAuras.ModelPaths = {
             fileId = "190688",
            },
           },
-          value = "voodoopile",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "battotem",
+          value = "battotem",
           children = {
            {
             text = "trollbattotem.m2",
@@ -28156,10 +28161,10 @@ WeakAuras.ModelPaths = {
             fileId = "190690",
            },
           },
-          value = "battotem",
          },
          {
           text = "heart",
+          value = "heart",
           children = {
            {
             text = "heartofhakkar.m2",
@@ -28167,10 +28172,10 @@ WeakAuras.ModelPaths = {
             fileId = "190693",
            },
           },
-          value = "heart",
          },
          {
           text = "lightning",
+          value = "lightning",
           children = {
            {
             text = "zulgurublightningmadness.m2",
@@ -28178,10 +28183,10 @@ WeakAuras.ModelPaths = {
             fileId = "190694",
            },
           },
-          value = "lightning",
          },
          {
           text = "ruins",
+          value = "ruins",
           children = {
            {
             text = "zulgurubruins04.m2",
@@ -28204,10 +28209,10 @@ WeakAuras.ModelPaths = {
             fileId = "190698",
            },
           },
-          value = "ruins",
          },
          {
           text = "spiderarea",
+          value = "spiderarea",
           children = {
            {
             text = "nastyspiderweb01.m2",
@@ -28235,10 +28240,10 @@ WeakAuras.ModelPaths = {
             fileId = "190707",
            },
           },
-          value = "spiderarea",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "zulgurubtree01.m2",
@@ -28266,22 +28271,20 @@ WeakAuras.ModelPaths = {
             fileId = "190715",
            },
           },
-          value = "trees",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "zulgurub",
      },
     },
-    value = "azeroth",
    },
    {
     text = "critter",
+    value = "critter",
     children = {
      {
       text = "bats",
+      value = "bats",
       children = {
        {
         text = "bat01.m2",
@@ -28294,10 +28297,10 @@ WeakAuras.ModelPaths = {
         fileId = "190717",
        },
       },
-      value = "bats",
      },
      {
       text = "birds",
+      value = "birds",
       children = {
        {
         text = "bird01.m2",
@@ -28320,10 +28323,10 @@ WeakAuras.ModelPaths = {
         fileId = "190724",
        },
       },
-      value = "birds",
      },
      {
       text = "butterflies",
+      value = "butterflies",
       children = {
        {
         text = "butterflyorange01.m2",
@@ -28341,10 +28344,10 @@ WeakAuras.ModelPaths = {
         fileId = "190727",
        },
       },
-      value = "butterflies",
      },
      {
       text = "fireflies",
+      value = "fireflies",
       children = {
        {
         text = "fireflies01.m2",
@@ -28352,10 +28355,10 @@ WeakAuras.ModelPaths = {
         fileId = "190731",
        },
       },
-      value = "fireflies",
      },
      {
       text = "fish",
+      value = "fish",
       children = {
        {
         text = "fish01.m2",
@@ -28363,10 +28366,10 @@ WeakAuras.ModelPaths = {
         fileId = "190733",
        },
       },
-      value = "fish",
      },
      {
       text = "flies",
+      value = "flies",
       children = {
        {
         text = "flies01.m2",
@@ -28374,13 +28377,12 @@ WeakAuras.ModelPaths = {
         fileId = "190739",
        },
       },
-      value = "flies",
      },
     },
-    value = "critter",
    },
    {
     text = "detail",
+    value = "detail",
     children = {
      {
       text = "drkbus01.m2",
@@ -28448,16 +28450,18 @@ WeakAuras.ModelPaths = {
       fileId = "2198584",
      },
     },
-    value = "detail",
    },
    {
     text = "dreaming",
+    value = "dreaming",
     children = {
      {
       text = "passivedoodads",
+      value = "passivedoodads",
       children = {
        {
         text = "dreamcatchers",
+        value = "dreamcatchers",
         children = {
          {
           text = "emeralddreamcatcher01.m2",
@@ -28480,10 +28484,10 @@ WeakAuras.ModelPaths = {
           fileId = "190758",
          },
         },
-        value = "dreamcatchers",
        },
        {
         text = "emeralddreamgiant",
+        value = "emeralddreamgiant",
         children = {
          {
           text = "emeralddreamgiant01.m2",
@@ -28491,10 +28495,10 @@ WeakAuras.ModelPaths = {
           fileId = "190760",
          },
         },
-        value = "emeralddreamgiant",
        },
        {
         text = "flowers",
+        value = "flowers",
         children = {
          {
           text = "dnrdreambellflower01.m2",
@@ -28562,10 +28566,10 @@ WeakAuras.ModelPaths = {
           fileId = "190775",
          },
         },
-        value = "flowers",
        },
        {
         text = "trees",
+        value = "trees",
         children = {
          {
           text = "emeralddreamfountaintree01.m2",
@@ -28593,25 +28597,26 @@ WeakAuras.ModelPaths = {
           fileId = "190797",
          },
         },
-        value = "trees",
        },
       },
-      value = "passivedoodads",
      },
     },
-    value = "dreaming",
    },
    {
     text = "dungeon",
+    value = "dungeon",
     children = {
      {
       text = "cave",
+      value = "cave",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "crystals",
+          value = "crystals",
           children = {
            {
             text = "basiliskcrystal02.m2",
@@ -28659,10 +28664,10 @@ WeakAuras.ModelPaths = {
             fileId = "190811",
            },
           },
-          value = "crystals",
          },
          {
           text = "icicles",
+          value = "icicles",
           children = {
            {
             text = "caveicicle1.m2",
@@ -28675,10 +28680,10 @@ WeakAuras.ModelPaths = {
             fileId = "190814",
            },
           },
-          value = "icicles",
          },
          {
           text = "stalagmite",
+          value = "stalagmite",
           children = {
            {
             text = "stalagmite01.m2",
@@ -28686,10 +28691,10 @@ WeakAuras.ModelPaths = {
             fileId = "190815",
            },
           },
-          value = "stalagmite",
          },
          {
           text = "stalagtite",
+          value = "stalagtite",
           children = {
            {
             text = "deadminesstalagtite01.m2",
@@ -28712,22 +28717,22 @@ WeakAuras.ModelPaths = {
             fileId = "190820",
            },
           },
-          value = "stalagtite",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "cave",
      },
      {
       text = "cavernsoftime",
+      value = "cavernsoftime",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "cavernsoftimedoor",
+          value = "cavernsoftimedoor",
           children = {
            {
             text = "caverndoor.m2",
@@ -28735,16 +28740,16 @@ WeakAuras.ModelPaths = {
             fileId = "190822",
            },
           },
-          value = "cavernsoftimedoor",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "darkportal",
+          value = "darkportal",
           children = {
            {
             text = "cot_portalparticles.m2",
@@ -28762,10 +28767,10 @@ WeakAuras.ModelPaths = {
             fileId = "190825",
            },
           },
-          value = "darkportal",
          },
          {
           text = "energytrails",
+          value = "energytrails",
           children = {
            {
             text = "energytrail01.m2",
@@ -28853,10 +28858,10 @@ WeakAuras.ModelPaths = {
             fileId = "190844",
            },
           },
-          value = "energytrails",
          },
          {
           text = "hourglass",
+          value = "hourglass",
           children = {
            {
             text = "cot_hourglass.m2",
@@ -28864,10 +28869,10 @@ WeakAuras.ModelPaths = {
             fileId = "190849",
            },
           },
-          value = "hourglass",
          },
          {
           text = "portal",
+          value = "portal",
           children = {
            {
             text = "cot_portal01.m2",
@@ -28875,22 +28880,22 @@ WeakAuras.ModelPaths = {
             fileId = "190858",
            },
           },
-          value = "portal",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "cavernsoftime",
      },
      {
       text = "goldmine",
+      value = "goldmine",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "cavelanterns",
+          value = "cavelanterns",
           children = {
            {
             text = "caveminelantern01.m2",
@@ -28908,10 +28913,10 @@ WeakAuras.ModelPaths = {
             fileId = "190871",
            },
           },
-          value = "cavelanterns",
          },
          {
           text = "caveminekobolds",
+          value = "caveminekobolds",
           children = {
            {
             text = "caveminekobold01.m2",
@@ -28939,10 +28944,10 @@ WeakAuras.ModelPaths = {
             fileId = "190876",
            },
           },
-          value = "caveminekobolds",
          },
          {
           text = "caveminespiderpillar01",
+          value = "caveminespiderpillar01",
           children = {
            {
             text = "caveminespiderpillar01.m2",
@@ -28950,10 +28955,10 @@ WeakAuras.ModelPaths = {
             fileId = "190880",
            },
           },
-          value = "caveminespiderpillar01",
          },
          {
           text = "cavespiderwebs",
+          value = "cavespiderwebs",
           children = {
            {
             text = "cavespiderweb01.m2",
@@ -28966,19 +28971,18 @@ WeakAuras.ModelPaths = {
             fileId = "190883",
            },
           },
-          value = "cavespiderwebs",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "goldmine",
      },
      {
       text = "goldshireinn",
+      value = "goldshireinn",
       children = {
        {
         text = "innbarrel",
+        value = "innbarrel",
         children = {
          {
           text = "innbarrel.m2",
@@ -28986,10 +28990,10 @@ WeakAuras.ModelPaths = {
           fileId = "190885",
          },
         },
-        value = "innbarrel",
        },
        {
         text = "innbed",
+        value = "innbed",
         children = {
          {
           text = "innbed.m2",
@@ -28997,10 +29001,10 @@ WeakAuras.ModelPaths = {
           fileId = "190886",
          },
         },
-        value = "innbed",
        },
        {
         text = "innbedcanopy",
+        value = "innbedcanopy",
         children = {
          {
           text = "innbedcanopy.m2",
@@ -29008,10 +29012,10 @@ WeakAuras.ModelPaths = {
           fileId = "190887",
          },
         },
-        value = "innbedcanopy",
        },
        {
         text = "innchandelier",
+        value = "innchandelier",
         children = {
          {
           text = "innchandelier.m2",
@@ -29019,10 +29023,10 @@ WeakAuras.ModelPaths = {
           fileId = "190890",
          },
         },
-        value = "innchandelier",
        },
        {
         text = "innlantern",
+        value = "innlantern",
         children = {
          {
           text = "innlantern.m2",
@@ -29030,10 +29034,10 @@ WeakAuras.ModelPaths = {
           fileId = "190893",
          },
         },
-        value = "innlantern",
        },
        {
         text = "innpillow",
+        value = "innpillow",
         children = {
          {
           text = "innpillow.m2",
@@ -29041,19 +29045,20 @@ WeakAuras.ModelPaths = {
           fileId = "190895",
          },
         },
-        value = "innpillow",
        },
       },
-      value = "goldshireinn",
      },
      {
       text = "scarletmonastery",
+      value = "scarletmonastery",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "fountains",
+          value = "fountains",
           children = {
            {
             text = "fishfountain.m2",
@@ -29066,10 +29071,10 @@ WeakAuras.ModelPaths = {
             fileId = "190900",
            },
           },
-          value = "fountains",
          },
          {
           text = "statues",
+          value = "statues",
           children = {
            {
             text = "statuedmmountainking.m2",
@@ -29152,28 +29157,28 @@ WeakAuras.ModelPaths = {
             fileId = "190929",
            },
           },
-          value = "statues",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "scarletmonastery",
      },
     },
-    value = "dungeon",
    },
    {
     text = "environment",
+    value = "environment",
     children = {
      {
       text = "doodad",
+      value = "doodad",
       children = {
        {
         text = "anquiraj",
+        value = "anquiraj",
         children = {
          {
           text = "fireflies",
+          value = "fireflies",
           children = {
            {
             text = "hive_fireflies_01.m2",
@@ -29186,10 +29191,10 @@ WeakAuras.ModelPaths = {
             fileId = "190964",
            },
           },
-          value = "fireflies",
          },
          {
           text = "lightshaft",
+          value = "lightshaft",
           children = {
            {
             text = "hive_lightshaft01.m2",
@@ -29202,10 +29207,10 @@ WeakAuras.ModelPaths = {
             fileId = "190968",
            },
           },
-          value = "lightshaft",
          },
          {
           text = "sandwaterfall",
+          value = "sandwaterfall",
           children = {
            {
             text = "hive_sand.m2",
@@ -29218,10 +29223,10 @@ WeakAuras.ModelPaths = {
             fileId = "190971",
            },
           },
-          value = "sandwaterfall",
          },
          {
           text = "steam",
+          value = "steam",
           children = {
            {
             text = "hivesteam.m2",
@@ -29229,13 +29234,12 @@ WeakAuras.ModelPaths = {
             fileId = "190974",
            },
           },
-          value = "steam",
          },
         },
-        value = "anquiraj",
        },
        {
         text = "carnival",
+        value = "carnival",
         children = {
          {
           text = "animaltrainer.m2",
@@ -29338,13 +29342,14 @@ WeakAuras.ModelPaths = {
           fileId = "191040",
          },
         },
-        value = "carnival",
        },
        {
         text = "desolace",
+        value = "desolace",
         children = {
          {
           text = "centaurruins",
+          value = "centaurruins",
           children = {
            {
             text = "centaur_arch01.m2",
@@ -29382,16 +29387,16 @@ WeakAuras.ModelPaths = {
             fileId = "2198518",
            },
           },
-          value = "centaurruins",
          },
         },
-        value = "desolace",
        },
        {
         text = "generaldoodads",
+        value = "generaldoodads",
         children = {
          {
           text = "elementalrifts",
+          value = "elementalrifts",
           children = {
            {
             text = "airrift.m2",
@@ -29409,10 +29414,10 @@ WeakAuras.ModelPaths = {
             fileId = "191093",
            },
           },
-          value = "elementalrifts",
          },
          {
           text = "helpwantedposter",
+          value = "helpwantedposter",
           children = {
            {
             text = "helpwantedposter.m2",
@@ -29420,10 +29425,10 @@ WeakAuras.ModelPaths = {
             fileId = "191094",
            },
           },
-          value = "helpwantedposter",
          },
          {
           text = "nightelflanternblue",
+          value = "nightelflanternblue",
           children = {
            {
             text = "ne_lanternblue01.m2",
@@ -29431,10 +29436,10 @@ WeakAuras.ModelPaths = {
             fileId = "191096",
            },
           },
-          value = "nightelflanternblue",
          },
          {
           text = "nightelfweapons",
+          value = "nightelfweapons",
           children = {
            {
             text = "ne_glaive01.m2",
@@ -29457,10 +29462,10 @@ WeakAuras.ModelPaths = {
             fileId = "191101",
            },
           },
-          value = "nightelfweapons",
          },
          {
           text = "package",
+          value = "package",
           children = {
            {
             text = "horde_package01.m2",
@@ -29468,10 +29473,10 @@ WeakAuras.ModelPaths = {
             fileId = "191107",
            },
           },
-          value = "package",
          },
          {
           text = "paladinshrine",
+          value = "paladinshrine",
           children = {
            {
             text = "paladinshrine.m2",
@@ -29479,13 +29484,12 @@ WeakAuras.ModelPaths = {
             fileId = "191109",
            },
           },
-          value = "paladinshrine",
          },
         },
-        value = "generaldoodads",
        },
        {
         text = "naxxramas",
+        value = "naxxramas",
         children = {
          {
           text = "icyrune01.m2",
@@ -29493,13 +29497,14 @@ WeakAuras.ModelPaths = {
           fileId = "191177",
          },
         },
-        value = "naxxramas",
        },
        {
         text = "plaguelands",
+        value = "plaguelands",
         children = {
          {
           text = "activedoodads",
+          value = "activedoodads",
           children = {
            {
             text = "plaguecauldronactive.m2",
@@ -29512,16 +29517,16 @@ WeakAuras.ModelPaths = {
             fileId = "191218",
            },
           },
-          value = "activedoodads",
          },
         },
-        value = "plaguelands",
        },
        {
         text = "winterspringgrove",
+        value = "winterspringgrove",
         children = {
          {
           text = "crackedice",
+          value = "crackedice",
           children = {
            {
             text = "cracked_ice01.m2",
@@ -29529,25 +29534,24 @@ WeakAuras.ModelPaths = {
             fileId = "191347",
            },
           },
-          value = "crackedice",
          },
         },
-        value = "winterspringgrove",
        },
       },
-      value = "doodad",
      },
     },
-    value = "environment",
    },
    {
     text = "generic",
+    value = "generic",
     children = {
      {
       text = "activedoodads",
+      value = "activedoodads",
       children = {
        {
         text = "bushes",
+        value = "bushes",
         children = {
          {
           text = "berrybush01.m2",
@@ -29555,10 +29559,10 @@ WeakAuras.ModelPaths = {
           fileId = "196975",
          },
         },
-        value = "bushes",
        },
        {
         text = "chest01",
+        value = "chest01",
         children = {
          {
           text = "chest01.m2",
@@ -29566,10 +29570,10 @@ WeakAuras.ModelPaths = {
           fileId = "196976",
          },
         },
-        value = "chest01",
        },
        {
         text = "chest02",
+        value = "chest02",
         children = {
          {
           text = "chest02.m2",
@@ -29577,10 +29581,10 @@ WeakAuras.ModelPaths = {
           fileId = "196979",
          },
         },
-        value = "chest02",
        },
        {
         text = "chest03",
+        value = "chest03",
         children = {
          {
           text = "chest03.m2",
@@ -29588,10 +29592,10 @@ WeakAuras.ModelPaths = {
           fileId = "196982",
          },
         },
-        value = "chest03",
        },
        {
         text = "chest04",
+        value = "chest04",
         children = {
          {
           text = "chest04.m2",
@@ -29599,10 +29603,10 @@ WeakAuras.ModelPaths = {
           fileId = "196987",
          },
         },
-        value = "chest04",
        },
        {
         text = "chests",
+        value = "chests",
         children = {
          {
           text = "chest01b.m2",
@@ -29620,10 +29624,10 @@ WeakAuras.ModelPaths = {
           fileId = "196990",
          },
         },
-        value = "chests",
        },
        {
         text = "christmas",
+        value = "christmas",
         children = {
          {
           text = "snowballmound01.m2",
@@ -29631,10 +29635,10 @@ WeakAuras.ModelPaths = {
           fileId = "196993",
          },
         },
-        value = "christmas",
        },
        {
         text = "clam",
+        value = "clam",
         children = {
          {
           text = "giantclamactive.m2",
@@ -29642,13 +29646,14 @@ WeakAuras.ModelPaths = {
           fileId = "196998",
          },
         },
-        value = "clam",
        },
        {
         text = "doors",
+        value = "doors",
         children = {
          {
           text = "giantportcullis",
+          value = "giantportcullis",
           children = {
            {
             text = "giantportcullisflatbottom01.m2",
@@ -29656,10 +29661,10 @@ WeakAuras.ModelPaths = {
             fileId = "197001",
            },
           },
-          value = "giantportcullis",
          },
          {
           text = "gnomeregandoors",
+          value = "gnomeregandoors",
           children = {
            {
             text = "gnomeregandoor01.m2",
@@ -29667,10 +29672,10 @@ WeakAuras.ModelPaths = {
             fileId = "197002",
            },
           },
-          value = "gnomeregandoors",
          },
          {
           text = "sunkentempledoors",
+          value = "sunkentempledoors",
           children = {
            {
             text = "sunktemple_portcullis.m2",
@@ -29678,10 +29683,10 @@ WeakAuras.ModelPaths = {
             fileId = "197003",
            },
           },
-          value = "sunkentempledoors",
          },
          {
           text = "uldamandoors",
+          value = "uldamandoors",
           children = {
            {
             text = "uldamandoor01.m2",
@@ -29689,13 +29694,12 @@ WeakAuras.ModelPaths = {
             fileId = "197004",
            },
           },
-          value = "uldamandoors",
          },
         },
-        value = "doors",
        },
        {
         text = "instanceportal",
+        value = "instanceportal",
         children = {
          {
           text = "instanceportal.m2",
@@ -29733,10 +29737,10 @@ WeakAuras.ModelPaths = {
           fileId = "197018",
          },
         },
-        value = "instanceportal",
        },
        {
         text = "mageportals",
+        value = "mageportals",
         children = {
          {
           text = "stormwindmageportal01.m2",
@@ -29744,10 +29748,10 @@ WeakAuras.ModelPaths = {
           fileId = "197020",
          },
         },
-        value = "mageportals",
        },
        {
         text = "meetingstones",
+        value = "meetingstones",
         children = {
          {
           text = "meetingstone01.m2",
@@ -29775,10 +29779,10 @@ WeakAuras.ModelPaths = {
           fileId = "197030",
          },
         },
-        value = "meetingstones",
        },
        {
         text = "rocks",
+        value = "rocks",
         children = {
          {
           text = "gemrock01.m2",
@@ -29786,10 +29790,10 @@ WeakAuras.ModelPaths = {
           fileId = "197038",
          },
         },
-        value = "rocks",
        },
        {
         text = "spellportals",
+        value = "spellportals",
         children = {
          {
           text = "mageportal_darnassus.m2",
@@ -29827,10 +29831,10 @@ WeakAuras.ModelPaths = {
           fileId = "197055",
          },
         },
-        value = "spellportals",
        },
        {
         text = "trollchest",
+        value = "trollchest",
         children = {
          {
           text = "trollchest.m2",
@@ -29838,10 +29842,10 @@ WeakAuras.ModelPaths = {
           fileId = "197063",
          },
         },
-        value = "trollchest",
        },
        {
         text = "worldtreeportals",
+        value = "worldtreeportals",
         children = {
          {
           text = "worldtreeportal01.m2",
@@ -29849,16 +29853,16 @@ WeakAuras.ModelPaths = {
           fileId = "197068",
          },
         },
-        value = "worldtreeportals",
        },
       },
-      value = "activedoodads",
      },
      {
       text = "buildings",
+      value = "buildings",
       children = {
        {
         text = "humantentlarge",
+        value = "humantentlarge",
         children = {
          {
           text = "humantentlarge.m2",
@@ -29866,10 +29870,10 @@ WeakAuras.ModelPaths = {
           fileId = "197108",
          },
         },
-        value = "humantentlarge",
        },
        {
         text = "humantentmedium",
+        value = "humantentmedium",
         children = {
          {
           text = "humantentmedium.m2",
@@ -29877,19 +29881,20 @@ WeakAuras.ModelPaths = {
           fileId = "197109",
          },
         },
-        value = "humantentmedium",
        },
       },
-      value = "buildings",
      },
      {
       text = "centaur",
+      value = "centaur",
       children = {
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "centaurruins",
+          value = "centaurruins",
           children = {
            {
             text = "centaur_arch01.m2",
@@ -29927,10 +29932,10 @@ WeakAuras.ModelPaths = {
             fileId = "197119",
            },
           },
-          value = "centaurruins",
          },
          {
           text = "centaurtents",
+          value = "centaurtents",
           children = {
            {
             text = "centaurtent01.m2",
@@ -29943,22 +29948,22 @@ WeakAuras.ModelPaths = {
             fileId = "197121",
            },
           },
-          value = "centaurtents",
          },
         },
-        value = "passive doodads",
        },
       },
-      value = "centaur",
      },
      {
       text = "darkirondwarf",
+      value = "darkirondwarf",
       children = {
        {
         text = "active doodads",
+        value = "active doodads",
         children = {
          {
           text = "runes",
+          value = "runes",
           children = {
            {
             text = "darkirondwarfrune_a.m2",
@@ -30001,16 +30006,16 @@ WeakAuras.ModelPaths = {
             fileId = "197131",
            },
           },
-          value = "runes",
          },
         },
-        value = "active doodads",
        },
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "beds",
+          value = "beds",
           children = {
            {
             text = "darkirondwarfbed01.m2",
@@ -30028,10 +30033,10 @@ WeakAuras.ModelPaths = {
             fileId = "197134",
            },
           },
-          value = "beds",
          },
          {
           text = "chairs",
+          value = "chairs",
           children = {
            {
             text = "darkironchair01.m2",
@@ -30064,10 +30069,10 @@ WeakAuras.ModelPaths = {
             fileId = "197142",
            },
           },
-          value = "chairs",
          },
          {
           text = "corpses",
+          value = "corpses",
           children = {
            {
             text = "darkirondwarfcorpse01.m2",
@@ -30090,10 +30095,10 @@ WeakAuras.ModelPaths = {
             fileId = "197148",
            },
           },
-          value = "corpses",
          },
          {
           text = "crates",
+          value = "crates",
           children = {
            {
             text = "darkironcrate01.m2",
@@ -30116,10 +30121,10 @@ WeakAuras.ModelPaths = {
             fileId = "197154",
            },
           },
-          value = "crates",
          },
          {
           text = "grindingwheels",
+          value = "grindingwheels",
           children = {
            {
             text = "darkirongrindingwheel.m2",
@@ -30132,10 +30137,10 @@ WeakAuras.ModelPaths = {
             fileId = "197156",
            },
           },
-          value = "grindingwheels",
          },
          {
           text = "haypiles",
+          value = "haypiles",
           children = {
            {
             text = "darkhaypilelarge01.m2",
@@ -30143,10 +30148,10 @@ WeakAuras.ModelPaths = {
             fileId = "197158",
            },
           },
-          value = "haypiles",
          },
          {
           text = "kegs",
+          value = "kegs",
           children = {
            {
             text = "darkironkeg01.m2",
@@ -30174,10 +30179,10 @@ WeakAuras.ModelPaths = {
             fileId = "197166",
            },
           },
-          value = "kegs",
          },
          {
           text = "lamps",
+          value = "lamps",
           children = {
            {
             text = "darkironhanginglamp01.m2",
@@ -30195,10 +30200,10 @@ WeakAuras.ModelPaths = {
             fileId = "197169",
            },
           },
-          value = "lamps",
          },
          {
           text = "lights",
+          value = "lights",
           children = {
            {
             text = "darkironlight01.m2",
@@ -30221,10 +30226,10 @@ WeakAuras.ModelPaths = {
             fileId = "197174",
            },
           },
-          value = "lights",
          },
          {
           text = "manacles",
+          value = "manacles",
           children = {
            {
             text = "blackrockorcmanacle01.m2",
@@ -30237,10 +30242,10 @@ WeakAuras.ModelPaths = {
             fileId = "197179",
            },
           },
-          value = "manacles",
          },
          {
           text = "murals",
+          value = "murals",
           children = {
            {
             text = "darkironmural01.m2",
@@ -30258,10 +30263,10 @@ WeakAuras.ModelPaths = {
             fileId = "197185",
            },
           },
-          value = "murals",
          },
          {
           text = "skeletons",
+          value = "skeletons",
           children = {
            {
             text = "skeletonlaying01.m2",
@@ -30299,10 +30304,10 @@ WeakAuras.ModelPaths = {
             fileId = "197196",
            },
           },
-          value = "skeletons",
          },
          {
           text = "stretchedskins",
+          value = "stretchedskins",
           children = {
            {
             text = "blackrockstretchedskin01.m2",
@@ -30315,10 +30320,10 @@ WeakAuras.ModelPaths = {
             fileId = "197200",
            },
           },
-          value = "stretchedskins",
          },
          {
           text = "tables",
+          value = "tables",
           children = {
            {
             text = "darkirontable01.m2",
@@ -30331,10 +30336,10 @@ WeakAuras.ModelPaths = {
             fileId = "197202",
            },
           },
-          value = "tables",
          },
          {
           text = "tapestries",
+          value = "tapestries",
           children = {
            {
             text = "darkirontapestry01.m2",
@@ -30352,10 +30357,10 @@ WeakAuras.ModelPaths = {
             fileId = "197208",
            },
           },
-          value = "tapestries",
          },
          {
           text = "throne",
+          value = "throne",
           children = {
            {
             text = "darkironthrone.m2",
@@ -30363,10 +30368,10 @@ WeakAuras.ModelPaths = {
             fileId = "197210",
            },
           },
-          value = "throne",
          },
          {
           text = "tools",
+          value = "tools",
           children = {
            {
             text = "darkironsaw01.m2",
@@ -30379,10 +30384,10 @@ WeakAuras.ModelPaths = {
             fileId = "197213",
            },
           },
-          value = "tools",
          },
          {
           text = "woodpiles",
+          value = "woodpiles",
           children = {
            {
             text = "darkironwoodpile01.m2",
@@ -30395,10 +30400,10 @@ WeakAuras.ModelPaths = {
             fileId = "197215",
            },
           },
-          value = "woodpiles",
          },
          {
           text = "woodplanks",
+          value = "woodplanks",
           children = {
            {
             text = "darkironwoodplanks01.m2",
@@ -30436,10 +30441,10 @@ WeakAuras.ModelPaths = {
             fileId = "197222",
            },
           },
-          value = "woodplanks",
          },
          {
           text = "workbenches",
+          value = "workbenches",
           children = {
            {
             text = "darkironworkbench01.m2",
@@ -30462,22 +30467,22 @@ WeakAuras.ModelPaths = {
             fileId = "197227",
            },
           },
-          value = "workbenches",
          },
         },
-        value = "passive doodads",
        },
       },
-      value = "darkirondwarf",
      },
      {
       text = "dwarf",
+      value = "dwarf",
       children = {
        {
         text = "active doodads",
+        value = "active doodads",
         children = {
          {
           text = "doors",
+          value = "doors",
           children = {
            {
             text = "dwarventunnelportcullis.m2",
@@ -30485,16 +30490,16 @@ WeakAuras.ModelPaths = {
             fileId = "197231",
            },
           },
-          value = "doors",
          },
         },
-        value = "active doodads",
        },
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "banners",
+          value = "banners",
           children = {
            {
             text = "ironforgebanner01.m2",
@@ -30512,10 +30517,10 @@ WeakAuras.ModelPaths = {
             fileId = "197236",
            },
           },
-          value = "banners",
          },
          {
           text = "barrels",
+          value = "barrels",
           children = {
            {
             text = "dwarvenbarrel01.m2",
@@ -30523,10 +30528,10 @@ WeakAuras.ModelPaths = {
             fileId = "197238",
            },
           },
-          value = "barrels",
          },
          {
           text = "battlements",
+          value = "battlements",
           children = {
            {
             text = "dwarvenbattlementlarge01.m2",
@@ -30619,10 +30624,10 @@ WeakAuras.ModelPaths = {
             fileId = "197261",
            },
           },
-          value = "battlements",
          },
          {
           text = "beds",
+          value = "beds",
           children = {
            {
             text = "dwarvenbed01.m2",
@@ -30630,10 +30635,10 @@ WeakAuras.ModelPaths = {
             fileId = "197266",
            },
           },
-          value = "beds",
          },
          {
           text = "benches",
+          value = "benches",
           children = {
            {
             text = "ironforgebench_average01.m2",
@@ -30651,10 +30656,10 @@ WeakAuras.ModelPaths = {
             fileId = "197274",
            },
           },
-          value = "benches",
          },
          {
           text = "bookshelves",
+          value = "bookshelves",
           children = {
            {
             text = "bookshelfdwarvenaverage01.m2",
@@ -30732,10 +30737,10 @@ WeakAuras.ModelPaths = {
             fileId = "197289",
            },
           },
-          value = "bookshelves",
          },
          {
           text = "braziers",
+          value = "braziers",
           children = {
            {
             text = "dwarvenbrazier01.m2",
@@ -30753,10 +30758,10 @@ WeakAuras.ModelPaths = {
             fileId = "197295",
            },
           },
-          value = "braziers",
          },
          {
           text = "chainlinks",
+          value = "chainlinks",
           children = {
            {
             text = "ts_chain01.m2",
@@ -30774,10 +30779,10 @@ WeakAuras.ModelPaths = {
             fileId = "197299",
            },
           },
-          value = "chainlinks",
          },
          {
           text = "chairs",
+          value = "chairs",
           children = {
            {
             text = "dwarvenchair01.m2",
@@ -30815,10 +30820,10 @@ WeakAuras.ModelPaths = {
             fileId = "197311",
            },
           },
-          value = "chairs",
          },
          {
           text = "constructionsigns",
+          value = "constructionsigns",
           children = {
            {
             text = "underconstruction01.m2",
@@ -30831,10 +30836,10 @@ WeakAuras.ModelPaths = {
             fileId = "197316",
            },
           },
-          value = "constructionsigns",
          },
          {
           text = "debris",
+          value = "debris",
           children = {
            {
             text = "ts_debris01.m2",
@@ -30887,10 +30892,10 @@ WeakAuras.ModelPaths = {
             fileId = "197326",
            },
           },
-          value = "debris",
          },
          {
           text = "docks",
+          value = "docks",
           children = {
            {
             text = "anvilmardock01.m2",
@@ -30898,10 +30903,10 @@ WeakAuras.ModelPaths = {
             fileId = "197327",
            },
           },
-          value = "docks",
          },
          {
           text = "dwarfcorpse",
+          value = "dwarfcorpse",
           children = {
            {
             text = "corpseskeletondwarf.m2",
@@ -30909,10 +30914,10 @@ WeakAuras.ModelPaths = {
             fileId = "197330",
            },
           },
-          value = "dwarfcorpse",
          },
          {
           text = "dynamite",
+          value = "dynamite",
           children = {
            {
             text = "gunshopdynamitebundle.m2",
@@ -30920,10 +30925,10 @@ WeakAuras.ModelPaths = {
             fileId = "197331",
            },
           },
-          value = "dynamite",
          },
          {
           text = "excavationbannerstands",
+          value = "excavationbannerstands",
           children = {
            {
             text = "excavationbannerstand.m2",
@@ -30941,10 +30946,10 @@ WeakAuras.ModelPaths = {
             fileId = "197334",
            },
           },
-          value = "excavationbannerstands",
          },
          {
           text = "excavationbarrierplank",
+          value = "excavationbarrierplank",
           children = {
            {
             text = "excavationbarrierplank.m2",
@@ -30982,10 +30987,10 @@ WeakAuras.ModelPaths = {
             fileId = "197343",
            },
           },
-          value = "excavationbarrierplank",
          },
          {
           text = "excavationbarrierpole",
+          value = "excavationbarrierpole",
           children = {
            {
             text = "excavationbarrierpole.m2",
@@ -31008,10 +31013,10 @@ WeakAuras.ModelPaths = {
             fileId = "197347",
            },
           },
-          value = "excavationbarrierpole",
          },
          {
           text = "excavationbarriers",
+          value = "excavationbarriers",
           children = {
            {
             text = "excavationbarrier01.m2",
@@ -31094,10 +31099,10 @@ WeakAuras.ModelPaths = {
             fileId = "197363",
            },
           },
-          value = "excavationbarriers",
          },
          {
           text = "excavationcrane",
+          value = "excavationcrane",
           children = {
            {
             text = "excavationcrane.m2",
@@ -31105,10 +31110,10 @@ WeakAuras.ModelPaths = {
             fileId = "197366",
            },
           },
-          value = "excavationcrane",
          },
          {
           text = "excavationdwarvenruins",
+          value = "excavationdwarvenruins",
           children = {
            {
             text = "excavationdwarvenruins01.m2",
@@ -31121,10 +31126,10 @@ WeakAuras.ModelPaths = {
             fileId = "197373",
            },
           },
-          value = "excavationdwarvenruins",
          },
          {
           text = "excavationrailingpost",
+          value = "excavationrailingpost",
           children = {
            {
             text = "excavationrailingpost.m2",
@@ -31137,10 +31142,10 @@ WeakAuras.ModelPaths = {
             fileId = "197375",
            },
           },
-          value = "excavationrailingpost",
          },
          {
           text = "excavationrailingrail",
+          value = "excavationrailingrail",
           children = {
            {
             text = "excavationrailingrail.m2",
@@ -31148,10 +31153,10 @@ WeakAuras.ModelPaths = {
             fileId = "197377",
            },
           },
-          value = "excavationrailingrail",
          },
          {
           text = "excavationropestake",
+          value = "excavationropestake",
           children = {
            {
             text = "excavationrope.m2",
@@ -31164,10 +31169,10 @@ WeakAuras.ModelPaths = {
             fileId = "197379",
            },
           },
-          value = "excavationropestake",
          },
          {
           text = "excavationstake",
+          value = "excavationstake",
           children = {
            {
             text = "excavationstake.m2",
@@ -31175,10 +31180,10 @@ WeakAuras.ModelPaths = {
             fileId = "197382",
            },
           },
-          value = "excavationstake",
          },
          {
           text = "excavationtentpavillion",
+          value = "excavationtentpavillion",
           children = {
            {
             text = "excavationtentpavillion.m2",
@@ -31186,10 +31191,10 @@ WeakAuras.ModelPaths = {
             fileId = "197383",
            },
           },
-          value = "excavationtentpavillion",
          },
          {
           text = "excavationtentpavillionruined",
+          value = "excavationtentpavillionruined",
           children = {
            {
             text = "excavationtentpavillionruined01.m2",
@@ -31197,10 +31202,10 @@ WeakAuras.ModelPaths = {
             fileId = "197385",
            },
           },
-          value = "excavationtentpavillionruined",
          },
          {
           text = "excavationtents",
+          value = "excavationtents",
           children = {
            {
             text = "excavationtent01.m2",
@@ -31223,10 +31228,10 @@ WeakAuras.ModelPaths = {
             fileId = "197391",
            },
           },
-          value = "excavationtents",
          },
          {
           text = "excavationwaterwagon",
+          value = "excavationwaterwagon",
           children = {
            {
             text = "excavationwaterwagon.m2",
@@ -31234,10 +31239,10 @@ WeakAuras.ModelPaths = {
             fileId = "197394",
            },
           },
-          value = "excavationwaterwagon",
          },
          {
           text = "forgebonfire",
+          value = "forgebonfire",
           children = {
            {
             text = "forgebonfire.m2",
@@ -31245,10 +31250,10 @@ WeakAuras.ModelPaths = {
             fileId = "197395",
            },
           },
-          value = "forgebonfire",
          },
          {
           text = "gunracks",
+          value = "gunracks",
           children = {
            {
             text = "gunrack01a.m2",
@@ -31291,10 +31296,10 @@ WeakAuras.ModelPaths = {
             fileId = "197405",
            },
           },
-          value = "gunracks",
          },
          {
           text = "guns",
+          value = "guns",
           children = {
            {
             text = "rifledwarven.m2",
@@ -31302,10 +31307,10 @@ WeakAuras.ModelPaths = {
             fileId = "197406",
            },
           },
-          value = "guns",
          },
          {
           text = "gyrocopter",
+          value = "gyrocopter",
           children = {
            {
             text = "gyrocopter.m2",
@@ -31313,10 +31318,10 @@ WeakAuras.ModelPaths = {
             fileId = "197408",
            },
           },
-          value = "gyrocopter",
          },
          {
           text = "lampposts",
+          value = "lampposts",
           children = {
            {
             text = "anvilmarlamppost.m2",
@@ -31329,10 +31334,10 @@ WeakAuras.ModelPaths = {
             fileId = "197411",
            },
           },
-          value = "lampposts",
          },
          {
           text = "lanterns",
+          value = "lanterns",
           children = {
            {
             text = "dwarvenhanginglanternhuge.m2",
@@ -31420,10 +31425,10 @@ WeakAuras.ModelPaths = {
             fileId = "197443",
            },
           },
-          value = "lanterns",
          },
          {
           text = "minecarts",
+          value = "minecarts",
           children = {
            {
             text = "minecartgiant.m2",
@@ -31431,10 +31436,10 @@ WeakAuras.ModelPaths = {
             fileId = "197453",
            },
           },
-          value = "minecarts",
          },
          {
           text = "museum",
+          value = "museum",
           children = {
            {
             text = "fossil01.m2",
@@ -31442,10 +31447,10 @@ WeakAuras.ModelPaths = {
             fileId = "197456",
            },
           },
-          value = "museum",
          },
          {
           text = "platters",
+          value = "platters",
           children = {
            {
             text = "plattergoldornate01.m2",
@@ -31468,10 +31473,10 @@ WeakAuras.ModelPaths = {
             fileId = "197462",
            },
           },
-          value = "platters",
          },
          {
           text = "powderkegs",
+          value = "powderkegs",
           children = {
            {
             text = "powderkeg01.m2",
@@ -31484,10 +31489,10 @@ WeakAuras.ModelPaths = {
             fileId = "197464",
            },
           },
-          value = "powderkegs",
          },
          {
           text = "sharpeningwheel",
+          value = "sharpeningwheel",
           children = {
            {
             text = "dwarvensharpeningwheel01.m2",
@@ -31495,10 +31500,10 @@ WeakAuras.ModelPaths = {
             fileId = "197466",
            },
           },
-          value = "sharpeningwheel",
          },
          {
           text = "signposts",
+          value = "signposts",
           children = {
            {
             text = "dwarvensignpost01.m2",
@@ -31511,10 +31516,10 @@ WeakAuras.ModelPaths = {
             fileId = "197472",
            },
           },
-          value = "signposts",
          },
          {
           text = "signs",
+          value = "signs",
           children = {
            {
             text = "dwarfsign_alchemist.m2",
@@ -31712,10 +31717,10 @@ WeakAuras.ModelPaths = {
             fileId = "197550",
            },
           },
-          value = "signs",
          },
          {
           text = "steins",
+          value = "steins",
           children = {
            {
             text = "dwarvenstein01.m2",
@@ -31728,10 +31733,10 @@ WeakAuras.ModelPaths = {
             fileId = "197552",
            },
           },
-          value = "steins",
          },
          {
           text = "tables",
+          value = "tables",
           children = {
            {
             text = "dwarventableaverage01.m2",
@@ -31839,10 +31844,10 @@ WeakAuras.ModelPaths = {
             fileId = "197579",
            },
           },
-          value = "tables",
          },
          {
           text = "targets",
+          value = "targets",
           children = {
            {
             text = "guntargetstand.m2",
@@ -31895,10 +31900,10 @@ WeakAuras.ModelPaths = {
             fileId = "197599",
            },
           },
-          value = "targets",
          },
          {
           text = "tavernstuff",
+          value = "tavernstuff",
           children = {
            {
             text = "alekegfoot.m2",
@@ -31936,10 +31941,10 @@ WeakAuras.ModelPaths = {
             fileId = "197610",
            },
           },
-          value = "tavernstuff",
          },
          {
           text = "tilings",
+          value = "tilings",
           children = {
            {
             text = "dwarventiling01.m2",
@@ -31957,10 +31962,10 @@ WeakAuras.ModelPaths = {
             fileId = "197616",
            },
           },
-          value = "tilings",
          },
          {
           text = "tools",
+          value = "tools",
           children = {
            {
             text = "lunchbox01.m2",
@@ -31988,10 +31993,10 @@ WeakAuras.ModelPaths = {
             fileId = "197622",
            },
           },
-          value = "tools",
          },
          {
           text = "wardrobe",
+          value = "wardrobe",
           children = {
            {
             text = "wardrobedwarvenaverage01.m2",
@@ -32039,22 +32044,22 @@ WeakAuras.ModelPaths = {
             fileId = "197634",
            },
           },
-          value = "wardrobe",
          },
         },
-        value = "passive doodads",
        },
       },
-      value = "dwarf",
      },
      {
       text = "gnome",
+      value = "gnome",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "gnomemachine",
+          value = "gnomemachine",
           children = {
            {
             text = "gnomemachine.m2",
@@ -32062,16 +32067,16 @@ WeakAuras.ModelPaths = {
             fileId = "197635",
            },
           },
-          value = "gnomemachine",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "buckets",
+          value = "buckets",
           children = {
            {
             text = "gnomebucket01.m2",
@@ -32099,10 +32104,10 @@ WeakAuras.ModelPaths = {
             fileId = "197644",
            },
           },
-          value = "buckets",
          },
          {
           text = "elevatorparts",
+          value = "elevatorparts",
           children = {
            {
             text = "gnomeelevatorcar01.m2",
@@ -32125,10 +32130,10 @@ WeakAuras.ModelPaths = {
             fileId = "197649",
            },
           },
-          value = "elevatorparts",
          },
          {
           text = "furniture",
+          value = "furniture",
           children = {
            {
             text = "gnomebed01.m2",
@@ -32196,10 +32201,10 @@ WeakAuras.ModelPaths = {
             fileId = "197665",
            },
           },
-          value = "furniture",
          },
          {
           text = "gears&levers",
+          value = "gears&levers",
           children = {
            {
             text = "gnomebiggear.m2",
@@ -32227,10 +32232,10 @@ WeakAuras.ModelPaths = {
             fileId = "197675",
            },
           },
-          value = "gears&levers",
          },
          {
           text = "gnomemachine",
+          value = "gnomemachine",
           children = {
            {
             text = "gnomemachine01.m2",
@@ -32283,10 +32288,10 @@ WeakAuras.ModelPaths = {
             fileId = "197688",
            },
           },
-          value = "gnomemachine",
          },
          {
           text = "gnomemachinery",
+          value = "gnomemachinery",
           children = {
            {
             text = "gnomehutelevator.m2",
@@ -32299,10 +32304,10 @@ WeakAuras.ModelPaths = {
             fileId = "197701",
            },
           },
-          value = "gnomemachinery",
          },
          {
           text = "gnomeroboarm",
+          value = "gnomeroboarm",
           children = {
            {
             text = "gnomeroboarm.m2",
@@ -32310,10 +32315,10 @@ WeakAuras.ModelPaths = {
             fileId = "197704",
            },
           },
-          value = "gnomeroboarm",
          },
          {
           text = "gnomerocketcarts",
+          value = "gnomerocketcarts",
           children = {
            {
             text = "crashedgnomerc.m2",
@@ -32326,10 +32331,10 @@ WeakAuras.ModelPaths = {
             fileId = "197707",
            },
           },
-          value = "gnomerocketcarts",
          },
          {
           text = "gnomewalladdons",
+          value = "gnomewalladdons",
           children = {
            {
             text = "gnomewalladdon01.m2",
@@ -32337,10 +32342,10 @@ WeakAuras.ModelPaths = {
             fileId = "197708",
            },
           },
-          value = "gnomewalladdons",
          },
          {
           text = "hazardlights",
+          value = "hazardlights",
           children = {
            {
             text = "gnomehazardlight01.m2",
@@ -32358,10 +32363,10 @@ WeakAuras.ModelPaths = {
             fileId = "197711",
            },
           },
-          value = "hazardlights",
          },
          {
           text = "lights",
+          value = "lights",
           children = {
            {
             text = "gnomemaintenancelight01.m2",
@@ -32384,10 +32389,10 @@ WeakAuras.ModelPaths = {
             fileId = "197719",
            },
           },
-          value = "lights",
          },
          {
           text = "parts",
+          value = "parts",
           children = {
            {
             text = "gnomescrew01.m2",
@@ -32460,10 +32465,10 @@ WeakAuras.ModelPaths = {
             fileId = "197735",
            },
           },
-          value = "parts",
          },
          {
           text = "pipes",
+          value = "pipes",
           children = {
            {
             text = "gnomepipe01.m2",
@@ -32486,10 +32491,10 @@ WeakAuras.ModelPaths = {
             fileId = "197739",
            },
           },
-          value = "pipes",
          },
          {
           text = "signposts",
+          value = "signposts",
           children = {
            {
             text = "gnomesignpost01.m2",
@@ -32507,10 +32512,10 @@ WeakAuras.ModelPaths = {
             fileId = "197742",
            },
           },
-          value = "signposts",
          },
          {
           text = "spidertank",
+          value = "spidertank",
           children = {
            {
             text = "gnomespidertank01.m2",
@@ -32518,10 +32523,10 @@ WeakAuras.ModelPaths = {
             fileId = "197745",
            },
           },
-          value = "spidertank",
          },
          {
           text = "steamwhistles",
+          value = "steamwhistles",
           children = {
            {
             text = "gnomewhistle02.m2",
@@ -32539,10 +32544,10 @@ WeakAuras.ModelPaths = {
             fileId = "197749",
            },
           },
-          value = "steamwhistles",
          },
          {
           text = "subway",
+          value = "subway",
           children = {
            {
             text = "subwaycar.m2",
@@ -32560,10 +32565,10 @@ WeakAuras.ModelPaths = {
             fileId = "197753",
            },
           },
-          value = "subway",
          },
          {
           text = "tools",
+          value = "tools",
           children = {
            {
             text = "gnometool01.m2",
@@ -32596,22 +32601,22 @@ WeakAuras.ModelPaths = {
             fileId = "197759",
            },
           },
-          value = "tools",
          },
         },
-        value = "passive doodads",
        },
       },
-      value = "gnome",
      },
      {
       text = "goblin",
+      value = "goblin",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "controlpanel",
+          value = "controlpanel",
           children = {
            {
             text = "goblincontrolpanel.m2",
@@ -32619,10 +32624,10 @@ WeakAuras.ModelPaths = {
             fileId = "197760",
            },
           },
-          value = "controlpanel",
          },
          {
           text = "goblinmachinery",
+          value = "goblinmachinery",
           children = {
            {
             text = "goblinhutbottles.m2",
@@ -32640,10 +32645,10 @@ WeakAuras.ModelPaths = {
             fileId = "197768",
            },
           },
-          value = "goblinmachinery",
          },
          {
           text = "goblinrocketcarts",
+          value = "goblinrocketcarts",
           children = {
            {
             text = "crashedgoblinrc.m2",
@@ -32676,10 +32681,10 @@ WeakAuras.ModelPaths = {
             fileId = "197783",
            },
           },
-          value = "goblinrocketcarts",
          },
          {
           text = "goblinshreddersuit",
+          value = "goblinshreddersuit",
           children = {
            {
             text = "goblinshreddersuit01.m2",
@@ -32692,10 +32697,10 @@ WeakAuras.ModelPaths = {
             fileId = "197790",
            },
           },
-          value = "goblinshreddersuit",
          },
          {
           text = "goblintents",
+          value = "goblintents",
           children = {
            {
             text = "goblintent01.m2",
@@ -32733,10 +32738,10 @@ WeakAuras.ModelPaths = {
             fileId = "197797",
            },
           },
-          value = "goblintents",
          },
          {
           text = "goblintntwagon",
+          value = "goblintntwagon",
           children = {
            {
             text = "goblinwagontnt_01.m2",
@@ -32744,22 +32749,22 @@ WeakAuras.ModelPaths = {
             fileId = "197799",
            },
           },
-          value = "goblintntwagon",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "goblin",
      },
      {
       text = "human",
+      value = "human",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "doors",
+          value = "doors",
           children = {
            {
             text = "deadminedoor01.m2",
@@ -32832,10 +32837,10 @@ WeakAuras.ModelPaths = {
             fileId = "197827",
            },
           },
-          value = "doors",
          },
          {
           text = "shadowfang",
+          value = "shadowfang",
           children = {
            {
             text = "wizardssphere.m2",
@@ -32843,16 +32848,16 @@ WeakAuras.ModelPaths = {
             fileId = "197829",
            },
           },
-          value = "shadowfang",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "altars",
+          value = "altars",
           children = {
            {
             text = "altar01.m2",
@@ -32870,10 +32875,10 @@ WeakAuras.ModelPaths = {
             fileId = "197835",
            },
           },
-          value = "altars",
          },
          {
           text = "anchor",
+          value = "anchor",
           children = {
            {
             text = "deadmineanchor.m2",
@@ -32881,10 +32886,10 @@ WeakAuras.ModelPaths = {
             fileId = "197836",
            },
           },
-          value = "anchor",
          },
          {
           text = "anchors",
+          value = "anchors",
           children = {
            {
             text = "bootyanchor.m2",
@@ -32892,10 +32897,10 @@ WeakAuras.ModelPaths = {
             fileId = "197838",
            },
           },
-          value = "anchors",
          },
          {
           text = "animalheads",
+          value = "animalheads",
           children = {
            {
             text = "duskwoodboarhead01.m2",
@@ -32923,10 +32928,10 @@ WeakAuras.ModelPaths = {
             fileId = "197847",
            },
           },
-          value = "animalheads",
          },
          {
           text = "archerytargets",
+          value = "archerytargets",
           children = {
            {
             text = "stormwindarcherytarget01.m2",
@@ -32934,10 +32939,10 @@ WeakAuras.ModelPaths = {
             fileId = "197849",
            },
           },
-          value = "archerytargets",
          },
          {
           text = "arches",
+          value = "arches",
           children = {
            {
             text = "gardenarch.m2",
@@ -32970,10 +32975,10 @@ WeakAuras.ModelPaths = {
             fileId = "197859",
            },
           },
-          value = "arches",
          },
          {
           text = "armor",
+          value = "armor",
           children = {
            {
             text = "armorbracerblue.m2",
@@ -33236,10 +33241,10 @@ WeakAuras.ModelPaths = {
             fileId = "197912",
            },
           },
-          value = "armor",
          },
          {
           text = "artwork",
+          value = "artwork",
           children = {
            {
             text = "painting05.m2",
@@ -33322,10 +33327,10 @@ WeakAuras.ModelPaths = {
             fileId = "197943",
            },
           },
-          value = "artwork",
          },
          {
           text = "ballandchain",
+          value = "ballandchain",
           children = {
            {
             text = "ballandchain01.m2",
@@ -33333,10 +33338,10 @@ WeakAuras.ModelPaths = {
             fileId = "197946",
            },
           },
-          value = "ballandchain",
          },
          {
           text = "ballistaruins",
+          value = "ballistaruins",
           children = {
            {
             text = "ballistabow01.m2",
@@ -33359,10 +33364,10 @@ WeakAuras.ModelPaths = {
             fileId = "197951",
            },
           },
-          value = "ballistaruins",
          },
          {
           text = "banners",
+          value = "banners",
           children = {
            {
             text = "bannerargentdawn.m2",
@@ -33480,10 +33485,10 @@ WeakAuras.ModelPaths = {
             fileId = "198000",
            },
           },
-          value = "banners",
          },
          {
           text = "beds",
+          value = "beds",
           children = {
            {
             text = "bunkbed01.m2",
@@ -33496,10 +33501,10 @@ WeakAuras.ModelPaths = {
             fileId = "198002",
            },
           },
-          value = "beds",
          },
          {
           text = "beerkegs",
+          value = "beerkegs",
           children = {
            {
             text = "beerkeg01.m2",
@@ -33512,10 +33517,10 @@ WeakAuras.ModelPaths = {
             fileId = "198006",
            },
           },
-          value = "beerkegs",
          },
          {
           text = "bellows",
+          value = "bellows",
           children = {
            {
             text = "bellows.m2",
@@ -33528,10 +33533,10 @@ WeakAuras.ModelPaths = {
             fileId = "198009",
            },
           },
-          value = "bellows",
          },
          {
           text = "benches",
+          value = "benches",
           children = {
            {
             text = "duskwoodbench.m2",
@@ -33559,10 +33564,10 @@ WeakAuras.ModelPaths = {
             fileId = "198015",
            },
           },
-          value = "benches",
          },
          {
           text = "books",
+          value = "books",
           children = {
            {
             text = "booklarge01.m2",
@@ -33710,10 +33715,10 @@ WeakAuras.ModelPaths = {
             fileId = "198046",
            },
           },
-          value = "books",
          },
          {
           text = "bookshelves",
+          value = "bookshelves",
           children = {
            {
             text = "abbeyshelf01.m2",
@@ -33751,10 +33756,10 @@ WeakAuras.ModelPaths = {
             fileId = "198054",
            },
           },
-          value = "bookshelves",
          },
          {
           text = "bookstacks",
+          value = "bookstacks",
           children = {
            {
             text = "generalbookstackshort01.m2",
@@ -33767,10 +33772,10 @@ WeakAuras.ModelPaths = {
             fileId = "198056",
            },
           },
-          value = "bookstacks",
          },
          {
           text = "bottles",
+          value = "bottles",
           children = {
            {
             text = "bottle01.m2",
@@ -33793,10 +33798,10 @@ WeakAuras.ModelPaths = {
             fileId = "198061",
            },
           },
-          value = "bottles",
          },
          {
           text = "braziers",
+          value = "braziers",
           children = {
            {
             text = "humanbraziercorrupt.m2",
@@ -33814,10 +33819,10 @@ WeakAuras.ModelPaths = {
             fileId = "198067",
            },
           },
-          value = "braziers",
          },
          {
           text = "buckets",
+          value = "buckets",
           children = {
            {
             text = "bucket.m2",
@@ -33830,10 +33835,10 @@ WeakAuras.ModelPaths = {
             fileId = "198069",
            },
           },
-          value = "buckets",
          },
          {
           text = "candelabras",
+          value = "candelabras",
           children = {
            {
             text = "candelabratall01.m2",
@@ -33851,10 +33856,10 @@ WeakAuras.ModelPaths = {
             fileId = "198076",
            },
           },
-          value = "candelabras",
          },
          {
           text = "cannon",
+          value = "cannon",
           children = {
            {
             text = "cannon01.m2",
@@ -33872,10 +33877,10 @@ WeakAuras.ModelPaths = {
             fileId = "198082",
            },
           },
-          value = "cannon",
          },
          {
           text = "cannonballstack",
+          value = "cannonballstack",
           children = {
            {
             text = "deadminecannonballstack.m2",
@@ -33883,10 +33888,10 @@ WeakAuras.ModelPaths = {
             fileId = "198084",
            },
           },
-          value = "cannonballstack",
          },
          {
           text = "cargoboxes",
+          value = "cargoboxes",
           children = {
            {
             text = "deadminecargoboxes.m2",
@@ -33894,10 +33899,10 @@ WeakAuras.ModelPaths = {
             fileId = "198085",
            },
           },
-          value = "cargoboxes",
          },
          {
           text = "cargonetboxes",
+          value = "cargonetboxes",
           children = {
            {
             text = "deadminecargonetboxes.m2",
@@ -33905,10 +33910,10 @@ WeakAuras.ModelPaths = {
             fileId = "198086",
            },
           },
-          value = "cargonetboxes",
          },
          {
           text = "cargonets",
+          value = "cargonets",
           children = {
            {
             text = "deadminecargonet01.m2",
@@ -33936,10 +33941,10 @@ WeakAuras.ModelPaths = {
             fileId = "198091",
            },
           },
-          value = "cargonets",
          },
          {
           text = "catapultruins",
+          value = "catapultruins",
           children = {
            {
             text = "catapultarm.m2",
@@ -33972,10 +33977,10 @@ WeakAuras.ModelPaths = {
             fileId = "198099",
            },
           },
-          value = "catapultruins",
          },
          {
           text = "cauldrons",
+          value = "cauldrons",
           children = {
            {
             text = "cauldron.m2",
@@ -33988,10 +33993,10 @@ WeakAuras.ModelPaths = {
             fileId = "198101",
            },
           },
-          value = "cauldrons",
          },
          {
           text = "caveminepump",
+          value = "caveminepump",
           children = {
            {
             text = "minepump01.m2",
@@ -33999,10 +34004,10 @@ WeakAuras.ModelPaths = {
             fileId = "198109",
            },
           },
-          value = "caveminepump",
          },
          {
           text = "caveroof",
+          value = "caveroof",
           children = {
            {
             text = "deadminescaveroof.m2",
@@ -34015,10 +34020,10 @@ WeakAuras.ModelPaths = {
             fileId = "198111",
            },
           },
-          value = "caveroof",
          },
          {
           text = "chairs",
+          value = "chairs",
           children = {
            {
             text = "generalchairhighend01.m2",
@@ -34051,10 +34056,10 @@ WeakAuras.ModelPaths = {
             fileId = "198120",
            },
           },
-          value = "chairs",
          },
          {
           text = "chimneys",
+          value = "chimneys",
           children = {
            {
             text = "generalchimney01.m2",
@@ -34067,10 +34072,10 @@ WeakAuras.ModelPaths = {
             fileId = "198123",
            },
           },
-          value = "chimneys",
          },
          {
           text = "cloth",
+          value = "cloth",
           children = {
            {
             text = "clothboltblue.m2",
@@ -34133,10 +34138,10 @@ WeakAuras.ModelPaths = {
             fileId = "198136",
            },
           },
-          value = "cloth",
          },
          {
           text = "clothing",
+          value = "clothing",
           children = {
            {
             text = "bootrack01.m2",
@@ -34239,10 +34244,10 @@ WeakAuras.ModelPaths = {
             fileId = "198157",
            },
           },
-          value = "clothing",
          },
          {
           text = "crates",
+          value = "crates",
           children = {
            {
             text = "crategrain01.m2",
@@ -34290,10 +34295,10 @@ WeakAuras.ModelPaths = {
             fileId = "198168",
            },
           },
-          value = "crates",
          },
          {
           text = "cups",
+          value = "cups",
           children = {
            {
             text = "metalcup03.m2",
@@ -34306,10 +34311,10 @@ WeakAuras.ModelPaths = {
             fileId = "198170",
            },
           },
-          value = "cups",
          },
          {
           text = "deadminecleat",
+          value = "deadminecleat",
           children = {
            {
             text = "deadminecleat.m2",
@@ -34317,10 +34322,10 @@ WeakAuras.ModelPaths = {
             fileId = "198172",
            },
           },
-          value = "deadminecleat",
          },
          {
           text = "deadminepowderkeg",
+          value = "deadminepowderkeg",
           children = {
            {
             text = "deadminepowderkeg.m2",
@@ -34328,10 +34333,10 @@ WeakAuras.ModelPaths = {
             fileId = "198173",
            },
           },
-          value = "deadminepowderkeg",
          },
          {
           text = "desks",
+          value = "desks",
           children = {
            {
             text = "fancydesk01.m2",
@@ -34339,10 +34344,10 @@ WeakAuras.ModelPaths = {
             fileId = "198175",
            },
           },
-          value = "desks",
          },
          {
           text = "doghouses",
+          value = "doghouses",
           children = {
            {
             text = "doghouse.m2",
@@ -34350,10 +34355,10 @@ WeakAuras.ModelPaths = {
             fileId = "198177",
            },
           },
-          value = "doghouses",
          },
          {
           text = "dolls",
+          value = "dolls",
           children = {
            {
             text = "ragdoll01.m2",
@@ -34361,10 +34366,10 @@ WeakAuras.ModelPaths = {
             fileId = "198178",
            },
           },
-          value = "dolls",
          },
          {
           text = "drapery",
+          value = "drapery",
           children = {
            {
             text = "drapery01.m2",
@@ -34377,10 +34382,10 @@ WeakAuras.ModelPaths = {
             fileId = "198186",
            },
           },
-          value = "drapery",
          },
          {
           text = "dredge",
+          value = "dredge",
           children = {
            {
             text = "cavekobolddredge.m2",
@@ -34388,10 +34393,10 @@ WeakAuras.ModelPaths = {
             fileId = "198189",
            },
           },
-          value = "dredge",
          },
          {
           text = "elevatorparts",
+          value = "elevatorparts",
           children = {
            {
             text = "burningsteppselevator.m2",
@@ -34399,10 +34404,10 @@ WeakAuras.ModelPaths = {
             fileId = "198191",
            },
           },
-          value = "elevatorparts",
          },
          {
           text = "fire",
+          value = "fire",
           children = {
            {
             text = "undeadcampfire.m2",
@@ -34420,10 +34425,10 @@ WeakAuras.ModelPaths = {
             fileId = "198195",
            },
           },
-          value = "fire",
          },
          {
           text = "firewood",
+          value = "firewood",
           children = {
            {
             text = "firewoodpile01.m2",
@@ -34436,10 +34441,10 @@ WeakAuras.ModelPaths = {
             fileId = "198198",
            },
           },
-          value = "firewood",
          },
          {
           text = "flagpole",
+          value = "flagpole",
           children = {
            {
             text = "flagpole01.m2",
@@ -34447,10 +34452,10 @@ WeakAuras.ModelPaths = {
             fileId = "198199",
            },
           },
-          value = "flagpole",
          },
          {
           text = "flowers",
+          value = "flowers",
           children = {
            {
             text = "flowersbunch01.m2",
@@ -34503,10 +34508,10 @@ WeakAuras.ModelPaths = {
             fileId = "198211",
            },
           },
-          value = "flowers",
          },
          {
           text = "food",
+          value = "food",
           children = {
            {
             text = "bread01.m2",
@@ -34584,10 +34589,10 @@ WeakAuras.ModelPaths = {
             fileId = "198228",
            },
           },
-          value = "food",
          },
          {
           text = "food&utensils",
+          value = "food&utensils",
           children = {
            {
             text = "cleaver01.m2",
@@ -34615,10 +34620,10 @@ WeakAuras.ModelPaths = {
             fileId = "198236",
            },
           },
-          value = "food&utensils",
          },
          {
           text = "footlockers",
+          value = "footlockers",
           children = {
            {
             text = "duskwoodfootlocker01.m2",
@@ -34626,10 +34631,10 @@ WeakAuras.ModelPaths = {
             fileId = "198238",
            },
           },
-          value = "footlockers",
          },
          {
           text = "fountains",
+          value = "fountains",
           children = {
            {
             text = "plaguedfountain.m2",
@@ -34652,10 +34657,10 @@ WeakAuras.ModelPaths = {
             fileId = "198253",
            },
           },
-          value = "fountains",
          },
          {
           text = "globes",
+          value = "globes",
           children = {
            {
             text = "globe01.m2",
@@ -34663,10 +34668,10 @@ WeakAuras.ModelPaths = {
             fileId = "198254",
            },
           },
-          value = "globes",
          },
          {
           text = "goblets",
+          value = "goblets",
           children = {
            {
             text = "goblet02.m2",
@@ -34674,10 +34679,10 @@ WeakAuras.ModelPaths = {
             fileId = "198256",
            },
           },
-          value = "goblets",
          },
          {
           text = "gryphonroost",
+          value = "gryphonroost",
           children = {
            {
             text = "gryphonroost01.m2",
@@ -34685,10 +34690,10 @@ WeakAuras.ModelPaths = {
             fileId = "198261",
            },
           },
-          value = "gryphonroost",
          },
          {
           text = "gunshop",
+          value = "gunshop",
           children = {
            {
             text = "gunlongrifle.m2",
@@ -34816,10 +34821,10 @@ WeakAuras.ModelPaths = {
             fileId = "198286",
            },
           },
-          value = "gunshop",
          },
          {
           text = "gypsywagons",
+          value = "gypsywagons",
           children = {
            {
             text = "stormwindgypsywagon01.m2",
@@ -34827,10 +34832,10 @@ WeakAuras.ModelPaths = {
             fileId = "198288",
            },
           },
-          value = "gypsywagons",
          },
          {
           text = "hanging cages",
+          value = "hanging cages",
           children = {
            {
             text = "generalhangingcage01.m2",
@@ -34838,10 +34843,10 @@ WeakAuras.ModelPaths = {
             fileId = "198289",
            },
           },
-          value = "hanging cages",
          },
          {
           text = "hanginglanterns",
+          value = "hanginglanterns",
           children = {
            {
             text = "generalhanginglantern01.m2",
@@ -34854,10 +34859,10 @@ WeakAuras.ModelPaths = {
             fileId = "198292",
            },
           },
-          value = "hanginglanterns",
          },
          {
           text = "haypiles",
+          value = "haypiles",
           children = {
            {
             text = "darkhaypilemedium01.m2",
@@ -34875,10 +34880,10 @@ WeakAuras.ModelPaths = {
             fileId = "198297",
            },
           },
-          value = "haypiles",
          },
          {
           text = "hearse",
+          value = "hearse",
           children = {
            {
             text = "moonbrookhearse.m2",
@@ -34886,10 +34891,10 @@ WeakAuras.ModelPaths = {
             fileId = "198301",
            },
           },
-          value = "hearse",
          },
          {
           text = "lampposts",
+          value = "lampposts",
           children = {
            {
             text = "duskwoodlamppost.m2",
@@ -34902,10 +34907,10 @@ WeakAuras.ModelPaths = {
             fileId = "198304",
            },
           },
-          value = "lampposts",
          },
          {
           text = "lamps",
+          value = "lamps",
           children = {
            {
             text = "lamppostbroken.m2",
@@ -34963,10 +34968,10 @@ WeakAuras.ModelPaths = {
             fileId = "198324",
            },
           },
-          value = "lamps",
          },
          {
           text = "lanterns",
+          value = "lanterns",
           children = {
            {
             text = "generallantern01.m2",
@@ -34989,10 +34994,10 @@ WeakAuras.ModelPaths = {
             fileId = "198330",
            },
           },
-          value = "lanterns",
          },
          {
           text = "logmachines",
+          value = "logmachines",
           children = {
            {
             text = "logmachine01.m2",
@@ -35015,10 +35020,10 @@ WeakAuras.ModelPaths = {
             fileId = "198334",
            },
           },
-          value = "logmachines",
          },
          {
           text = "loom",
+          value = "loom",
           children = {
            {
             text = "loomhumanblue.m2",
@@ -35031,10 +35036,10 @@ WeakAuras.ModelPaths = {
             fileId = "198338",
            },
           },
-          value = "loom",
          },
          {
           text = "lumberpiles",
+          value = "lumberpiles",
           children = {
            {
             text = "deadminelumberpilelarge.m2",
@@ -35047,10 +35052,10 @@ WeakAuras.ModelPaths = {
             fileId = "198340",
            },
           },
-          value = "lumberpiles",
          },
          {
           text = "meat",
+          value = "meat",
           children = {
            {
             text = "bloodymeat01.m2",
@@ -35063,10 +35068,10 @@ WeakAuras.ModelPaths = {
             fileId = "198344",
            },
           },
-          value = "meat",
          },
          {
           text = "minemachine",
+          value = "minemachine",
           children = {
            {
             text = "cavekoboldminemachine.m2",
@@ -35074,10 +35079,10 @@ WeakAuras.ModelPaths = {
             fileId = "198346",
            },
           },
-          value = "minemachine",
          },
          {
           text = "miningsifters",
+          value = "miningsifters",
           children = {
            {
             text = "miningsifter01.m2",
@@ -35090,10 +35095,10 @@ WeakAuras.ModelPaths = {
             fileId = "198352",
            },
           },
-          value = "miningsifters",
          },
          {
           text = "miningtroughs",
+          value = "miningtroughs",
           children = {
            {
             text = "miningtroughlarge.m2",
@@ -35106,10 +35111,10 @@ WeakAuras.ModelPaths = {
             fileId = "198356",
            },
           },
-          value = "miningtroughs",
          },
          {
           text = "mops",
+          value = "mops",
           children = {
            {
             text = "mop.m2",
@@ -35117,10 +35122,10 @@ WeakAuras.ModelPaths = {
             fileId = "198357",
            },
           },
-          value = "mops",
          },
          {
           text = "mugs",
+          value = "mugs",
           children = {
            {
             text = "goldgoblet01.m2",
@@ -35153,10 +35158,10 @@ WeakAuras.ModelPaths = {
             fileId = "198367",
            },
           },
-          value = "mugs",
          },
          {
           text = "museumskeletons",
+          value = "museumskeletons",
           children = {
            {
             text = "dragonskeletonhanging.m2",
@@ -35169,10 +35174,10 @@ WeakAuras.ModelPaths = {
             fileId = "198370",
            },
           },
-          value = "museumskeletons",
          },
          {
           text = "oildrums",
+          value = "oildrums",
           children = {
            {
             text = "oildrum01.m2",
@@ -35180,10 +35185,10 @@ WeakAuras.ModelPaths = {
             fileId = "198372",
            },
           },
-          value = "oildrums",
          },
          {
           text = "oilrigstacks",
+          value = "oilrigstacks",
           children = {
            {
             text = "oilrigstack01.m2",
@@ -35196,10 +35201,10 @@ WeakAuras.ModelPaths = {
             fileId = "198377",
            },
           },
-          value = "oilrigstacks",
          },
          {
           text = "onxiatrophy",
+          value = "onxiatrophy",
           children = {
            {
             text = "alliancehangingnefariantrophy.m2",
@@ -35212,10 +35217,10 @@ WeakAuras.ModelPaths = {
             fileId = "198379",
            },
           },
-          value = "onxiatrophy",
          },
          {
           text = "outposts",
+          value = "outposts",
           children = {
            {
             text = "generaloutpost01.m2",
@@ -35253,10 +35258,10 @@ WeakAuras.ModelPaths = {
             fileId = "198386",
            },
           },
-          value = "outposts",
          },
          {
           text = "peasantlumber",
+          value = "peasantlumber",
           children = {
            {
             text = "peasantlumber01.m2",
@@ -35264,10 +35269,10 @@ WeakAuras.ModelPaths = {
             fileId = "198389",
            },
           },
-          value = "peasantlumber",
          },
          {
           text = "pews",
+          value = "pews",
           children = {
            {
             text = "generalchurchpew01.m2",
@@ -35275,10 +35280,10 @@ WeakAuras.ModelPaths = {
             fileId = "198390",
            },
           },
-          value = "pews",
          },
          {
           text = "planterboxes",
+          value = "planterboxes",
           children = {
            {
             text = "stormwindplanter.m2",
@@ -35321,10 +35326,10 @@ WeakAuras.ModelPaths = {
             fileId = "198404",
            },
           },
-          value = "planterboxes",
          },
          {
           text = "plates",
+          value = "plates",
           children = {
            {
             text = "generaldirtyplate01.m2",
@@ -35332,10 +35337,10 @@ WeakAuras.ModelPaths = {
             fileId = "198405",
            },
           },
-          value = "plates",
          },
          {
           text = "podiums",
+          value = "podiums",
           children = {
            {
             text = "duskwoodpodium01.m2",
@@ -35343,10 +35348,10 @@ WeakAuras.ModelPaths = {
             fileId = "198407",
            },
           },
-          value = "podiums",
          },
          {
           text = "posters",
+          value = "posters",
           children = {
            {
             text = "missingposter01.m2",
@@ -35359,10 +35364,10 @@ WeakAuras.ModelPaths = {
             fileId = "198411",
            },
           },
-          value = "posters",
          },
          {
           text = "pulleys",
+          value = "pulleys",
           children = {
            {
             text = "exteriorpulley.m2",
@@ -35375,10 +35380,10 @@ WeakAuras.ModelPaths = {
             fileId = "198413",
            },
           },
-          value = "pulleys",
          },
          {
           text = "ramrod",
+          value = "ramrod",
           children = {
            {
             text = "deadminegiantramrod.m2",
@@ -35386,10 +35391,10 @@ WeakAuras.ModelPaths = {
             fileId = "198418",
            },
           },
-          value = "ramrod",
          },
          {
           text = "ropeladders",
+          value = "ropeladders",
           children = {
            {
             text = "ropeladder01.m2",
@@ -35397,10 +35402,10 @@ WeakAuras.ModelPaths = {
             fileId = "198421",
            },
           },
-          value = "ropeladders",
          },
          {
           text = "ropes",
+          value = "ropes",
           children = {
            {
             text = "cavekoboldropecoil.m2",
@@ -35408,10 +35413,10 @@ WeakAuras.ModelPaths = {
             fileId = "198422",
            },
           },
-          value = "ropes",
          },
          {
           text = "rugs",
+          value = "rugs",
           children = {
            {
             text = "generalbearskinrug01.m2",
@@ -35449,10 +35454,10 @@ WeakAuras.ModelPaths = {
             fileId = "198436",
            },
           },
-          value = "rugs",
          },
          {
           text = "sacks",
+          value = "sacks",
           children = {
            {
             text = "plaguedgrainsack01.m2",
@@ -35485,10 +35490,10 @@ WeakAuras.ModelPaths = {
             fileId = "198443",
            },
           },
-          value = "sacks",
          },
          {
           text = "sarcophagi",
+          value = "sarcophagi",
           children = {
            {
             text = "sarcophagus.m2",
@@ -35496,10 +35501,10 @@ WeakAuras.ModelPaths = {
             fileId = "198445",
            },
           },
-          value = "sarcophagi",
          },
          {
           text = "scribestations",
+          value = "scribestations",
           children = {
            {
             text = "generalscribestation01.m2",
@@ -35507,10 +35512,10 @@ WeakAuras.ModelPaths = {
             fileId = "198449",
            },
           },
-          value = "scribestations",
          },
          {
           text = "scrolls",
+          value = "scrolls",
           children = {
            {
             text = "scrolla02.m2",
@@ -35543,10 +35548,10 @@ WeakAuras.ModelPaths = {
             fileId = "198457",
            },
           },
-          value = "scrolls",
          },
          {
           text = "shack",
+          value = "shack",
           children = {
            {
             text = "shack.m2",
@@ -35554,10 +35559,10 @@ WeakAuras.ModelPaths = {
             fileId = "198459",
            },
           },
-          value = "shack",
          },
          {
           text = "shopcounter",
+          value = "shopcounter",
           children = {
            {
             text = "duskwoodshopcounter.m2",
@@ -35570,10 +35575,10 @@ WeakAuras.ModelPaths = {
             fileId = "198462",
            },
           },
-          value = "shopcounter",
          },
          {
           text = "signposts",
+          value = "signposts",
           children = {
            {
             text = "humansignpost01.m2",
@@ -35656,10 +35661,10 @@ WeakAuras.ModelPaths = {
             fileId = "198481",
            },
           },
-          value = "signposts",
          },
          {
           text = "signs",
+          value = "signs",
           children = {
            {
             text = "alchemistsshop01.m2",
@@ -35742,10 +35747,10 @@ WeakAuras.ModelPaths = {
             fileId = "198516",
            },
           },
-          value = "signs",
          },
          {
           text = "smokestack",
+          value = "smokestack",
           children = {
            {
             text = "smokestack.m2",
@@ -35753,10 +35758,10 @@ WeakAuras.ModelPaths = {
             fileId = "198517",
            },
           },
-          value = "smokestack",
          },
          {
           text = "spidereggsground",
+          value = "spidereggsground",
           children = {
            {
             text = "cavekoboldspidereggsground.m2",
@@ -35764,10 +35769,10 @@ WeakAuras.ModelPaths = {
             fileId = "198519",
            },
           },
-          value = "spidereggsground",
          },
          {
           text = "spidereggssack",
+          value = "spidereggssack",
           children = {
            {
             text = "cavekoboldspidereggssack.m2",
@@ -35790,10 +35795,10 @@ WeakAuras.ModelPaths = {
             fileId = "198527",
            },
           },
-          value = "spidereggssack",
          },
          {
           text = "statues",
+          value = "statues",
           children = {
            {
             text = "busthf01.m2",
@@ -35871,10 +35876,10 @@ WeakAuras.ModelPaths = {
             fileId = "198570",
            },
           },
-          value = "statues",
          },
          {
           text = "steam",
+          value = "steam",
           children = {
            {
             text = "deadminesteam01.m2",
@@ -35887,10 +35892,10 @@ WeakAuras.ModelPaths = {
             fileId = "198572",
            },
           },
-          value = "steam",
          },
          {
           text = "steamgauges",
+          value = "steamgauges",
           children = {
            {
             text = "deadminesteamgauge01.m2",
@@ -35908,10 +35913,10 @@ WeakAuras.ModelPaths = {
             fileId = "198575",
            },
           },
-          value = "steamgauges",
          },
          {
           text = "steamwhistles",
+          value = "steamwhistles",
           children = {
            {
             text = "deadminesteamwhistle.m2",
@@ -35924,10 +35929,10 @@ WeakAuras.ModelPaths = {
             fileId = "198577",
            },
           },
-          value = "steamwhistles",
          },
          {
           text = "stonefence",
+          value = "stonefence",
           children = {
            {
             text = "genericfencepost.m2",
@@ -35940,10 +35945,10 @@ WeakAuras.ModelPaths = {
             fileId = "198580",
            },
           },
-          value = "stonefence",
          },
          {
           text = "stonepyres",
+          value = "stonepyres",
           children = {
            {
             text = "stonepyre01.m2",
@@ -35951,10 +35956,10 @@ WeakAuras.ModelPaths = {
             fileId = "198581",
            },
           },
-          value = "stonepyres",
          },
          {
           text = "stormwind",
+          value = "stormwind",
           children = {
            {
             text = "alliancemaptable.m2",
@@ -35982,10 +35987,10 @@ WeakAuras.ModelPaths = {
             fileId = "198593",
            },
           },
-          value = "stormwind",
          },
          {
           text = "stoves",
+          value = "stoves",
           children = {
            {
             text = "potbellystove.m2",
@@ -36003,10 +36008,10 @@ WeakAuras.ModelPaths = {
             fileId = "198597",
            },
           },
-          value = "stoves",
          },
          {
           text = "tables",
+          value = "tables",
           children = {
            {
             text = "bloodytable1.m2",
@@ -36054,10 +36059,10 @@ WeakAuras.ModelPaths = {
             fileId = "198609",
            },
           },
-          value = "tables",
          },
          {
           text = "torturedevices",
+          value = "torturedevices",
           children = {
            {
             text = "generalironmaiden01.m2",
@@ -36075,10 +36080,10 @@ WeakAuras.ModelPaths = {
             fileId = "198613",
            },
           },
-          value = "torturedevices",
          },
          {
           text = "valves",
+          value = "valves",
           children = {
            {
             text = "deadminevalve.m2",
@@ -36086,10 +36091,10 @@ WeakAuras.ModelPaths = {
             fileId = "198616",
            },
           },
-          value = "valves",
          },
          {
           text = "valvesteam",
+          value = "valvesteam",
           children = {
            {
             text = "deadminevalvesteam01.m2",
@@ -36102,10 +36107,10 @@ WeakAuras.ModelPaths = {
             fileId = "198618",
            },
           },
-          value = "valvesteam",
          },
          {
           text = "valvewaterdrip",
+          value = "valvewaterdrip",
           children = {
            {
             text = "deadminevalvewaterdrip.m2",
@@ -36113,10 +36118,10 @@ WeakAuras.ModelPaths = {
             fileId = "198619",
            },
           },
-          value = "valvewaterdrip",
          },
          {
           text = "vendorawnings",
+          value = "vendorawnings",
           children = {
            {
             text = "stormwindvendorawning01.m2",
@@ -36124,10 +36129,10 @@ WeakAuras.ModelPaths = {
             fileId = "198620",
            },
           },
-          value = "vendorawnings",
          },
          {
           text = "vendortents",
+          value = "vendortents",
           children = {
            {
             text = "stormwindvendortent01.m2",
@@ -36135,10 +36140,10 @@ WeakAuras.ModelPaths = {
             fileId = "198621",
            },
           },
-          value = "vendortents",
          },
          {
           text = "vials",
+          value = "vials",
           children = {
            {
             text = "smallvials.m2",
@@ -36151,10 +36156,10 @@ WeakAuras.ModelPaths = {
             fileId = "198630",
            },
           },
-          value = "vials",
          },
          {
           text = "walls",
+          value = "walls",
           children = {
            {
             text = "greatwall_portcullis.m2",
@@ -36162,10 +36167,10 @@ WeakAuras.ModelPaths = {
             fileId = "198632",
            },
           },
-          value = "walls",
          },
          {
           text = "wardrobe",
+          value = "wardrobe",
           children = {
            {
             text = "duskwoodwardrobe01.m2",
@@ -36178,10 +36183,10 @@ WeakAuras.ModelPaths = {
             fileId = "198634",
            },
           },
-          value = "wardrobe",
          },
          {
           text = "waterdrops",
+          value = "waterdrops",
           children = {
            {
             text = "deadminewaterdrops.m2",
@@ -36189,10 +36194,10 @@ WeakAuras.ModelPaths = {
             fileId = "198635",
            },
           },
-          value = "waterdrops",
          },
          {
           text = "weaponracks",
+          value = "weaponracks",
           children = {
            {
             text = "generalweaponrack01.m2",
@@ -36200,10 +36205,10 @@ WeakAuras.ModelPaths = {
             fileId = "198636",
            },
           },
-          value = "weaponracks",
          },
          {
           text = "weapons&armor",
+          value = "weapons&armor",
           children = {
            {
             text = "2sidedpickaxe.m2",
@@ -36311,7 +36316,6 @@ WeakAuras.ModelPaths = {
             fileId = "198662",
            },
           },
-          value = "weapons&armor",
          },
          {
           text = "westfallgrainsilodestroyed01.m2",
@@ -36320,6 +36324,7 @@ WeakAuras.ModelPaths = {
          },
          {
           text = "woodendummies",
+          value = "woodendummies",
           children = {
            {
             text = "generalwoodendummy02.m2",
@@ -36332,10 +36337,10 @@ WeakAuras.ModelPaths = {
             fileId = "198666",
            },
           },
-          value = "woodendummies",
          },
          {
           text = "woodenrails",
+          value = "woodenrails",
           children = {
            {
             text = "rail_wooden01.m2",
@@ -36348,10 +36353,10 @@ WeakAuras.ModelPaths = {
             fileId = "198669",
            },
           },
-          value = "woodenrails",
          },
          {
           text = "woodenstairs",
+          value = "woodenstairs",
           children = {
            {
             text = "woodenstairs01.m2",
@@ -36364,10 +36369,10 @@ WeakAuras.ModelPaths = {
             fileId = "198671",
            },
           },
-          value = "woodenstairs",
          },
          {
           text = "wreckedbuildings",
+          value = "wreckedbuildings",
           children = {
            {
             text = "wreckedbuildinghbase01.m2",
@@ -36400,16 +36405,16 @@ WeakAuras.ModelPaths = {
             fileId = "198677",
            },
           },
-          value = "wreckedbuildings",
          },
         },
-        value = "passive doodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "prisoncell",
+          value = "prisoncell",
           children = {
            {
             text = "prisoncell01.m2",
@@ -36417,22 +36422,22 @@ WeakAuras.ModelPaths = {
             fileId = "198678",
            },
           },
-          value = "prisoncell",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "human",
      },
      {
       text = "makura",
+      value = "makura",
       children = {
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "makurashells",
+          value = "makurashells",
           children = {
            {
             text = "makurashells01.m2",
@@ -36475,22 +36480,22 @@ WeakAuras.ModelPaths = {
             fileId = "198715",
            },
           },
-          value = "makurashells",
          },
         },
-        value = "passive doodads",
        },
       },
-      value = "makura",
      },
      {
       text = "murloc",
+      value = "murloc",
       children = {
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "altars",
+          value = "altars",
           children = {
            {
             text = "murlocaltar_01.m2",
@@ -36498,10 +36503,10 @@ WeakAuras.ModelPaths = {
             fileId = "198717",
            },
           },
-          value = "altars",
          },
          {
           text = "pearl",
+          value = "pearl",
           children = {
            {
             text = "greatpearl_01.m2",
@@ -36509,22 +36514,22 @@ WeakAuras.ModelPaths = {
             fileId = "198719",
            },
           },
-          value = "pearl",
          },
         },
-        value = "passive doodads",
        },
       },
-      value = "murloc",
      },
      {
       text = "nightelf",
+      value = "nightelf",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "doors",
+          value = "doors",
           children = {
            {
             text = "bfd_brassdoors.m2",
@@ -36532,16 +36537,16 @@ WeakAuras.ModelPaths = {
             fileId = "198720",
            },
           },
-          value = "doors",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "banners",
+          value = "banners",
           children = {
            {
             text = "nightelfowlbanner01.m2",
@@ -36569,10 +36574,10 @@ WeakAuras.ModelPaths = {
             fileId = "198731",
            },
           },
-          value = "banners",
          },
          {
           text = "barrel",
+          value = "barrel",
           children = {
            {
             text = "elfbarrel01.m2",
@@ -36580,10 +36585,10 @@ WeakAuras.ModelPaths = {
             fileId = "198733",
            },
           },
-          value = "barrel",
          },
          {
           text = "beds",
+          value = "beds",
           children = {
            {
             text = "elfbed01.m2",
@@ -36601,10 +36606,10 @@ WeakAuras.ModelPaths = {
             fileId = "198736",
            },
           },
-          value = "beds",
          },
          {
           text = "bowls",
+          value = "bowls",
           children = {
            {
             text = "nightelfbowl.m2",
@@ -36612,10 +36617,10 @@ WeakAuras.ModelPaths = {
             fileId = "198741",
            },
           },
-          value = "bowls",
          },
          {
           text = "candles",
+          value = "candles",
           children = {
            {
             text = "ne_candle01.m2",
@@ -36628,10 +36633,10 @@ WeakAuras.ModelPaths = {
             fileId = "198744",
            },
           },
-          value = "candles",
          },
          {
           text = "crates",
+          value = "crates",
           children = {
            {
             text = "elfcrate01.m2",
@@ -36639,10 +36644,10 @@ WeakAuras.ModelPaths = {
             fileId = "198748",
            },
           },
-          value = "crates",
          },
          {
           text = "dressers",
+          value = "dressers",
           children = {
            {
             text = "ne_dresser01.m2",
@@ -36650,10 +36655,10 @@ WeakAuras.ModelPaths = {
             fileId = "198749",
            },
           },
-          value = "dressers",
          },
          {
           text = "druidbeds",
+          value = "druidbeds",
           children = {
            {
             text = "wailingdruidbed.m2",
@@ -36661,10 +36666,10 @@ WeakAuras.ModelPaths = {
             fileId = "198752",
            },
           },
-          value = "druidbeds",
          },
          {
           text = "fountains",
+          value = "fountains",
           children = {
            {
             text = "elvenfountain.m2",
@@ -36672,10 +36677,10 @@ WeakAuras.ModelPaths = {
             fileId = "198754",
            },
           },
-          value = "fountains",
          },
          {
           text = "furniture",
+          value = "furniture",
           children = {
            {
             text = "elvenstonestool01.m2",
@@ -36693,10 +36698,10 @@ WeakAuras.ModelPaths = {
             fileId = "198757",
            },
           },
-          value = "furniture",
          },
          {
           text = "gardenbenches",
+          value = "gardenbenches",
           children = {
            {
             text = "gardenbench01.m2",
@@ -36714,10 +36719,10 @@ WeakAuras.ModelPaths = {
             fileId = "198760",
            },
           },
-          value = "gardenbenches",
          },
          {
           text = "gates",
+          value = "gates",
           children = {
            {
             text = "kalidarmoongate.m2",
@@ -36725,10 +36730,10 @@ WeakAuras.ModelPaths = {
             fileId = "198761",
            },
           },
-          value = "gates",
          },
          {
           text = "gazibos",
+          value = "gazibos",
           children = {
            {
             text = "kalidargazibo.m2",
@@ -36736,10 +36741,10 @@ WeakAuras.ModelPaths = {
             fileId = "198762",
            },
           },
-          value = "gazibos",
          },
          {
           text = "glaivethrower",
+          value = "glaivethrower",
           children = {
            {
             text = "nightelfglaivethrower_doodad01.m2",
@@ -36752,10 +36757,10 @@ WeakAuras.ModelPaths = {
             fileId = "198765",
            },
           },
-          value = "glaivethrower",
          },
          {
           text = "hippogryphroost",
+          value = "hippogryphroost",
           children = {
            {
             text = "hippogryphroost.m2",
@@ -36763,10 +36768,10 @@ WeakAuras.ModelPaths = {
             fileId = "198768",
            },
           },
-          value = "hippogryphroost",
          },
          {
           text = "lamps",
+          value = "lamps",
           children = {
            {
             text = "darnassusstreetlamp01.m2",
@@ -36799,10 +36804,10 @@ WeakAuras.ModelPaths = {
             fileId = "198777",
            },
           },
-          value = "lamps",
          },
          {
           text = "lanterns",
+          value = "lanterns",
           children = {
            {
             text = "nightelfhanginglantern.m2",
@@ -36820,10 +36825,10 @@ WeakAuras.ModelPaths = {
             fileId = "198781",
            },
           },
-          value = "lanterns",
          },
          {
           text = "magicalimplements",
+          value = "magicalimplements",
           children = {
            {
             text = "nemagicimplement01.m2",
@@ -36876,10 +36881,10 @@ WeakAuras.ModelPaths = {
             fileId = "198794",
            },
           },
-          value = "magicalimplements",
          },
          {
           text = "moonwelllight",
+          value = "moonwelllight",
           children = {
            {
             text = "moonwelllight.m2",
@@ -36887,10 +36892,10 @@ WeakAuras.ModelPaths = {
             fileId = "198798",
            },
           },
-          value = "moonwelllight",
          },
          {
           text = "pottery",
+          value = "pottery",
           children = {
            {
             text = "elvenpottery01.m2",
@@ -36913,10 +36918,10 @@ WeakAuras.ModelPaths = {
             fileId = "198804",
            },
           },
-          value = "pottery",
          },
          {
           text = "pvpwalls",
+          value = "pvpwalls",
           children = {
            {
             text = "aszharapvp_walls_01.m2",
@@ -36934,10 +36939,10 @@ WeakAuras.ModelPaths = {
             fileId = "198807",
            },
           },
-          value = "pvpwalls",
          },
          {
           text = "ruins",
+          value = "ruins",
           children = {
            {
             text = "azrelfruin01.m2",
@@ -37070,10 +37075,10 @@ WeakAuras.ModelPaths = {
             fileId = "198839",
            },
           },
-          value = "ruins",
          },
          {
           text = "screens",
+          value = "screens",
           children = {
            {
             text = "ne_screen01.m2",
@@ -37081,10 +37086,10 @@ WeakAuras.ModelPaths = {
             fileId = "198842",
            },
           },
-          value = "screens",
          },
          {
           text = "signposts",
+          value = "signposts",
           children = {
            {
             text = "nightelfsignpost01.m2",
@@ -37107,10 +37112,10 @@ WeakAuras.ModelPaths = {
             fileId = "198848",
            },
           },
-          value = "signposts",
          },
          {
           text = "signs",
+          value = "signs",
           children = {
            {
             text = "nightelfshopsignbase01.m2",
@@ -37328,10 +37333,10 @@ WeakAuras.ModelPaths = {
             fileId = "198930",
            },
           },
-          value = "signs",
          },
          {
           text = "statue",
+          value = "statue",
           children = {
            {
             text = "kalidarwoodstatue02.m2",
@@ -37339,10 +37344,10 @@ WeakAuras.ModelPaths = {
             fileId = "198931",
            },
           },
-          value = "statue",
          },
          {
           text = "statues",
+          value = "statues",
           children = {
            {
             text = "druidstone.m2",
@@ -37380,10 +37385,10 @@ WeakAuras.ModelPaths = {
             fileId = "198946",
            },
           },
-          value = "statues",
          },
          {
           text = "steppingstones",
+          value = "steppingstones",
           children = {
            {
             text = "steppingstone01.m2",
@@ -37396,10 +37401,10 @@ WeakAuras.ModelPaths = {
             fileId = "198948",
            },
           },
-          value = "steppingstones",
          },
          {
           text = "stonerunes",
+          value = "stonerunes",
           children = {
            {
             text = "kalidarstonerune01.m2",
@@ -37417,10 +37422,10 @@ WeakAuras.ModelPaths = {
             fileId = "198951",
            },
           },
-          value = "stonerunes",
          },
          {
           text = "tables",
+          value = "tables",
           children = {
            {
             text = "elvenwoodentable01.m2",
@@ -37428,10 +37433,10 @@ WeakAuras.ModelPaths = {
             fileId = "198952",
            },
           },
-          value = "tables",
          },
          {
           text = "taxiflags",
+          value = "taxiflags",
           children = {
            {
             text = "taxiflagnightelf.m2",
@@ -37439,10 +37444,10 @@ WeakAuras.ModelPaths = {
             fileId = "198955",
            },
           },
-          value = "taxiflags",
          },
          {
           text = "teleporttree",
+          value = "teleporttree",
           children = {
            {
             text = "teleporttree.m2",
@@ -37450,10 +37455,10 @@ WeakAuras.ModelPaths = {
             fileId = "198959",
            },
           },
-          value = "teleporttree",
          },
          {
           text = "totems",
+          value = "totems",
           children = {
            {
             text = "nightelfwarningtotem_01.m2",
@@ -37471,10 +37476,10 @@ WeakAuras.ModelPaths = {
             fileId = "198962",
            },
           },
-          value = "totems",
          },
          {
           text = "wagons",
+          value = "wagons",
           children = {
            {
             text = "nightelfcart.m2",
@@ -37487,10 +37492,10 @@ WeakAuras.ModelPaths = {
             fileId = "198969",
            },
           },
-          value = "wagons",
          },
          {
           text = "wallhangings",
+          value = "wallhangings",
           children = {
            {
             text = "elfwallhanging01.m2",
@@ -37553,22 +37558,22 @@ WeakAuras.ModelPaths = {
             fileId = "198983",
            },
           },
-          value = "wallhangings",
          },
         },
-        value = "passive doodads",
        },
       },
-      value = "nightelf",
      },
      {
       text = "ogre",
+      value = "ogre",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "ogrehead",
+          value = "ogrehead",
           children = {
            {
             text = "glowingogrehead.m2",
@@ -37581,16 +37586,16 @@ WeakAuras.ModelPaths = {
             fileId = "198986",
            },
           },
-          value = "ogrehead",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "ogrebackpacks",
+          value = "ogrebackpacks",
           children = {
            {
             text = "ogrebackpack01.m2",
@@ -37603,10 +37608,10 @@ WeakAuras.ModelPaths = {
             fileId = "198990",
            },
           },
-          value = "ogrebackpacks",
          },
          {
           text = "ogremeatchains",
+          value = "ogremeatchains",
           children = {
            {
             text = "ogremeatchain01.m2",
@@ -37629,10 +37634,10 @@ WeakAuras.ModelPaths = {
             fileId = "198996",
            },
           },
-          value = "ogremeatchains",
          },
          {
           text = "ogremoundrocks",
+          value = "ogremoundrocks",
           children = {
            {
             text = "brogremoundrock01.m2",
@@ -37755,10 +37760,10 @@ WeakAuras.ModelPaths = {
             fileId = "199021",
            },
           },
-          value = "ogremoundrocks",
          },
          {
           text = "ogremoundvent",
+          value = "ogremoundvent",
           children = {
            {
             text = "ogresmokevent01.m2",
@@ -37766,10 +37771,10 @@ WeakAuras.ModelPaths = {
             fileId = "199022",
            },
           },
-          value = "ogremoundvent",
          },
          {
           text = "ogrethrone",
+          value = "ogrethrone",
           children = {
            {
             text = "ogrethrone.m2",
@@ -37777,10 +37782,10 @@ WeakAuras.ModelPaths = {
             fileId = "199025",
            },
           },
-          value = "ogrethrone",
          },
          {
           text = "poodad",
+          value = "poodad",
           children = {
            {
             text = "poodad01.m2",
@@ -37788,10 +37793,10 @@ WeakAuras.ModelPaths = {
             fileId = "199028",
            },
           },
-          value = "poodad",
          },
          {
           text = "torches",
+          value = "torches",
           children = {
            {
             text = "ogrewalltorch.m2",
@@ -37819,22 +37824,22 @@ WeakAuras.ModelPaths = {
             fileId = "199038",
            },
           },
-          value = "torches",
          },
         },
-        value = "passive doodads",
        },
       },
-      value = "ogre",
      },
      {
       text = "orc",
+      value = "orc",
       children = {
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "altarofstormsstatues",
+          value = "altarofstormsstatues",
           children = {
            {
             text = "altarofstormsstatue.m2",
@@ -37842,10 +37847,10 @@ WeakAuras.ModelPaths = {
             fileId = "199041",
            },
           },
-          value = "altarofstormsstatues",
          },
          {
           text = "animalskulls",
+          value = "animalskulls",
           children = {
            {
             text = "boarskull.m2",
@@ -37868,10 +37873,10 @@ WeakAuras.ModelPaths = {
             fileId = "199054",
            },
           },
-          value = "animalskulls",
          },
          {
           text = "banners",
+          value = "banners",
           children = {
            {
             text = "clanbanner.m2",
@@ -37944,10 +37949,10 @@ WeakAuras.ModelPaths = {
             fileId = "199083",
            },
           },
-          value = "banners",
          },
          {
           text = "barrelsandcrates",
+          value = "barrelsandcrates",
           children = {
            {
             text = "orcbarrel01.m2",
@@ -38020,10 +38025,10 @@ WeakAuras.ModelPaths = {
             fileId = "199105",
            },
           },
-          value = "barrelsandcrates",
          },
          {
           text = "blankets",
+          value = "blankets",
           children = {
            {
             text = "marketblanket01.m2",
@@ -38031,10 +38036,10 @@ WeakAuras.ModelPaths = {
             fileId = "199107",
            },
           },
-          value = "blankets",
          },
          {
           text = "bones",
+          value = "bones",
           children = {
            {
             text = "wailingcavernshangingbones01.m2",
@@ -38052,10 +38057,10 @@ WeakAuras.ModelPaths = {
             fileId = "199116",
            },
           },
-          value = "bones",
          },
          {
           text = "bongs",
+          value = "bongs",
           children = {
            {
             text = "hookahbong01.m2",
@@ -38063,10 +38068,10 @@ WeakAuras.ModelPaths = {
             fileId = "199118",
            },
           },
-          value = "bongs",
          },
          {
           text = "bottles",
+          value = "bottles",
           children = {
            {
             text = "orcbottle01.m2",
@@ -38074,10 +38079,10 @@ WeakAuras.ModelPaths = {
             fileId = "199120",
            },
           },
-          value = "bottles",
          },
          {
           text = "bowls",
+          value = "bowls",
           children = {
            {
             text = "bowlwood01.m2",
@@ -38090,10 +38095,10 @@ WeakAuras.ModelPaths = {
             fileId = "199122",
            },
           },
-          value = "bowls",
          },
          {
           text = "braziers",
+          value = "braziers",
           children = {
            {
             text = "blackrockorccampfire.m2",
@@ -38156,10 +38161,10 @@ WeakAuras.ModelPaths = {
             fileId = "199142",
            },
           },
-          value = "braziers",
          },
          {
           text = "burntoutposts",
+          value = "burntoutposts",
           children = {
            {
             text = "burntoutpost01.m2",
@@ -38197,10 +38202,10 @@ WeakAuras.ModelPaths = {
             fileId = "199150",
            },
           },
-          value = "burntoutposts",
          },
          {
           text = "feedingtroughs",
+          value = "feedingtroughs",
           children = {
            {
             text = "feedtroph01.m2",
@@ -38208,10 +38213,10 @@ WeakAuras.ModelPaths = {
             fileId = "199153",
            },
           },
-          value = "feedingtroughs",
          },
          {
           text = "firepits",
+          value = "firepits",
           children = {
            {
             text = "largefirepit01.m2",
@@ -38224,10 +38229,10 @@ WeakAuras.ModelPaths = {
             fileId = "199156",
            },
           },
-          value = "firepits",
          },
          {
           text = "flags",
+          value = "flags",
           children = {
            {
             text = "orcflappingflag01.m2",
@@ -38235,10 +38240,10 @@ WeakAuras.ModelPaths = {
             fileId = "199157",
            },
           },
-          value = "flags",
          },
          {
           text = "geyser",
+          value = "geyser",
           children = {
            {
             text = "steamgeyser.m2",
@@ -38246,10 +38251,10 @@ WeakAuras.ModelPaths = {
             fileId = "199159",
            },
           },
-          value = "geyser",
          },
          {
           text = "hammocks",
+          value = "hammocks",
           children = {
            {
             text = "hammock01.m2",
@@ -38272,10 +38277,10 @@ WeakAuras.ModelPaths = {
             fileId = "199163",
            },
           },
-          value = "hammocks",
          },
          {
           text = "hangingbones",
+          value = "hangingbones",
           children = {
            {
             text = "orchangingbones01.m2",
@@ -38298,10 +38303,10 @@ WeakAuras.ModelPaths = {
             fileId = "199169",
            },
           },
-          value = "hangingbones",
          },
          {
           text = "hordebanners",
+          value = "hordebanners",
           children = {
            {
             text = "hordebanner01.m2",
@@ -38329,10 +38334,10 @@ WeakAuras.ModelPaths = {
             fileId = "244208",
            },
           },
-          value = "hordebanners",
          },
          {
           text = "jars",
+          value = "jars",
           children = {
            {
             text = "jarorc01.m2",
@@ -38365,10 +38370,10 @@ WeakAuras.ModelPaths = {
             fileId = "199184",
            },
           },
-          value = "jars",
          },
          {
           text = "jugs",
+          value = "jugs",
           children = {
            {
             text = "orcjug01.m2",
@@ -38381,10 +38386,10 @@ WeakAuras.ModelPaths = {
             fileId = "199192",
            },
           },
-          value = "jugs",
          },
          {
           text = "kodowagon",
+          value = "kodowagon",
           children = {
            {
             text = "kodowagon.m2",
@@ -38392,10 +38397,10 @@ WeakAuras.ModelPaths = {
             fileId = "199195",
            },
           },
-          value = "kodowagon",
          },
          {
           text = "lampposts",
+          value = "lampposts",
           children = {
            {
             text = "orcbrazier_lightpostbarrens.m2",
@@ -38413,10 +38418,10 @@ WeakAuras.ModelPaths = {
             fileId = "199198",
            },
           },
-          value = "lampposts",
          },
          {
           text = "lanterns",
+          value = "lanterns",
           children = {
            {
             text = "orchanginglantern.m2",
@@ -38424,10 +38429,10 @@ WeakAuras.ModelPaths = {
             fileId = "199201",
            },
           },
-          value = "lanterns",
          },
          {
           text = "meatracks",
+          value = "meatracks",
           children = {
            {
             text = "rawmeatrack01.m2",
@@ -38440,10 +38445,10 @@ WeakAuras.ModelPaths = {
             fileId = "199205",
            },
           },
-          value = "meatracks",
          },
          {
           text = "mugs",
+          value = "mugs",
           children = {
            {
             text = "orcmug01.m2",
@@ -38451,10 +38456,10 @@ WeakAuras.ModelPaths = {
             fileId = "199207",
            },
           },
-          value = "mugs",
          },
          {
           text = "orcbellows",
+          value = "orcbellows",
           children = {
            {
             text = "orcbellow.m2",
@@ -38462,10 +38467,10 @@ WeakAuras.ModelPaths = {
             fileId = "199208",
            },
           },
-          value = "orcbellows",
          },
          {
           text = "orcfence",
+          value = "orcfence",
           children = {
            {
             text = "orcfence.m2",
@@ -38478,10 +38483,10 @@ WeakAuras.ModelPaths = {
             fileId = "199210",
            },
           },
-          value = "orcfence",
          },
          {
           text = "pinata",
+          value = "pinata",
           children = {
            {
             text = "quillboarpinata.m2",
@@ -38489,10 +38494,10 @@ WeakAuras.ModelPaths = {
             fileId = "199211",
            },
           },
-          value = "pinata",
          },
          {
           text = "pitchers",
+          value = "pitchers",
           children = {
            {
             text = "orcpitcher01.m2",
@@ -38500,10 +38505,10 @@ WeakAuras.ModelPaths = {
             fileId = "199212",
            },
           },
-          value = "pitchers",
          },
          {
           text = "plants",
+          value = "plants",
           children = {
            {
             text = "wailingfern06.m2",
@@ -38526,10 +38531,10 @@ WeakAuras.ModelPaths = {
             fileId = "199220",
            },
           },
-          value = "plants",
          },
          {
           text = "raptoreggs",
+          value = "raptoreggs",
           children = {
            {
             text = "wailingcavernsraptoreggs01.m2",
@@ -38552,10 +38557,10 @@ WeakAuras.ModelPaths = {
             fileId = "199225",
            },
           },
-          value = "raptoreggs",
          },
          {
           text = "raptornests",
+          value = "raptornests",
           children = {
            {
             text = "wailingcavernsraptornest01.m2",
@@ -38568,10 +38573,10 @@ WeakAuras.ModelPaths = {
             fileId = "199227",
            },
           },
-          value = "raptornests",
          },
          {
           text = "rickshaw",
+          value = "rickshaw",
           children = {
            {
             text = "rickshaw.m2",
@@ -38579,10 +38584,10 @@ WeakAuras.ModelPaths = {
             fileId = "199229",
            },
           },
-          value = "rickshaw",
          },
          {
           text = "roasts",
+          value = "roasts",
           children = {
            {
             text = "roastboar.m2",
@@ -38600,10 +38605,10 @@ WeakAuras.ModelPaths = {
             fileId = "199235",
            },
           },
-          value = "roasts",
          },
          {
           text = "rugs",
+          value = "rugs",
           children = {
            {
             text = "centaurrug01.m2",
@@ -38621,10 +38626,10 @@ WeakAuras.ModelPaths = {
             fileId = "199242",
            },
           },
-          value = "rugs",
          },
          {
           text = "saddles",
+          value = "saddles",
           children = {
            {
             text = "direwolfsaddle.m2",
@@ -38642,10 +38647,10 @@ WeakAuras.ModelPaths = {
             fileId = "199247",
            },
           },
-          value = "saddles",
          },
          {
           text = "shields",
+          value = "shields",
           children = {
            {
             text = "orcshield01.m2",
@@ -38663,10 +38668,10 @@ WeakAuras.ModelPaths = {
             fileId = "199254",
            },
           },
-          value = "shields",
          },
          {
           text = "signposts",
+          value = "signposts",
           children = {
            {
             text = "orcsignpost01.m2",
@@ -38699,10 +38704,10 @@ WeakAuras.ModelPaths = {
             fileId = "199262",
            },
           },
-          value = "signposts",
          },
          {
           text = "signs",
+          value = "signs",
           children = {
            {
             text = "orcsign_alchemist.m2",
@@ -38920,10 +38925,10 @@ WeakAuras.ModelPaths = {
             fileId = "199345",
            },
           },
-          value = "signs",
          },
          {
           text = "spits",
+          value = "spits",
           children = {
            {
             text = "spitmetal.m2",
@@ -38936,10 +38941,10 @@ WeakAuras.ModelPaths = {
             fileId = "199347",
            },
           },
-          value = "spits",
          },
          {
           text = "statues",
+          value = "statues",
           children = {
            {
             text = "hellscreammonument_01.m2",
@@ -38947,10 +38952,10 @@ WeakAuras.ModelPaths = {
             fileId = "199349",
            },
           },
-          value = "statues",
          },
          {
           text = "stonebrazier",
+          value = "stonebrazier",
           children = {
            {
             text = "wailingstonebrazier.m2",
@@ -38958,10 +38963,10 @@ WeakAuras.ModelPaths = {
             fileId = "199351",
            },
           },
-          value = "stonebrazier",
          },
          {
           text = "tablecooker",
+          value = "tablecooker",
           children = {
            {
             text = "orctablecooker01.m2",
@@ -38974,10 +38979,10 @@ WeakAuras.ModelPaths = {
             fileId = "199355",
            },
           },
-          value = "tablecooker",
          },
          {
           text = "tables",
+          value = "tables",
           children = {
            {
             text = "orcbench01.m2",
@@ -38990,13 +38995,14 @@ WeakAuras.ModelPaths = {
             fileId = "199357",
            },
           },
-          value = "tables",
          },
          {
           text = "tailoring",
+          value = "tailoring",
           children = {
            {
             text = "bolts",
+            value = "bolts",
             children = {
              {
               text = "orcboltblue.m2",
@@ -39019,10 +39025,10 @@ WeakAuras.ModelPaths = {
               fileId = "199361",
              },
             },
-            value = "bolts",
            },
            {
             text = "boots",
+            value = "boots",
             children = {
              {
               text = "orcboots01.m2",
@@ -39040,10 +39046,10 @@ WeakAuras.ModelPaths = {
               fileId = "199365",
              },
             },
-            value = "boots",
            },
            {
             text = "clothes",
+            value = "clothes",
             children = {
              {
               text = "orchangingpants01.m2",
@@ -39066,10 +39072,10 @@ WeakAuras.ModelPaths = {
               fileId = "199372",
              },
             },
-            value = "clothes",
            },
            {
             text = "spools",
+            value = "spools",
             children = {
              {
               text = "orcspoolbluelow.m2",
@@ -39107,10 +39113,10 @@ WeakAuras.ModelPaths = {
               fileId = "199379",
              },
             },
-            value = "spools",
            },
            {
             text = "yarn",
+            value = "yarn",
             children = {
              {
               text = "orcyarnred.m2",
@@ -39123,13 +39129,12 @@ WeakAuras.ModelPaths = {
               fileId = "199381",
              },
             },
-            value = "yarn",
            },
           },
-          value = "tailoring",
          },
          {
           text = "taxiflags",
+          value = "taxiflags",
           children = {
            {
             text = "orctaxiflag.m2",
@@ -39137,10 +39142,10 @@ WeakAuras.ModelPaths = {
             fileId = "199383",
            },
           },
-          value = "taxiflags",
          },
          {
           text = "tents",
+          value = "tents",
           children = {
            {
             text = "durotarorctent01.m2",
@@ -39163,10 +39168,10 @@ WeakAuras.ModelPaths = {
             fileId = "199389",
            },
           },
-          value = "tents",
          },
          {
           text = "trays",
+          value = "trays",
           children = {
            {
             text = "eggtray.m2",
@@ -39174,10 +39179,10 @@ WeakAuras.ModelPaths = {
             fileId = "199390",
            },
           },
-          value = "trays",
          },
          {
           text = "utensils",
+          value = "utensils",
           children = {
            {
             text = "ladlemetal.m2",
@@ -39195,10 +39200,10 @@ WeakAuras.ModelPaths = {
             fileId = "199396",
            },
           },
-          value = "utensils",
          },
          {
           text = "voodoostuff",
+          value = "voodoostuff",
           children = {
            {
             text = "bubblingbowl01.m2",
@@ -39246,10 +39251,10 @@ WeakAuras.ModelPaths = {
             fileId = "199413",
            },
           },
-          value = "voodoostuff",
          },
          {
           text = "wagons",
+          value = "wagons",
           children = {
            {
             text = "orcwagon01.m2",
@@ -39282,10 +39287,10 @@ WeakAuras.ModelPaths = {
             fileId = "199419",
            },
           },
-          value = "wagons",
          },
          {
           text = "wantedposters",
+          value = "wantedposters",
           children = {
            {
             text = "wantedposterframed01.m2",
@@ -39308,10 +39313,10 @@ WeakAuras.ModelPaths = {
             fileId = "199428",
            },
           },
-          value = "wantedposters",
          },
          {
           text = "weapons",
+          value = "weapons",
           children = {
            {
             text = "orcaxe01.m2",
@@ -39379,10 +39384,10 @@ WeakAuras.ModelPaths = {
             fileId = "199448",
            },
           },
-          value = "weapons",
          },
          {
           text = "wyvernnests",
+          value = "wyvernnests",
           children = {
            {
             text = "wyvernnest01.m2",
@@ -39395,10 +39400,10 @@ WeakAuras.ModelPaths = {
             fileId = "199452",
            },
           },
-          value = "wyvernnests",
          },
          {
           text = "wyvernroost",
+          value = "wyvernroost",
           children = {
            {
             text = "wyvernroost01.m2",
@@ -39406,19 +39411,18 @@ WeakAuras.ModelPaths = {
             fileId = "199454",
            },
           },
-          value = "wyvernroost",
          },
         },
-        value = "passive doodads",
        },
       },
-      value = "orc",
      },
      {
       text = "passive doodads",
+      value = "passive doodads",
       children = {
        {
         text = "wantedposters",
+        value = "wantedposters",
         children = {
          {
           text = "newwantedposter01.m2",
@@ -39441,16 +39445,16 @@ WeakAuras.ModelPaths = {
           fileId = "199477",
          },
         },
-        value = "wantedposters",
        },
       },
-      value = "passive doodads",
      },
      {
       text = "passivedoodads",
+      value = "passivedoodads",
       children = {
        {
         text = "ahnqiraj",
+        value = "ahnqiraj",
         children = {
          {
           text = "cloth_level01.m2",
@@ -39748,10 +39752,10 @@ WeakAuras.ModelPaths = {
           fileId = "199541",
          },
         },
-        value = "ahnqiraj",
        },
        {
         text = "babies",
+        value = "babies",
         children = {
          {
           text = "baby_dw.m2",
@@ -39789,10 +39793,10 @@ WeakAuras.ModelPaths = {
           fileId = "199552",
          },
         },
-        value = "babies",
        },
        {
         text = "barrel",
+        value = "barrel",
         children = {
          {
           text = "barrel01.m2",
@@ -39815,10 +39819,10 @@ WeakAuras.ModelPaths = {
           fileId = "199567",
          },
         },
-        value = "barrel",
        },
        {
         text = "bindstone",
+        value = "bindstone",
         children = {
          {
           text = "newbindstone.m2",
@@ -39826,10 +39830,10 @@ WeakAuras.ModelPaths = {
           fileId = "199571",
          },
         },
-        value = "bindstone",
        },
        {
         text = "bleachers",
+        value = "bleachers",
         children = {
          {
           text = "bleacherseat1a.m2",
@@ -39857,10 +39861,10 @@ WeakAuras.ModelPaths = {
           fileId = "199576",
          },
         },
-        value = "bleachers",
        },
        {
         text = "brokentrap",
+        value = "brokentrap",
         children = {
          {
           text = "brokenfreezingtrap.m2",
@@ -39868,10 +39872,10 @@ WeakAuras.ModelPaths = {
           fileId = "199580",
          },
         },
-        value = "brokentrap",
        },
        {
         text = "christmas",
+        value = "christmas",
         children = {
          {
           text = "g_nutcracker.m2",
@@ -40004,10 +40008,10 @@ WeakAuras.ModelPaths = {
           fileId = "199619",
          },
         },
-        value = "christmas",
        },
        {
         text = "crate01",
+        value = "crate01",
         children = {
          {
           text = "crate01.m2",
@@ -40015,10 +40019,10 @@ WeakAuras.ModelPaths = {
           fileId = "199632",
          },
         },
-        value = "crate01",
        },
        {
         text = "crate02",
+        value = "crate02",
         children = {
          {
           text = "crate02.m2",
@@ -40026,10 +40030,10 @@ WeakAuras.ModelPaths = {
           fileId = "199634",
          },
         },
-        value = "crate02",
        },
        {
         text = "cratesfirstaid",
+        value = "cratesfirstaid",
         children = {
          {
           text = "cratealliancefirstaid01.m2",
@@ -40042,10 +40046,10 @@ WeakAuras.ModelPaths = {
           fileId = "199639",
          },
         },
-        value = "cratesfirstaid",
        },
        {
         text = "creaturedeathskeletons",
+        value = "creaturedeathskeletons",
         children = {
          {
           text = "dragonfootsoldierbones.m2",
@@ -40053,10 +40057,10 @@ WeakAuras.ModelPaths = {
           fileId = "199640",
          },
         },
-        value = "creaturedeathskeletons",
        },
        {
         text = "darkportals",
+        value = "darkportals",
         children = {
          {
           text = "darkportal01.m2",
@@ -40064,10 +40068,10 @@ WeakAuras.ModelPaths = {
           fileId = "199642",
          },
         },
-        value = "darkportals",
        },
        {
         text = "deadtreelogs",
+        value = "deadtreelogs",
         children = {
          {
           text = "deadtreelog01.m2",
@@ -40090,10 +40094,10 @@ WeakAuras.ModelPaths = {
           fileId = "199655",
          },
         },
-        value = "deadtreelogs",
        },
        {
         text = "deathskeletons",
+        value = "deathskeletons",
         children = {
          {
           text = "dwarffemaledeathskeleton.m2",
@@ -40186,10 +40190,10 @@ WeakAuras.ModelPaths = {
           fileId = "199681",
          },
         },
-        value = "deathskeletons",
        },
        {
         text = "directionalmarker",
+        value = "directionalmarker",
         children = {
          {
           text = "directionalmarker.m2",
@@ -40202,10 +40206,10 @@ WeakAuras.ModelPaths = {
           fileId = "199684",
          },
         },
-        value = "directionalmarker",
        },
        {
         text = "doors",
+        value = "doors",
         children = {
          {
           text = "doortest01.m2",
@@ -40213,10 +40217,10 @@ WeakAuras.ModelPaths = {
           fileId = "199686",
          },
         },
-        value = "doors",
        },
        {
         text = "duelingflag",
+        value = "duelingflag",
         children = {
          {
           text = "duelingflag.m2",
@@ -40224,10 +40228,10 @@ WeakAuras.ModelPaths = {
           fileId = "199687",
          },
         },
-        value = "duelingflag",
        },
        {
         text = "eastereggs",
+        value = "eastereggs",
         children = {
          {
           text = "easteregg01.m2",
@@ -40255,10 +40259,10 @@ WeakAuras.ModelPaths = {
           fileId = "199699",
          },
         },
-        value = "eastereggs",
        },
        {
         text = "engineering",
+        value = "engineering",
         children = {
          {
           text = "spring.m2",
@@ -40271,10 +40275,10 @@ WeakAuras.ModelPaths = {
           fileId = "199702",
          },
         },
-        value = "engineering",
        },
        {
         text = "feathers",
+        value = "feathers",
         children = {
          {
           text = "featherbigblue.m2",
@@ -40292,10 +40296,10 @@ WeakAuras.ModelPaths = {
           fileId = "199708",
          },
         },
-        value = "feathers",
        },
        {
         text = "fish",
+        value = "fish",
         children = {
          {
           text = "fishskel01.m2",
@@ -40308,10 +40312,10 @@ WeakAuras.ModelPaths = {
           fileId = "199712",
          },
         },
-        value = "fish",
        },
        {
         text = "floatingdebris",
+        value = "floatingdebris",
         children = {
          {
           text = "floatingbarrel01.m2",
@@ -40359,10 +40363,10 @@ WeakAuras.ModelPaths = {
           fileId = "199721",
          },
         },
-        value = "floatingdebris",
        },
        {
         text = "flyinginsects",
+        value = "flyinginsects",
         children = {
          {
           text = "flyingsmallinsects.m2",
@@ -40370,10 +40374,10 @@ WeakAuras.ModelPaths = {
           fileId = "199723",
          },
         },
-        value = "flyinginsects",
        },
        {
         text = "fruits",
+        value = "fruits",
         children = {
          {
           text = "fruit_apple.m2",
@@ -40436,13 +40440,14 @@ WeakAuras.ModelPaths = {
           fileId = "199736",
          },
         },
-        value = "fruits",
        },
        {
         text = "furniture",
+        value = "furniture",
         children = {
          {
           text = "containers",
+          value = "containers",
           children = {
            {
             text = "barrel02.m2",
@@ -40490,10 +40495,10 @@ WeakAuras.ModelPaths = {
             fileId = "199753",
            },
           },
-          value = "containers",
          },
          {
           text = "refuse",
+          value = "refuse",
           children = {
            {
             text = "bone01.m2",
@@ -40506,13 +40511,12 @@ WeakAuras.ModelPaths = {
             fileId = "199755",
            },
           },
-          value = "refuse",
          },
         },
-        value = "furniture",
        },
        {
         text = "gallows",
+        value = "gallows",
         children = {
          {
           text = "gallows01.m2",
@@ -40520,10 +40524,10 @@ WeakAuras.ModelPaths = {
           fileId = "199756",
          },
         },
-        value = "gallows",
        },
        {
         text = "graystone",
+        value = "graystone",
         children = {
          {
           text = "graystone01.m2",
@@ -40536,10 +40540,10 @@ WeakAuras.ModelPaths = {
           fileId = "199758",
          },
         },
-        value = "graystone",
        },
        {
         text = "halloween",
+        value = "halloween",
         children = {
          {
           text = "burningash01.m2",
@@ -40562,10 +40566,10 @@ WeakAuras.ModelPaths = {
           fileId = "199789",
          },
         },
-        value = "halloween",
        },
        {
         text = "hides",
+        value = "hides",
         children = {
          {
           text = "hidestack01.m2",
@@ -40578,10 +40582,10 @@ WeakAuras.ModelPaths = {
           fileId = "199796",
          },
         },
-        value = "hides",
        },
        {
         text = "lights",
+        value = "lights",
         children = {
          {
           text = "bigcandle.m2",
@@ -40689,10 +40693,10 @@ WeakAuras.ModelPaths = {
           fileId = "199825",
          },
         },
-        value = "lights",
        },
        {
         text = "lunarnewyear",
+        value = "lunarnewyear",
         children = {
          {
           text = "firecrackerstring_blue01.m2",
@@ -40800,10 +40804,10 @@ WeakAuras.ModelPaths = {
           fileId = "199858",
          },
         },
-        value = "lunarnewyear",
        },
        {
         text = "metalbars",
+        value = "metalbars",
         children = {
          {
           text = "metalbars01copper.m2",
@@ -40866,13 +40870,14 @@ WeakAuras.ModelPaths = {
           fileId = "199874",
          },
         },
-        value = "metalbars",
        },
        {
         text = "misc",
+        value = "misc",
         children = {
          {
           text = "minecars",
+          value = "minecars",
           children = {
            {
             text = "caveminecar01.m2",
@@ -40900,10 +40905,10 @@ WeakAuras.ModelPaths = {
             fileId = "199883",
            },
           },
-          value = "minecars",
          },
          {
           text = "pulleys",
+          value = "pulleys",
           children = {
            {
             text = "pulley.m2",
@@ -40911,10 +40916,10 @@ WeakAuras.ModelPaths = {
             fileId = "199885",
            },
           },
-          value = "pulleys",
          },
          {
           text = "wheelbarrow",
+          value = "wheelbarrow",
           children = {
            {
             text = "caveminewheelbarrow01.m2",
@@ -40922,13 +40927,12 @@ WeakAuras.ModelPaths = {
             fileId = "199886",
            },
           },
-          value = "wheelbarrow",
          },
         },
-        value = "misc",
        },
        {
         text = "particleemitters",
+        value = "particleemitters",
         children = {
          {
           text = "ashenvalewisps.m2",
@@ -41221,10 +41225,10 @@ WeakAuras.ModelPaths = {
           fileId = "199973",
          },
         },
-        value = "particleemitters",
        },
        {
         text = "plainrune",
+        value = "plainrune",
         children = {
          {
           text = "plainrune.m2",
@@ -41237,10 +41241,10 @@ WeakAuras.ModelPaths = {
           fileId = "199976",
          },
         },
-        value = "plainrune",
        },
        {
         text = "plaque",
+        value = "plaque",
         children = {
          {
           text = "plaquebronze01.m2",
@@ -41268,10 +41272,10 @@ WeakAuras.ModelPaths = {
           fileId = "199989",
          },
         },
-        value = "plaque",
        },
        {
         text = "postboxes",
+        value = "postboxes",
         children = {
          {
           text = "postboxdwarf.m2",
@@ -41314,10 +41318,10 @@ WeakAuras.ModelPaths = {
           fileId = "200014",
          },
         },
-        value = "postboxes",
        },
        {
         text = "shamanstone",
+        value = "shamanstone",
         children = {
          {
           text = "shamanstone01.m2",
@@ -41325,10 +41329,10 @@ WeakAuras.ModelPaths = {
           fileId = "200024",
          },
         },
-        value = "shamanstone",
        },
        {
         text = "shieldracks",
+        value = "shieldracks",
         children = {
          {
           text = "rackshieldalliance01.m2",
@@ -41351,13 +41355,14 @@ WeakAuras.ModelPaths = {
           fileId = "200033",
          },
         },
-        value = "shieldracks",
        },
        {
         text = "ships",
+        value = "ships",
         children = {
          {
           text = "shipanimation",
+          value = "shipanimation",
           children = {
            {
             text = "transportship_sails.m2",
@@ -41365,10 +41370,10 @@ WeakAuras.ModelPaths = {
             fileId = "200049",
            },
           },
-          value = "shipanimation",
          },
          {
           text = "shipramps",
+          value = "shipramps",
           children = {
            {
             text = "shipramp01.m2",
@@ -41376,10 +41381,10 @@ WeakAuras.ModelPaths = {
             fileId = "200052",
            },
           },
-          value = "shipramps",
          },
          {
           text = "zeppelinanimation",
+          value = "zeppelinanimation",
           children = {
            {
             text = "zepanimation.m2",
@@ -41387,13 +41392,12 @@ WeakAuras.ModelPaths = {
             fileId = "200053",
            },
           },
-          value = "zeppelinanimation",
          },
         },
-        value = "ships",
        },
        {
         text = "skeletons",
+        value = "skeletons",
         children = {
          {
           text = "chainedskeleton01.m2",
@@ -41476,10 +41480,10 @@ WeakAuras.ModelPaths = {
           fileId = "200072",
          },
         },
-        value = "skeletons",
        },
        {
         text = "summerfestival",
+        value = "summerfestival",
         children = {
          {
           text = "summerfest_bonfire_large01.m2",
@@ -41582,10 +41586,10 @@ WeakAuras.ModelPaths = {
           fileId = "200109",
          },
         },
-        value = "summerfestival",
        },
        {
         text = "testball",
+        value = "testball",
         children = {
          {
           text = "testball.m2",
@@ -41593,10 +41597,10 @@ WeakAuras.ModelPaths = {
           fileId = "200117",
          },
         },
-        value = "testball",
        },
        {
         text = "thanksgiving",
+        value = "thanksgiving",
         children = {
          {
           text = "g_cornucopia.m2",
@@ -41654,10 +41658,10 @@ WeakAuras.ModelPaths = {
           fileId = "200128",
          },
         },
-        value = "thanksgiving",
        },
        {
         text = "traps",
+        value = "traps",
         children = {
          {
           text = "spellobject_invisibletrap.m2",
@@ -41665,10 +41669,10 @@ WeakAuras.ModelPaths = {
           fileId = "2199319",
          },
         },
-        value = "traps",
        },
        {
         text = "treasurepiles",
+        value = "treasurepiles",
         children = {
          {
           text = "goldpilelarge01.m2",
@@ -41686,10 +41690,10 @@ WeakAuras.ModelPaths = {
           fileId = "200137",
          },
         },
-        value = "treasurepiles",
        },
        {
         text = "tugofwar",
+        value = "tugofwar",
         children = {
          {
           text = "gryphonroost_ruined.m2",
@@ -41727,10 +41731,10 @@ WeakAuras.ModelPaths = {
           fileId = "200156",
          },
         },
-        value = "tugofwar",
        },
        {
         text = "valentinesday",
+        value = "valentinesday",
         children = {
          {
           text = "valentines_blanket.m2",
@@ -41838,13 +41842,14 @@ WeakAuras.ModelPaths = {
           fileId = "200196",
          },
         },
-        value = "valentinesday",
        },
        {
         text = "wall",
+        value = "wall",
         children = {
          {
           text = "bones",
+          value = "bones",
           children = {
            {
             text = "cavewallbones01.m2",
@@ -41857,13 +41862,12 @@ WeakAuras.ModelPaths = {
             fileId = "200201",
            },
           },
-          value = "bones",
          },
         },
-        value = "wall",
        },
        {
         text = "waterfall",
+        value = "waterfall",
         children = {
          {
           text = "newwaterfall.m2",
@@ -41876,10 +41880,10 @@ WeakAuras.ModelPaths = {
           fileId = "200203",
          },
         },
-        value = "waterfall",
        },
        {
         text = "waterfalls",
+        value = "waterfalls",
         children = {
          {
           text = "damwaterfall01.m2",
@@ -41887,10 +41891,10 @@ WeakAuras.ModelPaths = {
           fileId = "200204",
          },
         },
-        value = "waterfalls",
        },
        {
         text = "weaponcrates",
+        value = "weaponcrates",
         children = {
          {
           text = "weaponcratealliancesword.m2",
@@ -41923,10 +41927,10 @@ WeakAuras.ModelPaths = {
           fileId = "200213",
          },
         },
-        value = "weaponcrates",
        },
        {
         text = "weapons",
+        value = "weapons",
         children = {
          {
           text = "bone_bow.m2",
@@ -42024,10 +42028,10 @@ WeakAuras.ModelPaths = {
           fileId = "200246",
          },
         },
-        value = "weapons",
        },
        {
         text = "well",
+        value = "well",
         children = {
          {
           text = "well.m2",
@@ -42035,10 +42039,10 @@ WeakAuras.ModelPaths = {
           fileId = "200252",
          },
         },
-        value = "well",
        },
        {
         text = "windblown",
+        value = "windblown",
         children = {
          {
           text = "dustwestfall.m2",
@@ -42051,10 +42055,10 @@ WeakAuras.ModelPaths = {
           fileId = "200256",
          },
         },
-        value = "windblown",
        },
        {
         text = "windowbeam",
+        value = "windowbeam",
         children = {
          {
           text = "windowbeam01.m2",
@@ -42067,19 +42071,20 @@ WeakAuras.ModelPaths = {
           fileId = "200258",
          },
         },
-        value = "windowbeam",
        },
       },
-      value = "passivedoodads",
      },
      {
       text = "pirate",
+      value = "pirate",
       children = {
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "piratelandmarks",
+          value = "piratelandmarks",
           children = {
            {
             text = "piratelandmark.m2",
@@ -42087,19 +42092,18 @@ WeakAuras.ModelPaths = {
             fileId = "200259",
            },
           },
-          value = "piratelandmarks",
          },
         },
-        value = "passive doodads",
        },
       },
-      value = "pirate",
      },
      {
       text = "pvp",
+      value = "pvp",
       children = {
        {
         text = "battlefieldbanners",
+        value = "battlefieldbanners",
         children = {
          {
           text = "battlefieldbanner_state_base_plaguelands.m2",
@@ -42202,10 +42206,10 @@ WeakAuras.ModelPaths = {
           fileId = "200285",
          },
         },
-        value = "battlefieldbanners",
        },
        {
         text = "collisionwall",
+        value = "collisionwall",
         children = {
          {
           text = "collisionwallpvp01.m2",
@@ -42218,10 +42222,10 @@ WeakAuras.ModelPaths = {
           fileId = "527813",
          },
         },
-        value = "collisionwall",
        },
        {
         text = "ctfflags",
+        value = "ctfflags",
         children = {
          {
           text = "alliancectfflag.m2",
@@ -42234,10 +42238,10 @@ WeakAuras.ModelPaths = {
           fileId = "200299",
          },
         },
-        value = "ctfflags",
        },
        {
         text = "fires",
+        value = "fires",
         children = {
          {
           text = "lowpolyfire.m2",
@@ -42250,10 +42254,10 @@ WeakAuras.ModelPaths = {
           fileId = "200303",
          },
         },
-        value = "fires",
        },
        {
         text = "runes",
+        value = "runes",
         children = {
          {
           text = "pvp_rune_berserker.m2",
@@ -42281,10 +42285,10 @@ WeakAuras.ModelPaths = {
           fileId = "200310",
          },
         },
-        value = "runes",
        },
        {
         text = "warsong",
+        value = "warsong",
         children = {
          {
           text = "nightelfctfflagplaceglow.m2",
@@ -42308,6 +42312,7 @@ WeakAuras.ModelPaths = {
          },
          {
           text = "windows",
+          value = "windows",
           children = {
            {
             text = "elfwindow.m2",
@@ -42320,22 +42325,22 @@ WeakAuras.ModelPaths = {
             fileId = "200325",
            },
           },
-          value = "windows",
          },
         },
-        value = "warsong",
        },
       },
-      value = "pvp",
      },
      {
       text = "quilboar",
+      value = "quilboar",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "doors",
+          value = "doors",
           children = {
            {
             text = "razorfenforcefield01.m2",
@@ -42343,16 +42348,16 @@ WeakAuras.ModelPaths = {
             fileId = "200328",
            },
           },
-          value = "doors",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "barbs",
+          value = "barbs",
           children = {
            {
             text = "barbs_01.m2",
@@ -42365,10 +42370,10 @@ WeakAuras.ModelPaths = {
             fileId = "200330",
            },
           },
-          value = "barbs",
          },
          {
           text = "huts",
+          value = "huts",
           children = {
            {
             text = "quillboar_hut01.m2",
@@ -42381,10 +42386,10 @@ WeakAuras.ModelPaths = {
             fileId = "200333",
            },
           },
-          value = "huts",
          },
          {
           text = "leantos",
+          value = "leantos",
           children = {
            {
             text = "razorfen leanto03.m2",
@@ -42392,10 +42397,10 @@ WeakAuras.ModelPaths = {
             fileId = "200335",
            },
           },
-          value = "leantos",
          },
          {
           text = "post",
+          value = "post",
           children = {
            {
             text = "quillboarpost.m2",
@@ -42403,10 +42408,10 @@ WeakAuras.ModelPaths = {
             fileId = "200336",
            },
           },
-          value = "post",
          },
          {
           text = "quilboarrockpaintings",
+          value = "quilboarrockpaintings",
           children = {
            {
             text = "quillboarpaintingcliff01.m2",
@@ -42419,10 +42424,10 @@ WeakAuras.ModelPaths = {
             fileId = "200338",
            },
           },
-          value = "quilboarrockpaintings",
          },
          {
           text = "thorncanopies",
+          value = "thorncanopies",
           children = {
            {
             text = "razorfen_canopy01.m2",
@@ -42455,10 +42460,10 @@ WeakAuras.ModelPaths = {
             fileId = "200347",
            },
           },
-          value = "thorncanopies",
          },
          {
           text = "troughs",
+          value = "troughs",
           children = {
            {
             text = "razorfentrough01.m2",
@@ -42466,22 +42471,22 @@ WeakAuras.ModelPaths = {
             fileId = "200349",
            },
           },
-          value = "troughs",
          },
         },
-        value = "passive doodads",
        },
       },
-      value = "quilboar",
      },
      {
       text = "satyr",
+      value = "satyr",
       children = {
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "container",
+          value = "container",
           children = {
            {
             text = "satyrcontainer01.m2",
@@ -42499,10 +42504,10 @@ WeakAuras.ModelPaths = {
             fileId = "200352",
            },
           },
-          value = "container",
          },
          {
           text = "tents",
+          value = "tents",
           children = {
            {
             text = "satyrtent01.m2",
@@ -42520,22 +42525,22 @@ WeakAuras.ModelPaths = {
             fileId = "200356",
            },
           },
-          value = "tents",
          },
         },
-        value = "passive doodads",
        },
       },
-      value = "satyr",
      },
      {
       text = "tauren",
+      value = "tauren",
       children = {
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "animalcages",
+          value = "animalcages",
           children = {
            {
             text = "animalcage01.m2",
@@ -42558,10 +42563,10 @@ WeakAuras.ModelPaths = {
             fileId = "200360",
            },
           },
-          value = "animalcages",
          },
          {
           text = "archerytargets",
+          value = "archerytargets",
           children = {
            {
             text = "archerytargetdwarf01.m2",
@@ -42574,10 +42579,10 @@ WeakAuras.ModelPaths = {
             fileId = "200364",
            },
           },
-          value = "archerytargets",
          },
          {
           text = "babywheels",
+          value = "babywheels",
           children = {
            {
             text = "babywheel01.m2",
@@ -42585,10 +42590,10 @@ WeakAuras.ModelPaths = {
             fileId = "200365",
            },
           },
-          value = "babywheels",
          },
          {
           text = "ballandhoop",
+          value = "ballandhoop",
           children = {
            {
             text = "taurenballhoopstand.m2",
@@ -42601,10 +42606,10 @@ WeakAuras.ModelPaths = {
             fileId = "200370",
            },
           },
-          value = "ballandhoop",
          },
          {
           text = "baskets",
+          value = "baskets",
           children = {
            {
             text = "flatbasket01.m2",
@@ -42642,10 +42647,10 @@ WeakAuras.ModelPaths = {
             fileId = "200377",
            },
           },
-          value = "baskets",
          },
          {
           text = "bowls",
+          value = "bowls",
           children = {
            {
             text = "taurenbowl01.m2",
@@ -42693,10 +42698,10 @@ WeakAuras.ModelPaths = {
             fileId = "200386",
            },
           },
-          value = "bowls",
          },
          {
           text = "carvingtools",
+          value = "carvingtools",
           children = {
            {
             text = "carvingchisel01.m2",
@@ -42719,10 +42724,10 @@ WeakAuras.ModelPaths = {
             fileId = "200391",
            },
           },
-          value = "carvingtools",
          },
          {
           text = "chairs",
+          value = "chairs",
           children = {
            {
             text = "taurenlogchair01.m2",
@@ -42735,10 +42740,10 @@ WeakAuras.ModelPaths = {
             fileId = "200394",
            },
           },
-          value = "chairs",
          },
          {
           text = "chimes",
+          value = "chimes",
           children = {
            {
             text = "taurenchimesbells.m2",
@@ -42751,10 +42756,10 @@ WeakAuras.ModelPaths = {
             fileId = "200396",
            },
           },
-          value = "chimes",
          },
          {
           text = "dreamcatchers",
+          value = "dreamcatchers",
           children = {
            {
             text = "dreamcatcher01.m2",
@@ -42772,10 +42777,10 @@ WeakAuras.ModelPaths = {
             fileId = "200399",
            },
           },
-          value = "dreamcatchers",
          },
          {
           text = "drums",
+          value = "drums",
           children = {
            {
             text = "taurendrumgiant01.m2",
@@ -42793,10 +42798,10 @@ WeakAuras.ModelPaths = {
             fileId = "200403",
            },
           },
-          value = "drums",
          },
          {
           text = "funeralpyres",
+          value = "funeralpyres",
           children = {
            {
             text = "funeralpyre02.m2",
@@ -42804,10 +42809,10 @@ WeakAuras.ModelPaths = {
             fileId = "200405",
            },
           },
-          value = "funeralpyres",
          },
          {
           text = "hitchingposts",
+          value = "hitchingposts",
           children = {
            {
             text = "taurenhitchingpost.m2",
@@ -42815,10 +42820,10 @@ WeakAuras.ModelPaths = {
             fileId = "200406",
            },
           },
-          value = "hitchingposts",
          },
          {
           text = "hotspringssteam",
+          value = "hotspringssteam",
           children = {
            {
             text = "hotspringssteam.m2",
@@ -42826,10 +42831,10 @@ WeakAuras.ModelPaths = {
             fileId = "200407",
            },
           },
-          value = "hotspringssteam",
          },
          {
           text = "kilns",
+          value = "kilns",
           children = {
            {
             text = "taurenkiln01.m2",
@@ -42837,10 +42842,10 @@ WeakAuras.ModelPaths = {
             fileId = "200409",
            },
           },
-          value = "kilns",
          },
          {
           text = "kites",
+          value = "kites",
           children = {
            {
             text = "taurenkite01.m2",
@@ -42858,10 +42863,10 @@ WeakAuras.ModelPaths = {
             fileId = "200412",
            },
           },
-          value = "kites",
          },
          {
           text = "kodohide",
+          value = "kodohide",
           children = {
            {
             text = "taurenkodohide.m2",
@@ -42869,10 +42874,10 @@ WeakAuras.ModelPaths = {
             fileId = "200416",
            },
           },
-          value = "kodohide",
          },
          {
           text = "kodohorncontainers",
+          value = "kodohorncontainers",
           children = {
            {
             text = "bagkodohorns.m2",
@@ -42890,10 +42895,10 @@ WeakAuras.ModelPaths = {
             fileId = "200419",
            },
           },
-          value = "kodohorncontainers",
          },
          {
           text = "kodoskulls",
+          value = "kodoskulls",
           children = {
            {
             text = "kodoskulls01.m2",
@@ -42911,10 +42916,10 @@ WeakAuras.ModelPaths = {
             fileId = "200422",
            },
           },
-          value = "kodoskulls",
          },
          {
           text = "lampposts",
+          value = "lampposts",
           children = {
            {
             text = "taurenlamppost.m2",
@@ -42937,10 +42942,10 @@ WeakAuras.ModelPaths = {
             fileId = "200429",
            },
           },
-          value = "lampposts",
          },
          {
           text = "loom",
+          value = "loom",
           children = {
            {
             text = "taurenloomblue.m2",
@@ -42953,10 +42958,10 @@ WeakAuras.ModelPaths = {
             fileId = "200432",
            },
           },
-          value = "loom",
          },
          {
           text = "mortarpestle",
+          value = "mortarpestle",
           children = {
            {
             text = "mortarpestle.m2",
@@ -42964,10 +42969,10 @@ WeakAuras.ModelPaths = {
             fileId = "200433",
            },
           },
-          value = "mortarpestle",
          },
          {
           text = "peacepipe",
+          value = "peacepipe",
           children = {
            {
             text = "peacepipe05.m2",
@@ -42975,10 +42980,10 @@ WeakAuras.ModelPaths = {
             fileId = "200434",
            },
           },
-          value = "peacepipe",
          },
          {
           text = "pvpwalls",
+          value = "pvpwalls",
           children = {
            {
             text = "azsharataurnwallpvp_01.m2",
@@ -42986,10 +42991,10 @@ WeakAuras.ModelPaths = {
             fileId = "200436",
            },
           },
-          value = "pvpwalls",
          },
          {
           text = "rattles",
+          value = "rattles",
           children = {
            {
             text = "taurenrattle01.m2",
@@ -43002,10 +43007,10 @@ WeakAuras.ModelPaths = {
             fileId = "200440",
            },
           },
-          value = "rattles",
          },
          {
           text = "sacks",
+          value = "sacks",
           children = {
            {
             text = "taurensack01.m2",
@@ -43023,10 +43028,10 @@ WeakAuras.ModelPaths = {
             fileId = "200443",
            },
           },
-          value = "sacks",
          },
          {
           text = "sandpaintings",
+          value = "sandpaintings",
           children = {
            {
             text = "taurensandpainting01.m2",
@@ -43054,10 +43059,10 @@ WeakAuras.ModelPaths = {
             fileId = "200448",
            },
           },
-          value = "sandpaintings",
          },
          {
           text = "signposts",
+          value = "signposts",
           children = {
            {
             text = "taurensignpost01.m2",
@@ -43080,10 +43085,10 @@ WeakAuras.ModelPaths = {
             fileId = "200454",
            },
           },
-          value = "signposts",
          },
          {
           text = "signs",
+          value = "signs",
           children = {
            {
             text = "taurensign_alchemist.m2",
@@ -43266,10 +43271,10 @@ WeakAuras.ModelPaths = {
             fileId = "200526",
            },
           },
-          value = "signs",
          },
          {
           text = "smoke",
+          value = "smoke",
           children = {
            {
             text = "taurencoloredsmoke01.m2",
@@ -43277,10 +43282,10 @@ WeakAuras.ModelPaths = {
             fileId = "200527",
            },
           },
-          value = "smoke",
          },
          {
           text = "tallstridermeat",
+          value = "tallstridermeat",
           children = {
            {
             text = "tallstridermeat01.m2",
@@ -43293,10 +43298,10 @@ WeakAuras.ModelPaths = {
             fileId = "200529",
            },
           },
-          value = "tallstridermeat",
          },
          {
           text = "taurencanoe",
+          value = "taurencanoe",
           children = {
            {
             text = "taurencanoe.m2",
@@ -43304,10 +43309,10 @@ WeakAuras.ModelPaths = {
             fileId = "200532",
            },
           },
-          value = "taurencanoe",
          },
          {
           text = "taurencurtains",
+          value = "taurencurtains",
           children = {
            {
             text = "taurenbeadcurtain01.m2",
@@ -43315,10 +43320,10 @@ WeakAuras.ModelPaths = {
             fileId = "200533",
            },
           },
-          value = "taurencurtains",
          },
          {
           text = "taurenmummies",
+          value = "taurenmummies",
           children = {
            {
             text = "taurenmummy.m2",
@@ -43326,10 +43331,10 @@ WeakAuras.ModelPaths = {
             fileId = "200534",
            },
           },
-          value = "taurenmummies",
          },
          {
           text = "taurenplow",
+          value = "taurenplow",
           children = {
            {
             text = "taurenplow.m2",
@@ -43337,10 +43342,10 @@ WeakAuras.ModelPaths = {
             fileId = "200535",
            },
           },
-          value = "taurenplow",
          },
          {
           text = "taurenrugs",
+          value = "taurenrugs",
           children = {
            {
             text = "taurenrug01.m2",
@@ -43363,10 +43368,10 @@ WeakAuras.ModelPaths = {
             fileId = "200539",
            },
           },
-          value = "taurenrugs",
          },
          {
           text = "taurenshirts",
+          value = "taurenshirts",
           children = {
            {
             text = "taurenshirthangingblue.m2",
@@ -43379,10 +43384,10 @@ WeakAuras.ModelPaths = {
             fileId = "200541",
            },
           },
-          value = "taurenshirts",
          },
          {
           text = "taurentravois",
+          value = "taurentravois",
           children = {
            {
             text = "travois.m2",
@@ -43390,10 +43395,10 @@ WeakAuras.ModelPaths = {
             fileId = "200545",
            },
           },
-          value = "taurentravois",
          },
          {
           text = "taurenwallhangings",
+          value = "taurenwallhangings",
           children = {
            {
             text = "taurenwallhanging01.m2",
@@ -43411,10 +43416,10 @@ WeakAuras.ModelPaths = {
             fileId = "200549",
            },
           },
-          value = "taurenwallhangings",
          },
          {
           text = "taurenwallscrolls",
+          value = "taurenwallscrolls",
           children = {
            {
             text = "taurenwallscroll01.m2",
@@ -43442,10 +43447,10 @@ WeakAuras.ModelPaths = {
             fileId = "200555",
            },
           },
-          value = "taurenwallscrolls",
          },
          {
           text = "taurenwaterpump",
+          value = "taurenwaterpump",
           children = {
            {
             text = "waterpump.m2",
@@ -43453,10 +43458,10 @@ WeakAuras.ModelPaths = {
             fileId = "200557",
            },
           },
-          value = "taurenwaterpump",
          },
          {
           text = "taurenwindmills",
+          value = "taurenwindmills",
           children = {
            {
             text = "taurenwindmilla.m2",
@@ -43474,10 +43479,10 @@ WeakAuras.ModelPaths = {
             fileId = "200568",
            },
           },
-          value = "taurenwindmills",
          },
          {
           text = "totems",
+          value = "totems",
           children = {
            {
             text = "burned_totem01.m2",
@@ -43555,10 +43560,10 @@ WeakAuras.ModelPaths = {
             fileId = "200585",
            },
           },
-          value = "totems",
          },
          {
           text = "warharnasses",
+          value = "warharnasses",
           children = {
            {
             text = "warharnessfloor01.m2",
@@ -43621,10 +43626,10 @@ WeakAuras.ModelPaths = {
             fileId = "200599",
            },
           },
-          value = "warharnasses",
          },
          {
           text = "watertroughs",
+          value = "watertroughs",
           children = {
            {
             text = "watertroughlarge01.m2",
@@ -43637,10 +43642,10 @@ WeakAuras.ModelPaths = {
             fileId = "200602",
            },
           },
-          value = "watertroughs",
          },
          {
           text = "weapons",
+          value = "weapons",
           children = {
            {
             text = "tauren_weaponaxe01.m2",
@@ -43683,10 +43688,10 @@ WeakAuras.ModelPaths = {
             fileId = "200611",
            },
           },
-          value = "weapons",
          },
          {
           text = "windbreaks",
+          value = "windbreaks",
           children = {
            {
             text = "taurenwindbreak01.m2",
@@ -43709,10 +43714,10 @@ WeakAuras.ModelPaths = {
             fileId = "200616",
            },
           },
-          value = "windbreaks",
          },
          {
           text = "windmills",
+          value = "windmills",
           children = {
            {
             text = "windmillgiant01.m2",
@@ -43730,22 +43735,22 @@ WeakAuras.ModelPaths = {
             fileId = "200619",
            },
           },
-          value = "windmills",
          },
         },
-        value = "passive doodads",
        },
       },
-      value = "tauren",
      },
      {
       text = "troll",
+      value = "troll",
       children = {
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "mummytrolls",
+          value = "mummytrolls",
           children = {
            {
             text = "mummytroll01.m2",
@@ -43753,10 +43758,10 @@ WeakAuras.ModelPaths = {
             fileId = "200621",
            },
           },
-          value = "mummytrolls",
          },
          {
           text = "skultikis",
+          value = "skultikis",
           children = {
            {
             text = "skulltiki.m2",
@@ -43764,10 +43769,10 @@ WeakAuras.ModelPaths = {
             fileId = "200623",
            },
           },
-          value = "skultikis",
          },
          {
           text = "snakegargoyle",
+          value = "snakegargoyle",
           children = {
            {
             text = "snakegargoyle.m2",
@@ -43775,10 +43780,10 @@ WeakAuras.ModelPaths = {
             fileId = "200625",
            },
           },
-          value = "snakegargoyle",
          },
          {
           text = "thrones",
+          value = "thrones",
           children = {
            {
             text = "cobrathrone01.m2",
@@ -43786,10 +43791,10 @@ WeakAuras.ModelPaths = {
             fileId = "200629",
            },
           },
-          value = "thrones",
          },
          {
           text = "tikimasks",
+          value = "tikimasks",
           children = {
            {
             text = "troll_tikimask01.m2",
@@ -43807,10 +43812,10 @@ WeakAuras.ModelPaths = {
             fileId = "200635",
            },
           },
-          value = "tikimasks",
          },
          {
           text = "trollskullpile",
+          value = "trollskullpile",
           children = {
            {
             text = "trollskullpile.m2",
@@ -43818,10 +43823,10 @@ WeakAuras.ModelPaths = {
             fileId = "200638",
            },
           },
-          value = "trollskullpile",
          },
          {
           text = "trolltablets",
+          value = "trolltablets",
           children = {
            {
             text = "trolltablet.m2",
@@ -43829,10 +43834,10 @@ WeakAuras.ModelPaths = {
             fileId = "200640",
            },
           },
-          value = "trolltablets",
          },
          {
           text = "troughs",
+          value = "troughs",
           children = {
            {
             text = "trough.m2",
@@ -43840,22 +43845,22 @@ WeakAuras.ModelPaths = {
             fileId = "200642",
            },
           },
-          value = "troughs",
          },
         },
-        value = "passive doodads",
        },
       },
-      value = "troll",
      },
      {
       text = "undead",
+      value = "undead",
       children = {
        {
         text = "passive doodads",
+        value = "passive doodads",
         children = {
          {
           text = "batroost",
+          value = "batroost",
           children = {
            {
             text = "batroost.m2",
@@ -43873,10 +43878,10 @@ WeakAuras.ModelPaths = {
             fileId = "200646",
            },
           },
-          value = "batroost",
          },
          {
           text = "bell",
+          value = "bell",
           children = {
            {
             text = "lordaeron_bell_01.m2",
@@ -43889,10 +43894,10 @@ WeakAuras.ModelPaths = {
             fileId = "200650",
            },
           },
-          value = "bell",
          },
          {
           text = "furniture",
+          value = "furniture",
           children = {
            {
             text = "lordaeron_bench_01.m2",
@@ -43905,10 +43910,10 @@ WeakAuras.ModelPaths = {
             fileId = "200653",
            },
           },
-          value = "furniture",
          },
          {
           text = "lordaeronbrazier",
+          value = "lordaeronbrazier",
           children = {
            {
             text = "lordaeronbrazier01.m2",
@@ -43916,10 +43921,10 @@ WeakAuras.ModelPaths = {
             fileId = "200655",
            },
           },
-          value = "lordaeronbrazier",
          },
          {
           text = "lordaeronrailing",
+          value = "lordaeronrailing",
           children = {
            {
             text = "thronerailing01.m2",
@@ -43927,10 +43932,10 @@ WeakAuras.ModelPaths = {
             fileId = "200657",
            },
           },
-          value = "lordaeronrailing",
          },
          {
           text = "lordaeronthrone",
+          value = "lordaeronthrone",
           children = {
            {
             text = "tyranusthrone.m2",
@@ -43938,10 +43943,10 @@ WeakAuras.ModelPaths = {
             fileId = "200659",
            },
           },
-          value = "lordaeronthrone",
          },
          {
           text = "lordaerontowers",
+          value = "lordaerontowers",
           children = {
            {
             text = "undercitytower01.m2",
@@ -43964,10 +43969,10 @@ WeakAuras.ModelPaths = {
             fileId = "200663",
            },
           },
-          value = "lordaerontowers",
          },
          {
           text = "meatwagon",
+          value = "meatwagon",
           children = {
            {
             text = "meatwagon.m2",
@@ -43980,13 +43985,14 @@ WeakAuras.ModelPaths = {
             fileId = "200666",
            },
           },
-          value = "meatwagon",
          },
          {
           text = "meatwagonhauler",
+          value = "meatwagonhauler",
           children = {
            {
             text = "meatwagonhauler.mdx",
+            value = "meatwagonhauler.mdx",
             children = {
              {
               text = "meatwagonhauler.m2",
@@ -43994,13 +44000,12 @@ WeakAuras.ModelPaths = {
               fileId = "2198535",
              },
             },
-            value = "meatwagonhauler.mdx",
            },
           },
-          value = "meatwagonhauler",
          },
          {
           text = "meatwagonpieces",
+          value = "meatwagonpieces",
           children = {
            {
             text = "meatwagonbody.m2",
@@ -44028,10 +44033,10 @@ WeakAuras.ModelPaths = {
             fileId = "200672",
            },
           },
-          value = "meatwagonpieces",
          },
          {
           text = "signs",
+          value = "signs",
           children = {
            {
             text = "lordaeron_citybanner_01.m2",
@@ -44234,10 +44239,10 @@ WeakAuras.ModelPaths = {
             fileId = "200752",
            },
           },
-          value = "signs",
          },
          {
           text = "statues",
+          value = "statues",
           children = {
            {
             text = "lordaeron_statue_01.m2",
@@ -44255,10 +44260,10 @@ WeakAuras.ModelPaths = {
             fileId = "200756",
            },
           },
-          value = "statues",
          },
          {
           text = "stonefence",
+          value = "stonefence",
           children = {
            {
             text = "undeadfencepost.m2",
@@ -44271,10 +44276,10 @@ WeakAuras.ModelPaths = {
             fileId = "200761",
            },
           },
-          value = "stonefence",
          },
          {
           text = "taxiflags",
+          value = "taxiflags",
           children = {
            {
             text = "taxiflagundead.m2",
@@ -44282,10 +44287,10 @@ WeakAuras.ModelPaths = {
             fileId = "200762",
            },
           },
-          value = "taxiflags",
          },
          {
           text = "undeadalchemytable",
+          value = "undeadalchemytable",
           children = {
            {
             text = "undead_alchemy_table.m2",
@@ -44293,10 +44298,10 @@ WeakAuras.ModelPaths = {
             fileId = "200767",
            },
           },
-          value = "undeadalchemytable",
          },
          {
           text = "undeadcrankwheels",
+          value = "undeadcrankwheels",
           children = {
            {
             text = "undead_crankwheel.m2",
@@ -44304,10 +44309,10 @@ WeakAuras.ModelPaths = {
             fileId = "200772",
            },
           },
-          value = "undeadcrankwheels",
          },
          {
           text = "undeadhooks",
+          value = "undeadhooks",
           children = {
            {
             text = "undead_empty_hook.m2",
@@ -44335,10 +44340,10 @@ WeakAuras.ModelPaths = {
             fileId = "200780",
            },
           },
-          value = "undeadhooks",
          },
          {
           text = "undeadmeter",
+          value = "undeadmeter",
           children = {
            {
             text = "undead_meter.m2",
@@ -44346,10 +44351,10 @@ WeakAuras.ModelPaths = {
             fileId = "200781",
            },
           },
-          value = "undeadmeter",
          },
          {
           text = "undeadoperatingtable",
+          value = "undeadoperatingtable",
           children = {
            {
             text = "undead_operation_table.m2",
@@ -44357,10 +44362,10 @@ WeakAuras.ModelPaths = {
             fileId = "200782",
            },
           },
-          value = "undeadoperatingtable",
          },
          {
           text = "undeadtelsacoil",
+          value = "undeadtelsacoil",
           children = {
            {
             text = "undead_teslacoil.m2",
@@ -44368,10 +44373,10 @@ WeakAuras.ModelPaths = {
             fileId = "200784",
            },
           },
-          value = "undeadtelsacoil",
          },
          {
           text = "undeadtoolstable",
+          value = "undeadtoolstable",
           children = {
            {
             text = "undead_tools_table.m2",
@@ -44379,10 +44384,10 @@ WeakAuras.ModelPaths = {
             fileId = "200786",
            },
           },
-          value = "undeadtoolstable",
          },
          {
           text = "undercity torches",
+          value = "undercity torches",
           children = {
            {
             text = "undead_torch01.m2",
@@ -44395,10 +44400,10 @@ WeakAuras.ModelPaths = {
             fileId = "200789",
            },
           },
-          value = "undercity torches",
          },
          {
           text = "undercitychandeliers",
+          value = "undercitychandeliers",
           children = {
            {
             text = "undeadchandelier01.m2",
@@ -44411,10 +44416,10 @@ WeakAuras.ModelPaths = {
             fileId = "200791",
            },
           },
-          value = "undercitychandeliers",
          },
          {
           text = "undercityelevators",
+          value = "undercityelevators",
           children = {
            {
             text = "undeadelevator.m2",
@@ -44427,10 +44432,10 @@ WeakAuras.ModelPaths = {
             fileId = "200794",
            },
           },
-          value = "undercityelevators",
          },
          {
           text = "undercitylanterns",
+          value = "undercitylanterns",
           children = {
            {
             text = "undeadhanginglantern01.m2",
@@ -44438,10 +44443,10 @@ WeakAuras.ModelPaths = {
             fileId = "200795",
            },
           },
-          value = "undercitylanterns",
          },
          {
           text = "undercitysignposts",
+          value = "undercitysignposts",
           children = {
            {
             text = "undercitysignpost.m2",
@@ -44454,10 +44459,10 @@ WeakAuras.ModelPaths = {
             fileId = "200798",
            },
           },
-          value = "undercitysignposts",
          },
          {
           text = "undercityskylight",
+          value = "undercityskylight",
           children = {
            {
             text = "undercityskylight01.m2",
@@ -44465,10 +44470,10 @@ WeakAuras.ModelPaths = {
             fileId = "200800",
            },
           },
-          value = "undercityskylight",
          },
          {
           text = "undercityslimebubbles",
+          value = "undercityslimebubbles",
           children = {
            {
             text = "undercityslimebubbles01.m2",
@@ -44481,10 +44486,10 @@ WeakAuras.ModelPaths = {
             fileId = "200802",
            },
           },
-          value = "undercityslimebubbles",
          },
          {
           text = "undercityslimefalls",
+          value = "undercityslimefalls",
           children = {
            {
             text = "skullspoutsplash.m2",
@@ -44497,10 +44502,10 @@ WeakAuras.ModelPaths = {
             fileId = "200808",
            },
           },
-          value = "undercityslimefalls",
          },
          {
           text = "undercityslimespouts",
+          value = "undercityslimespouts",
           children = {
            {
             text = "skullspout01.m2",
@@ -44508,10 +44513,10 @@ WeakAuras.ModelPaths = {
             fileId = "200809",
            },
           },
-          value = "undercityslimespouts",
          },
          {
           text = "undercityworm",
+          value = "undercityworm",
           children = {
            {
             text = "undercitymonsterbirth.m2",
@@ -44524,22 +44529,22 @@ WeakAuras.ModelPaths = {
             fileId = "200817",
            },
           },
-          value = "undercityworm",
          },
         },
-        value = "passive doodads",
        },
       },
-      value = "undead",
      },
      {
       text = "underwater",
+      value = "underwater",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "plants",
+          value = "plants",
           children = {
            {
             text = "plant01.m2",
@@ -44602,10 +44607,10 @@ WeakAuras.ModelPaths = {
             fileId = "200830",
            },
           },
-          value = "plants",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "underwaterrock01.m2",
@@ -44623,10 +44628,10 @@ WeakAuras.ModelPaths = {
             fileId = "200835",
            },
           },
-          value = "rocks",
          },
          {
           text = "seaweed",
+          value = "seaweed",
           children = {
            {
             text = "genericseaweed01.m2",
@@ -44699,19 +44704,16 @@ WeakAuras.ModelPaths = {
             fileId = "200849",
            },
           },
-          value = "seaweed",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "underwater",
      },
     },
-    value = "generic",
    },
    {
     text = "goober",
+    value = "goober",
     children = {
      {
       text = "darkironkegshotgun.m2",
@@ -45429,19 +45431,22 @@ WeakAuras.ModelPaths = {
       fileId = "201156",
      },
     },
-    value = "goober",
    },
    {
     text = "kalimdor",
+    value = "kalimdor",
     children = {
      {
       text = "ashenvale",
+      value = "ashenvale",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "mannarothspear",
+          value = "mannarothspear",
           children = {
            {
             text = "ashenvalemannarothspear.m2",
@@ -45449,16 +45454,16 @@ WeakAuras.ModelPaths = {
             fileId = "201190",
            },
           },
-          value = "mannarothspear",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "ashenvalerocks",
+          value = "ashenvalerocks",
           children = {
            {
             text = "ashenvalerock01.m2",
@@ -45481,10 +45486,10 @@ WeakAuras.ModelPaths = {
             fileId = "201198",
            },
           },
-          value = "ashenvalerocks",
          },
          {
           text = "ashenvaleroots",
+          value = "ashenvaleroots",
           children = {
            {
             text = "ashenvaleroots01.m2",
@@ -45507,10 +45512,10 @@ WeakAuras.ModelPaths = {
             fileId = "201204",
            },
           },
-          value = "ashenvaleroots",
          },
          {
           text = "ashenvalestumps",
+          value = "ashenvalestumps",
           children = {
            {
             text = "ashenvalestump01.m2",
@@ -45543,10 +45548,10 @@ WeakAuras.ModelPaths = {
             fileId = "201214",
            },
           },
-          value = "ashenvalestumps",
          },
          {
           text = "ashenvaletreelogs",
+          value = "ashenvaletreelogs",
           children = {
            {
             text = "ashenvaletreelog01.m2",
@@ -45559,10 +45564,10 @@ WeakAuras.ModelPaths = {
             fileId = "201218",
            },
           },
-          value = "ashenvaletreelogs",
          },
          {
           text = "ashenvaletrees",
+          value = "ashenvaletrees",
           children = {
            {
             text = "ashenvalecuttree01.m2",
@@ -45600,10 +45605,10 @@ WeakAuras.ModelPaths = {
             fileId = "201230",
            },
           },
-          value = "ashenvaletrees",
          },
          {
           text = "bush",
+          value = "bush",
           children = {
            {
             text = "ashenvaleplantstardust.m2",
@@ -45611,10 +45616,10 @@ WeakAuras.ModelPaths = {
             fileId = "201233",
            },
           },
-          value = "bush",
          },
          {
           text = "satyrruins",
+          value = "satyrruins",
           children = {
            {
             text = "ruinssatyraltpillar01.m2",
@@ -45672,10 +45677,10 @@ WeakAuras.ModelPaths = {
             fileId = "201251",
            },
           },
-          value = "satyrruins",
          },
          {
           text = "satyrtotem",
+          value = "satyrtotem",
           children = {
            {
             text = "ashensatyrtotem01.m2",
@@ -45703,10 +45708,10 @@ WeakAuras.ModelPaths = {
             fileId = "201256",
            },
           },
-          value = "satyrtotem",
          },
          {
           text = "shrines",
+          value = "shrines",
           children = {
            {
             text = "corruptdryadshrine01.m2",
@@ -45734,22 +45739,22 @@ WeakAuras.ModelPaths = {
             fileId = "201269",
            },
           },
-          value = "shrines",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "ashenvale",
      },
      {
       text = "azshara",
+      value = "azshara",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "arcanecrystal",
+          value = "arcanecrystal",
           children = {
            {
             text = "arcanecrystal.m2",
@@ -45757,10 +45762,10 @@ WeakAuras.ModelPaths = {
             fileId = "201271",
            },
           },
-          value = "arcanecrystal",
          },
          {
           text = "stonetablets",
+          value = "stonetablets",
           children = {
            {
             text = "azsharastonetablet01.m2",
@@ -45783,16 +45788,16 @@ WeakAuras.ModelPaths = {
             fileId = "201277",
            },
           },
-          value = "stonetablets",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "anemone",
+          value = "anemone",
           children = {
            {
             text = "anemone01.m2",
@@ -45810,10 +45815,10 @@ WeakAuras.ModelPaths = {
             fileId = "201281",
            },
           },
-          value = "anemone",
          },
          {
           text = "barnaclerock",
+          value = "barnaclerock",
           children = {
            {
             text = "barnaclerock01.m2",
@@ -45821,10 +45826,10 @@ WeakAuras.ModelPaths = {
             fileId = "201284",
            },
           },
-          value = "barnaclerock",
          },
          {
           text = "bubbles",
+          value = "bubbles",
           children = {
            {
             text = "azsharabubble2.m2",
@@ -45837,10 +45842,10 @@ WeakAuras.ModelPaths = {
             fileId = "201286",
            },
           },
-          value = "bubbles",
          },
          {
           text = "coral",
+          value = "coral",
           children = {
            {
             text = "coral01.m2",
@@ -45858,10 +45863,10 @@ WeakAuras.ModelPaths = {
             fileId = "201293",
            },
           },
-          value = "coral",
          },
          {
           text = "debriswall",
+          value = "debriswall",
           children = {
            {
             text = "azsharadebriswall.m2",
@@ -45869,10 +45874,10 @@ WeakAuras.ModelPaths = {
             fileId = "201295",
            },
           },
-          value = "debriswall",
          },
          {
           text = "dragonstatues",
+          value = "dragonstatues",
           children = {
            {
             text = "azharadragonstatue_01.m2",
@@ -45885,10 +45890,10 @@ WeakAuras.ModelPaths = {
             fileId = "201300",
            },
           },
-          value = "dragonstatues",
          },
          {
           text = "nagaflags",
+          value = "nagaflags",
           children = {
            {
             text = "nagaflag01.m2",
@@ -45901,10 +45906,10 @@ WeakAuras.ModelPaths = {
             fileId = "201303",
            },
           },
-          value = "nagaflags",
          },
          {
           text = "nagapagoda",
+          value = "nagapagoda",
           children = {
            {
             text = "nagapagoda02.m2",
@@ -45912,10 +45917,10 @@ WeakAuras.ModelPaths = {
             fileId = "201304",
            },
           },
-          value = "nagapagoda",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "azshararock01.m2",
@@ -45943,10 +45948,10 @@ WeakAuras.ModelPaths = {
             fileId = "201309",
            },
           },
-          value = "rocks",
          },
          {
           text = "seashells",
+          value = "seashells",
           children = {
            {
             text = "azsharashell01.m2",
@@ -45989,10 +45994,10 @@ WeakAuras.ModelPaths = {
             fileId = "201323",
            },
           },
-          value = "seashells",
          },
          {
           text = "seaweed",
+          value = "seaweed",
           children = {
            {
             text = "seaweed01.m2",
@@ -46005,10 +46010,10 @@ WeakAuras.ModelPaths = {
             fileId = "2198548",
            },
           },
-          value = "seaweed",
          },
          {
           text = "starfish",
+          value = "starfish",
           children = {
            {
             text = "starfish02.m2",
@@ -46016,10 +46021,10 @@ WeakAuras.ModelPaths = {
             fileId = "201331",
            },
           },
-          value = "starfish",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "azr_tree01.m2",
@@ -46057,16 +46062,16 @@ WeakAuras.ModelPaths = {
             fileId = "201338",
            },
           },
-          value = "trees",
          },
         },
-        value = "passivedoodads",
        },
        {
         text = "seaplants",
+        value = "seaplants",
         children = {
          {
           text = "anemity01_02000",
+          value = "anemity01_02000",
           children = {
            {
             text = "anemity01_02.m2",
@@ -46074,10 +46079,10 @@ WeakAuras.ModelPaths = {
             fileId = "201351",
            },
           },
-          value = "anemity01_02000",
          },
          {
           text = "barnaclerock01_04",
+          value = "barnaclerock01_04",
           children = {
            {
             text = "barnaclerock01_04.m2",
@@ -46085,10 +46090,10 @@ WeakAuras.ModelPaths = {
             fileId = "201352",
            },
           },
-          value = "barnaclerock01_04",
          },
          {
           text = "coral03_01",
+          value = "coral03_01",
           children = {
            {
             text = "coral03_01.m2",
@@ -46096,10 +46101,10 @@ WeakAuras.ModelPaths = {
             fileId = "201354",
            },
           },
-          value = "coral03_01",
          },
          {
           text = "coraltree01_06",
+          value = "coraltree01_06",
           children = {
            {
             text = "coraltree01_06.m2",
@@ -46107,10 +46112,10 @@ WeakAuras.ModelPaths = {
             fileId = "201355",
            },
           },
-          value = "coraltree01_06",
          },
          {
           text = "coraltree02_07",
+          value = "coraltree02_07",
           children = {
            {
             text = "coraltree02_07.m2",
@@ -46118,10 +46123,10 @@ WeakAuras.ModelPaths = {
             fileId = "201356",
            },
           },
-          value = "coraltree02_07",
          },
          {
           text = "seaurchin01_05",
+          value = "seaurchin01_05",
           children = {
            {
             text = "seaurchin01_05.m2",
@@ -46129,10 +46134,10 @@ WeakAuras.ModelPaths = {
             fileId = "201357",
            },
           },
-          value = "seaurchin01_05",
          },
          {
           text = "starfish01_02",
+          value = "starfish01_02",
           children = {
            {
             text = "starfish01_02.m2",
@@ -46140,22 +46145,22 @@ WeakAuras.ModelPaths = {
             fileId = "201358",
            },
           },
-          value = "starfish01_02",
          },
         },
-        value = "seaplants",
        },
       },
-      value = "azshara",
      },
      {
       text = "barrens",
+      value = "barrens",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "bones",
+          value = "bones",
           children = {
            {
             text = "kotobeastbone01.m2",
@@ -46183,10 +46188,10 @@ WeakAuras.ModelPaths = {
             fileId = "201367",
            },
           },
-          value = "bones",
          },
          {
           text = "bushes",
+          value = "bushes",
           children = {
            {
             text = "barrensbush01.m2",
@@ -46204,10 +46209,10 @@ WeakAuras.ModelPaths = {
             fileId = "201372",
            },
           },
-          value = "bushes",
          },
          {
           text = "kodoeggs",
+          value = "kodoeggs",
           children = {
            {
             text = "kodoegg01.m2",
@@ -46220,10 +46225,10 @@ WeakAuras.ModelPaths = {
             fileId = "201376",
            },
           },
-          value = "kodoeggs",
          },
          {
           text = "lampposts",
+          value = "lampposts",
           children = {
            {
             text = "barrenslamppost01.m2",
@@ -46231,10 +46236,10 @@ WeakAuras.ModelPaths = {
             fileId = "201377",
            },
           },
-          value = "lampposts",
          },
          {
           text = "mkshrine",
+          value = "mkshrine",
           children = {
            {
             text = "mkshrine.m2",
@@ -46242,10 +46247,10 @@ WeakAuras.ModelPaths = {
             fileId = "201380",
            },
           },
-          value = "mkshrine",
          },
          {
           text = "mounds",
+          value = "mounds",
           children = {
            {
             text = "barrenstermitemound01.m2",
@@ -46268,10 +46273,10 @@ WeakAuras.ModelPaths = {
             fileId = "201386",
            },
           },
-          value = "mounds",
          },
          {
           text = "raptorhuts",
+          value = "raptorhuts",
           children = {
            {
             text = "raptorhut01.m2",
@@ -46284,10 +46289,10 @@ WeakAuras.ModelPaths = {
             fileId = "201390",
            },
           },
-          value = "raptorhuts",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "barrenstree01.m2",
@@ -46340,10 +46345,10 @@ WeakAuras.ModelPaths = {
             fileId = "201407",
            },
           },
-          value = "trees",
          },
          {
           text = "wagon",
+          value = "wagon",
           children = {
            {
             text = "barrensbustedwagon.m2",
@@ -46366,10 +46371,10 @@ WeakAuras.ModelPaths = {
             fileId = "201418",
            },
           },
-          value = "wagon",
          },
          {
           text = "waterwheel",
+          value = "waterwheel",
           children = {
            {
             text = "orc_waterwheel.m2",
@@ -46377,22 +46382,22 @@ WeakAuras.ModelPaths = {
             fileId = "201421",
            },
           },
-          value = "waterwheel",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "barrens",
      },
      {
       text = "blackfathom",
+      value = "blackfathom",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "braziers",
+          value = "braziers",
           children = {
            {
             text = "bfd_nagabrazier.m2",
@@ -46400,10 +46405,10 @@ WeakAuras.ModelPaths = {
             fileId = "201422",
            },
           },
-          value = "braziers",
          },
          {
           text = "furniture",
+          value = "furniture",
           children = {
            {
             text = "bfd_stonechair01.m2",
@@ -46421,10 +46426,10 @@ WeakAuras.ModelPaths = {
             fileId = "201426",
            },
           },
-          value = "furniture",
          },
          {
           text = "lights",
+          value = "lights",
           children = {
            {
             text = "bfd_walllight01.m2",
@@ -46492,10 +46497,10 @@ WeakAuras.ModelPaths = {
             fileId = "201441",
            },
           },
-          value = "lights",
          },
          {
           text = "pottery",
+          value = "pottery",
           children = {
            {
             text = "bfd_brokenpottery01.m2",
@@ -46528,10 +46533,10 @@ WeakAuras.ModelPaths = {
             fileId = "201450",
            },
           },
-          value = "pottery",
          },
          {
           text = "statue",
+          value = "statue",
           children = {
            {
             text = "bfd_statuenagapriestess.m2",
@@ -46539,10 +46544,10 @@ WeakAuras.ModelPaths = {
             fileId = "201452",
            },
           },
-          value = "statue",
          },
          {
           text = "waterfalls",
+          value = "waterfalls",
           children = {
            {
             text = "bfd_waterfalls01.m2",
@@ -46600,19 +46605,18 @@ WeakAuras.ModelPaths = {
             fileId = "201465",
            },
           },
-          value = "waterfalls",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "blackfathom",
      },
      {
       text = "buildings",
+      value = "buildings",
       children = {
        {
         text = "desolace",
+        value = "desolace",
         children = {
          {
           text = "centaurhorncover.m2",
@@ -46625,19 +46629,20 @@ WeakAuras.ModelPaths = {
           fileId = "201469",
          },
         },
-        value = "desolace",
        },
       },
-      value = "buildings",
      },
      {
       text = "darkshore",
+      value = "darkshore",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "illidancrystal",
+          value = "illidancrystal",
           children = {
            {
             text = "illidancrystal01.m2",
@@ -46645,13 +46650,12 @@ WeakAuras.ModelPaths = {
             fileId = "201472",
            },
           },
-          value = "illidancrystal",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "giantseaturtle",
+        value = "giantseaturtle",
         children = {
          {
           text = "giantseaturtle03.m2",
@@ -46664,10 +46668,10 @@ WeakAuras.ModelPaths = {
           fileId = "201476",
          },
         },
-        value = "giantseaturtle",
        },
        {
         text = "giantsnakeskulls",
+        value = "giantsnakeskulls",
         children = {
          {
           text = "snakeskullgiant.m2",
@@ -46675,10 +46679,10 @@ WeakAuras.ModelPaths = {
           fileId = "201486",
          },
         },
-        value = "giantsnakeskulls",
        },
        {
         text = "giantsnakespines",
+        value = "giantsnakespines",
         children = {
          {
           text = "snakespinegiant01.m2",
@@ -46696,13 +46700,14 @@ WeakAuras.ModelPaths = {
           fileId = "201489",
          },
         },
-        value = "giantsnakespines",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "anchors",
+          value = "anchors",
           children = {
            {
             text = "darkshoreanchor01.m2",
@@ -46710,10 +46715,10 @@ WeakAuras.ModelPaths = {
             fileId = "201490",
            },
           },
-          value = "anchors",
          },
          {
           text = "boats",
+          value = "boats",
           children = {
            {
             text = "darkshoreboat.m2",
@@ -46721,10 +46726,10 @@ WeakAuras.ModelPaths = {
             fileId = "201493",
            },
           },
-          value = "boats",
          },
          {
           text = "bushes",
+          value = "bushes",
           children = {
            {
             text = "darkshorebush01.m2",
@@ -46752,10 +46757,10 @@ WeakAuras.ModelPaths = {
             fileId = "201498",
            },
           },
-          value = "bushes",
          },
          {
           text = "darkshorelogs",
+          value = "darkshorelogs",
           children = {
            {
             text = "darkshorelog01.m2",
@@ -46768,10 +46773,10 @@ WeakAuras.ModelPaths = {
             fileId = "201504",
            },
           },
-          value = "darkshorelogs",
          },
          {
           text = "darkshoretrees",
+          value = "darkshoretrees",
           children = {
            {
             text = "darkshoretree01.m2",
@@ -46814,10 +46819,10 @@ WeakAuras.ModelPaths = {
             fileId = "201519",
            },
           },
-          value = "darkshoretrees",
          },
          {
           text = "dock",
+          value = "dock",
           children = {
            {
             text = "darkshoredock.m2",
@@ -46825,10 +46830,10 @@ WeakAuras.ModelPaths = {
             fileId = "201524",
            },
           },
-          value = "dock",
          },
          {
           text = "docks",
+          value = "docks",
           children = {
            {
             text = "darkshoredock01.m2",
@@ -46841,10 +46846,10 @@ WeakAuras.ModelPaths = {
             fileId = "201527",
            },
           },
-          value = "docks",
          },
          {
           text = "fallentreeroots",
+          value = "fallentreeroots",
           children = {
            {
             text = "darkshorefallentreeroots01.m2",
@@ -46852,10 +46857,10 @@ WeakAuras.ModelPaths = {
             fileId = "201528",
            },
           },
-          value = "fallentreeroots",
          },
          {
           text = "gazeebo",
+          value = "gazeebo",
           children = {
            {
             text = "darkshoregazeebo.m2",
@@ -46868,10 +46873,10 @@ WeakAuras.ModelPaths = {
             fileId = "201530",
            },
           },
-          value = "gazeebo",
          },
          {
           text = "glaivemaster",
+          value = "glaivemaster",
           children = {
            {
             text = "glaivemaster.m2",
@@ -46879,10 +46884,10 @@ WeakAuras.ModelPaths = {
             fileId = "201531",
            },
           },
-          value = "glaivemaster",
          },
          {
           text = "glaivemasterroots",
+          value = "glaivemasterroots",
           children = {
            {
             text = "glaivemasterroots01.m2",
@@ -46895,10 +46900,10 @@ WeakAuras.ModelPaths = {
             fileId = "201537",
            },
           },
-          value = "glaivemasterroots",
          },
          {
           text = "glaivemastertentacles",
+          value = "glaivemastertentacles",
           children = {
            {
             text = "glaivemastertentacle.m2",
@@ -46911,10 +46916,10 @@ WeakAuras.ModelPaths = {
             fileId = "201539",
            },
           },
-          value = "glaivemastertentacles",
          },
          {
           text = "lamp",
+          value = "lamp",
           children = {
            {
             text = "darkstreetlamp.m2",
@@ -46927,10 +46932,10 @@ WeakAuras.ModelPaths = {
             fileId = "201542",
            },
           },
-          value = "lamp",
          },
          {
           text = "moongate",
+          value = "moongate",
           children = {
            {
             text = "darkshoremoongate.m2",
@@ -46948,10 +46953,10 @@ WeakAuras.ModelPaths = {
             fileId = "201546",
            },
           },
-          value = "moongate",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "darkshorerock03.m2",
@@ -46959,10 +46964,10 @@ WeakAuras.ModelPaths = {
             fileId = "201548",
            },
           },
-          value = "rocks",
          },
          {
           text = "ruins",
+          value = "ruins",
           children = {
            {
             text = "darkshorerock01.m2",
@@ -47030,10 +47035,10 @@ WeakAuras.ModelPaths = {
             fileId = "201563",
            },
           },
-          value = "ruins",
          },
          {
           text = "seamonstercarcass",
+          value = "seamonstercarcass",
           children = {
            {
             text = "darkshoreseamonster01.m2",
@@ -47041,10 +47046,10 @@ WeakAuras.ModelPaths = {
             fileId = "201568",
            },
           },
-          value = "seamonstercarcass",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "darkshorefallentree01.m2",
@@ -47052,13 +47057,12 @@ WeakAuras.ModelPaths = {
             fileId = "201571",
            },
           },
-          value = "trees",
          },
         },
-        value = "passivedoodads",
        },
        {
         text = "threshadoncorpse",
+        value = "threshadoncorpse",
         children = {
          {
           text = "darkshorethreshadoncorpse.m2",
@@ -47066,16 +47070,16 @@ WeakAuras.ModelPaths = {
           fileId = "201573",
          },
         },
-        value = "threshadoncorpse",
        },
       },
-      value = "darkshore",
      },
      {
       text = "desolace",
+      value = "desolace",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "defiledtotem01.m2",
@@ -47089,6 +47093,7 @@ WeakAuras.ModelPaths = {
          },
          {
           text = "kodogravebones",
+          value = "kodogravebones",
           children = {
            {
             text = "bannercentaur01.m2",
@@ -47181,10 +47186,10 @@ WeakAuras.ModelPaths = {
             fileId = "201606",
            },
           },
-          value = "kodogravebones",
          },
          {
           text = "mushrooms",
+          value = "mushrooms",
           children = {
            {
             text = "desolacemushroom.m2",
@@ -47192,10 +47197,10 @@ WeakAuras.ModelPaths = {
             fileId = "201607",
            },
           },
-          value = "mushrooms",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "desolacerock01.m2",
@@ -47218,10 +47223,10 @@ WeakAuras.ModelPaths = {
             fileId = "201613",
            },
           },
-          value = "rocks",
          },
          {
           text = "spearwalls",
+          value = "spearwalls",
           children = {
            {
             text = "centaurspears01.m2",
@@ -47239,22 +47244,22 @@ WeakAuras.ModelPaths = {
             fileId = "201616",
            },
           },
-          value = "spearwalls",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "desolace",
      },
      {
       text = "diremaul",
+      value = "diremaul",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "crystalcorrupter",
+          value = "crystalcorrupter",
           children = {
            {
             text = "corruptedcrystalshard.m2",
@@ -47267,10 +47272,10 @@ WeakAuras.ModelPaths = {
             fileId = "201619",
            },
           },
-          value = "crystalcorrupter",
          },
          {
           text = "doors",
+          value = "doors",
           children = {
            {
             text = "diremaulbossforcefield.m2",
@@ -47303,10 +47308,10 @@ WeakAuras.ModelPaths = {
             fileId = "201634",
            },
           },
-          value = "doors",
          },
          {
           text = "lightcrystal",
+          value = "lightcrystal",
           children = {
            {
             text = "diremaulcrystalgenerator.m2",
@@ -47314,10 +47319,10 @@ WeakAuras.ModelPaths = {
             fileId = "201638",
            },
           },
-          value = "lightcrystal",
          },
          {
           text = "nightmaresummoning",
+          value = "nightmaresummoning",
           children = {
            {
             text = "nightmarebell.m2",
@@ -47335,10 +47340,10 @@ WeakAuras.ModelPaths = {
             fileId = "201643",
            },
           },
-          value = "nightmaresummoning",
          },
          {
           text = "warlockcircle",
+          value = "warlockcircle",
           children = {
            {
             text = "warlockmountritualcircle01.m2",
@@ -47366,16 +47371,16 @@ WeakAuras.ModelPaths = {
             fileId = "201653",
            },
           },
-          value = "warlockcircle",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "animalheadstatues",
+          value = "animalheadstatues",
           children = {
            {
             text = "diremaulstonebearstatue.m2",
@@ -47393,10 +47398,10 @@ WeakAuras.ModelPaths = {
             fileId = "201662",
            },
           },
-          value = "animalheadstatues",
          },
          {
           text = "banners",
+          value = "banners",
           children = {
            {
             text = "diremaul_banner.m2",
@@ -47439,10 +47444,10 @@ WeakAuras.ModelPaths = {
             fileId = "201672",
            },
           },
-          value = "banners",
          },
          {
           text = "deadtrees",
+          value = "deadtrees",
           children = {
            {
             text = "brokenferalastree01.m2",
@@ -47450,7 +47455,6 @@ WeakAuras.ModelPaths = {
             fileId = "201675",
            },
           },
-          value = "deadtrees",
          },
          {
           text = "goldenhighelfstatue01.m2",
@@ -47469,6 +47473,7 @@ WeakAuras.ModelPaths = {
          },
          {
           text = "ogrecampfires",
+          value = "ogrecampfires",
           children = {
            {
             text = "ogrecampfire01.m2",
@@ -47476,10 +47481,10 @@ WeakAuras.ModelPaths = {
             fileId = "201688",
            },
           },
-          value = "ogrecampfires",
          },
          {
           text = "ogreladder",
+          value = "ogreladder",
           children = {
            {
             text = "diremaulogreladder01.m2",
@@ -47487,10 +47492,10 @@ WeakAuras.ModelPaths = {
             fileId = "201689",
            },
           },
-          value = "ogreladder",
          },
          {
           text = "ogreposts",
+          value = "ogreposts",
           children = {
            {
             text = "diremaulogrepost01.m2",
@@ -47513,10 +47518,10 @@ WeakAuras.ModelPaths = {
             fileId = "201694",
            },
           },
-          value = "ogreposts",
          },
          {
           text = "ogrescaffolding",
+          value = "ogrescaffolding",
           children = {
            {
             text = "diremaulogrescaffolding01.m2",
@@ -47524,10 +47529,10 @@ WeakAuras.ModelPaths = {
             fileId = "201696",
            },
           },
-          value = "ogrescaffolding",
          },
          {
           text = "rubble",
+          value = "rubble",
           children = {
            {
             text = "diremaulfloorrubble01.m2",
@@ -47640,10 +47645,10 @@ WeakAuras.ModelPaths = {
             fileId = "201720",
            },
           },
-          value = "rubble",
          },
          {
           text = "treeplanters",
+          value = "treeplanters",
           children = {
            {
             text = "deadtreeplanterbox.m2",
@@ -47661,10 +47666,10 @@ WeakAuras.ModelPaths = {
             fileId = "201725",
            },
           },
-          value = "treeplanters",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "gardentreecanopy.m2",
@@ -47687,10 +47692,10 @@ WeakAuras.ModelPaths = {
             fileId = "201734",
            },
           },
-          value = "trees",
          },
          {
           text = "vortex",
+          value = "vortex",
           children = {
            {
             text = "diremaulmagicvortex.m2",
@@ -47698,22 +47703,22 @@ WeakAuras.ModelPaths = {
             fileId = "201741",
            },
           },
-          value = "vortex",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "diremaul",
      },
      {
       text = "dragoncave",
+      value = "dragoncave",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "artifact",
+          value = "artifact",
           children = {
            {
             text = "dragoncaveartifact.m2",
@@ -47721,10 +47726,10 @@ WeakAuras.ModelPaths = {
             fileId = "201743",
            },
           },
-          value = "artifact",
          },
          {
           text = "blackdragoneggs",
+          value = "blackdragoneggs",
           children = {
            {
             text = "blackdragonegg01.m2",
@@ -47742,10 +47747,10 @@ WeakAuras.ModelPaths = {
             fileId = "201747",
            },
           },
-          value = "blackdragoneggs",
          },
          {
           text = "charredbodies",
+          value = "charredbodies",
           children = {
            {
             text = "charredbody01.m2",
@@ -47793,10 +47798,10 @@ WeakAuras.ModelPaths = {
             fileId = "201762",
            },
           },
-          value = "charredbodies",
          },
          {
           text = "fireembers",
+          value = "fireembers",
           children = {
            {
             text = "dragoncavefireembers.m2",
@@ -47804,22 +47809,22 @@ WeakAuras.ModelPaths = {
             fileId = "201764",
            },
           },
-          value = "fireembers",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "dragoncave",
      },
      {
       text = "durotar",
+      value = "durotar",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "bridge",
+          value = "bridge",
           children = {
            {
             text = "taurenbridge01lantern.m2",
@@ -47827,10 +47832,10 @@ WeakAuras.ModelPaths = {
             fileId = "201765",
            },
           },
-          value = "bridge",
          },
          {
           text = "bushes",
+          value = "bushes",
           children = {
            {
             text = "cactusapple01.m2",
@@ -47858,10 +47863,10 @@ WeakAuras.ModelPaths = {
             fileId = "201771",
            },
           },
-          value = "bushes",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "durotarcliffrock01.m2",
@@ -47949,10 +47954,10 @@ WeakAuras.ModelPaths = {
             fileId = "201795",
            },
           },
-          value = "rocks",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "durotarpalm01.m2",
@@ -48005,22 +48010,22 @@ WeakAuras.ModelPaths = {
             fileId = "201809",
            },
           },
-          value = "trees",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "durotar",
      },
      {
       text = "dustwallow",
+      value = "dustwallow",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "bushes",
+          value = "bushes",
           children = {
            {
             text = "dustwallowbush01.m2",
@@ -48053,10 +48058,10 @@ WeakAuras.ModelPaths = {
             fileId = "201816",
            },
           },
-          value = "bushes",
          },
          {
           text = "outposts",
+          value = "outposts",
           children = {
            {
             text = "dustwallowoutpost01.m2",
@@ -48089,10 +48094,10 @@ WeakAuras.ModelPaths = {
             fileId = "201822",
            },
           },
-          value = "outposts",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "dustwallowtree01.m2",
@@ -48135,10 +48140,10 @@ WeakAuras.ModelPaths = {
             fileId = "201833",
            },
           },
-          value = "trees",
          },
          {
           text = "walls",
+          value = "walls",
           children = {
            {
             text = "duskwallowstonewall01.m2",
@@ -48176,22 +48181,22 @@ WeakAuras.ModelPaths = {
             fileId = "201844",
            },
           },
-          value = "walls",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "dustwallow",
      },
      {
       text = "felwood",
+      value = "felwood",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "illidancrystal",
+          value = "illidancrystal",
           children = {
            {
             text = "illidancrystal02.m2",
@@ -48199,16 +48204,16 @@ WeakAuras.ModelPaths = {
             fileId = "201845",
            },
           },
-          value = "illidancrystal",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "bush",
+          value = "bush",
           children = {
            {
             text = "felwoodbush01.m2",
@@ -48231,10 +48236,10 @@ WeakAuras.ModelPaths = {
             fileId = "201852",
            },
           },
-          value = "bush",
          },
          {
           text = "desolacebubbles",
+          value = "desolacebubbles",
           children = {
            {
             text = "desolacebubble01.m2",
@@ -48247,10 +48252,10 @@ WeakAuras.ModelPaths = {
             fileId = "201854",
            },
           },
-          value = "desolacebubbles",
          },
          {
           text = "felwoodbubbles",
+          value = "felwoodbubbles",
           children = {
            {
             text = "felwoodbubble01.m2",
@@ -48263,10 +48268,10 @@ WeakAuras.ModelPaths = {
             fileId = "201857",
            },
           },
-          value = "felwoodbubbles",
          },
          {
           text = "felwoodmushrooms",
+          value = "felwoodmushrooms",
           children = {
            {
             text = "felwoodmushroom01.m2",
@@ -48284,10 +48289,10 @@ WeakAuras.ModelPaths = {
             fileId = "201864",
            },
           },
-          value = "felwoodmushrooms",
          },
          {
           text = "lamp",
+          value = "lamp",
           children = {
            {
             text = "felwoodlamp01.m2",
@@ -48295,10 +48300,10 @@ WeakAuras.ModelPaths = {
             fileId = "201866",
            },
           },
-          value = "lamp",
          },
          {
           text = "plantsquest",
+          value = "plantsquest",
           children = {
            {
             text = "nightdragon01.m2",
@@ -48341,10 +48346,10 @@ WeakAuras.ModelPaths = {
             fileId = "201877",
            },
           },
-          value = "plantsquest",
          },
          {
           text = "roots",
+          value = "roots",
           children = {
            {
             text = "felwoodroots01.m2",
@@ -48372,10 +48377,10 @@ WeakAuras.ModelPaths = {
             fileId = "201885",
            },
           },
-          value = "roots",
          },
          {
           text = "tree",
+          value = "tree",
           children = {
            {
             text = "felwoodtree01.m2",
@@ -48453,10 +48458,10 @@ WeakAuras.ModelPaths = {
             fileId = "201916",
            },
           },
-          value = "tree",
          },
          {
           text = "treeeants",
+          value = "treeeants",
           children = {
            {
             text = "petrifiedtreant01.m2",
@@ -48474,10 +48479,10 @@ WeakAuras.ModelPaths = {
             fileId = "201926",
            },
           },
-          value = "treeeants",
          },
          {
           text = "waterfall",
+          value = "waterfall",
           children = {
            {
             text = "felrockwaterfall.m2",
@@ -48490,22 +48495,22 @@ WeakAuras.ModelPaths = {
             fileId = "201929",
            },
           },
-          value = "waterfall",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "felwood",
      },
      {
       text = "feralas",
+      value = "feralas",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "fern",
+          value = "fern",
           children = {
            {
             text = "feralasferns01.m2",
@@ -48513,10 +48518,10 @@ WeakAuras.ModelPaths = {
             fileId = "201930",
            },
           },
-          value = "fern",
          },
          {
           text = "stones",
+          value = "stones",
           children = {
            {
             text = "feralasstone01.m2",
@@ -48529,10 +48534,10 @@ WeakAuras.ModelPaths = {
             fileId = "201934",
            },
           },
-          value = "stones",
          },
          {
           text = "tree",
+          value = "tree",
           children = {
            {
             text = "feralastree01.m2",
@@ -48590,22 +48595,22 @@ WeakAuras.ModelPaths = {
             fileId = "201949",
            },
           },
-          value = "tree",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "feralas",
      },
      {
       text = "generic",
+      value = "generic",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "elevendestoryerwreckback",
+          value = "elevendestoryerwreckback",
           children = {
            {
             text = "elvendestroyerwreckback.m2",
@@ -48613,10 +48618,10 @@ WeakAuras.ModelPaths = {
             fileId = "201968",
            },
           },
-          value = "elevendestoryerwreckback",
          },
          {
           text = "elevendestoryerwreckfront",
+          value = "elevendestoryerwreckfront",
           children = {
            {
             text = "elvendestroyerwreckfront.m2",
@@ -48624,10 +48629,10 @@ WeakAuras.ModelPaths = {
             fileId = "201972",
            },
           },
-          value = "elevendestoryerwreckfront",
          },
          {
           text = "elevendestoryerwrecksails",
+          value = "elevendestoryerwrecksails",
           children = {
            {
             text = "elvendestroyerwrecksails.m2",
@@ -48635,10 +48640,10 @@ WeakAuras.ModelPaths = {
             fileId = "201973",
            },
           },
-          value = "elevendestoryerwrecksails",
          },
          {
           text = "nightelfguardtower",
+          value = "nightelfguardtower",
           children = {
            {
             text = "nightelfguardtower.m2",
@@ -48646,22 +48651,22 @@ WeakAuras.ModelPaths = {
             fileId = "201982",
            },
           },
-          value = "nightelfguardtower",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "generic",
      },
      {
       text = "hyjal",
+      value = "hyjal",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "doors",
+          value = "doors",
           children = {
            {
             text = "hyjalgate.m2",
@@ -48669,16 +48674,16 @@ WeakAuras.ModelPaths = {
             fileId = "201985",
            },
           },
-          value = "doors",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "hyjalrock01.m2",
@@ -48701,10 +48706,10 @@ WeakAuras.ModelPaths = {
             fileId = "201990",
            },
           },
-          value = "rocks",
          },
          {
           text = "theworldtree",
+          value = "theworldtree",
           children = {
            {
             text = "theworldtree.m2",
@@ -48712,10 +48717,10 @@ WeakAuras.ModelPaths = {
             fileId = "201992",
            },
           },
-          value = "theworldtree",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "hyjalfallentree01.m2",
@@ -48748,22 +48753,22 @@ WeakAuras.ModelPaths = {
             fileId = "202003",
            },
           },
-          value = "trees",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "hyjal",
      },
      {
       text = "kalidar",
+      value = "kalidar",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "felpinecone",
+          value = "felpinecone",
           children = {
            {
             text = "felpinecone.m2",
@@ -48771,10 +48776,10 @@ WeakAuras.ModelPaths = {
             fileId = "202013",
            },
           },
-          value = "felpinecone",
          },
          {
           text = "furbolgtent",
+          value = "furbolgtent",
           children = {
            {
             text = "furbolgtent.m2",
@@ -48787,10 +48792,10 @@ WeakAuras.ModelPaths = {
             fileId = "202017",
            },
           },
-          value = "furbolgtent",
          },
          {
           text = "furbolgtotem",
+          value = "furbolgtotem",
           children = {
            {
             text = "furbolgtotem01.m2",
@@ -48803,10 +48808,10 @@ WeakAuras.ModelPaths = {
             fileId = "202019",
            },
           },
-          value = "furbolgtotem",
          },
          {
           text = "kalidarbushes",
+          value = "kalidarbushes",
           children = {
            {
             text = "kalidarbush01.m2",
@@ -48829,10 +48834,10 @@ WeakAuras.ModelPaths = {
             fileId = "202024",
            },
           },
-          value = "kalidarbushes",
          },
          {
           text = "kalidarharpynest",
+          value = "kalidarharpynest",
           children = {
            {
             text = "kalidarnest01.m2",
@@ -48845,10 +48850,10 @@ WeakAuras.ModelPaths = {
             fileId = "202030",
            },
           },
-          value = "kalidarharpynest",
          },
          {
           text = "kalidarroots",
+          value = "kalidarroots",
           children = {
            {
             text = "kalidargiantroot01.m2",
@@ -48881,10 +48886,10 @@ WeakAuras.ModelPaths = {
             fileId = "202041",
            },
           },
-          value = "kalidarroots",
          },
          {
           text = "kalidartreelogs",
+          value = "kalidartreelogs",
           children = {
            {
             text = "kalidartreelog01.m2",
@@ -48897,10 +48902,10 @@ WeakAuras.ModelPaths = {
             fileId = "202045",
            },
           },
-          value = "kalidartreelogs",
          },
          {
           text = "kalidartrees",
+          value = "kalidartrees",
           children = {
            {
             text = "kalidarfallentree01.m2",
@@ -48953,10 +48958,10 @@ WeakAuras.ModelPaths = {
             fileId = "202058",
            },
           },
-          value = "kalidartrees",
          },
          {
           text = "kalidartreestumps",
+          value = "kalidartreestumps",
           children = {
            {
             text = "kalidartreestump01.m2",
@@ -48969,10 +48974,10 @@ WeakAuras.ModelPaths = {
             fileId = "202060",
            },
           },
-          value = "kalidartreestumps",
          },
          {
           text = "moonwellwater",
+          value = "moonwellwater",
           children = {
            {
             text = "moowellwaterfx.m2",
@@ -48980,10 +48985,10 @@ WeakAuras.ModelPaths = {
             fileId = "202061",
            },
           },
-          value = "moonwellwater",
          },
          {
           text = "oracletree",
+          value = "oracletree",
           children = {
            {
             text = "oracletree.m2",
@@ -48996,22 +49001,22 @@ WeakAuras.ModelPaths = {
             fileId = "202064",
            },
           },
-          value = "oracletree",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "kalidar",
      },
      {
       text = "mauradon",
+      value = "mauradon",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "button",
+          value = "button",
           children = {
            {
             text = "centaurteleporter01.m2",
@@ -49024,10 +49029,10 @@ WeakAuras.ModelPaths = {
             fileId = "202074",
            },
           },
-          value = "button",
          },
          {
           text = "doors",
+          value = "doors",
           children = {
            {
             text = "stone_door01.m2",
@@ -49035,16 +49040,16 @@ WeakAuras.ModelPaths = {
             fileId = "202077",
            },
           },
-          value = "doors",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "bridgebraziers",
+          value = "bridgebraziers",
           children = {
            {
             text = "bridgebrazierblue01.m2",
@@ -49062,10 +49067,10 @@ WeakAuras.ModelPaths = {
             fileId = "202082",
            },
           },
-          value = "bridgebraziers",
          },
          {
           text = "centaurbraziers",
+          value = "centaurbraziers",
           children = {
            {
             text = "centaurbrazierred01.m2",
@@ -49073,10 +49078,10 @@ WeakAuras.ModelPaths = {
             fileId = "202086",
            },
           },
-          value = "centaurbraziers",
          },
          {
           text = "centaurstatue",
+          value = "centaurstatue",
           children = {
            {
             text = "centaurstatue01.m2",
@@ -49084,10 +49089,10 @@ WeakAuras.ModelPaths = {
             fileId = "202088",
            },
           },
-          value = "centaurstatue",
          },
          {
           text = "corruptedplants",
+          value = "corruptedplants",
           children = {
            {
             text = "maraudoncorruptedtree01.m2",
@@ -49155,10 +49160,10 @@ WeakAuras.ModelPaths = {
             fileId = "202112",
            },
           },
-          value = "corruptedplants",
          },
          {
           text = "crystals",
+          value = "crystals",
           children = {
            {
             text = "amethystcrystal01.m2",
@@ -49271,10 +49276,10 @@ WeakAuras.ModelPaths = {
             fileId = "202150",
            },
           },
-          value = "crystals",
          },
          {
           text = "flowers",
+          value = "flowers",
           children = {
            {
             text = "maraudon_drippingflower01.m2",
@@ -49282,10 +49287,10 @@ WeakAuras.ModelPaths = {
             fileId = "202154",
            },
           },
-          value = "flowers",
          },
          {
           text = "grovegravemound",
+          value = "grovegravemound",
           children = {
            {
             text = "grovegravemound01.m2",
@@ -49293,10 +49298,10 @@ WeakAuras.ModelPaths = {
             fileId = "202158",
            },
           },
-          value = "grovegravemound",
          },
          {
           text = "mauradondetail",
+          value = "mauradondetail",
           children = {
            {
             text = "maraudondetail01.m2",
@@ -49334,10 +49339,10 @@ WeakAuras.ModelPaths = {
             fileId = "202170",
            },
           },
-          value = "mauradondetail",
          },
          {
           text = "mushrooms",
+          value = "mushrooms",
           children = {
            {
             text = "maraudonmushroomspikey01.m2",
@@ -49365,10 +49370,10 @@ WeakAuras.ModelPaths = {
             fileId = "202178",
            },
           },
-          value = "mushrooms",
          },
          {
           text = "pods",
+          value = "pods",
           children = {
            {
             text = "maraudonpod01.m2",
@@ -49381,10 +49386,10 @@ WeakAuras.ModelPaths = {
             fileId = "202183",
            },
           },
-          value = "pods",
          },
          {
           text = "roots",
+          value = "roots",
           children = {
            {
             text = "maraudonroot01.m2",
@@ -49422,10 +49427,10 @@ WeakAuras.ModelPaths = {
             fileId = "202192",
            },
           },
-          value = "roots",
          },
          {
           text = "ruinedtents",
+          value = "ruinedtents",
           children = {
            {
             text = "ruinedcentaurtent01.m2",
@@ -49448,10 +49453,10 @@ WeakAuras.ModelPaths = {
             fileId = "202197",
            },
           },
-          value = "ruinedtents",
          },
          {
           text = "satyrbanners",
+          value = "satyrbanners",
           children = {
            {
             text = "mrdnsatyrbanner01.m2",
@@ -49469,10 +49474,10 @@ WeakAuras.ModelPaths = {
             fileId = "202202",
            },
           },
-          value = "satyrbanners",
          },
          {
           text = "satyrfloorbraziers",
+          value = "satyrfloorbraziers",
           children = {
            {
             text = "satyrfloorbrazierblue01.m2",
@@ -49490,10 +49495,10 @@ WeakAuras.ModelPaths = {
             fileId = "202205",
            },
           },
-          value = "satyrfloorbraziers",
          },
          {
           text = "satyrgraves",
+          value = "satyrgraves",
           children = {
            {
             text = "satyr_graves01.m2",
@@ -49526,10 +49531,10 @@ WeakAuras.ModelPaths = {
             fileId = "202213",
            },
           },
-          value = "satyrgraves",
          },
          {
           text = "satyrhangingbraziers",
+          value = "satyrhangingbraziers",
           children = {
            {
             text = "satyrhangingbrazierblue01.m2",
@@ -49547,10 +49552,10 @@ WeakAuras.ModelPaths = {
             fileId = "202218",
            },
           },
-          value = "satyrhangingbraziers",
          },
          {
           text = "satyrwalls",
+          value = "satyrwalls",
           children = {
            {
             text = "satyrwall01.m2",
@@ -49573,10 +49578,10 @@ WeakAuras.ModelPaths = {
             fileId = "202223",
            },
           },
-          value = "satyrwalls",
          },
          {
           text = "sporelight",
+          value = "sporelight",
           children = {
            {
             text = "sporelight01.m2",
@@ -49589,10 +49594,10 @@ WeakAuras.ModelPaths = {
             fileId = "202229",
            },
           },
-          value = "sporelight",
          },
          {
           text = "spores",
+          value = "spores",
           children = {
            {
             text = "maraudonspore01.m2",
@@ -49600,10 +49605,10 @@ WeakAuras.ModelPaths = {
             fileId = "202231",
            },
           },
-          value = "spores",
          },
          {
           text = "stalactites",
+          value = "stalactites",
           children = {
            {
             text = "maraudonstalactites01.m2",
@@ -49631,10 +49636,10 @@ WeakAuras.ModelPaths = {
             fileId = "202236",
            },
           },
-          value = "stalactites",
          },
          {
           text = "vines",
+          value = "vines",
           children = {
            {
             text = "maraudonnastyvine01.m2",
@@ -49672,10 +49677,10 @@ WeakAuras.ModelPaths = {
             fileId = "202244",
            },
           },
-          value = "vines",
          },
          {
           text = "waterfalls",
+          value = "waterfalls",
           children = {
            {
             text = "maraudon_waterfall01.m2",
@@ -49713,22 +49718,22 @@ WeakAuras.ModelPaths = {
             fileId = "202253",
            },
           },
-          value = "waterfalls",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "mauradon",
      },
      {
       text = "moonglade",
+      value = "moonglade",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "druidstone",
+          value = "druidstone",
           children = {
            {
             text = "druidstone.m2",
@@ -49741,10 +49746,10 @@ WeakAuras.ModelPaths = {
             fileId = "202259",
            },
           },
-          value = "druidstone",
          },
          {
           text = "moongladebushes",
+          value = "moongladebushes",
           children = {
            {
             text = "moongladebush01.m2",
@@ -49757,10 +49762,10 @@ WeakAuras.ModelPaths = {
             fileId = "202263",
            },
           },
-          value = "moongladebushes",
          },
          {
           text = "moongladetrees",
+          value = "moongladetrees",
           children = {
            {
             text = "moongladetree01.m2",
@@ -49803,22 +49808,22 @@ WeakAuras.ModelPaths = {
             fileId = "202278",
            },
           },
-          value = "moongladetrees",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "moonglade",
      },
      {
       text = "mulgore",
+      value = "mulgore",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "burnedwagons",
+          value = "burnedwagons",
           children = {
            {
             text = "burnedgypsywagon01.m2",
@@ -49831,10 +49836,10 @@ WeakAuras.ModelPaths = {
             fileId = "202293",
            },
           },
-          value = "burnedwagons",
          },
          {
           text = "funeralpyres",
+          value = "funeralpyres",
           children = {
            {
             text = "funeralpyre01.m2",
@@ -49842,10 +49847,10 @@ WeakAuras.ModelPaths = {
             fileId = "202295",
            },
           },
-          value = "funeralpyres",
          },
          {
           text = "pinecone",
+          value = "pinecone",
           children = {
            {
             text = "pinecone.m2",
@@ -49853,10 +49858,10 @@ WeakAuras.ModelPaths = {
             fileId = "202297",
            },
           },
-          value = "pinecone",
          },
          {
           text = "rockarch",
+          value = "rockarch",
           children = {
            {
             text = "mullgorerockarch.m2",
@@ -49864,10 +49869,10 @@ WeakAuras.ModelPaths = {
             fileId = "202298",
            },
           },
-          value = "rockarch",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "mullgorerock01.m2",
@@ -49890,10 +49895,10 @@ WeakAuras.ModelPaths = {
             fileId = "202303",
            },
           },
-          value = "rocks",
          },
          {
           text = "thorns",
+          value = "thorns",
           children = {
            {
             text = "mullgorethorn01.m2",
@@ -49936,10 +49941,10 @@ WeakAuras.ModelPaths = {
             fileId = "202312",
            },
           },
-          value = "thorns",
          },
          {
           text = "thunderbluffelevator",
+          value = "thunderbluffelevator",
           children = {
            {
             text = "elevatorcar.m2",
@@ -49952,10 +49957,10 @@ WeakAuras.ModelPaths = {
             fileId = "202317",
            },
           },
-          value = "thunderbluffelevator",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "mullgorefallentree01.m2",
@@ -49973,19 +49978,18 @@ WeakAuras.ModelPaths = {
             fileId = "202323",
            },
           },
-          value = "trees",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "mulgore",
      },
      {
       text = "onyxiaslair",
+      value = "onyxiaslair",
       children = {
        {
         text = "doors",
+        value = "doors",
         children = {
          {
           text = "onyxiasgate01.m2",
@@ -49993,10 +49997,10 @@ WeakAuras.ModelPaths = {
           fileId = "202324",
          },
         },
-        value = "doors",
        },
        {
         text = "fallingrocks",
+        value = "fallingrocks",
         children = {
          {
           text = "onyziaslairfallingrocks.m2",
@@ -50004,10 +50008,10 @@ WeakAuras.ModelPaths = {
           fileId = "202325",
          },
         },
-        value = "fallingrocks",
        },
        {
         text = "lavatraps",
+        value = "lavatraps",
         children = {
          {
           text = "onyziaslairlavasplash.m2",
@@ -50025,19 +50029,20 @@ WeakAuras.ModelPaths = {
           fileId = "202328",
          },
         },
-        value = "lavatraps",
        },
       },
-      value = "onyxiaslair",
      },
      {
       text = "orgrimmar",
+      value = "orgrimmar",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "auctionhouse",
+          value = "auctionhouse",
           children = {
            {
             text = "kl_auctionhousecollide.m2",
@@ -50045,10 +50050,10 @@ WeakAuras.ModelPaths = {
             fileId = "202334",
            },
           },
-          value = "auctionhouse",
          },
          {
           text = "doors",
+          value = "doors",
           children = {
            {
             text = "orgrimmardoor.m2",
@@ -50056,10 +50061,10 @@ WeakAuras.ModelPaths = {
             fileId = "202335",
            },
           },
-          value = "doors",
          },
          {
           text = "manarothtree",
+          value = "manarothtree",
           children = {
            {
             text = "manerothtree.m2",
@@ -50067,10 +50072,10 @@ WeakAuras.ModelPaths = {
             fileId = "202344",
            },
           },
-          value = "manarothtree",
          },
          {
           text = "maptable",
+          value = "maptable",
           children = {
            {
             text = "hordemaptable.m2",
@@ -50078,10 +50083,10 @@ WeakAuras.ModelPaths = {
             fileId = "202348",
            },
           },
-          value = "maptable",
          },
          {
           text = "onyxiatrophypost",
+          value = "onyxiatrophypost",
           children = {
            {
             text = "hordenefarianpost.m2",
@@ -50094,10 +50099,10 @@ WeakAuras.ModelPaths = {
             fileId = "202356",
            },
           },
-          value = "onyxiatrophypost",
          },
          {
           text = "orgrimmarbonfire",
+          value = "orgrimmarbonfire",
           children = {
            {
             text = "orgrimmarbonfire01.m2",
@@ -50115,10 +50120,10 @@ WeakAuras.ModelPaths = {
             fileId = "202363",
            },
           },
-          value = "orgrimmarbonfire",
          },
          {
           text = "pentagram",
+          value = "pentagram",
           children = {
            {
             text = "orgrimmarpentagram.m2",
@@ -50126,7 +50131,6 @@ WeakAuras.ModelPaths = {
             fileId = "202366",
            },
           },
-          value = "pentagram",
          },
          {
           text = "thralls_throne.m2",
@@ -50135,6 +50139,7 @@ WeakAuras.ModelPaths = {
          },
          {
           text = "waterfalls",
+          value = "waterfalls",
           children = {
            {
             text = "orgrimmar_waterfalla.m2",
@@ -50142,22 +50147,22 @@ WeakAuras.ModelPaths = {
             fileId = "202368",
            },
           },
-          value = "waterfalls",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "orgrimmar",
      },
      {
       text = "razorfen",
+      value = "razorfen",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "razorfendoors",
+          value = "razorfendoors",
           children = {
            {
             text = "razorfendoor01.m2",
@@ -50185,22 +50190,22 @@ WeakAuras.ModelPaths = {
             fileId = "202373",
            },
           },
-          value = "razorfendoors",
          },
         },
-        value = "activedoodads",
        },
       },
-      value = "razorfen",
      },
      {
       text = "silithidhive",
+      value = "silithidhive",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "lights",
+          value = "lights",
           children = {
            {
             text = "silithidlight02.m2",
@@ -50208,10 +50213,10 @@ WeakAuras.ModelPaths = {
             fileId = "202375",
            },
           },
-          value = "lights",
          },
          {
           text = "membranes",
+          value = "membranes",
           children = {
            {
             text = "exterior_arch01.m2",
@@ -50239,10 +50244,10 @@ WeakAuras.ModelPaths = {
             fileId = "202382",
            },
           },
-          value = "membranes",
          },
          {
           text = "silithidmodels",
+          value = "silithidmodels",
           children = {
            {
             text = "silithiddragonflymodel_01.m2",
@@ -50260,10 +50265,10 @@ WeakAuras.ModelPaths = {
             fileId = "202390",
            },
           },
-          value = "silithidmodels",
          },
          {
           text = "spikes",
+          value = "spikes",
           children = {
            {
             text = "silithidspike_01.m2",
@@ -50281,22 +50286,22 @@ WeakAuras.ModelPaths = {
             fileId = "202395",
            },
           },
-          value = "spikes",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "silithidhive",
      },
      {
       text = "silithus",
+      value = "silithus",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "ahn_quiraj_ossiriancrystal",
+          value = "ahn_quiraj_ossiriancrystal",
           children = {
            {
             text = "ahn_quiraj_ossiriancrystal.m2",
@@ -50304,10 +50309,10 @@ WeakAuras.ModelPaths = {
             fileId = "202396",
            },
           },
-          value = "ahn_quiraj_ossiriancrystal",
          },
          {
           text = "ahnqirajdoor",
+          value = "ahnqirajdoor",
           children = {
            {
             text = "ahn_qiraj_doorplug.m2",
@@ -50340,10 +50345,10 @@ WeakAuras.ModelPaths = {
             fileId = "202405",
            },
           },
-          value = "ahnqirajdoor",
          },
          {
           text = "egglayer",
+          value = "egglayer",
           children = {
            {
             text = "ahnqirajegglayer.m2",
@@ -50351,10 +50356,10 @@ WeakAuras.ModelPaths = {
             fileId = "202413",
            },
           },
-          value = "egglayer",
          },
          {
           text = "sandworm",
+          value = "sandworm",
           children = {
            {
             text = "sandworm_rockbase.m2",
@@ -50362,16 +50367,16 @@ WeakAuras.ModelPaths = {
             fileId = "202417",
            },
           },
-          value = "sandworm",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "ahnqiracoffins",
+          value = "ahnqiracoffins",
           children = {
            {
             text = "aq_coffinbase.m2",
@@ -50399,13 +50404,14 @@ WeakAuras.ModelPaths = {
             fileId = "202422",
            },
           },
-          value = "ahnqiracoffins",
          },
          {
           text = "ahnqiraj",
+          value = "ahnqiraj",
           children = {
            {
             text = "torch",
+            value = "torch",
             children = {
              {
               text = "ahnqirajwalltorch01.m2",
@@ -50413,13 +50419,12 @@ WeakAuras.ModelPaths = {
               fileId = "202425",
              },
             },
-            value = "torch",
            },
           },
-          value = "ahnqiraj",
          },
          {
           text = "ahnqirajaltar",
+          value = "ahnqirajaltar",
           children = {
            {
             text = "ahnqirajalter.m2",
@@ -50427,10 +50432,10 @@ WeakAuras.ModelPaths = {
             fileId = "202429",
            },
           },
-          value = "ahnqirajaltar",
          },
          {
           text = "ahnqirajglow",
+          value = "ahnqirajglow",
           children = {
            {
             text = "quirajglow.m2",
@@ -50438,10 +50443,10 @@ WeakAuras.ModelPaths = {
             fileId = "202430",
            },
           },
-          value = "ahnqirajglow",
          },
          {
           text = "ahnqirajsconces",
+          value = "ahnqirajsconces",
           children = {
            {
             text = "ahnqirajsconce01.m2",
@@ -50464,10 +50469,10 @@ WeakAuras.ModelPaths = {
             fileId = "202435",
            },
           },
-          value = "ahnqirajsconces",
          },
          {
           text = "ahnqirajstairs",
+          value = "ahnqirajstairs",
           children = {
            {
             text = "ahnqiraj_slab01.m2",
@@ -50485,10 +50490,10 @@ WeakAuras.ModelPaths = {
             fileId = "202439",
            },
           },
-          value = "ahnqirajstairs",
          },
          {
           text = "ahnqirajstones",
+          value = "ahnqirajstones",
           children = {
            {
             text = "ahn_qirajbrick01.m2",
@@ -50506,10 +50511,10 @@ WeakAuras.ModelPaths = {
             fileId = "202442",
            },
           },
-          value = "ahnqirajstones",
          },
          {
           text = "crystals",
+          value = "crystals",
           children = {
            {
             text = "floatingpurplecrystal01.m2",
@@ -50682,10 +50687,10 @@ WeakAuras.ModelPaths = {
             fileId = "202486",
            },
           },
-          value = "crystals",
          },
          {
           text = "dustdevil",
+          value = "dustdevil",
           children = {
            {
             text = "ahnqirajdustdevil.m2",
@@ -50693,10 +50698,10 @@ WeakAuras.ModelPaths = {
             fileId = "202487",
            },
           },
-          value = "dustdevil",
          },
          {
           text = "eggs",
+          value = "eggs",
           children = {
            {
             text = "silithidegg.m2",
@@ -50704,10 +50709,10 @@ WeakAuras.ModelPaths = {
             fileId = "202490",
            },
           },
-          value = "eggs",
          },
          {
           text = "elven",
+          value = "elven",
           children = {
            {
             text = "elventowerroofsilithus02.m2",
@@ -50765,10 +50770,10 @@ WeakAuras.ModelPaths = {
             fileId = "202504",
            },
           },
-          value = "elven",
          },
          {
           text = "gong",
+          value = "gong",
           children = {
            {
             text = "silithidgong.m2",
@@ -50781,10 +50786,10 @@ WeakAuras.ModelPaths = {
             fileId = "202509",
            },
           },
-          value = "gong",
          },
          {
           text = "hives",
+          value = "hives",
           children = {
            {
             text = "silithushanginghive01.m2",
@@ -50807,10 +50812,10 @@ WeakAuras.ModelPaths = {
             fileId = "202517",
            },
           },
-          value = "hives",
          },
          {
           text = "insectmound",
+          value = "insectmound",
           children = {
            {
             text = "silithusinsectmound01.m2",
@@ -50828,10 +50833,10 @@ WeakAuras.ModelPaths = {
             fileId = "202521",
            },
           },
-          value = "insectmound",
          },
          {
           text = "masterhiveswarm",
+          value = "masterhiveswarm",
           children = {
            {
             text = "masterhiveswarm.m2",
@@ -50839,10 +50844,10 @@ WeakAuras.ModelPaths = {
             fileId = "202522",
            },
           },
-          value = "masterhiveswarm",
          },
          {
           text = "mummies",
+          value = "mummies",
           children = {
            {
             text = "aq_mummy01.m2",
@@ -50860,10 +50865,10 @@ WeakAuras.ModelPaths = {
             fileId = "202529",
            },
           },
-          value = "mummies",
          },
          {
           text = "obsidianstatue",
+          value = "obsidianstatue",
           children = {
            {
             text = "obsidianstatue.m2",
@@ -50871,10 +50876,10 @@ WeakAuras.ModelPaths = {
             fileId = "202533",
            },
           },
-          value = "obsidianstatue",
          },
          {
           text = "pods",
+          value = "pods",
           children = {
            {
             text = "silithuspod01.m2",
@@ -50892,10 +50897,10 @@ WeakAuras.ModelPaths = {
             fileId = "202536",
            },
           },
-          value = "pods",
          },
          {
           text = "pylons",
+          value = "pylons",
           children = {
            {
             text = "silithuspylon.m2",
@@ -50908,10 +50913,10 @@ WeakAuras.ModelPaths = {
             fileId = "202540",
            },
           },
-          value = "pylons",
          },
          {
           text = "quiraj_small_swarm",
+          value = "quiraj_small_swarm",
           children = {
            {
             text = "quiraj_small_swarm.m2",
@@ -50919,10 +50924,10 @@ WeakAuras.ModelPaths = {
             fileId = "202543",
            },
           },
-          value = "quiraj_small_swarm",
          },
          {
           text = "quirajbeeroomswarm",
+          value = "quirajbeeroomswarm",
           children = {
            {
             text = "quiraj_beeroom_swarm.m2",
@@ -50930,10 +50935,10 @@ WeakAuras.ModelPaths = {
             fileId = "202545",
            },
           },
-          value = "quirajbeeroomswarm",
          },
          {
           text = "quirajruins",
+          value = "quirajruins",
           children = {
            {
             text = "quirajfallenwall01.m2",
@@ -51031,10 +51036,10 @@ WeakAuras.ModelPaths = {
             fileId = "202567",
            },
           },
-          value = "quirajruins",
          },
          {
           text = "ruins",
+          value = "ruins",
           children = {
            {
             text = "silithusgate01.m2",
@@ -51097,10 +51102,10 @@ WeakAuras.ModelPaths = {
             fileId = "202579",
            },
           },
-          value = "ruins",
          },
          {
           text = "silithidtankhusks",
+          value = "silithidtankhusks",
           children = {
            {
             text = "silithidtankhuskabdomen.m2",
@@ -51128,10 +51133,10 @@ WeakAuras.ModelPaths = {
             fileId = "202584",
            },
           },
-          value = "silithidtankhusks",
          },
          {
           text = "silithidwasphusks",
+          value = "silithidwasphusks",
           children = {
            {
             text = "silithidwasphuskabdomen.m2",
@@ -51164,10 +51169,10 @@ WeakAuras.ModelPaths = {
             fileId = "202592",
            },
           },
-          value = "silithidwasphusks",
          },
          {
           text = "silithusruinspillartop",
+          value = "silithusruinspillartop",
           children = {
            {
             text = "silithusruinspillartop.m2",
@@ -51175,10 +51180,10 @@ WeakAuras.ModelPaths = {
             fileId = "202593",
            },
           },
-          value = "silithusruinspillartop",
          },
          {
           text = "twilighttablet",
+          value = "twilighttablet",
           children = {
            {
             text = "twilighttabletlower.m2",
@@ -51191,10 +51196,10 @@ WeakAuras.ModelPaths = {
             fileId = "202596",
            },
           },
-          value = "twilighttablet",
          },
          {
           text = "waspswarm",
+          value = "waspswarm",
           children = {
            {
             text = "waspswarm.m2",
@@ -51202,10 +51207,10 @@ WeakAuras.ModelPaths = {
             fileId = "202598",
            },
           },
-          value = "waspswarm",
          },
          {
           text = "waterfalls",
+          value = "waterfalls",
           children = {
            {
             text = "silithussandwaterfalllarge.m2",
@@ -51228,22 +51233,22 @@ WeakAuras.ModelPaths = {
             fileId = "202602",
            },
           },
-          value = "waterfalls",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "silithus",
      },
      {
       text = "stonetalon",
+      value = "stonetalon",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "tree",
+          value = "tree",
           children = {
            {
             text = "g_sapling01.m2",
@@ -51256,16 +51261,16 @@ WeakAuras.ModelPaths = {
             fileId = "202608",
            },
           },
-          value = "tree",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "harpynests",
+          value = "harpynests",
           children = {
            {
             text = "stonetalonharpysnest01.m2",
@@ -51278,10 +51283,10 @@ WeakAuras.ModelPaths = {
             fileId = "202612",
            },
           },
-          value = "harpynests",
          },
          {
           text = "rock",
+          value = "rock",
           children = {
            {
             text = "stonetalonrockoutcrop01.m2",
@@ -51289,10 +51294,10 @@ WeakAuras.ModelPaths = {
             fileId = "202614",
            },
           },
-          value = "rock",
          },
          {
           text = "tools",
+          value = "tools",
           children = {
            {
             text = "stonetalontools_crank01.m2",
@@ -51305,10 +51310,10 @@ WeakAuras.ModelPaths = {
             fileId = "202616",
            },
           },
-          value = "tools",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "burntstonetree01.m2",
@@ -51381,10 +51386,10 @@ WeakAuras.ModelPaths = {
             fileId = "202635",
            },
           },
-          value = "trees",
          },
          {
           text = "treestumps",
+          value = "treestumps",
           children = {
            {
             text = "burntstonetreestump02.m2",
@@ -51417,10 +51422,10 @@ WeakAuras.ModelPaths = {
             fileId = "202644",
            },
           },
-          value = "treestumps",
          },
          {
           text = "waterwheel",
+          value = "waterwheel",
           children = {
            {
             text = "stonetalonwaterwheel.m2",
@@ -51428,10 +51433,10 @@ WeakAuras.ModelPaths = {
             fileId = "202646",
            },
           },
-          value = "waterwheel",
          },
          {
           text = "webbedtrees",
+          value = "webbedtrees",
           children = {
            {
             text = "stonetree01_web.m2",
@@ -51454,22 +51459,22 @@ WeakAuras.ModelPaths = {
             fileId = "202652",
            },
           },
-          value = "webbedtrees",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "stonetalon",
      },
      {
       text = "tanaris",
+      value = "tanaris",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "trollgate",
+          value = "trollgate",
           children = {
            {
             text = "tanaristrollgate.m2",
@@ -51477,16 +51482,16 @@ WeakAuras.ModelPaths = {
             fileId = "202655",
            },
           },
-          value = "trollgate",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "cacti",
+          value = "cacti",
           children = {
            {
             text = "tanariscactus01.m2",
@@ -51519,10 +51524,10 @@ WeakAuras.ModelPaths = {
             fileId = "202662",
            },
           },
-          value = "cacti",
          },
          {
           text = "desertholdingpen",
+          value = "desertholdingpen",
           children = {
            {
             text = "desertholdingpen.m2",
@@ -51530,10 +51535,10 @@ WeakAuras.ModelPaths = {
             fileId = "202670",
            },
           },
-          value = "desertholdingpen",
          },
          {
           text = "goblin",
+          value = "goblin",
           children = {
            {
             text = "tanarisgoblinwall01.m2",
@@ -51561,10 +51566,10 @@ WeakAuras.ModelPaths = {
             fileId = "202676",
            },
           },
-          value = "goblin",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "tanarisrock01.m2",
@@ -51602,10 +51607,10 @@ WeakAuras.ModelPaths = {
             fileId = "202683",
            },
           },
-          value = "rocks",
          },
          {
           text = "watertower",
+          value = "watertower",
           children = {
            {
             text = "tanariswatertower.m2",
@@ -51613,22 +51618,22 @@ WeakAuras.ModelPaths = {
             fileId = "202687",
            },
           },
-          value = "watertower",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "tanaris",
      },
      {
       text = "thousandneedles",
+      value = "thousandneedles",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "bleachers",
+          value = "bleachers",
           children = {
            {
             text = "gnomebleachers.m2",
@@ -51641,10 +51646,10 @@ WeakAuras.ModelPaths = {
             fileId = "202692",
            },
           },
-          value = "bleachers",
          },
          {
           text = "bridge",
+          value = "bridge",
           children = {
            {
             text = "thousandneedlesbridge.m2",
@@ -51652,10 +51657,10 @@ WeakAuras.ModelPaths = {
             fileId = "202693",
            },
           },
-          value = "bridge",
          },
          {
           text = "haybails",
+          value = "haybails",
           children = {
            {
             text = "back-stop.m2",
@@ -51728,10 +51733,10 @@ WeakAuras.ModelPaths = {
             fileId = "202707",
            },
           },
-          value = "haybails",
          },
          {
           text = "racingflags",
+          value = "racingflags",
           children = {
            {
             text = "racingflag01.m2",
@@ -51739,10 +51744,10 @@ WeakAuras.ModelPaths = {
             fileId = "202709",
            },
           },
-          value = "racingflags",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "saltflatrock_01.m2",
@@ -51840,10 +51845,10 @@ WeakAuras.ModelPaths = {
             fileId = "202731",
            },
           },
-          value = "rocks",
          },
          {
           text = "snakenests",
+          value = "snakenests",
           children = {
            {
             text = "snake_nest_001.m2",
@@ -51856,10 +51861,10 @@ WeakAuras.ModelPaths = {
             fileId = "202734",
            },
           },
-          value = "snakenests",
          },
          {
           text = "wyverneggs",
+          value = "wyverneggs",
           children = {
            {
             text = "wyverneggs01.m2",
@@ -51872,22 +51877,22 @@ WeakAuras.ModelPaths = {
             fileId = "202738",
            },
           },
-          value = "wyverneggs",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "thousandneedles",
      },
      {
       text = "timbermaw",
+      value = "timbermaw",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "woodendoor",
+          value = "woodendoor",
           children = {
            {
             text = "timbermawwoodendoor.m2",
@@ -51895,16 +51900,16 @@ WeakAuras.ModelPaths = {
             fileId = "202740",
            },
           },
-          value = "woodendoor",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "timbermawflowers",
+          value = "timbermawflowers",
           children = {
            {
             text = "timbermawflower01.m2",
@@ -51917,22 +51922,22 @@ WeakAuras.ModelPaths = {
             fileId = "202744",
            },
           },
-          value = "timbermawflowers",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "timbermaw",
      },
      {
       text = "ungoro",
+      value = "ungoro",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "archway",
+          value = "archway",
           children = {
            {
             text = "ungoroarchway01.m2",
@@ -51940,10 +51945,10 @@ WeakAuras.ModelPaths = {
             fileId = "202747",
            },
           },
-          value = "archway",
          },
          {
           text = "crystals",
+          value = "crystals",
           children = {
            {
             text = "ungorocrystal_blue01.m2",
@@ -51991,10 +51996,10 @@ WeakAuras.ModelPaths = {
             fileId = "202759",
            },
           },
-          value = "crystals",
          },
          {
           text = "geyser",
+          value = "geyser",
           children = {
            {
             text = "ungorogeyser01.m2",
@@ -52007,10 +52012,10 @@ WeakAuras.ModelPaths = {
             fileId = "202767",
            },
           },
-          value = "geyser",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "ungororock06.m2",
@@ -52063,10 +52068,10 @@ WeakAuras.ModelPaths = {
             fileId = "202779",
            },
           },
-          value = "rocks",
          },
          {
           text = "threshadoncorpse",
+          value = "threshadoncorpse",
           children = {
            {
             text = "ungorothreshadoncorpse.m2",
@@ -52074,10 +52079,10 @@ WeakAuras.ModelPaths = {
             fileId = "202781",
            },
           },
-          value = "threshadoncorpse",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "ungorotreebite.m2",
@@ -52095,10 +52100,10 @@ WeakAuras.ModelPaths = {
             fileId = "202784",
            },
           },
-          value = "trees",
          },
          {
           text = "trexfootprint",
+          value = "trexfootprint",
           children = {
            {
             text = "trexfootprint.m2",
@@ -52106,10 +52111,10 @@ WeakAuras.ModelPaths = {
             fileId = "202786",
            },
           },
-          value = "trexfootprint",
          },
          {
           text = "ungorobubbles",
+          value = "ungorobubbles",
           children = {
            {
             text = "ungoroblackbubble.m2",
@@ -52117,22 +52122,22 @@ WeakAuras.ModelPaths = {
             fileId = "202787",
            },
           },
-          value = "ungorobubbles",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "ungoro",
      },
      {
       text = "wailingcaverns",
+      value = "wailingcaverns",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "baskets",
+          value = "baskets",
           children = {
            {
             text = "wc_basket01.m2",
@@ -52140,10 +52145,10 @@ WeakAuras.ModelPaths = {
             fileId = "202790",
            },
           },
-          value = "baskets",
          },
          {
           text = "cages",
+          value = "cages",
           children = {
            {
             text = "wc_cage01.m2",
@@ -52151,10 +52156,10 @@ WeakAuras.ModelPaths = {
             fileId = "202792",
            },
           },
-          value = "cages",
          },
          {
           text = "fangdruids",
+          value = "fangdruids",
           children = {
            {
             text = "wc_basinstone.m2",
@@ -52237,10 +52242,10 @@ WeakAuras.ModelPaths = {
             fileId = "202815",
            },
           },
-          value = "fangdruids",
          },
          {
           text = "hangingheads",
+          value = "hangingheads",
           children = {
            {
             text = "wc_hanginghead01.m2",
@@ -52248,10 +52253,10 @@ WeakAuras.ModelPaths = {
             fileId = "202818",
            },
           },
-          value = "hangingheads",
          },
          {
           text = "stickbundles",
+          value = "stickbundles",
           children = {
            {
             text = "wc_stickbundle01.m2",
@@ -52269,10 +52274,10 @@ WeakAuras.ModelPaths = {
             fileId = "202823",
            },
           },
-          value = "stickbundles",
          },
          {
           text = "waterfalls",
+          value = "waterfalls",
           children = {
            {
             text = "wailingwaterfall01.m2",
@@ -52280,22 +52285,22 @@ WeakAuras.ModelPaths = {
             fileId = "202824",
            },
           },
-          value = "waterfalls",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "wailingcaverns",
      },
      {
       text = "winterspring",
+      value = "winterspring",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "altar",
+          value = "altar",
           children = {
            {
             text = "winterspringaltar01.m2",
@@ -52303,16 +52308,16 @@ WeakAuras.ModelPaths = {
             fileId = "202828",
            },
           },
-          value = "altar",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "frostsaberrock",
+          value = "frostsaberrock",
           children = {
            {
             text = "winterspringfrostsaberrock.m2",
@@ -52320,10 +52325,10 @@ WeakAuras.ModelPaths = {
             fileId = "202832",
            },
           },
-          value = "frostsaberrock",
          },
          {
           text = "frozenwaterfalls",
+          value = "frozenwaterfalls",
           children = {
            {
             text = "frozenwaterfall01.m2",
@@ -52341,10 +52346,10 @@ WeakAuras.ModelPaths = {
             fileId = "202836",
            },
           },
-          value = "frozenwaterfalls",
          },
          {
           text = "furbolgtent",
+          value = "furbolgtent",
           children = {
            {
             text = "furbolgtentsnow.m2",
@@ -52357,10 +52362,10 @@ WeakAuras.ModelPaths = {
             fileId = "202840",
            },
           },
-          value = "furbolgtent",
          },
          {
           text = "furbolgtotems",
+          value = "furbolgtotems",
           children = {
            {
             text = "furbolgtotemsnow01.m2",
@@ -52373,10 +52378,10 @@ WeakAuras.ModelPaths = {
             fileId = "202842",
            },
           },
-          value = "furbolgtotems",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "winterspringrock01.m2",
@@ -52419,10 +52424,10 @@ WeakAuras.ModelPaths = {
             fileId = "202852",
            },
           },
-          value = "rocks",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "newwinterspringmidtree01.m2",
@@ -52450,10 +52455,10 @@ WeakAuras.ModelPaths = {
             fileId = "202859",
            },
           },
-          value = "trees",
          },
          {
           text = "winterspringbushes",
+          value = "winterspringbushes",
           children = {
            {
             text = "winterspringbush01.m2",
@@ -52461,10 +52466,10 @@ WeakAuras.ModelPaths = {
             fileId = "202868",
            },
           },
-          value = "winterspringbushes",
          },
          {
           text = "winterspringfallentrees",
+          value = "winterspringfallentrees",
           children = {
            {
             text = "winterspringfallenbranch01.m2",
@@ -52482,10 +52487,10 @@ WeakAuras.ModelPaths = {
             fileId = "202874",
            },
           },
-          value = "winterspringfallentrees",
          },
          {
           text = "winterspringtrees",
+          value = "winterspringtrees",
           children = {
            {
             text = "winterspringtree01.m2",
@@ -52503,10 +52508,10 @@ WeakAuras.ModelPaths = {
             fileId = "202878",
            },
           },
-          value = "winterspringtrees",
          },
          {
           text = "worldtreeroots",
+          value = "worldtreeroots",
           children = {
            {
             text = "winterspringworldtreeroot01.m2",
@@ -52529,28 +52534,28 @@ WeakAuras.ModelPaths = {
             fileId = "202887",
            },
           },
-          value = "worldtreeroots",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "winterspring",
      },
     },
-    value = "kalimdor",
    },
    {
     text = "khazmodan",
+    value = "khazmodan",
     children = {
      {
       text = "badlands",
+      value = "badlands",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "bones",
+          value = "bones",
           children = {
            {
             text = "badlandsbones01.m2",
@@ -52568,10 +52573,10 @@ WeakAuras.ModelPaths = {
             fileId = "202892",
            },
           },
-          value = "bones",
          },
          {
           text = "bushes",
+          value = "bushes",
           children = {
            {
             text = "badlandsshrub01.m2",
@@ -52624,10 +52629,10 @@ WeakAuras.ModelPaths = {
             fileId = "202914",
            },
           },
-          value = "bushes",
          },
          {
           text = "cactus",
+          value = "cactus",
           children = {
            {
             text = "badlandscactus_1.m2",
@@ -52680,10 +52685,10 @@ WeakAuras.ModelPaths = {
             fileId = "202934",
            },
           },
-          value = "cactus",
          },
          {
           text = "questblade",
+          value = "questblade",
           children = {
            {
             text = "questbladebadlands.m2",
@@ -52691,10 +52696,10 @@ WeakAuras.ModelPaths = {
             fileId = "202935",
            },
           },
-          value = "questblade",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "badlandsrock01.m2",
@@ -52737,10 +52742,10 @@ WeakAuras.ModelPaths = {
             fileId = "202947",
            },
           },
-          value = "rocks",
          },
          {
           text = "rune",
+          value = "rune",
           children = {
            {
             text = "pentagramdirtbadlands.m2",
@@ -52748,10 +52753,10 @@ WeakAuras.ModelPaths = {
             fileId = "202952",
            },
           },
-          value = "rune",
          },
          {
           text = "skeletalking",
+          value = "skeletalking",
           children = {
            {
             text = "badlandsskeletalking.m2",
@@ -52759,10 +52764,10 @@ WeakAuras.ModelPaths = {
             fileId = "202953",
            },
           },
-          value = "skeletalking",
          },
          {
           text = "statues",
+          value = "statues",
           children = {
            {
             text = "badlandscobrapillar01.m2",
@@ -52795,10 +52800,10 @@ WeakAuras.ModelPaths = {
             fileId = "202960",
            },
           },
-          value = "statues",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "badlandscactus01.m2",
@@ -52876,10 +52881,10 @@ WeakAuras.ModelPaths = {
             fileId = "202984",
            },
           },
-          value = "trees",
          },
          {
           text = "wagon",
+          value = "wagon",
           children = {
            {
             text = "badlandssunkenwagon.m2",
@@ -52887,22 +52892,22 @@ WeakAuras.ModelPaths = {
             fileId = "203004",
            },
           },
-          value = "wagon",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "badlands",
      },
      {
       text = "blackrock",
+      value = "blackrock",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "altarritual",
+          value = "altarritual",
           children = {
            {
             text = "blackrockaltarritual.m2",
@@ -52910,10 +52915,10 @@ WeakAuras.ModelPaths = {
             fileId = "203006",
            },
           },
-          value = "altarritual",
          },
          {
           text = "anvil",
+          value = "anvil",
           children = {
            {
             text = "darkironanvil.m2",
@@ -52926,10 +52931,10 @@ WeakAuras.ModelPaths = {
             fileId = "203012",
            },
           },
-          value = "anvil",
          },
          {
           text = "arenaflag",
+          value = "arenaflag",
           children = {
            {
             text = "arenaflag.m2",
@@ -52937,10 +52942,10 @@ WeakAuras.ModelPaths = {
             fileId = "203013",
            },
           },
-          value = "arenaflag",
          },
          {
           text = "chalice",
+          value = "chalice",
           children = {
            {
             text = "blackrockchalice.m2",
@@ -52948,10 +52953,10 @@ WeakAuras.ModelPaths = {
             fileId = "203016",
            },
           },
-          value = "chalice",
          },
          {
           text = "darkironbrazier",
+          value = "darkironbrazier",
           children = {
            {
             text = "darkironbrazier.m2",
@@ -52959,10 +52964,10 @@ WeakAuras.ModelPaths = {
             fileId = "203018",
            },
           },
-          value = "darkironbrazier",
          },
          {
           text = "safe",
+          value = "safe",
           children = {
            {
             text = "darkironsafe.m2",
@@ -52970,10 +52975,10 @@ WeakAuras.ModelPaths = {
             fileId = "203020",
            },
           },
-          value = "safe",
          },
          {
           text = "seal",
+          value = "seal",
           children = {
            {
             text = "blackrockseal.m2",
@@ -52981,10 +52986,10 @@ WeakAuras.ModelPaths = {
             fileId = "203022",
            },
           },
-          value = "seal",
          },
          {
           text = "statuethaurissan",
+          value = "statuethaurissan",
           children = {
            {
             text = "statuedarkironthaurissan.m2",
@@ -52997,10 +53002,10 @@ WeakAuras.ModelPaths = {
             fileId = "203025",
            },
           },
-          value = "statuethaurissan",
          },
          {
           text = "suppressiontrap",
+          value = "suppressiontrap",
           children = {
            {
             text = "blackrocksuppressiontrap.m2",
@@ -53008,10 +53013,10 @@ WeakAuras.ModelPaths = {
             fileId = "203027",
            },
           },
-          value = "suppressiontrap",
          },
          {
           text = "vault",
+          value = "vault",
           children = {
            {
             text = "blackrockvaultdepositdoor01.m2",
@@ -53034,16 +53039,16 @@ WeakAuras.ModelPaths = {
             fileId = "203031",
            },
           },
-          value = "vault",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "blackrockdirectionalsign",
+          value = "blackrockdirectionalsign",
           children = {
            {
             text = "blackrockdirectionalsign.m2",
@@ -53051,10 +53056,10 @@ WeakAuras.ModelPaths = {
             fileId = "203033",
            },
           },
-          value = "blackrockdirectionalsign",
          },
          {
           text = "blackrocklavabubbles",
+          value = "blackrocklavabubbles",
           children = {
            {
             text = "blackrockstatuelavabubble.m2",
@@ -53072,10 +53077,10 @@ WeakAuras.ModelPaths = {
             fileId = "203037",
            },
           },
-          value = "blackrocklavabubbles",
          },
          {
           text = "blackrocklavaflow",
+          value = "blackrocklavaflow",
           children = {
            {
             text = "blackrocklavafalls01.m2",
@@ -53108,10 +53113,10 @@ WeakAuras.ModelPaths = {
             fileId = "203046",
            },
           },
-          value = "blackrocklavaflow",
          },
          {
           text = "blackrockportraits",
+          value = "blackrockportraits",
           children = {
            {
             text = "bankportrait.m2",
@@ -53124,7 +53129,6 @@ WeakAuras.ModelPaths = {
             fileId = "203051",
            },
           },
-          value = "blackrockportraits",
          },
          {
           text = "blackrockteslacoil.m2",
@@ -53133,6 +53137,7 @@ WeakAuras.ModelPaths = {
          },
          {
           text = "blackwingthrone",
+          value = "blackwingthrone",
           children = {
            {
             text = "blackwinglair_throne.m2",
@@ -53140,10 +53145,10 @@ WeakAuras.ModelPaths = {
             fileId = "203055",
            },
           },
-          value = "blackwingthrone",
          },
          {
           text = "deathwingexperiments",
+          value = "deathwingexperiments",
           children = {
            {
             text = "blackrockbloodmachine01.m2",
@@ -53191,10 +53196,10 @@ WeakAuras.ModelPaths = {
             fileId = "203073",
            },
           },
-          value = "deathwingexperiments",
          },
          {
           text = "doors",
+          value = "doors",
           children = {
            {
             text = "blackrockcelldoor01.m2",
@@ -53247,10 +53252,10 @@ WeakAuras.ModelPaths = {
             fileId = "203087",
            },
           },
-          value = "doors",
          },
          {
           text = "dragonkineggs",
+          value = "dragonkineggs",
           children = {
            {
             text = "dragonkinegg.m2",
@@ -53263,10 +53268,10 @@ WeakAuras.ModelPaths = {
             fileId = "203090",
            },
           },
-          value = "dragonkineggs",
          },
          {
           text = "dragonkinnests",
+          value = "dragonkinnests",
           children = {
            {
             text = "dragonkinnest01.m2",
@@ -53289,10 +53294,10 @@ WeakAuras.ModelPaths = {
             fileId = "203094",
            },
           },
-          value = "dragonkinnests",
          },
          {
           text = "golemparts",
+          value = "golemparts",
           children = {
            {
             text = "cannongolemarm.m2",
@@ -53330,10 +53335,10 @@ WeakAuras.ModelPaths = {
             fileId = "203103",
            },
           },
-          value = "golemparts",
          },
          {
           text = "hooks",
+          value = "hooks",
           children = {
            {
             text = "blackrockhookarm01.m2",
@@ -53366,10 +53371,10 @@ WeakAuras.ModelPaths = {
             fileId = "203110",
            },
           },
-          value = "hooks",
          },
          {
           text = "museumgem",
+          value = "museumgem",
           children = {
            {
             text = "museumgem01.m2",
@@ -53377,10 +53382,10 @@ WeakAuras.ModelPaths = {
             fileId = "203112",
            },
           },
-          value = "museumgem",
          },
          {
           text = "warchiefshead",
+          value = "warchiefshead",
           children = {
            {
             text = "warchiefrendshead.m2",
@@ -53388,22 +53393,22 @@ WeakAuras.ModelPaths = {
             fileId = "203114",
            },
           },
-          value = "warchiefshead",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "blackrock",
      },
      {
       text = "ironforge",
+      value = "ironforge",
       children = {
        {
         text = "buildings",
+        value = "buildings",
         children = {
          {
           text = "fortress01_06",
+          value = "fortress01_06",
           children = {
            {
             text = "fortress01_06.m2",
@@ -53411,10 +53416,10 @@ WeakAuras.ModelPaths = {
             fileId = "203116",
            },
           },
-          value = "fortress01_06",
          },
          {
           text = "fortress01_08",
+          value = "fortress01_08",
           children = {
            {
             text = "fortress01_08.m2",
@@ -53422,10 +53427,10 @@ WeakAuras.ModelPaths = {
             fileId = "203120",
            },
           },
-          value = "fortress01_08",
          },
          {
           text = "fortress01_09",
+          value = "fortress01_09",
           children = {
            {
             text = "fortress01_09.m2",
@@ -53433,10 +53438,10 @@ WeakAuras.ModelPaths = {
             fileId = "203122",
            },
           },
-          value = "fortress01_09",
          },
          {
           text = "fortress02_04",
+          value = "fortress02_04",
           children = {
            {
             text = "fortress02_04.m2",
@@ -53444,10 +53449,10 @@ WeakAuras.ModelPaths = {
             fileId = "203123",
            },
           },
-          value = "fortress02_04",
          },
          {
           text = "fortress02_06",
+          value = "fortress02_06",
           children = {
            {
             text = "fortress02_06.m2",
@@ -53455,10 +53460,10 @@ WeakAuras.ModelPaths = {
             fileId = "203124",
            },
           },
-          value = "fortress02_06",
          },
          {
           text = "fortress02_07",
+          value = "fortress02_07",
           children = {
            {
             text = "fortress02_07.m2",
@@ -53466,10 +53471,10 @@ WeakAuras.ModelPaths = {
             fileId = "203125",
            },
           },
-          value = "fortress02_07",
          },
          {
           text = "fortress03_03",
+          value = "fortress03_03",
           children = {
            {
             text = "fortress03_03.m2",
@@ -53477,10 +53482,10 @@ WeakAuras.ModelPaths = {
             fileId = "203126",
            },
           },
-          value = "fortress03_03",
          },
          {
           text = "fortress03_04a",
+          value = "fortress03_04a",
           children = {
            {
             text = "fortress03_04a.m2",
@@ -53488,10 +53493,10 @@ WeakAuras.ModelPaths = {
             fileId = "203127",
            },
           },
-          value = "fortress03_04a",
          },
          {
           text = "fortress03_04b",
+          value = "fortress03_04b",
           children = {
            {
             text = "fortress03_04b.m2",
@@ -53499,10 +53504,10 @@ WeakAuras.ModelPaths = {
             fileId = "203128",
            },
           },
-          value = "fortress03_04b",
          },
          {
           text = "fortress03_05",
+          value = "fortress03_05",
           children = {
            {
             text = "fortress03_05.m2",
@@ -53510,10 +53515,10 @@ WeakAuras.ModelPaths = {
             fileId = "203129",
            },
           },
-          value = "fortress03_05",
          },
          {
           text = "fortress03_05b",
+          value = "fortress03_05b",
           children = {
            {
             text = "fortress03_05b.m2",
@@ -53521,10 +53526,10 @@ WeakAuras.ModelPaths = {
             fileId = "203130",
            },
           },
-          value = "fortress03_05b",
          },
          {
           text = "fortress04_03",
+          value = "fortress04_03",
           children = {
            {
             text = "fortress04_03.m2",
@@ -53532,10 +53537,10 @@ WeakAuras.ModelPaths = {
             fileId = "203131",
            },
           },
-          value = "fortress04_03",
          },
          {
           text = "fortress04_05",
+          value = "fortress04_05",
           children = {
            {
             text = "fortress04_05.m2",
@@ -53543,10 +53548,10 @@ WeakAuras.ModelPaths = {
             fileId = "203132",
            },
           },
-          value = "fortress04_05",
          },
          {
           text = "fortress04_06",
+          value = "fortress04_06",
           children = {
            {
             text = "fortress04_06.m2",
@@ -53554,10 +53559,10 @@ WeakAuras.ModelPaths = {
             fileId = "203133",
            },
           },
-          value = "fortress04_06",
          },
          {
           text = "fortress05_03",
+          value = "fortress05_03",
           children = {
            {
             text = "fortress05_03.m2",
@@ -53565,10 +53570,10 @@ WeakAuras.ModelPaths = {
             fileId = "203134",
            },
           },
-          value = "fortress05_03",
          },
          {
           text = "fortress05_05",
+          value = "fortress05_05",
           children = {
            {
             text = "fortress05_05.m2",
@@ -53576,10 +53581,10 @@ WeakAuras.ModelPaths = {
             fileId = "203135",
            },
           },
-          value = "fortress05_05",
          },
          {
           text = "runestonesnow_01",
+          value = "runestonesnow_01",
           children = {
            {
             text = "runestonesnow_01.m2",
@@ -53587,16 +53592,16 @@ WeakAuras.ModelPaths = {
             fileId = "203136",
            },
           },
-          value = "runestonesnow_01",
          },
         },
-        value = "buildings",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "auctionhouse",
+          value = "auctionhouse",
           children = {
            {
             text = "auctioneercollision.m2",
@@ -53604,10 +53609,10 @@ WeakAuras.ModelPaths = {
             fileId = "203138",
            },
           },
-          value = "auctionhouse",
          },
          {
           text = "banners",
+          value = "banners",
           children = {
            {
             text = "dwarfbannerblue01.m2",
@@ -53630,10 +53635,10 @@ WeakAuras.ModelPaths = {
             fileId = "203142",
            },
           },
-          value = "banners",
          },
          {
           text = "bush",
+          value = "bush",
           children = {
            {
             text = "ironforgeangledbush01.m2",
@@ -53651,10 +53656,10 @@ WeakAuras.ModelPaths = {
             fileId = "203151",
            },
           },
-          value = "bush",
          },
          {
           text = "elevators",
+          value = "elevators",
           children = {
            {
             text = "ironforgeelevator.m2",
@@ -53672,10 +53677,10 @@ WeakAuras.ModelPaths = {
             fileId = "203154",
            },
           },
-          value = "elevators",
          },
          {
           text = "fences",
+          value = "fences",
           children = {
            {
             text = "dunmoroghstonefence01.m2",
@@ -53698,10 +53703,10 @@ WeakAuras.ModelPaths = {
             fileId = "203161",
            },
           },
-          value = "fences",
          },
          {
           text = "garagemachine",
+          value = "garagemachine",
           children = {
            {
             text = "garagemachine.m2",
@@ -53709,10 +53714,10 @@ WeakAuras.ModelPaths = {
             fileId = "203162",
            },
           },
-          value = "garagemachine",
          },
          {
           text = "gnomearea",
+          value = "gnomearea",
           children = {
            {
             text = "gnomekinggear.m2",
@@ -53741,6 +53746,7 @@ WeakAuras.ModelPaths = {
            },
            {
             text = "vent",
+            value = "vent",
             children = {
              {
               text = "gnomereganvent.m2",
@@ -53748,13 +53754,12 @@ WeakAuras.ModelPaths = {
               fileId = "203171",
              },
             },
-            value = "vent",
            },
           },
-          value = "gnomearea",
          },
          {
           text = "greatforge",
+          value = "greatforge",
           children = {
            {
             text = "thegreatanvil.m2",
@@ -53762,10 +53767,10 @@ WeakAuras.ModelPaths = {
             fileId = "203176",
            },
           },
-          value = "greatforge",
          },
          {
           text = "hammerquest01",
+          value = "hammerquest01",
           children = {
            {
             text = "hammerquest01.m2",
@@ -53773,10 +53778,10 @@ WeakAuras.ModelPaths = {
             fileId = "203177",
            },
           },
-          value = "hammerquest01",
          },
          {
           text = "hotcoals",
+          value = "hotcoals",
           children = {
            {
             text = "hotcoals.m2",
@@ -53784,10 +53789,10 @@ WeakAuras.ModelPaths = {
             fileId = "203178",
            },
           },
-          value = "hotcoals",
          },
          {
           text = "lavasteam",
+          value = "lavasteam",
           children = {
            {
             text = "forgelavaa.m2",
@@ -53825,10 +53830,10 @@ WeakAuras.ModelPaths = {
             fileId = "203188",
            },
           },
-          value = "lavasteam",
          },
          {
           text = "margolreaverhorn",
+          value = "margolreaverhorn",
           children = {
            {
             text = "margolreaverhorn.m2",
@@ -53836,10 +53841,10 @@ WeakAuras.ModelPaths = {
             fileId = "203190",
            },
           },
-          value = "margolreaverhorn",
          },
          {
           text = "museumexhibits",
+          value = "museumexhibits",
           children = {
            {
             text = "dwarvenglobe01.m2",
@@ -53857,10 +53862,10 @@ WeakAuras.ModelPaths = {
             fileId = "203196",
            },
           },
-          value = "museumexhibits",
          },
          {
           text = "plaques",
+          value = "plaques",
           children = {
            {
             text = "dwarfmuseumplaque01.m2",
@@ -53868,10 +53873,10 @@ WeakAuras.ModelPaths = {
             fileId = "203198",
            },
           },
-          value = "plaques",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "ironforgecliff01.m2",
@@ -53909,10 +53914,10 @@ WeakAuras.ModelPaths = {
             fileId = "203210",
            },
           },
-          value = "rocks",
          },
          {
           text = "signposts",
+          value = "signposts",
           children = {
            {
             text = "ironforgesignpost.m2",
@@ -53925,10 +53930,10 @@ WeakAuras.ModelPaths = {
             fileId = "203214",
            },
           },
-          value = "signposts",
          },
          {
           text = "slimejars",
+          value = "slimejars",
           children = {
            {
             text = "slimejar01.m2",
@@ -53946,10 +53951,10 @@ WeakAuras.ModelPaths = {
             fileId = "203219",
            },
           },
-          value = "slimejars",
          },
          {
           text = "statues",
+          value = "statues",
           children = {
            {
             text = "ironforgestatue_01.m2",
@@ -53957,10 +53962,10 @@ WeakAuras.ModelPaths = {
             fileId = "203221",
            },
           },
-          value = "statues",
          },
          {
           text = "steamtank",
+          value = "steamtank",
           children = {
            {
             text = "ironforgesteamtank.m2",
@@ -54003,10 +54008,10 @@ WeakAuras.ModelPaths = {
             fileId = "203235",
            },
           },
-          value = "steamtank",
          },
          {
           text = "throne",
+          value = "throne",
           children = {
            {
             text = "dwarventhrone01.m2",
@@ -54014,10 +54019,10 @@ WeakAuras.ModelPaths = {
             fileId = "203241",
            },
           },
-          value = "throne",
          },
          {
           text = "throneroom",
+          value = "throneroom",
           children = {
            {
             text = "ironforgecrystalroof.m2",
@@ -54025,10 +54030,10 @@ WeakAuras.ModelPaths = {
             fileId = "203245",
            },
           },
-          value = "throneroom",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "ironforgepine01.m2",
@@ -54141,22 +54146,22 @@ WeakAuras.ModelPaths = {
             fileId = "203290",
            },
           },
-          value = "trees",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "ironforge",
      },
      {
       text = "lochmodan",
+      value = "lochmodan",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "bushes",
+          value = "bushes",
           children = {
            {
             text = "lochmodanshrub01.m2",
@@ -54189,10 +54194,10 @@ WeakAuras.ModelPaths = {
             fileId = "203302",
            },
           },
-          value = "bushes",
          },
          {
           text = "dam",
+          value = "dam",
           children = {
            {
             text = "testdam01.m2",
@@ -54200,10 +54205,10 @@ WeakAuras.ModelPaths = {
             fileId = "203305",
            },
           },
-          value = "dam",
          },
          {
           text = "fences",
+          value = "fences",
           children = {
            {
             text = "lochmodanstonefence01.m2",
@@ -54246,10 +54251,10 @@ WeakAuras.ModelPaths = {
             fileId = "203314",
            },
           },
-          value = "fences",
          },
          {
           text = "grass",
+          value = "grass",
           children = {
            {
             text = "lochtallgrass01.m2",
@@ -54272,10 +54277,10 @@ WeakAuras.ModelPaths = {
             fileId = "203319",
            },
           },
-          value = "grass",
          },
          {
           text = "logs",
+          value = "logs",
           children = {
            {
             text = "lochlog01.m2",
@@ -54283,10 +54288,10 @@ WeakAuras.ModelPaths = {
             fileId = "203320",
            },
           },
-          value = "logs",
          },
          {
           text = "titanruins",
+          value = "titanruins",
           children = {
            {
             text = "titanruinsarch01.m2",
@@ -54364,10 +54369,10 @@ WeakAuras.ModelPaths = {
             fileId = "203337",
            },
           },
-          value = "titanruins",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "lochmodanfallentree01.m2",
@@ -54450,22 +54455,22 @@ WeakAuras.ModelPaths = {
             fileId = "203364",
            },
           },
-          value = "trees",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "lochmodan",
      },
      {
       text = "uldaman",
+      value = "uldaman",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "altar",
+          value = "altar",
           children = {
            {
             text = "stonekeeperaltar.m2",
@@ -54473,16 +54478,16 @@ WeakAuras.ModelPaths = {
             fileId = "203368",
            },
           },
-          value = "altar",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "banners",
+          value = "banners",
           children = {
            {
             text = "banner01.m2",
@@ -54505,10 +54510,10 @@ WeakAuras.ModelPaths = {
             fileId = "203374",
            },
           },
-          value = "banners",
          },
          {
           text = "benches",
+          value = "benches",
           children = {
            {
             text = "uldamanbench01.m2",
@@ -54536,10 +54541,10 @@ WeakAuras.ModelPaths = {
             fileId = "203381",
            },
           },
-          value = "benches",
          },
          {
           text = "books",
+          value = "books",
           children = {
            {
             text = "uldamanbook01.m2",
@@ -54567,10 +54572,10 @@ WeakAuras.ModelPaths = {
             fileId = "203389",
            },
           },
-          value = "books",
          },
          {
           text = "bookshelves",
+          value = "bookshelves",
           children = {
            {
             text = "uldamanbookshelf.m2",
@@ -54593,10 +54598,10 @@ WeakAuras.ModelPaths = {
             fileId = "203395",
            },
           },
-          value = "bookshelves",
          },
          {
           text = "braziers",
+          value = "braziers",
           children = {
            {
             text = "uldamanbrazier01.m2",
@@ -54609,10 +54614,10 @@ WeakAuras.ModelPaths = {
             fileId = "203398",
            },
           },
-          value = "braziers",
          },
          {
           text = "debris",
+          value = "debris",
           children = {
            {
             text = "uldamanscrolldebris01.m2",
@@ -54630,10 +54635,10 @@ WeakAuras.ModelPaths = {
             fileId = "203402",
            },
           },
-          value = "debris",
          },
          {
           text = "lamps",
+          value = "lamps",
           children = {
            {
             text = "uldamanlamp.m2",
@@ -54681,10 +54686,10 @@ WeakAuras.ModelPaths = {
             fileId = "203413",
            },
           },
-          value = "lamps",
          },
          {
           text = "paintings",
+          value = "paintings",
           children = {
            {
             text = "painting01.m2",
@@ -54707,10 +54712,10 @@ WeakAuras.ModelPaths = {
             fileId = "203419",
            },
           },
-          value = "paintings",
          },
          {
           text = "platinumdisk",
+          value = "platinumdisk",
           children = {
            {
             text = "platinumdisk.m2",
@@ -54718,10 +54723,10 @@ WeakAuras.ModelPaths = {
             fileId = "203420",
            },
           },
-          value = "platinumdisk",
          },
          {
           text = "pots",
+          value = "pots",
           children = {
            {
             text = "uldamanpot01.m2",
@@ -54754,10 +54759,10 @@ WeakAuras.ModelPaths = {
             fileId = "203427",
            },
           },
-          value = "pots",
          },
          {
           text = "scrolls",
+          value = "scrolls",
           children = {
            {
             text = "uldamanscroll01.m2",
@@ -54780,10 +54785,10 @@ WeakAuras.ModelPaths = {
             fileId = "203432",
            },
           },
-          value = "scrolls",
          },
          {
           text = "signs",
+          value = "signs",
           children = {
            {
             text = "uldamanstreetsign.m2",
@@ -54796,10 +54801,10 @@ WeakAuras.ModelPaths = {
             fileId = "203435",
            },
           },
-          value = "signs",
          },
          {
           text = "statues",
+          value = "statues",
           children = {
            {
             text = "uldamandwarfstatue.m2",
@@ -54837,10 +54842,10 @@ WeakAuras.ModelPaths = {
             fileId = "203446",
            },
           },
-          value = "statues",
          },
          {
           text = "stonekeeper",
+          value = "stonekeeper",
           children = {
            {
             text = "stonekeeperdead01.m2",
@@ -54848,10 +54853,10 @@ WeakAuras.ModelPaths = {
             fileId = "203449",
            },
           },
-          value = "stonekeeper",
          },
          {
           text = "tables",
+          value = "tables",
           children = {
            {
             text = "uldamantable01.m2",
@@ -54874,10 +54879,10 @@ WeakAuras.ModelPaths = {
             fileId = "203455",
            },
           },
-          value = "tables",
          },
          {
           text = "tapestries",
+          value = "tapestries",
           children = {
            {
             text = "tapestry01.m2",
@@ -54900,10 +54905,10 @@ WeakAuras.ModelPaths = {
             fileId = "203463",
            },
           },
-          value = "tapestries",
          },
          {
           text = "titanstatues",
+          value = "titanstatues",
           children = {
            {
             text = "libertystatue.m2",
@@ -54921,22 +54926,22 @@ WeakAuras.ModelPaths = {
             fileId = "203469",
            },
           },
-          value = "titanstatues",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "uldaman",
      },
      {
       text = "wetlands",
+      value = "wetlands",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "blackrockbanners",
+          value = "blackrockbanners",
           children = {
            {
             text = "blackrockclanbanner01.m2",
@@ -54944,10 +54949,10 @@ WeakAuras.ModelPaths = {
             fileId = "203471",
            },
           },
-          value = "blackrockbanners",
          },
          {
           text = "bushes",
+          value = "bushes",
           children = {
            {
             text = "wetlandgrass01.m2",
@@ -55050,10 +55055,10 @@ WeakAuras.ModelPaths = {
             fileId = "203499",
            },
           },
-          value = "bushes",
          },
          {
           text = "dragonbones",
+          value = "dragonbones",
           children = {
            {
             text = "dragonbonesbody.m2",
@@ -55096,10 +55101,10 @@ WeakAuras.ModelPaths = {
             fileId = "203508",
            },
           },
-          value = "dragonbones",
          },
          {
           text = "dragoneggs",
+          value = "dragoneggs",
           children = {
            {
             text = "dragonegg01.m2",
@@ -55112,10 +55117,10 @@ WeakAuras.ModelPaths = {
             fileId = "203512",
            },
           },
-          value = "dragoneggs",
          },
          {
           text = "dragonmawgates",
+          value = "dragonmawgates",
           children = {
            {
             text = "dragonmawbanner.m2",
@@ -55133,10 +55138,10 @@ WeakAuras.ModelPaths = {
             fileId = "203518",
            },
           },
-          value = "dragonmawgates",
          },
          {
           text = "dwarfbones",
+          value = "dwarfbones",
           children = {
            {
             text = "dwarvebone01.m2",
@@ -55149,10 +55154,10 @@ WeakAuras.ModelPaths = {
             fileId = "203522",
            },
           },
-          value = "dwarfbones",
          },
          {
           text = "raptorbones",
+          value = "raptorbones",
           children = {
            {
             text = "raptorbone01.m2",
@@ -55160,10 +55165,10 @@ WeakAuras.ModelPaths = {
             fileId = "203523",
            },
           },
-          value = "raptorbones",
          },
          {
           text = "totem",
+          value = "totem",
           children = {
            {
             text = "dragontotem01.m2",
@@ -55176,10 +55181,10 @@ WeakAuras.ModelPaths = {
             fileId = "203525",
            },
           },
-          value = "totem",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "wetlandsnest01.m2",
@@ -55242,10 +55247,10 @@ WeakAuras.ModelPaths = {
             fileId = "203548",
            },
           },
-          value = "trees",
          },
          {
           text = "wetlandswagons",
+          value = "wetlandswagons",
           children = {
            {
             text = "wetlandswagon01.m2",
@@ -55268,28 +55273,28 @@ WeakAuras.ModelPaths = {
             fileId = "203557",
            },
           },
-          value = "wetlandswagons",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "wetlands",
      },
     },
-    value = "khazmodan",
    },
    {
     text = "lordaeron",
+    value = "lordaeron",
     children = {
      {
       text = "aeriepeaks",
+      value = "aeriepeaks",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "boulders",
+          value = "boulders",
           children = {
            {
             text = "aerieboulder01.m2",
@@ -55312,10 +55317,10 @@ WeakAuras.ModelPaths = {
             fileId = "203561",
            },
           },
-          value = "boulders",
          },
          {
           text = "bushes",
+          value = "bushes",
           children = {
            {
             text = "aeriepeaksbush01.m2",
@@ -55328,10 +55333,10 @@ WeakAuras.ModelPaths = {
             fileId = "203566",
            },
           },
-          value = "bushes",
          },
          {
           text = "cliff",
+          value = "cliff",
           children = {
            {
             text = "aeriepeaksrockoutcrop01.m2",
@@ -55339,10 +55344,10 @@ WeakAuras.ModelPaths = {
             fileId = "203569",
            },
           },
-          value = "cliff",
          },
          {
           text = "griffondoodads",
+          value = "griffondoodads",
           children = {
            {
             text = "griffonmemorialfetish01.m2",
@@ -55380,10 +55385,10 @@ WeakAuras.ModelPaths = {
             fileId = "203579",
            },
           },
-          value = "griffondoodads",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "aeriepeaksfir01.m2",
@@ -55426,22 +55431,22 @@ WeakAuras.ModelPaths = {
             fileId = "203591",
            },
           },
-          value = "trees",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "aeriepeaks",
      },
      {
       text = "alteracmountains",
+      value = "alteracmountains",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "bushes",
+          value = "bushes",
           children = {
            {
             text = "alteracshrub01.m2",
@@ -55459,10 +55464,10 @@ WeakAuras.ModelPaths = {
             fileId = "203597",
            },
           },
-          value = "bushes",
          },
          {
           text = "dalaran",
+          value = "dalaran",
           children = {
            {
             text = "dalarandome.m2",
@@ -55470,10 +55475,10 @@ WeakAuras.ModelPaths = {
             fileId = "203598",
            },
           },
-          value = "dalaran",
          },
          {
           text = "fruitbuckets",
+          value = "fruitbuckets",
           children = {
            {
             text = "alteracfruitbucket01.m2",
@@ -55496,10 +55501,10 @@ WeakAuras.ModelPaths = {
             fileId = "203605",
            },
           },
-          value = "fruitbuckets",
          },
          {
           text = "ladders",
+          value = "ladders",
           children = {
            {
             text = "alteracladder01.m2",
@@ -55507,10 +55512,10 @@ WeakAuras.ModelPaths = {
             fileId = "203607",
            },
           },
-          value = "ladders",
          },
          {
           text = "opengraves",
+          value = "opengraves",
           children = {
            {
             text = "alteracopengrave01.m2",
@@ -55518,10 +55523,10 @@ WeakAuras.ModelPaths = {
             fileId = "203608",
            },
           },
-          value = "opengraves",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "alteracboulder01.m2",
@@ -55549,10 +55554,10 @@ WeakAuras.ModelPaths = {
             fileId = "203615",
            },
           },
-          value = "rocks",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "alteractree01.m2",
@@ -55595,10 +55600,10 @@ WeakAuras.ModelPaths = {
             fileId = "203624",
            },
           },
-          value = "trees",
          },
          {
           text = "watertower",
+          value = "watertower",
           children = {
            {
             text = "alteracwatertower.m2",
@@ -55606,22 +55611,22 @@ WeakAuras.ModelPaths = {
             fileId = "203634",
            },
           },
-          value = "watertower",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "alteracmountains",
      },
      {
       text = "arathi",
+      value = "arathi",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "bramblestaff",
+          value = "bramblestaff",
           children = {
            {
             text = "bramblestaff.m2",
@@ -55629,16 +55634,16 @@ WeakAuras.ModelPaths = {
             fileId = "203636",
            },
           },
-          value = "bramblestaff",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "boardwalk",
+          value = "boardwalk",
           children = {
            {
             text = "arathiboardwalk01.m2",
@@ -55661,10 +55666,10 @@ WeakAuras.ModelPaths = {
             fileId = "203642",
            },
           },
-          value = "boardwalk",
          },
          {
           text = "bushes",
+          value = "bushes",
           children = {
            {
             text = "arathiplant01.m2",
@@ -55697,10 +55702,10 @@ WeakAuras.ModelPaths = {
             fileId = "203652",
            },
           },
-          value = "bushes",
          },
          {
           text = "farmhouses",
+          value = "farmhouses",
           children = {
            {
             text = "arathifarmhouse01.m2",
@@ -55713,10 +55718,10 @@ WeakAuras.ModelPaths = {
             fileId = "203657",
            },
           },
-          value = "farmhouses",
          },
          {
           text = "impalingstonecorpses",
+          value = "impalingstonecorpses",
           children = {
            {
             text = "impalingstone_corpse_01.m2",
@@ -55729,10 +55734,10 @@ WeakAuras.ModelPaths = {
             fileId = "203661",
            },
           },
-          value = "impalingstonecorpses",
          },
          {
           text = "impalingstones",
+          value = "impalingstones",
           children = {
            {
             text = "impalingstone02.m2",
@@ -55740,10 +55745,10 @@ WeakAuras.ModelPaths = {
             fileId = "203663",
            },
           },
-          value = "impalingstones",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "arathiflatrock01.m2",
@@ -55821,10 +55826,10 @@ WeakAuras.ModelPaths = {
             fileId = "203682",
            },
           },
-          value = "rocks",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "arathistump01.m2",
@@ -55887,22 +55892,22 @@ WeakAuras.ModelPaths = {
             fileId = "203696",
            },
           },
-          value = "trees",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "arathi",
      },
      {
       text = "plagueland",
+      value = "plagueland",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "dolly",
+          value = "dolly",
           children = {
            {
             text = "infesteddollyhead.m2",
@@ -55925,10 +55930,10 @@ WeakAuras.ModelPaths = {
             fileId = "203714",
            },
           },
-          value = "dolly",
          },
          {
           text = "outhouse",
+          value = "outhouse",
           children = {
            {
             text = "outhousetrapped.m2",
@@ -55936,16 +55941,16 @@ WeakAuras.ModelPaths = {
             fileId = "203715",
            },
           },
-          value = "outhouse",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "arcoftriumph",
+          value = "arcoftriumph",
           children = {
            {
             text = "arcoftriumphplagued01.m2",
@@ -55953,10 +55958,10 @@ WeakAuras.ModelPaths = {
             fileId = "203718",
            },
           },
-          value = "arcoftriumph",
          },
          {
           text = "banners",
+          value = "banners",
           children = {
            {
             text = "plaugelandsbanner01.m2",
@@ -55964,10 +55969,10 @@ WeakAuras.ModelPaths = {
             fileId = "203720",
            },
           },
-          value = "banners",
          },
          {
           text = "bloodofheroes",
+          value = "bloodofheroes",
           children = {
            {
             text = "bloodofheroes.m2",
@@ -55975,10 +55980,10 @@ WeakAuras.ModelPaths = {
             fileId = "203722",
            },
           },
-          value = "bloodofheroes",
          },
          {
           text = "bonespikes",
+          value = "bonespikes",
           children = {
            {
             text = "bonespike_01.m2",
@@ -55996,10 +56001,10 @@ WeakAuras.ModelPaths = {
             fileId = "203725",
            },
           },
-          value = "bonespikes",
          },
          {
           text = "bonewalls",
+          value = "bonewalls",
           children = {
            {
             text = "bonewall_01.m2",
@@ -56007,10 +56012,10 @@ WeakAuras.ModelPaths = {
             fileId = "203726",
            },
           },
-          value = "bonewalls",
          },
          {
           text = "bushes",
+          value = "bushes",
           children = {
            {
             text = "plaguelandwesternbush01.m2",
@@ -56033,10 +56038,10 @@ WeakAuras.ModelPaths = {
             fileId = "203734",
            },
           },
-          value = "bushes",
          },
          {
           text = "cages",
+          value = "cages",
           children = {
            {
             text = "plaugelandscage01.m2",
@@ -56044,10 +56049,10 @@ WeakAuras.ModelPaths = {
             fileId = "203737",
            },
           },
-          value = "cages",
          },
          {
           text = "forsakenbanner",
+          value = "forsakenbanner",
           children = {
            {
             text = "forsakenbanner01.m2",
@@ -56055,10 +56060,10 @@ WeakAuras.ModelPaths = {
             fileId = "203742",
            },
           },
-          value = "forsakenbanner",
          },
          {
           text = "hangingscourge",
+          value = "hangingscourge",
           children = {
            {
             text = "scourgebodyhangingfemale01.m2",
@@ -56071,10 +56076,10 @@ WeakAuras.ModelPaths = {
             fileId = "203746",
            },
           },
-          value = "hangingscourge",
          },
          {
           text = "haystacks",
+          value = "haystacks",
           children = {
            {
             text = "plaguelandhaystack.m2",
@@ -56082,10 +56087,10 @@ WeakAuras.ModelPaths = {
             fileId = "203748",
            },
           },
-          value = "haystacks",
          },
          {
           text = "plaguecauldron",
+          value = "plaguecauldron",
           children = {
            {
             text = "plaguecauldron.m2",
@@ -56093,10 +56098,10 @@ WeakAuras.ModelPaths = {
             fileId = "203749",
            },
           },
-          value = "plaguecauldron",
          },
          {
           text = "plaguedchariot",
+          value = "plaguedchariot",
           children = {
            {
             text = "plaguechariot.m2",
@@ -56104,10 +56109,10 @@ WeakAuras.ModelPaths = {
             fileId = "203752",
            },
           },
-          value = "plaguedchariot",
          },
          {
           text = "plaguedwagons",
+          value = "plaguedwagons",
           children = {
            {
             text = "plaguewagon.m2",
@@ -56120,10 +56125,10 @@ WeakAuras.ModelPaths = {
             fileId = "203755",
            },
           },
-          value = "plaguedwagons",
          },
          {
           text = "plants",
+          value = "plants",
           children = {
            {
             text = "plaguelandfern01.m2",
@@ -56166,10 +56171,10 @@ WeakAuras.ModelPaths = {
             fileId = "203768",
            },
           },
-          value = "plants",
          },
          {
           text = "rocks",
+          value = "rocks",
           children = {
            {
             text = "plaguelandrock01.m2",
@@ -56212,10 +56217,10 @@ WeakAuras.ModelPaths = {
             fileId = "203780",
            },
           },
-          value = "rocks",
          },
          {
           text = "treebarrier",
+          value = "treebarrier",
           children = {
            {
             text = "treebarrier01.m2",
@@ -56223,10 +56228,10 @@ WeakAuras.ModelPaths = {
             fileId = "203781",
            },
           },
-          value = "treebarrier",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "plaguedfallentree01.m2",
@@ -56339,10 +56344,10 @@ WeakAuras.ModelPaths = {
             fileId = "203810",
            },
           },
-          value = "trees",
          },
          {
           text = "walls",
+          value = "walls",
           children = {
            {
             text = "undeadwall_01.m2",
@@ -56350,22 +56355,22 @@ WeakAuras.ModelPaths = {
             fileId = "203831",
            },
           },
-          value = "walls",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "plagueland",
      },
      {
       text = "scholomance",
+      value = "scholomance",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "bookshelves",
+          value = "bookshelves",
           children = {
            {
             text = "scholme_bookshelf.m2",
@@ -56383,10 +56388,10 @@ WeakAuras.ModelPaths = {
             fileId = "203838",
            },
           },
-          value = "bookshelves",
          },
          {
           text = "brazier",
+          value = "brazier",
           children = {
            {
             text = "scholomancebrazier01green.m2",
@@ -56404,10 +56409,10 @@ WeakAuras.ModelPaths = {
             fileId = "203845",
            },
           },
-          value = "brazier",
          },
          {
           text = "candles",
+          value = "candles",
           children = {
            {
             text = "floorcandlescorner01.m2",
@@ -56510,10 +56515,10 @@ WeakAuras.ModelPaths = {
             fileId = "203871",
            },
           },
-          value = "candles",
          },
          {
           text = "cauldrons",
+          value = "cauldrons",
           children = {
            {
             text = "greenbubblingcauldron.m2",
@@ -56531,10 +56536,10 @@ WeakAuras.ModelPaths = {
             fileId = "203886",
            },
           },
-          value = "cauldrons",
          },
          {
           text = "chandelier",
+          value = "chandelier",
           children = {
            {
             text = "scholme_chandelier.m2",
@@ -56542,10 +56547,10 @@ WeakAuras.ModelPaths = {
             fileId = "203889",
            },
           },
-          value = "chandelier",
          },
          {
           text = "crystalball",
+          value = "crystalball",
           children = {
            {
             text = "scholomancecrystalball01.m2",
@@ -56553,10 +56558,10 @@ WeakAuras.ModelPaths = {
             fileId = "203892",
            },
           },
-          value = "crystalball",
          },
          {
           text = "diseasedpumpkin",
+          value = "diseasedpumpkin",
           children = {
            {
             text = "diseasedpumpkin.m2",
@@ -56564,10 +56569,10 @@ WeakAuras.ModelPaths = {
             fileId = "203894",
            },
           },
-          value = "diseasedpumpkin",
          },
          {
           text = "operationtables",
+          value = "operationtables",
           children = {
            {
             text = "creepyoperationtable01.m2",
@@ -56575,10 +56580,10 @@ WeakAuras.ModelPaths = {
             fileId = "203895",
            },
           },
-          value = "operationtables",
          },
          {
           text = "rugs",
+          value = "rugs",
           children = {
            {
             text = "scholme_logorug.m2",
@@ -56586,10 +56591,10 @@ WeakAuras.ModelPaths = {
             fileId = "203898",
            },
           },
-          value = "rugs",
          },
          {
           text = "smoke",
+          value = "smoke",
           children = {
            {
             text = "scholomancesmoke01.m2",
@@ -56597,10 +56602,10 @@ WeakAuras.ModelPaths = {
             fileId = "203899",
            },
           },
-          value = "smoke",
          },
          {
           text = "stonelogo",
+          value = "stonelogo",
           children = {
            {
             text = "scholme_stonelogo.m2",
@@ -56608,10 +56613,10 @@ WeakAuras.ModelPaths = {
             fileId = "203901",
            },
           },
-          value = "stonelogo",
          },
          {
           text = "tapestries",
+          value = "tapestries",
           children = {
            {
             text = "scholme_logo.m2",
@@ -56639,10 +56644,10 @@ WeakAuras.ModelPaths = {
             fileId = "203910",
            },
           },
-          value = "tapestries",
          },
          {
           text = "testingtubes",
+          value = "testingtubes",
           children = {
            {
             text = "empty_testing_jar.m2",
@@ -56660,22 +56665,22 @@ WeakAuras.ModelPaths = {
             fileId = "203913",
            },
           },
-          value = "testingtubes",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "scholomance",
      },
      {
       text = "silverpine",
+      value = "silverpine",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "boardwalks",
+          value = "boardwalks",
           children = {
            {
             text = "silverpineboardwalk01.m2",
@@ -56683,10 +56688,10 @@ WeakAuras.ModelPaths = {
             fileId = "203965",
            },
           },
-          value = "boardwalks",
          },
          {
           text = "bushes",
+          value = "bushes",
           children = {
            {
             text = "silverpinebush01.m2",
@@ -56704,10 +56709,10 @@ WeakAuras.ModelPaths = {
             fileId = "203971",
            },
           },
-          value = "bushes",
          },
          {
           text = "docks",
+          value = "docks",
           children = {
            {
             text = "silverpinedocks01.m2",
@@ -56720,10 +56725,10 @@ WeakAuras.ModelPaths = {
             fileId = "203974",
            },
           },
-          value = "docks",
          },
          {
           text = "shadowfanggates",
+          value = "shadowfanggates",
           children = {
            {
             text = "shadowfanggate01.m2",
@@ -56736,10 +56741,10 @@ WeakAuras.ModelPaths = {
             fileId = "203976",
            },
           },
-          value = "shadowfanggates",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "silverpinetree01.m2",
@@ -56772,10 +56777,10 @@ WeakAuras.ModelPaths = {
             fileId = "203983",
            },
           },
-          value = "trees",
          },
          {
           text = "treestumps",
+          value = "treestumps",
           children = {
            {
             text = "silverpinetreestump01.m2",
@@ -56788,22 +56793,22 @@ WeakAuras.ModelPaths = {
             fileId = "203986",
            },
           },
-          value = "treestumps",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "silverpine",
      },
      {
       text = "stratholme",
+      value = "stratholme",
       children = {
        {
         text = "activedoodads",
+        value = "activedoodads",
         children = {
          {
           text = "doors",
+          value = "doors",
           children = {
            {
             text = "frostwyrm_waterfall.m2",
@@ -56871,10 +56876,10 @@ WeakAuras.ModelPaths = {
             fileId = "204005",
            },
           },
-          value = "doors",
          },
          {
           text = "furnace",
+          value = "furnace",
           children = {
            {
             text = "furnace_skull01.m2",
@@ -56882,10 +56887,10 @@ WeakAuras.ModelPaths = {
             fileId = "204006",
            },
           },
-          value = "furnace",
          },
          {
           text = "gates",
+          value = "gates",
           children = {
            {
             text = "deathknight_gate01.m2",
@@ -56893,10 +56898,10 @@ WeakAuras.ModelPaths = {
             fileId = "204007",
            },
           },
-          value = "gates",
          },
          {
           text = "postboxdestroyed",
+          value = "postboxdestroyed",
           children = {
            {
             text = "stratholmepostboxruined.m2",
@@ -56904,10 +56909,10 @@ WeakAuras.ModelPaths = {
             fileId = "204011",
            },
           },
-          value = "postboxdestroyed",
          },
          {
           text = "sporetrap",
+          value = "sporetrap",
           children = {
            {
             text = "plaguewingsporetrap.m2",
@@ -56915,10 +56920,10 @@ WeakAuras.ModelPaths = {
             fileId = "204013",
            },
           },
-          value = "sporetrap",
          },
          {
           text = "tesla",
+          value = "tesla",
           children = {
            {
             text = "nox_tesla.m2",
@@ -56926,16 +56931,16 @@ WeakAuras.ModelPaths = {
             fileId = "204019",
            },
           },
-          value = "tesla",
          },
         },
-        value = "activedoodads",
        },
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "anvil",
+          value = "anvil",
           children = {
            {
             text = "nox_anvil.m2",
@@ -56943,10 +56948,10 @@ WeakAuras.ModelPaths = {
             fileId = "204024",
            },
           },
-          value = "anvil",
          },
          {
           text = "fx",
+          value = "fx",
           children = {
            {
             text = "blackcitadel_exteriorslimefalls.m2",
@@ -57054,10 +57059,10 @@ WeakAuras.ModelPaths = {
             fileId = "204058",
            },
           },
-          value = "fx",
          },
          {
           text = "naxxramasslimefalls",
+          value = "naxxramasslimefalls",
           children = {
            {
             text = "naxxramas_frostwyrm_slimefall.m2",
@@ -57065,10 +57070,10 @@ WeakAuras.ModelPaths = {
             fileId = "204059",
            },
           },
-          value = "naxxramasslimefalls",
          },
          {
           text = "signs",
+          value = "signs",
           children = {
            {
             text = "ruinedsign01.m2",
@@ -57086,10 +57091,10 @@ WeakAuras.ModelPaths = {
             fileId = "204063",
            },
           },
-          value = "signs",
          },
          {
           text = "throne",
+          value = "throne",
           children = {
            {
             text = "kelthuzad_throne.m2",
@@ -57097,10 +57102,10 @@ WeakAuras.ModelPaths = {
             fileId = "204065",
            },
           },
-          value = "throne",
          },
          {
           text = "webs",
+          value = "webs",
           children = {
            {
             text = "bossweb_doodad01.m2",
@@ -57133,10 +57138,10 @@ WeakAuras.ModelPaths = {
             fileId = "204073",
            },
           },
-          value = "webs",
          },
          {
           text = "window",
+          value = "window",
           children = {
            {
             text = "nox_window01.m2",
@@ -57144,22 +57149,22 @@ WeakAuras.ModelPaths = {
             fileId = "204075",
            },
           },
-          value = "window",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "stratholme",
      },
      {
       text = "tirisfalglade",
+      value = "tirisfalglade",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "arcoftriumph",
+          value = "arcoftriumph",
           children = {
            {
             text = "arcoftriumph01.m2",
@@ -57167,10 +57172,10 @@ WeakAuras.ModelPaths = {
             fileId = "204076",
            },
           },
-          value = "arcoftriumph",
          },
          {
           text = "barricade",
+          value = "barricade",
           children = {
            {
             text = "tirisfallbarricade.m2",
@@ -57178,10 +57183,10 @@ WeakAuras.ModelPaths = {
             fileId = "204080",
            },
           },
-          value = "barricade",
          },
          {
           text = "boardwalk",
+          value = "boardwalk",
           children = {
            {
             text = "tirisfallboardwalk01.m2",
@@ -57194,10 +57199,10 @@ WeakAuras.ModelPaths = {
             fileId = "204085",
            },
           },
-          value = "boardwalk",
          },
          {
           text = "bodies",
+          value = "bodies",
           children = {
            {
             text = "bodyshrouded.m2",
@@ -57225,10 +57230,10 @@ WeakAuras.ModelPaths = {
             fileId = "204093",
            },
           },
-          value = "bodies",
          },
          {
           text = "bushes",
+          value = "bushes",
           children = {
            {
             text = "tirisfallbush01.m2",
@@ -57246,10 +57251,10 @@ WeakAuras.ModelPaths = {
             fileId = "204099",
            },
           },
-          value = "bushes",
          },
          {
           text = "doomweed",
+          value = "doomweed",
           children = {
            {
             text = "doomweed01.m2",
@@ -57257,10 +57262,10 @@ WeakAuras.ModelPaths = {
             fileId = "204101",
            },
           },
-          value = "doomweed",
          },
          {
           text = "gloomweed",
+          value = "gloomweed",
           children = {
            {
             text = "gloomweed01.m2",
@@ -57268,10 +57273,10 @@ WeakAuras.ModelPaths = {
             fileId = "204103",
            },
           },
-          value = "gloomweed",
          },
          {
           text = "graves",
+          value = "graves",
           children = {
            {
             text = "brillcoffins.m2",
@@ -57314,10 +57319,10 @@ WeakAuras.ModelPaths = {
             fileId = "204114",
            },
           },
-          value = "graves",
          },
          {
           text = "outposts",
+          value = "outposts",
           children = {
            {
             text = "tirisfalloutpost01.m2",
@@ -57355,10 +57360,10 @@ WeakAuras.ModelPaths = {
             fileId = "204122",
            },
           },
-          value = "outposts",
          },
          {
           text = "trees",
+          value = "trees",
           children = {
            {
             text = "tirisfalgladetree01.m2",
@@ -57426,10 +57431,10 @@ WeakAuras.ModelPaths = {
             fileId = "204136",
            },
           },
-          value = "trees",
          },
          {
           text = "uthershrine",
+          value = "uthershrine",
           children = {
            {
             text = "uthershrinepedestal.m2",
@@ -57437,10 +57442,10 @@ WeakAuras.ModelPaths = {
             fileId = "204142",
            },
           },
-          value = "uthershrine",
          },
          {
           text = "windmill",
+          value = "windmill",
           children = {
            {
             text = "tirisfallwindmill.m2",
@@ -57448,22 +57453,20 @@ WeakAuras.ModelPaths = {
             fileId = "204144",
            },
           },
-          value = "windmill",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "tirisfalglade",
      },
     },
-    value = "lordaeron",
    },
    {
     text = "nodxt",
+    value = "nodxt",
     children = {
      {
       text = "detail",
+      value = "detail",
       children = {
        {
         text = "apkbus01.m2",
@@ -59831,16 +59834,18 @@ WeakAuras.ModelPaths = {
         fileId = "219180",
        },
       },
-      value = "detail",
      },
      {
       text = "generic",
+      value = "generic",
       children = {
        {
         text = "passivedoodads",
+        value = "passivedoodads",
         children = {
          {
           text = "volumetriclights",
+          value = "volumetriclights",
           children = {
            {
             text = "ahnqiraj_lightshaft.m2",
@@ -59903,25 +59908,24 @@ WeakAuras.ModelPaths = {
             fileId = "219226",
            },
           },
-          value = "volumetriclights",
          },
         },
-        value = "passivedoodads",
        },
       },
-      value = "generic",
      },
     },
-    value = "nodxt",
    },
    {
     text = "outland",
+    value = "outland",
     children = {
      {
       text = "passivedoodads",
+      value = "passivedoodads",
       children = {
        {
         text = "bladethrower",
+        value = "bladethrower",
         children = {
          {
           text = "bladethrowerruined01.m2",
@@ -59939,7 +59943,6 @@ WeakAuras.ModelPaths = {
           fileId = "219230",
          },
         },
-        value = "bladethrower",
        },
        {
         text = "caltrop01.m2",
@@ -59948,6 +59951,7 @@ WeakAuras.ModelPaths = {
        },
        {
         text = "campfire",
+        value = "campfire",
         children = {
          {
           text = "outlanddeadcampfire.m2",
@@ -59955,10 +59959,10 @@ WeakAuras.ModelPaths = {
           fileId = "219237",
          },
         },
-        value = "campfire",
        },
        {
         text = "dam",
+        value = "dam",
         children = {
          {
           text = "outland_bone_dam.m2",
@@ -59966,10 +59970,10 @@ WeakAuras.ModelPaths = {
           fileId = "219239",
          },
         },
-        value = "dam",
        },
        {
         text = "deaddemon",
+        value = "deaddemon",
         children = {
          {
           text = "outland_dead_demon.m2",
@@ -59977,10 +59981,10 @@ WeakAuras.ModelPaths = {
           fileId = "219241",
          },
         },
-        value = "deaddemon",
        },
        {
         text = "floatingrubble",
+        value = "floatingrubble",
         children = {
          {
           text = "outlandtowerfloatingrubble.m2",
@@ -59988,10 +59992,10 @@ WeakAuras.ModelPaths = {
           fileId = "219245",
          },
         },
-        value = "floatingrubble",
        },
        {
         text = "hangingcrystals",
+        value = "hangingcrystals",
         children = {
          {
           text = "outlandhangingcrystal01.m2",
@@ -59999,10 +60003,10 @@ WeakAuras.ModelPaths = {
           fileId = "219248",
          },
         },
-        value = "hangingcrystals",
        },
        {
         text = "monument",
+        value = "monument",
         children = {
          {
           text = "outlandmonolith.m2",
@@ -60010,10 +60014,10 @@ WeakAuras.ModelPaths = {
           fileId = "219250",
          },
         },
-        value = "monument",
        },
        {
         text = "mushrooms",
+        value = "mushrooms",
         children = {
          {
           text = "outland_big_shroom01.m2",
@@ -60036,10 +60040,10 @@ WeakAuras.ModelPaths = {
           fileId = "219257",
          },
         },
-        value = "mushrooms",
        },
        {
         text = "plants",
+        value = "plants",
         children = {
          {
           text = "outlandplant01.m2",
@@ -60072,10 +60076,10 @@ WeakAuras.ModelPaths = {
           fileId = "219269",
          },
         },
-        value = "plants",
        },
        {
         text = "rocks",
+        value = "rocks",
         children = {
          {
           text = "floatingrocklarge01.m2",
@@ -60168,10 +60172,10 @@ WeakAuras.ModelPaths = {
           fileId = "219294",
          },
         },
-        value = "rocks",
        },
        {
         text = "roots",
+        value = "roots",
         children = {
          {
           text = "outlandroot01.m2",
@@ -60189,10 +60193,10 @@ WeakAuras.ModelPaths = {
           fileId = "219301",
          },
         },
-        value = "roots",
        },
        {
         text = "rubble",
+        value = "rubble",
         children = {
          {
           text = "outlandrubble01.m2",
@@ -60220,10 +60224,10 @@ WeakAuras.ModelPaths = {
           fileId = "219307",
          },
         },
-        value = "rubble",
        },
        {
         text = "skybox",
+        value = "skybox",
         children = {
          {
           text = "outlandskybox.m2",
@@ -60231,10 +60235,10 @@ WeakAuras.ModelPaths = {
           fileId = "219309",
          },
         },
-        value = "skybox",
        },
        {
         text = "tankparts",
+        value = "tankparts",
         children = {
          {
           text = "humantankcannon.m2",
@@ -60252,10 +60256,10 @@ WeakAuras.ModelPaths = {
           fileId = "219315",
          },
         },
-        value = "tankparts",
        },
        {
         text = "thorns",
+        value = "thorns",
         children = {
          {
           text = "outlandthorn01.m2",
@@ -60293,10 +60297,10 @@ WeakAuras.ModelPaths = {
           fileId = "219324",
          },
         },
-        value = "thorns",
        },
        {
         text = "trees",
+        value = "trees",
         children = {
          {
           text = "outlandaloetree01.m2",
@@ -60414,16 +60418,14 @@ WeakAuras.ModelPaths = {
           fileId = "219353",
          },
         },
-        value = "trees",
        },
       },
-      value = "passivedoodads",
      },
     },
-    value = "outland",
    },
    {
     text = "scale",
+    value = "scale",
     children = {
      {
       text = "1000x1000.m2",
@@ -60456,13 +60458,14 @@ WeakAuras.ModelPaths = {
       fileId = "219368",
      },
     },
-    value = "scale",
    },
    {
     text = "skillactivated",
+    value = "skillactivated",
     children = {
      {
       text = "containers",
+      value = "containers",
       children = {
        {
         text = "treasurechest01.m2",
@@ -60470,10 +60473,10 @@ WeakAuras.ModelPaths = {
         fileId = "219372",
        },
       },
-      value = "containers",
      },
      {
       text = "tradeskillenablers",
+      value = "tradeskillenablers",
       children = {
        {
         text = "blacksmithforge.m2",
@@ -60566,10 +60569,10 @@ WeakAuras.ModelPaths = {
         fileId = "219414",
        },
       },
-      value = "tradeskillenablers",
      },
      {
       text = "tradeskillnodes",
+      value = "tradeskillnodes",
       children = {
        {
         text = "bush_arthastears.m2",
@@ -60802,19 +60805,20 @@ WeakAuras.ModelPaths = {
         fileId = "219569",
        },
       },
-      value = "tradeskillnodes",
      },
     },
-    value = "skillactivated",
    },
    {
     text = "wmo",
+    value = "wmo",
     children = {
      {
       text = "outland",
+      value = "outland",
       children = {
        {
         text = "darkportal",
+        value = "darkportal",
         children = {
          {
           text = "darkportalanim01.m2",
@@ -60822,15 +60826,11 @@ WeakAuras.ModelPaths = {
           fileId = "219757",
          },
         },
-        value = "darkportal",
        },
       },
-      value = "outland",
      },
     },
-    value = "wmo",
    },
   },
-  value = "world",
  },
 }
