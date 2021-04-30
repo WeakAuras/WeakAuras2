@@ -229,6 +229,15 @@ showCodeButton:SetPoint("BOTTOMLEFT", 8, 8)
 showCodeButton:SetText(L["Show Code"])
 showCodeButton:SetWidth(90)
 
+local urlEditBox = CreateFrame("EDITBOX", "WeakAurasTooltipUrlEditBox", buttonAnchor)
+urlEditBox:SetWidth(250)
+urlEditBox:SetHeight(34)
+urlEditBox:SetFont(STANDARD_TEXT_FONT, 12)
+urlEditBox:SetPoint("TOPLEFT", 65, -57)
+urlEditBox:SetScript("OnMouseUp", function() urlEditBox:HighlightText() end)
+urlEditBox:SetScript("OnChar", function() urlEditBox:SetText(urlEditBox.text) urlEditBox:HighlightText() end)
+urlEditBox:SetAutoFocus(false)
+
 local checkButtons, radioButtons, keyToButton, pendingData = {}, {}, {}, {}
 
 for _, key in pairs(Private.internal_fields) do
@@ -843,6 +852,15 @@ function Private.RefreshTooltipButtons()
   else
     showCodeButton:Show()
   end
+  urlEditBox:Enable()
+  if pendingData.url then
+    urlEditBox:Show()
+    urlEditBox.text = pendingData.url
+    urlEditBox:SetText(pendingData.url)
+    urlEditBox:HighlightText(0, 0)
+  else
+    urlEditBox:Hide()
+  end
   if InCombatLockdown() then
     importButton:SetText(L["In Combat"])
     importButton.tooltipText = L["Importing is disabled while in combat"]
@@ -1453,6 +1471,7 @@ local function ShowDisplayTooltip(data, children, matchInfo, icon, icons, import
   local highestVersion = data.internalVersion or 1;
   local hasDescription = data.desc and data.desc ~= "";
   local hasUrl = data.url and data.url ~= "";
+  pendingData.url = hasUrl and data.url
   local hasVersion = (data.semver and data.semver ~= "") or (data.version and data.version ~= "");
   local tocversion = data.tocversion;
 
@@ -1460,12 +1479,12 @@ local function ShowDisplayTooltip(data, children, matchInfo, icon, icons, import
     tinsert(tooltip, {1, " "});
   end
 
-  if hasDescription then
-    tinsert(tooltip, {1, "\""..data.desc.."\"", 1, 0.82, 0, 1});
+  if hasUrl then
+    tinsert(tooltip, {1, L["Source: "], 1, 0.82, 0, 1});
   end
 
-  if hasUrl then
-    tinsert(tooltip, {1, L["Source: "] .. data.url, 1, 0.82, 0, 1});
+  if hasDescription then
+    tinsert(tooltip, {1, "\""..data.desc.."\"", 1, 0.82, 0, 1});
   end
 
   if hasVersion then
