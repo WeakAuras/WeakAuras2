@@ -780,8 +780,8 @@ end
 
 if WeakAuras.IsClassic() or WeakAuras.IsBC() then
   function WeakAuras.CheckTalentByIndex(index, extraOption)
-    local tab = ceil(index / 20)
-    local num_talent = (index - 1) % 20 + 1
+    local tab = ceil(index / MAX_NUM_TALENTS)
+    local num_talent = (index - 1) % MAX_NUM_TALENTS + 1
     local _, _, _, _, rank  = GetTalentInfo(tab, num_talent)
     return rank and rank > 0;
   end
@@ -5373,8 +5373,8 @@ Private.event_prototypes = {
           for index in pairs(trigger.talent.multi) do
             local tier, column
             if WeakAuras.IsClassic() or WeakAuras.IsBC() then
-              tier = index and ceil(index / 20)
-              column = index and ((index - 1) % 20 + 1)
+              tier = index and ceil(index / MAX_NUM_TALENTS)
+              column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
             else
               tier = index and ceil(index / 3)
               column = index and ((index - 1) % 3 + 1)
