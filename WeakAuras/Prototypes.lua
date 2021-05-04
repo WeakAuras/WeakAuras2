@@ -16,6 +16,7 @@ local GetShapeshiftFormInfo, GetShapeshiftForm = GetShapeshiftFormInfo, GetShape
 local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitCastingInfo, UnitChannelInfo
 local UnitDetailedThreatSituation, UnitThreatSituation = UnitDetailedThreatSituation, UnitThreatSituation
 local CastingInfo, ChannelInfo = CastingInfo, ChannelInfo
+local MAX_NUM_TALENTS = MAX_NUM_TALENTS or 20
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
