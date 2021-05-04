@@ -19,6 +19,7 @@ local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPos
   = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
 local debugstack, IsSpellKnown, GetFileIDFromPath = debugstack, IsSpellKnown, GetFileIDFromPath
 local GetNumTalentTabs, GetNumTalents = GetNumTalentTabs, GetNumTalents
+local MAX_NUM_TALENTS = MAX_NUM_TALENTS or 20
 
 local ADDON_NAME = "WeakAuras"
 local WeakAuras = WeakAuras
