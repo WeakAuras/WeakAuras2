@@ -3878,6 +3878,7 @@ templates.class.DEMONHUNTER = {
         { spell = 258920, type = "buff", unit = "player"}, -- Immolation Aura
         { spell = 337313, type = "buff", unit = "player" }, -- Inner Demon
         { spell = 343312, type = "buff", unit = "player" }, -- Eye Beam
+        { spell = 347462, type = "buff", unit = "player", talent = 8 }, -- Unbound Chaos
       },
       icon = 1247266
     },
