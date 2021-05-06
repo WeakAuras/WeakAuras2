@@ -449,7 +449,7 @@ local function TimerTickForRegion(region)
 end
 
 local function UpdateTimerTick(self)
-  if self.triggerProvidesTimer and self.regionHasTimer then
+  if self.triggerProvidesTimer and self.regionHasTimer and self.toShow then
     if not self:GetScript("OnUpdate") then
       self:SetScript("OnUpdate", function()
         TimerTickForRegion(self)
@@ -806,6 +806,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       end
 
       UnRegisterForFrameTick(region)
+      region:UpdateTimerTick()
     end
     function region:Expand()
       if (region.toShow) then
@@ -851,6 +852,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       end
 
       UnRegisterForFrameTick(region)
+      region:UpdateTimerTick()
     end
     function region:Expand()
       if data.anchorFrameType == "SELECTFRAME"
