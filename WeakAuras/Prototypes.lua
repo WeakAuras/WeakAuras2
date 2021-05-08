@@ -3588,7 +3588,7 @@ Private.event_prototypes = {
         local stacks = maxCharges and maxCharges ~= 1 and charges or (spellCount and spellCount > 0 and spellCount) or nil;
         if (charges == nil) then
           -- Use fake charges for spells that use GetSpellCooldown
-          charges = (duration == 0) and 1 or 0;
+          charges = (duration == 0 or gcdCooldown) and 1 or 0;
         end
         local genericShowOn = %s
         local expirationTime = startTime and duration and startTime + duration
@@ -5165,10 +5165,10 @@ Private.event_prototypes = {
       trigger.realSpellName = spellName; -- Cache
       local ret = [=[
         local spellName = %s
-        local startTime, duration, _, readyTime = WeakAuras.GetSpellCooldown(spellName);
+        local startTime, duration, gcdCooldown, readyTime = WeakAuras.GetSpellCooldown(spellName);
         local charges, _, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellName);
         if (charges == nil) then
-          charges = (duration == 0) and 1 or 0;
+          charges = (duration == 0 or gcdCooldown) and 1 or 0;
         end
         local ready = startTime == 0 or charges > 0
         local active = IsUsableSpell(spellName) and ready
