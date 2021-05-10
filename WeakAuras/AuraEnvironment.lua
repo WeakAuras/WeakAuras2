@@ -460,22 +460,24 @@ function env_getenv(id)
     return function_env_cache[id]
   end
 
-  local WaProxy = setmetatable({ __aura_id = id }, {
+  local __LoadFunction = function(code)
+    return WeakAuras.LoadFunction(code, id)
+  end
+
+  local WaProxy = setmetatable({}, {
     __index = function(t1, k1)
       if ( k1 == 'LoadFunction' ) then
-        return function(code)
-          return WeakAuras.LoadFunction(code, t1.__aura_id)
-        end
+        return __LoadFunction
       else
         return exec_env["WeakAuras"][k1]
       end
     end
   })
 
-  function_env_cache[id] = setmetatable({ __aura_id = id },{
+  function_env_cache[id] = setmetatable({},{
     __index = function(t, k)
       if k == "aura_env" then
-        return aura_environments[t.__aura_id]
+        return aura_environments[id]
       elseif k == 'WeakAuras' then
         return WaProxy
       else
