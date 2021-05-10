@@ -2262,7 +2262,7 @@ function BuffTrigger.Add(data)
       if HasMatchCount(trigger) and trigger.match_countOperator and trigger.match_count and tonumber(trigger.match_count) then
         local count = tonumber(trigger.match_count)
         local match_countFuncStr = Private.function_strings.count:format(trigger.match_countOperator, count)
-        matchCountFunc = WeakAuras.LoadFunction(match_countFuncStr, ContainerIDToInventoryID)
+        matchCountFunc = WeakAuras.LoadFunction(match_countFuncStr, id)
       elseif IsGroupTrigger(trigger) then
         if trigger.showClones and not trigger.combinePerUnit then
           matchCountFunc = GreaterEqualOne
