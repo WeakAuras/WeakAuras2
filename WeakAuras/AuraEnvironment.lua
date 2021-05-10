@@ -455,7 +455,7 @@ end
 
 local function_env_cache = {}
 
-function env_getenv(id)
+local function env_getenv(id)
   if ( function_env_cache[id] ) then
     return function_env_cache[id]
   end
