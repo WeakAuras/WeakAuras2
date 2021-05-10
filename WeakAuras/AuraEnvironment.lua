@@ -342,7 +342,6 @@ local FakeWeakAurasMixin = {
     Delete = true,
     HideOptions = true,
     Rename = true,
-    NewAura = true,
     OptionsFrame = true,
     RegisterAddon = true,
     RegisterDisplay = true,
@@ -352,7 +351,6 @@ local FakeWeakAurasMixin = {
     RegisterRegionType = true,
     RegisterTriggerSystem = true,
     RegisterTriggerSystemOptions = true,
-    ShowOptions = true,
     -- Note these shouldn't exist in the WeakAuras namespace, but moving them takes a bit of effort,
     -- so for now just block them and clean them up later
     CollisionResolved = true,
@@ -554,8 +552,8 @@ do
     local t = {}
 
     for k,v in pairs(from) do
-      if ( _G[k]) then
-        t[ _G[k] ] = k
+      if (_G[k]) then
+        t[_G[k]] = k
       else
         print('Unable to find reference for', k)
       end
@@ -573,14 +571,36 @@ do
   end
 
   local checkPayload
-  local function captureReturn(handle, arg, ...)
+
+  local function nextArgs(handle, arg, ...)
+    local numPayload = select('#', ...)
+    if numPayload == 0 and arg == nil then return arg end
+    return handle(arg), nextArgs(handle, ...)
+  end
+
+  local function captureReturn(handle, success, result, ...)
+    if not success then
+      error(result)
+    end
+
+    return handle(result), nextArgs(handle, ...)
+  end
+
+  local function capturePayload(handle, arg, ...)
     local numPayload = select('#', ...)
     if numPayload == 0 and arg == nil then return end
-    return handle(arg), captureReturn(handle, ...)
+    return handle(arg), capturePayload(handle, ...)
   end
 
   local function proxifier_proxy_table(var)
     if not proxifierCache[var] then
+      for id, aura_env in pairs(aura_environments) do
+        if (aura_env == var) then
+          print('Attept to proxify aura_env')
+          break
+        end
+      end
+
       local mt = getmetatable(var)
       local proxy = setmetatable({}, {
         __index = function(t, k)
@@ -590,7 +610,9 @@ do
           rawset(var, k, v)
         end,
         __call = ( mt and mt.__call ) and function(t, ...) -- this for LibStud() __call
-          return captureReturn(proxifier,var(...))
+          return captureReturn(proxifier,
+            pcall(var, capturePayload(checkPayload, ...))
+          )
         end,
         __metatable = false,
       })
@@ -605,7 +627,9 @@ do
   local function proxifier_proxy_function(var)
     if not proxifierCache[var] then
       local proxy = function(...)
-        return captureReturn(proxifier, var(captureReturn(checkPayload,...)))
+        return captureReturn(proxifier,
+          pcall(var, capturePayload(checkPayload, ...))
+        )
       end
       proxifierCache[var] = proxy
       proxifierCache[proxy] = proxy
@@ -790,7 +814,8 @@ function WeakAuras.LoadFunction(string, id, inTrigger)
   if function_cache[id] and function_cache[id][string] then
     return function_cache[id][string]
   else
-    local loadedFunction, errorString = loadstring("--[==[ Error in '" .. (id or "Unknown") .. (inTrigger and ("':'".. inTrigger) or "") .."' ]==] " .. string)
+    local loadedFunction, errorString = loadstring(string, "Error in '" .. (id or "Unknown") .. (inTrigger and ("':'".. inTrigger) or "") .."'")
+
     if errorString then
       print(errorString)
     else
