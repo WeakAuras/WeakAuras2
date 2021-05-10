@@ -495,8 +495,8 @@ function WeakAuras.LoadFunction(string, id, inTrigger)
     error('Unable to find id in WeakAuras.LoadFunction')
   end
 
-  if function_cache[string] then
-    return function_cache[string]
+  if function_cache[id] and function_cache[id][string] then
+    return function_cache[id][string]
   else
     local loadedFunction, errorString = loadstring(
       string, "Error in '" .. (id or "Unknown") .. (inTrigger and ("':'".. inTrigger) or "") .."'"
