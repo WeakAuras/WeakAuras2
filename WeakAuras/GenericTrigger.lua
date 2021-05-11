@@ -1572,7 +1572,8 @@ do
         end
         mainTimer = timer:ScheduleTimerFixed(swingEnd, mainSpeed, "main");
         WeakAuras.ScanEvents(event);
-      elseif Private.reset_ranged_swing_spells[spell] then
+      end
+      if Private.reset_ranged_swing_spells[spell] then
         local event;
         local currentTime = GetTime();
         local speed = UnitRangedDamage("player");
