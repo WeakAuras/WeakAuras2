@@ -133,6 +133,10 @@ local checks = {
   enchantMissing = {
     variable = "enchanted",
     value = 0
+  },
+  queued = {
+    variable = "show",
+    value = 1,
   }
 }
 
@@ -190,6 +194,10 @@ local function GenericGlow(conditions, trigger, regionType, check)
   else
     tinsert(conditions, buildCondition(trigger, check, {changes("yellow", regionType)}));
   end
+end
+
+local function isQueuedGlow(conditions, trigger, regionType)
+  GenericGlow(conditions, trigger, regionType, checks.queued)
 end
 
 local function isBuffedGlow(conditions, trigger, regionType)
@@ -390,7 +398,6 @@ local function createOverlayGlowTrigger(triggers, position, item)
   };
 end
 
-
 local function createWeaponEnchantTrigger(triggers, position, item, showOn)
   triggers[position] = {
     trigger = {
@@ -402,6 +409,21 @@ local function createWeaponEnchantTrigger(triggers, position, item, showOn)
       showOn = showOn
     }
   }
+end
+
+local function createQueuedActionTrigger(triggers, position, item)
+  triggers[position] = {
+    trigger = {
+      type = WeakAuras.GetTriggerCategoryFor("Queued Action"),
+      event = "Queued Action",
+      spellName = item.spell
+    }
+  }
+end
+
+local function createAbilityAndQueuedActionTrigger(triggers, item)
+  createAbilityTrigger(triggers, 1, item, "showAlways");
+  createQueuedActionTrigger(triggers, 2, item);
 end
 
 local function createAbilityAndDurationTrigger(triggers, item)
@@ -743,6 +765,19 @@ local function subTypesFor(item, regionType)
             data = dataGlow
           });
         end
+      elseif (item.queued) then
+        tinsert(types, {
+          icon = icon.glow,
+          title = L["Show Cooldown and Action Queued"],
+          description = L["Highlight while action is queued."],
+          createTriggers = createAbilityAndQueuedActionTrigger,
+          createConditions = function(conditions, item, regionType)
+            insufficientResourcesBlue(conditions, 1, regionType);
+            isOnCdGrey(conditions, 1, regionType);
+            isQueuedGlow(conditions, 2, regionType);
+          end,
+          data = dataGlow
+        });
       elseif (item.buff) then
         tinsert(types, {
           icon = icon.glow,

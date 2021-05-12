@@ -79,12 +79,13 @@ templates.class.WARRIOR = {
       title = L["Abilities"],
       args = {
         { spell = 72, type = "ability", debuff = true, requiresTarget = true, form = 2}, -- Shield Bash
+        { spell = 78, type = "ability", queued = true}, -- Heroic Strike
         { spell = 100, type = "ability", requiresTarget = true, form = 1}, -- Charge
         { spell = 355, type = "ability", debuff = true, requiresTarget = true, form = 2}, -- Taunt
         { spell = 676, type = "ability", debuff = true, requiresTarget = true, form = 2}, -- Disarm
         { spell = 694, type = "ability", debuff = true, requiresTarget = true, form = 1}, -- Mocking Blow
         { spell = 772, type = "ability", debuff = true, requiresTarget = true}, -- Rend
-        { spell = 845, type = "ability"}, -- Cleave
+        { spell = 845, type = "ability", queued = true}, -- Cleave
         { spell = 871, type = "ability", buff = true, form = 2}, -- Shield Wall
         { spell = 1160, type = "ability", debuff = true}, -- Demoralizing Shout
         { spell = 1161, type = "ability", debuff = true}, -- Challenging Shout
@@ -236,7 +237,7 @@ templates.class.HUNTER = {
         { spell = 1978, type = "ability", requiresTarget = true, debuff = true}, -- Serpent Sting
         { spell = 2643, type = "ability"}, -- Multi-Shot
         { spell = 2649, type = "ability", requiresTarget = true, debuff = true}, -- Growl
-        { spell = 2973, type = "ability", requiresTarget = true}, -- Raptor Strike
+        { spell = 2973, type = "ability", queued = true}, -- Raptor Strike
         { spell = 2974, type = "ability", requiresTarget = true, debuff = true}, -- Wing Clip
         { spell = 3034, type = "ability", requiresTarget = true, debuff = true}, -- Viper Sting
         { spell = 3043, type = "ability", requiresTarget = true, debuff = true}, -- Scorpid Sting
@@ -248,13 +249,13 @@ templates.class.HUNTER = {
         { spell = 13809, type = "ability"}, -- Frost Trap
         { spell = 13813, type = "ability"}, -- Explosive Trap
         { spell = 16827, type = "ability", requiresTarget = true}, -- Claw
-        { spell = 19263, type = "ability", buff = true}, -- Deterrence -TODO
-        { spell = 19306, type = "ability", requiresTarget = true, usable = true}, -- Counterattack -TODO
-        { spell = 19434, type = "ability", requiresTarget = true}, -- Aimed Shot -TODO
-        { spell = 19386, type = "ability", requiresTarget = true, debuff = true}, -- Wyvern Sting -TODO
-        { spell = 19503, type = "ability", requiresTarget = true, debuff = true}, -- Scatter Shot -TODO
-        { spell = 19574, type = "ability", buff = true}, -- Bestial Wrath -TODO
-        { spell = 19577, type = "ability", requiresTarget = true, debuff = true}, -- Intimidation -TODO
+        { spell = 19263, type = "ability", buff = true}, -- Deterrence
+        { spell = 19306, type = "ability", requiresTarget = true, usable = true}, -- Counterattack
+        { spell = 19434, type = "ability", requiresTarget = true}, -- Aimed Shot
+        { spell = 19386, type = "ability", requiresTarget = true, debuff = true}, -- Wyvern Sting
+        { spell = 19503, type = "ability", requiresTarget = true, debuff = true}, -- Scatter Shot
+        { spell = 19574, type = "ability", buff = true}, -- Bestial Wrath
+        { spell = 19577, type = "ability", requiresTarget = true, debuff = true}, -- Intimidation
         { spell = 19801, type = "ability", requiresTarget = true}, -- Tranquilizing Shot
         { spell = 20736, type = "ability", requiresTarget = true}, -- Distracting Shot
       },
@@ -699,7 +700,7 @@ templates.class.DRUID = {
         { spell = 5570, type = "ability", requiresTarget = true, debuff = true, talent = 47}, -- Insect Swarm
         { spell = 6785, type = "ability", requiresTarget = true, form = 1}, -- Ravage
         { spell = 6795, type = "ability", debuff = true, requiresTarget = true, form = 1}, -- Growl
-        { spell = 6807, type = "ability", form = 1}, -- Maul
+        { spell = 6807, type = "ability", queued = true, form = 1}, -- Maul
         { spell = 8921, type = "ability", requiresTarget = true, debuff = true}, -- Moonfire
         { spell = 8946, type = "ability"}, -- Cure Poison
         { spell = 9005, type = "ability", requiresTarget = true, debuff = true, form = 3}, -- Pounce
