@@ -14,7 +14,7 @@
 locales.xml
 
 TriggerTemplates.lua
-#@version-retailc@
+#@version-retail@
 TriggerTemplatesData.lua
 #@end-version-retail@
 #@version-classic@
