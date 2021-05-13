@@ -211,11 +211,21 @@ function ConstructTest(trigger, arg)
       test = TestForMultiSelect(trigger, arg);
     elseif(arg.type == "toggle") then
       test = TestForToggle(trigger, arg);
+    elseif (arg.type == "spell") then
+      if arg.test then
+        if arg.showExactOption then
+          test = "("..arg.test:format(trigger[name], tostring(trigger["use_exact_" .. name]) or "false") ..")";
+        else
+          test = "("..arg.test:format(trigger[name])..")";
+        end
+      else
+        test = "(".. name .." and "..name.."==" ..(number or "\""..(trigger[name] or "").."\"")..")";
+      end
     elseif(arg.test) then
-      test = "("..arg.test:format(trigger[name])..")";
+      test = "("..arg.test:format(tostring(trigger[name]) or "")..")";
     elseif(arg.type == "longstring" and trigger[name.."_operator"]) then
       test = TestForLongString(trigger, arg);
-    elseif (arg.type == "string" or arg.type == "select" or arg.type == "spell" or arg.type == "item") then
+    elseif (arg.type == "string" or arg.type == "select" or arg.type == "item") then
       test = "(".. name .." and "..name.."==" ..(number or "\""..(trigger[name] or "").."\"")..")";
     else
       if(type(trigger[name]) == "table") then

@@ -977,6 +977,14 @@ function WeakAuras.IsSpellKnownIncludingPet(spell)
   end
 end
 
+function WeakAuras.CompareSpellIds(a, b, exactCheck)
+  if exactCheck then
+    return tonumber(a) == tonumber(b)
+  else
+    return GetSpellInfo(a) == GetSpellInfo(b)
+  end
+end
+
 function WeakAuras.UnitPowerDisplayMod(powerType)
   if (powerType == 7) then
     return 10;
@@ -7098,8 +7106,8 @@ Private.event_prototypes = {
         type = "spell",
         enable = function(trigger) return not trigger.use_inverse end,
         conditionType = "number",
-        forceExactOption = true,
-        test = "GetSpellInfo(%s) == spell",
+        showExactOption = true,
+        test = "WeakAuras.CompareSpellIds(spellId, %s, %s)",
         store = true,
       },
       {
