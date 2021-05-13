@@ -233,7 +233,7 @@ local urlEditBox = CreateFrame("EDITBOX", "WeakAurasTooltipUrlEditBox", buttonAn
 urlEditBox:SetWidth(250)
 urlEditBox:SetHeight(34)
 urlEditBox:SetFont(STANDARD_TEXT_FONT, 12)
-urlEditBox:SetPoint("TOPLEFT", 65, -57)
+urlEditBox:SetPoint("TOPLEFT", 8, -57)
 urlEditBox:SetScript("OnMouseUp", function() urlEditBox:HighlightText() end)
 urlEditBox:SetScript("OnChar", function() urlEditBox:SetText(urlEditBox.text) urlEditBox:HighlightText() end)
 urlEditBox:SetAutoFocus(false)
@@ -1480,7 +1480,7 @@ local function ShowDisplayTooltip(data, children, matchInfo, icon, icons, import
   end
 
   if hasUrl then
-    tinsert(tooltip, {1, L["Source: "], 1, 0.82, 0, 1});
+    tinsert(tooltip, {1, " "});
   end
 
   if hasDescription then
