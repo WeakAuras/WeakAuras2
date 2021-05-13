@@ -1603,6 +1603,20 @@ local function AddUnitRoleChangeInternalEvents(triggerUnit, t)
   end
 end
 
+local function AddRemainingCastInternalEvents(triggerUnit, t)
+  if (triggerUnit == nil) then
+    return
+  end
+
+  if Private.multiUnitUnits[triggerUnit] then
+    for unit in pairs(Private.multiUnitUnits[triggerUnit]) do
+      tinsert(t, "CAST_REMAINING_CHECK_" .. string.lower(unit))
+    end
+  else
+    tinsert(t, "CAST_REMAINING_CHECK_" .. string.lower(triggerUnit))
+  end
+end
+
 local function AddUnitEventForEvents(result, unit, event)
   if unit then
     if not result.unit_events then
@@ -6982,12 +6996,13 @@ Private.event_prototypes = {
     end,
     internal_events = function(trigger)
       local unit = trigger.unit
-      local result = {"CAST_REMAINING_CHECK_" .. string.lower(unit)}
+      local result = {}
       if WeakAuras.IsClassic() and unit ~= "player" then
         tinsert(result, "UNIT_SPELLCAST_START")
         tinsert(result, "UNIT_SPELLCAST_DELAYED")
         tinsert(result, "UNIT_SPELLCAST_CHANNEL_START")
       end
+      AddRemainingCastInternalEvents(unit, result)
       AddUnitChangeInternalEvents(unit, result)
       AddUnitRoleChangeInternalEvents(unit, result)
       return result
