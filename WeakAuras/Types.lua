@@ -3104,6 +3104,7 @@ Private.noreset_swing_spells = {
   [35475] = true, -- Drums of War
   [35477] = true, -- Drums of Speed
   [35478] = true, -- Drums of Restoration
+  [34120] = true, -- Steady Shot (rank 1)
   --35474 Drums of Panic DO reset the swing timer, do not add
 }
 
