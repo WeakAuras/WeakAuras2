@@ -2698,6 +2698,9 @@ local function pAdd(data, simpleChange)
   if simpleChange then
     db.displays[id] = data
     WeakAuras.SetRegion(data)
+    for cloneId, region in pairs(clones[id]) do
+      WeakAuras.SetRegion(data, cloneId)
+    end
     Private.UpdatedTriggerState(id)
   else
     if (data.controlledChildren) then
