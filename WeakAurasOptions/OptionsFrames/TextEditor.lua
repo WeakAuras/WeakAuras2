@@ -662,32 +662,34 @@ local function ConstructTextEditor(frame)
         self.oldOnTextChanged(...)
       end
     )
-    if (data.controlledChildren and not setOnParent) then
+
+    if setOnParent then
+      editor:SetText(OptionsPrivate.Private.ValueFromPath(data, path) or "")
+    else
       local singleText
       local sameTexts = true
       local combinedText = ""
-      for index, childId in pairs(data.controlledChildren) do
-        local childData = WeakAuras.GetData(childId)
+      for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
         local text
         if multipath then
-          text = path[childId] and OptionsPrivate.Private.ValueFromPath(childData, path[childId])
+          text = path[child.id] and OptionsPrivate.Private.ValueFromPath(child, path[child.id])
         else
-          text = OptionsPrivate.Private.ValueFromPath(childData, path)
+          text = OptionsPrivate.Private.ValueFromPath(child, path)
         end
         if text then
           if not (singleText) then
             singleText = text
           else
-            if not (singleText == text) then
+            if singleText ~= text then
               sameTexts = false
             end
           end
-          if not (combinedText == "") then
+          if combinedText ~= "" then
             combinedText = combinedText .. "\n\n"
           end
 
           combinedText =
-            combinedText .. L["-- Do not remove this comment, it is part of this trigger: "] .. childId .. "\n"
+            combinedText .. L["-- Do not remove this comment, it is part of this aura: "] .. child.id .. "\n"
           combinedText = combinedText .. (text or "")
         end
       end
@@ -698,8 +700,6 @@ local function ConstructTextEditor(frame)
         editor:SetText(combinedText)
         editor.combinedText = true
       end
-    else
-      editor:SetText(OptionsPrivate.Private.ValueFromPath(data, path) or "")
     end
     editor:SetFocus()
   end
@@ -717,7 +717,7 @@ local function ConstructTextEditor(frame)
     local currentPos, id, startIdLine, startId, endId, endIdLine
     while (true) do
       startIdLine, startId =
-        string.find(input, L["-- Do not remove this comment, it is part of this trigger: "], currentPos, true)
+        string.find(input, L["-- Do not remove this comment, it is part of this aura: "], currentPos, true)
       if (not startId) then
         break
       end
@@ -749,30 +749,20 @@ local function ConstructTextEditor(frame)
   end
 
   function group.Close(self)
-    if (self.data.controlledChildren and not self.setOnParent) then
-      local textById = editor.combinedText and extractTexts(editor:GetText(), self.data.controlledChildren)
-      for index, childId in pairs(self.data.controlledChildren) do
-        local text = editor.combinedText and (textById[childId] or "") or editor:GetText()
-        local childData = WeakAuras.GetData(childId)
-        OptionsPrivate.Private.ValueToPath(childData, self.multipath and self.path[childId] or self.path, text)
-        WeakAuras.Add(childData)
-      end
-    else
+    if self.setOnParent then
       OptionsPrivate.Private.ValueToPath(self.data, self.path, editor:GetText())
       WeakAuras.Add(self.data)
-    end
-    if (self.reloadOptions) then
-      if (self.data.controlledChildren) then
-        for index, childId in pairs(self.data.controlledChildren) do
-          WeakAuras.ClearAndUpdateOptions(childId)
-        end
-        WeakAuras.ClearAndUpdateOptions(self.data.id)
-      else
-        WeakAuras.ClearAndUpdateOptions(self.data.id)
-      end
     else
-      WeakAuras.ClearAndUpdateOptions(self.data.id)
+      local textById = editor.combinedText and extractTexts(editor:GetText(), self.data.controlledChildren)
+      for child in OptionsPrivate.Private.TraverseLeafsOrAura(self.data) do
+        local text = editor.combinedText and (textById[child.id] or "") or editor:GetText()
+        OptionsPrivate.Private.ValueToPath(child, self.multipath and self.path[child.id] or self.path, text)
+        WeakAuras.Add(child)
+        OptionsPrivate.ClearOptions(child.id)
+      end
     end
+
+    WeakAuras.ClearAndUpdateOptions(self.data.id)
 
     editor.editBox:SetScript("OnTextChanged", self.oldOnTextChanged)
     editor:ClearFocus()
