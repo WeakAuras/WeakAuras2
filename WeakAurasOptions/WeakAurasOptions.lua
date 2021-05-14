@@ -1704,7 +1704,6 @@ function OptionsPrivate.DuplicateCollapseData(id, namespace, path)
     local tmp = collapsedOptions[id][namespace]
     local lastKey = tremove(path)
     for _, key in ipairs(path) do
-      print(" key: ", key)
       tmp[key] = tmp[key] or {}
       tmp = tmp[key]
     end
