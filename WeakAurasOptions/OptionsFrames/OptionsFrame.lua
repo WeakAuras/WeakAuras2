@@ -882,8 +882,8 @@ function OptionsPrivate.CreateFrame()
       if data and data.parent then
         frame:ClearOptions(data.parent)
       end
-      for _, tmpId in ipairs(tempGroup.controlledChildren) do
-        if (id == tmpId) then
+      for child in OptionsPrivate.Private.TraverseAllChildren(tempGroup) do
+        if (id == child.id) then
           frame:ClearOptions(tempGroup.id)
         end
       end
@@ -1275,10 +1275,8 @@ function OptionsPrivate.CreateFrame()
       self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32)
     end
 
-    if data.controlledChildren then
-      for index, childId in pairs(data.controlledChildren) do
-        displayButtons[childId]:PriorityShow(1)
-      end
+    for child in OptionsPrivate.Private.TraverseAllChildren(data) do
+      displayButtons[child.id]:PriorityShow(1)
     end
 
     if data.controlledChildren and #data.controlledChildren == 0 then
@@ -1329,15 +1327,13 @@ function OptionsPrivate.CreateFrame()
   end
 
   frame.PickDisplayBatch = function(self, batchSelection)
+    local alreadySelected = {}
+    for child in OptionsPrivate.Private.TraverseAllChildren(tempGroup) do
+      alreadySelected[child.id] = true
+    end
+
     for index, id in ipairs(batchSelection) do
-      local alreadySelected = false
-      for _, v in pairs(tempGroup.controlledChildren) do
-        if v == id then
-          alreadySelected = true
-          break
-        end
-      end
-      if not alreadySelected then
+      if not alreadySelected[id] then
         displayButtons[id]:Pick()
         tinsert(tempGroup.controlledChildren, id)
       end
