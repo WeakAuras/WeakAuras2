@@ -774,12 +774,12 @@ local methods = {
       OptionsPrivate.Private.PauseAllDynamicGroups();
 
       if(self.view.func() == 2) then
-        for index, childId in ipairs(data.controlledChildren) do
-          WeakAuras.GetDisplayButton(childId):PriorityHide(2);
+        for child in OptionsPrivate.Private.TraverseAllChildren(data) do
+          WeakAuras.GetDisplayButton(child.id):PriorityHide(2);
         end
       else
-        for index, childId in ipairs(data.controlledChildren) do
-          WeakAuras.GetDisplayButton(childId):PriorityShow(2);
+        for child in OptionsPrivate.Private.TraverseAllChildren(data) do
+          WeakAuras.GetDisplayButton(child.id):PriorityShow(2);
         end
       end
 
@@ -788,8 +788,8 @@ local methods = {
 
     function self.callbacks.ViewTest()
       local none, all = true, true;
-      for index, childId in ipairs(data.controlledChildren) do
-        local childButton = WeakAuras.GetDisplayButton(childId);
+      for child in OptionsPrivate.Private.TraverseAllChildren(data) do
+        local childButton = WeakAuras.GetDisplayButton(child.id);
         if(childButton) then
           if(childButton:GetVisibility() ~= 2) then
             all = false;
