@@ -930,10 +930,15 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
           if companionData.refreshLogo then
             child:SetRefreshLogo(companionData.refreshLogo)
           end
+          child.frame:Show()
+          child:AcquireThumbnail()
+          frame.buttonsScroll:AddChild(child)
         end
-        child.frame:Show()
-        child:AcquireThumbnail()
-        frame.buttonsScroll:AddChild(child)
+        if not child.frame:IsShown() then
+          child.frame:Show()
+          child:AcquireThumbnail()
+        end
+        tinsert(frame.buttonsScroll.children, child)
       elseif child then
         child.frame:Hide()
         if child.ReleaseThumbnail then
@@ -980,13 +985,16 @@ function WeakAuras.SortDisplayButtons(filter, overrideReset, id)
                   if auraData.refreshLogo then
                     child:SetRefreshLogo(auraData.refreshLogo)
                   end
+                  child.frame:Show()
+                  child:AcquireThumbnail()
+                  frame.buttonsScroll:AddChild(child)
                 end
                 if not child.frame:IsShown() then
                   child.frame:Show()
                   child:AcquireThumbnail()
                 end
                 if not buttonsShown[slug] then
-                  frame.buttonsScroll:AddChild(child)
+                  tinsert(frame.buttonsScroll.children, child)
                   buttonsShown[slug] = true
                 end
                 child:MarkLinkedAura(id)
