@@ -184,6 +184,10 @@ local aura_environments = {}
 -- 2 == fully initialized
 local environment_initialized = {}
 
+
+local function_env_cache = {}
+local function_cache = {}
+
 function Private.IsEnvironmentInitialized(id)
   return environment_initialized[id] == 2
 end
@@ -192,15 +196,16 @@ function Private.DeleteAuraEnvironment(id)
   aura_environments[id] = nil
   environment_initialized[id] = nil
 
-  Private.RemoveFunctionCache(id)
+  function_cache[id] = nil
+  function_env_cache[id] = nil
 end
 
 function Private.RenameAuraEnvironment(oldid, newid)
   aura_environments[oldid], aura_environments[newid] = nil, aura_environments[oldid]
   environment_initialized[oldid], environment_initialized[newid] = nil, environment_initialized[oldid]
 
-  Private.RemoveFunctionCache(oldid)
-  Private.RemoveFunctionCache(newid)
+  function_cache[oldid] = nil
+  function_env_cache[oldid] = nil
 end
 
 local current_uid = nil
@@ -453,8 +458,6 @@ function env_getglobal(k)
   return exec_env[k]
 end
 
-local function_env_cache = {}
-
 local function env_getenv(id)
   if ( function_env_cache[id] ) then
     return function_env_cache[id]
@@ -484,13 +487,15 @@ local function env_getenv(id)
         return exec_env[k]
       end
     end,
+    __newindex = function(t, k, v)
+      exec_env[k] = v
+    end,
     __metatable = false
   })
 
   return function_env_cache[id]
 end
 
-local function_cache = {}
 function WeakAuras.LoadFunction(string, id, inTrigger)
 
   if not id then
@@ -518,11 +523,6 @@ function WeakAuras.LoadFunction(string, id, inTrigger)
       end
     end
   end
-end
-
-function Private.RemoveFunctionCache(id)
-  function_cache[id] = nil
-  function_env_cache[id] = nil
 end
 
 function Private.GetSanitizedGlobal(key)
