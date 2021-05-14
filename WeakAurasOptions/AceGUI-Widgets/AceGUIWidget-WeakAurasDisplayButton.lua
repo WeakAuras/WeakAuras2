@@ -1006,21 +1006,29 @@ local methods = {
     local data = self.data;
     local namestable = {};
     if(data.controlledChildren) then
-      for index, childId in pairs(data.controlledChildren) do
-        tinsert(namestable, {" ", childId});
+      namestable[1] = "";
+      local function addChildrenNames(data, indent)
+        for index, childId in pairs(data.controlledChildren) do
+          tinsert(namestable, indent .. childId);
+          local childData = WeakAuras.GetData(childId)
+          if (childData.controlledChildren) then
+            addChildrenNames(childData, indent .. "  ")
+          end
+        end
       end
+      addChildrenNames(data, "  ")
 
       if (#namestable > 30) then
         local size = #namestable;
         namestable[26] = {" ", "[...]"};
-        namestable[27] = {L[string.format(L["%s total auras"], #data.controlledChildren)], " " }
+        namestable[27] = {L[string.format(L["%s total auras"], #namestable)], " " }
         for i = 28, size do
           namestable[i] = nil;
         end
       end
 
-      if(#namestable > 0) then
-        namestable[1][1] = L["Children:"];
+      if(#namestable > 1) then
+        namestable[1] = L["Children:"];
       else
         namestable[1] = L["No Children"];
       end
