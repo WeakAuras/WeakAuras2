@@ -289,22 +289,20 @@ local function createOptions(id, data)
     options["displayText_format_" .. key] = option
   end
 
-  if data.controlledChildren then
-    for index, childId in pairs(data.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
-      local get = function(key)
-        return childData["displayText_format_" .. key]
-      end
-      local input = childData.displayText
-      OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden, index, #data.controlledChildren)
-    end
-  else
-    local get = function(key)
-      return data["displayText_format_" .. key]
-    end
-    local input = data.displayText
-    OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
+  local total, index = 0, 1
+  for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+    total = total + 1
   end
+
+  for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+    local get = function(key)
+      return child["displayText_format_" .. key]
+    end
+    local input = child.displayText
+    OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden, index, total)
+    index = index + 1
+  end
+
   addOption("footer", {
     type = "description",
     name = "",
