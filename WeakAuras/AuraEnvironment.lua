@@ -444,13 +444,15 @@ local FakeWeakAurasMixin = {
 }
 
 local FakeWeakAuras = MakeReadOnly(WeakAuras, FakeWeakAurasMixin)
-
+--local UIParent = UIParent
 local FakeCreateFrame = function(frameType, name, parent, ...)
   if type(frameType) ~= 'string' then error('Usage: CreateFrame("frameType" [, "name"] [, parent] [, "template"] [, id])') end
 
   if ( parent ) then
     if ( type(parent) == 'userdata' ) then
       parent = Private.GetFrameHandleFrame(parent)
+    -- elseif ( parent == UIParent) then
+    --   parent = UIParent
     else
       error('Error: CreateFrame - Unknown parent')
     end
@@ -741,6 +743,10 @@ local exec_env = setmetatable({},
   __index = function(t, k)
     if k == "_G" then
       return t
+    elseif k == "UIParent" then
+      return Private.GetFrameHandle(UIParent)
+    elseif k == "WorldFrame" then
+      return Private.GetFrameHandle(WorldFrame)
     elseif k == "getglobal" then
       return env_getglobal
     elseif blockedFunctions[k] then
@@ -752,7 +758,7 @@ local exec_env = setmetatable({},
     elseif overridden[k] then
       return overridden[k]
     else
-      return proxifier(_G[k])
+      return _G[k] -- proxifier(_G[k])
     end
   end,
   __newindex = function(table, key, value)

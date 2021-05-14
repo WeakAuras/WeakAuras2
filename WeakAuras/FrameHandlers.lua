@@ -1,6 +1,8 @@
 if not WeakAuras.IsCorrectVersion() then return end
 local AddonName, Private = ...
 
+-- Blizzard Code Interface/FrameXML/RestrictedInfrastructure.lua
+
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local prettyPrint = WeakAuras.prettyPrint
