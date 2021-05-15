@@ -1,6 +1,6 @@
 ## Interface: 90005
 ## Interface-Classic: 11307
-## Interface-BC: 20501
+## Interface-BCC: 20501
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
 ## Version: @project-version@
@@ -20,8 +20,8 @@ TriggerTemplatesData.lua
 #@version-classic@
 TriggerTemplatesDataClassic.lua
 #@end-version-classic@
-#@version-bc@
-TriggerTemplatesDataTBC.lua
-#@end-version-bc@
+#@version-bcc@
+TriggerTemplatesDataBCC.lua
+#@end-version-bcc@
 
 AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua
