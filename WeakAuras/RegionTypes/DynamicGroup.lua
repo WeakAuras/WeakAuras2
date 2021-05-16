@@ -144,7 +144,7 @@ local anchorers = {
   aura = function(self, anchorLocation) return WeakAuras.GetRegion(anchorLocation) end, --? do we actually want this?
 }
 
-local distributers = {
+local distributors = {
   self = function(data)
     return function(regionData) return "self" end
   end,
@@ -171,8 +171,9 @@ local distributers = {
     end
   end
 }
+
 local function createDistributeFunc(data)
-  local distributor = distributers[data.distribute] or distributers["self"]
+  local distributor = distributors[data.distribute] or distributors["self"]
   return distributor(data)
 end
 
@@ -419,7 +420,7 @@ local growers = {
       local x, y = startX, startY + (numVisible - 1) * stagger * coeff
       for i, regionData in ipairs(activeRegions) do
         if i <= numVisible then
-          newPositions[i] = { x, y, true }
+          newPositions[i] = { x = x, y = y, show = true }
           x = x - regionData.dimensions.width - space
           y = y - stagger
         end
@@ -437,7 +438,7 @@ local growers = {
       local x, y = startX, startY - (numVisible - 1) * stagger * coeff
       for i, regionData in ipairs(activeRegions) do
         if i <= numVisible then
-          newPositions[i] = { x, y, true }
+          newPositions[i] = { x = x, y = y, show = true }
           x = x + (regionData.dimensions.width) + space
           y = y + stagger
         end
@@ -455,7 +456,7 @@ local growers = {
       local x, y = startX - (numVisible - 1) * stagger * coeff, startY
       for i, regionData in ipairs(activeRegions) do
         if i <= numVisible then
-          newPositions[i] = { x, y, true }
+          newPositions[i] = { x = x, y = y, show = true }
           x = x + stagger
           y = y + (regionData.dimensions.height) + space
         end
@@ -473,7 +474,7 @@ local growers = {
       local x, y = startX - (numVisible - 1) * stagger * coeff, startY
       for i, regionData in ipairs(activeRegions) do
         if i <= numVisible then
-          newPositions[i] = { x, y, true }
+          newPositions[i] = { x = x, y = y, show = true }
           x = x + stagger
           y = y - (regionData.dimensions.height) - space
         end
@@ -496,7 +497,7 @@ local growers = {
       for i, regionData in ipairs(activeRegions) do
         if i <= numVisible then
           x = x + (regionData.dimensions.width) / 2
-          newPositions[i] = { x, y, true }
+          newPositions[i] = { x = x, y = y, show = true }
           x = x + (regionData.dimensions.width) / 2 + space
           y = y + stagger
         end
@@ -519,7 +520,7 @@ local growers = {
       for i, regionData in ipairs(activeRegions) do
         if i <= numVisible then
           y = y + (regionData.dimensions.height) / 2
-          newPositions[i] = { x, y, true }
+          newPositions[i] = { x = x, y = y, show = true }
           x = x + stagger
           y = y + (regionData.dimensions.height) / 2 + space
         end
@@ -558,7 +559,7 @@ local growers = {
       for i, regionData in ipairs(activeRegions) do
         if i <= numVisible then
           local x, y = polarToRect(r, theta)
-          newPositions[i] = { x, y, true }
+          newPositions[i] = { x = x, y = y, show = true }
           theta = theta + dAngle
         end
       end
@@ -596,7 +597,7 @@ local growers = {
       for i, regionData in ipairs(activeRegions) do
         if i <= numVisible then
           local x, y = polarToRect(r, theta)
-          newPositions[i] = { x, y, true }
+          newPositions[i] = { x = x, y = y, show = true }
           theta = theta - dAngle
         end
       end
@@ -623,7 +624,7 @@ local growers = {
     local primary = {
       -- x direction
       dim = "width",
-      coord = 1,
+      coord = "x",
       mul = colMul,
       space = colSpace,
       current = 0
@@ -631,7 +632,7 @@ local growers = {
     local secondary = {
       -- y direction
       dim = "height",
-      coord = 2,
+      coord = "y",
       mul = rowMul,
       space = rowSpace,
       current = 0
@@ -646,7 +647,7 @@ local growers = {
       secondary.max = 0
       for i, regionData in ipairs(activeRegions) do
         if i <= numVisible then
-          newPositions[i] = { [primary.coord] = primary.current, [secondary.coord] = secondary.current, [3] = true }
+          newPositions[i] = { [primary.coord] = primary.current, [secondary.coord] = secondary.current, show = true }
           secondary.max = max(secondary.max, getDimension(regionData, secondary.dim))
           if i % gridWidth == 0 then
             primary.current = 0
@@ -925,6 +926,7 @@ local function modify(parent, region, data)
           local anchorType, anchorLocation, anchorId do -- interpret results of distributeFunc into anchor data
             local temp1, temp2
             anchorType, temp1, temp2 = region.distributeFunc(regionData)
+            print(anchorType, temp1, temp2)
             if not anchorers[anchorType] then
               anchorType = "self"
             end
@@ -1041,11 +1043,10 @@ local function modify(parent, region, data)
           local regionData = group.children[index]
           local x, y, point, relativePoint, show =
               type(pos.x) == "number" and pos.x or 0,
-              type(pos.y) == "number" and pos.x or 0,
+              type(pos.y) == "number" and pos.y or 0,
               Private.point_types[pos.point] and pos.point or data.selfPoint or "CENTER",
               Private.point_types[pos.relativePoint] and pos.relativePoint or data.anchorPoint,
               type(pos.show) ~= "boolean" and true or pos.show
-
           local controlPoint = regionData.controlPoint
           controlPoint:ClearAnchorPoint()
           controlPoint:SetAnchorPoint(

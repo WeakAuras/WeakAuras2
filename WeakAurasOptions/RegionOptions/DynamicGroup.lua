@@ -416,8 +416,8 @@ local function createOptions(id, data)
                           2, function() return data.grow ~= "CUSTOM" end, {"customGrow"}, false, { setOnParent = true })
   OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Sort"], "custom_sort", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-sort",
                           21, function() return data.sort ~= "custom" end, {"customSort"}, false, { setOnParent = true })
-  OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Anchor"], "custom_anchor_per_unit", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#group-by-frame",
-                          1.7, function() return not(data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM") end, {"customAnchorPerUnit"}, false, { setOnParent = true })
+  OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Distribute"], "custom_distribute", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#group-by-frame",
+                          27.5, function() return data.distribute ~= "custom" end, {"customDistribute"}, false, { setOnParent = true })
 
   local borderHideFunc = function() return data.useAnchorPerUnit or data.grow == "CUSTOM" end
   local disableSelfPoint = function() return data.grow ~= "CUSTOM" and data.grow ~= "GRID" and not data.useAnchorPerUnit end
