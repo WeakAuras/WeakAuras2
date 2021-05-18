@@ -18,6 +18,11 @@
 #@retail@
 ModelPaths.lua
 #@end-retail@
-#@non-retail@
+#@non-version-retail@
+# #@version-classic@
 # ModelPathsClassic.lua
-#@end-non-retail@
+# #@end-version-classic@
+# #@version-bcc@
+# ModelPathsBCC.lua
+# #@end-version-bcc@
+#@end-non-version-retail@
