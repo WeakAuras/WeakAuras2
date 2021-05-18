@@ -5,50 +5,31 @@ wget -O ".wowtools.json" "https://wow.tools/api.php?type=currentbc"
 if [[ $? -ne 0 ]]; then
     echo "error while downloading .wowtools.json"
 else
-    wowbuild=$(cat .wowtools.json | jq -r '.wow')
-    classicwowbuild=$(cat .wowtools.json | jq -r '.wow_classic')
-
-    if [ -z "${wowbuild}" ]; then
-        echo "\$wowbuild build not found"
-    else
-        if [[ ${wowbuild} == $(cat .lastwowbuild) ]]; then
-            echo "wow build has not changed"
+    for version in wow wow_classic wow_classic_era
+    do
+        build=$(cat .wowtools.json | jq -r ".${version}")
+        if [ -z "${build}" ]; then
+            "${version} build not found in .wowtools.json"
         else
-            echo "new wow build detected"
-            wget -O "retail_list.csv" "https://wow.tools/casc/listfile/download/csv/build?buildConfig=${wowbuild}&typeFilter=m2"
-            if [ $? -ne 0 ]; then
-                echo "error while downloading retail_list.csv"
+            lastbuildfile=".last${version}build"
+            if [[ ${build} == $(cat ${lastbuildfile}) ]]; then
+                echo "${version} build has not changed"
             else
-                echo "${wowbuild}" > .lastwowbuild
-                lua ./csv_to_lua.lua retail
+                echo "new ${version} build detected"
+                csvfile="${version}_list.csv"
+                wget -O ${csvfile} "https://wow.tools/casc/listfile/download/csv/build?buildConfig=${build}&typeFilter=m2"
                 if [ $? -ne 0 ]; then
-                  echo "error while creating classic lua file"
+                    echo "error while downloading ${csvfile}"
                 else
-                  mv ModelPaths.lua ../../WeakAurasModelPaths/
+                    echo "${build}" > ${lastbuildfile}
+                    lua ./csv_to_lua.lua ${version}
+                    if [ $? -ne 0 ]; then
+                      echo "error while creating ${version} lua file"
+                    else
+                      mv ModelPaths*.lua ../../WeakAurasModelPaths/
+                    fi
                 fi
             fi
         fi
-    fi
-
-    if [ -z "${classicwowbuild}" ]; then
-        echo "\$classicwow build not found"
-    else
-        if [[ ${classicwowbuild} == $(cat .lastclassicwowbuild) ]]; then
-            echo "classicwow build has not changed"
-        else
-            echo "new classicwow build detected"
-            wget -O "classic_list.csv" "https://wow.tools/casc/listfile/download/csv/build?buildConfig=${classicwowbuild}&typeFilter=m2"
-            if [ $? -ne 0 ]; then
-                echo "error while downloading classic_list.csv"
-            else
-                echo "${classicwowbuild}" > .lastclassicwowbuild
-                lua ./csv_to_lua.lua classic
-                if [ $? -ne 0 ]; then
-                  echo "error while creating classic lua file"
-                else
-                  mv ModelPathsClassic.lua ../../WeakAurasModelPaths/
-                fi
-            fi
-        fi
-    fi
+    done
 fi

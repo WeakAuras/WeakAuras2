@@ -3,13 +3,18 @@
 -- # lua.exe ./list_to_table.lua <release>
 
 local releases = {
-  classic = {
-    input = "classic_list.csv", -- get it from https://wow.tools/casc/listfile/download/csv/build?buildConfig=9ad6ad5306deb8eed364b64cc628ac98
+  wow_classic_era = {
+    input = "wow_classic_era_list.csv", -- get it from https://wow.tools/casc/listfile/download/csv/build?buildConfig=9ad6ad5306deb8eed364b64cc628ac98
     output = "ModelPathsClassic.lua",
     generate = true
   },
-  retail = {
-    input = "retail_list.csv", -- get it from https://wow.tools/casc/listfile/download/csv/build?buildConfig=26291f284f42494375d511d1fc120216 (last retail build when i write that)
+  wow_classic = {
+    input = "wow_classic_list.csv", -- get it from https://wow.tools/casc/listfile/download/csv/build?buildConfig=9ad6ad5306deb8eed364b64cc628ac98
+    output = "ModelPathsBCC.lua",
+    generate = true
+  },
+  wow = {
+    input = "wow_list.csv", -- get it from https://wow.tools/casc/listfile/download/csv/build?buildConfig=26291f284f42494375d511d1fc120216 (last retail build when i write that)
     output = "ModelPaths.lua",
     generate = true
   }
@@ -18,7 +23,7 @@ local releases = {
 require "table"
 
 if not arg[1] or not releases[arg[1]] then
-  print(arg[0], "<classic|retail>")
+  print(arg[0], "<wow|wow_classic|wow_classic_era>")
   return
 end
 
