@@ -49,3 +49,4 @@ move-folders:
   WeakAuras/WeakAurasModelPaths: WeakAurasModelPaths
   WeakAuras/WeakAurasTemplates: WeakAurasTemplates
   WeakAuras/WeakAurasArchive: WeakAurasArchive
+  WeakAuras/Libs/LibRangeCheck-2.0/LibRangeCheck-2.0: WeakAuras/Libs/LibRangeCheck-2.0
