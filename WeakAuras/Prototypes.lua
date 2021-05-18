@@ -5346,8 +5346,8 @@ Private.event_prototypes = {
         local index = trigger.talent and trigger.talent.single;
         local tier, column
         if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
-          tier = index and ceil(index / 20)
-          column = index and ((index - 1) % 20 + 1)
+          tier = index and ceil(index / MAX_NUM_TALENTS)
+          column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
         else
           tier = index and ceil(index / 3)
           column = index and ((index - 1) % 3 + 1)
