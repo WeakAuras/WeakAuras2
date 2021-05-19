@@ -80,7 +80,7 @@ local function createOptions(id, data)
     __order = 1,
     groupIcon = {
       type = "input",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.doubleWidth - 0.15,
       name = L["Group Icon"],
       desc = L["Set Thumbnail Icon"],
       order = 0.5,
@@ -95,10 +95,16 @@ local function createOptions(id, data)
     },
     chooseIcon = {
       type = "execute",
-      width = WeakAuras.normalWidth,
+      width = 0.15,
       name = L["Choose"],
       order = 0.51,
-      func = function() OptionsPrivate.OpenIconPicker(data, "groupIcon", true) end
+      func = function()
+        OptionsPrivate.OpenIconPicker(data, { [data.id] = {"groupIcon"} }, true)
+      end,
+      imageWidth = 24,
+      imageHeight = 24,
+      control = "WeakAurasIcon",
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
     },
     -- grow options
     grow = {
@@ -109,11 +115,15 @@ local function createOptions(id, data)
       values = OptionsPrivate.Private.grow_types,
       set = function(info, v)
         data.grow = v
-        local selfPoint = selfPoints[data.grow] or selfPoints.default
-        if type(selfPoint) == "function" then
-          selfPoint = selfPoint(data)
+        if v == "GRID" then
+          data.selfPoint = gridSelfPoints[data.gridType]
+        else
+          local selfPoint = selfPoints[data.grow] or selfPoints.default
+          if type(selfPoint) == "function" then
+            selfPoint = selfPoint(data)
+          end
+          data.selfPoint = selfPoint
         end
-        data.selfPoint = selfPoint
         WeakAuras.Add(data)
         WeakAuras.ClearAndUpdateOptions(data.id)
         OptionsPrivate.ResetMoverSizer()
@@ -400,6 +410,7 @@ local function createOptions(id, data)
       order = 28,
       min = 0.05,
       softMax = 2,
+      max = 10,
       bigStep = 0.05,
       get = function()
         return data.scale or 1
@@ -422,11 +433,11 @@ local function createOptions(id, data)
   };
 
   OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Grow"], "custom_grow", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#grow",
-                          2, function() return data.grow ~= "CUSTOM" end, {"customGrow"}, nil, nil, nil, nil, nil, true)
+                          2, function() return data.grow ~= "CUSTOM" end, {"customGrow"}, false, { setOnParent = true })
   OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Sort"], "custom_sort", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-sort",
-                          21, function() return data.sort ~= "custom" end, {"customSort"}, nil, nil, nil, nil, nil, true)
+                          21, function() return data.sort ~= "custom" end, {"customSort"}, false, { setOnParent = true })
   OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Anchor"], "custom_anchor_per_unit", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#group-by-frame",
-                          1.7, function() return not(data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM") end, {"customAnchorPerUnit"}, nil, nil, nil, nil, nil, true)
+                          1.7, function() return not(data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM") end, {"customAnchorPerUnit"}, false, { setOnParent = true })
 
   local borderHideFunc = function() return data.useAnchorPerUnit or data.grow == "CUSTOM" end
   local disableSelfPoint = function() return data.grow ~= "CUSTOM" and data.grow ~= "GRID" and not data.useAnchorPerUnit end
@@ -437,7 +448,7 @@ local function createOptions(id, data)
 
   return {
     dynamicgroup = options,
-    position = OptionsPrivate.commonOptions.PositionOptions(id, data, nil, true, disableSelfPoint),
+    position = OptionsPrivate.commonOptions.PositionOptions(id, data, nil, true, disableSelfPoint, true),
   };
 end
 
@@ -542,4 +553,4 @@ local function createIcon()
   return thumbnail
 end
 
-WeakAuras.RegisterRegionOptions("dynamicgroup", createOptions, createIcon, L["Dynamic Group (Legacy)"], createThumbnail, modifyThumbnail, L["A group that dynamically controls the positioning of its children"]);
+WeakAuras.RegisterRegionOptions("dynamicgroup", createOptions, createIcon, L["Dynamic Group"], createThumbnail, modifyThumbnail, L["A group that dynamically controls the positioning of its children"]);

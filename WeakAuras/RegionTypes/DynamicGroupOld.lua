@@ -95,7 +95,7 @@ local function releaseControlPoint(self, controlPoint)
   local regionData = controlPoint.regionData
   if regionData then
     if self.parent.anchorPerUnit == "UNITFRAME" then
-      WeakAuras.dyngroup_unitframe_monitor[regionData] = nil
+      Private.dyngroup_unitframe_monitor[regionData] = nil
     end
     controlPoint.regionData = nil
     regionData.controlPoint = nil
@@ -780,8 +780,7 @@ end
 
 local function modify(parent, region, data)
   Private.FixGroupChildrenOrderForGroup(data)
-  -- Scale
-  region:SetScale(data.scale and data.scale > 0 and data.scale or 1)
+  region:SetScale(data.scale and data.scale > 0 and data.scale <= 10 and data.scale or 1)
   WeakAuras.regionPrototype.modify(parent, region, data)
 
   if data.border and (data.grow ~= "CUSTOM" and not data.useAnchorPerUnit) then
@@ -855,6 +854,7 @@ local function modify(parent, region, data)
       cloneId = cloneID,
       dataIndex = dataIndex,
       controlPoint = controlPoint,
+      parent = region
     }
 
     if childData.regionType == "text" then
@@ -871,7 +871,7 @@ local function modify(parent, region, data)
     if(childData.frameStrata == 1) then
       childRegion:SetFrameStrata(region:GetFrameStrata());
     else
-      childRegion:SetFrameStrata(WeakAuras.frame_strata_types[childData.frameStrata]);
+      childRegion:SetFrameStrata(Private.frame_strata_types[childData.frameStrata]);
     end
     return regionData
   end
@@ -1076,10 +1076,10 @@ local function modify(parent, region, data)
       controlPoint:SetWidth(regionData.dimensions.width)
       controlPoint:SetHeight(regionData.dimensions.height)
       if self.anchorPerUnit == "UNITFRAME" then
-        WeakAuras.dyngroup_unitframe_monitor[regionData] = frame
+        Private.dyngroup_unitframe_monitor[regionData] = frame
       end
       if animate then
-        WeakAuras.CancelAnimation(regionData.controlPoint, true)
+        Private.CancelAnimation(regionData.controlPoint, true)
         local xPrev = regionData.xOffset or x
         local yPrev = regionData.yOffset or y
         local xDelta = xPrev - x
@@ -1150,7 +1150,7 @@ local function modify(parent, region, data)
             }
           end
           -- update animated expand & collapse for this child
-          WeakAuras.Animate("controlPoint", data.uid, "controlPoint", anim, regionData.controlPoint, true)
+          Private.Animate("controlPoint", data.uid, "controlPoint", anim, regionData.controlPoint, true)
         end
       end
       regionData.xOffset = x
