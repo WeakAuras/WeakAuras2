@@ -146,16 +146,22 @@ local anchorers = {
 
 local distributors = {
   self = function(data)
-    return function(regionData) return "self" end
+    return function(regionData) return { type = "self" } end
   end,
   nameplate = function(data)
     return function(regionData)
-      return "nameplate", regionData.region.state and regionData.region.state.unit
+      return {
+        type = "nameplate",
+        location = regionData.region.state and regionData.region.state.unit
+      }
     end
   end,
   unit = function(data)
     return function(regionData)
-      return "unit", regionData.region.state and regionData.region.state.unit
+      return {
+        type = "unit",
+        location = regionData.region.state and regionData.region.state.unit
+      }
     end
   end,
   custom = function(data)
@@ -163,10 +169,10 @@ local distributors = {
     local distributeFunc = WeakAuras.LoadFunction("return " .. distributeStr, data.id, "custom distribute") or noop
     return function(regionData)
       Private.ActivateAuraEnvironment(data.id)
-      local ok, result1, result2, result3 = xpcall(distributeFunc, geterrorhandler(), regionData)
+      local ok, result = xpcall(distributeFunc, geterrorhandler(), regionData)
       Private.ActivateAuraEnvironment()
       if ok then
-        return result1, result2, result3
+        return result
       end
     end
   end
@@ -900,18 +906,40 @@ local function modify(parent, region, data)
     self:RedistributeChildren()
   end
 
-  local function getOrCreateGroup(anchorType, anchorLocation, anchorId)
-    local tbl = resolvePath(region.groups, anchorType, anchorLocation)
-    if not tbl[anchorId] then
-      tbl[anchorId] = {
-        type = anchorType,
-        location = anchorLocation,
-        id = anchorId,
+  local function getOrCreateGroup(anchor)
+    local tbl = resolvePath(region.groups, anchor.type, anchor.location, anchor.point)
+    if not tbl[anchor.id] then
+      tbl[anchor.id] = {
+        type = anchor.type,
+        location = anchor.location,
+        id = anchor.id,
+        point = anchor.point,
         children = {}
       }
     end
-    return tbl[anchorId]
+    return tbl[anchor.id]
   end
+
+
+  local function validateAnchor(anchor)
+    if type(anchor) ~= "table" then
+      anchor = {}
+    end
+    if not anchorers[anchor.type] then
+      anchor.type = "self"
+    end
+    if anchor.type == "self" or type(anchor.location) ~= "string" then
+      anchor.location = ""
+    end
+    if type(anchor.id) ~= "string" then
+      anchor.id = ""
+    end
+    if not Private.point_types[anchor.point] then
+      anchor.point = "CENTER"
+    end
+    return anchor
+  end
+
 
   region.distributeFunc = createDistributeFunc(data)
   function region:RedistributeChildren()
@@ -923,23 +951,8 @@ local function modify(parent, region, data)
       for regionData, active in pairs(self.updatedChildren) do
         if active then
           -- child wants to be visible, find an appropriate group
-          local anchorType, anchorLocation, anchorId do -- interpret results of distributeFunc into anchor data
-            local temp1, temp2
-            anchorType, temp1, temp2 = region.distributeFunc(regionData)
-            print(anchorType, temp1, temp2)
-            if not anchorers[anchorType] then
-              anchorType = "self"
-            end
-            regionData.anchorType = anchorType
-            if anchorType == "self" then
-              anchorId = type(temp1) == "string" and temp1 or ""
-              anchorLocation = ""
-            else
-              anchorLocation = (type(temp1) == "string" or (type(temp1) == "table" and type(temp1[0]) == "userdata")) and temp1 or ""
-              anchorId = type(temp2) == "string" and temp2 or ""
-            end
-          end
-          local group = getOrCreateGroup(anchorType, anchorLocation, anchorId)
+          local anchor = validateAnchor(region.distributeFunc(regionData))
+          local group = getOrCreateGroup(anchor)
           self.updatedGroups[group] = true
           if regionData.group ~= group then
             -- either this child wasn't previously assigned to a group, or its group has changed
@@ -1041,19 +1054,19 @@ local function modify(parent, region, data)
       if #newPositions > 0 then
         for index, pos in ipairs(newPositions) do
           local regionData = group.children[index]
-          local x, y, point, relativePoint, show =
+          local x, y, relativePoint, show =
               type(pos.x) == "number" and pos.x or 0,
               type(pos.y) == "number" and pos.y or 0,
-              Private.point_types[pos.point] and pos.point or data.selfPoint or "CENTER",
               Private.point_types[pos.relativePoint] and pos.relativePoint or data.anchorPoint,
               type(pos.show) ~= "boolean" and true or pos.show
           local controlPoint = regionData.controlPoint
           controlPoint:ClearAnchorPoint()
           controlPoint:SetAnchorPoint(
-            data.selfPoint,
-            self.relativeTo,
-            data.anchorPoint,
-            x + data.xOffset, y + data.yOffset
+            relativePoint,
+            frame,
+            group.point,
+            x,
+            y
           )
           controlPoint:SetShown(show)
           controlPoint:SetWidth(regionData.dimensions.width)
@@ -1133,7 +1146,7 @@ local function modify(parent, region, data)
               Private.Animate("controlPoint", data.uid, "controlPoint", anim, regionData.controlPoint, true)
             end
           end
-          regionData.xOffset = x
+          regionData.xOffset = xq
           regionData.yOffset = y
           regionData.shown = show
         end
