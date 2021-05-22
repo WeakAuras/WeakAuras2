@@ -5143,6 +5143,10 @@ Private.event_prototypes = {
         test = "(inverse and duration == 0) or (not inverse and duration > 0)"
       }
     },
+    {
+      hidden = true,
+      test = "remainingCheck"
+    },
     automaticrequired = true,
     canHaveDuration = true,
     statesParameter = "one"
