@@ -6,7 +6,7 @@ local L = WeakAuras.L;
 local root2 = math.sqrt(2);
 local halfroot2 = root2/2;
 
-local default = {
+local pristineDefault = {
   texture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
   desaturate = false,
   width = 200,
@@ -26,7 +26,7 @@ local default = {
   frameStrata = 1
 };
 
-WeakAuras.regionPrototype.AddAlphaToDefault(default);
+WeakAuras.regionPrototype.AddAlphaToDefault(pristineDefault);
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
@@ -66,7 +66,11 @@ local properties = {
   }
 }
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+WeakAuras.regionPrototype.AddProperties(properties, pristineDefault);
+
+local function default()
+  return pristineDefault
+end
 
 local function create(parent)
   local region = CreateFrame("FRAME", nil, UIParent);

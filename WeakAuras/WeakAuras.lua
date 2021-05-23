@@ -33,7 +33,23 @@ LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 Private.maxTimerDuration = 604800; -- A week, in seconds
 local maxUpTime = 4294967; -- 2^32 / 1000
 
-Private.callbacks = LibStub("CallbackHandler-1.0"):New(Private)
+-- The worlds simplest callback system
+-- That supports 1:N, but no deregistration and breaks if registrating in a callback
+Private.callbacks = {}
+Private.callbacks.events = {}
+
+function Private.callbacks:RegisterCallback(event, handler)
+  self.events[event] = self.events[event] or {}
+  tinsert(self.events[event], handler)
+end
+
+function Private.callbacks:Fire(event, ...)
+  if self.events[event] then
+    for index, f in ipairs(self.events[event]) do
+      f(event, ...)
+    end
+  end
+end
 
 function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
   if (delay < Private.maxTimerDuration) then
@@ -215,6 +231,9 @@ local regionOptions = WeakAuras.regionOptions;
 Private.subRegionOptions = {}
 local subRegionOptions = Private.subRegionOptions
 
+-- TODO Also should this be its own table or part of regionTypes/subRegionTypes ?
+Private.extraDefaultsOptions = {}
+
 -- Maps from trigger type to trigger system
 Private.triggerTypes = {};
 local triggerTypes = Private.triggerTypes;
@@ -321,10 +340,10 @@ function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, defa
     error("Improper arguments to WeakAuras.RegisterRegionType - modification function is not a function", 2)
   elseif not(default) then
     error("Improper arguments to WeakAuras.RegisterRegionType - default options are not defined", 2);
-  elseif(type(default) ~= "table") then
-    error("Improper arguments to WeakAuras.RegisterRegionType - default options are not a table", 2);
-  elseif(type(default) ~= "table" and type(default) ~= "nil") then
-    error("Improper arguments to WeakAuras.RegisterRegionType - properties options are not a table", 2);
+  elseif(type(default) ~= "function") then
+    error("Improper arguments to WeakAuras.RegisterRegionType - default options is not a function", 2);
+  elseif(type(properties) ~= "table" and type(properties) ~= "function" and type(properties) ~= "nil") then
+    error("Improper arguments to WeakAuras.RegisterRegionType - properties options are not a table, function or nil", 2);
   elseif(regionTypes[name]) then
     error("Improper arguments to WeakAuras.RegisterRegionType - region type \""..name.."\" already defined", 2);
   else
@@ -473,6 +492,28 @@ function WeakAuras.RegisterSubRegionOptions(name, createFunction, description)
       create = createFunction,
       description = description,
     };
+  end
+end
+
+function WeakAuras.RegisterDefaultsOptions(createFunction)
+if not(createFunction) then
+    error("Improper arguments to WeakAuras.RegisterDefaultsOptions - creation function is not defined", 2);
+  elseif(type(createFunction) ~= "function") then
+    error("Improper arguments to WeakAuras.RegisterDefaultsOptions - creation function is not a function", 2);
+  else
+    tinsert(Private.extraDefaultsOptions, createFunction)
+  end
+end
+
+function Private.GetDefaultsForRegion(regionType, action)
+  if regionTypes[regionType] then
+    return regionTypes[regionType].default(action)
+  end
+end
+
+function Private.GetDefaultsForSubRegion(subRegionType, parentType, action)
+  if subRegionTypes[subRegionType] then
+    return subRegionTypes[subRegionType].default(parentType, action)
   end
 end
 
@@ -1100,12 +1141,11 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       db.displays = db.displays or {};
       db.registered = db.registered or {};
-
+      db.defaults = db.defaults or {}
       Private.UpdateCurrentInstanceType();
       Private.SyncParentChildRelationships();
       local isFirstUIDValidation = db.dbVersion == nil or db.dbVersion < 26;
       Private.ValidateUniqueDataIds(isFirstUIDValidation);
-
       if db.lastArchiveClear == nil then
         db.lastArchiveClear = time();
       elseif db.lastArchiveClear < time() - 86400 then
@@ -1984,6 +2024,12 @@ function WeakAuras.DeepMixin(dest, source)
   recurse(source, dest);
 end
 
+function Private.DeepCopy(source)
+  local result = {}
+  WeakAuras.DeepMixin(result, source)
+  return result
+end
+
 function WeakAuras.RegisterAddon(addon, displayName, description, icon)
   if(addons[addon]) then
     addons[addon].displayName = displayName;
@@ -2634,7 +2680,7 @@ function WeakAuras.PreAdd(data)
     WeakAuras.validate(data, oldDataStub2)
   end
 
-  local default = data.regionType and WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default
+  local default = Private.GetDefaultsForRegion(data.regionType, "validate")
   if default then
     WeakAuras.validate(data, default)
   end
@@ -2653,10 +2699,7 @@ function WeakAuras.PreAdd(data)
       if subType and Private.subRegionTypes[subType] then
         -- If it is not supported, then drop it
         if Private.subRegionTypes[subType].supports(data.regionType) then
-          local default = Private.subRegionTypes[subType].default
-          if type(default) == "function" then
-            default = default(data.regionType)
-          end
+          local default = Private.GetDefaultsForSubRegion(subType, data.regionType, "validate")
           if default then
             WeakAuras.validate(subRegionData, default)
           end
@@ -2869,7 +2912,7 @@ function WeakAuras.SetRegion(data, cloneId)
       end
       region.id = id;
       region.cloneId = cloneId or "";
-      WeakAuras.validate(data, regionTypes[regionType].default);
+      WeakAuras.validate(data, Private.GetDefaultsForRegion(regionType, "validate"))
 
       local parent = frame;
       if(data.parent) then

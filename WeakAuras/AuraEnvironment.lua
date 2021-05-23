@@ -357,7 +357,6 @@ local FakeWeakAurasMixin = {
     GetDisplayButton = true,
     Import = true,
     NewDisplayButton = true,
-    OpenTriggerTemplate = true,
     OpenCodeReview = true,
     PickDisplay = true,
     SetMoverSizer = true,
@@ -368,7 +367,6 @@ local FakeWeakAurasMixin = {
     UpdateGroupOrders = true,
     UpdateThumbnail = true,
     validate = true,
-    getDefaultGlow = true,
   },
   blockedTables = {
     AuraWarnings = true,

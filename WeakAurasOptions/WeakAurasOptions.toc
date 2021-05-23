@@ -47,6 +47,7 @@ LoadOptions.lua
 ActionOptions.lua
 AnimationOptions.lua
 InformationOptions.lua
+DefaultOptions.lua
 
 BuffTrigger.lua
 BuffTrigger2.lua
@@ -66,6 +67,7 @@ OptionsFrames\ImportExport.lua
 OptionsFrames\ModelPicker.lua
 OptionsFrames\TextEditor.lua
 OptionsFrames\TexturePicker.lua
+OptionsFrames\SettingsView.lua
 
 # Misc frames
 OptionsFrames\MoverSizer.lua

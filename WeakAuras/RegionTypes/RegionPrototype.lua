@@ -506,11 +506,8 @@ end
 function WeakAuras.regionPrototype.modify(parent, region, data)
   region.subRegionEvents:ClearSubscribers()
 
-  local defaultsForRegion = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default;
-  if (defaultsForRegion and defaultsForRegion.alpha) then
-    region:SetRegionAlpha(data.alpha);
-  end
-  if region.SetRegionAlpha then
+  local defaultsForRegion = Private.GetDefaultsForRegion(data.regionType, "validate")
+  if (defaultsForRegion and defaultsForRegion.alpha and region.SetRegionAlpha) then
     region:SetRegionAlpha(data.alpha)
   end
 

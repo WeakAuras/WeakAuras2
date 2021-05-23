@@ -11,7 +11,7 @@ end
 -- WoW API
 local _G = _G
 
-local default = {
+local pristineDefault = {
   icon = true,
   desaturate = false,
   iconSource = -1,
@@ -34,7 +34,7 @@ local default = {
   subRegions = {}
 };
 
-WeakAuras.regionPrototype.AddAlphaToDefault(default);
+WeakAuras.regionPrototype.AddAlphaToDefault(pristineDefault);
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
@@ -105,7 +105,24 @@ local properties = {
   }
 };
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+WeakAuras.regionPrototype.AddProperties(properties, pristineDefault);
+
+local mappings = {
+  normal = {
+    base = pristineDefault,
+    map = {
+      [{'region', 'icon', 'zoom'}] = "zoom",
+      [{'region', 'icon', 'cooldown'}] = "cooldown",
+      [{'region', 'icon', 'cooldownTextDisabled'}] = "cooldownTextDisabled",
+    }
+  },
+}
+
+local defaultsCache = Private.CreateDefaultsCache(mappings)
+
+local function default(action)
+  return defaultsCache:GetDefault(action, "normal")
+end
 
 local function GetProperties(data)
   local result = CopyTable(properties)
