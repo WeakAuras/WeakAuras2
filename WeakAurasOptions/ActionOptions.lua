@@ -907,12 +907,16 @@ function OptionsPrivate.GetActionOptions(data)
   end
 
   if data.controlledChildren then
-    for index, childId in pairs(data.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
+    local list = {}
+    for child in OptionsPrivate.Private.TraverseLeafs(data) do
+      tinsert(list, child)
+    end
+
+    for index, child in ipairs(list) do
       local startGet = function(key)
-        return childData.actions.start["message_format_" .. key]
+        return child.actions.start["message_format_" .. key]
       end
-      OptionsPrivate.AddTextFormatOption(childData.actions and childData.actions.start.message, true, startGet, startAddOption, startHidden, startSetHidden, index, #data.controlledChildren)
+      OptionsPrivate.AddTextFormatOption(child.actions and child.actions.start.message, true, startGet, startAddOption, startHidden, startSetHidden, index, #list)
     end
   else
     OptionsPrivate.AddTextFormatOption(data.actions and data.actions.start.message, true, startGet, startAddOption, startHidden, startSetHidden)
@@ -966,12 +970,15 @@ function OptionsPrivate.GetActionOptions(data)
   end
 
   if data.controlledChildren then
-    for index, childId in pairs(data.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
+    local list = {}
+    for child in OptionsPrivate.Private.TraverseLeafs(data) do
+      tinsert(list, child)
+    end
+    for index, child in ipairs(list) do
       local finishGet = function(key)
-        return childData.actions.finish["message_format_" .. key]
+        return child.actions.finish["message_format_" .. key]
       end
-      OptionsPrivate.AddTextFormatOption(childData.actions and childData.actions.finish.message, true, finishGet, finishAddOption, finishHidden, finishSetHidden, index, #data.controlledChildren)
+      OptionsPrivate.AddTextFormatOption(child.actions and child.actions.finish.message, true, finishGet, finishAddOption, finishHidden, finishSetHidden, index, #list)
     end
   else
     OptionsPrivate.AddTextFormatOption(data.actions and data.actions.finish.message, true, finishGet, finishAddOption, finishHidden, finishSetHidden)
