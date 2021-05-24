@@ -299,6 +299,7 @@ local Actions = {
           source.data.parent = groupId
           WeakAuras.Add(source.data)
           WeakAuras.Add(group.data)
+          OptionsPrivate.Private.AddParents(group.data)
           WeakAuras.UpdateGroupOrders(group.data)
           WeakAuras.ClearAndUpdateOptions(group.data.id)
           WeakAuras.ClearAndUpdateOptions(source.data.id)
@@ -332,6 +333,7 @@ local Actions = {
         source:SetGroup()
         source.data.parent = nil
         WeakAuras.Add(parent);
+        OptionsPrivate.Private.AddParents(parent)
         WeakAuras.UpdateGroupOrders(parent);
         WeakAuras.ClearAndUpdateOptions(parent.id);
         WeakAuras.UpdateDisplayButton(parent);
@@ -369,6 +371,7 @@ local Actions = {
           tinsert(children, 1, source.data.id)
         end
         WeakAuras.Add(parent)
+        OptionsPrivate.Private.AddParents(parent)
         WeakAuras.ClearAndUpdateOptions(parent.id)
         WeakAuras.FillOptions()
         WeakAuras.UpdateGroupOrders(parent)
@@ -617,6 +620,7 @@ local methods = {
       end
       WeakAuras.Add(data);
       WeakAuras.ClearAndUpdateOptions(data.id)
+      OptionsPrivate.Private.AddParents(data)
       self.callbacks.UpdateExpandButton();
       OptionsPrivate.SetGrouping();
       WeakAuras.UpdateDisplayButton(data);
@@ -637,10 +641,22 @@ local methods = {
       OptionsPrivate.SetGrouping(data);
     end
 
+    local function addParents(hash, data)
+      local parent = data.parent
+      if parent then
+        hash[parent] = true
+        local parentData = WeakAuras.GetData(parent)
+        if parentData then
+          addParents(hash, parentData)
+        end
+      end
+    end
+
     function self.callbacks.OnDeleteClick()
       if (WeakAuras.IsImporting()) then return end;
       local toDelete = {data}
-      local parents = data.parent and {[data.parent] = true}
+      local parents = {}
+      addParents(parents, data)
       OptionsPrivate.ConfirmDelete(toDelete, parents)
     end
 
@@ -674,7 +690,6 @@ local methods = {
       if (WeakAuras.IsImporting()) then return end;
       local toDelete = {}
       if(data.controlledChildren) then
-
         local region = WeakAuras.regions[data.id];
         if (region.Suspend) then
           region:Suspend();
@@ -685,7 +700,9 @@ local methods = {
         end
       end
       tinsert(toDelete, data)
-      OptionsPrivate.ConfirmDelete(toDelete);
+      local parents = {}
+      addParents(parents, data)
+      OptionsPrivate.ConfirmDelete(toDelete, parents);
     end
 
     function self.callbacks.OnUngroupClick()
@@ -711,6 +728,7 @@ local methods = {
             tremove(parentData.controlledChildren, index);
             tinsert(parentData.controlledChildren, index - 1, id);
             WeakAuras.Add(parentData);
+            OptionsPrivate.Private.AddParents(parentData)
             WeakAuras.ClearAndUpdateOptions(parentData.id)
             self:SetGroupOrder(index - 1, #parentData.controlledChildren);
             local otherbutton = WeakAuras.GetDisplayButton(parentData.controlledChildren[index]);
@@ -750,6 +768,7 @@ local methods = {
             tremove(parentData.controlledChildren, index);
             tinsert(parentData.controlledChildren, index + 1, id);
             WeakAuras.Add(parentData);
+            OptionsPrivate.Private.AddParents(parentData)
             WeakAuras.ClearAndUpdateOptions(parentData.id)
             self:SetGroupOrder(index + 1, #parentData.controlledChildren);
             local otherbutton = WeakAuras.GetDisplayButton(parentData.controlledChildren[index]);
@@ -1115,6 +1134,7 @@ local methods = {
     if(index) then
       tremove(parentData.controlledChildren, index);
       WeakAuras.Add(parentData);
+      OptionsPrivate.Private.AddParents(parentData)
       WeakAuras.ClearAndUpdateOptions(parentData.id);
     else
       error("Display thinks it is a member of a group which does not control it");
