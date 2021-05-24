@@ -116,6 +116,13 @@ local function create(parent)
   region.controlPoints.parent = region
   WeakAuras.regionPrototype.create(region)
   region.suspended = 0
+
+  local oldSetFrameLevel = region.SetFrameLevel
+  region.SetFrameLevel = function(self, level)
+    oldSetFrameLevel(self, level)
+    self.background:SetFrameLevel(level)
+  end
+
   return region
 end
 
@@ -1205,7 +1212,7 @@ local function modify(parent, region, data)
       -- if self.dynamicAnchor then self:UpdateBorder(); return end
       Private.StartProfileSystem("dynamicgroup")
       Private.StartProfileAura(data.id)
-      local numVisible, minX, maxX, maxY, minY, minLevel = 0
+      local numVisible, minX, maxX, maxY, minY = 0
       for active, regionData in ipairs(self.sortedChildren) do
         if regionData.shown then
           numVisible = numVisible + 1
@@ -1213,14 +1220,12 @@ local function modify(parent, region, data)
           local regionLeft, regionRight, regionTop, regionBottom
              = SafeGetPos(childRegion, childRegion.GetLeft), SafeGetPos(childRegion, childRegion.GetRight),
                SafeGetPos(childRegion, childRegion.GetTop), SafeGetPos(childRegion, childRegion.GetBottom)
-          local frameLevel = childRegion:GetFrameLevel()
 
-          if(regionLeft and regionRight and regionTop and regionBottom and frameLevel) then
+          if(regionLeft and regionRight and regionTop and regionBottom) then
             minX = minX and min(regionLeft, minX) or regionLeft
             maxX = maxX and max(regionRight, maxX) or regionRight
             minY = minY and min(regionBottom, minY) or regionBottom
             maxY = maxY and max(regionTop, maxY) or regionTop
-            minLevel = minLevel and min(frameLevel, minLevel) or frameLevel
           end
         end
       end
@@ -1237,7 +1242,6 @@ local function modify(parent, region, data)
         self:SetHeight(height)
         self.currentWidth = width
         self.currentHeight = height
-        self.background:SetFrameLevel(minLevel and minLevel - 1 or 0)
       else
         self:Hide()
       end
