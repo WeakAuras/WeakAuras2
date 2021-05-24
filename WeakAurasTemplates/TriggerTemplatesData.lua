@@ -1,3 +1,4 @@
+local AddonName, TemplatePrivate = ...
 local WeakAuras = WeakAuras
 if not WeakAuras.IsRetail() then return end
 local L = WeakAuras.L

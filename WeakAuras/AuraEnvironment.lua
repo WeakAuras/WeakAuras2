@@ -357,7 +357,6 @@ local FakeWeakAurasMixin = {
     GetDisplayButton = true,
     Import = true,
     NewDisplayButton = true,
-    OpenTriggerTemplate = true,
     OpenCodeReview = true,
     PickDisplay = true,
     SetMoverSizer = true,
