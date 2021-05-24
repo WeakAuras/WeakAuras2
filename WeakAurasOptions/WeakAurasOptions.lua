@@ -1463,8 +1463,10 @@ function OptionsPrivate.OpenTriggerTemplate(data, targetId)
     end
     frame.newView = WeakAuras.CreateTemplateView(OptionsPrivate.Private, frame);
   end
-  frame.newView.targetId = targetId;
-  frame.newView:Open(data);
+  -- This is called multiple times if a group is selected
+  if frame.window ~= "newView" then
+    frame.newView:Open(data, targetId);
+  end
 end
 
 function OptionsPrivate.ResetMoverSizer()

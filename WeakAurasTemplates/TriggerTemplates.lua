@@ -1598,17 +1598,10 @@ function WeakAuras.CreateTemplateView(Private, frame)
       WeakAuras.UpdateThumbnail(data);
       WeakAuras.UpdateDisplayButton(data);
     end
-    if (data.controlledChildren) then
-      for index, childId in pairs(data.controlledChildren) do
-        local childData = WeakAuras.GetData(childId);
-        if(childData) then
-          handle(childData, item, subType);
-        end
-      end
-    else
-      handle(data, item, subType);
-      WeakAuras.PickDisplay(data.id);
+    for child in TemplatePrivate.Private.TraverseLeafsOrAura(data) do
+      handle(child, item, subType);
     end
+    WeakAuras.ClearAndUpdateOptions(data.id)
   end
 
   local function addTriggers(data, item, subType)
@@ -1624,17 +1617,10 @@ function WeakAuras.CreateTemplateView(Private, frame)
       WeakAuras.UpdateThumbnail(data);
       WeakAuras.UpdateDisplayButton(data);
     end
-    if (data.controlledChildren) then
-      for index, childId in pairs(data.controlledChildren) do
-        local childData = WeakAuras.GetData(childId);
-        if(childData) then
-          handle(childData, item, subType);
-        end
-      end
-    else
-      handle(data, item, subType);
-      WeakAuras.PickDisplay(data.id);
+    for child in TemplatePrivate.Private.TraverseLeafsOrAura(data) do
+      handle(child, item, subType);
     end
+    WeakAuras.ClearAndUpdateOptions(data.id)
   end
 
   local function createLastPage()
@@ -1868,16 +1854,16 @@ function WeakAuras.CreateTemplateView(Private, frame)
   newViewCancel:SetWidth(100);
   newViewCancel:SetText(L["Cancel"]);
 
-  function newView.Open(self, data)
+  function newView.Open(self, data, targetId)
     frame.window = "newView";
     frame:UpdateFrameVisible()
+    self.targetId = targetId
+    self.data = data -- Might be nil
     if (data) then
-      self.data = data;
       newView.existingAura = true;
       newView.chosenItem = nil;
       newView.chosenSubType = nil;
     else
-      self.data = nil; -- Data is cloned from display template
       newView.existingAura = false;
       newView.chosenItem = nil;
       newView.chosenSubType = nil;

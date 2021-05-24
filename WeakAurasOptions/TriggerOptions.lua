@@ -358,7 +358,9 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
   }
   if (GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") ~= 0) then
     options.__applyTemplate = function()
-      OptionsPrivate.OpenTriggerTemplate(data)
+      -- If we have more than a single aura selected,
+      -- we want to open the template view with the group/multi selection
+      OptionsPrivate.OpenTriggerTemplate(OptionsPrivate.GetPickedDisplay())
     end
   end
 end
