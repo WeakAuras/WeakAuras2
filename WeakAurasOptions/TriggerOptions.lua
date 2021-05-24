@@ -153,13 +153,8 @@ end
 
 function OptionsPrivate.GetTriggerOptions(data)
   local allOptions = {}
-  if data.controlledChildren then
-    for index, childId in pairs(data.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
-      allOptions = AddOptions(allOptions, childData)
-    end
-  else
-    allOptions = AddOptions(allOptions, data)
+  for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+    allOptions = AddOptions(allOptions, child)
   end
 
   fixMetaOrders(allOptions)
