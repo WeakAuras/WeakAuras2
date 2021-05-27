@@ -593,7 +593,7 @@ local function importPendingData()
     WeakAuras.UpdateGroupOrders(parentData)
     WeakAuras.UpdateDisplayButton(parentData)
     WeakAuras.ClearAndUpdateOptions(parentData.id)
-    WeakAuras.SortDisplayButtons()
+    Private.callbacks:Fire("Import")
   end
   WeakAuras.SetImporting(false)
   return WeakAuras.PickDisplay(installedData[0].id)

@@ -74,7 +74,7 @@ function OptionsPrivate.CreateImportButtons()
         end
 
         OptionsPrivate.Private.ScanForLoads();
-        WeakAuras.SortDisplayButtons();
+        OptionsPrivate.SortDisplayButtons();
       end);
     end);
 
@@ -134,7 +134,7 @@ function OptionsPrivate.CreateImportButtons()
             end
             OptionsPrivate.Private.ResolveCollisions(function()
               OptionsPrivate.Private.ScanForLoads();
-              WeakAuras.SortDisplayButtons();
+              OptionsPrivate.SortDisplayButtons();
               UpdateGroupChecked();
             end);
           end);
@@ -174,7 +174,7 @@ function OptionsPrivate.CreateImportButtons()
             end
 
             OptionsPrivate.Private.ScanForLoads();
-            WeakAuras.SortDisplayButtons();
+            OptionsPrivate.SortDisplayButtons();
             UpdateAddonChecked();
           end);
         end);
@@ -203,7 +203,7 @@ function OptionsPrivate.CreateImportButtons()
             WeakAuras.DisableAddonDisplay(id);
           end
           OptionsPrivate.Private.ResolveCollisions(function()
-            WeakAuras.SortDisplayButtons()
+            OptionsPrivate.SortDisplayButtons()
             UpdateAddonChecked();
           end);
         end);
