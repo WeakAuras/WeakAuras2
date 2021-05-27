@@ -753,7 +753,7 @@ function StringToTable(inString, fromChat)
 end
 Private.StringToTable = StringToTable
 
-function WeakAuras.DisplayToString(id, forChat)
+function Private.DisplayToString(id, forChat)
   local data = WeakAuras.GetData(id);
   if(data) then
     data.uid = data.uid or GenerateUniqueID()
@@ -1684,7 +1684,7 @@ function TransmitError(errorMsg, characterName)
 end
 
 function TransmitDisplay(id, characterName)
-  local encoded = WeakAuras.DisplayToString(id);
+  local encoded = Private.DisplayToString(id);
   if(encoded ~= "") then
     crossRealmSendCommMessage("WeakAuras", encoded, characterName, "BULK", function(displayName, done, total)
       crossRealmSendCommMessage("WeakAurasProg", done.." "..total.." "..displayName, characterName, "ALERT");
