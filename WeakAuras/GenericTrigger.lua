@@ -1446,6 +1446,7 @@ do
   local selfGUID;
   local mainSpeed, offSpeed = UnitAttackSpeed("player")
   local casting = false
+  local skipNextAttack, skipNextAttackCount
 
   function WeakAuras.GetSwingTimerInfo(hand)
     if(hand == "main") then
@@ -1493,7 +1494,16 @@ do
   local function swingTimerCLEUCheck(ts, event, _, sourceGUID, _, _, _, destGUID, _, _, _, ...)
     Private.StartProfileSystem("generictrigger swing");
     if(sourceGUID == selfGUID) then
-      if(event == "SWING_DAMAGE" or event == "SWING_MISSED") then
+      if event == "SPELL_EXTRA_ATTACKS" then
+        skipNextAttack = ts
+        skipNextAttackCount = select(4, ...)
+      elseif(event == "SWING_DAMAGE" or event == "SWING_MISSED") then
+        if skipNextAttack == ts and tonumber(skipNextAttackCount) then
+          if skipNextAttackCount > 0 then
+            skipNextAttackCount = skipNextAttackCount - 1
+            return
+          end
+        end
         local isOffHand = select(event == "SWING_DAMAGE" and 10 or 2, ...);
 
         local event;
