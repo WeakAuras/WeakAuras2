@@ -273,16 +273,11 @@ local function createOptions(parentData, data, index, subIndex)
   -- design I had for anchor options proved to be not general enough for
   -- what SubText needed. So, I removed it, and postponed making it work for unknown future
   -- sub regions
-  local anchors
-  if parentData.controlledChildren then
-    anchors = {}
-    for index, childId in ipairs(parentData.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
-      Mixin(anchors, OptionsPrivate.Private.GetAnchorsForData(childData, "point"))
-    end
-  else
-     anchors = OptionsPrivate.Private.GetAnchorsForData(parentData, "point")
+  local anchors = {}
+  for child in OptionsPrivate.Private.TraverseLeafsOrAura(parentData) do
+    Mixin(anchors, OptionsPrivate.Private.GetAnchorsForData(child, "point"))
   end
+
   -- Anchor Options
   options.text_anchorsDescription = {
     type = "execute",
@@ -464,18 +459,22 @@ local function createOptions(parentData, data, index, subIndex)
   end
 
   if parentData.controlledChildren then
-    for childIndex, childId in pairs(parentData.controlledChildren) do
-      local parentChildData = WeakAuras.GetData(childId)
-      if parentChildData.subRegions then
-        local childData = parentChildData.subRegions[index]
-        if childData then
-          local get = function(key)
-            return childData["text_text_format_" .. key]
-          end
-          local input = childData["text_text"]
-          OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden, childIndex, #parentData.controlledChildren)
+    local list = {}
+    for child in OptionsPrivate.Private.TraverseLeafs(parentData) do
+      if child.subRegions then
+        local childSubRegion = child.subRegions[index]
+        if childSubRegion then
+          tinsert(list, childSubRegion)
         end
       end
+    end
+
+    for listIndex, childSubRegion in ipairs(list) do
+      local get = function(key)
+        return childSubRegion["text_text_format_" .. key]
+      end
+      local input = childSubRegion["text_text"]
+      OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden, listIndex, #list)
     end
   else
     local get = function(key)
