@@ -5,7 +5,6 @@ local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
-local prettyPrint = WeakAuras.prettyPrint
 
 local LOCAL_FrameHandle_Other_Frames = {};
 local LOCAL_FrameHandle_Lookup = {};
@@ -590,6 +589,7 @@ for k,v in pairs(backdropMethods) do
     end
 end
 
+Private.IsFrameHandle = IsFrameHandle
 Private.GetFrameHandle = GetFrameHandle
 Private.GetFrameHandleFrame = GetFrameHandleFrame
 Private.AddToFrameHandle = function(name)

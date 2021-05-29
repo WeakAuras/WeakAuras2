@@ -3,7 +3,6 @@ local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
-local prettyPrint = WeakAuras.prettyPrint
 
 local LCD
 if WeakAuras.IsClassic() then
@@ -515,228 +514,10 @@ overridden = {
   hooksecurefunc = Fakehooksecurefunc, -- is it realy needed?
 }
 
-
+local ENV = Private.GetManagedEnvironment()
 local env_getglobal
-local proxifier
-do
-  local _G = _G
 
-  local pairs, ipairs, next, unpack = _G.pairs, _G.ipairs, _G.next, _G.unpack
-  local pcall, type = _G.pcall, _G.type
-  local string = _G.string
-  local table = _G.table
-
-  local proxifierCache = {}
-  local proxyList = {}
-  setmetatable(proxifierCache, { __mode = "k" });
-  setmetatable(proxyList, { __mode = "k" });
-
-  local ignoreProxy = {
-    [ipairs] = 'ipairs',
-    [pairs] = 'pairs',
-    [next] = 'next',
-    [unpack] = 'unpack',
-    [type] = 'type',
-    [setmetatable] = 'setmetatable',
-    [rawset] = 'rawset',
-    [rawget] = 'rawget',
-  }
-
-  local function addReferencesToIgnore(root)
-    for k,v in pairs(root) do
-      ignoreProxy[ root[k] ] = k
-    end
-  end
-  addReferencesToIgnore(string)
-  addReferencesToIgnore(table)
-
-  local function MakeTableReference(from)
-    local t = {}
-
-    for k,v in pairs(from) do
-      if (_G[k]) then
-        t[_G[k]] = k
-      else
-        print('Unable to find reference for', k)
-      end
-    end
-
-    return t
-  end
-
-  local blockedFunctionsReference = MakeTableReference(blockedFunctions)
-  local blockedTablesReference = MakeTableReference(blockedTables)
-
-  local doOutput = true
-  local output = function(...)
-    if doOutput then print(...) end
-  end
-
-  local checkPayload
-
-  local function nextArgs(handle, arg, ...)
-    local numPayload = select('#', ...)
-    if numPayload == 0 and arg == nil then return arg end
-    return handle(arg), nextArgs(handle, ...)
-  end
-
-  local function captureReturn(handle, success, result, ...)
-    if not success then
-      error(result)
-    end
-
-    return handle(result), nextArgs(handle, ...)
-  end
-
-  local function capturePayload(handle, arg, ...)
-    local numPayload = select('#', ...)
-    if numPayload == 0 and arg == nil then return end
-    return handle(arg), capturePayload(handle, ...)
-  end
-
-  local function proxifier_proxy_table(var)
-    if not proxifierCache[var] then
-      for id, aura_env in pairs(aura_environments) do
-        if (aura_env == var) then
-          print('Attept to proxify aura_env')
-          break
-        end
-      end
-
-      local mt = getmetatable(var)
-      local proxy = setmetatable({}, {
-        __index = function(t, k)
-          return proxifier(var[k])
-        end,
-        __newindex = function(t, k, v)
-          rawset(var, k, v)
-        end,
-        __call = ( mt and mt.__call ) and function(t, ...) -- this for LibStud() __call
-          return captureReturn(proxifier,
-            pcall(var, capturePayload(checkPayload, ...))
-          )
-        end,
-        __metatable = false,
-      })
-
-      proxifierCache[var] = proxy
-      proxifierCache[proxy] = proxy
-    end
-
-    return proxifierCache[var]
-  end
-
-  local function proxifier_proxy_function(var)
-    if not proxifierCache[var] then
-      local proxy = function(...)
-        return captureReturn(proxifier,
-          pcall(var, capturePayload(checkPayload, ...))
-        )
-      end
-      proxifierCache[var] = proxy
-      proxifierCache[proxy] = proxy
-    end
-    return proxifierCache[var]
-  end
-
-  local deepCheckTable
-  function deepCheckTable(tbl, dept, real, from, checked)
-    checked = checked or {}
-
-    if ( checked[tbl] ) then
-      return true
-    end
-
-    checked[tbl] = true
-
-    if ( dept > 10 ) then
-      -- print('High dept found??', dept, from)
-      return false
-    end
-
-    if ( tbl == WeakAuras ) then return false end
-    if ( tbl == _G ) then return false end
-    if ( blockedTablesReference[tbl] ) then return false end
-
-    for k,v in pairs(tbl) do
-      if ( v == WeakAuras ) then return false end
-      if ( v == _G ) then return false end
-      if ( blockedTablesReference[v] ) then return false end
-    end
-
-    for k,v in pairs(tbl) do
-      if ( type(v) == 'table' ) then
-        if ( checked[v]) then
-          --print('Circular reference:0 ??', k, dept)
-        elseif ( tbl == v) then
-          --print('Circular reference:1 ??', k, dept)
-        elseif ( not deepCheckTable(v, dept+1, real, from..'.'..k, checked) ) then
-          return false
-        end
-      end
-    end
-
-    return true
-  end
-
-  function checkPayload(var)
-    if ( not var ) then
-      return var;
-    end
-
-    if ( type(var) == 'table' ) then
-      if not deepCheckTable(var, 0, var, 'FROM') then
-        output('Invalid table value', 'FROM')
-        return {}
-      end
-    elseif ( type(var) == 'function' ) then
-      if ( blockedFunctionsReference[var] ) then
-        blocked( blockedFunctionsReference[var] )
-        return function() end
-      elseif ( ignoreProxy[var] ) then -- type doesnt work without it
-        return var
-      end
-    end
-
-    return var
-  end
-
-  function proxifier(var)
-    if ( not var ) then
-      return var;
-    end
-
-    if ( type(var) == 'table' ) then
-      if ( var == WeakAuras ) then
-        return FakeWeakAuras
-      elseif ( var == _G ) then
-        return env_getglobal('_G')
-      elseif ( blockedTablesReference[var] ) then
-        blocked( blockedTablesReference[var] )
-        return {}
-      elseif ( var == string or var == table ) then
-        return var
-      end
-
-      if ( type(var[0]) == 'userdata' ) then
-        return Private.GetFrameHandle(var)
-      else
-        return proxifier_proxy_table(var)
-      end
-    elseif ( type(var) == 'function' ) then
-      if ( blockedFunctionsReference[var] ) then
-        blocked( blockedFunctionsReference[var] )
-        return function() end
-      elseif ( ignoreProxy[var] ) then -- ipairs, pairs doesnt work without it
-        return var
-      end
-
-      return proxifier_proxy_function(var)
-    end
-
-    return var
-  end
-end
+local LibStub = getfenv(0).LibStub;
 
 local exec_env = setmetatable({},
 {
@@ -747,8 +528,12 @@ local exec_env = setmetatable({},
       return Private.GetFrameHandle(UIParent)
     elseif k == "WorldFrame" then
       return Private.GetFrameHandle(WorldFrame)
+    elseif k == "LibStub" then
+      return LibStub
     elseif k == "getglobal" then
       return env_getglobal
+    elseif Private.RestrictedTable_API[k] then
+      return Private.RestrictedTable_API[k]
     elseif blockedFunctions[k] then
       blocked(k)
       return function() end
@@ -758,11 +543,11 @@ local exec_env = setmetatable({},
     elseif overridden[k] then
       return overridden[k]
     else
-      return _G[k] -- proxifier(_G[k])
+      return ENV[k]
     end
   end,
   __newindex = function(table, key, value)
-    if _G[key] then
+    if ENV[key] then
       Private.AuraWarnings.UpdateWarning(current_uid, "OverridingGlobal", "warning",
          string.format(L["The aura has overwritten the global '%s', this might affect other auras."], key))
     end

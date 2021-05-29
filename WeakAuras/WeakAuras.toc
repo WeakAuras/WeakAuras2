@@ -45,7 +45,8 @@ BuffTrigger.lua
 BuffTrigger2.lua
 GenericTrigger.lua
 AuraWarnings.lua
-FrameHandlers.lua 
+Env\FrameHandlers.lua
+Env\TableHandlers.lua
 AuraEnvironment.lua
 
 # region support
