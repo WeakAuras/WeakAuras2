@@ -3,6 +3,15 @@ local AddonName, Private = ...
 
 local ENV = getfenv(0);
 local issecurevariable = ENV.issecurevariable;
+local type = ENV.type;
+local newproxy = ENV.newproxy;
+local next = ENV.next;
+local pairs = ENV.pairs;
+local ipairs = ENV.ipairs;
+local setmetatable = ENV.setmetatable;
+local getmetatable = ENV.getmetatable;
+
+
 
 local IsFrameHandle = Private.IsFrameHandle;
 
@@ -30,7 +39,6 @@ local function CheckReadonlyValue(ret, real, key)
         elseif (IsFrameHandle(ret)) then
             return ret
         end
-        return nil
     elseif ( tret == "table" ) then
         if ( LOCAL_Real_Tables[ret] ) then
             return LOCAL_Real_Tables[ret]
@@ -40,7 +48,6 @@ local function CheckReadonlyValue(ret, real, key)
                 return RestrictedTable_create(ret)
             end
         end
-        return nil
     elseif ( tret == "function" ) then
         if ( LOCAL_Real_Variables[ret] ) then
             return ret
@@ -51,10 +58,11 @@ local function CheckReadonlyValue(ret, real, key)
                 return ret;
             end
         end
-        return nil
+    elseif ( tret == "string" or tret == "number" or tret == "boolean"  ) then
+        return ret;
     end
 
-    return ret;
+    return nil;
 end
 
 local LOCAL_Readonly_Restricted_Table_Meta = {

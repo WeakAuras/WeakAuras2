@@ -1,11 +1,6 @@
 if not WeakAuras.IsCorrectVersion() then return end
 local AddonName, Private = ...
 
--- Blizzard Code Interface/FrameXML/RestrictedInfrastructure.lua
-
-local WeakAuras = WeakAuras
-local L = WeakAuras.L
-
 local LOCAL_FrameHandle_Other_Frames = {};
 local LOCAL_FrameHandle_Lookup = {};
 local LOCAL_FrameHandle_Args = {};
