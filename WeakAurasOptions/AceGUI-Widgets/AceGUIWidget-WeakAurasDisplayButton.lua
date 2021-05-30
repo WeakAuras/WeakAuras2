@@ -85,11 +85,10 @@ clipboard.pasteMenuEntry = {
   func = function()
     if (not IsRegionAGroup(clipboard.source) and IsRegionAGroup(clipboard.current)) then
       -- Copy from a single aura to a group => paste it to each individual aura
-      for index, childId in pairs(clipboard.current.controlledChildren) do
-        local childData = WeakAuras.GetData(childId);
-        copyAuraPart(clipboard.source, childData, clipboard.part);
-        WeakAuras.Add(childData)
-        WeakAuras.ClearAndUpdateOptions(childData.id)
+      for child in OptionsPrivate.Private.TraverseLeafs(clipboard.current) do
+        copyAuraPart(clipboard.source, child, clipboard.part);
+        WeakAuras.Add(child)
+        WeakAuras.ClearAndUpdateOptions(child.id)
       end
     else
       copyAuraPart(clipboard.source, clipboard.current, clipboard.part);
