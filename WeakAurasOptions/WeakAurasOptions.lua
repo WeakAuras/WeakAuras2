@@ -103,7 +103,7 @@ function OptionsPrivate.DuplicateAura(data, newParent, massEdit)
       OptionsPrivate.ClearOptions(parentData.id)
     end
   end
-  return newData.id
+  return newData
 end
 
 AceGUI:RegisterLayout("AbsoluteList", function(content, children)
@@ -316,16 +316,10 @@ function OptionsPrivate.MultipleDisplayTooltipMenu()
       text = L["Duplicate All"],
       notCheckable = 1,
       func = function()
-        local toDuplicate = {};
-        for index, id in pairs(tempGroup.controlledChildren) do
-          toDuplicate[index] = id;
-        end
-
         local duplicated = {};
-
-        for index, id in ipairs(toDuplicate) do
-          local childData = WeakAuras.GetData(id);
-          duplicated[index] = OptionsPrivate.DuplicateAura(childData);
+        for child in OptionsPrivate.Private.TraverseAllChildren(tempGroup) do
+          local newData = OptionsPrivate.DuplicateAura(child)
+          tinsert(duplicated, newData.id);
         end
 
         OptionsPrivate.ClearPicks();

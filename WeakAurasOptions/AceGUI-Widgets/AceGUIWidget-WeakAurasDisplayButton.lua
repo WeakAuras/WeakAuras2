@@ -659,29 +659,60 @@ local methods = {
       OptionsPrivate.ConfirmDelete(toDelete, parents)
     end
 
+    local function DuplicateGroups(sourceParent, targetParent, mapping)
+      for index, childId in pairs(sourceParent.controlledChildren) do
+        local childData = WeakAuras.GetData(childId)
+        if childData.controlledChildren then
+          local newChildGroup = OptionsPrivate.DuplicateAura(childData, targetParent.id)
+          mapping[childData] = newChildGroup
+          DuplicateGroups(childData, newChildGroup, mapping)
+        end
+      end
+    end
+
+    local function DuplicateAuras(sourceParent, targetParent, mapping)
+      print("DuplicateAuras", sourceParent.id, targetParent.id)
+      for index, childId in pairs(sourceParent.controlledChildren) do
+        local childData = WeakAuras.GetData(childId)
+        if childData.controlledChildren then
+          DuplicateAuras(childData, mapping[childData], mapping)
+        else
+          OptionsPrivate.DuplicateAura(childData, targetParent.id, true)
+        end
+      end
+    end
+
     function self.callbacks.OnDuplicateClick()
       if (WeakAuras.IsImporting()) then return end;
       if data.controlledChildren then
-        local new_idGroup = OptionsPrivate.DuplicateAura(data)
-        -- Do this after duplicating the parent!
+        local newGroup = OptionsPrivate.DuplicateAura(data) -- TODO check that this sets the correct parent even if data has controlledChildren!
+
+        local mapping = {}
+        -- This builds the group skeleton
+        DuplicateGroups(data, newGroup, mapping)
+        -- Do this after duplicating all groups
         OptionsPrivate.Private.PauseAllDynamicGroups()
-        for index, childId in pairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId)
-          OptionsPrivate.DuplicateAura(childData, new_idGroup, true)
+        -- And this fills in the leafs
+        DuplicateAuras(data, newGroup, mapping)
+
+        local button = WeakAuras.GetDisplayButton(newGroup.id)
+        button.callbacks.UpdateExpandButton()
+        WeakAuras.UpdateDisplayButton(newGroup)
+
+        for old, new in pairs(mapping) do
+          local button = WeakAuras.GetDisplayButton(new.id)
+          button.callbacks.UpdateExpandButton()
+          WeakAuras.UpdateDisplayButton(new)
         end
 
-        local button = WeakAuras.GetDisplayButton(new_idGroup)
-        button.callbacks.UpdateExpandButton()
-        WeakAuras.UpdateDisplayButton(WeakAuras.GetData(new_idGroup))
-
         OptionsPrivate.SortDisplayButtons(nil, true)
-        OptionsPrivate.PickAndEditDisplay(new_idGroup)
+        OptionsPrivate.PickAndEditDisplay(newGroup.id)
 
         OptionsPrivate.Private.ResumeAllDynamicGroups()
       else
-        local new_id = OptionsPrivate.DuplicateAura(data)
+        local new = OptionsPrivate.DuplicateAura(data)
         OptionsPrivate.SortDisplayButtons(nil, true)
-        OptionsPrivate.PickAndEditDisplay(new_id)
+        OptionsPrivate.PickAndEditDisplay(new.id)
       end
     end
 
