@@ -694,8 +694,8 @@ local methods = {
           region:Suspend();
         end
 
-        for _, id in pairs(data.controlledChildren) do
-          tinsert(toDelete, WeakAuras.GetData(id));
+        for child in OptionsPrivate.Private.TraverseAllChildren(data) do
+          tinsert(toDelete, child);
         end
       end
       tinsert(toDelete, data)
