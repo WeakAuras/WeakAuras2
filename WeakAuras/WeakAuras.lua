@@ -1503,12 +1503,17 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     Private.FinishLoadUnload();
   end
 
+  -- This iterates over all auras and could be optimized to only check
+  -- parents of children that have changed. (A further optimization would be to distinguish
+  -- between auras that changed from unloaded to loaded and vice versa.
+  -- The complicated bit is that a full check must be done if the group memberships changed,
+  -- and currently this function handles that too.
   for id, data in pairs(db.displays) do
     if(data.controlledChildren) then
       if(#data.controlledChildren > 0) then
         local any_loaded;
-        for index, childId in pairs(data.controlledChildren) do
-          if(loaded[childId] ~= nil) then
+        for child in Private.TraverseLeafs(data) do
+          if(loaded[child.id] ~= nil) then
             any_loaded = true;
             break;
           end
