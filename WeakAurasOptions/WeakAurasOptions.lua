@@ -1344,27 +1344,58 @@ function OptionsPrivate.Ungroup(data)
   WeakAuras.FillOptions()
 end
 
-function OptionsPrivate.SetDragging(data, drop)
+function OptionsPrivate.DragReset()
+  for id, button in pairs(displayButtons) do
+    button:DragReset();
+  end
+  OptionsPrivate.UpdateButtonsScroll()
+end
+
+function OptionsPrivate.Drop(mainAura, target, action)
   WeakAuras_DropDownMenu:Hide()
+
+  local mode = ""
   if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0) then
+    mode = "MULTI"
+  elseif mainAura.controlledChildren then
+    mode = "GROUP"
+  else
+    mode = "SINGLE"
+  end
+
+  for id, button in pairs(displayButtons) do
+    button:Drop(mode, mainAura, target, action);
+  end
+  OptionsPrivate.SortDisplayButtons()
+  OptionsPrivate.UpdateButtonsScroll()
+end
+
+function OptionsPrivate.StartDrag(mainAura)
+  WeakAuras_DropDownMenu:Hide()
+
+  if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0) then
+    -- Multi selection
     local children = {};
     local size = #tempGroup.controlledChildren;
     -- set dragging for selected buttons in reverse for ordering
-    for index = size, 1, -1 do
-      local childId = tempGroup.controlledChildren[index];
-      local button = WeakAuras.GetDisplayButton(childId);
-      button:SetDragging(data, drop, size);
-      children[childId] = true;
+
+    for child in OptionsPrivate.Private.TraverseAllChildren(tempGroup) do
+      local button = WeakAuras.GetDisplayButton(child.id);
+      button:DragStart("MULTI", true, mainAura, size)
+      children[child.id] = true
     end
     -- set dragging for non selected buttons
     for id, button in pairs(displayButtons) do
       if not children[button.data.id] then
-        button:SetDragging(data, drop);
+        button:DragStart("MULTI", false, mainAura);
       end
     end
   else
-    for id, button in pairs(displayButtons) do
-      button:SetDragging(data, drop);
+    if mainAura.controlledChildren then
+    else
+      for id, button in pairs(displayButtons) do
+        button:DragStart("SINGLE", id == mainAura.id, mainAura);
+      end
     end
   end
 end
@@ -1376,19 +1407,49 @@ function OptionsPrivate.DropIndicator()
     indicator:SetHeight(4)
     indicator:SetFrameStrata("FULLSCREEN")
 
-    local texture = indicator:CreateTexture(nil, "ARTWORK")
-    texture:SetBlendMode("ADD")
-    texture:SetAllPoints(indicator)
-    texture:SetTexture("Interface\\PaperDollInfoFrame\\UI-Character-Tab-Highlight")
+    local groupTexture = indicator:CreateTexture(nil, "ARTWORK")
+    groupTexture:SetBlendMode("ADD")
+    groupTexture:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite")
 
-    local icon = indicator:CreateTexture(nil, "OVERLAY")
-    icon:SetSize(16,16)
-    icon:SetPoint("CENTER", indicator)
+    local lineTexture = indicator:CreateTexture(nil, "ARTWORK")
+    lineTexture:SetBlendMode("ADD")
+    lineTexture:SetAllPoints(indicator)
+    lineTexture:SetTexture("Interface\\PaperDollInfoFrame\\UI-Character-Tab-Highlight")
 
-    indicator.icon = icon
-    indicator.texture = texture
+    indicator.lineTexture = lineTexture
+    indicator.groupTexture = groupTexture
     frame.dropIndicator = indicator
     indicator:Hide()
+
+    function indicator:ShowAction(target, action)
+      self:Show()
+      self:ClearAllPoints()
+      if action == "GROUP" then
+        self.groupTexture:ClearAllPoints()
+        self.groupTexture:SetVertexColor(0.4, 0.7, 1, 0.7)
+        self.groupTexture:Show()
+        self.groupTexture:SetPoint("TOPLEFT", target.icon, "TOPRIGHT", 2, -1)
+        self.groupTexture:SetPoint("BOTTOMRIGHT", target.frame, "BOTTOMRIGHT", 0, 1)
+      else
+        self.groupTexture:Hide()
+      end
+
+      -- Position line texture, if needed
+      if action == "BEFORE" then
+        self.lineTexture:Show()
+        self:SetPoint("BOTTOMLEFT", target.frame, "TOPLEFT", 0, -1)
+        self:SetPoint("BOTTOMRIGHT", target.frame, "TOPRIGHT", 0, -1)
+        self:SetHeight(4)
+      elseif action == "AFTER" then
+        self.lineTexture:Show()
+        self:SetPoint("TOPLEFT", target.frame, "BOTTOMLEFT", 0, 1)
+        self:SetPoint("TOPRIGHT", target.frame, "BOTTOMRIGHT", 0, 1)
+        self:SetHeight(4)
+      else
+        self.lineTexture:Hide()
+      end
+    end
+
   end
   return indicator
 end
