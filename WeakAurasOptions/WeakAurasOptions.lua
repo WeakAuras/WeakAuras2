@@ -588,7 +588,7 @@ local function OnRename(event, uid, oldid, newid)
     end
   end
 
-  OptionsPrivate.SetGrouping()
+  OptionsPrivate.StopGrouping()
   OptionsPrivate.SortDisplayButtons()
   WeakAuras.PickDisplay(newid)
 
@@ -1297,25 +1297,44 @@ function OptionsPrivate.AddDisplayButton(data)
   end
 end
 
-function OptionsPrivate.SetGrouping(data)
-  if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0 and data) then
+function OptionsPrivate.StartGrouping(data)
+  if not data then
+    return
+  end
+
+  if not OptionsPrivate.IsDisplayPicked(data) then
+    WeakAuras.PickDisplay(data.id)
+  end
+
+  if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0) then
     local children = {};
-    -- set grouping for selected buttons
+    -- start grouping for selected buttons
     for index, childId in ipairs(tempGroup.controlledChildren) do
       local button = WeakAuras.GetDisplayButton(childId);
-      button:SetGrouping(tempGroup.controlledChildren, true);
+      button:StartGrouping(tempGroup.controlledChildren, true);
       children[childId] = true;
     end
     -- set grouping for non selected buttons
     for id, button in pairs(displayButtons) do
       if not children[button.data.id] then
-        button:SetGrouping(tempGroup.controlledChildren);
+        button:StartGrouping(tempGroup.controlledChildren, false);
       end
     end
   else
-    for id, button in pairs(displayButtons) do
-      button:SetGrouping(data);
+    local children = {};
+    for child in OptionsPrivate.Private.TraverseAllChildren(data) do
+      children[child.id] = true
     end
+
+    for id, button in pairs(displayButtons) do
+      button:StartGrouping({data.id}, data.id == id, data.regionType == "dynamicgroup" or data.regionType == "group", children[id]);
+    end
+  end
+end
+
+function OptionsPrivate.StopGrouping(data)
+  for id, button in pairs(displayButtons) do
+    button:StopGrouping();
   end
 end
 
@@ -1358,6 +1377,13 @@ function OptionsPrivate.Drop(mainAura, target, action)
   for id, button in pairs(displayButtons) do
     button:Drop(mode, mainAura, target, action);
   end
+
+  -- Update offset, this is a bit wasteful to do for every aura
+  -- But we also need to update the offset if a parent was dragged
+  for id, button in pairs(displayButtons) do
+    button:UpdateOffset();
+  end
+
   OptionsPrivate.SortDisplayButtons()
   OptionsPrivate.UpdateButtonsScroll()
 end
@@ -1384,6 +1410,20 @@ function OptionsPrivate.StartDrag(mainAura)
     end
   else
     if mainAura.controlledChildren then
+      -- Group aura
+      local mode = "GROUP"
+      local children = {};
+      for child in OptionsPrivate.Private.TraverseAll(mainAura) do
+        local button = WeakAuras.GetDisplayButton(child.id);
+        button:DragStart(mode, true, mainAura)
+        children[child.id] = true
+      end
+      -- set dragging for non selected buttons
+      for id, button in pairs(displayButtons) do
+        if not children[button.data.id] then
+          button:DragStart(mode, false, mainAura);
+        end
+      end
     else
       for id, button in pairs(displayButtons) do
         button:DragStart("SINGLE", id == mainAura.id, mainAura);
