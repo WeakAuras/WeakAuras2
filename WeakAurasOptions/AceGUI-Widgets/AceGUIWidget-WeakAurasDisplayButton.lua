@@ -457,6 +457,8 @@ local methods = {
     self:SetWidth(1000);
     self:SetHeight(32);
     self.hasThumbnail = false
+    self.first = false
+    self.last = false
   end,
   ["Initialize"] = function(self)
     self.callbacks = {};
@@ -518,60 +520,55 @@ local methods = {
       end
     end
 
+
     function self.callbacks.OnClickGrouping()
       if (WeakAuras.IsImporting()) then return end;
-      if #self.grouping > 0 then
-        for index, childId in ipairs(self.grouping) do
-          tinsert(self.data.controlledChildren, childId);
-          local childButton = WeakAuras.GetDisplayButton(childId);
-          local childData = WeakAuras.GetData(childId);
-          if childData.parent then
-            childButton:Ungroup();
-          end
-          childButton:SetGroup(self.data.id, self.data.regionType == "dynamicgroup");
-          childButton:SetGroupOrder(#self.data.controlledChildren, #self.data.controlledChildren);
-          childData.parent = self.data.id;
-          if (self.data.regionType == "dynamicgroup") then
-            childData.xOffset = 0
-            childData.yOffset = 0
-          end
-          WeakAuras.Add(childData);
-          WeakAuras.ClearAndUpdateOptions(childData.id)
+      for index, selectedId in ipairs(self.grouping) do
+        local selectedData = WeakAuras.GetData(selectedId);
+        tinsert(self.data.controlledChildren, selectedId);
+        local selectedButton = WeakAuras.GetDisplayButton(selectedId);
+        while selectedData.parent do
+          selectedButton:Ungroup();
         end
-      else
-        tinsert(self.data.controlledChildren, self.grouping.id);
-        local childButton = WeakAuras.GetDisplayButton(self.grouping.id);
-        childButton:SetGroup(self.data.id, self.data.regionType == "dynamicgroup");
-        childButton:SetGroupOrder(#self.data.controlledChildren, #self.data.controlledChildren);
-        self.grouping.parent = self.data.id;
+        selectedButton:SetGroup(self.data.id, self.data.regionType == "dynamicgroup");
+        selectedButton:SetGroupOrder(#self.data.controlledChildren, #self.data.controlledChildren);
+        selectedData.parent = self.data.id;
         if (self.data.regionType == "dynamicgroup") then
-          self.grouping.xOffset = 0
-          self.grouping.yOffset = 0
+          selectedData.xOffset = 0
+          selectedData.yOffset = 0
         end
-        WeakAuras.Add(self.grouping);
-        WeakAuras.ClearAndUpdateOptions(self.grouping.id);
+        WeakAuras.Add(selectedData);
+        OptionsPrivate.ClearOptions(selectedId)
+
+        if (selectedData.controlledChildren) then
+          for child in OptionsPrivate.Private.TraverseAllChildren(selectedData) do
+            local childButton = WeakAuras.GetDisplayButton(child.id)
+            childButton:UpdateOffset()
+          end
+        end
       end
+
       WeakAuras.Add(self.data);
-      WeakAuras.ClearAndUpdateOptions(self.data.id)
       OptionsPrivate.Private.AddParents(self.data)
       self.callbacks.UpdateExpandButton();
-      OptionsPrivate.SetGrouping();
+      OptionsPrivate.StopGrouping();
       WeakAuras.UpdateDisplayButton(self.data);
-      WeakAuras.ClearAndUpdateOptions(self.data.id);
+      OptionsPrivate.ClearOptions(self.data.id);
       WeakAuras.FillOptions();
       WeakAuras.UpdateGroupOrders(self.data);
       OptionsPrivate.SortDisplayButtons();
       self:ReloadTooltip();
+      self:Expand()
       OptionsPrivate.ResetMoverSizer();
     end
 
     function self.callbacks.OnClickGroupingSelf()
-      OptionsPrivate.SetGrouping();
+      OptionsPrivate.StopGrouping();
       self:ReloadTooltip();
     end
 
     function self.callbacks.OnGroupClick()
-      OptionsPrivate.SetGrouping(self.data);
+      OptionsPrivate.StartGrouping(self.data);
     end
 
     local function addParents(hash, data)
@@ -808,7 +805,9 @@ local methods = {
 
     function self.callbacks.OnDragStart()
       if WeakAuras.IsImporting() then return end;
-      OptionsPrivate.PickDisplayMultiple(self.data.id)
+      if not OptionsPrivate.IsDisplayPicked(self.data.id) then
+        WeakAuras.PickDisplay(self.data.id)
+      end
       OptionsPrivate.StartDrag(self.data);
     end
 
@@ -938,17 +937,17 @@ local methods = {
     if(self.data.controlledChildren) then
       self:SetViewClick(self.callbacks.OnViewClick);
       self:SetViewTest(self.callbacks.ViewTest);
-      self.group:Hide();
       self.loaded:Hide();
       self.expand:Show();
       self.callbacks.UpdateExpandButton();
       self:SetOnExpandCollapse(function() OptionsPrivate.SortDisplayButtons(nil, true) end);
     else
       self:SetViewRegion(WeakAuras.regions[self.data.id].region);
-      self.group:Show();
       self.loaded:Show();
       self.expand:Hide();
     end
+    self.group:Show();
+
     self:SetNormalTooltip();
     self.frame:SetScript("OnClick", self.callbacks.OnClickNormal);
     self.frame:SetScript("OnKeyDown", self.callbacks.OnKeyDown);
@@ -1043,8 +1042,8 @@ local methods = {
 
     tinsert(namestable, " ");
     tinsert(namestable, {" ", "|cFF00FFFF"..L["Right-click for more options"]});
+    tinsert(namestable, {" ", "|cFF00FFFF"..L["Drag to move"]});
     if not(data.controlledChildren) then
-      tinsert(namestable, {" ", "|cFF00FFFF"..L["Drag to move"]});
       tinsert(namestable, {" ", "|cFF00FFFF"..L["Control-click to select multiple displays"]});
     end
     tinsert(namestable, {" ", "|cFF00FFFF"..L["Shift-click to create chat link"]});
@@ -1059,25 +1058,31 @@ local methods = {
       Show_Long_Tooltip(self.frame, self.frame.description);
     end
   end,
-  ["SetGrouping"] = function(self, groupingData, multi)
+  ["StartGrouping"] = function(self, groupingData, selected, groupingGroup, childOfGrouing)
     self.grouping = groupingData;
-    if(self.grouping) then
-      if(self.data.id == self.grouping.id or multi) then
-        self.frame:SetScript("OnClick", self.callbacks.OnClickGroupingSelf);
-        self:SetDescription(L["Cancel"], L["Do not group this display"]);
-      else
-        if(self.data.regionType == "group" or self.data.regionType == "dynamicgroup") then
-          self.frame:SetScript("OnClick", self.callbacks.OnClickGrouping);
-          self:SetDescription(self.data.id, L["Add to group %s"]:format(self.data.id));
-        else
-          self:Disable();
-        end
-      end
+    self:UpdateIconsVisible()
+    if(selected) then
+      self.frame:SetScript("OnClick", self.callbacks.OnClickGroupingSelf);
+      self:SetDescription(L["Cancel"], L["Do not group this display"]);
+    elseif (childOfGrouing) then
+      self:Disable();
     else
-      self:SetNormalTooltip();
-      self.frame:SetScript("OnClick", self.callbacks.OnClickNormal);
-      self:Enable();
+      if(self.data.regionType == "dynamicgroup" and groupingGroup) then
+        self:Disable();
+      elseif (self.data.regionType == "group" or self.data.regionType == "dynamicgroup") then
+        self.frame:SetScript("OnClick", self.callbacks.OnClickGrouping);
+        self:SetDescription(self.data.id, L["Add to group %s"]:format(self.data.id));
+      else
+        self:Disable();
+      end
     end
+  end,
+  ["StopGrouping"] = function(self)
+    self.grouping = nil;
+    self:UpdateIconsVisible()
+    self:SetNormalTooltip();
+    self.frame:SetScript("OnClick", self.callbacks.OnClickNormal);
+    self:Enable();
   end,
   ["Ungroup"] = function(self)
     if (WeakAuras.IsImporting()) then return end;
@@ -1106,6 +1111,7 @@ local methods = {
     self:SetGroup(newParent and newParent.id);
     self.data.parent = newParent and newParent.id;
     WeakAuras.Add(self.data);
+    self:UpdateIconsVisible()
     if newParent then
       WeakAuras.Add(newParent)
       OptionsPrivate.Private.AddParents(newParent)
@@ -1115,6 +1121,10 @@ local methods = {
     WeakAuras.ClearAndUpdateOptions(self.data.id);
     WeakAuras.UpdateGroupOrders(parentData);
     WeakAuras.UpdateDisplayButton(parentData);
+    if(#parentData.controlledChildren == 0) then
+      local parentButton = WeakAuras.GetDisplayButton(parentData.id)
+      parentButton:DisableExpand()
+    end
 
     for child in OptionsPrivate.Private.TraverseAllChildren(self.data) do
       local button = WeakAuras.GetDisplayButton(child.id)
@@ -1122,6 +1132,25 @@ local methods = {
     end
 
     OptionsPrivate.SortDisplayButtons();
+  end,
+  ["UpdateIconsVisible"] = function(self)
+    if self.dragging or self.grouping then
+      self.downgroup:Hide()
+      self.group:Hide()
+      self.ungroup:Hide()
+      self.upgroup:Hide()
+    else
+      self.group:Show()
+      if self.data.parent then
+        self.downgroup:Show()
+        self.ungroup:Show()
+        self.upgroup:Show()
+      else
+        self.downgroup:Hide()
+        self.ungroup:Hide()
+        self.upgroup:Hide()
+      end
+    end
   end,
   ["DragStart"] = function(self, mode, picked, mainAura, size)
     self.frame:SetScript("OnClick", nil)
@@ -1134,11 +1163,6 @@ local methods = {
       local uiscale, scale = UIParent:GetScale(), self.frame:GetEffectiveScale()
       local x, w = self.frame:GetLeft(), self.frame:GetWidth()
       local _, y = GetCursorPosition()
-      -- hide "visual clutter"
-      self.downgroup:Hide()
-      self.group:Hide()
-      self.ungroup:Hide()
-      self.upgroup:Hide()
       -- mark as being dragged, attach to mouse and raise frame strata
       self.dragging = true
       self.frame:StartMoving()
@@ -1175,12 +1199,25 @@ local methods = {
         end)
         Show_DropIndicator(id)
       end
+      self:UpdateIconsVisible()
       OptionsPrivate.UpdateButtonsScroll()
     else
       -- Are we a valid target?
       -- Top level auras that aren't groups aren't
       if not self.data.parent and not self:IsGroup() then
         self:Disable()
+      end
+
+      -- If we are dragging a group, dynamic groups aren't valid targets
+      if mode == "GROUP" then
+        if self.data.regionType == "dynamicgroup" then
+          self:Disable()
+        else
+          local parentData = self.data.parent and WeakAuras.GetData(self.data.parent)
+          if (parentData and parentData.regionType == "dynamicgroup") then
+            self:Disable()
+          end
+        end
       end
     end
   end,
@@ -1228,20 +1265,9 @@ local methods = {
       self.frame:SetParent(self.frame.temp.parent)
       self.frame:SetFrameStrata(self.frame.temp.strata)
       self.frame.temp = nil
-      if self.data.parent then
-        self.downgroup:Show()
-        self.ungroup:Show()
-        self.upgroup:Show()
-      else
-        if not self.data.controlledChildren then
-          self.group:Show()
-        end
-      end
-
-      -- Update offset
-      self:UpdateOffset()
     end
     self.dragging = false
+    self:UpdateIconsVisible()
   end,
   ["ShowTooltip"] = function(self)
   end,
@@ -1307,20 +1333,11 @@ local methods = {
     if(group) then
       self.icon:SetPoint("LEFT", self.ungroup, "RIGHT");
       self.background:SetPoint("LEFT", self.offset, "RIGHT");
-      self.ungroup:Show();
-      self.group:Hide();
-      self.upgroup:Show();
-      self.downgroup:Show();
     else
       self.icon:SetPoint("LEFT", self.frame, "LEFT");
       self.background:SetPoint("LEFT", self.frame, "LEFT");
-      self.ungroup:Hide();
-      if not self.data.controlledChildren then
-        self.group:Show();
-      end
-      self.upgroup:Hide();
-      self.downgroup:Hide();
     end
+    self:UpdateIconsVisible()
     self:UpdateOffset()
   end,
   ["GetGroup"] = function(self)
@@ -1404,36 +1421,30 @@ local methods = {
     end
   end,
   ["SetGroupOrder"] = function(self, order, max)
-    if(order == 1) then
-      self:DisableUpGroup();
-    else
-      self:EnableUpGroup();
-    end
-    if(order == max) then
-      self:DisableDownGroup();
-    else
-      self:EnableDownGroup();
-    end
+    self.first = (order == 1)
+    self.last = (order == max)
     self.frame.dgrouporder = order;
+    self:UpdateUpDownButtons()
+  end,
+  ["UpdateUpDownButtons"] = function(self)
+    if self.first or not self:IsEnabled() then
+      self.upgroup:Disable();
+      self.upgroup.texture:SetVertexColor(0.3, 0.3, 0.3);
+    else
+      self.upgroup:Enable();
+      self.upgroup.texture:SetVertexColor(1, 1, 1);
+    end
+
+    if self.last or not self:IsEnabled() then
+      self.downgroup:Disable();
+      self.downgroup.texture:SetVertexColor(0.3, 0.3, 0.3);
+    else
+      self.downgroup:Enable();
+      self.downgroup.texture:SetVertexColor(1, 1, 1);
+    end
   end,
   ["GetGroupOrder"] = function(self)
     return self.frame.dgrouporder;
-  end,
-  ["DisableUpGroup"] = function(self)
-    self.upgroup:Disable();
-    self.upgroup.texture:SetVertexColor(0.3, 0.3, 0.3);
-  end,
-  ["EnableUpGroup"] = function(self)
-    self.upgroup:Enable();
-    self.upgroup.texture:SetVertexColor(1, 1, 1);
-  end,
-  ["DisableDownGroup"] = function(self)
-    self.downgroup:Disable();
-    self.downgroup.texture:SetVertexColor(0.3, 0.3, 0.3);
-  end,
-  ["EnableDownGroup"] = function(self)
-    self.downgroup:Enable();
-    self.downgroup.texture:SetVertexColor(1, 1, 1);
   end,
   ["DisableLoaded"] = function(self)
     self.loaded.title = L["Not Loaded"];
@@ -1530,10 +1541,9 @@ local methods = {
     self.view:Disable();
     self.group:Disable();
     self.ungroup:Disable();
-    self.upgroup:Disable();
-    self.downgroup:Disable();
     self.loaded:Disable();
     self.expand:Disable();
+    self:UpdateUpDownButtons()
   end,
   ["Enable"] = function(self)
     self.background:Show();
@@ -1541,9 +1551,8 @@ local methods = {
     self.view:Enable();
     self.group:Enable();
     self.ungroup:Enable();
-    self.upgroup:Enable();
-    self.downgroup:Enable();
     self.loaded:Enable();
+    self:UpdateUpDownButtons()
     if not(self.expand.disabled) then
       self.expand:Enable();
     end
