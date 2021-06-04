@@ -671,7 +671,6 @@ local methods = {
     end
 
     local function DuplicateAuras(sourceParent, targetParent, mapping)
-      print("DuplicateAuras", sourceParent.id, targetParent.id)
       for index, childId in pairs(sourceParent.controlledChildren) do
         local childData = WeakAuras.GetData(childId)
         if childData.controlledChildren then
