@@ -1058,12 +1058,12 @@ local methods = {
     local displayName = regionData and regionData.displayName or "";
     self:SetDescription({data.id, displayName}, unpack(namestable));
   end,
-  ["ReloadTooltip"] = function(self)if(
-    OptionsPrivate.IsPickedMultiple() and OptionsPrivate.IsDisplayPicked(self.data.id)) then
-    Show_Long_Tooltip(self.frame, OptionsPrivate.MultipleDisplayTooltipDesc());
-  else
-    Show_Long_Tooltip(self.frame, self.frame.description);
-  end
+  ["ReloadTooltip"] = function(self)
+    if(OptionsPrivate.IsPickedMultiple() and OptionsPrivate.IsDisplayPicked(self.data.id)) then
+      Show_Long_Tooltip(self.frame, OptionsPrivate.MultipleDisplayTooltipDesc());
+    else
+      Show_Long_Tooltip(self.frame, self.frame.description);
+    end
   end,
   ["SetGrouping"] = function(self, groupingData, multi)
     self.grouping = groupingData;
@@ -1089,13 +1089,7 @@ local methods = {
     if (WeakAuras.IsImporting()) then return end;
     local parentData = WeakAuras.GetData(self.data.parent);
     if not parentData then return end;
-    local index;
-    for childIndex, childId in pairs(parentData.controlledChildren) do
-      if(childId == self.data.id) then
-        index = childIndex;
-        break;
-      end
-    end
+    local index = tIndexOf(parentData.controlledChildren, self.data.id);
     if(index) then
       tremove(parentData.controlledChildren, index);
       WeakAuras.Add(parentData);
@@ -1104,9 +1098,26 @@ local methods = {
     else
       error("Display thinks it is a member of a group which does not control it");
     end
-    self:SetGroup();
-    self.data.parent = nil;
+
+    local newParent = parentData.parent and WeakAuras.GetData(parentData.parent)
+    if newParent then
+      local insertIndex = tIndexOf(newParent.controlledChildren, parentData.id)
+      if not insertIndex then
+        error("Parent Display thinks it is a member of a group which does not control it");
+      end
+      insertIndex = insertIndex + 1
+      tinsert(newParent.controlledChildren, insertIndex, self.data.id)
+    end
+
+    self:SetGroup(newParent and newParent.id);
+    self.data.parent = newParent and newParent.id;
     WeakAuras.Add(self.data);
+    if newParent then
+      WeakAuras.Add(newParent)
+      OptionsPrivate.Private.AddParents(newParent)
+      WeakAuras.ClearAndUpdateOptions(newParent.id)
+      WeakAuras.UpdateGroupOrders(newParent)
+    end
     WeakAuras.ClearAndUpdateOptions(self.data.id);
     WeakAuras.UpdateGroupOrders(parentData);
     WeakAuras.UpdateDisplayButton(parentData);
