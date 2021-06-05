@@ -2151,7 +2151,7 @@ Private.event_prototypes = {
         end
 		    if trigger.use_showHealAbsorb then
           AddUnitEventForEvents(result, unit, "UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
-        end	
+        end
         if trigger.use_showIncomingHeal then
           AddUnitEventForEvents(result, unit, "UNIT_HEAL_PREDICTION")
         end
