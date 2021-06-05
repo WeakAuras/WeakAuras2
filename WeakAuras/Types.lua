@@ -2554,6 +2554,11 @@ Private.absorb_modes = {
   OVERLAY_FROM_END = L["Attach to End"]
 }
 
+Private.absorb_heal_modes = {
+  OVERLAY_FROM_START = L["Attach to Start"],
+  OVERLAY_FROM_END = L["Attach to End"]
+}
+
 Private.mythic_plus_affixes = {}
 
 local mythic_plus_ignorelist = {
