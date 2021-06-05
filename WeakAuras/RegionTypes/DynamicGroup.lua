@@ -116,13 +116,14 @@ local function create(parent)
   region.controlPoints.parent = region
   WeakAuras.regionPrototype.create(region)
   region.suspended = 0
+  region.height = 0
+  region.width = 0
 
   local oldSetFrameLevel = region.SetFrameLevel
   region.SetFrameLevel = function(self, level)
     oldSetFrameLevel(self, level)
     self.background:SetFrameLevel(level)
   end
-
   return region
 end
 
@@ -864,7 +865,7 @@ local function modify(parent, region, data)
       parent = region
     }
 
-    if childData.regionType == "text" then
+    if childData.regionType == "text" or childData.regionType == "group" or childData.regionType == "dynamicgroup" then
       regionData.dimensions = childRegion
     else
       regionData.dimensions = childData
@@ -1240,9 +1241,11 @@ local function modify(parent, region, data)
 
         self:SetWidth(width)
         self:SetHeight(height)
-        self.currentWidth = width
-        self.currentHeight = height
+        region.width = width
+        region.height = height
       else
+        region.width = 0
+        region.height = 0
         self:Hide()
       end
       if WeakAuras.IsOptionsOpen() then

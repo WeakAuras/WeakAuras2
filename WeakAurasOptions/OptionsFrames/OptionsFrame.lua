@@ -1138,18 +1138,16 @@ function OptionsPrivate.CreateFrame()
 
     for index, regionType in ipairs(regionTypesSorted) do
       local regionData = regionOptions[regionType]
-      if (not (fromGroup and (regionType == "group" or regionType == "dynamicgroup"))) then
-        local button = AceGUI:Create("WeakAurasNewButton")
-        button:SetTitle(regionData.displayName)
-        if(type(regionData.icon) == "string" or type(regionData.icon) == "table") then
-          button:SetIcon(regionData.icon)
-        end
-        button:SetDescription(regionData.description)
-        button:SetClick(function()
-          WeakAuras.NewAura(nil, regionType, targetId)
-        end)
-        containerScroll:AddChild(button)
+      local button = AceGUI:Create("WeakAurasNewButton")
+      button:SetTitle(regionData.displayName)
+      if(type(regionData.icon) == "string" or type(regionData.icon) == "table") then
+        button:SetIcon(regionData.icon)
       end
+      button:SetDescription(regionData.description)
+      button:SetClick(function()
+        WeakAuras.NewAura(nil, regionType, targetId)
+      end)
+      containerScroll:AddChild(button)
     end
 
     local spacer2Label = AceGUI:Create("Label")

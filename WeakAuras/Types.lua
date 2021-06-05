@@ -2698,7 +2698,6 @@ Private.internal_fields = {
 -- or are represented in other ways in exported
 Private.non_transmissable_fields = {
   controlledChildren = true,
-  parent = true,
   authorMode = true,
   skipWagoUpdate = true,
   ignoreWagoUpdate = true,

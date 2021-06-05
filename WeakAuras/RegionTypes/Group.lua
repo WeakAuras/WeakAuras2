@@ -98,11 +98,10 @@ local function modify(parent, region, data)
 
   -- Get overall bounding box
   local leftest, rightest, lowest, highest = 0, 0, 0, 0;
-  for index, childId in ipairs(data.controlledChildren) do
-    local childData = WeakAuras.GetData(childId);
-    local childRegion = WeakAuras.GetRegion(childId)
-    if(childData) then
-      local blx, bly, trx, try = getRect(childData, childRegion);
+  for child in WeakAuras.TraverseData(data) do
+    local childRegion = WeakAuras.GetRegion(child.id)
+    if(child) then
+      local blx, bly, trx, try = getRect(child, childRegion);
       leftest = math.min(leftest, blx);
       rightest = math.max(rightest, trx);
       lowest = math.min(lowest, bly);
@@ -113,6 +112,8 @@ local function modify(parent, region, data)
   region.bly = lowest;
   region.trx = rightest;
   region.try = highest;
+  region.height = highest - lowest
+  region.width = rightest - leftest
 
   -- Adjust frame-level sorting
   Private.FixGroupChildrenOrderForGroup(data);

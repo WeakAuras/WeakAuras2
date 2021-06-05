@@ -754,7 +754,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
   end
 
   local hideRegion;
-  if(inDynamicGroup) then
+  if(inDynamicGroup and not(data.controlledChildren)) then
     hideRegion = function()
       if region.PreHide then
         region:PreHide()
@@ -788,7 +788,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
     end
   end
 
-  if(inDynamicGroup) then
+  if(inDynamicGroup and not(data.controlledChildren)) then
     function region:Collapse()
       if (not region.toShow) then
         return;
