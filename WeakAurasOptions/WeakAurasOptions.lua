@@ -91,7 +91,7 @@ function OptionsPrivate.DuplicateAura(data, newParent, massEdit)
 
       for index, id in pairs(parentData.controlledChildren) do
         local childButton = WeakAuras.GetDisplayButton(id)
-        childButton:SetGroup(parentData.id, parentData.regionType:find("dynamicgroup"))
+        childButton:SetGroup(parentData.id)
         childButton:SetGroupOrder(index, #parentData.controlledChildren)
       end
 
@@ -263,7 +263,7 @@ function OptionsPrivate.MultipleDisplayTooltipMenu()
 
         for index, id in pairs(data.controlledChildren) do
           local childButton = WeakAuras.GetDisplayButton(id);
-          childButton:SetGroup(data.id, data.regionType:find("dynamicgroup"));
+          childButton:SetGroup(data.id);
           childButton:SetGroupOrder(index, #data.controlledChildren);
         end
 
@@ -300,7 +300,7 @@ function OptionsPrivate.MultipleDisplayTooltipMenu()
 
         for index, id in pairs(data.controlledChildren) do
           local childButton = WeakAuras.GetDisplayButton(id);
-          childButton:SetGroup(data.id, data.regionType:find("dynamicgroup"));
+          childButton:SetGroup(data.id);
           childButton:SetGroupOrder(index, #data.controlledChildren);
         end
 
@@ -1508,7 +1508,7 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
 
   AddDefaultSubRegions(data)
 
-  if (not data.regionType:find("group") and targetId) then
+  if (not data.controlledChildren and targetId) then
     local target = WeakAuras.GetDisplayButton(targetId);
     local group
     if (target) then

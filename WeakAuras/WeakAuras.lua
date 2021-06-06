@@ -2347,12 +2347,12 @@ function WeakAuras.AddMany(table, takeSnapshots)
   local groups = {}
   for id, data in pairs(idtable) do
     load(id, {});
-    if data.regionType:find("group") then
+    if data.controlledChildren then
       groups[data] = true
     end
   end
   for data in pairs(groups) do
-    if data.regionType:find("dynamicgroup") then
+    if data.regionType:find("dynamicgroup", 1, true) then
       regions[data.id].region:ReloadControlledChildren()
     else
       WeakAuras.Add(data)
@@ -2866,11 +2866,11 @@ function WeakAuras.SetRegion(data, cloneId)
             regionType = regionType,
             region = region
           };
-          if not regionType:find("group") then
+          if data.controlledChildren then
+            region.toShow = true
+          else
             region.toShow = false
             region:Hide()
-          else
-            region.toShow = true
           end
         else
           region = regions[id].region;
@@ -5001,7 +5001,7 @@ local anchorFrameDeferred = {}
 
 function Private.AnchorFrame(data, region, parent)
   if data.anchorFrameType == "CUSTOM"
-  and (data.regionType:find("group"))
+  and data.controlledChildren
   and not WeakAuras.IsLoginFinished()
   and not anchorFrameDeferred[data.id]
   then

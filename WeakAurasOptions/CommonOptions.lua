@@ -972,7 +972,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
   local function IsParentDynamicGroup()
     if data.parent then
       local parentData = WeakAuras.GetData(data.parent)
-      return parentData and parentData.regionType:find("dynamicgroup")
+      return parentData and parentData.regionType:find("dynamicgroup", 1, true)
     end
   end
 
@@ -1065,7 +1065,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       name = L["Anchored To"],
       order = 72,
       hidden = IsParentDynamicGroup,
-      values = (data.regionType:find("group")) and OptionsPrivate.Private.anchor_frame_types_group or OptionsPrivate.Private.anchor_frame_types,
+      values = data.controlledChildren and OptionsPrivate.Private.anchor_frame_types_group or OptionsPrivate.Private.anchor_frame_types,
     },
     -- Input field to select frame to anchor on
     anchorFrameFrame = {

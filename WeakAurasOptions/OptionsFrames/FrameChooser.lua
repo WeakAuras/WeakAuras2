@@ -54,7 +54,7 @@ function OptionsPrivate.StartFrameChooser(data, path)
           local focusIsGroup = false;
           for id, regionData in pairs(WeakAuras.regions) do
             if(regionData.region:IsVisible() and MouseIsOver(regionData.region)) then
-              local isGroup = regionData.regionType:find("group");
+              local isGroup = regionData.data.controlledChildren;
               if (not focusName or (not isGroup and focusIsGroup)) then
                 focus = regionData.region;
                 focusName = "WeakAuras:"..id;

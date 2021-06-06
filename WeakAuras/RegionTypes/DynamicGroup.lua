@@ -1146,7 +1146,7 @@ local function modify(parent, region, data)
               Private.Animate("controlPoint", data.uid, "controlPoint", anim, regionData.controlPoint, true)
             end
           end
-          regionData.xOffset = xq
+          regionData.xOffset = x
           regionData.yOffset = y
           regionData.shown = show
         end
@@ -1156,9 +1156,6 @@ local function modify(parent, region, data)
     Private.StopProfileSystem("dynamicgroup2")
     Private.StopProfileAura(data.id)
     self:Resize()
-  end
-
-  function region:ApplyUpdates()
   end
 
   function region:Resize()

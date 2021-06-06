@@ -3,16 +3,6 @@ local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L;
 
-local aura_env = aura_env;
-hooksecurefunc("ToggleRun", function()
-  if aura_env.walking then
-    aura_env.walking = false;
-  else
-    aura_env.walking = true;
-  end
-end)
-
-
 -- Calculate bounding box
 local function getRect(data)
   -- Temp variables
