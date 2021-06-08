@@ -5123,6 +5123,7 @@ local classLegendaries = {
     { spell = 337567, type = "buff", unit = "player", bonusItemId = 7050}, -- Chaos Theory/Chaotic Blades
     { spell = 346264, type = "buff", unit = "player", bonusItemId = 7218}, -- Darker Nature
     { spell = 337542, type = "buff", unit = "player", bonusItemId = 7045}, -- Spirit of the Darkness Flame
+    { spell = 337849, type = "buff", unit = "player", bonusItemId = 7052}, -- Fel Bombardment
   },
   DEATHKNIGHT = {
     { spell = 332199, type = "buff", unit = "player", bonusItemId = 6954}, -- Phearomones
