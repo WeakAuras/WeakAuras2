@@ -5123,12 +5123,12 @@ local classLegendaries = {
     { spell = 337567, type = "buff", unit = "player", bonusItemId = 7050}, -- Chaos Theory/Chaotic Blades
     { spell = 346264, type = "buff", unit = "player", bonusItemId = 7218}, -- Darker Nature
     { spell = 337542, type = "buff", unit = "player", bonusItemId = 7045}, -- Spirit of the Darkness Flame
-    { spell = 334722, type = "buff", unit = "player", bonusItemId = 6948}, -- Grip of the Everlasting
   },
   DEATHKNIGHT = {
     { spell = 332199, type = "buff", unit = "player", bonusItemId = 6954}, -- Phearomones
     { spell = 334526, type = "buff", unit = "player", bonusItemId = 6941}, -- Crimson Rune Weapon
     { spell = 334693, type = "debuff", unit = "target", bonusItemId = 6946}, -- Absolute Zero
+    { spell = 334722, type = "buff", unit = "player", bonusItemId = 6948}, -- Grip of the Everlasting
   }
 }
 
