@@ -2864,6 +2864,7 @@ do
   local bars = {}
   local nextExpire -- time of next expiring timer
   local recheckTimer -- handle of timer
+  local currentStage = 0
 
   local function recheckTimers()
     local now = GetTime()
@@ -2964,6 +2965,10 @@ do
           WeakAuras.ScanEvents("BigWigs_StopBar", id)
         end
       end
+    elseif event == "BigWigs_SetStage" then
+      local addon, stage = ...
+      currentStage = stage
+      WeakAuras.ScanEvents("BigWigs_SetStage", ...)
     end
   end
 
@@ -3046,6 +3051,10 @@ do
       return false
     end
     return true
+  end
+
+  function WeakAuras.GetBigWigsStage()
+    return currentStage
   end
 
   function WeakAuras.GetAllBigWigsTimers()

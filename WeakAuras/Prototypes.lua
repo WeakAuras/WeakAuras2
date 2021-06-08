@@ -4768,6 +4768,30 @@ Private.event_prototypes = {
     automaticrequired = true,
   },
   -- BigWigs
+  ["BigWigs Stage"] = {
+    type = "addons",
+    events = {},
+    internal_events = {
+      "BigWigs_SetStage"
+    },
+    name = L["BigWigs Stage"],
+    init = function(trigger)
+      WeakAuras.RegisterBigWigsCallback("BigWigs_SetStage");
+      return [[
+         local stage = WeakAuras.GetBigWigsStage()
+      ]]
+    end,
+    args = {
+      {
+        name = "stage",
+        init = "arg",
+        display = L["Stage"],
+        type = "string",
+      },
+    },
+    automaticrequired = true,
+    statesParameter = "one",
+  },
   ["BigWigs Message"] = {
     type = "addons",
     events = {},
