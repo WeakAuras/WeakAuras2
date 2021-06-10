@@ -4784,10 +4784,11 @@ Private.event_prototypes = {
     args = {
       {
         name = "stage",
-        init = "arg",
+        init = "WeakAuras.GetBigWigsStage()",
         display = L["Stage"],
         type = "number",
         conditionType = "number",
+        store = true,
       },
     },
     automaticrequired = true,
