@@ -2180,15 +2180,24 @@ Private.group_types = {
   raid = L["In Raid"]
 }
 
-Private.difficulty_types = {
-  none = L["None"],
-  normal = PLAYER_DIFFICULTY1,
-  heroic = PLAYER_DIFFICULTY2,
-  mythic = PLAYER_DIFFICULTY6,
-  timewalking = PLAYER_DIFFICULTY_TIMEWALKER,
-  lfr = PLAYER_DIFFICULTY3,
-  challenge = PLAYER_DIFFICULTY5
-}
+if WeakAuras.IsRetail() then
+  Private.difficulty_types = {
+    none = L["None"],
+    normal = PLAYER_DIFFICULTY1,
+    heroic = PLAYER_DIFFICULTY2,
+    mythic = PLAYER_DIFFICULTY6,
+    timewalking = PLAYER_DIFFICULTY_TIMEWALKER,
+    lfr = PLAYER_DIFFICULTY3,
+    challenge = PLAYER_DIFFICULTY5
+  }
+elseif WeakAuras.IsBCC() then
+  Private.difficulty_types = {
+    none = L["None"],
+    normal = PLAYER_DIFFICULTY1,
+    heroic = PLAYER_DIFFICULTY2,
+  }
+end
+
 
 if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
   Private.raid_role_types = {
