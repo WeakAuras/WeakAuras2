@@ -2966,6 +2966,22 @@ Private.difficulty_info = {
     size = "twenty",
     difficulty = "normal",
   },
+  [173] = {
+    size = "party",
+    difficulty = "normal",
+  },
+  [174] = {
+    size = "party",
+    difficulty = "heroic",
+  },
+  [175] = {
+    size = "ten",
+    difficulty = "heroic",
+  },
+  [176] = {
+    size = "twentyfive",
+    difficulty = "heroic",
+  }
 }
 
 Private.glow_types = {
