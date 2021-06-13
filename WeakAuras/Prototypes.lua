@@ -2149,7 +2149,7 @@ Private.event_prototypes = {
         if trigger.use_showAbsorb then
           AddUnitEventForEvents(result, unit, "UNIT_ABSORB_AMOUNT_CHANGED")
         end
-		    if trigger.use_showHealAbsorb then
+        if trigger.use_showHealAbsorb then
           AddUnitEventForEvents(result, unit, "UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
         end
         if trigger.use_showIncomingHeal then
@@ -2250,7 +2250,7 @@ Private.event_prototypes = {
         enable = function(trigger) return WeakAuras.IsRetail() and trigger.use_showAbsorb end,
         hidden = not WeakAuras.IsRetail()
       },
-	    {
+      {
         name = "showHealAbsorb",
         display = L["Show Heal Absorb"],
         type = "toggle",
@@ -2288,7 +2288,7 @@ Private.event_prototypes = {
         enable = function(trigger) return WeakAuras.IsRetail() and trigger.use_showAbsorb end,
         hidden = not WeakAuras.IsRetail()
       },
-	        {
+      {
         name = "healabsorb",
         type = "number",
         display = L["Heal Absorb"],
@@ -2449,7 +2449,7 @@ Private.event_prototypes = {
           return WeakAuras.IsRetail() and trigger.use_showAbsorb;
         end
       },
-	        {
+      {
         name = L["Heal Absorb"],
         func = function(trigger, state)
           local healabsorb = state.healabsorb
