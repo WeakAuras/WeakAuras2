@@ -4777,9 +4777,7 @@ Private.event_prototypes = {
     name = L["BigWigs Stage"],
     init = function(trigger)
       WeakAuras.RegisterBigWigsCallback("BigWigs_SetStage");
-      return [[
-         local stage = WeakAuras.GetBigWigsStage()
-      ]]
+      return ""
     end,
     args = {
       {
@@ -4789,7 +4787,7 @@ Private.event_prototypes = {
         type = "number",
         conditionType = "number",
         store = true,
-      },
+      }
     },
     automaticrequired = true,
     statesParameter = "one",
