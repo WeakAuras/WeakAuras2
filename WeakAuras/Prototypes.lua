@@ -2149,6 +2149,9 @@ Private.event_prototypes = {
         if trigger.use_showAbsorb then
           AddUnitEventForEvents(result, unit, "UNIT_ABSORB_AMOUNT_CHANGED")
         end
+        if trigger.use_showHealAbsorb then
+          AddUnitEventForEvents(result, unit, "UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
+        end
         if trigger.use_showIncomingHeal then
           AddUnitEventForEvents(result, unit, "UNIT_HEAL_PREDICTION")
         end
@@ -2248,6 +2251,25 @@ Private.event_prototypes = {
         hidden = not WeakAuras.IsRetail()
       },
       {
+        name = "showHealAbsorb",
+        display = L["Show Heal Absorb"],
+        type = "toggle",
+        test = "true",
+        reloadOptions = true,
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail()
+      },
+      {
+        name = "absorbHealMode",
+        display = L["Absorb Heal Display"],
+        type = "select",
+        test = "true",
+        values = "absorb_modes",
+        required = true,
+        enable = function(trigger) return WeakAuras.IsRetail() and trigger.use_showHealAbsorb end,
+        hidden = not WeakAuras.IsRetail()
+      },
+      {
         name = "showIncomingHeal",
         display = L["Show Incoming Heal"],
         type = "toggle",
@@ -2264,6 +2286,16 @@ Private.event_prototypes = {
         store = true,
         conditionType = "number",
         enable = function(trigger) return WeakAuras.IsRetail() and trigger.use_showAbsorb end,
+        hidden = not WeakAuras.IsRetail()
+      },
+      {
+        name = "healabsorb",
+        type = "number",
+        display = L["Heal Absorb"],
+        init = "UnitGetTotalHealAbsorbs(unit)",
+        store = true,
+        conditionType = "number",
+        enable = function(trigger) return WeakAuras.IsRetail() and trigger.use_showHealAbsorb end,
         hidden = not WeakAuras.IsRetail()
       },
       {
@@ -2415,6 +2447,20 @@ Private.event_prototypes = {
         end,
         enable = function(trigger)
           return WeakAuras.IsRetail() and trigger.use_showAbsorb;
+        end
+      },
+      {
+        name = L["Heal Absorb"],
+        func = function(trigger, state)
+          local healabsorb = state.healabsorb
+          if (trigger.absorbHealMode == "OVERLAY_FROM_START") then
+            return 0, healabsorb;
+          else
+            return "forward", healabsorb;
+          end
+        end,
+        enable = function(trigger)
+          return WeakAuras.IsRetail() and trigger.use_showHealAbsorb;
         end
       },
       {
