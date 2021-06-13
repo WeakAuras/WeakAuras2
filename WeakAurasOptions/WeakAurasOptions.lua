@@ -531,6 +531,13 @@ local function OnRename(event, uid, oldid, newid)
   OptionsPrivate.SetGrouping()
   OptionsPrivate.SortDisplayButtons()
   WeakAuras.PickDisplay(newid)
+
+  local parent = data.parent
+  while parent do
+    OptionsPrivate.ClearOptions(parent)
+    local parentData = WeakAuras.GetData(parent)
+    parent = parentData.parent
+  end
 end
 
 function WeakAuras.ToggleOptions(msg, Private)
