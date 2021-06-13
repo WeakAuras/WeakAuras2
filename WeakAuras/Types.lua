@@ -1722,6 +1722,29 @@ if WeakAuras.IsClassic() then -- Classic
       runes[tostring(v)] = nil
     end
   end
+elseif WeakAuras.IsBCC() then
+  Private.texture_types["Blizzard Alerts"] = nil
+  do
+    local beams = Private.texture_types["Beams"]
+    local beams_ids = {186193, 186194, 241098, 241099, 369749, 369750}
+    for _, v in ipairs(beams_ids) do
+      beams[tostring(v)] = nil
+    end
+  end
+  do
+    local icons = Private.texture_types["Icons"]
+    local icons_ids = {165605, 240925, 240961, 240972, 241049}
+    for _, v in ipairs(icons_ids) do
+      icons[tostring(v)] = nil
+    end
+  end
+  do
+    local runes = Private.texture_types["Runes"]
+    local runes_ids = {165922, 241003, 241004, 241005}
+    for _, v in ipairs(runes_ids) do
+      runes[tostring(v)] = nil
+    end
+  end
 end
 
 local PowerAurasPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\"
