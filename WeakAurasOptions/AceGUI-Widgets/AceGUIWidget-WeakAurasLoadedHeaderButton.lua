@@ -99,6 +99,16 @@ local methods = {
   ["SetViewTest"] = function(self, func)
     self.view.func = func;
   end,
+  ["UpdateViewTexture"] = function(self)
+    local visibility = self.view.func()
+    if(visibility == 2) then
+      self.view.texture:SetTexture("Interface\\LFGFrame\\BattlenetWorking0.blp");
+    elseif(visibility == 1) then
+      self.view.texture:SetTexture("Interface\\LFGFrame\\BattlenetWorking2.blp");
+    else
+      self.view.texture:SetTexture("Interface\\LFGFrame\\BattlenetWorking4.blp");
+    end
+  end,
   ["SetViewDescription"] = function(self, desc)
     self.view.desc = desc;
   end,
@@ -164,15 +174,6 @@ local function Constructor()
   view:SetScript("OnLeave", Hide_Tooltip);
   view.visibility = 0;
   view.func = function() return view.visibility end;
-  view:SetScript("OnUpdate", function()
-    if(view.func() == 2) then
-      view.texture:SetTexture("Interface\\LFGFrame\\BattlenetWorking0.blp");
-    elseif(view.func() == 1) then
-      view.texture:SetTexture("Interface\\LFGFrame\\BattlenetWorking2.blp");
-    else
-      view.texture:SetTexture("Interface\\LFGFrame\\BattlenetWorking4.blp");
-    end
-  end);
 
   local widget = {
     frame = button,
