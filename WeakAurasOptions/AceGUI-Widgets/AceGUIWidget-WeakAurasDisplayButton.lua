@@ -1285,9 +1285,9 @@ local methods = {
     self.view.func = function() return self.view.visibility end;
     self.view:SetScript("OnClick", function()
       if(self.view.visibility < 2) then
-        self.view:PriorityShow(2);
+        self:PriorityShow(2);
       else
-        self.view:PriorityHide(2);
+        self:PriorityHide(2);
       end
     end);
   end,
@@ -1453,19 +1453,69 @@ local methods = {
   end,
   ["Pick"] = function(self)
     self.frame:LockHighlight();
-    self.view:PriorityShow(1);
+    self:PriorityShow(1);
   end,
   ["ClearPick"] = function(self, noHide)
     self.frame:UnlockHighlight();
     if not noHide then
-      self.view:PriorityHide(1);
+      self:PriorityHide(1);
     end
   end,
   ["PriorityShow"] = function(self, priority)
-    self.view:PriorityShow(priority);
+    if (not WeakAuras.IsOptionsOpen()) then
+      return;
+    end
+    if(priority >= self.view.visibility) then
+      self.view.visibility = priority;
+      if(self.view.region and self.view.region.Expand) then
+        OptionsPrivate.Private.FakeStatesFor(self.view.region.id, true)
+        if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
+          OptionsPrivate.Private.personalRessourceDisplayFrame:expand(self.view.region.id);
+        end
+        if (OptionsPrivate.Private.mouseFrame) then
+          OptionsPrivate.Private.mouseFrame:expand(self.view.region.id);
+        end
+      end
+    end
+    if self.view.region and self.view.region.ClickToPick then
+      self.view.region:ClickToPick();
+    end
+    self:UpdateViewTexture()
   end,
   ["PriorityHide"] = function(self, priority)
-    self.view:PriorityHide(priority);
+    if (not WeakAuras.IsOptionsOpen()) then
+      return;
+    end
+    if(priority >= self.view.visibility) then
+      self.view.visibility = 0;
+      if(self.view.region and self.view.region.Collapse) then
+        OptionsPrivate.Private.FakeStatesFor(self.view.region.id, false)
+        if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
+          OptionsPrivate.Private.personalRessourceDisplayFrame:collapse(self.view.region.id);
+        end
+        if (OptionsPrivate.Private.mouseFrame) then
+          OptionsPrivate.Private.mouseFrame:collapse(self.view.region.id);
+        end
+      end
+    end
+    self:UpdateViewTexture()
+  end,
+  ["UpdateViewTexture"] = function(self, priority)
+    local visibility = self.view.func()
+    if(visibility == 2) then
+      self.view.texture:SetTexture("Interface\\LFGFrame\\BattlenetWorking0.blp");
+    elseif(visibility == 1) then
+      self.view.texture:SetTexture("Interface\\LFGFrame\\BattlenetWorking2.blp");
+    else
+      self.view.texture:SetTexture("Interface\\LFGFrame\\BattlenetWorking4.blp");
+    end
+    if self.data.parent then
+      local parentButton = WeakAuras.GetDisplayButton(self.data.parent)
+      parentButton:UpdateViewTexture()
+    else
+      WeakAuras.OptionsFrame().loadedButton:UpdateViewTexture()
+      WeakAuras.OptionsFrame().unloadedButton:UpdateViewTexture()
+    end
   end,
   ["GetVisibility"] = function(self)
     return self.view.visibility;
@@ -1656,53 +1706,7 @@ local function Constructor()
   view:SetScript("OnEnter", function() Show_Tooltip(button, L["View"], L["Toggle the visibility of this display"]) end);
   view:SetScript("OnLeave", Hide_Tooltip);
   view.visibility = 0;
-  view.PriorityShow = function(self, priority)
-    if (not WeakAuras.IsOptionsOpen()) then
-      return;
-    end
-    if(priority >= self.visibility) then
-      self.visibility = priority;
-      if(self.region and self.region.Expand) then
-        OptionsPrivate.Private.FakeStatesFor(self.region.id, true)
-        if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
-          OptionsPrivate.Private.personalRessourceDisplayFrame:expand(self.region.id);
-        end
-        if (OptionsPrivate.Private.mouseFrame) then
-          OptionsPrivate.Private.mouseFrame:expand(self.region.id);
-        end
-      end
-    end
-    if self.region and self.region.ClickToPick then
-      self.region:ClickToPick();
-    end
-  end
-  view.PriorityHide = function(self, priority)
-    if (not WeakAuras.IsOptionsOpen()) then
-      return;
-    end
-    if(priority >= self.visibility) then
-      self.visibility = 0;
-      if(self.region and self.region.Collapse) then
-        OptionsPrivate.Private.FakeStatesFor(self.region.id, false)
-        if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
-          OptionsPrivate.Private.personalRessourceDisplayFrame:collapse(self.region.id);
-        end
-        if (OptionsPrivate.Private.mouseFrame) then
-          OptionsPrivate.Private.mouseFrame:collapse(self.region.id);
-        end
-      end
-    end
-  end
   view.func = function() return view.visibility end;
-  view:SetScript("OnUpdate", function()
-    if(view.func() == 2) then
-      view.texture:SetTexture("Interface\\LFGFrame\\BattlenetWorking0.blp");
-    elseif(view.func() == 1) then
-      view.texture:SetTexture("Interface\\LFGFrame\\BattlenetWorking2.blp");
-    else
-      view.texture:SetTexture("Interface\\LFGFrame\\BattlenetWorking4.blp");
-    end
-  end);
 
   local loaded = CreateFrame("BUTTON", nil, button);
   button.loaded = loaded;
