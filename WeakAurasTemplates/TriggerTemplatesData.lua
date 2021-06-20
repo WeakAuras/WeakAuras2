@@ -5021,6 +5021,7 @@ local classLegendaries = {
     { spell = 335558, type = "buff", unit = "player", bonusItemId = 6963}, -- Cadence of Fujieda
     { spell = 335597, type = "buff", unit = "player", bonusItemId = 6966}, -- Will of the Berserker
     { spell = 335734, type = "buff", unit = "player", bonusItemId = 6969}, -- Reprisal
+    { spell = 311193, type = "buff", unit = "player", bonusItemId = 7730}, -- Elysian Might
   },
   PALADIN = {
     { spell = 337682, type = "buff", unit = "player", bonusItemId = 7056}, -- The Magistrate's Judgment
@@ -5031,7 +5032,8 @@ local classLegendaries = {
     { spell = 337848, type = "buff", unit = "player", bonusItemId = 7062}, -- Bulwark of Righteous Fury
     { spell = 337315, type = "buff", unit = "player", bonusItemId = 7066}, -- Relentless Inquisitor
     { spell = 345046, type = "buff", unit = "player", bonusItemId = 7065}, -- Vanguard's Momentum
-
+    { spell = 355455, type = "buff", unit = "player", bonusItemId = 7679}, -- Divine Resonance
+    { spell = 355567, type = "buff", unit = "player", bonusItemId = 7702}, -- Equinox
   },
   HUNTER = {
     { spell = 336744, type = "buff", unit = "player", bonusItemId = 7004}, -- Nesingwary's Trapping Apparatus
@@ -5040,6 +5042,8 @@ local classLegendaries = {
     { spell = 336892, type = "buff", unit = "player", bonusItemId = 7013}, -- Secrets of the Unblinking Vigil
     { spell = 336908, type = "buff", unit = "player", bonusItemId = 7018}, -- Butcher's Bone Fragments
     { spell = 273286, type = "debuff", unit = "target", bonusItemId = 7017}, -- Latent Poison
+    { spell = 356263, type = "buff", unit = "player", bonusItemId = 7714}, -- Pact of the Soulstalkers
+    { spell = 356620, type = "debuff", unit = "target", bonusItemId = 7717}, -- Pouch of Razor Fragments
   },
   ROGUE = {
     { spell = 23580, type = "debuff", unit = "target", bonusItemId = 7113}, -- Bloodfang
@@ -5056,6 +5060,7 @@ local classLegendaries = {
   PRIEST = {
     { spell = 341824, type = "buff", unit = "player", bonusItemId = 7161}, -- Measured Contemplation
     { spell = 336267, type = "buff", unit = "player", bonusItemId = 6974}, -- Flash Concentration
+    { spell = 357028, type = "buff", unit = "player", bonusItemId = 0000}, -- Shadow Word: Manipulation
   },
   SHAMAN = {
     { spell = 329771, type = "buff", unit = "player", bonusItemId = 6988}, -- Chains of Devastation
@@ -5070,6 +5075,8 @@ local classLegendaries = {
     { spell = 335896, type = "buff", unit = "player", bonusItemId = 6996}, -- Primal Lava Actuators
     { spell = 335894, type = "buff", unit = "player", bonusItemId = 6997}, -- Jonat's Natural Focus
     { spell = 335892, type = "buff", unit = "player", bonusItemId = 6998}, -- Spiritwalker's Tidal Totem
+    { spell = 358945, type = "buff", unit = "player", bonusItemId = 7708}, -- Seeds of Rampant Growth
+    { spell = 354648, type = "buff", unit = "player", bonusItemId = 7570}, -- Splintered Elements
   },
   MAGE = {
     { spell = 327371, type = "buff", unit = "player", bonusItemId = 6832}, -- Disciplinary Command
@@ -5086,6 +5093,7 @@ local classLegendaries = {
     { spell = 327330, spellId = 327330, type = "buff", unit = "player",  titleSuffix = L["Meteor Ready"], bonusItemId = 6828}, -- Cold Front
     { spell = 327478, type = "buff", unit = "player", bonusItemId = 6829}, -- Freezing Winds
     { spell = 327509, type = "buff", unit = "player", bonusItemId = 6823}, -- Slick Ice
+    { spell = 356881, type = "buff", unit = "player", bonusItemId = 7727}, -- Heart of the Fae
   },
   WARLOCK = {
     { spell = 337096, type = "buff", unit = "player", bonusItemId = 7028}, -- Pillars of the Dark Portal
@@ -5098,6 +5106,9 @@ local classLegendaries = {
     { spell = 337139, type = "buff", unit = "player", bonusItemId = 7033}, -- Implosive Potential
     { spell = 337170, type = "buff", unit = "player", bonusItemId = 7029}, -- Madness of the Azj'Aqir
     { spell = 337164, type = "debuff", unit = "target", bonusItemId = 7034}, -- Grim Inquisitor's Dread Calling
+    { spell = 356255, type = "buff", unit = "player", bonusItemId = 7710}, -- Languishing Soul Detritus
+    { spell = 356342, type = "buff", unit = "player", bonusItemId = 7711}, -- Shard of Annihilation
+    { spell = 356369, type = "buff", unit = "player", bonusItemId = 7712}, -- Decaying Soul Satchel
   },
   MONK = {
     { spell = 343249, type = "buff", unit = "player", bonusItemId = 7184}, -- Escape from Reality
@@ -5108,6 +5119,7 @@ local classLegendaries = {
     { spell = 337476, type = "buff", unit = "player", bonusItemId = 7072}, -- Tear of Morning
     { spell = 337571, type = "buff", unit = "player", bonusItemId = 7068}, -- Jade Ignition/Chi Energy
     { spell = 337291, type = "buff", unit = "player", bonusItemId = 7069}, -- The Emperor's Capacitor
+    { spell = 356773, type = "debuff", unit = "target", bonusItemId = 7721}, -- Faeline Harmony
   },
   DRUID = {
     { spell = 340060, type = "buff", unit = "player", bonusItemId = 7110}, -- Lycara's Fleeting Glimpse
@@ -5118,18 +5130,23 @@ local classLegendaries = {
     { spell = 339140, type = "buff", unit = "player", bonusItemId = 7091}, -- Apex Predator's Craving
     { spell = 339142, type = "buff", unit = "player", bonusItemId = 7090}, -- Eye of Fearful Symmetry
     { spell = 189877, type = "buff", unit = "player", bonusItemId = 7096}, -- Memory of the Mother Tree
+    { spell = 355779, type = "buff", unit = "player", bonusItemId = 7477}, -- Kindred Affinity
   },
   DEMONHUNTER = {
     { spell = 337567, type = "buff", unit = "player", bonusItemId = 7050}, -- Chaos Theory/Chaotic Blades
     { spell = 346264, type = "buff", unit = "player", bonusItemId = 7218}, -- Darker Nature
     { spell = 337542, type = "buff", unit = "player", bonusItemId = 7045}, -- Spirit of the Darkness Flame
     { spell = 337849, type = "buff", unit = "player", bonusItemId = 7052}, -- Fel Bombardment
+    { spell = 355894, type = "buff", unit = "player", bonusItemId = 7699}, -- Blind Faith
+    { spell = 355892, type = "buff", unit = "player", bonusItemId = 7698}, -- Blazing Slaughter
   },
   DEATHKNIGHT = {
     { spell = 332199, type = "buff", unit = "player", bonusItemId = 6954}, -- Phearomones
     { spell = 334526, type = "buff", unit = "player", bonusItemId = 6941}, -- Crimson Rune Weapon
     { spell = 334693, type = "debuff", unit = "target", bonusItemId = 6946}, -- Absolute Zero
     { spell = 334722, type = "buff", unit = "player", bonusItemId = 6948}, -- Grip of the Everlasting
+    { spell = 353823, type = "debuff", unit = "target", bonusItemId = 7467}, -- Final Sentence
+    { spell = 353546, type = "debuff", unit = "target", bonusItemId = 7458}, -- Abomination's Frenzy
   }
 }
 
