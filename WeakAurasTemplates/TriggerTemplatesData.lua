@@ -5147,6 +5147,35 @@ for class, classData in pairs(templates.class) do
   end
 end
 
+-- Shards of Domination
+local shardsOfDomination = {
+  title = L["Shards Of Domination"],
+  icon = 1392550,
+  args = {
+    -- General Ability
+    { spell = 356321, type = "buff", unit = "player"}, -- Unholy Aura
+    { spell = 356329, type = "debuff", unit = "target"}, -- Scouring Touch
+    { spell = 356043, type = "buff", unit = "player"}, -- Chaos Bane
+    { spell = 356305, type = "buff", unit = "player"}, -- Accretion
+    { spell = 356257, type = "buff", unit = "player"}, -- Frostrime
+    { spell = 356364, type = "buff", unit = "player"}, -- Coldhearted
+    { spell = 355735, type = "buff", unit = "player"}, -- Winds of Winter
+    { spell = 355804, type = "debuff", unit = "target"}, -- Blood Link
+  }
+}
+
+-- Copy to main templates table
+for class, classData in pairs(templates.class) do
+  for spec, specData in ipairs(classData) do
+    specData[10].title = shardsOfDomination.title
+    specData[10].icon = shardsOfDomination.icon
+    specData[10].args = {}
+    for _, entry in ipairs(shardsOfDomination.args) do
+      tinsert(specData[10].args, CopyTable(entry))
+    end
+  end
+end
+
 ------------------------------
 -- Hardcoded race templates
 -------------------------------
