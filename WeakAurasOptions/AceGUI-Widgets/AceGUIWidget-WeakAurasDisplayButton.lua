@@ -1465,7 +1465,7 @@ local methods = {
     if (not WeakAuras.IsOptionsOpen()) then
       return;
     end
-    if(priority >= self.view.visibility) then
+    if(priority >= self.view.visibility and self.view.visibility ~= priority) then
       self.view.visibility = priority;
       if(self.view.region and self.view.region.Expand) then
         OptionsPrivate.Private.FakeStatesFor(self.view.region.id, true)
@@ -1476,17 +1476,17 @@ local methods = {
           OptionsPrivate.Private.mouseFrame:expand(self.view.region.id);
         end
       end
+      self:UpdateViewTexture()
     end
     if self.view.region and self.view.region.ClickToPick then
       self.view.region:ClickToPick();
     end
-    self:UpdateViewTexture()
   end,
   ["PriorityHide"] = function(self, priority)
     if (not WeakAuras.IsOptionsOpen()) then
       return;
     end
-    if(priority >= self.view.visibility) then
+    if(priority >= self.view.visibility and self.view.visibility ~= 0) then
       self.view.visibility = 0;
       if(self.view.region and self.view.region.Collapse) then
         OptionsPrivate.Private.FakeStatesFor(self.view.region.id, false)
@@ -1497,8 +1497,8 @@ local methods = {
           OptionsPrivate.Private.mouseFrame:collapse(self.view.region.id);
         end
       end
+      self:UpdateViewTexture()
     end
-    self:UpdateViewTexture()
   end,
   ["UpdateViewTexture"] = function(self, priority)
     local visibility = self.view.func()
