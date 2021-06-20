@@ -51,7 +51,7 @@ local function changes(property, regionType)
   elseif property == "glow" and (regionType == "icon" or regionType == "aurabar") then
     return {
       value = true,
-      property = regionType == "icon" and "sub.1.glow" or "sub.2.glow",
+      property = "sub.2.glow"
     };
   elseif WeakAuras.regionTypes[regionType].default[property] == nil then
     return nil;
@@ -519,14 +519,13 @@ local function subTypesFor(item, regionType)
     cd = 134377,
     cd2 = 134376,
   };
-  local subglow = WeakAuras.getDefaultGlow(regionType)
-  local subglowindex = (regionType == "icon" or regionType == "aurabar") and 1
   local data = {}
-  local dataGlow = {
-    subRegions = {
-      [subglowindex] = subglow
+  local dataGlow = {}
+  if regionType == "aurabar" then
+    dataGlow.subRegions = {
+      [1] = WeakAuras.getDefaultGlow(regionType)
     }
-  }
+  end
   if (item.type == "ability") then
     tinsert(types, {
       fallback = true,
