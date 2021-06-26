@@ -26,6 +26,7 @@ RegionOptions\Icon.lua
 RegionOptions\Text.lua
 RegionOptions\Group.lua
 RegionOptions\DynamicGroup.lua
+RegionOptions\DynamicGroupOld.lua
 RegionOptions\StopMotion.lua
 RegionOptions\Model.lua
 RegionOptions\ProgressTexture.lua

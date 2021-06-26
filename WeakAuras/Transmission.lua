@@ -582,7 +582,7 @@ local function importPendingData()
       tinsert(parentData.controlledChildren, installedChild.id)
       WeakAuras.NewDisplayButton(installedChild)
       local childButton = WeakAuras.GetDisplayButton(installedChild.id)
-      childButton:SetGroup(parentData.id, parentData.regionType == "dynamicgroup")
+      childButton:SetGroup(parentData.id)
       childButton:SetGroupOrder(index, #parentData.controlledChildren)
       coroutine.yield()
     end

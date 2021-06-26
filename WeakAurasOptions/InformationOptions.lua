@@ -125,27 +125,24 @@ function OptionsPrivate.GetInformationOptions(data)
     end
   end
 
-  -- Show warnings only for single selection for now
-  if not isGroup then
-    local icon, title, message = OptionsPrivate.Private.AuraWarnings.FormatWarnings(data.uid)
-    if title and message then
-      args.warningTitle = {
-        type = "header",
-        name = title,
-        width = WeakAuras.doubleWidth,
-        order = order,
-      }
-      order = order + 1
+  local icon, title, messages = OptionsPrivate.Private.AuraWarnings.FormatWarnings(data.uid)
+  if title and messages then
+    args.warningTitle = {
+      type = "header",
+      name = title,
+      width = WeakAuras.doubleWidth,
+      order = order,
+    }
+    order = order + 1
 
-      args.warnings = {
-        type = "description",
-        name = message,
-        width = WeakAuras.doubleWidth,
-        order = order,
-        fontSize = "medium"
-      }
-      order = order + 1
-    end
+    args.warnings = {
+      type = "description",
+      name = messages,
+      width = WeakAuras.doubleWidth,
+      order = order,
+      fontSize = "medium"
+    }
+    order = order + 1
   end
 
   -- compatibility Options

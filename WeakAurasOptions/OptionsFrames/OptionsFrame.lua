@@ -1138,7 +1138,7 @@ function OptionsPrivate.CreateFrame()
 
     for index, regionType in ipairs(regionTypesSorted) do
       local regionData = regionOptions[regionType]
-      if (not (fromGroup and (regionType == "group" or regionType == "dynamicgroup"))) then
+      if (not (fromGroup and (regionType:find("group")))) then
         local button = AceGUI:Create("WeakAurasNewButton")
         button:SetTitle(regionData.displayName)
         if(type(regionData.icon) == "string" or type(regionData.icon) == "table") then
