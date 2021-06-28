@@ -1686,7 +1686,7 @@ Private.load_prototype = {
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
       desc = function()
         return WeakAuras.GetLegendariesBonusIds()
-               .. L["\n\nSupports multiple entries, separated by commas"]
+               .. "\n\n" .. L["Supports multiple entries, separated by commas"]
       end
     },
     {
@@ -1697,7 +1697,7 @@ Private.load_prototype = {
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
       desc = function()
         return WeakAuras.GetLegendariesBonusIds()
-               .. L["\n\nSupports multiple entries, separated by commas"]
+               .. "\n\n" .. L["Supports multiple entries, separated by commas"]
       end
     }
   }
@@ -6727,7 +6727,7 @@ Private.event_prototypes = {
         required = true,
         desc = function()
           return WeakAuras.GetLegendariesBonusIds()
-          .. L["\n\nSupports multiple entries, separated by commas"]
+          .. "\n\n" .. L["Supports multiple entries, separated by commas"]
         end,
         conditionType = "number",
       },
