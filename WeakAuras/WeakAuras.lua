@@ -2991,13 +2991,25 @@ function Private.ReleaseClone(id, cloneId, regionType)
   clonePool[regionType][#clonePool[regionType] + 1] = region;
 end
 
-function Private.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region, customFunc, when, formatters)
+function Private.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region, customFunc, when, formatters, voice)
   local useHiddenStates = when == "finish"
   if (message:find('%%')) then
     message = Private.ReplacePlaceHolders(message, region, customFunc, useHiddenStates, formatters);
   end
   if(message_type == "PRINT") then
     DEFAULT_CHAT_FRAME:AddMessage(message, r or 1, g or 1, b or 1);
+  elseif message_type == "TTS" then
+    pcall(
+      function()
+        C_VoiceChat.SpeakText(
+          voice,
+          message,
+          Enum.VoiceTtsDestination.QueuedLocalPlayback,
+          TEXTTOSPEECH_CONFIG.speechRate or 0,
+          TEXTTOSPEECH_CONFIG.speechVolume or 100
+        );
+      end
+    );
   elseif message_type == "ERROR" then
     UIErrorsFrame:AddMessage(message, r or 1, g or 1, b or 1)
   elseif(message_type == "COMBAT") then
@@ -3246,7 +3258,7 @@ function Private.PerformActions(data, when, region)
 
   if(actions.do_message and actions.message_type and actions.message) then
     local customFunc = Private.customActionsFunctions[data.id][when .. "_message"];
-    Private.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc, when, formatters);
+    Private.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc, when, formatters, actions.message_tts_voice);
   end
 
   if (actions.stop_sound) then

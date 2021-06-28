@@ -729,6 +729,23 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     }
     order = order + 1;
 
+    args["condition" .. i .. "value" .. j .. "message voice"] = {
+      type = "select",
+      width = WeakAuras.doubleWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", L["Voice"], L["Voice"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", propertyType),
+      values = OptionsPrivate.Private.tts_voices,
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_voice;
+      end,
+      set = setValueComplex("message_voice"),
+      hidden = function()
+        return not anyMessageType("TTS");
+      end
+    }
+    order = order + 1;
+
     local descMessage = descIfNoValue2(data, conditions[i].changes[j], "value", "message", propertyType);
     if (not descMessage and data ~= OptionsPrivate.tempGroup) then
       descMessage = L["Dynamic text tooltip"] .. OptionsPrivate.Private.GetAdditionalProperties(data)

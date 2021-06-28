@@ -150,6 +150,15 @@ function OptionsPrivate.GetActionOptions(data)
         disabled = function() return not data.actions.start.do_message end,
         hidden = function() return data.actions.start.message_type ~= "WHISPER" end
       },
+      start_message_tts_voice = {
+        type = "select",
+        width = WeakAuras.doubleWidth,
+        name = L["Voice"],
+        order = 3.2,
+        disabled = function() return not data.actions.start.do_message end,
+        hidden = function() return (not WeakAuras.IsRetail()) or data.actions.start.message_type ~= "TTS" end,
+        values = OptionsPrivate.Private.tts_voices,
+      },
       start_message = {
         type = "input",
         width = WeakAuras.doubleWidth,
@@ -538,6 +547,15 @@ function OptionsPrivate.GetActionOptions(data)
         order = 23.1,
         disabled = function() return not data.actions.finish.do_message end,
         hidden = function() return data.actions.finish.message_type ~= "WHISPER" end
+      },
+      finish_message_tts_voice = {
+        type = "select",
+        width = WeakAuras.doubleWidth,
+        name = L["Voice"],
+        order = 23.2,
+        disabled = function() return not data.actions.finish.do_message end,
+        hidden = function() return (not WeakAuras.IsRetail()) or data.actions.finish.message_type ~= "TTS" end,
+        values = OptionsPrivate.Private.tts_voices,
       },
       finish_message = {
         type = "input",
