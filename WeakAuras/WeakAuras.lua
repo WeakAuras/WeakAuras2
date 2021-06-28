@@ -3002,7 +3002,7 @@ function Private.HandleChatAction(message_type, message, message_dest, message_c
     pcall(
       function()
         C_VoiceChat.SpeakText(
-          voice,
+          voice or 0,
           message,
           Enum.VoiceTtsDestination.QueuedLocalPlayback,
           TEXTTOSPEECH_CONFIG.speechRate or 0,
