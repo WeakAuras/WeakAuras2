@@ -2631,6 +2631,7 @@ do
   local bars = {}
   local nextExpire -- time of next expiring timer
   local recheckTimer -- handle of timer
+  local currentStage = 0
 
   local function dbmRecheckTimers()
     local now = GetTime()
@@ -2750,6 +2751,10 @@ do
         end
       end
       WeakAuras.ScanEvents("DBM_TimerUpdate", id)
+    elseif event == "DBM_SetStage" then
+      local mod, modId, stage, encounterId = ...
+      currentStage = stage
+      WeakAuras.ScanEvents("DBM_SetStage", ...)
     else -- DBM_Announce
       WeakAuras.ScanEvents(event, ...)
     end
@@ -2789,6 +2794,10 @@ do
       return false
     end
     return true
+  end
+
+  function WeakAuras.GetDBMStage()
+    return currentStage
   end
 
   function WeakAuras.GetDBMTimerById(id)
