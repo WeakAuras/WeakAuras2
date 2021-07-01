@@ -35,6 +35,7 @@ local methods = {
     self:SetTitle(self.companionData.name)
     self.update:SetScript("OnClick", self.callbacks.OnUpdateClick)
     local data = OptionsPrivate.Private.StringToTable(self.companionData.encoded, true)
+    WeakAuras.PreAdd(data.d)
     self.data = data.d
     self.frame:EnableKeyboard(false)
     self:Enable()
