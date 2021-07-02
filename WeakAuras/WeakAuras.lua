@@ -2996,6 +2996,9 @@ function Private.HandleChatAction(message_type, message, message_dest, message_c
   if (message:find('%%')) then
     message = Private.ReplacePlaceHolders(message, region, customFunc, useHiddenStates, formatters);
   end
+  if message_dest and (message_dest:find('%%')) then
+    message_dest = Private.ReplacePlaceHolders(message_dest, region, customFunc, useHiddenStates, formatters);
+  end
   if(message_type == "PRINT") then
     DEFAULT_CHAT_FRAME:AddMessage(message, r or 1, g or 1, b or 1);
   elseif message_type == "ERROR" then
@@ -3006,7 +3009,7 @@ function Private.HandleChatAction(message_type, message, message_dest, message_c
     end
   elseif(message_type == "WHISPER") then
     if(message_dest) then
-      if(message_dest == "target" or message_dest == "'target'" or message_dest == "\"target\"" or message_dest == "%t" or message_dest == "'%t'" or message_dest == "\"%t\"") then
+      if(message_dest == "target" or message_dest == "'target'" or message_dest == "\"target\"") then
         pcall(function() SendChatMessage(message, "WHISPER", nil, UnitName("target")) end);
       else
         pcall(function() SendChatMessage(message, "WHISPER", nil, message_dest) end);
