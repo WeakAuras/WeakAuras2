@@ -2996,9 +2996,6 @@ function Private.HandleChatAction(message_type, message, message_dest, message_c
   if (message:find('%%')) then
     message = Private.ReplacePlaceHolders(message, region, customFunc, useHiddenStates, formatters);
   end
-  if message_dest and (message_dest:find('%%')) then
-    message_dest = Private.ReplacePlaceHolders(message_dest, region, customFunc, useHiddenStates, formatters);
-  end
   if(message_type == "PRINT") then
     DEFAULT_CHAT_FRAME:AddMessage(message, r or 1, g or 1, b or 1);
   elseif message_type == "ERROR" then
