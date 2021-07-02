@@ -1447,6 +1447,7 @@ do
   local mainSpeed, offSpeed = UnitAttackSpeed("player")
   local casting = false
   local skipNextAttack, skipNextAttackCount
+  local isAttacking
 
   function WeakAuras.GetSwingTimerInfo(hand)
     if(hand == "main") then
@@ -1546,7 +1547,7 @@ do
   end
 
   local function swingTimerCheck(event, unit, guid, spell)
-    if unit ~= "player" then return end
+    if unit and unit ~= "player" then return end
     Private.StartProfileSystem("generictrigger swing");
     if event == "UNIT_ATTACK_SPEED" then
       local mainSpeedNew, offSpeedNew = UnitAttackSpeed("player")
@@ -1579,6 +1580,7 @@ do
         if casting then
           casting = false
         end
+        if not isAttacking then return end
         local event;
         mainSpeed, offSpeed = UnitAttackSpeed("player");
         lastSwingMain = GetTime();
@@ -1624,6 +1626,10 @@ do
         lastSwingOff, swingDurationOff = nil, nil
         WeakAuras.ScanEvents("SWING_TIMER_END")
       end
+    elseif event == "PLAYER_ENTER_COMBAT" then
+      isAttacking = true
+    elseif event == "PLAYER_LEAVE_COMBAT" then
+      isAttacking = nil
     end
     Private.StopProfileSystem("generictrigger swing");
   end
@@ -1633,6 +1639,7 @@ do
       swingTimerFrame = CreateFrame("frame");
       swingTimerFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
       swingTimerFrame:RegisterEvent("PLAYER_ENTER_COMBAT");
+      swingTimerFrame:RegisterEvent("PLAYER_LEAVE_COMBAT");
       swingTimerFrame:RegisterUnitEvent("UNIT_ATTACK_SPEED", "player");
       swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
       if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
