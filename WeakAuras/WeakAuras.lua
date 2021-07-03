@@ -2998,14 +2998,16 @@ function Private.HandleChatAction(message_type, message, message_dest, message_c
   end
   if(message_type == "PRINT") then
     DEFAULT_CHAT_FRAME:AddMessage(message, r or 1, g or 1, b or 1);
-  elseif message_type == "TTS" then
-    C_VoiceChat.SpeakText(
-      voice or 0,
-      message,
-      0,
-      TEXTTOSPEECH_CONFIG.speechRate or 0,
-      TEXTTOSPEECH_CONFIG.speechVolume or 100
-    );
+  elseif message_type == "TTS" and WeakAuras.IsRetail() then
+    pcall(function()
+      C_VoiceChat.SpeakText(
+        voice or 0,
+        message,
+        0,
+        TEXTTOSPEECH_CONFIG.speechRate or 0,
+        TEXTTOSPEECH_CONFIG.speechVolume or 100
+      );
+    end)
   elseif message_type == "ERROR" then
     UIErrorsFrame:AddMessage(message, r or 1, g or 1, b or 1)
   elseif(message_type == "COMBAT") then
