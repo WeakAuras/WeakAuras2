@@ -63,11 +63,12 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
     return "{1, 1, 1, 1}";
   elseif(vType == "chat") then
     if (value and type(value) == "table") then
-      local serialized = string.format("{message_type = %s, message = %s, message_dest = %s, message_channel = %s, message_custom = %s, message_formaters = %s}",
+      local serialized = string.format("{message_type = %s, message = %s, message_dest = %s, message_channel = %s, message_custom = %s, message_formaters = %s, message_voice = %s}",
         Private.QuotedString(tostring(value.message_type)), Private.QuotedString(tostring(value.message or "")),
         Private.QuotedString(tostring(value.message_dest)), Private.QuotedString(tostring(value.message_channel)),
         pathToCustomFunction,
-        pathToFormatters)
+        pathToFormatters,
+        Private.QuotedString(tostring(value.message_voice)))
       return serialized
     end
   elseif(vType == "sound") then

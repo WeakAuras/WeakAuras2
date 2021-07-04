@@ -120,12 +120,14 @@ globals = {
 	"STANDARD_TEXT_FONT",
 	"MAX_BOSS_FRAMES",
 	"MAX_SPELL_SCHOOLS",
+	"TEXTTOSPEECH_CONFIG",
 
 	-- ENUMS
 	"LOWER_LEFT_VERTEX",
 	"LOWER_RIGHT_VERTEX",
 	"UPPER_LEFT_VERTEX",
 	"UPPER_RIGHT_VERTEX",
+	"Enum",
 
 	-- API functions
 	"AbandonQuest",
@@ -1190,6 +1192,7 @@ globals = {
 	"C_Vignettes.GetNumVignettes",
 	"C_Vignettes.GetVignetteGUID",
 	"C_Vignettes.GetVignetteInfoFromInstanceID",
+	"C_VoiceChat",
 	"C_WowTokenPublic",
 	"C_WowTokenPublic.BuyToken",
 	"C_WowTokenPublic.GetCommerceSystemStatus",
