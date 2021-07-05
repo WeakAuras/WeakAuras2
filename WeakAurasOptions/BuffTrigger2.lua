@@ -690,6 +690,12 @@ local function GetBuffTriggerOptions(data, triggernum)
       order = 66,
       hidden = function() return not trigger.type == "aura2" end
     },
+    use_includePets = {
+      type = "toggle",
+      width = WeakAuras.doubleWidth,
+      name = WeakAuras.newFeatureString .. L["Include Pets"],
+      order = 66.1
+    },
     useGroupRole = {
       type = "toggle",
       width = WeakAuras.normalWidth,
@@ -722,7 +728,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       order = 67.1,
       hidden = function() return
         not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
-        or not WeakAuras.IsClassic()
+        or WeakAuras.IsRetail()
       end
     },
     raid_role = {

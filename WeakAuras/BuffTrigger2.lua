@@ -129,7 +129,7 @@ local function UnitIsVisibleFixed(unit)
 end
 
 local function UnitInSubgroupOrPlayer(unit)
-  return UnitInSubgroup(unit) or UnitIsUnit("player", unit)
+  return UnitInSubgroup(WeakAuras.petUnitToUnit[unit] or unit) or UnitIsUnit("player", unit)
 end
 
 local function GetOrCreateSubTable(base, next, ...)
@@ -837,17 +837,34 @@ local function RemoveState(triggerStates, cloneId)
   end
 end
 
-local function GetAllUnits(unit, allUnits)
+local function GetAllUnits(unit, allUnits, includePets)
   if unit == "group" then
     if allUnits then
       local i = 1
       local raid = true
+      local pets = true
       return function()
         if raid then
           if i <= 40 then
-            local ret = WeakAuras.raidUnits[i]
-            i = i + 1
+            local ret
+            if includePets == true then -- pets + raid
+              ret = pets and WeakAuras.raidpetUnits[i] or WeakAuras.raidUnits[i]
+              pets = not pets
+              if pets then
+                i = i + 1
+              end
+            elseif includePets == false then -- pets only
+              ret = WeakAuras.raidpetUnits[i]
+              i = i + 1
+            else -- raid
+              ret = WeakAuras.raidUnits[i]
+              i = i + 1
+            end
             return ret
+          end
+          if includePets and pets then
+            pets = not pets
+            return "pet"
           end
           raid = false
           i = 1
@@ -855,8 +872,20 @@ local function GetAllUnits(unit, allUnits)
         end
 
         if i <= 4 then
-          local ret =  WeakAuras.partyUnits[i]
-          i = i + 1
+          local ret
+          if includePets == true then -- pets + group
+            ret = pets and WeakAuras.partypetUnits[i] or WeakAuras.partyUnits[i]
+            pets = not pets
+            if pets then
+              i = i + 1
+            end
+          elseif includePets == false then -- pets only
+            ret = WeakAuras.partypetUnits[i]
+            i = i + 1
+          else -- group
+            ret = WeakAuras.partyUnits[i]
+            i = i + 1
+          end
           return ret
         end
 
@@ -869,10 +898,23 @@ local function GetAllUnits(unit, allUnits)
     if IsInRaid() then
       local i = 1
       local max = GetNumGroupMembers()
+      local pets = true
       return function()
         if i <= max then
-          local ret = WeakAuras.raidUnits[i]
-          i = i + 1
+          local ret
+          if includePets == true then -- pets + raid
+            ret = pets and WeakAuras.raidpetUnits[i] or WeakAuras.raidUnits[i]
+            pets = not pets
+            if pets then
+              i = i + 1
+            end
+          elseif includePets == false then -- pets only
+            ret = WeakAuras.raidpetUnits[i]
+            i = i + 1
+          else -- raid
+            ret = WeakAuras.raidUnits[i]
+            i = i + 1
+          end
           return ret
         end
         i = 1
@@ -880,14 +922,31 @@ local function GetAllUnits(unit, allUnits)
     else
       local i = 0
       local max = GetNumSubgroupMembers()
+      local pets = true
       return function()
         if i == 0 then
+          if includePets and pets then
+            pets = not pets
+            return "pet"
+          end
           i = 1
           return "player"
         else
           if i <= max then
-            local ret =  WeakAuras.partyUnits[i]
-            i = i + 1
+            local ret
+            if includePets == true then -- pets + group
+              ret = pets and WeakAuras.partypetUnits[i] or WeakAuras.partyUnits[i]
+              pets = not pets
+              if pets then
+                i = i + 1
+              end
+            elseif includePets == false then -- pets only
+              ret = WeakAuras.partypetUnits[i]
+              i = i + 1
+            else -- group
+              ret = WeakAuras.partyUnits[i]
+              i = i + 1
+            end
             return ret
           end
         end
@@ -979,6 +1038,15 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
+  if triggerInfo.unit == "group" then
+    local isPet = WeakAuras.UnitIsPet(unit)
+    if triggerInfo.includePets == false and not isPet then -- pets only
+      return false
+    elseif triggerInfo.includePets == nil and isPet then -- exclude pets
+      return false
+    end
+  end
+
   if triggerInfo.unit == "group" and triggerInfo.groupSubType == "party" then
     if IsInRaid() then
       -- Filter our player/party# while in raid and keep only raid units that are correct
@@ -1015,7 +1083,7 @@ end
 local function FormatAffectedUnaffected(triggerInfo, matchedUnits)
   local affected = ""
   local unaffected = ""
-  for unit in GetAllUnits(triggerInfo.unit) do
+  for unit in GetAllUnits(triggerInfo.unit, nil, triggerInfo.includePets) do
     if activeGroupScanFuncs[unit] and activeGroupScanFuncs[unit][triggerInfo] then
       if matchedUnits[unit] then
         affected = affected .. (GetUnitName(unit, false) or unit) .. ", "
@@ -1200,7 +1268,7 @@ local function UpdateTriggerState(time, id, triggernum)
         end
       else
         -- state per unaffected unit
-        for unit in GetAllUnits(triggerInfo.unit) do
+        for unit in GetAllUnits(triggerInfo.unit, nil, triggerInfo.includePets) do
           if activeGroupScanFuncs[unit] and activeGroupScanFuncs[unit][triggerInfo] then
             local bestMatch = matches[unit]
             if bestMatch then
@@ -1348,7 +1416,6 @@ end
 local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
   scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup,
   scanFuncName, scanFuncSpellId, scanFuncGeneral)
-
   if not scanFuncName and not scanFuncSpellId and not scanFuncGeneral and not scanFuncNameGroup and not scanFuncSpellIdGroup and not scanFuncGeneralGroup then
     if matchDataUpToDate[unit] then
       matchDataUpToDate[unit][filter] = nil
@@ -1426,7 +1493,6 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit)
   scanFuncName[unit] = scanFuncName[unit] or {}
   scanFuncSpellId[unit] = scanFuncSpellId[unit] or {}
   scanFuncGeneral[unit] = scanFuncGeneral[unit] or {}
-
   if unitType then
     scanFuncNameGroup[unit] = scanFuncNameGroup[unit] or {}
     scanFuncSpellIdGroup[unit] = scanFuncSpellIdGroup[unit] or {}
@@ -1463,7 +1529,7 @@ end
 local function ScanAllGroup(time, matchDataChanged)
   -- We iterate over all raid/player unit ids here because ScanGroupUnit also
   -- handles the cases where a unit existence changes.
-  for unit in GetAllUnits("group") do
+  for unit in GetAllUnits("group", nil, true) do
     ScanGroupUnit(time, matchDataChanged, "group", unit)
   end
 end
@@ -1607,9 +1673,9 @@ local function EventHandler(frame, event, arg1, arg2, ...)
       tinsert(unitsToRemove, "focus")
     end
   elseif event == "UNIT_PET" then
-    ScanGroupUnit(time, matchDataChanged, nil, "pet")
-    if not UnitExistsFixed("pet") then
-      tinsert(unitsToRemove, "pet")
+    ScanGroupUnit(time, matchDataChanged, nil, arg1)
+    if not UnitExistsFixed(arg1) then
+      tinsert(unitsToRemove, arg1) -- not sure if his is working, needs tests
     end
   elseif event == "NAME_PLATE_UNIT_ADDED" then
     nameplateExists[arg1] = true
@@ -1641,7 +1707,7 @@ local function EventHandler(frame, event, arg1, arg2, ...)
   elseif event == "GROUP_ROSTER_UPDATE" then
     unitVisible = {}
     local unitsToCheck = {}
-    for unit in GetAllUnits("group", true) do
+    for unit in GetAllUnits("group", true, true) do
       RecheckActiveForUnitType("group", unit, deactivatedTriggerInfos)
       if not UnitExistsFixed(unit) then
         tinsert(unitsToRemove, unit)
@@ -1818,7 +1884,7 @@ local function LoadAura(id, triggernum, triggerInfo)
      AddScanFuncs(triggerInfo, nil, scanFuncNameMulti, scanFuncSpellIdMulti, nil)
   elseif triggerInfo.groupTrigger then
     triggerInfo.maxUnitCount = 0
-    for unit in GetAllUnits(triggerInfo.unit) do
+    for unit in GetAllUnits(triggerInfo.unit, nil, triggerInfo.includePets) do
       RecheckActive(triggerInfo, unit, unitsToCheck)
     end
   else
@@ -2357,7 +2423,8 @@ function BuffTrigger.Add(data)
         matchCountFunc = matchCountFunc,
         useAffected = unit == "group" and trigger.useAffected,
         isMulti = trigger.unit == "multi",
-        nameChecker = effectiveNameCheck and WeakAuras.ParseNameCheck(trigger.unitName)
+        nameChecker = effectiveNameCheck and WeakAuras.ParseNameCheck(trigger.unitName),
+        includePets = trigger.use_includePets
       }
       triggerInfos[id] = triggerInfos[id] or {}
       triggerInfos[id][triggernum] = triggerInformation
