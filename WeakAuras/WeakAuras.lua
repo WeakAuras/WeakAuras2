@@ -716,6 +716,11 @@ local function LoadCustomActionFunctions(data)
         local func = WeakAuras.LoadFunction("return "..(data.actions.start.message_custom), id, "show message");
         Private.customActionsFunctions[id]["start_message"] = func;
       end
+
+      if (data.actions.start.message_dest and data.actions.start.message_dest_custom) then
+        local func = WeakAuras.LoadFunction("return "..(data.actions.start.message_dest_custom), id, "start message dest");
+        Private.customActionsFunctions[id]["start_message_dest"] = func;
+      end
     end
 
     if (data.actions.finish) then
@@ -727,6 +732,11 @@ local function LoadCustomActionFunctions(data)
       if (data.actions.finish.do_message and data.actions.finish.message_custom) then
         local func = WeakAuras.LoadFunction("return "..(data.actions.finish.message_custom), id, "hide message");
         Private.customActionsFunctions[id]["finish_message"] = func;
+      end
+
+      if (data.actions.finish.message_dest and data.actions.finish.message_dest_custom) then
+        local func = WeakAuras.LoadFunction("return "..(data.actions.finish.message_dest_custom), id, "finish message dest");
+        Private.customActionsFunctions[id]["finish_message_dest"] = func;
       end
     end
   end
@@ -3006,14 +3016,7 @@ function Private.HandleChatAction(message_type, message, message_dest, message_c
     end
   elseif(message_type == "WHISPER") then
     if(message_dest) then
-      if(message_dest == "target" or message_dest == "'target'" or message_dest == "\"target\"" or message_dest == "%t" or message_dest == "'%t'" or message_dest == "\"%t\"") then
-        pcall(function() SendChatMessage(message, "WHISPER", nil, UnitName("target")) end);
-      elseif (message_dest:find('%%')) then
-        message_dest = Private.ReplacePlaceHolders(message_dest, region, customFunc, useHiddenStates, formatters);
-        pcall(function() SendChatMessage(message, "WHISPER", nil, message_dest) end);
-      else
-        pcall(function() SendChatMessage(message, "WHISPER", nil, message_dest) end);
-      end
+      pcall(function() SendChatMessage(message, "WHISPER", nil, message_dest) end);
     end
   elseif(message_type == "SMARTRAID") then
     local isInstanceGroup = IsInGroup(LE_PARTY_CATEGORY_INSTANCE)
@@ -3249,7 +3252,15 @@ function Private.PerformActions(data, when, region)
 
   if(actions.do_message and actions.message_type and actions.message) then
     local customFunc = Private.customActionsFunctions[data.id][when .. "_message"];
-    Private.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc, when, formatters);
+    local customDestFunc = Private.customActionsFunctions[data.id][when .. "_message_dest"]
+    local message_dest = actions.message_dest
+    local useHiddenStates = when == "finish"
+    if(message_dest == "target" or message_dest == "'target'" or message_dest == "\"target\"" or message_dest == "%t" or message_dest == "'%t'" or message_dest == "\"%t\"") then
+      message_dest = UnitName("target")
+    elseif (message_dest:find('%%')) then
+      message_dest = Private.ReplacePlaceHolders(message_dest, region, customDestFunc, useHiddenStates, formatters)
+    end
+    Private.HandleChatAction(actions.message_type, actions.message, message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc, when, formatters);
   end
 
   if (actions.stop_sound) then

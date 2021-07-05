@@ -63,9 +63,19 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
     return "{1, 1, 1, 1}";
   elseif(vType == "chat") then
     if (value and type(value) == "table") then
+      -- can't ReplacePlaceHolders here because the region is required
+      -- will have to send the function forward but I'm already adding the Voice to that function call in another PR
+      -- so wait until that's gone in then return to this.
+      local message_dest = Private.QuotedString(tostring(value.message_dest)) or ""
+      local message_dest_custom = Private.QuotedString(tostring(value.message_dest_custom))
+      if(message_dest == "target" or message_dest == "'target'" or message_dest == "\"target\"" or message_dest == "%t" or message_dest == "'%t'" or message_dest == "\"%t\"") then
+        message_dest = UnitName("target") or ""
+      elseif (message_dest:find('%%') and message_dest_custom) then
+        --message_dest = Private.ReplacePlaceHolders(message_dest, region, message_dest_custom)
+      end
       local serialized = string.format("{message_type = %s, message = %s, message_dest = %s, message_channel = %s, message_custom = %s, message_formaters = %s}",
         Private.QuotedString(tostring(value.message_type)), Private.QuotedString(tostring(value.message or "")),
-        Private.QuotedString(tostring(value.message_dest)), Private.QuotedString(tostring(value.message_channel)),
+        message_dest, Private.QuotedString(tostring(value.message_channel)),
         pathToCustomFunction,
         pathToFormatters)
       return serialized

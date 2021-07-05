@@ -865,6 +865,9 @@ function OptionsPrivate.GetActionOptions(data)
   OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "start_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code",
                           5, function() return not (data.actions.start.do_message and OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.start.message)) end, {"actions", "start", "message_custom"}, false);
 
+  OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "start_message_dest", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#send-to",
+                          3.2, function() return not(data.actions.start.message_type == "WHISPER" and OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.start.message_dest)) end, {"actions", "start", "message_dest_custom"}, false)
+
   local startHidden = function()
     return OptionsPrivate.IsCollapsed("format_option", "actions", "start_message", true)
   end
@@ -928,6 +931,9 @@ function OptionsPrivate.GetActionOptions(data)
 
   OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "finish_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code",
                           25, function() return not (data.actions.finish.do_message and OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.finish.message)) end, {"actions", "finish", "message_custom"}, false);
+
+  OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "finish_message_dest", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#send-to",
+                          23.2, function() return not(data.actions.finish.message_type == "WHISPER" and OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.finish.message_dest)) end, {"actions", "finish", "message_dest_custom"}, false)
 
   local finishHidden = function()
     return OptionsPrivate.IsCollapsed("format_option", "actions", "finish_message", true)

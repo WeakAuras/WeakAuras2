@@ -729,6 +729,87 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     }
     order = order + 1;
 
+    local function customDestHidden()
+      local message_dest = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_dest;
+      if (not message_dest) then return true; end
+      return not OptionsPrivate.Private.ContainsCustomPlaceHolder(message_dest);
+    end
+
+    args["condition" .. i .. "value" .. j .. "custom dest"] = {
+      type = "input",
+      width = WeakAuras.doubleWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_dest_custom", L["Custom Code"], L["Custom Code"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_dest_custom", propertyType),
+      order = order,
+      multiline = true,
+      hidden = customDestHidden,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_dest_custom;
+      end,
+      control = "WeakAurasMultiLineEditBox",
+      set = setValueComplex("message_dest_custom"),
+      arg = {
+        extraFunctions = {
+          {
+            buttonLabel = L["Expand"],
+            func = function()
+              if (data.controlledChildren) then
+                -- Collect multi paths
+                local multipath = {};
+                for id, reference in pairs(conditions[i].changes[j].references) do
+                  local conditionIndex = conditions[i].check.references[id].conditionIndex;
+                  local changeIndex = reference.changeIndex;
+                  multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "message_dest_custom"};
+                end
+                OptionsPrivate.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#send-to");
+              else
+                OptionsPrivate.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "message_dest_custom"}, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#send-to");
+              end
+            end
+          }
+        }
+      }
+    }
+
+    order = order + 1;
+
+    args["condition" .. i .. "value" .. j .. "message_dest_custom_error"] = {
+      type = "description",
+      name = function()
+        local custom = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_dest_custom;
+        if not custom then
+          return "";
+        end
+        local _, errorString = loadstring("return  " .. custom);
+        return errorString and "|cFFFF0000"..errorString or "";
+      end,
+      width = WeakAuras.doubleWidth,
+      order = order,
+      hidden = function()
+        local message_dest = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_dest;
+        if (not message_dest) then
+          return true;
+        end
+        if (not OptionsPrivate.Private.ContainsCustomPlaceHolder(message_dest)) then
+          return true;
+        end
+
+        local custom = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_dest_custom;
+
+        if (not custom) then
+          return true;
+        end
+
+        local loadedFunction, errorString = loadstring("return " .. custom);
+        if(errorString and not loadedFunction) then
+          return false;
+        else
+          return true;
+        end
+      end
+    }
+    order = order + 1;
+
     local descMessage = descIfNoValue2(data, conditions[i].changes[j], "value", "message", propertyType);
     if (not descMessage and data ~= OptionsPrivate.tempGroup) then
       descMessage = L["Dynamic text tooltip"] .. OptionsPrivate.Private.GetAdditionalProperties(data)
