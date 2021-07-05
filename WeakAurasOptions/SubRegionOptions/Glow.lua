@@ -118,6 +118,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     glowColor = {
       type = "color",
+      hasAlpha = true,
       width = WeakAuras.normalWidth,
       name = L["Custom Color"],
       order = 7,

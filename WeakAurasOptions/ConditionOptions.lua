@@ -1102,6 +1102,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_color"] = {
       type = "color",
+      hasAlpha = true,
       width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_color", L["Glow Color"], L["Glow Color"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_color", "color"),
