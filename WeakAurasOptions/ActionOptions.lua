@@ -322,6 +322,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       start_glow_color = {
         type = "color",
+        hasAlpha = true,
         width = WeakAuras.normalWidth,
         name = L["Glow Color"],
         order = 10.8,
@@ -693,6 +694,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       finish_glow_color = {
         type = "color",
+        hasAlpha = true,
         width = WeakAuras.normalWidth,
         name = L["Glow Color"],
         order = 30.8,
