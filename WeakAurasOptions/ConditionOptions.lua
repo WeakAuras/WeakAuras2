@@ -742,7 +742,8 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       set = setValueComplex("message_voice"),
       hidden = function()
         return not anyMessageType("TTS");
-      end
+      end,
+      desc = L["Available Voices are system specific"]
     }
     order = order + 1;
 

@@ -158,6 +158,7 @@ function OptionsPrivate.GetActionOptions(data)
         disabled = function() return not data.actions.start.do_message end,
         hidden = function() return (not WeakAuras.IsRetail()) or data.actions.start.message_type ~= "TTS" end,
         values = OptionsPrivate.Private.tts_voices,
+        desc = L["Available Voices are system specific"]
       },
       start_message = {
         type = "input",
@@ -556,6 +557,7 @@ function OptionsPrivate.GetActionOptions(data)
         disabled = function() return not data.actions.finish.do_message end,
         hidden = function() return (not WeakAuras.IsRetail()) or data.actions.finish.message_type ~= "TTS" end,
         values = OptionsPrivate.Private.tts_voices,
+        desc = L["Available Voices are system specific"]
       },
       finish_message = {
         type = "input",
