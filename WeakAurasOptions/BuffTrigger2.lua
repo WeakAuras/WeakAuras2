@@ -76,7 +76,7 @@ local function CanHaveMatchCheck(trigger)
   return trigger.showClones
 end
 
-local function CreateNameOptions(aura_options, data, trigger, size, isExactSpellId, isIgnoreList, prefix, baseOrder, useKey, optionKey, name, desc)
+local function CreateNameOptions(aura_options, data, trigger, size, isExactSpellId, isIgnoreList, prefix, baseOrder, useKey, optionKey, name, desc, inverse)
   local spellCache = WeakAuras.spellCache
 
   for i = 1, size do
@@ -94,7 +94,7 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
     if i ~= 1 then
       aura_options[prefix .. "space" .. i] = {
         type = "execute",
-        name = L["or"],
+        name = inverse and L["and"] or L["or"],
         width = WeakAuras.normalWidth - 0.2,
         image = function() return "", 0, 0 end,
         order = baseOrder + i / 100 + 0.0001,
@@ -1100,21 +1100,25 @@ local function GetBuffTriggerOptions(data, triggernum)
   CreateNameOptions(aura_options, data, trigger, nameOptionSize,
                     false, false, "name", 12, "useName", "auranames",
                     L["Aura Name"],
-                    L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."])
+                    L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."],
+                    IsSingleMissing(trigger))
 
 
   CreateNameOptions(aura_options, data, trigger, spellOptionsSize,
                     true, false, "spellid", 22, "useExactSpellId", "auraspellids",
-                    L["Spell ID"], L["Enter a Spell ID"])
+                    L["Spell ID"], L["Enter a Spell ID"],
+                    IsSingleMissing(trigger))
 
   CreateNameOptions(aura_options, data, trigger, ignoreNameOptionSize,
                     false, true, "ignorename", 32, "useIgnoreName", "ignoreAuraNames",
                     L["Ignored Aura Name"],
-                    L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."])
+                    L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."],
+                    IsSingleMissing(trigger))
 
   CreateNameOptions(aura_options, data, trigger, ignoreSpellOptionsSize,
                     true, true, "ignorespellid", 42, "useIgnoreExactSpellId", "ignoreAuraSpellids",
-                    L["Ignored Spell ID"], L["Enter a Spell ID"])
+                    L["Ignored Spell ID"], L["Enter a Spell ID"],
+                    IsSingleMissing(trigger))
 
   OptionsPrivate.commonOptions.AddCommonTriggerOptions(aura_options, data, triggernum, true)
   OptionsPrivate.commonOptions.AddTriggerGetterSetter(aura_options, data, triggernum)
