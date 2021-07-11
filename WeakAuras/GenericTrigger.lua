@@ -549,6 +549,13 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       if (ok and returnValue) then
         updateTriggerState = true;
       end
+      for key, state in pairs(allStates) do
+        if (type(state) ~= "table") then
+          errorHandler(string.format(L["Error in aura '%s' in %s. trigger. All States table contains a non table at key: '%s'."], id, triggernum, key))
+          wipe(allStates)
+          return
+        end
+      end
     elseif (data.statesParameter == "all") then
       local ok, returnValue = xpcall(data.triggerFunc, errorHandler, allStates, event, arg1, arg2, ...);
       if( (ok and returnValue) or optionsEvent) then
