@@ -1461,12 +1461,11 @@ local methods = {
       self:PriorityHide(1);
     end
   end,
-  ["PriorityShow"] = function(self, priority)
+  ["SyncVisibility"] = function(self)
     if (not WeakAuras.IsOptionsOpen()) then
       return;
     end
-    if(priority >= self.view.visibility and self.view.visibility ~= priority) then
-      self.view.visibility = priority;
+    if self.view.visibility >= 1 then
       if(self.view.region and self.view.region.Expand) then
         OptionsPrivate.Private.FakeStatesFor(self.view.region.id, true)
         if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
@@ -1476,6 +1475,25 @@ local methods = {
           OptionsPrivate.Private.mouseFrame:expand(self.view.region.id);
         end
       end
+    else
+      if(self.view.region and self.view.region.Collapse) then
+        OptionsPrivate.Private.FakeStatesFor(self.view.region.id, false)
+        if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
+          OptionsPrivate.Private.personalRessourceDisplayFrame:collapse(self.view.region.id);
+        end
+        if (OptionsPrivate.Private.mouseFrame) then
+          OptionsPrivate.Private.mouseFrame:collapse(self.view.region.id);
+        end
+      end
+    end
+  end,
+  ["PriorityShow"] = function(self, priority)
+    if (not WeakAuras.IsOptionsOpen()) then
+      return;
+    end
+    if(priority >= self.view.visibility and self.view.visibility ~= priority) then
+      self.view.visibility = priority;
+      self:SyncVisibility()
       self:UpdateViewTexture()
     end
     if self.view.region and self.view.region.ClickToPick then
@@ -1488,15 +1506,7 @@ local methods = {
     end
     if(priority >= self.view.visibility and self.view.visibility ~= 0) then
       self.view.visibility = 0;
-      if(self.view.region and self.view.region.Collapse) then
-        OptionsPrivate.Private.FakeStatesFor(self.view.region.id, false)
-        if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
-          OptionsPrivate.Private.personalRessourceDisplayFrame:collapse(self.view.region.id);
-        end
-        if (OptionsPrivate.Private.mouseFrame) then
-          OptionsPrivate.Private.mouseFrame:collapse(self.view.region.id);
-        end
-      end
+      self:SyncVisibility()
       self:UpdateViewTexture()
     end
   end,
@@ -1698,7 +1708,7 @@ local function Constructor()
   view:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -2, 0);
   local viewTexture = view:CreateTexture()
   view.texture = viewTexture;
-  viewTexture:SetTexture("Interface\\LFGFrame\\BattlenetWorking1.blp");
+  viewTexture:SetTexture("Interface\\LFGFrame\\BattlenetWorking4.blp");
   viewTexture:SetTexCoord(0.1, 0.9, 0.1, 0.9);
   viewTexture:SetAllPoints(view);
   view:SetNormalTexture(viewTexture);

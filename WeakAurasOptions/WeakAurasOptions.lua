@@ -770,9 +770,7 @@ function WeakAuras.ShowOptions(msg)
     -- Show what was last shown
     OptionsPrivate.Private.PauseAllDynamicGroups();
     for id, button in pairs(displayButtons) do
-      if (button:GetVisibility() > 0) then
-        button:PriorityShow(button:GetVisibility());
-      end
+      button:SyncVisibility()
     end
     OptionsPrivate.Private.ResumeAllDynamicGroups();
   end
