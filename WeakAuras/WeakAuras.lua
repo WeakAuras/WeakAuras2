@@ -3021,6 +3021,9 @@ function Private.HandleChatAction(message_type, message, message_dest, message_c
     if(message_dest) then
       if(message_dest == "target" or message_dest == "'target'" or message_dest == "\"target\"" or message_dest == "%t" or message_dest == "'%t'" or message_dest == "\"%t\"") then
         pcall(function() SendChatMessage(message, "WHISPER", nil, UnitName("target")) end);
+      elseif (message_dest:find('%%')) then
+        message_dest = Private.ReplacePlaceHolders(message_dest, region, customFunc, useHiddenStates, formatters);
+        pcall(function() SendChatMessage(message, "WHISPER", nil, message_dest) end);
       else
         pcall(function() SendChatMessage(message, "WHISPER", nil, message_dest) end);
       end
