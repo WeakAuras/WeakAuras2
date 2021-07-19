@@ -278,6 +278,10 @@ do
   end
 end
 
+WeakAuras.UnitIsPet = function(unit)
+  return WeakAuras.petUnitToUnit[unit] ~= nil
+end
+
 local playerLevel = UnitLevel("player");
 local currentInstanceType = "none"
 

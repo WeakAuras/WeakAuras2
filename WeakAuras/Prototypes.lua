@@ -2511,6 +2511,16 @@ Private.event_prototypes = {
         end
       },
       {
+        name = "ignorePets",
+        display = L["Ignore Pets"],
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        init = "not WeakAuras.UnitIsPet(unit)",
+        enable = function(trigger)
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end
+      },
+      {
         name = "ignoreSelf",
         display = L["Ignore Self"],
         type = "toggle",

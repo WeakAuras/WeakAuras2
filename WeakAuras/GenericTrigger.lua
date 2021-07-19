@@ -3995,6 +3995,7 @@ else
   end
 end
 
+
 local types = {}
 tinsert(types, "custom")
 for type in pairs(Private.category_event_prototype) do
