@@ -457,6 +457,7 @@ local function ConstructTextEditor(frame)
     function(self)
       local snippet = editor.editBox:GetText()
       if snippet and #snippet > 0 then
+        snippet = snippet:gsub("|", "||")
         local baseName, name, index = "New Snippet", "New Snippet", 0
         local snippetExists = function(name)
           for _, snippet in ipairs(savedSnippets) do
