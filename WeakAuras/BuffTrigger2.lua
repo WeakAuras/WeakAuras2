@@ -129,7 +129,7 @@ local function UnitIsVisibleFixed(unit)
 end
 
 local function UnitInSubgroupOrPlayer(unit)
-  return UnitInSubgroup(unit) or UnitIsUnit("player", unit)
+  return UnitInSubgroup(WeakAuras.petUnitToUnit[unit] or unit) or UnitIsUnit("player", unit)
 end
 
 local function GetOrCreateSubTable(base, next, ...)
@@ -842,11 +842,15 @@ local function GetAllUnits(unit, allUnits)
     if allUnits then
       local i = 1
       local raid = true
+      local pets = true
       return function()
         if raid then
           if i <= 40 then
-            local ret = WeakAuras.raidUnits[i]
-            i = i + 1
+            local ret = pets and WeakAuras.raidpetUnits[i] or WeakAuras.raidUnits[i]
+            pets = not pets
+            if pets then
+              i = i + 1
+            end
             return ret
           end
           raid = false
@@ -855,8 +859,11 @@ local function GetAllUnits(unit, allUnits)
         end
 
         if i <= 4 then
-          local ret =  WeakAuras.partyUnits[i]
-          i = i + 1
+          local ret = pets and WeakAuras.partypetUnits[i] or WeakAuras.partyUnits[i]
+          pets = not pets
+          if pets then
+            i = i + 1
+          end
           return ret
         end
 
@@ -869,10 +876,14 @@ local function GetAllUnits(unit, allUnits)
     if IsInRaid() then
       local i = 1
       local max = GetNumGroupMembers()
+      local pets = true
       return function()
         if i <= max then
-          local ret = WeakAuras.raidUnits[i]
-          i = i + 1
+          local ret = pets and WeakAuras.raidpetUnits[i] or WeakAuras.raidUnits[i]
+          pets = not pets
+          if pets then
+            i = i + 1
+          end
           return ret
         end
         i = 1
@@ -880,14 +891,18 @@ local function GetAllUnits(unit, allUnits)
     else
       local i = 0
       local max = GetNumSubgroupMembers()
+      local pets = true
       return function()
         if i == 0 then
           i = 1
           return "player"
         else
           if i <= max then
-            local ret =  WeakAuras.partyUnits[i]
-            i = i + 1
+            local ret =  pets and WeakAuras.partypetUnits[i] or WeakAuras.partyUnits[i]
+            pets = not pets
+            if pets then
+              i = i + 1
+            end
             return ret
           end
         end
@@ -1348,7 +1363,6 @@ end
 local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
   scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup,
   scanFuncName, scanFuncSpellId, scanFuncGeneral)
-
   if not scanFuncName and not scanFuncSpellId and not scanFuncGeneral and not scanFuncNameGroup and not scanFuncSpellIdGroup and not scanFuncGeneralGroup then
     if matchDataUpToDate[unit] then
       matchDataUpToDate[unit][filter] = nil
@@ -1426,7 +1440,6 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit)
   scanFuncName[unit] = scanFuncName[unit] or {}
   scanFuncSpellId[unit] = scanFuncSpellId[unit] or {}
   scanFuncGeneral[unit] = scanFuncGeneral[unit] or {}
-
   if unitType then
     scanFuncNameGroup[unit] = scanFuncNameGroup[unit] or {}
     scanFuncSpellIdGroup[unit] = scanFuncSpellIdGroup[unit] or {}
@@ -1607,9 +1620,9 @@ local function EventHandler(frame, event, arg1, arg2, ...)
       tinsert(unitsToRemove, "focus")
     end
   elseif event == "UNIT_PET" then
-    ScanGroupUnit(time, matchDataChanged, nil, "pet")
-    if not UnitExistsFixed("pet") then
-      tinsert(unitsToRemove, "pet")
+    ScanGroupUnit(time, matchDataChanged, nil, arg1)
+    if not UnitExistsFixed(arg1) then
+      tinsert(unitsToRemove, arg1)
     end
   elseif event == "NAME_PLATE_UNIT_ADDED" then
     nameplateExists[arg1] = true

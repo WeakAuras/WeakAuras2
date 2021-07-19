@@ -3074,19 +3074,29 @@ Private.multiUnitUnits = {
 Private.multiUnitUnits.group["player"] = true
 Private.multiUnitUnits.party["player"] = true
 
+Private.multiUnitUnits.group["pet"] = true
+Private.multiUnitUnits.party["pet"] = true
+
 for i = 1, 4 do
   Private.baseUnitId["party"..i] = true
   Private.baseUnitId["partypet"..i] = true
   Private.multiUnitUnits.group["party"..i] = true
   Private.multiUnitUnits.party["party"..i] = true
+  Private.multiUnitUnits.group["partypet"..i] = true
+  Private.multiUnitUnits.party["partypet"..i] = true
 end
 
 if WeakAuras.IsRetail() then
   for i = 1, MAX_BOSS_FRAMES do
-    Private.baseUnitId["arena"..i] = true
     Private.baseUnitId["boss"..i] = true
-    Private.multiUnitUnits.arena["arena"..i] = true
     Private.multiUnitUnits.boss["boss"..i] = true
+  end
+end
+
+if WeakAuras.IsRetail() or WeakAuras.IsBCC() then
+  for i = 1, 5 do
+    Private.baseUnitId["arena"..i] = true
+    Private.multiUnitUnits.arena["arena"..i] = true
   end
 end
 
@@ -3097,6 +3107,8 @@ for i = 1, 40 do
   Private.multiUnitUnits.nameplate["nameplate"..i] = true
   Private.multiUnitUnits.group["raid"..i] = true
   Private.multiUnitUnits.raid["raid"..i] = true
+  Private.multiUnitUnits.group["raidpet"..i] = true
+  Private.multiUnitUnits.raid["raidpet"..i] = true
 end
 
 Private.dbm_types = {

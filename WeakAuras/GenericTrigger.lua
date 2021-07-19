@@ -965,20 +965,26 @@ local function MultiUnitLoop(Func, unit, ...)
     end
   elseif unit == "group" then
     Func("player", ...)
+    Func("pet", ...)
     for i = 1, 4 do
       Func("party"..i, ...)
+      Func("partypet"..i, ...)
     end
     for i = 1, 40 do
       Func("raid"..i, ...)
+      Func("raidpet"..i, ...)
     end
   elseif unit == "party" then
     Func("player", ...)
+    Func("pet", ...)
     for i = 1, 4 do
       Func("party"..i, ...)
+      Func("partypet"..i, ...)
     end
   elseif unit == "raid" then
     for i = 1, 40 do
       Func("raid"..i, ...)
+      Func("raidpet"..i, ...)
     end
   else
     Func(unit, ...)
@@ -3960,6 +3966,14 @@ else
       spellCrit = min(spellCrit, GetSpellCritChance(i))
     end
     return max(spellCrit, GetRangedCritChance(), GetCritChance())
+  end
+end
+
+do
+  local guid
+  WeakAuras.UnitIsPet = function(unit)
+    guid = UnitGUID(unit)
+    return guid and guid:sub(1, 4) == "Pet-"
   end
 end
 
