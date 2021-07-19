@@ -4,6 +4,7 @@ local AddonName, OptionsPrivate = ...
 -- Lua APIs
 local pairs, type, ipairs = pairs, type, ipairs
 local loadstring = loadstring
+local gsub = gsub
 
 -- WoW APIs
 local CreateFrame = CreateFrame
@@ -359,7 +360,6 @@ local function ConstructTextEditor(frame)
       button:SetCallback(
         "OnClick",
         function()
-
           editor.editBox:Insert(snippetInsert)
           editor:SetFocus()
         end
