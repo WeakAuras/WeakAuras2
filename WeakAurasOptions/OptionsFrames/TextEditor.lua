@@ -4,6 +4,7 @@ local AddonName, OptionsPrivate = ...
 -- Lua APIs
 local pairs, type, ipairs = pairs, type, ipairs
 local loadstring = loadstring
+local gsub = gsub
 
 -- WoW APIs
 local CreateFrame = CreateFrame
@@ -349,8 +350,9 @@ local function ConstructTextEditor(frame)
     -- iterate saved snippets and make buttons
     for order, snippet in ipairs(savedSnippets) do
       local button = AceGUI:Create("WeakAurasSnippetButton")
+      local snippetInsert = gsub(snippet.snippet, "|", "||")
       button:SetTitle(snippet.name)
-      button:SetDescription(snippet.snippet)
+      button:SetDescription(snippetInsert)
       button:SetEditable(true)
       button:SetRelativeWidth(1)
       button:SetNew(snippet.new)
@@ -358,7 +360,7 @@ local function ConstructTextEditor(frame)
       button:SetCallback(
         "OnClick",
         function()
-          editor.editBox:Insert(snippet.snippet)
+          editor.editBox:Insert(snippetInsert)
           editor:SetFocus()
         end
       )
