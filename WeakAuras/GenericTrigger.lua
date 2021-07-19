@@ -3946,6 +3946,14 @@ else
   end
 end
 
+do
+  local guid
+  WeakAuras.UnitIsPet = function(unit)
+    guid = UnitGUID(unit)
+    return guid and guid:sub(1, 4) == "Pet-"
+  end
+end
+
 local types = {}
 tinsert(types, "custom")
 for type in pairs(Private.category_event_prototype) do
