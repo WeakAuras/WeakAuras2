@@ -1647,7 +1647,9 @@ do
       swingTimerFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
       swingTimerFrame:RegisterEvent("PLAYER_ENTER_COMBAT");
       swingTimerFrame:RegisterEvent("PLAYER_LEAVE_COMBAT");
-      swingTimerFrame:RegisterUnitEvent("UNIT_ATTACK_SPEED", "player");
+      if not WeakAuras.IsBCC() then
+        swingTimerFrame:RegisterUnitEvent("UNIT_ATTACK_SPEED", "player");
+      end
       swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
       if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
         swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
