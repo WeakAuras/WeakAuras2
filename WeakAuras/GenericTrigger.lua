@@ -1554,7 +1554,7 @@ do
   end
 
   local function swingTimerCheck(event, unit, guid, spell)
-    if unit and unit ~= "player" then return end
+    if event ~= "PLAYER_EQUIPMENT_CHANGED" and unit and unit ~= "player" then return end
     Private.StartProfileSystem("generictrigger swing");
     if event == "UNIT_ATTACK_SPEED" then
       local mainSpeedNew, offSpeedNew = UnitAttackSpeed("player")
@@ -1582,6 +1582,41 @@ do
       mainSpeed, offSpeed = mainSpeedNew, offSpeedNew
     elseif casting and (event == "UNIT_SPELLCAST_INTERRUPTED" or event == "UNIT_SPELLCAST_FAILED") then
       casting = false
+    elseif event == "PLAYER_EQUIPMENT_CHANGED" and isAttacking then
+      local currentTime = GetTime()
+      mainSpeed, offSpeed = UnitAttackSpeed("player")
+      offSpeed = offSpeed or 0
+      local startEvent = false
+      if lastSwingMain then
+        lastSwingMain = currentTime
+        swingDurationMain = mainSpeed
+        mainSwingOffset = 0
+        timer:CancelTimer(mainTimer)
+        mainTimer = timer:ScheduleTimerFixed(swingEnd, mainSpeed, "main")
+        startEvent = true
+      end
+      if lastSwingOff then
+        lastSwingOff = currentTime
+        swingDurationOff = offSpeed
+        timer:CancelTimer(offTimer)
+        if C_PaperDollInfo.OffhandHasWeapon() then
+          offTimer = timer:ScheduleTimerFixed(swingEnd, offSpeed, "off")
+          startEvent = true
+        else
+          WeakAuras.ScanEvents("SWING_TIMER_END")
+        end
+      end
+      if lastSwingRange then
+        local speed = UnitRangedDamage("player")
+        lastSwingRange = currentTime
+        swingDurationRange = speed
+        timer:CancelTimer(rangeTimer)
+        rangeTimer = timer:ScheduleTimerFixed(swingEnd, speed, "ranged")
+        startEvent = true
+      end
+      if startEvent then
+        WeakAuras.ScanEvents("SWING_TIMER_START")
+      end
     elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
       if Private.reset_swing_spells[spell] or casting then
         if casting then
@@ -1647,6 +1682,7 @@ do
       swingTimerFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
       swingTimerFrame:RegisterEvent("PLAYER_ENTER_COMBAT");
       swingTimerFrame:RegisterEvent("PLAYER_LEAVE_COMBAT");
+      swingTimerFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
       if not WeakAuras.IsBCC() then
         swingTimerFrame:RegisterUnitEvent("UNIT_ATTACK_SPEED", "player");
       end
