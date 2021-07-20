@@ -3377,7 +3377,8 @@ if WeakAuras.IsBCC() then
     6807, 6808, 6809, 8972, 9745, 9880, 9881, 26996, -- Maul
     20549, -- War Stomp
     2764, 3018, -- Shoots,
-    19434, 20900, 20901, 20902, 20903, 20904, 27065 -- Aimed Shot
+    19434, 20900, 20901, 20902, 20903, 20904, 27065, -- Aimed Shot
+    20066, -- Repentance
   }
   for _, spellid in ipairs(reset_swing_spell_list) do
     Private.reset_swing_spells[spellid] = true
