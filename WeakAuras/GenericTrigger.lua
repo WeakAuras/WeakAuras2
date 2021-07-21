@@ -1488,6 +1488,10 @@ do
     return 0, math.huge;
   end
 
+  local function swingTriggerUpdate()
+    WeakAuras.ScanEvents("SWING_TIMER_UPDATE")
+  end
+
   local function swingEnd(hand)
     if(hand == "main") then
       lastSwingMain, swingDurationMain, mainSwingOffset = nil, nil, nil;
@@ -1496,7 +1500,48 @@ do
     elseif(hand == "ranged") then
       lastSwingRange, swingDurationRange = nil, nil;
     end
-    WeakAuras.ScanEvents("SWING_TIMER_END");
+  end
+
+  local function swingStart(hand)
+    mainSpeed, offSpeed = UnitAttackSpeed("player")
+    offSpeed = offSpeed or 0
+    local currentTime = GetTime()
+    if hand == "main" then
+      lastSwingMain = currentTime
+      swingDurationMain = mainSpeed
+      mainSwingOffset = 0
+      if mainTimer then
+        timer:CancelTimer(mainTimer)
+      end
+      if mainSpeed and mainSpeed > 0 then
+        mainTimer = timer:ScheduleTimerFixed(swingEnd, mainSpeed, hand)
+      else
+        swingEnd(hand)
+      end
+    elseif hand == "off" then
+      lastSwingOff = currentTime
+      swingDurationOff = offSpeed
+      if offTimer then
+        timer:CancelTimer(offTimer)
+      end
+      if offSpeed and offSpeed > 0 then
+        offTimer = timer:ScheduleTimerFixed(swingEnd, offSpeed, hand)
+      else
+        swingEnd(hand)
+      end
+    elseif hand == "ranged" then
+      local rangeSpeed = UnitRangedDamage("player")
+      lastSwingRange = currentTime
+      swingDurationRange = rangeSpeed
+      if rangeTimer then
+        timer:CancelTimer(rangeTimer)
+      end
+      if rangeSpeed and rangeSpeed > 0 then
+        rangeTimer = timer:ScheduleTimerFixed(swingEnd, rangeSpeed, hand)
+      else
+        swingEnd(hand)
+      end
+    end
   end
 
   local function swingTimerCLEUCheck(ts, event, _, sourceGUID, _, _, _, destGUID, _, _, _, ...)
@@ -1513,40 +1558,26 @@ do
           end
         end
         local isOffHand = select(event == "SWING_DAMAGE" and 10 or 2, ...);
-
-        local event;
-        local currentTime = GetTime();
-        mainSpeed, offSpeed = UnitAttackSpeed("player");
-        offSpeed = offSpeed or 0;
-        if not(isOffHand) then
-          lastSwingMain = currentTime;
-          swingDurationMain = mainSpeed;
-          mainSwingOffset = 0;
-          event = "SWING_TIMER_START";
-          timer:CancelTimer(mainTimer);
-          mainTimer = timer:ScheduleTimerFixed(swingEnd, mainSpeed, "main");
+        if not isOffHand then
+          swingStart("main")
         elseif(isOffHand) then
-          lastSwingOff = currentTime;
-          swingDurationOff = offSpeed;
-          event = "SWING_TIMER_START";
-          timer:CancelTimer(offTimer);
-          offTimer = timer:ScheduleTimerFixed(swingEnd, offSpeed, "off");
+          swingStart("off")
         end
-        WeakAuras.ScanEvents(event);
+        swingTriggerUpdate()
       end
-    elseif (destGUID == selfGUID and (select(1, ...) == "PARRY" or select(4, ...) == "PARRY")) then
+    elseif (destGUID == selfGUID and (... == "PARRY" or select(4, ...) == "PARRY")) then
       if (lastSwingMain) then
         local timeLeft = lastSwingMain + swingDurationMain - GetTime();
         if (timeLeft > 0.6 * swingDurationMain) then
           timer:CancelTimer(mainTimer);
           mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft - 0.4 * swingDurationMain, "main");
           mainSwingOffset = 0.4 * swingDurationMain
-          WeakAuras.ScanEvents("SWING_TIMER_CHANGE");
+          swingTriggerUpdate()
         elseif (timeLeft > 0.2 * swingDurationMain) then
           timer:CancelTimer(mainTimer);
           mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft - 0.2 * swingDurationMain, "main");
           mainSwingOffset = 0.2 * swingDurationMain
-          WeakAuras.ScanEvents("SWING_TIMER_CHANGE");
+          swingTriggerUpdate()
         end
       end
     end
@@ -1566,7 +1597,6 @@ do
           local timeLeft = (lastSwingMain + swingDurationMain - GetTime()) * multiplier
           swingDurationMain = mainSpeedNew
           mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft, "main")
-          WeakAuras.ScanEvents("SWING_TIMER_CHANGE")
         end
       end
       if lastSwingOff then
@@ -1576,89 +1606,34 @@ do
           local timeLeft = (lastSwingOff + swingDurationOff - GetTime()) * multiplier
           swingDurationOff = offSpeedNew
           offTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft, "off")
-          WeakAuras.ScanEvents("SWING_TIMER_CHANGE")
         end
       end
       mainSpeed, offSpeed = mainSpeedNew, offSpeedNew
+      swingTriggerUpdate()
     elseif casting and (event == "UNIT_SPELLCAST_INTERRUPTED" or event == "UNIT_SPELLCAST_FAILED") then
       casting = false
     elseif event == "PLAYER_EQUIPMENT_CHANGED" and isAttacking then
-      local currentTime = GetTime()
-      mainSpeed, offSpeed = UnitAttackSpeed("player")
-      offSpeed = offSpeed or 0
-      local startEvent = false
-      if lastSwingMain then
-        lastSwingMain = currentTime
-        swingDurationMain = mainSpeed
-        mainSwingOffset = 0
-        timer:CancelTimer(mainTimer)
-        mainTimer = timer:ScheduleTimerFixed(swingEnd, mainSpeed, "main")
-        startEvent = true
-      end
-      if lastSwingOff then
-        lastSwingOff = currentTime
-        swingDurationOff = offSpeed
-        timer:CancelTimer(offTimer)
-        if C_PaperDollInfo.OffhandHasWeapon() then
-          offTimer = timer:ScheduleTimerFixed(swingEnd, offSpeed, "off")
-          startEvent = true
-        else
-          WeakAuras.ScanEvents("SWING_TIMER_END")
-        end
-      end
-      if lastSwingRange then
-        local speed = UnitRangedDamage("player")
-        lastSwingRange = currentTime
-        swingDurationRange = speed
-        timer:CancelTimer(rangeTimer)
-        rangeTimer = timer:ScheduleTimerFixed(swingEnd, speed, "ranged")
-        startEvent = true
-      end
-      if startEvent then
-        WeakAuras.ScanEvents("SWING_TIMER_START")
-      end
+      swingStart("main")
+      swingStart("off")
+      swingStart("ranged")
+      swingTriggerUpdate()
     elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
       if Private.reset_swing_spells[spell] or casting then
         if casting then
           casting = false
         end
-        if not isAttacking then return end
-        local event;
-        mainSpeed, offSpeed = UnitAttackSpeed("player");
-        lastSwingMain = GetTime();
-        swingDurationMain = mainSpeed;
-        mainSwingOffset = 0;
-        if (lastSwingMain) then
-          timer:CancelTimer(mainTimer);
-          event = "SWING_TIMER_CHANGE";
-        else
-          event = "SWING_TIMER_START";
+        if isAttacking then
+          swingStart("main")
+          swingTriggerUpdate()
         end
-        mainTimer = timer:ScheduleTimerFixed(swingEnd, mainSpeed, "main");
-        WeakAuras.ScanEvents(event);
       end
-      if Private.reset_ranged_swing_spells[spell] then
-        local event;
-        local currentTime = GetTime();
-        local speed = UnitRangedDamage("player");
-        if(lastSwingRange) then
-          if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
-            timer:CancelTimer(rangeTimer, true)
-          else
-            timer:CancelTimer(mainTimer, true)
-          end
-          event = "SWING_TIMER_CHANGE";
-        else
-          event = "SWING_TIMER_START";
-        end
-        lastSwingRange = currentTime;
-        swingDurationRange = speed;
+      if Private.reset_ranged_swing_spells[spell] and isAttacking then
         if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
-          rangeTimer = timer:ScheduleTimerFixed(swingEnd, speed, "ranged");
+          swingStart("ranged")
         else
-          mainTimer = timer:ScheduleTimerFixed(swingEnd, speed, "main");
+          swingStart("main")
         end
-        WeakAuras.ScanEvents(event);
+        swingTriggerUpdate()
       end
     elseif event == "UNIT_SPELLCAST_START" then
       if not Private.noreset_swing_spells[spell] then
@@ -1666,7 +1641,7 @@ do
         casting = true
         lastSwingMain, swingDurationMain, mainSwingOffset = nil, nil, nil
         lastSwingOff, swingDurationOff = nil, nil
-        WeakAuras.ScanEvents("SWING_TIMER_END")
+        swingTriggerUpdate()
       end
     elseif event == "PLAYER_ENTER_COMBAT" then
       isAttacking = true
