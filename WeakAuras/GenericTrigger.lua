@@ -3928,11 +3928,17 @@ end
 
 WeakAuras.CheckForItemBonusId = function(ids)
   for id in tostring(ids):gmatch('([^,]+)') do
-    id = ":" .. tostring(id:trim()) .. ":"
+    id = ":" .. tostring(id:trim())
     for slot in pairs(Private.item_slot_types) do
       local itemLink = GetInventoryItemLink('player', slot)
-      if itemLink and itemLink:find(id, 1, true) then
-        return true
+      if itemLink then
+        local _, endPos = itemLink:find(id, 1, true)
+        if endPos then
+          endPos = endPos +1
+          if (itemLink:sub(endPos, endPos) == ":" or itemLink:sub(endPos, endPos) == "|") then
+            return true
+          end
+        end
       end
     end
   end
