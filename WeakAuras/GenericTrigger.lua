@@ -1500,6 +1500,7 @@ do
     elseif(hand == "ranged") then
       lastSwingRange, swingDurationRange = nil, nil;
     end
+    swingTriggerUpdate()
   end
 
   local function swingStart(hand)
