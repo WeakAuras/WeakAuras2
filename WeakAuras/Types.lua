@@ -425,7 +425,6 @@ Private.format_types = {
       local nameFunc
       local colorFunc
       local abbreviateFunc
-      local raidTargetFunc
 
       if color == "class" then
         colorFunc = function(unit, text)
