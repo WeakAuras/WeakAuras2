@@ -408,16 +408,25 @@ Private.format_types = {
           return not get(symbol .. "_abbreviate")
         end
       })
+      addOption(symbol .. "_raid_marker", {
+        type = "toggle",
+        name = L["Raid Marker"],
+        width = WeakAuras.normalWidth,
+        hidden = hidden,
+      })
     end,
     CreateFormatter = function(symbol, get)
-      local color = get(symbol .. "_color", true)
+      local color = get(symbol .. "_color", "none")
       local realm = get(symbol .. "_realm_name", "never")
       local abbreviate = get(symbol .. "_abbreviate", false)
       local abbreviateMax = get(symbol .. "_abbreviate_max", 8)
+      local raidTarget = get(symbol .. "_raid_marker", false)
 
       local nameFunc
       local colorFunc
       local abbreviateFunc
+      local raidTargetFunc
+
       if color == "class" then
         colorFunc = function(unit, text)
           if unit and UnitPlayerControlled(unit) then
@@ -432,7 +441,15 @@ Private.format_types = {
 
       if realm == "never" then
         nameFunc = function(unit)
-          return unit and UnitName(unit)
+          if not unit then
+            return ""
+          end
+          if raidTarget then
+            local rt = GetRaidTargetIndex(unit)
+            return rt and ("{rt" .. rt .. "}" .. UnitName(unit)) or UnitName(unit)
+          else
+            return UnitName(unit)
+          end
         end
       elseif realm == "star" then
         nameFunc = function(unit)
@@ -440,6 +457,10 @@ Private.format_types = {
             return ""
           end
           local name, realm = UnitName(unit)
+          if raidTarget then
+            local rt = GetRaidTargetIndex(unit)
+            if rt then name = "{rt" .. rt .. "}" .. name end
+          end
           if realm then
             return name .. "*"
           end
@@ -451,6 +472,10 @@ Private.format_types = {
             return ""
           end
           local name, realm = UnitName(unit)
+          if raidTarget then
+            local rt = GetRaidTargetIndex(unit)
+            if rt then name = "{rt" .. rt .. "}" .. name end
+          end
           if realm then
             return name .. "-" .. realm
           end
@@ -462,12 +487,19 @@ Private.format_types = {
             return ""
           end
           local name, realm = WeakAuras.UnitNameWithRealm(unit)
+          if raidTarget then
+            local rt = GetRaidTargetIndex(unit)
+            if rt then name = "{rt" .. rt .. "}" .. name end
+          end
           return name .. "-" .. realm
         end
       end
 
       if abbreviate then
         abbreviateFunc = function(input)
+          if raidTarget and input:sub(1,3) == "{rt" then
+            return WeakAuras.WA_Utf8Sub(input, abbreviateMax + 5)
+          end
           return WeakAuras.WA_Utf8Sub(input, abbreviateMax)
         end
       end
