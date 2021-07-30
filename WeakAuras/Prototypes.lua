@@ -1734,9 +1734,15 @@ local function AddUnitRoleChangeInternalEvents(triggerUnit, t)
     return
   end
 
+  if WeakAuras.UnitIsPet(triggerUnit) then
+    return
+  end
+
   if Private.multiUnitUnits[triggerUnit] then
     for unit in pairs(Private.multiUnitUnits[triggerUnit]) do
-      tinsert(t, "UNIT_ROLE_CHANGED_" .. string.lower(unit))
+      if not WeakAuras.UnitIsPet(unit) then
+        tinsert(t, "UNIT_ROLE_CHANGED_" .. string.lower(unit))
+      end
     end
   else
     tinsert(t, "UNIT_ROLE_CHANGED_" .. string.lower(triggerUnit))
