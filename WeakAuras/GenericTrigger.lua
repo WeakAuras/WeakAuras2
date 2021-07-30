@@ -953,7 +953,7 @@ function GenericTrigger.Rename(oldid, newid)
   Private.EveryFrameUpdateRename(oldid, newid)
 end
 
-local function MultiUnitLoop(Func, unit, ...)
+local function MultiUnitLoop(Func, unit, includePets, ...)
   unit = string.lower(unit)
   if unit == "boss" or unit == "arena" then
     for i = 1, MAX_BOSS_FRAMES do
@@ -964,27 +964,51 @@ local function MultiUnitLoop(Func, unit, ...)
       Func(unit..i, ...)
     end
   elseif unit == "group" then
-    Func("player", ...)
-    Func("pet", ...)
+    if includePets ~= false then
+      Func("player", ...)
+    end
+    if includePets ~= nil then
+      Func("pet", ...)
+    end
     for i = 1, 4 do
-      Func("party"..i, ...)
-      Func("partypet"..i, ...)
+      if includePets ~= false then
+        Func("party"..i, ...)
+      end
+      if includePets ~= nil then
+        Func("partypet"..i, ...)
+      end
     end
     for i = 1, 40 do
-      Func("raid"..i, ...)
-      Func("raidpet"..i, ...)
+      if includePets ~= false then
+        Func("raid"..i, ...)
+      end
+      if includePets ~= nil then
+        Func("raidpet"..i, ...)
+      end
     end
   elseif unit == "party" then
-    Func("player", ...)
-    Func("pet", ...)
+    if includePets ~= false then
+      Func("player", ...)
+    end
+    if includePets ~= nil then
+      Func("pet", ...)
+    end
     for i = 1, 4 do
-      Func("party"..i, ...)
-      Func("partypet"..i, ...)
+      if includePets ~= false then
+        Func("party"..i, ...)
+      end
+      if includePets ~= nil then
+        Func("partypet"..i, ...)
+      end
     end
   elseif unit == "raid" then
     for i = 1, 40 do
-      Func("raid"..i, ...)
-      Func("raidpet"..i, ...)
+      if includePets ~= false then
+        Func("raid"..i, ...)
+      end
+      if includePets ~= nil then
+        Func("raidpet"..i, ...)
+      end
     end
   else
     Func(unit, ...)
@@ -1019,12 +1043,17 @@ function LoadEvent(id, triggernum, data)
       unit = string.lower(unit)
       for index, event in pairs(events) do
         MultiUnitLoop(
-          function(unit)
-            loaded_unit_events[unit] = loaded_unit_events[unit] or {};
-            loaded_unit_events[unit][event] = loaded_unit_events[unit][event] or {};
-            loaded_unit_events[unit][event][id] = loaded_unit_events[unit][event][id] or {}
-            loaded_unit_events[unit][event][id][triggernum] = data;
-          end, unit
+          function(u)
+            loaded_unit_events[u] = loaded_unit_events[u] or {};
+            loaded_unit_events[u][event] = loaded_unit_events[u][event] or {};
+            loaded_unit_events[u][event][id] = loaded_unit_events[u][event][id] or {}
+            loaded_unit_events[u][event][id][triggernum] = data;
+            if WeakAuras.UnitIsPet(u) then
+              loaded_unit_events[u].UNIT_PET = loaded_unit_events[u].UNIT_PET or {}
+              loaded_unit_events[u].UNIT_PET[id] = loaded_unit_events[u].UNIT_PET[id] or {}
+              loaded_unit_events[u].UNIT_PET[id][triggernum] = data;
+            end
+          end, unit, data.trigger.use_includePets
         )
       end
     end
@@ -1068,12 +1097,15 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
           for unit, events in pairs(data.unit_events) do
             for index, event in pairs(events) do
               MultiUnitLoop(
-                function (unit)
-                  if not (genericTriggerRegisteredUnitEvents[unit] and genericTriggerRegisteredUnitEvents[unit][event]) then
-                    unitEventsToRegister[unit] = unitEventsToRegister[unit] or {}
-                    unitEventsToRegister[unit][event] = true
+                function (u)
+                  if not (genericTriggerRegisteredUnitEvents[u] and genericTriggerRegisteredUnitEvents[u][event]) then
+                    unitEventsToRegister[u] = unitEventsToRegister[u] or {}
+                    unitEventsToRegister[u][event] = true
+                    if WeakAuras.UnitIsPet(u) then
+                      unitEventsToRegister[u].UNIT_PET = true
+                    end
                   end
-                end, unit
+                end, unit, data.trigger.use_includePets
               )
             end
           end
@@ -1298,12 +1330,23 @@ function GenericTrigger.Add(data, region)
                     hasParam = true
                   end
                 elseif trueEvent:match("^UNIT_") then
+                  local includePets
+                  if i == "grouppets" then
+                    includePets = true
+                    i = "group"
+                  elseif i == "grouppetsonly" then
+                    includePets = false
+                    i = "group"
+                  end
                   MultiUnitLoop(
                     function(unit)
                       trigger_unit_events[unit] = trigger_unit_events[unit] or {}
                       tinsert(trigger_unit_events[unit], trueEvent)
                       isUnitEvent = true
-                    end, i
+                      if WeakAuras.UnitIsPet(unit) then
+                        tinsert(trigger_unit_events[unit], "UNIT_PET")
+                      end
+                    end, i, includePets
                   )
                 end
               end
