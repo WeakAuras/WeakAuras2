@@ -1703,7 +1703,7 @@ Private.load_prototype = {
   }
 };
 
-local function AddUnitChangeInternalEvents(triggerUnit, t)
+local function AddUnitChangeInternalEvents(triggerUnit, t, includePets)
   if (triggerUnit == nil) then
     return
   end
@@ -1714,9 +1714,13 @@ local function AddUnitChangeInternalEvents(triggerUnit, t)
     tinsert(t, "PET_UPDATE")
   else
     if Private.multiUnitUnits[triggerUnit] then
+      local isPet
       for unit in pairs(Private.multiUnitUnits[triggerUnit]) do
-        tinsert(t, "UNIT_CHANGED_" .. string.lower(unit))
-        WeakAuras.WatchUnitChange(unit)
+        isPet = WeakAuras.UnitIsPet(unit)
+        if (includePets ~= nil and isPet) or (includePets ~= false and not isPet) then
+          tinsert(t, "UNIT_CHANGED_" .. string.lower(unit))
+          WeakAuras.WatchUnitChange(unit)
+        end
       end
     else
       tinsert(t, "UNIT_CHANGED_" .. string.lower(triggerUnit))
