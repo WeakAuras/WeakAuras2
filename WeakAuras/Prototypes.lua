@@ -2527,11 +2527,11 @@ Private.event_prototypes = {
         end
       },
       {
-        name = "ignorePets",
-        display = L["Ignore Pets"],
-        type = "toggle",
+        name = "includePets",
+        display = L["Include Pets"],
+        type = "tristate",
         width = WeakAuras.doubleWidth,
-        init = "not WeakAuras.UnitIsPet(unit)",
+        test = "true",
         enable = function(trigger)
           return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end
