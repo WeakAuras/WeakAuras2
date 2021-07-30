@@ -2307,8 +2307,10 @@ Private.event_prototypes = {
     internal_events = function(trigger)
       local unit = trigger.unit
       local result = {}
-      AddUnitChangeInternalEvents(unit, result)
-      AddUnitRoleChangeInternalEvents(unit, result)
+      AddUnitChangeInternalEvents(unit, result, trigger.use_includePets)
+      if trigger.use_includePets ~= false then
+        AddUnitRoleChangeInternalEvents(unit, result)
+      end
       return result
     end,
     force_events = unitHelperFunctions.UnitChangedForceEvents,
