@@ -1784,8 +1784,12 @@ local unitHelperFunctions = {
   UnitChangedForceEvents = function(trigger)
     local events = {}
     if Private.multiUnitUnits[trigger.unit] then
+      local isPet
       for unit in pairs(Private.multiUnitUnits[trigger.unit]) do
-        tinsert(events, {"UNIT_CHANGED_" .. unit, unit})
+        isPet = WeakAuras.UnitIsPet(unit)
+        if (trigger.use_includePets ~= nil and isPet) or (trigger.use_includePets ~= false and not isPet) then
+          tinsert(events, {"UNIT_CHANGED_" .. unit, unit})
+        end
       end
     else
       if trigger.unit then
