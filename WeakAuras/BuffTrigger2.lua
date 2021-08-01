@@ -1532,20 +1532,6 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit)
   end
 end
 
-local function ScanAllGroup(time, matchDataChanged)
-  -- We iterate over all raid/player unit ids here because ScanGroupUnit also
-  -- handles the cases where a unit existence changes.
-  for unit in GetAllUnits("group", nil, true) do
-    ScanGroupUnit(time, matchDataChanged, "group", unit)
-  end
-end
-
-local function ScanAllBoss(time, matchDataChanged)
-  for unit in GetAllUnits("boss") do
-    ScanGroupUnit(time, matchDataChanged, "boss", unit)
-  end
-end
-
 local function ScanUnit(time, arg1)
   if (Private.multiUnitUnits.raid[arg1] and IsInRaid()) then
     ScanGroupUnit(time, matchDataChanged, "group", arg1)
