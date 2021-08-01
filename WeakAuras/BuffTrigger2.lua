@@ -128,8 +128,14 @@ local function UnitIsVisibleFixed(unit)
   return unitVisible[unit]
 end
 
-local function UnitInSubgroupOrPlayer(unit)
-  return UnitInSubgroup(WeakAuras.petUnitToUnit[unit] or unit) or UnitIsUnit("player", unit)
+local function UnitInSubgroupOrPlayer(unit, includePets)
+  if includePets == nil then
+    return UnitInSubgroup(unit) or UnitIsUnit("player", unit)
+  elseif includePets == true then
+    return UnitInSubgroup(WeakAuras.petUnitToUnit[unit] or unit) or UnitIsUnit("player", unit) or UnitIsUnit("pet", unit)
+  elseif includePets == false then
+    return UnitInSubgroup(WeakAuras.petUnitToUnit[unit]) or UnitIsUnit("pet", unit)
+  end
 end
 
 local function GetOrCreateSubTable(base, next, ...)
@@ -1050,11 +1056,11 @@ local function TriggerInfoApplies(triggerInfo, unit)
   if triggerInfo.unit == "group" and triggerInfo.groupSubType == "party" then
     if IsInRaid() then
       -- Filter our player/party# while in raid and keep only raid units that are correct
-      if not Private.multiUnitUnits.raid[unit] or not UnitInSubgroupOrPlayer(unit) then
+      if not Private.multiUnitUnits.raid[unit] or not UnitInSubgroupOrPlayer(unit, triggerInfo.includePets) then
         return false
       end
     else
-      if not UnitInSubgroupOrPlayer(unit) then
+      if not UnitInSubgroupOrPlayer(unit, triggerInfo.includePets) then
         return false
       end
     end
