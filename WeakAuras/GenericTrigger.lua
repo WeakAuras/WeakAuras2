@@ -1355,7 +1355,7 @@ function GenericTrigger.Add(data, region)
                       function(unit)
                         trigger_unit_events[unit] = trigger_unit_events[unit] or {}
                         tinsert(trigger_unit_events[unit], "UNIT_PET")
-                      end, unit, nil
+                      end, i, nil
                     )
                   end
                 end
@@ -2621,6 +2621,7 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
     watchUnitChange:RegisterEvent("UNIT_FACTION")
     watchUnitChange:RegisterEvent("PLAYER_ENTERING_WORLD")
+    watchUnitChange:RegisterEvent("UNIT_PET")
 
     watchUnitChange:SetScript("OnEvent", function(self, event, unit)
       Private.StartProfileSystem("generictrigger unit change");
@@ -2640,6 +2641,11 @@ function WeakAuras.WatchUnitChange(unit)
             watchUnitChange.nameplateFaction[unit] = reaction
             WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
           end
+        end
+      elseif event == "UNIT_PET" then
+        local pet = WeakAuras.unitToPetUnit[unit]
+        if pet then
+          WeakAuras.ScanEvents("UNIT_CHANGED_" .. pet, pet)
         end
       else
         local inRaid = IsInRaid()
