@@ -1048,13 +1048,18 @@ function LoadEvent(id, triggernum, data)
             loaded_unit_events[u][event] = loaded_unit_events[u][event] or {};
             loaded_unit_events[u][event][id] = loaded_unit_events[u][event][id] or {}
             loaded_unit_events[u][event][id][triggernum] = data;
-            if WeakAuras.UnitIsPet(u) then
-              loaded_unit_events[u].UNIT_PET = loaded_unit_events[u].UNIT_PET or {}
-              loaded_unit_events[u].UNIT_PET[id] = loaded_unit_events[u].UNIT_PET[id] or {}
-              loaded_unit_events[u].UNIT_PET[id][triggernum] = data;
-            end
           end, unit, data.trigger.use_includePets
         )
+        if data.trigger.use_includePets ~= nil then
+          MultiUnitLoop(
+            function(u)
+              loaded_unit_events[u] = loaded_unit_events[u] or {};
+              loaded_unit_events[u].UNIT_PET = loaded_unit_events[u].UNIT_PET or {};
+              loaded_unit_events[u].UNIT_PET[id] = loaded_unit_events[u].UNIT_PET[id] or {}
+              loaded_unit_events[u].UNIT_PET[id][triggernum] = data;
+            end, unit, nil
+          )
+        end
       end
     end
   end
@@ -1343,11 +1348,16 @@ function GenericTrigger.Add(data, region)
                       trigger_unit_events[unit] = trigger_unit_events[unit] or {}
                       tinsert(trigger_unit_events[unit], trueEvent)
                       isUnitEvent = true
-                      if WeakAuras.UnitIsPet(unit) then
-                        tinsert(trigger_unit_events[unit], "UNIT_PET")
-                      end
                     end, i, includePets
                   )
+                  if includePets ~= nil then
+                    MultiUnitLoop(
+                      function(unit)
+                        trigger_unit_events[unit] = trigger_unit_events[unit] or {}
+                        tinsert(trigger_unit_events[unit], "UNIT_PET")
+                      end, unit, nil
+                    )
+                  end
                 end
               end
               if isCLEU then
