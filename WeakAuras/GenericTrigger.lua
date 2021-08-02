@@ -964,14 +964,14 @@ local function MultiUnitLoop(Func, unit, includePets, ...)
       Func(unit..i, ...)
     end
   elseif unit == "group" then
-    if includePets ~= false then
+    if includePets ~= "PetsOnly" then
       Func("player", ...)
     end
     if includePets ~= nil then
       Func("pet", ...)
     end
     for i = 1, 4 do
-      if includePets ~= false then
+      if includePets ~= "PetsOnly" then
         Func("party"..i, ...)
       end
       if includePets ~= nil then
@@ -979,7 +979,7 @@ local function MultiUnitLoop(Func, unit, includePets, ...)
       end
     end
     for i = 1, 40 do
-      if includePets ~= false then
+      if includePets ~= "PetsOnly" then
         Func("raid"..i, ...)
       end
       if includePets ~= nil then
@@ -987,14 +987,14 @@ local function MultiUnitLoop(Func, unit, includePets, ...)
       end
     end
   elseif unit == "party" then
-    if includePets ~= false then
+    if includePets ~= "PetsOnly" then
       Func("player", ...)
     end
     if includePets ~= nil then
       Func("pet", ...)
     end
     for i = 1, 4 do
-      if includePets ~= false then
+      if includePets ~= "PetsOnly" then
         Func("party"..i, ...)
       end
       if includePets ~= nil then
@@ -1003,7 +1003,7 @@ local function MultiUnitLoop(Func, unit, includePets, ...)
     end
   elseif unit == "raid" then
     for i = 1, 40 do
-      if includePets ~= false then
+      if includePets ~= "PetsOnly" then
         Func("raid"..i, ...)
       end
       if includePets ~= nil then
@@ -1039,6 +1039,7 @@ function LoadEvent(id, triggernum, data)
     end
   end
   if data.unit_events then
+    local includePets = data.trigger.use_includePets == true and data.trigger.includePets or nil
     for unit, events in pairs(data.unit_events) do
       unit = string.lower(unit)
       for index, event in pairs(events) do
@@ -1048,9 +1049,9 @@ function LoadEvent(id, triggernum, data)
             loaded_unit_events[u][event] = loaded_unit_events[u][event] or {};
             loaded_unit_events[u][event][id] = loaded_unit_events[u][event][id] or {}
             loaded_unit_events[u][event][id][triggernum] = data;
-          end, unit, data.trigger.use_includePets
+          end, unit, includePets
         )
-        if data.trigger.use_includePets ~= nil then
+        if includePets ~= nil then
           MultiUnitLoop(
             function(u)
               loaded_unit_events[u] = loaded_unit_events[u] or {};
@@ -1099,6 +1100,7 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
           end
         end
         if data.unit_events then
+          local includePets = data.trigger.use_includePets == true and data.trigger.includePets or nil
           for unit, events in pairs(data.unit_events) do
             for index, event in pairs(events) do
               MultiUnitLoop(
@@ -1110,7 +1112,7 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
                       unitEventsToRegister[u].UNIT_PET = true
                     end
                   end
-                end, unit, data.trigger.use_includePets
+                end, unit, includePets
               )
             end
           end
@@ -1337,10 +1339,10 @@ function GenericTrigger.Add(data, region)
                 elseif trueEvent:match("^UNIT_") then
                   local includePets
                   if i == "grouppets" then
-                    includePets = true
+                    includePets = "PlayersAndPets"
                     i = "group"
                   elseif i == "grouppetsonly" then
-                    includePets = false
+                    includePets = "PetsOnly"
                     i = "group"
                   end
                   MultiUnitLoop(

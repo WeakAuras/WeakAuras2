@@ -131,9 +131,9 @@ end
 local function UnitInSubgroupOrPlayer(unit, includePets)
   if includePets == nil then
     return UnitInSubgroup(unit) or UnitIsUnit("player", unit)
-  elseif includePets == true then
+  elseif includePets == "PlayersAndPets" then
     return UnitInSubgroup(WeakAuras.petUnitToUnit[unit] or unit) or UnitIsUnit("player", unit) or UnitIsUnit("pet", unit)
-  elseif includePets == false then
+  elseif includePets == "PetsOnly" then
     return UnitInSubgroup(WeakAuras.petUnitToUnit[unit]) or UnitIsUnit("pet", unit)
   end
 end
@@ -853,13 +853,13 @@ local function GetAllUnits(unit, allUnits, includePets)
         if raid then
           if i <= 40 then
             local ret
-            if includePets == true then -- pets + raid
+            if includePets == "PlayersAndPets" then
               ret = pets and WeakAuras.raidpetUnits[i] or WeakAuras.raidUnits[i]
               pets = not pets
               if pets then
                 i = i + 1
               end
-            elseif includePets == false then -- pets only
+            elseif includePets == "PetsOnly" then
               ret = WeakAuras.raidpetUnits[i]
               i = i + 1
             else -- raid
@@ -879,13 +879,13 @@ local function GetAllUnits(unit, allUnits, includePets)
 
         if i <= 4 then
           local ret
-          if includePets == true then -- pets + group
+          if includePets == "PlayersAndPets" then
             ret = pets and WeakAuras.partypetUnits[i] or WeakAuras.partyUnits[i]
             pets = not pets
             if pets then
               i = i + 1
             end
-          elseif includePets == false then -- pets only
+          elseif includePets == "PetsOnly" then
             ret = WeakAuras.partypetUnits[i]
             i = i + 1
           else -- group
@@ -908,13 +908,13 @@ local function GetAllUnits(unit, allUnits, includePets)
       return function()
         if i <= max then
           local ret
-          if includePets == true then -- pets + raid
+          if includePets == "PlayersAndPets" then
             ret = pets and WeakAuras.raidpetUnits[i] or WeakAuras.raidUnits[i]
             pets = not pets
             if pets then
               i = i + 1
             end
-          elseif includePets == false then -- pets only
+          elseif includePets == "PetsOnly" then
             ret = WeakAuras.raidpetUnits[i]
             i = i + 1
           else -- raid
@@ -940,13 +940,13 @@ local function GetAllUnits(unit, allUnits, includePets)
         else
           if i <= max then
             local ret
-            if includePets == true then -- pets + group
+            if includePets == "PlayersAndPets" then
               ret = pets and WeakAuras.partypetUnits[i] or WeakAuras.partyUnits[i]
               pets = not pets
               if pets then
                 i = i + 1
               end
-            elseif includePets == false then -- pets only
+            elseif includePets == "PetsOnly" then
               ret = WeakAuras.partypetUnits[i]
               i = i + 1
             else -- group
@@ -1046,7 +1046,7 @@ local function TriggerInfoApplies(triggerInfo, unit)
 
   if triggerInfo.unit == "group" then
     local isPet = WeakAuras.UnitIsPet(unit)
-    if triggerInfo.includePets == false and not isPet then -- pets only
+    if triggerInfo.includePets == "PetsOnly" and not isPet then
       return false
     elseif triggerInfo.includePets == nil and isPet then -- exclude pets
       return false
@@ -2416,7 +2416,7 @@ function BuffTrigger.Add(data)
         useAffected = unit == "group" and trigger.useAffected,
         isMulti = trigger.unit == "multi",
         nameChecker = effectiveNameCheck and WeakAuras.ParseNameCheck(trigger.unitName),
-        includePets = trigger.use_includePets
+        includePets = trigger.use_includePets and trigger.includePets
       }
       triggerInfos[id] = triggerInfos[id] or {}
       triggerInfos[id][triggernum] = triggerInformation

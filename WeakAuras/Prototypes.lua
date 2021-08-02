@@ -1717,7 +1717,7 @@ local function AddUnitChangeInternalEvents(triggerUnit, t, includePets)
       local isPet
       for unit in pairs(Private.multiUnitUnits[triggerUnit]) do
         isPet = WeakAuras.UnitIsPet(unit)
-        if (includePets ~= nil and isPet) or (includePets ~= false and not isPet) then
+        if (includePets ~= nil and isPet) or (includePets ~= "PetsOnly" and not isPet) then
           tinsert(t, "UNIT_CHANGED_" .. string.lower(unit))
           WeakAuras.WatchUnitChange(unit)
         end
@@ -1783,11 +1783,12 @@ end
 local unitHelperFunctions = {
   UnitChangedForceEvents = function(trigger)
     local events = {}
+    local includePets = trigger.use_includePets == true and trigger.includePets or nil
     if Private.multiUnitUnits[trigger.unit] then
       local isPet
       for unit in pairs(Private.multiUnitUnits[trigger.unit]) do
         isPet = WeakAuras.UnitIsPet(unit)
-        if (trigger.use_includePets ~= nil and isPet) or (trigger.use_includePets ~= false and not isPet) then
+        if (includePets ~= nil and isPet) or (includePets ~= "PetsOnly" and not isPet) then
           tinsert(events, {"UNIT_CHANGED_" .. unit, unit})
         end
       end
@@ -2307,8 +2308,9 @@ Private.event_prototypes = {
     internal_events = function(trigger)
       local unit = trigger.unit
       local result = {}
-      AddUnitChangeInternalEvents(unit, result, trigger.use_includePets)
-      if trigger.use_includePets ~= false then
+      local includePets = trigger.use_includePets == true and trigger.includePets or nil
+      AddUnitChangeInternalEvents(unit, result, includePets)
+      if includePets ~= "PetsOnly" then
         AddUnitRoleChangeInternalEvents(unit, result)
       end
       return result
@@ -2529,8 +2531,9 @@ Private.event_prototypes = {
       {
         name = "includePets",
         display = L["Include Pets"],
-        type = "tristate",
-        width = WeakAuras.doubleWidth,
+        type = "select",
+        values = "include_pets_types",
+        width = WeakAuras.normalWidth,
         test = "true",
         enable = function(trigger)
           return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"

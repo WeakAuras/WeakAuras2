@@ -1055,6 +1055,11 @@ Private.text_word_wrap = {
   Elide = L["Elide"]
 }
 
+Private.include_pets_types = {
+  PlayersAndPets = L["Players and Pets"],
+  PetsOnly = L["Pets only"]
+}
+
 Private.category_event_prototype = {}
 for name, prototype in pairs(Private.event_prototypes) do
   Private.category_event_prototype[prototype.type] = Private.category_event_prototype[prototype.type] or {}
