@@ -1665,9 +1665,12 @@ local function EventHandler(frame, event, arg1, arg2, ...)
       tinsert(unitsToRemove, "focus")
     end
   elseif event == "UNIT_PET" then
-    ScanGroupUnit(time, matchDataChanged, nil, arg1)
-    if not UnitExistsFixed(arg1) then
-      tinsert(unitsToRemove, arg1) -- not sure if his is working, needs tests
+    local pet = WeakAuras.unitToPetUnit[arg1]
+    if pet then
+      ScanGroupUnit(time, matchDataChanged, nil, pet)
+      if not UnitExistsFixed(pet) then
+        tinsert(unitsToRemove, pet)
+      end
     end
   elseif event == "NAME_PLATE_UNIT_ADDED" then
     nameplateExists[arg1] = true
@@ -1747,7 +1750,7 @@ frame:RegisterEvent("UNIT_FACTION")
 frame:RegisterEvent("UNIT_NAME_UPDATE")
 frame:RegisterEvent("UNIT_FLAGS")
 frame:RegisterEvent("PLAYER_FLAGS_CHANGED")
-frame:RegisterUnitEvent("UNIT_PET", "player")
+frame:RegisterEvent("UNIT_PET")
 if not WeakAuras.IsClassic() then
   frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
   if WeakAuras.IsRetail() then
