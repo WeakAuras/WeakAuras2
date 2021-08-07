@@ -1039,7 +1039,7 @@ function LoadEvent(id, triggernum, data)
     end
   end
   if data.unit_events then
-    local includePets = data.trigger.use_includePets == true and data.trigger.includePets or nil
+    local includePets = data.includePets
     for unit, events in pairs(data.unit_events) do
       unit = string.lower(unit)
       for index, event in pairs(events) do
@@ -1051,16 +1051,6 @@ function LoadEvent(id, triggernum, data)
             loaded_unit_events[u][event][id][triggernum] = data;
           end, unit, includePets
         )
-        if includePets ~= nil then
-          MultiUnitLoop(
-            function(u)
-              loaded_unit_events[u] = loaded_unit_events[u] or {};
-              loaded_unit_events[u].UNIT_PET = loaded_unit_events[u].UNIT_PET or {};
-              loaded_unit_events[u].UNIT_PET[id] = loaded_unit_events[u].UNIT_PET[id] or {}
-              loaded_unit_events[u].UNIT_PET[id][triggernum] = data;
-            end, unit, nil
-          )
-        end
       end
     end
   end
@@ -1100,7 +1090,7 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
           end
         end
         if data.unit_events then
-          local includePets = data.trigger.use_includePets == true and data.trigger.includePets or nil
+          local includePets = data.includePets
           for unit, events in pairs(data.unit_events) do
             for index, event in pairs(events) do
               MultiUnitLoop(
@@ -1108,9 +1098,6 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
                   if not (genericTriggerRegisteredUnitEvents[u] and genericTriggerRegisteredUnitEvents[u][event]) then
                     unitEventsToRegister[u] = unitEventsToRegister[u] or {}
                     unitEventsToRegister[u][event] = true
-                    if WeakAuras.UnitIsPet(u) then
-                      unitEventsToRegister[u].UNIT_PET = true
-                    end
                   end
                 end, unit, includePets
               )
@@ -1184,6 +1171,7 @@ function GenericTrigger.Add(data, region)
         local trigger_events = {};
         local internal_events = {};
         local trigger_unit_events = {};
+        local includePets
         local trigger_subevents = {};
         local force_events = false;
         local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc, loadFunc;
@@ -1273,6 +1261,11 @@ function GenericTrigger.Add(data, region)
               if (type(force_events) == "function") then
                 force_events = force_events(trigger, untrigger)
               end
+
+
+              if prototype.includePets then
+                includePets = trigger.use_includePets == true and trigger.includePets or nil
+              end
             end
           end
         else -- CUSTOM
@@ -1337,29 +1330,18 @@ function GenericTrigger.Add(data, region)
                     hasParam = true
                   end
                 elseif trueEvent:match("^UNIT_") then
-                  local includePets
-                  if i == "grouppets" then
+                  isUnitEvent = true
+
+                  if string.lower(strsub(i, #i - 3)) == "pets" then
+                    i = strsub(i, 1, #i-4)
                     includePets = "PlayersAndPets"
-                    i = "group"
-                  elseif i == "grouppetsonly" then
+                  elseif string.lower(strsub(i, #i - 7)) == "petsonly" then
                     includePets = "PetsOnly"
-                    i = "group"
+                    i = strsub(i, 1, #i - 8)
                   end
-                  MultiUnitLoop(
-                    function(unit)
-                      trigger_unit_events[unit] = trigger_unit_events[unit] or {}
-                      tinsert(trigger_unit_events[unit], trueEvent)
-                      isUnitEvent = true
-                    end, i, includePets
-                  )
-                  if includePets ~= nil then
-                    MultiUnitLoop(
-                      function(unit)
-                        trigger_unit_events[unit] = trigger_unit_events[unit] or {}
-                        tinsert(trigger_unit_events[unit], "UNIT_PET")
-                      end, i, nil
-                    )
-                  end
+
+                  trigger_unit_events[i] = trigger_unit_events[i] or {}
+                  tinsert(trigger_unit_events[i], trueEvent)
                 end
               end
               if isCLEU then
@@ -1403,6 +1385,7 @@ function GenericTrigger.Add(data, region)
           internal_events = internal_events,
           force_events = force_events,
           unit_events = trigger_unit_events,
+          includePets = includePets,
           inverse = trigger.use_inverse,
           subevents = trigger_subevents,
           durationFunc = durationFunc,

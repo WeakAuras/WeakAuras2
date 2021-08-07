@@ -1734,10 +1734,6 @@ local function AddUnitRoleChangeInternalEvents(triggerUnit, t)
     return
   end
 
-  if WeakAuras.UnitIsPet(triggerUnit) then
-    return
-  end
-
   if Private.multiUnitUnits[triggerUnit] then
     for unit in pairs(Private.multiUnitUnits[triggerUnit]) do
       if not WeakAuras.UnitIsPet(unit) then
@@ -1745,7 +1741,9 @@ local function AddUnitRoleChangeInternalEvents(triggerUnit, t)
       end
     end
   else
-    tinsert(t, "UNIT_ROLE_CHANGED_" .. string.lower(triggerUnit))
+    if not WeakAuras.UnitIsPet(triggerUnit) then
+      tinsert(t, "UNIT_ROLE_CHANGED_" .. string.lower(triggerUnit))
+    end
   end
 end
 
@@ -1781,7 +1779,7 @@ local function AddUnitEventForEvents(result, unit, event)
 end
 
 local unitHelperFunctions = {
-  UnitChangedForceEvents = function(trigger)
+  UnitChangedForceEventsWithPets = function(trigger)
     local events = {}
     local includePets = trigger.use_includePets == true and trigger.includePets or nil
     if Private.multiUnitUnits[trigger.unit] then
@@ -1789,6 +1787,22 @@ local unitHelperFunctions = {
       for unit in pairs(Private.multiUnitUnits[trigger.unit]) do
         isPet = WeakAuras.UnitIsPet(unit)
         if (includePets ~= nil and isPet) or (includePets ~= "PetsOnly" and not isPet) then
+          tinsert(events, {"UNIT_CHANGED_" .. unit, unit})
+        end
+      end
+    else
+      if trigger.unit then
+        tinsert(events, {"UNIT_CHANGED_" .. trigger.unit, trigger.unit})
+      end
+    end
+    return events
+  end,
+
+  UnitChangedForceEvents = function(trigger)
+    local events = {}
+    if Private.multiUnitUnits[trigger.unit] then
+      for unit in pairs(Private.multiUnitUnits[trigger.unit]) do
+        if not WeakAuras.UnitIsPet(unit) then
           tinsert(events, {"UNIT_CHANGED_" .. unit, unit})
         end
       end
@@ -2282,6 +2296,7 @@ Private.event_prototypes = {
   },
   ["Health"] = {
     type = "unit",
+    includePets = "true",
     canHaveDuration = true,
     events = function(trigger)
       local unit = trigger.unit
@@ -2315,7 +2330,7 @@ Private.event_prototypes = {
       end
       return result
     end,
-    force_events = unitHelperFunctions.UnitChangedForceEvents,
+    force_events = unitHelperFunctions.UnitChangedForceEventsWithPets,
     name = L["Health"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";

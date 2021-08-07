@@ -3063,7 +3063,11 @@ Private.multiUnitId = {
   ["boss"] = true,
   ["arena"] = true,
   ["group"] = true,
+  ["grouppets"] = true,
+  ["grouppetsonly"] = true,
   ["party"] = true,
+  ["partypets"] = true,
+  ["partypetsonly"] = true,
   ["raid"] = true,
 }
 
