@@ -2686,12 +2686,15 @@ Private.event_prototypes = {
     internal_events = function(trigger)
       local unit = trigger.unit
       local result = {}
-      AddUnitChangeInternalEvents(unit, result)
-      AddUnitRoleChangeInternalEvents(unit, result)
+      local includePets = trigger.use_includePets == true and trigger.includePets or nil
+      AddUnitChangeInternalEvents(unit, result, includePets)
+      if includePets ~= "PetsOnly" then
+        AddUnitRoleChangeInternalEvents(unit, result)
+      end
 
       return result
     end,
-    force_events = unitHelperFunctions.UnitChangedForceEvents,
+    force_events = unitHelperFunctions.UnitChangedForceEventsWithPets,
     name = L["Power"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -2950,6 +2953,17 @@ Private.event_prototypes = {
         conditionType = "select",
         enable = function(trigger)
           return not WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+        end
+      },
+      {
+        name = "includePets",
+        display = L["Include Pets"],
+        type = "select",
+        values = "include_pets_types",
+        width = WeakAuras.normalWidth,
+        test = "true",
+        enable = function(trigger)
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end
       },
       {
@@ -7279,8 +7293,11 @@ Private.event_prototypes = {
         tinsert(result, "UNIT_SPELLCAST_CHANNEL_START")
       end
       AddRemainingCastInternalEvents(unit, result)
-      AddUnitChangeInternalEvents(unit, result)
-      AddUnitRoleChangeInternalEvents(unit, result)
+      local includePets = trigger.use_includePets == true and trigger.includePets or nil
+      AddUnitChangeInternalEvents(unit, result, includePets)
+      if includePets ~= "PetsOnly" then
+        AddUnitRoleChangeInternalEvents(unit, result)
+      end
       return result
     end,
     loadFunc = function(trigger)
@@ -7288,7 +7305,7 @@ Private.event_prototypes = {
         WeakAuras.WatchForCastLatency()
       end
     end,
-    force_events = unitHelperFunctions.UnitChangedForceEvents,
+    force_events = unitHelperFunctions.UnitChangedForceEventsWithPets,
     canHaveDuration = "timed",
     name = L["Cast"],
     init = function(trigger)
@@ -7498,6 +7515,17 @@ Private.event_prototypes = {
         enable = function(trigger)
           return not WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
                  and not trigger.use_inverse
+        end
+      },
+      {
+        name = "includePets",
+        display = L["Include Pets"],
+        type = "select",
+        values = "include_pets_types",
+        width = WeakAuras.normalWidth,
+        test = "true",
+        enable = function(trigger)
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end
       },
       {
