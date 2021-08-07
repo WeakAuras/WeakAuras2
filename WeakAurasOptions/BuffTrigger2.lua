@@ -690,6 +690,33 @@ local function GetBuffTriggerOptions(data, triggernum)
       order = 66,
       hidden = function() return not trigger.type == "aura2" end
     },
+    use_includePets = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = WeakAuras.newFeatureString .. L["Include Pets"],
+      order = 66.1,
+      hidden = function() return
+        not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
+      end
+    },
+    includePets = {
+      type = "select",
+      values = OptionsPrivate.Private.include_pets_types,
+      width = WeakAuras.normalWidth,
+      name = WeakAuras.newFeatureString .. L["Include Pets"],
+      order = 66.15,
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.use_includePets) end,
+    },
+    includePetsSpace = {
+      type = "description",
+      name = "",
+      order = 66.16,
+      width = WeakAuras.normalWidth,
+      hidden = function()
+        return not (trigger.type == "aura2"
+                    and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.use_includePets)
+      end
+    },
     useGroupRole = {
       type = "toggle",
       width = WeakAuras.normalWidth,
@@ -697,7 +724,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       order = 67.1,
       hidden = function() return
         not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
-        or WeakAuras.IsClassic()
+        or WeakAuras.IsClassic() or WeakAuras.IsBCC()
       end
     },
     group_role = {
@@ -722,7 +749,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       order = 67.1,
       hidden = function() return
         not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
-        or not WeakAuras.IsClassic()
+        or WeakAuras.IsRetail()
       end
     },
     raid_role = {

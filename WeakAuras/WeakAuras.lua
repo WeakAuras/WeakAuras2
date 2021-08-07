@@ -259,14 +259,32 @@ local timers = {}; -- Timers for autohiding, keyed on id, triggernum, cloneid
 WeakAuras.timers = timers;
 
 WeakAuras.raidUnits = {};
+WeakAuras.raidpetUnits = {};
 WeakAuras.partyUnits = {};
+WeakAuras.partypetUnits = {};
+WeakAuras.petUnitToUnit = {
+  pet = "player"
+}
+WeakAuras.unitToPetUnit = {
+  player = "pet"
+}
 do
   for i=1,40 do
     WeakAuras.raidUnits[i] = "raid"..i
+    WeakAuras.raidpetUnits[i] = "raidpet"..i
+    WeakAuras.petUnitToUnit["raidpet"..i] = "raid"..i
+    WeakAuras.unitToPetUnit["raid"..i] = "raidpet"..i
   end
   for i=1,4 do
     WeakAuras.partyUnits[i] = "party"..i
+    WeakAuras.partypetUnits[i] = "partypet"..i
+    WeakAuras.petUnitToUnit["partypet"..i] = "party"..i
+    WeakAuras.unitToPetUnit["party"..i] = "partypet"..i
   end
+end
+
+WeakAuras.UnitIsPet = function(unit)
+  return WeakAuras.petUnitToUnit[unit] ~= nil
 end
 
 local playerLevel = UnitLevel("player");
