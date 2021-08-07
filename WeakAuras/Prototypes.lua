@@ -2545,7 +2545,7 @@ Private.event_prototypes = {
       },
       {
         name = "includePets",
-        display = L["Include Pets"],
+        display = WeakAuras.newFeatureString .. L["Include Pets"],
         type = "select",
         values = "include_pets_types",
         width = WeakAuras.normalWidth,
@@ -2957,7 +2957,7 @@ Private.event_prototypes = {
       },
       {
         name = "includePets",
-        display = L["Include Pets"],
+        display = WeakAuras.newFeatureString .. L["Include Pets"],
         type = "select",
         values = "include_pets_types",
         width = WeakAuras.normalWidth,
@@ -7519,7 +7519,7 @@ Private.event_prototypes = {
       },
       {
         name = "includePets",
-        display = L["Include Pets"],
+        display = WeakAuras.newFeatureString .. L["Include Pets"],
         type = "select",
         values = "include_pets_types",
         width = WeakAuras.normalWidth,
