@@ -72,6 +72,7 @@ globals = {
 	"CombatText_AddMessage",
 	"CooldownFrame_Set",
 	"CreateFromMixins",
+	"CreateTextureMarkup",
 	"CreateObjectPool",
 	"DEFAULT_CHAT_FRAME",
 	"GameTooltip_Hide",
