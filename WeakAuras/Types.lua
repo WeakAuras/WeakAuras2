@@ -3199,6 +3199,8 @@ Private.noreset_swing_spells = {
   --35474 Drums of Panic DO reset the swing timer, do not add
 }
 
+Private.swingtimer_snapshotted_aura = {}
+
 Private.item_weapon_types = {}
 
 local skippedWeaponTypes = {}
@@ -3417,6 +3419,14 @@ if WeakAuras.IsBCC() then
 
   for _, spellid in ipairs(reset_ranged_swing_spell_list) do
     Private.reset_ranged_swing_spells[spellid] = true
+  end
+
+  local paladin_snapshotted_aura = {
+    21082, 20162, 20305, 20306, 20307, 20308, 27159 -- Seal of the Crusader
+  }
+  Private.swingtimer_snapshotted_aura.PALADIN = {}
+  for _, spellid in ipairs(paladin_snapshotted_aura) do
+    Private.swingtimer_snapshotted_aura.PALADIN[spellid] = true
   end
 
   Private.glow_types.ACShine = nil

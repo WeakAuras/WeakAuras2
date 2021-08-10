@@ -1497,8 +1497,10 @@ do
   local selfGUID;
   local mainSpeed, offSpeed = UnitAttackSpeed("player")
   local casting = false
-  local skipNextAttack, skipNextAttackCount
+  local skipNextAttack, skipNextAttackCount, skipNextAttackSpeed
   local isAttacking
+  local _, playerClass = UnitClass("player")
+  local buffs, currentBuffs = {}, {}
 
   function WeakAuras.GetSwingTimerInfo(hand)
     if(hand == "main") then
@@ -1634,29 +1636,58 @@ do
     Private.StartProfileSystem("generictrigger swing");
     local now = GetTime()
     if event == "UNIT_ATTACK_SPEED" then
-      local mainSpeedNew, offSpeedNew = UnitAttackSpeed("player")
-      offSpeedNew = offSpeedNew or 0
-      if lastSwingMain then
-        if mainSpeedNew ~= mainSpeed then
-          timer:CancelTimer(mainTimer)
-          local multiplier = mainSpeedNew / mainSpeed
-          local timeLeft = (lastSwingMain + swingDurationMain - now) * multiplier
-          swingDurationMain = mainSpeedNew
-          mainSwingOffset = (lastSwingMain + swingDurationMain) - (now + timeLeft)
-          mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft, "main")
+      -- delay this event by a frame because it trigger before UNIT_AURA
+      -- some aura update attack speed but doesn't update swing timer (only known at this time is tbc paladin Seal of the Crusader)
+      swingTimerFrame:SetScript("OnUpdate", function(self, elapsed)
+        if skipNextAttackSpeed and math.abs(skipNextAttackSpeed - now) < 0.1 then
+          self:SetScript("OnUpdate", nil)
+          return
+        end
+        local mainSpeedNew, offSpeedNew = UnitAttackSpeed("player")
+        offSpeedNew = offSpeedNew or 0
+        if lastSwingMain then
+          if mainSpeedNew ~= mainSpeed then
+            timer:CancelTimer(mainTimer)
+            local multiplier = mainSpeedNew / mainSpeed
+            local timeLeft = (lastSwingMain + swingDurationMain - now) * multiplier
+            swingDurationMain = mainSpeedNew
+            mainSwingOffset = (lastSwingMain + swingDurationMain) - (now + timeLeft)
+            mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft, "main")
+          end
+        end
+        if lastSwingOff then
+          if offSpeedNew ~= offSpeed then
+            timer:CancelTimer(offTimer)
+            local multiplier = offSpeedNew / mainSpeed
+            local timeLeft = (lastSwingOff + swingDurationOff - now) * multiplier
+            swingDurationOff = offSpeedNew
+            offTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft, "off")
+          end
+        end
+        mainSpeed, offSpeed = mainSpeedNew, offSpeedNew
+        swingTriggerUpdate()
+        self:SetScript("OnUpdate", nil)
+      end)
+    elseif event == "UNIT_AURA" then
+      local spellId
+      wipe(currentBuffs)
+      for i = 1, 255 do
+        spellId = select(10, UnitAura("player", i))
+        if not spellId then break end
+        if Private.swingtimer_snapshotted_aura[playerClass][spellId] then
+          if not buffs[spellId] then
+            buffs[spellId] = true
+            currentBuffs[spellId] = true
+            skipNextAttackSpeed = now
+          end
         end
       end
-      if lastSwingOff then
-        if offSpeedNew ~= offSpeed then
-          timer:CancelTimer(offTimer)
-          local multiplier = offSpeedNew / mainSpeed
-          local timeLeft = (lastSwingOff + swingDurationOff - now) * multiplier
-          swingDurationOff = offSpeedNew
-          offTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft, "off")
+      for spellId in pairs(buffs) do
+        if not currentBuffs[spellId] then
+          buffs[spellId] = nil
+          skipNextAttackSpeed = now
         end
       end
-      mainSpeed, offSpeed = mainSpeedNew, offSpeedNew
-      swingTriggerUpdate()
     elseif casting and (event == "UNIT_SPELLCAST_INTERRUPTED" or event == "UNIT_SPELLCAST_FAILED") then
       casting = false
     elseif event == "PLAYER_EQUIPMENT_CHANGED" and isAttacking then
@@ -1707,6 +1738,11 @@ do
       swingTimerFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
       swingTimerFrame:RegisterUnitEvent("UNIT_ATTACK_SPEED", "player");
       swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
+      if WeakAuras.IsBCC() then
+        if Private.swingtimer_snapshotted_aura[playerClass] then
+          swingTimerFrame:RegisterUnitEvent("UNIT_AURA", "player")
+        end
+      end
       if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
         swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
         swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
