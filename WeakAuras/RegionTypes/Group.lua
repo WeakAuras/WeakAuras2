@@ -26,6 +26,7 @@ local default = {
 local function create(parent)
   -- Main region
   local region = CreateFrame("FRAME", nil, parent);
+  region.regionType = "group"
   region:SetMovable(true);
   region:SetWidth(2);
   region:SetHeight(2);

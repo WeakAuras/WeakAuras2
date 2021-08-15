@@ -958,6 +958,7 @@ local function create(parent)
   local font = "GameFontHighlight";
 
   local region = CreateFrame("FRAME", nil, parent);
+  region.regionType = "progresstexture"
   region:SetMovable(true);
   region:SetResizable(true);
   region:SetMinResize(1, 1);

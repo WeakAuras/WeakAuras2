@@ -180,6 +180,7 @@ local function create(parent, data)
   local font = "GameFontHighlight";
 
   local region = CreateFrame("FRAME", nil, parent);
+  region.regionType = "icon"
   region:SetMovable(true);
   region:SetResizable(true);
   region:SetMinResize(1, 1);

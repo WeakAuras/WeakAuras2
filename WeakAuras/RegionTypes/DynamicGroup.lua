@@ -104,6 +104,7 @@ end
 
 local function create(parent)
   local region = CreateFrame("FRAME", nil, parent)
+  region.regionType = "dynamicgroup"
   region:SetSize(16, 16)
   region:SetMovable(true)
   region.sortedChildren = {}

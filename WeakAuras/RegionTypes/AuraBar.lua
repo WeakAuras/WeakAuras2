@@ -983,6 +983,7 @@ local funcs = {
 local function create(parent)
   -- Create overall region (containing everything else)
   local region = CreateFrame("FRAME", nil, parent);
+  region.regionType = "aurabar"
   region:SetMovable(true);
   region:SetResizable(true);
   region:SetMinResize(1, 1);
