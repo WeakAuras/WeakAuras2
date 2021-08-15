@@ -4028,19 +4028,13 @@ WeakAuras.GetItemSubClassInfo = function(i)
   return GetItemSubClassInfo(classId, subClassId)
 end
 
-if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
-  WeakAuras.GetCritChance = function()
-    return max(GetRangedCritChance(), GetCritChance())
+WeakAuras.GetCritChance = function()
+  -- Based on what the wow paper doll does
+  local spellCrit = 0
+  for i = 2, MAX_SPELL_SCHOOLS or 7 do -- MAX_SPELL_SCHOOLS is nil on classic_era
+    spellCrit = max(spellCrit, GetSpellCritChance(i))
   end
-else
-  WeakAuras.GetCritChance = function()
-    -- Based on what the wow paper doll does
-    local spellCrit = GetSpellCritChance(2)
-    for i = 3, MAX_SPELL_SCHOOLS do
-      spellCrit = min(spellCrit, GetSpellCritChance(i))
-    end
-    return max(spellCrit, GetRangedCritChance(), GetCritChance())
-  end
+  return max(spellCrit, GetRangedCritChance(), GetCritChance())
 end
 
 
