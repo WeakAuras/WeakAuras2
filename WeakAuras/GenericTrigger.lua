@@ -4037,6 +4037,13 @@ WeakAuras.GetCritChance = function()
   return max(spellCrit, GetRangedCritChance(), GetCritChance())
 end
 
+WeakAuras.GetHitChance = function()
+  local melee = GetCombatRatingBonus(CR_HIT_MELEE) + GetHitModifier()
+  local ranged = GetCombatRatingBonus(CR_HIT_RANGED) + GetHitModifier()
+  local spell = GetCombatRatingBonus(CR_HIT_SPELL) + GetSpellHitModifier()
+  return max(melee, ranged, spell)
+end
+
 
 local types = {}
 tinsert(types, "custom")
