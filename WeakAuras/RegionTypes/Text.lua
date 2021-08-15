@@ -55,6 +55,7 @@ end
 
 local function create(parent)
   local region = CreateFrame("FRAME", nil, parent);
+  region.regionType = "text"
   region:SetMovable(true);
 
   local text = region:CreateFontString(nil, "OVERLAY");

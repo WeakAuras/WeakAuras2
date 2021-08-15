@@ -80,6 +80,7 @@ local regionFunctions = {
 local function create(parent)
   -- Main region
   local region = CreateFrame("FRAME", nil, UIParent);
+  region.regionType = "model"
   region:SetMovable(true);
   region:SetResizable(true);
   region:SetMinResize(1, 1);
