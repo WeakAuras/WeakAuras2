@@ -504,10 +504,9 @@ local function importPendingData()
       end
       local oldID, newID = oldData and oldData.id, data and data.id
       if oldData and mode ~= 1 then
-        oldData.parent = parentData.id
+        oldData.parent = data.parent
       end
       if data then
-        data.parent = parentData.id
         data.authorMode = nil
       end
       if oldData then
@@ -552,7 +551,6 @@ local function importPendingData()
                 local data = toInsert[index][i]
                 local id = data.id
                 data.id = WeakAuras.FindUnusedId(id)
-                data.parent = parentData.id;
                 WeakAuras.Add(data)
                 tinsert(installedData, index, data)
                 if hybridTables and hybridTables.new[id] then
@@ -608,20 +606,31 @@ local function importPendingData()
     parentData.controlledChildren = {}
     parentData.sortHybridTable = hybridTables and hybridTables.merged
     for index, installedChild in ipairs(installedData) do
-      installedChild.parent = parentData.id
-      tinsert(parentData.controlledChildren, installedChild.id)
+      local childParent
+      if installedChild.parent then
+        childParent = WeakAuras.GetData(installedChild.parent)
+      else
+        installedChild.parent = parentData.id
+        childParent = parentData
+      end
+      tinsert(childParent.controlledChildren, installedChild.id)
       WeakAuras.NewDisplayButton(installedChild)
       local childButton = WeakAuras.GetDisplayButton(installedChild.id)
-      childButton:SetGroup(parentData.id, parentData.regionType == "dynamicgroup")
-      childButton:SetGroupOrder(index, #parentData.controlledChildren)
+      childButton:SetGroup(childParent.id, childParent.regionType == "dynamicgroup")
+      childButton:SetGroupOrder(index, #childParent.controlledChildren)
       coroutine.yield()
     end
 
     WeakAuras.Add(parentData);
-    local button = WeakAuras.GetDisplayButton(parentData.id)
-    button.callbacks.UpdateExpandButton()
-    WeakAuras.UpdateGroupOrders(parentData)
-    WeakAuras.ClearAndUpdateOptions(parentData.id)
+    for data in WeakAuras.TraverseData(parentData, true) do
+      if data.controlledChildren then
+        local button = WeakAuras.GetDisplayButton(data.id)
+        button.callbacks.UpdateExpandButton()
+        WeakAuras.UpdateGroupOrders(data)
+        WeakAuras.UpdateThumbnail(data)
+        WeakAuras.ClearAndUpdateOptions(data.id)
+      end
+    end
     Private.callbacks:Fire("Import")
   end
 
@@ -1277,16 +1286,18 @@ local function MatchInfo(data, children, oldParent)
 
   if children then
     -- setup
-    info.deleted = #oldParent.controlledChildren
+    info.deleted = 0
     info.added = #children
     local UIDtoID, IDtoIndex = {}, {}
-    for index, oldChildID in ipairs(oldParent.controlledChildren) do
-      local oldChild = WeakAuras.GetData(oldChildID)
+    local index = 1
+    for oldChild in WeakAuras.TraverseData(oldParent) do
+      info.deleted = info.deleted + 1
       info.oldData[index] = oldChild
-      IDtoIndex[oldChildID] = index
+      IDtoIndex[oldChild.id] = index
       if oldChild.uid and not UIDtoID[oldChild.uid] then
-        UIDtoID[oldChild.uid] = oldChildID
+        UIDtoID[oldChild.uid] = oldChild.id
       end
+      index = index + 1
     end
 
     -- confirm uid matches, find tentative matches
