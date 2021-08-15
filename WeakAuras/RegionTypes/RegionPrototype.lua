@@ -462,6 +462,7 @@ local function UpdateTimerTick(self)
 end
 
 function WeakAuras.regionPrototype.create(region)
+  local defaultsForRegion = WeakAuras.regionTypes[region.regionType] and WeakAuras.regionTypes[region.regionType].default;
   region.SoundPlay = SoundPlay;
   region.SoundStop = SoundStop;
   region.SoundRepeatStop = SoundRepeatStop;
@@ -487,8 +488,10 @@ function WeakAuras.regionPrototype.create(region)
     region:RealClearAllPoints();
     region:ResetPosition();
   end
-  region.SetRegionAlpha = SetRegionAlpha;
-  region.GetRegionAlpha = GetRegionAlpha;
+  if (defaultsForRegion and defaultsForRegion.alpha) then
+    region.SetRegionAlpha = SetRegionAlpha;
+    region.GetRegionAlpha = GetRegionAlpha;
+  end
   region.SetAnimAlpha = SetAnimAlpha;
 
   region.SetTriggerProvidesTimer = SetTriggerProvidesTimer
@@ -506,9 +509,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
   region.subRegionEvents:ClearSubscribers()
 
   local defaultsForRegion = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].default;
-  if (defaultsForRegion and defaultsForRegion.alpha) then
-    region:SetRegionAlpha(data.alpha);
-  end
+
   if region.SetRegionAlpha then
     region:SetRegionAlpha(data.alpha)
   end
