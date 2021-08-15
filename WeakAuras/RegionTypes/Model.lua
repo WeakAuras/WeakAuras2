@@ -162,7 +162,7 @@ local function ConfigureModel(region, model, data)
   end
 
   -- Enable model animation
-  if(data.advance) then
+  if(data.advance and model:HasAnimation(data.sequence)) then
     model:SetAnimation(data.sequence)
   else
     model:SetAnimation(0)
