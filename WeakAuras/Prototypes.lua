@@ -416,7 +416,7 @@ local function get_encounters_list()
 end
 
 local function get_zoneId_list()
-  if not WeakAuras.IsRetail() then return "" end
+  if WeakAuras.IsClassic() then return "" end
   local currentmap_id = C_Map.GetBestMapForUnit("player")
   local currentmap_info = C_Map.GetMapInfo(currentmap_id)
   local currentmap_name = currentmap_info and currentmap_info.name or ""
@@ -1573,21 +1573,21 @@ Private.load_prototype = {
       hidden = true,
       init = "arg",
       test = "true",
-      enable = WeakAuras.IsRetail(),
+      enable = not WeakAuras.IsClassic(),
     },
     {
       name = "zonegroupId",
       hidden = true,
       init = "arg",
       test = "true",
-      enable = WeakAuras.IsRetail(),
+      enable = not WeakAuras.IsClassic(),
     },
     {
       name = "zoneIds",
       display = L["Zone ID(s)"],
       type = "string",
-      enable = WeakAuras.IsRetail(),
-      hidden = not WeakAuras.IsRetail(),
+      enable = not WeakAuras.IsClassic(),
+      hidden = WeakAuras.IsClassic(),
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
       desc = get_zoneId_list,
       preamble = "local zoneChecker = WeakAuras.ParseZoneCheck(%q)",
