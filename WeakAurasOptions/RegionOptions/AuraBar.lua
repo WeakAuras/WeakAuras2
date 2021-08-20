@@ -395,12 +395,32 @@ local function createOptions(id, data)
     }
     local index = 0.01
     for id, display in ipairs(overlayInfo) do
+      options["overlaytexture" .. id] = {
+        type = "select",
+        dialogControl = "LSM30_Statusbar",
+        width = WeakAuras.doubleWidth,
+        name = string.format(L["%s Texture"], display),
+        values = AceGUIWidgetLSMlists.statusbar,
+        order = 58.1 + index,
+        set = function(info, texture)
+          if (not data.overlaysTexture) then
+            data.overlaysTexture = {};
+          end
+          data.overlaysTexture[id] = texture;
+          WeakAuras.Add(data);
+        end,
+        get = function()
+          if data.overlaysTexture and data.overlaysTexture[id] then
+            return data.overlaysTexture[id]
+          end
+        end
+      }
       options["overlaycolor" .. id] = {
         type = "color",
         width = WeakAuras.normalWidth,
         name = string.format(L["%s Color"], display),
         hasAlpha = true,
-        order = 58 + index,
+        order = 58.2 + index,
         get = function()
           if (data.overlays and data.overlays[id]) then
             return unpack(data.overlays[id]);
@@ -422,7 +442,7 @@ local function createOptions(id, data)
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Clip Overlays"],
-      order = 58 + index;
+      order = 58.3 + index;
     }
 
   end
