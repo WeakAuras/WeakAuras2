@@ -316,7 +316,6 @@ local barPrototype = {
           local extraTexture = self:CreateTexture(nil, "ARTWORK");
           extraTexture:SetSnapToPixelGrid(false)
           extraTexture:SetTexelSnappingBias(0)
-          extraTexture:SetTexture(self:GetStatusBarTexture(), extraTextureWrapMode, extraTextureWrapMode);
           extraTexture:SetDrawLayer("ARTWORK", min(index, 7));
           self.extraTextures[index] = extraTexture;
         end
@@ -379,6 +378,14 @@ local barPrototype = {
             extraTexture:SetVertexColor(unpack(color));
           else
             extraTexture:SetVertexColor(1, 1, 1, 1);
+          end
+
+          local texture = self.additionalBarsTextures and self.additionalBarsTextures[index];
+          if texture then
+            local texturePath = SharedMedia:Fetch("statusbar", texture) or ""
+            extraTexture:SetTexture(texturePath, extraTextureWrapMode, extraTextureWrapMode)
+          else
+            extraTexture:SetTexture(self:GetStatusBarTexture(), extraTextureWrapMode, extraTextureWrapMode);
           end
 
           local xOffset = 0;
@@ -463,9 +470,10 @@ local barPrototype = {
     end
   end,
 
-  ["SetAdditionalBars"] = function(self, additionalBars, colors, min, max, inverse, overlayclip)
+  ["SetAdditionalBars"] = function(self, additionalBars, colors, textures, min, max, inverse, overlayclip)
     self.additionalBars = additionalBars;
     self.additionalBarsColors = colors;
+    self.additionalBarsTextures = textures;
     self.additionalBarsMin = min or 0;
     self.additionalBarsMax = max or 0;
     self.additionalBarsInverse = inverse;
@@ -1096,6 +1104,11 @@ local function modify(parent, region, data)
   else
     region.overlays = {}
   end
+  if data.overlaysTexture then
+    region.overlaysTexture = CopyTable(data.overlaysTexture)
+  else
+    region.overlaysTexture = {}
+  end
 
   -- Update texture settings
   local texturePath = SharedMedia:Fetch("statusbar", data.texture) or "";
@@ -1285,7 +1298,7 @@ local function modify(parent, region, data)
 
     local duration = state.duration or 0
     local effectiveInverse = (state.inverse and not region.inverseDirection) or (not state.inverse and region.inverseDirection);
-    region.bar:SetAdditionalBars(state.additionalProgress, region.overlays, region.currentMin, region.currentMax, effectiveInverse, region.overlayclip);
+    region.bar:SetAdditionalBars(state.additionalProgress, region.overlays, region.overlaysTexture, region.currentMin, region.currentMax, effectiveInverse, region.overlayclip);
   end
 
   -- Scale update function
