@@ -2535,7 +2535,7 @@ function BuffTrigger.Add(data)
         unitExists = showIfInvalidUnit,
         fetchTooltip = not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip,
         fetchRole = WeakAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole,
-        fetchRaidMark = WeakAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRaidMark,
+        fetchRaidMark = trigger.unit ~= "multi" and trigger.fetchRaidMark,
         groupTrigger = IsGroupTrigger(trigger),
         ignoreSelf = effectiveIgnoreSelf,
         ignoreDead = effectiveIgnoreDead,
@@ -2699,7 +2699,7 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
     ret = ret .. "|cFFFF0000%roleIcon|r - " .. L["Assigned Role Icon"] .. "\n"
   end
 
-  if WeakAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole then
+  if trigger.unit ~= "multi" and trigger.fetchRaidMark then
     ret = ret .. "|cFFFF0000%raidMark|r - " .. L["Raid Mark"] .. "\n"
   end
 

@@ -506,7 +506,6 @@ local function GetBuffTriggerOptions(data, triggernum)
       width = WeakAuras.doubleWidth,
       hidden = function()
         return not (trigger.type == "aura2" and trigger.unit ~= "multi")
-               or WeakAuras.IsClassic() or WeakAuras.IsBCC()
       end
     },
     fetchTooltip = {
