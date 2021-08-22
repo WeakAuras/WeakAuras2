@@ -2757,6 +2757,8 @@ local function pAdd(data, simpleChange)
 
       db.displays[id] = data;
 
+      Private.UpdateDeprecatedMediaWarnings(data)
+
       if (not data.triggers.activeTriggerMode or data.triggers.activeTriggerMode > #data.triggers) then
         data.triggers.activeTriggerMode = Private.trigger_modes.first_active;
       end

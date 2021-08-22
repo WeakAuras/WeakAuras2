@@ -2487,6 +2487,64 @@ LSM.RegisterCallback(WeakAuras, "LibSharedMedia_Registered", function(_, mediaty
   end
 end)
 
+Private.deprecated_sounds = {
+  [PowerAurasSoundPath.."bigkiss.ogg"] = "Big Kiss",
+  [PowerAurasSoundPath.."burp4.ogg"] = "Burp",
+  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CartoonVoiceBaritone.ogg"] = "Cartoon Voice Baritone",
+  ["Interface\\AddOns\\WeakAuras\\Media\\Sounds\\CartoonWalking.ogg"] = "Cartoon Walking",
+  [PowerAurasSoundPath.."chimes.ogg"] = "Chimes",
+  [PowerAurasSoundPath.."cookie.ogg"] = "Cookie Monster",
+  [PowerAurasSoundPath.."hurricane.ogg"] = "Hurricane",
+  [PowerAurasSoundPath.."hyena.ogg"] = "Hyena",
+  [PowerAurasSoundPath.."moan.ogg"] = "Moan",
+  [PowerAurasSoundPath.."rainroof.ogg"] = "Rain",
+  [PowerAurasSoundPath.."rocket.ogg"] = "Rocket",
+  [PowerAurasSoundPath.."shipswhistle.ogg"] = "Ship's Whistle",
+  [PowerAurasSoundPath.."Squeakypig.ogg"] = "Squeaky Toy",
+  [PowerAurasSoundPath.."wickedmalelaugh1.ogg"] = "Wicked Male Laugh",
+  [PowerAurasSoundPath.."wlaugh.ogg"] = "Wicked Female Laugh",
+}
+
+Private.UpdateDeprecatedMediaWarnings = function(data)
+  local found = {}
+
+  -- Actions
+  if data.actions and data.actions.start and data.actions.start.do_sound
+      and Private.deprecated_sounds[data.actions.start.sound] then
+    tinsert(found, Private.deprecated_sounds[data.actions.start.sound])
+  end
+
+  if data.actions and data.actions.finish and data.actions.finish.do_sound
+      and Private.deprecated_sounds[data.actions.finish.sound] then
+    tinsert(found, Private.deprecated_sounds[data.actions.finish.sound])
+end
+
+  -- Conditions
+  if data.conditions then
+    for _, condition in ipairs(data.conditions) do
+      if condition.changes then
+        for _, change in ipairs(condition.changes) do
+          if change.property == "sound" and type(change.value) == "table"
+             and (change.value.sound_type == "Play" or change.value.sound_type == "Loop")
+             and Private.deprecated_sounds[change.value.sound]
+          then
+            tinsert(found, Private.deprecated_sounds[change.value.sound])
+          end
+        end
+      end
+    end
+  end
+
+
+  if (#found > 0) then
+    local files = table.concat(found, ", ")
+    Private.AuraWarnings.UpdateWarning(data.uid, "deprecatedMedia", "warning",
+        string.format(L["This aura uses deprecated media files. Those files are currently scheduled to be removed with the next expansion. Used media: '%s'"], files))
+  else
+    Private.AuraWarnings.UpdateWarning(data.uid, "deprecatedMedia")
+  end
+end
+
 -- register options font
 LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraMono-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 
