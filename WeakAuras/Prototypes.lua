@@ -2394,6 +2394,14 @@ Private.event_prototypes = {
         conditionType = "number"
       },
       {
+        name = "deficit",
+        display = WeakAuras.newFeatureString .. L["Health Deficit"],
+        type = "number",
+        init = "total - value",
+        store = true,
+        conditionType = "number"
+      },
+      {
         name = "showAbsorb",
         display = L["Show Absorb"],
         type = "toggle",
@@ -2879,6 +2887,14 @@ Private.event_prototypes = {
         display = L["Power (%)"],
         type = "number",
         init = "total ~= 0 and (value / total) * 100 or nil",
+        store = true,
+        conditionType = "number"
+      },
+      {
+        name = "deficit",
+        display = WeakAuras.newFeatureString .. L["Power Deficit"],
+        type = "number",
+        init = "total - value",
         store = true,
         conditionType = "number"
       },
