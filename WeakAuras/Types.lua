@@ -2334,7 +2334,7 @@ Private.send_chat_message_types = {
   ERROR = L["Error Frame"]
 }
 
-if WeakAuras.IsRetail() then
+if not WeakAuras.IsClassic() then
   Private.send_chat_message_types.TTS = L["Text-to-speech"]
   Private.tts_voices = {}
   for i, voiceInfo in pairs(C_VoiceChat.GetTtsVoices()) do
