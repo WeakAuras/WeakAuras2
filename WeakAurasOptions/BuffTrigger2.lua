@@ -441,7 +441,7 @@ local function GetBuffTriggerOptions(data, triggernum)
     rem = {
       type = "input",
       name = L["Remaining Time"],
-      validate = ValidateNumeric,
+      validate = ValidateNumericOrPercent,
       order = 61.2,
       width = WeakAuras.halfWidth,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.useRem) end,

@@ -408,12 +408,19 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name
   return changed or data.lastChanged == time
 end
 
-local function calculateNextCheck(triggerInfoRemaining, auraDataRemaining, auraDataExpirationTime,  nextCheck)
+local function calculateNextCheck(triggerInfo, time, auraData, nextCheck)
+  local triggerInfoRemaining = triggerInfo.remainingCheck
+  local auraDataRemaining = auraData.expirationTime - time
+
+  if triggerInfo.remainingPercent then
+    triggerInfoRemaining = triggerInfoRemaining * auraData.duration
+  end
+
   if auraDataRemaining > 0 and auraDataRemaining >= triggerInfoRemaining then
     if not nextCheck then
-      return auraDataExpirationTime - triggerInfoRemaining
+      return auraData.expirationTime - triggerInfoRemaining
     else
-      return min(auraDataExpirationTime - triggerInfoRemaining, nextCheck)
+      return min(auraData.expirationTime - triggerInfoRemaining, nextCheck)
     end
   end
   return nextCheck
@@ -437,8 +444,11 @@ local function FindBestMatchData(time, id, triggernum, triggerInfo, matchedUnits
       local remCheck = true
       if triggerInfo.remainingFunc and auraData.expirationTime then
         local remaining = auraData.expirationTime - time
+        if triggerInfo.remainingPercent then
+          remaining = remaining / auraData.duration
+        end
         remCheck = triggerInfo.remainingFunc(remaining)
-        nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
+        nextCheck = calculateNextCheck(triggerInfo, time, auraData, nextCheck)
       end
 
       if remCheck then
@@ -473,8 +483,11 @@ local function FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
     local remCheck = true
     if triggerInfo.remainingFunc and auraData.expirationTime then
       local remaining = auraData.expirationTime - time
+      if triggerInfo.remainingPercent then
+        remaining = remaining / auraData.duration
+      end
       remCheck = triggerInfo.remainingFunc(remaining)
-      nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
+      nextCheck = calculateNextCheck(triggerInfo, time, auraData, nextCheck)
     end
 
     if remCheck then
@@ -1245,8 +1258,11 @@ local function UpdateTriggerState(time, id, triggernum)
           local remCheck = true
           if triggerInfo.remainingFunc and auraData.expirationTime then
             local remaining = auraData.expirationTime - time
+            if triggerInfo.remainingPercent then
+              remaining = remaining / auraData.duration
+            end
             remCheck = triggerInfo.remainingFunc(remaining)
-            nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
+            nextCheck = calculateNextCheck(triggerInfo, time, auraData, nextCheck)
           end
 
           if remCheck then
@@ -2423,8 +2439,12 @@ function BuffTrigger.Add(data)
       local scanFunc = createScanFunc(trigger)
 
       local remFunc
+      local remPercent
       if trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.useRem then
-        local remFuncStr = Private.function_strings.count:format(trigger.remOperator or ">=", tonumber(trigger.rem) or 0)
+        local remStr = trigger.rem or "0"
+        remPercent = string.match(remStr, "(%d+)%%")
+        local remNumber = remPercent and (tonumber(remPercent) / 100) or tonumber(remStr)
+        local remFuncStr = Private.function_strings.count:format(trigger.remOperator or ">=", remNumber)
         remFunc = WeakAuras.LoadFunction(remFuncStr)
       end
 
@@ -2528,7 +2548,8 @@ function BuffTrigger.Add(data)
         perUnitMode = perUnitMode,
         scanFunc = scanFunc,
         remainingFunc = remFunc,
-        remainingCheck = trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.useRem and tonumber(trigger.rem) or 0,
+        remainingPercent = remPercent,
+        remainingCheck = trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.useRem and (remPercent and remPercent / 100) or tonumber(trigger.rem) or 0,
         id = id,
         triggernum = triggernum,
         compareFunc = trigger.combineMode == "showHighest" and highestExpirationTime or lowestExpirationTime,
