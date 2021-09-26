@@ -2764,12 +2764,28 @@ Private.event_prototypes = {
           and trigger.unit == 'player' and trigger.use_powertype and trigger.powertype == 4
       then
         ret = ret .. [[
-          local chargedComboPoint = GetUnitChargedPowerPoints('player')
-          chargedComboPoint = chargedComboPoint and chargedComboPoint[1]
-          if state.chargedComboPoint ~= chargedComboPoint then
-            state.chargedComboPoint = chargedComboPoint
+          local chargedComboPoint = GetUnitChargedPowerPoints('player') or {}
+          if state.chargedComboPoint1 ~= chargedComboPoint[1] then
+            state.chargedComboPoint = chargedComboPoint[1] -- For backwards compability
+            state.chargedComboPoint1 = chargedComboPoint[1]
             state.changed = true
           end
+
+          if state.chargedComboPoint2 ~= chargedComboPoint[2] then
+            state.chargedComboPoint2 = chargedComboPoint[2]
+            state.changed = true
+          end
+
+          if state.chargedComboPoint3 ~= chargedComboPoint[3] then
+            state.chargedComboPoint3 = chargedComboPoint[3]
+            state.changed = true
+          end
+
+          if state.chargedComboPoint4 ~= chargedComboPoint[4] then
+            state.chargedComboPoint4 = chargedComboPoint[4]
+            state.changed = true
+          end
+
         ]]
       end
 
@@ -2828,10 +2844,47 @@ Private.event_prototypes = {
         end,
         hidden = not WeakAuras.IsRetail()
       },
+-- TODO modernize conditions
       {
-        name = "chargedComboPoint",
+        name = "chargedComboPoint1",
         type = "number",
-        display = WeakAuras.newFeatureString .. L["Charged Combo Point"],
+        display = WeakAuras.newFeatureString .. L["Charged Combo Point 1"],
+        store = true,
+        conditionType = "number",
+        enable = function(trigger)
+          return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
+        end,
+        hidden = true,
+        test = "true"
+      },
+      {
+        name = "chargedComboPoint2",
+        type = "number",
+        display = WeakAuras.newFeatureString .. L["Charged Combo Point 2"],
+        store = true,
+        conditionType = "number",
+        enable = function(trigger)
+          return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
+        end,
+        hidden = true,
+        test = "true"
+      },
+      {
+        name = "chargedComboPoint3",
+        type = "number",
+        display = WeakAuras.newFeatureString .. L["Charged Combo Point 3"],
+        store = true,
+        conditionType = "number",
+        enable = function(trigger)
+          return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
+        end,
+        hidden = true,
+        test = "true"
+      },
+      {
+        name = "chargedComboPoint4",
+        type = "number",
+        display = WeakAuras.newFeatureString .. L["Charged Combo Point 4"],
         store = true,
         conditionType = "number",
         enable = function(trigger)
@@ -3046,10 +3099,46 @@ Private.event_prototypes = {
         end
       },
       {
-        name = L["Charged Combo Point"],
+        name = L["Charged Combo Point (1)"],
         func = function(trigger, state)
-          if type(state.chargedComboPoint) == "number" then
-            return state.chargedComboPoint - 1, state.chargedComboPoint
+          if type(state.chargedComboPoint1) == "number" then
+            return state.chargedComboPoint1 - 1, state.chargedComboPoint1
+          end
+          return 0, 0
+        end,
+        enable = function(trigger)
+          return WeakAuras.IsRetail() and trigger.unit == 'player' and trigger.use_powertype and trigger.powertype == 4 and trigger.use_showChargedComboPoints
+        end,
+      },
+      {
+        name = L["Charged Combo Point (2)"],
+        func = function(trigger, state)
+          if type(state.chargedComboPoint2) == "number" then
+            return state.chargedComboPoint2 - 1, state.chargedComboPoint2
+          end
+          return 0, 0
+        end,
+        enable = function(trigger)
+          return WeakAuras.IsRetail() and trigger.unit == 'player' and trigger.use_powertype and trigger.powertype == 4 and trigger.use_showChargedComboPoints
+        end,
+      },
+      {
+        name = L["Charged Combo Point (3)"],
+        func = function(trigger, state)
+          if type(state.chargedComboPoint3) == "number" then
+            return state.chargedComboPoint3 - 1, state.chargedComboPoint3
+          end
+          return 0, 0
+        end,
+        enable = function(trigger)
+          return WeakAuras.IsRetail() and trigger.unit == 'player' and trigger.use_powertype and trigger.powertype == 4 and trigger.use_showChargedComboPoints
+        end,
+      },
+      {
+        name = L["Charged Combo Point (4)"],
+        func = function(trigger, state)
+          if type(state.chargedComboPoint4) == "number" then
+            return state.chargedComboPoint4 - 1, state.chargedComboPoint4
           end
           return 0, 0
         end,
