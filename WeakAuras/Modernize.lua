@@ -1287,5 +1287,23 @@ function Private.Modernize(data)
 
   end
 
+  if (data.internalVersion < 46) then
+    if (data.conditions) then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        if (condition.check) then
+          local triggernum = condition.check.trigger;
+          if (triggernum) then
+            local trigger = data.triggers[triggernum]
+            if (trigger and trigger.trigger and trigger.trigger.event == "Power") then
+              if (condition.check.variable == "chargedComboPoint") then
+                condition.check.variable = "chargedComboPoint1";
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
 end
