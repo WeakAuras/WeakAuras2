@@ -3344,9 +3344,7 @@ do
       castLatencyFrame = CreateFrame("Frame")
       castLatencyFrame:RegisterEvent("CURRENT_SPELL_CAST_CHANGED")
       castLatencyFrame:SetScript("OnEvent", function(event)
-        Private.StartProfileSystem("generictrigger")
-        WeakAuras.ScanEvents("CAST_LATENCY_UPDATE", "player")
-        Private.StopProfileSystem("generictrigger")
+        Private.LAST_CURRENT_SPELL_CAST_CHANGED = GetTime()
       end)
     end
   end
