@@ -3667,6 +3667,19 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
         ret = ret .. additional;
       end
     end
+  else
+    if (trigger.custom_type == "stateupdate") then
+      local variables = events[data.id][triggernum].tsuConditionVariables();
+      if (type(variables) == "table") then
+        for var, varData in pairs(variables) do
+          if (type(varData) == "table") then
+            if varData.display then
+              ret = ret .. "|cFFFF0000%".. triggernum .. "." .. var .. "|r - " .. varData.display .. "\n"
+            end
+          end
+        end
+      end
+    end
   end
 
   return ret;
