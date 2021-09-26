@@ -7358,7 +7358,6 @@ Private.event_prototypes = {
           WeakAuras.ScheduleCastCheck(expirationTime - remainingCheck, unit)
         end
       ]=];
-
       ret = ret:format(trigger.unit == "group" and "true" or "false",
                         trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
                         trigger.use_inverse and "true" or "false");
@@ -8076,6 +8075,14 @@ Private.event_prototypes = {
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
         hidden = not WeakAuras.IsRetail()
+      },
+      {
+        name = "blockvalue",
+        display = L["Block Value"],
+        type = "number",
+        init = "GetShieldBlock()",
+        store = true,
+        conditionType = "number"
       },
       {
         name = "armorrating",
