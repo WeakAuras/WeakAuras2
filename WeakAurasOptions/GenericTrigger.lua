@@ -287,7 +287,8 @@ local function GetCustomTriggerOptions(data, triggernum)
     type = "string",
     test = "function",
     events = "table",
-    values = "table"
+    values = "table",
+    display = "string"
   }
 
   local function validateCustomVariables(variables)
