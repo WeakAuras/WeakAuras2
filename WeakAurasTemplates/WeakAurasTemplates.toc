@@ -1,5 +1,5 @@
 ## Interface: 90100
-## Interface-Classic: 11307
+## Interface-Classic: 11400
 ## Interface-BCC: 20502
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
