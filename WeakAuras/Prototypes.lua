@@ -7681,6 +7681,7 @@ Private.event_prototypes = {
       {
         name = L["Latency"],
         func = function(trigger, state)
+          if not state.expirationTime or not state.duration then return 0, 0 end
           return 0, (state.expirationTime - state.duration) - (Private.LAST_CURRENT_SPELL_CAST_CHANGED or 0)
         end,
         enable = function(trigger)
