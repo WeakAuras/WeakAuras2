@@ -1669,10 +1669,14 @@ do
         if casting then
           casting = false
         end
-        if isAttacking then
-          swingStart("main")
-          swingTriggerUpdate()
-        end
+        -- check next frame
+        swingTimerFrame:SetScript("OnUpdate", function(self)
+          if isAttacking then
+            swingStart("main")
+            swingTriggerUpdate()
+          end
+          self:SetScript("OnUpdate", nil)
+        end)
       end
       if Private.reset_ranged_swing_spells[spell] then
         if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
