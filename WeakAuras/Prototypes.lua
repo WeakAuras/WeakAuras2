@@ -5472,6 +5472,17 @@ Private.event_prototypes = {
     end,
     args = {
       {
+        name = "note",
+        type = "description",
+        display = "",
+        text = function()
+          if not WeakAuras.IsRetail() then
+            return L["Note: Due to how complicated the swing timer behaviour is and the lack of APIs from Blizzard, results are inaccurate in edge cases."]
+          end
+        end,
+
+      },
+      {
         name = "hand",
         required = true,
         display = L["Weapon"],
