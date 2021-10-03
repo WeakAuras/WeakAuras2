@@ -1713,13 +1713,6 @@ function Private.UnloadDisplays(toUnload, ...)
   end
 
   for id in pairs(toUnload) do
-    -- Even though auras are collapsed, their finish animation can be running
-    Private.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
-    if clones[id] then
-      for cloneId, region in pairs(clones[id]) do
-        Private.CancelAnimation(region, true, true, true, true, true, true)
-      end
-    end
 
     for i = 1, triggerState[id].numTriggers do
       if (triggerState[id][i]) then
@@ -1745,6 +1738,14 @@ function Private.UnloadDisplays(toUnload, ...)
 
     WeakAuras.regions[id].region:Collapse();
     Private.CollapseAllClones(id);
+
+    -- Even though auras are collapsed, their finish animation can be running
+    Private.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
+    if clones[id] then
+      for cloneId, region in pairs(clones[id]) do
+        Private.CancelAnimation(region, true, true, true, true, true, true)
+      end
+    end
   end
 end
 
