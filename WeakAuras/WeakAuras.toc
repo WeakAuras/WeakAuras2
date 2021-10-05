@@ -64,6 +64,7 @@ RegionTypes\Icon.lua
 RegionTypes\Text.lua
 RegionTypes\Group.lua
 RegionTypes\DynamicGroup.lua
+RegionTypes\DynamicGroupOld.lua
 RegionTypes\StopMotion.lua
 RegionTypes\Model.lua
 

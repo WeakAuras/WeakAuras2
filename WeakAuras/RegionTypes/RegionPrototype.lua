@@ -553,7 +553,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
     region.customAnchorFunc = nil
   end
 
-  if not parent or parent.regionType ~= "dynamicgroup" then
+  if not parent or not parent.regionType or not parent.regionType:find("dynamicgroup") then
     if
       -- Don't anchor single Auras that with custom anchoring,
       -- these will be anchored in expand
@@ -564,8 +564,7 @@ function WeakAuras.regionPrototype.modify(parent, region, data)
       )
       -- Group Auras that will never be expanded, so those need
       -- to be always anchored here
-      or data.regionType == "dynamicgroup"
-      or data.regionType == "group"
+      or data.regionType:find("group")
     then
       Private.AnchorFrame(data, region, parent);
     end
@@ -731,7 +730,7 @@ end
 function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, parent, parentRegionType)
   local uid = data.uid
   local id = data.id
-  local inDynamicGroup = parentRegionType == "dynamicgroup";
+  local inDynamicGroup = parentRegionType and parentRegionType:find("dynamicgroup");
   local inGroup = parentRegionType == "group";
 
   local startMainAnimation = function()

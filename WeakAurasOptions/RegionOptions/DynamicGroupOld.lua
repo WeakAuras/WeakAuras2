@@ -129,6 +129,33 @@ local function createOptions(id, data)
         OptionsPrivate.ResetMoverSizer()
       end,
     },
+    useAnchorPerUnit = {
+      type = "toggle",
+      order = 1.5,
+      width = WeakAuras.normalWidth,
+      name = L["Group by Frame"],
+      desc = L[
+[[Group and anchor each auras by frame.
+
+- Nameplates: attach to nameplates per unit.
+- Unit Frames: attach to unit frame buttons per unit.
+- Custom Frames: choose which frame each region should be anchored to.]]
+      ],
+      hidden = function() return data.grow == "CUSTOM" end,
+    },
+    anchorPerUnit = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Group by Frame"],
+      order = 1.6,
+      values = {
+        ["UNITFRAME"] = L["Unit Frames"],
+        ["NAMEPLATE"] = L["Nameplates"],
+        ["CUSTOM"] = L["Custom Frames"],
+      },
+      hidden = function() return data.grow == "CUSTOM" end,
+      disabled = function() return not data.useAnchorPerUnit end
+    },
     -- custom grow option added below
     align = {
       type = "select",
@@ -370,24 +397,17 @@ local function createOptions(id, data)
       disabled = function() return not data.useLimit end,
       hidden = function() return data.grow == "CUSTOM" end,
     },
-    distribute = {
-      type = "select",
-      width = WeakAuras.doubleWidth,
-      name = L["Distribute"], -- TODO: bikeshed
-      order = 27,
-      values = OptionsPrivate.Private.group_distribute_types
-    },
     animate = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Animated Expand and Collapse"],
-      order = 28
+      order = 27
     },
     scale = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Group Scale"],
-      order = 29,
+      order = 28,
       min = 0.05,
       softMax = 2,
       max = 10,
@@ -416,8 +436,8 @@ local function createOptions(id, data)
                           2, function() return data.grow ~= "CUSTOM" end, {"customGrow"}, false, { setOnParent = true })
   OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Sort"], "custom_sort", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-sort",
                           21, function() return data.sort ~= "custom" end, {"customSort"}, false, { setOnParent = true })
-  OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Distribute"], "custom_distribute", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#group-by-frame",
-                          27.5, function() return data.distribute ~= "custom" end, {"customDistribute"}, false, { setOnParent = true })
+  OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Anchor"], "custom_anchor_per_unit", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#group-by-frame",
+                          1.7, function() return not(data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM") end, {"customAnchorPerUnit"}, false, { setOnParent = true })
 
   local borderHideFunc = function() return data.useAnchorPerUnit or data.grow == "CUSTOM" end
   local disableSelfPoint = function() return data.grow ~= "CUSTOM" and data.grow ~= "GRID" and not data.useAnchorPerUnit end
@@ -533,4 +553,4 @@ local function createIcon()
   return thumbnail
 end
 
-WeakAuras.RegisterRegionOptions("dynamicgroup2", createOptions, createIcon, L["Dynamic Group"], createThumbnail, modifyThumbnail, L["A group that dynamically controls the positioning of its children"]);
+WeakAuras.RegisterRegionOptions("dynamicgroup", createOptions, createIcon, L["Dynamic Group"], createThumbnail, modifyThumbnail, L["A group that dynamically controls the positioning of its children"]);

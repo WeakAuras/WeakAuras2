@@ -20,7 +20,6 @@ local default = {
   space = 2,
   stagger = 0,
   sort = "none",
-  distribute = "self",
   animate = false,
   anchorPoint = "CENTER",
   anchorFrameType = "SCREEN",
@@ -95,6 +94,9 @@ local function releaseControlPoint(self, controlPoint)
   controlPoint:ClearAnchorPoint()
   local regionData = controlPoint.regionData
   if regionData then
+    if self.parent.anchorPerUnit == "UNITFRAME" then
+      Private.dyngroup_unitframe_monitor[regionData] = nil
+    end
     controlPoint.regionData = nil
     regionData.controlPoint = nil
   end
@@ -102,22 +104,11 @@ end
 
 local function create(parent)
   local region = CreateFrame("FRAME", nil, parent)
-  region.regionType = "dynamicgroup"
   region:SetSize(16, 16)
   region:SetMovable(true)
-
-  -- 2-dimensional table of children, indexed by id, cloneId
+  region.sortedChildren = {}
   region.controlledChildren = {}
-  -- regionData -> boolean map. Entries in this table will be checked to see if their position needs modifying
   region.updatedChildren = {}
-  -- Set of sorted lists. Entries in this set are added by RedistributeChildren when an updated child is assigned to a sortedList,
-  -- or when a sortedList loses a child
-  -- Repositioning happens only on lists which are flagged as having any updates to their children.
-  region.updatedGroups = {}
-  -- types of frames to attach a child's control point to
-  -- 3-dimensional table, indexed by type, groupId, sort index
-  -- DistributeChildren assigns type & groupId, sort assigns sort index
-  region.groups = {}
   local background = CreateFrame("frame", nil, region, BackdropTemplateMixin and "BackdropTemplate")
   region.background = background
   region.selfPoint = "TOPLEFT"
@@ -129,59 +120,10 @@ local function create(parent)
   local oldSetFrameLevel = region.SetFrameLevel
   region.SetFrameLevel = function(self, level)
     oldSetFrameLevel(self, level)
-    self.background:SetFrameLevel(level)
+    self.border:SetFrameLevel(level)
   end
 
   return region
-end
-
-local function noop() end
-
-local anchorers = {
-  self = function(self, anchorLocation) return self end,
-  nameplate = function(self, anchorLocation) return WeakAuras.GetUnitNameplate(anchorLocation) end,
-  unit = function(self, anchorLocation) return WeakAuras.GetUnitFrame(anchorLocation) end,
-  frame = function(self, anchorLocation) return Private.GetSanitizedGlobal(anchorLocation) end,
-  aura = function(self, anchorLocation) return WeakAuras.GetRegion(anchorLocation) end, --? do we actually want this?
-}
-
-local distributors = {
-  self = function(data)
-    return function(regionData) return { type = "self" } end
-  end,
-  nameplate = function(data)
-    return function(regionData)
-      return {
-        type = "nameplate",
-        location = regionData.region.state and regionData.region.state.unit
-      }
-    end
-  end,
-  unit = function(data)
-    return function(regionData)
-      return {
-        type = "unit",
-        location = regionData.region.state and regionData.region.state.unit
-      }
-    end
-  end,
-  custom = function(data)
-    local distributeStr = data.customDistribute or ""
-    local distributeFunc = WeakAuras.LoadFunction("return " .. distributeStr, data.id, "custom distribute") or noop
-    return function(regionData)
-      Private.ActivateAuraEnvironment(data.id)
-      local ok, result = xpcall(distributeFunc, geterrorhandler(), regionData)
-      Private.ActivateAuraEnvironment()
-      if ok then
-        return result
-      end
-    end
-  end
-}
-
-local function createDistributeFunc(data)
-  local distributor = distributors[data.distribute] or distributors["self"]
-  return distributor(data)
 end
 
 function WeakAuras.GetPolarCoordinates(x, y, originX, originY)
@@ -320,6 +262,8 @@ function WeakAuras.ComposeSorts(...)
   end
 end
 
+local function noop() end
+
 local sorters = {
   none = function(data)
     return WeakAuras.ComposeSorts(
@@ -383,6 +327,7 @@ local sorters = {
     end
   end
 }
+WeakAuras.SortFunctions = sorters
 
 local function createSortFunc(data)
   local sorter = sorters[data.sort] or sorters.none
@@ -411,6 +356,59 @@ local function staggerCoefficient(alignment, stagger)
   end
 end
 
+local anchorers = {
+  ["NAMEPLATE"] = function(data)
+    return function(frames, activeRegions)
+      for _, regionData in ipairs(activeRegions) do
+        local unit = regionData.region.state and regionData.region.state.unit
+        local found
+        if unit then
+          local frame = WeakAuras.GetUnitNameplate(unit)
+          if frame then
+            frames[frame] = frames[frame] or {}
+            tinsert(frames[frame], regionData)
+            found = true
+          end
+        end
+        if not found and WeakAuras.IsOptionsOpen() then
+          Private.ensurePRDFrame()
+          Private.personalRessourceDisplayFrame:anchorFrame(regionData.region.state.id, "NAMEPLATE")
+          frames[Private.personalRessourceDisplayFrame] = frames[Private.personalRessourceDisplayFrame] or {}
+          tinsert(frames[Private.personalRessourceDisplayFrame], regionData)
+        end
+      end
+    end
+  end,
+  ["UNITFRAME"] = function(data)
+    return function(frames, activeRegions)
+      for _, regionData in ipairs(activeRegions) do
+        local unit = regionData.region.state and regionData.region.state.unit
+        if unit then
+          local frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
+          if frame then
+            frames[frame] = frames[frame] or {}
+            tinsert(frames[frame], regionData)
+          end
+        end
+      end
+    end
+  end,
+  ["CUSTOM"] = function(data)
+    local anchorStr = data.customAnchorPerUnit or ""
+    local anchorFunc = WeakAuras.LoadFunction("return " .. anchorStr, data.id, "custom frame anchor") or noop
+    return function(frames, activeRegions)
+      Private.ActivateAuraEnvironment(data.id)
+      xpcall(anchorFunc, geterrorhandler(), frames, activeRegions)
+      Private.ActivateAuraEnvironment()
+    end
+  end
+}
+
+local function createAnchorPerUnitFunc(data)
+  local anchorer = anchorers[data.anchorPerUnit] or anchorers.NAMEPLATE
+  return anchorer(data)
+end
+
 local function getDimension(regionData, dim)
   return regionData.dimensions[dim]
 end
@@ -422,14 +420,24 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = staggerCoefficient(data.align, data.stagger)
+    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local numVisible = min(limit, #activeRegions)
-      local x, y = startX, startY + (numVisible - 1) * stagger * coeff
-      for i, regionData in ipairs(activeRegions) do
-        if i <= numVisible then
-          newPositions[i] = { x = x, y = y, show = true }
-          x = x - regionData.dimensions.width - space
-          y = y - stagger
+      local frames = {}
+      if anchorPerUnitFunc then
+        anchorPerUnitFunc(frames, activeRegions)
+      else
+        frames[""] = activeRegions
+      end
+      for frame, regionDatas in pairs(frames) do
+        local numVisible = min(limit, #regionDatas)
+        local x, y = startX, startY + (numVisible - 1) * stagger * coeff
+        newPositions[frame] = {}
+        for i, regionData in ipairs(regionDatas) do
+          if i <= numVisible then
+            newPositions[frame][regionData] = { x, y, true }
+            x = x - regionData.dimensions.width - space
+            y = y - stagger
+          end
         end
       end
     end
@@ -440,14 +448,24 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = 1 - staggerCoefficient(data.align, stagger)
+    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local numVisible = min(limit, #activeRegions)
-      local x, y = startX, startY - (numVisible - 1) * stagger * coeff
-      for i, regionData in ipairs(activeRegions) do
-        if i <= numVisible then
-          newPositions[i] = { x = x, y = y, show = true }
-          x = x + (regionData.dimensions.width) + space
-          y = y + stagger
+      local frames = {}
+      if anchorPerUnitFunc then
+        anchorPerUnitFunc(frames, activeRegions)
+      else
+        frames[""] = activeRegions
+      end
+      for frame, regionDatas in pairs(frames) do
+        local numVisible = min(limit, #regionDatas)
+        local x, y = startX, startY - (numVisible - 1) * stagger * coeff
+        newPositions[frame] = {}
+        for i, regionData in ipairs(regionDatas) do
+          if i <= numVisible then
+            newPositions[frame][regionData] = { x, y, true }
+            x = x + (regionData.dimensions.width) + space
+            y = y + stagger
+          end
         end
       end
     end
@@ -458,14 +476,24 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = 1 - staggerCoefficient(data.align, stagger)
+    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local numVisible = min(limit, #activeRegions)
-      local x, y = startX - (numVisible - 1) * stagger * coeff, startY
-      for i, regionData in ipairs(activeRegions) do
-        if i <= numVisible then
-          newPositions[i] = { x = x, y = y, show = true }
-          x = x + stagger
-          y = y + (regionData.dimensions.height) + space
+      local frames = {}
+      if anchorPerUnitFunc then
+        anchorPerUnitFunc(frames, activeRegions)
+      else
+        frames[""] = activeRegions
+      end
+      for frame, regionDatas in pairs(frames) do
+        local numVisible = min(limit, #regionDatas)
+        local x, y = startX - (numVisible - 1) * stagger * coeff, startY
+        newPositions[frame] = {}
+        for i, regionData in ipairs(regionDatas) do
+          if i <= numVisible then
+            newPositions[frame][regionData] = { x, y, true }
+            x = x + stagger
+            y = y + (regionData.dimensions.height) + space
+          end
         end
       end
     end
@@ -476,14 +504,24 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = staggerCoefficient(data.align, stagger)
+    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local numVisible = min(limit, #activeRegions)
-      local x, y = startX - (numVisible - 1) * stagger * coeff, startY
-      for i, regionData in ipairs(activeRegions) do
-        if i <= numVisible then
-          newPositions[i] = { x = x, y = y, show = true }
-          x = x + stagger
-          y = y - (regionData.dimensions.height) - space
+      local frames = {}
+      if anchorPerUnitFunc then
+        anchorPerUnitFunc(frames, activeRegions)
+      else
+        frames[""] = activeRegions
+      end
+      for frame, regionDatas in pairs(frames) do
+        local numVisible = min(limit, #regionDatas)
+        local x, y = startX - (numVisible - 1) * stagger * coeff, startY
+        newPositions[frame] = {}
+        for i, regionData in ipairs(regionDatas) do
+          if i <= numVisible then
+            newPositions[frame][regionData] = { x, y, true }
+            x = x + stagger
+            y = y - (regionData.dimensions.height) - space
+          end
         end
       end
     end
@@ -493,20 +531,30 @@ local growers = {
     local space = data.space or 0
     local limit = data.useLimit and data.limit or math.huge
     local midX, midY = 0, 0
+    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local numVisible = min(limit, #activeRegions)
-      local totalWidth = (numVisible - 1) * space
-      for i = 1, numVisible do
-        local regionData = activeRegions[i]
-        totalWidth = totalWidth + (regionData.dimensions.width)
+      local frames = {}
+      if anchorPerUnitFunc then
+        anchorPerUnitFunc(frames, activeRegions)
+      else
+        frames[""] = activeRegions
       end
-      local x, y = midX - totalWidth/2, midY - (stagger * (numVisible - 1)/2)
-      for i, regionData in ipairs(activeRegions) do
-        if i <= numVisible then
-          x = x + (regionData.dimensions.width) / 2
-          newPositions[i] = { x = x, y = y, show = true }
-          x = x + (regionData.dimensions.width) / 2 + space
-          y = y + stagger
+      for frame, regionDatas in pairs(frames) do
+        local numVisible = min(limit, #regionDatas)
+        local totalWidth = (numVisible - 1) * space
+        for i = 1, numVisible do
+          local regionData = regionDatas[i]
+          totalWidth = totalWidth + (regionData.dimensions.width)
+        end
+        local x, y = midX - totalWidth/2, midY - (stagger * (numVisible - 1)/2)
+        newPositions[frame] = {}
+        for i, regionData in ipairs(regionDatas) do
+          if i <= numVisible then
+            x = x + (regionData.dimensions.width) / 2
+            newPositions[frame][regionData] = { x, y, true }
+            x = x + (regionData.dimensions.width) / 2 + space
+            y = y + stagger
+          end
         end
       end
     end
@@ -516,20 +564,30 @@ local growers = {
     local space = data.space or 0
     local limit = data.useLimit and data.limit or math.huge
     local midX, midY = 0, 0
+    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local numVisible = min(limit, #activeRegions)
-      local totalHeight = (numVisible - 1) * space
-      for i = 1, numVisible do
-        local regionData = activeRegions[i]
-        totalHeight = totalHeight + (regionData.dimensions.height)
+      local frames = {}
+      if anchorPerUnitFunc then
+        anchorPerUnitFunc(frames, activeRegions)
+      else
+        frames[""] = activeRegions
       end
-      local x, y = midX - (stagger * (numVisible - 1)/2), midY - totalHeight/2
-      for i, regionData in ipairs(activeRegions) do
-        if i <= numVisible then
-          y = y + (regionData.dimensions.height) / 2
-          newPositions[i] = { x = x, y = y, show = true }
-          x = x + stagger
-          y = y + (regionData.dimensions.height) / 2 + space
+      for frame, regionDatas in pairs(frames) do
+        local numVisible = min(limit, #regionDatas)
+        local totalHeight = (numVisible - 1) * space
+        for i = 1, numVisible do
+          local regionData = regionDatas[i]
+          totalHeight = totalHeight + (regionData.dimensions.height)
+        end
+        local x, y = midX - (stagger * (numVisible - 1)/2), midY - totalHeight/2
+        newPositions[frame] = {}
+        for i, regionData in ipairs(regionDatas) do
+          if i <= numVisible then
+            y = y + (regionData.dimensions.height) / 2
+            newPositions[frame][regionData] = { x, y, true }
+            x = x + stagger
+            y = y + (regionData.dimensions.height) / 2 + space
+          end
         end
       end
     end
@@ -542,32 +600,42 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local sAngle = (data.rotation or 0) * math.pi / 180
     local arc = (data.fullCircle and 360 or data.arcLength or 0) * math.pi / 180
+    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local numVisible = min(limit, #activeRegions)
-      local r
-      if constantFactor == "RADIUS" then
-        r = radius
+      local frames = {}
+      if anchorPerUnitFunc then
+        anchorPerUnitFunc(frames, activeRegions)
       else
-        if numVisible <= 1 then
-          r = 0
+        frames[""] = activeRegions
+      end
+      for frame, regionDatas in pairs(frames) do
+        local numVisible = min(limit, #regionDatas)
+        local r
+        if constantFactor == "RADIUS" then
+          r = radius
         else
-          r = (numVisible * space) / (2 * math.pi)
+          if numVisible <= 1 then
+            r = 0
+          else
+            r = (numVisible * space) / (2 * math.pi)
+          end
         end
-      end
-      local theta = sAngle
-      local dAngle
-      if numVisible == 1 then
-        dAngle = 0
-      elseif not data.fullCircle then
-        dAngle = arc / (numVisible - 1)
-      else
-        dAngle = arc / numVisible
-      end
-      for i, regionData in ipairs(activeRegions) do
-        if i <= numVisible then
-          local x, y = polarToRect(r, theta)
-          newPositions[i] = { x = x, y = y, show = true }
-          theta = theta + dAngle
+        local theta = sAngle
+        local dAngle
+        if numVisible == 1 then
+          dAngle = 0
+        elseif not data.fullCircle then
+          dAngle = arc / (numVisible - 1)
+        else
+          dAngle = arc / numVisible
+        end
+        newPositions[frame] = {}
+        for i, regionData in ipairs(regionDatas) do
+          if i <= numVisible then
+            local x, y = polarToRect(r, theta)
+            newPositions[frame][regionData] = { x, y, true }
+            theta = theta + dAngle
+          end
         end
       end
     end
@@ -580,32 +648,42 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local sAngle = (data.rotation or 0) * math.pi / 180
     local arc = (data.fullCircle and 360 or data.arcLength or 0) * math.pi / 180
+    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local numVisible = min(limit, #activeRegions)
-      local r
-      if constantFactor == "RADIUS" then
-        r = radius
+      local frames = {}
+      if anchorPerUnitFunc then
+        anchorPerUnitFunc(frames, activeRegions)
       else
-        if numVisible <= 1 then
-          r = 0
+        frames[""] = activeRegions
+      end
+      for frame, regionDatas in pairs(frames) do
+        local numVisible = min(limit, #regionDatas)
+        local r
+        if constantFactor == "RADIUS" then
+          r = radius
         else
-          r = (numVisible * space) / (2 * math.pi)
+          if numVisible <= 1 then
+            r = 0
+          else
+            r = (numVisible * space) / (2 * math.pi)
+          end
         end
-      end
-      local theta = sAngle
-      local dAngle
-      if numVisible == 1 then
-        dAngle = 0
-      elseif not data.fullCircle then
-        dAngle = arc / (numVisible - 1)
-      else
-        dAngle = arc / numVisible
-      end
-      for i, regionData in ipairs(activeRegions) do
-        if i <= numVisible then
-          local x, y = polarToRect(r, theta)
-          newPositions[i] = { x = x, y = y, show = true }
-          theta = theta - dAngle
+        local theta = sAngle
+        local dAngle
+        if numVisible == 1 then
+          dAngle = 0
+        elseif not data.fullCircle then
+          dAngle = arc / (1 - numVisible)
+        else
+          dAngle = arc / -numVisible
+        end
+        newPositions[frame] = {}
+        for i, regionData in ipairs(regionDatas) do
+          if i <= numVisible then
+            local x, y = polarToRect(r, theta)
+            newPositions[frame][regionData] = { x, y, true }
+            theta = theta + dAngle
+          end
         end
       end
     end
@@ -631,7 +709,7 @@ local growers = {
     local primary = {
       -- x direction
       dim = "width",
-      coord = "x",
+      coord = 1,
       mul = colMul,
       space = colSpace,
       current = 0
@@ -639,7 +717,7 @@ local growers = {
     local secondary = {
       -- y direction
       dim = "height",
-      coord = "y",
+      coord = 2,
       mul = rowMul,
       space = rowSpace,
       current = 0
@@ -647,21 +725,31 @@ local growers = {
     if not rowFirst then
       primary, secondary = secondary, primary
     end
+    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
     return function(newPositions, activeRegions)
-      local numVisible = min(limit, #activeRegions)
-      primary.current = 0
-      secondary.current = 0
-      secondary.max = 0
-      for i, regionData in ipairs(activeRegions) do
-        if i <= numVisible then
-          newPositions[i] = { [primary.coord] = primary.current, [secondary.coord] = secondary.current, show = true }
-          secondary.max = max(secondary.max, getDimension(regionData, secondary.dim))
-          if i % gridWidth == 0 then
-            primary.current = 0
-            secondary.current = secondary.current + (secondary.space + secondary.max) * secondary.mul
-            secondary.max = 0
-          else
-            primary.current = primary.current + (primary.space + getDimension(regionData, primary.dim)) * primary.mul
+      local frames = {}
+      if anchorPerUnitFunc then
+        anchorPerUnitFunc(frames, activeRegions)
+      else
+        frames[""] = activeRegions
+      end
+      for frame, regionDatas in pairs(frames) do
+        local numVisible = min(limit, #regionDatas)
+        primary.current = 0
+        secondary.current = 0
+        secondary.max = 0
+        newPositions[frame] = {}
+        for i, regionData in ipairs(regionDatas) do
+          if i <= numVisible then
+            newPositions[frame][regionData] = { [primary.coord] = primary.current, [secondary.coord] = secondary.current, [3] = true }
+            secondary.max = max(secondary.max, getDimension(regionData, secondary.dim))
+            if i % gridWidth == 0 then
+              primary.current = 0
+              secondary.current = secondary.current + (secondary.space + secondary.max) * secondary.mul
+              secondary.max = 0
+            else
+              primary.current = primary.current + (primary.space + getDimension(regionData, primary.dim)) * primary.mul
+            end
           end
         end
       end
@@ -680,26 +768,21 @@ local growers = {
     end
   end
 }
+WeakAuras.GrowFunctions = growers
 
 local function createGrowFunc(data)
   local grower = growers[data.grow] or growers.DOWN
   return grower(data)
 end
 
+local nullErrorHandler = function()
+end
+
 local function SafeGetPos(region, func)
-  local ok, value1, value2 = xpcall(func, noop, region)
+  local ok, value1, value2 = xpcall(func, nullErrorHandler, region)
   if ok then
     return value1, value2
   end
-end
-
-local function resolvePath(tbl, ...)
-  for i = 1, select("#", ...) do
-    local index = select(i, ...)
-    tbl[index] = tbl[index] or {}
-    tbl = tbl[index]
-  end
-  return tbl
 end
 
 local function modify(parent, region, data)
@@ -707,7 +790,7 @@ local function modify(parent, region, data)
   region:SetScale(data.scale and data.scale > 0 and data.scale <= 10 and data.scale or 1)
   WeakAuras.regionPrototype.modify(parent, region, data)
 
-  if data.border then
+  if data.border and (data.grow ~= "CUSTOM" and not data.useAnchorPerUnit) then
     local background = region.background
     background:SetBackdrop({
       edgeFile = data.borderEdge ~= "None" and SharedMedia:Fetch("border", data.borderEdge) or "",
@@ -753,9 +836,6 @@ local function modify(parent, region, data)
     if not self:IsSuspended() then
       if self.needToReload then
         self:ReloadControlledChildren()
-      end
-      if self.needToDistribute then
-        self:RedistributeChildren()
       end
       if self.needToSort then
         self:SortUpdatedChildren()
@@ -805,7 +885,8 @@ local function modify(parent, region, data)
 
   local function getRegionData(childID, cloneID)
     cloneID = cloneID or ""
-    local controlPoint = region.controlledChildren[childID] and region.controlledChildren[childID][cloneID]
+    local controlPoint
+    controlPoint = region.controlledChildren[childID] and region.controlledChildren[childID][cloneID]
     if not controlPoint then return end
     return controlPoint.regionData
   end
@@ -820,19 +901,19 @@ local function modify(parent, region, data)
   function region:ReloadControlledChildren()
     -- 'forgets' about regions it controls and starts from scratch. Mostly useful when Add()ing the group
     if not self:IsSuspended() then
-      Private.StartProfileSystem("dynamicgroup2")
+      Private.StartProfileSystem("dynamicgroup")
       Private.StartProfileAura(data.id)
       self.needToReload = false
+      self.sortedChildren = {}
       self.controlledChildren = {}
       self.updatedChildren = {}
-      self.groups = {}
-      self.updatedGroups = {}
       self.controlPoints:ReleaseAll()
       for dataIndex, childID in ipairs(data.controlledChildren) do
         local childRegion, childData = WeakAuras.GetRegion(childID), WeakAuras.GetData(childID)
         if childRegion and childData then
           local regionData = createRegionData(childData, childRegion, childID, nil, dataIndex)
           if childRegion.toShow then
+            tinsert(self.sortedChildren, regionData)
             self.updatedChildren[regionData] = true
           end
         end
@@ -840,14 +921,15 @@ local function modify(parent, region, data)
           for cloneID, cloneRegion in pairs(WeakAuras.clones[childID]) do
             local regionData = createRegionData(childData, cloneRegion, childID, cloneID, dataIndex)
             if cloneRegion.toShow then
+              tinsert(self.sortedChildren, regionData)
               self.updatedChildren[regionData] = true
             end
           end
         end
       end
-      Private.StopProfileSystem("dynamicgroup2")
+      Private.StopProfileSystem("dynamicgroup")
       Private.StopProfileAura(data.id)
-      self:RedistributeChildren()
+      self:SortUpdatedChildren()
     else
       self.needToReload = true
     end
@@ -867,9 +949,10 @@ local function modify(parent, region, data)
     if not childData or not childRegion then return end
     local regionData = createRegionData(childData, childRegion, childID, cloneID, dataIndex)
     if childRegion.toShow then
+      tinsert(self.sortedChildren, regionData)
       self.updatedChildren[regionData] = true
     end
-    self:RedistributeChildren()
+    self:SortUpdatedChildren()
   end
 
   function region:ActivateChild(childID, cloneID)
@@ -883,8 +966,11 @@ local function modify(parent, region, data)
     -- it's possible that while paused, we might get Activate, Deactivate, Activate on the same child
     -- so we need to check if this child has been updated since the last Sort
     -- if it has been, then don't insert it again
+    if not regionData.active and self.updatedChildren[regionData] == nil then
+      tinsert(self.sortedChildren, regionData)
+    end
     self.updatedChildren[regionData] = true
-    self:RedistributeChildren()
+    self:SortUpdatedChildren()
   end
 
   function region:RemoveChild(childID, cloneID)
@@ -894,7 +980,7 @@ local function modify(parent, region, data)
     if not regionData then return end
     releaseRegionData(regionData)
     self.updatedChildren[regionData] = false
-    self:RedistributeChildren()
+    self:SortUpdatedChildren()
   end
 
   function region:DeactivateChild(childID, cloneID)
@@ -904,79 +990,7 @@ local function modify(parent, region, data)
     if regionData and not regionData.region.toShow then
       self.updatedChildren[regionData] = false
     end
-    self:RedistributeChildren()
-  end
-
-  local function getOrCreateGroup(anchor)
-    local tbl = resolvePath(region.groups, anchor.type, anchor.location, anchor.point)
-    if not tbl[anchor.id] then
-      tbl[anchor.id] = {
-        type = anchor.type,
-        location = anchor.location,
-        id = anchor.id,
-        point = anchor.point,
-        children = {}
-      }
-    end
-    return tbl[anchor.id]
-  end
-
-
-  local function validateAnchor(anchor)
-    if type(anchor) ~= "table" then
-      anchor = {}
-    end
-    if not anchorers[anchor.type] then
-      anchor.type = "self"
-    end
-    if anchor.type == "self" or type(anchor.location) ~= "string" then
-      anchor.location = ""
-    end
-    if type(anchor.id) ~= "string" then
-      anchor.id = ""
-    end
-    if not Private.point_types[anchor.point] then
-      anchor.point = "CENTER"
-    end
-    return anchor
-  end
-
-
-  region.distributeFunc = createDistributeFunc(data)
-  function region:RedistributeChildren()
-    -- redistributes updated children to the correct groups
-    if not self:IsSuspended() then
-      Private.StartProfileSystem("dynamicgroup2")
-      Private.StartProfileAura(data.id)
-      self.needToDistribute = false
-      for regionData, active in pairs(self.updatedChildren) do
-        if active then
-          -- child wants to be visible, find an appropriate group
-          local anchor = validateAnchor(region.distributeFunc(regionData))
-          local group = getOrCreateGroup(anchor)
-          self.updatedGroups[group] = true
-          if regionData.group ~= group then
-            -- either this child wasn't previously assigned to a group, or its group has changed
-            -- either way, we need to insert it into the new group
-            if regionData.group then
-              self.updatedGroups[regionData.group] = true
-            end
-            tinsert(group.children, regionData)
-          end
-          regionData.group = group
-        elseif regionData.group then
-          -- child wants to hide, find the group it was in and flag as updated
-          self.updatedGroups[regionData.group] = true
-          -- set to nil, so that Sort knows to remove the child from group.children
-          regionData.group = nil
-        end
-      end
-      Private.StopProfileAura(data.id)
-      Private.StopProfileSystem("dynamicgroup2")
-      self:SortUpdatedChildren()
-    else
-      self.needToDistribute = true
-    end
+    self:SortUpdatedChildren()
   end
 
   region.sortFunc = createSortFunc(data)
@@ -986,40 +1000,37 @@ local function modify(parent, region, data)
     -- Called when the Group is Resume()d
     -- uses sort data to determine the correct spot
     if not self:IsSuspended() then
-      Private.StartProfileSystem("dynamicgroup2")
+      Private.StartProfileSystem("dynamicgroup")
       Private.StartProfileAura(data.id)
       self.needToSort = false
-      for group in pairs(self.updatedGroups) do
-        local i = 1
-        while group.children[i] do
-          local regionData = group.children[i]
-          local active = self.updatedChildren[regionData]
-          if active ~= nil then
-            regionData.active = active
-          end
-          if active == false or regionData.group ~= group then
-            -- i now refers to what was i + 1, so don't increment
-            tremove(group.children, i)
-          else
-            local j = i
-            while j > 1 do
-              local otherRegionData = group.children[j - 1]
-              if not (active or group.children[otherRegionData])
-              or not self.sortFunc(regionData, otherRegionData) then
-                break
-              else
-                group.children[j] = otherRegionData
-                j = j - 1
-                group.children[j] = regionData
-              end
+      local i = 1
+      while self.sortedChildren[i] do
+        local regionData = self.sortedChildren[i]
+        local active = self.updatedChildren[regionData]
+        if active ~= nil then
+          regionData.active = active
+        end
+        if active == false then
+          -- i now refers to what was i + 1, so don't increment
+          tremove(self.sortedChildren, i)
+        else
+          local j = i
+          while j > 1 do
+            local otherRegionData = self.sortedChildren[j - 1]
+            if not (active or self.updatedChildren[otherRegionData])
+            or not self.sortFunc(regionData, otherRegionData) then
+              break
+            else
+              self.sortedChildren[j] = otherRegionData
+              j = j - 1
+              self.sortedChildren[j] = regionData
             end
-            i = i + 1
           end
+          i = i + 1
         end
       end
-      -- all children are in their correct places now, we can wipe updatedChildren
       self.updatedChildren = {}
-      Private.StopProfileSystem("dynamicgroup2")
+      Private.StopProfileSystem("dynamicgroup")
       Private.StopProfileAura(data.id)
       self:PositionChildren()
     else
@@ -1028,6 +1039,7 @@ local function modify(parent, region, data)
   end
 
   region.growFunc = createGrowFunc(data)
+  region.anchorPerUnit = data.useAnchorPerUnit and data.anchorPerUnit
 
   local animate = data.animate
   function region:PositionChildren()
@@ -1035,136 +1047,170 @@ local function modify(parent, region, data)
     -- Positioning is based on grow information from the data
     if not self:IsSuspended() then
       self.needToPosition = false
-      if animate then
-        Private.RegisterGroupForPositioning(data.uid, self)
+      if #self.sortedChildren > 0 then
+        if animate then
+          Private.RegisterGroupForPositioning(data.uid, self)
+        else
+          self:DoPositionChildren()
+        end
       else
-        self:DoPositionChildren()
+        self:Resize()
       end
     else
       self.needToPosition = true
     end
   end
 
-  function region:DoPositionChildren()
-    Private.StartProfileSystem("dynamicgroup2")
-    Private.StartProfileAura(data.id)
-    for group in pairs(self.updatedGroups) do
-      local frame = anchorers[group.type](self, group.location)
-      local newPositions = {}
-      self.growFunc(newPositions, group.children)
-      if #newPositions > 0 then
-        for index, pos in ipairs(newPositions) do
-          local regionData = group.children[index]
-          local x, y, relativePoint, show =
-              type(pos.x) == "number" and pos.x or 0,
-              type(pos.y) == "number" and pos.y or 0,
-              Private.point_types[pos.relativePoint] and pos.relativePoint or data.anchorPoint,
-              type(pos.show) ~= "boolean" and true or pos.show
-          local controlPoint = regionData.controlPoint
-          controlPoint:ClearAnchorPoint()
-          controlPoint:SetAnchorPoint(
-            relativePoint,
-            frame,
-            group.point,
-            x,
-            y
-          )
-          controlPoint:SetShown(show)
-          controlPoint:SetWidth(regionData.dimensions.width)
-          controlPoint:SetHeight(regionData.dimensions.height)
-          if animate then
-            Private.CancelAnimation(regionData.controlPoint, true)
-            local xPrev = regionData.xOffset or x
-            local yPrev = regionData.yOffset or y
-            local xDelta = xPrev - x
-            local yDelta = yPrev - y
-            if show and (abs(xDelta) > 0.01 or abs(yDelta) > 0.01) then
-              local anim
-              if data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" then
-                local originX, originY = 0,0
-                local radius1, previousAngle = WeakAuras.GetPolarCoordinates(xPrev, yPrev, originX, originY)
-                local radius2, newAngle = WeakAuras.GetPolarCoordinates(x, y, originX, originY)
-                local dAngle = newAngle - previousAngle
-                dAngle = ((dAngle > 180 and dAngle - 360) or (dAngle < -180 and dAngle + 360) or dAngle)
-                if(math.abs(radius1 - radius2) > 0.1) then
-                  local translateFunc = [[
-                                    function(progress, _, _, previousAngle, dAngle)
-                                        local previousRadius, dRadius = %f, %f;
-                                        local targetX, targetY = %f, %f
-                                        local radius = previousRadius + (1 - progress) * dRadius;
-                                        local angle = previousAngle + (1 - progress) * dAngle;
-                                        return cos(angle) * radius - targetX, sin(angle) * radius - targetY;
-                                    end
-                                ]]
-                  anim = {
-                    type = "custom",
-                    duration = 0.2,
-                    use_translate = true,
-                    translateType = "custom",
-                    translateFunc = translateFunc:format(radius1, radius2 - radius1, x, y),
-                    x = previousAngle,
-                    y = dAngle,
-                    selfPoint = data.selfPoint,
-                    anchor = self,
-                    anchorPoint = data.selfPoint,
-                  }
-                else
-                  local translateFunc = [[
-                                    function(progress, _, _, previousAngle, dAngle)
-                                        local radius = %f;
-                                        local targetX, targetY = %f, %f
-                                        local angle = previousAngle + (1 - progress) * dAngle;
-                                        return cos(angle) * radius - targetX, sin(angle) * radius - targetY;
-                                    end
-                                ]]
-                  anim = {
-                    type = "custom",
-                    duration = 0.2,
-                    use_translate = true,
-                    translateType = "custom",
-                    translateFunc = translateFunc:format(radius1, x, y),
-                    x = previousAngle,
-                    y = dAngle,
-                    selfPoint = data.selfPoint,
-                    anchor = self,
-                    anchorPoint = data.selfPoint,
-                  }
-                end
-              end
-              if not(anim) then
-                anim = {
-                  type = "custom",
-                  duration = 0.2,
-                  use_translate = true,
-                  x = xDelta,
-                  y = yDelta,
-                  selfPoint = data.selfPoint,
-                  anchor = self,
-                  anchorPoint = data.selfPoint,
-                }
-              end
-              -- update animated expand & collapse for this child
-              Private.Animate("controlPoint", data.uid, "controlPoint", anim, regionData.controlPoint, true)
+  function region:DoPositionChildrenPerFrame(frame, positions, handledRegionData)
+    for regionData, pos in pairs(positions) do
+      if type(regionData) ~= "table" then
+        break;
+      end
+      handledRegionData[regionData] = true
+      local x, y, show =  type(pos[1]) == "number" and pos[1] or 0,
+                          type(pos[2]) == "number" and pos[2] or 0,
+                          type(pos[3]) ~= "boolean" and true or pos[3]
+
+      local controlPoint = regionData.controlPoint
+      controlPoint:ClearAnchorPoint()
+      controlPoint:SetAnchorPoint(
+        data.selfPoint,
+        frame == "" and self.relativeTo or frame,
+        data.anchorPoint,
+        x + data.xOffset, y + data.yOffset
+      )
+      controlPoint:SetShown(show and frame ~= WeakAuras.HiddenFrames)
+      controlPoint:SetWidth(regionData.dimensions.width)
+      controlPoint:SetHeight(regionData.dimensions.height)
+      if self.anchorPerUnit == "UNITFRAME" then
+        Private.dyngroup_unitframe_monitor[regionData] = frame
+      end
+      if animate then
+        Private.CancelAnimation(regionData.controlPoint, true)
+        local xPrev = regionData.xOffset or x
+        local yPrev = regionData.yOffset or y
+        local xDelta = xPrev - x
+        local yDelta = yPrev - y
+        if show and (abs(xDelta) > 0.01 or abs(yDelta) > 0.01) then
+          local anim
+          if data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" then
+            local originX, originY = 0,0
+            local radius1, previousAngle = WeakAuras.GetPolarCoordinates(xPrev, yPrev, originX, originY)
+            local radius2, newAngle = WeakAuras.GetPolarCoordinates(x, y, originX, originY)
+            local dAngle = newAngle - previousAngle
+            dAngle = ((dAngle > 180 and dAngle - 360) or (dAngle < -180 and dAngle + 360) or dAngle)
+            if(math.abs(radius1 - radius2) > 0.1) then
+              local translateFunc = [[
+                                function(progress, _, _, previousAngle, dAngle)
+                                    local previousRadius, dRadius = %f, %f;
+                                    local targetX, targetY = %f, %f
+                                    local radius = previousRadius + (1 - progress) * dRadius;
+                                    local angle = previousAngle + (1 - progress) * dAngle;
+                                    return cos(angle) * radius - targetX, sin(angle) * radius - targetY;
+                                end
+                            ]]
+              anim = {
+                type = "custom",
+                duration = 0.2,
+                use_translate = true,
+                translateType = "custom",
+                translateFunc = translateFunc:format(radius1, radius2 - radius1, x, y),
+                x = previousAngle,
+                y = dAngle,
+                selfPoint = data.selfPoint,
+                anchor = self,
+                anchorPoint = data.selfPoint,
+              }
+            else
+              local translateFunc = [[
+                                function(progress, _, _, previousAngle, dAngle)
+                                    local radius = %f;
+                                    local targetX, targetY = %f, %f
+                                    local angle = previousAngle + (1 - progress) * dAngle;
+                                    return cos(angle) * radius - targetX, sin(angle) * radius - targetY;
+                                end
+                            ]]
+              anim = {
+                type = "custom",
+                duration = 0.2,
+                use_translate = true,
+                translateType = "custom",
+                translateFunc = translateFunc:format(radius1, x, y),
+                x = previousAngle,
+                y = dAngle,
+                selfPoint = data.selfPoint,
+                anchor = self,
+                anchorPoint = data.selfPoint,
+              }
             end
           end
-          regionData.xOffset = x
-          regionData.yOffset = y
-          regionData.shown = show
+          if not(anim) then
+            anim = {
+              type = "custom",
+              duration = 0.2,
+              use_translate = true,
+              x = xDelta,
+              y = yDelta,
+              selfPoint = data.selfPoint,
+              anchor = self,
+              anchorPoint = data.selfPoint,
+            }
+          end
+          -- update animated expand & collapse for this child
+          Private.Animate("controlPoint", data.uid, "controlPoint", anim, regionData.controlPoint, true)
         end
+      end
+      regionData.xOffset = x
+      regionData.yOffset = y
+      regionData.shown = show
+    end
+  end
+
+  function region:DoPositionChildren()
+    Private.StartProfileSystem("dynamicgroup")
+    Private.StartProfileAura(data.id)
+
+    local handledRegionData = {}
+
+    local newPositions = {}
+    self.growFunc(newPositions, self.sortedChildren)
+    if #newPositions > 0 then
+      for index = 1, #newPositions do
+        if type(newPositions[index]) == "table" then
+          local data = self.sortedChildren[index]
+          if data then
+            newPositions[data] = newPositions[index]
+          else
+            geterrorhandler()(("Error in '%s', Grow function return position for an invalid region"):format(region.id))
+          end
+          newPositions[index] = nil
+        end
+      end
+      region:DoPositionChildrenPerFrame("", newPositions, handledRegionData)
+    else
+      for frame, positions in pairs(newPositions) do
+        region:DoPositionChildrenPerFrame(frame, positions, handledRegionData)
       end
     end
 
-    Private.StopProfileSystem("dynamicgroup2")
+    for index, child in ipairs(self.sortedChildren) do
+      if not handledRegionData[child] then
+        child.controlPoint:SetShown(false)
+      end
+    end
+
+    Private.StopProfileSystem("dynamicgroup")
     Private.StopProfileAura(data.id)
     self:Resize()
   end
 
+
   function region:Resize()
     -- Resizes the dynamic group, for background and border purposes
-    if not self:IsSuspended() and false then
-      -- TODO: fix this - but how? create borders on every subgroup? On just the "default" one?
+    if not self:IsSuspended() then
       self.needToResize = false
-      Private.StartProfileSystem("dynamicgroup2")
+      -- if self.dynamicAnchor then self:UpdateBorder(); return end
+      Private.StartProfileSystem("dynamicgroup")
       Private.StartProfileAura(data.id)
       local numVisible, minX, maxX, maxY, minY = 0
       for active, regionData in ipairs(self.sortedChildren) do
@@ -1202,7 +1248,7 @@ local function modify(parent, region, data)
       if WeakAuras.IsOptionsOpen() then
         WeakAuras.OptionsFrame().moversizer:ReAnchor()
       end
-      Private.StopProfileSystem("dynamicgroup2")
+      Private.StopProfileSystem("dynamicgroup")
       Private.StopProfileAura(data.id)
     else
       self.needToResize = true
@@ -1214,4 +1260,4 @@ local function modify(parent, region, data)
   WeakAuras.regionPrototype.modifyFinish(parent, region, data)
 end
 
-WeakAuras.RegisterRegionType("dynamicgroup2", create, modify, default)
+WeakAuras.RegisterRegionType("dynamicgroup", create, modify, default)

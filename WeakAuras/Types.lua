@@ -68,6 +68,14 @@ Private.group_sort_types = {
   custom = L["Custom"]
 }
 
+Private.group_distribute_types = {
+  -- TODO: bikeshed these strings
+  self = L["None"],
+  nameplate = L["Nameplate Unit"],
+  unit = L["Unit Frames"],
+  custom = L["Custom"],
+}
+
 Private.group_hybrid_position_types = {
   hybridFirst = L["Marked First"],
   hybridLast = L["Marked Last"]
