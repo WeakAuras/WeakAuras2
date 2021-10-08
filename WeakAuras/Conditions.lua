@@ -68,7 +68,7 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
         Private.QuotedString(tostring(value.message_dest)), Private.QuotedString(tostring(value.message_channel)),
         pathToCustomFunction,
         pathToFormatters,
-        Private.QuotedString(tostring(value.message_voice)))
+        tostring(value.message_voice))
       return serialized
     end
   elseif(vType == "sound") then
