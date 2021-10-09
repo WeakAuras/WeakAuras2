@@ -481,6 +481,15 @@ local barPrototype = {
     self:UpdateAdditionalBars();
   end,
 
+  ["GetAdditionalBarsInverse"] = function(self)
+    return self.additionalBarsInverse
+  end,
+
+  ["SetAdditionalBarsInverse"] = function(self, value)
+    self.additionalBarsInverse = value;
+    self:UpdateAdditionalBars();
+  end,
+
   ["SetAdditionalBarColor"] = function(self, id, color)
     self.additionalBarsColors[id] = color;
     if self.extraTextures[id] then
@@ -864,6 +873,7 @@ local funcs = {
     else
       self.bar:SetValue(1 - self.bar:GetValue());
     end
+    self.bar:SetAdditionalBarsInverse(not self.bar:GetAdditionalBarsInverse())
     self.subRegionEvents:Notify("InverseChanged")
   end,
   SetOrientation = function(self, orientation)
