@@ -531,6 +531,10 @@ local methods = {
           childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
           childButton:SetGroupOrder(#data.controlledChildren, #data.controlledChildren);
           childData.parent = data.id;
+          if (data.regionType == "dynamicgroup") then
+            childData.xOffset = 0
+            childData.yOffset = 0
+          end
           WeakAuras.Add(childData);
           WeakAuras.ClearAndUpdateOptions(childData.id)
         end
@@ -540,12 +544,12 @@ local methods = {
         childButton:SetGroup(data.id, data.regionType == "dynamicgroup");
         childButton:SetGroupOrder(#data.controlledChildren, #data.controlledChildren);
         self.grouping.parent = data.id;
+        if (data.regionType == "dynamicgroup") then
+          self.grouping.xOffset = 0
+          self.grouping.yOffset = 0
+        end
         WeakAuras.Add(self.grouping);
         WeakAuras.ClearAndUpdateOptions(self.grouping.id);
-      end
-      if (data.regionType == "dynamicgroup") then
-        self.grouping.xOffset = 0;
-        self.grouping.yOffset = 0;
       end
       WeakAuras.Add(data);
       WeakAuras.ClearAndUpdateOptions(data.id)
