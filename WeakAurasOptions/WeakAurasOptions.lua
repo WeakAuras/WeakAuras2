@@ -643,10 +643,6 @@ local function LayoutDisplayButtons(msg)
   local loadedSorted, unloadedSorted = GetSortedOptionsLists();
 
   frame:SetLoadProgressVisible(true)
-  --frame.buttonsScroll:AddChild(frame.newButton);
-  --if(frame.addonsButton) then
-  --  frame.buttonsScroll:AddChild(frame.addonsButton);
-  --end
   if WeakAurasCompanion then
     frame.buttonsScroll:AddChild(frame.pendingInstallButton);
     frame.buttonsScroll:AddChild(frame.pendingUpdateButton);

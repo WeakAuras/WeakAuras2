@@ -693,20 +693,6 @@ function OptionsPrivate.CreateFrame()
     status.scrollvalue = status.offset / ((height - viewheight) / 1000.0)
   end
 
-  local numAddons = 0
-
-  for addon, addonData in pairs(OptionsPrivate.Private) do
-    numAddons = numAddons + 1
-  end
-
-  if numAddons > 0 then
-    local addonsButton = AceGUI:Create("WeakAurasNewHeaderButton")
-    addonsButton:SetText(L["Addons"])
-    addonsButton:SetDescription(L["Manage displays defined by Addons"])
-    addonsButton:SetClick(function() frame:PickOption("Addons") end)
-    frame.addonsButton = addonsButton
-  end
-
   -- Ready to Install section
   local pendingInstallButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
   pendingInstallButton:SetText(L["Ready for Install"])
@@ -1049,10 +1035,6 @@ function OptionsPrivate.CreateFrame()
     for id, button in pairs(displayButtons) do
       button:ClearPick(noHide)
     end
-    --newButton:ClearPick(noHide)
-    if frame.addonsButton then
-      frame.addonsButton:ClearPick(noHide)
-    end
     loadedButton:ClearPick(noHide)
     unloadedButton:ClearPick(noHide)
     container:ReleaseChildren()
@@ -1203,32 +1185,6 @@ function OptionsPrivate.CreateFrame()
     importButton:SetDescription(L["Import a display from an encoded string"])
     importButton:SetClick(OptionsPrivate.ImportFromString)
     containerScroll:AddChild(importButton)
-  end
-
-  frame.PickOption = function(self, option, fromGroup)
-    local targetId = GetTarget(self.pickedDisplay)
-    self:ClearPicks()
-    if targetId then
-      local pickedButton = WeakAuras.GetDisplayButton(targetId)
-      if pickedButton then
-        pickedButton:Pick()
-      end
-    end
-    self.moversizer:Hide()
-    self.pickedOption = option
-    if option == "Addons" then
-      frame.addonsButton:Pick()
-
-      local containerScroll = AceGUI:Create("ScrollFrame")
-      containerScroll:SetLayout("AbsoluteList")
-      container:SetLayout("fill")
-      container:AddChild(containerScroll)
-
-      OptionsPrivate.CreateImportButtons()
-      WeakAuras.SortImportButtons(containerScroll)
-    else
-      error("An options button other than New or Addons was selected... but there are no other options buttons!")
-    end
   end
 
   frame.PickDisplay = function(self, id, tab, noHide)

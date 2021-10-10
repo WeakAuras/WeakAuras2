@@ -37,11 +37,10 @@ function Private.CleanArchive(historyCutoff, migrationCutoff)
   end
 end
 
-function Private.SetHistory(uid, data, source, addon)
+function Private.SetHistory(uid, data, source)
   if uid and data then
     local repo = loadHistory()
     data.source = source
-    data.addon = source == "addon" and addon or nil
     local hist = repo:Set(uid, data, true)
     return hist
   end

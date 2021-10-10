@@ -161,15 +161,6 @@ BINDING_NAME_WEAKAURASPRINTPROFILING = L["Print Profiling Results"]
 --  displays: All aura settings, keyed on their id
 local db;
 
-local registeredFromAddons;
--- List of addons that registered displays
-Private.addons = {};
-local addons = Private.addons;
-
--- used if an addon tries to register a display under an id that the user already has a display with that id
-Private.collisions = {};
-local collisions = Private.collisions;
-
 -- While true no events are handled. E.g. WeakAuras is paused while the Options dialog is open
 local paused = true;
 local importing = false;
@@ -1029,11 +1020,6 @@ function Private.Login(initialTime, takeNewSnapshots)
 
     WeakAuras.AddMany(toAdd, takeNewSnapshots);
     coroutine.yield();
-    WeakAuras.AddManyFromAddons(from_files);
-    WeakAuras.RegisterDisplay = WeakAuras.AddFromAddon;
-    coroutine.yield();
-    Private.ResolveCollisions(function() registeredFromAddons = true; end);
-    coroutine.yield();
 
     -- check in case of a disconnect during an encounter.
     if (db.CurrentEncounter) then
@@ -1820,13 +1806,6 @@ function WeakAuras.Delete(data)
   regions[id].region:Hide();
 
   db.registered[id] = nil;
-  if(WeakAuras.importDisplayButtons and WeakAuras.importDisplayButtons[id]) then
-    local button = WeakAuras.importDisplayButtons[id];
-    button.checkbox:SetChecked(false);
-    if(button.updateChecked) then
-      button.updateChecked();
-    end
-  end
 
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.Delete(id);
@@ -2009,163 +1988,6 @@ function WeakAuras.DeepMixin(dest, source)
     end
   end
   recurse(source, dest);
-end
-
-function WeakAuras.RegisterAddon(addon, displayName, description, icon)
-  if(addons[addon]) then
-    addons[addon].displayName = displayName;
-    addons[addon].description = description;
-    addons[addon].icon = icon;
-    addons[addon].displays = addons[addon].displays or {};
-  else
-    addons[addon] = {
-      displayName = displayName,
-      description = description,
-      icon = icon,
-      displays = {}
-    };
-  end
-end
-
-function WeakAuras.RegisterDisplay(addon, data, force)
-  tinsert(from_files, {addon, data, force});
-end
-
-function WeakAuras.AddManyFromAddons(table)
-  for _, addData in ipairs(table) do
-    WeakAuras.AddFromAddon(addData[1], addData[2], addData[3]);
-  end
-end
-
-function WeakAuras.AddFromAddon(addon, data, force)
-  local id = data.id;
-  if(id and addons[addon]) then
-    addons[addon].displays[id] = data;
-    if(db.registered[id]) then
-    -- This display was already registered
-    -- It is unnecessary to add it again
-    elseif(force and not db.registered[id] == false) then
-      if(db.displays[id]) then
-        -- ID collision
-        collisions[id] = {addon, data};
-      else
-        db.registered[id] = addon;
-        WeakAuras.Add(data);
-      end
-    end
-  end
-end
-
-function WeakAuras.CollisionResolved(addon, data, force)
-  WeakAuras.AddFromAddon(addon, data, force);
-end
-
-function Private.IsDefinedByAddon(id)
-  return db.registered[id];
-end
-
-function Private.ResolveCollisions(onFinished)
-  local num = 0;
-  for id, _ in pairs(collisions) do
-    num = num + 1;
-  end
-
-  if(num > 0) then
-    local baseText;
-    local buttonText;
-    if(registeredFromAddons) then
-      if(num == 1) then
-        baseText = L["Resolve collisions dialog singular"];
-        buttonText = L["Done"];
-      else
-        baseText = L["Resolve collisions dialog"];
-        buttonText = L["Next"];
-      end
-    else
-      if(num == 1) then
-        baseText = L["Resolve collisions dialog startup singular"];
-        buttonText = L["Done"];
-      else
-        baseText = L["Resolve collisions dialog startup"];
-        buttonText = L["Next"];
-      end
-    end
-
-    local numResolved = 0;
-    local currentId = next(collisions);
-
-    local function UpdateText(popup)
-      popup.text:SetText(baseText..(numResolved or "error").."/"..(num or "error"));
-    end
-
-    StaticPopupDialogs["WEAKAURAS_RESOLVE_COLLISIONS"] = {
-      text = baseText,
-      button1 = buttonText,
-      OnAccept = function(self)
-        -- Do the collision resolution
-        local newId = self.editBox:GetText();
-        if(WeakAuras.OptionsFrame and WeakAuras.OptionsFrame() and WeakAuras.displayButtons and WeakAuras.displayButtons[currentId]) then
-          WeakAuras.displayButtons[currentId].callbacks.OnRenameAction(newId)
-        else
-          local data = WeakAuras.GetData(currentId);
-          if(data) then
-            WeakAuras.Rename(data, newId);
-          else
-            print("|cFF8800FFWeakAuras|r: Data not found");
-          end
-        end
-
-        WeakAuras.CollisionResolved(collisions[currentId][1], collisions[currentId][2], true);
-        numResolved = numResolved + 1;
-
-        -- Get the next id to resolve
-        currentId = next(collisions, currentId);
-        if(currentId) then
-          -- There is another conflict to resolve - hook OnHide to reshow the dialog as soon as it hides
-          self:SetScript("OnHide", function(self)
-            self:Show();
-            UpdateText(self);
-            self.editBox:SetText(currentId);
-            self:SetScript("OnHide", nil);
-            if not(next(collisions, currentId)) then
-              self.button1:SetText(L["Done"]);
-            end
-          end);
-        else
-          self.editBox:SetScript("OnTextChanged", nil);
-          wipe(collisions);
-          if(onFinished) then
-            onFinished();
-          end
-        end
-      end,
-      hasEditBox = true,
-      hasWideEditBox = true,
-      hideOnEscape = true,
-      whileDead = true,
-      showAlert = true,
-      timeout = 0,
-      preferredindex = STATICPOPUP_NUMDIALOGS
-    };
-
-    local popup = StaticPopup_Show("WEAKAURAS_RESOLVE_COLLISIONS");
-    popup.editBox:SetScript("OnTextChanged", function(self)
-      local newid = self:GetText();
-      if(collisions[newid] or db.displays[newid]) then
-        popup.button1:Disable();
-      else
-        popup.button1:Enable();
-      end
-    end);
-    popup.editBox:SetText(currentId);
-    popup.text:SetJustifyH("left");
-    popup.icon:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\\icon.blp");
-    popup.icon:SetVertexColor(0.833, 0, 1);
-
-    UpdateText(popup);
-  elseif(onFinished) then
-    onFinished();
-  end
 end
 
 local function LastUpgrade()
