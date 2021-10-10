@@ -886,7 +886,7 @@ function OptionsPrivate.UpdateButtonsScroll()
 end
 
 local function addChildButtons(button, children, visible)
-  local controlledChildren = children[button:GetTitle()];
+  local controlledChildren = children[button.data.id];
   if(controlledChildren) then
     table.sort(controlledChildren, function(a, b) return displayButtons[a]:GetGroupOrder() <  displayButtons[b]:GetGroupOrder(); end);
     for _, groupchild in ipairs(controlledChildren) do
