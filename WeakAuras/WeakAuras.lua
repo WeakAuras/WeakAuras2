@@ -2838,7 +2838,7 @@ function Private.HandleChatAction(message_type, message, message_dest, message_c
   end
   if(message_type == "PRINT") then
     DEFAULT_CHAT_FRAME:AddMessage(message, r or 1, g or 1, b or 1);
-  elseif message_type == "TTS" and not WeakAuras.IsClassic() then
+  elseif message_type == "TTS" then
     local validVoice = voice and Private.tts_voices[voice]
     if not Private.SquelchingActions() then
       pcall(function()
@@ -2846,8 +2846,8 @@ function Private.HandleChatAction(message_type, message, message_dest, message_c
           validVoice and voice or 0,
           message,
           0,
-          TEXTTOSPEECH_CONFIG.speechRate or 0,
-          TEXTTOSPEECH_CONFIG.speechVolume or 100
+          TEXTTOSPEECH_CONFIG and TEXTTOSPEECH_CONFIG.speechRate or 0,
+          TEXTTOSPEECH_CONFIG and TEXTTOSPEECH_CONFIG.speechVolume or 100
         );
       end)
     end
