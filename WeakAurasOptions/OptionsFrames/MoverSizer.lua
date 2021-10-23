@@ -46,12 +46,7 @@ local function moveOnePxl(direction)
       WeakAuras.Add(data, nil, true)
       WeakAuras.UpdateThumbnail(data)
       OptionsPrivate.ResetMoverSizer()
-      if data.parent then
-        local parentData = WeakAuras.GetData(data.parent)
-        if parentData then
-          WeakAuras.Add(parentData)
-        end
-      end
+      OptionsPrivate.Private.AddParents(data)
       WeakAuras.FillOptions()
     end
   end
@@ -656,12 +651,7 @@ local function ConstructMoverSizer(parent)
         mover:SetHeight(region:GetHeight() * scale)
         mover:SetPoint(mover.selfPoint, mover.anchor, mover.anchorPoint, xOff * scale, yOff * scale)
       end
-      if data.parent then
-        local parentData = db.displays[data.parent]
-        if parentData then
-          WeakAuras.Add(parentData)
-        end
-      end
+      OptionsPrivate.Private.AddParents(data)
       WeakAuras.FillOptions()
       OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, WeakAuras.regions[data.id].region, false, nil, true)
       -- hide alignment lines
@@ -766,6 +756,7 @@ local function ConstructMoverSizer(parent)
 
         region:ResetPosition()
         WeakAuras.Add(data, nil, true)
+        OptionsPrivate.Private.AddParents(data)
         WeakAuras.UpdateThumbnail(data)
 
         frame:ScaleCorners(region:GetWidth(), region:GetHeight())
