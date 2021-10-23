@@ -7860,11 +7860,21 @@ Private.event_prototypes = {
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
-     {
+      {
         name = "intellect",
         display = L["Intellect"],
         type = "number",
         init = "UnitStat('player', LE_UNIT_STAT_INTELLECT)",
+        store = true,
+        enable = WeakAuras.IsClassic() or WeakAuras.IsBCC(),
+        conditionType = "number",
+        hidden = WeakAuras.IsRetail()
+      },
+      {
+        name = "spirit",
+        display = L["Spirit"],
+        type = "number",
+        init = "UnitStat('player', 5)",
         store = true,
         enable = WeakAuras.IsClassic() or WeakAuras.IsBCC(),
         conditionType = "number",
