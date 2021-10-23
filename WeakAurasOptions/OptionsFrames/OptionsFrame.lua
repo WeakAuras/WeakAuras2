@@ -1187,24 +1187,23 @@ function OptionsPrivate.CreateFrame()
     containerScroll:AddChild(importButton)
   end
 
-  frame.PickDisplay = function(self, id, tab, noHide)
-    if self.pickedDisplay == id then
-      return
-    end
-
-    OptionsPrivate.Private.PauseAllDynamicGroups()
-
-    self:ClearPicks(noHide)
-    local data = WeakAuras.GetData(id)
-
-    displayButtons[id]:Pick()
-    self.pickedDisplay = id
-
+  local function ExpandParents(data)
     if data.parent then
       if not displayButtons[data.parent]:GetExpanded() then
+        print("Expanding", data.parent)
         displayButtons[data.parent]:Expand()
       end
+      local parentData = WeakAuras.GetData(data.parent)
+      ExpandParents(parentData)
     end
+  end
+
+  frame.PickDisplay = function(self, id, tab, noHide)
+    local data = WeakAuras.GetData(id)
+
+    -- Always expand even if already picked
+    ExpandParents(data)
+
     if OptionsPrivate.Private.loaded[id] ~= nil then
       -- Under loaded
       if not loadedButton:GetExpanded() then
@@ -1216,6 +1215,18 @@ function OptionsPrivate.CreateFrame()
         unloadedButton:Expand()
       end
     end
+
+    if self.pickedDisplay == id then
+      return
+    end
+
+    OptionsPrivate.Private.PauseAllDynamicGroups()
+
+    self:ClearPicks(noHide)
+
+    displayButtons[id]:Pick()
+    self.pickedDisplay = id
+
 
     if tab then
       self.selectedTab = tab
