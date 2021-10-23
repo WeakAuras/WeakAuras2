@@ -1841,11 +1841,7 @@ function WeakAuras.Delete(data)
 
   Private.RemoveHistory(data.uid)
 
-  -- Add the parent
-  if parentUid then
-    WeakAuras.Add(Private.GetDataByUID(parentUid))
-  end
-
+  Private.AddParents(data)
   Private.callbacks:Fire("Delete", uid, id, parentUid, parentId)
 end
 
