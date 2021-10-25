@@ -406,14 +406,6 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"] = {
     end
   end,
   OnCancel = function(self)
-    if self.data.parents then
-      for id in pairs(self.data.parents) do
-        local parentRegion = WeakAuras.GetRegion(id)
-        if parentRegion.Resume then
-          parentRegion:Resume()
-        end
-      end
-    end
     self.data = nil
   end,
   showAlert = true,

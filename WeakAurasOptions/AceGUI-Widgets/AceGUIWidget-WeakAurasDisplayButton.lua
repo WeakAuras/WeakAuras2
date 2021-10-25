@@ -654,10 +654,6 @@ local methods = {
       local toDelete = {}
       if(data.controlledChildren) then
         local region = WeakAuras.regions[data.id];
-        if (region.Suspend) then
-          region:Suspend();
-        end
-
         for child in OptionsPrivate.Private.TraverseAllChildren(data) do
           tinsert(toDelete, child);
         end
