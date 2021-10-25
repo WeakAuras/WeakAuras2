@@ -19,25 +19,17 @@ local function filterAnimPresetTypes(intable, id)
   local region = WeakAuras.regions[id] and WeakAuras.regions[id].region;
   local regionType = WeakAuras.regions[id] and WeakAuras.regions[id].regionType;
   local data = WeakAuras.GetData(id);
+
+  if data.controlledChildren then
+    return ret
+  end
+
   if(region and regionType and data) then
     for key, value in pairs(intable) do
       local preset = OptionsPrivate.Private.anim_presets[key];
       if(preset) then
-        if(regionType == "group" or regionType == "dynamicgroup") then
-          local valid = true;
-          for index, childId in pairs(data.controlledChildren) do
-            local childRegion = WeakAuras.regions[childId] and WeakAuras.regions[childId].region
-            if(childRegion and ((preset.use_scale and not childRegion.Scale) or (preset.use_rotate and not childRegion.Rotate))) then
-              valid = false;
-            end
-          end
-          if(valid) then
-            ret[key] = value;
-          end
-        else
-          if not((preset.use_scale and not region.Scale) or (preset.use_rotate and not region.Rotate)) then
-            ret[key] = value;
-          end
+        if not((preset.use_scale and not region.Scale) or (preset.use_rotate and not region.Rotate)) then
+          ret[key] = value;
         end
       end
     end
