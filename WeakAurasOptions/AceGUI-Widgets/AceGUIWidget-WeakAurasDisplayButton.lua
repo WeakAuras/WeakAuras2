@@ -875,7 +875,7 @@ local methods = {
     if (not data.controlledChildren) then
       local convertMenu = {};
       for regionType, regionData in pairs(WeakAuras.regionOptions) do
-        if(regionType ~= "group" and regionType ~= "dynamicgroup" and regionType ~= "timer" and regionType ~= data.regionType) then
+        if(regionType ~= "group" and regionType ~= "dynamicgroup" and regionType ~= data.regionType) then
           tinsert(convertMenu, {
             text = regionData.displayName,
             notCheckable = true,
