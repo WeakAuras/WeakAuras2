@@ -713,7 +713,7 @@ local function ConstructTextEditor(frame)
     frame:UpdateFrameVisible()
   end
 
-  local function extractTexts(input, ids)
+  local function extractTexts(input)
     local texts = {}
 
     local currentPos, id, startIdLine, startId, endId, endIdLine
@@ -755,7 +755,7 @@ local function ConstructTextEditor(frame)
       OptionsPrivate.Private.ValueToPath(self.data, self.path, editor:GetText())
       WeakAuras.Add(self.data)
     else
-      local textById = editor.combinedText and extractTexts(editor:GetText(), self.data.controlledChildren)
+      local textById = editor.combinedText and extractTexts(editor:GetText())
       for child in OptionsPrivate.Private.TraverseLeafsOrAura(self.data) do
         local text = editor.combinedText and (textById[child.id] or "") or editor:GetText()
         OptionsPrivate.Private.ValueToPath(child, self.multipath and self.path[child.id] or self.path, text)
