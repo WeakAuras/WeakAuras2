@@ -1190,7 +1190,6 @@ function OptionsPrivate.CreateFrame()
   local function ExpandParents(data)
     if data.parent then
       if not displayButtons[data.parent]:GetExpanded() then
-        print("Expanding", data.parent)
         displayButtons[data.parent]:Expand()
       end
       local parentData = WeakAuras.GetData(data.parent)
