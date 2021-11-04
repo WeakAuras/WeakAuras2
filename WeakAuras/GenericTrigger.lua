@@ -3996,19 +3996,17 @@ do
   end
 end
 
+local findIdInLink = function(id, itemLink)
+  local findID = ":" .. tostring(id:trim())
+  return itemLink:find(findID .. ":", 1, true) or itemLink:find(findID .. "|", 1, true)
+end
+
 WeakAuras.CheckForItemBonusId = function(ids)
   for id in tostring(ids):gmatch('([^,]+)') do
-    id = ":" .. tostring(id:trim())
     for slot in pairs(Private.item_slot_types) do
       local itemLink = GetInventoryItemLink('player', slot)
-      if itemLink then
-        local _, endPos = itemLink:find(id, 1, true)
-        if endPos then
-          endPos = endPos +1
-          if (itemLink:sub(endPos, endPos) == ":" or itemLink:sub(endPos, endPos) == "|") then
-            return true
-          end
-        end
+      if itemLink and findIdInLink(id, itemLink) then
+        return true
       end
     end
   end
@@ -4019,19 +4017,12 @@ end
 WeakAuras.GetBonusIdInfo = function(ids, specificSlot)
   local checkSlots = specificSlot and {[specificSlot] = true} or Private.item_slot_types
   for id in tostring(ids):gmatch('([^,]+)') do
-    local findID = ":" .. tostring(id:trim())
     for slot in pairs(checkSlots) do
       local itemLink = GetInventoryItemLink('player', slot)
-      if itemLink then
-        local _, endPos = itemLink:find(id, 1, true)
-        if endPos then
-          endPos = endPos +1
-          if (itemLink:sub(endPos, endPos) == ":" or itemLink:sub(endPos, endPos) == "|") then
-            local itemID, _, _, _, icon = GetItemInfoInstant(itemLink)
-            local itemName = itemLink:match("%[(.*)%]")
-            return id, itemID, itemName, icon, slot, Private.item_slot_types[slot]
-          end
-        end
+      if itemLink and findIdInLink(id, itemLink) then
+        local itemID, _, _, _, icon = GetItemInfoInstant(itemLink)
+        local itemName = itemLink:match("%[(.*)%]")
+        return id, itemID, itemName, icon, slot, Private.item_slot_types[slot]
       end
     end
   end
