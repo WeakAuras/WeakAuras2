@@ -975,12 +975,20 @@ local function GetAllUnits(unit, allUnits, includePets)
       local pets = true
       return function()
         if i == 0 then
-          if includePets and pets then
+          if includePets == "PlayersAndPets" then
+            local ret = pets and "pet" or "player"
             pets = not pets
+            if pets then
+                i = i + 1
+            end
+            return ret
+          elseif includePets == "PetsOnly" then
+            i = 1
             return "pet"
+          else -- group
+            i = 1
+            return "player"
           end
-          i = 1
-          return "player"
         else
           if i <= max then
             local ret
@@ -1810,7 +1818,7 @@ local function EventHandler(frame, event, arg1, arg2, ...)
   elseif event == "GROUP_ROSTER_UPDATE" then
     unitVisible = {}
     local unitsToCheck = {}
-    for unit in GetAllUnits("group", true, true) do
+    for unit in GetAllUnits("group", true, "PlayersAndPets") do
       RecheckActiveForUnitType("group", unit, deactivatedTriggerInfos)
       if not UnitExistsFixed(unit) then
         tinsert(unitsToRemove, unit)
