@@ -1187,7 +1187,8 @@ Private.environmental_types = {
 Private.combatlog_flags_check_type = {
   Mine = L["Mine"],
   InGroup = L["In Group"],
-  NotInGroup = L["Not in Group"]
+  InParty = L["In Party"],
+  NotInGroup = L["Not in Smart Group"]
 }
 
 Private.combatlog_flags_check_reaction = {
