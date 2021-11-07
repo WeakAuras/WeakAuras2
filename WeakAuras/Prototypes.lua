@@ -2851,7 +2851,6 @@ Private.event_prototypes = {
         name = "chargedComboPoint1",
         type = "number",
         display = WeakAuras.newFeatureString .. L["Charged Combo Point 1"],
-        store = true,
         conditionType = "number",
         enable = function(trigger)
           return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
@@ -2863,7 +2862,6 @@ Private.event_prototypes = {
         name = "chargedComboPoint2",
         type = "number",
         display = WeakAuras.newFeatureString .. L["Charged Combo Point 2"],
-        store = true,
         conditionType = "number",
         enable = function(trigger)
           return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
@@ -2875,7 +2873,6 @@ Private.event_prototypes = {
         name = "chargedComboPoint3",
         type = "number",
         display = WeakAuras.newFeatureString .. L["Charged Combo Point 3"],
-        store = true,
         conditionType = "number",
         enable = function(trigger)
           return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
@@ -2887,7 +2884,6 @@ Private.event_prototypes = {
         name = "chargedComboPoint4",
         type = "number",
         display = WeakAuras.newFeatureString .. L["Charged Combo Point 4"],
-        store = true,
         conditionType = "number",
         enable = function(trigger)
           return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
