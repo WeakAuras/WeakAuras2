@@ -1060,7 +1060,13 @@ local function MaxUnitCount(triggerInfo)
 end
 
 local function TriggerInfoApplies(triggerInfo, unit)
-  if triggerInfo.ignoreSelf and UnitIsUnit("player", unit) then
+  local controllingUnit = unit
+  if WeakAuras.UnitIsPet(unit) then
+    controllingUnit = WeakAuras.petUnitToUnit[unit]
+  end
+
+
+  if triggerInfo.ignoreSelf and UnitIsUnit("player", controllingUnit) then
     return false
   end
 
@@ -1076,11 +1082,11 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
-  if triggerInfo.groupRole and not triggerInfo.groupRole[UnitGroupRolesAssigned(unit) or ""] then
+  if triggerInfo.groupRole and not triggerInfo.groupRole[UnitGroupRolesAssigned(controllingUnit) or ""] then
     return false
   end
 
-  if triggerInfo.raidRole and not triggerInfo.raidRole[WeakAuras.UnitRaidRole(unit) or ""] then
+  if triggerInfo.raidRole and not triggerInfo.raidRole[WeakAuras.UnitRaidRole(controllingUnit) or ""] then
     return false
   end
 
@@ -1127,7 +1133,7 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
-  if triggerInfo.class and not triggerInfo.class[select(2, UnitClass(unit))] then
+  if triggerInfo.class and not triggerInfo.class[select(2, UnitClass(controllingUnit))] then
     return false
   end
 
