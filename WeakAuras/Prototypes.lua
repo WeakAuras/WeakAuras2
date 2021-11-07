@@ -2848,7 +2848,6 @@ Private.event_prototypes = {
         end,
         hidden = not WeakAuras.IsRetail()
       },
--- TODO modernize conditions
       {
         name = "chargedComboPoint1",
         type = "number",
