@@ -1024,6 +1024,8 @@ function WeakAuras.CheckCombatLogFlags(flags, flagToCheck)
     return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0
   elseif (flagToCheck == "InGroup") then
     return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_OUTSIDER) == 0
+  elseif (flagToCheck == "InParty") then
+    return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_PARTY) > 0
   elseif (flagToCheck == "NotInGroup") then
     return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_OUTSIDER) > 0
   end
