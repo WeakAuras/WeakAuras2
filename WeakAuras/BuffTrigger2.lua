@@ -1822,7 +1822,6 @@ local function EventHandler(frame, event, arg1, arg2, ...)
       RecheckActiveForUnitType("nameplate", arg1, deactivatedTriggerInfos)
     end
   elseif event == "ENCOUNTER_START" or event == "ENCOUNTER_END" or event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" then
-    local unitsToCheck = {}
     for unit in GetAllUnits("boss", true) do
       RecheckActiveForUnitType("boss", unit, deactivatedTriggerInfos)
       if not UnitExistsFixed(unit) then
@@ -1830,7 +1829,6 @@ local function EventHandler(frame, event, arg1, arg2, ...)
       end
     end
   elseif event =="ARENA_OPPONENT_UPDATE" then
-    local unitsToCheck = {}
     for unit in GetAllUnits("arena", true) do
       RecheckActiveForUnitType("arena", unit, deactivatedTriggerInfos)
       if not UnitExistsFixed(unit) then
@@ -1839,7 +1837,6 @@ local function EventHandler(frame, event, arg1, arg2, ...)
     end
   elseif event == "GROUP_ROSTER_UPDATE" then
     unitVisible = {}
-    local unitsToCheck = {}
     for unit in GetAllUnits("group", true, "PlayersAndPets") do
       RecheckActiveForUnitType("group", unit, deactivatedTriggerInfos)
       if not UnitExistsFixed(unit) then
