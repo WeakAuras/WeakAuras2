@@ -762,7 +762,8 @@ Private.trigger_modes = {
 
 Private.debuff_types = {
   HELPFUL = L["Buff"],
-  HARMFUL = L["Debuff"]
+  HARMFUL = L["Debuff"],
+  BOTH = L["Buff/Debuff"]
 }
 
 Private.tooltip_count = {
@@ -773,7 +774,7 @@ Private.tooltip_count = {
 
 Private.aura_types = {
   BUFF = L["Buff"],
-  DEBUFF = L["Debuff"]
+  DEBUFF = L["Debuff"],
 }
 
 
