@@ -1805,6 +1805,7 @@ local function EventHandler(frame, event, arg1, arg2, ...)
     local pet = WeakAuras.unitToPetUnit[arg1]
     if pet then
       ScanGroupUnit(time, matchDataChanged, nil, pet)
+      RecheckActiveForUnitType("group", pet, deactivatedTriggerInfos)
       if not UnitExistsFixed(pet) then
         tinsert(unitsToRemove, pet)
       end
