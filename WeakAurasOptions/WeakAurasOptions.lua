@@ -1330,6 +1330,10 @@ function OptionsPrivate.SetGrouping(data)
 end
 
 function OptionsPrivate.Ungroup(data)
+  if not OptionsPrivate.IsDisplayPicked(data.id) then
+    WeakAuras.PickDisplay(data.id)
+  end
+
   if (frame.pickedDisplay == tempGroup and #tempGroup.controlledChildren > 0) then
     for index, childId in ipairs(tempGroup.controlledChildren) do
       local button = WeakAuras.GetDisplayButton(childId);
