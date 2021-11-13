@@ -512,6 +512,7 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       casterName = bestMatch.casterName,
       spellId = bestMatch.spellId,
       index = bestMatch.index,
+      filter = bestMatch.filter,
       unit = bestMatch.unit,
       unitName = bestMatch.unitName,
       GUID = bestMatch.unit and UnitGUID(bestMatch.unit) or bestMatch.GUID,
@@ -638,6 +639,11 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
 
     if state.index ~= bestMatch.index then
       state.index = bestMatch.index
+      changed = true
+    end
+
+    if state.filter ~= bestMatch.filter then
+      state.filter = bestMatch.filter
       changed = true
     end
 
@@ -1670,8 +1676,7 @@ local function ScanUnit(time, arg1)
   end
 end
 
-local function AddScanFuncs(triggerInfo, unit, scanFuncName, scanFuncSpellId, scanFuncGeneral)
-  local filter = triggerInfo.debuffType
+local function AddScanFuncs(triggerInfo, filter, unit, scanFuncName, scanFuncSpellId, scanFuncGeneral)
   if triggerInfo.auranames then
     for _, name in ipairs(triggerInfo.auranames) do
       if name ~= "" then
@@ -1699,8 +1704,7 @@ local function AddScanFuncs(triggerInfo, unit, scanFuncName, scanFuncSpellId, sc
   end
 end
 
-local function RemoveScanFuncs(triggerInfo, unit, scanFuncName, scanFuncSpellId, scanFuncGeneral)
-  local filter = triggerInfo.debuffType
+local function RemoveScanFuncs(triggerInfo, filter, unit, scanFuncName, scanFuncSpellId, scanFuncGeneral)
   if triggerInfo.auranames then
     for _, name in ipairs(triggerInfo.auranames) do
       if name ~= "" then
@@ -1735,7 +1739,13 @@ local function RecheckActive(triggerInfo, unit, unitsToRemoveScan)
   if unitExists and TriggerInfoApplies(triggerInfo, unit) then
     if (not activeGroupScanFuncs[unit] or not activeGroupScanFuncs[unit][triggerInfo]) then
       triggerInfo.maxUnitCount = triggerInfo.maxUnitCount + 1
-      AddScanFuncs(triggerInfo, unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
+      if triggerInfo.debuffType == "BOTH" then
+        AddScanFuncs(triggerInfo, "HELPFUL", unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
+        AddScanFuncs(triggerInfo, "HARMFUL", unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
+      else
+        AddScanFuncs(triggerInfo, triggerInfo.debuffType, unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
+      end
+
       activeGroupScanFuncs[unit] = activeGroupScanFuncs[unit] or {}
       activeGroupScanFuncs[unit][triggerInfo] = true
       matchDataChanged[triggerInfo.id] = matchDataChanged[triggerInfo.id] or {}
@@ -1745,7 +1755,12 @@ local function RecheckActive(triggerInfo, unit, unitsToRemoveScan)
     -- Either the unit doesn't exist or the TriggerInfo no longer applies
     if activeGroupScanFuncs[unit] and activeGroupScanFuncs[unit][triggerInfo] then
       triggerInfo.maxUnitCount = triggerInfo.maxUnitCount - 1
-      RemoveScanFuncs(triggerInfo, unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
+      if triggerInfo.debuffType == "BOTH" then
+        RemoveScanFuncs(triggerInfo, "HELPFUL", unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
+        RemoveScanFuncs(triggerInfo, "HARMFUL", unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
+      else
+        RemoveScanFuncs(triggerInfo, triggerInfo.debuffType, unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
+      end
       if unitsToRemoveScan then
         unitsToRemoveScan[unit] = unitsToRemoveScan[unit] or {}
         unitsToRemoveScan[unit][triggerInfo] = true
@@ -1998,20 +2013,29 @@ local function LoadAura(id, triggernum, triggerInfo)
   if not triggerInfo.unit then
     return
   end
-  local filter = triggerInfo.debuffType
   local time = GetTime();
 
   local unitsToCheck = {}
 
   if triggerInfo.unit == "multi" then
-     AddScanFuncs(triggerInfo, nil, scanFuncNameMulti, scanFuncSpellIdMulti, nil)
+    if triggerInfo.debuffType == "BOTH" then
+      AddScanFuncs(triggerInfo, "HELPFUL", nil, scanFuncNameMulti, scanFuncSpellIdMulti, nil)
+      AddScanFuncs(triggerInfo, "HARMFUL", nil, scanFuncNameMulti, scanFuncSpellIdMulti, nil)
+    else
+      AddScanFuncs(triggerInfo, triggerInfo.debuffType, nil, scanFuncNameMulti, scanFuncSpellIdMulti, nil)
+    end
   elseif triggerInfo.groupTrigger then
     triggerInfo.maxUnitCount = 0
     for unit in GetAllUnits(triggerInfo.unit, nil, triggerInfo.includePets) do
       RecheckActive(triggerInfo, unit, unitsToCheck)
     end
   else
-    AddScanFuncs(triggerInfo, triggerInfo.unit, scanFuncName, scanFuncSpellId, scanFuncGeneral)
+    if triggerInfo.debuffType == "BOTH" then
+      AddScanFuncs(triggerInfo, "HELPFUL", triggerInfo.unit, scanFuncName, scanFuncSpellId, scanFuncGeneral)
+      AddScanFuncs(triggerInfo, "HARMFUL", triggerInfo.unit, scanFuncName, scanFuncSpellId, scanFuncGeneral)
+    else
+      AddScanFuncs(triggerInfo, triggerInfo.debuffType, triggerInfo.unit, scanFuncName, scanFuncSpellId, scanFuncGeneral)
+    end
     unitsToCheck[triggerInfo.unit] = true
   end
 
@@ -2612,9 +2636,9 @@ function BuffTrigger.SetToolTip(trigger, state)
   if not state.unit or not state.index then
     return false
   end
-  if trigger.debuffType == "HELPFUL" then
+  if state.filter == "HELPFUL" then
     GameTooltip:SetUnitBuff(state.unit, state.index)
-  elseif trigger.debuffType == "HARMFUL" then
+  elseif state.filter == "HARMFUL" then
     GameTooltip:SetUnitDebuff(state.unit, state.index)
   end
   return true
