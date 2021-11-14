@@ -1796,7 +1796,9 @@ function WeakAuras.Delete(data)
       if parentData.sortHybridTable then
         parentData.sortHybridTable[id] = nil
       end
-      Private.ClearAuraEnvironment(data.parent);
+      for parent in Private.TraverseParents(data) do
+        Private.ClearAuraEnvironment(parent.id);
+      end
     end
   end
 
@@ -2623,8 +2625,8 @@ local function pAdd(data, simpleChange)
   else
     if (data.controlledChildren) then
       Private.ClearAuraEnvironment(id);
-      if data.parent then
-        Private.ClearAuraEnvironment(data.parent);
+      for parent in Private.TraverseParents(data) do
+        Private.ClearAuraEnvironment(parent.id);
       end
       db.displays[id] = data;
       WeakAuras.SetRegion(data);
@@ -2644,8 +2646,8 @@ local function pAdd(data, simpleChange)
       end
 
       Private.ClearAuraEnvironment(id);
-      if data.parent then
-        Private.ClearAuraEnvironment(data.parent);
+      for parent in Private.TraverseParents(data) do
+        Private.ClearAuraEnvironment(parent.id);
       end
 
       db.displays[id] = data;
@@ -5315,6 +5317,14 @@ do
     return Traverse(data, true, true, true)
   end
 
+  local function TraverseParents(data)
+    while data.parent do
+      local parentData = WeakAuras.GetData(data.parent)
+      coroutine.yield(parentData)
+      data = parentData
+    end
+  end
+
   -- Only non-group auras, not include self
   function Private.TraverseLeafs(data)
     return coroutine.wrap(TraverseLeafs), data
@@ -5343,6 +5353,10 @@ do
   -- All Children and self
   function Private.TraverseAll(data)
     return coroutine.wrap(TraverseAll), data
+  end
+
+  function Private.TraverseParents(data)
+    return coroutine.wrap(TraverseParents), data
   end
 end
 
