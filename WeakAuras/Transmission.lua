@@ -621,7 +621,6 @@ local function importPendingData()
     local button = WeakAuras.GetDisplayButton(parentData.id)
     button.callbacks.UpdateExpandButton()
     WeakAuras.UpdateGroupOrders(parentData)
-    WeakAuras.UpdateDisplayButton(parentData)
     WeakAuras.ClearAndUpdateOptions(parentData.id)
     Private.callbacks:Fire("Import")
   end

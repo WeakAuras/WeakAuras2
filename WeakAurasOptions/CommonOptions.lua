@@ -1421,7 +1421,6 @@ local function AddCommonTriggerOptions(options, data, triggernum, doubleWidth)
       end
       WeakAuras.Add(data);
       WeakAuras.UpdateThumbnail(data);
-      WeakAuras.UpdateDisplayButton(data);
       WeakAuras.ClearAndUpdateOptions(data.id);
     end,
     control = "WeakAurasSortedDropdown"

@@ -99,7 +99,6 @@ function OptionsPrivate.DuplicateAura(data, newParent, massEdit)
       if not massEdit then
         local button = WeakAuras.GetDisplayButton(parentData.id)
         button.callbacks.UpdateExpandButton()
-        WeakAuras.UpdateDisplayButton(parentData)
       end
       OptionsPrivate.ClearOptions(parentData.id)
     end
@@ -280,7 +279,6 @@ local function CreateNewGroupFromSelection(regionType, resetChildPositions)
     WeakAuras.NewDisplayButton(data);
     WeakAuras.UpdateGroupOrders(parentData);
     OptionsPrivate.ClearOptions(parentData.id);
-    WeakAuras.UpdateDisplayButton(parentData);
 
     local parentButton = WeakAuras.GetDisplayButton(parent)
     parentButton.callbacks.UpdateExpandButton();
@@ -306,7 +304,6 @@ local function CreateNewGroupFromSelection(regionType, resetChildPositions)
       OptionsPrivate.Private.AddParents(oldParentData)
       WeakAuras.UpdateGroupOrders(oldParentData);
       WeakAuras.ClearAndUpdateOptions(oldParent);
-      WeakAuras.UpdateDisplayButton(oldParentData);
       local oldParentButton = WeakAuras.GetDisplayButton(oldParent)
       oldParentButton.callbacks.UpdateExpandButton();
       oldParentButton:ReloadTooltip()
@@ -326,10 +323,8 @@ local function CreateNewGroupFromSelection(regionType, resetChildPositions)
     childButton:SetGroupOrder(index, #data.controlledChildren);
   end
 
-
   local button = WeakAuras.GetDisplayButton(data.id);
   button.callbacks.UpdateExpandButton();
-  WeakAuras.UpdateDisplayButton(data);
   OptionsPrivate.SortDisplayButtons();
   button:Expand();
 
@@ -464,7 +459,6 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"] = {
           parentButton:SetNormalTooltip()
           WeakAuras.Add(parentData)
           WeakAuras.ClearAndUpdateOptions(parentData.id)
-          WeakAuras.UpdateDisplayButton(parentData)
         end
       end
       OptionsPrivate.Private.ResumeAllDynamicGroups()
@@ -563,7 +557,6 @@ local function OnDelete(event, uid, id, parentUid, parentId)
       end
     end
     WeakAuras.ClearAndUpdateOptions(parentData.id)
-    WeakAuras.UpdateDisplayButton(parentData)
   end
 end
 
@@ -714,7 +707,7 @@ local function LayoutDisplayButtons(msg)
       local data = WeakAuras.GetData(id);
       if(data) then
         EnsureDisplayButton(data);
-        WeakAuras.UpdateDisplayButton(data);
+        WeakAuras.UpdateThumbnail(data);
 
         frame.buttonsScroll:AddChild(displayButtons[data.id]);
 
@@ -755,7 +748,7 @@ local function LayoutDisplayButtons(msg)
       local data = WeakAuras.GetData(id);
       if(data) then
         EnsureDisplayButton(data);
-        WeakAuras.UpdateDisplayButton(data);
+        WeakAuras.UpdateThumbnail(data);
 
         local button = displayButtons[data.id]
         frame.buttonsScroll:AddChild(button);
@@ -911,7 +904,7 @@ function OptionsPrivate.ConvertDisplay(data, newType)
   displayButtons[id]:PriorityShow(visibility);
   frame:ClearOptions(id)
   frame:FillOptions();
-  WeakAuras.UpdateDisplayButton(data);
+  WeakAuras.UpdateThumbnail(data);
   WeakAuras.SetMoverSizer(id)
   OptionsPrivate.ResetMoverSizer();
   OptionsPrivate.SortDisplayButtons()
@@ -921,7 +914,7 @@ function WeakAuras.NewDisplayButton(data, massEdit)
   local id = data.id;
   OptionsPrivate.Private.ScanForLoads({[id] = true});
   EnsureDisplayButton(db.displays[id]);
-  WeakAuras.UpdateDisplayButton(db.displays[id]);
+  WeakAuras.UpdateThumbnail(db.displays[id]);
   frame.buttonsScroll:AddChild(displayButtons[id]);
   if not massEdit then
     OptionsPrivate.SortDisplayButtons()
@@ -1288,7 +1281,7 @@ end
 
 function OptionsPrivate.AddDisplayButton(data)
   EnsureDisplayButton(data);
-  WeakAuras.UpdateDisplayButton(data);
+  WeakAuras.UpdateThumbnail(data);
   frame.buttonsScroll:AddChild(displayButtons[data.id]);
   if(WeakAuras.regions[data.id] and WeakAuras.regions[data.id].region.SetStacks) then
     WeakAuras.regions[data.id].region:SetStacks(1);
@@ -1484,14 +1477,6 @@ function OptionsPrivate.DropIndicator()
   return indicator
 end
 
-function WeakAuras.UpdateDisplayButton(data)
-  local id = data.id;
-  local button = displayButtons[id];
-  if (button) then
-    button:UpdateThumbnail()
-  end
-end
-
 function WeakAuras.UpdateThumbnail(data)
   local id = data.id
   local button = displayButtons[id]
@@ -1625,7 +1610,6 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
         WeakAuras.NewDisplayButton(data);
         WeakAuras.UpdateGroupOrders(group.data);
         OptionsPrivate.ClearOptions(group.data.id);
-        WeakAuras.UpdateDisplayButton(group.data);
         group.callbacks.UpdateExpandButton();
         group:Expand();
         group:ReloadTooltip();

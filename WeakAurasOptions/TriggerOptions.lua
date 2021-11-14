@@ -80,7 +80,6 @@ local function GetGlobalOptions(data)
         data.triggers.activeTriggerMode = v;
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
-        WeakAuras.UpdateDisplayButton(data);
       end,
       hidden = function() return #data.triggers <= 1 end
     }

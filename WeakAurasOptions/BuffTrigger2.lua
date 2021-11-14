@@ -188,7 +188,6 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
 
         WeakAuras.Add(data)
         WeakAuras.UpdateThumbnail(data)
-        WeakAuras.UpdateDisplayButton(data)
         WeakAuras.ClearAndUpdateOptions(data.id)
       end,
       validate = isExactSpellId and WeakAuras.ValidateNumeric or nil

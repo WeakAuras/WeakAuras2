@@ -100,7 +100,7 @@ clipboard.pasteMenuEntry = {
     OptionsPrivate.Private.ScanForLoads({[clipboard.current.id] = true});
     OptionsPrivate.SortDisplayButtons(nil, true);
     WeakAuras.PickDisplay(clipboard.current.id);
-    WeakAuras.UpdateDisplayButton(clipboard.current.id);
+    WeakAuras.UpdateThumbnail(clipboard.current.id);
     WeakAuras.ClearAndUpdateOptions(clipboard.current.id);
   end
 }
@@ -302,7 +302,6 @@ local Actions = {
           WeakAuras.UpdateGroupOrders(group.data)
           WeakAuras.ClearAndUpdateOptions(group.data.id)
           WeakAuras.ClearAndUpdateOptions(source.data.id)
-          WeakAuras.UpdateDisplayButton(group.data)
           WeakAuras.FillOptions()
           group.callbacks.UpdateExpandButton();
           group:ReloadTooltip()
@@ -335,7 +334,6 @@ local Actions = {
         OptionsPrivate.Private.AddParents(parent)
         WeakAuras.UpdateGroupOrders(parent);
         WeakAuras.ClearAndUpdateOptions(parent.id);
-        WeakAuras.UpdateDisplayButton(parent);
         local group = WeakAuras.GetDisplayButton(parent.id)
         group.callbacks.UpdateExpandButton();
         group:ReloadTooltip()
@@ -550,7 +548,6 @@ local methods = {
       OptionsPrivate.Private.AddParents(data)
       self.callbacks.UpdateExpandButton();
       OptionsPrivate.StopGrouping();
-      WeakAuras.UpdateDisplayButton(data);
       OptionsPrivate.ClearOptions(data.id);
       WeakAuras.FillOptions();
       WeakAuras.UpdateGroupOrders(data);
@@ -625,12 +622,10 @@ local methods = {
 
         local button = WeakAuras.GetDisplayButton(newGroup.id)
         button.callbacks.UpdateExpandButton()
-        WeakAuras.UpdateDisplayButton(newGroup)
 
         for old, new in pairs(mapping) do
           local button = WeakAuras.GetDisplayButton(new.id)
           button.callbacks.UpdateExpandButton()
-          WeakAuras.UpdateDisplayButton(new)
         end
 
         OptionsPrivate.SortDisplayButtons(nil, true)
@@ -692,7 +687,6 @@ local methods = {
             local downdata = {duration = 0.15, type = "custom", use_translate = true, x = 0, y = 32};
             OptionsPrivate.Private.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index-1]).uid, "main", updata, self.frame, true, function() OptionsPrivate.SortDisplayButtons() end);
             OptionsPrivate.Private.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index]).uid, "main", downdata, otherbutton.frame, true, function() OptionsPrivate.SortDisplayButtons() end);
-            WeakAuras.UpdateDisplayButton(parentData);
             WeakAuras.FillOptions()
           end
         else
@@ -732,7 +726,6 @@ local methods = {
             local downdata = {duration = 0.15, type = "custom", use_translate = true, x = 0, y = 32};
             OptionsPrivate.Private.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index+1]).uid, "main", downdata, self.frame, true, function() OptionsPrivate.SortDisplayButtons() end);
             OptionsPrivate.Private.Animate("button", WeakAuras.GetData(parentData.controlledChildren[index]).uid, "main", updata, otherbutton.frame, true, function() OptionsPrivate.SortDisplayButtons() end);
-            WeakAuras.UpdateDisplayButton(parentData);
             WeakAuras.FillOptions()
           end
         else
@@ -1118,7 +1111,6 @@ local methods = {
     end
     WeakAuras.ClearAndUpdateOptions(self.data.id);
     WeakAuras.UpdateGroupOrders(parentData);
-    WeakAuras.UpdateDisplayButton(parentData);
     if(#parentData.controlledChildren == 0) then
       local parentButton = WeakAuras.GetDisplayButton(parentData.id)
       parentButton:DisableExpand()
