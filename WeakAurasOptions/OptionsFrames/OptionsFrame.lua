@@ -1274,7 +1274,7 @@ function OptionsPrivate.CreateFrame()
     else
       local wasGroup = false
       if type(self.pickedDisplay) == "string" then
-        if WeakAuras.GetData(self.pickedDisplay).controlledChildren then
+        if WeakAuras.GetData(self.pickedDisplay).controlledChildren or WeakAuras.GetData(id).controlledChildren then
           wasGroup = true
         elseif not OptionsPrivate.IsDisplayPicked(id) then
           tinsert(tempGroup.controlledChildren, self.pickedDisplay)
