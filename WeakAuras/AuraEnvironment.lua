@@ -355,7 +355,6 @@ local FakeWeakAurasMixin = {
     PickDisplay = true,
     SetMoverSizer = true,
     ToggleOptions = true,
-    UpdateDisplayButton = true,
     UpdateGroupOrders = true,
     UpdateThumbnail = true,
     validate = true,
