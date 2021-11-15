@@ -20,7 +20,7 @@ jobs:
       - name: Update Build Date
         run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
 
-      - name: Create Retail Package
+      - name: Create Package
         uses: BigWigsMods/packager@master
         with:
           args: -d -z
@@ -29,21 +29,6 @@ jobs:
         with:
           name: WeakAuras-PR${{ github.event.number }}
           path: .release/
-
-      - name: Create Classic Package
-        uses: BigWigsMods/packager@master
-        with:
-          args: -d -z -g classic
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: WeakAuras-PR${{ github.event.number }}-classic
-          path: .release/
-
-      - name: Create BCC Package
-        uses: BigWigsMods/packager@master
-        with:
-          args: -d -z -g bcc
 
       - uses: actions/upload-artifact@v2
         with:
