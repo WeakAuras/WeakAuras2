@@ -41,10 +41,6 @@ ignore:
   - babelfish.lua
   - update_translations.sh
   - generate_changelog.sh
-  - WeakAurasModelPaths/ModelPathsClassic.lua
-  - WeakAurasModelPaths/ModelPathsBCC.lua
-  - WeakAurasTemplates/TriggerTemplatesDataClassic.lua
-  - WeakAurasTemplates/TriggerTemplatesDataBCC.lua
 
 move-folders:
   WeakAuras/WeakAuras: WeakAuras
