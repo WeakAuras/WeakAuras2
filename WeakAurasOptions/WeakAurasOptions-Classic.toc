@@ -1,4 +1,4 @@
-## Interface: 90105
+## Interface: 11400
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
 ## Version: @project-version@
