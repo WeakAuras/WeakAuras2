@@ -610,7 +610,7 @@ local methods = {
         if childData.controlledChildren then
           DuplicateAuras(childData, mapping[childData], mapping)
         else
-          OptionsPrivate.DuplicateAura(childData, targetParent.id, true)
+          OptionsPrivate.DuplicateAura(childData, targetParent.id, true, index)
         end
       end
     end
@@ -618,7 +618,7 @@ local methods = {
     function self.callbacks.OnDuplicateClick()
       if (WeakAuras.IsImporting()) then return end;
       if self.data.controlledChildren then
-        local newGroup = OptionsPrivate.DuplicateAura(self.data) -- TODO check that this sets the correct parent even if data has controlledChildren!
+        local newGroup = OptionsPrivate.DuplicateAura(self.data)
 
         local mapping = {}
         -- This builds the group skeleton
