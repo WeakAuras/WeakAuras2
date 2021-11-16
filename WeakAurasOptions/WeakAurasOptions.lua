@@ -47,7 +47,7 @@ local tempGroup = {
 OptionsPrivate.tempGroup = tempGroup;
 
 -- Does not duplicate child auras.
-function OptionsPrivate.DuplicateAura(data, newParent, massEdit)
+function OptionsPrivate.DuplicateAura(data, newParent, massEdit, targetIndex)
   local base_id = data.id .. " "
   local num = 2
 
@@ -78,13 +78,15 @@ function OptionsPrivate.DuplicateAura(data, newParent, massEdit)
     local parentId = newParent or data.parent
     local parentData = WeakAuras.GetData(parentId)
     local index
-    if newParent then
-      index = #parentData.controlledChildren
+    if targetIndex then
+      index = targetIndex
+    elseif newParent then
+      index = #parentData.controlledChildren + 1
     else
-      index = tIndexOf(parentData.controlledChildren, data.id)
+      index = tIndexOf(parentData.controlledChildren, data.id) + 1
     end
     if(index) then
-      tinsert(parentData.controlledChildren, index + 1, newData.id)
+      tinsert(parentData.controlledChildren, index, newData.id)
       newData.parent = parentId
       WeakAuras.Add(newData)
       WeakAuras.Add(parentData)
