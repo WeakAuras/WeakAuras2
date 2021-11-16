@@ -27,7 +27,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: WeakAuras-PR#${{ github.event.number }}-{{ github.sha }}
+          name: WeakAuras-PR#${{ github.event.number }}-${{ github.sha }}
           path: .release/
 
       - name: Send Status to Discord
