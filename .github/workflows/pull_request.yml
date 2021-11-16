@@ -21,7 +21,7 @@ jobs:
         run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
 
       - name: Create Package
-        uses: BigWigsMods/packager@master
+        uses: BigWigsMods/packager@multitoc
         with:
           args: -d -z
 

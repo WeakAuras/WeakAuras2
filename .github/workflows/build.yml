@@ -35,7 +35,7 @@ jobs:
         run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
 
       - name: Create Package
-        uses: BigWigsMods/packager@master
+        uses: BigWigsMods/packager@multitoc
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
