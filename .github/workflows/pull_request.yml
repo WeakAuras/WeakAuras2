@@ -30,11 +30,6 @@ jobs:
           name: WeakAuras-PR${{ github.event.number }}
           path: .release/
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: WeakAuras-PR${{ github.event.number }}-bcc
-          path: .release/
-
       - name: Send Status to Discord
         uses: nebularg/actions-discord-webhook@v1
         with:
