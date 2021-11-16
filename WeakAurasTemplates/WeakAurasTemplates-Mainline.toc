@@ -12,14 +12,6 @@
 locales.xml
 
 TriggerTemplates.lua
-#@version-retail@
 TriggerTemplatesData.lua
-#@end-version-retail@
-#@version-classic@
-TriggerTemplatesDataClassic.lua
-#@end-version-classic@
-#@version-bcc@
-TriggerTemplatesDataBCC.lua
-#@end-version-bcc@
 
 AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua
