@@ -1032,15 +1032,31 @@ function OptionsPrivate.CreateFrame()
     self:FillOptions()
   end
 
+  frame.OnRename = function(self, uid, oldid, newid)
+    if type(frame.pickedDisplay) == "string" and frame.pickedDisplay == oldid then
+      frame.pickedDisplay = newid
+    else
+      for i, childId in pairs(tempGroup.controlledChildren) do
+        if (childId == newid) then
+          tempGroup.controlledChildren[i] = newid
+        end
+      end
+    end
+  end
+
   frame.ClearPicks = function(self, noHide)
     OptionsPrivate.Private.PauseAllDynamicGroups()
+    if type(frame.pickedDisplay) == "string" then
+      displayButtons[frame.pickedDisplay]:ClearPick(noHide)
+    else
+      for i, childId in pairs(tempGroup.controlledChildren) do
+        displayButtons[childId]:ClearPick(noHide)
+      end
+    end
 
     frame.pickedDisplay = nil
     frame.pickedOption = nil
     wipe(tempGroup.controlledChildren)
-    for id, button in pairs(displayButtons) do
-      button:ClearPick(noHide)
-    end
     loadedButton:ClearPick(noHide)
     unloadedButton:ClearPick(noHide)
     container:ReleaseChildren()
