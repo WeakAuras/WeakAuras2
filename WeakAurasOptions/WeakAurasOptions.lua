@@ -583,6 +583,9 @@ local function OnRename(event, uid, oldid, newid)
 
   OptionsPrivate.StopGrouping()
   OptionsPrivate.SortDisplayButtons()
+
+  frame:OnRename(uid, oldid, newid)
+
   WeakAuras.PickDisplay(newid)
 
   local parent = data.parent
