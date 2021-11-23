@@ -6640,6 +6640,47 @@ Private.event_prototypes = {
     },
     timedrequired = true
   },
+  ["Spell Cast Succeeded"] = {
+    type = "event",
+    events = {
+      ["events"] = {"UNIT_SPELLCAST_SUCCEEDED"}
+    },
+    name = L["Spell Cast Succeeded"],
+    statesParameter = "one",
+    args = {
+      {
+        name = "unit",
+        init = "arg",
+        display = L["Caster Unit"],
+        type = "unit",
+        test = "UnitIsUnit(unit or '', %q)",
+        values = "actual_unit_types_with_specific",
+        store = true,
+        conditionType = "select",
+        conditionTest = function(state, needle, op)
+          return state and state.show and (UnitIsUnit(needle, state.unit or '') == (op == "=="))
+        end
+      },
+      {}, -- castGUID
+      {
+        name = "spellId",
+        display = L["Spell Id"],
+        type = "string",
+        init = "arg",
+        store = true,
+        conditionType = "number"
+      },
+
+      {
+        name = "icon",
+        hidden = true,
+        init = "select(3, GetSpellInfo(spellId))",
+        store = true,
+        test = "true"
+      },
+    },
+    timedrequired = true
+  },
   ["Ready Check"] = {
     type = "event",
     events = {
@@ -8715,6 +8756,7 @@ if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
   Private.event_prototypes["Crowd Controlled"] = nil
   Private.event_prototypes["PvP Talent Selected"] = nil
   Private.event_prototypes["Class/Spec"] = nil
+  Private.event_prototypes["Spell Cast Succeeded"] = nil
 else
   Private.event_prototypes["Queued Action"] = nil
 end
