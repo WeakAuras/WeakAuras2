@@ -527,6 +527,24 @@ local function setArrayStr(data, option, array, index)
   end
 end
 
+local function generateKey(prefix, options, index)
+  local goodKey = true
+  local key = prefix .. index
+  local existingKeys = {}
+  for index, option in ipairs(options) do
+    if option.key == key then
+      goodKey = false
+    end
+    existingKeys[option.key] = true
+  end
+  while not goodKey do
+    index = index + 1
+    key = prefix .. index
+    goodKey = not existingKeys[key]
+  end
+  return key
+end
+
 local typeControlAdders, addAuthorModeOption
 typeControlAdders = {
   toggle = function(options, args, data, order, prefix, i)
@@ -1312,7 +1330,7 @@ typeControlAdders = {
           path[#path + 1] = j
           childOption.subOptions[j] = {
             type = "toggle",
-            key = "subOption" .. j,
+            key = generateKey("subOption", optionData.options, j),
             name = L["Sub Option %i"]:format(j),
             default = false,
             width = 1,
@@ -1411,7 +1429,7 @@ local function duplicate(data, options, index)
           end
         end
         while existingKeys[newOption.key] do
-          newOption.key = newOption.key .. "copy"
+          newOption.key = generateKey(newOption.key .. "copy", childOptions, 1)
         end
       end
       if newOption.name then
@@ -2528,7 +2546,7 @@ function OptionsPrivate.GetAuthorOptions(data)
           local i = #child.authorOptions + 1
           child.authorOptions[i] = {
             type = "toggle",
-            key = "option" .. i,
+            key = generateKey("option", child.authorOptions, i),
             name = L["Option %i"]:format(i),
             default = false,
             width = 1,
