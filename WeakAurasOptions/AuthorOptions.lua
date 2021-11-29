@@ -948,7 +948,7 @@ typeControlAdders = {
     end
     args[prefix .. "default"] = {
       type = "multiselect",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.normalWidth * 0.9,
       name = L["Default"],
       order = order(),
       values = defaultValues,
