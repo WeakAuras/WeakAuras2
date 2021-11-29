@@ -7274,7 +7274,8 @@ Private.event_prototypes = {
     type = "unit",
     events = {
       ["events"] = {
-        "LOSS_OF_CONTROL_UPDATE"
+        "LOSS_OF_CONTROL_UPDATE",
+        "PLAYER_ENTERING_WORLD"
       }
     },
     force_events = "LOSS_OF_CONTROL_UPDATE",
