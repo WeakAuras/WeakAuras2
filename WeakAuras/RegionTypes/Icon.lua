@@ -542,14 +542,14 @@ local function modify(parent, region, data)
         if state.paused == true then
           if not region.paused then
             region:Pause()
-            cooldown:Pause()
           end
+          cooldown:Pause()
           expirationTime = GetTime() + (state.remaining or 0)
         else
           if region.paused then
             region:Resume()
-            cooldown:Resume()
           end
+          cooldown:Resume()
           expirationTime = state.expirationTime and state.expirationTime > 0 and state.expirationTime or math.huge;
         end
 
