@@ -1780,7 +1780,7 @@ function OptionsPrivate.DuplicateCollapseData(id, namespace, path)
   end
 end
 
-function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, hidden, setHidden, index, total)
+function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, hidden, setHidden, withoutColor, index, total)
   local headerOption
   if withHeader and (not index or index == 1) then
     headerOption =  {
@@ -1832,7 +1832,7 @@ function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, h
 
         local selectedFormat = get(symbol .. "_format")
         if (OptionsPrivate.Private.format_types[selectedFormat]) then
-          OptionsPrivate.Private.format_types[selectedFormat].AddOptions(symbol, hidden, addOption, get)
+          OptionsPrivate.Private.format_types[selectedFormat].AddOptions(symbol, hidden, addOption, get, withoutColor)
         end
         seenSymbols[symbol] = true
       end

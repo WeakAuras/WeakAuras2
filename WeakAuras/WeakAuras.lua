@@ -4276,7 +4276,7 @@ function Private.ParseTextStr(textStr, symbolCallback)
   end
 end
 
-function Private.CreateFormatters(input, getter)
+function Private.CreateFormatters(input, getter, withoutColor)
   local seenSymbols = {}
   local formatters = {}
   Private.ParseTextStr(input, function(symbol)
@@ -4289,7 +4289,7 @@ function Private.CreateFormatters(input, getter)
         local default = (sym == "p" or sym == "t") and "timed" or "none"
         local selectedFormat = getter(symbol ..  "_format", default)
         if (Private.format_types[selectedFormat]) then
-          formatters[symbol] = Private.format_types[selectedFormat].CreateFormatter(symbol, getter)
+          formatters[symbol] = Private.format_types[selectedFormat].CreateFormatter(symbol, getter, withoutColor)
         end
       end
     end
