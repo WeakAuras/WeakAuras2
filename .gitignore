@@ -11,3 +11,4 @@ format.bat
 .install
 .lua/*
 .vscode
+CHANGELOG.MD

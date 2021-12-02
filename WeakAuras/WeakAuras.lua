@@ -2229,16 +2229,16 @@ end
 local function validateUserConfig(data, options, config)
   local authorOptionKeys, corruptOptions = {}, {}
   for index, option in ipairs(options) do
-    if not customOptionIsValid(option) then
+    if not customOptionIsValid(option) or authorOptionKeys[option.key] then
       prettyPrint(data.id .. " Custom Option #" .. index .. " in " .. data.id .. " has been detected as corrupt, and has been deleted.")
       corruptOptions[index] = true
     else
       local optionClass = Private.author_option_classes[option.type]
+      authorOptionKeys[option.key] = index
       if optionClass == "simple" then
         if not option.key then
           option.key = WeakAuras.GenerateUniqueID()
         end
-        authorOptionKeys[option.key] = index
         if config[option.key] == nil then
           if type(option.default) ~= "table" then
             config[option.key] = option.default
@@ -2247,7 +2247,6 @@ local function validateUserConfig(data, options, config)
           end
         end
       elseif optionClass == "group" then
-        authorOptionKeys[option.key] = "group"
         local subOptions = option.subOptions
         if type(config[option.key]) ~= "table" then
           config[option.key] = {}
@@ -2288,63 +2287,67 @@ local function validateUserConfig(data, options, config)
       end
     end
   end
-  for i = #options, 1, -1 do
-    if corruptOptions[i] then
-      tremove(options, i)
-    end
-  end
   for key, value in pairs(config) do
     if not authorOptionKeys[key] then
       config[key] = nil
-    elseif authorOptionKeys[key] ~= "group" then
+    else
       local option = options[authorOptionKeys[key]]
-      if type(value) ~= type(option.default) then
-        -- if type mismatch then we know that it can't be right
-        if type(option.default) ~= "table" then
-          config[key] = option.default
-        else
-          config[key] = CopyTable(option.default)
-        end
-      elseif option.type == "input" and option.useLength then
-        config[key] = config[key]:sub(1, option.length)
-      elseif option.type == "number" or option.type == "range" then
-        if (option.max and option.max < value) or (option.min and option.min > value) then
-          config[key] = option.default
-        else
-          if option.type == "number" and option.step then
-            local min = option.min or 0
-            config[key] = option.step * Round((value - min)/option.step) + min
-          end
-        end
-      elseif option.type == "select" then
-        if value < 1 or value > #option.values then
-          config[key] = option.default
-        end
-      elseif option.type == "multiselect" then
-        local multiselect = config[key]
-        for i, v in ipairs(multiselect) do
-          if option.default[i] ~= nil then
-            if type(v) ~= "boolean" then
-              multiselect[i] = option.default[i]
-            end
-          else
-            multiselect[i] = nil
-          end
-        end
-        for i, v in ipairs(option.default) do
-          if type(multiselect[i]) ~= "boolean" then
-            multiselect[i] = v
-          end
-        end
-      elseif option.type == "color" then
-        for i = 1, 4 do
-          local c = config[key][i]
-          if type(c) ~= "number" or c < 0 or c > 1 then
+      local optionClass = Private.author_option_classes[option.type]
+      if optionClass ~= "group" then
+        local option = options[authorOptionKeys[key]]
+        if type(value) ~= type(option.default) then
+          -- if type mismatch then we know that it can't be right
+          if type(option.default) ~= "table" then
             config[key] = option.default
-            break
+          else
+            config[key] = CopyTable(option.default)
+          end
+        elseif option.type == "input" and option.useLength then
+          config[key] = config[key]:sub(1, option.length)
+        elseif option.type == "number" or option.type == "range" then
+          if (option.max and option.max < value) or (option.min and option.min > value) then
+            config[key] = option.default
+          else
+            if option.type == "number" and option.step then
+              local min = option.min or 0
+              config[key] = option.step * Round((value - min)/option.step) + min
+            end
+          end
+        elseif option.type == "select" then
+          if value < 1 or value > #option.values then
+            config[key] = option.default
+          end
+        elseif option.type == "multiselect" then
+          local multiselect = config[key]
+          for i, v in ipairs(multiselect) do
+            if option.default[i] ~= nil then
+              if type(v) ~= "boolean" then
+                multiselect[i] = option.default[i]
+              end
+            else
+              multiselect[i] = nil
+            end
+          end
+          for i, v in ipairs(option.default) do
+            if type(multiselect[i]) ~= "boolean" then
+              multiselect[i] = v
+            end
+          end
+        elseif option.type == "color" then
+          for i = 1, 4 do
+            local c = config[key][i]
+            if type(c) ~= "number" or c < 0 or c > 1 then
+              config[key] = option.default
+              break
+            end
           end
         end
       end
+    end
+  end
+  for i = #options, 1, -1 do
+    if corruptOptions[i] then
+      tremove(options, i)
     end
   end
 end

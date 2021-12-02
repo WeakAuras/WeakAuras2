@@ -527,6 +527,32 @@ local function setArrayStr(data, option, array, index)
   end
 end
 
+local function ensureUniqueKey(candidate, suffix, options, index)
+  index = index or 1
+  local goodKey = true
+  local key = candidate
+  local existingKeys = {}
+  for index, option in ipairs(options) do
+    if option.key == key then
+      goodKey = false
+    end
+    existingKeys[option.key] = true
+  end
+  if not goodKey then
+    local prefix = candidate .. suffix
+    while not goodKey do
+      key = prefix .. index
+      goodKey = not existingKeys[key]
+      index = index + 1
+    end
+  end
+  return key
+end
+
+local function generateKey(prefix, options, index)
+  return ensureUniqueKey(prefix, "", options, index)
+end
+
 local typeControlAdders, addAuthorModeOption
 typeControlAdders = {
   toggle = function(options, args, data, order, prefix, i)
@@ -1312,7 +1338,7 @@ typeControlAdders = {
           path[#path + 1] = j
           childOption.subOptions[j] = {
             type = "toggle",
-            key = "subOption" .. j,
+            key = generateKey("subOption", optionData.options, j),
             name = L["Sub Option %i"]:format(j),
             default = false,
             width = 1,
@@ -1411,7 +1437,7 @@ local function duplicate(data, options, index)
           end
         end
         while existingKeys[newOption.key] do
-          newOption.key = newOption.key .. "copy"
+          newOption.key = generateKey(newOption.key .. "copy", childOptions, 1)
         end
       end
       if newOption.name then
@@ -1424,7 +1450,7 @@ local function duplicate(data, options, index)
   end
 end
 
-local function ensureNonDuplicateKey(option)
+local function validateNonDuplicateKey(option)
   -- note: this has some unintuitive behavior
   -- e.g. if aura A has option keys "foo", "bar"
   -- and aura B has option keys "foo", "baz",
@@ -1511,6 +1537,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
           tinsert(newPath, #childGroup.subOptions + 1)
           OptionsPrivate.InsertCollapsed(id, "author", newPath, childCollapsed)
           local childOption = tremove(optionData.options, optionData.index)
+          childOption.key = ensureUniqueKey(childOption.key, "In", childGroup.subOptions)
           local childData = optionData.data
           tinsert(childGroup.subOptions, childOption)
           WeakAuras.Add(childData)
@@ -1540,6 +1567,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
           tinsert(newPath, 1)
           OptionsPrivate.InsertCollapsed(id, "author", newPath, childCollapsed)
           local childOption = tremove(optionData.options, optionData.index)
+          childOption.key = ensureUniqueKey(childOption.key, "In", childGroup.subOptions)
           local childData = optionData.data
           tinsert(childGroup.subOptions, 1, childOption)
           WeakAuras.Add(childData)
@@ -1575,6 +1603,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
           end
         end
         OptionsPrivate.RemoveCollapsed(id, "author", optionData.path)
+        childOption.key = ensureUniqueKey(childOption.key, "Out", parentOptions)
         tinsert(parentOptions, path[#path - 1], childOption)
         path[#path] = nil
         OptionsPrivate.InsertCollapsed(id, "author", path)
@@ -1609,6 +1638,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
           end
         end
         OptionsPrivate.RemoveCollapsed(id, "author", optionData.path)
+        childOption.key = ensureUniqueKey(childOption.key, "Out", parentOptions)
         tinsert(parentOptions, path[#path - 1] + 1, childOption)
         path[#path] = nil
         path[#path] = path[#path] + 1
@@ -1779,7 +1809,7 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
       width = WeakAuras.normalWidth,
       name = name(option, "key", optionClass == "group" and L["Group key"] or L["Option key"]),
       order = order(),
-      validate = ensureNonDuplicateKey(option),
+      validate = validateNonDuplicateKey(option),
       get = get(option, "key"),
       set = set(data, option, "key")
     }
@@ -2528,7 +2558,7 @@ function OptionsPrivate.GetAuthorOptions(data)
           local i = #child.authorOptions + 1
           child.authorOptions[i] = {
             type = "toggle",
-            key = "option" .. i,
+            key = generateKey("option", child.authorOptions, i),
             name = L["Option %i"]:format(i),
             default = false,
             width = 1,
