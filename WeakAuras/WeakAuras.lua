@@ -776,9 +776,7 @@ local function CreateTalentCache()
   end
 end
 
-local pvpTalentsInitialized = false;
 local function CreatePvPTalentCache()
-  if (pvpTalentsInitialized) then return end;
   local _, player_class = UnitClass("player")
   local spec = GetSpecialization()
 
@@ -803,8 +801,6 @@ local function CreatePvPTalentCache()
     for i, talentId in ipairs(pvpSpecTalents) do
       Private.pvp_talent_types_specific[player_class][spec][i] = formatTalent(talentId);
     end
-
-    pvpTalentsInitialized = true;
   end
 end
 
