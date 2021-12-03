@@ -2234,7 +2234,9 @@ local function validateUserConfig(data, options, config)
       corruptOptions[index] = true
     else
       local optionClass = Private.author_option_classes[option.type]
-      authorOptionKeys[option.key] = index
+      if option.key then
+        authorOptionKeys[option.key] = index
+      end
       if optionClass == "simple" then
         if not option.key then
           option.key = WeakAuras.GenerateUniqueID()
