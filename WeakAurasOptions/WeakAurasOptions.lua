@@ -878,36 +878,21 @@ function OptionsPrivate.UpdateButtonsScroll()
   frame.buttonsScroll:DoLayout()
 end
 
-local function addChildButtons(button, children, visible)
-  local controlledChildren = children[button.data.id];
-  if(controlledChildren) then
-    table.sort(controlledChildren, function(a, b) return displayButtons[a]:GetGroupOrder() <  displayButtons[b]:GetGroupOrder(); end);
-    for _, groupchild in ipairs(controlledChildren) do
-      if(button:GetExpanded()) then
-        displayButtons[groupchild].frame:Show();
-        if displayButtons[groupchild].AcquireThumbnail then
-          displayButtons[groupchild]:AcquireThumbnail()
-        end
-        tinsert(frame.buttonsScroll.children, displayButtons[groupchild]);
-        visible[displayButtons[groupchild]] = true
+local function addButton(button, aurasMatchingFilter, visible)
+  button.frame:Show();
+  if button.AcquireThumbnail then
+    button:AcquireThumbnail()
+  end
+  tinsert(frame.buttonsScroll.children, button);
+  visible[button] = true
 
-        addChildButtons(displayButtons[groupchild], children, visible)
+  if button.data.controlledChildren and button:GetExpanded() then
+    for _, childId in ipairs(button.data.controlledChildren) do
+      if aurasMatchingFilter[childId] then
+        addButton(displayButtons[childId], aurasMatchingFilter, visible)
       end
     end
   end
-end
-
-local function anyParentLoaded(parentId)
-    if(parentId) then
-      if(OptionsPrivate.Private.loaded[parentId]) then
-        return true
-      end
-      local parentData = WeakAuras.GetData(parentId)
-      if parentData then
-        return anyParentLoaded(parentData.parent)
-      end
-    end
-    return false
 end
 
 local previousFilter;
@@ -1045,124 +1030,62 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
   end
 
   tinsert(frame.buttonsScroll.children, frame.loadedButton);
-  -- First handle loaded auras
-  local numLoaded = 0;
-  local to_sort = {};
-  local children = {};
-  local containsFilter = false;
 
+  local aurasMatchingFilter = {}
+  local useTextFilter = filter and filter ~= ""
+  local topLevelLoadedAuras = {}
+  local topLevelUnloadedAuras = {}
   local visible = {}
 
   for id, child in pairs(displayButtons) do
-    containsFilter = not filter or filter == "";
-    local data = WeakAuras.GetData(id);
-    if not(data) then
-      print("|cFF8800FFWeakAuras|r: No data for", id);
+    if(OptionsPrivate.Private.loaded[id]) then
+      child:EnableLoaded();
     else
-      if(not containsFilter and data.controlledChildren) then
-        for child in OptionsPrivate.Private.TraverseAllChildren(data) do
-          if(child.id:lower():find(filter, 1, true)) then
-            containsFilter = true;
-            break;
-          end
+      child:DisableLoaded();
+    end
+
+    if useTextFilter then
+      if(id:lower():find(filter, 1, true)) then
+        aurasMatchingFilter[id] = true
+        for parent in OptionsPrivate.Private.TraverseParents(child.data) do
+          aurasMatchingFilter[parent.id] = true
         end
       end
-      if(
-        frame.loadedButton:GetExpanded()
-        and (not filter or id:lower():find(filter, 1, true) or containsFilter)
-        ) then
-
-        local group = child:GetGroup();
-        if(group) then
-          -- In a Group
-          if anyParentLoaded(group) then
-            if(OptionsPrivate.Private.loaded[id]) then
-              child:EnableLoaded();
-            else
-              child:DisableLoaded();
-            end
-            children[group] = children[group] or {};
-            tinsert(children[group], id);
-          end
-        else
-          -- Top Level
-          if(OptionsPrivate.Private.loaded[id] ~= nil) then
-            if(OptionsPrivate.Private.loaded[id]) then
-              child:EnableLoaded();
-            else
-              child:DisableLoaded();
-            end
-            tinsert(to_sort, child);
-          end
-        end
-      end
+    else
+      aurasMatchingFilter[id] = true
     end
-  end
-  table.sort(to_sort, function(a, b) return a:GetTitle() < b:GetTitle() end);
 
-  for _, child in ipairs(to_sort) do
-    child.frame:Show();
-    if child.AcquireThumbnail then
-      child:AcquireThumbnail()
-    end
-    tinsert(frame.buttonsScroll.children, child);
-    visible[child] = true
-    addChildButtons(child, children, visible)
-  end
 
-  -- Now handle unloaded auras
-  tinsert(frame.buttonsScroll.children, frame.unloadedButton);
-  local numUnloaded = 0;
-  wipe(to_sort);
-  wipe(children);
-
-  for id, child in pairs(displayButtons) do
-    containsFilter = not filter or filter == "";
-    local data = WeakAuras.GetData(id);
-    if(not containsFilter and data.controlledChildren) then
-      for child in OptionsPrivate.Private.TraverseAllChildren(data) do
-        if(child.id:lower():find(filter, 1, true)) then
-          containsFilter = true;
-          break;
-        end
-      end
-    end
-    if(
-      frame.unloadedButton:GetExpanded()
-      and (not filter or id:lower():find(filter, 1, true) or containsFilter)
-      ) then
-      local group = child:GetGroup();
-      if(group) then
-        if not anyParentLoaded(group) then
-          if(OptionsPrivate.Private.loaded[id]) then
-            child:EnableLoaded();
-          else
-            child:DisableLoaded();
-          end
-          children[group] = children[group] or {};
-          tinsert(children[group], id);
-        end
+    if not child:GetGroup() then
+      -- Top Level aura
+      if OptionsPrivate.Private.loaded[child.data.id] ~= nil then
+        tinsert(topLevelLoadedAuras, id)
       else
-        if(OptionsPrivate.Private.loaded[id] == nil) then
-          child:DisableLoaded();
-          tinsert(to_sort, child);
-        end
+        tinsert(topLevelUnloadedAuras, id)
       end
     end
   end
-  table.sort(to_sort, function(a, b) return a:GetTitle() < b:GetTitle() end);
 
-  for _, child in ipairs(to_sort) do
-    child.frame:Show();
-    if child.AcquireThumbnail then
-      child:AcquireThumbnail()
+  if frame.loadedButton:GetExpanded() then
+    table.sort(topLevelLoadedAuras)
+    for _, id in ipairs(topLevelLoadedAuras) do
+      if aurasMatchingFilter[id] then
+        addButton(displayButtons[id], aurasMatchingFilter, visible)
+      end
     end
-    tinsert(frame.buttonsScroll.children, child);
-    visible[child] = true
-    addChildButtons(child, children, visible)
   end
 
-  -- Hiding the other buttons
+  tinsert(frame.buttonsScroll.children, frame.unloadedButton);
+
+  if frame.unloadedButton:GetExpanded() then
+    table.sort(topLevelUnloadedAuras)
+    for _, id in ipairs(topLevelUnloadedAuras) do
+      if aurasMatchingFilter[id] then
+        addButton(displayButtons[id], aurasMatchingFilter, visible)
+      end
+    end
+  end
+
   for id, child in pairs(displayButtons) do
     if(not visible[child]) then
       child.frame:Hide();

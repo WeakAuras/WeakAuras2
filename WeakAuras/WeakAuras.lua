@@ -1462,6 +1462,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
 
   local changed = 0;
   local shouldBeLoaded, couldBeLoaded;
+  local parentsToCheck = {}
   wipe(toLoad);
   wipe(toUnload);
 
@@ -1484,11 +1485,17 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
       if(shouldBeLoaded and not loaded[id]) then
         changed = changed + 1;
         toLoad[id] = true;
+        for parent in Private.TraverseParents(data) do
+          parentsToCheck[parent.id] = true
+        end
       end
 
       if(loaded[id] and not shouldBeLoaded) then
         toUnload[id] = true;
         changed = changed + 1;
+        for parent in Private.TraverseParents(data) do
+          parentsToCheck[parent.id] = true
+        end
       end
       if(shouldBeLoaded) then
         loaded[id] = true;
@@ -1506,19 +1513,25 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     Private.FinishLoadUnload();
   end
 
-  -- This iterates over all auras and could be optimized to only check
-  -- parents of children that have changed. (A further optimization would be to distinguish
-  -- between auras that changed from unloaded to loaded and vice versa.
-  -- The complicated bit is that a full check must be done if the group memberships changed,
-  -- and currently this function handles that too.
-  for id, data in pairs(db.displays) do
+  Private.ScanForLoadsGroup(parentsToCheck)
+  Private.callbacks:Fire("ScanForLoads")
+
+  wipe(toLoad);
+  wipe(toUnload)
+end
+
+function Private.ScanForLoadsGroup(toCheck)
+  for id in pairs(toCheck) do
+    local data = WeakAuras.GetData(id)
     if(data.controlledChildren) then
       if(#data.controlledChildren > 0) then
-        local any_loaded;
+        local any_loaded = false;
         for child in Private.TraverseLeafs(data) do
           if(loaded[child.id] ~= nil) then
             any_loaded = true;
             break;
+          else
+            any_loaded = nil
           end
         end
         loaded[id] = any_loaded;
@@ -1527,11 +1540,6 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
       end
     end
   end
-
-  Private.callbacks:Fire("ScanForLoads")
-
-  wipe(toLoad);
-  wipe(toUnload)
 end
 
 function Private.ScanForLoads(toCheck, event, arg1, ...)
@@ -1670,6 +1678,9 @@ function Private.Resume()
 
   UnloadAll();
   scanForLoadsImpl();
+  if loadEvents["GROUP"] then
+    Private.ScanForLoadsGroup(loadEvents["GROUP"])
+  end
 
   Private.ResumeAllDynamicGroups();
 end
@@ -2558,7 +2569,10 @@ local function pAdd(data, simpleChange)
       end
       db.displays[id] = data;
       WeakAuras.SetRegion(data);
-    else
+      Private.ScanForLoadsGroup({[id] = true});
+      loadEvents["GROUP"] = loadEvents["GROUP"] or {}
+      loadEvents["GROUP"][id] = true
+    else -- Non group aura
       local visible
       if (WeakAuras.IsOptionsOpen()) then
         visible = Private.FakeStatesFor(id, false)
