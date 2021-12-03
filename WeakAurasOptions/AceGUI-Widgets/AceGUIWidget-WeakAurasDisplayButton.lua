@@ -454,6 +454,8 @@ local methods = {
     self:SetWidth(1000);
     self:SetHeight(32);
     self.hasThumbnail = false
+    self.first = false
+    self.last = false
   end,
   ["Initialize"] = function(self)
     local data = self.data;
@@ -1411,36 +1413,30 @@ local methods = {
     end
   end,
   ["SetGroupOrder"] = function(self, order, max)
-    if(order == 1) then
-      self:DisableUpGroup();
-    else
-      self:EnableUpGroup();
-    end
-    if(order == max) then
-      self:DisableDownGroup();
-    else
-      self:EnableDownGroup();
-    end
+    self.first = (order == 1)
+    self.last = (order == max)
     self.frame.dgrouporder = order;
+    self:UpdateUpDownButtons()
+  end,
+  ["UpdateUpDownButtons"] = function(self)
+    if self.first or not self:IsEnabled() then
+      self.upgroup:Disable();
+      self.upgroup.texture:SetVertexColor(0.3, 0.3, 0.3);
+    else
+      self.upgroup:Enable();
+      self.upgroup.texture:SetVertexColor(1, 1, 1);
+    end
+
+    if self.last or not self:IsEnabled() then
+      self.downgroup:Disable();
+      self.downgroup.texture:SetVertexColor(0.3, 0.3, 0.3);
+    else
+      self.downgroup:Enable();
+      self.downgroup.texture:SetVertexColor(1, 1, 1);
+    end
   end,
   ["GetGroupOrder"] = function(self)
     return self.frame.dgrouporder;
-  end,
-  ["DisableUpGroup"] = function(self)
-    self.upgroup:Disable();
-    self.upgroup.texture:SetVertexColor(0.3, 0.3, 0.3);
-  end,
-  ["EnableUpGroup"] = function(self)
-    self.upgroup:Enable();
-    self.upgroup.texture:SetVertexColor(1, 1, 1);
-  end,
-  ["DisableDownGroup"] = function(self)
-    self.downgroup:Disable();
-    self.downgroup.texture:SetVertexColor(0.3, 0.3, 0.3);
-  end,
-  ["EnableDownGroup"] = function(self)
-    self.downgroup:Enable();
-    self.downgroup.texture:SetVertexColor(1, 1, 1);
   end,
   ["DisableLoaded"] = function(self)
     self.loaded.title = L["Not Loaded"];
@@ -1537,10 +1533,9 @@ local methods = {
     self.view:Disable();
     self.group:Disable();
     self.ungroup:Disable();
-    self.upgroup:Disable();
-    self.downgroup:Disable();
     self.loaded:Disable();
     self.expand:Disable();
+    self:UpdateUpDownButtons()
   end,
   ["Enable"] = function(self)
     self.background:Show();
@@ -1548,9 +1543,8 @@ local methods = {
     self.view:Enable();
     self.group:Enable();
     self.ungroup:Enable();
-    self.upgroup:Enable();
-    self.downgroup:Enable();
     self.loaded:Enable();
+    self:UpdateUpDownButtons()
     if not(self.expand.disabled) then
       self.expand:Enable();
     end
