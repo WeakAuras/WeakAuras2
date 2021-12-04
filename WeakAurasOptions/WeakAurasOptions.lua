@@ -741,6 +741,7 @@ local function LayoutDisplayButtons(msg)
           button:PriorityShow(1);
         end
       end
+      WeakAuras.OptionsFrame().loadedButton:RecheckVisibility()
     end
     OptionsPrivate.Private.ResumeAllDynamicGroups();
 
@@ -898,7 +899,7 @@ end
 function OptionsPrivate.ConvertDisplay(data, newType)
   local id = data.id;
   local visibility = displayButtons[id]:GetVisibility();
-  displayButtons[id]:PriorityHide(0);
+  displayButtons[id]:PriorityHide(2);
 
   WeakAuras.regions[id].region:Collapse();
   OptionsPrivate.Private.CollapseAllClones(id);
