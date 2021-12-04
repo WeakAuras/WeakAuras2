@@ -41,6 +41,18 @@ commonOptionsCache.GetSameAll = function(self, info)
   end
 end
 
+commonOptionsCache.SetNameAll = function(self, info, value)
+  local base = self:GetOrCreateData(info)
+  base.nameAll = value
+end
+
+commonOptionsCache.GetNameAll = function(self, info)
+  local base = self:GetData(info)
+  if base then
+    return base.nameAll
+  end
+end
+
 commonOptionsCache.Clear = function(self)
   self.data = {}
 end
@@ -558,6 +570,11 @@ local function replaceNameDescFuncs(intable, data, subOption)
   end
 
   local function nameAll(info)
+    local cached = commonOptionsCache:GetNameAll(info)
+    if (cached ~= nil) then
+      return cached
+    end
+
     local combinedName;
     local first = true;
     local foundNames = {};
@@ -569,6 +586,8 @@ local function replaceNameDescFuncs(intable, data, subOption)
           name = childOption.name(info);
         else
           name = childOption.name;
+          commonOptionsCache:SetNameAll(info, name)
+          return name
         end
         if (not name) then
         -- Do nothing
@@ -590,7 +609,9 @@ local function replaceNameDescFuncs(intable, data, subOption)
         end
       end
     end
-    return combinedName or "";
+    combinedName = combinedName or ""
+    commonOptionsCache:SetNameAll(info, combinedName)
+    return combinedName;
   end
 
   local function descAll(info)
