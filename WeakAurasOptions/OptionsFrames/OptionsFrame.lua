@@ -761,22 +761,24 @@ function OptionsPrivate.CreateFrame()
   loadedButton:SetCollapseDescription(L["Collapse all loaded displays"])
   loadedButton:SetViewClick(function()
     OptionsPrivate.Private.PauseAllDynamicGroups()
-    if loadedButton.view.func() == 2 then
+    if loadedButton.view.visibility == 2 then
       for id, child in pairs(displayButtons) do
         if OptionsPrivate.Private.loaded[id] ~= nil then
           child:PriorityHide(2)
         end
       end
+      loadedButton:PriorityHide(2)
     else
       for id, child in pairs(displayButtons) do
         if OptionsPrivate.Private.loaded[id] ~= nil then
           child:PriorityShow(2)
         end
       end
+      loadedButton:PriorityShow(2)
     end
     OptionsPrivate.Private.ResumeAllDynamicGroups()
   end)
-  loadedButton:SetViewTest(function()
+  loadedButton.RecheckVisibility = function(self)
     local none, all = true, true
     for id, child in pairs(displayButtons) do
       if OptionsPrivate.Private.loaded[id] ~= nil then
@@ -788,14 +790,19 @@ function OptionsPrivate.CreateFrame()
         end
       end
     end
+    local newVisibility
     if all then
-      return 2
+      newVisibility = 2
     elseif none then
-      return 0
+      newVisibility = 0
     else
-      return 1
+      newVisibility = 1
     end
-  end)
+    if newVisibility ~= self.view.visibility then
+      self.view.visibility = newVisibility
+      self:UpdateViewTexture()
+    end
+  end
   loadedButton:SetViewDescription(L["Toggle the visibility of all loaded displays"])
   frame.loadedButton = loadedButton
 
@@ -821,22 +828,24 @@ function OptionsPrivate.CreateFrame()
   unloadedButton:SetCollapseDescription(L["Collapse all non-loaded displays"])
   unloadedButton:SetViewClick(function()
     OptionsPrivate.Private.PauseAllDynamicGroups()
-    if unloadedButton.view.func() == 2 then
+    if unloadedButton.view.visibility == 2 then
       for id, child in pairs(displayButtons) do
         if OptionsPrivate.Private.loaded[id] == nil then
           child:PriorityHide(2)
         end
       end
+      unloadedButton:PriorityHide(2)
     else
       for id, child in pairs(displayButtons) do
         if OptionsPrivate.Private.loaded[id] == nil then
           child:PriorityShow(2)
         end
       end
+      unloadedButton:PriorityShow(2)
     end
     OptionsPrivate.Private.ResumeAllDynamicGroups()
   end)
-  unloadedButton:SetViewTest(function()
+  unloadedButton.RecheckVisibility = function(self)
     local none, all = true, true
     for id, child in pairs(displayButtons) do
       if OptionsPrivate.Private.loaded[id] == nil then
@@ -848,14 +857,19 @@ function OptionsPrivate.CreateFrame()
         end
       end
     end
+    local newVisibility
     if all then
-      return 2
+      newVisibility = 2
     elseif none then
-      return 0
+      newVisibility = 0
     else
-      return 1
+      newVisibility = 1
     end
-  end)
+    if newVisibility ~= self.view.visibility then
+      self.view.visibility = newVisibility
+      self:UpdateViewTexture()
+    end
+  end
   unloadedButton:SetViewDescription(L["Toggle the visibility of all non-loaded displays"])
   frame.unloadedButton = unloadedButton
 
@@ -1283,6 +1297,7 @@ function OptionsPrivate.CreateFrame()
     for child in OptionsPrivate.Private.TraverseAllChildren(data) do
       displayButtons[child.id]:PriorityShow(1)
     end
+    displayButtons[data.id]:RecheckParentVisibility()
 
     if data.controlledChildren and #data.controlledChildren == 0 then
       WeakAurasOptions:NewAura()
