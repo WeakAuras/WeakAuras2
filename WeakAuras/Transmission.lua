@@ -630,7 +630,8 @@ local function importPendingData()
   while(RenameToOriginalNames(originalNames)) do end
 
   WeakAuras.SetImporting(false)
-  return WeakAuras.PickDisplay(installedData[0].id)
+  local tabToDisplay = installedData[0].controlledChildren and "group" or "region"
+  return WeakAuras.PickDisplay(installedData[0].id, tabToDisplay)
 end
 
 ItemRefTooltip:HookScript("OnHide", function(self)
