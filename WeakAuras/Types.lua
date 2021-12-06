@@ -2646,6 +2646,7 @@ end
 Private.update_categories = {
   {
     name = "anchor",
+    -- Note, these are special cased for child auras and considered arrangment
     fields = {
       "xOffset",
       "yOffset",
