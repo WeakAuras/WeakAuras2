@@ -1422,22 +1422,6 @@ local function ShowDisplayTooltip(data, children, matchInfo, icon, icons, import
     tinsert(tooltip, {1, L["Version: "] .. (data.semver or data.version), 1, 0.82, 0, 1});
   end
 
-  -- WeakAuras.GetData needs to be replaced temporarily so that when the subsequent code constructs the thumbnail for
-  -- the tooltip, it will look to the incoming transmission data for child data. This allows thumbnails of incoming
-  -- groups to be constructed properly.
-  local RegularGetData = WeakAuras.GetData
-  if children then
-    WeakAuras.GetData = function(id)
-      if(children) then
-        for index, childData in pairs(children) do
-          if(childData.id == id) then
-            return childData;
-          end
-        end
-      end
-    end
-  end
-
   local linesFromTop
   if import then
     -- import description
@@ -1608,7 +1592,6 @@ local function ShowDisplayTooltip(data, children, matchInfo, icon, icons, import
       end
     end
   end
-  WeakAuras.GetData = RegularGetData or WeakAuras.GetData
   ShowTooltip(tooltip, linesFromTop, matchInfo and matchInfo.activeCategories)
 end
 
