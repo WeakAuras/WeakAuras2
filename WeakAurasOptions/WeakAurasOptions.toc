@@ -66,6 +66,7 @@ OptionsFrames\ImportExport.lua
 OptionsFrames\ModelPicker.lua
 OptionsFrames\TextEditor.lua
 OptionsFrames\TexturePicker.lua
+OptionsFrames\Update.lua
 
 # Misc frames
 OptionsFrames\MoverSizer.lua
@@ -92,3 +93,5 @@ AceGUI-Widgets\AceGUIContainer-WeakAurasTreeGroup.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasSnippetButton.lua
 AceGUI-Widgets\AceGUIContainer-WeakAurasInlineGroup.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasExpandAnchor.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasSpacer.lua
+AceGUI-Widgets\AceGuiWidget-WeakAurasProgressBar.lua

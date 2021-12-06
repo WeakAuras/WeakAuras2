@@ -149,7 +149,7 @@ function OptionsPrivate.CreateFrame()
     edgeSize = 32,
     insets = { left = 8, right = 8, top = 8, bottom = 8 }
   })
-  frame:SetBackdropColor(0.1, 0.1, 0.1, 0.8)
+  frame:SetBackdropColor(0.1, 0.1, 0.1, 0.85)
   frame:EnableMouse(true)
   frame:SetMovable(true)
   frame:SetResizable(true)
@@ -278,6 +278,7 @@ function OptionsPrivate.CreateFrame()
       self.iconPicker.frame:Hide()
       self.modelPicker.frame:Hide()
       self.importexport.frame:Hide()
+      self.update.frame:Hide()
       self.texteditor.frame:Hide()
       self.codereview.frame:Hide()
       if self.newView then
@@ -350,7 +351,11 @@ function OptionsPrivate.CreateFrame()
           self.newView.frame:Hide()
         end
       end
-
+      if self.window == "update" then
+        self.update.frame:Show()
+      else
+        self.update.frame:Hide()
+      end
       if self.window == "default" then
         if self.loadProgessVisible then
           self.loadProgress:Show()
@@ -536,6 +541,7 @@ function OptionsPrivate.CreateFrame()
   frame.importexport = OptionsPrivate.ImportExport(frame)
   frame.texteditor = OptionsPrivate.TextEditor(frame)
   frame.codereview = OptionsPrivate.CodeReview(frame)
+  frame.update = OptionsPrivate.UpdateFrame(frame)
 
   frame.moversizer, frame.mover = OptionsPrivate.MoverSizer(frame)
 
