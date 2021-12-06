@@ -1100,6 +1100,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       db.displays = db.displays or {};
       db.registered = db.registered or {};
+      db.migrationCutoff = db.migrationCutoff or 14;
+      db.historyCutoff = db.historyCutoff or 30;
 
       Private.UpdateCurrentInstanceType();
       Private.SyncParentChildRelationships();
