@@ -550,6 +550,7 @@ function WeakAuras.ToggleOptions(msg, Private)
     OptionsPrivate.Private.callbacks:RegisterCallback("ScanForLoads", AfterScanForLoads)
     OptionsPrivate.Private.callbacks:RegisterCallback("AboutToDelete", OnAboutToDelete)
     OptionsPrivate.Private.callbacks:RegisterCallback("Rename", OnRename)
+    OptionsPrivate.Private.OpenUpdate = OptionsPrivate.OpenUpdate
   end
 
   if(frame and frame:IsVisible()) then
@@ -827,9 +828,8 @@ function OptionsPrivate.ImportFromString()
   frame.importexport:Open("import");
 end
 
-function WeakAuras.CloseImportExport()
-  frame.codereview:Close();
-  frame.importexport:Close();
+function OptionsPrivate.OpenUpdate(data, children, target, sender)
+  return frame.update:Open(data, children, target, sender)
 end
 
 function OptionsPrivate.ConvertDisplay(data, newType)
@@ -1494,12 +1494,8 @@ function OptionsPrivate.OpenModelPicker(baseObject, path)
   frame.modelPicker:Open(baseObject, path);
 end
 
-function WeakAuras.OpenCodeReview(data)
+function OptionsPrivate.OpenCodeReview(data)
   frame.codereview:Open(data);
-end
-
-function WeakAuras.CloseCodeReview(data)
-  frame.codereview:Close();
 end
 
 function OptionsPrivate.OpenTriggerTemplate(data, targetId)
@@ -1604,7 +1600,7 @@ function WeakAuras.NewAura(sourceData, regionType, targetId)
         OptionsPrivate.PickAndEditDisplay(data.id);
       end
     else
-      error("Calling 'WeakAuras.NewAura' with invalid groupId. Reload your UI to fix the display list.")
+      error(string.format("Calling 'WeakAuras.NewAura' with invalid groupId %s. Reload your UI to fix the display list.", targetId))
     end
   else
     -- move source into the top-level list

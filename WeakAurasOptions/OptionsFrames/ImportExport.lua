@@ -15,26 +15,32 @@ local L = WeakAuras.L
 local importexport
 
 local function ConstructImportExport(frame)
-  local group = AceGUI:Create("InlineGroup");
+  local group = AceGUI:Create("WeakAurasInlineGroup");
   group.frame:SetParent(frame);
-  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 12);
-  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -10);
+  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -16);
+  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 46);
   group.frame:Hide();
-  group:SetLayout("fill");
+  group:SetLayout("flow");
+
+  local title = AceGUI:Create("Label")
+  title:SetFontObject(GameFontNormalHuge)
+  title:SetFullWidth(true)
+  group:AddChild(title)
 
   local input = AceGUI:Create("MultiLineEditBox");
-  input:SetWidth(400);
-  input.button:Hide();
+  input:DisableButton(true)
   input.frame:SetClipsChildren(true);
+  input:SetFullWidth(true)
+  input:SetFullHeight(true)
   group:AddChild(input);
 
   local close = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
   close:SetScript("OnClick", function() group:Close() end);
-  close:SetPoint("BOTTOMRIGHT", -27, 13);
+  close:SetPoint("BOTTOMRIGHT", -20, -24);
   close:SetFrameLevel(close:GetFrameLevel() + 1)
   close:SetHeight(20);
   close:SetWidth(100);
-  close:SetText(L["Done"])
+  close:SetText(L["Close"])
 
   function group.Open(self, mode, id)
     if(frame.window == "texture") then
@@ -47,6 +53,7 @@ local function ConstructImportExport(frame)
     frame.window = "importexport";
     frame:UpdateFrameVisible()
     if(mode == "export" or mode == "table") then
+      title:SetText(L["Exporting"])
       if(id) then
         local displayStr;
         if(mode == "export") then
@@ -65,6 +72,7 @@ local function ConstructImportExport(frame)
         input:SetFocus();
       end
     elseif(mode == "import") then
+      title:SetText(L["Importing"])
       input.editBox:SetScript("OnTextChanged", function(self)
         local pasted = self:GetText()
         pasted = pasted:match("^%s*(.-)%s*$")
@@ -78,6 +86,7 @@ local function ConstructImportExport(frame)
       input:SetLabel(L["Paste text below"]);
       input:SetFocus();
     end
+    group:DoLayout()
   end
 
   function group.Close(self)

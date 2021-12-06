@@ -344,7 +344,6 @@ local FakeWeakAurasMixin = {
     -- Note these shouldn't exist in the WeakAuras namespace, but moving them takes a bit of effort,
     -- so for now just block them and clean them up later
     ClearAndUpdateOptions = true,
-    CloseCodeReview = true,
     CloseImportExport = true,
     CreateTemplateView = true,
     FillOptions = true,
@@ -353,10 +352,8 @@ local FakeWeakAurasMixin = {
     GetDisplayButton = true,
     Import = true,
     NewDisplayButton = true,
-    OpenCodeReview = true,
     PickDisplay = true,
     SetMoverSizer = true,
-    SetImporting = true,
     ToggleOptions = true,
     UpdateDisplayButton = true,
     UpdateGroupOrders = true,

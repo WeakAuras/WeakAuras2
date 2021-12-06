@@ -1192,9 +1192,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
   end
 end)
 
-function WeakAuras.SetImporting(b)
+function Private.SetImporting(b)
   importing = b;
-  Private.RefreshTooltipButtons()
 end
 
 function WeakAuras.IsImporting()
@@ -2046,7 +2045,7 @@ end
 
 local function RepairDatabase(loginAfter)
   local coro = coroutine.create(function()
-    WeakAuras.SetImporting(true)
+    Private.SetImporting(true)
     -- set db version to current code version
     db.dbVersion = WeakAuras.InternalVersion()
     -- reinstall snapshots from history
@@ -2061,7 +2060,7 @@ local function RepairDatabase(loginAfter)
       end
     end
     db.displays = newDB
-    WeakAuras.SetImporting(false)
+    Private.SetImporting(false)
     -- finally, login
     Private.Login()
   end)
@@ -2582,6 +2581,14 @@ local function pAdd(data, simpleChange)
   end
 
   data.uid = data.uid or WeakAuras.GenerateUniqueID()
+  if db.displays[id] and db.displays[id].uid ~= data.uid then
+    print("Improper? arguments to WeakAuras.Add - id", id, "is assigned to a different uid.", data.uid, db.displays[id].uid)
+  end
+  if UIDtoID[data.uid] and UIDtoID[data.uid] ~= id then
+    print("Improper? arguments to WeakAuras.Add - uid is assigned to a id. Uid:", data.uid, "assigned too:", UIDtoID[data.uid], "assigning now to", data.id)
+  end
+
+
   local otherID = UIDtoID[data.uid]
   if not otherID then
     UIDtoID[data.uid] = id
@@ -5262,8 +5269,8 @@ do
     end
 
     if data.controlledChildren then
-      for _, children in ipairs(data.controlledChildren) do
-        Traverse(WeakAuras.GetData(children), true, includeGroups, includeLeafs)
+      for _, child in ipairs(data.controlledChildren) do
+        Traverse(WeakAuras.GetData(child), true, includeGroups, includeLeafs)
       end
     end
   end
