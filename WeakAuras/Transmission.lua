@@ -1667,9 +1667,6 @@ function WeakAuras.Import(inData, target)
   return status, msg
 end
 
--- backwards compatibility
-WeakAuras.ImportString = WeakAuras.Import
-
 local function crossRealmSendCommMessage(prefix, text, target, queueName, callbackFn, callbackArg)
   local chattype = "WHISPER"
   if target and not UnitIsSameServer(target) then
