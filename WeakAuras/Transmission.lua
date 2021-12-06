@@ -264,7 +264,6 @@ end
 
 radioButtons = {
   CreateFrame("CHECKBUTTON", "WeakAurasTooltipRadioButtonCopy", buttonAnchor, "UIRadioButtonTemplate"),
-  -- CreateFrame("CHECKBUTTON", "WeakAurasTooltipRadioButtonReplace", buttonAnchor, "UIRadioButtonTemplate"),
   CreateFrame("CHECKBUTTON", "WeakAurasTooltipRadioButtonUpdate", buttonAnchor, "UIRadioButtonTemplate"),
 }
 
@@ -286,6 +285,7 @@ for index, button in ipairs(radioButtons) do
   end)
 end
 
+-- Fallback to display category, if keyToButton doesn't contain an entry
 -- Ideally, we would not add an __index method to this
 -- But that would greatly bloat the update_category for display
 -- A better solution would be to refactor the data
@@ -324,7 +324,7 @@ local function install(data, oldData, patch, mode, isParent, originalNames)
   -- munch the provided data and add, update, or delete as appropriate
   -- return the data which the SV knows about afterwards (if there is any)
   local installedUID, imported
-  if mode == 1 then
+  if mode == 1 then -- Copy
     -- always import as a new thing, set preferToUpdate = false
     if data then
       imported = CopyTable(data)
@@ -339,52 +339,55 @@ local function install(data, oldData, patch, mode, isParent, originalNames)
       -- nothing to add
       return
     end
-  elseif not oldData then
-    -- this is a new thing
-    if not checkButtons.newchildren:GetChecked() then
-      -- user has chosen to not add new children, so do nothing
-      return
-    end
-    imported = CopyTable(data)
-    data.id = WeakAuras.FindUnusedId(data.id)
-    data.preferToUpdate = true
-    WeakAuras.Add(data)
-    installedUID = data.uid
-  elseif not data then
-    -- this is an old thing
-    if checkButtons.oldchildren:GetChecked() then
-      WeakAuras.Delete(oldData)
-      return
+  else -- mode == 2 => Update
+    if not oldData then
+      -- this is a new thing
+      if not checkButtons.newchildren:GetChecked() then
+        -- user has chosen to not add new children, so do nothing
+        return
+      end
+      imported = CopyTable(data)
+      data.id = WeakAuras.FindUnusedId(data.id)
+      data.preferToUpdate = true
+      WeakAuras.Add(data)
+      installedUID = data.uid
+    elseif not data then
+      -- this is an old thing
+      if checkButtons.oldchildren:GetChecked() then
+        WeakAuras.Delete(oldData)
+        return
+      else
+        -- user has chosen to not delete obsolete auras, so do nothing
+        return Private.GetDataByUID(oldData.uid)
+      end
     else
-      -- user has chosen to not delete obsolete auras, so do nothing
-      return Private.GetDataByUID(oldData.uid)
-    end
-  else
-    -- something to update
-    if patch then -- if there's no result from Diff, then there's nothing to do
-      for key in pairs(patch) do
-        local checkButton = keyToButton[key]
-        if not isParent and checkButton == checkButtons.anchor then
-          checkButton = checkButtons.arrangement
+      -- something to update
+      if patch then -- if there's no result from Diff, then there's nothing to do
+        for key in pairs(patch) do
+          local checkButton = keyToButton[key]
+          -- For child auras, anchor fields are considered arrangement
+          if not isParent and checkButton == checkButtons.anchor then
+            checkButton = checkButtons.arrangement
+          end
+          if checkButton and not checkButton:GetChecked() then
+            patch[key] = nil
+          end
         end
-        if checkButton and not checkButton:GetChecked() then
-          patch[key] = nil
+        if patch.id then
+          patch.id = WeakAuras.FindUnusedId(patch.id)
         end
       end
-      if patch.id then
-        patch.id = WeakAuras.FindUnusedId(patch.id)
+      WeakAuras.Delete(oldData)
+      if data.uid and data.uid ~= oldData.uid then
+        oldData.uid = data.uid
       end
+      Update(oldData, patch)
+      oldData.preferToUpdate = true
+      installedUID = oldData.uid
+      imported = data
+      originalNames[installedUID] = originalNames[data.uid]
+      originalNames[data.uid] = nil
     end
-    WeakAuras.Delete(oldData)
-    if data.uid and data.uid ~= oldData.uid then
-      oldData.uid = data.uid
-    end
-    Update(oldData, patch)
-    oldData.preferToUpdate = true
-    installedUID = oldData.uid
-    imported = data
-    originalNames[installedUID] = originalNames[data.uid]
-    originalNames[data.uid] = nil
   end
   -- if at this point, then some change has been made in the db. Update History to reflect the change
   Private.SetHistory(installedUID, imported, "import")
@@ -413,7 +416,7 @@ local function importPendingData()
   -- get necessary info
   local imports, old, diffs = pendingData.newData, pendingData.oldData or {}, pendingData.diffs or {}
   local addedChildren, deletedChildren = pendingData.added or 0, pendingData.deleted or 0
-  local mode = pendingData.mode or 1
+  local mode = pendingData.mode or 1 -- mode: 1 == COPY, 2 == UPDATE
   local indexMap = pendingData.indexMap
 
   -- cleanup the mess
@@ -433,10 +436,6 @@ local function importPendingData()
   WeakAuras.CloseImportExport()
   WeakAuras.SetImporting(true)
 
-  -- import parent/single aura
-  local data, oldData, patch = imports[0], old[0], diffs[0]
-  data.parent = nil
-
   -- Setup for preserving names.
   -- Importing can rename auras, and due to deletion or cross-renaming, importing also frees names.
   -- So after importing we try to rename again
@@ -446,10 +445,17 @@ local function importPendingData()
       originalNames[imports[i].uid] = imports[i].id
     end
   end
+
+  -- import parent/single aura
+  local data, oldData, patch = imports[0], old[0], diffs[0]
+  data.parent = nil
+
   -- handle sortHybridTable
   local hybridTables
   if (data and data.sortHybridTable) or (mode ~= 1 and oldData and oldData.sortHybridTable) then
     hybridTables = {
+      -- At the end of the function merged contains the correct sortHybridTable
+      -- This only depends on the mode, arrangement checkbox and id renames
       new = data and data.sortHybridTable or {},
       old = mode ~= 1 and oldData and oldData.sortHybridTable or {},
       merged = {},
@@ -476,6 +482,9 @@ local function importPendingData()
     else
       map = preserveOldArrangement and indexMap.oldToNew or indexMap.newToOld
     end
+    -- Depending on mode and/or the state of the arrangement checkbox, either the old
+    -- or new data's arrangement should be preserved.
+    -- This is done by first handling that side, and then later filling in the other side
     for i = 1, preserveOldArrangement and #old or #imports do
       local j = map[i]
       if preserveOldArrangement then
@@ -495,9 +504,11 @@ local function importPendingData()
       end
       local oldID, newID = oldData and oldData.id, data and data.id
       if oldData and mode ~= 1 then
+        -- Update might have changed the parents id!
         oldData.parent = parentData.id
       end
       if data then
+        -- Update might have changed the parents id!
         data.parent = parentData.id
         data.authorMode = nil
       end
@@ -518,11 +529,13 @@ local function importPendingData()
       coroutine.yield()
     end
 
-    -- now, the other side of the data may have some children which need to be handled
+    -- Now, the other side of the data may have some children which need to be handled
+    -- A aura's insert position is determined by the last aura, that matched between old and new
+    -- We fist build up a map of insertPositons -> auras, and then insert them
     if mode ~= 1 then
       if preserveOldArrangement then
         if checkButtons.newchildren:GetChecked() and addedChildren > 0 then
-          -- we have children which need to be added
+          -- We have children which need to be added, adding new into old
           local nextInsert, highestInsert, toInsert, newToOld = 1, 0, {}, indexMap.newToOld
           for newIndex, data in ipairs(imports) do
             local oldIndex = newToOld[newIndex]
@@ -1183,16 +1196,8 @@ local function findMatch(data, children)
     oldParent = nil
   end
   if not oldParent or not isParentMatch(oldParent, data) then
-    oldParent = nil
     if data.uid then
-      for id, existingData in pairs(WeakAurasSaved.displays) do
-        if isParentMatch(existingData, data) then
-          oldParent = existingData
-          break
-        end
-      end
-    else
-      return nil
+      oldParent = Private.GetDataByUID(data.uid)
     end
   end
   return oldParent
@@ -1242,19 +1247,24 @@ local function MatchInfo(data, children, oldParent)
   end
   local hybridTables
   if oldParent.sortHybridTable or data.sortHybridTable then
+    -- MatchInfo only checks if the sortHybridTables conflict in anyway
+    -- The old and new aura, matched via uid, might have different ids,
+    -- so we can't compare the sortHybridTables directly
+    -- Instead everytime we establish a match between old and new, we check
+    -- if the sortHybridTable of old and new agree
+    -- We remove the matches from hybridTables.old/new, so that any left-over
+    -- at the end indicate a conflict
+    -- Any conflict leads to arrangement category being active
+
     hybridTables = {
       old = {},
       new = {},
     }
     if oldParent.sortHybridTable then
-      for id, isHybrid in pairs(oldParent.sortHybridTable) do
-        hybridTables.old[id] = isHybrid
-      end
+      hybridTables.old = CopyTable(oldParent.sortHybridTable)
     end
     if data.sortHybridTable then
-      for id, isHybrid in pairs(data.sortHybridTable) do
-        hybridTables.new[id] = isHybrid
-      end
+      hybridTables.new = CopyTable(data.sortHybridTable)
     end
   end
 
@@ -1361,6 +1371,7 @@ local function MatchInfo(data, children, oldParent)
       for key in pairs(diff) do
         local button = keyToButton[key]
         if button then
+          -- For child auras, anchor fields are arrangement
           if i > 0 and button == checkButtons.anchor then
             button = checkButtons.arrangement
           end
