@@ -117,7 +117,7 @@ local function stripNonTransmissableFields(datum, fieldMap)
   end
 end
 
-function CompressDisplay(data)
+function CompressDisplay(data, version)
   -- Clean up custom trigger fields that are unused
   -- Those can contain lots of unnecessary data.
   -- Also we warn about any custom code, so removing unnecessary
@@ -139,7 +139,8 @@ function CompressDisplay(data)
   end
 
   local copiedData = CopyTable(data)
-  stripNonTransmissableFields(copiedData, Private.non_transmissable_fields)
+  local non_transmissable_fields = version >= 2000 and Private.non_transmissable_fields_v2000 or Private.non_transmissable_fields
+  stripNonTransmissableFields(copiedData, non_transmissable_fields)
   copiedData.tocversion = WeakAuras.BuildInfo
   return copiedData;
 end
@@ -795,11 +796,17 @@ function Private.DisplayToString(id, forChat)
   local data = WeakAuras.GetData(id);
   if(data) then
     data.uid = data.uid or GenerateUniqueID()
-    local transmitData = CompressDisplay(data);
+    -- Check which transmission version we want to use
+    local version = 1421
+    for child in Private.TraverseSubGroups(data) do -- luacheck: ignore
+      version = 2000
+      break;
+    end
+    local transmitData = CompressDisplay(data, version);
     local transmit = {
       m = "d",
       d = transmitData,
-      v = 1421, -- Version of Transmisson, won't change anymore.
+      v = version,
       s = versionString
     };
     local firstTrigger = data.triggers[1].trigger
@@ -823,7 +830,7 @@ function Private.DisplayToString(id, forChat)
         else
           child.uid = GenerateUniqueID()
         end
-        transmit.c[index] = CompressDisplay(child);
+        transmit.c[index] = CompressDisplay(child, version);
         index = index + 1
         if child.controlledChildren then
           transmit.v = 2000

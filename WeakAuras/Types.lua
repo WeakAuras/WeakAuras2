@@ -2765,6 +2765,8 @@ Private.internal_fields = {
   internalVersion = true,
   sortHybridTable = true,
   tocversion = true,
+  parent = true,
+  controlledChildren = true,
 }
 
 -- fields that are not included in exported data
@@ -2773,6 +2775,14 @@ Private.internal_fields = {
 Private.non_transmissable_fields = {
   controlledChildren = true,
   parent = true,
+  authorMode = true,
+  skipWagoUpdate = true,
+  ignoreWagoUpdate = true,
+  preferToUpdate = true,
+}
+
+-- For nested groups, we do transmit parent + controlledChildren
+Private.non_transmissable_fields_v2000 = {
   authorMode = true,
   skipWagoUpdate = true,
   ignoreWagoUpdate = true,
