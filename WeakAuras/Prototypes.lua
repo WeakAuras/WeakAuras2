@@ -91,7 +91,9 @@ if WeakAuras.IsClassic() then
   LibClassicCasterino = LibStub("LibClassicCasterino")
 end
 
-if WeakAuras.IsRetail() then
+local TBC253 = WeakAuras.IsBCC() and select(4, GetBuildInfo()) >= 20503 -- for 2.5.3 PTR, refactor this after release
+
+if WeakAuras.IsRetail() or TBC253 then
   WeakAuras.UnitCastingInfo = UnitCastingInfo
 elseif WeakAuras.IsBCC() then
   WeakAuras.UnitCastingInfo = function(unit)
@@ -101,7 +103,7 @@ elseif WeakAuras.IsBCC() then
 else
   WeakAuras.UnitCastingInfo = function(unit)
     if UnitIsUnit(unit, "player") then
-      return CastingInfo()
+      return UnitCastingInfo("player")
     else
       return LibClassicCasterino:UnitCastingInfo(unit)
     end
@@ -118,7 +120,7 @@ elseif WeakAuras.IsBCC() then
 else
   WeakAuras.UnitChannelInfo = function(unit)
     if UnitIsUnit(unit, "player") then
-      return ChannelInfo()
+      return UnitChannelInfo("player")
     else
       return LibClassicCasterino:UnitChannelInfo(unit)
     end
