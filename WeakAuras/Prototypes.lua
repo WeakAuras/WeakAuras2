@@ -4889,11 +4889,21 @@ Private.event_prototypes = {
       {
         name = "stage",
         init = "WeakAuras.GetDBMStage()",
-        display = L["Stage"],
+        display = L["Journal Stage"],
+        desc = L["Matches stage number of encounter journal.\nIntermissions are .5\nE.g. 1;2;1;2;2.5;3"],
         type = "number",
         conditionType = "number",
         store = true,
-      }
+      },
+      {
+        name = "stageTotal",
+        init = "select(2, WeakAuras.GetDBMStage())",
+        display = L["Stage Counter"],
+        desc = L["Increases by one per stage or intermission."],
+        type = "number",
+        conditionType = "number",
+        store = true,
+      },
     },
     automaticrequired = true,
     statesParameter = "one",
