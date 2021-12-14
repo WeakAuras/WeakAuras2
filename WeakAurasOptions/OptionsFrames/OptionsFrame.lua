@@ -142,14 +142,14 @@ function OptionsPrivate.CreateFrame()
 
   tinsert(UISpecialFrames, frame:GetName())
   frame:SetBackdrop({
-    bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
+    bgFile = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite",
     edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
     tile = true,
     tileSize = 32,
     edgeSize = 32,
     insets = { left = 8, right = 8, top = 8, bottom = 8 }
   })
-  frame:SetBackdropColor(0, 0, 0, 1)
+  frame:SetBackdropColor(0.1, 0.1, 0.1, 0.8)
   frame:EnableMouse(true)
   frame:SetMovable(true)
   frame:SetResizable(true)
