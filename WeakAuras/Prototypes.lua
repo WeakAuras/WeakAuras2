@@ -2104,16 +2104,29 @@ Private.event_prototypes = {
     init = function(trigger)
       local ret = [=[
         local factionID = %q
-        local name, description, standingId, bottomValue, topValue, earnedValue, _, _, isHeader, _, _, _, _, factionID = GetFactionInfoByID(factionID)
+        local useWatched = %s
+        local name, description, standingId, bottomValue, topValue, earnedValue, _
+        if useWatched then
+          name, standingId, bottomValue, topValue, earnedValue, factionID = GetWatchedFactionInfo()
+        else
+          name, description, standingId, bottomValue, topValue, earnedValue, _, _, _, _, _, _, _, factionID = GetFactionInfoByID(factionID)
+        end
         local standing
         if tonumber(standingId) then
            standing = getglobal("FACTION_STANDING_LABEL"..standingId)
         end
       ]=]
-      return ret:format(trigger.factionID or 0)
+      return ret:format(trigger.factionID or 0, trigger.use_watched and "true" or "false")
     end,
     statesParameter = "one",
     args = {
+      {
+        name = "watched",
+        display = L["Use Watched Faction"],
+        type = "toggle",
+        test = "true",
+        reloadOptions = true,
+      },
       {
         name = "factionID",
         display = L["Faction"],
@@ -2130,6 +2143,9 @@ Private.event_prototypes = {
           return ret
         end,
         conditionType = "select",
+        enable = function(trigger)
+          return not trigger.use_watched
+        end,
         test = "true"
       },
       {
