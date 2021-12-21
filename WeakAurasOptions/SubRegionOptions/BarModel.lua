@@ -43,10 +43,28 @@ local function createOptions(parentData, data, index, subIndex)
     },
     bar_model_clip = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.doubleWidth,
       name = L["Clipped by Progress"],
       order = 12,
       hidden = function() return parentData.regionType ~= "aurabar" end
+    },
+    extra_width = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Extra Width"],
+      order = 12.1,
+      min = -100,
+      max = 500,
+      step = 1
+    },
+    extra_height = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Extra Height"],
+      order = 12.2,
+      min = -100,
+      max = 500,
+      step = 1
     },
     bar_model_alpha = {
       type = "range",

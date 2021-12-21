@@ -96,11 +96,16 @@ local function AcquireModel(region, data)
 
   model:ClearAllPoints()
 
+  local anchor
   if region.parentType == "aurabar" then
-    model:SetAllPoints(region.parent.bar)
+    anchor = region.parent.bar
   else
-    model:SetAllPoints(region.parent)
+    anchor = region.parent
   end
+
+  model:SetPoint("TOPLEFT", anchor ,"TOPLEFT", - (data.extra_width or 0)/2, (data.extra_height or 0)/2)
+  model:SetPoint("BOTTOMRIGHT", anchor ,"BOTTOMRIGHT", (data.extra_width or 0)/2, - (data.extra_height or 0)/2)
+
   model:SetParent(region)
   model:SetKeepModelOnHide(true)
   model:Show()
@@ -219,15 +224,18 @@ local function modify(parent, region, parentData, data, first)
 
   region:SetParent(parent)
 
+  local anchor
   if parentData.regionType == "aurabar" then
     if data.bar_model_clip then
-      region:SetAllPoints(parent.bar.fgFrame)
+      anchor = parent.bar.fgFrame
     else
-      region:SetAllPoints(parent.bar)
+      anchor = parent.bar
     end
   else
-    region:SetAllPoints(parent)
+    anchor = parent
   end
+  region:SetPoint("TOPLEFT", anchor ,"TOPLEFT", - (data.extra_width or 0)/2, (data.extra_height or 0)/2)
+  region:SetPoint("BOTTOMRIGHT", anchor ,"BOTTOMRIGHT", (data.extra_width or 0)/2, - (data.extra_height or 0)/2)
 
   region:SetAlpha(data.bar_model_alpha)
   region:SetVisible(data.bar_model_visible)
@@ -238,7 +246,10 @@ local function modify(parent, region, parentData, data, first)
 end
 
 local function supports(regionType)
-  return regionType == "aurabar" or regionType == "icon"
+  return regionType == "texture"
+         or regionType == "progresstexture"
+         or regionType == "icon"
+         or regionType == "aurabar"
 end
 
 WeakAuras.RegisterSubRegionType("subbarmodel", L["Model"], supports, create, modify, onAcquire, onRelease, default, nil, properties);
