@@ -3501,12 +3501,16 @@ end
 
 function Private.ApplyFrameLevel(region, frameLevel)
   frameLevel = frameLevel or GetFrameLevelFor(region.id)
-  region:SetFrameLevel(frameLevel)
+  local subforegroundIndex = 0
   if region.subRegions then
     for index, subRegion in pairs(region.subRegions) do
-      subRegion:SetFrameLevel(frameLevel + index + 1)
+      if subRegion.type == "subforeground" then
+        subforegroundIndex = index
+      end
+      subRegion:SetFrameLevel(frameLevel + index)
     end
   end
+  region:SetFrameLevel(frameLevel + subforegroundIndex)
 end
 
 function WeakAuras.EnsureString(input)

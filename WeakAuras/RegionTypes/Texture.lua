@@ -241,4 +241,16 @@ local function modify(parent, region, data)
   WeakAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
-WeakAuras.RegisterRegionType("texture", create, modify, default, properties);
+local function ValidateRegion(data)
+  data.subRegions = data.subRegions or {}
+  for index, subRegionData in ipairs(data.subRegions) do
+    if subRegionData.type == "subforeground" then
+      return
+    end
+  end
+  tinsert(data.subRegions, 1, {
+    ["type"] = "subforeground"
+  })
+end
+
+WeakAuras.RegisterRegionType("texture", create, modify, default, properties, ValidateRegion);

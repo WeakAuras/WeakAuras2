@@ -797,29 +797,5 @@ local function GetAnchors(data)
   return anchorPoints;
 end
 
-local function subCreateOptions(parentData, data, index, subIndex)
-  local order = 9
-  local options = {
-    __title = L["Foreground"],
-    __order = 1,
-    __up = function()
-      for child in OptionsPrivate.Private.TraverseLeafsOrAura(parentData) do
-        OptionsPrivate.MoveSubRegionUp(child, index, "aurabar_bar")
-      end
-      WeakAuras.ClearAndUpdateOptions(parentData.id)
-    end,
-    __down = function()
-      for child in OptionsPrivate.Private.TraverseLeafsOrAura(parentData) do
-        OptionsPrivate.MoveSubRegionDown(child, index, "aurabar_bar")
-      end
-      WeakAuras.ClearAndUpdateOptions(parentData.id)
-    end,
-    __notcollapsable = true
-  }
-  return options
-end
-
 -- Register new region type options with WeakAuras
 WeakAuras.RegisterRegionOptions("aurabar", createOptions, createIcon, L["Progress Bar"], createThumbnail, modifyThumbnail, L["Shows a progress bar with name, timer, and icon"], templates, GetAnchors);
-
-WeakAuras.RegisterSubRegionOptions("aurabar_bar", subCreateOptions, L["Foreground"]);
