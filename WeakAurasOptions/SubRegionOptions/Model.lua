@@ -8,7 +8,7 @@ local function createOptions(parentData, data, index, subIndex)
   local options = {
     __title = L["Model %s"]:format(subIndex),
     __order = 1,
-    bar_model_visible = {
+    model_visible = {
       type = "toggle",
       width = WeakAuras.doubleWidth,
       name = L["Show Model"],
@@ -66,7 +66,7 @@ local function createOptions(parentData, data, index, subIndex)
       max = 500,
       step = 1
     },
-    bar_model_alpha = {
+    model_alpha = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Alpha"],

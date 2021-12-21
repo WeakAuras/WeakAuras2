@@ -54,7 +54,12 @@ local default = {
   fontSize = defaultFontSize,
   mirror = false,
   frameStrata = 1,
-  slantMode = "INSIDE"
+  slantMode = "INSIDE",
+  subRegions = {
+    [1] = {
+      ["type"] = "subforeground"
+    }
+  }
 };
 
 WeakAuras.regionPrototype.AddAlphaToDefault(default);

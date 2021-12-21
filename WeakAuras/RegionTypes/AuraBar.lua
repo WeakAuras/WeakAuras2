@@ -38,7 +38,7 @@ local default = {
   zoom = 0,
   subRegions = {
     [1] = {
-      ["type"] = "aurabar_bar"
+      ["type"] = "subforeground"
     }
   }
 };

@@ -1305,5 +1305,36 @@ function Private.Modernize(data)
     end
   end
 
+  if (data.internalVersion < 47) then
+    if data.subRegions then
+      for index, subRegionData in ipairs(data.subRegions) do
+        if subRegionData.type == "aurabar_bar" then
+          subRegionData.type = "subforeground"
+        elseif subRegionData.type == "subbarmodel" then
+          subRegionData.type = "submodel"
+        end
+        if subRegionData.bar_model_visible then
+          subRegionData.model_visible = subRegionData.bar_model_visible
+          subRegionData.bar_model_visible = nil
+        end
+        if subRegionData.bar_model_alpha then
+          subRegionData.model_alpha = subRegionData.bar_model_alpha
+          subRegionData.bar_model_alpha = nil
+        end
+      end
+    end
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        if condition.check then
+          if condition.check.variable == "bar_model_visible" then
+            condition.check.variable = "model_visible"
+          elseif condition.check.variable == "bar_model_alpha" then
+            condition.check.variable = "model_alpha"
+          end
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
 end

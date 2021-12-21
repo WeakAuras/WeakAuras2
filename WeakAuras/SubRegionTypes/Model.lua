@@ -8,8 +8,8 @@ Private.barmodels = {}
 
 local default = function(parentType)
   return {
-    bar_model_visible = true,
-    bar_model_alpha = 1,
+    model_visible = true,
+    model_alpha = 1,
     api = false,
     model_x = 0,
     model_y = 0,
@@ -31,13 +31,13 @@ local default = function(parentType)
 end
 
 local properties = {
-  bar_model_visible = {
+  model_visible = {
     display = L["Visibility"],
     setter = "SetVisible",
     type = "bool",
     defaultProperty = true
   },
-  bar_model_alpha = {
+  model_alpha = {
     display = L["Alpha"],
     setter = "SetAlpha",
     type = "number",
@@ -237,8 +237,8 @@ local function modify(parent, region, parentData, data, first)
   region:SetPoint("TOPLEFT", anchor ,"TOPLEFT", - (data.extra_width or 0)/2, (data.extra_height or 0)/2)
   region:SetPoint("BOTTOMRIGHT", anchor ,"BOTTOMRIGHT", (data.extra_width or 0)/2, - (data.extra_height or 0)/2)
 
-  region:SetAlpha(data.bar_model_alpha)
-  region:SetVisible(data.bar_model_visible)
+  region:SetAlpha(data.model_alpha)
+  region:SetVisible(data.model_visible)
 
   parent.subRegionEvents:AddSubscriber("AlphaChanged", region)
   parent.subRegionEvents:AddSubscriber("PreShow", region)
