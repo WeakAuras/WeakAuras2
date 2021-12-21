@@ -7,6 +7,7 @@ local function subSupports(regionType)
     or regionType == "progresstexture"
     or regionType == "icon"
     or regionType == "aurabar"
+    or regionType == "text"
 end
 
 local function noop()
