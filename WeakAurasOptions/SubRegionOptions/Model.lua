@@ -53,8 +53,8 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth,
       name = L["Extra Width"],
       order = 12.1,
-      min = -100,
-      max = 500,
+      softMin = -100,
+      softMax = 500,
       step = 1
     },
     extra_height = {
@@ -62,8 +62,8 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth,
       name = L["Extra Height"],
       order = 12.2,
-      min = -100,
-      max = 500,
+      softMin = -100,
+      softMax = 500,
       step = 1
     },
     model_alpha = {
