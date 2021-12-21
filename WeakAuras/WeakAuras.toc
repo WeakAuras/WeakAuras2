@@ -73,7 +73,7 @@ SubRegionTypes\SubText.lua
 SubRegionTypes\Border.lua
 SubRegionTypes\Glow.lua
 SubRegionTypes\Tick.lua
-SubRegionTypes\BarModel.lua
+SubRegionTypes\Model.lua
 
 # Misc
 Legendaries.lua

@@ -205,9 +205,9 @@ local function createOptions(parentData, data, index, subIndex)
     },
   }
 
-  OptionsPrivate.AddUpDownDeleteDuplicate(options, parentData, index, "subbarmodel")
+  OptionsPrivate.AddUpDownDeleteDuplicate(options, parentData, index, "submodel")
 
   return options
 end
 
-WeakAuras.RegisterSubRegionOptions("subbarmodel", createOptions, L["Shows a model"]);
+WeakAuras.RegisterSubRegionOptions("submodel", createOptions, L["Shows a model"]);

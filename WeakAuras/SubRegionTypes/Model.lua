@@ -253,4 +253,4 @@ local function supports(regionType)
          or regionType == "text"
 end
 
-WeakAuras.RegisterSubRegionType("subbarmodel", L["Model"], supports, create, modify, onAcquire, onRelease, default, nil, properties);
+WeakAuras.RegisterSubRegionType("submodel", L["Model"], supports, create, modify, onAcquire, onRelease, default, nil, properties);
