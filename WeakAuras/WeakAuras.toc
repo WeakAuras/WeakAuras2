@@ -68,7 +68,7 @@ RegionTypes\StopMotion.lua
 RegionTypes\Model.lua
 
 # Sub-region support
-SubRegionTypes\Foreground.lua
+SubRegionTypes\Background.lua
 SubRegionTypes\SubText.lua
 SubRegionTypes\Border.lua
 SubRegionTypes\Glow.lua

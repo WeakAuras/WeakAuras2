@@ -33,7 +33,7 @@ local default = {
   cooldownEdge = false,
   subRegions = {
     [1] = {
-      ["type"] = "subforeground"
+      ["type"] = "subbackground"
     }
   }
 };
@@ -623,12 +623,12 @@ end
 local function ValidateRegion(data)
   data.subRegions = data.subRegions or {}
   for index, subRegionData in ipairs(data.subRegions) do
-    if subRegionData.type == "subforeground" then
+    if subRegionData.type == "subbackground" then
       return
     end
   end
   tinsert(data.subRegions, 1, {
-    ["type"] = "subforeground"
+    ["type"] = "subbackground"
   })
 end
 

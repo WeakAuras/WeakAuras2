@@ -38,8 +38,11 @@ local default = {
   zoom = 0,
   subRegions = {
     [1] = {
+      ["type"] = "subbackground"
+    },
+    [2] = {
       ["type"] = "subforeground"
-    }
+    },
   }
 };
 
@@ -1054,12 +1057,6 @@ local function create(parent)
     if (self.__WAGlowFrame) then
       self.__WAGlowFrame:SetFrameLevel(frameLevel + 5);
     end
-    if self.bar then
-      self.bar:SetFrameLevel(frameLevel)
-    end
-    if self.iconFrame then
-      self.iconFrame:SetFrameLevel(frameLevel)
-    end
   end
 
   WeakAuras.regionPrototype.create(region);
@@ -1373,14 +1370,24 @@ end
 
 local function ValidateRegion(data)
   data.subRegions = data.subRegions or {}
+  local background, foreground = false, false
   for index, subRegionData in ipairs(data.subRegions) do
     if subRegionData.type == "subforeground" then
-      return
+      foreground = true
+    elseif subRegionData.type == "subbackground" then
+      background = true
     end
   end
-  tinsert(data.subRegions, 1, {
-    ["type"] = "subforeground"
-  })
+  if not background then
+    tinsert(data.subRegions, 1, {
+      ["type"] = "subbackground"
+    })
+  end
+  if not foreground then
+    tinsert(data.subRegions, 2, {
+      ["type"] = "subforeground"
+    })
+  end
 end
 
 -- Register new region type with WeakAuras
