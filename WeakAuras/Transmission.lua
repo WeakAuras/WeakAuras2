@@ -494,13 +494,6 @@ function WeakAuras.Import(inData, target)
   if type(data) ~= "table" then
     return nil, "Invalid import data."
   end
-  if version > 1999 then
-    ShowTooltip{
-      {1, "WeakAuras", 0.5333, 0, 1},
-      {1, L["This import requires a newer WeakAuras version."], 1, 0, 0, 1}
-    }
-    return nil, "Invalid import data. This import requires a newer WeakAuras version."
-  end
 
   if version < 2000 then
     if children then
