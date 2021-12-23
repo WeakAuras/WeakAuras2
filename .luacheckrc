@@ -121,7 +121,6 @@ globals = {
 	"STANDARD_TEXT_FONT",
 	"MAX_BOSS_FRAMES",
 	"MAX_SPELL_SCHOOLS",
-	"TEXTTOSPEECH_CONFIG",
 
 	-- ENUMS
 	"LOWER_LEFT_VERTEX",
@@ -1189,6 +1188,9 @@ globals = {
 	"C_Trophy.MonumentLoadSelectedTrophyID",
 	"C_Trophy.MonumentRevertAppearanceToSaved",
 	"C_Trophy.MonumentSaveSelection",
+	"C_TTSSettings",
+	"C_TTSSettings.GetSpeechRate",
+	"C_TTSSettings.GetSpeechVolume()",
 	"C_Vignettes",
 	"C_Vignettes.GetNumVignettes",
 	"C_Vignettes.GetVignetteGUID",
