@@ -1327,10 +1327,15 @@ function Private.Modernize(data)
       for conditionIndex, condition in ipairs(data.conditions) do
         if type(condition.changes) == "table" then
           for changeIndex, change in ipairs(condition.changes) do
-            if change.property == "bar_model_visible" then
-              change.property = "model_visible"
-            elseif change.property == "bar_model_alpha" then
-              change.property = "model_alpha"
+            if change.property then
+              local prefix, property = change.property:match("(sub%.%d+%.)(.*)")
+              if prefix and property then
+                if property == "bar_model_visible" then
+                  change.property = prefix.."model_visible"
+                elseif property == "bar_model_alpha" then
+                  change.property = prefix.."model_alpha"
+                end
+              end
             end
           end
         end
