@@ -103,8 +103,14 @@ local function AcquireModel(region, data)
     anchor = region.parent
   end
 
-  model:SetPoint("TOPLEFT", anchor ,"TOPLEFT", - (data.extra_width or 0)/2, (data.extra_height or 0)/2)
-  model:SetPoint("BOTTOMRIGHT", anchor ,"BOTTOMRIGHT", (data.extra_width or 0)/2, - (data.extra_height or 0)/2)
+  local extra_width, extra_height = 0, 0
+  if not(data.bar_model_clip and region.parentType == "aurabar") then
+    extra_width = data.extra_width or 0
+    extra_height = data.extra_height or 0
+  end
+
+  model:SetPoint("TOPLEFT", anchor ,"TOPLEFT", -extra_width/2, extra_height/2)
+  model:SetPoint("BOTTOMRIGHT", anchor ,"BOTTOMRIGHT", extra_width/2, -extra_height/2)
 
   model:SetParent(region)
   model:SetKeepModelOnHide(true)
@@ -234,8 +240,15 @@ local function modify(parent, region, parentData, data, first)
   else
     anchor = parent
   end
-  region:SetPoint("TOPLEFT", anchor ,"TOPLEFT", - (data.extra_width or 0)/2, (data.extra_height or 0)/2)
-  region:SetPoint("BOTTOMRIGHT", anchor ,"BOTTOMRIGHT", (data.extra_width or 0)/2, - (data.extra_height or 0)/2)
+
+  local extra_width, extra_height = 0, 0
+  if not(data.bar_model_clip and parentData.regionType == "aurabar") then
+    extra_width = data.extra_width or 0
+    extra_height = data.extra_height or 0
+  end
+
+  region:SetPoint("TOPLEFT", anchor ,"TOPLEFT", -extra_width/2, extra_height/2)
+  region:SetPoint("BOTTOMRIGHT", anchor ,"BOTTOMRIGHT", extra_width/2, -extra_height/2)
 
   region:SetAlpha(data.model_alpha)
   region:SetVisible(data.model_visible)

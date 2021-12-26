@@ -55,7 +55,8 @@ local function createOptions(parentData, data, index, subIndex)
       order = 12.1,
       softMin = -100,
       softMax = 500,
-      step = 1
+      step = 1,
+      hidden = function() return data.bar_model_clip and parentData.regionType == "aurabar" end
     },
     extra_height = {
       type = "range",
@@ -64,7 +65,8 @@ local function createOptions(parentData, data, index, subIndex)
       order = 12.2,
       softMin = -100,
       softMax = 500,
-      step = 1
+      step = 1,
+      hidden = function() return data.bar_model_clip and parentData.regionType == "aurabar" end
     },
     model_alpha = {
       type = "range",
