@@ -1313,11 +1313,11 @@ function Private.Modernize(data)
         elseif subRegionData.type == "subbarmodel" then
           subRegionData.type = "submodel"
         end
-        if subRegionData.bar_model_visible then
+        if subRegionData.bar_model_visible ~= nil then
           subRegionData.model_visible = subRegionData.bar_model_visible
           subRegionData.bar_model_visible = nil
         end
-        if subRegionData.bar_model_alpha then
+        if subRegionData.bar_model_alpha ~= nil then
           subRegionData.model_alpha = subRegionData.bar_model_alpha
           subRegionData.bar_model_alpha = nil
         end
@@ -1325,11 +1325,13 @@ function Private.Modernize(data)
     end
     if data.conditions then
       for conditionIndex, condition in ipairs(data.conditions) do
-        if condition.check then
-          if condition.check.variable == "bar_model_visible" then
-            condition.check.variable = "model_visible"
-          elseif condition.check.variable == "bar_model_alpha" then
-            condition.check.variable = "model_alpha"
+        if type(condition.changes) == "table" then
+          for changeIndex, change in ipairs(condition.changes) do
+            if change.property == "bar_model_visible" then
+              change.property = "model_visible"
+            elseif change.property == "bar_model_alpha" then
+              change.property = "model_alpha"
+            end
           end
         end
       end
