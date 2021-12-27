@@ -326,17 +326,5 @@ do
   end
 end
 
-local function ValidateRegion(data)
-  data.subRegions = data.subRegions or {}
-  for index, subRegionData in ipairs(data.subRegions) do
-    if subRegionData.type == "subbackground" then
-      return
-    end
-  end
-  tinsert(data.subRegions, 1, {
-    ["type"] = "subbackground"
-  })
-end
-
 -- Register new region type with WeakAuras
-WeakAuras.RegisterRegionType("model", create, modify, default, GetProperties, ValidateRegion);
+WeakAuras.RegisterRegionType("model", create, modify, default, GetProperties);

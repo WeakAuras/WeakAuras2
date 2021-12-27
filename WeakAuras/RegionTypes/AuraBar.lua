@@ -1368,27 +1368,5 @@ local function modify(parent, region, data)
   WeakAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
-local function ValidateRegion(data)
-  data.subRegions = data.subRegions or {}
-  local background, foreground = false, false
-  for index, subRegionData in ipairs(data.subRegions) do
-    if subRegionData.type == "subforeground" then
-      foreground = true
-    elseif subRegionData.type == "subbackground" then
-      background = true
-    end
-  end
-  if not background then
-    tinsert(data.subRegions, 1, {
-      ["type"] = "subbackground"
-    })
-  end
-  if not foreground then
-    tinsert(data.subRegions, 2, {
-      ["type"] = "subforeground"
-    })
-  end
-end
-
 -- Register new region type with WeakAuras
-WeakAuras.RegisterRegionType("aurabar", create, modify, default, GetProperties, ValidateRegion);
+WeakAuras.RegisterRegionType("aurabar", create, modify, default, GetProperties);

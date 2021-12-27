@@ -620,16 +620,4 @@ local function modify(parent, region, data)
   region:SetHeight(region:GetHeight())
 end
 
-local function ValidateRegion(data)
-  data.subRegions = data.subRegions or {}
-  for index, subRegionData in ipairs(data.subRegions) do
-    if subRegionData.type == "subbackground" then
-      return
-    end
-  end
-  tinsert(data.subRegions, 1, {
-    ["type"] = "subbackground"
-  })
-end
-
-WeakAuras.RegisterRegionType("icon", create, modify, default, GetProperties, ValidateRegion)
+WeakAuras.RegisterRegionType("icon", create, modify, default, GetProperties)
