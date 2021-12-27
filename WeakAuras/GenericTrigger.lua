@@ -1596,7 +1596,7 @@ do
         skipNextAttack = ts
         skipNextAttackCount = select(4, ...)
       elseif(event == "SWING_DAMAGE" or event == "SWING_MISSED") then
-        if skipNextAttack == ts and tonumber(skipNextAttackCount) then
+        if tonumber(skipNextAttack) and (ts - skipNextAttack) < 0.04 and tonumber(skipNextAttackCount) then
           if skipNextAttackCount > 0 then
             skipNextAttackCount = skipNextAttackCount - 1
             return
