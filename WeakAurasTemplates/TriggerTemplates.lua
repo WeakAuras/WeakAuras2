@@ -51,7 +51,7 @@ local function changes(property, regionType)
   elseif property == "glow" and (regionType == "icon" or regionType == "aurabar") then
     return {
       value = true,
-      property = "sub.2.glow"
+      property = "sub.3.glow"
     };
   elseif WeakAuras.regionTypes[regionType].default[property] == nil then
     return nil;
