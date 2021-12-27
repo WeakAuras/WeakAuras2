@@ -2859,8 +2859,8 @@ function Private.HandleChatAction(message_type, message, message_dest, message_c
           validVoice and voice or 0,
           message,
           0,
-          TEXTTOSPEECH_CONFIG and TEXTTOSPEECH_CONFIG.speechRate or 0,
-          TEXTTOSPEECH_CONFIG and TEXTTOSPEECH_CONFIG.speechVolume or 100
+          C_TTSSettings and C_TTSSettings.GetSpeechRate() or 0,
+          C_TTSSettings and C_TTSSettings.GetSpeechVolume() or 100
         );
       end)
     end
