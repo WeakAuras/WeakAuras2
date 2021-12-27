@@ -31,7 +31,11 @@ local default = {
   cooldownTextDisabled = false,
   cooldownSwipe = true,
   cooldownEdge = false,
-  subRegions = {}
+  subRegions = {
+    [1] = {
+      ["type"] = "subbackground"
+    }
+  }
 };
 
 WeakAuras.regionPrototype.AddAlphaToDefault(default);

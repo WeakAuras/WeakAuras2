@@ -31,11 +31,12 @@ RegionOptions\Model.lua
 RegionOptions\ProgressTexture.lua
 
 SubRegionOptions\SubRegionCommon.lua
+SubRegionOptions\Background.lua
 SubRegionOptions\SubText.lua
 SubRegionOptions\Border.lua
 SubRegionOptions\Glow.lua
 SubRegionOptions\Tick.lua
-SubRegionOptions\BarModel.lua
+SubRegionOptions\Model.lua
 
 Cache.lua
 

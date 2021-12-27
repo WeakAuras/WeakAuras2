@@ -38,8 +38,11 @@ local default = {
   zoom = 0,
   subRegions = {
     [1] = {
-      ["type"] = "aurabar_bar"
-    }
+      ["type"] = "subbackground"
+    },
+    [2] = {
+      ["type"] = "subforeground"
+    },
   }
 };
 
@@ -1365,42 +1368,5 @@ local function modify(parent, region, data)
   WeakAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
-local function ValidateRegion(data)
-  data.subRegions = data.subRegions or {}
-  for index, subRegionData in ipairs(data.subRegions) do
-    if subRegionData.type == "aurabar_bar" then
-      return
-    end
-  end
-  tinsert(data.subRegions, 1, {
-    ["type"] = "aurabar_bar"
-  })
-end
-
 -- Register new region type with WeakAuras
-WeakAuras.RegisterRegionType("aurabar", create, modify, default, GetProperties, ValidateRegion);
-
-local function subSupports(regionType)
-  return regionType == "aurabar"
-end
-
-local function noop()
-end
-
-local function SetFrameLevel(self, level)
-  self.parent.bar:SetFrameLevel(level)
-  self.parent.iconFrame:SetFrameLevel(level)
-end
-
-local function subCreate()
-  local result = {}
-  result.Update = noop
-  result.SetFrameLevel = SetFrameLevel
-  return result
-end
-
-local function subModify(parent, region)
-  region.parent = parent
-end
-
-WeakAuras.RegisterSubRegionType("aurabar_bar", L["Foreground"], subSupports, subCreate, subModify, noop, noop, {}, nil, {}, false);
+WeakAuras.RegisterRegionType("aurabar", create, modify, default, GetProperties);

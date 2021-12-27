@@ -28,6 +28,11 @@ local default = {
   shadowColor = { 0, 0, 0, 1},
   shadowXOffset = 1,
   shadowYOffset = -1,
+  subRegions = {
+    [1] = {
+      ["type"] = "subbackground"
+    }
+  }
 };
 
 local properties = {

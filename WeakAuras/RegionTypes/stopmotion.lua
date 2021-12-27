@@ -39,7 +39,12 @@ local default = {
     customBackgroundFrames = 0,
     customBackgroundRows = 16,
     customBackgroundColumns = 16,
-    hideBackground = true
+    hideBackground = true,
+    subRegions = {
+      [1] = {
+        ["type"] = "subbackground"
+      }
+    }
 };
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;

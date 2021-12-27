@@ -68,11 +68,12 @@ RegionTypes\StopMotion.lua
 RegionTypes\Model.lua
 
 # Sub-region support
+SubRegionTypes\Background.lua
 SubRegionTypes\SubText.lua
 SubRegionTypes\Border.lua
 SubRegionTypes\Glow.lua
 SubRegionTypes\Tick.lua
-SubRegionTypes\BarModel.lua
+SubRegionTypes\Model.lua
 
 # Misc
 Legendaries.lua

@@ -1,6 +1,6 @@
 local AddonName, Private = ...
 
-local internalVersion = 45
+local internalVersion = 47
 
 -- Lua APIs
 local insert = table.insert
@@ -3501,10 +3501,10 @@ end
 
 function Private.ApplyFrameLevel(region, frameLevel)
   frameLevel = frameLevel or GetFrameLevelFor(region.id)
-  region:SetFrameLevel(frameLevel)
+  local subforegroundIndex = 0
   if region.subRegions then
     for index, subRegion in pairs(region.subRegions) do
-      subRegion:SetFrameLevel(frameLevel + index + 1)
+      subRegion:SetFrameLevel(frameLevel + index)
     end
   end
 end

@@ -23,7 +23,12 @@ local default = {
   anchorFrameType = "SCREEN",
   xOffset = 0,
   yOffset = 0,
-  frameStrata = 1
+  frameStrata = 1,
+  subRegions = {
+    [1] = {
+      ["type"] = "subbackground"
+    }
+  }
 };
 
 WeakAuras.regionPrototype.AddAlphaToDefault(default);

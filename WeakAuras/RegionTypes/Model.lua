@@ -41,6 +41,11 @@ local default = {
   borderInset = 11,
   borderSize = 16,
   borderBackdrop = "Blizzard Tooltip",
+  subRegions = {
+    [1] = {
+      ["type"] = "subbackground"
+    }
+  }
 };
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
@@ -319,8 +324,7 @@ do
     end
     Private.StopProfileSystem("model");
   end
- end
-
+end
 
 -- Register new region type with WeakAuras
 WeakAuras.RegisterRegionType("model", create, modify, default, GetProperties);

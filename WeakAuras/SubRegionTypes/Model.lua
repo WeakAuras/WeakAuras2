@@ -8,8 +8,8 @@ Private.barmodels = {}
 
 local default = function(parentType)
   return {
-    bar_model_visible = true,
-    bar_model_alpha = 1,
+    model_visible = true,
+    model_alpha = 1,
     api = false,
     model_x = 0,
     model_y = 0,
@@ -31,13 +31,13 @@ local default = function(parentType)
 end
 
 local properties = {
-  bar_model_visible = {
+  model_visible = {
     display = L["Visibility"],
     setter = "SetVisible",
     type = "bool",
     defaultProperty = true
   },
-  bar_model_alpha = {
+  model_alpha = {
     display = L["Alpha"],
     setter = "SetAlpha",
     type = "number",
@@ -96,11 +96,22 @@ local function AcquireModel(region, data)
 
   model:ClearAllPoints()
 
+  local anchor
   if region.parentType == "aurabar" then
-    model:SetAllPoints(region.parent.bar)
+    anchor = region.parent.bar
   else
-    model:SetAllPoints(region.parent)
+    anchor = region.parent
   end
+
+  local extra_width, extra_height = 0, 0
+  if not(data.bar_model_clip and region.parentType == "aurabar") then
+    extra_width = data.extra_width or 0
+    extra_height = data.extra_height or 0
+  end
+
+  model:SetPoint("TOPLEFT", anchor ,"TOPLEFT", -extra_width/2, extra_height/2)
+  model:SetPoint("BOTTOMRIGHT", anchor ,"BOTTOMRIGHT", extra_width/2, -extra_height/2)
+
   model:SetParent(region)
   model:SetKeepModelOnHide(true)
   model:Show()
@@ -219,18 +230,28 @@ local function modify(parent, region, parentData, data, first)
 
   region:SetParent(parent)
 
+  local anchor
   if parentData.regionType == "aurabar" then
     if data.bar_model_clip then
-      region:SetAllPoints(parent.bar.fgFrame)
+      anchor = parent.bar.fgFrame
     else
-      region:SetAllPoints(parent.bar)
+      anchor = parent.bar
     end
   else
-    region:SetAllPoints(parent)
+    anchor = parent
   end
 
-  region:SetAlpha(data.bar_model_alpha)
-  region:SetVisible(data.bar_model_visible)
+  local extra_width, extra_height = 0, 0
+  if not(data.bar_model_clip and parentData.regionType == "aurabar") then
+    extra_width = data.extra_width or 0
+    extra_height = data.extra_height or 0
+  end
+
+  region:SetPoint("TOPLEFT", anchor ,"TOPLEFT", -extra_width/2, extra_height/2)
+  region:SetPoint("BOTTOMRIGHT", anchor ,"BOTTOMRIGHT", extra_width/2, -extra_height/2)
+
+  region:SetAlpha(data.model_alpha)
+  region:SetVisible(data.model_visible)
 
   parent.subRegionEvents:AddSubscriber("AlphaChanged", region)
   parent.subRegionEvents:AddSubscriber("PreShow", region)
@@ -238,7 +259,11 @@ local function modify(parent, region, parentData, data, first)
 end
 
 local function supports(regionType)
-  return regionType == "aurabar" or regionType == "icon"
+  return regionType == "texture"
+         or regionType == "progresstexture"
+         or regionType == "icon"
+         or regionType == "aurabar"
+         or regionType == "text"
 end
 
-WeakAuras.RegisterSubRegionType("subbarmodel", L["Model"], supports, create, modify, onAcquire, onRelease, default, nil, properties);
+WeakAuras.RegisterSubRegionType("submodel", L["Model"], supports, create, modify, onAcquire, onRelease, default, nil, properties);
