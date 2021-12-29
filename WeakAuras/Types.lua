@@ -1223,6 +1223,9 @@ Private.combatlog_raid_mark_check_type = {
   L["Any"]
 }
 
+Private.raid_mark_check_type = CopyTable(Private.combatlog_raid_mark_check_type)
+Private.raid_mark_check_type[9] = nil
+
 Private.orientation_types = {
   HORIZONTAL_INVERSE = L["Left to Right"],
   HORIZONTAL = L["Right to Left"],
