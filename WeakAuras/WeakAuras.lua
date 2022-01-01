@@ -1,6 +1,6 @@
 local AddonName, Private = ...
 
-local internalVersion = 47
+local internalVersion = 48
 
 -- Lua APIs
 local insert = table.insert
@@ -2509,11 +2509,9 @@ function WeakAuras.PreAdd(data)
   Private.Modernize(data);
   WeakAuras.validate(data, WeakAuras.data_stub);
   if data.subRegions then
-    local result = {}
     for index, subRegionData in ipairs(data.subRegions) do
       local subType = subRegionData.type
       if subType and Private.subRegionTypes[subType] then
-        -- If it is not supported, then drop it
         if Private.subRegionTypes[subType].supports(data.regionType) then
           local default = Private.subRegionTypes[subType].default
           if type(default) == "function" then
@@ -2522,16 +2520,11 @@ function WeakAuras.PreAdd(data)
           if default then
             WeakAuras.validate(subRegionData, default)
           end
-
-          tinsert(result, subRegionData)
+        else
+          WeakAuras.prettyPrint(L["ERROR in '%s' unknown or incompatible sub element type '%s'"]:format(data.id, subType))
         end
-      else
-        -- Unknown sub type is because the user didn't restart their client
-        -- so keep it
-        tinsert(result, subRegionData)
       end
     end
-    data.subRegions = result
   end
   validateUserConfig(data, data.authorOptions, data.config)
   removeSpellNames(data)
