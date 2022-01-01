@@ -95,11 +95,13 @@ local function scamCheck(codes, data)
           data.regionType == "dynamicgroup" and data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM")
 
   if (data.conditions) then
+    local i = 1
     for _, condition in ipairs(data.conditions) do
       if (condition and condition.changes) then
         for _, property in ipairs(condition.changes) do
           if ((property.property == "chat" or property.property == "customcode") and type(property.value) == "table" and property.value.custom) then
-            addCode(codes, L["%s - Condition Custom Chat"]:format(data.id), property.value.custom);
+            addCode(codes, L["%s - Condition Custom Chat %s"]:format(data.id, i), property.value.custom);
+            i = i + 1
           end
         end
       end
