@@ -1385,5 +1385,42 @@ function Private.Modernize(data)
     end
   end
 
+  if (data.internalVersion < 48) then
+    data.subRegions = data.subRegions or {}
+    -- rename aurabar_bar into subforeground, and subbarmodel into submodel
+    for index, subRegionData in ipairs(data.subRegions) do
+      if subRegionData.type == "subbarmodel" then
+        subRegionData.type = "submodel"
+      end
+      if subRegionData.bar_model_visible ~= nil then
+        subRegionData.model_visible = subRegionData.bar_model_visible
+        subRegionData.bar_model_visible = nil
+      end
+      if subRegionData.bar_model_alpha ~= nil then
+        subRegionData.model_alpha = subRegionData.bar_model_alpha
+        subRegionData.bar_model_alpha = nil
+      end
+    end
+    -- rename conditions for bar_model_visible and bar_model_alpha
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        if type(condition.changes) == "table" then
+          for changeIndex, change in ipairs(condition.changes) do
+            if change.property then
+              local prefix, property = change.property:match("(sub%.%d+%.)(.*)")
+              if prefix and property then
+                if property == "bar_model_visible" then
+                  change.property = prefix.."model_visible"
+                elseif property == "bar_model_alpha" then
+                  change.property = prefix.."model_alpha"
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
 end
