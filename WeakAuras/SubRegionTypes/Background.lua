@@ -4,11 +4,7 @@ local L = WeakAuras.L;
 
 do
     local function subSupports(regionType)
-        return regionType == "texture"
-        or regionType == "progresstexture"
-        or regionType == "icon"
-        or regionType == "aurabar"
-        or regionType == "text"
+        return regionType ~= "group" and regionType ~= "dynamicgroup"
     end
 
     local function noop()
