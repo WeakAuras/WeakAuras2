@@ -166,6 +166,18 @@ local function ConstructTextEditor(frame)
   group:AddChild(editor)
   editor.frame:SetClipsChildren(true)
 
+  local originalOnCursorChanged = editor.editBox:GetScript("OnCursorChanged")
+  editor.editBox:SetScript("OnCursorChanged", function(self, ...)
+    -- WORKAROUND the editbox sends spurious OnCursorChanged events if its resized
+    -- That makes AceGUI scroll the editbox to make the cursor visible, leading to unintended
+    -- movements. Prevent all of that by checking if the edit box has focus, as otherwise the cursor
+    -- is invisible, and we don't care about making it visible
+    if not self:HasFocus() then
+      return
+    end
+    originalOnCursorChanged(self, ...)
+  end)
+
   -- The indention lib overrides GetText, but for the line number
   -- display we ned the original, so save it here.
   local originalGetText = editor.editBox.GetText
