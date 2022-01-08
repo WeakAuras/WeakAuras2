@@ -3321,6 +3321,14 @@ local function UpdateMouseoverTooltip(region)
 end
 
 function Private.ShowMouseoverTooltip(region, owner)
+  if region:IsAnchoringRestricted() then
+    local data = region.id and WeakAuras.GetData(region.id)
+    if data then
+      Private.AuraWarnings.UpdateWarning(data.uid, "anchoring", "warning", L["This aura tried to show a tooltip on a anchoring restricted region"])
+    end
+    return
+  end
+
   currentTooltipRegion = region;
   currentTooltipOwner = owner;
 
