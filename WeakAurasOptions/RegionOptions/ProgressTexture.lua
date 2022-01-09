@@ -827,8 +827,4 @@ if WeakAuras.IsClassic() then
   table.remove(templates, 2)
 end
 
-local function GetAnchors(data)
-  return OptionsPrivate.Private.default_types_for_anchor
-end
-
-WeakAuras.RegisterRegionOptions("progresstexture", createOptions, createIcon, L["Progress Texture"], createThumbnail, modifyThumbnail, L["Shows a texture that changes based on duration"], templates, GetAnchors);
+WeakAuras.RegisterRegionOptions("progresstexture", createOptions, createIcon, L["Progress Texture"], createThumbnail, modifyThumbnail, L["Shows a texture that changes based on duration"], templates);
