@@ -68,7 +68,6 @@ local function create(parent)
   text:SetWordWrap(true);
   text:SetNonSpaceWrap(true);
 
-  region.values = {};
   region.duration = 0;
   region.expirationTime = math.huge;
 
