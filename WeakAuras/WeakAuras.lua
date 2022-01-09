@@ -1973,6 +1973,44 @@ function Private.Convert(data, newType)
   regions[id] = nil;
 
   data.regionType = newType;
+
+  -- Clean up sub regions
+  if data.subRegions then
+    for index, subRegionData in ipairs_reverse(data.subRegions) do
+      local subType = subRegionData.type
+      local removeSubRegion = true
+      if subType and Private.subRegionTypes[subType] then
+        if Private.subRegionTypes[subType].supports(data.regionType) then
+          removeSubRegion = false
+        end
+      end
+      if removeSubRegion then
+        tremove(data.subRegions, index)
+        -- Adjust conditions!
+        if data.conditions then
+          for conditionIndex, condition in ipairs(data.conditions) do
+            if type(condition.changes) == "table" then
+              for changeIndex, change in ipairs(condition.changes) do
+                if change.property then
+                  local subRegionIndex, property = change.property:match("^sub%.(%d+)%.(.*)")
+                  subRegionIndex = tonumber(subRegionIndex)
+                  if subRegionIndex and property then
+                    if subRegionIndex == index then
+                      change.property = nil
+                    elseif subRegionIndex > index then
+                      change.property = "sub." .. subRegionIndex -1 .. "." .. property
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+
   WeakAuras.Add(data);
 
   Private.FakeStatesFor(id, true)
