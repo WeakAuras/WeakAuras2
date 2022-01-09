@@ -89,8 +89,6 @@ local function create(parent)
   WeakAuras.regionPrototype.create(region);
   region.values = {};
 
-  region.AnchorSubRegion = WeakAuras.regionPrototype.AnchorSubRegion
-
   return region;
 end
 

@@ -134,23 +134,6 @@ function Private.GetAnchorsForData(parentData, type)
   return result
 end
 
-function WeakAuras.regionPrototype:AnchorSubRegion(subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
-  subRegion:ClearAllPoints()
-
-  if anchorType == "point" then
-    local xOffset = anchorXOffset or 0
-    local yOffset = anchorYOffset or 0
-    subRegion:SetPoint(Private.point_types[selfPoint] and selfPoint or "CENTER",
-                       self, Private.point_types[anchorPoint] and anchorPoint or "CENTER",
-                       xOffset, yOffset)
-  else
-    anchorXOffset = anchorXOffset or 0
-    anchorYOffset = anchorYOffset or 0
-    subRegion:SetPoint("bottomleft", self, "bottomleft", -anchorXOffset, -anchorYOffset)
-    subRegion:SetPoint("topright", self, "topright", anchorXOffset,  anchorYOffset)
-  end
-end
-
 -- Sound / Chat Message / Custom Code
 function WeakAuras.regionPrototype.AddProperties(properties, defaultsForRegion)
   properties["sound"] = {
@@ -461,6 +444,25 @@ local function UpdateTimerTick(self)
   end
 end
 
+local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
+  subRegion:ClearAllPoints()
+
+  if anchorType == "point" then
+    local xOffset = anchorXOffset or 0
+    local yOffset = anchorYOffset or 0
+    subRegion:SetPoint(Private.point_types[selfPoint] and selfPoint or "CENTER",
+                       self, Private.point_types[anchorPoint] and anchorPoint or "CENTER",
+                       xOffset, yOffset)
+  else
+    anchorXOffset = anchorXOffset or 0
+    anchorYOffset = anchorYOffset or 0
+    subRegion:SetPoint("bottomleft", self, "bottomleft", -anchorXOffset, -anchorYOffset)
+    subRegion:SetPoint("topright", self, "topright", anchorXOffset,  anchorYOffset)
+  end
+end
+
+WeakAuras.regionPrototype.AnchorSubRegion = AnchorSubRegion
+
 function WeakAuras.regionPrototype.create(region)
   local defaultsForRegion = WeakAuras.regionTypes[region.regionType] and WeakAuras.regionTypes[region.regionType].default;
   region.SoundPlay = SoundPlay;
@@ -499,6 +501,7 @@ function WeakAuras.regionPrototype.create(region)
   region.UpdateTimerTick = UpdateTimerTick
 
   region.subRegionEvents = CreateSubRegionEventSystem()
+  region.AnchorSubRegion = AnchorSubRegion
 
   region:SetPoint("CENTER", UIParent, "CENTER")
 end
