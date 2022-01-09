@@ -81,6 +81,7 @@ globals = {
 	"GetClassColoredTextForUnit",
 	"Lerp",
 	"Mixin",
+	"ipairs_reverse",
 	"Round",
 	"Saturate",
 	"SecondsFormatter",
