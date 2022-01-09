@@ -507,6 +507,7 @@ function WeakAuras.regionPrototype.create(region)
 
   region.subRegionEvents = CreateSubRegionEventSystem()
   region.AnchorSubRegion = AnchorSubRegion
+  region.values = {} -- For SubText
 
   region:SetPoint("CENTER", UIParent, "CENTER")
 end

@@ -981,8 +981,6 @@ local function create(parent)
   region.extraTextures = {};
   region.extraSpinners = {};
 
-  region.values = {};
-
   -- Use a dummy object for the SmoothStatusBarMixin, because our SetValue
   -- is used for a different purpose
   region.smoothProgress = {};

@@ -256,9 +256,6 @@ local function create(parent, data)
   cooldown.SetDrawSwipeOrg = cooldown.SetDrawSwipe
   cooldown.SetDrawSwipe = function() end
 
-  region.values = {};
-
-
   local SetFrameLevel = region.SetFrameLevel;
 
   function region.SetFrameLevel(self, level)

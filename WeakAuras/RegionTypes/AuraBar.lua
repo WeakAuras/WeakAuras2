@@ -1047,9 +1047,6 @@ local function create(parent)
   region.icon = icon;
   icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
 
-  -- Region variables
-  region.values = {};
-
   local oldSetFrameLevel = region.SetFrameLevel;
   function region.SetFrameLevel(self, frameLevel)
     oldSetFrameLevel(self, frameLevel);
