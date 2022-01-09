@@ -100,6 +100,8 @@ local function create(parent)
     region[k] = v
   end
 
+  region.AnchorSubRegion = WeakAuras.regionPrototype.AnchorSubRegion
+
   -- Return complete region
   return region;
 end
