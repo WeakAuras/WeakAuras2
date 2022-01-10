@@ -533,10 +533,12 @@ local function ensureUniqueKey(candidate, suffix, options, index)
   local key = candidate
   local existingKeys = {}
   for index, option in ipairs(options) do
-    if option.key == key then
-      goodKey = false
+    if option.key then
+      if option.key == key then
+        goodKey = false
+      end
+      existingKeys[option.key] = true
     end
-    existingKeys[option.key] = true
   end
   if not goodKey then
     local prefix = candidate .. suffix
