@@ -1305,8 +1305,8 @@ function Private.Modernize(data)
     end
   end
 
-  if (data.internalVersion < 47) then
-    local function bump_condition_subregions(data)
+  if (data.internalVersion < 49) then
+    local function move_condition_subregions(data, offset, afterPos, beforePos)
       if data.conditions then
         for conditionIndex, condition in ipairs(data.conditions) do
           if type(condition.changes) == "table" then
@@ -1315,7 +1315,9 @@ function Private.Modernize(data)
                 local subRegionIndex, property = change.property:match("^sub%.(%d+)%.(.*)")
                 subRegionIndex = tonumber(subRegionIndex)
                 if subRegionIndex and property then
-                  change.property = "sub." .. subRegionIndex + 1 .. "." .. property
+                  if (afterPos and subRegionIndex > afterPos) and (beforePos and subRegionIndex < beforePos) then
+                    change.property = "sub." .. subRegionIndex + (offset or 1) .. "." .. property
+                  end
                 end
               end
             end
@@ -1323,73 +1325,35 @@ function Private.Modernize(data)
         end
       end
     end
-
-    if data.regionType == "aurabar" then
-      data.subRegions = data.subRegions or {}
-      -- rename aurabar_bar into subforeground, and subbarmodel into submodel
+    local function check_and_fix_subregion(data, subregionType)
+      -- search existing ones
+      local indexes = {}
       for index, subRegionData in ipairs(data.subRegions) do
-        if subRegionData.type == "aurabar_bar" then
-          subRegionData.type = "subforeground"
-        elseif subRegionData.type == "subbarmodel" then
-          subRegionData.type = "submodel"
-        end
-        if subRegionData.bar_model_visible ~= nil then
-          subRegionData.model_visible = subRegionData.bar_model_visible
-          subRegionData.bar_model_visible = nil
-        end
-        if subRegionData.bar_model_alpha ~= nil then
-          subRegionData.model_alpha = subRegionData.bar_model_alpha
-          subRegionData.bar_model_alpha = nil
+        if subRegionData.type == subregionType then
+          table.insert(indexes, index)
         end
       end
-      -- check if "subforeground" exists, add it if not
-      local found = false
-      for index, subRegionData in ipairs(data.subRegions) do
-        if subRegionData.type == "subforeground" then
-          found = true
-        end
-      end
-      if not found then
+      -- add if missing
+      if #indexes == 0 then
         tinsert(data.subRegions, 1, {
-          ["type"] = "subforeground"
+          ["type"] = subregionType
         })
-        bump_condition_subregions(data)
-      end
-    end
-    -- rename conditions for bar_model_visible and bar_model_alpha
-    if data.conditions then
-      for conditionIndex, condition in ipairs(data.conditions) do
-        if type(condition.changes) == "table" then
-          for changeIndex, change in ipairs(condition.changes) do
-            if change.property then
-              local prefix, property = change.property:match("(sub%.%d+%.)(.*)")
-              if prefix and property then
-                if property == "bar_model_visible" then
-                  change.property = prefix.."model_visible"
-                elseif property == "bar_model_alpha" then
-                  change.property = prefix.."model_alpha"
-                end
-              end
-            end
-          end
+        move_condition_subregions(data, 1)
+      -- delete duplicate
+      elseif #indexes > 1 then
+        for i = 2, #indexes do
+          table.remove(data.subRegions, i)
+          move_condition_subregions(data, -1, i)
         end
       end
     end
-    -- add subbackground
-    if data.regionType ~= "group" and data.regionType ~= "dynamicgroup" then
-      tinsert(data.subRegions, 1, {
-        ["type"] = "subbackground"
-      })
-      -- bump conditions subregion index
-      bump_condition_subregions(data)
-    end
-  end
 
-  if (data.internalVersion < 48) then
     data.subRegions = data.subRegions or {}
     -- rename aurabar_bar into subforeground, and subbarmodel into submodel
     for index, subRegionData in ipairs(data.subRegions) do
-      if subRegionData.type == "subbarmodel" then
+      if subRegionData.type == "aurabar_bar" then
+        subRegionData.type = "subforeground"
+      elseif subRegionData.type == "subbarmodel" then
         subRegionData.type = "submodel"
       end
       if subRegionData.bar_model_visible ~= nil then
@@ -1400,6 +1364,14 @@ function Private.Modernize(data)
         subRegionData.model_alpha = subRegionData.bar_model_alpha
         subRegionData.bar_model_alpha = nil
       end
+    end
+    -- make sure aurabar have 1 subforeground
+    if data.regionType == "aurabar" then
+      check_and_fix_subregion(data, "subforeground")
+    end
+    -- make sure non-group auras have 1 subbackground
+    if data.regionType ~= "group" and data.regionType ~= "dynamicgroup" then
+      check_and_fix_subregion(data, "subbackground")
     end
     -- rename conditions for bar_model_visible and bar_model_alpha
     if data.conditions then
