@@ -1341,7 +1341,7 @@ function Private.Modernize(data)
         move_condition_subregions(data, 1)
       -- delete duplicate
       elseif #indexes > 1 then
-        for i = 2, #indexes do
+        for i = #indexes, 2, -1 do
           table.remove(data.subRegions, indexes[i])
           move_condition_subregions(data, -1, indexes[i])
         end
