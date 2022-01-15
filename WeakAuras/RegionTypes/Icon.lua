@@ -30,12 +30,7 @@ local default = {
   cooldown = false,
   cooldownTextDisabled = false,
   cooldownSwipe = true,
-  cooldownEdge = false,
-  subRegions = {
-    [1] = {
-      ["type"] = "subbackground"
-    }
-  }
+  cooldownEdge = false
 };
 
 WeakAuras.regionPrototype.AddAlphaToDefault(default);
@@ -617,4 +612,8 @@ local function modify(parent, region, data)
   region:SetHeight(region:GetHeight())
 end
 
-WeakAuras.RegisterRegionType("icon", create, modify, default, GetProperties)
+local function validate(data)
+  Private.EnforceSubregionExists(data, "subbackground")
+end
+
+WeakAuras.RegisterRegionType("icon", create, modify, default, GetProperties, validate)

@@ -54,12 +54,7 @@ local default = {
   fontSize = defaultFontSize,
   mirror = false,
   frameStrata = 1,
-  slantMode = "INSIDE",
-  subRegions = {
-    [1] = {
-      ["type"] = "subbackground"
-    }
-  }
+  slantMode = "INSIDE"
 };
 
 WeakAuras.regionPrototype.AddAlphaToDefault(default);
@@ -1412,4 +1407,8 @@ local function modify(parent, region, data)
   WeakAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
-WeakAuras.RegisterRegionType("progresstexture", create, modify, default, GetProperties);
+local function validate(data)
+  Private.EnforceSubregionExists(data, "subbackground")
+end
+
+WeakAuras.RegisterRegionType("progresstexture", create, modify, default, GetProperties, validate);

@@ -933,3 +933,49 @@ function WeakAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
     texture:SetTexture(path, wrapModeH, wrapModeV);
   end
 end
+
+do
+  local function move_condition_subregions(data, offset, afterPos, beforePos)
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        if type(condition.changes) == "table" then
+          for changeIndex, change in ipairs(condition.changes) do
+            if change.property then
+              local subRegionIndex, property = change.property:match("^sub%.(%d+)%.(.*)")
+              subRegionIndex = tonumber(subRegionIndex)
+              if subRegionIndex and property then
+                if (afterPos and subRegionIndex > afterPos) and (beforePos and subRegionIndex < beforePos) then
+                  change.property = "sub." .. subRegionIndex + (offset or 1) .. "." .. property
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  function Private.EnforceSubregionExists(data, subregionType)
+    data.subRegions = data.subRegions or {}
+    -- search and save indexes of matching subregions
+    local indexes = {}
+    for index, subRegionData in ipairs(data.subRegions) do
+      if subRegionData.type == subregionType then
+        table.insert(indexes, index)
+      end
+    end
+    -- add if missing
+    if #indexes == 0 then
+      tinsert(data.subRegions, 1, {
+        ["type"] = subregionType
+      })
+      move_condition_subregions(data, 1)
+    -- delete duplicate
+    elseif #indexes > 1 then
+      for i = #indexes, 2, -1 do
+        table.remove(data.subRegions, indexes[i])
+        move_condition_subregions(data, -1, indexes[i])
+      end
+    end
+  end
+end
