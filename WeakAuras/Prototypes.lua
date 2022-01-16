@@ -2354,9 +2354,9 @@ Private.event_prototypes = {
         if trigger.use_showHealAbsorb then
           AddUnitEventForEvents(result, unit, "UNIT_HEAL_ABSORB_AMOUNT_CHANGED")
         end
-        if trigger.use_showIncomingHeal then
-          AddUnitEventForEvents(result, unit, "UNIT_HEAL_PREDICTION")
-        end
+      end
+      if trigger.use_showIncomingHeal then
+        AddUnitEventForEvents(result, unit, "UNIT_HEAL_PREDICTION")
       end
       if trigger.use_ignoreDead or trigger.use_ignoreDisconnected then
         AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
@@ -2488,8 +2488,6 @@ Private.event_prototypes = {
         type = "toggle",
         test = "true",
         reloadOptions = true,
-        enable = WeakAuras.IsRetail(),
-        hidden = not WeakAuras.IsRetail()
       },
       {
         name = "absorb",
@@ -2518,8 +2516,7 @@ Private.event_prototypes = {
         init = "UnitGetIncomingHeals(unit)",
         store = true,
         conditionType = "number",
-        enable = function(trigger) return WeakAuras.IsRetail() and trigger.use_showIncomingHeal end,
-        hidden = not WeakAuras.IsRetail()
+        enable = function(trigger) return trigger.use_showIncomingHeal end,
       },
       {
         name = "name",
@@ -2713,7 +2710,7 @@ Private.event_prototypes = {
           end
         end,
         enable = function(trigger)
-          return WeakAuras.IsRetail() and trigger.use_showIncomingHeal;
+          return trigger.use_showIncomingHeal;
         end
       }
     },
