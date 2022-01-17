@@ -23,12 +23,7 @@ local default = {
   anchorFrameType = "SCREEN",
   xOffset = 0,
   yOffset = 0,
-  frameStrata = 1,
-  subRegions = {
-    [1] = {
-      ["type"] = "subbackground"
-    }
-  }
+  frameStrata = 1
 };
 
 WeakAuras.regionPrototype.AddAlphaToDefault(default);
@@ -243,4 +238,8 @@ local function modify(parent, region, data)
   WeakAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
-WeakAuras.RegisterRegionType("texture", create, modify, default, properties);
+local function validate(data)
+  Private.EnforceSubregionExists(data, "subbackground")
+end
+
+WeakAuras.RegisterRegionType("texture", create, modify, default, properties, validate);

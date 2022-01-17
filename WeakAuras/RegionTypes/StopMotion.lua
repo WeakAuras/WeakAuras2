@@ -39,12 +39,7 @@ local default = {
     customBackgroundFrames = 0,
     customBackgroundRows = 16,
     customBackgroundColumns = 16,
-    hideBackground = true,
-    subRegions = {
-      [1] = {
-        ["type"] = "subbackground"
-      }
-    }
+    hideBackground = true
 };
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
@@ -410,4 +405,8 @@ local function modify(parent, region, data)
     end
 end
 
-WeakAuras.RegisterRegionType("stopmotion", create, modify, default, properties);
+local function validate(data)
+  Private.EnforceSubregionExists(data, "subbackground")
+end
+
+WeakAuras.RegisterRegionType("stopmotion", create, modify, default, properties, validate);
