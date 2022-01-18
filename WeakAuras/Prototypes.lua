@@ -8999,3 +8999,28 @@ Private.dynamic_texts = {
     end
   }
 };
+
+-- Events in that list can be filtered by unitID
+Private.UnitEventList = {
+  PLAYER_GUILD_UPDATE = true,
+  MINIMAP_PING = true,
+  PARTY_MEMBER_DISABLE = true,
+  PARTY_MEMBER_ENABLE = true,
+  READY_CHECK_CONFIRM = true,
+  PLAYER_GAINS_VEHICLE_DATA = true,
+  PLAYER_LOSES_VEHICLE_DATA = true,
+  ARENA_COOLDOWNS_UPDATE = true,
+  ARENA_CROWD_CONTROL_SPELL_UPDATE = true,
+  HONOR_XP_UPDATE = true,
+  INCOMING_RESURRECT_CHANGED = true,
+  INCOMING_SUMMON_CHANGED = true,
+  KNOWN_TITLES_UPDATE = true,
+  PLAYER_DAMAGE_DONE_MODS = true,
+  PLAYER_FLAGS_CHANGED = true,
+  PLAYER_PVP_KILLS_CHANGED = true,
+  PLAYER_PVP_RANK_CHANGED = true,
+  PLAYER_SPECIALIZATION_CHANGED = true,
+  PLAYER_TRIAL_XP_UPDATE = true,
+  PLAYER_XP_UPDATE = true,
+  PVP_TIMER_UPDATE = true
+}

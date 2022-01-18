@@ -1329,7 +1329,7 @@ function GenericTrigger.Add(data, region)
                     tinsert(trigger_subevents, subevent)
                     hasParam = true
                   end
-                elseif trueEvent:match("^UNIT_") then
+                elseif trueEvent:match("^UNIT_") or Private.UnitEventList[trueEvent] then
                   isUnitEvent = true
 
                   if string.lower(strsub(i, #i - 3)) == "pets" then
