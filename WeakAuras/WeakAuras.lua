@@ -3873,7 +3873,12 @@ local function ApplyStatesToRegions(id, activeTrigger, states)
           local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
           triggerState = triggerStates[cloneId] or triggerStates[""] or {}
         end
-        applyChanges = applyChanges or region.states[triggernum] ~= triggerState or (triggerState and triggerState.changed)
+        if triggernum > 0 then
+          applyChanges = applyChanges or region.states[triggernum] ~= triggerState or (triggerState and triggerState.changed)
+                       or region.states[triggernum] ~= triggerState
+                       or (triggerState and triggerState.changed)
+        end
+
         region.states[triggernum] = triggerState
         needsTimerTick = needsTimerTick or (triggerState and triggerState.show and triggerState.progressType == "timed")
       end
