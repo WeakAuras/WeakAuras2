@@ -411,17 +411,7 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
   return ret;
 end
 
-function Private.GetProperties(data)
-  local properties;
-  local propertiesFunction = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].properties;
-  if (type(propertiesFunction) == "function") then
-    properties = propertiesFunction(data);
-  elseif propertiesFunction then
-    properties = CopyTable(propertiesFunction);
-  else
-    properties = {}
-  end
-
+function Private.GetSubRegionProperties(data, properties)
   if data.subRegions then
     local subIndex = {}
     for index, subRegion in ipairs(data.subRegions) do
@@ -443,7 +433,20 @@ function Private.GetProperties(data)
       end
     end
   end
+end
 
+function Private.GetProperties(data)
+  local properties;
+  local propertiesFunction = WeakAuras.regionTypes[data.regionType] and WeakAuras.regionTypes[data.regionType].properties;
+  if (type(propertiesFunction) == "function") then
+    properties = propertiesFunction(data);
+  elseif propertiesFunction then
+    properties = CopyTable(propertiesFunction);
+  else
+    properties = {}
+  end
+
+  Private.GetSubRegionProperties(data, properties)
   return properties;
 end
 

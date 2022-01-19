@@ -1349,9 +1349,10 @@ function Private.Modernize(data)
 
   if (data.internalVersion == 49) then
     -- Version 49 was a dud and contained a broken validation. Try to salvage the data, as
-    -- best as we can
+    -- best as we can.
     local broken = false
-    local properties = Private.GetProperties(data)
+    local properties = {}
+    Private.GetSubRegionProperties(data, properties)
     if data.conditions then
       for conditionIndex, condition in ipairs(data.conditions) do
         if type(condition.changes) == "table" then
@@ -1359,12 +1360,14 @@ function Private.Modernize(data)
             if change.property then
               if not properties[change.property] then
                 -- The property does not exist, so maybe it's one that was accidentally not moved
-                broken = true
                 local subRegionIndex, property = change.property:match("^sub%.(%d+)%.(.*)")
-                for _, offset in ipairs({-1, 1}) do
-                  local newProperty = "sub." .. subRegionIndex + offset .. "." .. property
-                  if properties[newProperty] then
-                    change.property = newProperty
+                if subRegionIndex and property then
+                  broken = true
+                  for _, offset in ipairs({-1, 1}) do
+                    local newProperty = "sub." .. subRegionIndex + offset .. "." .. property
+                    if properties[newProperty] then
+                      change.property = newProperty
+                    end
                   end
                 end
               end
