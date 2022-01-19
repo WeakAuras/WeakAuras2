@@ -935,7 +935,7 @@ function WeakAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
 end
 
 do
-  local function move_condition_subregions(data, offset, afterPos, beforePos)
+  local function move_condition_subregions(data, offset, afterPos)
     if data.conditions then
       for conditionIndex, condition in ipairs(data.conditions) do
         if type(condition.changes) == "table" then
@@ -944,8 +944,8 @@ do
               local subRegionIndex, property = change.property:match("^sub%.(%d+)%.(.*)")
               subRegionIndex = tonumber(subRegionIndex)
               if subRegionIndex and property then
-                if (afterPos and subRegionIndex > afterPos) and (beforePos and subRegionIndex < beforePos) then
-                  change.property = "sub." .. subRegionIndex + (offset or 1) .. "." .. property
+                if (subRegionIndex >= afterPos) then
+                  change.property = "sub." .. subRegionIndex + offset .. "." .. property
                 end
               end
             end
@@ -969,7 +969,7 @@ do
       tinsert(data.subRegions, 1, {
         ["type"] = subregionType
       })
-      move_condition_subregions(data, 1)
+      move_condition_subregions(data, 1, 1)
     -- delete duplicate
     elseif #indexes > 1 then
       for i = #indexes, 2, -1 do
