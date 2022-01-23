@@ -163,12 +163,14 @@ local blockedFunctions = {
   EditMacro = true,
   DevTools_DumpCommand = true,
   hash_SlashCmdList = true,
+  RegisterNewSlashCommand = true,
   CreateMacro = true,
   SetBindingMacro = true,
   GuildDisband = true,
   GuildUninvite = true,
   securecall = true,
   DeleteCursorItem = true,
+  ChatEdit_SendText = true
 }
 
 local blockedTables = {
@@ -176,6 +178,7 @@ local blockedTables = {
   SendMailMailButton = true,
   SendMailMoneyGold = true,
   MailFrameTab2 = true,
+  ChatFrame1 = true,
 }
 
 local aura_environments = {}
