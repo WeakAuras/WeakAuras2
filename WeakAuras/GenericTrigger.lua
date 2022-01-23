@@ -1918,7 +1918,7 @@ do
   local spellCdsOnlyCooldownRune = CreateSpellCDHandler();
   local spellCdsCharges = CreateSpellCDHandler();
 
-  local spellIds = {}
+  local spellDetails = {}
 
   function WeakAuras.InitCooldownReady()
     cdReadyFrame = CreateFrame("FRAME");
@@ -2207,12 +2207,30 @@ do
   function Private.CheckSpellKnown()
     for id, _ in pairs(spells) do
       local known = WeakAuras.IsSpellKnownIncludingPet(id);
+      local changed = false
       if (known ~= spellKnown[id]) then
         spellKnown[id] = known
-        if not WeakAuras.IsPaused() then
-          WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id)
-        end
+        changed = true
       end
+
+      local name, _, icon, _, _, _, spellId = GetSpellInfo(id)
+      if spellDetails[id].name ~= name then
+        spellDetails[id].name = name
+        changed = true
+      end
+      if spellDetails[id].icon ~= icon then
+        spellDetails[id].icon = icon
+        changed = true
+      end
+      if spellDetails[id].id ~= spellId then
+        spellDetails[id].id = spellId
+        changed = true
+      end
+
+      if changed and not WeakAuras.IsPaused() then
+        WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id)
+      end
+
     end
   end
 
@@ -2225,7 +2243,8 @@ do
     local time = GetTime();
     local remaining = startTime + duration - time;
 
-    local chargesChanged = spellCharges[id] ~= charges or spellCounts[id] ~= spellCount;
+    local chargesChanged = spellCharges[id] ~= charges or spellCounts[id] ~= spellCount
+                           or spellChargesMax[id] ~= maxCharges
     local chargesDifference = (charges or spellCount or 0) - (spellCharges[id] or spellCount or 0)
     spellCharges[id] = charges;
     spellChargesMax[id] = maxCharges;
@@ -2241,12 +2260,7 @@ do
     end
 
     local changed = false
-    local spellId = select(7, GetSpellInfo(id))
-    if spellIds[id] ~= spellId then
-      spellIds[id] = spellId
-      changed = true
-      chargesChanged = true
-    end
+
 
     changed = spellCds:HandleSpell(id, startTime, duration) or changed
     if not unifiedCooldownBecauseRune then
@@ -2461,7 +2475,12 @@ do
       return;
     end
     spells[id] = true;
-    spellIds[id] = select(7, GetSpellInfo(id))
+    local name, _, icon, _, _, _, spellId = GetSpellInfo(id)
+    spellDetails[id] = {
+      name = name,
+      icon = icon,
+      id = spellId
+    }
     spellKnown[id] = WeakAuras.IsSpellKnownIncludingPet(id);
 
     local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
