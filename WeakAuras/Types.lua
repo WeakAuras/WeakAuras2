@@ -3423,6 +3423,10 @@ if WeakAuras.IsBCC() then
   Private.item_slot_types[18] = RANGEDSLOT
   Private.talent_extra_option_types[0] = nil
   Private.talent_extra_option_types[2] = nil
+  Private.multiUnitId.boss = nil
+  wipe(Private.multiUnitUnits.boss)
+  Private.unit_types_bufftrigger_2.boss = nil
+  Private.actual_unit_types_cast.boss = nil
 
   local reset_swing_spell_list = {
     1464, 8820, 11604, 11605, 25242, -- Slam
