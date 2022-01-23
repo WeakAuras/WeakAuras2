@@ -1762,9 +1762,14 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
       end
     end
   end
+
+  if not safeSenders[sender] then
+    return
+  end
+
   local received = StringToTable(message);
   if(received and type(received) == "table" and received.m) then
-    if(received.m == "d") and safeSenders[sender] then
+    if(received.m == "d") then
       tooltipLoading = nil;
       local data, children, icon, icons = received.d, received.c, received.i, received.a
       WeakAuras.PreAdd(data)
