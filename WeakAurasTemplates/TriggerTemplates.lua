@@ -49,9 +49,10 @@ local function changes(property, regionType)
       property = regionColorProperty[regionType],
     };
   elseif property == "glow" and (regionType == "icon" or regionType == "aurabar") then
+    local subregionPos = regionType == "aurabar" and 1 or 2
     return {
       value = true,
-      property = "sub.3.glow"
+      property = "sub."..subregionPos..".glow"
     };
   elseif WeakAuras.regionTypes[regionType].default[property] == nil then
     return nil;
