@@ -1,6 +1,6 @@
-## Interface: 90005
-## Interface-Classic: 11307
-## Interface-BC: 20501
+## Interface: 90105
+## Interface-Classic: 11401
+## Interface-BCC: 20503
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
 ## Version: @project-version@
@@ -68,11 +68,12 @@ RegionTypes\StopMotion.lua
 RegionTypes\Model.lua
 
 # Sub-region support
+SubRegionTypes\Background.lua
 SubRegionTypes\SubText.lua
 SubRegionTypes\Border.lua
 SubRegionTypes\Glow.lua
 SubRegionTypes\Tick.lua
-SubRegionTypes\BarModel.lua
+SubRegionTypes\Model.lua
 
 # Misc
 Legendaries.lua

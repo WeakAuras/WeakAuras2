@@ -47,23 +47,16 @@ function OptionsPrivate.GetInformationOptions(data)
   local sameURL = true
   local commonURL
   local desc = ""
-  if not isTmpGroup then
-    commonURL = data.url
-    if data.url then
-      desc = "|cFFE0E000"..data.id..": |r".. data.url .. "\n"
+
+  local traverseForUrl = isTmpGroup and OptionsPrivate.Private.TraverseAllChildren or OptionsPrivate.Private.TraverseAll
+  for child in traverseForUrl(data) do
+    if child.url then
+      desc = desc .. "|cFFE0E000"..child.id..": |r"..child.url .. "\n"
     end
-  end
-  if data.controlledChildren then
-    for _, childId in ipairs(data.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
-      if childData.url then
-        desc = desc .. "|cFFE0E000"..childData.id..": |r"..childData.url .. "\n"
-      end
-      if not commonURL then
-        commonURL = childData.url or ""
-      elseif childData.url ~= commonURL then
-        sameURL = false
-      end
+    if not commonURL then
+      commonURL = child.url or ""
+    elseif child.url ~= commonURL then
+      sameURL = false
     end
   end
 
@@ -72,26 +65,15 @@ function OptionsPrivate.GetInformationOptions(data)
     name = sameURL and L["URL"] or "|cFF4080FF" .. L["URL"],
     width = WeakAuras.doubleWidth,
     get = function()
-      if data.controlledChildren then
-        return sameURL and commonURL or ""
-      else
-        return data.url
-      end
+      return sameURL and commonURL or ""
     end,
     set = function(info, v)
-      if data.controlledChildren then
-        for _, childId in ipairs(data.controlledChildren) do
-          local childData = WeakAuras.GetData(childId)
-          childData.url = v
-          WeakAuras.Add(childData)
-          OptionsPrivate.ClearOptions(childData.id)
-        end
+      for child in traverseForUrl(data) do
+        child.url = v
+        WeakAuras.Add(child)
+        OptionsPrivate.ClearOptions(child.id)
       end
 
-      if not isTmpGroup then
-        data.url = v
-        WeakAuras.Add(data)
-      end
       WeakAuras.ClearAndUpdateOptions(data.id)
     end,
     desc = sameURL and "" or desc,
@@ -177,7 +159,7 @@ function OptionsPrivate.GetInformationOptions(data)
 
   local properties = {
     ignoreOptionsEventErrors = {
-      name = L["Ignore Lua Errors on OPTIONS event"]
+      name = L["Ignore Lua Errors on OPTIONS event"],
     },
     groupOffset = {
       name = L["Offset by 1px"],
@@ -200,28 +182,30 @@ function OptionsPrivate.GetInformationOptions(data)
   }
 
   for property, propertyData in pairs(properties) do
-    if not propertyData.onParent and data.controlledChildren then
-      for _, childId in ipairs(data.controlledChildren) do
-        local childData = WeakAuras.GetData(childId)
-        if not propertyData.regionType or propertyData.regionType == childData.regionType then
-          mergedDesc[property] = (mergedDesc[property] or "") .. "|cFFE0E000"..childData.id..": |r".. (childData.information[property] and "true" or "false") .. "\n"
-          if common[property] == nil then
-            if childData.information[property] ~= nil then
-              common[property] = childData.information[property]
-            else
-              common[property] = false
-            end
-          elseif childData.information[property] ~= common[property] then
-            same[property] = false
-          end
-        end
-      end
-    else
+    if propertyData.onParent then
       if not isTmpGroup and (not propertyData.regionType or propertyData.regionType == data.regionType) then
         if data.information[property] ~= nil then
           common[property] = data.information[property]
         else
           common[property] = false
+        end
+      end
+    else
+      for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+        if not propertyData.regionType or propertyData.regionType == child.regionType then
+          local effectiveProperty = child.information[property]
+          if effectiveProperty == nil then
+            effectiveProperty = false
+          end
+
+          mergedDesc[property] = (mergedDesc[property] or "") .. "|cFFE0E000" .. child.id .. ": |r"
+          .. (effectiveProperty and "true" or "false") .. "\n"
+
+          if common[property] == nil then
+            common[property] = effectiveProperty
+          elseif effectiveProperty ~= common[property] then
+            same[property] = false
+          end
         end
       end
     end
@@ -232,26 +216,25 @@ function OptionsPrivate.GetInformationOptions(data)
         name = same[property] and propertyData.name or "|cFF4080FF" .. propertyData.name,
         width = WeakAuras.doubleWidth,
         get = function()
-          if not propertyData.onParent and data.controlledChildren then
-            return same[property] and common[property] or false
-          else
+          if propertyData.onParent then
             return data.information[property]
+          else
+            return same[property] and common[property] or false
           end
         end,
         set = function(info, v)
-          if not propertyData.onParent and data.controlledChildren then
-            for _, childId in ipairs(data.controlledChildren) do
-              local childData = WeakAuras.GetData(childId)
-              if not propertyData.regionType or propertyData.regionType == childData.regionType then
-                childData.information[property] = v
-                WeakAuras.Add(childData)
-                OptionsPrivate.ClearOptions(childData.id)
-              end
-            end
-          else
+          if propertyData.onParent then
             data.information[property] = v
             WeakAuras.Add(data)
             OptionsPrivate.ClearOptions(data.id)
+          else
+            for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+              if not propertyData.regionType or propertyData.regionType == child.regionType then
+                child.information[property] = v
+                WeakAuras.Add(child)
+                OptionsPrivate.ClearOptions(child.id)
+              end
+            end
           end
           WeakAuras.ClearAndUpdateOptions(data.id)
         end,

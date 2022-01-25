@@ -1,3 +1,4 @@
+local AddonName, TemplatePrivate = ...
 local WeakAuras = WeakAuras
 if not WeakAuras.IsRetail() then return end
 local L = WeakAuras.L
@@ -4605,6 +4606,9 @@ local covenants = {
       { spell = 330896, type = "buff", unit = "player"}, -- Road of Trials
       { spell = 330749, type = "buff", unit = "player"}, -- Phial of Patience
       { spell = 328900, type = "buff", unit = "player"}, -- Let Go of the Past
+      { spell = 352498, type = "buff", unit = "player"}, -- Better Together
+      { spell = 352875, type = "buff", unit = "player"}, -- Path of the Devoted
+      { spell = 352917, type = "buff", unit = "player"}, -- Newfound Resolve
       -- Kleia
       { spell = 331449, type = "buff", unit = "player"}, -- Valiant Strikes
       { spell = 334067, type = "buff", unit = "player"}, -- Mentorship
@@ -4614,12 +4618,18 @@ local covenants = {
       { spell = 321759, type = "debuff", unit = "target"}, -- Bearer's Pursuit
       { spell = 330511, type = "buff", unit = "player"}, -- Pointed Courage
       { spell = 330859, type = "buff", unit = "player"}, -- Resonant Accolades
+      { spell = 352720, type = "buff", unit = "player"}, -- Spear of the Archon
+      { spell = 353192, type = "buff", unit = "player"}, -- Hope Springs Eternal
+      { spell = 352981, type = "buff", unit = "player"}, -- Light the Path
       -- Forgelite Prime Mikanikos
       { spell = 332514, type = "buff", unit = "player"}, -- Bron's Call to Action
       { spell = 337697, type = "buff", unit = "player"}, -- Resilient Plumage
       { spell = 332505, type = "buff", unit = "player"}, -- Soulsteel Clamps
       { spell = 333943, type = "buff", unit = "player"}, -- Hammer of Genesis
       { spell = 332423, type = "debuff", unit = "target"}, -- Sparkling Driftglobe Core
+      { spell = 352938, type = "buff", unit = "player", titleSuffix = L["Buff"]}, -- Soulglow Spectrometer
+      { spell = 352939, type = "debuff", unit = "target", titleSuffix = L["Debuff"]}, -- Soulglow Spectrometer
+      { spell = 352789, type = "buff", unit = "player"}, -- Reactive Retrofitting
 
       -- WARRIOR
       { spell = 307865, type = "ability", debuff = true, titleSuffix = L["Cooldown"], class = "WARRIOR"}, -- Spear of Bastion
@@ -4672,16 +4682,26 @@ local covenants = {
       { spell = 338836, type = "debuff", unit = "target"}, -- Agent of Chaos
       { spell = 331868, type = "buff", unit = "player"}, -- Fancy Footwork
       { spell = 331934, type = "debuff", unit = "target"}, -- Adversary
+      { spell = 352882, type = "buff", unit = "player"}, -- Sinful Preservation
+      { spell = 354050, type = "debuff", unit = "target", titleSuffix = L["Slow"], exactSpellId = true}, -- Nimble Steps
+      { spell = 354051, type = "debuff", unit = "target", titleSuffix = L["Root"], exactSpellId = true}, -- Nimble Steps
+      { spell = 354054, type = "buff", unit = "player"}, -- Fatal Flaw
       -- Theotar the Mad Duke
       { spell = 336885, type = "buff", unit = "player"}, -- Soothing Shade
       { spell = 337470, type = "buff", unit = "target"}, -- Token of Appreciation
       { spell = 333218, type = "buff", unit = "player"}, -- Wasteland Propriety
+      { spell = 353334, type = "buff", unit = "player"}, -- It's Always Tea Time
+      { spell = 353365, type = "buff", unit = "player"}, -- Life is but an Appetizer
+      { spell = 353266, type = "buff", unit = "player"}, -- The Mad Duke's Tea
       -- General Draven
       { spell = 333104, type = "buff", unit = "player"}, -- Move As One
       { spell = 321012, type = "buff", unit = "player"}, -- Enduring Gloom
       { spell = 333089, type = "buff", unit = "player"}, -- Hold Your Ground
       { spell = 332922, type = "buff", unit = "player"}, -- Superior Tactics
       { spell = 332842, type = "buff", unit = "player"}, -- Built for War
+      { spell = 352802, type = "buff", unit = "player"}, -- Regenerative Stone Skin
+      { spell = 353211, type = "buff", unit = "player"}, -- Intimidation Tactics
+      { spell = 352858, type = "buff", unit = "player"}, -- Battlefield Presence
 
       -- WARRIOR
       { spell = 317320, type = "ability", titleSuffix = L["Ability"], class = "WARRIOR"}, -- Condemn
@@ -4738,6 +4758,9 @@ local covenants = {
       { spell = 333526, type = "debuff", unit = "target"}, -- Niya's Tools: Burrs
       { spell = 321519, type = "debuff", unit = "target"}, -- Niya's Tools: Poison
       { spell = 321510, type = "buff", unit = "player"}, -- Niya's Tools: Herbs
+      { spell = 352865, type = "buff", unit = "player"}, -- Called Shot
+      { spell = 352857, type = "buff", unit = "player"}, -- Survivor's Rally
+      { spell = 352881, type = "buff", unit = "player"}, -- Bonded Hearts
       -- Dreamweaver
       { spell = 320224, type = "buff", unit = "player"}, -- Podtender
       { spell = 320267, type = "buff", unit = "player"}, -- Soothing Voice
@@ -4746,6 +4769,11 @@ local covenants = {
       { spell = 319970, type = "buff", unit = "player"}, -- Faerie Dust
       { spell = 320235, type = "buff", unit = "player"}, -- Somnambulist
       { spell = 342774, type = "buff", unit = "player"}, -- Field of Blossoms
+
+      { spell = 353472, type = "debuff", unit = "target"}, -- Cunning Dreams
+      { spell = 353477, type = "buff", unit = "player"}, -- Waking Dreams
+      { spell = 353353, type = "buff", unit = "target", titleSuffix = L["Debuff"]}, -- Dream Delver
+      { spell = 353354, type = "debuff", unit = "target", titleSuffix = L["Buff"]}, -- Dream Delver
       -- Korayn
       { spell = 343594, type = "buff", unit = "player"}, -- Wild Hunt Tactics
       { spell = 325268, type = "buff", unit = "player"}, -- Horn of the Wild Hunt
@@ -4754,6 +4782,14 @@ local covenants = {
       { spell = 325437, type = "debuff", unit = "target"}, -- Face Your Foes
       { spell = 325381, type = "buff", unit = "player"}, -- First Strike
       { spell = 325612, type = "buff", unit = "player"}, -- Hold the Line
+
+      { spell = 353077, type = "debuff", unit = "target"}, -- Vorkai Ambush
+      { spell = 353203, type = "buff", unit = "player"}, -- Hunt's Exhilaration
+
+      { spell = 353286, type = "buff", unit = "player", titleSuffix = L["Initial Buff"], exactSpellId = true}, -- Wild Hunt Strategem
+      { spell = 353793, type = "buff", unit = "target", titleSuffix = L["Buff"], exactSpellId = true}, -- Wild Hunt Strategem
+      { spell = 353254, type = "debuff", unit = "target", titleSuffix = L["Debuff"]}, -- Wild Hunt Strategem
+
 
       -- WARRIOR
       { spell = 325886, type = "ability", class = "WARRIOR"}, -- Ancient Aftershock
@@ -4818,13 +4854,16 @@ local covenants = {
       { spell = 323396, type = "buff", unit = "player"}, -- Bloop's Wanderlust
       { spell = 323416, type = "debuff", unit = "target"}, -- Plaguey's Preemptive Strike
       { spell = 323524, type = "buff", unit = "player"}, -- Ultimate Form
+      { spell = 352561, type = "debuff", unit = "player"}, -- Undulating Maneuvers
       -- Emeni
       { spell = 328210, type = "buff", unit = "player"}, -- Emeni's Magnificent Skin
       { spell = 324523, type = "buff", unit = "player"}, -- Cartilaginous Legs
       { spell = 324463, type = "buff", unit = "player"}, -- Gristled Toes
       { spell = 324242, type = "buff", unit = "player"}, -- Gnashing Chompers
-      { spell = 324523, type = "buff", unit = "player"}, -- Cartilaginous Legs
       { spell = 324263, type = "debuff", unit = "target"}, -- Sulfuric Emission
+      { spell = 351913, type = "buff", unit = "player", exactSpellId = true, titleSuffix = L["Preparation"]}, -- Sole Slough
+      { spell = 351915, type = "buff", unit = "player", exactSpellId = true, titleSuffix = L["Sprint"]}, -- Sole Slough
+      { spell = 351921, type = "buff", unit = "player"}, -- Resilient Stitching
 
       -- Bonesmith Heirmir
       { spell = 327140, type = "buff", unit = "player"}, -- Forgeborne Reveries
@@ -4834,6 +4873,8 @@ local covenants = {
       { spell = 327066, type = "buff", unit = "player"}, -- Marrowed Gemstone Charging
       { spell = 327069, type = "buff", unit = "player"}, -- Marrowed Gemstone Enhancement
       { spell = 326946, type = "buff", unit = "player"}, -- Heirmir's Arsenal: Ravenous Pendant
+      { spell = 351414, type = "buff", unit = "player"}, -- Carver's Eye
+      { spell = 351433, type = "buff", unit = "player"}, -- Waking Bone Breastplate
 
       -- WARRIOR
       { spell = 324143, type = "ability", class = "WARRIOR"}, -- Conqueror's Banner
@@ -4989,14 +5030,22 @@ local conduits = {
     { spell = 338523, type = "debuff", unit = "target"}, -- Debilitating Malady
     { spell = 337936, type = "buff", unit = "player"}, -- Eradicating Blow
     { spell = 338501, type = "buff", unit = "player"}, -- Unleashed Frenzy
+  },
+  ALL = {
+    { spell = 357972, type = "buff", unit = "player"}, -- Adaptive Armor Fragment
   }
 }
+
+
 for class, classData in pairs(templates.class) do
   for spec, specData in ipairs(classData) do
     specData[8].title = L["Conduits"]
     specData[8].icon = 3528287
     specData[8].args = {}
     for _, entry in ipairs(conduits[class]) do
+      tinsert(specData[8].args, CopyTable(entry))
+    end
+    for _, entry in ipairs(conduits.ALL) do
       tinsert(specData[8].args, CopyTable(entry))
     end
   end
@@ -5020,6 +5069,7 @@ local classLegendaries = {
     { spell = 335558, type = "buff", unit = "player", bonusItemId = 6963}, -- Cadence of Fujieda
     { spell = 335597, type = "buff", unit = "player", bonusItemId = 6966}, -- Will of the Berserker
     { spell = 335734, type = "buff", unit = "player", bonusItemId = 6969}, -- Reprisal
+    { spell = 311193, type = "buff", unit = "player", bonusItemId = 7730}, -- Elysian Might
   },
   PALADIN = {
     { spell = 337682, type = "buff", unit = "player", bonusItemId = 7056}, -- The Magistrate's Judgment
@@ -5030,7 +5080,8 @@ local classLegendaries = {
     { spell = 337848, type = "buff", unit = "player", bonusItemId = 7062}, -- Bulwark of Righteous Fury
     { spell = 337315, type = "buff", unit = "player", bonusItemId = 7066}, -- Relentless Inquisitor
     { spell = 345046, type = "buff", unit = "player", bonusItemId = 7065}, -- Vanguard's Momentum
-
+    { spell = 355455, type = "buff", unit = "player", bonusItemId = 7679}, -- Divine Resonance
+    { spell = 355567, type = "buff", unit = "player", bonusItemId = 7702}, -- Equinox
   },
   HUNTER = {
     { spell = 336744, type = "buff", unit = "player", bonusItemId = 7004}, -- Nesingwary's Trapping Apparatus
@@ -5039,6 +5090,8 @@ local classLegendaries = {
     { spell = 336892, type = "buff", unit = "player", bonusItemId = 7013}, -- Secrets of the Unblinking Vigil
     { spell = 336908, type = "buff", unit = "player", bonusItemId = 7018}, -- Butcher's Bone Fragments
     { spell = 273286, type = "debuff", unit = "target", bonusItemId = 7017}, -- Latent Poison
+    { spell = 356263, type = "buff", unit = "player", bonusItemId = 7714}, -- Pact of the Soulstalkers
+    { spell = 356620, type = "debuff", unit = "target", bonusItemId = 7717}, -- Pouch of Razor Fragments
   },
   ROGUE = {
     { spell = 23580, type = "debuff", unit = "target", bonusItemId = 7113}, -- Bloodfang
@@ -5055,6 +5108,7 @@ local classLegendaries = {
   PRIEST = {
     { spell = 341824, type = "buff", unit = "player", bonusItemId = 7161}, -- Measured Contemplation
     { spell = 336267, type = "buff", unit = "player", bonusItemId = 6974}, -- Flash Concentration
+    { spell = 357028, type = "buff", unit = "player", bonusItemId = 0000}, -- Shadow Word: Manipulation
   },
   SHAMAN = {
     { spell = 329771, type = "buff", unit = "player", bonusItemId = 6988}, -- Chains of Devastation
@@ -5069,6 +5123,8 @@ local classLegendaries = {
     { spell = 335896, type = "buff", unit = "player", bonusItemId = 6996}, -- Primal Lava Actuators
     { spell = 335894, type = "buff", unit = "player", bonusItemId = 6997}, -- Jonat's Natural Focus
     { spell = 335892, type = "buff", unit = "player", bonusItemId = 6998}, -- Spiritwalker's Tidal Totem
+    { spell = 358945, type = "buff", unit = "player", bonusItemId = 7708}, -- Seeds of Rampant Growth
+    { spell = 354648, type = "buff", unit = "player", bonusItemId = 7570}, -- Splintered Elements
   },
   MAGE = {
     { spell = 327371, type = "buff", unit = "player", bonusItemId = 6832}, -- Disciplinary Command
@@ -5085,6 +5141,7 @@ local classLegendaries = {
     { spell = 327330, spellId = 327330, type = "buff", unit = "player",  titleSuffix = L["Meteor Ready"], bonusItemId = 6828}, -- Cold Front
     { spell = 327478, type = "buff", unit = "player", bonusItemId = 6829}, -- Freezing Winds
     { spell = 327509, type = "buff", unit = "player", bonusItemId = 6823}, -- Slick Ice
+    { spell = 356881, type = "buff", unit = "player", bonusItemId = 7727}, -- Heart of the Fae
   },
   WARLOCK = {
     { spell = 337096, type = "buff", unit = "player", bonusItemId = 7028}, -- Pillars of the Dark Portal
@@ -5097,6 +5154,9 @@ local classLegendaries = {
     { spell = 337139, type = "buff", unit = "player", bonusItemId = 7033}, -- Implosive Potential
     { spell = 337170, type = "buff", unit = "player", bonusItemId = 7029}, -- Madness of the Azj'Aqir
     { spell = 337164, type = "debuff", unit = "target", bonusItemId = 7034}, -- Grim Inquisitor's Dread Calling
+    { spell = 356255, type = "buff", unit = "player", bonusItemId = 7710}, -- Languishing Soul Detritus
+    { spell = 356342, type = "buff", unit = "player", bonusItemId = 7711}, -- Shard of Annihilation
+    { spell = 356369, type = "buff", unit = "player", bonusItemId = 7712}, -- Decaying Soul Satchel
   },
   MONK = {
     { spell = 343249, type = "buff", unit = "player", bonusItemId = 7184}, -- Escape from Reality
@@ -5107,6 +5167,7 @@ local classLegendaries = {
     { spell = 337476, type = "buff", unit = "player", bonusItemId = 7072}, -- Tear of Morning
     { spell = 337571, type = "buff", unit = "player", bonusItemId = 7068}, -- Jade Ignition/Chi Energy
     { spell = 337291, type = "buff", unit = "player", bonusItemId = 7069}, -- The Emperor's Capacitor
+    { spell = 356773, type = "debuff", unit = "target", bonusItemId = 7721}, -- Faeline Harmony
   },
   DRUID = {
     { spell = 340060, type = "buff", unit = "player", bonusItemId = 7110}, -- Lycara's Fleeting Glimpse
@@ -5117,17 +5178,23 @@ local classLegendaries = {
     { spell = 339140, type = "buff", unit = "player", bonusItemId = 7091}, -- Apex Predator's Craving
     { spell = 339142, type = "buff", unit = "player", bonusItemId = 7090}, -- Eye of Fearful Symmetry
     { spell = 189877, type = "buff", unit = "player", bonusItemId = 7096}, -- Memory of the Mother Tree
+    { spell = 355779, type = "buff", unit = "player", bonusItemId = 7477}, -- Kindred Affinity
   },
   DEMONHUNTER = {
     { spell = 337567, type = "buff", unit = "player", bonusItemId = 7050}, -- Chaos Theory/Chaotic Blades
     { spell = 346264, type = "buff", unit = "player", bonusItemId = 7218}, -- Darker Nature
     { spell = 337542, type = "buff", unit = "player", bonusItemId = 7045}, -- Spirit of the Darkness Flame
-    { spell = 334722, type = "buff", unit = "player", bonusItemId = 6948}, -- Grip of the Everlasting
+    { spell = 337849, type = "buff", unit = "player", bonusItemId = 7052}, -- Fel Bombardment
+    { spell = 355894, type = "buff", unit = "player", bonusItemId = 7699}, -- Blind Faith
+    { spell = 355892, type = "buff", unit = "player", bonusItemId = 7698}, -- Blazing Slaughter
   },
   DEATHKNIGHT = {
     { spell = 332199, type = "buff", unit = "player", bonusItemId = 6954}, -- Phearomones
     { spell = 334526, type = "buff", unit = "player", bonusItemId = 6941}, -- Crimson Rune Weapon
     { spell = 334693, type = "debuff", unit = "target", bonusItemId = 6946}, -- Absolute Zero
+    { spell = 334722, type = "buff", unit = "player", bonusItemId = 6948}, -- Grip of the Everlasting
+    { spell = 353823, type = "debuff", unit = "target", bonusItemId = 7467}, -- Final Sentence
+    { spell = 353546, type = "debuff", unit = "target", bonusItemId = 7458}, -- Abomination's Frenzy
   }
 }
 
@@ -5141,6 +5208,35 @@ for class, classData in pairs(templates.class) do
     end
     for _, entry in ipairs(classLegendaries[class]) do
       tinsert(specData[9].args, CopyTable(entry))
+    end
+  end
+end
+
+-- Shards of Domination
+local shardsOfDomination = {
+  title = L["Shards Of Domination"],
+  icon = 1392550,
+  args = {
+    -- General Ability
+    { spell = 356321, type = "buff", unit = "player"}, -- Unholy Aura
+    { spell = 356329, type = "debuff", unit = "target"}, -- Scouring Touch
+    { spell = 356043, type = "buff", unit = "player"}, -- Chaos Bane
+    { spell = 356305, type = "buff", unit = "player"}, -- Accretion
+    { spell = 356257, type = "buff", unit = "player"}, -- Frostrime
+    { spell = 356364, type = "buff", unit = "player"}, -- Coldhearted
+    { spell = 355735, type = "buff", unit = "player"}, -- Winds of Winter
+    { spell = 355804, type = "debuff", unit = "target"}, -- Blood Link
+  }
+}
+
+-- Copy to main templates table
+for class, classData in pairs(templates.class) do
+  for spec, specData in ipairs(classData) do
+    specData[10].title = shardsOfDomination.title
+    specData[10].icon = shardsOfDomination.icon
+    specData[10].args = {}
+    for _, entry in ipairs(shardsOfDomination.args) do
+      tinsert(specData[10].args, CopyTable(entry))
     end
   end
 end

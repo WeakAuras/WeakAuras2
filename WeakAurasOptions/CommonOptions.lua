@@ -938,7 +938,7 @@ local function CreateSetAll(subOption, getAll)
     OptionsPrivate.Private.ResumeAllDynamicGroups()
     OptionsPrivate.Private.pauseOptionsProcessing(false);
     OptionsPrivate.Private.ScanForLoads();
-    WeakAuras.SortDisplayButtons(nil, true);
+    OptionsPrivate.SortDisplayButtons(nil, true);
     OptionsPrivate.UpdateOptions()
   end
 end
@@ -1018,12 +1018,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
-        if(data.parent) then
-          local parentData = WeakAuras.GetData(data.parent);
-          if(parentData) then
-            WeakAuras.Add(parentData);
-          end
-        end
+        OptionsPrivate.Private.AddParents(data)
       end
     },
     yOffset = {
@@ -1042,12 +1037,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
-        if(data.parent) then
-          local parentData = WeakAuras.GetData(data.parent);
-          if(parentData) then
-            WeakAuras.Add(parentData);
-          end
-        end
+        OptionsPrivate.Private.AddParents(data)
       end
     },
     selfPoint = {

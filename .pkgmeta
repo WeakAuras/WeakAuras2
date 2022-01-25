@@ -15,11 +15,13 @@ externals:
   WeakAuras/Libs/LibDataBroker-1.1: https://github.com/tekkub/libdatabroker-1-1
   WeakAuras/Libs/LibCompress: https://repos.curseforge.com/wow/libcompress/trunk
   WeakAuras/Libs/LibSpellRange-1.0: https://github.com/ascott18/LibSpellRange-1.0
-  WeakAuras/Libs/LibRangeCheck-2.0: https://repos.curseforge.com/wow/librangecheck-2-0/trunk/LibRangeCheck-2.0
+  WeakAuras/Libs/LibRangeCheck-2.0: https://github.com/WeakAuras/LibRangeCheck-2.0/
   WeakAuras/Libs/LibCustomGlow-1.0: https://github.com/Stanzilla/LibCustomGlow
   WeakAuras/Libs/LibDBIcon-1.0: https://repos.curseforge.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
   WeakAuras/Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
-  WeakAuras/Libs/Archivist: https://github.com/emptyrivers/Archivist
+  WeakAuras/Libs/Archivist:
+    url: https://github.com/emptyrivers/Archivist
+    tag: v1.0.8
   WeakAuras/Libs/LibSerialize:
     url: https://github.com/rossnichols/LibSerialize
     tag: v1.0.0
@@ -37,8 +39,9 @@ ignore:
   - update_translations.sh
   - generate_changelog.sh
   - WeakAurasModelPaths/ModelPathsClassic.lua
+  - WeakAurasModelPaths/ModelPathsBCC.lua
   - WeakAurasTemplates/TriggerTemplatesDataClassic.lua
-  - WeakAurasTemplates/TriggerTemplatesDataTBC.lua
+  - WeakAurasTemplates/TriggerTemplatesDataBCC.lua
 
 move-folders:
   WeakAuras/WeakAuras: WeakAuras
@@ -46,3 +49,4 @@ move-folders:
   WeakAuras/WeakAurasModelPaths: WeakAurasModelPaths
   WeakAuras/WeakAurasTemplates: WeakAurasTemplates
   WeakAuras/WeakAurasArchive: WeakAurasArchive
+  WeakAuras/Libs/LibRangeCheck-2.0/LibRangeCheck-2.0: WeakAuras/Libs/LibRangeCheck-2.0

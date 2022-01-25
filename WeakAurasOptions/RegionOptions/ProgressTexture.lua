@@ -189,12 +189,6 @@ local function createOptions(id, data)
         data.crop_x = v;
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
-        if(data.parent) then
-          local parentData = WeakAuras.GetData(data.parent);
-          if(parentData) then
-            WeakAuras.Add(parentData);
-          end
-        end
         OptionsPrivate.ResetMoverSizer();
       end,
     },
@@ -212,12 +206,6 @@ local function createOptions(id, data)
         data.crop_y = v;
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
-        if(data.parent) then
-          local parentData = WeakAuras.GetData(data.parent);
-          if(parentData) then
-            WeakAuras.Add(parentData);
-          end
-        end
         OptionsPrivate.ResetMoverSizer();
       end,
     },
@@ -839,8 +827,4 @@ if WeakAuras.IsClassic() then
   table.remove(templates, 2)
 end
 
-local function GetAnchors(data)
-  return OptionsPrivate.Private.default_types_for_anchor
-end
-
-WeakAuras.RegisterRegionOptions("progresstexture", createOptions, createIcon, L["Progress Texture"], createThumbnail, modifyThumbnail, L["Shows a texture that changes based on duration"], templates, GetAnchors);
+WeakAuras.RegisterRegionOptions("progresstexture", createOptions, createIcon, L["Progress Texture"], createThumbnail, modifyThumbnail, L["Shows a texture that changes based on duration"], templates);

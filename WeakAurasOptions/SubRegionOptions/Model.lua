@@ -8,7 +8,7 @@ local function createOptions(parentData, data, index, subIndex)
   local options = {
     __title = L["Model %s"]:format(subIndex),
     __order = 1,
-    bar_model_visible = {
+    model_visible = {
       type = "toggle",
       width = WeakAuras.doubleWidth,
       name = L["Show Model"],
@@ -43,12 +43,32 @@ local function createOptions(parentData, data, index, subIndex)
     },
     bar_model_clip = {
       type = "toggle",
-      width = WeakAuras.normalWidth,
+      width = WeakAuras.doubleWidth,
       name = L["Clipped by Progress"],
       order = 12,
       hidden = function() return parentData.regionType ~= "aurabar" end
     },
-    bar_model_alpha = {
+    extra_width = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Extra Width"],
+      order = 12.1,
+      softMin = -100,
+      softMax = 500,
+      step = 1,
+      hidden = function() return data.bar_model_clip and parentData.regionType == "aurabar" end
+    },
+    extra_height = {
+      type = "range",
+      width = WeakAuras.normalWidth,
+      name = L["Extra Height"],
+      order = 12.2,
+      softMin = -100,
+      softMax = 500,
+      step = 1,
+      hidden = function() return data.bar_model_clip and parentData.regionType == "aurabar" end
+    },
+    model_alpha = {
       type = "range",
       width = WeakAuras.normalWidth,
       name = L["Alpha"],
@@ -187,9 +207,9 @@ local function createOptions(parentData, data, index, subIndex)
     },
   }
 
-  OptionsPrivate.AddUpDownDeleteDuplicate(options, parentData, index, "subbarmodel")
+  OptionsPrivate.AddUpDownDeleteDuplicate(options, parentData, index, "submodel")
 
   return options
 end
 
-WeakAuras.RegisterSubRegionOptions("subbarmodel", createOptions, L["Shows a model"]);
+WeakAuras.RegisterSubRegionOptions("submodel", createOptions, L["Shows a model"]);

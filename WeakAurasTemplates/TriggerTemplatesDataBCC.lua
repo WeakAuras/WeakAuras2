@@ -1,5 +1,5 @@
 local WeakAuras = WeakAuras
-if not WeakAuras.IsBC() then return end
+if not WeakAuras.IsBCC() then return end
 local L = WeakAuras.L
 local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
 
@@ -83,13 +83,14 @@ templates.class.WARRIOR = {
       title = L["Abilities"],
       args = {
         { spell = 72, type = "ability", debuff = true, requiresTarget = true, form = 2}, -- Shield Bash
+        { spell = 78, type = "ability", queued = true}, -- Heroic Strike
         { spell = 100, type = "ability", requiresTarget = true, form = 1}, -- Charge
         { spell = 355, type = "ability", debuff = true, requiresTarget = true, form = 2}, -- Taunt
         { spell = 469, type = "ability", buff = true}, -- Commanding Shout
         { spell = 676, type = "ability", debuff = true, requiresTarget = true, form = 2}, -- Disarm
         { spell = 694, type = "ability", debuff = true, requiresTarget = true, form = 1}, -- Mocking Blow
         { spell = 772, type = "ability", debuff = true, requiresTarget = true}, -- Rend
-        { spell = 845, type = "ability"}, -- Cleave
+        { spell = 845, type = "ability", queued = true}, -- Cleave
         { spell = 871, type = "ability", buff = true, form = 2}, -- Shield Wall
         { spell = 1160, type = "ability", debuff = true}, -- Demoralizing Shout
         { spell = 1161, type = "ability", debuff = true}, -- Challenging Shout
@@ -109,11 +110,11 @@ templates.class.WARRIOR = {
         { spell = 7384, type = "ability", requiresTarget = true, form = 1}, -- Overpower
         { spell = 7386, type = "ability", requiresTarget = true, debuff = true}, -- Sunder Armor
         { spell = 12323, type = "ability", debuff = true, talent = 46}, -- Piercing Howl
-        { spell = 12292, type = "ability", buff = true, talent = 53}, -- Sweeping Strikes
+        { spell = 12328, type = "ability", buff = true, talent = 53}, -- Sweeping Strikes
         { spell = 12294, type = "ability", requiresTarget = true, talent = 20}, -- Mortal Strike
         { spell = 12809, type = "ability", requiresTarget = true, debuff = true, talent = 94}, -- Concussion Blow
         { spell = 12975, type = "ability", buff = true, talent = 86}, -- Last Stand
-        { spell = 12328, type = "ability", buff = true, talent = 13}, -- Death Wish
+        { spell = 12292, type = "ability", buff = true, talent = 13}, -- Death Wish
         { spell = 18499, type = "ability", buff = true, form = 3}, -- Berserker Rage
         { spell = 20230, type = "ability", buff = true, form = 1}, -- Retaliation
         { spell = 20252, type = "ability", requiresTarget = true, form = 3}, -- Intercept
@@ -256,7 +257,7 @@ templates.class.HUNTER = {
         { spell = 1978, type = "ability", requiresTarget = true, debuff = true}, -- Serpent Sting
         { spell = 2643, type = "ability"}, -- Multi-Shot
         { spell = 2649, type = "ability", requiresTarget = true, debuff = true}, -- Growl
-        { spell = 2973, type = "ability", requiresTarget = true}, -- Raptor Strike
+        { spell = 2973, type = "ability", queued = true}, -- Raptor Strike
         { spell = 2974, type = "ability", requiresTarget = true, debuff = true}, -- Wing Clip
         { spell = 3034, type = "ability", requiresTarget = true, debuff = true}, -- Viper Sting
         { spell = 3043, type = "ability", requiresTarget = true, debuff = true}, -- Scorpid Sting
@@ -766,7 +767,7 @@ templates.class.DRUID = {
         { spell = 5570, type = "ability", requiresTarget = true, debuff = true, talent = 8}, -- Insect Swarm
         { spell = 6785, type = "ability", requiresTarget = true, form = 3}, -- Ravage
         { spell = 6795, type = "ability", debuff = true, requiresTarget = true, form = 1}, -- Growl
-        { spell = 6807, type = "ability", form = 1}, -- Maul
+        { spell = 6807, type = "ability", queued = true, form = 1}, -- Maul
         { spell = 8921, type = "ability", requiresTarget = true, debuff = true}, -- Moonfire
         { spell = 8946, type = "ability"}, -- Cure Poison
         { spell = 8983, type = "ability", requiresTarget = true, debuff = true, form = 1}, -- Buff
@@ -970,10 +971,10 @@ tinsert(templates.race.Troll, { spell = 26296, type = "ability", titleSuffix = L
 tinsert(templates.race.Troll, { spell = 20554, type = "ability", titleSuffix = L["Other cooldown"]});
 tinsert(templates.race.Troll, { spell = 26635, type = "buff", unit = "player", titleSuffix = L["buff"]});
 -- Arcane Torrent
-tinsert(templates.race.BloodElf, { spell = 69179, type = "ability", titleSuffix = L["cooldown"]}); -- TODO check this for TBC
+tinsert(templates.race.BloodElf, { spell = 69179, type = "ability", titleSuffix = L["cooldown"]}); -- TODO check this for BCC
 -- Gift of the Naaru
-tinsert(templates.race.Draenei, { spell = 28880, type = "ability", titleSuffix = L["cooldown"]}); -- TODO check this for TBC
-tinsert(templates.race.Draenei, { spell = 28880, type = "buff", unit = "player", titleSuffix = L["buff"]}); -- TODO check this for TBC
+tinsert(templates.race.Draenei, { spell = 28880, type = "ability", titleSuffix = L["cooldown"]}); -- TODO check this for BCC
+tinsert(templates.race.Draenei, { spell = 28880, type = "buff", unit = "player", titleSuffix = L["buff"]}); -- TODO check this for BCC
 
 ------------------------------
 -- Helper code for options

@@ -1,6 +1,6 @@
-## Interface: 90005
-## Interface-Classic: 11307
-## Interface-BC: 20501
+## Interface: 90105
+## Interface-Classic: 11401
+## Interface-BCC: 20503
 ## Title: WeakAuras Archive
 ## Author: The WeakAuras Team
 ## Version: @project-version@

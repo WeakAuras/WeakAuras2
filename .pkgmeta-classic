@@ -20,9 +20,11 @@ externals:
   WeakAuras/Libs/LibClassicDurations: https://github.com/rgd87/LibClassicDurations
   WeakAuras/Libs/LibClassicCasterino: https://github.com/rgd87/LibClassicCasterino
   WeakAuras/Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
-  WeakAuras/Libs/LibRangeCheck-2.0: https://repos.curseforge.com/wow/librangecheck-2-0/trunk/LibRangeCheck-2.0
+  WeakAuras/Libs/LibRangeCheck-2.0: https://github.com/WeakAuras/LibRangeCheck-2.0/
   WeakAuras/Libs/LibClassicSpellActionCount-1.0: https://github.com/Ennea/LibClassicSpellActionCount-1.0
-  WeakAuras/Libs/Archivist: https://github.com/emptyrivers/Archivist
+  WeakAuras/Libs/Archivist:
+    url: https://github.com/emptyrivers/Archivist
+    tag: v1.0.8
   WeakAuras/Libs/LibSerialize:
     url: https://github.com/rossnichols/LibSerialize
     tag: v1.0.0
@@ -40,8 +42,9 @@ ignore:
   - update_translations.sh
   - generate_changelog.sh
   - WeakAurasModelPaths/ModelPaths.lua
+  - WeakAurasModelPaths/ModelPathsBCC.lua
   - WeakAurasTemplates/TriggerTemplatesData.lua
-  - WeakAurasTemplates/TriggerTemplatesDataTBC.lua
+  - WeakAurasTemplates/TriggerTemplatesDataBCC.lua
 
 move-folders:
   WeakAuras/WeakAuras: WeakAuras
@@ -49,3 +52,4 @@ move-folders:
   WeakAuras/WeakAurasModelPaths: WeakAurasModelPaths
   WeakAuras/WeakAurasTemplates: WeakAurasTemplates
   WeakAuras/WeakAurasArchive: WeakAurasArchive
+  WeakAuras/Libs/LibRangeCheck-2.0/LibRangeCheck-2.0: WeakAuras/Libs/LibRangeCheck-2.0

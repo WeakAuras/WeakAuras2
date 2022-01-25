@@ -153,13 +153,8 @@ end
 
 function OptionsPrivate.GetTriggerOptions(data)
   local allOptions = {}
-  if data.controlledChildren then
-    for index, childId in pairs(data.controlledChildren) do
-      local childData = WeakAuras.GetData(childId)
-      allOptions = AddOptions(allOptions, childData)
-    end
-  else
-    allOptions = AddOptions(allOptions, data)
+  for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+    allOptions = AddOptions(allOptions, child)
   end
 
   fixMetaOrders(allOptions)
@@ -363,7 +358,9 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
   }
   if (GetAddOnEnableState(UnitName("player"), "WeakAurasTemplates") ~= 0) then
     options.__applyTemplate = function()
-      WeakAuras.OpenTriggerTemplate(data)
+      -- If we have more than a single aura selected,
+      -- we want to open the template view with the group/multi selection
+      OptionsPrivate.OpenTriggerTemplate(OptionsPrivate.GetPickedDisplay())
     end
   end
 end

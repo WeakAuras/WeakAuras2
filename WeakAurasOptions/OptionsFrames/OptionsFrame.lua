@@ -543,7 +543,7 @@ function OptionsPrivate.CreateFrame()
   local filterInput = CreateFrame("editbox", "WeakAurasFilterInput", frame, "SearchBoxTemplate")
   filterInput:SetScript("OnTextChanged", function(self)
     SearchBoxTemplate_OnTextChanged(self)
-    WeakAuras.SortDisplayButtons(filterInput:GetText())
+    OptionsPrivate.SortDisplayButtons(filterInput:GetText())
   end)
   filterInput:SetHeight(15)
   filterInput:SetPoint("TOP", frame, "TOP", 0, -44)
@@ -693,41 +693,53 @@ function OptionsPrivate.CreateFrame()
     status.scrollvalue = status.offset / ((height - viewheight) / 1000.0)
   end
 
-  local numAddons = 0
-
-  for addon, addonData in pairs(OptionsPrivate.Private) do
-    numAddons = numAddons + 1
-  end
-
-  if numAddons > 0 then
-    local addonsButton = AceGUI:Create("WeakAurasNewHeaderButton")
-    addonsButton:SetText(L["Addons"])
-    addonsButton:SetDescription(L["Manage displays defined by Addons"])
-    addonsButton:SetClick(function() frame:PickOption("Addons") end)
-    frame.addonsButton = addonsButton
-  end
-
-  local pendingImportButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
-  pendingImportButton:SetText(L["Ready to Import"])
-  pendingImportButton:Disable()
-  pendingImportButton:EnableExpand()
+  -- Ready to Install section
+  local pendingInstallButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
+  pendingInstallButton:SetText(L["Ready for Install"])
+  pendingInstallButton:Disable()
+  pendingInstallButton:EnableExpand()
+  pendingInstallButton.frame.view:Hide()
   if odb.pendingImportCollapse then
-    pendingImportButton:Collapse()
+    pendingInstallButton:Collapse()
   else
-    pendingImportButton:Expand()
+    pendingInstallButton:Expand()
   end
-  pendingImportButton:SetOnExpandCollapse(function()
-    if pendingImportButton:GetExpanded() then
+  pendingInstallButton:SetOnExpandCollapse(function()
+    if pendingInstallButton:GetExpanded() then
       odb.pendingImportCollapse = nil
     else
       odb.pendingImportCollapse = true
     end
-    WeakAuras.SortDisplayButtons()
+    OptionsPrivate.SortDisplayButtons()
   end)
-  pendingImportButton:SetExpandDescription(L["Expand all Pending Import"])
-  pendingImportButton:SetCollapseDescription(L["Collapse all Pending Import"])
-  frame.pendingImportButton = pendingImportButton
+  pendingInstallButton:SetExpandDescription(L["Expand all pending Import"])
+  pendingInstallButton:SetCollapseDescription(L["Collapse all pending Import"])
+  frame.pendingInstallButton = pendingInstallButton
 
+  -- Ready for update section
+  local pendingUpdateButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
+  pendingUpdateButton:SetText(L["Ready for Update"])
+  pendingUpdateButton:Disable()
+  pendingUpdateButton:EnableExpand()
+  pendingUpdateButton.frame.view:Hide()
+  if odb.pendingUpdateCollapse then
+    pendingUpdateButton:Collapse()
+  else
+    pendingUpdateButton:Expand()
+  end
+  pendingUpdateButton:SetOnExpandCollapse(function()
+    if pendingUpdateButton:GetExpanded() then
+      odb.pendingUpdateCollapse = nil
+    else
+      odb.pendingUpdateCollapse = true
+    end
+    OptionsPrivate.SortDisplayButtons()
+  end)
+  pendingUpdateButton:SetExpandDescription(L["Expand all pending Import"])
+  pendingUpdateButton:SetCollapseDescription(L["Collapse all pending Import"])
+  frame.pendingUpdateButton = pendingUpdateButton
+
+  -- Loaded section
   local loadedButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
   loadedButton:SetText(L["Loaded"])
   loadedButton:Disable()
@@ -743,7 +755,7 @@ function OptionsPrivate.CreateFrame()
     else
       odb.loadedCollapse = true
     end
-    WeakAuras.SortDisplayButtons()
+    OptionsPrivate.SortDisplayButtons()
   end)
   loadedButton:SetExpandDescription(L["Expand all loaded displays"])
   loadedButton:SetCollapseDescription(L["Collapse all loaded displays"])
@@ -787,6 +799,7 @@ function OptionsPrivate.CreateFrame()
   loadedButton:SetViewDescription(L["Toggle the visibility of all loaded displays"])
   frame.loadedButton = loadedButton
 
+  -- Not Loaded section
   local unloadedButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
   unloadedButton:SetText(L["Not Loaded"])
   unloadedButton:Disable()
@@ -802,7 +815,7 @@ function OptionsPrivate.CreateFrame()
     else
       odb.unloadedCollapse = true
     end
-    WeakAuras.SortDisplayButtons()
+    OptionsPrivate.SortDisplayButtons()
   end)
   unloadedButton:SetExpandDescription(L["Expand all non-loaded displays"])
   unloadedButton:SetCollapseDescription(L["Collapse all non-loaded displays"])
@@ -855,8 +868,8 @@ function OptionsPrivate.CreateFrame()
       if data and data.parent then
         frame:ClearOptions(data.parent)
       end
-      for _, tmpId in ipairs(tempGroup.controlledChildren) do
-        if (id == tmpId) then
+      for child in OptionsPrivate.Private.TraverseAllChildren(tempGroup) do
+        if (id == child.id) then
           frame:ClearOptions(tempGroup.id)
         end
       end
@@ -1022,10 +1035,6 @@ function OptionsPrivate.CreateFrame()
     for id, button in pairs(displayButtons) do
       button:ClearPick(noHide)
     end
-    --newButton:ClearPick(noHide)
-    if frame.addonsButton then
-      frame.addonsButton:ClearPick(noHide)
-    end
     loadedButton:ClearPick(noHide)
     unloadedButton:ClearPick(noHide)
     container:ReleaseChildren()
@@ -1084,7 +1093,7 @@ function OptionsPrivate.CreateFrame()
       button:SetDescription(L["Offer a guided way to create auras for your character"])
       button:SetIcon("Interface\\Icons\\INV_Misc_Book_06")
       button:SetClick(function()
-        WeakAuras.OpenTriggerTemplate(nil, targetId)
+        OptionsPrivate.OpenTriggerTemplate(nil, targetId)
       end)
       containerScroll:AddChild(button)
 
@@ -1178,50 +1187,22 @@ function OptionsPrivate.CreateFrame()
     containerScroll:AddChild(importButton)
   end
 
-  frame.PickOption = function(self, option, fromGroup)
-    local targetId = GetTarget(self.pickedDisplay)
-    self:ClearPicks()
-    if targetId then
-      local pickedButton = WeakAuras.GetDisplayButton(targetId)
-      if pickedButton then
-        pickedButton:Pick()
-      end
-    end
-    self.moversizer:Hide()
-    self.pickedOption = option
-    if option == "Addons" then
-      frame.addonsButton:Pick()
-
-      local containerScroll = AceGUI:Create("ScrollFrame")
-      containerScroll:SetLayout("AbsoluteList")
-      container:SetLayout("fill")
-      container:AddChild(containerScroll)
-
-      OptionsPrivate.CreateImportButtons()
-      WeakAuras.SortImportButtons(containerScroll)
-    else
-      error("An options button other than New or Addons was selected... but there are no other options buttons!")
-    end
-  end
-
-  frame.PickDisplay = function(self, id, tab, noHide)
-    if self.pickedDisplay == id then
-      return
-    end
-
-    OptionsPrivate.Private.PauseAllDynamicGroups()
-
-    self:ClearPicks(noHide)
-    local data = WeakAuras.GetData(id)
-
-    displayButtons[id]:Pick()
-    self.pickedDisplay = id
-
+  local function ExpandParents(data)
     if data.parent then
       if not displayButtons[data.parent]:GetExpanded() then
         displayButtons[data.parent]:Expand()
       end
+      local parentData = WeakAuras.GetData(data.parent)
+      ExpandParents(parentData)
     end
+  end
+
+  frame.PickDisplay = function(self, id, tab, noHide)
+    local data = WeakAuras.GetData(id)
+
+    -- Always expand even if already picked
+    ExpandParents(data)
+
     if OptionsPrivate.Private.loaded[id] ~= nil then
       -- Under loaded
       if not loadedButton:GetExpanded() then
@@ -1233,6 +1214,18 @@ function OptionsPrivate.CreateFrame()
         unloadedButton:Expand()
       end
     end
+
+    if self.pickedDisplay == id then
+      return
+    end
+
+    OptionsPrivate.Private.PauseAllDynamicGroups()
+
+    self:ClearPicks(noHide)
+
+    displayButtons[id]:Pick()
+    self.pickedDisplay = id
+
 
     if tab then
       self.selectedTab = tab
@@ -1248,10 +1241,8 @@ function OptionsPrivate.CreateFrame()
       self.buttonsScroll:SetScrollPos(yOffset, yOffset - 32)
     end
 
-    if data.controlledChildren then
-      for index, childId in pairs(data.controlledChildren) do
-        displayButtons[childId]:PriorityShow(1)
-      end
+    for child in OptionsPrivate.Private.TraverseAllChildren(data) do
+      displayButtons[child.id]:PriorityShow(1)
     end
 
     if data.controlledChildren and #data.controlledChildren == 0 then
@@ -1283,7 +1274,7 @@ function OptionsPrivate.CreateFrame()
     else
       local wasGroup = false
       if type(self.pickedDisplay) == "string" then
-        if WeakAuras.GetData(self.pickedDisplay).controlledChildren then
+        if WeakAuras.GetData(self.pickedDisplay).controlledChildren or WeakAuras.GetData(id).controlledChildren then
           wasGroup = true
         elseif not OptionsPrivate.IsDisplayPicked(id) then
           tinsert(tempGroup.controlledChildren, self.pickedDisplay)
@@ -1302,15 +1293,13 @@ function OptionsPrivate.CreateFrame()
   end
 
   frame.PickDisplayBatch = function(self, batchSelection)
+    local alreadySelected = {}
+    for child in OptionsPrivate.Private.TraverseAllChildren(tempGroup) do
+      alreadySelected[child.id] = true
+    end
+
     for index, id in ipairs(batchSelection) do
-      local alreadySelected = false
-      for _, v in pairs(tempGroup.controlledChildren) do
-        if v == id then
-          alreadySelected = true
-          break
-        end
-      end
-      if not alreadySelected then
+      if not alreadySelected[id] then
         displayButtons[id]:Pick()
         tinsert(tempGroup.controlledChildren, id)
       end

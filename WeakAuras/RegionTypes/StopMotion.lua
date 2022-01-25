@@ -87,6 +87,7 @@ WeakAuras.regionPrototype.AddProperties(properties, default);
 
 local function create(parent)
     local frame = CreateFrame("FRAME", nil, UIParent);
+    frame.regionType = "stopmotion"
     frame:SetMovable(true);
     frame:SetResizable(true);
     frame:SetMinResize(1, 1);
@@ -404,4 +405,8 @@ local function modify(parent, region, data)
     end
 end
 
-WeakAuras.RegisterRegionType("stopmotion", create, modify, default, properties);
+local function validate(data)
+  Private.EnforceSubregionExists(data, "subbackground")
+end
+
+WeakAuras.RegisterRegionType("stopmotion", create, modify, default, properties, validate);

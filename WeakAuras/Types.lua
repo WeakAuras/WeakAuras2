@@ -375,14 +375,16 @@ Private.format_types = {
   },
   Unit = {
     display = L["Formats |cFFFF0000%unit|r"],
-    AddOptions = function(symbol, hidden, addOption, get)
-      addOption(symbol .. "_color", {
-        type = "select",
-        name = L["Color"],
-        width = WeakAuras.normalWidth,
-        values = Private.unit_color_types,
-        hidden = hidden,
-      })
+    AddOptions = function(symbol, hidden, addOption, get, withoutColor)
+      if not withoutColor then
+        addOption(symbol .. "_color", {
+          type = "select",
+          name = L["Color"],
+          width = WeakAuras.normalWidth,
+          values = Private.unit_color_types,
+          hidden = hidden,
+        })
+      end
       addOption(symbol .. "_realm_name", {
         type = "select",
         name = L["Realm Name"],
@@ -409,8 +411,8 @@ Private.format_types = {
         end
       })
     end,
-    CreateFormatter = function(symbol, get)
-      local color = get(symbol .. "_color", true)
+    CreateFormatter = function(symbol, get, withoutColor)
+      local color = not withoutColor and get(symbol .. "_color", true)
       local realm = get(symbol .. "_realm_name", "never")
       local abbreviate = get(symbol .. "_abbreviate", false)
       local abbreviateMax = get(symbol .. "_abbreviate_max", 8)
@@ -500,14 +502,16 @@ Private.format_types = {
   },
   guid = {
     display = L["Formats Player's |cFFFF0000%guid|r"],
-    AddOptions = function(symbol, hidden, addOption, get)
-      addOption(symbol .. "_color", {
-        type = "select",
-        name = L["Color"],
-        width = WeakAuras.normalWidth,
-        values = Private.unit_color_types,
-        hidden = hidden,
-      })
+    AddOptions = function(symbol, hidden, addOption, get, withoutColor)
+      if not withoutColor then
+        addOption(symbol .. "_color", {
+          type = "select",
+          name = L["Color"],
+          width = WeakAuras.normalWidth,
+          values = Private.unit_color_types,
+          hidden = hidden,
+        })
+      end
       addOption(symbol .. "_realm_name", {
         type = "select",
         name = L["Realm Name"],
@@ -533,8 +537,8 @@ Private.format_types = {
         end
       })
     end,
-    CreateFormatter = function(symbol, get)
-      local color = get(symbol .. "_color", true)
+    CreateFormatter = function(symbol, get, withoutColor)
+      local color = not withoutColor and get(symbol .. "_color", true)
       local realm = get(symbol .. "_realm_name", "never")
       local abbreviate = get(symbol .. "_abbreviate", false)
       local abbreviateMax = get(symbol .. "_abbreviate_max", 8)
@@ -762,7 +766,8 @@ Private.trigger_modes = {
 
 Private.debuff_types = {
   HELPFUL = L["Buff"],
-  HARMFUL = L["Debuff"]
+  HARMFUL = L["Debuff"],
+  BOTH = L["Buff/Debuff"]
 }
 
 Private.tooltip_count = {
@@ -773,7 +778,7 @@ Private.tooltip_count = {
 
 Private.aura_types = {
   BUFF = L["Buff"],
-  DEBUFF = L["Debuff"]
+  DEBUFF = L["Debuff"],
 }
 
 
@@ -1055,6 +1060,11 @@ Private.text_word_wrap = {
   Elide = L["Elide"]
 }
 
+Private.include_pets_types = {
+  PlayersAndPets = L["Players and Pets"],
+  PetsOnly = L["Pets only"]
+}
+
 Private.category_event_prototype = {}
 for name, prototype in pairs(Private.event_prototypes) do
   Private.category_event_prototype[prototype.type] = Private.category_event_prototype[prototype.type] or {}
@@ -1182,7 +1192,8 @@ Private.environmental_types = {
 Private.combatlog_flags_check_type = {
   Mine = L["Mine"],
   InGroup = L["In Group"],
-  NotInGroup = L["Not in Group"]
+  InParty = L["In Party"],
+  NotInGroup = L["Not in Smart Group"]
 }
 
 Private.combatlog_flags_check_reaction = {
@@ -1211,6 +1222,9 @@ Private.combatlog_raid_mark_check_type = {
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_8:14|t " .. RAID_TARGET_8, -- Skull
   L["Any"]
 }
+
+Private.raid_mark_check_type = CopyTable(Private.combatlog_raid_mark_check_type)
+Private.raid_mark_check_type[9] = nil
 
 Private.orientation_types = {
   HORIZONTAL_INVERSE = L["Left to Right"],
@@ -1722,6 +1736,29 @@ if WeakAuras.IsClassic() then -- Classic
       runes[tostring(v)] = nil
     end
   end
+elseif WeakAuras.IsBCC() then
+  Private.texture_types["Blizzard Alerts"] = nil
+  do
+    local beams = Private.texture_types["Beams"]
+    local beams_ids = {186193, 186194, 241098, 241099, 369749, 369750}
+    for _, v in ipairs(beams_ids) do
+      beams[tostring(v)] = nil
+    end
+  end
+  do
+    local icons = Private.texture_types["Icons"]
+    local icons_ids = {165605, 240925, 240961, 240972, 241049}
+    for _, v in ipairs(icons_ids) do
+      icons[tostring(v)] = nil
+    end
+  end
+  do
+    local runes = Private.texture_types["Runes"]
+    local runes_ids = {165922, 241003, 241004, 241005}
+    for _, v in ipairs(runes_ids) do
+      runes[tostring(v)] = nil
+    end
+  end
 end
 
 local PowerAurasPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\"
@@ -1917,7 +1954,7 @@ Private.swing_types = {
   ["off"] = SECONDARYHANDSLOT
 }
 
-if WeakAuras.IsClassic() or WeakAuras.IsBC() then
+if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
   Private.swing_types["ranged"] = RANGEDSLOT
 end
 
@@ -2180,17 +2217,26 @@ Private.group_types = {
   raid = L["In Raid"]
 }
 
-Private.difficulty_types = {
-  none = L["None"],
-  normal = PLAYER_DIFFICULTY1,
-  heroic = PLAYER_DIFFICULTY2,
-  mythic = PLAYER_DIFFICULTY6,
-  timewalking = PLAYER_DIFFICULTY_TIMEWALKER,
-  lfr = PLAYER_DIFFICULTY3,
-  challenge = PLAYER_DIFFICULTY5
-}
+if WeakAuras.IsRetail() then
+  Private.difficulty_types = {
+    none = L["None"],
+    normal = PLAYER_DIFFICULTY1,
+    heroic = PLAYER_DIFFICULTY2,
+    mythic = PLAYER_DIFFICULTY6,
+    timewalking = PLAYER_DIFFICULTY_TIMEWALKER,
+    lfr = PLAYER_DIFFICULTY3,
+    challenge = PLAYER_DIFFICULTY5
+  }
+elseif WeakAuras.IsBCC() then
+  Private.difficulty_types = {
+    none = L["None"],
+    normal = PLAYER_DIFFICULTY1,
+    heroic = PLAYER_DIFFICULTY2,
+  }
+end
 
-if WeakAuras.IsClassic() or WeakAuras.IsBC() then
+
+if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
   Private.raid_role_types = {
     MAINTANK = "|TInterface\\GroupFrame\\UI-Group-maintankIcon:16:16|t "..MAINTANK,
     MAINASSIST = "|TInterface\\GroupFrame\\UI-Group-mainassistIcon:16:16|t "..MAINASSIST,
@@ -2297,6 +2343,13 @@ Private.send_chat_message_types = {
   ERROR = L["Error Frame"]
 }
 
+
+Private.send_chat_message_types.TTS = L["Text-to-speech"]
+Private.tts_voices = {}
+for i, voiceInfo in pairs(C_VoiceChat.GetTtsVoices()) do
+  Private.tts_voices[voiceInfo.voiceID] = voiceInfo.name
+end
+
 Private.group_aura_name_info_types = {
   aura = L["Aura Name"],
   players = L["Player(s) Affected"],
@@ -2339,6 +2392,22 @@ LSM:Register("sound", "Temple Bell", "Interface\\AddOns\\WeakAuras\\Media\\Sound
 LSM:Register("sound", "Torch", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Torch.ogg")
 LSM:Register("sound", "Warning Siren", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\WarningSiren.ogg")
 LSM:Register("sound", "Lich King Apocalypse", 554003) -- Sound\Creature\LichKing\IC_Lich King_Special01.ogg
+-- Sounds from freesound.org, see commits for attributions
+LSM:Register("sound", "Sheep Blerping", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\SheepBleat.ogg")
+LSM:Register("sound", "Rooster Chicken Call", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RoosterChickenCalls.ogg")
+LSM:Register("sound", "Goat Bleeting", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\GoatBleating.ogg")
+LSM:Register("sound", "Acoustic Guitar", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\AcousticGuitar.ogg")
+LSM:Register("sound", "Synth Chord", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\SynthChord.ogg")
+LSM:Register("sound", "Chicken Alarm", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\ChickenAlarm.ogg")
+LSM:Register("sound", "Xylophone", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Xylophone.ogg")
+LSM:Register("sound", "Drums", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Drums.ogg")
+LSM:Register("sound", "Tada Fanfare", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\TadaFanfare.ogg")
+LSM:Register("sound", "Squeaky Toy Short", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\SqueakyToyShort.ogg")
+LSM:Register("sound", "Error Beep", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\ErrorBeep.ogg")
+LSM:Register("sound", "Oh No", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\OhNo.ogg")
+LSM:Register("sound", "Double Whoosh", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\DoubleWhoosh.ogg")
+LSM:Register("sound", "Brass", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Brass.mp3")
+LSM:Register("sound", "Glass", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Glass.mp3")
 
 LSM:Register("sound", "Voice: Adds", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Adds.ogg")
 LSM:Register("sound", "Voice: Boss", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Boss.ogg")
@@ -2365,7 +2434,6 @@ LSM:Register("sound", "Voice: Star", "Interface\\AddOns\\WeakAuras\\Media\\Sound
 LSM:Register("sound", "Voice: Switch", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Switch.ogg")
 LSM:Register("sound", "Voice: Taunt", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Taunt.ogg")
 LSM:Register("sound", "Voice: Triangle", "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Triangle.ogg")
-
 
 local PowerAurasSoundPath = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Sounds\\"
 LSM:Register("sound", "Aggro", PowerAurasSoundPath.."aggro.ogg")
@@ -2411,6 +2479,7 @@ LSM:Register("sound", "Wicked Female Laugh", PowerAurasSoundPath.."wlaugh.ogg")
 LSM:Register("sound", "Wolf Howl", PowerAurasSoundPath.."wolf5.ogg")
 LSM:Register("sound", "Yeehaw", PowerAurasSoundPath.."yeehaw.ogg")
 
+
 Private.sound_types = {
   [" custom"] = " " .. L["Custom"],
   [" KitID"] = " " .. L["Sound by Kit ID"]
@@ -2434,6 +2503,13 @@ LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\F
 
 -- register plain white border
 LSM:Register("border", "Square Full White", [[Interface\AddOns\WeakAuras\Media\Textures\Square_FullWhite.tga]])
+
+--
+LSM:Register("statusbar", "Clean", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Clean]])
+LSM:Register("statusbar", "Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes]])
+LSM:Register("statusbar", "Thick Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes_Thick]])
+LSM:Register("statusbar", "Thin Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes_Thin]])
+LSM:Register("border", "Drop Shadow", [[Interface\AddOns\WeakAuras\Media\Textures\Border_DropShadow]])
 
 Private.duration_types = {
   seconds = L["Seconds"],
@@ -2573,6 +2649,7 @@ end
 Private.update_categories = {
   {
     name = "anchor",
+    -- Note, these are special cased for child auras and considered arrangment
     fields = {
       "xOffset",
       "yOffset",
@@ -2691,6 +2768,8 @@ Private.internal_fields = {
   internalVersion = true,
   sortHybridTable = true,
   tocversion = true,
+  parent = true,
+  controlledChildren = true,
 }
 
 -- fields that are not included in exported data
@@ -2699,6 +2778,14 @@ Private.internal_fields = {
 Private.non_transmissable_fields = {
   controlledChildren = true,
   parent = true,
+  authorMode = true,
+  skipWagoUpdate = true,
+  ignoreWagoUpdate = true,
+  preferToUpdate = true,
+}
+
+-- For nested groups, we do transmit parent + controlledChildren
+Private.non_transmissable_fields_v2000 = {
   authorMode = true,
   skipWagoUpdate = true,
   ignoreWagoUpdate = true,
@@ -2966,6 +3053,22 @@ Private.difficulty_info = {
     size = "twenty",
     difficulty = "normal",
   },
+  [173] = {
+    size = "party",
+    difficulty = "normal",
+  },
+  [174] = {
+    size = "party",
+    difficulty = "heroic",
+  },
+  [175] = {
+    size = "ten",
+    difficulty = "heroic",
+  },
+  [176] = {
+    size = "twentyfive",
+    difficulty = "heroic",
+  }
 }
 
 Private.glow_types = {
@@ -2994,7 +3097,11 @@ Private.multiUnitId = {
   ["boss"] = true,
   ["arena"] = true,
   ["group"] = true,
+  ["grouppets"] = true,
+  ["grouppetsonly"] = true,
   ["party"] = true,
+  ["partypets"] = true,
+  ["partypetsonly"] = true,
   ["raid"] = true,
 }
 
@@ -3010,19 +3117,29 @@ Private.multiUnitUnits = {
 Private.multiUnitUnits.group["player"] = true
 Private.multiUnitUnits.party["player"] = true
 
+Private.multiUnitUnits.group["pet"] = true
+Private.multiUnitUnits.party["pet"] = true
+
 for i = 1, 4 do
   Private.baseUnitId["party"..i] = true
   Private.baseUnitId["partypet"..i] = true
   Private.multiUnitUnits.group["party"..i] = true
   Private.multiUnitUnits.party["party"..i] = true
+  Private.multiUnitUnits.group["partypet"..i] = true
+  Private.multiUnitUnits.party["partypet"..i] = true
 end
 
 if WeakAuras.IsRetail() then
   for i = 1, MAX_BOSS_FRAMES do
-    Private.baseUnitId["arena"..i] = true
     Private.baseUnitId["boss"..i] = true
-    Private.multiUnitUnits.arena["arena"..i] = true
     Private.multiUnitUnits.boss["boss"..i] = true
+  end
+end
+
+if WeakAuras.IsRetail() or WeakAuras.IsBCC() then
+  for i = 1, 5 do
+    Private.baseUnitId["arena"..i] = true
+    Private.multiUnitUnits.arena["arena"..i] = true
   end
 end
 
@@ -3033,6 +3150,8 @@ for i = 1, 40 do
   Private.multiUnitUnits.nameplate["nameplate"..i] = true
   Private.multiUnitUnits.group["raid"..i] = true
   Private.multiUnitUnits.raid["raid"..i] = true
+  Private.multiUnitUnits.group["raidpet"..i] = true
+  Private.multiUnitUnits.raid["raidpet"..i] = true
 end
 
 Private.dbm_types = {
@@ -3104,6 +3223,8 @@ Private.noreset_swing_spells = {
   [35475] = true, -- Drums of War
   [35477] = true, -- Drums of Speed
   [35478] = true, -- Drums of Restoration
+  [34120] = true, -- Steady Shot (rank 1)
+  [19434] = true, -- Aimed Shot (rank 1)
   --35474 Drums of Panic DO reset the swing timer, do not add
 }
 
@@ -3147,7 +3268,7 @@ WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAuras\\Media\\Textures
      ["columns"] = 8
   }
 
-  WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\circle"] = {
+WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Basic\\circle"] = {
      ["count"] = 256,
      ["rows"] = 16,
      ["columns"] = 16
@@ -3213,15 +3334,6 @@ WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textu
      ["rows"] = 8,
      ["columns"] = 8
   }
-
-WeakAuras.StopMotion.texture_types.Kaitan = {
-    ["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\CellRing"] = "CellRing",
-    ["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Gadget"] = "Gadget",
-    ["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Radar"] = "Radar",
-    ["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\RadarComplex"] = "RadarComplex",
-    ["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Saber"] = "Saber",
-    ["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\Waveform"] = "Waveform",
-}
 
 WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textures\\Kaitan\\CellRing"] = {
       ["count"] = 32,
@@ -3306,11 +3418,15 @@ if WeakAuras.IsClassic() then
   Private.glow_types.ACShine = nil
 end
 
-if WeakAuras.IsBC() then
+if WeakAuras.IsBCC() then
   Private.item_slot_types[0] = AMMOSLOT
   Private.item_slot_types[18] = RANGEDSLOT
   Private.talent_extra_option_types[0] = nil
   Private.talent_extra_option_types[2] = nil
+  Private.multiUnitId.boss = nil
+  wipe(Private.multiUnitUnits.boss)
+  Private.unit_types_bufftrigger_2.boss = nil
+  Private.actual_unit_types_cast.boss = nil
 
   local reset_swing_spell_list = {
     1464, 8820, 11604, 11605, 25242, -- Slam
@@ -3319,13 +3435,22 @@ if WeakAuras.IsBC() then
     2973, 14260, 14261, 14262, 14263, 14264, 14265, 14266, 27014, -- Raptor Strike
     6807, 6808, 6809, 8972, 9745, 9880, 9881, 26996, -- Maul
     20549, -- War Stomp
-    2764, 3018, -- Shoots
+    2764, 3018, -- Shoots,
+    19434, 20900, 20901, 20902, 20903, 20904, 27065, -- Aimed Shot
+    20066, -- Repentance
   }
-  for i, spellid in ipairs(reset_swing_spell_list) do
+  for _, spellid in ipairs(reset_swing_spell_list) do
     Private.reset_swing_spells[spellid] = true
   end
-  Private.reset_ranged_swing_spells[2764] = true -- Throw
-  Private.reset_ranged_swing_spells[3018] = true -- Shoot
+
+  local reset_ranged_swing_spell_list = {
+    2764, 3018, -- Shoots
+    19434, 20900, 20901, 20902, 20903, 20904, 27065 -- Aimed Shot
+  }
+
+  for _, spellid in ipairs(reset_ranged_swing_spell_list) do
+    Private.reset_ranged_swing_spells[spellid] = true
+  end
 
   Private.glow_types.ACShine = nil
 end

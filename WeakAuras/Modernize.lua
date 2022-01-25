@@ -1,5 +1,6 @@
 if not WeakAuras.IsCorrectVersion() then return end
 local AddonName, Private = ...
+local L = WeakAuras.L
 
 -- Takes as input a table of display data and attempts to update it to be compatible with the current version
 function Private.Modernize(data)
@@ -1285,6 +1286,99 @@ function Private.Modernize(data)
       end
     end
 
+  end
+
+  if (data.internalVersion < 46) then
+    if (data.conditions) then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        if (condition.check) then
+          local triggernum = condition.check.trigger;
+          if (triggernum) then
+            local trigger = data.triggers[triggernum]
+            if (trigger and trigger.trigger and trigger.trigger.event == "Power") then
+              if (condition.check.variable == "chargedComboPoint") then
+                condition.check.variable = "chargedComboPoint1";
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  if (data.internalVersion < 49) then
+    if not data.regionType:match("group") then
+      data.subRegions = data.subRegions or {}
+      -- rename aurabar_bar into subforeground, and subbarmodel into submodel
+      for index, subRegionData in ipairs(data.subRegions) do
+        if subRegionData.type == "aurabar_bar" then
+          subRegionData.type = "subforeground"
+        elseif subRegionData.type == "subbarmodel" then
+          subRegionData.type = "submodel"
+        end
+        if subRegionData.bar_model_visible ~= nil then
+          subRegionData.model_visible = subRegionData.bar_model_visible
+          subRegionData.bar_model_visible = nil
+        end
+        if subRegionData.bar_model_alpha ~= nil then
+          subRegionData.model_alpha = subRegionData.bar_model_alpha
+          subRegionData.bar_model_alpha = nil
+        end
+      end
+      -- rename conditions for bar_model_visible and bar_model_alpha
+      if data.conditions then
+        for conditionIndex, condition in ipairs(data.conditions) do
+          if type(condition.changes) == "table" then
+            for changeIndex, change in ipairs(condition.changes) do
+              if change.property then
+                local prefix, property = change.property:match("(sub%.%d+%.)(.*)")
+                if prefix and property then
+                  if property == "bar_model_visible" then
+                    change.property = prefix.."model_visible"
+                  elseif property == "bar_model_alpha" then
+                    change.property = prefix.."model_alpha"
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  if (data.internalVersion == 49) then
+    -- Version 49 was a dud and contained a broken validation. Try to salvage the data, as
+    -- best as we can.
+    local broken = false
+    local properties = {}
+    Private.GetSubRegionProperties(data, properties)
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        if type(condition.changes) == "table" then
+          for changeIndex, change in ipairs(condition.changes) do
+            if change.property then
+              if not properties[change.property] then
+                -- The property does not exist, so maybe it's one that was accidentally not moved
+                local subRegionIndex, property = change.property:match("^sub%.(%d+)%.(.*)")
+                if subRegionIndex and property then
+                  broken = true
+                  for _, offset in ipairs({-1, 1}) do
+                    local newProperty = "sub." .. subRegionIndex + offset .. "." .. property
+                    if properties[newProperty] then
+                      change.property = newProperty
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+    if broken then
+      WeakAuras.prettyPrint(L["Trying to repair broken conditions in %s likely caused by a WeakAuras bug."]:format(data.id))
+    end
   end
 
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());

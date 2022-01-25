@@ -729,6 +729,24 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     }
     order = order + 1;
 
+    args["condition" .. i .. "value" .. j .. "message voice"] = {
+      type = "select",
+      width = WeakAuras.doubleWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", L["Voice"], L["Voice"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", propertyType),
+      values = OptionsPrivate.Private.tts_voices,
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_voice;
+      end,
+      set = setValueComplex("message_voice"),
+      hidden = function()
+        return not anyMessageType("TTS");
+      end,
+      desc = L["Available Voices are system specific"]
+    }
+    order = order + 1;
+
     local descMessage = descIfNoValue2(data, conditions[i].changes[j], "value", "message", propertyType);
     if (not descMessage and data ~= OptionsPrivate.tempGroup) then
       descMessage = L["Dynamic text tooltip"] .. OptionsPrivate.Private.GetAdditionalProperties(data)
@@ -794,11 +812,11 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       end
       for index, reference in ipairs(ordered) do
         local input = reference.value and reference.value.message
-        hasTextFormatOption = OptionsPrivate.AddTextFormatOption(input, true, formatGet, addOption, hidden, setHidden, index, #ordered)
+        hasTextFormatOption = OptionsPrivate.AddTextFormatOption(input, true, formatGet, addOption, hidden, setHidden, true, index, #ordered)
       end
     else
       local input = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value["message"]
-      hasTextFormatOption = OptionsPrivate.AddTextFormatOption(input, true, formatGet, addOption, hidden, setHidden)
+      hasTextFormatOption = OptionsPrivate.AddTextFormatOption(input, true, formatGet, addOption, hidden, setHidden, true)
     end
 
     if hasTextFormatOption then
@@ -842,9 +860,9 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
                   local changeIndex = reference.changeIndex;
                   multipath[id] = {"conditions", conditionIndex, "changes", changeIndex, "value", "custom"};
                 end
-                OptionsPrivate.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
+                OptionsPrivate.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code-1");
               else
-                OptionsPrivate.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"}, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-check");
+                OptionsPrivate.OpenTextEditor(data, {"conditions", i, "changes", j, "value", "custom"}, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code-1");
               end
             end
           }
@@ -1084,6 +1102,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_color"] = {
       type = "color",
+      hasAlpha = true,
       width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_color", L["Glow Color"], L["Glow Color"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_color", "color"),
@@ -2436,7 +2455,7 @@ local function SubPropertiesForChange(change)
       end
       OptionsPrivate.AddTextFormatOption(input, false, getter, function(key)
         tinsert(result, "message_format_" .. key)
-      end)
+      end, nil, nil, true)
     end
     return result
   end

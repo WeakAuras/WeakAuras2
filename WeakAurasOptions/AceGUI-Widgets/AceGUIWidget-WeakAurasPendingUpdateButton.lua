@@ -18,13 +18,28 @@ local function Hide_Tooltip()
   GameTooltip:Hide()
 end
 
-local function Show_Tooltip(owner, line1, line2)
-  GameTooltip:SetOwner(owner, "ANCHOR_NONE")
-  GameTooltip:SetPoint("LEFT", owner, "RIGHT")
-  GameTooltip:ClearLines()
-  GameTooltip:AddLine(line1)
-  GameTooltip:AddLine(line2, 1, 1, 1, 1)
-  GameTooltip:Show()
+local function Show_Long_Tooltip(owner, description)
+  GameTooltip:SetOwner(owner, "ANCHOR_NONE");
+  GameTooltip:SetPoint("LEFT", owner, "RIGHT");
+  GameTooltip:ClearLines();
+  local line = 1;
+  for i,v in pairs(description) do
+    if(type(v) == "string") then
+      if(line > 1) then
+        GameTooltip:AddLine(v, 1, 1, 1, 1);
+      else
+        GameTooltip:AddLine(v);
+      end
+    elseif(type(v) == "table") then
+      if(i == 1) then
+        GameTooltip:AddDoubleLine(v[1], v[2]..(v[3] and (" |T"..v[3]..":12:12:0:0:64:64:4:60:4:60|t") or ""));
+      else
+        GameTooltip:AddDoubleLine(v[1], v[2]..(v[3] and (" |T"..v[3]..":12:12:0:0:64:64:4:60:4:60|t") or ""), 1, 1, 1, 1, 1, 1, 1, 1);
+      end
+    end
+    line = line + 1;
+  end
+  GameTooltip:Show();
 end
 
 --[[-----------------------------------------------------------------------------
@@ -40,6 +55,8 @@ local methods = {
     self.callbacks = {}
     self.id = id
     self.companionData = companionData
+    self.linkedAuras = {}
+    self.linkedChildren = {}
 
     function self.callbacks.OnUpdateClick()
       WeakAuras.Import(self.companionData.encoded)
@@ -48,10 +65,58 @@ local methods = {
     self:SetTitle(self.companionData.name)
     self.update:SetScript("OnClick", self.callbacks.OnUpdateClick)
     local data = OptionsPrivate.Private.StringToTable(self.companionData.encoded, true)
+    WeakAuras.PreAdd(data.d)
     self.data = data.d
     self.frame:EnableKeyboard(false)
     self:Enable()
     self.frame:Hide()
+
+    self.menu = {}
+
+    self.frame:SetScript("OnMouseUp", function()
+      Hide_Tooltip()
+      self:SetMenu()
+      EasyMenu(self.menu, WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU")
+    end)
+
+    self.frame:SetScript("OnEnter", function()
+      self:SetNormalTooltip()
+      Show_Long_Tooltip(self.frame, self.frame.description)
+    end)
+    self.frame:SetScript("OnLeave", Hide_Tooltip)
+  end,
+  ["SetMenu"] = function(self)
+    wipe(self.menu)
+    for auraId in pairs(self.linkedAuras) do
+      if not self.linkedChildren[auraId] then
+        tinsert(self.menu,
+          {
+            text = auraId,
+            notCheckable = true,
+            hasArrow = true,
+            menuList = {
+              {
+                text = L["Update"],
+                notCheckable = true,
+                func = function()
+                  local auraData = WeakAuras.GetData(auraId)
+                  if auraData then
+                    WeakAuras.Import(self.companionData.encoded, auraData)
+                  end
+                end
+              },
+              {
+                text = L["Ignore updates"],
+                notCheckable = true,
+                func = function()
+                  StaticPopup_Show("WEAKAURAS_CONFIRM_IGNORE_UPDATES", "", "", auraId)
+                end
+              }
+            }
+          }
+        )
+      end
+    end
   end,
   ["SetLogo"] = function(self, path)
     self.frame.updateLogo.tex:SetTexture(path)
@@ -83,12 +148,64 @@ local methods = {
     self.frame = nil
     self.data = nil
   end,
+  ["SetNormalTooltip"] = function(self)
+    local data = self.data;
+    local namestable = {};
+
+    local hasDescription = data.desc and data.desc ~= "";
+    local hasUrl = data.url and data.url ~= "";
+    local hasVersion = (data.semver and data.semver ~= "") or (data.version and data.version ~= "");
+    local hasVersionNote = self.companionData.versionNote and self.companionData.versionNote ~= ""
+
+    if(hasDescription or hasUrl or hasVersion or hasVersionNote) then
+      tinsert(namestable, " ")
+    end
+
+    if hasVersionNote then
+      tinsert(namestable, "|cFFFFD100"..self.companionData.versionNote)
+      tinsert(namestable, " ")
+    end
+
+    for auraId in pairs(self.linkedAuras) do
+      if not self.linkedChildren[auraId] then
+        tinsert(namestable, "|cFFFFD100" .. L["Linked aura: "]  .. auraId .. "|r")
+      end
+    end
+    tinsert(namestable, " ")
+
+    if(hasDescription) then
+      tinsert(namestable, "|cFFFFD100"..data.desc)
+    end
+
+    if (hasUrl) then
+      tinsert(namestable, "|cFFFFD100" .. data.url .. "|r")
+    end
+
+    if (hasVersion) then
+      tinsert(namestable, "|cFFFFD100" .. L["Version: "]  .. (data.semver or data.version) .. "|r")
+    end
+
+    self:SetDescription({self.companionData.name or self.data.id, self.companionData.author or ""}, unpack(namestable))
+  end,
+  ["SetDescription"] = function(self, ...)
+    self.frame.description = {...};
+  end,
   ["SetTitle"] = function(self, title)
     self.titletext = title
     self.title:SetText(title)
   end,
   ["SetClick"] = function(self, func)
     self.frame:SetScript("OnClick", func)
+  end,
+  ["ResetLinkedAuras"] = function(self)
+    wipe(self.linkedAuras)
+    wipe(self.linkedChildren)
+  end,
+  ["MarkLinkedAura"] = function(self, auraId)
+    self.linkedAuras[auraId] = true
+  end,
+  ["MarkLinkedChildren"] = function(self, auraId)
+    self.linkedChildren[auraId] = true
   end,
   ["UpdateThumbnail"] = function(self)
     if not self.hasThumbnail then
@@ -114,6 +231,9 @@ local methods = {
     if self.thumbnail then
       local regionType = self.thumbnailType
       local option = WeakAuras.regionOptions[regionType]
+      if self.thumbnail.icon then
+        self.thumbnail.icon:SetDesaturated(false)
+      end
       option.releaseThumbnail(self.thumbnail)
       self.thumbnail = nil
     end
@@ -136,6 +256,9 @@ local methods = {
     local option = WeakAuras.regionOptions[regionType]
     if option and option.acquireThumbnail then
       self.thumbnail = option.acquireThumbnail(button, self.data)
+      if self.thumbnail.icon then
+        self.thumbnail.icon:SetDesaturated(true)
+      end
       self:SetIcon(self.thumbnail)
     else
       self:SetIcon("Interface\\Icons\\INV_Misc_QuestionMark")
@@ -157,65 +280,6 @@ local methods = {
       self.iconRegion:Show()
       self.icon:Hide()
     end
-    self.thumbnail.icon:SetDesaturated(true)
-  end,
-  ["OverrideIcon"] = function(self)
-    self.icon:SetTexture("Interface\\Addons\\WeakAuras\\Media\\Textures\\icon.blp")
-    self.icon:Show()
-    if (self.iconRegion and self.iconRegion.Hide) then
-      self.iconRegion:Hide()
-    end
-  end,
-  ["RestoreIcon"] = function(self)
-    self:SetIcon(self.orgIcon)
-  end,
-  ["Expand"] = function(self, reloadTooltip)
-    self.expand:Enable()
-    OptionsPrivate.SetCollapsed(self.data.id, "displayButton", "", false)
-    self.expand:SetNormalTexture("Interface\\BUTTONS\\UI-MinusButton-Up.blp")
-    self.expand:SetPushedTexture("Interface\\BUTTONS\\UI-MinusButton-Down.blp")
-    self.expand.title = L["Collapse"]
-    self.expand.desc = L["Hide this group's children"]
-    self.expand:SetScript("OnClick", function()
-      self:Collapse(true)
-    end)
-    self.expand.func()
-    if reloadTooltip then
-      Hide_Tooltip()
-      Show_Tooltip(self.frame, self.expand.title, self.expand.desc)
-    end
-  end,
-  ["Collapse"] = function(self, reloadTooltip)
-    self.expand:Enable()
-    OptionsPrivate.SetCollapsed(self.data.id, "displayButton", "", true)
-    self.expand:SetNormalTexture("Interface\\BUTTONS\\UI-PlusButton-Up.blp")
-    self.expand:SetPushedTexture("Interface\\BUTTONS\\UI-PlusButton-Down.blp")
-    self.expand.title = L["Expand"]
-    self.expand.desc = L["Show this group's children"]
-    self.expand:SetScript("OnClick", function()
-      self:Expand(true)
-    end)
-    self.expand.func()
-  end,
-  ["SetOnExpandCollapse"] = function(self, func)
-    self.expand.func = func
-  end,
-  ["GetExpanded"] = function(self)
-    return not OptionsPrivate.IsCollapsed(self.id, "displayButton", "", true)
-  end,
-  ["DisableExpand"] = function(self)
-    self.expand:Disable()
-    self.expand.disabled = true
-    self.expand.expanded = false
-    self.expand:SetNormalTexture("Interface\\BUTTONS\\UI-PlusButton-Disabled.blp")
-  end,
-  ["EnableExpand"] = function(self)
-    self.expand.disabled = false
-    if (self:GetExpanded()) then
-      self:Expand()
-    else
-      self:Collapse()
-    end
   end,
 }
 
@@ -234,7 +298,7 @@ local function Constructor()
   button.background = background
   background:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp")
   background:SetBlendMode("ADD")
-  background:SetVertexColor(0.5, 1, 0.5, 0.3)
+  background:SetVertexColor(0.88, 0.88, 0, 0.3)
   background:SetPoint("TOP", button, "TOP")
   background:SetPoint("BOTTOM", button, "BOTTOM")
   background:SetPoint("LEFT", button, "LEFT")

@@ -50,7 +50,7 @@ local function ConstructImportExport(frame)
       if(id) then
         local displayStr;
         if(mode == "export") then
-          displayStr = WeakAuras.DisplayToString(id, true);
+          displayStr = OptionsPrivate.Private.DisplayToString(id, true);
         elseif(mode == "table") then
           displayStr = OptionsPrivate.Private.DataToString(id);
         end

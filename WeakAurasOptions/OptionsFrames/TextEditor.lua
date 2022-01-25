@@ -4,6 +4,7 @@ local AddonName, OptionsPrivate = ...
 -- Lua APIs
 local pairs, type, ipairs = pairs, type, ipairs
 local loadstring = loadstring
+local gsub = gsub
 
 -- WoW APIs
 local CreateFrame = CreateFrame
@@ -164,6 +165,18 @@ local function ConstructTextEditor(frame)
   end
   group:AddChild(editor)
   editor.frame:SetClipsChildren(true)
+
+  local originalOnCursorChanged = editor.editBox:GetScript("OnCursorChanged")
+  editor.editBox:SetScript("OnCursorChanged", function(self, ...)
+    -- WORKAROUND the editbox sends spurious OnCursorChanged events if its resized
+    -- That makes AceGUI scroll the editbox to make the cursor visible, leading to unintended
+    -- movements. Prevent all of that by checking if the edit box has focus, as otherwise the cursor
+    -- is invisible, and we don't care about making it visible
+    if not self:HasFocus() then
+      return
+    end
+    originalOnCursorChanged(self, ...)
+  end)
 
   -- The indention lib overrides GetText, but for the line number
   -- display we ned the original, so save it here.
@@ -349,8 +362,9 @@ local function ConstructTextEditor(frame)
     -- iterate saved snippets and make buttons
     for order, snippet in ipairs(savedSnippets) do
       local button = AceGUI:Create("WeakAurasSnippetButton")
+      local snippetInsert = gsub(snippet.snippet, "|", "||")
       button:SetTitle(snippet.name)
-      button:SetDescription(snippet.snippet)
+      button:SetDescription(snippetInsert)
       button:SetEditable(true)
       button:SetRelativeWidth(1)
       button:SetNew(snippet.new)
@@ -358,7 +372,7 @@ local function ConstructTextEditor(frame)
       button:SetCallback(
         "OnClick",
         function()
-          editor.editBox:Insert(snippet.snippet)
+          editor.editBox:Insert(snippetInsert)
           editor:SetFocus()
         end
       )
@@ -662,32 +676,34 @@ local function ConstructTextEditor(frame)
         self.oldOnTextChanged(...)
       end
     )
-    if (data.controlledChildren and not setOnParent) then
+
+    if setOnParent then
+      editor:SetText(OptionsPrivate.Private.ValueFromPath(data, path) or "")
+    else
       local singleText
       local sameTexts = true
       local combinedText = ""
-      for index, childId in pairs(data.controlledChildren) do
-        local childData = WeakAuras.GetData(childId)
+      for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
         local text
         if multipath then
-          text = path[childId] and OptionsPrivate.Private.ValueFromPath(childData, path[childId])
+          text = path[child.id] and OptionsPrivate.Private.ValueFromPath(child, path[child.id])
         else
-          text = OptionsPrivate.Private.ValueFromPath(childData, path)
+          text = OptionsPrivate.Private.ValueFromPath(child, path)
         end
         if text then
           if not (singleText) then
             singleText = text
           else
-            if not (singleText == text) then
+            if singleText ~= text then
               sameTexts = false
             end
           end
-          if not (combinedText == "") then
+          if combinedText ~= "" then
             combinedText = combinedText .. "\n\n"
           end
 
           combinedText =
-            combinedText .. L["-- Do not remove this comment, it is part of this trigger: "] .. childId .. "\n"
+            combinedText .. L["-- Do not remove this comment, it is part of this aura: "] .. child.id .. "\n"
           combinedText = combinedText .. (text or "")
         end
       end
@@ -698,8 +714,6 @@ local function ConstructTextEditor(frame)
         editor:SetText(combinedText)
         editor.combinedText = true
       end
-    else
-      editor:SetText(OptionsPrivate.Private.ValueFromPath(data, path) or "")
     end
     editor:SetFocus()
   end
@@ -711,13 +725,13 @@ local function ConstructTextEditor(frame)
     frame:UpdateFrameVisible()
   end
 
-  local function extractTexts(input, ids)
+  local function extractTexts(input)
     local texts = {}
 
     local currentPos, id, startIdLine, startId, endId, endIdLine
     while (true) do
       startIdLine, startId =
-        string.find(input, L["-- Do not remove this comment, it is part of this trigger: "], currentPos, true)
+        string.find(input, L["-- Do not remove this comment, it is part of this aura: "], currentPos, true)
       if (not startId) then
         break
       end
@@ -749,30 +763,20 @@ local function ConstructTextEditor(frame)
   end
 
   function group.Close(self)
-    if (self.data.controlledChildren and not self.setOnParent) then
-      local textById = editor.combinedText and extractTexts(editor:GetText(), self.data.controlledChildren)
-      for index, childId in pairs(self.data.controlledChildren) do
-        local text = editor.combinedText and (textById[childId] or "") or editor:GetText()
-        local childData = WeakAuras.GetData(childId)
-        OptionsPrivate.Private.ValueToPath(childData, self.multipath and self.path[childId] or self.path, text)
-        WeakAuras.Add(childData)
-      end
-    else
+    if self.setOnParent then
       OptionsPrivate.Private.ValueToPath(self.data, self.path, editor:GetText())
       WeakAuras.Add(self.data)
-    end
-    if (self.reloadOptions) then
-      if (self.data.controlledChildren) then
-        for index, childId in pairs(self.data.controlledChildren) do
-          WeakAuras.ClearAndUpdateOptions(childId)
-        end
-        WeakAuras.ClearAndUpdateOptions(self.data.id)
-      else
-        WeakAuras.ClearAndUpdateOptions(self.data.id)
-      end
     else
-      WeakAuras.ClearAndUpdateOptions(self.data.id)
+      local textById = editor.combinedText and extractTexts(editor:GetText())
+      for child in OptionsPrivate.Private.TraverseLeafsOrAura(self.data) do
+        local text = editor.combinedText and (textById[child.id] or "") or editor:GetText()
+        OptionsPrivate.Private.ValueToPath(child, self.multipath and self.path[child.id] or self.path, text)
+        WeakAuras.Add(child)
+        OptionsPrivate.ClearOptions(child.id)
+      end
     end
+
+    WeakAuras.ClearAndUpdateOptions(self.data.id)
 
     editor.editBox:SetScript("OnTextChanged", self.oldOnTextChanged)
     editor:ClearFocus()

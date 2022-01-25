@@ -52,10 +52,10 @@ jobs:
           WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
           WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
 
-      - name: Create BC Package
+      - name: Create BCC Package
         uses: BigWigsMods/packager@master
         with:
-          args: -g bc -m .pkgmeta-bc
+          args: -g bcc -m .pkgmeta-bcc
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}

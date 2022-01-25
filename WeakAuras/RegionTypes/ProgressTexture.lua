@@ -958,6 +958,7 @@ local function create(parent)
   local font = "GameFontHighlight";
 
   local region = CreateFrame("FRAME", nil, parent);
+  region.regionType = "progresstexture"
   region:SetMovable(true);
   region:SetResizable(true);
   region:SetMinResize(1, 1);
@@ -974,8 +975,6 @@ local function create(parent)
 
   region.extraTextures = {};
   region.extraSpinners = {};
-
-  region.values = {};
 
   -- Use a dummy object for the SmoothStatusBarMixin, because our SetValue
   -- is used for a different purpose
@@ -997,8 +996,6 @@ local function create(parent)
   region.SetOrientation = SetOrientation;
 
   WeakAuras.regionPrototype.create(region);
-
-  region.AnchorSubRegion = WeakAuras.regionPrototype.AnchorSubRegion
 
   return region;
 end
@@ -1410,4 +1407,8 @@ local function modify(parent, region, data)
   WeakAuras.regionPrototype.modifyFinish(parent, region, data);
 end
 
-WeakAuras.RegisterRegionType("progresstexture", create, modify, default, GetProperties);
+local function validate(data)
+  Private.EnforceSubregionExists(data, "subbackground")
+end
+
+WeakAuras.RegisterRegionType("progresstexture", create, modify, default, GetProperties, validate);

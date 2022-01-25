@@ -1,6 +1,6 @@
-## Interface: 90005
-## Interface-Classic: 11307
-## Interface-BC: 20501
+## Interface: 90105
+## Interface-Classic: 11400
+## Interface-BCC: 20503
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
 ## Version: @project-version@
@@ -31,11 +31,12 @@ RegionOptions\Model.lua
 RegionOptions\ProgressTexture.lua
 
 SubRegionOptions\SubRegionCommon.lua
+SubRegionOptions\Background.lua
 SubRegionOptions\SubText.lua
 SubRegionOptions\Border.lua
 SubRegionOptions\Glow.lua
 SubRegionOptions\Tick.lua
-SubRegionOptions\BarModel.lua
+SubRegionOptions\Model.lua
 
 Cache.lua
 
@@ -53,7 +54,6 @@ BuffTrigger2.lua
 GenericTrigger.lua
 
 WeakAurasOptions.lua
-ExternalAddons.lua
 ConditionOptions.lua
 AuthorOptions.lua
 
@@ -77,6 +77,7 @@ AceGUI-Widgets\AceGUIWidget-WeakAurasIcon.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasNewHeaderButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasLoadedHeaderButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasDisplayButton.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasPendingInstallButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasPendingUpdateButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasTextureButton.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasIconButton.lua
