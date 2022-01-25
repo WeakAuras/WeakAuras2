@@ -1358,6 +1358,14 @@ local function modify(parent, region, data)
 end
 
 local function validate(data)
+  -- pre-migration
+  if data.subRegions then
+    for _, subRegionData in ipairs(data.subRegions) do
+      if subRegionData.type == "aurabar_bar" then
+        subRegionData.type = "subforeground"
+      end
+    end
+  end
   Private.EnforceSubregionExists(data, "subforeground")
   Private.EnforceSubregionExists(data, "subbackground")
 end
