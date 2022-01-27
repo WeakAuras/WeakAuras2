@@ -482,7 +482,7 @@ local methods = {
           end
           editbox:Insert("[WeakAuras: "..fullName.." - "..data.id.."]");
           OptionsPrivate.Private.linked = OptionsPrivate.Private.linked or {}
-          OptionsPrivate.Private.linked[data.id] = true
+          OptionsPrivate.Private.linked[data.id] = GetTime()
         elseif not data.controlledChildren then
           -- select all buttons between 1st select and current
           OptionsPrivate.PickDisplayMultipleShift(data.id)
