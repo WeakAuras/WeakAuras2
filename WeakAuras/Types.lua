@@ -1706,6 +1706,11 @@ Private.texture_types = {
     ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_6"] = RAID_TARGET_6,
     ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_7"] = RAID_TARGET_7,
     ["Interface\\TargetingFrame\\UI-RaidTargetingIcon_8"] = RAID_TARGET_8,
+  },
+  ["WeakAuras"] = {
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\logo_64.tga"] = "WeakAuras logo 64px",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\logo_256.tga"] = "WeakAuras logo 256px",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\logo_512.tga"] = "WeakAuras logo 512px",
   }
 }
 local BuildInfo = select(4, GetBuildInfo())
