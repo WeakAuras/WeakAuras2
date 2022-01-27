@@ -1709,8 +1709,7 @@ Private.texture_types = {
   },
   ["WeakAuras"] = {
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\logo_64.tga"] = "WeakAuras logo 64px",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\logo_256.tga"] = "WeakAuras logo 256px",
-    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\logo_512.tga"] = "WeakAuras logo 512px",
+    ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\logo_256.tga"] = "WeakAuras logo 256px"
   }
 }
 local BuildInfo = select(4, GetBuildInfo())
