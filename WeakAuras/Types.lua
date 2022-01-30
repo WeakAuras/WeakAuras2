@@ -3229,6 +3229,12 @@ Private.noreset_swing_spells = {
   [35478] = true, -- Drums of Restoration
   [34120] = true, -- Steady Shot (rank 1)
   [19434] = true, -- Aimed Shot (rank 1)
+  [1464] = true, -- Slam (rank 1)
+  [8820] = true, -- Slam (rank 2)
+  [11604] = true, -- Slam (rank 3)
+  [11605] = true, -- Slam (rank 4)
+  [25241] = true, -- Slam (rank 5)
+  [25242] = true, -- Slam (rank 6)
   --35474 Drums of Panic DO reset the swing timer, do not add
 }
 
