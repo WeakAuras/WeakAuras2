@@ -299,7 +299,7 @@ local function createOptions(id, data)
       return child["displayText_format_" .. key]
     end
     local input = child.displayText
-    OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden, index, total)
+    OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden, false, index, total)
     index = index + 1
   end
 
