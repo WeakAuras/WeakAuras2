@@ -474,14 +474,14 @@ local function createOptions(parentData, data, index, subIndex)
         return childSubRegion["text_text_format_" .. key]
       end
       local input = childSubRegion["text_text"]
-      OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden, listIndex, #list)
+      OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden, false, listIndex, #list)
     end
   else
     local get = function(key)
       return data["text_text_format_" .. key]
     end
     local input = data["text_text"]
-    OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden)
+    OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden, false)
   end
 
   addOption("footer", {
