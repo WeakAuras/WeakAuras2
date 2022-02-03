@@ -2076,10 +2076,13 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_REPAIR"] = {
      RepairDatabase()
   end,
   OnShow = function(self)
+    local AutomaticRepairText = L["WeakAuras has detected that it has been downgraded.\nYour saved auras may no longer work properly.\nWould you like to run the |cffff0000EXPERIMENTAL|r repair tool? This will overwrite any changes you have made since the last database upgrade.\nLast upgrade: %s"]
+    local ManualRepairText = L["Are you sure you want to run the |cffff0000EXPERIMENTAL|r repair tool?\nThis will overwrite any changes you have made since the last database upgrade.\nLast upgrade: %s"]
+
     if self.data.reason == "user" then
-      self.text:SetText(L["Manual Repair Confirmation Dialog"]:format(LastUpgrade()))
+      self.text:SetText(AutomaticRepairText:format(LastUpgrade()))
     else
-      self.text:SetText(L["Automatic Repair Confirmation Dialog"]:format(LastUpgrade()))
+      self.text:SetText(ManualRepairText:format(LastUpgrade()))
     end
   end,
   OnCancel = function(self)
