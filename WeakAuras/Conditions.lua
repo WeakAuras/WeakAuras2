@@ -815,8 +815,11 @@ end
 function Private.UnregisterForGlobalConditions(uid)
   for event, condFuncs in pairs(dynamicConditions) do
     condFuncs[uid] = nil;
-    if next(dynamicConditions) == nil then
-      if not event:match("([^:]+):([^:]+)") then
+    if next(condFuncs) == nil then
+      local unitEvent, unit = event:match("([^:]+):([^:]+)")
+      if unitEvent and unit then
+        dynamicConditionsFrame[unit]:UnregisterEvent(unitEvent)
+      else
         dynamicConditionsFrame:UnregisterEvent(event)
       end
     end
