@@ -698,6 +698,22 @@ local function handleDynamicConditions(self, event)
   Private.StopProfileSystem("dynamic conditions")
 end
 
+local function handleDynamicConditionsPerUnit(self, event, unit)
+  Private.StartProfileSystem("dynamic conditions")
+  if unit then
+    local unitEvent = event..":"..unit
+    if globalDynamicConditionFuncs[unitEvent] then
+      for i, func in ipairs(globalDynamicConditionFuncs[unitEvent]) do
+        func(globalConditionState);
+      end
+    end
+    if (dynamicConditions[unitEvent]) then
+      runDynamicConditionFunctions(dynamicConditions[unitEvent]);
+    end
+  end
+  Private.StopProfileSystem("dynamic conditions")
+end
+
 local lastDynamicConditionsUpdateCheck;
 local function handleDynamicConditionsOnUpdate(self)
   handleDynamicConditions(self, "FRAME_UPDATE");
@@ -721,7 +737,7 @@ local function EvaluateCheckForRegisterForGlobalConditions(uid, check, allCondit
     end
   elseif trigger == -1 and variable == "customcheck" then
     if check.op then
-      for event in string.gmatch(check.op, "[%w_]+") do
+      for event in string.gmatch(check.op, "[%w_:]+") do
         if (not dynamicConditions[event]) then
           register[event] = true;
           dynamicConditions[event] = {};
@@ -781,7 +797,17 @@ function Private.RegisterForGlobalConditions(uid)
         dynamicConditionsFrame.onUpdate = true;
       end
     else
-      pcall(dynamicConditionsFrame.RegisterEvent, dynamicConditionsFrame, event);
+      local unitEvent, unit = event:match("([^:]+):([^:]+)")
+      if unitEvent and unit then
+        unit = unit:lower()
+        if not dynamicConditionsFrame[unit] then
+          dynamicConditionsFrame[unit] = CreateFrame("FRAME");
+          dynamicConditionsFrame[unit]:SetScript("OnEvent", handleDynamicConditionsPerUnit);
+        end
+        pcall(dynamicConditionsFrame.RegisterUnitEvent, dynamicConditionsFrame[unit], unitEvent, unit);
+      else
+        pcall(dynamicConditionsFrame.RegisterEvent, dynamicConditionsFrame, event);
+      end
     end
   end
 end
@@ -789,6 +815,11 @@ end
 function Private.UnregisterForGlobalConditions(uid)
   for event, condFuncs in pairs(dynamicConditions) do
     condFuncs[uid] = nil;
+    if next(dynamicConditions) == nil then
+      if not event:match("([^:]+):([^:]+)") then
+        dynamicConditionsFrame:UnregisterEvent(event)
+      end
+    end
   end
 end
 
