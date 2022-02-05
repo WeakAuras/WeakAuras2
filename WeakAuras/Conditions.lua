@@ -787,6 +787,7 @@ function Private.RegisterForGlobalConditions(uid)
   if (next(register) and not dynamicConditionsFrame) then
     dynamicConditionsFrame = CreateFrame("FRAME");
     dynamicConditionsFrame:SetScript("OnEvent", handleDynamicConditions);
+    dynamicConditionsFrame.units = {}
     WeakAuras.frames["Rerun Conditions Frame"] = dynamicConditionsFrame
   end
 
@@ -800,11 +801,11 @@ function Private.RegisterForGlobalConditions(uid)
       local unitEvent, unit = event:match("([^:]+):([^:]+)")
       if unitEvent and unit then
         unit = unit:lower()
-        if not dynamicConditionsFrame[unit] then
-          dynamicConditionsFrame[unit] = CreateFrame("FRAME");
-          dynamicConditionsFrame[unit]:SetScript("OnEvent", handleDynamicConditionsPerUnit);
+        if not dynamicConditionsFrame.units[unit] then
+          dynamicConditionsFrame.units[unit] = CreateFrame("FRAME");
+          dynamicConditionsFrame.units[unit]:SetScript("OnEvent", handleDynamicConditionsPerUnit);
         end
-        pcall(dynamicConditionsFrame.RegisterUnitEvent, dynamicConditionsFrame[unit], unitEvent, unit);
+        pcall(dynamicConditionsFrame.RegisterUnitEvent, dynamicConditionsFrame.units[unit], unitEvent, unit);
       else
         pcall(dynamicConditionsFrame.RegisterEvent, dynamicConditionsFrame, event);
       end
@@ -818,14 +819,14 @@ function Private.UnregisterForGlobalConditions(uid)
     if next(condFuncs) == nil then
       local unitEvent, unit = event:match("([^:]+):([^:]+)")
       if unitEvent and unit then
-        dynamicConditionsFrame[unit]:UnregisterEvent(unitEvent)
+        dynamicConditionsFrame.units[unit]:UnregisterEvent(unitEvent)
       else
         dynamicConditionsFrame:UnregisterEvent(event)
       end
+      dynamicConditions[event] = nil
     end
   end
 end
-
 
 function Private.UnloadAllConditions()
   for uid in pairs(conditionChecksTimers.recheckTime) do
@@ -839,6 +840,12 @@ function Private.UnloadAllConditions()
   wipe(conditionChecksTimers.recheckHandle)
 
   dynamicConditions = {}
+  if dynamicConditionsFrame then
+    dynamicConditionsFrame:UnregisterAllEvents()
+    for unit, frame in pairs(dynamicConditionsFrame.units) do
+      frame:UnregisterAllEvents()
+    end
+  end
 end
 
 function Private.UnloadConditions(uid)
