@@ -3448,6 +3448,10 @@ if WeakAuras.IsBCC() then
     2764, 3018, -- Shoots,
     19434, 20900, 20901, 20902, 20903, 20904, 27065, -- Aimed Shot
     20066, -- Repentance
+    11350, -- Fire Shield (Oil of Immolation)
+    50986, -- Sulfuron Slammer
+    439, 440, 441, 2024, 4042, 17534, 28495, -- Minor/Lesser/Greater/Superior/Major/Super Healing Potion
+    41619, 41620 -- Cenarion Healing Salve/Bottled Nethergon Vapor
   }
   for _, spellid in ipairs(reset_swing_spell_list) do
     Private.reset_swing_spells[spellid] = true
