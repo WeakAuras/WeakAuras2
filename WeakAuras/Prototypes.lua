@@ -5448,6 +5448,7 @@ Private.event_prototypes = {
         display = L["Count"],
         desc = L["Only if BigWigs shows it on it's bar"],
         type = "string",
+        store = true,
         conditionType = "string",
       },
       {
