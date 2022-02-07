@@ -820,6 +820,13 @@ function Private.UnregisterForGlobalConditions(uid)
       local unitEvent, unit = event:match("([^:]+):([^:]+)")
       if unitEvent and unit then
         dynamicConditionsFrame.units[unit]:UnregisterEvent(unitEvent)
+      elseif (event == "FRAME_UPDATE" or event == "WA_SPELL_RANGECHECK") then
+        if (event == "FRAME_UPDATE" and dynamicConditions["WA_SPELL_RANGECHECK"] == nil)
+        or (event == "WA_SPELL_RANGECHECK" and dynamicConditions["FRAME_UPDATE"] == nil)
+        then
+          dynamicConditionsFrame:SetScript("OnUpdate", nil)
+          dynamicConditionsFrame.onUpdate = false
+        end
       else
         dynamicConditionsFrame:UnregisterEvent(event)
       end
@@ -845,6 +852,8 @@ function Private.UnloadAllConditions()
     for unit, frame in pairs(dynamicConditionsFrame.units) do
       frame:UnregisterAllEvents()
     end
+    dynamicConditionsFrame:SetScript("OnUpdate", nil)
+    dynamicConditionsFrame.onUpdate = false
   end
 end
 
