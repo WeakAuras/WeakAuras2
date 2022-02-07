@@ -65,31 +65,14 @@ local function ConstructImportExport(frame)
         input:SetFocus();
       end
     elseif(mode == "import") then
-      local textBuffer, i, lastPaste = {}, 0, 0
-      local function clearBuffer(self)
-        self:SetScript('OnUpdate', nil)
-        local pasted = strtrim(table.concat(textBuffer))
-        input.editBox:ClearFocus();
-        pasted = pasted:match( "^%s*(.-)%s*$" );
-        if (#pasted > 20) then
-          WeakAuras.Import(pasted);
-          input:SetLabel(L["Processed %i chars"]:format(i));
-          input.editBox:SetMaxBytes(2500);
-          input.editBox:SetText(strsub(pasted, 1, 2500));
+      input.editBox:SetScript("OnTextChanged", function(self)
+        local pasted = self:GetText()
+        pasted = pasted:match("^%s*(.-)%s*$")
+        if #pasted > 20 then
+          WeakAuras.Import(pasted)
         end
-      end
-
-      input.editBox:SetScript('OnChar', function(self, c)
-        if lastPaste ~= GetTime() then
-          textBuffer, i, lastPaste = {}, 0, GetTime()
-          self:SetScript('OnUpdate', clearBuffer)
-        end
-        i = i + 1
-        textBuffer[i] = c
       end)
-
       input.editBox:SetText("");
-      input.editBox:SetMaxBytes(2500);
       input.editBox:SetScript("OnEscapePressed", function() group:Close(); end);
       input.editBox:SetScript("OnMouseUp", nil);
       input:SetLabel(L["Paste text below"]);
