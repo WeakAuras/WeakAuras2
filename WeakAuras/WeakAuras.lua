@@ -4183,7 +4183,7 @@ local function ValueForSymbol(symbol, region, customFunc, regionState, regionSta
         if regionStates[triggerNum][sym] then
           local value = regionStates[triggerNum][sym]
           if formatters[symbol] then
-            return tostring(formatters[symbol](value, regionStates[triggerNum])) or ""
+            return tostring(formatters[symbol](value, regionStates[triggerNum]) or "") or ""
           else
             return tostring(value) or ""
           end
