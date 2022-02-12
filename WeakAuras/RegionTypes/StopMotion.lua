@@ -154,8 +154,9 @@ end
 
 local function modify(parent, region, data)
     WeakAuras.regionPrototype.modify(parent, region, data);
-
+    region.foreground = region.foreground or {}
     local pattern = "%.x(%d+)y(%d+)f(%d+)%.[tb][gl][ap]"
+    local pattern2 = "%.x(%d+)y(%d+)f(%d+)w(%d+)h(%d+)W(%d+)H(%d+)%.[tb][gl][ap]"
     local tdata = texture_data[data.foregroundTexture];
     if (tdata) then
       local lastFrame = tdata.count - 1;
@@ -166,21 +167,34 @@ local function modify(parent, region, data)
     else
       local rows, columns, frames = data.foregroundTexture:lower():match(pattern)
       if rows and columns and frames then
-        local lastFrame = frames - 1;
+        local lastFrame = tonumber(frames) - 1;
         region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
         region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
-        region.foreground.rows = rows;
-        region.foreground.columns = columns;
+        region.foreground.rows = tonumber(rows)
+        region.foreground.columns = tonumber(columns)
       else
-        local lastFrame = (data.customForegroundFrames or 256) - 1;
-        region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
-        region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
-        region.foreground.rows = data.customForegroundRows;
-        region.foreground.columns = data.customForegroundColumns;
-        region.foreground.fileWidth = data.customForegroundFileWidth
-        region.foreground.fileHeight = data.customForegroundFileHeight
-        region.foreground.frameWidth = data.customForegroundFrameWidth
-        region.foreground.frameHeight = data.customForegroundFrameHeight
+        local rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight = data.foregroundTexture:match(pattern2)
+        if rows and columns and frames and frameWidth and frameHeight and fileWidth and fileHeight then
+          local lastFrame = tonumber(frames) - 1;
+          region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
+          region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
+          region.foreground.rows = tonumber(rows)
+          region.foreground.columns = tonumber(columns)
+          region.foreground.fileWidth = tonumber(fileWidth)
+          region.foreground.fileHeight = tonumber(fileHeight)
+          region.foreground.frameWidth = tonumber(frameWidth)
+          region.foreground.frameHeight = tonumber(frameHeight)
+        else
+          local lastFrame = (data.customForegroundFrames or 256) - 1;
+          region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
+          region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
+          region.foreground.rows = data.customForegroundRows;
+          region.foreground.columns = data.customForegroundColumns;
+          region.foreground.fileWidth = data.customForegroundFileWidth
+          region.foreground.fileHeight = data.customForegroundFileHeight
+          region.foreground.frameWidth = data.customForegroundFrameWidth
+          region.foreground.frameHeight = data.customForegroundFrameHeight
+        end
       end
     end
 
@@ -196,7 +210,7 @@ local function modify(parent, region, data)
       region.background.columns = tbdata.columns;
     else
       local rows, columns, frames = backgroundTexture:lower():match(pattern)
-      if rows and columns and frames then
+      if rows then
         local lastFrame = frames - 1;
         region.backgroundFrame = floor( (data.backgroundPercent or 1) * lastFrame + 1);
         region.background.rows = rows;

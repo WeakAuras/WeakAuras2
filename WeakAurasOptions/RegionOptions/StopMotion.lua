@@ -45,9 +45,16 @@ local function setTextureFunc(textureWidget, texturePath, textureName)
 end
 
 local function textureNameHasData(textureName)
-  local pattern = "%.x(%d+)y(%d+)f(%d+)%.[tb][gl][ap]"
-  local rows, columns, frames = textureName:lower():match(pattern)
-  return rows and columns and frames
+  local pattern = "%.x(%d+)y(%d+)f(%d+)%.[tb][gl][ap]$"
+  local pattern2 = "%.x(%d+)y(%d+)f(%d+)w(%d+)h(%d+)W(%d+)H(%d+)%.[tb][gl][ap]$"
+  local ok = textureName:lower():match(pattern)
+  if ok then return true end
+  local ok2 = textureName:match(pattern2)
+  if ok2 then
+     return true
+  else
+     return false
+  end
 end
 
 local function createOptions(id, data)
@@ -396,33 +403,47 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
     end
 
     local frame = 1;
-
+    region.foreground = region.foreground or {}
     local tdata = texture_data[data.foregroundTexture];
     if (tdata) then
       local lastFrame = tdata.count - 1;
       region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
       region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
-      region.foregroundRows = tdata.rows;
-      region.foregroundColumns = tdata.columns;
+      region.foreground.rows = tdata.rows;
+      region.foreground.columns = tdata.columns;
     else
       local pattern = "%.x(%d+)y(%d+)f(%d+)%.[tb][gl][ap]"
+      local pattern2 = "%.x(%d+)y(%d+)f(%d+)w(%d+)h(%d+)W(%d+)H(%d+)%.[tb][gl][ap]"
       local rows, columns, frames = data.foregroundTexture:lower():match(pattern)
-      if rows and columns and frames then
+      if rows then
         local lastFrame = frames - 1;
         region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
         region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
-        region.foregroundRows = rows;
-        region.foregroundColumns = columns;
+        region.foreground.rows = tonumber(rows);
+        region.foreground.columns = tonumber(columns);
       else
-        local lastFrame = data.customForegroundFrames - 1;
-        region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
-        region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
-        region.foregroundRows = data.customForegroundRows;
-        region.foregroundColumns = data.customForegroundColumns;
-        region.foregroundFileWidth = data.customForegroundFileWidth
-        region.foregroundFileHeight = data.customForegroundFileHeight
-        region.foregroundFrameWidth = data.customForegroundFrameWidth
-        region.foregroundFrameHeight = data.customForegroundFrameHeight
+        local rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight = data.foregroundTexture:match(pattern2)
+        if rows then
+          local lastFrame = frames - 1;
+          region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
+          region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
+          region.foreground.rows = tonumber(rows)
+          region.foreground.columns = tonumber(columns)
+          region.foreground.fileWidth = tonumber(fileWidth)
+          region.foreground.fileHeight = tonumber(fileHeight)
+          region.foreground.frameWidth = tonumber(frameWidth)
+          region.foreground.frameHeight = tonumber(frameHeight)
+        else
+          local lastFrame = data.customForegroundFrames - 1;
+          region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
+          region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
+          region.foreground.rows = data.customForegroundRows;
+          region.foreground.columns = data.customForegroundColumns;
+          region.foreground.fileWidth = data.customForegroundFileWidth
+          region.foreground.fileHeight = data.customForegroundFileHeight
+          region.foreground.frameWidth = data.customForegroundFrameWidth
+          region.foreground.frameHeight = data.customForegroundFrameHeight
+        end
       end
     end
 
@@ -432,20 +453,20 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
 
     local texture = data.foregroundTexture or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion";
 
-    if (region.foregroundRows and region.foregroundColumns) then
+    if (region.foreground.rows and region.foreground.columns) then
       region.texture:SetTexture(texture);
       local frameScaleW, frameScaleH = 1, 1
-      if region.foregroundFileWidth and region.foregroundFrameWidth and region.foregroundFileWidth > 0 and region.foregroundFrameWidth > 0 then
-        frameScaleW = (region.foregroundFrameWidth * region.foregroundColumns) / region.foregroundFileWidth
+      if region.foreground.fileWidth and region.foreground.frameWidth and region.foreground.fileWidth > 0 and region.foreground.frameWidth > 0 then
+        frameScaleW = (region.foreground.frameWidth * region.foreground.columns) / region.foreground.fileWidth
       end
-      if region.foregroundFileHeight and region.foregroundFrameHeight and region.foregroundFileHeight > 0 and region.foregroundFrameHeight > 0 then
-        frameScaleH = (region.foregroundFrameHeight * region.foregroundRows) / region.foregroundFileHeight
+      if region.foreground.fileHeight and region.foreground.frameHeight and region.foreground.fileHeight > 0 and region.foreground.frameHeight > 0 then
+        frameScaleH = (region.foreground.frameHeight * region.foreground.rows) / region.foreground.fileHeight
       end
-      setTile(region.texture, frame, region.foregroundRows, region.foregroundColumns, frameScaleW, frameScaleH);
+      setTile(region.texture, frame, region.foreground.rows, region.foreground.columns, frameScaleW, frameScaleH);
 
       region.SetValue = function(self, percent)
         local frame = floor(percent * (region.endFrame - region.startFrame) + region.startFrame);
-        setTile(self.texture, frame, region.foregroundRows, region.foregroundColumns, frameScaleW, frameScaleH);
+        setTile(self.texture, frame, region.foreground.rows, region.foreground.columns, frameScaleW, frameScaleH);
       end
     else
       region.texture:SetTexture(texture .. format("%03d", frame));
