@@ -342,7 +342,6 @@ local function getChildOption(options, info)
         end
       end
     end
-
   end
   return options
 end

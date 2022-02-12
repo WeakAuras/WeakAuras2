@@ -170,9 +170,44 @@ local function createOptions(id, data)
             name = L["Frame Count"],
             min = 0,
             max = 4096,
-            --bigStep = 0.01,
             order = 17.73,
             hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
+        },
+        customForegroundFileWidth = {
+          type = "range",
+          width = WeakAuras.normalWidth,
+          name = L["File Width"],
+          min = 0,
+          max = 4096,
+          order = 17.731,
+          hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
+        },
+        customForegroundFileHeight = {
+          type = "range",
+          width = WeakAuras.normalWidth,
+          name = L["File Height"],
+          min = 0,
+          max = 4096,
+          order = 17.732,
+          hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
+        },
+        customForegroundFrameWidth = {
+          type = "range",
+          width = WeakAuras.normalWidth,
+          name = L["Frame Width"],
+          min = 0,
+          max = 4096,
+          order = 17.733,
+          hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
+        },
+        customForegroundFrameHeight = {
+          type = "range",
+          width = WeakAuras.normalWidth,
+          name = L["Frame Height"],
+          min = 0,
+          max = 4096,
+          order = 17.734,
+          hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
         },
         customForegroundSpace = {
             type = "execute",
@@ -384,6 +419,10 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
         region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
         region.foregroundRows = data.customForegroundRows;
         region.foregroundColumns = data.customForegroundColumns;
+        region.foregroundFileWidth = data.customForegroundFileWidth
+        region.foregroundFileHeight = data.customForegroundFileHeight
+        region.foregroundFrameWidth = data.customForegroundFrameWidth
+        region.foregroundFrameHeight = data.customForegroundFrameHeight
       end
     end
 
@@ -395,11 +434,18 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
 
     if (region.foregroundRows and region.foregroundColumns) then
       region.texture:SetTexture(texture);
-      setTile(region.texture, frame, region.foregroundRows, region.foregroundColumns);
+      local frameScaleW, frameScaleH = 1, 1
+      if region.foregroundFileWidth and region.foregroundFrameWidth and region.foregroundFileWidth > 0 and region.foregroundFrameWidth > 0 then
+        frameScaleW = (region.foregroundFrameWidth * region.foregroundColumns) / region.foregroundFileWidth
+      end
+      if region.foregroundFileHeight and region.foregroundFrameHeight and region.foregroundFileHeight > 0 and region.foregroundFrameHeight > 0 then
+        frameScaleH = (region.foregroundFrameHeight * region.foregroundRows) / region.foregroundFileHeight
+      end
+      setTile(region.texture, frame, region.foregroundRows, region.foregroundColumns, frameScaleW, frameScaleH);
 
       region.SetValue = function(self, percent)
         local frame = floor(percent * (region.endFrame - region.startFrame) + region.startFrame);
-        setTile(self.texture, frame, region.foregroundRows, region.foregroundColumns);
+        setTile(self.texture, frame, region.foregroundRows, region.foregroundColumns, frameScaleW, frameScaleH);
       end
     else
       region.texture:SetTexture(texture .. format("%03d", frame));

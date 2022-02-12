@@ -37,6 +37,10 @@ local default = {
     customForegroundRows = 16,
     customForegroundColumns = 16,
     customBackgroundFrames = 0,
+    customForegroundFileWidth = 0,
+    customForegroundFileHeight = 0,
+    customForegroundFrameWidth = 0,
+    customForegroundFrameHeight = 0,
     customBackgroundRows = 16,
     customBackgroundColumns = 16,
     hideBackground = true
@@ -109,27 +113,34 @@ local function SetTextureViaAtlas(self, texture)
   self:SetTexture(texture);
 end
 
-local function setTile(texture, frame, rows, columns )
+local function setTile(texture, frame, rows, columns, frameScaleW, frameScaleH)
   frame = frame - 1;
   local row = floor(frame / columns);
   local column = frame % columns;
 
-  local deltaX = 1 / columns;
-  local deltaY = 1 / rows;
+  local deltaX = frameScaleW / columns
+  local deltaY = frameScaleH / rows
 
   local left = deltaX * column;
   local right = left + deltaX;
 
   local top = deltaY * row;
   local bottom = top + deltaY;
-
   texture:SetTexCoord(left, right, top, bottom);
 end
 
 WeakAuras.setTile = setTile;
 
 local function SetFrameViaAtlas(self, texture, frame)
-  setTile(self, frame, self.rows, self.columns);
+  local frameScaleW = 1
+  local frameScaleH = 1
+  if self.fileWidth and self.frameWidth and self.fileWidth > 0 and self.frameWidth > 0 then
+    frameScaleW = (self.frameWidth * self.columns) / self.fileWidth
+  end
+  if self.fileHeight and self.frameHeight and self.fileHeight > 0 and self.frameHeight > 0 then
+    frameScaleH = (self.frameHeight * self.rows) / self.fileHeight
+  end
+  setTile(self, frame, self.rows, self.columns, frameScaleW, frameScaleH);
 end
 
 local function SetTextureViaFrames(self, texture)
@@ -166,6 +177,10 @@ local function modify(parent, region, data)
         region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
         region.foreground.rows = data.customForegroundRows;
         region.foreground.columns = data.customForegroundColumns;
+        region.foreground.fileWidth = data.customForegroundFileWidth
+        region.foreground.fileHeight = data.customForegroundFileHeight
+        region.foreground.frameWidth = data.customForegroundFrameWidth
+        region.foreground.frameHeight = data.customForegroundFrameHeight
       end
     end
 
