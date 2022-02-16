@@ -2080,9 +2080,9 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_REPAIR"] = {
     local ManualRepairText = L["Are you sure you want to run the |cffff0000EXPERIMENTAL|r repair tool?\nThis will overwrite any changes you have made since the last database upgrade.\nLast upgrade: %s"]
 
     if self.data.reason == "user" then
-      self.text:SetText(AutomaticRepairText:format(LastUpgrade()))
-    else
       self.text:SetText(ManualRepairText:format(LastUpgrade()))
+    else
+      self.text:SetText(AutomaticRepairText:format(LastUpgrade()))
     end
   end,
   OnCancel = function(self)
