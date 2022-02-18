@@ -805,7 +805,7 @@ function Private.RegisterForGlobalConditions(uid)
           dynamicConditionsFrame.units[unit] = CreateFrame("FRAME");
           dynamicConditionsFrame.units[unit]:SetScript("OnEvent", handleDynamicConditionsPerUnit);
         end
-        pcall(dynamicConditionsFrame.RegisterUnitEvent, dynamicConditionsFrame.units[unit], unitEvent, unit);
+        pcall(dynamicConditionsFrame.units[unit].RegisterUnitEvent, dynamicConditionsFrame.units[unit], unitEvent, unit);
       else
         pcall(dynamicConditionsFrame.RegisterEvent, dynamicConditionsFrame, event);
       end
@@ -819,7 +819,7 @@ function Private.UnregisterForGlobalConditions(uid)
     if next(condFuncs) == nil then
       local unitEvent, unit = event:match("([^:]+):([^:]+)")
       if unitEvent and unit then
-        dynamicConditionsFrame.units[unit]:UnregisterEvent(unitEvent)
+        pcall(dynamicConditionsFrame.units[unit].UnregisterEvent, dynamicConditionsFrame.units[unit], unitEvent);
       elseif (event == "FRAME_UPDATE" or event == "WA_SPELL_RANGECHECK") then
         if (event == "FRAME_UPDATE" and dynamicConditions["WA_SPELL_RANGECHECK"] == nil)
         or (event == "WA_SPELL_RANGECHECK" and dynamicConditions["FRAME_UPDATE"] == nil)
@@ -828,7 +828,7 @@ function Private.UnregisterForGlobalConditions(uid)
           dynamicConditionsFrame.onUpdate = false
         end
       else
-        dynamicConditionsFrame:UnregisterEvent(event)
+        pcall(dynamicConditionsFrame.UnregisterEvent, dynamicConditionsFrame, event);
       end
       dynamicConditions[event] = nil
     end
