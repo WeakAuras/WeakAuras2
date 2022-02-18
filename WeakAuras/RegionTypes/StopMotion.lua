@@ -126,7 +126,7 @@ local function setTile(texture, frame, rows, columns, frameScaleW, frameScaleH)
 
   local top = deltaY * row;
   local bottom = top + deltaY;
-  texture:SetTexCoord(left, right, top, bottom);
+  pcall(function() texture:SetTexCoord(left, right, top, bottom) end)
 end
 
 WeakAuras.setTile = setTile;
