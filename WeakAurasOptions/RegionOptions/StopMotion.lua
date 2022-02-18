@@ -14,14 +14,14 @@ local function setTextureFunc(textureWidget, texturePath, textureName)
         -- Texture Atlas
         textureWidget:SetTexture(texturePath, textureName);
 
-        setTile(textureWidget, data.count, data.rows, data.columns);
+        setTile(textureWidget, data.count, data.rows, data.columns, 1, 1);
 
         textureWidget:SetOnUpdate(function()
           textureWidget.frameNr = textureWidget.frameNr + 1;
           if (textureWidget.frameNr == data.count) then
             textureWidget.frameNr = 1;
           end
-          setTile(textureWidget, textureWidget.frameNr, data.rows, data.columns);
+          setTile(textureWidget, textureWidget.frameNr, data.rows, data.columns, 1, 1);
         end);
       else
         -- Numbered Textures
