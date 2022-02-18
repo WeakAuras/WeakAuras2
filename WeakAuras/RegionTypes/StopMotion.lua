@@ -37,6 +37,10 @@ local default = {
     customForegroundRows = 16,
     customForegroundColumns = 16,
     customBackgroundFrames = 0,
+    customForegroundFileWidth = 0,
+    customForegroundFileHeight = 0,
+    customForegroundFrameWidth = 0,
+    customForegroundFrameHeight = 0,
     customBackgroundRows = 16,
     customBackgroundColumns = 16,
     hideBackground = true
@@ -109,27 +113,34 @@ local function SetTextureViaAtlas(self, texture)
   self:SetTexture(texture);
 end
 
-local function setTile(texture, frame, rows, columns )
+local function setTile(texture, frame, rows, columns, frameScaleW, frameScaleH)
   frame = frame - 1;
   local row = floor(frame / columns);
   local column = frame % columns;
 
-  local deltaX = 1 / columns;
-  local deltaY = 1 / rows;
+  local deltaX = frameScaleW / columns
+  local deltaY = frameScaleH / rows
 
   local left = deltaX * column;
   local right = left + deltaX;
 
   local top = deltaY * row;
   local bottom = top + deltaY;
-
-  texture:SetTexCoord(left, right, top, bottom);
+  pcall(function() texture:SetTexCoord(left, right, top, bottom) end)
 end
 
 WeakAuras.setTile = setTile;
 
 local function SetFrameViaAtlas(self, texture, frame)
-  setTile(self, frame, self.rows, self.columns);
+  local frameScaleW = 1
+  local frameScaleH = 1
+  if self.fileWidth and self.frameWidth and self.fileWidth > 0 and self.frameWidth > 0 then
+    frameScaleW = (self.frameWidth * self.columns) / self.fileWidth
+  end
+  if self.fileHeight and self.frameHeight and self.fileHeight > 0 and self.frameHeight > 0 then
+    frameScaleH = (self.frameHeight * self.rows) / self.fileHeight
+  end
+  setTile(self, frame, self.rows, self.columns, frameScaleW, frameScaleH);
 end
 
 local function SetTextureViaFrames(self, texture)
@@ -143,29 +154,63 @@ end
 
 local function modify(parent, region, data)
     WeakAuras.regionPrototype.modify(parent, region, data);
-
+    region.foreground = region.foreground or {}
+    region.background = region.background or {}
     local pattern = "%.x(%d+)y(%d+)f(%d+)%.[tb][gl][ap]"
-    local tdata = texture_data[data.foregroundTexture];
-    if (tdata) then
-      local lastFrame = tdata.count - 1;
-      region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
-      region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
-      region.foreground.rows = tdata.rows;
-      region.foreground.columns = tdata.columns;
-    else
-      local rows, columns, frames = data.foregroundTexture:lower():match(pattern)
-      if rows and columns and frames then
-        local lastFrame = frames - 1;
+    local pattern2 = "%.x(%d+)y(%d+)f(%d+)w(%d+)h(%d+)W(%d+)H(%d+)%.[tb][gl][ap]"
+
+    do
+      local tdata = texture_data[data.foregroundTexture];
+      if (tdata) then
+        local lastFrame = tdata.count - 1;
+        region.foreground.lastFrame = lastFrame
         region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
         region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
-        region.foreground.rows = rows;
-        region.foreground.columns = columns;
+        region.foreground.rows = tdata.rows;
+        region.foreground.columns = tdata.columns;
+        region.foreground.fileWidth = 0
+        region.foreground.fileHeight = 0
+        region.foreground.frameWidth = 0
+        region.foreground.frameHeight = 0
       else
-        local lastFrame = (data.customForegroundFrames or 256) - 1;
-        region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
-        region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
-        region.foreground.rows = data.customForegroundRows;
-        region.foreground.columns = data.customForegroundColumns;
+        local rows, columns, frames = data.foregroundTexture:lower():match(pattern)
+        if rows then
+          local lastFrame = tonumber(frames) - 1;
+          region.foreground.lastFrame = lastFrame
+          region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
+          region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
+          region.foreground.rows = tonumber(rows)
+          region.foreground.columns = tonumber(columns)
+          region.foreground.fileWidth = 0
+          region.foreground.fileHeight = 0
+          region.foreground.frameWidth = 0
+          region.foreground.frameHeight = 0
+        else
+          local rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight = data.foregroundTexture:match(pattern2)
+          if rows then
+            local lastFrame = tonumber(frames) - 1;
+            region.foreground.lastFrame = lastFrame
+            region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
+            region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
+            region.foreground.rows = tonumber(rows)
+            region.foreground.columns = tonumber(columns)
+            region.foreground.fileWidth = tonumber(fileWidth)
+            region.foreground.fileHeight = tonumber(fileHeight)
+            region.foreground.frameWidth = tonumber(frameWidth)
+            region.foreground.frameHeight = tonumber(frameHeight)
+          else
+            local lastFrame = (data.customForegroundFrames or 256) - 1;
+            region.foreground.lastFrame = lastFrame
+            region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
+            region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
+            region.foreground.rows = data.customForegroundRows;
+            region.foreground.columns = data.customForegroundColumns;
+            region.foreground.fileWidth = data.customForegroundFileWidth
+            region.foreground.fileHeight = data.customForegroundFileHeight
+            region.foreground.frameWidth = data.customForegroundFrameWidth
+            region.foreground.frameHeight = data.customForegroundFrameHeight
+          end
+        end
       end
     end
 
@@ -173,27 +218,60 @@ local function modify(parent, region, data)
                              and data.foregroundTexture
                              or data.backgroundTexture;
 
-    local tbdata = texture_data[backgroundTexture];
-    if (tbdata) then
-      local lastFrame = tbdata.count - 1;
-      region.backgroundFrame = floor( (data.backgroundPercent or 1) * lastFrame + 1);
-      region.background.rows = tbdata.rows;
-      region.background.columns = tbdata.columns;
-    else
-      local rows, columns, frames = backgroundTexture:lower():match(pattern)
-      if rows and columns and frames then
-        local lastFrame = frames - 1;
-        region.backgroundFrame = floor( (data.backgroundPercent or 1) * lastFrame + 1);
-        region.background.rows = rows;
-        region.background.columns = columns;
+    do
+      if data.sameTexture then
+        region.backgroundFrame = floor( (data.backgroundPercent or 1) * region.foreground.lastFrame + 1);
+        region.background.rows = region.foreground.rows
+        region.background.columns = region.foreground.columns
+        region.background.fileWidth = region.foreground.fileWidth
+        region.background.fileHeight = region.foreground.fileHeight
+        region.background.frameWidth = region.foreground.frameWidth
+        region.background.frameHeight = region.foreground.frameHeight
       else
-        local lastFrame = (data.sameTexture and data.customForegroundFrames
-                                            or data.customBackgroundFrames or 256) - 1;
-        region.backgroundFrame = floor( (data.backgroundPercent or 1) * lastFrame + 1);
-        region.background.rows = data.sameTexture and data.customForegroundRows
-                                                  or data.customBackgroundRows;
-        region.background.columns = data.sameTexture and data.customForegroundColumns
-                                                    or data.customBackgroundColumns;
+        local tdata = texture_data[data.backgroundTexture];
+        if (tdata) then
+          local lastFrame = tdata.count - 1;
+          region.backgroundFrame = floor( (data.backgroundPercent or 1) * lastFrame + 1);
+          region.background.rows = tdata.rows;
+          region.background.columns = tdata.columns;
+          region.background.fileWidth = 0
+          region.background.fileHeight = 0
+          region.background.frameWidth = 0
+          region.background.frameHeight = 0
+        else
+          local rows, columns, frames = data.backgroundTexture:lower():match(pattern)
+          if rows then
+            local lastFrame = frames - 1;
+            region.backgroundFrame = floor( (data.backgroundPercent or 1) * lastFrame + 1);
+            region.background.rows = tonumber(rows)
+            region.background.columns = tonumber(columns)
+            region.background.fileWidth = 0
+            region.background.fileHeight = 0
+            region.background.frameWidth = 0
+            region.background.frameHeight = 0
+          else
+            local rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight = data.backgroundTexture:match(pattern2)
+            if rows then
+              local lastFrame = frames - 1;
+              region.backgroundFrame = floor( (data.backgroundPercent or 1) * lastFrame + 1);
+              region.background.rows = tonumber(rows)
+              region.background.columns = tonumber(columns)
+              region.background.fileWidth = tonumber(fileWidth)
+              region.background.fileHeight = tonumber(fileHeight)
+              region.background.frameWidth = tonumber(frameWidth)
+              region.background.frameHeight = tonumber(frameHeight)
+            else
+              local lastFrame = (data.customBackgroundFrames or 256) - 1;
+              region.backgroundFrame = floor( (data.backgroundPercent or 1) * lastFrame + 1);
+              region.background.rows = data.customBackgroundRows;
+              region.background.columns = data.customBackgroundColumns;
+              region.background.fileWidth = data.customBackgroundFileWidth
+              region.background.fileHeight = data.customBackgroundFileHeight
+              region.background.frameWidth = data.customBackgroundFrameWidth
+              region.background.frameHeight = data.customBackgroundFrameHeight
+            end
+          end
+        end
       end
     end
 
