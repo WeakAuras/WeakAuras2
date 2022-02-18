@@ -2140,8 +2140,8 @@ Private.event_prototypes = {
         values = function()
           local ret = {}
           for i = 1, GetNumFactions() do
-            local name, _, _, _, _, _, _, _, isHeader, _, _, _, _, factionID = GetFactionInfo(i)
-            if not isHeader and factionID then
+            local name, _, _, _, _, _, _, _, isHeader, _, hasRep, _, _, factionID = GetFactionInfo(i)
+            if (hasRep or not isHeader) and factionID then
               ret[factionID] = name
             end
           end
