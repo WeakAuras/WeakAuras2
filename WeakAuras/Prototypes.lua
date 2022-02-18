@@ -2151,7 +2151,8 @@ Private.event_prototypes = {
         enable = function(trigger)
           return not trigger.use_watched
         end,
-        test = "true"
+        test = "true",
+        control = "WeakAurasSortedDropdown"
       },
       {
         name = "name",
