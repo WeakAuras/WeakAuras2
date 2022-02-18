@@ -63,7 +63,7 @@ local function createOptions(id, data)
         __order = 1,
         foregroundTexture = {
             type = "input",
-            width = WeakAuras.normalWidth - 0.15,
+            width = WeakAuras.doubleWidth - 0.15,
             name = L["Texture"],
             order = 1,
         },
@@ -86,204 +86,157 @@ local function createOptions(id, data)
             control = "WeakAurasIcon",
             image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
         },
-        backgroundTexture = {
-            type = "input",
-            width = WeakAuras.normalWidth - 0.15,
-            name = L["Background Texture"],
-            order = 5,
-            disabled = function() return data.sameTexture or data.hideBackground  end,
-            get = function() return data.sameTexture and data.foregroundTexture or data.backgroundTexture; end,
-        },
-        chooseBackgroundTexture = {
-            type = "execute",
-            width = 0.15,
-            name = L["Choose"],
-            order = 6,
-            func = function()
-                OptionsPrivate.OpenTexturePicker(data, {}, {
-                  texture = "backgroundTexture",
-                  color = "backgroundColor",
-                  rotation = "rotation",
-                  mirror = "mirror",
-                  blendMode = "blendMode"
-                }, texture_types, setTextureFunc);
-            end,
-            disabled = function() return data.sameTexture or data.hideBackground; end,
-            imageWidth = 24,
-            imageHeight = 24,
-            control = "WeakAurasIcon",
-            image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
-        },
-        sameTextureSpace = {
-            type = "description",
-            width = WeakAuras.normalWidth,
-            name = "",
-            order = 13,
-        },
-        hideBackground = {
-          type = "toggle",
-          name = L["Hide"],
-          order = 14,
-          width = WeakAuras.halfWidth,
-        },
-        sameTexture = {
-            type = "toggle",
-            width = WeakAuras.halfWidth,
-            name = L["Same"],
-            order = 15,
-            disabled = function() return data.hideBackground; end
+        foregroundColor = {
+          type = "color",
+          width = WeakAuras.normalWidth,
+          name = L["Color"],
+          hasAlpha = true,
+          order = 3
         },
         desaturateForeground = {
-            type = "toggle",
-            width = WeakAuras.normalWidth,
-            name = L["Desaturate"],
-            order = 17.5,
-        },
-        desaturateBackground = {
-            type = "toggle",
-            name = L["Desaturate"],
-            order = 17.6,
-            width = WeakAuras.normalWidth,
-            disabled = function() return data.hideBackground; end
-        },
-        -- Foreground options for custom textures
-        customForegroundHeader = {
-            type = "header",
-            name = L["Custom Foreground"],
-            order = 17.70,
-            hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
+          type = "toggle",
+          width = WeakAuras.normalWidth,
+          name = L["Desaturate"],
+          order = 3.5,
         },
         customForegroundRows = {
-            type = "range",
-            width = WeakAuras.normalWidth,
+            type = "input",
+            width = WeakAuras.doubleWidth / 3,
             name = L["Rows"],
-            min = 1,
-            max = 64,
-            order = 17.71,
+            validate = WeakAuras.ValidateNumeric,
+            get = function()
+              return data.customForegroundRows and tostring(data.customForegroundRows) or "";
+            end,
+            set = function(info, v)
+              data.customForegroundRows = v and tonumber(v) or 0
+              WeakAuras.Add(data);
+              WeakAuras.UpdateThumbnail(data);
+            end,
+            order = 4,
             hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
         },
         customForegroundColumns = {
-            type = "range",
-            width = WeakAuras.normalWidth,
+            type = "input",
+            width = WeakAuras.doubleWidth / 3,
             name = L["Columns"],
-            min = 1,
-            max = 64,
-            order = 17.72,
+            validate = WeakAuras.ValidateNumeric,
+            get = function()
+              return data.customForegroundColumns and tostring(data.customForegroundColumns) or "";
+            end,
+            set = function(info, v)
+              data.customForegroundColumns = v and tonumber(v) or 0
+              WeakAuras.Add(data);
+              WeakAuras.UpdateThumbnail(data);
+            end,
+            order = 5,
             hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
         },
         customForegroundFrames = {
-            type = "range",
-            width = WeakAuras.normalWidth,
+            type = "input",
+            width = WeakAuras.doubleWidth / 3,
             name = L["Frame Count"],
-            min = 0,
-            max = 4096,
-            order = 17.73,
+            validate = WeakAuras.ValidateNumeric,
+            get = function()
+              return data.customForegroundFrames and tostring(data.customForegroundFrames) or "";
+            end,
+            set = function(info, v)
+              data.customForegroundFrames = v and tonumber(v) or 0
+              WeakAuras.Add(data);
+              WeakAuras.UpdateThumbnail(data);
+            end,
+            order = 6,
             hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
         },
         customForegroundFileWidth = {
-          type = "range",
-          width = WeakAuras.normalWidth,
+          type = "input",
+          width = WeakAuras.normalWidth / 2,
           name = L["File Width"],
-          min = 0,
-          max = 4096,
-          order = 17.731,
+          desc = L["Must be a power of 2"],
+          validate = function(info, val)
+            if val ~= nil and val ~= "" and (not tonumber(val) or tonumber(val) >= 2^31 or math.frexp(val) ~= 0.5) then
+              return false;
+            end
+            return true
+          end,
+          get = function()
+            return data.customForegroundFileWidth and tostring(data.customForegroundFileWidth) or "";
+          end,
+          set = function(info, v)
+            data.customForegroundFileWidth = v and tonumber(v) or 0
+            WeakAuras.Add(data);
+            WeakAuras.UpdateThumbnail(data);
+          end,
+          order = 7,
           hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
         },
         customForegroundFileHeight = {
-          type = "range",
-          width = WeakAuras.normalWidth,
+          type = "input",
+          width = WeakAuras.normalWidth / 2,
           name = L["File Height"],
-          min = 0,
-          max = 4096,
-          order = 17.732,
+          desc = L["Must be a power of 2"],
+          validate = function(info, val)
+            if val ~= nil and val ~= "" and (not tonumber(val) or tonumber(val) >= 2^31 or math.frexp(val) ~= 0.5) then
+              return false;
+            end
+            return true
+          end,
+          get = function()
+            return data.customForegroundFileHeight and tostring(data.customForegroundFileHeight) or "";
+          end,
+          set = function(info, v)
+            data.customForegroundFileHeight = v and tonumber(v) or 0
+            WeakAuras.Add(data);
+            WeakAuras.UpdateThumbnail(data);
+          end,
+          order = 8,
           hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
         },
         customForegroundFrameWidth = {
-          type = "range",
-          width = WeakAuras.normalWidth,
+          type = "input",
+          width = WeakAuras.normalWidth / 2,
           name = L["Frame Width"],
-          min = 0,
-          max = 4096,
-          order = 17.733,
+          validate = WeakAuras.ValidateNumeric,
+          desc = L["Can set to 0 if Columns * Width equal File Width"],
+          get = function()
+            return data.customForegroundFrameWidth and tostring(data.customForegroundFrameWidth) or "";
+          end,
+          set = function(info, v)
+            data.customForegroundFrameWidth = v and tonumber(v) or 0
+            WeakAuras.Add(data);
+            WeakAuras.UpdateThumbnail(data);
+          end,
+          order = 9,
           hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
         },
         customForegroundFrameHeight = {
-          type = "range",
-          width = WeakAuras.normalWidth,
+          type = "input",
+          width = WeakAuras.normalWidth / 2,
           name = L["Frame Height"],
-          min = 0,
-          max = 4096,
-          order = 17.734,
+          validate = WeakAuras.ValidateNumeric,
+          desc = L["Can set to 0 if Rows * Height equal File Height"],
+          get = function()
+            return data.customForegroundFrameHeight and tostring(data.customForegroundFrameHeight) or "";
+          end,
+          set = function(info, v)
+            data.customForegroundFrameHeight = v and tonumber(v) or 0
+            WeakAuras.Add(data);
+            WeakAuras.UpdateThumbnail(data);
+          end,
+          order = 10,
           hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
-        },
-        customForegroundSpace = {
-            type = "execute",
-            width = WeakAuras.normalWidth,
-            name = "",
-            order = 17.74,
-            image = function() return "", 0, 0 end,
-            hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
-        },
-        -- Background options for custom textures
-        customBackgroundHeader = {
-            type = "header",
-            name = L["Custom Background"],
-            order = 18.00,
-            hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture)
-                                       or data.hideBackground end
-        },
-        customBackgroundRows = {
-            type = "range",
-            width = WeakAuras.normalWidth,
-            name = L["Rows"],
-            min = 1,
-            max = 64,
-            order = 18.01,
-            hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture)
-                                       or data.hideBackground end
-        },
-        customBackgroundColumns = {
-            type = "range",
-            width = WeakAuras.normalWidth,
-            name = L["Columns"],
-            min = 1,
-            max = 64,
-            order = 18.02,
-            hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture)
-                                       or data.hideBackground end
-        },
-        customBackgroundFrames = {
-            type = "range",
-            width = WeakAuras.normalWidth,
-            name = L["Frame Count"],
-            min = 0,
-            max = 4096,
-            step = 1,
-            order = 18.03,
-            hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture)
-                                       or data.hideBackground end
-        },
-        customBackgroundSpace = {
-            type = "execute",
-            width = WeakAuras.normalWidth,
-            name = "",
-            order = 18.04,
-            image = function() return "", 0, 0 end,
-            hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture)
-                                       or data.hideBackground end
         },
         blendMode = {
             type = "select",
             width = WeakAuras.normalWidth,
             name = L["Blend Mode"],
-            order = 20,
+            order = 11,
             values = OptionsPrivate.Private.blend_types
         },
         animationType = {
             type = "select",
             width = WeakAuras.normalWidth,
             name = L["Animation Mode"],
-            order = 21,
+            order = 12,
             values = animation_types
         },
         startPercent = {
@@ -293,7 +246,7 @@ local function createOptions(id, data)
             min = 0,
             max = 1,
             --bigStep = 0.01,
-            order = 22,
+            order = 13,
             isPercent = true
         },
         endPercent = {
@@ -303,7 +256,7 @@ local function createOptions(id, data)
             min = 0,
             max = 1,
             --bigStep  = 0.01,
-            order = 23,
+            order = 14,
             isPercent = true
         },
         frameRate = {
@@ -314,47 +267,225 @@ local function createOptions(id, data)
            max = 120,
            step = 1,
            bigStep = 3,
-           order = 24,
+           order = 15,
            disabled = function() return data.animationType == "progress" end;
         },
-        backgroundPercent = {
-            type = "range",
-            width = WeakAuras.normalWidth,
-            name = L["Background"],
-            min = 0,
-            max = 1,
-            order = 25,
-            isPercent = true,
-            disabled = function() return data.hideBackground; end
+        inverse = {
+          type = "toggle",
+          width = WeakAuras.normalWidth,
+          name = L["Inverse"],
+          order = 15.5
         },
-        foregroundColor = {
-            type = "color",
-            width = WeakAuras.normalWidth,
-            name = L["Foreground Color"],
-            hasAlpha = true,
-            order = 30
+        customBackgroundHeader = {
+          type = "header",
+          name = L["Background Texture"],
+          order = 16,
+        },
+        hideBackground = {
+          type = "toggle",
+          name = L["Hide Background"],
+          order = 17,
+          width = WeakAuras.normalWidth,
+        },
+        sameTexture = {
+          type = "toggle",
+          width = WeakAuras.normalWidth,
+          name = L["Same texture as Foreground"],
+          order = 18,
+          disabled = function() return data.hideBackground; end,
+          hidden = function() return data.hideBackground; end
+        },
+        backgroundTexture = {
+            type = "input",
+            width = WeakAuras.doubleWidth - 0.15,
+            name = L["Background Texture"],
+            order = 19,
+            disabled = function() return data.sameTexture or data.hideBackground end,
+            hidden = function() return data.hideBackground end,
+            get = function() return data.sameTexture and data.foregroundTexture or data.backgroundTexture; end,
+        },
+        chooseBackgroundTexture = {
+            type = "execute",
+            width = 0.15,
+            name = L["Choose"],
+            order = 20,
+            func = function()
+                OptionsPrivate.OpenTexturePicker(data, {}, {
+                  texture = "backgroundTexture",
+                  color = "backgroundColor",
+                  rotation = "rotation",
+                  mirror = "mirror",
+                  blendMode = "blendMode"
+                }, texture_types, setTextureFunc);
+            end,
+            disabled = function() return data.sameTexture or data.hideBackground; end,
+            hidden = function() return data.hideBackground end,
+            imageWidth = 24,
+            imageHeight = 24,
+            control = "WeakAurasIcon",
+            image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
         },
         backgroundColor = {
             type = "color",
             width = WeakAuras.normalWidth,
-            name = L["Background Color"],
+            name = L["Color"],
             hasAlpha = true,
-            order = 32,
-            disabled = function() return data.hideBackground; end
+            order = 21,
+            disabled = function() return data.hideBackground; end,
+            hidden = function() return data.hideBackground; end
         },
-        inverse = {
-            type = "toggle",
-            width = WeakAuras.normalWidth,
-            name = L["Inverse"],
-            order = 33
+        desaturateBackground = {
+          type = "toggle",
+          name = L["Desaturate"],
+          order = 22,
+          width = WeakAuras.normalWidth,
+          disabled = function() return data.hideBackground; end,
+          hidden = function() return data.hideBackground; end
+      },
+        backgroundColorHiddenSpacer = {
+          type = "execute",
+          width = WeakAuras.normalWidth,
+          name = "",
+          order = 23,
+          image = function() return "", 0, 0 end,
+          hidden = function() return not data.hideBackground end
         },
-        space3 = {
-            type = "execute",
-            width = WeakAuras.normalWidth,
-            name = "",
-            order = 36,
-            image = function() return "", 0, 0 end,
-        },
+        customBackgroundRows = {
+          type = "input",
+          width = WeakAuras.doubleWidth / 3,
+          name = L["Rows"],
+          validate = WeakAuras.ValidateNumeric,
+          get = function()
+            return data.customBackgroundRows and tostring(data.customBackgroundRows) or "";
+          end,
+          set = function(info, v)
+            data.customBackgroundRows = v and tonumber(v) or 0
+            WeakAuras.Add(data);
+            WeakAuras.UpdateThumbnail(data);
+          end,
+          order = 24,
+          hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture) end
+      },
+      customBackgroundColumns = {
+          type = "input",
+          width = WeakAuras.doubleWidth / 3,
+          name = L["Columns"],
+          validate = WeakAuras.ValidateNumeric,
+          get = function()
+            return data.customBackgroundColumns and tostring(data.customBackgroundColumns) or "";
+          end,
+          set = function(info, v)
+            data.customBackgroundColumns = v and tonumber(v) or 0
+            WeakAuras.Add(data);
+            WeakAuras.UpdateThumbnail(data);
+          end,
+          order = 25,
+          hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture) end
+      },
+      customBackgroundFrames = {
+          type = "input",
+          width = WeakAuras.doubleWidth / 3,
+          name = L["Frame Count"],
+          validate = WeakAuras.ValidateNumeric,
+          get = function()
+            return data.customBackgroundFrames and tostring(data.customBackgroundFrames) or "";
+          end,
+          set = function(info, v)
+            data.customBackgroundFrames = v and tonumber(v) or 0
+            WeakAuras.Add(data);
+            WeakAuras.UpdateThumbnail(data);
+          end,
+          order = 26,
+          hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture) end
+      },
+      customBackgroundFileWidth = {
+        type = "input",
+        width = WeakAuras.normalWidth / 2,
+        name = L["File Width"],
+        desc = L["Must be a power of 2"],
+        validate = function(info, val)
+          if val ~= nil and val ~= "" and (not tonumber(val) or tonumber(val) >= 2^31 or math.frexp(val) ~= 0.5) then
+            return false;
+          end
+          return true
+        end,
+        get = function()
+          return data.customBackgroundFileWidth and tostring(data.customBackgroundFileWidth) or "";
+        end,
+        set = function(info, v)
+          data.customBackgroundFileWidth = v and tonumber(v) or 0
+          WeakAuras.Add(data);
+          WeakAuras.UpdateThumbnail(data);
+        end,
+        order = 27,
+        hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture) end
+      },
+      customBackgroundFileHeight = {
+        type = "input",
+        width = WeakAuras.normalWidth / 2,
+        name = L["File Height"],
+        desc = L["Must be a power of 2"],
+        validate = function(info, val)
+          if val ~= nil and val ~= "" and (not tonumber(val) or tonumber(val) >= 2^31 or math.frexp(val) ~= 0.5) then
+            return false;
+          end
+          return true
+        end,
+        get = function()
+          return data.customBackgroundFileHeight and tostring(data.customBackgroundFileHeight) or "";
+        end,
+        set = function(info, v)
+          data.customBackgroundFileHeight = v and tonumber(v) or 0
+          WeakAuras.Add(data);
+          WeakAuras.UpdateThumbnail(data);
+        end,
+        order = 28,
+        hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture) end
+      },
+      customBackgroundFrameWidth = {
+        type = "input",
+        width = WeakAuras.normalWidth / 2,
+        name = L["Frame Width"],
+        validate = WeakAuras.ValidateNumeric,
+        desc = L["Can set to 0 if Columns * Width equal File Width"],
+        get = function()
+          return data.customBackgroundFrameWidth and tostring(data.customBackgroundFrameWidth) or "";
+        end,
+        set = function(info, v)
+          data.customBackgroundFrameWidth = v and tonumber(v) or 0
+          WeakAuras.Add(data);
+          WeakAuras.UpdateThumbnail(data);
+        end,
+        order = 29,
+        hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture) end
+      },
+      customBackgroundFrameHeight = {
+        type = "input",
+        width = WeakAuras.normalWidth / 2,
+        name = L["Frame Height"],
+        validate = WeakAuras.ValidateNumeric,
+        desc = L["Can set to 0 if Rows * Height equal File Height"],
+        get = function()
+          return data.customBackgroundFrameHeight and tostring(data.customBackgroundFrameHeight) or "";
+        end,
+        set = function(info, v)
+          data.customBackgroundFrameHeight = v and tonumber(v) or 0
+          WeakAuras.Add(data);
+          WeakAuras.UpdateThumbnail(data);
+        end,
+        order = 30,
+        hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture) end
+      },
+      backgroundPercent = {
+        type = "range",
+        width = WeakAuras.normalWidth,
+        name = L["Selected Frame"],
+        min = 0,
+        max = 1,
+        order = 31,
+        isPercent = true,
+        hidden = function() return data.hideBackground; end
+      }
     };
 
     if OptionsPrivate.commonOptions then
@@ -411,6 +542,10 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
       region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
       region.foreground.rows = tdata.rows;
       region.foreground.columns = tdata.columns;
+      region.foreground.fileWidth = 0
+      region.foreground.fileHeight = 0
+      region.foreground.frameWidth = 0
+      region.foreground.frameHeight = 0
     else
       local pattern = "%.x(%d+)y(%d+)f(%d+)%.[tb][gl][ap]"
       local pattern2 = "%.x(%d+)y(%d+)f(%d+)w(%d+)h(%d+)W(%d+)H(%d+)%.[tb][gl][ap]"
@@ -421,6 +556,10 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
         region.endFrame = floor( (data.endPercent or 1) * lastFrame) + 1;
         region.foreground.rows = tonumber(rows);
         region.foreground.columns = tonumber(columns);
+        region.foreground.fileWidth = 0
+        region.foreground.fileHeight = 0
+        region.foreground.frameWidth = 0
+        region.foreground.frameHeight = 0
       else
         local rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight = data.foregroundTexture:match(pattern2)
         if rows then
