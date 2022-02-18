@@ -979,6 +979,40 @@ function WeakAuras.ValidateNumeric(info, val)
   return true
 end
 
+function WeakAuras.ParseStringCheck(input)
+  if not input then return end
+  local matcher = {
+    zones = {},
+    Check = function(self, zone)
+      return self.zones[zone]
+    end,
+    Add = function(self, z)
+      self.zones[z] = true
+    end
+  }
+
+  local start = 1
+  local escaped = false
+  local partial = ""
+  for i = 1, #input do
+    local c = input:sub(i, i)
+    if escaped then
+      escaped = false
+    elseif c == '\\' then
+      partial = partial .. input:sub(start, i -1)
+      start = i + 1
+      escaped = true
+    elseif c == "," then
+      matcher:Add(partial .. input:sub(start, i -1):trim())
+      start = i + 1
+      partial = ""
+    end
+  end
+  matcher:Add(partial .. input:sub(start, #input):trim())
+
+  return matcher
+end
+
 function WeakAuras.ValidateNumericOrPercent(info, val)
   if val ~= nil and val ~= "" then
     local percent = string.match(val, "(%d+)%%")
@@ -1562,9 +1596,10 @@ Private.load_prototype = {
       display = L["Zone Name"],
       type = "string",
       init = "arg",
-      test = "WeakAuras.CheckString(%q, zone)",
+      preamble = "local checker = WeakAuras.ParseStringCheck(%q)",
+      test = "checker:Check(zone)",
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
-      desc = L["Supports multiple entries, separated by commas"]
+      desc = L["Supports multiple entries, separated by commas. Escape ',' with \\"]
     },
     {
       name = "zoneId",
