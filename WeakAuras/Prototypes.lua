@@ -2153,9 +2153,18 @@ Private.event_prototypes = {
         end
         local standing
         if tonumber(standingId) then
-           standing = getglobal("FACTION_STANDING_LABEL"..standingId)
+           standing = GetText("FACTION_STANDING_LABEL"..standingId, UnitSex("player"))
         end
       ]=]
+      if WeakAuras.IsRetail() then
+        ret = ret .. [=[
+          local _, _, _, _, _, _, friendTextLevel = GetFriendshipReputation(factionID)
+          if friendTextLevel then
+            standing = friendTextLevel
+          end
+          local friendshipRank, friendshipMaxRank = GetFriendshipReputationRanks(factionID)
+        ]=]
+      end
       return ret:format(trigger.factionID or 0, trigger.use_watched and "true" or "false")
     end,
     statesParameter = "one",
@@ -2225,7 +2234,7 @@ Private.event_prototypes = {
         values = function()
           local ret = {}
           for i = 0, 8 do
-            ret[i] = getglobal("FACTION_STANDING_LABEL"..i)
+            ret[i] = GetText("FACTION_STANDING_LABEL"..i, UnitSex("player"))
           end
           return ret
         end,
@@ -2241,6 +2250,28 @@ Private.event_prototypes = {
         store = "true",
         hidden = "true",
         test = "true"
+      },
+      {
+        name = "friendshipRank",
+        display = L["Friendship Rank"],
+        type = "number",
+        init = "friendshipRank",
+        store = "true",
+        test = "true",
+        conditionType = "number",
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail()
+      },
+      {
+        name = "friendshipMaxRank",
+        display = L["Friendship Max Rank"],
+        type = "number",
+        init = "friendshipMaxRank",
+        store = "true",
+        test = "true",
+        conditionType = "number",
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail()
       },
       {
         name = "progressType",
