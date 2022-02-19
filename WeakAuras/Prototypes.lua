@@ -8114,7 +8114,7 @@ Private.event_prototypes = {
         name = "hastepercent",
         display = L["Haste (%)"],
         type = "number",
-        init = WeakAuras.IsClassic() and GetHaste() or GetCombatRatingBonus(CR_HASTE_SPELL),
+        init = WeakAuras.IsClassic() and "GetHaste()" or "GetCombatRatingBonus(CR_HASTE_SPELL)",
         store = true,
         conditionType = "number"
       },
