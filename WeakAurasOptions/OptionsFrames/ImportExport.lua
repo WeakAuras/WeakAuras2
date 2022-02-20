@@ -56,7 +56,7 @@ local function ConstructImportExport(frame)
         end
         input.editBox:SetMaxBytes(nil);
         input.editBox:SetScript("OnEscapePressed", function() group:Close(); end);
-        input.editBox:SetScript("OnChar", function() input:SetText(displayStr); input.editBox:HighlightText(); end);
+        input.editBox:SetScript("OnTextChanged", function() input:SetText(displayStr); input.editBox:HighlightText(); end);
         input.editBox:SetScript("OnMouseUp", function() input.editBox:HighlightText(); end);
         input:SetLabel(id.." - "..#displayStr);
         input.button:Hide();
