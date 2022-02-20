@@ -3424,8 +3424,6 @@ if WeakAuras.IsClassic() then
   for i, spellid in ipairs(reset_swing_spell_list) do
     Private.reset_swing_spells[spellid] = true
   end
-
-  Private.glow_types.ACShine = nil
 end
 
 if WeakAuras.IsBCC() then
@@ -3465,6 +3463,4 @@ if WeakAuras.IsBCC() then
   for _, spellid in ipairs(reset_ranged_swing_spell_list) do
     Private.reset_ranged_swing_spells[spellid] = true
   end
-
-  Private.glow_types.ACShine = nil
 end
