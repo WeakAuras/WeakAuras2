@@ -885,7 +885,7 @@ do
     [23] = true,
     [33] = true
   }
-  if WeakAuras.IsClassic() then
+  if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
     unplayableRace[9] = true
   end
 
