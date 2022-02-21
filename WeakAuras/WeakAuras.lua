@@ -3843,6 +3843,7 @@ local function evaluateTriggerStateTriggers(id)
     if (triggerState[id].disjunctive == "custom" and triggerState[id].triggerLogicFunc) then
       local ok, returnValue = xpcall(triggerState[id].triggerLogicFunc, geterrorhandler(), triggerState[id].triggers);
       result = ok and returnValue;
+        triggerState[id].activeTriggerMode = type(returnValue) == "number" and returnValue <= triggerState[id].numTriggers and returnValue or db.displays[id].triggers.activeTriggerMode
     end
   end
 
