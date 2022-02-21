@@ -881,6 +881,7 @@ local function modify(parent, region, data)
     else
       childRegion:SetFrameStrata(Private.frame_strata_types[childData.frameStrata]);
     end
+    Private.ApplyFrameLevel(childRegion)
     return regionData
   end
 
