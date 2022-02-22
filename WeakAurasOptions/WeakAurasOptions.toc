@@ -1,5 +1,5 @@
-## Interface: 90105
-## Interface-Classic: 11400
+## Interface: 90200
+## Interface-Classic: 11402
 ## Interface-BCC: 20503
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
