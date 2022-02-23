@@ -27,7 +27,7 @@ local intendedWoWProject = WOW_PROJECT_MAINLINE
 intendedWoWProject = WOW_PROJECT_CLASSIC
 --@end-version-classic@
 --@version-bcc@
-intendedWoWProject = WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5 -- TODO: Remove when every flavor build has the constant
+intendedWoWProject = WOW_PROJECT_BURNING_CRUSADE_CLASSIC or WOW_PROJECT_MAINLINE
 --@end-version-bcc@
 --@end-non-version-retail@]===]
 
