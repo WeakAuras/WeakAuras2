@@ -1938,6 +1938,7 @@ Private.event_prototypes = {
         type = "unit",
         init = "arg",
         values = "actual_unit_types_cast",
+        desc = Private.actual_unit_types_cast_tooltip,
         test = "true",
         store = true
       },
@@ -2451,6 +2452,7 @@ Private.event_prototypes = {
         type = "unit",
         init = "arg",
         values = "actual_unit_types_cast",
+        desc = Private.actual_unit_types_cast_tooltip,
         test = "true",
         store = true
       },
@@ -2908,6 +2910,7 @@ Private.event_prototypes = {
         type = "unit",
         init = "arg",
         values = "actual_unit_types_cast",
+        desc = Private.actual_unit_types_cast_tooltip,
         test = "true",
         store = true
       },
@@ -3313,6 +3316,7 @@ Private.event_prototypes = {
         type = "unit",
         init = "arg",
         values = "actual_unit_types_cast",
+        desc = Private.actual_unit_types_cast_tooltip,
         test = "true",
         store = true
       },
@@ -7671,6 +7675,7 @@ Private.event_prototypes = {
             return Private.actual_unit_types_cast
           end
         end,
+        desc = Private.actual_unit_types_cast_tooltip,
         test = "true",
         store = true
       },
