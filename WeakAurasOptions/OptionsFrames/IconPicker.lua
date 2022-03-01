@@ -66,7 +66,7 @@ local function ConstructIconPicker(frame)
       for name, icons in pairs(spellCache.Get()) do
         if(name:lower():find(subname, 1, true)) then
           if icons.spells then
-            for spell, icon in pairs(icons.spells:gmatch("(%d+)=(%d+)")) do
+            for spell, icon in icons.spells:gmatch("(%d+)=(%d+)") do
               local iconId = tonumber(icon)
               if (not usedIcons[iconId]) then
                 AddButton(name, iconId)
@@ -77,7 +77,7 @@ local function ConstructIconPicker(frame)
               end
             end
           elseif icons.achievements then
-            for _, icon in pairs(icons.achievements:gmatch("(%d+)=(%d+)")) do
+            for _, icon in icons.achievements:gmatch("(%d+)=(%d+)") do
               local iconId = tonumber(icon)
               if (not usedIcons[iconId]) then
                 AddButton(name, iconId)

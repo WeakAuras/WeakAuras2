@@ -16,8 +16,6 @@ local executeAll = OptionsPrivate.commonOptions.CreateExecuteAll("trigger")
 local flattenRegionOptions = OptionsPrivate.commonOptions.flattenRegionOptions
 local fixMetaOrders = OptionsPrivate.commonOptions.fixMetaOrders
 
-local spellCache = WeakAuras.spellCache
-
 local function union(table1, table2)
   local meta = {};
   for i,v in pairs(table1) do
