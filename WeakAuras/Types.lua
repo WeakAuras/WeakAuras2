@@ -3134,7 +3134,7 @@ for i = 1, 4 do
 end
 
 if WeakAuras.IsRetail() then
-  for i = 1, MAX_BOSS_FRAMES do
+  for i = 1, 10 do
     Private.baseUnitId["boss"..i] = true
     Private.multiUnitUnits.boss["boss"..i] = true
   end
