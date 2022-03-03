@@ -985,7 +985,7 @@ end
 
 local function CheckForPreviousEncounter()
   if (UnitAffectingCombat ("player") or InCombatLockdown()) then
-    for i = 1, 5 do
+    for i = 1, 10 do
       if (UnitExists ("boss" .. i)) then
         local guid = UnitGUID ("boss" .. i)
         if (guid and db.CurrentEncounter.boss_guids [guid]) then
@@ -1255,7 +1255,7 @@ end
 local function StoreBossGUIDs()
   Private.StartProfileSystem("boss_guids")
   if (WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.boss_guids) then
-    for i = 1, 5 do
+    for i = 1, 10 do
       if (UnitExists ("boss" .. i)) then
         local guid = UnitGUID ("boss" .. i)
         if (guid) then
@@ -5105,7 +5105,7 @@ do
     trackableUnits["partypet" .. i] = true
   end
 
-  for i = 1, MAX_BOSS_FRAMES do
+  for i = 1, 10 do
     trackableUnits["boss" .. i] = true
   end
 
