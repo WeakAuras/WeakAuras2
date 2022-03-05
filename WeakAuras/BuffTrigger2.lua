@@ -1021,7 +1021,7 @@ local function GetAllUnits(unit, allUnits, includePets)
     local i = 1
     local max
     if unit == "boss" then
-      max = MAX_BOSS_FRAMES
+      max = 10
     elseif unit == "arena" then
       max = 5
     elseif unit == "nameplate" then
