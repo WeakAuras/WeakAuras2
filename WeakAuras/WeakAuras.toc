@@ -38,8 +38,8 @@ ArchiveTypes\Repository.lua
 DefaultOptions.lua
 
 # Core files
-Prototypes.lua
 Types.lua
+Prototypes.lua
 Profiling.lua
 WeakAuras.lua
 History.lua

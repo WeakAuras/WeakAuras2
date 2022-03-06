@@ -8928,6 +8928,12 @@ else
   Private.event_prototypes["Queued Action"] = nil
 end
 
+Private.category_event_prototype = {}
+for name, prototype in pairs(Private.event_prototypes) do
+  Private.category_event_prototype[prototype.type] = Private.category_event_prototype[prototype.type] or {}
+  Private.category_event_prototype[prototype.type][name] = prototype.name
+end
+
 Private.dynamic_texts = {
   ["p"] = {
     get = function(state)

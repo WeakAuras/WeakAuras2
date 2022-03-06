@@ -1065,12 +1065,6 @@ Private.include_pets_types = {
   PetsOnly = L["Pets only"]
 }
 
-Private.category_event_prototype = {}
-for name, prototype in pairs(Private.event_prototypes) do
-  Private.category_event_prototype[prototype.type] = Private.category_event_prototype[prototype.type] or {}
-  Private.category_event_prototype[prototype.type][name] = prototype.name
-end
-
 Private.subevent_prefix_types = {
   SWING = L["Swing"],
   RANGE = L["Range"],
