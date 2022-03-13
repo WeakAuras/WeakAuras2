@@ -8658,24 +8658,36 @@ Private.event_prototypes = {
     name = L["Spell Known"],
     init = function(trigger)
       local spellName;
+      local ret;
       if (trigger.use_exact_spellName) then
         spellName = tonumber(trigger.spellName) or "nil";
         if spellName == 0 then
           spellName = "nil"
         end
-        local ret = [[
+        ret = [[
           local spellName = %s;
-          local usePet = %s;
         ]]
-        return ret:format(spellName, trigger.use_petspell and "true" or "false");
+        ret = ret:format(spellName)
       else
         local name = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName or "";
-        local ret = [[
+        ret = [[
           local spellName = select(7, GetSpellInfo(%q));
-          local usePet = %s;
         ]]
-        return ret:format(name, trigger.use_petspell and "true" or "false");
+        ret = ret:format(name)
       end
+      local ret2
+      if (trigger.use_inverse) then
+        ret2 = [[
+          local usePet = %s;
+          local active = not spellName or not WeakAuras.IsSpellKnown(spellName, usePet)
+        ]]
+      else
+        ret2 = [[
+          local usePet = %s;
+          local active = spellName and WeakAuras.IsSpellKnown(spellName, usePet)
+        ]]
+      end
+      return ret .. ret2:format(trigger.use_petspell and "true" or "false")
     end,
     args = {
       {
@@ -8693,8 +8705,14 @@ Private.event_prototypes = {
         test = "true"
       },
       {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true",
+      },
+      {
         hidden = true,
-        test = "spellName and WeakAuras.IsSpellKnown(spellName, usePet)";
+        test = "active"
       }
     },
     nameFunc = function(trigger)
