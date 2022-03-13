@@ -1206,6 +1206,48 @@ Private.combatlog_flags_check_object_type = {
   Player = L["Player"]
 }
 
+Private.combatlog_spell_school_types = {
+  [1] = STRING_SCHOOL_PHYSICAL,
+  [2] = STRING_SCHOOL_HOLY,
+  [4] = STRING_SCHOOL_FIRE,
+  [8] = STRING_SCHOOL_NATURE,
+  [16] = STRING_SCHOOL_FROST,
+  [32] = STRING_SCHOOL_SHADOW,
+  [64] = STRING_SCHOOL_ARCANE,
+  [3] = STRING_SCHOOL_HOLYSTRIKE,
+  [5] = STRING_SCHOOL_FLAMESTRIKE,
+  [6] = STRING_SCHOOL_HOLYFIRE,
+  [9] = STRING_SCHOOL_STORMSTRIKE,
+  [10] = STRING_SCHOOL_HOLYSTORM,
+  [12] = STRING_SCHOOL_FIRESTORM,
+  [17] = STRING_SCHOOL_FROSTSTRIKE,
+  [18] = STRING_SCHOOL_HOLYFROST,
+  [20] = STRING_SCHOOL_FROSTFIRE,
+  [24] = STRING_SCHOOL_FROSTSTORM,
+  [33] = STRING_SCHOOL_SHADOWSTRIKE,
+  [34] = STRING_SCHOOL_SHADOWLIGHT,
+  [36] = STRING_SCHOOL_SHADOWFLAME,
+  [40] = STRING_SCHOOL_SHADOWSTORM,
+  [48] = STRING_SCHOOL_SHADOWFROST,
+  [65] = STRING_SCHOOL_SPELLSTRIKE,
+  [66] = STRING_SCHOOL_DIVINE,
+  [68] = STRING_SCHOOL_SPELLFIRE,
+  [72] = STRING_SCHOOL_SPELLSTORM,
+  [80] = STRING_SCHOOL_SPELLFROST,
+  [96] = STRING_SCHOOL_SPELLSHADOW,
+  [28] = STRING_SCHOOL_ELEMENTAL,
+  [62] = STRING_SCHOOL_CHROMATIC,
+  [106] = STRING_SCHOOL_COSMIC,
+  [124] = STRING_SCHOOL_CHAOS,
+  [126] = STRING_SCHOOL_MAGIC,
+  [127] = STRING_SCHOOL_CHAOS,
+}
+
+Private.combatlog_spell_school_types_for_ui = {}
+for id, str in pairs(Private.combatlog_spell_school_types) do
+  Private.combatlog_spell_school_types_for_ui[id] = ("%.3d - %s"):format(id, str)
+end
+
 Private.combatlog_raid_mark_check_type = {
   [0] = RAID_TARGET_NONE,
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1:14|t " .. RAID_TARGET_1, -- Star

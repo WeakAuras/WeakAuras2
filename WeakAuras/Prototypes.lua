@@ -128,6 +128,15 @@ if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
   end
 end
 
+function WeakAuras.SpellSchool(school)
+  return Private.combatlog_spell_school_types[school] or ""
+end
+
+function WeakAuras.TestSchool(spellSchool, test)
+  print(spellSchool, test, type(spellSchool), type(test))
+  return spellSchool == test
+end
+
 local encounter_list = ""
 local zoneId_list = ""
 function Private.InitializeEncounterAndZoneLists()
@@ -3739,10 +3748,19 @@ Private.event_prototypes = {
         conditionType = "string"
       },
       {
+        name = "spellSchool",
+        display = L["Spell School"],
+        type = "select",
+        values = "combatlog_spell_school_types_for_ui",
+        test = "spellSchool == %d",
+        init = "arg",
+        control = "WeakAurasSortedDropdown",
+        conditionType = "select",
+        store = true,
         enable = function(trigger)
           return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
         end
-      }, -- spellSchool ignored with _ argument
+      },
       {
         name = "environmentalType",
         display = L["Environment Type"],
@@ -3994,7 +4012,7 @@ Private.event_prototypes = {
         init = "(not WeakAuras.IsRetail() and spellName and select(3, GetSpellInfo(spellName))) or (WeakAuras.IsRetail() and spellId and select(3, GetSpellInfo(spellId))) or 'Interface\\\\Icons\\\\INV_Misc_QuestionMark'",
         store = true,
         test = "true"
-      }
+      },
     },
     timedrequired = true
   },
