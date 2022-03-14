@@ -1381,5 +1381,16 @@ function Private.Modernize(data)
     end
   end
 
+  if (data.internalVersion < 51) then
+    for triggerId, triggerData in ipairs(data.triggers) do
+      if triggerData.trigger.event == "Threat Situation" then
+        triggerData.trigger.unit = triggerData.trigger.threatUnit
+        triggerData.trigger.use_unit = triggerData.trigger.use_threatUnit
+        triggerData.trigger.threatUnit = nil
+        triggerData.trigger.use_threatUnit = nil
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
 end
