@@ -5147,7 +5147,12 @@ Private.event_prototypes = {
 
           function copyOrSchedule(bar, cloneId)
             if triggerUseRemaining then
-              local remainingTime = bar.expirationTime - GetTime() + extendTimer
+              local remainingTime
+              if bar.paused then
+                remainingTime = bar.remaining + extendTimer
+              else
+                remainingTime = bar.expirationTime - GetTime() + extendTimer
+              end
               if remainingTime %s triggerRemaining then
                 WeakAuras.CopyBarToState(bar, states, cloneId, extendTimer)
               else
@@ -5157,7 +5162,7 @@ Private.event_prototypes = {
                   state.changed = true
                 end
               end
-              if remainingTime >= triggerRemaining then
+              if remainingTime >= triggerRemaining and not bar.paused then
                 WeakAuras.ScheduleDbmCheck(bar.expirationTime - triggerRemaining + extendTimer)
               end
             else
@@ -5415,7 +5420,12 @@ Private.event_prototypes = {
 
           function copyOrSchedule(bar, cloneId)
             if triggerUseRemaining then
-              local remainingTime = bar.expirationTime - GetTime() + extendTimer
+              local remainingTime
+              if bar.paused then
+                remainingTime = bar.remaining + extendTimer
+              else
+                remainingTime = bar.expirationTime - GetTime() + extendTimer
+              end
               if remainingTime %s triggerRemaining then
                 WeakAuras.CopyBigWigsTimerToState(bar, states, cloneId, extendTimer)
               else
@@ -5425,7 +5435,7 @@ Private.event_prototypes = {
                   state.changed = true
                 end
               end
-              if remainingTime >= triggerRemaining then
+              if remainingTime >= triggerRemaining and not bar.paused then
                 WeakAuras.ScheduleBigWigsCheck(bar.expirationTime - triggerRemaining + extendTimer)
               end
             else
