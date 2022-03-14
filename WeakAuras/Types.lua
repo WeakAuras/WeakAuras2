@@ -843,6 +843,8 @@ Private.actual_unit_types_cast_tooltip = L["• |cff00ff00Player|r, |cff00ff00Ta
 Private.threat_unit_types = {
   target = L["Target"],
   focus = L["Focus"],
+  nameplate = L["Nameplate"],
+  boss = L["Boss"],
   member = L["Specific Unit"],
   none = L["At Least One Enemy"]
 }

@@ -7326,29 +7326,32 @@ Private.event_prototypes = {
   ["Threat Situation"] = {
     type = "unit",
     events = function(trigger)
+      local unit = trigger.unit
       local result = {}
-      if trigger.threatUnit and trigger.threatUnit ~= "none" then
-        AddUnitEventForEvents(result, trigger.threatUnit, "UNIT_THREAT_LIST_UPDATE")
+      if unit and unit ~= "none" then
+        AddUnitEventForEvents(result, unit, "UNIT_THREAT_LIST_UPDATE")
       else
         AddUnitEventForEvents(result, "player", "UNIT_THREAT_SITUATION_UPDATE")
       end
       return result
     end,
     internal_events = function(trigger)
+      local unit = trigger.unit
       local result = {}
-      if trigger.threatUnit and trigger.threatUnit ~= "none" then
-        AddUnitChangeInternalEvents(trigger.threatUnit, result)
+      if unit and unit ~= "none" then
+        AddUnitChangeInternalEvents(unit, result)
       end
       return result
     end,
-    force_events = "UNIT_THREAT_LIST_UPDATE",
+    force_events = unitHelperFunctions.UnitChangedForceEvents,
     name = L["Threat Situation"],
     init = function(trigger)
+      trigger.unit = trigger.unit or "target";
       local ret = [[
-        local unit = %s
+        unit = string.lower(unit)
         local ok = true
         local aggro, status, threatpct, rawthreatpct, threatvalue, threattotal
-        if unit then
+        if unit and unit ~= "none" then
           aggro, status, threatpct, rawthreatpct, threatvalue = WeakAuras.UnitDetailedThreatSituation('player', unit)
           threattotal = (threatvalue or 0) * 100 / (threatpct ~= 0 and threatpct or 1)
         else
@@ -7357,18 +7360,20 @@ Private.event_prototypes = {
           threatpct, rawthreatpct, threatvalue, threattotal = 100, 100, 0, 100
         end
       ]];
-      return ret:format(trigger.threatUnit and trigger.threatUnit ~= "none" and "[["..trigger.threatUnit.."]]" or "nil");
+      return ret;
     end,
     canHaveDuration = true,
-    statesParameter = "one",
+    statesParameter = "unit",
     args = {
       {
-        name = "threatUnit",
+        name = "unit",
         display = L["Unit"],
         required = true,
         type = "unit",
+        init = "arg",
         values = "threat_unit_types",
         test = "true",
+        store = true,
         default = "target"
       },
       {
@@ -7393,7 +7398,7 @@ Private.event_prototypes = {
         type = "number",
         store = true,
         conditionType = "number",
-        enable = function(trigger) return trigger.threatUnit ~= "none" end,
+        enable = function(trigger) return trigger.unit ~= "none" end,
       },
       {
         name = "rawthreatpct",
@@ -7402,7 +7407,7 @@ Private.event_prototypes = {
         type = "number",
         store = true,
         conditionType = "number",
-        enable = function(trigger) return trigger.threatUnit ~= "none" end,
+        enable = function(trigger) return trigger.unit ~= "none" end,
       },
       {
         name = "threatvalue",
@@ -7411,7 +7416,7 @@ Private.event_prototypes = {
         type = "number",
         store = true,
         conditionType = "number",
-        enable = function(trigger) return trigger.threatUnit ~= "none" end,
+        enable = function(trigger) return trigger.unit ~= "none" end,
       },
       {
         name = "value",
