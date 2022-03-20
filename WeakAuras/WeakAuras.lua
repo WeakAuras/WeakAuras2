@@ -5079,6 +5079,13 @@ function Private.ReplaceLocalizedRaidMarkers(txt)
   end
 end
 
+-- WORKAROUND
+-- UnitPlayerControlled doesn't work if the target is "too" far away
+function Private.UnitPlayerControlledFixed(unit)
+  local guid = UnitGUID(unit)
+  return guid:sub(1, 6) == "Player"
+end
+
 do
   local trackableUnits = {}
   trackableUnits["player"] = true
