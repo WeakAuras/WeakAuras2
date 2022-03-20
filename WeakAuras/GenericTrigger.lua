@@ -2847,6 +2847,7 @@ do
         WeakAuras.ScanEvents("DBM_TimerResume", id)
         if nextExpire == nil then
           recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, bar.expirationTime - GetTime())
+          nextExpire = bar.expirationTime
         elseif bar.expirationTime < nextExpire then
           timer:CancelTimer(recheckTimer)
           recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, bar.expirationTime - GetTime())
@@ -2861,7 +2862,10 @@ do
       if bar then
         bar.duration = duration
         bar.expirationTime = expirationTime
-        if expirationTime < nextExpire then
+        if nextExpire == nil then
+          recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, bar.expirationTime - GetTime())
+          nextExpire = expirationTime
+        elseif nextExpire == nil or expirationTime < nextExpire then
           timer:CancelTimer(recheckTimer)
           recheckTimer = timer:ScheduleTimerFixed(dbmRecheckTimers, duration - elapsed)
           nextExpire = expirationTime
