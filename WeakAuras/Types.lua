@@ -422,7 +422,7 @@ Private.format_types = {
       local abbreviateFunc
       if color == "class" then
         colorFunc = function(unit, text)
-          if unit and UnitPlayerControlled(unit) then
+          if unit and Private.UnitPlayerControlledFixed(unit) then
             local classFilename = select(2, UnitClass(unit))
             if classFilename then
               return WrapTextInColorCode(text, WA_GetClassColor(classFilename))
