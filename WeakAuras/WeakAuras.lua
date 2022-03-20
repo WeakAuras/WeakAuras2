@@ -5083,7 +5083,7 @@ end
 -- UnitPlayerControlled doesn't work if the target is "too" far away
 function Private.UnitPlayerControlledFixed(unit)
   local guid = UnitGUID(unit)
-  return guid:sub(1, 6) == "Player"
+  return guid and guid:sub(1, 6) == "Player"
 end
 
 do
