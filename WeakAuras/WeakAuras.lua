@@ -3546,7 +3546,15 @@ function Private.ApplyFrameLevel(region, frameLevel)
   local subforegroundIndex = 0
   if region.subRegions then
     for index, subRegion in pairs(region.subRegions) do
-      subRegion:SetFrameLevel(frameLevel + index)
+      if subRegion.type == "subbackground" then
+        subRegion:SetFrameLevel(frameLevel + index)
+      end
+    end
+
+    for index, subRegion in pairs(region.subRegions) do
+      if subRegion.type ~= "subbackground" then
+        subRegion:SetFrameLevel(frameLevel + index)
+      end
     end
   end
 end
