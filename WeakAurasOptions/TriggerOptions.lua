@@ -71,6 +71,7 @@ local function GetGlobalOptions(data)
         for i = 1, #data.triggers do
           vals[i] = L["Dynamic information from Trigger %i"]:format(i);
         end
+        vals[OptionsPrivate.Private.trigger_modes.custom] = L["Custom"]
         return vals;
       end,
       get = function()
@@ -90,7 +91,13 @@ local function GetGlobalOptions(data)
     return not (data.triggers.disjunctive == "custom")
   end
   OptionsPrivate.commonOptions.AddCodeOption(globalTriggerOptions, data, L["Custom"], "custom_trigger_combination", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-activation",
-                          2.4, hideTriggerCombiner, {"triggers", "customTriggerLogic"}, false);
+                          2.2, hideTriggerCombiner, {"triggers", "customTriggerLogic"}, false);
+
+  local function hideDynamicInfoCombiner()
+    return not data.triggers.activeTriggerMode == ("custom")
+  end
+  OptionsPrivate.commonOptions.AddCodeOption(globalTriggerOptions, data, L["Custom"], "custom_dynamic_info_combination", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-dynamic-info",
+                          2.4, hideDynamicInfoCombiner, {"triggers", "customDynamicInfoLogic"}, false);
 
   return {
     global = globalTriggerOptions
