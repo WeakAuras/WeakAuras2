@@ -4108,8 +4108,8 @@ Private.event_prototypes = {
         local showgcd = %s;
         local ignoreSpellKnown = %s;
         local track = %q
-        local startTime, duration, gcdCooldown, readyTime = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track);
-        local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown);
+        local startTime, duration, gcdCooldown, readyTime, modRate = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track);
+        local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime, modRateCharges = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown);
         local stacks = maxCharges and maxCharges ~= 1 and charges or (spellCount and spellCount > 0 and spellCount) or nil;
         if (charges == nil) then
           -- Use fake charges for spells that use GetSpellCooldown
@@ -4150,6 +4150,10 @@ Private.event_prototypes = {
             state.duration = duration;
             state.changed = true;
           end
+          if (state.modRate ~= modRate) then
+            state.modRate = modRate;
+            state.changed = true;
+          end
           state.progressType = 'timed';
         ]=];
       else
@@ -4184,10 +4188,13 @@ Private.event_prototypes = {
             if (state.expirationTime ~= expirationTime) then
               state.expirationTime = expirationTime;
               state.changed = true;
-              state.changed = true;
             end
             if (state.duration ~= duration) then
               state.duration = duration;
+              state.changed = true;
+            end
+            if (state.modRate ~= modRateCharges) then
+              state.modRate = modRateCharges;
               state.changed = true;
             end
             state.value = nil;
@@ -4204,12 +4211,18 @@ Private.event_prototypes = {
           if (expirationTime and expirationTime > 0) then
             remaining = expirationTime - GetTime();
             local remainingCheck = %s;
+            local isCharge = %s;
+            if isCharge then
+              remaining = remaining / modRate;
+            else
+              remaining = remaining / modRateCharges;
+            end
             if(remaining >= remainingCheck and remaining > 0) then
               WeakAuras.ScheduleScan(expirationTime - remainingCheck);
             end
           end
         ]];
-        ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
+        ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0, (not trigger.use_trackcharge or not trigger.trackcharge) and "false" or "true");
       end
 
       return ret;

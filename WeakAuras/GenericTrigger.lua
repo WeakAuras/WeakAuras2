@@ -1740,11 +1740,14 @@ do
   local spells = {};
   local spellKnown = {};
 
+  local spellModRate = {};
+
   local spellCharges = {};
   local spellChargesMax = {};
   local spellCounts = {}
   local spellChargeGainTime = {}
   local spellChargeLostTime = {}
+  local spellChargeModRate = {}
 
   local items = {};
   local itemCdDurs = {};
@@ -2008,14 +2011,14 @@ do
       end
     end
 
-    return startTime, duration, gcdCooldown, readyTime
+    return startTime, duration, gcdCooldown, readyTime, spellModRate[id] or 1
   end
 
   function WeakAuras.GetSpellCharges(id, ignoreSpellKnown)
     if (not spellKnown[id] and not ignoreSpellKnown) then
       return;
     end
-    return spellCharges[id], spellChargesMax[id], spellCounts[id], spellChargeGainTime[id], spellChargeLostTime[id]
+    return spellCharges[id], spellChargesMax[id], spellCounts[id], spellChargeGainTime[id], spellChargeLostTime[id], spellChargeModRate[id]
   end
 
   function WeakAuras.GetItemCooldown(id, showgcd)
@@ -2142,14 +2145,17 @@ do
   end
 
   function WeakAuras.GetSpellCooldownUnified(id, runeDuration)
-    local startTimeCooldown, durationCooldown, enabled = GetSpellCooldown(id)
-    local charges, maxCharges, startTimeCharges, durationCharges = GetSpellCharges(id);
+    local startTimeCooldown, durationCooldown, enabled, modRate = GetSpellCooldown(id)
+    local charges, maxCharges, startTimeCharges, durationCharges, modRateCharges = GetSpellCharges(id);
 
     startTimeCooldown = startTimeCooldown or 0;
     durationCooldown = durationCooldown or 0;
 
     startTimeCharges = startTimeCharges or 0;
     durationCharges = durationCharges or 0;
+
+    modRate = modRate or 1.0;
+    modRateCharges = modRateCharges or 1.0;
 
     -- WORKAROUND Sometimes the API returns very high bogus numbers causing client freezes, discard them here. CurseForge issue #1008
     if (durationCooldown > 604800) then
@@ -2205,7 +2211,7 @@ do
 
     return charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
            startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
-           count;
+           count, modRate, modRateCharges;
   end
 
   function Private.CheckSpellKnown()
@@ -2241,7 +2247,7 @@ do
   function Private.CheckSpellCooldown(id, runeDuration)
     local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
           startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
-          spellCount
+          spellCount, modRate, modRateCharges
           = WeakAuras.GetSpellCooldownUnified(id, runeDuration);
 
     local time = GetTime();
@@ -2253,6 +2259,8 @@ do
     spellCharges[id] = charges;
     spellChargesMax[id] = maxCharges;
     spellCounts[id] = spellCount
+    spellChargeModRate[id] = modRateCharges;
+    spellModRate[id] = modRate;
     if chargesDifference ~= 0 then
       if chargesDifference > 0 then
         spellChargeGainTime[id] = time
@@ -2489,12 +2497,14 @@ do
 
     local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
           startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
-          spellCount
+          spellCount, modRate, modRateCharges
           = WeakAuras.GetSpellCooldownUnified(id, GetRuneDuration());
 
     spellCharges[id] = charges;
     spellChargesMax[id] = maxCharges;
     spellCounts[id] = spellCount
+    spellChargeModRate[id] = modRateCharges;
+    spellModRate[id] = modRate;
     spellCds:HandleSpell(id, startTime, duration)
     if not unifiedCooldownBecauseRune then
       spellCdsRune:HandleSpell(id, startTime, duration)
