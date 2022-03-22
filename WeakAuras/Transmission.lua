@@ -1063,7 +1063,8 @@ local function scamCheck(codes, data)
     checkTrigger(codes, L["%s - %i. Trigger"]:format(data.id, i), v.trigger, v.untrigger);
   end
 
-  addCode(codes,  L["%s - Trigger Logic"]:format(data.id), data.triggers.customTriggerLogic, data.triggers.disjunctive == "custom");
+  addCode(codes, L["%s - Trigger Logic"]:format(data.id), data.triggers.customTriggerLogic, data.triggers.disjunctive == "custom");
+  addCode(codes, L["%s - Custom Dynamic Information"]:format(data.id), data.triggers.customDynamicInfoLogic, data.triggers.activeTriggerMode == Private.trigger_modes.custom);
   addCode(codes, L["%s - Custom Text"]:format(data.id), data.customText)
   addCode(codes, L["%s - Custom Anchor"]:format(data.id), data.customAnchor, data.anchorFrameType == "CUSTOM")
 
