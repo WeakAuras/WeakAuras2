@@ -2653,6 +2653,10 @@ local function pAdd(data, simpleChange)
       if data.triggers.disjunctive == "custom" then
         triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.triggers.customTriggerLogic or ""), id, "trigger combination");
       end
+      local dynamicInfoFunc;
+      if data.triggers.activeTriggerMode == Private.trigger_modes.custom then
+        dynamicInfoFunc = WeakAuras.LoadFunction("return "..(data.triggers.customDynamicInfoLogic or ""), id, "dynamic information");
+      end
 
       LoadCustomActionFunctions(data);
       Private.LoadConditionPropertyFunctions(data);
@@ -2680,6 +2684,7 @@ local function pAdd(data, simpleChange)
         numTriggers = #data.triggers,
         activeTriggerMode = data.triggers.activeTriggerMode or Private.trigger_modes.first_active,
         triggerLogicFunc = triggerLogicFunc,
+        dynamicInfoFunc = dynamicInfoFunc,
         triggers = {},
         triggerCount = 0,
         activatedConditions = {},
@@ -3859,6 +3864,31 @@ local function evaluateTriggerStateTriggers(id)
   return result;
 end
 
+local function evaluateDynamicInfo(id)
+  Private.ActivateAuraEnvironment(id);
+
+  -- Figure out which subtrigger is active, and if it changed
+  local result = triggerState[id].activeTriggerMode;
+  if (result == Private.trigger_modes.first_active) then
+    -- Mode is first active trigger, so find a active trigger
+    for i = 1, triggerState[id].numTriggers do
+      if (triggerState[id].triggers[i]) then
+        result = i;
+        break;
+      end
+    end
+  elseif (result == Private.trigger_modes.custom) then
+    result = 1
+    if triggerState[id].dynamicInfoFunc then
+      local ok, returnValue = xpcall(triggerState[id].dynamicInfoFunc, geterrorhandler(), triggerState[id].triggers);
+      result = ok and returnValue <= triggerState[id].numTriggers and returnValue or 1
+    end
+  end
+
+  Private.ActivateAuraEnvironment(nil);
+  return result
+end
+
 local function ApplyStatesToRegions(id, activeTrigger, states)
   -- Show new clones
   local data = WeakAuras.GetData(id)
@@ -3939,17 +3969,7 @@ function Private.UpdatedTriggerState(id)
     show = evaluateTriggerStateTriggers(id);
   end
 
-  -- Figure out which subtrigger is active, and if it changed
-  local newActiveTrigger = triggerState[id].activeTriggerMode;
-  if (newActiveTrigger == Private.trigger_modes.first_active) then
-    -- Mode is first active trigger, so find a active trigger
-    for i = 1, triggerState[id].numTriggers do
-      if (triggerState[id].triggers[i]) then
-        newActiveTrigger = i;
-        break;
-      end
-    end
-  end
+  local newActiveTrigger = evaluateDynamicInfo(id)
 
   local oldShow = triggerState[id].show;
   triggerState[id].activeTrigger = newActiveTrigger;
