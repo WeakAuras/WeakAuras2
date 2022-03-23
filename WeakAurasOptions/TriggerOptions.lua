@@ -69,7 +69,7 @@ local function GetGlobalOptions(data)
         for i = 1, #data.triggers do
           vals[i] = L["Dynamic information from Trigger %i"]:format(i);
         end
-        vals[OptionsPrivate.Private.trigger_modes.custom] = L["Custom"]
+        vals[OptionsPrivate.Private.trigger_modes.custom] = WeakAuras.newFeatureString .. L["Custom Function"]
         return vals;
       end,
       get = function()
@@ -81,7 +81,8 @@ local function GetGlobalOptions(data)
         WeakAuras.UpdateThumbnail(data);
         WeakAuras.UpdateDisplayButton(data);
       end,
-      hidden = function() return #data.triggers <= 1 end
+      hidden = function() return #data.triggers <= 1 end,
+      desc = "\"Dynamic Info\" is all the info that a trigger carries. This setting lets you decide which trigger will provide this info to your Aura."
     }
   }
 
