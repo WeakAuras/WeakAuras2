@@ -2409,7 +2409,11 @@ Private.event_prototypes = {
     events = function(trigger)
       local unit = trigger.unit
       local result = {}
-      AddUnitEventForEvents(result, unit, "UNIT_HEALTH")
+      if WeakAuras.IsBCC() then
+        AddUnitEventForEvents(result, unit, "UNIT_HEALTH_FREQUENT")
+      else
+        AddUnitEventForEvents(result, unit, "UNIT_HEALTH")
+      end
       AddUnitEventForEvents(result, unit, "UNIT_MAXHEALTH")
       AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
       if WeakAuras.IsRetail() then
