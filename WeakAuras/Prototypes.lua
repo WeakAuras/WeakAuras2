@@ -9011,14 +9011,15 @@ Private.dynamic_texts = {
         return state.value or nil
       end
       if state.progressType == "timed" then
+        local modRate = state.modRate or 1
         if state.paused then
-          return state.remaining and state.remaining >= 0 and state.remaining or nil
+          return state.remaining and state.remaining >= 0 and state.remaining / modRate or nil
         end
 
         if not state.expirationTime or not state.duration then
           return nil
         end
-        local remaining = state.expirationTime - GetTime();
+        local remaining = (state.expirationTime - GetTime()) / modRate;
         return remaining >= 0 and remaining or nil
       end
     end,
@@ -9033,6 +9034,8 @@ Private.dynamic_texts = {
       end
 
       local remainingStr = "";
+      local modRate = state.modRate or 1
+      remaining = remaining / modRate
       if remaining == math.huge then
         remainingStr = " ";
       elseif remaining > 60 then
