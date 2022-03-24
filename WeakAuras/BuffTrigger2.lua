@@ -269,7 +269,7 @@ local function UpdateToolTipDataInMatchData(matchData, time)
   return changed
 end
 
-local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, isBossDebuff, isCastByPlayer, spellId)
+local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, isBossDebuff, isCastByPlayer, spellId, modRate)
   if not matchData[unit] then
     matchData[unit] = {}
   end
@@ -286,6 +286,7 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name
       debuffClassIcon = debuffClassIcon,
       duration = duration,
       expirationTime = expirationTime,
+      modRate = modRate,
       unitCaster = unitCaster,
       casterName = unitCaster and GetUnitName(unitCaster, false) or "",
       spellId = spellId,
@@ -339,6 +340,11 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name
 
   if data.expirationTime ~= expirationTime then
     data.expirationTime = expirationTime
+    changed = true
+  end
+
+  if data.modRate ~= modRate then
+    data.modRate = modRate
     changed = true
   end
 
@@ -436,9 +442,10 @@ local function FindBestMatchData(time, id, triggernum, triggerInfo, matchedUnits
     for index, auraData in pairs(unitData) do
       local remCheck = true
       if triggerInfo.remainingFunc and auraData.expirationTime then
-        local remaining = auraData.expirationTime - time
+        local modRate = auraData.modRate or 1
+        local remaining = (auraData.expirationTime - time) / modRate
         remCheck = triggerInfo.remainingFunc(remaining)
-        nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
+        nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime / modRate, nextCheck)
       end
 
       if remCheck then
@@ -472,9 +479,10 @@ local function FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
   for index, auraData in pairs(matchDataByTrigger[id][triggernum][unit]) do
     local remCheck = true
     if triggerInfo.remainingFunc and auraData.expirationTime then
-      local remaining = auraData.expirationTime - time
+      local modRate = auraData.modRate or 1
+      local remaining = (auraData.expirationTime - time) / modRate
       remCheck = triggerInfo.remainingFunc(remaining)
-      nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
+      nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime / modRate, nextCheck)
     end
 
     if remCheck then
@@ -508,6 +516,7 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       progressType = "timed",
       duration = bestMatch.duration,
       expirationTime = bestMatch.expirationTime,
+      modRate = bestMatch.modRate,
       unitCaster = bestMatch.unitCaster,
       casterName = bestMatch.casterName,
       spellId = bestMatch.spellId,
@@ -621,6 +630,11 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       changed = true
     end
 
+    if state.modRate ~= bestMatch.modRate then
+      state.modRate = bestMatch.modRate
+      changed = true
+    end
+
     if state.progressType ~= "timed" then
       state.progressType = "timed"
       changed = true
@@ -723,6 +737,7 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
       progressType = 'timed',
       duration = 0,
       expirationTime = math.huge,
+      modRate = 1,
       matchCount = matchCount,
       unitCount = unitCount,
       maxUnitCount = maxUnitCount,
@@ -779,6 +794,11 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
 
     if state.progressType then
       state.progressType = nil
+      changed = true
+    end
+
+    if state.modRate ~= 1 then
+      state.modRate = 1
       changed = true
     end
 
@@ -1264,9 +1284,10 @@ local function UpdateTriggerState(time, id, triggernum)
         for index, auraData in pairs(unitData) do
           local remCheck = true
           if triggerInfo.remainingFunc and auraData.expirationTime then
-            local remaining = auraData.expirationTime - time
+            local modRate = auraData.modRate or 1
+            local remaining = (auraData.expirationTime - time) / modRate
             remCheck = triggerInfo.remainingFunc(remaining)
-            nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, nextCheck)
+            nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime / modRate, nextCheck)
           end
 
           if remCheck then
@@ -1437,7 +1458,7 @@ local function PrepareMatchData(unit, filter)
     local time = GetTime()
     local index = 1
     while true do
-      local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, isBossDebuff, isCastByPlayer = UnitAura(unit, index, filter)
+      local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, isBossDebuff, isCastByPlayer, _, modRate = UnitAura(unit, index, filter)
       if not name then
         break
       end
@@ -1450,7 +1471,7 @@ local function PrepareMatchData(unit, filter)
         debuffClass = string.lower(debuffClass)
       end
 
-      local updatedMatchData = UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, isBossDebuff, isCastByPlayer, spellId)
+      local updatedMatchData = UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, isBossDebuff, isCastByPlayer, spellId, modRate)
       index = index + 1
     end
 
@@ -1544,7 +1565,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
 
   if UnitExistsFixed(unit) then
     while true do
-      local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, isBossDebuff, isCastByPlayer = UnitAura(unit, index, filter)
+      local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, isBossDebuff, isCastByPlayer, _, modRate = UnitAura(unit, index, filter)
       if not name then
         break
       end
@@ -1557,7 +1578,7 @@ local function ScanUnitWithFilter(matchDataChanged, time, unit, filter,
         debuffClass = string.lower(debuffClass)
       end
 
-      local updatedMatchData = UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, isBossDebuff, isCastByPlayer, spellId)
+      local updatedMatchData = UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, isBossDebuff, isCastByPlayer, spellId, modRate)
 
       if updatedMatchData then -- Aura data changed, check against triggerInfos
         CheckScanFuncs(scanFuncName and scanFuncName[name], unit, filter, index)
@@ -2868,6 +2889,7 @@ function BuffTrigger.CreateFallbackState(data, triggernum, state)
   state.progressType = "timed"
   state.duration = 0
   state.expirationTime = math.huge
+  state.modRate = 1
   local name, icon = BuffTrigger.GetNameAndIconSimple(data, triggernum)
   state.name = name
   state.icon = icon
@@ -3140,6 +3162,7 @@ local function UpdateMatchDataMulti(time, base, key, event, sourceGUID, sourceNa
       icon = icon,
       duration = 0,
       expirationTime = math.huge,
+      modRate = 1,
       spellId = spellId,
       GUID = destGUID,
       sourceGUID = sourceGUID,
@@ -3208,11 +3231,11 @@ local function UpdateMatchDataMulti(time, base, key, event, sourceGUID, sourceNa
   return updated
 end
 
-local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate)
   if expirationTime == 0 then
     expirationTime = math.huge
   else
-    ScheduleMultiCleanUp(matchData.GUID, expirationTime)
+    ScheduleMultiCleanUp(matchData.GUID, expirationTime / (modRate or 1))
   end
   local changed = false
   if matchData.name ~= name then
@@ -3251,6 +3274,11 @@ local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, de
     changed = true
   end
 
+  if matchData.modRate ~= modRate then
+    matchData.modRate = modRate
+    changed = true
+  end
+
   if matchData.unitCaster ~= unitCaster then
     matchData.unitCaster = unitCaster
     changed = true
@@ -3284,7 +3312,7 @@ end
 local function AugmentMatchDataMulti(matchData, unit, filter, sourceGUID, nameKey, spellKey)
   local index = 1
   while true do
-    local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter)
+    local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate = UnitAura(unit, index, filter)
     if not name then
       return false
     end
@@ -3298,7 +3326,7 @@ local function AugmentMatchDataMulti(matchData, unit, filter, sourceGUID, nameKe
     end
     local auraSourceGuid = unitCaster and UnitGUID(unitCaster)
     if (name == nameKey or spellId == spellKey) and sourceGUID == auraSourceGuid then
-      local changed = AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+      local changed = AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate)
       return changed
     end
     index = index + 1
@@ -3374,7 +3402,7 @@ end
 local function CheckAurasMulti(base, unit, filter)
   local index = 1
   while true do
-    local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId = UnitAura(unit, index, filter)
+    local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate = UnitAura(unit, index, filter)
     if not name then
       return false
     end
@@ -3388,7 +3416,7 @@ local function CheckAurasMulti(base, unit, filter)
     end
     local auraCasterGUID = unitCaster and UnitGUID(unitCaster)
     if base[name] and base[name][auraCasterGUID] then
-      local changed = AugmentMatchDataMultiWith(base[name][auraCasterGUID], unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+      local changed = AugmentMatchDataMultiWith(base[name][auraCasterGUID], unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate)
       if changed then
         for id, idData in pairs(base[name][auraCasterGUID].auras) do
           for triggernum in pairs(idData) do
@@ -3399,7 +3427,7 @@ local function CheckAurasMulti(base, unit, filter)
       end
     end
     if base[spellId] and base[spellId][auraCasterGUID] then
-      local changed = AugmentMatchDataMultiWith(base[spellId][auraCasterGUID], unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId)
+      local changed = AugmentMatchDataMultiWith(base[spellId][auraCasterGUID], unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate)
       if changed then
         for id, idData in pairs(base[spellId][auraCasterGUID].auras) do
           for triggernum in pairs(idData) do
