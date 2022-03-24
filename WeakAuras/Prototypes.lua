@@ -9070,7 +9070,8 @@ Private.dynamic_texts = {
         if not state.duration then
           return nil
         end
-        return state.duration, true
+        local modRate = state.modRate or 1
+        return state.duration / modRate, true
       end
     end,
     func = function(duration, state, totalPrecision)
@@ -9081,6 +9082,8 @@ Private.dynamic_texts = {
         return ""
       end
       local durationStr = "";
+      local modRate = state.modRate or 1
+      duration = duration / modRate
       if math.abs(duration) == math.huge or tostring(duration) == "nan" then
         durationStr = " ";
       elseif duration > 60 then
