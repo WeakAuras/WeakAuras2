@@ -1,6 +1,6 @@
 if not WeakAuras.IsCorrectVersion() then return end
 
-if not(GetLocale() == "frFR") then
+if GetLocale() ~= "frFR" then
   return
 end
 

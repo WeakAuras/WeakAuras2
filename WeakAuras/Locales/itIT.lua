@@ -1,4 +1,4 @@
-if not(GetLocale() == "itIT") then
+if GetLocale() ~= "itIT" then
   return
 end
 

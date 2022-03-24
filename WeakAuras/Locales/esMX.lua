@@ -1,4 +1,4 @@
-if not(GetLocale() == "esMX") then
+if GetLocale() ~= "esMX" then
   return
 end
 
