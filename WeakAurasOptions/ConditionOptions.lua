@@ -1548,47 +1548,32 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
   end
 
   if (currentConditionTemplate and currentConditionTemplate.type and type(currentConditionTemplate.type) == "string") then
-    local setOp;
-    local setValue;
-    if (data.controlledChildren) then
-      setOp = function(info, v)
-        check = getOrCreateSubCheck(conditions[i].check, path);
-        for id, reference in pairs(conditions[i].check.references) do
-          local auraData = WeakAuras.GetData(id);
-          local childCheck = getOrCreateSubCheck(auraData[conditionVariable][reference.conditionIndex].check, path);
-          childCheck.op = v;
-          WeakAuras.Add(auraData);
-          OptionsPrivate.ClearOptions(auraData.id)
+    local function makeSetter(field)
+      if (data.controlledChildren) then
+        return function(info, v)
+          check = getOrCreateSubCheck(conditions[i].check, path);
+          for id, reference in pairs(conditions[i].check.references) do
+            local auraData = WeakAuras.GetData(id);
+            local childCheck = getOrCreateSubCheck(auraData[conditionVariable][reference.conditionIndex].check, path);
+            childCheck[field] = v;
+            WeakAuras.Add(auraData);
+            OptionsPrivate.ClearOptions(auraData.id)
+          end
+          check[field] = v;
+          WeakAuras.ClearAndUpdateOptions(data.id)
         end
-        check.op = v;
-        WeakAuras.ClearAndUpdateOptions(data.id)
-      end
-      setValue = function(info, v)
-        check = getOrCreateSubCheck(conditions[i].check, path);
-        for id, reference in pairs(conditions[i].check.references) do
-          local auraData = WeakAuras.GetData(id);
-          local childCheck = getOrCreateSubCheck(auraData[conditionVariable][reference.conditionIndex].check, path);
-          childCheck.value = v;
-          WeakAuras.Add(auraData);
-          OptionsPrivate.ClearOptions(auraData.id)
+      else
+        return function(info, v)
+          check = getOrCreateSubCheck(conditions[i].check, path);
+          check[field] = v;
+          WeakAuras.Add(data);
+          WeakAuras.ClearAndUpdateOptions(data.id)
         end
-        check.value = v;
-        WeakAuras.ClearAndUpdateOptions(data.id)
-      end
-    else
-      setOp = function(info, v)
-        check = getOrCreateSubCheck(conditions[i].check, path);
-        check.op = v;
-        WeakAuras.Add(data);
-        WeakAuras.ClearAndUpdateOptions(data.id)
-      end
-      setValue = function(info, v)
-        check = getOrCreateSubCheck(conditions[i].check, path);
-        check.value = v;
-        WeakAuras.Add(data)
-        WeakAuras.ClearAndUpdateOptions(data.id)
       end
     end
+
+    local setOp = makeSetter("op")
+    local setValue = makeSetter("value")
 
     if (currentConditionTemplate.type == "number" or currentConditionTemplate.type == "timer" or currentConditionTemplate.type == "elapsedTimer") then
       local opTypes = OptionsPrivate.Private.operator_types
@@ -1735,6 +1720,79 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
       order = order + 1;
     elseif currentConditionTemplate.type == "alwaystrue" then
       order = addSpace(args, order)
+    elseif (currentConditionTemplate.type == "range") then
+      args["condition" .. i .. tostring(path) .. "_op_range"] = {
+        name = blueIfNoValue(data, conditions[i].check, "op_range", L["Differences"]),
+        desc = descIfNoValue(data, conditions[i].check, "op_range", currentConditionTemplate.type),
+        type = "select",
+        order = order,
+        values = OptionsPrivate.Private.operator_types_without_equal,
+        width = WeakAuras.halfWidth,
+        get = function()
+          return check.op_range;
+        end,
+        set = makeSetter("op_range"),
+      }
+      order = order + 1;
+
+      args["condition" .. i .. tostring(path) .. "_range"] = {
+        type = "input",
+        name = L["Range in yards"],
+        desc = descIfNoValue(data, conditions[i].check, "range", currentConditionTemplate.type),
+        width = WeakAuras.halfWidth,
+        order = order,
+        validate = WeakAuras.ValidateNumeric,
+        get = function()
+          return check.range;
+        end,
+        set = makeSetter("range")
+      }
+      order = order + 1;
+
+      args["condition" .. i .. tostring(path) .. "_type"] = {
+        type = "select",
+        width = WeakAuras.normalWidth,
+        name = blueIfNoValue(data, conditions[i].check, "type", L["Differences"]),
+        desc = descIfNoValue(data, conditions[i].check, "type", currentConditionTemplate.type),
+        order = order,
+        values = {
+          group = L["Group player(s) found"],
+          enemies = L["Enemy nameplate(s) found"]
+        },
+        get = function()
+          return check.type
+        end,
+        set = makeSetter("type"),
+      }
+      order = order + 1;
+
+      args["condition" .. i .. tostring(path) .. "_op"] = {
+        name = blueIfNoValue(data, conditions[i].check, "op", L["Differences"]),
+        desc = descIfNoValue(data, conditions[i].check, "op", currentConditionTemplate.type),
+        type = "select",
+        order = order,
+        values = OptionsPrivate.Private.operator_types,
+        width = WeakAuras.halfWidth,
+        get = function()
+          return check.op;
+        end,
+        set = setOp,
+      }
+      order = order + 1;
+
+      args["condition" .. i .. tostring(path) .. "_value"] = {
+        type = "input",
+        name = blueIfNoValue(data, conditions[i].check, "value", L["Differences"]),
+        desc = descIfNoValue(data, conditions[i].check, "value", currentConditionTemplate.type),
+        width = WeakAuras.halfWidth,
+        order = order,
+        validate = WeakAuras.ValidateNumeric,
+        get = function()
+          return check.value;
+        end,
+        set = setValue
+      }
+      order = order + 1;
     elseif currentConditionTemplate.type == "customcheck" then
       args["condition" .. i .. tostring(path) .. "_op"] = {
         name = blueIfNoValue(data, conditions[i].check, "op", L["Additional Events"], L["Additional Events"]),

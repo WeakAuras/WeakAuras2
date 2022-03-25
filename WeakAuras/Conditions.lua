@@ -271,6 +271,52 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
       else
         check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]".. string.format("[%q]", variable) .. op .. "'" .. value .. "'";
       end
+    elseif (cType == "range" and value and op and input.type and input.op_range and input.range) then
+      local fn
+      if input.type == "group" then
+        fn = [[
+          return function()
+            local found = 0
+            local op = %q
+            local range = %s
+            for unit in WA_IterateGroupMembers() do
+              if not UnitIsUnit(unit, "player") and WeakAuras.CheckRange(unit, range, op) then
+                found = found + 1
+              end
+            end
+            return found %s %d
+          end
+        ]]
+        fn = fn:format(input.op_range, input.range, op, value)
+      elseif input.type == "enemies" then
+        fn = [[
+          return function()
+            local found = 0
+            local op = %q
+            local range = %s
+            for i = 1, 40 do
+              local unit = "nameplate" .. i
+              if UnitExists(unit) and UnitIsEnemy("player", unit) and  WeakAuras.CheckRange(unit, range, op) then
+                found = found + 1
+              end
+            end
+            return found %s %d
+          end
+        ]]
+        fn = fn:format(input.op_range, input.range, op, value)
+      end
+      if fn then
+        local customCheck = WeakAuras.LoadFunction(fn, Private.UIDtoID(uid), "conditions range check")
+        if customCheck then
+          WeakAuras.conditionHelpers[uid] = WeakAuras.conditionHelpers[uid] or {}
+          WeakAuras.conditionHelpers[uid].customTestFunctions = WeakAuras.conditionHelpers[uid].customTestFunctions or {}
+          tinsert(WeakAuras.conditionHelpers[uid].customTestFunctions, customCheck);
+          local testFunctionNumber = #(WeakAuras.conditionHelpers[uid].customTestFunctions);
+
+          check = string.format("state and WeakAuras.CallCustomConditionTest(%q, %s, state)",
+                                uid, testFunctionNumber, trigger);
+        end
+      end
     elseif (cType == "bool" and value) then
       local rightSide = value == 0 and "false" or "true";
       check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable) .. "==" .. rightSide
@@ -526,6 +572,11 @@ local globalConditions =
     globalStateUpdate = function(state)
       state.hastarget = UnitExists("target");
     end
+  },
+  ["rangecheck"] = {
+    display = L["Range Check"],
+    type = "range",
+    events = {"WA_SPELL_RANGECHECK"}
   },
   ["attackabletarget"] = {
     display = L["Attackable Target"],
