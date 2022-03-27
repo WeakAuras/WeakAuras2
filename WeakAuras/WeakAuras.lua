@@ -33,7 +33,7 @@ LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 Private.maxTimerDuration = 604800; -- A week, in seconds
 local maxUpTime = 4294967; -- 2^32 / 1000
 
--- The worlds simplest callback system
+-- The worlds simplest callback system.
 -- That supports 1:N, but no deregistration and breaks if registrating in a callback
 Private.callbacks = {}
 Private.callbacks.events = {}
