@@ -50,7 +50,7 @@ Returns the tooltip text for additional properties.
 GetTriggerConditions(data, triggernum)
 Returns the potential conditions for a trigger
 ]]--
-if not WeakAuras.IsCorrectVersion() then return end
+if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 -- Lua APIs
