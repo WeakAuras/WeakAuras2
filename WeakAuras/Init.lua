@@ -56,6 +56,62 @@ WeakAuras.prettyPrint = function(...)
   print("|cff9900ffWeakAuras:|r ", ...)
 end
 
+-- Force enable WeakAurasCompanion and Archive because some addon managers interfere with it
+EnableAddOn("WeakAurasCompanion")
+EnableAddOn("WeakAurasArchive")
+
+local libsAreOk = true
+do
+  local StandAloneLibs = {
+    "Archivist",
+    "LibStub"
+  }
+  local LibStubLibs = {
+    "CallbackHandler-1.0",
+    "AceConfig-3.0",
+    "AceConsole-3.0",
+    "AceGUI-3.0",
+    "AceEvent-3.0",
+    "AceGUISharedMediaWidgets-1.0",
+    "AceTimer-3.0",
+    "AceSerializer-3.0",
+    "AceComm-3.0",
+    "LibSharedMedia-3.0",
+    "LibDataBroker-1.1",
+    "LibCompress",
+    "SpellRange-1.0",
+    "LibCustomGlow-1.0",
+    "LibDBIcon-1.0",
+    "LibGetFrame-1.0",
+    "LibSerialize",
+  }
+  if WeakAuras.IsClassic() then
+    tinsert(LibStubLibs, "LibClassicSpellActionCount-1.0")
+    tinsert(LibStubLibs, "LibClassicCasterino")
+    tinsert(LibStubLibs, "LibClassicDurations")
+  end
+  for _, lib in ipairs(StandAloneLibs) do
+    if not lib then
+        libsAreOk = false
+        WeakAuras.prettyPrint("Missing library:", lib)
+    end
+  end
+  if LibStub then
+    for _, lib in ipairs(LibStubLibs) do
+        if not LibStub:GetLibrary(lib, true) then
+          libsAreOk = false
+          WeakAuras.prettyPrint("Missing library:", lib)
+        end
+    end
+  else
+    libsAreOk = false
+  end
+end
+
+function WeakAuras.IsLibsOK()
+  return libsAreOk
+end
+
 local intendedWoWProjectName = {
   [WOW_PROJECT_MAINLINE] = "Retail",
   [WOW_PROJECT_CLASSIC] = "Classic",
@@ -71,9 +127,9 @@ if not WeakAuras.IsCorrectVersion() then
   C_Timer.After(1, function() WeakAuras.prettyPrint(Private.wrongTargetMessage) end)
 end
 
--- Force enable WeakAurasCompanion and Archive because some addon managers interfere with it
-EnableAddOn("WeakAurasCompanion")
-EnableAddOn("WeakAurasArchive")
+if not WeakAuras.IsLibsOK() then
+  C_Timer.After(1, function() WeakAuras.prettyPrint("WeakAuras is missing necessary libraries. Please reinstall a proper package.") end)
+end
 
 -- These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile
 function WeakAuras.RegisterRegionType()

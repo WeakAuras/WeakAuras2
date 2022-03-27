@@ -1,4 +1,4 @@
-if not WeakAuras.IsCorrectVersion() then return end
+if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe

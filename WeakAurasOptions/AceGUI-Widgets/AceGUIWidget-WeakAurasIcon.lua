@@ -3,7 +3,7 @@ Icon Widget that allows for a tooltip, by preventing SetLabel from actually
 setting a label
 Graphical Button.
 -------------------------------------------------------------------------------]]
-if not WeakAuras.IsCorrectVersion() then return end
+if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 
 local Type, Version = "WeakAurasIcon", 1
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
