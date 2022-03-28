@@ -7667,6 +7667,9 @@ Private.event_prototypes = {
         tinsert(result, "UNIT_SPELLCAST_DELAYED")
         tinsert(result, "UNIT_SPELLCAST_CHANNEL_START")
       end
+      if unit == "nameplate" and trigger.use_onUpdateUnitTarget then
+        tinsert(result, "WA_UNIT_TARGET_NAME_PLATE")
+      end
       AddRemainingCastInternalEvents(unit, result)
       local includePets = trigger.use_includePets == true and trigger.includePets or nil
       AddUnitChangeInternalEvents(unit, result, includePets)
@@ -7678,6 +7681,9 @@ Private.event_prototypes = {
     loadFunc = function(trigger)
       if trigger.use_showLatency and trigger.unit == "player" then
         WeakAuras.WatchForCastLatency()
+      end
+      if trigger.unit == "nameplate" and trigger.use_onUpdateUnitTarget then
+        WeakAuras.WatchForNameplateTargetChange()
       end
     end,
     force_events = unitHelperFunctions.UnitChangedForceEventsWithPets,
@@ -8039,6 +8045,16 @@ Private.event_prototypes = {
           return trigger.unit == "player"
         end,
         reloadOptions = true
+      },
+      {
+        name = "onUpdateUnitTarget",
+        display = L["Advanced Caster's Target Check"],
+        desc = L["Check nameplate's target every 0.2s"],
+        type = "toggle",
+        test = "true",
+        enable = function(trigger)
+          return trigger.unit == "nameplate"
+        end
       },
       {
         name = "inverse",
