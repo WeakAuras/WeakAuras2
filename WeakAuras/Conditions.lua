@@ -574,7 +574,7 @@ local globalConditions =
     end
   },
   ["rangecheck"] = {
-    display = L["Range Check"],
+    display = WeakAuras.newFeatureString .. L["Range Check"],
     type = "range",
     events = {"WA_SPELL_RANGECHECK"}
   },

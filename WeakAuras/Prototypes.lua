@@ -3768,7 +3768,7 @@ Private.event_prototypes = {
       },
       {
         name = "spellSchool",
-        display = L["Spell School"],
+        display = WeakAuras.newFeatureString .. L["Spell School"],
         type = "select",
         values = "combatlog_spell_school_types_for_ui",
         test = "spellSchool == %d",
@@ -8048,7 +8048,7 @@ Private.event_prototypes = {
       },
       {
         name = "onUpdateUnitTarget",
-        display = L["Advanced Caster's Target Check"],
+        display = WeakAuras.newFeatureString .. L["Advanced Caster's Target Check"],
         desc = L["Check nameplate's target every 0.2s"],
         type = "toggle",
         test = "true",
@@ -8767,7 +8767,7 @@ Private.event_prototypes = {
       },
       {
         name = "inverse",
-        display = L["Inverse"],
+        display = WeakAuras.newFeatureString .. L["Inverse"],
         type = "toggle",
         test = "true",
       },

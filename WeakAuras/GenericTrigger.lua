@@ -3428,7 +3428,7 @@ do
     if throttle_update < 0 then
       for unit, targetGUID in pairs(nameplateTargets) do
         local newTargetGUID = UnitGUID(unit.."-target")
-        if (newTargetGUID == nil and targetGUID ~= true) 
+        if (newTargetGUID == nil and targetGUID ~= true)
         or (newTargetGUID ~= nil and targetGUID ~= newTargetGUID)
         then
           nameplateTargets[unit] = newTargetGUID or true
