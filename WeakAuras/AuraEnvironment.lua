@@ -179,6 +179,8 @@ local blockedTables = {
   SendMailMoneyGold = true,
   MailFrameTab2 = true,
   ChatFrame1 = true,
+  WeakAurasOptions = true,
+  WeakAurasOptionsSaved = true
 }
 
 local aura_environments = {}
