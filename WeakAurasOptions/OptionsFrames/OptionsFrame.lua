@@ -1025,6 +1025,10 @@ function OptionsPrivate.CreateFrame()
 
     AceConfigDialog:Open("WeakAuras", group)
     tabsWidget:SetTitle("")
+
+    if data.controlledChildren and #data.controlledChildren == 0 then
+      WeakAurasOptions:NewAura()
+    end
   end
 
   frame.ClearPick = function(self, id)
@@ -1315,10 +1319,6 @@ function OptionsPrivate.CreateFrame()
       displayButtons[child.id]:PriorityShow(1)
     end
     displayButtons[data.id]:RecheckParentVisibility()
-
-    if data.controlledChildren and #data.controlledChildren == 0 then
-      WeakAurasOptions:NewAura()
-    end
 
     OptionsPrivate.Private.ResumeAllDynamicGroups()
   end
