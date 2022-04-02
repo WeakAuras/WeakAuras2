@@ -1283,10 +1283,12 @@ local methods = {
 
         importCopyRadioButton:SetCallback("OnValueChanged", function(_, _, v)
           self:SelectMode(v and "import" or "update")
+          self:DoLayout()
         end)
 
         updateRadioButton:SetCallback("OnValueChanged", function(_, _, v)
           self:SelectMode(v and "update" or "import")
+          self:DoLayout()
         end)
 
         self:SelectMode(preferToUpdate and "update" or "import")
@@ -1323,7 +1325,7 @@ local methods = {
 
       local scamCheckText = AceGUI:Create("Label")
       scamCheckText:SetFullWidth(true)
-      scamCheckText:SetText("This aura contains custom Lua code.\nMake sure you can trust the person who sent it!")
+      scamCheckText:SetText(L["This aura contains custom Lua code.\nMake sure you can trust the person who sent it!"])
       scamCheckText:SetColor(1, 0, 0)
       self:AddChild(scamCheckText)
     end
@@ -1960,10 +1962,10 @@ local methods = {
 
 local updateFrame
 local function ConstructUpdateFrame(frame)
-  local group = AceGUI:Create("WeakAurasInlineGroup");
+  local group = AceGUI:Create("ScrollFrame");
   group.frame:SetParent(frame);
   group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -16);
-  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 26);
+  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 46);
   group.frame:Hide();
   group:SetLayout("flow");
   group.optionsWindow = frame
@@ -1972,7 +1974,7 @@ local function ConstructUpdateFrame(frame)
   -- Action buttons
   local viewCodeButton = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
   viewCodeButton:SetScript("OnClick", function() OptionsPrivate.OpenCodeReview(group.scamCheckResult) end);
-  viewCodeButton:SetPoint("BOTTOMLEFT", 20, -4);
+  viewCodeButton:SetPoint("BOTTOMLEFT", 20, -24);
   viewCodeButton:SetFrameLevel(viewCodeButton:GetFrameLevel() + 1)
   viewCodeButton:SetHeight(20);
   viewCodeButton:SetWidth(160);
@@ -1980,7 +1982,7 @@ local function ConstructUpdateFrame(frame)
 
   local importButton = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
   importButton:SetScript("OnClick", function() group:Import() end);
-  importButton:SetPoint("BOTTOMRIGHT", -190, -4);
+  importButton:SetPoint("BOTTOMRIGHT", -190, -24);
   importButton:SetFrameLevel(importButton:GetFrameLevel() + 1)
   importButton:SetHeight(20);
   importButton:SetWidth(160);
@@ -1988,7 +1990,7 @@ local function ConstructUpdateFrame(frame)
 
   local closeButton = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
   closeButton:SetScript("OnClick", function() group:Close() end);
-  closeButton:SetPoint("BOTTOMRIGHT", -20, -4);
+  closeButton:SetPoint("BOTTOMRIGHT", -20, -24);
   closeButton:SetFrameLevel(closeButton:GetFrameLevel() + 1)
   closeButton:SetHeight(20);
   closeButton:SetWidth(160);
