@@ -1831,7 +1831,7 @@ function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, h
       local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
       sym = sym or symbol
 
-      if sym == "c" or sym == "i" then
+      if sym == "i" then
         -- No special options for these
       else
         addOption(symbol .. "desc", {

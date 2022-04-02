@@ -4085,6 +4085,10 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc, state, form
     if custom then
       value = WeakAuras.EnsureString(custom[index])
     end
+
+    if formatter then
+      value = formatter(value, state)
+    end
   else
     local variable = Private.dynamic_texts[textStr];
     if (not variable) then
@@ -4261,7 +4265,7 @@ function Private.ReplacePlaceHolders(textStr, region, customFunc, useHiddenState
   if (endPos == 2) then
     if string.byte(textStr, 1) == 37 then
       local symbol = string.sub(textStr, 2)
-      local value = (regionState.show or useHiddenStates) and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState, formatters[symbol]);
+      local value = ValueForSymbol(symbol, region, customFunc, regionState, regionStates, useHiddenStates, formatters);
       if (value) then
         textStr = tostring(value);
       end
@@ -4380,7 +4384,7 @@ function Private.CreateFormatters(input, getter, withoutColor)
     if not seenSymbols[symbol] then
       local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
       sym = sym or symbol
-      if sym == "c" or sym == "i" then
+      if sym == "i" then
         -- Do nothing
       else
         local default = (sym == "p" or sym == "t") and "timed" or "none"
