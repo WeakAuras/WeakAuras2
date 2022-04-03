@@ -1582,7 +1582,7 @@ function OptionsPrivate.OpenModelPicker(baseObject, path)
     local loaded, reason = LoadAddOn("WeakAurasModelPaths");
     if not(loaded) then
       reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
-      WeakAuras.prettyPrint("ModelPaths could not be loaded, the addon is " .. reason);
+      WeakAuras.prettyPrint(string.format(L["ModelPaths could not be loaded, the addon is %s"], reason));
       WeakAuras.ModelPaths = {};
     end
     frame.modelPicker.modelTree:SetTree(WeakAuras.ModelPaths);
@@ -1599,7 +1599,7 @@ function OptionsPrivate.OpenTriggerTemplate(data, targetId)
     local loaded, reason = LoadAddOn("WeakAurasTemplates");
     if not(loaded) then
       reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
-      WeakAuras.prettyPrint("Templates could not be loaded, the addon is " .. reason);
+      WeakAuras.prettyPrint(string.format(L["Templates could not be loaded, the addon is %s"], reason));
       return;
     end
     frame.newView = WeakAuras.CreateTemplateView(OptionsPrivate.Private, frame);
