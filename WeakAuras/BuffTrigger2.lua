@@ -3116,8 +3116,8 @@ local function CleanUpMulti(guid)
   if nextCheck then
     local timeUntilNext = nextCheck - GetTime()
     if timeUntilNext > 0 then
-     cleanupTimerMulti[guid].handle = timer:ScheduleTimerFixed(CleanUpMulti, timeUntilNext, guid)
-     cleanupTimerMulti[guid].nextTime = nextCheck
+      cleanupTimerMulti[guid].handle = timer:ScheduleTimerFixed(CleanUpMulti, timeUntilNext, guid)
+      cleanupTimerMulti[guid].nextTime = nextCheck
    end
   end
 end
