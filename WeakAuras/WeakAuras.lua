@@ -91,7 +91,7 @@ function Private.LoadOptions(msg)
       local loaded, reason = LoadAddOn("WeakAurasOptions");
       if not(loaded) then
         reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
-        WeakAuras.prettyPrint("Options could not be loaded, the addon is " .. reason);
+        WeakAuras.prettyPrint(string.format(L["Options could not be loaded, the addon is %s"], reason));
         return false;
       end
     end
@@ -959,7 +959,8 @@ do -- Archive stuff
       if not IsAddOnLoaded("WeakAurasArchive") then
         local ok, reason = LoadAddOn("WeakAurasArchive")
         if not ok then
-          error("Could not load WeakAuras Archive, reason: |cFFFF00" .. (reason or "UNKNOWN"))
+          reason = string.lower("|cffff2020" .. _G["ADDON_" .. reason] .. "|r.")
+          error(string.format(L["Could not load WeakAuras Archive, the addon is %s"], reason))
         end
       end
       Archivist:Initialize(WeakAurasArchive)
