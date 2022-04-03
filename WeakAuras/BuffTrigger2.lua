@@ -3094,7 +3094,12 @@ local function CleanUpMulti(guid)
     local time = GetTime()
     for key, data in pairs(matchDataMulti[guid]) do
       for source, sourceData in pairs(data) do
-        local removeAt = sourceData.expirationTime or (sourceData.time + 60)
+        local removeAt
+        if sourceData.expirationTime and sourceData.expirationTime ~= math.huge then
+          removeAt = sourceData.expirationTime
+        else
+          removeAt = sourceData.time + 60
+        end
         if removeAt <= time then
           RemoveMatchDataMulti(matchDataMulti[guid], guid, key, source)
         else
