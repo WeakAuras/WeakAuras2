@@ -1709,7 +1709,7 @@ Private.load_prototype = {
       name = "itemequiped",
       display = L["Item Equipped"],
       type = "item",
-      test = "IsEquippedItem(%s)",
+      test = "IsEquippedItem(GetItemInfo(%s))",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"}
     },
     {
@@ -7049,7 +7049,7 @@ Private.event_prototypes = {
 
       local ret = [[
         local inverse = %s;
-        local equipped = IsEquippedItem(%s);
+        local equipped = IsEquippedItem(GetItemInfo(%s));
       ]];
 
       return ret:format(trigger.use_inverse and "true" or "false", itemName);
