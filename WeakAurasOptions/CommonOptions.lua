@@ -998,6 +998,10 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     end
   end
 
+  local function IsGroupByFrame()
+    return data.regionType == "dynamicgroup" and data.useAnchorPerUnit
+  end
+
   local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
   local positionOptions = {
     __title = L["Position Settings"],
@@ -1076,7 +1080,9 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       width = WeakAuras.normalWidth,
       name = L["Anchored To"],
       order = 72,
-      hidden = IsParentDynamicGroup,
+      hidden = function()
+        return IsParentDynamicGroup() or IsGroupByFrame()
+      end,
       values = (data.regionType == "group" or data.regionType == "dynamicgroup") and OptionsPrivate.Private.anchor_frame_types_group or OptionsPrivate.Private.anchor_frame_types,
     },
     -- Input field to select frame to anchor on
@@ -1123,9 +1129,9 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       order = 75,
       hidden = function()
         if (data.parent) then
-          --if (IsParentDynamicGroup()) then
-          --  return true;
-          --end
+          if IsGroupByFrame() then
+            return false
+          end
           return data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE";
         else
           return data.anchorFrameType == "MOUSE";
@@ -1139,6 +1145,9 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       name = L["To Group's"],
       order = 76,
       hidden = function()
+        if IsGroupByFrame() then
+          return true
+        end
         if (data.anchorFrameType ~= "SCREEN") then
           return true;
         end
