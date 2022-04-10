@@ -414,12 +414,12 @@ local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name
   return changed or data.lastChanged == time
 end
 
-local function calculateNextCheck(triggerInfoRemaining, auraDataRemaining, auraDataExpirationTime,  nextCheck)
+local function calculateNextCheck(triggerInfoRemaining, auraDataRemaining, auraDataExpirationTime, modRate, nextCheck)
   if auraDataRemaining > 0 and auraDataRemaining >= triggerInfoRemaining then
     if not nextCheck then
-      return auraDataExpirationTime - triggerInfoRemaining
+      return auraDataExpirationTime - triggerInfoRemaining * modRate
     else
-      return min(auraDataExpirationTime - triggerInfoRemaining, nextCheck)
+      return min(auraDataExpirationTime - triggerInfoRemaining * modRate, nextCheck)
     end
   end
   return nextCheck
@@ -445,7 +445,7 @@ local function FindBestMatchData(time, id, triggernum, triggerInfo, matchedUnits
         local modRate = auraData.modRate or 1
         local remaining = (auraData.expirationTime - time) / modRate
         remCheck = triggerInfo.remainingFunc(remaining)
-        nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime / modRate, nextCheck)
+        nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, modRate, nextCheck)
       end
 
       if remCheck then
@@ -482,7 +482,7 @@ local function FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
       local modRate = auraData.modRate or 1
       local remaining = (auraData.expirationTime - time) / modRate
       remCheck = triggerInfo.remainingFunc(remaining)
-      nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime / modRate, nextCheck)
+      nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, modRate, nextCheck)
     end
 
     if remCheck then
@@ -1287,7 +1287,7 @@ local function UpdateTriggerState(time, id, triggernum)
             local modRate = auraData.modRate or 1
             local remaining = (auraData.expirationTime - time) / modRate
             remCheck = triggerInfo.remainingFunc(remaining)
-            nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime / modRate, nextCheck)
+            nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, modRate, nextCheck)
           end
 
           if remCheck then
@@ -2237,7 +2237,7 @@ local function createScanFunc(trigger)
 
   if use_total then
     local ret2 = [[
-      if not(matchData.duration %s %s) then
+      if not(matchData.duration / matchData.modRate %s %s) then
         return false
       end
     ]]
@@ -2785,12 +2785,14 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
 
   result["expirationTime"] = {
     display = L["Remaining Duration"],
-    type = "timer"
+    type = "timer",
+    useModRate = true
   }
 
   result["duration"] = {
     display = L["Total Duration"],
-    type = "number"
+    type = "number",
+    useModRate = true
   }
 
   result["stacks"] = {

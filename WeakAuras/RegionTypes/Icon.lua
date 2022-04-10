@@ -30,7 +30,8 @@ local default = {
   cooldown = false,
   cooldownTextDisabled = false,
   cooldownSwipe = true,
-  cooldownEdge = false
+  cooldownEdge = false,
+  useCooldownModRate = true
 };
 
 WeakAuras.regionPrototype.AddAlphaToDefault(default);
@@ -473,7 +474,9 @@ local function modify(parent, region, data)
     if (cooldown.expirationTime and cooldown.duration and cooldown:IsShown()) then
       -- WORKAROUND SetReverse not applying until next frame
       cooldown:SetCooldown(0, 0);
-      cooldown:SetCooldown(cooldown.expirationTime - cooldown.duration, cooldown.duration, cooldown.modRate);
+      cooldown:SetCooldown(cooldown.expirationTime - cooldown.duration,
+                           cooldown.duration,
+                           cooldown.useCooldownModRate and cooldown.modRate);
     end
   end
 
@@ -497,12 +500,14 @@ local function modify(parent, region, data)
 
   cooldown.expirationTime = nil;
   cooldown.duration = nil;
+  cooldown.modRate = nil
+  cooldown.useCooldownModRate = data.useCooldownModRate
   cooldown:Hide()
   if(data.cooldown) then
-    function region:SetValue(value, total, modRate)
+    function region:SetValue(value, total)
       cooldown.value = value
       cooldown.total = total
-      cooldown.modRate = modRate
+      cooldown.modRate = nil
       if (value >= 0 and value <= total) then
         cooldown:Show()
         cooldown:SetCooldown(GetTime() - (total - value), total)
@@ -517,7 +522,7 @@ local function modify(parent, region, data)
         cooldown.expirationTime = expirationTime;
         cooldown.duration = duration;
         cooldown.modRate = modRate;
-        cooldown:SetCooldown(expirationTime - duration, duration, modRate);
+        cooldown:SetCooldown(expirationTime - duration, duration, cooldown.useCooldownModRate and modRate);
       else
         cooldown.expirationTime = expirationTime;
         cooldown.duration = duration;
@@ -529,7 +534,7 @@ local function modify(parent, region, data)
     function region:PreShow()
       if (cooldown.duration and cooldown.duration > 0.01) then
         cooldown:Show();
-        cooldown:SetCooldown(cooldown.expirationTime - cooldown.duration, cooldown.duration, cooldown.modRate);
+        cooldown:SetCooldown(cooldown.expirationTime - cooldown.duration, cooldown.duration, cooldown.useCooldownModRate and cooldown.modRate);
         cooldown:Resume()
       end
     end

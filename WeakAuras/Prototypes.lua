@@ -4109,7 +4109,7 @@ Private.event_prototypes = {
         local ignoreSpellKnown = %s;
         local track = %q
         local startTime, duration, gcdCooldown, readyTime, modRate = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track);
-        local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime, modRateCharges = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown);
+        local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown);
         local stacks = maxCharges and maxCharges ~= 1 and charges or (spellCount and spellCount > 0 and spellCount) or nil;
         if (charges == nil) then
           -- Use fake charges for spells that use GetSpellCooldown
@@ -4171,6 +4171,7 @@ Private.event_prototypes = {
 
             state.expirationTime = nil;
             state.duration = nil;
+            state.modRate = nil
             state.progressType = 'static';
           elseif (charges > trackedCharge) then
             if (state.expirationTime ~= 0) then
@@ -4181,6 +4182,7 @@ Private.event_prototypes = {
               state.duration = 0;
               state.changed = true;
             end
+            state.modRate = nil;
             state.value = nil;
             state.total = nil;
             state.progressType = 'timed';
@@ -4193,8 +4195,8 @@ Private.event_prototypes = {
               state.duration = duration;
               state.changed = true;
             end
-            if (state.modRate ~= modRateCharges) then
-              state.modRate = modRateCharges;
+            if (state.modRate ~= modRate) then
+              state.modRate = modRate;
               state.changed = true;
             end
             state.value = nil;
@@ -4210,25 +4212,21 @@ Private.event_prototypes = {
           local remaining = 0;
           if (expirationTime and expirationTime > 0) then
             remaining = expirationTime - GetTime();
+            local remainingModRate = remaining / modRate;
             local remainingCheck = %s;
-            local isCharge = %s;
-            if isCharge then
-              remaining = remaining / modRate;
-            else
-              remaining = remaining / modRateCharges;
-            end
-            if(remaining >= remainingCheck and remaining > 0) then
-              WeakAuras.ScheduleScan(expirationTime - remainingCheck);
+            if(remainingModRate >= remainingCheck and remainingModRate > 0) then
+              WeakAuras.ScheduleScan(expirationTime - remainingCheck * modRate);
             end
           end
         ]];
-        ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0, (not trigger.use_trackcharge or not trigger.trackcharge) and "false" or "true");
+        ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
 
       return ret;
     end,
     statesParameter = "one",
     canHaveDuration = "timed",
+    useModRate = true,
     args = {
       {
       }, -- Ignore first argument (id)
@@ -9011,15 +9009,14 @@ Private.dynamic_texts = {
         return state.value or nil
       end
       if state.progressType == "timed" then
-        local modRate = state.modRate or 1
         if state.paused then
-          return state.remaining and state.remaining >= 0 and state.remaining / modRate or nil
+          return state.remaining and state.remaining >= 0 and state.remaining or nil
         end
 
         if not state.expirationTime or not state.duration then
           return nil
         end
-        local remaining = (state.expirationTime - GetTime()) / modRate;
+        local remaining = state.expirationTime - GetTime();
         return remaining >= 0 and remaining or nil
       end
     end,
@@ -9034,8 +9031,6 @@ Private.dynamic_texts = {
       end
 
       local remainingStr = "";
-      local modRate = state.modRate or 1
-      remaining = remaining / modRate
       if remaining == math.huge then
         remainingStr = " ";
       elseif remaining > 60 then
@@ -9070,8 +9065,7 @@ Private.dynamic_texts = {
         if not state.duration then
           return nil
         end
-        local modRate = state.modRate or 1
-        return state.duration / modRate, true
+        return state.duration, true
       end
     end,
     func = function(duration, state, totalPrecision)
@@ -9082,8 +9076,6 @@ Private.dynamic_texts = {
         return ""
       end
       local durationStr = "";
-      local modRate = state.modRate or 1
-      duration = duration / modRate
       if math.abs(duration) == math.huge or tostring(duration) == "nan" then
         durationStr = " ";
       elseif duration > 60 then
