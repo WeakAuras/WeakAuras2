@@ -25,7 +25,7 @@ jobs:
         with:
           args: -d -z
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: WeakAuras-PR${{ github.event.number }}
           path: .release/
@@ -35,7 +35,7 @@ jobs:
         with:
           args: -d -z -g classic -m .pkgmeta-classic
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: WeakAuras-PR${{ github.event.number }}-classic
           path: .release/
@@ -45,7 +45,7 @@ jobs:
         with:
           args: -d -z -g bcc -m .pkgmeta-bcc
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: WeakAuras-PR${{ github.event.number }}-bcc
           path: .release/
