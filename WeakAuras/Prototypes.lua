@@ -1911,6 +1911,7 @@ Private.event_prototypes = {
       AddUnitEventForEvents(result, unit, "UNIT_FACTION")
       AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
       AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
+      AddUnitEventForEvents(result, unit, "PLAYER_FLAGS_CHANGED")
       return result;
     end,
     internal_events = function(trigger)
@@ -2130,6 +2131,22 @@ Private.event_prototypes = {
         display = L["In Combat"],
         type = "tristate",
         init = "UnitAffectingCombat(unit)",
+        store = true,
+        conditionType = "bool"
+      },
+      {
+        name = "afk",
+        display = L["Afk"],
+        type = "tristate",
+        init = "UnitIsAFK(unit)",
+        store = true,
+        conditionType = "bool"
+      },
+      {
+        name = "dnd",
+        display = L["Do Not Disturb"],
+        type = "tristate",
+        init = "UnitIsDND(unit)",
         store = true,
         conditionType = "bool"
       },
