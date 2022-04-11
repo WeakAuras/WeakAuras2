@@ -45,7 +45,7 @@ jobs:
         with:
           args: -z -g bc -m .pkgmeta-bc
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: WeakAuras-BC
           path: .release/
