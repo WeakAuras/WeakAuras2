@@ -189,6 +189,7 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
 
     local conditionTemplate = allConditionsTemplate[trigger] and allConditionsTemplate[trigger][variable];
     local cType = conditionTemplate and conditionTemplate.type;
+    local useModRate = conditionTemplate and conditionTemplate.useModRate
     local test = conditionTemplate and conditionTemplate.test;
     local preamble = conditionTemplate and conditionTemplate.preamble;
 
@@ -233,14 +234,30 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
       check = "true"
     elseif (cType == "number" and value and op) then
       local v = tonumber(value)
+
       if (v) then
-        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable) .. op .. v;
+        if useModRate then
+          check = stateCheck .. stateVariableCheck .. "(state[" .. trigger .. "]" .. string.format("[%q]", variable)
+                  .. "/ (state[" .. trigger .. "].modRate or 1.0))" .. op .. v;
+        else
+          check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable) .. op .. v;
+        end
       end
     elseif (cType == "timer" and value and op) then
-      if (op == "==") then
-        check = stateCheck .. stateVariableCheck .. "abs(state[" .. trigger .. "]" .. string.format("[%q]", variable) .. "- now -" .. value .. ") < 0.05";
+      if useModRate then
+        if (op == "==") then
+          check = stateCheck .. stateVariableCheck .. "abs(((state[" .. trigger .. "]" .. string.format("[%q]", variable) .. "- now) "
+                 .. "/ (state[" .. trigger .. "].modRate or 1.0))" .. " -" .. value .. ") < 0.05";
+        else
+          check = stateCheck .. stateVariableCheck .. "((state[" .. trigger .. "]" .. string.format("[%q]", variable)
+                  .. "- now) / (state[" .. trigger .. "].modRate or 1.0))" .. op .. value;
+        end
       else
-        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable) .. "- now" .. op .. value;
+        if (op == "==") then
+          check = stateCheck .. stateVariableCheck .. "abs(state[" .. trigger .. "]" .. string.format("[%q]", variable) .. "- now -" .. value .. ") < 0.05";
+        else
+          check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable) .. "- now" .. op .. value;
+        end
       end
     elseif (cType == "elapsedTimer" and value and op) then
       if (op == "==") then

@@ -4112,7 +4112,7 @@ Private.event_prototypes = {
         local showgcd = %s;
         local ignoreSpellKnown = %s;
         local track = %q
-        local startTime, duration, gcdCooldown, readyTime = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track);
+        local startTime, duration, gcdCooldown, readyTime, modRate = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track);
         local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown);
         local stacks = maxCharges and maxCharges ~= 1 and charges or (spellCount and spellCount > 0 and spellCount) or nil;
         if (charges == nil) then
@@ -4154,6 +4154,10 @@ Private.event_prototypes = {
             state.duration = duration;
             state.changed = true;
           end
+          if (state.modRate ~= modRate) then
+            state.modRate = modRate;
+            state.changed = true;
+          end
           state.progressType = 'timed';
         ]=];
       else
@@ -4171,6 +4175,7 @@ Private.event_prototypes = {
 
             state.expirationTime = nil;
             state.duration = nil;
+            state.modRate = nil
             state.progressType = 'static';
           elseif (charges > trackedCharge) then
             if (state.expirationTime ~= 0) then
@@ -4181,6 +4186,7 @@ Private.event_prototypes = {
               state.duration = 0;
               state.changed = true;
             end
+            state.modRate = nil;
             state.value = nil;
             state.total = nil;
             state.progressType = 'timed';
@@ -4188,10 +4194,13 @@ Private.event_prototypes = {
             if (state.expirationTime ~= expirationTime) then
               state.expirationTime = expirationTime;
               state.changed = true;
-              state.changed = true;
             end
             if (state.duration ~= duration) then
               state.duration = duration;
+              state.changed = true;
+            end
+            if (state.modRate ~= modRate) then
+              state.modRate = modRate;
               state.changed = true;
             end
             state.value = nil;
@@ -4207,9 +4216,10 @@ Private.event_prototypes = {
           local remaining = 0;
           if (expirationTime and expirationTime > 0) then
             remaining = expirationTime - GetTime();
+            local remainingModRate = remaining / modRate;
             local remainingCheck = %s;
-            if(remaining >= remainingCheck and remaining > 0) then
-              WeakAuras.ScheduleScan(expirationTime - remainingCheck);
+            if(remainingModRate >= remainingCheck and remainingModRate > 0) then
+              WeakAuras.ScheduleScan(expirationTime - remainingCheck * modRate);
             end
           end
         ]];
@@ -4220,6 +4230,7 @@ Private.event_prototypes = {
     end,
     statesParameter = "one",
     canHaveDuration = "timed",
+    useModRate = true,
     args = {
       {
       }, -- Ignore first argument (id)

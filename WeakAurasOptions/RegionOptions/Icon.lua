@@ -232,6 +232,15 @@ local function createOptions(id, data)
       disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data); end,
       hidden = function() return not data.cooldown end,
     },
+    useCooldownModRate = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Blizzard Cooldown Reduction"],
+      order = 11.6,
+      desc = L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."],
+      disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data); end,
+      hidden = function() return not data.cooldown end,
+    },
     endHeader = {
       type = "header",
       order = 100,

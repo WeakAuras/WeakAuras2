@@ -30,7 +30,8 @@ local default = {
   cooldown = false,
   cooldownTextDisabled = false,
   cooldownSwipe = true,
-  cooldownEdge = false
+  cooldownEdge = false,
+  useCooldownModRate = true
 };
 
 WeakAuras.regionPrototype.AddAlphaToDefault(default);
@@ -473,7 +474,9 @@ local function modify(parent, region, data)
     if (cooldown.expirationTime and cooldown.duration and cooldown:IsShown()) then
       -- WORKAROUND SetReverse not applying until next frame
       cooldown:SetCooldown(0, 0);
-      cooldown:SetCooldown(cooldown.expirationTime - cooldown.duration, cooldown.duration);
+      cooldown:SetCooldown(cooldown.expirationTime - cooldown.duration,
+                           cooldown.duration,
+                           cooldown.useCooldownModRate and cooldown.modRate);
     end
   end
 
@@ -497,11 +500,14 @@ local function modify(parent, region, data)
 
   cooldown.expirationTime = nil;
   cooldown.duration = nil;
+  cooldown.modRate = nil
+  cooldown.useCooldownModRate = data.useCooldownModRate
   cooldown:Hide()
   if(data.cooldown) then
     function region:SetValue(value, total)
       cooldown.value = value
       cooldown.total = total
+      cooldown.modRate = nil
       if (value >= 0 and value <= total) then
         cooldown:Show()
         cooldown:SetCooldown(GetTime() - (total - value), total)
@@ -510,15 +516,17 @@ local function modify(parent, region, data)
       end
     end
 
-    function region:SetTime(duration, expirationTime)
+    function region:SetTime(duration, expirationTime, modRate)
       if (duration > 0 and expirationTime > GetTime()) then
         cooldown:Show();
         cooldown.expirationTime = expirationTime;
         cooldown.duration = duration;
-        cooldown:SetCooldown(expirationTime - duration, duration);
+        cooldown.modRate = modRate;
+        cooldown:SetCooldown(expirationTime - duration, duration, cooldown.useCooldownModRate and modRate);
       else
         cooldown.expirationTime = expirationTime;
         cooldown.duration = duration;
+        cooldown.modRate = modRate;
         cooldown:Hide();
       end
     end
@@ -526,7 +534,7 @@ local function modify(parent, region, data)
     function region:PreShow()
       if (cooldown.duration and cooldown.duration > 0.01) then
         cooldown:Show();
-        cooldown:SetCooldown(cooldown.expirationTime - cooldown.duration, cooldown.duration);
+        cooldown:SetCooldown(cooldown.expirationTime - cooldown.duration, cooldown.duration, cooldown.useCooldownModRate and cooldown.modRate);
         cooldown:Resume()
       end
     end
@@ -567,7 +575,7 @@ local function modify(parent, region, data)
           max = duration
         end
 
-        region:SetTime(max - adjustMin, expirationTime - adjustMin, state.inverse);
+        region:SetTime(max - adjustMin, expirationTime - adjustMin, state.modRate);
       elseif state.progressType == "static" then
         local value = state.value or 0;
         local total = state.total or 0;

@@ -259,16 +259,26 @@ Private.format_types = {
         hidden = hidden,
         disabled = function() return get(symbol .. "_time_dynamic_threshold") == 0 end
       })
+
+      addOption(symbol .. "_time_mod_rate", {
+        type = "toggle",
+        name = L["Blizzard Cooldown Reduction"],
+        desc = L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."],
+        width = WeakAuras.doubleWidth,
+        hidden = hidden,
+      })
     end,
     CreateFormatter = function(symbol, get)
       local format = get(symbol .. "_time_format", 0)
       local threshold = get(symbol .. "_time_dynamic_threshold", 60)
       local precision = get(symbol .. "_time_precision", 1)
+      local modRate = get(symbol .. "_time_mod_rate", true)
 
       local mainFormater = simpleFormatters.time[format]
       if not mainFormater then
         mainFormater = simpleFormatters.time[0]
       end
+
       local formatter
       if threshold == 0 then
         formatter = function(value, state)
@@ -278,6 +288,11 @@ Private.format_types = {
           if value <= 0 then
             return ""
           end
+
+          if modRate then
+            value = value / (state.modRate or 1.0)
+          end
+
           return mainFormater(value)
         end
       else
@@ -288,6 +303,9 @@ Private.format_types = {
           end
           if value <= 0 then
             return ""
+          end
+          if modRate then
+            value = value / (state.modRate or 1.0)
           end
           if value < threshold then
             return string.format(formatString, value)
