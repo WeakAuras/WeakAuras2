@@ -1624,7 +1624,7 @@ do
           end
           timer:CancelTimer(mainTimer);
           mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft - offset, "main");
-          mainSwingOffset = mainSwingOffset and mainSwingOffset + offset or offset
+          mainSwingOffset = (mainSwingOffset or 0) + offset
           swingTriggerUpdate()
         end
       end
