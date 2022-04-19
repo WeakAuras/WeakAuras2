@@ -1616,7 +1616,7 @@ do
       end
     elseif (destGUID == selfGUID and (... == "PARRY" or select(4, ...) == "PARRY")) then
       if (lastSwingMain) then
-        local timeLeft = lastSwingMain + swingDurationMain - GetTime() - (mainSwingOffset and mainSwingOffset or 0);
+        local timeLeft = lastSwingMain + swingDurationMain - GetTime() - (mainSwingOffset or 0);
         if (timeLeft > 0.2 * swingDurationMain) then
           local offset = 0.4 * swingDurationMain
           if (timeLeft - offset < 0.2 * swingDurationMain) then
