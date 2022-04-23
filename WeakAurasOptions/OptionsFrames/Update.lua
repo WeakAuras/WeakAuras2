@@ -1330,6 +1330,21 @@ local methods = {
       self:AddChild(scamCheckText)
     end
 
+    local highestVersion = data.internalVersion or 0
+    if children then
+      for _, child in ipairs(children) do
+        highestVersion = max(highestVersion, child.internalVersion or 0)
+      end
+    end
+
+    if (highestVersion > WeakAuras.InternalVersion()) then
+      local highestVersionWwarning = AceGUI:Create("Label")
+      highestVersionWwarning:SetFullWidth(true)
+      highestVersionWwarning:SetText(L["This aura was created with a newer version of WeakAuras.\nIt might not work correctly with your version!"])
+      highestVersionWwarning:SetColor(1, 0, 0)
+      self:AddChild(highestVersionWwarning)
+    end
+
     if (#scamCheckResult > 0) then
       self.viewCodeButton:Show()
     else
