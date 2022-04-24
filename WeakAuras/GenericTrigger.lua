@@ -1616,16 +1616,15 @@ do
       end
     elseif (destGUID == selfGUID and (... == "PARRY" or select(4, ...) == "PARRY")) then
       if (lastSwingMain) then
-        local timeLeft = lastSwingMain + swingDurationMain - GetTime();
-        if (timeLeft > 0.6 * swingDurationMain) then
+        local timeLeft = lastSwingMain + swingDurationMain - GetTime() - (mainSwingOffset or 0);
+        if (timeLeft > 0.2 * swingDurationMain) then
+          local offset = 0.4 * swingDurationMain
+          if (timeLeft - offset < 0.2 * swingDurationMain) then
+            offset = timeLeft - 0.2 * swingDurationMain
+          end
           timer:CancelTimer(mainTimer);
-          mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft - 0.4 * swingDurationMain, "main");
-          mainSwingOffset = 0.4 * swingDurationMain
-          swingTriggerUpdate()
-        elseif (timeLeft > 0.2 * swingDurationMain) then
-          timer:CancelTimer(mainTimer);
-          mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft - 0.2 * swingDurationMain, "main");
-          mainSwingOffset = 0.2 * swingDurationMain
+          mainTimer = timer:ScheduleTimerFixed(swingEnd, timeLeft - offset, "main");
+          mainSwingOffset = (mainSwingOffset or 0) + offset
           swingTriggerUpdate()
         end
       end
