@@ -46,7 +46,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
     addCode(codes, L["%s Stacks Function"]:format(id), trigger.customStacks)
     for i = 1, 7 do
       local property = "customOverlay" .. i;
-      addCode(codes, L["%s Overlay Function"]:format(id), trigger[property])
+      addCode(codes, L["%s %u. Overlay Function"]:format(id, i), trigger[property])
     end
   end
 end
