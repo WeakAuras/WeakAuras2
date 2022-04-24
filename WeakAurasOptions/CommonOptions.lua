@@ -649,7 +649,7 @@ local function replaceNameDescFuncs(intable, data, subOption)
             if(name == "") then
               return name;
             else
-              return "|cFF4080FF"..(name or "error");
+              return "|cFF4080FF"..(name or "error").."|r";
             end
           end
         end
@@ -687,14 +687,14 @@ local function replaceNameDescFuncs(intable, data, subOption)
                       elseif(tri) then
                         tinsert(values, "|cFFE0E000"..child.id..": |r"..L["Ignored"]);
                       elseif(childOptionTable[i].get(info)) then
-                        tinsert(values, "|cFFE0E000"..child.id..": |r|cFF00FF00"..L["Enabled"]);
+                        tinsert(values, "|cFFE0E000"..child.id..": |r|cFF00FF00"..L["Enabled"].."|r");
                       else
-                        tinsert(values, "|cFFE0E000"..child.id..": |r|cFFFF0000"..L["Disabled"]);
+                        tinsert(values, "|cFFE0E000"..child.id..": |r|cFFFF0000"..L["Disabled"].."|r");
                       end
                     elseif(intable.type == "color") then
                       local r, g, b = childOptionTable[i].get(info);
                       r, g, b = r or 1, g or 1, b or 1;
-                      tinsert(values, ("|cFF%2x%2x%2x%s"):format(r * 220 + 35, g * 220 + 35, b * 220 + 35, child.id));
+                      tinsert(values, ("|cFF%2x%2x%2x%s|r"):format(r * 220 + 35, g * 220 + 35, b * 220 + 35, child.id));
                     elseif(intable.type == "select") then
                       local selectValues = type(intable.values) == "table" and intable.values or intable.values(info);
                       local key = childOptionTable[i].get(info);
