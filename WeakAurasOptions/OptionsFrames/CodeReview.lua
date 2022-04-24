@@ -70,6 +70,7 @@ local function ConstructCodeReview(frame)
   group:AddChild(title)
 
   local codeTree = AceGUI:Create("TreeGroup");
+  codeTree:SetTreeWidth(300, false)
   codeTree:SetFullWidth(true)
   codeTree:SetFullHeight(true)
   codeTree:SetLayout("flow")
