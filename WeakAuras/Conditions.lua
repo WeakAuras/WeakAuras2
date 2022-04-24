@@ -836,6 +836,7 @@ function Private.UnregisterForGlobalConditions(uid)
     if next(condFuncs) == nil then
       local unitEvent, unit = event:match("([^:]+):([^:]+)")
       if unitEvent and unit then
+        unit = unit:lower()
         pcall(dynamicConditionsFrame.units[unit].UnregisterEvent, dynamicConditionsFrame.units[unit], unitEvent);
       elseif (event == "FRAME_UPDATE" or event == "WA_SPELL_RANGECHECK") then
         if (event == "FRAME_UPDATE" and dynamicConditions["WA_SPELL_RANGECHECK"] == nil)
