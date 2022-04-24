@@ -95,15 +95,41 @@ local function scamCheck(codes, data)
           data.regionType == "dynamicgroup" and data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM")
 
   if (data.conditions) then
-    local i = 1
+    local customChat = 1
+    local customCode = 1
+    local customCheck = 1
     for _, condition in ipairs(data.conditions) do
-      if (condition and condition.changes) then
+      if (condition.changes) then
         for _, property in ipairs(condition.changes) do
-          if ((property.property == "chat" or property.property == "customcode") and type(property.value) == "table" and property.value.custom) then
-            addCode(codes, L["%s - Condition Custom Chat %s"]:format(data.id, i), property.value.custom);
-            i = i + 1
+          if type(property.value) == "table" and property.value.custom then
+            if property.property == "chat" then
+              addCode(codes, L["%s - Condition Custom Chat %s"]:format(data.id, customChat), property.value.custom);
+              customChat = customChat + 1
+            elseif property.property == "customcode" then
+              addCode(codes, L["%s - Condition Custom Code %s"]:format(data.id, customCode), property.value.custom);
+              customCode = customCode + 1
+            end
           end
         end
+      end
+
+      local function recurseAddCustomCheck(checks)
+        if not checks then return end
+        for _, check in pairs(checks) do
+          if check.trigger == -1 and check.variable == "customcheck" then
+            addCode(codes, L["%s - Condition Custom Check %s"]:format(data.id, customCheck), check.value);
+            customCheck = customCheck + 1
+          end
+          recurseAddCustomCheck(check.checks)
+        end
+      end
+
+      if condition.check then
+        if condition.check.trigger == -1 and condition.check.variable == "customcheck" then
+          addCode(codes, L["%s - Condition Custom Check %s"]:format(data.id, customCheck), condition.check.value);
+          customCheck = customCheck + 1
+        end
+        recurseAddCustomCheck(condition.check.checks)
       end
     end
   end
