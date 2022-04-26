@@ -272,17 +272,23 @@ local function GetBuffTriggerOptions(data, triggernum)
       values = OptionsPrivate.Private.debuff_types,
       hidden = function() return not trigger.type == "aura2" end
     },
+    spell_filters_header = {
+      type = "header",
+      name = L["Spell Selection Filters"],
+      order = 11.15,
+    },
     use_debuffClass = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Debuff Type"],
+      name = L["Dispel Type"],
       order = 11.2,
+      desc = L["Filter to only dispellable de/buffs of the given type(s)"],
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger)) end
     },
     debuffClass = {
       type = "multiselect",
       width = WeakAuras.normalWidth,
-      name = L["Debuff Type"],
+      name = L["Dispel Type"],
       order = 11.3,
       hidden = function()
         return not (trigger.type == "aura2" and trigger.unit ~= "multi"
@@ -363,6 +369,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Name Pattern Match"],
+      desc = L["Filter based on the spell Name string."],
       order = 55,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi") end
     },
@@ -387,6 +394,11 @@ local function GetBuffTriggerOptions(data, triggernum)
       width = WeakAuras.doubleWidth,
       order = 55.2,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and trigger.useNamePattern) end
+    },
+    aura_filters_header = {
+      type = "header",
+      name = L["Active Aura Filters and Info"],
+      order = 59.9,
     },
     useStacks = {
       type = "toggle",
@@ -486,27 +498,6 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = "",
       order = 61.7,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and not trigger.useTotal) end
-    },
-    fetchRole = {
-      type = "toggle",
-      name = L["Add Role Information"],
-      desc = L["This adds %role, %roleIcon as text replacements."],
-      order = 61.8,
-      width = WeakAuras.doubleWidth,
-      hidden = function()
-        return not (trigger.type == "aura2" and trigger.unit ~= "multi")
-               or WeakAuras.IsClassic() or WeakAuras.IsBCC()
-      end
-    },
-    fetchRaidMark = {
-      type = "toggle",
-      name = L["Add Raid Mark Information"],
-      desc = L["This adds %raidMark as text replacements."],
-      order = 61.9,
-      width = WeakAuras.doubleWidth,
-      hidden = function()
-        return not (trigger.type == "aura2" and trigger.unit ~= "multi")
-      end
     },
     fetchTooltip = {
       type = "toggle",
@@ -670,13 +661,6 @@ local function GetBuffTriggerOptions(data, triggernum)
         WeakAuras.Add(data)
       end
     },
-    useAffected = {
-      type = "toggle",
-      name = L["Fetch Affected/Unaffected Names"],
-      width = WeakAuras.doubleWidth,
-      order = 65,
-      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
-    },
     ownOnly = {
       type = "toggle",
       width = WeakAuras.doubleWidth,
@@ -708,8 +692,42 @@ local function GetBuffTriggerOptions(data, triggernum)
         end
         WeakAuras.Add(data)
       end,
-      order = 66,
+      order = 64.3,
       hidden = function() return not trigger.type == "aura2" end
+    },
+    unit_filters_header = {
+      type = "header",
+      name = L["Affected Unit Filters and Info"],
+      order = 65,
+      hidden = function() return trigger.unit == "multi" end,
+    },
+    useAffected = {
+      type = "toggle",
+      name = L["Fetch Affected/Unaffected Names"],
+      width = WeakAuras.doubleWidth,
+      order = 65.1,
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
+    },
+    fetchRole = {
+      type = "toggle",
+      name = L["Add Role Information"],
+      desc = L["This adds %role, %roleIcon as text replacements. Does nothing if the unit is not a group member."],
+      order = 65.2,
+      width = WeakAuras.doubleWidth,
+      hidden = function()
+        return not (trigger.type == "aura2" and trigger.unit ~= "multi")
+               or WeakAuras.IsClassic() or WeakAuras.IsBCC()
+      end
+    },
+    fetchRaidMark = {
+      type = "toggle",
+      name = L["Add Raid Mark Information"],
+      desc = L["This adds %raidMark as text replacements."],
+      order = 65.3,
+      width = WeakAuras.doubleWidth,
+      hidden = function()
+        return not (trigger.type == "aura2" and trigger.unit ~= "multi")
+      end
     },
     use_includePets = {
       type = "toggle",
@@ -930,6 +948,11 @@ local function GetBuffTriggerOptions(data, triggernum)
     },
 
 
+    show_settings_header = {
+      type = "header",
+      name = L["Show and Clone Settings"],
+      order = 69.9,
+    },
     useGroup_count = {
       type = "toggle",
       width = WeakAuras.normalWidth,
