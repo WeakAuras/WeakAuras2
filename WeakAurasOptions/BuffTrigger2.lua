@@ -637,7 +637,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = function(input)
         local value = trigger.use_castByPlayer
         if value == nil then return L["Cast by a Player Character"]
-        elseif value == false then return "|cFFFF0000 "..L["Negator"].." "..L["Cast by a Player"]
+        elseif value == false then return "|cFFFF0000 "..L["Negator"].." "..L["Cast by a Player Character"]
         else return "|cFF00FF00"..L["Cast by a Player Character"] end
       end,
       desc = L["Only Match auras cast by a player (not an npc)"],
