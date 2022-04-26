@@ -636,9 +636,9 @@ local function GetBuffTriggerOptions(data, triggernum)
       type = "toggle",
       name = function(input)
         local value = trigger.use_castByPlayer
-        if value == nil then return L["Cast by Players"]
-        elseif value == false then return "|cFFFF0000 "..L["Negator"].." "..L["Cast by Players"]
-        else return "|cFF00FF00"..L["Cast by Player Character"] end
+        if value == nil then return L["Cast by a Player Character"]
+        elseif value == false then return "|cFFFF0000 "..L["Negator"].." "..L["Cast by a Player"]
+        else return "|cFF00FF00"..L["Cast by a Player Character"] end
       end,
       desc = L["Only Match auras cast by a player (not an npc)"],
       width = WeakAuras.doubleWidth,
@@ -710,7 +710,7 @@ local function GetBuffTriggerOptions(data, triggernum)
     },
     fetchRole = {
       type = "toggle",
-      name = L["Add Role Information"],
+      name = L["Fetch Role Information"],
       desc = L["This adds %role, %roleIcon as text replacements. Does nothing if the unit is not a group member."],
       order = 65.2,
       width = WeakAuras.doubleWidth,
@@ -721,7 +721,7 @@ local function GetBuffTriggerOptions(data, triggernum)
     },
     fetchRaidMark = {
       type = "toggle",
-      name = L["Add Raid Mark Information"],
+      name = L["Fetch Raid Mark Information"],
       desc = L["This adds %raidMark as text replacements."],
       order = 65.3,
       width = WeakAuras.doubleWidth,
@@ -804,7 +804,10 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = "",
       order = 67.2,
       width = WeakAuras.normalWidth,
-      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useRaidRole) end
+      hidden = function() return
+        not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useRaidRole)
+        or WeakAuras.IsRetail()
+      end
     },
     useArenaSpec = {
       type = "toggle",
@@ -834,13 +837,6 @@ local function GetBuffTriggerOptions(data, triggernum)
         return not (WeakAuras.IsRetail() and trigger.type == "aura2" and trigger.unit == "arena" and not trigger.useArenaSpec)
       end,
     },
-    ignoreSelf = {
-      type = "toggle",
-      name = L["Ignore Self"],
-      order = 67.5,
-      width = WeakAuras.doubleWidth,
-      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party" or trigger.unit == "nameplate")) end
-    },
 
     useClass = {
       type = "toggle",
@@ -867,11 +863,42 @@ local function GetBuffTriggerOptions(data, triggernum)
       hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useClass) end
     },
 
+    useUnitName = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Filter by Unit Name"],
+      order = 68.4,
+      hidden = function() return
+        not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
+      end
+    },
+    unitName = {
+      type = "input",
+      width = WeakAuras.normalWidth,
+      name = L["Filter by Unit Name"],
+      desc = L["Filter formats: 'Name', 'Name-Realm', '-Realm'.\n\nSupports multiple entries, separated by commas\n"],
+      order = 68.5,
+      hidden = function()
+        return not (trigger.type == "aura2"
+                    and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useUnitName)
+      end
+    },
+    unitNameSpace = {
+      type = "description",
+      name = "",
+      order = 68.5,
+      width = WeakAuras.normalWidth,
+      hidden = function()
+        return not (trigger.type == "aura2"
+                    and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useUnitName)
+      end
+    },
+
     useHostility = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Filter by Nameplate Type"],
-      order = 68.4,
+      order = 69.1,
       hidden = function() return
         not (trigger.type == "aura2" and trigger.unit == "nameplate")
       end
@@ -882,20 +909,28 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Hostility"],
       values = OptionsPrivate.Private.hostility_types,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and trigger.useHostility) end,
-      order = 68.5
+      order = 69.2
     },
     hostilitySpace = {
       type = "description",
       name = "",
-      order = 68.6,
+      order = 69.3,
       width = WeakAuras.normalWidth,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and not trigger.useHostility) end
+    },
+
+    ignoreSelf = {
+      type = "toggle",
+      name = L["Ignore Self"],
+      order = 69.35,
+      width = WeakAuras.doubleWidth,
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party" or trigger.unit == "nameplate")) end
     },
 
     ignoreDead = {
       type = "toggle",
       name = L["Ignore Dead"],
-      order = 68.7,
+      order = 69.4,
       width = WeakAuras.doubleWidth,
       hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
     },
@@ -903,7 +938,7 @@ local function GetBuffTriggerOptions(data, triggernum)
     ignoreDisconnected = {
       type = "toggle",
       name = L["Ignore Disconnected"],
-      order = 68.8,
+      order = 69.8,
       width = WeakAuras.doubleWidth,
       hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
     },
@@ -911,47 +946,22 @@ local function GetBuffTriggerOptions(data, triggernum)
       type = "toggle",
       name = L["Ignore out of checking range"],
       desc = L["Uses UnitIsVisible() to check if in range. This is polled every second."],
-      order = 68.9,
+      order = 69.9,
       width = WeakAuras.doubleWidth,
       hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
     },
 
-    useUnitName = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["UnitName Filter"],
-      order = 69.1,
-      hidden = function() return
-        not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
-      end
-    },
-    unitName = {
-      type = "input",
-      width = WeakAuras.normalWidth,
-      name = L["Unit Name Filter"],
-      desc = L["Filter formats: 'Name', 'Name-Realm', '-Realm'.\n\nSupports multiple entries, separated by commas\n"],
-      order = 69.2,
-      hidden = function()
-        return not (trigger.type == "aura2"
-                    and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useUnitName)
-      end
-    },
-    unitNameSpace = {
-      type = "description",
-      name = "",
-      order = 69.3,
-      width = WeakAuras.normalWidth,
-      hidden = function()
-        return not (trigger.type == "aura2"
-                    and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useUnitName)
-      end
-    },
-
-
     show_settings_header = {
       type = "header",
       name = L["Show and Clone Settings"],
-      order = 69.9,
+      order = 69.91,
+    },
+    multi_unit_hint = {
+      type = "description",
+      order = 69.92,
+      width = WeakAuras.doubleWidth,
+      hidden = function() return not (trigger.type == "aura2" and IsGroupTrigger(trigger)) end,
+      name = L["|cff999999Triggers tracking multiple units will default to being active even while no affected units are found without a Unit Count or Match Count setting applied.|r"],
     },
     useGroup_count = {
       type = "toggle",

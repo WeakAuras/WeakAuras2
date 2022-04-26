@@ -2729,8 +2729,8 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
   local ret =  "|cFFFF0000%".. triggernum .. ".spellId|r - " .. L["Spell ID"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".debuffClass|r - " .. L["Debuff Class"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".debuffClassIcon|r - " .. L["Debuff Class Icon"] .. "\n"
+  ret = ret .. "|cFFFF0000%".. triggernum .. ".debuffClass|r - " .. L["Dispel Type"] .. "\n"
+  ret = ret .. "|cFFFF0000%".. triggernum .. ".debuffClassIcon|r - " .. L["Dispel Type Icon"] .. "\n"
   ret = ret .. "|cFFFF0000%".. triggernum .. ".unitCaster|r - " .. L["Caster Unit"] .. "\n"
   ret = ret .. "|cFFFF0000%".. triggernum .. ".casterName|r - " .. L["Caster Name"] .. "\n"
   ret = ret .. "|cFFFF0000%".. triggernum .. ".unit|r - " .. L["Unit"] .. "\n"
@@ -2773,7 +2773,7 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
   local result = {}
 
   result["debuffClass"] = {
-    display = L["Debuff Type"],
+    display = L["Dispel Type"],
     type = "select",
     values = Private.debuff_class_types
   }
