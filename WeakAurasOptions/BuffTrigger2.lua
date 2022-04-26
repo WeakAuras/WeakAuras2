@@ -280,7 +280,7 @@ local function GetBuffTriggerOptions(data, triggernum)
     use_debuffClass = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Dispel Type"],
+      name = L["Debuff Type"],
       order = 11.2,
       desc = L["Filter to only dispellable de/buffs of the given type(s)"],
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger)) end
@@ -288,7 +288,7 @@ local function GetBuffTriggerOptions(data, triggernum)
     debuffClass = {
       type = "multiselect",
       width = WeakAuras.normalWidth,
-      name = L["Dispel Type"],
+      name = L["Debuff Type"],
       order = 11.3,
       hidden = function()
         return not (trigger.type == "aura2" and trigger.unit ~= "multi"
@@ -499,83 +499,6 @@ local function GetBuffTriggerOptions(data, triggernum)
       order = 61.7,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and not trigger.useTotal) end
     },
-    fetchTooltip = {
-      type = "toggle",
-      name = L["Use Tooltip Information"],
-      desc = L["This adds %tooltip, %tooltip1, %tooltip2, %tooltip3 as text replacements."],
-      order = 62,
-      width = WeakAuras.doubleWidth,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end
-    },
-    use_tooltip = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Tooltip Pattern Match"],
-      order = 62.1,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.fetchTooltip) end
-    },
-    use_tooltipSpace = {
-      type = "description",
-      name = "",
-      order = 62.2,
-      width = WeakAuras.normalWidth,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and not trigger.use_tooltip and trigger.fetchTooltip) end
-    },
-    tooltip_operator = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Operator"],
-      order = 62.3,
-      disabled = function() return not trigger.use_tooltip end,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.use_tooltip and trigger.fetchTooltip) end,
-      values = OptionsPrivate.Private.string_operator_types
-    },
-    tooltip = {
-      type = "input",
-      name = L["Tooltip Content"],
-      width = WeakAuras.doubleWidth,
-      order = 62.4,
-      disabled = function() return not trigger.use_tooltip end,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.use_tooltip and trigger.fetchTooltip) end
-    },
-    use_tooltipValue = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Tooltip Value"],
-      order = 63.1,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.fetchTooltip) end
-    },
-    tooltipValueNumber = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Tooltip Value #"],
-      order = 63.2,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip) end,
-      values = OptionsPrivate.Private.tooltip_count
-    },
-    use_tooltipValueSpace = {
-      type = "description",
-      name = "",
-      order = 63.2,
-      width = WeakAuras.normalWidth,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and not trigger.use_tooltipValue and trigger.fetchTooltip) end
-    },
-    tooltipValue_operator = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Operator"],
-      order = 63.3,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip) end,
-      values = OptionsPrivate.Private.operator_types
-    },
-    tooltipValue = {
-      type = "input",
-      name = L["Tooltip"],
-      width = WeakAuras.normalWidth,
-      validate = ValidateNumeric,
-      order = 63.4,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip) end
-    },
     use_stealable = {
       type = "toggle",
       name = function(input)
@@ -694,6 +617,84 @@ local function GetBuffTriggerOptions(data, triggernum)
       end,
       order = 64.3,
       hidden = function() return not trigger.type == "aura2" end
+    },
+
+    fetchTooltip = {
+      type = "toggle",
+      name = L["Fetch Tooltip Information"],
+      desc = L["This adds %tooltip, %tooltip1, %tooltip2, %tooltip3 as text replacements and also allows filtering based on the tooltip content/values."],
+      order = 64.5,
+      width = WeakAuras.doubleWidth,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end
+    },
+    use_tooltip = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Tooltip Pattern Match"],
+      order = 64.51,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.fetchTooltip) end
+    },
+    use_tooltipSpace = {
+      type = "description",
+      name = "",
+      order = 64.52,
+      width = WeakAuras.normalWidth,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and not trigger.use_tooltip and trigger.fetchTooltip) end
+    },
+    tooltip_operator = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Operator"],
+      order = 64.53,
+      disabled = function() return not trigger.use_tooltip end,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.use_tooltip and trigger.fetchTooltip) end,
+      values = OptionsPrivate.Private.string_operator_types
+    },
+    tooltip = {
+      type = "input",
+      name = L["Tooltip Content"],
+      width = WeakAuras.doubleWidth,
+      order = 64.54,
+      disabled = function() return not trigger.use_tooltip end,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.use_tooltip and trigger.fetchTooltip) end
+    },
+    use_tooltipValue = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Tooltip Value"],
+      order = 64.55,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.fetchTooltip) end
+    },
+    tooltipValueNumber = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Tooltip Value #"],
+      order = 64.56,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip) end,
+      values = OptionsPrivate.Private.tooltip_count
+    },
+    use_tooltipValueSpace = {
+      type = "description",
+      name = "",
+      order = 64.57,
+      width = WeakAuras.normalWidth,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and not trigger.use_tooltipValue and trigger.fetchTooltip) end
+    },
+    tooltipValue_operator = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Operator"],
+      order = 64.58,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip) end,
+      values = OptionsPrivate.Private.operator_types
+    },
+    tooltipValue = {
+      type = "input",
+      name = L["Tooltip"],
+      width = WeakAuras.normalWidth,
+      validate = ValidateNumeric,
+      order = 64.59,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.use_tooltipValue and trigger.fetchTooltip) end
     },
     unit_filters_header = {
       type = "header",
