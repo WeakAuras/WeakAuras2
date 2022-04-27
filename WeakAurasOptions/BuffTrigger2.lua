@@ -504,8 +504,8 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = function(input)
         local value = trigger.use_stealable
         if value == nil then return L["Is Stealable"]
-        elseif value == false then return "|cFFFF0000 "..L["Negator"].." "..L["Is Stealable"]
-        else return "|cFF00FF00"..L["Is Stealable"] end
+        elseif value == false then return "|cFFFF0000 " .. L["Negator"] .. " " .. L["Is Stealable"] .. "|r"
+        else return "|cFF00FF00" .. L["Is Stealable"] .. "|r" end
       end,
       width = WeakAuras.doubleWidth,
       order = 64,
@@ -532,8 +532,8 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = function(input)
         local value = trigger.use_isBossDebuff
         if value == nil then return L["Is Boss Debuff"]
-        elseif value == false then return "|cFFFF0000 "..L["Negator"].." "..L["Is Boss Debuff"]
-        else return "|cFF00FF00"..L["Is Boss Debuff"] end
+        elseif value == false then return "|cFFFF0000 " .. L["Negator"] .. " " .. L["Is Boss Debuff"] .. "|r"
+        else return "|cFF00FF00" .. L["Is Boss Debuff"] .. "|r" end
       end,
       width = WeakAuras.doubleWidth,
       order = 64.1,
@@ -590,8 +590,8 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = function()
         local value = trigger.ownOnly
         if value == nil then return L["Own Only"]
-        elseif value == false then return "|cFFFF0000 "..L["Negator"].." "..L["Own Only"]
-        else return "|cFF00FF00"..L["Own Only"] end
+        elseif value == false then return "|cFFFF0000 " .. L["Negator"] .. " " .. L["Own Only"] .. "|r"
+        else return "|cFF00FF00" .. L["Own Only"] .. "|r" end
       end,
       desc = function()
         local value = trigger.ownOnly

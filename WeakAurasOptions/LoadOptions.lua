@@ -162,8 +162,8 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           name = function(input)
             local value = trigger["use_"..realname];
             if(value == nil) then return arg.display;
-            elseif(value == false) then return "|cFFFF0000 "..L["Negator"].." "..arg.display;
-            else return "|cFF00FF00"..arg.display; end
+            elseif(value == false) then return "|cFFFF0000 "..L["Negator"].." "..arg.display.."|r";
+            else return "|cFF00FF00"..arg.display.."|r"; end
           end,
           desc = arg.desc,
           get = function()

@@ -46,7 +46,7 @@ local function checkTrigger(codes, id, trigger, untrigger)
     addCode(codes, L["%s Stacks Function"]:format(id), trigger.customStacks)
     for i = 1, 7 do
       local property = "customOverlay" .. i;
-      addCode(codes, L["%s Overlay Function"]:format(id), trigger[property])
+      addCode(codes, L["%s %u. Overlay Function"]:format(id, i), trigger[property])
     end
   end
 end
@@ -95,15 +95,41 @@ local function scamCheck(codes, data)
           data.regionType == "dynamicgroup" and data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM")
 
   if (data.conditions) then
-    local i = 1
+    local customChat = 1
+    local customCode = 1
+    local customCheck = 1
     for _, condition in ipairs(data.conditions) do
-      if (condition and condition.changes) then
+      if (condition.changes) then
         for _, property in ipairs(condition.changes) do
-          if ((property.property == "chat" or property.property == "customcode") and type(property.value) == "table" and property.value.custom) then
-            addCode(codes, L["%s - Condition Custom Chat %s"]:format(data.id, i), property.value.custom);
-            i = i + 1
+          if type(property.value) == "table" and property.value.custom then
+            if property.property == "chat" then
+              addCode(codes, L["%s - Condition Custom Chat %s"]:format(data.id, customChat), property.value.custom);
+              customChat = customChat + 1
+            elseif property.property == "customcode" then
+              addCode(codes, L["%s - Condition Custom Code %s"]:format(data.id, customCode), property.value.custom);
+              customCode = customCode + 1
+            end
           end
         end
+      end
+
+      local function recurseAddCustomCheck(checks)
+        if not checks then return end
+        for _, check in pairs(checks) do
+          if check.trigger == -1 and check.variable == "customcheck" then
+            addCode(codes, L["%s - Condition Custom Check %s"]:format(data.id, customCheck), check.value);
+            customCheck = customCheck + 1
+          end
+          recurseAddCustomCheck(check.checks)
+        end
+      end
+
+      if condition.check then
+        if condition.check.trigger == -1 and condition.check.variable == "customcheck" then
+          addCode(codes, L["%s - Condition Custom Check %s"]:format(data.id, customCheck), condition.check.value);
+          customCheck = customCheck + 1
+        end
+        recurseAddCustomCheck(condition.check.checks)
       end
     end
   end
@@ -1328,6 +1354,21 @@ local methods = {
       scamCheckText:SetText(L["This aura contains custom Lua code.\nMake sure you can trust the person who sent it!"])
       scamCheckText:SetColor(1, 0, 0)
       self:AddChild(scamCheckText)
+    end
+
+    local highestVersion = data.internalVersion or 0
+    if children then
+      for _, child in ipairs(children) do
+        highestVersion = max(highestVersion, child.internalVersion or 0)
+      end
+    end
+
+    if (highestVersion > WeakAuras.InternalVersion()) then
+      local highestVersionWwarning = AceGUI:Create("Label")
+      highestVersionWwarning:SetFullWidth(true)
+      highestVersionWwarning:SetText(L["This aura was created with a newer version of WeakAuras.\nIt might not work correctly with your version!"])
+      highestVersionWwarning:SetColor(1, 0, 0)
+      self:AddChild(highestVersionWwarning)
     end
 
     if (#scamCheckResult > 0) then
