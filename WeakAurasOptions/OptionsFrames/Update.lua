@@ -1364,11 +1364,11 @@ local methods = {
     end
 
     if (highestVersion > WeakAuras.InternalVersion()) then
-      local highestVersionWwarning = AceGUI:Create("Label")
-      highestVersionWwarning:SetFullWidth(true)
-      highestVersionWwarning:SetText(L["This aura was created with a newer version of WeakAuras.\nIt might not work correctly with your version!"])
-      highestVersionWwarning:SetColor(1, 0, 0)
-      self:AddChild(highestVersionWwarning)
+      local highestVersionWarning = AceGUI:Create("Label")
+      highestVersionWarning:SetFullWidth(true)
+      highestVersionWarning:SetText(L["This aura was created with a newer version of WeakAuras.\nIt might not work correctly with your version!"])
+      highestVersionWarning:SetColor(1, 0, 0)
+      self:AddChild(highestVersionWarning)
     end
 
     if (#scamCheckResult > 0) then
