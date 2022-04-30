@@ -5177,15 +5177,57 @@ function WeakAuras.ParseNameCheck(name)
     name = {},
     realm = {},
     full = {},
-    AddMatch = function(self, name, start, last)
-      local match = strtrim(name:sub(start, last))
+    AddMatch = function(self, input, start, last)
+      local match = strtrim(input:sub(start, last))
 
-      if (match:sub(1, 1) == "-") then
-        self.realm[match:sub(2)] = true
-      elseif match:find("-", 1, true) then
-        self.full[match] = true
+      -- state: 1: In name
+      -- state: 2: In Realm
+      -- state: -1: Escape Name
+      -- state: -2: In Escape Realm
+      local index = 1
+      local state = 1
+      local name = ""
+      local realm = ""
+
+
+      for index = 1, #match do
+        local c = match:sub(index, index)
+
+        if state == -1 then
+          name = name .. c
+          state = 1
+        elseif state == -2 then
+          realm = realm .. c
+          state = 2
+        elseif state == 1 then
+          if c == "\\" then
+            state = -1
+          elseif c == "-" then
+            state = 2
+          else
+            name = name .. c
+          end
+        elseif state == 2 then
+          if c == "\\" then
+            state = -2
+          else
+            realm = realm .. c
+          end
+        end
+      end
+
+      if name == "" then
+        if realm == "" then
+          -- Do nothing
+        else
+          self.realm[realm] = true
+        end
       else
-        self.name[match] = true
+        if realm == "" then
+          self.name[name] = true
+        else
+          self.full[name .. "-" .. realm] = true
+        end
       end
     end,
     Check = function(self, name, realm)
