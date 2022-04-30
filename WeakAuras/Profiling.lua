@@ -678,7 +678,7 @@ function RealTimeProfilingWindow:Init()
   toggleButton:SetFrameLevel(statsFrame:GetFrameLevel() + 1)
   toggleButton:SetHeight(20)
   toggleButton:SetWidth(width)
-  toggleButton:SetText(L["Start"])
+  toggleButton:SetText(L["Start Now"])
   toggleButton:SetScript("OnClick", function(self)
     local parent = self:GetParent():GetParent()
     if (not profileData.systems.time or profileData.systems.time.count ~= 1) then
@@ -801,7 +801,7 @@ function RealTimeProfilingWindow:Stop()
   self:Hide()
   self:ResetBars()
   WeakAuras.StopProfile()
-  self.toggleButton:SetText(L["Start"])
+  self.toggleButton:SetText(L["Start Now"])
 end
 
 function RealTimeProfilingWindow:Toggle()
