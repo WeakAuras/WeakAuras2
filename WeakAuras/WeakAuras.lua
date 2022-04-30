@@ -447,10 +447,15 @@ function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName
   elseif(regionOptions[name]) then
     error("Improper arguments to WeakAuras.RegisterRegionOptions - region type \""..name.."\" already defined", 2);
   else
+    local templateIcon
     if (type(icon) == "function") then
-      -- We only want to create one icon and reparent it as needed
+      -- We only want to create two icons and reparent it as needed
+      templateIcon = icon()
+      templateIcon:Hide()
       icon = icon()
       icon:Hide()
+    else
+      templateIcon = icon
     end
 
     local acquireThumbnail, releaseThumbnail
@@ -470,6 +475,7 @@ function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName
     regionOptions[name] = {
       create = createFunction,
       icon = icon,
+      templateIcon = templateIcon,
       displayName = displayName,
       createThumbnail = createThumbnail,
       modifyThumbnail = modifyThumbnail,

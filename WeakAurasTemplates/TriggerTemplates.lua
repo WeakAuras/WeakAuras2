@@ -1343,7 +1343,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
     local button = AceGUI:Create("WeakAurasNewButton");
     button:SetTitle(regionData.displayName);
     if(type(regionData.icon) == "string" or type(regionData.icon) == "table") then
-      button:SetIcon(regionData.icon);
+      button:SetIcon(regionData.templateIcon);
     end
     button:SetDescription(regionData.description);
     button:SetFullWidth(true);
