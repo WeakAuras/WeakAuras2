@@ -2275,7 +2275,7 @@ end
 
 Private.group_types = {
   solo = L["Not in Group"],
-  group = L["In Group"],
+  group = L["In Party"],
   raid = L["In Raid"]
 }
 

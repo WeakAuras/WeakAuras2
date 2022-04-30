@@ -1326,7 +1326,7 @@ Private.load_prototype = {
     },
     {
       name = "ingroup",
-      display = L["In Group"],
+      display = L["Group Type"],
       type = "multiselect",
       width = WeakAuras.normalWidth,
       init = "arg",
@@ -8655,7 +8655,7 @@ Private.event_prototypes = {
       },
       {
         name = "ingroup",
-        display = L["In Group"],
+        display = L["Group Type"],
         type = "multiselect",
         values = "group_types",
         init = "WeakAuras.GroupType()",
