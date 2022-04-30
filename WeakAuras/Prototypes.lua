@@ -2260,7 +2260,7 @@ Private.event_prototypes = {
         type = "select",
         values = function()
           local ret = {}
-          for i = 0, 8 do
+          for i = 1, 8 do
             ret[i] = GetText("FACTION_STANDING_LABEL"..i, UnitSex("player"))
           end
           return ret
