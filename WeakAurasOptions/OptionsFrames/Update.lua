@@ -1241,6 +1241,7 @@ local methods = {
     self:AddBasicInformationWidgets(data, sender)
 
     local matchInfoResult = AceGUI:Create("Label")
+    matchInfoResult:SetFontObject(GameFontHighlight)
     matchInfoResult:SetFullWidth(true)
     self:AddChild(matchInfoResult)
 
@@ -1350,6 +1351,7 @@ local methods = {
       self:AddChild(AceGUI:Create("WeakAurasSpacer"))
 
       local scamCheckText = AceGUI:Create("Label")
+      scamCheckText:SetFontObject(GameFontHighlight)
       scamCheckText:SetFullWidth(true)
       scamCheckText:SetText(L["This aura contains custom Lua code.\nMake sure you can trust the person who sent it!"])
       scamCheckText:SetColor(1, 0, 0)
@@ -1365,6 +1367,7 @@ local methods = {
 
     if (highestVersion > WeakAuras.InternalVersion()) then
       local highestVersionWarning = AceGUI:Create("Label")
+      highestVersionWarning:SetFontObject(GameFontHighlight)
       highestVersionWarning:SetFullWidth(true)
       highestVersionWarning:SetText(L["This aura was created with a newer version of WeakAuras.\nIt might not work correctly with your version!"])
       highestVersionWarning:SetColor(1, 0, 0)
@@ -1377,6 +1380,7 @@ local methods = {
 
     if importBuild and currentBuild ~= importBuild then
       local flavorWarning = AceGUI:Create("Label")
+      flavorWarning:SetFontObject(GameFontHighlight)
       flavorWarning:SetFullWidth(true)
       flavorWarning:SetText(L["This aura was created with a different version (%s) of World of Warcraft.\nIt might not work correctly!"]:format(OptionsPrivate.Private.TocToExpansion[importBuild]))
       flavorWarning:SetColor(1, 0, 0)
@@ -1427,6 +1431,7 @@ local methods = {
     area:AddChild(summaryHeader)
 
     local summary = AceGUI:Create("Label")
+    summary:SetFontObject(GameFontHighlight)
     summary:SetFullWidth(true)
     area:AddChild(summary)
     self.updateSummary= summary
@@ -1975,12 +1980,14 @@ local methods = {
     self:AddChild(title)
 
     local description = AceGUI:Create("Label")
+    description:SetFontObject(GameFontHighlight)
     description:SetFullWidth(true)
     description:SetText(data.desc or "")
     self:AddChild(description)
 
     if data.url and data.url ~= "" then
       local url = AceGUI:Create("Label")
+      url:SetFontObject(GameFontHighlight)
       url:SetFullWidth(true)
       url:SetText(L["Url: %s"]:format(data.url))
       self:AddChild(url)
@@ -1988,6 +1995,7 @@ local methods = {
 
     if data.semver or data.version then
       local version = AceGUI:Create("Label")
+      version:SetFontObject(GameFontHighlight)
       version:SetFullWidth(true)
       version:SetText(L["Version: %s"]:format(data.semver or data.version))
       self:AddChild(version)
@@ -1995,6 +2003,7 @@ local methods = {
 
     if sender then
       local senderLabel = AceGUI:Create("Label")
+      senderLabel:SetFontObject(GameFontHighlight)
       senderLabel:SetFullWidth(true)
       senderLabel:SetText(L["Aura received from: %s"]:format(sender))
       self:AddChild(senderLabel)
