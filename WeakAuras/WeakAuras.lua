@@ -3704,7 +3704,7 @@ do
       for triggernum, triggerData in ipairs(triggers) do
         for id, state in pairs(triggerData) do
           if state.progressType == "timed" and state.expirationTime and state.expirationTime < t and state.duration and state.duration > 0 then
-            state.expirationTime = state.expirationTime + state.duration
+            state.expirationTime = t + state.duration
             state.changed = true
             changed = true
           end
