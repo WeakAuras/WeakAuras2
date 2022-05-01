@@ -866,12 +866,12 @@ local methods = {
     });
 
     tinsert(self.menu, {
-      text = L["Export to string..."],
+      text = L["Export..."],
       notCheckable = true,
       func = function() OptionsPrivate.ExportToString(self.data.id) end
     });
     tinsert(self.menu, {
-      text = L["Export to Lua table..."],
+      text = L["Export debug table..."],
       notCheckable = true,
       func = function() OptionsPrivate.ExportToTable(self.data.id) end
     });
