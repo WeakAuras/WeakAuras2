@@ -48,26 +48,34 @@ local function setTextureFunc(textureWidget, texturePath, textureName)
 
         setTile(textureWidget, data.count, data.rows, data.columns, data.frameScaleW or 1, data.frameScaleH or 1);
 
-        textureWidget:SetOnUpdate(function()
-          textureWidget.frameNr = textureWidget.frameNr + 1;
-          if (textureWidget.frameNr == data.count) then
-            textureWidget.frameNr = 1;
+        textureWidget:SetOnUpdate(function(self, elapsed)
+          self.elapsed = (self.elapsed or 0) + elapsed
+          if(self.elapsed > 0.1) then
+            self.elapsed = self.elapsed - 0.1;
+            textureWidget.frameNr = textureWidget.frameNr + 1;
+            if (textureWidget.frameNr == data.count) then
+              textureWidget.frameNr = 1;
+            end
+            setTile(textureWidget, textureWidget.frameNr, data.rows, data.columns, data.frameScaleW or 1, data.frameScaleH or 1);
           end
-          setTile(textureWidget, textureWidget.frameNr, data.rows, data.columns, data.frameScaleW or 1, data.frameScaleH or 1);
-        end);
+        end)
       else
         -- Numbered Textures
         local texture = texturePath .. format("%03d", texture_data[texturePath].count)
         textureWidget:SetTexture(texture, textureName)
         textureWidget:SetTexCoord(0, 1, 0, 1);
 
-        textureWidget:SetOnUpdate(function()
-          textureWidget.frameNr = textureWidget.frameNr + 1;
-          if (textureWidget.frameNr == data.count) then
-            textureWidget.frameNr = 1;
+        textureWidget:SetOnUpdate(function(self, elapsed)
+          self.elapsed = (self.elapsed or 0) + elapsed
+          if(self.elapsed > 0.1) then
+            self.elapsed = self.elapsed - 0.1;
+            textureWidget.frameNr = textureWidget.frameNr + 1;
+            if (textureWidget.frameNr == data.count) then
+              textureWidget.frameNr = 1;
+            end
+            local texture = texturePath .. format("%03d", textureWidget.frameNr)
+            textureWidget:SetTexture(texture, textureName);
           end
-          local texture = texturePath .. format("%03d", textureWidget.frameNr)
-          textureWidget:SetTexture(texture, textureName);
         end);
       end
   else
