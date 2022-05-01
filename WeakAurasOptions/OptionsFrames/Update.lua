@@ -1371,6 +1371,18 @@ local methods = {
       self:AddChild(highestVersionWarning)
     end
 
+
+    local currentBuild = floor(WeakAuras.BuildInfo / 10000)
+    local importBuild = data.tocversion and floor(data.tocversion / 10000)
+
+    if importBuild and currentBuild ~= importBuild then
+      local flavorWarning = AceGUI:Create("Label")
+      flavorWarning:SetFullWidth(true)
+      flavorWarning:SetText(L["This aura was created with a different version (%s) of World of Warcraft.\nIt might not work correctly!"]:format(OptionsPrivate.Private.TocToExpansion[importBuild]))
+      flavorWarning:SetColor(1, 0, 0)
+      self:AddChild(flavorWarning)
+    end
+
     if (#scamCheckResult > 0) then
       self.viewCodeButton:Show()
     else

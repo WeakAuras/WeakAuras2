@@ -2272,6 +2272,18 @@ if WeakAuras.IsRetail() then
 
 end
 
+Private.TocToExpansion = {
+   [1] = L["Classic"],
+   [2] = L["Burning Crusade"],
+   [3] = L["Wrath of the Lich King"],
+   [4] = L["Cataclysm"],
+   [5] = L["Mists of Pandaria"],
+   [6] = L["Warlords of Draenor"],
+   [7] = L["Legion"],
+   [8] = L["Battle for Azeroth"],
+   [9] = L["Shadowlands"],
+  [10] = L["Dragonflight"]
+}
 
 Private.group_types = {
   solo = L["Not in Group"],
