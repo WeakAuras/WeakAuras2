@@ -55,7 +55,7 @@ local function modify(parent, region, parentData, data, first)
   if edgeFile and edgeFile ~= "" then
     region:SetBackdrop({
       edgeFile = edgeFile,
-      edgeSize = data.border_size,
+      edgeSize = data.border_size * Private.PixelMult,
       bgFile = nil,
     })
     region:SetBackdropBorderColor(data.border_color[1], data.border_color[2], data.border_color[3], data.border_color[4])

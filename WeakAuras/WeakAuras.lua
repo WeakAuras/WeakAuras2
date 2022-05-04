@@ -1098,6 +1098,7 @@ loadedFrame:RegisterEvent("PLAYER_LOGIN");
 loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 loadedFrame:RegisterEvent("LOADING_SCREEN_ENABLED");
 loadedFrame:RegisterEvent("LOADING_SCREEN_DISABLED");
+loadedFrame:RegisterEvent("UI_SCALE_CHANGED");
 if WeakAuras.IsRetail() then
   loadedFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
   loadedFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
@@ -1136,6 +1137,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       end
       db.minimap = db.minimap or { hide = false };
       LDBIcon:Register("WeakAuras", Broker_WeakAuras, db.minimap);
+      Private:SetPixelMult()
     end
   elseif(event == "PLAYER_LOGIN") then
     local dbIsValid, takeNewSnapshots
@@ -1163,6 +1165,8 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     in_loading_screen = true;
   elseif(event == "LOADING_SCREEN_DISABLED") then
     in_loading_screen = false;
+  elseif(event == "UI_SCALE_CHANGED") then
+    Private:SetPixelMult()
   else
     local callback
     if(event == "PLAYER_ENTERING_WORLD") then
@@ -1177,6 +1181,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
         Private.UpdateCurrentInstanceType();
         Private.InitializeEncounterAndZoneLists()
+
       end
     elseif(event == "PLAYER_PVP_TALENT_UPDATE") then
       callback = CreatePvPTalentCache;
@@ -5413,4 +5418,14 @@ do
   end
 end
 
+function Private:SetPixelMult()
+	local _, screenheight = GetPhysicalScreenSize()
+	local uiUnitFactor = 768 / screenheight
+	local uiScale = UIParent:GetScale()
+	self.PixelMult = uiUnitFactor / uiScale
+end
 
+function Private.DisablePixelSnap(obj)
+  obj:SetTexelSnappingBias(0.0)
+  obj:SetSnapToPixelGrid(false)
+end

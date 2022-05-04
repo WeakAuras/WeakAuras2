@@ -172,7 +172,7 @@ local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoi
       anchorPoint = "CENTER"
     end
 
-    subRegion:SetPoint(selfPoint, anchorRegion, anchorPoint, anchorXOffset, anchorYOffset)
+    subRegion:SetPoint(selfPoint, anchorRegion, anchorPoint, anchorXOffset * Private.PixelMult, anchorYOffset * Private.PixelMult)
   end
 end
 
@@ -219,8 +219,7 @@ local function create(parent, data)
   end
 
   local icon = region:CreateTexture(nil, "BACKGROUND");
-  icon:SetSnapToPixelGrid(false)
-  icon:SetTexelSnappingBias(0)
+  Private.DisablePixelSnap(icon)
   if MSQ then
     icon:SetAllPoints(button);
     button:SetScript("OnSizeChanged", region.UpdateInnerOuterSize);
@@ -293,8 +292,8 @@ local function modify(parent, region, data)
   end
 
   function region:UpdateSize()
-    local width = region.width * math.abs(region.scalex);
-    local height = region.height * math.abs(region.scaley);
+    local width = region.width * region.scalex;
+    local height = region.height * region.scaley;
     region:SetWidth(width);
     region:SetHeight(height);
     if MSQ then
@@ -314,8 +313,8 @@ local function modify(parent, region, data)
     if not region.keepAspectRatio then
       aspectRatio = 1;
     else
-      local width = region.width * math.abs(region.scalex);
-      local height = region.height * math.abs(region.scaley);
+      local width = region.width * (Private.PixelMult / region.scalex);
+      local height = region.height * (Private.PixelMult / region.scaley);
 
       if width == 0 or height == 0 then
         aspectRatio = 1;

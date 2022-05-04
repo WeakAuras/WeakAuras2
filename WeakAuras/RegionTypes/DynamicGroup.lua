@@ -416,8 +416,8 @@ end
 
 local growers = {
   LEFT = function(data)
-    local stagger = -(data.stagger or 0)
-    local space = data.space or 0
+    local stagger = -(data.stagger or 0) * Private.PixelMult
+    local space = (data.space or 0) * Private.PixelMult
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = staggerCoefficient(data.align, data.stagger)
@@ -444,8 +444,8 @@ local growers = {
     end
   end,
   RIGHT = function(data)
-    local stagger = data.stagger or 0
-    local space = data.space or 0
+    local stagger = (data.stagger or 0) * Private.PixelMult
+    local space = (data.space or 0) * Private.PixelMult
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = 1 - staggerCoefficient(data.align, stagger)
@@ -472,8 +472,8 @@ local growers = {
     end
   end,
   UP = function(data)
-    local stagger = data.stagger or 0
-    local space = data.space or 0
+    local stagger = (data.stagger or 0) * Private.PixelMult
+    local space = (data.space or 0) * Private.PixelMult
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = 1 - staggerCoefficient(data.align, stagger)
@@ -500,8 +500,8 @@ local growers = {
     end
   end,
   DOWN = function(data)
-    local stagger = data.stagger or 0
-    local space = data.space or 0
+    local stagger = (data.stagger or 0) * Private.PixelMult
+    local space = (data.space or 0) * Private.PixelMult
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = staggerCoefficient(data.align, stagger)
@@ -528,8 +528,8 @@ local growers = {
     end
   end,
   HORIZONTAL = function(data)
-    local stagger = data.stagger or 0
-    local space = data.space or 0
+    local stagger = (data.stagger or 0) * Private.PixelMult
+    local space = (data.space or 0) * Private.PixelMult
     local limit = data.useLimit and data.limit or math.huge
     local midX, midY = 0, 0
     local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
@@ -561,8 +561,8 @@ local growers = {
     end
   end,
   VERTICAL = function(data)
-    local stagger = -(data.stagger or 0)
-    local space = data.space or 0
+    local stagger = -(data.stagger or 0) * Private.PixelMult
+    local space = (data.space or 0) * Private.PixelMult
     local limit = data.useLimit and data.limit or math.huge
     local midX, midY = 0, 0
     local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
@@ -692,8 +692,8 @@ local growers = {
   GRID = function(data)
     local gridType = data.gridType
     local gridWidth = data.gridWidth
-    local rowSpace = data.rowSpace
-    local colSpace = data.columnSpace
+    local rowSpace = (data.rowSpace or 0) * Private.PixelMult
+    local colSpace = (data.columnSpace or 0) * Private.PixelMult
     local rowFirst = (gridType:find("^[RL]")) ~= nil
     local limit = data.useLimit and data.limit or math.huge
     local rowMul, colMul
@@ -795,20 +795,20 @@ local function modify(parent, region, data)
     local background = region.background
     background:SetBackdrop({
       edgeFile = data.borderEdge ~= "None" and SharedMedia:Fetch("border", data.borderEdge) or "",
-      edgeSize = data.borderSize,
+      edgeSize = data.borderSize * Private.PixelMult,
       bgFile = data.borderBackdrop ~= "None" and SharedMedia:Fetch("background", data.borderBackdrop) or "",
       insets = {
-        left = data.borderInset,
-        right = data.borderInset,
-        top = data.borderInset,
-        bottom  = data.borderInset,
+        left = data.borderInset * Private.PixelMult,
+        right = data.borderInset * Private.PixelMult,
+        top = data.borderInset * Private.PixelMult,
+        bottom = data.borderInset * Private.PixelMult,
       },
     });
     background:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2], data.borderColor[3], data.borderColor[4]);
     background:SetBackdropColor(data.backdropColor[1], data.backdropColor[2], data.backdropColor[3], data.backdropColor[4]);
 
     background:ClearAllPoints();
-    background:SetPoint("bottomleft", region, "bottomleft", -1 * data.borderOffset, -1 * data.borderOffset)
+    background:SetPoint("bottomleft", region, "bottomleft", (-1 * data.borderOffset), (-1 * data.borderOffset))
     background:SetPoint("topright", region, "topright", data.borderOffset, data.borderOffset)
     background:Show();
   else

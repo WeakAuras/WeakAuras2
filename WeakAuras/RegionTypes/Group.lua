@@ -150,21 +150,21 @@ local function modify(parent, region, data)
         if childVisible then
           border:SetBackdrop({
             edgeFile = data.borderEdge ~= "None" and SharedMedia:Fetch("border", data.borderEdge) or "",
-            edgeSize = data.borderSize,
+            edgeSize = data.borderSize * Private.PixelMult,
             bgFile = data.borderBackdrop ~= "None" and SharedMedia:Fetch("background", data.borderBackdrop) or "",
             insets = {
-              left     = data.borderInset,
-              right     = data.borderInset,
-              top     = data.borderInset,
-              bottom     = data.borderInset,
+              left = data.borderInset * Private.PixelMult,
+              right = data.borderInset * Private.PixelMult,
+              top = data.borderInset * Private.PixelMult,
+              bottom = data.borderInset * Private.PixelMult,
             },
           });
           border:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2], data.borderColor[3], data.borderColor[4]);
           border:SetBackdropColor(data.backdropColor[1], data.backdropColor[2], data.backdropColor[3], data.backdropColor[4]);
 
           border:ClearAllPoints();
-          border:SetPoint("bottomleft", region, "bottomleft", leftest-data.borderOffset, lowest-data.borderOffset);
-          border:SetPoint("topright",   region, "topright",   rightest+data.borderOffset, highest+data.borderOffset);
+          border:SetPoint("bottomleft", region, "bottomleft", (leftest-data.borderOffset) * Private.PixelMult, (lowest-data.borderOffset) * Private.PixelMult);
+          border:SetPoint("topright",   region, "topright", (rightest+data.borderOffset) * Private.PixelMult, (highest+data.borderOffset) * Private.PixelMult);
           border:Show();
         else
           border:Hide();

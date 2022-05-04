@@ -109,6 +109,7 @@ local auraBarAnchorInverse = {
 local function create()
   local subRegion = CreateFrame("FRAME", nil, UIParent)
   subRegion.texture = subRegion:CreateTexture()
+  Private.DisablePixelSnap(subRegion.texture)
   subRegion.texture:SetDrawLayer("ARTWORK", 3)
   subRegion.texture:SetAllPoints(subRegion)
   return subRegion
@@ -387,6 +388,7 @@ local function modify(parent, region, parentData, data, first)
 
   if data.use_texture then
     WeakAuras.SetTextureOrAtlas(region.texture, data.tick_texture, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+    Private.DisablePixelSnap(region.texture)
   end
 
   region:SetVisible(data.tick_visible)

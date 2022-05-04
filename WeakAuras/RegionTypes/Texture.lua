@@ -89,6 +89,7 @@ end
 local function modify(parent, region, data)
   WeakAuras.regionPrototype.modify(parent, region, data);
   WeakAuras.SetTextureOrAtlas(region.texture, data.texture, data.textureWrapMode, data.textureWrapMode);
+  Private.DisablePixelSnap(region.texture)
   region.texture:SetDesaturated(data.desaturate)
   region:SetWidth(data.width);
   region:SetHeight(data.height);

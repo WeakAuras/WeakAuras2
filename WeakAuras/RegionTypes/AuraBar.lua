@@ -253,7 +253,7 @@ local barPrototype = {
     self.fgFrame:SetPoint(self.align1);
     self.fgFrame:SetPoint(self.align2);
 
-    self.spark:SetPoint("CENTER", self.fg, self.alignSpark, self.spark.sparkOffsetX or 0, self.spark.sparkOffsetY or 0);
+    self.spark:SetPoint("CENTER", self.fg, self.alignSpark, (self.spark.sparkOffsetX or 0) * Private.PixelMult, (self.spark.sparkOffsetY or 0) * Private.PixelMult);
 
     local sparkMirror = self.spark.sparkMirror;
     local sparkRotationMode = self.spark.sparkRotationMode;
@@ -309,8 +309,7 @@ local barPrototype = {
       for index, additionalBar in ipairs(self.additionalBars) do
         if (not self.extraTextures[index]) then
           local extraTexture = self:CreateTexture(nil, "ARTWORK");
-          extraTexture:SetSnapToPixelGrid(false)
-          extraTexture:SetTexelSnappingBias(0)
+          Private.DisablePixelSnap(extraTexture)
           extraTexture:SetDrawLayer("ARTWORK", min(index, 7));
           self.extraTextures[index] = extraTexture;
         end
@@ -404,8 +403,8 @@ local barPrototype = {
           end
 
           extraTexture:ClearAllPoints();
-          extraTexture:SetPoint(self.align1, self, self.align1, xOffset, yOffset);
-          extraTexture:SetPoint(self.align2, self, self.align2, xOffset, yOffset);
+          extraTexture:SetPoint(self.align1, self, self.align1, xOffset * Private.PixelMult, yOffset * Private.PixelMult);
+          extraTexture:SetPoint(self.align2, self, self.align2, xOffset * Private.PixelMult, yOffset * Private.PixelMult);
         end
       end
 
@@ -746,8 +745,8 @@ local funcs = {
       anchorXOffset = anchorXOffset or 0
       anchorYOffset = anchorYOffset or 0
       subRegion:ClearAllPoints()
-      subRegion:SetPoint("bottomleft", anchor, "bottomleft", -anchorXOffset, -anchorYOffset)
-      subRegion:SetPoint("topright", anchor, "topright", anchorXOffset,  anchorYOffset)
+      subRegion:SetPoint("bottomleft", anchor, "bottomleft", -anchorXOffset * Private.PixelMult, -anchorYOffset * Private.PixelMult)
+      subRegion:SetPoint("topright", anchor, "topright", anchorXOffset * Private.PixelMult,  anchorYOffset * Private.PixelMult)
     else
       subRegion:ClearAllPoints()
       anchorPoint = anchorPoint or "CENTER"
@@ -789,7 +788,7 @@ local funcs = {
         anchorPoint = "CENTER"
       end
 
-      subRegion:SetPoint(selfPoint, anchorRegion, anchorPoint, anchorXOffset, anchorYOffset)
+      subRegion:SetPoint(selfPoint, anchorRegion, anchorPoint, anchorXOffset * Private.PixelMult, anchorYOffset * Private.PixelMult)
     end
   end,
   SetIconColor = function(self, r, g, b, a)
@@ -1005,16 +1004,13 @@ local function create(parent)
   local bar = CreateFrame("FRAME", nil, region);
   Mixin(bar, SmoothStatusBarMixin);
   local fg = bar:CreateTexture(nil, "ARTWORK");
-  fg:SetSnapToPixelGrid(false)
-  fg:SetTexelSnappingBias(0)
+  Private.DisablePixelSnap(fg)
   local bg = bar:CreateTexture(nil, "ARTWORK");
-  bg:SetSnapToPixelGrid(false)
-  bg:SetTexelSnappingBias(0)
+  Private.DisablePixelSnap(bg)
   bg:SetAllPoints();
   local fgFrame = CreateFrame("FRAME", nil, bar)
   local spark = bar:CreateTexture(nil, "ARTWORK");
-  spark:SetSnapToPixelGrid(false)
-  spark:SetTexelSnappingBias(0)
+  Private.DisablePixelSnap(spark)
   fg:SetDrawLayer("ARTWORK", 0);
   bg:SetDrawLayer("ARTWORK", -1);
   spark:SetDrawLayer("ARTWORK", 7);
@@ -1034,8 +1030,7 @@ local function create(parent)
   local iconFrame = CreateFrame("FRAME", nil, region);
   region.iconFrame = iconFrame;
   local icon = iconFrame:CreateTexture(nil, "OVERLAY");
-  icon:SetSnapToPixelGrid(false)
-  icon:SetTexelSnappingBias(0)
+  Private.DisablePixelSnap(icon)
   region.icon = icon;
   icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
 
