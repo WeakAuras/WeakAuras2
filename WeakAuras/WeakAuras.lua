@@ -1166,7 +1166,9 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
   elseif(event == "LOADING_SCREEN_DISABLED") then
     in_loading_screen = false;
   elseif(event == "UI_SCALE_CHANGED") then
-    Private:SetPixelMult()
+    if WeakAuras.IsLoginFinished() then
+      prettyPrint(L["Frames will be re-aligned after next UI initialization."])
+    end
   else
     local callback
     if(event == "PLAYER_ENTERING_WORLD") then
@@ -5423,6 +5425,7 @@ function Private:SetPixelMult()
 	local uiUnitFactor = 768 / screenheight
 	local uiScale = UIParent:GetScale()
 	self.PixelMult = uiUnitFactor / uiScale
+  print("SetPixelMult", self.PixelMult)
 end
 
 function Private.DisablePixelSnap(obj)
