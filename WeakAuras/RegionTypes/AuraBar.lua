@@ -403,8 +403,8 @@ local barPrototype = {
           end
 
           extraTexture:ClearAllPoints();
-          extraTexture:SetPoint(self.align1, self, self.align1, xOffset * Private.PixelMult, yOffset * Private.PixelMult);
-          extraTexture:SetPoint(self.align2, self, self.align2, xOffset * Private.PixelMult, yOffset * Private.PixelMult);
+          extraTexture:SetPoint(self.align1, self, self.align1, xOffset, yOffset);
+          extraTexture:SetPoint(self.align2, self, self.align2, xOffset, yOffset);
         end
       end
 
