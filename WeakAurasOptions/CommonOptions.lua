@@ -702,7 +702,11 @@ local function replaceNameDescFuncs(intable, data, subOption)
                       if intable.dialogControl == "LSM30_Font" then
                         tinsert(values, "|cFFE0E000"..child.id..": |r" .. key);
                       else
-                        tinsert(values, "|cFFE0E000"..child.id..": |r"..display);
+                        if type(display) == "string" then
+                          tinsert(values, "|cFFE0E000"..child.id..": |r"..display);
+                        elseif type(display) == "table" then
+                          tinsert(values, "|cFFE0E000"..child.id..": |r"..display[1].."/"..display[2] );
+                        end
                       end
                     elseif(intable.type == "multiselect") then
                       local selectedValues = {};
