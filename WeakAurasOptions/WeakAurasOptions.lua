@@ -1249,22 +1249,24 @@ function OptionsPrivate.PickDisplayMultipleShift(target)
         elseif (firstData.parent == nil and targetData.parent == nil) then
           -- top-level
           for index, button in ipairs(frame.buttonsScroll.children) do
-            local data = button.data;
-            -- 1st button
-            if (data and (data.id == target or data.id == first)) then
-              table.insert(batchSelection, data.id);
-              for i = index + 1, #frame.buttonsScroll.children do
-                local current = frame.buttonsScroll.children[i];
-                local currentData = current.data;
-                if currentData and not currentData.parent and not currentData.controlledChildren then
-                  table.insert(batchSelection, currentData.id);
-                  -- last button: stop selection
-                  if (currentData.id == target or currentData.id == first) then
-                    break;
+            if button.type == "WeakAurasDisplayButton" then
+              local data = button.data;
+              -- 1st button
+              if (data and (data.id == target or data.id == first)) then
+                table.insert(batchSelection, data.id);
+                for i = index + 1, #frame.buttonsScroll.children do
+                  local current = frame.buttonsScroll.children[i];
+                  local currentData = current.data;
+                  if currentData and not currentData.parent and not currentData.controlledChildren then
+                    table.insert(batchSelection, currentData.id);
+                    -- last button: stop selection
+                    if (currentData.id == target or currentData.id == first) then
+                      break;
+                    end
                   end
                 end
+                break;
               end
-              break;
             end
           end
         end
