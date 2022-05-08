@@ -1749,9 +1749,26 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
       }
       order = order + 1;
 
+      if (indentWidth > 0) then
+        args["condition" .. i .. tostring(path) .. "_space"] = {
+          type = "description",
+          name = "",
+          order = order,
+          width = WeakAuras.doubleWidth * 1.5,
+        }
+        order = order + 1;
+        args["condition" .. i .. tostring(path) .. "_indent"] = {
+          type = "description",
+          width = indentWidth,
+          name = "",
+          order = order
+        }
+        order = order + 1;
+      end
+
       args["condition" .. i .. tostring(path) .. "_type"] = {
         type = "select",
-        width = WeakAuras.normalWidth,
+        width = normalWidth,
         name = blueIfNoValue(data, conditions[i].check, "type", L["Differences"]),
         desc = descIfNoValue(data, conditions[i].check, "type", currentConditionTemplate.type),
         order = order,
