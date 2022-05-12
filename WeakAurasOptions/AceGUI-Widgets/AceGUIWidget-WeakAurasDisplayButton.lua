@@ -503,7 +503,11 @@ local methods = {
           if (OptionsPrivate.IsDisplayPicked(self.data.id)) then
             OptionsPrivate.ClearPicks();
           else
-            WeakAuras.PickDisplay(self.data.id);
+            if self.data.controlledChildren then
+              WeakAuras.PickDisplay(self.data.id, "group")
+            else
+              WeakAuras.PickDisplay(self.data.id);
+            end
           end
           self:ReloadTooltip();
         end
