@@ -669,7 +669,7 @@ end
 local function modifyThumbnail(parent, frame, data)
   function frame:SetIcon(path)
     if data.groupIcon then
-      local success = frame.icon:SetTexture(data.groupIcon)
+      local success = WeakAuras.SetTextureOrAtlas(frame.icon, data.groupIcon)
       if success then
         if frame.defaultIcon then
           frame.defaultIcon:Hide()
