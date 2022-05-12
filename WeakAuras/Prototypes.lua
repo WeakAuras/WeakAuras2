@@ -4083,7 +4083,15 @@ Private.event_prototypes = {
   },
   ["Cooldown Progress (Spell)"] = {
     type = "spell",
-    events = {},
+    events = function(trigger)
+      if trigger.use_showlossofcontrol then
+        return {
+          ["events"] = {"LOSS_OF_CONTROL_UPDATE", "LOSS_OF_CONTROL_ADDED"}
+        }
+      else
+        return {}
+      end
+    end,
     internal_events = function(trigger, untrigger)
       local events = {
         "SPELL_COOLDOWN_CHANGED",
@@ -4125,11 +4133,19 @@ Private.event_prototypes = {
         local spellname = %s
         local ignoreRuneCD = %s
         local showgcd = %s;
+        local showlossofcontrol = %s;
         local ignoreSpellKnown = %s;
         local track = %q
         local startTime, duration, gcdCooldown, readyTime, modRate = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track);
         local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown);
         local stacks = maxCharges and maxCharges ~= 1 and charges or (spellCount and spellCount > 0 and spellCount) or nil;
+        if showlossofcontrol and startTime and duration then
+          local locStart, locDuration = GetSpellLossOfControlCooldown(spellname);
+          if locStart and locDuration and (locStart + locDuration) > (startTime + duration) then
+            startTime = locStart
+            duration = locDuration
+          end
+        end
         if (charges == nil) then
           -- Use fake charges for spells that use GetSpellCooldown
           charges = (duration == 0 or gcdCooldown) and 1 or 0;
@@ -4154,6 +4170,7 @@ Private.event_prototypes = {
       ret = ret:format(spellName,
         (trigger.use_matchedRune and "true" or "false"),
         (trigger.use_showgcd and "true" or "false"),
+        (trigger.use_showlossofcontrol and "true" or "false"),
         (trigger.use_ignoreSpellKnown and "true" or "false"),
         (trigger.track or "auto"),
         showOnCheck
@@ -4272,6 +4289,11 @@ Private.event_prototypes = {
               text = text .. L["Show GCD"]
             end
 
+            if trigger.showlossofcontrol then
+              if text ~= "" then text = text .. "; " end
+              text = text .. L["Show Loss of Control"]
+            end
+
             if trigger.use_matchedRune then
               if text ~= "" then text = text .. "; " end
               text = text ..L["Ignore Rune CDs"]
@@ -4312,6 +4334,15 @@ Private.event_prototypes = {
         type = "toggle",
         test = "true",
         collapse = "extra Cooldown Progress (Spell)"
+      },
+      {
+        name = "showlossofcontrol",
+        display = WeakAuras.newFeatureString .. L["Show Loss of Control"],
+        type = "toggle",
+        test = "true",
+        collapse = "extra Cooldown Progress (Spell)",
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail()
       },
       {
         name = "matchedRune",
