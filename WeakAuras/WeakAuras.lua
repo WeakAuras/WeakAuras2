@@ -1616,6 +1616,7 @@ unitLoadFrame:RegisterUnitEvent("UNIT_FLAGS", "player");
 if WeakAuras.IsRetail() then
   unitLoadFrame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
   unitLoadFrame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
+  unitLoadFrame:RegisterUnitEvent("PLAYER_FLAGS_CHANGED", "player");
 end
 
 function Private.RegisterLoadEvents()
