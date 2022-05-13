@@ -3,7 +3,7 @@ Button Widget for our Expand button
 -------------------------------------------------------------------------------]]
 if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 
-local Type, Version = "WeakAurasExpand", 2
+local Type, Version = "WeakAurasExpand", 3
 
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
@@ -92,7 +92,11 @@ local methods = {
 			self.label:SetTextColor(1, 1, 1)
 			self.image:SetVertexColor(1, 1, 1, 1)
 		end
-	end
+	end,
+
+  ["SetFontObject"] = function(self, fontObject)
+    self.label:SetFontObject(fontObject)
+  end
 }
 
 --[[-----------------------------------------------------------------------------

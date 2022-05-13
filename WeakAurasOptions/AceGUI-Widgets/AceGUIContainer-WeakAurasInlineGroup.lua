@@ -32,7 +32,7 @@ local methods = {
 
 	["LayoutFinished"] = function(self, width, height)
 		if self.noAutoHeight then return end
-		self:SetHeight((height or 0) + 40)
+		self:SetHeight(height or 0)
 	end,
 
 	["OnWidthSet"] = function(self, width)
