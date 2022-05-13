@@ -1193,26 +1193,6 @@ local function MatchInfo(data, children, target)
   return matchInfo
 end
 
-local function ListAuras(auras, uidMap)
-  local sortedNames = {}
-  for uid in pairs(auras) do
-    tinsert(sortedNames, uidMap:GetIdFor(uid))
-  end
-  table.sort(sortedNames)
-
-  local result = sortedNames[1]
-
-  for i = 2, #sortedNames - 1, 1 do
-    result = result .. L[", "] .. sortedNames[i]
-  end
-
-  if #sortedNames > 1 then
-    result = result .. L[" and "] .. sortedNames[#sortedNames]
-  end
-
-  return result
-end
-
 local function AddAuraList(container, uidMap, list, expandText)
   local expand = AceGUI:Create("WeakAurasExpand")
   local collapsed = true
