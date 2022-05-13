@@ -1283,7 +1283,7 @@ Private.load_prototype = {
       optional = true,
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
-      events = {"UNIT_FLAGS"}
+      events = {"PLAYER_FLAGS_CHANGED"}
     },
     {
       name = "never",
