@@ -521,7 +521,10 @@ function OptionsPrivate.GetActionOptions(data)
         name = "",
         order = 23,
         image = function() return "", 0, 0 end,
-        hidden = function() return data.actions.finish.message_type ~= "WHISPER" end
+        hidden = function()
+          return not(data.actions.finish.message_type == "WHISPER" or data.actions.finish.message_type == "COMBAT"
+                     or data.actions.finish.message_type == "PRINT" or data.actions.finish.message_type == "ERROR")
+        end
       },
       finish_message_color = {
         type = "color",
@@ -963,7 +966,7 @@ function OptionsPrivate.GetActionOptions(data)
     return data.actions.finish["message_format_" .. key]
   end
 
-  order = 25
+  order = 26
   usedKeys = {}
   local function finishAddOption(key, option)
     if usedKeys[key] then
