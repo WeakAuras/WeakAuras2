@@ -1874,7 +1874,9 @@ do
         if self.expirationTime[id] and self.expirationTime[id] > endTime and self.expirationTime[id] ~= 0 then
           self.duration[id] = 0
           self.expirationTime[id] = 0
-          self.readyTime[id] = time
+          if not self.readyTime[id] then
+            self.readyTime[id] = time
+          end
           changed = true
           nowReady = true
         end
@@ -1895,7 +1897,9 @@ do
     end
 
     if duration == 0 then
-      self.readyTime[id] = time
+      if not self.readyTime[id] then
+        self.readyTime[id] = time
+      end
     else
       self.readyTime[id] = nil
     end
