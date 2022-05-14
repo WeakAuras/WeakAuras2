@@ -1067,8 +1067,10 @@ function OptionsPrivate.CreateFrame()
     if type(frame.pickedDisplay) == "string" then
       displayButtons[frame.pickedDisplay]:ClearPick(noHide)
     else
-      for i, childId in pairs(tempGroup.controlledChildren) do
-        displayButtons[childId]:ClearPick(noHide)
+      for id, button in pairs(displayButtons) do
+        button:ClearPick(true)
+        button:PriorityHide(1)
+        button:SetVisibilityDirectly(0)
       end
     end
 
