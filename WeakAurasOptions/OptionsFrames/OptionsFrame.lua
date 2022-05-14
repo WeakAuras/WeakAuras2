@@ -668,10 +668,8 @@ function OptionsPrivate.CreateFrame()
   -- override SetScroll to make children visible as needed
   local oldSetScroll = buttonsScroll.SetScroll
   buttonsScroll.SetScroll = function(self, value)
-    if self:GetScrollPos() ~= value then
-      oldSetScroll(self, value)
-      self.LayoutFunc(self.content, self.children, true)
-    end
+    oldSetScroll(self, value)
+    self.LayoutFunc(self.content, self.children, true)
   end
 
   function buttonsScroll:SetScrollPos(top, bottom)
