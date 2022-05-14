@@ -4289,7 +4289,7 @@ Private.event_prototypes = {
               text = text .. L["Show GCD"]
             end
 
-            if trigger.showlossofcontrol then
+            if trigger.use_showlossofcontrol then
               if text ~= "" then text = text .. "; " end
               text = text .. L["Show Loss of Control"]
             end
