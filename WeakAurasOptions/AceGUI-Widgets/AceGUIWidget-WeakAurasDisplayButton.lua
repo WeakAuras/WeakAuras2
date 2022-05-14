@@ -1517,6 +1517,12 @@ local methods = {
       self:RecheckParentVisibility()
     end
   end,
+  ["SetVisibilityDirectly"] = function(self, visibility)
+    if self.data.parent and visibility ~= self.view.visibility then
+      self.view.visibility = visibility
+      self:UpdateViewTexture()
+    end
+  end,
   ["UpdateViewTexture"] = function(self)
     local visibility = self.view.visibility
     if(visibility == 2) then
