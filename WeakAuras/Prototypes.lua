@@ -1981,6 +1981,7 @@ Private.event_prototypes = {
       {
         name = "namerealm",
         display = L["Unit Name/Realm"],
+        desc = constants.nameRealmFilterDesc,
         type = "string",
         preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
         test = "nameRealmChecker:Check(name, realm)",

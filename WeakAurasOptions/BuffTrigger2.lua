@@ -877,7 +877,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       type = "input",
       width = WeakAuras.normalWidth,
       name = L["Filter by Unit Name"],
-      desc = L["Filter formats: 'Name', 'Name-Realm', '-Realm'.\n\nSupports multiple entries, separated by commas\n"],
+      desc = L["Filter formats: 'Name', 'Name-Realm', '-Realm'.\n\nSupports multiple entries, separated by commas\nCan use \\ to escape -."],
       order = 68.5,
       hidden = function()
         return not (trigger.type == "aura2"
