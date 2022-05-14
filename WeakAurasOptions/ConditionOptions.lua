@@ -713,6 +713,34 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       order = order + 1;
     end
 
+    args["condition" .. i .. "value" .. j .. "_indent"] = {
+      type = "description",
+      width = WeakAuras.normalWidth,
+      name = "",
+      order = order
+    }
+    order = order + 1;
+
+    args["condition" .. i .. "value" .. j .. "message color"] = {
+      type = "color",
+      width = WeakAuras.normalWidth,
+      hasAlpha = false,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_color", L["Color"], L["Color"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_color", propertyType),
+      order = order,
+      get = function()
+        if (conditions[i].changes[j].value and type(conditions[i].changes[j].value) == "table") and type(conditions[i].changes[j].value.message_color) == "table" then
+          return conditions[i].changes[j].value.message_color[1], conditions[i].changes[j].value.message_color[2], conditions[i].changes[j].value.message_color[3];
+        end
+        return 1, 1, 1, 1;
+      end,
+      set = setValueColorComplex("message_color"),
+      hidden = function()
+        return not (anyMessageType("COMBAT") or anyMessageType("PRINT") or anyMessageType("ERROR"));
+      end
+    }
+    order = order + 1;
+
     args["condition" .. i .. "value" .. j .. "message dest"] = {
       type = "input",
       width = WeakAuras.normalWidth,
@@ -2522,7 +2550,7 @@ local function SubPropertiesForChange(change)
       "glow_scale", "glow_border"
     }
   elseif change.property == "chat" then
-    local result = { "message_type", "message_dest", "message_channel", "message", "custom" }
+    local result = { "message_type", "message_dest", "message_channel", "message_color", "message", "custom" }
     local input = change.value and change.value.message
     if input then
       local getter = function(key)
@@ -2537,7 +2565,8 @@ local function SubPropertiesForChange(change)
 end
 
 local subPropertyToType = {
-  glow_color = "color"
+  glow_color = "color",
+  message_color = "color"
 }
 
 local function mergeConditionChange(all, change, id, changeIndex, allProperties)
