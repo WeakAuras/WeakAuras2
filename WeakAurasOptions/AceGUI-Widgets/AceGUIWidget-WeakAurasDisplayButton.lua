@@ -1368,7 +1368,11 @@ local methods = {
     local icon, title, warningText = OptionsPrivate.Private.AuraWarnings.FormatWarnings(self.data.uid)
     if warningText then
       self.warning:Show()
-      self.warning:SetNormalTexture(icon)
+      if C_Texture.GetAtlasInfo(icon) then
+        self.warning:SetNormalAtlas(icon)
+      else
+        self.warning:SetNormalTexture(icon)
+      end
       self.warning:SetScript("OnEnter", function()
         Show_Tooltip(
           self.frame,

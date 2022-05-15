@@ -2581,6 +2581,34 @@ function Private.UpdateDeprecateWarning(data)
   end
 end
 
+
+function Private.UpdateSoundIcon(data)
+  local function anySoundCondition()
+    if data.conditions then
+      for _, condition in ipairs(data.conditions) do
+        for changeIndex, change in ipairs(condition.changes) do
+          if change.property == "sound" then
+            return true
+          end
+        end
+      end
+    end
+  end
+
+  if data.actions.start.do_sound or data.actions.finish.do_sound then
+    Private.AuraWarnings.UpdateWarning(data.uid, "sound_action", "sound", L["This aura plays a sound via an action."])
+  else
+    Private.AuraWarnings.UpdateWarning(data.uid, "sound_action")
+  end
+
+  if anySoundCondition() then
+    Private.AuraWarnings.UpdateWarning(data.uid, "sound_condition", "sound", L["This aura plays a sound via a condition."])
+  else
+    Private.AuraWarnings.UpdateWarning(data.uid, "sound_condition")
+  end
+
+end
+
 function WeakAuras.PreAdd(data)
   -- Readd what Compress removed before version 8
   if (not data.internalVersion or data.internalVersion < 7) then
@@ -2759,7 +2787,7 @@ local function pAdd(data, simpleChange)
     end
 
     Private.UpdateDeprecateWarning(data)
-
+    Private.UpdateSoundIcon(data)
   end
 end
 
