@@ -2551,6 +2551,36 @@ local oldDataStub2 = {
   conditions = {},
 }
 
+function Private.UpdateDeprecateWarning(data)
+  -- Deprecated target / %t in message_dest at the end of Shadowlands
+  local function matchTarget(input)
+    return input == "target" or input == "'target'" or input == "\"target\"" or input == "%t" or input == "'%t'" or input == "\"%t\""
+  end
+
+  local function anyChatCondition()
+    if data.conditions then
+      for _, condition in ipairs(data.conditions) do
+        for changeIndex, change in ipairs(condition.changes) do
+          if change.property == "chat" and change.value then
+            if matchTarget(change.value.message_dest) then
+              return true
+            end
+          end
+        end
+      end
+    end
+  end
+
+  if (data.actions.start.do_message and data.actions.start.message_type == "WHISPER" and matchTarget(data.actions.start.message_dest))
+  or (data.actions.finish.do_message and data.actions.finish.message_type == "WHISPER" and matchTarget(data.actions.finish.message_dest))
+  or anyChatCondition()
+  then
+    Private.AuraWarnings.UpdateWarning(data.uid, "target_message_dest", "warning", L["This aura uses a deprecated 'target' or '%t' destination for a chat action."])
+  else
+    Private.AuraWarnings.UpdateWarning(data.uid, "target_message_dest")
+  end
+end
+
 function WeakAuras.PreAdd(data)
   -- Readd what Compress removed before version 8
   if (not data.internalVersion or data.internalVersion < 7) then
@@ -2610,7 +2640,6 @@ local function pAdd(data, simpleChange)
   if UIDtoID[data.uid] and UIDtoID[data.uid] ~= id then
     print("Improper? arguments to WeakAuras.Add - uid is assigned to a id. Uid:", data.uid, "assigned too:", UIDtoID[data.uid], "assigning now to", data.id)
   end
-
 
   local otherID = UIDtoID[data.uid]
   if not otherID then
@@ -2728,6 +2757,9 @@ local function pAdd(data, simpleChange)
         Private.ScanForLoads({[id] = true});
       end
     end
+
+    Private.UpdateDeprecateWarning(data)
+
   end
 end
 
