@@ -1,6 +1,6 @@
 local AddonName, Private = ...
 
-local internalVersion = 51
+local internalVersion = 52
 
 -- Lua APIs
 local insert = table.insert
@@ -2551,37 +2551,6 @@ local oldDataStub2 = {
   conditions = {},
 }
 
-function Private.UpdateDeprecateWarning(data)
-  -- Deprecated target / %t in message_dest at the end of Shadowlands
-  local function matchTarget(input)
-    return input == "target" or input == "'target'" or input == "\"target\"" or input == "%t" or input == "'%t'" or input == "\"%t\""
-  end
-
-  local function anyChatCondition()
-    if data.conditions then
-      for _, condition in ipairs(data.conditions) do
-        for changeIndex, change in ipairs(condition.changes) do
-          if change.property == "chat" and change.value then
-            if matchTarget(change.value.message_dest) then
-              return true
-            end
-          end
-        end
-      end
-    end
-  end
-
-  if (data.actions.start.do_message and data.actions.start.message_type == "WHISPER" and matchTarget(data.actions.start.message_dest))
-  or (data.actions.finish.do_message and data.actions.finish.message_type == "WHISPER" and matchTarget(data.actions.finish.message_dest))
-  or anyChatCondition()
-  then
-    Private.AuraWarnings.UpdateWarning(data.uid, "target_message_dest", "warning", L["This aura uses a deprecated 'target' or '%t' destination for a chat action."])
-  else
-    Private.AuraWarnings.UpdateWarning(data.uid, "target_message_dest")
-  end
-end
-
-
 function Private.UpdateSoundIcon(data)
   local function anySoundCondition()
     if data.conditions then
@@ -2786,7 +2755,6 @@ local function pAdd(data, simpleChange)
       end
     end
 
-    Private.UpdateDeprecateWarning(data)
     Private.UpdateSoundIcon(data)
   end
 end
@@ -2975,7 +2943,7 @@ function Private.ReleaseClone(id, cloneId, regionType)
   end
 end
 
-function Private.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region, customFunc, when, formatters, voice)
+function Private.HandleChatAction(message_type, message, message_dest, message_dest_isunit, message_channel, r, g, b, region, customFunc, when, formatters, voice)
   local useHiddenStates = when == "finish"
   if (message:find('%%')) then
     message = Private.ReplacePlaceHolders(message, region, customFunc, useHiddenStates, formatters);
@@ -3003,11 +2971,13 @@ function Private.HandleChatAction(message_type, message, message_dest, message_c
     end
   elseif(message_type == "WHISPER") then
     if(message_dest) then
-      if(message_dest == "target" or message_dest == "'target'" or message_dest == "\"target\"" or message_dest == "%t" or message_dest == "'%t'" or message_dest == "\"%t\"") then
-        pcall(function() SendChatMessage(message, "WHISPER", nil, UnitName("target")) end);
-      else
-        pcall(function() SendChatMessage(message, "WHISPER", nil, message_dest) end);
+      if (message_dest:find('%%')) then
+        message_dest = Private.ReplacePlaceHolders(message_dest, region, customFunc, useHiddenStates, formatters);
       end
+      if message_dest_isunit == true then
+        message_dest = UnitName(message_dest)
+      end
+      pcall(function() SendChatMessage(message, "WHISPER", nil, message_dest) end);
     end
   elseif(message_type == "SMARTRAID") then
     local isInstanceGroup = IsInGroup(LE_PARTY_CATEGORY_INSTANCE)
@@ -3243,7 +3213,7 @@ function Private.PerformActions(data, when, region)
 
   if(actions.do_message and actions.message_type and actions.message) then
     local customFunc = Private.customActionsFunctions[data.id][when .. "_message"];
-    Private.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc, when, formatters, actions.message_tts_voice);
+    Private.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_dest_isunit, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc, when, formatters, actions.message_tts_voice);
   end
 
   if (actions.stop_sound) then
