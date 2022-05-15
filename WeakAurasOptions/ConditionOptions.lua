@@ -717,7 +717,10 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       type = "description",
       width = WeakAuras.normalWidth,
       name = "",
-      order = order
+      order = order,
+      hidden = function()
+        return anyMessageType("WHISPER");
+      end
     }
     order = order + 1;
 
@@ -741,16 +744,37 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     }
     order = order + 1;
 
+    local descMessage = descIfNoValue2(data, conditions[i].changes[j], "value", "message", propertyType);
+    if (not descMessage and data ~= OptionsPrivate.tempGroup) then
+      descMessage = L["Dynamic text tooltip"] .. OptionsPrivate.Private.GetAdditionalProperties(data)
+    end
+
     args["condition" .. i .. "value" .. j .. "message dest"] = {
       type = "input",
       width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_dest", L["Send To"], L["Send To"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_dest", propertyType),
+      desc = descMessage,
       order = order,
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_dest;
       end,
       set = setValueComplex("message_dest"),
+      hidden = function()
+        return not anyMessageType("WHISPER");
+      end
+    }
+    order = order + 1;
+
+    args["condition" .. i .. "value" .. j] = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue(data, conditions[i].changes[j], "value", "message_dest_isunit", L["Is Unit"], L["Is Unit"]),
+      desc = descIfNoValue(data, conditions[i].changes[j], "value", "message_dest_isunit", propertyType),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_dest_isunit;
+      end,
+      set = setValueComplex("message_dest_isunit"),
       hidden = function()
         return not anyMessageType("WHISPER");
       end
@@ -774,11 +798,6 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       desc = L["Available Voices are system specific"]
     }
     order = order + 1;
-
-    local descMessage = descIfNoValue2(data, conditions[i].changes[j], "value", "message", propertyType);
-    if (not descMessage and data ~= OptionsPrivate.tempGroup) then
-      descMessage = L["Dynamic text tooltip"] .. OptionsPrivate.Private.GetAdditionalProperties(data)
-    end
 
     local message_getter = function()
       return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message;
@@ -858,8 +877,9 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     local function customHidden()
       local message = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message;
-      if (not message) then return true; end
-      return not OptionsPrivate.Private.ContainsCustomPlaceHolder(message);
+      local message_dest = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_type == "WHISPER" and conditions[i].changes[j].value.message_dest
+      if (not message and not message_dest) then return true; end
+      return not OptionsPrivate.Private.ContainsCustomPlaceHolder(message) and not OptionsPrivate.Private.ContainsCustomPlaceHolder(message_dest);
     end
 
     args["condition" .. i .. "value" .. j .. "custom"] = {
