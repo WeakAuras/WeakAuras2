@@ -826,9 +826,24 @@ local function CreatePvPTalentCache()
   end
 end
 
-function WeakAuras.CountWagoUpdates()
+Private.CompanionData = {}
+-- use this function to not overwrite data from other companion compatible addons
+-- when using this function, do not name your global data table "WeakAurasCompanion"
+function WeakAuras.AddCompanionData(data)
+  WeakAuras.DeepMixin(Private.CompanionData, data)
+end
+
+-- add data from versions of companion compatible addon that does not use WeakAuras.AddCompanionData yet
+local function AddLegacyCompanionData()
   local CompanionData = WeakAurasCompanion and WeakAurasCompanion.WeakAuras or WeakAurasCompanion
-  if not (CompanionData and CompanionData.slugs) then
+  if CompanionData then
+    WeakAuras.AddCompanionData(CompanionData)
+  end
+end
+
+function WeakAuras.CountWagoUpdates()
+  AddLegacyCompanionData()
+  if not (Private.CompanionData.slugs) then
     return 0
   end
   local WeakAurasSaved = WeakAurasSaved
@@ -841,7 +856,7 @@ function WeakAuras.CountWagoUpdates()
         version = 1
       end
       if slug and version then
-        local wago = CompanionData.slugs and CompanionData.slugs[slug]
+        local wago = Private.CompanionData.slugs[slug]
         if wago and wago.wagoVersion and tonumber(wago.wagoVersion) > tonumber(version) then
           if not updatedSlugs[slug] then
             updatedSlugs[slug] = true
@@ -859,7 +874,7 @@ local function tooltip_draw()
   local tooltip = GameTooltip;
   tooltip:ClearLines();
   tooltip:AddDoubleLine("WeakAuras", versionString);
-  if WeakAurasCompanion then
+  if Private.CompanionData.slugs then
     local count = WeakAuras.CountWagoUpdates()
     if count > 0 then
       tooltip:AddLine(" ");

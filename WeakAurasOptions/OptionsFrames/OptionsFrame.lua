@@ -491,7 +491,7 @@ function OptionsPrivate.CreateFrame()
   addFooter(L["Find Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]], "https://wago.io",
             L["Browse Wago, the largest collection of auras."])
 
-  if not WeakAurasCompanion then
+  if not OptionsPrivate.Private.CompanionData.slugs then
     addFooter(L["Update Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]], "https://weakauras.wtf",
             L["Keep your Wago imports up to date with the Companion App."])
   end
