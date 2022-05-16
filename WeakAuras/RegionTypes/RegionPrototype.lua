@@ -773,7 +773,20 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
 
       Private.RunConditions(region, uid, true)
       region.subRegionEvents:Notify("PreHide")
-      region:Hide();
+      if region:IsProtected() then
+        if InCombatLockdown() then
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_hide", "error",
+            L["Cannot hide secure frame in combat lockdown. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"],
+            true)
+        else
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_hide", "warning",
+            L["Secure frame detected. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"])
+          region:Hide()
+        end
+      else
+        Private.AuraWarnings.UpdateWarning(uid, "protected_frame_hide")
+        region:Hide()
+      end
       region.states = nil
       region.state = nil
       if (cloneId) then
@@ -790,7 +803,22 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       end
       Private.RunConditions(region, uid, true)
       region.subRegionEvents:Notify("PreHide")
-      region:Hide();
+
+      if region:IsProtected() then
+        if InCombatLockdown() then
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_hide", "error",
+            L["Cannot hide secure frame in combat lockdown. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"],
+            true)
+        else
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_hide", "warning",
+            L["Secure frame detected. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"])
+          region:Hide()
+        end
+      else
+        Private.AuraWarnings.UpdateWarning(uid, "protected_frame_hide")
+        region:Hide()
+      end
+
       region.states = nil
       region.state = nil
       if (cloneId) then
@@ -831,7 +859,21 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       region.subRegionEvents:Notify("PreShow")
 
       Private.ApplyFrameLevel(region)
-      region:Show();
+      if region:IsProtected() then
+        if InCombatLockdown() then
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_show", "error",
+            L["Cannot show secure frame in combat lockdown. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"],
+            true)
+        else
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_show", "warning",
+            L["Secure frame detected. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"])
+          region:Show()
+        end
+      else
+        Private.AuraWarnings.UpdateWarning(uid, "protected_frame_show")
+        region:Show()
+      end
+
       Private.PerformActions(data, "start", region);
       if not(Private.Animate("display", data.uid, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
         startMainAnimation();
@@ -877,16 +919,30 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       if (region.toShow) then
         return;
       end
-      region.toShow = true;
+      region.toShow = true
 
       if(region.PreShow) then
         region:PreShow();
       end
 
       region.subRegionEvents:Notify("PreShow")
-
       Private.ApplyFrameLevel(region)
-      region:Show();
+
+      if region:IsProtected() then
+        if InCombatLockdown() then
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_show", "error",
+            L["Cannot show secure frame in combat lockdown. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"],
+            true)
+        else
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_show", "warning",
+            L["Secure frame detected. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"])
+          region:Show()
+        end
+      else
+        Private.AuraWarnings.UpdateWarning(uid, "protected_frame_show")
+        region:Show()
+      end
+
       Private.PerformActions(data, "start", region);
       if not(Private.Animate("display", data.uid, "start", data.animation.start, region, true, startMainAnimation, nil, cloneId)) then
         startMainAnimation();
