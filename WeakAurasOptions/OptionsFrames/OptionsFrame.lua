@@ -1062,11 +1062,9 @@ function OptionsPrivate.CreateFrame()
 
   frame.ClearPicks = function(self, noHide)
     OptionsPrivate.Private.PauseAllDynamicGroups()
-    if type(frame.pickedDisplay) == "string" then
-      displayButtons[frame.pickedDisplay]:ClearPick(noHide)
-    else
-      for id, button in pairs(displayButtons) do
-        button:ClearPick(true)
+    for id, button in pairs(displayButtons) do
+      button:ClearPick(true)
+      if not noHide then
         button:PriorityHide(1)
         button:SetVisibilityDirectly(0)
       end
