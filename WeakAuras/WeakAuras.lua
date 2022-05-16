@@ -2968,7 +2968,11 @@ function Private.ReleaseClone(id, cloneId, regionType)
   end
   local region = clones[id][cloneId];
   clones[id][cloneId] = nil;
-  clonePool[regionType][#clonePool[regionType] + 1] = region;
+  if region:IsProtected() then
+    WeakAuras.prettyPrint(L["Error '%s' created a secure clone. We advise deleting the aura. For more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"]:format(id))
+  else
+    clonePool[regionType][#clonePool[regionType] + 1] = region;
+  end
 end
 
 function Private.HandleChatAction(message_type, message, message_dest, message_channel, r, g, b, region, customFunc, when, formatters, voice)

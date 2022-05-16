@@ -33,11 +33,13 @@ local function UpdateWarning(uid, key, severity, message, printOnConsole)
       severity = severity,
       message = message
     }
+    Private.callbacks:Fire("AuraWarningsUpdated", uid)
   else
-    warnings[uid][key] = nil
+    if warnings[uid][key] then
+      warnings[uid][key] = nil
+      Private.callbacks:Fire("AuraWarningsUpdated", uid)
+    end
   end
-
-  Private.callbacks:Fire("AuraWarningsUpdated", uid)
 end
 
 local severityLevel = {
