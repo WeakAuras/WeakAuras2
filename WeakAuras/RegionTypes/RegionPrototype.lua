@@ -775,16 +775,16 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       region.subRegionEvents:Notify("PreHide")
       if region:IsProtected() then
         if InCombatLockdown() then
-          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_hide", "error",
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "error",
             L["Cannot hide secure frame in combat lockdown. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"],
             true)
         else
-          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_hide", "warning",
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "warning",
             L["Secure frame detected. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"])
           region:Hide()
         end
       else
-        Private.AuraWarnings.UpdateWarning(uid, "protected_frame_hide")
+        Private.AuraWarnings.UpdateWarning(uid, "protected_frame")
         region:Hide()
       end
       region.states = nil
@@ -806,16 +806,16 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
 
       if region:IsProtected() then
         if InCombatLockdown() then
-          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_hide", "error",
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "error",
             L["Cannot hide secure frame in combat lockdown. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"],
             true)
         else
-          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_hide", "warning",
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "warning",
             L["Secure frame detected. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"])
           region:Hide()
         end
       else
-        Private.AuraWarnings.UpdateWarning(uid, "protected_frame_hide")
+        Private.AuraWarnings.UpdateWarning(uid, "protected_frame")
         region:Hide()
       end
 
@@ -861,16 +861,16 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       Private.ApplyFrameLevel(region)
       if region:IsProtected() then
         if InCombatLockdown() then
-          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_show", "error",
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "error",
             L["Cannot show secure frame in combat lockdown. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"],
             true)
         else
-          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_show", "warning",
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "warning",
             L["Secure frame detected. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"])
           region:Show()
         end
       else
-        Private.AuraWarnings.UpdateWarning(uid, "protected_frame_show")
+        Private.AuraWarnings.UpdateWarning(uid, "protected_frame")
         region:Show()
       end
 
@@ -930,16 +930,16 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
 
       if region:IsProtected() then
         if InCombatLockdown() then
-          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_show", "error",
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "error",
             L["Cannot show secure frame in combat lockdown. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"],
             true)
         else
-          Private.AuraWarnings.UpdateWarning(uid, "protected_frame_show", "warning",
+          Private.AuraWarnings.UpdateWarning(uid, "protected_frame", "warning",
             L["Secure frame detected. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"])
           region:Show()
         end
       else
-        Private.AuraWarnings.UpdateWarning(uid, "protected_frame_show")
+        Private.AuraWarnings.UpdateWarning(uid, "protected_frame")
         region:Show()
       end
 
