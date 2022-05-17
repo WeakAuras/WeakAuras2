@@ -841,14 +841,26 @@ local function AddLegacyCompanionData()
   end
 end
 
-function WeakAuras.CountWagoUpdates()
+function Private.PostAddCompanion()
+  -- add data from older verion of companion addons
   AddLegacyCompanionData()
+  -- nag if updates
+  local count = Private.CountWagoUpdates()
+  if count and count > 0 then
+    WeakAuras.prettyPrint(L["There are %i updates to your auras ready to be installed!"]:format(count))
+  end
+  -- nag if new installs
+  if Private.CompanionData.stash and next(Private.CompanionData.stash) then
+    WeakAuras.prettyPrint(L["You have new auras ready to be installed!"])
+  end
+end
+
+function Private.CountWagoUpdates()
   if not (Private.CompanionData.slugs) then
     return 0
   end
-  local WeakAurasSaved = WeakAurasSaved
   local updatedSlugs, updatedSlugsCount = {}, 0
-  for id, aura in pairs(WeakAurasSaved.displays) do
+  for id, aura in pairs(db.displays) do
     if not aura.ignoreWagoUpdate and aura.url and aura.url ~= "" then
       local slug, version = aura.url:match("wago.io/([^/]+)/([0-9]+)")
       if not slug and not version then
@@ -875,7 +887,7 @@ local function tooltip_draw()
   tooltip:ClearLines();
   tooltip:AddDoubleLine("WeakAuras", versionString);
   if Private.CompanionData.slugs then
-    local count = WeakAuras.CountWagoUpdates()
+    local count = Private.CountWagoUpdates()
     if count > 0 then
       tooltip:AddLine(" ");
       tooltip:AddLine((L["There are %i updates to your auras ready to be installed!"]):format(count));
@@ -1193,6 +1205,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         Private.UpdateCurrentInstanceType();
         Private.InitializeEncounterAndZoneLists()
       end
+      Private.PostAddCompanion()
     elseif(event == "PLAYER_PVP_TALENT_UPDATE") then
       callback = CreatePvPTalentCache;
     elseif(event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "CHARACTER_POINTS_CHANGED" or event == "SPELLS_CHANGED") then
