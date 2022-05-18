@@ -67,6 +67,7 @@ OptionsFrames\ModelPicker.lua
 OptionsFrames\TextEditor.lua
 OptionsFrames\TexturePicker.lua
 OptionsFrames\Update.lua
+OptionsFrames\DebugLogFrame.lua
 
 # Misc frames
 OptionsFrames\MoverSizer.lua

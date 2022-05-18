@@ -10,6 +10,7 @@ local printedWarnings = {}
 
 local function OnDelete(event, uid)
   warnings[uid] = nil
+  printedWarnings[uid] = nil
 end
 
 Private.callbacks:RegisterCallback("Delete", OnDelete)
@@ -37,6 +38,9 @@ local function UpdateWarning(uid, key, severity, message, printOnConsole)
   else
     if warnings[uid][key] then
       warnings[uid][key] = nil
+      if printedWarnings[uid] then
+        printedWarnings[uid][key] = nil
+      end
       Private.callbacks:Fire("AuraWarningsUpdated", uid)
     end
   end
