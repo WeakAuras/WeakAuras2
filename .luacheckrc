@@ -78,6 +78,7 @@ globals = {
 	"CreateTextureMarkup",
 	"CreateObjectPool",
 	"DEFAULT_CHAT_FRAME",
+	"DevTools_Dump",
 	"GameTooltip_Hide",
 	"GameTooltip_SetDefaultAnchor",
 	"GameTooltip_UnitColor",

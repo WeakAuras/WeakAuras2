@@ -148,7 +148,7 @@ function OptionsPrivate.GetInformationOptions(data)
     end
   end
 
-  -- compatibility Options
+    -- compatibility Options
   args.compabilityTitle = {
     type = "header",
     name = L["Compatibility Options"],
@@ -245,6 +245,102 @@ function OptionsPrivate.GetInformationOptions(data)
     end
   end
 
+  -- Debug Log
+  args.debugLogTitle = {
+    type = "header",
+    name = L["Enable Debug Log"],
+    width = WeakAuras.doubleWidth,
+    order = order,
+  }
+  order = order + 1
+
+  args.debugLogDesc = {
+    type = "description",
+    name = L["This enables the collection of debug logs. This requires custom coded auras that use DebugPrints."],
+    width = WeakAuras.doubleWidth,
+    order = order,
+  }
+  order = order + 1
+
+  local sameDebugLog = true
+  local commonDebugLog
+  local debugLogDesc = ""
+
+  for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+    local effectiveDebugLog = child.information.debugLog and true or false
+    debugLogDesc = debugLogDesc .. "|cFFE0E000"..child.id..": |r".. (effectiveDebugLog and "true" or "false") .. "\n"
+    if commonDebugLog == nil then
+      commonDebugLog = effectiveDebugLog
+    elseif effectiveDebugLog ~= commonDebugLog then
+      sameDebugLog = false
+    end
+  end
+
+  args.debugLogToggle = {
+    type = "toggle",
+    name = sameDebugLog and L["Enable Debug Logging"] or "|cFF4080FF" .. L["Enable Debug Logging"],
+    desc = not sameDebugLog and debugLogDesc or nil,
+    width = WeakAuras.doubleWidth,
+    order = order,
+    get = function()
+      return sameDebugLog and commonDebugLog
+    end,
+    set = function(info, v)
+      for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+        child.information.debugLog = v
+        WeakAuras.Add(child)
+        OptionsPrivate.ClearOptions(child.id)
+      end
+
+      WeakAuras.ClearAndUpdateOptions(data.id)
+    end
+  }
+  order = order + 1
+
+  if not sameDebugLog or commonDebugLog then
+    args.debugLogShow = {
+      type = "execute",
+      name = L["Show Debug Logs"],
+      width = WeakAuras.normalWidth,
+      order = order,
+      func = function()
+        local fullMessage = L["WeakAuras %s on WoW %s"]:format(WeakAuras.versionString, WeakAuras.BuildInfo) .. "\n\n"
+        local haveLogs = false
+        for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+          local auraLog = OptionsPrivate.Private.DebugLog.GetLogs(child.uid)
+          if auraLog then
+            haveLogs = true
+            fullMessage = fullMessage .. L["Aura: '%s'"]:format(child.id)
+            local version = child.semver or child.version
+            if (version) then
+              fullMessage = fullMessage .. "\n" .. L["Version: %s"]:format(version)
+            end
+            fullMessage = fullMessage .. "\n" .. L["Debug Log:"] .. "\n" .. auraLog .. "\n\n"
+          end
+        end
+
+        if haveLogs then
+          OptionsPrivate.OpenDebugLog(fullMessage)
+        else
+          OptionsPrivate.OpenDebugLog(L["No Logs saved."])
+        end
+      end
+    }
+    order = order + 1
+
+    args.debugLogClear = {
+      type = "execute",
+      name = L["Clear Debug Logs"],
+      width = WeakAuras.normalWidth,
+      order = order,
+      func = function()
+        for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+          OptionsPrivate.Private.DebugLog.Clear(child.uid)
+        end
+      end
+    }
+    order = order + 1
+  end
 
   return options
 end

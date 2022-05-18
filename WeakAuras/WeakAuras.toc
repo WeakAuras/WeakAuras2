@@ -52,8 +52,11 @@ Conditions.lua
 BuffTrigger.lua
 BuffTrigger2.lua
 GenericTrigger.lua
+
+# Helper Systems
 AuraWarnings.lua
 AuraEnvironment.lua
+DebugLog.lua
 
 # Region support
 RegionTypes\RegionPrototype.lua
