@@ -119,7 +119,6 @@ local function ConstructCodeReview(frame)
     self.codeTree:SetTree(data);
     self.codeTree:SelectByValue(firstEntry.value)
 
-    WeakAuras.ShowOptions();
     frame.window = "codereview";
     frame:UpdateFrameVisible()
   end
