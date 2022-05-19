@@ -300,7 +300,7 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
             local range = %s
             for i = 1, 40 do
               local unit = "nameplate" .. i
-              if UnitExists(unit) and UnitIsEnemy("player", unit) and  WeakAuras.CheckRange(unit, range, op) then
+              if UnitExists(unit) and UnitCanAttack("player", unit) and WeakAuras.CheckRange(unit, range, op) then
                 found = found + 1
               end
             end
