@@ -1427,5 +1427,52 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 53 then
+    local function ReplaceIn(text, table, prefix)
+      local seenSymbols = {}
+      Private.ParseTextStr(text, function(symbol)
+        if not seenSymbols[symbol] then
+          if table[prefix .. symbol .. "_format"] == "timed"
+              and table[prefix .. symbol .. "_time_format"] == 0
+          then
+            table[prefix .. symbol .. "_time_legacy_floor"] = true
+          end
+        end
+        seenSymbols[symbol] = symbol
+      end)
+    end
+
+    if data.regionType == "text" then
+      ReplaceIn(data.displayText, data, "displayText_format_")
+    end
+
+    if data.subRegions then
+      for index, subRegionData in ipairs(data.subRegions) do
+        if subRegionData.type == "subtext" then
+          ReplaceIn(subRegionData.text_text, subRegionData, "text_text_format_")
+        end
+      end
+    end
+
+    if data.actions then
+      if data.actions.start then
+        ReplaceIn(data.actions.start.message, data.actions.start, "message_format_")
+      end
+      if data.actions.finish then
+        ReplaceIn(data.actions.finish.message, data.actions.finish, "message_format_")
+      end
+    end
+
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        for changeIndex, change in ipairs(condition.changes) do
+          if change.property == "chat" and change.value then
+            ReplaceIn(change.value.message, change.value, "message_format_")
+          end
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
 end
