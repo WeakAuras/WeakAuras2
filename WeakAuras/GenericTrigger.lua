@@ -102,6 +102,78 @@ function WeakAuras.UnitExistsFixed(unit, smart)
   return UnitExists(unit) or UnitGUID(unit)
 end
 
+-- similiar to GetAllUnits in BuffTrigger2
+-- this one does not support pets
+-- and has no flag to also return non existing units
+-- maybe this can be combined in the future
+function WeakAuras.GetAllUnits(unit)
+  if unit == "raid" or (unit == "group" and IsInRaid()) then
+    local i = 1
+    local max = GetNumGroupMembers()
+    return function()
+      if i <= max then
+        local ret = WeakAuras.raidUnits[i]
+        i = i + 1
+        return ret
+      end
+      i = 1
+    end
+  elseif unit == "party" or unit == "group" then
+    local i = 0
+    local max = GetNumSubgroupMembers()
+    return function()
+      if i == 0 then
+        i = 1
+        return "player"
+      else
+        if i <= max then
+          local ret = WeakAuras.partyUnits[i]
+          i = i + 1
+          return ret
+        end
+      end
+      i = 0
+    end
+  elseif unit == "boss" or unit == "arena" or unit == "nameplate" then
+    local i = 1
+    local max
+    if unit == "boss" then
+      max = 10
+    elseif unit == "arena" then
+      max = 5
+    elseif unit == "nameplate" then
+      max = 40
+    else
+      return function() end
+    end
+    return function()
+      local ret = unit .. i
+      while not WeakAuras.UnitExistsFixed(ret) do
+        i = i + 1
+        if i > max then
+          i = 1
+          return nil
+        end
+        ret = unit .. i
+      end
+      i = i + 1
+      if i > max then
+        i = 1
+        return nil
+      end
+      return ret
+    end
+  else
+    local toggle = false
+    return function()
+      toggle = not toggle
+      if toggle then
+        return unit
+      end
+    end
+  end
+end
+
 function WeakAuras.split(input)
   input = input or "";
   local ret = {};

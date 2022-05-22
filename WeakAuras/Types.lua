@@ -870,6 +870,12 @@ Private.threat_unit_types = {
 Private.unit_types_range_check = {
   target = L["Target"],
   focus = L["Focus"],
+  group = L["Smart Group"],
+  raid = L["Raid"],
+  party = L["Party"],
+  boss = L["Boss"],
+  arena = L["Arena"],
+  nameplate = L["Nameplate"],
   pet = L["Pet"],
   member = L["Specific Unit"]
 }
@@ -3482,6 +3488,8 @@ if WeakAuras.IsClassic() then
   Private.actual_unit_types_cast.arena = nil
   Private.actual_unit_types_cast.focus = nil
   Private.unit_types_range_check.focus = nil
+  Private.unit_types_range_check.boss = nil
+  Private.unit_types_range_check.arena = nil
   Private.threat_unit_types.focus = nil
   Private.item_slot_types[0] = AMMOSLOT
   Private.item_slot_types[18] = RANGEDSLOT

@@ -8974,21 +8974,54 @@ Private.event_prototypes = {
     init = function(trigger)
       trigger.unit = trigger.unit or "target";
       local ret = [=[
-          local unit = %q;
-          local min, max = WeakAuras.GetRange(unit, true);
-          min = min or 0;
-          max = max or 999;
-          local triggerResult = true;
-      ]=]
-      if (trigger.use_range) then
-        trigger.range = trigger.range or 8;
-        if (trigger.range_operator == "<=") then
-          ret = ret .. "triggerResult = max <= " .. tostring(trigger.range) .. "\n";
-        else
-          ret = ret .. "triggerResult = min >= " .. tostring(trigger.range).. "\n";
+        local unit = %q
+        local use_range = %s
+        local range = %s
+        local range_op = %q
+
+        local closest_unit = nil
+        local farest_unit = nil
+        local min_of_closest_unit = math.huge
+        local max_of_farest_unit = -math.huge
+        local count = 0
+
+        for u in WeakAuras.GetAllUnits(unit) do
+          local min, max = WeakAuras.GetRange(u, true)
+
+          if not use_range
+            or (max and range_op == "<=" and max <= range)
+            or (min and range_op == ">=" and min >= range)
+          then
+            if max and max > max_of_farest_unit then
+              farest_unit = u
+              max_of_farest_unit = max
+            end
+
+            if min and min < min_of_closest_unit then
+              closest_unit = u
+              min_of_closest_unit = min
+            end
+
+            count = count + 1
+          end
         end
-      end
-      return ret:format(trigger.unit);
+
+        local min = min_of_closest_unit ~= math.huge and min_of_closest_unit or 0
+        local max = max_of_farest_unit ~= -math.huge and max_of_farest_unit or 999
+        local triggerResult = (closest_unit or farest_unit) and true or false
+
+        local relevantUnit = nil
+        if range_op == "<=" then
+          relevantUnit = farest_unit
+        elseif range_op == ">=" then
+          relevantUnit = closest_unit
+        end
+      ]=]
+      return ret:format(
+        trigger.unit,
+        trigger.use_range and "true" or "false",
+        tonumber(trigger.range) or 8,
+        trigger.range_operator or ">=")
     end,
     statesParameter = "one",
     args = {
@@ -9003,7 +9036,7 @@ Private.event_prototypes = {
         required = true,
         display = L["Unit"],
         type = "unit",
-        init = "unit",
+        init = "relevantUnit",
         values = "unit_types_range_check",
         test = "true",
         store = true
@@ -9011,7 +9044,7 @@ Private.event_prototypes = {
       {
         hidden = true,
         name = "minRange",
-        display = L["Minimum Estimate"],
+        display = L["Minimum Estimate of closest unit"],
         type = "number",
         init = "min",
         store = true,
@@ -9020,7 +9053,7 @@ Private.event_prototypes = {
       {
         hidden = true,
         name = "maxRange",
-        display = L["Maximum Estimate"],
+        display = L["Maximum Estimate of farthest unit"],
         type = "number",
         init = "max",
         store = true,
@@ -9033,13 +9066,42 @@ Private.event_prototypes = {
         operator_types = "without_equal",
         test = "triggerResult",
         conditionType = "number",
-        conditionTest = function(state, needle, needle2)
-          return state and state.show and WeakAuras.CheckRange(state.unit, needle, needle2);
+        conditionTest = function(state, value, operator)
+          if not state or not state.show then
+            return false
+          end
+
+          -- the check for this condition must be like this to be backwards compatible
+          for unit in WeakAuras.GetAllUnits(state.trigger.unit) do
+            if WeakAuras.CheckRange(unit, value, operator) then
+              return true
+            end
+          end
+
+          return false
         end,
       },
       {
+        name = "count",
+        display = WeakAuras.newFeatureString .. L["Unit Count"],
+        type = "number",
+        operator_types = "operator_types",
+        init = "count",
+        store = true,
+        conditionType = "number",
+        enable = function(trigger)
+          return trigger.use_range
+            and (trigger.unit == "group"
+              or trigger.unit == "raid"
+              or trigger.unit == "party"
+              or trigger.unit == "boss"
+              or trigger.unit == "arena"
+              or trigger.unit == "nameplate")
+        end
+      },
+      {
         hidden = true,
-        test = "UnitExists(unit)"
+        test = "triggerResult"
       }
     },
     automaticrequired = true
