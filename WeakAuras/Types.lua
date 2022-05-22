@@ -87,7 +87,7 @@ else
   Private.time_format_types = {
     [0] = L["WeakAuras Built-In (63:42 | 3:07 | 10 | 2.4)"],
     [1] = L["Old Blizzard (2h | 3m | 10s | 2.4)"],
-    [2] = L["Modern Blizzard (1h 3m | 3m 7s | 10s | 2.4)"]
+    [2] = L["Modern Blizzard (1h 3m | 3m 7s | 10s | 2.4)"],
   }
 end
 
@@ -187,8 +187,17 @@ local simpleFormatters = {
     -- Modern Blizzard
     [2] = WeakAuras.IsRetail() and function(value)
       return timeFormatter:Format(value)
-    end
-  }
+    end,
+    -- Fixed built-in formatter
+    [99] = function(value)
+      value = ceil(value)
+      if value > 60 then
+        return string.format("%i:", math.floor(value / 60)) .. string.format("%02i", value % 60)
+      else
+        return string.format("%d", value)
+      end
+    end,
+  },
 }
 
 Private.format_types = {
@@ -264,8 +273,17 @@ Private.format_types = {
         type = "toggle",
         name = L["Blizzard Cooldown Reduction"],
         desc = L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."],
-        width = WeakAuras.doubleWidth,
+        width = WeakAuras.normalWidth,
         hidden = hidden,
+      })
+
+      addOption(symbol .. "_time_legacy_floor", {
+        type = "toggle",
+        name = L["Use Legacy floor rounding"],
+        desc = L["Enables (incorrect) round down of seconds, which was the previous default behaviour."],
+        width = WeakAuras.normalWidth,
+        hidden = hidden,
+        disabled = function() return get(symbol .. "_time_format", 0) ~= 0 end
       })
     end,
     CreateFormatter = function(symbol, get)
@@ -273,11 +291,15 @@ Private.format_types = {
       local threshold = get(symbol .. "_time_dynamic_threshold", 60)
       local precision = get(symbol .. "_time_precision", 1)
       local modRate = get(symbol .. "_time_mod_rate", true)
+      local legacyRoundingMode = get(symbol .. "_time_legacy_floor", false)
 
-      local mainFormater = simpleFormatters.time[format]
-      if not mainFormater then
-        mainFormater = simpleFormatters.time[0]
+      if format == 0 and not legacyRoundingMode then
+        format = 99
       end
+      if not simpleFormatters.time[format] then
+        format = 99
+      end
+      local mainFormater = simpleFormatters.time[format]
 
       local formatter
       if threshold == 0 then
