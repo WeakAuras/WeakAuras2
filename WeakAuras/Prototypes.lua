@@ -9057,7 +9057,6 @@ if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
   Private.event_prototypes["Crowd Controlled"] = nil
   Private.event_prototypes["PvP Talent Selected"] = nil
   Private.event_prototypes["Class/Spec"] = nil
-  Private.event_prototypes["Spell Cast Succeeded"] = nil
 else
   Private.event_prototypes["Queued Action"] = nil
 end
