@@ -78,6 +78,11 @@ Private.group_hybrid_sort_types = {
   descending = L["Descending"]
 }
 
+Private.range_sort_types = {
+  ascending = L["Closest unit first"],
+  descending = L["Farthest unit first"]
+}
+
 if WeakAuras.IsClassic() then
   Private.time_format_types = {
     [0] = L["WeakAuras Built-In (63:42 | 3:07 | 10 | 2.4)"],

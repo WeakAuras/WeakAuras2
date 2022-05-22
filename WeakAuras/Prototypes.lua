@@ -8976,13 +8976,40 @@ Private.event_prototypes = {
       local ret = [=[return
         function(states)
           local unit = %q
-          local use_clones = %s;
+          local use_clones = %s
+          local clone_sort = %q
           local use_range = %s
           local range = %s
           local range_op = %q
 
           if use_clones then
-            // TODO
+            for unit, state in pairs(states) do
+              state.changed = true
+              state.show = false
+            end
+
+            for u in WeakAuras.GetAllUnits(unit) do
+              local min, max = WeakAuras.GetRange(u, true)
+
+              if not use_range
+                or (max and range_op == "<=" and max <= range)
+                or (min and range_op == ">=" and min >= range)
+              then
+                states[u] = states[u] or {}
+                local state = states[u]
+                state.changed = true
+                state.show = true
+                state.unit = u
+                state.minRange = min
+                state.maxRange = max
+
+                if clone_sort == "ascending" then
+                  state.index = (min + max)/2
+                elseif clone_sort == "descending" then
+                  state.index = -(max + min)/2
+                end
+              end
+            end
           else
             local closest_unit = nil
             local farest_unit = nil
@@ -9026,10 +9053,12 @@ Private.event_prototypes = {
             local state = states[""]
             state.changed = true
             state.show = triggerResult
-            state.unit = relevantUnit
-            state.minRange = minRange
-            state.maxRange = maxRange
-            state.count = count
+            if triggerResult then
+              state.unit = relevantUnit
+              state.minRange = minRange
+              state.maxRange = maxRange
+              state.count = count
+            end
           end
 
           return true
@@ -9038,6 +9067,7 @@ Private.event_prototypes = {
       return ret:format(
         trigger.unit,
         trigger.use_clones and "true" or "false",
+        trigger.use_clone_sort and trigger.clone_sort or "none",
         trigger.use_range and "true" or "false",
         tonumber(trigger.range) or 8,
         trigger.range_operator or ">=")
@@ -9055,16 +9085,8 @@ Private.event_prototypes = {
         required = true,
         display = L["Unit"],
         type = "unit",
-        init = "relevantUnit",
         values = "unit_types_range_check",
-        test = "true",
         store = true
-      },
-      {
-        name = "clones",
-        display = L["Clone per Match"],
-        type = "toggle",
-        test = "true",
       },
       {
         hidden = true,
@@ -9085,7 +9107,6 @@ Private.event_prototypes = {
         display = L["Distance"],
         type = "number",
         operator_types = "without_equal",
-        test = "triggerResult",
         conditionType = "number",
         conditionTest = function(state, value, operator)
           if not state or not state.show then
@@ -9101,6 +9122,18 @@ Private.event_prototypes = {
 
           return false
         end,
+      },
+      {
+        name = "clones",
+        display = WeakAuras.newFeatureString .. L["Clone per Match"],
+        type = "toggle",
+      },
+      {
+        name = "clone_sort",
+        display = WeakAuras.newFeatureString .. L["Sort"],
+        type = "select",
+        values = "range_sort_types",
+        enable = function(trigger) return trigger.use_clones end
       },
       {
         name = "count",
