@@ -4249,10 +4249,10 @@ Private.event_prototypes = {
           local remaining = 0;
           if (expirationTime and expirationTime > 0) then
             remaining = expirationTime - GetTime();
-            local remainingModRate = remaining / modRate;
+            local remainingModRate = remaining / (modRate or 1);
             local remainingCheck = %s;
             if(remainingModRate >= remainingCheck and remainingModRate > 0) then
-              WeakAuras.ScheduleScan(expirationTime - remainingCheck * modRate);
+              WeakAuras.ScheduleScan(expirationTime - remainingCheck * (modRate or 1));
             end
           end
         ]];
