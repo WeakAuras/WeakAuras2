@@ -496,7 +496,11 @@ local methods = {
             UpdateClipboardMenuEntry(self.data);
             EasyMenu(self.menu, WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
             if not(OptionsPrivate.IsDisplayPicked(self.data.id)) then
-              WeakAuras.PickDisplay(self.data.id);
+              if self.data.controlledChildren then
+                WeakAuras.PickDisplay(self.data.id, "group")
+              else
+                WeakAuras.PickDisplay(self.data.id);
+              end
             end
           end
         else
