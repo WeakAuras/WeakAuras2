@@ -5,7 +5,7 @@ local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove
 local select, pairs, next, type, unpack = select, pairs, next, type, unpack
 local tostring, error = tostring, error
 
-local Type, Version = "WeakAurasDisplayButton", 57
+local Type, Version = "WeakAurasDisplayButton", 58
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -1523,12 +1523,6 @@ local methods = {
       self:UpdateViewTexture()
 
       self:RecheckParentVisibility()
-    end
-  end,
-  ["SetVisibilityDirectly"] = function(self, visibility)
-    if self.data.parent and visibility ~= self.view.visibility then
-      self.view.visibility = visibility
-      self:UpdateViewTexture()
     end
   end,
   ["UpdateViewTexture"] = function(self)
