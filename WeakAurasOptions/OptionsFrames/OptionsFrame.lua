@@ -1066,7 +1066,13 @@ function OptionsPrivate.CreateFrame()
       button:ClearPick(true)
       if not noHide then
         button:PriorityHide(1)
-        button:SetVisibilityDirectly(0)
+      end
+    end
+    if not noHide then
+      for id, button in pairs(displayButtons) do
+        if button.data.controlledChildren then
+          button:RecheckVisibility()
+        end
       end
     end
 
