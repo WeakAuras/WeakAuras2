@@ -453,14 +453,10 @@ function WeakAuras.PrintProfile()
   PrintOneProfile(popup, "|cff9900ffTotal time:|r", profileData.systems.time)
   PrintOneProfile(popup, "|cff9900ffTime inside WA:|r", profileData.systems.wa)
   popup:AddText(string.format("|cff9900ffTime spent inside WA:|r %.2f%%", 100 * profileData.systems.wa.elapsed / profileData.systems.time.elapsed))
-  popup:AddText("")
-  popup:AddText("|cff9900ffSystems:|r")
 
-  for i, k in ipairs(SortProfileMap(profileData.systems)) do
-    if (k ~= "time" and k ~= "wa") then
-      PrintOneProfile(popup, k, profileData.systems[k], profileData.systems.wa.elapsed)
-    end
-  end
+  popup:AddText("")
+  popup:AddText("Note: Not every aspect of each aura can be tracked.")
+  popup:AddText("You can ask on our discord https://discord.gg/weakauras for help interpreting this output.")
 
   popup:AddText("")
   popup:AddText("|cff9900ffAuras:|r")
@@ -468,6 +464,15 @@ function WeakAuras.PrintProfile()
   popup:AddText("Total time attributed to auras: ", floor(total) .."ms")
   for i, k in ipairs(SortProfileMap(profileData.auras)) do
     PrintOneProfile(popup, k, profileData.auras[k], total)
+  end
+
+  popup:AddText("")
+  popup:AddText("|cff9900ffSystems:|r")
+
+  for i, k in ipairs(SortProfileMap(profileData.systems)) do
+    if (k ~= "time" and k ~= "wa") then
+      PrintOneProfile(popup, k, profileData.systems[k], profileData.systems.wa.elapsed)
+    end
   end
   popup:Show()
 end
