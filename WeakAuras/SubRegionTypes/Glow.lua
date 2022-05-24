@@ -170,11 +170,18 @@ local funcs = {
     local color
     self.glow = visible
 
+    self.fixupNeeded = false
     if not self:IsRectValid() then
       -- This ensures that WoW tries to make the rect valid
       -- which helps the glow lib to apply the glow in the right size
       -- See Ticket: #2818
       self:GetWidth()
+      if not self:IsRectValid() then
+        -- Try even harder, because for frames that we only anchor in Expand, e.g. nameplate attached
+        -- we fix that in PreShow
+        self.fixupNeeded = true
+        return
+      end
     end
 
     if self.useGlowColor then
@@ -300,6 +307,12 @@ local funcs = {
     if self.glow then
       self:SetVisible(true)
     end
+  end,
+  PreShow = function(self)
+    if self.glow and self.fixupNeeded then
+      self.fixupNeeded = false
+      self:SetVisible(true)
+    end
   end
 }
 
@@ -319,6 +332,10 @@ end
 
 local function onRelease(subRegion)
   subRegion.glowType = nil
+  if subRegion.glow then
+    subRegion:SetVisible(false)
+  end
+  subRegion.fixupNeeded = false
   subRegion:Hide()
   subRegion:ClearAllPoints()
   subRegion:SetParent(UIParent)
@@ -351,6 +368,7 @@ local function modify(parent, region, parentData, data, first)
   region:SetVisible(data.glow)
 
   region:SetScript("OnSizeChanged", region.UpdateSize)
+  parent.subRegionEvents:AddSubscriber("PreShow", region)
 end
 
 -- This is used by the templates to add glow
