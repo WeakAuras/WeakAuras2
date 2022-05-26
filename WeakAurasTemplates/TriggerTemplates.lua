@@ -452,7 +452,7 @@ end
 -- Create preview thumbnail
 local function createThumbnail(parent)
   -- Preview frame
-  local borderframe = CreateFrame("FRAME", nil, parent);
+  local borderframe = CreateFrame("Frame", nil, parent);
   borderframe:SetWidth(32);
   borderframe:SetHeight(32);
 
@@ -463,7 +463,7 @@ local function createThumbnail(parent)
   border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
 
   -- Main region
-  local region = CreateFrame("FRAME", nil, borderframe);
+  local region = CreateFrame("Frame", nil, borderframe);
   borderframe.region = region;
 
   -- Preview children
@@ -1755,7 +1755,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
     end
   end
 
-  local batchModeLabel = CreateFrame("FRAME", "batchModeLabel", newView.frame);
+  local batchModeLabel = CreateFrame("Frame", "batchModeLabel", newView.frame);
   batchModeLabel:SetSize(300, 20);
   local batchModeLabelString = batchModeLabel:CreateFontString(nil, "ARTWORK");
   batchModeLabelString:SetFont(STANDARD_TEXT_FONT, 10); -- "OUTLINE"

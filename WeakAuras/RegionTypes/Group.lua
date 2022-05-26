@@ -25,14 +25,14 @@ local default = {
 -- Called when first creating a new region/display
 local function create(parent)
   -- Main region
-  local region = CreateFrame("FRAME", nil, parent);
+  local region = CreateFrame("Frame", nil, parent);
   region.regionType = "group"
   region:SetMovable(true);
   region:SetWidth(2);
   region:SetHeight(2);
 
   -- Border region
-  local border = CreateFrame("frame", nil, region, BackdropTemplateMixin and "BackdropTemplate")
+  local border = CreateFrame("Frame", nil, region, BackdropTemplateMixin and "BackdropTemplate")
   region.border = border;
 
   WeakAuras.regionPrototype.create(region);

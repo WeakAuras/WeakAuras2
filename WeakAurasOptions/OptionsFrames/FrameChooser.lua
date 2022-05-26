@@ -21,8 +21,8 @@ local oldFocusName
 function OptionsPrivate.StartFrameChooser(data, path)
   local frame = WeakAuras.OptionsFrame();
   if not(frameChooserFrame) then
-    frameChooserFrame = CreateFrame("frame");
-    frameChooserBox = CreateFrame("frame", nil, frameChooserFrame, BackdropTemplateMixin and "BackdropTemplate");
+    frameChooserFrame = CreateFrame("Frame");
+    frameChooserBox = CreateFrame("Frame", nil, frameChooserFrame, BackdropTemplateMixin and "BackdropTemplate");
     frameChooserBox:SetFrameStrata("TOOLTIP");
     frameChooserBox:SetBackdrop({
       edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",

@@ -79,7 +79,7 @@ local controlPointFunctions = {
 }
 
 local function createControlPoint(self)
-  local controlPoint = CreateFrame("FRAME", nil, self.parent)
+  local controlPoint = CreateFrame("Frame", nil, self.parent)
   Mixin(controlPoint, controlPointFunctions)
 
   controlPoint:SetWidth(16)
@@ -103,14 +103,14 @@ local function releaseControlPoint(self, controlPoint)
 end
 
 local function create(parent)
-  local region = CreateFrame("FRAME", nil, parent)
+  local region = CreateFrame("Frame", nil, parent)
   region.regionType = "dynamicgroup"
   region:SetSize(16, 16)
   region:SetMovable(true)
   region.sortedChildren = {}
   region.controlledChildren = {}
   region.updatedChildren = {}
-  local background = CreateFrame("frame", nil, region, BackdropTemplateMixin and "BackdropTemplate")
+  local background = CreateFrame("Frame", nil, region, BackdropTemplateMixin and "BackdropTemplate")
   region.background = background
   region.selfPoint = "TOPLEFT"
   region.controlPoints = CreateObjectPool(createControlPoint, releaseControlPoint)

@@ -255,7 +255,7 @@ local function createOptions(id, data)
 end
 
 local function createThumbnail()
-  local frame = CreateFrame("FRAME", nil, UIParent)
+  local frame = CreateFrame("Frame", nil, UIParent)
   local icon = frame:CreateTexture();
   icon:SetTexture("Interface\\Icons\\INV_Misc_QuestionMark");
   icon:SetAllPoints(frame)

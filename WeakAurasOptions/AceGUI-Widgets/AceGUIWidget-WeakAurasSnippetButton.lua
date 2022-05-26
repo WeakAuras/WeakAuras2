@@ -137,7 +137,7 @@ local function Constructor()
   button:SetHeight(24)
   button:SetWidth(170)
 
-  local deleteButton = CreateFrame("BUTTON", nil, button)
+  local deleteButton = CreateFrame("Button", nil, button)
   deleteButton:SetPoint("RIGHT", button, "RIGHT", -3, 0)
   deleteButton:SetSize(20, 20)
   local deleteTex = deleteButton:CreateTexture()

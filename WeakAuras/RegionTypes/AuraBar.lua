@@ -995,14 +995,14 @@ local funcs = {
 -- Called when first creating a new region/display
 local function create(parent)
   -- Create overall region (containing everything else)
-  local region = CreateFrame("FRAME", nil, parent);
+  local region = CreateFrame("Frame", nil, parent);
   region.regionType = "aurabar"
   region:SetMovable(true);
   region:SetResizable(true);
   region:SetMinResize(1, 1);
 
   -- Create statusbar (inherit prototype)
-  local bar = CreateFrame("FRAME", nil, region);
+  local bar = CreateFrame("Frame", nil, region);
   Mixin(bar, SmoothStatusBarMixin);
   local fg = bar:CreateTexture(nil, "ARTWORK");
   fg:SetSnapToPixelGrid(false)
@@ -1011,7 +1011,7 @@ local function create(parent)
   bg:SetSnapToPixelGrid(false)
   bg:SetTexelSnappingBias(0)
   bg:SetAllPoints();
-  local fgFrame = CreateFrame("FRAME", nil, bar)
+  local fgFrame = CreateFrame("Frame", nil, bar)
   local spark = bar:CreateTexture(nil, "ARTWORK");
   spark:SetSnapToPixelGrid(false)
   spark:SetTexelSnappingBias(0)
@@ -1031,7 +1031,7 @@ local function create(parent)
   region.bar = bar;
 
   -- Create icon
-  local iconFrame = CreateFrame("FRAME", nil, region);
+  local iconFrame = CreateFrame("Frame", nil, region);
   region.iconFrame = iconFrame;
   local icon = iconFrame:CreateTexture(nil, "OVERLAY");
   icon:SetSnapToPixelGrid(false)
@@ -1187,7 +1187,7 @@ local function modify(parent, region, data)
   if tooltipType and data.useTooltip then
     -- Create and enable tooltip-hover frame
     if not region.tooltipFrame then
-      region.tooltipFrame = CreateFrame("frame", nil, region);
+      region.tooltipFrame = CreateFrame("Frame", nil, region);
       region.tooltipFrame:SetAllPoints(icon);
       region.tooltipFrame:SetScript("OnEnter", function()
         Private.ShowMouseoverTooltip(region, region.tooltipFrame);

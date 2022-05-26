@@ -857,7 +857,7 @@ function Private.RegisterForGlobalConditions(uid)
   end
 
   if (next(register) and not dynamicConditionsFrame) then
-    dynamicConditionsFrame = CreateFrame("FRAME");
+    dynamicConditionsFrame = CreateFrame("Frame");
     dynamicConditionsFrame:SetScript("OnEvent", handleDynamicConditions);
     dynamicConditionsFrame.units = {}
     WeakAuras.frames["Rerun Conditions Frame"] = dynamicConditionsFrame
@@ -874,7 +874,7 @@ function Private.RegisterForGlobalConditions(uid)
       if unitEvent and unit then
         unit = unit:lower()
         if not dynamicConditionsFrame.units[unit] then
-          dynamicConditionsFrame.units[unit] = CreateFrame("FRAME");
+          dynamicConditionsFrame.units[unit] = CreateFrame("Frame");
           dynamicConditionsFrame.units[unit]:SetScript("OnEvent", handleDynamicConditionsPerUnit);
         end
         pcall(dynamicConditionsFrame.units[unit].RegisterUnitEvent, dynamicConditionsFrame.units[unit], unitEvent, unit);

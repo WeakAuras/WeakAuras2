@@ -197,7 +197,7 @@ local funcs = {
 }
 
 local function create()
-  local subRegion = CreateFrame("FRAME", nil, UIParent)
+  local subRegion = CreateFrame("Frame", nil, UIParent)
   subRegion:SetClipsChildren(true)
 
   for k, v in pairs(funcs) do

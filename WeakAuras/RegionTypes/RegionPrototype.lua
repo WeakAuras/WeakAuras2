@@ -642,7 +642,7 @@ end
 
 local regionsForFrameTick = {}
 
-local frameForFrameTick = CreateFrame("FRAME");
+local frameForFrameTick = CreateFrame("Frame");
 
 WeakAuras.frames["Frame Tick Frame"] = frameForFrameTick
 

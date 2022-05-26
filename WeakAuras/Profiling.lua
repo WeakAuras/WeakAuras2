@@ -483,7 +483,7 @@ function RealTimeProfilingWindow:GetBar(name)
   if self.bars[name] then
     return self.bars[name]
   else
-    local bar = CreateFrame("FRAME", nil, self.barsFrame)
+    local bar = CreateFrame("Frame", nil, self.barsFrame)
     self.bars[name] = bar
     Mixin(bar, SmoothStatusBarMixin)
     bar.name = name

@@ -97,7 +97,7 @@ local function ConstructIconPicker(frame)
     end
   end
 
-  local input = CreateFrame("EDITBOX", nil, group.frame, "InputBoxTemplate");
+  local input = CreateFrame("EditBox", nil, group.frame, "InputBoxTemplate");
   input:SetScript("OnTextChanged", function(...) iconPickerFill(input:GetText(), false); end);
   input:SetScript("OnEnterPressed", function(...) iconPickerFill(input:GetText(), true); end);
   input:SetScript("OnEscapePressed", function(...) input:SetText(""); iconPickerFill(input:GetText(), true); end);

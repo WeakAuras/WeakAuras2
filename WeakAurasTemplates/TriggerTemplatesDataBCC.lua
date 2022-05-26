@@ -1079,7 +1079,7 @@ local function addLoadCondition(item, loadCondition)
 end
 
 local delayedEnrichDatabase = false;
-local itemInfoReceived = CreateFrame("frame")
+local itemInfoReceived = CreateFrame("Frame")
 
 local enrichTries = 0;
 local function enrichDatabase()
