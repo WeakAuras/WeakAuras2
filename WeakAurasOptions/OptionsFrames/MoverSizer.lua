@@ -8,8 +8,6 @@ local pairs = pairs
 -- WoW APIs
 local IsShiftKeyDown, CreateFrame =  IsShiftKeyDown, CreateFrame
 
-local AceConfigDialog = LibStub("AceConfigDialog-3.0")
-
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 

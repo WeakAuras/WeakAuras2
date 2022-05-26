@@ -29,7 +29,6 @@ end
 
 local function GetGlobalOptions(data)
 
-  local triggerCount = 0
   local globalTriggerOptions = {
     __title = L["Trigger Combination"],
     __order = 1,

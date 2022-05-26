@@ -1,9 +1,9 @@
 if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local tinsert, tconcat, tremove, wipe = table.insert, table.concat, table.remove, wipe
-local select, pairs, next, type, unpack = select, pairs, next, type, unpack
-local tostring, error = tostring, error
+local tinsert, tremove = table.insert, table.remove
+local select, pairs, type, unpack = select, pairs, type, unpack
+local error = error
 
 local Type, Version = "WeakAurasDisplayButton", 58
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)

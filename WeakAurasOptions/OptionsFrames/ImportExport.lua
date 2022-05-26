@@ -1,11 +1,8 @@
 if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
--- Lua APIs
-local strtrim, strsub = strtrim, strsub
-
 -- WoW APIs
-local GetTime, CreateFrame = GetTime, CreateFrame
+local CreateFrame = CreateFrame
 
 local AceGUI = LibStub("AceGUI-3.0")
 

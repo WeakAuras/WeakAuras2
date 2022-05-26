@@ -17,7 +17,7 @@ local conditionChecksTimers = {};
 conditionChecksTimers.recheckTime = {};
 conditionChecksTimers.recheckHandle = {};
 
-local function OnDelete(event, uid)
+local function OnDelete(_, uid)
   checkConditions[uid] = nil
   conditionChecksTimers.recheckTime[uid] = nil
   if (conditionChecksTimers.recheckHandle[uid]) then
@@ -27,7 +27,7 @@ local function OnDelete(event, uid)
   end
   conditionChecksTimers.recheckHandle[uid] = nil
 
-  for event, funcs in pairs(dynamicConditions) do
+  for _, funcs in pairs(dynamicConditions) do
     funcs[uid] = nil
   end
 end
@@ -630,7 +630,6 @@ local function ConstructConditionFunction(data)
   ret = ret .. "  local recheckTime;\n"
   ret = ret .. "  local now = GetTime();\n"
 
-  local normalConditionCount = data.conditions and #data.conditions;
   -- First Loop gather which conditions are active
   ret = ret .. "  if (not hideRegion) then\n"
   local recheckCode = ""
@@ -922,7 +921,7 @@ function Private.UnloadAllConditions()
   dynamicConditions = {}
   if dynamicConditionsFrame then
     dynamicConditionsFrame:UnregisterAllEvents()
-    for unit, frame in pairs(dynamicConditionsFrame.units) do
+    for _, frame in pairs(dynamicConditionsFrame.units) do
       frame:UnregisterAllEvents()
     end
     dynamicConditionsFrame:SetScript("OnUpdate", nil)

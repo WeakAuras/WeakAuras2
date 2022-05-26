@@ -536,7 +536,7 @@ local function ConstructTextEditor(frame)
   editorError:SetPoint("LEFT", helpButton, "RIGHT", 0, 4)
   editorError:SetPoint("RIGHT", settings_frame, "LEFT")
 
-  local editorLine = CreateFrame("Editbox", nil, group.frame)
+  local editorLine = CreateFrame("EditBox", nil, group.frame)
   -- Set script on enter pressed..
   editorLine:SetPoint("BOTTOMRIGHT", editor.frame, "TOPRIGHT", -100, -15)
   editorLine:SetFont(STANDARD_TEXT_FONT, 10)

@@ -451,7 +451,7 @@ local function createDistributeAlignOptions(id, data)
         end
         local spaced;
         local previousData;
-        for index, childId in pairs(data.controlledChildren) do
+        for _, childId in pairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childId);
           if(childData) then
             local _, bottom, _, top = getRect(childData);
@@ -667,7 +667,7 @@ end
 
 -- Modify preview thumbnail
 local function modifyThumbnail(parent, frame, data)
-  function frame:SetIcon(path)
+  function frame:SetIcon()
     if data.groupIcon then
       local success = WeakAuras.SetTextureOrAtlas(frame.icon, data.groupIcon)
       if success then
@@ -688,12 +688,12 @@ local function modifyThumbnail(parent, frame, data)
     frame.defaultIcon:Show()
   end
 
-  frame:SetIcon(nil)
+  frame:SetIcon()
 end
 
 -- Create "new region" preview
 local function createIcon()
-  local thumbnail = createThumbnail(UIParent)
+  local thumbnail = createThumbnail()
   thumbnail.defaultIcon = createDefaultIcon(thumbnail)
   return thumbnail
 end

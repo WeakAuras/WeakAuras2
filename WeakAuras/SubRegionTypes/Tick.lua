@@ -1,10 +1,9 @@
 if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
-local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
 
-local default = function(parentType)
+local default = function()
   return {
     tick_visible = true,
     tick_color = {1, 1, 1, 1},

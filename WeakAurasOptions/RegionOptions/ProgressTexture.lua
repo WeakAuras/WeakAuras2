@@ -739,7 +739,7 @@ local function createIcon()
     backgroundColor = {0.5, 0.5, 0.5, 0.5}
   };
 
-  local thumbnail = createThumbnail(UIParent);
+  local thumbnail = createThumbnail();
   modifyThumbnail(UIParent, thumbnail, data, nil, 32);
 
   thumbnail.elapsed = 0;
