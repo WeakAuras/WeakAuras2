@@ -416,7 +416,7 @@ local function BuildAlignLines(mover)
 end
 
 local function ConstructMoverSizer(parent)
-  local frame = CreateFrame("Frame", nil, parent, BackdropTemplateMixin and "BackdropTemplate")
+  local frame = CreateFrame("Frame", nil, parent, "BackdropTemplate")
   frame:SetBackdrop({
     edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
     edgeSize = 12,

@@ -138,7 +138,7 @@ function OptionsPrivate.CreateFrame()
   local db = OptionsPrivate.savedVars.db
   local odb = OptionsPrivate.savedVars.odb
   -------- Mostly Copied from AceGUIContainer-Frame--------
-  frame = CreateFrame("Frame", "WeakAurasOptions", UIParent, BackdropTemplateMixin and "BackdropTemplate")
+  frame = CreateFrame("Frame", "WeakAurasOptions", UIParent, "BackdropTemplate")
 
   tinsert(UISpecialFrames, frame:GetName())
   frame:SetBackdrop({
@@ -412,7 +412,7 @@ function OptionsPrivate.CreateFrame()
   tipFrame.frame:Hide()
   frame.tipFrame = tipFrame
 
-  local tipPopup = CreateFrame("Frame", nil, frame, BackdropTemplateMixin and "BackdropTemplate")
+  local tipPopup = CreateFrame("Frame", nil, frame, "BackdropTemplate")
   tipPopup:SetFrameStrata("FULLSCREEN")
   tipPopup:SetBackdrop({
     bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",

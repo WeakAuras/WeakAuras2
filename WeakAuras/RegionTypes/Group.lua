@@ -32,7 +32,7 @@ local function create(parent)
   region:SetHeight(2);
 
   -- Border region
-  local border = CreateFrame("Frame", nil, region, BackdropTemplateMixin and "BackdropTemplate")
+  local border = CreateFrame("Frame", nil, region, "BackdropTemplate")
   region.border = border;
 
   WeakAuras.regionPrototype.create(region);
