@@ -171,9 +171,9 @@ function TestForMultiSelect(trigger, arg)
     if trigger[name] and trigger[name].multi then
       for value, _ in pairs(trigger[name].multi) do
         if not arg.test then
-          test = test..name.."=="..(tonumber(value) or "[["..value.."]]").." or ";
+          test = test..name.."=="..(tonumber(value) or ("[["..value.."]]")).." or ";
         else
-          test = test..arg.test:format(tonumber(value) or "[["..value.."]]").." or ";
+          test = test..arg.test:format(tonumber(value) or ("[["..value.."]]")).." or ";
         end
         any = true;
       end
@@ -191,9 +191,9 @@ function TestForMultiSelect(trigger, arg)
       return test;
     end
     if not arg.test then
-      test = trigger[name].single and "("..name.."=="..(tonumber(value) or "[["..value.."]]")..")";
+      test = trigger[name].single and "("..name.."=="..(tonumber(value) or ("[["..value.."]]"))..")";
     else
-      test = trigger[name].single and "("..arg.test:format(tonumber(value) or "[["..value.."]]")..")";
+      test = trigger[name].single and "("..arg.test:format(tonumber(value) or ("[["..value.."]]"))..")";
     end
   end
   return test;
@@ -219,20 +219,20 @@ function ConstructTest(trigger, arg)
           test = "("..arg.test:format(trigger[name])..")";
         end
       else
-        test = "(".. name .." and "..name.."==" ..(number or "\""..(trigger[name] or "").."\"")..")";
+        test = "(".. name .." and "..name.."==" ..(number or ("\""..(trigger[name] or "").."\""))..")";
       end
     elseif(arg.test) then
       test = "("..arg.test:format(tostring(trigger[name]) or "")..")";
     elseif(arg.type == "longstring" and trigger[name.."_operator"]) then
       test = TestForLongString(trigger, arg);
     elseif (arg.type == "string" or arg.type == "select" or arg.type == "item") then
-      test = "(".. name .." and "..name.."==" ..(number or "\""..(trigger[name] or "").."\"")..")";
+      test = "(".. name .." and "..name.."==" ..(number or ("\""..(trigger[name] or "").."\""))..")";
     else
       if(type(trigger[name]) == "table") then
         trigger[name] = "error";
       end
       -- number
-      test = "(".. name .." and "..name..(trigger[name.."_operator"] or "==")..(number or "\""..(trigger[name] or "").."\"")..")";
+      test = "(".. name .." and "..name..(trigger[name.."_operator"] or "==")..(number or ("\""..(trigger[name] or "").."\""))..")";
     end
   end
 

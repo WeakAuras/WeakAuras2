@@ -615,12 +615,12 @@ local function ConstructFunction(prototype, trigger, skipOptional)
                 test = "(";
                 for value, _ in pairs(trigger[name].multi) do
                   if not arg.test then
-                    test = test..name.."=="..(tonumber(value) or "[["..value.."]]").." or ";
+                    test = test..name.."=="..(tonumber(value) or ("[["..value.."]]")).." or ";
                   else
                     if arg.extraOption then
-                      test = test..arg.test:format(tonumber(value) or "[["..value.."]]", trigger[name .. "_extraOption"] or 0).." or ";
+                      test = test..arg.test:format(tonumber(value) or ("[["..value.."]]"), trigger[name .. "_extraOption"] or 0).." or ";
                     else
-                      test = test..arg.test:format(tonumber(value) or "[["..value.."]]").." or ";
+                      test = test..arg.test:format(tonumber(value) or ("[["..value.."]]")).." or ";
                     end
                   end
                   any = true;
@@ -644,9 +644,9 @@ local function ConstructFunction(prototype, trigger, skipOptional)
             elseif(trigger["use_"..name]) then -- single selection
               local value = trigger[name] and trigger[name].single;
               if not arg.test then
-                test = trigger[name] and trigger[name].single and "("..name.."=="..(tonumber(value) or "[["..value.."]]")..")";
+                test = trigger[name] and trigger[name].single and "("..name.."=="..(tonumber(value) or ("[["..value.."]]"))..")";
               else
-                test = trigger[name] and trigger[name].single and "("..arg.test:format(tonumber(value) or "[["..value.."]]")..")";
+                test = trigger[name] and trigger[name].single and "("..arg.test:format(tonumber(value) or ("[["..value.."]]"))..")";
               end
             end
           elseif(arg.type == "toggle") then
@@ -679,7 +679,7 @@ local function ConstructFunction(prototype, trigger, skipOptional)
             if(type(trigger[name]) == "table") then
               trigger[name] = "error";
             end
-            test = "("..name..(trigger[name.."_operator"] or "==")..(number or "[["..(trigger[name] or "").."]]")..")";
+            test = "("..name..(trigger[name.."_operator"] or "==")..(number or ("[["..(trigger[name] or "").."]]"))..")";
           end
           if (arg.preamble) then
             preambles = preambles .. arg.preamble:format(trigger[name]) .. "\n"
