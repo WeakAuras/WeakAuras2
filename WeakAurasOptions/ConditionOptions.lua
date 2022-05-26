@@ -50,8 +50,6 @@ local AddonName, OptionsPrivate = ...
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
-local debug = false;
-
 local function addSpace(args, order)
   args["space" .. order] = {
     type = "description",
@@ -59,18 +57,6 @@ local function addSpace(args, order)
     image = function() return "", 0, 0 end,
     order = order,
     width = WeakAuras.normalWidth
-  }
-  order = order + 1;
-  return order;
-end
-
-local function addHalfSpace(args, order)
-  args["space" .. order] = {
-    type = "description",
-    name = "",
-    image = function() return "", 0, 0 end,
-    order = order,
-    width = WeakAuras.halfWidth
   }
   order = order + 1;
   return order;
@@ -768,7 +754,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     args["condition" .. i .. "value" .. j] = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = blueIfNoValue(data, conditions[i].changes[j], "value", "message_dest_isunit", L["Is Unit"], L["Is Unit"]),
+      name = blueIfNoValue(data, conditions[i].changes[j], "value", "message_dest_isunit", L["Is Unit"]),
       desc = descIfNoValue(data, conditions[i].changes[j], "value", "message_dest_isunit", propertyType),
       order = order,
       get = function()
@@ -785,7 +771,6 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       type = "select",
       width = WeakAuras.doubleWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", L["Voice"], L["Voice"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", propertyType),
       values = OptionsPrivate.Private.tts_voices,
       order = order,
       get = function()
@@ -810,7 +795,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       desc = descMessage,
       order = order,
       get = message_getter,
-      set = setValueComplex("message", true)
+      set = setValueComplex("message")
     }
     order = order + 1;
 

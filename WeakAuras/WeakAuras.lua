@@ -13,11 +13,11 @@ local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsI
   = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
 local UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
   = UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
-local SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, GetTime, GetSpellLink, GetItemInfo
-  = SendChatMessage, GetChannelName, UnitInBattleground, UnitInRaid, UnitInParty, GetTime, GetSpellLink, GetItemInfo
+local SendChatMessage, UnitInBattleground, UnitInRaid, UnitInParty, GetTime
+  = SendChatMessage, UnitInBattleground, UnitInRaid, UnitInParty, GetTime
 local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
   = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
-local debugstack, IsSpellKnown, GetFileIDFromPath = debugstack, IsSpellKnown, GetFileIDFromPath
+local debugstack = debugstack
 local GetNumTalentTabs, GetNumTalents = GetNumTalentTabs, GetNumTalents
 local MAX_NUM_TALENTS = MAX_NUM_TALENTS or 20
 
@@ -259,8 +259,6 @@ local fallbacksStates = {};
 
 -- List of all trigger systems, contains each system once
 local triggerSystems = {}
-
-local from_files = {};
 
 local timers = {}; -- Timers for autohiding, keyed on id, triggernum, cloneid
 WeakAuras.timers = timers;
@@ -1002,8 +1000,8 @@ do -- Archive stuff
   end
 
   function WeakAuras.LoadFromArchive(storeType, storeID)
-    local Archivist = OpenArchive()
-    return Archivist:Load(storeType, storeID)
+    local Archive = OpenArchive()
+    return Archive:Load(storeType, storeID)
   end
 end
 
@@ -1786,7 +1784,7 @@ function Private.UnloadDisplays(toUnload, ...)
     -- Even though auras are collapsed, their finish animation can be running
     Private.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
     if clones[id] then
-      for cloneId, region in pairs(clones[id]) do
+      for _, region in pairs(clones[id]) do
         Private.CancelAnimation(region, true, true, true, true, true, true)
       end
     end
@@ -1840,7 +1838,7 @@ function WeakAuras.Delete(data)
 
   UIDtoID[data.uid] = nil
   if(data.controlledChildren) then
-    for index, childId in pairs(data.controlledChildren) do
+    for _, childId in pairs(data.controlledChildren) do
       local childData = db.displays[childId];
       if(childData) then
         childData.parent = nil;
@@ -1855,7 +1853,7 @@ function WeakAuras.Delete(data)
   Private.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
 
   if clones[id] then
-    for cloneId, region in pairs(clones[id]) do
+    for _, region in pairs(clones[id]) do
       Private.CancelAnimation(region, true, true, true, true, true, true)
     end
   end
@@ -2036,9 +2034,9 @@ function Private.Convert(data, newType)
         tremove(data.subRegions, index)
         -- Adjust conditions!
         if data.conditions then
-          for conditionIndex, condition in ipairs(data.conditions) do
+          for _, condition in ipairs(data.conditions) do
             if type(condition.changes) == "table" then
-              for changeIndex, change in ipairs(condition.changes) do
+              for _, change in ipairs(condition.changes) do
                 if change.property then
                   local subRegionIndex, property = change.property:match("^sub%.(%d+)%.(.*)")
                   subRegionIndex = tonumber(subRegionIndex)
@@ -2627,7 +2625,7 @@ function WeakAuras.PreAdd(data)
   Private.Modernize(data);
   WeakAuras.validate(data, WeakAuras.data_stub);
   if data.subRegions then
-    for index, subRegionData in ipairs(data.subRegions) do
+    for _, subRegionData in ipairs(data.subRegions) do
       local subType = subRegionData.type
       if subType and Private.subRegionTypes[subType] then
         if Private.subRegionTypes[subType].supports(data.regionType) then
@@ -2760,7 +2758,7 @@ local function pAdd(data, simpleChange)
         timers[id] = nil;
       end
 
-      local region = WeakAuras.SetRegion(data);
+      WeakAuras.SetRegion(data);
 
       triggerState[id] = {
         disjunctive = data.triggers.disjunctive or "all",
@@ -2940,7 +2938,7 @@ end
 function Private.SetAllStatesHidden(id, triggernum)
   local triggerState = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
   local changed = false
-  for id, state in pairs(triggerState) do
+  for _, state in pairs(triggerState) do
     changed = changed or state.show
     state.show = false;
     state.changed = true;
@@ -3168,7 +3166,6 @@ function Private.HandleGlowAction(actions, region)
   )
   then
     local glow_frame
-    local original_glow_frame
     if actions.glow_frame_type == "FRAMESELECTOR" then
       if actions.glow_frame:sub(1, 10) == "WeakAuras:" then
         local frame_name = actions.glow_frame:sub(11)
@@ -3638,7 +3635,6 @@ end
 
 function Private.ApplyFrameLevel(region, frameLevel)
   frameLevel = frameLevel or GetFrameLevelFor(region.id)
-  local subforegroundIndex = 0
   if region.subRegions then
     for index, subRegion in pairs(region.subRegions) do
       if subRegion.type == "subbackground" then
@@ -3815,7 +3811,7 @@ do
       visibleFakeStates[id] = false
       if triggerState[id] then
         local changed = false
-        for triggernum, state in ipairs(triggerState[id]) do
+        for triggernum in ipairs(triggerState[id]) do
           changed = Private.SetAllStatesHidden(id, triggernum) or changed
         end
         if changed then
@@ -3830,7 +3826,7 @@ do
     if (WeakAuras.IsOptionsOpen() and visibleFakeStates[id]) then
       local data = WeakAuras.GetData(id)
       if (data) then
-        for triggernum, trigger in ipairs(data.triggers) do
+        for triggernum in ipairs(data.triggers) do
           Private.SetAllStatesHidden(id, triggernum)
           local triggerSystem = GetTriggerSystem(data, triggernum)
           if triggerSystem and triggerSystem.CreateFakeStates then
@@ -3949,7 +3945,7 @@ local function evaluateTriggerStateTriggers(id)
     end
   end
 
-  Private.ActivateAuraEnvironment(nil);
+  Private.ActivateAuraEnvironment();
 
   return result;
 end
@@ -4060,7 +4056,7 @@ function Private.UpdatedTriggerState(id)
     end
   elseif (show) then
     local needsFallback = true;
-    for cloneId, state in pairs(activeTriggerState) do
+    for _, state in pairs(activeTriggerState) do
       if (state.show) then
         needsFallback = false;
         break;
@@ -4077,7 +4073,7 @@ function Private.UpdatedTriggerState(id)
   if (show and not oldShow) then -- Hide => Show
     ApplyStatesToRegions(id, newActiveTrigger, activeTriggerState);
   elseif (not show and oldShow) then -- Show => Hide
-    for cloneId, clone in pairs(clones[id]) do
+    for _, clone in pairs(clones[id]) do
       clone:Collapse()
     end
     WeakAuras.regions[id].region:Collapse()
@@ -4141,7 +4137,6 @@ function Private.RunCustomTextFunc(region, customFunc)
 end
 
 local function ReplaceValuePlaceHolders(textStr, region, customFunc, state, formatter)
-  local regionValues = region.values;
   local value;
   if string.sub(textStr, 1, 1) == "c" then
     local custom
@@ -4452,7 +4447,7 @@ function Private.CreateFormatters(input, getter, withoutColor)
   local formatters = {}
   Private.ParseTextStr(input, function(symbol)
     if not seenSymbols[symbol] then
-      local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
+      local _, sym = string.match(symbol, "(.+)%.(.+)")
       sym = sym or symbol
       if sym == "i" then
         -- Do nothing
@@ -5247,7 +5242,6 @@ function WeakAuras.ParseNameCheck(name)
       -- state: 2: In Realm
       -- state: -1: Escape Name
       -- state: -2: In Escape Realm
-      local index = 1
       local state = 1
       local name = ""
       local realm = ""

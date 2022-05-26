@@ -8,7 +8,6 @@ local pairs  = pairs
 local CreateFrame, GetSpellInfo = CreateFrame, GetSpellInfo
 
 local AceGUI = LibStub("AceGUI-3.0")
-local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
@@ -32,9 +31,6 @@ local function ConstructIconPicker(frame)
 
   local function iconPickerFill(subname, doSort)
     scroll:ReleaseChildren();
-
-    local distances = {};
-    local names = {};
 
     -- Work around special numbers such as inf and nan
     if (tonumber(subname)) then

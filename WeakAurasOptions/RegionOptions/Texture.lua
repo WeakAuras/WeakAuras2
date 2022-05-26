@@ -194,7 +194,7 @@ local function createIcon()
     rotation = 0;
   };
 
-  local thumbnail = createThumbnail(UIParent);
+  local thumbnail = createThumbnail();
   modifyThumbnail(UIParent, thumbnail, data, nil, 50);
 
   return thumbnail;

@@ -3,7 +3,6 @@ if not WeakAuras.IsCorrectVersion() then
 end
 
 local AddonName, OptionsPrivate = ...
-local L = WeakAuras.L
 
 local pairs, next, type, unpack = pairs, next, type, unpack
 

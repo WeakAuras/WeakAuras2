@@ -27,15 +27,11 @@ local tostring, string_char, strsplit = tostring, string.char, strsplit
 local pairs, type, unpack = pairs, type, unpack
 local error = error
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
-local coroutine = coroutine
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
 local versionString = WeakAuras.versionString;
-
-local regionOptions = WeakAuras.regionOptions;
-local regionTypes = WeakAuras.regionTypes;
 
 -- Local functions
 local decodeB64, GenerateUniqueID

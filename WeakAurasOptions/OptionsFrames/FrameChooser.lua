@@ -8,8 +8,6 @@ local pairs = pairs
 local CreateFrame, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
   = CreateFrame, IsMouseButtonDown, SetCursor, GetMouseFocus, MouseIsOver, ResetCursor
 
-local AceConfigDialog = LibStub("AceConfigDialog-3.0")
-
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 

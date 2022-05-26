@@ -16,17 +16,6 @@ local ValidateNumeric = WeakAuras.ValidateNumeric;
 
 local spellCache = WeakAuras.spellCache;
 
-local function union(table1, table2)
-  local meta = {};
-  for i,v in pairs(table1) do
-    meta[i] = v;
-  end
-  for i,v in pairs(table2) do
-    meta[i] = v;
-  end
-  return meta;
-end
-
 local function CorrectSpellName(input)
   local inputId = tonumber(input);
   if(inputId) then

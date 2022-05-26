@@ -685,7 +685,7 @@ local function createIcon()
         animationType = "progress"
     };
 
-    local thumbnail = createThumbnail(UIParent);
+    local thumbnail = createThumbnail();
     modifyThumbnail(UIParent, thumbnail, data, nil, 75);
 
     thumbnail.elapsed = 0;

@@ -4,7 +4,6 @@ local L = WeakAuras.L;
 
 do
   local function subCreateOptions(parentData, data, index, subIndex)
-      local order = 9
       local options = {
         __title = L["Background"],
         __order = 1,
@@ -32,7 +31,6 @@ end
 
 do
   local function subCreateOptions(parentData, data, index, subIndex)
-    local order = 9
     local options = {
       __title = L["Foreground"],
       __order = 1,

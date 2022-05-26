@@ -3,8 +3,8 @@ local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
 local tinsert, tremove, wipe = table.insert, table.remove, wipe
-local pairs, type, unpack = pairs, type, unpack
-local loadstring, error = loadstring, error
+local pairs, type = pairs, type
+local error = error
 local coroutine = coroutine
 local _G = _G
 
