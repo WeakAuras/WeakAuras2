@@ -89,7 +89,7 @@ local function CreateFrameSizer(frame, callback, position)
     xOffset2, yOffset2 = -6, -6
   end
 
-  local handle = CreateFrame("BUTTON", nil, frame)
+  local handle = CreateFrame("Button", nil, frame)
   handle:SetPoint(position, frame)
   handle:SetSize(25, 25)
   handle:EnableMouse()
@@ -133,12 +133,12 @@ local minWidth = 750
 local minHeight = 240
 
 function OptionsPrivate.CreateFrame()
-  local WeakAuras_DropDownMenu = CreateFrame("frame", "WeakAuras_DropDownMenu", nil, "UIDropDownMenuTemplate")
+  local WeakAuras_DropDownMenu = CreateFrame("Frame", "WeakAuras_DropDownMenu", nil, "UIDropDownMenuTemplate")
   local frame
   local db = OptionsPrivate.savedVars.db
   local odb = OptionsPrivate.savedVars.odb
   -------- Mostly Copied from AceGUIContainer-Frame--------
-  frame = CreateFrame("FRAME", "WeakAurasOptions", UIParent, BackdropTemplateMixin and "BackdropTemplate")
+  frame = CreateFrame("Frame", "WeakAurasOptions", UIParent, BackdropTemplateMixin and "BackdropTemplate")
 
   tinsert(UISpecialFrames, frame:GetName())
   frame:SetBackdrop({
@@ -217,7 +217,7 @@ function OptionsPrivate.CreateFrame()
   local close = CreateDecoration(frame)
   close:SetPoint("TOPRIGHT", -30, 12)
 
-  local closebutton = CreateFrame("BUTTON", nil, close, "UIPanelCloseButton")
+  local closebutton = CreateFrame("Button", nil, close, "UIPanelCloseButton")
   closebutton:SetPoint("CENTER", close, "CENTER", 1, -1)
   closebutton:SetScript("OnClick", WeakAuras.HideOptions)
 
@@ -375,7 +375,7 @@ function OptionsPrivate.CreateFrame()
     end
   end
 
-  local minimizebutton = CreateFrame("BUTTON", nil, minimize)
+  local minimizebutton = CreateFrame("Button", nil, minimize)
   minimizebutton:SetWidth(30)
   minimizebutton:SetHeight(30)
   minimizebutton:SetPoint("CENTER", minimize, "CENTER", 1, -1)
@@ -438,7 +438,7 @@ function OptionsPrivate.CreateFrame()
   tipPopupLabel:SetJustifyH("LEFT")
   tipPopupLabel:SetJustifyV("TOP")
 
-  local urlWidget = CreateFrame("EDITBOX", nil, tipPopup, "InputBoxTemplate")
+  local urlWidget = CreateFrame("EditBox", nil, tipPopup, "InputBoxTemplate")
   urlWidget:SetFont(STANDARD_TEXT_FONT, 12)
   urlWidget:SetPoint("TOPLEFT", tipPopupLabel, "BOTTOMLEFT", 6, 0)
   urlWidget:SetPoint("TOPRIGHT", tipPopupLabel, "BOTTOMRIGHT", 0, 0)
@@ -546,7 +546,7 @@ function OptionsPrivate.CreateFrame()
   frame.moversizer, frame.mover = OptionsPrivate.MoverSizer(frame)
 
   -- filter line
-  local filterInput = CreateFrame("editbox", "WeakAurasFilterInput", frame, "SearchBoxTemplate")
+  local filterInput = CreateFrame("EditBox", "WeakAurasFilterInput", frame, "SearchBoxTemplate")
   filterInput:SetScript("OnTextChanged", function(self)
     SearchBoxTemplate_OnTextChanged(self)
     OptionsPrivate.SortDisplayButtons(filterInput:GetText())

@@ -912,7 +912,7 @@ end
 
 local genericTriggerRegisteredEvents = {};
 local genericTriggerRegisteredUnitEvents = {};
-local frame = CreateFrame("FRAME");
+local frame = CreateFrame("Frame");
 frame.unitFrames = {};
 WeakAuras.frames["WeakAuras Generic Trigger Frame"] = frame;
 frame:RegisterEvent("PLAYER_ENTERING_WORLD");
@@ -1128,7 +1128,7 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
   for unit, events in pairs(unitEventsToRegister) do
     for event in pairs(events) do
       if not frame.unitFrames[unit] then
-        frame.unitFrames[unit] = CreateFrame("FRAME")
+        frame.unitFrames[unit] = CreateFrame("Frame")
         frame.unitFrames[unit].unit = unit
         frame.unitFrames[unit]:SetScript("OnEvent", HandleUnitEvent);
       end
@@ -1425,7 +1425,7 @@ do
       update_clients_num = update_clients_num + 1;
     end
     if not(update_frame) then
-      update_frame = CreateFrame("FRAME");
+      update_frame = CreateFrame("Frame");
     end
     if not(updating) then
       update_frame:SetScript("OnUpdate", function()
@@ -1707,7 +1707,7 @@ do
 
   function WeakAuras.InitSwingTimer()
     if not(swingTimerFrame) then
-      swingTimerFrame = CreateFrame("frame");
+      swingTimerFrame = CreateFrame("Frame");
       swingTimerFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED");
       swingTimerFrame:RegisterEvent("PLAYER_ENTER_COMBAT");
       swingTimerFrame:RegisterEvent("PLAYER_LEAVE_COMBAT");
@@ -1935,7 +1935,7 @@ do
   local spellDetails = {}
 
   function WeakAuras.InitCooldownReady()
-    cdReadyFrame = CreateFrame("FRAME");
+    cdReadyFrame = CreateFrame("Frame");
     WeakAuras.frames["Cooldown Trigger Handler"] = cdReadyFrame
     if WeakAuras.IsRetail() then
       cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
@@ -2576,7 +2576,7 @@ do
   local spellActivationSpellsCurrent = {};
   local spellActivationFrame;
   local function InitSpellActivation()
-    spellActivationFrame = CreateFrame("FRAME");
+    spellActivationFrame = CreateFrame("Frame");
     WeakAuras.frames["Spell Activation"] = spellActivationFrame;
     spellActivationFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
     spellActivationFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
@@ -2624,7 +2624,7 @@ end
 function WeakAuras.WatchUnitChange(unit)
   unit = string.lower(unit)
   if not watchUnitChange then
-    watchUnitChange = CreateFrame("FRAME");
+    watchUnitChange = CreateFrame("Frame");
     watchUnitChange.unitChangeGUIDS = {}
     watchUnitChange.unitRoles = {}
     watchUnitChange.unitRaidRole = {}
@@ -3387,7 +3387,7 @@ do
   WeakAuras.frames["Pet Use Handler"] = petFrame;
   function WeakAuras.WatchForPetDeath()
     if not(petFrame) then
-      petFrame = CreateFrame("frame");
+      petFrame = CreateFrame("Frame");
       petFrame:RegisterUnitEvent("UNIT_PET", "player")
       petFrame:SetScript("OnEvent", function(event, unit)
         Private.StartProfileSystem("generictrigger")
@@ -3488,7 +3488,7 @@ do
 
   function WeakAuras.WatchForPlayerMoving()
     if not(playerMovingFrame) then
-      playerMovingFrame = CreateFrame("frame");
+      playerMovingFrame = CreateFrame("Frame");
       WeakAuras.frames["Player Moving Frame"] =  playerMovingFrame;
     end
     playerMovingFrame:RegisterEvent("PLAYER_STARTED_MOVING");
@@ -3498,7 +3498,7 @@ do
 
   function WeakAuras.WatchPlayerMoveSpeed()
     if not(playerMovingFrame) then
-      playerMovingFrame = CreateFrame("frame");
+      playerMovingFrame = CreateFrame("Frame");
       WeakAuras.frames["Player Moving Frame"] =  playerMovingFrame;
     end
     playerMovingFrame.speed = GetUnitSpeed("player")
@@ -3510,7 +3510,7 @@ end
 local itemCountWatchFrame;
 function WeakAuras.RegisterItemCountWatch()
   if not(itemCountWatchFrame) then
-    itemCountWatchFrame = CreateFrame("frame");
+    itemCountWatchFrame = CreateFrame("Frame");
     itemCountWatchFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
     itemCountWatchFrame:SetScript("OnEvent", function()
       Private.StartProfileSystem("generictrigger");

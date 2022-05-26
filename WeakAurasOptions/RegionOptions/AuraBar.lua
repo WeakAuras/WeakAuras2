@@ -456,7 +456,7 @@ end
 -- Create preview thumbnail
 local function createThumbnail()
   -- Preview frame
-  local borderframe = CreateFrame("FRAME", nil, UIParent);
+  local borderframe = CreateFrame("Frame", nil, UIParent);
   borderframe:SetWidth(32);
   borderframe:SetHeight(32);
 
@@ -467,13 +467,13 @@ local function createThumbnail()
   border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
 
   -- Main region
-  local region = CreateFrame("FRAME", nil, borderframe);
+  local region = CreateFrame("Frame", nil, borderframe);
   borderframe.region = region;
   region:SetWidth(32);
   region:SetHeight(32);
 
   -- Status-bar frame
-  local bar = CreateFrame("FRAME", nil, region);
+  local bar = CreateFrame("Frame", nil, region);
   borderframe.bar = bar;
 
   -- Fake status-bar

@@ -1808,7 +1808,7 @@ local function RecheckActiveForUnitType(unitType, unit, unitsToRemoveScan)
   end
 end
 
-local frame = CreateFrame("FRAME")
+local frame = CreateFrame("Frame")
 WeakAuras.frames["WeakAuras Buff2 Frame"] = frame
 
 local function EventHandler(frame, event, arg1, arg2, ...)
@@ -3475,7 +3475,7 @@ end
 
 function BuffTrigger.InitMultiAura()
   if not multiAuraFrame then
-    multiAuraFrame = CreateFrame("frame")
+    multiAuraFrame = CreateFrame("Frame")
     multiAuraFrame:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
     multiAuraFrame:RegisterEvent("UNIT_TARGET")
     multiAuraFrame:RegisterEvent("UNIT_AURA")

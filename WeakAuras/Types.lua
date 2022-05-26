@@ -972,7 +972,7 @@ local function update_forms()
     end
   end
 end
-local form_frame = CreateFrame("frame");
+local form_frame = CreateFrame("Frame");
 form_frame:RegisterEvent("UPDATE_SHAPESHIFT_FORMS")
 form_frame:RegisterEvent("PLAYER_LOGIN")
 form_frame:SetScript("OnEvent", update_forms);
@@ -1363,7 +1363,7 @@ end
 
 Private.talent_types = {}
 if WeakAuras.IsRetail() then
-  local spec_frame = CreateFrame("frame");
+  local spec_frame = CreateFrame("Frame");
   spec_frame:RegisterEvent("PLAYER_LOGIN")
   spec_frame:SetScript("OnEvent", update_specs);
   local numTalents, numTiers, numColumns = MAX_TALENT_TIERS * NUM_TALENT_COLUMNS, MAX_TALENT_TIERS, NUM_TALENT_COLUMNS

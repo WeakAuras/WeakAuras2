@@ -69,7 +69,7 @@ local properties = {
 WeakAuras.regionPrototype.AddProperties(properties, default);
 
 local function create(parent)
-  local region = CreateFrame("FRAME", nil, UIParent);
+  local region = CreateFrame("Frame", nil, UIParent);
   region.regionType = "texture"
   region:SetMovable(true);
   region:SetResizable(true);

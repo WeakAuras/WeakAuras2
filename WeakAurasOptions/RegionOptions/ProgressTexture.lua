@@ -398,7 +398,7 @@ local function Transform(tx, x, y, angle, aspect) -- Translates texture to x, y 
 end
 
 local function createThumbnail()
-  local borderframe = CreateFrame("FRAME", nil, UIParent);
+  local borderframe = CreateFrame("Frame", nil, UIParent);
   borderframe:SetWidth(32);
   borderframe:SetHeight(32);
 
@@ -407,7 +407,7 @@ local function createThumbnail()
   border:SetTexture("Interface\\BUTTONS\\UI-Quickslot2.blp");
   border:SetTexCoord(0.2, 0.8, 0.2, 0.8);
 
-  local region = CreateFrame("FRAME", nil, borderframe);
+  local region = CreateFrame("Frame", nil, borderframe);
   borderframe.region = region;
   region:SetWidth(32);
   region:SetHeight(32);

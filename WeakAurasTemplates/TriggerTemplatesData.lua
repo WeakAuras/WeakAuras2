@@ -5428,7 +5428,7 @@ local function addLoadCondition(item, loadCondition)
 end
 
 local delayedEnrichDatabase = false;
-local itemInfoReceived = CreateFrame("frame")
+local itemInfoReceived = CreateFrame("Frame")
 
 local enrichTries = 0;
 local function enrichDatabase()
@@ -5503,7 +5503,7 @@ local function fixupIcons()
   end
 end
 
-local fixupIconsFrame = CreateFrame("frame");
+local fixupIconsFrame = CreateFrame("Frame");
 fixupIconsFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
 fixupIconsFrame:SetScript("OnEvent", fixupIcons);
 

@@ -231,7 +231,7 @@ local function ConstructTextEditor(frame)
   helpButton:SetWidth(100)
   helpButton:SetText(L["Help"])
 
-  local urlText = CreateFrame("editbox", nil, group.frame)
+  local urlText = CreateFrame("EditBox", nil, group.frame)
   urlText:SetFrameLevel(cancel:GetFrameLevel() + 1)
   urlText:SetFont(STANDARD_TEXT_FONT, 12)
   urlText:EnableMouse(true)
@@ -414,7 +414,7 @@ local function ConstructTextEditor(frame)
   end
 
   -- Make sidebar for snippets
-  local snippetsFrame = CreateFrame("FRAME", "WeakAurasSnippets", group.frame, BackdropTemplateMixin and "BackdropTemplate")
+  local snippetsFrame = CreateFrame("Frame", "WeakAurasSnippets", group.frame, BackdropTemplateMixin and "BackdropTemplate")
   snippetsFrame:SetPoint("TOPLEFT", group.frame, "TOPRIGHT", 20, 0)
   snippetsFrame:SetPoint("BOTTOMLEFT", group.frame, "BOTTOMRIGHT", 20, 0)
   snippetsFrame:SetWidth(250)

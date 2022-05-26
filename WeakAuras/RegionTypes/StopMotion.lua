@@ -90,7 +90,7 @@ local properties = {
 WeakAuras.regionPrototype.AddProperties(properties, default);
 
 local function create(parent)
-    local frame = CreateFrame("FRAME", nil, UIParent);
+    local frame = CreateFrame("Frame", nil, UIParent);
     frame.regionType = "stopmotion"
     frame:SetMovable(true);
     frame:SetResizable(true);

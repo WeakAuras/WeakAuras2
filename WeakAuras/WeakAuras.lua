@@ -907,7 +907,7 @@ local function tooltip_draw()
   tooltip:Show();
 end
 
-local colorFrame = CreateFrame("frame");
+local colorFrame = CreateFrame("Frame");
 WeakAuras.frames["LDB Icon Recoloring"] = colorFrame;
 
 local colorElapsed = 0;
@@ -915,7 +915,7 @@ local colorDelay = 2;
 local r, g, b = 0.8, 0, 1;
 local r2, g2, b2 = random(2)-1, random(2)-1, random(2)-1;
 
-local tooltip_update_frame = CreateFrame("FRAME");
+local tooltip_update_frame = CreateFrame("Frame");
 WeakAuras.frames["LDB Tooltip Updater"] = tooltip_update_frame;
 
 -- function copied from LibDBIcon-1.0.lua
@@ -1114,11 +1114,11 @@ function Private.Login(initialTime, takeNewSnapshots)
   end
 end
 
-local WeakAurasFrame = CreateFrame("FRAME", "WeakAurasFrame", UIParent);
+local WeakAurasFrame = CreateFrame("Frame", "WeakAurasFrame", UIParent);
 WeakAuras.frames["WeakAuras Main Frame"] = WeakAurasFrame;
 WeakAurasFrame:SetAllPoints(UIParent);
 
-local loadedFrame = CreateFrame("FRAME");
+local loadedFrame = CreateFrame("Frame");
 WeakAuras.frames["Addon Initialization Handler"] = loadedFrame;
 loadedFrame:RegisterEvent("ADDON_LOADED");
 loadedFrame:RegisterEvent("PLAYER_LOGIN");
@@ -1599,7 +1599,7 @@ function Private.ScanForLoads(toCheck, event, arg1, ...)
   scanForLoadsImpl(toCheck, event, arg1, ...)
 end
 
-local loadFrame = CreateFrame("FRAME");
+local loadFrame = CreateFrame("Frame");
 WeakAuras.loadFrame = loadFrame;
 WeakAuras.frames["Display Load Handling"] = loadFrame;
 
@@ -1636,7 +1636,7 @@ loadFrame:RegisterEvent("PLAYER_DEAD")
 loadFrame:RegisterEvent("PLAYER_ALIVE")
 loadFrame:RegisterEvent("PLAYER_UNGHOST")
 
-local unitLoadFrame = CreateFrame("FRAME");
+local unitLoadFrame = CreateFrame("Frame");
 WeakAuras.unitLoadFrame = unitLoadFrame;
 WeakAuras.frames["Display Load Handling 2"] = unitLoadFrame;
 
@@ -3665,7 +3665,7 @@ end
 local dynFrame = {};
 do
   -- Internal data
-  dynFrame.frame = CreateFrame("frame");
+  dynFrame.frame = CreateFrame("Frame");
   dynFrame.update = {};
   dynFrame.size = 0;
 
@@ -4540,12 +4540,12 @@ local function ensureMouseFrame()
   if (mouseFrame) then
     return;
   end
-  mouseFrame = CreateFrame("FRAME", "WeakAurasAttachToMouseFrame", UIParent);
+  mouseFrame = CreateFrame("Frame", "WeakAurasAttachToMouseFrame", UIParent);
   mouseFrame.attachedVisibleFrames = {};
   mouseFrame:SetWidth(1);
   mouseFrame:SetHeight(1);
 
-  local moverFrame = CreateFrame("FRAME", "WeakAurasMousePointerFrame", mouseFrame);
+  local moverFrame = CreateFrame("Frame", "WeakAurasMousePointerFrame", mouseFrame);
   mouseFrame.moverFrame = moverFrame;
   moverFrame:SetPoint("TOPLEFT", mouseFrame, "CENTER");
   moverFrame:SetWidth(32);
@@ -4676,12 +4676,12 @@ function Private.ensurePRDFrame()
   if (personalRessourceDisplayFrame) then
     return;
   end
-  personalRessourceDisplayFrame = CreateFrame("FRAME", "WeakAurasAttachToPRD", UIParent);
+  personalRessourceDisplayFrame = CreateFrame("Frame", "WeakAurasAttachToPRD", UIParent);
   personalRessourceDisplayFrame:Hide();
   personalRessourceDisplayFrame.attachedVisibleFrames = {};
   Private.personalRessourceDisplayFrame = personalRessourceDisplayFrame;
 
-  local moverFrame = CreateFrame("FRAME", "WeakAurasPRDMoverFrame", personalRessourceDisplayFrame);
+  local moverFrame = CreateFrame("Frame", "WeakAurasPRDMoverFrame", personalRessourceDisplayFrame);
   personalRessourceDisplayFrame.moverFrame = moverFrame;
   moverFrame:SetPoint("TOPLEFT", personalRessourceDisplayFrame, "TOPLEFT", -2, 2);
   moverFrame:SetPoint("BOTTOMRIGHT", personalRessourceDisplayFrame, "BOTTOMRIGHT", 2, -2);
@@ -4926,7 +4926,7 @@ local function postponeAnchor(id)
   end
 end
 
-local HiddenFrames = CreateFrame("FRAME", "WeakAurasHiddenFrames")
+local HiddenFrames = CreateFrame("Frame", "WeakAurasHiddenFrames")
 HiddenFrames:Hide()
 WeakAuras.HiddenFrames = HiddenFrames
 

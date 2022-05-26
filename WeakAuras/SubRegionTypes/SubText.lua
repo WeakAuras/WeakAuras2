@@ -161,7 +161,7 @@ local function getRotateOffset(object, degrees, point)
 end
 
 local function create()
-  local region = CreateFrame("FRAME", nil, UIParent);
+  local region = CreateFrame("Frame", nil, UIParent);
 
   local text = region:CreateFontString(nil, "OVERLAY");
   region.text = text;

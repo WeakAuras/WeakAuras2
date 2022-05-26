@@ -317,7 +317,7 @@ local funcs = {
 }
 
 local function create()
-  local region = CreateFrame("FRAME", nil, UIParent)
+  local region = CreateFrame("Frame", nil, UIParent)
 
   for name, func  in pairs(funcs) do
     region[name] = func

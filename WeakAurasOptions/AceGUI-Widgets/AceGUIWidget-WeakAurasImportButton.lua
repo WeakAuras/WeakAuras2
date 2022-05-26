@@ -124,7 +124,7 @@ Constructor
 
 local function Constructor()
   local name = "WeakAurasImportButton"..AceGUI:GetNextWidgetNum(Type);
-  local button = CreateFrame("BUTTON", name, UIParent, "OptionsListButtonTemplate");
+  local button = CreateFrame("Button", name, UIParent, "OptionsListButtonTemplate");
   button:SetHeight(18);
   button:SetWidth(380);
   button.dgroup = nil;
@@ -136,7 +136,7 @@ local function Constructor()
   background:SetVertexColor(0.5, 0.5, 0.5, 0.25);
   background:SetAllPoints(button);
 
-  local expand = CreateFrame("BUTTON", nil, button);
+  local expand = CreateFrame("Button", nil, button);
   button.expand = expand;
   expand.expanded = true;
   expand.disabled = true;

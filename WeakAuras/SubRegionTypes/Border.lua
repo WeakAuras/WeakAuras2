@@ -34,7 +34,7 @@ local properties = {
 
 
 local function create()
-  local region = CreateFrame("FRAME", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
+  local region = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate")
   return region
 end
 

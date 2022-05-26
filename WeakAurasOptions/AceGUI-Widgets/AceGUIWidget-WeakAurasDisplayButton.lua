@@ -1668,7 +1668,7 @@ Constructor
 
 local function Constructor()
   local name = "WeakAurasDisplayButton"..AceGUI:GetNextWidgetNum(Type);
-  local button = CreateFrame("BUTTON", name, UIParent, "OptionsListButtonTemplate");
+  local button = CreateFrame("Button", name, UIParent, "OptionsListButtonTemplate");
   button:SetHeight(32);
   button:SetWidth(1000);
   button.dgroup = nil;
@@ -1707,7 +1707,7 @@ local function Constructor()
 
   button.description = {};
 
-  local view = CreateFrame("BUTTON", nil, button);
+  local view = CreateFrame("Button", nil, button);
   button.view = view;
   view:SetWidth(16);
   view:SetHeight(16);
@@ -1724,7 +1724,7 @@ local function Constructor()
 
   view.visibility = 0;
 
-  local loaded = CreateFrame("BUTTON", nil, button);
+  local loaded = CreateFrame("Button", nil, button);
   button.loaded = loaded;
   loaded:SetWidth(16);
   loaded:SetHeight(16);
@@ -1738,7 +1738,7 @@ local function Constructor()
   loaded:SetScript("OnEnter", function() Show_Tooltip(button, loaded.title, loaded.desc) end);
   loaded:SetScript("OnLeave", Hide_Tooltip);
 
-  local renamebox = CreateFrame("EDITBOX", nil, button, "InputBoxTemplate");
+  local renamebox = CreateFrame("EditBox", nil, button, "InputBoxTemplate");
   renamebox:SetHeight(14);
   renamebox:SetPoint("TOP", button, "TOP");
   renamebox:SetPoint("LEFT", icon, "RIGHT", 6, 0);
@@ -1765,7 +1765,7 @@ local function Constructor()
     renamebox:Hide();
   end);
 
-  local group = CreateFrame("BUTTON", nil, button);
+  local group = CreateFrame("Button", nil, button);
   button.group = group;
   group:SetWidth(16);
   group:SetHeight(16);
@@ -1780,7 +1780,7 @@ local function Constructor()
   group:SetScript("OnEnter", function() Show_Tooltip(button, L["Group (verb)"], L["Put this display in a group"]) end);
   group:SetScript("OnLeave", Hide_Tooltip);
 
-  local ungroup = CreateFrame("BUTTON", nil, button);
+  local ungroup = CreateFrame("Button", nil, button);
   button.ungroup = ungroup;
   ungroup:SetWidth(11);
   ungroup:SetHeight(11);
@@ -1795,7 +1795,7 @@ local function Constructor()
   ungroup:SetScript("OnLeave", Hide_Tooltip);
   ungroup:Hide();
 
-  local upgroup = CreateFrame("BUTTON", nil, button);
+  local upgroup = CreateFrame("Button", nil, button);
   button.upgroup = upgroup;
   upgroup:SetWidth(11);
   upgroup:SetHeight(11);
@@ -1812,7 +1812,7 @@ local function Constructor()
   upgroup:SetScript("OnLeave", Hide_Tooltip);
   upgroup:Hide();
 
-  local downgroup = CreateFrame("BUTTON", nil, button);
+  local downgroup = CreateFrame("Button", nil, button);
   button.downgroup = downgroup;
   downgroup:SetWidth(11);
   downgroup:SetHeight(11);
@@ -1828,7 +1828,7 @@ local function Constructor()
   downgroup:SetScript("OnLeave", Hide_Tooltip);
   downgroup:Hide();
 
-  local expand = CreateFrame("BUTTON", nil, button);
+  local expand = CreateFrame("Button", nil, button);
   button.expand = expand;
   expand.expanded = true;
   expand.disabled = true;
@@ -1845,7 +1845,7 @@ local function Constructor()
   expand:SetScript("OnEnter", function() Show_Tooltip(button, expand.title, expand.desc) end);
   expand:SetScript("OnLeave", Hide_Tooltip);
 
-  local warning = CreateFrame("BUTTON", nil, button);
+  local warning = CreateFrame("Button", nil, button);
   button.warning = warning
   warning:SetWidth(16)
   warning:SetHeight(16)

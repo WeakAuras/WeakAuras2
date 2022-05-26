@@ -447,7 +447,7 @@ function ShowTooltip(lines)
   ItemRefTooltip:Show()
 end
 
-local delayedImport = CreateFrame("FRAME")
+local delayedImport = CreateFrame("Frame")
 
 local function ImportNow(data, children, target, sender)
   if InCombatLockdown() then

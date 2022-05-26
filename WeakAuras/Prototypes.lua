@@ -480,7 +480,7 @@ Private.function_strings = {
   ]]
 };
 
-local hsvFrame = CreateFrame("Colorselect")
+local hsvFrame = CreateFrame("ColorSelect")
 
 -- HSV transition, for a much prettier color transition in many cases
 -- see http://www.wowinterface.com/forums/showthread.php?t=48236

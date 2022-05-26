@@ -92,7 +92,7 @@ Constructor
 
 local function Constructor()
   local name = "WeakAurasTextureButton"..AceGUI:GetNextWidgetNum(Type);
-  local button = CreateFrame("BUTTON", name, UIParent, "OptionsListButtonTemplate");
+  local button = CreateFrame("Button", name, UIParent, "OptionsListButtonTemplate");
   if BackdropTemplateMixin then
     Mixin(button, BackdropTemplateMixin)
   end

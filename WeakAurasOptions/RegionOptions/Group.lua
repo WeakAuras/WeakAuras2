@@ -624,7 +624,7 @@ end
 
 local function createThumbnail()
   -- frame
-  local thumbnail = CreateFrame("FRAME", nil, UIParent);
+  local thumbnail = CreateFrame("Frame", nil, UIParent);
   thumbnail:SetWidth(32);
   thumbnail:SetHeight(32);
 
@@ -643,7 +643,7 @@ end
 
 local function createDefaultIcon(parent)
   -- default Icon
-  local defaultIcon = CreateFrame("FRAME", nil, parent);
+  local defaultIcon = CreateFrame("Frame", nil, parent);
   parent.defaultIcon = defaultIcon;
 
   local t1 = defaultIcon:CreateTexture(nil, "ARTWORK");

@@ -57,7 +57,7 @@ local function ConstructModelPicker(frame)
   group.frame:Hide();
   group:SetLayout("flow");
 
-  local filterInput = CreateFrame("editbox", "WeakAurasFilterInput", group.frame, "SearchBoxTemplate")
+  local filterInput = CreateFrame("EditBox", "WeakAurasFilterInput", group.frame, "SearchBoxTemplate")
   filterInput:SetScript("OnTextChanged", function(self)
     SearchBoxTemplate_OnTextChanged(self)
     local filterText = filterInput:GetText()

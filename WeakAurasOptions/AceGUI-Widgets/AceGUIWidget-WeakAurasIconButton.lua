@@ -62,7 +62,7 @@ Constructor
 -------------------------------------------------------------------------------]]
 
 local function Constructor()
-  local button = CreateFrame("BUTTON", nil, UIParent);
+  local button = CreateFrame("Button", nil, UIParent);
   button:SetHeight(52);
   button:SetWidth(52);
 
