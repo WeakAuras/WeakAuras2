@@ -1114,9 +1114,9 @@ function Private.Login(initialTime, takeNewSnapshots)
   end
 end
 
-local frame = CreateFrame("FRAME", "WeakAurasFrame", UIParent);
-WeakAuras.frames["WeakAuras Main Frame"] = frame;
-frame:SetAllPoints(UIParent);
+local WeakAurasFrame = CreateFrame("FRAME", "WeakAurasFrame", UIParent);
+WeakAuras.frames["WeakAuras Main Frame"] = WeakAurasFrame;
+WeakAurasFrame:SetAllPoints(UIParent);
 
 local loadedFrame = CreateFrame("FRAME");
 WeakAuras.frames["Addon Initialization Handler"] = loadedFrame;
@@ -2836,7 +2836,7 @@ function WeakAuras.SetRegion(data, cloneId)
           if(clonePool[data.regionType] and clonePool[data.regionType][1]) then
             clones[id][cloneId] = tremove(clonePool[data.regionType]);
           else
-            local clone = regionTypes[data.regionType].create(frame, data);
+            local clone = regionTypes[data.regionType].create(WeakAurasFrame, data);
             clone.regionType = data.regionType;
             clone:Hide();
             clones[id][cloneId] = clone;
@@ -2845,7 +2845,7 @@ function WeakAuras.SetRegion(data, cloneId)
         end
       else
         if((not regions[id]) or (not regions[id].region) or regions[id].regionType ~= regionType) then
-          region = regionTypes[regionType].create(frame, data);
+          region = regionTypes[regionType].create(WeakAurasFrame, data);
           regions[id] = {
             regionType = regionType,
             region = region
@@ -2864,7 +2864,7 @@ function WeakAuras.SetRegion(data, cloneId)
       region.cloneId = cloneId or "";
       WeakAuras.validate(data, regionTypes[regionType].default);
 
-      local parent = frame;
+      local parent = WeakAurasFrame;
       if(data.parent) then
         if(regions[data.parent]) then
           parent = regions[data.parent].region;
@@ -4910,7 +4910,7 @@ local function tryAnchorAgain()
     local data = WeakAuras.GetData(id);
     local region = WeakAuras.GetRegion(id);
     if (data and region) then
-      local parent = frame;
+      local parent = WeakAurasFrame;
       if (data.parent and regions[data.parent]) then
         parent = regions[data.parent].region;
       end
@@ -5045,7 +5045,7 @@ function Private.AnchorFrame(data, region, parent)
       end
       xpcall(region.SetParent, errorhandler, region, anchorParent);
     else
-      region:SetParent(parent or frame);
+      region:SetParent(parent or WeakAurasFrame);
     end
 
     local anchorPoint = data.anchorPoint
