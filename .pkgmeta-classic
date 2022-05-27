@@ -46,6 +46,9 @@ ignore:
   - WeakAurasTemplates/TriggerTemplatesData.lua
   - WeakAurasTemplates/TriggerTemplatesDataBCC.lua
 
+plain-copy:
+  - WeakAurasModelPaths/*.lua
+
 move-folders:
   WeakAuras/WeakAuras: WeakAuras
   WeakAuras/WeakAurasOptions: WeakAurasOptions
