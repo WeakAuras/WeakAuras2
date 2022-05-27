@@ -1692,6 +1692,14 @@ Private.load_prototype = {
       events = {"PLAYER_ROLES_ASSIGNED"}
     },
     {
+      name = "group_leader",
+      display = WeakAuras.newFeatureString .. L["Group Leader"],
+      type = "toggle",
+      init = "arg",
+      events = {"PARTY_LEADER_CHANGED", "GROUP_ROSTER_UPDATE"},
+      width = WeakAuras.doubleWidth,
+    },
+    {
       name = "affixes",
       display = L["Mythic+ Affix"],
       type = "multiselect",
