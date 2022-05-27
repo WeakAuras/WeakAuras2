@@ -1996,7 +1996,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
             while i <= #values or i <= #childValues do
               if firstChild then
                 values[i] = childValues[i][nameSource] or conflictBlue .. L["Entry %i"]:format(i)
-              elseif childValues[i] ~= values[i] then
+              elseif childValues[i][nameSource] ~= values[i] then
                 values[i] = conflictBlue .. L["Entry %i"]:format(i)
               end
               i = i + 1
@@ -2413,7 +2413,7 @@ local function mergeOptions(mergedOptions, data, options, config, prepath, paren
               -- check if nextToMerge.nameSource was merged in the same spot as mergedOption.nameSource
               local subMergedOption = mergedOption.subOptions[mergedOption.nameSource]
               local optionData = subMergedOption.references[data.id]
-              if not optionData or optionData.optionIndex ~= nextToMerge.nameSource then
+              if not optionData or optionData.index ~= nextToMerge.nameSource then
                 -- either an option was not merged at the name source's index, or the wrong option was.
                 -- in both cases, the name source is conflicted. Fallback to "Entry #" as entry names
                 mergedOption.nameSource = nil
