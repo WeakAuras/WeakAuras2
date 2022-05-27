@@ -1466,6 +1466,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   local inCombat = UnitAffectingCombat("player")
   local inEncounter = encounter_id ~= 0;
   local alive = not UnitIsDeadOrGhost('player')
+  local isLeader = UnitIsGroupLeader("player")
 
   if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
     local raidID = UnitInRaid("player")
@@ -1520,14 +1521,14 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
       local loadFunc = loadFuncs[id];
       local loadOpt = loadFuncsForOptions[id];
       if WeakAuras.IsClassic() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole);
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole);
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole, isLeader);
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole, isLeader);
       elseif WeakAuras.IsBCC() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, raidRole);
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, raidRole);
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, raidRole, isLeader);
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, raidRole, isLeader);
       elseif WeakAuras.IsRetail() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, affixes);
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, affixes);
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, isLeader, affixes);
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, isLeader, affixes);
       end
 
       if(shouldBeLoaded and not loaded[id]) then
@@ -1633,6 +1634,7 @@ loadFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 loadFrame:RegisterEvent("PLAYER_DEAD")
 loadFrame:RegisterEvent("PLAYER_ALIVE")
 loadFrame:RegisterEvent("PLAYER_UNGHOST")
+loadFrame:RegisterEvent("PARTY_LEADER_CHANGED")
 
 local unitLoadFrame = CreateFrame("Frame");
 WeakAuras.unitLoadFrame = unitLoadFrame;
