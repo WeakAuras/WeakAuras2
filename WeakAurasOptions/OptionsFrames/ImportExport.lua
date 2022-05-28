@@ -86,7 +86,7 @@ local function ConstructImportExport(frame)
     group:DoLayout()
   end
 
-  function group.Close(self)
+  function group.Close()
     input:ClearFocus();
     frame.window = "default";
     frame:UpdateFrameVisible()

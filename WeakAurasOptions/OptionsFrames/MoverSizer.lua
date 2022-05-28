@@ -907,7 +907,7 @@ local function ConstructMoverSizer(parent)
 
     local numInterim = floor(distance/40)
 
-    for index, texture in pairs(self.interims) do
+    for _, texture in pairs(self.interims) do
       texture:Hide()
     end
     for i = 1, numInterim  do

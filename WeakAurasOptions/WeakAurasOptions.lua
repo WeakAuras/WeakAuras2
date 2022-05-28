@@ -400,7 +400,7 @@ function OptionsPrivate.MultipleDisplayTooltipMenu()
   local allSameParent = true
   local commonParent = nil
   local first = true
-  for index, id in pairs(tempGroup.controlledChildren) do
+  for _, id in pairs(tempGroup.controlledChildren) do
     local childData = WeakAuras.GetData(id);
     if(childData and childData.controlledChildren) then
       anyGroup = true;
@@ -549,19 +549,6 @@ local function OnAboutToDelete(event, uid, id, parentUid, parentId)
   collapsedOptions[id] = nil
 end
 
-local function OnDelete(event, uid, id, parentUid, parentId)
-  local parentData = OptionsPrivate.Private.GetDataByUID(parentUid)
-  if(parentData and parentData.controlledChildren and not OptionsPrivate.massDelete) then
-    for index, childId in pairs(parentData.controlledChildren) do
-      local childButton = displayButtons[childId];
-      if(childButton) then
-        childButton:SetGroupOrder(index, #parentData.controlledChildren)
-      end
-    end
-    WeakAuras.ClearAndUpdateOptions(parentData.id)
-  end
-end
-
 local function OnRename(event, uid, oldid, newid)
   local data = OptionsPrivate.Private.GetDataByUID(uid)
 
@@ -576,7 +563,7 @@ local function OnRename(event, uid, oldid, newid)
   collapsedOptions[oldid] = nil
 
   if(data.controlledChildren) then
-    for index, childId in pairs(data.controlledChildren) do
+    for _, childId in pairs(data.controlledChildren) do
       WeakAuras.displayButtons[childId]:SetGroup(newid)
     end
   end
@@ -709,7 +696,7 @@ local function LayoutDisplayButtons(msg)
 
   local func2 = function()
     local num = frame.loadProgressNum or 0;
-    for index, id in pairs(unloadedSorted) do
+    for _, id in pairs(unloadedSorted) do
       local data = WeakAuras.GetData(id);
       if(data) then
         EnsureDisplayButton(data);
@@ -751,7 +738,7 @@ local function LayoutDisplayButtons(msg)
   local func1 = function()
     local num = frame.loadProgressNum or 0;
     frame.buttonsScroll:PauseLayout()
-    for index, id in pairs(loadedSorted) do
+    for _, id in pairs(loadedSorted) do
       local data = WeakAuras.GetData(id);
       if(data) then
         EnsureDisplayButton(data);
@@ -1148,7 +1135,7 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
     end
   end
 
-  for id, child in pairs(displayButtons) do
+  for _, child in pairs(displayButtons) do
     if(not visible[child]) then
       child.frame:Hide();
       if child.ReleaseThumbnail then
@@ -1312,7 +1299,7 @@ function OptionsPrivate.StartGrouping(data)
       children[childId] = true;
     end
     -- set grouping for non selected buttons
-    for id, button in pairs(displayButtons) do
+    for _, button in pairs(displayButtons) do
       if not children[button.data.id] then
         button:StartGrouping(tempGroup.controlledChildren, false);
       end
@@ -1353,7 +1340,7 @@ function OptionsPrivate.Ungroup(data)
 end
 
 function OptionsPrivate.DragReset()
-  for id, button in pairs(displayButtons) do
+  for _, button in pairs(displayButtons) do
     button:DragReset();
   end
   OptionsPrivate.UpdateButtonsScroll()
@@ -1449,13 +1436,13 @@ function OptionsPrivate.Drop(mainAura, target, action, area)
     end
   end
 
-  for index, button in ipairs(buttonsToSort) do
+  for _, button in ipairs(buttonsToSort) do
     button:Drop(mode, mainAura, target, action)
   end
 
   -- Update offset, this is a bit wasteful to do for every aura
   -- But we also need to update the offset if a parent was dragged
-  for id, button in pairs(displayButtons) do
+  for _, button in pairs(displayButtons) do
     button:UpdateOffset();
   end
 
@@ -1494,7 +1481,7 @@ function OptionsPrivate.StartDrag(mainAura)
         children[child.id] = true
       end
       -- set dragging for non selected buttons
-      for id, button in pairs(displayButtons) do
+      for _, button in pairs(displayButtons) do
         if not children[button.data.id] then
           button:DragStart(mode, false, mainAura);
         end
@@ -1622,7 +1609,7 @@ function WeakAuras.SetMoverSizer(id)
     frame.moversizer:SetToRegion(WeakAuras.regions[id].region, db.displays[id])
   else
     if WeakAuras.clones[id] then
-      local cloneId, clone = next(WeakAuras.clones[id])
+      local _, clone = next(WeakAuras.clones[id])
       if clone then
         frame.moversizer:SetToRegion(clone, db.displays[id])
       end
@@ -1906,7 +1893,7 @@ function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, h
   local seenSymbols = {}
   OptionsPrivate.Private.ParseTextStr(input, function(symbol)
     if not seenSymbols[symbol] then
-      local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
+      local _, sym = string.match(symbol, "(.+)%.(.+)")
       sym = sym or symbol
 
       if sym == "i" then

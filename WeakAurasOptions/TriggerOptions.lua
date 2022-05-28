@@ -108,7 +108,7 @@ local function AddOptions(allOptions, data)
       -- Unknown trigger system, empty options
       local options = {};
       OptionsPrivate.commonOptions.AddCommonTriggerOptions(options, data, index)
-      OptionsPrivate.AddTriggerMetaFunctions(options, data, index, true)
+      OptionsPrivate.AddTriggerMetaFunctions(options, data, index)
       triggerOptions = union(triggerOptions, {
           ["trigger." .. index .. ".unknown"] = options
       })

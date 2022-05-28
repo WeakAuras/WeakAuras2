@@ -127,7 +127,7 @@ function OptionsPrivate.GetInformationOptions(data)
 
   -- Show warnings only for single selection for now
   if not isGroup then
-    local icon, title, message = OptionsPrivate.Private.AuraWarnings.FormatWarnings(data.uid)
+    local _, title, message = OptionsPrivate.Private.AuraWarnings.FormatWarnings(data.uid)
     if title and message then
       args.warningTitle = {
         type = "header",

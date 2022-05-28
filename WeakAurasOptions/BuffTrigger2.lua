@@ -7,7 +7,7 @@ local function getAuraMatchesLabel(name)
   local ids = WeakAuras.spellCache.GetSpellsMatching(name)
   if ids then
     local numMatches = 0
-    for id, _ in pairs(ids) do
+    for _ in pairs(ids) do
       numMatches = numMatches + 1
     end
     return tostring(numMatches)
@@ -21,7 +21,7 @@ local function getAuraMatchesList(name)
   if ids then
     local descText = ""
     for id, _ in pairs(ids) do
-      local name, _, icon = GetSpellInfo(id)
+      local _, _, icon = GetSpellInfo(id)
       if icon then
         if descText == "" then
           descText = "|T"..icon..":0|t: "..id
@@ -113,8 +113,7 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
 
     if isExactSpellId then
       aura_options[iconOption].name = function()
-        local name = GetSpellInfo(WeakAuras.SafeToNumber(trigger[optionKey] and trigger[optionKey][i]))
-        return name
+        return GetSpellInfo(WeakAuras.SafeToNumber(trigger[optionKey] and trigger[optionKey][i]))
       end
       aura_options[iconOption].image = function()
         local icon = select(3, GetSpellInfo(trigger[optionKey] and trigger[optionKey][i]))
@@ -565,7 +564,7 @@ local function GetBuffTriggerOptions(data, triggernum)
     },
     use_castByPlayer = {
       type = "toggle",
-      name = function(input)
+      name = function()
         local value = trigger.use_castByPlayer
         if value == nil then return L["Cast by a Player Character"]
         elseif value == false then return "|cFFFF0000 "..L["Negator"].." "..L["Cast by a Player Character"]
