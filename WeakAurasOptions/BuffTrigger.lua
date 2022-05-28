@@ -6,9 +6,8 @@ local L = WeakAuras.L;
 local function getAuraMatchesLabel(name)
   local ids = WeakAuras.spellCache.GetSpellsMatching(name)
   if(ids) then
-    local descText = "";
     local numMatches = 0;
-    for id, _ in pairs(ids) do
+    for _ in pairs(ids) do
       numMatches = numMatches + 1;
     end
     if(numMatches == 1) then
@@ -21,19 +20,12 @@ local function getAuraMatchesLabel(name)
   end
 end
 
--- the spell id table is sparse, so tremove doesn't work
-local function spellId_tremove(tbl, pos)
-  for i = pos, 9, 1 do
-    tbl[i] = tbl[i + 1]
-  end
-end
-
 local function getAuraMatchesList(name)
   local ids = WeakAuras.spellCache.GetSpellsMatching(name)
   if(ids) then
     local descText = "";
-    for id, _ in pairs(ids) do
-      local name, _, icon = GetSpellInfo(id);
+    for id in pairs(ids) do
+      local _, _, icon = GetSpellInfo(id);
       if(icon) then
         if(descText == "") then
           descText = "|T"..icon..":0|t: "..id;
