@@ -1493,8 +1493,7 @@ local methods = {
       local parentButton = WeakAuras.GetDisplayButton(self.data.parent)
       parentButton:RecheckVisibility()
     else
-      WeakAuras.OptionsFrame().loadedButton:RecheckVisibility()
-      WeakAuras.OptionsFrame().unloadedButton:RecheckVisibility()
+      WeakAuras.OptionsFrame().allAurasButton:RecheckVisibility()
     end
   end,
   ["RecheckVisibility"] = function(self)

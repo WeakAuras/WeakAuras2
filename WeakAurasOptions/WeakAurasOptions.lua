@@ -642,12 +642,12 @@ local function EnsureDisplayButton(data)
 end
 
 local function GetSortedOptionsLists()
-  local loadedSorted, unloadedSorted = {}, {};
+  local aurasSorted = {}
   local to_sort = {};
   for id, data in pairs(db.displays) do
     if(data.parent) then
     -- Do nothing; children will be added later
-  elseif(OptionsPrivate.Private.loaded[id]) then
+    else
       tinsert(to_sort, id);
     end
   end
@@ -655,27 +655,11 @@ local function GetSortedOptionsLists()
   for _, id in ipairs(to_sort) do
     local data = WeakAuras.GetData(id);
     for child in OptionsPrivate.Private.TraverseAll(data) do
-      tinsert(loadedSorted, child.id)
+      tinsert(aurasSorted, child.id)
     end
   end
 
-  wipe(to_sort);
-  for id, data in pairs(db.displays) do
-    if(data.parent) then
-    -- Do nothing; children will be added later
-    elseif not(OptionsPrivate.Private.loaded[id]) then
-      tinsert(to_sort, id);
-    end
-  end
-  table.sort(to_sort, function(a, b) return a < b end);
-  for _, id in ipairs(to_sort) do
-    local data = WeakAuras.GetData(id);
-    for child in OptionsPrivate.Private.TraverseAll(data) do
-      tinsert(unloadedSorted, child.id)
-    end
-  end
-
-  return loadedSorted, unloadedSorted;
+  return aurasSorted;
 end
 
 local function LayoutDisplayButtons(msg)
@@ -684,51 +668,26 @@ local function LayoutDisplayButtons(msg)
     total = total + 1;
   end
 
-  local loadedSorted, unloadedSorted = GetSortedOptionsLists();
+  local aurasSorted = GetSortedOptionsLists();
 
   frame:SetLoadProgressVisible(true)
   if OptionsPrivate.Private.CompanionData.slugs then
     frame.buttonsScroll:AddChild(frame.pendingInstallButton);
     frame.buttonsScroll:AddChild(frame.pendingUpdateButton);
   end
-  frame.buttonsScroll:AddChild(frame.loadedButton);
-  frame.buttonsScroll:AddChild(frame.unloadedButton);
+  frame.buttonsScroll:AddChild(frame.allAurasButton);
 
   local func2 = function()
-    local num = frame.loadProgressNum or 0;
-    for _, id in pairs(unloadedSorted) do
-      local data = WeakAuras.GetData(id);
-      if(data) then
-        EnsureDisplayButton(data);
-        WeakAuras.UpdateThumbnail(data);
-
-        frame.buttonsScroll:AddChild(displayButtons[data.id]);
-
-        if (num % 50 == 0) then
-          frame.buttonsScroll:ResumeLayout()
-          frame.buttonsScroll:PerformLayout()
-          frame.buttonsScroll:PauseLayout()
-        end
-
-        num = num + 1;
-      end
-      frame.loadProgress:SetText(L["Creating buttons: "]..num.."/"..total);
-      frame.loadProgressNum = num;
-      coroutine.yield();
-    end
-
     frame.buttonsScroll:ResumeLayout()
     frame.buttonsScroll:PerformLayout()
     OptionsPrivate.SortDisplayButtons(msg);
 
     OptionsPrivate.Private.PauseAllDynamicGroups();
     if (WeakAuras.IsOptionsOpen()) then
-      for id, button in pairs(displayButtons) do
-        if(OptionsPrivate.Private.loaded[id] ~= nil) then
-          button:PriorityShow(1);
-        end
+      for _, button in pairs(displayButtons) do
+        button:PriorityShow(1);
       end
-      WeakAuras.OptionsFrame().loadedButton:RecheckVisibility()
+      WeakAuras.OptionsFrame().allAurasButton:RecheckVisibility()
     end
     OptionsPrivate.Private.ResumeAllDynamicGroups();
 
@@ -738,7 +697,7 @@ local function LayoutDisplayButtons(msg)
   local func1 = function()
     local num = frame.loadProgressNum or 0;
     frame.buttonsScroll:PauseLayout()
-    for _, id in pairs(loadedSorted) do
+    for _, id in pairs(aurasSorted) do
       local data = WeakAuras.GetData(id);
       if(data) then
         EnsureDisplayButton(data);
@@ -810,7 +769,7 @@ function WeakAuras.ShowOptions(msg)
   if not(firstLoad) then
     -- Show what was last shown
     OptionsPrivate.Private.PauseAllDynamicGroups();
-    for id, button in pairs(displayButtons) do
+    for _, button in pairs(displayButtons) do
       button:SyncVisibility()
     end
     OptionsPrivate.Private.ResumeAllDynamicGroups();
@@ -946,10 +905,72 @@ local function addButton(button, aurasMatchingFilter, visible)
   end
 end
 
+local path_with_toggles = {
+  "^load",
+}
+local function searchData(filter, id)
+  local path, value = filter:match("^([%w%d_%.]+):([%w%d]+)$")
+  if path and value then
+    -- search in data
+    value = value:upper()
+    local data = WeakAuras.GetData(id)
+    if data then
+      local path_ok
+      local toggle_check -- value of a field starting with "use_" for last key of the path
+      local isToggle -- true if last key of the path start with "use_"
+      local is_path_with_toggles = false
+      for _, check in ipairs(path_with_toggles) do
+        if check:match(path) then
+          is_path_with_toggles = true
+          break
+        end
+      end
+
+      for field in path:gmatch("[%w%d_]+") do
+        if data[field] == nil then
+          path_ok = false
+          break
+        end
+        path_ok = true
+        if data[field] then
+          toggle_check = data["use_"..field]
+        end
+        data = data[field]
+        isToggle = field:sub(1,4) == "use_"
+      end
+
+      if path_ok
+      and (
+        (
+          (is_path_with_toggles == false or toggle_check == true or isToggle)
+          and (
+            data == value
+            or (type(data) == "string" and data:upper() == value)
+            or (data == true and value == "TRUE")
+            or (data == false and value == "FALSE")
+            or (type(data) == "table" and data.single and data.single:upper() == value)
+          )
+        )
+        or (
+          is_path_with_toggles == true
+          and toggle_check == false
+          and (
+            type(data) == "table" and data.multi and (data.multi[value] == true)
+          )
+        )
+      )
+      then
+        return true
+      end
+    end
+  end
+end
+
 local previousFilter;
+local previousLoadMode
 local pendingUpdateButtons = {}
 local pendingInstallButtons = {}
-function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
+function OptionsPrivate.SortDisplayButtons(filter, overrideReset, loadMode)
   if (OptionsPrivate.Private.IsOptionsProcessingPaused()) then
     return;
   end
@@ -963,7 +984,6 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
     recenter = true;
   end
   previousFilter = filter;
-  filter = filter:lower();
 
   wipe(frame.buttonsScroll.children);
 
@@ -1079,13 +1099,13 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
     frame.pendingUpdateButton.frame:Hide()
   end
 
-  tinsert(frame.buttonsScroll.children, frame.loadedButton);
+  tinsert(frame.buttonsScroll.children, frame.allAurasButton);
 
   local aurasMatchingFilter = {}
   local useTextFilter = filter and filter ~= ""
-  local topLevelLoadedAuras = {}
-  local topLevelUnloadedAuras = {}
+  local topLevelAuras = {}
   local visible = {}
+  local lowerFilter = filter:lower();
 
   for id, child in pairs(displayButtons) do
     if(OptionsPrivate.Private.loaded[id]) then
@@ -1095,7 +1115,9 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
     end
 
     if useTextFilter then
-      if(id:lower():find(filter, 1, true)) then
+      if searchData(filter, id)
+      or id:lower():find(lowerFilter, 1, true)
+      then
         aurasMatchingFilter[id] = true
         for parent in OptionsPrivate.Private.TraverseParents(child.data) do
           aurasMatchingFilter[parent.id] = true
@@ -1105,30 +1127,23 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
       aurasMatchingFilter[id] = true
     end
 
+    if loadMode == nil then
+      loadMode = previousLoadMode
+    end
+    previousLoadMode = loadMode
+    if loadMode and not OptionsPrivate.Private.loaded[id] then
+      aurasMatchingFilter[id] = nil
+    end
+
     if not child:GetGroup() then
       -- Top Level aura
-      if OptionsPrivate.Private.loaded[child.data.id] ~= nil then
-        tinsert(topLevelLoadedAuras, id)
-      else
-        tinsert(topLevelUnloadedAuras, id)
-      end
+      tinsert(topLevelAuras, id)
     end
   end
 
-  if frame.loadedButton:GetExpanded() then
-    table.sort(topLevelLoadedAuras)
-    for _, id in ipairs(topLevelLoadedAuras) do
-      if aurasMatchingFilter[id] then
-        addButton(displayButtons[id], aurasMatchingFilter, visible)
-      end
-    end
-  end
-
-  tinsert(frame.buttonsScroll.children, frame.unloadedButton);
-
-  if frame.unloadedButton:GetExpanded() then
-    table.sort(topLevelUnloadedAuras)
-    for _, id in ipairs(topLevelUnloadedAuras) do
+  if frame.allAurasButton:GetExpanded() then
+    table.sort(topLevelAuras)
+    for _, id in ipairs(topLevelAuras) do
       if aurasMatchingFilter[id] then
         addButton(displayButtons[id], aurasMatchingFilter, visible)
       end

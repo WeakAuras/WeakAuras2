@@ -288,6 +288,7 @@ function OptionsPrivate.CreateFrame()
 
       self.loadProgress:Hide()
       self.toolbarContainer.frame:Hide()
+      self.loadedToggle:Hide()
       self.filterInput:Hide();
       self.tipFrame.frame:Hide()
       self.bottomLeftResizer:Hide()
@@ -360,16 +361,19 @@ function OptionsPrivate.CreateFrame()
         if self.loadProgessVisible then
           self.loadProgress:Show()
           self.toolbarContainer.frame:Hide()
+          self.loadedToggle:Hide()
           self.filterInput:Hide();
         else
           self.loadProgress:Hide()
           self.toolbarContainer.frame:Show()
+          self.loadedToggle:Show()
           self.filterInput:Show();
           --self.filterInputClear:Show();
         end
       else
         self.loadProgress:Hide()
         self.toolbarContainer.frame:Hide()
+        self.loadedToggle:Hide()
         self.filterInput:Hide();
       end
     end
@@ -545,15 +549,48 @@ function OptionsPrivate.CreateFrame()
 
   frame.moversizer, frame.mover = OptionsPrivate.MoverSizer(frame)
 
+  -- loaded toggle
+  --local loadedToggle = CreateFrame("CheckButton", nil, frame, "UICheckButtonTemplate");
+  local loadedToggle = CreateFrame("Button", nil, frame);
+  frame.loadedToggle = loadedToggle;
+  loadedToggle:SetWidth(22)
+  loadedToggle:SetHeight(20)
+  loadedToggle:SetPoint("TOP", frame, "TOP", 0, -42)
+  loadedToggle:SetPoint("LEFT", frame, "LEFT", 16, 0)
+  loadedToggle:SetScript("OnEnter", function()
+    local title = L["Filter loaded auras"]
+    local desc = L["Enabling this hide auras with Load settings:\n\n - Never ticked\n - Wrong class or race\n - Wrong character name or server"]
+    GameTooltip:SetOwner(loadedToggle, "ANCHOR_NONE")
+    GameTooltip:SetPoint("LEFT", loadedToggle, "RIGHT")
+    GameTooltip:ClearLines()
+    GameTooltip:AddLine(title)
+    GameTooltip:AddLine(desc, 1, 1, 1, 1)
+    GameTooltip:Show()
+  end)
+  loadedToggle:SetScript("OnLeave", function() GameTooltip:Hide() end)
+  loadedToggle:SetScript("OnClick", function()
+    loadedToggle.state = not loadedToggle.state
+    if loadedToggle.state then
+      loadedToggle:SetNormalTexture("interface/chatframe/ui-chaticon-battlebro-up.blp")
+    else
+      loadedToggle:SetNormalTexture("interface/chatframe/ui-chaticon-battlebro-disabled.blp")
+    end
+    OptionsPrivate.SortDisplayButtons(nil, true, loadedToggle.state)
+  end)
+  loadedToggle.state = false
+  loadedToggle:SetNormalTexture("interface/chatframe/ui-chaticon-battlebro-disabled.blp")
+  loadedToggle:SetPushedTexture("interface/chatframe/ui-chaticon-battlebro-down.blp")
+  loadedToggle:Hide()
+
   -- filter line
   local filterInput = CreateFrame("EditBox", "WeakAurasFilterInput", frame, "SearchBoxTemplate")
   filterInput:SetScript("OnTextChanged", function(self)
     SearchBoxTemplate_OnTextChanged(self)
-    OptionsPrivate.SortDisplayButtons(filterInput:GetText())
+    OptionsPrivate.SortDisplayButtons(filterInput:GetText(), true)
   end)
   filterInput:SetHeight(15)
   filterInput:SetPoint("TOP", frame, "TOP", 0, -44)
-  filterInput:SetPoint("LEFT", frame, "LEFT", 24, 0)
+  filterInput:SetPoint("LEFT", frame, "LEFT", 44, 0)
   filterInput:SetPoint("RIGHT", container.frame, "LEFT", -5, 0)
   filterInput:SetFont(STANDARD_TEXT_FONT, 10)
   frame.filterInput = filterInput
@@ -743,55 +780,49 @@ function OptionsPrivate.CreateFrame()
   pendingUpdateButton:SetCollapseDescription(L["Collapse all pending Import"])
   frame.pendingUpdateButton = pendingUpdateButton
 
-  -- Loaded section
-  local loadedButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
-  loadedButton:SetText(L["Loaded"])
-  loadedButton:Disable()
-  loadedButton:EnableExpand()
+  -- Auras section
+  local allAurasButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
+  allAurasButton:SetText(L["Auras"])
+  allAurasButton:Disable()
+  allAurasButton:EnableExpand()
   if odb.loadedCollapse then
-    loadedButton:Collapse()
+    allAurasButton:Collapse()
   else
-    loadedButton:Expand()
+    allAurasButton:Expand()
   end
-  loadedButton:SetOnExpandCollapse(function()
-    if loadedButton:GetExpanded() then
+  allAurasButton:SetOnExpandCollapse(function()
+    if allAurasButton:GetExpanded() then
       odb.loadedCollapse = nil
     else
       odb.loadedCollapse = true
     end
     OptionsPrivate.SortDisplayButtons()
   end)
-  loadedButton:SetExpandDescription(L["Expand all loaded displays"])
-  loadedButton:SetCollapseDescription(L["Collapse all loaded displays"])
-  loadedButton:SetViewClick(function()
+  allAurasButton:SetExpandDescription(L["Expand all displays"])
+  allAurasButton:SetCollapseDescription(L["Collapse all displays"])
+  allAurasButton:SetViewClick(function()
     OptionsPrivate.Private.PauseAllDynamicGroups()
-    if loadedButton.view.visibility == 2 then
-      for id, child in pairs(displayButtons) do
-        if OptionsPrivate.Private.loaded[id] ~= nil then
-          child:PriorityHide(2)
-        end
+    if allAurasButton.view.visibility == 2 then
+      for _, child in pairs(displayButtons) do
+        child:PriorityHide(2)
       end
-      loadedButton:PriorityHide(2)
+      allAurasButton:PriorityHide(2)
     else
-      for id, child in pairs(displayButtons) do
-        if OptionsPrivate.Private.loaded[id] ~= nil then
-          child:PriorityShow(2)
-        end
+      for _, child in pairs(displayButtons) do
+        child:PriorityShow(2)
       end
-      loadedButton:PriorityShow(2)
+      allAurasButton:PriorityShow(2)
     end
     OptionsPrivate.Private.ResumeAllDynamicGroups()
   end)
-  loadedButton.RecheckVisibility = function(self)
+  allAurasButton.RecheckVisibility = function(self)
     local none, all = true, true
-    for id, child in pairs(displayButtons) do
-      if OptionsPrivate.Private.loaded[id] ~= nil then
-        if child:GetVisibility() ~= 2 then
-          all = false
-        end
-        if child:GetVisibility() ~= 0 then
-          none = false
-        end
+    for _, child in pairs(displayButtons) do
+      if child:GetVisibility() ~= 2 then
+        all = false
+      end
+      if child:GetVisibility() ~= 0 then
+        none = false
       end
     end
     local newVisibility
@@ -807,76 +838,8 @@ function OptionsPrivate.CreateFrame()
       self:UpdateViewTexture()
     end
   end
-  loadedButton:SetViewDescription(L["Toggle the visibility of all loaded displays"])
-  frame.loadedButton = loadedButton
-
-  -- Not Loaded section
-  local unloadedButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
-  unloadedButton:SetText(L["Not Loaded"])
-  unloadedButton:Disable()
-  unloadedButton:EnableExpand()
-  if odb.unloadedCollapse then
-    unloadedButton:Collapse()
-  else
-    unloadedButton:Expand()
-  end
-  unloadedButton:SetOnExpandCollapse(function()
-    if unloadedButton:GetExpanded() then
-      odb.unloadedCollapse = nil
-    else
-      odb.unloadedCollapse = true
-    end
-    OptionsPrivate.SortDisplayButtons()
-  end)
-  unloadedButton:SetExpandDescription(L["Expand all non-loaded displays"])
-  unloadedButton:SetCollapseDescription(L["Collapse all non-loaded displays"])
-  unloadedButton:SetViewClick(function()
-    OptionsPrivate.Private.PauseAllDynamicGroups()
-    if unloadedButton.view.visibility == 2 then
-      for id, child in pairs(displayButtons) do
-        if OptionsPrivate.Private.loaded[id] == nil then
-          child:PriorityHide(2)
-        end
-      end
-      unloadedButton:PriorityHide(2)
-    else
-      for id, child in pairs(displayButtons) do
-        if OptionsPrivate.Private.loaded[id] == nil then
-          child:PriorityShow(2)
-        end
-      end
-      unloadedButton:PriorityShow(2)
-    end
-    OptionsPrivate.Private.ResumeAllDynamicGroups()
-  end)
-  unloadedButton.RecheckVisibility = function(self)
-    local none, all = true, true
-    for id, child in pairs(displayButtons) do
-      if OptionsPrivate.Private.loaded[id] == nil then
-        if child:GetVisibility() ~= 2 then
-          all = false
-        end
-        if child:GetVisibility() ~= 0 then
-          none = false
-        end
-      end
-    end
-    local newVisibility
-    if all then
-      newVisibility = 2
-    elseif none then
-      newVisibility = 0
-    else
-      newVisibility = 1
-    end
-    if newVisibility ~= self.view.visibility then
-      self.view.visibility = newVisibility
-      self:UpdateViewTexture()
-    end
-  end
-  unloadedButton:SetViewDescription(L["Toggle the visibility of all non-loaded displays"])
-  frame.unloadedButton = unloadedButton
-
+  allAurasButton:SetViewDescription(L["Toggle the visibility of all displays"])
+  frame.allAurasButton = allAurasButton
 
   frame.ClearOptions = function(self, id)
     aceOptions[id] = nil
@@ -1079,8 +1042,7 @@ function OptionsPrivate.CreateFrame()
     frame.pickedDisplay = nil
     frame.pickedOption = nil
     wipe(tempGroup.controlledChildren)
-    loadedButton:ClearPick(noHide)
-    unloadedButton:ClearPick(noHide)
+    allAurasButton:ClearPick(noHide)
     container:ReleaseChildren()
     self.moversizer:Hide()
 
@@ -1281,16 +1243,9 @@ function OptionsPrivate.CreateFrame()
     -- Always expand even if already picked
     ExpandParents(data)
 
-    if OptionsPrivate.Private.loaded[id] ~= nil then
-      -- Under loaded
-      if not loadedButton:GetExpanded() then
-        loadedButton:Expand()
-      end
-    else
-      -- Under Unloaded
-      if not unloadedButton:GetExpanded() then
-        unloadedButton:Expand()
-      end
+    -- Under loaded
+    if not allAurasButton:GetExpanded() then
+      allAurasButton:Expand()
     end
 
     if self.pickedDisplay == id then

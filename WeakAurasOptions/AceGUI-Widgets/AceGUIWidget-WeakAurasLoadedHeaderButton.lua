@@ -93,6 +93,9 @@ local methods = {
       self:Collapse();
     end
   end,
+  ["SetLoadedClick"] = function(self, func)
+    self.loaded:SetScript("OnClick", func);
+  end,
   ["SetViewClick"] = function(self, func)
     self.view:SetScript("OnClick", func);
   end,
@@ -172,7 +175,7 @@ local function Constructor()
   expand:SetScript("OnEnter", function() Show_Tooltip(button, expand.title, expand.desc) end);
   expand:SetScript("OnLeave", Hide_Tooltip);
 
-  local view = CreateFrame("Button", nil, button);
+  local view = CreateFrame("BUTTON", nil, button);
   button.view = view;
   view:SetWidth(16);
   view:SetHeight(16);
