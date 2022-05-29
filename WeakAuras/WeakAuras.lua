@@ -565,7 +565,7 @@ local function ConstructFunction(prototype, trigger, skipOptional)
   else
     init = "";
   end
-  for index, arg in pairs(prototype.args) do
+  for _, arg in pairs(prototype.args) do
     local enable = arg.type ~= "collpase";
     if(type(arg.enable) == "function") then
       enable = arg.enable(trigger);
@@ -2721,7 +2721,7 @@ local function pAdd(data, simpleChange)
       end
 
       local loadFuncStr, events = ConstructFunction(load_prototype, data.load);
-      for event, eventData in pairs(loadEvents) do
+      for _, eventData in pairs(loadEvents) do
         eventData[id] = nil
       end
       for event in pairs(events) do

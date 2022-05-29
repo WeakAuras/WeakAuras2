@@ -1108,7 +1108,7 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, loadMode)
   local lowerFilter = filter:lower();
 
   for id, child in pairs(displayButtons) do
-    if(OptionsPrivate.Private.loaded[id]) then
+    if(OptionsPrivate.Private.loaded[id] ~= nil) then
       child:EnableLoaded();
     else
       child:DisableLoaded();
@@ -1131,7 +1131,9 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, loadMode)
       loadMode = previousLoadMode
     end
     previousLoadMode = loadMode
-    if loadMode and not OptionsPrivate.Private.loaded[id] then
+    if (loadMode == 1 and not OptionsPrivate.Private.loaded[id])
+    or (loadMode == 2 and OptionsPrivate.Private.loaded[id] ~= nil)
+    then
       aurasMatchingFilter[id] = nil
     end
 

@@ -117,6 +117,13 @@ local methods = {
       self:UpdateViewTexture()
     end
   end,
+  ["UpdateLoadedTexture"] = function(self)
+    if self.loaded.mode == 0 then -- all
+      self.loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Disabled.blp");
+    elseif self.loaded.mode == 1 then -- loaded only
+      self.loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Up.blp");
+    end
+  end,
   ["UpdateViewTexture"] = function(self)
     local visibility = self.view.visibility
     if(visibility == 2) then

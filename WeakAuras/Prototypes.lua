@@ -1328,6 +1328,7 @@ Private.load_prototype = {
       display = L["Group Type"],
       type = "multiselect",
       width = WeakAuras.normalWidth,
+      optional = true,
       init = "arg",
       values = "group_types",
       events = {"GROUP_ROSTER_UPDATE"}
@@ -1415,6 +1416,7 @@ Private.load_prototype = {
         end
       end,
       init = "arg",
+      optional = true,
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
       events = {"PLAYER_TALENT_UPDATE"}
@@ -1440,6 +1442,7 @@ Private.load_prototype = {
         -- Check for multi select!
         return load.talent_extraOption == 2 or load.talent_extraOption == 3
       end,
+      optional = true,
       extraOption = {
         display = "",
         values = function()
@@ -1460,6 +1463,7 @@ Private.load_prototype = {
       inverse = function(load)
         return load.talent2_extraOption == 2 or load.talent2_extraOption == 3
       end,
+      optional = true,
       extraOption = {
         display = "",
         values = function()
@@ -1480,6 +1484,7 @@ Private.load_prototype = {
       inverse = function(load)
         return load.talent3_extraOption == 2 or load.talent3_extraOption == 3
       end,
+      optional = true,
       extraOption = {
         display = "",
         values = function()
@@ -1546,6 +1551,7 @@ Private.load_prototype = {
         end
       end,
       test = "WeakAuras.CheckPvpTalentByIndex(%d)",
+      optional = true,
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
       events = {"PLAYER_PVP_TALENT_UPDATE"}
@@ -1556,6 +1562,7 @@ Private.load_prototype = {
       type = "spell",
       test = "WeakAuras.IsSpellKnownForLoad(%s, %s)",
       events = {"SPELLS_CHANGED"},
+      optional = true,
       showExactOption = true
     },
     {
@@ -1564,6 +1571,7 @@ Private.load_prototype = {
       type = "multiselect",
       values = "covenant_types",
       init = "arg",
+      optional = true,
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
       events = {"COVENANT_CHOSEN"}
@@ -1587,13 +1595,15 @@ Private.load_prototype = {
       display = L["Player Level"],
       type = "number",
       init = "arg",
-      events = {"PLAYER_LEVEL_UP"}
+      events = {"PLAYER_LEVEL_UP"},
+      optional = true,
     },
     {
       name = "effectiveLevel",
       display = L["Player Effective Level"],
       type = "number",
       init = "arg",
+      optional = true,
       desc = L["The effective level differs from the level in e.g. Time Walking dungeons."],
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
@@ -1604,6 +1614,7 @@ Private.load_prototype = {
       display = L["Zone Name"],
       type = "string",
       init = "arg",
+      optional = true,
       preamble = "local checker = WeakAuras.ParseStringCheck(%q)",
       test = "checker:Check(zone)",
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
@@ -1613,6 +1624,7 @@ Private.load_prototype = {
       name = "zoneId",
       hidden = true,
       init = "arg",
+      optional = true,
       test = "true",
       enable = not WeakAuras.IsClassic(),
     },
@@ -1620,6 +1632,7 @@ Private.load_prototype = {
       name = "zonegroupId",
       hidden = true,
       init = "arg",
+      optional = true,
       test = "true",
       enable = not WeakAuras.IsClassic(),
     },
@@ -1630,6 +1643,7 @@ Private.load_prototype = {
       enable = not WeakAuras.IsClassic(),
       hidden = WeakAuras.IsClassic(),
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
+      optional = true,
       desc = get_zoneId_list,
       preamble = "local zoneChecker = WeakAuras.ParseZoneCheck(%q)",
       test = "zoneChecker:Check(zoneId, zonegroupId)"
@@ -1639,6 +1653,7 @@ Private.load_prototype = {
       display = L["Encounter ID(s)"],
       type = "string",
       init = "arg",
+      optional = true,
       desc = get_encounters_list,
       test = "WeakAuras.CheckNumericIds(%q, encounterid)",
       events = {"ENCOUNTER_START", "ENCOUNTER_END"}
@@ -1649,6 +1664,7 @@ Private.load_prototype = {
       type = "multiselect",
       values = "instance_types",
       init = "arg",
+      optional = true,
       control = "WeakAurasSortedDropdown",
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
     },
@@ -1658,6 +1674,7 @@ Private.load_prototype = {
       type = "multiselect",
       values = "difficulty_types",
       init = "arg",
+      optional = true,
       enable = not WeakAuras.IsClassic(),
       hidden = WeakAuras.IsClassic(),
       events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
@@ -1668,6 +1685,7 @@ Private.load_prototype = {
       type = "multiselect",
       values = "instance_difficulty_types",
       init = "arg",
+      optional = true,
       control = "WeakAurasSortedDropdown",
       events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"},
     },
@@ -1677,6 +1695,7 @@ Private.load_prototype = {
       type = "multiselect",
       values = "role_types",
       init = "arg",
+      optional = true,
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
       events = {"PLAYER_ROLES_ASSIGNED", "PLAYER_TALENT_UPDATE"}
@@ -1687,6 +1706,7 @@ Private.load_prototype = {
       type = "multiselect",
       values = "raid_role_types",
       init = "arg",
+      optional = true,
       enable = WeakAuras.IsClassic() or WeakAuras.IsBCC(),
       hidden = WeakAuras.IsRetail(),
       events = {"PLAYER_ROLES_ASSIGNED"}
@@ -1697,6 +1717,7 @@ Private.load_prototype = {
       type = "multiselect",
       values = "mythic_plus_affixes",
       init = "arg",
+      optional = true,
       test = "WeakAuras.CheckMPlusAffixIds(%d, affixes)",
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
@@ -1706,6 +1727,7 @@ Private.load_prototype = {
       name = "itemequiped",
       display = L["Item Equipped"],
       type = "item",
+      optional = true,
       test = "IsEquippedItem(GetItemInfo(%s))",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"}
     },
@@ -1713,6 +1735,7 @@ Private.load_prototype = {
       name = "itemtypeequipped",
       display = WeakAuras.newFeatureString .. L["Item Type Equipped"],
       type = "multiselect",
+      optional = true,
       test = "IsEquippedItemType(WeakAuras.GetItemSubClassInfo(%s))",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
       values = "item_weapon_types"
@@ -1721,6 +1744,7 @@ Private.load_prototype = {
       name = "item_bonusid_equipped",
       display =  WeakAuras.newFeatureString .. L["Item Bonus Id Equipped"],
       type = "string",
+      optional = true,
       test = "WeakAuras.CheckForItemBonusId(%q)",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
       desc = function()
@@ -1732,6 +1756,7 @@ Private.load_prototype = {
       name = "not_item_bonusid_equipped",
       display =  WeakAuras.newFeatureString .. L["|cFFFF0000Not|r Item Bonus Id Equipped"],
       type = "string",
+      optional = true,
       test = "not WeakAuras.CheckForItemBonusId(%q)",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
       desc = function()
