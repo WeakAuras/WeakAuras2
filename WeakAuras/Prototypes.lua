@@ -131,10 +131,6 @@ function WeakAuras.SpellSchool(school)
   return Private.combatlog_spell_school_types[school] or ""
 end
 
-function WeakAuras.TestSchool(spellSchool, test)
-  print(spellSchool, test, type(spellSchool), type(test))
-  return spellSchool == test
-end
 
 local encounter_list = ""
 local zoneId_list = ""
@@ -248,9 +244,7 @@ function Private.InitializeEncounterAndZoneLists()
     for _, raid in ipairs(classic_raids) do
       encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, raid[1])
       for _, boss in ipairs(raid[2]) do
-        for _, boss in ipairs(raid[2]) do
-          encounter_list = ("%s%s: %d\n"):format(encounter_list, boss[1], boss[2])
-        end
+        encounter_list = ("%s%s: %d\n"):format(encounter_list, boss[1], boss[2])
       end
       encounter_list = encounter_list .. "\n"
     end
