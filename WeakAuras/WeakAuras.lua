@@ -5335,14 +5335,16 @@ function WeakAuras.ParseZoneCheck(input)
 
   local start = input:find('%d', 1)
   local last = input:find('%D', start)
-  while (last) do
+  while (start and last) do
     matcher:AddId(input, start, last - 1)
     start = input:find('%d', last + 1)
     last = input:find('%D', start)
   end
 
   last = #input
-  matcher:AddId(input, start, last)
+  if start and last then
+    matcher:AddId(input, start, last)
+  end
   return matcher
 end
 
