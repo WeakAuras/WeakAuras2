@@ -134,6 +134,7 @@ end
 
 local encounter_list = ""
 local zoneId_list = ""
+Private.encounter_table = {}
 function Private.InitializeEncounterAndZoneLists()
   if encounter_list ~= "" then
     return
@@ -241,6 +242,7 @@ function Private.InitializeEncounterAndZoneLists()
         }
       }
     }
+    Private.encounter_table = classic_raids
     for _, raid in ipairs(classic_raids) do
       encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, raid[1])
       for _, boss in ipairs(raid[2]) do
@@ -346,6 +348,7 @@ function Private.InitializeEncounterAndZoneLists()
         }
       },
     }
+    Private.encounter_table = bcc_raids
     for _, raid in ipairs(bcc_raids) do
       encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, raid[1])
       for _, boss in ipairs(raid[2]) do
@@ -355,13 +358,13 @@ function Private.InitializeEncounterAndZoneLists()
     end
   else
     EJ_SelectTier(EJ_GetCurrentTier())
-
+    Private.zoneId_table = {}
     for _, inRaid in ipairs({false, true}) do
       local instance_index = 1
       local instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
       local title = inRaid and L["Raids"] or L["Dungeons"]
       zoneId_list = ("%s|cffffd200%s|r\n"):format(zoneId_list, title)
-
+      tinsert(Private.zoneId_table, {title, {}})
       while instance_id do
         EJ_SelectInstance(instance_id)
         local instance_name, _, _, _, _, _, dungeonAreaMapID = EJ_GetInstanceInfo(instance_id)
@@ -373,24 +376,31 @@ function Private.InitializeEncounterAndZoneLists()
           local mapGroupId = C_Map.GetMapGroupID(dungeonAreaMapID)
           if mapGroupId then -- If there's a group id, only list that one
             zoneId_list = ("%s%s: g%d\n"):format(zoneId_list, instance_name, mapGroupId)
+            tinsert(Private.zoneId_table[#Private.zoneId_table][2], {instance_name, "g"..mapGroupId})
           else
             zoneId_list = ("%s%s: %d\n"):format(zoneId_list, instance_name, dungeonAreaMapID)
+            tinsert(Private.zoneId_table[#Private.zoneId_table][2], {instance_name, dungeonAreaMapID})
           end
         end
 
         -- Encounter ids
         if inRaid then
+          local encounter_table = {}
           while boss do
             if encounter_id then
               if instance_name then
                 encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, instance_name)
+                tinsert(encounter_table, instance_name)
+                tinsert(encounter_table, {})
                 instance_name = nil -- Only add it once per section
               end
               encounter_list = ("%s%s: %d\n"):format(encounter_list, boss, encounter_id)
+              tinsert(encounter_table[2], {boss, encounter_id})
             end
             ej_index = ej_index + 1
             boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
           end
+          tinsert(Private.encounter_table, encounter_table)
           encounter_list = encounter_list .. "\n"
         end
         instance_index = instance_index + 1
@@ -425,7 +435,7 @@ local function get_zoneId_list()
                                          L["Current Zone Group\n"], currentmap_name, mapGroupId)
 
     -- if map is in a group, its real name is (or should be?) found in GetMapGroupMembersInfo
-    for k, map in ipairs(C_Map.GetMapGroupMembersInfo(mapGroupId)) do
+    for _, map in ipairs(C_Map.GetMapGroupMembersInfo(mapGroupId)) do
       if map.mapID and map.mapID == currentmap_id and map.name then
         currentmap_name = map.name
         break

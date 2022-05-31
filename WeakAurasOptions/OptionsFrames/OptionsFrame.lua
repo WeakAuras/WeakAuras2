@@ -584,6 +584,82 @@ function OptionsPrivate.CreateFrame()
 
   -- filter line
   local filterInput = CreateFrame("EditBox", "WeakAurasFilterInput", frame, "SearchBoxTemplate")
+  local searchMenuFrame = CreateFrame("Frame", "WeakAurasSearchMenuFrame", filterInput, "UIDropDownMenuTemplate")
+  searchMenuFrame:Hide()
+
+  local filterInputMenuEntries = {
+    { text = L["Load"], notCheckable = true, hasArrow = true,
+      menuList = {
+        { text = L["Class"], notCheckable = true, hasArrow = true, menuList = {} },
+        { text = L["Encounters"], notCheckable = true, hasArrow = true, menuList = {} },
+        { text = L["Never"], notCheckable = true, func = function() filterInput:SetText("load.use_never:true") end },
+        { text = L["In Combat"], notCheckable = true, func = function() filterInput:SetText("load.use_combat:true") end },
+      }
+    },
+    { text = L["Type"], notCheckable = true, hasArrow = true,
+      menuList = {
+        { text = L["Icon"], notCheckable = true, func = function() filterInput:SetText("regionType:icon") end },
+        { text = L["Text"], notCheckable = true, func = function() filterInput:SetText("regionType:text") end },
+        { text = L["Progress Bar"], notCheckable = true, func = function() filterInput:SetText("regionType:aurabar") end },
+        { text = L["Texture"], notCheckable = true, func = function() filterInput:SetText("regionType:texture") end },
+        { text = L["Progress Texture"], notCheckable = true, func = function() filterInput:SetText("regionType:progresstexture") end },
+        { text = L["Model"], notCheckable = true, func = function() filterInput:SetText("regionType:model") end },
+        { text = L["Stop Motion"], notCheckable = true, func = function() filterInput:SetText("regionType:stopmotion") end },
+      }
+    },
+  }
+
+  local function fillFilterInputMenuEntries(menu, input)
+    local loadMenu = menu[1].menuList
+    local classMenu = loadMenu[1].menuList
+    local encounterMenu = loadMenu[2].menuList
+
+    local classList = {}
+    for classFile, colored in pairs(WeakAuras.class_types) do
+      tinsert(classList, {classFile, colored})
+    end
+    table.sort(classList, function(a, b) return a[1] < b[1] end)
+    for _, class in ipairs(classList) do
+      tinsert(classMenu, {
+        text = class[2],
+        notCheckable = true,
+        func = function()
+          input:SetText("load.class:"..class[1]:lower())
+        end
+      })
+    end
+
+    for _, raid in ipairs(OptionsPrivate.Private.encounter_table) do
+      local raidMenu = { text = raid[1], notCheckable = true, hasArrow = true, menuList = {} }
+      for _, boss in ipairs(raid[2]) do
+        tinsert(raidMenu.menuList, { text = boss[1], notCheckable = true, func = function() filterInput:SetText("load.encounterid:"..boss[2]) end })
+      end
+      tinsert(encounterMenu, raidMenu)
+    end
+
+    if OptionsPrivate.Private.zoneId_table then
+      local zoneIdMenu = { text = L["Zone ID"], notCheckable = true, hasArrow = true, menuList = {} }
+      for _, zoneCategory in ipairs(OptionsPrivate.Private.zoneId_table) do
+        local dungeonOrRaidMenu = { text = zoneCategory[1], notCheckable = true, hasArrow = true, menuList = {} }
+        for _, zone in ipairs(zoneCategory[2]) do
+          tinsert(dungeonOrRaidMenu.menuList, { text = zone[1], notCheckable = true, func = function() filterInput:SetText("load.zoneIds:"..zone[2]) end })
+        end
+        tinsert(zoneIdMenu.menuList, dungeonOrRaidMenu)
+      end
+      tinsert(loadMenu, 3, zoneIdMenu)
+    end
+
+    if not WeakAuras.IsClassic() then
+      local zoneIdMenu = { text = L["Instance Difficulty"], notCheckable = true, hasArrow = true, menuList = {} }
+      for difficulty, localeName in pairs(OptionsPrivate.Private.difficulty_types) do
+        tinsert(zoneIdMenu.menuList, { text = localeName, notCheckable = true, func = function() filterInput:SetText("load.difficulty:"..difficulty) end })
+      end
+      tinsert(loadMenu, 3, zoneIdMenu)
+    end
+  end
+
+  fillFilterInputMenuEntries(filterInputMenuEntries, filterInput)
+
   filterInput:SetScript("OnTextChanged", function(self)
     SearchBoxTemplate_OnTextChanged(self)
     OptionsPrivate.SortDisplayButtons(filterInput:GetText(), true)
@@ -593,6 +669,10 @@ function OptionsPrivate.CreateFrame()
   filterInput:SetPoint("LEFT", frame, "LEFT", 44, 0)
   filterInput:SetPoint("RIGHT", container.frame, "LEFT", -5, 0)
   filterInput:SetFont(STANDARD_TEXT_FONT, 10)
+  filterInput:SetScript("OnEditFocusGained", function()
+    EasyMenu(filterInputMenuEntries, WeakAurasSearchMenuFrame, WeakAurasFilterInput, 20 , -30)
+    searchMenuFrame:SetPoint("TOPLEFT", WeakAurasFilterInput, "BOTTOMLEFT")
+  end)
   frame.filterInput = filterInput
   filterInput:Hide()
 

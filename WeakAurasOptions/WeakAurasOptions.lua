@@ -908,6 +908,12 @@ end
 local path_with_toggles = {
   "^load",
 }
+local path_with_checknumericids = {
+  ["load.encounterid"] = true
+}
+local path_with_zoneChecker = {
+  ["load.zoneIds"] = true
+}
 local function searchData(filter, id)
   local path, value = filter:match("^([%w%d_%.]+):([%w%d]+)$")
   if path and value then
@@ -918,13 +924,6 @@ local function searchData(filter, id)
       local path_ok
       local toggle_check -- value of a field starting with "use_" for last key of the path
       local isToggle -- true if last key of the path start with "use_"
-      local is_path_with_toggles = false
-      for _, check in ipairs(path_with_toggles) do
-        if check:match(path) then
-          is_path_with_toggles = true
-          break
-        end
-      end
 
       for field in path:gmatch("[%w%d_]+") do
         if data[field] == nil then
@@ -939,12 +938,25 @@ local function searchData(filter, id)
         isToggle = field:sub(1,4) == "use_"
       end
 
-      if path_ok
-      and (
+      if path_ok then
+        local is_path_with_toggles = false
+        for _, check in ipairs(path_with_toggles) do
+          if path:match(check) then
+            is_path_with_toggles = true
+            break
+          end
+        end
+        local is_path_with_checknumericids = path_with_checknumericids[path]
+        local is_path_wih_zoneChecker = path_with_zoneChecker[path]
+        local zoneChecker = is_path_wih_zoneChecker and toggle_check == true and value ~= "" and WeakAuras.ParseZoneCheck(tostring(data))
+
+        if
         (
           (is_path_with_toggles == false or toggle_check == true or isToggle)
           and (
             data == value
+            or (is_path_with_checknumericids and WeakAuras.CheckNumericIds(data, value))
+            or (is_path_wih_zoneChecker and zoneChecker and zoneChecker:Check(value:lower(), value:lower()))
             or (type(data) == "string" and data:upper() == value)
             or (data == true and value == "TRUE")
             or (data == false and value == "FALSE")
@@ -958,9 +970,9 @@ local function searchData(filter, id)
             type(data) == "table" and data.multi and (data.multi[value] == true)
           )
         )
-      )
-      then
-        return true
+        then
+          return true
+        end
       end
     end
   end
