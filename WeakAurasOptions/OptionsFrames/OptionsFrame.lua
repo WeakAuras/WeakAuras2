@@ -691,7 +691,7 @@ function OptionsPrivate.CreateFrame()
   filterInput:SetPoint("RIGHT", container.frame, "LEFT", -5, 0)
   filterInput:SetFont(STANDARD_TEXT_FONT, 10)
   filterInput:SetScript("OnEditFocusGained", function()
-    EasyMenu(filterInputMenuEntries, WeakAurasSearchMenuFrame, WeakAurasFilterInput, 20 , -30)
+    EasyMenu(filterInputMenuEntries, WeakAurasSearchMenuFrame, WeakAurasFilterInput, 20 , -30, "MENU")
     searchMenuFrame:SetPoint("TOPLEFT", WeakAurasFilterInput, "BOTTOMLEFT")
   end)
   frame.filterInput = filterInput
