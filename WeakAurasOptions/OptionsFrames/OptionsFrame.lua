@@ -587,24 +587,30 @@ function OptionsPrivate.CreateFrame()
   local searchMenuFrame = CreateFrame("Frame", "WeakAurasSearchMenuFrame", filterInput, "UIDropDownMenuTemplate")
   searchMenuFrame:Hide()
 
+  local function addSearch(s)
+    local prevText = filterInput:GetText()
+    local newText = prevText and prevText ~= "" and (prevText .. " " .. s) or s
+    filterInput:SetText(newText)
+  end
+
   local filterInputMenuEntries = {
     { text = L["Load"], notCheckable = true, hasArrow = true,
       menuList = {
         { text = L["Class"], notCheckable = true, hasArrow = true, menuList = {} },
         { text = L["Encounters"], notCheckable = true, hasArrow = true, menuList = {} },
-        { text = L["Never"], notCheckable = true, func = function() filterInput:SetText("load.use_never:true") end },
-        { text = L["In Combat"], notCheckable = true, func = function() filterInput:SetText("load.use_combat:true") end },
+        { text = L["Never"], notCheckable = true, func = function() addSearch("load.use_never:true") end },
+        { text = L["In Combat"], notCheckable = true, func = function() addSearch("load.use_combat:true") end },
       }
     },
     { text = L["Type"], notCheckable = true, hasArrow = true,
       menuList = {
-        { text = L["Icon"], notCheckable = true, func = function() filterInput:SetText("regionType:icon") end },
-        { text = L["Text"], notCheckable = true, func = function() filterInput:SetText("regionType:text") end },
-        { text = L["Progress Bar"], notCheckable = true, func = function() filterInput:SetText("regionType:aurabar") end },
-        { text = L["Texture"], notCheckable = true, func = function() filterInput:SetText("regionType:texture") end },
-        { text = L["Progress Texture"], notCheckable = true, func = function() filterInput:SetText("regionType:progresstexture") end },
-        { text = L["Model"], notCheckable = true, func = function() filterInput:SetText("regionType:model") end },
-        { text = L["Stop Motion"], notCheckable = true, func = function() filterInput:SetText("regionType:stopmotion") end },
+        { text = L["Icon"], notCheckable = true, func = function() addSearch("regionType:icon") end },
+        { text = L["Text"], notCheckable = true, func = function() addSearch("regionType:text") end },
+        { text = L["Progress Bar"], notCheckable = true, func = function() addSearch("regionType:aurabar") end },
+        { text = L["Texture"], notCheckable = true, func = function() addSearch("regionType:texture") end },
+        { text = L["Progress Texture"], notCheckable = true, func = function() addSearch("regionType:progresstexture") end },
+        { text = L["Model"], notCheckable = true, func = function() addSearch("regionType:model") end },
+        { text = L["Stop Motion"], notCheckable = true, func = function() addSearch("regionType:stopmotion") end },
       }
     },
   }
@@ -632,7 +638,7 @@ function OptionsPrivate.CreateFrame()
     for _, raid in ipairs(OptionsPrivate.Private.encounter_table) do
       local raidMenu = { text = raid[1], notCheckable = true, hasArrow = true, menuList = {} }
       for _, boss in ipairs(raid[2]) do
-        tinsert(raidMenu.menuList, { text = boss[1], notCheckable = true, func = function() filterInput:SetText("load.encounterid:"..boss[2]) end })
+        tinsert(raidMenu.menuList, { text = boss[1], notCheckable = true, func = function() addSearch("load.encounterid:"..boss[2]) end })
       end
       tinsert(encounterMenu, raidMenu)
     end
@@ -642,7 +648,7 @@ function OptionsPrivate.CreateFrame()
       for _, zoneCategory in ipairs(OptionsPrivate.Private.zoneId_table) do
         local dungeonOrRaidMenu = { text = zoneCategory[1], notCheckable = true, hasArrow = true, menuList = {} }
         for _, zone in ipairs(zoneCategory[2]) do
-          tinsert(dungeonOrRaidMenu.menuList, { text = zone[1], notCheckable = true, func = function() filterInput:SetText("load.zoneIds:"..zone[2]) end })
+          tinsert(dungeonOrRaidMenu.menuList, { text = zone[1], notCheckable = true, func = function() addSearch("load.zoneIds:"..zone[2]) end })
         end
         tinsert(zoneIdMenu.menuList, dungeonOrRaidMenu)
       end
@@ -652,7 +658,7 @@ function OptionsPrivate.CreateFrame()
     if not WeakAuras.IsClassic() then
       local zoneIdMenu = { text = L["Instance Difficulty"], notCheckable = true, hasArrow = true, menuList = {} }
       for difficulty, localeName in pairs(OptionsPrivate.Private.difficulty_types) do
-        tinsert(zoneIdMenu.menuList, { text = localeName, notCheckable = true, func = function() filterInput:SetText("load.difficulty:"..difficulty) end })
+        tinsert(zoneIdMenu.menuList, { text = localeName, notCheckable = true, func = function() addSearch("load.difficulty:"..difficulty) end })
       end
       tinsert(loadMenu, 3, zoneIdMenu)
     end
