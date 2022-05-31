@@ -613,6 +613,21 @@ function OptionsPrivate.CreateFrame()
         { text = L["Stop Motion"], notCheckable = true, func = function() addSearch("regionType:stopmotion") end },
       }
     },
+    { text = L["Triggers"], notCheckable = true, hasArrow = true,
+      menuList = {
+        { text = L["Any Aura"], notCheckable = true, func = function() addSearch("triggers.*.trigger.type:aura2") end },
+        { text = L["Trigger 1 Aura"], notCheckable = true, func = function() addSearch("triggers.1.trigger.type:aura2") end },
+        { text = L["Trigger 1 Cast"], notCheckable = true, func = function() addSearch("triggers.1.trigger.type:unit") addSearch("triggers.1.trigger.event:cast") end },
+      }
+    },
+    { text = L["Anchor"], notCheckable = true, hasArrow = true,
+      menuList = {
+        { text = L["Nameplate Aura"], notCheckable = true, func = function() addSearch("anchorFrameType:nameplate") end },
+        { text = L["Nameplate Group"], notCheckable = true, func = function() addSearch("useAnchorPerUnit:true") addSearch("anchorPerUnit:nameplate") end },
+        { text = L["Unit Frame Aura"], notCheckable = true, func = function() addSearch("anchorFrameType:unitframe") end },
+        { text = L["Unit Frame Group"], notCheckable = true, func = function() addSearch("useAnchorPerUnit:true") addSearch("anchorPerUnit:unitframe") end },
+      }
+    }
   }
 
   local function fillFilterInputMenuEntries(menu, input)

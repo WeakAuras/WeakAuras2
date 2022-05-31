@@ -920,30 +920,16 @@ local function searchData(filter, id)
   local functionReturn = false
   for search in filter:gmatch("[^ ]+") do
     local loopReturn = false
-    local path, value = search:match("^([%w%d_%.]+):([%w%d]+)$")
+    local path, value = search:match("^([%w%d_%.%*]+):([%w%d]+)$")
     if path and value then
       -- search in data
       value = value:upper()
       local data = WeakAuras.GetData(id)
       if data then
-        local path_ok
         local toggle_check -- value of a field starting with "use_" for last key of the path
         local isToggle -- true if last key of the path start with "use_"
 
-        for field in path:gmatch("[%w%d_]+") do
-          if data[field] == nil then
-            path_ok = false
-            break
-          end
-          path_ok = true
-          if data[field] then
-            toggle_check = data["use_"..field]
-          end
-          data = data[field]
-          isToggle = field:sub(1,4) == "use_"
-        end
-
-        if path_ok then
+        local function test(data)
           local is_path_with_toggles = false
           for _, check in ipairs(path_with_toggles) do
             if path:match(check) then
@@ -955,7 +941,6 @@ local function searchData(filter, id)
           local is_path_wih_zoneChecker = path_with_zoneChecker[path]
           -- TO FIX
           --local zoneChecker = is_path_wih_zoneChecker and toggle_check == true and value ~= "" and WeakAuras.ParseZoneCheck(tostring(data))
-
           if
           (
             (is_path_with_toggles == false or toggle_check == true or isToggle)
@@ -977,9 +962,41 @@ local function searchData(filter, id)
             )
           )
           then
-            loopReturn = true
-            functionReturn = true
+            return true
           end
+        end
+
+        local function recurse(data, rec_path)
+          local field, rest = rec_path:match("^([%w%d_%*]+)%.?(.*)")
+          if field == nil then
+            return test(data)
+          elseif field == "*" and type(data) == "table" then
+            for _, element in ipairs(data) do
+              local ret = recurse(element, rest)
+              if ret then
+                return true
+              end
+            end
+          elseif tonumber(field) and type(data) == "table" then
+            field = tonumber(field)
+            if data[field] then
+              return recurse(data[field], rest)
+            end
+          else
+            if data[field] == nil then
+              return false
+            end
+            if data[field] then
+              toggle_check = data["use_"..field]
+            end
+            isToggle = field:sub(1,4) == "use_"
+            return recurse(data[field], rest)
+          end
+        end
+
+        if recurse(data, path) then
+          loopReturn = true
+          functionReturn = true
         end
       end
     else
