@@ -969,26 +969,28 @@ local function searchData(filter, id)
           local field, rest = rec_path:match("^([%w%d_%*]+)%.?(.*)")
           if field == nil then
             return test(data)
-          elseif field == "*" and type(data) == "table" then
+          elseif type(data) ~= "table" then
+            return false
+          elseif field == "*" then -- wildcard explore list
             for _, element in ipairs(data) do
               local ret = recurse(element, rest)
               if ret then
                 return true
               end
             end
-          elseif tonumber(field) and type(data) == "table" then
+          elseif tonumber(field) then -- explore list at index
             field = tonumber(field)
             if data[field] then
               return recurse(data[field], rest)
             end
           else
-            if data[field] == nil then
+            if data[field] == nil then -- path does not match
               return false
             end
-            if data[field] then
+            if data[field] then --  a toggle is checked for for this field
               toggle_check = data["use_"..field]
             end
-            isToggle = field:sub(1,4) == "use_"
+            isToggle = field:sub(1,4) == "use_" -- field is a toggle
             return recurse(data[field], rest)
           end
         end
