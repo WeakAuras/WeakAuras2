@@ -939,15 +939,14 @@ local function searchData(filter, id)
           end
           local is_path_with_checknumericids = path_with_checknumericids[path]
           local is_path_wih_zoneChecker = path_with_zoneChecker[path]
-          -- TO FIX
-          --local zoneChecker = is_path_wih_zoneChecker and toggle_check == true and value ~= "" and WeakAuras.ParseZoneCheck(tostring(data))
+          local zoneChecker = (is_path_wih_zoneChecker and toggle_check == true and type(data) == "string" and data ~= "") and WeakAuras.ParseZoneCheck(data)
           if
           (
             (is_path_with_toggles == false or toggle_check == true or isToggle)
             and (
               data == value
               or (is_path_with_checknumericids and WeakAuras.CheckNumericIds(data, value))
-              or (is_path_wih_zoneChecker and zoneChecker and zoneChecker:Check(value:lower(), value:lower()))
+              or (zoneChecker and zoneChecker:Check(tonumber(value), value:lower():sub(1,1) == "g" and tonumber(value:sub(2,#value))))
               or (type(data) == "string" and data:upper() == value)
               or (data == true and value == "TRUE")
               or (data == false and value == "FALSE")
