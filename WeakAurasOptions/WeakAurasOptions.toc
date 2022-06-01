@@ -1,4 +1,4 @@
-## Interface: 90200
+## Interface: 90205
 ## Interface-Classic: 11402
 ## Interface-BCC: 20504
 ## Title: WeakAuras Options
