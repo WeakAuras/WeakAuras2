@@ -621,6 +621,12 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       changed = true
     end
 
+    if not state.initialTime then
+      -- Only set initialTime if it wasn't set before
+      state.initialTime = time
+      changed = true
+    end
+
     if state.expirationTime ~= bestMatch.expirationTime then
       -- A bit fuzzy checking
       if state.expirationTime and bestMatch.expirationTime and bestMatch.expirationTime - state.expirationTime > 0.2  then
@@ -784,6 +790,16 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
 
     if state.duration then
       state.duration = nil
+      changed = true
+    end
+
+    if state.initialTime then
+      state.initialTime = nil
+      changed = true
+    end
+
+    if state.refreshTime then
+      state.refreshTime = nil
       changed = true
     end
 
