@@ -688,7 +688,7 @@ function OptionsPrivate.CreateFrame()
         text = class[2],
         notCheckable = true,
         func = function()
-          input:SetText("load.class:"..class[1]:lower())
+          addSearch("load.class:"..class[1]:lower())
         end
       })
     end
