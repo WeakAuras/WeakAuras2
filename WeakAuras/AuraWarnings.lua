@@ -77,7 +77,7 @@ local function AddMessages(result, messages, icon, mixedSeverity)
     end
     if mixedSeverity then
       if C_Texture.GetAtlasInfo(icon) then
-        result = result .. "|A" .. icon .. ":12:12:0:0:64:64:4:60:4:60|t"
+        result = result .. "|A:" .. icon .. ":12:12:0:0|a"
       else
         result = result .. "|T" .. icon .. ":12:12:0:0:64:64:4:60:4:60|t"
       end
