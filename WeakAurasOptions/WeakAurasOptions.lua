@@ -924,12 +924,10 @@ local function searchData(filter, id)
     if path and value then
       -- search in data
       value = value:upper()
-      local data = WeakAuras.GetData(id)
-      if data then
-        local toggle_check -- value of a field starting with "use_" for last key of the path
-        local isToggle -- true if last key of the path start with "use_"
+      local AuraData = WeakAuras.GetData(id)
 
-        local function test(data)
+      if AuraData then
+        local function test(data, toggle_for_field, field_is_a_toggle)
           local is_path_with_toggles = false
           for _, check in ipairs(path_with_toggles) do
             if path:match(check) then
@@ -939,10 +937,10 @@ local function searchData(filter, id)
           end
           local is_path_with_checknumericids = path_with_checknumericids[path]
           local is_path_wih_zoneChecker = path_with_zoneChecker[path]
-          local zoneChecker = (is_path_wih_zoneChecker and toggle_check == true and type(data) == "string" and data ~= "") and WeakAuras.ParseZoneCheck(data)
+          local zoneChecker = (is_path_wih_zoneChecker and toggle_for_field == true and type(data) == "string" and data ~= "") and WeakAuras.ParseZoneCheck(data)
           if
           (
-            (is_path_with_toggles == false or toggle_check == true or isToggle)
+            (not is_path_with_toggles or (is_path_with_toggles and toggle_for_field == true) or field_is_a_toggle == true)
             and (
               data == value
               or (is_path_with_checknumericids and WeakAuras.CheckNumericIds(data, value))
@@ -955,7 +953,7 @@ local function searchData(filter, id)
           )
           or (
             is_path_with_toggles == true
-            and toggle_check == false
+            and toggle_for_field == false
             and (
               type(data) == "table" and data.multi and (data.multi[value] == true)
             )
@@ -965,15 +963,15 @@ local function searchData(filter, id)
           end
         end
 
-        local function recurse(data, rec_path)
-          local field, rest = rec_path:match("^([%w%d_%*]+)%.?(.*)")
+        local function recurse(data, path, toggle_for_field, field_is_a_toggle)
+          local field, next_path = path:match("^([%w%d_%*]+)%.?(.*)")
           if field == nil then
-            return test(data)
+            return test(data, toggle_for_field, field_is_a_toggle)
           elseif type(data) ~= "table" then
             return false
           elseif field == "*" then -- wildcard explore list
             for _, element in ipairs(data) do
-              local ret = recurse(element, rest)
+              local ret = recurse(element, next_path)
               if ret then
                 return true
               end
@@ -981,21 +979,22 @@ local function searchData(filter, id)
           elseif tonumber(field) then -- explore list at index
             field = tonumber(field)
             if data[field] then
-              return recurse(data[field], rest)
+              return recurse(data[field], next_path)
             end
           else
             if data[field] == nil then -- path does not match
               return false
             end
-            if data[field] then --  a toggle is checked for for this field
-              toggle_check = data["use_"..field]
-            end
-            isToggle = field:sub(1,4) == "use_" -- field is a toggle
-            return recurse(data[field], rest)
+            return recurse(
+              data[field],
+              next_path,
+              data["use_"..field],
+              field:sub(1,4) == "use_"
+            )
           end
         end
 
-        if recurse(data, path) then
+        if recurse(AuraData, path) then
           loopReturn = true
           functionReturn = true
         end
