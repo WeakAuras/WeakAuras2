@@ -189,6 +189,10 @@ local aura_environments = {}
 -- 2 == fully initialized
 local environment_initialized = {}
 
+
+local function_env_cache = {}
+local function_cache = {}
+
 function Private.IsEnvironmentInitialized(id)
   return environment_initialized[id] == 2
 end
@@ -196,11 +200,17 @@ end
 function Private.DeleteAuraEnvironment(id)
   aura_environments[id] = nil
   environment_initialized[id] = nil
+
+  function_cache[id] = nil
+  function_env_cache[id] = nil
 end
 
 function Private.RenameAuraEnvironment(oldid, newid)
   aura_environments[oldid], aura_environments[newid] = nil, aura_environments[oldid]
   environment_initialized[oldid], environment_initialized[newid] = nil, environment_initialized[oldid]
+
+  function_cache[oldid] = nil
+  function_env_cache[oldid] = nil
 end
 
 local current_uid = nil
@@ -415,8 +425,6 @@ local exec_env = setmetatable({},
       return t
     elseif k == "getglobal" then
       return env_getglobal
-    elseif k == "aura_env" then
-      return current_aura_env
     elseif blockedFunctions[k] then
       blocked(k)
       return function() end
@@ -443,19 +451,65 @@ function env_getglobal(k)
   return exec_env[k]
 end
 
-local function_cache = {}
+local function env_getenv(id)
+  if ( function_env_cache[id] ) then
+    return function_env_cache[id]
+  end
+
+  local __LoadFunction = function(code)
+    return WeakAuras.LoadFunction(code, id)
+  end
+
+  local WaProxy = setmetatable({}, {
+    __index = function(t1, k1)
+      if ( k1 == 'LoadFunction' ) then
+        return __LoadFunction
+      else
+        return exec_env["WeakAuras"][k1]
+      end
+    end
+  })
+
+  function_env_cache[id] = setmetatable({},{
+    __index = function(t, k)
+      if k == "aura_env" then
+        return aura_environments[id]
+      elseif k == 'WeakAuras' then
+        return WaProxy
+      else
+        return exec_env[k]
+      end
+    end,
+    __newindex = function(t, k, v)
+      exec_env[k] = v
+    end,
+    __metatable = false
+  })
+
+  return function_env_cache[id]
+end
+
 function WeakAuras.LoadFunction(string, id, inTrigger)
-  if function_cache[string] then
-    return function_cache[string]
+
+  if not id then
+    error('Unable to find id in WeakAuras.LoadFunction')
+  end
+
+  if function_cache[id] and function_cache[id][string] then
+    return function_cache[id][string]
   else
     local loadedFunction, errorString = loadstring(string, "Error in: " .. (id or "Unknown") .. (inTrigger and ("':'".. inTrigger) or ""))
     if errorString then
       print(errorString)
     else
-      setfenv(loadedFunction, exec_env)
+      setfenv(loadedFunction, env_getenv(id))
       local success, func = pcall(assert(loadedFunction))
       if success then
-        function_cache[string] = func
+        if not function_cache[id] then
+          function_cache[id] = {}
+        end
+
+        function_cache[id][string] = func
         return func
       end
     end
