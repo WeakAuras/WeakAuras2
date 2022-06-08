@@ -920,7 +920,7 @@ local function searchData(filter, id)
   local functionReturn = false
   for search in filter:gmatch("[^ ]+") do
     local loopReturn = false
-    local operator, path, value = search:match("^(+?)([%w%d_%.%*]+):([%w%d]+)$")
+    local operator, path, value = search:match("^([+-]?)([%w%d_%.%*]+):([%w%d]+)$")
     if path and value then
       -- search in data
       value = value:upper()
@@ -1011,6 +1011,9 @@ local function searchData(filter, id)
         end
 
         local result = recurse(AuraData, path)
+        if operator == "-" then
+          result = not result
+        end
         if result == true or (operator == "+" and result ~= false) then
           loopReturn = true
           functionReturn = true
