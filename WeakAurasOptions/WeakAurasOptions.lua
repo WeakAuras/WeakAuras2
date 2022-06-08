@@ -920,7 +920,7 @@ local function searchData(filter, id)
   local functionReturn = false
   for search in filter:gmatch("[^ ]+") do
     local loopReturn = false
-    local operator, path, value = search:match("^([+-]?)([%w%d_%.%*]+):([%w%d]+)$")
+    local operator, path, value = search:match("^([+-]?)([^: ]+):([^: ]+)$")
     if path and value then
       -- search in data
       value = value:upper()
@@ -969,7 +969,7 @@ local function searchData(filter, id)
         -- if path exists and test is not valid: return false
         -- if path does not exists or is toggled off: return nil
         local function recurse(data, recurse_path, toggle_for_field, field_is_a_toggle)
-          local field, next_path = recurse_path:match("^([%w%d_%*]+)%.?(.*)")
+          local field, next_path = recurse_path:match("^([^. ]+)%.?(.*)")
           if field == nil then
             -- return nil if path is a toggled off
             if not field_is_a_toggle then
