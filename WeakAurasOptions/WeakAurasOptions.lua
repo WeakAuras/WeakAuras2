@@ -1168,12 +1168,6 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, loadMode)
   local visible = {}
 
   for id, child in pairs(displayButtons) do
-    if(OptionsPrivate.Private.loaded[id] ~= nil) then
-      child:EnableLoaded();
-    else
-      child:DisableLoaded();
-    end
-
     if loadMode == nil then
       loadMode = previousLoadMode
     end

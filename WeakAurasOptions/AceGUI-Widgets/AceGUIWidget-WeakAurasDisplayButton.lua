@@ -915,13 +915,11 @@ local methods = {
       func = function() WeakAuras_DropDownMenu:Hide() end
     });
     if(self.data.controlledChildren) then
-      self.loaded:Hide();
       self.expand:Show();
       self.callbacks.UpdateExpandButton();
       self:SetOnExpandCollapse(function() OptionsPrivate.SortDisplayButtons(nil, true) end);
     else
       self:SetViewRegion(WeakAuras.regions[self.data.id].region);
-      self.loaded:Show();
       self.expand:Hide();
     end
     self.group:Show();
@@ -1134,7 +1132,6 @@ local methods = {
     self.frame:SetScript("OnClick", nil)
     self.view:Hide()
     self.expand:Hide()
-    self.loaded:Hide()
     Hide_Tooltip()
     if picked then
       self.frame:EnableKeyboard(true)
@@ -1229,8 +1226,6 @@ local methods = {
     self.view:Show()
     if self.data.controlledChildren then
       self.expand:Show()
-    else
-      self.loaded:Show()
     end
     self:Enable()
 
@@ -1417,16 +1412,6 @@ local methods = {
   ["GetGroupOrder"] = function(self)
     return self.frame.dgrouporder;
   end,
-  ["DisableLoaded"] = function(self)
-    self.loaded.title = L["Not Loaded"];
-    self.loaded.desc = L["This display is not currently loaded"];
-    self.loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Disabled.blp");
-  end,
-  ["EnableLoaded"] = function(self)
-    self.loaded.title = L["Loaded"];
-    self.loaded.desc = L["This display is currently loaded"];
-    self.loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Up.blp");
-  end,
   ["Pick"] = function(self)
     self.frame:LockHighlight();
     self:PriorityShow(1);
@@ -1543,7 +1528,6 @@ local methods = {
     self.view:Disable();
     self.group:Disable();
     self.ungroup:Disable();
-    self.loaded:Disable();
     self.expand:Disable();
     self:UpdateUpDownButtons()
   end,
@@ -1553,7 +1537,6 @@ local methods = {
     self.view:Enable();
     self.group:Enable();
     self.ungroup:Enable();
-    self.loaded:Enable();
     self:UpdateUpDownButtons()
     if not(self.expand.disabled) then
       self.expand:Enable();
@@ -1723,20 +1706,6 @@ local function Constructor()
 
   view.visibility = 0;
 
-  local loaded = CreateFrame("Button", nil, button);
-  button.loaded = loaded;
-  loaded:SetWidth(16);
-  loaded:SetHeight(16);
-  loaded:SetPoint("BOTTOM", button, "BOTTOM");
-  loaded:SetPoint("LEFT", icon, "RIGHT", 0, 0);
-  loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Up.blp");
-  loaded:SetDisabledTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Disabled.blp");
-  --loaded:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp");
-  loaded.title = L["Loaded"];
-  loaded.desc = L["This display is currently loaded"];
-  loaded:SetScript("OnEnter", function() Show_Tooltip(button, loaded.title, loaded.desc) end);
-  loaded:SetScript("OnLeave", Hide_Tooltip);
-
   local renamebox = CreateFrame("EditBox", nil, button, "InputBoxTemplate");
   renamebox:SetHeight(14);
   renamebox:SetPoint("TOP", button, "TOP");
@@ -1862,7 +1831,6 @@ local function Constructor()
     ungroup = ungroup,
     upgroup = upgroup,
     downgroup = downgroup,
-    loaded = loaded,
     background = background,
     expand = expand,
     warning = warning,

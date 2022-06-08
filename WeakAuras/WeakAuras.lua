@@ -188,8 +188,6 @@ local in_loading_screen = false;
 
 -- Load functions, keyed on id
 local loadFuncs = {};
--- Load functions for the Options window that ignore various load options
-local loadFuncsForOptions = {};
 -- Mapping of events to ids, contains true if a aura should be checked for a certain event
 local loadEvents = {}
 
@@ -1509,7 +1507,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   end
 
   local changed = 0;
-  local shouldBeLoaded, couldBeLoaded;
+  local shouldBeLoaded;
   local parentsToCheck = {}
   wipe(toLoad);
   wipe(toUnload);
@@ -1518,16 +1516,12 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     local data = WeakAuras.GetData(id)
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
-      local loadOpt = loadFuncsForOptions[id];
       if WeakAuras.IsClassic() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole);
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole);
       elseif WeakAuras.IsBCC() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, raidRole);
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, raidRole);
       elseif WeakAuras.IsRetail() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, affixes);
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, affixes);
       end
 
       if(shouldBeLoaded and not loaded[id]) then
@@ -1547,8 +1541,6 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
       end
       if(shouldBeLoaded) then
         loaded[id] = true;
-      elseif(couldBeLoaded) then
-        loaded[id] = false;
       else
         loaded[id] = nil;
       end
@@ -1575,7 +1567,7 @@ function Private.ScanForLoadsGroup(toCheck)
       if(#data.controlledChildren > 0) then
         local any_loaded = false;
         for child in Private.TraverseLeafs(data) do
-          if(loaded[child.id] ~= nil) then
+          if(loaded[child.id]) then
             any_loaded = true;
             break;
           else
@@ -1676,7 +1668,7 @@ local function UnloadAll()
   for id in pairs(loaded) do
     Private.CancelAnimation(WeakAuras.regions[id].region, true, true, true, true, true, true)
     if clones[id] then
-      for cloneId, region in pairs(clones[id]) do
+      for _, region in pairs(clones[id]) do
         Private.CancelAnimation(region, true, true, true, true, true, true)
       end
     end
@@ -1873,8 +1865,7 @@ function WeakAuras.Delete(data)
   regions[id] = nil;
   loaded[id] = nil;
   loadFuncs[id] = nil;
-  loadFuncsForOptions[id] = nil;
-  for event, eventData in pairs(loadEvents) do
+  for _, eventData in pairs(loadEvents) do
     eventData[id] = nil
   end
 
@@ -1938,10 +1929,7 @@ function WeakAuras.Rename(data, newid)
   loadFuncs[newid] = loadFuncs[oldid];
   loadFuncs[oldid] = nil;
 
-  loadFuncsForOptions[newid] = loadFuncsForOptions[oldid]
-  loadFuncsForOptions[oldid] = nil;
-
-  for event, eventData in pairs(loadEvents) do
+  for _, eventData in pairs(loadEvents) do
     eventData[newid] = eventData[oldid]
     eventData[oldid] = nil
   end
@@ -1960,7 +1948,7 @@ function WeakAuras.Rename(data, newid)
   if(clones[oldid]) then
     clones[newid] = clones[oldid];
     clones[oldid] = nil;
-    for cloneid, clone in pairs(clones[newid]) do
+    for _, clone in pairs(clones[newid]) do
       clone.id = newid;
     end
   end
@@ -2731,9 +2719,7 @@ local function pAdd(data, simpleChange)
       loadEvents["SCAN_ALL"] = loadEvents["SCAN_ALL"] or {}
       loadEvents["SCAN_ALL"][id] = true
 
-      local loadForOptionsFuncStr = ConstructFunction(load_prototype, data.load, true);
       local loadFunc = WeakAuras.LoadFunction(loadFuncStr, id, "load");
-      local loadForOptionsFunc = WeakAuras.LoadFunction(loadForOptionsFuncStr, id, "options load");
       local triggerLogicFunc;
       if data.triggers.disjunctive == "custom" then
         triggerLogicFunc = WeakAuras.LoadFunction("return "..(data.triggers.customTriggerLogic or ""), id, "trigger combination");
@@ -2744,7 +2730,6 @@ local function pAdd(data, simpleChange)
       Private.LoadConditionFunction(data)
 
       loadFuncs[id] = loadFunc;
-      loadFuncsForOptions[id] = loadForOptionsFunc;
       clones[id] = clones[id] or {};
 
       if (timers[id]) then
