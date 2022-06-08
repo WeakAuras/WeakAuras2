@@ -920,7 +920,7 @@ local function searchData(filter, id)
   local functionReturn = false
   for search in filter:gmatch("[^ ]+") do
     local loopReturn = false
-    local path, value = search:match("^([%w%d_%.%*]+):([%w%d]+)$")
+    local operator, path, value = search:match("^(+?)([%w%d_%.%*]+):([%w%d]+)$")
     if path and value then
       -- search in data
       value = value:upper()
@@ -960,15 +960,31 @@ local function searchData(filter, id)
           )
           then
             return true
+          else
+            return false
           end
         end
 
-        local function recurse(data, path, toggle_for_field, field_is_a_toggle)
-          local field, next_path = path:match("^([%w%d_%*]+)%.?(.*)")
+        -- if path exists and test is valid: return true
+        -- if path exists and test is not valid: return false
+        -- if path does not exists or is toggled off: return nil
+        local function recurse(data, recurse_path, toggle_for_field, field_is_a_toggle)
+          local field, next_path = recurse_path:match("^([%w%d_%*]+)%.?(.*)")
           if field == nil then
+            -- return nil if path is a toggled off
+            if not field_is_a_toggle then
+              for _, check in ipairs(path_with_toggles) do
+                if path:match(check) then
+                  if toggle_for_field == nil then
+                    return
+                  end
+                  break
+                end
+              end
+            end
             return test(data, toggle_for_field, field_is_a_toggle)
           elseif type(data) ~= "table" then
-            return false
+            return nil
           elseif field == "*" then -- wildcard explore list
             for _, element in ipairs(data) do
               local ret = recurse(element, next_path)
@@ -983,7 +999,7 @@ local function searchData(filter, id)
             end
           else
             if data[field] == nil then -- path does not match
-              return false
+              return nil
             end
             return recurse(
               data[field],
@@ -994,7 +1010,8 @@ local function searchData(filter, id)
           end
         end
 
-        if recurse(AuraData, path) then
+        local result = recurse(AuraData, path)
+        if result == true or (operator == "+" and result ~= false) then
           loopReturn = true
           functionReturn = true
         end
