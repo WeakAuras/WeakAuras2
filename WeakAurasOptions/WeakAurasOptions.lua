@@ -914,6 +914,10 @@ local path_with_checknumericids = {
 local path_with_zoneChecker = {
   ["load.zoneIds"] = true
 }
+local path_with_namerealm = {
+  ["load.namerealm"] = true,
+  ["load.ignoreNameRealm"] = true
+}
 
 local function searchData(filter, id)
   if not filter or filter == "" then return end
@@ -938,6 +942,8 @@ local function searchData(filter, id)
           local is_path_with_checknumericids = path_with_checknumericids[path]
           local is_path_wih_zoneChecker = path_with_zoneChecker[path]
           local zoneChecker = (is_path_wih_zoneChecker and toggle_for_field == true and type(data) == "string" and data ~= "") and WeakAuras.ParseZoneCheck(data)
+          local is_path_with_namerealm = path_with_namerealm[path]
+          local namerealmChecker = (is_path_with_namerealm and toggle_for_field == true and type(data) == "string" and data ~= "") and WeakAuras.ParseNameCheck(data)
           if
           (
             (not is_path_with_toggles or (is_path_with_toggles and toggle_for_field == true) or field_is_a_toggle == true)
@@ -945,6 +951,7 @@ local function searchData(filter, id)
               data == value
               or (is_path_with_checknumericids and WeakAuras.CheckNumericIds(data, value))
               or (zoneChecker and zoneChecker:Check(tonumber(value), value:lower():sub(1,1) == "g" and tonumber(value:sub(2,#value))))
+              or (namerealmChecker and namerealmChecker:Check(strsplit("-", data), select(2, strsplit("-", data))))
               or (type(data) == "string" and data:upper() == value)
               or (data == true and value == "TRUE")
               or (data == false and value == "FALSE")
@@ -1165,30 +1172,34 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, loadMode)
 
   tinsert(frame.buttonsScroll.children, frame.allAurasButton);
 
+  if loadMode == nil then
+    loadMode = previousLoadMode
+  end
+  previousLoadMode = loadMode
+  if loadMode then
+    filter = ("-load.use_never:true +load.class:%s +load.namerealm:%s-%s +load.race:%s -regionType:group -regionType:dynamicgroup %s"):format(
+      select(2, UnitClass("player")),
+      UnitName("player"),
+      GetRealmName(),
+      select(2, UnitRace("player")),
+      filter or ""
+    )
+  end
   local aurasMatchingFilter = {}
   local useTextFilter = filter and filter ~= ""
   local topLevelAuras = {}
   local visible = {}
 
   for id, child in pairs(displayButtons) do
-    if loadMode == nil then
-      loadMode = previousLoadMode
-    end
-    previousLoadMode = loadMode
-
-    if loadMode and OptionsPrivate.Private.loaded[id] == nil then
-      aurasMatchingFilter[id] = nil
-    else
-      if useTextFilter then
-        if searchData(filter, id) then
-          aurasMatchingFilter[id] = true
-          for parent in OptionsPrivate.Private.TraverseParents(child.data) do
-            aurasMatchingFilter[parent.id] = true
-          end
-        end
-      else
+    if useTextFilter then
+      if searchData(filter, id) then
         aurasMatchingFilter[id] = true
+        for parent in OptionsPrivate.Private.TraverseParents(child.data) do
+          aurasMatchingFilter[parent.id] = true
+        end
       end
+    else
+      aurasMatchingFilter[id] = true
     end
 
     if not child:GetGroup() then
