@@ -905,16 +905,16 @@ local function addButton(button, aurasMatchingFilter, visible)
   end
 end
 
-local path_with_toggles = {
+local pathWithToggles = {
   "^load",
 }
-local path_with_checknumericids = {
+local pathWithChecknumericids = {
   ["load.encounterid"] = true
 }
-local path_with_zoneChecker = {
+local pathWithZoneChecker = {
   ["load.zoneIds"] = true
 }
-local path_with_namerealm = {
+local pathWithNamerealm = {
   ["load.namerealm"] = true,
   ["load.ignoreNameRealm"] = true
 }
@@ -931,25 +931,25 @@ local function searchData(filter, id)
       local AuraData = WeakAuras.GetData(id)
 
       if AuraData then
-        local function test(data, toggle_for_field, field_is_a_toggle)
-          local is_path_with_toggles = false
-          for _, check in ipairs(path_with_toggles) do
+        local function test(data, toggleForField, fieldIsToggle)
+          local isPathWithToggles = false
+          for _, check in ipairs(pathWithToggles) do
             if path:match(check) then
-              is_path_with_toggles = true
+              isPathWithToggles = true
               break
             end
           end
-          local is_path_with_checknumericids = path_with_checknumericids[path]
-          local is_path_wih_zoneChecker = path_with_zoneChecker[path]
-          local zoneChecker = (is_path_wih_zoneChecker and toggle_for_field == true and type(data) == "string" and data ~= "") and WeakAuras.ParseZoneCheck(data)
-          local is_path_with_namerealm = path_with_namerealm[path]
-          local namerealmChecker = (is_path_with_namerealm and toggle_for_field == true and type(data) == "string" and data ~= "") and WeakAuras.ParseNameCheck(data)
+          local isPathWithChecknumericids = pathWithChecknumericids[path]
+          local isPathWihZoneChecker = pathWithZoneChecker[path]
+          local zoneChecker = (isPathWihZoneChecker and toggleForField == true and type(data) == "string" and data ~= "") and WeakAuras.ParseZoneCheck(data)
+          local isPathWithNamerealm = pathWithNamerealm[path]
+          local namerealmChecker = (isPathWithNamerealm and toggleForField == true and type(data) == "string" and data ~= "") and WeakAuras.ParseNameCheck(data)
           if
           (
-            (not is_path_with_toggles or (is_path_with_toggles and toggle_for_field == true) or field_is_a_toggle == true)
+            (not isPathWithToggles or (isPathWithToggles and toggleForField == true) or fieldIsToggle == true)
             and (
               data == value
-              or (is_path_with_checknumericids and WeakAuras.CheckNumericIds(data, value))
+              or (isPathWithChecknumericids and WeakAuras.CheckNumericIds(data, value))
               or (zoneChecker and zoneChecker:Check(tonumber(value), value:lower():sub(1,1) == "g" and tonumber(value:sub(2,#value))))
               or (namerealmChecker and namerealmChecker:Check(strsplit("-", data), select(2, strsplit("-", data))))
               or (type(data) == "string" and data:upper() == value)
@@ -959,8 +959,8 @@ local function searchData(filter, id)
             )
           )
           or (
-            is_path_with_toggles == true
-            and toggle_for_field == false
+            isPathWithToggles == true
+            and toggleForField == false
             and (
               type(data) == "table" and data.multi and (data.multi[value] == true)
             )
@@ -975,21 +975,21 @@ local function searchData(filter, id)
         -- if path exists and test is valid: return true
         -- if path exists and test is not valid: return false
         -- if path does not exists or is toggled off: return nil
-        local function recurse(data, recurse_path, toggle_for_field, field_is_a_toggle)
-          local field, next_path = recurse_path:match("^([^. ]+)%.?(.*)")
+        local function recurse(data, recursePath, toggleForField, fieldIsToggle)
+          local field, next_path = recursePath:match("^([^. ]+)%.?(.*)")
           if field == nil then
             -- return nil if path is a toggled off
-            if not field_is_a_toggle then
-              for _, check in ipairs(path_with_toggles) do
+            if not fieldIsToggle then
+              for _, check in ipairs(pathWithToggles) do
                 if path:match(check) then
-                  if toggle_for_field == nil then
+                  if toggleForField == nil then
                     return
                   end
                   break
                 end
               end
             end
-            return test(data, toggle_for_field, field_is_a_toggle)
+            return test(data, toggleForField, fieldIsToggle)
           elseif type(data) ~= "table" then
             return nil
           elseif field == "*" then -- wildcard explore list
