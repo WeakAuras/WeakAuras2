@@ -28,6 +28,7 @@ externals:
   WeakAuras/Libs/LibSerialize:
     url: https://github.com/rossnichols/LibSerialize
     tag: v1.0.0
+  WeakAuras/Libs/LibSpecialization: https://repos.curseforge.com/wow/libspecialization/trunk/LibSpecialization
 
 enable-nolib-creation: no
 

@@ -1892,6 +1892,17 @@ local function AddUnitChangeInternalEvents(triggerUnit, t, includePets)
   end
 end
 
+local function AddUnitSpecChangeInternalEvents(triggerUnit, t)
+  if Private.multiUnitUnits[triggerUnit] then
+    for unit in pairs(Private.multiUnitUnits[triggerUnit]) do
+      local isPet = WeakAuras.UnitIsPet(unit)
+      if (not isPet) then
+        tinsert(t, "UNIT_SPEC_CHANGED_" .. string.lower(unit))
+      end
+    end
+  end
+end
+
 local function AddUnitRoleChangeInternalEvents(triggerUnit, t)
   if (triggerUnit == nil) then
     return
@@ -2043,6 +2054,9 @@ Private.event_prototypes = {
         AddUnitChangeInternalEvents(trigger.unitisunit, result)
       end
       AddUnitRoleChangeInternalEvents(unit, result)
+      if trigger.use_specId then
+        AddUnitSpecChangeInternalEvents(unit, result)
+      end
       return result
     end,
     force_events = unitHelperFunctions.UnitChangedForceEvents,
@@ -2125,6 +2139,19 @@ Private.event_prototypes = {
         values = "class_types",
         store = true,
         conditionType = "select"
+      },
+      {
+        name = "specId",
+        display = L["Specialization"],
+        type = "multiselect",
+        init = "WeakAuras.SpecForUnit(unit)",
+        values = "spec_types_all",
+        store = true,
+        conditionType = "select",
+        enable = function(trigger)
+          return WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+        end,
+        desc = L["Requires syncing the specialization via LibSpecialization."],
       },
       {
         name = "classification",
@@ -2597,6 +2624,9 @@ Private.event_prototypes = {
       if includePets ~= "PetsOnly" then
         AddUnitRoleChangeInternalEvents(unit, result)
       end
+      if trigger.use_specId then
+        AddUnitSpecChangeInternalEvents(unit, result)
+      end
       return result
     end,
     force_events = unitHelperFunctions.UnitChangedForceEventsWithPets,
@@ -2795,6 +2825,19 @@ Private.event_prototypes = {
         conditionType = "select"
       },
       {
+        name = "specId",
+        display = L["Specialization"],
+        type = "multiselect",
+        init = "WeakAuras.SpecForUnit(unit)",
+        values = "spec_types_all",
+        store = true,
+        conditionType = "select",
+        enable = function(trigger)
+          return WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+        end,
+        desc = L["Requires syncing the specialization via LibSpecialization."],
+      },
+      {
         name = "role",
         display = L["Assigned Role"],
         type = "select",
@@ -2985,7 +3028,9 @@ Private.event_prototypes = {
       if includePets ~= "PetsOnly" then
         AddUnitRoleChangeInternalEvents(unit, result)
       end
-
+      if trigger.use_specId then
+        AddUnitSpecChangeInternalEvents(unit, result)
+      end
       return result
     end,
     force_events = unitHelperFunctions.UnitChangedForceEventsWithPets,
@@ -3283,6 +3328,19 @@ Private.event_prototypes = {
         conditionType = "select"
       },
       {
+        name = "specId",
+        display = L["Specialization"],
+        type = "multiselect",
+        init = "WeakAuras.SpecForUnit(unit)",
+        values = "spec_types_all",
+        store = true,
+        conditionType = "select",
+        enable = function(trigger)
+          return WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+        end,
+        desc = L["Requires syncing the specialization via LibSpecialization."],
+      },
+      {
         name = "role",
         display = L["Assigned Role"],
         type = "select",
@@ -3461,6 +3519,9 @@ Private.event_prototypes = {
       local result = { }
       AddUnitChangeInternalEvents(unit, result)
       AddUnitRoleChangeInternalEvents(unit, result)
+      if trigger.use_specId then
+        AddUnitSpecChangeInternalEvents(unit, result)
+      end
       return result
     end,
     force_events = unitHelperFunctions.UnitChangedForceEvents,
@@ -3571,6 +3632,19 @@ Private.event_prototypes = {
         values = "class_types",
         store = true,
         conditionType = "select"
+      },
+      {
+        name = "specId",
+        display = L["Specialization"],
+        type = "multiselect",
+        init = "WeakAuras.SpecForUnit(unit)",
+        values = "spec_types_all",
+        store = true,
+        conditionType = "select",
+        enable = function(trigger)
+          return WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+        end,
+        desc = L["Requires syncing the specialization via LibSpecialization."],
       },
       {
         name = "role",

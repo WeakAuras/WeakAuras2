@@ -107,6 +107,9 @@ do
     tinsert(LibStubLibs, "LibClassicCasterino")
     tinsert(LibStubLibs, "LibClassicDurations")
   end
+  if WeakAuras.IsRetail() then
+    tinsert(LibStubLibs, "LibSpecialization")
+  end
   for _, lib in ipairs(StandAloneLibs) do
     if not lib then
         libsAreOk = false

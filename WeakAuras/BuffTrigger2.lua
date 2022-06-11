@@ -1134,6 +1134,13 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
+  if triggerInfo.specId then
+    local spec = Private.LibSpecWrapper.SpecForUnit(controllingUnit)
+    if not triggerInfo.specId[spec] then
+      return false
+    end
+  end
+
   if triggerInfo.arenaSpec and unit:sub(1, 5) == "arena" then
     -- GetArenaOpponentSpec doesn't use unit ids!
     local i = tonumber(unit:sub(6))
@@ -1836,7 +1843,6 @@ local Buff2Frame = CreateFrame("Frame")
 WeakAuras.frames["WeakAuras Buff2 Frame"] = Buff2Frame
 
 local function EventHandler(frame, event, arg1, arg2, ...)
-
   Private.StartProfileSystem("bufftrigger2")
 
   local deactivatedTriggerInfos = {}
@@ -1933,6 +1939,19 @@ local function EventHandler(frame, event, arg1, arg2, ...)
   end
 
   Private.StopProfileSystem("bufftrigger2")
+end
+
+if WeakAuras.IsRetail() then
+  Private.LibSpecWrapper.Register(function(unit)
+    Private.StartProfileSystem("bufftrigger2")
+
+    local deactivatedTriggerInfos = {}
+    RecheckActiveForUnitType("group", unit, deactivatedTriggerInfos)
+    RecheckActiveForUnitType("group", unit .. "pet", deactivatedTriggerInfos)
+    DeactivateScanFuncs(deactivatedTriggerInfos)
+
+    Private.StopProfileSystem("bufftrigger2")
+  end)
 end
 
 Buff2Frame:RegisterEvent("UNIT_AURA")
@@ -2576,6 +2595,7 @@ function BuffTrigger.Add(data)
       local effectiveGroupRole = groupTrigger and trigger.useGroupRole and trigger.group_role
       local effectiveRaidRole = groupTrigger and trigger.useRaidRole and trigger.raid_role
       local effectiveClass = groupTrigger and trigger.useClass and trigger.class
+      local effectiveSpecId = groupTrigger and trigger.useActualSpec and trigger.actualSpec
       local effectiveArenaSpec = trigger.unit == "arena" and trigger.useArenaSpec and trigger.arena_spec
       local effectiveHostility = trigger.unit == "nameplate" and trigger.useHostility and trigger.hostility
       local effectiveIgnoreDead = groupTrigger and trigger.ignoreDead
@@ -2639,6 +2659,7 @@ function BuffTrigger.Add(data)
         ignoreInvisible = effectiveIgnoreInvisible,
         groupRole = effectiveGroupRole,
         raidRole = effectiveRaidRole,
+        specId = effectiveSpecId,
         arenaSpec = effectiveArenaSpec,
         groupSubType = groupSubType,
         groupCountFunc = groupCountFunc,
