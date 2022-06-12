@@ -554,10 +554,157 @@ function OptionsPrivate.CreateFrame()
 
   -- filter line
   local filterInput = CreateFrame("EditBox", "WeakAurasFilterInput", frame, "SearchBoxTemplate")
+
+  local searchMenuFrame = CreateFrame("Frame", "WeakAurasSearchMenuFrame", filterInput, "UIDropDownMenuTemplate")
+  searchMenuFrame:Hide()
+
+  local function addSearch(s)
+    local prevText = filterInput:GetText()
+    local newText = prevText and prevText ~= "" and (prevText .. " " .. s) or s
+    filterInput:SetText(newText)
+  end
+
+  local filterInputMenuEntries = {
+    { text = L["Filters"], notCheckable = true, isTitle = true},
+    { text = L["Load"], notCheckable = true, hasArrow = true,
+      menuList = {
+        { text = L["Class"], notCheckable = true, hasArrow = true, menuList = {} },
+        { text = L["Encounters"], notCheckable = true, hasArrow = true, menuList = {} },
+        { text = L["Never"], notCheckable = true, func = function() addSearch("load.use_never:true") end },
+        { text = L["In Combat"], notCheckable = true, func = function() addSearch("load.use_combat:true") end },
+      }
+    },
+    { text = L["Actions"], notCheckable = true, hasArrow = true,
+      menuList = {
+        { text = L["On Show"], notCheckable = true, hasArrow = true,
+          menuList = {
+            { text = L["Glow"], notCheckable = true, hasArrow = true,
+              menuList = {
+                { text = L["Unit Frame"], notCheckable = true, func = function() addSearch("actions.start.do_glow:true") addSearch("actions.start.glow_frame_type:unitframe") end },
+                { text = L["Nameplate"], notCheckable = true, func = function() addSearch("actions.start.do_glow:true") addSearch("actions.start.glow_frame_type:nameplate") end },
+              }
+            },
+            { text = L["Sound"], notCheckable = true, func = function() addSearch("actions.start.do_sound:true") end },
+            { text = L["Message"], notCheckable = true, func = function() addSearch("actions.start.do_message:true") end },
+          }
+        }
+      }
+    },
+    { text = L["Conditions"], notCheckable = true, hasArrow = true,
+      menuList = {
+        { text = L["Glow"], notCheckable = true, hasArrow = true,
+          menuList = {
+            { text = L["Unit Frame"], notCheckable = true, func = function() addSearch("conditions.*.changes.*.property:glowexternal") addSearch("conditions.*.changes.*.value.glow_frame_type:unitframe") end },
+            { text = L["Nameplate"], notCheckable = true, func = function() addSearch("conditions.*.changes.*.property:glowexternal") addSearch("conditions.*.changes.*.value.glow_frame_type:nameplate") end },
+          }
+        },
+        { text = L["Sound"], notCheckable = true, func = function() addSearch("conditions.*.changes.*.property:sound") end },
+        { text = L["Message"], notCheckable = true, func = function() addSearch("conditions.*.changes.*.property:chat") end },
+        { text = L["Range Check"], notCheckable = true, func = function() addSearch("conditions.*.check.variable:rangecheck") end },
+      }
+    },
+    { text = L["Triggers"], notCheckable = true, hasArrow = true,
+      menuList = {
+        { text = L["Any Aura"], notCheckable = true, func = function() addSearch("triggers.*.trigger.type:aura2") end },
+        { text = L["Trigger 1 Aura"], notCheckable = true, func = function() addSearch("triggers.1.trigger.type:aura2") end },
+        { text = L["Trigger 1 Cast"], notCheckable = true, func = function() addSearch("triggers.1.trigger.type:unit") addSearch("triggers.1.trigger.event:cast") end },
+      }
+    },
+    { text = L["Display"], notCheckable = true, hasArrow = true,
+      menuList = {
+        { text = L["Anchor"], notCheckable = true, hasArrow = true,
+          menuList = {
+            { text = L["Group"], notCheckable = true, hasArrow = true,
+              menuList = {
+                { text = L["Nameplate"], notCheckable = true, func = function() addSearch("useAnchorPerUnit:true") addSearch("anchorPerUnit:nameplate") end },
+                { text = L["Unit Frame"], notCheckable = true, func = function() addSearch("useAnchorPerUnit:true") addSearch("anchorPerUnit:unitframe") end },
+              }
+            },
+            { text = L["Aura"], notCheckable = true, hasArrow = true,
+              menuList = {
+                { text = L["Nameplate"], notCheckable = true, func = function() addSearch("anchorFrameType:nameplate") end },
+                { text = L["Unit Frame"], notCheckable = true, func = function() addSearch("anchorFrameType:unitframe") end },
+                { text = L["Mouse Cursor"], notCheckable = true, func = function() addSearch("anchorFrameType:mouse") end },
+              }
+            }
+          }
+        },
+      }
+    },
+    { text = L["Type"], notCheckable = true, hasArrow = true,
+      menuList = {
+        { text = L["Icon"], notCheckable = true, func = function() addSearch("regionType:icon") end },
+        { text = L["Text"], notCheckable = true, func = function() addSearch("regionType:text") end },
+        { text = L["Progress Bar"], notCheckable = true, func = function() addSearch("regionType:aurabar") end },
+        { text = L["Texture"], notCheckable = true, func = function() addSearch("regionType:texture") end },
+        { text = L["Progress Texture"], notCheckable = true, func = function() addSearch("regionType:progresstexture") end },
+        { text = L["Model"], notCheckable = true, func = function() addSearch("regionType:model") end },
+        { text = L["Stop Motion"], notCheckable = true, func = function() addSearch("regionType:stopmotion") end },
+      }
+    },
+  }
+
+  local function fillFilterInputMenuEntries(menu, input)
+    local loadMenu = menu[2].menuList
+    local classMenu = loadMenu[1].menuList
+    local encounterMenu = loadMenu[2].menuList
+
+    local classList = {}
+    for classFile, colored in pairs(WeakAuras.class_types) do
+      tinsert(classList, {classFile, colored})
+    end
+    table.sort(classList, function(a, b) return a[1] < b[1] end)
+    for _, class in ipairs(classList) do
+      tinsert(classMenu, {
+        text = class[2],
+        notCheckable = true,
+        func = function()
+          addSearch("load.class:"..class[1]:lower())
+        end
+      })
+    end
+
+    for _, raid in ipairs(OptionsPrivate.Private.encounter_table) do
+      local raidMenu = { text = raid[1], notCheckable = true, hasArrow = true, menuList = {} }
+      for _, boss in ipairs(raid[2]) do
+        tinsert(raidMenu.menuList, { text = boss[1], notCheckable = true, func = function() addSearch("load.encounterid:"..boss[2]) end })
+      end
+      tinsert(encounterMenu, raidMenu)
+    end
+
+    if OptionsPrivate.Private.zoneId_table then
+      local zoneIdMenu = { text = L["Zone ID"], notCheckable = true, hasArrow = true, menuList = {} }
+      for _, zoneCategory in ipairs(OptionsPrivate.Private.zoneId_table) do
+        local dungeonOrRaidMenu = { text = zoneCategory[1], notCheckable = true, hasArrow = true, menuList = {} }
+        for _, zone in ipairs(zoneCategory[2]) do
+          tinsert(dungeonOrRaidMenu.menuList, { text = zone[1], notCheckable = true, func = function() addSearch("load.zoneIds:"..zone[2]) end })
+        end
+        tinsert(zoneIdMenu.menuList, dungeonOrRaidMenu)
+      end
+      tinsert(loadMenu, 3, zoneIdMenu)
+    end
+
+    if not WeakAuras.IsClassic() then
+      local difficultyMenu = { text = L["Instance Difficulty"], notCheckable = true, hasArrow = true, menuList = {} }
+      for difficulty, localeName in pairs(OptionsPrivate.Private.difficulty_types) do
+        tinsert(difficultyMenu.menuList, { text = localeName, notCheckable = true, func = function() addSearch("load.difficulty:"..difficulty) end })
+      end
+      tinsert(loadMenu, 4, difficultyMenu)
+    end
+  end
+
+  fillFilterInputMenuEntries(filterInputMenuEntries, filterInput)
+
   filterInput:SetScript("OnTextChanged", function(self)
     SearchBoxTemplate_OnTextChanged(self)
     OptionsPrivate.SortDisplayButtons(filterInput:GetText())
   end)
+
+  filterInput:SetScript("OnEditFocusGained", function()
+    EasyMenu(filterInputMenuEntries, WeakAurasSearchMenuFrame, WeakAurasFilterInput, 20 , -30, "MENU")
+    searchMenuFrame:SetPoint("TOPLEFT", WeakAurasFilterInput, "BOTTOMLEFT")
+  end)
+
   filterInput:SetHeight(15)
   filterInput:SetPoint("TOP", frame, "TOP", 0, -44)
   filterInput:SetPoint("LEFT", frame, "LEFT", 24, 0)

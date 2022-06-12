@@ -51,6 +51,8 @@ globals = {
 	"WeakAurasSaved",
 	"WeakAurasTimers",
 	"WeakAurasArchive",
+	"WeakAurasSearchMenuFrame",
+	"WeakAurasFilterInput",
 
 	-- Third Party Addons/Libs
 	"BigWigs",

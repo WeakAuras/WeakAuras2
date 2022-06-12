@@ -950,6 +950,138 @@ local function addButton(button, aurasMatchingFilter, visible)
   end
 end
 
+local pathWithToggles = {
+  "^load",
+}
+local pathWithChecknumericids = {
+  ["load.encounterid"] = true
+}
+local pathWithZoneChecker = {
+  ["load.zoneIds"] = true
+}
+local pathWithNamerealm = {
+  ["load.namerealm"] = true,
+  ["load.ignoreNameRealm"] = true
+}
+
+local function searchData(filter, id)
+  if not filter or filter == "" then return end
+  local functionReturn = false
+  for search in filter:gmatch("[^ ]+") do
+    local loopReturn = false
+    local operator, path, value = search:match("^([+-]?)([^: ]+):([^: ]+)$")
+    if path and value then
+      -- search in data
+      value = value:upper()
+      local AuraData = WeakAuras.GetData(id)
+
+      if AuraData then
+        local function test(data, toggleForField, fieldIsToggle)
+          local isPathWithToggles = false
+          for _, check in ipairs(pathWithToggles) do
+            if path:match(check) then
+              isPathWithToggles = true
+              break
+            end
+          end
+          local isPathWithChecknumericids = pathWithChecknumericids[path]
+          local isPathWihZoneChecker = pathWithZoneChecker[path]
+          local zoneChecker = (isPathWihZoneChecker and toggleForField == true and type(data) == "string" and data ~= "") and WeakAuras.ParseZoneCheck(data)
+          local isPathWithNamerealm = pathWithNamerealm[path]
+          local namerealmChecker = (isPathWithNamerealm and toggleForField == true and type(data) == "string" and data ~= "") and WeakAuras.ParseNameCheck(data)
+          if
+          (
+            (not isPathWithToggles or (isPathWithToggles and toggleForField == true) or fieldIsToggle == true)
+            and (
+              data == value
+              or (isPathWithChecknumericids and WeakAuras.CheckNumericIds(data, value))
+              or (zoneChecker and zoneChecker:Check(tonumber(value), value:lower():sub(1,1) == "g" and tonumber(value:sub(2,#value))))
+              or (namerealmChecker and namerealmChecker:Check(strsplit("-", data), select(2, strsplit("-", data))))
+              or (type(data) == "string" and data:upper() == value)
+              or (data == true and value == "TRUE")
+              or (data == false and value == "FALSE")
+              or (type(data) == "table" and data.single and data.single:upper() == value)
+            )
+          )
+          or (
+            isPathWithToggles == true
+            and toggleForField == false
+            and (
+              type(data) == "table" and data.multi and (data.multi[value] == true)
+            )
+          )
+          then
+            return true
+          else
+            return false
+          end
+        end
+
+        -- if path exists and test is valid: return true
+        -- if path exists and test is not valid: return false
+        -- if path does not exists or is toggled off: return nil
+        local function recurse(data, recursePath, toggleForField, fieldIsToggle)
+          local field, next_path = recursePath:match("^([^. ]+)%.?(.*)")
+          if field == nil then
+            -- return nil if path is a toggled off
+            if not fieldIsToggle then
+              for _, check in ipairs(pathWithToggles) do
+                if path:match(check) then
+                  if toggleForField == nil then
+                    return
+                  end
+                  break
+                end
+              end
+            end
+            return test(data, toggleForField, fieldIsToggle)
+          elseif type(data) ~= "table" then
+            return nil
+          elseif field == "*" then -- wildcard explore list
+            for _, element in ipairs(data) do
+              local ret = recurse(element, next_path)
+              if ret then
+                return true
+              end
+            end
+          elseif tonumber(field) then -- explore list at index
+            field = tonumber(field)
+            if data[field] then
+              return recurse(data[field], next_path)
+            end
+          else
+            if data[field] == nil then -- path does not match
+              return nil
+            end
+            return recurse(
+              data[field],
+              next_path,
+              data["use_"..field],
+              field:sub(1,4) == "use_"
+            )
+          end
+        end
+
+        local result = recurse(AuraData, path)
+        if operator == "-" then
+          result = not result
+        end
+        if result == true or (operator == "+" and result ~= false) then
+          loopReturn = true
+          functionReturn = true
+        end
+      end
+    else
+      if id:lower():find(search:lower(), 1, true) then
+        loopReturn = true
+        functionReturn = true
+      end
+    end
+    if not loopReturn then return false end
+  end
+  return functionReturn
+end
+
 local previousFilter;
 local pendingUpdateButtons = {}
 local pendingInstallButtons = {}
@@ -1099,7 +1231,7 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
     end
 
     if useTextFilter then
-      if(id:lower():find(filter, 1, true)) then
+      if searchData(filter, id) then
         aurasMatchingFilter[id] = true
         for parent in OptionsPrivate.Private.TraverseParents(child.data) do
           aurasMatchingFilter[parent.id] = true
