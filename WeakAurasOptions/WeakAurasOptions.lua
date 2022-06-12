@@ -964,12 +964,31 @@ local pathWithNamerealm = {
   ["load.ignoreNameRealm"] = true
 }
 
+local splitSearch = function(text)
+  local e = 0
+  return function()
+      local b = e + 1
+      b = text:find("%S", b)
+      if b == nil then return end
+      local q = text:find('"', b)
+      if q then
+          e = text:find('"', q + 1)
+      else
+          e = text:find("%s", b + 1)
+      end
+      if e == nil then
+          e = #text + 1
+      end
+      return text:sub(b, e - 1):gsub("\"", "")
+  end
+end
+
 local function searchData(filter, id)
   if not filter or filter == "" then return end
   local functionReturn = false
-  for search in filter:gmatch("[^ ]+") do
+  for search in splitSearch(filter) do
     local loopReturn = false
-    local operator, path, value = search:match("^([+-]?)([^: ]+):([^: ]+)$")
+    local operator, path, value = search:match("^([+-]?)([^:]+):([^:]+)$")
     if path and value then
       -- search in data
       value = value:upper()
@@ -1021,7 +1040,7 @@ local function searchData(filter, id)
         -- if path exists and test is not valid: return false
         -- if path does not exists or is toggled off: return nil
         local function recurse(data, recursePath, toggleForField, fieldIsToggle)
-          local field, next_path = recursePath:match("^([^. ]+)%.?(.*)")
+          local field, next_path = recursePath:match("^([^.]+)%.?(.*)")
           if field == nil then
             -- return nil if path is a toggled off
             if not fieldIsToggle then
