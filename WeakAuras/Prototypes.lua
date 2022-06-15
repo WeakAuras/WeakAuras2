@@ -7439,7 +7439,7 @@ Private.event_prototypes = {
           threatpct, rawthreatpct, threatvalue, threattotal = 100, 100, 0, 100
         end
       ]];
-      return ret;
+      return ret .. unitHelperFunctions.SpecificUnitCheck(trigger);
     end,
     canHaveDuration = true,
     statesParameter = "unit",
@@ -7521,6 +7521,10 @@ Private.event_prototypes = {
       {
         hidden = true,
         test = "status ~= nil and ok"
+      },
+      {
+        hidden = true,
+        test = "WeakAuras.UnitExistsFixed(unit, smart) and specificUnitCheck"
       }
     },
     automaticrequired = true
