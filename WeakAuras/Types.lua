@@ -3296,6 +3296,7 @@ Private.reset_ranged_swing_spells = {
   [2764] = true, -- Throw
   [5019] = true, -- Shoot Wands
   [75] = true, -- Auto Shot
+  [5384] = true, -- Feign Death
 }
 
 Private.noreset_swing_spells = {
@@ -3518,8 +3519,9 @@ if WeakAuras.IsClassic() then
     6807, 6808, 6809, 8972, 9745, 9880, 9881, -- Maul
     20549, -- War Stomp
     2480, 7919, 7918, 2764, 5019, -- Shoots
+    5384, -- Feign Death
   }
-  for i, spellid in ipairs(reset_swing_spell_list) do
+  for _, spellid in ipairs(reset_swing_spell_list) do
     Private.reset_swing_spells[spellid] = true
   end
 end
@@ -3547,7 +3549,8 @@ if WeakAuras.IsBCC() then
     11350, -- Fire Shield (Oil of Immolation)
     50986, -- Sulfuron Slammer
     439, 440, 441, 2024, 4042, 17534, 28495, -- Minor/Lesser/Greater/Superior/Major/Super Healing Potion
-    41619, 41620 -- Cenarion Healing Salve/Bottled Nethergon Vapor
+    41619, 41620, -- Cenarion Healing Salve/Bottled Nethergon Vapor
+    5384, -- Feign Death
   }
   for _, spellid in ipairs(reset_swing_spell_list) do
     Private.reset_swing_spells[spellid] = true
