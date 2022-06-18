@@ -93,7 +93,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       desc = L["Custom trigger event tooltip"],
       width = WeakAuras.doubleWidth,
       order = 9.1,
-      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event") end,
+      hidden = function() return not (trigger.type == "custom" and (trigger.custom_type == "event" or trigger.custom_type == "addOnEvent")) end,
       get = function() return trigger.events end,
       set = function(info, v)
         trigger.events = v;
@@ -156,13 +156,56 @@ local function GetCustomTriggerOptions(data, triggernum)
         return true
       end
     },
+    source_addon = {
+      type = "input",
+      width = WeakAuras.doubleWidth,
+      name = L["AddOn Event(s)"],
+      desc = L["Custom trigger event addon tooltip"],
+      order = 9.21,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "addOnEvent") end,
+      get = function() return trigger.addon end,
+      set = function(info, v)
+        -- Avoid empty strings
+        trigger.addon = v == "" and nil or v;
+
+        WeakAuras.Add(data);
+        WeakAuras.SetIconNames(data);
+        WeakAuras.UpdateDisplayButton(data);
+      end
+    },
+    source_addon_customError = {
+      type = "description",
+      name = function()
+        if not trigger.addon then
+          return "|cFFFF0000" .. L["You need to specify an addon"] .. "|r"
+        end
+
+        local addonStub = LibStub(trigger.addon)
+        if (not addonStub or not addonStub.RegisterCallback) then
+          return "|CFFFF0000" .. L["Addon %s is not an addon enabled through Ace3, or does not expose the required machinery to subscribe to it."]:format(trigger.addon) .. "|r"
+        end
+
+        return ""
+      end,
+      width = WeakAuras.doubleWidth,
+      order = 9.215,
+      hidden = function()
+        return not(
+          trigger.type == "custom"
+          and trigger.custom_type == "addOnEvent"
+          and trigger.addon ~= nil
+          and LibStub(trigger.addon) ~= nil
+          and LibStub(trigger.addon).RegisterCallback ~= nil
+        )
+      end
+    },
     -- texteditor below
     custom_hide = {
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Hide"],
       order = 12,
-      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom") end,
+      hidden = function() return not (trigger.type == "custom" and (trigger.custom_type == "event" or trigger.custom_type == "addOnEvent") and trigger.custom_hide ~= "custom") end,
       values = OptionsPrivate.Private.eventend_types,
       get = function() trigger.custom_hide = trigger.custom_hide or "timed"; return trigger.custom_hide end,
       set = function(info, v)
@@ -175,7 +218,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       name = L["Hide"],
       order = 12,
       width = WeakAuras.doubleWidth,
-      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide == "custom") end,
+      hidden = function() return not (trigger.type == "custom" and (trigger.custom_type == "event" or trigger.custom_type == "addOnEvent") and trigger.custom_hide == "custom") end,
       values = OptionsPrivate.Private.eventend_types,
       get = function() return trigger.custom_hide end,
       set = function(info, v)
@@ -188,7 +231,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       width = WeakAuras.normalWidth,
       name = L["Dynamic Duration"],
       order = 12.5,
-      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom") end,
+      hidden = function() return not (trigger.type == "custom" and (trigger.custom_type == "event" or trigger.custom_type == "addOnEvent") and trigger.custom_hide ~= "custom") end,
       get = function()
         return trigger.dynamicDuration
       end,
@@ -203,7 +246,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       width = WeakAuras.normalWidth,
       name = L["Duration (s)"],
       order = 13,
-      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom" and not trigger.dynamicDuration) end,
+      hidden = function() return not (trigger.type == "custom" and (trigger.custom_type == "event" or trigger.custom_type == "addOnEvent") and trigger.custom_hide ~= "custom" and not trigger.dynamicDuration) end,
       get = function()
         return trigger.duration
       end,
@@ -317,7 +360,8 @@ local function GetCustomTriggerOptions(data, triggernum)
 
   local function hideCustomUntrigger()
     return not (trigger.type == "custom"
-      and (trigger.custom_type == "status" or (trigger.custom_type == "event" and trigger.custom_hide == "custom")))
+      and (trigger.custom_type == "status"
+        or ((trigger.custom_type == "event" or trigger.custom_type == "addOnEvent") and trigger.custom_hide == "custom")))
   end
   OptionsPrivate.commonOptions.AddCodeOption(customOptions, data, L["Custom Untrigger"], "custom_untrigger", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-untrigger",
                           14, hideCustomUntrigger, appendToUntriggerPath("custom"), false, {multipath = false, extraSetFunction = extraSetFunction});
@@ -325,7 +369,7 @@ local function GetCustomTriggerOptions(data, triggernum)
   local function hideCustomDuration()
     return not (trigger.type == "custom"
       and (trigger.custom_type == "status"
-           or (trigger.custom_type == "event" and (trigger.custom_hide ~= "timed" or trigger.dynamicDuration))))
+        or ((trigger.custom_type == "event" or trigger.custom_type == "addOnEvent") and (trigger.custom_hide ~= "timed" or trigger.dynamicDuration))))
   end
   OptionsPrivate.commonOptions.AddCodeOption(customOptions, data, L["Duration Info"], "custom_duration", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#duration-info",
                           16, hideCustomDuration, appendToTriggerPath("customDuration"), false, { multipath = false, extraSetFunction = extraSetFunctionReload });

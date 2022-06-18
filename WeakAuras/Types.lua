@@ -2054,7 +2054,8 @@ Private.rune_specific_types = {
 Private.custom_trigger_types = {
   ["event"] = L["Event"],
   ["status"] = L["Status"],
-  ["stateupdate"] = L["Trigger State Updater (Advanced)"]
+  ["stateupdate"] = L["Trigger State Updater (Advanced)"],
+  ["addOnEvent"] = L["AddOn Callback"]
 }
 
 Private.eventend_types = {

@@ -680,6 +680,23 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
   return updateTriggerState;
 end
 
+local function RunAddonTriggerFunc(allStates, data, id, triggernum, addon, event, arg1, arg2, ...)
+  if data.addon ~= addon then
+    return
+  end
+
+  RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)
+end
+
+function WeakAuras.ScanAddonCallbacks(addon, event, ...)
+  Private.StartProfileSystem("generictrigger " .. addon .. "/" .. event )
+  local event_list = loaded_addon_events[addon][event];
+  if event_list ~= nil then
+    WeakAuras.ScanAddonCallbacksInternal(event_list, addon, event, ...)
+  end
+  Private.StopProfileSystem("generictrigger " .. addon .. "/" .. event )
+end
+
 function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   local orgEvent = event;
   Private.StartProfileSystem("generictrigger " .. orgEvent )
@@ -756,6 +773,24 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
   end
 end
 
+function WeakAuras.ScanAddonCallbacksInternal(event_list, addon, event, arg1, arg2, ... )
+  for id, triggers in pairs(event_list) do
+    Private.StartProfileAura(id);
+    Private.ActivateAuraEnvironment(id);
+    local updateTriggerState = false;
+    for triggernum, data in pairs(triggers) do
+      local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+      if (RunAddonTriggerFunc(allStates, data, id, triggernum, addon, event, arg1, arg2, ...)) then
+        updateTriggerState = true;
+      end
+    end
+    if (updateTriggerState) then
+      Private.UpdatedTriggerState(id);
+    end
+    Private.StopProfileAura(id);
+    Private.ActivateAuraEnvironment(nil);
+  end
+end
 local function AddFakeTime(state)
   if state.progressType == "timed" then
     if state.expirationTime and state.expirationTime ~= math.huge and state.expirationTime > GetTime() then
@@ -1068,6 +1103,7 @@ local function trueFunction()
   return true;
 end
 
+local addonEventsToRegister = {};
 local eventsToRegister = {};
 local unitEventsToRegister = {};
 function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
@@ -1076,37 +1112,46 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
     if(events[id]) then
       loaded_auras[id] = true;
       for triggernum, data in pairs(events[id]) do
-        if data.events then
-          for index, event in pairs(data.events) do
-            if (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
-              if not genericTriggerRegisteredEvents["COMBAT_LOG_EVENT_UNFILTERED"] then
-                eventsToRegister["COMBAT_LOG_EVENT_UNFILTERED"] = true;
-              end
-            elseif (event == "FRAME_UPDATE") then
-              register_for_frame_updates = true;
-            else
-              if (genericTriggerRegisteredEvents[event]) then
-                -- Already registered event
+        if not data.addon then
+          if data.events then
+            for index, event in pairs(data.events) do
+              if (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
+                if not genericTriggerRegisteredEvents["COMBAT_LOG_EVENT_UNFILTERED"] then
+                  eventsToRegister["COMBAT_LOG_EVENT_UNFILTERED"] = true;
+                end
+              elseif (event == "FRAME_UPDATE") then
+                register_for_frame_updates = true;
               else
-                eventsToRegister[event] = true;
+                if (genericTriggerRegisteredEvents[event]) then
+                  -- Already registered event
+                else
+                  eventsToRegister[event] = true;
+                end
               end
             end
           end
-        end
-        if data.unit_events then
-          local includePets = data.includePets
-          for unit, events in pairs(data.unit_events) do
-            for index, event in pairs(events) do
-              MultiUnitLoop(
-                function (u)
-                  if not (genericTriggerRegisteredUnitEvents[u] and genericTriggerRegisteredUnitEvents[u][event]) then
-                    unitEventsToRegister[u] = unitEventsToRegister[u] or {}
-                    unitEventsToRegister[u][event] = true
-                  end
-                end, unit, includePets
-              )
+          if data.unit_events then
+            local includePets = data.includePets
+            for unit, events in pairs(data.unit_events) do
+              for index, event in pairs(events) do
+                MultiUnitLoop(
+                  function (u)
+                    if not (genericTriggerRegisteredUnitEvents[u] and genericTriggerRegisteredUnitEvents[u][event]) then
+                      unitEventsToRegister[u] = unitEventsToRegister[u] or {}
+                      unitEventsToRegister[u][event] = true
+                    end
+                  end, unit, includePets
+                )
+              end
             end
           end
+        else
+          addonEventsToRegister[data.addon] = addonEventsToRegister[data.addon] or {}
+            if data.events then
+              for index, event in pairs(data.events) do
+                addonEventsToRegister[data.addon][event] = true
+              end
+            end
         end
 
         LoadEvent(id, triggernum, data);
@@ -1117,6 +1162,36 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
       Private.RegisterEveryFrameUpdate(id);
     else
       Private.UnregisterEveryFrameUpdate(id);
+    end
+  end
+  
+  for addon, events in pairs(addonEventsToRegister) do
+    -- TODO: Is this a good idea? We should probably let aura writers decide
+    --   This is however needed if the aura is the only one using that addon ...
+    --   Plus, addon name sometimes could not match LibStub addon; but hopefully
+    --   sensible humans don't do that
+    local loaded = IsAddOnLoaded(addon) or LoadAddOn(addon)
+    local addonStub = LibStub(addon)
+    if addonStub ~= nil then
+      -- Remove all previous handlers; UnregisterAllCallbacks is not always exposed
+      -- TODO: Addon writers can use custom API names:
+      --   LibStub("CallbackHandler-1.0"):New(MyAddon, "Register", "Unregister", "UnregisterAll" || false)
+      -- for example
+
+      -- Note: The colon syntax not being used here is expected
+
+      -- TODO: Probably display a warning somehow asking for an UI reload?
+      if addonStub.UnregisterAllCallbacks ~= nil then
+        addonStub.UnregisterAllCallbacks(WeakAuras)
+      end
+
+      if addonStub.RegisterCallback ~= nil then
+        for event in pairs(events) do
+          addonStub.RegisterCallback(WeakAuras, event, function(...) 
+            WeakAuras.ScanAddonCallbacks(addon, ...)
+          end, event)
+        end
+      end
     end
   end
 
@@ -1281,7 +1356,7 @@ function GenericTrigger.Add(data, region)
             end
           end
 
-          if(trigger.custom_type == "status" or trigger.custom_type == "event" and trigger.custom_hide == "custom") then
+          if(trigger.custom_type == "status" or (trigger.custom_type == "event" or trigger.custom_type == "addOnEvent") and trigger.custom_hide == "custom") then
             untriggerFunc = WeakAuras.LoadFunction("return "..(untrigger.custom or ""), id);
             if (not untriggerFunc) then
               untriggerFunc = trueFunction;
@@ -1403,7 +1478,8 @@ function GenericTrigger.Add(data, region)
           automaticAutoHide = automaticAutoHide,
           tsuConditionVariables = tsuConditionVariables,
           prototype = prototype,
-          ignoreOptionsEventErrors = data.information.ignoreOptionsEventErrors
+          ignoreOptionsEventErrors = data.information.ignoreOptionsEventErrors,
+          addon = trigger.addon or nil
         };
       end
     end
