@@ -1186,6 +1186,7 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
       else if addonStub.UnregisterCallback ~= nil then
         for event in pairs(events) do
           addonStub.UnregisterCallback(WeakAuras, event)
+        end
       end
 
       if addonStub.RegisterCallback ~= nil then
