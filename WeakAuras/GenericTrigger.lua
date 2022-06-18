@@ -1183,6 +1183,9 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
       -- TODO: Probably display a warning somehow asking for an UI reload?
       if addonStub.UnregisterAllCallbacks ~= nil then
         addonStub.UnregisterAllCallbacks(WeakAuras)
+      else if addonStub.UnregisterCallback ~= nil then
+        for event in pairs(events) do
+          addonStub.UnregisterCallback(WeakAuras, event)
       end
 
       if addonStub.RegisterCallback ~= nil then
