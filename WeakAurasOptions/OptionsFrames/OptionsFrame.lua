@@ -560,6 +560,11 @@ function OptionsPrivate.CreateFrame()
 
   local function addSearch(s)
     local prevText = filterInput:GetText()
+    if IsShiftKeyDown() then
+      s = "+" .. s
+    elseif IsControlKeyDown() then
+      s = "-" .. s
+    end
     local newText = prevText and prevText ~= "" and (prevText .. " " .. s) or s
     filterInput:SetText(newText)
   end
@@ -644,7 +649,7 @@ function OptionsPrivate.CreateFrame()
     },
   }
 
-  local function fillFilterInputMenuEntries(menu, input)
+  local function fillFilterInputMenuEntries(menu)
     local loadMenu = menu[2].menuList
     local classMenu = loadMenu[1].menuList
     local encounterMenu = loadMenu[2].menuList
@@ -691,9 +696,13 @@ function OptionsPrivate.CreateFrame()
       end
       tinsert(loadMenu, 4, difficultyMenu)
     end
+
+    tinsert(menu, { text = L["Prefixes"], notCheckable = true, isTitle = true })
+    tinsert(menu, { text = L["+ Inclusive (Shift)"], notCheckable = true, notClickable = true })
+    tinsert(menu, { text = L["- Inverse (Ctrl) "], notCheckable = true, notClickable = true })
   end
 
-  fillFilterInputMenuEntries(filterInputMenuEntries, filterInput)
+  fillFilterInputMenuEntries(filterInputMenuEntries)
 
   filterInput:SetScript("OnTextChanged", function(self)
     SearchBoxTemplate_OnTextChanged(self)
