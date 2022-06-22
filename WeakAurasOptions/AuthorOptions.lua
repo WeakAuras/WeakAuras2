@@ -1993,7 +1993,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
             while i <= #values or i <= #childValues do
               if firstChild then
                 values[i] = childValues[i][nameSource] or conflictBlue .. L["Entry %i"]:format(i)
-              elseif childValues[i][nameSource] ~= values[i] then
+              elseif not childValues[i] or childValues[i][nameSource] ~= values[i] then
                 values[i] = conflictBlue .. L["Entry %i"]:format(i)
               end
               i = i + 1
