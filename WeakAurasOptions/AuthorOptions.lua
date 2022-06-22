@@ -1179,7 +1179,7 @@ typeControlAdders = {
     }
     args[prefix .. "noMerge"] = {
       type = "toggle",
-      name = name(option, "noMerge", L["Prevent Merging"]),
+      name = WeakAuras.newFeatureString .. name(option, "noMerge", L["Prevent Merging"]),
       desc = desc(option, "noMerge", L["If checked, then this group will not merge with other group when selecting multiple auras."]),
       order = order(),
       width = WeakAuras.doubleWidth,
