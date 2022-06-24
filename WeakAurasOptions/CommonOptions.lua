@@ -1031,11 +1031,141 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       bigStep = 1,
       hidden = hideWidthHeight,
     },
+    anchorFrameType = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Anchored To"],
+      order = 70,
+      hidden = function()
+        return IsParentDynamicGroup() or IsGroupByFrame()
+      end,
+      values = (data.regionType == "group" or data.regionType == "dynamicgroup") and OptionsPrivate.Private.anchor_frame_types_group or OptionsPrivate.Private.anchor_frame_types,
+    },
+    anchorFrameParent = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Set Parent to Anchor"],
+      desc = L["Sets the anchored frame as the aura's parent, causing the aura to inherit attributes such as visibility and scale."],
+      order = 71,
+      get = function()
+        return data.anchorFrameParent or data.anchorFrameParent == nil;
+      end,
+      hidden = function()
+        return (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE" or IsParentDynamicGroup());
+      end,
+    },
+    anchorFrameSpaceOne = {
+      type = "execute",
+      width = WeakAuras.normalWidth,
+      name = "",
+      order = 72,
+      image = function() return "", 0, 0 end,
+      hidden = function()
+        return IsParentDynamicGroup() or IsGroupByFrame() or not (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE")
+      end,
+    },
+    -- Input field to select frame to anchor on
+    anchorFrameFrame = {
+      type = "input",
+      width = WeakAuras.normalWidth,
+      name = L["Frame"],
+      order = 73,
+      hidden = function()
+        if (IsParentDynamicGroup()) then
+          return true;
+        end
+        return not (data.anchorFrameType == "SELECTFRAME")
+      end
+    },
+    -- Button to select frame to anchor on
+    chooseAnchorFrameFrame = {
+      type = "execute",
+      width = WeakAuras.normalWidth,
+      name = L["Choose"],
+      order = 74,
+      hidden = function()
+        if (IsParentDynamicGroup()) then
+          return true;
+        end
+        return not (data.anchorFrameType == "SELECTFRAME")
+      end,
+      func = function()
+        OptionsPrivate.StartFrameChooser(data, {"anchorFrameFrame"});
+      end
+    },
+    selfPoint = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Anchor"],
+      order = 75,
+      hidden = IsParentDynamicGroup,
+      values = OptionsPrivate.Private.point_types,
+      disabled = disableSelfPoint,
+      control = "WeakAurasAnchorButtons",
+    },
+    anchorPoint = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = function()
+        if (data.anchorFrameType == "SCREEN") then
+          return L["To Screen's"]
+        elseif (data.anchorFrameType == "PRD") then
+          return L["To Personal Ressource Display's"];
+        else
+          return L["To Frame's"];
+        end
+      end,
+      order = 76,
+      hidden = function()
+        if (data.parent) then
+          if IsGroupByFrame() then
+            return false
+          end
+          return data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE";
+        else
+          return data.anchorFrameType == "MOUSE";
+        end
+      end,
+      values = OptionsPrivate.Private.point_types,
+      control = "WeakAurasAnchorButtons",
+    },
+    anchorPointGroup = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["To Group's"],
+      order = 77,
+      hidden = function()
+        if IsGroupByFrame() then
+          return true
+        end
+        if (data.anchorFrameType ~= "SCREEN") then
+          return true;
+        end
+        if (data.parent) then
+          return IsParentDynamicGroup();
+        end
+        return true;
+      end,
+      disabled = true,
+      values = {["CENTER"] = L["Anchor Point"]},
+      get = function() return "CENTER"; end,
+      control = "WeakAurasAnchorButtons",
+    },
+    anchorFramePoints = {
+      type = "execute",
+      width = WeakAuras.normalWidth,
+      name = "",
+      order = 78,
+      image = function() return "", 0, 0 end,
+      hidden = function()
+        return not (data.anchorFrameType == "MOUSE") or IsParentDynamicGroup();
+      end
+    },
     xOffset = {
       type = "range",
-      width = WeakAuras.normalWidth,
       name = L["X Offset"],
-      order = 62,
+      order = 79,
+      width = WeakAuras.normalWidth,
       softMin = (-1 * screenWidth),
       min = (-4 * screenWidth),
       softMax = screenWidth,
@@ -1052,9 +1182,9 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     },
     yOffset = {
       type = "range",
-      width = WeakAuras.normalWidth,
       name = L["Y Offset"],
-      order = 63,
+      order = 80,
+      width = WeakAuras.normalWidth,
       softMin = (-1 * screenHeight),
       min = (-4 * screenHeight),
       softMax = screenHeight,
@@ -1069,125 +1199,18 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
         OptionsPrivate.Private.AddParents(data)
       end
     },
-    selfPoint = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Anchor"],
-      order = 70,
-      hidden = IsParentDynamicGroup,
-      values = OptionsPrivate.Private.point_types,
-      disabled = disableSelfPoint,
-    },
-    anchorFrameType = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Anchored To"],
-      order = 72,
-      hidden = function()
-        return IsParentDynamicGroup() or IsGroupByFrame()
-      end,
-      values = (data.regionType == "group" or data.regionType == "dynamicgroup") and OptionsPrivate.Private.anchor_frame_types_group or OptionsPrivate.Private.anchor_frame_types,
-    },
-    -- Input field to select frame to anchor on
-    anchorFrameFrame = {
-      type = "input",
-      width = WeakAuras.normalWidth,
-      name = L["Frame"],
-      order = 72.2,
-      hidden = function()
-        if (IsParentDynamicGroup()) then
-          return true;
-        end
-        return not (data.anchorFrameType == "SELECTFRAME")
-      end
-    },
-    -- Button to select frame to anchor on
-    chooseAnchorFrameFrame = {
-      type = "execute",
-      width = WeakAuras.normalWidth,
-      name = L["Choose"],
-      order = 72.4,
-      hidden = function()
-        if (IsParentDynamicGroup()) then
-          return true;
-        end
-        return not (data.anchorFrameType == "SELECTFRAME")
-      end,
-      func = function()
-        OptionsPrivate.StartFrameChooser(data, {"anchorFrameFrame"});
-      end
-    },
-    anchorPoint = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = function()
-        if (data.anchorFrameType == "SCREEN") then
-          return L["To Screen's"]
-        elseif (data.anchorFrameType == "PRD") then
-          return L["To Personal Ressource Display's"];
-        else
-          return L["To Frame's"];
-        end
-      end,
-      order = 75,
-      hidden = function()
-        if (data.parent) then
-          if IsGroupByFrame() then
-            return false
-          end
-          return data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE";
-        else
-          return data.anchorFrameType == "MOUSE";
-        end
-      end,
-      values = OptionsPrivate.Private.point_types
-    },
-    anchorPointGroup = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["To Group's"],
-      order = 76,
-      hidden = function()
-        if IsGroupByFrame() then
-          return true
-        end
-        if (data.anchorFrameType ~= "SCREEN") then
-          return true;
-        end
-        if (data.parent) then
-          return IsParentDynamicGroup();
-        end
-        return true;
-      end,
-      disabled = true,
-      values = {["CENTER"] = L["Anchor Point"]},
-      get = function() return "CENTER"; end
-    },
-    anchorFrameParent = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Set Parent to Anchor"],
-      desc = L["Sets the anchored frame as the aura's parent, causing the aura to inherit attributes such as visibility and scale."],
-      order = 77,
-      get = function()
-        return data.anchorFrameParent or data.anchorFrameParent == nil;
-      end,
-      hidden = function()
-        return (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE" or IsParentDynamicGroup());
-      end,
-    },
     frameStrata = {
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Frame Strata"],
-      order = 78,
+      order = 81,
       values = OptionsPrivate.Private.frame_strata_types
     },
     anchorFrameSpace = {
       type = "execute",
       width = WeakAuras.normalWidth,
       name = "",
-      order = 79,
+      order = 82,
       image = function() return "", 0, 0 end,
       hidden = function()
         return not (data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup());
@@ -1196,7 +1219,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
   };
 
   OptionsPrivate.commonOptions.AddCodeOption(positionOptions, data, L["Custom Anchor"], "custom_anchor", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-anchor-function",
-                          72.1, function() return not(data.anchorFrameType == "CUSTOM" and not IsParentDynamicGroup()) end, {"customAnchor"}, false, { setOnParent = group })
+                          71.5, function() return not(data.anchorFrameType == "CUSTOM" and not IsParentDynamicGroup()) end, {"customAnchor"}, false, { setOnParent = group })
   return positionOptions;
 end
 
