@@ -1121,6 +1121,9 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
           if IsGroupByFrame() then
             return false
           end
+          if IsParentDynamicGroup() then
+            return true
+          end
           return data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE";
         else
           return data.anchorFrameType == "MOUSE";
