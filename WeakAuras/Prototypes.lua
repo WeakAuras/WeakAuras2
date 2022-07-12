@@ -1560,7 +1560,7 @@ Private.load_prototype = {
     },
     {
       name = "covenant",
-      display = WeakAuras.newFeatureString .. L["Player Covenant"],
+      display = L["Player Covenant"],
       type = "multiselect",
       values = "covenant_types",
       init = "arg",
@@ -1683,7 +1683,7 @@ Private.load_prototype = {
     },
     {
       name = "raid_role",
-      display = WeakAuras.newFeatureString .. L["Raid Role"],
+      display = L["Raid Role"],
       type = "multiselect",
       values = "raid_role_types",
       init = "arg",
@@ -1719,7 +1719,7 @@ Private.load_prototype = {
     },
     {
       name = "itemtypeequipped",
-      display = WeakAuras.newFeatureString .. L["Item Type Equipped"],
+      display = L["Item Type Equipped"],
       type = "multiselect",
       test = "IsEquippedItemType(WeakAuras.GetItemSubClassInfo(%s))",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
@@ -1727,7 +1727,7 @@ Private.load_prototype = {
     },
     {
       name = "item_bonusid_equipped",
-      display =  WeakAuras.newFeatureString .. L["Item Bonus Id Equipped"],
+      display =  L["Item Bonus Id Equipped"],
       type = "string",
       test = "WeakAuras.CheckForItemBonusId(%q)",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
@@ -2531,7 +2531,7 @@ Private.event_prototypes = {
       },
       {
         name = "deficit",
-        display = WeakAuras.newFeatureString .. L["Health Deficit"],
+        display = L["Health Deficit"],
         type = "number",
         init = "total - value",
         store = true,
@@ -2703,7 +2703,7 @@ Private.event_prototypes = {
       },
       {
         name = "includePets",
-        display = WeakAuras.newFeatureString .. L["Include Pets"],
+        display = L["Include Pets"],
         type = "select",
         values = "include_pets_types",
         width = WeakAuras.normalWidth,
@@ -2982,7 +2982,7 @@ Private.event_prototypes = {
       },
       {
         name = "showChargedComboPoints",
-        display = WeakAuras.newFeatureString .. L["Overlay Charged Combo Points"],
+        display = L["Overlay Charged Combo Points"],
         type = "toggle",
         test = "true",
         reloadOptions = true,
@@ -2994,7 +2994,7 @@ Private.event_prototypes = {
       {
         name = "chargedComboPoint1",
         type = "number",
-        display = WeakAuras.newFeatureString .. L["Charged Combo Point 1"],
+        display = L["Charged Combo Point 1"],
         conditionType = "number",
         enable = function(trigger)
           return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
@@ -3005,7 +3005,7 @@ Private.event_prototypes = {
       {
         name = "chargedComboPoint2",
         type = "number",
-        display = WeakAuras.newFeatureString .. L["Charged Combo Point 2"],
+        display = L["Charged Combo Point 2"],
         conditionType = "number",
         enable = function(trigger)
           return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
@@ -3016,7 +3016,7 @@ Private.event_prototypes = {
       {
         name = "chargedComboPoint3",
         type = "number",
-        display = WeakAuras.newFeatureString .. L["Charged Combo Point 3"],
+        display = L["Charged Combo Point 3"],
         conditionType = "number",
         enable = function(trigger)
           return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
@@ -3027,7 +3027,7 @@ Private.event_prototypes = {
       {
         name = "chargedComboPoint4",
         type = "number",
-        display = WeakAuras.newFeatureString .. L["Charged Combo Point 4"],
+        display = L["Charged Combo Point 4"],
         conditionType = "number",
         enable = function(trigger)
           return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
@@ -3093,7 +3093,7 @@ Private.event_prototypes = {
       },
       {
         name = "deficit",
-        display = WeakAuras.newFeatureString .. L["Power Deficit"],
+        display = L["Power Deficit"],
         type = "number",
         init = "total - value",
         store = true,
@@ -3191,7 +3191,7 @@ Private.event_prototypes = {
       },
       {
         name = "includePets",
-        display = WeakAuras.newFeatureString .. L["Include Pets"],
+        display = L["Include Pets"],
         type = "select",
         values = "include_pets_types",
         width = WeakAuras.normalWidth,
@@ -7950,7 +7950,7 @@ Private.event_prototypes = {
       },
       {
         name = "includePets",
-        display = WeakAuras.newFeatureString .. L["Include Pets"],
+        display = L["Include Pets"],
         type = "select",
         values = "include_pets_types",
         width = WeakAuras.normalWidth,
