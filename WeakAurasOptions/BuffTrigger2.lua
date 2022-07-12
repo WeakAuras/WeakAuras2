@@ -790,7 +790,10 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = "",
       order = 67.2,
       width = WeakAuras.normalWidth,
-      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useGroupRole) end
+      hidden = function() return
+        not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useGroupRole)
+        or WeakAuras.IsClassic() or WeakAuras.IsBCC()
+      end
     },
     useRaidRole = {
       type = "toggle",
