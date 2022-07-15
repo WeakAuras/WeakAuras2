@@ -50,6 +50,16 @@ jobs:
           name: WeakAuras-PR${{ github.event.number }}-bcc
           path: .release/
 
+      - name: Create Wrath Package
+        uses: BigWigsMods/packager@master
+        with:
+          args: -d -z -g wrath -m .pkgmeta-bcc
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: WeakAuras-PR${{ github.event.number }}-wrath
+          path: .release/
+
       - name: Send Status to Discord
         uses: nebularg/actions-discord-webhook@v1
         with:

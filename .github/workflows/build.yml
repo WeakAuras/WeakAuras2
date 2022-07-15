@@ -62,6 +62,16 @@ jobs:
           WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
           WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
 
+      - name: Create Wrath Package
+        uses: BigWigsMods/packager@master
+        with:
+          args: -g wrath -m .pkgmeta-bcc
+        env:
+          CF_API_KEY: ${{ secrets.CF_API_KEY }}
+          GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
+          WOWI_API_TOKEN: ${{ secrets.WOWI_API_TOKEN }}
+          WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
+
       - name: Send Status to Discord
         uses: nebularg/actions-discord-webhook@v1
         with:
