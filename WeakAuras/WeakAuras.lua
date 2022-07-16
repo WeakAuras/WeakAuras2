@@ -4015,6 +4015,19 @@ local function ApplyStatesToRegions(id, activeTrigger, states)
   end
 end
 
+-- handle trigger updates that have been requested to be sent into custom
+-- we need the id and triggernum that's changing, but can't send the ScanEvents to the custom trigger until after UpdatedTriggerState has fired
+local trigger_to_custom_Queue = {}
+function Private.AddTriggerToCustomQueue(id, triggernum)
+  trigger_to_custom_Queue[id] = triggernum
+end
+function Private.SendQueuedTriggers()
+  for id,triggernum in pairs(trigger_to_custom_Queue) do
+    WeakAuras.ScanEvents("WA_TRIGGER_"..id.."_"..triggernum, triggerState[id][triggernum])
+  end
+  trigger_to_custom_Queue = {}
+end
+
 function Private.UpdatedTriggerState(id)
   if (not triggerState[id]) then
     return;
@@ -4117,6 +4130,8 @@ function Private.UpdatedTriggerState(id)
       state.changed = false;
     end
   end
+  -- once updatedTriggerStates is complete, and empty states removed, etc., then check for queued trigger_to_custom updates
+  Private.SendQueuedTriggers()
 end
 
 function Private.RunCustomTextFunc(region, customFunc)

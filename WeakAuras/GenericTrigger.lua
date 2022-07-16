@@ -677,6 +677,10 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       end
     end
   end
+  if updateTriggerState and data.trigger.trigger_to_custom then
+    -- if this trigger's udpates are requested to be sent into the Aura's custom trigger
+    Private.AddTriggerToCustomQueue(id, triggernum)
+  end
   return updateTriggerState;
 end
 
@@ -705,6 +709,10 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
     end
     WeakAuras.ScanEventsInternal(event_list, event, CombatLogGetCurrentEventInfo());
   else
+    -- is the event is one of our "trigger to custom" events then change the event string to the one the user wwill expect
+    if (event:sub(1,11) == "WA_TRIGGER_") then
+      event = "TRIGGER:"..event:match("%d+$")
+    end
     WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ...);
   end
   Private.StopProfileSystem("generictrigger " .. orgEvent )
@@ -1164,6 +1172,7 @@ end
 function GenericTrigger.Add(data, region)
   local id = data.id;
   events[id] = nil;
+  local trigger_to_custom = {};
 
   for triggernum, triggerData in ipairs(data.triggers) do
     local trigger, untrigger = triggerData.trigger, triggerData.untrigger
@@ -1322,11 +1331,13 @@ function GenericTrigger.Add(data, region)
               local trueEvent
               local hasParam = false
               local isCLEU = false
+              local isTrigger = false
               local isUnitEvent = false
               for i in event:gmatch("[^:]+") do
                 if not trueEvent then
                   trueEvent = string.upper(i)
                   isCLEU = trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED"
+                  isTrigger = trueEvent == "TRIGGER"
                 elseif isCLEU then
                   local subevent = string.upper(i)
                   if Private.IsCLEUSubevent(subevent) then
@@ -1346,6 +1357,14 @@ function GenericTrigger.Add(data, region)
 
                   trigger_unit_events[i] = trigger_unit_events[i] or {}
                   tinsert(trigger_unit_events[i], trueEvent)
+                elseif isTrigger then
+                  -- if the event is requesting a trigger's updated be sent in to the custo trigger then check it isn't requesting itself then add to a table to
+                  -- be processed once all the Aura's triggers are added
+                  local requestedTriggernum = tonumber(i)
+                  if requestedTriggernum and requestedTriggernum ~= triggernum then
+                    tinsert(trigger_events, "WA_TRIGGER_"..id.."_"..i)
+                    tinsert(trigger_to_custom, requestedTriggernum)
+                  end
                 end
               end
               if isCLEU then
@@ -1359,6 +1378,8 @@ function GenericTrigger.Add(data, region)
                   tinsert(trigger_events, "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM")
                 end
               elseif isUnitEvent then
+                -- not added to trigger_events
+              elseif isTrigger then
                 -- not added to trigger_events
               else
                 tinsert(trigger_events, event)
@@ -1408,7 +1429,14 @@ function GenericTrigger.Add(data, region)
       end
     end
   end
-
+  -- if any of the trigger updates are requested to be sent into custom a trigger then set a flag on that trigger
+  if #trigger_to_custom > 0 then
+    for _, triggernum in ipairs(trigger_to_custom) do
+      if data.triggers[triggernum] then
+        data.triggers[triggernum].trigger.trigger_to_custom = true
+      end
+    end
+  end
 
 end
 

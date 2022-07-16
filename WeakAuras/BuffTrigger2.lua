@@ -1466,6 +1466,13 @@ local function UpdateTriggerState(time, id, triggernum)
     triggerInfo.nextScheduledCheck = nil
   end
 
+  -- if the trigger has updated then check to see if it is flagged for trigger_to_custom and send to queue if it is
+  if updated then
+    local data = WeakAuras.GetData(id)
+    if data.triggers[triggernum].trigger.trigger_to_custom then
+      Private.AddTriggerToCustomQueue(id, triggernum)
+    end
+  end
   return updated
 end
 
