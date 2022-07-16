@@ -2042,14 +2042,25 @@ if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
   Private.swing_types["ranged"] = RANGEDSLOT
 end
 
-Private.rune_specific_types = {
-  [1] = L["Rune #1"],
-  [2] = L["Rune #2"],
-  [3] = L["Rune #3"],
-  [4] = L["Rune #4"],
-  [5] = L["Rune #5"],
-  [6] = L["Rune #6"]
-}
+if WeakAuras.IsWrathClassic() then
+  Private.rune_specific_types = {
+    [1] = L["Blood Rune #1"],
+    [2] = L["Blood Rune #2"],
+    [3] = L["Unholy Rune #1"],
+    [4] = L["Unholy Rune #2"],
+    [5] = L["Frost Rune #1"],
+    [6] = L["Frost Rune #2"],
+  }
+else
+  Private.rune_specific_types = {
+    [1] = L["Rune #1"],
+    [2] = L["Rune #2"],
+    [3] = L["Rune #3"],
+    [4] = L["Rune #4"],
+    [5] = L["Rune #5"],
+    [6] = L["Rune #6"]
+  }
+end
 
 Private.custom_trigger_types = {
   ["event"] = L["Event"],
