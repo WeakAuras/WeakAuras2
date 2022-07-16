@@ -22,71 +22,26 @@ local displayButtons = OptionsPrivate.displayButtons
 local tempGroup = OptionsPrivate.tempGroup
 local aceOptions = {}
 
-local function CreateDecoration(frame)
-  local deco = CreateFrame("Frame", nil, frame)
-  deco:SetSize(17, 40)
-
-  local bg1 = deco:CreateTexture(nil, "BACKGROUND")
-  bg1:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  bg1:SetTexCoord(0.31, 0.67, 0, 0.63)
-  bg1:SetAllPoints(deco)
-
-  local bg2 = deco:CreateTexture(nil, "BACKGROUND")
-  bg2:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  bg2:SetTexCoord(0.235, 0.275, 0, 0.63)
-  bg2:SetPoint("RIGHT", bg1, "LEFT")
-  bg2:SetSize(10, 40)
-
-  local bg3 = deco:CreateTexture(nil, "BACKGROUND")
-  bg3:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  bg3:SetTexCoord(0.72, 0.76, 0, 0.63)
-  bg3:SetPoint("LEFT", bg1, "RIGHT")
-  bg3:SetSize(10, 40)
-
-  return deco
-end
-
-local function CreateDecorationWide(frame, width)
-  local deco1 = frame:CreateTexture(nil, "OVERLAY")
-  deco1:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  deco1:SetTexCoord(0.31, 0.67, 0, 0.63)
-  deco1:SetSize(width, 40)
-
-  local deco2 = frame:CreateTexture(nil, "OVERLAY")
-  deco2:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  deco2:SetTexCoord(0.21, 0.31, 0, 0.63)
-  deco2:SetPoint("RIGHT", deco1, "LEFT")
-  deco2:SetSize(30, 40)
-
-  local deco3 = frame:CreateTexture(nil, "OVERLAY")
-  deco3:SetTexture("Interface\\DialogFrame\\UI-DialogBox-Header")
-  deco3:SetTexCoord(0.67, 0.77, 0, 0.63)
-  deco3:SetPoint("LEFT", deco1, "RIGHT")
-  deco3:SetSize(30, 40)
-
-  return deco1
-end
-
 local function CreateFrameSizer(frame, callback, position)
   callback = callback or (function() end)
 
   local left, right, top, bottom, xOffset1, yOffset1, xOffset2, yOffset2
   if position == "BOTTOMLEFT" then
     left, right, top, bottom = 1, 0, 0, 1
-    xOffset1, yOffset1 = 6, 6
+    xOffset1, yOffset1 = 1, 1
     xOffset2, yOffset2 = 0, 0
   elseif position == "BOTTOMRIGHT" then
     left, right, top, bottom = 0, 1, 0, 1
-    xOffset1, yOffset1 = 0, 6
-    xOffset2, yOffset2 = -6, 0
+    xOffset1, yOffset1 = 0, 1
+    xOffset2, yOffset2 = -1, 0
   elseif position == "TOPLEFT" then
     left, right, top, bottom = 1, 0, 1, 0
-    xOffset1, yOffset1 = 6, 0
-    xOffset2, yOffset2 = 0, -6
+    xOffset1, yOffset1 = 1, 0
+    xOffset2, yOffset2 = 0, -1
   elseif position == "TOPRIGHT" then
     left, right, top, bottom = 0, 1, 1, 0
     xOffset1, yOffset1 = 0, 0
-    xOffset2, yOffset2 = -6, -6
+    xOffset2, yOffset2 = -1, -1
   end
 
   local handle = CreateFrame("Button", nil, frame)
@@ -138,18 +93,9 @@ function OptionsPrivate.CreateFrame()
   local db = OptionsPrivate.savedVars.db
   local odb = OptionsPrivate.savedVars.odb
   -------- Mostly Copied from AceGUIContainer-Frame--------
-  frame = CreateFrame("Frame", "WeakAurasOptions", UIParent, "BackdropTemplate")
+  frame = CreateFrame("Frame", "WeakAurasOptions", UIParent, "PortraitFrameTemplate") -- PortraitFrameTemplateMinimizable
 
   tinsert(UISpecialFrames, frame:GetName())
-  frame:SetBackdrop({
-    bgFile = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite",
-    edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-    tile = true,
-    tileSize = 32,
-    edgeSize = 32,
-    insets = { left = 8, right = 8, top = 8, bottom = 8 }
-  })
-  frame:SetBackdropColor(0.1, 0.1, 0.1, 0.85)
   frame:EnableMouse(true)
   frame:SetMovable(true)
   frame:SetResizable(true)
@@ -159,6 +105,7 @@ function OptionsPrivate.CreateFrame()
     frame:SetMinResize(minWidth, minHeight)
   end
   frame:SetFrameStrata("DIALOG")
+  frame:SetPortraitTextureRaw([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]])
   frame.window = "default"
 
   local xOffset, yOffset
@@ -235,28 +182,29 @@ function OptionsPrivate.CreateFrame()
   frame:SetWidth(width)
   frame:SetHeight(height)
 
-  local close = CreateDecoration(frame)
-  close:SetPoint("TOPRIGHT", -30, 12)
+  --local close = CreateDecoration(frame)
+  --close:SetPoint("TOPRIGHT", -30, 12)
 
-  local closebutton = CreateFrame("Button", nil, close, "UIPanelCloseButton")
-  closebutton:SetPoint("CENTER", close, "CENTER", 1, -1)
-  closebutton:SetScript("OnClick", WeakAuras.HideOptions)
+  --local closebutton = CreateFrame("Button", nil, close, "UIPanelCloseButton")
+  --closebutton:SetPoint("CENTER", close, "CENTER", 1, -1)
+  --closebutton:SetScript("OnClick", WeakAuras.HideOptions)
 
-  local title = CreateFrame("Frame", nil, frame)
-  title:SetClampedToScreen(true)
-  local titleText = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+  --local title = CreateFrame("Frame", nil, frame)
 
-  titleText:SetText("WeakAuras " .. WeakAuras.versionString)
+  --local titleText = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 
-  local titleBG = CreateDecorationWide(frame, max(120, titleText:GetWidth()))
-  titleBG:SetPoint("TOP", 0, 24)
-  titleText:SetPoint("TOP", titleBG, "TOP", 0, -14)
+  --titleText:SetText("WeakAuras " .. WeakAuras.versionString)
+  frame:SetTitle("WeakAuras " .. WeakAuras.versionString)
+
+  --local titleBG = CreateDecorationWide(frame, max(120, titleText:GetWidth()))
+  --titleBG:SetPoint("TOP", 0, 24)
+  --titleText:SetPoint("TOP", titleBG, "TOP", 0, -14)
 
 
   local function commitWindowChanges()
-    local xOffset = frame:GetRight()-(frame:GetWidth()/2)
-    local yOffset = frame:GetTop()
-    odb.frame = odb.frame or {}
+    local xOffset = frame:GetRight() - GetScreenWidth()
+    local yOffset = frame:GetTop() - GetScreenHeight()
+    odb.frame = db.frame or {}
     odb.frame.xOffset = xOffset
     odb.frame.yOffset = yOffset
     if not frame.minimized then
@@ -265,20 +213,23 @@ function OptionsPrivate.CreateFrame()
     end
   end
 
-  title:EnableMouse(true)
-  title:SetScript("OnMouseDown", function() frame:StartMoving() end)
-  title:SetScript("OnMouseUp", function()
+  frame:SetScript("OnMouseDown", function()
+    frame:SetAlpha(0.3)
+    frame:StartMoving()
+  end)
+  frame:SetScript("OnMouseUp", function()
+    frame:SetAlpha(1)
     frame:StopMovingOrSizing()
     commitWindowChanges()
   end)
-  title:SetPoint("BOTTOMLEFT", titleBG, "BOTTOMLEFT", -25, 0)
-  title:SetPoint("TOPRIGHT", titleBG, "TOPRIGHT", 25, 0)
 
   frame.bottomLeftResizer = CreateFrameSizer(frame, commitWindowChanges, "BOTTOMLEFT")
   frame.bottomRightResizer = CreateFrameSizer(frame, commitWindowChanges, "BOTTOMRIGHT")
 
+  --[[
   local minimize = CreateDecoration(frame)
   minimize:SetPoint("TOPRIGHT", -65, 12)
+  ]]
 
   frame.UpdateFrameVisible = function(self)
     if self.minimized then
@@ -390,13 +341,35 @@ function OptionsPrivate.CreateFrame()
     end
   end
 
-  local minimizebutton = CreateFrame("Button", nil, minimize)
+  --[[ temporary button
+  local minimizebutton = CreateFrame("Button", nil, frame, "MaximizeMinimizeButtonFrameTemplate")
+  minimizebutton:SetPoint("RIGHT", WeakAurasOptionsCloseButton, "LEFT", 8.5, 0)
+  minimizebutton:SetOnMaximizedCallback(function()
+    frame.minimized = false
+    if db.frame then
+      if not db.frame.height or db.frame.height < 240 then
+        db.frame.height = 500
+      end
+    end
+    frame:SetHeight(db.frame and db.frame.height or 500)
+    frame.buttonsScroll:DoLayout()
+    frame:UpdateFrameVisible()
+  end)
+  minimizebutton:SetOnMinimizedCallback(function()
+    frame.minimized = true
+    frame:SetHeight(25)
+    frame:UpdateFrameVisible()
+  end)
+  ]]
+
+  --[[ old button
   minimizebutton:SetWidth(30)
   minimizebutton:SetHeight(30)
   minimizebutton:SetPoint("CENTER", minimize, "CENTER", 1, -1)
   minimizebutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up.blp")
   minimizebutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down.blp")
   minimizebutton:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp")
+
   minimizebutton:SetScript("OnClick", function()
     if frame.minimized then
       frame.minimized = nil
@@ -418,12 +391,13 @@ function OptionsPrivate.CreateFrame()
     end
     frame:UpdateFrameVisible()
   end)
+  ]]
 
   local tipFrame = AceGUI:Create("SimpleGroup")
   tipFrame.frame:SetParent(frame)
   tipFrame:SetLayout("Flow")
-  tipFrame.frame:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 22, 15)
-  tipFrame.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 15)
+  tipFrame.frame:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 22, 10)
+  tipFrame.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 10)
   tipFrame.frame:Hide()
   frame.tipFrame = tipFrame
 
@@ -540,13 +514,13 @@ function OptionsPrivate.CreateFrame()
   local container = AceGUI:Create("InlineGroup")
   container.frame:SetParent(frame)
   container.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 10)
-  container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -63 - WeakAuras.normalWidth * 340, -14)
+  container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -63 - WeakAuras.normalWidth * 340, 0)
   container.frame:Show()
   container.frame:SetClipsChildren(true)
   container.titletext:Hide()
   -- Hide the border
   container.content:GetParent():SetBackdrop(nil)
-  container.content:SetPoint("TOPLEFT", 0, 0)
+  container.content:SetPoint("TOPLEFT", 0, -28)
   container.content:SetPoint("BOTTOMRIGHT", 0, 0)
   frame.container = container
 
@@ -568,9 +542,9 @@ function OptionsPrivate.CreateFrame()
     OptionsPrivate.SortDisplayButtons(filterInput:GetText())
   end)
   filterInput:SetHeight(15)
-  filterInput:SetPoint("TOP", frame, "TOP", 0, -44)
+  filterInput:SetPoint("TOP", frame, "TOP", 0, -65)
   filterInput:SetPoint("LEFT", frame, "LEFT", 24, 0)
-  filterInput:SetPoint("RIGHT", container.frame, "LEFT", -5, 0)
+  filterInput:SetPoint("RIGHT", container.frame, "LEFT", -2, 0)
   filterInput:SetFont(STANDARD_TEXT_FONT, 10, "")
   frame.filterInput = filterInput
   filterInput:Hide()
@@ -580,7 +554,7 @@ function OptionsPrivate.CreateFrame()
   buttonsContainer:SetWidth(170)
   buttonsContainer.frame:SetParent(frame)
   buttonsContainer.frame:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 17, 12)
-  buttonsContainer.frame:SetPoint("TOP", frame, "TOP", 0, -46)
+  buttonsContainer.frame:SetPoint("TOP", frame, "TOP", 0, -67)
   buttonsContainer.frame:SetPoint("RIGHT", container.frame, "LEFT", -17)
   buttonsContainer.frame:Show()
   frame.buttonsContainer = buttonsContainer
@@ -588,9 +562,11 @@ function OptionsPrivate.CreateFrame()
   -- Toolbar
   local toolbarContainer = AceGUI:Create("SimpleGroup")
   toolbarContainer.frame:SetParent(buttonsContainer.frame)
-  toolbarContainer.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 20, -16)
-  toolbarContainer.frame:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -17, -16)
-  toolbarContainer.frame:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 20, -38)
+  --toolbarContainer.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 70, -40)
+  toolbarContainer.frame:SetPoint("TOPRIGHT", frame, "TOPRIGHT", -17, -40)
+  --toolbarContainer.frame:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 20, -38)
+  toolbarContainer.frame:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -17, -55)
+  toolbarContainer.frame:SetWidth(430)
   toolbarContainer:SetLayout("Flow")
 
   local newButton = AceGUI:Create("WeakAurasToolbarButton")
@@ -1004,7 +980,7 @@ function OptionsPrivate.CreateFrame()
 
     local tabsWidget
 
-    container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -63 - WeakAuras.normalWidth * 340, -14)
+    container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -63 - WeakAuras.normalWidth * 340, -10)
     container:ReleaseChildren()
     container:SetLayout("Fill")
     tabsWidget = AceGUI:Create("TabGroup")
@@ -1146,7 +1122,7 @@ function OptionsPrivate.CreateFrame()
     self.pickedOption = "New"
 
     container:ReleaseChildren()
-    container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -63 - WeakAuras.normalWidth * 340, -8)
+    container.frame:SetPoint("TOPLEFT", frame, "TOPRIGHT", -63 - WeakAuras.normalWidth * 340, 0)
     container:SetLayout("fill")
     local border = AceGUI:Create("InlineGroup")
     border:SetLayout("Fill")
