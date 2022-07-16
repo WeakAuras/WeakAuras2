@@ -1361,9 +1361,15 @@ function GenericTrigger.Add(data, region)
                   -- if the event is requesting a trigger's updated be sent in to the custo trigger then check it isn't requesting itself then add to a table to
                   -- be processed once all the Aura's triggers are added
                   local requestedTriggernum = tonumber(i)
-                  if requestedTriggernum and requestedTriggernum ~= triggernum then
-                    tinsert(trigger_events, "WA_TRIGGER_"..id.."_"..i)
-                    tinsert(trigger_to_custom, requestedTriggernum)
+                  if requestedTriggernum then
+                    if trigger_to_custom[requestedTriggernum] and trigger_to_custom[requestedTriggernum][triggernum] then
+                      -- if the request is reciprocal (2 custom triggers request each other which would cause a stack overflow) then neither get added.
+                      trigger_to_custom[requestedTriggernum][triggernum] = nil
+                    elseif requestedTriggernum and requestedTriggernum ~= triggernum then
+                      tinsert(trigger_events, "WA_TRIGGER_"..id.."_"..i)
+                      trigger_to_custom[triggernum] = trigger_to_custom[triggernum] or {}
+                      trigger_to_custom[triggernum][requestedTriggernum] = true
+                    end
                   end
                 end
               end
@@ -1431,9 +1437,11 @@ function GenericTrigger.Add(data, region)
   end
   -- if any of the trigger updates are requested to be sent into custom a trigger then set a flag on that trigger
   if #trigger_to_custom > 0 then
-    for _, triggernum in ipairs(trigger_to_custom) do
-      if data.triggers[triggernum] then
-        data.triggers[triggernum].trigger.trigger_to_custom = true
+    for requestingTrigger, triggernums in pairs(trigger_to_custom) do
+      for triggernum, _ in pairs(triggernums) do
+        if data.triggers[triggernum] then
+          data.triggers[triggernum].trigger.trigger_to_custom = true
+        end
       end
     end
   end
