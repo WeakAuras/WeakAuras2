@@ -105,7 +105,8 @@ function OptionsPrivate.CreateFrame()
     frame:SetMinResize(minWidth, minHeight)
   end
   frame:SetFrameStrata("DIALOG")
-  frame:SetPortraitTextureRaw([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]])
+  --frame:SetPortraitTextureRaw([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]])
+  WeakAurasOptionsPortrait:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]]) -- workaround for classic
   frame.window = "default"
 
   local xOffset, yOffset
@@ -194,7 +195,8 @@ function OptionsPrivate.CreateFrame()
   --local titleText = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 
   --titleText:SetText("WeakAuras " .. WeakAuras.versionString)
-  frame:SetTitle("WeakAuras " .. WeakAuras.versionString)
+  --frame:SetTitle("WeakAuras " .. WeakAuras.versionString)
+  WeakAurasOptionsTitleText:SetText("WeakAuras " .. WeakAuras.versionString) -- workaround for classic
 
   --local titleBG = CreateDecorationWide(frame, max(120, titleText:GetWidth()))
   --titleBG:SetPoint("TOP", 0, 24)
