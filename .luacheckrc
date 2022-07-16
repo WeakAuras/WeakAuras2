@@ -2497,6 +2497,7 @@ globals = {
 	"GetRewardXP",
 	"GetRuneCooldown",
 	"GetRuneCount",
+	"GetRuneType",
 	"GetRunningMacro",
 	"GetRunningMacroButton",
 	"GetSavedInstanceChatLink",
