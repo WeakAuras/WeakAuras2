@@ -47,6 +47,11 @@ function WeakAuras.IsBCC()
   return WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
 end
 
+function WeakAuras.IsWrathClassic()
+  --return WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
+    return WeakAuras.BuildInfo >= 30400 and WeakAuras.BuildInfo < 40000 -- TODO: Change to WOW_PROJECT_ID once wrath project id available
+end
+
 function WeakAuras.IsRetail()
   return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 end
