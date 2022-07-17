@@ -1073,16 +1073,7 @@ local function trueFunction()
 end
 
 local function parseAceEventMessageType(event) 
-  local eventType
-  for i in string.gmatch(event, "[^:]+") do
-    if not eventType then
-      eventType = i
-    elseif eventType == "AceEvent" then
-      return i
-    else
-      return
-    end
-  end
+  return string.match("AceEvent:(.*)", event)
 end
 
 local eventsToRegister = {};
