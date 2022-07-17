@@ -5803,8 +5803,7 @@ Private.event_prototypes = {
   ["Action Usable"] = {
     type = "spell",
     events = function()
-      local events
-      events = {
+      local events = {
         "SPELL_UPDATE_USABLE",
         "PLAYER_TARGET_CHANGED",
         "RUNE_POWER_UPDATE",
@@ -6972,18 +6971,11 @@ Private.event_prototypes = {
   ["Death Knight Rune"] = {
     type = "unit",
     events = function()
-        local events
-        events = {
-          "RUNE_POWER_UPDATE"
-        }
-
-        if WeakAuras.IsWrathClassic() then
-          tinsert(events, "RUNE_TYPE_UPDATE")
-        end
-
-        return {
-          ["events"] = events
-        }
+      if WeakAuras.IsWrathClassic() then
+        return { events = { "RUNE_POWER_UPDATE", "RUNE_TYPE_UPDATE"} }
+      else
+        return { events = { "RUNE_POWER_UPDATE" } }
+      end
     end,
     internal_events = {
       "RUNE_COOLDOWN_READY",
@@ -7006,7 +6998,7 @@ Private.event_prototypes = {
     end,
     init = function(trigger)
       trigger.rune = trigger.rune or 0;
-      local let
+      local ret
       if WeakAuras.IsWrathClassic() then
         ret = [[
           local rune = %s;
@@ -7019,16 +7011,17 @@ Private.event_prototypes = {
           local numFrostRunes = 0;
           local numDeathRunes = 0;
           for index = 1, 6 do
-            local startTime = select(1, GetRuneCooldown(index));
+            local startTime = GetRuneCooldown(index);
             if startTime == 0 then
-              if GetRuneType(index) == 1 then
-                numBloodRunes = numBloodRunes  + 1;
-              elseif GetRuneType(index) == 2 then
+              local runeType = GetRuneType(index)
+              if runeType == 1 then
+                numBloodRunes = numBloodRunes + 1;
+              elseif runeType == 2 then
                 numFrostRunes = numFrostRunes + 1;
-              elseif GetRuneType(index) == 3 then
-                numUnholyRunes = numUnholyRunes  + 1;
-              elseif GetRuneType(index) == 4 then
-                numDeathRunes = numDeathRunes  + 1;
+              elseif runeType == 3 then
+                numUnholyRunes = numUnholyRunes + 1;
+              elseif runeType == 4 then
+                numDeathRunes = numDeathRunes + 1;
               end
             end
           end
@@ -7099,7 +7092,8 @@ Private.event_prototypes = {
         display = L["Death Rune"],
         type = "tristate",
         test = "true",
-        enable = function(trigger) return WeakAuras.IsWrathClassic() and trigger.use_rune end
+        enable = function(trigger) return WeakAuras.IsWrathClassic() and trigger.use_rune end,
+        hidden = not WeakAuras.IsWrathClassic()
       },
       {
         name = "remaining",
@@ -7112,7 +7106,8 @@ Private.event_prototypes = {
         display = L["Inverse"],
         type = "toggle",
         test = "true",
-        enable = function(trigger) return WeakAuras.IsWrathClassic() and trigger.use_rune end
+        enable = function(trigger) return WeakAuras.IsWrathClassic() and trigger.use_rune end,
+        hidden = not WeakAuras.IsWrathClassic()
       },
       {
         name = "genericShowOn",
@@ -7146,28 +7141,32 @@ Private.event_prototypes = {
         display = L["Blood Runes"],
         type = "number",
         init = "numBloodRunes",
-        enable = function(trigger) return WeakAuras.IsWrathClassic() and not trigger.use_rune end
+        enable = function(trigger) return WeakAuras.IsWrathClassic() and not trigger.use_rune end,
+        hidden = not WeakAuras.IsWrathClassic()
       },
       {
         name = "unholyRunes",
         display = L["Unholy Runes"],
         type = "number",
         init = "numUnholyRunes",
-        enable = function(trigger) return WeakAuras.IsWrathClassic() and not trigger.use_rune end
+        enable = function(trigger) return WeakAuras.IsWrathClassic() and not trigger.use_rune end,
+        hidden = not WeakAuras.IsWrathClassic()
       },
       {
         name = "frostRunes",
         display = L["Frost Runes"],
         type = "number",
         init = "numFrostRunes",
-        enable = function(trigger) return WeakAuras.IsWrathClassic() and not trigger.use_rune end
+        enable = function(trigger) return WeakAuras.IsWrathClassic() and not trigger.use_rune end,
+        hidden = not WeakAuras.IsWrathClassic()
       },
       {
         name = "includeDeath",
         display = L["Include Death Runes"],
         type = "toggle",
         test = "true",
-        enable = function(trigger) return WeakAuras.IsWrathClassic() and trigger.use_bloodRunes or trigger.use_unholyRunes or trigger.use_frostRunes end
+        enable = function(trigger) return WeakAuras.IsWrathClassic() and trigger.use_bloodRunes or trigger.use_unholyRunes or trigger.use_frostRunes end,
+        hidden = not WeakAuras.IsWrathClassic()
       },
     },
     durationFunc = function(trigger)
@@ -9193,6 +9192,9 @@ Private.event_prototypes = {
 if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
   if not UnitDetailedThreatSituation then
     Private.event_prototypes["Threat Situation"] = nil
+  end
+  if not WeakAuras.IsWrathClassic() then
+    Private.event_prototypes["Death Knight Rune"] = nil
   end
   Private.event_prototypes["Alternate Power"] = nil
   Private.event_prototypes["Equipment Set"] = nil
