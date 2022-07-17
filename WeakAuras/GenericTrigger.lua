@@ -84,7 +84,7 @@ local loaded_auras = {}; -- id to bool map
 local timers = WeakAuras.timers;
 
 -- Local functions
-local LoadEvent, HandleEvent, HandleUnitEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
+local LoadEvent, HandleEvent, HandleMessage, HandleUnitEvent, TestForTriState, TestForToggle, TestForLongString, TestForMultiSelect
 local ConstructTest, ConstructFunction
 
 
@@ -836,6 +836,10 @@ function GenericTrigger.ScanWithFakeEvent(id, fake)
   Private.ActivateAuraEnvironment(nil);
 end
 
+function HandleMessage(frame, event, ...) 
+  HandleEvent(frame, "AceEvent:" .. event, ...)
+end
+
 function HandleEvent(frame, event, arg1, arg2, ...)
   Private.StartProfileSystem("generictrigger " .. event);
   if event == "NAME_PLATE_UNIT_ADDED" then
@@ -1068,6 +1072,19 @@ local function trueFunction()
   return true;
 end
 
+local function parseAceEventMessageType(event) 
+  local eventType
+  for i in string.gmatch(event, "[^:]+") do
+    if not eventType then
+      eventType = i
+    elseif eventType == "AceEvent" then
+      return i
+    else
+      return
+    end
+  end
+end
+
 local eventsToRegister = {};
 local unitEventsToRegister = {};
 function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
@@ -1121,8 +1138,14 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
   end
 
   for event in pairs(eventsToRegister) do
-    xpcall(frame.RegisterEvent, trueFunction, frame, event)
-    genericTriggerRegisteredEvents[event] = true;
+    local aceEventMessage = parseAceEventMessageType(event)
+    if aceEventMessage then
+      aceEvents:RegisterMessage(aceEventMessage, HandleMessage, frame)
+      genericTriggerRegisteredEvents[event] = true;  
+    else
+      xpcall(frame.RegisterEvent, trueFunction, frame, event)
+      genericTriggerRegisteredEvents[event] = true;
+    end
   end
 
   for unit, events in pairs(unitEventsToRegister) do
