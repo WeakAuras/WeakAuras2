@@ -2191,11 +2191,29 @@ Private.event_prototypes = {
       ]=]
       if WeakAuras.IsRetail() then
         ret = ret .. [=[
-          local _, _, _, _, _, _, friendTextLevel = GetFriendshipReputation(factionID)
-          if friendTextLevel then
-            standing = friendTextLevel
+          local friendshipRank, friendshipMaxRank
+          if factionID then
+            local friendID, friendRep, friendMaxRep, _, _, _, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
+            if (friendID ~= nil) then
+              standing = friendTextLevel
+              if nextFriendThreshold then
+                bottomValue, topValue, earnedValue = friendThreshold, nextFriendThreshold, friendRep
+              else
+                -- max rank, make it look like a full bar
+                bottomValue, topValue, earnedValue = 0, 1, 1
+              end
+              friendshipRank, friendshipMaxRank = GetFriendshipReputationRanks(factionID)
+            end
+
+            if C_Reputation.IsFactionParagon(factionID) then
+              local currentValue, threshold, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
+              bottomValue, topValue = 0, threshold
+              earnedValue = currentValue %% threshold
+              if hasRewardPending then
+                earnedValue = earnedValue + threshold
+              end
+            end
           end
-          local friendshipRank, friendshipMaxRank = GetFriendshipReputationRanks(factionID)
         ]=]
       end
       return ret:format(trigger.factionID or 0, trigger.use_watched and "true" or "false")
