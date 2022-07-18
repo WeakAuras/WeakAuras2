@@ -19,7 +19,7 @@ local spellCache = WeakAuras.spellCache
 local function ConstructIconPicker(frame)
   local group = AceGUI:Create("InlineGroup");
   group.frame:SetParent(frame);
-  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 30); -- 12
+  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 46);
   group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -50);
   group.frame:Hide();
   group:SetLayout("fill");
@@ -93,18 +93,17 @@ local function ConstructIconPicker(frame)
     end
   end
 
-  local input = CreateFrame("EditBox", nil, group.frame, "InputBoxTemplate");
-  input:SetScript("OnTextChanged", function(...) iconPickerFill(input:GetText(), false); end);
+  local input = CreateFrame("EditBox", "WeakAurasFilterInput", group.frame, "SearchBoxTemplate")
+  input:SetScript("OnTextChanged", function(self)
+    SearchBoxTemplate_OnTextChanged(self)
+    iconPickerFill(input:GetText(), false)
+  end);
   input:SetScript("OnEnterPressed", function(...) iconPickerFill(input:GetText(), true); end);
   input:SetScript("OnEscapePressed", function(...) input:SetText(""); iconPickerFill(input:GetText(), true); end);
-  input:SetWidth(170);
+  input:SetWidth(200);
   input:SetHeight(15);
-  input:SetPoint("BOTTOMRIGHT", group.frame, "TOPRIGHT", -12, -5);
-
-  local inputLabel = input:CreateFontString(nil, "OVERLAY", "GameFontNormal");
-  inputLabel:SetText(L["Search"]);
-  inputLabel:SetJustifyH("RIGHT");
-  inputLabel:SetPoint("BOTTOMLEFT", input, "TOPLEFT", 0, 5);
+  input:SetFont(STANDARD_TEXT_FONT, 10)
+  input:SetPoint("BOTTOMRIGHT", group.frame, "TOPRIGHT", -3, -10);
 
   local icon = AceGUI:Create("WeakAurasIconButton");
   icon.frame:Disable();
@@ -192,7 +191,7 @@ local function ConstructIconPicker(frame)
 
   local cancel = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
   cancel:SetScript("OnClick", group.CancelClose);
-  cancel:SetPoint("bottomright", frame, "bottomright", -27, 11);
+  cancel:SetPoint("BOTTOMRIGHT", -20, -24)
   cancel:SetHeight(20);
   cancel:SetWidth(100);
   cancel:SetText(L["Cancel"]);

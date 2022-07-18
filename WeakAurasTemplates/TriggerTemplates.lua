@@ -1229,7 +1229,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
   local newView = AceGUI:Create("InlineGroup");
   newView.frame:SetParent(frame);
   newView.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 42);
-  newView.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -10);
+  newView.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -50);
   newView.frame:Hide();
   newView:SetLayout("fill");
 

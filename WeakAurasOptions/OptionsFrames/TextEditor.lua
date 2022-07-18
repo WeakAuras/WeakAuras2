@@ -154,16 +154,10 @@ end]=]
 local function ConstructTextEditor(frame)
   local group = AceGUI:Create("WeakAurasInlineGroup")
   group.frame:SetParent(frame)
-  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -16);
-  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 46);
+  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -63);
+  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 46);
   group.frame:Hide()
   group:SetLayout("flow")
-
-  local title = AceGUI:Create("Label")
-  title:SetFontObject(GameFontNormalHuge)
-  title:SetFullWidth(true)
-  title:SetText(L["Code Editor"])
-  group:AddChild(title)
 
   local editor = AceGUI:Create("MultiLineEditBox")
   editor:SetFullWidth(true)
@@ -228,7 +222,7 @@ local function ConstructTextEditor(frame)
   settings_frame:RegisterForClicks("LeftButtonUp")
 
   local helpButton = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate")
-  helpButton:SetPoint("BOTTOMLEFT", 12, -24)
+  helpButton:SetPoint("BOTTOMLEFT", 0, -24)
   helpButton:SetFrameLevel(cancel:GetFrameLevel() + 1)
   helpButton:SetHeight(20)
   helpButton:SetWidth(100)
@@ -347,7 +341,7 @@ local function ConstructTextEditor(frame)
 
   -- Make Snippets button (top right, near the line number)
   local snippetsButton = CreateFrame("Button", "WASnippetsButton", group.frame, "UIPanelButtonTemplate")
-  snippetsButton:SetPoint("BOTTOMRIGHT", editor.frame, "TOPRIGHT", 0, -15)
+  snippetsButton:SetPoint("BOTTOMRIGHT", editor.frame, "TOPRIGHT", -20, -10)
   snippetsButton:SetFrameLevel(group.frame:GetFrameLevel() + 2)
   snippetsButton:SetHeight(20)
   snippetsButton:SetWidth(100)
@@ -562,16 +556,22 @@ local function ConstructTextEditor(frame)
   editorError:SetPoint("LEFT", helpButton, "RIGHT", 0, 4)
   editorError:SetPoint("RIGHT", settings_frame, "LEFT")
 
-  local editorLine = CreateFrame("EditBox", nil, group.frame)
+  local editorLine = CreateFrame("EditBox", nil, group.frame, "InputBoxTemplate")
   -- Set script on enter pressed..
-  editorLine:SetPoint("BOTTOMRIGHT", editor.frame, "TOPRIGHT", -100, -15)
+  editorLine:SetPoint("RIGHT", snippetsButton, "LEFT", -10, 0)
   editorLine:SetFont(STANDARD_TEXT_FONT, 10, "")
   editorLine:SetJustifyH("RIGHT")
-  editorLine:SetWidth(80)
+  editorLine:SetWidth(30)
   editorLine:SetHeight(20)
   editorLine:SetNumeric(true)
-  editorLine:SetTextInsets(10, 10, 0, 0)
+  editorLine:SetTextInsets(0, 5, 0, 0)
   editorLine:SetAutoFocus(false)
+
+  local editorLineText = group.frame:CreateFontString(nil, "OVERLAY")
+  editorLineText:SetFont(STANDARD_TEXT_FONT, 10)
+  editorLineText:SetTextColor(1, 1, 1)
+  editorLineText:SetText(L["Line"])
+  editorLineText:SetPoint("RIGHT", editorLine, "LEFT", -8, 0)
 
   urlText:SetScript(
     "OnChar",
