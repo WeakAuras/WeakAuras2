@@ -594,21 +594,7 @@ function OptionsPrivate.CreateFrame()
   -- Toolbar
   local toolbarContainer = CreateFrame("Frame", nil, buttonsContainer.frame)
   toolbarContainer:SetParent(buttonsContainer.frame)
-  toolbarContainer:SetPoint("CENTER", frame, "TOP", 0, -45)
-  toolbarContainer:SetHeight(15)
   toolbarContainer:Hide()
-
-  local newButton = AceGUI:Create("WeakAurasToolbarButton")
-  newButton:SetText(L["New Aura"])
-  newButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\newaura")
-  newButton.frame:SetParent(toolbarContainer)
-  newButton.frame:Show()
-  newButton:SetPoint("LEFT", toolbarContainer, "LEFT")
-  frame.toolbarContainer = toolbarContainer
-
-  newButton:SetCallback("OnClick", function()
-    frame:NewAura()
-  end)
 
   local importButton = AceGUI:Create("WeakAurasToolbarButton")
   importButton:SetText(L["Import"])
@@ -616,31 +602,24 @@ function OptionsPrivate.CreateFrame()
   importButton:SetCallback("OnClick", OptionsPrivate.ImportFromString)
   importButton.frame:SetParent(toolbarContainer)
   importButton.frame:Show()
-  importButton:SetPoint("LEFT", newButton.frame, "RIGHT", 10, 0)
+  importButton:SetPoint("RIGHT", filterInput, "RIGHT")
+  importButton:SetPoint("BOTTOM", frame, "TOP", 0, -55)
 
-  local lockButton = AceGUI:Create("WeakAurasToolbarButton")
-  lockButton:SetText(L["Lock Positions"])
-  lockButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\lockPosition")
-  lockButton:SetCallback("OnClick", function(self)
-    if WeakAurasOptionsSaved.lockPositions then
-      lockButton:SetStrongHighlight(false)
-      lockButton:UnlockHighlight()
-      WeakAurasOptionsSaved.lockPositions = false
-    else
-      lockButton:SetStrongHighlight(true)
-      lockButton:LockHighlight()
-      WeakAurasOptionsSaved.lockPositions = true
-    end
+  local newButton = AceGUI:Create("WeakAurasToolbarButton")
+  newButton:SetText(L["New Aura"])
+  newButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\newaura")
+  newButton.frame:SetParent(toolbarContainer)
+  newButton.frame:Show()
+  newButton:SetPoint("RIGHT", importButton.frame, "LEFT", -10, 0)
+  frame.toolbarContainer = toolbarContainer
+
+  newButton:SetCallback("OnClick", function()
+    frame:NewAura()
   end)
-  if WeakAurasOptionsSaved.lockPositions then
-    lockButton:LockHighlight()
-  end
-  lockButton.frame:SetParent(toolbarContainer)
-  lockButton.frame:Show()
-  lockButton:SetPoint("LEFT", importButton.frame, "RIGHT", 10, 0)
 
   local magnetButton = AceGUI:Create("WeakAurasToolbarButton")
-  magnetButton:SetText(L["Magnetically Align"])
+  magnetButton:SetText("")
+  magnetButton:SetTooltip(L["Magnetically Align"])
   magnetButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\magnetic")
   magnetButton:SetCallback("OnClick", function(self)
     if WeakAurasOptionsSaved.magnetAlign then
@@ -659,16 +638,29 @@ function OptionsPrivate.CreateFrame()
   end
   magnetButton.frame:SetParent(toolbarContainer)
   magnetButton.frame:Show()
-  magnetButton:SetPoint("LEFT", lockButton.frame, "RIGHT", 10, 0)
+  magnetButton:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -17, -55)
 
-  -- resize to keep frame centered
-  do
-    local containerWidth = 0
-    for _, obj in ipairs({newButton, importButton, lockButton, magnetButton}) do
-      containerWidth = containerWidth + obj.frame:GetWidth()
+  local lockButton = AceGUI:Create("WeakAurasToolbarButton")
+  lockButton:SetText("")
+  lockButton:SetTooltip(L["Lock Positions"])
+  lockButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\lockPosition")
+  lockButton:SetCallback("OnClick", function(self)
+    if WeakAurasOptionsSaved.lockPositions then
+      lockButton:SetStrongHighlight(false)
+      lockButton:UnlockHighlight()
+      WeakAurasOptionsSaved.lockPositions = false
+    else
+      lockButton:SetStrongHighlight(true)
+      lockButton:LockHighlight()
+      WeakAurasOptionsSaved.lockPositions = true
     end
-    toolbarContainer:SetWidth(containerWidth + 30)
+  end)
+  if WeakAurasOptionsSaved.lockPositions then
+    lockButton:LockHighlight()
   end
+  lockButton.frame:SetParent(toolbarContainer)
+  lockButton.frame:Show()
+  lockButton:SetPoint("RIGHT", magnetButton.frame, "LEFT", -10, 0)
 
   local loadProgress = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
   loadProgress:SetPoint("TOP", buttonsContainer.frame, "TOP", 0, -4)

@@ -24,10 +24,18 @@ local function Button_OnClick(frame, ...)
 end
 
 local function Control_OnEnter(frame)
+	if frame.tooltip then
+		GameTooltip:ClearLines()
+		GameTooltip:SetOwner(frame, "ANCHOR_NONE");
+		GameTooltip:SetPoint("BOTTOM", frame, "TOP", 0, 5);
+		GameTooltip:AddLine(frame.tooltip)
+		GameTooltip:Show()
+	end
 	frame.obj:Fire("OnEnter")
 end
 
 local function Control_OnLeave(frame)
+	GameTooltip:Hide()
 	frame.obj:Fire("OnLeave")
 end
 
@@ -53,6 +61,10 @@ local methods = {
 		else
 			self:SetWidth(16)
 		end
+	end,
+
+	["SetTooltip"] = function(self, text)
+		self.frame.tooltip = text
 	end,
 
 	["SetDisabled"] = function(self, disabled)
