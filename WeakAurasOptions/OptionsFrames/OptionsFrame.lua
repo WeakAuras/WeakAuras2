@@ -258,11 +258,9 @@ function OptionsPrivate.CreateFrame()
       self.container.frame:Hide()
 
       self.loadProgress:Hide()
-      self.toolbarContainer.frame:Hide()
+      self.toolbarContainer:Hide()
       self.filterInput:Hide();
-      self.tipFrameLeft.frame:Hide()
-      self.tipFrameRight.frame:Hide()
-      --self.bottomLeftResizer:Hide()
+      self.tipFrame:Hide()
       self.bottomRightResizer:Hide()
     else
       --self.bottomLeftResizer:Show()
@@ -272,17 +270,14 @@ function OptionsPrivate.CreateFrame()
         self.buttonsContainer.frame:Show()
         self.container.frame:Show()
         if self.tipFrameIsVisible then
-          self.tipFrameLeft.frame:Show()
-          self.tipFrameRight.frame:Show()
+          self.tipFrame:Show()
         else
-          self.tipFrameLeft.frame:Hide()
-          self.tipFrameRight.frame:Hide()
+          self.tipFrame:Hide()
         end
       else
         self.buttonsContainer.frame:Hide()
         self.container.frame:Hide()
-        self.tipFrameLeft.frame:Hide()
-        self.tipFrameRight.frame:Hide()
+        self.tipFrame:Hide()
       end
 
       if self.window == "texture" then
@@ -349,17 +344,17 @@ function OptionsPrivate.CreateFrame()
       if self.window == "default" then
         if self.loadProgessVisible then
           self.loadProgress:Show()
-          self.toolbarContainer.frame:Hide()
+          self.toolbarContainer:Hide()
           self.filterInput:Hide();
         else
           self.loadProgress:Hide()
-          self.toolbarContainer.frame:Show()
+          self.toolbarContainer:Show()
           self.filterInput:Show();
           --self.filterInputClear:Show();
         end
       else
         self.loadProgress:Hide()
-        self.toolbarContainer.frame:Hide()
+        self.toolbarContainer:Hide()
         self.filterInput:Hide();
       end
     end
@@ -417,19 +412,11 @@ function OptionsPrivate.CreateFrame()
   end)
   ]]
 
-  local tipFrameLeft = AceGUI:Create("SimpleGroup")
-  tipFrameLeft.frame:SetParent(frame)
-  tipFrameLeft:SetLayout("Flow")
-  tipFrameLeft.frame:SetPoint("LEFT", frame, "BOTTOMLEFT", 17, 20)
-  tipFrameLeft.frame:Hide()
-  frame.tipFrameLeft = tipFrameLeft
-
-  local tipFrameRight = AceGUI:Create("SimpleGroup")
-  tipFrameRight.frame:SetParent(frame)
-  tipFrameRight:SetLayout("Flow")
-  tipFrameRight.frame:SetPoint("RIGHT", frame, "BOTTOMRIGHT", -17, 20)
-  tipFrameRight.frame:Hide()
-  frame.tipFrameRight = tipFrameRight
+  local tipFrame = CreateFrame("Frame", nil, frame)
+  tipFrame:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 17, 30)
+  tipFrame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 10)
+  tipFrame:Hide()
+  frame.tipFrame = tipFrame
 
   local tipPopup = CreateFrame("Frame", nil, frame, "BackdropTemplate")
   tipPopup:SetFrameStrata("FULLSCREEN")
@@ -491,43 +478,47 @@ function OptionsPrivate.CreateFrame()
     tipPopup:Show()
   end
 
-  local addFooter = function(title, texture, url, description, container)
+  local addFooter = function(title, texture, url, description)
     local button = AceGUI:Create("WeakAurasToolbarButton")
     button:SetText(title)
     button:SetTexture(texture)
     button:SetCallback("OnClick", function()
       ToggleTip(button, url, title, description)
     end)
-    container:AddChild(button)
+    button.frame:Show()
+    return button.frame
   end
 
-  addFooter(L["Join Discord"], [[Interface\AddOns\WeakAuras\Media\Textures\discord.tga]], "https://discord.gg/weakauras",
-            L["Chat with WeakAuras experts on our Discord server."], tipFrameLeft)
+  local discordButton = addFooter(L["Join Discord"], [[Interface\AddOns\WeakAuras\Media\Textures\discord.tga]], "https://discord.gg/weakauras",
+            L["Chat with WeakAuras experts on our Discord server."])
+  discordButton:SetParent(tipFrame)
+  discordButton:SetPoint("LEFT", tipFrame, "LEFT")
 
-  addFooter(L["Documentation"], [[Interface\AddOns\WeakAuras\Media\Textures\GitHub.tga]], "https://github.com/WeakAuras/WeakAuras2/wiki",
-            L["Check out our wiki for a large collection of examples and snippets."], tipFrameLeft)
+  local documentationButton = addFooter(L["Documentation"], [[Interface\AddOns\WeakAuras\Media\Textures\GitHub.tga]], "https://github.com/WeakAuras/WeakAuras2/wiki",
+            L["Check out our wiki for a large collection of examples and snippets."])
+  documentationButton:SetParent(tipFrame)
+  documentationButton:SetPoint("LEFT", discordButton, "RIGHT", 10, 0)
 
-  addFooter(L["Find Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]], "https://wago.io",
-            L["Browse Wago, the largest collection of auras."], tipFrameRight)
+  local reportbugButton = addFooter(L["Found a Bug?"], [[Interface\AddOns\WeakAuras\Media\Textures\bug_report.tga]], "https://github.com/WeakAuras/WeakAuras2/issues/new?assignees=&labels=%F0%9F%90%9B+Bug&template=bug_report.md&title=",
+            L["Report bugs on our issue tracker."])
+  reportbugButton:SetParent(tipFrame)
+  reportbugButton:SetPoint("RIGHT", tipFrame, "RIGHT")
 
+  local wagoButton = addFooter(L["Find Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]], "https://wago.io",
+            L["Browse Wago, the largest collection of auras."])
+  wagoButton:SetParent(tipFrame)
+  wagoButton:SetPoint("RIGHT", reportbugButton, "LEFT", -10, 0)
+
+  local companionButton
   if not OptionsPrivate.Private.CompanionData.slugs then
-    addFooter(L["Update Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]], "https://weakauras.wtf",
-            L["Keep your Wago imports up to date with the Companion App."], tipFrameRight)
+    companionButton = addFooter(L["Update Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]], "https://weakauras.wtf",
+            L["Keep your Wago imports up to date with the Companion App."])
+    companionButton:SetParent(tipFrame)
+    companionButton:SetPoint("RIGHT", wagoButton, "LEFT", -10, 0)
   end
 
-  addFooter(L["Found a Bug?"], [[Interface\AddOns\WeakAuras\Media\Textures\bug_report.tga]], "https://github.com/WeakAuras/WeakAuras2/issues/new?assignees=&labels=%F0%9F%90%9B+Bug&template=bug_report.md&title=",
-            L["Report bugs on our issue tracker."], tipFrameRight)
 
-  -- resize to keep frame centered
-  do
-    local containerWidth, objs = 0, 0
-    for i, obj in ipairs(tipFrameRight.children) do
-      containerWidth = containerWidth + obj.frame:GetWidth()
-      objs = i
-    end
-    containerWidth = containerWidth + (objs - 1)
-    tipFrameRight.frame:SetWidth(containerWidth)
-  end
+
 
   -- Disable for now
   --local closeTipButton = CreateFrame("Button", nil, tipFrame.frame, "UIPanelCloseButton")
@@ -539,16 +530,14 @@ function OptionsPrivate.CreateFrame()
 
   frame.ShowTip = function(self)
     self.tipFrameIsVisible = true
-    self.tipFrameLeft.frame:Show()
-    self.tipFrameRight.frame:Show()
+    self.tipFrame:Show()
     self.buttonsContainer.frame:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 17, 30)
     self.container.frame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -17, 28)
   end
 
   frame.HideTip = function(self)
     self.tipFrameIsVisible = false
-    self.tipFrameLeft.frame:Hide()
-    self.tipFrameRight.frame:Hide()
+    self.tipFrame.Hide()
     self.buttonsContainer.frame:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 17, 12)
     self.container.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 10)
   end
@@ -603,16 +592,18 @@ function OptionsPrivate.CreateFrame()
   frame.buttonsContainer = buttonsContainer
 
   -- Toolbar
-  local toolbarContainer = AceGUI:Create("SimpleGroup")
-  toolbarContainer.frame:SetParent(buttonsContainer.frame)
-  toolbarContainer.frame:SetPoint("CENTER", frame, "TOP", 0, -45)
-  toolbarContainer.frame:SetHeight(15)
-  toolbarContainer:SetLayout("Flow")
+  local toolbarContainer = CreateFrame("Frame", nil, buttonsContainer.frame)
+  toolbarContainer:SetParent(buttonsContainer.frame)
+  toolbarContainer:SetPoint("CENTER", frame, "TOP", 0, -45)
+  toolbarContainer:SetHeight(15)
+  toolbarContainer:Hide()
 
   local newButton = AceGUI:Create("WeakAurasToolbarButton")
   newButton:SetText(L["New Aura"])
   newButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\newaura")
-  toolbarContainer:AddChild(newButton)
+  newButton.frame:SetParent(toolbarContainer)
+  newButton.frame:Show()
+  newButton:SetPoint("LEFT", toolbarContainer, "LEFT")
   frame.toolbarContainer = toolbarContainer
 
   newButton:SetCallback("OnClick", function()
@@ -623,7 +614,9 @@ function OptionsPrivate.CreateFrame()
   importButton:SetText(L["Import"])
   importButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\importsmall")
   importButton:SetCallback("OnClick", OptionsPrivate.ImportFromString)
-  toolbarContainer:AddChild(importButton)
+  importButton.frame:SetParent(toolbarContainer)
+  importButton.frame:Show()
+  importButton:SetPoint("LEFT", newButton.frame, "RIGHT", 10, 0)
 
   local lockButton = AceGUI:Create("WeakAurasToolbarButton")
   lockButton:SetText(L["Lock Positions"])
@@ -642,7 +635,9 @@ function OptionsPrivate.CreateFrame()
   if WeakAurasOptionsSaved.lockPositions then
     lockButton:LockHighlight()
   end
-  toolbarContainer:AddChild(lockButton)
+  lockButton.frame:SetParent(toolbarContainer)
+  lockButton.frame:Show()
+  lockButton:SetPoint("LEFT", importButton.frame, "RIGHT", 10, 0)
 
   local magnetButton = AceGUI:Create("WeakAurasToolbarButton")
   magnetButton:SetText(L["Magnetically Align"])
@@ -662,17 +657,17 @@ function OptionsPrivate.CreateFrame()
   if WeakAurasOptionsSaved.magnetAlign then
     magnetButton:LockHighlight()
   end
-  toolbarContainer:AddChild(magnetButton)
+  magnetButton.frame:SetParent(toolbarContainer)
+  magnetButton.frame:Show()
+  magnetButton:SetPoint("LEFT", lockButton.frame, "RIGHT", 10, 0)
 
   -- resize to keep frame centered
   do
-    local containerWidth, objs = 0, 0
-    for i, obj in ipairs(toolbarContainer.children) do
+    local containerWidth = 0
+    for _, obj in ipairs({newButton, importButton, lockButton, magnetButton}) do
       containerWidth = containerWidth + obj.frame:GetWidth()
-      objs = i
     end
-    containerWidth = containerWidth + (objs - 1)
-    toolbarContainer.frame:SetWidth(containerWidth)
+    toolbarContainer:SetWidth(containerWidth + 30)
   end
 
   local loadProgress = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
