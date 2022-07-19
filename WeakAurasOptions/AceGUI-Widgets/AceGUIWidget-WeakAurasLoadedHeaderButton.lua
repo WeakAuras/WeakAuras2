@@ -151,7 +151,7 @@ local function Constructor()
   button.background = background;
   background:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp");
   background:SetBlendMode("ADD");
-  background:SetVertexColor(0.5, 0.5, 0.5, 0.25);
+  background:SetVertexColor(0.5, 0.5, 0.5, 0.6);
   background:SetAllPoints(button);
 
   local expand = CreateFrame("Button", nil, button);
