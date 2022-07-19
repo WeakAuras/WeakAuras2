@@ -84,13 +84,13 @@ local function ConstructTexturePicker(frame)
   local group = AceGUI:Create("SimpleGroup");
   group.frame:SetParent(frame);
   group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 46);
-  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -63);
+  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -50);
   group.frame:Hide();
   group.children = {};
   group.categories = {};
   group.textureWidgets = {}
 
-  local dropdown = AceGUI:Create("DropdownGroup");
+  local dropdown = AceGUI:Create("WeakAurasDropdownGroup");
   dropdown:SetLayout("fill");
   dropdown.width = "fill";
   dropdown:SetHeight(390);
