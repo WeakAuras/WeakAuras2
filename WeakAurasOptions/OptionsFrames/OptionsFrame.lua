@@ -504,7 +504,7 @@ function OptionsPrivate.CreateFrame()
   reportbugButton:SetParent(tipFrame)
   reportbugButton:SetPoint("RIGHT", tipFrame, "RIGHT")
 
-  local wagoButton = addFooter(L["Find Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]], "https://wago.io",
+  local wagoButton = addFooter(L["Find Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wago.tga]], "https://wago.io",
             L["Browse Wago, the largest collection of auras."])
   wagoButton:SetParent(tipFrame)
   wagoButton:SetPoint("RIGHT", reportbugButton, "LEFT", -10, 0)
@@ -618,8 +618,8 @@ function OptionsPrivate.CreateFrame()
   end)
 
   local magnetButton = AceGUI:Create("WeakAurasToolbarButton")
-  magnetButton:SetText("")
-  magnetButton:SetTooltip(L["Magnetically Align"])
+  magnetButton:SetText(L["Magnetically Align"])
+  --magnetButton:SetTooltip(L["Magnetically Align"])
   magnetButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\magnetic")
   magnetButton:SetCallback("OnClick", function(self)
     if WeakAurasOptionsSaved.magnetAlign then
@@ -641,8 +641,8 @@ function OptionsPrivate.CreateFrame()
   magnetButton:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -17, -55)
 
   local lockButton = AceGUI:Create("WeakAurasToolbarButton")
-  lockButton:SetText("")
-  lockButton:SetTooltip(L["Lock Positions"])
+  lockButton:SetText(L["Lock Positions"])
+  --lockButton:SetTooltip(L["Lock Positions"])
   lockButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\lockPosition")
   lockButton:SetCallback("OnClick", function(self)
     if WeakAurasOptionsSaved.lockPositions then
