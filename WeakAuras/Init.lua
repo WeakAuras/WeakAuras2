@@ -29,6 +29,9 @@ intendedWoWProject = WOW_PROJECT_CLASSIC
 --@version-bcc@
 intendedWoWProject = WOW_PROJECT_BURNING_CRUSADE_CLASSIC or WOW_PROJECT_MAINLINE
 --@end-version-bcc@
+--@version-wrath@
+intendedWoWProject = WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+--@end-version-wrath@
 --@end-non-version-retail@]===]
 
 WeakAuras.versionString = versionStringFromToc
