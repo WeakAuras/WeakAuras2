@@ -185,6 +185,13 @@ local function ConstructTextEditor(frame)
     originalOnCursorChanged(self, ...)
   end)
 
+  -- Fixes a ACEGUI issue where HitRectInsets are not reset in some cases
+  -- Causing inability to use the mouse to select any text.
+  editor.editBox:HookScript("OnHide",function(self)
+    self:SetHitRectInsets(0,0,0,0);
+  end);
+
+
   -- The indention lib overrides GetText, but for the line number
   -- display we ned the original, so save it here.
   local originalGetText = editor.editBox.GetText
