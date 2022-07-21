@@ -2276,11 +2276,10 @@ do
     [173] = L["Normal Party"],
     [174] = L["Heroic Party"],
     [175] = L["10 Player Raid"],
-    [176] = L["25 Player Raid"]
+    [176] = L["25 Player Raid"],
+    [193] = L["10 Player Raid (Heroic)"],
+    [194] = L["25 Player Raid (Heroic)"],
   }
-
-  local names = {}
-  local ids = {}
 
   for i = 1, 200 do
     local name, type = GetDifficultyInfo(i)
