@@ -42,7 +42,7 @@ ignore:
   - WeakAurasModelPaths/ModelPathsClassic.lua
   - WeakAurasTemplates/TriggerTemplatesData.lua
   - WeakAurasTemplates/TriggerTemplatesDataClassic.lua
-  - WeakAurasTemplates/TriggerTemplatesDataWrath.lua
+  - WeakAurasTemplates/TriggerTemplatesDataBCC.lua
 
 plain-copy:
   - WeakAurasModelPaths/*.lua
