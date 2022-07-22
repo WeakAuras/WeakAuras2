@@ -142,9 +142,9 @@ function Private.InitializeEncounterAndZoneLists()
   if encounter_list ~= "" then
     return
   end
+  local raids
   if WeakAuras.IsClassic() then
-
-    local classic_raids = {
+    raids = {
       {
         L["Black Wing Lair"],
         {
@@ -245,114 +245,232 @@ function Private.InitializeEncounterAndZoneLists()
         }
       }
     }
-    for _, raid in ipairs(classic_raids) do
-      encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, raid[1])
-      for _, boss in ipairs(raid[2]) do
-        for _, boss in ipairs(raid[2]) do
-          encounter_list = ("%s%s: %d\n"):format(encounter_list, boss[1], boss[2])
-        end
-      end
-      encounter_list = encounter_list .. "\n"
-    end
   elseif WeakAuras.IsBCC() then
-    local bcc_raids = {
-      {
-        L["Karazhan"],
+    if not WeakAuras.IsWrathClassic() then
+      raids = {
         {
-          { L["Attumen the Huntsman"], 652 },
-          { L["Moroes"], 653 },
-          { L["Maiden of Virtue"], 654 },
-          { L["Opera Hall"], 655 },
-          { L["The Curator"], 656 },
-          { L["Terestian Illhoof"], 657 },
-          { L["Shade of Aran"], 658 },
-          { L["Netherspite"], 659 },
-          { L["Chess Event"], 660 },
-          { L["Prince Malchezaar"], 661 },
-          { L["Nightbane"], 662 },
-        }
-      },
-      {
-        L["Gruul's Lair"],
+          L["Karazhan"],
+          {
+            { L["Attumen the Huntsman"], 652 },
+            { L["Moroes"], 653 },
+            { L["Maiden of Virtue"], 654 },
+            { L["Opera Hall"], 655 },
+            { L["The Curator"], 656 },
+            { L["Terestian Illhoof"], 657 },
+            { L["Shade of Aran"], 658 },
+            { L["Netherspite"], 659 },
+            { L["Chess Event"], 660 },
+            { L["Prince Malchezaar"], 661 },
+            { L["Nightbane"], 662 },
+          }
+        },
         {
-          { L["High King Maulgar"], 649 },
-          { L["Gruul the Dragonkiller"], 650 },
-        }
-      },
-      {
-        L["Magtheridon's Lair"],
+          L["Gruul's Lair"],
+          {
+            { L["High King Maulgar"], 649 },
+            { L["Gruul the Dragonkiller"], 650 },
+          }
+        },
         {
-          { L["Magtheridon"], 651 },
-        }
-      },
-      {
-        L["Coilfang: Serpentshrine Cavern"],
+          L["Magtheridon's Lair"],
+          {
+            { L["Magtheridon"], 651 },
+          }
+        },
         {
-          { L["Hydross the Unstable"], 623 },
-          { L["The Lurker Below"], 624 },
-          { L["Leotheras the Blind"], 625 },
-          { L["Fathom-Lord Karathress"], 626 },
-          { L["Morogrim Tidewalker"], 627 },
-          { L["Lady Vashj"], 628 },
-        }
-      },
-      {
-        L["Tempest Keep"],
+          L["Coilfang: Serpentshrine Cavern"],
+          {
+            { L["Hydross the Unstable"], 623 },
+            { L["The Lurker Below"], 624 },
+            { L["Leotheras the Blind"], 625 },
+            { L["Fathom-Lord Karathress"], 626 },
+            { L["Morogrim Tidewalker"], 627 },
+            { L["Lady Vashj"], 628 },
+          }
+        },
         {
-          { L["Al'ar"], 730 },
-          { L["Void Reaver"], 731 },
-          { L["High Astromancer Solarian"], 732 },
-          { L["Kael'thas Sunstrider"], 733 },
-        }
-      },
-      {
-        L["The Battle for Mount Hyjal"],
+          L["Tempest Keep"],
+          {
+            { L["Al'ar"], 730 },
+            { L["Void Reaver"], 731 },
+            { L["High Astromancer Solarian"], 732 },
+            { L["Kael'thas Sunstrider"], 733 },
+          }
+        },
         {
-          { L["Rage Winterchill"], 618 },
-          { L["Anetheron"], 619 },
-          { L["Kaz'rogal"], 620 },
-          { L["Azgalor"], 621 },
-          { L["Archimonde"], 622 },
-        }
-      },
-      {
-        L["Black Temple"],
+          L["The Battle for Mount Hyjal"],
+          {
+            { L["Rage Winterchill"], 618 },
+            { L["Anetheron"], 619 },
+            { L["Kaz'rogal"], 620 },
+            { L["Azgalor"], 621 },
+            { L["Archimonde"], 622 },
+          }
+        },
         {
-          { L["High Warlord Naj'entus"], 601 },
-          { L["Supremus"], 602 },
-          { L["Shade of Akama"], 603 },
-          { L["Teron Gorefiend"], 604 },
-          { L["Gurtogg Bloodboil"], 605 },
-          { L["Reliquary of Souls"], 606 },
-          { L["Mother Shahraz"], 607 },
-          { L["The Illidari Council"], 608 },
-          { L["Illidan Stormrage"], 609 },
-        }
-      },
-      {
-        L["Zul'Aman"],
+          L["Black Temple"],
+          {
+            { L["High Warlord Naj'entus"], 601 },
+            { L["Supremus"], 602 },
+            { L["Shade of Akama"], 603 },
+            { L["Teron Gorefiend"], 604 },
+            { L["Gurtogg Bloodboil"], 605 },
+            { L["Reliquary of Souls"], 606 },
+            { L["Mother Shahraz"], 607 },
+            { L["The Illidari Council"], 608 },
+            { L["Illidan Stormrage"], 609 },
+          }
+        },
         {
-          { L["Akil'zon"], 1189 },
-          { L["Nalorakk"], 1190 },
-          { L["Jan'alai"], 1191 },
-          { L["Halazzi"], 1192 },
-          { L["Hex Lord Malacrass"], 1193 },
-          { L["Daakara"], 1194 },
-        }
-      },
-      {
-        L["The Sunwell Plateau"],
+          L["Zul'Aman"],
+          {
+            { L["Akil'zon"], 1189 },
+            { L["Nalorakk"], 1190 },
+            { L["Jan'alai"], 1191 },
+            { L["Halazzi"], 1192 },
+            { L["Hex Lord Malacrass"], 1193 },
+            { L["Daakara"], 1194 },
+          }
+        },
         {
-          { L["Kalecgos"], 724 },
-          { L["Brutallus"], 725 },
-          { L["Felmyst"], 726 },
-          { L["Eredar Twins"], 727 },
-          { L["M'uru"], 728 },
-          { L["Kil'jaeden"], 729 },
-        }
-      },
-    }
-    for _, raid in ipairs(bcc_raids) do
+          L["The Sunwell Plateau"],
+          {
+            { L["Kalecgos"], 724 },
+            { L["Brutallus"], 725 },
+            { L["Felmyst"], 726 },
+            { L["Eredar Twins"], 727 },
+            { L["M'uru"], 728 },
+            { L["Kil'jaeden"], 729 },
+          }
+        },
+      }
+    else
+      raids = {
+        {
+          L["Vault of Archavon"],
+          {
+            { L["Archavon the Stone Watcher"], 1126 },
+            { L["Emalon the Storm Watcher"], 1127 },
+            { L["Koralon the Flame Watcher"], 1128 },
+            { L["Toravon the Ice Watcher"], 1129 },
+          }
+        },
+        {
+          L["Naxxramas"],
+          {
+            -- The Arachnid Quarter
+            { L["Anub'Rekhan"], 1107 },
+            { L["Grand Widow Faerlina"], 1110 },
+            { L["Maexxna"], 1116 },
+            -- The Plague Quarter
+            { L["Noth the Plaguebringer"], 1117 },
+            { L["Heigan the Unclean"], 1112 },
+            { L["Loatheb"], 1115 },
+            -- The Military Quarter
+            { L["Instructor Razuvious"], 1113 },
+            { L["Gothik the Harvester"], 1109 },
+            { L["The Four Horsemen"], 1121 },
+            -- The Construct Quarter
+            { L["Patchwerk"], 1118 },
+            { L["Grobbulus"], 1111 },
+            { L["Gluth"], 1108 },
+            { L["Thaddius"], 1120 },
+            -- Frostwyrm Lair
+            { L["Sapphiron"], 1119 },
+            { L["Kel'Thuzad"], 1114 }
+          }
+        },
+        {
+          L["The Obsidian Sanctum"],
+          {
+            { L["Tenebron"], 1092 },
+            { L["Shadron"], 1091 },
+            { L["Vesperon"], 1093 },
+            { L["Sartharion"], 1090 },
+          }
+        },
+        {
+          L["The Eye of Eternity"],
+          {
+            { L["Malygos"], 1094 },
+          }
+        },
+        {
+          L["Ulduar"],
+          {
+            -- The Siege of Ulduar
+            { L["Flame Leviathan"], 1132 },
+            { L["Ignis the Furnace Master"], 1136 },
+            { L["Razorscale"], 1139 },
+            { L["XT-002 Deconstructor"], 1142 },
+            -- The Antechamber of Ulduar
+            { L["Assembly of Iron"], 1140 },
+            { L["Kologarn"], 1137 },
+            { L["Auriaya"], 1131 },
+            -- The Keepers of Ulduar
+            { L["Freya"], 1133 },
+            { L["Hodir"], 1135 },
+            { L["Mimiron"], 1138 },
+            { L["Thorim"], 1141 },
+            -- The Descent into Madness
+            { L["General Vezax"], 1134 },
+            { L["Yogg-Saron"], 1143 },
+            -- Celestial Planetarium
+            { L["Algalon the Observer"], 1130 },
+          }
+        },
+        {
+          L["Trial of the Crusader"],
+          {
+            { L["Northrend Beasts"], 1088 },
+            { L["Lord Jaraxxus"], 1087 },
+            { L["Faction Champions"], 1086 },
+            { L["Val'kyr Twins"], 1089 },
+            { L["Anub'arak"], 1085 },
+          }
+        },
+        {
+          L["Onyxia's Lair"],
+          {
+            { L["Onyxia"], 1084 },
+          }
+        },
+        {
+          L["Icecrown Citadel"],
+          {
+            -- The Lower Spire
+            { L["Lord Marrowgar"], 1101 },
+            { L["Lady Deathwhisper"], 1100 },
+            { L["Gunship Battle"], 1099 },
+            { L["Deathbringer Saurfang"], 1096 },
+            -- The Plagueworks
+            { L["Festergut"], 1097 },
+            { L["Rotface"], 1104 },
+            { L["Professor Putricide"], 1102 },
+            -- The Crimson Hall
+            { L["Blood Prince Council"], 1095 },
+            { L["Blood-Queen Lana'thel"], 1103 },
+            -- The Frostwing Halls
+            { L["Valithria Dreamwalker"], 1098 },
+            { L["Sindragosa"], 1105 },
+            -- The Frozen Throne
+            { L["The Lich King"], 1106 },
+          }
+        },
+        {
+          L["The Ruby Sanctum"],
+          {
+            { L["Baltharus the Warborn"], 1147 },
+            { L["General Zarithrian"], 1148 },
+            { L["Saviana Ragefire"], 1149 },
+            { L["Halion"], 1150 },
+          }
+        },
+      }
+    end
+  end
+  if raids then -- classic / bcc / wrath
+    for _, raid in ipairs(raids) do
       encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, raid[1])
       for _, boss in ipairs(raid[2]) do
           encounter_list = ("%s%s: %d\n"):format(encounter_list, boss[1], boss[2])
