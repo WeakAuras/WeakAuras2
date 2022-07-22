@@ -24,5 +24,8 @@ TriggerTemplatesDataClassic.lua
 #@version-bcc@
 TriggerTemplatesDataBCC.lua
 #@end-version-bcc@
+#@version-wrath@
+TriggerTemplatesDataWrath.lua
+#@end-version-wrath@
 
 AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua
