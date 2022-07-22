@@ -9324,6 +9324,10 @@ else
   Private.event_prototypes["Queued Action"] = nil
 end
 
+if WeakAuras.IsWrathClassic() then
+  Private.event_prototypes["Swing Timer"] = nil
+end
+
 Private.category_event_prototype = {}
 for name, prototype in pairs(Private.event_prototypes) do
   Private.category_event_prototype[prototype.type] = Private.category_event_prototype[prototype.type] or {}
