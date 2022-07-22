@@ -1791,12 +1791,12 @@ Private.load_prototype = {
     },
     {
       name = "role",
-      display = L["Spec Role"],
+      display = L["Assigned Role"],
       type = "multiselect",
       values = "role_types",
       init = "arg",
-      enable = WeakAuras.IsRetail(),
-      hidden = not WeakAuras.IsRetail(),
+      enable = WeakAuras.IsRetail() or WeakAuras.IsWrathClassic(),
+      hidden = not (WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()),
       events = {"PLAYER_ROLES_ASSIGNED", "PLAYER_TALENT_UPDATE"}
     },
     {
@@ -2146,12 +2146,12 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return (WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()) and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
         name = "raid_role",
-        display = L["Assigned Role"],
+        display = L["Raid Role"],
         type = "select",
         init = "WeakAuras.UnitRaidRole(unit)",
         values = "raid_role_types",
@@ -2805,12 +2805,12 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return (WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()) and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
         name = "raid_role",
-        display = L["Assigned Role"],
+        display = L["Raid Role"],
         type = "select",
         init = "WeakAuras.UnitRaidRole(unit)",
         values = "raid_role_types",
@@ -3293,12 +3293,12 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return (WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()) and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
         name = "raid_role",
-        display = L["Assigned Role"],
+        display = L["Raid Role"],
         type = "select",
         init = "WeakAuras.UnitRaidRole(unit)",
         values = "raid_role_types",
@@ -3583,12 +3583,12 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return (WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()) and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
         name = "raid_role",
-        display = L["Assigned Role"],
+        display = L["Raid Role"],
         type = "select",
         init = "WeakAuras.UnitRaidRole(unit)",
         values = "raid_role_types",
@@ -8164,13 +8164,13 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return (WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()) and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
                  and not trigger.use_inverse
         end
       },
       {
         name = "raid_role",
-        display = L["Assigned Role"],
+        display = L["Raid Role"],
         type = "select",
         init = "WeakAuras.UnitRaidRole(unit)",
         values = "raid_role_types",

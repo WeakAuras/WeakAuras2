@@ -2351,7 +2351,8 @@ if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
     MAINASSIST = "|TInterface\\GroupFrame\\UI-Group-mainassistIcon:16:16|t "..MAINASSIST,
     NONE = L["Other"]
   }
-else
+end
+if WeakAuras.IsRetail() or WeakAuras.IsWrathClassic() then
   Private.role_types = {
     TANK = INLINE_TANK_ICON.." "..TANK,
     DAMAGER = INLINE_DAMAGER_ICON.." "..DAMAGER,
