@@ -2712,7 +2712,8 @@ function WeakAuras.WatchUnitChange(unit)
                   watchUnitChange.unitRaidRole[unit] = newRaidRole
                   WeakAuras.ScanEvents("UNIT_ROLE_CHANGED_" .. unit, unit)
                 end
-              else
+              end
+              if WeakAuras.IsRetail() or WeakAuras.IsWrathClassic() then
                 local newRole = UnitGroupRolesAssigned(unit)
                 if watchUnitChange.unitRoles[unit] ~= newRole then
                   watchUnitChange.unitRoles[unit] = newRole
