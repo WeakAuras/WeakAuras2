@@ -4163,12 +4163,19 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc, state, form
     end
 
     local index = tonumber(textStr:match("^c(%d+)$") or 1)
+
     if custom then
-      value = WeakAuras.EnsureString(custom[index])
+      value = custom[index]
     end
+
+    if value == nil then value = "" end
 
     if formatter then
       value = formatter(value, state)
+    end
+
+    if custom then
+      value = WeakAuras.EnsureString(value)
     end
   else
     local variable = Private.dynamic_texts[textStr];
