@@ -1220,7 +1220,7 @@ function WeakAuras.CheckRaidFlags(flags, flagToCheck)
 end
 
 function WeakAuras.IsSpellKnownForLoad(spell, exact)
-  local result = WeakAuras.IsSpellKnown(spell)
+  local result = IsPlayerSpell(spell) or IsSpellKnown(spell, true)
   if exact or result then
     return result
   end
@@ -1673,7 +1673,7 @@ Private.load_prototype = {
       display = L["Spell Known"],
       type = "spell",
       test = "WeakAuras.IsSpellKnownForLoad(%s, %s)",
-      events = {"SPELLS_CHANGED"},
+      events = {"SPELLS_CHANGED", "UNIT_PET"},
       showExactOption = true
     },
     {
