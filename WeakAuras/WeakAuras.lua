@@ -33,7 +33,7 @@ LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 Private.maxTimerDuration = 604800; -- A week, in seconds
 local maxUpTime = 4294967; -- 2^32 / 1000
 
-Private.TTC_events = {} -- trigger to custom
+Private.trigger_to_custom_events = {} -- trigger to custom
 
 -- The worlds simplest callback system.
 -- That supports 1:N, but no deregistration and breaks if registrating in a callback
@@ -4019,15 +4019,15 @@ end
 
 -- handle trigger updates that have been requested to be sent into custom
 -- we need the id and triggernum that's changing, but can't send the ScanEvents to the custom trigger until after UpdatedTriggerState has fired
-local TTC_Queue = {}
-function Private.AddTriggerToCustomQueue(id, triggernum)
-  TTC_Queue[id] = triggernum
+local trigger_to_custom_delayed = {}
+function Private.AddToTriggerToCustomDelay(id, triggernum)
+  trigger_to_custom_delayed[id] = triggernum
 end
-function Private.SendQueuedTriggers()
-  for id,triggernum in pairs(TTC_Queue) do
-    WeakAuras.ScanEvents("WA_TRIGGER_"..id.."_"..triggernum, triggerState[id][triggernum])
+function Private.SendDelayedTriggerToCustom()
+  for id,triggernum in pairs(trigger_to_custom_delayed) do
+    WeakAuras.ScanEventsInternalToCustom(id, triggernum)
   end
-  wipe(TTC_Queue)
+  wipe(trigger_to_custom_delayed)
 end
 
 function Private.UpdatedTriggerState(id)
@@ -4133,7 +4133,7 @@ function Private.UpdatedTriggerState(id)
     end
   end
   -- once updatedTriggerStates is complete, and empty states removed, etc., then check for queued trigger_to_custom updates
-  Private.SendQueuedTriggers()
+  Private.SendDelayedTriggerToCustom()
 end
 
 function Private.RunCustomTextFunc(region, customFunc)

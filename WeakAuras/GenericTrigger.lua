@@ -80,7 +80,7 @@ local timer = WeakAuras.timer;
 local events = {}
 local loaded_events = {}
 local loaded_unit_events = {};
-local TTC_events = Private.TTC_events
+local trigger_to_custom_events = Private.trigger_to_custom_events
 local loaded_auras = {}; -- id to bool map
 local timers = WeakAuras.timers;
 
@@ -678,9 +678,9 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       end
     end
   end
-  if updateTriggerState and TTC_events[id] and TTC_events[id][triggernum] then
+  if updateTriggerState and trigger_to_custom_events[id] and trigger_to_custom_events[id][triggernum] then
     -- if this trigger's udpates are requested to be sent into one of the Aura's custom triggers
-    Private.AddTriggerToCustomQueue(id, triggernum)
+    Private.AddToTriggerToCustomDelay(id, triggernum)
   end
   return updateTriggerState;
 end
@@ -760,9 +760,35 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
     if (updateTriggerState) then
       Private.UpdatedTriggerState(id);
     end
-    Private.StopProfileAura(id);
-    Private.ActivateAuraEnvironment(nil);
+    Private.StartProfileAura(id);
+    Private.ActivateAuraEnvironment(id);
   end
+end
+
+function WeakAuras.ScanEventsInternalToCustom(id, triggernum)
+  Private.StartProfileAura(id);
+  Private.ActivateAuraEnvironment(id);
+  local data = events and events[id] and events[id][triggernum]
+  local updateTriggerState = false
+  if trigger_to_custom_events[id] and trigger_to_custom_events[id][triggernum] then
+    for requestingTrigger, bool in pairs(trigger_to_custom_events[id][triggernum]) do
+      if bool then
+        local data = events and events[id] and events[id][requestingTrigger]
+        local updatedTriggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
+        local allstates = WeakAuras.GetTriggerStateForTrigger(id, requestingTrigger)
+        if data and allstates and updatedTriggerStates then
+          if RunTriggerFunc(allStates, data, id, requestingTrigger, "TRIGGER:"..triggernum, updatedTriggerStates) then
+            updateTriggerState = true
+          end
+        end
+      end
+    end
+  end
+  if (updateTriggerState) then
+    Private.UpdatedTriggerState(id)
+  end
+  Private.StartProfileAura(id)
+  Private.ActivateAuraEnvironment(id)
 end
 
 local function AddFakeTime(state)
@@ -1173,7 +1199,7 @@ end
 function GenericTrigger.Add(data, region)
   local id = data.id;
   events[id] = nil;
-  TTC_events[id] = nil
+  trigger_to_custom_events[id] = nil
 
   for triggernum, triggerData in ipairs(data.triggers) do
     local trigger, untrigger = triggerData.trigger, triggerData.untrigger
@@ -1361,13 +1387,18 @@ function GenericTrigger.Add(data, region)
                 elseif isTrigger then
                   local requestedTriggernum = tonumber(i)
                   if requestedTriggernum then
-                    if TTC_events[id] and TTC_events[id][triggernum] and TTC_events[id][triggernum][requestedTriggernum] then
-                      -- if the request is reciprocal (2 custom triggers request each other which would cause a stack overflow) then neither get added.
+                    if trigger_to_custom_events[id] and trigger_to_custom_events[id][triggernum] and trigger_to_custom_events[id][triggernum][requestedTriggernum] then
+                      -- if the request is reciprocal (2 custom triggers request each other which would cause a stack overflow) then prevent the reciprocal one being added.
+                      --[[ if it were decided that, in the case of a reciprocal request from 2 triggers, neither should be added then this can be uncommented below
+                      trigger_to_custom_events[id][triggernum][requestedTriggernum] = nil
+                      if not next(trigger_to_custom_events[id][triggernum]) then
+                        trigger_to_custom_events[id][triggernum] = nil
+                      end
+                      ]]
                     elseif requestedTriggernum and requestedTriggernum ~= triggernum then
-                      tinsert(trigger_events, "WA_TRIGGER_"..id.."_"..i)
-                      TTC_events[id] = TTC_events[id] or {}
-                      TTC_events[id][requestedTriggernum] = TTC_events[id][requestedTriggernum] or {}
-                      TTC_events[id][requestedTriggernum][triggernum] = true
+                      trigger_to_custom_events[id] = trigger_to_custom_events[id] or {}
+                      trigger_to_custom_events[id][requestedTriggernum] = trigger_to_custom_events[id][requestedTriggernum] or {}
+                      trigger_to_custom_events[id][requestedTriggernum][triggernum] = true
                     end
                   end
                 end
