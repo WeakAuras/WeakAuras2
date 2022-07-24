@@ -777,7 +777,7 @@ function WeakAuras.ScanEventsInternalToCustom(id, triggernum)
         local updatedTriggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
         local allstates = WeakAuras.GetTriggerStateForTrigger(id, requestingTrigger)
         if data and allstates and updatedTriggerStates then
-          if RunTriggerFunc(allStates, data, id, requestingTrigger, "TRIGGER:"..triggernum, updatedTriggerStates) then
+          if RunTriggerFunc(allstates, data, id, requestingTrigger, "TRIGGER:"..triggernum, updatedTriggerStates) then
             updateTriggerState = true
           end
         end
