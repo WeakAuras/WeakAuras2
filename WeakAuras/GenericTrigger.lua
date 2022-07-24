@@ -710,10 +710,6 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
     end
     WeakAuras.ScanEventsInternal(event_list, event, CombatLogGetCurrentEventInfo());
   else
-    -- is the event is one of our "trigger to custom" events then change the event string to the one the user wwill expect
-    if (event:sub(1,11) == "WA_TRIGGER_") then
-      event = "TRIGGER:"..event:match("%d+$")
-    end
     WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ...);
   end
   Private.StopProfileSystem("generictrigger " .. orgEvent )
