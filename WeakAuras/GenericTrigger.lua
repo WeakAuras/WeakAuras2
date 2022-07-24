@@ -80,6 +80,7 @@ local timer = WeakAuras.timer;
 local events = {}
 local loaded_events = {}
 local loaded_unit_events = {};
+local TTC_events = Private.TTC_events
 local loaded_auras = {}; -- id to bool map
 local timers = WeakAuras.timers;
 
@@ -677,8 +678,8 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       end
     end
   end
-  if updateTriggerState and data.trigger.trigger_to_custom then
-    -- if this trigger's udpates are requested to be sent into the Aura's custom trigger
+  if updateTriggerState and TTC_events[id] and TTC_events[id][triggernum] then
+    -- if this trigger's udpates are requested to be sent into one of the Aura's custom triggers
     Private.AddTriggerToCustomQueue(id, triggernum)
   end
   return updateTriggerState;
@@ -1172,7 +1173,7 @@ end
 function GenericTrigger.Add(data, region)
   local id = data.id;
   events[id] = nil;
-  local trigger_to_custom = {};
+  TTC_events[id] = nil
 
   for triggernum, triggerData in ipairs(data.triggers) do
     local trigger, untrigger = triggerData.trigger, triggerData.untrigger
@@ -1358,17 +1359,15 @@ function GenericTrigger.Add(data, region)
                   trigger_unit_events[i] = trigger_unit_events[i] or {}
                   tinsert(trigger_unit_events[i], trueEvent)
                 elseif isTrigger then
-                  -- if the event is requesting a trigger's updated be sent in to the custo trigger then check it isn't requesting itself then add to a table to
-                  -- be processed once all the Aura's triggers are added
                   local requestedTriggernum = tonumber(i)
                   if requestedTriggernum then
-                    if trigger_to_custom[requestedTriggernum] and trigger_to_custom[requestedTriggernum][triggernum] then
+                    if TTC_events[id] and TTC_events[id][triggernum] and TTC_events[id][triggernum][requestedTriggernum] then
                       -- if the request is reciprocal (2 custom triggers request each other which would cause a stack overflow) then neither get added.
-                      trigger_to_custom[requestedTriggernum][triggernum] = nil
                     elseif requestedTriggernum and requestedTriggernum ~= triggernum then
                       tinsert(trigger_events, "WA_TRIGGER_"..id.."_"..i)
-                      trigger_to_custom[triggernum] = trigger_to_custom[triggernum] or {}
-                      trigger_to_custom[triggernum][requestedTriggernum] = true
+                      TTC_events[id] = TTC_events[id] or {}
+                      TTC_events[id][requestedTriggernum] = TTC_events[id][requestedTriggernum] or {}
+                      TTC_events[id][requestedTriggernum][triggernum] = true
                     end
                   end
                 end
@@ -1435,17 +1434,6 @@ function GenericTrigger.Add(data, region)
       end
     end
   end
-  -- if any of the trigger updates are requested to be sent into custom a trigger then set a flag on that trigger
-  if #trigger_to_custom > 0 then
-    for requestingTrigger, triggernums in pairs(trigger_to_custom) do
-      for triggernum, _ in pairs(triggernums) do
-        if data.triggers[triggernum] then
-          data.triggers[triggernum].trigger.trigger_to_custom = true
-        end
-      end
-    end
-  end
-
 end
 
 do

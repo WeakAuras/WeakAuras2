@@ -33,6 +33,8 @@ LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 Private.maxTimerDuration = 604800; -- A week, in seconds
 local maxUpTime = 4294967; -- 2^32 / 1000
 
+Private.TTC_events = {} -- trigger to custom
+
 -- The worlds simplest callback system.
 -- That supports 1:N, but no deregistration and breaks if registrating in a callback
 Private.callbacks = {}
@@ -4017,15 +4019,15 @@ end
 
 -- handle trigger updates that have been requested to be sent into custom
 -- we need the id and triggernum that's changing, but can't send the ScanEvents to the custom trigger until after UpdatedTriggerState has fired
-local trigger_to_custom_Queue = {}
+local TTC_Queue = {}
 function Private.AddTriggerToCustomQueue(id, triggernum)
-  trigger_to_custom_Queue[id] = triggernum
+  TTC_Queue[id] = triggernum
 end
 function Private.SendQueuedTriggers()
-  for id,triggernum in pairs(trigger_to_custom_Queue) do
+  for id,triggernum in pairs(TTC_Queue) do
     WeakAuras.ScanEvents("WA_TRIGGER_"..id.."_"..triggernum, triggerState[id][triggernum])
   end
-  trigger_to_custom_Queue = {}
+  wipe(TTC_Queue)
 end
 
 function Private.UpdatedTriggerState(id)

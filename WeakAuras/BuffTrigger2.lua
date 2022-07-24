@@ -71,6 +71,8 @@ local timer = WeakAuras.timer
 local BuffTrigger = {}
 local triggerInfos = {}
 
+local TTC_events = Private.TTC_events -- trigger to custom
+
 local UnitGroupRolesAssigned = WeakAuras.IsWrathOrRetail() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 
 -- keyed on unit, debuffType, spellname, with a scan object value
@@ -1468,8 +1470,7 @@ local function UpdateTriggerState(time, id, triggernum)
 
   -- if the trigger has updated then check to see if it is flagged for trigger_to_custom and send to queue if it is
   if updated then
-    local data = WeakAuras.GetData(id)
-    if data.triggers[triggernum].trigger.trigger_to_custom then
+    if TTC_events[id] and TTC_events[id][triggernum] then
       Private.AddTriggerToCustomQueue(id, triggernum)
     end
   end
