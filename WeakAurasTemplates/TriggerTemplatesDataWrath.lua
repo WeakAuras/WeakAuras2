@@ -57,6 +57,7 @@ templates.class.WARRIOR = {
         { spell = 12319, type = "buff", unit = "player"}, -- Flurry
         { spell = 12975, type = "buff", unit = "player"}, -- Last Stand
         { spell = 23920, type = "buff", unit = "player"}, -- Spell Reflection
+        { spell = 46913, type = "buff", unit = "player"}, -- Bloodsurge
       },
       icon = 132333
     },
@@ -94,8 +95,8 @@ templates.class.WARRIOR = {
         { spell = 871, type = "ability", buff = true, form = 2}, -- Shield Wall
         { spell = 1160, type = "ability", debuff = true}, -- Demoralizing Shout
         { spell = 1161, type = "ability", debuff = true}, -- Challenging Shout
-        { spell = 1464, type = "ability", requiresTarget = true}, -- Slam
-        { spell = 1680, type = "ability", form = 3}, -- Whirlwind
+        { spell = 1464, type = "ability", requiresTarget = true, buff = true, buffId = 46913}, -- Slam
+        { spell = 1680, type = "ability", buff = true, buffId = 46913, form = 3}, -- Whirlwind
         { spell = 1715, type = "ability", requiresTarget = true, form = {1, 2}}, -- Hamstring
         { spell = 1719, type = "ability", buff = true, form = 3}, -- Recklessness
         { spell = 2565, type = "ability", buff = true, form = 2}, -- Shield Block
@@ -124,6 +125,11 @@ templates.class.WARRIOR = {
         { spell = 23922, type = "ability", requiresTarget = true, talent = 99}, -- Shield Slam
         { spell = 29801, type = "ability", requiresTarget = true, talent = 61}, -- Rampage
         { spell = 34428, type = "ability", requiresTarget = true, usable = true}, -- Victory Rush
+        { spell = 46924, type = "ability", buff = true}, -- Bladestorm
+        { spell = 55694, type = "ability", buff = true}, -- Enraged Regeneration
+        { spell = 57755, type = "ability", requiresTarget = true}, -- Heroic Throw
+        { spell = 60970, type = "ability", talent = 65}, -- Heroic Fury
+        { spell = 64382, type = "ability", requiresTarget = true, debuff = true, form = 1}, -- Shattering Throw
       },
       icon = 132355
     },
@@ -197,6 +203,8 @@ templates.class.PALADIN = {
         { spell = 31892, type = "ability", buff = true}, -- Seal of Blood
         { spell = 31935, type = "ability", talent = 62}, -- Avenger's Shield
         { spell = 35395, type = "ability", requiresTarget = true, talent = 102}, -- Crusader Strike
+        { spell = 53585, type = "ability", talent = 104}, -- Divine Storm
+        { spell = 53595, type = "ability", talent = 61}, -- Hammer of the Righteous
         { spell = 348704, type = "ability", buff = true}, -- Seal of Vengeance
       },
       icon = 135972
@@ -283,6 +291,9 @@ templates.class.HUNTER = {
         { spell = 34477, type = "ability", requiresTarget = true, debuff = true}, -- Misdirection
         { spell = 34490, type = "ability", requiresTarget = true, debuff = true, talent = 60}, -- Silencing Shot
         { spell = 34600, type = "ability"}, -- Snake Trap
+        { spell = 53209, type = "ability", requiresTarget = true, talent = 66}, -- Chimera Shot
+        { spell = 53301, type = "ability", requiresTarget = true, talent = 106}, -- Explosive Shot
+        { spell = 53351, type = "ability", requiresTarget = true, usable = true}, -- Kill Shot
       },
       icon = 135130
     },
@@ -359,6 +370,11 @@ templates.class.ROGUE = {
         { spell = 16511, type = "ability", requiresTarget = true, debuff = true, talent = 95}, -- Hemorrhage
         { spell = 31224, type = "ability", buff = true}, -- Cloak of Shadows
         { spell = 36554, type = "ability", requiresTarget = true, talent = 102}, -- Shadowstep
+        { spell = 51662, type = "ability", buff = true, talent = 27}, -- Hunger For Blood
+        { spell = 51690, type = "ability", buff = true, talent = 68}, -- Killing Spree
+        { spell = 51713, type = "ability", buff = true, talent = 107}, -- Shadow Dance
+        { spell = 51723, type = "ability"}, -- Fan of Knives
+        { spell = 57934, type = "ability", buff = true}, -- Tricks of the Trade
       },
       icon = 132350
     },
@@ -430,6 +446,11 @@ templates.class.PRIEST = {
         { spell = 34433, type = "ability", totem = true}, -- Shadowfiend
         { spell = 34861, type = "ability", talent = 61}, -- Circle of Healing
         { spell = 34914, type = "ability", debuff = true, requireTarget = true, talent = 101}, -- Vampiric Touch
+        { spell = 47540, type = "ability", requireTarget = true, talent = 24}, -- Penance
+        { spell = 47585, type = "ability", buff = true, talent = 105}, -- Dispersion
+        { spell = 47788, type = "ability", buff = true, talent = 66}, -- Guardian Spirit
+        { spell = 64843, type = "ability"}, -- Divine Hymn
+        { spell = 64901, type = "ability"}, -- Hymn of Hope
       },
       icon = 136224
     },
@@ -519,6 +540,11 @@ templates.class.SHAMAN = {
         { spell = 30706, type = "ability", totem = true, talent = 20}, -- Totem of Wrath
         { spell = 30823, type = "buff", talent = 61}, -- Shamanistic Rage
         { spell = 32182, type = "ability", buff = true}, -- Heroism
+        { spell = 51514, type = "ability", requireTarget = true}, -- Hex
+        { spell = 51505, type = "ability", requireTarget = true}, -- Lava Burst
+        { spell = 51490, type = "ability", talent = 23}, -- Thunderstorm
+        { spell = 51533, type = "ability", buff = true, talent = 65}, -- Feral Spirit
+        { spell = 61295, type = "ability", talent = 105}, -- Riptide
       },
       icon = 135963
     },
@@ -605,6 +631,10 @@ templates.class.MAGE = {
         { spell = 31687, type = "ability", totem = true, talent = 102}, -- Summon Water Elemental
         { spell = 34589, type = "ability", requireTarget = true, debuff = true, talent = 23}, -- Slow
         { spell = 45438, type = "ability", buff = true}, -- Ice Block
+        { spell = 44614, type = "ability", requiresTarget = true, debuff = true}, -- Frostfire Bolt
+        { spell = 44457, type = "ability", buff = true, talent = 67}, -- Living Bomb
+        { spell = 44425, type = "ability", requiresTarget = true, talent = 27}, -- Arcane Barrage
+        { spell = 44572, type = "ability", requiresTarget = true, debuff = true, usable = true, talent = 107}, -- Deep Freeze
       },
       icon = 136075
     },
@@ -657,6 +687,7 @@ templates.class.WARLOCK = {
         { spell = 18223, type = "debuff", unit = "target", talent = 15}, -- Curse of Exhaustion
         { spell = 18265, type = "debuff", unit = "target", talent = 14}, -- Siphon Life
         { spell = 30108, type = "debuff", unit = "target", talent = 21}, -- Unstable Afflication
+        { spell = 48181, type = "debuff", unit = "target", talent = 26}, -- Haunt
       },
       icon = 136139
     },
@@ -690,6 +721,11 @@ templates.class.WARLOCK = {
         { spell = 18877, type = "ability", requiresTarget = true, debuff = true, talent = 88}, -- Shadowburn
         { spell = 30108, ability = "ability", debuff = true, requiresTarget = true, talent = 21}, -- Unstable Afflication
         { spell = 30283, type = "ability", debuff = true, talent = 101}, -- Fel Domination
+        { spell = 48181, type = "ability", requiresTarget = true, debuff = true, talent = 26}, -- Haunt
+        { spell = 59672, type = "ability", buff = true, talent = 66}, -- Metamorphosis
+        { spell = 50796, type = "ability", requiresTarget = true, talent = 105}, -- Chaos Bolt
+        { spell = 47897, type = "ability"}, -- Shadowflame
+        { spell = 48020, type = "ability"}, -- Demonic Circle: Teleport
       },
       icon = 135808
     },
@@ -788,7 +824,10 @@ templates.class.DRUID = {
         { spell = 27006, type = "ability", requiresTarget = true, debuff = true, form = 3}, -- Pounce
         { spell = 33831, type = "ability", talent = 21}, -- Force of Nature
         { spell = 42389, type = "ability", talent = 61, form = {1, 3}}, -- Mangle
-
+        { spell = 48438, type = "ability", talent = 103}, -- Wild Growth
+        { spell = 50464, type = "ability"}, -- Nourish
+        { spell = 48505, type = "ability", talent = 24}, -- Starfall
+        { spell = 50334, type = "ability", buff = true, talent = 67}, -- Berserk
       },
       icon = 132134
     },
@@ -801,6 +840,74 @@ templates.class.DRUID = {
       args = {
       },
       icon = manaIcon,
+    },
+  },
+}
+templates.class.DEATHKNIGHT = {
+  [1] = {
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 3714, type = "buff", unit = "player"}, -- Path of Frost
+        { spell = 47568, type = "buff", unit = "player"}, -- Empower Rune Weapon
+        { spell = 48265, type = "buff", unit = "player"}, -- Death's Advance
+        { spell = 48707, type = "buff", unit = "player"}, -- Anti-Magic Shell
+        { spell = 48792, type = "buff", unit = "player"}, -- Icebound Fortitude
+        { spell = 49039, type = "buff", unit = "player"}, -- Lichborne
+        { spell = 55233, type = "buff", unit = "player"}, -- Vampiric Blood
+        { spell = 53365, type = "buff", unit = "player"}, -- Unholy Strength
+        { spell = 51124, type = "buff", unit = "player"}, -- Killing Machine
+        { spell = 51271, type = "buff", unit = "player"}, -- Pillar of Frost
+        { spell = 59052, type = "buff", unit = "player"}, -- Rime
+      },
+      icon = 237517
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 45524, type = "debuff", unit = "target"}, -- Chains of Ice
+        { spell = 48743, type = "debuff", unit = "player"}, -- Death Pact
+        { spell = 51399, type = "debuff", unit = "target"}, -- Death Grip
+        { spell = 56222, type = "debuff", unit = "target"}, -- Dark Command
+        { spell = 55078, type = "debuff", unit = "target"}, -- Blood Plague
+      },
+      icon = 237514
+    },
+    [3] = {
+      title = L["Abilities"],
+      args = {
+        { spell = 3714, type = "ability", buff = true}, -- Path of Frost
+        { spell = 43265, type = "ability", buff = true, buffId = 188290, overlayGlow = true}, -- Death and Decay
+        { spell = 45524, type = "ability", requiresTarget = true}, -- Chains of Ice
+        { spell = 46585, type = "ability"}, -- Raise Dead
+        { spell = 47528, type = "ability", requiresTarget = true}, -- Mind Freeze
+        { spell = 47541, type = "ability"}, -- Death Coil
+        { spell = 48265, type = "ability", buff = true}, -- Death's Advance
+        { spell = 48707, type = "ability", buff = true}, -- Anti-Magic Shell
+        { spell = 48792, type = "ability", buff = true}, -- Icebound Fortitude
+        { spell = 48743, type = "ability"}, -- Death Pact
+        { spell = 49028, type = "ability", buff = true}, -- Dancing Rune Weapon
+        { spell = 49039, type = "ability", buff = true}, -- Lichborne
+        { spell = 49998, type = "ability"}, -- Death Strike
+        { spell = 49576, type = "ability", requiresTarget = true}, -- Death Grip
+        { spell = 50842, type = "ability", charges = true}, -- Blood Boil
+        { spell = 50977, type = "ability"}, -- Death Gate
+        { spell = 51052, type = "ability", buff = true}, -- Anti-Magic Zone
+        { spell = 55233, type = "ability", buff = true}, -- Vampiric Blood
+        { spell = 56222, type = "ability", requiresTarget = true, debuff = true}, -- Dark Command
+        { spell = 61999, type = "ability"}, -- Raise Ally
+      },
+      icon = 136120
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {
+      title = L["Resources"],
+      args = {
+      },
+      icon = "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-SingleRune",
     },
   }
 }
