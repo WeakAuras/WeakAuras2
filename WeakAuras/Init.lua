@@ -56,6 +56,14 @@ function WeakAuras.IsRetail()
   return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 end
 
+function WeakAuras.IsBCCAndNotWrath()
+  return WeakAuras.IsBCC() and not WeakAuras.IsWrathClassic()
+end
+
+function WeakAuras.IsRetailOrWrath()
+  return WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()
+end
+
 function WeakAuras.IsCorrectVersion()
   return isDevVersion or intendedWoWProject == WOW_PROJECT_ID
 end
