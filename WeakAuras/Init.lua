@@ -30,7 +30,7 @@ intendedWoWProject = WOW_PROJECT_CLASSIC
 intendedWoWProject = WOW_PROJECT_BURNING_CRUSADE_CLASSIC or WOW_PROJECT_MAINLINE
 --@end-version-bcc@
 --@version-wrath@
-intendedWoWProject = WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+intendedWoWProject = 99
 --@end-version-wrath@
 --@end-non-version-retail@]===]
 
@@ -76,7 +76,7 @@ function WeakAuras.IsWrathOrRetail()
 end
 
 function WeakAuras.IsCorrectVersion()
-  return isDevVersion or intendedWoWProject == WOW_PROJECT_ID
+  return isDevVersion or intendedWoWProject == (WeakAuras.IsWrathClassic() and 99 or WOW_PROJECT_ID)
 end
 
 WeakAuras.prettyPrint = function(...)
@@ -142,11 +142,12 @@ end
 local intendedWoWProjectName = {
   [WOW_PROJECT_MAINLINE] = "Retail",
   [WOW_PROJECT_CLASSIC] = "Classic",
-  [WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5] = "The Burning Crusade Classic"
-} -- TODO HANDLE WRATH
+  [WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5] = "The Burning Crusade Classic",
+  [99] = "Wrath Of The Lich King Classic"
+}
 
 Private.wrongTargetMessage = "This version of WeakAuras was packaged for World of Warcraft " .. intendedWoWProjectName[intendedWoWProject] ..
-                              ". Please install the " .. intendedWoWProjectName[WOW_PROJECT_ID] ..
+                              ". Please install the " .. intendedWoWProjectName[WeakAuras.IsWrathClassic() and 99 or WOW_PROJECT_ID] ..
                               " version instead.\nIf you are using an addon manager, then" ..
                               " contact their support for further assistance and reinstall WeakAuras manually."
 
