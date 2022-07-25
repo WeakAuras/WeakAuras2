@@ -756,8 +756,8 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
     if (updateTriggerState) then
       Private.UpdatedTriggerState(id);
     end
-    Private.StartProfileAura(id);
-    Private.ActivateAuraEnvironment(id);
+    Private.StopProfileAura(id);
+    Private.ActivateAuraEnvironment(nil);
   end
 end
 
@@ -783,8 +783,8 @@ function WeakAuras.ScanEventsInternalToCustom(id, triggernum)
   if (updateTriggerState) then
     Private.UpdatedTriggerState(id)
   end
-  Private.StartProfileAura(id)
-  Private.ActivateAuraEnvironment(id)
+  Private.StopProfileAura(id)
+  Private.ActivateAuraEnvironment(nil)
 end
 
 local function AddFakeTime(state)
