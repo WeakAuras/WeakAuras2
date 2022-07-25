@@ -1,5 +1,5 @@
 local WeakAuras = WeakAuras
-if not WeakAuras.IsBCC() then return end
+if not WeakAuras.IsWrathClassic() then return end
 local L = WeakAuras.L
 local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
 

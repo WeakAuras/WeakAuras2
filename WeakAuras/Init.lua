@@ -44,23 +44,34 @@ function WeakAuras.IsClassic()
 end
 
 function WeakAuras.IsBCC()
-  return WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+  return WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC and not WeakAuras.IsWrathClassic()
 end
 
 function WeakAuras.IsWrathClassic()
-  --return WOW_PROJECT_ID == WOW_PROJECT_WRATH_CLASSIC
-    return WeakAuras.BuildInfo >= 30400 and WeakAuras.BuildInfo < 40000 -- TODO: Change to WOW_PROJECT_ID once wrath project id available
+    return WeakAuras.BuildInfo >= 30400 and WeakAuras.BuildInfo < 40000
 end
 
 function WeakAuras.IsRetail()
   return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
 end
 
-function WeakAuras.IsBCCAndNotWrath()
-  return WeakAuras.IsBCC() and not WeakAuras.IsWrathClassic()
+function WeakAuras.IsClassicOrBCC()
+  return WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
 end
 
-function WeakAuras.IsRetailOrWrath()
+function WeakAuras.IsClassicOrBCCOrWrath()
+  return WeakAuras.IsClassic() or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+end
+
+function WeakAuras.IsBCCOrWrath()
+  return WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+end
+
+function WeakAuras.IsBCCOrWrathOrRetail()
+  return WeakAuras.IsRetail() or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+end
+
+function WeakAuras.IsWrathOrRetail()
   return WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()
 end
 
@@ -131,8 +142,8 @@ end
 local intendedWoWProjectName = {
   [WOW_PROJECT_MAINLINE] = "Retail",
   [WOW_PROJECT_CLASSIC] = "Classic",
-  [WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5] = "The Burning Crusade Classic" -- TODO: Remove when every flavor build has the constant
-}
+  [WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5] = "The Burning Crusade Classic"
+} -- TODO HANDLE WRATH
 
 Private.wrongTargetMessage = "This version of WeakAuras was packaged for World of Warcraft " .. intendedWoWProjectName[intendedWoWProject] ..
                               ". Please install the " .. intendedWoWProjectName[WOW_PROJECT_ID] ..
