@@ -764,7 +764,6 @@ end
 function WeakAuras.ScanEventsInternalToCustom(id, triggernum)
   Private.StartProfileAura(id);
   Private.ActivateAuraEnvironment(id);
-  local data = events and events[id] and events[id][triggernum]
   local updateTriggerState = false
   if trigger_to_custom_events[id] and trigger_to_custom_events[id][triggernum] then
     for requestingTrigger, bool in pairs(trigger_to_custom_events[id][triggernum]) do
