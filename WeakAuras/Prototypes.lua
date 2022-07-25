@@ -90,7 +90,7 @@ if WeakAuras.IsClassic() then
   LibClassicCasterino = LibStub("LibClassicCasterino")
 end
 
-if WeakAuras.IsRetail() or WeakAuras.IsBCC() then
+if WeakAuras.IsBCCOrWrathOrRetail() then
   WeakAuras.UnitCastingInfo = UnitCastingInfo
 else
   WeakAuras.UnitCastingInfo = function(unit)
@@ -102,7 +102,7 @@ else
   end
 end
 
-if WeakAuras.IsRetail() or WeakAuras.IsBCC() then
+if WeakAuras.IsBCCOrWrathOrRetail() then
   WeakAuras.UnitChannelInfo = UnitChannelInfo
 else
   WeakAuras.UnitChannelInfo = function(unit)
@@ -118,7 +118,7 @@ local constants = {
   nameRealmFilterDesc = L[" Filter formats: 'Name', 'Name-Realm', '-Realm'. \n\nSupports multiple entries, separated by commas\nCan use \\ to escape -."],
 }
 
-if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
+if WeakAuras.IsClassicOrBCCOrWrath() then
   WeakAuras.UnitRaidRole = function(unit)
     local raidID = UnitInRaid(unit)
     if raidID then
@@ -246,228 +246,226 @@ function Private.InitializeEncounterAndZoneLists()
       }
     }
   elseif WeakAuras.IsBCC() then
-    if not WeakAuras.IsWrathClassic() then
-      raids = {
+    raids = {
+      {
+        L["Vault of Archavon"],
         {
-          L["Karazhan"],
-          {
-            { L["Attumen the Huntsman"], 652 },
-            { L["Moroes"], 653 },
-            { L["Maiden of Virtue"], 654 },
-            { L["Opera Hall"], 655 },
-            { L["The Curator"], 656 },
-            { L["Terestian Illhoof"], 657 },
-            { L["Shade of Aran"], 658 },
-            { L["Netherspite"], 659 },
-            { L["Chess Event"], 660 },
-            { L["Prince Malchezaar"], 661 },
-            { L["Nightbane"], 662 },
-          }
-        },
+          { L["Archavon the Stone Watcher"], 1126 },
+          { L["Emalon the Storm Watcher"], 1127 },
+          { L["Koralon the Flame Watcher"], 1128 },
+          { L["Toravon the Ice Watcher"], 1129 },
+        }
+      },
+      {
+        L["Naxxramas"],
         {
-          L["Gruul's Lair"],
-          {
-            { L["High King Maulgar"], 649 },
-            { L["Gruul the Dragonkiller"], 650 },
-          }
-        },
+          -- The Arachnid Quarter
+          { L["Anub'Rekhan"], 1107 },
+          { L["Grand Widow Faerlina"], 1110 },
+          { L["Maexxna"], 1116 },
+          -- The Plague Quarter
+          { L["Noth the Plaguebringer"], 1117 },
+          { L["Heigan the Unclean"], 1112 },
+          { L["Loatheb"], 1115 },
+          -- The Military Quarter
+          { L["Instructor Razuvious"], 1113 },
+          { L["Gothik the Harvester"], 1109 },
+          { L["The Four Horsemen"], 1121 },
+          -- The Construct Quarter
+          { L["Patchwerk"], 1118 },
+          { L["Grobbulus"], 1111 },
+          { L["Gluth"], 1108 },
+          { L["Thaddius"], 1120 },
+          -- Frostwyrm Lair
+          { L["Sapphiron"], 1119 },
+          { L["Kel'Thuzad"], 1114 }
+        }
+      },
+      {
+        L["The Obsidian Sanctum"],
         {
-          L["Magtheridon's Lair"],
-          {
-            { L["Magtheridon"], 651 },
-          }
-        },
+          { L["Tenebron"], 1092 },
+          { L["Shadron"], 1091 },
+          { L["Vesperon"], 1093 },
+          { L["Sartharion"], 1090 },
+        }
+      },
+      {
+        L["The Eye of Eternity"],
         {
-          L["Coilfang: Serpentshrine Cavern"],
-          {
-            { L["Hydross the Unstable"], 623 },
-            { L["The Lurker Below"], 624 },
-            { L["Leotheras the Blind"], 625 },
-            { L["Fathom-Lord Karathress"], 626 },
-            { L["Morogrim Tidewalker"], 627 },
-            { L["Lady Vashj"], 628 },
-          }
-        },
+          { L["Malygos"], 1094 },
+        }
+      },
+      {
+        L["Ulduar"],
         {
-          L["Tempest Keep"],
-          {
-            { L["Al'ar"], 730 },
-            { L["Void Reaver"], 731 },
-            { L["High Astromancer Solarian"], 732 },
-            { L["Kael'thas Sunstrider"], 733 },
-          }
-        },
+          -- The Siege of Ulduar
+          { L["Flame Leviathan"], 1132 },
+          { L["Ignis the Furnace Master"], 1136 },
+          { L["Razorscale"], 1139 },
+          { L["XT-002 Deconstructor"], 1142 },
+          -- The Antechamber of Ulduar
+          { L["Assembly of Iron"], 1140 },
+          { L["Kologarn"], 1137 },
+          { L["Auriaya"], 1131 },
+          -- The Keepers of Ulduar
+          { L["Freya"], 1133 },
+          { L["Hodir"], 1135 },
+          { L["Mimiron"], 1138 },
+          { L["Thorim"], 1141 },
+          -- The Descent into Madness
+          { L["General Vezax"], 1134 },
+          { L["Yogg-Saron"], 1143 },
+          -- Celestial Planetarium
+          { L["Algalon the Observer"], 1130 },
+        }
+      },
+      {
+        L["Trial of the Crusader"],
         {
-          L["The Battle for Mount Hyjal"],
-          {
-            { L["Rage Winterchill"], 618 },
-            { L["Anetheron"], 619 },
-            { L["Kaz'rogal"], 620 },
-            { L["Azgalor"], 621 },
-            { L["Archimonde"], 622 },
-          }
-        },
+          { L["Northrend Beasts"], 1088 },
+          { L["Lord Jaraxxus"], 1087 },
+          { L["Faction Champions"], 1086 },
+          { L["Val'kyr Twins"], 1089 },
+          { L["Anub'arak"], 1085 },
+        }
+      },
+      {
+        L["Onyxia's Lair"],
         {
-          L["Black Temple"],
-          {
-            { L["High Warlord Naj'entus"], 601 },
-            { L["Supremus"], 602 },
-            { L["Shade of Akama"], 603 },
-            { L["Teron Gorefiend"], 604 },
-            { L["Gurtogg Bloodboil"], 605 },
-            { L["Reliquary of Souls"], 606 },
-            { L["Mother Shahraz"], 607 },
-            { L["The Illidari Council"], 608 },
-            { L["Illidan Stormrage"], 609 },
-          }
-        },
+          { L["Onyxia"], 1084 },
+        }
+      },
+      {
+        L["Icecrown Citadel"],
         {
-          L["Zul'Aman"],
-          {
-            { L["Akil'zon"], 1189 },
-            { L["Nalorakk"], 1190 },
-            { L["Jan'alai"], 1191 },
-            { L["Halazzi"], 1192 },
-            { L["Hex Lord Malacrass"], 1193 },
-            { L["Daakara"], 1194 },
-          }
-        },
+          -- The Lower Spire
+          { L["Lord Marrowgar"], 1101 },
+          { L["Lady Deathwhisper"], 1100 },
+          { L["Gunship Battle"], 1099 },
+          { L["Deathbringer Saurfang"], 1096 },
+          -- The Plagueworks
+          { L["Festergut"], 1097 },
+          { L["Rotface"], 1104 },
+          { L["Professor Putricide"], 1102 },
+          -- The Crimson Hall
+          { L["Blood Prince Council"], 1095 },
+          { L["Blood-Queen Lana'thel"], 1103 },
+          -- The Frostwing Halls
+          { L["Valithria Dreamwalker"], 1098 },
+          { L["Sindragosa"], 1105 },
+          -- The Frozen Throne
+          { L["The Lich King"], 1106 },
+        }
+      },
+      {
+        L["The Ruby Sanctum"],
         {
-          L["The Sunwell Plateau"],
-          {
-            { L["Kalecgos"], 724 },
-            { L["Brutallus"], 725 },
-            { L["Felmyst"], 726 },
-            { L["Eredar Twins"], 727 },
-            { L["M'uru"], 728 },
-            { L["Kil'jaeden"], 729 },
-          }
-        },
-      }
-    else
-      raids = {
+          { L["Baltharus the Warborn"], 1147 },
+          { L["General Zarithrian"], 1148 },
+          { L["Saviana Ragefire"], 1149 },
+          { L["Halion"], 1150 },
+        }
+      },
+    }
+  elseif WeakAuras.IsWrathClassic() then
+    raids = {
+      {
+        L["Karazhan"],
         {
-          L["Vault of Archavon"],
-          {
-            { L["Archavon the Stone Watcher"], 1126 },
-            { L["Emalon the Storm Watcher"], 1127 },
-            { L["Koralon the Flame Watcher"], 1128 },
-            { L["Toravon the Ice Watcher"], 1129 },
-          }
-        },
+          { L["Attumen the Huntsman"], 652 },
+          { L["Moroes"], 653 },
+          { L["Maiden of Virtue"], 654 },
+          { L["Opera Hall"], 655 },
+          { L["The Curator"], 656 },
+          { L["Terestian Illhoof"], 657 },
+          { L["Shade of Aran"], 658 },
+          { L["Netherspite"], 659 },
+          { L["Chess Event"], 660 },
+          { L["Prince Malchezaar"], 661 },
+          { L["Nightbane"], 662 },
+        }
+      },
+      {
+        L["Gruul's Lair"],
         {
-          L["Naxxramas"],
-          {
-            -- The Arachnid Quarter
-            { L["Anub'Rekhan"], 1107 },
-            { L["Grand Widow Faerlina"], 1110 },
-            { L["Maexxna"], 1116 },
-            -- The Plague Quarter
-            { L["Noth the Plaguebringer"], 1117 },
-            { L["Heigan the Unclean"], 1112 },
-            { L["Loatheb"], 1115 },
-            -- The Military Quarter
-            { L["Instructor Razuvious"], 1113 },
-            { L["Gothik the Harvester"], 1109 },
-            { L["The Four Horsemen"], 1121 },
-            -- The Construct Quarter
-            { L["Patchwerk"], 1118 },
-            { L["Grobbulus"], 1111 },
-            { L["Gluth"], 1108 },
-            { L["Thaddius"], 1120 },
-            -- Frostwyrm Lair
-            { L["Sapphiron"], 1119 },
-            { L["Kel'Thuzad"], 1114 }
-          }
-        },
+          { L["High King Maulgar"], 649 },
+          { L["Gruul the Dragonkiller"], 650 },
+        }
+      },
+      {
+        L["Magtheridon's Lair"],
         {
-          L["The Obsidian Sanctum"],
-          {
-            { L["Tenebron"], 1092 },
-            { L["Shadron"], 1091 },
-            { L["Vesperon"], 1093 },
-            { L["Sartharion"], 1090 },
-          }
-        },
+          { L["Magtheridon"], 651 },
+        }
+      },
+      {
+        L["Coilfang: Serpentshrine Cavern"],
         {
-          L["The Eye of Eternity"],
-          {
-            { L["Malygos"], 1094 },
-          }
-        },
+          { L["Hydross the Unstable"], 623 },
+          { L["The Lurker Below"], 624 },
+          { L["Leotheras the Blind"], 625 },
+          { L["Fathom-Lord Karathress"], 626 },
+          { L["Morogrim Tidewalker"], 627 },
+          { L["Lady Vashj"], 628 },
+        }
+      },
+      {
+        L["Tempest Keep"],
         {
-          L["Ulduar"],
-          {
-            -- The Siege of Ulduar
-            { L["Flame Leviathan"], 1132 },
-            { L["Ignis the Furnace Master"], 1136 },
-            { L["Razorscale"], 1139 },
-            { L["XT-002 Deconstructor"], 1142 },
-            -- The Antechamber of Ulduar
-            { L["Assembly of Iron"], 1140 },
-            { L["Kologarn"], 1137 },
-            { L["Auriaya"], 1131 },
-            -- The Keepers of Ulduar
-            { L["Freya"], 1133 },
-            { L["Hodir"], 1135 },
-            { L["Mimiron"], 1138 },
-            { L["Thorim"], 1141 },
-            -- The Descent into Madness
-            { L["General Vezax"], 1134 },
-            { L["Yogg-Saron"], 1143 },
-            -- Celestial Planetarium
-            { L["Algalon the Observer"], 1130 },
-          }
-        },
+          { L["Al'ar"], 730 },
+          { L["Void Reaver"], 731 },
+          { L["High Astromancer Solarian"], 732 },
+          { L["Kael'thas Sunstrider"], 733 },
+        }
+      },
+      {
+        L["The Battle for Mount Hyjal"],
         {
-          L["Trial of the Crusader"],
-          {
-            { L["Northrend Beasts"], 1088 },
-            { L["Lord Jaraxxus"], 1087 },
-            { L["Faction Champions"], 1086 },
-            { L["Val'kyr Twins"], 1089 },
-            { L["Anub'arak"], 1085 },
-          }
-        },
+          { L["Rage Winterchill"], 618 },
+          { L["Anetheron"], 619 },
+          { L["Kaz'rogal"], 620 },
+          { L["Azgalor"], 621 },
+          { L["Archimonde"], 622 },
+        }
+      },
+      {
+        L["Black Temple"],
         {
-          L["Onyxia's Lair"],
-          {
-            { L["Onyxia"], 1084 },
-          }
-        },
+          { L["High Warlord Naj'entus"], 601 },
+          { L["Supremus"], 602 },
+          { L["Shade of Akama"], 603 },
+          { L["Teron Gorefiend"], 604 },
+          { L["Gurtogg Bloodboil"], 605 },
+          { L["Reliquary of Souls"], 606 },
+          { L["Mother Shahraz"], 607 },
+          { L["The Illidari Council"], 608 },
+          { L["Illidan Stormrage"], 609 },
+        }
+      },
+      {
+        L["Zul'Aman"],
         {
-          L["Icecrown Citadel"],
-          {
-            -- The Lower Spire
-            { L["Lord Marrowgar"], 1101 },
-            { L["Lady Deathwhisper"], 1100 },
-            { L["Gunship Battle"], 1099 },
-            { L["Deathbringer Saurfang"], 1096 },
-            -- The Plagueworks
-            { L["Festergut"], 1097 },
-            { L["Rotface"], 1104 },
-            { L["Professor Putricide"], 1102 },
-            -- The Crimson Hall
-            { L["Blood Prince Council"], 1095 },
-            { L["Blood-Queen Lana'thel"], 1103 },
-            -- The Frostwing Halls
-            { L["Valithria Dreamwalker"], 1098 },
-            { L["Sindragosa"], 1105 },
-            -- The Frozen Throne
-            { L["The Lich King"], 1106 },
-          }
-        },
+          { L["Akil'zon"], 1189 },
+          { L["Nalorakk"], 1190 },
+          { L["Jan'alai"], 1191 },
+          { L["Halazzi"], 1192 },
+          { L["Hex Lord Malacrass"], 1193 },
+          { L["Daakara"], 1194 },
+        }
+      },
+      {
+        L["The Sunwell Plateau"],
         {
-          L["The Ruby Sanctum"],
-          {
-            { L["Baltharus the Warborn"], 1147 },
-            { L["General Zarithrian"], 1148 },
-            { L["Saviana Ragefire"], 1149 },
-            { L["Halion"], 1150 },
-          }
-        },
-      }
-    end
+          { L["Kalecgos"], 724 },
+          { L["Brutallus"], 725 },
+          { L["Felmyst"], 726 },
+          { L["Eredar Twins"], 727 },
+          { L["M'uru"], 728 },
+          { L["Kil'jaeden"], 729 },
+        }
+      },
+    }
   end
   if raids then -- classic / bcc / wrath
     for _, raid in ipairs(raids) do
@@ -1029,7 +1027,7 @@ for classID = 1, 20 do -- GetNumClasses not supported by wow classic
   end
 end
 
-if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
+if WeakAuras.IsClassicOrBCCOrWrath() then
   function WeakAuras.CheckTalentByIndex(index, extraOption)
     local tab = ceil(index / MAX_NUM_TALENTS)
     local num_talent = (index - 1) % MAX_NUM_TALENTS + 1
@@ -1353,7 +1351,7 @@ local function valuesForTalentFunction(trigger)
     if(single_class and Private.talent_types_specific[single_class]
       and single_spec and Private.talent_types_specific[single_class][single_spec]) then
       return Private.talent_types_specific[single_class][single_spec];
-    elseif((WeakAuras.IsClassic() or WeakAuras.IsBCC()) and single_class and Private.talent_types_specific[single_class]
+    elseif(WeakAuras.IsClassicOrBCCOrWrath() and single_class and Private.talent_types_specific[single_class]
       and Private.talent_types_specific[single_class]) then
       return Private.talent_types_specific[single_class];
     else
@@ -1422,12 +1420,12 @@ Private.load_prototype = {
     },
     {
       name = "vehicle",
-      display = (WeakAuras.IsClassic() or WeakAuras.IsBCCAndNotWrath()) and L["On Taxi"] or L["In Vehicle"],
+      display = (WeakAuras.IsClassicOrBCC()) and L["On Taxi"] or L["In Vehicle"],
       type = "tristate",
       init = "arg",
       width = WeakAuras.normalWidth,
       optional = true,
-      events = (WeakAuras.IsClassic() or WeakAuras.IsBCCAndNotWrath()) and {"UNIT_FLAGS"}
+      events = (WeakAuras.IsClassicOrBCC()) and {"UNIT_FLAGS"}
                or {"VEHICLE_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "UPDATE_OVERRIDE_ACTIONBAR", "UNIT_FLAGS"}
     },
     {
@@ -1437,8 +1435,8 @@ Private.load_prototype = {
       init = "arg",
       width = WeakAuras.normalWidth,
       optional = true,
-      enable = WeakAuras.IsRetailOrWrath(),
-      hidden = not WeakAuras.IsRetailOrWrath(),
+      enable = WeakAuras.IsWrathOrRetail(),
+      hidden = not WeakAuras.IsWrathOrRetail(),
       events = {"VEHICLE_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "UPDATE_OVERRIDE_ACTIONBAR", "UPDATE_VEHICLE_ACTIONBAR"}
     },
     {
@@ -1795,8 +1793,8 @@ Private.load_prototype = {
       type = "multiselect",
       values = "role_types",
       init = "arg",
-      enable = WeakAuras.IsRetail() or WeakAuras.IsWrathClassic(),
-      hidden = not (WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()),
+      enable = WeakAuras.IsWrathOrRetail(),
+      hidden = not WeakAuras.IsWrathOrRetail(),
       events = {"PLAYER_ROLES_ASSIGNED", "PLAYER_TALENT_UPDATE"}
     },
     {
@@ -1805,7 +1803,7 @@ Private.load_prototype = {
       type = "multiselect",
       values = "raid_role_types",
       init = "arg",
-      enable = WeakAuras.IsClassic() or WeakAuras.IsBCC(),
+      enable = WeakAuras.IsClassicOrBCCOrWrath(),
       hidden = WeakAuras.IsRetail(),
       events = {"PLAYER_ROLES_ASSIGNED"}
     },
@@ -2146,7 +2144,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return (WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()) and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsWrathOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
@@ -2158,7 +2156,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return (WeakAuras.IsClassic() or WeakAuras.IsBCC()) and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsClassicOrBCCOrWrath() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
@@ -2568,7 +2566,7 @@ Private.event_prototypes = {
     events = function(trigger)
       local unit = trigger.unit
       local result = {}
-      if WeakAuras.IsBCC() or WeakAuras.IsClassic() then
+      if WeakAuras.IsClassicOrBCCOrWrath() then
         AddUnitEventForEvents(result, unit, "UNIT_HEALTH_FREQUENT")
       else
         AddUnitEventForEvents(result, unit, "UNIT_HEALTH")
@@ -2805,7 +2803,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return (WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()) and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsWrathOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
@@ -2817,7 +2815,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return (WeakAuras.IsClassic() or WeakAuras.IsBCC()) and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsClassicOrBCCOrWrath() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
@@ -3293,7 +3291,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return (WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()) and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsWrathOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
@@ -3583,7 +3581,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return (WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()) and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsWrathOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
@@ -6121,7 +6119,7 @@ Private.event_prototypes = {
     type = "unit",
     events = function()
       local events
-      if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
+      if WeakAuras.IsClassicOrBCCOrWrath() then
         events = {
           "CHARACTER_POINTS_CHANGED",
           "SPELLS_CHANGED"
@@ -6141,7 +6139,7 @@ Private.event_prototypes = {
         -- Single selection
         local index = trigger.talent and trigger.talent.single;
         local tier, column
-        if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
+        if WeakAuras.IsClassicOrBCCOrWrath() then
           tier = index and ceil(index / MAX_NUM_TALENTS)
           column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
         else
@@ -6153,7 +6151,7 @@ Private.event_prototypes = {
           local tier = %s;
           local column = %s;
         ]]
-        if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
+        if WeakAuras.IsClassicOrBCCOrWrath() then
           ret = ret .. [[
           local active, _, rank
           _, _, _, _, rank  = GetTalentInfo(tier, column)
@@ -6191,7 +6189,7 @@ Private.event_prototypes = {
           ]]
           for index in pairs(trigger.talent.multi) do
             local tier, column
-            if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
+            if WeakAuras.IsClassicOrBCCOrWrath() then
               tier = index and ceil(index / MAX_NUM_TALENTS)
               column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
             else
@@ -6203,7 +6201,7 @@ Private.event_prototypes = {
                 tier = %s
                 column = %s
             ]]
-            if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
+            if WeakAuras.IsClassicOrBCCOrWrath() then
               ret2 = ret2 .. [[
                 local name, icon, _, _, rank  = GetTalentInfo(tier, column)
                 if rank > 0 then
@@ -7563,6 +7561,8 @@ Private.event_prototypes = {
             return L["Set IDs can be found on websites such as classic.wowhead.com/item-sets"]
           elseif WeakAuras.IsBCC() then
             return L["Set IDs can be found on websites such as tbc.wowhead.com/item-sets"]
+          elseif WeakAuras.IsWrath() then
+            return L["Set IDs can be found on websites such as wowhead.com/wotlk/item-sets"]
           end
         end
       },
@@ -8072,10 +8072,10 @@ Private.event_prototypes = {
         name = "interruptible",
         display = L["Interruptible"],
         type = "tristate",
-        enable = function(trigger) return not WeakAuras.IsBCC() and not trigger.use_inverse end,
+        enable = function(trigger) return not WeakAuras.IsBCCOrWrath() and not trigger.use_inverse end,
         store = true,
         conditionType = "bool",
-        hidden = WeakAuras.IsBCC()
+        hidden = WeakAuras.IsBCCOrWrath()
       },
       {
         name = "remaining",
@@ -8164,7 +8164,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return (WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()) and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsWrathOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
                  and not trigger.use_inverse
         end
       },
@@ -8428,7 +8428,7 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitStat('player', LE_UNIT_STAT_STRENGTH)",
         store = true,
-        enable = WeakAuras.IsClassic() or WeakAuras.IsBCC(),
+        enable = WeakAuras.IsClassicOrBCCOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8438,7 +8438,7 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitStat('player', LE_UNIT_STAT_AGILITY)",
         store = true,
-        enable = WeakAuras.IsClassic() or WeakAuras.IsBCC(),
+        enable = WeakAuras.IsClassicOrBCCOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8448,7 +8448,7 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitStat('player', LE_UNIT_STAT_INTELLECT)",
         store = true,
-        enable = WeakAuras.IsClassic() or WeakAuras.IsBCC(),
+        enable = WeakAuras.IsClassicOrBCCOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8458,7 +8458,7 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitStat('player', 5)",
         store = true,
-        enable = WeakAuras.IsClassic() or WeakAuras.IsBCC(),
+        enable = WeakAuras.IsClassicOrBCCOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8476,9 +8476,9 @@ Private.event_prototypes = {
         type = "number",
         init = "max(GetCombatRating(CR_CRIT_MELEE), GetCombatRating(CR_CRIT_RANGED), GetCombatRating(CR_CRIT_SPELL))",
         store = true,
-        enable = WeakAuras.IsRetail() or WeakAuras.IsBCC(),
+        enable = WeakAuras.IsBCCOrWrathOrRetail(),
         conditionType = "number",
-        hidden = not (WeakAuras.IsRetail() or WeakAuras.IsBCC())
+        hidden = not WeakAuras.IsBCCOrWrathOrRetail()
       },
       {
         name = "criticalpercent",
@@ -8494,9 +8494,9 @@ Private.event_prototypes = {
         type = "number",
         init = "max(GetCombatRating(CR_HIT_MELEE), GetCombatRating(CR_HIT_RANGED), GetCombatRating(CR_HIT_SPELL))",
         store = true,
-        enable = WeakAuras.IsBCC(),
+        enable = WeakAuras.IsBCCOrWrath(),
         conditionType = "number",
-        hidden = not WeakAuras.IsBCC()
+        hidden = not WeakAuras.IsBCCOrWrath()
       },
       {
         name = "hitpercent",
@@ -8505,8 +8505,8 @@ Private.event_prototypes = {
         init = "WeakAuras.GetHitChance()",
         store = true,
         conditionType = "number",
-        enable = WeakAuras.IsBCC(),
-        hidden = not WeakAuras.IsBCC()
+        enable = WeakAuras.IsBCCOrWrath(),
+        hidden = not WeakAuras.IsBCCOrWrath()
       },
       {
         name = "hasterating",
@@ -8514,9 +8514,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_HASTE_SPELL)",
         store = true,
-        enable = WeakAuras.IsRetail() or WeakAuras.IsBCC(),
+        enable = WeakAuras.IsBCCOrWrathOrRetail(),
         conditionType = "number",
-        hidden = not (WeakAuras.IsRetail() or WeakAuras.IsBCC())
+        hidden = not WeakAuras.IsBCCOrWrathOrRetail()
       },
       {
         name = "hastepercent",
@@ -8580,7 +8580,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 1))",
         store = true,
-        enable = WeakAuras.IsClassic() or WeakAuras.IsBCC(),
+        enable = WeakAuras.IsClassicOrBCCOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8590,7 +8590,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 2))",
         store = true,
-        enable = WeakAuras.IsClassic() or WeakAuras.IsBCC(),
+        enable = WeakAuras.IsClassicOrBCCOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8600,7 +8600,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 3))",
         store = true,
-        enable = WeakAuras.IsClassic() or WeakAuras.IsBCC(),
+        enable = WeakAuras.IsClassicOrBCCOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8610,7 +8610,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 4))",
         store = true,
-        enable = WeakAuras.IsClassic() or WeakAuras.IsBCC(),
+        enable = WeakAuras.IsClassicOrBCCOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8620,7 +8620,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 5))",
         store = true,
-        enable = WeakAuras.IsClassic() or WeakAuras.IsBCC(),
+        enable = WeakAuras.IsClassicOrBCCOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8630,7 +8630,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 6))",
         store = true,
-        enable = WeakAuras.IsClassic() or WeakAuras.IsBCC(),
+        enable = WeakAuras.IsClassicOrBCCOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8713,9 +8713,9 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitDefense('player') + select(2, UnitDefense('player'))",
         store = true,
-        enable = WeakAuras.IsBCC(),
+        enable = WeakAuras.IsBCCOrWrath(),
         conditionType = "number",
-        hidden = not WeakAuras.IsBCC()
+        hidden = not WeakAuras.IsBCCOrWrath()
       },
       {
         name = "dodgerating",
@@ -8723,9 +8723,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_DODGE)",
         store = true,
-        enable = WeakAuras.IsRetail() or WeakAuras.IsBCC(),
+        enable = WeakAuras.IsBCCOrWrathOrRetail(),
         conditionType = "number",
-        hidden = not (WeakAuras.IsRetail() or WeakAuras.IsBCC())
+        hidden = not WeakAuras.IsBCCOrWrathOrRetail()
       },
       {
         name = "dodgepercent",
@@ -8741,9 +8741,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_PARRY)",
         store = true,
-        enable = WeakAuras.IsRetail() or WeakAuras.IsBCC(),
+        enable = WeakAuras.IsBCCOrWrathOrRetail(),
         conditionType = "number",
-        hidden = not (WeakAuras.IsRetail() or WeakAuras.IsBCC())
+        hidden = not WeakAuras.IsBCCOrWrathOrRetail()
       },
       {
         name = "parrypercent",
@@ -8793,9 +8793,9 @@ Private.event_prototypes = {
         type = "number",
         init = "PaperDollFrame_GetArmorReduction(select(2, UnitArmor('player')), UnitEffectiveLevel and UnitEffectiveLevel('player') or UnitLevel('player'))",
         store = true,
-        enable = WeakAuras.IsRetail() or WeakAuras.IsBCC(),
+        enable = WeakAuras.IsBCCOrWrathOrRetail(),
         conditionType = "number",
-        hidden = not (WeakAuras.IsRetail() or WeakAuras.IsBCC())
+        hidden = not WeakAuras.IsBCCOrWrathOrRetail()
       },
       {
         name = "armortargetpercent",
@@ -8838,7 +8838,7 @@ Private.event_prototypes = {
       local unit_events = {}
       local pet_unit_events = {}
       if trigger.use_vehicle ~= nil then
-        if WeakAuras.IsClassic() or WeakAuras.IsBCCAndNotWrath() then
+        if WeakAuras.IsClassicOrBCC() then
           tinsert(unit_events, "UNIT_FLAGS")
         else
           tinsert(unit_events, "UNIT_ENTERED_VEHICLE")
@@ -8926,9 +8926,9 @@ Private.event_prototypes = {
       },
       {
         name = "vehicle",
-        display = not WeakAuras.IsRetailOrWrath() and L["On Taxi"] or L["In Vehicle"],
+        display = not WeakAuras.IsWrathOrRetail() and L["On Taxi"] or L["In Vehicle"],
         type = "tristate",
-        init = not WeakAuras.IsRetailOrWrath() and "UnitOnTaxi('player')" or "UnitInVehicle('player')",
+        init = not WeakAuras.IsWrathOrRetail() and "UnitOnTaxi('player')" or "UnitInVehicle('player')",
       },
       {
         name = "resting",
@@ -9307,7 +9307,7 @@ Private.event_prototypes = {
   },
 };
 
-if WeakAuras.IsClassic() or WeakAuras.IsBCC() then
+if WeakAuras.IsClassicOrBCCOrWrath() then
   if not UnitDetailedThreatSituation then
     Private.event_prototypes["Threat Situation"] = nil
   end
