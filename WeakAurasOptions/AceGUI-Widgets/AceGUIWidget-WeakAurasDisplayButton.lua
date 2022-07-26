@@ -1430,7 +1430,7 @@ local methods = {
   ["NeverLoaded"] = function(self)
     self.loaded.title = L["Never Loaded"];
     self.loaded.desc = L["This display is set to never load"];
-    self.loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Down.blp");
+    self.loaded:SetNormalTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\WA_loaded_never.tga");
   end,
   ["Pick"] = function(self)
     self.frame:LockHighlight();
