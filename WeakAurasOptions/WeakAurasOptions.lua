@@ -1092,7 +1092,9 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
   local visible = {}
 
   for id, child in pairs(displayButtons) do
-    if(OptionsPrivate.Private.loaded[id]) then
+    if child.data.load.use_never then
+      child:NeverLoaded();
+    elseif(OptionsPrivate.Private.loaded[id]) then
       child:EnableLoaded();
     else
       child:DisableLoaded();

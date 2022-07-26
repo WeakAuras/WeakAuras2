@@ -1427,6 +1427,11 @@ local methods = {
     self.loaded.desc = L["This display is currently loaded"];
     self.loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Up.blp");
   end,
+  ["NeverLoaded"] = function(self)
+    self.loaded.title = L["Never Loaded"];
+    self.loaded.desc = L["This display is set to never load"];
+    self.loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GroupLoot-Pass-Down.blp");
+  end,
   ["Pick"] = function(self)
     self.frame:LockHighlight();
     self:PriorityShow(1);
