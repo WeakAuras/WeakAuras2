@@ -26,4 +26,7 @@ ModelPaths.lua
 # #@version-bcc@
 # ModelPathsBCC.lua
 # #@end-version-bcc@
+# #@version-wrath@
+# ModelPathsBCC.lua
+# #@end-version-wrath@
 #@end-non-version-retail@
