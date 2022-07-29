@@ -2110,6 +2110,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
             type = "execute",
             name = L["Delete Entry"],
             order = order(),
+            confirm = true,
             func = function()
               for id, optionData in pairs(option.references) do
                 local childOption = optionData.options[optionData.index]
