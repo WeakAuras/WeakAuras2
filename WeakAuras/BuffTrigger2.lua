@@ -238,7 +238,6 @@ local function ReferenceMatchDataMulti(matchData, id, triggernum, destGUID)
     local matchDataByTriggerBase = GetOrCreateSubTable(matchDataByTrigger, id, triggernum, destGUID)
     tinsert(matchDataByTriggerBase, matchData)
   end
-
   matchDataChanged[id] = matchDataChanged[id] or {}
   matchDataChanged[id][triggernum] = true
 end
@@ -2794,7 +2793,9 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
   ret = ret .. "|cFFFF0000%".. triggernum .. ".debuffClassIcon|r - " .. L["Debuff Class Icon"] .. "\n"
   ret = ret .. "|cFFFF0000%".. triggernum .. ".unitCaster|r - " .. L["Caster Unit"] .. "\n"
   ret = ret .. "|cFFFF0000%".. triggernum .. ".casterName|r - " .. L["Caster Name"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".unit|r - " .. L["Unit"] .. "\n"
+  if trigger.unit ~= "multi" then
+    ret = ret .. "|cFFFF0000%".. triggernum .. ".unit|r - " .. L["Unit"] .. "\n"
+  end
   ret = ret .. "|cFFFF0000%".. triggernum .. ".unitName|r - " .. L["Unit Name"] .. "\n"
   ret = ret .. "|cFFFF0000%".. triggernum .. ".matchCount|r - " .. L["Match Count"] .. "\n"
   ret = ret .. "|cFFFF0000%".. triggernum .. ".matchCountPerUnit|r - " .. L["Match Count per Unit"] .. "\n"
@@ -3358,17 +3359,11 @@ local function AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, de
     changed = true
   end
 
-  if (matchData.unit ~= unit) then
-    matchData.unit = unit
-    changed = true
-  end
-
   local unitName = GetUnitName(unit, false) or ""
   if matchData.unitName ~= unitName then
     matchData.unitName = unitName
     changed = true
   end
-
 
   if matchData.spellId ~= spellId then
     matchData.spellId = name
