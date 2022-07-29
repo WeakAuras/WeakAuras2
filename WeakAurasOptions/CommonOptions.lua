@@ -1051,7 +1051,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
         return data.anchorFrameParent or data.anchorFrameParent == nil;
       end,
       hidden = function()
-        return (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE" or IsParentDynamicGroup());
+        return not IsGroupByFrame() and (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE" or IsParentDynamicGroup());
       end,
     },
     anchorFrameSpaceOne = {
@@ -1061,7 +1061,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       order = 72,
       image = function() return "", 0, 0 end,
       hidden = function()
-        return IsParentDynamicGroup() or IsGroupByFrame() or not (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE")
+        return IsParentDynamicGroup() or not (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE")
       end,
     },
     -- Input field to select frame to anchor on
