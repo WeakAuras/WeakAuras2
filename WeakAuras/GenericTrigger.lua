@@ -772,7 +772,7 @@ function WeakAuras.ScanEventsInternalToCustom(id, triggernum)
         local updatedTriggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
         local allstates = WeakAuras.GetTriggerStateForTrigger(id, requestingTrigger)
         if data and allstates and updatedTriggerStates then
-          if RunTriggerFunc(allstates, data, id, requestingTrigger, "TRIGGER:"..triggernum, updatedTriggerStates) then
+          if RunTriggerFunc(allstates, data, id, requestingTrigger, "TRIGGER", triggernum, updatedTriggerStates) then
             updateTriggerState = true
           end
         end
@@ -936,6 +936,9 @@ function GenericTrigger.UnloadDisplays(toUnload)
         auras[id] = nil;
       end
     end
+    if trigger_to_custom_events[id] then
+      trigger_to_custom_events[id] = nil
+    end
     Private.UnregisterEveryFrameUpdate(id);
   end
 end
@@ -979,6 +982,9 @@ function GenericTrigger.Rename(oldid, newid)
       auras[oldid] = nil
     end
   end
+
+  trigger_to_custom_events[newid] = trigger_to_custom_events[oldid]
+  trigger_to_custom_events[oldid] = nil
 
   Private.EveryFrameUpdateRename(oldid, newid)
 end
