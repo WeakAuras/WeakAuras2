@@ -10,29 +10,22 @@ WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
 local versionString = "@project-version@"
 local buildTime = "@build-time@"
-local isDevVersion = false
+
+local flavorFromToc = GetAddOnMetadata("WeakAuras", "X-Flavor")
+local flavorFromTocToNumber = {
+  Vanilla = 1,
+  TBC = 2,
+  Wrath = 3,
+  Mainline = 10
+}
+local flavor = flavorFromTocToNumber[flavorFromToc]
 
 --@debug@
 if versionStringFromToc == "@project-version@" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
-  isDevVersion = true
 end
 --@end-debug@
-
-local intendedWoWProject = WOW_PROJECT_MAINLINE
-
---[===[@non-version-retail@
---@version-classic@
-intendedWoWProject = WOW_PROJECT_CLASSIC
---@end-version-classic@
---@version-bcc@
-intendedWoWProject = WOW_PROJECT_BURNING_CRUSADE_CLASSIC or WOW_PROJECT_MAINLINE
---@end-version-bcc@
---@version-wrath@
-intendedWoWProject = 99
---@end-version-wrath@
---@end-non-version-retail@]===]
 
 WeakAuras.versionString = versionStringFromToc
 WeakAuras.buildTime = buildTime
@@ -40,44 +33,41 @@ WeakAuras.newFeatureString = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeat
 WeakAuras.BuildInfo = select(4, GetBuildInfo())
 
 function WeakAuras.IsClassic()
-  return WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+  return flavor == 1
 end
 
 function WeakAuras.IsBCC()
-  return WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC and not WeakAuras.IsWrathClassic()
+  return flavor == 2
 end
 
 function WeakAuras.IsWrathClassic()
-    return WeakAuras.BuildInfo >= 30400 and WeakAuras.BuildInfo < 40000
+  return flavor == 3
 end
 
 function WeakAuras.IsRetail()
-  return WOW_PROJECT_ID == WOW_PROJECT_MAINLINE
+  return flavor == 10
 end
 
 function WeakAuras.IsClassicOrBCC()
-  return WOW_PROJECT_ID == WOW_PROJECT_CLASSIC
+  return WeakAuras.IsClassic() or WeakAuras.IsBCC()
 end
 
 function WeakAuras.IsClassicOrBCCOrWrath()
-  return WeakAuras.IsClassic() or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+  return WeakAuras.IsClassic() or WeakAuras.IsBCC() or WeakAuras.IsWrathClassic()
 end
 
 function WeakAuras.IsBCCOrWrath()
-  return WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+  return WeakAuras.IsBCC() or WeakAuras.IsWrathClassic()
 end
 
 function WeakAuras.IsBCCOrWrathOrRetail()
-  return WeakAuras.IsRetail() or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC
+  return WeakAuras.IsBCC() or WeakAuras.IsWrathClassic() or WeakAuras.IsRetail()
 end
 
 function WeakAuras.IsWrathOrRetail()
   return WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()
 end
 
-function WeakAuras.IsCorrectVersion()
-  return isDevVersion or intendedWoWProject == (WeakAuras.IsWrathClassic() and 99 or WOW_PROJECT_ID)
-end
 
 WeakAuras.prettyPrint = function(...)
   print("|cff9900ffWeakAuras:|r ", ...)
@@ -137,22 +127,6 @@ end
 
 function WeakAuras.IsLibsOK()
   return libsAreOk
-end
-
-local intendedWoWProjectName = {
-  [WOW_PROJECT_MAINLINE] = "Retail",
-  [WOW_PROJECT_CLASSIC] = "Classic",
-  [WOW_PROJECT_BURNING_CRUSADE_CLASSIC or 5] = "The Burning Crusade Classic",
-  [99] = "Wrath Of The Lich King Classic"
-}
-
-Private.wrongTargetMessage = "This version of WeakAuras was packaged for World of Warcraft " .. intendedWoWProjectName[intendedWoWProject] ..
-                              ". Please install the " .. intendedWoWProjectName[WeakAuras.IsWrathClassic() and 99 or WOW_PROJECT_ID] ..
-                              " version instead.\nIf you are using an addon manager, then" ..
-                              " contact their support for further assistance and reinstall WeakAuras manually."
-
-if not WeakAuras.IsCorrectVersion() then
-  C_Timer.After(1, function() WeakAuras.prettyPrint(Private.wrongTargetMessage) end)
 end
 
 if not WeakAuras.IsLibsOK() then

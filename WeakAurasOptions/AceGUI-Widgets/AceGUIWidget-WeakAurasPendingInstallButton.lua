@@ -1,7 +1,3 @@
-if not WeakAuras.IsCorrectVersion() then
-  return
-end
-
 local AddonName, OptionsPrivate = ...
 
 local pairs, next, type, unpack = pairs, next, type, unpack

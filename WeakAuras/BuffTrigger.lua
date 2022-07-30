@@ -2,7 +2,7 @@
 This used to contains the "aura" trigger for buffs and debuffs. Nowadays all functions do essentially nothing
 ]]--
 
-if not WeakAuras.IsCorrectVersion() or not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 local L = WeakAuras.L

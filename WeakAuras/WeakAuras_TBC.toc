@@ -1,7 +1,8 @@
 ## Interface: 20504
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
-## Version: @project-version@
+## Version: @project-version@ tbc
+## X-Flavor: TBC
 ## Notes: A powerful, comprehensive utility for displaying graphics and information based on buffs, debuffs, and other triggers.
 ## Notes-esES: Potente y completa aplicación que te permitirá mostrar por pantalla múltiples diseños, basados en beneficios, perjuicios y otros activadores.
 ## Notes-deDE: Ein leistungsfähiges, umfassendes Addon zur grafischen Darstellung von Informationen von Auren, Cooldowns, Timern und vielem mehr.
