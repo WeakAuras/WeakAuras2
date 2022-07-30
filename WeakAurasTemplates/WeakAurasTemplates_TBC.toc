@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 20504
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
 ## Version: @project-version@
@@ -12,6 +12,6 @@
 locales.xml
 
 TriggerTemplates.lua
-TriggerTemplatesData.lua
+TriggerTemplatesDataBCC.lua
 
 AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua

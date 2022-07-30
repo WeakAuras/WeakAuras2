@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 30400
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
 ## Version: @project-version@
