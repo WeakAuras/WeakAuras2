@@ -1085,7 +1085,7 @@ local function modify(parent, region, data)
       controlPoint:SetWidth(regionData.dimensions.width)
       controlPoint:SetHeight(regionData.dimensions.height)
       if data.anchorFrameParent then
-        controlPoint:SetParent(frame)
+        controlPoint:SetParent(frame == "" and self.relativeTo or frame)
       else
         controlPoint:SetParent(self)
       end
