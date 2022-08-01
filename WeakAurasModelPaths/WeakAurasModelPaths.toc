@@ -1,7 +1,4 @@
 ## Interface: 90205
-## Interface-Classic: 11402
-## Interface-BCC: 20504
-## Interface-Wrath: 30400
 ## Title: WeakAuras Model Paths
 ## Author: The WeakAuras Team
 ## Version: @project-version@
@@ -16,17 +13,4 @@
 ## LoadOnDemand: 1
 ## Dependencies: WeakAuras, WeakAurasOptions
 
-#@retail@
 ModelPaths.lua
-#@end-retail@
-#@non-version-retail@
-# #@version-classic@
-# ModelPathsClassic.lua
-# #@end-version-classic@
-# #@version-bcc@
-# ModelPathsBCC.lua
-# #@end-version-bcc@
-# #@version-wrath@
-# ModelPathsBCC.lua
-# #@end-version-wrath@
-#@end-non-version-retail@

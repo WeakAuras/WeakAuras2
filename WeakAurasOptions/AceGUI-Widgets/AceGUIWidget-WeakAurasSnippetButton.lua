@@ -1,8 +1,9 @@
+if not WeakAuras.IsLibsOK() then return end
 --[[-----------------------------------------------------------------------------
 SnippetButton Widget, based on AceGUI Button (and WA ToolbarButton)
 Graphical Button.
 -------------------------------------------------------------------------------]]
-local Type, Version = "WeakAurasSnippetButton", 1
+local Type, Version = "WeakAurasSnippetButton", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then
   return

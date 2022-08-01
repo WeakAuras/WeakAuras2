@@ -1,10 +1,8 @@
 ## Interface: 90205
-## Interface-Classic: 11402
-## Interface-BCC: 20504
-## Interface-Wrath: 30400
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
 ## Version: @project-version@
+## X-Flavor: Mainline
 ## Notes: A powerful, comprehensive utility for displaying graphics and information based on buffs, debuffs, and other triggers.
 ## Notes-esES: Potente y completa aplicación que te permitirá mostrar por pantalla múltiples diseños, basados en beneficios, perjuicios y otros activadores.
 ## Notes-deDE: Ein leistungsfähiges, umfassendes Addon zur grafischen Darstellung von Informationen von Auren, Cooldowns, Timern und vielem mehr.
@@ -23,15 +21,6 @@
 
 # External code + initialization
 embeds.xml
-
-# Client flavor specific libs
-#@non-version-retail@
-# #@version-classic@
-# Libs\LibClassicDurations\LibClassicDurations.xml
-# Libs\LibClassicCasterino\LibClassicCasterino.lua
-# Libs\LibClassicSpellActionCount-1.0\LibClassicSpellActionCount-1.0.lua
-# #@end-version-classic@
-#@end-non-version-retail@
 
 Init.lua
 locales.xml

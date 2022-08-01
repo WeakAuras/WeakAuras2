@@ -19,6 +19,9 @@ externals:
   WeakAuras/Libs/LibCustomGlow-1.0: https://github.com/Stanzilla/LibCustomGlow
   WeakAuras/Libs/LibDBIcon-1.0: https://repos.curseforge.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
   WeakAuras/Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
+  WeakAuras/Libs/LibClassicDurations: https://github.com/rgd87/LibClassicDurations
+  WeakAuras/Libs/LibClassicCasterino: https://github.com/rgd87/LibClassicCasterino
+  WeakAuras/Libs/LibClassicSpellActionCount-1.0: https://github.com/Ennea/LibClassicSpellActionCount-1.0
   WeakAuras/Libs/Archivist:
     url: https://github.com/emptyrivers/Archivist
     tag: v1.0.8
@@ -38,11 +41,6 @@ ignore:
   - babelfish.lua
   - update_translations.sh
   - generate_changelog.sh
-  - WeakAurasModelPaths/ModelPathsClassic.lua
-  - WeakAurasModelPaths/ModelPathsBCC.lua
-  - WeakAurasTemplates/TriggerTemplatesDataClassic.lua
-  - WeakAurasTemplates/TriggerTemplatesDataBCC.lua
-  - WeakAurasTemplates/TriggerTemplatesDataWrath.lua
 
 plain-copy:
   - WeakAurasModelPaths/*.lua
