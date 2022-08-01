@@ -71,7 +71,7 @@ local timer = WeakAuras.timer
 local BuffTrigger = {}
 local triggerInfos = {}
 
-local trigger_to_custom_events = Private.trigger_to_custom_events -- trigger to custom
+local trigger_to_custom_events = Private.trigger_to_custom_events
 
 local UnitGroupRolesAssigned = WeakAuras.IsWrathOrRetail() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 

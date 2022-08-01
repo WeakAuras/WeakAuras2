@@ -4021,11 +4021,16 @@ end
 -- we need the id and triggernum that's changing, but can't send the ScanEvents to the custom trigger until after UpdatedTriggerState has fired
 local trigger_to_custom_delayed = {}
 function Private.AddToTriggerToCustomDelay(id, triggernum)
-  trigger_to_custom_delayed[id] = triggernum
+  trigger_to_custom_delayed[id] = trigger_to_custom_delayed[id] or {}
+  tinsert(trigger_to_custom_delayed[id], triggernum)
 end
 function Private.SendDelayedTriggerToCustom()
-  for id,triggernum in pairs(trigger_to_custom_delayed) do
-    WeakAuras.ScanEventsInternalToCustom(id, triggernum)
+  for id,triggernums in pairs(trigger_to_custom_delayed) do
+    for i = #triggernums, 1, -1 do
+      local triggernum = triggernums[i]
+      tremove(triggernums, i)
+      Private.ScanEventsInternalToCustom(id, triggernum)
+    end
   end
   wipe(trigger_to_custom_delayed)
 end

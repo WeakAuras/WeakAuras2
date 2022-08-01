@@ -761,15 +761,15 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
   end
 end
 
-function WeakAuras.ScanEventsInternalToCustom(id, triggernum)
+function Private.ScanEventsInternalToCustom(id, triggernum)
   Private.StartProfileAura(id);
   Private.ActivateAuraEnvironment(id);
   local updateTriggerState = false
   if trigger_to_custom_events[id] and trigger_to_custom_events[id][triggernum] then
+    local updatedTriggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
     for requestingTrigger, bool in pairs(trigger_to_custom_events[id][triggernum]) do
       if bool then
         local data = events and events[id] and events[id][requestingTrigger]
-        local updatedTriggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
         local allstates = WeakAuras.GetTriggerStateForTrigger(id, requestingTrigger)
         if data and allstates and updatedTriggerStates then
           if RunTriggerFunc(allstates, data, id, requestingTrigger, "TRIGGER", triggernum, updatedTriggerStates) then
