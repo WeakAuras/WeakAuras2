@@ -33,7 +33,7 @@ LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 Private.maxTimerDuration = 604800; -- A week, in seconds
 local maxUpTime = 4294967; -- 2^32 / 1000
 
-Private.trigger_to_custom_events = {} -- trigger to custom
+Private.watched_trigger_events = {} -- trigger to custom
 
 -- The worlds simplest callback system.
 -- That supports 1:N, but no deregistration and breaks if registrating in a callback
@@ -4019,20 +4019,20 @@ end
 
 -- handle trigger updates that have been requested to be sent into custom
 -- we need the id and triggernum that's changing, but can't send the ScanEvents to the custom trigger until after UpdatedTriggerState has fired
-local trigger_to_custom_delayed = {}
-function Private.AddToTriggerToCustomDelay(id, triggernum)
-  trigger_to_custom_delayed[id] = trigger_to_custom_delayed[id] or {}
-  tinsert(trigger_to_custom_delayed[id], triggernum)
+local delayed_watched_trigger = {}
+function Private.AddToWatchedTriggerDelay(id, triggernum)
+  delayed_watched_trigger[id] = delayed_watched_trigger[id] or {}
+  tinsert(delayed_watched_trigger[id], triggernum)
 end
-function Private.SendDelayedTriggerToCustom()
-  for id,triggernums in pairs(trigger_to_custom_delayed) do
+function Private.SendDelayedWatchedTriggers()
+  for id,triggernums in pairs(delayed_watched_trigger) do
     for i = #triggernums, 1, -1 do
       local triggernum = triggernums[i]
       tremove(triggernums, i)
-      Private.ScanEventsInternalToCustom(id, triggernum)
+      Private.ScanEventsWatchedTrigger(id, triggernum)
     end
   end
-  wipe(trigger_to_custom_delayed)
+  wipe(delayed_watched_trigger)
 end
 
 function Private.UpdatedTriggerState(id)
@@ -4137,8 +4137,8 @@ function Private.UpdatedTriggerState(id)
       state.changed = false;
     end
   end
-  -- once updatedTriggerStates is complete, and empty states removed, etc., then check for queued trigger_to_custom updates
-  Private.SendDelayedTriggerToCustom()
+  -- once updatedTriggerStates is complete, and empty states removed, etc., then check for queued watched triggers update
+  Private.SendDelayedWatchedTriggers()
 end
 
 function Private.RunCustomTextFunc(region, customFunc)

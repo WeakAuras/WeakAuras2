@@ -122,9 +122,9 @@ local function GetCustomTriggerOptions(data, triggernum)
             elseif trueEvent == "TRIGGER" then
               local requestedTriggernum = tonumber(i)
               if requestedTriggernum then
-                if OptionsPrivate.Private.trigger_to_custom_events[data.id]
-                and OptionsPrivate.Private.trigger_to_custom_events[data.id][triggernum]
-                and OptionsPrivate.Private.trigger_to_custom_events[data.id][triggernum][requestedTriggernum] then
+                if OptionsPrivate.Private.watched_trigger_events[data.id]
+                and OptionsPrivate.Private.watched_trigger_events[data.id][triggernum]
+                and OptionsPrivate.Private.watched_trigger_events[data.id][triggernum][requestedTriggernum] then
                   return "|cFFFF0000"..L["Reciprocal trigger requests will be ignored!"]
                 end
               end
@@ -162,9 +162,9 @@ local function GetCustomTriggerOptions(data, triggernum)
             elseif trueEvent == "TRIGGER" then
               local requestedTriggernum = tonumber(i)
               if requestedTriggernum then
-                if OptionsPrivate.Private.trigger_to_custom_events[data.id]
-                and OptionsPrivate.Private.trigger_to_custom_events[data.id][triggernum]
-                and OptionsPrivate.Private.trigger_to_custom_events[data.id][triggernum][requestedTriggernum] then
+                if OptionsPrivate.Private.watched_trigger_events[data.id]
+                and OptionsPrivate.Private.watched_trigger_events[data.id][triggernum]
+                and OptionsPrivate.Private.watched_trigger_events[data.id][triggernum][requestedTriggernum] then
                   return false
                 end
               end

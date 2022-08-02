@@ -71,7 +71,7 @@ local timer = WeakAuras.timer
 local BuffTrigger = {}
 local triggerInfos = {}
 
-local trigger_to_custom_events = Private.trigger_to_custom_events
+local watched_trigger_events = Private.watched_trigger_events
 
 local UnitGroupRolesAssigned = WeakAuras.IsWrathOrRetail() and UnitGroupRolesAssigned or function() return "DAMAGER" end
 
@@ -1468,10 +1468,10 @@ local function UpdateTriggerState(time, id, triggernum)
     triggerInfo.nextScheduledCheck = nil
   end
 
-  -- if the trigger has updated then check to see if it is flagged for trigger_to_custom and send to queue if it is
+  -- if the trigger has updated then check to see if it is flagged for WatchedTrigger and send to queue if it is
   if updated then
-    if trigger_to_custom_events[id] and trigger_to_custom_events[id][triggernum] then
-      Private.AddToTriggerToCustomDelay(id, triggernum)
+    if watched_trigger_events[id] and watched_trigger_events[id][triggernum] then
+      Private.AddToWatchedTriggerDelay(id, triggernum)
     end
   end
   return updated

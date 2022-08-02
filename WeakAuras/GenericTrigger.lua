@@ -80,7 +80,7 @@ local timer = WeakAuras.timer;
 local events = {}
 local loaded_events = {}
 local loaded_unit_events = {};
-local trigger_to_custom_events = Private.trigger_to_custom_events
+local watched_trigger_events = Private.watched_trigger_events
 local loaded_auras = {}; -- id to bool map
 local timers = WeakAuras.timers;
 
@@ -678,9 +678,9 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       end
     end
   end
-  if updateTriggerState and trigger_to_custom_events[id] and trigger_to_custom_events[id][triggernum] then
+  if updateTriggerState and watched_trigger_events[id] and watched_trigger_events[id][triggernum] then
     -- if this trigger's udpates are requested to be sent into one of the Aura's custom triggers
-    Private.AddToTriggerToCustomDelay(id, triggernum)
+    Private.AddToWatchedTriggerDelay(id, triggernum)
   end
   return updateTriggerState;
 end
@@ -761,13 +761,13 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
   end
 end
 
-function Private.ScanEventsInternalToCustom(id, triggernum)
+function Private.ScanEventsWatchedTrigger(id, triggernum)
   Private.StartProfileAura(id);
   Private.ActivateAuraEnvironment(id);
   local updateTriggerState = false
-  if trigger_to_custom_events[id] and trigger_to_custom_events[id][triggernum] then
+  if watched_trigger_events[id] and watched_trigger_events[id][triggernum] then
     local updatedTriggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
-    for requestingTrigger, bool in pairs(trigger_to_custom_events[id][triggernum]) do
+    for requestingTrigger, bool in pairs(watched_trigger_events[id][triggernum]) do
       if bool then
         local data = events and events[id] and events[id][requestingTrigger]
         local allstates = WeakAuras.GetTriggerStateForTrigger(id, requestingTrigger)
@@ -936,8 +936,8 @@ function GenericTrigger.UnloadDisplays(toUnload)
         auras[id] = nil;
       end
     end
-    if trigger_to_custom_events[id] then
-      trigger_to_custom_events[id] = nil
+    if watched_trigger_events[id] then
+      watched_trigger_events[id] = nil
     end
     Private.UnregisterEveryFrameUpdate(id);
   end
@@ -983,8 +983,8 @@ function GenericTrigger.Rename(oldid, newid)
     end
   end
 
-  trigger_to_custom_events[newid] = trigger_to_custom_events[oldid]
-  trigger_to_custom_events[oldid] = nil
+  watched_trigger_events[newid] = watched_trigger_events[oldid]
+  watched_trigger_events[oldid] = nil
 
   Private.EveryFrameUpdateRename(oldid, newid)
 end
@@ -1200,7 +1200,7 @@ end
 function GenericTrigger.Add(data, region)
   local id = data.id;
   events[id] = nil;
-  trigger_to_custom_events[id] = nil
+  watched_trigger_events[id] = nil
 
   for triggernum, triggerData in ipairs(data.triggers) do
     local trigger, untrigger = triggerData.trigger, triggerData.untrigger
@@ -1388,18 +1388,12 @@ function GenericTrigger.Add(data, region)
                 elseif isTrigger then
                   local requestedTriggernum = tonumber(i)
                   if requestedTriggernum then
-                    if trigger_to_custom_events[id] and trigger_to_custom_events[id][triggernum] and trigger_to_custom_events[id][triggernum][requestedTriggernum] then
+                    if watched_trigger_events[id] and watched_trigger_events[id][triggernum] and watched_trigger_events[id][triggernum][requestedTriggernum] then
                       -- if the request is reciprocal (2 custom triggers request each other which would cause a stack overflow) then prevent the reciprocal one being added.
-                      --[[ if it were decided that, in the case of a reciprocal request from 2 triggers, neither should be added then this can be uncommented below
-                      trigger_to_custom_events[id][triggernum][requestedTriggernum] = nil
-                      if not next(trigger_to_custom_events[id][triggernum]) then
-                        trigger_to_custom_events[id][triggernum] = nil
-                      end
-                      ]]
                     elseif requestedTriggernum and requestedTriggernum ~= triggernum then
-                      trigger_to_custom_events[id] = trigger_to_custom_events[id] or {}
-                      trigger_to_custom_events[id][requestedTriggernum] = trigger_to_custom_events[id][requestedTriggernum] or {}
-                      trigger_to_custom_events[id][requestedTriggernum][triggernum] = true
+                      watched_trigger_events[id] = watched_trigger_events[id] or {}
+                      watched_trigger_events[id][requestedTriggernum] = watched_trigger_events[id][requestedTriggernum] or {}
+                      watched_trigger_events[id][requestedTriggernum][triggernum] = true
                     end
                   end
                 end
