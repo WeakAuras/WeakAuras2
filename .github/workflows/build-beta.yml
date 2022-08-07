@@ -45,7 +45,7 @@ jobs:
 
       - uses: actions/upload-artifact@v3
         with:
-          name: WeakAuras-BC
+          name: WeakAuras-DF
           path: .release/
 
       - name: Send Status to Discord
