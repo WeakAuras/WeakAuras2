@@ -33,7 +33,7 @@ LibStub("AceTimer-3.0"):Embed(WeakAurasTimers)
 Private.maxTimerDuration = 604800; -- A week, in seconds
 local maxUpTime = 4294967; -- 2^32 / 1000
 
-Private.watched_trigger_events = {} -- trigger to custom
+Private.watched_trigger_events = {}
 
 -- The worlds simplest callback system.
 -- That supports 1:N, but no deregistration and breaks if registrating in a callback
@@ -4024,15 +4024,15 @@ function Private.AddToWatchedTriggerDelay(id, triggernum)
   delayed_watched_trigger[id] = delayed_watched_trigger[id] or {}
   tinsert(delayed_watched_trigger[id], triggernum)
 end
+
 function Private.SendDelayedWatchedTriggers()
-  for id,triggernums in pairs(delayed_watched_trigger) do
-    for i = #triggernums, 1, -1 do
-      local triggernum = triggernums[i]
-      tremove(triggernums, i)
-      Private.ScanEventsWatchedTrigger(id, triggernum)
-    end
+  for id in pairs(delayed_watched_trigger) do
+    local watched = delayed_watched_trigger[id]
+    -- Since the observers are themselves observable, we set the list of observers to
+    -- empty here.
+    delayed_watched_trigger[id] = {}
+    Private.ScanEventsWatchedTrigger(id, watched)
   end
-  wipe(delayed_watched_trigger)
 end
 
 function Private.UpdatedTriggerState(id)

@@ -125,7 +125,7 @@ local function GetCustomTriggerOptions(data, triggernum)
                 if OptionsPrivate.Private.watched_trigger_events[data.id]
                 and OptionsPrivate.Private.watched_trigger_events[data.id][triggernum]
                 and OptionsPrivate.Private.watched_trigger_events[data.id][triggernum][requestedTriggernum] then
-                  return "|cFFFF0000"..L["Reciprocal trigger requests will be ignored!"]
+                  return "|cFFFF0000"..L["Reciprocal TRIGGER:# requests will be ignored!"]
                 end
               end
             end

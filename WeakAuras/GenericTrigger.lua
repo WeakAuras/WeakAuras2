@@ -761,18 +761,19 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
   end
 end
 
-function Private.ScanEventsWatchedTrigger(id, triggernum)
+function Private.ScanEventsWatchedTrigger(id, watchedTriggernums)
   Private.StartProfileAura(id);
   Private.ActivateAuraEnvironment(id);
   local updateTriggerState = false
-  if watched_trigger_events[id] and watched_trigger_events[id][triggernum] then
-    local updatedTriggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
-    for requestingTrigger, bool in pairs(watched_trigger_events[id][triggernum]) do
-      if bool then
-        local data = events and events[id] and events[id][requestingTrigger]
-        local allstates = WeakAuras.GetTriggerStateForTrigger(id, requestingTrigger)
+
+  for _, wathcedTrigger in ipairs(watchedTriggernums) do
+    if watched_trigger_events[id] and watched_trigger_events[id][wathcedTrigger] then
+      local updatedTriggerStates = WeakAuras.GetTriggerStateForTrigger(id, wathcedTrigger)
+      for observerTrigger in pairs(watched_trigger_events[id][wathcedTrigger]) do
+        local data = events and events[id] and events[id][observerTrigger]
+        local allstates = WeakAuras.GetTriggerStateForTrigger(id, observerTrigger)
         if data and allstates and updatedTriggerStates then
-          if RunTriggerFunc(allstates, data, id, requestingTrigger, "TRIGGER", triggernum, updatedTriggerStates) then
+          if RunTriggerFunc(allstates, data, id, observerTrigger, "TRIGGER", wathcedTrigger, updatedTriggerStates) then
             updateTriggerState = true
           end
         end
@@ -935,9 +936,6 @@ function GenericTrigger.UnloadDisplays(toUnload)
       for eventname, auras in pairs(events) do
         auras[id] = nil;
       end
-    end
-    if watched_trigger_events[id] then
-      watched_trigger_events[id] = nil
     end
     Private.UnregisterEveryFrameUpdate(id);
   end
