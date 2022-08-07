@@ -766,14 +766,14 @@ function Private.ScanEventsWatchedTrigger(id, watchedTriggernums)
   Private.ActivateAuraEnvironment(id);
   local updateTriggerState = false
 
-  for _, wathcedTrigger in ipairs(watchedTriggernums) do
-    if watched_trigger_events[id] and watched_trigger_events[id][wathcedTrigger] then
-      local updatedTriggerStates = WeakAuras.GetTriggerStateForTrigger(id, wathcedTrigger)
-      for observerTrigger in pairs(watched_trigger_events[id][wathcedTrigger]) do
+  for _, watchedTrigger in ipairs(watchedTriggernums) do
+    if watched_trigger_events[id] and watched_trigger_events[id][watchedTrigger] then
+      local updatedTriggerStates = WeakAuras.GetTriggerStateForTrigger(id, watchedTrigger)
+      for observerTrigger in pairs(watched_trigger_events[id][watchedTrigger]) do
         local data = events and events[id] and events[id][observerTrigger]
         local allstates = WeakAuras.GetTriggerStateForTrigger(id, observerTrigger)
         if data and allstates and updatedTriggerStates then
-          if RunTriggerFunc(allstates, data, id, observerTrigger, "TRIGGER", wathcedTrigger, updatedTriggerStates) then
+          if RunTriggerFunc(allstates, data, id, observerTrigger, "TRIGGER", watchedTrigger, updatedTriggerStates) then
             updateTriggerState = true
           end
         end
