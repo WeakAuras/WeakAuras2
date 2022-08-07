@@ -119,6 +119,15 @@ local function GetCustomTriggerOptions(data, triggernum)
               if not OptionsPrivate.Private.baseUnitId[unit] and not OptionsPrivate.Private.multiUnitId[unit] then
                 return "|cFFFF0000"..L["Unit %s is not a valid unit for RegisterUnitEvent"]:format(unit)
               end
+            elseif trueEvent == "TRIGGER" then
+              local requestedTriggernum = tonumber(i)
+              if requestedTriggernum then
+                if OptionsPrivate.Private.watched_trigger_events[data.id]
+                and OptionsPrivate.Private.watched_trigger_events[data.id][triggernum]
+                and OptionsPrivate.Private.watched_trigger_events[data.id][triggernum][requestedTriggernum] then
+                  return "|cFFFF0000"..L["Reciprocal TRIGGER:# requests will be ignored!"]
+                end
+              end
             end
           end
         end
@@ -149,6 +158,15 @@ local function GetCustomTriggerOptions(data, triggernum)
               local unit = string.lower(i)
               if not OptionsPrivate.Private.baseUnitId[unit] then
                 return false
+              end
+            elseif trueEvent == "TRIGGER" then
+              local requestedTriggernum = tonumber(i)
+              if requestedTriggernum then
+                if OptionsPrivate.Private.watched_trigger_events[data.id]
+                and OptionsPrivate.Private.watched_trigger_events[data.id][triggernum]
+                and OptionsPrivate.Private.watched_trigger_events[data.id][triggernum][requestedTriggernum] then
+                  return false
+                end
               end
             end
           end

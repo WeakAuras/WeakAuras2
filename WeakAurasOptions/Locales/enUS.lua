@@ -106,19 +106,26 @@ L["Crusader"] = "Crusader"
 L["Custom Code"] = "Custom Code"
 L["Custom Trigger"] = "Custom Trigger"
 L["Custom trigger event tooltip"] = [=[
-Choose which events cause the custom trigger to be checked.
-Multiple events can be specified using commas or spaces.
+Choose which events cause the custom trigger to be checked. Multiple events can be specified using commas or spaces.
+
+• "UNIT" events can use colons to define which unitIDs will be registered. In addition to UnitIDs Unit types can be used, they include "nameplate", "group", "raid", "party", "arena", "boss".
+• "CLEU" can be used instead of COMBAT_LOG_EVENT_UNFILTERED and colons can be used to separate specific "subEvents" you want to recieve.
+• The keyword "TRIGGER" can be used, with colons separating trigger numbers, to have the custom trigger get updated when the specified trigger(s) update.
 
 |cFF4444FFFor example:|r
-UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED
+UNIT_POWER_UPDATE:player, UNIT_AURA:nameplate:group PLAYER_TARGET_CHANGED CLEU:SPELL_CAST_SUCCESS TRIGGER:3:1
 ]=]
 L["Custom trigger status tooltip"] = [=[
-Choose which events cause the custom trigger to be checked.
+Choose which events cause the custom trigger to be checked. Multiple events can be specified using commas or spaces.
+
+• "UNIT" events can use colons to define which unitIDs will be registered. In addition to UnitIDs Unit types can be used, they include "nameplate", "group", "raid", "party", "arena", "boss".
+• "CLEU" can be used instead of COMBAT_LOG_EVENT_UNFILTERED and colons can be used to separate specific "subEvents" you want to recieve.
+• The keyword "TRIGGER" can be used, with colons separating trigger numbers, to have the custom trigger get updated when the specified trigger(s) update.
+
 Since this is a status-type trigger, the specified events may be called by WeakAuras without the expected arguments.
-Multiple events can be specified using commas or spaces.
 
 |cFF4444FFFor example:|r
-UNIT_POWER_UPDATE, UNIT_AURA PLAYER_TARGET_CHANGED
+UNIT_POWER_UPDATE:player, UNIT_AURA:nameplate:group PLAYER_TARGET_CHANGED CLEU:SPELL_CAST_SUCCESS TRIGGER:3:1
 ]=]
 L["Custom Untrigger"] = "Custom Untrigger"
 L["Custom untrigger event tooltip"] = [=[

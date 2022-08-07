@@ -80,6 +80,7 @@ local timer = WeakAuras.timer;
 local events = {}
 local loaded_events = {}
 local loaded_unit_events = {};
+local watched_trigger_events = Private.watched_trigger_events
 local loaded_auras = {}; -- id to bool map
 local timers = WeakAuras.timers;
 
@@ -677,6 +678,10 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       end
     end
   end
+  if updateTriggerState and watched_trigger_events[id] and watched_trigger_events[id][triggernum] then
+    -- if this trigger's udpates are requested to be sent into one of the Aura's custom triggers
+    Private.AddToWatchedTriggerDelay(id, triggernum)
+  end
   return updateTriggerState;
 end
 
@@ -754,6 +759,32 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
     Private.StopProfileAura(id);
     Private.ActivateAuraEnvironment(nil);
   end
+end
+
+function Private.ScanEventsWatchedTrigger(id, watchedTriggernums)
+  Private.StartProfileAura(id);
+  Private.ActivateAuraEnvironment(id);
+  local updateTriggerState = false
+
+  for _, wathcedTrigger in ipairs(watchedTriggernums) do
+    if watched_trigger_events[id] and watched_trigger_events[id][wathcedTrigger] then
+      local updatedTriggerStates = WeakAuras.GetTriggerStateForTrigger(id, wathcedTrigger)
+      for observerTrigger in pairs(watched_trigger_events[id][wathcedTrigger]) do
+        local data = events and events[id] and events[id][observerTrigger]
+        local allstates = WeakAuras.GetTriggerStateForTrigger(id, observerTrigger)
+        if data and allstates and updatedTriggerStates then
+          if RunTriggerFunc(allstates, data, id, observerTrigger, "TRIGGER", wathcedTrigger, updatedTriggerStates) then
+            updateTriggerState = true
+          end
+        end
+      end
+    end
+  end
+  if (updateTriggerState) then
+    Private.UpdatedTriggerState(id)
+  end
+  Private.StopProfileAura(id)
+  Private.ActivateAuraEnvironment(nil)
 end
 
 local function AddFakeTime(state)
@@ -949,6 +980,9 @@ function GenericTrigger.Rename(oldid, newid)
       auras[oldid] = nil
     end
   end
+
+  watched_trigger_events[newid] = watched_trigger_events[oldid]
+  watched_trigger_events[oldid] = nil
 
   Private.EveryFrameUpdateRename(oldid, newid)
 end
@@ -1164,6 +1198,7 @@ end
 function GenericTrigger.Add(data, region)
   local id = data.id;
   events[id] = nil;
+  watched_trigger_events[id] = nil
 
   for triggernum, triggerData in ipairs(data.triggers) do
     local trigger, untrigger = triggerData.trigger, triggerData.untrigger
@@ -1322,11 +1357,13 @@ function GenericTrigger.Add(data, region)
               local trueEvent
               local hasParam = false
               local isCLEU = false
+              local isTrigger = false
               local isUnitEvent = false
               for i in event:gmatch("[^:]+") do
                 if not trueEvent then
                   trueEvent = string.upper(i)
                   isCLEU = trueEvent == "CLEU" or trueEvent == "COMBAT_LOG_EVENT_UNFILTERED"
+                  isTrigger = trueEvent == "TRIGGER"
                 elseif isCLEU then
                   local subevent = string.upper(i)
                   if Private.IsCLEUSubevent(subevent) then
@@ -1346,6 +1383,17 @@ function GenericTrigger.Add(data, region)
 
                   trigger_unit_events[i] = trigger_unit_events[i] or {}
                   tinsert(trigger_unit_events[i], trueEvent)
+                elseif isTrigger then
+                  local requestedTriggernum = tonumber(i)
+                  if requestedTriggernum then
+                    if watched_trigger_events[id] and watched_trigger_events[id][triggernum] and watched_trigger_events[id][triggernum][requestedTriggernum] then
+                      -- if the request is reciprocal (2 custom triggers request each other which would cause a stack overflow) then prevent the reciprocal one being added.
+                    elseif requestedTriggernum and requestedTriggernum ~= triggernum then
+                      watched_trigger_events[id] = watched_trigger_events[id] or {}
+                      watched_trigger_events[id][requestedTriggernum] = watched_trigger_events[id][requestedTriggernum] or {}
+                      watched_trigger_events[id][requestedTriggernum][triggernum] = true
+                    end
+                  end
                 end
               end
               if isCLEU then
@@ -1359,6 +1407,8 @@ function GenericTrigger.Add(data, region)
                   tinsert(trigger_events, "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM")
                 end
               elseif isUnitEvent then
+                -- not added to trigger_events
+              elseif isTrigger then
                 -- not added to trigger_events
               else
                 tinsert(trigger_events, event)
@@ -1408,8 +1458,6 @@ function GenericTrigger.Add(data, region)
       end
     end
   end
-
-
 end
 
 do
