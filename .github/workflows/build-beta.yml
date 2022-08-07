@@ -3,7 +3,7 @@ name: CI-Beta
 on:
   push:
     branches:
-      - bc
+      - dragonflight
     tags:
       - "**-alpha**"
 
@@ -31,8 +31,6 @@ jobs:
       - name: Create Package
         if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
         uses: BigWigsMods/packager@master
-        with:
-          args: -g bc -m .pkgmeta-bc
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
@@ -43,7 +41,7 @@ jobs:
         if: github.event_name == 'push' && !contains(github.ref, 'refs/tags/')
         uses: BigWigsMods/packager@master
         with:
-          args: -z -g bc -m .pkgmeta-bc
+          args: -z
 
       - uses: actions/upload-artifact@v3
         with:
