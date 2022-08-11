@@ -31,6 +31,7 @@ ArchiveTypes\Repository.lua
 DefaultOptions.lua
 
 # Core files
+Types_Retail.lua
 Types.lua
 Prototypes.lua
 Profiling.lua

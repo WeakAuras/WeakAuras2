@@ -28,6 +28,7 @@ ArchiveTypes\Repository.lua
 DefaultOptions.lua
 
 # Core files
+Types_TBC.lua
 Types.lua
 Prototypes.lua
 Profiling.lua
