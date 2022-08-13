@@ -410,7 +410,7 @@ local function createDistributeAlignOptions(id, data)
           local childData = WeakAuras.GetData(childId);
           local childRegion = WeakAuras.GetRegion(childId)
           if(childData and childRegion) then
-            if(v > 0) then
+            if(v >= 0) then
               if(childData.selfPoint:find("LEFT")) then
                 childData.xOffset = xOffset;
               elseif(childData.selfPoint:find("RIGHT")) then
@@ -493,7 +493,7 @@ local function createDistributeAlignOptions(id, data)
           local childData = WeakAuras.GetData(childId);
           local childRegion = WeakAuras.GetRegion(childId)
           if(childData and childRegion) then
-            if(v > 0) then
+            if(v >= 0) then
               if(childData.selfPoint:find("BOTTOM")) then
                 childData.yOffset = yOffset;
               elseif(childData.selfPoint:find("TOP")) then
