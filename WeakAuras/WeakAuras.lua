@@ -1627,6 +1627,7 @@ else
   loadFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
 end
 if WeakAuras.IsWrathClassic() then
+  loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
   loadFrame:RegisterEvent("VEHICLE_UPDATE");
   loadFrame:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR")
   loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR");
