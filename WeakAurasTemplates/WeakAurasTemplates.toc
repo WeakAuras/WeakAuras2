@@ -1,4 +1,4 @@
-## Interface: 90205
+## Interface: 90207
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
 ## Version: @project-version@
