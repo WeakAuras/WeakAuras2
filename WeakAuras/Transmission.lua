@@ -462,6 +462,7 @@ local function ImportNow(data, children, target, sender)
       WeakAuras.OpenOptions()
     end
     Private.OpenUpdate(data, children, target, sender)
+    return true, ""
   end
 end
 
@@ -518,8 +519,7 @@ function WeakAuras.Import(inData, target)
   end
 
   tooltipLoading = nil;
-  ImportNow(data, children, target)
-  return true, ""
+  return ImportNow(data, children, target)
 end
 
 local function crossRealmSendCommMessage(prefix, text, target, queueName, callbackFn, callbackArg)
