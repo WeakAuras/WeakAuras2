@@ -501,7 +501,6 @@ function WeakAuras.Import(inData, target)
     end
   end
 
-  local status, msg = true, ""
   if type(target) ~= 'nil' then
     local uid = type(target) == 'table' and target.uid or target
     local targetData = Private.GetDataByUID(uid)
@@ -519,7 +518,8 @@ function WeakAuras.Import(inData, target)
   end
 
   tooltipLoading = nil;
-  return ImportNow(data, children, target)
+  ImportNow(data, children, target)
+  return true, ""
 end
 
 local function crossRealmSendCommMessage(prefix, text, target, queueName, callbackFn, callbackArg)
