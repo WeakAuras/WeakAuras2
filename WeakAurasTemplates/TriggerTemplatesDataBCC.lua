@@ -642,6 +642,7 @@ templates.class.WARLOCK = {
       title = L["Debuffs"],
       args = {
         { spell = 172, type = "debuff", unit = "target"}, -- Corruption
+        { spell = 348, type = "debuff", unit = "target"}, -- Immolate
         { spell = 603, type = "debuff", unit = "target"}, -- Curse of Doom
         { spell = 702, type = "debuff", unit = "target"}, -- Curse of Weakness
         { spell = 704, type = "debuff", unit = "target"}, -- Curse of Recklessness
