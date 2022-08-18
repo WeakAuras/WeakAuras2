@@ -4206,6 +4206,17 @@ WeakAuras.GetBonusIdInfo = function(ids, specificSlot)
   end
 end
 
+WeakAuras.CheckForItemEquipped = function(itemName, specificSlot)
+  if not specificSlot then
+    return IsEquippedItem(itemName)
+  else
+    local item = Item:CreateFromEquipmentSlot(specificSlot)
+    if item and not item:IsItemEmpty() then
+      return itemName == item:GetItemName()
+    end
+  end
+end
+
 WeakAuras.GetItemSubClassInfo = function(i)
   local subClassId = i % 256
   local classId = (i - subClassId) / 256
