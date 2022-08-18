@@ -2958,6 +2958,7 @@ globals = {
 	"IsWorldQuestWatched",
 	"IsXPUserDisabled",
 	"IsZoomOutAvailable",
+	"Item",
 	"ItemAddedToArtifact",
 	"ItemCanTargetGarrisonFollowerAbility",
 	"ItemHasRange",
