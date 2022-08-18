@@ -7055,10 +7055,12 @@ Private.event_prototypes = {
 
       local ret = [[
         local inverse = %s;
-        local equipped = IsEquippedItem(GetItemInfo(%s));
+        local itemName = GetItemInfo(%s);
+        local itemSlot = %s;
+        local equipped = WeakAuras.CheckForItemEquipped(itemName, itemSlot);
       ]];
 
-      return ret:format(trigger.use_inverse and "true" or "false", itemName);
+      return ret:format(trigger.use_inverse and "true" or "false", itemName, trigger.use_itemSlot and trigger.itemSlot or "nil");
     end,
     args = {
       {
@@ -7067,6 +7069,13 @@ Private.event_prototypes = {
         type = "item",
         required = true,
         test = "true"
+      },
+      {
+        name = "itemSlot",
+        display = WeakAuras.newFeatureString .. L["Item Slot"],
+        type = "select",
+        values = "item_slot_types",
+        test = "true",
       },
       {
         name = "inverse",
