@@ -964,7 +964,6 @@ typeControlAdders = {
   end,
   multiselect = function(options, args, data, order, prefix, i)
     local option = options[i]
-    args[prefix .. "width"] = nil
     local values = getValues(option)
     local defaultValues = {}
     for i, v in ipairs(values) do
