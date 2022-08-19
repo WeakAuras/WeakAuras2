@@ -4052,28 +4052,28 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
   local event = events[data.id][triggernum];
 
   Private.ActivateAuraEnvironment(data.id, "", state);
-  local firstTrigger = data.triggers[1].trigger
+  local trigger = data.triggers[triggernum].trigger
   if (event.nameFunc) then
-    local ok, name = xpcall(event.nameFunc, Private.GetErrorHandlerUid(data.uid, L["Name Function (fallback state)"]), firstTrigger);
+    local ok, name = xpcall(event.nameFunc, Private.GetErrorHandlerUid(data.uid, L["Name Function (fallback state)"]), trigger);
     state.name = ok and name or nil;
   end
   if (event.iconFunc) then
-    local ok, icon = xpcall(event.iconFunc, Private.GetErrorHandlerUid(data.uid, L["Icon Function (fallback state)"]), firstTrigger);
+    local ok, icon = xpcall(event.iconFunc, Private.GetErrorHandlerUid(data.uid, L["Icon Function (fallback state)"]), trigger);
     state.icon = ok and icon or nil;
   end
 
   if (event.textureFunc ) then
-    local ok, texture = xpcall(event.textureFunc, Private.GetErrorHandlerUid(data.uid, L["Texture Function (fallback state)"]), firstTrigger);
+    local ok, texture = xpcall(event.textureFunc, Private.GetErrorHandlerUid(data.uid, L["Texture Function (fallback state)"]), trigger);
     state.texture = ok and texture or nil;
   end
 
   if (event.stacksFunc) then
-    local ok, stacks = xpcall(event.stacksFunc, Private.GetErrorHandlerUid(data.uid, L["Stacks Function (fallback state)"]), firstTrigger);
+    local ok, stacks = xpcall(event.stacksFunc, Private.GetErrorHandlerUid(data.uid, L["Stacks Function (fallback state)"]), trigger);
     state.stacks = ok and stacks or nil;
   end
 
   if (event.durationFunc) then
-    local ok, arg1, arg2, arg3, inverse = xpcall(event.durationFunc, Private.GetErrorHandlerUid(data.uid, L["Duration Function (fallback state)"]), firstTrigger);
+    local ok, arg1, arg2, arg3, inverse = xpcall(event.durationFunc, Private.GetErrorHandlerUid(data.uid, L["Duration Function (fallback state)"]), trigger);
     if (not ok) then
       state.progressType = "timed";
       state.duration = 0;
