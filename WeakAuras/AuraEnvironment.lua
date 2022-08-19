@@ -294,7 +294,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
       if(actions and actions.do_custom and actions.custom) then
         local func = Private.customActionsFunctions[id]["init"]
         if func then
-          xpcall(func, geterrorhandler())
+          xpcall(func, Private.GetErrorHandlerId(id, "init"))
         end
       end
     end
@@ -450,11 +450,11 @@ function env_getglobal(k)
 end
 
 local function_cache = {}
-function WeakAuras.LoadFunction(string, id, inTrigger)
+function WeakAuras.LoadFunction(string)
   if function_cache[string] then
     return function_cache[string]
   else
-    local loadedFunction, errorString = loadstring(string, "Error in: " .. (id or "Unknown") .. (inTrigger and ("':'".. inTrigger) or ""))
+    local loadedFunction, errorString = loadstring(string)
     if errorString then
       print(errorString)
     else

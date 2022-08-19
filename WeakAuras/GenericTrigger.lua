@@ -350,13 +350,13 @@ function Private.EndEvent(id, triggernum, force, state)
   end
 end
 
-local function RunOverlayFuncs(event, state)
+local function RunOverlayFuncs(event, state, id)
   state.additionalProgress = state.additionalProgress or {};
   local changed = false;
   for i, overlayFunc in ipairs(event.overlayFuncs) do
     state.additionalProgress[i] = state.additionalProgress[i] or {};
     local additionalProgress = state.additionalProgress[i];
-    local ok, a, b, c = xpcall(overlayFunc, geterrorhandler(), event.trigger, state);
+    local ok, a, b, c = xpcall(overlayFunc, Private.GetErrorHandlerId(id, L["Overlay %s"]:format(i)), event.trigger, state);
     if (not ok) then
       additionalProgress.min = nil;
       additionalProgress.max = nil;
@@ -407,7 +407,7 @@ local function callFunctionForActivateEvent(func, trigger, fallback, errorHandle
   return ok and value or fallback
 end
 
-function Private.ActivateEvent(id, triggernum, data, state, errorHandler)
+function Private.ActivateEvent(id, triggernum, data, state)
   local changed = state.changed or false;
   if (state.show ~= true) then
     state.show = true;
@@ -436,7 +436,7 @@ function Private.ActivateEvent(id, triggernum, data, state, errorHandler)
     state.inverse = nil;
     state.autoHide = autoHide;
   elseif (data.durationFunc) then
-    local ok, arg1, arg2, arg3, inverse = xpcall(data.durationFunc, errorHandler, data.trigger);
+    local ok, arg1, arg2, arg3, inverse = xpcall(data.durationFunc, Private.GetErrorHandlerId(id, L["Duration Function"]), data.trigger);
     arg1 = ok and type(arg1) == "number" and arg1 or 0;
     arg2 = ok and type(arg2) == "number" and arg2 or 0;
 
@@ -498,10 +498,10 @@ function Private.ActivateEvent(id, triggernum, data, state, errorHandler)
     end
   end
 
-  local name = callFunctionForActivateEvent(data.nameFunc, data.trigger, state.name, errorHandler)
-  local icon = callFunctionForActivateEvent(data.iconFunc, data.trigger, state.icon, errorHandler)
-  local texture = callFunctionForActivateEvent(data.textureFunc, data.trigger, state.texture, errorHandler)
-  local stacks = callFunctionForActivateEvent(data.stacksFunc, data.trigger, state.stacks, errorHandler)
+  local name = callFunctionForActivateEvent(data.nameFunc, data.trigger, state.name, Private.GetErrorHandlerId(id, L["Name Function"]))
+  local icon = callFunctionForActivateEvent(data.iconFunc, data.trigger, state.icon, Private.GetErrorHandlerId(id, L["Icon Function"]))
+  local texture = callFunctionForActivateEvent(data.textureFunc, data.trigger, state.texture, Private.GetErrorHandlerId(id, L["Texture Function"]))
+  local stacks = callFunctionForActivateEvent(data.stacksFunc, data.trigger, state.stacks, Private.GetErrorHandlerId(id, L["Stacks Function"]))
 
   if (state.name ~= name) then
     state.name = name;
@@ -521,7 +521,7 @@ function Private.ActivateEvent(id, triggernum, data, state, errorHandler)
   end
 
   if (data.overlayFuncs) then
-    RunOverlayFuncs(data, state);
+    RunOverlayFuncs(data, state, id);
   else
     state.additionalProgress = nil;
   end
@@ -537,7 +537,7 @@ end
 
 local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)
   local optionsEvent = event == "OPTIONS";
-  local errorHandler = (optionsEvent and data.ignoreOptionsEventErrors) and ignoreErrorHandler or geterrorhandler()
+  local errorHandler = (optionsEvent and data.ignoreOptionsEventErrors) and ignoreErrorHandler or Private.GetErrorHandlerId(id, L["Trigger %s"]:format(triggernum))
   local updateTriggerState = false;
 
   local unitForUnitTrigger
@@ -552,7 +552,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       end
       for key, state in pairs(allStates) do
         if (type(state) ~= "table") then
-          errorHandler(string.format(L["Error in aura '%s' in %s. trigger. All States table contains a non table at key: '%s'."], id, triggernum, key))
+          errorHandler(string.format(L["All States table contains a non table at key: '%s'."], key))
           wipe(allStates)
           return
         end
@@ -562,7 +562,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       if( (ok and returnValue) or optionsEvent) then
         for id, state in pairs(allStates) do
           if (state.changed) then
-            if (Private.ActivateEvent(id, triggernum, data, state, errorHandler)) then
+            if (Private.ActivateEvent(id, triggernum, data, state)) then
               updateTriggerState = true;
             end
           end
@@ -590,7 +590,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         local state = allStates[cloneIdForUnitTrigger];
         local ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, unitForUnitTrigger, arg1, arg2, ...);
         if (ok and returnValue) or optionsEvent then
-          if(Private.ActivateEvent(id, triggernum, data, state, errorHandler)) then
+          if(Private.ActivateEvent(id, triggernum, data, state)) then
             updateTriggerState = true;
           end
         else
@@ -602,7 +602,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       local state = allStates[""];
       local ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, arg1, arg2, ...);
       if (ok and returnValue) or optionsEvent then
-        if(Private.ActivateEvent(id, triggernum, data, state, errorHandler)) then
+        if(Private.ActivateEvent(id, triggernum, data, state)) then
           updateTriggerState = true;
         end
       else
@@ -613,7 +613,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       if (ok and returnValue) or optionsEvent then
         allStates[""] = allStates[""] or {};
         local state = allStates[""];
-        if(Private.ActivateEvent(id, triggernum, data, state, errorHandler)) then
+        if(Private.ActivateEvent(id, triggernum, data, state)) then
           updateTriggerState = true;
         end
       else
@@ -1244,7 +1244,7 @@ function GenericTrigger.Add(data, region)
             triggerFuncStr = ConstructFunction(prototype, trigger);
 
             statesParameter = prototype.statesParameter;
-            triggerFunc = WeakAuras.LoadFunction(triggerFuncStr, id);
+            triggerFunc = WeakAuras.LoadFunction(triggerFuncStr);
 
             durationFunc = prototype.durationFunc;
             nameFunc = prototype.nameFunc;
@@ -1308,7 +1308,7 @@ function GenericTrigger.Add(data, region)
             end
           end
         else -- CUSTOM
-          triggerFunc = WeakAuras.LoadFunction("return "..(trigger.custom or ""), id);
+          triggerFunc = WeakAuras.LoadFunction("return "..(trigger.custom or ""));
           if (trigger.custom_type == "stateupdate") then
             tsuConditionVariables = WeakAuras.LoadFunction("return function() return \n" .. (trigger.customVariables or "") .. "\n end");
             if not tsuConditionVariables then
@@ -1317,35 +1317,35 @@ function GenericTrigger.Add(data, region)
           end
 
           if(trigger.custom_type == "status" or trigger.custom_type == "event" and trigger.custom_hide == "custom") then
-            untriggerFunc = WeakAuras.LoadFunction("return "..(untrigger.custom or ""), id);
+            untriggerFunc = WeakAuras.LoadFunction("return "..(untrigger.custom or ""));
             if (not untriggerFunc) then
               untriggerFunc = trueFunction;
             end
           end
 
           if(trigger.custom_type ~= "stateupdate" and trigger.customDuration and trigger.customDuration ~= "") then
-            durationFunc = WeakAuras.LoadFunction("return "..trigger.customDuration, id);
+            durationFunc = WeakAuras.LoadFunction("return "..trigger.customDuration);
           end
           if(trigger.custom_type ~= "stateupdate") then
             overlayFuncs = {};
             for i = 1, 7 do
               local property = "customOverlay" .. i;
               if (trigger[property] and trigger[property] ~= "") then
-                overlayFuncs[i] = WeakAuras.LoadFunction("return ".. trigger[property], id);
+                overlayFuncs[i] = WeakAuras.LoadFunction("return ".. trigger[property]);
               end
             end
           end
           if(trigger.custom_type ~= "stateupdate" and trigger.customName and trigger.customName ~= "") then
-            nameFunc = WeakAuras.LoadFunction("return "..trigger.customName, id);
+            nameFunc = WeakAuras.LoadFunction("return "..trigger.customName);
           end
           if(trigger.custom_type ~= "stateupdate" and trigger.customIcon and trigger.customIcon ~= "") then
-            iconFunc = WeakAuras.LoadFunction("return "..trigger.customIcon, id);
+            iconFunc = WeakAuras.LoadFunction("return "..trigger.customIcon);
           end
           if(trigger.custom_type ~= "stateupdate" and trigger.customTexture and trigger.customTexture ~= "") then
-            textureFunc = WeakAuras.LoadFunction("return "..trigger.customTexture, id);
+            textureFunc = WeakAuras.LoadFunction("return "..trigger.customTexture);
           end
           if(trigger.custom_type ~= "stateupdate" and trigger.customStacks and trigger.customStacks ~= "") then
-            stacksFunc = WeakAuras.LoadFunction("return "..trigger.customStacks, id);
+            stacksFunc = WeakAuras.LoadFunction("return "..trigger.customStacks);
           end
 
           if((trigger.custom_type == "status" or trigger.custom_type == "stateupdate") and trigger.check == "update") then
@@ -4055,26 +4055,26 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
   Private.ActivateAuraEnvironment(data.id, "", state);
   local firstTrigger = data.triggers[1].trigger
   if (event.nameFunc) then
-    local ok, name = xpcall(event.nameFunc, geterrorhandler(), firstTrigger);
+    local ok, name = xpcall(event.nameFunc, Private.GetErrorHandlerUid(data.uid, L["Name Function (fallback state)"]), firstTrigger);
     state.name = ok and name or nil;
   end
   if (event.iconFunc) then
-    local ok, icon = xpcall(event.iconFunc, geterrorhandler(), firstTrigger);
+    local ok, icon = xpcall(event.iconFunc, Private.GetErrorHandlerUid(data.uid, L["Icon Function (fallback state)"]), firstTrigger);
     state.icon = ok and icon or nil;
   end
 
   if (event.textureFunc ) then
-    local ok, texture = xpcall(event.textureFunc, geterrorhandler(), firstTrigger);
+    local ok, texture = xpcall(event.textureFunc, Private.GetErrorHandlerUid(data.uid, L["Texture Function (fallback state)"]), firstTrigger);
     state.texture = ok and texture or nil;
   end
 
   if (event.stacksFunc) then
-    local ok, stacks = xpcall(event.stacksFunc, geterrorhandler(), firstTrigger);
+    local ok, stacks = xpcall(event.stacksFunc, Private.GetErrorHandlerUid(data.uid, L["Stacks Function (fallback state)"]), firstTrigger);
     state.stacks = ok and stacks or nil;
   end
 
   if (event.durationFunc) then
-    local ok, arg1, arg2, arg3, inverse = xpcall(event.durationFunc, geterrorhandler(), firstTrigger);
+    local ok, arg1, arg2, arg3, inverse = xpcall(event.durationFunc, Private.GetErrorHandlerUid(data.uid, L["Duration Function (fallback state)"]), firstTrigger);
     if (not ok) then
       state.progressType = "timed";
       state.duration = 0;
@@ -4118,7 +4118,7 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
     state.total = nil;
   end
   if (event.overlayFuncs) then
-    RunOverlayFuncs(event, state);
+    RunOverlayFuncs(event, state, data.id);
   end
   Private.ActivateAuraEnvironment(nil);
 end
