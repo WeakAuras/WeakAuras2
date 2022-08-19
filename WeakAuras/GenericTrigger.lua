@@ -228,12 +228,11 @@ function ConstructTest(trigger, arg)
       test = TestForLongString(trigger, arg);
     elseif (arg.type == "string" or arg.type == "select" or arg.type == "item") then
       test = "(".. name .." and "..name.."==" ..(number or ("\""..(trigger[name] or "").."\""))..")";
+    elseif (arg.type == "number") then
+      test = "(".. name .." and "..name..(trigger[name.."_operator"] or "==")..(number or 0) ..")";
     else
-      if(type(trigger[name]) == "table") then
-        trigger[name] = "error";
-      end
-      -- number
-      test = "(".. name .." and "..name..(trigger[name.."_operator"] or "==")..(number or ("\""..(trigger[name] or "").."\""))..")";
+      -- Should be unused
+      test = "(".. name .." and "..name..(trigger[name.."_operator"] or "==")..(number or ("\""..(trigger[name] or 0).."\""))..")";
     end
   end
 
