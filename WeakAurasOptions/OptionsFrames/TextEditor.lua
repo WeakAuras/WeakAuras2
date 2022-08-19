@@ -315,7 +315,7 @@ local function ConstructTextEditor(frame)
         level)
       end
     elseif menu == "sizes" then
-      local sizes = {12,14,16,18,20,22,24}
+      local sizes = {10, 12, 14, 16}
       for _, i in pairs(sizes) do
         UIDropDownMenu_AddButton(
           {
