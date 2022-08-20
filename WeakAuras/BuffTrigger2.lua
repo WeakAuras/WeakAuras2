@@ -3569,7 +3569,7 @@ end
 
 function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
   local trigger = data.triggers[triggernum].trigger
-  if trigger.auranames then
+  if trigger.useName and trigger.auranames then
     for index, name in pairs(trigger.auranames) do
       local left = " "
       if(index == 1) then
@@ -3593,7 +3593,7 @@ function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
     end
   end
 
-  if trigger.auraspellids then
+  if trigger.useExactSpellId and  trigger.auraspellids then
     for index, spellId in pairs(trigger.auraspellids) do
       local left = " "
       if index == 1 then
