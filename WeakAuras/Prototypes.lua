@@ -3460,7 +3460,7 @@ Private.event_prototypes = {
       },
       {
         name = "sourceRaidMarkIndex",
-        display = L["Source Raid Mark Index"],
+        display = WeakAuras.newFeatureString .. L["Source Raid Mark Index"],
         init = "WeakAuras.RaidFlagToIndex(sourceRaidFlags)",
         test = "true",
         store = true,
@@ -3468,7 +3468,7 @@ Private.event_prototypes = {
       },
       {
         name = "sourceRaidMark",
-        display = L["Source Raid Mark"],
+        display = WeakAuras.newFeatureString .. L["Source Raid Mark"],
         test = "true",
         init = "sourceRaidMarkIndex > 0 and '{rt'..sourceRaidMarkIndex..'}' or ''",
         store = true,
@@ -3594,7 +3594,7 @@ Private.event_prototypes = {
       },
       {
         name = "destRaidMarkIndex",
-        display = L["Dest Raid Mark Index"],
+        display = WeakAuras.newFeatureString .. L["Dest Raid Mark Index"],
         init = "WeakAuras.RaidFlagToIndex(destRaidFlags)",
         test = "true",
         store = true,
@@ -3602,7 +3602,7 @@ Private.event_prototypes = {
       },
       {
         name = "destRaidMark",
-        display = L["Dest Raid Mark"],
+        display = WeakAuras.newFeatureString .. L["Dest Raid Mark"],
         test = "true",
         init = "destRaidMarkIndex > 0 and '{rt'..destRaidMarkIndex..'}' or ''",
         store = true,
