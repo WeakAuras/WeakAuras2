@@ -1474,6 +1474,9 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     role = "none"
     if WeakAuras.IsWrathClassic() then
       role = UnitGroupRolesAssigned("player")
+      if role == "NONE" then
+        role = GetTalentGroupRole(GetActiveTalentGroup()) or "NONE"
+      end
       vehicle = UnitInVehicle('player') or UnitOnTaxi('player')
       vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar() or HasVehicleActionBar()
     else
