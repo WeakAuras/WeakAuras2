@@ -1781,7 +1781,7 @@ Private.event_prototypes = {
       },
       {
         name = "role",
-        display = L["Assigned Role"],
+        display = WeakAuras.IsWrathClassic() and L["Assigned Role"] or L["Spec Role"],
         type = "select",
         init = "UnitGroupRolesAssigned(unit)",
         values = "role_types",
