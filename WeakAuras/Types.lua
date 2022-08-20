@@ -1314,6 +1314,18 @@ Private.combatlog_raid_mark_check_type = {
   L["Any"]
 }
 
+Private.combatlog_raidFlags = {
+  [0] = 0,
+  [1] = 1,
+  [2] = 2,
+  [4] = 3,
+  [8] = 4,
+  [16] = 5,
+  [32] = 6,
+  [64] = 7,
+  [128] = 8,
+}
+
 Private.raid_mark_check_type = CopyTable(Private.combatlog_raid_mark_check_type)
 Private.raid_mark_check_type[9] = nil
 
