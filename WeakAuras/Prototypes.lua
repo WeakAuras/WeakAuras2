@@ -136,6 +136,10 @@ function WeakAuras.TestSchool(spellSchool, test)
   return spellSchool == test
 end
 
+function WeakAuras.RaidFlagToIndex(flag)
+  return Private.combatlog_raidFlags[flag] or 0
+end
+
 local function get_zoneId_list()
   if WeakAuras.IsClassic() then return "" end
   local currentmap_id = C_Map.GetBestMapForUnit("player")
@@ -3455,6 +3459,22 @@ Private.event_prototypes = {
         end
       },
       {
+        name = "sourceRaidMarkIndex",
+        display = WeakAuras.newFeatureString .. L["Source Raid Mark Index"],
+        init = "WeakAuras.RaidFlagToIndex(sourceRaidFlags)",
+        test = "true",
+        store = true,
+        hidden = true,
+      },
+      {
+        name = "sourceRaidMark",
+        display = WeakAuras.newFeatureString .. L["Source Raid Mark"],
+        test = "true",
+        init = "sourceRaidMarkIndex > 0 and '{rt'..sourceRaidMarkIndex..'}' or ''",
+        store = true,
+        hidden = true,
+      },
+      {
         name = "destGUID",
         init = "arg",
         hidden = "true",
@@ -3571,6 +3591,22 @@ Private.event_prototypes = {
         enable = function(trigger)
           return (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end
+      },
+      {
+        name = "destRaidMarkIndex",
+        display = WeakAuras.newFeatureString .. L["Dest Raid Mark Index"],
+        init = "WeakAuras.RaidFlagToIndex(destRaidFlags)",
+        test = "true",
+        store = true,
+        hidden = true,
+      },
+      {
+        name = "destRaidMark",
+        display = WeakAuras.newFeatureString .. L["Dest Raid Mark"],
+        test = "true",
+        init = "destRaidMarkIndex > 0 and '{rt'..destRaidMarkIndex..'}' or ''",
+        store = true,
+        hidden = true,
       },
       {
         name = "spellId",
