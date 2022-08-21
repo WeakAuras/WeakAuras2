@@ -1244,19 +1244,19 @@ Private.load_prototype = {
         or {"PLAYER_TALENT_UPDATE"},
       inverse = function(load)
         -- Check for multi select!
-        return not WeakAuras.IsWrathClassic() and (load.talent_extraOption == 2 or load.talent_extraOption == 3)
+        return (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail()) and (load.talent_extraOption == 2 or load.talent_extraOption == 3)
       end,
-      extraOption = not WeakAuras.IsWrathClassic() and {
+      extraOption = (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail()) and {
         display = "",
         values = function()
           return Private.talent_extra_option_types
         end
       },
-      control = WeakAuras.IsWrathClassic() and "WeakAurasMiniTalent",
+      control = WeakAuras.IsWrathClassic() and "WeakAurasMiniTalent" or nil,
       multiNoSingle = WeakAuras.IsWrathClassic(), -- no single mode
       multiTristate = WeakAuras.IsWrathClassic(), -- values can be true/false/nil
       multiAll = WeakAuras.IsWrathClassic(), -- require all tests
-      orConjonctionGroup = WeakAuras.IsWrathClassic() and "talent",
+      orConjunctionGroup  = WeakAuras.IsWrathClassic() and "talent",
       multiUseControlWhenFalse = WeakAuras.IsWrathClassic()
     },
     {
@@ -1272,19 +1272,19 @@ Private.load_prototype = {
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
         or {"PLAYER_TALENT_UPDATE"},
       inverse = function(load)
-        return not WeakAuras.IsWrathClassic() and (load.talent2_extraOption == 2 or load.talent2_extraOption == 3)
+        return (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail()) and (load.talent2_extraOption == 2 or load.talent2_extraOption == 3)
       end,
-      extraOption = not WeakAuras.IsWrathClassic() and {
+      extraOption = (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail()) and {
         display = "",
         values = function()
           return Private.talent_extra_option_types
         end,
       },
-      control = WeakAuras.IsWrathClassic() and "WeakAurasMiniTalent",
+      control = WeakAuras.IsWrathClassic() and "WeakAurasMiniTalent" or nil,
       multiNoSingle = WeakAuras.IsWrathClassic(),
       multiTristate = WeakAuras.IsWrathClassic(),
       multiAll = WeakAuras.IsWrathClassic(),
-      orConjonctionGroup = WeakAuras.IsWrathClassic() and "talent",
+      orConjunctionGroup  = WeakAuras.IsWrathClassic() and "talent",
       multiUseControlWhenFalse = WeakAuras.IsWrathClassic()
     },
     {
@@ -1300,19 +1300,19 @@ Private.load_prototype = {
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
         or {"PLAYER_TALENT_UPDATE"},
       inverse = function(load)
-        return not WeakAuras.IsWrathClassic() and (load.talent3_extraOption == 2 or load.talent3_extraOption == 3)
+        return (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail()) and (load.talent3_extraOption == 2 or load.talent3_extraOption == 3)
       end,
-      extraOption = not WeakAuras.IsWrathClassic() and {
+      extraOption = (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail()) and {
         display = "",
         values = function()
           return Private.talent_extra_option_types
         end,
       },
-      control = WeakAuras.IsWrathClassic() and "WeakAurasMiniTalent",
+      control = WeakAuras.IsWrathClassic() and "WeakAurasMiniTalent" or nil,
       multiNoSingle = WeakAuras.IsWrathClassic(),
       multiTristate = WeakAuras.IsWrathClassic(),
       multiAll = WeakAuras.IsWrathClassic(),
-      orConjonctionGroup = WeakAuras.IsWrathClassic() and "talent",
+      orConjunctionGroup  = WeakAuras.IsWrathClassic() and "talent",
       multiUseControlWhenFalse = WeakAuras.IsWrathClassic()
     },
     {

@@ -557,7 +557,7 @@ local function ConstructFunction(prototype, trigger, skipOptional)
   local events = {}
   local init;
   local preambles = ""
-  local orConjonctionGroups = {}
+  local orConjunctionGroups = {}
   if(prototype.init) then
     init = prototype.init(trigger);
   else
@@ -692,9 +692,9 @@ local function ConstructFunction(prototype, trigger, skipOptional)
             if(arg.required) then
               tinsert(required, test);
             elseif test ~= nil then
-              if arg.orConjonctionGroup then
-                orConjonctionGroups[arg.orConjonctionGroup] = orConjonctionGroups[arg.orConjonctionGroup] or {}
-                tinsert(orConjonctionGroups[arg.orConjonctionGroup], "("..test..")")
+              if arg.orConjunctionGroup  then
+                orConjunctionGroups[arg.orConjunctionGroup ] = orConjunctionGroups[arg.orConjunctionGroup ] or {}
+                tinsert(orConjunctionGroups[arg.orConjunctionGroup ], "("..test..")")
               else
                 tinsert(tests, test);
               end
@@ -715,8 +715,8 @@ local function ConstructFunction(prototype, trigger, skipOptional)
     end
   end
 
-  for _, orConjonctionGroup in pairs(orConjonctionGroups) do
-    tinsert(tests, "("..table.concat(orConjonctionGroup, " or ")..")")
+  for _, orConjunctionGroup  in pairs(orConjunctionGroups) do
+    tinsert(tests, "("..table.concat(orConjunctionGroup , " or ")..")")
   end
   local ret = preambles .. "return function("..table.concat(input, ", ")..")\n";
   ret = ret..(init or "");
