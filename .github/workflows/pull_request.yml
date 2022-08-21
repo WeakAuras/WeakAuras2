@@ -17,6 +17,11 @@ jobs:
           args: "--no-color -q"
           annotate: warning
 
+      - uses: JohnnyMorganz/stylua-action@1.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --check .
+
       - name: Update Build Date
         run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
 
