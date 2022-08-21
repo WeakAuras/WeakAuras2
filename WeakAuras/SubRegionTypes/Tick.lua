@@ -1,12 +1,14 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
-local L = WeakAuras.L;
+local L = WeakAuras.L
 
 local default = function()
   return {
     tick_visible = true,
-    tick_color = {1, 1, 1, 1},
+    tick_color = { 1, 1, 1, 1 },
     tick_placement_mode = "AtValue",
     tick_placement = "50",
     automatic_length = true,
@@ -133,7 +135,7 @@ local funcs = {
       self.trigger_total = nil
     end
     self:UpdateVisible()
-    self:UpdateTickPlacement();
+    self:UpdateTickPlacement()
     self:UpdateTimerTick()
   end,
   OrientationChanged = function(self)
@@ -264,7 +266,7 @@ local funcs = {
       offset = -offset
     end
 
-    if (self.vertical) then
+    if self.vertical then
       offsety = offset
     else
       offsetx = offset
@@ -321,8 +323,8 @@ local funcs = {
     end
   end,
   UpdateTickRotation = function(self)
-      local rad = math.rad(self.tick_rotation)
-      self.texture:SetRotation(rad)
+    local rad = math.rad(self.tick_rotation)
+    self.texture:SetRotation(rad)
   end,
   SetTickMirror = function(self, mirror)
     if self.mirror ~= mirror then
@@ -332,9 +334,9 @@ local funcs = {
   end,
   UpdateTickMirror = function(self)
     if self.mirror then
-      self.texture:SetTexCoord(0,  1,  1,  1,  0,  0,  1,  0)
+      self.texture:SetTexCoord(0, 1, 1, 1, 0, 0, 1, 0)
     else
-      self.texture:SetTexCoord(0,  0,  1,  0,  0,  1,  1,  1)
+      self.texture:SetTexCoord(0, 0, 1, 0, 0, 1, 1, 1)
     end
   end,
   SetTickBlendMode = function(self, mode)
@@ -353,13 +355,12 @@ local funcs = {
 }
 
 local function modify(parent, region, parentData, data, first)
-
   region:SetParent(parent)
   region.orientation = parent.effectiveOrientation
   region.inverse = parentData.inverse
   region.trigger_inverse = false
   region.vertical = region.orientation == "VERTICAL" or region.orientation == "VERTICAL_INVERSE"
-  if (region.vertical) then
+  if region.vertical then
     region.parentMinorSize, region.parentMajorSize = parent.bar:GetRealSize()
   else
     region.parentMajorSize, region.parentMinorSize = parent.bar:GetRealSize()
@@ -409,4 +410,4 @@ local function supports(regionType)
   return regionType == "aurabar"
 end
 
-WeakAuras.RegisterSubRegionType("subtick", L["Tick"], supports, create, modify, onAcquire, onRelease, default, nil, properties);
+WeakAuras.RegisterSubRegionType("subtick", L["Tick"], supports, create, modify, onAcquire, onRelease, default, nil, properties)

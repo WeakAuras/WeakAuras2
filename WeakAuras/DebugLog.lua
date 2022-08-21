@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
@@ -44,12 +46,12 @@ function Private.DebugLog.Print(uid, text, ...)
   if enabled[uid] then
     local log = debugLogs[uid]
     tinsert(log, "")
-    if select('#', ...) == 0 then
+    if select("#", ...) == 0 then
       serialize(log, text)
     else
       serialize(log, text)
-      local texts = {...}
-      for i = 1, select('#', ...) do
+      local texts = { ... }
+      for i = 1, select("#", ...) do
         local v = select(i, ...)
         serialize(log, v)
       end
@@ -68,7 +70,7 @@ end
 function Private.DebugLog.Clear(uid)
   if enabled[uid] then
     debugLogs[uid] = {
-      AddMessage = AddMessage
+      AddMessage = AddMessage,
     }
     -- Dance to clear a potential console message from the AuraWarnings
     Private.AuraWarnings.UpdateWarning(uid, "Debug Log", "info")
@@ -83,7 +85,7 @@ function Private.DebugLog.SetEnabled(uid, enable)
   enabled[uid] = enable
   if enable then
     debugLogs[uid] = {
-      AddMessage = AddMessage
+      AddMessage = AddMessage,
     }
     Private.AuraWarnings.UpdateWarning(uid, "Debug Log", "info", L["Debug Logging enabled"])
   else
@@ -108,5 +110,3 @@ local function OnDelete(_, uid)
 end
 
 Private.callbacks:RegisterCallback("Delete", OnDelete)
-
-

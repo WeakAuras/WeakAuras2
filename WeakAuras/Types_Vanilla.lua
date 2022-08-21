@@ -1,8 +1,10 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
-local WeakAuras = WeakAuras;
-local L = WeakAuras.L;
+local WeakAuras = WeakAuras
+local L = WeakAuras.L
 
 local encounter_list = ""
 function Private.InitializeEncounterAndZoneLists()
@@ -13,15 +15,15 @@ function Private.InitializeEncounterAndZoneLists()
     {
       L["Black Wing Lair"],
       {
-          { L["Razorgore the Untamed"], 610 },
-          { L["Vaelastrasz the Corrupt"], 611 },
-          { L["Broodlord Lashlayer"], 612 },
-          { L["Firemaw"], 613 },
-          { L["Ebonroc"], 614 },
-          { L["Flamegor"], 615 },
-          { L["Chromaggus"], 616 },
-          { L["Nefarian"], 617 }
-      }
+        { L["Razorgore the Untamed"], 610 },
+        { L["Vaelastrasz the Corrupt"], 611 },
+        { L["Broodlord Lashlayer"], 612 },
+        { L["Firemaw"], 613 },
+        { L["Ebonroc"], 614 },
+        { L["Flamegor"], 615 },
+        { L["Chromaggus"], 616 },
+        { L["Nefarian"], 617 },
+      },
     },
     {
       L["Molten Core"],
@@ -35,8 +37,8 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Sulfuron Harbinger"], 669 },
         { L["Golemagg the Incinerator"], 670 },
         { L["Majordomo Executus"], 671 },
-        { L["Ragnaros"], 672 }
-      }
+        { L["Ragnaros"], 672 },
+      },
     },
     {
       L["Ahn'Qiraj"],
@@ -49,8 +51,8 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Princess Huhuran"], 714 },
         { L["Twin Emperors"], 715 },
         { L["Ouro"], 716 },
-        { L["C'thun"], 717 }
-      }
+        { L["C'thun"], 717 },
+      },
     },
     {
       L["Ruins of Ahn'Qiraj"],
@@ -60,8 +62,8 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Moam"], 720 },
         { L["Buru the Gorger"], 721 },
         { L["Ayamiss the Hunter"], 722 },
-        { L["Ossirian the Unscarred"], 723 }
-      }
+        { L["Ossirian the Unscarred"], 723 },
+      },
     },
     {
       L["Zul'Gurub"],
@@ -75,14 +77,14 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Gahz'ranka"], 790 },
         { L["High Priestess Arlokk"], 791 },
         { L["Jin'do the Hexxer"], 792 },
-        { L["Hakkar"], 793 }
-      }
+        { L["Hakkar"], 793 },
+      },
     },
     {
       L["Onyxia's Lair"],
       {
-        { L["Onyxia"], 1084 }
-      }
+        { L["Onyxia"], 1084 },
+      },
     },
     {
       L["Naxxramas"],
@@ -106,14 +108,14 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Thaddius"], 1120 },
         -- Frostwyrm Lair
         { L["Sapphiron"], 1119 },
-        { L["Kel'Thuzad"], 1114 }
-      }
-    }
+        { L["Kel'Thuzad"], 1114 },
+      },
+    },
   }
   for _, raid in ipairs(raids) do
     encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, raid[1])
     for _, boss in ipairs(raid[2]) do
-        encounter_list = ("%s%s: %d\n"):format(encounter_list, boss[1], boss[2])
+      encounter_list = ("%s%s: %d\n"):format(encounter_list, boss[1], boss[2])
     end
     encounter_list = encounter_list .. "\n"
   end

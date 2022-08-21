@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
@@ -32,7 +34,7 @@ local function UpdateWarning(uid, key, severity, message, printOnConsole)
   if severity and message then
     warnings[uid][key] = {
       severity = severity,
-      message = message
+      message = message,
     }
     Private.callbacks:Fire("AuraWarningsUpdated", uid)
   else
@@ -50,21 +52,21 @@ local severityLevel = {
   info = 0,
   sound = 1,
   warning = 2,
-  error = 3
+  error = 3,
 }
 
 local icons = {
   info = [[Interface/friendsframe/informationicon.blp]],
   sound = [[chatframe-button-icon-voicechat]],
   warning = [[Interface/buttons/adventureguidemicrobuttonalert.blp]],
-  error =  [[Interface/DialogFrame/UI-Dialog-Icon-AlertNew]]
+  error = [[Interface/DialogFrame/UI-Dialog-Icon-AlertNew]],
 }
 
 local titles = {
   info = L["Information"],
   sound = L["Sound"],
   warning = L["Warning"],
-  error = L["Error"]
+  error = L["Error"],
 }
 
 local function AddMessages(result, messages, icon, mixedSeverity)

@@ -16,7 +16,7 @@ local flavorFromTocToNumber = {
   Vanilla = 1,
   TBC = 2,
   Wrath = 3,
-  Mainline = 10
+  Mainline = 10,
 }
 local flavor = flavorFromTocToNumber[flavorFromToc]
 
@@ -68,7 +68,6 @@ function WeakAuras.IsWrathOrRetail()
   return WeakAuras.IsRetail() or WeakAuras.IsWrathClassic()
 end
 
-
 WeakAuras.prettyPrint = function(...)
   print("|cff9900ffWeakAuras:|r ", ...)
 end
@@ -81,7 +80,7 @@ local libsAreOk = true
 do
   local StandAloneLibs = {
     "Archivist",
-    "LibStub"
+    "LibStub",
   }
   local LibStubLibs = {
     "CallbackHandler-1.0",
@@ -112,16 +111,16 @@ do
   end
   for _, lib in ipairs(StandAloneLibs) do
     if not lib then
-        libsAreOk = false
-        WeakAuras.prettyPrint("Missing library:", lib)
+      libsAreOk = false
+      WeakAuras.prettyPrint("Missing library:", lib)
     end
   end
   if LibStub then
     for _, lib in ipairs(LibStubLibs) do
-        if not LibStub:GetLibrary(lib, true) then
-          libsAreOk = false
-          WeakAuras.prettyPrint("Missing library:", lib)
-        end
+      if not LibStub:GetLibrary(lib, true) then
+        libsAreOk = false
+        WeakAuras.prettyPrint("Missing library:", lib)
+      end
     end
   else
     libsAreOk = false
@@ -133,43 +132,34 @@ function WeakAuras.IsLibsOK()
 end
 
 if not WeakAuras.IsLibsOK() then
-  C_Timer.After(1, function() WeakAuras.prettyPrint("WeakAuras is missing necessary libraries. Please reinstall a proper package.") end)
+  C_Timer.After(1, function()
+    WeakAuras.prettyPrint("WeakAuras is missing necessary libraries. Please reinstall a proper package.")
+  end)
 end
 
 -- These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile
-function WeakAuras.RegisterRegionType()
-end
+function WeakAuras.RegisterRegionType() end
 
-function WeakAuras.RegisterRegionOptions()
-end
+function WeakAuras.RegisterRegionOptions() end
 
-function Private.StartProfileSystem()
-end
+function Private.StartProfileSystem() end
 
-function Private.StartProfileAura()
-end
+function Private.StartProfileAura() end
 
-function Private.StopProfileSystem()
-end
+function Private.StopProfileSystem() end
 
-function Private.StopProfileAura()
-end
+function Private.StopProfileAura() end
 
-function Private.StartProfileUID()
-end
+function Private.StartProfileUID() end
 
-function Private.StopProfileUID()
-end
+function Private.StopProfileUID() end
 
 -- If WeakAuras shuts down due to being installed on the wrong target, keep the bindings from erroring
-function WeakAuras.StartProfile()
-end
+function WeakAuras.StartProfile() end
 
-function WeakAuras.StopProfile()
-end
+function WeakAuras.StopProfile() end
 
-function WeakAuras.PrintProfile()
-end
+function WeakAuras.PrintProfile() end
 
 function WeakAuras.CountWagoUpdates()
   -- XXX this is to work around the Companion app trying to use our stuff!

@@ -1,8 +1,10 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
-local WeakAuras = WeakAuras;
-local L = WeakAuras.L;
+local WeakAuras = WeakAuras
+local L = WeakAuras.L
 
 local encounter_list = ""
 function Private.InitializeEncounterAndZoneLists()
@@ -24,20 +26,20 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Chess Event"], 660 },
         { L["Prince Malchezaar"], 661 },
         { L["Nightbane"], 662 },
-      }
+      },
     },
     {
       L["Gruul's Lair"],
       {
         { L["High King Maulgar"], 649 },
         { L["Gruul the Dragonkiller"], 650 },
-      }
+      },
     },
     {
       L["Magtheridon's Lair"],
       {
         { L["Magtheridon"], 651 },
-      }
+      },
     },
     {
       L["Coilfang: Serpentshrine Cavern"],
@@ -48,7 +50,7 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Fathom-Lord Karathress"], 626 },
         { L["Morogrim Tidewalker"], 627 },
         { L["Lady Vashj"], 628 },
-      }
+      },
     },
     {
       L["Tempest Keep"],
@@ -57,7 +59,7 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Void Reaver"], 731 },
         { L["High Astromancer Solarian"], 732 },
         { L["Kael'thas Sunstrider"], 733 },
-      }
+      },
     },
     {
       L["The Battle for Mount Hyjal"],
@@ -67,7 +69,7 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Kaz'rogal"], 620 },
         { L["Azgalor"], 621 },
         { L["Archimonde"], 622 },
-      }
+      },
     },
     {
       L["Black Temple"],
@@ -81,7 +83,7 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Mother Shahraz"], 607 },
         { L["The Illidari Council"], 608 },
         { L["Illidan Stormrage"], 609 },
-      }
+      },
     },
     {
       L["Zul'Aman"],
@@ -92,7 +94,7 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Halazzi"], 1192 },
         { L["Hex Lord Malacrass"], 1193 },
         { L["Daakara"], 1194 },
-      }
+      },
     },
     {
       L["The Sunwell Plateau"],
@@ -103,14 +105,14 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Eredar Twins"], 727 },
         { L["M'uru"], 728 },
         { L["Kil'jaeden"], 729 },
-      }
-    }
+      },
+    },
   }
 
   for _, raid in ipairs(raids) do
     encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, raid[1])
     for _, boss in ipairs(raid[2]) do
-        encounter_list = ("%s%s: %d\n"):format(encounter_list, boss[1], boss[2])
+      encounter_list = ("%s%s: %d\n"):format(encounter_list, boss[1], boss[2])
     end
     encounter_list = encounter_list .. "\n"
   end
@@ -121,7 +123,6 @@ end
 function Private.get_encounters_list()
   return encounter_list
 end
-
 
 function Private.get_zoneId_list()
   return ""
