@@ -5,20 +5,13 @@ local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(widgetType) or 0) >= widgetVersion then return end
 local L = WeakAuras.L
 
-local iconSize = 32
-local buttonSize = 37
+local buttonSize = 32
 local buttonSizePadded = 45
 
 local function CreateTalentButton(parent)
     local button = CreateFrame("Button", nil, parent)
     button.obj = parent
     button:SetSize(buttonSize, buttonSize)
-
-    local icon = button:CreateTexture(nil, "ARTWORK")
-    icon:SetSize(iconSize, iconSize)
-    icon:SetPoint("CENTER", button)
-    icon:Show()
-    button.icon = icon
 
     local cover = button:CreateTexture(nil, "OVERLAY")
     cover:SetTexture("interface/buttons/checkbuttonglow")
@@ -27,11 +20,14 @@ local function CreateTalentButton(parent)
     cover:SetBlendMode("ADD")
     cover:Hide()
     button.cover = cover
-    button:SetHighlightAtlas("Talent-Highlight", "ADD")
+    button:SetHighlightTexture("Interface/Buttons/ButtonHilight-Square", "ADD")
     function button:Yellow()
         self.cover:Show()
         self.cover:SetVertexColor(1, 1, 0, 1)
-        self.icon:SetVertexColor(1,1,1,1)
+        local normalTexture = self:GetNormalTexture()
+        if normalTexture then
+            normalTexture:SetVertexColor(1,1,1,1)
+        end
         if self.line1 then
             self.line1:Hide()
             self.line2:Hide()
@@ -40,18 +36,21 @@ local function CreateTalentButton(parent)
     function button:Red()
         self.cover:Show()
         self.cover:SetVertexColor(1, 0, 0, 1)
-        self.icon:SetVertexColor(1,0,0,1)
+        local normalTexture = self:GetNormalTexture()
+        if normalTexture then
+            normalTexture:SetVertexColor(1,0,0,1)
+        end
         if not self.line1 then
             local line1 = button:CreateLine()
             line1:SetColorTexture(1, 0, 0, 1)
-            line1:SetStartPoint("TOPLEFT", 5, -5)
-            line1:SetEndPoint("BOTTOMRIGHT", -5, 5)
+            line1:SetStartPoint("TOPLEFT", 3, -3)
+            line1:SetEndPoint("BOTTOMRIGHT", -3, 3)
             line1:SetBlendMode("ADD")
             line1:SetThickness(2)
             local line2 = button:CreateLine()
             line2:SetColorTexture(1, 0, 0, 1)
-            line2:SetStartPoint("TOPRIGHT", -5, -5)
-            line2:SetEndPoint("BOTTOMLEFT", 5, 5)
+            line2:SetStartPoint("TOPRIGHT", -3, -3)
+            line2:SetEndPoint("BOTTOMLEFT", 3, 3)
             line2:SetBlendMode("ADD")
             line2:SetThickness(2)
             self.line1 = line1
@@ -62,7 +61,10 @@ local function CreateTalentButton(parent)
     end
     function button:Clear()
         self.cover:Hide()
-        self.icon:SetVertexColor(.3,.3,.3,1)
+        local normalTexture = self:GetNormalTexture()
+        if normalTexture then
+            normalTexture:SetVertexColor(.3,.3,.3,1)
+        end
         if self.line1 then
             self.line1:Hide()
             self.line2:Hide()
@@ -132,7 +134,7 @@ local function TalentFrame_Update(self)
                 end
                 button.tier = tier
                 button.column = column
-                button.icon:SetTexture(icon)
+                button:SetNormalTexture(icon)
                 button.spellId = spellId
                 button:UpdateTexture()
                 button:ClearAllPoints()
