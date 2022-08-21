@@ -522,15 +522,12 @@ local function ConstructTextEditor(frame)
       end
   )
 
-  -- CTRL + S saves and closes, ESC cancels and closes
+  -- CTRL + S saves and closes
   editor.editBox:HookScript(
     "OnKeyDown",
     function(_, key)
       if IsControlKeyDown() and key == "S" then
         group:Close()
-      end
-      if key == "ESCAPE" then
-        group:CancelClose()
       end
     end
   )
