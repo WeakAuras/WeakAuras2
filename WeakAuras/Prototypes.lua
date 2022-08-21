@@ -3459,7 +3459,7 @@ Private.event_prototypes = {
         end
       },
       {
-        name = "sourceMarkIndex",
+        name = "sourceRaidMarkIndex",
         display = WeakAuras.newFeatureString .. L["Source unit's raid mark index"],
         init = "WeakAuras.RaidFlagToIndex(sourceRaidFlags)",
         test = "true",
@@ -3467,10 +3467,10 @@ Private.event_prototypes = {
         hidden = true,
       },
       {
-        name = "sourceMarkTexture",
+        name = "sourceRaidMarkTexture",
         display = WeakAuras.newFeatureString .. L["Source unit's raid mark texture"],
         test = "true",
-        init = "sourceMarkIndex > 0 and '{rt'..sourceMarkIndex..'}' or ''",
+        init = "sourceRaidMarkIndex > 0 and '{rt'..sourceRaidMarkIndex..'}' or ''",
         store = true,
         hidden = true,
       },
@@ -3593,7 +3593,7 @@ Private.event_prototypes = {
         end
       },
       {
-        name = "destMarkIndex",
+        name = "destRaidMarkIndex",
         display = WeakAuras.newFeatureString .. L["Destination unit's raid mark index"],
         init = "WeakAuras.RaidFlagToIndex(destRaidFlags)",
         test = "true",
@@ -3604,10 +3604,10 @@ Private.event_prototypes = {
         end,
       },
       {
-        name = "destMarkTexture",
+        name = "destRaidMarkTexture",
         display = WeakAuras.newFeatureString .. L["Destination unit's raid mark texture"],
         test = "true",
-        init = "destMarkIndex > 0 and '{rt'..destMarkIndex..'}' or ''",
+        init = "destRaidMarkIndex > 0 and '{rt'..destRaidMarkIndex..'}' or ''",
         store = true,
         hidden = true,
         enable = function(trigger)
