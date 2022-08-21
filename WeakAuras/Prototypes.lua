@@ -3467,7 +3467,7 @@ Private.event_prototypes = {
         hidden = true,
       },
       {
-        name = "sourceRaidMarkTexture",
+        name = "sourceRaidMark",
         display = WeakAuras.newFeatureString .. L["Source unit's raid mark texture"],
         test = "true",
         init = "sourceRaidMarkIndex > 0 and '{rt'..sourceRaidMarkIndex..'}' or ''",
@@ -3604,7 +3604,7 @@ Private.event_prototypes = {
         end,
       },
       {
-        name = "destRaidMarkTexture",
+        name = "destRaidMark",
         display = WeakAuras.newFeatureString .. L["Destination unit's raid mark texture"],
         test = "true",
         init = "destRaidMarkIndex > 0 and '{rt'..destRaidMarkIndex..'}' or ''",
