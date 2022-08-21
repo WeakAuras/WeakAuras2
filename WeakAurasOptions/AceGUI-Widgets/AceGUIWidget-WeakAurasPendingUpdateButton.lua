@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 local L = WeakAuras.L
 
@@ -16,27 +18,27 @@ local function Hide_Tooltip()
 end
 
 local function Show_Long_Tooltip(owner, description)
-  GameTooltip:SetOwner(owner, "ANCHOR_NONE");
-  GameTooltip:SetPoint("LEFT", owner, "RIGHT");
-  GameTooltip:ClearLines();
-  local line = 1;
-  for i,v in pairs(description) do
-    if(type(v) == "string") then
-      if(line > 1) then
-        GameTooltip:AddLine(v, 1, 1, 1, 1);
+  GameTooltip:SetOwner(owner, "ANCHOR_NONE")
+  GameTooltip:SetPoint("LEFT", owner, "RIGHT")
+  GameTooltip:ClearLines()
+  local line = 1
+  for i, v in pairs(description) do
+    if type(v) == "string" then
+      if line > 1 then
+        GameTooltip:AddLine(v, 1, 1, 1, 1)
       else
-        GameTooltip:AddLine(v);
+        GameTooltip:AddLine(v)
       end
-    elseif(type(v) == "table") then
-      if(i == 1) then
-        GameTooltip:AddDoubleLine(v[1], v[2]..(v[3] and (" |T"..v[3]..":12:12:0:0:64:64:4:60:4:60|t") or ""));
+    elseif type(v) == "table" then
+      if i == 1 then
+        GameTooltip:AddDoubleLine(v[1], v[2] .. (v[3] and (" |T" .. v[3] .. ":12:12:0:0:64:64:4:60:4:60|t") or ""))
       else
-        GameTooltip:AddDoubleLine(v[1], v[2]..(v[3] and (" |T"..v[3]..":12:12:0:0:64:64:4:60:4:60|t") or ""), 1, 1, 1, 1, 1, 1, 1, 1);
+        GameTooltip:AddDoubleLine(v[1], v[2] .. (v[3] and (" |T" .. v[3] .. ":12:12:0:0:64:64:4:60:4:60|t") or ""), 1, 1, 1, 1, 1, 1, 1, 1)
       end
     end
-    line = line + 1;
+    line = line + 1
   end
-  GameTooltip:Show();
+  GameTooltip:Show()
 end
 
 --[[-----------------------------------------------------------------------------
@@ -86,32 +88,30 @@ local methods = {
     wipe(self.menu)
     for auraId in pairs(self.linkedAuras) do
       if not self.linkedChildren[auraId] then
-        tinsert(self.menu,
-          {
-            text = auraId,
-            notCheckable = true,
-            hasArrow = true,
-            menuList = {
-              {
-                text = L["Update"],
-                notCheckable = true,
-                func = function()
-                  local auraData = WeakAuras.GetData(auraId)
-                  if auraData then
-                    WeakAuras.Import(self.companionData.encoded, auraData)
-                  end
+        tinsert(self.menu, {
+          text = auraId,
+          notCheckable = true,
+          hasArrow = true,
+          menuList = {
+            {
+              text = L["Update"],
+              notCheckable = true,
+              func = function()
+                local auraData = WeakAuras.GetData(auraId)
+                if auraData then
+                  WeakAuras.Import(self.companionData.encoded, auraData)
                 end
-              },
-              {
-                text = L["Ignore updates"],
-                notCheckable = true,
-                func = function()
-                  StaticPopup_Show("WEAKAURAS_CONFIRM_IGNORE_UPDATES", "", "", auraId)
-                end
-              }
-            }
-          }
-        )
+              end,
+            },
+            {
+              text = L["Ignore updates"],
+              notCheckable = true,
+              func = function()
+                StaticPopup_Show("WEAKAURAS_CONFIRM_IGNORE_UPDATES", "", "", auraId)
+              end,
+            },
+          },
+        })
       end
     end
   end,
@@ -146,46 +146,46 @@ local methods = {
     self.data = nil
   end,
   ["SetNormalTooltip"] = function(self)
-    local data = self.data;
-    local namestable = {};
+    local data = self.data
+    local namestable = {}
 
-    local hasDescription = data.desc and data.desc ~= "";
-    local hasUrl = data.url and data.url ~= "";
-    local hasVersion = (data.semver and data.semver ~= "") or (data.version and data.version ~= "");
+    local hasDescription = data.desc and data.desc ~= ""
+    local hasUrl = data.url and data.url ~= ""
+    local hasVersion = (data.semver and data.semver ~= "") or (data.version and data.version ~= "")
     local hasVersionNote = self.companionData.versionNote and self.companionData.versionNote ~= ""
 
-    if(hasDescription or hasUrl or hasVersion or hasVersionNote) then
+    if hasDescription or hasUrl or hasVersion or hasVersionNote then
       tinsert(namestable, " ")
     end
 
     if hasVersionNote then
-      tinsert(namestable, "|cFFFFD100"..self.companionData.versionNote)
+      tinsert(namestable, "|cFFFFD100" .. self.companionData.versionNote)
       tinsert(namestable, " ")
     end
 
     for auraId in pairs(self.linkedAuras) do
       if not self.linkedChildren[auraId] then
-        tinsert(namestable, "|cFFFFD100" .. L["Linked aura: "]  .. auraId .. "|r")
+        tinsert(namestable, "|cFFFFD100" .. L["Linked aura: "] .. auraId .. "|r")
       end
     end
     tinsert(namestable, " ")
 
-    if(hasDescription) then
-      tinsert(namestable, "|cFFFFD100"..data.desc)
+    if hasDescription then
+      tinsert(namestable, "|cFFFFD100" .. data.desc)
     end
 
-    if (hasUrl) then
+    if hasUrl then
       tinsert(namestable, "|cFFFFD100" .. data.url .. "|r")
     end
 
-    if (hasVersion) then
-      tinsert(namestable, "|cFFFFD100" .. L["Version: "]  .. (data.semver or data.version) .. "|r")
+    if hasVersion then
+      tinsert(namestable, "|cFFFFD100" .. L["Version: "] .. (data.semver or data.version) .. "|r")
     end
 
-    self:SetDescription({self.companionData.name or self.data.id, self.companionData.author or ""}, unpack(namestable))
+    self:SetDescription({ self.companionData.name or self.data.id, self.companionData.author or "" }, unpack(namestable))
   end,
   ["SetDescription"] = function(self, ...)
-    self.frame.description = {...};
+    self.frame.description = { ... }
   end,
   ["SetTitle"] = function(self, title)
     self.titletext = title
@@ -263,10 +263,10 @@ local methods = {
   end,
   ["SetIcon"] = function(self, icon)
     self.orgIcon = icon
-    if (type(icon) == "string" or type(icon) == "number") then
+    if type(icon) == "string" or type(icon) == "number" then
       self.icon:SetTexture(icon)
       self.icon:Show()
-      if (self.iconRegion and self.iconRegion.Hide) then
+      if self.iconRegion and self.iconRegion.Hide then
         self.iconRegion:Hide()
       end
     else
@@ -320,8 +320,7 @@ local function Constructor()
   local update = CreateFrame("Button", nil, button)
   button.update = update
   update.disabled = true
-  update.func = function()
-  end
+  update.func = function() end
   update:SetNormalTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]])
   update:Disable()
   update:SetWidth(24)
@@ -338,7 +337,7 @@ local function Constructor()
   updateLogo:SetSize(24, 24)
   updateLogo:SetPoint("CENTER", update)
   updateLogo:SetFrameStrata(update:GetFrameStrata())
-  updateLogo:SetFrameLevel(update:GetFrameLevel()-1)
+  updateLogo:SetFrameLevel(update:GetFrameLevel() - 1)
 
   -- Animation On Hover
   local animGroup = update:CreateAnimationGroup()
@@ -349,7 +348,7 @@ local function Constructor()
   animRotate:SetDuration(1)
   animRotate:SetSmoothing("OUT")
   animGroup:SetScript("OnFinished", function()
-    if (MouseIsOver(update)) then
+    if MouseIsOver(update) then
       animGroup:Play()
     end
   end)

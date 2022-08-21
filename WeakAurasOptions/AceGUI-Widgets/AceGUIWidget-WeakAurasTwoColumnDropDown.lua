@@ -1,8 +1,12 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 
 local Type, Version = "WeakAurasTwoColumnDropdown", 4
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
-if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
+if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then
+  return
+end
 
 local function errorhandler(err)
   return geterrorhandler()(err)
@@ -14,38 +18,37 @@ local function safecall(func, ...)
   end
 end
 
-AceGUI:RegisterLayout("TwoColumn",
-  function(content, children)
-    local height = 0
-    local width = content.width or content:GetWidth() or 0
-    for i = 1, #children do
-      local child = children[i]
+AceGUI:RegisterLayout("TwoColumn", function(content, children)
+  local height = 0
+  local width = content.width or content:GetWidth() or 0
+  for i = 1, #children do
+    local child = children[i]
 
-      local frame = child.frame
-      frame:ClearAllPoints()
-      if child.userdata.hideMe then
-        frame:Hide()
-      else
-        frame:Show()
-      end
-      if i == 1 then
-        frame:SetPoint("TOPLEFT", content)
-      else
-        frame:SetPoint("TOPLEFT", children[i-1].frame, "TOPRIGHT")
-      end
-
-      if child.width == "relative" then
-        child:SetWidth(width * child.relWidth)
-
-        if child.DoLayout then
-          child:DoLayout()
-        end
-      end
-
-      height = max(height, frame.height or frame:GetHeight() or 0)
+    local frame = child.frame
+    frame:ClearAllPoints()
+    if child.userdata.hideMe then
+      frame:Hide()
+    else
+      frame:Show()
     end
-    safecall(content.obj.LayoutFinished, content.obj, nil, height)
-  end)
+    if i == 1 then
+      frame:SetPoint("TOPLEFT", content)
+    else
+      frame:SetPoint("TOPLEFT", children[i - 1].frame, "TOPRIGHT")
+    end
+
+    if child.width == "relative" then
+      child:SetWidth(width * child.relWidth)
+
+      if child.DoLayout then
+        child:DoLayout()
+      end
+    end
+
+    height = max(height, frame.height or frame:GetHeight() or 0)
+  end
+  safecall(content.obj.LayoutFinished, content.obj, nil, height)
+end)
 
 local methods = {
   ["OnAcquire"] = function(widget)
@@ -95,11 +98,11 @@ local methods = {
         widget.secondDropDown.userdata.hideMe = false
         widget:DoLayout()
 
-        if (oldValueIndex) then
+        if oldValueIndex then
           widget.secondDropDown:SetValue(oldValueIndex)
 
           local v = widget:GetValue()
-          if (v) then
+          if v then
             widget:Fire("OnValueChanged", v)
           end
         else
@@ -108,7 +111,7 @@ local methods = {
             local index = tIndexOf(secondList, default)
             widget.secondDropDown:SetValue(index)
             local v = widget:GetValue()
-            if (v) then
+            if v then
               widget:Fire("OnValueChanged", v)
             end
           else
@@ -146,8 +149,7 @@ local methods = {
     secondDropDown:SetCallback("OnEnter", FireOnEnter)
     secondDropDown:SetCallback("OnLeave", FireOnLeave)
   end,
-  ["OnRelease"] = function(self)
-  end,
+  ["OnRelease"] = function(self) end,
   ["SetLabel"] = function(self, ...)
     self.firstDropdown:SetLabel(...)
   end,
@@ -161,12 +163,12 @@ local methods = {
         return
       elseif type(treeValue) == "table" then
         for displayName2, key in pairs(treeValue) do
-          if (key == value) then
+          if key == value then
             self.firstDropdown:SetRelativeWidth(0.5)
             self.secondDropDown:SetRelativeWidth(0.5)
             self.secondDropDown.userdata.hideMe = false
             self:DoLayout()
-            local index = tIndexOf(self.userdata.firstList, displayName);
+            local index = tIndexOf(self.userdata.firstList, displayName)
             self.firstDropdown:SetValue(index)
             self.firstDropdown:OnFirstDropdownValueChanged("", index)
             self.secondDropDown:SetValue(tIndexOf(self.userdata.secondList, displayName2))
@@ -222,7 +224,7 @@ local methods = {
     table.sort(firstList)
     self.userdata.firstList = firstList
     self.firstDropdown:SetList(firstList, order, itemType)
-  end
+  end,
 }
 
 local function Constructor()
@@ -237,7 +239,7 @@ local function Constructor()
   local widget = {
     frame = frame,
     content = content,
-    type = Type
+    type = Type,
   }
   for method, func in pairs(methods) do
     widget[method] = func

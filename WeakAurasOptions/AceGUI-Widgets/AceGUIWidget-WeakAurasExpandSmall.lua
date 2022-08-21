@@ -1,13 +1,17 @@
 --[[-----------------------------------------------------------------------------
 Button Widget for our Expand button
 -------------------------------------------------------------------------------]]
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 
 local Type, Version = "WeakAurasExpandSmall", 3
 
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
-if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
+if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then
+  return
+end
 
 -- Lua APIs
 local select, pairs = select, pairs
@@ -130,7 +134,7 @@ local methods = {
     else
       self:SetHeight(self.image:GetHeight())
     end
-    self.expandedBackground:SetHeight(self.frame:GetHeight()*2)
+    self.expandedBackground:SetHeight(self.frame:GetHeight() * 2)
   end,
 
   ["SetAnchor"] = function(self, otherWidget)
@@ -138,7 +142,7 @@ local methods = {
     if otherWidget then
       expandedBackground:SetPoint("BOTTOMLEFT", otherWidget.frame, "TOPLEFT", -4, -2)
     end
-  end
+  end,
 }
 
 local function OnFrameShow(frame)
@@ -166,9 +170,6 @@ local function OnFrameHide(frame)
     end
   end
 end
-
-
-
 
 --[[-----------------------------------------------------------------------------
 Constructor
@@ -221,7 +222,7 @@ local function Constructor()
     label = label,
     image = image,
     frame = frame,
-    type  = Type,
+    type = Type,
     expanded = false,
     expandedBackground = expandedBackground,
     expandedHighlight = expandedHighlight,

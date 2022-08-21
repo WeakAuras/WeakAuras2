@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
@@ -11,9 +13,7 @@ function OptionsPrivate.GetInformationOptions(data)
     type = "group",
     name = L["Information"],
     order = 1,
-    args = {
-
-    }
+    args = {},
   }
 
   local order = 1
@@ -34,9 +34,9 @@ function OptionsPrivate.GetInformationOptions(data)
       set = function(info, newid)
         if data.id ~= newid and not WeakAuras.GetData(newid) then
           local oldid = data.id
-          WeakAuras.Rename(data, newid);
+          WeakAuras.Rename(data, newid)
         end
-      end
+      end,
     }
     order = order + 1
   end
@@ -51,7 +51,7 @@ function OptionsPrivate.GetInformationOptions(data)
   local traverseForUrl = isTmpGroup and OptionsPrivate.Private.TraverseAllChildren or OptionsPrivate.Private.TraverseAll
   for child in traverseForUrl(data) do
     if child.url then
-      desc = desc .. "|cFFE0E000"..child.id..": |r"..child.url .. "\n"
+      desc = desc .. "|cFFE0E000" .. child.id .. ": |r" .. child.url .. "\n"
     end
     if not commonURL then
       commonURL = child.url or ""
@@ -77,21 +77,19 @@ function OptionsPrivate.GetInformationOptions(data)
       WeakAuras.ClearAndUpdateOptions(data.id)
     end,
     desc = sameURL and "" or desc,
-    order = order
+    order = order,
   }
   order = order + 1
 
   if isGroup then
     args.url_note = {
       type = "description",
-      name = isTmpGroup and L["|cFFE0E000Note:|r This sets the URL on all selected auras"]
-                         or L["|cFFE0E000Note:|r This sets the URL on this group and all its members."],
+      name = isTmpGroup and L["|cFFE0E000Note:|r This sets the URL on all selected auras"] or L["|cFFE0E000Note:|r This sets the URL on this group and all its members."],
       width = WeakAuras.doubleWidth,
-      order = order
+      order = order,
     }
     order = order + 1
   end
-
 
   -- Description
   -- One Aura/Group: Edit description of the aura or group
@@ -110,7 +108,7 @@ function OptionsPrivate.GetInformationOptions(data)
         data.desc = v
         WeakAuras.Add(data)
         WeakAuras.ClearAndUpdateOptions(data.id)
-      end
+      end,
     }
     order = order + 1
 
@@ -142,13 +140,13 @@ function OptionsPrivate.GetInformationOptions(data)
         name = message,
         width = WeakAuras.doubleWidth,
         order = order,
-        fontSize = "medium"
+        fontSize = "medium",
       }
       order = order + 1
     end
   end
 
-    -- compatibility Options
+  -- compatibility Options
   args.compabilityTitle = {
     type = "header",
     name = L["Compatibility Options"],
@@ -164,22 +162,18 @@ function OptionsPrivate.GetInformationOptions(data)
     groupOffset = {
       name = L["Offset by 1px"],
       onParent = true,
-      regionType = "group"
-    }
+      regionType = "group",
+    },
   }
 
   local same = {
     ignoreOptionsEventErrors = true,
-    groupOffset = true
+    groupOffset = true,
   }
 
-  local common = {
+  local common = {}
 
-  }
-
-  local mergedDesc = {
-
-  }
+  local mergedDesc = {}
 
   for property, propertyData in pairs(properties) do
     if propertyData.onParent then
@@ -198,8 +192,7 @@ function OptionsPrivate.GetInformationOptions(data)
             effectiveProperty = false
           end
 
-          mergedDesc[property] = (mergedDesc[property] or "") .. "|cFFE0E000" .. child.id .. ": |r"
-          .. (effectiveProperty and "true" or "false") .. "\n"
+          mergedDesc[property] = (mergedDesc[property] or "") .. "|cFFE0E000" .. child.id .. ": |r" .. (effectiveProperty and "true" or "false") .. "\n"
 
           if common[property] == nil then
             common[property] = effectiveProperty
@@ -239,7 +232,7 @@ function OptionsPrivate.GetInformationOptions(data)
           WeakAuras.ClearAndUpdateOptions(data.id)
         end,
         desc = same[property] and "" or mergedDesc[property],
-        order = order
+        order = order,
       }
       order = order + 1
     end
@@ -268,7 +261,7 @@ function OptionsPrivate.GetInformationOptions(data)
 
   for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
     local effectiveDebugLog = child.information.debugLog and true or false
-    debugLogDesc = debugLogDesc .. "|cFFE0E000"..child.id..": |r".. (effectiveDebugLog and "true" or "false") .. "\n"
+    debugLogDesc = debugLogDesc .. "|cFFE0E000" .. child.id .. ": |r" .. (effectiveDebugLog and "true" or "false") .. "\n"
     if commonDebugLog == nil then
       commonDebugLog = effectiveDebugLog
     elseif effectiveDebugLog ~= commonDebugLog then
@@ -293,7 +286,7 @@ function OptionsPrivate.GetInformationOptions(data)
       end
 
       WeakAuras.ClearAndUpdateOptions(data.id)
-    end
+    end,
   }
   order = order + 1
 
@@ -312,7 +305,7 @@ function OptionsPrivate.GetInformationOptions(data)
             haveLogs = true
             fullMessage = fullMessage .. L["Aura: '%s'"]:format(child.id)
             local version = child.semver or child.version
-            if (version) then
+            if version then
               fullMessage = fullMessage .. "\n" .. L["Version: %s"]:format(version)
             end
             fullMessage = fullMessage .. "\n" .. L["Debug Log:"] .. "\n" .. auraLog .. "\n\n"
@@ -324,7 +317,7 @@ function OptionsPrivate.GetInformationOptions(data)
         else
           OptionsPrivate.OpenDebugLog(L["No Logs saved."])
         end
-      end
+      end,
     }
     order = order + 1
 
@@ -337,7 +330,7 @@ function OptionsPrivate.GetInformationOptions(data)
         for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
           OptionsPrivate.Private.DebugLog.Clear(child.uid)
         end
-      end
+      end,
     }
     order = order + 1
   end

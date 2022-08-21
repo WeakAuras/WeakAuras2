@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 
 local L = WeakAuras.L
 
@@ -65,7 +67,8 @@ L["Border Size"] = "Border Size"
 L["Border Style"] = "Border Style"
 L["Bottom Text"] = "Bottom Text"
 L["Button Glow"] = "Button Glow"
-L["Can be a name or a UID (e.g., party1). A name only works on friendly players in your group."] = "Can be a name or a UID (e.g., party1). A name only works on friendly players in your group."
+L["Can be a name or a UID (e.g., party1). A name only works on friendly players in your group."] =
+  "Can be a name or a UID (e.g., party1). A name only works on friendly players in your group."
 L["Cancel"] = "Cancel"
 L["Cat"] = "Cat"
 L["Change the name of this display"] = "Change the name of this display"
@@ -286,7 +289,8 @@ L["Player Character"] = "Player Character"
 L["Play Sound"] = "Play Sound"
 L["Presence (DK)"] = "Presence"
 L["Presence (Rogue)"] = "Presence"
-L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."] = "Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."
+L["Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."] =
+  "Prevents duration information from decreasing when an aura refreshes. May cause problems if used with multiple auras with different durations."
 L["Primary"] = "Primary"
 L["Progress Bar"] = "Progress Bar"
 L["Progress Texture"] = "Progress Texture"
@@ -324,7 +328,8 @@ L["Shows a custom texture"] = "Shows a custom texture"
 L["Shows a progress bar with name, timer, and icon"] = "Shows a progress bar with name, timer, and icon"
 L["Shows a spell icon with an optional cooldown overlay"] = "Shows a spell icon with an optional cooldown overlay"
 L["Shows a texture that changes based on duration"] = "Shows a texture that changes based on duration"
-L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"] = "Shows one or more lines of text, which can include dynamic information such as progress or stacks"
+L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"] =
+  "Shows one or more lines of text, which can include dynamic information such as progress or stacks"
 L["Shows the remaining or expended time for an aura or timed event"] = "Shows the remaining or expended time for an aura or timed event"
 L["Show this group's children"] = "Show this group's children"
 L["Size"] = "Size"
@@ -362,7 +367,8 @@ L["Text Position"] = "Text Position"
 L["Text Settings"] = "Text Settings"
 L["Texture"] = "Texture"
 L["Texture Info"] = "Texture Info"
-L["The children of this group have different display types, so their display options cannot be set as a group."] = "The children of this group have different display types, so their display options cannot be set as a group."
+L["The children of this group have different display types, so their display options cannot be set as a group."] =
+  "The children of this group have different display types, so their display options cannot be set as a group."
 L["The duration of the animation in seconds."] = "The duration of the animation in seconds."
 L["The type of trigger"] = "The type of trigger"
 L["This condition will not be tested"] = "This condition will not be tested"
@@ -370,7 +376,7 @@ L["This display is currently loaded"] = "This display is currently loaded"
 L["This display is not currently loaded"] = "This display is not currently loaded"
 L["This display will only show when |cFF00FF00%s"] = "This display will only show when |cFF00FF00%s"
 L["This display will only show when |cFFFF0000 Not %s"] = "This display will only show when |cFFFF0000 Not %s"
-L["This region of type \"%s\" has no configuration options."] = "This region of type \"%s\" has no configuration options."
+L['This region of type "%s" has no configuration options.'] = 'This region of type "%s" has no configuration options.'
 L["Time in"] = "Time in"
 L["Timer"] = "Timer"
 L["Timer Settings"] = "Timer Settings"
@@ -392,11 +398,12 @@ L["Type"] = "Type"
 L["Ungroup"] = "Ungroup"
 L["Unholy"] = "Unholy"
 L["Unit Exists"] = "Unit Exists"
-L["Unlike the start or finish animations, the main animation will loop over and over until the display is hidden."] = "Unlike the start or finish animations, the main animation will loop over and over until the display is hidden."
+L["Unlike the start or finish animations, the main animation will loop over and over until the display is hidden."] =
+  "Unlike the start or finish animations, the main animation will loop over and over until the display is hidden."
 L["Unstealthed"] = "Unstealthed"
 L["Update Custom Text On..."] = "Update Custom Text On..."
 L["Use Full Scan (High CPU)"] = "Use Full Scan (High CPU)"
-L["Use tooltip \"size\" instead of stacks"] = "Use tooltip \"size\" instead of stacks"
+L['Use tooltip "size" instead of stacks'] = 'Use tooltip "size" instead of stacks'
 L["Vertical Align"] = "Vertical Align"
 L["View"] = "View"
 L["Width"] = "Width"

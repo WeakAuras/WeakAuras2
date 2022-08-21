@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
@@ -15,7 +17,7 @@ local self_point_types = {
   TOPLEFT = L["Top Left"],
   LEFT = L["Left"],
   CENTER = L["Center"],
-  AUTO = L["Automatic"]
+  AUTO = L["Automatic"],
 }
 
 local function createOptions(parentData, data, index, subIndex)
@@ -55,7 +57,7 @@ local function createOptions(parentData, data, index, subIndex)
         data.text_text = OptionsPrivate.Private.ReplaceLocalizedRaidMarkers(v)
         WeakAuras.Add(parentData)
         WeakAuras.ClearAndUpdateOptions(parentData.id)
-      end
+      end,
     },
     text_font = {
       type = "select",
@@ -79,9 +81,7 @@ local function createOptions(parentData, data, index, subIndex)
       control = "WeakAurasExpandSmall",
       name = function()
         local textFlags = OptionsPrivate.Private.font_flags[data.text_fontType]
-        local color = format("%02x%02x%02x%02x",
-                             data.text_shadowColor[4] * 255, data.text_shadowColor[1] * 255,
-                             data.text_shadowColor[2] * 255, data.text_shadowColor[3]*255)
+        local color = format("%02x%02x%02x%02x", data.text_shadowColor[4] * 255, data.text_shadowColor[1] * 255, data.text_shadowColor[2] * 255, data.text_shadowColor[3] * 255)
 
         local textJustify = ""
         if data.text_justify == "CENTER" then
@@ -89,7 +89,7 @@ local function createOptions(parentData, data, index, subIndex)
         elseif data.text_justify == "LEFT" then
           textJustify = " " .. L["and aligned left"]
         elseif data.text_justify == "RIGHT" then
-          textJustify = " " ..  L["and aligned right"]
+          textJustify = " " .. L["and aligned right"]
         end
 
         local textRotate = ""
@@ -107,10 +107,18 @@ local function createOptions(parentData, data, index, subIndex)
           else
             wordWarp = L["eliding"]
           end
-          textWidth = " "..L["and with width |cFFFF0000%s|r and %s"]:format(data.text_fixedWidth, wordWarp)
+          textWidth = " " .. L["and with width |cFFFF0000%s|r and %s"]:format(data.text_fixedWidth, wordWarp)
         end
 
-        local secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s%s"]:format(textFlags, color, data.text_shadowXOffset, data.text_shadowYOffset, textRotate, textJustify, textWidth)
+        local secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s%s"]:format(
+          textFlags,
+          color,
+          data.text_shadowXOffset,
+          data.text_shadowYOffset,
+          textRotate,
+          textJustify,
+          textWidth
+        )
 
         return secondline
       end,
@@ -127,8 +135,8 @@ local function createOptions(parentData, data, index, subIndex)
       imageWidth = 15,
       imageHeight = 15,
       arg = {
-        expanderName = "subtext" .. index .. "#" .. subIndex
-      }
+        expanderName = "subtext" .. index .. "#" .. subIndex,
+      },
     },
 
     text_font_space = {
@@ -136,7 +144,7 @@ local function createOptions(parentData, data, index, subIndex)
       name = "",
       order = 45,
       hidden = hiddenFontExtra,
-      width = indentWidth
+      width = indentWidth,
     },
 
     text_fontType = {
@@ -145,7 +153,7 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Outline"],
       order = 46,
       values = OptionsPrivate.Private.font_flags,
-      hidden = hiddenFontExtra
+      hidden = hiddenFontExtra,
     },
     text_shadowColor = {
       type = "color",
@@ -153,7 +161,7 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth,
       name = L["Shadow Color"],
       order = 47,
-      hidden = hiddenFontExtra
+      hidden = hiddenFontExtra,
     },
 
     text_font_space3 = {
@@ -161,7 +169,7 @@ local function createOptions(parentData, data, index, subIndex)
       name = "",
       order = 47.5,
       hidden = hiddenFontExtra,
-      width = indentWidth
+      width = indentWidth,
     },
     text_shadowXOffset = {
       type = "range",
@@ -171,7 +179,7 @@ local function createOptions(parentData, data, index, subIndex)
       softMax = 15,
       bigStep = 1,
       order = 48,
-      hidden = hiddenFontExtra
+      hidden = hiddenFontExtra,
     },
     text_shadowYOffset = {
       type = "range",
@@ -181,7 +189,7 @@ local function createOptions(parentData, data, index, subIndex)
       softMax = 15,
       bigStep = 1,
       order = 49,
-      hidden = hiddenFontExtra
+      hidden = hiddenFontExtra,
     },
 
     text_font_space4 = {
@@ -189,7 +197,7 @@ local function createOptions(parentData, data, index, subIndex)
       name = "",
       order = 49.5,
       hidden = hiddenFontExtra,
-      width = indentWidth
+      width = indentWidth,
     },
     rotateText = {
       type = "select",
@@ -197,7 +205,7 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Rotate Text"],
       values = OptionsPrivate.Private.text_rotate_types,
       order = 50,
-      hidden = hiddenFontExtra
+      hidden = hiddenFontExtra,
     },
     text_justify = {
       type = "select",
@@ -205,14 +213,14 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Alignment"],
       values = OptionsPrivate.Private.justify_types,
       order = 50.5,
-      hidden = hiddenFontExtra
+      hidden = hiddenFontExtra,
     },
     text_font_space5 = {
       type = "description",
       name = "",
       order = 51,
       hidden = hiddenFontExtra,
-      width = indentWidth
+      width = indentWidth,
     },
     text_automaticWidth = {
       type = "select",
@@ -220,21 +228,23 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Width"],
       order = 51.5,
       values = OptionsPrivate.Private.text_automatic_width,
-      hidden = hiddenFontExtra
+      hidden = hiddenFontExtra,
     },
     text_font_space6 = {
       type = "description",
       name = "",
       order = 52,
       hidden = hiddenFontExtra,
-      width = WeakAuras.normalWidth
+      width = WeakAuras.normalWidth,
     },
     text_font_space7 = {
       type = "description",
       name = "",
       order = 52.5,
       width = indentWidth,
-      hidden = function() return hiddenFontExtra() or data.text_automaticWidth ~= "Fixed" end
+      hidden = function()
+        return hiddenFontExtra() or data.text_automaticWidth ~= "Fixed"
+      end,
     },
     text_fixedWidth = {
       name = L["Width"],
@@ -244,7 +254,9 @@ local function createOptions(parentData, data, index, subIndex)
       min = 1,
       softMax = 200,
       bigStep = 1,
-      hidden = function() return hiddenFontExtra() or data.text_automaticWidth ~= "Fixed" end
+      hidden = function()
+        return hiddenFontExtra() or data.text_automaticWidth ~= "Fixed"
+      end,
     },
     text_wordWrap = {
       type = "select",
@@ -252,7 +264,9 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Overflow"],
       order = 54,
       values = OptionsPrivate.Private.text_word_wrap,
-      hidden = function() return hiddenFontExtra() or data.text_automaticWidth ~= "Fixed" end
+      hidden = function()
+        return hiddenFontExtra() or data.text_automaticWidth ~= "Fixed"
+      end,
     },
 
     text_anchor = {
@@ -262,9 +276,9 @@ local function createOptions(parentData, data, index, subIndex)
       hidden = hiddenFontExtra,
       control = "WeakAurasExpandAnchor",
       arg = {
-        expanderName = "subtext" .. index .. "#" .. subIndex
-      }
-    }
+        expanderName = "subtext" .. index .. "#" .. subIndex,
+      },
+    },
   }
 
   -- Note: Anchor Options need to be generalized once there are multiple sub regions
@@ -288,7 +302,7 @@ local function createOptions(parentData, data, index, subIndex)
       local xOffset = data.text_anchorXOffset or 0
       local yOffset = data.text_anchorYOffset or 0
 
-      if (type(anchorPoint) == "table") then
+      if type(anchorPoint) == "table" then
         anchorPoint = anchorPoint[1] .. "/" .. anchorPoint[2]
       end
 
@@ -319,10 +333,9 @@ local function createOptions(parentData, data, index, subIndex)
       OptionsPrivate.SetCollapsed("subregion", "text_anchors", tostring(index), not collapsed)
     end,
     arg = {
-      expanderName = "subtext_anchor" .. index .. "#" .. subIndex
-    }
+      expanderName = "subtext_anchor" .. index .. "#" .. subIndex,
+    },
   }
-
 
   local hiddenFunction = function()
     return OptionsPrivate.IsCollapsed("subregion", "text_anchors", tostring(index), true)
@@ -333,7 +346,7 @@ local function createOptions(parentData, data, index, subIndex)
     name = "",
     order = 60.15,
     hidden = hiddenFunction,
-    width = indentWidth
+    width = indentWidth,
   }
 
   options.text_selfPoint = {
@@ -342,7 +355,7 @@ local function createOptions(parentData, data, index, subIndex)
     name = L["Anchor"],
     order = 60.2,
     values = self_point_types,
-    hidden = hiddenFunction
+    hidden = hiddenFunction,
   }
 
   options.text_anchorPoint = {
@@ -354,7 +367,7 @@ local function createOptions(parentData, data, index, subIndex)
     order = 60.3,
     values = anchors,
     hidden = hiddenFunction,
-    control = "WeakAurasTwoColumnDropdown"
+    control = "WeakAurasTwoColumnDropdown",
   }
 
   options.text_anchor_space2 = {
@@ -362,7 +375,7 @@ local function createOptions(parentData, data, index, subIndex)
     name = "",
     order = 60.35,
     hidden = hiddenFunction,
-    width = indentWidth
+    width = indentWidth,
   }
 
   options.text_anchorXOffset = {
@@ -373,7 +386,7 @@ local function createOptions(parentData, data, index, subIndex)
     softMin = (-1 * screenWidth),
     softMax = screenWidth,
     bigStep = 10,
-    hidden = hiddenFunction
+    hidden = hiddenFunction,
   }
 
   options.text_anchorYOffset = {
@@ -384,7 +397,7 @@ local function createOptions(parentData, data, index, subIndex)
     softMin = (-1 * screenHeight),
     softMax = screenHeight,
     bigStep = 10,
-    hidden = hiddenFunction
+    hidden = hiddenFunction,
   }
 
   options.text_anchor_anchor = {
@@ -394,8 +407,8 @@ local function createOptions(parentData, data, index, subIndex)
     hidden = hiddenFunction,
     control = "WeakAurasExpandAnchor",
     arg = {
-      expanderName = "subtext_anchor" .. index .. "#" .. subIndex
-    }
+      expanderName = "subtext_anchor" .. index .. "#" .. subIndex,
+    },
   }
 
   local function hideCustomTextOption()
@@ -413,7 +426,9 @@ local function createOptions(parentData, data, index, subIndex)
 
   local commonTextOptions = {
     __title = L["Common Text"],
-    __hidden = function() return hideCustomTextOption() end,
+    __hidden = function()
+      return hideCustomTextOption()
+    end,
     text_customTextUpdate = {
       type = "select",
       width = WeakAuras.doubleWidth,
@@ -421,17 +436,28 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Update Custom Text On..."],
       values = OptionsPrivate.Private.text_check_types,
       order = 3,
-      get = function() return parentData.customTextUpdate or "event" end,
+      get = function()
+        return parentData.customTextUpdate or "event"
+      end,
       set = function(info, v)
         parentData.customTextUpdate = v
         WeakAuras.Add(parentData)
         WeakAuras.ClearAndUpdateOptions(parentData.id)
-      end
+      end,
     },
   }
 
-  OptionsPrivate.commonOptions.AddCodeOption(commonTextOptions, parentData, L["Custom Function"], "customText", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text",
-                          4,  hideCustomTextOption, {"customText"}, false)
+  OptionsPrivate.commonOptions.AddCodeOption(
+    commonTextOptions,
+    parentData,
+    L["Custom Function"],
+    "customText",
+    "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text",
+    4,
+    hideCustomTextOption,
+    { "customText" },
+    false
+  )
 
   -- Add Text Format Options
   local hidden = function()
@@ -487,7 +513,7 @@ local function createOptions(parentData, data, index, subIndex)
     type = "description",
     name = "",
     width = WeakAuras.doubleWidth,
-    hidden = hidden
+    hidden = hidden,
   })
 
   OptionsPrivate.AddUpDownDeleteDuplicate(options, parentData, index, "subtext")

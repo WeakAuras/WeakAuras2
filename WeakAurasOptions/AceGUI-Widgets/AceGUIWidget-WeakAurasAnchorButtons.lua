@@ -1,8 +1,12 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 
 local Type, Version = "WeakAurasAnchorButtons", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
-if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
+if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then
+  return
+end
 
 local directions = { "TOPLEFT", "TOP", "TOPRIGHT", "LEFT", "CENTER", "RIGHT", "BOTTOMLEFT", "BOTTOM", "BOTTOMRIGHT" }
 local buttonSize = 10
@@ -18,7 +22,9 @@ local methods = {
   end,
 
   ["SetValue"] = function(self, text)
-    if not tContains(directions, text) then return end
+    if not tContains(directions, text) then
+      return
+    end
     for direction, button in pairs(self.buttons) do
       if direction == text then
         button.tex:SetVertexColor(0.9, 0.9, 0, 1)
@@ -36,7 +42,7 @@ local methods = {
 
   ["SetLabel"] = function(self, text)
     if text and text ~= "" then
-      self.label:SetText(text);
+      self.label:SetText(text)
       self.label:Show()
     else
       self.label:SetText("")
@@ -49,12 +55,12 @@ local methods = {
   ["SetDisabled"] = function(self, disabled)
     self.disabled = disabled
     if disabled then
-      self.label:SetTextColor(0.5,0.5,0.5)
+      self.label:SetTextColor(0.5, 0.5, 0.5)
       for _, button in pairs(self.buttons) do
         button:EnableMouse(false)
       end
     else
-      self.label:SetTextColor(1,.82,0)
+      self.label:SetTextColor(1, 0.82, 0)
       for _, button in pairs(self.buttons) do
         button:EnableMouse(true)
       end
@@ -76,35 +82,31 @@ local function Constructor()
   frame:SetSize(frameWidth, frameHeight)
   frame:SetFrameStrata("FULLSCREEN_DIALOG")
 
-  local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall");
-  label:SetHeight(titleHeight);
-  label:SetJustifyH("CENTER");
-  label:SetPoint("TOP", frame, "TOP");
+  local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
+  label:SetHeight(titleHeight)
+  label:SetJustifyH("CENTER")
+  label:SetPoint("TOP", frame, "TOP")
 
   local background = CreateFrame("Frame", nil, frame, "BackdropTemplate")
   background:SetSize(frameWidth, frameHeight)
   background:SetPoint("TOP", frame, "TOP", 0, -(titleHeight + 4))
   background:SetBackdrop({
-     bgFile = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite.tga",
-     edgeFile = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite.tga",
-     tile = true,
-     tileEdge = true,
-     --tileSize = 8,
-     edgeSize = 2
-     --insets = { left = 1, right = 1, top = 1, bottom = 1 },
+    bgFile = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite.tga",
+    edgeFile = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite.tga",
+    tile = true,
+    tileEdge = true,
+    --tileSize = 8,
+    edgeSize = 2,
+    --insets = { left = 1, right = 1, top = 1, bottom = 1 },
   })
-  background:SetBackdropColor(0.2,0.2,0.2,0.5)
-  background:SetBackdropBorderColor(1,1,1,0.6)
+  background:SetBackdropColor(0.2, 0.2, 0.2, 0.5)
+  background:SetBackdropBorderColor(1, 1, 1, 0.6)
 
   local buttons = {}
   for _, direction in ipairs(directions) do
     local button = CreateFrame("Button", nil, frame)
     button:SetSize(buttonSize, buttonSize)
-    button:SetPoint(
-      "CENTER",
-      background,
-      direction
-    )
+    button:SetPoint("CENTER", background, direction)
 
     local buttonTex = button:CreateTexture()
     buttonTex:SetAllPoints()
@@ -122,13 +124,13 @@ local function Constructor()
     frame = frame,
     type = Type,
     buttons = buttons,
-    label = label
+    label = label,
   }
   for method, func in pairs(methods) do
     widget[method] = func
   end
 
-  return AceGUI:RegisterAsWidget(widget);
+  return AceGUI:RegisterAsWidget(widget)
 end
 
 AceGUI:RegisterWidgetType(Type, Constructor, Version)

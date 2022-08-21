@@ -1,13 +1,14 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L;
+local L = WeakAuras.L
 local indentWidth = 0.15
 
 local function createOptions(parentData, data, index, subIndex)
-
   local hiddenGlowExtra = function()
-    return OptionsPrivate.IsCollapsed("glow", "glow", "glowextra" .. index, true);
+    return OptionsPrivate.IsCollapsed("glow", "glow", "glowextra" .. index, true)
   end
 
   local options = {
@@ -32,7 +33,9 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Glow Anchor"],
       order = 3,
       values = OptionsPrivate.Private.aurabar_anchor_areas,
-      hidden = function() return parentData.regionType ~= "aurabar" end
+      hidden = function()
+        return parentData.regionType ~= "aurabar"
+      end,
     },
     glowExtraDescription = {
       type = "execute",
@@ -41,35 +44,17 @@ local function createOptions(parentData, data, index, subIndex)
         local line = L["|cFFffcc00Extra Options:|r"]
         local color = L["Default Color"]
         if data.useGlowColor then
-          color = L["|c%02x%02x%02x%02xCustom Color|r"]:format(
-            data.glowColor[4] * 255,
-            data.glowColor[1] * 255,
-            data.glowColor[2] * 255,
-            data.glowColor[3] * 255
-          )
+          color = L["|c%02x%02x%02x%02xCustom Color|r"]:format(data.glowColor[4] * 255, data.glowColor[1] * 255, data.glowColor[2] * 255, data.glowColor[3] * 255)
         end
         if data.glowType == "buttonOverlay" then
           line = ("%s %s"):format(line, color)
         elseif data.glowType == "ACShine" then
-          line = L["%s %s, Particles: %d, Frequency: %0.2f, Scale: %0.2f"]:format(
-            line,
-            color,
-            data.glowLines,
-            data.glowFrequency,
-            data.glowScale
-          )
+          line = L["%s %s, Particles: %d, Frequency: %0.2f, Scale: %0.2f"]:format(line, color, data.glowLines, data.glowFrequency, data.glowScale)
           if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
             line = L["%s, offset: %0.2f;%0.2f"]:format(line, data.glowXOffset, data.glowYOffset)
           end
         elseif data.glowType == "Pixel" then
-          line = L["%s %s, Lines: %d, Frequency: %0.2f, Length: %d, Thickness: %d"]:format(
-            line,
-            color,
-            data.glowLines,
-            data.glowFrequency,
-            data.glowLength,
-            data.glowThickness
-          )
+          line = L["%s %s, Lines: %d, Frequency: %0.2f, Length: %d, Thickness: %d"]:format(line, color, data.glowLines, data.glowFrequency, data.glowLength, data.glowThickness)
           if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
             line = L["%s, Offset: %0.2f;%0.2f"]:format(line, data.glowXOffset, data.glowYOffset)
           end
@@ -82,18 +67,18 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.doubleWidth,
       order = 4,
       image = function()
-        local collapsed = OptionsPrivate.IsCollapsed("glow", "glow", "glowextra" .. index, true);
+        local collapsed = OptionsPrivate.IsCollapsed("glow", "glow", "glowextra" .. index, true)
         return collapsed and "collapsed" or "expanded"
       end,
       imageWidth = 15,
       imageHeight = 15,
       func = function(info, button)
-        local collapsed = OptionsPrivate.IsCollapsed("glow", "glow", "glowextra" .. index, true);
-        OptionsPrivate.SetCollapsed("glow", "glow", "glowextra" .. index, not collapsed);
+        local collapsed = OptionsPrivate.IsCollapsed("glow", "glow", "glowextra" .. index, true)
+        OptionsPrivate.SetCollapsed("glow", "glow", "glowextra" .. index, not collapsed)
       end,
       arg = {
-        expanderName = "glow" .. index .. "#" .. subIndex
-      }
+        expanderName = "glow" .. index .. "#" .. subIndex,
+      },
     },
     glow_space1 = {
       type = "description",
@@ -108,7 +93,7 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Use Custom Color"],
       desc = L["If unchecked, then a default color will be used (usually yellow)"],
       order = 6,
-      hidden = hiddenGlowExtra
+      hidden = hiddenGlowExtra,
     },
     glowColor = {
       type = "color",
@@ -116,8 +101,10 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth,
       name = L["Custom Color"],
       order = 7,
-      disabled = function() return not data.useGlowColor end,
-      hidden = hiddenGlowExtra
+      disabled = function()
+        return not data.useGlowColor
+      end,
+      hidden = hiddenGlowExtra,
     },
     glow_space2 = {
       type = "description",
@@ -134,7 +121,9 @@ local function createOptions(parentData, data, index, subIndex)
       min = 1,
       softMax = 30,
       step = 1,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
+      hidden = function()
+        return hiddenGlowExtra() or data.glowType == "buttonOverlay"
+      end,
     },
     glowFrequency = {
       type = "range",
@@ -144,14 +133,18 @@ local function createOptions(parentData, data, index, subIndex)
       softMin = -2,
       softMax = 2,
       step = 0.05,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
+      hidden = function()
+        return hiddenGlowExtra() or data.glowType == "buttonOverlay"
+      end,
     },
     glow_space3 = {
       type = "description",
       name = "",
       width = indentWidth,
       order = 11,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
+      hidden = function()
+        return hiddenGlowExtra() or data.glowType ~= "Pixel"
+      end,
     },
     glowLength = {
       type = "range",
@@ -161,7 +154,9 @@ local function createOptions(parentData, data, index, subIndex)
       min = 1,
       softMax = 20,
       step = 0.05,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
+      hidden = function()
+        return hiddenGlowExtra() or data.glowType ~= "Pixel"
+      end,
     },
     glowThickness = {
       type = "range",
@@ -171,7 +166,9 @@ local function createOptions(parentData, data, index, subIndex)
       min = 0.05,
       softMax = 20,
       step = 0.05,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
+      hidden = function()
+        return hiddenGlowExtra() or data.glowType ~= "Pixel"
+      end,
     },
     glow_space4 = {
       type = "description",
@@ -188,7 +185,9 @@ local function createOptions(parentData, data, index, subIndex)
       softMin = -100,
       softMax = 100,
       step = 0.5,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
+      hidden = function()
+        return hiddenGlowExtra() or data.glowType == "buttonOverlay"
+      end,
     },
     glowYOffset = {
       type = "range",
@@ -198,7 +197,9 @@ local function createOptions(parentData, data, index, subIndex)
       softMin = -100,
       softMax = 100,
       step = 0.5,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
+      hidden = function()
+        return hiddenGlowExtra() or data.glowType == "buttonOverlay"
+      end,
     },
     glow_space5 = {
       type = "description",
@@ -216,14 +217,18 @@ local function createOptions(parentData, data, index, subIndex)
       softMax = 10,
       step = 0.05,
       isPercent = true,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "ACShine" end,
+      hidden = function()
+        return hiddenGlowExtra() or data.glowType ~= "ACShine"
+      end,
     },
     glowBorder = {
       type = "toggle",
       width = WeakAuras.normalWidth - indentWidth,
       name = L["Border"],
       order = 19,
-      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Pixel" end,
+      hidden = function()
+        return hiddenGlowExtra() or data.glowType ~= "Pixel"
+      end,
     },
 
     glow_expand_anchor = {
@@ -233,9 +238,9 @@ local function createOptions(parentData, data, index, subIndex)
       hidden = hiddenGlowExtra,
       control = "WeakAurasExpandAnchor",
       arg = {
-        expanderName = "glow" .. index .. "#" .. subIndex
-      }
-    }
+        expanderName = "glow" .. index .. "#" .. subIndex,
+      },
+    },
   }
 
   OptionsPrivate.AddUpDownDeleteDuplicate(options, parentData, index, "subglow")
@@ -243,4 +248,4 @@ local function createOptions(parentData, data, index, subIndex)
   return options
 end
 
-WeakAuras.RegisterSubRegionOptions("subglow", createOptions, L["Shows a glow"]);
+WeakAuras.RegisterSubRegionOptions("subglow", createOptions, L["Shows a glow"])

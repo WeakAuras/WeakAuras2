@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 
 --[[-----------------------------------------------------------------------------
 WeakAurasTemplateGroup Container
@@ -6,7 +8,9 @@ Simple container that is used in the template selection
 -------------------------------------------------------------------------------]]
 local Type, Version = "WeakAurasTemplateGroup", 1
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
-if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
+if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then
+  return
+end
 
 -- Lua APIs
 local pairs = pairs
@@ -24,7 +28,9 @@ local methods = {
   end,
 
   ["LayoutFinished"] = function(self, width, height)
-    if self.noAutoHeight then return end
+    if self.noAutoHeight then
+      return
+    end
     self:SetHeight((height or 0) + 15)
   end,
 
@@ -46,17 +52,19 @@ local methods = {
     end
     content:SetHeight(contentheight)
     content.height = contentheight
-  end
+  end,
 }
 
 --[[-----------------------------------------------------------------------------
 Constructor
 -------------------------------------------------------------------------------]]
-local PaneBackdrop  = {
+local PaneBackdrop = {
   bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
   edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
-  tile = true, tileSize = 16, edgeSize = 16,
-  insets = { left = 3, right = 3, top = 5, bottom = 3 }
+  tile = true,
+  tileSize = 16,
+  edgeSize = 16,
+  insets = { left = 3, right = 3, top = 5, bottom = 3 },
 }
 
 local function Constructor()
@@ -69,9 +77,9 @@ local function Constructor()
   content:SetPoint("BOTTOMRIGHT", 0, 15)
 
   local widget = {
-    frame     = frame,
-    content   = content,
-    type      = Type
+    frame = frame,
+    content = content,
+    type = Type,
   }
   for method, func in pairs(methods) do
     widget[method] = func
