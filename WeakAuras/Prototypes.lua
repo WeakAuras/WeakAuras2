@@ -3451,7 +3451,6 @@ Private.event_prototypes = {
         type = "select",
         values = "combatlog_raid_mark_check_type",
         init = "arg",
-        store = true,
         test = "WeakAuras.CheckRaidFlags(sourceRaidFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
@@ -3459,18 +3458,18 @@ Private.event_prototypes = {
         end
       },
       {
-        name = "sourceRaidMarkIndex",
-        display = WeakAuras.newFeatureString .. L["Source Raid Mark Index"],
+        name = "sourceMarkIndex",
+        display = WeakAuras.newFeatureString .. L["Source unit's raid mark index"],
         init = "WeakAuras.RaidFlagToIndex(sourceRaidFlags)",
         test = "true",
         store = true,
         hidden = true,
       },
       {
-        name = "sourceRaidMark",
-        display = WeakAuras.newFeatureString .. L["Source Raid Mark"],
+        name = "sourceMarkTexture",
+        display = WeakAuras.newFeatureString .. L["Source unit's raid mark texture"],
         test = "true",
-        init = "sourceRaidMarkIndex > 0 and '{rt'..sourceRaidMarkIndex..'}' or ''",
+        init = "sourceMarkIndex > 0 and '{rt'..sourceMarkIndex..'}' or ''",
         store = true,
         hidden = true,
       },
@@ -3577,7 +3576,6 @@ Private.event_prototypes = {
         type = "select",
         values = "combatlog_raid_mark_check_type",
         init = "arg",
-        store = true,
         test = "WeakAuras.CheckRaidFlags(destRaidFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
@@ -3593,20 +3591,26 @@ Private.event_prototypes = {
         end
       },
       {
-        name = "destRaidMarkIndex",
-        display = WeakAuras.newFeatureString .. L["Dest Raid Mark Index"],
+        name = "destMarkIndex",
+        display = WeakAuras.newFeatureString .. L["Destination unit's raid mark index"],
         init = "WeakAuras.RaidFlagToIndex(destRaidFlags)",
         test = "true",
         store = true,
         hidden = true,
+        enable = function(trigger)
+          return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end,
       },
       {
-        name = "destRaidMark",
-        display = WeakAuras.newFeatureString .. L["Dest Raid Mark"],
+        name = "destMarkTexture",
+        display = WeakAuras.newFeatureString .. L["Destination unit's raid mark texture"],
         test = "true",
-        init = "destRaidMarkIndex > 0 and '{rt'..destRaidMarkIndex..'}' or ''",
+        init = "destMarkIndex > 0 and '{rt'..destMarkIndex..'}' or ''",
         store = true,
         hidden = true,
+        enable = function(trigger)
+          return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end,
       },
       {
         name = "spellId",
