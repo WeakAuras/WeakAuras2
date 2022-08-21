@@ -3460,7 +3460,7 @@ Private.event_prototypes = {
       },
       {
         name = "sourceRaidMarkIndex",
-        display = WeakAuras.newFeatureString .. L["Source Raid Mark Index"],
+        display = WeakAuras.newFeatureString .. L["Source unit's raid mark index"],
         init = "WeakAuras.RaidFlagToIndex(sourceRaidFlags)",
         test = "true",
         store = true,
@@ -3468,7 +3468,7 @@ Private.event_prototypes = {
       },
       {
         name = "sourceRaidMark",
-        display = WeakAuras.newFeatureString .. L["Source Raid Mark"],
+        display = WeakAuras.newFeatureString .. L["Source unit's raid mark texture"],
         test = "true",
         init = "sourceRaidMarkIndex > 0 and '{rt'..sourceRaidMarkIndex..'}' or ''",
         store = true,
@@ -3594,19 +3594,25 @@ Private.event_prototypes = {
       },
       {
         name = "destRaidMarkIndex",
-        display = WeakAuras.newFeatureString .. L["Dest Raid Mark Index"],
+        display = WeakAuras.newFeatureString .. L["Destination unit's raid mark index"],
         init = "WeakAuras.RaidFlagToIndex(destRaidFlags)",
         test = "true",
         store = true,
         hidden = true,
+        enable = function(trigger)
+          return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end,
       },
       {
         name = "destRaidMark",
-        display = WeakAuras.newFeatureString .. L["Dest Raid Mark"],
+        display = WeakAuras.newFeatureString .. L["Destination unit's raid mark texture"],
         test = "true",
         init = "destRaidMarkIndex > 0 and '{rt'..destRaidMarkIndex..'}' or ''",
         store = true,
         hidden = true,
+        enable = function(trigger)
+          return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end,
       },
       {
         name = "spellId",
