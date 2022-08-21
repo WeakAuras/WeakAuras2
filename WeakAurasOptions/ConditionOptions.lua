@@ -1333,8 +1333,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       end,
       set = setValueComplex("glow_border"),
       hidden = function()
-        return
-not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", "Pixel"))
+        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", "Pixel"))
       end,
     }
     order = order + 1

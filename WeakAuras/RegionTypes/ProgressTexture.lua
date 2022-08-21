@@ -372,7 +372,7 @@ local function createTexCoord(texture)
     { 0.5, 1 }, -- 180°
     { 0, 1 }, -- 225°
     { 0, 0.5 }, -- 270°
-    { 0, 0 },     -- 315°
+    { 0, 0 }, -- 315°
   }
 
   local function angleToCoord(angle)

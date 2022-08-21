@@ -4397,12 +4397,14 @@ tinsert(templates.general.args, {
 tinsert(templates.general.args, {
   title = L["Pet Behavior"],
   icon = "Interface\\Icons\\Ability_hunter_pet_assist",
-  triggers = { [1] = { trigger = {
-    type = WeakAuras.GetTriggerCategoryFor("Pet Behavior"),
-    event = "Pet Behavior",
-    use_behavior = true,
-    behavior = "assist",
-  } } },
+  triggers = {
+    [1] = { trigger = {
+      type = WeakAuras.GetTriggerCategoryFor("Pet Behavior"),
+      event = "Pet Behavior",
+      use_behavior = true,
+      behavior = "assist",
+    } },
+  },
 })
 
 tinsert(templates.general.args, {

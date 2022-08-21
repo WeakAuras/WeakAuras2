@@ -925,8 +925,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Include Pets"],
       order = 66.1,
       hidden = function()
-        return
-not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
+        return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
       end,
     },
     includePets = {
@@ -956,8 +955,7 @@ not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "ra
       desc = L["Requires LibSpecialization, that is e.g. a up-to date WeakAuras version"],
       order = 66.3,
       hidden = function()
-        return
-not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and WeakAuras.IsRetail())
+        return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and WeakAuras.IsRetail())
       end,
     },
     actualSpec = {
@@ -992,8 +990,7 @@ not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "ra
       name = L["Filter by Group Role"],
       order = 67.1,
       hidden = function()
-        return
-not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) or WeakAuras.IsClassicOrBCC()
+        return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) or WeakAuras.IsClassicOrBCC()
       end,
     },
     group_role = {
@@ -1024,8 +1021,7 @@ not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "ra
       name = L["Filter by Raid Role"],
       order = 67.1,
       hidden = function()
-        return
-not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) or WeakAuras.IsRetail()
+        return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) or WeakAuras.IsRetail()
       end,
     },
     raid_role = {
@@ -1034,8 +1030,7 @@ not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "ra
       name = L["Raid Role"],
       values = OptionsPrivate.Private.raid_role_types,
       hidden = function()
-        return
-not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useRaidRole) or WeakAuras.IsRetail()
+        return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useRaidRole) or WeakAuras.IsRetail()
       end,
       order = 67.2,
     },
@@ -1045,8 +1040,7 @@ not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "ra
       order = 67.2,
       width = WeakAuras.normalWidth,
       hidden = function()
-        return
-not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useRaidRole) or WeakAuras.IsRetail()
+        return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useRaidRole) or WeakAuras.IsRetail()
       end,
     },
     useArenaSpec = {
@@ -1055,8 +1049,7 @@ not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "ra
       name = L["Filter by Arena Spec"],
       order = 67.3,
       hidden = function()
-        return
-not (WeakAuras.IsRetail() and trigger.type == "aura2" and trigger.unit == "arena")
+        return not (WeakAuras.IsRetail() and trigger.type == "aura2" and trigger.unit == "arena")
       end,
     },
     arena_spec = {
@@ -1085,8 +1078,7 @@ not (WeakAuras.IsRetail() and trigger.type == "aura2" and trigger.unit == "arena
       name = L["Filter by Class"],
       order = 68.1,
       hidden = function()
-        return
-not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
+        return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
       end,
     },
     class = {
@@ -1115,8 +1107,7 @@ not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "ra
       name = L["Filter by Unit Name"],
       order = 68.4,
       hidden = function()
-        return
-not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
+        return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
       end,
     },
     unitName = {
@@ -1145,8 +1136,7 @@ not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "ra
       name = L["Filter by Nameplate Type"],
       order = 69.1,
       hidden = function()
-        return
-not (trigger.type == "aura2" and trigger.unit == "nameplate")
+        return not (trigger.type == "aura2" and trigger.unit == "nameplate")
       end,
     },
     hostility = {

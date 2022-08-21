@@ -1944,8 +1944,7 @@ function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, h
       arg = {
         expanderName = tostring(addOption),
       },
-    }
-)
+    })
   end
 
   if not next(seenSymbols) and headerOption and not index then
