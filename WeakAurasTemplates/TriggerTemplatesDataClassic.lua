@@ -388,7 +388,7 @@ templates.class.PRIEST = {
         { spell = 10951, type = "ability", buff = true}, -- Inner Fire
         { spell = 14751, type = "ability", buff = true, talent = 7}, -- Inner Focus
         { spell = 14914, type = "ability", debuff = true, requireTarget = true}, -- Holy Fire
-        { spell = 15487, type = "ability", debuff = true, requireTarget = true, talnet = 52}, -- Silence
+        { spell = 15487, type = "ability", debuff = true, requireTarget = true, talent = 52}, -- Silence
 
       },
       icon = 136224

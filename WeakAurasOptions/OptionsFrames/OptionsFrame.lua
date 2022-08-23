@@ -1181,7 +1181,7 @@ function OptionsPrivate.CreateFrame()
       tinsert(regionTypesSorted, regionType)
     end
 
-    -- Sort group + dynamic group first, then the others alphabeticaly
+    -- Sort group + dynamic group first, then the others alphabetically
     table.sort(regionTypesSorted, function(a, b)
       if (a == "group") then
         return true

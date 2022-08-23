@@ -1874,7 +1874,7 @@ function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, h
     headerOption =  {
       type = "execute",
       control = "WeakAurasExpandSmall",
-      name = L["|cFFffcc00Format Options|r"],
+      name = L["|cffffcc00Format Options|r"],
       width = WeakAuras.doubleWidth,
       func = function(info, button)
         setHidden(not hidden())

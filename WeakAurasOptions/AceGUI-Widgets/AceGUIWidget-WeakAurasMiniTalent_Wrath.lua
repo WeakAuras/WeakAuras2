@@ -2,7 +2,7 @@ if not WeakAuras.IsLibsOK() then
   return
 end
 
-local widgetType, widgetVersion = "WeakAurasMiniTalent", 1
+local widgetType, widgetVersion = "WeakAurasMiniTalent", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(widgetType) or 0) >= widgetVersion then
   return
@@ -127,7 +127,7 @@ local function TalentFrame_Update(self)
         if spellId == nil then
           local talentId = button.index - (button.tab - 1) * MAX_NUM_TALENTS
           local name = GetTalentInfo(button.tab, talentId)
-          print("Please Report on WeakAuras Discord:\nspell missing", button.tab, tier, column, name)
+          print("Please report on WeakAuras Discord:\nspell missing", button.tab, tier, column, name)
         end
         button.tier = tier
         button.column = column
@@ -274,14 +274,14 @@ local function Constructor()
   local height = buttonSizePadded * 11 + 10
   local finalWidth = 440
   local scale = (finalWidth / width)
-  local finalHeiht = height * scale
+  local finalHeight = height * scale
   for _, button in ipairs(buttons) do
     button:SetScale(scale)
   end
   for _, background in ipairs(backgrounds) do
     background:SetScale(scale)
   end
-  talentFrame:SetSize(finalWidth, finalHeiht)
+  talentFrame:SetSize(finalWidth, finalHeight)
   talentFrame:SetScript("OnClick", function(self)
     self.obj:ToggleView()
   end)
@@ -311,7 +311,7 @@ local function Constructor()
     backgrounds = backgrounds,
     saveSize = {
       fullWidth = finalWidth,
-      fullHeight = finalHeiht,
+      fullHeight = finalHeight,
       collapsedRowHeight = (buttonSizePadded + 5) * scale,
     },
   }

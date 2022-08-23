@@ -678,7 +678,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
     end
   end
   if updateTriggerState and watched_trigger_events[id] and watched_trigger_events[id][triggernum] then
-    -- if this trigger's udpates are requested to be sent into one of the Aura's custom triggers
+    -- if this trigger's updates are requested to be sent into one of the Aura's custom triggers
     Private.AddToWatchedTriggerDelay(id, triggernum)
   end
   return updateTriggerState;

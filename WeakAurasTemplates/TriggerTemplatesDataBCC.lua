@@ -657,7 +657,7 @@ templates.class.WARLOCK = {
         { spell = 17862, type = "debuff", unit = "target"}, -- Curse of Shadow
         { spell = 18223, type = "debuff", unit = "target", talent = 15}, -- Curse of Exhaustion
         { spell = 18265, type = "debuff", unit = "target", talent = 14}, -- Siphon Life
-        { spell = 30108, type = "debuff", unit = "target", talent = 21}, -- Unstable Afflication
+        { spell = 30108, type = "debuff", unit = "target", talent = 21}, -- Unstable Affliction
       },
       icon = 136139
     },
@@ -689,7 +689,7 @@ templates.class.WARLOCK = {
         { spell = 18288, type = "ability", buff = true, talent = 9}, -- Amplify Curse
         { spell = 18708, type = "ability", talent = 28}, -- Fel Domination
         { spell = 18877, type = "ability", requiresTarget = true, debuff = true, talent = 88}, -- Shadowburn
-        { spell = 30108, ability = "ability", debuff = true, requiresTarget = true, talent = 21}, -- Unstable Afflication
+        { spell = 30108, ability = "ability", debuff = true, requiresTarget = true, talent = 21}, -- Unstable Affliction
         { spell = 30283, type = "ability", debuff = true, talent = 101}, -- Fel Domination
       },
       icon = 135808

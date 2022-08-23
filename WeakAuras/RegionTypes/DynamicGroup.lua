@@ -830,7 +830,7 @@ local function modify(parent, region, data)
   end
 
   function region:Resume()
-    -- Allows group to reindex and reposition.
+    -- Allows group to re-index and reposition.
     -- TriggersSortUpdatedChildren and PositionChildren to happen
     if self.suspended > 0 then
       self.suspended = self.suspended - 1

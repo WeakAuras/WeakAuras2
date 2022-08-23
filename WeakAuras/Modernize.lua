@@ -1107,7 +1107,7 @@ function Private.Modernize(data)
 
   if data.internalVersion < 43 then
     -- The merging of zone ids and group ids went a bit wrong,
-    -- fourtunately that was caught before a actual release
+    -- fortunately that was caught before a actual release
     -- still try to recover the data
     if data.internalVersion == 42 then
       if data.load.zoneIds then

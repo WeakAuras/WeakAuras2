@@ -261,7 +261,7 @@ local function modify(parent, region, data)
     region:Scale(region.scalex, region.scaley);
   end
 
-  -- Roate model
+  -- Rotate model
   function region:Rotate(degrees)
     region.rotation = degrees;
     if region.model then

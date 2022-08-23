@@ -5699,7 +5699,7 @@ Private.event_prototypes = {
         display = "",
         text = function()
           if not WeakAuras.IsRetail() then
-            return L["Note: Due to how complicated the swing timer behaviour is and the lack of APIs from Blizzard, results are inaccurate in edge cases."]
+            return L["Note: Due to how complicated the swing timer behavior is and the lack of APIs from Blizzard, results are inaccurate in edge cases."]
           end
         end,
 
