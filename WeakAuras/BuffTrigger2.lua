@@ -3794,7 +3794,7 @@ function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
     end
   end
 
-  if trigger.useExactSpellId and  trigger.auraspellids then
+  if trigger.useExactSpellId and trigger.auraspellids then
     for index, spellId in pairs(trigger.auraspellids) do
       local left = " "
       if index == 1 then
