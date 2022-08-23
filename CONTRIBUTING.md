@@ -7,11 +7,10 @@ There are a few things which we require in any contribution:
 - This repository comes with a `.editorconfig` file, so the following requirements will be taken care of if you have [EditorConfig](https://editorconfig.org/) installed:
   - Tabs consist of 2 spaces.
   - Files end with a newline.
-  - Line endings in addon files must be Windows-Style (CRLF). This is a WoW AddOn, pretty much everyone is going to be running Windows when using or developing WeakAuras.
   - No trailing whitespace at the end of a line.
+  - We use [StyLua](https://github.com/JohnnyMorganz/StyLua) for automatic code formatting. Make sure you apply it to your changes before commiting them. There are extensions for the most common IDEs and editors as well as CLI tools to do that.
 - All user-facing strings (`names` and `desc` fields in AceConfig tables, mostly) must be localized:
   - We use a locale scraper to find translation phrases and automatically export them to CurseForge for translation. This scraper parses the addon files, looking for tokens that look like: `L["some translation phrase"]`. You must use double quoted strings, and name the localization table (found at `WeakAuras.L`) `L` in your code for this to work properly.
-- When writing a new file, avoid using semicolons. When modifying code in an existing file, try to be consistent, but err on the side of no semicolons.
 - New features should be indicated by concatenating `WeakAuras.newFeatureString` onto the associated translation phrase. We will remove the new feature indicator approximately 3 months after the first release.
 
 ## Pull Requests
@@ -24,19 +23,19 @@ If you want to help, here's what you need to do:
 1. Create a new topic branch (based on the `main` branch) to contain your feature, change, or fix.
 
     ```bash
-    > git checkout -b my-topic-branch
+    git checkout -b my-topic-branch
     ```
 
 1. Set `core.autocrlf` to true.
 
     ```bash
-    > git config core.autocrlf true
+    git config core.autocrlf true
     ```
 
 1. Set `pull.rebase`to true.
 
     ```bash
-    > git config pull.rebase true
+    git config pull.rebase true
     ```
 
 1. Set up your [Git identity](https://git-scm.com/book/en/v2/Getting-Started-First-Time-Git-Setup) so your commits are attributed to your name and email address properly.
@@ -45,11 +44,13 @@ If you want to help, here's what you need to do:
 
 1. Install an [EditorConfig](https://editorconfig.org/) plugin for your text editor to automatically follow our indenting rules.
 
+1. Install and run [StyLua](https://github.com/JohnnyMorganz/StyLua).
+
 1. Commit and push your changes to your new branch.
 
     ```bash
-    > git commit -a -m "commit-description"
-    > git push
+    git commit -a -m "commit-description"
+    git push
     ```
 
 1. [Open a Pull Request](https://github.com/WeakAuras/WeakAuras2/pulls) with a clear title and description.
@@ -65,9 +66,9 @@ If you want to help, here's what you need to do:
 - In order to sync your fork with the upstream WeakAuras repository you would do
 
   ```bash
-  > git fetch upstream
-  > git checkout main
-  > git rebase upstream/main
+  git fetch upstream
+  git checkout main
+  git rebase upstream/main
   ```
 
 - You are now all synced up.
@@ -77,16 +78,16 @@ If you want to help, here's what you need to do:
 - In order to sync your pull request with the upstream WeakAuras repository in case there are any conflicts you would do
 
   ```bash
-  > git fetch upstream
-  > git checkout my-topic-branch
-  > git rebase upstream/main
+  git fetch upstream
+  git checkout my-topic-branch
+  git rebase upstream/main
   ```
 
 - In case there are any conflicts, you will now have to [fix them manually](https://help.github.com/articles/resolving-merge-conflicts-after-a-git-rebase/).
 - After you're done with that, you are ready to force-push your changes.
 
   ```bash
-  > git push --force
+  git push --force
   ```
 
 - Note: Force-pushing is a destructive operation, so make sure you don't lose something in the progress.
