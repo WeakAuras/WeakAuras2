@@ -1075,13 +1075,13 @@ local methods = {
       Show_Long_Tooltip(self.frame, self.frame.description)
     end
   end,
-  ["StartGrouping"] = function(self, groupingData, selected, groupingGroup, childOfGrouing)
+  ["StartGrouping"] = function(self, groupingData, selected, groupingGroup, childOfGrouping)
     self.grouping = groupingData
     self:UpdateIconsVisible()
     if selected then
       self.frame:SetScript("OnClick", self.callbacks.OnClickGroupingSelf)
       self:SetDescription(L["Cancel"], L["Do not group this display"])
-    elseif childOfGrouing then
+    elseif childOfGrouping then
       self:Disable()
     else
       if self.data.regionType == "dynamicgroup" and groupingGroup then
