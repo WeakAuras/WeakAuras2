@@ -2,7 +2,8 @@
 
 # WeakAuras
 
-[![Build Status](https://github.com/WeakAuras/WeakAuras2/workflows/CI/badge.svg)](https://github.com/WeakAuras/WeakAuras2/actions?workflow=CI)
+[![Build Status](https://github.com/WeakAuras/WeakAuras2/workflows/CI/badge.svg)](https://github.com/WeakAuras/WeakAuras2/actions?workflow=CI) [![Code Style: StyLua](https://img.shields.io/badge/code%20style-stylua-brightgreen.svg)](https://github.com/JohnnyMorganz/StyLua "StyLua")
+
 [![WeakAuras on Discord](https://img.shields.io/badge/discord-weakauras-738bd7.svg?style=flat)](https://discord.gg/weakauras) [![Patreon](https://img.shields.io/badge/patreon-donate-orange.svg)](https://www.patreon.com/weakauras)
 
 ![Logo](https://i.imgur.com/wwbxeCG.jpeg)
