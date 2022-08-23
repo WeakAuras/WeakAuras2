@@ -557,6 +557,7 @@ local function ConstructFunction(prototype, trigger, skipOptional)
   local events = {}
   local init;
   local preambles = ""
+  local orConjunctionGroups = {}
   if(prototype.init) then
     init = prototype.init(trigger);
   else
@@ -608,20 +609,27 @@ local function ConstructFunction(prototype, trigger, skipOptional)
               local any = false;
               if (trigger[name] and trigger[name].multi) then
                 test = "(";
-                for value, _ in pairs(trigger[name].multi) do
+                for value, positive in pairs(trigger[name].multi) do
                   if not arg.test then
-                    test = test..name.."=="..(tonumber(value) or ("[["..value.."]]")).." or ";
+                    test = test..name.."=="..(tonumber(value) or ("[["..value.."]]"))
                   else
                     if arg.extraOption then
-                      test = test..arg.test:format(tonumber(value) or ("[["..value.."]]"), trigger[name .. "_extraOption"] or 0).." or ";
+                      test = test..arg.test:format(tonumber(value) or ("[["..value.."]]"), trigger[name .. "_extraOption"] or 0)
+                    elseif arg.multiTristate then
+                      test = test..arg.test:format(tonumber(value) or ("[["..value.."]]"), positive and 4 or 5)
                     else
-                      test = test..arg.test:format(tonumber(value) or ("[["..value.."]]")).." or ";
+                      test = test..arg.test:format(tonumber(value) or ("[["..value.."]]"))
                     end
+                  end
+                  if arg.multiAll then
+                    test = test.." and "
+                  else
+                    test = test.." or  "
                   end
                   any = true;
                 end
                 if(any) then
-                  test = test:sub(1, -5);
+                  test = test:sub(1, -6);
                 else
                   test = "(false";
                 end
@@ -636,7 +644,7 @@ local function ConstructFunction(prototype, trigger, skipOptional)
                   end
                 end
               end
-            elseif(trigger["use_"..name]) then -- single selection
+            elseif(trigger["use_"..name] and not arg.multiNoSingle) then -- single selection
               local value = trigger[name] and trigger[name].single;
               if not arg.test then
                 test = trigger[name] and trigger[name].single and "("..name.."=="..(tonumber(value) or ("[["..value.."]]"))..")";
@@ -683,8 +691,13 @@ local function ConstructFunction(prototype, trigger, skipOptional)
           if test ~= "(test)" then
             if(arg.required) then
               tinsert(required, test);
-            else
-              tinsert(tests, test);
+            elseif test ~= nil then
+              if arg.orConjunctionGroup  then
+                orConjunctionGroups[arg.orConjunctionGroup ] = orConjunctionGroups[arg.orConjunctionGroup ] or {}
+                tinsert(orConjunctionGroups[arg.orConjunctionGroup ], "("..test..")")
+              else
+                tinsert(tests, test);
+              end
             end
           end
 
@@ -702,6 +715,9 @@ local function ConstructFunction(prototype, trigger, skipOptional)
     end
   end
 
+  for _, orConjunctionGroup  in pairs(orConjunctionGroups) do
+    tinsert(tests, "("..table.concat(orConjunctionGroup , " or ")..")")
+  end
   local ret = preambles .. "return function("..table.concat(input, ", ")..")\n";
   ret = ret..(init or "");
   ret = ret..(#debug > 0 and table.concat(debug, "\n") or "");
