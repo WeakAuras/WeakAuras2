@@ -668,7 +668,7 @@ local function ConstructTextEditor(frame)
     editor.editBox:SetScript(
       "OnEscapePressed",
       function()
-        group:CancelClose()
+        -- catch it so that escape doesn't default to losing focus (after which another escape would close config)
       end
     )
     self.oldOnTextChanged = editor.editBox:GetScript("OnTextChanged")
