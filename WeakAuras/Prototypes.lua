@@ -1026,7 +1026,10 @@ local function valuesForTalentFunction(trigger)
           end
         end
       end
-      if single_class and single_spec and Private.talent_types_specific[single_class][single_spec] then
+      if single_class and single_spec
+      and Private.talent_types_specific[single_class]
+      and Private.talent_types_specific[single_class][single_spec]
+      then
         return Private.talent_types_specific[single_class][single_spec]
       else
         return Private.talent_types
