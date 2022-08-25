@@ -1501,7 +1501,7 @@ Private.load_prototype = {
     },
     {
       name = "role",
-      display = L["Assigned Role"],
+      display = WeakAuras.IsWrathClassic() and L["Assigned Role"] or L["Spec Role"],
       type = "multiselect",
       values = "role_types",
       init = "arg",
@@ -1876,7 +1876,7 @@ Private.event_prototypes = {
       },
       {
         name = "role",
-        display = WeakAuras.IsWrathClassic() and L["Assigned Role"] or L["Spec Role"],
+        display = L["Assigned Role"],
         type = "select",
         init = "UnitGroupRolesAssigned(unit)",
         values = "role_types",
