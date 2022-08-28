@@ -1001,7 +1001,7 @@ local function GetBuffTriggerOptions(data, triggernum)
     subcount = {
       type = "toggle",
       width = WeakAuras.doubleWidth,
-      name = L['Use tooltip "size" instead of stacks'],
+      name = L["Use tooltip \"size\" instead of stacks"],
       hidden = function()
         return not (trigger.type == "aura" and trigger.fullscan)
       end,

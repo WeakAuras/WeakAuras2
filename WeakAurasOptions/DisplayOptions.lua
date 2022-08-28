@@ -131,7 +131,7 @@ function OptionsPrivate.GetDisplayOptions(data)
           __order = 1,
           unsupported = {
             type = "description",
-            name = L['This region of type "%s" is not supported.']:format(data.regionType),
+            name = L["This region of type \"%s\" is not supported."]:format(data.regionType),
             order = 2,
           },
         },
@@ -215,7 +215,7 @@ function OptionsPrivate.GetDisplayOptions(data)
             __order = 1,
             warning = {
               type = "description",
-              name = L['Regions of type "%s" are not supported.']:format(child.regionType),
+              name = L["Regions of type \"%s\" are not supported."]:format(child.regionType),
               order = 1,
             },
           }

@@ -232,19 +232,19 @@ function ConstructTest(trigger, arg)
           test = "(" .. arg.test:format(trigger[name]) .. ")"
         end
       else
-        test = "(" .. name .. " and " .. name .. "==" .. (number or ('"' .. (trigger[name] or "") .. '"')) .. ")"
+        test = "(" .. name .. " and " .. name .. "==" .. (number or ("\"" .. (trigger[name] or "") .. "\"")) .. ")"
       end
     elseif arg.test then
       test = "(" .. arg.test:format(tostring(trigger[name]) or "") .. ")"
     elseif arg.type == "longstring" and trigger[name .. "_operator"] then
       test = TestForLongString(trigger, arg)
     elseif arg.type == "string" or arg.type == "select" or arg.type == "item" then
-      test = "(" .. name .. " and " .. name .. "==" .. (number or ('"' .. (trigger[name] or "") .. '"')) .. ")"
+      test = "(" .. name .. " and " .. name .. "==" .. (number or ("\"" .. (trigger[name] or "") .. "\"")) .. ")"
     elseif arg.type == "number" then
       test = "(" .. name .. " and " .. name .. (trigger[name .. "_operator"] or "==") .. (number or 0) .. ")"
     else
       -- Should be unused
-      test = "(" .. name .. " and " .. name .. (trigger[name .. "_operator"] or "==") .. (number or ('"' .. (trigger[name] or 0) .. '"')) .. ")"
+      test = "(" .. name .. " and " .. name .. (trigger[name .. "_operator"] or "==") .. (number or ("\"" .. (trigger[name] or 0) .. "\"")) .. ")"
     end
   end
 
@@ -1220,12 +1220,12 @@ function GenericTrigger.Add(data, region)
         local duration
         if Private.category_event_prototype[triggerType] then
           if not trigger.event then
-            error('Improper arguments to WeakAuras.Add - trigger type is "event" but event is not defined')
+            error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined")
           elseif not event_prototypes[trigger.event] then
             if event_prototypes["Health"] then
               trigger.event = "Health"
             else
-              error('Improper arguments to WeakAuras.Add - no event prototype can be found for event type "' .. trigger.event .. '" and default prototype reset failed.')
+              error("Improper arguments to WeakAuras.Add - no event prototype can be found for event type \"" .. trigger.event .. "\" and default prototype reset failed.")
             end
           else
             if trigger.event == "Combat Log" then

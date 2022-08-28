@@ -1820,7 +1820,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "bool",
         desc = function()
-          return L['Can be used for e.g. checking if "boss1target" is the same as "player".']
+          return L["Can be used for e.g. checking if \"boss1target\" is the same as \"player\"."]
         end,
         enable = function(trigger)
           return not Private.multiUnitUnits[trigger.unit]
@@ -1938,7 +1938,7 @@ Private.event_prototypes = {
         enable = function(trigger)
           return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end,
-        init = 'not UnitIsUnit("player", unit)',
+        init = "not UnitIsUnit(\"player\", unit)",
       },
       {
         name = "ignoreDead",
@@ -2635,7 +2635,7 @@ Private.event_prototypes = {
         enable = function(trigger)
           return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end,
-        init = 'not UnitIsUnit("player", unit)',
+        init = "not UnitIsUnit(\"player\", unit)",
       },
       {
         name = "ignoreDead",
@@ -3144,7 +3144,7 @@ Private.event_prototypes = {
         enable = function(trigger)
           return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end,
-        init = 'not UnitIsUnit("player", unit)',
+        init = "not UnitIsUnit(\"player\", unit)",
       },
       {
         name = "ignoreDead",
@@ -3439,7 +3439,7 @@ Private.event_prototypes = {
         enable = function(trigger)
           return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end,
-        init = 'not UnitIsUnit("player", unit)',
+        init = "not UnitIsUnit(\"player\", unit)",
       },
       {
         name = "ignoreDead",
@@ -4882,9 +4882,9 @@ Private.event_prototypes = {
       },
       {
         hidden = true,
-        test = '(genericShowOn == "showOnReady" and (startTime == 0 and enabled == 1 or gcdCooldown))'
-          .. 'or (genericShowOn == "showOnCooldown" and (startTime > 0 or enabled == 0) and not gcdCooldown) '
-          .. 'or (genericShowOn == "showAlways")',
+        test = "(genericShowOn == \"showOnReady\" and (startTime == 0 and enabled == 1 or gcdCooldown))"
+          .. "or (genericShowOn == \"showOnCooldown\" and (startTime > 0 or enabled == 0) and not gcdCooldown) "
+          .. "or (genericShowOn == \"showAlways\")",
       },
     },
     durationFunc = function(trigger)
@@ -5039,9 +5039,9 @@ Private.event_prototypes = {
       },
       {
         hidden = true,
-        test = '(genericShowOn == "showOnReady" and (startTime == 0 or gcdCooldown)) '
-          .. 'or (genericShowOn == "showOnCooldown" and startTime > 0 and not gcdCooldown) '
-          .. 'or (genericShowOn == "showAlways")',
+        test = "(genericShowOn == \"showOnReady\" and (startTime == 0 or gcdCooldown)) "
+          .. "or (genericShowOn == \"showOnCooldown\" and startTime > 0 and not gcdCooldown) "
+          .. "or (genericShowOn == \"showAlways\")",
       },
     },
     durationFunc = function(trigger)
@@ -7168,7 +7168,9 @@ Private.event_prototypes = {
         display = L["Rune"],
         type = "select",
         values = "rune_specific_types",
-        test = '(genericShowOn == "showOnReady" and (startTime == 0)) ' .. 'or (genericShowOn == "showOnCooldown" and startTime > 0) ' .. 'or (genericShowOn == "showAlways")',
+        test = "(genericShowOn == \"showOnReady\" and (startTime == 0)) "
+          .. "or (genericShowOn == \"showOnCooldown\" and startTime > 0) "
+          .. "or (genericShowOn == \"showAlways\")",
         reloadOptions = true,
       },
       {
@@ -8217,7 +8219,7 @@ Private.event_prototypes = {
         enable = function(trigger)
           return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end,
-        init = 'not UnitIsUnit("player", unit)',
+        init = "not UnitIsUnit(\"player\", unit)",
       },
       {
         name = "nameplateType",
@@ -9149,7 +9151,7 @@ Private.event_prototypes = {
               end
             end
         ]]
-        ret = ret:format(trigger.use_inverse and "true" or "false", trigger.use_behavior and ('"' .. (trigger.behavior or "") .. '"') or "nil")
+        ret = ret:format(trigger.use_inverse and "true" or "false", trigger.use_behavior and ("\"" .. (trigger.behavior or "") .. "\"") or "nil")
       end
       if trigger.use_petspec then
         ret = ret

@@ -195,7 +195,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Enable Swipe"],
       order = 11.1,
-      desc = L['Enable the "Swipe" radial overlay'],
+      desc = L["Enable the \"Swipe\" radial overlay"],
       disabled = function()
         return not OptionsPrivate.Private.CanHaveDuration(data)
       end,
@@ -222,9 +222,9 @@ local function createOptions(id, data)
     cooldownSwipe = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L['Show "Swipe"'],
+      name = L["Show \"Swipe\""],
       order = 11.3,
-      desc = "|TInterface\\AddOns\\WeakAuras\\Media\\Textures\\swipe-example:30|t\n" .. L['Enable "swipe" part of the overlay'],
+      desc = "|TInterface\\AddOns\\WeakAuras\\Media\\Textures\\swipe-example:30|t\n" .. L["Enable \"swipe\" part of the overlay"],
       disabled = function()
         return not OptionsPrivate.Private.CanHaveDuration(data)
       end,
@@ -235,9 +235,9 @@ local function createOptions(id, data)
     cooldownEdge = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L['Show "Edge"'],
+      name = L["Show \"Edge\""],
       order = 11.4,
-      desc = "|TInterface\\AddOns\\WeakAuras\\Media\\Textures\\edge-example:30|t\n" .. L['Enable "Edge" part of the overlay'],
+      desc = "|TInterface\\AddOns\\WeakAuras\\Media\\Textures\\edge-example:30|t\n" .. L["Enable \"Edge\" part of the overlay"],
       disabled = function()
         return not OptionsPrivate.Private.CanHaveDuration(data)
       end,

@@ -994,7 +994,7 @@ local methods = {
         self:SetGroup(self.data.parent)
         self:SetGroupOrder(index, #parentData.controlledChildren)
       else
-        error('Display "' .. self.data.id .. '" thinks it is a member of group "' .. self.data.parent .. '" which does not control it')
+        error("Display \"" .. self.data.id .. "\" thinks it is a member of group \"" .. self.data.parent .. "\" which does not control it")
       end
     end
 
@@ -1046,7 +1046,7 @@ local methods = {
     end
 
     if hasDescription then
-      tinsert(namestable, '|cFFFFD100"' .. data.desc .. '"')
+      tinsert(namestable, "|cFFFFD100\"" .. data.desc .. "\"")
     end
 
     if hasUrl then

@@ -376,7 +376,7 @@ L["This display is currently loaded"] = "This display is currently loaded"
 L["This display is not currently loaded"] = "This display is not currently loaded"
 L["This display will only show when |cFF00FF00%s"] = "This display will only show when |cFF00FF00%s"
 L["This display will only show when |cFFFF0000 Not %s"] = "This display will only show when |cFFFF0000 Not %s"
-L['This region of type "%s" has no configuration options.'] = 'This region of type "%s" has no configuration options.'
+L["This region of type \"%s\" has no configuration options."] = "This region of type \"%s\" has no configuration options."
 L["Time in"] = "Time in"
 L["Timer"] = "Timer"
 L["Timer Settings"] = "Timer Settings"
@@ -403,7 +403,7 @@ L["Unlike the start or finish animations, the main animation will loop over and 
 L["Unstealthed"] = "Unstealthed"
 L["Update Custom Text On..."] = "Update Custom Text On..."
 L["Use Full Scan (High CPU)"] = "Use Full Scan (High CPU)"
-L['Use tooltip "size" instead of stacks'] = 'Use tooltip "size" instead of stacks'
+L["Use tooltip \"size\" instead of stacks"] = "Use tooltip \"size\" instead of stacks"
 L["Vertical Align"] = "Vertical Align"
 L["View"] = "View"
 L["Width"] = "Width"

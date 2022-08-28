@@ -1392,7 +1392,7 @@ function Private.Modernize(data)
 
   if data.internalVersion < 52 then
     local function matchTarget(input)
-      return input == "target" or input == "'target'" or input == '"target"' or input == "%t" or input == "'%t'" or input == '"%t"'
+      return input == "target" or input == "'target'" or input == "\"target\"" or input == "%t" or input == "'%t'" or input == "\"%t\""
     end
 
     if data.conditions then

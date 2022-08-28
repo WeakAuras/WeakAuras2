@@ -509,7 +509,7 @@ local function recurseStringify(data, level, lines)
     end
     if vType == "string" then
       form2 = "%q"
-      v = v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub('"', '\\"')
+      v = v:gsub("\\", "\\\\"):gsub("\n", "\\n"):gsub("\"", "\\\"")
     elseif vType == "boolean" then
       v = tostring(v)
       form2 = "%s"

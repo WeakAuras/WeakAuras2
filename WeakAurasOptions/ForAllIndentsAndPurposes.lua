@@ -118,7 +118,7 @@ if not IndentationLib.revision or revision > IndentationLib.revision then
   bytes.BYTE_LINEBREAK_UNIX = stringbyte("\n")
   bytes.BYTE_LINEBREAK_MAC = stringbyte("\r")
   bytes.BYTE_SINGLE_QUOTE = stringbyte("'")
-  bytes.BYTE_DOUBLE_QUOTE = stringbyte('"')
+  bytes.BYTE_DOUBLE_QUOTE = stringbyte("\"")
   bytes.BYTE_0 = stringbyte("0")
   bytes.BYTE_9 = stringbyte("9")
   bytes.BYTE_PERIOD = stringbyte(".")

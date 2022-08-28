@@ -20,7 +20,7 @@ function OptionsPrivate.GetGroupOptions(data)
         __order = 1,
         unsupported = {
           type = "description",
-          name = L['This region of type "%s" is not supported.']:format(data.regionType),
+          name = L["This region of type \"%s\" is not supported."]:format(data.regionType),
         },
       },
     }

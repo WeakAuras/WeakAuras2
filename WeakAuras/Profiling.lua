@@ -39,11 +39,11 @@ table_to_string = function(tbl, depth)
       elseif type(v) == "function" then
         v = "function"
       elseif type(v) == "string" then
-        v = '"' .. v .. '"'
+        v = "\"" .. v .. "\""
       end
 
       if type(k) == "string" then
-        k = '"' .. k .. '"'
+        k = "\"" .. k .. "\""
       end
 
       str = (str and str .. "|cff999999,|r " or "|cff999999{|r ") .. "|cffffff99[" .. tostring(k) .. "]|r |cff999999=|r |cffffffff" .. tostring(v) .. "|r"

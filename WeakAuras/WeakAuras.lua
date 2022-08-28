@@ -164,7 +164,7 @@ function Private.PrintHelp()
   print(L["/wa help - Show this message"])
   print(L["/wa minimap - Toggle the minimap icon"])
   print(
-    L['/wa pstart - Start profiling. Optionally include a duration in seconds after which profiling automatically stops. To profile the next combat/encounter, pass a "combat" or "encounter" argument.']
+    L["/wa pstart - Start profiling. Optionally include a duration in seconds after which profiling automatically stops. To profile the next combat/encounter, pass a \"combat\" or \"encounter\" argument."]
   )
   print(L["/wa pstop - Finish profiling"])
   print(L["/wa pprint - Show the results from the most recent profiling"])
@@ -400,7 +400,7 @@ function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, defa
   elseif type(default) ~= "table" and type(default) ~= "nil" then
     error("Improper arguments to WeakAuras.RegisterRegionType - properties options are not a table", 2)
   elseif regionTypes[name] then
-    error('Improper arguments to WeakAuras.RegisterRegionType - region type "' .. name .. '" already defined', 2)
+    error("Improper arguments to WeakAuras.RegisterRegionType - region type \"" .. name .. "\" already defined", 2)
   else
     regionTypes[name] = {
       create = createFunction,
@@ -460,7 +460,7 @@ function WeakAuras.RegisterSubRegionType(
   elseif addDefaultsForNewAura and type(addDefaultsForNewAura) ~= "function" then
     error("Improper arguments to WeakAuras.RegisterSubRegionType - addDefaultsForNewAura function is not nil or a function", 2)
   elseif subRegionTypes[name] then
-    error('Improper arguments to WeakAuras.RegisterSubRegionType - region type "' .. name .. '" already defined', 2)
+    error("Improper arguments to WeakAuras.RegisterSubRegionType - region type \"" .. name .. "\" already defined", 2)
   else
     local pool = CreateObjectPool(createFunction)
 
@@ -506,7 +506,7 @@ function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName
   elseif getAnchors and type(getAnchors) ~= "function" then
     error("Improper arguments to WeakAuras.RegisterRegionOptions - anchors is not a function", 2)
   elseif regionOptions[name] then
-    error('Improper arguments to WeakAuras.RegisterRegionOptions - region type "' .. name .. '" already defined', 2)
+    error("Improper arguments to WeakAuras.RegisterRegionOptions - region type \"" .. name .. "\" already defined", 2)
   else
     local templateIcon
     if type(icon) == "function" then
@@ -559,7 +559,7 @@ function WeakAuras.RegisterSubRegionOptions(name, createFunction, description)
   elseif type(createFunction) ~= "function" then
     error("Improper arguments to WeakAuras.RegisterSubRegionOptions - creation function is not a function", 2)
   elseif subRegionOptions[name] then
-    error('Improper arguments to WeakAuras.RegisterSubRegionOptions - region type "' .. name .. '" already defined', 2)
+    error("Improper arguments to WeakAuras.RegisterSubRegionOptions - region type \"" .. name .. "\" already defined", 2)
   else
     subRegionOptions[name] = {
       create = createFunction,
@@ -2458,7 +2458,7 @@ function Private.ValidateUniqueDataIds(silent)
     if type(data.uid) == "string" then
       if seenUIDs[data.uid] then
         if not silent then
-          prettyPrint('Duplicate uid "' .. data.uid .. '" detected in saved variables between "' .. data.id .. '" and "' .. seenUIDs[data.uid].id .. '".')
+          prettyPrint("Duplicate uid \"" .. data.uid .. "\" detected in saved variables between \"" .. data.id .. "\" and \"" .. seenUIDs[data.uid].id .. "\".")
         end
         data.uid = WeakAuras.GenerateUniqueID()
         seenUIDs[data.uid] = data
@@ -2467,7 +2467,7 @@ function Private.ValidateUniqueDataIds(silent)
       end
     elseif data.uid ~= nil then
       if not silent then
-        prettyPrint('Invalid uid detected in saved variables for "' .. data.id .. '"')
+        prettyPrint("Invalid uid detected in saved variables for \"" .. data.id .. "\"")
       end
       data.uid = WeakAuras.GenerateUniqueID()
       seenUIDs[data.uid] = data
@@ -3119,7 +3119,7 @@ function WeakAuras.SetRegion(data, cloneId)
   else
     if not regionTypes[regionType] then
       regionType = "fallback"
-      print('Improper arguments to WeakAuras.CreateRegion - regionType "' .. data.regionType .. '" is not supported')
+      print("Improper arguments to WeakAuras.CreateRegion - regionType \"" .. data.regionType .. "\" is not supported")
     end
 
     local id = data.id
