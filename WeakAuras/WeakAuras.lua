@@ -647,6 +647,17 @@ local function ConstructFunction(prototype, trigger, skipOptional)
               test = "("..name.. "==".. (number or string.format("%s", Private.QuotedString(trigger[name] or ""))) .. ")"
             end
           elseif(arg.type == "multiselect") then
+            if arg.multiNoSingle then
+              -- convert single to multi
+              -- this is a lazy migration because multiNoSingle is not set for all game versions
+              if trigger["use_"..name] == true then
+                trigger["use_"..name] = false
+                trigger[name] = trigger[name] or {}
+                trigger[name].multi = trigger[name].multi or {};
+                trigger[name].multi[trigger[name].single] = true;
+                trigger[name].single = nil
+              end
+            end
             if(trigger["use_"..name] == false) then -- multi selection
               local any = false;
               if (trigger[name] and trigger[name].multi) then
@@ -686,7 +697,7 @@ local function ConstructFunction(prototype, trigger, skipOptional)
                   end
                 end
               end
-            elseif(trigger["use_"..name] and not arg.multiNoSingle) then -- single selection
+            elseif(trigger["use_"..name]) then -- single selection
               local value = trigger[name] and trigger[name].single;
               if not arg.test then
                 test = trigger[name] and trigger[name].single and "("..name.."=="..(tonumber(value) or ("[["..value.."]]"))..")";
