@@ -642,14 +642,17 @@ if WeakAuras.IsClassicOrBCCOrWrath() then
   function WeakAuras.CheckTalentByIndex(index, extraOption)
     local tab = ceil(index / MAX_NUM_TALENTS)
     local num_talent = (index - 1) % MAX_NUM_TALENTS + 1
-    local _, _, _, _, rank  = GetTalentInfo(tab, num_talent)
+    local name, _, _, _, rank  = GetTalentInfo(tab, num_talent)
+    if name == nil then
+      return nil
+    end
     local result = rank and rank > 0
     if extraOption == 4 then
       return result
     elseif extraOption == 5 then
       return not result
     end
-    return rank and rank > 0;
+    return result;
   end
 else
   function WeakAuras.CheckTalentByIndex(index, extraOption)
@@ -1242,6 +1245,9 @@ Private.load_prototype = {
       type = "multiselect",
       values = valuesForTalentFunction,
       test = "WeakAuras.CheckTalentByIndex(%d, %d)",
+      enableTest = function(...)
+        return WeakAuras.CheckTalentByIndex(...) ~= nil
+      end,
       events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
         or {"PLAYER_TALENT_UPDATE"},
@@ -1268,6 +1274,9 @@ Private.load_prototype = {
       type = "multiselect",
       values = valuesForTalentFunction,
       test = "WeakAuras.CheckTalentByIndex(%d, %d)",
+      enableTest = function(...)
+        return WeakAuras.CheckTalentByIndex(...) ~= nil
+      end,
       enable = function(trigger)
         return trigger.use_talent ~= nil or trigger.use_talent2 ~= nil;
       end,
@@ -1296,6 +1305,9 @@ Private.load_prototype = {
       type = "multiselect",
       values = valuesForTalentFunction,
       test = "WeakAuras.CheckTalentByIndex(%d, %d)",
+      enableTest = function(...)
+        return WeakAuras.CheckTalentByIndex(...) ~= nil
+      end,
       enable = function(trigger)
         return (trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil;
       end,
