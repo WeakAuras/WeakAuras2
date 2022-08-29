@@ -663,23 +663,31 @@ local function ConstructFunction(prototype, trigger, skipOptional)
               if (trigger[name] and trigger[name].multi) then
                 test = "(";
                 for value, positive in pairs(trigger[name].multi) do
-                  if not arg.test then
-                    test = test..name.."=="..(tonumber(value) or ("[["..value.."]]"))
-                  else
-                    if arg.extraOption then
-                      test = test..arg.test:format(tonumber(value) or ("[["..value.."]]"), trigger[name .. "_extraOption"] or 0)
-                    elseif arg.multiTristate then
-                      test = test..arg.test:format(tonumber(value) or ("[["..value.."]]"), positive and 4 or 5)
+                  local arg1 = tonumber(value) or ("[["..value.."]]")
+                  local arg2
+                  if arg.extraOption then
+                    arg2 = trigger[name .. "_extraOption"] or 0
+                  elseif arg.multiTristate then
+                    arg2 = positive and 4 or 5
+                  end
+                  local testEnabled = true
+                  if type(arg.enableTest) == "function" then
+                    testEnabled = arg.enableTest(arg1, arg2)
+                  end
+                  if testEnabled then
+                    local check
+                    if not arg.test then
+                      check = name.."=="..arg1
                     else
-                      test = test..arg.test:format(tonumber(value) or ("[["..value.."]]"))
+                      check = arg.test:format(arg1, arg2)
                     end
+                    if arg.multiAll then
+                      test = test..check.." and "
+                    else
+                      test = test..check.." or  "
+                    end
+                    any = true;
                   end
-                  if arg.multiAll then
-                    test = test.." and "
-                  else
-                    test = test.." or  "
-                  end
-                  any = true;
                 end
                 if(any) then
                   test = test:sub(1, -6);
