@@ -654,8 +654,10 @@ local function ConstructFunction(prototype, trigger, skipOptional)
                 trigger["use_"..name] = false
                 trigger[name] = trigger[name] or {}
                 trigger[name].multi = trigger[name].multi or {};
-                trigger[name].multi[trigger[name].single] = true;
-                trigger[name].single = nil
+                if trigger[name].single ~= nil then
+                  trigger[name].multi[trigger[name].single] = true;
+                  trigger[name].single = nil
+                end
               end
             end
             if(trigger["use_"..name] == false) then -- multi selection
