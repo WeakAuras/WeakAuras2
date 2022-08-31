@@ -653,7 +653,7 @@ local function ConstructFunction(prototype, trigger, skipOptional)
               if trigger["use_"..name] == true then
                 trigger["use_"..name] = false
                 trigger[name] = trigger[name] or {}
-                trigger[name].multi = trigger[name].multi or {};
+                trigger[name].multi = {};
                 if trigger[name].single ~= nil then
                   trigger[name].multi[trigger[name].single] = true;
                   trigger[name].single = nil
