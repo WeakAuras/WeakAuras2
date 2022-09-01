@@ -762,7 +762,7 @@ local growers = {
     local growFunc = WeakAuras.LoadFunction("return " .. growStr) or noop
     return function(newPositions, activeRegions)
       Private.ActivateAuraEnvironment(data.id)
-      local ok = xpcall(growFunc, Private.GetErrorHandlerId(data.id, L["Custom Sort"]), newPositions, activeRegions)
+      local ok = xpcall(growFunc, Private.GetErrorHandlerId(data.id, L["Custom Grow"]), newPositions, activeRegions)
       Private.ActivateAuraEnvironment()
       if not ok then
         wipe(newPositions)
