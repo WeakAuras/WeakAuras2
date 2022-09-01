@@ -169,7 +169,7 @@ local function ConstructTextEditor(frame)
   editor:DisableButton(true)
   local fontPath = SharedMedia:Fetch("font", "Fira Mono Medium")
   if (fontPath) then
-    editor.editBox:SetFont(fontPath, WeakAurasSaved.editor_font_size)
+    editor.editBox:SetFont(fontPath, WeakAurasSaved.editor_font_size, "")
   end
   group:AddChild(editor)
   editor.frame:SetClipsChildren(true)
@@ -234,7 +234,7 @@ local function ConstructTextEditor(frame)
 
   local urlText = CreateFrame("EditBox", nil, group.frame)
   urlText:SetFrameLevel(cancel:GetFrameLevel() + 1)
-  urlText:SetFont(STANDARD_TEXT_FONT, 12)
+  urlText:SetFont(STANDARD_TEXT_FONT, 12, "")
   urlText:EnableMouse(true)
   urlText:SetAutoFocus(false)
   urlText:SetCountInvisibleLetters(false)
@@ -326,7 +326,7 @@ local function ConstructTextEditor(frame)
             end,
             func = function()
               WeakAurasSaved.editor_font_size = i
-              editor.editBox:SetFont(fontPath, WeakAurasSaved.editor_font_size)
+              editor.editBox:SetFont(fontPath, WeakAurasSaved.editor_font_size, "")
             end
           },
         level)
@@ -552,7 +552,7 @@ local function ConstructTextEditor(frame)
   )
 
   local editorError = group.frame:CreateFontString(nil, "OVERLAY")
-  editorError:SetFont(STANDARD_TEXT_FONT, 12)
+  editorError:SetFont(STANDARD_TEXT_FONT, 12, "")
   editorError:SetJustifyH("LEFT")
   editorError:SetJustifyV("TOP")
   editorError:SetTextColor(1, 0, 0)
@@ -562,7 +562,7 @@ local function ConstructTextEditor(frame)
   local editorLine = CreateFrame("EditBox", nil, group.frame)
   -- Set script on enter pressed..
   editorLine:SetPoint("BOTTOMRIGHT", editor.frame, "TOPRIGHT", -100, -15)
-  editorLine:SetFont(STANDARD_TEXT_FONT, 10)
+  editorLine:SetFont(STANDARD_TEXT_FONT, 10, "")
   editorLine:SetJustifyH("RIGHT")
   editorLine:SetWidth(80)
   editorLine:SetHeight(20)

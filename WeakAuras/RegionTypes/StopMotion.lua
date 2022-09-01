@@ -92,7 +92,7 @@ local function create(parent)
     frame.regionType = "stopmotion"
     frame:SetMovable(true);
     frame:SetResizable(true);
-    frame:SetMinResize(1, 1);
+    -- frame:SetMinResize(1, 1);
 
     local background = frame:CreateTexture(nil, "BACKGROUND");
     frame.background = background;

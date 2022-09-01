@@ -187,7 +187,7 @@ local function create(parent, data)
   region.regionType = "icon"
   region:SetMovable(true);
   region:SetResizable(true);
-  region:SetMinResize(1, 1);
+  -- region:SetMinResize(1, 1);
 
   function region.UpdateInnerOuterSize()
     local width = region.width * math.abs(region.scalex);

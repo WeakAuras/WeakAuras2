@@ -70,7 +70,7 @@ local function create(parent)
   region.regionType = "texture"
   region:SetMovable(true);
   region:SetResizable(true);
-  region:SetMinResize(1, 1);
+  -- region:SetMinResize(1, 1);
 
   local texture = region:CreateTexture();
   texture:SetSnapToPixelGrid(false)
