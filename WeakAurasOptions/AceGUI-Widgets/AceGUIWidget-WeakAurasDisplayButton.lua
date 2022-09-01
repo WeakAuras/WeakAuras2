@@ -1178,7 +1178,6 @@ local methods = {
         Show_DropIndicator(id)
       end
       self:UpdateIconsVisible()
-      OptionsPrivate.UpdateButtonsScroll()
     else
       -- Are we a valid target?
       -- Top level auras that aren't groups aren't

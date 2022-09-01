@@ -1496,6 +1496,7 @@ function OptionsPrivate.StartDrag(mainAura)
       end
     end
   end
+  OptionsPrivate.UpdateButtonsScroll()
 end
 
 function OptionsPrivate.DropIndicator()
