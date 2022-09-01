@@ -1402,8 +1402,8 @@ Private.load_prototype = {
       type = "multiselect",
       values = "covenant_types",
       init = "arg",
-      enable = WeakAuras.IsRetail(),
-      hidden = not WeakAuras.IsRetail(),
+      enable = WeakAuras.IsShadowlands(),
+      hidden = not WeakAuras.IsShadowlands(),
       events = {"COVENANT_CHOSEN"}
     },
     {
