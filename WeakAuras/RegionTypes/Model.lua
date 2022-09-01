@@ -83,7 +83,7 @@ local function create(parent)
   region.regionType = "model"
   region:SetMovable(true);
   region:SetResizable(true);
-  region:SetMinResize(1, 1);
+  -- region:SetMinResize(1, 1);
 
   -- Border region
   local border = CreateFrame("Frame", nil, region, "BackdropTemplate");

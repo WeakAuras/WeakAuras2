@@ -68,7 +68,7 @@ local function ConstructModelPicker(frame)
   filterInput:SetPoint("TOP", group.frame, "TOP", 0, 1)
   filterInput:SetPoint("LEFT", group.frame, "LEFT", 7, 0)
   filterInput:SetWidth(200)
-  filterInput:SetFont(STANDARD_TEXT_FONT, 10)
+  filterInput:SetFont(STANDARD_TEXT_FONT, 10, "")
   group.frame.filterInput = filterInput
 
   -- Old X Y Z controls
