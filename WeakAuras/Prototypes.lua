@@ -7789,6 +7789,11 @@ Private.event_prototypes = {
       AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
       AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_INTERRUPTED")
       AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
+      if WeakAuras.IsDragonflight() then
+        AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_START")
+        AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_UPDATE")
+        AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_STOP")
+      end
       if WeakAuras.IsClassic() and unit ~= "player" then
         LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_START", WeakAuras.ScanUnitEvents)
         LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_DELAYED", WeakAuras.ScanUnitEvents) -- only for player
