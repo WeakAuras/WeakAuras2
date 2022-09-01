@@ -960,7 +960,7 @@ local function create(parent)
   region.regionType = "progresstexture"
   region:SetMovable(true);
   region:SetResizable(true);
-  region:SetMinResize(1, 1);
+  -- region:SetMinResize(1, 1);
 
   local background = createTexture(region, "BACKGROUND", 0);
   region.background = background;

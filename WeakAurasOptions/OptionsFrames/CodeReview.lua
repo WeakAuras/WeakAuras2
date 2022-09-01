@@ -90,7 +90,7 @@ local function ConstructCodeReview(frame)
   IndentationLib.enable(codebox.editBox, colorScheme, 4);
   local fontPath = SharedMedia:Fetch("font", "Fira Mono Medium");
   if(fontPath) then
-    codebox.editBox:SetFont(fontPath, 12);
+    codebox.editBox:SetFont(fontPath, 12, "");
   end
   group.codebox = codebox;
 

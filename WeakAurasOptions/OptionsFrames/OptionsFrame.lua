@@ -153,7 +153,7 @@ function OptionsPrivate.CreateFrame()
   frame:EnableMouse(true)
   frame:SetMovable(true)
   frame:SetResizable(true)
-  frame:SetMinResize(minWidth, minHeight)
+  -- frame:SetMinResize(minWidth, minHeight)
   frame:SetFrameStrata("DIALOG")
   frame.window = "default"
 
@@ -445,7 +445,7 @@ function OptionsPrivate.CreateFrame()
   tipPopupLabel:SetJustifyV("TOP")
 
   local urlWidget = CreateFrame("EditBox", nil, tipPopup, "InputBoxTemplate")
-  urlWidget:SetFont(STANDARD_TEXT_FONT, 12)
+  urlWidget:SetFont(STANDARD_TEXT_FONT, 12, "")
   urlWidget:SetPoint("TOPLEFT", tipPopupLabel, "BOTTOMLEFT", 6, 0)
   urlWidget:SetPoint("TOPRIGHT", tipPopupLabel, "BOTTOMRIGHT", 0, 0)
   urlWidget:SetScript("OnChar", function() urlWidget:SetText(urlWidget.text); urlWidget:HighlightText(); end);
@@ -562,7 +562,7 @@ function OptionsPrivate.CreateFrame()
   filterInput:SetPoint("TOP", frame, "TOP", 0, -44)
   filterInput:SetPoint("LEFT", frame, "LEFT", 24, 0)
   filterInput:SetPoint("RIGHT", container.frame, "LEFT", -5, 0)
-  filterInput:SetFont(STANDARD_TEXT_FONT, 10)
+  filterInput:SetFont(STANDARD_TEXT_FONT, 10, "")
   frame.filterInput = filterInput
   filterInput:Hide()
 
