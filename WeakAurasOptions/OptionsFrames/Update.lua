@@ -1943,7 +1943,9 @@ local methods = {
   Close = function(self, success, id)
     self.optionsWindow.window = "default";
     self.optionsWindow:UpdateFrameVisible()
-    self.CallbackFunc(success, id)
+    if self.CallbackFunc then
+      self.CallbackFunc(success, id)
+    end
   end,
   AddBasicInformationWidgets = function(self, data, sender)
     local title = AceGUI:Create("Label")
