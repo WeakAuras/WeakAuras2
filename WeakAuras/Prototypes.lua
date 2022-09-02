@@ -7848,16 +7848,37 @@ Private.event_prototypes = {
         local smart = %s
         local remainingCheck = %s
         local inverseTrigger = %s
+        local empowered = false
+        local stage = 1
+        local stagesData = {}
 
-        local show, expirationTime, castType, spell, icon, startTime, endTime, interruptible, spellId, remaining, _
+        local show, expirationTime, castType, spell, icon, startTime, endTime, interruptible, spellId, remaining, _, stageTotal
 
         spell, _, icon, startTime, endTime, _, _, interruptible, spellId = WeakAuras.UnitCastingInfo(unit)
         if spell then
           castType = "cast"
         else
-          spell, _, icon, startTime, endTime, _, interruptible, spellId = WeakAuras.UnitChannelInfo(unit)
+          spell, _, icon, startTime, endTime, _, interruptible, spellId, _, stageTotal = WeakAuras.UnitChannelInfo(unit)
           if spell then
             castType = "channel"
+            if stageTotal and stageTotal > 0 then
+              empowered = true
+
+              local lastFinish = 0
+              for i = 1, stageTotal do
+                stagesData[i] = {
+                  start = lastFinish,
+                  finish = lastFinish + GetEmpowerStageDuration(i - 1) / 1000
+                }
+                lastFinish = stagesData[i].finish
+                if startTime / 1000 + lastFinish < GetTime() then
+                  stage = i + 1
+                end
+                if Round(startTime/1000) == Round(GetTime()) and i < stageTotal then
+                  WeakAuras.ScheduleCastCheck(startTime / 1000 + lastFinish, unit)
+                end
+              end
+            end
           end
         end
         interruptible = not interruptible
@@ -7932,6 +7953,33 @@ Private.event_prototypes = {
         hidden = WeakAuras.IsBCC()
       },
       {
+        name = "empowered",
+        display = L["Empowered"],
+        type = "tristate",
+        enable = WeakAuras.IsDragonflight(),
+        store = true,
+        conditionType = "bool",
+        hidden = not WeakAuras.IsDragonflight()
+      },
+      {
+        name = "stage",
+        display = L["Current Stage"],
+        type = "number",
+        enable = WeakAuras.IsDragonflight(),
+        store = true,
+        conditionType = "number",
+        hidden = not WeakAuras.IsDragonflight()
+      },
+      {
+        name = "stageTotal",
+        display = L["Total Stages"],
+        type = "number",
+        enable = WeakAuras.IsDragonflight(),
+        store = true,
+        conditionType = "number",
+        hidden = not WeakAuras.IsDragonflight()
+      },
+      {
         name = "remaining",
         display = L["Remaining Time"],
         type = "number",
@@ -7982,7 +8030,7 @@ Private.event_prototypes = {
       {
         name = "autoHide",
         hidden = true,
-        init = "true",
+        init = "not empowered",
         test = "true",
         store = true
       },
@@ -8213,6 +8261,13 @@ Private.event_prototypes = {
       {
         hidden = true,
         test = "WeakAuras.UnitExistsFixed(unit, smart) and ((not inverseTrigger and spell) or (inverseTrigger and not spell)) and specificUnitCheck"
+      },
+      {
+        name = "stagesData",
+        hidden = true,
+        test = "true",
+        store = true,
+        init = "stagesData",
       }
     },
     overlayFuncs = {
@@ -8226,6 +8281,46 @@ Private.event_prototypes = {
           return trigger.use_showLatency and trigger.unit == "player"
         end
       },
+      {
+        name = L["Empowered 1"],
+        func = function(trigger, state)
+          if not state.stageTotal or state.stageTotal < 1 then return 0, 0 end
+          return state.duration - state.stagesData[1].start, state.duration - state.stagesData[1].finish
+        end,
+        enable = WeakAuras.IsDragonflight
+      },
+      {
+        name = L["Empowered 2"],
+        func = function(trigger, state)
+          if not state.stageTotal or state.stageTotal < 2 then return 0, 0 end
+          return state.duration - state.stagesData[2].start, state.duration - state.stagesData[2].finish
+        end,
+        enable = WeakAuras.IsDragonflight
+      },
+      {
+        name = L["Empowered 3"],
+        func = function(trigger, state)
+          if not state.stageTotal or state.stageTotal < 3 then return 0, 0 end
+          return state.duration - state.stagesData[3].start, state.duration - state.stagesData[3].finish
+        end,
+        enable = WeakAuras.IsDragonflight
+      },
+      {
+        name = L["Empowered 4"],
+        func = function(trigger, state)
+          if not state.stageTotal or state.stageTotal < 4 then return 0, 0 end
+          return state.duration - state.stagesData[4].start, state.duration - state.stagesData[4].finish
+        end,
+        enable = WeakAuras.IsDragonflight
+      },
+      {
+        name = L["Empowered 5"],
+        func = function(trigger, state)
+          if not state.stageTotal or state.stageTotal < 5 then return 0, 0 end
+          return state.duration - state.stagesData[5].start, state.duration - state.stagesData[5].finish
+        end,
+        enable = WeakAuras.IsDragonflight
+      }
     },
     automaticrequired = true,
   },
