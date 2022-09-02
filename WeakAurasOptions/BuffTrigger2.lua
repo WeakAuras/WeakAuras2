@@ -975,6 +975,31 @@ local function GetBuffTriggerOptions(data, triggernum)
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and not trigger.useHostility) end
     },
 
+    useNpcId = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Filter by Npc ID"],
+      order = 69.31,
+      hidden = function() return
+        not (trigger.type == "aura2" and trigger.unit == "nameplate")
+      end
+    },
+    npcId = {
+      type = "input",
+      width = WeakAuras.normalWidth,
+      name = L["Npc ID"],
+      validate = ValidateNumeric,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and trigger.useNpcId) end,
+      order = 69.32
+    },
+    npcIdSpace = {
+      type = "description",
+      name = "",
+      order = 69.33,
+      width = WeakAuras.normalWidth,
+      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and not trigger.useNpcId) end
+    },
+
     ignoreSelf = {
       type = "toggle",
       name = L["Ignore Self"],
