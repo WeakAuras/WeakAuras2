@@ -883,8 +883,8 @@ function OptionsPrivate.OpenDebugLog(text)
   frame.debugLog:Open(text)
 end
 
-function OptionsPrivate.OpenUpdate(data, children, target, sender)
-  return frame.update:Open(data, children, target, sender)
+function OptionsPrivate.OpenUpdate(data, children, target, sender,CallbackFunc)
+  return frame.update:Open(data, children, target, sender,CallbackFunc)
 end
 
 function OptionsPrivate.ConvertDisplay(data, newType)
@@ -1874,7 +1874,7 @@ function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, h
     headerOption =  {
       type = "execute",
       control = "WeakAurasExpandSmall",
-      name = L["|cffffcc00Format Options|r"],
+      name = L["|cFFffcc00Format Options|r"],
       width = WeakAuras.doubleWidth,
       func = function(info, button)
         setHidden(not hidden())
