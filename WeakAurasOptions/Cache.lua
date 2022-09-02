@@ -31,7 +31,7 @@ function spellCache.Build()
   local co = coroutine.create(function()
     local id = 0
     local misses = 0
-    while misses < 50000 do
+    while misses < 80000 do
       id = id + 1
       local name, _, icon = GetSpellInfo(id)
 
