@@ -1244,7 +1244,7 @@ end
 local methods = {
   Open = function(self, data, children, target, sender, callbackFunc)
     if(self.optionsWindow.window == "importexport") then
-      self.optionsWindow.importexport:Close(false);
+      self.optionsWindow.importexport:Close();
     elseif(self.optionsWindow.window == "texture") then
       self.optionsWindow.texturePicker:CancelClose();
     elseif(self.optionsWindow.window == "icon") then
