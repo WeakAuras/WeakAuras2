@@ -1941,7 +1941,7 @@ local methods = {
     self.progress = self.total
     self.progressBar:SetProgress(self.progress, self.total)
   end,
-  Close = function(self, wasSuccesful)
+  Close = function(self, id)
     self.optionsWindow.window = "default";
     self.optionsWindow:UpdateFrameVisible()
     self.CallbackFunc(wasSuccesful)
