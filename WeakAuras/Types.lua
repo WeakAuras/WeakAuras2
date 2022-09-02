@@ -1374,10 +1374,12 @@ local function update_specs()
       local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i);
       if tabName then
         tinsert(WeakAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
-        Private.spec_types_all[specId] = "|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:0:0:0:0:256:256:"
-         .. classTexcoords[1] * 256 .. ":" .. classTexcoords[2] * 256 .. ":" .. classTexcoords[3] * 256 .. ":" .. classTexcoords[4] * 256
-         .. ":0|t"
-         .. "|T"..(icon or "error")..":0|t "..(tabName or "error");
+        if WeakAuras.IsShadowlands() then
+          Private.spec_types_all[specId] = "|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:0:0:0:0:256:256:"
+          .. classTexcoords[1] * 256 .. ":" .. classTexcoords[2] * 256 .. ":" .. classTexcoords[3] * 256 .. ":" .. classTexcoords[4] * 256
+          .. ":0|t"
+          .. "|T"..(icon or "error")..":0|t "..(tabName or "error");
+        end
       end
     end
   end
@@ -1385,7 +1387,11 @@ end
 
 
 Private.talent_types = {}
-if WeakAuras.IsRetail() then
+if WeakAuras.IsDragonflight() then
+  local spec_frame = CreateFrame("Frame");
+  spec_frame:RegisterEvent("PLAYER_LOGIN")
+  spec_frame:SetScript("OnEvent", update_specs);
+elseif WeakAuras.IsRetail() then
   local spec_frame = CreateFrame("Frame");
   spec_frame:RegisterEvent("PLAYER_LOGIN")
   spec_frame:SetScript("OnEvent", update_specs);
