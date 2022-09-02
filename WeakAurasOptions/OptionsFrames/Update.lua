@@ -1242,7 +1242,7 @@ local function AddAuraList(container, uidMap, list, expandText)
 end
 
 local methods = {
-  Open = function(self, data, children, target, sender)
+  Open = function(self, data, children, target, sender, callbackFunc)
     if(self.optionsWindow.window == "importexport") then
       self.optionsWindow.importexport:Close();
     elseif(self.optionsWindow.window == "texture") then
@@ -1264,6 +1264,7 @@ local methods = {
     self.userChoices = {
 
     }
+    self.callbackFunc = callbackFunc
 
     self:ReleaseChildren()
     self:AddBasicInformationWidgets(data, sender)
@@ -1641,8 +1642,7 @@ local methods = {
     self.closeButton:SetEnabled(true)
     OptionsPrivate.Private.callbacks:Fire("Import")
 
-    self:Close()
-
+    self:Close(true, pendingPickData.id)
 
     if pendingPickData then
       OptionsPrivate.ClearPicks()
@@ -1940,9 +1940,12 @@ local methods = {
     self.progress = self.total
     self.progressBar:SetProgress(self.progress, self.total)
   end,
-  Close = function(self)
+  Close = function(self, success, id)
     self.optionsWindow.window = "default";
     self.optionsWindow:UpdateFrameVisible()
+    if self.CallbackFunc then
+      self.CallbackFunc(success, id)
+    end
   end,
   AddBasicInformationWidgets = function(self, data, sender)
     local title = AceGUI:Create("Label")
@@ -2023,7 +2026,7 @@ local function ConstructUpdateFrame(frame)
   importButton:SetText(L["Import"])
 
   local closeButton = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
-  closeButton:SetScript("OnClick", function() group:Close() end);
+  closeButton:SetScript("OnClick", function() group:Close(false) end);
   closeButton:SetPoint("BOTTOMRIGHT", -20, -24);
   closeButton:SetFrameLevel(closeButton:GetFrameLevel() + 1)
   closeButton:SetHeight(20);
