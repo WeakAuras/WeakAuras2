@@ -12,7 +12,7 @@ local function notEmptyString(str)
 end
 
 local function addCode(codes, text, code, ...)
-  -- The 4th parameter is a "check" if the code is active
+  -- The 4th paramter is a "check" if the code is active
   -- The following line let's distinguish between addCode(a, b, c, nil) and addCode(a, b, c)
   -- If the 4th parameter is nil, then we want to return
   if (select("#", ...) > 0) then
@@ -182,7 +182,7 @@ local function recurseUpdate(data, chunk)
   end
 end
 
-local ignoredForDiffChecking -- Needs to be created lazily
+local ignoredForDiffChecking -- Needs to be created lazyly
 local function RecurseDiff(ours, theirs)
   local diff, seen, same = {}, {}, true
   for key, ourVal in pairs(ours) do
@@ -381,7 +381,7 @@ local function BuildUidMap(data, children, type)
     self.idToUid[data.id] = data.uid
     self.totalCount = self.totalCount + 1
 
-    -- clean up children/sortHybrid
+    -- clean up children/sortHybird
     -- The Update code first inserts children before it inserts us
     -- But not every child might be inserted, since empty groups aren't inserted
     -- so clean that up here
@@ -1242,9 +1242,9 @@ local function AddAuraList(container, uidMap, list, expandText)
 end
 
 local methods = {
-  Open = function(self, data, children, target, sender)
+  Open = function(self, data, children, target, sender,CallbackFunc)
     if(self.optionsWindow.window == "importexport") then
-      self.optionsWindow.importexport:Close();
+      self.optionsWindow.importexport:Close(false);
     elseif(self.optionsWindow.window == "texture") then
       self.optionsWindow.texturePicker:CancelClose();
     elseif(self.optionsWindow.window == "icon") then
@@ -1264,6 +1264,7 @@ local methods = {
     self.userChoices = {
 
     }
+    self.CallbackFunc = CallbackFunc
 
     self:ReleaseChildren()
     self:AddBasicInformationWidgets(data, sender)
@@ -1513,7 +1514,7 @@ local methods = {
       local onePhaseProgress = matchInfo.oldUidMap:GetTotalCount() + matchInfo.newUidMap:GetTotalCount()
       local IncProgress = function() self:IncProgress() end
 
-      -- The progress is more for appearances than anything resembling real calculation
+      -- The progress is more for appereance than anything resembling real calculation
       -- The estimate for the total work is wonky, as is how the code compensates for that
       -- But then again, lying progress bar is a industry standard pratice
       self:InitializeProgress(onePhaseProgress * 26)
@@ -1543,7 +1544,7 @@ local methods = {
       local GetPhase1Data   -- Getting the right data is a bit tricky, and depends on the mode
       local GetPhase2Data
       if userChoices.activeCategories.arrangement then
-        -- new arrangement
+        -- new arragement
         structureUidMap = matchInfo.newUidMap
         if not userChoices.activeCategories.oldchildren then
           -- Keep old children
@@ -1641,7 +1642,7 @@ local methods = {
     self.closeButton:SetEnabled(true)
     OptionsPrivate.Private.callbacks:Fire("Import")
 
-    self:Close()
+    self:Close(pendingPickData.id)
 
 
     if pendingPickData then
@@ -1940,9 +1941,10 @@ local methods = {
     self.progress = self.total
     self.progressBar:SetProgress(self.progress, self.total)
   end,
-  Close = function(self)
+  Close = function(self,wassuccesful)
     self.optionsWindow.window = "default";
     self.optionsWindow:UpdateFrameVisible()
+    self.CallbackFunc(wassuccesful)
   end,
   AddBasicInformationWidgets = function(self, data, sender)
     local title = AceGUI:Create("Label")
@@ -2023,7 +2025,7 @@ local function ConstructUpdateFrame(frame)
   importButton:SetText(L["Import"])
 
   local closeButton = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
-  closeButton:SetScript("OnClick", function() group:Close() end);
+  closeButton:SetScript("OnClick", function() group:Close(false) end);
   closeButton:SetPoint("BOTTOMRIGHT", -20, -24);
   closeButton:SetFrameLevel(closeButton:GetFrameLevel() + 1)
   closeButton:SetHeight(20);
