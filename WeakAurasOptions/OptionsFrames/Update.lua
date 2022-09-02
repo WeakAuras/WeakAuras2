@@ -1642,8 +1642,7 @@ local methods = {
     self.closeButton:SetEnabled(true)
     OptionsPrivate.Private.callbacks:Fire("Import")
 
-    self:Close(pendingPickData.id)
-
+    self:Close(true, pendingPickData.id)
 
     if pendingPickData then
       OptionsPrivate.ClearPicks()
@@ -1941,10 +1940,10 @@ local methods = {
     self.progress = self.total
     self.progressBar:SetProgress(self.progress, self.total)
   end,
-  Close = function(self, id)
+  Close = function(self, success, id)
     self.optionsWindow.window = "default";
     self.optionsWindow:UpdateFrameVisible()
-    self.CallbackFunc(id)
+    self.CallbackFunc(success, id)
   end,
   AddBasicInformationWidgets = function(self, data, sender)
     local title = AceGUI:Create("Label")
