@@ -445,14 +445,14 @@ end
 
 local delayedImport = CreateFrame("Frame")
 
-local function ImportNow(data, children, target, sender,CallbackFunc)
+local function ImportNow(data, children, target, sender, callbackFunc)
   if InCombatLockdown() then
     WeakAuras.prettyPrint(L["Importing will start after combat ends."])
 
     delayedImport:RegisterEvent("PLAYER_REGEN_ENABLED")
     delayedImport:SetScript("OnEvent", function()
       delayedImport:UnregisterEvent("PLAYER_REGEN_ENABLED")
-      ImportNow(data, children, target, sender,CallbackFunc)
+      ImportNow(data, children, target, sender, callbackFunc)
     end)
     return
   end
@@ -461,11 +461,11 @@ local function ImportNow(data, children, target, sender,CallbackFunc)
     if not WeakAuras.IsOptionsOpen() then
       WeakAuras.OpenOptions()
     end
-    Private.OpenUpdate(data, children, target, sender,CallbackFunc)
+    Private.OpenUpdate(data, children, target, sender, callbackFunc)
   end
 end
 
-function WeakAuras.Import(inData, target,CallbackFunc)
+function WeakAuras.Import(inData, target, callbackFunc)
   local data, children, version
   if type(inData) == 'string' then
     -- encoded data
@@ -519,7 +519,7 @@ function WeakAuras.Import(inData, target,CallbackFunc)
   end
 
   tooltipLoading = nil;
-  return ImportNow(data, children, target,nil,CallbackFunc)
+  return ImportNow(data, children, target, nil, callbackFunc)
 end
 
 local function crossRealmSendCommMessage(prefix, text, target, queueName, callbackFn, callbackArg)
