@@ -1196,25 +1196,12 @@ Private.power_types = {
   [17] = POWER_TYPE_FURY_DEMONHUNTER,
   [18] = POWER_TYPE_PAIN
 }
-
-Private.power_types_with_stagger = {
-  [0] = POWER_TYPE_MANA,
-  [1] = POWER_TYPE_RED_POWER,
-  [2] = POWER_TYPE_FOCUS,
-  [3] = POWER_TYPE_ENERGY,
-  [4] = COMBO_POINTS,
-  [6] = RUNIC_POWER,
-  [7] = SOUL_SHARDS_POWER,
-  [8] = POWER_TYPE_LUNAR_POWER,
-  [9] = HOLY_POWER,
-  [11] = POWER_TYPE_MAELSTROM,
-  [12] = CHI_POWER,
-  [13] = POWER_TYPE_INSANITY,
-  [16] = POWER_TYPE_ARCANE_CHARGES,
-  [17] = POWER_TYPE_FURY_DEMONHUNTER,
-  [18] = POWER_TYPE_PAIN,
-  [99] = STAGGER
-}
+if WeakAuras.IsRetail() then
+  Private.power_types[99] = STAGGER
+end
+if WeakAuras.IsDragonflight() then
+  Private.power_types[19] = POWER_TYPE_ESSENCE
+end
 
 Private.miss_types = {
   ABSORB = L["Absorb"],
