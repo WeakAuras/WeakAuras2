@@ -2318,6 +2318,7 @@ do
     [174] = L["Heroic Party"],
     [175] = L["10 Player Raid"],
     [176] = L["25 Player Raid"],
+    [192] = L["Dungeon (Mythic+)"], -- "Challenge Level 1" TODO: check if this label is correct
     [193] = L["10 Player Raid (Heroic)"],
     [194] = L["25 Player Raid (Heroic)"],
   }
