@@ -1950,7 +1950,7 @@ if WeakAuras.IsRetail() then
 
     local deactivatedTriggerInfos = {}
     RecheckActiveForUnitType("group", unit, deactivatedTriggerInfos)
-    RecheckActiveForUnitType("group", unit .. "pet", deactivatedTriggerInfos)
+    RecheckActiveForUnitType("group", WeakAuras.unitToPetUnit[unit], deactivatedTriggerInfos)
     DeactivateScanFuncs(deactivatedTriggerInfos)
 
     Private.StopProfileSystem("bufftrigger2")
@@ -2674,7 +2674,7 @@ function BuffTrigger.Add(data)
         useAffected = unit == "group" and trigger.useAffected,
         isMulti = trigger.unit == "multi",
         nameChecker = effectiveNameCheck and WeakAuras.ParseNameCheck(trigger.unitName),
-        includePets = trigger.use_includePets and trigger.includePets,
+        includePets = trigger.use_includePets and trigger.includePets or nil,
         npcId = effectiveNpcId
       }
       triggerInfos[id] = triggerInfos[id] or {}
