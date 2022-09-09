@@ -315,7 +315,7 @@ local function BuildUidMap(data, children, type)
   idToUid[data.id] = data.uid
   for i, child in ipairs(children) do
     if idToUid[child.id] then
-      error("Diplicated id in import data")
+      error("Duplicate id in import data: "..child.id)
     end
     idToUid[child.id] = child.uid
   end
