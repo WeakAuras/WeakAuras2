@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 local L = WeakAuras.L
 local regionOptions = WeakAuras.regionOptions
@@ -66,32 +68,32 @@ local function AddOptionsForSupportedSubRegion(regionOption, data, supported)
       order = order + 1
     end
   end
-  regionOption["sub"] = result;
+  regionOption["sub"] = result
   return hasSubRegions
 end
 
 local function union(table1, table2)
-  local meta = {};
-  for i,v in pairs(table1) do
-    meta[i] = v;
+  local meta = {}
+  for i, v in pairs(table1) do
+    meta[i] = v
   end
-  for i,v in pairs(table2) do
-    meta[i] = v;
+  for i, v in pairs(table2) do
+    meta[i] = v
   end
-  return meta;
+  return meta
 end
 
 function OptionsPrivate.GetDisplayOptions(data)
   local id = data.id
 
   if not data.controlledChildren then
-    local regionOption;
-    local commonOption = {};
+    local regionOption
+    local commonOption = {}
 
     local hasSubElements = false
 
-    if(regionOptions[data.regionType]) then
-      regionOption = regionOptions[data.regionType].create(id, data);
+    if regionOptions[data.regionType] then
+      regionOption = regionOptions[data.regionType].create(id, data)
 
       if data.subRegions then
         local subIndex = {}
@@ -131,9 +133,9 @@ function OptionsPrivate.GetDisplayOptions(data)
             type = "description",
             name = L["This region of type \"%s\" is not supported."]:format(data.regionType),
             order = 2,
-          }
-        }
-      };
+          },
+        },
+      }
     end
 
     if hasSubElements then
@@ -143,8 +145,8 @@ function OptionsPrivate.GetDisplayOptions(data)
         header = {
           type = "header",
           name = L["Sub Elements"],
-          order = 1
-        }
+          order = 1,
+        },
       }
     end
 
@@ -155,36 +157,36 @@ function OptionsPrivate.GetDisplayOptions(data)
       name = L["Display"],
       order = 10,
       get = function(info)
-        local base, property = parsePrefix(info[#info], data);
+        local base, property = parsePrefix(info[#info], data)
         if not base then
           return nil
         end
-        if(info.type == "color") then
-          base[property] = base[property] or {};
-          local c = base[property];
-          return c[1], c[2], c[3], c[4];
+        if info.type == "color" then
+          base[property] = base[property] or {}
+          local c = base[property]
+          return c[1], c[2], c[3], c[4]
         else
-          return base[property];
+          return base[property]
         end
       end,
       set = function(info, v, g, b, a)
-        local base, property = parsePrefix(info[#info], data, true);
-        if(info.type == "color") then
-          base[property] = base[property] or {};
-          local c = base[property];
-          c[1], c[2], c[3], c[4] = v, g, b, a;
-        elseif(info.type == "toggle") then
-          base[property] = v;
+        local base, property = parsePrefix(info[#info], data, true)
+        if info.type == "color" then
+          base[property] = base[property] or {}
+          local c = base[property]
+          c[1], c[2], c[3], c[4] = v, g, b, a
+        elseif info.type == "toggle" then
+          base[property] = v
         else
-          base[property] = (v ~= "" and v) or nil;
+          base[property] = (v ~= "" and v) or nil
         end
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        WeakAuras.Add(data)
+        WeakAuras.UpdateThumbnail(data)
         OptionsPrivate.Private.AddParents(data)
-        OptionsPrivate.ResetMoverSizer();
+        OptionsPrivate.ResetMoverSizer()
       end,
-      args = options
-    };
+      args = options,
+    }
     return region
   else
     -- Multiple Auras
@@ -195,26 +197,26 @@ function OptionsPrivate.GetDisplayOptions(data)
     local handledRegionTypes = {}
     local handledSubRegionTypes = {}
 
-    local allOptions = {};
-    local commonOption = {};
+    local allOptions = {}
+    local commonOption = {}
     local unsupportedCount = 0
     local supportedSubRegions = {}
     local hasSubElements = false
 
     for child in OptionsPrivate.Private.TraverseLeafs(data) do
       if child and not handledRegionTypes[child.regionType] then
-        handledRegionTypes[child.regionType] = true;
+        handledRegionTypes[child.regionType] = true
         if regionOptions[child.regionType] then
-          allOptions = union(allOptions, regionOptions[child.regionType].create(id, data));
+          allOptions = union(allOptions, regionOptions[child.regionType].create(id, data))
         else
           unsupportedCount = unsupportedCount + 1
-          allOptions["__unsupported" .. unsupportedCount] =  {
+          allOptions["__unsupported" .. unsupportedCount] = {
             __title = "|cFFFFFF00" .. child.regionType,
             __order = 1,
             warning = {
               type = "description",
               name = L["Regions of type \"%s\" are not supported."]:format(child.regionType),
-              order = 1
+              order = 1,
             },
           }
         end
@@ -262,36 +264,41 @@ function OptionsPrivate.GetDisplayOptions(data)
           order = 1,
           type = "header",
           name = L["Sub Elements"],
-        }
+        },
       }
     end
 
-    fixMetaOrders(allOptions);
+    fixMetaOrders(allOptions)
 
     local region = {
       type = "group",
       name = L["Display"],
       order = 10,
-      args = flattenRegionOptions(allOptions, false);
-    };
+      args = flattenRegionOptions(allOptions, false),
+    }
 
-    removeFuncs(region);
-    replaceNameDescFuncs(region, data, "region");
-    replaceImageFuncs(region, data, "region");
-    replaceValuesFuncs(region, data, "region");
+    removeFuncs(region)
+    replaceNameDescFuncs(region, data, "region")
+    replaceImageFuncs(region, data, "region")
+    replaceValuesFuncs(region, data, "region")
 
-    region.get = function(info, ...) return getAll(data, info, ...); end;
+    region.get = function(info, ...)
+      return getAll(data, info, ...)
+    end
     region.set = function(info, ...)
-      setAll(data, info, ...);
-      if(type(data.id) == "string") then
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
-        OptionsPrivate.ResetMoverSizer();
+      setAll(data, info, ...)
+      if type(data.id) == "string" then
+        WeakAuras.Add(data)
+        WeakAuras.UpdateThumbnail(data)
+        OptionsPrivate.ResetMoverSizer()
       end
     end
-    region.hidden = function(info, ...) return hiddenAll(data, info, ...); end;
-    region.disabled = function(info, ...) return disabledAll(data, info, ...); end;
+    region.hidden = function(info, ...)
+      return hiddenAll(data, info, ...)
+    end
+    region.disabled = function(info, ...)
+      return disabledAll(data, info, ...)
+    end
     return region
   end
-
 end

@@ -1,11 +1,15 @@
 --[[-----------------------------------------------------------------------------
 Anchor for a Expandable section
 -------------------------------------------------------------------------------]]
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 local Type, Version = "WeakAurasExpandAnchor", 3
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
-if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
+if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then
+  return
+end
 
 local methods = {
   ["OnAcquire"] = function(self)
@@ -15,14 +19,11 @@ local methods = {
 
   -- ["OnRelease"] = nil,
 
-  ["OnWidthSet"] = function(self, width)
-  end,
+  ["OnWidthSet"] = function(self, width) end,
 
-  ["SetText"] = function(self, text)
-  end,
+  ["SetText"] = function(self, text) end,
 
-  ["SetFontObject"] = function(self, font)
-  end,
+  ["SetFontObject"] = function(self, font) end,
 }
 
 local function OnFrameShow(frame)
@@ -50,7 +51,6 @@ local function OnFrameHide(frame)
   end
 end
 
-
 local function Constructor()
   local frame = CreateFrame("Frame", nil, UIParent)
   frame:Hide()
@@ -61,7 +61,7 @@ local function Constructor()
   -- create widget
   local widget = {
     frame = frame,
-    type  = Type
+    type = Type,
   }
   for method, func in pairs(methods) do
     widget[method] = func

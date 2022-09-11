@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
@@ -8,8 +10,8 @@ local SharedMedia = LibStub("LibSharedMedia-3.0")
 local default = {
   controlledChildren = {},
   border = false,
-  borderColor = {0, 0, 0, 1},
-  backdropColor = {1, 1, 1, 0.5},
+  borderColor = { 0, 0, 0, 1 },
+  backdropColor = { 1, 1, 1, 0.5 },
   borderEdge = "Square Full White",
   borderOffset = 4,
   borderInset = 1,
@@ -38,12 +40,12 @@ local default = {
   gridType = "RD",
   gridWidth = 5,
   rowSpace = 1,
-  columnSpace = 1
+  columnSpace = 1,
 }
 
 local controlPointFunctions = {
   ["SetAnchorPoint"] = function(self, point, relativeFrame, relativePoint, offsetX, offsetY)
-    self:ClearAllPoints();
+    self:ClearAllPoints()
     self.point, self.relativeFrame, self.relativePoint, self.offsetX, self.offsetY = point, relativeFrame, relativePoint, offsetX, offsetY
     self.totalOffsetX = (self.animOffsetX or 0) + (self.offsetX or 0)
     self.totalOffsetY = (self.animOffsetY or 0) + (self.offsetY or 0)
@@ -76,7 +78,7 @@ local controlPointFunctions = {
     else
       self:SetPoint(self.point, self.totalOffsetX, self.totalOffsetY)
     end
-  end
+  end,
 }
 
 local function createControlPoint(self)
@@ -129,12 +131,12 @@ local function create(parent)
 end
 
 function WeakAuras.GetPolarCoordinates(x, y, originX, originY)
-  local dX, dY = x - originX, y - originY;
+  local dX, dY = x - originX, y - originY
 
-  local r = math.sqrt(dX * dX + dY * dY);
-  local theta = atan2(dY, dX);
+  local r = math.sqrt(dX * dX + dY * dY)
+  local theta = atan2(dY, dX)
 
-  return r, theta;
+  return r, theta
 end
 
 function WeakAuras.InvertSort(sortFunc)
@@ -146,7 +148,9 @@ function WeakAuras.InvertSort(sortFunc)
   else
     return function(...)
       local result = sortFunc(...)
-      if result == nil then return nil end
+      if result == nil then
+        return nil
+      end
       return not result
     end
   end
@@ -180,7 +184,7 @@ function WeakAuras.SortNilFirst(a, b)
     -- hence this special case
     return false
   else
-    return sortNilFirst(a,b)
+    return sortNilFirst(a, b)
   end
 end
 
@@ -224,8 +228,12 @@ function WeakAuras.SortRegionData(path, sortFunc)
   return function(a, b)
     local aValue, bValue = a, b
     for _, key in ipairs(path) do
-      if type(aValue) ~= "table" then return nil end
-      if type(bValue) ~= "table" then return nil end
+      if type(aValue) ~= "table" then
+        return nil
+      end
+      if type(bValue) ~= "table" then
+        return nil
+      end
       aValue, bValue = aValue[key], bValue[key]
     end
     return sortFunc(aValue, bValue)
@@ -268,18 +276,19 @@ local function noop() end
 
 local sorters = {
   none = function(data)
-    return WeakAuras.ComposeSorts(
-      WeakAuras.SortAscending({"dataIndex"}),
-      WeakAuras.SortAscending({"region", "state", "index"})
-    )
+    return WeakAuras.ComposeSorts(WeakAuras.SortAscending({ "dataIndex" }), WeakAuras.SortAscending({ "region", "state", "index" }))
   end,
   hybrid = function(data)
     local sortHybridTable = data.sortHybridTable or {}
     local hybridSortAscending = data.hybridSortMode == "ascending"
     local hybridFirst = data.hybridPosition == "hybridFirst"
     local function sortHybridStatus(a, b)
-      if not b then return true end
-      if not a then return false end
+      if not b then
+        return true
+      end
+      if not a then
+        return false
+      end
 
       local aIsHybrid = sortHybridTable[a.id]
       local bIsHybrid = sortHybridTable[b.id]
@@ -294,27 +303,17 @@ local sorters = {
     end
     local sortExpirationTime
     if hybridSortAscending then
-      sortExpirationTime = WeakAuras.SortAscending({"region", "state", "expirationTime"})
+      sortExpirationTime = WeakAuras.SortAscending({ "region", "state", "expirationTime" })
     else
-      sortExpirationTime = WeakAuras.SortDescending({"region", "state", "expirationTime"})
+      sortExpirationTime = WeakAuras.SortDescending({ "region", "state", "expirationTime" })
     end
-    return WeakAuras.ComposeSorts(
-      sortHybridStatus,
-      sortExpirationTime,
-      WeakAuras.SortAscending({"dataIndex"})
-    )
+    return WeakAuras.ComposeSorts(sortHybridStatus, sortExpirationTime, WeakAuras.SortAscending({ "dataIndex" }))
   end,
   ascending = function(data)
-    return WeakAuras.ComposeSorts(
-      WeakAuras.SortAscending({"region", "state", "expirationTime"}),
-      WeakAuras.SortAscending({"dataIndex"})
-    )
+    return WeakAuras.ComposeSorts(WeakAuras.SortAscending({ "region", "state", "expirationTime" }), WeakAuras.SortAscending({ "dataIndex" }))
   end,
   descending = function(data)
-    return WeakAuras.ComposeSorts(
-      WeakAuras.SortDescending({"region", "state", "expirationTime"}),
-      WeakAuras.SortAscending({"dataIndex"})
-    )
+    return WeakAuras.ComposeSorts(WeakAuras.SortDescending({ "region", "state", "expirationTime" }), WeakAuras.SortAscending({ "dataIndex" }))
   end,
   custom = function(data)
     local sortStr = data.customSort or ""
@@ -327,7 +326,7 @@ local sorters = {
         return result
       end
     end
-  end
+  end,
 }
 WeakAuras.SortFunctions = sorters
 
@@ -403,7 +402,7 @@ local anchorers = {
       xpcall(anchorFunc, Private.GetErrorHandlerUid(data.uid, L["Custom Anchor"]), frames, activeRegions)
       Private.ActivateAuraEnvironment()
     end
-  end
+  end,
 }
 
 local function createAnchorPerUnitFunc(data)
@@ -465,7 +464,7 @@ local growers = {
         for i, regionData in ipairs(regionDatas) do
           if i <= numVisible then
             newPositions[frame][regionData] = { x, y, true }
-            x = x + (regionData.dimensions.width) + space
+            x = x + regionData.dimensions.width + space
             y = y + stagger
           end
         end
@@ -494,7 +493,7 @@ local growers = {
           if i <= numVisible then
             newPositions[frame][regionData] = { x, y, true }
             x = x + stagger
-            y = y + (regionData.dimensions.height) + space
+            y = y + regionData.dimensions.height + space
           end
         end
       end
@@ -522,7 +521,7 @@ local growers = {
           if i <= numVisible then
             newPositions[frame][regionData] = { x, y, true }
             x = x + stagger
-            y = y - (regionData.dimensions.height) - space
+            y = y - regionData.dimensions.height - space
           end
         end
       end
@@ -546,15 +545,15 @@ local growers = {
         local totalWidth = (numVisible - 1) * space
         for i = 1, numVisible do
           local regionData = regionDatas[i]
-          totalWidth = totalWidth + (regionData.dimensions.width)
+          totalWidth = totalWidth + regionData.dimensions.width
         end
-        local x, y = midX - totalWidth/2, midY - (stagger * (numVisible - 1)/2)
+        local x, y = midX - totalWidth / 2, midY - (stagger * (numVisible - 1) / 2)
         newPositions[frame] = {}
         for i, regionData in ipairs(regionDatas) do
           if i <= numVisible then
-            x = x + (regionData.dimensions.width) / 2
+            x = x + regionData.dimensions.width / 2
             newPositions[frame][regionData] = { x, y, true }
-            x = x + (regionData.dimensions.width) / 2 + space
+            x = x + regionData.dimensions.width / 2 + space
             y = y + stagger
           end
         end
@@ -579,16 +578,16 @@ local growers = {
         local totalHeight = (numVisible - 1) * space
         for i = 1, numVisible do
           local regionData = regionDatas[i]
-          totalHeight = totalHeight + (regionData.dimensions.height)
+          totalHeight = totalHeight + regionData.dimensions.height
         end
-        local x, y = midX - (stagger * (numVisible - 1)/2), midY - totalHeight/2
+        local x, y = midX - (stagger * (numVisible - 1) / 2), midY - totalHeight / 2
         newPositions[frame] = {}
         for i, regionData in ipairs(regionDatas) do
           if i <= numVisible then
-            y = y + (regionData.dimensions.height) / 2
+            y = y + regionData.dimensions.height / 2
             newPositions[frame][regionData] = { x, y, true }
             x = x + stagger
-            y = y + (regionData.dimensions.height) / 2 + space
+            y = y + regionData.dimensions.height / 2 + space
           end
         end
       end
@@ -714,7 +713,7 @@ local growers = {
       coord = 1,
       mul = colMul,
       space = colSpace,
-      current = 0
+      current = 0,
     }
     local secondary = {
       -- y direction
@@ -722,7 +721,7 @@ local growers = {
       coord = 2,
       mul = rowMul,
       space = rowSpace,
-      current = 0
+      current = 0,
     }
     if not rowFirst then
       primary, secondary = secondary, primary
@@ -768,7 +767,7 @@ local growers = {
         wipe(newPositions)
       end
     end
-  end
+  end,
 }
 WeakAuras.GrowFunctions = growers
 
@@ -777,8 +776,7 @@ local function createGrowFunc(data)
   return grower(data)
 end
 
-local nullErrorHandler = function()
-end
+local nullErrorHandler = function() end
 
 local function SafeGetPos(region, func)
   local ok, value1, value2 = xpcall(func, nullErrorHandler, region)
@@ -802,18 +800,18 @@ local function modify(parent, region, data)
         left = data.borderInset,
         right = data.borderInset,
         top = data.borderInset,
-        bottom  = data.borderInset,
+        bottom = data.borderInset,
       },
-    });
-    background:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2], data.borderColor[3], data.borderColor[4]);
-    background:SetBackdropColor(data.backdropColor[1], data.backdropColor[2], data.backdropColor[3], data.backdropColor[4]);
+    })
+    background:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2], data.borderColor[3], data.borderColor[4])
+    background:SetBackdropColor(data.backdropColor[1], data.backdropColor[2], data.backdropColor[3], data.backdropColor[4])
 
-    background:ClearAllPoints();
+    background:ClearAllPoints()
     background:SetPoint("bottomleft", region, "bottomleft", -1 * data.borderOffset, -1 * data.borderOffset)
     background:SetPoint("topright", region, "topright", data.borderOffset, data.borderOffset)
-    background:Show();
+    background:Show()
   else
-    region.background:Hide();
+    region.background:Hide()
   end
 
   function region:IsSuspended()
@@ -863,7 +861,7 @@ local function modify(parent, region, data)
       cloneId = cloneID,
       dataIndex = dataIndex,
       controlPoint = controlPoint,
-      parent = region
+      parent = region,
     }
 
     if childData.regionType == "text" then
@@ -877,10 +875,10 @@ local function modify(parent, region, data)
     region.controlledChildren[childID] = region.controlledChildren[childID] or {}
     region.controlledChildren[childID][cloneID] = controlPoint
     childRegion:SetAnchor(data.selfPoint, controlPoint, data.selfPoint)
-    if(childData.frameStrata == 1) then
-      childRegion:SetFrameStrata(region:GetFrameStrata());
+    if childData.frameStrata == 1 then
+      childRegion:SetFrameStrata(region:GetFrameStrata())
     else
-      childRegion:SetFrameStrata(Private.frame_strata_types[childData.frameStrata]);
+      childRegion:SetFrameStrata(Private.frame_strata_types[childData.frameStrata])
     end
     Private.ApplyFrameLevel(childRegion)
     return regionData
@@ -890,7 +888,9 @@ local function modify(parent, region, data)
     cloneID = cloneID or ""
     local controlPoint
     controlPoint = region.controlledChildren[childID] and region.controlledChildren[childID][cloneID]
-    if not controlPoint then return end
+    if not controlPoint then
+      return
+    end
     return controlPoint.regionData
   end
 
@@ -946,10 +946,14 @@ local function modify(parent, region, data)
       return
     end
     local dataIndex = tIndexOf(data.controlledChildren, childID)
-    if not dataIndex then return end
+    if not dataIndex then
+      return
+    end
     local childData = WeakAuras.GetData(childID)
     local childRegion = WeakAuras.GetRegion(childID, cloneID)
-    if not childData or not childRegion then return end
+    if not childData or not childRegion then
+      return
+    end
     local regionData = createRegionData(childData, childRegion, childID, cloneID, dataIndex)
     if childRegion.toShow then
       tinsert(self.sortedChildren, regionData)
@@ -965,7 +969,9 @@ local function modify(parent, region, data)
     if not regionData then
       return self:AddChild(childID, cloneID)
     end
-    if not regionData.region.toShow then return end
+    if not regionData.region.toShow then
+      return
+    end
     -- it's possible that while paused, we might get Activate, Deactivate, Activate on the same child
     -- so we need to check if this child has been updated since the last Sort
     -- if it has been, then don't insert it again
@@ -980,7 +986,9 @@ local function modify(parent, region, data)
     -- removes something from the store. Mostly useful when a clone gets released
     -- so that we don't step on our own feet.
     local regionData = getRegionData(childID, cloneID)
-    if not regionData then return end
+    if not regionData then
+      return
+    end
     releaseRegionData(regionData)
     self.updatedChildren[regionData] = false
     self:SortUpdatedChildren()
@@ -1020,8 +1028,7 @@ local function modify(parent, region, data)
           local j = i
           while j > 1 do
             local otherRegionData = self.sortedChildren[j - 1]
-            if not (active or self.updatedChildren[otherRegionData])
-            or not self.sortFunc(regionData, otherRegionData) then
+            if not (active or self.updatedChildren[otherRegionData]) or not self.sortFunc(regionData, otherRegionData) then
               break
             else
               self.sortedChildren[j] = otherRegionData
@@ -1067,15 +1074,17 @@ local function modify(parent, region, data)
   function region:DoPositionChildrenPerFrame(frame, positions, handledRegionData)
     for regionData, pos in pairs(positions) do
       if type(regionData) ~= "table" then
-        break;
+        break
       end
       handledRegionData[regionData] = true
+      -- stylua: ignore
       local x, y, show =  type(pos[1]) == "number" and pos[1] or 0,
                           type(pos[2]) == "number" and pos[2] or 0,
                           type(pos[3]) ~= "boolean" and true or pos[3]
 
       local controlPoint = regionData.controlPoint
       controlPoint:ClearAnchorPoint()
+      -- stylua: ignore
       controlPoint:SetAnchorPoint(
         data.selfPoint,
         frame == "" and self.relativeTo or frame,
@@ -1102,12 +1111,12 @@ local function modify(parent, region, data)
         if show and (abs(xDelta) > 0.01 or abs(yDelta) > 0.01) then
           local anim
           if data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" then
-            local originX, originY = 0,0
+            local originX, originY = 0, 0
             local radius1, previousAngle = WeakAuras.GetPolarCoordinates(xPrev, yPrev, originX, originY)
             local radius2, newAngle = WeakAuras.GetPolarCoordinates(x, y, originX, originY)
             local dAngle = newAngle - previousAngle
             dAngle = ((dAngle > 180 and dAngle - 360) or (dAngle < -180 and dAngle + 360) or dAngle)
-            if(math.abs(radius1 - radius2) > 0.1) then
+            if math.abs(radius1 - radius2) > 0.1 then
               local translateFunc = [[
                                 function(progress, _, _, previousAngle, dAngle)
                                     local previousRadius, dRadius = %f, %f;
@@ -1152,7 +1161,7 @@ local function modify(parent, region, data)
               }
             end
           end
-          if not(anim) then
+          if not anim then
             anim = {
               type = "custom",
               duration = 0.2,
@@ -1212,7 +1221,6 @@ local function modify(parent, region, data)
     self:Resize()
   end
 
-
   function region:Resize()
     -- Resizes the dynamic group, for background and border purposes
     if not self:IsSuspended() then
@@ -1225,11 +1233,12 @@ local function modify(parent, region, data)
         if regionData.shown then
           numVisible = numVisible + 1
           local childRegion = regionData.region
+          -- stylua: ignore
           local regionLeft, regionRight, regionTop, regionBottom
              = SafeGetPos(childRegion, childRegion.GetLeft), SafeGetPos(childRegion, childRegion.GetRight),
                SafeGetPos(childRegion, childRegion.GetTop), SafeGetPos(childRegion, childRegion.GetBottom)
 
-          if(regionLeft and regionRight and regionTop and regionBottom) then
+          if regionLeft and regionRight and regionTop and regionBottom then
             minX = minX and min(regionLeft, minX) or regionLeft
             maxX = maxX and max(regionRight, maxX) or regionRight
             minY = minY and min(regionBottom, minY) or regionBottom

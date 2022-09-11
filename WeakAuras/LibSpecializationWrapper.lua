@@ -1,12 +1,16 @@
-if not WeakAuras.IsLibsOK() then return end
-if not WeakAuras.IsRetail() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
+if not WeakAuras.IsRetail() then
+  return
+end
 local AddonName, Private = ...
 
 local LibSpec = LibStub("LibSpecialization")
 
 local nameToSpecMap = {}
 local nameToUnitMap = {
-  [GetUnitName("player", true)] = "player"
+  [GetUnitName("player", true)] = "player",
 }
 
 local subscribers = {}
@@ -72,9 +76,7 @@ if LibSpec then
     return nameToSpecMap[GetUnitName(unit, true)]
   end
 else -- non retail
-  function Private.LibSpecWrapper.Register(f)
-
-  end
+  function Private.LibSpecWrapper.Register(f) end
 
   function Private.LibSpecWrapper.SpecForUnit(unit)
     return nil

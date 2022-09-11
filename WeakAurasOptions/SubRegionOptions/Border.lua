@@ -1,7 +1,9 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L;
+local L = WeakAuras.L
 
 local function createOptions(parentData, data, index, subIndex)
   local options = {
@@ -52,8 +54,10 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Border Anchor"],
       order = 7,
       values = OptionsPrivate.Private.aurabar_anchor_areas,
-      hidden = function() return parentData.regionType ~= "aurabar" end
-    }
+      hidden = function()
+        return parentData.regionType ~= "aurabar"
+      end,
+    },
   }
 
   OptionsPrivate.AddUpDownDeleteDuplicate(options, parentData, index, "subborder")
@@ -61,4 +65,4 @@ local function createOptions(parentData, data, index, subIndex)
   return options
 end
 
-WeakAuras.RegisterSubRegionOptions("subborder", createOptions, L["Shows a border"]);
+WeakAuras.RegisterSubRegionOptions("subborder", createOptions, L["Shows a border"])

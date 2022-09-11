@@ -1,8 +1,10 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
-local WeakAuras = WeakAuras;
-local L = WeakAuras.L;
+local WeakAuras = WeakAuras
+local L = WeakAuras.L
 
 local encounter_list = ""
 function Private.InitializeEncounterAndZoneLists()
@@ -17,7 +19,7 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Emalon the Storm Watcher"], 1127 },
         { L["Koralon the Flame Watcher"], 1128 },
         { L["Toravon the Ice Watcher"], 1129 },
-      }
+      },
     },
     {
       L["Naxxramas"],
@@ -41,8 +43,8 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Thaddius"], 1120 },
         -- Frostwyrm Lair
         { L["Sapphiron"], 1119 },
-        { L["Kel'Thuzad"], 1114 }
-      }
+        { L["Kel'Thuzad"], 1114 },
+      },
     },
     {
       L["The Obsidian Sanctum"],
@@ -51,13 +53,13 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Shadron"], 1091 },
         { L["Vesperon"], 1093 },
         { L["Sartharion"], 1090 },
-      }
+      },
     },
     {
       L["The Eye of Eternity"],
       {
         { L["Malygos"], 1094 },
-      }
+      },
     },
     {
       L["Ulduar"],
@@ -81,7 +83,7 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Yogg-Saron"], 1143 },
         -- Celestial Planetarium
         { L["Algalon the Observer"], 1130 },
-      }
+      },
     },
     {
       L["Trial of the Crusader"],
@@ -91,13 +93,13 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Faction Champions"], 1086 },
         { L["Val'kyr Twins"], 1089 },
         { L["Anub'arak"], 1085 },
-      }
+      },
     },
     {
       L["Onyxia's Lair"],
       {
         { L["Onyxia"], 1084 },
-      }
+      },
     },
     {
       L["Icecrown Citadel"],
@@ -119,7 +121,7 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Sindragosa"], 1105 },
         -- The Frozen Throne
         { L["The Lich King"], 1106 },
-      }
+      },
     },
     {
       L["The Ruby Sanctum"],
@@ -128,13 +130,13 @@ function Private.InitializeEncounterAndZoneLists()
         { L["General Zarithrian"], 1148 },
         { L["Saviana Ragefire"], 1149 },
         { L["Halion"], 1150 },
-      }
+      },
     },
   }
   for _, raid in ipairs(raids) do
     encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, raid[1])
     for _, boss in ipairs(raid[2]) do
-        encounter_list = ("%s%s: %d\n"):format(encounter_list, boss[1], boss[2])
+      encounter_list = ("%s%s: %d\n"):format(encounter_list, boss[1], boss[2])
     end
     encounter_list = encounter_list .. "\n"
   end

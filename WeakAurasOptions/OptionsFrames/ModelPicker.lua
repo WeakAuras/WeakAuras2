@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
@@ -49,12 +51,12 @@ local function ConstructModelPicker(frame)
     end
   end
 
-  local group = AceGUI:Create("InlineGroup");
-  group.frame:SetParent(frame);
-  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 87);
-  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -15);
-  group.frame:Hide();
-  group:SetLayout("flow");
+  local group = AceGUI:Create("InlineGroup")
+  group.frame:SetParent(frame)
+  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 87)
+  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -15)
+  group.frame:Hide()
+  group:SetLayout("flow")
 
   local filterInput = CreateFrame("EditBox", "WeakAurasFilterInput", group.frame, "SearchBoxTemplate")
   filterInput:SetScript("OnTextChanged", function(self)
@@ -72,164 +74,163 @@ local function ConstructModelPicker(frame)
   group.frame.filterInput = filterInput
 
   -- Old X Y Z controls
-  local modelPickerZ = AceGUI:Create("Slider");
-  modelPickerZ:SetSliderValues(-20, 20, 0.05);
-  modelPickerZ:SetLabel(L["Z Offset"]);
-  modelPickerZ.frame:SetParent(group.frame);
+  local modelPickerZ = AceGUI:Create("Slider")
+  modelPickerZ:SetSliderValues(-20, 20, 0.05)
+  modelPickerZ:SetLabel(L["Z Offset"])
+  modelPickerZ.frame:SetParent(group.frame)
   modelPickerZ:SetCallback("OnValueChanged", function()
-    group:Pick(nil, nil, modelPickerZ:GetValue());
-  end);
+    group:Pick(nil, nil, modelPickerZ:GetValue())
+  end)
 
-  local modelPickerX = AceGUI:Create("Slider");
-  modelPickerX:SetSliderValues(-20, 20, 0.05);
-  modelPickerX:SetLabel(L["X Offset"]);
-  modelPickerX.frame:SetParent(group.frame);
+  local modelPickerX = AceGUI:Create("Slider")
+  modelPickerX:SetSliderValues(-20, 20, 0.05)
+  modelPickerX:SetLabel(L["X Offset"])
+  modelPickerX.frame:SetParent(group.frame)
   modelPickerX:SetCallback("OnValueChanged", function()
-    group:Pick(nil, nil, nil, modelPickerX:GetValue());
-  end);
+    group:Pick(nil, nil, nil, modelPickerX:GetValue())
+  end)
 
-  local modelPickerY = AceGUI:Create("Slider");
-  modelPickerY:SetSliderValues(-20, 20, 0.05);
-  modelPickerY:SetLabel(L["Y Offset"]);
-  modelPickerY.frame:SetParent(group.frame);
+  local modelPickerY = AceGUI:Create("Slider")
+  modelPickerY:SetSliderValues(-20, 20, 0.05)
+  modelPickerY:SetLabel(L["Y Offset"])
+  modelPickerY.frame:SetParent(group.frame)
   modelPickerY:SetCallback("OnValueChanged", function()
-    group:Pick(nil, nil, nil, nil, modelPickerY:GetValue());
-  end);
+    group:Pick(nil, nil, nil, nil, modelPickerY:GetValue())
+  end)
 
-  local modelPickerRotation = AceGUI:Create("Slider");
-  modelPickerRotation:SetSliderValues(0, 360, 0.05);
-  modelPickerRotation:SetLabel(L["Rotation"]);
-  modelPickerRotation.frame:SetParent(group.frame);
+  local modelPickerRotation = AceGUI:Create("Slider")
+  modelPickerRotation:SetSliderValues(0, 360, 0.05)
+  modelPickerRotation:SetLabel(L["Rotation"])
+  modelPickerRotation.frame:SetParent(group.frame)
   modelPickerRotation:SetCallback("OnValueChanged", function()
-    group:Pick(nil, nil, nil, nil, nil, modelPickerRotation:GetValue());
-  end);
+    group:Pick(nil, nil, nil, nil, nil, modelPickerRotation:GetValue())
+  end)
 
   -- New TX TY TZ, RX, RY, RZ, US controls
-  local modelPickerTX = AceGUI:Create("Slider");
-  modelPickerTX:SetSliderValues(-1000, 1000, 1);
-  modelPickerTX:SetLabel(L["X Offset"]);
-  modelPickerTX.frame:SetParent(group.frame);
+  local modelPickerTX = AceGUI:Create("Slider")
+  modelPickerTX:SetSliderValues(-1000, 1000, 1)
+  modelPickerTX:SetLabel(L["X Offset"])
+  modelPickerTX.frame:SetParent(group.frame)
   modelPickerTX:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, modelPickerTX:GetValue());
-  end);
+    group:PickSt(nil, nil, modelPickerTX:GetValue())
+  end)
 
-  local modelPickerTY = AceGUI:Create("Slider");
-  modelPickerTY:SetSliderValues(-1000, 1000, 1);
-  modelPickerTY:SetLabel(L["Y Offset"]);
-  modelPickerTY.frame:SetParent(group.frame);
+  local modelPickerTY = AceGUI:Create("Slider")
+  modelPickerTY:SetSliderValues(-1000, 1000, 1)
+  modelPickerTY:SetLabel(L["Y Offset"])
+  modelPickerTY.frame:SetParent(group.frame)
   modelPickerTY:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, modelPickerTY:GetValue());
-  end);
+    group:PickSt(nil, nil, nil, modelPickerTY:GetValue())
+  end)
 
-  local modelPickerTZ = AceGUI:Create("Slider");
-  modelPickerTZ:SetSliderValues(-1000, 1000, 1);
-  modelPickerTZ:SetLabel(L["Z Offset"]);
-  modelPickerTZ.frame:SetParent(group.frame);
+  local modelPickerTZ = AceGUI:Create("Slider")
+  modelPickerTZ:SetSliderValues(-1000, 1000, 1)
+  modelPickerTZ:SetLabel(L["Z Offset"])
+  modelPickerTZ.frame:SetParent(group.frame)
   modelPickerTZ:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, nil, modelPickerTZ:GetValue());
-  end);
+    group:PickSt(nil, nil, nil, nil, modelPickerTZ:GetValue())
+  end)
 
-  local modelPickerRX = AceGUI:Create("Slider");
-  modelPickerRX:SetSliderValues(0, 360, 1);
-  modelPickerRX:SetLabel(L["X Rotation"]);
-  modelPickerRX.frame:SetParent(group.frame);
+  local modelPickerRX = AceGUI:Create("Slider")
+  modelPickerRX:SetSliderValues(0, 360, 1)
+  modelPickerRX:SetLabel(L["X Rotation"])
+  modelPickerRX.frame:SetParent(group.frame)
   modelPickerRX:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, nil, nil, modelPickerRX:GetValue());
-  end);
+    group:PickSt(nil, nil, nil, nil, nil, modelPickerRX:GetValue())
+  end)
 
-  local modelPickerRY = AceGUI:Create("Slider");
-  modelPickerRY:SetSliderValues(0, 360, 1);
-  modelPickerRY:SetLabel(L["Y Rotation"]);
-  modelPickerRY.frame:SetParent(group.frame);
+  local modelPickerRY = AceGUI:Create("Slider")
+  modelPickerRY:SetSliderValues(0, 360, 1)
+  modelPickerRY:SetLabel(L["Y Rotation"])
+  modelPickerRY.frame:SetParent(group.frame)
   modelPickerRY:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, nil, nil, nil, modelPickerRY:GetValue());
-  end);
+    group:PickSt(nil, nil, nil, nil, nil, nil, modelPickerRY:GetValue())
+  end)
 
-  local modelPickerRZ = AceGUI:Create("Slider");
-  modelPickerRZ:SetSliderValues(0, 360, 1);
-  modelPickerRZ:SetLabel(L["Z Rotation"]);
-  modelPickerRZ.frame:SetParent(group.frame);
+  local modelPickerRZ = AceGUI:Create("Slider")
+  modelPickerRZ:SetSliderValues(0, 360, 1)
+  modelPickerRZ:SetLabel(L["Z Rotation"])
+  modelPickerRZ.frame:SetParent(group.frame)
   modelPickerRZ:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, nil, nil, nil, nil, modelPickerRZ:GetValue());
-  end);
+    group:PickSt(nil, nil, nil, nil, nil, nil, nil, modelPickerRZ:GetValue())
+  end)
 
-  local modelPickerUS = AceGUI:Create("Slider");
-  modelPickerUS:SetSliderValues(5, 1000, 1);
-  modelPickerUS:SetLabel(L["Scale"]);
-  modelPickerUS.frame:SetParent(group.frame);
+  local modelPickerUS = AceGUI:Create("Slider")
+  modelPickerUS:SetSliderValues(5, 1000, 1)
+  modelPickerUS:SetLabel(L["Scale"])
+  modelPickerUS.frame:SetParent(group.frame)
   modelPickerUS:SetCallback("OnValueChanged", function()
-    group:PickSt(nil, nil, nil, nil, nil, nil, nil, nil, modelPickerUS:GetValue());
-  end);
+    group:PickSt(nil, nil, nil, nil, nil, nil, nil, nil, modelPickerUS:GetValue())
+  end)
 
-  local modelTree = AceGUI:Create("WeakAurasTreeGroup");
-  group.modelTree = modelTree;
+  local modelTree = AceGUI:Create("WeakAurasTreeGroup")
+  group.modelTree = modelTree
   group.frame:SetScript("OnSizeChanged", function()
-    local frameWidth = frame:GetWidth();
-    local sliderWidth = (frameWidth - 50) / 4;
-    local narrowSliderWidth = (frameWidth - 50) / 7;
+    local frameWidth = frame:GetWidth()
+    local sliderWidth = (frameWidth - 50) / 4
+    local narrowSliderWidth = (frameWidth - 50) / 7
 
-    modelTree:SetTreeWidth(frameWidth - 370);
+    modelTree:SetTreeWidth(frameWidth - 370)
 
-    modelPickerZ.frame:SetPoint("bottomleft", frame, "bottomleft", 15, 43);
-    modelPickerZ.frame:SetPoint("bottomright", frame, "bottomleft", 15 + sliderWidth, 43);
+    modelPickerZ.frame:SetPoint("bottomleft", frame, "bottomleft", 15, 43)
+    modelPickerZ.frame:SetPoint("bottomright", frame, "bottomleft", 15 + sliderWidth, 43)
 
-    modelPickerX.frame:SetPoint("bottomleft", frame, "bottomleft", 25 + sliderWidth, 43);
-    modelPickerX.frame:SetPoint("bottomright", frame, "bottomleft", 25 + (2 * sliderWidth), 43);
+    modelPickerX.frame:SetPoint("bottomleft", frame, "bottomleft", 25 + sliderWidth, 43)
+    modelPickerX.frame:SetPoint("bottomright", frame, "bottomleft", 25 + (2 * sliderWidth), 43)
 
-    modelPickerY.frame:SetPoint("bottomleft", frame, "bottomleft", 35 + (2 * sliderWidth), 43);
-    modelPickerY.frame:SetPoint("bottomright", frame, "bottomleft", 35 + (3 * sliderWidth), 43);
+    modelPickerY.frame:SetPoint("bottomleft", frame, "bottomleft", 35 + (2 * sliderWidth), 43)
+    modelPickerY.frame:SetPoint("bottomright", frame, "bottomleft", 35 + (3 * sliderWidth), 43)
 
-    modelPickerRotation.frame:SetPoint("bottomleft", frame, "bottomleft", 45 + (3 * sliderWidth), 43);
-    modelPickerRotation.frame:SetPoint("bottomright", frame, "bottomleft", 45 + (4 * sliderWidth), 43);
+    modelPickerRotation.frame:SetPoint("bottomleft", frame, "bottomleft", 45 + (3 * sliderWidth), 43)
+    modelPickerRotation.frame:SetPoint("bottomright", frame, "bottomleft", 45 + (4 * sliderWidth), 43)
 
     -- New controls
-    modelPickerTX.frame:SetPoint("bottomleft", frame, "bottomleft", 15, 43);
-    modelPickerTX.frame:SetPoint("bottomright", frame, "bottomleft", 15 + narrowSliderWidth, 43);
+    modelPickerTX.frame:SetPoint("bottomleft", frame, "bottomleft", 15, 43)
+    modelPickerTX.frame:SetPoint("bottomright", frame, "bottomleft", 15 + narrowSliderWidth, 43)
 
-    modelPickerTY.frame:SetPoint("bottomleft", frame, "bottomleft", 20 + narrowSliderWidth, 43);
-    modelPickerTY.frame:SetPoint("bottomright", frame, "bottomleft", 20 + (2 * narrowSliderWidth), 43);
+    modelPickerTY.frame:SetPoint("bottomleft", frame, "bottomleft", 20 + narrowSliderWidth, 43)
+    modelPickerTY.frame:SetPoint("bottomright", frame, "bottomleft", 20 + (2 * narrowSliderWidth), 43)
 
-    modelPickerTZ.frame:SetPoint("bottomleft", frame, "bottomleft", 25 + (2 * narrowSliderWidth), 43);
-    modelPickerTZ.frame:SetPoint("bottomright", frame, "bottomleft", 25 + (3 * narrowSliderWidth), 43);
+    modelPickerTZ.frame:SetPoint("bottomleft", frame, "bottomleft", 25 + (2 * narrowSliderWidth), 43)
+    modelPickerTZ.frame:SetPoint("bottomright", frame, "bottomleft", 25 + (3 * narrowSliderWidth), 43)
 
-    modelPickerRX.frame:SetPoint("bottomleft", frame, "bottomleft", 30 + (3 * narrowSliderWidth), 43);
-    modelPickerRX.frame:SetPoint("bottomright", frame, "bottomleft", 30 + (4 * narrowSliderWidth), 43);
+    modelPickerRX.frame:SetPoint("bottomleft", frame, "bottomleft", 30 + (3 * narrowSliderWidth), 43)
+    modelPickerRX.frame:SetPoint("bottomright", frame, "bottomleft", 30 + (4 * narrowSliderWidth), 43)
 
-    modelPickerRY.frame:SetPoint("bottomleft", frame, "bottomleft", 35 + (4 * narrowSliderWidth), 43);
-    modelPickerRY.frame:SetPoint("bottomright", frame, "bottomleft", 35 + (5 * narrowSliderWidth), 43);
+    modelPickerRY.frame:SetPoint("bottomleft", frame, "bottomleft", 35 + (4 * narrowSliderWidth), 43)
+    modelPickerRY.frame:SetPoint("bottomright", frame, "bottomleft", 35 + (5 * narrowSliderWidth), 43)
 
-    modelPickerRZ.frame:SetPoint("bottomleft", frame, "bottomleft", 40 + (5 * narrowSliderWidth), 43);
-    modelPickerRZ.frame:SetPoint("bottomright", frame, "bottomleft", 40 + (6 * narrowSliderWidth), 43);
+    modelPickerRZ.frame:SetPoint("bottomleft", frame, "bottomleft", 40 + (5 * narrowSliderWidth), 43)
+    modelPickerRZ.frame:SetPoint("bottomright", frame, "bottomleft", 40 + (6 * narrowSliderWidth), 43)
 
-    modelPickerUS.frame:SetPoint("bottomleft", frame, "bottomleft", 45 + (6 * narrowSliderWidth), 43);
-    modelPickerUS.frame:SetPoint("bottomright", frame, "bottomleft", 45 + (7 * narrowSliderWidth), 43);
-
-  end);
-  group:SetLayout("fill");
-  modelTree:SetTree(WeakAuras.ModelPaths);
+    modelPickerUS.frame:SetPoint("bottomleft", frame, "bottomleft", 45 + (6 * narrowSliderWidth), 43)
+    modelPickerUS.frame:SetPoint("bottomright", frame, "bottomleft", 45 + (7 * narrowSliderWidth), 43)
+  end)
+  group:SetLayout("fill")
+  modelTree:SetTree(WeakAuras.ModelPaths)
   modelTree:SetCallback("OnGroupSelected", function(self, event, value, fileId)
-    local path = string.gsub(value, "\001", "/");
-    if(string.lower(string.sub(path, -3, -1)) == ".m2") then
-      local model_path = path;
-      if (group.selectedValues.api) then
-        group:PickSt(model_path, fileId);
+    local path = string.gsub(value, "\001", "/")
+    if string.lower(string.sub(path, -3, -1)) == ".m2" then
+      local model_path = path
+      if group.selectedValues.api then
+        group:PickSt(model_path, fileId)
       else
-        group:Pick(model_path, fileId);
+        group:Pick(model_path, fileId)
       end
     end
-  end);
-  group:AddChild(modelTree);
+  end)
+  group:AddChild(modelTree)
 
-  local model = CreateFrame("PlayerModel", nil, group.content);
-  model:SetAllPoints(modelTree.content);
-  model:SetFrameStrata("FULLSCREEN");
-  group.model = model;
+  local model = CreateFrame("PlayerModel", nil, group.content)
+  model:SetAllPoints(modelTree.content)
+  model:SetFrameStrata("FULLSCREEN")
+  group.model = model
 
   local startX, rotation
   local function OnUpdateScript()
     local uiScale, x = UIParent:GetEffectiveScale(), GetCursorPosition()
     local screenW, screenH = GetScreenWidth(), GetScreenHeight()
-    local diffX = startX/uiScale - x/uiScale
+    local diffX = startX / uiScale - x / uiScale
     rotation = (rotation + 180 / screenW * diffX) % 360
     model:SetFacing(rad(rotation))
   end
@@ -286,23 +287,21 @@ local function ConstructModelPicker(frame)
     self.selectedValues.model_st_ty = model_ty or self.selectedValues.model_st_ty
     self.selectedValues.model_st_tz = model_tz or self.selectedValues.model_st_tz
 
-    self.selectedValues.model_st_rx = model_rx or self.selectedValues.model_st_rx;
-    self.selectedValues.model_st_ry = model_ry or self.selectedValues.model_st_ry;
-    self.selectedValues.model_st_rz = model_rz or self.selectedValues.model_st_rz;
+    self.selectedValues.model_st_rx = model_rx or self.selectedValues.model_st_rx
+    self.selectedValues.model_st_ry = model_ry or self.selectedValues.model_st_ry
+    self.selectedValues.model_st_rz = model_rz or self.selectedValues.model_st_rz
 
-    self.selectedValues.model_st_us = model_us or self.selectedValues.model_st_us;
+    self.selectedValues.model_st_us = model_us or self.selectedValues.model_st_us
 
     WeakAuras.SetModel(self.model, self.selectedValues.model_path, self.selectedValues.model_fileId)
-    self.model:SetTransform(self.selectedValues.model_st_tx / 1000, self.selectedValues.model_st_ty / 1000, self.selectedValues.model_st_tz / 1000,
-      rad(self.selectedValues.model_st_rx), rad(self.selectedValues.model_st_ry), rad(self.selectedValues.model_st_rz),
-      self.selectedValues.model_st_us / 1000);
+    self.model:SetTransform(self.selectedValues.model_st_tx / 1000, self.selectedValues.model_st_ty / 1000, self.selectedValues.model_st_tz / 1000, rad(self.selectedValues.model_st_rx), rad(self.selectedValues.model_st_ry), rad(self.selectedValues.model_st_rz), self.selectedValues.model_st_us / 1000)
 
     for child in OptionsPrivate.Private.TraverseLeafsOrAura(self.baseObject) do
       local object = valueFromPath(child, self.path)
-      if(object) then
+      if object then
         SetStOnObject(object, model_path, model_fileId, model_tx, model_ty, model_tz, model_rx, model_ry, model_rz, model_us)
-        WeakAuras.Add(child);
-        WeakAuras.UpdateThumbnail(child);
+        WeakAuras.Add(child)
+        WeakAuras.UpdateThumbnail(child)
       end
     end
   end
@@ -340,13 +339,13 @@ local function ConstructModelPicker(frame)
 
     WeakAuras.SetModel(self.model, self.selectedValues.model_path, self.selectedValues.model_fileId)
 
-    self.model:ClearTransform();
-    self.model:SetPosition(self.selectedValues.model_z, self.selectedValues.model_x, self.selectedValues.model_y);
-    self.model:SetFacing(rad(self.selectedValues.rotation));
+    self.model:ClearTransform()
+    self.model:SetPosition(self.selectedValues.model_z, self.selectedValues.model_x, self.selectedValues.model_y)
+    self.model:SetFacing(rad(self.selectedValues.rotation))
 
     for child in OptionsPrivate.Private.TraverseLeafsOrAura(self.baseObject) do
       local object = valueFromPath(child, self.path)
-      if(object) then
+      if object then
         SetOnObject(object, model_path, model_fileId, model_z, model_x, model_y, rotation)
         WeakAuras.Add(child)
         WeakAuras.UpdateThumbnail(child)
@@ -382,130 +381,127 @@ local function ConstructModelPicker(frame)
     self.selectedValues.model_z = GetAll(baseObject, path, "model_z", 0)
     self.selectedValues.rotation = GetAll(baseObject, path, "rotation", 0)
 
+    if self.selectedValues.api then
+      self.model:SetTransform(self.selectedValues.model_st_tx / 1000, self.selectedValues.model_st_ty / 1000, self.selectedValues.model_st_tz / 1000, rad(self.selectedValues.model_st_rx), rad(self.selectedValues.model_st_ry), rad(self.selectedValues.model_st_rz), self.selectedValues.model_st_us / 1000)
 
-    if (self.selectedValues.api) then
-      self.model:SetTransform(self.selectedValues.model_st_tx / 1000, self.selectedValues.model_st_ty / 1000, self.selectedValues.model_st_tz / 1000,
-        rad(self.selectedValues.model_st_rx), rad(self.selectedValues.model_st_ry), rad(self.selectedValues.model_st_rz),
-        self.selectedValues.model_st_us / 1000);
+      modelPickerTX:SetValue(self.selectedValues.model_st_tx)
+      modelPickerTX.editbox:SetText(("%.2f"):format(self.selectedValues.model_st_tx))
 
-      modelPickerTX:SetValue(self.selectedValues.model_st_tx);
-      modelPickerTX.editbox:SetText(("%.2f"):format(self.selectedValues.model_st_tx));
+      modelPickerTY:SetValue(self.selectedValues.model_st_ty)
+      modelPickerTY.editbox:SetText(("%.2f"):format(self.selectedValues.model_st_ty))
+      modelPickerTZ:SetValue(self.selectedValues.model_st_tz)
+      modelPickerTZ.editbox:SetText(("%.2f"):format(self.selectedValues.model_st_tz))
 
-      modelPickerTY:SetValue(self.selectedValues.model_st_ty);
-      modelPickerTY.editbox:SetText(("%.2f"):format(self.selectedValues.model_st_ty));
-      modelPickerTZ:SetValue(self.selectedValues.model_st_tz);
-      modelPickerTZ.editbox:SetText(("%.2f"):format(self.selectedValues.model_st_tz));
+      modelPickerRX:SetValue(self.selectedValues.model_st_rx)
+      modelPickerRX.editbox:SetText(("%.2f"):format(self.selectedValues.model_st_rx))
+      modelPickerRY:SetValue(self.selectedValues.model_st_ry)
+      modelPickerRY.editbox:SetText(("%.2f"):format(self.selectedValues.model_st_ry))
+      modelPickerRZ:SetValue(self.selectedValues.model_st_rz)
+      modelPickerRZ.editbox:SetText(("%.2f"):format(self.selectedValues.model_st_rz))
 
-      modelPickerRX:SetValue(self.selectedValues.model_st_rx);
-      modelPickerRX.editbox:SetText(("%.2f"):format(self.selectedValues.model_st_rx));
-      modelPickerRY:SetValue(self.selectedValues.model_st_ry);
-      modelPickerRY.editbox:SetText(("%.2f"):format(self.selectedValues.model_st_ry));
-      modelPickerRZ:SetValue(self.selectedValues.model_st_rz);
-      modelPickerRZ.editbox:SetText(("%.2f"):format(self.selectedValues.model_st_rz));
+      modelPickerUS:SetValue(self.selectedValues.model_st_us)
+      modelPickerUS.editbox:SetText(("%.2f"):format(self.selectedValues.model_st_us))
 
-      modelPickerUS:SetValue(self.selectedValues.model_st_us);
-      modelPickerUS.editbox:SetText(("%.2f"):format(self.selectedValues.model_st_us));
+      modelPickerZ.frame:Hide()
+      modelPickerY.frame:Hide()
+      modelPickerX.frame:Hide()
+      modelPickerRotation.frame:Hide()
 
-      modelPickerZ.frame:Hide();
-      modelPickerY.frame:Hide();
-      modelPickerX.frame:Hide();
-      modelPickerRotation.frame:Hide();
-
-      modelPickerTX.frame:Show();
-      modelPickerTY.frame:Show();
-      modelPickerTZ.frame:Show();
-      modelPickerRX.frame:Show();
-      modelPickerRY.frame:Show();
-      modelPickerRZ.frame:Show();
-      modelPickerUS.frame:Show();
+      modelPickerTX.frame:Show()
+      modelPickerTY.frame:Show()
+      modelPickerTZ.frame:Show()
+      modelPickerRX.frame:Show()
+      modelPickerRY.frame:Show()
+      modelPickerRZ.frame:Show()
+      modelPickerUS.frame:Show()
     else
-      self.model:ClearTransform();
-      self.model:SetPosition(self.selectedValues.model_z, self.selectedValues.model_x, self.selectedValues.model_y);
-      self.model:SetFacing(rad(self.selectedValues.rotation));
-      modelPickerZ:SetValue(self.selectedValues.model_z);
-      modelPickerZ.editbox:SetText(("%.2f"):format(self.selectedValues.model_z));
-      modelPickerX:SetValue(self.selectedValues.model_x);
-      modelPickerX.editbox:SetText(("%.2f"):format(self.selectedValues.model_x));
-      modelPickerY:SetValue(self.selectedValues.model_y);
-      modelPickerY.editbox:SetText(("%.2f"):format(self.selectedValues.model_y));
-      modelPickerRotation:SetValue(self.selectedValues.rotation);
-      modelPickerRotation.editbox:SetText(("%.2f"):format(self.selectedValues.rotation));
+      self.model:ClearTransform()
+      self.model:SetPosition(self.selectedValues.model_z, self.selectedValues.model_x, self.selectedValues.model_y)
+      self.model:SetFacing(rad(self.selectedValues.rotation))
+      modelPickerZ:SetValue(self.selectedValues.model_z)
+      modelPickerZ.editbox:SetText(("%.2f"):format(self.selectedValues.model_z))
+      modelPickerX:SetValue(self.selectedValues.model_x)
+      modelPickerX.editbox:SetText(("%.2f"):format(self.selectedValues.model_x))
+      modelPickerY:SetValue(self.selectedValues.model_y)
+      modelPickerY.editbox:SetText(("%.2f"):format(self.selectedValues.model_y))
+      modelPickerRotation:SetValue(self.selectedValues.rotation)
+      modelPickerRotation.editbox:SetText(("%.2f"):format(self.selectedValues.rotation))
 
-      modelPickerZ.frame:Show();
-      modelPickerY.frame:Show();
-      modelPickerX.frame:Show();
-      modelPickerRotation.frame:Show();
+      modelPickerZ.frame:Show()
+      modelPickerY.frame:Show()
+      modelPickerX.frame:Show()
+      modelPickerRotation.frame:Show()
 
-      modelPickerTX.frame:Hide();
-      modelPickerTY.frame:Hide();
-      modelPickerTZ.frame:Hide();
-      modelPickerRX.frame:Hide();
-      modelPickerRY.frame:Hide();
-      modelPickerRZ.frame:Hide();
-      modelPickerUS.frame:Hide();
+      modelPickerTX.frame:Hide()
+      modelPickerTY.frame:Hide()
+      modelPickerTZ.frame:Hide()
+      modelPickerRX.frame:Hide()
+      modelPickerRY.frame:Hide()
+      modelPickerRZ.frame:Hide()
+      modelPickerUS.frame:Hide()
     end
 
-    if(baseObject.controlledChildren) then
-      self.givenModel = {};
-      self.givenModelId = {};
-      self.givenApi = {};
-      self.givenZ = {};
-      self.givenX = {};
-      self.givenY = {};
-      self.givenRotation = {};
-      self.givenTX = {};
-      self.givenTY = {};
-      self.givenTZ = {};
-      self.givenRX = {};
-      self.givenRY = {};
-      self.givenRZ = {};
-      self.givenUS = {};
+    if baseObject.controlledChildren then
+      self.givenModel = {}
+      self.givenModelId = {}
+      self.givenApi = {}
+      self.givenZ = {}
+      self.givenX = {}
+      self.givenY = {}
+      self.givenRotation = {}
+      self.givenTX = {}
+      self.givenTY = {}
+      self.givenTZ = {}
+      self.givenRX = {}
+      self.givenRY = {}
+      self.givenRZ = {}
+      self.givenUS = {}
       for child in OptionsPrivate.Private.TraverseLeafs(baseObject) do
         local childId = child.id
         local object = valueFromPath(child, path)
-        if(object) then
-          self.givenModel[childId] = object.model_path;
-          self.givenModelId[childId] = object.model_fileId;
-          self.givenApi[childId] = object.api;
-          if (object.api) then
-            self.givenTX[childId] = object.model_st_tx;
-            self.givenTY[childId] = object.model_st_ty;
-            self.givenTZ[childId] = object.model_st_tz;
-            self.givenRX[childId] = object.model_st_rx;
-            self.givenRY[childId] = object.model_st_ry;
-            self.givenRZ[childId] = object.model_st_rz;
-            self.givenUS[childId] = object.model_st_us;
+        if object then
+          self.givenModel[childId] = object.model_path
+          self.givenModelId[childId] = object.model_fileId
+          self.givenApi[childId] = object.api
+          if object.api then
+            self.givenTX[childId] = object.model_st_tx
+            self.givenTY[childId] = object.model_st_ty
+            self.givenTZ[childId] = object.model_st_tz
+            self.givenRX[childId] = object.model_st_rx
+            self.givenRY[childId] = object.model_st_ry
+            self.givenRZ[childId] = object.model_st_rz
+            self.givenUS[childId] = object.model_st_us
           else
-            self.givenZ[childId] = object.model_z;
-            self.givenX[childId] = object.model_x;
-            self.givenY[childId] = object.model_y;
-            self.givenRotation[childId] = object.rotation;
+            self.givenZ[childId] = object.model_z
+            self.givenX[childId] = object.model_x
+            self.givenY[childId] = object.model_y
+            self.givenRotation[childId] = object.rotation
           end
         end
       end
     else
       local object = valueFromPath(baseObject, path)
 
-      self.givenModel = object.model_path;
-      self.givenModelId = object.model_fileId;
-      self.givenApi = object.api;
+      self.givenModel = object.model_path
+      self.givenModelId = object.model_fileId
+      self.givenApi = object.api
 
-      if (object.api) then
-        self.givenTX = object.model_st_tx;
-        self.givenTY = object.model_st_ty;
-        self.givenTZ = object.model_st_tz;
-        self.givenRX = object.model_st_rx;
-        self.givenRY = object.model_st_ry;
-        self.givenRZ = object.model_st_rz;
-        self.givenUS = object.model_st_us;
+      if object.api then
+        self.givenTX = object.model_st_tx
+        self.givenTY = object.model_st_ty
+        self.givenTZ = object.model_st_tz
+        self.givenRX = object.model_st_rx
+        self.givenRY = object.model_st_ry
+        self.givenRZ = object.model_st_rz
+        self.givenUS = object.model_st_us
       else
-        self.givenZ = object.model_z;
-        self.givenX = object.model_x;
-        self.givenY = object.model_y;
-        self.givenRotation = object.rotation;
+        self.givenZ = object.model_z
+        self.givenX = object.model_x
+        self.givenY = object.model_y
+        self.givenRotation = object.rotation
       end
     end
-    frame.window = "model";
+    frame.window = "model"
     frame:UpdateFrameVisible()
   end
 
@@ -517,40 +513,40 @@ local function ConstructModelPicker(frame)
 
   function group.CancelClose()
     local valueFromPath = OptionsPrivate.Private.ValueFromPath
-    if(group.baseObject.controlledChildren) then
+    if group.baseObject.controlledChildren then
       for child in OptionsPrivate.Private.TraverseLeafs(group.baseObject) do
         local childId = child.id
         local object = valueFromPath(child, group.path)
-        if(object) then
-          object.model_path = group.givenModel[childId];
-          object.model_fileId = group.givenModelId[childId];
-          object.api = group.givenApi[childId];
-          if (object.api) then
-            object.model_st_tx = group.givenTX[childId];
-            object.model_st_ty = group.givenTY[childId];
-            object.model_st_tz = group.givenTZ[childId];
-            object.model_st_rx = group.givenRX[childId];
-            object.model_st_ry = group.givenRY[childId];
-            object.model_st_rz = group.givenRZ[childId];
-            object.model_st_us = group.givenUS[childId];
+        if object then
+          object.model_path = group.givenModel[childId]
+          object.model_fileId = group.givenModelId[childId]
+          object.api = group.givenApi[childId]
+          if object.api then
+            object.model_st_tx = group.givenTX[childId]
+            object.model_st_ty = group.givenTY[childId]
+            object.model_st_tz = group.givenTZ[childId]
+            object.model_st_rx = group.givenRX[childId]
+            object.model_st_ry = group.givenRY[childId]
+            object.model_st_rz = group.givenRZ[childId]
+            object.model_st_us = group.givenUS[childId]
           else
-            object.model_z = group.givenZ[childId];
-            object.model_x = group.givenX[childId];
-            object.model_y = group.givenY[childId];
-            object.rotation = group.givenRotation[childId];
+            object.model_z = group.givenZ[childId]
+            object.model_x = group.givenX[childId]
+            object.model_y = group.givenY[childId]
+            object.rotation = group.givenRotation[childId]
           end
-          WeakAuras.Add(child);
-          WeakAuras.UpdateThumbnail(child);
+          WeakAuras.Add(child)
+          WeakAuras.UpdateThumbnail(child)
         end
       end
     else
       local object = valueFromPath(group.baseObject, group.path)
 
-      if(object) then
+      if object then
         object.model_path = group.givenModel
         object.model_fileId = group.givenModelId
         object.api = group.givenApi
-        if (object.api) then
+        if object.api then
           object.model_st_tx = group.givenTX
           object.model_st_ty = group.givenTY
           object.model_st_tz = group.givenTZ
@@ -564,26 +560,26 @@ local function ConstructModelPicker(frame)
           object.model_y = group.givenY
           object.rotation = group.givenRotation
         end
-        WeakAuras.Add(group.baseObject);
-        WeakAuras.UpdateThumbnail(group.baseObject);
+        WeakAuras.Add(group.baseObject)
+        WeakAuras.UpdateThumbnail(group.baseObject)
       end
     end
-    group.Close();
+    group.Close()
   end
 
-  local cancel = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
-  cancel:SetScript("OnClick", group.CancelClose);
-  cancel:SetPoint("bottomright", frame, "bottomright", -27, 16);
-  cancel:SetHeight(20);
-  cancel:SetWidth(100);
-  cancel:SetText(L["Cancel"]);
+  local cancel = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate")
+  cancel:SetScript("OnClick", group.CancelClose)
+  cancel:SetPoint("bottomright", frame, "bottomright", -27, 16)
+  cancel:SetHeight(20)
+  cancel:SetWidth(100)
+  cancel:SetText(L["Cancel"])
 
-  local close = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
-  close:SetScript("OnClick", group.Close);
-  close:SetPoint("RIGHT", cancel, "LEFT", -10, 0);
-  close:SetHeight(20);
-  close:SetWidth(100);
-  close:SetText(L["Okay"]);
+  local close = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate")
+  close:SetScript("OnClick", group.Close)
+  close:SetPoint("RIGHT", cancel, "LEFT", -10, 0)
+  close:SetHeight(20)
+  close:SetWidth(100)
+  close:SetText(L["Okay"])
 
   return group
 end

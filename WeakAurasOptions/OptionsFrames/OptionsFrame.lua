@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
@@ -7,8 +9,7 @@ local pairs, type, error = pairs, type, error
 local _G = _G
 
 -- WoW APIs
-local GetScreenWidth, GetScreenHeight, CreateFrame, UnitName
-  = GetScreenWidth, GetScreenHeight, CreateFrame, UnitName
+local GetScreenWidth, GetScreenHeight, CreateFrame, UnitName = GetScreenWidth, GetScreenHeight, CreateFrame, UnitName
 
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
@@ -68,7 +69,7 @@ local function CreateDecorationWide(frame, width)
 end
 
 local function CreateFrameSizer(frame, callback, position)
-  callback = callback or (function() end)
+  callback = callback or function() end
 
   local left, right, top, bottom, xOffset1, yOffset1, xOffset2, yOffset2
   if position == "BOTTOMLEFT" then
@@ -147,7 +148,7 @@ function OptionsPrivate.CreateFrame()
     tile = true,
     tileSize = 32,
     edgeSize = 32,
-    insets = { left = 8, right = 8, top = 8, bottom = 8 }
+    insets = { left = 8, right = 8, top = 8, bottom = 8 },
   })
   frame:SetBackdropColor(0.1, 0.1, 0.1, 0.85)
   frame:EnableMouse(true)
@@ -174,7 +175,6 @@ function OptionsPrivate.CreateFrame()
     OptionsPrivate.Private.PauseAllDynamicGroups()
 
     OptionsPrivate.Private.ClearFakeStates()
-
 
     for id, data in pairs(WeakAuras.regions) do
       data.region:Collapse()
@@ -231,7 +231,6 @@ function OptionsPrivate.CreateFrame()
   titleBG:SetPoint("TOP", 0, 24)
   titleText:SetPoint("TOP", titleBG, "TOP", 0, -14)
 
-
   local function commitWindowChanges()
     local xOffset = frame:GetRight() - GetScreenWidth()
     local yOffset = frame:GetTop() - GetScreenHeight()
@@ -257,7 +256,9 @@ function OptionsPrivate.CreateFrame()
   end
 
   title:EnableMouse(true)
-  title:SetScript("OnMouseDown", function() frame:StartMoving() end)
+  title:SetScript("OnMouseDown", function()
+    frame:StartMoving()
+  end)
   title:SetScript("OnMouseUp", function()
     frame:StopMovingOrSizing()
     commitWindowChanges()
@@ -289,7 +290,7 @@ function OptionsPrivate.CreateFrame()
 
       self.loadProgress:Hide()
       self.toolbarContainer.frame:Hide()
-      self.filterInput:Hide();
+      self.filterInput:Hide()
       self.tipFrame.frame:Hide()
       self.bottomLeftResizer:Hide()
       self.bottomRightResizer:Hide()
@@ -366,17 +367,17 @@ function OptionsPrivate.CreateFrame()
         if self.loadProgessVisible then
           self.loadProgress:Show()
           self.toolbarContainer.frame:Hide()
-          self.filterInput:Hide();
+          self.filterInput:Hide()
         else
           self.loadProgress:Hide()
           self.toolbarContainer.frame:Show()
-          self.filterInput:Show();
+          self.filterInput:Show()
           --self.filterInputClear:Show();
         end
       else
         self.loadProgress:Hide()
         self.toolbarContainer.frame:Hide()
-        self.filterInput:Hide();
+        self.filterInput:Hide()
       end
     end
   end
@@ -426,7 +427,7 @@ function OptionsPrivate.CreateFrame()
     tile = true,
     tileSize = 16,
     edgeSize = 16,
-    insets = { left = 4, right = 4, top = 4, bottom = 4 }
+    insets = { left = 4, right = 4, top = 4, bottom = 4 },
   })
   tipPopup:SetBackdropColor(0, 0, 0, 0.8)
   --tipPopup:SetHeight(100)
@@ -448,9 +449,16 @@ function OptionsPrivate.CreateFrame()
   urlWidget:SetFont(STANDARD_TEXT_FONT, 12)
   urlWidget:SetPoint("TOPLEFT", tipPopupLabel, "BOTTOMLEFT", 6, 0)
   urlWidget:SetPoint("TOPRIGHT", tipPopupLabel, "BOTTOMRIGHT", 0, 0)
-  urlWidget:SetScript("OnChar", function() urlWidget:SetText(urlWidget.text); urlWidget:HighlightText(); end);
-  urlWidget:SetScript("OnMouseUp", function() urlWidget:HighlightText(); end);
-  urlWidget:SetScript("OnEscapePressed", function() tipPopup:Hide() end)
+  urlWidget:SetScript("OnChar", function()
+    urlWidget:SetText(urlWidget.text)
+    urlWidget:HighlightText()
+  end)
+  urlWidget:SetScript("OnMouseUp", function()
+    urlWidget:HighlightText()
+  end)
+  urlWidget:SetScript("OnEscapePressed", function()
+    tipPopup:Hide()
+  end)
   urlWidget:SetHeight(34)
 
   local tipPopupCtrlC = tipPopup:CreateFontString(nil, "BACKGROUND", "GameFontWhite")
@@ -488,22 +496,17 @@ function OptionsPrivate.CreateFrame()
     tipFrame:AddChild(button)
   end
 
-  addFooter(L["Get Help"], [[Interface\AddOns\WeakAuras\Media\Textures\discord.tga]], "https://discord.gg/weakauras",
-            L["Chat with WeakAuras experts on our Discord server."])
+  addFooter(L["Get Help"], [[Interface\AddOns\WeakAuras\Media\Textures\discord.tga]], "https://discord.gg/weakauras", L["Chat with WeakAuras experts on our Discord server."])
 
-  addFooter(L["Documentation"], [[Interface\AddOns\WeakAuras\Media\Textures\GitHub.tga]], "https://github.com/WeakAuras/WeakAuras2/wiki",
-            L["Check out our wiki for a large collection of examples and snippets."])
+  addFooter(L["Documentation"], [[Interface\AddOns\WeakAuras\Media\Textures\GitHub.tga]], "https://github.com/WeakAuras/WeakAuras2/wiki", L["Check out our wiki for a large collection of examples and snippets."])
 
-  addFooter(L["Find Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]], "https://wago.io",
-            L["Browse Wago, the largest collection of auras."])
+  addFooter(L["Find Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_logo.tga]], "https://wago.io", L["Browse Wago, the largest collection of auras."])
 
   if not OptionsPrivate.Private.CompanionData.slugs then
-    addFooter(L["Update Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]], "https://weakauras.wtf",
-            L["Keep your Wago imports up to date with the Companion App."])
+    addFooter(L["Update Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]], "https://weakauras.wtf", L["Keep your Wago imports up to date with the Companion App."])
   end
 
-  addFooter(L["Found a Bug?"], [[Interface\AddOns\WeakAuras\Media\Textures\bug_report.tga]], "https://github.com/WeakAuras/WeakAuras2/issues/new?assignees=&labels=%F0%9F%90%9B+Bug&template=bug_report.md&title=",
-            L["Report bugs on our issue tracker."])
+  addFooter(L["Found a Bug?"], [[Interface\AddOns\WeakAuras\Media\Textures\bug_report.tga]], "https://github.com/WeakAuras/WeakAuras2/issues/new?assignees=&labels=%F0%9F%90%9B+Bug&template=bug_report.md&title=", L["Report bugs on our issue tracker."])
 
   -- Disable for now
   --local closeTipButton = CreateFrame("Button", nil, tipFrame.frame, "UIPanelCloseButton")
@@ -641,14 +644,13 @@ function OptionsPrivate.CreateFrame()
 
   local loadProgress = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
   loadProgress:SetPoint("TOP", buttonsContainer.frame, "TOP", 0, -4)
-  loadProgress:SetText(L["Creating options: "].."0/0")
+  loadProgress:SetText(L["Creating options: "] .. "0/0")
   frame.loadProgress = loadProgress
 
   frame.SetLoadProgressVisible = function(self, visible)
     self.loadProgessVisible = visible
     self:UpdateFrameVisible()
   end
-
 
   local buttonsScroll = AceGUI:Create("ScrollFrame")
   buttonsScroll:SetLayout("ButtonsScrollLayout")
@@ -884,7 +886,6 @@ function OptionsPrivate.CreateFrame()
   unloadedButton:SetViewDescription(L["Toggle the visibility of all non-loaded displays"])
   frame.unloadedButton = unloadedButton
 
-
   frame.ClearOptions = function(self, id)
     aceOptions[id] = nil
     OptionsPrivate.commonOptionsCache:Clear()
@@ -894,7 +895,7 @@ function OptionsPrivate.CreateFrame()
         frame:ClearOptions(data.parent)
       end
       for child in OptionsPrivate.Private.TraverseAllChildren(tempGroup) do
-        if (id == child.id) then
+        if id == child.id then
           frame:ClearOptions(tempGroup.id)
         end
       end
@@ -916,9 +917,7 @@ function OptionsPrivate.CreateFrame()
         frame:ClearOptions(child.id)
       end
     end
-    if (type(self.pickedDisplay) == "string" and self.pickedDisplay == id)
-       or (type(self.pickedDisplay) == "table" and id == tempGroup.id)
-    then
+    if (type(self.pickedDisplay) == "string" and self.pickedDisplay == id) or (type(self.pickedDisplay) == "table" and id == tempGroup.id) then
       frame:UpdateOptions()
     end
   end
@@ -952,10 +951,9 @@ function OptionsPrivate.CreateFrame()
     local id = data.id
     aceOptions[id] = aceOptions[id] or {}
     if not aceOptions[id][tab] then
-      local optionsGenerator =
-      {
+      local optionsGenerator = {
         group = OptionsPrivate.GetGroupOptions,
-        region =  OptionsPrivate.GetDisplayOptions,
+        region = OptionsPrivate.GetDisplayOptions,
         trigger = OptionsPrivate.GetTriggerOptions,
         conditions = OptionsPrivate.GetConditionOptions,
         load = OptionsPrivate.GetLoadOptions,
@@ -1001,18 +999,18 @@ function OptionsPrivate.CreateFrame()
     tabsWidget = AceGUI:Create("TabGroup")
 
     local tabs = {
-      { value = "region", text = L["Display"]},
-      { value = "trigger", text = L["Trigger"]},
-      { value = "conditions", text = L["Conditions"]},
-      { value = "action", text = L["Actions"]},
-      { value = "animation", text = L["Animations"]},
-      { value = "load", text = L["Load"]},
-      { value = "authorOptions", text = L["Custom Options"]},
-      { value = "information", text = L["Information"]},
+      { value = "region", text = L["Display"] },
+      { value = "trigger", text = L["Trigger"] },
+      { value = "conditions", text = L["Conditions"] },
+      { value = "action", text = L["Actions"] },
+      { value = "animation", text = L["Animations"] },
+      { value = "load", text = L["Load"] },
+      { value = "authorOptions", text = L["Custom Options"] },
+      { value = "information", text = L["Information"] },
     }
     -- Check if group and not the temp group
     if data.controlledChildren and type(data.id) == "string" then
-      tinsert(tabs, 1, { value = "group", text = L["Group"]})
+      tinsert(tabs, 1, { value = "group", text = L["Group"] })
     end
 
     tabsWidget:SetTabs(tabs)
@@ -1024,9 +1022,9 @@ function OptionsPrivate.CreateFrame()
     tabsWidget:AddChild(group)
 
     tabsWidget:SetCallback("OnGroupSelected", function(self, event, tab)
-        frame.selectedTab = tab
-        frame:FillOptions()
-      end)
+      frame.selectedTab = tab
+      frame:FillOptions()
+    end)
 
     AceConfigDialog:Open("WeakAuras", group)
     tabsWidget:SetTitle("")
@@ -1060,7 +1058,7 @@ function OptionsPrivate.CreateFrame()
       frame.pickedDisplay = newid
     else
       for i, childId in pairs(tempGroup.controlledChildren) do
-        if (childId == newid) then
+        if childId == newid then
           tempGroup.controlledChildren[i] = newid
         end
       end
@@ -1183,18 +1181,18 @@ function OptionsPrivate.CreateFrame()
 
     -- Sort group + dynamic group first, then the others alphabetically
     table.sort(regionTypesSorted, function(a, b)
-      if (a == "group") then
+      if a == "group" then
         return true
       end
 
-      if (b == "group") then
+      if b == "group" then
         return false
       end
 
-      if (a == "dynamicgroup") then
+      if a == "dynamicgroup" then
         return true
       end
-      if (b == "dynamicgroup") then
+      if b == "dynamicgroup" then
         return false
       end
 
@@ -1202,13 +1200,13 @@ function OptionsPrivate.CreateFrame()
     end)
 
     for index, regionType in ipairs(regionTypesSorted) do
-      if (targetIsDynamicGroup and (regionType == "group" or regionType == "dynamicgroup")) then
+      if targetIsDynamicGroup and (regionType == "group" or regionType == "dynamicgroup") then
         -- Dynamic groups can't contain group/dynamic groups
       else
         local regionData = regionOptions[regionType]
         local button = AceGUI:Create("WeakAurasNewButton")
         button:SetTitle(regionData.displayName)
-        if(type(regionData.icon) == "string" or type(regionData.icon) == "table") then
+        if type(regionData.icon) == "string" or type(regionData.icon) == "table" then
           button:SetIcon(regionData.icon)
         end
         button:SetDescription(regionData.description)
@@ -1240,7 +1238,7 @@ function OptionsPrivate.CreateFrame()
 
     local data = {
       outline = false,
-      color = {1, 1, 1, 1},
+      color = { 1, 1, 1, 1 },
       justify = "CENTER",
       font = "Friz Quadrata TT",
       fontSize = 8,
@@ -1255,7 +1253,7 @@ function OptionsPrivate.CreateFrame()
         jNxtLgzEnLt
         LDNx051u25L
         tXmdmY4fDE5
-      ]]
+      ]],
     }
 
     if not frame.importThumbnail then
@@ -1310,7 +1308,6 @@ function OptionsPrivate.CreateFrame()
 
     displayButtons[id]:Pick()
     self.pickedDisplay = id
-
 
     if tab then
       self.selectedTab = tab
@@ -1400,7 +1397,7 @@ function OptionsPrivate.CreateFrame()
 
   frame:SetClampedToScreen(true)
   local w, h = frame:GetSize()
-  local left, right, top, bottom = w/2,-w/2, 0, h-25
+  local left, right, top, bottom = w / 2, -w / 2, 0, h - 25
   frame:SetClampRectInsets(left, right, top, bottom)
 
   return frame

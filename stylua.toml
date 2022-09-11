@@ -1,4 +1,5 @@
 indent_type = "Spaces"
 indent_width = 2
-column_width = 180
+column_width = 1000
 line_endings = "Unix"
+quote_style = "ForceDouble"

@@ -1,20 +1,22 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
 local LCG = LibStub("LibCustomGlow-1.0")
-local MSQ, MSQ_Version = LibStub("Masque", true);
+local MSQ, MSQ_Version = LibStub("Masque", true)
 if MSQ then
   if MSQ_Version <= 80100 then
     MSQ = nil
   end
 end
-local L = WeakAuras.L;
+local L = WeakAuras.L
 
 local default = function(parentType)
   local options = {
     glow = false,
     useGlowColor = false,
-    glowColor = {1, 1, 1, 1},
+    glowColor = { 1, 1, 1, 1 },
     glowType = "buttonOverlay",
     glowLines = 8,
     glowFrequency = 0.25,
@@ -37,10 +39,10 @@ local properties = {
     display = L["Visibility"],
     setter = "SetVisible",
     type = "bool",
-    defaultProperty = true
+    defaultProperty = true,
   },
   glowType = {
-    display =L["Type"],
+    display = L["Type"],
     setter = "SetGlowType",
     type = "list",
     values = Private.glow_types,
@@ -48,12 +50,12 @@ local properties = {
   useGlowColor = {
     display = L["Use Custom Color"],
     setter = "SetUseGlowColor",
-    type = "bool"
+    type = "bool",
   },
   glowColor = {
     display = L["Custom Color"],
     setter = "SetGlowColor",
-    type = "color"
+    type = "color",
   },
   glowLines = {
     display = L["Lines & Particles"],
@@ -62,7 +64,7 @@ local properties = {
     min = 1,
     softMax = 30,
     bigStep = 1,
-    default = 4
+    default = 4,
   },
   glowFrequency = {
     display = L["Frequency"],
@@ -71,7 +73,7 @@ local properties = {
     softMin = -2,
     softMax = 2,
     bigStep = 0.1,
-    default = 0.25
+    default = 0.25,
   },
   glowLength = {
     display = L["Length"],
@@ -80,7 +82,7 @@ local properties = {
     min = 1,
     softMax = 20,
     bigStep = 1,
-    default = 10
+    default = 10,
   },
   glowThickness = {
     display = L["Thickness"],
@@ -89,7 +91,7 @@ local properties = {
     min = 1,
     softMax = 20,
     bigStep = 1,
-    default = 1
+    default = 1,
   },
   glowScale = {
     display = L["Scale"],
@@ -99,12 +101,12 @@ local properties = {
     softMax = 10,
     bigStep = 0.05,
     default = 1,
-    isPercent = true
+    isPercent = true,
   },
   glowBorder = {
     display = L["Border"],
     setter = "SetGlowBorder",
-    type = "bool"
+    type = "bool",
   },
   glowXOffset = {
     display = L["X-Offset"],
@@ -113,7 +115,7 @@ local properties = {
     softMin = -100,
     softMax = 100,
     bigStep = 1,
-    default = 0
+    default = 0,
   },
   glowYOffset = {
     display = L["Y-Offset"],
@@ -122,12 +124,11 @@ local properties = {
     softMin = -100,
     softMax = 100,
     bigStep = 1,
-    default = 0
+    default = 0,
   },
 }
 
 local function glowStart(self, frame, color)
-
   if frame:GetWidth() < 1 or frame:GetHeight() < 1 then
     self.glowStop(frame)
     return
@@ -136,6 +137,7 @@ local function glowStart(self, frame, color)
   if self.glowType == "buttonOverlay" then
     self.glowStart(frame, color, self.glowFrequency, 0)
   elseif self.glowType == "Pixel" then
+    -- stylua: ignore
     self.glowStart(
       frame,
       color,
@@ -150,6 +152,7 @@ local function glowStart(self, frame, color)
       0
     )
   elseif self.glowType == "ACShine" then
+    -- stylua: ignore
     self.glowStart(
       frame,
       color,
@@ -181,19 +184,19 @@ local funcs = {
     end
 
     if MSQ and self.parentType == "icon" then
-      if (visible) then
+      if visible then
         self.__MSQ_Shape = self:GetParent().button.__MSQ_Shape
         self:Show()
-        glowStart(self, self, color);
+        glowStart(self, self, color)
       else
-        self.glowStop(self);
+        self.glowStop(self)
         self:Hide()
       end
-    elseif (visible) then
+    elseif visible then
       self:Show()
-      glowStart(self, self, color);
+      glowStart(self, self, color)
     else
-      self.glowStop(self);
+      self.glowStop(self)
       self:Hide()
     end
   end,
@@ -239,7 +242,7 @@ local funcs = {
     end
   end,
   SetGlowColor = function(self, r, g, b, a)
-    self.glowColor = {r, g, b, a}
+    self.glowColor = { r, g, b, a }
     if self.glow then
       self:SetVisible(true)
     end
@@ -299,13 +302,13 @@ local funcs = {
     if self.glow then
       self:SetVisible(true)
     end
-  end
+  end,
 }
 
 local function create()
   local region = CreateFrame("Frame", nil, UIParent)
 
-  for name, func  in pairs(funcs) do
+  for name, func in pairs(funcs) do
     region[name] = func
   end
 
@@ -362,7 +365,7 @@ function WeakAuras.getDefaultGlow(regionType)
       ["type"] = "subglow",
       glow = false,
       useGlowColor = false,
-      glowColor = {1, 1, 1, 1},
+      glowColor = { 1, 1, 1, 1 },
       glowType = "Pixel",
       glowLines = 8,
       glowFrequency = 0.25,
@@ -372,14 +375,14 @@ function WeakAuras.getDefaultGlow(regionType)
       glowBorder = false,
       glowXOffset = 0,
       glowYOffset = 0,
-      glow_anchor = "bar"
+      glow_anchor = "bar",
     }
   elseif regionType == "icon" then
     return {
       ["type"] = "subglow",
       glow = false,
       useGlowColor = false,
-      glowColor = {1, 1, 1, 1},
+      glowColor = { 1, 1, 1, 1 },
       glowType = "buttonOverlay",
       glowLines = 8,
       glowFrequency = 0.25,
@@ -394,8 +397,7 @@ function WeakAuras.getDefaultGlow(regionType)
 end
 
 local function supports(regionType)
-  return regionType == "icon"
-         or regionType == "aurabar"
+  return regionType == "icon" or regionType == "aurabar"
 end
 
 local function addDefaultsForNewAura(data)
@@ -404,7 +406,7 @@ local function addDefaultsForNewAura(data)
       ["type"] = "subglow",
       glow = false,
       useGlowColor = false,
-      glowColor = {1, 1, 1, 1},
+      glowColor = { 1, 1, 1, 1 },
       glowType = "buttonOverlay",
       glowLines = 8,
       glowFrequency = 0.25,
@@ -418,4 +420,4 @@ local function addDefaultsForNewAura(data)
   end
 end
 
-WeakAuras.RegisterSubRegionType("subglow", L["Glow"], supports, create, modify, onAcquire, onRelease, default, addDefaultsForNewAura, properties);
+WeakAuras.RegisterSubRegionType("subglow", L["Glow"], supports, create, modify, onAcquire, onRelease, default, addDefaultsForNewAura, properties)

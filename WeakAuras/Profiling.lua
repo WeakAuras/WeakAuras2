@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
@@ -38,11 +40,11 @@ table_to_string = function(tbl, depth)
       elseif type(v) == "function" then
         v = "function"
       elseif type(v) == "string" then
-        v = '"'.. v ..'"'
+        v = "\"" .. v .. "\""
       end
 
       if type(k) == "string" then
-        k = '"' .. k ..'"'
+        k = "\"" .. k .. "\""
       end
 
       str = (str and str .. "|cff999999,|r " or "|cff999999{|r ") .. "|cffffff99[" .. tostring(k) .. "]|r |cff999999=|r |cffffffff" .. tostring(v) .. "|r"
@@ -104,7 +106,9 @@ local function CreateProfilePopup()
   popupFrame:SetAutoFocus(false)
   popupFrame:SetFontObject(ChatFontNormal)
   popupFrame:SetSize(450, 300)
-  popupFrame:SetScript("OnChar", function() popupFrame:SetText(popupFrame.originalText) end);
+  popupFrame:SetScript("OnChar", function()
+    popupFrame:SetText(popupFrame.originalText)
+  end)
   popupFrame:Hide()
 
   popupFrame.orig_Hide = popupFrame.Hide
@@ -123,7 +127,9 @@ local function CreateProfilePopup()
   end
 
   function popupFrame:AddText(v)
-    if not v then return end
+    if not v then
+      return
+    end
     local m = popupFrame:GetText()
     if m ~= "" then
       m = m .. "|n"
@@ -163,7 +169,7 @@ local function CreateProfilePopup()
     tile = true,
     tileSize = 32,
     edgeSize = 32,
-    insets = { left = 4, right = 4, top = 4, bottom = 4 }
+    insets = { left = 4, right = 4, top = 4, bottom = 4 },
   })
   bg:SetPoint("TOPLEFT", scrollFrame, -20, 20)
   bg:SetPoint("BOTTOMRIGHT", scrollFrame, 35, -25)
@@ -286,7 +292,9 @@ function Private.ProfileRenameAura(oldid, id)
 end
 
 local RegisterProfile = function(startType)
-  if startType == "boss" then startType = "encounter" end
+  if startType == "boss" then
+    startType = "encounter"
+  end
   local delayedStart
   if startType == "encounter" then
     RealTimeProfilingWindow:UnregisterAllEvents()
@@ -346,11 +354,10 @@ function WeakAuras.StartProfile(startType)
   LGF.StartProfile()
 end
 
-local function doNothing()
-end
+local function doNothing() end
 
 function WeakAuras.StopProfile()
-  if (currentProfileState ~= "profiling") then
+  if currentProfileState ~= "profiling" then
     prettyPrint(L["Profiling not running."])
     return
   end
@@ -378,7 +385,7 @@ function WeakAuras.StopProfile()
 end
 
 function WeakAuras.ToggleProfile()
-  if (not profileData.systems.time or profileData.systems.time.count ~= 1) then
+  if not profileData.systems.time or profileData.systems.time.count ~= 1 then
     WeakAuras.StartProfile()
   else
     WeakAuras.StopProfile()
@@ -464,7 +471,7 @@ function WeakAuras.PrintProfile()
   popup:AddText("")
   popup:AddText("|cff9900ffAuras:|r")
   local total = TotalProfileTime(profileData.auras)
-  popup:AddText("Total time attributed to auras: ", floor(total) .."ms")
+  popup:AddText("Total time attributed to auras: ", floor(total) .. "ms")
   for i, k in ipairs(SortProfileMap(profileData.auras)) do
     PrintOneProfile(popup, k, profileData.auras[k], total)
   end
@@ -473,7 +480,7 @@ function WeakAuras.PrintProfile()
   popup:AddText("|cff9900ffSystems:|r")
 
   for i, k in ipairs(SortProfileMap(profileData.systems)) do
-    if (k ~= "time" and k ~= "wa") then
+    if k ~= "time" and k ~= "wa" then
       PrintOneProfile(popup, k, profileData.systems[k], profileData.systems.wa.elapsed)
     end
   end
@@ -529,7 +536,7 @@ function RealTimeProfilingWindow:GetBar(name)
     local txtPct = bar:CreateFontString(nil, "OVERLAY", "GameFontNormal")
     bar.txtPct = txtPct
     txtPct:SetPoint("TOPLEFT", bar, "TOPRIGHT", -55, 0)
-    txtPct:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", - margin, 0)
+    txtPct:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", -margin, 0)
     txtPct:SetJustifyH("RIGHT")
 
     function bar:SetValue(value)
@@ -559,7 +566,7 @@ function RealTimeProfilingWindow:GetBar(name)
         self:Hide()
       else
         self:ClearAllPoints()
-        self:SetPoint("TOPLEFT", self.parent.barsFrame, "TOPLEFT", 0, - (pos - 1) * self.parent.barHeight)
+        self:SetPoint("TOPLEFT", self.parent.barsFrame, "TOPLEFT", 0, -(pos - 1) * self.parent.barHeight)
         if pos % 2 == 0 then
           bar.fg:SetColorTexture(0.7, 0.7, 0.7, 0.7)
           bar.bg:SetColorTexture(0, 0, 0, 0.2)
@@ -582,7 +589,7 @@ function RealTimeProfilingWindow:RefreshBars()
 
   local total = TotalProfileTime(profileData.auras)
   for i, name in ipairs(SortProfileMap(profileData.auras)) do
-    if (name ~= "time" and name ~= "wa") then
+    if name ~= "time" and name ~= "wa" then
       local bar = self:GetBar(name)
       local elapsed = profileData.auras[name].elapsed
       local pct = 100 * elapsed / total
@@ -594,11 +601,7 @@ function RealTimeProfilingWindow:RefreshBars()
   end
   if profileData.systems.wa then
     local timespent = debugprofilestop() - profileData.systems.time.start
-    self.statsFrameText:SetText(("|cFFFFFFFFTime in WA: %.2fs / %ds (%.1f%%)"):format(
-      profileData.systems.wa.elapsed / 1000,
-      timespent / 1000,
-      100 * profileData.systems.wa.elapsed / timespent
-    ))
+    self.statsFrameText:SetText(("|cFFFFFFFFTime in WA: %.2fs / %ds (%.1f%%)"):format(profileData.systems.wa.elapsed / 1000, timespent / 1000, 100 * profileData.systems.wa.elapsed / timespent))
   end
 end
 
@@ -696,14 +699,13 @@ function RealTimeProfilingWindow:Init()
   toggleButton:SetText(L["Start Now"])
   toggleButton:SetScript("OnClick", function(self)
     local parent = self:GetParent():GetParent()
-    if (not profileData.systems.time or profileData.systems.time.count ~= 1) then
+    if not profileData.systems.time or profileData.systems.time.count ~= 1 then
       parent:ResetBars()
       WeakAuras.StartProfile()
     else
       WeakAuras.StopProfile()
     end
   end)
-
 
   local reportButton = CreateFrame("Button", nil, statsFrame, "UIPanelButtonTemplate")
   self.reportButton = reportButton
@@ -719,7 +721,7 @@ function RealTimeProfilingWindow:Init()
 
   local combatButton = CreateFrame("Button", nil, statsFrame, "UIPanelButtonTemplate")
   self.combatButton = combatButton
-  combatButton:SetPoint("TOPRIGHT", statsFrame, "BOTTOMRIGHT", -spacing - width , spacing)
+  combatButton:SetPoint("TOPRIGHT", statsFrame, "BOTTOMRIGHT", -spacing - width, spacing)
   combatButton:SetFrameLevel(statsFrame:GetFrameLevel() + 1)
   combatButton:SetHeight(20)
   combatButton:SetWidth(width)

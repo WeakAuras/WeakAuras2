@@ -146,13 +146,7 @@ local function TalentFrame_Update(self)
         else
           if button.state ~= nil then
             buttonShownCount = buttonShownCount + 1
-            button:SetPoint(
-              "TOPLEFT",
-              button.obj,
-              "TOPLEFT",
-              7 + ((buttonShownCount - 1) % 11) * (buttonSizePadded + 4),
-              -7 + -1 * (ceil(buttonShownCount / 11) - 1) * (buttonSizePadded + 4)
-            )
+            button:SetPoint("TOPLEFT", button.obj, "TOPLEFT", 7 + ((buttonShownCount - 1) % 11) * (buttonSizePadded + 4), -7 + -1 * (ceil(buttonShownCount / 11) - 1) * (buttonSizePadded + 4))
             button:SetEnabled(false)
             button:SetMouseClickEnabled(false)
             button:Show()

@@ -1,13 +1,15 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
-local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L;
+local SharedMedia = LibStub("LibSharedMedia-3.0")
+local L = WeakAuras.L
 
 local default = function(parentType)
   local options = {
     border_visible = true,
-    border_color = {1, 1, 1, 1},
+    border_color = { 1, 1, 1, 1 },
     border_edge = "Square Full White",
     border_offset = 0,
     border_size = 2,
@@ -23,15 +25,14 @@ local properties = {
     display = L["Visibility"],
     setter = "SetVisible",
     type = "bool",
-    defaultProperty = true
+    defaultProperty = true,
   },
   border_color = {
     display = L["Color"],
     setter = "SetBorderColor",
-    type = "color"
+    type = "color",
   },
 }
-
 
 local function create()
   local region = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
@@ -66,7 +67,7 @@ local function modify(parent, region, parentData, data, first)
     self:SetBackdropBorderColor(r, g, b, a or 1)
   end
 
-  region:SetBorderColor(data.border_color[1], data.border_color[2], data.border_color[3], data.border_color[4]);
+  region:SetBorderColor(data.border_color[1], data.border_color[2], data.border_color[3], data.border_color[4])
 
   function region:SetVisible(visible)
     if visible then
@@ -80,10 +81,7 @@ local function modify(parent, region, parentData, data, first)
 end
 
 local function supports(regionType)
-  return regionType == "texture"
-         or regionType == "progresstexture"
-         or regionType == "icon"
-         or regionType == "aurabar"
+  return regionType == "texture" or regionType == "progresstexture" or regionType == "icon" or regionType == "aurabar"
 end
 
-WeakAuras.RegisterSubRegionType("subborder", L["Border"], supports, create, modify, onAcquire, onRelease, default, nil, properties);
+WeakAuras.RegisterSubRegionType("subborder", L["Border"], supports, create, modify, onAcquire, onRelease, default, nil, properties)

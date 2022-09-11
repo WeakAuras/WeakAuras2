@@ -1,12 +1,13 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
-
 
 -- Lua APIs
 local pairs = pairs
 
 -- WoW APIs
-local IsShiftKeyDown, CreateFrame =  IsShiftKeyDown, CreateFrame
+local IsShiftKeyDown, CreateFrame = IsShiftKeyDown, CreateFrame
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
@@ -80,7 +81,9 @@ local function ConstructMover(frame)
   top:SetNormalTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-up.blp")
   top:SetHighlightTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-highlight.blp")
   top:SetPushedTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-down.blp")
-  top:SetScript("OnClick", function() moveOnePxl("top") end)
+  top:SetScript("OnClick", function()
+    moveOnePxl("top")
+  end)
 
   bottom:SetNormalTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-up.blp")
   bottom:GetNormalTexture():SetTexCoord(0, 1, 1, 0)
@@ -88,23 +91,29 @@ local function ConstructMover(frame)
   bottom:GetHighlightTexture():SetTexCoord(0, 1, 1, 0)
   bottom:SetPushedTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-down.blp")
   bottom:GetPushedTexture():SetTexCoord(0, 1, 1, 0)
-  bottom:SetScript("OnClick", function() moveOnePxl("bottom") end)
+  bottom:SetScript("OnClick", function()
+    moveOnePxl("bottom")
+  end)
 
   left:SetNormalTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-up.blp")
-  left:GetNormalTexture():SetRotation(math.pi/2)
+  left:GetNormalTexture():SetRotation(math.pi / 2)
   left:SetHighlightTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-highlight.blp")
-  left:GetHighlightTexture():SetRotation(math.pi/2)
+  left:GetHighlightTexture():SetRotation(math.pi / 2)
   left:SetPushedTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-down.blp")
-  left:GetPushedTexture():SetRotation(math.pi/2)
-  left:SetScript("OnClick", function() moveOnePxl("left") end)
+  left:GetPushedTexture():SetRotation(math.pi / 2)
+  left:SetScript("OnClick", function()
+    moveOnePxl("left")
+  end)
 
   right:SetNormalTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-up.blp")
-  right:GetNormalTexture():SetRotation(-math.pi/2)
+  right:GetNormalTexture():SetRotation(-math.pi / 2)
   right:SetHighlightTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-highlight.blp")
-  right:GetHighlightTexture():SetRotation(-math.pi/2)
+  right:GetHighlightTexture():SetRotation(-math.pi / 2)
   right:SetPushedTexture("interface\\buttons\\ui-scrollbar-scrollupbutton-down.blp")
-  right:GetPushedTexture():SetRotation(-math.pi/2)
-  right:SetScript("OnClick", function() moveOnePxl("right") end)
+  right:GetPushedTexture():SetRotation(-math.pi / 2)
+  right:SetScript("OnClick", function()
+    moveOnePxl("right")
+  end)
 
   local arrow = CreateFrame("Frame", nil, frame)
   arrow:SetClampedToScreen(true)
@@ -118,14 +127,14 @@ local function ConstructMover(frame)
   arrowTexture:SetVertexColor(0.8, 0.8, 0.2)
   arrowTexture:Hide()
   local offscreenText = arrow:CreateFontString(nil, "OVERLAY")
-  offscreenText:SetFont(STANDARD_TEXT_FONT, 14, "THICKOUTLINE");
+  offscreenText:SetFont(STANDARD_TEXT_FONT, 14, "THICKOUTLINE")
   offscreenText:SetText(L["Aura is\nOff Screen"])
   offscreenText:Hide()
   offscreenText:SetPoint("CENTER", arrow, "CENTER")
 
   local lineX = frame:CreateLine(nil, "OVERLAY", 7)
   lineX:SetThickness(2)
-  lineX:SetColorTexture(1,1,0)
+  lineX:SetColorTexture(1, 1, 0)
   lineX:SetStartPoint("BOTTOMLEFT", UIParent)
   lineX:SetEndPoint("BOTTOMRIGHT", UIParent)
   lineX:Hide()
@@ -133,7 +142,7 @@ local function ConstructMover(frame)
 
   local lineY = frame:CreateLine(nil, "OVERLAY", 7)
   lineY:SetThickness(2)
-  lineY:SetColorTexture(1,1,0)
+  lineY:SetColorTexture(1, 1, 0)
   lineY:SetStartPoint("TOPLEFT", UIParent)
   lineY:SetEndPoint("BOTTOMLEFT", UIParent)
   lineY:SetIgnoreParentAlpha(true)
@@ -373,7 +382,7 @@ local function BuildAlignLines(mover)
   local data = mover.moving.data
   local align = {
     x = {},
-    y = {}
+    y = {},
   }
   local x, y = {}, {}
   local skipIds = {}
@@ -403,12 +412,12 @@ local function BuildAlignLines(mover)
   table.sort(x)
   table.sort(y)
   for index, value in ipairs(x) do
-    if value ~= x[index+1] then
+    if value ~= x[index + 1] then
       tinsert(align.x, value)
     end
   end
   for index, value in ipairs(y) do
-    if value ~= y[index+1] then
+    if value ~= y[index + 1] then
       tinsert(align.y, value)
     end
   end
@@ -420,12 +429,11 @@ local function ConstructMoverSizer(parent)
   frame:SetBackdrop({
     edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border",
     edgeSize = 12,
-    insets = {left = 0, right = 0, top = 0, bottom = 0}
+    insets = { left = 0, right = 0, top = 0, bottom = 0 },
   })
   frame:EnableMouse()
 
-  frame.top, frame.topright, frame.right, frame.bottomright, frame.bottom, frame.bottomleft, frame.left, frame.topleft
-  = ConstructSizer(frame)
+  frame.top, frame.topright, frame.right, frame.bottomright, frame.bottom, frame.bottomleft, frame.left, frame.topleft = ConstructSizer(frame)
 
   frame.lineX, frame.lineY, frame.arrowTexture, frame.offscreenText = ConstructMover(frame)
 
@@ -466,7 +474,7 @@ local function ConstructMoverSizer(parent)
     local limit = math.min(width, height) + 16
     local size = 16
     if limit <= 40 then
-      size = limit * (2/5)
+      size = limit * (2 / 5)
     end
     frame.bottomleft:SetWidth(size)
     frame.bottomleft:SetHeight(size)
@@ -569,8 +577,7 @@ local function ConstructMoverSizer(parent)
       mover.isMoving = false
       mover.text:Hide()
 
-      local align = (WeakAurasOptionsSaved.magnetAlign and not IsShiftKeyDown())
-                    or (not WeakAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
+      local align = (WeakAurasOptionsSaved.magnetAlign and not IsShiftKeyDown()) or (not WeakAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
 
       if align and (mover.alignXFrom or mover.alignYFrom) then
         if mover.alignXFrom == "LEFT" then
@@ -722,8 +729,7 @@ local function ConstructMoverSizer(parent)
         local width = region:GetWidth()
         local height = region:GetHeight()
 
-        local align = (WeakAurasOptionsSaved.magnetAlign and not IsShiftKeyDown())
-                      or (not WeakAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
+        local align = (WeakAurasOptionsSaved.magnetAlign and not IsShiftKeyDown()) or (not WeakAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
 
         if not IsControlKeyDown() then
           if point:find("RIGHT") then
@@ -782,36 +788,68 @@ local function ConstructMoverSizer(parent)
         mover.sizePoint = nil
       end
 
-      frame.bottomleft:SetScript("OnMouseDown", function() frame.startSizing("BOTTOMLEFT") end)
-      frame.bottomleft:SetScript("OnMouseUp", function() frame.doneSizing("BOTTOMLEFT") end)
+      frame.bottomleft:SetScript("OnMouseDown", function()
+        frame.startSizing("BOTTOMLEFT")
+      end)
+      frame.bottomleft:SetScript("OnMouseUp", function()
+        frame.doneSizing("BOTTOMLEFT")
+      end)
       frame.bottomleft:SetScript("OnEnter", frame.bottomleft.Highlight)
       frame.bottomleft:SetScript("OnLeave", frame.bottomleft.Clear)
-      frame.bottom:SetScript("OnMouseDown", function() frame.startSizing("BOTTOM") end)
-      frame.bottom:SetScript("OnMouseUp", function() frame.doneSizing("BOTTOM") end)
+      frame.bottom:SetScript("OnMouseDown", function()
+        frame.startSizing("BOTTOM")
+      end)
+      frame.bottom:SetScript("OnMouseUp", function()
+        frame.doneSizing("BOTTOM")
+      end)
       frame.bottom:SetScript("OnEnter", frame.bottom.Highlight)
       frame.bottom:SetScript("OnLeave", frame.bottom.Clear)
-      frame.bottomright:SetScript("OnMouseDown", function() frame.startSizing("BOTTOMRIGHT") end)
-      frame.bottomright:SetScript("OnMouseUp", function() frame.doneSizing("BOTTOMRIGHT") end)
+      frame.bottomright:SetScript("OnMouseDown", function()
+        frame.startSizing("BOTTOMRIGHT")
+      end)
+      frame.bottomright:SetScript("OnMouseUp", function()
+        frame.doneSizing("BOTTOMRIGHT")
+      end)
       frame.bottomright:SetScript("OnEnter", frame.bottomright.Highlight)
       frame.bottomright:SetScript("OnLeave", frame.bottomright.Clear)
-      frame.right:SetScript("OnMouseDown", function() frame.startSizing("RIGHT") end)
-      frame.right:SetScript("OnMouseUp", function() frame.doneSizing("RIGHT") end)
+      frame.right:SetScript("OnMouseDown", function()
+        frame.startSizing("RIGHT")
+      end)
+      frame.right:SetScript("OnMouseUp", function()
+        frame.doneSizing("RIGHT")
+      end)
       frame.right:SetScript("OnEnter", frame.right.Highlight)
       frame.right:SetScript("OnLeave", frame.right.Clear)
-      frame.topright:SetScript("OnMouseDown", function() frame.startSizing("TOPRIGHT") end)
-      frame.topright:SetScript("OnMouseUp", function() frame.doneSizing("TOPRIGHT") end)
+      frame.topright:SetScript("OnMouseDown", function()
+        frame.startSizing("TOPRIGHT")
+      end)
+      frame.topright:SetScript("OnMouseUp", function()
+        frame.doneSizing("TOPRIGHT")
+      end)
       frame.topright:SetScript("OnEnter", frame.topright.Highlight)
       frame.topright:SetScript("OnLeave", frame.topright.Clear)
-      frame.top:SetScript("OnMouseDown", function() frame.startSizing("TOP") end)
-      frame.top:SetScript("OnMouseUp", function() frame.doneSizing("TOP") end)
+      frame.top:SetScript("OnMouseDown", function()
+        frame.startSizing("TOP")
+      end)
+      frame.top:SetScript("OnMouseUp", function()
+        frame.doneSizing("TOP")
+      end)
       frame.top:SetScript("OnEnter", frame.top.Highlight)
       frame.top:SetScript("OnLeave", frame.top.Clear)
-      frame.topleft:SetScript("OnMouseDown", function() frame.startSizing("TOPLEFT") end)
-      frame.topleft:SetScript("OnMouseUp", function() frame.doneSizing("TOPLEFT") end)
+      frame.topleft:SetScript("OnMouseDown", function()
+        frame.startSizing("TOPLEFT")
+      end)
+      frame.topleft:SetScript("OnMouseUp", function()
+        frame.doneSizing("TOPLEFT")
+      end)
       frame.topleft:SetScript("OnEnter", frame.topleft.Highlight)
       frame.topleft:SetScript("OnLeave", frame.topleft.Clear)
-      frame.left:SetScript("OnMouseDown", function() frame.startSizing("LEFT") end)
-      frame.left:SetScript("OnMouseUp", function() frame.doneSizing("LEFT") end)
+      frame.left:SetScript("OnMouseDown", function()
+        frame.startSizing("LEFT")
+      end)
+      frame.left:SetScript("OnMouseUp", function()
+        frame.doneSizing("LEFT")
+      end)
       frame.left:SetScript("OnEnter", frame.left.Highlight)
       frame.left:SetScript("OnLeave", frame.left.Clear)
 
@@ -856,8 +894,7 @@ local function ConstructMoverSizer(parent)
       self.currentAlpha = newAlpha
     end
 
-    local align = (WeakAurasOptionsSaved.magnetAlign and not IsShiftKeyDown())
-                  or (not WeakAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
+    local align = (WeakAurasOptionsSaved.magnetAlign and not IsShiftKeyDown()) or (not WeakAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
     if align then
       self.alignGoalAlpha = 1
     else
@@ -902,15 +939,15 @@ local function ConstructMoverSizer(parent)
 
     local dX = selfX - anchorX
     local dY = selfY - anchorY
-    local distance = sqrt(dX^2 + dY^2)
+    local distance = sqrt(dX ^ 2 + dY ^ 2)
     local angle = atan2(dY, dX)
 
-    local numInterim = floor(distance/40)
+    local numInterim = floor(distance / 40)
 
     for _, texture in pairs(self.interims) do
       texture:Hide()
     end
-    for i = 1, numInterim  do
+    for i = 1, numInterim do
       local x = (distance - (i * 40)) * cos(angle)
       local y = (distance - (i * 40)) * sin(angle)
       self.interims[i] = EnsureTexture(self, self.interims[i])
@@ -933,19 +970,17 @@ local function ConstructMoverSizer(parent)
         local arrowAngle = atan2(y - arrowY, x - arrowX)
         frame.offscreenText:Show()
         frame.arrowTexture:Show()
-        frame.arrowTexture:SetRotation( (arrowAngle - 90) / 180 * math.pi)
+        frame.arrowTexture:SetRotation((arrowAngle - 90) / 180 * math.pi)
       end
     end
 
     local regionScale = self.moving.region:GetScale()
-    self.text:SetText(("(%.2f, %.2f)"):format(dX*1/regionScale, dY*1/regionScale))
+    self.text:SetText(("(%.2f, %.2f)"):format(dX * 1 / regionScale, dY * 1 / regionScale))
     local midX = (distance / 2) * cos(angle)
     local midY = (distance / 2) * sin(angle)
     self.text:SetPoint("CENTER", self.anchorPointIcon, "CENTER", midX, midY)
     local left, right, top, bottom, centerX, centerY = frame:GetLeft(), frame:GetRight(), frame:GetTop(), frame:GetBottom(), frame:GetCenter()
-    if (midX > 0 and (self.text:GetRight() or 0) > (left or 0))
-    or (midX < 0 and (self.text:GetLeft() or 0) < (right or 0))
-    then
+    if (midX > 0 and (self.text:GetRight() or 0) > (left or 0)) or (midX < 0 and (self.text:GetLeft() or 0) < (right or 0)) then
       if midY > 0 and (self.text:GetTop() or 0) > (top or 0) then
         midY = midY - ((self.text:GetTop() or 0) - (bottom or 0))
       elseif midY < 0 and (self.text:GetBottom() or 0) < (top or 0) then
@@ -965,15 +1000,9 @@ local function ConstructMoverSizer(parent)
           start = reverse and #mover.align.x or 1
           finish = reverse and 1 or #mover.align.x
           step = reverse and -1 or 1
-          for i=start,finish,step do
+          for i = start, finish, step do
             local v = mover.align.x[i]
-            if not ctrlDown and (
-              ((left >= v - 5 and left <= v + 5) and (not point or point:find("LEFT")))
-              or ((right >= v - 5 and right <= v + 5) and (not point or point:find("RIGHT")))
-            ) or (
-              ctrlDown and centerX >= v - 5 and centerX <= v + 5
-            )
-            then
+            if not ctrlDown and (((left >= v - 5 and left <= v + 5) and (not point or point:find("LEFT"))) or ((right >= v - 5 and right <= v + 5) and (not point or point:find("RIGHT")))) or (ctrlDown and centerX >= v - 5 and centerX <= v + 5) then
               frame.lineY:SetStartPoint("TOPLEFT", UIParent, v, 0)
               frame.lineY:SetEndPoint("BOTTOMLEFT", UIParent, v, 0)
               frame.lineY:Show()
@@ -997,15 +1026,9 @@ local function ConstructMoverSizer(parent)
           start = reverse and #mover.align.y or 1
           finish = reverse and 1 or #mover.align.y
           step = reverse and -1 or 1
-          for i=start,finish,step do
+          for i = start, finish, step do
             local v = mover.align.y[i]
-            if not ctrlDown and (
-              ((top >= v - 5 and top <= v + 5) and (not point or point:find("TOP")))
-              or ((bottom >= v - 5 and bottom <= v + 5) and (not point or point:find("BOTTOM")))
-            ) or (
-              ctrlDown and centerY >= v - 5 and centerY <= v + 5
-            )
-            then
+            if not ctrlDown and (((top >= v - 5 and top <= v + 5) and (not point or point:find("TOP"))) or ((bottom >= v - 5 and bottom <= v + 5) and (not point or point:find("BOTTOM")))) or (ctrlDown and centerY >= v - 5 and centerY <= v + 5) then
               frame.lineX:SetStartPoint("BOTTOMLEFT", UIParent, 0, v)
               frame.lineX:SetEndPoint("BOTTOMRIGHT", UIParent, 0, v)
               frame.lineX:Show()

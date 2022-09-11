@@ -17,8 +17,11 @@ Import(str, [target])
 Imports an aura from a table, which may or may not be encoded as a B64 string.
 If target is installed data, or is a uid which points to installed data, then the import will be an update to that aura
 
-]]--
-if not WeakAuras.IsLibsOK() then return end
+]]
+--
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
 -- Lua APIs
@@ -28,16 +31,16 @@ local pairs, type, unpack = pairs, type, unpack
 local error = error
 local bit_band, bit_lshift, bit_rshift = bit.band, bit.lshift, bit.rshift
 
-local WeakAuras = WeakAuras;
-local L = WeakAuras.L;
+local WeakAuras = WeakAuras
+local L = WeakAuras.L
 
-local versionString = WeakAuras.versionString;
+local versionString = WeakAuras.versionString
 
 -- Local functions
 local decodeB64, GenerateUniqueID
 local CompressDisplay, ShowTooltip, TableToString, StringToTable
 local RequestDisplay, TransmitError, TransmitDisplay
-
+-- stylua: ignore start
 local bytetoB64 = {
   [0]="a","b","c","d","e","f","g","h",
   "i","j","k","l","m","n","o","p",
@@ -59,33 +62,33 @@ local B64tobyte = {
   W = 48,  X = 49,  Y = 50,  Z = 51,["0"]=52,["1"]=53,["2"]=54,["3"]=55,
   ["4"]=56,["5"]=57,["6"]=58,["7"]=59,["8"]=60,["9"]=61,["("]=62,[")"]=63
 }
-
+-- stylua: ignore end
 -- This code is based on the Encode7Bit algorithm from LibCompress
 -- Credit goes to Galmok (galmok@gmail.com)
 local decodeB64Table = {}
 
 function decodeB64(str)
-  local bit8 = decodeB64Table;
-  local decoded_size = 0;
-  local ch;
-  local i = 1;
-  local bitfield_len = 0;
-  local bitfield = 0;
-  local l = #str;
+  local bit8 = decodeB64Table
+  local decoded_size = 0
+  local ch
+  local i = 1
+  local bitfield_len = 0
+  local bitfield = 0
+  local l = #str
   while true do
     if bitfield_len >= 8 then
-      decoded_size = decoded_size + 1;
-      bit8[decoded_size] = string_char(bit_band(bitfield, 255));
-      bitfield = bit_rshift(bitfield, 8);
-      bitfield_len = bitfield_len - 8;
+      decoded_size = decoded_size + 1
+      bit8[decoded_size] = string_char(bit_band(bitfield, 255))
+      bitfield = bit_rshift(bitfield, 8)
+      bitfield_len = bitfield_len - 8
     end
-    ch = B64tobyte[str:sub(i, i)];
-    bitfield = bitfield + bit_lshift(ch or 0, bitfield_len);
-    bitfield_len = bitfield_len + 6;
+    ch = B64tobyte[str:sub(i, i)]
+    bitfield = bitfield + bit_lshift(ch or 0, bitfield_len)
+    bitfield_len = bitfield_len + 6
     if i > l then
-      break;
+      break
     end
-    i = i + 1;
+    i = i + 1
   end
   return table.concat(bit8, "", 1, decoded_size)
 end
@@ -93,7 +96,7 @@ end
 function GenerateUniqueID()
   -- generates a unique random 11 digit number in base64
   local s = {}
-  for i=1,11 do
+  for i = 1, 11 do
     tinsert(s, bytetoB64[math.random(0, 63)])
   end
   return table.concat(s)
@@ -118,15 +121,15 @@ function CompressDisplay(data, version)
   for triggernum, triggerData in ipairs(data.triggers) do
     local trigger, untrigger = triggerData.trigger, triggerData.untrigger
 
-    if (trigger and trigger.type ~= "custom") then
-      trigger.custom = nil;
-      trigger.customDuration = nil;
-      trigger.customName = nil;
-      trigger.customIcon = nil;
-      trigger.customTexture = nil;
-      trigger.customStacks = nil;
-      if (untrigger) then
-        untrigger.custom = nil;
+    if trigger and trigger.type ~= "custom" then
+      trigger.custom = nil
+      trigger.customDuration = nil
+      trigger.customName = nil
+      trigger.customIcon = nil
+      trigger.customTexture = nil
+      trigger.customStacks = nil
+      if untrigger then
+        untrigger.custom = nil
       end
     end
   end
@@ -135,7 +138,7 @@ function CompressDisplay(data, version)
   local non_transmissable_fields = version >= 2000 and Private.non_transmissable_fields_v2000 or Private.non_transmissable_fields
   stripNonTransmissableFields(copiedData, non_transmissable_fields)
   copiedData.tocversion = WeakAuras.BuildInfo
-  return copiedData;
+  return copiedData
 end
 
 local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
@@ -143,47 +146,47 @@ local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
     return
   end
 
-  local newMsg = "";
-  local remaining = msg;
-  local done;
+  local newMsg = ""
+  local remaining = msg
+  local done
   repeat
-    local start, finish, characterName, displayName = remaining:find("%[WeakAuras: ([^%s]+) %- (.*)%]");
-    if(characterName and displayName) then
-      characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
-      displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
-      newMsg = newMsg..remaining:sub(1, start-1);
-      newMsg = newMsg.."|Hgarrmission:weakauras|h|cFF8800FF["..characterName.." |r|cFF8800FF- "..displayName.."]|h|r";
-      remaining = remaining:sub(finish + 1);
+    local start, finish, characterName, displayName = remaining:find("%[WeakAuras: ([^%s]+) %- (.*)%]")
+    if characterName and displayName then
+      characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "")
+      displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "")
+      newMsg = newMsg .. remaining:sub(1, start - 1)
+      newMsg = newMsg .. "|Hgarrmission:weakauras|h|cFF8800FF[" .. characterName .. " |r|cFF8800FF- " .. displayName .. "]|h|r"
+      remaining = remaining:sub(finish + 1)
     else
-      done = true;
+      done = true
     end
-  until(done)
+  until done
   if newMsg ~= "" then
     local trimmedPlayer = Ambiguate(player, "none")
     if event == "CHAT_MSG_WHISPER" and not UnitInRaid(trimmedPlayer) and not UnitInParty(trimmedPlayer) then -- XXX: Need a guild check
       local _, num = BNGetNumFriends()
-      for i=1, num do
+      for i = 1, num do
         if C_BattleNet then -- introduced in 8.2.5 PTR
           local toon = C_BattleNet.GetFriendNumGameAccounts(i)
-          for j=1, toon do
-            local gameAccountInfo = C_BattleNet.GetFriendGameAccountInfo(i, j);
+          for j = 1, toon do
+            local gameAccountInfo = C_BattleNet.GetFriendGameAccountInfo(i, j)
             if gameAccountInfo.characterName == trimmedPlayer and gameAccountInfo.clientProgram == "WoW" then
-              return false, newMsg, player, l, cs, t, flag, channelId, ...; -- Player is a real id friend, allow it
+              return false, newMsg, player, l, cs, t, flag, channelId, ... -- Player is a real id friend, allow it
             end
           end
         else -- keep old method for 8.2 and Classic
           local toon = BNGetNumFriendGameAccounts(i)
-          for j=1, toon do
+          for j = 1, toon do
             local _, rName, rGame = BNGetFriendGameAccountInfo(i, j)
             if rName == trimmedPlayer and rGame == "WoW" then
-              return false, newMsg, player, l, cs, t, flag, channelId, ...; -- Player is a real id friend, allow it
+              return false, newMsg, player, l, cs, t, flag, channelId, ... -- Player is a real id friend, allow it
             end
           end
         end
       end
       return true -- Filter strangers
     else
-      return false, newMsg, player, l, cs, t, flag, channelId, ...;
+      return false, newMsg, player, l, cs, t, flag, channelId, ...
     end
   end
 end
@@ -209,53 +212,53 @@ local LibDeflate = LibStub:GetLibrary("LibDeflate")
 local Serializer = LibStub:GetLibrary("AceSerializer-3.0")
 local LibSerialize = LibStub("LibSerialize")
 local Comm = LibStub:GetLibrary("AceComm-3.0")
-local configForDeflate = {level = 9} -- the biggest bottleneck by far is in transmission and printing; so use maximal compression
+local configForDeflate = { level = 9 } -- the biggest bottleneck by far is in transmission and printing; so use maximal compression
 local configForLS = {
-  errorOnUnserializableType =  false
+  errorOnUnserializableType = false,
 }
 
-local tooltipLoading;
-local receivedData;
+local tooltipLoading
+local receivedData
 
 hooksecurefunc("SetItemRef", function(link, text)
-  if(link == "garrmission:weakauras") then
-    local _, _, characterName, displayName = text:find("|Hgarrmission:weakauras|h|cFF8800FF%[([^%s]+) |r|cFF8800FF%- (.*)%]|h");
-    if(characterName and displayName) then
-      characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
-      displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "");
-      if(IsShiftKeyDown()) then
-        local editbox = GetCurrentKeyBoardFocus();
-        if(editbox) then
-          editbox:Insert("[WeakAuras: "..characterName.." - "..displayName.."]");
+  if link == "garrmission:weakauras" then
+    local _, _, characterName, displayName = text:find("|Hgarrmission:weakauras|h|cFF8800FF%[([^%s]+) |r|cFF8800FF%- (.*)%]|h")
+    if characterName and displayName then
+      characterName = characterName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "")
+      displayName = displayName:gsub("|c[Ff][Ff]......", ""):gsub("|r", "")
+      if IsShiftKeyDown() then
+        local editbox = GetCurrentKeyBoardFocus()
+        if editbox then
+          editbox:Insert("[WeakAuras: " .. characterName .. " - " .. displayName .. "]")
         end
       else
         characterName = characterName:gsub("%.", "")
         ShowTooltip({
-          {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
-          {1, L["Requesting display information from %s ..."]:format(characterName), 1, 0.82, 0},
-          {1, L["Note, that cross realm transmission is possible if you are on the same group"], 1, 0.82, 0}
-        });
-        tooltipLoading = true;
-        receivedData = false;
-        RequestDisplay(characterName, displayName);
+          { 2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1 },
+          { 1, L["Requesting display information from %s ..."]:format(characterName), 1, 0.82, 0 },
+          { 1, L["Note, that cross realm transmission is possible if you are on the same group"], 1, 0.82, 0 },
+        })
+        tooltipLoading = true
+        receivedData = false
+        RequestDisplay(characterName, displayName)
         WeakAuras.timer:ScheduleTimer(function()
-          if (tooltipLoading and not receivedData and ItemRefTooltip:IsVisible()) then
+          if tooltipLoading and not receivedData and ItemRefTooltip:IsVisible() then
             ShowTooltip({
-              {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
-              {1, L["Error not receiving display information from %s"]:format(characterName), 1, 0, 0},
-              {1, L["Note, that cross realm transmission is possible if you are on the same group"], 1, 0.82, 0}
+              { 2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1 },
+              { 1, L["Error not receiving display information from %s"]:format(characterName), 1, 0, 0 },
+              { 1, L["Note, that cross realm transmission is possible if you are on the same group"], 1, 0.82, 0 },
             })
           end
-        end, 5);
+        end, 5)
       end
     else
       ShowTooltip({
-        {1, "WeakAuras", 0.5, 0, 1},
-        {1, L["Malformed WeakAuras link"], 1, 0, 0}
-      });
+        { 1, "WeakAuras", 0.5, 0, 1 },
+        { 1, L["Malformed WeakAuras link"], 1, 0, 0 },
+      })
     end
   end
-end);
+end)
 
 local compressedTablesCache = {}
 
@@ -280,7 +283,7 @@ function TableToString(inTable, forChat)
     end
   end
   local encoded = "!WA:2!"
-  if(forChat) then
+  if forChat then
     encoded = encoded .. LibDeflate:EncodeForPrint(compressed)
   else
     encoded = encoded .. LibDeflate:EncodeForWoWAddonChannel(compressed)
@@ -302,7 +305,7 @@ function StringToTable(inString, fromChat)
   end
 
   local decoded
-  if(fromChat) then
+  if fromChat then
     if encodeVersion > 0 then
       decoded = LibDeflate:DecodeForPrint(encoded)
     else
@@ -322,7 +325,7 @@ function StringToTable(inString, fromChat)
   else
     decompressed, errorMsg = Compresser:Decompress(decoded)
   end
-  if not(decompressed) then
+  if not decompressed then
     return "Error decompressing: " .. errorMsg
   end
 
@@ -332,32 +335,32 @@ function StringToTable(inString, fromChat)
   else
     success, deserialized = LibSerialize:Deserialize(decompressed)
   end
-  if not(success) then
-    return "Error deserializing "..deserialized
+  if not success then
+    return "Error deserializing " .. deserialized
   end
   return deserialized
 end
 Private.StringToTable = StringToTable
 
 function Private.DisplayToString(id, forChat)
-  local data = WeakAuras.GetData(id);
-  if(data) then
+  local data = WeakAuras.GetData(id)
+  if data then
     data.uid = data.uid or GenerateUniqueID()
     -- Check which transmission version we want to use
     local version = 1421
     for child in Private.TraverseSubGroups(data) do -- luacheck: ignore
       version = 2000
-      break;
+      break
     end
-    local transmitData = CompressDisplay(data, version);
+    local transmitData = CompressDisplay(data, version)
     local transmit = {
       m = "d",
       d = transmitData,
       v = version,
-      s = versionString
-    };
-    if(data.controlledChildren) then
-      transmit.c = {};
+      s = versionString,
+    }
+    if data.controlledChildren then
+      transmit.c = {}
       local uids = {}
       local index = 1
       for child in Private.TraverseAllChildren(data) do
@@ -370,13 +373,13 @@ function Private.DisplayToString(id, forChat)
         else
           child.uid = GenerateUniqueID()
         end
-        transmit.c[index] = CompressDisplay(child, version);
+        transmit.c[index] = CompressDisplay(child, version)
         index = index + 1
       end
     end
-    return TableToString(transmit, forChat);
+    return TableToString(transmit, forChat)
   else
-    return "";
+    return ""
   end
 end
 
@@ -420,24 +423,24 @@ function Private.DataToString(id)
 end
 
 function Private.SerializeTable(data)
-  local lines = {"{"}
+  local lines = { "{" }
   recurseStringify(data, 1, lines)
   tinsert(lines, "}")
   return table.concat(lines, "\n")
 end
 
 function ShowTooltip(lines)
-  ItemRefTooltip:Show();
+  ItemRefTooltip:Show()
   if not ItemRefTooltip:IsVisible() then
-    ItemRefTooltip:SetOwner(UIParent, "ANCHOR_PRESERVE");
+    ItemRefTooltip:SetOwner(UIParent, "ANCHOR_PRESERVE")
   end
-  ItemRefTooltip:ClearLines();
+  ItemRefTooltip:ClearLines()
   for i, line in ipairs(lines) do
-    local sides, a1, a2, a3, a4, a5, a6, a7, a8 = unpack(line);
-    if(sides == 1) then
-      ItemRefTooltip:AddLine(a1, a2, a3, a4, a5);
-    elseif(sides == 2) then
-      ItemRefTooltip:AddDoubleLine(a1, a2, a3, a4, a5, a6, a7, a8);
+    local sides, a1, a2, a3, a4, a5, a6, a7, a8 = unpack(line)
+    if sides == 1 then
+      ItemRefTooltip:AddLine(a1, a2, a3, a4, a5)
+    elseif sides == 2 then
+      ItemRefTooltip:AddDoubleLine(a1, a2, a3, a4, a5, a6, a7, a8)
     end
   end
   ItemRefTooltip:Show()
@@ -467,22 +470,22 @@ end
 
 function WeakAuras.Import(inData, target, callbackFunc)
   local data, children, version
-  if type(inData) == 'string' then
+  if type(inData) == "string" then
     -- encoded data
     local received = StringToTable(inData, true)
-    if type(received) == 'string' then
+    if type(received) == "string" then
       -- this is probably an error message from LibDeflate. Display it.
-      ShowTooltip{
-        {1, "WeakAuras", 0.5333, 0, 1},
-        {1, received, 1, 0, 0, 1}
-      }
+      ShowTooltip({
+        { 1, "WeakAuras", 0.5333, 0, 1 },
+        { 1, received, 1, 0, 0, 1 },
+      })
       return nil, received
     elseif received.m == "d" then
       data = received.d
       children = received.c
       version = received.v
     end
-  elseif type(inData.d) == 'table' then
+  elseif type(inData.d) == "table" then
     data = inData.d
     children = inData.c
     version = inData.v
@@ -502,8 +505,8 @@ function WeakAuras.Import(inData, target, callbackFunc)
   end
 
   local status, msg = true, ""
-  if type(target) ~= 'nil' then
-    local uid = type(target) == 'table' and target.uid or target
+  if type(target) ~= "nil" then
+    local uid = type(target) == "table" and target.uid or target
     local targetData = Private.GetDataByUID(uid)
     if not targetData then
       return false, "Invalid update target."
@@ -518,7 +521,7 @@ function WeakAuras.Import(inData, target, callbackFunc)
     end
   end
 
-  tooltipLoading = nil;
+  tooltipLoading = nil
   return ImportNow(data, children, target, nil, callbackFunc)
 end
 
@@ -542,28 +545,28 @@ function RequestDisplay(characterName, displayName)
   safeSenders[Ambiguate(characterName, "none")] = true
   local transmit = {
     m = "dR",
-    d = displayName
-  };
-  local transmitString = TableToString(transmit);
-  crossRealmSendCommMessage("WeakAuras", transmitString, characterName);
+    d = displayName,
+  }
+  local transmitString = TableToString(transmit)
+  crossRealmSendCommMessage("WeakAuras", transmitString, characterName)
 end
 
 function TransmitError(errorMsg, characterName)
   local transmit = {
     m = "dE",
-    eM = errorMsg
-  };
-  crossRealmSendCommMessage("WeakAuras", TableToString(transmit), characterName);
+    eM = errorMsg,
+  }
+  crossRealmSendCommMessage("WeakAuras", TableToString(transmit), characterName)
 end
 
 function TransmitDisplay(id, characterName)
-  local encoded = Private.DisplayToString(id);
-  if(encoded ~= "") then
+  local encoded = Private.DisplayToString(id)
+  if encoded ~= "" then
     crossRealmSendCommMessage("WeakAuras", encoded, characterName, "BULK", function(displayName, done, total)
-      crossRealmSendCommMessage("WeakAurasProg", done.." "..total.." "..displayName, characterName, "ALERT");
-    end, id);
+      crossRealmSendCommMessage("WeakAurasProg", done .. " " .. total .. " " .. displayName, characterName, "ALERT")
+    end, id)
   else
-    TransmitError("dne", characterName);
+    TransmitError("dne", characterName)
   end
 end
 
@@ -581,17 +584,17 @@ Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sende
     end
   end
   if tooltipLoading and ItemRefTooltip:IsVisible() and safeSenders[sender] then
-    receivedData = true;
+    receivedData = true
     local done, total, displayName = strsplit(" ", message, 3)
     done = tonumber(done)
     total = tonumber(total)
-    if(done and total and total >= done) then
+    if done and total and total >= done then
       local red = min(255, (1 - done / total) * 511)
       local green = min(255, (done / total) * 511)
       ShowTooltip({
-        {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
-        {1, L["Receiving display information"]:format(sender), 1, 0.82, 0},
-        {2, " ", ("|cFF%2x%2x00"):format(red, green)..done.."|cFF00FF00/"..total}
+        { 2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1 },
+        { 1, L["Receiving display information"]:format(sender), 1, 0.82, 0 },
+        { 2, " ", ("|cFF%2x%2x00"):format(red, green) .. done .. "|cFF00FF00/" .. total },
       })
     end
   end
@@ -626,10 +629,10 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
     return
   end
 
-  local received = StringToTable(message);
-  if(received and type(received) == "table" and received.m) then
-    if(received.m == "d") then
-      tooltipLoading = nil;
+  local received = StringToTable(message)
+  if received and type(received) == "table" and received.m then
+    if received.m == "d" then
+      tooltipLoading = nil
       local data, children, version = received.d, received.c, received.v
       WeakAuras.PreAdd(data)
       if children then
@@ -649,28 +652,28 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
 
       ItemRefTooltip:Hide()
       ImportNow(data, children, nil, sender)
-    elseif(received.m == "dR") then
-      if(Private.linked and Private.linked[received.d] and Private.linked[received.d] > GetTime() - linkValidityDuration) then
-        TransmitDisplay(received.d, sender);
+    elseif received.m == "dR" then
+      if Private.linked and Private.linked[received.d] and Private.linked[received.d] > GetTime() - linkValidityDuration then
+        TransmitDisplay(received.d, sender)
       end
-    elseif(received.m == "dE") then
-      tooltipLoading = nil;
-      if(received.eM == "dne") then
+    elseif received.m == "dE" then
+      tooltipLoading = nil
+      if received.eM == "dne" then
         ShowTooltip({
-          {1, "WeakAuras", 0.5333, 0, 1},
-          {1, L["Requested display does not exist"], 1, 0, 0}
-        });
-      elseif(received.eM == "na") then
+          { 1, "WeakAuras", 0.5333, 0, 1 },
+          { 1, L["Requested display does not exist"], 1, 0, 0 },
+        })
+      elseif received.eM == "na" then
         ShowTooltip({
-          {1, "WeakAuras", 0.5333, 0, 1},
-          {1, L["Requested display not authorized"], 1, 0, 0}
-        });
+          { 1, "WeakAuras", 0.5333, 0, 1 },
+          { 1, L["Requested display not authorized"], 1, 0, 0 },
+        })
       end
     end
-  elseif(ItemRefTooltip.WeakAuras_Tooltip_Thumbnail and ItemRefTooltip.WeakAuras_Tooltip_Thumbnail:IsVisible()) then
+  elseif ItemRefTooltip.WeakAuras_Tooltip_Thumbnail and ItemRefTooltip.WeakAuras_Tooltip_Thumbnail:IsVisible() then
     ShowTooltip({
-      {1, "WeakAuras", 0.5333, 0, 1},
-      {1, L["Transmission error"], 1, 0, 0}
-    });
+      { 1, "WeakAuras", 0.5333, 0, 1 },
+      { 1, L["Transmission error"], 1, 0, 0 },
+    })
   end
-end);
+end)
