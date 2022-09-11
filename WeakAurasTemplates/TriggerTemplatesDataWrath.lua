@@ -83,13 +83,13 @@ templates.class.WARRIOR = {
     [3] = {
       title = L["Abilities"],
       args = {
-        { spell = 72, type = "ability", debuff = true, requiresTarget = true, form = 2}, -- Shield Bash
+        { spell = 72, type = "ability", debuff = true, requiresTarget = true, form = {1, 2}}, -- Shield Bash
         { spell = 78, type = "ability", queued = true}, -- Heroic Strike
         { spell = 100, type = "ability", requiresTarget = true, form = 1}, -- Charge
         { spell = 355, type = "ability", debuff = true, requiresTarget = true, form = 2}, -- Taunt
         { spell = 469, type = "ability", buff = true}, -- Commanding Shout
         { spell = 676, type = "ability", debuff = true, requiresTarget = true, form = 2}, -- Disarm
-        { spell = 694, type = "ability", debuff = true, requiresTarget = true, form = 1}, -- Mocking Blow
+        { spell = 694, type = "ability", debuff = true, requiresTarget = true, form = {1, 2}}, -- Mocking Blow
         { spell = 772, type = "ability", debuff = true, requiresTarget = true}, -- Rend
         { spell = 845, type = "ability", queued = true}, -- Cleave
         { spell = 871, type = "ability", buff = true, form = 2}, -- Shield Wall
@@ -104,11 +104,11 @@ templates.class.WARRIOR = {
         { spell = 3411, type = "ability", requiresTarget = true, form = 2}, -- Intervene
         { spell = 5246, type = "ability", debuff = true, requiresTarget = true}, -- Intimidating Shout
         { spell = 5308, type = "ability", requiresTarget = true, form = {1, 3}}, -- Execute
-        { spell = 6343, type = "ability", debuff = true, form = 1}, -- Thunder Clap
+        { spell = 6343, type = "ability", debuff = true, form = {1, 2}}, -- Thunder Clap
         { spell = 6552, type = "ability", requiresTarget = true, form = 3}, -- Pummel
         { spell = 6572, type = "ability", requiresTarget = true, usable = true, form = 2}, -- Revenge
         { spell = 6673, type = "ability", buff = true}, -- Battle Shout
-        { spell = 7384, type = "ability", requiresTarget = true, form = 1}, -- Overpower
+        { spell = 7384, type = "ability", requiresTarget = true, buff = true, buffId = 60503, form = 1}, -- Overpower
         { spell = 7386, type = "ability", requiresTarget = true, debuff = true}, -- Sunder Armor
         { spell = 12323, type = "ability", debuff = true, talent = 46}, -- Piercing Howl
         { spell = 12328, type = "ability", buff = true, talent = 53}, -- Sweeping Strikes
@@ -116,7 +116,7 @@ templates.class.WARRIOR = {
         { spell = 12809, type = "ability", requiresTarget = true, debuff = true, talent = 94}, -- Concussion Blow
         { spell = 12975, type = "ability", buff = true, talent = 86}, -- Last Stand
         { spell = 12292, type = "ability", buff = true, talent = 13}, -- Death Wish
-        { spell = 18499, type = "ability", buff = true, form = 3}, -- Berserker Rage
+        { spell = 18499, type = "ability", buff = true}, -- Berserker Rage
         { spell = 20230, type = "ability", buff = true, form = 1}, -- Retaliation
         { spell = 20252, type = "ability", requiresTarget = true, form = 3}, -- Intercept
         { spell = 20243, type = "ability", requiresTarget = true, talent = 102}, -- Devastate
