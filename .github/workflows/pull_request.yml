@@ -7,15 +7,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 200
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Install and run Luacheck
         uses: nebularg/actions-luacheck@v1
         with:
           args: "--no-color -q"
           annotate: warning
+
+      - uses: JohnnyMorganz/stylua-action@1.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --check .
 
       - name: Update Build Date
         run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
