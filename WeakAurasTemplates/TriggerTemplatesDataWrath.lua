@@ -1068,14 +1068,14 @@ end
 -- Hardcoded race templates
 -------------------------------
 
--- Every Man for Himself
-tinsert(templates.race.Human, { spell = 20600, type = "ability" });
+-- Will of Survive
+tinsert(templates.race.Human, { spell = 59752, type = "ability" });
 -- Stoneform
-tinsert(templates.race.Dwarf, { spell = 20594, type = "ability", titleSuffix = L["cooldown"]});
+tinsert(templates.race.Dwarf, { spell = 20594, type = "ability", buff = true, titleSuffix = L["cooldown"]});
 tinsert(templates.race.Dwarf, { spell = 20594, type = "buff", unit = "player", titleSuffix = L["buff"]});
 -- Shadow Meld
-tinsert(templates.race.NightElf, { spell = 20580, type = "ability", titleSuffix = L["cooldown"]});
-tinsert(templates.race.NightElf, { spell = 20580, type = "buff", titleSuffix = L["buff"]});
+tinsert(templates.race.NightElf, { spell = 58984, type = "ability", buff = true, titleSuffix = L["cooldown"]});
+tinsert(templates.race.NightElf, { spell = 58984, type = "buff", titleSuffix = L["buff"]});
 -- Escape Artist
 tinsert(templates.race.Gnome, { spell = 20589, type = "ability" });
 
@@ -1086,21 +1086,19 @@ tinsert(templates.race.Orc, { spell = 20572, type = "buff", unit = "player", tit
 tinsert(templates.race.Scourge, { spell = 20577, type = "ability", titleSuffix = L["cooldown"]});
 tinsert(templates.race.Scourge, { spell = 20578, type = "buff", unit = "player", titleSuffix = L["buff"]});
 -- Will of the Forsaken
-tinsert(templates.race.Scourge, { spell = 7744, type = "ability", titleSuffix = L["cooldown"]});
+tinsert(templates.race.Scourge, { spell = 7744, type = "ability", buff = true, titleSuffix = L["cooldown"]});
 tinsert(templates.race.Scourge, { spell = 7744, type = "buff", unit = "player", titleSuffix = L["buff"]});
 -- War Stomp
-tinsert(templates.race.Tauren, { spell = 20549, type = "ability", titleSuffix = L["cooldown"]});
+tinsert(templates.race.Tauren, { spell = 20549, type = "ability", debuff = true, titleSuffix = L["cooldown"]});
 tinsert(templates.race.Tauren, { spell = 20549, type = "debuff", titleSuffix = L["debuff"]});
 --Beserking
-tinsert(templates.race.Troll, { spell = 26297, type = "ability", titleSuffix = L["Rogue cooldown"]});
-tinsert(templates.race.Troll, { spell = 26296, type = "ability", titleSuffix = L["Warrior cooldown"]});
-tinsert(templates.race.Troll, { spell = 20554, type = "ability", titleSuffix = L["Other cooldown"]});
-tinsert(templates.race.Troll, { spell = 26635, type = "buff", unit = "player", titleSuffix = L["buff"]});
+tinsert(templates.race.Troll, { spell = 26297, type = "ability", buff = true, titleSuffix = L["cooldown"]});
+tinsert(templates.race.Troll, { spell = 26297, type = "buff", unit = "player", titleSuffix = L["buff"]});
 -- Arcane Torrent
-tinsert(templates.race.BloodElf, { spell = 69179, type = "ability", titleSuffix = L["cooldown"]}); -- TODO check this for BCC
+tinsert(templates.race.BloodElf, { spell = 28730, type = "ability", debuff = true, titleSuffix = L["cooldown"]});
 -- Gift of the Naaru
-tinsert(templates.race.Draenei, { spell = 28880, type = "ability", titleSuffix = L["cooldown"]}); -- TODO check this for BCC
-tinsert(templates.race.Draenei, { spell = 28880, type = "buff", unit = "player", titleSuffix = L["buff"]}); -- TODO check this for BCC
+tinsert(templates.race.Draenei, { spell = 28880, type = "ability", buff = true, titleSuffix = L["cooldown"]});
+tinsert(templates.race.Draenei, { spell = 28880, type = "buff", unit = "player", titleSuffix = L["buff"]});
 
 ------------------------------
 -- Helper code for options
