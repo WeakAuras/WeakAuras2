@@ -791,6 +791,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           hidden = function() return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] ~= false; end,
           values = values,
           control = arg.multiUseControlWhenFalse and arg.control,
+          multiTristate = arg.multiTristate,
           get = function(info, v)
             if(trigger["use_"..realname] == false and trigger[realname] and trigger[realname].multi) then
               return trigger[realname].multi[v];
