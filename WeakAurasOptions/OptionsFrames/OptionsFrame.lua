@@ -153,7 +153,11 @@ function OptionsPrivate.CreateFrame()
   frame:EnableMouse(true)
   frame:SetMovable(true)
   frame:SetResizable(true)
-  -- frame:SetMinResize(minWidth, minHeight)
+  if frame.SetResizeBounds then
+    frame:SetResizeBounds(minWidth, minHeight)
+  else
+    frame:SetMinResize(minWidth, minHeight)
+  end
   frame:SetFrameStrata("DIALOG")
   frame.window = "default"
 
