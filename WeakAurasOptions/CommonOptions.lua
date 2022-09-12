@@ -948,11 +948,24 @@ local function CreateSetAll(subOption, getAll)
 
       if (childOption and not disabledOrHiddenChild(childOptionTable, info)) then
         for i=#childOptionTable,0,-1 do
-          if(childOptionTable[i].set) then
-            if (childOptionTable[i].type == "multiselect") then
-              childOptionTable[i].set(info, ..., not before);
+          local optionTable = childOptionTable[i]
+          if(optionTable.set) then
+            if (optionTable.type == "multiselect") then
+              local newValue
+              if optionTable.multiTristate then
+                if before == true then
+                  newValue = false
+                elseif before == false then
+                  newValue = nil
+                elseif before == nil then
+                  newValue = true
+                end
+              else
+                newValue = not before
+              end
+              optionTable.set(info, ..., newValue)
             else
-              childOptionTable[i].set(info, ...);
+              optionTable.set(info, ...);
             end
             break;
           end
