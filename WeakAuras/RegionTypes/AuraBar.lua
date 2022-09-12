@@ -999,7 +999,11 @@ local function create(parent)
   region.regionType = "aurabar"
   region:SetMovable(true);
   region:SetResizable(true);
-  -- region:SetMinResize(1, 1);
+  if region.SetResizeBounds then
+    region:SetResizeBounds(1, 1)
+  else
+    region:SetMinResize(1, 1)
+  end
 
   -- Create statusbar (inherit prototype)
   local bar = CreateFrame("Frame", nil, region);
