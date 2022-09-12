@@ -2140,7 +2140,7 @@ Private.event_prototypes = {
            standing = GetText("FACTION_STANDING_LABEL"..standingId, UnitSex("player"))
         end
       ]=]
-      if WeakAuras.IsRetail() then
+      if WeakAuras.IsShadowlands() then
         ret = ret .. [=[
           local friendshipRank, friendshipMaxRank
           if factionID then
@@ -2154,6 +2154,43 @@ Private.event_prototypes = {
                 bottomValue, topValue, earnedValue = 0, 1, 1
               end
               friendshipRank, friendshipMaxRank = GetFriendshipReputationRanks(factionID)
+            end
+
+            if C_Reputation.IsFactionParagon(factionID) then
+              local currentValue, threshold, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
+              bottomValue, topValue = 0, threshold
+              earnedValue = currentValue %% threshold
+              if hasRewardPending then
+                earnedValue = earnedValue + threshold
+              end
+            end
+          end
+        ]=]
+      elseif WeakAuras.IsDragonflight() then
+        ret = ret .. [=[
+          local friendshipRank, friendshipMaxRank
+          if factionID then
+            local repInfo = factionID and C_GossipInfo.GetFriendshipReputation(factionID)
+            if repInfo and repInfo.friendshipFactionID > 0 then
+              standing = repInfo.reaction
+              if repInfo.nextThreshold then
+                bottomValue, topValue, earnedValue = repInfo.reactionThreshold, repInfo.nextThreshold, repInfo.standing
+              else
+                -- max rank, make it look like a full bar
+                bottomValue, topValue, earnedValue = 0, 1, 1
+              end
+              local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID)
+              if rankInfo.maxLevel > 0 then
+                friendshipRank, friendshipMaxRank = rankInfo.currentLevel, rankInfo.maxLevel
+              else
+                friendshipRank, friendshipMaxRank = 1, 1
+              end
+            elseif C_Reputation.IsMajorFaction(factionID) then
+              local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID)
+              local isCapped = C_MajorFactions.HasMaximumRenown(factionID)
+              bottomValue, topValue = 0, majorFactionData.renownLevelThreshold
+              earnedValue = isCapped and majorFactionData.renownLevelThreshold or majorFactionData.renownReputationEarned or 0
+              standing = RENOWN_LEVEL_LABEL .. majorFactionData.renownLevel
             end
 
             if C_Reputation.IsFactionParagon(factionID) then
