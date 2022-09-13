@@ -780,6 +780,13 @@ local function replaceImageFuncs(intable, data, subOption)
   recurse(intable);
 end
 
+local concatenableTypes = {
+  string = true,
+  number = true
+}
+local function isConcatenableValue(value)
+  return value and concatenableTypes[type(value)]
+end
 local function replaceValuesFuncs(intable, data, subOption)
   local function valuesAll(info)
     local combinedValues = {};
@@ -810,7 +817,9 @@ local function replaceValuesFuncs(intable, data, subOption)
             -- Already known key/value pair
             else
               if (combinedValues[k]) then
-                combinedValues[k] = combinedValues[k] .. "/" .. v;
+                if isConcatenableValue(k) and isConcatenableValue(v) then
+                  combinedValues[k] = combinedValues[k] .. "/" .. v;
+                end
               else
                 combinedValues[k] = v;
               end
