@@ -909,6 +909,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
     end
     function region:Expand()
       if data.anchorFrameType == "SELECTFRAME"
+      or data.anchorFrameType == "ACTIONBUTTON"
       or data.anchorFrameType == "CUSTOM"
       or data.anchorFrameType == "UNITFRAME"
       or data.anchorFrameType == "NAMEPLATE"

@@ -1064,6 +1064,7 @@ Private.anchor_frame_types = {
   PRD = L["Personal Resource Display"],
   MOUSE = L["Mouse Cursor"],
   SELECTFRAME = L["Select Frame"],
+  ACTIONBUTTON = L["Action Button"],
   NAMEPLATE = L["Nameplates"],
   UNITFRAME = L["Unit Frames"],
   CUSTOM = L["Custom"]
@@ -1074,6 +1075,7 @@ Private.anchor_frame_types_group = {
   PRD = L["Personal Resource Display"],
   MOUSE = L["Mouse Cursor"],
   SELECTFRAME = L["Select Frame"],
+  ACTIONBUTTON = L["Action Button"],
   CUSTOM = L["Custom"]
 }
 

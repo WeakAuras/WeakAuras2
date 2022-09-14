@@ -3071,6 +3071,25 @@ function Private.ReleaseClone(id, cloneId, regionType)
   end
 end
 
+function WeakAuras.GetActionInfoFromRegion(region)
+  -- spell
+  local spell = region.state.spellId or region.state.spellname or region.state.spellName
+  if type(spell) == "string" then
+    spell = select(7, GetSpellInfo(spell))
+  end
+  if tonumber(spell) then
+    return tonumber(spell), "spell"
+  end
+  -- item
+  local item = region.state.itemId or region.state.itemName or region.state.itemname or region.state.trigger.itemName
+  if type(item) == "string" then
+    item = GetItemInfoInstant(item)
+  end
+  if tonumber(item) then
+    return tonumber(item), "item"
+  end
+end
+
 function Private.HandleChatAction(message_type, message, message_dest, message_dest_isunit, message_channel, r, g, b, region, customFunc, when, formatters, voice)
   local useHiddenStates = when == "finish"
   if (message:find('%%')) then
@@ -3268,6 +3287,7 @@ function Private.HandleGlowAction(actions, region)
       and region.state.unit
     )
     or (actions.glow_frame_type == "FRAMESELECTOR" and actions.glow_frame)
+    or actions.glow_frame_type == "ACTIONBUTTON"
   )
   then
     local glow_frame, should_glow_frame
@@ -3288,6 +3308,17 @@ function Private.HandleGlowAction(actions, region)
     elseif actions.glow_frame_type == "NAMEPLATE" and region.state.unit then
       glow_frame = WeakAuras.GetUnitNameplate(region.state.unit)
       should_glow_frame = true
+    elseif actions.glow_frame_type == "ACTIONBUTTON" then
+      local actionId, actionType = WeakAuras.GetActionInfoFromRegion(region)
+      if actionId and actionType then
+        for _, frame in ipairs(LGF.GetActionButtonsById(actionId, actionType)) do
+          if frame and frame:IsVisible() then
+            glow_frame = frame
+            should_glow_frame = true
+            break
+          end
+        end
+      end
     end
 
     if should_glow_frame then
@@ -5139,6 +5170,20 @@ local function GetAnchorFrame(data, region, parent)
       postponeAnchor(id);
       return parent;
     end
+  end
+
+  if (anchorFrameType == "ACTIONBUTTON") then
+    if not region.state then return end
+    local actionId, actionType = WeakAuras.GetActionInfoFromRegion(region)
+    if actionId and actionType then
+      for _, frame in ipairs(LGF.GetActionButtonsById(actionId, actionType)) do
+        if frame and frame:IsVisible() then
+          return frame
+        end
+      end
+    end
+    postponeAnchor(id)
+    return HiddenFrames
   end
 
   if (anchorFrameType == "CUSTOM" and region.customAnchorFunc) then
