@@ -3206,6 +3206,8 @@ end
 
 local glow_frame_monitor
 local anchor_unitframe_monitor
+local glow_actionbutton_monitor
+local anchor_actionbutton_monitor
 Private.dyngroup_unitframe_monitor = {}
 do
   local function frame_monitor_callback(event, frame, unit)
@@ -3275,8 +3277,64 @@ do
 
   end
 
+  local function actionbar_slot_callback()
+    if type(anchor_actionbutton_monitor) == "table" then
+      for region, data in pairs(anchor_actionbutton_monitor) do
+        if region.state then
+          local new_frame = WeakAuras.HiddenFrames
+          local actionId, actionType = WeakAuras.GetActionInfoFromRegion(region)
+          if actionId and actionType then
+            for _, frame in ipairs(LGF.GetActionButtonsById(actionId, actionType)) do
+              if frame and frame:IsVisible() then
+                new_frame = frame
+                break
+              end
+            end
+          end
+          if new_frame and new_frame ~= data.frame then
+            Private.AnchorFrame(data.data, region, data.parent)
+          end
+        end
+      end
+    end
+    if type(glow_actionbutton_monitor) == "table" then
+      for region, data in pairs(glow_actionbutton_monitor) do
+        if region.state then
+          local new_frame = WeakAuras.HiddenFrames
+          local actionId, actionType = WeakAuras.GetActionInfoFromRegion(region)
+          if actionId and actionType then
+            for _, frame in ipairs(LGF.GetActionButtonsById(actionId, actionType)) do
+              if frame and frame:IsVisible() then
+                new_frame = frame
+                break
+              end
+            end
+          end
+          if new_frame and new_frame ~= data.frame then
+            local id = region.id .. (region.cloneId or "")
+            -- remove previous glow
+            if data.frame then
+              actionGlowStop(data.actions, data.frame, id)
+            end
+            -- apply the glow to new_frame
+            data.frame = new_frame
+            actionGlowStart(data.actions, data.frame, id)
+            -- update hidefunc
+            local region = region
+            region.active_glows_hidefunc = region.active_glows_hidefunc or {}
+            region.active_glows_hidefunc[data.frame] = function()
+              actionGlowStop(data.actions, data.frame, id)
+              glow_actionbutton_monitor[region] = nil
+            end
+          end
+        end
+      end
+    end
+  end
+
   LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_UPDATE", frame_monitor_callback)
   LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_REMOVED", frame_monitor_callback)
+  LGF.RegisterCallback("WeakAuras", "ACTIONBAR_SLOT_CHANGED", actionbar_slot_callback)
 end
 
 function Private.HandleGlowAction(actions, region)
@@ -3314,11 +3372,11 @@ function Private.HandleGlowAction(actions, region)
         for _, frame in ipairs(LGF.GetActionButtonsById(actionId, actionType)) do
           if frame and frame:IsVisible() then
             glow_frame = frame
-            should_glow_frame = true
             break
           end
         end
       end
+      should_glow_frame = true
     end
 
     if should_glow_frame then
@@ -3340,6 +3398,11 @@ function Private.HandleGlowAction(actions, region)
               actionGlowStop(actions, glow_frame, id)
               glow_frame_monitor[region] = nil
             end
+          elseif actions.glow_frame_type == "ACTIONBUTTON" then
+            region.active_glows_hidefunc[glow_frame] = function()
+              actionGlowStop(actions, glow_frame, id)
+              glow_actionbutton_monitor[region] = nil
+            end
           else
             region.active_glows_hidefunc[glow_frame] = function()
               actionGlowStop(actions, glow_frame, id)
@@ -3349,6 +3412,12 @@ function Private.HandleGlowAction(actions, region)
         if actions.glow_frame_type == "UNITFRAME" then
           glow_frame_monitor = glow_frame_monitor or {}
           glow_frame_monitor[region] = {
+            actions = actions,
+            frame = glow_frame
+          }
+        elseif actions.glow_frame_type == "ACTIONBUTTON" then
+          glow_actionbutton_monitor = glow_actionbutton_monitor or {}
+          glow_actionbutton_monitor[region] = {
             actions = actions,
             frame = glow_frame
           }
@@ -3419,8 +3488,13 @@ function Private.PerformActions(data, when, region)
     end
     wipe(region.active_glows_hidefunc)
   end
-  if when == "finish" and type(anchor_unitframe_monitor) == "table" then
-    anchor_unitframe_monitor[region] = nil
+  if when == "finish" then
+    if type(anchor_unitframe_monitor) == "table" then
+      anchor_unitframe_monitor[region] = nil
+    end
+    if type(glow_actionbutton_monitor) == "table" then
+      glow_actionbutton_monitor[region] = nil
+    end
   end
 end
 
@@ -5175,15 +5249,22 @@ local function GetAnchorFrame(data, region, parent)
   if (anchorFrameType == "ACTIONBUTTON") then
     if not region.state then return end
     local actionId, actionType = WeakAuras.GetActionInfoFromRegion(region)
+    local anchorFrame = HiddenFrames
     if actionId and actionType then
       for _, frame in ipairs(LGF.GetActionButtonsById(actionId, actionType)) do
         if frame and frame:IsVisible() then
-          return frame
+          anchorFrame = frame
+          break
         end
       end
     end
-    postponeAnchor(id)
-    return HiddenFrames
+    anchor_actionbutton_monitor = anchor_actionbutton_monitor or {}
+    anchor_actionbutton_monitor[region] = {
+      data = data,
+      parent = parent,
+      frame = anchorFrame
+    }
+    return anchorFrame
   end
 
   if (anchorFrameType == "CUSTOM" and region.customAnchorFunc) then
