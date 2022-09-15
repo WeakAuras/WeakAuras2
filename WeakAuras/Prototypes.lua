@@ -7993,7 +7993,7 @@ Private.event_prototypes = {
               for i = 1, stageTotal do
                 stagesData[i] = {
                   start = lastFinish,
-                  finish = lastFinish + GetEmpowerStageDuration(i - 1) / 1000
+                  finish = lastFinish + GetUnitEmpowerStageDuration(unit, i - 1) / 1000
                 }
                 lastFinish = stagesData[i].finish
                 if startTime / 1000 + lastFinish < GetTime() then
