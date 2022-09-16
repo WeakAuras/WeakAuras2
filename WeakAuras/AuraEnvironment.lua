@@ -140,6 +140,7 @@ WeakAuras.GetUnitNameplate =  function(unit)
     return LGF.GetUnitNameplate(unit)
   end
 end
+WeakAuras.GetActionButtonsById = LGF.GetActionButtonsById
 
 local blockedFunctions = {
   -- Lua functions that may allow breaking out of the environment

@@ -5,6 +5,8 @@ local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
 
+local LGF = LibStub("LibGetFrame-1.0")
+
 WeakAuras.regionPrototype = {};
 
 
@@ -640,6 +642,58 @@ local function SetProgressValue(region, value, total)
   region:SetValue(value - adjustMin, max - adjustMin);
 end
 
+local keybindingMonitor = CreateFrame("Frame");
+local regionsWithKeybinding = {}
+WeakAuras.frames["Keybinding Monitor Frame"] = keybindingMonitor
+
+local function UpdateKeybindings()
+  if WeakAuras.IsOptionsOpen() then
+    return
+  end
+  Private.StartProfileSystem("update keybinding")
+  for region in pairs(regionsWithKeybinding) do
+    Private.StartProfileAura(region.id);
+    region.subRegionEvents:Notify("UpdateKeybinding")
+    Private.StopProfileAura(region.id);
+  end
+  Private.StopProfileSystem("update keybinding")
+end
+
+local function RegisterForKeybinding(region)
+  -- Check for a UpdateKeybinding function
+  local hasKeybinding = false
+  if (region.subRegions) then
+    for index, subRegion in pairs(region.subRegions) do
+      if subRegion.UpdateKeybinding then
+        hasKeybinding = true
+        break
+      end
+    end
+  end
+
+  if not hasKeybinding then
+    return
+  end
+
+  regionsWithKeybinding[region] = true
+  if not keybindingMonitor.registered then
+    keybindingMonitor:RegisterEvent("UPDATE_BINDINGS")
+    LGF.RegisterCallback("WeakAuras", "ACTIONBAR_SLOT_CHANGED", UpdateKeybindings)
+    keybindingMonitor.registered = true
+  end
+end
+
+local function UnRegisterForKeybinding(region)
+  regionsWithKeybinding[region] = nil
+  if not next(regionsWithKeybinding) then
+    keybindingMonitor:UnregisterEvent("UPDATE_BINDINGS")
+    LGF.UnregisterCallback("WeakAuras", "ACTIONBAR_SLOT_CHANGED")
+    keybindingMonitor.registered = false
+  end
+end
+
+keybindingMonitor:SetScript("OnEvent", UpdateKeybindings);
+
 local regionsForFrameTick = {}
 
 local frameForFrameTick = CreateFrame("Frame");
@@ -845,6 +899,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       end
 
       UnRegisterForFrameTick(region)
+      UnRegisterForKeybinding(region)
       region:UpdateTimerTick()
     end
     function region:Expand()
@@ -881,6 +936,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       parent:ActivateChild(data.id, cloneId);
 
       RegisterForFrameTick(region)
+      RegisterForKeybinding(region)
       region:UpdateTimerTick()
     end
   elseif not(data.controlledChildren) then
@@ -905,6 +961,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       end
 
       UnRegisterForFrameTick(region)
+      UnRegisterForKeybinding(region)
       region:UpdateTimerTick()
     end
     function region:Expand()
@@ -954,6 +1011,7 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
       end
 
       RegisterForFrameTick(region)
+      RegisterForKeybinding(region)
       region:UpdateTimerTick()
     end
   end

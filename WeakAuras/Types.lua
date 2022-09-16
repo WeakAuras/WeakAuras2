@@ -115,6 +115,11 @@ Private.round_types = {
   round = L["Round"]
 }
 
+Private.keybinding_types = {
+  spell = L["Spell"],
+  item = L["Item"]
+}
+
 Private.unit_color_types = {
   none = L["None"],
   class = L["Class"]
@@ -777,6 +782,48 @@ Private.format_types = {
         end
 
         return numberToStringFunc(result / WeakAuras.CalculatedGcdDuration())
+      end
+    end
+  },
+  Keybinding = {
+    display = L["Keybinding"],
+    AddOptions = function(symbol, hidden, addOption, get)
+      addOption(symbol .. "_type", {
+        type = "select",
+        name = L["Type"],
+        width = WeakAuras.normalWidth,
+        values = Private.keybinding_types,
+        hidden = hidden
+      })
+    end,
+    CreateFormatter = function(symbol, get)
+      local actionType = get(symbol .. "_type", false)
+      return function(actionId, state)
+        if actionType == "spell" then
+          if type(actionId) == "string" then
+            actionId = select(7, GetSpellInfo(actionId))
+          end
+          if tonumber(actionId) then
+            actionId = tonumber(actionId)
+          end
+        elseif actionType == "item" then
+          if type(actionId) == "string" then
+            actionId = GetItemInfoInstant(actionId)
+          end
+          if tonumber(actionId) then
+            actionId = tonumber(actionId)
+          end
+        end
+        if actionId and actionType then
+          for _, frame in ipairs(WeakAuras.GetActionButtonsById(actionId, actionType)) do
+            if frame and frame.IsVisible and frame:IsVisible() and frame.commandName then
+              local key = GetBindingKey(frame.commandName)
+              if key then
+                return key
+              end
+            end
+          end
+        end
       end
     end
   }

@@ -3332,9 +3332,9 @@ do
     end
   end
 
-  LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_UPDATE", frame_monitor_callback)
-  LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_REMOVED", frame_monitor_callback)
-  LGF.RegisterCallback("WeakAuras", "ACTIONBAR_SLOT_CHANGED", actionbar_slot_callback)
+  LGF.RegisterCallback("WeakAuras_FRAME_UNIT_UPDATE", "FRAME_UNIT_UPDATE", frame_monitor_callback)
+  LGF.RegisterCallback("WeakAuras_FRAME_UNIT_REMOVED", "FRAME_UNIT_REMOVED", frame_monitor_callback)
+  LGF.RegisterCallback("WeakAuras_ACTIONBAR_SLOT_CHANGED", "ACTIONBAR_SLOT_CHANGED", actionbar_slot_callback)
 end
 
 function Private.HandleGlowAction(actions, region)
