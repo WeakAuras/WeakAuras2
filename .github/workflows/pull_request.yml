@@ -18,7 +18,7 @@ jobs:
           args: "--no-color -q"
           annotate: warning
 
-      - uses: JohnnyMorganz/stylua-action@1.0.0
+      - uses: JohnnyMorganz/stylua-action@1.1.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --check . --output-format=summary
