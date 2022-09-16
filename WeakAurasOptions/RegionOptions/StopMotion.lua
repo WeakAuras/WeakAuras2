@@ -21,7 +21,8 @@ local function setTextureFunc(textureWidget, texturePath, textureName)
     else
       local rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight = texturePath:match(pattern2)
       if rows then
-        rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight = tonumber(rows), tonumber(columns), tonumber(frames), tonumber(frameWidth), tonumber(frameHeight), tonumber(fileWidth), tonumber(fileHeight)
+        rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight =
+          tonumber(rows), tonumber(columns), tonumber(frames), tonumber(frameWidth), tonumber(frameHeight), tonumber(fileWidth), tonumber(fileHeight)
         local frameScaleW = 1
         local frameScaleH = 1
         if fileWidth > 0 and frameWidth > 0 then

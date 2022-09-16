@@ -56,7 +56,13 @@ local function CountNames(data, triggernum, name)
 end
 
 local function IsGroupTrigger(trigger)
-  return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party" or trigger.unit == "boss" or trigger.unit == "nameplate" or trigger.unit == "arena" or trigger.unit == "multi"
+  return trigger.unit == "group"
+    or trigger.unit == "raid"
+    or trigger.unit == "party"
+    or trigger.unit == "boss"
+    or trigger.unit == "nameplate"
+    or trigger.unit == "arena"
+    or trigger.unit == "multi"
 end
 
 local function IsSingleMissing(trigger)
@@ -84,7 +90,13 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
     local hiddenFunction
     if isIgnoreList then
       hiddenFunction = function()
-        return not (trigger.type == "aura2" and trigger[useKey] and (i == 1 or trigger[optionKey] and trigger[optionKey][i - 1]) and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger))
+        return not (
+            trigger.type == "aura2"
+            and trigger[useKey]
+            and (i == 1 or trigger[optionKey] and trigger[optionKey][i - 1])
+            and trigger.unit ~= "multi"
+            and CanHaveMatchCheck(trigger)
+          )
       end
     else
       hiddenFunction = function()
@@ -963,7 +975,12 @@ local function GetBuffTriggerOptions(data, triggernum)
       order = 66.5,
       width = WeakAuras.normalWidth,
       hidden = function()
-        return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useActualSpec and WeakAuras.IsRetail())
+        return not (
+            trigger.type == "aura2"
+            and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+            and not trigger.useActualSpec
+            and WeakAuras.IsRetail()
+          )
       end,
     },
 
@@ -982,7 +999,8 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Group Role"],
       values = OptionsPrivate.Private.role_types,
       hidden = function()
-        return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useGroupRole) or WeakAuras.IsClassicOrBCC()
+        return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useGroupRole)
+          or WeakAuras.IsClassicOrBCC()
       end,
       order = 67.2,
     },
@@ -992,7 +1010,8 @@ local function GetBuffTriggerOptions(data, triggernum)
       order = 67.2,
       width = WeakAuras.normalWidth,
       hidden = function()
-        return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useGroupRole) or WeakAuras.IsClassicOrBCC()
+        return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useGroupRole)
+          or WeakAuras.IsClassicOrBCC()
       end,
     },
     useRaidRole = {
@@ -1508,13 +1527,69 @@ local function GetBuffTriggerOptions(data, triggernum)
   local ignoreNameOptionSize = CountNames(data, triggernum, "ignoreAuraNames") + 1
   local ignoreSpellOptionsSize = CountNames(data, triggernum, "ignoreAuraSpellids") + 1
 
-  CreateNameOptions(aura_options, data, trigger, nameOptionSize, false, false, "name", 12, "useName", "auranames", L["Aura Name"], L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."], IsSingleMissing(trigger))
+  CreateNameOptions(
+    aura_options,
+    data,
+    trigger,
+    nameOptionSize,
+    false,
+    false,
+    "name",
+    12,
+    "useName",
+    "auranames",
+    L["Aura Name"],
+    L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."],
+    IsSingleMissing(trigger)
+  )
 
-  CreateNameOptions(aura_options, data, trigger, spellOptionsSize, true, false, "spellid", 22, "useExactSpellId", "auraspellids", L["Spell ID"], L["Enter a Spell ID"], IsSingleMissing(trigger))
+  CreateNameOptions(
+    aura_options,
+    data,
+    trigger,
+    spellOptionsSize,
+    true,
+    false,
+    "spellid",
+    22,
+    "useExactSpellId",
+    "auraspellids",
+    L["Spell ID"],
+    L["Enter a Spell ID"],
+    IsSingleMissing(trigger)
+  )
 
-  CreateNameOptions(aura_options, data, trigger, ignoreNameOptionSize, false, true, "ignorename", 32, "useIgnoreName", "ignoreAuraNames", L["Ignored Aura Name"], L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."], IsSingleMissing(trigger))
+  CreateNameOptions(
+    aura_options,
+    data,
+    trigger,
+    ignoreNameOptionSize,
+    false,
+    true,
+    "ignorename",
+    32,
+    "useIgnoreName",
+    "ignoreAuraNames",
+    L["Ignored Aura Name"],
+    L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."],
+    IsSingleMissing(trigger)
+  )
 
-  CreateNameOptions(aura_options, data, trigger, ignoreSpellOptionsSize, true, true, "ignorespellid", 42, "useIgnoreExactSpellId", "ignoreAuraSpellids", L["Ignored Spell ID"], L["Enter a Spell ID"], IsSingleMissing(trigger))
+  CreateNameOptions(
+    aura_options,
+    data,
+    trigger,
+    ignoreSpellOptionsSize,
+    true,
+    true,
+    "ignorespellid",
+    42,
+    "useIgnoreExactSpellId",
+    "ignoreAuraSpellids",
+    L["Ignored Spell ID"],
+    L["Enter a Spell ID"],
+    IsSingleMissing(trigger)
+  )
 
   OptionsPrivate.commonOptions.AddCommonTriggerOptions(aura_options, data, triggernum, true)
   OptionsPrivate.commonOptions.AddTriggerGetterSetter(aura_options, data, triggernum)

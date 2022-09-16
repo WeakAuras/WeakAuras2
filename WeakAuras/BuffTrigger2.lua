@@ -171,7 +171,13 @@ local function GetSubTable(base, next, ...)
 end
 
 local function IsGroupTrigger(trigger)
-  return trigger.unit == "group" or trigger.unit == "party" or trigger.unit == "raid" or trigger.unit == "boss" or trigger.unit == "nameplate" or trigger.unit == "arena" or trigger.unit == "multi"
+  return trigger.unit == "group"
+    or trigger.unit == "party"
+    or trigger.unit == "raid"
+    or trigger.unit == "boss"
+    or trigger.unit == "nameplate"
+    or trigger.unit == "arena"
+    or trigger.unit == "multi"
 end
 
 local function IsSingleMissing(trigger)
@@ -213,7 +219,11 @@ end
 local function ScanMatchData(time, triggerInfo, unit, filter)
   if matchData[unit] and matchData[unit][filter] then
     for index, match in pairs(matchData[unit][filter]) do
-      if (not triggerInfo.auranames and not triggerInfo.auraspellids) or (triggerInfo.auranames and tContains(triggerInfo.auranames, match.name)) or (triggerInfo.auraspellids and tContains(triggerInfo.auraspellids, match.spellId)) then
+      if
+        (not triggerInfo.auranames and not triggerInfo.auraspellids)
+        or (triggerInfo.auranames and tContains(triggerInfo.auranames, match.name))
+        or (triggerInfo.auraspellids and tContains(triggerInfo.auraspellids, match.spellId))
+      then
         if triggerInfo.fetchTooltip then
           matchData[unit][filter][index]:UpdateTooltip(time)
         end
@@ -271,7 +281,25 @@ local function UpdateToolTipDataInMatchData(matchData, time)
   return changed
 end
 
-local function UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, isBossDebuff, isCastByPlayer, spellId, modRate)
+local function UpdateMatchData(
+  time,
+  matchDataChanged,
+  unit,
+  index,
+  filter,
+  name,
+  icon,
+  stacks,
+  debuffClass,
+  duration,
+  expirationTime,
+  unitCaster,
+  isStealable,
+  isBossDebuff,
+  isCastByPlayer,
+  spellId,
+  modRate
+)
   if not matchData[unit] then
     matchData[unit] = {}
   end
@@ -504,7 +532,21 @@ local roleIcons = {
   TANK = CreateTextureMarkup([[Interface\LFGFrame\UI-LFG-ICON-ROLES]], 256, 256, 0, 0, GetTexCoordsForRole("TANK")),
 }
 
-local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, matchCountPerUnit, totalStacks, affected, unaffected, role, raidMark)
+local function UpdateStateWithMatch(
+  time,
+  bestMatch,
+  triggerStates,
+  cloneId,
+  matchCount,
+  unitCount,
+  maxUnitCount,
+  matchCountPerUnit,
+  totalStacks,
+  affected,
+  unaffected,
+  role,
+  raidMark
+)
   local debuffClassIcon = WeakAuras.EJIcons[bestMatch.debuffClass]
   if not triggerStates[cloneId] then
     triggerStates[cloneId] = {
@@ -736,7 +778,22 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
   end
 end
 
-local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId, unit, matchCount, unitCount, maxUnitCount, matchCountPerUnit, totalStacks, affected, unaffected, role, raidMark)
+local function UpdateStateWithNoMatch(
+  time,
+  triggerStates,
+  triggerInfo,
+  cloneId,
+  unit,
+  matchCount,
+  unitCount,
+  maxUnitCount,
+  matchCountPerUnit,
+  totalStacks,
+  affected,
+  unaffected,
+  role,
+  raidMark
+)
   local fallbackName, fallbackIcon = BuffTrigger.GetNameAndIconSimple(WeakAuras.GetData(triggerInfo.id), triggerInfo.triggernum)
   if not triggerStates[cloneId] then
     triggerStates[cloneId] = {
@@ -1365,7 +1422,21 @@ local function UpdateTriggerState(time, id, triggernum)
 
         local role = roleForTriggerInfo(triggerInfo, auraData.unit)
         local mark = markForTriggerInfo(triggerInfo, auraData.unit)
-        updated = UpdateStateWithMatch(time, auraData, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, matchCountPerUnit[auraData.unit], totalStacks, affected, unaffected, role, mark) or updated
+        updated = UpdateStateWithMatch(
+          time,
+          auraData,
+          triggerStates,
+          cloneId,
+          matchCount,
+          unitCount,
+          maxUnitCount,
+          matchCountPerUnit[auraData.unit],
+          totalStacks,
+          affected,
+          unaffected,
+          role,
+          mark
+        ) or updated
         cloneIds[cloneId] = true
       end
 
@@ -1422,7 +1493,21 @@ local function UpdateTriggerState(time, id, triggernum)
           if bestMatch then
             local role = roleForTriggerInfo(triggerInfo, unit)
             local mark = markForTriggerInfo(triggerInfo, unit)
-            updated = UpdateStateWithMatch(time, bestMatch, triggerStates, unit, matchCount, unitCount, maxUnitCount, matchCountPerUnit[unit], totalStacks, affected, unaffected, role, mark) or updated
+            updated = UpdateStateWithMatch(
+              time,
+              bestMatch,
+              triggerStates,
+              unit,
+              matchCount,
+              unitCount,
+              maxUnitCount,
+              matchCountPerUnit[unit],
+              totalStacks,
+              affected,
+              unaffected,
+              role,
+              mark
+            ) or updated
             cloneIds[unit] = true
           end
         end
@@ -1435,11 +1520,39 @@ local function UpdateTriggerState(time, id, triggernum)
             local mark = markForTriggerInfo(triggerInfo, unit)
             if bestMatch then
               if triggerInfo.perUnitMode == "all" then
-                updated = UpdateStateWithMatch(time, bestMatch, triggerStates, unit, matchCount, unitCount, maxUnitCount, matchCountPerUnit[unit], totalStacks, affected, unaffected, role, mark) or updated
+                updated = UpdateStateWithMatch(
+                  time,
+                  bestMatch,
+                  triggerStates,
+                  unit,
+                  matchCount,
+                  unitCount,
+                  maxUnitCount,
+                  matchCountPerUnit[unit],
+                  totalStacks,
+                  affected,
+                  unaffected,
+                  role,
+                  mark
+                ) or updated
                 cloneIds[unit] = true
               end
             else
-              updated = UpdateStateWithNoMatch(time, triggerStates, triggerInfo, unit, unit, matchCount, unitCount, maxUnitCount, matchCountPerUnit[unit], totalStacks, affected, unaffected, role) or updated
+              updated = UpdateStateWithNoMatch(
+                time,
+                triggerStates,
+                triggerInfo,
+                unit,
+                unit,
+                matchCount,
+                unitCount,
+                maxUnitCount,
+                matchCountPerUnit[unit],
+                totalStacks,
+                affected,
+                unaffected,
+                role
+              ) or updated
               cloneIds[unit] = true
             end
           end
@@ -1489,7 +1602,8 @@ local function PrepareMatchData(unit, filter)
     local time = GetTime()
     local index = 1
     while true do
-      local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, isBossDebuff, isCastByPlayer, _, modRate = UnitAura(unit, index, filter)
+      local name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, isBossDebuff, isCastByPlayer, _, modRate =
+        UnitAura(unit, index, filter)
       if not name then
         break
       end
@@ -1502,7 +1616,25 @@ local function PrepareMatchData(unit, filter)
         debuffClass = string.lower(debuffClass)
       end
 
-      local updatedMatchData = UpdateMatchData(time, matchDataChanged, unit, index, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, isBossDebuff, isCastByPlayer, spellId, modRate)
+      local updatedMatchData = UpdateMatchData(
+        time,
+        matchDataChanged,
+        unit,
+        index,
+        filter,
+        name,
+        icon,
+        stacks,
+        debuffClass,
+        duration,
+        expirationTime,
+        unitCaster,
+        isStealable,
+        isBossDebuff,
+        isCastByPlayer,
+        spellId,
+        modRate
+      )
       index = index + 1
     end
 
@@ -2564,7 +2696,14 @@ function BuffTrigger.Add(data)
       end
 
       local matchPerUnitCountFunc
-      if IsGroupTrigger(trigger) and combineMode == "showPerUnit" and perUnitMode ~= "unaffected" and trigger.useMatchPerUnit_count and tonumber(trigger.matchPerUnit_count) and trigger.matchPerUnit_countOperator then
+      if
+        IsGroupTrigger(trigger)
+        and combineMode == "showPerUnit"
+        and perUnitMode ~= "unaffected"
+        and trigger.useMatchPerUnit_count
+        and tonumber(trigger.matchPerUnit_count)
+        and trigger.matchPerUnit_countOperator
+      then
         local count = tonumber(trigger.matchPerUnit_count)
         local match_countFuncStr = Private.function_strings.count:format(trigger.matchPerUnit_countOperator, count)
         matchPerUnitCountFunc = WeakAuras.LoadFunction(match_countFuncStr)
@@ -2961,7 +3100,8 @@ function Private.CanConvertBuffTrigger2(trigger)
   end
 
   if trigger.unit == "group" then
-    return true, L["Warning: Name info is now available via %affected, %unaffected. Number of affected group members via %unitCount. Some options behave differently now. This is not automatically adjusted."]
+    return true,
+      L["Warning: Name info is now available via %affected, %unaffected. Number of affected group members via %unitCount. Some options behave differently now. This is not automatically adjusted."]
   end
 
   if trigger.fullscan then
@@ -3371,7 +3511,8 @@ local function AugmentMatchDataMulti(matchData, unit, filter, sourceGUID, nameKe
     end
     local auraSourceGuid = unitCaster and UnitGUID(unitCaster)
     if (name == nameKey or spellId == spellKey) and sourceGUID == auraSourceGuid then
-      local changed = AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate)
+      local changed =
+        AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate)
       return changed
     end
     index = index + 1
@@ -3461,7 +3602,25 @@ local function CheckAurasMulti(base, unit, filter)
     end
     local auraCasterGUID = unitCaster and UnitGUID(unitCaster)
     if base[name] and base[name][auraCasterGUID] then
-      local changed = AugmentMatchDataMultiWith(base[name][auraCasterGUID], unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate)
+      local changed = AugmentMatchDataMultiWith(
+        base[name][auraCasterGUID],
+        unit,
+        name,
+        icon,
+        stacks,
+        debuffClass,
+        duration,
+        expirationTime,
+        unitCaster,
+        isStealable,
+        _,
+        spellId,
+        _,
+        _,
+        _,
+        _,
+        modRate
+      )
       if changed then
         for id, idData in pairs(base[name][auraCasterGUID].auras) do
           for triggernum in pairs(idData) do
@@ -3472,7 +3631,25 @@ local function CheckAurasMulti(base, unit, filter)
       end
     end
     if base[spellId] and base[spellId][auraCasterGUID] then
-      local changed = AugmentMatchDataMultiWith(base[spellId][auraCasterGUID], unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate)
+      local changed = AugmentMatchDataMultiWith(
+        base[spellId][auraCasterGUID],
+        unit,
+        name,
+        icon,
+        stacks,
+        debuffClass,
+        duration,
+        expirationTime,
+        unitCaster,
+        isStealable,
+        _,
+        spellId,
+        _,
+        _,
+        _,
+        _,
+        modRate
+      )
       if changed then
         for id, idData in pairs(base[spellId][auraCasterGUID].auras) do
           for triggernum in pairs(idData) do

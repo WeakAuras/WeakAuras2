@@ -1002,7 +1002,11 @@ local function ConstructMoverSizer(parent)
           step = reverse and -1 or 1
           for i = start, finish, step do
             local v = mover.align.x[i]
-            if not ctrlDown and (((left >= v - 5 and left <= v + 5) and (not point or point:find("LEFT"))) or ((right >= v - 5 and right <= v + 5) and (not point or point:find("RIGHT")))) or (ctrlDown and centerX >= v - 5 and centerX <= v + 5) then
+            if
+              not ctrlDown
+                and (((left >= v - 5 and left <= v + 5) and (not point or point:find("LEFT"))) or ((right >= v - 5 and right <= v + 5) and (not point or point:find("RIGHT"))))
+              or (ctrlDown and centerX >= v - 5 and centerX <= v + 5)
+            then
               frame.lineY:SetStartPoint("TOPLEFT", UIParent, v, 0)
               frame.lineY:SetEndPoint("BOTTOMLEFT", UIParent, v, 0)
               frame.lineY:Show()
@@ -1028,7 +1032,11 @@ local function ConstructMoverSizer(parent)
           step = reverse and -1 or 1
           for i = start, finish, step do
             local v = mover.align.y[i]
-            if not ctrlDown and (((top >= v - 5 and top <= v + 5) and (not point or point:find("TOP"))) or ((bottom >= v - 5 and bottom <= v + 5) and (not point or point:find("BOTTOM")))) or (ctrlDown and centerY >= v - 5 and centerY <= v + 5) then
+            if
+              not ctrlDown
+                and (((top >= v - 5 and top <= v + 5) and (not point or point:find("TOP"))) or ((bottom >= v - 5 and bottom <= v + 5) and (not point or point:find("BOTTOM"))))
+              or (ctrlDown and centerY >= v - 5 and centerY <= v + 5)
+            then
               frame.lineX:SetStartPoint("BOTTOMLEFT", UIParent, 0, v)
               frame.lineX:SetEndPoint("BOTTOMRIGHT", UIParent, 0, v)
               frame.lineX:Show()

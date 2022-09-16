@@ -166,7 +166,14 @@ local function get_zoneId_list()
     end
   end
 
-  return ("%s|cffffd200%s|r%s: %d\n\n%s%s"):format(Private.get_zoneId_list(), L["Current Zone\n"], currentmap_name, currentmap_id, currentmap_zone_name, L["Supports multiple entries, separated by commas. Group Zone IDs must be prefixed with 'g', e.g. g277."])
+  return ("%s|cffffd200%s|r%s: %d\n\n%s%s"):format(
+    Private.get_zoneId_list(),
+    L["Current Zone\n"],
+    currentmap_name,
+    currentmap_id,
+    currentmap_zone_name,
+    L["Supports multiple entries, separated by commas. Group Zone IDs must be prefixed with 'g', e.g. g277."]
+  )
 end
 
 Private.function_strings = {
@@ -1227,7 +1234,9 @@ Private.load_prototype = {
       enableTest = function(...)
         return WeakAuras.CheckTalentByIndex(...) ~= nil
       end,
-      events = (WeakAuras.IsClassicOrBCC() and { "CHARACTER_POINTS_CHANGED" }) or (WeakAuras.IsWrathClassic() and { "CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE" }) or { "PLAYER_TALENT_UPDATE" },
+      events = (WeakAuras.IsClassicOrBCC() and { "CHARACTER_POINTS_CHANGED" }) or (WeakAuras.IsWrathClassic() and { "CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE" }) or {
+        "PLAYER_TALENT_UPDATE",
+      },
       inverse = function(load)
         -- Check for multi select!
         return (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail()) and (load.talent_extraOption == 2 or load.talent_extraOption == 3)
@@ -1258,7 +1267,9 @@ Private.load_prototype = {
       enableTest = function(...)
         return WeakAuras.CheckTalentByIndex(...) ~= nil
       end,
-      events = (WeakAuras.IsClassicOrBCC() and { "CHARACTER_POINTS_CHANGED" }) or (WeakAuras.IsWrathClassic() and { "CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE" }) or { "PLAYER_TALENT_UPDATE" },
+      events = (WeakAuras.IsClassicOrBCC() and { "CHARACTER_POINTS_CHANGED" }) or (WeakAuras.IsWrathClassic() and { "CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE" }) or {
+        "PLAYER_TALENT_UPDATE",
+      },
       inverse = function(load)
         return (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail()) and (load.talent2_extraOption == 2 or load.talent2_extraOption == 3)
       end,
@@ -1288,7 +1299,9 @@ Private.load_prototype = {
       enableTest = function(...)
         return WeakAuras.CheckTalentByIndex(...) ~= nil
       end,
-      events = (WeakAuras.IsClassicOrBCC() and { "CHARACTER_POINTS_CHANGED" }) or (WeakAuras.IsWrathClassic() and { "CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE" }) or { "PLAYER_TALENT_UPDATE" },
+      events = (WeakAuras.IsClassicOrBCC() and { "CHARACTER_POINTS_CHANGED" }) or (WeakAuras.IsWrathClassic() and { "CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE" }) or {
+        "PLAYER_TALENT_UPDATE",
+      },
       inverse = function(load)
         return (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail()) and (load.talent3_extraOption == 2 or load.talent3_extraOption == 3)
       end,
@@ -1306,7 +1319,8 @@ Private.load_prototype = {
       multiUseControlWhenFalse = WeakAuras.IsWrathClassic(),
       enable = function(trigger)
         local class = Private.checkForSingleLoadCondition(trigger, "class")
-        return ((trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil) and (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail() or (WeakAuras.IsWrathClassic() and class ~= nil))
+        return ((trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil)
+          and (WeakAuras.IsClassicOrBCC() or WeakAuras.IsRetail() or (WeakAuras.IsWrathClassic() and class ~= nil))
       end,
     },
     {
@@ -2777,14 +2791,15 @@ Private.event_prototypes = {
           local UnitPower = WeakAuras.UnitStagger
         ]]
         if trigger.use_scaleStagger and trigger.scaleStagger then
-          ret = ret .. string.format(
-            [[
+          ret = ret
+            .. string.format(
+              [[
             local UnitPowerMax = function(unit)
               return UnitHealthMax(unit) * %s
             end
           ]],
-            trigger.scaleStagger
-          )
+              trigger.scaleStagger
+            )
         else
           ret = ret .. [[
             local UnitPowerMax = UnitHealthMax;
@@ -2793,7 +2808,8 @@ Private.event_prototypes = {
       end
       local canEnableShowCost = (not trigger.use_powertype or trigger.powertype ~= 99) and trigger.unit == "player"
       if canEnableShowCost and trigger.use_showCost then
-        ret = ret .. [[
+        ret = ret
+          .. [[
           if (event == "UNIT_DISPLAYPOWER") then
             local cost = WeakAuras.GetSpellCost(powerTypeToCheck)
             if state.cost ~= cost then
@@ -2810,7 +2826,8 @@ Private.event_prototypes = {
         ]]
       end
       if WeakAuras.IsRetail() and trigger.unit == "player" and trigger.use_powertype and trigger.powertype == 4 then
-        ret = ret .. [[
+        ret = ret
+          .. [[
           local chargedComboPoint = GetUnitChargedPowerPoints('player') or {}
           if state.chargedComboPoint1 ~= chargedComboPoint[1] then
             state.chargedComboPoint = chargedComboPoint[1] -- For backwards compability
@@ -2952,7 +2969,8 @@ Private.event_prototypes = {
         name = "power",
         display = L["Power"],
         type = "number",
-        init = not WeakAuras.IsRetail() and "powerType == 4 and GetComboPoints(unit, unit .. '-target') or UnitPower(unit, powerType, powerThirdArg)" or "UnitPower(unit, powerType, powerThirdArg) / WeakAuras.UnitPowerDisplayMod(powerTypeToCheck)",
+        init = not WeakAuras.IsRetail() and "powerType == 4 and GetComboPoints(unit, unit .. '-target') or UnitPower(unit, powerType, powerThirdArg)"
+          or "UnitPower(unit, powerType, powerThirdArg) / WeakAuras.UnitPowerDisplayMod(powerTypeToCheck)",
         store = true,
         conditionType = "number",
       },
@@ -2966,7 +2984,8 @@ Private.event_prototypes = {
       {
         name = "total",
         hidden = true,
-        init = not WeakAuras.IsRetail() and "powerType == 4 and (math.max(1, UnitPowerMax(unit, 14))) or math.max(1, UnitPowerMax(unit, powerType, powerThirdArg))" or "math.max(1, UnitPowerMax(unit, powerType, powerThirdArg)) / WeakAuras.UnitPowerDisplayMod(powerTypeToCheck)",
+        init = not WeakAuras.IsRetail() and "powerType == 4 and (math.max(1, UnitPowerMax(unit, 14))) or math.max(1, UnitPowerMax(unit, powerType, powerThirdArg))"
+          or "math.max(1, UnitPowerMax(unit, powerType, powerThirdArg)) / WeakAuras.UnitPowerDisplayMod(powerTypeToCheck)",
         store = true,
         test = "true",
       },
@@ -3802,7 +3821,15 @@ Private.event_prototypes = {
       }, -- source of absorb Raid Flags ignored with SPELL_ABSORBED
       {
         enable = function(trigger)
-          return trigger.subeventSuffix and (trigger.subeventSuffix == "_ABSORBED" or trigger.subeventSuffix == "_INTERRUPT" or trigger.subeventSuffix == "_DISPEL" or trigger.subeventSuffix == "_DISPEL_FAILED" or trigger.subeventSuffix == "_STOLEN" or trigger.subeventSuffix == "_AURA_BROKEN_SPELL")
+          return trigger.subeventSuffix
+            and (
+              trigger.subeventSuffix == "_ABSORBED"
+              or trigger.subeventSuffix == "_INTERRUPT"
+              or trigger.subeventSuffix == "_DISPEL"
+              or trigger.subeventSuffix == "_DISPEL_FAILED"
+              or trigger.subeventSuffix == "_STOLEN"
+              or trigger.subeventSuffix == "_AURA_BROKEN_SPELL"
+            )
         end,
       }, -- extraSpellId ignored with SPELL_ABSORBED
       {
@@ -3811,14 +3838,30 @@ Private.event_prototypes = {
         type = "string",
         init = "arg",
         enable = function(trigger)
-          return trigger.subeventSuffix and (trigger.subeventSuffix == "_ABSORBED" or trigger.subeventSuffix == "_INTERRUPT" or trigger.subeventSuffix == "_DISPEL" or trigger.subeventSuffix == "_DISPEL_FAILED" or trigger.subeventSuffix == "_STOLEN" or trigger.subeventSuffix == "_AURA_BROKEN_SPELL")
+          return trigger.subeventSuffix
+            and (
+              trigger.subeventSuffix == "_ABSORBED"
+              or trigger.subeventSuffix == "_INTERRUPT"
+              or trigger.subeventSuffix == "_DISPEL"
+              or trigger.subeventSuffix == "_DISPEL_FAILED"
+              or trigger.subeventSuffix == "_STOLEN"
+              or trigger.subeventSuffix == "_AURA_BROKEN_SPELL"
+            )
         end,
         store = true,
         conditionType = "string",
       },
       {
         enable = function(trigger)
-          return trigger.subeventSuffix and (trigger.subeventSuffix == "_ABSORBED" or trigger.subeventSuffix == "_INTERRUPT" or trigger.subeventSuffix == "_DISPEL" or trigger.subeventSuffix == "_DISPEL_FAILED" or trigger.subeventSuffix == "_STOLEN" or trigger.subeventSuffix == "_AURA_BROKEN_SPELL")
+          return trigger.subeventSuffix
+            and (
+              trigger.subeventSuffix == "_ABSORBED"
+              or trigger.subeventSuffix == "_INTERRUPT"
+              or trigger.subeventSuffix == "_DISPEL"
+              or trigger.subeventSuffix == "_DISPEL_FAILED"
+              or trigger.subeventSuffix == "_STOLEN"
+              or trigger.subeventSuffix == "_AURA_BROKEN_SPELL"
+            )
         end,
       }, -- extraSchool ignored with _ argument
       {
@@ -3839,7 +3882,17 @@ Private.event_prototypes = {
         type = "number",
         init = "arg",
         enable = function(trigger)
-          return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_ABSORBED" or trigger.subeventSuffix == "_DAMAGE" or trigger.subeventSuffix == "_HEAL" or trigger.subeventSuffix == "_ENERGIZE" or trigger.subeventSuffix == "_DRAIN" or trigger.subeventSuffix == "_LEECH" or trigger.subeventPrefix:find("DAMAGE"))
+          return trigger.subeventSuffix
+            and trigger.subeventPrefix
+            and (
+              trigger.subeventSuffix == "_ABSORBED"
+              or trigger.subeventSuffix == "_DAMAGE"
+              or trigger.subeventSuffix == "_HEAL"
+              or trigger.subeventSuffix == "_ENERGIZE"
+              or trigger.subeventSuffix == "_DRAIN"
+              or trigger.subeventSuffix == "_LEECH"
+              or trigger.subeventPrefix:find("DAMAGE")
+            )
         end,
         store = true,
         conditionType = "number",
@@ -3850,7 +3903,9 @@ Private.event_prototypes = {
         type = "number",
         init = "arg",
         enable = function(trigger)
-          return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
+          return trigger.subeventSuffix
+            and trigger.subeventPrefix
+            and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
         end,
         store = true,
         conditionType = "number",
@@ -3868,7 +3923,9 @@ Private.event_prototypes = {
       },
       {
         enable = function(trigger)
-          return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
+          return trigger.subeventSuffix
+            and trigger.subeventPrefix
+            and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
         end,
       }, -- damage school ignored with _ argument
       {
@@ -3877,7 +3934,9 @@ Private.event_prototypes = {
         type = "number",
         init = "arg",
         enable = function(trigger)
-          return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
+          return trigger.subeventSuffix
+            and trigger.subeventPrefix
+            and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
         end,
         store = true,
         conditionType = "number",
@@ -3888,7 +3947,9 @@ Private.event_prototypes = {
         type = "number",
         init = "arg",
         enable = function(trigger)
-          return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
+          return trigger.subeventSuffix
+            and trigger.subeventPrefix
+            and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
         end,
         store = true,
         conditionType = "number",
@@ -3899,7 +3960,9 @@ Private.event_prototypes = {
         type = "number",
         init = "arg",
         enable = function(trigger)
-          return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT" or trigger.subeventSuffix == "_HEAL")
+          return trigger.subeventSuffix
+            and trigger.subeventPrefix
+            and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT" or trigger.subeventSuffix == "_HEAL")
         end,
         store = true,
         conditionType = "number",
@@ -3910,7 +3973,9 @@ Private.event_prototypes = {
         type = "tristate",
         init = "arg",
         enable = function(trigger)
-          return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT" or trigger.subeventSuffix == "_HEAL")
+          return trigger.subeventSuffix
+            and trigger.subeventPrefix
+            and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT" or trigger.subeventSuffix == "_HEAL")
         end,
         store = true,
         conditionType = "bool",
@@ -3921,7 +3986,9 @@ Private.event_prototypes = {
         type = "tristate",
         init = "arg",
         enable = function(trigger)
-          return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
+          return trigger.subeventSuffix
+            and trigger.subeventPrefix
+            and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
         end,
         store = true,
         conditionType = "bool",
@@ -3932,7 +3999,9 @@ Private.event_prototypes = {
         type = "tristate",
         init = "arg",
         enable = function(trigger)
-          return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
+          return trigger.subeventSuffix
+            and trigger.subeventPrefix
+            and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT")
         end,
         store = true,
         conditionType = "bool",
@@ -3943,7 +4012,15 @@ Private.event_prototypes = {
         type = "tristate",
         init = "arg",
         enable = function(trigger)
-          return trigger.subeventSuffix and trigger.subeventPrefix and (trigger.subeventSuffix == "_DAMAGE" or trigger.subeventPrefix == "DAMAGE_SHIELD" or trigger.subeventPrefix == "DAMAGE_SPLIT" or trigger.subeventSuffix == "_MISSED" or trigger.subeventPrefix == "DAMAGE_SHIELD_MISSED")
+          return trigger.subeventSuffix
+            and trigger.subeventPrefix
+            and (
+              trigger.subeventSuffix == "_DAMAGE"
+              or trigger.subeventPrefix == "DAMAGE_SHIELD"
+              or trigger.subeventPrefix == "DAMAGE_SPLIT"
+              or trigger.subeventSuffix == "_MISSED"
+              or trigger.subeventPrefix == "DAMAGE_SHIELD_MISSED"
+            )
         end,
         store = true,
         conditionType = "bool",
@@ -4140,10 +4217,19 @@ Private.event_prototypes = {
       if type(spellName) == "string" then
         spellName = "[[" .. spellName .. "]]"
       end
-      ret = ret:format(spellName, (trigger.use_matchedRune and "true" or "false"), (trigger.use_showgcd and "true" or "false"), (trigger.use_showlossofcontrol and "true" or "false"), (trigger.use_ignoreSpellKnown and "true" or "false"), (trigger.track or "auto"), showOnCheck)
+      ret = ret:format(
+        spellName,
+        (trigger.use_matchedRune and "true" or "false"),
+        (trigger.use_showgcd and "true" or "false"),
+        (trigger.use_showlossofcontrol and "true" or "false"),
+        (trigger.use_ignoreSpellKnown and "true" or "false"),
+        (trigger.track or "auto"),
+        showOnCheck
+      )
 
       if not trigger.use_trackcharge or not trigger.trackcharge then
-        ret = ret .. [=[
+        ret = ret
+          .. [=[
           if (state.expirationTime ~= expirationTime) then
             state.expirationTime = expirationTime;
             state.changed = true;
@@ -4793,7 +4879,9 @@ Private.event_prototypes = {
       },
       {
         hidden = true,
-        test = "(genericShowOn == \"showOnReady\" and (startTime == 0 and enabled == 1 or gcdCooldown))" .. "or (genericShowOn == \"showOnCooldown\" and (startTime > 0 or enabled == 0) and not gcdCooldown) " .. "or (genericShowOn == \"showAlways\")",
+        test = "(genericShowOn == \"showOnReady\" and (startTime == 0 and enabled == 1 or gcdCooldown))"
+          .. "or (genericShowOn == \"showOnCooldown\" and (startTime > 0 or enabled == 0) and not gcdCooldown) "
+          .. "or (genericShowOn == \"showAlways\")",
       },
     },
     durationFunc = function(trigger)
@@ -4948,7 +5036,9 @@ Private.event_prototypes = {
       },
       {
         hidden = true,
-        test = "(genericShowOn == \"showOnReady\" and (startTime == 0 or gcdCooldown)) " .. "or (genericShowOn == \"showOnCooldown\" and startTime > 0 and not gcdCooldown) " .. "or (genericShowOn == \"showAlways\")",
+        test = "(genericShowOn == \"showOnReady\" and (startTime == 0 or gcdCooldown)) "
+          .. "or (genericShowOn == \"showOnCooldown\" and startTime > 0 and not gcdCooldown) "
+          .. "or (genericShowOn == \"showAlways\")",
       },
     },
     durationFunc = function(trigger)
@@ -5284,7 +5374,19 @@ Private.event_prototypes = {
         end
         ]=]
 
-      return ret:format(trigger.use_id and trigger.id or "", trigger.use_spellId and trigger.spellId or "", trigger.use_message and trigger.message or "", trigger.use_message and trigger.message_operator or "", trigger.use_cloneId and "true" or "false", trigger.use_extend and tonumber(trigger.extend or 0) or 0, trigger.use_remaining and "true" or "false", trigger.remaining or 0, trigger.use_count and trigger.count or "", trigger.use_dbmType and trigger.dbmType or "nil", trigger.remaining_operator or "<")
+      return ret:format(
+        trigger.use_id and trigger.id or "",
+        trigger.use_spellId and trigger.spellId or "",
+        trigger.use_message and trigger.message or "",
+        trigger.use_message and trigger.message_operator or "",
+        trigger.use_cloneId and "true" or "false",
+        trigger.use_extend and tonumber(trigger.extend or 0) or 0,
+        trigger.use_remaining and "true" or "false",
+        trigger.remaining or 0,
+        trigger.use_count and trigger.count or "",
+        trigger.use_dbmType and trigger.dbmType or "nil",
+        trigger.remaining_operator or "<"
+      )
     end,
     statesParameter = "full",
     args = {
@@ -5539,7 +5641,18 @@ Private.event_prototypes = {
           return true
         end
       ]=]
-      return ret:format(trigger.use_spellId and trigger.spellId or "", trigger.use_text and trigger.text or "", trigger.use_text and trigger.text_operator or "", trigger.use_cloneId and "true" or "false", trigger.use_extend and tonumber(trigger.extend or 0) or 0, trigger.use_remaining and "true" or "false", trigger.remaining or 0, trigger.use_count and trigger.count or "", trigger.use_cast == nil and "nil" or trigger.use_cast and "true" or "false", trigger.remaining_operator or "<")
+      return ret:format(
+        trigger.use_spellId and trigger.spellId or "",
+        trigger.use_text and trigger.text or "",
+        trigger.use_text and trigger.text_operator or "",
+        trigger.use_cloneId and "true" or "false",
+        trigger.use_extend and tonumber(trigger.extend or 0) or 0,
+        trigger.use_remaining and "true" or "false",
+        trigger.remaining or 0,
+        trigger.use_count and trigger.count or "",
+        trigger.use_cast == nil and "nil" or trigger.use_cast and "true" or "false",
+        trigger.remaining_operator or "<"
+      )
     end,
     statesParameter = "full",
     args = {
@@ -5667,7 +5780,12 @@ Private.event_prototypes = {
           WeakAuras.ScheduleScan(expirationTime - triggerRemaining, "SWING_TIMER_UPDATE")
         end
       ]=]
-      return ret:format((trigger.use_inverse and "true" or "false"), trigger.hand or "main", trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil", trigger.remaining_operator or "<")
+      return ret:format(
+        (trigger.use_inverse and "true" or "false"),
+        trigger.hand or "main",
+        trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
+        trigger.remaining_operator or "<"
+      )
     end,
     args = {
       {
@@ -5986,13 +6104,15 @@ Private.event_prototypes = {
           ]]
         else
           if trigger.use_onlySelected then
-            ret = ret .. [[
+            ret = ret
+              .. [[
             local active, _, activeName, activeIcon, selected, known
             _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
             active = selected
             ]]
           else
-            ret = ret .. [[
+            ret = ret
+              .. [[
             local active, _, activeName, activeIcon, selected, known
             _, activeName, activeIcon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
             active = selected or known
@@ -6029,7 +6149,8 @@ Private.event_prototypes = {
                 column = %s
             ]]
             if WeakAuras.IsClassicOrBCCOrWrath() then
-              ret2 = ret2 .. [[
+              ret2 = ret2
+                .. [[
                 local name, icon, _, _, rank  = GetTalentInfo(tier, column)
                 if rank > 0 then
                   active = true;
@@ -6039,7 +6160,8 @@ Private.event_prototypes = {
               ]]
             else
               if trigger.use_onlySelected then
-                ret2 = ret2 .. [[
+                ret2 = ret2
+                  .. [[
                   local _, name, icon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
                   if (selected) then
                     active = true;
@@ -6048,7 +6170,8 @@ Private.event_prototypes = {
                   end
                 ]]
               else
-                ret2 = ret2 .. [[
+                ret2 = ret2
+                  .. [[
                   local _, name, icon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
                   if (selected or known) then
                     active = true;
@@ -6385,7 +6508,16 @@ Private.event_prototypes = {
       end
       ]]
       local totemName = tonumber(trigger.totemName) and GetSpellInfo(tonumber(trigger.totemName)) or trigger.totemName
-      ret = ret:format(trigger.use_totemType and tonumber(trigger.totemType) or "nil", trigger.use_totemName and totemName or "", trigger.use_totemNamePattern and trigger.totemNamePattern or "", trigger.use_totemNamePattern and trigger.totemNamePattern_operator or "", trigger.use_clones and "true" or "false", trigger.use_inverse and "true" or "false", trigger.use_remaining and trigger.remaining or "nil", trigger.use_remaining and trigger.remaining_operator or "<")
+      ret = ret:format(
+        trigger.use_totemType and tonumber(trigger.totemType) or "nil",
+        trigger.use_totemName and totemName or "",
+        trigger.use_totemNamePattern and trigger.totemNamePattern or "",
+        trigger.use_totemNamePattern and trigger.totemNamePattern_operator or "",
+        trigger.use_clones and "true" or "false",
+        trigger.use_inverse and "true" or "false",
+        trigger.use_remaining and trigger.remaining or "nil",
+        trigger.use_remaining and trigger.remaining_operator or "<"
+      )
       return ret
     end,
     args = {
@@ -6652,7 +6784,15 @@ Private.event_prototypes = {
 
       local showOnActive = trigger.showOn == "showOnActive" or not trigger.showOn
 
-      return ret:format(trigger.weapon or "main", trigger.use_enchant and trigger.enchant or "", showOnActive and trigger.use_stack and tonumber(trigger.stack or 0) or "nil", showOnActive and trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil", trigger.showOn or "showOnActive", trigger.stack_operator or "<", trigger.remaining_operator or "<")
+      return ret:format(
+        trigger.weapon or "main",
+        trigger.use_enchant and trigger.enchant or "",
+        showOnActive and trigger.use_stack and tonumber(trigger.stack or 0) or "nil",
+        showOnActive and trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
+        trigger.showOn or "showOnActive",
+        trigger.stack_operator or "<",
+        trigger.remaining_operator or "<"
+      )
     end,
     args = {
       {
@@ -7025,7 +7165,9 @@ Private.event_prototypes = {
         display = L["Rune"],
         type = "select",
         values = "rune_specific_types",
-        test = "(genericShowOn == \"showOnReady\" and (startTime == 0)) " .. "or (genericShowOn == \"showOnCooldown\" and startTime > 0) " .. "or (genericShowOn == \"showAlways\")",
+        test = "(genericShowOn == \"showOnReady\" and (startTime == 0)) "
+          .. "or (genericShowOn == \"showOnCooldown\" and startTime > 0) "
+          .. "or (genericShowOn == \"showAlways\")",
         reloadOptions = true,
       },
       {
@@ -7292,7 +7434,13 @@ Private.event_prototypes = {
 
         local slotValidation = (useItemSlot and itemSlot == slotSelected) or (not useItemSlot)
       ]=]
-      return ret:format(trigger.use_legendaryIcon and "true" or "false", trigger.itemBonusId or "", trigger.use_inverse and "true" or "false", trigger.use_itemSlot and "true" or "false", trigger.itemSlot)
+      return ret:format(
+        trigger.use_legendaryIcon and "true" or "false",
+        trigger.itemBonusId or "",
+        trigger.use_inverse and "true" or "false",
+        trigger.use_itemSlot and "true" or "false",
+        trigger.itemSlot
+      )
     end,
     args = {
       {
@@ -7663,7 +7811,13 @@ Private.event_prototypes = {
             end
           end
       ]=]
-      ret = ret:format(trigger.use_controlType and "true" or "false", type(trigger.controlType) == "string" and "[[" .. trigger.controlType .. "]]" or [["STUN"]], trigger.use_inverse and "true" or "false", trigger.use_interruptSchool and "true" or "false", trigger.interruptSchool or 0)
+      ret = ret:format(
+        trigger.use_controlType and "true" or "false",
+        type(trigger.controlType) == "string" and "[[" .. trigger.controlType .. "]]" or [["STUN"]],
+        trigger.use_inverse and "true" or "false",
+        trigger.use_interruptSchool and "true" or "false",
+        trigger.interruptSchool or 0
+      )
       return ret
     end,
     args = {
@@ -7852,7 +8006,8 @@ Private.event_prototypes = {
           WeakAuras.ScheduleCastCheck(expirationTime - remainingCheck, unit)
         end
       ]=]
-      ret = ret:format(trigger.unit == "group" and "true" or "false", trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil", trigger.use_inverse and "true" or "false")
+      ret =
+        ret:format(trigger.unit == "group" and "true" or "false", trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil", trigger.use_inverse and "true" or "false")
 
       ret = ret .. unitHelperFunctions.SpecificUnitCheck(trigger)
 
@@ -8996,7 +9151,8 @@ Private.event_prototypes = {
         ret = ret:format(trigger.use_inverse and "true" or "false", trigger.use_behavior and ("\"" .. (trigger.behavior or "") .. "\"") or "nil")
       end
       if trigger.use_petspec then
-        ret = ret .. [[
+        ret = ret
+          .. [[
           local petspec = GetSpecialization(false, true)
           if (petspec) then
             activeIcon = select(4, GetSpecializationInfo(petspec, false, true));
@@ -9122,7 +9278,11 @@ Private.event_prototypes = {
         type = "description",
         display = "",
         text = function()
-          return L["Note: This trigger type estimates the range to the hitbox of a unit. The actual range of friendly players is usually 3 yards more than the estimate. Range checking capabilities depend on your current class and known abilities as well as the type of unit being checked. Some of the ranges may also not work with certain NPCs.|n|n|cFFAAFFAAFriendly Units:|r %s|n|cFFFFAAAAHarmful Units:|r %s|n|cFFAAAAFFMiscellanous Units:|r %s"]:format(RangeCacheStrings.friend or "", RangeCacheStrings.harm or "", RangeCacheStrings.misc or "")
+          return L["Note: This trigger type estimates the range to the hitbox of a unit. The actual range of friendly players is usually 3 yards more than the estimate. Range checking capabilities depend on your current class and known abilities as well as the type of unit being checked. Some of the ranges may also not work with certain NPCs.|n|n|cFFAAFFAAFriendly Units:|r %s|n|cFFFFAAAAHarmful Units:|r %s|n|cFFAAAAFFMiscellanous Units:|r %s"]:format(
+            RangeCacheStrings.friend or "",
+            RangeCacheStrings.harm or "",
+            RangeCacheStrings.misc or ""
+          )
         end,
       },
       {

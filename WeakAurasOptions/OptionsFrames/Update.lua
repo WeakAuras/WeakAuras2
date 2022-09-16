@@ -97,7 +97,12 @@ local function scamCheck(codes, data)
 
   addCode(codes, L["%s - Custom Grow"]:format(data.id), data.customGrow, data.regionType == "dynamicgroup" and data.grow == "CUSTOM")
   addCode(codes, L["%s - Custom Sort"]:format(data.id), data.customSort, data.regionType == "dynamicgroup" and data.sort == "custom")
-  addCode(codes, L["%s - Custom Anchor"]:format(data.id), data.customAnchorPerUnit, data.regionType == "dynamicgroup" and data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM")
+  addCode(
+    codes,
+    L["%s - Custom Anchor"]:format(data.id),
+    data.customAnchorPerUnit,
+    data.regionType == "dynamicgroup" and data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM"
+  )
 
   if data.conditions then
     local customChat = 1
@@ -1109,7 +1114,13 @@ local function CompareControlledChildrenOrder(oldUID, newUidMap, oldUidMap, matc
 end
 
 local function hasChanges(matchInfo)
-  return matchInfo.modifiedCount > 0 or matchInfo.modifiedGroupCount > 0 or matchInfo.addedCount > 0 or matchInfo.addedGroupCount > 0 or matchInfo.deletedCount > 0 or matchInfo.deletedGroupCount > 0 or matchInfo.activeCategories.arrangement
+  return matchInfo.modifiedCount > 0
+    or matchInfo.modifiedGroupCount > 0
+    or matchInfo.addedCount > 0
+    or matchInfo.addedGroupCount > 0
+    or matchInfo.deletedCount > 0
+    or matchInfo.deletedGroupCount > 0
+    or matchInfo.activeCategories.arrangement
 end
 
 local function BuildDiffs(newUidMap, oldUidMap)
@@ -1402,7 +1413,9 @@ local methods = {
       local flavorWarning = AceGUI:Create("Label")
       flavorWarning:SetFontObject(GameFontHighlight)
       flavorWarning:SetFullWidth(true)
-      flavorWarning:SetText(L["This aura was created with a different version (%s) of World of Warcraft.\nIt might not work correctly!"]:format(OptionsPrivate.Private.TocToExpansion[importBuild]))
+      flavorWarning:SetText(
+        L["This aura was created with a different version (%s) of World of Warcraft.\nIt might not work correctly!"]:format(OptionsPrivate.Private.TocToExpansion[importBuild])
+      )
       flavorWarning:SetColor(1, 0, 0)
       self:AddChild(flavorWarning)
     end

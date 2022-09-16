@@ -580,7 +580,11 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             end
           end,
           disabled = function()
-            return not ((arg.type == "aura" and trigger[realname] and spellCache.GetIcon(trigger[realname])) or (arg.type == "spell" and trigger[realname] and GetSpellInfo(trigger[realname])) or (arg.type == "item" and trigger[realname] and GetItemIcon(trigger[realname])))
+            return not (
+                (arg.type == "aura" and trigger[realname] and spellCache.GetIcon(trigger[realname]))
+                or (arg.type == "spell" and trigger[realname] and GetSpellInfo(trigger[realname]))
+                or (arg.type == "item" and trigger[realname] and GetItemIcon(trigger[realname]))
+              )
           end,
         }
         order = order + 1
@@ -737,7 +741,9 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             name = L["Specific Unit"],
             order = order,
             hidden = function()
-              return (not trigger["use_specific_" .. realname] and trigger[realname] ~= "member") or (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden)
+              return (not trigger["use_specific_" .. realname] and trigger[realname] ~= "member")
+                or (type(hidden) == "function" and hidden(trigger))
+                or (type(hidden) ~= "function" and hidden)
             end,
             get = function()
               return true
@@ -756,7 +762,9 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             desc = L["Can be a UID (e.g., party1)."],
             order = order,
             hidden = function()
-              return (not trigger["use_specific_" .. realname] and trigger[realname] ~= "member") or (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden)
+              return (not trigger["use_specific_" .. realname] and trigger[realname] ~= "member")
+                or (type(hidden) == "function" and hidden(trigger))
+                or (type(hidden) ~= "function" and hidden)
             end,
             get = function()
               return trigger[realname]

@@ -293,7 +293,10 @@ local barPrototype = {
     self.fg:SetTexCoord(TLx_, TLy_, BLx_, BLy_, TRx_, TRy_, BRx_, BRy_)
 
     local sparkHidden = self.spark.sparkHidden
-    local sparkVisible = sparkHidden == "NEVER" or (sparkHidden == "FULL" and progress < 1) or (sparkHidden == "EMPTY" and progress > 0) or (sparkHidden == "BOTH" and progress < 1 and progress > 0)
+    local sparkVisible = sparkHidden == "NEVER"
+      or (sparkHidden == "FULL" and progress < 1)
+      or (sparkHidden == "EMPTY" and progress > 0)
+      or (sparkHidden == "BOTH" and progress < 1 and progress > 0)
 
     if sparkVisible then
       self.spark:Show()
@@ -1121,13 +1124,14 @@ local function modify(parent, region, data)
   bar.spark.sparkMirror = data.sparkMirror
 
   -- Color update function
-  region.Color = region.Color or function(self, r, g, b, a)
-    self.color_r = r
-    self.color_g = g
-    self.color_b = b
-    self.color_a = a
-    self.bar:SetForegroundColor(self.color_anim_r or r, self.color_anim_g or g, self.color_anim_b or b, self.color_anim_a or a)
-  end
+  region.Color = region.Color
+    or function(self, r, g, b, a)
+      self.color_r = r
+      self.color_g = g
+      self.color_b = b
+      self.color_a = a
+      self.bar:SetForegroundColor(self.color_anim_r or r, self.color_anim_g or g, self.color_anim_b or b, self.color_anim_a or a)
+    end
 
   region.ColorAnim = function(self, r, g, b, a)
     self.color_anim_r = r

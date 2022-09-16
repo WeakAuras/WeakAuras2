@@ -1206,7 +1206,10 @@ local function modify(parent, region, data)
   end
 
   function region:GetColor()
-    return region.color_r or data.foregroundColor[1], region.color_g or data.foregroundColor[2], region.color_b or data.foregroundColor[3], region.color_a or data.foregroundColor[4]
+    return region.color_r or data.foregroundColor[1],
+      region.color_g or data.foregroundColor[2],
+      region.color_b or data.foregroundColor[3],
+      region.color_a or data.foregroundColor[4]
   end
 
   region:Color(data.foregroundColor[1], data.foregroundColor[2], data.foregroundColor[3], data.foregroundColor[4])

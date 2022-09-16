@@ -294,7 +294,15 @@ local function ConstructModelPicker(frame)
     self.selectedValues.model_st_us = model_us or self.selectedValues.model_st_us
 
     WeakAuras.SetModel(self.model, self.selectedValues.model_path, self.selectedValues.model_fileId)
-    self.model:SetTransform(self.selectedValues.model_st_tx / 1000, self.selectedValues.model_st_ty / 1000, self.selectedValues.model_st_tz / 1000, rad(self.selectedValues.model_st_rx), rad(self.selectedValues.model_st_ry), rad(self.selectedValues.model_st_rz), self.selectedValues.model_st_us / 1000)
+    self.model:SetTransform(
+      self.selectedValues.model_st_tx / 1000,
+      self.selectedValues.model_st_ty / 1000,
+      self.selectedValues.model_st_tz / 1000,
+      rad(self.selectedValues.model_st_rx),
+      rad(self.selectedValues.model_st_ry),
+      rad(self.selectedValues.model_st_rz),
+      self.selectedValues.model_st_us / 1000
+    )
 
     for child in OptionsPrivate.Private.TraverseLeafsOrAura(self.baseObject) do
       local object = valueFromPath(child, self.path)
@@ -382,7 +390,15 @@ local function ConstructModelPicker(frame)
     self.selectedValues.rotation = GetAll(baseObject, path, "rotation", 0)
 
     if self.selectedValues.api then
-      self.model:SetTransform(self.selectedValues.model_st_tx / 1000, self.selectedValues.model_st_ty / 1000, self.selectedValues.model_st_tz / 1000, rad(self.selectedValues.model_st_rx), rad(self.selectedValues.model_st_ry), rad(self.selectedValues.model_st_rz), self.selectedValues.model_st_us / 1000)
+      self.model:SetTransform(
+        self.selectedValues.model_st_tx / 1000,
+        self.selectedValues.model_st_ty / 1000,
+        self.selectedValues.model_st_tz / 1000,
+        rad(self.selectedValues.model_st_rx),
+        rad(self.selectedValues.model_st_ry),
+        rad(self.selectedValues.model_st_rz),
+        self.selectedValues.model_st_us / 1000
+      )
 
       modelPickerTX:SetValue(self.selectedValues.model_st_tx)
       modelPickerTX.editbox:SetText(("%.2f"):format(self.selectedValues.model_st_tx))

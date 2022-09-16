@@ -126,7 +126,15 @@ local function ConfigureModel(region, model, data)
   model:ClearTransform()
   if data.api then
     model:MakeCurrentCameraCustom()
-    model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000, rad(data.model_st_rx), rad(data.model_st_ry), rad(region.rotation), data.model_st_us / 1000)
+    model:SetTransform(
+      data.model_st_tx / 1000,
+      data.model_st_ty / 1000,
+      data.model_st_tz / 1000,
+      rad(data.model_st_rx),
+      rad(data.model_st_ry),
+      rad(region.rotation),
+      data.model_st_us / 1000
+    )
   else
     model:SetPosition(data.model_z, data.model_x, data.model_y)
     model:SetFacing(rad(region.rotation))
@@ -266,7 +274,15 @@ local function modify(parent, region, data)
     region.rotation = degrees
     if region.model then
       if data.api then
-        region.model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000, rad(data.model_st_rx), rad(data.model_st_ry), rad(degrees), data.model_st_us / 1000)
+        region.model:SetTransform(
+          data.model_st_tx / 1000,
+          data.model_st_ty / 1000,
+          data.model_st_tz / 1000,
+          rad(data.model_st_rx),
+          rad(data.model_st_ry),
+          rad(degrees),
+          data.model_st_us / 1000
+        )
       else
         region.model:SetFacing(rad(region.rotation))
       end

@@ -110,7 +110,15 @@ local function createOptions(parentData, data, index, subIndex)
           textWidth = " " .. L["and with width |cFFFF0000%s|r and %s"]:format(data.text_fixedWidth, wordWarp)
         end
 
-        local secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s%s"]:format(textFlags, color, data.text_shadowXOffset, data.text_shadowYOffset, textRotate, textJustify, textWidth)
+        local secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s%s"]:format(
+          textFlags,
+          color,
+          data.text_shadowXOffset,
+          data.text_shadowYOffset,
+          textRotate,
+          textJustify,
+          textWidth
+        )
 
         return secondline
       end,
@@ -439,7 +447,17 @@ local function createOptions(parentData, data, index, subIndex)
     },
   }
 
-  OptionsPrivate.commonOptions.AddCodeOption(commonTextOptions, parentData, L["Custom Function"], "customText", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text", 4, hideCustomTextOption, { "customText" }, false)
+  OptionsPrivate.commonOptions.AddCodeOption(
+    commonTextOptions,
+    parentData,
+    L["Custom Function"],
+    "customText",
+    "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text",
+    4,
+    hideCustomTextOption,
+    { "customText" },
+    false
+  )
 
   -- Add Text Format Options
   local hidden = function()

@@ -263,7 +263,13 @@ function Private.Modernize(data)
   if data.internalVersion < 14 then
     if data.triggers then
       for triggerId, triggerData in pairs(data.triggers) do
-        if type(triggerData) == "table" and triggerData.trigger and triggerData.trigger.debuffClass and type(triggerData.trigger.debuffClass) == "string" and triggerData.trigger.debuffClass ~= "" then
+        if
+          type(triggerData) == "table"
+          and triggerData.trigger
+          and triggerData.trigger.debuffClass
+          and type(triggerData.trigger.debuffClass) == "string"
+          and triggerData.trigger.debuffClass ~= ""
+        then
           local idx = triggerData.trigger.debuffClass
           data.triggers[triggerId].trigger.debuffClass = { [idx] = true }
         end
@@ -762,7 +768,8 @@ function Private.Modernize(data)
           sym = sym or symbol
           if sym == "p" or sym == "t" then
             data["displayText_format_" .. symbol .. "_format"] = "timed"
-            data["displayText_format_" .. symbol .. "_time_precision"], data["displayText_format_" .. symbol .. "_time_dynamic"] = convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
+            data["displayText_format_" .. symbol .. "_time_precision"], data["displayText_format_" .. symbol .. "_time_dynamic"] =
+              convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
           end
         end
         seenSymbols[symbol] = symbol
@@ -779,7 +786,8 @@ function Private.Modernize(data)
               sym = sym or symbol
               if sym == "p" or sym == "t" then
                 subRegionData["text_text_format_" .. symbol .. "_format"] = "timed"
-                subRegionData["text_text_format_" .. symbol .. "_time_precision"], subRegionData["text_text_format_" .. symbol .. "_time_dynamic"] = convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
+                subRegionData["text_text_format_" .. symbol .. "_time_precision"], subRegionData["text_text_format_" .. symbol .. "_time_dynamic"] =
+                  convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
               end
             end
             seenSymbols[symbol] = symbol
@@ -798,7 +806,8 @@ function Private.Modernize(data)
               sym = sym or symbol
               if sym == "p" or sym == "t" then
                 data.actions[when]["message_format_" .. symbol .. "_format"] = "timed"
-                data.actions[when]["message_format_" .. symbol .. "_time_precision"], data.actions[when]["message_format_" .. symbol .. "_time_dynamic"] = convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
+                data.actions[when]["message_format_" .. symbol .. "_time_precision"], data.actions[when]["message_format_" .. symbol .. "_time_dynamic"] =
+                  convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
               end
             end
             seenSymbols[symbol] = symbol
@@ -818,7 +827,8 @@ function Private.Modernize(data)
                 sym = sym or symbol
                 if sym == "p" or sym == "t" then
                   change.value["message_format_" .. symbol .. "_format"] = "timed"
-                  change.value["message_format_" .. symbol .. "_time_precision"], change.value["message_format_" .. symbol .. "_time_dynamic"] = convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
+                  change.value["message_format_" .. symbol .. "_time_precision"], change.value["message_format_" .. symbol .. "_time_dynamic"] =
+                    convertLegacyPrecision(sym == "p" and progressPrecision or totalPrecision)
                 end
               end
               seenSymbols[symbol] = symbol

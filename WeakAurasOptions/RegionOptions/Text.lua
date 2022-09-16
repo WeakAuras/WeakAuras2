@@ -103,7 +103,14 @@ local function createOptions(id, data)
           textWidth = " " .. L["and with width |cFFFF0000%s|r and %s"]:format(data.fixedWidth, wordWarp)
         end
 
-        local secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s"]:format(textFlags, color, data.shadowXOffset, data.shadowYOffset, textJustify, textWidth)
+        local secondline = L["|cFFffcc00Font Flags:|r |cFFFF0000%s|r and shadow |c%sColor|r with offset |cFFFF0000%s/%s|r%s%s"]:format(
+          textFlags,
+          color,
+          data.shadowXOffset,
+          data.shadowYOffset,
+          textJustify,
+          textWidth
+        )
 
         return secondline
       end,
@@ -272,9 +279,19 @@ local function createOptions(id, data)
     },
   }
 
-  OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Function"], "customText", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text", 37, function()
-    return not OptionsPrivate.Private.ContainsCustomPlaceHolder(data.displayText)
-  end, { "customText" }, false)
+  OptionsPrivate.commonOptions.AddCodeOption(
+    options,
+    data,
+    L["Custom Function"],
+    "customText",
+    "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text",
+    37,
+    function()
+      return not OptionsPrivate.Private.ContainsCustomPlaceHolder(data.displayText)
+    end,
+    { "customText" },
+    false
+  )
 
   -- Add Text Format Options
   local hidden = function()
@@ -434,4 +451,13 @@ local templates = {
   },
 }
 
-WeakAuras.RegisterRegionOptions("text", createOptions, createIcon, L["Text"], createThumbnail, modifyThumbnail, L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"], templates)
+WeakAuras.RegisterRegionOptions(
+  "text",
+  createOptions,
+  createIcon,
+  L["Text"],
+  createThumbnail,
+  modifyThumbnail,
+  L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"],
+  templates
+)

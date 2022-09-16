@@ -1153,7 +1153,12 @@ local function GetBuffTriggerOptions(data, triggernum)
       order = 71,
       disabled = true,
       hidden = function()
-        return not (trigger.type == "aura" and not (trigger.unit ~= "group" and trigger.fullscan and trigger.autoclone) and trigger.unit ~= "multi" and not (trigger.unit == "group" and not trigger.groupclone))
+        return not (
+            trigger.type == "aura"
+            and not (trigger.unit ~= "group" and trigger.fullscan and trigger.autoclone)
+            and trigger.unit ~= "multi"
+            and not (trigger.unit == "group" and not trigger.groupclone)
+          )
       end,
       get = function()
         return true
@@ -1170,7 +1175,12 @@ local function GetBuffTriggerOptions(data, triggernum)
         return trigger.buffShowOn
       end,
       hidden = function()
-        return not (trigger.type == "aura" and not (trigger.unit ~= "group" and trigger.fullscan and trigger.autoclone) and trigger.unit ~= "multi" and not (trigger.unit == "group" and not trigger.groupclone))
+        return not (
+            trigger.type == "aura"
+            and not (trigger.unit ~= "group" and trigger.fullscan and trigger.autoclone)
+            and trigger.unit ~= "multi"
+            and not (trigger.unit == "group" and not trigger.groupclone)
+          )
       end,
       set = noop,
     },
@@ -1180,7 +1190,13 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Show If Unit Is Invalid"],
       order = 72,
       hidden = function()
-        return not (trigger.type == "aura" and not (trigger.unit ~= "group" and trigger.fullscan and trigger.autoclone) and trigger.unit ~= "multi" and trigger.unit ~= "group" and trigger.unit ~= "player")
+        return not (
+            trigger.type == "aura"
+            and not (trigger.unit ~= "group" and trigger.fullscan and trigger.autoclone)
+            and trigger.unit ~= "multi"
+            and trigger.unit ~= "group"
+            and trigger.unit ~= "player"
+          )
       end,
       set = noop,
     },

@@ -398,7 +398,11 @@ function OptionsPrivate.GetActionOptions(data)
           return data.actions.start.glow_lines or 8
         end,
         hidden = function()
-          return not data.actions.start.do_glow or data.actions.start.glow_action ~= "show" or not data.actions.start.glow_type or data.actions.start.glow_type == "buttonOverlay" or data.actions.start.glow_frame_type == nil
+          return not data.actions.start.do_glow
+            or data.actions.start.glow_action ~= "show"
+            or not data.actions.start.glow_type
+            or data.actions.start.glow_type == "buttonOverlay"
+            or data.actions.start.glow_frame_type == nil
         end,
       },
       start_glow_frequency = {
@@ -413,7 +417,11 @@ function OptionsPrivate.GetActionOptions(data)
           return data.actions.start.glow_frequency or 0.25
         end,
         hidden = function()
-          return not data.actions.start.do_glow or data.actions.start.glow_action ~= "show" or not data.actions.start.glow_type or data.actions.start.glow_type == "buttonOverlay" or data.actions.start.glow_frame_type == nil
+          return not data.actions.start.do_glow
+            or data.actions.start.glow_action ~= "show"
+            or not data.actions.start.glow_type
+            or data.actions.start.glow_type == "buttonOverlay"
+            or data.actions.start.glow_frame_type == nil
         end,
       },
       start_glow_length = {
@@ -455,7 +463,11 @@ function OptionsPrivate.GetActionOptions(data)
         softMax = 100,
         step = 0.5,
         hidden = function()
-          return not data.actions.start.do_glow or data.actions.start.glow_action ~= "show" or not data.actions.start.glow_type or data.actions.start.glow_type == "buttonOverlay" or data.actions.start.glow_frame_type == nil
+          return not data.actions.start.do_glow
+            or data.actions.start.glow_action ~= "show"
+            or not data.actions.start.glow_type
+            or data.actions.start.glow_type == "buttonOverlay"
+            or data.actions.start.glow_frame_type == nil
         end,
       },
       start_glow_YOffset = {
@@ -467,7 +479,11 @@ function OptionsPrivate.GetActionOptions(data)
         softMax = 100,
         step = 0.5,
         hidden = function()
-          return not data.actions.start.do_glow or data.actions.start.glow_action ~= "show" or not data.actions.start.glow_type or data.actions.start.glow_type == "buttonOverlay" or data.actions.start.glow_frame_type == nil
+          return not data.actions.start.do_glow
+            or data.actions.start.glow_action ~= "show"
+            or not data.actions.start.glow_type
+            or data.actions.start.glow_type == "buttonOverlay"
+            or data.actions.start.glow_frame_type == nil
         end,
       },
       start_glow_scale = {
@@ -483,7 +499,10 @@ function OptionsPrivate.GetActionOptions(data)
           return data.actions.start.glow_scale or 1
         end,
         hidden = function()
-          return not data.actions.start.do_glow or data.actions.start.glow_action ~= "show" or data.actions.start.glow_type ~= "ACShine" or data.actions.start.glow_frame_type == nil
+          return not data.actions.start.do_glow
+            or data.actions.start.glow_action ~= "show"
+            or data.actions.start.glow_type ~= "ACShine"
+            or data.actions.start.glow_frame_type == nil
         end,
       },
       start_glow_border = {
@@ -784,7 +803,11 @@ function OptionsPrivate.GetActionOptions(data)
           return data.actions.finish.glow_lines or 8
         end,
         hidden = function()
-          return not data.actions.finish.do_glow or data.actions.finish.glow_action ~= "show" or not data.actions.finish.glow_type or data.actions.finish.glow_type == "buttonOverlay" or data.actions.finish.glow_frame_type == nil
+          return not data.actions.finish.do_glow
+            or data.actions.finish.glow_action ~= "show"
+            or not data.actions.finish.glow_type
+            or data.actions.finish.glow_type == "buttonOverlay"
+            or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_glow_frequency = {
@@ -799,7 +822,11 @@ function OptionsPrivate.GetActionOptions(data)
           return data.actions.finish.glow_frequency or 0.25
         end,
         hidden = function()
-          return not data.actions.finish.do_glow or data.actions.finish.glow_action ~= "show" or not data.actions.finish.glow_type or data.actions.finish.glow_type == "buttonOverlay" or data.actions.finish.glow_frame_type == nil
+          return not data.actions.finish.do_glow
+            or data.actions.finish.glow_action ~= "show"
+            or not data.actions.finish.glow_type
+            or data.actions.finish.glow_type == "buttonOverlay"
+            or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_glow_length = {
@@ -814,7 +841,10 @@ function OptionsPrivate.GetActionOptions(data)
           return data.actions.finish.glow_length or 10
         end,
         hidden = function()
-          return not data.actions.finish.do_glow or data.actions.finish.glow_action ~= "show" or data.actions.finish.glow_type ~= "Pixel" or data.actions.finish.glow_frame_type == nil
+          return not data.actions.finish.do_glow
+            or data.actions.finish.glow_action ~= "show"
+            or data.actions.finish.glow_type ~= "Pixel"
+            or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_glow_thickness = {
@@ -829,7 +859,10 @@ function OptionsPrivate.GetActionOptions(data)
           return data.actions.finish.glow_thickness or 1
         end,
         hidden = function()
-          return not data.actions.finish.do_glow or data.actions.finish.glow_action ~= "show" or data.actions.finish.glow_type ~= "Pixel" or data.actions.finish.glow_frame_type == nil
+          return not data.actions.finish.do_glow
+            or data.actions.finish.glow_action ~= "show"
+            or data.actions.finish.glow_type ~= "Pixel"
+            or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_glow_XOffset = {
@@ -841,7 +874,11 @@ function OptionsPrivate.GetActionOptions(data)
         softMax = 100,
         step = 0.5,
         hidden = function()
-          return not data.actions.finish.do_glow or data.actions.finish.glow_action ~= "show" or not data.actions.finish.glow_type or data.actions.finish.glow_type == "buttonOverlay" or data.actions.finish.glow_frame_type == nil
+          return not data.actions.finish.do_glow
+            or data.actions.finish.glow_action ~= "show"
+            or not data.actions.finish.glow_type
+            or data.actions.finish.glow_type == "buttonOverlay"
+            or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_glow_YOffset = {
@@ -853,7 +890,11 @@ function OptionsPrivate.GetActionOptions(data)
         softMax = 100,
         step = 0.5,
         hidden = function()
-          return not data.actions.finish.do_glow or data.actions.finish.glow_action ~= "show" or not data.actions.finish.glow_type or data.actions.finish.glow_type == "buttonOverlay" or data.actions.finish.glow_frame_type == nil
+          return not data.actions.finish.do_glow
+            or data.actions.finish.glow_action ~= "show"
+            or not data.actions.finish.glow_type
+            or data.actions.finish.glow_type == "buttonOverlay"
+            or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_glow_scale = {
@@ -869,7 +910,10 @@ function OptionsPrivate.GetActionOptions(data)
           return data.actions.finish.glow_scale or 1
         end,
         hidden = function()
-          return not data.actions.finish.do_glow or data.actions.finish.glow_action ~= "show" or data.actions.finish.glow_type ~= "ACShine" or data.actions.finish.glow_frame_type == nil
+          return not data.actions.finish.do_glow
+            or data.actions.finish.glow_action ~= "show"
+            or data.actions.finish.glow_type ~= "ACShine"
+            or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_glow_border = {
@@ -878,7 +922,10 @@ function OptionsPrivate.GetActionOptions(data)
         name = L["Border"],
         order = 30.88,
         hidden = function()
-          return not data.actions.finish.do_glow or data.actions.finish.glow_action ~= "show" or data.actions.finish.glow_type ~= "Pixel" or data.actions.finish.glow_frame_type == nil
+          return not data.actions.finish.do_glow
+            or data.actions.finish.glow_action ~= "show"
+            or data.actions.finish.glow_type ~= "Pixel"
+            or data.actions.finish.glow_frame_type == nil
         end,
       },
       finish_hide_all_glows = {
@@ -899,13 +946,39 @@ function OptionsPrivate.GetActionOptions(data)
 
   -- Text format option helpers
 
-  OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "init", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-init", 0.011, function()
-    return not data.actions.init.do_custom
-  end, { "actions", "init", "custom" }, true)
+  OptionsPrivate.commonOptions.AddCodeOption(
+    action.args,
+    data,
+    L["Custom Code"],
+    "init",
+    "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-init",
+    0.011,
+    function()
+      return not data.actions.init.do_custom
+    end,
+    { "actions", "init", "custom" },
+    true
+  )
 
-  OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "start_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code", 5, function()
-    return not (data.actions.start.do_message and (OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.start.message) or (data.actions.start.message_type == "WHISPER" and OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.start.message_dest))))
-  end, { "actions", "start", "message_custom" }, false)
+  OptionsPrivate.commonOptions.AddCodeOption(
+    action.args,
+    data,
+    L["Custom Code"],
+    "start_message",
+    "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code",
+    5,
+    function()
+      return not (
+          data.actions.start.do_message
+          and (
+            OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.start.message)
+            or (data.actions.start.message_type == "WHISPER" and OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.start.message_dest))
+          )
+        )
+    end,
+    { "actions", "start", "message_custom" },
+    false
+  )
 
   local startHidden = function()
     return OptionsPrivate.IsCollapsed("format_option", "actions", "start_message", true)
@@ -972,9 +1045,25 @@ function OptionsPrivate.GetActionOptions(data)
     return not data.actions.start.do_custom
   end, { "actions", "start", "custom" }, true)
 
-  OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "finish_message", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code", 25, function()
-    return not (data.actions.finish.do_message and (OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.finish.message) or (data.actions.finish.message_type == "WHISPER" and OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.finish.message_dest))))
-  end, { "actions", "finish", "message_custom" }, false)
+  OptionsPrivate.commonOptions.AddCodeOption(
+    action.args,
+    data,
+    L["Custom Code"],
+    "finish_message",
+    "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code",
+    25,
+    function()
+      return not (
+          data.actions.finish.do_message
+          and (
+            OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.finish.message)
+            or (data.actions.finish.message_type == "WHISPER" and OptionsPrivate.Private.ContainsCustomPlaceHolder(data.actions.finish.message_dest))
+          )
+        )
+    end,
+    { "actions", "finish", "message_custom" },
+    false
+  )
 
   local finishHidden = function()
     return OptionsPrivate.IsCollapsed("format_option", "actions", "finish_message", true)
@@ -1035,9 +1124,19 @@ function OptionsPrivate.GetActionOptions(data)
     OptionsPrivate.AddTextFormatOption(data.actions and data.actions.finish.message, true, finishGet, finishAddOption, finishHidden, finishSetHidden, true)
   end
 
-  OptionsPrivate.commonOptions.AddCodeOption(action.args, data, L["Custom Code"], "finish", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-hide", 32, function()
-    return not data.actions.finish.do_custom
-  end, { "actions", "finish", "custom" }, true)
+  OptionsPrivate.commonOptions.AddCodeOption(
+    action.args,
+    data,
+    L["Custom Code"],
+    "finish",
+    "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#on-hide",
+    32,
+    function()
+      return not data.actions.finish.do_custom
+    end,
+    { "actions", "finish", "custom" },
+    true
+  )
 
   if data.controlledChildren then
     removeFuncs(action)

@@ -221,7 +221,15 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
         local testFunctionNumber = #WeakAuras.conditionHelpers[uid].customTestFunctions
         local valueString = type(value) == "string" and string.format("%q", value) or value
         local opString = type(op) == "string" and string.format("%q", op) or op
-        check = string.format("state and WeakAuras.CallCustomConditionTest(%q, %s, state[%s], %s, %s, %s)", uid, testFunctionNumber, trigger, valueString, (opString or "nil"), preambleString or "nil")
+        check = string.format(
+          "state and WeakAuras.CallCustomConditionTest(%q, %s, state[%s], %s, %s, %s)",
+          uid,
+          testFunctionNumber,
+          trigger,
+          valueString,
+          (opString or "nil"),
+          preambleString or "nil"
+        )
       end
     elseif cType == "customcheck" then
       if value then
@@ -250,9 +258,31 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
     elseif cType == "timer" and value and op then
       if useModRate then
         if op == "==" then
-          check = stateCheck .. stateVariableCheck .. "abs(((state[" .. trigger .. "]" .. string.format("[%q]", variable) .. "- now) " .. "/ (state[" .. trigger .. "].modRate or 1.0))" .. " -" .. value .. ") < 0.05"
+          check = stateCheck
+            .. stateVariableCheck
+            .. "abs(((state["
+            .. trigger
+            .. "]"
+            .. string.format("[%q]", variable)
+            .. "- now) "
+            .. "/ (state["
+            .. trigger
+            .. "].modRate or 1.0))"
+            .. " -"
+            .. value
+            .. ") < 0.05"
         else
-          check = stateCheck .. stateVariableCheck .. "((state[" .. trigger .. "]" .. string.format("[%q]", variable) .. "- now) / (state[" .. trigger .. "].modRate or 1.0))" .. op .. value
+          check = stateCheck
+            .. stateVariableCheck
+            .. "((state["
+            .. trigger
+            .. "]"
+            .. string.format("[%q]", variable)
+            .. "- now) / (state["
+            .. trigger
+            .. "].modRate or 1.0))"
+            .. op
+            .. value
         end
       else
         if op == "==" then
@@ -443,15 +473,36 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
           elseif propertyData.action then
             local pathToCustomFunction = "nil"
             local pathToFormatter = "nil"
-            if WeakAuras.customConditionsFunctions[id] and WeakAuras.customConditionsFunctions[id][conditionNumber] and WeakAuras.customConditionsFunctions[id][conditionNumber].changes and WeakAuras.customConditionsFunctions[id][conditionNumber].changes[changeNum] then
+            if
+              WeakAuras.customConditionsFunctions[id]
+              and WeakAuras.customConditionsFunctions[id][conditionNumber]
+              and WeakAuras.customConditionsFunctions[id][conditionNumber].changes
+              and WeakAuras.customConditionsFunctions[id][conditionNumber].changes[changeNum]
+            then
               pathToCustomFunction = string.format("WeakAuras.customConditionsFunctions[%q][%s].changes[%s]", id, conditionNumber, changeNum)
             end
-            if WeakAuras.conditionTextFormatters[id] and WeakAuras.conditionTextFormatters[id][conditionNumber] and WeakAuras.conditionTextFormatters[id][conditionNumber].changes and WeakAuras.conditionTextFormatters[id][conditionNumber].changes[changeNum] then
+            if
+              WeakAuras.conditionTextFormatters[id]
+              and WeakAuras.conditionTextFormatters[id][conditionNumber]
+              and WeakAuras.conditionTextFormatters[id][conditionNumber].changes
+              and WeakAuras.conditionTextFormatters[id][conditionNumber].changes[changeNum]
+            then
               pathToFormatter = string.format("WeakAuras.conditionTextFormatters[%q][%s].changes[%s]", id, conditionNumber, changeNum)
             end
-            ret = ret .. "     region:" .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction, pathToFormatter) .. ")" .. "\n"
+            ret = ret
+              .. "     region:"
+              .. propertyData.action
+              .. "("
+              .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction, pathToFormatter)
+              .. ")"
+              .. "\n"
             if debug then
-              ret = ret .. "     print('# " .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction, pathToFormatter) .. "')\n"
+              ret = ret
+                .. "     print('# "
+                .. propertyData.action
+                .. "("
+                .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction, pathToFormatter)
+                .. "')\n"
             end
           end
         end

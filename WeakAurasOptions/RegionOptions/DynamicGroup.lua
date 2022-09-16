@@ -177,7 +177,15 @@ local function createOptions(id, data)
         OptionsPrivate.ResetMoverSizer()
       end,
       hidden = function()
-        return (data.grow == "CUSTOM" or data.grow == "LEFT" or data.grow == "RIGHT" or data.grow == "HORIZONTAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" or data.grow == "GRID")
+        return (
+          data.grow == "CUSTOM"
+          or data.grow == "LEFT"
+          or data.grow == "RIGHT"
+          or data.grow == "HORIZONTAL"
+          or data.grow == "CIRCLE"
+          or data.grow == "COUNTERCIRCLE"
+          or data.grow == "GRID"
+        )
       end,
       disabled = function()
         return data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE"
@@ -190,7 +198,15 @@ local function createOptions(id, data)
       order = 3,
       values = OptionsPrivate.Private.rotated_align_types,
       hidden = function()
-        return (data.grow == "CUSTOM" or data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" or data.grow == "GRID")
+        return (
+          data.grow == "CUSTOM"
+          or data.grow == "UP"
+          or data.grow == "DOWN"
+          or data.grow == "VERTICAL"
+          or data.grow == "CIRCLE"
+          or data.grow == "COUNTERCIRCLE"
+          or data.grow == "GRID"
+        )
       end,
       get = function()
         return data.align
@@ -478,12 +494,34 @@ local function createOptions(id, data)
   OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Grow"], "custom_grow", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#grow", 2, function()
     return data.grow ~= "CUSTOM"
   end, { "customGrow" }, false, { setOnParent = true })
-  OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Sort"], "custom_sort", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-sort", 21, function()
-    return data.sort ~= "custom"
-  end, { "customSort" }, false, { setOnParent = true })
-  OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Anchor"], "custom_anchor_per_unit", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#group-by-frame", 1.7, function()
-    return not (data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM")
-  end, { "customAnchorPerUnit" }, false, { setOnParent = true })
+  OptionsPrivate.commonOptions.AddCodeOption(
+    options,
+    data,
+    L["Custom Sort"],
+    "custom_sort",
+    "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-sort",
+    21,
+    function()
+      return data.sort ~= "custom"
+    end,
+    { "customSort" },
+    false,
+    { setOnParent = true }
+  )
+  OptionsPrivate.commonOptions.AddCodeOption(
+    options,
+    data,
+    L["Custom Anchor"],
+    "custom_anchor_per_unit",
+    "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#group-by-frame",
+    1.7,
+    function()
+      return not (data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM")
+    end,
+    { "customAnchorPerUnit" },
+    false,
+    { setOnParent = true }
+  )
 
   local borderHideFunc = function()
     return data.useAnchorPerUnit or data.grow == "CUSTOM"
@@ -607,4 +645,12 @@ local function createIcon()
   return thumbnail
 end
 
-WeakAuras.RegisterRegionOptions("dynamicgroup", createOptions, createIcon, L["Dynamic Group"], createThumbnail, modifyThumbnail, L["A group that dynamically controls the positioning of its children"])
+WeakAuras.RegisterRegionOptions(
+  "dynamicgroup",
+  createOptions,
+  createIcon,
+  L["Dynamic Group"],
+  createThumbnail,
+  modifyThumbnail,
+  L["A group that dynamically controls the positioning of its children"]
+)

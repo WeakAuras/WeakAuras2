@@ -67,7 +67,15 @@ local function PreShow(self)
   self:ClearTransform()
   if data.api then
     self:MakeCurrentCameraCustom()
-    self:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000, rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz), data.model_st_us / 1000)
+    self:SetTransform(
+      data.model_st_tx / 1000,
+      data.model_st_ty / 1000,
+      data.model_st_tz / 1000,
+      rad(data.model_st_rx),
+      rad(data.model_st_ry),
+      rad(data.model_st_rz),
+      data.model_st_us / 1000
+    )
   else
     self:SetPosition(data.model_z, data.model_x, data.model_y)
     self:SetFacing(0)
@@ -128,7 +136,15 @@ local function AcquireModel(region, data)
   model:ClearTransform()
   if data.api then
     model:MakeCurrentCameraCustom()
-    model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000, rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz), data.model_st_us / 1000)
+    model:SetTransform(
+      data.model_st_tx / 1000,
+      data.model_st_ty / 1000,
+      data.model_st_tz / 1000,
+      rad(data.model_st_rx),
+      rad(data.model_st_ry),
+      rad(data.model_st_rz),
+      data.model_st_us / 1000
+    )
   else
     model:SetPosition(data.model_z, data.model_x, data.model_y)
     model:SetFacing(0)

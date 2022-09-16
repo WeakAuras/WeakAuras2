@@ -861,4 +861,14 @@ local function GetAnchors(data)
 end
 
 -- Register new region type options with WeakAuras
-WeakAuras.RegisterRegionOptions("aurabar", createOptions, createIcon, L["Progress Bar"], createThumbnail, modifyThumbnail, L["Shows a progress bar with name, timer, and icon"], templates, GetAnchors)
+WeakAuras.RegisterRegionOptions(
+  "aurabar",
+  createOptions,
+  createIcon,
+  L["Progress Bar"],
+  createThumbnail,
+  modifyThumbnail,
+  L["Shows a progress bar with name, timer, and icon"],
+  templates,
+  GetAnchors
+)

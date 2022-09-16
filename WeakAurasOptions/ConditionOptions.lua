@@ -782,7 +782,9 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       type = "select",
       width = WeakAuras.doubleWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", L["Voice"], L["Voice"]),
-      desc = (descIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", propertyType, OptionsPrivate.Private.tts_voices) or "") .. "\n" .. L["Available Voices are system specific"],
+      desc = (descIfNoValue2(data, conditions[i].changes[j], "value", "message_voice", propertyType, OptionsPrivate.Private.tts_voices) or "")
+        .. "\n"
+        .. L["Available Voices are system specific"],
       values = OptionsPrivate.Private.tts_voices,
       order = order,
       get = function()
@@ -872,7 +874,9 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     local function customHidden()
       local message = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message
-      local message_dest = type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.message_type == "WHISPER" and conditions[i].changes[j].value.message_dest
+      local message_dest = type(conditions[i].changes[j].value) == "table"
+        and conditions[i].changes[j].value.message_type == "WHISPER"
+        and conditions[i].changes[j].value.message_dest
       if not message and not message_dest then
         return true
       end
@@ -907,7 +911,15 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
                 end
                 OptionsPrivate.OpenTextEditor(data, multipath, nil, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code-1")
               else
-                OptionsPrivate.OpenTextEditor(data, { "conditions", i, "changes", j, "value", "custom" }, nil, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code-1")
+                OptionsPrivate.OpenTextEditor(
+                  data,
+                  { "conditions", i, "changes", j, "value", "custom" },
+                  nil,
+                  nil,
+                  nil,
+                  nil,
+                  "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#chat-message---custom-code-1"
+                )
               end
             end,
           },
@@ -986,7 +998,15 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
                 OptionsPrivate.OpenTextEditor(data, multipath, true, true, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#run-custom-code")
               else
                 data.conditions[i].changes[j].value = data.conditions[i].changes[j].value or {}
-                OptionsPrivate.OpenTextEditor(data, { "conditions", i, "changes", j, "value", "custom" }, true, nil, nil, nil, "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#run-custom-code")
+                OptionsPrivate.OpenTextEditor(
+                  data,
+                  { "conditions", i, "changes", j, "value", "custom" },
+                  true,
+                  nil,
+                  nil,
+                  nil,
+                  "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#run-custom-code"
+                )
               end
             end,
           },
@@ -1155,13 +1175,20 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       order = order,
       get = function()
         if (conditions[i].changes[j].value and type(conditions[i].changes[j].value) == "table") and type(conditions[i].changes[j].value.glow_color) == "table" then
-          return conditions[i].changes[j].value.glow_color[1], conditions[i].changes[j].value.glow_color[2], conditions[i].changes[j].value.glow_color[3], conditions[i].changes[j].value.glow_color[4]
+          return conditions[i].changes[j].value.glow_color[1],
+            conditions[i].changes[j].value.glow_color[2],
+            conditions[i].changes[j].value.glow_color[3],
+            conditions[i].changes[j].value.glow_color[4]
         end
         return 1, 1, 1, 1
       end,
       set = setValueColorComplex("glow_color"),
       hidden = function()
-        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_frame_type", OptionsPrivate.Private.glow_frame_types) and anyGlowExternal("glow_type", OptionsPrivate.Private.glow_types))
+        return not (
+            anyGlowExternal("glow_action", "show")
+            and anyGlowExternal("glow_frame_type", OptionsPrivate.Private.glow_frame_types)
+            and anyGlowExternal("glow_type", OptionsPrivate.Private.glow_types)
+          )
       end,
       disabled = function()
         return not anyGlowExternal("use_glow_color", true)
@@ -1366,7 +1393,20 @@ local function removeSubCheck(base, path)
   tremove(parent.checks, path[#path])
 end
 
-local function addControlsForIfLine(args, order, data, conditionVariable, totalAuraCount, conditions, i, path, conditionTemplates, conditionTemplateWithoutCombinations, allProperties, parentType)
+local function addControlsForIfLine(
+  args,
+  order,
+  data,
+  conditionVariable,
+  totalAuraCount,
+  conditions,
+  i,
+  path,
+  conditionTemplates,
+  conditionTemplateWithoutCombinations,
+  allProperties,
+  parentType
+)
   local check = getSubCheck(conditions[i].check, path)
 
   local indentDepth = min(#path, 3) -- Be reasonable
@@ -1580,7 +1620,20 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
     for subCheck = 1, subCheckCount do
       local subPath = CopyTable(path)
       tinsert(subPath, subCheck)
-      order = addControlsForIfLine(args, order, data, conditionVariable, totalAuraCount, conditions, i, subPath, conditionTemplates, conditionTemplateWithoutCombinations, allProperties, check.variable)
+      order = addControlsForIfLine(
+        args,
+        order,
+        data,
+        conditionVariable,
+        totalAuraCount,
+        conditions,
+        i,
+        subPath,
+        conditionTemplates,
+        conditionTemplateWithoutCombinations,
+        allProperties,
+        check.variable
+      )
     end
   end
 

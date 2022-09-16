@@ -32,7 +32,8 @@ end
 if WeakAuras.IsClassic() then
   local WA_GetUnitAuraBase = WA_GetUnitAura
   WA_GetUnitAura = function(unit, spell, filter)
-    local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = WA_GetUnitAuraBase(unit, spell, filter)
+    local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod =
+      WA_GetUnitAuraBase(unit, spell, filter)
     if spellId then
       local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, source, name)
       if duration == 0 and durationNew then
@@ -40,7 +41,21 @@ if WeakAuras.IsClassic() then
         expirationTime = expirationTimeNew
       end
     end
-    return name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
+    return name,
+      icon,
+      count,
+      debuffType,
+      duration,
+      expirationTime,
+      source,
+      isStealable,
+      nameplateShowPersonal,
+      spellId,
+      canApplyAura,
+      isBossDebuff,
+      castByPlayer,
+      nameplateShowAll,
+      timeMod
   end
 end
 
@@ -437,7 +452,12 @@ local exec_env = setmetatable({}, {
   end,
   __newindex = function(table, key, value)
     if _G[key] then
-      Private.AuraWarnings.UpdateWarning(current_uid, "OverridingGlobal", "warning", string.format(L["The aura has overwritten the global '%s', this might affect other auras."], key))
+      Private.AuraWarnings.UpdateWarning(
+        current_uid,
+        "OverridingGlobal",
+        "warning",
+        string.format(L["The aura has overwritten the global '%s', this might affect other auras."], key)
+      )
     end
     rawset(table, key, value)
   end,

@@ -601,7 +601,9 @@ function RealTimeProfilingWindow:RefreshBars()
   end
   if profileData.systems.wa then
     local timespent = debugprofilestop() - profileData.systems.time.start
-    self.statsFrameText:SetText(("|cFFFFFFFFTime in WA: %.2fs / %ds (%.1f%%)"):format(profileData.systems.wa.elapsed / 1000, timespent / 1000, 100 * profileData.systems.wa.elapsed / timespent))
+    self.statsFrameText:SetText(
+      ("|cFFFFFFFFTime in WA: %.2fs / %ds (%.1f%%)"):format(profileData.systems.wa.elapsed / 1000, timespent / 1000, 100 * profileData.systems.wa.elapsed / timespent)
+    )
   end
 end
 

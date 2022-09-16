@@ -180,7 +180,11 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
   local auraDisplayName = Private.UIDtoID(uid)
   local key = tostring(region)
   local valid
-  if anim and anim.type == "custom" and (anim.use_translate or anim.use_alpha or (anim.use_scale and region.Scale) or (anim.use_rotate and region.Rotate) or (anim.use_color and region.Color)) then
+  if
+    anim
+    and anim.type == "custom"
+    and (anim.use_translate or anim.use_alpha or (anim.use_scale and region.Scale) or (anim.use_rotate and region.Rotate) or (anim.use_color and region.Color))
+  then
     valid = true
   elseif anim and anim.type == "preset" and anim.preset and Private.anim_presets[anim.preset] then
     anim = Private.anim_presets[anim.preset]
@@ -195,7 +199,8 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
       end
       anim.x = anim.x or 0
       anim.y = anim.y or 0
-      selfPoint, anchor, anchorPoint, startX, startY = animations[key].selfPoint, animations[key].anchor, animations[key].anchorPoint, animations[key].startX, animations[key].startY
+      selfPoint, anchor, anchorPoint, startX, startY =
+        animations[key].selfPoint, animations[key].anchor, animations[key].anchorPoint, animations[key].startX, animations[key].startY
       anim.alpha = anim.alpha or 0
       startAlpha = animations[key].startAlpha
       anim.scalex = anim.scalex or 1

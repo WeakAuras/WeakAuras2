@@ -9,9 +9,11 @@ local insert = table.insert
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
 local LoadAddOn, UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid = LoadAddOn, UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
 local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
-local UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo = UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
+local UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo =
+  UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
 local SendChatMessage, UnitInBattleground, UnitInRaid, UnitInParty, GetTime = SendChatMessage, UnitInBattleground, UnitInRaid, UnitInParty, GetTime
-local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop = CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
+local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop =
+  CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
 local debugstack = debugstack
 local GetNumTalentTabs, GetNumTalents = GetNumTalentTabs, GetNumTalents
 local MAX_NUM_TALENTS = MAX_NUM_TALENTS or 20
@@ -55,7 +57,9 @@ end
 function WeakAurasTimers:ScheduleTimerFixed(func, delay, ...)
   if delay < Private.maxTimerDuration then
     if delay + GetTime() > maxUpTime then
-      WeakAuras.prettyPrint(WeakAuras.L["Can't schedule timer with %i, due to a World of Warcraft bug with high computer uptime. (Uptime: %i). Please restart your computer."]:format(delay, GetTime()))
+      WeakAuras.prettyPrint(
+        WeakAuras.L["Can't schedule timer with %i, due to a World of Warcraft bug with high computer uptime. (Uptime: %i). Please restart your computer."]:format(delay, GetTime())
+      )
       return
     end
     return self:ScheduleTimer(func, delay, ...)
@@ -90,7 +94,13 @@ do
       data = Private.GetDataByUID(currentErrorHandlerUid)
     end
     if data then
-      Private.AuraWarnings.UpdateWarning(data.uid, "LuaError", "error", L["This aura has caused a Lua error."] .. "\n" .. L["Install the addons BugSack and BugGrabber for detailed error logs."], true)
+      Private.AuraWarnings.UpdateWarning(
+        data.uid,
+        "LuaError",
+        "error",
+        L["This aura has caused a Lua error."] .. "\n" .. L["Install the addons BugSack and BugGrabber for detailed error logs."],
+        true
+      )
       prefix = L["Lua error in aura '%s': %s"]:format(data.id, currentErrorHandlerContext or L["unknown location"]) .. "\n"
     else
       prefix = L["Lua error"] .. "\n"
@@ -153,7 +163,9 @@ function Private.PrintHelp()
   print(L["Usage:"])
   print(L["/wa help - Show this message"])
   print(L["/wa minimap - Toggle the minimap icon"])
-  print(L["/wa pstart - Start profiling. Optionally include a duration in seconds after which profiling automatically stops. To profile the next combat/encounter, pass a \"combat\" or \"encounter\" argument."])
+  print(
+    L["/wa pstart - Start profiling. Optionally include a duration in seconds after which profiling automatically stops. To profile the next combat/encounter, pass a \"combat\" or \"encounter\" argument."]
+  )
   print(L["/wa pstop - Finish profiling"])
   print(L["/wa pprint - Show the results from the most recent profiling"])
   print(L["/wa repair - Repair tool"])
@@ -400,7 +412,19 @@ function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, defa
   end
 end
 
-function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, createFunction, modifyFunction, onAcquire, onRelease, default, addDefaultsForNewAura, properties, supportsAdd)
+function WeakAuras.RegisterSubRegionType(
+  name,
+  displayName,
+  supportFunction,
+  createFunction,
+  modifyFunction,
+  onAcquire,
+  onRelease,
+  default,
+  addDefaultsForNewAura,
+  properties,
+  supportsAdd
+)
   if not name then
     error("Improper arguments to WeakAuras.RegisterSubRegionType - name is not defined", 2)
   elseif type(name) ~= "string" then
@@ -622,7 +646,14 @@ local function ConstructFunction(prototype, trigger, skipOptional)
         end
         if arg.optional and skipOptional then
         -- Do nothing
-        elseif arg.hidden or arg.type == "tristate" or arg.type == "toggle" or arg.type == "tristatestring" or (arg.type == "multiselect" and trigger["use_" .. name] ~= nil) or ((trigger["use_" .. name] or arg.required) and trigger[name]) then
+        elseif
+          arg.hidden
+          or arg.type == "tristate"
+          or arg.type == "toggle"
+          or arg.type == "tristatestring"
+          or (arg.type == "multiselect" and trigger["use_" .. name] ~= nil)
+          or ((trigger["use_" .. name] or arg.required) and trigger[name])
+        then
           if arg.init and arg.init ~= "arg" then
             init = init .. "local " .. name .. " = " .. arg.init .. "\n"
           end
@@ -1178,7 +1209,9 @@ function Private.Login(initialTime, takeNewSnapshots)
       Private.dynFrame:AddAction("login", loginThread)
     end
     if not ok then
-      loginMessage = L["WeakAuras has encountered an error during the login process. Please report this issue at https://github.com/WeakAuras/Weakauras2/issues/new."] .. "\nMessage:" .. msg
+      loginMessage = L["WeakAuras has encountered an error during the login process. Please report this issue at https://github.com/WeakAuras/Weakauras2/issues/new."]
+        .. "\nMessage:"
+        .. msg
       geterrorhandler()(msg .. "\n" .. debugstack(loginThread))
     end
   else
@@ -1608,17 +1641,213 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
       local loadFunc = loadFuncs[id]
       local loadOpt = loadFuncsForOptions[id]
       if WeakAuras.IsClassic() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole, isLeader)
-        couldBeLoaded = loadOpt and loadOpt("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole, isLeader)
+        shouldBeLoaded = loadFunc
+          and loadFunc(
+            "ScanForLoads_Auras",
+            inCombat,
+            inEncounter,
+            alive,
+            vehicle,
+            group,
+            player,
+            realm,
+            class,
+            race,
+            faction,
+            playerLevel,
+            zone,
+            encounter_id,
+            size,
+            raidRole,
+            isLeader
+          )
+        couldBeLoaded = loadOpt
+          and loadOpt(
+            "ScanForLoads_Auras",
+            inCombat,
+            inEncounter,
+            alive,
+            vehicle,
+            group,
+            player,
+            realm,
+            class,
+            race,
+            faction,
+            playerLevel,
+            zone,
+            encounter_id,
+            size,
+            raidRole,
+            isLeader
+          )
       elseif WeakAuras.IsBCC() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, raidRole, isLeader)
-        couldBeLoaded = loadOpt and loadOpt("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, raidRole, isLeader)
+        shouldBeLoaded = loadFunc
+          and loadFunc(
+            "ScanForLoads_Auras",
+            inCombat,
+            inEncounter,
+            alive,
+            vehicle,
+            group,
+            player,
+            realm,
+            class,
+            race,
+            faction,
+            playerLevel,
+            zone,
+            zoneId,
+            zonegroupId,
+            encounter_id,
+            size,
+            difficulty,
+            difficultyIndex,
+            raidRole,
+            isLeader
+          )
+        couldBeLoaded = loadOpt
+          and loadOpt(
+            "ScanForLoads_Auras",
+            inCombat,
+            inEncounter,
+            alive,
+            vehicle,
+            group,
+            player,
+            realm,
+            class,
+            race,
+            faction,
+            playerLevel,
+            zone,
+            zoneId,
+            zonegroupId,
+            encounter_id,
+            size,
+            difficulty,
+            difficultyIndex,
+            raidRole,
+            isLeader
+          )
       elseif WeakAuras.IsWrathClassic() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, vehicleUi, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidRole, isLeader)
-        couldBeLoaded = loadOpt and loadOpt("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, vehicleUi, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidRole, isLeader)
+        shouldBeLoaded = loadFunc
+          and loadFunc(
+            "ScanForLoads_Auras",
+            inCombat,
+            inEncounter,
+            alive,
+            vehicle,
+            vehicleUi,
+            group,
+            player,
+            realm,
+            class,
+            race,
+            faction,
+            playerLevel,
+            zone,
+            zoneId,
+            zonegroupId,
+            encounter_id,
+            size,
+            difficulty,
+            difficultyIndex,
+            role,
+            raidRole,
+            isLeader
+          )
+        couldBeLoaded = loadOpt
+          and loadOpt(
+            "ScanForLoads_Auras",
+            inCombat,
+            inEncounter,
+            alive,
+            vehicle,
+            vehicleUi,
+            group,
+            player,
+            realm,
+            class,
+            race,
+            faction,
+            playerLevel,
+            zone,
+            zoneId,
+            zonegroupId,
+            encounter_id,
+            size,
+            difficulty,
+            difficultyIndex,
+            role,
+            raidRole,
+            isLeader
+          )
       elseif WeakAuras.IsRetail() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, isLeader, affixes)
-        couldBeLoaded = loadOpt and loadOpt("ScanForLoads_Auras", inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, group, player, realm, class, spec, specId, covenant, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, isLeader, affixes)
+        shouldBeLoaded = loadFunc
+          and loadFunc(
+            "ScanForLoads_Auras",
+            inCombat,
+            inEncounter,
+            alive,
+            warmodeActive,
+            inPetBattle,
+            vehicle,
+            vehicleUi,
+            group,
+            player,
+            realm,
+            class,
+            spec,
+            specId,
+            covenant,
+            race,
+            faction,
+            playerLevel,
+            effectiveLevel,
+            zone,
+            zoneId,
+            zonegroupId,
+            encounter_id,
+            size,
+            difficulty,
+            difficultyIndex,
+            role,
+            isLeader,
+            affixes
+          )
+        couldBeLoaded = loadOpt
+          and loadOpt(
+            "ScanForLoads_Auras",
+            inCombat,
+            inEncounter,
+            alive,
+            warmodeActive,
+            inPetBattle,
+            vehicle,
+            vehicleUi,
+            group,
+            player,
+            realm,
+            class,
+            spec,
+            specId,
+            covenant,
+            race,
+            faction,
+            playerLevel,
+            effectiveLevel,
+            zone,
+            zoneId,
+            zonegroupId,
+            encounter_id,
+            size,
+            difficulty,
+            difficultyIndex,
+            role,
+            isLeader,
+            affixes
+          )
       end
 
       if shouldBeLoaded and not loaded[id] then
@@ -2221,8 +2450,10 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_REPAIR"] = {
     RepairDatabase()
   end,
   OnShow = function(self)
-    local AutomaticRepairText = L["WeakAuras has detected that it has been downgraded.\nYour saved auras may no longer work properly.\nWould you like to run the |cffff0000EXPERIMENTAL|r repair tool? This will overwrite any changes you have made since the last database upgrade.\nLast upgrade: %s"]
-    local ManualRepairText = L["Are you sure you want to run the |cffff0000EXPERIMENTAL|r repair tool?\nThis will overwrite any changes you have made since the last database upgrade.\nLast upgrade: %s"]
+    local AutomaticRepairText =
+      L["WeakAuras has detected that it has been downgraded.\nYour saved auras may no longer work properly.\nWould you like to run the |cffff0000EXPERIMENTAL|r repair tool? This will overwrite any changes you have made since the last database upgrade.\nLast upgrade: %s"]
+    local ManualRepairText =
+      L["Are you sure you want to run the |cffff0000EXPERIMENTAL|r repair tool?\nThis will overwrite any changes you have made since the last database upgrade.\nLast upgrade: %s"]
 
     if self.data.reason == "user" then
       self.text:SetText(ManualRepairText:format(LastUpgrade()))
@@ -3057,7 +3288,9 @@ function Private.ReleaseClone(id, cloneId, regionType)
   local region = clones[id][cloneId]
   clones[id][cloneId] = nil
   if region:IsProtected() then
-    WeakAuras.prettyPrint(L["Error '%s' created a secure clone. We advise deleting the aura. For more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"]:format(id))
+    WeakAuras.prettyPrint(
+      L["Error '%s' created a secure clone. We advise deleting the aura. For more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Protected-Frames"]:format(id)
+    )
   else
     clonePool[regionType][#clonePool[regionType] + 1] = region
   end
@@ -3163,7 +3396,18 @@ local function actionGlowStart(actions, frame, id)
   if actions.glow_type == "buttonOverlay" then
     LCG.ButtonGlow_Start(glow_frame, color)
   elseif actions.glow_type == "Pixel" then
-    LCG.PixelGlow_Start(glow_frame, color, actions.glow_lines, actions.glow_frequency, actions.glow_length, actions.glow_thickness, actions.glow_XOffset, actions.glow_YOffset, actions.glow_border, id)
+    LCG.PixelGlow_Start(
+      glow_frame,
+      color,
+      actions.glow_lines,
+      actions.glow_frequency,
+      actions.glow_length,
+      actions.glow_thickness,
+      actions.glow_XOffset,
+      actions.glow_YOffset,
+      actions.glow_border,
+      id
+    )
   elseif actions.glow_type == "ACShine" then
     LCG.AutoCastGlow_Start(glow_frame, color, actions.glow_lines, actions.glow_frequency, actions.glow_scale, actions.glow_XOffset, actions.glow_YOffset, id)
   end
@@ -3238,7 +3482,13 @@ do
 end
 
 function Private.HandleGlowAction(actions, region)
-  if actions.glow_action and (((actions.glow_frame_type == "UNITFRAME" or actions.glow_frame_type == "NAMEPLATE") and region.state.unit) or (actions.glow_frame_type == "FRAMESELECTOR" and actions.glow_frame)) then
+  if
+    actions.glow_action
+    and (
+      ((actions.glow_frame_type == "UNITFRAME" or actions.glow_frame_type == "NAMEPLATE") and region.state.unit)
+      or (actions.glow_frame_type == "FRAMESELECTOR" and actions.glow_frame)
+    )
+  then
     local glow_frame, should_glow_frame
     if actions.glow_frame_type == "FRAMESELECTOR" then
       if actions.glow_frame:sub(1, 10) == "WeakAuras:" then
@@ -3315,7 +3565,21 @@ function Private.PerformActions(data, when, region)
 
   if actions.do_message and actions.message_type and actions.message then
     local customFunc = Private.customActionsFunctions[data.id][when .. "_message"]
-    Private.HandleChatAction(actions.message_type, actions.message, actions.message_dest, actions.message_dest_isunit, actions.message_channel, actions.r, actions.g, actions.b, region, customFunc, when, formatters, actions.message_tts_voice)
+    Private.HandleChatAction(
+      actions.message_type,
+      actions.message,
+      actions.message_dest,
+      actions.message_dest_isunit,
+      actions.message_channel,
+      actions.r,
+      actions.g,
+      actions.b,
+      region,
+      customFunc,
+      when,
+      formatters,
+      actions.message_tts_voice
+    )
   end
 
   if actions.stop_sound then
@@ -3450,7 +3714,12 @@ Private.GetAdditionalProperties = function(data, triggernum, ...)
   end
 
   if additionalProperties ~= "" then
-    additionalProperties = "\n\n" .. L["Additional Trigger Replacements"] .. "\n" .. additionalProperties .. "\n\n" .. L["The trigger number is optional, and uses the trigger providing dynamic information if not specified."]
+    additionalProperties = "\n\n"
+      .. L["Additional Trigger Replacements"]
+      .. "\n"
+      .. additionalProperties
+      .. "\n\n"
+      .. L["The trigger number is optional, and uses the trigger providing dynamic information if not specified."]
   end
   return additionalProperties
 end
@@ -3581,7 +3850,10 @@ do
     if not hiddenTooltip then
       hiddenTooltip = CreateFrame("GameTooltip", "WeakAurasTooltip", nil, "GameTooltipTemplate")
       hiddenTooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
-      hiddenTooltip:AddFontStrings(hiddenTooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"), hiddenTooltip:CreateFontString("$parentTextRight1", nil, "GameTooltipText"))
+      hiddenTooltip:AddFontStrings(
+        hiddenTooltip:CreateFontString("$parentTextLeft1", nil, "GameTooltipText"),
+        hiddenTooltip:CreateFontString("$parentTextRight1", nil, "GameTooltipText")
+      )
     end
     return hiddenTooltip
   end
@@ -4045,7 +4317,11 @@ local function ApplyStatesToRegions(id, activeTrigger, states)
           triggerState = triggerStates[cloneId] or triggerStates[""] or {}
         end
         if triggernum > 0 then
-          applyChanges = applyChanges or region.states[triggernum] ~= triggerState or (triggerState and triggerState.changed) or region.states[triggernum] ~= triggerState or (triggerState and triggerState.changed)
+          applyChanges = applyChanges
+            or region.states[triggernum] ~= triggerState
+            or (triggerState and triggerState.changed)
+            or region.states[triggernum] ~= triggerState
+            or (triggerState and triggerState.changed)
         end
 
         region.states[triggernum] = triggerState
@@ -4216,7 +4492,9 @@ function Private.RunCustomTextFunc(region, customFunc)
     end
   end
 
-  local custom = { select(2, xpcall(customFunc, Private.GetErrorHandlerId(region.id, L["Custom Text Function"]), expirationTime or math.huge, duration or 0, progress, dur, name, icon, stacks)) }
+  local custom = {
+    select(2, xpcall(customFunc, Private.GetErrorHandlerId(region.id, L["Custom Text Function"]), expirationTime or math.huge, duration or 0, progress, dur, name, icon, stacks)),
+  }
   Private.ActivateAuraEnvironment(nil)
 
   return custom
@@ -5124,7 +5402,12 @@ end
 local anchorFrameDeferred = {}
 
 function Private.AnchorFrame(data, region, parent)
-  if data.anchorFrameType == "CUSTOM" and (data.regionType == "group" or data.regionType == "dynamicgroup") and not WeakAuras.IsLoginFinished() and not anchorFrameDeferred[data.id] then
+  if
+    data.anchorFrameType == "CUSTOM"
+    and (data.regionType == "group" or data.regionType == "dynamicgroup")
+    and not WeakAuras.IsLoginFinished()
+    and not anchorFrameDeferred[data.id]
+  then
     loginQueue[#loginQueue + 1] = { Private.AnchorFrame, { data, region, parent } }
     anchorFrameDeferred[data.id] = true
   else

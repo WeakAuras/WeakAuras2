@@ -126,11 +126,13 @@ local function GetTexCoord(region, texWidth, aspectRatio)
     local db = region.MSQGroup.db
     if db and not db.Disabled then
       usesMasque = true
-      region.currentCoord[1], region.currentCoord[2], region.currentCoord[3], region.currentCoord[4], region.currentCoord[5], region.currentCoord[6], region.currentCoord[7], region.currentCoord[8] = region.icon:GetTexCoord()
+      region.currentCoord[1], region.currentCoord[2], region.currentCoord[3], region.currentCoord[4], region.currentCoord[5], region.currentCoord[6], region.currentCoord[7], region.currentCoord[8] =
+        region.icon:GetTexCoord()
     end
   end
   if not usesMasque then
-    region.currentCoord[1], region.currentCoord[2], region.currentCoord[3], region.currentCoord[4], region.currentCoord[5], region.currentCoord[6], region.currentCoord[7], region.currentCoord[8] = 0, 0, 0, 1, 1, 0, 1, 1
+    region.currentCoord[1], region.currentCoord[2], region.currentCoord[3], region.currentCoord[4], region.currentCoord[5], region.currentCoord[6], region.currentCoord[7], region.currentCoord[8] =
+      0, 0, 0, 1, 1, 0, 1, 1
   end
 
   local xRatio = aspectRatio < 1 and aspectRatio or 1
