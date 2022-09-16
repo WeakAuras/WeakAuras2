@@ -26,6 +26,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --check . --output-format=summary
+          version: v0.14.4
 
       - name: Generate Changelog
         run: ./generate_changelog.sh

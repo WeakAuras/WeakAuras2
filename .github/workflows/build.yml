@@ -27,6 +27,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           args: --check . --output-format=summary
+          version: v0.14.4
 
       - name: Update CurseForge Translations
         run: ./update_translations.sh
