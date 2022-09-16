@@ -22,6 +22,11 @@ jobs:
           args: "--no-color -q"
           annotate: warning
 
+      - uses: JohnnyMorganz/stylua-action@1.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --check . --output-format=summary
+
       - name: Generate Changelog
         run: ./generate_changelog.sh
 
