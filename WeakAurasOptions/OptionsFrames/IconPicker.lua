@@ -102,7 +102,7 @@ local function ConstructIconPicker(frame)
   input:SetScript("OnEscapePressed", function(...) input:SetText(""); iconPickerFill(input:GetText(), true); end);
   input:SetWidth(200);
   input:SetHeight(15);
-  input:SetFont(STANDARD_TEXT_FONT, 10)
+  input:SetFont(STANDARD_TEXT_FONT, 10, "")
   input:SetPoint("BOTTOMRIGHT", group.frame, "TOPRIGHT", -3, -10);
 
   local icon = AceGUI:Create("WeakAurasIconButton");
