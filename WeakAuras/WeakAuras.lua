@@ -1708,7 +1708,9 @@ if WeakAuras.IsRetail() then
   loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR");
   loadFrame:RegisterEvent("CHALLENGE_MODE_COMPLETED")
   loadFrame:RegisterEvent("CHALLENGE_MODE_START")
-  loadFrame:RegisterEvent("COVENANT_CHOSEN")
+  if WeakAuras.IsDragonflight() then
+    loadFrame:RegisterEvent("COVENANT_CHOSEN")
+  end
 else
   loadFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
 end
