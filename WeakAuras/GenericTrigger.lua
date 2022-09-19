@@ -3354,6 +3354,7 @@ do
     if not(tenchFrame) then
       tenchFrame = CreateFrame("Frame");
       tenchFrame:RegisterEvent("UNIT_INVENTORY_CHANGED");
+      tenchFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
       if WeakAuras.IsClassicOrBCCOrWrath() then
         tenchFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
       end
@@ -3413,11 +3414,9 @@ do
         Private.StopProfileSystem("generictrigger");
       end
 
-      tenchFrame:SetScript("OnEvent", function(self, event, arg1)
+      tenchFrame:SetScript("OnEvent", function()
         Private.StartProfileSystem("generictrigger");
-        if (event == "UNIT_INVENTORY_CHANGED" and arg1 == "player") or event == "UNIT_INVENTORY_CHANGED" then
-          timer:ScheduleTimer(tenchUpdate, 0.1);
-        end
+        timer:ScheduleTimer(tenchUpdate, 0.1);
         Private.StopProfileSystem("generictrigger");
       end);
 
