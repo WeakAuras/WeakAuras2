@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
@@ -57,7 +59,6 @@ commonOptionsCache.Clear = function(self)
   self.data = {}
 end
 
-
 local parsePrefix = function(input, data, create)
   local subRegionIndex, property = string.match(input, "^sub%.(%d+)%..-%.(.+)")
   subRegionIndex = tonumber(subRegionIndex)
@@ -72,9 +73,9 @@ local parsePrefix = function(input, data, create)
     end
     return data.subRegions[subRegionIndex], property
   end
-  local index = string.find(input, ".", 1, true);
-  if (index) then
-    return data, string.sub(input, index + 1);
+  local index = string.find(input, ".", 1, true)
+  if index then
+    return data, string.sub(input, index + 1)
   end
   return data, input
 end
@@ -122,8 +123,13 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
     end
   end
 
-  local titleWidth = WeakAuras.doubleWidth - (hasAdd and 0.15 or 0) - (hasDelete and 0.15 or 0)  - (hasUp and 0.15 or 0)
-                     - (hasDown and 0.15 or 0) - (hasDuplicate and 0.15 or 0) - (hasApplyTemplate and 0.15 or 0)
+  local titleWidth = WeakAuras.doubleWidth
+    - (hasAdd and 0.15 or 0)
+    - (hasDelete and 0.15 or 0)
+    - (hasUp and 0.15 or 0)
+    - (hasDown and 0.15 or 0)
+    - (hasDuplicate and 0.15 or 0)
+    - (hasApplyTemplate and 0.15 or 0)
 
   options[key .. "collapseSpacer"] = {
     type = marginTop and "header" or "description",
@@ -148,7 +154,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         end
       end,
       control = "WeakAurasExpand",
-      hidden = hiddenFunc
+      hidden = hiddenFunc,
     }
 
     if hasAdd then
@@ -161,7 +167,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         imageWidth = 24,
         imageHeight = 24,
         control = "WeakAurasIcon",
-        hidden = hiddenFunc
+        hidden = hiddenFunc,
       }
       setFuncs(options[key .. "addButton"], input.__add)
     end
@@ -176,7 +182,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         imageWidth = 24,
         imageHeight = 24,
         control = "WeakAurasIcon",
-        hidden = hiddenFunc
+        hidden = hiddenFunc,
       }
       setFuncs(options[key .. "upButton"], input.__up)
     end
@@ -191,7 +197,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         imageWidth = 24,
         imageHeight = 24,
         control = "WeakAurasIcon",
-        hidden = hiddenFunc
+        hidden = hiddenFunc,
       }
       setFuncs(options[key .. "downButton"], input.__down)
     end
@@ -206,7 +212,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         imageWidth = 24,
         imageHeight = 24,
         control = "WeakAurasIcon",
-        hidden = hiddenFunc
+        hidden = hiddenFunc,
       }
       setFuncs(options[key .. "duplicateButton"], input.__duplicate)
     end
@@ -221,7 +227,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         imageWidth = 24,
         imageHeight = 24,
         control = "WeakAurasIcon",
-        hidden = hiddenFunc
+        hidden = hiddenFunc,
       }
       setFuncs(options[key .. "deleteButton"], input.__delete)
     end
@@ -236,7 +242,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         imageWidth = 24,
         imageHeight = 24,
         control = "WeakAurasIcon",
-        hidden = hiddenFunc
+        hidden = hiddenFunc,
       }
       setFuncs(options[key .. "applyTemplate"], input.__applyTemplate)
     end
@@ -252,14 +258,16 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
 end
 
 local function copyOptionTable(input, orderAdjustment, collapsedFunc)
-  local resultOption = CopyTable(input);
-  resultOption.order = orderAdjustment + resultOption.order;
+  local resultOption = CopyTable(input)
+  resultOption.order = orderAdjustment + resultOption.order
   if collapsedFunc then
-    local oldHidden = resultOption.hidden;
+    local oldHidden = resultOption.hidden
     if oldHidden ~= nil then
       local oldFunc
       if type(oldHidden) ~= "function" then
-        oldFunc = function(...) return oldHidden end
+        oldFunc = function(...)
+          return oldHidden
+        end
       else
         oldFunc = oldHidden
       end
@@ -271,15 +279,15 @@ local function copyOptionTable(input, orderAdjustment, collapsedFunc)
         end
       end
     else
-      resultOption.hidden = collapsedFunc;
+      resultOption.hidden = collapsedFunc
     end
   end
-  return resultOption;
+  return resultOption
 end
 
 local flattenRegionOptions = function(allOptions, isGroupTab)
-  local result = {};
-  local base = 1000;
+  local result = {}
+  local base = 1000
 
   for optionGroup, options in pairs(allOptions) do
     local groupBase = base * options.__order
@@ -288,12 +296,12 @@ local flattenRegionOptions = function(allOptions, isGroupTab)
 
     for optionName, option in pairs(options) do
       if not optionName:find("^__") then
-        result[optionGroup .. "." .. optionName] = copyOptionTable(option, groupBase, collapsedFunc);
+        result[optionGroup .. "." .. optionName] = copyOptionTable(option, groupBase, collapsedFunc)
       end
     end
   end
 
-  return result;
+  return result
 end
 
 local function fixMetaOrders(allOptions)
@@ -324,33 +332,33 @@ local function fixMetaOrders(allOptions)
 end
 
 local function removeFuncs(intable, removeFunc)
-  for i,v in pairs(intable) do
-    if(i == "get" or i == "set" or i == "hidden" or i == "disabled") then
-      intable[i] = nil;
-    elseif (i == "func" and removeFunc) then
+  for i, v in pairs(intable) do
+    if i == "get" or i == "set" or i == "hidden" or i == "disabled" then
       intable[i] = nil
-    elseif(type(v) == "table" and i ~= "values" and i ~= "extraFunctions") then
+    elseif i == "func" and removeFunc then
+      intable[i] = nil
+    elseif type(v) == "table" and i ~= "values" and i ~= "extraFunctions" then
       removeFuncs(v, removeFunc)
     end
   end
 end
 
 local function getChildOption(options, info)
-  for i=1,#info do
-    options = options.args[info[i]];
-    if not(options) then
-      return nil;
+  for i = 1, #info do
+    options = options.args[info[i]]
+    if not options then
+      return nil
     end
 
-    if (options.hidden) then
-      local type = type(options.hidden);
-      if (type == "bool") then
-        if (options.hidden) then
-          return nil;
+    if options.hidden then
+      local type = type(options.hidden)
+      if type == "bool" then
+        if options.hidden then
+          return nil
         end
-      elseif (type == "function") then
-        if (options.hidden(info)) then
-          return nil;
+      elseif type == "function" then
+        if options.hidden(info) then
+          return nil
         end
       end
     end
@@ -359,161 +367,160 @@ local function getChildOption(options, info)
 end
 
 local function hiddenChild(childOptionTable, info)
-  for i=#childOptionTable,0,-1 do
-    if(childOptionTable[i].hidden ~= nil) then
-      if(type(childOptionTable[i].hidden) == "boolean") then
-        return childOptionTable[i].hidden;
-      elseif(type(childOptionTable[i].hidden) == "function") then
-        return childOptionTable[i].hidden(info);
+  for i = #childOptionTable, 0, -1 do
+    if childOptionTable[i].hidden ~= nil then
+      if type(childOptionTable[i].hidden) == "boolean" then
+        return childOptionTable[i].hidden
+      elseif type(childOptionTable[i].hidden) == "function" then
+        return childOptionTable[i].hidden(info)
       end
     end
   end
-  return false;
+  return false
 end
 
 local function CreateHiddenAll(subOption)
   return function(data, info)
-    if(#data.controlledChildren == 0) then
-      return true;
+    if #data.controlledChildren == 0 then
+      return true
     end
 
-    for child in  OptionsPrivate.Private.TraverseLeafs(data) do
+    for child in OptionsPrivate.Private.TraverseLeafs(data) do
       local childOptions = OptionsPrivate.EnsureOptions(child, subOption)
-      local childOption = childOptions;
-      local childOptionTable = {[0] = childOption};
-      for i=1,#info do
-        childOption = childOption.args[info[i]];
-        childOptionTable[i] = childOption;
+      local childOption = childOptions
+      local childOptionTable = { [0] = childOption }
+      for i = 1, #info do
+        childOption = childOption.args[info[i]]
+        childOptionTable[i] = childOption
       end
-      if (childOption) then
-        if (not hiddenChild(childOptionTable, info)) then
-          return false;
+      if childOption then
+        if not hiddenChild(childOptionTable, info) then
+          return false
         end
       end
     end
 
-    return true;
+    return true
   end
 end
 
 local function disabledChild(childOptionTable, info)
-  for i=#childOptionTable,0,-1 do
-    if(childOptionTable[i].disabled ~= nil) then
-      if(type(childOptionTable[i].disabled) == "boolean") then
-        return childOptionTable[i].disabled;
-      elseif(type(childOptionTable[i].disabled) == "function") then
-        return childOptionTable[i].disabled(info);
+  for i = #childOptionTable, 0, -1 do
+    if childOptionTable[i].disabled ~= nil then
+      if type(childOptionTable[i].disabled) == "boolean" then
+        return childOptionTable[i].disabled
+      elseif type(childOptionTable[i].disabled) == "function" then
+        return childOptionTable[i].disabled(info)
       end
     end
   end
-  return false;
+  return false
 end
 
 local function CreateDisabledAll(subOption)
   return function(data, info)
     for child in OptionsPrivate.Private.TraverseLeafs(data) do
-      local childOptions = OptionsPrivate.EnsureOptions(child, subOption);
-      local childOption = childOptions;
-      local childOptionTable = {[0] = childOption};
-      for i=1,#info do
-        childOption = childOption.args[info[i]];
-        childOptionTable[i] = childOption;
+      local childOptions = OptionsPrivate.EnsureOptions(child, subOption)
+      local childOption = childOptions
+      local childOptionTable = { [0] = childOption }
+      for i = 1, #info do
+        childOption = childOption.args[info[i]]
+        childOptionTable[i] = childOption
       end
-      if (childOption) then
-        if (not disabledChild(childOptionTable, info)) then
-          return false;
+      if childOption then
+        if not disabledChild(childOptionTable, info) then
+          return false
         end
       end
     end
 
-    return true;
+    return true
   end
 end
 
 local function disabledOrHiddenChild(childOptionTable, info)
-  return hiddenChild(childOptionTable, info) or disabledChild(childOptionTable, info);
+  return hiddenChild(childOptionTable, info) or disabledChild(childOptionTable, info)
 end
-
 
 local function replaceNameDescFuncs(intable, data, subOption)
   local function compareTables(tableA, tableB)
-    if(#tableA == #tableB) then
-      for j=1,#tableA do
-        if(type(tableA[j]) == "number" and type(tableB[j]) == "number") then
-          if((math.floor(tableA[j] * 100) / 100) ~= (math.floor(tableB[j] * 100) / 100)) then
-            return false;
+    if #tableA == #tableB then
+      for j = 1, #tableA do
+        if type(tableA[j]) == "number" and type(tableB[j]) == "number" then
+          if (math.floor(tableA[j] * 100) / 100) ~= (math.floor(tableB[j] * 100) / 100) then
+            return false
           end
         else
-          if(tableA[j] ~= tableB[j]) then
-            return false;
+          if tableA[j] ~= tableB[j] then
+            return false
           end
         end
       end
     else
-      return false;
+      return false
     end
-    return true;
+    return true
   end
 
   local function getValueFor(options, info, key)
-    local childOptionTable = {[0] = options};
-    for i=1,#info do
-      options = options.args[info[i]];
-      if (not options) then
-        return nil;
+    local childOptionTable = { [0] = options }
+    for i = 1, #info do
+      options = options.args[info[i]]
+      if not options then
+        return nil
       end
-      childOptionTable[i] = options;
+      childOptionTable[i] = options
     end
 
-    if (disabledOrHiddenChild(childOptionTable, info)) then
-      return nil;
+    if disabledOrHiddenChild(childOptionTable, info) then
+      return nil
     end
 
-    for i=#childOptionTable,0,-1 do
-      if(childOptionTable[i][key]) then
-        return childOptionTable[i][key];
+    for i = #childOptionTable, 0, -1 do
+      if childOptionTable[i][key] then
+        return childOptionTable[i][key]
       end
     end
-    return nil;
+    return nil
   end
 
   local function combineKeys(info)
-    local combinedKeys = nil;
+    local combinedKeys = nil
     for child in OptionsPrivate.Private.TraverseLeafs(data) do
-      local values = getValueFor(OptionsPrivate.EnsureOptions(child, subOption), info, "values");
-      if (values) then
-        if (type(values) == "function") then
-          values = values(info);
+      local values = getValueFor(OptionsPrivate.EnsureOptions(child, subOption), info, "values")
+      if values then
+        if type(values) == "function" then
+          values = values(info)
         end
-        if (type(values) == "table") then
-          combinedKeys = combinedKeys or {};
+        if type(values) == "table" then
+          combinedKeys = combinedKeys or {}
           for k, v in pairs(values) do
-            combinedKeys[k] = v;
+            combinedKeys[k] = v
           end
         end
       end
     end
-    return combinedKeys;
+    return combinedKeys
   end
 
   local function regionPrefix(input)
-    local index = string.find(input, ".", 1, true);
-    if (index) then
-      local regionType = string.sub(input, 1, index - 1);
-      return regionOptions[regionType] and regionType;
+    local index = string.find(input, ".", 1, true)
+    if index then
+      local regionType = string.sub(input, 1, index - 1)
+      return regionOptions[regionType] and regionType
     end
-    return nil;
+    return nil
   end
 
   local function sameAll(info)
     local cached = commonOptionsCache:GetSameAll(info)
-    if (cached ~= nil) then
+    if cached ~= nil then
       return cached
     end
 
-    local combinedValues = {};
-    local first = true;
-    local combinedKeys = combineKeys(info);
+    local combinedValues = {}
+    local first = true
+    local combinedKeys = combineKeys(info)
 
     local isToggle = nil
 
@@ -523,40 +530,40 @@ local function replaceNameDescFuncs(intable, data, subOption)
         isToggle = childOption and childOption.type == "toggle"
       end
 
-      local regionType = regionPrefix(info[#info]);
-      if(child and (not regionType or child.regionType == regionType or regionType == "sub")) then
+      local regionType = regionPrefix(info[#info])
+      if child and (not regionType or child.regionType == regionType or regionType == "sub") then
         local childOptions = OptionsPrivate.EnsureOptions(child, subOption)
-        local get = getValueFor(childOptions, info, "get");
-        if (combinedKeys) then
+        local get = getValueFor(childOptions, info, "get")
+        if combinedKeys then
           for key, _ in pairs(combinedKeys) do
-            local values = {};
-            if (get) then
-              values = { get(info, key) };
+            local values = {}
+            if get then
+              values = { get(info, key) }
             end
-            if (combinedValues[key] == nil) then
-              combinedValues[key] = values;
+            if combinedValues[key] == nil then
+              combinedValues[key] = values
             else
-              if (not compareTables(combinedValues[key], values)) then
+              if not compareTables(combinedValues[key], values) then
                 commonOptionsCache:SetSameAll(info, false)
-                return nil;
+                return nil
               end
             end
           end
         else
-          local values = {};
-          if (get) then
-            values = { get(info) };
+          local values = {}
+          if get then
+            values = { get(info) }
             if isToggle and values[1] == nil then
               values[1] = false
             end
           end
-          if(first) then
-            combinedValues = values;
-            first = false;
+          if first then
+            combinedValues = values
+            first = false
           else
-            if (not compareTables(combinedValues, values)) then
+            if not compareTables(combinedValues, values) then
               commonOptionsCache:SetSameAll(info, false)
-              return nil;
+              return nil
             end
           end
         end
@@ -564,46 +571,46 @@ local function replaceNameDescFuncs(intable, data, subOption)
     end
 
     commonOptionsCache:SetSameAll(info, true)
-    return true;
+    return true
   end
 
   local function nameAll(info)
     local cached = commonOptionsCache:GetNameAll(info)
-    if (cached ~= nil) then
+    if cached ~= nil then
       return cached
     end
 
-    local combinedName;
-    local first = true;
-    local foundNames = {};
+    local combinedName
+    local first = true
+    local foundNames = {}
     for child in OptionsPrivate.Private.TraverseLeafs(data) do
-      local childOption = getChildOption(OptionsPrivate.EnsureOptions(child, subOption), info);
-      if (childOption) then
-        local name;
-        if(type(childOption.name) == "function") then
-          name = childOption.name(info);
+      local childOption = getChildOption(OptionsPrivate.EnsureOptions(child, subOption), info)
+      if childOption then
+        local name
+        if type(childOption.name) == "function" then
+          name = childOption.name(info)
         else
-          name = childOption.name;
+          name = childOption.name
           commonOptionsCache:SetNameAll(info, name)
           return name
         end
-        if (not name) then
+        if not name then
         -- Do nothing
-        elseif(first) then
-          if (name ~= "") then
-            combinedName = name;
-            first = false;
+        elseif first then
+          if name ~= "" then
+            combinedName = name
+            first = false
           end
-          foundNames[name] = true;
-        elseif not(foundNames[name]) then
-          if (name ~= "") then
-            if (childOption.type == "description") then
-              combinedName = combinedName .. "\n\n" .. name;
+          foundNames[name] = true
+        elseif not foundNames[name] then
+          if name ~= "" then
+            if childOption.type == "description" then
+              combinedName = combinedName .. "\n\n" .. name
             else
-              combinedName = combinedName .. " / " .. name;
+              combinedName = combinedName .. " / " .. name
             end
           end
-          foundNames[name] = true;
+          foundNames[name] = true
         end
       end
     end
@@ -615,235 +622,235 @@ local function replaceNameDescFuncs(intable, data, subOption)
   end
 
   local function descAll(info)
-    local combinedDesc;
-    local first = true;
+    local combinedDesc
+    local first = true
     for child in OptionsPrivate.Private.TraverseLeafs(data) do
-      local childOption = getChildOption(OptionsPrivate.EnsureOptions(child, subOption), info);
-      if (childOption) then
-        local desc;
-        if(type(childOption.desc) == "function") then
-          desc = childOption.desc(info);
+      local childOption = getChildOption(OptionsPrivate.EnsureOptions(child, subOption), info)
+      if childOption then
+        local desc
+        if type(childOption.desc) == "function" then
+          desc = childOption.desc(info)
         else
-          desc = childOption.desc;
+          desc = childOption.desc
         end
-        if(first) then
-          combinedDesc = desc;
-          first = false;
-        elseif not(combinedDesc == desc) then
-          return L["Not all children have the same value for this option"];
+        if first then
+          combinedDesc = desc
+          first = false
+        elseif not (combinedDesc == desc) then
+          return L["Not all children have the same value for this option"]
         end
       end
     end
-    return combinedDesc;
+    return combinedDesc
   end
 
   local function recurse(intable)
-    for i,v in pairs(intable) do
-      if(i == "name" and type(v) ~= "table") then
+    for i, v in pairs(intable) do
+      if i == "name" and type(v) ~= "table" then
         intable.name = function(info)
-          local name = nameAll(info);
-          if(sameAll(info)) then
-            return name;
+          local name = nameAll(info)
+          if sameAll(info) then
+            return name
           else
-            if(name == "") then
-              return name;
+            if name == "" then
+              return name
             else
-              return "|cFF4080FF"..(name or "error").."|r";
+              return "|cFF4080FF" .. (name or "error") .. "|r"
             end
           end
         end
         intable.desc = function(info)
-          if(sameAll(info)) then
-            return descAll(info);
+          if sameAll(info) then
+            return descAll(info)
           else
-            local combinedKeys = nil;
-            if (intable.type == "multiselect") then
+            local combinedKeys = nil
+            if intable.type == "multiselect" then
               combinedKeys = combineKeys(info)
             end
 
-            local values = {};
+            local values = {}
             for child in OptionsPrivate.Private.TraverseLeafs(data) do
               local childOptions = OptionsPrivate.EnsureOptions(child, subOption)
-              local childOption = childOptions;
-              local childOptionTable = {[0] = childOption};
-              for i=1,#info do
-                childOption = childOption.args[info[i]];
-                childOptionTable[i] = childOption;
+              local childOption = childOptions
+              local childOptionTable = { [0] = childOption }
+              for i = 1, #info do
+                childOption = childOption.args[info[i]]
+                childOptionTable[i] = childOption
               end
-              if (childOption and not hiddenChild(childOptionTable, info)) then
-                for i=#childOptionTable,0,-1 do
-                  if(childOptionTable[i].get) then
-                    if(intable.type == "toggle") then
-                      local name, tri;
-                      if(type(childOption.name) == "function") then
-                        name = childOption.name(info);
-                        tri = true;
+              if childOption and not hiddenChild(childOptionTable, info) then
+                for i = #childOptionTable, 0, -1 do
+                  if childOptionTable[i].get then
+                    if intable.type == "toggle" then
+                      local name, tri
+                      if type(childOption.name) == "function" then
+                        name = childOption.name(info)
+                        tri = true
                       else
-                        name = childOption.name;
+                        name = childOption.name
                       end
-                      if(tri and childOptionTable[i].get(info)) then
-                        tinsert(values, "|cFFE0E000"..child.id..": |r"..name);
-                      elseif(tri) then
-                        tinsert(values, "|cFFE0E000"..child.id..": |r"..L["Ignored"]);
-                      elseif(childOptionTable[i].get(info)) then
-                        tinsert(values, "|cFFE0E000"..child.id..": |r|cFF00FF00"..L["Enabled"].."|r");
+                      if tri and childOptionTable[i].get(info) then
+                        tinsert(values, "|cFFE0E000" .. child.id .. ": |r" .. name)
+                      elseif tri then
+                        tinsert(values, "|cFFE0E000" .. child.id .. ": |r" .. L["Ignored"])
+                      elseif childOptionTable[i].get(info) then
+                        tinsert(values, "|cFFE0E000" .. child.id .. ": |r|cFF00FF00" .. L["Enabled"] .. "|r")
                       else
-                        tinsert(values, "|cFFE0E000"..child.id..": |r|cFFFF0000"..L["Disabled"].."|r");
+                        tinsert(values, "|cFFE0E000" .. child.id .. ": |r|cFFFF0000" .. L["Disabled"] .. "|r")
                       end
-                    elseif(intable.type == "color") then
-                      local r, g, b = childOptionTable[i].get(info);
-                      r, g, b = r or 1, g or 1, b or 1;
-                      tinsert(values, ("|cFF%2x%2x%2x%s|r"):format(r * 220 + 35, g * 220 + 35, b * 220 + 35, child.id));
-                    elseif(intable.type == "select") then
-                      local selectValues = type(intable.values) == "table" and intable.values or intable.values(info);
-                      local key = childOptionTable[i].get(info);
-                      local display = key and selectValues[key] or L["None"];
+                    elseif intable.type == "color" then
+                      local r, g, b = childOptionTable[i].get(info)
+                      r, g, b = r or 1, g or 1, b or 1
+                      tinsert(values, ("|cFF%2x%2x%2x%s|r"):format(r * 220 + 35, g * 220 + 35, b * 220 + 35, child.id))
+                    elseif intable.type == "select" then
+                      local selectValues = type(intable.values) == "table" and intable.values or intable.values(info)
+                      local key = childOptionTable[i].get(info)
+                      local display = key and selectValues[key] or L["None"]
                       if intable.dialogControl == "LSM30_Font" then
-                        tinsert(values, "|cFFE0E000"..child.id..": |r" .. key);
+                        tinsert(values, "|cFFE0E000" .. child.id .. ": |r" .. key)
                       else
                         if type(display) == "string" then
-                          tinsert(values, "|cFFE0E000"..child.id..": |r"..display);
+                          tinsert(values, "|cFFE0E000" .. child.id .. ": |r" .. display)
                         elseif type(display) == "table" then
-                          tinsert(values, "|cFFE0E000"..child.id..": |r"..display[1].."/"..display[2] );
+                          tinsert(values, "|cFFE0E000" .. child.id .. ": |r" .. display[1] .. "/" .. display[2])
                         end
                       end
-                    elseif(intable.type == "multiselect") then
-                      local selectedValues = {};
+                    elseif intable.type == "multiselect" then
+                      local selectedValues = {}
                       for k, v in pairs(combinedKeys) do
-                        if (childOptionTable[i].get(info, k)) then
+                        if childOptionTable[i].get(info, k) then
                           tinsert(selectedValues, tostring(v))
                         end
                       end
-                      tinsert(values, "|cFFE0E000"..child.id..": |r"..table.concat(selectedValues, ","));
+                      tinsert(values, "|cFFE0E000" .. child.id .. ": |r" .. table.concat(selectedValues, ","))
                     else
-                      local display = childOptionTable[i].get(info) or L["None"];
-                      if(type(display) == "number") then
-                        display = math.floor(display * 100) / 100;
+                      local display = childOptionTable[i].get(info) or L["None"]
+                      if type(display) == "number" then
+                        display = math.floor(display * 100) / 100
                       else
                         if #display > 50 then
                           display = display:sub(1, 50) .. "..."
                         end
                       end
-                      tinsert(values, "|cFFE0E000"..child.id..": |r"..display);
+                      tinsert(values, "|cFFE0E000" .. child.id .. ": |r" .. display)
                     end
-                    break;
+                    break
                   end
                 end
               end
             end
-            return table.concat(values, "\n");
+            return table.concat(values, "\n")
           end
         end
-      elseif(type(v) == "table" and i ~= "values") then
-        recurse(v);
+      elseif type(v) == "table" and i ~= "values" then
+        recurse(v)
       end
     end
   end
-  recurse(intable);
+  recurse(intable)
 end
 
 local function replaceImageFuncs(intable, data, subOption)
   local function imageAll(info)
-    local combinedImage = {};
-    local first = true;
+    local combinedImage = {}
+    local first = true
     for child in OptionsPrivate.Private.TraverseLeafs(data) do
       local childOption = OptionsPrivate.EnsureOptions(child, subOption)
-      if not(childOption) then
+      if not childOption then
         return "error"
       end
-      childOption = getChildOption(childOption, info);
+      childOption = getChildOption(childOption, info)
       if childOption and childOption.image then
-        local image = {childOption.image(info)};
-        if(first) then
-          combinedImage = image;
-          first = false;
+        local image = { childOption.image(info) }
+        if first then
+          combinedImage = image
+          first = false
         else
-          if not(combinedImage[1] == image[1]) then
-            return "", 0, 0;
+          if not (combinedImage[1] == image[1]) then
+            return "", 0, 0
           end
         end
       end
     end
 
-    return unpack(combinedImage);
+    return unpack(combinedImage)
   end
 
   local function recurse(intable)
-    for i,v in pairs(intable) do
-      if(i == "image" and type(v) == "function") then
-        intable[i] = imageAll;
-      elseif(type(v) == "table" and i ~= "values") then
-        recurse(v);
+    for i, v in pairs(intable) do
+      if i == "image" and type(v) == "function" then
+        intable[i] = imageAll
+      elseif type(v) == "table" and i ~= "values" then
+        recurse(v)
       end
     end
   end
-  recurse(intable);
+  recurse(intable)
 end
 
 local concatenableTypes = {
   string = true,
-  number = true
+  number = true,
 }
 local function isConcatenableValue(value)
   return value and concatenableTypes[type(value)]
 end
 local function replaceValuesFuncs(intable, data, subOption)
   local function valuesAll(info)
-    local combinedValues = {};
-    local handledValues = {};
-    local first = true;
+    local combinedValues = {}
+    local handledValues = {}
+    local first = true
     for child in OptionsPrivate.Private.TraverseLeafs(data) do
       local childOption = OptionsPrivate.EnsureOptions(child, subOption)
-      if not(childOption) then
+      if not childOption then
         return "error"
       end
 
-      childOption = getChildOption(childOption, info);
-      if (childOption) then
-        local values = childOption.values;
-        if (type(values) == "function") then
-          values = values(info);
+      childOption = getChildOption(childOption, info)
+      if childOption then
+        local values = childOption.values
+        if type(values) == "function" then
+          values = values(info)
         end
-        if(first) then
+        if first then
           for k, v in pairs(values) do
-            handledValues[k] = handledValues[k] or {};
-            handledValues[k][v] = true;
-            combinedValues[k] = v;
+            handledValues[k] = handledValues[k] or {}
+            handledValues[k][v] = true
+            combinedValues[k] = v
           end
-          first = false;
+          first = false
         else
           for k, v in pairs(values) do
-            if (handledValues[k] and handledValues[k][v]) then
+            if handledValues[k] and handledValues[k][v] then
             -- Already known key/value pair
             else
-              if (combinedValues[k]) then
+              if combinedValues[k] then
                 if isConcatenableValue(k) and isConcatenableValue(v) then
-                  combinedValues[k] = combinedValues[k] .. "/" .. v;
+                  combinedValues[k] = combinedValues[k] .. "/" .. v
                 end
               else
-                combinedValues[k] = v;
+                combinedValues[k] = v
               end
-              handledValues[k] = handledValues[k] or {};
-              handledValues[k][v] = true;
+              handledValues[k] = handledValues[k] or {}
+              handledValues[k][v] = true
             end
           end
         end
       end
     end
 
-    return combinedValues;
+    return combinedValues
   end
 
   local function recurse(intable)
-    for i,v in pairs(intable) do
-      if(i == "values" and type(v) == "function") then
-        intable[i] = valuesAll;
-      elseif(type(v) == "table" and i ~= "values") then
-        recurse(v);
+    for i, v in pairs(intable) do
+      if i == "values" and type(v) == "function" then
+        intable[i] = valuesAll
+      elseif type(v) == "table" and i ~= "values" then
+        recurse(v)
       end
     end
   end
-  recurse(intable);
+  recurse(intable)
 end
 
 local getHelper = {
@@ -854,27 +861,27 @@ local getHelper = {
     if self.same == false then
       return false
     end
-    if(self.first) then
-      self.combinedValues = values;
-      self.first = false;
+    if self.first then
+      self.combinedValues = values
+      self.first = false
       return true
     else
-      if(#self.combinedValues == #values) then
-        for j=1,#self.combinedValues do
-          if(type(self.combinedValues[j]) == "number" and type(values[j]) == "number") then
-            if((math.floor(self.combinedValues[j] * 100) / 100) ~= (math.floor(values[j] * 100) / 100)) then
-              self.same = false;
-              break;
+      if #self.combinedValues == #values then
+        for j = 1, #self.combinedValues do
+          if type(self.combinedValues[j]) == "number" and type(values[j]) == "number" then
+            if (math.floor(self.combinedValues[j] * 100) / 100) ~= (math.floor(values[j] * 100) / 100) then
+              self.same = false
+              break
             end
           else
-            if(self.combinedValues[j] ~= values[j]) then
-              self.same = false;
-              break;
+            if self.combinedValues[j] ~= values[j] then
+              self.same = false
+              break
             end
           end
         end
       else
-        self.same = false;
+        self.same = false
       end
       return self.same
     end
@@ -887,9 +894,8 @@ local getHelper = {
   end,
   HasValue = function(self)
     return not self.first
-  end
+  end,
 }
-
 
 local function CreateGetAll(subOption)
   return function(data, info, ...)
@@ -904,29 +910,29 @@ local function CreateGetAll(subOption)
       end
 
       local childOptions = OptionsPrivate.EnsureOptions(child, subOption)
-      local childOption = childOptions;
-      local childOptionTable = {[0] = childOption};
-      for i=1,#info do
-        childOption = childOption.args[info[i]];
-        childOptionTable[i] = childOption;
+      local childOption = childOptions
+      local childOptionTable = { [0] = childOption }
+      for i = 1, #info do
+        childOption = childOption.args[info[i]]
+        childOptionTable[i] = childOption
       end
-      if (childOption) then
-        for i=#childOptionTable,0,-1 do
-          if(childOptionTable[i].get) then
-            local values = {childOptionTable[i].get(info, ...)};
+      if childOption then
+        for i = #childOptionTable, 0, -1 do
+          if childOptionTable[i].get then
+            local values = { childOptionTable[i].get(info, ...) }
             if isToggle and values[1] == nil then
               values[1] = false
             end
 
             allChildren:Set(values)
             if not disabledOrHiddenChild(childOptionTable, info) then
-                enabledChildren:Set(values)
+              enabledChildren:Set(values)
             end
 
             if not allChildren:GetSame() and not enabledChildren:GetSame() then
-              return nil;
+              return nil
             end
-            break;
+            break
           end
         end
       end
@@ -943,23 +949,23 @@ end
 
 local function CreateSetAll(subOption, getAll)
   return function(data, info, ...)
-    OptionsPrivate.Private.pauseOptionsProcessing(true);
+    OptionsPrivate.Private.pauseOptionsProcessing(true)
     OptionsPrivate.Private.PauseAllDynamicGroups()
     local before = getAll(data, info, ...)
     for child in OptionsPrivate.Private.TraverseLeafs(data) do
       local childOptions = OptionsPrivate.EnsureOptions(child, subOption)
-      local childOption = childOptions;
-      local childOptionTable = {[0] = childOption};
-      for i=1,#info do
-        childOption = childOption.args[info[i]];
-        childOptionTable[i] = childOption;
+      local childOption = childOptions
+      local childOptionTable = { [0] = childOption }
+      for i = 1, #info do
+        childOption = childOption.args[info[i]]
+        childOptionTable[i] = childOption
       end
 
-      if (childOption and not disabledOrHiddenChild(childOptionTable, info)) then
-        for i=#childOptionTable,0,-1 do
+      if childOption and not disabledOrHiddenChild(childOptionTable, info) then
+        for i = #childOptionTable, 0, -1 do
           local optionTable = childOptionTable[i]
-          if(optionTable.set) then
-            if (optionTable.type == "multiselect") then
+          if optionTable.set then
+            if optionTable.type == "multiselect" then
               local newValue
               if optionTable.multiTristate then
                 if before == true then
@@ -974,18 +980,18 @@ local function CreateSetAll(subOption, getAll)
               end
               optionTable.set(info, ..., newValue)
             else
-              optionTable.set(info, ...);
+              optionTable.set(info, ...)
             end
-            break;
+            break
           end
         end
       end
     end
 
     OptionsPrivate.Private.ResumeAllDynamicGroups()
-    OptionsPrivate.Private.pauseOptionsProcessing(false);
-    OptionsPrivate.Private.ScanForLoads();
-    OptionsPrivate.SortDisplayButtons(nil, true);
+    OptionsPrivate.Private.pauseOptionsProcessing(false)
+    OptionsPrivate.Private.ScanForLoads()
+    OptionsPrivate.SortDisplayButtons(nil, true)
     OptionsPrivate.UpdateOptions()
   end
 end
@@ -995,14 +1001,14 @@ local function CreateExecuteAll(subOption)
     local secondCall = nil
     for child in OptionsPrivate.Private.TraverseLeafs(data) do
       local childOptions = OptionsPrivate.EnsureOptions(child, subOption)
-      local childOption = childOptions;
-      local childOptionTable = {[0] = childOption};
-      for i=1,#info do
-        childOption = childOption.args[info[i]];
-        childOptionTable[i] = childOption;
+      local childOption = childOptions
+      local childOptionTable = { [0] = childOption }
+      for i = 1, #info do
+        childOption = childOption.args[info[i]]
+        childOptionTable[i] = childOption
       end
 
-      if (childOption and not disabledOrHiddenChild(childOptionTable, info)) then
+      if childOption and not disabledOrHiddenChild(childOptionTable, info) then
         -- Some functions, that is the expand/collapse functions need to be
         -- effectively called only once. Passing in the secondCall parameter allows
         -- them to distinguish between the first and every other call
@@ -1027,7 +1033,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
     return data.regionType == "dynamicgroup" and data.useAnchorPerUnit
   end
 
-  local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
+  local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20
   local positionOptions = {
     __title = L["Position Settings"],
     __order = metaOrder,
@@ -1070,10 +1076,10 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       desc = L["Sets the anchored frame as the aura's parent, causing the aura to inherit attributes such as visibility and scale."],
       order = 71,
       get = function()
-        return data.anchorFrameParent or data.anchorFrameParent == nil;
+        return data.anchorFrameParent or data.anchorFrameParent == nil
       end,
       hidden = function()
-        return not IsGroupByFrame() and (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE" or IsParentDynamicGroup());
+        return not IsGroupByFrame() and (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE" or IsParentDynamicGroup())
       end,
     },
     anchorFrameSpaceOne = {
@@ -1081,7 +1087,9 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       width = WeakAuras.normalWidth,
       name = "",
       order = 72,
-      image = function() return "", 0, 0 end,
+      image = function()
+        return "", 0, 0
+      end,
       hidden = function()
         return IsParentDynamicGroup() or not (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE")
       end,
@@ -1093,11 +1101,11 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       name = L["Frame"],
       order = 73,
       hidden = function()
-        if (IsParentDynamicGroup()) then
-          return true;
+        if IsParentDynamicGroup() then
+          return true
         end
         return not (data.anchorFrameType == "SELECTFRAME")
-      end
+      end,
     },
     -- Button to select frame to anchor on
     chooseAnchorFrameFrame = {
@@ -1106,14 +1114,14 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       name = L["Choose"],
       order = 74,
       hidden = function()
-        if (IsParentDynamicGroup()) then
-          return true;
+        if IsParentDynamicGroup() then
+          return true
         end
         return not (data.anchorFrameType == "SELECTFRAME")
       end,
       func = function()
-        OptionsPrivate.StartFrameChooser(data, {"anchorFrameFrame"});
-      end
+        OptionsPrivate.StartFrameChooser(data, { "anchorFrameFrame" })
+      end,
     },
     selfPoint = {
       type = "select",
@@ -1129,26 +1137,26 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       type = "select",
       width = WeakAuras.normalWidth,
       name = function()
-        if (data.anchorFrameType == "SCREEN") then
+        if data.anchorFrameType == "SCREEN" then
           return L["To Screen's"]
-        elseif (data.anchorFrameType == "PRD") then
-          return L["To Personal Ressource Display's"];
+        elseif data.anchorFrameType == "PRD" then
+          return L["To Personal Ressource Display's"]
         else
-          return L["To Frame's"];
+          return L["To Frame's"]
         end
       end,
       order = 76,
       hidden = function()
-        if (data.parent) then
+        if data.parent then
           if IsGroupByFrame() then
             return false
           end
           if IsParentDynamicGroup() then
             return true
           end
-          return data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE";
+          return data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE"
         else
-          return data.anchorFrameType == "MOUSE";
+          return data.anchorFrameType == "MOUSE"
         end
       end,
       values = OptionsPrivate.Private.point_types,
@@ -1163,17 +1171,19 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
         if IsGroupByFrame() then
           return true
         end
-        if (data.anchorFrameType ~= "SCREEN") then
-          return true;
+        if data.anchorFrameType ~= "SCREEN" then
+          return true
         end
-        if (data.parent) then
-          return IsParentDynamicGroup();
+        if data.parent then
+          return IsParentDynamicGroup()
         end
-        return true;
+        return true
       end,
       disabled = true,
-      values = {["CENTER"] = L["Anchor Point"]},
-      get = function() return "CENTER"; end,
+      values = { ["CENTER"] = L["Anchor Point"] },
+      get = function()
+        return "CENTER"
+      end,
       control = "WeakAurasAnchorButtons",
     },
     anchorFramePoints = {
@@ -1181,10 +1191,12 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       width = WeakAuras.normalWidth,
       name = "",
       order = 78,
-      image = function() return "", 0, 0 end,
+      image = function()
+        return "", 0, 0
+      end,
       hidden = function()
-        return not (data.anchorFrameType == "MOUSE") or IsParentDynamicGroup();
-      end
+        return not (data.anchorFrameType == "MOUSE") or IsParentDynamicGroup()
+      end,
     },
     xOffset = {
       type = "range",
@@ -1196,14 +1208,16 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       softMax = screenWidth,
       max = 4 * screenWidth,
       bigStep = 10,
-      get = function() return data.xOffset end,
+      get = function()
+        return data.xOffset
+      end,
       set = function(info, v)
-        data.xOffset = v;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
-        OptionsPrivate.ResetMoverSizer();
+        data.xOffset = v
+        WeakAuras.Add(data)
+        WeakAuras.UpdateThumbnail(data)
+        OptionsPrivate.ResetMoverSizer()
         OptionsPrivate.Private.AddParents(data)
-      end
+      end,
     },
     yOffset = {
       type = "range",
@@ -1215,37 +1229,53 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       softMax = screenHeight,
       max = 4 * screenHeight,
       bigStep = 10,
-      get = function() return data.yOffset end,
+      get = function()
+        return data.yOffset
+      end,
       set = function(info, v)
-        data.yOffset = v;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
-        OptionsPrivate.ResetMoverSizer();
+        data.yOffset = v
+        WeakAuras.Add(data)
+        WeakAuras.UpdateThumbnail(data)
+        OptionsPrivate.ResetMoverSizer()
         OptionsPrivate.Private.AddParents(data)
-      end
+      end,
     },
     frameStrata = {
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Frame Strata"],
       order = 81,
-      values = OptionsPrivate.Private.frame_strata_types
+      values = OptionsPrivate.Private.frame_strata_types,
     },
     anchorFrameSpace = {
       type = "execute",
       width = WeakAuras.normalWidth,
       name = "",
       order = 82,
-      image = function() return "", 0, 0 end,
+      image = function()
+        return "", 0, 0
+      end,
       hidden = function()
-        return not (data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup());
-      end
+        return not (data.anchorFrameType ~= "SCREEN" or IsParentDynamicGroup())
+      end,
     },
-  };
+  }
 
-  OptionsPrivate.commonOptions.AddCodeOption(positionOptions, data, L["Custom Anchor"], "custom_anchor", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-anchor-function",
-                          71.5, function() return not(data.anchorFrameType == "CUSTOM" and not IsParentDynamicGroup()) end, {"customAnchor"}, false, { setOnParent = group })
-  return positionOptions;
+  OptionsPrivate.commonOptions.AddCodeOption(
+    positionOptions,
+    data,
+    L["Custom Anchor"],
+    "custom_anchor",
+    "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-anchor-function",
+    71.5,
+    function()
+      return not (data.anchorFrameType == "CUSTOM" and not IsParentDynamicGroup())
+    end,
+    { "customAnchor" },
+    false,
+    { setOnParent = group }
+  )
+  return positionOptions
 end
 
 local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
@@ -1270,7 +1300,9 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
       name = L["Border Style"],
       order = order + 0.2,
       values = AceGUIWidgetLSMlists.border,
-      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
+      hidden = function()
+        return hiddenFunc and hiddenFunc() or not data.border
+      end,
     },
     borderBackdrop = {
       type = "select",
@@ -1279,7 +1311,9 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
       name = L["Backdrop Style"],
       order = order + 0.3,
       values = AceGUIWidgetLSMlists.background,
-      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
+      hidden = function()
+        return hiddenFunc and hiddenFunc() or not data.border
+      end,
     },
     borderOffset = {
       type = "range",
@@ -1289,7 +1323,9 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
       softMin = 0,
       softMax = 32,
       bigStep = 1,
-      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
+      hidden = function()
+        return hiddenFunc and hiddenFunc() or not data.border
+      end,
     },
     borderSize = {
       type = "range",
@@ -1299,7 +1335,9 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
       min = 1,
       softMax = 64,
       bigStep = 1,
-      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
+      hidden = function()
+        return hiddenFunc and hiddenFunc() or not data.border
+      end,
     },
     borderInset = {
       type = "range",
@@ -1309,14 +1347,18 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
       softMin = 1,
       softMax = 32,
       bigStep = 1,
-      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
+      hidden = function()
+        return hiddenFunc and hiddenFunc() or not data.border
+      end,
     },
     border_spacer = {
       type = "description",
       name = "",
       width = WeakAuras.normalWidth,
-      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
-      order = order + 0.6
+      hidden = function()
+        return hiddenFunc and hiddenFunc() or not data.border
+      end,
+      order = order + 0.6,
     },
     borderColor = {
       type = "color",
@@ -1324,14 +1366,18 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
       name = L["Border Color"],
       hasAlpha = true,
       order = order + 0.7,
-      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
+      hidden = function()
+        return hiddenFunc and hiddenFunc() or not data.border
+      end,
     },
-    borderInFront  = {
+    borderInFront = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Border in Front"],
       order = order + 0.8,
-      hidden = function() return hiddenFunc and hiddenFunc() or not data.border or not showBackDropOptions end,
+      hidden = function()
+        return hiddenFunc and hiddenFunc() or not data.border or not showBackDropOptions
+      end,
     },
     backdropColor = {
       type = "color",
@@ -1339,42 +1385,54 @@ local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
       name = L["Backdrop Color"],
       hasAlpha = true,
       order = order + 0.9,
-      hidden = function() return hiddenFunc and hiddenFunc() or not data.border end,
+      hidden = function()
+        return hiddenFunc and hiddenFunc() or not data.border
+      end,
     },
-    backdropInFront  = {
+    backdropInFront = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Backdrop in Front"],
       order = order + 1,
-      hidden = function() return hiddenFunc and hiddenFunc() or not data.border or not showBackDropOptions end,
+      hidden = function()
+        return hiddenFunc and hiddenFunc() or not data.border or not showBackDropOptions
+      end,
     },
   }
 
-  return borderOptions;
+  return borderOptions
 end
 
-local function noop()
-end
+local function noop() end
 
 local function GetCustomCode(data, path)
   for _, key in ipairs(path) do
-    if (not data or not data[key]) then
-      return nil;
+    if not data or not data[key] then
+      return nil
     end
-    data = data[key];
+    data = data[key]
   end
-  return data;
+  return data
 end
 
 local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, path, encloseInFunction, options)
   options = options and CopyTable(options) or {}
-  options.extraFunctions = options.extraFunctions or {};
+  options.extraFunctions = options.extraFunctions or {}
   tinsert(options.extraFunctions, 1, {
     buttonLabel = L["Expand"],
     func = function()
-      OptionsPrivate.OpenTextEditor(OptionsPrivate.GetPickedDisplay(), path, encloseInFunction, options.multipath, options.reloadOptions, options.setOnParent, url, options.validator)
-    end
-  });
+      OptionsPrivate.OpenTextEditor(
+        OptionsPrivate.GetPickedDisplay(),
+        path,
+        encloseInFunction,
+        options.multipath,
+        options.reloadOptions,
+        options.setOnParent,
+        url,
+        options.validator
+      )
+    end,
+  })
 
   args[prefix .. "_custom"] = {
     type = "input",
@@ -1388,79 +1446,81 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
       extraFunctions = options.extraFunctions,
     },
     set = function(info, v)
-      local subdata = data;
-      for i = 1, #path -1 do
-        local key = path[i];
-        subdata[key] = subdata[key] or {};
-        subdata = subdata[key];
+      local subdata = data
+      for i = 1, #path - 1 do
+        local key = path[i]
+        subdata[key] = subdata[key] or {}
+        subdata = subdata[key]
       end
 
-      subdata[path[#path]] = v;
-      WeakAuras.Add(data);
-      if (options.extraSetFunction) then
-        options.extraSetFunction();
+      subdata[path[#path]] = v
+      WeakAuras.Add(data)
+      if options.extraSetFunction then
+        options.extraSetFunction()
       end
-      if (options.reloadOptions) then
+      if options.reloadOptions then
         OptionsPrivate.ClearOptions(data.id)
       end
     end,
     get = function(info)
-      return GetCustomCode(data, path);
-    end
-  };
+      return GetCustomCode(data, path)
+    end,
+  }
 
   args[prefix .. "_customError"] = {
     type = "description",
     name = function()
       if hiddenFunc() then
-        return "";
-      end
-
-      local code = GetCustomCode(data, path);
-
-      if (not code or code:trim() == "") then
         return ""
       end
 
-      if (encloseInFunction) then
-        code = "function() "..code.."\n end";
+      local code = GetCustomCode(data, path)
+
+      if not code or code:trim() == "" then
+        return ""
       end
 
-      code = "return " .. code;
+      if encloseInFunction then
+        code = "function() " .. code .. "\n end"
+      end
 
-      local loadedFunction, errorString = loadstring(code);
+      code = "return " .. code
+
+      local loadedFunction, errorString = loadstring(code)
 
       if not errorString then
         if options.validator then
-          local ok, validate = xpcall(loadedFunction, function(err) errorString = err end)
+          local ok, validate = xpcall(loadedFunction, function(err)
+            errorString = err
+          end)
           if ok then
             errorString = options.validator(validate)
           end
         end
       end
-      return errorString and "|cFFFF0000"..errorString or "";
+      return errorString and "|cFFFF0000" .. errorString or ""
     end,
     width = WeakAuras.doubleWidth,
     order = order + 0.002,
     hidden = function()
-      if (hiddenFunc()) then
-        return true;
+      if hiddenFunc() then
+        return true
       end
 
-      local code = GetCustomCode(data, path);
-      if (not code or code:trim() == "") then
-        return true;
+      local code = GetCustomCode(data, path)
+      if not code or code:trim() == "" then
+        return true
       end
 
-      if (encloseInFunction) then
-        code = "function() "..code.."\n end";
+      if encloseInFunction then
+        code = "function() " .. code .. "\n end"
       end
 
-      code = "return " .. code;
+      code = "return " .. code
 
-      local loadedFunction, errorString = loadstring(code);
-      if(errorString and not loadedFunction) then
-        return false;
+      local loadedFunction, errorString = loadstring(code)
+      if errorString and not loadedFunction then
+        return false
       else
         if options.validator then
           local ok, validate = xpcall(loadedFunction, noop)
@@ -1469,18 +1529,18 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
           end
           return false
         end
-        return true;
+        return true
       end
-    end
-  };
+    end,
+  }
 end
 
 local function AddCommonTriggerOptions(options, data, triggernum, doubleWidth)
   local trigger = data.triggers[triggernum].trigger
 
-  local trigger_types = {};
+  local trigger_types = {}
   for type, triggerSystem in pairs(OptionsPrivate.Private.triggerTypes) do
-    trigger_types[type] = triggerSystem.GetName(type);
+    trigger_types[type] = triggerSystem.GetName(type)
   end
 
   options.type = {
@@ -1494,18 +1554,18 @@ local function AddCommonTriggerOptions(options, data, triggernum, doubleWidth)
       return trigger.type
     end,
     set = function(info, v)
-      trigger.type = v;
-      local prototype = trigger.event and OptionsPrivate.Private.event_prototypes[trigger.event];
+      trigger.type = v
+      local prototype = trigger.event and OptionsPrivate.Private.event_prototypes[trigger.event]
       if OptionsPrivate.Private.event_categories[v] and OptionsPrivate.Private.event_categories[v].default then
         if not prototype or prototype.type ~= v then
           trigger.event = OptionsPrivate.Private.event_categories[v].default
         end
       end
-      WeakAuras.Add(data);
-      WeakAuras.UpdateThumbnail(data);
-      WeakAuras.ClearAndUpdateOptions(data.id);
+      WeakAuras.Add(data)
+      WeakAuras.UpdateThumbnail(data)
+      WeakAuras.ClearAndUpdateOptions(data.id)
     end,
-    control = "WeakAurasSortedDropdown"
+    control = "WeakAurasSortedDropdown",
   }
 end
 
@@ -1561,7 +1621,6 @@ local function AddTriggerGetterSetter(options, data, triggernum)
     end
   end
 end
-
 
 OptionsPrivate.commonOptions = {}
 OptionsPrivate.commonOptions.parsePrefix = parsePrefix
