@@ -2233,7 +2233,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
       userOption.get = getUserNumAsString(option)
       userOption.set = setUserNum(data, option)
     elseif optionType == "range" then
-      userOption.softMax = option.softMax or 20
+      userOption.softMax = option.softMax
       userOption.softMin = option.softMin
       userOption.bigStep = option.bigStep
       userOption.min = option.min
