@@ -1943,8 +1943,8 @@ local methods = {
   Close = function(self, success, id)
     self.optionsWindow.window = "default";
     self.optionsWindow:UpdateFrameVisible()
-    if self.CallbackFunc then
-      self.CallbackFunc(success, id)
+    if self.callbackFunc then
+      self.callbackFunc(success, id)
     end
   end,
   AddBasicInformationWidgets = function(self, data, sender)
