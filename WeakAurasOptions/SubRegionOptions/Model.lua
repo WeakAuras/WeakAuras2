@@ -1,7 +1,9 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L;
+local L = WeakAuras.L
 
 local function createOptions(parentData, data, index, subIndex)
   local options = {
@@ -17,23 +19,23 @@ local function createOptions(parentData, data, index, subIndex)
       type = "input",
       width = WeakAuras.doubleWidth - 0.15,
       name = L["Model"],
-      order =  10,
-      hidden = WeakAuras.IsClassic()
+      order = 10,
+      hidden = WeakAuras.IsClassic(),
     },
     model_path = {
       type = "input",
       width = WeakAuras.doubleWidth - 0.15,
       name = L["Model"],
-      order =  10.5,
-      hidden = not WeakAuras.IsClassic()
+      order = 10.5,
+      hidden = not WeakAuras.IsClassic(),
     },
     chooseModel = {
       type = "execute",
       width = 0.15,
       name = L["Choose"],
-      order =  11,
+      order = 11,
       func = function()
-        OptionsPrivate.OpenModelPicker(parentData, {"subRegions", index});
+        OptionsPrivate.OpenModelPicker(parentData, { "subRegions", index })
       end,
       imageWidth = 24,
       imageHeight = 24,
@@ -45,7 +47,9 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.doubleWidth,
       name = L["Clipped by Progress"],
       order = 12,
-      hidden = function() return parentData.regionType ~= "aurabar" end
+      hidden = function()
+        return parentData.regionType ~= "aurabar"
+      end,
     },
     extra_width = {
       type = "range",
@@ -55,7 +59,9 @@ local function createOptions(parentData, data, index, subIndex)
       softMin = -100,
       softMax = 500,
       step = 1,
-      hidden = function() return data.bar_model_clip and parentData.regionType == "aurabar" end
+      hidden = function()
+        return data.bar_model_clip and parentData.regionType == "aurabar"
+      end,
     },
     extra_height = {
       type = "range",
@@ -65,7 +71,9 @@ local function createOptions(parentData, data, index, subIndex)
       softMin = -100,
       softMax = 500,
       step = 1,
-      hidden = function() return data.bar_model_clip and parentData.regionType == "aurabar" end
+      hidden = function()
+        return data.bar_model_clip and parentData.regionType == "aurabar"
+      end,
     },
     model_alpha = {
       type = "range",
@@ -74,13 +82,13 @@ local function createOptions(parentData, data, index, subIndex)
       order = 13,
       min = 0,
       max = 1,
-      bigStep = 0.1
+      bigStep = 0.1,
     },
     api = {
       type = "toggle",
       name = L["Use SetTransform"],
       order = 14,
-      width = WeakAuras.normalWidth
+      width = WeakAuras.normalWidth,
     },
     model_z = {
       type = "range",
@@ -88,10 +96,12 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Z Offset"],
       softMin = -20,
       softMax = 20,
-      step = .001,
+      step = 0.001,
       bigStep = 0.05,
       order = 20,
-      hidden = function() return data.api end
+      hidden = function()
+        return data.api
+      end,
     },
     model_x = {
       type = "range",
@@ -99,10 +109,12 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["X Offset"],
       softMin = -20,
       softMax = 20,
-      step = .001,
+      step = 0.001,
       bigStep = 0.05,
       order = 30,
-      hidden = function() return data.api end
+      hidden = function()
+        return data.api
+      end,
     },
     model_y = {
       type = "range",
@@ -110,10 +122,12 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Y Offset"],
       softMin = -20,
       softMax = 20,
-      step = .001,
+      step = 0.001,
       bigStep = 0.05,
       order = 40,
-      hidden = function() return data.api end
+      hidden = function()
+        return data.api
+      end,
     },
     rotation = {
       type = "range",
@@ -124,7 +138,9 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
       bigStep = 3,
       order = 45,
-      hidden = function() return data.api end
+      hidden = function()
+        return data.api
+      end,
     },
     -- New Settings
     model_st_tx = {
@@ -136,7 +152,9 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
       bigStep = 5,
       order = 20,
-      hidden = function() return not data.api end
+      hidden = function()
+        return not data.api
+      end,
     },
     model_st_ty = {
       type = "range",
@@ -147,7 +165,9 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
       bigStep = 5,
       order = 21,
-      hidden = function() return not data.api end
+      hidden = function()
+        return not data.api
+      end,
     },
     model_st_tz = {
       type = "range",
@@ -158,7 +178,9 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
       bigStep = 5,
       order = 22,
-      hidden = function() return not data.api end
+      hidden = function()
+        return not data.api
+      end,
     },
     model_st_rx = {
       type = "range",
@@ -169,7 +191,9 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
       bigStep = 3,
       order = 23,
-      hidden = function() return not data.api end
+      hidden = function()
+        return not data.api
+      end,
     },
     model_st_ry = {
       type = "range",
@@ -180,7 +204,9 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
       bigStep = 3,
       order = 24,
-      hidden = function() return not data.api end
+      hidden = function()
+        return not data.api
+      end,
     },
     model_st_rz = {
       type = "range",
@@ -191,7 +217,9 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
       bigStep = 3,
       order = 25,
-      hidden = function() return not data.api end
+      hidden = function()
+        return not data.api
+      end,
     },
     model_st_us = {
       type = "range",
@@ -202,7 +230,9 @@ local function createOptions(parentData, data, index, subIndex)
       step = 0.1,
       bigStep = 5,
       order = 26,
-      hidden = function() return not data.api end
+      hidden = function()
+        return not data.api
+      end,
     },
   }
 
@@ -211,4 +241,4 @@ local function createOptions(parentData, data, index, subIndex)
   return options
 end
 
-WeakAuras.RegisterSubRegionOptions("submodel", createOptions, L["Shows a model"]);
+WeakAuras.RegisterSubRegionOptions("submodel", createOptions, L["Shows a model"])

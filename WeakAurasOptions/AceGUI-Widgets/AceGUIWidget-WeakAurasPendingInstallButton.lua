@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 
 local pairs, next, type, unpack = pairs, next, type, unpack
@@ -133,10 +135,10 @@ local methods = {
   end,
   ["SetIcon"] = function(self, icon)
     self.orgIcon = icon
-    if (type(icon) == "string" or type(icon) == "number") then
+    if type(icon) == "string" or type(icon) == "number" then
       self.icon:SetTexture(icon)
       self.icon:Show()
-      if (self.iconRegion and self.iconRegion.Hide) then
+      if self.iconRegion and self.iconRegion.Hide then
         self.iconRegion:Hide()
       end
     else
@@ -190,8 +192,7 @@ local function Constructor()
   local update = CreateFrame("Button", nil, button)
   button.update = update
   update.disabled = true
-  update.func = function()
-  end
+  update.func = function() end
   update:SetNormalTexture([[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]])
   update:Disable()
   update:SetWidth(24)
@@ -208,7 +209,7 @@ local function Constructor()
   updateLogo:SetSize(24, 24)
   updateLogo:SetPoint("CENTER", update)
   updateLogo:SetFrameStrata(update:GetFrameStrata())
-  updateLogo:SetFrameLevel(update:GetFrameLevel()-1)
+  updateLogo:SetFrameLevel(update:GetFrameLevel() - 1)
 
   -- Animation On Hover
   local animGroup = update:CreateAnimationGroup()
@@ -219,7 +220,7 @@ local function Constructor()
   animRotate:SetDuration(1)
   animRotate:SetSmoothing("OUT")
   animGroup:SetScript("OnFinished", function()
-    if (MouseIsOver(update)) then
+    if MouseIsOver(update) then
       animGroup:Play()
     end
   end)

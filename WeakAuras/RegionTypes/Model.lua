@@ -1,8 +1,10 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
-local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L;
+local SharedMedia = LibStub("LibSharedMedia-3.0")
+local L = WeakAuras.L
 
 -- Default settings
 local default = {
@@ -34,16 +36,16 @@ local default = {
   yOffset = 0,
   frameStrata = 1,
   border = false,
-  borderColor = {1.0, 1.0, 1.0, 0.5},
-  backdropColor = {1.0, 1.0, 1.0, 0.5},
+  borderColor = { 1.0, 1.0, 1.0, 0.5 },
+  backdropColor = { 1.0, 1.0, 1.0, 0.5 },
   borderEdge = "None",
   borderOffset = 5,
   borderInset = 11,
   borderSize = 16,
-  borderBackdrop = "Blizzard Tooltip"
-};
+  borderBackdrop = "Blizzard Tooltip",
+}
 
-local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
+local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20
 
 local properties = {
   width = {
@@ -53,7 +55,7 @@ local properties = {
     min = 1,
     softMax = screenWidth,
     bigStep = 1,
-    default = 32
+    default = 32,
   },
   height = {
     display = L["Height"],
@@ -62,43 +64,43 @@ local properties = {
     min = 1,
     softMax = screenHeight,
     bigStep = 1,
-    default = 32
+    default = 32,
   },
 }
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+WeakAuras.regionPrototype.AddProperties(properties, default)
 
 local function GetProperties(data)
-  return properties;
+  return properties
 end
 
 local regionFunctions = {
-  Update = function() end
+  Update = function() end,
 }
 
 -- Called when first creating a new region/display
 local function create(parent)
   -- Main region
-  local region = CreateFrame("Frame", nil, UIParent);
+  local region = CreateFrame("Frame", nil, UIParent)
   region.regionType = "model"
-  region:SetMovable(true);
-  region:SetResizable(true);
-  region:SetMinResize(1, 1);
+  region:SetMovable(true)
+  region:SetResizable(true)
+  region:SetMinResize(1, 1)
 
   -- Border region
-  local border = CreateFrame("Frame", nil, region, "BackdropTemplate");
-  region.border = border;
+  local border = CreateFrame("Frame", nil, region, "BackdropTemplate")
+  region.border = border
 
-  WeakAuras.regionPrototype.create(region);
+  WeakAuras.regionPrototype.create(region)
 
-  for k, v in pairs (regionFunctions) do
+  for k, v in pairs(regionFunctions) do
     region[k] = v
   end
 
   region.AnchorSubRegion = WeakAuras.regionPrototype.AnchorSubRegion
 
   -- Return complete region
-  return region;
+  return region
 end
 
 local function CreateModel()
@@ -120,19 +122,26 @@ local function ConfigureModel(region, model, data)
 
   -- Adjust model
   WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
-  model:SetPortraitZoom(data.portraitZoom and 1 or 0);
+  model:SetPortraitZoom(data.portraitZoom and 1 or 0)
   model:ClearTransform()
-  if (data.api) then
+  if data.api then
     model:MakeCurrentCameraCustom()
-    model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
-      rad(data.model_st_rx), rad(data.model_st_ry), rad(region.rotation), data.model_st_us / 1000);
+    model:SetTransform(
+      data.model_st_tx / 1000,
+      data.model_st_ty / 1000,
+      data.model_st_tz / 1000,
+      rad(data.model_st_rx),
+      rad(data.model_st_ry),
+      rad(region.rotation),
+      data.model_st_us / 1000
+    )
   else
-    model:SetPosition(data.model_z, data.model_x, data.model_y);
-    model:SetFacing(rad(region.rotation));
+    model:SetPosition(data.model_z, data.model_x, data.model_y)
+    model:SetFacing(rad(region.rotation))
   end
 
   if data.modelIsUnit then
-    model:RegisterEvent("UNIT_MODEL_CHANGED");
+    model:RegisterEvent("UNIT_MODEL_CHANGED")
 
     local unit
     if not WeakAuras.IsRetail() then
@@ -141,30 +150,29 @@ local function ConfigureModel(region, model, data)
       unit = data.model_fileId
     end
 
-    if (unit == "target") then
-      model:RegisterEvent("PLAYER_TARGET_CHANGED");
+    if unit == "target" then
+      model:RegisterEvent("PLAYER_TARGET_CHANGED")
     elseif not WeakAuras.IsClassic() and unit == "focus" then
-      model:RegisterEvent("PLAYER_FOCUS_CHANGED");
+      model:RegisterEvent("PLAYER_FOCUS_CHANGED")
     end
     model:SetScript("OnEvent", function(self, event, unitId)
-      Private.StartProfileSystem("model");
-      if (event ~= "UNIT_MODEL_CHANGED" or UnitIsUnit(unitId, unit)) then
+      Private.StartProfileSystem("model")
+      if event ~= "UNIT_MODEL_CHANGED" or UnitIsUnit(unitId, unit) then
         WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
       end
-      Private.StopProfileSystem("model");
-    end
-    );
+      Private.StopProfileSystem("model")
+    end)
   else
-    model:UnregisterEvent("UNIT_MODEL_CHANGED");
-    model:UnregisterEvent("PLAYER_TARGET_CHANGED");
+    model:UnregisterEvent("UNIT_MODEL_CHANGED")
+    model:UnregisterEvent("PLAYER_TARGET_CHANGED")
     if not WeakAuras.IsClassic() then
-      model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
+      model:UnregisterEvent("PLAYER_FOCUS_CHANGED")
     end
-    model:SetScript("OnEvent", nil);
+    model:SetScript("OnEvent", nil)
   end
 
   -- Enable model animation
-  if(data.advance and model:HasAnimation(data.sequence)) then
+  if data.advance and model:HasAnimation(data.sequence) then
     model:SetAnimation(data.sequence)
   else
     model:SetAnimation(0)
@@ -181,21 +189,21 @@ end
 local function ReleaseModel(model)
   model:SetKeepModelOnHide(false)
   model:Hide()
-  model:UnregisterEvent("UNIT_MODEL_CHANGED");
-  model:UnregisterEvent("PLAYER_TARGET_CHANGED");
+  model:UnregisterEvent("UNIT_MODEL_CHANGED")
+  model:UnregisterEvent("PLAYER_TARGET_CHANGED")
   if not WeakAuras.IsClassic() then
-    model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
+    model:UnregisterEvent("PLAYER_FOCUS_CHANGED")
   end
-  model:SetScript("OnEvent", nil);
+  model:SetScript("OnEvent", nil)
   local pool = model.api and poolNewApi or poolOldApi
   pool:Release(model)
 end
 
 -- Modify a given region/display
 local function modify(parent, region, data)
-  WeakAuras.regionPrototype.modify(parent, region, data);
+  WeakAuras.regionPrototype.modify(parent, region, data)
   -- Localize
-  local border = region.border;
+  local border = region.border
 
   if region.model then
     ReleaseModel(region.model)
@@ -203,12 +211,12 @@ local function modify(parent, region, data)
   end
 
   -- Reset position and size
-  region:SetWidth(data.width);
-  region:SetHeight(data.height);
-  region.width = data.width;
-  region.height = data.height;
-  region.scalex = 1;
-  region.scaley = 1;
+  region:SetWidth(data.width)
+  region:SetHeight(data.height)
+  region.width = data.width
+  region.height = data.height
+  region.scalex = 1
+  region.scaley = 1
 
   -- Update border
   if data.border then
@@ -217,72 +225,79 @@ local function modify(parent, region, data)
       edgeSize = data.borderSize,
       bgFile = SharedMedia:Fetch("background", data.borderBackdrop),
       insets = {
-        left     = data.borderInset,
-        right     = data.borderInset,
-        top     = data.borderInset,
-        bottom     = data.borderInset,
+        left = data.borderInset,
+        right = data.borderInset,
+        top = data.borderInset,
+        bottom = data.borderInset,
       },
-    });
-    border:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2], data.borderColor[3], data.borderColor[4]);
-    border:SetBackdropColor(data.backdropColor[1], data.backdropColor[2], data.backdropColor[3], data.backdropColor[4]);
+    })
+    border:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2], data.borderColor[3], data.borderColor[4])
+    border:SetBackdropColor(data.backdropColor[1], data.backdropColor[2], data.backdropColor[3], data.backdropColor[4])
 
-    border:SetPoint("bottomleft", region, "bottomleft", -data.borderOffset, -data.borderOffset);
-    border:SetPoint("topright",   region, "topright",    data.borderOffset,  data.borderOffset);
+    border:SetPoint("bottomleft", region, "bottomleft", -data.borderOffset, -data.borderOffset)
+    border:SetPoint("topright", region, "topright", data.borderOffset, data.borderOffset)
 
-    border:Show();
+    border:Show()
   else
-    border:Hide();
+    border:Hide()
   end
   -- Rescale model display
   function region:Scale(scalex, scaley)
-    if(scalex < 0) then
-      region.mirror_h = true;
-      scalex = scalex * -1;
+    if scalex < 0 then
+      region.mirror_h = true
+      scalex = scalex * -1
     else
-      region.mirror_h = nil;
+      region.mirror_h = nil
     end
-    region:SetWidth(region.width * scalex);
-    if(scaley < 0) then
-      scaley = scaley * -1;
-      region.mirror_v = true;
+    region:SetWidth(region.width * scalex)
+    if scaley < 0 then
+      scaley = scaley * -1
+      region.mirror_v = true
     else
-      region.mirror_v = nil;
+      region.mirror_v = nil
     end
-    region:SetHeight(region.height * scaley);
+    region:SetHeight(region.height * scaley)
   end
 
   function region:SetRegionWidth(width)
-    region.width = width;
-    region:Scale(region.scalex, region.scaley);
+    region.width = width
+    region:Scale(region.scalex, region.scaley)
   end
 
   function region:SetRegionHeight(height)
-    region.height = height;
-    region:Scale(region.scalex, region.scaley);
+    region.height = height
+    region:Scale(region.scalex, region.scaley)
   end
 
   -- Rotate model
   function region:Rotate(degrees)
-    region.rotation = degrees;
+    region.rotation = degrees
     if region.model then
-      if (data.api) then
-        region.model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
-          rad(data.model_st_rx), rad(data.model_st_ry), rad(degrees), data.model_st_us / 1000);
+      if data.api then
+        region.model:SetTransform(
+          data.model_st_tx / 1000,
+          data.model_st_ty / 1000,
+          data.model_st_tz / 1000,
+          rad(data.model_st_rx),
+          rad(data.model_st_ry),
+          rad(degrees),
+          data.model_st_us / 1000
+        )
       else
-        region.model:SetFacing(rad(region.rotation));
+        region.model:SetFacing(rad(region.rotation))
       end
     end
   end
 
-  if (data.api) then
-    region:Rotate(data.model_st_rz);
+  if data.api then
+    region:Rotate(data.model_st_rz)
   else
-    region:Rotate(data.rotation);
+    region:Rotate(data.rotation)
   end
 
   -- Get model rotation
   function region:GetRotation()
-    return region.rotation;
+    return region.rotation
   end
 
   function region:PreShow()
@@ -300,26 +315,26 @@ local function modify(parent, region, data)
     end
   end
 
-  WeakAuras.regionPrototype.modifyFinish(parent, region, data);
+  WeakAuras.regionPrototype.modifyFinish(parent, region, data)
 end
 
 -- Work around for movies and world map hiding all models
 do
   function Private.PreShowModels(self, event)
-    Private.StartProfileSystem("model");
+    Private.StartProfileSystem("model")
     for id, data in pairs(WeakAuras.regions) do
-      Private.StartProfileAura(id);
+      Private.StartProfileAura(id)
       if data.region.toShow then
-        if (data.regionType == "model") then
-          data.region:PreShow();
+        if data.regionType == "model" then
+          data.region:PreShow()
         end
       end
-      Private.StopProfileAura(id);
+      Private.StopProfileAura(id)
     end
     for model in pairs(Private.barmodels) do
       model:PreShow()
     end
-    Private.StopProfileSystem("model");
+    Private.StopProfileSystem("model")
   end
 end
 
@@ -328,4 +343,4 @@ local function validate(data)
 end
 
 -- Register new region type with WeakAuras
-WeakAuras.RegisterRegionType("model", create, modify, default, GetProperties, validate);
+WeakAuras.RegisterRegionType("model", create, modify, default, GetProperties, validate)

@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 
 local AceGUI = LibStub("AceGUI-3.0")
@@ -15,23 +17,25 @@ local function addCode(codes, text, code, ...)
   -- The 4th parameter is a "check" if the code is active
   -- The following line let's distinguish between addCode(a, b, c, nil) and addCode(a, b, c)
   -- If the 4th parameter is nil, then we want to return
-  if (select("#", ...) > 0) then
+  if select("#", ...) > 0 then
     if not select(1, ...) then
       return
     end
   end
 
   if code and notEmptyString(code) then
-    local t = {};
-    t.text = text;
+    local t = {}
+    t.text = text
     t.value = text
     t.code = code
-    tinsert(codes, t);
+    tinsert(codes, t)
   end
 end
 
 local function checkTrigger(codes, id, trigger, untrigger)
-  if not trigger or trigger.type ~= "custom" then return end;
+  if not trigger or trigger.type ~= "custom" then
+    return
+  end
 
   addCode(codes, L["%s Trigger Function"]:format(id), trigger.custom)
 
@@ -42,17 +46,19 @@ local function checkTrigger(codes, id, trigger, untrigger)
     addCode(codes, L["%s Duration Function"]:format(id), trigger.customDuration)
     addCode(codes, L["%s Name Function"]:format(id), trigger.customName)
     addCode(codes, L["%s Icon Function"]:format(id), trigger.customIcon)
-    addCode(codes, L["%s Texture Function"]:format(id),trigger.customTexture)
+    addCode(codes, L["%s Texture Function"]:format(id), trigger.customTexture)
     addCode(codes, L["%s Stacks Function"]:format(id), trigger.customStacks)
     for i = 1, 7 do
-      local property = "customOverlay" .. i;
+      local property = "customOverlay" .. i
       addCode(codes, L["%s %u. Overlay Function"]:format(id, i), trigger[property])
     end
   end
 end
 
 local function checkAnimation(codes, id, a)
-  if not a or a.type ~= "custom" then return end
+  if not a or a.type ~= "custom" then
+    return
+  end
   addCode(codes, L["%s - Alpha Animation"]:format(id), a.alphaFunc, a.alphaType == "custom" and a.use_alpha)
   addCode(codes, L["%s - Translate Animation"]:format(id), a.translateFunc, a.translateType == "custom" and a.use_translate)
   addCode(codes, L["%s - Scale Animation"]:format(id), a.scaleFunc, a.scaleType == "custom" and a.use_scale)
@@ -62,14 +68,14 @@ end
 
 local function scamCheck(codes, data)
   for i, v in ipairs(data.triggers) do
-    checkTrigger(codes, L["%s - %i. Trigger"]:format(data.id, i), v.trigger, v.untrigger);
+    checkTrigger(codes, L["%s - %i. Trigger"]:format(data.id, i), v.trigger, v.untrigger)
   end
 
-  addCode(codes,  L["%s - Trigger Logic"]:format(data.id), data.triggers.customTriggerLogic, data.triggers.disjunctive == "custom");
+  addCode(codes, L["%s - Trigger Logic"]:format(data.id), data.triggers.customTriggerLogic, data.triggers.disjunctive == "custom")
   addCode(codes, L["%s - Custom Text"]:format(data.id), data.customText)
   addCode(codes, L["%s - Custom Anchor"]:format(data.id), data.customAnchor, data.anchorFrameType == "CUSTOM")
 
-  if (data.actions) then
+  if data.actions then
     if data.actions.init then
       addCode(codes, L["%s - Init Action"]:format(data.id), data.actions.init.custom, data.actions.init.do_custom)
     end
@@ -83,30 +89,34 @@ local function scamCheck(codes, data)
     end
   end
 
-  if (data.animation) then
-    checkAnimation(codes, L["%s - Start"]:format(data.id), data.animation.start);
-    checkAnimation(codes, L["%s - Main"]:format(data.id), data.animation.main);
-    checkAnimation(codes, L["%s - Finish"]:format(data.id), data.animation.finish);
+  if data.animation then
+    checkAnimation(codes, L["%s - Start"]:format(data.id), data.animation.start)
+    checkAnimation(codes, L["%s - Main"]:format(data.id), data.animation.main)
+    checkAnimation(codes, L["%s - Finish"]:format(data.id), data.animation.finish)
   end
 
   addCode(codes, L["%s - Custom Grow"]:format(data.id), data.customGrow, data.regionType == "dynamicgroup" and data.grow == "CUSTOM")
   addCode(codes, L["%s - Custom Sort"]:format(data.id), data.customSort, data.regionType == "dynamicgroup" and data.sort == "custom")
-  addCode(codes, L["%s - Custom Anchor"]:format(data.id), data.customAnchorPerUnit,
-          data.regionType == "dynamicgroup" and data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM")
+  addCode(
+    codes,
+    L["%s - Custom Anchor"]:format(data.id),
+    data.customAnchorPerUnit,
+    data.regionType == "dynamicgroup" and data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM"
+  )
 
-  if (data.conditions) then
+  if data.conditions then
     local customChat = 1
     local customCode = 1
     local customCheck = 1
     for _, condition in ipairs(data.conditions) do
-      if (condition.changes) then
+      if condition.changes then
         for _, property in ipairs(condition.changes) do
           if type(property.value) == "table" and property.value.custom then
             if property.property == "chat" then
-              addCode(codes, L["%s - Condition Custom Chat %s"]:format(data.id, customChat), property.value.custom);
+              addCode(codes, L["%s - Condition Custom Chat %s"]:format(data.id, customChat), property.value.custom)
               customChat = customChat + 1
             elseif property.property == "customcode" then
-              addCode(codes, L["%s - Condition Custom Code %s"]:format(data.id, customCode), property.value.custom);
+              addCode(codes, L["%s - Condition Custom Code %s"]:format(data.id, customCode), property.value.custom)
               customCode = customCode + 1
             end
           end
@@ -114,10 +124,12 @@ local function scamCheck(codes, data)
       end
 
       local function recurseAddCustomCheck(checks)
-        if not checks then return end
+        if not checks then
+          return
+        end
         for _, check in pairs(checks) do
           if check.trigger == -1 and check.variable == "customcheck" then
-            addCode(codes, L["%s - Condition Custom Check %s"]:format(data.id, customCheck), check.value);
+            addCode(codes, L["%s - Condition Custom Check %s"]:format(data.id, customCheck), check.value)
             customCheck = customCheck + 1
           end
           recurseAddCustomCheck(check.checks)
@@ -126,7 +138,7 @@ local function scamCheck(codes, data)
 
       if condition.check then
         if condition.check.trigger == -1 and condition.check.variable == "customcheck" then
-          addCode(codes, L["%s - Condition Custom Check %s"]:format(data.id, customCheck), condition.check.value);
+          addCode(codes, L["%s - Condition Custom Check %s"]:format(data.id, customCheck), condition.check.value)
           customCheck = customCheck + 1
         end
         recurseAddCustomCheck(condition.check.checks)
@@ -171,10 +183,10 @@ local function FieldToCategory(field, isRoot)
 end
 
 local function recurseUpdate(data, chunk)
-  for k,v in pairs(chunk) do
+  for k, v in pairs(chunk) do
     if v == deleted then
       data[k] = nil
-    elseif type(v) == 'table' and type(data[k]) == 'table' then
+    elseif type(v) == "table" and type(data[k]) == "table" then
       recurseUpdate(data[k], v)
     else
       data[k] = v
@@ -195,12 +207,14 @@ local function RecurseDiff(ours, theirs)
           diff[key] = diffVal
           same = false
         end
-      elseif ourVal ~= theirVal and -- of course, floating points can be nonequal by less than we could possibly care
-      not(type(ourVal) == "number" and type(theirVal) == "number" and math.abs(ourVal - theirVal) < 1e-6) then
-        if (theirVal == nil) then
+      elseif
+        ourVal ~= theirVal -- of course, floating points can be nonequal by less than we could possibly care
+        and not (type(ourVal) == "number" and type(theirVal) == "number" and math.abs(ourVal - theirVal) < 1e-6)
+      then
+        if theirVal == nil then
           diff[key] = deleted
         else
-          diff[key] = theirVal;
+          diff[key] = theirVal
         end
         same = false
       end
@@ -212,7 +226,9 @@ local function RecurseDiff(ours, theirs)
       same = false
     end
   end
-  if not same then return diff end
+  if not same then
+    return diff
+  end
 end
 
 -- for debug purposes
@@ -244,13 +260,14 @@ end
 
 local function Diff(ours, theirs)
   if not ignoredForDiffChecking then
-    ignoredForDiffChecking = CreateFromMixins(OptionsPrivate.Private.internal_fields,
-    OptionsPrivate.Private.non_transmissable_fields)
+    ignoredForDiffChecking = CreateFromMixins(OptionsPrivate.Private.internal_fields, OptionsPrivate.Private.non_transmissable_fields)
   end
 
   -- generates a diff which WeakAuras.Update can use
   local debug = false
-  if not ours or not theirs then return end
+  if not ours or not theirs then
+    return
+  end
   local diff = RecurseDiff(ours, theirs)
   if diff then
     if debug then
@@ -302,7 +319,7 @@ local function BuildUidMap(data, children, type)
 
       -- index, total, parentIsDynamicGroup: helpers that transport data between phase 1 and 2
     },
-    type = type -- Either old or new, only used for error checking
+    type = type, -- Either old or new, only used for error checking
     -- root: uid of the root
     -- totalCount: count of members
     -- idToUid maps from id to uid
@@ -315,7 +332,7 @@ local function BuildUidMap(data, children, type)
   idToUid[data.id] = data.uid
   for i, child in ipairs(children) do
     if idToUid[child.id] then
-      error("Duplicate id in import data: "..child.id)
+      error("Duplicate id in import data: " .. child.id)
     end
     idToUid[child.id] = child.uid
   end
@@ -327,7 +344,7 @@ local function BuildUidMap(data, children, type)
     uidMap.map[data.uid] = {
       originalName = data.id,
       id = data.id,
-      data = data
+      data = data,
     }
 
     -- Add controlled children
@@ -376,7 +393,6 @@ local function BuildUidMap(data, children, type)
     handleSortHybridTable(child)
   end
 
-
   uidMap.InsertData = function(self, data, parentUid, children, sortHybrid, index)
     self.idToUid[data.id] = data.uid
     self.totalCount = self.totalCount + 1
@@ -403,7 +419,7 @@ local function BuildUidMap(data, children, type)
       parent = parentUid,
       matchedUid = data.uid,
       controlledChildren = children,
-      sortHybrid = sortHybrid
+      sortHybrid = sortHybrid,
     }
 
     if index then
@@ -458,11 +474,11 @@ local function BuildUidMap(data, children, type)
 
     data.id = self.map[uid].id
 
-    if (data.controlledChildren) then
+    if data.controlledChildren then
       data.controlledChildren = {}
     end
 
-    if (data.sortHybridTable) then
+    if data.sortHybridTable then
       data.sortHybridTable = {}
     end
 
@@ -537,7 +553,7 @@ local function BuildUidMap(data, children, type)
     end
 
     local oldId = self.map[uid].id
-    if (oldId == id) then
+    if oldId == id then
       return
     end
     uidMap.idToUid[oldId] = nil
@@ -565,7 +581,7 @@ local function BuildUidMap(data, children, type)
         for i, childUid in ipairs(parentMap.controlledChildren) do
           if childUid == uid then
             parentMap.controlledChildren[i] = newUid
-            break;
+            break
           end
         end
       end
@@ -575,7 +591,6 @@ local function BuildUidMap(data, children, type)
           self.map[childUid].parent = newUid
         end
       end
-
     end
   end
 
@@ -721,8 +736,8 @@ local function BuildUidMap(data, children, type)
     local children = otherUidMap:GetChildren(otherUid)
     local lastMatchUid = nil -- our uid
     local waitingForMatch = {} -- Auras that we haven't assigned to a match yet
-                               -- Will be added to before on finding a match
-                               -- or the parent will be added
+    -- Will be added to before on finding a match
+    -- or the parent will be added
     local matchToInsert = {
       -- from our uid to
       --   before: array of other uids that should be inserted before the uid
@@ -850,7 +865,6 @@ local function BuildUidMap(data, children, type)
   return uidMap, uidMap.root
 end
 
-
 local function hasChildren(data)
   return data.controlledChildren and true or false
 end
@@ -865,7 +879,6 @@ local function MatchChild(uid, newUidMap, oldUidMap)
   for _, childUid in ipairs(newChildren) do
     MatchChild(childUid, newUidMap, oldUidMap)
   end
-
 end
 
 local function BuildMatches(newUidMap, oldUidMap)
@@ -955,8 +968,6 @@ local function SetCategories(globalCategories, categories)
     end
   end
 end
-
-
 
 local function GetCategories(diff, isRoot)
   local categories = {}
@@ -1104,12 +1115,12 @@ end
 
 local function hasChanges(matchInfo)
   return matchInfo.modifiedCount > 0
-         or matchInfo.modifiedGroupCount > 0
-         or matchInfo.addedCount > 0
-         or matchInfo.addedGroupCount > 0
-         or matchInfo.deletedCount > 0
-         or matchInfo.deletedGroupCount > 0
-         or matchInfo.activeCategories.arrangement
+    or matchInfo.modifiedGroupCount > 0
+    or matchInfo.addedCount > 0
+    or matchInfo.addedGroupCount > 0
+    or matchInfo.deletedCount > 0
+    or matchInfo.deletedGroupCount > 0
+    or matchInfo.activeCategories.arrangement
 end
 
 local function BuildDiffs(newUidMap, oldUidMap)
@@ -1126,7 +1137,7 @@ local function BuildDiffs(newUidMap, oldUidMap)
     unmodified = {}, -- Contains new uids that had a empty diff
     added = {}, -- Contains new uids that were added
     deleted = {}, -- Contains old uids that were removed
-    activeCategories = {} -- maps from name of Private.update_categories to true/nil
+    activeCategories = {}, -- maps from name of Private.update_categories to true/nil
   }
   -- Handles addition + modification
   BuildDiffsHelper(newUidMap:GetRootUID(), newUidMap, oldUidMap, matchInfo)
@@ -1196,8 +1207,7 @@ end
 local function AddAuraList(container, uidMap, list, expandText)
   local expand = AceGUI:Create("WeakAurasExpand")
   local collapsed = true
-  local image = collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand"
-                           or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse"
+  local image = collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse"
   expand:SetImage(image)
   expand:SetImageSize(10, 10)
   expand:SetFontObject(GameFontHighlight)
@@ -1218,8 +1228,7 @@ local function AddAuraList(container, uidMap, list, expandText)
 
   expand:SetCallback("OnClick", function()
     collapsed = not collapsed
-    local image = collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand"
-                           or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse"
+    local image = collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse"
     expand:SetImage(image)
 
     if collapsed then
@@ -1243,14 +1252,14 @@ end
 
 local methods = {
   Open = function(self, data, children, target, sender, callbackFunc)
-    if(self.optionsWindow.window == "importexport") then
-      self.optionsWindow.importexport:Close();
-    elseif(self.optionsWindow.window == "texture") then
-      self.optionsWindow.texturePicker:CancelClose();
-    elseif(self.optionsWindow.window == "icon") then
-      self.optionsWindow.iconPicker:CancelClose();
-    elseif(self.optionsWindow.window == "model") then
-      self.optionsWindow.modelPicker:CancelClose();
+    if self.optionsWindow.window == "importexport" then
+      self.optionsWindow.importexport:Close()
+    elseif self.optionsWindow.window == "texture" then
+      self.optionsWindow.texturePicker:CancelClose()
+    elseif self.optionsWindow.window == "icon" then
+      self.optionsWindow.iconPicker:CancelClose()
+    elseif self.optionsWindow.window == "model" then
+      self.optionsWindow.modelPicker:CancelClose()
     end
     self.optionsWindow.window = "update"
     self.optionsWindow:UpdateFrameVisible()
@@ -1259,11 +1268,9 @@ local methods = {
       data = data,
       children = children or {},
       target = target,
-      sender = sender
+      sender = sender,
     }
-    self.userChoices = {
-
-    }
+    self.userChoices = {}
     self.callbackFunc = callbackFunc
 
     self:ReleaseChildren()
@@ -1290,7 +1297,7 @@ local methods = {
       else
         local oldRootId = matchInfo.oldUidMap:GetIdFor(matchInfo.oldUidMap:GetRootUID())
         local preferToUpdate = matchInfo.oldUidMap:GetRawData(matchInfo.oldUidMap:GetRootUID()).preferToUpdate
-        if (data.regionType == "group" or data.regionType == "dynamicgroup") then
+        if data.regionType == "group" or data.regionType == "dynamicgroup" then
           local matchInfoText = L["This is a modified version of your group: |cff9900FF%s|r"]:format(oldRootId)
           matchInfoResult:SetText(matchInfoText)
           if matchInfo.addedCount ~= 0 then
@@ -1348,7 +1355,7 @@ local methods = {
     else
       self.userChoices.mode = "import"
       local matchInfoText = ""
-      if (errorMessage) then
+      if errorMessage then
         matchInfoText = matchInfoText .. "|cFFFF0000" .. errorMessage .. "|r\n"
       end
 
@@ -1372,7 +1379,7 @@ local methods = {
     end
     self.scamCheckResult = scamCheckResult
 
-    if (#scamCheckResult > 0) then
+    if #scamCheckResult > 0 then
       self:AddChild(AceGUI:Create("WeakAurasSpacer"))
 
       local scamCheckText = AceGUI:Create("Label")
@@ -1390,7 +1397,7 @@ local methods = {
       end
     end
 
-    if (highestVersion > WeakAuras.InternalVersion()) then
+    if highestVersion > WeakAuras.InternalVersion() then
       local highestVersionWarning = AceGUI:Create("Label")
       highestVersionWarning:SetFontObject(GameFontHighlight)
       highestVersionWarning:SetFullWidth(true)
@@ -1399,7 +1406,6 @@ local methods = {
       self:AddChild(highestVersionWarning)
     end
 
-
     local currentBuild = floor(WeakAuras.BuildInfo / 10000)
     local importBuild = data.tocversion and floor(data.tocversion / 10000)
 
@@ -1407,12 +1413,14 @@ local methods = {
       local flavorWarning = AceGUI:Create("Label")
       flavorWarning:SetFontObject(GameFontHighlight)
       flavorWarning:SetFullWidth(true)
-      flavorWarning:SetText(L["This aura was created with a different version (%s) of World of Warcraft.\nIt might not work correctly!"]:format(OptionsPrivate.Private.TocToExpansion[importBuild]))
+      flavorWarning:SetText(
+        L["This aura was created with a different version (%s) of World of Warcraft.\nIt might not work correctly!"]:format(OptionsPrivate.Private.TocToExpansion[importBuild])
+      )
       flavorWarning:SetColor(1, 0, 0)
       self:AddChild(flavorWarning)
     end
 
-    if (#scamCheckResult > 0) then
+    if #scamCheckResult > 0 then
       self.viewCodeButton:Show()
     else
       self.viewCodeButton:Hide()
@@ -1443,7 +1451,6 @@ local methods = {
         button:SetCallback("OnValueChanged", function(_, _, value)
           self.userChoices.activeCategories[name] = value
         end)
-
       end
     end
 
@@ -1467,9 +1474,12 @@ local methods = {
     end
   end,
   Import = function(self)
-    OptionsPrivate.Private.dynFrame:AddAction("import", coroutine.create(function()
-      self:ImportImpl()
-    end))
+    OptionsPrivate.Private.dynFrame:AddAction(
+      "import",
+      coroutine.create(function()
+        self:ImportImpl()
+      end)
+    )
   end,
   ImportImpl = function(self)
     local pendingData = self.pendingData
@@ -1503,7 +1513,7 @@ local methods = {
       self:ImportPhase2(uidMap, phase2Order)
 
       pendingPickData = {
-        id = uidMap:GetIdFor(uidMap:GetRootUID())
+        id = uidMap:GetIdFor(uidMap:GetRootUID()),
       }
       if #pendingData.children > 0 then
         pendingPickData.tabToShow = "group"
@@ -1512,7 +1522,9 @@ local methods = {
       OptionsPrivate.SortDisplayButtons()
     elseif userChoices.mode == "update" then
       local onePhaseProgress = matchInfo.oldUidMap:GetTotalCount() + matchInfo.newUidMap:GetTotalCount()
-      local IncProgress = function() self:IncProgress() end
+      local IncProgress = function()
+        self:IncProgress()
+      end
 
       -- The progress is more for appearances than anything resembling real calculation
       -- The estimate for the total work is wonky, as is how the code compensates for that
@@ -1541,7 +1553,7 @@ local methods = {
       local targetNames = {}
 
       local structureUidMap -- We iterate either over new or old, depending on the mode
-      local GetPhase1Data   -- Getting the right data is a bit tricky, and depends on the mode
+      local GetPhase1Data -- Getting the right data is a bit tricky, and depends on the mode
       local GetPhase2Data
       if userChoices.activeCategories.arrangement then
         -- new arrangement
@@ -1606,7 +1618,7 @@ local methods = {
         self:GatherTargetNames(matchInfo.oldUidMap, matchInfo.newUidMap, useNewNames, targetNames)
         self:SetMinimumProgress(6 * onePhaseProgress)
 
-        GetPhase1Data  = function(uid)
+        GetPhase1Data = function(uid)
           return matchInfo.oldUidMap:GetPhase1Data(uid, true, userChoices.activeCategories)
         end
         GetPhase2Data = function(uid)
@@ -1620,14 +1632,14 @@ local methods = {
 
       self:UpdatePhase2(structureUidMap, GetPhase2Data, phase2Order)
       self:SetMinimumProgress(26 * onePhaseProgress)
-      while(self:RenameAuras(targetNames)) do
+      while self:RenameAuras(targetNames) do
         -- Try renaming again and again...
       end
       self:SetMaxProgress()
       coroutine.yield()
 
       pendingPickData = {
-        id = OptionsPrivate.Private.GetDataByUID(matchInfo.oldUidMap:GetRootUID()).id
+        id = OptionsPrivate.Private.GetDataByUID(matchInfo.oldUidMap:GetRootUID()).id,
       }
       if matchInfo.oldUidMap:GetGroupRegionType(matchInfo.oldUidMap:GetRootUID()) then
         pendingPickData.tabToShow = "group"
@@ -1825,7 +1837,7 @@ local methods = {
       OptionsPrivate.Private.SetHistory(data.uid, data, "import")
       local button = WeakAuras.GetDisplayButton(data.id)
       button:SetData(data)
-      if (data.parent) then
+      if data.parent then
         local parentIsDynamicGroup = structureUidMap:GetParentIsDynamicGroup(uid)
         local index, total = structureUidMap:GetGroupOrder(uid)
         button:SetGroup(data.parent, parentIsDynamicGroup)
@@ -1886,7 +1898,7 @@ local methods = {
 
       local button = WeakAuras.GetDisplayButton(data.id)
       button:SetData(data)
-      if (data.parent) then
+      if data.parent then
         local parentIsDynamicGroup = uidMap:GetParentIsDynamicGroup(uid)
         local index, total = uidMap:GetGroupOrder(uid)
         button:SetGroup(data.parent, parentIsDynamicGroup)
@@ -1909,7 +1921,6 @@ local methods = {
       local displayButton = WeakAuras.GetDisplayButton(data.id)
       displayButton:UpdateOffset()
     end
-
   end,
   InitializeProgress = function(self, total)
     self.progress = 0
@@ -1941,7 +1952,7 @@ local methods = {
     self.progressBar:SetProgress(self.progress, self.total)
   end,
   Close = function(self, success, id)
-    self.optionsWindow.window = "default";
+    self.optionsWindow.window = "default"
     self.optionsWindow:UpdateFrameVisible()
     if self.callbackFunc then
       self.callbackFunc(success, id)
@@ -1994,43 +2005,48 @@ local methods = {
     local progress = AceGUI:Create("WeakAurasProgressBar")
     self.progressBar = progress
     self:AddChild(progress)
-  end
+  end,
 }
 
 local updateFrame
 local function ConstructUpdateFrame(frame)
-  local group = AceGUI:Create("ScrollFrame");
-  group.frame:SetParent(frame);
-  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -16);
-  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 46);
-  group.frame:Hide();
-  group:SetLayout("flow");
+  local group = AceGUI:Create("ScrollFrame")
+  group.frame:SetParent(frame)
+  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -16)
+  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 46)
+  group.frame:Hide()
+  group:SetLayout("flow")
   group.optionsWindow = frame
 
-
   -- Action buttons
-  local viewCodeButton = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
-  viewCodeButton:SetScript("OnClick", function() OptionsPrivate.OpenCodeReview(group.scamCheckResult) end);
-  viewCodeButton:SetPoint("BOTTOMLEFT", 20, -24);
+  local viewCodeButton = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate")
+  viewCodeButton:SetScript("OnClick", function()
+    OptionsPrivate.OpenCodeReview(group.scamCheckResult)
+  end)
+  viewCodeButton:SetPoint("BOTTOMLEFT", 20, -24)
   viewCodeButton:SetFrameLevel(viewCodeButton:GetFrameLevel() + 1)
-  viewCodeButton:SetHeight(20);
-  viewCodeButton:SetWidth(160);
+  viewCodeButton:SetHeight(20)
+  viewCodeButton:SetWidth(160)
   viewCodeButton:SetText(L["View custom code"])
 
-  local importButton = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
-  importButton:SetScript("OnClick", function() group:Import() end);
-  importButton:SetPoint("BOTTOMRIGHT", -190, -24);
+  local importButton = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate")
+  importButton:SetScript("OnClick", function()
+    group:Import()
+  end)
+  importButton:SetPoint("BOTTOMRIGHT", -190, -24)
   importButton:SetFrameLevel(importButton:GetFrameLevel() + 1)
-  importButton:SetHeight(20);
-  importButton:SetWidth(160);
+  importButton:SetHeight(20)
+  importButton:SetWidth(160)
   importButton:SetText(L["Import"])
 
-  local closeButton = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
-  closeButton:SetScript("OnClick", function() group:Close(false) end);
-  closeButton:SetPoint("BOTTOMRIGHT", -20, -24);
+  local closeButton = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate")
+  closeButton:SetScript("OnClick", function()
+    group:Close(false)
+  end)
+  closeButton:SetPoint("BOTTOMRIGHT", -20, -24)
   closeButton:SetFrameLevel(closeButton:GetFrameLevel() + 1)
-  closeButton:SetHeight(20);
-  closeButton:SetWidth(160);
+  closeButton:SetHeight(20)
+  closeButton:SetWidth(160)
   closeButton:SetText(L["Close"])
 
   group.viewCodeButton = viewCodeButton

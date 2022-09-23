@@ -23,6 +23,12 @@ jobs:
           args: "--no-color -q"
           annotate: warning
 
+      - uses: JohnnyMorganz/stylua-action@v1.1.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --check . --output-format=summary
+          version: v0.15.1
+
       - name: Update CurseForge Translations
         run: ./update_translations.sh
         env:

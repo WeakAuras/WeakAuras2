@@ -1,8 +1,10 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
-local SharedMedia = LibStub("LibSharedMedia-3.0");
-local L = WeakAuras.L;
+local SharedMedia = LibStub("LibSharedMedia-3.0")
+local L = WeakAuras.L
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20
 
@@ -14,7 +16,7 @@ local default = function(parentType)
     -- No Shadow, but Outline
     return {
       text_text = "%p",
-      text_color = {1, 1, 1, 1},
+      text_color = { 1, 1, 1, 1 },
       text_font = defaultFont,
       text_fontSize = defaultFontSize,
       text_fontType = "OUTLINE",
@@ -26,7 +28,7 @@ local default = function(parentType)
       anchorXOffset = 0,
       anchorYOffset = 0,
 
-      text_shadowColor = { 0, 0, 0, 1},
+      text_shadowColor = { 0, 0, 0, 1 },
       text_shadowXOffset = 0,
       text_shadowYOffset = 0,
       rotateText = "NONE",
@@ -39,7 +41,7 @@ local default = function(parentType)
     -- With Shadow, without Outline
     return {
       text_text = "%n",
-      text_color = {1, 1, 1, 1},
+      text_color = { 1, 1, 1, 1 },
       text_font = defaultFont,
       text_fontSize = defaultFontSize,
       text_fontType = "None",
@@ -51,7 +53,7 @@ local default = function(parentType)
       anchorXOffset = 0,
       anchorYOffset = 0,
 
-      text_shadowColor = { 0, 0, 0, 1},
+      text_shadowColor = { 0, 0, 0, 1 },
       text_shadowXOffset = 1,
       text_shadowYOffset = -1,
       rotateText = "NONE",
@@ -68,7 +70,7 @@ local properties = {
     display = L["Visibility"],
     setter = "SetVisible",
     type = "bool",
-    defaultProperty = true
+    defaultProperty = true,
   },
   text_color = {
     display = L["Color"],
@@ -82,7 +84,7 @@ local properties = {
     min = 6,
     softMax = 72,
     step = 1,
-    default = 12
+    default = 12,
   },
   text_anchorXOffset = {
     display = L["X-Offset"],
@@ -102,31 +104,30 @@ local properties = {
   },
 }
 
-
 -- Rotate object around its origin
 local function animRotate(object, degrees, anchor)
-  if (not anchor) then
-    anchor = "CENTER";
+  if not anchor then
+    anchor = "CENTER"
   end
   -- Something to rotate
   if object.animationGroup or degrees ~= 0 then
     -- Create AnimationGroup and rotation animation
-    object.animationGroup = object.animationGroup or object:CreateAnimationGroup();
-    local group = object.animationGroup;
-    group.rotate = group.rotate or group:CreateAnimation("rotation");
-    local rotate = group.rotate;
+    object.animationGroup = object.animationGroup or object:CreateAnimationGroup()
+    local group = object.animationGroup
+    group.rotate = group.rotate or group:CreateAnimation("rotation")
+    local rotate = group.rotate
 
     if rotate:GetDegrees() == degrees and rotate:GetOrigin() == anchor then
       return
     end
 
-    rotate:SetOrigin(anchor, 0, 0);
-    rotate:SetDegrees(degrees);
-    rotate:SetDuration(0);
-    rotate:SetEndDelay(2147483647);
-    group:Play();
-    rotate:SetSmoothProgress(1);
-    group:Pause();
+    rotate:SetOrigin(anchor, 0, 0)
+    rotate:SetDegrees(degrees)
+    rotate:SetDuration(0)
+    rotate:SetEndDelay(2147483647)
+    group:Play()
+    rotate:SetSmoothProgress(1)
+    group:Pause()
   end
 end
 
@@ -135,36 +136,36 @@ local function getRotateOffset(object, degrees, point)
   -- Any rotation at all?
   if degrees ~= 0 then
     -- Basic offset
-    local originoffset = object:GetStringHeight() / 2;
-    local xo = -1 * originoffset * sin(degrees);
-    local yo = originoffset * (cos(degrees) - 1);
+    local originoffset = object:GetStringHeight() / 2
+    local xo = -1 * originoffset * sin(degrees)
+    local yo = originoffset * (cos(degrees) - 1)
 
     -- Alignment dependant offset
     if point:find("BOTTOM", 1, true) then
-      yo = yo + (1 - cos(degrees)) * (object:GetStringWidth() / 2 - originoffset);
+      yo = yo + (1 - cos(degrees)) * (object:GetStringWidth() / 2 - originoffset)
     elseif point:find("TOP", 1, true) then
-      yo = yo - (1 - cos(degrees)) * (object:GetStringWidth() / 2 - originoffset);
+      yo = yo - (1 - cos(degrees)) * (object:GetStringWidth() / 2 - originoffset)
     end
     if point:find("RIGHT", 1, true) then
-      xo = xo + (1 - cos(degrees)) * (object:GetStringWidth() / 2 - originoffset);
+      xo = xo + (1 - cos(degrees)) * (object:GetStringWidth() / 2 - originoffset)
     elseif point:find("LEFT", 1, true) then
-      xo = xo - (1 - cos(degrees)) * (object:GetStringWidth() / 2 - originoffset);
+      xo = xo - (1 - cos(degrees)) * (object:GetStringWidth() / 2 - originoffset)
     end
 
     -- Done
-    return xo, yo;
+    return xo, yo
 
   -- No rotation
   else
-    return 0, 0;
+    return 0, 0
   end
 end
 
 local function create()
-  local region = CreateFrame("Frame", nil, UIParent);
+  local region = CreateFrame("Frame", nil, UIParent)
 
-  local text = region:CreateFontString(nil, "OVERLAY");
-  region.text = text;
+  local text = region:CreateFontString(nil, "OVERLAY")
+  region.text = text
 
   -- WOW's layout system works best if frames and all their parents are anchored
   -- In this case, it appears that a text doesn't get the right size on the initial
@@ -177,7 +178,7 @@ local function create()
   text:SetWordWrap(true)
   text:SetNonSpaceWrap(true)
 
-  return region;
+  return region
 end
 
 local function onAcquire(subRegion)
@@ -190,7 +191,7 @@ end
 
 local function modify(parent, region, parentData, data, first)
   region:SetParent(parent)
-  local text = region.text;
+  local text = region.text
 
   -- Legacy members in icon
   -- Can we remove them with 9.0 ?
@@ -210,37 +211,37 @@ local function modify(parent, region, parentData, data, first)
     end
   end
 
-  local fontPath = SharedMedia:Fetch("font", data.text_font);
-  text:SetFont(fontPath, data.text_fontSize, data.text_fontType);
+  local fontPath = SharedMedia:Fetch("font", data.text_font)
+  text:SetFont(fontPath, data.text_fontSize, data.text_fontType)
   if not text:GetFont() then -- Font invalid, set the font but keep the setting
-    text:SetFont(STANDARD_TEXT_FONT, data.text_fontSize, data.text_fontType);
+    text:SetFont(STANDARD_TEXT_FONT, data.text_fontSize, data.text_fontType)
   end
   if text:GetFont() then
-    text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(data.text_text));
+    text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(data.text_text))
   end
 
-  text:SetTextHeight(data.text_fontSize);
+  text:SetTextHeight(data.text_fontSize)
 
   text:SetShadowColor(unpack(data.text_shadowColor))
   text:SetShadowOffset(data.text_shadowXOffset, data.text_shadowYOffset)
   text:SetJustifyH(data.text_justify or "CENTER")
 
-  if (data.text_automaticWidth == "Fixed") then
-    if (data.text_wordWrap == "WordWrap") then
-      text:SetWordWrap(true);
-      text:SetNonSpaceWrap(true);
+  if data.text_automaticWidth == "Fixed" then
+    if data.text_wordWrap == "WordWrap" then
+      text:SetWordWrap(true)
+      text:SetNonSpaceWrap(true)
     else
-      text:SetWordWrap(false);
-      text:SetNonSpaceWrap(false);
+      text:SetWordWrap(false)
+      text:SetNonSpaceWrap(false)
     end
 
-    text:SetWidth(data.text_fixedWidth);
-    region:SetWidth(data.text_fixedWidth);
-    region.width = data.text_fixedWidth;
+    text:SetWidth(data.text_fixedWidth)
+    region:SetWidth(data.text_fixedWidth)
+    region.width = data.text_fixedWidth
   else
-    text:SetWidth(0);
-    text:SetWordWrap(true);
-    text:SetNonSpaceWrap(true);
+    text:SetWidth(0)
+    text:SetWordWrap(true)
+    text:SetNonSpaceWrap(true)
   end
 
   if first then
@@ -253,7 +254,7 @@ local function modify(parent, region, parentData, data, first)
     end
 
     if containsCustomText and parentData.customText and parentData.customText ~= "" then
-      parent.customTextFunc = WeakAuras.LoadFunction("return "..parentData.customText)
+      parent.customTextFunc = WeakAuras.LoadFunction("return " .. parentData.customText)
     else
       parent.customTextFunc = nil
     end
@@ -341,33 +342,33 @@ local function modify(parent, region, parentData, data, first)
   if not UpdateText then
     if text:GetFont() then
       local textStr = data.text_text
-      textStr = textStr:gsub("\\n", "\n");
+      textStr = textStr:gsub("\\n", "\n")
       text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(textStr))
     end
   end
 
   function region:Color(r, g, b, a)
-    region.color_r = r;
-    region.color_g = g;
-    region.color_b = b;
-    region.color_a = a;
-    if (r or g or b) then
-      a = a or 1;
+    region.color_r = r
+    region.color_g = g
+    region.color_b = b
+    region.color_a = a
+    if r or g or b then
+      a = a or 1
     end
-    text:SetTextColor(region.color_anim_r or r, region.color_anim_g or g, region.color_anim_b or b, region.color_anim_a or a);
+    text:SetTextColor(region.color_anim_r or r, region.color_anim_g or g, region.color_anim_b or b, region.color_anim_a or a)
   end
 
-  region:Color(data.text_color[1], data.text_color[2], data.text_color[3], data.text_color[4]);
+  region:Color(data.text_color[1], data.text_color[2], data.text_color[3], data.text_color[4])
 
   function region:SetTextHeight(size)
-    local fontPath = SharedMedia:Fetch("font", data.text_font);
+    local fontPath = SharedMedia:Fetch("font", data.text_font)
     if not text:GetFont() then -- Font invalid, set the font but keep the setting
-      text:SetFont(STANDARD_TEXT_FONT, size, data.text_fontType);
+      text:SetFont(STANDARD_TEXT_FONT, size, data.text_fontType)
     else
-      region.text:SetFont(fontPath, size, data.text_fontType);
+      region.text:SetFont(fontPath, size, data.text_fontType)
     end
     region.text:SetTextHeight(size)
-    region:UpdateAnchorOnTextChange();
+    region:UpdateAnchorOnTextChange()
   end
 
   function region:SetVisible(visible)
@@ -408,7 +409,7 @@ local function modify(parent, region, parentData, data, first)
   region.text_anchorXOffset = data.text_anchorXOffset
   region.text_anchorYOffset = data.text_anchorYOffset
 
-  local textDegrees = data.rotateText == "LEFT" and 90 or data.rotateText == "RIGHT" and -90 or 0;
+  local textDegrees = data.rotateText == "LEFT" and 90 or data.rotateText == "RIGHT" and -90 or 0
 
   region.UpdateAnchor = function(self)
     local xo, yo = getRotateOffset(text, textDegrees, selfPoint)
@@ -446,7 +447,7 @@ local function addDefaultsForNewAura(data)
     tinsert(data.subRegions, {
       ["type"] = "subtext",
       text_text = "%p",
-      text_color = {1, 1, 1, 1},
+      text_color = { 1, 1, 1, 1 },
       text_font = defaultFont,
       text_fontSize = defaultFontSize,
       text_fontType = "None",
@@ -458,17 +459,17 @@ local function addDefaultsForNewAura(data)
       anchorXOffset = 0,
       anchorYOffset = 0,
 
-      text_shadowColor = { 0, 0, 0, 1},
+      text_shadowColor = { 0, 0, 0, 1 },
       text_shadowXOffset = 1,
       text_shadowYOffset = -1,
 
       rotateText = "NONE",
-    });
+    })
 
     tinsert(data.subRegions, {
       ["type"] = "subtext",
       text_text = "%n",
-      text_color = {1, 1, 1, 1},
+      text_color = { 1, 1, 1, 1 },
       text_font = defaultFont,
       text_fontSize = defaultFontSize,
       text_fontType = "None",
@@ -480,17 +481,17 @@ local function addDefaultsForNewAura(data)
       anchorXOffset = 0,
       anchorYOffset = 0,
 
-      text_shadowColor = { 0, 0, 0, 1},
+      text_shadowColor = { 0, 0, 0, 1 },
       text_shadowXOffset = 1,
       text_shadowYOffset = -1,
 
       rotateText = "NONE",
-    });
+    })
   elseif data.regionType == "icon" then
     tinsert(data.subRegions, {
       ["type"] = "subtext",
       text_text = "%s",
-      text_color = {1, 1, 1, 1},
+      text_color = { 1, 1, 1, 1 },
       text_font = defaultFont,
       text_fontSize = defaultFontSize,
       text_fontType = "OUTLINE",
@@ -502,15 +503,16 @@ local function addDefaultsForNewAura(data)
       anchorXOffset = 0,
       anchorYOffset = 0,
 
-      text_shadowColor = { 0, 0, 0, 1},
+      text_shadowColor = { 0, 0, 0, 1 },
       text_shadowXOffset = 0,
       text_shadowYOffset = 0,
 
       rotateText = "NONE",
-    });
+    })
   end
 end
 
+-- stylua: ignore
 local function supports(regionType)
   return regionType == "texture"
          or regionType == "progresstexture"
@@ -518,4 +520,4 @@ local function supports(regionType)
          or regionType == "aurabar"
 end
 
-WeakAuras.RegisterSubRegionType("subtext", L["Text"], supports, create, modify, onAcquire, onRelease, default, addDefaultsForNewAura, properties);
+WeakAuras.RegisterSubRegionType("subtext", L["Text"], supports, create, modify, onAcquire, onRelease, default, addDefaultsForNewAura, properties)

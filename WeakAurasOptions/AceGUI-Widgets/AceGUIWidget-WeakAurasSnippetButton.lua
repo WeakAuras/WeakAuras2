@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 --[[-----------------------------------------------------------------------------
 SnippetButton Widget, based on AceGUI Button (and WA ToolbarButton)
 Graphical Button.
@@ -119,7 +121,7 @@ local methods = {
       self.renameEditBox:HighlightText()
       self.renameEditBox:SetFocus()
     end
-  end
+  end,
 }
 
 --[[-----------------------------------------------------------------------------
@@ -196,26 +198,20 @@ local function Constructor()
   renameEditBox:SetPoint("BOTTOMRIGHT", title, "BOTTOMRIGHT")
   renameEditBox:Disable()
   renameEditBox:Hide()
-  renameEditBox:SetScript(
-    "OnEscapePressed",
-    function(self)
-      self:ClearFocus()
-      AceGUI:ClearFocus()
-      self:Disable()
-      self:Hide()
-      title:Show()
-    end
-  )
-  renameEditBox:SetScript(
-    "OnEditFocusLost",
-    function(self)
-      self:ClearFocus()
-      AceGUI:ClearFocus()
-      self:Disable()
-      self:Hide()
-      title:Show()
-    end
-  )
+  renameEditBox:SetScript("OnEscapePressed", function(self)
+    self:ClearFocus()
+    AceGUI:ClearFocus()
+    self:Disable()
+    self:Hide()
+    title:Show()
+  end)
+  renameEditBox:SetScript("OnEditFocusLost", function(self)
+    self:ClearFocus()
+    AceGUI:ClearFocus()
+    self:Disable()
+    self:Hide()
+    title:Show()
+  end)
   renameEditBox:SetScript("OnEnterPressed", rename_complete)
   button.renameEditBox = renameEditBox
 
@@ -226,7 +222,7 @@ local function Constructor()
     htex = htex,
     ptex = ptex,
     deleteButton = deleteButton,
-    renameEditBox = renameEditBox
+    renameEditBox = renameEditBox,
   }
   for method, func in pairs(methods) do
     widget[method] = func

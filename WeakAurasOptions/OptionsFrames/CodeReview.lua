@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
@@ -56,12 +58,12 @@ local colorScheme = {
 }
 
 local function ConstructCodeReview(frame)
-  local group = AceGUI:Create("WeakAurasInlineGroup");
-  group.frame:SetParent(frame);
-  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -16);
-  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 46);
-  group.frame:Hide();
-  group:SetLayout("flow");
+  local group = AceGUI:Create("WeakAurasInlineGroup")
+  group.frame:SetParent(frame)
+  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -16)
+  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 46)
+  group.frame:Hide()
+  group:SetLayout("flow")
 
   local title = AceGUI:Create("Label")
   title:SetFontObject(GameFontNormalHuge)
@@ -69,7 +71,7 @@ local function ConstructCodeReview(frame)
   title:SetText(L["Custom Code Viewer"])
   group:AddChild(title)
 
-  local codeTree = AceGUI:Create("TreeGroup");
+  local codeTree = AceGUI:Create("TreeGroup")
   codeTree:SetTreeWidth(300, false)
   codeTree:SetFullWidth(true)
   codeTree:SetFullHeight(true)
@@ -77,37 +79,39 @@ local function ConstructCodeReview(frame)
   codeTree.dragger:Hide()
   codeTree.border:SetBackdrop(nil)
   codeTree.content:SetAllPoints()
-  group.codeTree = codeTree;
-  group:AddChild(codeTree);
+  group.codeTree = codeTree
+  group:AddChild(codeTree)
 
-  local codebox = AceGUI:Create("MultiLineEditBox");
-  codebox:SetLabel("");
+  local codebox = AceGUI:Create("MultiLineEditBox")
+  codebox:SetLabel("")
   codebox:DisableButton(true)
   codebox:SetFullWidth(true)
   codebox:SetFullHeight(true)
   codeTree:AddChild(codebox)
 
-  IndentationLib.enable(codebox.editBox, colorScheme, 4);
-  local fontPath = SharedMedia:Fetch("font", "Fira Mono Medium");
-  if(fontPath) then
-    codebox.editBox:SetFont(fontPath, 12);
+  IndentationLib.enable(codebox.editBox, colorScheme, 4)
+  local fontPath = SharedMedia:Fetch("font", "Fira Mono Medium")
+  if fontPath then
+    codebox.editBox:SetFont(fontPath, 12)
   end
-  group.codebox = codebox;
+  group.codebox = codebox
 
   codeTree:SetCallback("OnGroupSelected", function(self, event, value)
     for _, v in pairs(group.data) do
-      if (v.value == value) then
-        codebox:SetText(v.code);
+      if v.value == value then
+        codebox:SetText(v.code)
       end
     end
-  end);
+  end)
 
-  local cancel = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
-  cancel:SetScript("OnClick", function() group:Close() end);
-  cancel:SetPoint("BOTTOMRIGHT", -20, -24);
-  cancel:SetHeight(20);
-  cancel:SetWidth(100);
-  cancel:SetText(L["Okay"]);
+  local cancel = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate")
+  cancel:SetScript("OnClick", function()
+    group:Close()
+  end)
+  cancel:SetPoint("BOTTOMRIGHT", -20, -24)
+  cancel:SetHeight(20)
+  cancel:SetWidth(100)
+  cancel:SetText(L["Okay"])
 
   function group.Open(self, data)
     if frame.window == "codereview" then
@@ -115,16 +119,16 @@ local function ConstructCodeReview(frame)
     end
 
     local _, firstEntry = next(data)
-    self.data = data;
-    self.codeTree:SetTree(data);
+    self.data = data
+    self.codeTree:SetTree(data)
     self.codeTree:SelectByValue(firstEntry.value)
 
-    frame.window = "codereview";
+    frame.window = "codereview"
     frame:UpdateFrameVisible()
   end
 
   function group.Close()
-    frame.window = "update";
+    frame.window = "update"
     frame:UpdateFrameVisible()
   end
 

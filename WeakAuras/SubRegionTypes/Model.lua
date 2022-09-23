@@ -1,7 +1,9 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
-local L = WeakAuras.L;
+local L = WeakAuras.L
 
 Private.barmodels = {}
 
@@ -25,7 +27,7 @@ local default = function(parentType)
 
     model_fileId = "235338",
     model_path = "spells/arcanepower_state_chest.m2",
-    bar_model_clip = true
+    bar_model_clip = true,
   }
 end
 
@@ -34,7 +36,7 @@ local properties = {
     display = L["Visibility"],
     setter = "SetVisible",
     type = "bool",
-    defaultProperty = true
+    defaultProperty = true,
   },
   model_alpha = {
     display = L["Alpha"],
@@ -42,8 +44,8 @@ local properties = {
     type = "number",
     min = 0,
     max = 1,
-    bigStep = 0.1
-  }
+    bigStep = 0.1,
+  },
 }
 
 local function PreShow(self)
@@ -63,28 +65,33 @@ local function PreShow(self)
   end
 
   self:ClearTransform()
-  if (data.api) then
+  if data.api then
     self:MakeCurrentCameraCustom()
-    self:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
-      rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
-      data.model_st_us / 1000);
+    self:SetTransform(
+      data.model_st_tx / 1000,
+      data.model_st_ty / 1000,
+      data.model_st_tz / 1000,
+      rad(data.model_st_rx),
+      rad(data.model_st_ry),
+      rad(data.model_st_rz),
+      data.model_st_us / 1000
+    )
   else
-    self:SetPosition(data.model_z, data.model_x, data.model_y);
-    self:SetFacing(0);
+    self:SetPosition(data.model_z, data.model_x, data.model_y)
+    self:SetFacing(0)
   end
   self:SetModelAlpha(self.region.alpha)
 end
 
 local function CreateModel()
-  local model =  CreateFrame("PlayerModel", nil, UIParent)
-  model.PreShow = PreShow;
+  local model = CreateFrame("PlayerModel", nil, UIParent)
+  model.PreShow = PreShow
   return model
 end
 
 -- Keep the two model apis separate
 local poolOldApi = CreateObjectPool(CreateModel)
 local poolNewApi = CreateObjectPool(CreateModel)
-
 
 local function AcquireModel(region, data)
   local pool = data.api and poolNewApi or poolOldApi
@@ -103,13 +110,13 @@ local function AcquireModel(region, data)
   end
 
   local extra_width, extra_height = 0, 0
-  if not(data.bar_model_clip and region.parentType == "aurabar") then
+  if not (data.bar_model_clip and region.parentType == "aurabar") then
     extra_width = data.extra_width or 0
     extra_height = data.extra_height or 0
   end
 
-  model:SetPoint("TOPLEFT", anchor ,"TOPLEFT", -extra_width/2, extra_height/2)
-  model:SetPoint("BOTTOMRIGHT", anchor ,"BOTTOMRIGHT", extra_width/2, -extra_height/2)
+  model:SetPoint("TOPLEFT", anchor, "TOPLEFT", -extra_width / 2, extra_height / 2)
+  model:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", extra_width / 2, -extra_height / 2)
 
   model:SetParent(region)
   model:SetKeepModelOnHide(true)
@@ -127,14 +134,20 @@ local function AcquireModel(region, data)
   end
 
   model:ClearTransform()
-  if (data.api) then
+  if data.api then
     model:MakeCurrentCameraCustom()
-    model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
-      rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
-      data.model_st_us / 1000);
+    model:SetTransform(
+      data.model_st_tx / 1000,
+      data.model_st_ty / 1000,
+      data.model_st_tz / 1000,
+      rad(data.model_st_rx),
+      rad(data.model_st_ry),
+      rad(data.model_st_rz),
+      data.model_st_us / 1000
+    )
   else
-    model:SetPosition(data.model_z, data.model_x, data.model_y);
-    model:SetFacing(0);
+    model:SetPosition(data.model_z, data.model_x, data.model_y)
+    model:SetFacing(0)
   end
   return model
 end
@@ -192,7 +205,7 @@ local funcs = {
       self.toosmall = false
     end
     self:UpdateVisible()
-  end
+  end,
 }
 
 local function create()
@@ -214,8 +227,6 @@ end
 local function onRelease(subRegion)
   subRegion:Hide()
 end
-
-
 
 local function modify(parent, region, parentData, data, first)
   if region.model then
@@ -241,13 +252,13 @@ local function modify(parent, region, parentData, data, first)
   end
 
   local extra_width, extra_height = 0, 0
-  if not(data.bar_model_clip and parentData.regionType == "aurabar") then
+  if not (data.bar_model_clip and parentData.regionType == "aurabar") then
     extra_width = data.extra_width or 0
     extra_height = data.extra_height or 0
   end
 
-  region:SetPoint("TOPLEFT", anchor ,"TOPLEFT", -extra_width/2, extra_height/2)
-  region:SetPoint("BOTTOMRIGHT", anchor ,"BOTTOMRIGHT", extra_width/2, -extra_height/2)
+  region:SetPoint("TOPLEFT", anchor, "TOPLEFT", -extra_width / 2, extra_height / 2)
+  region:SetPoint("BOTTOMRIGHT", anchor, "BOTTOMRIGHT", extra_width / 2, -extra_height / 2)
 
   region:SetAlpha(data.model_alpha)
   region:SetVisible(data.model_visible)
@@ -257,6 +268,7 @@ local function modify(parent, region, parentData, data, first)
   parent.subRegionEvents:AddSubscriber("PreHide", region)
 end
 
+-- stylua: ignore
 local function supports(regionType)
   return regionType == "texture"
          or regionType == "progresstexture"
@@ -265,4 +277,4 @@ local function supports(regionType)
          or regionType == "text"
 end
 
-WeakAuras.RegisterSubRegionType("submodel", L["Model"], supports, create, modify, onAcquire, onRelease, default, nil, properties);
+WeakAuras.RegisterSubRegionType("submodel", L["Model"], supports, create, modify, onAcquire, onRelease, default, nil, properties)

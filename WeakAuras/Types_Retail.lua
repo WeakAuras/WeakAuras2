@@ -1,8 +1,10 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
-local WeakAuras = WeakAuras;
-local L = WeakAuras.L;
+local WeakAuras = WeakAuras
+local L = WeakAuras.L
 
 local encounter_list = ""
 local zoneId_list = ""
@@ -12,7 +14,7 @@ function Private.InitializeEncounterAndZoneLists()
   end
   EJ_SelectTier(EJ_GetCurrentTier())
 
-  for _, inRaid in ipairs({false, true}) do
+  for _, inRaid in ipairs({ false, true }) do
     local instance_index = 1
     local instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
     local title = inRaid and L["Raids"] or L["Dungeons"]
@@ -65,4 +67,3 @@ end
 function Private.get_zoneId_list()
   return zoneId_list
 end
-

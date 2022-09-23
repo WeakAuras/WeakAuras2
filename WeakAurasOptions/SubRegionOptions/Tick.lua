@@ -1,7 +1,9 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, OptionsPrivate = ...
 
-local L = WeakAuras.L;
+local L = WeakAuras.L
 
 local function createOptions(parentData, data, index, subIndex)
   local hiddentickextras = function()
@@ -70,7 +72,7 @@ local function createOptions(parentData, data, index, subIndex)
         end
 
         local offsettext = ""
-        if data.tick_xOffset ~=0 or data.tick_yOffset ~=0 then
+        if data.tick_xOffset ~= 0 or data.tick_yOffset ~= 0 then
           offsettext = L["Offset by |cFFFF0000%s|r/|cFFFF0000%s|r"]:format(data.tick_xOffset, data.tick_yOffset)
         end
 
@@ -91,8 +93,8 @@ local function createOptions(parentData, data, index, subIndex)
       imageWidth = 15,
       imageHeight = 15,
       arg = {
-        expanderName = "tick" .. index .. "#" .. subIndex
-      }
+        expanderName = "tick" .. index .. "#" .. subIndex,
+      },
     },
     automatic_length = {
       type = "toggle",
@@ -110,7 +112,9 @@ local function createOptions(parentData, data, index, subIndex)
       min = 0,
       softMax = 50,
       step = 1,
-      disabled = function() return data.automatic_length end,
+      disabled = function()
+        return data.automatic_length
+      end,
       hidden = hiddentickextras,
     },
     use_texture = {
@@ -126,7 +130,9 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Blend Mode"],
       order = 10,
       values = OptionsPrivate.Private.blend_types,
-      disabled = function() return not data.use_texture end,
+      disabled = function()
+        return not data.use_texture
+      end,
       hidden = hiddentickextras,
     },
     tick_texture = {
@@ -134,7 +140,9 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Texture"],
       order = 11,
       width = WeakAuras.doubleWidth - 0.15,
-      disabled = function() return not data.use_texture end,
+      disabled = function()
+        return not data.use_texture
+      end,
       hidden = hiddentickextras,
     },
     texture_chooser = {
@@ -144,14 +152,17 @@ local function createOptions(parentData, data, index, subIndex)
       order = 11.5,
       func = function()
         OptionsPrivate.OpenTexturePicker(parentData, {
-          "subRegions", index
+          "subRegions",
+          index,
         }, {
           texture = "tick_texture",
           color = "tick_color",
-          blendMode = "tick_blend_mode"
-        }, OptionsPrivate.Private.texture_types);
+          blendMode = "tick_blend_mode",
+        }, OptionsPrivate.Private.texture_types)
       end,
-      disabled = function() return not data.use_texture end,
+      disabled = function()
+        return not data.use_texture
+      end,
       hidden = hiddentickextras,
       imageWidth = 24,
       imageHeight = 24,
@@ -179,7 +190,9 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth,
       name = L["Mirror"],
       order = 15,
-      disabled = function() return not data.use_texture end,
+      disabled = function()
+        return not data.use_texture
+      end,
       hidden = hiddentickextras,
     },
     tick_xOffset = {
@@ -208,9 +221,9 @@ local function createOptions(parentData, data, index, subIndex)
       hidden = hiddentickextras,
       control = "WeakAurasExpandAnchor",
       arg = {
-        expanderName = "tick" .. index .. "#" .. subIndex
-      }
-    }
+        expanderName = "tick" .. index .. "#" .. subIndex,
+      },
+    },
   }
 
   OptionsPrivate.AddUpDownDeleteDuplicate(options, parentData, index, "subtick")
@@ -218,4 +231,4 @@ local function createOptions(parentData, data, index, subIndex)
   return options
 end
 
-WeakAuras.RegisterSubRegionOptions("subtick", createOptions, L["Places a tick on the bar"]);
+WeakAuras.RegisterSubRegionOptions("subtick", createOptions, L["Places a tick on the bar"])

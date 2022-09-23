@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
@@ -14,11 +16,13 @@ local UnitAura = UnitAura
 -- Unit Aura functions that return info about the first Aura matching the spellName or spellID given on the unit.
 local WA_GetUnitAura = function(unit, spell, filter)
   if filter and not filter:upper():find("FUL") then
-      filter = filter.."|HELPFUL"
+    filter = filter .. "|HELPFUL"
   end
   for i = 1, 255 do
     local name, _, _, _, _, _, _, _, _, spellId = UnitAura(unit, i, filter)
-    if not name then return end
+    if not name then
+      return
+    end
     if spell == spellId or spell == name then
       return UnitAura(unit, i, filter)
     end
@@ -28,37 +32,52 @@ end
 if WeakAuras.IsClassic() then
   local WA_GetUnitAuraBase = WA_GetUnitAura
   WA_GetUnitAura = function(unit, spell, filter)
-    local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = WA_GetUnitAuraBase(unit, spell, filter)
+    local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod =
+      WA_GetUnitAuraBase(unit, spell, filter)
     if spellId then
       local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, source, name)
       if duration == 0 and durationNew then
-          duration = durationNew
-          expirationTime = expirationTimeNew
+        duration = durationNew
+        expirationTime = expirationTimeNew
       end
     end
-    return name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
+    return name,
+      icon,
+      count,
+      debuffType,
+      duration,
+      expirationTime,
+      source,
+      isStealable,
+      nameplateShowPersonal,
+      spellId,
+      canApplyAura,
+      isBossDebuff,
+      castByPlayer,
+      nameplateShowAll,
+      timeMod
   end
 end
 
 local WA_GetUnitBuff = function(unit, spell, filter)
-  filter = filter and filter.."|HELPFUL" or "HELPFUL"
+  filter = filter and filter .. "|HELPFUL" or "HELPFUL"
   return WA_GetUnitAura(unit, spell, filter)
 end
 
 local WA_GetUnitDebuff = function(unit, spell, filter)
-  filter = filter and filter.."|HARMFUL" or "HARMFUL"
+  filter = filter and filter .. "|HARMFUL" or "HARMFUL"
   return WA_GetUnitAura(unit, spell, filter)
 end
 
 -- Function to assist iterating group members whether in a party or raid.
 local WA_IterateGroupMembers = function(reversed, forceParty)
-  local unit = (not forceParty and IsInRaid()) and 'raid' or 'party'
-  local numGroupMembers = unit == 'party' and GetNumSubgroupMembers() or GetNumGroupMembers()
-  local i = reversed and numGroupMembers or (unit == 'party' and 0 or 1)
+  local unit = (not forceParty and IsInRaid()) and "raid" or "party"
+  local numGroupMembers = unit == "party" and GetNumSubgroupMembers() or GetNumGroupMembers()
+  local i = reversed and numGroupMembers or (unit == "party" and 0 or 1)
   return function()
     local ret
-    if i == 0 and unit == 'party' then
-      ret = 'player'
+    if i == 0 and unit == "party" then
+      ret = "player"
     elseif i <= numGroupMembers and i > 0 then
       ret = unit .. i
     end
@@ -93,7 +112,7 @@ local WA_Utf8Sub = function(input, size)
     return output
   end
   local i = 1
-  while (size > 0) do
+  while size > 0 do
     local byte = input:byte(i)
     if not byte then
       return output
@@ -114,7 +133,7 @@ local WA_Utf8Sub = function(input, size)
   end
 
   -- Add any bytes that are part of the sequence
-  while (true) do
+  while true do
     local byte = input:byte(i)
     if byte and byte >= 128 and byte < 192 then
       output = output .. input:sub(i, i)
@@ -135,7 +154,7 @@ WeakAuras.HideOverlayGlow = LCG.ButtonGlow_Stop
 
 local LGF = LibStub("LibGetFrame-1.0")
 WeakAuras.GetUnitFrame = LGF.GetUnitFrame
-WeakAuras.GetUnitNameplate =  function(unit)
+WeakAuras.GetUnitNameplate = function(unit)
   if Private.multiUnitUnits.nameplate[unit] then
     return LGF.GetUnitNameplate(unit)
   end
@@ -170,7 +189,7 @@ local blockedFunctions = {
   GuildUninvite = true,
   securecall = true,
   DeleteCursorItem = true,
-  ChatEdit_SendText = true
+  ChatEdit_SendText = true,
 }
 
 local blockedTables = {
@@ -180,7 +199,7 @@ local blockedTables = {
   MailFrameTab2 = true,
   ChatFrame1 = true,
   WeakAurasOptions = true,
-  WeakAurasOptionsSaved = true
+  WeakAurasOptionsSaved = true,
 }
 
 local aura_environments = {}
@@ -209,7 +228,7 @@ local current_aura_env = nil
 local aura_env_stack = {}
 
 function Private.ClearAuraEnvironment(id)
-  environment_initialized[id] = nil;
+  environment_initialized[id] = nil
 end
 
 function Private.ActivateAuraEnvironmentForRegion(region, onlyConfig)
@@ -240,7 +259,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
       current_aura_env.states = states
       current_aura_env.region = region
       -- Push the new environment onto the stack
-      tinsert(aura_env_stack, {current_aura_env, data.uid})
+      tinsert(aura_env_stack, { current_aura_env, data.uid })
     elseif onlyConfig then
       environment_initialized[id] = 1
       aura_environments[id] = {}
@@ -251,7 +270,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
       current_aura_env.state = state
       current_aura_env.states = states
       current_aura_env.region = region
-      tinsert(aura_env_stack, {current_aura_env, data.uid})
+      tinsert(aura_env_stack, { current_aura_env, data.uid })
 
       if not data.controlledChildren then
         current_aura_env.config = CopyTable(data.config)
@@ -268,7 +287,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
       current_aura_env.states = states
       current_aura_env.region = region
       -- push new environment onto the stack
-      tinsert(aura_env_stack, {current_aura_env, data.uid})
+      tinsert(aura_env_stack, { current_aura_env, data.uid })
 
       if data.controlledChildren then
         current_aura_env.child_envs = {}
@@ -291,7 +310,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
       end
       -- Finally, run the init function if supplied
       local actions = data.actions.init
-      if(actions and actions.do_custom and actions.custom) then
+      if actions and actions.do_custom and actions.custom then
         local func = Private.customActionsFunctions[id]["init"]
         if func then
           xpcall(func, Private.GetErrorHandlerId(id, "init"))
@@ -306,28 +325,26 @@ local function DebugPrint(...)
 end
 
 local function blocked(key)
-  Private.AuraWarnings.UpdateWarning(current_uid, "SandboxForbidden", "error",
-          string.format(L["Forbidden function or table: %s"], key))
+  Private.AuraWarnings.UpdateWarning(current_uid, "SandboxForbidden", "error", string.format(L["Forbidden function or table: %s"], key))
 end
 
 local function MakeReadOnly(input, options)
-  return setmetatable({},
-  {
+  return setmetatable({}, {
     __index = function(t, k)
-       if options.blockedFunctions[k] then
-         options.blocked(k)
-         return function() end
-       elseif options.blockedTables[k] then
-         options.blocked(k)
-         return {}
-       elseif options.override[k] then
-         return options.override[k]
-       else
-         return input[k]
-       end
-     end,
-     __newindex = options.setBlocked,
-     __metatable = false
+      if options.blockedFunctions[k] then
+        options.blocked(k)
+        return function() end
+      elseif options.blockedTables[k] then
+        options.blocked(k)
+        return {}
+      elseif options.override[k] then
+        return options.override[k]
+      else
+        return input[k]
+      end
+    end,
+    __newindex = options.setBlocked,
+    __metatable = false,
   })
 end
 
@@ -384,17 +401,16 @@ local FakeWeakAurasMixin = {
     frames = true,
     loadFrame = true,
     unitLoadFrame = true,
-    loaded = true
+    loaded = true,
   },
   override = {
     me = GetUnitName("player", true),
-    myGUID = UnitGUID("player")
+    myGUID = UnitGUID("player"),
   },
   blocked = blocked,
   setBlocked = function()
-    Private.AuraWarnings.UpdateWarning(current_uid, "FakeWeakAurasSet", "error",
-                  L["Writing to the WeakAuras table is not allowed."], true)
-  end
+    Private.AuraWarnings.UpdateWarning(current_uid, "FakeWeakAurasSet", "error", L["Writing to the WeakAuras table is not allowed."], true)
+  end,
 }
 
 local FakeWeakAuras = MakeReadOnly(WeakAuras, FakeWeakAurasMixin)
@@ -408,12 +424,11 @@ local overridden = {
   WA_Utf8Sub = WA_Utf8Sub,
   ActionButton_ShowOverlayGlow = WeakAuras.ShowOverlayGlow,
   ActionButton_HideOverlayGlow = WeakAuras.HideOverlayGlow,
-  WeakAuras = FakeWeakAuras
+  WeakAuras = FakeWeakAuras,
 }
 
 local env_getglobal
-local exec_env = setmetatable({},
-{
+local exec_env = setmetatable({}, {
   __index = function(t, k)
     if k == "_G" then
       return t
@@ -437,12 +452,16 @@ local exec_env = setmetatable({},
   end,
   __newindex = function(table, key, value)
     if _G[key] then
-      Private.AuraWarnings.UpdateWarning(current_uid, "OverridingGlobal", "warning",
-         string.format(L["The aura has overwritten the global '%s', this might affect other auras."], key))
+      Private.AuraWarnings.UpdateWarning(
+        current_uid,
+        "OverridingGlobal",
+        "warning",
+        string.format(L["The aura has overwritten the global '%s', this might affect other auras."], key)
+      )
     end
     rawset(table, key, value)
   end,
-  __metatable = false
+  __metatable = false,
 })
 
 function env_getglobal(k)
