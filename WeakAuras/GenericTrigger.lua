@@ -4145,13 +4145,10 @@ function GenericTrigger.GetTriggerDescription(data, triggernum, namestable)
   if Private.category_event_prototype[trigger.type] then
     tinsert(namestable, { L["Trigger:"], (Private.event_prototypes[trigger.event].name or L["Undefined"]) })
     if trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix then
-      tinsert(
-        namestable,
-        {
-          L["Message type:"],
-          (Private.subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]) .. " " .. (Private.subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"]),
-        }
-      )
+      tinsert(namestable, {
+        L["Message type:"],
+        (Private.subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]) .. " " .. (Private.subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"]),
+      })
     end
   else
     tinsert(namestable, { L["Trigger:"], L["Custom"] })
