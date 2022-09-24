@@ -98,7 +98,7 @@ local function create(parent)
     frame.background = background;
     background:SetAllPoints(frame);
 
-    local foreground = frame:CreateTexture(nil, "ART");
+    local foreground = frame:CreateTexture(nil, "ARTWORK");
     frame.foreground = foreground;
     foreground:SetAllPoints(frame);
 
