@@ -484,7 +484,7 @@ local function modify(parent, region, data)
       cooldown:SetCooldown(0, 0);
       cooldown:SetCooldown(cooldown.expirationTime - cooldown.duration,
                            cooldown.duration,
-                           cooldown.useCooldownModRate and cooldown.modRate);
+                           cooldown.useCooldownModRate and cooldown.modRate or nil);
     end
   end
 
@@ -530,7 +530,7 @@ local function modify(parent, region, data)
         cooldown.expirationTime = expirationTime;
         cooldown.duration = duration;
         cooldown.modRate = modRate;
-        cooldown:SetCooldown(expirationTime - duration, duration, cooldown.useCooldownModRate and modRate);
+        cooldown:SetCooldown(expirationTime - duration, duration, cooldown.useCooldownModRate and modRate or nil);
       else
         cooldown.expirationTime = expirationTime;
         cooldown.duration = duration;
@@ -542,7 +542,7 @@ local function modify(parent, region, data)
     function region:PreShow()
       if (cooldown.duration and cooldown.duration > 0.01) then
         cooldown:Show();
-        cooldown:SetCooldown(cooldown.expirationTime - cooldown.duration, cooldown.duration, cooldown.useCooldownModRate and cooldown.modRate);
+        cooldown:SetCooldown(cooldown.expirationTime - cooldown.duration, cooldown.duration, cooldown.useCooldownModRate and cooldown.modRate or nil);
         cooldown:Resume()
       end
     end
