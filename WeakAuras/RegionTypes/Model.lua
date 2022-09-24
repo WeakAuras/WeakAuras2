@@ -114,7 +114,7 @@ local poolOldApi = CreateObjectPool(CreateModel)
 local poolNewApi = CreateObjectPool(CreateModel)
 
 local function ConfigureModel(region, model, data)
-  model.api = data.api
+  model.api = not WeakAuras.IsDragonflight() and data.api
 
   model:ClearAllPoints()
   model:SetAllPoints(region)
@@ -126,7 +126,7 @@ local function ConfigureModel(region, model, data)
   WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
   model:SetPortraitZoom(data.portraitZoom and 1 or 0);
   model:ClearTransform()
-  if (data.api) then
+  if (data.api and not WeakAuras.IsDragonflight()) then
     model:MakeCurrentCameraCustom()
     model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
       rad(data.model_st_rx), rad(data.model_st_ry), rad(region.rotation), data.model_st_us / 1000);
@@ -176,7 +176,7 @@ local function ConfigureModel(region, model, data)
 end
 
 local function AcquireModel(region, data)
-  local pool = data.api and poolNewApi or poolOldApi
+  local pool = (data.api and not WeakAuras.IsDragonflight()) and poolNewApi or poolOldApi
   local model = pool:Acquire()
   ConfigureModel(region, model, data)
   return model
@@ -191,7 +191,7 @@ local function ReleaseModel(model)
     model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
   end
   model:SetScript("OnEvent", nil);
-  local pool = model.api and poolNewApi or poolOldApi
+  local pool = (model.api and not WeakAuras.IsDragonflight()) and poolNewApi or poolOldApi
   pool:Release(model)
 end
 
@@ -269,7 +269,7 @@ local function modify(parent, region, data)
   function region:Rotate(degrees)
     region.rotation = degrees;
     if region.model then
-      if (data.api) then
+      if (data.api and not WeakAuras.IsDragonflight()) then
         region.model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
           rad(data.model_st_rx), rad(data.model_st_ry), rad(degrees), data.model_st_us / 1000);
       else
@@ -278,7 +278,7 @@ local function modify(parent, region, data)
     end
   end
 
-  if (data.api) then
+  if (data.api and not WeakAuras.IsDragonflight()) then
     region:Rotate(data.model_st_rz);
   else
     region:Rotate(data.rotation);

@@ -52,7 +52,16 @@ local function createOptions(id, data)
       type = "toggle",
       name = L["Use SetTransform"],
       order = 7,
-      width = WeakAuras.normalWidth
+      width = WeakAuras.normalWidth,
+      hidden = function() return WeakAuras.IsDragonflight() end
+    },
+    api_space = {
+      type = "description",
+      name = "",
+      name = "",
+      order = 7.1,
+      width = WeakAuras.normalWidth,
+      hidden = function() return not WeakAuras.IsDragonflight() end
     },
     portraitZoom = {
       type = "toggle",
@@ -70,7 +79,7 @@ local function createOptions(id, data)
       step = .001,
       bigStep = 0.05,
       order = 20,
-      hidden = function() return data.api end
+      hidden = function() return data.api and not WeakAuras.IsDragonflight() end
     },
     model_x = {
       type = "range",
@@ -81,7 +90,7 @@ local function createOptions(id, data)
       step = .001,
       bigStep = 0.05,
       order = 30,
-      hidden = function() return data.api end
+      hidden = function() return data.api and not WeakAuras.IsDragonflight() end
     },
     model_y = {
       type = "range",
@@ -92,7 +101,7 @@ local function createOptions(id, data)
       step = .001,
       bigStep = 0.05,
       order = 40,
-      hidden = function() return data.api end
+      hidden = function() return data.api and not WeakAuras.IsDragonflight() end
     },
     rotation = {
       type = "range",
@@ -103,7 +112,7 @@ local function createOptions(id, data)
       step = 1,
       bigStep = 3,
       order = 45,
-      hidden = function() return data.api end
+      hidden = function() return data.api and not WeakAuras.IsDragonflight() end
     },
     -- New Settings
     model_st_tx = {
@@ -115,7 +124,7 @@ local function createOptions(id, data)
       step = 1,
       bigStep = 5,
       order = 20,
-      hidden = function() return not data.api end
+      hidden = function() return not (data.api and not WeakAuras.IsDragonflight()) end
     },
     model_st_ty = {
       type = "range",
@@ -126,7 +135,7 @@ local function createOptions(id, data)
       step = 1,
       bigStep = 5,
       order = 21,
-      hidden = function() return not data.api end
+      hidden = function() return not (data.api and not WeakAuras.IsDragonflight()) end
     },
     model_st_tz = {
       type = "range",
@@ -137,7 +146,7 @@ local function createOptions(id, data)
       step = 1,
       bigStep = 5,
       order = 22,
-      hidden = function() return not data.api end
+      hidden = function() return not (data.api and not WeakAuras.IsDragonflight()) end
     },
     model_st_rx = {
       type = "range",
@@ -148,7 +157,7 @@ local function createOptions(id, data)
       step = 1,
       bigStep = 3,
       order = 23,
-      hidden = function() return not data.api end
+      hidden = function() return not (data.api and not WeakAuras.IsDragonflight()) end
     },
     model_st_ry = {
       type = "range",
@@ -159,7 +168,7 @@ local function createOptions(id, data)
       step = 1,
       bigStep = 3,
       order = 24,
-      hidden = function() return not data.api end
+      hidden = function() return not (data.api and not WeakAuras.IsDragonflight()) end
     },
     model_st_rz = {
       type = "range",
@@ -170,7 +179,7 @@ local function createOptions(id, data)
       step = 1,
       bigStep = 3,
       order = 25,
-      hidden = function() return not data.api end
+      hidden = function() return not (data.api and not WeakAuras.IsDragonflight()) end
     },
     model_st_us = {
       type = "range",
@@ -181,7 +190,7 @@ local function createOptions(id, data)
       step = 0.1,
       bigStep = 5,
       order = 26,
-      hidden = function() return not data.api end
+      hidden = function() return not (data.api and not WeakAuras.IsDragonflight()) end
     },
     endHeader = {
       type = "header",
@@ -254,7 +263,7 @@ local function modifyThumbnail(parent, region, data)
   model:SetScript("OnShow", function()
     WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
     model:SetPortraitZoom(data.portraitZoom and 1 or 0)
-    if (data.api) then
+    if data.api and not WeakAuras.IsDragonflight() then
       model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
         rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
         data.model_st_us / 1000);
@@ -265,7 +274,7 @@ local function modifyThumbnail(parent, region, data)
     end
   end);
 
-  if (data.api) then
+  if data.api and not WeakAuras.IsDragonflight() then
     model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
       rad(data.model_st_rx), rad(data.model_st_ry), rad(data.model_st_rz),
       data.model_st_us / 1000);
