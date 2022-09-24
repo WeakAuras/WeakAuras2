@@ -80,7 +80,14 @@ local function createOptions(parentData, data, index, subIndex)
       type = "toggle",
       name = L["Use SetTransform"],
       order = 14,
-      width = WeakAuras.normalWidth
+      width = WeakAuras.normalWidth,
+      hidden = function() return WeakAuras.IsDragonflight() end
+    },
+    api_space = {
+      type = "description",
+      order = 15,
+      width = WeakAuras.normalWidth,
+      hidden = function() return not WeakAuras.IsDragonflight() end
     },
     model_z = {
       type = "range",
@@ -91,7 +98,7 @@ local function createOptions(parentData, data, index, subIndex)
       step = .001,
       bigStep = 0.05,
       order = 20,
-      hidden = function() return data.api end
+      hidden = function() return data.api and not WeakAuras.IsDragonflight() end
     },
     model_x = {
       type = "range",
@@ -102,7 +109,7 @@ local function createOptions(parentData, data, index, subIndex)
       step = .001,
       bigStep = 0.05,
       order = 30,
-      hidden = function() return data.api end
+      hidden = function() return data.api and not WeakAuras.IsDragonflight() end
     },
     model_y = {
       type = "range",
@@ -113,7 +120,7 @@ local function createOptions(parentData, data, index, subIndex)
       step = .001,
       bigStep = 0.05,
       order = 40,
-      hidden = function() return data.api end
+      hidden = function() return data.api and not WeakAuras.IsDragonflight() end
     },
     rotation = {
       type = "range",
@@ -124,7 +131,7 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
       bigStep = 3,
       order = 45,
-      hidden = function() return data.api end
+      hidden = function() return data.api and not WeakAuras.IsDragonflight() end
     },
     -- New Settings
     model_st_tx = {
@@ -136,7 +143,7 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
       bigStep = 5,
       order = 20,
-      hidden = function() return not data.api end
+      hidden = function() return not (data.api and not WeakAuras.IsDragonflight()) end
     },
     model_st_ty = {
       type = "range",
@@ -147,7 +154,7 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
       bigStep = 5,
       order = 21,
-      hidden = function() return not data.api end
+      hidden = function() return not (data.api and not WeakAuras.IsDragonflight()) end
     },
     model_st_tz = {
       type = "range",
@@ -158,7 +165,7 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
       bigStep = 5,
       order = 22,
-      hidden = function() return not data.api end
+      hidden = function() return not (data.api and not WeakAuras.IsDragonflight()) end
     },
     model_st_rx = {
       type = "range",
@@ -169,7 +176,7 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
       bigStep = 3,
       order = 23,
-      hidden = function() return not data.api end
+      hidden = function() return not (data.api and not WeakAuras.IsDragonflight()) end
     },
     model_st_ry = {
       type = "range",
@@ -180,7 +187,7 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
       bigStep = 3,
       order = 24,
-      hidden = function() return not data.api end
+      hidden = function() return not (data.api and not WeakAuras.IsDragonflight()) end
     },
     model_st_rz = {
       type = "range",
@@ -191,7 +198,7 @@ local function createOptions(parentData, data, index, subIndex)
       step = 1,
       bigStep = 3,
       order = 25,
-      hidden = function() return not data.api end
+      hidden = function() return not (data.api and not WeakAuras.IsDragonflight()) end
     },
     model_st_us = {
       type = "range",
@@ -202,7 +209,7 @@ local function createOptions(parentData, data, index, subIndex)
       step = 0.1,
       bigStep = 5,
       order = 26,
-      hidden = function() return not data.api end
+      hidden = function() return not (data.api and not WeakAuras.IsDragonflight()) end
     },
   }
 
