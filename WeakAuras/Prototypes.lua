@@ -9448,6 +9448,10 @@ else
   Private.event_prototypes["Queued Action"] = nil
 end
 
+if WeakAuras.IsDragonflight() then
+  Private.event_prototypes["Talent Known"] = nil
+end
+
 if WeakAuras.IsWrathClassic() then
   Private.event_prototypes["Swing Timer"] = nil
 end
