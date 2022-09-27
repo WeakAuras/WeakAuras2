@@ -1086,6 +1086,19 @@ function Private.checkForSingleLoadCondition(trigger, name, validateFn)
 end
 
 Private.load_prototype = {
+  -- Each entry
+  --   name: name of argument for load function/option for options/setting in saved data
+  --   Options data
+  --     display: name to be displayed in the options
+  --     type: type to be used for the options
+  --     width: width in the options
+  --     hidden: whether the option is shown in the options, defaults to false
+  --   Load Function Data
+  --     enable: whether the test should be tested or not, defaults to true
+  --     test: overrides the default test
+  --     init: whether the argument should be a function parameter or not. "arg" for yes. Defaults to no argument
+  --     events: the events on which the test must be reevaluated
+  --     optional: whether the test is relevant for the options classification between loaded and unloaded, defaults to false
   args = {
     {
       name = "combat",
@@ -1118,7 +1131,7 @@ Private.load_prototype = {
       name = "warmode",
       display = L["War Mode Active"],
       type = "tristate",
-      init = "arg",
+      init = WeakAuras.IsRetail() and "arg" or nil,
       width = WeakAuras.normalWidth,
       optional = true,
       enable = WeakAuras.IsRetail(),
@@ -1130,13 +1143,14 @@ Private.load_prototype = {
       display = L["Never"],
       type = "toggle",
       width = WeakAuras.normalWidth,
-      init = "false",
+      --init = "false", -- TODO this!
+      test = "false",
     },
     {
       name = "petbattle",
       display = L["In Pet Battle"],
       type = "tristate",
-      init = "arg",
+      init = WeakAuras.IsRetail() and "arg" or nil,
       width = WeakAuras.normalWidth,
       optional = true,
       enable = WeakAuras.IsRetail(),
@@ -1157,7 +1171,7 @@ Private.load_prototype = {
       name = "vehicleUi",
       display = L["Has Vehicle UI"],
       type = "tristate",
-      init = "arg",
+      init = WeakAuras.IsWrathOrRetail() and "arg" or nil,
       width = WeakAuras.normalWidth,
       optional = true,
       enable = WeakAuras.IsWrathOrRetail(),
@@ -1175,15 +1189,15 @@ Private.load_prototype = {
     },
     {
       name = "player",
-      hidden = true,
       init = "arg",
-      test = "true"
+      enable = false,
+      hidden = true
     },
     {
       name = "realm",
-      hidden = true,
       init = "arg",
-      test = "true"
+      enable = false,
+      hidden = true
     },
     {
       name = "namerealm",
@@ -1236,11 +1250,21 @@ Private.load_prototype = {
           end
         end
       end,
-      init = "arg",
+      init = (WeakAuras.IsShadowlands() or WeakAuras.IsDragonflight()) and "arg" or nil,
       enable = function(trigger)
         return WeakAuras.IsShadowlands() or (WeakAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
       end,
-      hidden = not WeakAuras.IsRetail(),
+      hidden = function(trigger)
+        if WeakAuras.IsClassicOrBCCOrWrath() then
+          return true
+        end
+        if WeakAuras.IsShadowlands() then
+          return false
+        end
+        if WeakAuras.IsDragonflight() then
+          return Private.checkForSingleLoadCondition(trigger, "class") == nil
+        end
+      end,
       events = {"PLAYER_TALENT_UPDATE"}
     },
     {
@@ -1248,7 +1272,7 @@ Private.load_prototype = {
       display = L["Class and Specialization"],
       type = "multiselect",
       values = "spec_types_all",
-      init = "arg",
+      init = WeakAuras.IsShadowlands() and "arg" or nil,
       enable = WeakAuras.IsShadowlands(),
       hidden = not WeakAuras.IsShadowlands(),
       events = {"PLAYER_TALENT_UPDATE"}
@@ -1303,7 +1327,30 @@ Private.load_prototype = {
             or WeakAuras.IsShadowlands()
             or (WeakAuras.IsWrathClassic() and class ~= nil)
             or (WeakAuras.IsDragonflight() and class ~= nil and spec ~= nil)
-      end
+      end,
+      hidden = function(trigger)
+        local class = Private.checkForSingleLoadCondition(trigger, "class")
+        local spec
+        if WeakAuras.IsDragonflight() and class then
+          -- check if class selected has a spec with spec's index
+          spec = Private.checkForSingleLoadCondition(trigger, "spec", function(specIndex)
+            for classID = 1, GetNumClasses() do
+              local _, classFile = GetClassInfo(classID)
+              if classFile == class then
+                if GetSpecializationInfoForClassID(classID, specIndex) then
+                  return true
+                end
+                break
+              end
+            end
+          end)
+        end
+        return not (
+            WeakAuras.IsClassicOrBCC()
+            or WeakAuras.IsShadowlands()
+            or (WeakAuras.IsWrathClassic() and class ~= nil)
+            or (WeakAuras.IsDragonflight() and class ~= nil and spec ~= nil))
+      end,
     },
     {
       name = "talent2",
@@ -1356,7 +1403,31 @@ Private.load_prototype = {
           or (WeakAuras.IsWrathClassic() and class ~= nil)
           or (WeakAuras.IsDragonflight() and class ~= nil and spec ~= nil)
         )
-      end
+      end,
+      hidden = function(trigger)
+        local class = Private.checkForSingleLoadCondition(trigger, "class")
+        local spec
+        if WeakAuras.IsDragonflight() and class then
+          -- check if class selected has a spec with spec's index
+          spec = Private.checkForSingleLoadCondition(trigger, "spec", function(specIndex)
+            for classID = 1, GetNumClasses() do
+              local _, classFile = GetClassInfo(classID)
+              if classFile == class then
+                if GetSpecializationInfoForClassID(classID, specIndex) then
+                  return true
+                end
+                break
+              end
+            end
+          end)
+        end
+        return not((trigger.use_talent ~= nil or trigger.use_talent2 ~= nil) and (
+          WeakAuras.IsClassicOrBCC()
+          or WeakAuras.IsShadowlands()
+          or (WeakAuras.IsWrathClassic() and class ~= nil)
+          or (WeakAuras.IsDragonflight() and class ~= nil and spec ~= nil))
+        )
+      end,
     },
     {
       name = "talent3",
@@ -1409,6 +1480,30 @@ Private.load_prototype = {
           or (WeakAuras.IsWrathClassic() and class ~= nil)
           or (WeakAuras.IsDragonflight() and class ~= nil and spec ~= nil)
         )
+      end,
+      hidden = function(trigger)
+        local class = Private.checkForSingleLoadCondition(trigger, "class")
+        local spec
+        if WeakAuras.IsDragonflight() and class then
+          -- check if class selected has a spec with spec's index
+          spec = Private.checkForSingleLoadCondition(trigger, "spec", function(specIndex)
+            for classID = 1, GetNumClasses() do
+              local _, classFile = GetClassInfo(classID)
+              if classFile == class then
+                if GetSpecializationInfoForClassID(classID, specIndex) then
+                  return true
+                end
+                break
+              end
+            end
+          end)
+        end
+        return not(((trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil) and (
+          WeakAuras.IsClassicOrBCC()
+          or WeakAuras.IsShadowlands()
+          or (WeakAuras.IsWrathClassic() and class ~= nil)
+          or (WeakAuras.IsDragonflight() and class ~= nil and spec ~= nil)
+        ))
       end
     },
     {
@@ -1487,7 +1582,7 @@ Private.load_prototype = {
       display = L["Player Covenant"],
       type = "multiselect",
       values = "covenant_types",
-      init = "arg",
+      init = WeakAuras.IsShadowlands() and "arg" or nil,
       enable = WeakAuras.IsShadowlands(),
       hidden = not WeakAuras.IsShadowlands(),
       events = {"COVENANT_CHOSEN"}
@@ -1517,7 +1612,7 @@ Private.load_prototype = {
       name = "effectiveLevel",
       display = L["Player Effective Level"],
       type = "number",
-      init = "arg",
+      init = WeakAuras.IsRetail() and "arg" or nil,
       desc = L["The effective level differs from the level in e.g. Time Walking dungeons."],
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
@@ -1535,17 +1630,15 @@ Private.load_prototype = {
     },
     {
       name = "zoneId",
+      enable = false,
       hidden = true,
-      init = "arg",
-      test = "true",
-      enable = not WeakAuras.IsClassic(),
+      init = not WeakAuras.IsClassic() and "arg" or nil,
     },
     {
       name = "zonegroupId",
+      enable = false,
       hidden = true,
-      init = "arg",
-      test = "true",
-      enable = not WeakAuras.IsClassic(),
+      init = not WeakAuras.IsClassic() and "arg" or nil,
     },
     {
       name = "zoneIds",
@@ -1581,7 +1674,7 @@ Private.load_prototype = {
       display = L["Instance Difficulty"],
       type = "multiselect",
       values = "difficulty_types",
-      init = "arg",
+      init = not WeakAuras.IsClassic() and "arg" or nil,
       enable = not WeakAuras.IsClassic(),
       hidden = WeakAuras.IsClassic(),
       events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
@@ -1600,7 +1693,7 @@ Private.load_prototype = {
       display = WeakAuras.IsWrathClassic() and L["Assigned Role"] or L["Spec Role"],
       type = "multiselect",
       values = "role_types",
-      init = "arg",
+      init = WeakAuras.IsWrathOrRetail() and "arg" or nil,
       enable = WeakAuras.IsWrathOrRetail(),
       hidden = not WeakAuras.IsWrathOrRetail(),
       events = {"PLAYER_ROLES_ASSIGNED", "PLAYER_TALENT_UPDATE"}
@@ -1610,7 +1703,7 @@ Private.load_prototype = {
       display = L["Raid Role"],
       type = "multiselect",
       values = "raid_role_types",
-      init = "arg",
+      init = WeakAuras.IsClassicOrBCCOrWrath() and "arg" or nil,
       enable = WeakAuras.IsClassicOrBCCOrWrath(),
       hidden = WeakAuras.IsRetail(),
       events = {"PLAYER_ROLES_ASSIGNED"}
@@ -1628,7 +1721,7 @@ Private.load_prototype = {
       display = L["Mythic+ Affix"],
       type = "multiselect",
       values = "mythic_plus_affixes",
-      init = "arg",
+      init = WeakAuras.IsRetail() and "arg" or nil,
       test = "WeakAuras.CheckMPlusAffixIds(%d, affixes)",
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
