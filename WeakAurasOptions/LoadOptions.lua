@@ -72,10 +72,14 @@ end
 -- Also used by the GenericTrigger
 function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum, triggertype)
   local trigger
+  -- For load options only the hidden property counts, but for the generic trigger
+  -- we look at enabled.
+  local hiddenProperty = "enable"
   if(data.controlledChildren) then
     trigger = {}
   elseif(triggertype == "load") then
     trigger = data.load;
+    hiddenProperty = "hidden"
   elseif data.triggers[triggernum] then
     trigger = data.triggers[triggernum].trigger
   else
@@ -88,13 +92,30 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
   local positionsForCollapseAnchor = {}
   for index, arg in pairs(prototype.args) do
     local hidden = nil;
-    if(arg.collapse and isCollapsedFunctions[arg.collapse] and type(arg.enable) == "function") then
+    local debug = arg.name == "spec"
+    if(arg.collapse and isCollapsedFunctions[arg.collapse] and type(arg[hiddenProperty]) == "function") then
       local isCollapsed = isCollapsedFunctions[arg.collapse]
-      hidden = function()
-        return isCollapsed() or not arg.enable(trigger)
+      if hiddenProperty == "hidden" then
+        hidden = function() return isCollapsed() or arg[hiddenProperty](trigger) end
+      else
+        hidden = function() return isCollapsed() or not arg[hiddenProperty](trigger) end
       end
-    elseif(type(arg.enable) == "function") then
-      hidden = function() return not arg.enable(trigger) end;
+    elseif type(arg[hiddenProperty]) == "function" then
+      if hiddenProperty == "hidden" then
+        print("HERE", hiddenProperty == "hidden")
+        hidden = function()
+          print("THERE")
+          return arg[hiddenProperty](trigger)
+        end
+      else
+        hidden = function() return not arg[hiddenProperty](trigger) end
+      end
+    elseif type(arg[hiddenProperty]) == "boolean" then
+      if hiddenProperty == "hidden" then
+        hidden = arg[hiddenProperty]
+      else
+        hidden = not arg[hiddenProperty]
+      end
     elseif(arg.collapse and isCollapsedFunctions[arg.collapse]) then
       hidden = isCollapsedFunctions[arg.collapse]
       positionsForCollapseAnchor[arg.collapse] = order
@@ -131,7 +152,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       isCollapsedFunctions[name] = function()
         return OptionsPrivate.IsCollapsed("trigger", name, "", true);
       end
-    elseif(name and not arg.hidden) then
+    elseif name and (hiddenProperty == "hidden" or not arg.hidden) then
       local realname = name;
       if (arg.type == "multiselect") then
         -- Ensure new line for non-toggle options
