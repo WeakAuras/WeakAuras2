@@ -105,8 +105,15 @@ local function create(parent)
   return region;
 end
 
+function Private.ModelSetTransformFixed(self, tx, ty, tz, rx, ry, rz, s)
+  -- In Dragonflight the api changed, this converts to the new api
+  self:SetTransform(CreateVector3D(tx, ty, tz), CreateVector3D(rx, ry, rz), s)
+end
+
 local function CreateModel()
-  return CreateFrame("PlayerModel", nil, UIParent)
+  local frame = CreateFrame("PlayerModel", nil, UIParent)
+  frame.SetTransformFixed = WeakAuras.IsDragonflight() and  Private.ModelSetTransformFixed or frame.SetTransform
+  return frame
 end
 
 -- Keep the two model apis separate
@@ -114,7 +121,7 @@ local poolOldApi = CreateObjectPool(CreateModel)
 local poolNewApi = CreateObjectPool(CreateModel)
 
 local function ConfigureModel(region, model, data)
-  model.api = not WeakAuras.IsDragonflight() and data.api
+  model.api = data.api
 
   model:ClearAllPoints()
   model:SetAllPoints(region)
@@ -126,9 +133,9 @@ local function ConfigureModel(region, model, data)
   WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
   model:SetPortraitZoom(data.portraitZoom and 1 or 0);
   model:ClearTransform()
-  if (data.api and not WeakAuras.IsDragonflight()) then
+  if data.api then
     model:MakeCurrentCameraCustom()
-    model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+    model:SetTransformFixed(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
       rad(data.model_st_rx), rad(data.model_st_ry), rad(region.rotation), data.model_st_us / 1000);
   else
     model:SetPosition(data.model_z, data.model_x, data.model_y);
@@ -176,7 +183,7 @@ local function ConfigureModel(region, model, data)
 end
 
 local function AcquireModel(region, data)
-  local pool = (data.api and not WeakAuras.IsDragonflight()) and poolNewApi or poolOldApi
+  local pool = data.api and poolNewApi or poolOldApi
   local model = pool:Acquire()
   ConfigureModel(region, model, data)
   return model
@@ -191,7 +198,7 @@ local function ReleaseModel(model)
     model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
   end
   model:SetScript("OnEvent", nil);
-  local pool = (model.api and not WeakAuras.IsDragonflight()) and poolNewApi or poolOldApi
+  local pool = model.api and poolNewApi or poolOldApi
   pool:Release(model)
 end
 
@@ -269,8 +276,8 @@ local function modify(parent, region, data)
   function region:Rotate(degrees)
     region.rotation = degrees;
     if region.model then
-      if (data.api and not WeakAuras.IsDragonflight()) then
-        region.model:SetTransform(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
+      if data.api then
+        region.model:SetTransformFixed(data.model_st_tx / 1000, data.model_st_ty / 1000, data.model_st_tz / 1000,
           rad(data.model_st_rx), rad(data.model_st_ry), rad(degrees), data.model_st_us / 1000);
       else
         region.model:SetFacing(rad(region.rotation));
@@ -278,7 +285,7 @@ local function modify(parent, region, data)
     end
   end
 
-  if (data.api and not WeakAuras.IsDragonflight()) then
+  if data.api then
     region:Rotate(data.model_st_rz);
   else
     region:Rotate(data.rotation);

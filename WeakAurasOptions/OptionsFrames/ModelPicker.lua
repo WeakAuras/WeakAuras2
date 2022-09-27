@@ -221,6 +221,7 @@ local function ConstructModelPicker(frame)
   group:AddChild(modelTree);
 
   local model = CreateFrame("PlayerModel", nil, group.content);
+  model.SetTransformFixed = WeakAuras.IsDragonflight() and OptionsPrivate.Private.ModelSetTransformFixed or model.SetTransform
   model:SetAllPoints(modelTree.content);
   model:SetFrameStrata("FULLSCREEN");
   group.model = model;
@@ -293,7 +294,7 @@ local function ConstructModelPicker(frame)
     self.selectedValues.model_st_us = model_us or self.selectedValues.model_st_us;
 
     WeakAuras.SetModel(self.model, self.selectedValues.model_path, self.selectedValues.model_fileId)
-    self.model:SetTransform(self.selectedValues.model_st_tx / 1000, self.selectedValues.model_st_ty / 1000, self.selectedValues.model_st_tz / 1000,
+    self.model:SetTransformFixed(self.selectedValues.model_st_tx / 1000, self.selectedValues.model_st_ty / 1000, self.selectedValues.model_st_tz / 1000,
       rad(self.selectedValues.model_st_rx), rad(self.selectedValues.model_st_ry), rad(self.selectedValues.model_st_rz),
       self.selectedValues.model_st_us / 1000);
 
@@ -366,7 +367,7 @@ local function ConstructModelPicker(frame)
 
     WeakAuras.SetModel(self.model, self.selectedValues.model_path, self.selectedValues.model_fileId)
 
-    self.selectedValues.api = GetAll(baseObject, path, "api", false) and not WeakAuras.IsDragonflight()
+    self.selectedValues.api = GetAll(baseObject, path, "api", false)
     self.selectedValues.model_st_tx = GetAll(baseObject, path, "model_st_tx", 0)
     self.selectedValues.model_st_ty = GetAll(baseObject, path, "model_st_ty", 0)
     self.selectedValues.model_st_tz = GetAll(baseObject, path, "model_st_tz", 0)
@@ -384,7 +385,7 @@ local function ConstructModelPicker(frame)
 
 
     if (self.selectedValues.api) then
-      self.model:SetTransform(self.selectedValues.model_st_tx / 1000, self.selectedValues.model_st_ty / 1000, self.selectedValues.model_st_tz / 1000,
+      self.model:SetTransformFixed(self.selectedValues.model_st_tx / 1000, self.selectedValues.model_st_ty / 1000, self.selectedValues.model_st_tz / 1000,
         rad(self.selectedValues.model_st_rx), rad(self.selectedValues.model_st_ry), rad(self.selectedValues.model_st_rz),
         self.selectedValues.model_st_us / 1000);
 
@@ -466,8 +467,8 @@ local function ConstructModelPicker(frame)
         if(object) then
           self.givenModel[childId] = object.model_path;
           self.givenModelId[childId] = object.model_fileId;
-          self.givenApi[childId] = object.api and not WeakAuras.IsDragonflight();
-          if object.api and not WeakAuras.IsDragonflight() then
+          self.givenApi[childId] = object.api
+          if object.api then
             self.givenTX[childId] = object.model_st_tx;
             self.givenTY[childId] = object.model_st_ty;
             self.givenTZ[childId] = object.model_st_tz;
@@ -488,9 +489,9 @@ local function ConstructModelPicker(frame)
 
       self.givenModel = object.model_path;
       self.givenModelId = object.model_fileId;
-      self.givenApi = object.api and not WeakAuras.IsDragonflight()
+      self.givenApi = object.api
 
-      if object.api and not WeakAuras.IsDragonflight() then
+      if object.api then
         self.givenTX = object.model_st_tx;
         self.givenTY = object.model_st_ty;
         self.givenTZ = object.model_st_tz;

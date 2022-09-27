@@ -77,6 +77,7 @@ globals = {
 	"CreateFromMixins",
 	"CreateTextureMarkup",
 	"CreateObjectPool",
+	"CreateVector3D",
 	"DEFAULT_CHAT_FRAME",
 	"DevTools_Dump",
 	"GameTooltip_Hide",
