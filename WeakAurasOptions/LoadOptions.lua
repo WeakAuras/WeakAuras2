@@ -102,11 +102,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       end
     elseif type(arg[hiddenProperty]) == "function" then
       if hiddenProperty == "hidden" then
-        print("HERE", hiddenProperty == "hidden")
-        hidden = function()
-          print("THERE")
-          return arg[hiddenProperty](trigger)
-        end
+        hidden = function() return arg[hiddenProperty](trigger) end
       else
         hidden = function() return not arg[hiddenProperty](trigger) end
       end
