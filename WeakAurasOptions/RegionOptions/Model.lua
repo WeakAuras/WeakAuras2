@@ -58,7 +58,6 @@ local function createOptions(id, data)
     api_space = {
       type = "description",
       name = "",
-      name = "",
       order = 7.1,
       width = WeakAuras.normalWidth,
       hidden = function() return not WeakAuras.IsDragonflight() end
