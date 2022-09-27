@@ -899,7 +899,7 @@ local function CreateGetAll(subOption)
     local allChildren = CopyTable(getHelper)
     local enabledChildren = CopyTable(getHelper)
     for child in OptionsPrivate.Private.TraverseLeafs(data) do
-      if isToggle == nil or isToggle == nil then
+      if isToggle == nil or isColor == nil then
         local childOptions = getChildOption(OptionsPrivate.EnsureOptions(child, subOption), info)
         isToggle = childOptions and childOptions.type == "toggle"
         isColor = childOptions and childOptions.type == "color"
