@@ -918,7 +918,7 @@ Private.unit_threat_situation_types = {
 WeakAuras.class_types = {}
 for classID = 1, 20 do -- 20 is for GetNumClasses() but that function doesn't exists on Classic
   local classInfo = C_CreatureInfo.GetClassInfo(classID)
-  if classInfo then
+  if classInfo and classID ~=14 then -- 14 == Adventurer
     WeakAuras.class_types[classInfo.classFile] = WrapTextInColorCode(classInfo.className, WA_GetClassColor(classInfo.classFile))
   end
 end
