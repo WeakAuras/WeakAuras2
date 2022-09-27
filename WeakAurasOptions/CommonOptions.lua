@@ -894,14 +894,17 @@ local getHelper = {
 local function CreateGetAll(subOption)
   return function(data, info, ...)
     local isToggle = nil
+    local isColor = nil
 
     local allChildren = CopyTable(getHelper)
     local enabledChildren = CopyTable(getHelper)
     for child in OptionsPrivate.Private.TraverseLeafs(data) do
-      if isToggle == nil then
+      if isToggle == nil or isToggle == nil then
         local childOptions = getChildOption(OptionsPrivate.EnsureOptions(child, subOption), info)
         isToggle = childOptions and childOptions.type == "toggle"
+        isColor = childOptions and childOptions.type == "color"
       end
+
 
       local childOptions = OptionsPrivate.EnsureOptions(child, subOption)
       local childOption = childOptions;
@@ -924,6 +927,9 @@ local function CreateGetAll(subOption)
             end
 
             if not allChildren:GetSame() and not enabledChildren:GetSame() then
+              if isColor then
+                return 0, 0, 0, 1
+              end
               return nil;
             end
             break;
