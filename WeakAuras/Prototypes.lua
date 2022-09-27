@@ -678,15 +678,19 @@ elseif WeakAuras.IsDragonflight() then
             local node = C_Traits.GetNodeInfo(configId, nodeId)
             if node and node.ID ~= 0 then
               for _, talentId in ipairs(node.entryIDs) do
-                idx = idx + 1
-                if idx == index then
-                  if node.activeEntry
-                  and node.activeEntry.entryID == talentId
-                  and node.currentRank > 0
-                  then
-                    return true
-                  else
-                    return false
+                local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
+                local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
+                if GetSpellInfo(definitionInfo.spellID) then
+                  idx = idx + 1
+                  if idx == index then
+                    if node.activeEntry
+                    and node.activeEntry.entryID == talentId
+                    and node.currentRank > 0
+                    then
+                      return true
+                    else
+                      return false
+                    end
                   end
                 end
               end
