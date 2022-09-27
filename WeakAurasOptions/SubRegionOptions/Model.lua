@@ -84,6 +84,7 @@ local function createOptions(parentData, data, index, subIndex)
       hidden = function() return WeakAuras.IsDragonflight() end
     },
     api_space = {
+      name = "",
       type = "description",
       order = 15,
       width = WeakAuras.normalWidth,
