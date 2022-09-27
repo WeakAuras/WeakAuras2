@@ -935,7 +935,7 @@ do
     [6] = true,
     [7] = true,
     [8] = true,
-    [9] = not WeakAuras.IsClassicOrBCCOrWrath(), -- Goblin
+    [9] = not WeakAuras.IsClassicOrBCCOrWrath() and true or nil, -- Goblin
     [10] = true,
     [11] = true,
     [22] = true,
