@@ -616,7 +616,7 @@ local function ConstructFunction(prototype, trigger, skipOptional)
     init = "";
   end
   for index, arg in pairs(prototype.args) do
-    local enable = EvalBooleanArg(arg.enable, trigger)
+    local enable = EvalBooleanArg(arg.enable, trigger, true)
     local init = arg.init
     local name = arg.name;
     if(arg.init == "arg") then
