@@ -30,6 +30,7 @@ body:
     description: What version of World of Warcraft are are you running?
     options:
       - Retail (Default)
+      - Beta (Dragonflight)
       - Classic
       - The Burning Crusade
       - Wrath of the Lich King Classic
@@ -84,7 +85,7 @@ body:
     placeholder: Click here to attach your screenshots via the editor button in the top right.
   validations:
     required: false
-    
+
 - type: textarea
   attributes:
     label: Export String
@@ -92,5 +93,5 @@ body:
     placeholder: Paste your exported WeakAuras string here.
   validations:
     required: false
-    
-   
+
+
