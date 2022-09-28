@@ -13,10 +13,10 @@ function Private.InitializeEncounterAndZoneLists()
     {
       L["Vault of Archavon"],
       {
-        { L["Archavon the Stone Watcher"], 1126 },
-        { L["Emalon the Storm Watcher"], 1127 },
-        { L["Koralon the Flame Watcher"], 1128 },
-        { L["Toravon the Ice Watcher"], 1129 },
+        { L["Archavon the Stone Watcher"], 772 },
+        { L["Emalon the Storm Watcher"], 774 },
+        { L["Koralon the Flame Watcher"], 776 },
+        { L["Toravon the Ice Watcher"], 885 },
       }
     },
     {
@@ -47,50 +47,50 @@ function Private.InitializeEncounterAndZoneLists()
     {
       L["The Obsidian Sanctum"],
       {
-        { L["Tenebron"], 1092 },
-        { L["Shadron"], 1091 },
-        { L["Vesperon"], 1093 },
-        { L["Sartharion"], 1090 },
+        { L["Tenebron"], 736 },
+        { L["Shadron"], 738 },
+        { L["Vesperon"], 740 },
+        { L["Sartharion"], 742 },
       }
     },
     {
       L["The Eye of Eternity"],
       {
-        { L["Malygos"], 1094 },
+        { L["Malygos"], 734 },
       }
     },
     {
       L["Ulduar"],
       {
         -- The Siege of Ulduar
-        { L["Flame Leviathan"], 1132 },
-        { L["Ignis the Furnace Master"], 1136 },
-        { L["Razorscale"], 1139 },
-        { L["XT-002 Deconstructor"], 1142 },
+        { L["Flame Leviathan"], 744 },
+        { L["Ignis the Furnace Master"], 745 },
+        { L["Razorscale"], 746 },
+        { L["XT-002 Deconstructor"], 747 },
         -- The Antechamber of Ulduar
-        { L["Assembly of Iron"], 1140 },
-        { L["Kologarn"], 1137 },
-        { L["Auriaya"], 1131 },
+        { L["Assembly of Iron"], 748 },
+        { L["Kologarn"], 749 },
+        { L["Auriaya"], 750 },
         -- The Keepers of Ulduar
-        { L["Freya"], 1133 },
-        { L["Hodir"], 1135 },
-        { L["Mimiron"], 1138 },
-        { L["Thorim"], 1141 },
+        { L["Freya"], 753 },
+        { L["Hodir"], 751 },
+        { L["Mimiron"], 754 },
+        { L["Thorim"], 752 },
         -- The Descent into Madness
-        { L["General Vezax"], 1134 },
-        { L["Yogg-Saron"], 1143 },
+        { L["General Vezax"], 755 },
+        { L["Yogg-Saron"], 756 },
         -- Celestial Planetarium
-        { L["Algalon the Observer"], 1130 },
+        { L["Algalon the Observer"], 757 },
       }
     },
     {
       L["Trial of the Crusader"],
       {
-        { L["Northrend Beasts"], 1088 },
-        { L["Lord Jaraxxus"], 1087 },
-        { L["Faction Champions"], 1086 },
-        { L["Val'kyr Twins"], 1089 },
-        { L["Anub'arak"], 1085 },
+        { L["Northrend Beasts"], 629 },
+        { L["Lord Jaraxxus"], 633 },
+        { L["Faction Champions"], 637 },
+        { L["Val'kyr Twins"], 641 },
+        { L["Anub'arak"], 645 },
       }
     },
     {
@@ -103,31 +103,31 @@ function Private.InitializeEncounterAndZoneLists()
       L["Icecrown Citadel"],
       {
         -- The Lower Spire
-        { L["Lord Marrowgar"], 1101 },
-        { L["Lady Deathwhisper"], 1100 },
-        { L["Gunship Battle"], 1099 },
-        { L["Deathbringer Saurfang"], 1096 },
+        { L["Lord Marrowgar"], 845 },
+        { L["Lady Deathwhisper"], 846 },
+        { L["Gunship Battle"], 847 },
+        { L["Deathbringer Saurfang"], 848 },
         -- The Plagueworks
-        { L["Festergut"], 1097 },
-        { L["Rotface"], 1104 },
-        { L["Professor Putricide"], 1102 },
+        { L["Festergut"], 849 },
+        { L["Rotface"], 850 },
+        { L["Professor Putricide"], 851 },
         -- The Crimson Hall
-        { L["Blood Prince Council"], 1095 },
-        { L["Blood-Queen Lana'thel"], 1103 },
+        { L["Blood Prince Council"], 852 },
+        { L["Blood-Queen Lana'thel"], 853 },
         -- The Frostwing Halls
-        { L["Valithria Dreamwalker"], 1098 },
-        { L["Sindragosa"], 1105 },
+        { L["Valithria Dreamwalker"], 854 },
+        { L["Sindragosa"], 855 },
         -- The Frozen Throne
-        { L["The Lich King"], 1106 },
+        { L["The Lich King"], 856 },
       }
     },
     {
       L["The Ruby Sanctum"],
       {
-        { L["Baltharus the Warborn"], 1147 },
-        { L["General Zarithrian"], 1148 },
-        { L["Saviana Ragefire"], 1149 },
-        { L["Halion"], 1150 },
+        { L["Baltharus the Warborn"], 890 },
+        { L["General Zarithrian"], 893 },
+        { L["Saviana Ragefire"], 891 },
+        { L["Halion"], 887 },
       }
     },
   }
