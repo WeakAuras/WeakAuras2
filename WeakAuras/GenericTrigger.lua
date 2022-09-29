@@ -3458,8 +3458,36 @@ do
     if not castLatencyFrame then
       castLatencyFrame = CreateFrame("Frame")
       castLatencyFrame:RegisterEvent("CURRENT_SPELL_CAST_CHANGED")
-      castLatencyFrame:SetScript("OnEvent", function(event)
-        Private.LAST_CURRENT_SPELL_CAST_CHANGED = GetTime()
+      castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
+      castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player")
+
+      castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player")
+      castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
+      castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
+
+      if WeakAuras.IsDragonflight() then
+        castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", "player")
+        castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", "player")
+      end
+
+      castLatencyFrame:SetScript("OnEvent", function(self, event)
+        if event == "UNIT_SPELLCAST_START" then
+          Private.LAST_CURRENT_SPELL_CAST_START = select(4, UnitCastingInfo("player")) / 1000
+        elseif event == "UNIT_SPELLCAST_CHANNEL_START" then
+          Private.LAST_CURRENT_SPELL_CAST_START = select(4, UnitChannelInfo("player")) / 1000
+        elseif event == "UNIT_SPELLCAST_EMPOWER_START" then
+          Private.LAST_CURRENT_SPELL_CAST_START = select(4, UnitCastingInfo("player")) / 1000
+        elseif event == "CURRENT_SPELL_CAST_CHANGED" then
+          -- We want to store the CURRENT_SPELL_CAST_CHANGED time
+          -- that was the last before the actual START event
+          -- This prevents updating the CURRENT_SPELL_CAST_CHANGED time after
+          -- we got the start time
+          if not Private.LAST_CURRENT_SPELL_CAST_START then
+            Private.LAST_CURRENT_SPELL_CAST_CHANGED = GetTime()
+          end
+        else -- STOP EVENTS
+          Private.LAST_CURRENT_SPELL_CAST_START = nil
+        end
       end)
     end
   end
