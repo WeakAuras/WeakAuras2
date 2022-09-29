@@ -620,6 +620,14 @@ local function BuildUidMap(data, children, type)
     return self.map[uid].parent
   end
 
+  uidMap.UnsetParent = function(self, uid)
+    if not self.map[uid] then
+      error("GetParent for unknown uid")
+      return
+    end
+    self.map[uid].parent = nil
+  end
+
   uidMap.GetParentIsDynamicGroup = function(self, uid)
     if not self.map[uid] then
       error("GetParentIsDynamicGroup for unknown uid")
@@ -1527,14 +1535,20 @@ local methods = {
       self:SetMinimumProgress(1 * onePhaseProgress)
       coroutine.yield()
 
-      if userChoices.activeCategories.oldchildren then
-        self:RemoveUnmatchedOld(matchInfo.oldUidMap, matchInfo.oldUidMap:GetRootUID())
+      local removeOldGroups = matchInfo.activeCategories.arrangement and userChoices.activeCategories.arrangement
+      if userChoices.activeCategories.oldchildren or removeOldGroups then
+        self:RemoveUnmatchedOld(matchInfo.oldUidMap, matchInfo.oldUidMap:GetRootUID(), matchInfo.newUidMap,
+                                userChoices.activeCategories.oldchildren,
+                                removeOldGroups)
       end
 
       self:SetMinimumProgress(2 * onePhaseProgress)
 
-      if not userChoices.activeCategories.newchildren then
-        self:RemoveUnmatchedNew(matchInfo.newUidMap, matchInfo.newUidMap:GetRootUID())
+      local removeNewGroups = matchInfo.activeCategories.arrangement and not userChoices.activeCategories.arrangement
+      if userChoices.activeCategories.newchildren or removeNewGroups then
+        self:RemoveUnmatchedNew(matchInfo.newUidMap, matchInfo.newUidMap:GetRootUID(), matchInfo.oldUidMap,
+                                userChoices.activeCategories.newchildren,
+                                removeNewGroups)
       end
       self:SetMinimumProgress(3 * onePhaseProgress)
 
@@ -1731,7 +1745,7 @@ local methods = {
     coroutine.yield()
     return changed
   end,
-  RemoveUnmatchedOld = function(self, uidMap, uid)
+  RemoveUnmatchedOld = function(self, uidMap, uid, otherMap, removeAuras, removeGroups)
     if uidMap:GetType() ~= "old" then
       error("Wrong map for delete")
     end
@@ -1739,8 +1753,8 @@ local methods = {
     local children = uidMap:GetChildren(uid)
     local removedAllChildren = true
     for index, childUid in ipairs_reverse(children) do
-      local removed = self:RemoveUnmatchedOld(uidMap, childUid)
-      if not removed then
+      local removed = self:RemoveUnmatchedOld(uidMap, childUid, otherMap, removeAuras, removeGroups)
+      if not removed and not uidMap:GetUIDMatch(childUid) then
         removedAllChildren = false
       end
     end
@@ -1751,21 +1765,30 @@ local methods = {
         error("Can't remove root")
       end
 
-      local data = OptionsPrivate.Private.GetDataByUID(uid)
-      if not data then
-        error("Can't find data")
+      if (uidMap:GetGroupRegionType(uid) and removeGroups)
+          or (uidMap:GetGroupRegionType(uid) == nil and removeAuras)
+        then
+
+        for index, childUid in ipairs_reverse(children) do
+          uidMap:UnsetParent(childUid)
+        end
+
+        local data = OptionsPrivate.Private.GetDataByUID(uid)
+        if not data then
+          error("Can't find data")
+        end
+        WeakAuras.Delete(data)
+        uidMap:Remove(uid)
+        self:IncProgress()
+        coroutine.yield()
+        return true
       end
-      WeakAuras.Delete(data)
-      uidMap:Remove(uid)
-      self:IncProgress()
-      coroutine.yield()
-      return true
     end
     self:IncProgress()
     coroutine.yield()
     return false
   end,
-  RemoveUnmatchedNew = function(self, uidMap, uid)
+  RemoveUnmatchedNew = function(self, uidMap, uid, otherMap, removeAuras, removeGroups)
     if uidMap:GetType() ~= "new" then
       error("Wrong map for delete")
     end
@@ -1773,8 +1796,8 @@ local methods = {
     local children = uidMap:GetChildren(uid)
     local removedAllChildren = true
     for index, childUid in ipairs_reverse(children) do
-      local removed = self:RemoveUnmatchedNew(uidMap, childUid)
-      if not removed then
+      local removed = self:RemoveUnmatchedNew(uidMap, childUid, otherMap, removeAuras, removeGroups)
+      if not removed and not uidMap:GetUIDMatch(childUid) then
         removedAllChildren = false
       end
     end
@@ -1785,10 +1808,19 @@ local methods = {
         error("Can't remove root")
       end
 
-      uidMap:Remove(uid)
-      self:IncProgress()
-      coroutine.yield()
-      return true
+      if (uidMap:GetGroupRegionType(uid) and removeGroups)
+          or (uidMap:GetGroupRegionType(uid) == nil and removeAuras)
+        then
+
+        for index, childUid in ipairs_reverse(children) do
+          uidMap:UnsetParent(childUid)
+        end
+
+        uidMap:Remove(uid)
+        self:IncProgress()
+        coroutine.yield()
+        return true
+      end
     end
     self:IncProgress()
     coroutine.yield()
