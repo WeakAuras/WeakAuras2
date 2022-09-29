@@ -8219,8 +8219,8 @@ Private.event_prototypes = {
       {
         name = L["Latency"],
         func = function(trigger, state)
-          if not state.expirationTime or not state.duration then return 0, 0 end
-          return 0, (state.expirationTime - state.duration) - (Private.LAST_CURRENT_SPELL_CAST_CHANGED or 0)
+          if not Private.LAST_CURRENT_SPELL_CAST_START or not Private.LAST_CURRENT_SPELL_CAST_CHANGED then return 0, 0 end
+          return 0, Private.LAST_CURRENT_SPELL_CAST_START - Private.LAST_CURRENT_SPELL_CAST_CHANGED
         end,
         enable = function(trigger)
           return trigger.use_showLatency and trigger.unit == "player"
