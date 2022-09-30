@@ -2387,6 +2387,12 @@ if WeakAuras.IsWrathOrRetail() then
   }
 end
 
+Private.group_member_types = {
+  LEADER = L["Leader"],
+  ASSIST = L["Assist"],
+  NONE = L["None"]
+}
+
 Private.classification_types = {
   worldboss = L["World Boss"],
   rareelite = L["Rare Elite"],
