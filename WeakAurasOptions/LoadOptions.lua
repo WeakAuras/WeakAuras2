@@ -74,12 +74,11 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
   local trigger
   -- For load options only the hidden property counts, but for the generic trigger
   -- we look at enabled.
-  local hiddenProperty = "enable"
+  local hiddenProperty = triggertype == "load" and "hidden" or "enable"
   if(data.controlledChildren) then
     trigger = {}
   elseif(triggertype == "load") then
     trigger = data.load;
-    hiddenProperty = "hidden"
   elseif data.triggers[triggernum] then
     trigger = data.triggers[triggernum].trigger
   else
