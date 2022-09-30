@@ -826,6 +826,16 @@ function WeakAuras.CheckMPlusAffixIds(loadids, currentId)
   return false
 end
 
+function WeakAuras.CheckGroupMemberType(loadSetting, currentFlags)
+  if loadSetting == "LEADER" then
+    return bit.band(currentFlags, 1) == 1
+  elseif loadSetting == "ASSIST" then
+    return bit.band(currentFlags, 2) == 2
+  else
+    return currentFlags == 0
+  end
+end
+
 function WeakAuras.CheckChargesDirection(direction, triggerDirection)
   return triggerDirection == "CHANGED"
     or (triggerDirection == "GAINED" and direction > 0)
@@ -1714,11 +1724,13 @@ Private.load_prototype = {
     },
     {
       name = "group_leader",
-      display = WeakAuras.newFeatureString .. L["Group Leader"],
-      type = "toggle",
+      display = WeakAuras.newFeatureString .. L["Group Leader/Assist"],
+      type = "multiselect",
       init = "arg",
       events = {"PARTY_LEADER_CHANGED", "GROUP_ROSTER_UPDATE"},
       width = WeakAuras.doubleWidth,
+      values = "group_member_types",
+      test = "WeakAuras.CheckGroupMemberType(%s, group_leader)"
     },
     {
       name = "affixes",
