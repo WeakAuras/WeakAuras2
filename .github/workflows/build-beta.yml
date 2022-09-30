@@ -32,6 +32,8 @@ jobs:
       - name: Create Package
         if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
         uses: BigWigsMods/packager@master
+        with:
+          args: -g retail
         env:
           CF_API_KEY: ${{ secrets.CF_API_KEY }}
           GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}
@@ -42,7 +44,7 @@ jobs:
         if: github.event_name == 'push' && !contains(github.ref, 'refs/tags/')
         uses: BigWigsMods/packager@master
         with:
-          args: -z
+          args: -zg retail
 
       - uses: actions/upload-artifact@v3
         with:
