@@ -6205,7 +6205,7 @@ Private.event_prototypes = {
         ["events"] = events
       }
     end,
-    force_events = WeakAuras.IsRetail() and "PLAYER_TALENT_UPDATE" or "CHARACTER_POINTS_CHANGED",
+    force_events = (WeakAuras.IsDragonflight() and "TRAIT_CONFIG_UPDATED") or (WeakAuras.IsShadowlands() and "PLAYER_TALENT_UPDATE") or "CHARACTER_POINTS_CHANGED",
     name = L["Talent Known"],
     init = function(trigger)
       local inverse = trigger.use_inverse;
@@ -6216,7 +6216,7 @@ Private.event_prototypes = {
         if WeakAuras.IsClassicOrBCCOrWrath() then
           tier = index and ceil(index / MAX_NUM_TALENTS)
           column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
-        else
+        elseif WeakAuras.IsShadowlands() then
           tier = index and ceil(index / 3)
           column = index and ((index - 1) % 3 + 1)
         end
@@ -6255,36 +6255,79 @@ Private.event_prototypes = {
       elseif (trigger.use_talent == false) then
         if (trigger.talent.multi) then
           local ret = [[
-            local tier
-            local column
             local active = false;
             local activeIcon;
             local activeName;
+            local _
           ]]
-          for index in pairs(trigger.talent.multi) do
-            local tier, column
-            if WeakAuras.IsClassicOrBCCOrWrath() then
-              tier = index and ceil(index / MAX_NUM_TALENTS)
-              column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
-            else
-              tier = index and ceil(index / 3)
-              column = index and ((index - 1) % 3 + 1)
-            end
-            local ret2 = [[
-              if (not active) then
-                tier = %s
-                column = %s
+          if WeakAuras.IsDragonflight() then
+            ret = ret .. [[
+              local function hasTalentIndex(index)
+                local configId = C_ClassTalents.GetActiveConfigID()
+                local idx = 0
+                if configId then
+                  local configInfo = C_Traits.GetConfigInfo(configId)
+                  for _, treeId in ipairs(configInfo.treeIDs) do
+                    local nodes = C_Traits.GetTreeNodes(treeId)
+                    for _, nodeId in ipairs(nodes) do
+                      local node = C_Traits.GetNodeInfo(configId, nodeId)
+                      if node and node.ID ~= 0 then
+                        for _, talentId in ipairs(node.entryIDs) do
+                          local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
+                          local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
+                          if GetSpellInfo(definitionInfo.spellID) then
+                            idx = idx + 1
+                            if idx == index then
+                              if node.activeEntry
+                              and node.activeEntry.entryID == talentId
+                              and node.currentRank > 0
+                              then
+                                return definitionInfo.spellID
+                              else
+                                return false
+                              end
+                            end
+                          end
+                        end
+                      end
+                    end
+                  end
+                end
+              end
+              local index
             ]]
+          else
+            ret = ret .. [[
+              local tier
+              local column
+            ]]
+          end
+          local firstLoop = true
+          for index, value in pairs(trigger.talent.multi) do
             if WeakAuras.IsClassicOrBCCOrWrath() then
-              ret2 = ret2 .. [[
-                local name, icon, _, _, rank  = GetTalentInfo(tier, column)
-                if rank > 0 then
-                  active = true;
-                  activeName = name;
-                  activeIcon = icon;
+              local tier = index and ceil(index / MAX_NUM_TALENTS)
+              local column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
+              local ret2 = [[
+                if (not active) then
+                  tier = %s
+                  column = %s
+                  local name, icon, _, _, rank  = GetTalentInfo(tier, column)
+                  if rank > 0 then
+                    active = true;
+                    activeName = name;
+                    activeIcon = icon;
+                  end
                 end
               ]]
-            else
+              ret = ret .. ret2:format(tier, column)
+            elseif WeakAuras.IsShadowlands() then
+              local tier = index and ceil(index / 3)
+              local column = index and ((index - 1) % 3 + 1)
+              local ret2 = [[
+                if (not active) then
+                  tier = %s
+                  column = %s
+              ]]
               if trigger.use_onlySelected then
                 ret2 = ret2 .. [[
                   local _, name, icon, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
@@ -6304,11 +6347,42 @@ Private.event_prototypes = {
                   end
                 ]]
               end
+              ret2 = ret2 .. [[
+                end
+              ]]
+              ret = ret .. ret2:format(tier, column)
+            elseif WeakAuras.IsDragonflight() then
+              local ret2 = [[
+                local index = %s
+                local shouldBeActive = %s
+                local firstLoop = %s
+                local spellId = hasTalentIndex(index)
+                if spellId then
+                  if shouldBeActive then
+                    if firstLoop then
+                      active = true
+                    else
+                      active = active and true
+                    end
+                  else
+                    active = false
+                  end
+                  activeName, _, activeIcon = GetSpellInfo(spellId)
+                else
+                  if shouldBeActive then
+                    active = false
+                  else
+                    if firstLoop then
+                      active = true
+                    else
+                      active = active and true
+                    end
+                  end
+                end
+              ]]
+              ret = ret .. ret2:format(index, value and "true" or "false", firstLoop and "true" or "false")
             end
-            ret2 = ret2 .. [[
-              end
-            ]]
-            ret = ret .. ret2:format(tier, column);
+            firstLoop = false
           end
           if (inverse) then
             ret = ret .. [[
@@ -6328,14 +6402,23 @@ Private.event_prototypes = {
         values = function()
           local class = select(2, UnitClass("player"));
           local spec =  WeakAuras.IsRetail() and GetSpecialization();
-          if(Private.talent_types_specific[class] and  Private.talent_types_specific[class][spec]) then
+          if WeakAuras.IsDragonflight() then
+            local classId = select(3, UnitClass("player"))
+            local specId = GetSpecializationInfoForClassID(classId, spec)
+            return Private.talentInfo[specId]
+          elseif(Private.talent_types_specific[class] and  Private.talent_types_specific[class][spec]) then
             return Private.talent_types_specific[class][spec];
           elseif not WeakAuras.IsRetail() and Private.talent_types_specific[class] then
             return Private.talent_types_specific[class];
-          else
+          elseif WeakAuras.IsShadowlands() then
             return Private.talent_types;
           end
         end,
+        multiUseControlWhenFalse = WeakAuras.IsDragonflight(),
+        multiAll = WeakAuras.IsDragonflight(),
+        multiNoSingle = WeakAuras.IsDragonflight(),
+        multiTristate = WeakAuras.IsDragonflight(), -- values can be true/false/nil
+        control = WeakAuras.IsDragonflight() and "WeakAurasMiniTalent" or nil,
         test = "active",
       },
       {
@@ -6343,14 +6426,16 @@ Private.event_prototypes = {
         display = L["Only if selected"],
         type = "boolean",
         test = "true",
-        enable = WeakAuras.IsRetail(),
-        hidden = not WeakAuras.IsRetail(),
+        enable = WeakAuras.IsShadowlands(),
+        hidden = not WeakAuras.IsShadowlands(),
       },
       {
         name = "inverse",
         display = L["Inverse"],
         type = "toggle",
-        test = "true"
+        test = "true",
+        enable = not WeakAuras.IsDragonflight(),
+        hidden = WeakAuras.IsDragonflight(),
       },
       {
         hidden = true,
@@ -9555,10 +9640,6 @@ if WeakAuras.IsClassicOrBCCOrWrath() then
   Private.event_prototypes["Class/Spec"] = nil
 else
   Private.event_prototypes["Queued Action"] = nil
-end
-
-if WeakAuras.IsDragonflight() then
-  Private.event_prototypes["Talent Known"] = nil
 end
 
 if WeakAuras.IsWrathClassic() then
