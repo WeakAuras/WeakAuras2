@@ -5520,6 +5520,19 @@ function WeakAuras.UnitStagger(unit)
   return UnitStagger(unit) or 0
 end
 
+function Private.SortOrderForValues(values)
+  local sortOrder = {}
+  for key, value in pairs(values) do
+    tinsert(sortOrder, key)
+  end
+  table.sort(sortOrder, function(aKey, bKey)
+    local aValue = values[aKey]
+    local bValue = values[bKey]
+    return aValue < bValue
+  end)
+  return sortOrder
+end
+
 do
   local function shouldInclude(data, includeGroups, includeLeafs)
     if data.controlledChildren then

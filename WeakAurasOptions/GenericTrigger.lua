@@ -410,9 +410,8 @@ local function GetGenericTriggerOptions(data, triggernum)
       name = "",
       order = 7.1,
       width = WeakAuras.normalWidth,
-      values = function()
-        return subtypes
-      end,
+      values = subtypes,
+      sorting = OptionsPrivate.Private.SortOrderForValues(subtypes),
       get = function(info)
         return trigger.event
       end,
@@ -421,7 +420,6 @@ local function GetGenericTriggerOptions(data, triggernum)
         WeakAuras.Add(data)
         WeakAuras.ClearAndUpdateOptions(data.id)
       end,
-      control = "WeakAurasSortedDropdown",
     }
   end
 
@@ -437,7 +435,7 @@ local function GetGenericTriggerOptions(data, triggernum)
       width = WeakAuras.normalWidth,
       order = 8,
       values = OptionsPrivate.Private.subevent_prefix_types,
-      control = "WeakAurasSortedDropdown",
+      sorting = OptionsPrivate.Private.SortOrderForValues(OptionsPrivate.Private.subevent_prefix_types),
       hidden = function() return not (trigger.type == combatLogCategory and trigger.event == "Combat Log"); end,
       get = function(info)
         return trigger.subeventPrefix
@@ -453,7 +451,7 @@ local function GetGenericTriggerOptions(data, triggernum)
       name = L["Message Suffix"],
       order = 9,
       values = OptionsPrivate.Private.subevent_suffix_types,
-      control = "WeakAurasSortedDropdown",
+      sorting = OptionsPrivate.Private.SortOrderForValues(OptionsPrivate.Private.subevent_suffix_types),
       hidden = function() return not (trigger.type == combatLogCategory and trigger.event == "Combat Log" and OptionsPrivate.Private.subevent_actual_prefix_types[trigger.subeventPrefix]); end,
       get = function(info)
         return trigger.subeventSuffix
