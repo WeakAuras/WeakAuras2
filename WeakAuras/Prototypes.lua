@@ -1491,8 +1491,8 @@ Private.load_prototype = {
       display = L["Instance Size Type"],
       type = "multiselect",
       values = "instance_types",
+      sorted = true,
       init = "arg",
-      control = "WeakAurasSortedDropdown",
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
     },
     {
@@ -1510,8 +1510,8 @@ Private.load_prototype = {
       display = L["Instance Type"],
       type = "multiselect",
       values = "instance_difficulty_types",
+      sorted = true,
       init = "arg",
-      control = "WeakAurasSortedDropdown",
       events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"},
     },
     {
@@ -2112,12 +2112,12 @@ Private.event_prototypes = {
           end
           return ret
         end,
+        sorted = true,
         conditionType = "select",
         enable = function(trigger)
           return not trigger.use_watched
         end,
         test = "true",
-        control = "WeakAurasSortedDropdown"
       },
       {
         name = "name",
@@ -3752,9 +3752,9 @@ Private.event_prototypes = {
         display = WeakAuras.newFeatureString .. L["Spell School"],
         type = "select",
         values = "combatlog_spell_school_types_for_ui",
+        sorted = true,
         test = "spellSchool == %d",
         init = "arg",
-        control = "WeakAurasSortedDropdown",
         conditionType = "select",
         store = true,
         enable = function(trigger)
@@ -6834,8 +6834,8 @@ Private.event_prototypes = {
         display = L["Message Type"],
         type = "select",
         values = "chat_message_types",
+        sorted = true,
         test = "event == %q",
-        control = "WeakAurasSortedDropdown"
       },
       {
         name = "message",
@@ -8826,8 +8826,8 @@ Private.event_prototypes = {
         display = L["Instance Size Type"],
         type = "multiselect",
         values = "instance_types",
+        sorted = true,
         init = "WeakAuras.InstanceType()",
-        control = "WeakAurasSortedDropdown",
       },
       {
         name = "instance_difficulty",

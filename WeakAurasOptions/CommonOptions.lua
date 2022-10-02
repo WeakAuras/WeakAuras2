@@ -1490,6 +1490,7 @@ local function AddCommonTriggerOptions(options, data, triggernum, doubleWidth)
     desc = L["The type of trigger"],
     order = 1.1,
     values = trigger_types,
+    sorting = OptionsPrivate.Private.SortOrderForValues(trigger_types),
     get = function()
       return trigger.type
     end,
@@ -1505,7 +1506,6 @@ local function AddCommonTriggerOptions(options, data, triggernum, doubleWidth)
       WeakAuras.UpdateThumbnail(data);
       WeakAuras.ClearAndUpdateOptions(data.id);
     end,
-    control = "WeakAurasSortedDropdown"
   }
 end
 
