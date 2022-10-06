@@ -2358,9 +2358,9 @@ function Private.SyncParentChildRelationships(silent)
   end
 end
 
-function WeakAuras.AddMany(table, takeSnapshots)
+function WeakAuras.AddMany(dataTable, takeSnapshots)
   local idtable = {};
-  for _, data in ipairs(table) do
+  for _, data in ipairs(dataTable) do
     idtable[data.id] = data;
   end
   local loaded = {};
