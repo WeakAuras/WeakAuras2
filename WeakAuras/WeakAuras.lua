@@ -1134,6 +1134,7 @@ function Private.Login(initialTime, takeNewSnapshots)
         print("|cFF8800FFWeakAuras|r detected a corrupt entry in WeakAuras saved displays - '"..tostring(id).."' vs '"..tostring(data.id).."'" );
         data.id = id;
       end
+
       tinsert(toAdd, data);
     end
     coroutine.yield();
@@ -2358,26 +2359,41 @@ function Private.SyncParentChildRelationships(silent)
   end
 end
 
-function WeakAuras.AddMany(dataTable, takeSnapshots)
-  local idtable = {};
-  for _, data in ipairs(dataTable) do
-    idtable[data.id] = data;
-  end
+local function loadOrder(tbl, idtable)
+  local order = {}
+
   local loaded = {};
   local function load(id, depends)
     local data = idtable[id];
     if(data.parent) then
       if(idtable[data.parent]) then
-        if(tContains(depends, data.parent)) then
+        if depends[data.parent] then
+          -- There was an unfortunate bug in update.lua in 2022 that resulted
+          -- in auras having a circular dependencies
+          -- Fix one of the two known cases here
+          -- We can probably remove this code in 2023 again
+          for d in pairs(depends) do
+            local uid = idtable[d].uid
+            if uid == "fjtz3A6LwBW" then -- Fojji - Deathknight UI, need to fixup a lot
+              local cycleRoot = d
+              idtable[cycleRoot].parent = nil
+
+              for d in pairs(depends) do
+                tDeleteItem(idtable[d].controlledChildren, cycleRoot)
+              end
+
+              return loadOrder(tbl, idtable)
+            end
+            coroutine.yield()
+          end
           error("Circular dependency in WeakAuras.AddMany between "..table.concat(depends, ", "));
         else
           if not(loaded[data.parent]) then
-            local dependsOut = {};
-            for i,v in pairs(depends) do
-              dependsOut[i] = v;
-            end
-            tinsert(dependsOut, data.parent);
-            load(data.parent, dependsOut);
+            local dependsOut = CopyTable(depends)
+            dependsOut[data.parent] = true
+            coroutine.yield()
+            load(data.parent, dependsOut)
+            coroutine.yield()
           end
         end
       else
@@ -2385,14 +2401,39 @@ function WeakAuras.AddMany(dataTable, takeSnapshots)
       end
     end
     if not(loaded[id]) then
-      WeakAuras.Add(data, takeSnapshots);
       coroutine.yield();
       loaded[id] = true;
+      tinsert(order, idtable[id])
     end
   end
-  local groups = {}
+
   for id, data in pairs(idtable) do
     load(id, {});
+    coroutine.yield()
+  end
+
+  return order
+end
+
+function WeakAuras.AddMany(tbl, takeSnapshots)
+  local idtable = {};
+  for _, data in ipairs(tbl) do
+    -- There was an unfortunate bug in update.lua in 2022 that resulted
+    -- in auras having a circular dependencies
+    -- Fix one of the two known cases here
+    if data.id == data.parent then
+      data.parent = nil
+      tDeleteItem(data.controlledChildren, data.id)
+    end
+    idtable[data.id] = data;
+  end
+
+  local order = loadOrder(tbl, idtable)
+  coroutine.yield()
+  local groups = {}
+  for _, data in ipairs(order) do
+    WeakAuras.Add(data, takeSnapshots);
+    coroutine.yield()
     if data.regionType == "dynamicgroup" or data.regionType == "group" then
       groups[data] = true
     end
