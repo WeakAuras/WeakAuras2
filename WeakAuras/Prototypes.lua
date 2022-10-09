@@ -6282,9 +6282,9 @@ Private.event_prototypes = {
                               and node.activeEntry.entryID == talentId
                               and node.currentRank > 0
                               then
-                                return definitionInfo.spellID
+                                return definitionInfo.spellID, true
                               else
-                                return false
+                                return definitionInfo.spellID, false
                               end
                             end
                           end
@@ -6293,8 +6293,10 @@ Private.event_prototypes = {
                     end
                   end
                 end
+                return nil
               end
               local index
+              local firstLoop = true
             ]]
           else
             ret = ret .. [[
@@ -6302,7 +6304,6 @@ Private.event_prototypes = {
               local column
             ]]
           end
-          local firstLoop = true
           for index, value in pairs(trigger.talent.multi) do
             if WeakAuras.IsClassicOrBCCOrWrath() then
               local tier = index and ceil(index / MAX_NUM_TALENTS)
@@ -6355,20 +6356,22 @@ Private.event_prototypes = {
               local ret2 = [[
                 local index = %s
                 local shouldBeActive = %s
-                local firstLoop = %s
-                local spellId = hasTalentIndex(index)
+                local spellId, hasTalent = hasTalentIndex(index)
                 if spellId then
-                  if shouldBeActive then
-                    if firstLoop then
-                      active = true
-                    else
-                      active = active and true
-                    end
-                  else
-                    active = false
-                  end
                   activeName, _, activeIcon = GetSpellInfo(spellId)
-                else
+                end
+                if hasTalent then
+                  if shouldBeActive then
+                    if firstLoop then
+                      active = true
+                    else
+                      active = active and true
+                    end
+                  else
+                    active = false
+                  end
+                  firstLoop = false
+                elseif hasTalent == false then
                   if shouldBeActive then
                     active = false
                   else
@@ -6378,11 +6381,13 @@ Private.event_prototypes = {
                       active = active and true
                     end
                   end
+                  firstLoop = false
+                else
+                  -- nil case means talent index in data is not known for this class/spec
                 end
               ]]
-              ret = ret .. ret2:format(index, value and "true" or "false", firstLoop and "true" or "false")
+              ret = ret .. ret2:format(index, value and "true" or "false")
             end
-            firstLoop = false
           end
           if (inverse) then
             ret = ret .. [[
@@ -6396,17 +6401,58 @@ Private.event_prototypes = {
     end,
     args = {
       {
+        name = "class",
+        display = L["Class"],
+        type = "select",
+        init = "select(2, UnitClass('player'))",
+        values = "class_types",
+        store = true,
+        conditionType = "select",
+        required = true,
+        enable = WeakAuras.IsDragonflight(),
+        hidden = not WeakAuras.IsDragonflight(),
+        reloadOptions = true,
+      },
+      {
+        name = "spec",
+        display = L["Talent Specialization"],
+        type = "select",
+        init = "WeakAuras.IsRetail() and GetSpecialization()",
+        required = true,
+        values = function(trigger)
+          return WeakAuras.spec_types_specific[trigger.class]
+        end,
+        enable = function(trigger)
+          if WeakAuras.IsDragonflight() and trigger.use_class and trigger.class then
+            return true
+          else
+            return false
+          end
+        end,
+        reloadOptions = true,
+      },
+      {
         name = "talent",
         display = L["Talent"],
         type = "multiselect",
-        values = function()
+        values = function(trigger)
           local class = select(2, UnitClass("player"));
           local spec =  WeakAuras.IsRetail() and GetSpecialization();
           if WeakAuras.IsDragonflight() then
-            local classId = select(3, UnitClass("player"))
-            local specId = GetSpecializationInfoForClassID(classId, spec)
-            return Private.talentInfo[specId]
-          elseif(Private.talent_types_specific[class] and  Private.talent_types_specific[class][spec]) then
+            local classId
+            for i = 1, GetNumClasses() do
+              if select(2, GetClassInfo(i)) == trigger.class then
+                classId = i
+              end
+            end
+            if classId and trigger.spec then
+              local specId = GetSpecializationInfoForClassID(classId, trigger.spec)
+              if specId and Private.talentInfo[specId] then
+                return Private.talentInfo[specId]
+              end
+            end
+            return {}
+          elseif(Private.talent_types_specific[class] and Private.talent_types_specific[class][spec]) then
             return Private.talent_types_specific[class][spec];
           elseif not WeakAuras.IsRetail() and Private.talent_types_specific[class] then
             return Private.talent_types_specific[class];
@@ -6419,6 +6465,13 @@ Private.event_prototypes = {
         multiNoSingle = WeakAuras.IsDragonflight(),
         multiTristate = WeakAuras.IsDragonflight(), -- values can be true/false/nil
         control = WeakAuras.IsDragonflight() and "WeakAurasMiniTalent" or nil,
+        enable = function(trigger)
+          if WeakAuras.IsDragonflight() and trigger.use_class and trigger.class and trigger.use_spec and trigger.spec then
+            return true
+          else
+            return false
+          end
+        end,
         test = "active",
       },
       {
