@@ -245,6 +245,52 @@ function OptionsPrivate.GetInformationOptions(data)
     end
   end
 
+  -- Saved Data
+  local savedDataCount = 0
+  for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+    OptionsPrivate.Private.SaveAuraEnvironment(data.id)
+    if child.information.saved then
+      savedDataCount = savedDataCount + 1
+    end
+  end
+  if savedDataCount > 0 then
+    args.savedDataTitle = {
+      type = "header",
+      name = L["Saved Data"],
+      width = WeakAuras.doubleWidth,
+      order = order,
+    }
+    order = order + 1
+
+    for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+      if child.information.saved then
+        args["savedData." .. child.uid] = {
+          type = "description",
+          name = L["%s stores around %s KB of data"]:format(child.id, ceil((#child.information.saved) / 1024)),
+          width = savedDataCount > 1 and WeakAuras.doubleWidth or WeakAuras.normalWidth,
+          order = order,
+        }
+        order = order + 1
+      end
+    end
+
+    args.savedDataClear = {
+      type = "execute",
+      name = L["Clear Saved Data"],
+      width = savedDataCount > 1 and WeakAuras.doubleWidth or WeakAuras.normalWidth,
+      order = order,
+      func = function()
+        for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+          OptionsPrivate.Private.ClearAuraEnvironmentSavedData(child.id)
+          WeakAuras.Add(child)
+          OptionsPrivate.ClearOptions(child.id)
+        end
+        WeakAuras.ClearAndUpdateOptions(data.id)
+      end
+    }
+    order = order + 1
+  end
+
   -- Debug Log
   args.debugLogTitle = {
     type = "header",
