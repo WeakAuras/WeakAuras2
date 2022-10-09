@@ -182,6 +182,7 @@ local blockedTables = {
   SendMailMoneyGold = true,
   MailFrameTab2 = true,
   ChatFrame1 = true,
+  WeakAurasSaved = true,
   WeakAurasOptions = true,
   WeakAurasOptionsSaved = true
 }
@@ -191,6 +192,7 @@ local aura_environments = {}
 -- 1 == config initialized
 -- 2 == fully initialized
 local environment_initialized = {}
+local getDataCallCounts = {}
 
 function Private.IsEnvironmentInitialized(id)
   return environment_initialized[id] == 2
@@ -199,11 +201,13 @@ end
 function Private.DeleteAuraEnvironment(id)
   aura_environments[id] = nil
   environment_initialized[id] = nil
+  getDataCallCounts[id] = nil
 end
 
 function Private.RenameAuraEnvironment(oldid, newid)
   aura_environments[oldid], aura_environments[newid] = nil, aura_environments[oldid]
   environment_initialized[oldid], environment_initialized[newid] = nil, environment_initialized[oldid]
+  getDataCallCounts[oldid], getDataCallCounts[newid] = nil, getDataCallCounts[oldid]
 end
 
 local current_uid = nil
@@ -273,7 +277,9 @@ end
 function Private.ClearAuraEnvironment(id)
   if environment_initialized[id] then
     Private.SaveAuraEnvironment(id)
-    environment_initialized[id] = nil;
+    environment_initialized[id] = nil
+    aura_environments[id] = nil
+    getDataCallCounts[id] = nil
   end
 end
 
@@ -309,6 +315,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
     elseif onlyConfig then
       environment_initialized[id] = 1
       aura_environments[id] = {}
+      getDataCallCounts[id] = 0
       current_uid = data.uid
       current_aura_env = aura_environments[id]
       current_aura_env.id = id
@@ -325,6 +332,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
       -- Either this aura environment has not yet been initialized, or it was reset via an edit in WeakaurasOptions
       environment_initialized[id] = 2
       aura_environments[id] = aura_environments[id] or {}
+      getDataCallCounts[id] = getDataCallCounts[id] or 0
       current_uid = data.uid
       current_aura_env = aura_environments[id]
       current_aura_env.id = id
@@ -454,7 +462,16 @@ local FakeWeakAurasMixin = {
   },
   override = {
     me = GetUnitName("player", true),
-    myGUID = UnitGUID("player")
+    myGUID = UnitGUID("player"),
+    GetData = function(id)
+      local currentId = Private.UIDtoID(current_uid)
+      getDataCallCounts[currentId] = getDataCallCounts[currentId] + 1
+      if getDataCallCounts[currentId] > 99 then
+        Private.AuraWarnings.UpdateWarning(current_uid, "FakeWeakAurasGetData", "warning",
+                  L["This aura calls GetData a lot, which is a slow function."])
+      end
+      return CopyTable(WeakAuras.GetData(id))
+    end
   },
   blocked = blocked,
   setBlocked = function()
