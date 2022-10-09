@@ -1377,7 +1377,7 @@ Private.load_prototype = {
       end,
       events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
-        or (WeakAuras.IsDragonflight() and {"TRAIT_CONFIG_CREATED"})
+        or (WeakAuras.IsDragonflight() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"})
         or {"PLAYER_TALENT_UPDATE"},
       inverse = function(load)
         return (WeakAuras.IsClassicOrBCC() or WeakAuras.IsShadowlands()) and (load.talent2_extraOption == 2 or load.talent2_extraOption == 3)
