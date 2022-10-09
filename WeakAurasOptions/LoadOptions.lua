@@ -82,7 +82,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
   elseif data.triggers[triggernum] then
     trigger = data.triggers[triggernum].trigger
   else
-    error("Improper argument to WeakAuras.ConstructOptions - trigger number not in range");
+    error("Improper argument to OptionsPrivate.ConstructOptions - trigger number not in range");
   end
   local options = {};
   local order = startorder or 10;

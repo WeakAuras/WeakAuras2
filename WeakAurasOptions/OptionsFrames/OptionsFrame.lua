@@ -17,8 +17,7 @@ local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
-local displayButtons = WeakAuras.displayButtons
-local regionOptions = WeakAuras.regionOptions
+local displayButtons = OptionsPrivate.displayButtons
 local tempGroup = OptionsPrivate.tempGroup
 local aceOptions = {}
 
@@ -180,11 +179,11 @@ function OptionsPrivate.CreateFrame()
     OptionsPrivate.Private.ClearFakeStates()
 
 
-    for id, data in pairs(WeakAuras.regions) do
+    for id, data in pairs(OptionsPrivate.Private.regions) do
       data.region:Collapse()
       data.region:OptionsClosed()
-      if WeakAuras.clones[id] then
-        for _, cloneRegion in pairs(WeakAuras.clones[id]) do
+      if OptionsPrivate.Private.clones[id] then
+        for _, cloneRegion in pairs(OptionsPrivate.Private.clones[id]) do
           cloneRegion:Collapse()
           cloneRegion:OptionsClosed()
         end
@@ -1128,7 +1127,7 @@ function OptionsPrivate.CreateFrame()
     end
 
     if targetId then
-      local pickedButton = WeakAuras.GetDisplayButton(targetId)
+      local pickedButton = OptionsPrivate.GetDisplayButton(targetId)
       if pickedButton.data.controlledChildren then
         targetIsDynamicGroup = pickedButton.data.regionType == "dynamicgroup"
       else
@@ -1181,7 +1180,7 @@ function OptionsPrivate.CreateFrame()
     end
 
     local regionTypesSorted = {}
-    for regionType, regionData in pairs(regionOptions) do
+    for regionType, regionData in pairs(OptionsPrivate.Private.regionOptions) do
       tinsert(regionTypesSorted, regionType)
     end
 
@@ -1202,14 +1201,14 @@ function OptionsPrivate.CreateFrame()
         return false
       end
 
-      return regionOptions[a].displayName < regionOptions[b].displayName
+      return OptionsPrivate.Private.regionOptions[a].displayName < OptionsPrivate.Private.regionOptions[b].displayName
     end)
 
     for index, regionType in ipairs(regionTypesSorted) do
       if (targetIsDynamicGroup and (regionType == "group" or regionType == "dynamicgroup")) then
         -- Dynamic groups can't contain group/dynamic groups
       else
-        local regionData = regionOptions[regionType]
+        local regionData = OptionsPrivate.Private.regionOptions[regionType]
         local button = AceGUI:Create("WeakAurasNewButton")
         button:SetTitle(regionData.displayName)
         if(type(regionData.icon) == "string" or type(regionData.icon) == "table") then
@@ -1263,8 +1262,8 @@ function OptionsPrivate.CreateFrame()
     }
 
     if not frame.importThumbnail then
-      local thumbnail = regionOptions["text"].createThumbnail(UIParent)
-      regionOptions["text"].modifyThumbnail(UIParent, thumbnail, data)
+      local thumbnail = OptionsPrivate.Private.regionOptions["text"].createThumbnail(UIParent)
+      OptionsPrivate.Private.regionOptions["text"].modifyThumbnail(UIParent, thumbnail, data)
       thumbnail.mask:SetPoint("BOTTOMLEFT", thumbnail, "BOTTOMLEFT", 3, 3)
       thumbnail.mask:SetPoint("TOPRIGHT", thumbnail, "TOPRIGHT", -3, -3)
       frame.importThumbnail = thumbnail

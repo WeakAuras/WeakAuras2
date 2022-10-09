@@ -318,7 +318,7 @@ end
 do
   function Private.PreShowModels(self, event)
     Private.StartProfileSystem("model");
-    for id, data in pairs(WeakAuras.regions) do
+    for id, data in pairs(Private.regions) do
       Private.StartProfileAura(id);
       if data.region.toShow then
         if (data.regionType == "model") then

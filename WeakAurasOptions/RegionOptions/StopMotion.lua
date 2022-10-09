@@ -4,7 +4,7 @@ local AddonName, OptionsPrivate = ...
 local texture_types = WeakAuras.StopMotion.texture_types;
 local texture_data = WeakAuras.StopMotion.texture_data;
 local animation_types = WeakAuras.StopMotion.animation_types;
-local setTile = WeakAuras.setTile;
+local setTile = WeakAuras.setTile
 
 local function setTextureFunc(textureWidget, texturePath, textureName)
   local data = texture_data[texturePath];
