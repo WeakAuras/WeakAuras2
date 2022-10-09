@@ -131,11 +131,6 @@ function WeakAuras.SpellSchool(school)
   return Private.combatlog_spell_school_types[school] or ""
 end
 
-function WeakAuras.TestSchool(spellSchool, test)
-  print(spellSchool, test, type(spellSchool), type(test))
-  return spellSchool == test
-end
-
 function WeakAuras.RaidFlagToIndex(flag)
   return Private.combatlog_raidFlags[flag] or 0
 end
