@@ -8376,6 +8376,56 @@ Private.event_prototypes = {
         conditionType = "number"
       },
       {
+        name = "expertiserating",
+        display = L["Expertise Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_EXPERTISE)",
+        store = true,
+        enable = WeakAuras.IsWrathClassic(),
+        conditionType = "number",
+        hidden = not WeakAuras.IsWrathClassic()
+      },
+      {
+        name = "expertisebonus",
+        display = L["Expertise Bonus"],
+        type = "number",
+        init = "GetCombatRatingBonus(CR_EXPERTISE)",
+        store = true,
+        conditionType = "number",
+        enable = WeakAuras.IsWrathClassic(),
+        hidden = not WeakAuras.IsWrathClassic()
+      },
+      {
+        name = "armorpenrating",
+        display = L["Armor Peneration Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_ARMOR_PENETRATION)",
+        store = true,
+        enable = WeakAuras.IsWrathClassic(),
+        conditionType = "number",
+        hidden = not WeakAuras.IsWrathClassic()
+      },
+      {
+        name = "armorpenpercent",
+        display = L["Armor Peneration Percent"],
+        type = "number",
+        init = "GetArmorPenetration()",
+        store = true,
+        conditionType = "number",
+        enable = WeakAuras.IsWrathClassic(),
+        hidden = not WeakAuras.IsWrathClassic()
+      },
+      {
+        name = "spellpenpercent",
+        display = L["Spell Peneration Percent"],
+        type = "number",
+        init = "GetSpellPenetration()",
+        store = true,
+        enable = WeakAuras.IsWrathClassic(),
+        conditionType = "number",
+        hidden = not WeakAuras.IsWrathClassic()
+      },
+      {
         name = "masteryrating",
         display = L["Mastery Rating"],
         type = "number",
