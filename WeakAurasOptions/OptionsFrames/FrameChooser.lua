@@ -17,7 +17,7 @@ local frameChooserBox
 local oldFocus
 local oldFocusName
 function OptionsPrivate.StartFrameChooser(data, path)
-  local frame = WeakAuras.OptionsFrame();
+  local frame = OptionsPrivate.Private.OptionsFrame();
   if not(frameChooserFrame) then
     frameChooserFrame = CreateFrame("Frame");
     frameChooserBox = CreateFrame("Frame", nil, frameChooserFrame, "BackdropTemplate");
@@ -50,7 +50,7 @@ function OptionsPrivate.StartFrameChooser(data, path)
         if(focusName == "WorldFrame" or not focusName) then
           focusName = nil;
           local focusIsGroup = false;
-          for id, regionData in pairs(WeakAuras.regions) do
+          for id, regionData in pairs(OptionsPrivate.Private.regions) do
             if(regionData.region:IsVisible() and MouseIsOver(regionData.region)) then
               local isGroup = regionData.regionType == "group" or regionData.regionType == "dynamicgroup";
               if (not focusName or (not isGroup and focusIsGroup)) then

@@ -920,8 +920,8 @@ local function modify(parent, region, data)
             self.updatedChildren[regionData] = true
           end
         end
-        if childData and WeakAuras.clones[childID] then
-          for cloneID, cloneRegion in pairs(WeakAuras.clones[childID]) do
+        if childData and Private.clones[childID] then
+          for cloneID, cloneRegion in pairs(Private.clones[childID]) do
             local regionData = createRegionData(childData, cloneRegion, childID, cloneID, dataIndex)
             if cloneRegion.toShow then
               tinsert(self.sortedChildren, regionData)
@@ -1254,7 +1254,7 @@ local function modify(parent, region, data)
         self:Hide()
       end
       if WeakAuras.IsOptionsOpen() then
-        WeakAuras.OptionsFrame().moversizer:ReAnchor()
+        Private.OptionsFrame().moversizer:ReAnchor()
       end
       Private.StopProfileSystem("dynamicgroup")
       Private.StopProfileAura(data.id)

@@ -1,4 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
+--- @type string, Private
 local AddonName, Private = ...
 
 local WeakAuras = WeakAuras
@@ -405,18 +406,33 @@ local function MakeReadOnly(input, options)
   })
 end
 
+--- Wraps a table, so that accessing any key in it creates a deprecated warning
+---@param input table
+---@param name string
+---@param warningMsg string
+---@return table
+local function MakeDeprecated(input, name, warningMsg)
+  return setmetatable({},
+  {
+    __index = function(t, k)
+      Private.AuraWarnings.UpdateWarning(current_uid, "Deprecated_" .. name, "warning", warningMsg)
+      return input[k]
+    end,
+    __metatable = false
+  })
+end
+
 local FakeWeakAurasMixin = {
   blockedFunctions = {
     -- Other addons might use these, so before moving them to the Private space, we need
     -- to discuss these. But Auras have no purpose for calling these
     Add = true,
-    AddMany = true,
     Delete = true,
     HideOptions = true,
     Rename = true,
     NewAura = true,
-    OptionsFrame = true,
-    RegisterDisplay = true,
+    Import = true,
+    PreAdd = true,
     RegisterRegionOptions = true,
     RegisterSubRegionOptions = true,
     RegisterSubRegionType = true,
@@ -426,39 +442,34 @@ local FakeWeakAurasMixin = {
     ShowOptions = true,
     -- Note these shouldn't exist in the WeakAuras namespace, but moving them takes a bit of effort,
     -- so for now just block them and clean them up later
+    createSpinner = true,
     ClearAndUpdateOptions = true,
-    CloseImportExport = true,
     CreateTemplateView = true,
     FillOptions = true,
-    FindUnusedId = true,
     GetMoverSizerId = true,
-    GetDisplayButton = true,
-    Import = true,
+    GetNameAndIcon = true,
+    GetTriggerCategoryFor = true,
     NewDisplayButton = true,
+    OpenOptions = true,
     PickDisplay = true,
+    setTile = true,
     SetMoverSizer = true,
+    SetModel = true,
+    Toggle = true,
     ToggleOptions = true,
     UpdateGroupOrders = true,
     UpdateThumbnail = true,
-    validate = true,
-    getDefaultGlow = true,
   },
   blockedTables = {
-    AuraWarnings = true,
     ModelPaths = true,
     regionPrototype = true,
+    RealTimeProfilingWindow = true,
     -- Note these shouldn't exist in the WeakAuras namespace, but moving them takes a bit of effort,
     -- so for now just block them and clean them up later
-    data_stub = true,
-    displayButtons = true,
-    regionTypes = true,
-    regionOptions = true,
+    genericTriggerTypes = true,
+    newFeatureString = true,
     spellCache = true,
-    triggerTemplates = true,
-    frames = true,
-    loadFrame = true,
-    unitLoadFrame = true,
-    loaded = true
+    StopMotion = true,
   },
   override = {
     me = GetUnitName("player", true),
@@ -471,7 +482,11 @@ local FakeWeakAurasMixin = {
                   L["This aura calls GetData a lot, which is a slow function."])
       end
       return CopyTable(WeakAuras.GetData(id))
-    end
+    end,
+    clones = MakeDeprecated(Private.clones, "clones",
+                L["Using WeakAuras.clones is deprecated. Use WeakAuras.GetRegion(id, cloneId) instead."]),
+    regions = MakeDeprecated(Private.regions, "regions",
+                L["Using WeakAuras.regions is deprecated. Use WeakAuras.GetRegion(id) instead."])
   },
   blocked = blocked,
   setBlocked = function()
@@ -494,14 +509,14 @@ local overridden = {
   WeakAuras = FakeWeakAuras
 }
 
-local env_getglobal
-local exec_env = setmetatable({},
+local env_getglobal_custom
+local exec_env_custom = setmetatable({},
 {
   __index = function(t, k)
     if k == "_G" then
       return t
     elseif k == "getglobal" then
-      return env_getglobal
+      return env_getglobal_custom
     elseif k == "aura_env" then
       return current_aura_env
     elseif k == "DebugPrint" then
@@ -528,29 +543,89 @@ local exec_env = setmetatable({},
   __metatable = false
 })
 
-function env_getglobal(k)
-  return exec_env[k]
+function env_getglobal_custom(k)
+  return exec_env_custom[k]
 end
 
-local function_cache = {}
-function WeakAuras.LoadFunction(string)
-  if function_cache[string] then
-    return function_cache[string]
-  else
-    local loadedFunction, errorString = loadstring(string)
-    if errorString then
-      print(errorString)
+local PrivateForBuiltIn = {
+  ExecEnv = Private.ExecEnv
+}
+
+local env_getglobal_builtin
+local exec_env_builtin = setmetatable({},
+{
+  __index = function(t, k)
+    if k == "_G" then
+      return t
+    elseif k == "getglobal" then
+      return env_getglobal_builtin
+    elseif k == "aura_env" then
+      return current_aura_env
+    elseif k == "DebugPrint" then
+      return DebugPrint
+    elseif k == "Private" then
+      -- Built in code has access to Private.ExecEnv
+      -- Which contains a bunch of internal helpers
+      return PrivateForBuiltIn
+    elseif blockedFunctions[k] then
+      blocked(k)
+      return function() end
+    elseif blockedTables[k] then
+      blocked(k)
+      return {}
+    elseif overridden[k] then
+      return overridden[k]
     else
-      setfenv(loadedFunction, exec_env)
-      local success, func = pcall(assert(loadedFunction))
-      if success then
-        function_cache[string] = func
-        return func
+      return _G[k]
+    end
+  end,
+  __newindex = function(table, key, value)
+    if _G[key] then
+      Private.AuraWarnings.UpdateWarning(current_uid, "OverridingGlobal", "warning",
+         string.format(L["The aura has overwritten the global '%s', this might affect other auras."], key))
+    end
+    rawset(table, key, value)
+  end,
+  __metatable = false
+})
+
+function env_getglobal_builtin(k)
+  return exec_env_builtin[k]
+end
+
+local function CreateFunctionCache(exec_env)
+  local cache = {}
+  cache.Load = function(self, string)
+    if self[string] then
+      return self[string]
+    else
+      local loadedFunction, errorString = loadstring(string)
+      if errorString then
+        print(errorString)
+      else
+        setfenv(loadedFunction, exec_env)
+        local success, func = pcall(assert(loadedFunction))
+        if success then
+          self[string] = func
+          return func
+        end
       end
     end
   end
+  return cache
+end
+
+local function_cache_custom = CreateFunctionCache(exec_env_custom)
+local function_cache_builtin = CreateFunctionCache(exec_env_builtin)
+
+function WeakAuras.LoadFunction(string)
+  return function_cache_custom:Load(string)
+end
+
+function Private.LoadFunction(string)
+  return function_cache_builtin:Load(string)
 end
 
 function Private.GetSanitizedGlobal(key)
-  return exec_env[key]
+  return exec_env_custom[key]
 end

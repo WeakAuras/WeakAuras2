@@ -2,7 +2,6 @@ if not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
-local regionOptions = WeakAuras.regionOptions
 
 local commonOptionsCache = {}
 OptionsPrivate.commonOptionsCache = commonOptionsCache
@@ -500,7 +499,7 @@ local function replaceNameDescFuncs(intable, data, subOption)
     local index = string.find(input, ".", 1, true);
     if (index) then
       local regionType = string.sub(input, 1, index - 1);
-      return regionOptions[regionType] and regionType;
+      return OptionsPrivate.Private.regionOptions[regionType] and regionType;
     end
     return nil;
   end

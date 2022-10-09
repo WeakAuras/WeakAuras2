@@ -1861,18 +1861,4 @@ itemInfoReceived:SetScript("OnEvent", function()
   end
 end);
 
-
--- Enrich Display templates with default values
-for regionType, regionData in pairs(WeakAuras.regionOptions) do
-  if (regionData.templates) then
-    for _, item in ipairs(regionData.templates) do
-      for k, v in pairs(WeakAuras.regionTypes[regionType].default) do
-        if (item.data[k] == nil) then
-          item.data[k] = v;
-        end
-      end
-    end
-  end
-end
-
-WeakAuras.triggerTemplates = templates;
+TemplatePrivate.triggerTemplates = templates

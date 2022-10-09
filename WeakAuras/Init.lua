@@ -1,7 +1,18 @@
 local AddonName, Private = ...
 WeakAuras = {}
 WeakAuras.L = {}
-WeakAuras.frames = {}
+Private.frames = {}
+
+--- @alias uid string
+--- @alias auraId string
+
+--- @class Private
+--- @field AuraWarnings AuraWarnings
+--- @field callbacks callbacks
+--- @field clones table<auraId, table<string, table>>
+--- @field ExecEnv table
+--- @field regions table<auraId, table>
+--- @field UIDtoID fun(uid: uid): auraId
 
 WeakAuras.normalWidth = 1.3
 WeakAuras.halfWidth = WeakAuras.normalWidth / 2
@@ -169,6 +180,8 @@ end
 
 function Private.StopProfileUID()
 end
+
+Private.ExecEnv = {}
 
 -- If WeakAuras shuts down due to being installed on the wrong target, keep the bindings from erroring
 function WeakAuras.StartProfile()
