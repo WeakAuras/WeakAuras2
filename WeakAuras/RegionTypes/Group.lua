@@ -138,7 +138,7 @@ local function modify(parent, region, data)
         -- Scan children for visibility
         if not childVisible then
           for child in Private.TraverseLeafs(data) do
-            local childRegion = WeakAuras.regions[child.id] and WeakAuras.regions[child.id].region;
+            local childRegion = Private.regions[child.id] and Private.regions[child.id].region;
             if childRegion and childRegion.toShow then
               childVisible = true;
               break;

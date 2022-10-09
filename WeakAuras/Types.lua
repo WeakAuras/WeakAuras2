@@ -2944,7 +2944,7 @@ Private.non_transmissable_fields_v2000 = {
   }
 }
 
-WeakAuras.data_stub = {
+Private.data_stub = {
   -- note: this is the minimal data stub which prevents false positives in diff upon reimporting an aura.
   -- pending a refactor of other code which adds unnecessary fields, it is possible to shrink it
   triggers = {

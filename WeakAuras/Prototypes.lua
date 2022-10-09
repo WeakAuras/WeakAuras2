@@ -776,20 +776,6 @@ function WeakAuras.CheckNumericIds(loadids, currentId)
   return false;
 end
 
-function WeakAuras.CheckString(ids, currentId)
-  if (not ids or not currentId) then
-    return false;
-  end
-
-  for id in ids:gmatch('([^,]+)') do
-    if id:trim() == currentId then
-      return true
-    end
-  end
-
-  return false;
-end
-
 function WeakAuras.ValidateNumeric(info, val)
   if val ~= nil and val ~= "" and (not tonumber(val) or tonumber(val) >= 2^31) then
     return false;
@@ -797,7 +783,7 @@ function WeakAuras.ValidateNumeric(info, val)
   return true
 end
 
-function WeakAuras.ParseStringCheck(input)
+function Private.ExecEnv.ParseStringCheck(input)
   if not input then return end
   local matcher = {
     zones = {},
@@ -842,7 +828,7 @@ function WeakAuras.ValidateNumericOrPercent(info, val)
   return true
 end
 
-function WeakAuras.CheckMPlusAffixIds(loadids, currentId)
+function Private.ExecEnv.CheckMPlusAffixIds(loadids, currentId)
   if (not loadids or not currentId) or type(currentId) ~= "table" then
     return false
   end
@@ -854,7 +840,7 @@ function WeakAuras.CheckMPlusAffixIds(loadids, currentId)
   return false
 end
 
-function WeakAuras.CheckGroupMemberType(loadSetting, currentFlags)
+function Private.ExecEnv.CheckGroupMemberType(loadSetting, currentFlags)
   if loadSetting == "LEADER" then
     return bit.band(currentFlags, 1) == 1
   elseif loadSetting == "ASSIST" then
@@ -864,13 +850,13 @@ function WeakAuras.CheckGroupMemberType(loadSetting, currentFlags)
   end
 end
 
-function WeakAuras.CheckChargesDirection(direction, triggerDirection)
+function Private.ExecEnv.CheckChargesDirection(direction, triggerDirection)
   return triggerDirection == "CHANGED"
     or (triggerDirection == "GAINED" and direction > 0)
     or (triggerDirection == "LOST" and direction < 0)
 end
 
-function WeakAuras.CheckCombatLogFlags(flags, flagToCheck)
+function Private.ExecEnv.CheckCombatLogFlags(flags, flagToCheck)
   if type(flags) ~= "number" then return end
   if(flagToCheck == "Mine") then
     return bit.band(flags, COMBATLOG_OBJECT_AFFILIATION_MINE) > 0
@@ -883,7 +869,7 @@ function WeakAuras.CheckCombatLogFlags(flags, flagToCheck)
   end
 end
 
-function WeakAuras.CheckCombatLogFlagsReaction(flags, flagToCheck)
+function Private.ExecEnv.CheckCombatLogFlagsReaction(flags, flagToCheck)
   if type(flags) ~= "number" then return end
   if (flagToCheck == "Hostile") then
     return bit.band(flags, 64) ~= 0;
@@ -902,14 +888,14 @@ local objectTypeToBit = {
   Player = 1024,
 }
 
-function WeakAuras.CheckCombatLogFlagsObjectType(flags, flagToCheck)
+function Private.ExecEnv.CheckCombatLogFlagsObjectType(flags, flagToCheck)
   if type(flags) ~= "number" then return end
   local bitToCheck = objectTypeToBit[flagToCheck]
   if not bitToCheck then return end
   return bit.band(flags, bitToCheck) ~= 0;
 end
 
-function WeakAuras.CheckRaidFlags(flags, flagToCheck)
+function Private.ExecEnv.CheckRaidFlags(flags, flagToCheck)
   flagToCheck = tonumber(flagToCheck)
   if not flagToCheck or not flags then return end --bailout
   if flagToCheck == 0 then --no raid mark
@@ -965,7 +951,7 @@ function WeakAuras.IsSpellKnownIncludingPet(spell)
   end
 end
 
-function WeakAuras.CompareSpellIds(a, b, exactCheck)
+function Private.ExecEnv.CompareSpellIds(a, b, exactCheck)
   if exactCheck then
     return tonumber(a) == tonumber(b)
   else
@@ -1245,7 +1231,7 @@ Private.load_prototype = {
       display = L["Player Name/Realm"],
       type = "string",
       test = "nameRealmChecker:Check(player, realm)",
-      preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+      preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
       desc = constants.nameRealmFilterDesc,
     },
     {
@@ -1253,7 +1239,7 @@ Private.load_prototype = {
       display = L["|cFFFF0000Not|r Player Name/Realm"],
       type = "string",
       test = "not nameRealmIgnoreChecker:Check(player, realm)",
-      preamble = "local nameRealmIgnoreChecker = WeakAuras.ParseNameCheck(%q)",
+      preamble = "local nameRealmIgnoreChecker = Private.ExecEnv.ParseNameCheck(%q)",
       desc = constants.nameRealmFilterDesc,
     },
     {
@@ -1664,7 +1650,7 @@ Private.load_prototype = {
       display = L["Zone Name"],
       type = "string",
       init = "arg",
-      preamble = "local checker = WeakAuras.ParseStringCheck(%q)",
+      preamble = "local checker = Private.ExecEnv.ParseStringCheck(%q)",
       test = "checker:Check(zone)",
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
       desc = L["Supports multiple entries, separated by commas. Escape ',' with \\"]
@@ -1689,7 +1675,7 @@ Private.load_prototype = {
       hidden = WeakAuras.IsClassic(),
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
       desc = get_zoneId_list,
-      preamble = "local zoneChecker = WeakAuras.ParseZoneCheck(%q)",
+      preamble = "local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q)",
       test = "zoneChecker:Check(zoneId, zonegroupId)"
     },
     {
@@ -1757,7 +1743,7 @@ Private.load_prototype = {
       events = {"PARTY_LEADER_CHANGED", "GROUP_ROSTER_UPDATE"},
       width = WeakAuras.doubleWidth,
       values = "group_member_types",
-      test = "WeakAuras.CheckGroupMemberType(%s, group_leader)"
+      test = "Private.ExecEnv.CheckGroupMemberType(%s, group_leader)"
     },
     {
       name = "affixes",
@@ -1765,7 +1751,7 @@ Private.load_prototype = {
       type = "multiselect",
       values = "mythic_plus_affixes",
       init = WeakAuras.IsRetail() and "arg" or nil,
-      test = "WeakAuras.CheckMPlusAffixIds(%d, affixes)",
+      test = "Private.ExecEnv.CheckMPlusAffixIds(%d, affixes)",
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
       events = {"CHALLENGE_MODE_START", "CHALLENGE_MODE_COMPLETED"},
@@ -1781,7 +1767,7 @@ Private.load_prototype = {
       name = "itemtypeequipped",
       display = L["Item Type Equipped"],
       type = "multiselect",
-      test = "IsEquippedItemType(WeakAuras.GetItemSubClassInfo(%s))",
+      test = "IsEquippedItemType(Private.ExecEnv.GetItemSubClassInfo(%s))",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
       values = "item_weapon_types"
     },
@@ -1792,7 +1778,7 @@ Private.load_prototype = {
       test = "WeakAuras.CheckForItemBonusId(%q)",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
       desc = function()
-        return WeakAuras.GetLegendariesBonusIds()
+        return Private.GetLegendariesBonusIds()
                .. "\n\n" .. L["Supports multiple entries, separated by commas"]
       end
     },
@@ -1803,7 +1789,7 @@ Private.load_prototype = {
       test = "not WeakAuras.CheckForItemBonusId(%q)",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
       desc = function()
-        return WeakAuras.GetLegendariesBonusIds()
+        return Private.GetLegendariesBonusIds()
                .. "\n\n" .. L["Supports multiple entries, separated by commas"]
       end
     }
@@ -2064,11 +2050,11 @@ Private.event_prototypes = {
         display = L["Unit Name/Realm"],
         desc = constants.nameRealmFilterDesc,
         type = "string",
-        preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "nameRealmChecker:Check(name, realm)",
         conditionType = "string",
         conditionPreamble = function(input)
-          return WeakAuras.ParseNameCheck(input)
+          return Private.ExecEnv.ParseNameCheck(input)
         end,
         conditionTest = function(state, needle, op, preamble)
           return preamble:Check(state.name, state.realm)
@@ -2776,11 +2762,11 @@ Private.event_prototypes = {
         name = "namerealm",
         display = L["Unit Name/Realm"],
         type = "string",
-        preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "nameRealmChecker:Check(name, realm)",
         conditionType = "string",
         conditionPreamble = function(input)
-          return WeakAuras.ParseNameCheck(input)
+          return Private.ExecEnv.ParseNameCheck(input)
         end,
         conditionTest = function(state, needle, op, preamble)
           return preamble:Check(state.name, state.realm)
@@ -3279,11 +3265,11 @@ Private.event_prototypes = {
         name = "namerealm",
         display = L["Unit Name/Realm"],
         type = "string",
-        preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "nameRealmChecker:Check(name, realm)",
         conditionType = "string",
         conditionPreamble = function(input)
-          return WeakAuras.ParseNameCheck(input)
+          return Private.ExecEnv.ParseNameCheck(input)
         end,
         conditionTest = function(state, needle, op, preamble)
           return preamble:Check(state.name, state.realm)
@@ -3586,11 +3572,11 @@ Private.event_prototypes = {
         name = "namerealm",
         display = L["Unit Name/Realm"],
         type = "string",
-        preamble = "local nameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "nameRealmChecker:Check(unitname, unitrealm)",
         conditionType = "string",
         conditionPreamble = function(input)
-          return WeakAuras.ParseNameCheck(input)
+          return Private.ExecEnv.ParseNameCheck(input)
         end,
         conditionTest = function(state, needle, op, preamble)
           return preamble:Check(state.unitname, state.unitrealm)
@@ -3781,10 +3767,10 @@ Private.event_prototypes = {
         values = "combatlog_flags_check_type",
         init = "arg",
         store = true,
-        test = "WeakAuras.CheckCombatLogFlags(sourceFlags, %q)",
+        test = "Private.ExecEnv.CheckCombatLogFlags(sourceFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckCombatLogFlags(state.sourceFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckCombatLogFlags(state.sourceFlags, needle);
         end
       },
       {
@@ -3792,10 +3778,10 @@ Private.event_prototypes = {
         display = L["Source Reaction"],
         type = "select",
         values = "combatlog_flags_check_reaction",
-        test = "WeakAuras.CheckCombatLogFlagsReaction(sourceFlags, %q)",
+        test = "Private.ExecEnv.CheckCombatLogFlagsReaction(sourceFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckCombatLogFlagsReaction(state.sourceFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckCombatLogFlagsReaction(state.sourceFlags, needle);
         end
       },
       {
@@ -3803,10 +3789,10 @@ Private.event_prototypes = {
         display = L["Source Object Type"],
         type = "select",
         values = "combatlog_flags_check_object_type",
-        test = "WeakAuras.CheckCombatLogFlagsObjectType(sourceFlags, %q)",
+        test = "Private.ExecEnv.CheckCombatLogFlagsObjectType(sourceFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckCombatLogFlagsObjectType(state.sourceFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckCombatLogFlagsObjectType(state.sourceFlags, needle);
         end
       },
       {
@@ -3816,10 +3802,10 @@ Private.event_prototypes = {
         values = "combatlog_raid_mark_check_type",
         init = "arg",
         store = true,
-        test = "WeakAuras.CheckRaidFlags(sourceRaidFlags, %q)",
+        test = "Private.ExecEnv.CheckRaidFlags(sourceRaidFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckRaidFlags(state.sourceRaidFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckRaidFlags(state.sourceRaidFlags, needle);
         end
       },
       {
@@ -3893,10 +3879,10 @@ Private.event_prototypes = {
         values = "combatlog_flags_check_type",
         init = "arg",
         store = true,
-        test = "WeakAuras.CheckCombatLogFlags(destFlags, %q)",
+        test = "Private.ExecEnv.CheckCombatLogFlags(destFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckCombatLogFlags(state.destFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckCombatLogFlags(state.destFlags, needle);
         end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
@@ -3907,10 +3893,10 @@ Private.event_prototypes = {
         display = L["Destination Reaction"],
         type = "select",
         values = "combatlog_flags_check_reaction",
-        test = "WeakAuras.CheckCombatLogFlagsReaction(destFlags, %q)",
+        test = "Private.ExecEnv.CheckCombatLogFlagsReaction(destFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckCombatLogFlagsReaction(state.destFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckCombatLogFlagsReaction(state.destFlags, needle);
         end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
@@ -3921,10 +3907,10 @@ Private.event_prototypes = {
         display = L["Destination Object Type"],
         type = "select",
         values = "combatlog_flags_check_object_type",
-        test = "WeakAuras.CheckCombatLogFlagsObjectType(destFlags, %q)",
+        test = "Private.ExecEnv.CheckCombatLogFlagsObjectType(destFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckCombatLogFlagsObjectType(state.destFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckCombatLogFlagsObjectType(state.destFlags, needle);
         end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
@@ -3942,10 +3928,10 @@ Private.event_prototypes = {
         values = "combatlog_raid_mark_check_type",
         init = "arg",
         store = true,
-        test = "WeakAuras.CheckRaidFlags(destRaidFlags, %q)",
+        test = "Private.ExecEnv.CheckRaidFlags(destRaidFlags, %q)",
         conditionType = "select",
         conditionTest = function(state, needle)
-          return state and state.show and WeakAuras.CheckRaidFlags(state.destRaidFlags, needle);
+          return state and state.show and Private.ExecEnv.CheckRaidFlags(state.destRaidFlags, needle);
         end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
@@ -4486,7 +4472,7 @@ Private.event_prototypes = {
             local remainingModRate = remaining / (modRate or 1);
             local remainingCheck = %s;
             if(remainingModRate >= remainingCheck and remainingModRate > 0) then
-              WeakAuras.ScheduleScan(expirationTime - remainingCheck * (modRate or 1));
+              Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck * (modRate or 1));
             end
           end
         ]];
@@ -4872,12 +4858,12 @@ Private.event_prototypes = {
         type = "select",
         values = "charges_change_type",
         init = "arg",
-        test = "WeakAuras.CheckChargesDirection(direction, %q)",
+        test = "Private.ExecEnv.CheckChargesDirection(direction, %q)",
         store = true,
         conditionType = "select",
         conditionValues = "charges_change_condition_type";
         conditionTest = function(state, needle)
-          return state and state.show and state.direction and WeakAuras.CheckChargesDirection(state.direction, needle)
+          return state and state.show and state.direction and Private.ExecEnv.CheckChargesDirection(state.direction, needle)
         end,
       },
       {
@@ -4953,7 +4939,7 @@ Private.event_prototypes = {
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
           local remainingCheck = %s;
           if(remaining >= remainingCheck and remaining > 0) then
-            WeakAuras.ScheduleScan(expirationTime - remainingCheck);
+            Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck);
           end
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
@@ -5121,7 +5107,7 @@ Private.event_prototypes = {
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
           local remainingCheck = %s;
           if(remaining >= remainingCheck and remaining > 0) then
-            WeakAuras.ScheduleScan(expirationTime - remainingCheck);
+            Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck);
           end
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
@@ -5450,7 +5436,7 @@ Private.event_prototypes = {
                 remainingTime = bar.expirationTime - GetTime() + extendTimer
               end
               if remainingTime %s triggerRemaining then
-                WeakAuras.CopyBarToState(bar, states, cloneId, extendTimer)
+                Private.ExecEnv.CopyBarToState(bar, states, cloneId, extendTimer)
               else
                 local state = states[cloneId]
                 if state and state.show then
@@ -5459,10 +5445,10 @@ Private.event_prototypes = {
                 end
               end
               if remainingTime >= triggerRemaining and not bar.paused then
-                WeakAuras.ScheduleDbmCheck(bar.expirationTime - triggerRemaining + extendTimer)
+                Private.ExecEnv.ScheduleDbmCheck(bar.expirationTime - triggerRemaining + extendTimer)
               end
             else
-              WeakAuras.CopyBarToState(bar, states, cloneId, extendTimer)
+              Private.ExecEnv.ExecEnv.CopyBarToState(bar, states, cloneId, extendTimer)
             end
           end
 
@@ -5471,7 +5457,7 @@ Private.event_prototypes = {
             or event == "DBM_TimerPause"
             or event == "DBM_TimerResume"
             then
-              if WeakAuras.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
+              if Private.ExecEnv.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
                 local bar = WeakAuras.GetDBMTimerById(id)
                 if bar then
                   copyOrSchedule(bar, cloneId)
@@ -5485,7 +5471,7 @@ Private.event_prototypes = {
               end
             elseif event == "DBM_TimerUpdate" then
               for id, bar in pairs(WeakAuras.GetAllDBMTimers()) do
-                if WeakAuras.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
+                if Private.ExecEnv.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
                   copyOrSchedule(bar, id)
                 else
                   local state = states[id]
@@ -5501,7 +5487,7 @@ Private.event_prototypes = {
             elseif event == "DBM_TimerForce" then
               wipe(states)
               for id, bar in pairs(WeakAuras.GetAllDBMTimers()) do
-                if WeakAuras.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
+                if Private.ExecEnv.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
                   copyOrSchedule(bar, cloneId)
                 end
               end
@@ -5509,7 +5495,7 @@ Private.event_prototypes = {
           else
             if event == "DBM_TimerStart" or event == "DBM_TimerUpdate" then
               if extendTimer ~= 0 then
-                if WeakAuras.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
+                if Private.ExecEnv.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, triggerCount) then
                   local bar = WeakAuras.GetDBMTimerById(id)
                   WeakAuras.ScheduleDbmCheck(bar.expirationTime + extendTimer)
                 end
@@ -5723,7 +5709,7 @@ Private.event_prototypes = {
                 remainingTime = bar.expirationTime - GetTime() + extendTimer
               end
               if remainingTime %s triggerRemaining then
-                WeakAuras.CopyBigWigsTimerToState(bar, states, cloneId, extendTimer)
+                Private.ExecEnv.CopyBigWigsTimerToState(bar, states, cloneId, extendTimer)
               else
                 local state = states[cloneId]
                 if state and state.show then
@@ -5732,10 +5718,10 @@ Private.event_prototypes = {
                 end
               end
               if remainingTime >= triggerRemaining and not bar.paused then
-                WeakAuras.ScheduleBigWigsCheck(bar.expirationTime - triggerRemaining + extendTimer)
+                Private.ExecEnv.ScheduleBigWigsCheck(bar.expirationTime - triggerRemaining + extendTimer)
               end
             else
-              WeakAuras.CopyBigWigsTimerToState(bar, states, cloneId, extendTimer)
+              Private.ExecEnv.CopyBigWigsTimerToState(bar, states, cloneId, extendTimer)
             end
           end
 
@@ -5744,7 +5730,7 @@ Private.event_prototypes = {
             or event == "BigWigs_PauseBar"
             or event == "BigWigs_ResumeBar"
             then
-              if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
+              if Private.ExecEnv.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                 local bar = WeakAuras.GetBigWigsTimerById(id)
                 if bar then
                   copyOrSchedule(bar, cloneId)
@@ -5758,14 +5744,14 @@ Private.event_prototypes = {
               end
             elseif event == "BigWigs_Timer_Update" then
               for id, bar in pairs(WeakAuras.GetAllBigWigsTimers()) do
-                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
+                if Private.ExecEnv.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                   copyOrSchedule(bar, id)
                 end
               end
             elseif event == "BigWigs_Timer_Force" then
               wipe(states)
               for id, bar in pairs(WeakAuras.GetAllBigWigsTimers()) do
-                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
+                if Private.ExecEnv.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                   copyOrSchedule(bar, id)
                 end
               end
@@ -5773,9 +5759,9 @@ Private.event_prototypes = {
           else
             if event == "BigWigs_StartBar" then
               if extendTimer ~= 0 then
-                if WeakAuras.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
+                if Private.ExecEnv.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
                   local bar = WeakAuras.GetBigWigsTimerById(id)
-                  WeakAuras.ScheduleBigWigsCheck(bar.expirationTime + extendTimer)
+                  Private.ExecEnv.ScheduleBigWigsCheck(bar.expirationTime + extendTimer)
                 end
               end
             end
@@ -5936,7 +5922,7 @@ Private.event_prototypes = {
         local remainingCheck = not triggerRemaining or remaining and remaining %s triggerRemaining
 
         if triggerRemaining and remaining and remaining >= triggerRemaining and remaining > 0 then
-          WeakAuras.ScheduleScan(expirationTime - triggerRemaining, "SWING_TIMER_UPDATE")
+          Private.ExecEnv.ScheduleScan(expirationTime - triggerRemaining, "SWING_TIMER_UPDATE")
         end
       ]=];
       return ret:format(
@@ -6709,7 +6695,7 @@ Private.event_prototypes = {
           local _, totemName, startTime, duration, icon = GetTotemInfo(totemType);
           active = (startTime and startTime ~= 0);
 
-          if not WeakAuras.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
+          if not Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
             active = false;
           end
 
@@ -6722,7 +6708,7 @@ Private.event_prototypes = {
             local expirationTime = startTime and (startTime + duration) or 0;
             local remainingTime = expirationTime - GetTime()
             if (remainingTime >= remainingCheck) then
-              WeakAuras.ScheduleScan(expirationTime - remainingCheck);
+              Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck);
             end
             active = checkActive(remainingTime);
           end
@@ -6743,7 +6729,7 @@ Private.event_prototypes = {
           for i = 1, 5 do
             local _, totemName, startTime, duration, icon = GetTotemInfo(i);
             if ((startTime and startTime ~= 0) and
-                WeakAuras.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator)
+              Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator)
             ) then
               found = true;
             end
@@ -6763,14 +6749,14 @@ Private.event_prototypes = {
             local _, totemName, startTime, duration, icon = GetTotemInfo(i);
             active = (startTime and startTime ~= 0);
 
-            if not WeakAuras.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
+            if not Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
               active = false;
             end
             if (active and remainingCheck) then
               local expirationTime = startTime and (startTime + duration) or 0;
               local remainingTime = expirationTime - GetTime()
               if (remainingTime >= remainingCheck) then
-                WeakAuras.ScheduleScan(expirationTime - remainingCheck);
+                Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck);
               end
               active = checkActive(remainingTime);
             end
@@ -7051,7 +7037,7 @@ Private.event_prototypes = {
         local found = expirationTime and nameCheck and stackCheck and remainingCheck
 
         if(triggerRemaining and remaining and remaining >= triggerRemaining and remaining > 0) then
-          WeakAuras.ScheduleScan(expirationTime - triggerRemaining, "TENCH_UPDATE");
+          Private.ExecEnv.ScheduleScan(expirationTime - triggerRemaining, "TENCH_UPDATE");
         end
 
         if not found then
@@ -7426,7 +7412,7 @@ Private.event_prototypes = {
           local remaining = expirationTime - GetTime();
           local remainingCheck = %s;
           if(remaining >= remainingCheck and remaining > 0) then
-            WeakAuras.ScheduleScan(expirationTime - remainingCheck);
+            Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck);
           end
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
@@ -7670,7 +7656,7 @@ Private.event_prototypes = {
         display = L["Item Type"],
         type = "multiselect",
         values = "item_weapon_types",
-        test = "IsEquippedItemType(WeakAuras.GetItemSubClassInfo(%s))"
+        test = "IsEquippedItemType(Private.ExecEnv.GetItemSubClassInfo(%s))"
       },
     },
     automaticrequired = true
@@ -7714,7 +7700,7 @@ Private.event_prototypes = {
         test = "true",
         required = true,
         desc = function()
-          return WeakAuras.GetLegendariesBonusIds()
+          return Private.GetLegendariesBonusIds()
           .. "\n\n" .. L["Supports multiple entries, separated by commas"]
         end,
         conditionType = "number",
@@ -8275,7 +8261,7 @@ Private.event_prototypes = {
                   stage = i
                 end
                 if Round(startTime/1000) == Round(GetTime()) then
-                  WeakAuras.ScheduleCastCheck(startTime / 1000 + lastFinish, unit)
+                  Private.ExecEnv.ScheduleCastCheck(startTime / 1000 + lastFinish, unit)
                 end
               end
             end
@@ -8289,7 +8275,7 @@ Private.event_prototypes = {
         remaining = expirationTime - GetTime()
 
         if remainingCheck and remaining >= remainingCheck and remaining > 0 then
-          WeakAuras.ScheduleCastCheck(expirationTime - remainingCheck, unit)
+          Private.ExecEnv.ScheduleCastCheck(expirationTime - remainingCheck, unit)
         end
       ]=];
       ret = ret:format(trigger.unit == "group" and "true" or "false",
@@ -8328,7 +8314,7 @@ Private.event_prototypes = {
         enable = function(trigger) return not trigger.use_inverse end,
         conditionType = "number",
         showExactOption = true,
-        test = "WeakAuras.CompareSpellIds(spellId, %s, %s)",
+        test = "Private.ExecEnv.CompareSpellIds(spellId, %s, %s)",
         store = true,
       },
       {
@@ -8593,11 +8579,11 @@ Private.event_prototypes = {
         name = "sourceNameRealm",
         display = L["Source Unit Name/Realm"],
         type = "string",
-        preamble = "local sourceNameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        preamble = "local sourceNameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "sourceNameRealmChecker:Check(sourceName, sourceRealm)",
         conditionType = "string",
         conditionPreamble = function(input)
-          return WeakAuras.ParseNameCheck(input)
+          return Private.ExecEnv.ParseNameCheck(input)
         end,
         conditionTest = function(state, needle, op, preamble)
           return preamble:Check(state.sourceName, state.sourceRealm)
@@ -8641,11 +8627,11 @@ Private.event_prototypes = {
         name = "destNameRealm",
         display = L["Name/Realm of Caster's Target"],
         type = "string",
-        preamble = "local destNameRealmChecker = WeakAuras.ParseNameCheck(%q)",
+        preamble = "local destNameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "destNameRealmChecker:Check(destName, destRealm)",
         conditionType = "string",
         conditionPreamble = function(input)
-          return WeakAuras.ParseNameCheck(input)
+          return Private.ExecEnv.ParseNameCheck(input)
         end,
         conditionTest = function(state, needle, op, preamble)
           return preamble:Check(state.destName, state.destRealm)
@@ -9387,7 +9373,7 @@ Private.event_prototypes = {
         display = L["Group Type"],
         type = "multiselect",
         values = "group_types",
-        init = "WeakAuras.GroupType()",
+        init = "Private.ExecEnv.GroupType()",
       },
       {
         name = "instance_size",

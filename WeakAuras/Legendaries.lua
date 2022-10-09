@@ -272,7 +272,7 @@ for k, v in pairs(legendariesToBonusId) do
   bonusIdToLegendary[v] = k
 end
 
-WeakAuras.GetLegendariesBonusIds = function()
+Private.GetLegendariesBonusIds = function()
   if not WeakAuras.IsRetail() then
     return ""
   end

@@ -2,15 +2,14 @@ if not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
-local regionOptions = WeakAuras.regionOptions;
 local parsePrefix = OptionsPrivate.commonOptions.parsePrefix
 local flattenRegionOptions = OptionsPrivate.commonOptions.flattenRegionOptions
 
 function OptionsPrivate.GetGroupOptions(data)
   local regionOption;
   local id = data.id
-  if (regionOptions[data.regionType]) then
-    regionOption = regionOptions[data.regionType].create(id, data);
+  if (OptionsPrivate.Private.regionOptions[data.regionType]) then
+    regionOption = OptionsPrivate.Private.regionOptions[data.regionType].create(id, data);
   else
     regionOption = {
       [data.regionType] = {

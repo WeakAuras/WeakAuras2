@@ -1,3 +1,4 @@
+local AddonName, TemplatePrivate = ...
 local WeakAuras = WeakAuras
 if not WeakAuras.IsClassic() then return end
 local L = WeakAuras.L
@@ -1061,10 +1062,10 @@ end);
 
 
 -- Enrich Display templates with default values
-for regionType, regionData in pairs(WeakAuras.regionOptions) do
+for regionType, regionData in pairs(TemplatePrivate.Private.regionOptions) do
   if (regionData.templates) then
     for _, item in ipairs(regionData.templates) do
-      for k, v in pairs(WeakAuras.regionTypes[regionType].default) do
+      for k, v in pairs(TemplatePrivate.Private.regionTypes[regionType].default) do
         if (item.data[k] == nil) then
           item.data[k] = v;
         end
@@ -1073,4 +1074,4 @@ for regionType, regionData in pairs(WeakAuras.regionOptions) do
   end
 end
 
-WeakAuras.triggerTemplates = templates;
+TemplatePrivate.triggerTemplates = templates

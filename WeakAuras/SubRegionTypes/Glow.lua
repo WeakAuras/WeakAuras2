@@ -356,7 +356,7 @@ local function modify(parent, region, parentData, data, first)
 end
 
 -- This is used by the templates to add glow
-function WeakAuras.getDefaultGlow(regionType)
+function Private.getDefaultGlow(regionType)
   if regionType == "aurabar" then
     return {
       ["type"] = "subglow",
