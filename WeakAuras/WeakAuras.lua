@@ -1197,6 +1197,7 @@ local loadedFrame = CreateFrame("Frame");
 WeakAuras.frames["Addon Initialization Handler"] = loadedFrame;
 loadedFrame:RegisterEvent("ADDON_LOADED");
 loadedFrame:RegisterEvent("PLAYER_LOGIN");
+loadedFrame:RegisterEvent("PLAYER_LOGOUT")
 loadedFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
 loadedFrame:RegisterEvent("LOADING_SCREEN_ENABLED");
 loadedFrame:RegisterEvent("LOADING_SCREEN_DISABLED");
@@ -1260,6 +1261,10 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     else
       -- db isn't valid. Request permission to run repair tool before logging in
       StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "downgrade"})
+    end
+  elseif event == "PLAYER_LOGOUT" then
+    for id in pairs(db.displays) do
+      Private.SaveAuraEnvironment(id)
     end
   elseif(event == "LOADING_SCREEN_ENABLED") then
     in_loading_screen = true;

@@ -10,6 +10,9 @@ if WeakAuras.IsClassic() then
   LCD:RegisterFrame("WeakAuras")
 end
 
+local LibSerialize = LibStub("LibSerialize")
+local LibDeflate = LibStub:GetLibrary("LibDeflate")
+
 local UnitAura = UnitAura
 -- Unit Aura functions that return info about the first Aura matching the spellName or spellID given on the unit.
 local WA_GetUnitAura = function(unit, spell, filter)
@@ -208,8 +211,70 @@ local current_aura_env = nil
 -- Stack of of aura environments/uids, allows use of recursive aura activations through calls to WeakAuras.ScanEvents().
 local aura_env_stack = {}
 
+
+local function UpdateSavedDataWarning(uid, size)
+  local savedDataWarning = 16 * 1024 * 1024 -- 16 KB, but it's only a warning
+  if size > savedDataWarning then
+    Private.AuraWarnings.UpdateWarning(uid, "CustomSavedData", "warning",
+                                       L["This aura is saving %s KB of data"]:format(ceil(size / 1024)))
+  else
+    Private.AuraWarnings.UpdateWarning(uid, "CustomSavedData")
+  end
+end
+
+function Private.SaveAuraEnvironment(id)
+  local data = WeakAuras.GetData(id)
+  if not data then
+    return
+  end
+
+  local input = aura_environments[id] and aura_environments[id].saved
+  if input then
+    local serialized = LibSerialize:SerializeEx({errorOnUnserializableType = false}, input)
+    -- We use minimal compression, since that already achieves a reasonable compression ratio,
+    -- but takes significant less time
+    local compressed = LibDeflate:CompressDeflate(serialized, {level = 1})
+    local encoded = LibDeflate:EncodeForPrint(compressed)
+    UpdateSavedDataWarning(data.uid, #encoded)
+    data.information.saved = encoded
+  else
+    data.information.saved = nil
+  end
+end
+
+function Private.RestoreAuraEnvironment(id)
+  local data = WeakAuras.GetData(id)
+  if not data then
+    return
+  end
+
+  local input = data.information.saved
+  if input then
+    local decoded = LibDeflate:DecodeForPrint(input)
+    local decompressed = LibDeflate:DecompressDeflate(decoded)
+    local success, deserialized = LibSerialize:Deserialize(decompressed)
+    if success then
+      aura_environments[id].saved = deserialized
+    else
+      aura_environments[id].saved = nil
+    end
+    UpdateSavedDataWarning(data.uid, #input)
+  else
+    aura_environments[id].saved = nil
+  end
+end
+
+function Private.ClearAuraEnvironmentSavedData(id)
+  if environment_initialized[id] then
+    aura_environments[id].saved = nil
+  end
+end
+
 function Private.ClearAuraEnvironment(id)
-  environment_initialized[id] = nil;
+  if environment_initialized[id] then
+    Private.SaveAuraEnvironment(id)
+    environment_initialized[id] = nil;
+  end
 end
 
 function Private.ActivateAuraEnvironmentForRegion(region, onlyConfig)
@@ -267,6 +332,7 @@ function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
       current_aura_env.state = state
       current_aura_env.states = states
       current_aura_env.region = region
+      Private.RestoreAuraEnvironment(id)
       -- push new environment onto the stack
       tinsert(aura_env_stack, {current_aura_env, data.uid})
 
