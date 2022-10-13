@@ -580,7 +580,7 @@ function OptionsPrivate.GetActionOptions(data)
         name = L["Voice"],
         order = 23.2,
         disabled = function() return not data.actions.finish.do_message end,
-        hidden = function() return (not WeakAuras.Classic()) or data.actions.finish.message_type ~= "TTS" end,
+        hidden = function() return (WeakAuras.IsClassic()) or data.actions.finish.message_type ~= "TTS" end,
         values = OptionsPrivate.Private.tts_voices,
         desc = L["Available Voices are system specific"]
       },
