@@ -2214,15 +2214,15 @@ function BuffTrigger.FinishLoadUnload()
 end
 
 --- Removes all data for an aura id
--- @param id
+--- @param id number
 function BuffTrigger.Delete(id)
   BuffTrigger.UnloadDisplays({[id] = true})
   triggerInfos[id] = nil
 end
 
 --- Updates all data for aura oldid to use newid
--- @param oldid
--- @param newid
+--- @param oldid number
+--- @param newid number
 function BuffTrigger.Rename(oldid, newid)
   triggerInfos[newid] = triggerInfos[oldid]
   triggerInfos[oldid] = nil
@@ -2503,7 +2503,7 @@ local function EqualZero(x)
 end
 
 --- Adds an aura, setting up internal data structures for all buff triggers.
--- @param data
+--- @param data table
 function BuffTrigger.Add(data)
   local id = data.id
 
@@ -2684,23 +2684,23 @@ function BuffTrigger.Add(data)
 end
 
 --- Returns whether the trigger can have a duration.
--- @param data
--- @param triggernum
+--- @param data table
+--- @param triggernum number
 function BuffTrigger.CanHaveDuration(data, triggernum)
   return "timed"
 end
 
 --- Returns a table containing the names of all overlays
--- @param data
--- @param triggernum
+--- @param data table
+--- @param triggernum number
 function BuffTrigger.GetOverlayInfo(data, triggernum)
   return {}
 end
 
 --- Returns whether the trigger can have clones.
--- @param data
--- @param triggernum
--- @return
+--- @param data table
+--- @param triggernum number
+--- @return boolean
 function BuffTrigger.CanHaveClones(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   if not IsSingleMissing(trigger) and trigger.showClones then
@@ -2710,13 +2710,14 @@ function BuffTrigger.CanHaveClones(data, triggernum)
 end
 
 ---Returns the type of tooltip to show for the trigger.
--- @param data
--- @param triggernum
--- @return string
+--- @param data table
+--- @param triggernum number
+--- @return string
 function BuffTrigger.CanHaveTooltip(data, triggernum)
   return "aura"
 end
 
+--- @return boolean
 function BuffTrigger.SetToolTip(trigger, state)
   if not state.unit or not state.index then
     return false
@@ -2768,9 +2769,9 @@ function BuffTrigger.GetNameAndIconSimple(data, triggernum)
 end
 
 --- Returns the name and icon to show in the options.
--- @param data
--- @param triggernum
--- @return name and icon
+--- @param data table
+--- @param triggernum number
+--- @return string|nil name, any icon
 function BuffTrigger.GetNameAndIcon(data, triggernum)
   local name, icon = BuffTrigger.GetNameAndIconSimple(data, triggernum)
   if (not name or not icon and WeakAuras.spellCache) then
@@ -2788,9 +2789,9 @@ function BuffTrigger.GetNameAndIcon(data, triggernum)
 end
 
 --- Returns the tooltip text for additional properties.
--- @param data
--- @param triggernum
--- @return string of additional properties
+--- @param data table
+--- @param triggernum number
+--- @return string @additional properties
 function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
