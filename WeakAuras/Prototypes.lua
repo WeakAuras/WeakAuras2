@@ -103,7 +103,34 @@ else
 end
 
 if WeakAuras.IsBCCOrWrathOrRetail() then
-  WeakAuras.UnitChannelInfo = UnitChannelInfo
+  if WeakAuras.IsDragonflight() then
+    local cacheEmpowered = {}
+    WeakAuras.UnitChannelInfo = function(unit)
+      local name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = UnitChannelInfo(unit)
+      if name == nil and cacheEmpowered[unit] then
+        name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = unpack(cacheEmpowered[unit])
+        if endTime < GetTime() + 5 then -- invalidate too old data
+          cacheEmpowered[unit] = nil
+          return nil
+        end
+      end
+      return name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages
+    end
+    local cacheEmpoweredFrame = CreateFrame("Frame")
+    cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
+    cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
+    cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
+    cacheEmpoweredFrame:SetScript("OnEvent", function(_, event, unit, ...)
+      if event == "UNIT_SPELLCAST_EMPOWER_START" or event == "UNIT_SPELLCAST_EMPOWER_UPDATE" then
+        cacheEmpowered[unit] = {UnitChannelInfo(unit)}
+      else
+        cacheEmpowered[unit] = nil
+      end
+      WeakAuras.ScanUnitEvents(event.."_FAKE", unit, ...)
+    end)
+  else
+    WeakAuras.UnitChannelInfo = UnitChannelInfo
+  end
 else
   WeakAuras.UnitChannelInfo = function(unit)
     if UnitIsUnit(unit, "player") then
@@ -8162,9 +8189,9 @@ Private.event_prototypes = {
       AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_INTERRUPTED")
       AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
       if WeakAuras.IsDragonflight() then
-        AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_START")
-        AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_UPDATE")
-        AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_STOP")
+        AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_START_FAKE")
+        AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_UPDATE_FAKE")
+        AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_STOP_FAKE")
       end
       if WeakAuras.IsClassic() and unit ~= "player" then
         LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_START", WeakAuras.ScanUnitEvents)
@@ -8220,8 +8247,9 @@ Private.event_prototypes = {
         local smart = %s
         local remainingCheck = %s
         local inverseTrigger = %s
+        local showChargedDuration = %s
         local empowered = false
-        local stage = 1
+        local stage = 0
         local stagesData = {}
 
         local show, expirationTime, castType, spell, icon, startTime, endTime, interruptible, spellId, remaining, _, stageTotal
@@ -8243,15 +8271,18 @@ Private.event_prototypes = {
                   finish = lastFinish + GetUnitEmpowerStageDuration(unit, i - 1) / 1000
                 }
                 lastFinish = stagesData[i].finish
-                if startTime / 1000 + lastFinish < GetTime() then
-                  stage = i + 1
+                if startTime / 1000 + lastFinish <= GetTime() then
+                  stage = i
                 end
-                if Round(startTime/1000) == Round(GetTime()) and i < stageTotal then
+                if Round(startTime/1000) == Round(GetTime()) then
                   WeakAuras.ScheduleCastCheck(startTime / 1000 + lastFinish, unit)
                 end
               end
             end
           end
+        end
+        if empowered and showChargedDuration then
+          endTime = endTime + GetUnitEmpowerHoldAtMaxTime(unit)
         end
         interruptible = not interruptible
         expirationTime = endTime and endTime > 0 and (endTime / 1000) or 0
@@ -8263,7 +8294,9 @@ Private.event_prototypes = {
       ]=];
       ret = ret:format(trigger.unit == "group" and "true" or "false",
                         trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
-                        trigger.use_inverse and "true" or "false");
+                        trigger.use_inverse and "true" or "false",
+                        trigger.use_showChargedDuration and "true" or "false"
+                      );
 
       ret = ret .. unitHelperFunctions.SpecificUnitCheck(trigger)
 
@@ -8334,6 +8367,13 @@ Private.event_prototypes = {
         hidden = not WeakAuras.IsDragonflight()
       },
       {
+        name = "showChargedDuration",
+        display = L["Show charged duration for empowered casts"],
+        type = "toggle",
+        enable = WeakAuras.IsDragonflight(),
+        hidden = not WeakAuras.IsDragonflight()
+      },
+      {
         name = "stage",
         display = L["Current Stage"],
         type = "number",
@@ -8350,6 +8390,17 @@ Private.event_prototypes = {
         store = true,
         conditionType = "number",
         hidden = not WeakAuras.IsDragonflight()
+      },
+      {
+        name = "charged",
+        display = L["Charged Empowered Cast"],
+        hidden = true,
+        init = "stage == stageTotal",
+        test = "true",
+        enable = WeakAuras.IsDragonflight(),
+        store = true,
+        type = "toggle",
+        conditionType = "bool",
       },
       {
         name = "remaining",
