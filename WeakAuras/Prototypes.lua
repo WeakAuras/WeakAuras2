@@ -108,8 +108,9 @@ if WeakAuras.IsBCCOrWrathOrRetail() then
     WeakAuras.UnitChannelInfo = function(unit)
       local name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = UnitChannelInfo(unit)
       if name == nil and cacheEmpowered[unit] then
-        name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = unpack(cacheEmpowered[unit])
-        if endTime < GetTime() + 5 then -- invalidate too old data
+        local holdAtMaxTime
+        holdAtMaxTime, name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = unpack(cacheEmpowered[unit])
+        if endTime + holdAtMaxTime < GetTime()  then -- invalidate too old data
           cacheEmpowered[unit] = nil
           return nil
         end
@@ -122,7 +123,7 @@ if WeakAuras.IsBCCOrWrathOrRetail() then
     cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
     cacheEmpoweredFrame:SetScript("OnEvent", function(_, event, unit, ...)
       if event == "UNIT_SPELLCAST_EMPOWER_START" or event == "UNIT_SPELLCAST_EMPOWER_UPDATE" then
-        cacheEmpowered[unit] = {UnitChannelInfo(unit)}
+        cacheEmpowered[unit] = {GetUnitEmpowerHoldAtMaxTime(unit), UnitChannelInfo(unit)}
       else
         cacheEmpowered[unit] = nil
       end
