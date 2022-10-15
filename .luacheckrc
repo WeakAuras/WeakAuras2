@@ -2620,6 +2620,7 @@ globals = {
 	"GetTreasurePickerItemInfo",
 	"GetTutorialsEnabled",
 	"GetUICameraInfo",
+	"GetUnitEmpowerHoldAtMaxTime",
 	"GetUnitHealthModifier",
 	"GetUnitMaxHealthModifier",
 	"GetUnitPitch",
