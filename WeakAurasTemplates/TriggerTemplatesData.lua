@@ -66,6 +66,123 @@ local powerTypes =
 
 -- Collected by WeakAurasTemplateCollector:
 --------------------------------------------------------------------------------
+templates.class.EVOKER = {
+  [1] = { -- Devastation
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 370818, type = "buff", unit = "player", talent = 31 }, -- Snapfire
+        { spell = 370454, type = "buff", unit = "player", talent = 24 }, -- Charged Blast
+        { spell = 375802, type = "buff", unit = "player", talent = 30 }, -- Burnout
+        { spell = 357210, type = "buff", unit = "player" }, -- Deep Breath
+        { spell = 372470, type = "buff", unit = "player", talent = 87 }, -- Scarlet Adaptation
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 386353, type = "buff", unit = "player" }, -- Iridescence: Red
+        { spell = 376850, type = "buff", unit = "player", talent = 17 }, -- Power Swell
+        { spell = 370553, type = "buff", unit = "player", talent = 86 }, -- Tip the Scales
+        { spell = 375087, type = "buff", unit = "player", talent = 38 }, -- Dragonrage
+        { spell = 363916, type = "buff", unit = "player", talent = 75 }, -- Obsidian Scales
+        { spell = 386399, type = "buff", unit = "player" }, -- Iridescence: Blue
+        { spell = 374348, type = "buff", unit = "player", talent = 52 }, -- Renewing Blaze
+        { spell = 358267, type = "buff", unit = "player" }, -- Hover
+        { spell = 236321, type = "buff", unit = "player" }, -- War Banner
+        { spell = 358733, type = "buff", unit = "player" }, -- Glide
+        { spell = 366646, type = "buff", unit = "player" }, -- Familiar Skies
+        { spell = 370901, type = "buff", unit = "player", talent = 62 }, -- Leaping Flames
+        { spell = 2479, type = "buff", unit = "player" }, -- Honorless Target
+        { spell = 375234, type = "buff", unit = "player", talent = 49 }, -- Time Spiral
+        { spell = 361509, type = "buff", unit = "player" }, -- Living Flame
+        { spell = 374227, type = "buff", unit = "player", talent = 55 }, -- Zephyr
+        { spell = 390386, type = "buff", unit = "player" }, -- Fury of the Aspects
+        { spell = 359618, type = "buff", unit = "player", talent = 45 }, -- Essence Burst
+        { spell = 381748, type = "buff", unit = "player" }, -- Blessing of the Bronze
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 357209, type = "debuff", unit = "target" }, -- Fire Breath
+        { spell = 372048, type = "debuff", unit = "target", talent = 68 }, -- Oppressing Roar
+        { spell = 360806, type = "debuff", unit = "target", talent = 4 }, -- Sleep Walk
+        { spell = 361500, type = "debuff", unit = "target" }, -- Living Flame
+        { spell = 357214, type = "debuff", unit = "target" }, -- Wing Buffet
+        { spell = 370898, type = "debuff", unit = "target", talent = 76 }, -- Permeating Chill
+        { spell = 370452, type = "debuff", unit = "target", talent = 14 }, -- Shattering Star
+        { spell = 372245, type = "debuff", unit = "target", talent = 48 }, -- Terror of the Skies
+        { spell = 355689, type = "debuff", unit = "target", talent = 81 }, -- Landslide
+        { spell = 356995, type = "debuff", unit = "target" }, -- Disintegrate
+        { spell = 353759, type = "debuff", unit = "target" }, -- Deep Breath
+        { spell = 368970, type = "debuff", unit = "target" }, -- Tail Swipe
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 351338, type = "ability", requiresTarget = true, talent = 65 }, -- Quell
+        { spell = 355913, type = "ability" }, -- Emerald Blossom
+        { spell = 356995, type = "ability", overlayGlow = true, requiresTarget = true }, -- Disintegrate
+        { spell = 357208, type = "ability", overlayGlow = true }, -- Fire Breath
+        { spell = 357210, type = "ability", buff = true }, -- Deep Breath
+        { spell = 357211, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 42 }, -- Pyre
+        { spell = 357214, type = "ability" }, -- Wing Buffet
+        { spell = 358267, type = "ability", charges = true, buff = true, overlayGlow = true }, -- Hover
+        { spell = 358385, type = "ability", talent = 81 }, -- Landslide
+        { spell = 358733, type = "ability", buff = true }, -- Glide
+        { spell = 359073, type = "ability", overlayGlow = true, requiresTarget = true, talent = 20 }, -- Eternity Surge
+        { spell = 360806, type = "ability", requiresTarget = true, talent = 4 }, -- Sleep Walk
+        { spell = 360995, type = "ability", requiresTarget = true, talent = 88 }, -- Verdant Embrace
+        { spell = 361469, type = "ability", requiresTarget = true }, -- Living Flame
+        { spell = 361584, type = "ability" }, -- Whirling Surge
+        { spell = 362969, type = "ability", requiresTarget = true }, -- Azure Strike
+        { spell = 363916, type = "ability", buff = true, talent = 75 }, -- Obsidian Scales
+        { spell = 364342, type = "ability" }, -- Blessing of the Bronze
+        { spell = 365585, type = "ability", talent = 89 }, -- Expunge
+        { spell = 368432, type = "ability", overlayGlow = true, requiresTarget = true, talent = 63 }, -- Unravel
+        { spell = 368847, type = "ability", overlayGlow = true, talent = 32 }, -- Firestorm
+        { spell = 368970, type = "ability" }, -- Tail Swipe
+        { spell = 369536, type = "ability", usable = true }, -- Soar
+        { spell = 370452, type = "ability", requiresTarget = true, talent = 14 }, -- Shattering Star
+        { spell = 370553, type = "ability", buff = true, talent = 86 }, -- Tip the Scales
+        { spell = 370665, type = "ability", talent = 58 }, -- Rescue
+        { spell = 372048, type = "ability", talent = 68 }, -- Oppressing Roar
+        { spell = 372608, type = "ability" }, -- Surge Forward
+        { spell = 372610, type = "ability" }, -- Skyward Ascent
+        { spell = 374227, type = "ability", buff = true, talent = 55 }, -- Zephyr
+        { spell = 374251, type = "ability", talent = 73 }, -- Cauterizing Flame
+        { spell = 374348, type = "ability", buff = true, talent = 52 }, -- Renewing Blaze
+        { spell = 374968, type = "ability", talent = 49 }, -- Time Spiral
+        { spell = 375087, type = "ability", buff = true, talent = 38 }, -- Dragonrage
+        { spell = 383332, type = "ability" }, -- Time Stop
+        { spell = 390386, type = "ability", buff = true }, -- Fury of the Aspects
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 378464, type = "buff", unit = "player", pvptalent = 3, titleSuffix = L["buff"] }, -- Nullifying Shroud
+        { spell = 378441, type = "buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"] }, -- Time Stop
+        { spell = 383005, type = "debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"] }, -- Chrono Loop
+        { spell = 378441, type = "ability", buff = true, pvptalent = 5, titleSuffix = L["cooldown"] }, -- Time Stop
+        { spell = 378464, type = "ability", buff = true, pvptalent = 3, titleSuffix = L["cooldown"] }, -- Nullifying Shroud
+        { spell = 383005, type = "ability", requiresTarget = true, pvptalent = 8, titleSuffix = L["cooldown"] }, -- Chrono Loop
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
+  },
+  [2] = { -- Preservation
+
+  }
+}
+
 templates.class.WARRIOR = {
   [1] = { -- Arms
     [1] = {
