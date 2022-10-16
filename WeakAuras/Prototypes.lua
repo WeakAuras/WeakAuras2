@@ -1020,36 +1020,15 @@ local function valuesForTalentFunction(trigger)
       end
     end
 
-    if WeakAuras.IsDragonflight() and single_class then
-      single_spec = Private.checkForSingleLoadCondition(trigger, "spec", function(specIndex)
-        for classID = 1, GetNumClasses() do
-          local _, classFile = GetClassInfo(classID)
-          if classFile == single_class then
-            if GetSpecializationInfoForClassID(classID, specIndex) then
-              return true
-            end
-            break
-          end
-        end
-      end)
-    end
-
     local single_class_and_spec
     if WeakAuras.IsShadowlands() and trigger.use_spec == nil and trigger.use_class == nil then
       single_class_and_spec = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
     end
     -- If a single specific class was found, load the specific list for it
     if WeakAuras.IsDragonflight() then
-      if single_class and single_spec then
-        local classId
-        for i = 1, GetNumClasses() do
-          if select(2, GetClassInfo(i)) == single_class then
-            classId = i
-            break
-          end
-        end
-        local specId = GetSpecializationInfoForClassID(classId, single_spec)
-        return Private.talentInfo[specId]
+      single_class_and_spec = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+      if single_class_and_spec then
+        return Private.talentInfo[single_class_and_spec]
       else
         -- this should never happen
         return {}
@@ -1261,7 +1240,9 @@ Private.load_prototype = {
       display = L["Player Class"],
       type = "multiselect",
       values = "class_types",
-      init = "arg"
+      init = not WeakAuras.IsDragonflight and "arg" or nil,
+      enable = not WeakAuras.IsDragonflight(),
+      hidden = WeakAuras.IsDragonflight(),
     },
     {
       name = "spec",
@@ -1291,11 +1272,11 @@ Private.load_prototype = {
           end
         end
       end,
-      init = (WeakAuras.IsShadowlands() or WeakAuras.IsDragonflight()) and "arg" or nil,
-      enable = function(trigger)
-        return WeakAuras.IsShadowlands() or (WeakAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
+      init = WeakAuras.IsShadowlands() and "arg" or nil,
+      enable = function()
+        return WeakAuras.IsShadowlands()
       end,
-      hidden = function(trigger)
+      hidden = function()
         if WeakAuras.IsClassicOrBCCOrWrath() then
           return true
         end
@@ -1303,7 +1284,7 @@ Private.load_prototype = {
           return false
         end
         if WeakAuras.IsDragonflight() then
-          return Private.checkForSingleLoadCondition(trigger, "class") == nil
+          return true
         end
       end,
       events = {"PLAYER_TALENT_UPDATE"}
@@ -1313,9 +1294,9 @@ Private.load_prototype = {
       display = L["Class and Specialization"],
       type = "multiselect",
       values = "spec_types_all",
-      init = WeakAuras.IsShadowlands() and "arg" or nil,
-      enable = WeakAuras.IsShadowlands(),
-      hidden = not WeakAuras.IsShadowlands(),
+      init = WeakAuras.IsRetail() and "arg" or nil,
+      enable = WeakAuras.IsRetail(),
+      hidden = not WeakAuras.IsRetail(),
       events = {"PLAYER_TALENT_UPDATE"}
     },
     {
@@ -1348,49 +1329,17 @@ Private.load_prototype = {
       orConjunctionGroup = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()) and "talent",
       multiUseControlWhenFalse = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()),
       enable = function(trigger)
-        local class = Private.checkForSingleLoadCondition(trigger, "class")
-        local spec
-        if WeakAuras.IsDragonflight() and class then
-          -- check if class selected has a spec with spec's index
-          spec = Private.checkForSingleLoadCondition(trigger, "spec", function(specIndex)
-            for classID = 1, GetNumClasses() do
-              local _, classFile = GetClassInfo(classID)
-              if classFile == class then
-                if GetSpecializationInfoForClassID(classID, specIndex) then
-                  return true
-                end
-                break
-              end
-            end
-          end)
-        end
         return WeakAuras.IsClassicOrBCC()
             or WeakAuras.IsShadowlands()
-            or (WeakAuras.IsWrathClassic() and class ~= nil)
-            or (WeakAuras.IsDragonflight() and class ~= nil and spec ~= nil)
+            or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
+            or (WeakAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
       end,
       hidden = function(trigger)
-        local class = Private.checkForSingleLoadCondition(trigger, "class")
-        local spec
-        if WeakAuras.IsDragonflight() and class then
-          -- check if class selected has a spec with spec's index
-          spec = Private.checkForSingleLoadCondition(trigger, "spec", function(specIndex)
-            for classID = 1, GetNumClasses() do
-              local _, classFile = GetClassInfo(classID)
-              if classFile == class then
-                if GetSpecializationInfoForClassID(classID, specIndex) then
-                  return true
-                end
-                break
-              end
-            end
-          end)
-        end
         return not (
             WeakAuras.IsClassicOrBCC()
             or WeakAuras.IsShadowlands()
-            or (WeakAuras.IsWrathClassic() and class ~= nil)
-            or (WeakAuras.IsDragonflight() and class ~= nil and spec ~= nil))
+            or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
+            or (WeakAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil))
       end,
     },
     {
@@ -1422,51 +1371,19 @@ Private.load_prototype = {
       orConjunctionGroup  = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()) and "talent",
       multiUseControlWhenFalse = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()),
       enable = function(trigger)
-        local class = Private.checkForSingleLoadCondition(trigger, "class")
-        local spec
-        if WeakAuras.IsDragonflight() and class then
-          -- check if class selected has a spec with spec's index
-          spec = Private.checkForSingleLoadCondition(trigger, "spec", function(specIndex)
-            for classID = 1, GetNumClasses() do
-              local _, classFile = GetClassInfo(classID)
-              if classFile == class then
-                if GetSpecializationInfoForClassID(classID, specIndex) then
-                  return true
-                end
-                break
-              end
-            end
-          end)
-        end
         return (trigger.use_talent ~= nil or trigger.use_talent2 ~= nil) and (
           WeakAuras.IsClassicOrBCC()
           or WeakAuras.IsShadowlands()
-          or (WeakAuras.IsWrathClassic() and class ~= nil)
-          or (WeakAuras.IsDragonflight() and class ~= nil and spec ~= nil)
+          or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
+          or (WeakAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
         )
       end,
       hidden = function(trigger)
-        local class = Private.checkForSingleLoadCondition(trigger, "class")
-        local spec
-        if WeakAuras.IsDragonflight() and class then
-          -- check if class selected has a spec with spec's index
-          spec = Private.checkForSingleLoadCondition(trigger, "spec", function(specIndex)
-            for classID = 1, GetNumClasses() do
-              local _, classFile = GetClassInfo(classID)
-              if classFile == class then
-                if GetSpecializationInfoForClassID(classID, specIndex) then
-                  return true
-                end
-                break
-              end
-            end
-          end)
-        end
         return not((trigger.use_talent ~= nil or trigger.use_talent2 ~= nil) and (
           WeakAuras.IsClassicOrBCC()
           or WeakAuras.IsShadowlands()
-          or (WeakAuras.IsWrathClassic() and class ~= nil)
-          or (WeakAuras.IsDragonflight() and class ~= nil and spec ~= nil))
+          or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
+          or (WeakAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil))
         )
       end,
     },
@@ -1499,51 +1416,19 @@ Private.load_prototype = {
       orConjunctionGroup  = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()) and "talent",
       multiUseControlWhenFalse = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()),
       enable = function(trigger)
-        local class = Private.checkForSingleLoadCondition(trigger, "class")
-        local spec
-        if WeakAuras.IsDragonflight() and class then
-          -- check if class selected has a spec with spec's index
-          spec = Private.checkForSingleLoadCondition(trigger, "spec", function(specIndex)
-            for classID = 1, GetNumClasses() do
-              local _, classFile = GetClassInfo(classID)
-              if classFile == class then
-                if GetSpecializationInfoForClassID(classID, specIndex) then
-                  return true
-                end
-                break
-              end
-            end
-          end)
-        end
         return ((trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil) and (
           WeakAuras.IsClassicOrBCC()
           or WeakAuras.IsShadowlands()
-          or (WeakAuras.IsWrathClassic() and class ~= nil)
-          or (WeakAuras.IsDragonflight() and class ~= nil and spec ~= nil)
+          or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
+          or (WeakAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
         )
       end,
       hidden = function(trigger)
-        local class = Private.checkForSingleLoadCondition(trigger, "class")
-        local spec
-        if WeakAuras.IsDragonflight() and class then
-          -- check if class selected has a spec with spec's index
-          spec = Private.checkForSingleLoadCondition(trigger, "spec", function(specIndex)
-            for classID = 1, GetNumClasses() do
-              local _, classFile = GetClassInfo(classID)
-              if classFile == class then
-                if GetSpecializationInfoForClassID(classID, specIndex) then
-                  return true
-                end
-                break
-              end
-            end
-          end)
-        end
         return not(((trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil) and (
           WeakAuras.IsClassicOrBCC()
           or WeakAuras.IsShadowlands()
-          or (WeakAuras.IsWrathClassic() and class ~= nil)
-          or (WeakAuras.IsDragonflight() and class ~= nil and spec ~= nil)
+          or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
+          or (WeakAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
         ))
       end
     },
