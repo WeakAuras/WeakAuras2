@@ -1138,10 +1138,25 @@ local function enrichDatabase()
   for className, class in pairs(templates.class) do
     for specIndex, spec in pairs(class) do
       for _, section in pairs(spec) do
-        local loadCondition = {
-          use_class = true, class = { single = className, multi = {} },
-          use_spec = true, spec = { single = specIndex, multi = {}}
-        };
+        local loadCondition
+        if WeakAuras.IsDragonflight() then
+          local specialisationId
+          for classID = 1, GetNumClasses() do
+            local _, classFile = GetClassInfo(classID)
+            if classFile == className then
+              specialisationId = GetSpecializationInfoForClassID(classID, specIndex)
+              break
+            end
+          end
+          loadCondition = {
+            use_class_and_spec = true, class_and_spec = { single = specialisationId, multi = {} },
+          }
+        else
+          loadCondition = {
+            use_class = true, class = { single = className, multi = {} },
+            use_spec = true, spec = { single = specIndex, multi = {}}
+          };
+        end
         for itemIndex, item in pairs(section.args or {}) do
           local handle = handleItem(item)
           if(handle) then
