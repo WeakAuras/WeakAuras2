@@ -1185,7 +1185,6 @@ Private.load_prototype = {
       display = L["Never"],
       type = "toggle",
       width = WeakAuras.normalWidth,
-      --init = "false", -- TODO this!
       test = "false",
     },
     {
