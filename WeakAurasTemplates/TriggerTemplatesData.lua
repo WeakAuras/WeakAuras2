@@ -71,49 +71,49 @@ templates.class.EVOKER = {
     [1] = {
       title = L["Buffs"],
       args = {
-        { spell = 370818, type = "buff", unit = "player", talent = 31 }, -- Snapfire
-        { spell = 370454, type = "buff", unit = "player", talent = 24 }, -- Charged Blast
-        { spell = 375802, type = "buff", unit = "player", talent = 30 }, -- Burnout
-        { spell = 357210, type = "buff", unit = "player" }, -- Deep Breath
-        { spell = 372470, type = "buff", unit = "player", talent = 87 }, -- Scarlet Adaptation
-        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
-        { spell = 386353, type = "buff", unit = "player" }, -- Iridescence: Red
-        { spell = 376850, type = "buff", unit = "player", talent = 17 }, -- Power Swell
-        { spell = 370553, type = "buff", unit = "player", talent = 86 }, -- Tip the Scales
-        { spell = 375087, type = "buff", unit = "player", talent = 38 }, -- Dragonrage
-        { spell = 363916, type = "buff", unit = "player", talent = 75 }, -- Obsidian Scales
-        { spell = 386399, type = "buff", unit = "player" }, -- Iridescence: Blue
-        { spell = 374348, type = "buff", unit = "player", talent = 52 }, -- Renewing Blaze
-        { spell = 358267, type = "buff", unit = "player" }, -- Hover
-        { spell = 236321, type = "buff", unit = "player" }, -- War Banner
-        { spell = 358733, type = "buff", unit = "player" }, -- Glide
-        { spell = 366646, type = "buff", unit = "player" }, -- Familiar Skies
-        { spell = 370901, type = "buff", unit = "player", talent = 62 }, -- Leaping Flames
         { spell = 2479, type = "buff", unit = "player" }, -- Honorless Target
-        { spell = 375234, type = "buff", unit = "player", talent = 49 }, -- Time Spiral
-        { spell = 361509, type = "buff", unit = "player" }, -- Living Flame
-        { spell = 374227, type = "buff", unit = "player", talent = 55 }, -- Zephyr
-        { spell = 390386, type = "buff", unit = "player" }, -- Fury of the Aspects
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 236321, type = "buff", unit = "player" }, -- War Banner
+        { spell = 357210, type = "buff", unit = "player" }, -- Deep Breath
+        { spell = 358267, type = "buff", unit = "player" }, -- Hover
+        { spell = 358733, type = "buff", unit = "player" }, -- Glide
         { spell = 359618, type = "buff", unit = "player", talent = 45 }, -- Essence Burst
+        { spell = 361509, type = "buff", unit = "player" }, -- Living Flame
+        { spell = 363916, type = "buff", unit = "player", talent = 75 }, -- Obsidian Scales
+        { spell = 366646, type = "buff", unit = "player" }, -- Familiar Skies
+        { spell = 370454, type = "buff", unit = "player", talent = 24 }, -- Charged Blast
+        { spell = 370553, type = "buff", unit = "player", talent = 86 }, -- Tip the Scales
+        { spell = 370818, type = "buff", unit = "player", talent = 31 }, -- Snapfire
+        { spell = 370901, type = "buff", unit = "player", talent = 62 }, -- Leaping Flames
+        { spell = 372470, type = "buff", unit = "player", talent = 87 }, -- Scarlet Adaptation
+        { spell = 374227, type = "buff", unit = "player", talent = 55 }, -- Zephyr
+        { spell = 374348, type = "buff", unit = "player", talent = 52 }, -- Renewing Blaze
+        { spell = 375087, type = "buff", unit = "player", talent = 38 }, -- Dragonrage
+        { spell = 375234, type = "buff", unit = "player", talent = 49 }, -- Time Spiral
+        { spell = 375802, type = "buff", unit = "player", talent = 30 }, -- Burnout
+        { spell = 376850, type = "buff", unit = "player", talent = 17 }, -- Power Swell
         { spell = 381748, type = "buff", unit = "player" }, -- Blessing of the Bronze
+        { spell = 386353, type = "buff", unit = "player" }, -- Iridescence: Red
+        { spell = 386399, type = "buff", unit = "player" }, -- Iridescence: Blue
+        { spell = 390386, type = "buff", unit = "player" }, -- Fury of the Aspects
       },
       icon = 458972
     },
     [2] = {
       title = L["Debuffs"],
       args = {
-        { spell = 357209, type = "debuff", unit = "target" }, -- Fire Breath
-        { spell = 372048, type = "debuff", unit = "target", talent = 68 }, -- Oppressing Roar
-        { spell = 360806, type = "debuff", unit = "target", talent = 4 }, -- Sleep Walk
-        { spell = 361500, type = "debuff", unit = "target" }, -- Living Flame
-        { spell = 357214, type = "debuff", unit = "target" }, -- Wing Buffet
-        { spell = 370898, type = "debuff", unit = "target", talent = 76 }, -- Permeating Chill
-        { spell = 370452, type = "debuff", unit = "target", talent = 14 }, -- Shattering Star
-        { spell = 372245, type = "debuff", unit = "target", talent = 48 }, -- Terror of the Skies
+        { spell = 353759, type = "debuff", unit = "target" }, -- Deep Breath
         { spell = 355689, type = "debuff", unit = "target", talent = 81 }, -- Landslide
         { spell = 356995, type = "debuff", unit = "target" }, -- Disintegrate
-        { spell = 353759, type = "debuff", unit = "target" }, -- Deep Breath
+        { spell = 357209, type = "debuff", unit = "target" }, -- Fire Breath
+        { spell = 357214, type = "debuff", unit = "target" }, -- Wing Buffet
+        { spell = 360806, type = "debuff", unit = "target", talent = 4 }, -- Sleep Walk
+        { spell = 361500, type = "debuff", unit = "target" }, -- Living Flame
         { spell = 368970, type = "debuff", unit = "target" }, -- Tail Swipe
+        { spell = 370452, type = "debuff", unit = "target", talent = 14 }, -- Shattering Star
+        { spell = 370898, type = "debuff", unit = "target", talent = 76 }, -- Permeating Chill
+        { spell = 372048, type = "debuff", unit = "target", talent = 68 }, -- Oppressing Roar
+        { spell = 372245, type = "debuff", unit = "target", talent = 48 }, -- Terror of the Skies
       },
       icon = 458972
     },
@@ -168,8 +168,8 @@ templates.class.EVOKER = {
     [10] = {
       title = L["PvP Talents"],
       args = {
-        { spell = 378464, type = "buff", unit = "player", pvptalent = 3, titleSuffix = L["buff"] }, -- Nullifying Shroud
         { spell = 378441, type = "buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"] }, -- Time Stop
+        { spell = 378464, type = "buff", unit = "player", pvptalent = 3, titleSuffix = L["buff"] }, -- Nullifying Shroud
         { spell = 383005, type = "debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"] }, -- Chrono Loop
         { spell = 378441, type = "ability", buff = true, pvptalent = 5, titleSuffix = L["cooldown"] }, -- Time Stop
         { spell = 378464, type = "ability", buff = true, pvptalent = 3, titleSuffix = L["cooldown"] }, -- Nullifying Shroud
@@ -177,59 +177,53 @@ templates.class.EVOKER = {
       },
       icon = "Interface/Icons/Achievement_BG_winWSG",
     },
-    [11] = {
-      title = L["Resources"],
-      args = {
-      },
-      icon = manaIcon,
-    },
   },
   [2] = { -- Preservation
     [1] = {
       title = L["Buffs"],
       args = {
-        { spell = 381748, type = "buff", unit = "player" }, -- Blessing of the Bronze
-        { spell = 377102, type = "buff", unit = "player", talent = 10 }, -- Exhilarating Burst
-        { spell = 357210, type = "buff", unit = "player" }, -- Deep Breath
-        { spell = 370960, type = "buff", unit = "player", talent = 9 }, -- Emerald Communion
-        { spell = 378001, type = "buff", unit = "player" }, -- Dream Projection
-        { spell = 377088, type = "buff", unit = "player", talent = 8 }, -- Rush of Vitality
-        { spell = 358267, type = "buff", unit = "player" }, -- Hover
-        { spell = 374348, type = "buff", unit = "player", talent = 55 }, -- Renewing Blaze
-        { spell = 370537, type = "buff", unit = "player", talent = 18 }, -- Stasis
-        { spell = 370553, type = "buff", unit = "player", talent = 89 }, -- Tip the Scales
-        { spell = 370901, type = "buff", unit = "player", talent = 65 }, -- Leaping Flames
-        { spell = 390148, type = "buff", unit = "player", talent = 25 }, -- Flow State
         { spell = 2479, type = "buff", unit = "player" }, -- Honorless Target
-        { spell = 375234, type = "buff", unit = "player", talent = 52 }, -- Time Spiral
-        { spell = 370840, type = "buff", unit = "player", talent = 38 }, -- Empath
-        { spell = 390386, type = "buff", unit = "player" }, -- Fury of the Aspects
-        { spell = 374227, type = "buff", unit = "player", talent = 58 }, -- Zephyr
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
         { spell = 357170, type = "buff", unit = "player", talent = 28 }, -- Time Dilation
-        { spell = 363502, type = "buff", unit = "player", talent = 12 }, -- Dream Flight
-        { spell = 363534, type = "buff", unit = "player", talent = 27 }, -- Rewind
-        { spell = 375583, type = "buff", unit = "player", talent = 74 }, -- Ancient Flame
-        { spell = 373646, type = "buff", unit = "player" }, -- Soar
-        { spell = 387350, type = "buff", unit = "player", talent = 15 }, -- Ouroboros
+        { spell = 357210, type = "buff", unit = "player" }, -- Deep Breath
         { spell = 358134, type = "buff", unit = "player" }, -- Star Burst
+        { spell = 358267, type = "buff", unit = "player" }, -- Hover
         { spell = 358733, type = "buff", unit = "player" }, -- Glide
-        { spell = 373835, type = "buff", unit = "player", talent = 33 }, -- Call of Ysera
-        { spell = 370562, type = "buff", unit = "player", talent = 18 }, -- Stasis
-        { spell = 373267, type = "buff", unit = "player", talent = 49 }, -- Lifebind
-        { spell = 363916, type = "buff", unit = "player", talent = 78 }, -- Obsidian Scales
         { spell = 359816, type = "buff", unit = "player", talent = 12 }, -- Dream Flight
         { spell = 362877, type = "buff", unit = "player", talent = 41 }, -- Temporal Compression
-        { spell = 366646, type = "buff", unit = "player" }, -- Familiar Skies
-        { spell = 372014, type = "buff", unit = "player" }, -- Visage
+        { spell = 363502, type = "buff", unit = "player", talent = 12 }, -- Dream Flight
+        { spell = 363534, type = "buff", unit = "player", talent = 27 }, -- Rewind
+        { spell = 363916, type = "buff", unit = "player", talent = 78 }, -- Obsidian Scales
         { spell = 364343, type = "buff", unit = "player", talent = 43 }, -- Echo
-        { spell = 369299, type = "buff", unit = "player", talent = 45 }, -- Essence Burst
-        { spell = 372470, type = "buff", unit = "player", talent = 90 }, -- Scarlet Adaptation
         { spell = 366155, type = "buff", unit = "player", talent = 44 }, -- Reversion
-        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 366646, type = "buff", unit = "player" }, -- Familiar Skies
         { spell = 367364, type = "buff", unit = "player", talent = 44 }, -- Reversion
+        { spell = 369299, type = "buff", unit = "player", talent = 45 }, -- Essence Burst
+        { spell = 370537, type = "buff", unit = "player", talent = 18 }, -- Stasis
+        { spell = 370553, type = "buff", unit = "player", talent = 89 }, -- Tip the Scales
+        { spell = 370562, type = "buff", unit = "player", talent = 18 }, -- Stasis
+        { spell = 370840, type = "buff", unit = "player", talent = 38 }, -- Empath
+        { spell = 370901, type = "buff", unit = "player", talent = 65 }, -- Leaping Flames
+        { spell = 370960, type = "buff", unit = "player", talent = 9 }, -- Emerald Communion
+        { spell = 372014, type = "buff", unit = "player" }, -- Visage
+        { spell = 372470, type = "buff", unit = "player", talent = 90 }, -- Scarlet Adaptation
+        { spell = 373267, type = "buff", unit = "player", talent = 49 }, -- Lifebind
+        { spell = 373646, type = "buff", unit = "player" }, -- Soar
+        { spell = 373835, type = "buff", unit = "player", talent = 33 }, -- Call of Ysera
+        { spell = 374227, type = "buff", unit = "player", talent = 58 }, -- Zephyr
+        { spell = 374348, type = "buff", unit = "player", talent = 55 }, -- Renewing Blaze
+        { spell = 375234, type = "buff", unit = "player", talent = 52 }, -- Time Spiral
+        { spell = 375583, type = "buff", unit = "player", talent = 74 }, -- Ancient Flame
+        { spell = 377088, type = "buff", unit = "player", talent = 8 }, -- Rush of Vitality
+        { spell = 377102, type = "buff", unit = "player", talent = 10 }, -- Exhilarating Burst
+        { spell = 378001, type = "buff", unit = "player" }, -- Dream Projection
+        { spell = 381748, type = "buff", unit = "player" }, -- Blessing of the Bronze
+        { spell = 387350, type = "buff", unit = "player", talent = 15 }, -- Ouroboros
+        { spell = 390148, type = "buff", unit = "player", talent = 25 }, -- Flow State
+        { spell = 390386, type = "buff", unit = "player" }, -- Fury of the Aspects
+        { spell = 357170, type = "buff", unit = "target", talent = 28 }, -- Time Dilation
         { spell = 363534, type = "buff", unit = "target", talent = 27 }, -- Rewind
         { spell = 364343, type = "buff", unit = "target", talent = 43 }, -- Echo
-        { spell = 357170, type = "buff", unit = "target", talent = 28 }, -- Time Dilation
         { spell = 373862, type = "buff", unit = "target", talent = 26 }, -- Temporal Anomaly
         { spell = 381923, type = "buff", unit = "target", talent = 14 }, -- Renewing Breath
       },
@@ -238,15 +232,15 @@ templates.class.EVOKER = {
     [2] = {
       title = L["Debuffs"],
       args = {
+        { spell = 353759, type = "debuff", unit = "target" }, -- Deep Breath
+        { spell = 355689, type = "debuff", unit = "target", talent = 84 }, -- Landslide
         { spell = 356995, type = "debuff", unit = "target" }, -- Disintegrate
         { spell = 357209, type = "debuff", unit = "target" }, -- Fire Breath
+        { spell = 357214, type = "debuff", unit = "target" }, -- Wing Buffet
         { spell = 360806, type = "debuff", unit = "target", talent = 4 }, -- Sleep Walk
         { spell = 368970, type = "debuff", unit = "target" }, -- Tail Swipe
-        { spell = 357214, type = "debuff", unit = "target" }, -- Wing Buffet
         { spell = 370898, type = "debuff", unit = "target", talent = 79 }, -- Permeating Chill
         { spell = 372245, type = "debuff", unit = "target", talent = 51 }, -- Terror of the Skies
-        { spell = 355689, type = "debuff", unit = "target", talent = 84 }, -- Landslide
-        { spell = 353759, type = "debuff", unit = "target" }, -- Deep Breath
       },
       icon = 458972
     },
@@ -308,12 +302,6 @@ templates.class.EVOKER = {
         { spell = 383005, type = "ability", requiresTarget = true, pvptalent = 9, titleSuffix = L["cooldown"] }, -- Chrono Loop
       },
       icon = "Interface/Icons/Achievement_BG_winWSG",
-    },
-    [11] = {
-      title = L["Resources"],
-      args = {
-      },
-      icon = manaIcon,
     },
   }
 }
@@ -681,47 +669,49 @@ templates.class.PRIEST = {
     [1] = {
       title = L["Buffs"],
       args = {
-        { spell = 586, type = "buff", unit = "player" }, -- Fade
-        { spell = 198069, type = "buff", unit = "player", talent = 38 }, -- Power of the Dark Side
-        { spell = 194384, type = "buff", unit = "player", talent = 37 }, -- Atonement
         { spell = 17, type = "buff", unit = "player" }, -- Power Word: Shield
-        { spell = 390636, type = "buff", unit = "player", talent = 75 }, -- Rhapsody
-        { spell = 390706, type = "buff", unit = "player", talent = 9 }, -- Twilight Equilibrium
-        { spell = 2096, type = "buff", unit = "player" }, -- Mind Vision
-        { spell = 280398, type = "buff", unit = "player", talent = 6 }, -- Sins of the Many
-        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
-        { spell = 390707, type = "buff", unit = "player", talent = 9 }, -- Twilight Equilibrium
-        { spell = 390692, type = "buff", unit = "player", talent = 43 }, -- Borrowed Time
-        { spell = 10060, type = "buff", unit = "player", talent = 69 }, -- Power Infusion
-        { spell = 390677, type = "buff", unit = "player", talent = 71 }, -- Inspiration
-        { spell = 41635, type = "buff", unit = "player", talent = 95 }, -- Prayer of Mending
-        { spell = 81782, type = "buff", unit = "player", talent = 2 }, -- Power Word: Barrier
-        { spell = 121557, type = "buff", unit = "player", talent = 78 }, -- Angelic Feather
-        { spell = 33206, type = "buff", unit = "player", talent = 27 }, -- Pain Suppression
         { spell = 139, type = "buff", unit = "player", talent = 94 }, -- Renew
-        { spell = 390787, type = "buff", unit = "player", talent = 7 }, -- Weal and Woe
-        { spell = 21562, type = "buff", unit = "player" }, -- Power Word: Fortitude
-        { spell = 193065, type = "buff", unit = "player", talent = 81 }, -- Protective Light
+        { spell = 586, type = "buff", unit = "player" }, -- Fade
+        { spell = 2096, type = "buff", unit = "player" }, -- Mind Vision
+        { spell = 2479, type = "buff", unit = "player" }, -- Honorless Target
+        { spell = 10060, type = "buff", unit = "player", talent = 69 }, -- Power Infusion
         { spell = 15286, type = "buff", unit = "player", talent = 66 }, -- Vampiric Embrace
-        { spell = 114255, type = "buff", unit = "player", talent = 51 }, -- Surge of Light
-        { spell = 65081, type = "buff", unit = "player", talent = 80 }, -- Body and Soul
-        { spell = 47536, type = "buff", unit = "player", talent = 41 }, -- Rapture
-        { spell = 111759, type = "buff", unit = "player" }, -- Levitate
-        { spell = 373181, type = "buff", unit = "player", talent = 10 }, -- Harsh Discipline
-        { spell = 322105, type = "buff", unit = "player", talent = 20 }, -- Shadow Covenant
         { spell = 19236, type = "buff", unit = "player" }, -- Desperate Prayer
+        { spell = 21562, type = "buff", unit = "player" }, -- Power Word: Fortitude
+        { spell = 33206, type = "buff", unit = "player", talent = 27 }, -- Pain Suppression
+        { spell = 41635, type = "buff", unit = "player", talent = 95 }, -- Prayer of Mending
+        { spell = 47536, type = "buff", unit = "player", talent = 41 }, -- Rapture
+        { spell = 65081, type = "buff", unit = "player", talent = 80 }, -- Body and Soul
+        { spell = 81782, type = "buff", unit = "player", talent = 2 }, -- Power Word: Barrier
+        { spell = 111759, type = "buff", unit = "player" }, -- Levitate
+        { spell = 114255, type = "buff", unit = "player", talent = 51 }, -- Surge of Light
+        { spell = 121557, type = "buff", unit = "player", talent = 78 }, -- Angelic Feather
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 193065, type = "buff", unit = "player", talent = 81 }, -- Protective Light
+        { spell = 194384, type = "buff", unit = "player", talent = 37 }, -- Atonement
+        { spell = 198069, type = "buff", unit = "player", talent = 38 }, -- Power of the Dark Side
+        { spell = 280398, type = "buff", unit = "player", talent = 6 }, -- Sins of the Many
+        { spell = 322105, type = "buff", unit = "player", talent = 20 }, -- Shadow Covenant
+        { spell = 358134, type = "buff", unit = "player" }, -- Star Burst
+        { spell = 373181, type = "buff", unit = "player", talent = 10 }, -- Harsh Discipline
+        { spell = 390636, type = "buff", unit = "player", talent = 75 }, -- Rhapsody
+        { spell = 390677, type = "buff", unit = "player", talent = 71 }, -- Inspiration
+        { spell = 390692, type = "buff", unit = "player", talent = 43 }, -- Borrowed Time
+        { spell = 390706, type = "buff", unit = "player", talent = 9 }, -- Twilight Equilibrium
+        { spell = 390707, type = "buff", unit = "player", talent = 9 }, -- Twilight Equilibrium
+        { spell = 390787, type = "buff", unit = "player", talent = 7 }, -- Weal and Woe
       },
       icon = 458972
     },
     [2] = {
       title = L["Debuffs"],
       args = {
-        { spell = 204213, type = "debuff", unit = "target", talent = 32 }, -- Purge the Wicked
         { spell = 589, type = "debuff", unit = "target" }, -- Shadow Word: Pain
-        { spell = 214621, type = "debuff", unit = "target", talent = 18 }, -- Schism
         { spell = 2096, type = "debuff", unit = "target" }, -- Mind Vision
-        { spell = 375901, type = "debuff", unit = "target", talent = 62 }, -- Mindgames
         { spell = 8122, type = "debuff", unit = "target" }, -- Psychic Scream
+        { spell = 204213, type = "debuff", unit = "target", talent = 32 }, -- Purge the Wicked
+        { spell = 214621, type = "debuff", unit = "target", talent = 18 }, -- Schism
+        { spell = 375901, type = "debuff", unit = "target", talent = 62 }, -- Mindgames
       },
       icon = 458972
     },
@@ -740,7 +730,7 @@ templates.class.PRIEST = {
         { spell = 15286, type = "ability", buff = true, talent = 66 }, -- Vampiric Embrace
         { spell = 19236, type = "ability", buff = true }, -- Desperate Prayer
         { spell = 32375, type = "ability", talent = 74 }, -- Mass Dispel
-        { spell = 32379, type = "ability", talent = 89 }, -- Shadow Word: Death
+        { spell = 32379, type = "ability", overlayGlow = true, talent = 89 }, -- Shadow Word: Death
         { spell = 33076, type = "ability", talent = 95 }, -- Prayer of Mending
         { spell = 33206, type = "ability", buff = true, talent = 27 }, -- Pain Suppression
         { spell = 34433, type = "ability", requiresTarget = true, talent = 90 }, -- Shadowfiend
@@ -775,72 +765,67 @@ templates.class.PRIEST = {
     [10] = {
       title = L["PvP Talents"],
       args = {
-        { spell = 197871, type = "buff", unit = "player", pvptalent = 13, titleSuffix = L["buff"] }, -- Dark Archangel
         { spell = 197862, type = "buff", unit = "player", pvptalent = 14, titleSuffix = L["buff"] }, -- Archangel
+        { spell = 197871, type = "buff", unit = "player", pvptalent = 13, titleSuffix = L["buff"] }, -- Dark Archangel
         { spell = 197862, type = "ability", buff = true, pvptalent = 14, titleSuffix = L["cooldown"] }, -- Archangel
         { spell = 197871, type = "ability", buff = true, pvptalent = 13, titleSuffix = L["cooldown"] }, -- Dark Archangel
       },
       icon = "Interface/Icons/Achievement_BG_winWSG",
-    },
-    [11] = {
-      title = L["Resources"],
-      args = {
-      },
-      icon = manaIcon,
     },
   },
   [2] = { -- Holy
     [1] = {
       title = L["Buffs"],
       args = {
-        { spell = 21562, type = "buff", unit = "player" }, -- Power Word: Fortitude
-        { spell = 232707, type = "buff", unit = "player" }, -- Ray of Hope
-        { spell = 196490, type = "buff", unit = "player", talent = 40 }, -- Sanctified Prayers
-        { spell = 586, type = "buff", unit = "player" }, -- Fade
-        { spell = 390885, type = "buff", unit = "player", talent = 31 }, -- Healing Chorus
-        { spell = 111759, type = "buff", unit = "player" }, -- Levitate
-        { spell = 193065, type = "buff", unit = "player", talent = 87 }, -- Protective Light
-        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
-        { spell = 372617, type = "buff", unit = "player", talent = 10 }, -- Empyreal Blaze
-        { spell = 390636, type = "buff", unit = "player", talent = 81 }, -- Rhapsody
-        { spell = 372760, type = "buff", unit = "player", talent = 2 }, -- Divine Word
-        { spell = 391314, type = "buff", unit = "player" }, -- Catharsis
-        { spell = 64901, type = "buff", unit = "player", talent = 22 }, -- Symbol of Hope
         { spell = 17, type = "buff", unit = "player" }, -- Power Word: Shield
-        { spell = 64844, type = "buff", unit = "player", talent = 26 }, -- Divine Hymn
-        { spell = 121557, type = "buff", unit = "player", talent = 84 }, -- Angelic Feather
-        { spell = 77489, type = "buff", unit = "player" }, -- Echo of Light
-        { spell = 390989, type = "buff", unit = "player", talent = 34 }, -- Pontifex
+        { spell = 139, type = "buff", unit = "player", talent = 100 }, -- Renew
+        { spell = 586, type = "buff", unit = "player" }, -- Fade
         { spell = 2096, type = "buff", unit = "player" }, -- Mind Vision
+        { spell = 10060, type = "buff", unit = "player", talent = 75 }, -- Power Infusion
+        { spell = 15286, type = "buff", unit = "player", talent = 72 }, -- Vampiric Embrace
+        { spell = 19236, type = "buff", unit = "player" }, -- Desperate Prayer
+        { spell = 21562, type = "buff", unit = "player" }, -- Power Word: Fortitude
         { spell = 41635, type = "buff", unit = "player", talent = 101 }, -- Prayer of Mending
         { spell = 47788, type = "buff", unit = "player", talent = 45 }, -- Guardian Spirit
-        { spell = 289655, type = "buff", unit = "player" }, -- Sanctified Ground
-        { spell = 139, type = "buff", unit = "player", talent = 100 }, -- Renew
-        { spell = 65081, type = "buff", unit = "player", talent = 86 }, -- Body and Soul
-        { spell = 19236, type = "buff", unit = "player" }, -- Desperate Prayer
-        { spell = 10060, type = "buff", unit = "player", talent = 75 }, -- Power Infusion
-        { spell = 390993, type = "buff", unit = "player", talent = 4 }, -- Lightweaver
-        { spell = 390677, type = "buff", unit = "player", talent = 77 }, -- Inspiration
-        { spell = 392990, type = "buff", unit = "player", talent = 1 }, -- Divine Image
-        { spell = 372313, type = "buff", unit = "player", talent = 6 }, -- Resonant Words
         { spell = 64843, type = "buff", unit = "player", talent = 26 }, -- Divine Hymn
-        { spell = 15286, type = "buff", unit = "player", talent = 72 }, -- Vampiric Embrace
-        { spell = 65081, type = "buff", unit = "target", talent = 86 }, -- Body and Soul
-        { spell = 390677, type = "buff", unit = "target", talent = 77 }, -- Inspiration
+        { spell = 64844, type = "buff", unit = "player", talent = 26 }, -- Divine Hymn
+        { spell = 64901, type = "buff", unit = "player", talent = 22 }, -- Symbol of Hope
+        { spell = 65081, type = "buff", unit = "player", talent = 86 }, -- Body and Soul
+        { spell = 77489, type = "buff", unit = "player" }, -- Echo of Light
+        { spell = 111759, type = "buff", unit = "player" }, -- Levitate
+        { spell = 121557, type = "buff", unit = "player", talent = 84 }, -- Angelic Feather
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 193065, type = "buff", unit = "player", talent = 87 }, -- Protective Light
+        { spell = 196490, type = "buff", unit = "player", talent = 40 }, -- Sanctified Prayers
+        { spell = 232707, type = "buff", unit = "player" }, -- Ray of Hope
+        { spell = 280398, type = "buff", unit = "player", talent = 6 }, -- Sins of the Many
+        { spell = 289655, type = "buff", unit = "player" }, -- Sanctified Ground
+        { spell = 372313, type = "buff", unit = "player", talent = 6 }, -- Resonant Words
+        { spell = 372617, type = "buff", unit = "player", talent = 10 }, -- Empyreal Blaze
+        { spell = 372760, type = "buff", unit = "player", talent = 2 }, -- Divine Word
+        { spell = 390636, type = "buff", unit = "player", talent = 81 }, -- Rhapsody
+        { spell = 390677, type = "buff", unit = "player", talent = 77 }, -- Inspiration
+        { spell = 390885, type = "buff", unit = "player", talent = 31 }, -- Healing Chorus
+        { spell = 390989, type = "buff", unit = "player", talent = 34 }, -- Pontifex
+        { spell = 390993, type = "buff", unit = "player", talent = 4 }, -- Lightweaver
+        { spell = 391314, type = "buff", unit = "player" }, -- Catharsis
+        { spell = 392990, type = "buff", unit = "player", talent = 1 }, -- Divine Image
         { spell = 17, type = "buff", unit = "target" }, -- Power Word: Shield
+        { spell = 65081, type = "buff", unit = "target", talent = 86 }, -- Body and Soul
         { spell = 77489, type = "buff", unit = "target" }, -- Echo of Light
+        { spell = 390677, type = "buff", unit = "target", talent = 77 }, -- Inspiration
       },
       icon = 458972
     },
     [2] = {
       title = L["Debuffs"],
       args = {
-        { spell = 8122, type = "debuff", unit = "target" }, -- Psychic Scream
         { spell = 589, type = "debuff", unit = "target" }, -- Shadow Word: Pain
+        { spell = 2096, type = "debuff", unit = "target" }, -- Mind Vision
+        { spell = 8122, type = "debuff", unit = "target" }, -- Psychic Scream
         { spell = 14914, type = "debuff", unit = "target", talent = 58 }, -- Holy Fire
         { spell = 200200, type = "debuff", unit = "target", talent = 47 }, -- Holy Word: Chastise
         { spell = 390669, type = "debuff", unit = "target", talent = 70 }, -- Apathy
-        { spell = 2096, type = "debuff", unit = "target" }, -- Mind Vision
       },
       icon = 458972
     },
@@ -875,6 +860,7 @@ templates.class.PRIEST = {
         { spell = 205364, type = "ability", talent = 93 }, -- Dominate Mind
         { spell = 232633, type = "ability" }, -- Arcane Torrent
         { spell = 265202, type = "ability", talent = 14 }, -- Holy Word: Salvation
+        { spell = 312370, type = "ability" }, -- Make Camp
         { spell = 312372, type = "ability" }, -- Return to Camp
         { spell = 312411, type = "ability" }, -- Bag of Tricks
         { spell = 312425, type = "ability" }, -- Rummage Your Bag
@@ -901,64 +887,58 @@ templates.class.PRIEST = {
       },
       icon = "Interface/Icons/Achievement_BG_winWSG",
     },
-    [11] = {
-      title = L["Resources"],
-      args = {
-      },
-      icon = manaIcon,
-    },
   },
   [3] = { -- Shadow
     [1] = {
       title = L["Buffs"],
       args = {
-        { spell = 391092, type = "buff", unit = "player", talent = 8 }, -- Mind Melt
-        { spell = 586, type = "buff", unit = "player" }, -- Fade
         { spell = 17, type = "buff", unit = "player" }, -- Power Word: Shield
-        { spell = 377066, type = "buff", unit = "player", talent = 34 }, -- Mental Fortitude
-        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
-        { spell = 87160, type = "buff", unit = "player", talent = 45 }, -- Surge of Darkness
         { spell = 139, type = "buff", unit = "player", talent = 96 }, -- Renew
-        { spell = 41635, type = "buff", unit = "player", talent = 97 }, -- Prayer of Mending
-        { spell = 390636, type = "buff", unit = "player", talent = 77 }, -- Rhapsody
-        { spell = 375981, type = "buff", unit = "player", talent = 37 }, -- Shadowy Insight
-        { spell = 47585, type = "buff", unit = "player", talent = 38 }, -- Dispersion
-        { spell = 390677, type = "buff", unit = "player", talent = 73 }, -- Inspiration
+        { spell = 586, type = "buff", unit = "player" }, -- Fade
+        { spell = 10060, type = "buff", unit = "player", talent = 71 }, -- Power Infusion
+        { spell = 15286, type = "buff", unit = "player", talent = 68 }, -- Vampiric Embrace
         { spell = 21562, type = "buff", unit = "player" }, -- Power Word: Fortitude
+        { spell = 41635, type = "buff", unit = "player", talent = 97 }, -- Prayer of Mending
+        { spell = 47585, type = "buff", unit = "player", talent = 38 }, -- Dispersion
+        { spell = 65081, type = "buff", unit = "player", talent = 82 }, -- Body and Soul
+        { spell = 87160, type = "buff", unit = "player", talent = 45 }, -- Surge of Darkness
         { spell = 111759, type = "buff", unit = "player" }, -- Levitate
+        { spell = 114255, type = "buff", unit = "player", talent = 53 }, -- Surge of Light
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 193065, type = "buff", unit = "player", talent = 83 }, -- Protective Light
         { spell = 232698, type = "buff", unit = "player" }, -- Shadowform
+        { spell = 280398, type = "buff", unit = "player", talent = 6 }, -- Sins of the Many
+        { spell = 375981, type = "buff", unit = "player", talent = 37 }, -- Shadowy Insight
+        { spell = 377066, type = "buff", unit = "player", talent = 34 }, -- Mental Fortitude
+        { spell = 390636, type = "buff", unit = "player", talent = 77 }, -- Rhapsody
+        { spell = 390677, type = "buff", unit = "player", talent = 73 }, -- Inspiration
+        { spell = 391092, type = "buff", unit = "player", talent = 8 }, -- Mind Melt
+        { spell = 391099, type = "buff", unit = "player", talent = 35 }, -- Dark Evangelism
+        { spell = 391109, type = "buff", unit = "player", talent = 30 }, -- Dark Ascension
+        { spell = 391243, type = "buff", unit = "player", talent = 25 }, -- Coalescing Shadows
         { spell = 391244, type = "buff", unit = "player", talent = 25 }, -- Coalescing Shadows
         { spell = 391314, type = "buff", unit = "player" }, -- Catharsis
-        { spell = 391109, type = "buff", unit = "player", talent = 30 }, -- Dark Ascension
-        { spell = 193065, type = "buff", unit = "player", talent = 83 }, -- Protective Light
-        { spell = 15286, type = "buff", unit = "player", talent = 68 }, -- Vampiric Embrace
-        { spell = 114255, type = "buff", unit = "player", talent = 53 }, -- Surge of Light
-        { spell = 65081, type = "buff", unit = "player", talent = 82 }, -- Body and Soul
-        { spell = 391099, type = "buff", unit = "player", talent = 35 }, -- Dark Evangelism
         { spell = 391401, type = "buff", unit = "player", talent = 7 }, -- Mind Flay: Insanity
-        { spell = 280398, type = "buff", unit = "player", talent = 6 }, -- Sins of the Many
-        { spell = 10060, type = "buff", unit = "player", talent = 71 }, -- Power Infusion
-        { spell = 391243, type = "buff", unit = "player", talent = 25 }, -- Coalescing Shadows
       },
       icon = 458972
     },
     [2] = {
       title = L["Debuffs"],
       args = {
+        { spell = 589, type = "debuff", unit = "target" }, -- Shadow Word: Pain
+        { spell = 8122, type = "debuff", unit = "target" }, -- Psychic Scream
         { spell = 15407, type = "debuff", unit = "target" }, -- Mind Flay
+        { spell = 15487, type = "debuff", unit = "target", talent = 22 }, -- Silence
+        { spell = 34914, type = "debuff", unit = "target" }, -- Vampiric Touch
+        { spell = 48045, type = "debuff", unit = "target", talent = 39 }, -- Mind Sear
+        { spell = 64044, type = "debuff", unit = "target", talent = 24 }, -- Psychic Horror
+        { spell = 199845, type = "debuff", unit = "target" }, -- Psyflay
+        { spell = 263165, type = "debuff", unit = "target", talent = 27 }, -- Void Torrent
         { spell = 322098, type = "debuff", unit = "target", talent = 90 }, -- Death and Madness
         { spell = 335467, type = "debuff", unit = "target", talent = 40 }, -- Devouring Plague
-        { spell = 199845, type = "debuff", unit = "target" }, -- Psyflay
-        { spell = 34914, type = "debuff", unit = "target" }, -- Vampiric Touch
-        { spell = 8122, type = "debuff", unit = "target" }, -- Psychic Scream
-        { spell = 391403, type = "debuff", unit = "target", talent = 7 }, -- Mind Flay: Insanity
         { spell = 375901, type = "debuff", unit = "target", talent = 64 }, -- Mindgames
-        { spell = 263165, type = "debuff", unit = "target", talent = 27 }, -- Void Torrent
-        { spell = 15487, type = "debuff", unit = "target", talent = 22 }, -- Silence
-        { spell = 64044, type = "debuff", unit = "target", talent = 24 }, -- Psychic Horror
-        { spell = 589, type = "debuff", unit = "target" }, -- Shadow Word: Pain
         { spell = 390669, type = "debuff", unit = "target", talent = 66 }, -- Apathy
-        { spell = 48045, type = "debuff", unit = "target", talent = 39 }, -- Mind Sear
+        { spell = 391403, type = "debuff", unit = "target", talent = 7 }, -- Mind Flay: Insanity
       },
       icon = 458972
     },
@@ -992,7 +972,7 @@ templates.class.PRIEST = {
         { spell = 205385, type = "ability", talent = 5 }, -- Shadow Crash
         { spell = 232633, type = "ability" }, -- Arcane Torrent
         { spell = 263165, type = "ability", requiresTarget = true, talent = 27 }, -- Void Torrent
-        { spell = 335467, type = "ability", requiresTarget = true, talent = 40 }, -- Devouring Plague
+        { spell = 335467, type = "ability", requiresTarget = true, usable = true, talent = 40 }, -- Devouring Plague
         { spell = 341374, type = "ability", requiresTarget = true, talent = 26 }, -- Damnation
         { spell = 373481, type = "ability", talent = 52 }, -- Power Word: Life
         { spell = 375901, type = "ability", requiresTarget = true, talent = 64 }, -- Mindgames
@@ -1013,12 +993,6 @@ templates.class.PRIEST = {
         { spell = 316262, type = "ability", pvptalent = 1, titleSuffix = L["cooldown"] }, -- Thoughtsteal
       },
       icon = "Interface/Icons/Achievement_BG_winWSG",
-    },
-    [11] = {
-      title = L["Resources"],
-      args = {
-      },
-      icon = manaIcon,
     },
   },
 }
