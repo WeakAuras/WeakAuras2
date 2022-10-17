@@ -1474,5 +1474,15 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 54 then
+    for triggerId, triggerData in ipairs(data.triggers) do
+      if triggerData.trigger.type == "aura" then
+        triggerData.trigger.type = "unit"
+        triggerData.trigger.event = "Conditions"
+        triggerData.trigger.use_alwaystrue = false
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
 end
