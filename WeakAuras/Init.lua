@@ -14,6 +14,85 @@ Private.frames = {}
 --- @field regions table<auraId, table>
 --- @field UIDtoID fun(uid: uid): auraId
 
+--- @alias triggerTypes
+--- | "aura"
+--- | "aura2"
+--- | "custom"
+
+--- @class triggerData
+--- @field buffShowOn string
+--- @field event string|nil
+--- @field itemTypeName table|nil
+--- @field instance_size table|nil
+--- @field type triggerTypes
+--- @field use_showOn boolean|nil
+--- @field use_alwaystrue boolean|nil
+
+
+--- @class triggerUntriggerData
+--- @field trigger triggerData
+--- @field untrigger triggerData
+
+--- @class conditionCheck
+--- @field variable string
+--- @field trigger number
+--- @field checks conditionCheck[]|nil
+
+--- @class conditionChanges
+--- @field property string
+
+--- @class conditionData
+--- @field check conditionCheck
+--- @field changes conditionChanges
+
+--- @class subRegionData
+
+--- @class actionData
+--- @field do_glow boolean
+--- @field do_message boolean
+--- @field message string
+--- @field message_type string
+
+
+--- @class actions
+--- @field start actionData
+--- @field finish actionData
+
+--- @class load
+--- @field use_realm boolean
+--- @field itemtypeequipped table
+--- @field size table
+
+--- @alias regionTypes
+--- | "aurabar"
+--- | "dynamicgroup"
+--- | "fallback"
+--- | "group"
+--- | "icon"
+--- | "model"
+--- | "progresstexture"
+--- | "stopmotion"
+--- | "text"
+--- | "texture"
+
+
+--- @class auraData
+--- @field arcLength number
+--- @field actions actions
+--- @field conditions conditionData[]|nil
+--- @field controlledChildren auraId[]|nil
+--- @field displayText string|nil
+--- @field grow string|nil
+--- @field id auraId
+--- @field internalVersion number
+--- @field load load
+--- @field orientation string|nil
+--- @field parent auraId|nil
+--- @field regionType regionTypes
+--- @field subRegions subRegionData|nil
+--- @field triggers triggerUntriggerData[]
+--- @field url string|nil
+
 WeakAuras.normalWidth = 1.3
 WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
