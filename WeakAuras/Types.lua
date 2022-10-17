@@ -1370,10 +1370,13 @@ local function update_specs()
       local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i);
       if tabName then
         tinsert(WeakAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
-        if WeakAuras.IsShadowlands() or WeakAuras.IsDragonflight() then
+        if WeakAuras.IsShadowlands() then
           Private.spec_types_all[specId] = "|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:0:0:0:0:256:256:"
           .. classTexcoords[1] * 256 .. ":" .. classTexcoords[2] * 256 .. ":" .. classTexcoords[3] * 256 .. ":" .. classTexcoords[4] * 256
           .. ":0|t"
+          .. "|T"..(icon or "error")..":0|t "..(tabName or "error");
+        elseif WeakAuras.IsDragonflight() then
+          Private.spec_types_all[specId] = CreateAtlasMarkup(GetClassAtlas(classFileName:lower()))
           .. "|T"..(icon or "error")..":0|t "..(tabName or "error");
         end
       end
