@@ -3,6 +3,8 @@ local AddonName, Private = ...
 local L = WeakAuras.L
 
 -- Takes as input a table of display data and attempts to update it to be compatible with the current version
+--- Modernizes the aura data
+---@param data auraData
 function Private.Modernize(data)
   if (not data.internalVersion or data.internalVersion < 2) then
     WeakAuras.prettyPrint(string.format("Data for '%s' is too old, can't modernize.", data.id))
