@@ -44,7 +44,6 @@ Conditions.lua
 
 # Trigger systems
 LibSpecializationWrapper.lua
-BuffTrigger.lua
 BuffTrigger2.lua
 GenericTrigger.lua
 
