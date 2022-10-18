@@ -1486,5 +1486,9 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 55 then
+    data.forceEvents = true
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
 end
