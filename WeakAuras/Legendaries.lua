@@ -1,4 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
+--- @type string, Private
 local AddonName, Private = ...
 
 -- Legendaries based on https://wow.tools/dbc/?dbc=runeforgelegendaryability

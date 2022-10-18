@@ -1,3 +1,4 @@
+--- @type string, Private
 local AddonName, Private = ...
 
 local internalVersion = 55

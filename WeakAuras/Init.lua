@@ -1,3 +1,4 @@
+--- @type string, Private
 local AddonName, Private = ...
 WeakAuras = {}
 WeakAuras.L = {}
@@ -9,6 +10,7 @@ Private.frames = {}
 --- @class Private
 --- @field AuraWarnings AuraWarnings
 --- @field callbacks callbacks
+--- @field DebugLog debugLog
 --- @field clones table<auraId, table<string, table>>
 --- @field ExecEnv table
 --- @field regions table<auraId, table>
@@ -75,6 +77,11 @@ Private.frames = {}
 --- | "text"
 --- | "texture"
 
+--- @class information
+--- @field forceEvents boolean|nil
+--- @field ignoreOptionsEventErrors boolean|nil
+--- @field groupOffset boolean|nil
+
 
 --- @class auraData
 --- @field arcLength number
@@ -85,6 +92,7 @@ Private.frames = {}
 --- @field grow string|nil
 --- @field id auraId
 --- @field internalVersion number
+--- @field information information
 --- @field load load
 --- @field orientation string|nil
 --- @field parent auraId|nil

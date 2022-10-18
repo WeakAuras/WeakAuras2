@@ -1,5 +1,6 @@
 if not WeakAuras.IsLibsOK() then return end
 if not WeakAuras.IsRetail() then return end
+--- @type string, Private
 local AddonName, Private = ...
 
 local LibSpec = LibStub("LibSpecialization")
