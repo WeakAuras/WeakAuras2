@@ -1917,10 +1917,373 @@ templates.class.DEMONHUNTER = {
 
 templates.class.DEATHKNIGHT = {
   [1] = { -- Blood
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 3714, type = "buff", unit = "player" }, -- Path of Frost
+        { spell = 47568, type = "buff", unit = "player", talent = 13 }, -- Empower Rune Weapon
+        { spell = 48265, type = "buff", unit = "player" }, -- Death's Advance
+        { spell = 48707, type = "buff", unit = "player", talent = 34 }, -- Anti-Magic Shell
+        { spell = 48792, type = "buff", unit = "player", talent = 48 }, -- Icebound Fortitude
+        { spell = 49039, type = "buff", unit = "player" }, -- Lichborne
+        { spell = 55233, type = "buff", unit = "player", talent = 87 }, -- Vampiric Blood
+        { spell = 77535, type = "buff", unit = "player" }, -- Blood Shield
+        { spell = 81141, type = "buff", unit = "player", talent = 85 }, -- Crimson Scourge
+        { spell = 81256, type = "buff", unit = "player", talent = 67 }, -- Dancing Rune Weapon
+        { spell = 145629, type = "buff", unit = "player", talent = 29 }, -- Anti-Magic Zone
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 188290, type = "buff", unit = "player" }, -- Death and Decay
+        { spell = 194679, type = "buff", unit = "player", talent = 76 }, -- Rune Tap
+        { spell = 194844, type = "buff", unit = "player", talent = 56 }, -- Bonestorm
+        { spell = 194879, type = "buff", unit = "player", talent = 14 }, -- Icy Talons
+        { spell = 195181, type = "buff", unit = "player" }, -- Bone Shield
+        { spell = 212552, type = "buff", unit = "player", talent = 42 }, -- Wraith Walk
+        { spell = 219788, type = "buff", unit = "player", talent = 75 }, -- Ossuary
+        { spell = 219809, type = "buff", unit = "player", talent = 69 }, -- Tombstone
+        { spell = 228581, type = "buff", unit = "player" }, -- Decomposing Aura
+        { spell = 228583, type = "buff", unit = "player" }, -- Necrotic Aura
+        { spell = 253595, type = "buff", unit = "player", talent = 5 }, -- Inexorable Assault
+        { spell = 273947, type = "buff", unit = "player", talent = 66 }, -- Hemostasis
+        { spell = 274009, type = "buff", unit = "player", talent = 6 }, -- Voracious
+        { spell = 374271, type = "buff", unit = "player", talent = 22 }, -- Unholy Ground
+        { spell = 374585, type = "buff", unit = "player", talent = 44 }, -- Rune Mastery
+        { spell = 374748, type = "buff", unit = "player", talent = 53 }, -- Perseverance of the Ebon Blade
+        { spell = 377656, type = "buff", unit = "player", talent = 60 }, -- Heartrend
+        { spell = 383269, type = "buff", unit = "player", talent = 12 }, -- Abomination Limb
+        { spell = 391459, type = "buff", unit = "player", talent = 4 }, -- Sanguine Ground
+        { spell = 391481, type = "buff", unit = "player", talent = 1 }, -- Coagulopathy
+        { spell = 391519, type = "buff", unit = "player", talent = 3 }, -- Umbilicus Eternus
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 45524, type = "debuff", unit = "target", talent = 45 }, -- Chains of Ice
+        { spell = 51399, type = "debuff", unit = "target" }, -- Death Grip
+        { spell = 55078, type = "debuff", unit = "target" }, -- Blood Plague
+        { spell = 56222, type = "debuff", unit = "target" }, -- Dark Command
+        { spell = 91800, type = "debuff", unit = "target" }, -- Gnaw
+        { spell = 199721, type = "debuff", unit = "target" }, -- Decomposing Aura
+        { spell = 206891, type = "debuff", unit = "target" }, -- Focused Assault
+        { spell = 206930, type = "debuff", unit = "target", talent = 83 }, -- Heart Strike
+        { spell = 206931, type = "debuff", unit = "target", talent = 73 }, -- Blooddrinker
+        { spell = 206940, type = "debuff", unit = "target", talent = 68 }, -- Mark of Blood
+        { spell = 214968, type = "debuff", unit = "target" }, -- Necrotic Aura
+        { spell = 221562, type = "debuff", unit = "target", talent = 28 }, -- Asphyxiate
+        { spell = 228645, type = "debuff", unit = "target", talent = 83 }, -- Heart Strike
+        { spell = 343294, type = "debuff", unit = "target", talent = 16 }, -- Soul Reaper
+        { spell = 374557, type = "debuff", unit = "target", talent = 25 }, -- Brittle
+        { spell = 374776, type = "debuff", unit = "target", talent = 63 }, -- Tightening Grasp
+        { spell = 389681, type = "debuff", unit = "target", talent = 26 }, -- Clenching Grasp
+        { spell = 392490, type = "debuff", unit = "target", talent = 24 }, -- Enfeeble
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 43265, type = "ability", charges = true, overlayGlow = true }, -- Death and Decay
+        { spell = 45524, type = "ability", requiresTarget = true, talent = 45 }, -- Chains of Ice
+        { spell = 46585, type = "ability", totem = true, talent = 36 }, -- Raise Dead
+        { spell = 47528, type = "ability", requiresTarget = true, talent = 46 }, -- Mind Freeze
+        { spell = 47541, type = "ability", requiresTarget = true }, -- Death Coil
+        { spell = 47568, type = "ability", buff = true, talent = 13 }, -- Empower Rune Weapon
+        { spell = 48265, type = "ability", charges = true, buff = true }, -- Death's Advance
+        { spell = 48707, type = "ability", buff = true, talent = 34 }, -- Anti-Magic Shell
+        { spell = 48743, type = "ability", talent = 41 }, -- Death Pact
+        { spell = 48792, type = "ability", buff = true, talent = 48 }, -- Icebound Fortitude
+        { spell = 49028, type = "ability", requiresTarget = true, talent = 67 }, -- Dancing Rune Weapon
+        { spell = 49039, type = "ability", buff = true }, -- Lichborne
+        { spell = 49576, type = "ability", charges = true, requiresTarget = true }, -- Death Grip
+        { spell = 49998, type = "ability", requiresTarget = true, talent = 35 }, -- Death Strike
+        { spell = 50613, type = "ability" }, -- Arcane Torrent
+        { spell = 50842, type = "ability", charges = true, talent = 84 }, -- Blood Boil
+        { spell = 50977, type = "ability", usable = true }, -- Death Gate
+        { spell = 51052, type = "ability", talent = 29 }, -- Anti-Magic Zone
+        { spell = 55233, type = "ability", buff = true, talent = 87 }, -- Vampiric Blood
+        { spell = 56222, type = "ability", requiresTarget = true }, -- Dark Command
+        { spell = 61999, type = "ability" }, -- Raise Ally
+        { spell = 108199, type = "ability", requiresTarget = true, talent = 65 }, -- Gorefiend's Grasp
+        { spell = 194679, type = "ability", charges = true, buff = true, talent = 76 }, -- Rune Tap
+        { spell = 194844, type = "ability", buff = true, talent = 56 }, -- Bonestorm
+        { spell = 195182, type = "ability", charges = true, requiresTarget = true, talent = 82 }, -- Marrowrend
+        { spell = 195292, type = "ability", requiresTarget = true, talent = 77 }, -- Death's Caress
+        { spell = 206930, type = "ability", requiresTarget = true, talent = 83 }, -- Heart Strike
+        { spell = 206931, type = "ability", requiresTarget = true, talent = 73 }, -- Blooddrinker
+        { spell = 206940, type = "ability", requiresTarget = true, talent = 68 }, -- Mark of Blood
+        { spell = 207167, type = "ability", talent = 7 }, -- Blinding Sleet
+        { spell = 212552, type = "ability", buff = true, talent = 42 }, -- Wraith Walk
+        { spell = 219809, type = "ability", buff = true, usable = true, talent = 69 }, -- Tombstone
+        { spell = 221562, type = "ability", requiresTarget = true, talent = 28 }, -- Asphyxiate
+        { spell = 221699, type = "ability", charges = true, talent = 72 }, -- Blood Tap
+        { spell = 274156, type = "ability", talent = 74 }, -- Consumption
+        { spell = 327574, type = "ability", talent = 38 }, -- Sacrificial Pact
+        { spell = 343294, type = "ability", requiresTarget = true, talent = 16 }, -- Soul Reaper
+        { spell = 383269, type = "ability", buff = true, talent = 12 }, -- Abomination Limb
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 47476, type = "debuff", unit = "target", pvptalent = 11, titleSuffix = L["debuff"] }, -- Strangulate
+        { spell = 203173, type = "debuff", unit = "target", pvptalent = 8, titleSuffix = L["debuff"] }, -- Death Chain
+        { spell = 47476, type = "ability", requiresTarget = true, pvptalent = 11, titleSuffix = L["cooldown"] }, -- Strangulate
+        { spell = 203173, type = "ability", requiresTarget = true, pvptalent = 8, titleSuffix = L["cooldown"] }, -- Death Chain
+        { spell = 207018, type = "ability", requiresTarget = true, pvptalent = 5, titleSuffix = L["cooldown"] }, -- Murderous Intent
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
   [2] = { -- Frost
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 3714, type = "buff", unit = "player" }, -- Path of Frost
+        { spell = 47568, type = "buff", unit = "player", talent = 63 }, -- Empower Rune Weapon
+        { spell = 48265, type = "buff", unit = "player" }, -- Death's Advance
+        { spell = 48707, type = "buff", unit = "player", talent = 33 }, -- Anti-Magic Shell
+        { spell = 48792, type = "buff", unit = "player", talent = 47 }, -- Icebound Fortitude
+        { spell = 49039, type = "buff", unit = "player" }, -- Lichborne
+        { spell = 51124, type = "buff", unit = "player", talent = 81 }, -- Killing Machine
+        { spell = 51271, type = "buff", unit = "player", talent = 68 }, -- Pillar of Frost
+        { spell = 59052, type = "buff", unit = "player", talent = 77 }, -- Rime
+        { spell = 145629, type = "buff", unit = "player", talent = 28 }, -- Anti-Magic Zone
+        { spell = 152279, type = "buff", unit = "player", talent = 56 }, -- Breath of Sindragosa
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 188290, type = "buff", unit = "player" }, -- Death and Decay
+        { spell = 194879, type = "buff", unit = "player", talent = 13 }, -- Icy Talons
+        { spell = 196770, type = "buff", unit = "player", talent = 76 }, -- Remorseless Winter
+        { spell = 207203, type = "buff", unit = "player" }, -- Frost Shield
+        { spell = 211805, type = "buff", unit = "player", talent = 73 }, -- Gathering Storm
+        { spell = 212552, type = "buff", unit = "player", talent = 41 }, -- Wraith Walk
+        { spell = 228579, type = "buff", unit = "player" }, -- Shroud of Winter
+        { spell = 253595, type = "buff", unit = "player", talent = 5 }, -- Inexorable Assault
+        { spell = 281209, type = "buff", unit = "player", talent = 3 }, -- Cold Heart
+        { spell = 358134, type = "buff", unit = "player" }, -- Star Burst
+        { spell = 374271, type = "buff", unit = "player", talent = 21 }, -- Unholy Ground
+        { spell = 374585, type = "buff", unit = "player", talent = 43 }, -- Rune Mastery
+        { spell = 376907, type = "buff", unit = "player", talent = 82 }, -- Unleashed Frenzy
+        { spell = 377101, type = "buff", unit = "player", talent = 87 }, -- Bonegrinder
+        { spell = 377192, type = "buff", unit = "player", talent = 64 }, -- Enduring Strength
+        { spell = 377195, type = "buff", unit = "player", talent = 64 }, -- Enduring Strength
+        { spell = 383269, type = "buff", unit = "player", talent = 11 }, -- Abomination Limb
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 45524, type = "debuff", unit = "target", talent = 44 }, -- Chains of Ice
+        { spell = 51714, type = "debuff", unit = "target" }, -- Razorice
+        { spell = 55095, type = "debuff", unit = "target" }, -- Frost Fever
+        { spell = 56222, type = "debuff", unit = "target" }, -- Dark Command
+        { spell = 91800, type = "debuff", unit = "target" }, -- Gnaw
+        { spell = 204085, type = "debuff", unit = "target" }, -- Deathchill
+        { spell = 204206, type = "debuff", unit = "target" }, -- Chilled
+        { spell = 207167, type = "debuff", unit = "target", talent = 6 }, -- Blinding Sleet
+        { spell = 211793, type = "debuff", unit = "target", talent = 76 }, -- Remorseless Winter
+        { spell = 221562, type = "debuff", unit = "target", talent = 27 }, -- Asphyxiate
+        { spell = 233395, type = "debuff", unit = "target" }, -- Deathchill
+        { spell = 273977, type = "debuff", unit = "target", talent = 20 }, -- Grip of the Dead
+        { spell = 279303, type = "debuff", unit = "target", talent = 58 }, -- Frostwyrm's Fury
+        { spell = 343294, type = "debuff", unit = "target", talent = 15 }, -- Soul Reaper
+        { spell = 374557, type = "debuff", unit = "target", talent = 24 }, -- Brittle
+        { spell = 376974, type = "debuff", unit = "target", talent = 71 }, -- Everfrost
+        { spell = 377048, type = "debuff", unit = "target", talent = 57 }, -- Absolute Zero
+        { spell = 391568, type = "debuff", unit = "target", talent = 51 }, -- Insidious Chill
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 3714, type = "ability", buff = true }, -- Path of Frost
+        { spell = 43265, type = "ability" }, -- Death and Decay
+        { spell = 45524, type = "ability", overlayGlow = true, requiresTarget = true, talent = 44 }, -- Chains of Ice
+        { spell = 46585, type = "ability", totem = true, talent = 35 }, -- Raise Dead
+        { spell = 47528, type = "ability", requiresTarget = true, talent = 45 }, -- Mind Freeze
+        { spell = 47541, type = "ability", requiresTarget = true }, -- Death Coil
+        { spell = 47568, type = "ability", buff = true, talent = 63 }, -- Empower Rune Weapon
+        { spell = 48265, type = "ability", buff = true }, -- Death's Advance
+        { spell = 48707, type = "ability", buff = true, talent = 33 }, -- Anti-Magic Shell
+        { spell = 48743, type = "ability", talent = 40 }, -- Death Pact
+        { spell = 48792, type = "ability", buff = true, talent = 47 }, -- Icebound Fortitude
+        { spell = 49020, type = "ability", overlayGlow = true, requiresTarget = true, talent = 80 }, -- Obliterate
+        { spell = 49039, type = "ability", buff = true }, -- Lichborne
+        { spell = 49143, type = "ability", requiresTarget = true, talent = 79 }, -- Frost Strike
+        { spell = 49184, type = "ability", overlayGlow = true, requiresTarget = true, talent = 78 }, -- Howling Blast
+        { spell = 49576, type = "ability", requiresTarget = true }, -- Death Grip
+        { spell = 49998, type = "ability", requiresTarget = true, talent = 34 }, -- Death Strike
+        { spell = 50613, type = "ability" }, -- Arcane Torrent
+        { spell = 50977, type = "ability", usable = true }, -- Death Gate
+        { spell = 51052, type = "ability", talent = 28 }, -- Anti-Magic Zone
+        { spell = 51271, type = "ability", buff = true, talent = 68 }, -- Pillar of Frost
+        { spell = 56222, type = "ability", requiresTarget = true }, -- Dark Command
+        { spell = 57330, type = "ability", talent = 74 }, -- Horn of Winter
+        { spell = 61999, type = "ability" }, -- Raise Ally
+        { spell = 152279, type = "ability", buff = true, talent = 56 }, -- Breath of Sindragosa
+        { spell = 196770, type = "ability", buff = true, talent = 76 }, -- Remorseless Winter
+        { spell = 207167, type = "ability", talent = 6 }, -- Blinding Sleet
+        { spell = 212552, type = "ability", buff = true, talent = 41 }, -- Wraith Walk
+        { spell = 221562, type = "ability", requiresTarget = true, talent = 27 }, -- Asphyxiate
+        { spell = 279302, type = "ability", talent = 58 }, -- Frostwyrm's Fury
+        { spell = 305392, type = "ability", requiresTarget = true, talent = 62 }, -- Chill Streak
+        { spell = 327574, type = "ability", talent = 37 }, -- Sacrificial Pact
+        { spell = 343294, type = "ability", requiresTarget = true, talent = 15 }, -- Soul Reaper
+        { spell = 383269, type = "ability", buff = true, talent = 11 }, -- Abomination Limb
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 47476, type = "debuff", unit = "target", pvptalent = 1, titleSuffix = L["debuff"] }, -- Strangulate
+        { spell = 47476, type = "ability", requiresTarget = true, pvptalent = 1, titleSuffix = L["cooldown"] }, -- Strangulate
+        { spell = 77606, type = "ability", requiresTarget = true, pvptalent = 9, titleSuffix = L["cooldown"] }, -- Dark Simulacrum
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
   [3] = { -- Unholy
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 3714, type = "buff", unit = "player" }, -- Path of Frost
+        { spell = 42650, type = "buff", unit = "player", talent = 89 }, -- Army of the Dead
+        { spell = 47568, type = "buff", unit = "player", talent = 7 }, -- Empower Rune Weapon
+        { spell = 48265, type = "buff", unit = "player" }, -- Death's Advance
+        { spell = 48707, type = "buff", unit = "player", talent = 28 }, -- Anti-Magic Shell
+        { spell = 48792, type = "buff", unit = "player", talent = 42 }, -- Icebound Fortitude
+        { spell = 49039, type = "buff", unit = "player" }, -- Lichborne
+        { spell = 51460, type = "buff", unit = "player" }, -- Runic Corruption
+        { spell = 81340, type = "buff", unit = "player", talent = 70 }, -- Sudden Doom
+        { spell = 115989, type = "buff", unit = "player", talent = 62 }, -- Unholy Blight
+        { spell = 145629, type = "buff", unit = "player", talent = 23 }, -- Anti-Magic Zone
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 188290, type = "buff", unit = "player" }, -- Death and Decay
+        { spell = 194879, type = "buff", unit = "player", talent = 8 }, -- Icy Talons
+        { spell = 207203, type = "buff", unit = "player" }, -- Frost Shield
+        { spell = 207289, type = "buff", unit = "player", talent = 51 }, -- Unholy Assault
+        { spell = 212552, type = "buff", unit = "player", talent = 36 }, -- Wraith Walk
+        { spell = 228583, type = "buff", unit = "player" }, -- Necrotic Aura
+        { spell = 374271, type = "buff", unit = "player", talent = 16 }, -- Unholy Ground
+        { spell = 374585, type = "buff", unit = "player", talent = 38 }, -- Rune Mastery
+        { spell = 377588, type = "buff", unit = "player", talent = 54 }, -- Ghoulish Frenzy
+        { spell = 377591, type = "buff", unit = "player", talent = 52 }, -- Festermight
+        { spell = 383269, type = "buff", unit = "player", talent = 6 }, -- Abomination Limb
+        { spell = 390178, type = "buff", unit = "player", talent = 75 }, -- Plaguebringer
+        { spell = 3714, type = "buff", unit = "player" }, -- Path of Frost
+        { spell = 63560, type = "buff", unit = "pet", talent = 80 }, -- Dark Transformation
+        { spell = 91838, type = "buff", unit = "pet" }, -- Huddle
+        { spell = 377589, type = "buff", unit = "pet", talent = 54 }, -- Ghoulish Frenzy
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 45524, type = "debuff", unit = "target", talent = 39 }, -- Chains of Ice
+        { spell = 55078, type = "debuff", unit = "target" }, -- Blood Plague
+        { spell = 55095, type = "debuff", unit = "target" }, -- Frost Fever
+        { spell = 56222, type = "debuff", unit = "target" }, -- Dark Command
+        { spell = 91800, type = "debuff", unit = "target" }, -- Gnaw
+        { spell = 115994, type = "debuff", unit = "target", talent = 62 }, -- Unholy Blight
+        { spell = 191587, type = "debuff", unit = "target" }, -- Virulent Plague
+        { spell = 194310, type = "debuff", unit = "target" }, -- Festering Wound
+        { spell = 207167, type = "debuff", unit = "target", talent = 1 }, -- Blinding Sleet
+        { spell = 210141, type = "debuff", unit = "target" }, -- Zombie Explosion
+        { spell = 214968, type = "debuff", unit = "target" }, -- Necrotic Aura
+        { spell = 221562, type = "debuff", unit = "target", talent = 22 }, -- Asphyxiate
+        { spell = 273977, type = "debuff", unit = "target", talent = 15 }, -- Grip of the Dead
+        { spell = 317792, type = "debuff", unit = "target" }, -- Frostbolt
+        { spell = 343294, type = "debuff", unit = "target", talent = 10 }, -- Soul Reaper
+        { spell = 374557, type = "debuff", unit = "target", talent = 19 }, -- Brittle
+        { spell = 377445, type = "debuff", unit = "target", talent = 50 }, -- Unholy Aura
+        { spell = 377540, type = "debuff", unit = "target", talent = 58 }, -- Death Rot
+        { spell = 389681, type = "debuff", unit = "target", talent = 20 }, -- Clenching Grasp
+        { spell = 390271, type = "debuff", unit = "target", talent = 56 }, -- Coil of Devastation
+        { spell = 390276, type = "debuff", unit = "target", talent = 69 }, -- Rotten Touch
+        { spell = 391568, type = "debuff", unit = "target", talent = 46 }, -- Insidious Chill
+        { spell = 392490, type = "debuff", unit = "target", talent = 18 }, -- Enfeeble
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 3714, type = "ability", buff = true }, -- Path of Frost
+        { spell = 42650, type = "ability", buff = true, talent = 89 }, -- Army of the Dead
+        { spell = 43265, type = "ability", charges = true }, -- Death and Decay
+        { spell = 45524, type = "ability", requiresTarget = true, talent = 39 }, -- Chains of Ice
+        { spell = 46584, type = "ability", talent = 81 }, -- Raise Dead
+        { spell = 46585, type = "ability", totem = true, talent = 30 }, -- Raise Dead
+        { spell = 47468, type = "ability" }, -- Claw
+        { spell = 47481, type = "ability" }, -- Gnaw
+        { spell = 47484, type = "ability" }, -- Huddle
+        { spell = 47528, type = "ability", requiresTarget = true, talent = 40 }, -- Mind Freeze
+        { spell = 47541, type = "ability", overlayGlow = true, requiresTarget = true }, -- Death Coil
+        { spell = 47568, type = "ability", buff = true, talent = 7 }, -- Empower Rune Weapon
+        { spell = 48265, type = "ability", charges = true, buff = true }, -- Death's Advance
+        { spell = 48707, type = "ability", buff = true, talent = 28 }, -- Anti-Magic Shell
+        { spell = 48743, type = "ability", talent = 35 }, -- Death Pact
+        { spell = 48792, type = "ability", buff = true, talent = 42 }, -- Icebound Fortitude
+        { spell = 49039, type = "ability", buff = true }, -- Lichborne
+        { spell = 49206, type = "ability", requiresTarget = true, totem = true, talent = 67 }, -- Summon Gargoyle
+        { spell = 49576, type = "ability", charges = true, requiresTarget = true }, -- Death Grip
+        { spell = 49998, type = "ability", requiresTarget = true, talent = 29 }, -- Death Strike
+        { spell = 50613, type = "ability" }, -- Arcane Torrent
+        { spell = 50977, type = "ability", usable = true }, -- Death Gate
+        { spell = 51052, type = "ability", talent = 23 }, -- Anti-Magic Zone
+        { spell = 55090, type = "ability", requiresTarget = true, talent = 83 }, -- Scourge Strike
+        { spell = 56222, type = "ability", requiresTarget = true }, -- Dark Command
+        { spell = 61999, type = "ability" }, -- Raise Ally
+        { spell = 63560, type = "ability", buff = true, unit = 'pet', talent = 80 }, -- Dark Transformation
+        { spell = 77575, type = "ability", requiresTarget = true, talent = 84 }, -- Outbreak
+        { spell = 85948, type = "ability", requiresTarget = true, talent = 82 }, -- Festering Strike
+        { spell = 111673, type = "ability", talent = 17 }, -- Control Undead
+        { spell = 115989, type = "ability", buff = true, talent = 62 }, -- Unholy Blight
+        { spell = 207167, type = "ability", talent = 1 }, -- Blinding Sleet
+        { spell = 207289, type = "ability", buff = true, requiresTarget = true, talent = 51 }, -- Unholy Assault
+        { spell = 207311, type = "ability", requiresTarget = true, talent = 76 }, -- Clawing Shadows
+        { spell = 212552, type = "ability", buff = true, talent = 36 }, -- Wraith Walk
+        { spell = 221562, type = "ability", requiresTarget = true, talent = 22 }, -- Asphyxiate
+        { spell = 275699, type = "ability", requiresTarget = true, usable = true, talent = 78 }, -- Apocalypse
+        { spell = 327574, type = "ability", talent = 32 }, -- Sacrificial Pact
+        { spell = 343294, type = "ability", requiresTarget = true, talent = 10 }, -- Soul Reaper
+        { spell = 383269, type = "ability", buff = true, talent = 6 }, -- Abomination Limb
+        { spell = 390279, type = "ability", requiresTarget = true, talent = 59 }, -- Vile Contagion
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 47476, type = "debuff", unit = "target", pvptalent = 4, titleSuffix = L["debuff"] }, -- Strangulate
+        { spell = 47476, type = "ability", pvptalent = 4, titleSuffix = L["cooldown"] }, -- Strangulate
+        { spell = 288853, type = "ability", totem = true, pvptalent = 2, titleSuffix = L["cooldown"] }, -- Raise Abomination
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
 }
 
