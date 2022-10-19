@@ -5045,13 +5045,6 @@ end
 -- Hardcoded trigger templates
 -------------------------------
 local resourceSection = 11
--- TODO REMOVE THIS SECTION
-
---for _, specs in pairs(templates.class) do
---  for _, specData in ipairs(specs) do
---    specData[resourceSection] = specData[resourceSection] or { args = {} }
---  end
---end
 -- Warrior
 for i = 1, 3 do
   tinsert(templates.class.WARRIOR[i][resourceSection].args, createSimplePowerTemplate(1));
@@ -5171,8 +5164,10 @@ for i = 1, 3 do
 end
 
 -- Evoker
-tinsert(templates.class.EVOKER[1][resourceSection].args, createSimplePowerTemplate(19));
-tinsert(templates.class.EVOKER[2][resourceSection].args, createSimplePowerTemplate(19));
+tinsert(templates.class.EVOKER[1][resourceSection].args, createSimplePowerTemplate(19)); -- Essence
+tinsert(templates.class.EVOKER[1][resourceSection].args, createSimplePowerTemplate(0)); -- Mana
+tinsert(templates.class.EVOKER[2][resourceSection].args, createSimplePowerTemplate(19)); -- Essence
+tinsert(templates.class.EVOKER[2][resourceSection].args, createSimplePowerTemplate(0)); -- Mana
 
 ------------------------------
 -- Hardcoded race templates
