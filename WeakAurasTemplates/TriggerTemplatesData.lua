@@ -1695,10 +1695,385 @@ templates.class.WARLOCK = {
 
 templates.class.MONK = {
   [1] = { -- Brewmaster
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 101643, type = "buff", unit = "player", talent = 55 }, -- Transcendence
+        { spell = 116841, type = "buff", unit = "player", talent = 50 }, -- Tiger's Lust
+        { spell = 116847, type = "buff", unit = "player", talent = 91 }, -- Rushing Jade Wind
+        { spell = 120954, type = "buff", unit = "player", talent = 39 }, -- Fortifying Brew
+        { spell = 122278, type = "buff", unit = "player", talent = 65 }, -- Dampen Harm
+        { spell = 122783, type = "buff", unit = "player", talent = 58 }, -- Diffuse Magic
+        { spell = 125883, type = "buff", unit = "player" }, -- Zen Flight
+        { spell = 132578, type = "buff", unit = "player", talent = 87 }, -- Invoke Niuzao, the Black Ox
+        { spell = 166646, type = "buff", unit = "player", talent = 60 }, -- Windwalking
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 195630, type = "buff", unit = "player" }, -- Elusive Brawler
+        { spell = 196608, type = "buff", unit = "player", talent = 61 }, -- Eye of the Tiger
+        { spell = 215479, type = "buff", unit = "player", talent = 21 }, -- Shuffle
+        { spell = 228563, type = "buff", unit = "player", talent = 1 }, -- Blackout Combo
+        { spell = 322507, type = "buff", unit = "player", talent = 29 }, -- Celestial Brew
+        { spell = 325153, type = "buff", unit = "player", talent = 85 }, -- Exploding Keg
+        { spell = 325190, type = "buff", unit = "player", talent = 26 }, -- Celestial Flames
+        { spell = 383696, type = "buff", unit = "player", talent = 27 }, -- Hit Scheme
+        { spell = 386276, type = "buff", unit = "player", talent = 95 }, -- Bonedust Brew
+        { spell = 386963, type = "buff", unit = "player", talent = 32 }, -- Charred Passions
+        { spell = 387184, type = "buff", unit = "player", talent = 82 }, -- Weapons of Order
+        { spell = 389684, type = "buff", unit = "player", talent = 68 }, -- Close to Heart
+        { spell = 389685, type = "buff", unit = "player", talent = 43 }, -- Generous Pour
+        { spell = 392883, type = "buff", unit = "player", talent = 56 }, -- Vivacious Vivification
+        { spell = 393515, type = "buff", unit = "player", talent = 11 }, -- Pretense of Instability
+        { spell = 394112, type = "buff", unit = "player", talent = 77 }, -- Escape from Reality
+        { spell = 389684, type = "buff", unit = "pet", talent = 68 }, -- Close to Heart
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 113746, type = "debuff", unit = "target" }, -- Mystic Touch
+        { spell = 115078, type = "debuff", unit = "target", talent = 49 }, -- Paralysis
+        { spell = 116095, type = "debuff", unit = "target", talent = 38 }, -- Disable
+        { spell = 116189, type = "debuff", unit = "target", talent = 57 }, -- Provoke
+        { spell = 117952, type = "debuff", unit = "target" }, -- Crackling Jade Lightning
+        { spell = 119381, type = "debuff", unit = "target" }, -- Leg Sweep
+        { spell = 121253, type = "debuff", unit = "target", talent = 17 }, -- Keg Smash
+        { spell = 123725, type = "debuff", unit = "target", talent = 30 }, -- Breath of Fire
+        { spell = 196608, type = "debuff", unit = "target", talent = 61 }, -- Eye of the Tiger
+        { spell = 202346, type = "debuff", unit = "target" }, -- Double Barrel
+        { spell = 312106, type = "debuff", unit = "target", talent = 82 }, -- Weapons of Order
+        { spell = 324382, type = "debuff", unit = "target", talent = 6 }, -- Clash
+        { spell = 325153, type = "debuff", unit = "target", talent = 85 }, -- Exploding Keg
+        { spell = 386276, type = "debuff", unit = "target", talent = 95 }, -- Bonedust Brew
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 100780, type = "ability", requiresTarget = true }, -- Tiger Palm
+        { spell = 100784, type = "ability", requiresTarget = true }, -- Blackout Kick
+        { spell = 101643, type = "ability", buff = true, talent = 55 }, -- Transcendence
+        { spell = 107428, type = "ability", requiresTarget = true, talent = 51 }, -- Rising Sun Kick
+        { spell = 109132, type = "ability", charges = true, talent = 93 }, -- Roll
+        { spell = 115078, type = "ability", requiresTarget = true, talent = 49 }, -- Paralysis
+        { spell = 115098, type = "ability", requiresTarget = true, talent = 70 }, -- Chi Wave
+        { spell = 115181, type = "ability", talent = 30 }, -- Breath of Fire
+        { spell = 115203, type = "ability", talent = 39 }, -- Fortifying Brew
+        { spell = 115313, type = "ability", totem = true, talent = 75 }, -- Summon Jade Serpent Statue
+        { spell = 115315, type = "ability", totem = true, talent = 78 }, -- Summon Black Ox Statue
+        { spell = 115399, type = "ability", talent = 15 }, -- Black Ox Brew
+        { spell = 115546, type = "ability", requiresTarget = true, talent = 57 }, -- Provoke
+        { spell = 116095, type = "ability", requiresTarget = true, talent = 38 }, -- Disable
+        { spell = 116705, type = "ability", requiresTarget = true, talent = 47 }, -- Spear Hand Strike
+        { spell = 116841, type = "ability", buff = true, talent = 50 }, -- Tiger's Lust
+        { spell = 116844, type = "ability", talent = 59 }, -- Ring of Peace
+        { spell = 116847, type = "ability", buff = true, talent = 91 }, -- Rushing Jade Wind
+        { spell = 117952, type = "ability", requiresTarget = true }, -- Crackling Jade Lightning
+        { spell = 119381, type = "ability" }, -- Leg Sweep
+        { spell = 119582, type = "ability", charges = true, talent = 19 }, -- Purifying Brew
+        { spell = 119996, type = "ability" }, -- Transcendence: Transfer
+        { spell = 121253, type = "ability", charges = true, requiresTarget = true, talent = 17 }, -- Keg Smash
+        { spell = 122278, type = "ability", buff = true, talent = 65 }, -- Dampen Harm
+        { spell = 122281, type = "ability", charges = true, talent = 24 }, -- Healing Elixir
+        { spell = 122783, type = "ability", buff = true, talent = 58 }, -- Diffuse Magic
+        { spell = 123986, type = "ability", talent = 71 }, -- Chi Burst
+        { spell = 126892, type = "ability" }, -- Zen Pilgrimage
+        { spell = 129597, type = "ability" }, -- Arcane Torrent
+        { spell = 132578, type = "ability", buff = true, requiresTarget = true, totem = true, talent = 87 }, -- Invoke Niuzao, the Black Ox
+        { spell = 205523, type = "ability", requiresTarget = true }, -- Blackout Kick
+        { spell = 322101, type = "ability", talent = 63 }, -- Expel Harm
+        { spell = 322109, type = "ability", requiresTarget = true, usable = true, talent = 44 }, -- Touch of Death
+        { spell = 322113, type = "ability", requiresTarget = true, talent = 44 }, -- Improved Touch of Death
+        { spell = 322507, type = "ability", buff = true, talent = 29 }, -- Celestial Brew
+        { spell = 324312, type = "ability", requiresTarget = true, talent = 6 }, -- Clash
+        { spell = 325153, type = "ability", buff = true, talent = 85 }, -- Exploding Keg
+        { spell = 328670, type = "ability", requiresTarget = true, talent = 57 }, -- Hasty Provocation
+        { spell = 386276, type = "ability", buff = true, talent = 95 }, -- Bonedust Brew
+        { spell = 387184, type = "ability", buff = true, talent = 82 }, -- Weapons of Order
+        { spell = 388686, type = "ability", totem = true, talent = 62 }, -- Summon White Tiger Statue
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 202335, type = "buff", unit = "player", pvptalent = 3, titleSuffix = L["buff"] }, -- Double Barrel
+        { spell = 354540, type = "buff", unit = "player", pvptalent = 1, titleSuffix = L["buff"] }, -- Nimble Brew
+        { spell = 202162, type = "ability", pvptalent = 4, titleSuffix = L["cooldown"] }, -- Avert Harm
+        { spell = 202335, type = "ability", buff = true, pvptalent = 3, titleSuffix = L["cooldown"] }, -- Double Barrel
+        { spell = 354540, type = "ability", buff = true, pvptalent = 1, titleSuffix = L["cooldown"] }, -- Nimble Brew
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
   [2] = { -- Mistweaver
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 101643, type = "buff", unit = "player", talent = 75 }, -- Transcendence
+        { spell = 115175, type = "buff", unit = "player", talent = 72 }, -- Soothing Mist
+        { spell = 116680, type = "buff", unit = "player", talent = 55 }, -- Thunder Focus Tea
+        { spell = 116841, type = "buff", unit = "player", talent = 70 }, -- Tiger's Lust
+        { spell = 116849, type = "buff", unit = "player", talent = 35 }, -- Life Cocoon
+        { spell = 119611, type = "buff", unit = "player", talent = 39 }, -- Renewing Mist
+        { spell = 120954, type = "buff", unit = "player", talent = 59 }, -- Fortifying Brew
+        { spell = 122278, type = "buff", unit = "player", talent = 85 }, -- Dampen Harm
+        { spell = 122783, type = "buff", unit = "player", talent = 78 }, -- Diffuse Magic
+        { spell = 124682, type = "buff", unit = "player", talent = 15 }, -- Enveloping Mist
+        { spell = 166646, type = "buff", unit = "player", talent = 80 }, -- Windwalking
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 191840, type = "buff", unit = "player", talent = 51 }, -- Essence Font
+        { spell = 196608, type = "buff", unit = "player", talent = 81 }, -- Eye of the Tiger
+        { spell = 197916, type = "buff", unit = "player" }, -- Lifecycles (Vivify)
+        { spell = 197919, type = "buff", unit = "player" }, -- Lifecycles (Enveloping Mist)
+        { spell = 198533, type = "buff", unit = "player", talent = 72 }, -- Soothing Mist
+        { spell = 202090, type = "buff", unit = "player", talent = 48 }, -- Teachings of the Monastery
+        { spell = 325209, type = "buff", unit = "player", talent = 33 }, -- Enveloping Breath
+        { spell = 343737, type = "buff", unit = "player" }, -- Soothing Breath
+        { spell = 343820, type = "buff", unit = "player", talent = 42 }, -- Invoke Chi-Ji, the Red Crane
+        { spell = 344006, type = "buff", unit = "player", talent = 51 }, -- Essence Font
+        { spell = 386276, type = "buff", unit = "player", talent = 37 }, -- Bonedust Brew
+        { spell = 387766, type = "buff", unit = "player", talent = 54 }, -- Nourishing Chi
+        { spell = 388026, type = "buff", unit = "player", talent = 52 }, -- Ancient Teachings
+        { spell = 388193, type = "buff", unit = "player", talent = 4 }, -- Faeline Stomp
+        { spell = 388220, type = "buff", unit = "player", talent = 34 }, -- Calming Coalescence
+        { spell = 388479, type = "buff", unit = "player", talent = 20 }, -- Unison
+        { spell = 388497, type = "buff", unit = "player", talent = 17 }, -- Secret Infusion
+        { spell = 388498, type = "buff", unit = "player", talent = 17 }, -- Secret Infusion
+        { spell = 388513, type = "buff", unit = "player", talent = 32 }, -- Overflowing Mists
+        { spell = 388518, type = "buff", unit = "player", talent = 11 }, -- Tea of Serenity
+        { spell = 388519, type = "buff", unit = "player", talent = 11 }, -- Tea of Serenity
+        { spell = 388555, type = "buff", unit = "player", talent = 43 }, -- Uplifted Spirits
+        { spell = 388566, type = "buff", unit = "player", talent = 10 }, -- Accumulating Mist
+        { spell = 389387, type = "buff", unit = "player", talent = 28 }, -- Awakened Faeline
+        { spell = 389391, type = "buff", unit = "player", talent = 16 }, -- Ancient Concordance
+        { spell = 389422, type = "buff", unit = "player" }, -- Yu'lon's Blessing
+        { spell = 389684, type = "buff", unit = "player", talent = 88 }, -- Close to Heart
+        { spell = 389685, type = "buff", unit = "player", talent = 63 }, -- Generous Pour
+        { spell = 392883, type = "buff", unit = "player", talent = 76 }, -- Vivacious Vivification
+        { spell = 394112, type = "buff", unit = "player", talent = 97 }, -- Escape from Reality
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 113746, type = "debuff", unit = "target" }, -- Mystic Touch
+        { spell = 115078, type = "debuff", unit = "target", talent = 69 }, -- Paralysis
+        { spell = 116189, type = "debuff", unit = "target", talent = 77 }, -- Provoke
+        { spell = 117952, type = "debuff", unit = "target" }, -- Crackling Jade Lightning
+        { spell = 119381, type = "debuff", unit = "target" }, -- Leg Sweep
+        { spell = 196608, type = "debuff", unit = "target", talent = 81 }, -- Eye of the Tiger
+        { spell = 198909, type = "debuff", unit = "target", talent = 5 }, -- Song of Chi-Ji
+        { spell = 386276, type = "debuff", unit = "target", talent = 37 }, -- Bonedust Brew
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 100780, type = "ability", requiresTarget = true }, -- Tiger Palm
+        { spell = 100784, type = "ability", requiresTarget = true }, -- Blackout Kick
+        { spell = 101643, type = "ability", buff = true, talent = 75 }, -- Transcendence
+        { spell = 107428, type = "ability", requiresTarget = true, talent = 71 }, -- Rising Sun Kick
+        { spell = 109132, type = "ability", charges = true, talent = 93 }, -- Roll
+        { spell = 115078, type = "ability", requiresTarget = true, talent = 69 }, -- Paralysis
+        { spell = 115098, type = "ability", requiresTarget = true, talent = 90 }, -- Chi Wave
+        { spell = 115151, type = "ability", charges = true, talent = 39 }, -- Renewing Mist
+        { spell = 115203, type = "ability", talent = 59 }, -- Fortifying Brew
+        { spell = 115310, type = "ability", talent = 22 }, -- Revival
+        { spell = 115313, type = "ability", totem = true, talent = 95 }, -- Summon Jade Serpent Statue
+        { spell = 115315, type = "ability", totem = true, talent = 98 }, -- Summon Black Ox Statue
+        { spell = 115546, type = "ability", requiresTarget = true, talent = 77 }, -- Provoke
+        { spell = 116680, type = "ability", buff = true, usable = true, talent = 55 }, -- Thunder Focus Tea
+        { spell = 116705, type = "ability", requiresTarget = true, talent = 67 }, -- Spear Hand Strike
+        { spell = 116841, type = "ability", buff = true, talent = 70 }, -- Tiger's Lust
+        { spell = 116844, type = "ability", talent = 79 }, -- Ring of Peace
+        { spell = 116849, type = "ability", buff = true, talent = 35 }, -- Life Cocoon
+        { spell = 117952, type = "ability", requiresTarget = true }, -- Crackling Jade Lightning
+        { spell = 119381, type = "ability" }, -- Leg Sweep
+        { spell = 119996, type = "ability", usable = true }, -- Transcendence: Transfer
+        { spell = 122278, type = "ability", buff = true, talent = 85 }, -- Dampen Harm
+        { spell = 122281, type = "ability", charges = true, talent = 19 }, -- Healing Elixir
+        { spell = 122783, type = "ability", buff = true, talent = 78 }, -- Diffuse Magic
+        { spell = 123986, type = "ability", talent = 91 }, -- Chi Burst
+        { spell = 124081, type = "ability", talent = 13 }, -- Zen Pulse
+        { spell = 126892, type = "ability", usable = true }, -- Zen Pilgrimage
+        { spell = 129597, type = "ability" }, -- Arcane Torrent
+        { spell = 191837, type = "ability", charges = true, talent = 51 }, -- Essence Font
+        { spell = 196725, type = "ability", talent = 8 }, -- Refreshing Jade Wind
+        { spell = 198898, type = "ability", talent = 5 }, -- Song of Chi-Ji
+        { spell = 322101, type = "ability", talent = 63 }, -- Expel Harm
+        { spell = 322109, type = "ability", requiresTarget = true, usable = true, talent = 64 }, -- Touch of Death
+        { spell = 322118, type = "ability", totem = true, talent = 41 }, -- Invoke Yu'lon, the Jade Serpent
+        { spell = 325197, type = "ability", totem = true, talent = 42 }, -- Invoke Chi-Ji, the Red Crane
+        { spell = 386276, type = "ability", buff = true, talent = 37 }, -- Bonedust Brew
+        { spell = 388193, type = "ability", buff = true, talent = 4 }, -- Faeline Stomp
+        { spell = 388686, type = "ability", totem = true, talent = 82 }, -- Summon White Tiger Statue
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 209584, type = "buff", unit = "player", pvptalent = 2, titleSuffix = L["buff"] }, -- Zen Focus Tea
+        { spell = 202370, type = "ability", requiresTarget = true, pvptalent = 4, titleSuffix = L["cooldown"] }, -- Mighty Ox Kick
+        { spell = 205234, type = "ability", charges = true, pvptalent = 8, titleSuffix = L["cooldown"] }, -- Healing Sphere
+        { spell = 209584, type = "ability", buff = true, pvptalent = 2, titleSuffix = L["cooldown"] }, -- Zen Focus Tea
+        { spell = 233759, type = "ability", requiresTarget = true, pvptalent = 1, titleSuffix = L["cooldown"] }, -- Grapple Weapon
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
   [3] = { -- Windwalker
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 101643, type = "buff", unit = "player", talent = 67 }, -- Transcendence
+        { spell = 115175, type = "buff", unit = "player", talent = 64 }, -- Soothing Mist
+        { spell = 116768, type = "buff", unit = "player" }, -- Blackout Kick!
+        { spell = 116841, type = "buff", unit = "player", talent = 62 }, -- Tiger's Lust
+        { spell = 116847, type = "buff", unit = "player", talent = 24 }, -- Rushing Jade Wind
+        { spell = 120954, type = "buff", unit = "player", talent = 51 }, -- Fortifying Brew
+        { spell = 122278, type = "buff", unit = "player", talent = 77 }, -- Dampen Harm
+        { spell = 122783, type = "buff", unit = "player", talent = 70 }, -- Diffuse Magic
+        { spell = 125174, type = "buff", unit = "player", talent = 8 }, -- Touch of Karma
+        { spell = 125883, type = "buff", unit = "player" }, -- Zen Flight
+        { spell = 129914, type = "buff", unit = "player", talent = 12 }, -- Power Strikes
+        { spell = 137639, type = "buff", unit = "player", talent = 16 }, -- Storm, Earth, and Fire
+        { spell = 152173, type = "buff", unit = "player", talent = 17 }, -- Serenity
+        { spell = 166646, type = "buff", unit = "player", talent = 72 }, -- Windwalking
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 195321, type = "buff", unit = "player", talent = 31 }, -- Transfer the Power
+        { spell = 196608, type = "buff", unit = "player", talent = 73 }, -- Eye of the Tiger
+        { spell = 196741, type = "buff", unit = "player", talent = 47 }, -- Hit Combo
+        { spell = 196742, type = "buff", unit = "player", talent = 29 }, -- Whirling Dragon Punch
+        { spell = 202090, type = "buff", unit = "player", talent = 14 }, -- Teachings of the Monastery
+        { spell = 248646, type = "buff", unit = "player" }, -- Tigereye Brew
+        { spell = 287062, type = "buff", unit = "player", talent = 27 }, -- Fury of Xuen
+        { spell = 325202, type = "buff", unit = "player", talent = 25 }, -- Dance of Chi-Ji
+        { spell = 365080, type = "buff", unit = "player", talent = 72 }, -- Windwalking
+        { spell = 386276, type = "buff", unit = "player", talent = 40 }, -- Bonedust Brew
+        { spell = 388193, type = "buff", unit = "player", talent = 43 }, -- Faeline Stomp
+        { spell = 388663, type = "buff", unit = "player", talent = 32 }, -- Invoker's Delight
+        { spell = 389684, type = "buff", unit = "player", talent = 80 }, -- Close to Heart
+        { spell = 389685, type = "buff", unit = "player", talent = 55 }, -- Generous Pour
+        { spell = 391312, type = "buff", unit = "player" }, -- Wrapped Up In Weaving
+        { spell = 392883, type = "buff", unit = "player", talent = 68 }, -- Vivacious Vivification
+        { spell = 393039, type = "buff", unit = "player" }, -- The Emperor's Capacitor
+        { spell = 393053, type = "buff", unit = "player" }, -- Pressure Point
+        { spell = 393057, type = "buff", unit = "player" }, -- Chi Energy
+        { spell = 393565, type = "buff", unit = "player", talent = 45 }, -- Thunderfist
+        { spell = 394112, type = "buff", unit = "player", talent = 89 }, -- Escape from Reality
+        { spell = 395413, type = "buff", unit = "player" }, -- Fae Exposure
+        { spell = 396167, type = "buff", unit = "player", talent = 27 }, -- Fury of Xuen
+        { spell = 396168, type = "buff", unit = "player", talent = 27 }, -- Fury of Xuen
+        { spell = 389684, type = "buff", unit = "pet", talent = 80 }, -- Close to Heart
+        { spell = 389685, type = "buff", unit = "pet", talent = 55 }, -- Generous Pour
+        { spell = 395413, type = "buff", unit = "pet" }, -- Fae Exposure
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 113746, type = "debuff", unit = "target" }, -- Mystic Touch
+        { spell = 115804, type = "debuff", unit = "target" }, -- Mortal Wounds
+        { spell = 116095, type = "debuff", unit = "target", talent = 50 }, -- Disable
+        { spell = 116189, type = "debuff", unit = "target", talent = 69 }, -- Provoke
+        { spell = 116706, type = "debuff", unit = "target", talent = 50 }, -- Disable
+        { spell = 117952, type = "debuff", unit = "target" }, -- Crackling Jade Lightning
+        { spell = 119381, type = "debuff", unit = "target" }, -- Leg Sweep
+        { spell = 122470, type = "debuff", unit = "target", talent = 8 }, -- Touch of Karma
+        { spell = 196608, type = "debuff", unit = "target", talent = 73 }, -- Eye of the Tiger
+        { spell = 201787, type = "debuff", unit = "target" }, -- Heavy-Handed Strikes
+        { spell = 228287, type = "debuff", unit = "target", talent = 72 }, -- Mark of the Crane
+        { spell = 386276, type = "debuff", unit = "target", talent = 40 }, -- Bonedust Brew
+        { spell = 392983, type = "debuff", unit = "target", talent = 46 }, -- Strike of the Windlord
+        { spell = 393047, type = "debuff", unit = "target", talent = 34 }, -- Skyreach
+        { spell = 393050, type = "debuff", unit = "target" }, -- Skyreach Exhaustion
+        { spell = 395414, type = "debuff", unit = "target" }, -- Fae Exposure
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 100780, type = "ability", overlayGlow = true, requiresTarget = true }, -- Tiger Palm
+        { spell = 100784, type = "ability", overlayGlow = true, requiresTarget = true }, -- Blackout Kick
+        { spell = 101545, type = "ability", talent = 20 }, -- Flying Serpent Kick
+        { spell = 101546, type = "ability", charges = true, overlayGlow = true }, -- Spinning Crane Kick
+        { spell = 101643, type = "ability", buff = true, talent = 67 }, -- Transcendence
+        { spell = 107428, type = "ability", requiresTarget = true, talent = 63 }, -- Rising Sun Kick
+        { spell = 109132, type = "ability", charges = true, talent = 93 }, -- Roll
+        { spell = 113656, type = "ability", requiresTarget = true, totem = true, talent = 11 }, -- Fists of Fury
+        { spell = 115078, type = "ability", requiresTarget = true, talent = 61 }, -- Paralysis
+        { spell = 115098, type = "ability", requiresTarget = true, talent = 82 }, -- Chi Wave
+        { spell = 115203, type = "ability", talent = 51 }, -- Fortifying Brew
+        { spell = 115313, type = "ability", totem = true, talent = 87 }, -- Summon Jade Serpent Statue
+        { spell = 115315, type = "ability", totem = true, talent = 90 }, -- Summon Black Ox Statue
+        { spell = 115546, type = "ability", requiresTarget = true, talent = 69 }, -- Provoke
+        { spell = 116095, type = "ability", requiresTarget = true, talent = 50 }, -- Disable
+        { spell = 116705, type = "ability", requiresTarget = true, talent = 59 }, -- Spear Hand Strike
+        { spell = 116841, type = "ability", buff = true, talent = 62 }, -- Tiger's Lust
+        { spell = 116844, type = "ability", talent = 71 }, -- Ring of Peace
+        { spell = 116847, type = "ability", buff = true, talent = 24 }, -- Rushing Jade Wind
+        { spell = 117952, type = "ability", requiresTarget = true }, -- Crackling Jade Lightning
+        { spell = 119381, type = "ability" }, -- Leg Sweep
+        { spell = 119996, type = "ability" }, -- Transcendence: Transfer
+        { spell = 122278, type = "ability", buff = true, talent = 77 }, -- Dampen Harm
+        { spell = 122470, type = "ability", requiresTarget = true, talent = 8 }, -- Touch of Karma
+        { spell = 122783, type = "ability", buff = true, talent = 70 }, -- Diffuse Magic
+        { spell = 123904, type = "ability", requiresTarget = true, totem = true, talent = 28 }, -- Invoke Xuen, the White Tiger
+        { spell = 123986, type = "ability", talent = 83 }, -- Chi Burst
+        { spell = 126892, type = "ability", usable = true }, -- Zen Pilgrimage
+        { spell = 129597, type = "ability" }, -- Arcane Torrent
+        { spell = 137639, type = "ability", charges = true, buff = true, talent = 16 }, -- Storm, Earth, and Fire
+        { spell = 152173, type = "ability", buff = true, talent = 17 }, -- Serenity
+        { spell = 152175, type = "ability", talent = 29 }, -- Whirling Dragon Punch
+        { spell = 205320, type = "ability", requiresTarget = true, talent = 41 }, -- Strike of the Windlord
+        { spell = 221771, type = "ability" }, -- Storm, Earth, and Fire: Fixate
+        { spell = 322101, type = "ability", talent = 63 }, -- Expel Harm
+        { spell = 322109, type = "ability", requiresTarget = true, usable = true, talent = 56 }, -- Touch of Death
+        { spell = 322113, type = "ability", requiresTarget = true, talent = 56 }, -- Improved Touch of Death
+        { spell = 328670, type = "ability", requiresTarget = true, talent = 69 }, -- Hasty Provocation
+        { spell = 344359, type = "ability", requiresTarget = true, talent = 60 }, -- Improved Paralysis
+        { spell = 386276, type = "ability", buff = true, talent = 40 }, -- Bonedust Brew
+        { spell = 388193, type = "ability", buff = true, overlayGlow = true, talent = 43 }, -- Faeline Stomp
+        { spell = 388686, type = "ability", totem = true, talent = 74 }, -- Summon White Tiger Statue
+        { spell = 392983, type = "ability", requiresTarget = true, talent = 46 }, -- Strike of the Windlord
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 247483, type = "buff", unit = "player", pvptalent = 2, titleSuffix = L["buff"] }, -- Tigereye Brew
+        { spell = 202370, type = "ability", requiresTarget = true, pvptalent = 10, titleSuffix = L["cooldown"] }, -- Mighty Ox Kick
+        { spell = 233759, type = "ability", requiresTarget = true, pvptalent = 9, titleSuffix = L["cooldown"] }, -- Grapple Weapon
+        { spell = 247483, type = "ability", charges = true, buff = true, overlayGlow = true, pvptalent = 2, titleSuffix = L["cooldown"] }, -- Tigereye Brew
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
 }
 
