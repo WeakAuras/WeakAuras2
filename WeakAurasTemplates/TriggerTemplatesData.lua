@@ -989,10 +989,470 @@ templates.class.PALADIN = {
 
 templates.class.HUNTER = {
   [1] = { -- Beast Master
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 5384, type = "buff", unit = "player" }, -- Feign Death
+        { spell = 6197, type = "buff", unit = "player" }, -- Eagle Eye
+        { spell = 19574, type = "buff", unit = "player", talent = 71 }, -- Bestial Wrath
+        { spell = 34477, type = "buff", unit = "player", talent = 38 }, -- Misdirection
+        { spell = 35079, type = "buff", unit = "player", talent = 38 }, -- Misdirection
+        { spell = 118922, type = "buff", unit = "player", talent = 35 }, -- Posthaste
+        { spell = 186257, type = "buff", unit = "player" }, -- Aspect of the Cheetah
+        { spell = 186258, type = "buff", unit = "player" }, -- Aspect of the Cheetah
+        { spell = 186265, type = "buff", unit = "player" }, -- Aspect of the Turtle
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 193530, type = "buff", unit = "player", talent = 66 }, -- Aspect of the Wild
+        { spell = 199483, type = "buff", unit = "player", talent = 47 }, -- Camouflage
+        { spell = 202748, type = "buff", unit = "player" }, -- Survival Tactics
+        { spell = 212704, type = "buff", unit = "player" }, -- The Beast Within
+        { spell = 231390, type = "buff", unit = "player", talent = 44 }, -- Trailblazer
+        { spell = 246152, type = "buff", unit = "player", talent = 86 }, -- Barbed Shot
+        { spell = 246851, type = "buff", unit = "player", talent = 86 }, -- Barbed Shot
+        { spell = 246852, type = "buff", unit = "player", talent = 86 }, -- Barbed Shot
+        { spell = 246853, type = "buff", unit = "player", talent = 86 }, -- Barbed Shot
+        { spell = 248519, type = "buff", unit = "player" }, -- Interlope
+        { spell = 257946, type = "buff", unit = "player", talent = 82 }, -- Thrill of the Hunt
+        { spell = 264656, type = "buff", unit = "player", talent = 32 }, -- Pathfinding
+        { spell = 264663, type = "buff", unit = "player" }, -- Predator's Thirst
+        { spell = 264667, type = "buff", unit = "player" }, -- Primal Rage
+        { spell = 264735, type = "buff", unit = "player", talent = 9 }, -- Survival of the Fittest
+        { spell = 268877, type = "buff", unit = "player", talent = 72 }, -- Beast Cleave
+        { spell = 281036, type = "buff", unit = "player", talent = 75 }, -- Dire Beast
+        { spell = 321297, type = "buff", unit = "player" }, -- Eyes of the Beast
+        { spell = 359844, type = "buff", unit = "player", talent = 85 }, -- Call of the Wild
+        { spell = 361582, type = "buff", unit = "player", talent = 85 }, -- Call of the Wild
+        { spell = 378215, type = "buff", unit = "player", talent = 67 }, -- Hunter's Prey
+        { spell = 385540, type = "buff", unit = "player", talent = 20 }, -- Rejuvenating Wind
+        { spell = 388045, type = "buff", unit = "player", talent = 6 }, -- Sentinel Owl
+        { spell = 392296, type = "buff", unit = "player", talent = 55 }, -- Cobra Sting
+        { spell = 248519, type = "buff", unit = "target" }, -- Interlope
+        { spell = 264663, type = "buff", unit = "target" }, -- Predator's Thirst
+        { spell = 136, type = "buff", unit = "pet" }, -- Mend Pet
+        { spell = 34477, type = "buff", unit = "pet", talent = 38 }, -- Misdirection
+        { spell = 35079, type = "buff", unit = "pet", talent = 38 }, -- Misdirection
+        { spell = 61684, type = "buff", unit = "pet" }, -- Dash
+        { spell = 118455, type = "buff", unit = "pet", talent = 72 }, -- Beast Cleave
+        { spell = 186254, type = "buff", unit = "pet", talent = 71 }, -- Bestial Wrath
+        { spell = 199483, type = "buff", unit = "pet", talent = 47 }, -- Camouflage
+        { spell = 212704, type = "buff", unit = "pet" }, -- The Beast Within
+        { spell = 248519, type = "buff", unit = "pet" }, -- Interlope
+        { spell = 264360, type = "buff", unit = "pet" }, -- Winged Agility
+        { spell = 264663, type = "buff", unit = "pet" }, -- Predator's Thirst
+        { spell = 264735, type = "buff", unit = "pet", talent = 9 }, -- Survival of the Fittest
+        { spell = 272790, type = "buff", unit = "pet" }, -- Frenzy
+        { spell = 321297, type = "buff", unit = "pet" }, -- Eyes of the Beast
+        { spell = 392054, type = "buff", unit = "pet", talent = 78 }, -- Piercing Fangs
+        { spell = 393774, type = "buff", unit = "pet", talent = 4 }, -- Sentinel's Perception
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 2649, type = "debuff", unit = "target" }, -- Growl
+        { spell = 3355, type = "debuff", unit = "target" }, -- Freezing Trap
+        { spell = 5116, type = "debuff", unit = "target", talent = 17 }, -- Concussive Shot
+        { spell = 24394, type = "debuff", unit = "target", talent = 21 }, -- Intimidation
+        { spell = 117405, type = "debuff", unit = "target", talent = 51 }, -- Binding Shot
+        { spell = 131894, type = "debuff", unit = "target", talent = 57 }, -- A Murder of Crows
+        { spell = 135299, type = "debuff", unit = "target", talent = 42 }, -- Tar Trap
+        { spell = 162480, type = "debuff", unit = "target", talent = 19 }, -- Steel Trap
+        { spell = 162487, type = "debuff", unit = "target", talent = 19 }, -- Steel Trap
+        { spell = 209967, type = "debuff", unit = "target" }, -- Dire Beast: Basilisk
+        { spell = 212431, type = "debuff", unit = "target", talent = 27 }, -- Explosive Shot
+        { spell = 213691, type = "debuff", unit = "target", talent = 50 }, -- Scatter Shot
+        { spell = 217200, type = "debuff", unit = "target", talent = 86 }, -- Barbed Shot
+        { spell = 236777, type = "debuff", unit = "target", talent = 22 }, -- High Explosive Trap
+        { spell = 257284, type = "debuff", unit = "target" }, -- Hunter's Mark
+        { spell = 269576, type = "debuff", unit = "target", talent = 26 }, -- Master Marksman
+        { spell = 271788, type = "debuff", unit = "target", talent = 16 }, -- Serpent Sting
+        { spell = 321469, type = "debuff", unit = "target", talent = 34 }, -- Binding Shackles
+        { spell = 321538, type = "debuff", unit = "target", talent = 58 }, -- Bloodshed
+        { spell = 356723, type = "debuff", unit = "target" }, -- Scorpid Venom
+        { spell = 356727, type = "debuff", unit = "target" }, -- Spider Venom
+        { spell = 356730, type = "debuff", unit = "target" }, -- Viper Venom
+        { spell = 375893, type = "debuff", unit = "target", talent = 30 }, -- Death Chakram
+        { spell = 378015, type = "debuff", unit = "target" }, -- Latent Poison
+        { spell = 390232, type = "debuff", unit = "target", talent = 2 }, -- Arctic Bola
+        { spell = 392061, type = "debuff", unit = "target", talent = 52 }, -- Wailing Arrow
+        { spell = 393456, type = "debuff", unit = "target", talent = 87 }, -- Entrapment
+        { spell = 393480, type = "debuff", unit = "target" }, -- Sentinel
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 781, type = "ability" }, -- Disengage
+        { spell = 1543, type = "ability" }, -- Flare
+        { spell = 2643, type = "ability", requiresTarget = true, talent = 31 }, -- Multi-Shot
+        { spell = 2649, type = "ability" }, -- Growl
+        { spell = 5116, type = "ability", requiresTarget = true, talent = 17 }, -- Concussive Shot
+        { spell = 5384, type = "ability", buff = true, usable = true }, -- Feign Death
+        { spell = 17253, type = "ability" }, -- Bite
+        { spell = 19574, type = "ability", buff = true, talent = 71 }, -- Bestial Wrath
+        { spell = 19577, type = "ability", talent = 21 }, -- Intimidation
+        { spell = 19801, type = "ability", requiresTarget = true, talent = 18 }, -- Tranquilizing Shot
+        { spell = 34026, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 48 }, -- Kill Command
+        { spell = 34477, type = "ability", buff = true, buff = true, unit = 'pet', talent = 38 }, -- Misdirection
+        { spell = 53351, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 13 }, -- Kill Shot
+        { spell = 61684, type = "ability", buff = true, unit = 'pet' }, -- Dash
+        { spell = 80483, type = "ability" }, -- Arcane Torrent
+        { spell = 109248, type = "ability", talent = 51 }, -- Binding Shot
+        { spell = 109304, type = "ability" }, -- Exhilaration
+        { spell = 120360, type = "ability", talent = 28 }, -- Barrage
+        { spell = 120679, type = "ability", requiresTarget = true, talent = 75 }, -- Dire Beast
+        { spell = 131894, type = "ability", requiresTarget = true, talent = 57 }, -- A Murder of Crows
+        { spell = 147362, type = "ability", requiresTarget = true, talent = 25 }, -- Counter Shot
+        { spell = 162488, type = "ability", talent = 19 }, -- Steel Trap
+        { spell = 185358, type = "ability", requiresTarget = true }, -- Arcane Shot
+        { spell = 186257, type = "ability", buff = true }, -- Aspect of the Cheetah
+        { spell = 186265, type = "ability", buff = true }, -- Aspect of the Turtle
+        { spell = 187650, type = "ability" }, -- Freezing Trap
+        { spell = 187698, type = "ability", talent = 42 }, -- Tar Trap
+        { spell = 193455, type = "ability", requiresTarget = true, talent = 65 }, -- Cobra Shot
+        { spell = 193530, type = "ability", buff = true, requiresTarget = true, talent = 66 }, -- Aspect of the Wild
+        { spell = 199483, type = "ability", buff = true, buff = true, unit = 'pet', talent = 47 }, -- Camouflage
+        { spell = 201430, type = "ability", talent = 29 }, -- Stampede
+        { spell = 212431, type = "ability", requiresTarget = true, talent = 27 }, -- Explosive Shot
+        { spell = 213691, type = "ability", requiresTarget = true, talent = 50 }, -- Scatter Shot
+        { spell = 217200, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 86 }, -- Barbed Shot
+        { spell = 236776, type = "ability", talent = 22 }, -- High Explosive Trap
+        { spell = 257284, type = "ability", requiresTarget = true }, -- Hunter's Mark
+        { spell = 257620, type = "ability", requiresTarget = true, talent = 18 }, -- Multi-Shot
+        { spell = 259489, type = "ability", requiresTarget = true, talent = 18 }, -- Kill Command
+        { spell = 264360, type = "ability", buff = true, unit = 'pet' }, -- Winged Agility
+        { spell = 264667, type = "ability", buff = true }, -- Primal Rage
+        { spell = 264735, type = "ability", buff = true, buff = true, unit = 'pet', talent = 9 }, -- Survival of the Fittest
+        { spell = 271788, type = "ability", requiresTarget = true, talent = 16 }, -- Serpent Sting
+        { spell = 272678, type = "ability" }, -- Primal Rage
+        { spell = 320976, type = "ability", requiresTarget = true, talent = 16 }, -- Kill Shot
+        { spell = 321530, type = "ability", requiresTarget = true, talent = 58 }, -- Bloodshed
+        { spell = 359844, type = "ability", buff = true, requiresTarget = true, talent = 85 }, -- Call of the Wild
+        { spell = 375891, type = "ability", requiresTarget = true, talent = 30 }, -- Death Chakram
+        { spell = 388045, type = "ability", charges = true, buff = true, talent = 6 }, -- Sentinel Owl
+        { spell = 392060, type = "ability", requiresTarget = true, talent = 52 }, -- Wailing Arrow
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 53480, type = "buff", unit = "player", pvptalent = 3, titleSuffix = L["buff"] }, -- Roar of Sacrifice
+        { spell = 53480, type = "ability", buff = true, pvptalent = 3, titleSuffix = L["cooldown"] }, -- Roar of Sacrifice
+        { spell = 205691, type = "ability", requiresTarget = true, pvptalent = 12, titleSuffix = L["cooldown"] }, -- Dire Beast: Basilisk
+        { spell = 208652, type = "ability", pvptalent = 11, titleSuffix = L["cooldown"] }, -- Dire Beast: Hawk
+        { spell = 248518, type = "ability", pvptalent = 4, titleSuffix = L["cooldown"] }, -- Interlope
+        { spell = 356719, type = "ability", requiresTarget = true, pvptalent = 2, titleSuffix = L["cooldown"] }, -- Chimaeral Sting
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
   [2] = { -- Marksmanship
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 5384, type = "buff", unit = "player" }, -- Feign Death
+        { spell = 34477, type = "buff", unit = "player", talent = 78 }, -- Misdirection
+        { spell = 35079, type = "buff", unit = "player", talent = 78 }, -- Misdirection
+        { spell = 118922, type = "buff", unit = "player", talent = 75 }, -- Posthaste
+        { spell = 186257, type = "buff", unit = "player" }, -- Aspect of the Cheetah
+        { spell = 186258, type = "buff", unit = "player" }, -- Aspect of the Cheetah
+        { spell = 186265, type = "buff", unit = "player" }, -- Aspect of the Turtle
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 193534, type = "buff", unit = "player", talent = 39 }, -- Steady Focus
+        { spell = 194594, type = "buff", unit = "player", talent = 32 }, -- Lock and Load
+        { spell = 231390, type = "buff", unit = "player", talent = 84 }, -- Trailblazer
+        { spell = 257622, type = "buff", unit = "player", talent = 23 }, -- Trick Shots
+        { spell = 260242, type = "buff", unit = "player", talent = 25 }, -- Precise Shots
+        { spell = 260243, type = "buff", unit = "player", talent = 38 }, -- Volley
+        { spell = 260402, type = "buff", unit = "player", talent = 22 }, -- Double Tap
+        { spell = 264656, type = "buff", unit = "player", talent = 72 }, -- Pathfinding
+        { spell = 264663, type = "buff", unit = "player" }, -- Predator's Thirst
+        { spell = 264667, type = "buff", unit = "player" }, -- Primal Rage
+        { spell = 264735, type = "buff", unit = "player", talent = 11 }, -- Survival of the Fittest
+        { spell = 288613, type = "buff", unit = "player", talent = 30 }, -- Trueshot
+        { spell = 342076, type = "buff", unit = "player", talent = 41 }, -- Streamline
+        { spell = 378770, type = "buff", unit = "player", talent = 31 }, -- Deathblow
+        { spell = 385540, type = "buff", unit = "player", talent = 61 }, -- Rejuvenating Wind
+        { spell = 386875, type = "buff", unit = "player", talent = 37 }, -- Bombardment
+        { spell = 386877, type = "buff", unit = "player", talent = 52 }, -- Unerring Vision
+        { spell = 388045, type = "buff", unit = "player", talent = 8 }, -- Sentinel Owl
+        { spell = 388998, type = "buff", unit = "player", talent = 13 }, -- Razor Fragments
+        { spell = 389450, type = "buff", unit = "player", talent = 50 }, -- Eagletalon's True Focus
+        { spell = 393777, type = "buff", unit = "player", talent = 7 }, -- Sentinel's Protection
+        { spell = 136, type = "buff", unit = "pet" }, -- Mend Pet
+        { spell = 34477, type = "buff", unit = "pet", talent = 78 }, -- Misdirection
+        { spell = 61684, type = "buff", unit = "pet" }, -- Dash
+        { spell = 186258, type = "buff", unit = "pet" }, -- Aspect of the Cheetah
+        { spell = 264360, type = "buff", unit = "pet" }, -- Winged Agility
+        { spell = 264656, type = "buff", unit = "pet", talent = 72 }, -- Pathfinding
+        { spell = 264663, type = "buff", unit = "pet" }, -- Predator's Thirst
+        { spell = 264735, type = "buff", unit = "pet", talent = 11 }, -- Survival of the Fittest
+        { spell = 356781, type = "buff", unit = "pet" }, -- Aspect of the Cheetah
+        { spell = 393774, type = "buff", unit = "pet", talent = 6 }, -- Sentinel's Perception
+        { spell = 393777, type = "buff", unit = "pet", talent = 7 }, -- Sentinel's Protection
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 2649, type = "debuff", unit = "target" }, -- Growl
+        { spell = 3355, type = "debuff", unit = "target" }, -- Freezing Trap
+        { spell = 5116, type = "debuff", unit = "target", talent = 58 }, -- Concussive Shot
+        { spell = 24394, type = "debuff", unit = "target", talent = 62 }, -- Intimidation
+        { spell = 117405, type = "debuff", unit = "target", talent = 90 }, -- Binding Shot
+        { spell = 135299, type = "debuff", unit = "target", talent = 82 }, -- Tar Trap
+        { spell = 162480, type = "debuff", unit = "target", talent = 60 }, -- Steel Trap
+        { spell = 162487, type = "debuff", unit = "target", talent = 60 }, -- Steel Trap
+        { spell = 201594, type = "debuff", unit = "target", talent = 70 }, -- Stampede
+        { spell = 212431, type = "debuff", unit = "target", talent = 67 }, -- Explosive Shot
+        { spell = 213691, type = "debuff", unit = "target", talent = 89 }, -- Scatter Shot
+        { spell = 236777, type = "debuff", unit = "target", talent = 63 }, -- High Explosive Trap
+        { spell = 257044, type = "debuff", unit = "target", talent = 28 }, -- Rapid Fire
+        { spell = 257284, type = "debuff", unit = "target" }, -- Hunter's Mark
+        { spell = 269576, type = "debuff", unit = "target", talent = 66 }, -- Master Marksman
+        { spell = 271788, type = "debuff", unit = "target", talent = 57 }, -- Serpent Sting
+        { spell = 321469, type = "debuff", unit = "target", talent = 74 }, -- Binding Shackles
+        { spell = 356723, type = "debuff", unit = "target" }, -- Scorpid Venom
+        { spell = 356727, type = "debuff", unit = "target" }, -- Spider Venom
+        { spell = 356730, type = "debuff", unit = "target" }, -- Viper Venom
+        { spell = 375893, type = "debuff", unit = "target", talent = 71 }, -- Death Chakram
+        { spell = 378015, type = "debuff", unit = "target" }, -- Latent Poison
+        { spell = 385638, type = "debuff", unit = "target", talent = 13 }, -- Razor Fragments
+        { spell = 390232, type = "debuff", unit = "target", talent = 4 }, -- Arctic Bola
+        { spell = 392061, type = "debuff", unit = "target", talent = 33 }, -- Wailing Arrow
+        { spell = 393456, type = "debuff", unit = "target", talent = 91 }, -- Entrapment
+        { spell = 393480, type = "debuff", unit = "target" }, -- Sentinel
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 781, type = "ability" }, -- Disengage
+        { spell = 1543, type = "ability" }, -- Flare
+        { spell = 2643, type = "ability", requiresTarget = true, talent = 31 }, -- Multi-Shot
+        { spell = 2649, type = "ability" }, -- Growl
+        { spell = 5116, type = "ability", requiresTarget = true, talent = 58 }, -- Concussive Shot
+        { spell = 5384, type = "ability", buff = true, usable = true }, -- Feign Death
+        { spell = 17253, type = "ability" }, -- Bite
+        { spell = 19434, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 21 }, -- Aimed Shot
+        { spell = 19577, type = "ability", talent = 62 }, -- Intimidation
+        { spell = 19801, type = "ability", requiresTarget = true, talent = 59 }, -- Tranquilizing Shot
+        { spell = 34026, type = "ability", charges = true, requiresTarget = true, talent = 17 }, -- Kill Command
+        { spell = 34477, type = "ability", buff = true, buff = true, unit = 'pet', usable = true, talent = 78 }, -- Misdirection
+        { spell = 53351, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, usable = true, talent = 15 }, -- Kill Shot
+        { spell = 56641, type = "ability", requiresTarget = true }, -- Steady Shot
+        { spell = 61684, type = "ability", buff = true, unit = 'pet' }, -- Dash
+        { spell = 80483, type = "ability" }, -- Arcane Torrent
+        { spell = 109248, type = "ability", talent = 90 }, -- Binding Shot
+        { spell = 109304, type = "ability" }, -- Exhilaration
+        { spell = 120360, type = "ability", talent = 68 }, -- Barrage
+        { spell = 147362, type = "ability", requiresTarget = true, talent = 16 }, -- Counter Shot
+        { spell = 162488, type = "ability", talent = 60 }, -- Steel Trap
+        { spell = 185358, type = "ability", charges = true, overlayGlow = true, requiresTarget = true }, -- Arcane Shot
+        { spell = 186257, type = "ability", buff = true }, -- Aspect of the Cheetah
+        { spell = 186265, type = "ability", buff = true }, -- Aspect of the Turtle
+        { spell = 186387, type = "ability", talent = 20 }, -- Bursting Shot
+        { spell = 187650, type = "ability" }, -- Freezing Trap
+        { spell = 187698, type = "ability", talent = 82 }, -- Tar Trap
+        { spell = 201430, type = "ability", talent = 70 }, -- Stampede
+        { spell = 212431, type = "ability", requiresTarget = true, talent = 67 }, -- Explosive Shot
+        { spell = 213691, type = "ability", requiresTarget = true, talent = 89 }, -- Scatter Shot
+        { spell = 236776, type = "ability", talent = 63 }, -- High Explosive Trap
+        { spell = 257044, type = "ability", requiresTarget = true, talent = 28 }, -- Rapid Fire
+        { spell = 257284, type = "ability", requiresTarget = true }, -- Hunter's Mark
+        { spell = 257620, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 18 }, -- Multi-Shot
+        { spell = 260243, type = "ability", buff = true, talent = 38 }, -- Volley
+        { spell = 260402, type = "ability", buff = true, talent = 22 }, -- Double Tap
+        { spell = 264360, type = "ability", buff = true, unit = 'pet' }, -- Winged Agility
+        { spell = 264667, type = "ability", buff = true }, -- Primal Rage
+        { spell = 264735, type = "ability", buff = true, buff = true, unit = 'pet', talent = 11 }, -- Survival of the Fittest
+        { spell = 271788, type = "ability", requiresTarget = true, talent = 57 }, -- Serpent Sting
+        { spell = 272678, type = "ability" }, -- Primal Rage
+        { spell = 288613, type = "ability", buff = true, talent = 30 }, -- Trueshot
+        { spell = 342049, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 69 }, -- Chimaera Shot
+        { spell = 375891, type = "ability", requiresTarget = true, talent = 71 }, -- Death Chakram
+        { spell = 388045, type = "ability", charges = true, buff = true, talent = 8 }, -- Sentinel Owl
+        { spell = 392060, type = "ability", requiresTarget = true, talent = 33 }, -- Wailing Arrow
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 53480, type = "buff", unit = "player", pvptalent = 8, titleSuffix = L["buff"] }, -- Roar of Sacrifice
+        { spell = 203155, type = "buff", unit = "player", pvptalent = 1, titleSuffix = L["buff"] }, -- Sniper Shot
+        { spell = 356707, type = "buff", unit = "player", pvptalent = 7, titleSuffix = L["buff"] }, -- Wild Kingdom
+        { spell = 53480, type = "ability", buff = true, pvptalent = 8, titleSuffix = L["cooldown"] }, -- Roar of Sacrifice
+        { spell = 203155, type = "ability", buff = true, requiresTarget = true, pvptalent = 1, titleSuffix = L["cooldown"] }, -- Sniper Shot
+        { spell = 356707, type = "ability", buff = true, pvptalent = 7, titleSuffix = L["cooldown"] }, -- Wild Kingdom
+        { spell = 356719, type = "ability", requiresTarget = true, pvptalent = 4, titleSuffix = L["cooldown"] }, -- Chimaeral Sting
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
   [3] = { -- Survival
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 5384, type = "buff", unit = "player" }, -- Feign Death
+        { spell = 34477, type = "buff", unit = "player", talent = 73 }, -- Misdirection
+        { spell = 35079, type = "buff", unit = "player", talent = 73 }, -- Misdirection
+        { spell = 186257, type = "buff", unit = "player" }, -- Aspect of the Cheetah
+        { spell = 186258, type = "buff", unit = "player" }, -- Aspect of the Cheetah
+        { spell = 186265, type = "buff", unit = "player" }, -- Aspect of the Turtle
+        { spell = 186289, type = "buff", unit = "player", talent = 36 }, -- Aspect of the Eagle
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 231390, type = "buff", unit = "player", talent = 79 }, -- Trailblazer
+        { spell = 259388, type = "buff", unit = "player" }, -- Mongoose Fury
+        { spell = 260249, type = "buff", unit = "player", talent = 38 }, -- Bloodseeker
+        { spell = 260286, type = "buff", unit = "player", talent = 28 }, -- Tip of the Spear
+        { spell = 264656, type = "buff", unit = "player", talent = 67 }, -- Pathfinding
+        { spell = 264663, type = "buff", unit = "player" }, -- Predator's Thirst
+        { spell = 264667, type = "buff", unit = "player" }, -- Primal Rage
+        { spell = 264735, type = "buff", unit = "player", talent = 8 }, -- Survival of the Fittest
+        { spell = 265898, type = "buff", unit = "player", talent = 41 }, -- Terms of Engagement
+        { spell = 360952, type = "buff", unit = "player", talent = 45 }, -- Coordinated Assault
+        { spell = 360966, type = "buff", unit = "player", talent = 46 }, -- Spearhead
+        { spell = 361738, type = "buff", unit = "player", talent = 45 }, -- Coordinated Assault
+        { spell = 388045, type = "buff", unit = "player", talent = 5 }, -- Sentinel Owl
+        { spell = 260249, type = "buff", unit = "target", talent = 38 }, -- Bloodseeker
+        { spell = 264663, type = "buff", unit = "target" }, -- Predator's Thirst
+        { spell = 136, type = "buff", unit = "pet" }, -- Mend Pet
+        { spell = 34477, type = "buff", unit = "pet", talent = 73 }, -- Misdirection
+        { spell = 61684, type = "buff", unit = "pet" }, -- Dash
+        { spell = 186258, type = "buff", unit = "pet" }, -- Aspect of the Cheetah
+        { spell = 260249, type = "buff", unit = "pet", talent = 38 }, -- Bloodseeker
+        { spell = 264656, type = "buff", unit = "pet", talent = 67 }, -- Pathfinding
+        { spell = 264663, type = "buff", unit = "pet" }, -- Predator's Thirst
+        { spell = 264735, type = "buff", unit = "pet", talent = 8 }, -- Survival of the Fittest
+        { spell = 356781, type = "buff", unit = "pet" }, -- Aspect of the Cheetah
+        { spell = 361736, type = "buff", unit = "pet", talent = 45 }, -- Coordinated Assault
+        { spell = 393774, type = "buff", unit = "pet", talent = 3 }, -- Sentinel's Perception
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 2649, type = "debuff", unit = "target" }, -- Growl
+        { spell = 3355, type = "debuff", unit = "target" }, -- Freezing Trap
+        { spell = 5116, type = "debuff", unit = "target", talent = 54 }, -- Concussive Shot
+        { spell = 24394, type = "debuff", unit = "target", talent = 58 }, -- Intimidation
+        { spell = 117405, type = "debuff", unit = "target", talent = 85 }, -- Binding Shot
+        { spell = 135299, type = "debuff", unit = "target", talent = 77 }, -- Tar Trap
+        { spell = 162480, type = "debuff", unit = "target", talent = 56 }, -- Steel Trap
+        { spell = 162487, type = "debuff", unit = "target", talent = 56 }, -- Steel Trap
+        { spell = 190925, type = "debuff", unit = "target", talent = 20 }, -- Harpoon
+        { spell = 201594, type = "debuff", unit = "target", talent = 65 }, -- Stampede
+        { spell = 212431, type = "debuff", unit = "target", talent = 63 }, -- Explosive Shot
+        { spell = 213691, type = "debuff", unit = "target", talent = 84 }, -- Scatter Shot
+        { spell = 257284, type = "debuff", unit = "target" }, -- Hunter's Mark
+        { spell = 259277, type = "debuff", unit = "target", talent = 18 }, -- Kill Command
+        { spell = 269576, type = "debuff", unit = "target", talent = 62 }, -- Master Marksman
+        { spell = 269747, type = "debuff", unit = "target", talent = 42 }, -- Wildfire Bomb
+        { spell = 270332, type = "debuff", unit = "target" }, -- Pheromone Bomb
+        { spell = 270339, type = "debuff", unit = "target" }, -- Shrapnel Bomb
+        { spell = 271049, type = "debuff", unit = "target" }, -- Volatile Bomb
+        { spell = 271788, type = "debuff", unit = "target", talent = 53 }, -- Serpent Sting
+        { spell = 321469, type = "debuff", unit = "target", talent = 69 }, -- Binding Shackles
+        { spell = 361049, type = "debuff", unit = "target" }, -- Bleeding Gash
+        { spell = 378015, type = "debuff", unit = "target" }, -- Latent Poison
+        { spell = 389881, type = "debuff", unit = "target", talent = 46 }, -- Spearhead
+        { spell = 390232, type = "debuff", unit = "target", talent = 2 }, -- Arctic Bola
+        { spell = 393456, type = "debuff", unit = "target", talent = 86 }, -- Entrapment
+        { spell = 393480, type = "debuff", unit = "target" }, -- Sentinel
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 1543, type = "ability" }, -- Flare
+        { spell = 2649, type = "ability" }, -- Growl
+        { spell = 5116, type = "ability", requiresTarget = true, talent = 54 }, -- Concussive Shot
+        { spell = 5384, type = "ability", buff = true }, -- Feign Death
+        { spell = 17253, type = "ability" }, -- Bite
+        { spell = 19577, type = "ability", talent = 58 }, -- Intimidation
+        { spell = 19801, type = "ability", requiresTarget = true, talent = 55 }, -- Tranquilizing Shot
+        { spell = 34026, type = "ability", requiresTarget = true, talent = 17 }, -- Kill Command
+        { spell = 34477, type = "ability", buff = true, talent = 73 }, -- Misdirection
+        { spell = 53351, type = "ability", requiresTarget = true, talent = 15 }, -- Kill Shot
+        { spell = 56641, type = "ability", requiresTarget = true }, -- Steady Shot
+        { spell = 61684, type = "ability", buff = true, unit = 'pet' }, -- Dash
+        { spell = 109248, type = "ability", talent = 85 }, -- Binding Shot
+        { spell = 109304, type = "ability" }, -- Exhilaration
+        { spell = 162488, type = "ability", talent = 56 }, -- Steel Trap
+        { spell = 185358, type = "ability", requiresTarget = true }, -- Arcane Shot
+        { spell = 186257, type = "ability", buff = true }, -- Aspect of the Cheetah
+        { spell = 186265, type = "ability", buff = true }, -- Aspect of the Turtle
+        { spell = 186270, type = "ability", requiresTarget = true, talent = 25 }, -- Raptor Strike
+        { spell = 186289, type = "ability", buff = true, talent = 36 }, -- Aspect of the Eagle
+        { spell = 187650, type = "ability" }, -- Freezing Trap
+        { spell = 187698, type = "ability", talent = 77 }, -- Tar Trap
+        { spell = 187707, type = "ability", requiresTarget = true, talent = 17 }, -- Muzzle
+        { spell = 187708, type = "ability", talent = 26 }, -- Carve
+        { spell = 190925, type = "ability", requiresTarget = true, talent = 20 }, -- Harpoon
+        { spell = 201430, type = "ability", talent = 65 }, -- Stampede
+        { spell = 203415, type = "ability", talent = 31 }, -- Fury of the Eagle
+        { spell = 212431, type = "ability", requiresTarget = true, talent = 63 }, -- Explosive Shot
+        { spell = 212436, type = "ability", charges = true, talent = 27 }, -- Butchery
+        { spell = 213691, type = "ability", requiresTarget = true, talent = 84 }, -- Scatter Shot
+        { spell = 236776, type = "ability", talent = 59 }, -- High Explosive Trap
+        { spell = 257284, type = "ability", requiresTarget = true }, -- Hunter's Mark
+        { spell = 259387, type = "ability", requiresTarget = true, talent = 40 }, -- Mongoose Bite
+        { spell = 259489, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 18 }, -- Kill Command
+        { spell = 259495, type = "ability", overlayGlow = true, requiresTarget = true, talent = 42 }, -- Wildfire Bomb
+        { spell = 264667, type = "ability", buff = true }, -- Primal Rage
+        { spell = 264735, type = "ability", buff = true, talent = 8 }, -- Survival of the Fittest
+        { spell = 269751, type = "ability", requiresTarget = true, talent = 19 }, -- Flanking Strike
+        { spell = 270323, type = "ability", charges = true, overlayGlow = true }, -- Pheromone Bomb
+        { spell = 270335, type = "ability", charges = true, overlayGlow = true }, -- Shrapnel Bomb
+        { spell = 271045, type = "ability", charges = true, overlayGlow = true }, -- Volatile Bomb
+        { spell = 271788, type = "ability", requiresTarget = true, talent = 53 }, -- Serpent Sting
+        { spell = 272678, type = "ability" }, -- Primal Rage
+        { spell = 320976, type = "ability", overlayGlow = true, requiresTarget = true, talent = 16 }, -- Kill Shot
+        { spell = 360952, type = "ability", buff = true, requiresTarget = true, talent = 45 }, -- Coordinated Assault
+        { spell = 360966, type = "ability", buff = true, requiresTarget = true, talent = 46 }, -- Spearhead
+        { spell = 375891, type = "ability", requiresTarget = true, talent = 66 }, -- Death Chakram
+        { spell = 388045, type = "ability", charges = true, buff = true, talent = 5 }, -- Sentinel Owl
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 212640, type = "buff", unit = "player", pvptalent = 3, titleSuffix = L["buff"] }, -- Mending Bandage
+        { spell = 356707, type = "buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"] }, -- Wild Kingdom
+        { spell = 212638, type = "debuff", unit = "target", pvptalent = 10, titleSuffix = L["debuff"] }, -- Tracker's Net
+        { spell = 212638, type = "ability", requiresTarget = true, pvptalent = 10, titleSuffix = L["cooldown"] }, -- Tracker's Net
+        { spell = 212640, type = "ability", buff = true, pvptalent = 3, titleSuffix = L["cooldown"] }, -- Mending Bandage
+        { spell = 356707, type = "ability", buff = true, pvptalent = 5, titleSuffix = L["cooldown"] }, -- Wild Kingdom
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
 }
 
@@ -1668,10 +2128,401 @@ templates.class.PRIEST = {
 
 templates.class.SHAMAN = {
   [1] = { -- Elemental
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 546, type = "buff", unit = "player" }, -- Water Walking
+        { spell = 2645, type = "buff", unit = "player" }, -- Ghost Wolf
+        { spell = 2825, type = "buff", unit = "player" }, -- Bloodlust
+        { spell = 6196, type = "buff", unit = "player" }, -- Far Sight
+        { spell = 8178, type = "buff", unit = "player" }, -- Grounding Totem Effect
+        { spell = 58875, type = "buff", unit = "player", talent = 89 }, -- Spirit Walk
+        { spell = 77762, type = "buff", unit = "player", talent = 4 }, -- Lava Surge
+        { spell = 79206, type = "buff", unit = "player", talent = 64 }, -- Spiritwalker's Grace
+        { spell = 108271, type = "buff", unit = "player", talent = 54 }, -- Astral Shift
+        { spell = 108281, type = "buff", unit = "player", talent = 107 }, -- Ancestral Guidance
+        { spell = 114050, type = "buff", unit = "player", talent = 36 }, -- Ascendance
+        { spell = 118522, type = "buff", unit = "player" }, -- Elemental Blast: Critical Strike
+        { spell = 173183, type = "buff", unit = "player" }, -- Elemental Blast: Haste
+        { spell = 173184, type = "buff", unit = "player" }, -- Elemental Blast: Mastery
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 191634, type = "buff", unit = "player", talent = 22 }, -- Stormkeeper
+        { spell = 191877, type = "buff", unit = "player", talent = 50 }, -- Power of the Maelstrom
+        { spell = 192082, type = "buff", unit = "player" }, -- Wind Rush
+        { spell = 192106, type = "buff", unit = "player" }, -- Lightning Shield
+        { spell = 208963, type = "buff", unit = "player" }, -- Skyfury Totem
+        { spell = 210714, type = "buff", unit = "player", talent = 28 }, -- Icefury
+        { spell = 260734, type = "buff", unit = "player", talent = 37 }, -- Master of the Elements
+        { spell = 285514, type = "buff", unit = "player", talent = 32 }, -- Surge of Power
+        { spell = 375986, type = "buff", unit = "player", talent = 49 }, -- Primordial Wave
+        { spell = 378081, type = "buff", unit = "player", talent = 104 }, -- Nature's Swiftness
+        { spell = 378102, type = "buff", unit = "player", talent = 106 }, -- Swirling Currents
+        { spell = 378269, type = "buff", unit = "player", talent = 39 }, -- Windspeaker's Lava Resurgence
+        { spell = 378275, type = "buff", unit = "player", talent = 23 }, -- Elemental Equilibrium
+        { spell = 381668, type = "buff", unit = "player", talent = 55 }, -- Focused Insight
+        { spell = 381755, type = "buff", unit = "player", talent = 61 }, -- Earth Elemental
+        { spell = 381761, type = "buff", unit = "player", talent = 6 }, -- Primordial Bond
+        { spell = 381777, type = "buff", unit = "player", talent = 26 }, -- Flux Melting
+        { spell = 381786, type = "buff", unit = "player", talent = 34 }, -- Oath of the Far Seer
+        { spell = 381933, type = "buff", unit = "player", talent = 41 }, -- Magma Chamber
+        { spell = 382028, type = "buff", unit = "player", talent = 44 }, -- Improved Flametongue Weapon
+        { spell = 382889, type = "buff", unit = "player", talent = 56 }, -- Flurry
+        { spell = 383018, type = "buff", unit = "player" }, -- Stoneskin
+        { spell = 383020, type = "buff", unit = "player" }, -- Tranquil Air
+        { spell = 383648, type = "buff", unit = "player", talent = 111 }, -- Earth Shield
+        { spell = 384088, type = "buff", unit = "player", talent = 20 }, -- Echoes of Great Sundering
+        { spell = 395197, type = "buff", unit = "player", talent = 108 }, -- Mana Spring Totem
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 3600, type = "debuff", unit = "target" }, -- Earthbind
+        { spell = 51490, type = "debuff", unit = "target", talent = 102 }, -- Thunderstorm
+        { spell = 118297, type = "debuff", unit = "target" }, -- Immolate
+        { spell = 118905, type = "debuff", unit = "target", talent = 68 }, -- Static Charge
+        { spell = 188389, type = "debuff", unit = "target" }, -- Flame Shock
+        { spell = 196840, type = "debuff", unit = "target", talent = 73 }, -- Frost Shock
+        { spell = 197209, type = "debuff", unit = "target", talent = 21 }, -- Lightning Rod
+        { spell = 208997, type = "debuff", unit = "target" }, -- Counterstrike Totem
+        { spell = 305485, type = "debuff", unit = "target", talent = 101 }, -- Lightning Lasso
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 370, type = "ability", requiresTarget = true, talent = 75 }, -- Purge
+        { spell = 556, type = "ability", usable = true }, -- Astral Recall
+        { spell = 2484, type = "ability", totem = true }, -- Earthbind Totem
+        { spell = 2825, type = "ability", buff = true }, -- Bloodlust
+        { spell = 5394, type = "ability", talent = 105 }, -- Healing Stream Totem
+        { spell = 8042, type = "ability", overlayGlow = true, requiresTarget = true, talent = 12 }, -- Earth Shock
+        { spell = 8143, type = "ability", totem = true, talent = 67 }, -- Tremor Totem
+        { spell = 51490, type = "ability", talent = 102 }, -- Thunderstorm
+        { spell = 51505, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 59 }, -- Lava Burst
+        { spell = 51514, type = "ability", talent = 79 }, -- Hex
+        { spell = 51886, type = "ability", talent = 74 }, -- Cleanse Spirit
+        { spell = 57994, type = "ability", requiresTarget = true, talent = 66 }, -- Wind Shear
+        { spell = 58875, type = "ability", buff = true, talent = 89 }, -- Spirit Walk
+        { spell = 73899, type = "ability", requiresTarget = true }, -- Primal Strike
+        { spell = 79206, type = "ability", buff = true, talent = 64 }, -- Spiritwalker's Grace
+        { spell = 108271, type = "ability", buff = true, talent = 54 }, -- Astral Shift
+        { spell = 108281, type = "ability", buff = true, talent = 107 }, -- Ancestral Guidance
+        { spell = 108285, type = "ability", talent = 94 }, -- Totemic Recall
+        { spell = 108287, type = "ability", talent = 80 }, -- Totemic Projection
+        { spell = 114050, type = "ability", buff = true, talent = 36 }, -- Ascendance
+        { spell = 117014, type = "ability", overlayGlow = true, requiresTarget = true, talent = 24 }, -- Elemental Blast
+        { spell = 188196, type = "ability", overlayGlow = true, requiresTarget = true }, -- Lightning Bolt
+        { spell = 188389, type = "ability", requiresTarget = true }, -- Flame Shock
+        { spell = 188443, type = "ability", overlayGlow = true, requiresTarget = true, talent = 58 }, -- Chain Lightning
+        { spell = 191634, type = "ability", charges = true, buff = true, talent = 22 }, -- Stormkeeper
+        { spell = 192058, type = "ability", totem = true, talent = 70 }, -- Capacitor Totem
+        { spell = 192063, type = "ability", talent = 90 }, -- Gust of Wind
+        { spell = 192077, type = "ability", totem = true, talent = 82 }, -- Wind Rush Totem
+        { spell = 192222, type = "ability", totem = true, talent = 43 }, -- Liquid Magma Totem
+        { spell = 192249, type = "ability", requiresTarget = true, talent = 8 }, -- Storm Elemental
+        { spell = 196840, type = "ability", requiresTarget = true, talent = 73 }, -- Frost Shock
+        { spell = 198067, type = "ability", requiresTarget = true, totem = true, talent = 7 }, -- Fire Elemental
+        { spell = 198103, type = "ability", requiresTarget = true, totem = true, talent = 61 }, -- Earth Elemental
+        { spell = 210714, type = "ability", buff = true, requiresTarget = true, talent = 28 }, -- Icefury
+        { spell = 305483, type = "ability", requiresTarget = true, talent = 101 }, -- Lightning Lasso
+        { spell = 375982, type = "ability", requiresTarget = true, talent = 49 }, -- Primordial Wave
+        { spell = 378081, type = "ability", buff = true, usable = true, talent = 104 }, -- Nature's Swiftness
+        { spell = 383013, type = "ability", totem = true, talent = 96 }, -- Poison Cleansing Totem
+        { spell = 383017, type = "ability", totem = true, talent = 98 }, -- Stoneskin Totem
+        { spell = 383019, type = "ability", totem = true, talent = 99 }, -- Tranquil Air Totem
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 204330, type = "ability", totem = true, pvptalent = 10, titleSuffix = L["cooldown"] }, -- Skyfury Totem
+        { spell = 204331, type = "ability", totem = true, pvptalent = 9, titleSuffix = L["cooldown"] }, -- Counterstrike Totem
+        { spell = 204336, type = "ability", totem = true, pvptalent = 12, titleSuffix = L["cooldown"] }, -- Grounding Totem
+        { spell = 355580, type = "ability", totem = true, pvptalent = 7, titleSuffix = L["cooldown"] }, -- Static Field Totem
+        { spell = 356736, type = "ability", requiresTarget = true, pvptalent = 8, titleSuffix = L["cooldown"] }, -- Unleash Shield
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
   [2] = { -- Enhancement
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 546, type = "buff", unit = "player" }, -- Water Walking
+        { spell = 2645, type = "buff", unit = "player" }, -- Ghost Wolf
+        { spell = 2825, type = "buff", unit = "player" }, -- Bloodlust
+        { spell = 8178, type = "buff", unit = "player" }, -- Grounding Totem Effect
+        { spell = 58875, type = "buff", unit = "player", talent = 79 }, -- Spirit Walk
+        { spell = 79206, type = "buff", unit = "player", talent = 54 }, -- Spiritwalker's Grace
+        { spell = 108271, type = "buff", unit = "player", talent = 44 }, -- Astral Shift
+        { spell = 108281, type = "buff", unit = "player", talent = 97 }, -- Ancestral Guidance
+        { spell = 114051, type = "buff", unit = "player", talent = 103 }, -- Ascendance
+        { spell = 118522, type = "buff", unit = "player" }, -- Elemental Blast: Critical Strike
+        { spell = 173183, type = "buff", unit = "player" }, -- Elemental Blast: Haste
+        { spell = 173184, type = "buff", unit = "player" }, -- Elemental Blast: Mastery
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 187878, type = "buff", unit = "player", talent = 40 }, -- Crash Lightning
+        { spell = 192082, type = "buff", unit = "player" }, -- Wind Rush
+        { spell = 192106, type = "buff", unit = "player" }, -- Lightning Shield
+        { spell = 198300, type = "buff", unit = "player", talent = 39 }, -- Gathering Storms
+        { spell = 201846, type = "buff", unit = "player" }, -- Stormbringer
+        { spell = 208963, type = "buff", unit = "player" }, -- Skyfury Totem
+        { spell = 215785, type = "buff", unit = "player", talent = 11 }, -- Hot Hand
+        { spell = 224126, type = "buff", unit = "player" }, -- Icy Edge
+        { spell = 224127, type = "buff", unit = "player" }, -- Crackling Surge
+        { spell = 236502, type = "buff", unit = "player" }, -- Tidebringer
+        { spell = 262652, type = "buff", unit = "player", talent = 34 }, -- Forceful Winds
+        { spell = 327942, type = "buff", unit = "player", talent = 5 }, -- Windfury Totem
+        { spell = 333957, type = "buff", unit = "player", talent = 38 }, -- Feral Spirit
+        { spell = 333964, type = "buff", unit = "player", talent = 40 }, -- Crash Lightning
+        { spell = 334196, type = "buff", unit = "player", talent = 9 }, -- Hailstorm
+        { spell = 344179, type = "buff", unit = "player", talent = 47 }, -- Maelstrom Weapon
+        { spell = 375986, type = "buff", unit = "player", talent = 30 }, -- Primordial Wave
+        { spell = 378081, type = "buff", unit = "player", talent = 94 }, -- Nature's Swiftness
+        { spell = 378102, type = "buff", unit = "player", talent = 96 }, -- Swirling Currents
+        { spell = 381668, type = "buff", unit = "player", talent = 45 }, -- Focused Insight
+        { spell = 381755, type = "buff", unit = "player", talent = 51 }, -- Earth Elemental
+        { spell = 382028, type = "buff", unit = "player", talent = 44 }, -- Improved Flametongue Weapon
+        { spell = 382217, type = "buff", unit = "player", talent = 78 }, -- Winds of Al'Akir
+        { spell = 382889, type = "buff", unit = "player", talent = 46 }, -- Flurry
+        { spell = 383018, type = "buff", unit = "player" }, -- Stoneskin
+        { spell = 383648, type = "buff", unit = "player", talent = 101 }, -- Earth Shield
+        { spell = 384352, type = "buff", unit = "player", talent = 24 }, -- Doom Winds
+        { spell = 384357, type = "buff", unit = "player", talent = 21 }, -- Ice Strike
+        { spell = 384451, type = "buff", unit = "player", talent = 17 }, -- Legacy of the Frost Witch
+        { spell = 390371, type = "buff", unit = "player", talent = 13 }, -- Ashen Catalyst
+        { spell = 392375, type = "buff", unit = "player" }, -- Earthen Weapon
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 3600, type = "debuff", unit = "target" }, -- Earthbind
+        { spell = 51490, type = "debuff", unit = "target", talent = 92 }, -- Thunderstorm
+        { spell = 64695, type = "debuff", unit = "target" }, -- Earthgrab
+        { spell = 116947, type = "debuff", unit = "target" }, -- Earthbind
+        { spell = 118905, type = "debuff", unit = "target", talent = 58 }, -- Static Charge
+        { spell = 188389, type = "debuff", unit = "target" }, -- Flame Shock
+        { spell = 196840, type = "debuff", unit = "target", talent = 63 }, -- Frost Shock
+        { spell = 197214, type = "debuff", unit = "target", talent = 41 }, -- Sundering
+        { spell = 208997, type = "debuff", unit = "target" }, -- Counterstrike Totem
+        { spell = 305485, type = "debuff", unit = "target", talent = 91 }, -- Lightning Lasso
+        { spell = 334168, type = "debuff", unit = "target", talent = 14 }, -- Lashing Flames
+        { spell = 342240, type = "debuff", unit = "target", talent = 21 }, -- Ice Strike
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 370, type = "ability", requiresTarget = true, talent = 64 }, -- Purge
+        { spell = 556, type = "ability", usable = true }, -- Astral Recall
+        { spell = 2484, type = "ability", totem = true }, -- Earthbind Totem
+        { spell = 2825, type = "ability", buff = true }, -- Bloodlust
+        { spell = 5394, type = "ability", totem = true, talent = 95 }, -- Healing Stream Totem
+        { spell = 17364, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 6 }, -- Stormstrike
+        { spell = 51485, type = "ability", totem = true, talent = 73 }, -- Earthgrab Totem
+        { spell = 51490, type = "ability", talent = 92 }, -- Thunderstorm
+        { spell = 51505, type = "ability", overlayGlow = true, requiresTarget = true, talent = 49 }, -- Lava Burst
+        { spell = 51514, type = "ability", talent = 69 }, -- Hex
+        { spell = 51533, type = "ability", requiresTarget = true, talent = 38 }, -- Feral Spirit
+        { spell = 57994, type = "ability", requiresTarget = true, talent = 56 }, -- Wind Shear
+        { spell = 58875, type = "ability", buff = true, talent = 79 }, -- Spirit Walk
+        { spell = 60103, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 7 }, -- Lava Lash
+        { spell = 79206, type = "ability", buff = true, talent = 54 }, -- Spiritwalker's Grace
+        { spell = 108271, type = "ability", buff = true, talent = 44 }, -- Astral Shift
+        { spell = 108281, type = "ability", buff = true, talent = 97 }, -- Ancestral Guidance
+        { spell = 108285, type = "ability", talent = 84 }, -- Totemic Recall
+        { spell = 114051, type = "ability", buff = true, talent = 103 }, -- Ascendance
+        { spell = 115356, type = "ability", overlayGlow = true }, -- Windstrike
+        { spell = 117014, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 31 }, -- Elemental Blast
+        { spell = 187874, type = "ability", talent = 40 }, -- Crash Lightning
+        { spell = 188196, type = "ability", overlayGlow = true, requiresTarget = true }, -- Lightning Bolt
+        { spell = 188389, type = "ability", requiresTarget = true }, -- Flame Shock
+        { spell = 188443, type = "ability", overlayGlow = true, requiresTarget = true, talent = 48 }, -- Chain Lightning
+        { spell = 192058, type = "ability", totem = true, talent = 60 }, -- Capacitor Totem
+        { spell = 192077, type = "ability", totem = true, talent = 72 }, -- Wind Rush Totem
+        { spell = 196840, type = "ability", overlayGlow = true, requiresTarget = true, talent = 63 }, -- Frost Shock
+        { spell = 196884, type = "ability", requiresTarget = true, talent = 12 }, -- Feral Lunge
+        { spell = 197214, type = "ability", talent = 41 }, -- Sundering
+        { spell = 198103, type = "ability", requiresTarget = true, totem = true, talent = 51 }, -- Earth Elemental
+        { spell = 204406, type = "ability", talent = 92 }, -- Thunderstorm
+        { spell = 305483, type = "ability", requiresTarget = true, talent = 91 }, -- Lightning Lasso
+        { spell = 333974, type = "ability", talent = 10 }, -- Fire Nova
+        { spell = 342240, type = "ability", requiresTarget = true, talent = 21 }, -- Ice Strike
+        { spell = 375982, type = "ability", requiresTarget = true, talent = 30 }, -- Primordial Wave
+        { spell = 378081, type = "ability", buff = true, talent = 94 }, -- Nature's Swiftness
+        { spell = 383013, type = "ability", totem = true, talent = 86 }, -- Poison Cleansing Totem
+        { spell = 383017, type = "ability", totem = true, talent = 88 }, -- Stoneskin Totem
+        { spell = 383019, type = "ability", talent = 89 }, -- Tranquil Air Totem
+        { spell = 384352, type = "ability", buff = true, requiresTarget = true, talent = 24 }, -- Doom Winds
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 210918, type = "buff", unit = "player", pvptalent = 4, titleSuffix = L["buff"] }, -- Ethereal Form
+        { spell = 204330, type = "ability", totem = true, pvptalent = 13, titleSuffix = L["cooldown"] }, -- Skyfury Totem
+        { spell = 204331, type = "ability", totem = true, pvptalent = 12, titleSuffix = L["cooldown"] }, -- Counterstrike Totem
+        { spell = 204336, type = "ability", totem = true, pvptalent = 9, titleSuffix = L["cooldown"] }, -- Grounding Totem
+        { spell = 210918, type = "ability", buff = true, pvptalent = 4, titleSuffix = L["cooldown"] }, -- Ethereal Form
+        { spell = 355580, type = "ability", totem = true, pvptalent = 8, titleSuffix = L["cooldown"] }, -- Static Field Totem
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
   [3] = { -- Restoration
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 546, type = "buff", unit = "player" }, -- Water Walking
+        { spell = 974, type = "buff", unit = "player", talent = 110 }, -- Earth Shield
+        { spell = 2645, type = "buff", unit = "player" }, -- Ghost Wolf
+        { spell = 2825, type = "buff", unit = "player" }, -- Bloodlust
+        { spell = 6196, type = "buff", unit = "player" }, -- Far Sight
+        { spell = 8178, type = "buff", unit = "player" }, -- Grounding Totem Effect
+        { spell = 52127, type = "buff", unit = "player", talent = 11 }, -- Water Shield
+        { spell = 53390, type = "buff", unit = "player", talent = 7 }, -- Tidal Waves
+        { spell = 58875, type = "buff", unit = "player", talent = 88 }, -- Spirit Walk
+        { spell = 61295, type = "buff", unit = "player", talent = 13 }, -- Riptide
+        { spell = 73920, type = "buff", unit = "player", talent = 31 }, -- Healing Rain
+        { spell = 77762, type = "buff", unit = "player", talent = 2 }, -- Lava Surge
+        { spell = 79206, type = "buff", unit = "player", talent = 63 }, -- Spiritwalker's Grace
+        { spell = 108271, type = "buff", unit = "player", talent = 53 }, -- Astral Shift
+        { spell = 108281, type = "buff", unit = "player", talent = 106 }, -- Ancestral Guidance
+        { spell = 114052, type = "buff", unit = "player", talent = 50 }, -- Ascendance
+        { spell = 157504, type = "buff", unit = "player", talent = 42 }, -- Cloudburst Totem
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 192082, type = "buff", unit = "player" }, -- Wind Rush
+        { spell = 192106, type = "buff", unit = "player" }, -- Lightning Shield
+        { spell = 201633, type = "buff", unit = "player" }, -- Earthen Wall
+        { spell = 204262, type = "buff", unit = "player" }, -- Spectral Recovery
+        { spell = 207400, type = "buff", unit = "player", talent = 17 }, -- Ancestral Vigor
+        { spell = 208963, type = "buff", unit = "player" }, -- Skyfury Totem
+        { spell = 216251, type = "buff", unit = "player", talent = 26 }, -- Undulation
+        { spell = 236502, type = "buff", unit = "player" }, -- Tidebringer
+        { spell = 260734, type = "buff", unit = "player", talent = 5 }, -- Master of the Elements
+        { spell = 260881, type = "buff", unit = "player", talent = 70 }, -- Spirit Wolf
+        { spell = 280615, type = "buff", unit = "player", talent = 6 }, -- Flash Flood
+        { spell = 288675, type = "buff", unit = "player", talent = 34 }, -- High Tide
+        { spell = 320763, type = "buff", unit = "player", talent = 37 }, -- Mana Tide Totem
+        { spell = 325174, type = "buff", unit = "player", talent = 21 }, -- Spirit Link Totem
+        { spell = 344179, type = "buff", unit = "player", talent = 56 }, -- Maelstrom Weapon
+        { spell = 375986, type = "buff", unit = "player", talent = 25 }, -- Primordial Wave
+        { spell = 378081, type = "buff", unit = "player", talent = 103 }, -- Nature's Swiftness
+        { spell = 378102, type = "buff", unit = "player", talent = 105 }, -- Swirling Currents
+        { spell = 381668, type = "buff", unit = "player", talent = 54 }, -- Focused Insight
+        { spell = 381755, type = "buff", unit = "player", talent = 60 }, -- Earth Elemental
+        { spell = 382024, type = "buff", unit = "player", talent = 43 }, -- Earthliving Weapon
+        { spell = 382029, type = "buff", unit = "player", talent = 48 }, -- Ever-Rising Tide
+        { spell = 382217, type = "buff", unit = "player", talent = 87 }, -- Winds of Al'Akir
+        { spell = 382889, type = "buff", unit = "player", talent = 55 }, -- Flurry
+        { spell = 383009, type = "buff", unit = "player", talent = 16 }, -- Stormkeeper
+        { spell = 383018, type = "buff", unit = "player" }, -- Stoneskin
+        { spell = 383020, type = "buff", unit = "player" }, -- Tranquil Air
+        { spell = 383235, type = "buff", unit = "player", talent = 47 }, -- Undercurrent
+        { spell = 383648, type = "buff", unit = "player", talent = 110 }, -- Earth Shield
+        { spell = 395197, type = "buff", unit = "player", talent = 107 }, -- Mana Spring Totem
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 3600, type = "debuff", unit = "target" }, -- Earthbind
+        { spell = 51490, type = "debuff", unit = "target", talent = 101 }, -- Thunderstorm
+        { spell = 118905, type = "debuff", unit = "target", talent = 67 }, -- Static Charge
+        { spell = 188389, type = "debuff", unit = "target" }, -- Flame Shock
+        { spell = 196840, type = "debuff", unit = "target", talent = 73 }, -- Frost Shock
+        { spell = 356824, type = "debuff", unit = "target" }, -- Water Unleashed
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 370, type = "ability", requiresTarget = true, talent = 74 }, -- Purge
+        { spell = 556, type = "ability", usable = true }, -- Astral Recall
+        { spell = 2484, type = "ability", totem = true }, -- Earthbind Totem
+        { spell = 2825, type = "ability", buff = true }, -- Bloodlust
+        { spell = 5394, type = "ability", charges = true, totem = true, talent = 104 }, -- Healing Stream Totem
+        { spell = 8143, type = "ability", totem = true, talent = 66 }, -- Tremor Totem
+        { spell = 16191, type = "ability", totem = true, talent = 37 }, -- Mana Tide Totem
+        { spell = 51490, type = "ability", talent = 101 }, -- Thunderstorm
+        { spell = 51505, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 58 }, -- Lava Burst
+        { spell = 51514, type = "ability", talent = 78 }, -- Hex
+        { spell = 57994, type = "ability", requiresTarget = true, talent = 65 }, -- Wind Shear
+        { spell = 58875, type = "ability", buff = true, talent = 88 }, -- Spirit Walk
+        { spell = 61295, type = "ability", charges = true, buff = true, talent = 13 }, -- Riptide
+        { spell = 73899, type = "ability", requiresTarget = true }, -- Primal Strike
+        { spell = 73920, type = "ability", buff = true, talent = 31 }, -- Healing Rain
+        { spell = 79206, type = "ability", buff = true, talent = 63 }, -- Spiritwalker's Grace
+        { spell = 98008, type = "ability", totem = true, talent = 21 }, -- Spirit Link Totem
+        { spell = 108271, type = "ability", buff = true, talent = 53 }, -- Astral Shift
+        { spell = 108280, type = "ability", totem = true, talent = 20 }, -- Healing Tide Totem
+        { spell = 108281, type = "ability", buff = true, talent = 106 }, -- Ancestral Guidance
+        { spell = 108285, type = "ability", talent = 93 }, -- Totemic Recall
+        { spell = 108287, type = "ability", talent = 79 }, -- Totemic Projection
+        { spell = 114052, type = "ability", buff = true, talent = 50 }, -- Ascendance
+        { spell = 157153, type = "ability", totem = true, talent = 42 }, -- Cloudburst Totem
+        { spell = 188196, type = "ability", overlayGlow = true, requiresTarget = true }, -- Lightning Bolt
+        { spell = 188389, type = "ability", requiresTarget = true }, -- Flame Shock
+        { spell = 188443, type = "ability", overlayGlow = true, requiresTarget = true, talent = 57 }, -- Chain Lightning
+        { spell = 192058, type = "ability", totem = true, talent = 69 }, -- Capacitor Totem
+        { spell = 192063, type = "ability", talent = 89 }, -- Gust of Wind
+        { spell = 192077, type = "ability", totem = true, talent = 81 }, -- Wind Rush Totem
+        { spell = 196840, type = "ability", requiresTarget = true, talent = 73 }, -- Frost Shock
+        { spell = 197995, type = "ability", talent = 46 }, -- Wellspring
+        { spell = 198103, type = "ability", requiresTarget = true, totem = true, talent = 60 }, -- Earth Elemental
+        { spell = 198838, type = "ability", totem = true, talent = 38 }, -- Earthen Wall Totem
+        { spell = 201764, type = "ability" }, -- Recall Cloudburst Totem
+        { spell = 207399, type = "ability", talent = 39 }, -- Ancestral Protection Totem
+        { spell = 207778, type = "ability", talent = 1 }, -- Downpour
+        { spell = 305483, type = "ability", requiresTarget = true, talent = 100 }, -- Lightning Lasso
+        { spell = 375982, type = "ability", overlayGlow = true, requiresTarget = true, talent = 25 }, -- Primordial Wave
+        { spell = 378081, type = "ability", buff = true, usable = true, talent = 103 }, -- Nature's Swiftness
+        { spell = 382029, type = "ability", buff = true, talent = 48 }, -- Ever-Rising Tide
+        { spell = 383009, type = "ability", buff = true, talent = 16 }, -- Stormkeeper
+        { spell = 383013, type = "ability", totem = true, talent = 95 }, -- Poison Cleansing Totem
+        { spell = 383017, type = "ability", totem = true, talent = 97 }, -- Stoneskin Totem
+        { spell = 383019, type = "ability", totem = true, talent = 98 }, -- Tranquil Air Totem
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 204330, type = "ability", pvptalent = 11, titleSuffix = L["cooldown"] }, -- Skyfury Totem
+        { spell = 204331, type = "ability", pvptalent = 10, titleSuffix = L["cooldown"] }, -- Counterstrike Totem
+        { spell = 204336, type = "ability", totem = true, pvptalent = 1, titleSuffix = L["cooldown"] }, -- Grounding Totem
+        { spell = 356736, type = "ability", pvptalent = 4, titleSuffix = L["cooldown"] }, -- Unleash Shield
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
 }
 
@@ -1753,7 +2604,6 @@ templates.class.MAGE = {
         { spell = 2139, type = "ability", requiresTarget = true }, -- Counterspell
         { spell = 5143, type = "ability", overlayGlow = true, requiresTarget = true, talent = 87 }, -- Arcane Missiles
         { spell = 12051, type = "ability", buff = true, talent = 68 }, -- Evocation
-        { spell = 28730, type = "ability" }, -- Arcane Torrent
         { spell = 30449, type = "ability", requiresTarget = true, talent = 1 }, -- Spellsteal
         { spell = 30451, type = "ability", requiresTarget = true }, -- Arcane Blast
         { spell = 31589, type = "ability", requiresTarget = true, talent = 15 }, -- Slow
@@ -1882,7 +2732,6 @@ templates.class.MAGE = {
         { spell = 2139, type = "ability", requiresTarget = true }, -- Counterspell
         { spell = 2948, type = "ability", requiresTarget = true, talent = 79 }, -- Scorch
         { spell = 11366, type = "ability", overlayGlow = true, requiresTarget = true, talent = 81 }, -- Pyroblast
-        { spell = 28730, type = "ability" }, -- Arcane Torrent
         { spell = 30449, type = "ability", requiresTarget = true, talent = 2 }, -- Spellsteal
         { spell = 31589, type = "ability", requiresTarget = true, talent = 16 }, -- Slow
         { spell = 31661, type = "ability", talent = 9 }, -- Dragon's Breath
@@ -2002,7 +2851,6 @@ templates.class.MAGE = {
         { spell = 2139, type = "ability", requiresTarget = true }, -- Counterspell
         { spell = 11426, type = "ability", buff = true, talent = 37 }, -- Ice Barrier
         { spell = 12472, type = "ability", buff = true, talent = 70 }, -- Icy Veins
-        { spell = 28730, type = "ability" }, -- Arcane Torrent
         { spell = 30449, type = "ability", requiresTarget = true, talent = 1 }, -- Spellsteal
         { spell = 30455, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 76 }, -- Ice Lance
         { spell = 31589, type = "ability", requiresTarget = true, talent = 15 }, -- Slow
@@ -2064,10 +2912,447 @@ templates.class.MAGE = {
 
 templates.class.WARLOCK = {
   [1] = { -- Affliction
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 126, type = "buff", unit = "player" }, -- Eye of Kilrogg
+        { spell = 5697, type = "buff", unit = "player" }, -- Unending Breath
+        { spell = 20707, type = "buff", unit = "player" }, -- Soulstone
+        { spell = 48018, type = "buff", unit = "player", talent = 19 }, -- Demonic Circle
+        { spell = 104773, type = "buff", unit = "player" }, -- Unending Resolve
+        { spell = 108366, type = "buff", unit = "player" }, -- Soul Leech
+        { spell = 108416, type = "buff", unit = "player", talent = 22 }, -- Dark Pact
+        { spell = 111400, type = "buff", unit = "player", talent = 39 }, -- Burning Rush
+        { spell = 171982, type = "buff", unit = "player" }, -- Demonic Synergy
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 196099, type = "buff", unit = "player", talent = 81 }, -- Grimoire of Sacrifice
+        { spell = 221705, type = "buff", unit = "player" }, -- Casting Circle
+        { spell = 264571, type = "buff", unit = "player", talent = 73 }, -- Nightfall
+        { spell = 328774, type = "buff", unit = "player", talent = 20 }, -- Amplify Curse
+        { spell = 333889, type = "buff", unit = "player", talent = 17 }, -- Fel Domination
+        { spell = 334320, type = "buff", unit = "player", talent = 72 }, -- Inevitable Demise
+        { spell = 386256, type = "buff", unit = "player", talent = 26 }, -- Summon Soulkeeper
+        { spell = 387018, type = "buff", unit = "player", talent = 84 }, -- Dark Harvest
+        { spell = 387079, type = "buff", unit = "player", talent = 56 }, -- Tormented Crescendo
+        { spell = 387310, type = "buff", unit = "player", talent = 54 }, -- Haunted Soul
+        { spell = 387626, type = "buff", unit = "player", talent = 48 }, -- Soulburn
+        { spell = 388068, type = "buff", unit = "player", talent = 27 }, -- Inquisitor's Gaze
+        { spell = 389614, type = "buff", unit = "player", talent = 44 }, -- Abyss Walker
+        { spell = 394810, type = "buff", unit = "player" }, -- Soulburn: Drain Life
+        { spell = 7870, type = "buff", unit = "target" }, -- Lesser Invisibility
+        { spell = 108366, type = "buff", unit = "target" }, -- Soul Leech
+        { spell = 386861, type = "buff", unit = "target", talent = 14 }, -- Demonic Inspiration
+        { spell = 386865, type = "buff", unit = "target", talent = 35 }, -- Wrathful Minion
+        { spell = 7870, type = "buff", unit = "pet" }, -- Lesser Invisibility
+        { spell = 32752, type = "buff", unit = "pet" }, -- Summoning Disorientation
+        { spell = 108366, type = "buff", unit = "pet" }, -- Soul Leech
+        { spell = 112042, type = "buff", unit = "pet" }, -- Threatening Presence
+        { spell = 171982, type = "buff", unit = "pet" }, -- Demonic Synergy
+        { spell = 386861, type = "buff", unit = "pet", talent = 14 }, -- Demonic Inspiration
+        { spell = 386865, type = "buff", unit = "pet", talent = 35 }, -- Wrathful Minion
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 702, type = "debuff", unit = "target" }, -- Curse of Weakness
+        { spell = 980, type = "debuff", unit = "target" }, -- Agony
+        { spell = 1714, type = "debuff", unit = "target" }, -- Curse of Tongues
+        { spell = 5484, type = "debuff", unit = "target", talent = 36 }, -- Howl of Terror
+        { spell = 6360, type = "debuff", unit = "target" }, -- Whiplash
+        { spell = 6789, type = "debuff", unit = "target", talent = 37 }, -- Mortal Coil
+        { spell = 17735, type = "debuff", unit = "target" }, -- Suffering
+        { spell = 27243, type = "debuff", unit = "target", talent = 76 }, -- Seed of Corruption
+        { spell = 30283, type = "debuff", unit = "target", talent = 31 }, -- Shadowfury
+        { spell = 32390, type = "debuff", unit = "target", talent = 70 }, -- Shadow Embrace
+        { spell = 48181, type = "debuff", unit = "target", talent = 57 }, -- Haunt
+        { spell = 118699, type = "debuff", unit = "target" }, -- Fear
+        { spell = 146739, type = "debuff", unit = "target" }, -- Corruption
+        { spell = 198590, type = "debuff", unit = "target", talent = 71 }, -- Drain Soul
+        { spell = 205179, type = "debuff", unit = "target", talent = 61 }, -- Phantom Singularity
+        { spell = 212580, type = "debuff", unit = "target" }, -- Eye of the Observer
+        { spell = 234153, type = "debuff", unit = "target" }, -- Drain Life
+        { spell = 316099, type = "debuff", unit = "target", talent = 74 }, -- Unstable Affliction
+        { spell = 334275, type = "debuff", unit = "target" }, -- Curse of Exhaustion
+        { spell = 384069, type = "debuff", unit = "target", talent = 30 }, -- Shadowflame
+        { spell = 386931, type = "debuff", unit = "target", talent = 62 }, -- Vile Taint
+        { spell = 386997, type = "debuff", unit = "target", talent = 83 }, -- Soul Rot
+        { spell = 389845, type = "debuff", unit = "target", talent = 7 }, -- Malefic Affliction
+        { spell = 389868, type = "debuff", unit = "target", talent = 50 }, -- Dread Touch
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 172, type = "ability", requiresTarget = true }, -- Corruption
+        { spell = 686, type = "ability", overlayGlow = true, requiresTarget = true }, -- Shadow Bolt
+        { spell = 698, type = "ability" }, -- Ritual of Summoning
+        { spell = 702, type = "ability", requiresTarget = true }, -- Curse of Weakness
+        { spell = 980, type = "ability", requiresTarget = true }, -- Agony
+        { spell = 1714, type = "ability", requiresTarget = true }, -- Curse of Tongues
+        { spell = 3110, type = "ability" }, -- Firebolt
+        { spell = 3716, type = "ability" }, -- Consuming Shadows
+        { spell = 5484, type = "ability", talent = 36 }, -- Howl of Terror
+        { spell = 5782, type = "ability", requiresTarget = true }, -- Fear
+        { spell = 6360, type = "ability" }, -- Whiplash
+        { spell = 6789, type = "ability", requiresTarget = true, talent = 37 }, -- Mortal Coil
+        { spell = 7814, type = "ability" }, -- Lash of Pain
+        { spell = 7870, type = "ability", buff = true, unit = 'pet', debuff = true }, -- Lesser Invisibility
+        { spell = 17735, type = "ability" }, -- Suffering
+        { spell = 17767, type = "ability" }, -- Shadow Bulwark
+        { spell = 19505, type = "ability" }, -- Devour Magic
+        { spell = 19647, type = "ability" }, -- Spell Lock
+        { spell = 20707, type = "ability", buff = true }, -- Soulstone
+        { spell = 27243, type = "ability", requiresTarget = true, talent = 76 }, -- Seed of Corruption
+        { spell = 29893, type = "ability" }, -- Create Soulwell
+        { spell = 30283, type = "ability", talent = 31 }, -- Shadowfury
+        { spell = 48018, type = "ability", buff = true, talent = 19 }, -- Demonic Circle
+        { spell = 48020, type = "ability", usable = true }, -- Demonic Circle: Teleport
+        { spell = 48181, type = "ability", requiresTarget = true, talent = 57 }, -- Haunt
+        { spell = 54049, type = "ability" }, -- Shadow Bite
+        { spell = 63106, type = "ability", requiresTarget = true, talent = 80 }, -- Siphon Life
+        { spell = 104773, type = "ability", buff = true }, -- Unending Resolve
+        { spell = 108416, type = "ability", buff = true, talent = 22 }, -- Dark Pact
+        { spell = 108503, type = "ability", talent = 81 }, -- Grimoire of Sacrifice
+        { spell = 111771, type = "ability", talent = 45 }, -- Demonic Gateway
+        { spell = 112042, type = "ability", buff = true, unit = 'pet' }, -- Threatening Presence
+        { spell = 119910, type = "ability" }, -- Spell Lock
+        { spell = 205179, type = "ability", requiresTarget = true, talent = 61 }, -- Phantom Singularity
+        { spell = 205180, type = "ability", totem = true, talent = 59 }, -- Summon Darkglare
+        { spell = 234153, type = "ability", requiresTarget = true }, -- Drain Life
+        { spell = 264993, type = "ability" }, -- Shadow Shield
+        { spell = 278350, type = "ability", talent = 62 }, -- Vile Taint
+        { spell = 316099, type = "ability", requiresTarget = true, talent = 74 }, -- Unstable Affliction
+        { spell = 328774, type = "ability", buff = true, usable = true, talent = 20 }, -- Amplify Curse
+        { spell = 333889, type = "ability", buff = true, talent = 17 }, -- Fel Domination
+        { spell = 334275, type = "ability", requiresTarget = true }, -- Curse of Exhaustion
+        { spell = 342601, type = "ability" }, -- Ritual of Doom
+        { spell = 384069, type = "ability", talent = 30 }, -- Shadowflame
+        { spell = 385899, type = "ability", talent = 48 }, -- Soulburn
+        { spell = 386256, type = "ability", charges = true, buff = true, usable = true, talent = 26 }, -- Summon Soulkeeper
+        { spell = 386344, type = "ability", talent = 27 }, -- Inquisitor's Gaze
+        { spell = 386951, type = "ability", requiresTarget = true, talent = 63 }, -- Soul Swap
+        { spell = 386997, type = "ability", requiresTarget = true, talent = 83 }, -- Soul Rot
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 212295, type = "buff", unit = "player", pvptalent = 8, titleSuffix = L["buff"] }, -- Nether Ward
+        { spell = 344566, type = "buff", unit = "player", pvptalent = 1, titleSuffix = L["buff"] }, -- Rapid Contagion
+        { spell = 234877, type = "debuff", unit = "target", pvptalent = 6, titleSuffix = L["debuff"] }, -- Bane of Shadows
+        { spell = 199954, type = "ability", requiresTarget = true, pvptalent = 5, titleSuffix = L["cooldown"] }, -- Bane of Fragility
+        { spell = 201996, type = "ability", pvptalent = 8, titleSuffix = L["cooldown"] }, -- Call Observer
+        { spell = 212295, type = "ability", buff = true, pvptalent = 8, titleSuffix = L["cooldown"] }, -- Nether Ward
+        { spell = 221703, type = "ability", pvptalent = 11, titleSuffix = L["cooldown"] }, -- Casting Circle
+        { spell = 234877, type = "ability", requiresTarget = true, pvptalent = 6, titleSuffix = L["cooldown"] }, -- Bane of Shadows
+        { spell = 344566, type = "ability", buff = true, pvptalent = 1, titleSuffix = L["cooldown"] }, -- Rapid Contagion
+        { spell = 353294, type = "ability", pvptalent = 12, titleSuffix = L["cooldown"] }, -- Shadow Rift
+        { spell = 353753, type = "ability", pvptalent = 10, titleSuffix = L["cooldown"] }, -- Bonds of Fel
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
   [2] = { -- Demonology
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 126, type = "buff", unit = "player" }, -- Eye of Kilrogg
+        { spell = 5697, type = "buff", unit = "player" }, -- Unending Breath
+        { spell = 20707, type = "buff", unit = "player" }, -- Soulstone
+        { spell = 48018, type = "buff", unit = "player", talent = 17 }, -- Demonic Circle
+        { spell = 108366, type = "buff", unit = "player" }, -- Soul Leech
+        { spell = 108416, type = "buff", unit = "player", talent = 20 }, -- Dark Pact
+        { spell = 111400, type = "buff", unit = "player", talent = 37 }, -- Burning Rush
+        { spell = 171982, type = "buff", unit = "player" }, -- Demonic Synergy
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 205146, type = "buff", unit = "player", talent = 74 }, -- Demonic Calling
+        { spell = 221705, type = "buff", unit = "player" }, -- Casting Circle
+        { spell = 264173, type = "buff", unit = "player" }, -- Demonic Core
+        { spell = 265273, type = "buff", unit = "player" }, -- Demonic Power
+        { spell = 267218, type = "buff", unit = "player", talent = 54 }, -- Nether Portal
+        { spell = 328774, type = "buff", unit = "player", talent = 18 }, -- Amplify Curse
+        { spell = 333889, type = "buff", unit = "player", talent = 15 }, -- Fel Domination
+        { spell = 353646, type = "buff", unit = "player" }, -- Fel Obelisk
+        { spell = 386256, type = "buff", unit = "player", talent = 24 }, -- Summon Soulkeeper
+        { spell = 387327, type = "buff", unit = "player", talent = 84 }, -- Shadow's Bite
+        { spell = 387393, type = "buff", unit = "player", talent = 56 }, -- Dread Calling
+        { spell = 387437, type = "buff", unit = "player", talent = 57 }, -- Fel Covenant
+        { spell = 387603, type = "buff", unit = "player", talent = 64 }, -- Stolen Power
+        { spell = 387626, type = "buff", unit = "player", talent = 46 }, -- Soulburn
+        { spell = 388068, type = "buff", unit = "player", talent = 25 }, -- Inquisitor's Gaze
+        { spell = 389614, type = "buff", unit = "player", talent = 42 }, -- Abyss Walker
+        { spell = 394810, type = "buff", unit = "player" }, -- Soulburn: Drain Life
+        { spell = 89751, type = "buff", unit = "target" }, -- Felstorm
+        { spell = 108366, type = "buff", unit = "target" }, -- Soul Leech
+        { spell = 134477, type = "buff", unit = "target" }, -- Threatening Presence
+        { spell = 171982, type = "buff", unit = "target" }, -- Demonic Synergy
+        { spell = 7870, type = "buff", unit = "pet" }, -- Lesser Invisibility
+        { spell = 30151, type = "buff", unit = "pet" }, -- Pursuit
+        { spell = 32752, type = "buff", unit = "pet" }, -- Summoning Disorientation
+        { spell = 89751, type = "buff", unit = "pet" }, -- Felstorm
+        { spell = 108366, type = "buff", unit = "pet" }, -- Soul Leech
+        { spell = 134477, type = "buff", unit = "pet" }, -- Threatening Presence
+        { spell = 171982, type = "buff", unit = "pet" }, -- Demonic Synergy
+        { spell = 265273, type = "buff", unit = "pet" }, -- Demonic Power
+        { spell = 267171, type = "buff", unit = "pet", talent = 80 }, -- Demonic Strength
+        { spell = 353646, type = "buff", unit = "pet" }, -- Fel Obelisk
+        { spell = 386601, type = "buff", unit = "pet" }, -- Fiendish Wrath
+        { spell = 386861, type = "buff", unit = "pet", talent = 12 }, -- Demonic Inspiration
+        { spell = 386865, type = "buff", unit = "pet", talent = 33 }, -- Wrathful Minion
+        { spell = 387496, type = "buff", unit = "pet", talent = 65 }, -- Antoran Armaments
+        { spell = 387601, type = "buff", unit = "pet", talent = 51 }, -- The Expendables
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 603, type = "debuff", unit = "target", talent = 87 }, -- Doom
+        { spell = 702, type = "debuff", unit = "target" }, -- Curse of Weakness
+        { spell = 1714, type = "debuff", unit = "target" }, -- Curse of Tongues
+        { spell = 5484, type = "debuff", unit = "target", talent = 34 }, -- Howl of Terror
+        { spell = 6789, type = "debuff", unit = "target", talent = 35 }, -- Mortal Coil
+        { spell = 30213, type = "debuff", unit = "target" }, -- Legion Strike
+        { spell = 30283, type = "debuff", unit = "target", talent = 29 }, -- Shadowfury
+        { spell = 89766, type = "debuff", unit = "target" }, -- Axe Toss
+        { spell = 118699, type = "debuff", unit = "target" }, -- Fear
+        { spell = 146739, type = "debuff", unit = "target" }, -- Corruption
+        { spell = 212580, type = "debuff", unit = "target" }, -- Eye of the Observer
+        { spell = 213688, type = "debuff", unit = "target" }, -- Fel Cleave
+        { spell = 234153, type = "debuff", unit = "target" }, -- Drain Life
+        { spell = 267997, type = "debuff", unit = "target" }, -- Bile Spit
+        { spell = 270569, type = "debuff", unit = "target", talent = 72 }, -- From the Shadows
+        { spell = 386649, type = "debuff", unit = "target", talent = 32 }, -- Nightmare
+        { spell = 387402, type = "debuff", unit = "target", talent = 67 }, -- Fel Sunder
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 172, type = "ability", requiresTarget = true }, -- Corruption
+        { spell = 603, type = "ability", requiresTarget = true, talent = 87 }, -- Doom
+        { spell = 686, type = "ability", requiresTarget = true }, -- Shadow Bolt
+        { spell = 698, type = "ability" }, -- Ritual of Summoning
+        { spell = 702, type = "ability", requiresTarget = true }, -- Curse of Weakness
+        { spell = 1714, type = "ability", requiresTarget = true }, -- Curse of Tongues
+        { spell = 3110, type = "ability" }, -- Firebolt
+        { spell = 3716, type = "ability" }, -- Consuming Shadows
+        { spell = 5484, type = "ability", talent = 34 }, -- Howl of Terror
+        { spell = 5782, type = "ability", requiresTarget = true }, -- Fear
+        { spell = 6789, type = "ability", requiresTarget = true, talent = 35 }, -- Mortal Coil
+        { spell = 7814, type = "ability" }, -- Lash of Pain
+        { spell = 7870, type = "ability", buff = true, unit = 'pet' }, -- Lesser Invisibility
+        { spell = 17767, type = "ability" }, -- Shadow Bulwark
+        { spell = 20707, type = "ability", buff = true }, -- Soulstone
+        { spell = 29893, type = "ability" }, -- Create Soulwell
+        { spell = 30151, type = "ability", buff = true, unit = 'pet' }, -- Pursuit
+        { spell = 30213, type = "ability" }, -- Legion Strike
+        { spell = 30283, type = "ability", talent = 29 }, -- Shadowfury
+        { spell = 48018, type = "ability", buff = true, talent = 17 }, -- Demonic Circle
+        { spell = 48020, type = "ability", usable = true }, -- Demonic Circle: Teleport
+        { spell = 54049, type = "ability" }, -- Shadow Bite
+        { spell = 89751, type = "ability", buff = true, unit = 'pet', debuff = true }, -- Felstorm
+        { spell = 89766, type = "ability" }, -- Axe Toss
+        { spell = 104316, type = "ability", overlayGlow = true, requiresTarget = true, talent = 82 }, -- Call Dreadstalkers
+        { spell = 105174, type = "ability", requiresTarget = true }, -- Hand of Gul'dan
+        { spell = 108416, type = "ability", buff = true, talent = 20 }, -- Dark Pact
+        { spell = 111771, type = "ability", talent = 43 }, -- Demonic Gateway
+        { spell = 111898, type = "ability", requiresTarget = true, totem = true, talent = 70 }, -- Grimoire: Felguard
+        { spell = 112042, type = "ability" }, -- Threatening Presence
+        { spell = 119914, type = "ability" }, -- Axe Toss
+        { spell = 134477, type = "ability", buff = true, unit = 'pet', debuff = true }, -- Threatening Presence
+        { spell = 196277, type = "ability", charges = true, requiresTarget = true, usable = true, talent = 59 }, -- Implosion
+        { spell = 234153, type = "ability", requiresTarget = true }, -- Drain Life
+        { spell = 264057, type = "ability", requiresTarget = true, talent = 77 }, -- Soul Strike
+        { spell = 264119, type = "ability", totem = true, talent = 76 }, -- Summon Vilefiend
+        { spell = 264130, type = "ability", talent = 60 }, -- Power Siphon
+        { spell = 264178, type = "ability", overlayGlow = true, requiresTarget = true, talent = 83 }, -- Demonbolt
+        { spell = 264993, type = "ability" }, -- Shadow Shield
+        { spell = 265187, type = "ability", charges = true, talent = 89 }, -- Summon Demonic Tyrant
+        { spell = 267171, type = "ability", buff = true, unit = 'pet', talent = 80 }, -- Demonic Strength
+        { spell = 267211, type = "ability", talent = 79 }, -- Bilescourge Bombers
+        { spell = 267217, type = "ability", talent = 54 }, -- Nether Portal
+        { spell = 328774, type = "ability", buff = true, usable = true, talent = 18 }, -- Amplify Curse
+        { spell = 333889, type = "ability", buff = true, talent = 15 }, -- Fel Domination
+        { spell = 334275, type = "ability", requiresTarget = true }, -- Curse of Exhaustion
+        { spell = 342601, type = "ability" }, -- Ritual of Doom
+        { spell = 385899, type = "ability", talent = 46 }, -- Soulburn
+        { spell = 386256, type = "ability", charges = true, buff = true, usable = true, talent = 24 }, -- Summon Soulkeeper
+        { spell = 386344, type = "ability", talent = 25 }, -- Inquisitor's Gaze
+        { spell = 386833, type = "ability", talent = 62 }, -- Guillotine
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 212295, type = "buff", unit = "player", pvptalent = 8, titleSuffix = L["buff"] }, -- Nether Ward
+        { spell = 199954, type = "ability", pvptalent = 6, titleSuffix = L["cooldown"] }, -- Bane of Fragility
+        { spell = 201996, type = "ability", pvptalent = 7, titleSuffix = L["cooldown"] }, -- Call Observer
+        { spell = 212295, type = "ability", buff = true, pvptalent = 8, titleSuffix = L["cooldown"] }, -- Nether Ward
+        { spell = 212459, type = "ability", totem = true, pvptalent = 1, titleSuffix = L["cooldown"] }, -- Call Fel Lord
+        { spell = 212619, type = "ability", requiresTarget = true, pvptalent = 3, titleSuffix = L["cooldown"] }, -- Call Felhunter
+        { spell = 221703, type = "ability", pvptalent = 10, titleSuffix = L["cooldown"] }, -- Casting Circle
+        { spell = 353294, type = "ability", pvptalent = 12, titleSuffix = L["cooldown"] }, -- Shadow Rift
+        { spell = 353601, type = "ability", totem = true, pvptalent = 13, titleSuffix = L["cooldown"] }, -- Fel Obelisk
+        { spell = 353753, type = "ability", pvptalent = 10, titleSuffix = L["cooldown"] }, -- Bonds of Fel
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
   [3] = { -- Destruction
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 126, type = "buff", unit = "player" }, -- Eye of Kilrogg
+        { spell = 5697, type = "buff", unit = "player" }, -- Unending Breath
+        { spell = 20707, type = "buff", unit = "player" }, -- Soulstone
+        { spell = 48018, type = "buff", unit = "player", talent = 17 }, -- Demonic Circle
+        { spell = 104773, type = "buff", unit = "player" }, -- Unending Resolve
+        { spell = 108366, type = "buff", unit = "player" }, -- Soul Leech
+        { spell = 108416, type = "buff", unit = "player", talent = 20 }, -- Dark Pact
+        { spell = 111400, type = "buff", unit = "player", talent = 37 }, -- Burning Rush
+        { spell = 117828, type = "buff", unit = "player", talent = 89 }, -- Backdraft
+        { spell = 171982, type = "buff", unit = "player" }, -- Demonic Synergy
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 196099, type = "buff", unit = "player", talent = 62 }, -- Grimoire of Sacrifice
+        { spell = 221705, type = "buff", unit = "player" }, -- Casting Circle
+        { spell = 266030, type = "buff", unit = "player", talent = 73 }, -- Reverse Entropy
+        { spell = 266087, type = "buff", unit = "player", talent = 48 }, -- Rain of Chaos
+        { spell = 328774, type = "buff", unit = "player", talent = 18 }, -- Amplify Curse
+        { spell = 387109, type = "buff", unit = "player", talent = 83 }, -- Conflagration of Chaos
+        { spell = 387154, type = "buff", unit = "player", talent = 54 }, -- Burn to Ashes
+        { spell = 387157, type = "buff", unit = "player", talent = 61 }, -- Ritual of Ruin
+        { spell = 387158, type = "buff", unit = "player" }, -- Impending Ruin
+        { spell = 387161, type = "buff", unit = "player" }, -- Blasphemy
+        { spell = 387263, type = "buff", unit = "player", talent = 63 }, -- Flashpoint
+        { spell = 387283, type = "buff", unit = "player", talent = 55 }, -- Power Overwhelming
+        { spell = 387356, type = "buff", unit = "player", talent = 50 }, -- Crashing Chaos
+        { spell = 387409, type = "buff", unit = "player", talent = 58 }, -- Madness of the Azj'Aqir
+        { spell = 387413, type = "buff", unit = "player", talent = 58 }, -- Madness of the Azj'Aqir
+        { spell = 387570, type = "buff", unit = "player", talent = 51 }, -- Rolling Havoc
+        { spell = 387626, type = "buff", unit = "player", talent = 46 }, -- Soulburn
+        { spell = 388068, type = "buff", unit = "player", talent = 25 }, -- Inquisitor's Gaze
+        { spell = 389614, type = "buff", unit = "player", talent = 42 }, -- Abyss Walker
+        { spell = 394087, type = "buff", unit = "player", talent = 71 }, -- Mayhem
+        { spell = 7870, type = "buff", unit = "pet" }, -- Lesser Invisibility
+        { spell = 32752, type = "buff", unit = "pet" }, -- Summoning Disorientation
+        { spell = 108366, type = "buff", unit = "pet" }, -- Soul Leech
+        { spell = 134477, type = "buff", unit = "pet" }, -- Threatening Presence
+        { spell = 171982, type = "buff", unit = "pet" }, -- Demonic Synergy
+        { spell = 386861, type = "buff", unit = "pet", talent = 12 }, -- Demonic Inspiration
+        { spell = 386865, type = "buff", unit = "pet", talent = 33 }, -- Wrathful Minion
+        { spell = 387496, type = "buff", unit = "pet", talent = 65 }, -- Antoran Armaments
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 702, type = "debuff", unit = "target" }, -- Curse of Weakness
+        { spell = 1714, type = "debuff", unit = "target" }, -- Curse of Tongues
+        { spell = 5484, type = "debuff", unit = "target", talent = 34 }, -- Howl of Terror
+        { spell = 6360, type = "debuff", unit = "target" }, -- Whiplash
+        { spell = 17877, type = "debuff", unit = "target", talent = 82 }, -- Shadowburn
+        { spell = 22703, type = "debuff", unit = "target" }, -- Infernal Awakening
+        { spell = 30283, type = "debuff", unit = "target", talent = 29 }, -- Shadowfury
+        { spell = 118699, type = "debuff", unit = "target" }, -- Fear
+        { spell = 146739, type = "debuff", unit = "target" }, -- Corruption
+        { spell = 157736, type = "debuff", unit = "target" }, -- Immolate
+        { spell = 196414, type = "debuff", unit = "target", talent = 79 }, -- Eradication
+        { spell = 200548, type = "debuff", unit = "target" }, -- Bane of Havoc
+        { spell = 234153, type = "debuff", unit = "target" }, -- Drain Life
+        { spell = 265931, type = "debuff", unit = "target", talent = 90 }, -- Conflagrate
+        { spell = 334275, type = "debuff", unit = "target" }, -- Curse of Exhaustion
+        { spell = 386649, type = "debuff", unit = "target", talent = 32 }, -- Nightmare
+        { spell = 387096, type = "debuff", unit = "target", talent = 67 }, -- Pyrogenics
+        { spell = 387476, type = "debuff", unit = "target", talent = 47 }, -- Infernal Brand
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 348, type = "ability", requiresTarget = true }, -- Immolate
+        { spell = 698, type = "ability", usable = true }, -- Ritual of Summoning
+        { spell = 702, type = "ability", requiresTarget = true }, -- Curse of Weakness
+        { spell = 1122, type = "ability", talent = 80 }, -- Summon Infernal
+        { spell = 1714, type = "ability", requiresTarget = true }, -- Curse of Tongues
+        { spell = 3110, type = "ability" }, -- Firebolt
+        { spell = 5484, type = "ability", talent = 34 }, -- Howl of Terror
+        { spell = 5782, type = "ability", requiresTarget = true }, -- Fear
+        { spell = 6353, type = "ability", requiresTarget = true, talent = 70 }, -- Soul Fire
+        { spell = 6360, type = "ability" }, -- Whiplash
+        { spell = 7814, type = "ability" }, -- Lash of Pain
+        { spell = 7870, type = "ability", buff = true, unit = 'pet' }, -- Lesser Invisibility
+        { spell = 17877, type = "ability", charges = true, requiresTarget = true, talent = 82 }, -- Shadowburn
+        { spell = 17962, type = "ability", charges = true, requiresTarget = true, talent = 90 }, -- Conflagrate
+        { spell = 19647, type = "ability" }, -- Spell Lock
+        { spell = 20707, type = "ability", buff = true }, -- Soulstone
+        { spell = 28730, type = "ability" }, -- Arcane Torrent
+        { spell = 29722, type = "ability", requiresTarget = true }, -- Incinerate
+        { spell = 29893, type = "ability" }, -- Create Soulwell
+        { spell = 30283, type = "ability", talent = 29 }, -- Shadowfury
+        { spell = 48018, type = "ability", buff = true, talent = 17 }, -- Demonic Circle
+        { spell = 48020, type = "ability", usable = true }, -- Demonic Circle: Teleport
+        { spell = 54049, type = "ability" }, -- Shadow Bite
+        { spell = 69041, type = "ability" }, -- Rocket Barrage
+        { spell = 69046, type = "ability" }, -- Pack Hobgoblin
+        { spell = 69070, type = "ability" }, -- Rocket Jump
+        { spell = 104773, type = "ability", buff = true }, -- Unending Resolve
+        { spell = 108416, type = "ability", buff = true, talent = 20 }, -- Dark Pact
+        { spell = 108503, type = "ability", talent = 62 }, -- Grimoire of Sacrifice
+        { spell = 111771, type = "ability", talent = 43 }, -- Demonic Gateway
+        { spell = 116858, type = "ability", overlayGlow = true, requiresTarget = true, talent = 91 }, -- Chaos Bolt
+        { spell = 119910, type = "ability" }, -- Spell Lock
+        { spell = 152108, type = "ability", talent = 66 }, -- Cataclysm
+        { spell = 196447, type = "ability", usable = true, talent = 86 }, -- Channel Demonfire
+        { spell = 234153, type = "ability", requiresTarget = true }, -- Drain Life
+        { spell = 328774, type = "ability", buff = true, usable = true, talent = 18 }, -- Amplify Curse
+        { spell = 334275, type = "ability", requiresTarget = true }, -- Curse of Exhaustion
+        { spell = 342601, type = "ability", usable = true }, -- Ritual of Doom
+        { spell = 385899, type = "ability", talent = 46 }, -- Soulburn
+        { spell = 386256, type = "ability", charges = true, talent = 24 }, -- Summon Soulkeeper
+        { spell = 386344, type = "ability", talent = 25 }, -- Inquisitor's Gaze
+        { spell = 387976, type = "ability", charges = true, requiresTarget = true, talent = 57 }, -- Dimensional Rift
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 212295, type = "buff", unit = "player", pvptalent = 2, titleSuffix = L["buff"] }, -- Nether Ward
+        { spell = 199954, type = "ability", requiresTarget = true, pvptalent = 1, titleSuffix = L["cooldown"] }, -- Bane of Fragility
+        { spell = 212295, type = "ability", buff = true, pvptalent = 2, titleSuffix = L["cooldown"] }, -- Nether Ward
+        { spell = 221703, type = "ability", pvptalent = 11, titleSuffix = L["cooldown"] }, -- Casting Circle
+        { spell = 353294, type = "ability", pvptalent = 9, titleSuffix = L["cooldown"] }, -- Shadow Rift
+        { spell = 353753, type = "ability", pvptalent = 4, titleSuffix = L["cooldown"] }, -- Bonds of Fel
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
 }
 
@@ -2157,7 +3442,6 @@ templates.class.MONK = {
         { spell = 122783, type = "ability", buff = true, talent = 58 }, -- Diffuse Magic
         { spell = 123986, type = "ability", talent = 71 }, -- Chi Burst
         { spell = 126892, type = "ability" }, -- Zen Pilgrimage
-        { spell = 129597, type = "ability" }, -- Arcane Torrent
         { spell = 132578, type = "ability", buff = true, requiresTarget = true, totem = true, talent = 87 }, -- Invoke Niuzao, the Black Ox
         { spell = 205523, type = "ability", requiresTarget = true }, -- Blackout Kick
         { spell = 322101, type = "ability", talent = 63 }, -- Expel Harm
@@ -2284,7 +3568,6 @@ templates.class.MONK = {
         { spell = 123986, type = "ability", talent = 91 }, -- Chi Burst
         { spell = 124081, type = "ability", talent = 13 }, -- Zen Pulse
         { spell = 126892, type = "ability", usable = true }, -- Zen Pilgrimage
-        { spell = 129597, type = "ability" }, -- Arcane Torrent
         { spell = 191837, type = "ability", charges = true, talent = 51 }, -- Essence Font
         { spell = 196725, type = "ability", talent = 8 }, -- Refreshing Jade Wind
         { spell = 198898, type = "ability", talent = 5 }, -- Song of Chi-Ji
@@ -2418,7 +3701,6 @@ templates.class.MONK = {
         { spell = 123904, type = "ability", requiresTarget = true, totem = true, talent = 28 }, -- Invoke Xuen, the White Tiger
         { spell = 123986, type = "ability", talent = 83 }, -- Chi Burst
         { spell = 126892, type = "ability", usable = true }, -- Zen Pilgrimage
-        { spell = 129597, type = "ability" }, -- Arcane Torrent
         { spell = 137639, type = "ability", charges = true, buff = true, talent = 16 }, -- Storm, Earth, and Fire
         { spell = 152173, type = "ability", buff = true, talent = 17 }, -- Serenity
         { spell = 152175, type = "ability", talent = 29 }, -- Whirling Dragon Punch
@@ -2457,12 +3739,599 @@ templates.class.MONK = {
 
 templates.class.DRUID = {
   [1] = { -- Balance
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 768, type = "buff", unit = "player" }, -- Cat Form
+        { spell = 774, type = "buff", unit = "player", talent = 18 }, -- Rejuvenation
+        { spell = 783, type = "buff", unit = "player" }, -- Travel Form
+        { spell = 1126, type = "buff", unit = "player" }, -- Mark of the Wild
+        { spell = 1850, type = "buff", unit = "player" }, -- Dash
+        { spell = 5487, type = "buff", unit = "player" }, -- Bear Form
+        { spell = 8936, type = "buff", unit = "player" }, -- Regrowth
+        { spell = 22812, type = "buff", unit = "player" }, -- Barkskin
+        { spell = 24858, type = "buff", unit = "player", talent = 14 }, -- Moonkin Form
+        { spell = 48517, type = "buff", unit = "player" }, -- Eclipse (Solar)
+        { spell = 48518, type = "buff", unit = "player" }, -- Eclipse (Lunar)
+        { spell = 77761, type = "buff", unit = "player", talent = 35 }, -- Stampeding Roar
+        { spell = 77764, type = "buff", unit = "player", talent = 35 }, -- Stampeding Roar
+        { spell = 124974, type = "buff", unit = "player", talent = 47 }, -- Nature's Vigil
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 191034, type = "buff", unit = "player", talent = 52 }, -- Starfall
+        { spell = 192081, type = "buff", unit = "player", talent = 28 }, -- Ironfur
+        { spell = 194223, type = "buff", unit = "player", talent = 67 }, -- Celestial Alignment
+        { spell = 202425, type = "buff", unit = "player", talent = 86 }, -- Warrior of Elune
+        { spell = 203407, type = "buff", unit = "player" }, -- Reactive Resin
+        { spell = 209746, type = "buff", unit = "player" }, -- Moonkin Aura
+        { spell = 234084, type = "buff", unit = "player" }, -- Moon and Stars
+        { spell = 252216, type = "buff", unit = "player", talent = 3 }, -- Tiger Dash
+        { spell = 279709, type = "buff", unit = "player", talent = 51 }, -- Starlord
+        { spell = 319454, type = "buff", unit = "player", talent = 32 }, -- Heart of the Wild
+        { spell = 343648, type = "buff", unit = "player", talent = 54 }, -- Solstice
+        { spell = 385787, type = "buff", unit = "player", talent = 37 }, -- Matted Fur
+        { spell = 391528, type = "buff", unit = "player", talent = 58 }, -- Convoke the Spirits
+        { spell = 393763, type = "buff", unit = "player", talent = 68 }, -- Umbral Embrace
+        { spell = 393897, type = "buff", unit = "player", talent = 1 }, -- Tireless Pursuit
+        { spell = 393903, type = "buff", unit = "player", talent = 36 }, -- Ursine Vigor
+        { spell = 393942, type = "buff", unit = "player" }, -- Starweaver's Warp
+        { spell = 393944, type = "buff", unit = "player" }, -- Starweaver's Weft
+        { spell = 393955, type = "buff", unit = "player" }, -- Rattled Stars
+        { spell = 393959, type = "buff", unit = "player", talent = 75 }, -- Nature's Grace
+        { spell = 393961, type = "buff", unit = "player", talent = 74 }, -- Primordial Arcanic Pulsar
+        { spell = 394049, type = "buff", unit = "player", talent = 66 }, -- Balance of All Things
+        { spell = 394050, type = "buff", unit = "player", talent = 66 }, -- Balance of All Things
+        { spell = 394108, type = "buff", unit = "player", talent = 69 }, -- Sundered Firmament
+        { spell = 395110, type = "buff", unit = "player" }, -- Parting Skies
+        { spell = 395336, type = "buff", unit = "player", talent = 48 }, -- Protector of the Pack
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 339, type = "debuff", unit = "target" }, -- Entangling Roots
+        { spell = 1079, type = "debuff", unit = "target", talent = 23 }, -- Rip
+        { spell = 6795, type = "debuff", unit = "target" }, -- Growl
+        { spell = 61391, type = "debuff", unit = "target", talent = 11 }, -- Typhoon
+        { spell = 81261, type = "debuff", unit = "target", talent = 84 }, -- Solar Beam
+        { spell = 81281, type = "debuff", unit = "target", talent = 56 }, -- Fungal Growth
+        { spell = 102359, type = "debuff", unit = "target", talent = 44 }, -- Mass Entanglement
+        { spell = 106830, type = "debuff", unit = "target", talent = 24 }, -- Thrash
+        { spell = 155722, type = "debuff", unit = "target", talent = 4 }, -- Rake
+        { spell = 164812, type = "debuff", unit = "target" }, -- Moonfire
+        { spell = 164815, type = "debuff", unit = "target", talent = 10 }, -- Sunfire
+        { spell = 192090, type = "debuff", unit = "target", talent = 24 }, -- Thrash
+        { spell = 202347, type = "debuff", unit = "target", talent = 91 }, -- Stellar Flare
+        { spell = 203123, type = "debuff", unit = "target", talent = 22 }, -- Maim
+        { spell = 205644, type = "debuff", unit = "target", talent = 62 }, -- Force of Nature
+        { spell = 393957, type = "debuff", unit = "target", talent = 53 }, -- Waning Twilight
+        { spell = 394061, type = "debuff", unit = "target", talent = 55 }, -- Astral Smolder
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 99, type = "ability", talent = 38 }, -- Incapacitating Roar
+        { spell = 339, type = "ability", requiresTarget = true }, -- Entangling Roots
+        { spell = 768, type = "ability", buff = true }, -- Cat Form
+        { spell = 783, type = "ability", buff = true }, -- Travel Form
+        { spell = 1079, type = "ability", requiresTarget = true, usable = true, talent = 23 }, -- Rip
+        { spell = 1822, type = "ability", requiresTarget = true, usable = true, talent = 4 }, -- Rake
+        { spell = 1850, type = "ability", buff = true }, -- Dash
+        { spell = 2782, type = "ability", talent = 7 }, -- Remove Corruption
+        { spell = 2908, type = "ability", requiresTarget = true, talent = 30 }, -- Soothe
+        { spell = 5211, type = "ability", requiresTarget = true, talent = 39 }, -- Mighty Bash
+        { spell = 5221, type = "ability", requiresTarget = true, usable = true }, -- Shred
+        { spell = 5487, type = "ability", buff = true }, -- Bear Form
+        { spell = 6795, type = "ability", requiresTarget = true, usable = true }, -- Growl
+        { spell = 8921, type = "ability", requiresTarget = true }, -- Moonfire
+        { spell = 18562, type = "ability", usable = true, talent = 17 }, -- Swiftmend
+        { spell = 20484, type = "ability" }, -- Rebirth
+        { spell = 22568, type = "ability", requiresTarget = true, usable = true }, -- Ferocious Bite
+        { spell = 22570, type = "ability", requiresTarget = true, usable = true, talent = 22 }, -- Maim
+        { spell = 22812, type = "ability", buff = true }, -- Barkskin
+        { spell = 22842, type = "ability", charges = true, usable = true, talent = 21 }, -- Frenzied Regeneration
+        { spell = 24858, type = "ability", buff = true, talent = 14 }, -- Moonkin Form
+        { spell = 33786, type = "ability", requiresTarget = true, talent = 15 }, -- Cyclone
+        { spell = 33917, type = "ability", requiresTarget = true, usable = true }, -- Mangle
+        { spell = 48438, type = "ability", requiresTarget = true, talent = 43 }, -- Wild Growth
+        { spell = 77758, type = "ability", requiresTarget = true, talent = 24 }, -- Thrash
+        { spell = 77761, type = "ability", buff = true, talent = 35 }, -- Stampeding Roar
+        { spell = 77764, type = "ability", buff = true, talent = 35 }, -- Stampeding Roar
+        { spell = 78674, type = "ability", overlayGlow = true, requiresTarget = true, talent = 6 }, -- Starsurge
+        { spell = 78675, type = "ability", requiresTarget = true, talent = 84 }, -- Solar Beam
+        { spell = 88747, type = "ability", charges = true, requiresTarget = true, usable = true, talent = 72 }, -- Wild Mushroom
+        { spell = 93402, type = "ability", requiresTarget = true, talent = 10 }, -- Sunfire
+        { spell = 102359, type = "ability", requiresTarget = true, talent = 44 }, -- Mass Entanglement
+        { spell = 102401, type = "ability", requiresTarget = true, talent = 2 }, -- Wild Charge
+        { spell = 106832, type = "ability", requiresTarget = true, usable = true, talent = 24 }, -- Thrash
+        { spell = 106839, type = "ability", requiresTarget = true, usable = true, talent = 25 }, -- Skull Bash
+        { spell = 106898, type = "ability", talent = 35 }, -- Stampeding Roar
+        { spell = 108238, type = "ability", talent = 33 }, -- Renewal
+        { spell = 124974, type = "ability", buff = true, talent = 47 }, -- Nature's Vigil
+        { spell = 132469, type = "ability", talent = 11 }, -- Typhoon
+        { spell = 190984, type = "ability", charges = true, overlayGlow = true, requiresTarget = true }, -- Wrath
+        { spell = 192081, type = "ability", buff = true, usable = true, talent = 28 }, -- Ironfur
+        { spell = 194153, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 5 }, -- Starfire
+        { spell = 194223, type = "ability", buff = true, talent = 67 }, -- Celestial Alignment
+        { spell = 197626, type = "ability", requiresTarget = true, talent = 50 }, -- Starsurge
+        { spell = 197628, type = "ability", requiresTarget = true, talent = 93 }, -- Starfire
+        { spell = 202347, type = "ability", requiresTarget = true, talent = 91 }, -- Stellar Flare
+        { spell = 202359, type = "ability", talent = 88 }, -- Astral Communion
+        { spell = 202425, type = "ability", buff = true, usable = true, talent = 86 }, -- Warrior of Elune
+        { spell = 202770, type = "ability", requiresTarget = true, talent = 78 }, -- Fury of Elune
+        { spell = 205636, type = "ability", talent = 62 }, -- Force of Nature
+        { spell = 252216, type = "ability", buff = true, talent = 3 }, -- Tiger Dash
+        { spell = 274281, type = "ability", charges = true, requiresTarget = true, talent = 77 }, -- New Moon
+        { spell = 274282, type = "ability", charges = true }, -- Half Moon
+        { spell = 274283, type = "ability", charges = true }, -- Full Moon
+        { spell = 319454, type = "ability", buff = true, talent = 32 }, -- Heart of the Wild
+        { spell = 390414, type = "ability", talent = 57 }, -- Incarnation: Chosen of Elune
+        { spell = 391528, type = "ability", buff = true, talent = 58 }, -- Convoke the Spirits
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 305497, type = "buff", unit = "player", pvptalent = 5, titleSuffix = L["buff"] }, -- Thorns
+        { spell = 209749, type = "debuff", unit = "target", pvptalent = 10, titleSuffix = L["debuff"] }, -- Faerie Swarm
+        { spell = 209749, type = "ability", requiresTarget = true, pvptalent = 10, titleSuffix = L["cooldown"] }, -- Faerie Swarm
+        { spell = 305497, type = "ability", buff = true, pvptalent = 5, titleSuffix = L["cooldown"] }, -- Thorns
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
   [2] = { -- Feral
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 768, type = "buff", unit = "player" }, -- Cat Form
+        { spell = 774, type = "buff", unit = "player", talent = 61 }, -- Rejuvenation
+        { spell = 783, type = "buff", unit = "player" }, -- Travel Form
+        { spell = 1126, type = "buff", unit = "player" }, -- Mark of the Wild
+        { spell = 1850, type = "buff", unit = "player" }, -- Dash
+        { spell = 5215, type = "buff", unit = "player" }, -- Prowl
+        { spell = 5217, type = "buff", unit = "player", talent = 45 }, -- Tiger's Fury
+        { spell = 5487, type = "buff", unit = "player" }, -- Bear Form
+        { spell = 8936, type = "buff", unit = "player" }, -- Regrowth
+        { spell = 22812, type = "buff", unit = "player" }, -- Barkskin
+        { spell = 22842, type = "buff", unit = "player", talent = 64 }, -- Frenzied Regeneration
+        { spell = 61336, type = "buff", unit = "player", talent = 37 }, -- Survival Instincts
+        { spell = 69369, type = "buff", unit = "player", talent = 24 }, -- Predatory Swiftness
+        { spell = 77761, type = "buff", unit = "player", talent = 78 }, -- Stampeding Roar
+        { spell = 77764, type = "buff", unit = "player", talent = 78 }, -- Stampeding Roar
+        { spell = 102401, type = "buff", unit = "player", talent = 47 }, -- Wild Charge
+        { spell = 102543, type = "buff", unit = "player", talent = 34 }, -- Incarnation: Avatar of Ashamane
+        { spell = 106951, type = "buff", unit = "player", talent = 19 }, -- Berserk
+        { spell = 124974, type = "buff", unit = "player", talent = 90 }, -- Nature's Vigil
+        { spell = 135700, type = "buff", unit = "player" }, -- Clearcasting
+        { spell = 145152, type = "buff", unit = "player", talent = 29 }, -- Bloodtalons
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 192081, type = "buff", unit = "player", talent = 71 }, -- Ironfur
+        { spell = 197625, type = "buff", unit = "player", talent = 94 }, -- Moonkin Form
+        { spell = 197721, type = "buff", unit = "player" }, -- Flourish
+        { spell = 202636, type = "buff", unit = "player" }, -- Leader of the Pack
+        { spell = 236440, type = "buff", unit = "player" }, -- Strength of the Wild
+        { spell = 252071, type = "buff", unit = "player", talent = 34 }, -- Incarnation: Avatar of Ashamane
+        { spell = 252216, type = "buff", unit = "player", talent = 48 }, -- Tiger Dash
+        { spell = 319454, type = "buff", unit = "player", talent = 75 }, -- Heart of the Wild
+        { spell = 385787, type = "buff", unit = "player", talent = 80 }, -- Matted Fur
+        { spell = 391528, type = "buff", unit = "player", talent = 35 }, -- Convoke the Spirits
+        { spell = 391722, type = "buff", unit = "player", talent = 20 }, -- Sabertooth
+        { spell = 391873, type = "buff", unit = "player", talent = 26 }, -- Tiger's Tenacity
+        { spell = 391876, type = "buff", unit = "player", talent = 36 }, -- Frantic Momentum
+        { spell = 391955, type = "buff", unit = "player", talent = 15 }, -- Protective Growth
+        { spell = 391974, type = "buff", unit = "player", talent = 22 }, -- Sudden Ambush
+        { spell = 393897, type = "buff", unit = "player", talent = 46 }, -- Tireless Pursuit
+        { spell = 393903, type = "buff", unit = "player", talent = 79 }, -- Ursine Vigor
+        { spell = 393961, type = "buff", unit = "player", talent = 74 }, -- Primordial Arcanic Pulsar
+        { spell = 395336, type = "buff", unit = "player", talent = 91 }, -- Protector of the Pack
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 99, type = "debuff", unit = "target", talent = 81 }, -- Incapacitating Roar
+        { spell = 339, type = "debuff", unit = "target" }, -- Entangling Roots
+        { spell = 1079, type = "debuff", unit = "target", talent = 66 }, -- Rip
+        { spell = 5211, type = "debuff", unit = "target", talent = 82 }, -- Mighty Bash
+        { spell = 6795, type = "debuff", unit = "target" }, -- Growl
+        { spell = 58180, type = "debuff", unit = "target", talent = 21 }, -- Infected Wounds
+        { spell = 61391, type = "debuff", unit = "target", talent = 55 }, -- Typhoon
+        { spell = 102359, type = "debuff", unit = "target", talent = 87 }, -- Mass Entanglement
+        { spell = 106830, type = "debuff", unit = "target", talent = 67 }, -- Thrash
+        { spell = 155722, type = "debuff", unit = "target", talent = 49 }, -- Rake
+        { spell = 164812, type = "debuff", unit = "target" }, -- Moonfire
+        { spell = 164815, type = "debuff", unit = "target", talent = 54 }, -- Sunfire
+        { spell = 203123, type = "debuff", unit = "target", talent = 65 }, -- Maim
+        { spell = 236021, type = "debuff", unit = "target" }, -- Ferocious Wound
+        { spell = 391140, type = "debuff", unit = "target" }, -- Frenzied Assault
+        { spell = 391356, type = "debuff", unit = "target" }, -- Tear
+        { spell = 391889, type = "debuff", unit = "target", talent = 32 }, -- Adaptive Swarm
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 99, type = "ability", talent = 81 }, -- Incapacitating Roar
+        { spell = 339, type = "ability", overlayGlow = true, requiresTarget = true }, -- Entangling Roots
+        { spell = 768, type = "ability", buff = true }, -- Cat Form
+        { spell = 783, type = "ability", buff = true }, -- Travel Form
+        { spell = 1079, type = "ability", requiresTarget = true, usable = true, talent = 66 }, -- Rip
+        { spell = 1822, type = "ability", requiresTarget = true, usable = true, talent = 49 }, -- Rake
+        { spell = 1850, type = "ability", buff = true }, -- Dash
+        { spell = 2782, type = "ability", talent = 51 }, -- Remove Corruption
+        { spell = 2908, type = "ability", requiresTarget = true, talent = 73 }, -- Soothe
+        { spell = 5176, type = "ability", charges = true, requiresTarget = true }, -- Wrath
+        { spell = 5211, type = "ability", requiresTarget = true, talent = 82 }, -- Mighty Bash
+        { spell = 5215, type = "ability", buff = true, usable = true }, -- Prowl
+        { spell = 5217, type = "ability", buff = true, talent = 45 }, -- Tiger's Fury
+        { spell = 5221, type = "ability", overlayGlow = true, requiresTarget = true, usable = true }, -- Shred
+        { spell = 5487, type = "ability", buff = true }, -- Bear Form
+        { spell = 6795, type = "ability", requiresTarget = true, usable = true }, -- Growl
+        { spell = 8921, type = "ability", requiresTarget = true }, -- Moonfire
+        { spell = 18562, type = "ability", usable = true, talent = 60 }, -- Swiftmend
+        { spell = 20484, type = "ability" }, -- Rebirth
+        { spell = 22568, type = "ability", requiresTarget = true, usable = true }, -- Ferocious Bite
+        { spell = 22570, type = "ability", requiresTarget = true, usable = true, talent = 65 }, -- Maim
+        { spell = 22812, type = "ability", buff = true }, -- Barkskin
+        { spell = 22842, type = "ability", charges = true, buff = true, usable = true, talent = 64 }, -- Frenzied Regeneration
+        { spell = 33786, type = "ability", requiresTarget = true, talent = 58 }, -- Cyclone
+        { spell = 33917, type = "ability", requiresTarget = true, usable = true, talent = 7 }, -- Mangle
+        { spell = 48438, type = "ability", requiresTarget = true, talent = 86 }, -- Wild Growth
+        { spell = 49376, type = "ability", requiresTarget = true, talent = 47 }, -- Wild Charge
+        { spell = 61336, type = "ability", buff = true, talent = 37 }, -- Survival Instincts
+        { spell = 77758, type = "ability", requiresTarget = true, talent = 67 }, -- Thrash
+        { spell = 77761, type = "ability", buff = true, talent = 78 }, -- Stampeding Roar
+        { spell = 77764, type = "ability", buff = true, talent = 78 }, -- Stampeding Roar
+        { spell = 78674, type = "ability", requiresTarget = true, talent = 6 }, -- Starsurge
+        { spell = 93402, type = "ability", requiresTarget = true, talent = 54 }, -- Sunfire
+        { spell = 102359, type = "ability", requiresTarget = true, talent = 87 }, -- Mass Entanglement
+        { spell = 102401, type = "ability", buff = true, requiresTarget = true, usable = true, talent = 47 }, -- Wild Charge
+        { spell = 102417, type = "ability", requiresTarget = true, talent = 47 }, -- Wild Charge
+        { spell = 102543, type = "ability", buff = true, talent = 34 }, -- Incarnation: Avatar of Ashamane
+        { spell = 106832, type = "ability", requiresTarget = true, usable = true, talent = 67 }, -- Thrash
+        { spell = 106839, type = "ability", requiresTarget = true, usable = true, talent = 68 }, -- Skull Bash
+        { spell = 106898, type = "ability", talent = 78 }, -- Stampeding Roar
+        { spell = 106951, type = "ability", buff = true, talent = 19 }, -- Berserk
+        { spell = 108238, type = "ability", talent = 76 }, -- Renewal
+        { spell = 124974, type = "ability", buff = true, talent = 90 }, -- Nature's Vigil
+        { spell = 132469, type = "ability", talent = 55 }, -- Typhoon
+        { spell = 192081, type = "ability", buff = true, usable = true, talent = 71 }, -- Ironfur
+        { spell = 194153, type = "ability", requiresTarget = true, talent = 5 }, -- Starfire
+        { spell = 197625, type = "ability", buff = true, talent = 94 }, -- Moonkin Form
+        { spell = 197626, type = "ability", requiresTarget = true, talent = 50 }, -- Starsurge
+        { spell = 197628, type = "ability", charges = true, requiresTarget = true, talent = 93 }, -- Starfire
+        { spell = 202028, type = "ability", charges = true, overlayGlow = true, talent = 7 }, -- Brutal Slash
+        { spell = 231064, type = "ability", requiresTarget = true, talent = 7 }, -- Mangle
+        { spell = 236716, type = "ability", requiresTarget = true, usable = true }, -- Strength of the Wild
+        { spell = 252216, type = "ability", buff = true, talent = 48 }, -- Tiger Dash
+        { spell = 274837, type = "ability", requiresTarget = true, usable = true, talent = 27 }, -- Feral Frenzy
+        { spell = 319454, type = "ability", buff = true, talent = 75 }, -- Heart of the Wild
+        { spell = 325727, type = "ability", requiresTarget = true, talent = 51 }, -- Adaptive Swarm
+        { spell = 391528, type = "ability", buff = true, talent = 35 }, -- Convoke the Spirits
+        { spell = 391888, type = "ability", requiresTarget = true, talent = 32 }, -- Adaptive Swarm
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 305497, type = "buff", unit = "player", pvptalent = 3, titleSuffix = L["buff"] }, -- Thorns
+        { spell = 305497, type = "ability", buff = true, pvptalent = 3, titleSuffix = L["cooldown"] }, -- Thorns
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
   [3] = { -- Guardian
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 768, type = "buff", unit = "player" }, -- Cat Form
+        { spell = 774, type = "buff", unit = "player", talent = 60 }, -- Rejuvenation
+        { spell = 783, type = "buff", unit = "player" }, -- Travel Form
+        { spell = 1126, type = "buff", unit = "player" }, -- Mark of the Wild
+        { spell = 1850, type = "buff", unit = "player" }, -- Dash
+        { spell = 5215, type = "buff", unit = "player" }, -- Prowl
+        { spell = 5487, type = "buff", unit = "player" }, -- Bear Form
+        { spell = 8936, type = "buff", unit = "player" }, -- Regrowth
+        { spell = 22812, type = "buff", unit = "player" }, -- Barkskin
+        { spell = 22842, type = "buff", unit = "player", talent = 63 }, -- Frenzied Regeneration
+        { spell = 50334, type = "buff", unit = "player", talent = 19 }, -- Berserk
+        { spell = 61336, type = "buff", unit = "player", talent = 5 }, -- Survival Instincts
+        { spell = 77761, type = "buff", unit = "player", talent = 77 }, -- Stampeding Roar
+        { spell = 93622, type = "buff", unit = "player", talent = 2 }, -- Gore
+        { spell = 102558, type = "buff", unit = "player", talent = 80 }, -- Incarnation: Guardian of Ursoc
+        { spell = 106898, type = "buff", unit = "player", talent = 77 }, -- Stampeding Roar
+        { spell = 124974, type = "buff", unit = "player", talent = 89 }, -- Nature's Vigil
+        { spell = 135286, type = "buff", unit = "player", talent = 40 }, -- Tooth and Claw
+        { spell = 155835, type = "buff", unit = "player", talent = 42 }, -- Bristling Fur
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 192081, type = "buff", unit = "player", talent = 70 }, -- Ironfur
+        { spell = 197625, type = "buff", unit = "player", talent = 93 }, -- Moonkin Form
+        { spell = 200851, type = "buff", unit = "player", talent = 19 }, -- Rage of the Sleeper
+        { spell = 201671, type = "buff", unit = "player", talent = 8 }, -- Gory Fur
+        { spell = 203975, type = "buff", unit = "player", talent = 37 }, -- Earthwarden
+        { spell = 213708, type = "buff", unit = "player", talent = 26 }, -- Galactic Guardian
+        { spell = 252216, type = "buff", unit = "player", talent = 47 }, -- Tiger Dash
+        { spell = 319454, type = "buff", unit = "player", talent = 74 }, -- Heart of the Wild
+        { spell = 354704, type = "buff", unit = "player" }, -- Grove Protection
+        { spell = 372015, type = "buff", unit = "player", talent = 39 }, -- Vicious Cycle
+        { spell = 372019, type = "buff", unit = "player", talent = 39 }, -- Vicious Cycle
+        { spell = 372505, type = "buff", unit = "player", talent = 30 }, -- Ursoc's Fury
+        { spell = 385787, type = "buff", unit = "player", talent = 79 }, -- Matted Fur
+        { spell = 391528, type = "buff", unit = "player", talent = 13 }, -- Convoke the Spirits
+        { spell = 393897, type = "buff", unit = "player", talent = 45 }, -- Tireless Pursuit
+        { spell = 393903, type = "buff", unit = "player", talent = 78 }, -- Ursine Vigor
+        { spell = 395336, type = "buff", unit = "player", talent = 90 }, -- Protector of the Pack
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 99, type = "debuff", unit = "target", talent = 80 }, -- Incapacitating Roar
+        { spell = 339, type = "debuff", unit = "target" }, -- Entangling Roots
+        { spell = 1079, type = "debuff", unit = "target", talent = 65 }, -- Rip
+        { spell = 5211, type = "debuff", unit = "target", talent = 81 }, -- Mighty Bash
+        { spell = 6795, type = "debuff", unit = "target" }, -- Growl
+        { spell = 61391, type = "debuff", unit = "target", talent = 53 }, -- Typhoon
+        { spell = 80313, type = "debuff", unit = "target", talent = 34 }, -- Pulverize
+        { spell = 106830, type = "debuff", unit = "target", talent = 66 }, -- Thrash
+        { spell = 127797, type = "debuff", unit = "target", talent = 87 }, -- Ursol's Vortex
+        { spell = 135601, type = "debuff", unit = "target", talent = 40 }, -- Tooth and Claw
+        { spell = 155722, type = "debuff", unit = "target", talent = 48 }, -- Rake
+        { spell = 164812, type = "debuff", unit = "target" }, -- Moonfire
+        { spell = 164815, type = "debuff", unit = "target", talent = 52 }, -- Sunfire
+        { spell = 192090, type = "debuff", unit = "target", talent = 66 }, -- Thrash
+        { spell = 202244, type = "debuff", unit = "target" }, -- Overrun
+        { spell = 203123, type = "debuff", unit = "target", talent = 64 }, -- Maim
+        { spell = 206891, type = "debuff", unit = "target" }, -- Focused Assault
+        { spell = 274838, type = "debuff", unit = "target", talent = 27 }, -- Feral Frenzy
+        { spell = 345209, type = "debuff", unit = "target", talent = 44 }, -- Infected Wounds
+        { spell = 354789, type = "debuff", unit = "target" }, -- Grove Protection
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 99, type = "ability", talent = 80 }, -- Incapacitating Roar
+        { spell = 339, type = "ability", requiresTarget = true }, -- Entangling Roots
+        { spell = 768, type = "ability", buff = true }, -- Cat Form
+        { spell = 783, type = "ability", buff = true }, -- Travel Form
+        { spell = 1079, type = "ability", requiresTarget = true, usable = true, talent = 65 }, -- Rip
+        { spell = 1822, type = "ability", requiresTarget = true, usable = true, talent = 48 }, -- Rake
+        { spell = 1850, type = "ability", buff = true }, -- Dash
+        { spell = 2782, type = "ability", talent = 58 }, -- Remove Corruption
+        { spell = 2908, type = "ability", requiresTarget = true, talent = 72 }, -- Soothe
+        { spell = 5176, type = "ability", charges = true, requiresTarget = true }, -- Wrath
+        { spell = 5211, type = "ability", requiresTarget = true, talent = 81 }, -- Mighty Bash
+        { spell = 5215, type = "ability", buff = true }, -- Prowl
+        { spell = 5487, type = "ability", buff = true }, -- Bear Form
+        { spell = 6795, type = "ability", requiresTarget = true, usable = true }, -- Growl
+        { spell = 6807, type = "ability", overlayGlow = true, requiresTarget = true, talent = 3 }, -- Maul
+        { spell = 8921, type = "ability", overlayGlow = true, requiresTarget = true }, -- Moonfire
+        { spell = 20484, type = "ability" }, -- Rebirth
+        { spell = 22570, type = "ability", requiresTarget = true, usable = true, talent = 64 }, -- Maim
+        { spell = 22812, type = "ability", buff = true }, -- Barkskin
+        { spell = 22842, type = "ability", charges = true, buff = true, usable = true, talent = 63 }, -- Frenzied Regeneration
+        { spell = 33786, type = "ability", requiresTarget = true, talent = 56 }, -- Cyclone
+        { spell = 33917, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 7 }, -- Mangle
+        { spell = 48438, type = "ability", requiresTarget = true, talent = 85 }, -- Wild Growth
+        { spell = 49376, type = "ability", talent = 46 }, -- Wild Charge
+        { spell = 50334, type = "ability", buff = true, talent = 19 }, -- Berserk
+        { spell = 61336, type = "ability", charges = true, buff = true, talent = 5 }, -- Survival Instincts
+        { spell = 77758, type = "ability", requiresTarget = true, talent = 66 }, -- Thrash
+        { spell = 77761, type = "ability", buff = true, talent = 77 }, -- Stampeding Roar
+        { spell = 77764, type = "ability", talent = 77 }, -- Stampeding Roar
+        { spell = 78674, type = "ability", requiresTarget = true, talent = 6 }, -- Starsurge
+        { spell = 80313, type = "ability", requiresTarget = true, talent = 34 }, -- Pulverize
+        { spell = 93402, type = "ability", requiresTarget = true, talent = 52 }, -- Sunfire
+        { spell = 102401, type = "ability", requiresTarget = true, usable = true, talent = 46 }, -- Wild Charge
+        { spell = 102558, type = "ability", buff = true, talent = 80 }, -- Incarnation: Guardian of Ursoc
+        { spell = 102793, type = "ability", talent = 87 }, -- Ursol's Vortex
+        { spell = 106832, type = "ability", requiresTarget = true, usable = true, talent = 66 }, -- Thrash
+        { spell = 106839, type = "ability", requiresTarget = true, usable = true, talent = 67 }, -- Skull Bash
+        { spell = 106898, type = "ability", buff = true, talent = 77 }, -- Stampeding Roar
+        { spell = 124974, type = "ability", buff = true, talent = 89 }, -- Nature's Vigil
+        { spell = 132469, type = "ability", talent = 53 }, -- Typhoon
+        { spell = 155835, type = "ability", buff = true, talent = 42 }, -- Bristling Fur
+        { spell = 192081, type = "ability", buff = true, talent = 70 }, -- Ironfur
+        { spell = 194153, type = "ability", requiresTarget = true, talent = 5 }, -- Starfire
+        { spell = 197625, type = "ability", buff = true, talent = 93 }, -- Moonkin Form
+        { spell = 197626, type = "ability", requiresTarget = true, talent = 49 }, -- Starsurge
+        { spell = 197628, type = "ability", charges = true, requiresTarget = true, talent = 92 }, -- Starfire
+        { spell = 200851, type = "ability", buff = true, talent = 19 }, -- Rage of the Sleeper
+        { spell = 231064, type = "ability", requiresTarget = true, talent = 7 }, -- Mangle
+        { spell = 252216, type = "ability", buff = true, talent = 47 }, -- Tiger Dash
+        { spell = 319454, type = "ability", buff = true, talent = 74 }, -- Heart of the Wild
+        { spell = 391528, type = "ability", buff = true, talent = 13 }, -- Convoke the Spirits
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 329042, type = "buff", unit = "player", pvptalent = 7, titleSuffix = L["buff"] }, -- Emerald Slumber
+        { spell = 201664, type = "debuff", unit = "target", pvptalent = 14, titleSuffix = L["debuff"] }, -- Demoralizing Roar
+        { spell = 201664, type = "ability", pvptalent = 14, titleSuffix = L["cooldown"] }, -- Demoralizing Roar
+        { spell = 202246, type = "ability", requiresTarget = true, pvptalent = 15, titleSuffix = L["cooldown"] }, -- Overrun
+        { spell = 207017, type = "ability", pvptalent = 2, titleSuffix = L["cooldown"] }, -- Alpha Challenge
+        { spell = 329042, type = "ability", buff = true, usable = true, pvptalent = 7, titleSuffix = L["cooldown"] }, -- Emerald Slumber
+        { spell = 354654, type = "ability", pvptalent = 11, titleSuffix = L["cooldown"] }, -- Grove Protection
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
   [4] = { -- Restoration
+    [1] = {
+      title = L["Buffs"],
+      args = {
+        { spell = 768, type = "buff", unit = "player" }, -- Cat Form
+        { spell = 774, type = "buff", unit = "player", talent = 66 }, -- Rejuvenation
+        { spell = 783, type = "buff", unit = "player" }, -- Travel Form
+        { spell = 1126, type = "buff", unit = "player" }, -- Mark of the Wild
+        { spell = 1850, type = "buff", unit = "player" }, -- Dash
+        { spell = 5215, type = "buff", unit = "player" }, -- Prowl
+        { spell = 5487, type = "buff", unit = "player" }, -- Bear Form
+        { spell = 8936, type = "buff", unit = "player" }, -- Regrowth
+        { spell = 16870, type = "buff", unit = "player" }, -- Clearcasting
+        { spell = 22812, type = "buff", unit = "player" }, -- Barkskin
+        { spell = 29166, type = "buff", unit = "player", talent = 94 }, -- Innervate
+        { spell = 33763, type = "buff", unit = "player", talent = 7 }, -- Lifebloom
+        { spell = 33891, type = "buff", unit = "player", talent = 26 }, -- Incarnation: Tree of Life
+        { spell = 48438, type = "buff", unit = "player", talent = 91 }, -- Wild Growth
+        { spell = 102342, type = "buff", unit = "player", talent = 48 }, -- Ironbark
+        { spell = 102351, type = "buff", unit = "player", talent = 12 }, -- Cenarion Ward
+        { spell = 102401, type = "buff", unit = "player", talent = 52 }, -- Wild Charge
+        { spell = 106898, type = "buff", unit = "player", talent = 83 }, -- Stampeding Roar
+        { spell = 114108, type = "buff", unit = "player", talent = 20 }, -- Soul of the Forest
+        { spell = 117679, type = "buff", unit = "player" }, -- Incarnation
+        { spell = 132158, type = "buff", unit = "player", talent = 8 }, -- Nature's Swiftness
+        { spell = 155777, type = "buff", unit = "player" }, -- Rejuvenation (Germination)
+        { spell = 157982, type = "buff", unit = "player", talent = 15 }, -- Tranquility
+        { spell = 186403, type = "buff", unit = "player" }, -- Sign of Battle
+        { spell = 188550, type = "buff", unit = "player", talent = 7 }, -- Lifebloom
+        { spell = 192081, type = "buff", unit = "player", talent = 76 }, -- Ironfur
+        { spell = 197625, type = "buff", unit = "player", talent = 99 }, -- Moonkin Form
+        { spell = 197721, type = "buff", unit = "player", talent = 44 }, -- Flourish
+        { spell = 203554, type = "buff", unit = "player" }, -- Focused Growth
+        { spell = 207386, type = "buff", unit = "player", talent = 22 }, -- Spring Blossoms
+        { spell = 207640, type = "buff", unit = "player", talent = 11 }, -- Abundance
+        { spell = 252216, type = "buff", unit = "player", talent = 53 }, -- Tiger Dash
+        { spell = 290213, type = "buff", unit = "player" }, -- Full Bloom
+        { spell = 290640, type = "buff", unit = "player" }, -- Master Shapeshifter
+        { spell = 319454, type = "buff", unit = "player", talent = 80 }, -- Heart of the Wild
+        { spell = 362486, type = "buff", unit = "player" }, -- Keeper of the Grove
+        { spell = 383193, type = "buff", unit = "player", talent = 5 }, -- Grove Tending
+        { spell = 385787, type = "buff", unit = "player", talent = 85 }, -- Matted Fur
+        { spell = 391528, type = "buff", unit = "player", talent = 27 }, -- Convoke the Spirits
+        { spell = 393897, type = "buff", unit = "player", talent = 51 }, -- Tireless Pursuit
+        { spell = 393903, type = "buff", unit = "player", talent = 84 }, -- Ursine Vigor
+      },
+      icon = 458972
+    },
+    [2] = {
+      title = L["Debuffs"],
+      args = {
+        { spell = 99, type = "debuff", unit = "target", talent = 86 }, -- Incapacitating Roar
+        { spell = 339, type = "debuff", unit = "target" }, -- Entangling Roots
+        { spell = 1079, type = "debuff", unit = "target", talent = 71 }, -- Rip
+        { spell = 5211, type = "debuff", unit = "target", talent = 87 }, -- Mighty Bash
+        { spell = 6795, type = "debuff", unit = "target" }, -- Growl
+        { spell = 45334, type = "debuff", unit = "target" }, -- Immobilized
+        { spell = 50259, type = "debuff", unit = "target" }, -- Dazed
+        { spell = 61391, type = "debuff", unit = "target", talent = 60 }, -- Typhoon
+        { spell = 102359, type = "debuff", unit = "target", talent = 92 }, -- Mass Entanglement
+        { spell = 106830, type = "debuff", unit = "target", talent = 72 }, -- Thrash
+        { spell = 127797, type = "debuff", unit = "target", talent = 93 }, -- Ursol's Vortex
+        { spell = 155722, type = "debuff", unit = "target", talent = 54 }, -- Rake
+        { spell = 164812, type = "debuff", unit = "target" }, -- Moonfire
+        { spell = 164815, type = "debuff", unit = "target", talent = 59 }, -- Sunfire
+        { spell = 192090, type = "debuff", unit = "target", talent = 72 }, -- Thrash
+        { spell = 203123, type = "debuff", unit = "target", talent = 70 }, -- Maim
+        { spell = 391889, type = "debuff", unit = "target", talent = 30 }, -- Adaptive Swarm
+      },
+      icon = 458972
+    },
+    [3] = {
+      title = L["Cooldowns"],
+      args = {
+        { spell = 99, type = "ability", talent = 86 }, -- Incapacitating Roar
+        { spell = 339, type = "ability", overlayGlow = true, requiresTarget = true }, -- Entangling Roots
+        { spell = 740, type = "ability", talent = 15 }, -- Tranquility
+        { spell = 768, type = "ability", buff = true }, -- Cat Form
+        { spell = 783, type = "ability", buff = true }, -- Travel Form
+        { spell = 1079, type = "ability", requiresTarget = true, talent = 71 }, -- Rip
+        { spell = 1822, type = "ability", requiresTarget = true, talent = 54 }, -- Rake
+        { spell = 1850, type = "ability", buff = true }, -- Dash
+        { spell = 2908, type = "ability", requiresTarget = true, talent = 78 }, -- Soothe
+        { spell = 5176, type = "ability", requiresTarget = true }, -- Wrath
+        { spell = 5211, type = "ability", requiresTarget = true, talent = 87 }, -- Mighty Bash
+        { spell = 5215, type = "ability", buff = true }, -- Prowl
+        { spell = 5487, type = "ability", buff = true }, -- Bear Form
+        { spell = 6795, type = "ability", requiresTarget = true, usable = true }, -- Growl
+        { spell = 8921, type = "ability", requiresTarget = true }, -- Moonfire
+        { spell = 16979, type = "ability", requiresTarget = true, talent = 52 }, -- Wild Charge
+        { spell = 18562, type = "ability", usable = true, talent = 65 }, -- Swiftmend
+        { spell = 20484, type = "ability" }, -- Rebirth
+        { spell = 22570, type = "ability", requiresTarget = true, talent = 70 }, -- Maim
+        { spell = 22812, type = "ability", buff = true }, -- Barkskin
+        { spell = 22842, type = "ability", charges = true, talent = 69 }, -- Frenzied Regeneration
+        { spell = 29166, type = "ability", buff = true, talent = 94 }, -- Innervate
+        { spell = 33786, type = "ability", requiresTarget = true, talent = 63 }, -- Cyclone
+        { spell = 33891, type = "ability", buff = true, talent = 26 }, -- Incarnation: Tree of Life
+        { spell = 33917, type = "ability", requiresTarget = true, usable = true, talent = 7 }, -- Mangle
+        { spell = 48438, type = "ability", buff = true, requiresTarget = true, talent = 91 }, -- Wild Growth
+        { spell = 49376, type = "ability", requiresTarget = true, talent = 52 }, -- Wild Charge
+        { spell = 77758, type = "ability", requiresTarget = true, talent = 72 }, -- Thrash
+        { spell = 77761, type = "ability", talent = 83 }, -- Stampeding Roar
+        { spell = 77764, type = "ability", talent = 83 }, -- Stampeding Roar
+        { spell = 93402, type = "ability", requiresTarget = true, talent = 59 }, -- Sunfire
+        { spell = 102342, type = "ability", buff = true, talent = 48 }, -- Ironbark
+        { spell = 102351, type = "ability", buff = true, talent = 12 }, -- Cenarion Ward
+        { spell = 102359, type = "ability", requiresTarget = true, talent = 92 }, -- Mass Entanglement
+        { spell = 102401, type = "ability", buff = true, requiresTarget = true, talent = 52 }, -- Wild Charge
+        { spell = 102793, type = "ability", talent = 93 }, -- Ursol's Vortex
+        { spell = 106832, type = "ability", requiresTarget = true, talent = 72 }, -- Thrash
+        { spell = 106839, type = "ability", requiresTarget = true, talent = 73 }, -- Skull Bash
+        { spell = 106898, type = "ability", buff = true, talent = 83 }, -- Stampeding Roar
+        { spell = 108238, type = "ability", talent = 81 }, -- Renewal
+        { spell = 132158, type = "ability", buff = true, usable = true, talent = 8 }, -- Nature's Swiftness
+        { spell = 132469, type = "ability", talent = 60 }, -- Typhoon
+        { spell = 192081, type = "ability", buff = true, talent = 76 }, -- Ironfur
+        { spell = 194153, type = "ability", requiresTarget = true, talent = 56 }, -- Starfire
+        { spell = 197625, type = "ability", buff = true, talent = 99 }, -- Moonkin Form
+        { spell = 197626, type = "ability", requiresTarget = true, talent = 55 }, -- Starsurge
+        { spell = 197628, type = "ability", requiresTarget = true, talent = 98 }, -- Starfire
+        { spell = 197721, type = "ability", buff = true, talent = 44 }, -- Flourish
+        { spell = 203651, type = "ability", talent = 23 }, -- Overgrowth
+        { spell = 231064, type = "ability", requiresTarget = true, talent = 7 }, -- Mangle
+        { spell = 252216, type = "ability", buff = true, talent = 53 }, -- Tiger Dash
+        { spell = 319454, type = "ability", buff = true, talent = 80 }, -- Heart of the Wild
+        { spell = 391528, type = "ability", buff = true, talent = 27 }, -- Convoke the Spirits
+        { spell = 391888, type = "ability", requiresTarget = true, talent = 30 }, -- Adaptive Swarm
+        { spell = 392160, type = "ability", talent = 41 }, -- Invigorate
+      },
+      icon = 136012
+    },
+    [4] = {},
+    [5] = {},
+    [6] = {},
+    [7] = {},
+    [8] = {},
+    [9] = {},
+    [10] = {
+      title = L["PvP Talents"],
+      args = {
+        { spell = 305497, type = "buff", unit = "player", pvptalent = 3, titleSuffix = L["buff"] }, -- Thorns
+        { spell = 305497, type = "ability", buff = true, pvptalent = 3, titleSuffix = L["cooldown"] }, -- Thorns
+      },
+      icon = "Interface/Icons/Achievement_BG_winWSG",
+    },
   },
 }
 
@@ -2750,7 +4619,6 @@ templates.class.DEATHKNIGHT = {
         { spell = 49039, type = "ability", buff = true }, -- Lichborne
         { spell = 49576, type = "ability", charges = true, requiresTarget = true }, -- Death Grip
         { spell = 49998, type = "ability", requiresTarget = true, talent = 35 }, -- Death Strike
-        { spell = 50613, type = "ability" }, -- Arcane Torrent
         { spell = 50842, type = "ability", charges = true, talent = 84 }, -- Blood Boil
         { spell = 50977, type = "ability", usable = true }, -- Death Gate
         { spell = 51052, type = "ability", talent = 29 }, -- Anti-Magic Zone
@@ -2875,7 +4743,6 @@ templates.class.DEATHKNIGHT = {
         { spell = 49184, type = "ability", overlayGlow = true, requiresTarget = true, talent = 78 }, -- Howling Blast
         { spell = 49576, type = "ability", requiresTarget = true }, -- Death Grip
         { spell = 49998, type = "ability", requiresTarget = true, talent = 34 }, -- Death Strike
-        { spell = 50613, type = "ability" }, -- Arcane Torrent
         { spell = 50977, type = "ability", usable = true }, -- Death Gate
         { spell = 51052, type = "ability", talent = 28 }, -- Anti-Magic Zone
         { spell = 51271, type = "ability", buff = true, talent = 68 }, -- Pillar of Frost
@@ -2998,7 +4865,6 @@ templates.class.DEATHKNIGHT = {
         { spell = 49206, type = "ability", requiresTarget = true, totem = true, talent = 67 }, -- Summon Gargoyle
         { spell = 49576, type = "ability", charges = true, requiresTarget = true }, -- Death Grip
         { spell = 49998, type = "ability", requiresTarget = true, talent = 29 }, -- Death Strike
-        { spell = 50613, type = "ability" }, -- Arcane Torrent
         { spell = 50977, type = "ability", usable = true }, -- Death Gate
         { spell = 51052, type = "ability", talent = 23 }, -- Anti-Magic Zone
         { spell = 55090, type = "ability", requiresTarget = true, talent = 83 }, -- Scourge Strike
