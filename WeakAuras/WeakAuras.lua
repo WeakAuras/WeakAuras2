@@ -1724,6 +1724,8 @@ if WeakAuras.IsRetail() then
   loadFrame:RegisterEvent("CHALLENGE_MODE_START")
   if WeakAuras.IsDragonflight() then
     loadFrame:RegisterEvent("COVENANT_CHOSEN")
+    loadFrame:RegisterEvent("TRAIT_CONFIG_CREATED")
+    loadFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
   end
 else
   loadFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
