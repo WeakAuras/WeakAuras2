@@ -334,8 +334,7 @@ local function modify(parent, region, data)
     end
 
     if region.MSQGroup then
-      region.MSQGroup:RemoveButton(button)
-      region.MSQGroup:AddButton(button, {Icon = icon, Cooldown = cooldown}, "WA_Aura", true)
+      region.MSQGroup:ReSkin(button)
     end
 
     local ulx, uly, llx, lly, urx, ury, lrx, lry = GetTexCoord(region, texWidth, aspectRatio)
