@@ -1491,5 +1491,11 @@ function Private.Modernize(data)
     data.forceEvents = true
   end
 
+  -- Internal version 55 contained a incorrect Modernize
+  if data.internalVersion < 56 then
+    data.information.forceEvents = data.forceEvents
+    data.forceEvents = nil
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
 end
