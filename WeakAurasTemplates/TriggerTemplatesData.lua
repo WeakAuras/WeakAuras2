@@ -1842,7 +1842,6 @@ templates.class.PRIEST = {
         { spell = 390677, type = "buff", unit = "player", talent = 71 }, -- Inspiration
         { spell = 390692, type = "buff", unit = "player", talent = 43 }, -- Borrowed Time
         { spell = 390706, type = "buff", unit = "player", talent = 9 }, -- Twilight Equilibrium
-        { spell = 390707, type = "buff", unit = "player", talent = 9 }, -- Twilight Equilibrium
         { spell = 390787, type = "buff", unit = "player", talent = 7 }, -- Weal and Woe
       },
       icon = 135940
@@ -1865,19 +1864,20 @@ templates.class.PRIEST = {
         { spell = 17, type = "ability", buff = true }, -- Power Word: Shield
         { spell = 453, type = "ability" }, -- Mind Soothe
         { spell = 527, type = "ability", charges = true }, -- Purify
+        { spell = 528, type = "ability", requiresTarget = true, talent = 92 }, -- Dispel Magic
         { spell = 585, type = "ability", requiresTarget = true }, -- Smite
         { spell = 586, type = "ability", buff = true }, -- Fade
         { spell = 589, type = "ability", requiresTarget = true }, -- Shadow Word: Pain
-        { spell = 8092, type = "ability" }, -- Mind Blast
+        { spell = 8092, type = "ability", requiresTarget = true }, -- Mind Blast
         { spell = 8122, type = "ability" }, -- Psychic Scream
         { spell = 10060, type = "ability", buff = true, talent = 69 }, -- Power Infusion
         { spell = 15286, type = "ability", buff = true, talent = 66 }, -- Vampiric Embrace
         { spell = 19236, type = "ability", buff = true }, -- Desperate Prayer
         { spell = 32375, type = "ability", talent = 74 }, -- Mass Dispel
-        { spell = 32379, type = "ability", overlayGlow = true, talent = 89 }, -- Shadow Word: Death
+        { spell = 32379, type = "ability", overlayGlow = true, requiresTarget = true, talent = 89 }, -- Shadow Word: Death
         { spell = 33076, type = "ability", talent = 95 }, -- Prayer of Mending
         { spell = 33206, type = "ability", buff = true, talent = 27 }, -- Pain Suppression
-        { spell = 34433, type = "ability", requiresTarget = true, talent = 90 }, -- Shadowfiend
+        { spell = 34433, type = "ability", requiresTarget = true, totem = true, talent = 90 }, -- Shadowfiend
         { spell = 47536, type = "ability", buff = true, talent = 41 }, -- Rapture
         { spell = 47540, type = "ability", requiresTarget = true }, -- Penance
         { spell = 62618, type = "ability", talent = 2 }, -- Power Word: Barrier
@@ -1887,15 +1887,16 @@ templates.class.PRIEST = {
         { spell = 121536, type = "ability", charges = true, talent = 78 }, -- Angelic Feather
         { spell = 122121, type = "ability", talent = 57 }, -- Divine Star
         { spell = 123040, type = "ability", totem = true, talent = 24 }, -- Mindbender
-        { spell = 129250, type = "ability", talent = 31 }, -- Power Word: Solace
+        { spell = 129250, type = "ability", requiresTarget = true, talent = 31 }, -- Power Word: Solace
         { spell = 194509, type = "ability", charges = true, talent = 36 }, -- Power Word: Radiance
+        { spell = 204197, type = "ability", requiresTarget = true, talent = 32 }, -- Purge the Wicked
         { spell = 205364, type = "ability", talent = 87 }, -- Dominate Mind
-        { spell = 214621, type = "ability", talent = 18 }, -- Schism
+        { spell = 214621, type = "ability", requiresTarget = true, talent = 18 }, -- Schism
         { spell = 314867, type = "ability", talent = 20 }, -- Shadow Covenant
         { spell = 373129, type = "ability" }, -- Dark Reprimand
-        { spell = 373178, type = "ability", talent = 13 }, -- Light's Wrath
+        { spell = 373178, type = "ability", requiresTarget = true, talent = 13 }, -- Light's Wrath
         { spell = 373481, type = "ability", talent = 50 }, -- Power Word: Life
-        { spell = 375901, type = "ability", talent = 62 }, -- Mindgames
+        { spell = 375901, type = "ability", requiresTarget = true, talent = 62 }, -- Mindgames
       },
       icon = 136224
     },
@@ -1989,20 +1990,19 @@ templates.class.PRIEST = {
         { spell = 15286, type = "ability", buff = true, talent = 72 }, -- Vampiric Embrace
         { spell = 19236, type = "ability", buff = true }, -- Desperate Prayer
         { spell = 32375, type = "ability", talent = 80 }, -- Mass Dispel
-        { spell = 32379, type = "ability", talent = 95 }, -- Shadow Word: Death
+        { spell = 32379, type = "ability", requiresTarget = true, talent = 95 }, -- Shadow Word: Death
         { spell = 33076, type = "ability", talent = 101 }, -- Prayer of Mending
         { spell = 34433, type = "ability", requiresTarget = true, totem = true, talent = 96 }, -- Shadowfiend
         { spell = 34861, type = "ability", overlayGlow = true, talent = 38 }, -- Holy Word: Sanctify
         { spell = 47788, type = "ability", buff = true, talent = 45 }, -- Guardian Spirit
         { spell = 64843, type = "ability", buff = true, talent = 26 }, -- Divine Hymn
         { spell = 64901, type = "ability", buff = true, talent = 22 }, -- Symbol of Hope
-        { spell = 88625, type = "ability", overlayGlow = true, talent = 47 }, -- Holy Word: Chastise
+        { spell = 88625, type = "ability", overlayGlow = true, requiresTarget = true, talent = 47 }, -- Holy Word: Chastise
         { spell = 121536, type = "ability", charges = true, talent = 84 }, -- Angelic Feather
         { spell = 200183, type = "ability", talent = 13 }, -- Apotheosis
         { spell = 204883, type = "ability", talent = 29 }, -- Circle of Healing
         { spell = 205364, type = "ability", talent = 93 }, -- Dominate Mind
         { spell = 265202, type = "ability", talent = 14 }, -- Holy Word: Salvation
-        { spell = 312370, type = "ability" }, -- Make Camp
         { spell = 312411, type = "ability" }, -- Bag of Tricks
         { spell = 312425, type = "ability" }, -- Rummage Your Bag
         { spell = 372616, type = "ability", talent = 10 }, -- Empyreal Blaze
