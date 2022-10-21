@@ -1497,5 +1497,65 @@ function Private.Modernize(data)
     data.forceEvents = nil
   end
 
+  if data.internalVersion < 57 then
+    if WeakAuras.IsRetail() then
+      local function GetField(load, field)
+        local data = {}
+        if load["use_"..field] == true then
+          if load[field].single then
+            table.insert(data, load[field].single)
+          end
+        elseif load["use_"..field] == false then
+          for d in pairs(load[field].multi) do
+            table.insert(data, d)
+          end
+        end
+        return data
+      end
+      local function GetClassId(classFile)
+        for classID = 1, GetNumClasses() do
+          local _, thisClassFile = GetClassInfo(classID)
+          if classFile == thisClassFile then
+            return classID
+          end
+        end
+      end
+      local function SetSpec(load, specID)
+        if load.use_class_and_spec == true then
+          load.use_class_and_spec = false -- multi
+        elseif load.use_class_and_spec == nil then
+          load.use_class_and_spec = true -- single
+        end
+        load.class_and_spec = load.class_and_spec or {}
+        load.class_and_spec.single = specID
+        load.class_and_spec.multi = load.class_and_spec.multi or {}
+        load.class_and_spec.multi[specID] = true
+      end
+      local load = data.load
+      if load.use_class_and_spec == nil then
+        local classes = GetField(load, "class")
+        local specs = GetField(load, "spec")
+        for i, class in ipairs(classes) do
+          local classID = GetClassId(class)
+          if #specs == 0 then -- add all specs
+            for specIndex = 1, 4 do
+              local specID = GetSpecializationInfoForClassID(classID, specIndex)
+              if specID then
+                SetSpec(load, specID)
+              end
+            end
+          else
+            for j, specIndex in ipairs(specs) do
+              local specID = GetSpecializationInfoForClassID(classID, specIndex)
+              if specID then
+                SetSpec(load, specID)
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion());
 end
