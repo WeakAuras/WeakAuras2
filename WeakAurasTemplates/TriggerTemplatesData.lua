@@ -429,30 +429,30 @@ templates.class.WARRIOR = {
     [1] = {
       title = L["Buffs"],
       args = {
-        { spell = 1719, type = "buff", unit = "player", talent = 83 }, -- Recklessness
+        { spell = 1719, type = "buff", unit = "player", talent = 81 }, -- Recklessness
         { spell = 6673, type = "buff", unit = "player" }, -- Battle Shout
-        { spell = 18499, type = "buff", unit = "player", talent = 41 }, -- Berserker Rage
-        { spell = 23920, type = "buff", unit = "player", talent = 55 }, -- Spell Reflection
+        { spell = 18499, type = "buff", unit = "player", talent = 40 }, -- Berserker Rage
+        { spell = 23920, type = "buff", unit = "player", talent = 53 }, -- Spell Reflection
         { spell = 85739, type = "buff", unit = "player" }, -- Whirlwind
         { spell = 97463, type = "buff", unit = "player", talent = 8 }, -- Rallying Cry
-        { spell = 107574, type = "buff", unit = "player", talent = 37 }, -- Avatar
+        { spell = 107574, type = "buff", unit = "player", talent = 36 }, -- Avatar
         { spell = 132404, type = "buff", unit = "player" }, -- Shield Block
         { spell = 184362, type = "buff", unit = "player" }, -- Enrage
-        { spell = 184364, type = "buff", unit = "player", talent = 66 }, -- Enraged Regeneration
-        { spell = 202164, type = "buff", unit = "player", talent = 29 }, -- Bounding Stride
-        { spell = 280776, type = "buff", unit = "player", talent = 102 }, -- Sudden Death
+        { spell = 184364, type = "buff", unit = "player", talent = 64 }, -- Enraged Regeneration
+        { spell = 202164, type = "buff", unit = "player", talent = 28 }, -- Bounding Stride
+        { spell = 202602, type = "buff", unit = "player", talent = 34 }, -- Into the Fray
+        { spell = 280776, type = "buff", unit = "player", talent = 100 }, -- Sudden Death
         { spell = 311193, type = "buff", unit = "player", talent = 3 }, -- Elysian Might
-        { spell = 335082, type = "buff", unit = "player", talent = 77 }, -- Frenzy
+        { spell = 335082, type = "buff", unit = "player", talent = 75 }, -- Frenzy
         { spell = 351077, type = "buff", unit = "player", talent = 10 }, -- Second Wind
-        { spell = 385391, type = "buff", unit = "player", talent = 55 }, -- Spell Reflection
+        { spell = 385391, type = "buff", unit = "player", talent = 53 }, -- Spell Reflection
         { spell = 386196, type = "buff", unit = "player", talent = 4 }, -- Berserker Stance
         { spell = 386208, type = "buff", unit = "player", talent = 7 }, -- Defensive Stance
-        { spell = 391688, type = "buff", unit = "player", talent = 89 }, -- Dancing Blades
-        { spell = 392537, type = "buff", unit = "player", talent = 80 }, -- Ashen Juggernaut
-        { spell = 392778, type = "buff", unit = "player", talent = 34 }, -- Wild Strikes
-        { spell = 393931, type = "buff", unit = "player", talent = 82 }, -- Slaughtering Strikes
-        { spell = 393943, type = "buff", unit = "player", talent = 82 }, -- Slaughtering Strikes
-        { spell = 393951, type = "buff", unit = "player", talent = 76 }, -- Bloodcraze
+        { spell = 391688, type = "buff", unit = "player", talent = 87 }, -- Dancing Blades
+        { spell = 392537, type = "buff", unit = "player", talent = 78 }, -- Ashen Juggernaut
+        { spell = 392778, type = "buff", unit = "player", talent = 33 }, -- Wild Strikes
+        { spell = 393931, type = "buff", unit = "player", talent = 80 }, -- Slaughtering Strikes
+        { spell = 393951, type = "buff", unit = "player", talent = 74 }, -- Bloodcraze
         { spell = 147833, type = "buff", unit = "target", talent = 6 }, -- Intervene
       },
       icon = 136224
@@ -462,16 +462,16 @@ templates.class.WARRIOR = {
       args = {
         { spell = 355, type = "debuff", unit = "target" }, -- Taunt
         { spell = 1715, type = "debuff", unit = "target" }, -- Hamstring
-        { spell = 5246, type = "debuff", unit = "target", talent = 54 }, -- Intimidating Shout
-        { spell = 6343, type = "debuff", unit = "target", talent = 19 }, -- Thunder Clap
-        { spell = 12323, type = "debuff", unit = "target", talent = 23 }, -- Piercing Howl
+        { spell = 5246, type = "debuff", unit = "target", talent = 52 }, -- Intimidating Shout
+        { spell = 6343, type = "debuff", unit = "target", talent = 55 }, -- Thunder Clap
+        { spell = 12323, type = "debuff", unit = "target", talent = 22 }, -- Piercing Howl
         { spell = 105771, type = "debuff", unit = "target" }, -- Charge
-        { spell = 132168, type = "debuff", unit = "target", talent = 44 }, -- Shockwave
+        { spell = 132168, type = "debuff", unit = "target", talent = 43 }, -- Shockwave
         { spell = 132169, type = "debuff", unit = "target", talent = 14 }, -- Storm Bolt
-        { spell = 376080, type = "debuff", unit = "target", talent = 49 }, -- Spear of Bastion
-        { spell = 384318, type = "debuff", unit = "target", talent = 33 }, -- Thunderous Roar
+        { spell = 376080, type = "debuff", unit = "target", talent = 47 }, -- Spear of Bastion
+        { spell = 384318, type = "debuff", unit = "target", talent = 32 }, -- Thunderous Roar
         { spell = 385042, type = "debuff", unit = "target" }, -- Gushing Wound
-        { spell = 385060, type = "debuff", unit = "target", talent = 91 }, -- Odyn's Fury
+        { spell = 385060, type = "debuff", unit = "target", talent = 89 }, -- Odyn's Fury
       },
       icon = 132154
     },
@@ -482,41 +482,42 @@ templates.class.WARRIOR = {
         { spell = 355, type = "ability", requiresTarget = true }, -- Taunt
         { spell = 1464, type = "ability", requiresTarget = true }, -- Slam
         { spell = 1715, type = "ability", requiresTarget = true }, -- Hamstring
-        { spell = 1719, type = "ability", buff = true, talent = 83 }, -- Recklessness
-        { spell = 2565, type = "ability", usable = true }, -- Shield Block
+        { spell = 1719, type = "ability", buff = true, talent = 81 }, -- Recklessness
+        { spell = 2565, type = "ability", charges = true, usable = true }, -- Shield Block
         { spell = 3411, type = "ability", talent = 6 }, -- Intervene
-        { spell = 5246, type = "ability", requiresTarget = true, talent = 54 }, -- Intimidating Shout
+        { spell = 5246, type = "ability", requiresTarget = true, talent = 52 }, -- Intimidating Shout
         { spell = 5308, type = "ability", overlayGlow = true, requiresTarget = true, usable = true }, -- Execute
-        { spell = 6343, type = "ability", talent = 19 }, -- Thunder Clap
-        { spell = 6544, type = "ability", talent = 21 }, -- Heroic Leap
+        { spell = 6343, type = "ability", talent = 55 }, -- Thunder Clap
+        { spell = 6544, type = "ability", talent = 20 }, -- Heroic Leap
         { spell = 6552, type = "ability", requiresTarget = true }, -- Pummel
         { spell = 6673, type = "ability", buff = true }, -- Battle Shout
-        { spell = 12323, type = "ability", talent = 23 }, -- Piercing Howl
-        { spell = 18499, type = "ability", buff = true, talent = 41 }, -- Berserker Rage
-        { spell = 23881, type = "ability", requiresTarget = true, talent = 63 }, -- Bloodthirst
-        { spell = 23920, type = "ability", buff = true, talent = 55 }, -- Spell Reflection
+        { spell = 12323, type = "ability", talent = 22 }, -- Piercing Howl
+        { spell = 18499, type = "ability", buff = true, talent = 40 }, -- Berserker Rage
+        { spell = 23881, type = "ability", requiresTarget = true, talent = 61 }, -- Bloodthirst
+        { spell = 23920, type = "ability", buff = true, talent = 53 }, -- Spell Reflection
         { spell = 23922, type = "ability", requiresTarget = true, usable = true }, -- Shield Slam
         { spell = 34428, type = "ability", requiresTarget = true }, -- Victory Rush
-        { spell = 46968, type = "ability", talent = 44 }, -- Shockwave
+        { spell = 46968, type = "ability", talent = 43 }, -- Shockwave
         { spell = 57755, type = "ability", requiresTarget = true }, -- Heroic Throw
-        { spell = 85288, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 67 }, -- Raging Blow
+        { spell = 85288, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 65 }, -- Raging Blow
         { spell = 97462, type = "ability", talent = 8 }, -- Rallying Cry
         { spell = 107570, type = "ability", requiresTarget = true, talent = 14 }, -- Storm Bolt
-        { spell = 107574, type = "ability", buff = true, talent = 37 }, -- Avatar
-        { spell = 184364, type = "ability", buff = true, talent = 66 }, -- Enraged Regeneration
-        { spell = 184367, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 79 }, -- Rampage
+        { spell = 107574, type = "ability", buff = true, talent = 36 }, -- Avatar
+        { spell = 184364, type = "ability", buff = true, talent = 64 }, -- Enraged Regeneration
+        { spell = 184367, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 77 }, -- Rampage
         { spell = 190411, type = "ability" }, -- Whirlwind
         { spell = 202168, type = "ability", requiresTarget = true, talent = 5 }, -- Impending Victory
-        { spell = 228920, type = "ability", charges = true, talent = 58 }, -- Ravager
+        { spell = 228920, type = "ability", charges = true, talent = 56 }, -- Ravager
         { spell = 280735, type = "ability", overlayGlow = true, requiresTarget = true }, -- Execute
-        { spell = 315720, type = "ability", requiresTarget = true, usable = true, talent = 97 }, -- Onslaught
-        { spell = 376079, type = "ability", talent = 49 }, -- Spear of Bastion
-        { spell = 383762, type = "ability", talent = 30 }, -- Bitter Immunity
-        { spell = 384110, type = "ability", requiresTarget = true, talent = 26 }, -- Wrecking Throw
-        { spell = 384318, type = "ability", talent = 33 }, -- Thunderous Roar
-        { spell = 385059, type = "ability", talent = 91 }, -- Odyn's Fury
+        { spell = 315720, type = "ability", requiresTarget = true, usable = true, talent = 95 }, -- Onslaught
+        { spell = 376079, type = "ability", talent = 47 }, -- Spear of Bastion
+        { spell = 383762, type = "ability", talent = 29 }, -- Bitter Immunity
+        { spell = 384110, type = "ability", requiresTarget = true, talent = 25 }, -- Wrecking Throw
+        { spell = 384318, type = "ability", talent = 32 }, -- Thunderous Roar
+        { spell = 385059, type = "ability", talent = 89 }, -- Odyn's Fury
         { spell = 386196, type = "ability", buff = true, talent = 4 }, -- Berserker Stance
         { spell = 386208, type = "ability", buff = true, talent = 7 }, -- Defensive Stance
+        { spell = 396719, type = "ability", talent = 103 }, -- Thunder Clap
       },
       icon = 136012
     },
@@ -663,30 +664,28 @@ templates.class.PALADIN = {
         { spell = 465, type = "buff", unit = "player" }, -- Devotion Aura
         { spell = 498, type = "buff", unit = "player", talent = 21 }, -- Divine Protection
         { spell = 642, type = "buff", unit = "player" }, -- Divine Shield
-        { spell = 1022, type = "buff", unit = "player", talent = 76 }, -- Blessing of Protection
+        { spell = 1022, type = "buff", unit = "player", talent = 75 }, -- Blessing of Protection
         { spell = 1044, type = "buff", unit = "player", talent = 59 }, -- Blessing of Freedom
         { spell = 5502, type = "buff", unit = "player" }, -- Sense Undead
         { spell = 31821, type = "buff", unit = "player", talent = 20 }, -- Aura Mastery
-        { spell = 31884, type = "buff", unit = "player", talent = 65 }, -- Avenging Wrath
+        { spell = 31884, type = "buff", unit = "player", talent = 64 }, -- Avenging Wrath
         { spell = 32223, type = "buff", unit = "player" }, -- Crusader Aura
         { spell = 53563, type = "buff", unit = "player" }, -- Beacon of Light
         { spell = 54149, type = "buff", unit = "player" }, -- Infusion of Light
-        { spell = 105809, type = "buff", unit = "player", talent = 79 }, -- Holy Avenger
+        { spell = 105809, type = "buff", unit = "player", talent = 78 }, -- Holy Avenger
         { spell = 148039, type = "buff", unit = "player", talent = 9 }, -- Barrier of Faith
         { spell = 152262, type = "buff", unit = "player", talent = 81 }, -- Seraphim
         { spell = 183435, type = "buff", unit = "player" }, -- Retribution Aura
         { spell = 200025, type = "buff", unit = "player", talent = 5 }, -- Beacon of Virtue
         { spell = 200652, type = "buff", unit = "player", talent = 45 }, -- Tyr's Deliverance
-        { spell = 200654, type = "buff", unit = "player", talent = 45 }, -- Tyr's Deliverance
         { spell = 200656, type = "buff", unit = "player", talent = 46 }, -- Power of the Silver Hand
-        { spell = 200657, type = "buff", unit = "player", talent = 46 }, -- Power of the Silver Hand
         { spell = 210294, type = "buff", unit = "player", talent = 23 }, -- Divine Favor
         { spell = 210391, type = "buff", unit = "player" }, -- Darkest before the Dawn
         { spell = 214202, type = "buff", unit = "player", talent = 13 }, -- Rule of Law
         { spell = 216331, type = "buff", unit = "player", talent = 41 }, -- Avenging Crusader
-        { spell = 221886, type = "buff", unit = "player", talent = 96 }, -- Divine Steed
+        { spell = 221886, type = "buff", unit = "player", talent = 95 }, -- Divine Steed
         { spell = 223306, type = "buff", unit = "player", talent = 16 }, -- Bestow Faith
-        { spell = 223819, type = "buff", unit = "player", talent = 78 }, -- Divine Purpose
+        { spell = 223819, type = "buff", unit = "player", talent = 77 }, -- Divine Purpose
         { spell = 317920, type = "buff", unit = "player" }, -- Concentration Aura
         { spell = 385126, type = "buff", unit = "player" }, -- Blessing of Dusk
         { spell = 385127, type = "buff", unit = "player" }, -- Blessing of Dawn
@@ -695,7 +694,6 @@ templates.class.PALADIN = {
         { spell = 387895, type = "buff", unit = "player", talent = 54 }, -- Divine Resonance
         { spell = 388007, type = "buff", unit = "player", talent = 51 }, -- Blessing of Summer
         { spell = 394709, type = "buff", unit = "player", talent = 15 }, -- Unending Light
-        { spell = 395180, type = "buff", unit = "player", talent = 9 }, -- Barrier of Faith
       },
       icon = 135964
     },
@@ -705,11 +703,11 @@ templates.class.PALADIN = {
         { spell = 853, type = "debuff", unit = "target" }, -- Hammer of Justice
         { spell = 62124, type = "debuff", unit = "target" }, -- Hand of Reckoning
         { spell = 105421, type = "debuff", unit = "target", talent = 57 }, -- Blinding Light
-        { spell = 196941, type = "debuff", unit = "target", talent = 68 }, -- Judgment of Light
+        { spell = 196941, type = "debuff", unit = "target", talent = 67 }, -- Judgment of Light
         { spell = 197277, type = "debuff", unit = "target" }, -- Judgment
         { spell = 204242, type = "debuff", unit = "target" }, -- Consecration
         { spell = 287280, type = "debuff", unit = "target", talent = 53 }, -- Glimmer of Light
-        { spell = 385723, type = "debuff", unit = "target", talent = 88 }, -- Seal of the Crusader
+        { spell = 385723, type = "debuff", unit = "target", talent = 87 }, -- Seal of the Crusader
       },
       icon = 135952
     },
@@ -720,31 +718,31 @@ templates.class.PALADIN = {
         { spell = 633, type = "ability", talent = 55 }, -- Lay on Hands
         { spell = 642, type = "ability", buff = true, usable = true }, -- Divine Shield
         { spell = 853, type = "ability", requiresTarget = true }, -- Hammer of Justice
-        { spell = 1022, type = "ability", buff = true, talent = 76 }, -- Blessing of Protection
+        { spell = 1022, type = "ability", buff = true, talent = 75 }, -- Blessing of Protection
         { spell = 1044, type = "ability", buff = true, talent = 59 }, -- Blessing of Freedom
-        { spell = 10326, type = "ability", talent = 93 }, -- Turn Evil
+        { spell = 10326, type = "ability", talent = 92 }, -- Turn Evil
         { spell = 20066, type = "ability", talent = 56 }, -- Repentance
         { spell = 20473, type = "ability", requiresTarget = true, talent = 6 }, -- Holy Shock
         { spell = 24275, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 3 }, -- Hammer of Wrath
         { spell = 26573, type = "ability", totem = true }, -- Consecration
         { spell = 31821, type = "ability", buff = true, talent = 20 }, -- Aura Mastery
-        { spell = 31884, type = "ability", buff = true, talent = 65 }, -- Avenging Wrath
+        { spell = 31884, type = "ability", buff = true, talent = 64 }, -- Avenging Wrath
         { spell = 35395, type = "ability", charges = true, requiresTarget = true }, -- Crusader Strike
         { spell = 62124, type = "ability", requiresTarget = true }, -- Hand of Reckoning
-        { spell = 96231, type = "ability", requiresTarget = true, talent = 63 }, -- Rebuke
-        { spell = 105809, type = "ability", buff = true, talent = 79 }, -- Holy Avenger
+        { spell = 96231, type = "ability", requiresTarget = true, talent = 62 }, -- Rebuke
+        { spell = 105809, type = "ability", buff = true, talent = 78 }, -- Holy Avenger
         { spell = 114158, type = "ability", talent = 32 }, -- Light's Hammer
         { spell = 115750, type = "ability", talent = 57 }, -- Blinding Light
         { spell = 148039, type = "ability", buff = true, talent = 9 }, -- Barrier of Faith
         { spell = 152262, type = "ability", buff = true, talent = 81 }, -- Seraphim
-        { spell = 190784, type = "ability", charges = true, talent = 96 }, -- Divine Steed
+        { spell = 190784, type = "ability", charges = true, talent = 95 }, -- Divine Steed
         { spell = 200025, type = "ability", buff = true, talent = 5 }, -- Beacon of Virtue
         { spell = 200652, type = "ability", buff = true, talent = 45 }, -- Tyr's Deliverance
         { spell = 210294, type = "ability", buff = true, usable = true, talent = 23 }, -- Divine Favor
         { spell = 214202, type = "ability", charges = true, buff = true, talent = 13 }, -- Rule of Law
         { spell = 216331, type = "ability", buff = true, talent = 41 }, -- Avenging Crusader
         { spell = 223306, type = "ability", buff = true, talent = 16 }, -- Bestow Faith
-        { spell = 275773, type = "ability", requiresTarget = true }, -- Judgment
+        { spell = 275773, type = "ability", charges = true, requiresTarget = true }, -- Judgment
         { spell = 375576, type = "ability", requiresTarget = true, talent = 35 }, -- Divine Toll
         { spell = 388007, type = "ability", buff = true, talent = 51 }, -- Blessing of Summer
         { spell = 388010, type = "ability" }, -- Blessing of Autumn
