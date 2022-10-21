@@ -836,6 +836,10 @@ local function modify(parent, region, data)
     if self.suspended > 0 then
       self.suspended = self.suspended - 1
     end
+    region:RunDelayedActions()
+  end
+
+  function region:RunDelayedActions()
     if not self:IsSuspended() then
       if self.needToReload then
         self:ReloadControlledChildren()

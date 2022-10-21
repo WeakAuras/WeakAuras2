@@ -626,7 +626,7 @@ local methods = {
         -- This builds the group skeleton
         DuplicateGroups(self.data, newGroup, mapping)
         -- Do this after duplicating all groups
-        OptionsPrivate.Private.PauseAllDynamicGroups()
+        local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
         -- And this fills in the leafs
         DuplicateAuras(self.data, newGroup, mapping)
 
@@ -641,7 +641,7 @@ local methods = {
         OptionsPrivate.SortDisplayButtons(nil, true)
         OptionsPrivate.PickAndEditDisplay(newGroup.id)
 
-        OptionsPrivate.Private.ResumeAllDynamicGroups()
+        OptionsPrivate.Private.ResumeAllDynamicGroups(suspended)
       else
         local new = OptionsPrivate.DuplicateAura(self.data)
         OptionsPrivate.SortDisplayButtons(nil, true)
@@ -653,7 +653,6 @@ local methods = {
       if (WeakAuras.IsImporting()) then return end;
       local toDelete = {}
       if(self.data.controlledChildren) then
-        local region = OptionsPrivate.Private.regions[self.data.id];
         for child in OptionsPrivate.Private.TraverseAllChildren(self.data) do
           tinsert(toDelete, child);
         end
@@ -747,7 +746,7 @@ local methods = {
     end
 
     function self.callbacks.OnViewClick()
-      OptionsPrivate.Private.PauseAllDynamicGroups();
+      local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
       if(self.view.visibility == 2) then
         for child in OptionsPrivate.Private.TraverseAllChildren(self.data) do
           OptionsPrivate.GetDisplayButton(child.id):PriorityHide(2);
@@ -760,7 +759,7 @@ local methods = {
         self:PriorityShow(2)
       end
       self:RecheckParentVisibility()
-      OptionsPrivate.Private.ResumeAllDynamicGroups();
+      OptionsPrivate.Private.ResumeAllDynamicGroups(suspended)
     end
 
     function self.callbacks.OnRenameClick()
@@ -920,7 +919,6 @@ local methods = {
       self.callbacks.UpdateExpandButton();
       self:SetOnExpandCollapse(function() OptionsPrivate.SortDisplayButtons(nil, true) end);
     else
-      self:SetViewRegion(OptionsPrivate.Private.regions[self.data.id].region);
       self.loaded:Show();
       self.expand:Hide();
     end
@@ -1280,9 +1278,6 @@ local methods = {
   ["SetDescription"] = function(self, ...)
     self.frame.description = {...};
   end,
-  ["SetViewRegion"] = function(self, region)
-    self.view.region = region;
-  end,
   ["SetRenameAction"] = function(self, func)
     self.renamebox.func = function()
       func(self.renamebox:GetText());
@@ -1443,24 +1438,24 @@ local methods = {
       return;
     end
     if self.view.visibility >= 1 then
-      if(self.view.region and self.view.region.Expand) then
-        OptionsPrivate.Private.FakeStatesFor(self.view.region.id, true)
-        if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
-          OptionsPrivate.Private.personalRessourceDisplayFrame:expand(self.view.region.id);
-        end
-        if (OptionsPrivate.Private.mouseFrame) then
-          OptionsPrivate.Private.mouseFrame:expand(self.view.region.id);
-        end
+      if not OptionsPrivate.Private.IsGroupType(self.data) then
+        OptionsPrivate.Private.FakeStatesFor(self.data.id, true)
+      end
+      if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
+        OptionsPrivate.Private.personalRessourceDisplayFrame:expand(self.data.id);
+      end
+      if (OptionsPrivate.Private.mouseFrame) then
+        OptionsPrivate.Private.mouseFrame:expand(self.data.id);
       end
     else
-      if(self.view.region and self.view.region.Collapse) then
-        OptionsPrivate.Private.FakeStatesFor(self.view.region.id, false)
-        if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
-          OptionsPrivate.Private.personalRessourceDisplayFrame:collapse(self.view.region.id);
-        end
-        if (OptionsPrivate.Private.mouseFrame) then
-          OptionsPrivate.Private.mouseFrame:collapse(self.view.region.id);
-        end
+      if not OptionsPrivate.Private.IsGroupType(self.data) then
+        OptionsPrivate.Private.FakeStatesFor(self.data.id, false)
+      end
+      if (OptionsPrivate.Private.personalRessourceDisplayFrame) then
+        OptionsPrivate.Private.personalRessourceDisplayFrame:collapse(self.data.id);
+      end
+      if (OptionsPrivate.Private.mouseFrame) then
+        OptionsPrivate.Private.mouseFrame:collapse(self.data.id);
       end
     end
   end,
@@ -1473,8 +1468,9 @@ local methods = {
       self:SyncVisibility()
       self:UpdateViewTexture()
     end
-    if self.view.region and self.view.region.ClickToPick then
-      self.view.region:ClickToPick();
+    local region = OptionsPrivate.Private.EnsureRegion(self.data.id)
+    if region and region.ClickToPick then
+      region:ClickToPick();
     end
   end,
   ["PriorityHide"] = function(self, priority)
@@ -1564,7 +1560,6 @@ local methods = {
   end,
   ["OnRelease"] = function(self)
     self:ReleaseThumbnail()
-    self:SetViewRegion();
     self:Enable();
     self:SetGroup();
     self.renamebox:Hide();

@@ -174,7 +174,7 @@ function OptionsPrivate.CreateFrame()
   frame:Hide()
 
   frame:SetScript("OnHide", function()
-    OptionsPrivate.Private.PauseAllDynamicGroups()
+    local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
 
     OptionsPrivate.Private.ClearFakeStates()
 
@@ -190,7 +190,7 @@ function OptionsPrivate.CreateFrame()
       end
     end
 
-    OptionsPrivate.Private.ResumeAllDynamicGroups()
+    OptionsPrivate.Private.ResumeAllDynamicGroups(suspended)
     OptionsPrivate.Private.Resume()
 
     if OptionsPrivate.Private.mouseFrame then
@@ -774,7 +774,7 @@ function OptionsPrivate.CreateFrame()
   loadedButton:SetExpandDescription(L["Expand all loaded displays"])
   loadedButton:SetCollapseDescription(L["Collapse all loaded displays"])
   loadedButton:SetViewClick(function()
-    OptionsPrivate.Private.PauseAllDynamicGroups()
+    local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
     if loadedButton.view.visibility == 2 then
       for id, child in pairs(displayButtons) do
         if OptionsPrivate.Private.loaded[id] ~= nil then
@@ -790,7 +790,7 @@ function OptionsPrivate.CreateFrame()
       end
       loadedButton:PriorityShow(2)
     end
-    OptionsPrivate.Private.ResumeAllDynamicGroups()
+    OptionsPrivate.Private.ResumeAllDynamicGroups(suspended)
   end)
   loadedButton.RecheckVisibility = function(self)
     local none, all = true, true
@@ -841,7 +841,7 @@ function OptionsPrivate.CreateFrame()
   unloadedButton:SetExpandDescription(L["Expand all non-loaded displays"])
   unloadedButton:SetCollapseDescription(L["Collapse all non-loaded displays"])
   unloadedButton:SetViewClick(function()
-    OptionsPrivate.Private.PauseAllDynamicGroups()
+    local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
     if unloadedButton.view.visibility == 2 then
       for id, child in pairs(displayButtons) do
         if OptionsPrivate.Private.loaded[id] == nil then
@@ -857,7 +857,7 @@ function OptionsPrivate.CreateFrame()
       end
       unloadedButton:PriorityShow(2)
     end
-    OptionsPrivate.Private.ResumeAllDynamicGroups()
+    OptionsPrivate.Private.ResumeAllDynamicGroups(suspended)
   end)
   unloadedButton.RecheckVisibility = function(self)
     local none, all = true, true
@@ -1071,7 +1071,7 @@ function OptionsPrivate.CreateFrame()
   end
 
   frame.ClearPicks = function(self, noHide)
-    OptionsPrivate.Private.PauseAllDynamicGroups()
+    local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
     for id, button in pairs(displayButtons) do
       button:ClearPick(true)
       if not noHide then
@@ -1094,7 +1094,7 @@ function OptionsPrivate.CreateFrame()
     container:ReleaseChildren()
     self.moversizer:Hide()
 
-    OptionsPrivate.Private.ResumeAllDynamicGroups()
+    OptionsPrivate.Private.ResumeAllDynamicGroups(suspended)
 
     -- Clear trigger expand state
     OptionsPrivate.ClearTriggerExpandState()
@@ -1307,7 +1307,7 @@ function OptionsPrivate.CreateFrame()
       return
     end
 
-    OptionsPrivate.Private.PauseAllDynamicGroups()
+    local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
 
     self:ClearPicks(noHide)
 
@@ -1334,7 +1334,7 @@ function OptionsPrivate.CreateFrame()
     end
     displayButtons[data.id]:RecheckParentVisibility()
 
-    OptionsPrivate.Private.ResumeAllDynamicGroups()
+    OptionsPrivate.Private.ResumeAllDynamicGroups(suspended)
   end
 
   frame.CenterOnPicked = function(self)

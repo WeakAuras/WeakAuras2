@@ -289,8 +289,8 @@ function Private.ActivateAuraEnvironmentForRegion(region, onlyConfig)
 end
 
 function Private.ActivateAuraEnvironment(id, cloneId, state, states, onlyConfig)
-  local data = WeakAuras.GetData(id)
-  local region = WeakAuras.GetRegion(id, cloneId)
+  local data = id and WeakAuras.GetData(id)
+  local region = id and Private.EnsureRegion(id, cloneId)
   if not data then
     -- Pop the last aura_env from the stack, and update current_aura_env appropriately.
     tremove(aura_env_stack)

@@ -137,8 +137,11 @@ local function modify(parent, region, data)
       if(region.height ~= height) then
         region.height = height
         region:SetHeight(height)
-        if(data.parent and Private.regions[data.parent].region.PositionChildren) then
-          Private.regions[data.parent].region:PositionChildren();
+        if data.parent then
+          Private.EnsureRegion(data.parent)
+          if Private.regions[data.parent].region.PositionChildren then
+            Private.regions[data.parent].region:PositionChildren()
+          end
         end
       end
     end

@@ -16,6 +16,7 @@ local setAll = OptionsPrivate.commonOptions.CreateSetAll("animation", getAll)
 
 local function filterAnimPresetTypes(intable, id)
   local ret = {};
+  OptionsPrivate.Private.EnsureRegion(id)
   local region = OptionsPrivate.Private.regions[id] and OptionsPrivate.Private.regions[id].region
   local regionType = OptionsPrivate.Private.regions[id] and OptionsPrivate.Private.regions[id].regionType
   local data = WeakAuras.GetData(id);
@@ -79,11 +80,12 @@ function OptionsPrivate.GetAnimationOptions(data)
       data.animation[field] = data.animation[field] or {};
       data.animation[field][value] = v;
       if(field == "main") then
-        local region = OptionsPrivate.Private.regions[id].region
+        local region = OptionsPrivate.Private.EnsureRegion(id)
         OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, region, false, nil, true);
         if(OptionsPrivate.Private.clones[id]) then
           for cloneId, cloneRegion in pairs(OptionsPrivate.Private.clones[id]) do
-            OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, cloneRegion, false, nil, true, cloneId);
+            OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main,
+                                           cloneRegion, false, nil, true, cloneId);
           end
         end
       end
@@ -149,7 +151,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         order = 33,
         values = duration_types_no_choice,
         disabled = true,
-        hidden = function() return data.animation.start.type ~= "custom" or OptionsPrivate.Private.CanHaveDuration(data) end,
+        hidden = function()
+          return data.animation.start.type ~= "custom" or OptionsPrivate.Private.CanHaveDuration(data)
+        end,
         get = function() return "seconds" end
       },
       start_duration_type = {
@@ -158,7 +162,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         name = L["Time in"],
         order = 33,
         values = duration_types,
-        hidden = function() return data.animation.start.type ~= "custom" or not OptionsPrivate.Private.CanHaveDuration(data) end
+        hidden = function()
+          return data.animation.start.type ~= "custom" or not OptionsPrivate.Private.CanHaveDuration(data)
+        end
       },
       start_duration = {
         type = "input",
@@ -272,7 +278,7 @@ function OptionsPrivate.GetAnimationOptions(data)
         hidden = function()
           return (
             data.animation.start.type ~= "custom"
-            or not OptionsPrivate.Private.regions[id].region.Scale
+            or not OptionsPrivate.Private.EnsureRegion(id).Scale
             ) end
       },
       start_scaleType = {
@@ -281,7 +287,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         name = L["Type"],
         order = 43,
         values = anim_scale_types,
-        hidden = function() return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Scale) end
+        hidden = function()
+          return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Scale)
+        end
       },
       -- texteditor added below
       start_scalex = {
@@ -293,7 +301,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         softMax = 5,
         step = 0.01,
         bigStep = 0.1,
-        hidden = function() return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Scale) end
+        hidden = function()
+          return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Scale)
+        end
       },
       start_scaley = {
         type = "range",
@@ -304,14 +314,18 @@ function OptionsPrivate.GetAnimationOptions(data)
         softMax = 5,
         step = 0.01,
         bigStep = 0.1,
-        hidden = function() return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Scale) end
+        hidden = function()
+          return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Scale)
+        end
       },
       start_use_rotate = {
         type = "toggle",
         width = WeakAuras.normalWidth,
         name = L["Rotate In"],
         order = 46,
-        hidden = function() return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Rotate) end
+        hidden = function()
+          return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Rotate)
+        end
       },
       start_rotateType = {
         type = "select",
@@ -319,7 +333,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         name = L["Type"],
         order = 47,
         values = anim_rotate_types,
-        hidden = function() return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Rotate) end
+        hidden = function()
+          return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Rotate)
+        end
       },
       -- texteditor added below
       start_rotate = {
@@ -330,14 +346,18 @@ function OptionsPrivate.GetAnimationOptions(data)
         softMin = 0,
         softMax = 360,
         bigStep = 3,
-        hidden = function() return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Rotate) end
+        hidden = function()
+          return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Rotate)
+        end
       },
       start_use_color = {
         type = "toggle",
         width = WeakAuras.normalWidth,
         name = L["Color"],
         order = 48.2,
-        hidden = function() return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Color) end
+        hidden = function()
+           return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Color)
+        end
       },
       start_colorType = {
         type = "select",
@@ -345,7 +365,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         name = L["Type"],
         order = 48.5,
         values = anim_color_types,
-        hidden = function() return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Color) end
+        hidden = function()
+          return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Color)
+        end
       },
       -- texteditor added below
       start_color = {
@@ -353,7 +375,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         width = WeakAuras.doubleWidth,
         name = L["Color"],
         order = 49.5,
-        hidden = function() return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Color) end,
+        hidden = function()
+          return (data.animation.start.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Color)
+        end,
         get = function()
           return data.animation.start.colorR or 1,
             data.animation.start.colorG or 1,
@@ -395,7 +419,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         order = 53,
         values = duration_types_no_choice,
         disabled = true,
-        hidden = function() return data.animation.main.type ~= "custom" or OptionsPrivate.Private.CanHaveDuration(data) end,
+        hidden = function()
+          return data.animation.main.type ~= "custom" or OptionsPrivate.Private.CanHaveDuration(data)
+        end,
         get = function() return "seconds" end
       },
       main_duration_type = {
@@ -404,7 +430,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         name = L["Time in"],
         order = 53,
         values = duration_types,
-        hidden = function() return data.animation.main.type ~= "custom" or not OptionsPrivate.Private.CanHaveDuration(data) end
+        hidden = function()
+          return data.animation.main.type ~= "custom" or not OptionsPrivate.Private.CanHaveDuration(data)
+        end
       },
       main_duration = {
         type = "input",
@@ -518,7 +546,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         width = WeakAuras.normalWidth,
         name = L["Zoom"],
         order = 62,
-        hidden = function() return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Scale) end
+        hidden = function()
+          return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Scale)
+        end
       },
       main_scaleType = {
         type = "select",
@@ -526,7 +556,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         name = L["Type"],
         order = 63,
         values = anim_scale_types,
-        hidden = function() return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Scale) end
+        hidden = function()
+          return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Scale)
+        end
       },
       -- texteditor added below
       main_scalex = {
@@ -538,7 +570,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         softMax = 5,
         step = 0.01,
         bigStep = 0.1,
-        hidden = function() return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Scale) end
+        hidden = function()
+          return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Scale)
+        end
       },
       main_scaley = {
         type = "range",
@@ -549,14 +583,18 @@ function OptionsPrivate.GetAnimationOptions(data)
         softMax = 5,
         step = 0.01,
         bigStep = 0.1,
-        hidden = function() return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Scale) end
+        hidden = function()
+          return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Scale)
+        end
       },
       main_use_rotate = {
         type = "toggle",
         width = WeakAuras.normalWidth,
         name = L["Rotate"],
         order = 66,
-        hidden = function() return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Rotate) end
+        hidden = function()
+          return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Rotate)
+        end
       },
       main_rotateType = {
         type = "select",
@@ -564,7 +602,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         name = L["Type"],
         order = 67,
         values = anim_rotate_types,
-        hidden = function() return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Rotate) end
+        hidden = function()
+          return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Rotate)
+        end
       },
       -- text editor added below
       main_rotate = {
@@ -575,14 +615,18 @@ function OptionsPrivate.GetAnimationOptions(data)
         softMin = 0,
         softMax = 360,
         bigStep = 3,
-        hidden = function() return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Rotate) end
+        hidden = function()
+          return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Rotate)
+        end
       },
       main_use_color = {
         type = "toggle",
         width = WeakAuras.normalWidth,
         name = L["Color"],
         order = 68.2,
-        hidden = function() return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Color) end
+        hidden = function()
+           return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Color)
+          end
       },
       main_colorType = {
         type = "select",
@@ -590,7 +634,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         name = L["Type"],
         order = 68.5,
         values = anim_color_types,
-        hidden = function() return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Color) end
+        hidden = function()
+          return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Color)
+        end
       },
       -- texteditor added below
       main_color = {
@@ -598,7 +644,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         width = WeakAuras.doubleWidth,
         name = L["Color"],
         order = 69.5,
-        hidden = function() return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Color) end,
+        hidden = function()
+          return (data.animation.main.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Color)
+        end,
         get = function()
           return data.animation.main.colorR or 1,
             data.animation.main.colorG or 1,
@@ -740,7 +788,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         width = WeakAuras.normalWidth,
         name = L["Zoom Out"],
         order = 82,
-        hidden = function() return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Scale) end
+        hidden = function()
+          return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Scale)
+        end
       },
       finish_scaleType = {
         type = "select",
@@ -748,7 +798,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         name = L["Type"],
         order = 83,
         values = anim_scale_types,
-        hidden = function() return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Scale) end
+        hidden = function()
+          return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Scale)
+        end
       },
       -- texteditor added below
       finish_scalex = {
@@ -760,7 +812,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         softMax = 5,
         step = 0.01,
         bigStep = 0.1,
-        hidden = function() return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Scale) end
+        hidden = function()
+          return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Scale)
+        end
       },
       finish_scaley = {
         type = "range",
@@ -771,14 +825,18 @@ function OptionsPrivate.GetAnimationOptions(data)
         softMax = 5,
         step = 0.01,
         bigStep = 0.1,
-        hidden = function() return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Scale) end
+        hidden = function()
+          return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Scale)
+        end
       },
       finish_use_rotate = {
         type = "toggle",
         width = WeakAuras.normalWidth,
         name = L["Rotate Out"],
         order = 86,
-        hidden = function() return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Rotate) end
+        hidden = function()
+          return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Rotate)
+        end
       },
       finish_rotateType = {
         type = "select",
@@ -786,7 +844,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         name = L["Type"],
         order = 87,
         values = anim_rotate_types,
-        hidden = function() return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Rotate) end
+        hidden = function()
+           return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Rotate)
+          end
       },
       -- texteditor added below
       finish_rotate = {
@@ -797,14 +857,18 @@ function OptionsPrivate.GetAnimationOptions(data)
         softMin = 0,
         softMax = 360,
         bigStep = 3,
-        hidden = function() return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Rotate) end
+        hidden = function()
+          return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Rotate)
+        end
       },
       finish_use_color = {
         type = "toggle",
         width = WeakAuras.normalWidth,
         name = L["Color"],
         order = 88.2,
-        hidden = function() return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Color) end
+        hidden = function()
+          return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Color)
+        end
       },
       finish_colorType = {
         type = "select",
@@ -812,7 +876,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         name = L["Type"],
         order = 88.5,
         values = anim_color_types,
-        hidden = function() return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Color) end
+        hidden = function()
+          return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Color)
+        end
       },
       -- texteditor added below
       finish_color = {
@@ -820,7 +886,9 @@ function OptionsPrivate.GetAnimationOptions(data)
         width = WeakAuras.doubleWidth,
         name = L["Color"],
         order = 89.5,
-        hidden = function() return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.regions[id].region.Color) end,
+        hidden = function()
+          return (data.animation.finish.type ~= "custom" or not OptionsPrivate.Private.EnsureRegion(id).Color)
+        end,
         get = function()
           return data.animation.finish.colorR or 1,
             data.animation.finish.colorG or 1,
@@ -838,124 +906,153 @@ function OptionsPrivate.GetAnimationOptions(data)
   }
 
   local function extraSetFunction()
-    OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, OptionsPrivate.Private.regions[id].region, false, nil, true);
+    OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main,
+                                   OptionsPrivate.Private.EnsureRegion(id), false, nil, true)
     if(OptionsPrivate.Private.clones[id]) then
       for cloneId, cloneRegion in pairs(OptionsPrivate.Private.clones[id]) do
-        OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, cloneRegion, false, nil, true, cloneId);
+        OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main,
+                                       cloneRegion, false, nil, true, cloneId)
       end
     end
   end
 
   -- Text Editors for "start"
   local function hideStartAlphaFunc()
-    return data.animation.start.type ~= "custom" or data.animation.start.alphaType ~= "custom" or not data.animation.start.use_alpha
+    return data.animation.start.type ~= "custom"
+           or data.animation.start.alphaType ~= "custom"
+           or not data.animation.start.use_alpha
   end
-  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "start_alphaFunc", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#alpha-opacity",
+  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "start_alphaFunc",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#alpha-opacity",
                           35.3, hideStartAlphaFunc, {"animation", "start", "alphaFunc"}, false);
 
   local function hideStartTranslate()
-    return data.animation.start.type ~= "custom" or data.animation.start.translateType ~= "custom" or not data.animation.start.use_translate
+    return data.animation.start.type ~= "custom"
+           or data.animation.start.translateType ~= "custom"
+           or not data.animation.start.use_translate
   end
-  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "start_translateFunc",  "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#translate-position",
+  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "start_translateFunc",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#translate-position",
                           39.3, hideStartTranslate, {"animation", "start", "translateFunc"}, false);
 
   local function hideStartScale()
     return data.animation.start.type ~= "custom"
            or data.animation.start.scaleType ~= "custom"
-           or not (data.animation.start.use_scale and OptionsPrivate.Private.regions[id].region.Scale)
+           or not (data.animation.start.use_scale and OptionsPrivate.Private.EnsureRegion(id).Scale)
   end
-  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "start_scaleFunc",  "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#scale-size",
+  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "start_scaleFunc",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#scale-size",
                           43.3, hideStartScale, {"animation", "start", "scaleFunc"}, false);
 
   local function hideStartRotateFunc()
     return data.animation.start.type ~= "custom"
            or data.animation.start.rotateType ~= "custom"
-           or not (data.animation.start.use_rotate and OptionsPrivate.Private.regions[id].region.Rotate)
+           or not (data.animation.start.use_rotate and OptionsPrivate.Private.EnsureRegion(id).Rotate)
   end
-  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "start_rotateFunc",  "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#rotate",
+  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "start_rotateFunc",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#rotate",
                           47.3, hideStartRotateFunc, {"animation", "start", "rotateFunc"}, false);
 
   local function hideStartColorFunc()
     return data.animation.start.type ~= "custom"
            or data.animation.start.colorType ~= "custom"
-           or not (data.animation.start.use_color and OptionsPrivate.Private.regions[id].region.Color)
+           or not (data.animation.start.use_color and OptionsPrivate.Private.EnsureRegion(id).Color)
   end
-  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "start_colorFunc",  "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#color",
+  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "start_colorFunc",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#color",
                           48.7, hideStartColorFunc, {"animation", "start", "colorFunc"}, false);
 
   -- Text Editors for "main"
   local function hideMainAlphaFunc()
-    return data.animation.main.type ~= "custom" or data.animation.main.alphaType ~= "custom" or not data.animation.main.use_alpha
+    return data.animation.main.type ~= "custom"
+           or data.animation.main.alphaType ~= "custom"
+           or not data.animation.main.use_alpha
   end
   local mainCodeOptions = { extraSetFunction = extraSetFunction }
-  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "main_alphaFunc",  "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#alpha-opacity",
+  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "main_alphaFunc",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#alpha-opacity",
                           55.3, hideMainAlphaFunc, {"animation", "main", "alphaFunc"}, false, mainCodeOptions);
 
   local function hideMainTranslate()
-    return data.animation.main.type ~= "custom" or data.animation.main.translateType ~= "custom" or not data.animation.main.use_translate
+    return data.animation.main.type ~= "custom"
+           or data.animation.main.translateType ~= "custom"
+           or not data.animation.main.use_translate
   end
-  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "main_translateFunc",  "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#translate-position",
+  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "main_translateFunc",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#translate-position",
                           59.3, hideMainTranslate, {"animation", "main", "translateFunc"}, false, mainCodeOptions);
 
   local function hideMainScale()
     return data.animation.main.type ~= "custom"
            or data.animation.main.scaleType ~= "custom"
-           or not (data.animation.main.use_scale and OptionsPrivate.Private.regions[id].region.Scale)
+           or not (data.animation.main.use_scale and OptionsPrivate.Private.EnsureRegion(id).Scale)
   end
-  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "main_scaleFunc", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#scale-sizes",
+  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "main_scaleFunc",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#scale-sizes",
                           63.3, hideMainScale, {"animation", "main", "scaleFunc"}, false, mainCodeOptions);
 
   local function hideMainRotateFunc()
     return data.animation.main.type ~= "custom"
            or data.animation.main.rotateType ~= "custom"
-           or not (data.animation.main.use_rotate and OptionsPrivate.Private.regions[id].region.Rotate)
+           or not (data.animation.main.use_rotate and OptionsPrivate.Private.EnsureRegion(id).Rotate)
   end
-  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "main_rotateFunc", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#rotate",
+  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "main_rotateFunc",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#rotate",
                           67.3, hideMainRotateFunc, {"animation", "main", "rotateFunc"}, false, mainCodeOptions);
 
   local function hideMainColorFunc()
     return data.animation.main.type ~= "custom"
            or data.animation.main.colorType ~= "custom"
-           or not (data.animation.main.use_color and OptionsPrivate.Private.regions[id].region.Color)
+           or not (data.animation.main.use_color and OptionsPrivate.Private.EnsureRegion(id).Color)
   end
-  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "main_colorFunc", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#color",
+  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "main_colorFunc",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#color",
                           68.7, hideMainColorFunc, {"animation", "main", "colorFunc"}, false, mainCodeOptions);
 
   -- Text Editors for "finish"
   local function hideFinishAlphaFunc()
-    return data.animation.finish.type ~= "custom" or data.animation.finish.alphaType ~= "custom" or not data.animation.finish.use_alpha
+    return data.animation.finish.type ~= "custom"
+           or data.animation.finish.alphaType ~= "custom"
+           or not data.animation.finish.use_alpha
   end
-  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "finish_alphaFunc", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#alpha-opacity",
+  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "finish_alphaFunc",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#alpha-opacity",
                           75.3, hideFinishAlphaFunc, {"animation", "finish", "alphaFunc"}, false);
 
   local function hideFinishTranslate()
-    return data.animation.finish.type ~= "custom" or data.animation.finish.translateType ~= "custom" or not data.animation.finish.use_translate
+    return data.animation.finish.type ~= "custom"
+           or data.animation.finish.translateType ~= "custom"
+           or not data.animation.finish.use_translate
   end
-  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "finish_translateFunc", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#translate-position",
+  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "finish_translateFunc",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#translate-position",
                           79.3, hideFinishTranslate, {"animation", "finish", "translateFunc"}, false);
 
   local function hideFinishScale()
     return data.animation.finish.type ~= "custom"
            or data.animation.finish.scaleType ~= "custom"
-           or not (data.animation.finish.use_scale and OptionsPrivate.Private.regions[id].region.Scale)
+           or not (data.animation.finish.use_scale and OptionsPrivate.Private.EnsureRegion(id).Scale)
   end
-  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "finish_scaleFunc", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#scale-size",
+  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "finish_scaleFunc",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#scale-size",
                           83.3, hideFinishScale, {"animation", "finish", "scaleFunc"}, false);
 
   local function hideFinishRotateFunc()
     return data.animation.finish.type ~= "custom"
            or data.animation.finish.rotateType ~= "custom"
-           or not (data.animation.finish.use_rotate and OptionsPrivate.Private.regions[id].region.Rotate)
+           or not (data.animation.finish.use_rotate and OptionsPrivate.Private.EnsureRegion(id).Rotate)
   end
-  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "finish_rotateFunc", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#rotate",
+  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "finish_rotateFunc",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#rotate",
                           87.3, hideFinishRotateFunc, {"animation", "finish", "rotateFunc"}, false);
 
   local function hideFinishColorFunc()
     return data.animation.finish.type ~= "custom"
            or data.animation.finish.colorType ~= "custom"
-           or not (data.animation.finish.use_color and OptionsPrivate.Private.regions[id].region.Color)
+           or not (data.animation.finish.use_color and OptionsPrivate.Private.EnsureRegion(id).Color)
   end
-  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "finish_colorFunc", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#color",
+  OptionsPrivate.commonOptions.AddCodeOption(animation.args, data, L["Custom Function"], "finish_colorFunc",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#color",
                           88.7, hideFinishColorFunc, {"animation", "finish", "colorFunc"}, false);
 
   if(data.controlledChildren) then
