@@ -1227,7 +1227,7 @@ Private.load_prototype = {
       display = L["Player Class"],
       type = "multiselect",
       values = "class_types",
-      init = not WeakAuras.IsDragonflight and "arg" or nil,
+      init = not WeakAuras.IsDragonflight() and "arg" or nil,
       enable = not WeakAuras.IsDragonflight(),
       hidden = WeakAuras.IsDragonflight(),
     },
