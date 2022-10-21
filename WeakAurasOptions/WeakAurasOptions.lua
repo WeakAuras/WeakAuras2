@@ -441,7 +441,7 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"] = {
   button2 = L["Cancel"],
   OnAccept = function(self)
     if self.data then
-      OptionsPrivate.Private.PauseAllDynamicGroups()
+      local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
       OptionsPrivate.massDelete = true
       for _, auraData in pairs(self.data.toDelete) do
         WeakAuras.Delete(auraData)
@@ -463,7 +463,7 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"] = {
           WeakAuras.ClearAndUpdateOptions(parentData.id)
         end
       end
-      OptionsPrivate.Private.ResumeAllDynamicGroups()
+      OptionsPrivate.Private.ResumeAllDynamicGroups(suspended)
       OptionsPrivate.SortDisplayButtons(nil, true)
     end
   end,
@@ -722,7 +722,7 @@ local function LayoutDisplayButtons(msg)
     frame.buttonsScroll:PerformLayout()
     OptionsPrivate.SortDisplayButtons(msg);
 
-    OptionsPrivate.Private.PauseAllDynamicGroups();
+    local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
     if (WeakAuras.IsOptionsOpen()) then
       for id, button in pairs(displayButtons) do
         if(OptionsPrivate.Private.loaded[id] ~= nil) then
@@ -731,7 +731,7 @@ local function LayoutDisplayButtons(msg)
       end
       OptionsPrivate.Private.OptionsFrame().loadedButton:RecheckVisibility()
     end
-    OptionsPrivate.Private.ResumeAllDynamicGroups();
+    OptionsPrivate.Private.ResumeAllDynamicGroups(suspended)
 
     frame:SetLoadProgressVisible(false)
   end
@@ -810,11 +810,11 @@ function WeakAuras.ShowOptions(msg)
 
   if not(firstLoad) then
     -- Show what was last shown
-    OptionsPrivate.Private.PauseAllDynamicGroups();
+    local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
     for id, button in pairs(displayButtons) do
       button:SyncVisibility()
     end
-    OptionsPrivate.Private.ResumeAllDynamicGroups();
+    OptionsPrivate.Private.ResumeAllDynamicGroups(suspended)
   end
 
   if (frame.pickedDisplay) then
@@ -893,11 +893,12 @@ function OptionsPrivate.ConvertDisplay(data, newType)
   local visibility = displayButtons[id]:GetVisibility();
   displayButtons[id]:PriorityHide(2);
 
-  OptionsPrivate.Private.regions[id].region:Collapse();
+  if OptionsPrivate.Private.regions[id] then
+    OptionsPrivate.Private.regions[id].region:Collapse()
+  end
   OptionsPrivate.Private.CollapseAllClones(id);
 
   OptionsPrivate.Private.Convert(data, newType);
-  displayButtons[id]:SetViewRegion(OptionsPrivate.Private.regions[id].region);
   displayButtons[id]:Initialize();
   displayButtons[id]:PriorityShow(visibility);
   frame:ClearOptions(id)
@@ -1281,9 +1282,6 @@ function OptionsPrivate.AddDisplayButton(data)
   EnsureDisplayButton(data);
   WeakAuras.UpdateThumbnail(data);
   frame.buttonsScroll:AddChild(displayButtons[data.id]);
-  if(OptionsPrivate.Private.regions[data.id] and OptionsPrivate.Private.regions[data.id].region.SetStacks) then
-    OptionsPrivate.Private.regions[data.id].region:SetStacks(1);
-  end
 end
 
 function OptionsPrivate.StartGrouping(data)
@@ -1611,6 +1609,7 @@ function OptionsPrivate.ResetMoverSizer()
 end
 
 function WeakAuras.SetMoverSizer(id)
+  OptionsPrivate.Private.EnsureRegion(id)
   if OptionsPrivate.Private.regions[id].region.toShow then
     frame.moversizer:SetToRegion(OptionsPrivate.Private.regions[id].region, db.displays[id])
   else

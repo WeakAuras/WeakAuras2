@@ -315,7 +315,7 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
     if(namespace == "display" and type == "main" and not onFinished and not anim.duration_type == "relative") then
       local data = Private.GetDataByUID(uid);
       if(data and data.parent) then
-        local parentRegion = Private.regions[data.parent].region;
+        local parentRegion = WeakAuras.GetRegion(data.parent)
         if(parentRegion and parentRegion.controlledRegions) then
           for index, regionData in pairs(parentRegion.controlledRegions) do
             local childRegion = regionData.region;
