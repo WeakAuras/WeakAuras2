@@ -111,7 +111,7 @@ if WeakAuras.IsBCCOrWrathOrRetail() then
       if name == nil and cacheEmpowered[unit] then
         local holdAtMaxTime
         holdAtMaxTime, name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = unpack(cacheEmpowered[unit])
-        if endTime + holdAtMaxTime < GetTime()  then -- invalidate too old data
+        if endTime + holdAtMaxTime < GetTime() then -- invalidate too old data
           cacheEmpowered[unit] = nil
           return nil
         end
@@ -127,6 +127,12 @@ if WeakAuras.IsBCCOrWrathOrRetail() then
         cacheEmpowered[unit] = {GetUnitEmpowerHoldAtMaxTime(unit), UnitChannelInfo(unit)}
       else
         cacheEmpowered[unit] = nil
+      end
+      if unit == "player" and event == "UNIT_SPELLCAST_EMPOWER_START" or event == "UNIT_SPELLCAST_EMPOWER_STOP" then
+        local castLatencyFrame = Private.frames["Cast Latency Handler"]
+        if castLatencyFrame then
+          castLatencyFrame:GetScript("OnEvent")(nil, event, unit, ...)
+        end
       end
       WeakAuras.ScanUnitEvents(event.."_FAKE", unit, ...)
     end)
