@@ -3455,11 +3455,11 @@ end
 
 -- Cast Latency
 do
-  local castLatencyFrame = nil
-  Private.frames["Cast Latency Handler"] = castLatencyFrame
+  local castLatencyFrame
   function WeakAuras.WatchForCastLatency()
     if not castLatencyFrame then
       castLatencyFrame = CreateFrame("Frame")
+      Private.frames["Cast Latency Handler"] = castLatencyFrame
       castLatencyFrame:RegisterEvent("CURRENT_SPELL_CAST_CHANGED")
       castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
       castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player")
@@ -3468,18 +3468,16 @@ do
       castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
       castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
 
-      if WeakAuras.IsDragonflight() then
-        castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_START", "player")
-        castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_EMPOWER_STOP", "player")
-      end
+      -- on dragonflight UNIT_SPELLCAST_EMPOWER_START and UNIT_SPELLCAST_EMPOWER_STOP OnEvent are
+      -- triggered from cacheEmpoweredFrame after updating cache use by WeakAuras.UnitChannelInfo
 
       castLatencyFrame:SetScript("OnEvent", function(self, event)
         if event == "UNIT_SPELLCAST_START" then
-          Private.LAST_CURRENT_SPELL_CAST_START = select(4, UnitCastingInfo("player")) / 1000
+          Private.LAST_CURRENT_SPELL_CAST_START = select(4, WeakAuras.UnitCastingInfo("player")) / 1000
         elseif event == "UNIT_SPELLCAST_CHANNEL_START" then
-          Private.LAST_CURRENT_SPELL_CAST_START = select(4, UnitChannelInfo("player")) / 1000
+          Private.LAST_CURRENT_SPELL_CAST_START = select(4, WeakAuras.UnitChannelInfo("player")) / 1000
         elseif event == "UNIT_SPELLCAST_EMPOWER_START" then
-          Private.LAST_CURRENT_SPELL_CAST_START = select(4, UnitCastingInfo("player")) / 1000
+          Private.LAST_CURRENT_SPELL_CAST_START = select(4, WeakAuras.UnitChannelInfo("player")) / 1000
         elseif event == "CURRENT_SPELL_CAST_CHANGED" then
           -- We want to store the CURRENT_SPELL_CAST_CHANGED time
           -- that was the last before the actual START event
