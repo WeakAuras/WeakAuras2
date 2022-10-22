@@ -47,6 +47,7 @@ GenericTrigger.lua
 # Helper Systems
 AuraWarnings.lua
 AuraEnvironment.lua
+AuraEnvironmentWrappedSystems.lua
 DebugLog.lua
 
 # Region support

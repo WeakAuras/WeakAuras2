@@ -7,8 +7,15 @@ Private.frames = {}
 --- @alias uid string
 --- @alias auraId string
 
+--- @class state
+--- @field id auraId
+--- @field cloneId string?
+
 --- @class Private
+--- @field ActivateAuraEnvironment fun(id: auraId?, cloneId: string?, state: state?, states: state[]?, onlyConfig: boolean?)
+--- @field ActivateAuraEnvironmentForRegion fun(region: table, onlyConfig: boolean?)
 --- @field AuraWarnings AuraWarnings
+--- @field AuraEnvironmentWrappedSystem AuraEnvironmentWrappedSystem
 --- @field callbacks callbacks
 --- @field DebugLog debugLog
 --- @field clones table<auraId, table<string, table>>
