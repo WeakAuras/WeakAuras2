@@ -88,6 +88,8 @@ globals = {
 	"Mixin",
 	"ipairs_reverse",
 	"Round",
+	"SafePack",
+	"SafeUnpack",
 	"Saturate",
 	"SecondsFormatter",
 	"SecondsFormatterMixin",
@@ -102,6 +104,7 @@ globals = {
 	"UIDropDownMenu_AddButton",
 	"UIDropDownMenu_Initialize",
 	"UISpecialFrames",
+
 
 	-- FrameXML frames
 	"GameTooltip",

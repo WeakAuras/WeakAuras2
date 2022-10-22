@@ -1109,7 +1109,6 @@ local function TriggerInfoApplies(triggerInfo, unit)
     controllingUnit = WeakAuras.petUnitToUnit[unit]
   end
 
-
   if triggerInfo.ignoreSelf and UnitIsUnit("player", controllingUnit) then
     return false
   end
