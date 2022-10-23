@@ -1277,7 +1277,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     end
   elseif event == "PLAYER_LOGOUT" then
     for id in pairs(db.displays) do
-      Private.SaveAuraEnvironment(id)
+      Private.ClearAuraEnvironment(id)
     end
   elseif(event == "LOADING_SCREEN_ENABLED") then
     in_loading_screen = true;

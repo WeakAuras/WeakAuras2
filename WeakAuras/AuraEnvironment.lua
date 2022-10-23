@@ -270,13 +270,13 @@ function Private.RestoreAuraEnvironment(id)
 end
 
 function Private.ClearAuraEnvironmentSavedData(id)
-  if environment_initialized[id] then
+  if environment_initialized[id] == 2 then
     aura_environments[id].saved = nil
   end
 end
 
 function Private.ClearAuraEnvironment(id)
-  if environment_initialized[id] then
+  if environment_initialized[id] == 2 then
     Private.SaveAuraEnvironment(id)
     environment_initialized[id] = nil
     aura_environments[id] = nil
