@@ -7664,6 +7664,7 @@ Private.event_prototypes = {
     events = {
       ["events"] = {"PLAYER_EQUIPMENT_CHANGED"}
     },
+    internal_events = {"WA_DELAYED_PLAYER_ENTERING_WORLD"},
     force_events = "PLAYER_EQUIPMENT_CHANGED",
     name = L["Item Set Equipped"],
     automaticrequired = true,
