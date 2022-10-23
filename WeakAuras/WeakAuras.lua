@@ -2104,9 +2104,6 @@ function WeakAuras.Rename(data, newid)
 
   db.displays[newid] = db.displays[oldid];
   db.displays[oldid] = nil;
-
-
-
   db.displays[newid].id = newid;
 
   if(data.controlledChildren) then
@@ -4044,7 +4041,23 @@ function WeakAuras.GetActiveTriggers(id)
 end
 
 do
+  --- @type table<auraId, boolean>
   local visibleFakeStates = {}
+
+  --- @type fun(_: any, uid: uid, id: auraId)
+  local function OnDelete(_, uid, id)
+    visibleFakeStates[id] = nil
+  end
+
+  --- @type fun(_: any, uid: uid, oldId: auraId, newId: auraId)
+  local function OnRename(_, uid, oldId, newId)
+    visibleFakeStates[newId] = visibleFakeStates[oldId]
+    visibleFakeStates[oldId] = nil
+  end
+
+  Private.callbacks:RegisterCallback("Delete", OnDelete)
+  Private.callbacks:RegisterCallback("Rename", OnRename)
+
   local UpdateFakeTimesHandle
 
   local function UpdateFakeTimers()
