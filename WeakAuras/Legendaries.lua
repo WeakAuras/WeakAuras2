@@ -273,34 +273,6 @@ for k, v in pairs(legendariesToBonusId) do
   bonusIdToLegendary[v] = k
 end
 
-Private.GetLegendariesBonusIds = function()
-  if not WeakAuras.IsRetail() then
-    return ""
-  end
-
-  local classId = select(3, UnitClass('player'))
-  local specId = GetSpecializationInfo(GetSpecialization())
-
-  local powers = C_LegendaryCrafting.GetRuneforgePowersByClassSpecAndCovenant(classId, specId)
-  local abilities = {}
-  local names = {}
-  for _, power in ipairs(powers) do
-    local info = C_LegendaryCrafting.GetRuneforgePowerInfo(power)
-    if legendariesToBonusId[info.runeforgePowerID] then
-      abilities[info.name] = {legendariesToBonusId[info.runeforgePowerID], info.iconFileID }
-      tinsert(names, info.name)
-    end
-  end
-
-  table.sort(names)
-
-  local result = ""
-  for index, name in ipairs(names) do
-    result = result .. "|T".. abilities[name][2] .. ":16|t  " ..  name .. ": " .. abilities[name][1] .. "\n"
-  end
-  return result
-end
-
 WeakAuras.GetLegendaryData = function(id)
   if not WeakAuras.IsRetail() then
     return ""
