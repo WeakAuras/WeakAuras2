@@ -20,6 +20,7 @@ Private.frames = {}
 --- @field DebugLog debugLog
 --- @field clones table<auraId, table<string, table>>
 --- @field ExecEnv table
+--- @field LibSpecWrapper LibSpecWrapper
 --- @field regions table<auraId, table>
 --- @field UIDtoID fun(uid: uid): auraId
 
