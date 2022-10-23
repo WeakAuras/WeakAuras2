@@ -713,9 +713,9 @@ function Private.LoadConditionFunction(data)
   CancelTimers(data.uid)
 
   local checkConditionsFuncStr = ConstructConditionFunction(data);
-  local checkCondtionsFunc = checkConditionsFuncStr and Private.LoadFunction(checkConditionsFuncStr)
+  local checkConditionsFunc = checkConditionsFuncStr and Private.LoadFunction(checkConditionsFuncStr)
 
-  checkConditions[data.uid] = checkCondtionsFunc;
+  checkConditions[data.uid] = checkConditionsFunc;
 end
 
 function Private.RunConditions(region, uid, hideRegion)

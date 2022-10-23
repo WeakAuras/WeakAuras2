@@ -120,7 +120,7 @@ end
 
 --- Returns the logs for a given aura uid
 ---@param uid uid
----@return string
+---@return string?
 function Private.DebugLog.GetLogs(uid)
   if debugLogs[uid] then
     return table.concat(debugLogs[uid], "\n")
