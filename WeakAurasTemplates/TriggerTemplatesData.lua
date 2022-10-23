@@ -5231,7 +5231,7 @@ tinsert(templates.race.KulTiran, { spell = 287712, type = "ability", requiresTar
 tinsert(templates.race.KulTiran, { spell = 291843, type = "buff"});
 -- Hyper Organic Light Originator
 tinsert(templates.race.Mechagnome, { spell = 312924, type = "ability" });
--- Combat Anlysis
+-- Combat Analysis
 tinsert(templates.race.Mechagnome, { spell = 313424, type = "buff" });
 -- Recently Failed
 tinsert(templates.race.Mechagnome, { spell = 313015, type = "debuff" });
@@ -5356,16 +5356,16 @@ local function enrichDatabase()
       for _, section in pairs(spec) do
         local loadCondition
         if WeakAuras.IsDragonflight() then
-          local specialisationId
+          local specializationId
           for classID = 1, GetNumClasses() do
             local _, classFile = GetClassInfo(classID)
             if classFile == className then
-              specialisationId = GetSpecializationInfoForClassID(classID, specIndex)
+              specializationId = GetSpecializationInfoForClassID(classID, specIndex)
               break
             end
           end
           loadCondition = {
-            use_class_and_spec = true, class_and_spec = { single = specialisationId, multi = {} },
+            use_class_and_spec = true, class_and_spec = { single = specializationId, multi = {} },
           }
         else
           loadCondition = {
