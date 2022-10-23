@@ -3165,7 +3165,7 @@ end
 --- Ensures that a region/clone exists and returns it
 ---@param id auraId
 ---@param cloneId string|nil
----@return table
+---@return table?
 function Private.EnsureRegion(id, cloneId)
   -- Even if we are asked to only create a clone, we create the default region
   -- too.
