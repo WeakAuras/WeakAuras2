@@ -2448,8 +2448,13 @@ local function loadOrder(tbl, idtable)
   return order
 end
 
+---@param tbl auraData[]
+---@param takeSnapshots boolean
 function Private.AddMany(tbl, takeSnapshots)
+  --- @type table<auraId, auraData>
   local idtable = {};
+  --- @type table<auraId, boolean> The anchoring targetes of other auras
+  local anchorTargets = {}
   for _, data in ipairs(tbl) do
     -- There was an unfortunate bug in update.lua in 2022 that resulted
     -- in auras having a circular dependencies
@@ -2459,6 +2464,9 @@ function Private.AddMany(tbl, takeSnapshots)
       tDeleteItem(data.controlledChildren, data.id)
     end
     idtable[data.id] = data;
+    if data.anchorFrameType == "SELECTFRAME" and data.anchorFrameFrame and data.anchorFrameFrame:sub(1, 10) == "WeakAuras:" then
+      anchorTargets[data.anchorFrameFrame:sub(11)] = true
+    end
   end
 
   local order = loadOrder(tbl, idtable)
@@ -2471,6 +2479,14 @@ function Private.AddMany(tbl, takeSnapshots)
       groups[data] = true
     end
   end
+
+  for id in pairs(anchorTargets) do
+    local data = idtable[id]
+    if data and data.parent == nil or idtable[data.parent].regionType ~= "dynamicgroup" then
+      Private.EnsureRegion(id)
+    end
+  end
+
   for data in pairs(groups) do
     if data.type == "dynamicgroup" then
       if Private.regions[data.id] then
