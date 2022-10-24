@@ -8809,6 +8809,26 @@ Private.event_prototypes = {
         hidden = not WeakAuras.IsWrathClassic()
       },
       {
+        name = "resiliencerating",
+        display = L["Resilience Rating"],
+        type = "number",
+        init = "GetCombatRating(CR_RESILIENCE_PLAYER_DAMAGE_TAKEN)",
+        store = true,
+        enable = WeakAuras.IsWrathClassic(),
+        conditionType = "number",
+        hidden = not WeakAuras.IsWrathClassic()
+      },
+      {
+        name = "resiliencepercent",
+        display = L["Resilience Percent"],
+        type = "number",
+        init = "GetCombatRatingBonus(CR_RESILIENCE_PLAYER_DAMAGE_TAKEN)",
+        store = true,
+        conditionType = "number",
+        enable = WeakAuras.IsWrathClassic(),
+        hidden = not WeakAuras.IsWrathClassic()
+      },
+      {
         name = "spellpenpercent",
         display = L["Spell Peneration Percent"],
         type = "number",
