@@ -28,7 +28,8 @@ Private.callbacks:RegisterCallback("Rename", OnRename)
 local WrapData = {
   C_Timer = {
     { name = "After", arg = 2},
-    { name = "NewTimer", arg = 2}
+    { name = "NewTimer", arg = 2},
+    { name = "NewTicker", arg = 2}
   }
 }
 
@@ -54,7 +55,7 @@ local function Wrap(id, cloneId, system, funcs)
       system[data.name](SafeUnpack(packed))
     end
   end
-  setmetatable(wrappedSystem, { _index = system })
+  setmetatable(wrappedSystem, { __index = system, __metatable = false })
   return wrappedSystem
 end
 
