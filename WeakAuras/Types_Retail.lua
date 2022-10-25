@@ -48710,7 +48710,6 @@ if WeakAuras.IsDragonflight() then
 end
 
 function Private.GetTalentInfo(specId)
-  -- TODO: only evoker & paladin talents collected, will do more when structure of talentInfo will be final
   local talents = {}
   local talentInfo = Private.talentInfo[specId]
   if talentInfo then
@@ -48723,3 +48722,55 @@ function Private.GetTalentInfo(specId)
   end
   return talents
 end
+
+-- update data for current spec
+-- this will reduce the need for updating talent data after each hotfix
+-- but this work only for current spec, an update still need to be done to have proper display for all specs
+local updateTalentFrame = CreateFrame("Frame")
+updateTalentFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+updateTalentFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
+updateTalentFrame:SetScript("OnEvent", function()
+	C_Timer.After(1, function()
+		local classID = select(3, UnitClass("player"))
+		local specIndex = GetSpecialization()
+		local specId = GetSpecializationInfoForClassID(classID, specIndex)
+		local specData = Private.talentInfo[specId]
+		specData = {}
+		local configId = C_ClassTalents.GetActiveConfigID()
+		if configId == nil then return end
+		local configInfo = C_Traits.GetConfigInfo(configId)
+		if configInfo == nil then return end
+		for _, treeId in ipairs(configInfo.treeIDs) do
+			local nodes = C_Traits.GetTreeNodes(treeId)
+			for _, nodeId in ipairs(nodes) do
+				local node = C_Traits.GetNodeInfo(configId, nodeId)
+				if node and node.ID ~= 0 then
+					for idx, talentId in ipairs(node.entryIDs) do
+						local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
+						local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
+						local spellName = GetSpellInfo(definitionInfo.spellID)
+						if spellName then
+							local talentData = {
+								talentId,
+								definitionInfo.spellID,
+								{ node.posX, node.posY, idx, #node.entryIDs },
+								{}
+							}
+							for _, edge in pairs(node.visibleEdges) do
+								local targetNodeId = edge.targetNode
+								local targetNode = C_Traits.GetNodeInfo(configId, targetNodeId)
+								local targetNodeTalentId1 = targetNode.entryIDs[1]
+								if targetNodeTalentId1 then
+									-- add as target 1st talentId
+									-- because we don't save nodes
+									tinsert(talentData[4], targetNodeTalentId1)
+								end
+							end
+							tinsert(specData, talentData)
+						end
+					end
+				end
+			end
+		end
+	end)
+end)
