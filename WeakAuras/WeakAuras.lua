@@ -2482,7 +2482,7 @@ function Private.AddMany(tbl, takeSnapshots)
 
   for id in pairs(anchorTargets) do
     local data = idtable[id]
-    if data and data.parent == nil or idtable[data.parent].regionType ~= "dynamicgroup" then
+    if data and (data.parent == nil or idtable[data.parent].regionType ~= "dynamicgroup") then
       Private.EnsureRegion(id)
     end
   end
