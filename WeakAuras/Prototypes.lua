@@ -4334,7 +4334,7 @@ Private.event_prototypes = {
         showOnCheck
       );
 
-      if (not trigger.use_trackcharge or not trigger.trackcharge) then
+      if (not trigger.use_trackcharge or not trigger.trackcharge or trigger.trackcharge == "") then
         ret = ret .. [=[
           if (state.expirationTime ~= expirationTime) then
             state.expirationTime = expirationTime;
@@ -4398,7 +4398,7 @@ Private.event_prototypes = {
             state.progressType = 'timed';
           end
         ]=];
-        local trackedCharge = tonumber(trigger.trackcharge or 1) or 1;
+        local trackedCharge = tonumber(trigger.trackcharge) or 1;
         ret = ret .. ret2:format(trackedCharge - 1);
       end
       if(trigger.use_remaining and trigger.genericShowOn ~= "showOnReady") then
@@ -4463,7 +4463,7 @@ Private.event_prototypes = {
             end
 
             if trigger.genericShowOn ~= "showOnReady" and trigger.track ~= "cooldown" then
-              if trigger.use_trackcharge and trigger.trackcharge then
+              if trigger.use_trackcharge and trigger.trackcharge ~= "" then
                 if text ~= "" then text = text .. "; " end
                 text = text .. L["Tracking Charge %i"]:format(trigger.trackcharge)
               end
