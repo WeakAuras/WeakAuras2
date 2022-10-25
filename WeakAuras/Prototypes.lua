@@ -1297,10 +1297,27 @@ Private.load_prototype = {
       display = L["Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = "WeakAuras.CheckTalentByIndex(%d, %d)",
-      enableTest = function(...)
-        return WeakAuras.CheckTalentByIndex(...) ~= nil
+      test = WeakAuras.IsDragonflight() and "IsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
+      enableTest = function(trigger, talent, arg)
+        if WeakAuras.IsDragonflight() then
+          local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+          if specId and type(Private.talentInfo[specId]) == "table" then
+            for _, v in ipairs(Private.talentInfo[specId]) do
+              if talent == v[2] then
+                return true
+              end
+            end
+          end
+        else
+          return WeakAuras.CheckTalentByIndex(talent, arg) ~= nil
+        end
       end,
+      multiConvertKey = WeakAuras.IsDragonflight() and function(trigger, key)
+        local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+        if specId and type(Private.talentInfo[specId]) == "table" then
+          return Private.talentInfo[specId][key][2]
+        end
+      end or nil,
       events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
         or (WeakAuras.IsDragonflight() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"})
@@ -1340,10 +1357,27 @@ Private.load_prototype = {
       display = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()) and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = "WeakAuras.CheckTalentByIndex(%d, %d)",
-      enableTest = function(...)
-        return WeakAuras.CheckTalentByIndex(...) ~= nil
+      test = WeakAuras.IsDragonflight() and "IsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
+      enableTest = function(trigger, talent, arg)
+        if WeakAuras.IsDragonflight() then
+          local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+          if specId and type(Private.talentInfo[specId]) == "table" then
+            for _, v in ipairs(Private.talentInfo[specId]) do
+              if talent == v[2] then
+                return true
+              end
+            end
+          end
+        else
+          return WeakAuras.CheckTalentByIndex(talent, arg) ~= nil
+        end
       end,
+      multiConvertKey = WeakAuras.IsDragonflight() and function(trigger, key)
+        local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+        if specId and type(Private.talentInfo[specId]) == "table" then
+          return Private.talentInfo[specId][key][2]
+        end
+      end or nil,
       events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
         or (WeakAuras.IsDragonflight() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"})
@@ -1385,10 +1419,27 @@ Private.load_prototype = {
       display = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()) and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = "WeakAuras.CheckTalentByIndex(%d, %d)",
-      enableTest = function(...)
-        return WeakAuras.CheckTalentByIndex(...) ~= nil
+      test = WeakAuras.IsDragonflight() and "IsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
+      enableTest = function(trigger, talent, arg)
+        if WeakAuras.IsDragonflight() then
+          local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+          if specId and type(Private.talentInfo[specId]) == "table" then
+            for _, v in ipairs(Private.talentInfo[specId]) do
+              if talent == v[2] then
+                return true
+              end
+            end
+          end
+        else
+          return WeakAuras.CheckTalentByIndex(talent, arg) ~= nil
+        end
       end,
+      multiConvertKey = WeakAuras.IsDragonflight() and function(trigger, key)
+        local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+        if specId and type(Private.talentInfo[specId]) == "table" then
+          return Private.talentInfo[specId][key][2]
+        end
+      end or nil,
       events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
         or (WeakAuras.IsDragonflight() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"})

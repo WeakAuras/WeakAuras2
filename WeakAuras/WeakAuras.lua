@@ -1,7 +1,7 @@
 --- @type string, Private
 local AddonName, Private = ...
 
-local internalVersion = 57
+local internalVersion = 58
 
 -- Lua APIs
 local insert = table.insert
@@ -678,7 +678,7 @@ local function ConstructFunction(prototype, trigger, skipOptional)
                 end
                 local testEnabled = true
                 if type(arg.enableTest) == "function" then
-                  testEnabled = arg.enableTest(arg1, arg2)
+                  testEnabled = arg.enableTest(trigger, arg1, arg2)
                 end
                 if testEnabled then
                   local check

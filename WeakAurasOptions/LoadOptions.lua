@@ -813,10 +813,16 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           multiTristate = arg.multiTristate,
           get = function(info, v)
             if(trigger["use_"..realname] == false and trigger[realname] and trigger[realname].multi) then
+              if arg.multiConvertKey then
+                v = arg.multiConvertKey(trigger, v)
+              end
               return trigger[realname].multi[v];
             end
           end,
           set = function(info, v, calledFromSetAll)
+            if arg.multiConvertKey then
+              v = arg.multiConvertKey(trigger, v)
+            end
             trigger[realname].multi = trigger[realname].multi or {};
             if (calledFromSetAll or arg.multiTristate) then
               trigger[realname].multi[v] = calledFromSetAll;

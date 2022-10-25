@@ -1547,5 +1547,29 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 58 then
+    -- convert key use for talent load condition from talent's index to spellId
+    if WeakAuras.IsDragonflight() then
+      local function migrateTalent(load, specId, field)
+        if load[field] and load[field].multi then
+          local newData = {}
+          for key, value in pairs(load[field].multi) do
+            if value ~= nil and Private.talentInfo[specId] and Private.talentInfo[specId][key] then
+              newData[Private.talentInfo[specId][key][2]] = value
+            end
+          end
+          load[field].multi = newData
+        end
+      end
+      local load = data.load
+      local specId = Private.checkForSingleLoadCondition(load, "class_and_spec")
+      if specId then
+        migrateTalent(load, specId, "talent")
+        migrateTalent(load, specId, "talent2")
+        migrateTalent(load, specId, "talent3")
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
