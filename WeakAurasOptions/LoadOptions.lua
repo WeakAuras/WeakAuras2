@@ -112,7 +112,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       end
     elseif(arg.collapse and isCollapsedFunctions[arg.collapse]) then
       hidden = isCollapsedFunctions[arg.collapse]
-      positionsForCollapseAnchor[arg.collapse] = order
     end
     local name = arg.name;
     local validate = arg.validate;
@@ -860,6 +859,11 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         order = order + 1;
       end
     end
+
+    if(arg.collapse and isCollapsedFunctions[arg.collapse]) then
+      positionsForCollapseAnchor[arg.collapse] = order
+      order = order +1
+    end
   end
 
   if prototype.timedrequired then
@@ -899,7 +903,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       type = "description",
       name = "",
       control = "WeakAurasExpandAnchor",
-      order = order + 0.5,
+      order = order,
       arg = {
         expanderName = triggernum .. "#" .. tostring(prototype) .. "#"  .. name
       },
