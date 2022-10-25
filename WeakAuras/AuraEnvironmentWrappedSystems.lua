@@ -52,7 +52,7 @@ local function Wrap(id, cloneId, system, funcs)
           end
         end
       end
-      system[data.name](SafeUnpack(packed))
+      return system[data.name](SafeUnpack(packed))
     end
   end
   setmetatable(wrappedSystem, { __index = system, __metatable = false })
