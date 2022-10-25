@@ -3117,30 +3117,44 @@ templates.class.WARLOCK = {
         { spell = 205146, type = "buff", unit = "player", talent = 74 }, -- Demonic Calling
         { spell = 221705, type = "buff", unit = "player" }, -- Casting Circle
         { spell = 264173, type = "buff", unit = "player" }, -- Demonic Core
+        { spell = 126, type = "buff", unit = "player" }, -- Eye of Kilrogg
+        { spell = 5697, type = "buff", unit = "player" }, -- Unending Breath
+        { spell = 20707, type = "buff", unit = "player" }, -- Soulstone
+        { spell = 48018, type = "buff", unit = "player", talent = 19 }, -- Demonic Circle
+        { spell = 108366, type = "buff", unit = "player" }, -- Soul Leech
+        { spell = 108416, type = "buff", unit = "player", talent = 22 }, -- Dark Pact
+        { spell = 111400, type = "buff", unit = "player", talent = 39 }, -- Burning Rush
+        { spell = 171982, type = "buff", unit = "player" }, -- Demonic Synergy
+        { spell = 205146, type = "buff", unit = "player", talent = 74 }, -- Demonic Calling
+        { spell = 221705, type = "buff", unit = "player" }, -- Casting Circle
+        { spell = 264173, type = "buff", unit = "player" }, -- Demonic Core
         { spell = 265273, type = "buff", unit = "player" }, -- Demonic Power
         { spell = 267218, type = "buff", unit = "player", talent = 54 }, -- Nether Portal
-        { spell = 328774, type = "buff", unit = "player", talent = 18 }, -- Amplify Curse
-        { spell = 333889, type = "buff", unit = "player", talent = 15 }, -- Fel Domination
+        { spell = 328774, type = "buff", unit = "player", talent = 20 }, -- Amplify Curse
+        { spell = 333889, type = "buff", unit = "player", talent = 17 }, -- Fel Domination
         { spell = 353646, type = "buff", unit = "player" }, -- Fel Obelisk
-        { spell = 386256, type = "buff", unit = "player", talent = 24 }, -- Summon Soulkeeper
+        { spell = 386256, type = "buff", unit = "player", talent = 26 }, -- Summon Soulkeeper
         { spell = 387327, type = "buff", unit = "player", talent = 84 }, -- Shadow's Bite
         { spell = 387393, type = "buff", unit = "player", talent = 56 }, -- Dread Calling
         { spell = 387437, type = "buff", unit = "player", talent = 57 }, -- Fel Covenant
         { spell = 387603, type = "buff", unit = "player", talent = 64 }, -- Stolen Power
-        { spell = 387626, type = "buff", unit = "player", talent = 46 }, -- Soulburn
-        { spell = 388068, type = "buff", unit = "player", talent = 25 }, -- Inquisitor's Gaze
-        { spell = 389614, type = "buff", unit = "player", talent = 42 }, -- Abyss Walker
+        { spell = 387626, type = "buff", unit = "player", talent = 48 }, -- Soulburn
+        { spell = 388068, type = "buff", unit = "player", talent = 27 }, -- Inquisitor's Gaze
+        { spell = 389614, type = "buff", unit = "player", talent = 44 }, -- Abyss Walker
         { spell = 394810, type = "buff", unit = "player" }, -- Soulburn: Drain Life
+        { spell = 89751, type = "buff", unit = "target" }, -- Felstorm
+        { spell = 108366, type = "buff", unit = "target" }, -- Soul Leech
+        { spell = 134477, type = "buff", unit = "target" }, -- Threatening Presence
+        { spell = 171982, type = "buff", unit = "target" }, -- Demonic Synergy
         { spell = 7870, type = "buff", unit = "pet" }, -- Lesser Invisibility
         { spell = 30151, type = "buff", unit = "pet" }, -- Pursuit
         { spell = 32752, type = "buff", unit = "pet" }, -- Summoning Disorientation
-        { spell = 89751, type = "buff", unit = "pet" }, -- Felstorm
-        { spell = 108366, type = "buff", unit = "pet" }, -- Soul Leech
-        { spell = 134477, type = "buff", unit = "pet" }, -- Threatening Presence
+        { spell = 265273, type = "buff", unit = "pet" }, -- Demonic Power
         { spell = 267171, type = "buff", unit = "pet", talent = 80 }, -- Demonic Strength
+        { spell = 353646, type = "buff", unit = "pet" }, -- Fel Obelisk
         { spell = 386601, type = "buff", unit = "pet" }, -- Fiendish Wrath
-        { spell = 386861, type = "buff", unit = "pet", talent = 12 }, -- Demonic Inspiration
-        { spell = 386865, type = "buff", unit = "pet", talent = 33 }, -- Wrathful Minion
+        { spell = 386861, type = "buff", unit = "pet", talent = 14 }, -- Demonic Inspiration
+        { spell = 386865, type = "buff", unit = "pet", talent = 35 }, -- Wrathful Minion
         { spell = 387496, type = "buff", unit = "pet", talent = 65 }, -- Antoran Armaments
         { spell = 387601, type = "buff", unit = "pet", talent = 51 }, -- The Expendables
       },
@@ -3152,10 +3166,10 @@ templates.class.WARLOCK = {
         { spell = 603, type = "debuff", unit = "target", talent = 87 }, -- Doom
         { spell = 702, type = "debuff", unit = "target" }, -- Curse of Weakness
         { spell = 1714, type = "debuff", unit = "target" }, -- Curse of Tongues
-        { spell = 5484, type = "debuff", unit = "target", talent = 34 }, -- Howl of Terror
-        { spell = 6789, type = "debuff", unit = "target", talent = 35 }, -- Mortal Coil
+        { spell = 5484, type = "debuff", unit = "target", talent = 36 }, -- Howl of Terror
+        { spell = 6789, type = "debuff", unit = "target", talent = 37 }, -- Mortal Coil
         { spell = 30213, type = "debuff", unit = "target" }, -- Legion Strike
-        { spell = 30283, type = "debuff", unit = "target", talent = 29 }, -- Shadowfury
+        { spell = 30283, type = "debuff", unit = "target", talent = 31 }, -- Shadowfury
         { spell = 89766, type = "debuff", unit = "target" }, -- Axe Toss
         { spell = 118699, type = "debuff", unit = "target" }, -- Fear
         { spell = 146739, type = "debuff", unit = "target" }, -- Corruption
@@ -3164,7 +3178,7 @@ templates.class.WARLOCK = {
         { spell = 234153, type = "debuff", unit = "target" }, -- Drain Life
         { spell = 267997, type = "debuff", unit = "target" }, -- Bile Spit
         { spell = 270569, type = "debuff", unit = "target", talent = 72 }, -- From the Shadows
-        { spell = 386649, type = "debuff", unit = "target", talent = 32 }, -- Nightmare
+        { spell = 386649, type = "debuff", unit = "target", talent = 34 }, -- Nightmare
         { spell = 387402, type = "debuff", unit = "target", talent = 67 }, -- Fel Sunder
       },
       icon = 136122
@@ -3180,26 +3194,27 @@ templates.class.WARLOCK = {
         { spell = 1714, type = "ability", requiresTarget = true }, -- Curse of Tongues
         { spell = 3110, type = "ability" }, -- Firebolt
         { spell = 3716, type = "ability" }, -- Consuming Shadows
-        { spell = 5484, type = "ability", talent = 34 }, -- Howl of Terror
+        { spell = 5484, type = "ability", talent = 36 }, -- Howl of Terror
         { spell = 5782, type = "ability", requiresTarget = true }, -- Fear
-        { spell = 6789, type = "ability", requiresTarget = true, talent = 35 }, -- Mortal Coil
+        { spell = 6789, type = "ability", requiresTarget = true, talent = 37 }, -- Mortal Coil
         { spell = 7814, type = "ability" }, -- Lash of Pain
         { spell = 7870, type = "ability", buff = true, unit = 'pet' }, -- Lesser Invisibility
         { spell = 17767, type = "ability" }, -- Shadow Bulwark
         { spell = 20707, type = "ability", buff = true }, -- Soulstone
+        { spell = 28730, type = "ability" }, -- Arcane Torrent
         { spell = 29893, type = "ability" }, -- Create Soulwell
         { spell = 30151, type = "ability", buff = true, unit = 'pet' }, -- Pursuit
         { spell = 30213, type = "ability" }, -- Legion Strike
-        { spell = 30283, type = "ability", talent = 29 }, -- Shadowfury
-        { spell = 48018, type = "ability", buff = true, talent = 17 }, -- Demonic Circle
+        { spell = 30283, type = "ability", talent = 31 }, -- Shadowfury
+        { spell = 48018, type = "ability", buff = true, talent = 19 }, -- Demonic Circle
         { spell = 48020, type = "ability", usable = true }, -- Demonic Circle: Teleport
         { spell = 54049, type = "ability" }, -- Shadow Bite
         { spell = 89751, type = "ability", buff = true, unit = 'pet', debuff = true }, -- Felstorm
         { spell = 89766, type = "ability" }, -- Axe Toss
         { spell = 104316, type = "ability", overlayGlow = true, requiresTarget = true, talent = 82 }, -- Call Dreadstalkers
         { spell = 105174, type = "ability", requiresTarget = true }, -- Hand of Gul'dan
-        { spell = 108416, type = "ability", buff = true, talent = 20 }, -- Dark Pact
-        { spell = 111771, type = "ability", talent = 43 }, -- Demonic Gateway
+        { spell = 108416, type = "ability", buff = true, talent = 22 }, -- Dark Pact
+        { spell = 111771, type = "ability", talent = 45 }, -- Demonic Gateway
         { spell = 111898, type = "ability", requiresTarget = true, totem = true, talent = 70 }, -- Grimoire: Felguard
         { spell = 112042, type = "ability" }, -- Threatening Presence
         { spell = 119914, type = "ability" }, -- Axe Toss
@@ -3215,13 +3230,13 @@ templates.class.WARLOCK = {
         { spell = 267171, type = "ability", buff = true, unit = 'pet', talent = 80 }, -- Demonic Strength
         { spell = 267211, type = "ability", talent = 79 }, -- Bilescourge Bombers
         { spell = 267217, type = "ability", talent = 54 }, -- Nether Portal
-        { spell = 328774, type = "ability", buff = true, usable = true, talent = 18 }, -- Amplify Curse
-        { spell = 333889, type = "ability", buff = true, talent = 15 }, -- Fel Domination
+        { spell = 328774, type = "ability", buff = true, usable = true, talent = 20 }, -- Amplify Curse
+        { spell = 333889, type = "ability", buff = true, talent = 17 }, -- Fel Domination
         { spell = 334275, type = "ability", requiresTarget = true }, -- Curse of Exhaustion
         { spell = 342601, type = "ability" }, -- Ritual of Doom
-        { spell = 385899, type = "ability", talent = 46 }, -- Soulburn
-        { spell = 386256, type = "ability", charges = true, buff = true, usable = true, talent = 24 }, -- Summon Soulkeeper
-        { spell = 386344, type = "ability", talent = 25 }, -- Inquisitor's Gaze
+        { spell = 385899, type = "ability", talent = 48 }, -- Soulburn
+        { spell = 386256, type = "ability", charges = true, buff = true, usable = true, talent = 26 }, -- Summon Soulkeeper
+        { spell = 386344, type = "ability", talent = 27 }, -- Inquisitor's Gaze
         { spell = 386833, type = "ability", talent = 62 }, -- Guillotine
       },
       icon = 1378282
