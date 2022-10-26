@@ -2797,6 +2797,7 @@ function Private.UpdateSoundIcon(data)
 end
 
 function WeakAuras.PreAdd(data)
+  if not data then return end
   -- Readd what Compress removed before version 8
   if (not data.internalVersion or data.internalVersion < 7) then
     Private.validate(data, oldDataStub)
