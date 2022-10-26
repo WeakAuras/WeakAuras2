@@ -1314,7 +1314,7 @@ Private.load_prototype = {
       end,
       multiConvertKey = WeakAuras.IsDragonflight() and function(trigger, key)
         local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
-        if specId and type(Private.talentInfo[specId]) == "table" then
+        if specId and type(Private.talentInfo[specId]) == "table" and Private.talentInfo[specId][key] then
           return Private.talentInfo[specId][key][2]
         end
       end or nil,
@@ -1374,7 +1374,7 @@ Private.load_prototype = {
       end,
       multiConvertKey = WeakAuras.IsDragonflight() and function(trigger, key)
         local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
-        if specId and type(Private.talentInfo[specId]) == "table" then
+        if specId and type(Private.talentInfo[specId]) == "table" and Private.talentInfo[specId][key] then
           return Private.talentInfo[specId][key][2]
         end
       end or nil,
@@ -1436,7 +1436,7 @@ Private.load_prototype = {
       end,
       multiConvertKey = WeakAuras.IsDragonflight() and function(trigger, key)
         local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
-        if specId and type(Private.talentInfo[specId]) == "table" then
+        if specId and type(Private.talentInfo[specId]) == "table" and Private.talentInfo[specId][key] then
           return Private.talentInfo[specId][key][2]
         end
       end or nil,
