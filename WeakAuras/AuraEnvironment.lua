@@ -523,8 +523,9 @@ local exec_env_custom = setmetatable({},
     elseif k == "DebugPrint" then
       return DebugPrint
     elseif k == "C_Timer" then
-      return Private.AuraEnvironmentWrappedSystem.Get("C_Timer",
-                                current_aura_env.id, current_aura_env.cloneId)
+      return current_aura_env and Private.AuraEnvironmentWrappedSystem.Get("C_Timer",
+                                      current_aura_env.id, current_aura_env.cloneId)
+                              or C_Timer
     elseif blockedFunctions[k] then
       blocked(k)
       return function() end
