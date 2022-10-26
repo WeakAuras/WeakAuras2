@@ -1809,7 +1809,9 @@ end
 local function UnloadAll()
   -- Even though auras are collapsed, their finish animation can be running
   for id in pairs(loaded) do
-    Private.CancelAnimation(Private.regions[id].region, true, true, true, true, true, true)
+    if Private.regions[id].region then
+      Private.CancelAnimation(Private.regions[id].region, true, true, true, true, true, true)
+    end
     if clones[id] then
       for cloneId, region in pairs(clones[id]) do
         Private.CancelAnimation(region, true, true, true, true, true, true)
