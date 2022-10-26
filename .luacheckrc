@@ -38,6 +38,7 @@ globals = {
 	"CUSTOM_CLASS_COLORS",
 	"LibStub",
 	"OmniCC",
+	"ElvUI",
 
 	-- WeakAuras
 	"WeakAuras_DropDownMenu",
