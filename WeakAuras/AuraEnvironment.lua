@@ -481,7 +481,8 @@ local FakeWeakAurasMixin = {
         Private.AuraWarnings.UpdateWarning(current_uid, "FakeWeakAurasGetData", "warning",
                   L["This aura calls GetData a lot, which is a slow function."])
       end
-      return CopyTable(WeakAuras.GetData(id))
+      local data = WeakAuras.GetData(id)
+      return data and CopyTable(data) or nil
     end,
     clones = MakeDeprecated(Private.clones, "clones",
                 L["Using WeakAuras.clones is deprecated. Use WeakAuras.GetRegion(id, cloneId) instead."]),
