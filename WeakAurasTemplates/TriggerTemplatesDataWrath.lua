@@ -1273,18 +1273,4 @@ itemInfoReceived:SetScript("OnEvent", function()
 end);
 
 
--- Enrich Display templates with default values
-for regionType, regionData in pairs(TemplatePrivate.Private.regionOptions) do
-  if (regionData.templates) then
-    for _, item in ipairs(regionData.templates) do
-      for k, v in pairs(TemplatePrivate.Private.regionTypes[regionType].default) do
-        if (item.data[k] == nil) then
-          item.data[k] = v;
-        end
-      end
-    end
-  end
-end
-
-
 TemplatePrivate.triggerTemplates = templates
