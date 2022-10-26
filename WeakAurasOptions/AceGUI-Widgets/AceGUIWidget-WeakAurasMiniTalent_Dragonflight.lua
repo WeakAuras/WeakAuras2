@@ -2,7 +2,7 @@ if not WeakAuras.IsLibsOK() or not WeakAuras.IsDragonflight() then
   return
 end
 
-local widgetType, widgetVersion = "WeakAurasMiniTalent", 1
+local widgetType, widgetVersion = "WeakAurasMiniTalent", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(widgetType) or 0) >= widgetVersion then
   return
@@ -245,7 +245,9 @@ local methods = {
         local spellId = data[2]
         button.spellId = spellId
         local icon = select(3, GetSpellInfo(spellId))
-        button:SetNormalTexture(icon)
+        if icon then
+          button:SetNormalTexture(icon)
+        end
         local multiTalent, multiTalentTotal = 0, 0
         button.posX, button.posY, multiTalent, multiTalentTotal = unpack(data[3])
         button.posX = button.posX / 10 - extraOffset.offsetX
