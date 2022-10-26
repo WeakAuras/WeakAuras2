@@ -597,13 +597,21 @@ function env_getglobal_builtin(k)
   return exec_env_builtin[k]
 end
 
+local function firstLine(string)
+  local lineBreak = string:find('\n', 1, true)
+  if lineBreak then
+    return string:sub(1, lineBreak - 1)
+  end
+  return string
+end
+
 local function CreateFunctionCache(exec_env)
   local cache = {}
   cache.Load = function(self, string)
     if self[string] then
       return self[string]
     else
-      local loadedFunction, errorString = loadstring(string)
+      local loadedFunction, errorString = loadstring(string, firstLine(string))
       if errorString then
         print(errorString)
       else
