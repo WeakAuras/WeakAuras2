@@ -1571,5 +1571,37 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 59 then
+    -- convert key use for talent known trigger from talent's index to spellId
+    if WeakAuras.IsDragonflight() then
+      local function migrateTalent(load, specId, field)
+        if load[field] and load[field].multi then
+          local newData = {}
+          for key, value in pairs(load[field].multi) do
+            if value ~= nil and Private.talentInfo[specId] and Private.talentInfo[specId][key] then
+              newData[Private.talentInfo[specId][key][2]] = value
+            end
+          end
+          load[field].multi = newData
+        end
+      end
+      for triggerId, triggerData in ipairs(data.triggers) do
+        if triggerData.trigger.type == "unit" and triggerData.trigger.event == "Talent Known" then
+          local classId
+          for i = 1, GetNumClasses() do
+            if select(2, GetClassInfo(i)) == triggerData.trigger.class then
+              classId = i
+            end
+          end
+          if classId and triggerData.trigger.spec then
+            local specId = GetSpecializationInfoForClassID(classId, triggerData.trigger.spec)
+            if specId then
+              migrateTalent(triggerData.trigger, specId, "talent")
+            end
+          end
+        end
+      end
+    end
+  end
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
