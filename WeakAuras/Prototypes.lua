@@ -5385,7 +5385,7 @@ Private.event_prototypes = {
                 Private.ExecEnv.ScheduleDbmCheck(bar.expirationTime - triggerRemaining + extendTimer)
               end
             else
-              Private.ExecEnv.ExecEnv.CopyBarToState(bar, states, cloneId, extendTimer)
+              Private.ExecEnv.CopyBarToState(bar, states, cloneId, extendTimer)
             end
           end
 
