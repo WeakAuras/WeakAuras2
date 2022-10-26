@@ -261,6 +261,10 @@ local function create(parent, data)
   cooldown.SetDrawSwipeOrg = cooldown.SetDrawSwipe
   cooldown.SetDrawSwipe = function() end
 
+  if ElvUI and ElvUI[1] and ElvUI[1].CooldownEnabled and ElvUI[1].RegisterCooldown and ElvUI[1]:CooldownEnabled() then
+    ElvUI[1]:RegisterCooldown(cooldown, "WeakAuras");
+  end
+
   local SetFrameLevel = region.SetFrameLevel;
 
   function region.SetFrameLevel(self, level)
@@ -385,6 +389,9 @@ local function modify(parent, region, data)
     cooldown:SetHideCountdownNumbers(cooldownTextDisabled);
     if OmniCC and OmniCC.Cooldown and OmniCC.Cooldown.SetNoCooldownCount then
       OmniCC.Cooldown.SetNoCooldownCount(cooldown, cooldownTextDisabled)
+    end
+    if ElvUI and ElvUI[1] and ElvUI[1].CooldownEnabled and ElvUI[1].ToggleCooldown and ElvUI[1]:CooldownEnabled() then
+      ElvUI[1]:ToggleCooldown(cooldown, not cooldownTextDisabled);
     end
   end
   region:SetHideCountdownNumbers(data.cooldownTextDisabled)
