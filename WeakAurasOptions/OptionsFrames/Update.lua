@@ -855,6 +855,17 @@ local function BuildUidMap(data, children, type)
     self.rootParent = parentId
   end
 
+  uidMap.Dump = function(self, uid)
+    if uid == nil then
+      uid = self:GetRootUID()
+    end
+    print(self:GetIdFor(uid))
+    local children = self:GetChildren(uid)
+    for i, childUid in ipairs(children) do
+      uidMap:Dump(childUid)
+    end
+  end
+
   return uidMap, uidMap.root
 end
 
@@ -1545,9 +1556,9 @@ local methods = {
       self:SetMinimumProgress(2 * onePhaseProgress)
 
       local removeNewGroups = matchInfo.activeCategories.arrangement and not userChoices.activeCategories.arrangement
-      if userChoices.activeCategories.newchildren or removeNewGroups then
+      if not userChoices.activeCategories.newchildren or removeNewGroups then
         self:RemoveUnmatchedNew(matchInfo.newUidMap, matchInfo.newUidMap:GetRootUID(), matchInfo.oldUidMap,
-                                userChoices.activeCategories.newchildren,
+                                not userChoices.activeCategories.newchildren,
                                 removeNewGroups)
       end
       self:SetMinimumProgress(3 * onePhaseProgress)
