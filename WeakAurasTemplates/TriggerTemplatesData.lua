@@ -5338,7 +5338,7 @@ local function enrichDatabase()
     for specIndex, spec in pairs(class) do
       for _, section in pairs(spec) do
         local loadCondition
-        if WeakAuras.IsDragonflight() then
+        if WeakAuras.IsRetail() then
           local specializationId
           for classID = 1, GetNumClasses() do
             local _, classFile = GetClassInfo(classID)

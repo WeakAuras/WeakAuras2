@@ -221,7 +221,7 @@ local function ConstructModelPicker(frame)
   group:AddChild(modelTree);
 
   local model = CreateFrame("PlayerModel", nil, group.content);
-  model.SetTransformFixed = WeakAuras.IsDragonflight() and OptionsPrivate.Private.ModelSetTransformFixed or model.SetTransform
+  model.SetTransformFixed = WeakAuras.IsRetail() and OptionsPrivate.Private.ModelSetTransformFixed or model.SetTransform
   model:SetAllPoints(modelTree.content);
   model:SetFrameStrata("FULLSCREEN");
   group.model = model;

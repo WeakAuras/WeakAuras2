@@ -1,4 +1,4 @@
-if not WeakAuras.IsLibsOK() or not WeakAuras.IsDragonflight() then
+if not WeakAuras.IsLibsOK() then
   return
 end
 
