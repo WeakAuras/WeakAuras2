@@ -162,6 +162,11 @@ local function ConfigureModel(region, model, data)
       Private.StartProfileSystem("model");
       if (event ~= "UNIT_MODEL_CHANGED" or UnitIsUnit(unitId, unit)) then
         WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
+        if(data.advance and model:HasAnimation(data.sequence)) then
+          model:SetAnimation(data.sequence)
+        else
+          model:SetAnimation(0)
+        end
       end
       Private.StopProfileSystem("model");
     end
