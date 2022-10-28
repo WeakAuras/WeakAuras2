@@ -1549,7 +1549,7 @@ function Private.Modernize(data)
 
   if data.internalVersion < 58 then
     -- convert key use for talent load condition from talent's index to spellId
-    if WeakAuras.IsDragonflight() then
+    if WeakAuras.IsRetail() then
       local function migrateTalent(load, specId, field)
         if load[field] and load[field].multi then
           local newData = {}
@@ -1573,7 +1573,7 @@ function Private.Modernize(data)
 
   if data.internalVersion < 59 then
     -- convert key use for talent known trigger from talent's index to spellId
-    if WeakAuras.IsDragonflight() then
+    if WeakAuras.IsRetail() then
       local function migrateTalent(load, specId, field)
         if load[field] and load[field].multi then
           local newData = {}

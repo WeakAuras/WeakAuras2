@@ -104,7 +104,7 @@ else
 end
 
 if WeakAuras.IsBCCOrWrathOrRetail() then
-  if WeakAuras.IsDragonflight() then
+  if WeakAuras.IsRetail() then
     local cacheEmpowered = {}
     WeakAuras.UnitChannelInfo = function(unit)
       local name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = UnitChannelInfo(unit)
@@ -684,68 +684,6 @@ if WeakAuras.IsClassicOrBCCOrWrath() then
     end
     return result;
   end
-elseif WeakAuras.IsShadowlands() then
-  function WeakAuras.CheckTalentByIndex(index, extraOption)
-    local tier = ceil(index / 3)
-    local column = (index - 1) % 3 + 1
-    local _, _, _, selected, _, _, _, _, _, _, known  = GetTalentInfo(tier, column, 1)
-    if extraOption == 4 then
-      return selected or known
-    elseif extraOption == 5 then
-      return not (selected or known)
-    end
-    if extraOption == 0 or extraOption == 2 then
-      return selected or known
-    else
-      return selected
-    end
-  end
-elseif WeakAuras.IsDragonflight() then
-  function WeakAuras.CheckTalentByIndex(index, extraOption)
-    local function hasTalentIndex(index)
-      local configId = C_ClassTalents.GetActiveConfigID()
-      local idx = 0
-      if configId then
-        local configInfo = C_Traits.GetConfigInfo(configId)
-        for _, treeId in ipairs(configInfo.treeIDs) do
-          local nodes = C_Traits.GetTreeNodes(treeId)
-          for _, nodeId in ipairs(nodes) do
-            local node = C_Traits.GetNodeInfo(configId, nodeId)
-            if node and node.ID ~= 0 then
-              for _, talentId in ipairs(node.entryIDs) do
-                local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
-                local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
-                if GetSpellInfo(definitionInfo.spellID) then
-                  idx = idx + 1
-                  if idx == index then
-                    if node.activeEntry
-                    and node.activeEntry.entryID == talentId
-                    and node.currentRank > 0
-                    then
-                      return true
-                    else
-                      return false
-                    end
-                  end
-                end
-              end
-            end
-          end
-        end
-      end
-    end
-
-    local hasTalent = hasTalentIndex(index)
-    if hasTalent == nil then
-      return nil
-    end
-    if extraOption == 4 then
-      return hasTalent
-    elseif extraOption == 5 then
-      return not hasTalent
-    end
-    return hasTalent
-  end
 end
 
 function WeakAuras.CheckPvpTalentByIndex(index)
@@ -1005,54 +943,14 @@ local function valuesForTalentFunction(trigger)
       single_class = select(2, UnitClass("player"));
     end
 
-    local single_spec
-    if WeakAuras.IsShadowlands() then
-      single_spec = Private.checkForSingleLoadCondition(trigger, "spec")
-      if single_spec == nil then
-        single_spec = GetSpecialization();
-      end
-    end
-
-    local single_class_and_spec
-    if WeakAuras.IsShadowlands() and trigger.use_spec == nil and trigger.use_class == nil then
-      single_class_and_spec = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
-    end
     -- If a single specific class was found, load the specific list for it
-    if WeakAuras.IsDragonflight() then
-      single_class_and_spec = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
+    if WeakAuras.IsRetail() then
+      local single_class_and_spec = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
       if single_class_and_spec then
         return Private.talentInfo[single_class_and_spec]
       else
         -- this should never happen
         return {}
-      end
-    elseif WeakAuras.IsShadowlands() then
-      if single_class_and_spec then
-        local class = select(6, GetSpecializationInfoByID(single_class_and_spec))
-        if class then
-          for classID = 1, GetNumClasses() do -- we have classFile, we need classID
-            local _, classFile = GetClassInfo(classID)
-            if classFile == class then
-              for specIndex = 1, 4 do -- search specIndex
-                if GetSpecializationInfoForClassID(classID, specIndex) == single_class_and_spec then
-                  if Private.talent_types_specific[classFile] and Private.talent_types_specific[classFile][specIndex] then
-                    return Private.talent_types_specific[classFile][specIndex]
-                  end
-                  break
-                end
-              end
-              break
-            end
-          end
-        end
-      end
-      if single_class and single_spec
-      and Private.talent_types_specific[single_class]
-      and Private.talent_types_specific[single_class][single_spec]
-      then
-        return Private.talent_types_specific[single_class][single_spec]
-      else
-        return Private.talent_types
       end
     elseif WeakAuras.IsWrathClassic() then
       return Private.talentInfo[single_class]
@@ -1233,54 +1131,9 @@ Private.load_prototype = {
       display = L["Player Class"],
       type = "multiselect",
       values = "class_types",
-      init = not WeakAuras.IsDragonflight() and "arg" or nil,
-      enable = not WeakAuras.IsDragonflight(),
-      hidden = WeakAuras.IsDragonflight(),
-    },
-    {
-      name = "spec",
-      display = L["Talent Specialization"],
-      type = "multiselect",
-      values = function(trigger)
-        return function()
-          local min_specs = 4;
-          local single_class = Private.checkForSingleLoadCondition(trigger, "class")
-
-          if (trigger.use_class == nil) then -- no class selected, fallback to current class
-            single_class = select(2, UnitClass("player"));
-          end
-
-          -- If a single specific class was found, load the specific list for it
-          if(single_class) then
-            return WeakAuras.spec_types_specific[single_class];
-          else
-            -- List 4 specs if no class is specified, but if any multi-selected classes have less than 4 specs, list 3 instead
-            if (min_specs < 3) then
-              return Private.spec_types_2;
-            elseif(min_specs < 4) then
-              return Private.spec_types_3;
-            else
-              return Private.spec_types;
-            end
-          end
-        end
-      end,
-      init = WeakAuras.IsShadowlands() and "arg" or nil,
-      enable = function()
-        return WeakAuras.IsShadowlands()
-      end,
-      hidden = function()
-        if WeakAuras.IsClassicOrBCCOrWrath() then
-          return true
-        end
-        if WeakAuras.IsShadowlands() then
-          return false
-        end
-        if WeakAuras.IsDragonflight() then
-          return true
-        end
-      end,
-      events = {"PLAYER_TALENT_UPDATE"}
+      init = not WeakAuras.IsRetail() and "arg" or nil,
+      enable = not WeakAuras.IsRetail(),
+      hidden = WeakAuras.IsRetail(),
     },
     {
       name = "class_and_spec",
@@ -1297,9 +1150,9 @@ Private.load_prototype = {
       display = L["Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = WeakAuras.IsDragonflight() and "IsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
+      test = WeakAuras.IsRetail() and "IsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
       enableTest = function(trigger, talent, arg)
-        if WeakAuras.IsDragonflight() then
+        if WeakAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
           if specId and type(Private.talentInfo[specId]) == "table" then
             for _, v in ipairs(Private.talentInfo[specId]) do
@@ -1312,7 +1165,7 @@ Private.load_prototype = {
           return WeakAuras.CheckTalentByIndex(talent, arg) ~= nil
         end
       end,
-      multiConvertKey = WeakAuras.IsDragonflight() and function(trigger, key)
+      multiConvertKey = WeakAuras.IsRetail() and function(trigger, key)
         local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
         if specId and type(Private.talentInfo[specId]) == "table" and Private.talentInfo[specId][key] then
           return Private.talentInfo[specId][key][2]
@@ -1320,46 +1173,43 @@ Private.load_prototype = {
       end or nil,
       events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
-        or (WeakAuras.IsDragonflight() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"})
-        or (WeakAuras.IsShadowlands() and {"PLAYER_TALENT_UPDATE"}),
+        or (WeakAuras.IsRetail() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"}),
       inverse = function(load)
         -- Check for multi select!
-        return (WeakAuras.IsClassicOrBCC() or WeakAuras.IsShadowlands()) and (load.talent_extraOption == 2 or load.talent_extraOption == 3)
+        return WeakAuras.IsClassicOrBCC() and (load.talent_extraOption == 2 or load.talent_extraOption == 3)
       end,
-      extraOption = (WeakAuras.IsClassicOrBCC() or WeakAuras.IsShadowlands()) and {
+      extraOption = WeakAuras.IsClassicOrBCC() and {
         display = "",
         values = function()
           return Private.talent_extra_option_types
         end
       },
-      control = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()) and "WeakAurasMiniTalent" or nil,
-      multiNoSingle = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()), -- no single mode
-      multiTristate = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()), -- values can be true/false/nil
-      multiAll = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()), -- require all tests
-      orConjunctionGroup = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()) and "talent",
-      multiUseControlWhenFalse = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()),
+      control = WeakAuras.IsWrathOrRetail() and "WeakAurasMiniTalent" or nil,
+      multiNoSingle = WeakAuras.IsWrathOrRetail(), -- no single mode
+      multiTristate = WeakAuras.IsWrathOrRetail(), -- values can be true/false/nil
+      multiAll = WeakAuras.IsWrathOrRetail(), -- require all tests
+      orConjunctionGroup = WeakAuras.IsWrathOrRetail() and "talent",
+      multiUseControlWhenFalse = WeakAuras.IsWrathOrRetail(),
       enable = function(trigger)
         return WeakAuras.IsClassicOrBCC()
-            or WeakAuras.IsShadowlands()
             or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
-            or (WeakAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
+            or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
       end,
       hidden = function(trigger)
         return not (
             WeakAuras.IsClassicOrBCC()
-            or WeakAuras.IsShadowlands()
             or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
-            or (WeakAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil))
+            or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil))
       end,
     },
     {
       name = "talent2",
-      display = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()) and L["Or Talent"] or L["And Talent"],
+      display = WeakAuras.IsWrathOrRetail() and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = WeakAuras.IsDragonflight() and "IsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
+      test = WeakAuras.IsRetail() and "IsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
       enableTest = function(trigger, talent, arg)
-        if WeakAuras.IsDragonflight() then
+        if WeakAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
           if specId and type(Private.talentInfo[specId]) == "table" then
             for _, v in ipairs(Private.talentInfo[specId]) do
@@ -1372,7 +1222,7 @@ Private.load_prototype = {
           return WeakAuras.CheckTalentByIndex(talent, arg) ~= nil
         end
       end,
-      multiConvertKey = WeakAuras.IsDragonflight() and function(trigger, key)
+      multiConvertKey = WeakAuras.IsRetail() and function(trigger, key)
         local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
         if specId and type(Private.talentInfo[specId]) == "table" and Private.talentInfo[specId][key] then
           return Private.talentInfo[specId][key][2]
@@ -1380,48 +1230,45 @@ Private.load_prototype = {
       end or nil,
       events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
-        or (WeakAuras.IsDragonflight() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"})
-        or {"PLAYER_TALENT_UPDATE"},
+        or (WeakAuras.IsRetail() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"}),
       inverse = function(load)
-        return (WeakAuras.IsClassicOrBCC() or WeakAuras.IsShadowlands()) and (load.talent2_extraOption == 2 or load.talent2_extraOption == 3)
+        return WeakAuras.IsClassicOrBCC() and (load.talent2_extraOption == 2 or load.talent2_extraOption == 3)
       end,
-      extraOption = (WeakAuras.IsClassicOrBCC() or WeakAuras.IsShadowlands()) and {
+      extraOption = WeakAuras.IsClassicOrBCC() and {
         display = "",
         values = function()
           return Private.talent_extra_option_types
         end,
       },
-      control = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()) and "WeakAurasMiniTalent" or nil,
-      multiNoSingle = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()), -- no single mode
-      multiTristate = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()), -- values can be true/false/nil
-      multiAll = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()), -- require all tests
-      orConjunctionGroup  = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()) and "talent",
-      multiUseControlWhenFalse = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()),
+      control = WeakAuras.IsWrathOrRetail() and "WeakAurasMiniTalent" or nil,
+      multiNoSingle = WeakAuras.IsWrathOrRetail(), -- no single mode
+      multiTristate = WeakAuras.IsWrathOrRetail(), -- values can be true/false/nil
+      multiAll = WeakAuras.IsWrathOrRetail(), -- require all tests
+      orConjunctionGroup  = WeakAuras.IsWrathOrRetail() and "talent",
+      multiUseControlWhenFalse = WeakAuras.IsWrathOrRetail(),
       enable = function(trigger)
         return (trigger.use_talent ~= nil or trigger.use_talent2 ~= nil) and (
           WeakAuras.IsClassicOrBCC()
-          or WeakAuras.IsShadowlands()
           or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
-          or (WeakAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
+          or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
         )
       end,
       hidden = function(trigger)
         return not((trigger.use_talent ~= nil or trigger.use_talent2 ~= nil) and (
           WeakAuras.IsClassicOrBCC()
-          or WeakAuras.IsShadowlands()
           or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
-          or (WeakAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil))
+          or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil))
         )
       end,
     },
     {
       name = "talent3",
-      display = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()) and L["Or Talent"] or L["And Talent"],
+      display = WeakAuras.IsWrathOrRetail() and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = WeakAuras.IsDragonflight() and "IsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
+      test = WeakAuras.IsRetail() and "IsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
       enableTest = function(trigger, talent, arg)
-        if WeakAuras.IsDragonflight() then
+        if WeakAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
           if specId and type(Private.talentInfo[specId]) == "table" then
             for _, v in ipairs(Private.talentInfo[specId]) do
@@ -1434,7 +1281,7 @@ Private.load_prototype = {
           return WeakAuras.CheckTalentByIndex(talent, arg) ~= nil
         end
       end,
-      multiConvertKey = WeakAuras.IsDragonflight() and function(trigger, key)
+      multiConvertKey = WeakAuras.IsRetail() and function(trigger, key)
         local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
         if specId and type(Private.talentInfo[specId]) == "table" and Private.talentInfo[specId][key] then
           return Private.talentInfo[specId][key][2]
@@ -1442,37 +1289,34 @@ Private.load_prototype = {
       end or nil,
       events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
-        or (WeakAuras.IsDragonflight() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"})
-        or {"PLAYER_TALENT_UPDATE"},
+        or (WeakAuras.IsRetail() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"}),
       inverse = function(load)
-        return (WeakAuras.IsClassicOrBCC() or WeakAuras.IsShadowlands()) and (load.talent3_extraOption == 2 or load.talent3_extraOption == 3)
+        return WeakAuras.IsClassicOrBCC() and (load.talent3_extraOption == 2 or load.talent3_extraOption == 3)
       end,
-      extraOption = (WeakAuras.IsClassicOrBCC() or WeakAuras.IsShadowlands()) and {
+      extraOption = WeakAuras.IsClassicOrBCC() and {
         display = "",
         values = function()
           return Private.talent_extra_option_types
         end,
       },
-      control = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()) and "WeakAurasMiniTalent" or nil,
-      multiNoSingle = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()), -- no single mode
-      multiTristate = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()), -- values can be true/false/nil
-      multiAll = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()), -- require all tests
-      orConjunctionGroup  = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()) and "talent",
-      multiUseControlWhenFalse = (WeakAuras.IsWrathClassic() or WeakAuras.IsDragonflight()),
+      control = WeakAuras.IsWrathOrRetail() and "WeakAurasMiniTalent" or nil,
+      multiNoSingle = WeakAuras.IsWrathOrRetail(), -- no single mode
+      multiTristate = WeakAuras.IsWrathOrRetail(), -- values can be true/false/nil
+      multiAll = WeakAuras.IsWrathOrRetail(), -- require all tests
+      orConjunctionGroup  = WeakAuras.IsWrathOrRetail() and "talent",
+      multiUseControlWhenFalse = WeakAuras.IsWrathOrRetail(),
       enable = function(trigger)
         return ((trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil) and (
           WeakAuras.IsClassicOrBCC()
-          or WeakAuras.IsShadowlands()
           or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
-          or (WeakAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
+          or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
         )
       end,
       hidden = function(trigger)
         return not(((trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil) and (
           WeakAuras.IsClassicOrBCC()
-          or WeakAuras.IsShadowlands()
           or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
-          or (WeakAuras.IsDragonflight() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
+          or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
         ))
       end
     },
@@ -1546,16 +1390,6 @@ Private.load_prototype = {
       test = "WeakAuras.IsSpellKnownForLoad(%s, %s)",
       events = WeakAuras.IsWrathClassic() and {"SPELLS_CHANGED", "UNIT_PET", "PLAYER_TALENT_UPDATE"} or {"SPELLS_CHANGED", "UNIT_PET"},
       showExactOption = true
-    },
-    {
-      name = "covenant",
-      display = L["Player Covenant"],
-      type = "multiselect",
-      values = "covenant_types",
-      init = WeakAuras.IsShadowlands() and "arg" or nil,
-      enable = WeakAuras.IsShadowlands(),
-      hidden = not WeakAuras.IsShadowlands(),
-      events = {"COVENANT_CHOSEN"}
     },
     {
       name = "race",
@@ -2199,33 +2033,7 @@ Private.event_prototypes = {
            standing = GetText("FACTION_STANDING_LABEL"..standingId, UnitSex("player"))
         end
       ]=]
-      if WeakAuras.IsShadowlands() then
-        ret = ret .. [=[
-          local friendshipRank, friendshipMaxRank
-          if factionID then
-            local friendID, friendRep, friendMaxRep, _, _, _, friendTextLevel, friendThreshold, nextFriendThreshold = GetFriendshipReputation(factionID)
-            if (friendID ~= nil) then
-              standing = friendTextLevel
-              if nextFriendThreshold then
-                bottomValue, topValue, earnedValue = friendThreshold, nextFriendThreshold, friendRep
-              else
-                -- max rank, make it look like a full bar
-                bottomValue, topValue, earnedValue = 0, 1, 1
-              end
-              friendshipRank, friendshipMaxRank = GetFriendshipReputationRanks(factionID)
-            end
-
-            if C_Reputation.IsFactionParagon(factionID) then
-              local currentValue, threshold, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
-              bottomValue, topValue = 0, threshold
-              earnedValue = currentValue %% threshold
-              if hasRewardPending then
-                earnedValue = earnedValue + threshold
-              end
-            end
-          end
-        ]=]
-      elseif WeakAuras.IsDragonflight() then
+      if WeakAuras.IsRetail() then
         ret = ret .. [=[
           local friendshipRank, friendshipMaxRank
           if factionID then
@@ -6146,14 +5954,14 @@ Private.event_prototypes = {
           "SPELLS_CHANGED",
           "PLAYER_TALENT_UPDATE"
         }
-      elseif WeakAuras.IsDragonflight() then
+      elseif WeakAuras.IsRetail() then
         events = { "TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE" }
       end
       return {
         ["events"] = events
       }
     end,
-    force_events = (WeakAuras.IsDragonflight() and "TRAIT_CONFIG_UPDATED") or "CHARACTER_POINTS_CHANGED",
+    force_events = (WeakAuras.IsRetail() and "TRAIT_CONFIG_UPDATED") or "CHARACTER_POINTS_CHANGED",
     name = L["Talent Known"],
     init = function(trigger)
       local inverse = trigger.use_inverse;
@@ -6187,7 +5995,7 @@ Private.event_prototypes = {
             local activeName;
             local _
           ]]
-          if WeakAuras.IsDragonflight() then
+          if WeakAuras.IsRetail() then
             ret = ret .. [[
               local index
               local firstLoop = true
@@ -6215,7 +6023,7 @@ Private.event_prototypes = {
                 end
               ]]
               ret = ret .. ret2:format(tier, column)
-            elseif WeakAuras.IsDragonflight() then
+            elseif WeakAuras.IsRetail() then
               local ret2 = [[
                 local spellId = %s
                 local shouldBeActive = %s
@@ -6272,8 +6080,8 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         required = true,
-        enable = WeakAuras.IsDragonflight(),
-        hidden = not WeakAuras.IsDragonflight(),
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail(),
         reloadOptions = true,
       },
       {
@@ -6286,7 +6094,7 @@ Private.event_prototypes = {
           return WeakAuras.spec_types_specific[trigger.class]
         end,
         enable = function(trigger)
-          if WeakAuras.IsDragonflight() and trigger.use_class and trigger.class then
+          if WeakAuras.IsRetail() and trigger.use_class and trigger.class then
             return true
           else
             return false
@@ -6322,12 +6130,12 @@ Private.event_prototypes = {
             end
           end
         end,
-        multiUseControlWhenFalse = WeakAuras.IsDragonflight(),
-        multiAll = WeakAuras.IsDragonflight(),
-        multiNoSingle = WeakAuras.IsDragonflight(),
-        multiTristate = WeakAuras.IsDragonflight(), -- values can be true/false/nil
-        control = WeakAuras.IsDragonflight() and "WeakAurasMiniTalent" or nil,
-        multiConvertKey = WeakAuras.IsDragonflight() and function(trigger, key)
+        multiUseControlWhenFalse = WeakAuras.IsRetail(),
+        multiAll = WeakAuras.IsRetail(),
+        multiNoSingle = WeakAuras.IsRetail(),
+        multiTristate = WeakAuras.IsRetail(), -- values can be true/false/nil
+        control = WeakAuras.IsRetail() and "WeakAurasMiniTalent" or nil,
+        multiConvertKey = WeakAuras.IsRetail() and function(trigger, key)
           local classId
           for i = 1, GetNumClasses() do
             if select(2, GetClassInfo(i)) == trigger.class then
@@ -6342,7 +6150,7 @@ Private.event_prototypes = {
           end
         end or nil,
         enable = function(trigger)
-          if WeakAuras.IsDragonflight() then
+          if WeakAuras.IsRetail() then
             if trigger.use_class and trigger.class and trigger.use_spec and trigger.spec then
               return true
             else
@@ -6359,8 +6167,8 @@ Private.event_prototypes = {
         display = L["Inverse"],
         type = "toggle",
         test = "true",
-        enable = not WeakAuras.IsDragonflight(),
-        hidden = WeakAuras.IsDragonflight(),
+        enable = not WeakAuras.IsRetail(),
+        hidden = WeakAuras.IsRetail(),
       },
       {
         hidden = true,
@@ -8031,7 +7839,7 @@ Private.event_prototypes = {
       AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_NOT_INTERRUPTIBLE")
       AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_INTERRUPTED")
       AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
-      if WeakAuras.IsDragonflight() then
+      if WeakAuras.IsRetail() then
         AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_START_FAKE")
         AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_UPDATE_FAKE")
         AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_STOP_FAKE")
@@ -8204,35 +8012,35 @@ Private.event_prototypes = {
         name = "empowered",
         display = L["Empowered"],
         type = "tristate",
-        enable = WeakAuras.IsDragonflight(),
+        enable = WeakAuras.IsRetail(),
         store = true,
         conditionType = "bool",
-        hidden = not WeakAuras.IsDragonflight()
+        hidden = not WeakAuras.IsRetail()
       },
       {
         name = "showChargedDuration",
         display = L["Show charged duration for empowered casts"],
         type = "toggle",
-        enable = WeakAuras.IsDragonflight(),
-        hidden = not WeakAuras.IsDragonflight()
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail()
       },
       {
         name = "stage",
         display = L["Current Stage"],
         type = "number",
-        enable = WeakAuras.IsDragonflight(),
+        enable = WeakAuras.IsRetail(),
         store = true,
         conditionType = "number",
-        hidden = not WeakAuras.IsDragonflight()
+        hidden = not WeakAuras.IsRetail()
       },
       {
         name = "stageTotal",
         display = L["Total Stages"],
         type = "number",
-        enable = WeakAuras.IsDragonflight(),
+        enable = WeakAuras.IsRetail(),
         store = true,
         conditionType = "number",
-        hidden = not WeakAuras.IsDragonflight()
+        hidden = not WeakAuras.IsRetail()
       },
       {
         name = "charged",
@@ -8240,7 +8048,7 @@ Private.event_prototypes = {
         hidden = true,
         init = "stage == stageTotal",
         test = "true",
-        enable = WeakAuras.IsDragonflight(),
+        enable = WeakAuras.IsRetail(),
         store = true,
         type = "toggle",
         conditionType = "bool",
@@ -8553,7 +8361,7 @@ Private.event_prototypes = {
           if not state.stageTotal or state.stageTotal < 1 then return 0, 0 end
           return state.duration - state.stagesData[1].start, state.duration - state.stagesData[1].finish
         end,
-        enable = WeakAuras.IsDragonflight
+        enable = WeakAuras.IsRetail
       },
       {
         name = L["Empowered 2"],
@@ -8561,7 +8369,7 @@ Private.event_prototypes = {
           if not state.stageTotal or state.stageTotal < 2 then return 0, 0 end
           return state.duration - state.stagesData[2].start, state.duration - state.stagesData[2].finish
         end,
-        enable = WeakAuras.IsDragonflight
+        enable = WeakAuras.IsRetail
       },
       {
         name = L["Empowered 3"],
@@ -8569,7 +8377,7 @@ Private.event_prototypes = {
           if not state.stageTotal or state.stageTotal < 3 then return 0, 0 end
           return state.duration - state.stagesData[3].start, state.duration - state.stagesData[3].finish
         end,
-        enable = WeakAuras.IsDragonflight
+        enable = WeakAuras.IsRetail
       },
       {
         name = L["Empowered 4"],
@@ -8577,7 +8385,7 @@ Private.event_prototypes = {
           if not state.stageTotal or state.stageTotal < 4 then return 0, 0 end
           return state.duration - state.stagesData[4].start, state.duration - state.stagesData[4].finish
         end,
-        enable = WeakAuras.IsDragonflight
+        enable = WeakAuras.IsRetail
       },
       {
         name = L["Empowered 5"],
@@ -8585,7 +8393,7 @@ Private.event_prototypes = {
           if not state.stageTotal or state.stageTotal < 5 then return 0, 0 end
           return state.duration - state.stagesData[5].start, state.duration - state.stagesData[5].finish
         end,
-        enable = WeakAuras.IsDragonflight
+        enable = WeakAuras.IsRetail
       }
     },
     automaticrequired = true,

@@ -1211,8 +1211,6 @@ Private.power_types = {
 }
 if WeakAuras.IsRetail() then
   Private.power_types[99] = STAGGER
-end
-if WeakAuras.IsDragonflight() then
   Private.power_types[19] = POWER_TYPE_ESSENCE
 end
 
@@ -1368,18 +1366,12 @@ Private.spec_types_all = {}
 local function update_specs()
   for classFileName, classID in pairs(WeakAuras.class_ids) do
     WeakAuras.spec_types_specific[classFileName] = {}
-    local classTexcoords = CLASS_ICON_TCOORDS[classFileName]
     local numSpecs = GetNumSpecializationsForClassID(classID)
     for i=1, numSpecs do
       local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i);
       if tabName then
         tinsert(WeakAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
-        if WeakAuras.IsShadowlands() then
-          Private.spec_types_all[specId] = "|TInterface\\GLUES\\CHARACTERCREATE\\UI-CHARACTERCREATE-CLASSES:0:0:0:0:256:256:"
-          .. classTexcoords[1] * 256 .. ":" .. classTexcoords[2] * 256 .. ":" .. classTexcoords[3] * 256 .. ":" .. classTexcoords[4] * 256
-          .. ":0|t"
-          .. "|T"..(icon or "error")..":0|t "..(tabName or "error");
-        elseif WeakAuras.IsDragonflight() then
+        if WeakAuras.IsRetail() then
           Private.spec_types_all[specId] = CreateAtlasMarkup(GetClassAtlas(classFileName:lower()))
           .. "|T"..(icon or "error")..":0|t "..(tabName or "error");
         end
@@ -1390,28 +1382,10 @@ end
 
 
 Private.talent_types = {}
-if WeakAuras.IsDragonflight() then
+if WeakAuras.IsRetail() then
   local spec_frame = CreateFrame("Frame");
   spec_frame:RegisterEvent("PLAYER_LOGIN")
   spec_frame:SetScript("OnEvent", update_specs);
-elseif WeakAuras.IsRetail() then
-  local spec_frame = CreateFrame("Frame");
-  spec_frame:RegisterEvent("PLAYER_LOGIN")
-  spec_frame:SetScript("OnEvent", update_specs);
-  local numTalents, numTiers, numColumns = MAX_TALENT_TIERS * NUM_TALENT_COLUMNS, MAX_TALENT_TIERS, NUM_TALENT_COLUMNS
-  local talentId, tier, column = 1, 1, 1
-  while talentId <= numTalents do
-    while tier <= numTiers do
-      while column <= numColumns do
-        Private.talent_types[talentId] = L["Tier "]..tier.." - "..column
-        column = column + 1
-        talentId = talentId + 1
-      end
-      column = 1
-      tier = tier + 1
-    end
-    tier = 1
-  end
 else
   for tab = 1, GetNumTalentTabs() do
     for num_talent = 1, GetNumTalents(tab) do

@@ -113,7 +113,7 @@ end
 
 local function CreateModel()
   local frame = CreateFrame("PlayerModel", nil, UIParent)
-  frame.SetTransformFixed = WeakAuras.IsDragonflight() and  Private.ModelSetTransformFixed or frame.SetTransform
+  frame.SetTransformFixed = WeakAuras.IsRetail() and  Private.ModelSetTransformFixed or frame.SetTransform
   return frame
 end
 
