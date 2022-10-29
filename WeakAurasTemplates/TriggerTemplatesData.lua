@@ -2319,6 +2319,7 @@ templates.class.SHAMAN = {
         { spell = 201846, type = "buff", unit = "player" }, -- Stormbringer
         { spell = 208963, type = "buff", unit = "player" }, -- Skyfury Totem
         { spell = 215785, type = "buff", unit = "player", talent = 201900 }, -- Hot Hand
+        { spell = 224125, type = "buff", unit = "player" }, -- Molten Weapon
         { spell = 224126, type = "buff", unit = "player" }, -- Icy Edge
         { spell = 224127, type = "buff", unit = "player" }, -- Crackling Surge
         { spell = 236502, type = "buff", unit = "player" }, -- Tidebringer
