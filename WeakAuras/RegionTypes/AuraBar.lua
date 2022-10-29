@@ -343,7 +343,7 @@ local barPrototype = {
           local width = additionalBar.width or 0;
           local offset = additionalBar.offset or 0;
 
-          if (width ~= 0) then
+          if (width ~= 0 and valueWidth ~= 0) then
             if (forwardDirection) then
               startProgress = self.value + offset / valueWidth;
               endProgress = self.value + (width + offset) / valueWidth;
