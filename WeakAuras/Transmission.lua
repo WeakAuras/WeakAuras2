@@ -314,18 +314,23 @@ function StringToTable(inString, fromChat)
   end
 
   if not decoded then
-    return "Error decoding."
+    return L["Error decoding."]
   end
 
-  local decompressed, errorMsg = nil, "unknown compression method"
+  local decompressed
   if encodeVersion > 0 then
     decompressed = LibDeflate:DecompressDeflate(decoded)
+    if not(decompressed) then
+      return L["Error decompressing"]
+    end
   else
-    decompressed, errorMsg = Compresser:Decompress(decoded)
+    -- We ignore the error message, since it's more likely not a weakaura.
+    decompressed = Compresser:Decompress(decoded)
+    if not(decompressed) then
+      return L["Error decompressing. This doesn't look like a WeakAuras import."]
+    end
   end
-  if not(decompressed) then
-    return "Error decompressing: " .. errorMsg
-  end
+
 
   local success, deserialized
   if encodeVersion < 2 then
@@ -334,7 +339,7 @@ function StringToTable(inString, fromChat)
     success, deserialized = LibSerialize:Deserialize(decompressed)
   end
   if not(success) then
-    return "Error deserializing "..deserialized
+    return L["Error deserializing"]
   end
   return deserialized
 end
