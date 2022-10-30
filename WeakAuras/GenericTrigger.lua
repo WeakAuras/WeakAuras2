@@ -3136,7 +3136,7 @@ do
     elseif event == "BigWigs_PauseBar" then
       local addon, text = ...
       local bar = bars[text]
-      if bar then
+      if bar and not bar.paused then
         bar.paused = true
         bar.remaining = bar.expirationTime - GetTime()
         WeakAuras.ScanEvents("BigWigs_PauseBar", text)
@@ -3148,7 +3148,7 @@ do
     elseif event == "BigWigs_ResumeBar" then
       local addon, text = ...
       local bar = bars[text]
-      if bar then
+      if bar and bar.paused then
         bar.paused = nil
         bar.expirationTime = GetTime() + (bar.remaining or 0)
         bar.remaining = nil
