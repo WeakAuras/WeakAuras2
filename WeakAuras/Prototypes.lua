@@ -5442,6 +5442,7 @@ Private.event_prototypes = {
           local triggerRemaining = %s
           local triggerCount = %q
           local triggerCast = %s
+          local triggerIsCooldown = %s
           local cloneId = useClone and id or ""
           local state = states[cloneId]
 
@@ -5475,7 +5476,7 @@ Private.event_prototypes = {
             or event == "BigWigs_PauseBar"
             or event == "BigWigs_ResumeBar"
             then
-              if Private.ExecEnv.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast) then
+              if Private.ExecEnv.BigWigsTimerMatches(id, triggerText, triggerTextOperator, triggerSpellId, triggerCount, triggerCast, triggerIsCooldown) then
                 local bar = WeakAuras.GetBigWigsTimerById(id)
                 if bar then
                   copyOrSchedule(bar, cloneId)
@@ -5541,6 +5542,7 @@ Private.event_prototypes = {
         trigger.remaining or 0,
         trigger.use_count and trigger.count or "",
         trigger.use_cast == nil and "nil" or trigger.use_cast and "true" or "false",
+        trigger.use_isCooldown == nil and "nil" or trigger.use_isCooldown and "true" or "false",
         trigger.remaining_operator or "<"
       )
     end,
@@ -5581,6 +5583,15 @@ Private.event_prototypes = {
         name = "cast",
         display = L["Cast Bar"],
         desc = L["Filter messages with format <message>"],
+        type = "tristate",
+        test = "true",
+        init = "false",
+        conditionType = "bool"
+      },
+      {
+        name = "isCooldown",
+        display = L["Cooldown"],
+        desc = L["Cooldown bars show time before an ability is ready to be use, BigWigs prefix them with '~'"],
         type = "tristate",
         test = "true",
         init = "false",
