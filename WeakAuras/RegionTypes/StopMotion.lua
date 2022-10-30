@@ -112,8 +112,13 @@ local function create(parent)
     return frame;
 end
 
+local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
 local function SetTextureViaAtlas(self, texture)
-  self:SetTexture(texture);
+  if type(texture) == "string" and GetAtlasInfo(texture) then
+    self:SetAtlas(texture);
+  else
+    self:SetTexture(texture);
+  end
 end
 
 local function setTile(texture, frame, rows, columns, frameScaleW, frameScaleH)

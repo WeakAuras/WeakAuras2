@@ -3512,6 +3512,149 @@ WeakAuras.StopMotion.texture_data["Interface\\AddOns\\WeakAurasStopMotion\\Textu
      ["columns"] = 4
   }
 
+if WeakAuras.IsRetail() then
+  WeakAuras.StopMotion.texture_types.Blizzard = {
+    ["Skillbar_Fill_Flipbook_Alchemy"] = L["Alchemy Cast Bar"],
+    ["Skillbar_Fill_Flipbook_Blacksmithing"] = L["Blacksmithing Cast Bar"],
+    ["Skillbar_Fill_Flipbook_Jewelcrafting"] = L["Jewelcrafting Cast Bar"],
+    ["Skillbar_Fill_Flipbook_Tailoring"] = L["Tailoring Cast Bar"],
+    ["Skillbar_Fill_Flipbook_Leatherworking"] = L["Leatherworking Cast Bar"],
+    ["Skillbar_Fill_Flipbook_Enchanting"] = L["Enchanting Cast Bar"],
+    ["groupfinder-eye-flipbook-initial"] = L["Group Finder Eye Intial"],
+    ["groupfinder-eye-flipbook-searching"] = L["Group Finder Eye"],
+    ["groupfinder-eye-flipbook-mouseover"] = L["Group Finder Mouse Over"],
+    ["groupfinder-eye-flipbook-foundfx"] = L["Group Finder Found Initial"],
+    ["groupfinder-eye-flipbook-found-loop"] = L["Group Finder Foundn"],
+    ["groupfinder-eye-flipbook-poke-initial"] = L["Group Finder Poke Initial"],
+    ["groupfinder-eye-flipbook-poke-loop"] = L["Group Finder Poke"],
+    ["groupfinder-eye-flipbook-poke-end"] = L["Group Finder Poke End"],
+    ["UI-HUD-UnitFrame-Player-Rest-Flipbook"] = L["Player Rest"],
+  }
+
+
+  WeakAuras.StopMotion.texture_data["Skillbar_Fill_Flipbook_Alchemy"] = {
+    ["count"] = 60,
+    ["rows"] = 30,
+    ["columns"] = 2
+  }
+
+  WeakAuras.StopMotion.texture_data["Skillbar_Fill_Flipbook_Blacksmithing"] = {
+    ["count"] = 60,
+    ["rows"] = 30,
+    ["columns"] = 2
+  }
+
+  WeakAuras.StopMotion.texture_data["Skillbar_Fill_Flipbook_Jewelcrafting"] = {
+    ["count"] = 44,
+    ["rows"] = 22,
+    ["columns"] = 2
+  }
+
+  WeakAuras.StopMotion.texture_data["Skillbar_Fill_Flipbook_Tailoring"] = {
+    ["count"] = 58,
+    ["rows"] = 29,
+    ["columns"] = 2
+  }
+
+  WeakAuras.StopMotion.texture_data["Skillbar_Fill_Flipbook_Leatherworking"] = {
+    ["count"] = 60,
+    ["rows"] = 30,
+    ["columns"] = 2
+  }
+
+  WeakAuras.StopMotion.texture_data["Skillbar_Fill_Flipbook_Enchanting"] = {
+    ["count"] = 74,
+    ["rows"] = 37,
+    ["columns"] = 2
+  }
+  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-initial"] = {
+    ["count"] = 52,
+    ["rows"] = 5,
+    ["columns"] = 11
+  }
+  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-searching"] = {
+    ["count"] = 80,
+    ["rows"] = 8,
+    ["columns"] = 11
+  }
+  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-mouseover"] = {
+    ["count"] = 12,
+    ["rows"] = 1,
+    ["columns"] = 12
+  }
+  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-foundfx"] = {
+    ["count"] = 75,
+    ["rows"] = 5,
+    ["columns"] = 15
+  }
+  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-found-loop"] = {
+    ["count"] = 41,
+    ["rows"] = 4,
+    ["columns"] = 11
+  }
+  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-poke-initial"] = {
+    ["count"] = 66,
+    ["rows"] = 6,
+    ["columns"] = 11
+  }
+  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-poke-loop"] = {
+    ["count"] = 62,
+    ["rows"] = 6,
+    ["columns"] = 11
+  }
+  WeakAuras.StopMotion.texture_data["groupfinder-eye-flipbook-poke-end"] = {
+    ["count"] = 38,
+    ["rows"] = 4,
+    ["columns"] = 11
+  }
+  WeakAuras.StopMotion.texture_data["UI-HUD-UnitFrame-Player-Rest-Flipbook"] = {
+    ["count"] = 8,
+    ["rows"] = 1,
+    ["columns"] = 8
+  }
+
+  for _, profession in ipairs({"Tailoring", "Blacksmithing", "Jewelcrafting", "Leatherworking", "Enchanting"}) do
+    local name = ("SpecDial_Pip_Flipbook_%s"):format(profession)
+    WeakAuras.StopMotion.texture_data[name] = {
+      ["count"] = 24,
+      ["rows"] = 4,
+      ["columns"] = 4
+    }
+    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
+    name = ("SpecDial_EndPip_Flipbook_%s"):format(profession)
+    WeakAuras.StopMotion.texture_data[name] = {
+      ["count"] = 16,
+      ["rows"] = 4,
+      ["columns"] = 6
+    }
+    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
+  end
+  for i = 1, 5 do
+    local name = ("GemAppear_T%d_Flipbook"):format(i)
+    WeakAuras.StopMotion.texture_data[name] = {
+      ["count"] = 12,
+      ["rows"] = 3,
+      ["columns"] = 4
+    }
+    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
+    name = ("Quality-BarFill-Flipbook-T%d-x2"):format(i)
+    WeakAuras.StopMotion.texture_data[name] = {
+      ["count"] = 60,
+      ["rows"] = 15,
+      ["columns"] = 4
+    }
+    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
+  end
+  for i = 1, 4 do
+    local name = ("GemDissolve_T%d_Flipbook"):format(i)
+    WeakAuras.StopMotion.texture_data[name] = {
+      ["count"] = 12,
+      ["rows"] = 3,
+      ["columns"] = 4
+    }
+    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
+  end
+end
 
 WeakAuras.StopMotion.animation_types = {
   loop = L["Loop"],
