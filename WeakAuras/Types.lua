@@ -2309,7 +2309,7 @@ do
         end
       else
         Private.instance_difficulty_types[i] = name
-        WeakAuras.prettyPrint(string.format("Unknown difficulty id found. Please report as a bug: %s %s %s", i, name, type))
+        WeakAuras.prettyPrint(string.format("Unknown difficulty id found. You are probably running an outdated version. Debug Information: %s %s %s", i, name, type))
       end
     end
   end
