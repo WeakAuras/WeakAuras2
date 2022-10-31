@@ -1030,6 +1030,7 @@ globals = {
 	"C_Texture",
 	"C_Timer",
 	"C_Timer.After",
+	"C_TooltipInfo",
 	"C_ToyBox",
 	"C_ToyBox.ForceToyRefilter",
 	"C_ToyBox.GetCollectedShown",

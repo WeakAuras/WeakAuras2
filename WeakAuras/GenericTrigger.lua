@@ -3371,28 +3371,55 @@ do
         tenchFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
       end
 
-      tenchTip = WeakAuras.GetHiddenTooltip();
-
-      local function getTenchName(id)
-        tenchTip:SetInventoryItem("player", id);
-        local lines = { tenchTip:GetRegions() };
-        for i,v in ipairs(lines) do
-          if(v:GetObjectType() == "FontString") then
-            local text = v:GetText();
-            if(text) then
-              local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+.+%)$");
-              if(name and name ~= "") then
-                return name, shortenedName;
-              end
-              _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+.+%）$");
-              if(name and name ~= "") then
-                return name, shortenedName;
+      local getTenchName
+      if WeakAuras.IsRetail() then
+        getTenchName = function(id)
+          local tooltipData = C_TooltipInfo.GetInventoryItem("player", id)
+          if tooltipData and tooltipData.lines then
+            for _, line in ipairs(tooltipData.lines) do
+              if line.args then
+                for _, arg in ipairs(line.args) do
+                  if arg.field == "leftText" then
+                    local text = arg.stringVal;
+                    if(text) then
+                      local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+.+%)$");
+                      if(name and name ~= "") then
+                        return name, shortenedName;
+                      end
+                      _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+.+%）$");
+                      if(name and name ~= "") then
+                        return name, shortenedName;
+                      end
+                    end
+                  end
+                end
               end
             end
           end
         end
+      else
+        getTenchName = function(id)
+          tenchTip = WeakAuras.GetHiddenTooltip();
+          tenchTip:SetInventoryItem("player", id);
+          local lines = { tenchTip:GetRegions() };
+          for i,v in ipairs(lines) do
+            if(v:GetObjectType() == "FontString") then
+              local text = v:GetText();
+              if(text) then
+                local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+.+%)$");
+                if(name and name ~= "") then
+                  return name, shortenedName;
+                end
+                _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+.+%）$");
+                if(name and name ~= "") then
+                  return name, shortenedName;
+                end
+              end
+            end
+          end
 
-        return "Unknown", "Unknown";
+          return "Unknown", "Unknown";
+        end
       end
 
       local function tenchUpdate()
