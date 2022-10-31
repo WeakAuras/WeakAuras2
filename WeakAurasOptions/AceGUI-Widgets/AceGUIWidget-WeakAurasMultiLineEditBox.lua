@@ -323,7 +323,8 @@ local function Constructor()
   scrollBG:SetBackdropColor(0, 0, 0)
   scrollBG:SetBackdropBorderColor(0.4, 0.4, 0.4)
 
-  local scrollFrame = CreateFrame("ScrollFrame", ("%s%dScrollFrame"):format(Type, widgetNum), frame, "UIPanelScrollFrameTemplate")
+  local scrollFrame = CreateFrame("ScrollFrame", ("%s%dScrollFrame"):format(Type, widgetNum),
+                                  frame, "UIPanelScrollFrameTemplate")
   scrollFrame:EnableMouseWheel(false);
 
   local scrollBar = _G[scrollFrame:GetName() .. "ScrollBar"]

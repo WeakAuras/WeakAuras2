@@ -380,14 +380,22 @@ local function GetCustomTriggerOptions(data, triggernum)
                             17 + i / 10, hideOverlay, appendToTriggerPath("customOverlay" .. i), false, { multipath = false, extraSetFunction = extraSetFunctionReload, extraFunctions = extraFunctions});
   end
 
-  OptionsPrivate.commonOptions.AddCodeOption(customOptions, data, L["Name Info"], "custom_name", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#name-info",
-                          18, hideIfTriggerStateUpdate, appendToTriggerPath("customName"), false, { multipath = false, extraSetFunction = extraSetFunctionReload});
-  OptionsPrivate.commonOptions.AddCodeOption(customOptions, data, L["Icon Info"], "custom_icon", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#icon-info",
-                          20, hideIfTriggerStateUpdate, appendToTriggerPath("customIcon"), false, { multipath = false, extraSetFunction = extraSetFunction});
-  OptionsPrivate.commonOptions.AddCodeOption(customOptions, data, L["Texture Info"], "custom_texture", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#texture-info",
-                          22, hideIfTriggerStateUpdate, appendToTriggerPath("customTexture"), false, { multipath = false, extraSetFunction = extraSetFunction});
-  OptionsPrivate.commonOptions.AddCodeOption(customOptions, data, L["Stack Info"], "custom_stacks", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#stack-info",
-                          23, hideIfTriggerStateUpdate, appendToTriggerPath("customStacks"), false, { multipath = false, extraSetFunction = extraSetFunctionReload});
+  OptionsPrivate.commonOptions.AddCodeOption(customOptions, data, L["Name Info"], "custom_name",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#name-info",
+                          18, hideIfTriggerStateUpdate, appendToTriggerPath("customName"), false,
+                          { multipath = false, extraSetFunction = extraSetFunctionReload});
+  OptionsPrivate.commonOptions.AddCodeOption(customOptions, data, L["Icon Info"], "custom_icon",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#icon-info",
+                          20, hideIfTriggerStateUpdate, appendToTriggerPath("customIcon"), false,
+                          { multipath = false, extraSetFunction = extraSetFunction});
+  OptionsPrivate.commonOptions.AddCodeOption(customOptions, data, L["Texture Info"], "custom_texture",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#texture-info",
+                          22, hideIfTriggerStateUpdate, appendToTriggerPath("customTexture"), false,
+                          { multipath = false, extraSetFunction = extraSetFunction});
+  OptionsPrivate.commonOptions.AddCodeOption(customOptions, data, L["Stack Info"], "custom_stacks",
+                          "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#stack-info",
+                          23, hideIfTriggerStateUpdate, appendToTriggerPath("customStacks"), false,
+                          { multipath = false, extraSetFunction = extraSetFunctionReload});
 
   return customOptions;
 end

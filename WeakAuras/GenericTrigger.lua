@@ -106,7 +106,7 @@ end
 function WeakAuras.split(input)
   input = input or "";
   local ret = {};
-  local split, element = true;
+  local split, element = true, nil
   split = input:find("[,%s]");
   while(split) do
     element, input = input:sub(1, split-1), input:sub(split+1);
@@ -1688,6 +1688,7 @@ do
     Private.StartProfileSystem("generictrigger swing");
     local now = GetTime()
     if event == "UNIT_ATTACK_SPEED" then
+      --- @type number?, number?
       local mainSpeedNew, offSpeedNew = UnitAttackSpeed("player")
       offSpeedNew = offSpeedNew or 0
       if lastSwingMain then
@@ -1826,7 +1827,7 @@ do
   local function GetRuneDuration()
     local runeDuration = -100;
     for id, _ in pairs(runes) do
-      local startTime, duration = GetRuneCooldown(id);
+      local _, duration = GetRuneCooldown(id);
       duration = duration or 0;
       runeDuration = duration > 0 and duration or runeDuration
     end
@@ -3349,9 +3350,11 @@ do
   local oh = GetInventorySlotInfo("SecondaryHandSlot")
 
   local mh_name, mh_shortenedName, mh_exp, mh_dur, mh_charges, mh_EnchantID;
+  --- @type string?
   local mh_icon = GetInventoryItemTexture("player", mh) or "Interface\\Icons\\INV_Misc_QuestionMark"
 
   local oh_name, oh_shortenedName, oh_exp, oh_dur, oh_charges, oh_EnchantID;
+  --- @type string?
   local oh_icon = GetInventoryItemTexture("player", oh) or "Interface\\Icons\\INV_Misc_QuestionMark"
 
   local tenchFrame = nil

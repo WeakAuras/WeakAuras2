@@ -21,7 +21,8 @@ local function setTextureFunc(textureWidget, texturePath, textureName)
     else
       local rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight = texturePath:match(pattern2)
       if rows then
-        rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight = tonumber(rows), tonumber(columns), tonumber(frames), tonumber(frameWidth), tonumber(frameHeight), tonumber(fileWidth), tonumber(fileHeight)
+        rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight
+          = tonumber(rows), tonumber(columns), tonumber(frames), tonumber(frameWidth), tonumber(frameHeight), tonumber(fileWidth), tonumber(fileHeight)
         local frameScaleW = 1
         local frameScaleH = 1
         if fileWidth > 0 and frameWidth > 0 then
@@ -153,7 +154,9 @@ local function createOptions(id, data)
               WeakAuras.UpdateThumbnail(data);
             end,
             order = 4,
-            hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
+            hidden = function()
+              return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture)
+            end
         },
         customForegroundColumns = {
             type = "input",
@@ -169,7 +172,9 @@ local function createOptions(id, data)
               WeakAuras.UpdateThumbnail(data);
             end,
             order = 5,
-            hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
+            hidden = function()
+              return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture)
+            end
         },
         customForegroundFrames = {
             type = "input",
@@ -185,7 +190,9 @@ local function createOptions(id, data)
               WeakAuras.UpdateThumbnail(data);
             end,
             order = 6,
-            hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
+            hidden = function()
+              return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture)
+            end
         },
         customForegroundFileWidth = {
           type = "input",
@@ -207,7 +214,9 @@ local function createOptions(id, data)
             WeakAuras.UpdateThumbnail(data);
           end,
           order = 7,
-          hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
+          hidden = function()
+            return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture)
+          end
         },
         customForegroundFileHeight = {
           type = "input",
@@ -229,7 +238,9 @@ local function createOptions(id, data)
             WeakAuras.UpdateThumbnail(data);
           end,
           order = 8,
-          hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
+          hidden = function()
+            return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture)
+          end
         },
         customForegroundFrameWidth = {
           type = "input",
@@ -246,7 +257,9 @@ local function createOptions(id, data)
             WeakAuras.UpdateThumbnail(data);
           end,
           order = 9,
-          hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
+          hidden = function()
+            return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture)
+          end
         },
         customForegroundFrameHeight = {
           type = "input",
@@ -263,7 +276,9 @@ local function createOptions(id, data)
             WeakAuras.UpdateThumbnail(data);
           end,
           order = 10,
-          hidden = function() return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture) end
+          hidden = function()
+            return texture_data[data.foregroundTexture] or textureNameHasData(data.foregroundTexture)
+          end
         },
         blendMode = {
             type = "select",
@@ -404,7 +419,11 @@ local function createOptions(id, data)
             WeakAuras.UpdateThumbnail(data);
           end,
           order = 24,
-          hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture) end
+          hidden = function()
+            return data.sameTexture
+                   or texture_data[data.backgroundTexture]
+                   or textureNameHasData(data.backgroundTexture)
+          end
       },
       customBackgroundColumns = {
           type = "input",
@@ -420,7 +439,11 @@ local function createOptions(id, data)
             WeakAuras.UpdateThumbnail(data);
           end,
           order = 25,
-          hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture) end
+          hidden = function()
+            return data.sameTexture
+                   or texture_data[data.backgroundTexture]
+                  or textureNameHasData(data.backgroundTexture)
+          end
       },
       customBackgroundFrames = {
           type = "input",
@@ -436,7 +459,11 @@ local function createOptions(id, data)
             WeakAuras.UpdateThumbnail(data);
           end,
           order = 26,
-          hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture) end
+          hidden = function()
+            return data.sameTexture
+                   or texture_data[data.backgroundTexture]
+                   or textureNameHasData(data.backgroundTexture)
+          end
       },
       customBackgroundFileWidth = {
         type = "input",
@@ -458,7 +485,9 @@ local function createOptions(id, data)
           WeakAuras.UpdateThumbnail(data);
         end,
         order = 27,
-        hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture) end
+        hidden = function()
+          return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture)
+        end
       },
       customBackgroundFileHeight = {
         type = "input",
@@ -480,7 +509,9 @@ local function createOptions(id, data)
           WeakAuras.UpdateThumbnail(data);
         end,
         order = 28,
-        hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture) end
+        hidden = function()
+          return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture)
+        end
       },
       customBackgroundFrameWidth = {
         type = "input",
@@ -497,7 +528,9 @@ local function createOptions(id, data)
           WeakAuras.UpdateThumbnail(data);
         end,
         order = 29,
-        hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture) end
+        hidden = function()
+          return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture)
+        end
       },
       customBackgroundFrameHeight = {
         type = "input",
@@ -514,7 +547,9 @@ local function createOptions(id, data)
           WeakAuras.UpdateThumbnail(data);
         end,
         order = 30,
-        hidden = function() return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture) end
+        hidden = function()
+          return data.sameTexture or texture_data[data.backgroundTexture] or textureNameHasData(data.backgroundTexture)
+        end
       },
       backgroundPercent = {
         type = "range",
@@ -601,7 +636,8 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
         region.foreground.frameWidth = 0
         region.foreground.frameHeight = 0
       else
-        local rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight = data.foregroundTexture:match(pattern2)
+        local rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight
+              = data.foregroundTexture:match(pattern2)
         if rows then
           local lastFrame = frames - 1;
           region.startFrame = floor( (data.startPercent or 0) * lastFrame) + 1;
@@ -635,12 +671,18 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
     if (region.foreground.rows and region.foreground.columns) then
       region.texture:SetTexture(texture);
       local frameScaleW, frameScaleH = 1, 1
-      if region.foreground.fileWidth and region.foreground.frameWidth and region.foreground.fileWidth > 0 and region.foreground.frameWidth > 0 then
+      if region.foreground.fileWidth and region.foreground.frameWidth
+        and region.foreground.fileWidth > 0 and region.foreground.frameWidth > 0
+      then
         frameScaleW = (region.foreground.frameWidth * region.foreground.columns) / region.foreground.fileWidth
       end
-      if region.foreground.fileHeight and region.foreground.frameHeight and region.foreground.fileHeight > 0 and region.foreground.frameHeight > 0 then
+
+      if region.foreground.fileHeight and region.foreground.frameHeight
+         and region.foreground.fileHeight > 0 and region.foreground.frameHeight > 0
+      then
         frameScaleH = (region.foreground.frameHeight * region.foreground.rows) / region.foreground.fileHeight
       end
+
       setTile(region.texture, frame, region.foreground.rows, region.foreground.columns, frameScaleW, frameScaleH);
 
       region.SetValue = function(self, percent)
@@ -657,7 +699,8 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
       end
     end
 
-    region.texture:SetVertexColor(data.foregroundColor[1], data.foregroundColor[2], data.foregroundColor[3], data.foregroundColor[4]);
+    region.texture:SetVertexColor(data.foregroundColor[1], data.foregroundColor[2],
+                                  data.foregroundColor[3], data.foregroundColor[4])
     region.texture:SetBlendMode(data.blendMode);
 
     region.elapsed = 0;
@@ -700,4 +743,5 @@ local function createIcon()
     return thumbnail;
 end
 
-WeakAuras.RegisterRegionOptions("stopmotion", createOptions, createIcon, L["Stop Motion"], createThumbnail, modifyThumbnail, L["Shows a stop motion texture"]);
+WeakAuras.RegisterRegionOptions("stopmotion", createOptions, createIcon, L["Stop Motion"],
+                                createThumbnail, modifyThumbnail, L["Shows a stop motion texture"]);

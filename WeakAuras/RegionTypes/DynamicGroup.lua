@@ -45,7 +45,8 @@ local default = {
 local controlPointFunctions = {
   ["SetAnchorPoint"] = function(self, point, relativeFrame, relativePoint, offsetX, offsetY)
     self:ClearAllPoints();
-    self.point, self.relativeFrame, self.relativePoint, self.offsetX, self.offsetY = point, relativeFrame, relativePoint, offsetX, offsetY
+    self.point, self.relativeFrame, self.relativePoint, self.offsetX, self.offsetY
+      = point, relativeFrame, relativePoint, offsetX, offsetY
     self.totalOffsetX = (self.animOffsetX or 0) + (self.offsetX or 0)
     self.totalOffsetY = (self.animOffsetY or 0) + (self.offsetY or 0)
     if self.relativeFrame and self.relativePoint then
@@ -744,7 +745,11 @@ local growers = {
         newPositions[frame] = {}
         for i, regionData in ipairs(regionDatas) do
           if i <= numVisible then
-            newPositions[frame][regionData] = { [primary.coord] = primary.current, [secondary.coord] = secondary.current, [3] = true }
+            newPositions[frame][regionData] = {
+              [primary.coord] = primary.current,
+              [secondary.coord] = secondary.current,
+              [3] = true
+            }
             secondary.max = max(secondary.max, getDimension(regionData, secondary.dim))
             if i % gridWidth == 0 then
               primary.current = 0
@@ -806,8 +811,10 @@ local function modify(parent, region, data)
         bottom  = data.borderInset,
       },
     });
-    background:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2], data.borderColor[3], data.borderColor[4]);
-    background:SetBackdropColor(data.backdropColor[1], data.backdropColor[2], data.backdropColor[3], data.backdropColor[4]);
+    background:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2],
+                                      data.borderColor[3], data.borderColor[4]);
+    background:SetBackdropColor(data.backdropColor[1], data.backdropColor[2],
+                                data.backdropColor[3], data.backdropColor[4]);
 
     background:ClearAllPoints();
     background:SetPoint("bottomleft", region, "bottomleft", -1 * data.borderOffset, -1 * data.borderOffset)
@@ -1225,7 +1232,7 @@ local function modify(parent, region, data)
       -- if self.dynamicAnchor then self:UpdateBorder(); return end
       Private.StartProfileSystem("dynamicgroup")
       Private.StartProfileAura(data.id)
-      local numVisible, minX, maxX, maxY, minY = 0
+      local numVisible, minX, maxX, maxY, minY = 0, nil, nil, nil, nil
       for active, regionData in ipairs(self.sortedChildren) do
         if regionData.shown then
           numVisible = numVisible + 1

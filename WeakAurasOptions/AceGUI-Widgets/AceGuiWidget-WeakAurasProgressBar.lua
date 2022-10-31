@@ -45,6 +45,7 @@ local function Constructor()
 
 	frame:Hide()
 
+  --- @type table<string, any>
 	local widget = {
 		frame = frame,
     foreground = foreground,

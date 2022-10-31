@@ -2,7 +2,8 @@ local AddonName, TemplatePrivate = ...
 local WeakAuras = WeakAuras
 if not WeakAuras.IsBCC() then return end
 local L = WeakAuras.L
-local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
+local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
+    = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
 
 -- The templates tables are created on demand
 local templates =
@@ -973,10 +974,10 @@ tinsert(templates.race.Troll, { spell = 26296, type = "ability", titleSuffix = L
 tinsert(templates.race.Troll, { spell = 20554, type = "ability", titleSuffix = L["Other cooldown"]});
 tinsert(templates.race.Troll, { spell = 26635, type = "buff", unit = "player", titleSuffix = L["buff"]});
 -- Arcane Torrent
-tinsert(templates.race.BloodElf, { spell = 69179, type = "ability", titleSuffix = L["cooldown"]}); -- TODO check this for BCC
+tinsert(templates.race.BloodElf, { spell = 69179, type = "ability", titleSuffix = L["cooldown"]});
 -- Gift of the Naaru
-tinsert(templates.race.Draenei, { spell = 28880, type = "ability", titleSuffix = L["cooldown"]}); -- TODO check this for BCC
-tinsert(templates.race.Draenei, { spell = 28880, type = "buff", unit = "player", titleSuffix = L["buff"]}); -- TODO check this for BCC
+tinsert(templates.race.Draenei, { spell = 28880, type = "ability", titleSuffix = L["cooldown"]});
+tinsert(templates.race.Draenei, { spell = 28880, type = "buff", unit = "player", titleSuffix = L["buff"]});
 
 ------------------------------
 -- Helper code for options

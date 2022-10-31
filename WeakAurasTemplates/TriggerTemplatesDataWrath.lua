@@ -2,7 +2,8 @@ local AddonName, TemplatePrivate = ...
 local WeakAuras = WeakAuras
 if not WeakAuras.IsWrathClassic() then return end
 local L = WeakAuras.L
-local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
+local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
+    = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
 
 -- The templates tables are created on demand
 local templates =

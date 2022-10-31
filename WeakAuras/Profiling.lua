@@ -46,7 +46,8 @@ table_to_string = function(tbl, depth)
         k = '"' .. k ..'"'
       end
 
-      str = (str and str .. "|cff999999,|r " or "|cff999999{|r ") .. "|cffffff99[" .. tostring(k) .. "]|r |cff999999=|r |cffffffff" .. tostring(v) .. "|r"
+      str = (str and str .. "|cff999999,|r " or "|cff999999{|r ") .. "|cffffff99["
+            .. tostring(k) .. "]|r |cff999999=|r |cffffffff" .. tostring(v) .. "|r"
     end
   end
   return (str or "{ ") .. " }"
@@ -125,6 +126,7 @@ local function CreateProfilePopup()
 
   function popupFrame:AddText(v)
     if not v then return end
+    --- @type string?
     local m = popupFrame:GetText()
     if m ~= "" then
       m = m .. "|n"
@@ -148,7 +150,8 @@ local function CreateProfilePopup()
   scrollFrame:SetFrameStrata("DIALOG")
   scrollFrame:SetSize(450, 300)
   if WeakAurasSaved.ProfilingWindow then
-    scrollFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", WeakAurasSaved.ProfilingWindow.xOffset or 0, WeakAurasSaved.ProfilingWindow.yOffset or 0)
+    scrollFrame:SetPoint("TOPLEFT", UIParent, "TOPLEFT", WeakAurasSaved.ProfilingWindow.xOffset or 0,
+                                                         WeakAurasSaved.ProfilingWindow.yOffset or 0)
   else
     scrollFrame:SetPoint("CENTER")
   end
@@ -456,7 +459,8 @@ function WeakAuras.PrintProfile()
 
   PrintOneProfile(popup, "|cff9900ffTotal time:|r", profileData.systems.time)
   PrintOneProfile(popup, "|cff9900ffTime inside WA:|r", profileData.systems.wa)
-  popup:AddText(string.format("|cff9900ffTime spent inside WA:|r %.2f%%", 100 * profileData.systems.wa.elapsed / profileData.systems.time.elapsed))
+  popup:AddText(string.format("|cff9900ffTime spent inside WA:|r %.2f%%",
+                              100 * profileData.systems.wa.elapsed / profileData.systems.time.elapsed))
 
   popup:AddText("")
   popup:AddText("Note: Not every aspect of each aura can be tracked.")
@@ -556,7 +560,9 @@ function RealTimeProfilingWindow:GetBar(name)
     end
 
     function bar:SetPosition(pos)
-      if self.parent.barHeight * pos > self.parent.height - self.parent.titleHeight - self.parent.statsHeight - self.parent.buttonsHeight then
+      if self.parent.barHeight * pos >
+         self.parent.height - self.parent.titleHeight - self.parent.statsHeight - self.parent.buttonsHeight
+      then
         self:Hide()
       else
         self:ClearAllPoints()
@@ -615,7 +621,9 @@ function RealTimeProfilingWindow:Init()
   self:SetClampedToScreen(true)
 
   if WeakAurasSaved.RealTimeProfilingWindow then
-    self:SetPoint("TOPLEFT", UIParent, "TOPLEFT", WeakAurasSaved.RealTimeProfilingWindow.xOffset or 0, WeakAurasSaved.RealTimeProfilingWindow.yOffset or 0)
+    self:SetPoint("TOPLEFT", UIParent, "TOPLEFT",
+                  WeakAurasSaved.RealTimeProfilingWindow.xOffset or 0,
+                  WeakAurasSaved.RealTimeProfilingWindow.yOffset or 0)
   else
     self:SetPoint("TOPLEFT", UIParent, "TOPLEFT")
   end
