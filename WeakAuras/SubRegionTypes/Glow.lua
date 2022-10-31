@@ -3,6 +3,7 @@ if not WeakAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 local LCG = LibStub("LibCustomGlow-1.0")
+
 local MSQ, MSQ_Version = LibStub("Masque", true);
 if MSQ then
   if MSQ_Version <= 80100 then
@@ -419,4 +420,5 @@ local function addDefaultsForNewAura(data)
   end
 end
 
-WeakAuras.RegisterSubRegionType("subglow", L["Glow"], supports, create, modify, onAcquire, onRelease, default, addDefaultsForNewAura, properties);
+WeakAuras.RegisterSubRegionType("subglow", L["Glow"], supports, create, modify, onAcquire, onRelease,
+                                default, addDefaultsForNewAura, properties)

@@ -68,6 +68,7 @@ local function Constructor()
   content:SetPoint("TOPLEFT", 20, 0)
   content:SetPoint("BOTTOMRIGHT", 0, 15)
 
+  --- @type table<string, any>
   local widget = {
     frame     = frame,
     content   = content,

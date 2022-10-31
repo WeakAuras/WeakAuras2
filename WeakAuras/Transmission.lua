@@ -133,7 +133,8 @@ function CompressDisplay(data, version)
   end
 
   local copiedData = CopyTable(data)
-  local non_transmissable_fields = version >= 2000 and Private.non_transmissable_fields_v2000 or Private.non_transmissable_fields
+  local non_transmissable_fields = version >= 2000 and Private.non_transmissable_fields_v2000
+                                                       or Private.non_transmissable_fields
   stripNonTransmissableFields(copiedData, non_transmissable_fields)
   copiedData.tocversion = WeakAuras.BuildInfo
   return copiedData;
@@ -210,7 +211,8 @@ local LibDeflate = LibStub:GetLibrary("LibDeflate")
 local Serializer = LibStub:GetLibrary("AceSerializer-3.0")
 local LibSerialize = LibStub("LibSerialize")
 local Comm = LibStub:GetLibrary("AceComm-3.0")
-local configForDeflate = {level = 9} -- the biggest bottleneck by far is in transmission and printing; so use maximal compression
+-- the biggest bottleneck by far is in transmission and printing; so use maximal compression
+local configForDeflate = {level = 9}
 local configForLS = {
   errorOnUnserializableType =  false
 }

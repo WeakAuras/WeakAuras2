@@ -32,7 +32,8 @@ end
 if WeakAuras.IsClassic() then
   local WA_GetUnitAuraBase = WA_GetUnitAura
   WA_GetUnitAura = function(unit, spell, filter)
-    local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = WA_GetUnitAuraBase(unit, spell, filter)
+    local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId,
+          canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod = WA_GetUnitAuraBase(unit, spell, filter)
     if spellId then
       local durationNew, expirationTimeNew = LCD:GetAuraDurationByUnit(unit, spellId, source, name)
       if duration == 0 and durationNew then
@@ -40,7 +41,8 @@ if WeakAuras.IsClassic() then
           expirationTime = expirationTimeNew
       end
     end
-    return name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
+    return name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId,
+           canApplyAura, isBossDebuff, castByPlayer, nameplateShowAll, timeMod
   end
 end
 
@@ -616,6 +618,7 @@ local function CreateFunctionCache(exec_env)
       if errorString then
         print(errorString)
       else
+        --- @cast loadedFunction -nil
         setfenv(loadedFunction, exec_env)
         local success, func = pcall(assert(loadedFunction))
         if success then

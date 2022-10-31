@@ -179,6 +179,7 @@ end
 local frame;
 local db;
 local odb;
+--- @type boolean?
 local reopenAfterCombat = false;
 local loadedFrame = CreateFrame("Frame");
 loadedFrame:RegisterEvent("ADDON_LOADED");
@@ -1314,7 +1315,10 @@ function OptionsPrivate.StartGrouping(data)
     end
 
     for id, button in pairs(displayButtons) do
-      button:StartGrouping({data.id}, data.id == id, data.regionType == "dynamicgroup" or data.regionType == "group", children[id]);
+      button:StartGrouping({data.id},
+                           data.id == id,
+                           data.regionType == "dynamicgroup" or data.regionType == "group",
+                           children[id]);
     end
   end
 end
@@ -1758,7 +1762,8 @@ function OptionsPrivate.MoveCollapseDataUp(id, namespace, path)
   collapsedOptions[id] = collapsedOptions[id] or {}
   collapsedOptions[id][namespace] = collapsedOptions[id][namespace] or {}
   if type(path) ~= "table" then
-    collapsedOptions[id][namespace][path], collapsedOptions[id][namespace][path - 1] = collapsedOptions[id][namespace][path - 1], collapsedOptions[id][namespace][path]
+    collapsedOptions[id][namespace][path], collapsedOptions[id][namespace][path - 1]
+      = collapsedOptions[id][namespace][path - 1], collapsedOptions[id][namespace][path]
   else
     local tmp = collapsedOptions[id][namespace]
     local lastKey = tremove(path)
@@ -1774,7 +1779,8 @@ function OptionsPrivate.MoveCollapseDataDown(id, namespace, path)
   collapsedOptions[id] = collapsedOptions[id] or {}
   collapsedOptions[id][namespace] = collapsedOptions[id][namespace] or {}
   if type(path) ~= "table" then
-    collapsedOptions[id][namespace][path], collapsedOptions[id][namespace][path + 1] = collapsedOptions[id][namespace][path + 1], collapsedOptions[id][namespace][path]
+    collapsedOptions[id][namespace][path], collapsedOptions[id][namespace][path + 1]
+      = collapsedOptions[id][namespace][path + 1], collapsedOptions[id][namespace][path]
   else
     local tmp = collapsedOptions[id][namespace]
     local lastKey = tremove(path)
@@ -1869,7 +1875,8 @@ function OptionsPrivate.DuplicateCollapseData(id, namespace, path)
   end
 end
 
-function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, hidden, setHidden, withoutColor, index, total)
+function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, hidden, setHidden,
+                                            withoutColor, index, total)
   local headerOption
   if withHeader and (not index or index == 1) then
     headerOption =  {

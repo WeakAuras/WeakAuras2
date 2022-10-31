@@ -359,6 +359,7 @@ local function Constructor()
   update:Hide()
   updateLogo:Hide()
 
+  --- @type table<string, any>
   local widget = {
     frame = button,
     title = title,

@@ -118,6 +118,7 @@ local function Constructor()
     buttons[direction] = button
   end
 
+  --- @type table<string, any>
   local widget = {
     frame = frame,
     type = Type,

@@ -63,7 +63,7 @@ local methods = {
     widget.secondDropDown = secondDropDown
 
     widget:SetLayout("TwoColumn")
-    widget.SetLayout = function()
+    widget.SetLayout = function(self, _)
       -- AceGui wants to set a default layout, but we don't want that
     end
 

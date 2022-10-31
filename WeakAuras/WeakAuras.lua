@@ -1555,6 +1555,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   end
 
   local player, realm, zone = UnitName("player"), GetRealmName(), GetRealZoneText()
+  --- @type boolean|number, boolean|number, boolean|string, boolean|string
   local spec, specId, role, raidRole = false, false, false, false
   local inPetBattle, vehicle, vehicleUi = false, false, false
   local zoneId = C_Map.GetBestMapForUnit("player")

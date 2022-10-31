@@ -59,7 +59,9 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
     return "nil"
   elseif(vType == "color") then
     if (value and type(value) == "table") then
-      return string.format("{%s, %s, %s, %s}", tostring(value[1]), tostring(value[2]), tostring(value[3]), tostring(value[4]));
+      return string.format("{%s, %s, %s, %s}",
+                           tostring(value[1]), tostring(value[2]),
+                           tostring(value[3]), tostring(value[4]))
     end
     return "{1, 1, 1, 1}";
   elseif(vType == "chat") then
@@ -79,8 +81,10 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
   elseif(vType == "sound") then
     if (value and type(value) == "table") then
       return string.format("{ sound = %s, sound_channel = %s, sound_path = %s, sound_kit_id = %s, sound_type = %s, %s}",
-        Private.QuotedString(tostring(value.sound or "")), Private.QuotedString(tostring(value.sound_channel or "")),
-        Private.QuotedString(tostring(value.sound_path or "")), Private.QuotedString(tostring(value.sound_kit_id or "")),
+        Private.QuotedString(tostring(value.sound or "")),
+        Private.QuotedString(tostring(value.sound_channel or "")),
+        Private.QuotedString(tostring(value.sound_path or "")),
+        Private.QuotedString(tostring(value.sound_kit_id or "")),
         Private.QuotedString(tostring(value.sound_type or "")),
         value.sound_repeat and "sound_repeat = " .. tostring(value.sound_repeat) or "nil");
     end
@@ -215,20 +219,23 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
     if (test) then
       if (value) then
         Private.ExecEnv.conditionHelpers[uid] = Private.ExecEnv.conditionHelpers[uid] or {}
-        Private.ExecEnv.conditionHelpers[uid].customTestFunctions = Private.ExecEnv.conditionHelpers[uid].customTestFunctions or {}
+        Private.ExecEnv.conditionHelpers[uid].customTestFunctions
+          = Private.ExecEnv.conditionHelpers[uid].customTestFunctions or {}
         tinsert(Private.ExecEnv.conditionHelpers[uid].customTestFunctions, test);
         local testFunctionNumber = #(Private.ExecEnv.conditionHelpers[uid].customTestFunctions);
         local valueString = type(value) == "string" and string.format("%q", value) or value;
         local opString = type(op) == "string" and string.format("%q", op) or op;
         check = string.format("state and Private.ExecEnv.CallCustomConditionTest(%q, %s, state[%s], %s, %s, %s)",
-                              uid, testFunctionNumber, trigger, valueString, (opString or "nil"), preambleString or "nil");
+                              uid, testFunctionNumber, trigger, valueString, (opString or "nil"),
+                              preambleString or "nil")
       end
     elseif (cType == "customcheck") then
       if value then
         local customCheck = WeakAuras.LoadFunction("return " .. value)
         if customCheck then
           Private.ExecEnv.conditionHelpers[uid] = Private.ExecEnv.conditionHelpers[uid] or {}
-          Private.ExecEnv.conditionHelpers[uid].customTestFunctions = Private.ExecEnv.conditionHelpers[uid].customTestFunctions or {}
+          Private.ExecEnv.conditionHelpers[uid].customTestFunctions
+            = Private.ExecEnv.conditionHelpers[uid].customTestFunctions or {}
           tinsert(Private.ExecEnv.conditionHelpers[uid].customTestFunctions, customCheck);
           local testFunctionNumber = #(Private.ExecEnv.conditionHelpers[uid].customTestFunctions);
 
@@ -246,36 +253,43 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
           check = stateCheck .. stateVariableCheck .. "(state[" .. trigger .. "]" .. string.format("[%q]", variable)
                   .. "/ (state[" .. trigger .. "].modRate or 1.0))" .. op .. v;
         else
-          check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable) .. op .. v;
+          check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable)
+                  .. op .. v;
         end
       end
     elseif (cType == "timer" and value and op) then
       if useModRate then
         if (op == "==") then
-          check = stateCheck .. stateVariableCheck .. "abs(((state[" .. trigger .. "]" .. string.format("[%q]", variable) .. "- now) "
-                 .. "/ (state[" .. trigger .. "].modRate or 1.0))" .. " -" .. value .. ") < 0.05";
+          check = stateCheck .. stateVariableCheck .. "abs(((state[" .. trigger .. "]" .. string.format("[%q]", variable)
+                  .. "- now) " .. "/ (state[" .. trigger .. "].modRate or 1.0))" .. " -" .. value .. ") < 0.05"
         else
           check = stateCheck .. stateVariableCheck .. "((state[" .. trigger .. "]" .. string.format("[%q]", variable)
                   .. "- now) / (state[" .. trigger .. "].modRate or 1.0))" .. op .. value;
         end
       else
         if (op == "==") then
-          check = stateCheck .. stateVariableCheck .. "abs(state[" .. trigger .. "]" .. string.format("[%q]", variable) .. "- now -" .. value .. ") < 0.05";
+          check = stateCheck .. stateVariableCheck .. "abs(state[" .. trigger .. "]" .. string.format("[%q]", variable)
+                  .. "- now -" .. value .. ") < 0.05";
         else
-          check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable) .. "- now" .. op .. value;
+          check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable)
+                  .. "- now" .. op .. value;
         end
       end
     elseif (cType == "elapsedTimer" and value and op) then
       if (op == "==") then
-        check = stateCheck .. stateVariableCheck .. "abs(state[" .. trigger .. "]" .. string.format("[%q]", variable) .. "- now +" .. value .. ") < 0.05";
+        check = stateCheck .. stateVariableCheck .. "abs(state[" .. trigger .. "]" .. string.format("[%q]", variable)
+                .. "- now +" .. value .. ") < 0.05";
       else
-        check = stateCheck .. stateVariableCheck .. "now - state[" .. trigger .. "]" .. string.format("[%q]", variable) .. op .. value;
+        check = stateCheck .. stateVariableCheck .. "now - state[" .. trigger .. "]" .. string.format("[%q]", variable)
+                .. op .. value;
       end
     elseif (cType == "select" and value and op) then
       if (tonumber(value)) then
-        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable) .. op .. tonumber(value);
+        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable)
+                .. op .. tonumber(value);
       else
-        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]".. string.format("[%q]", variable) .. op .. "'" .. value .. "'";
+        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]".. string.format("[%q]", variable)
+                .. op .. "'" .. value .. "'";
       end
     elseif (cType == "range" and value and op and input.type and input.op_range and input.range) then
       local fn
@@ -315,7 +329,8 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
         local customCheck = WeakAuras.LoadFunction(fn)
         if customCheck then
           Private.ExecEnv.conditionHelpers[uid] = Private.ExecEnv.conditionHelpers[uid] or {}
-          Private.ExecEnv.conditionHelpers[uid].customTestFunctions = Private.ExecEnv.conditionHelpers[uid].customTestFunctions or {}
+          Private.ExecEnv.conditionHelpers[uid].customTestFunctions
+            = Private.ExecEnv.conditionHelpers[uid].customTestFunctions or {}
           tinsert(Private.ExecEnv.conditionHelpers[uid].customTestFunctions, customCheck);
           local testFunctionNumber = #(Private.ExecEnv.conditionHelpers[uid].customTestFunctions);
 
@@ -325,20 +340,26 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
       end
     elseif (cType == "bool" and value) then
       local rightSide = value == 0 and "false" or "true";
-      check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable) .. "==" .. rightSide
+      check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable)
+              .. "==" .. rightSide
     elseif (cType == "string" and value) then
       if(op == "==") then
-        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable) .. " == [[" .. value .. "]]";
+        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable)
+                .. " == [[" .. value .. "]]";
       elseif (op  == "find('%s')") then
-        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable) .. ":find([[" .. value .. "]], 1, true)";
+        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable)
+                .. ":find([[" .. value .. "]], 1, true)";
       elseif (op == "match('%s')") then
-        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. ":match([[" .. value .. "]], 1, true)";
+        check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]",  variable)
+                .. ":match([[" .. value .. "]], 1, true)";
       end
     end
     -- If adding a new condition type, don't forget to adjust the validator in the options code
 
     if (cType == "timer" and value) then
-      recheckCode = "  nextTime = state[" .. trigger .. "] and state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. " and (state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. " - " .. value .. ")\n";
+      recheckCode = "  nextTime = state[" .. trigger .. "] and state[" .. trigger .. "]"
+                    .. string.format("[%q]",  variable) .. " and (state[" .. trigger .. "]"
+                    .. string.format("[%q]",  variable) .. " - " .. value .. ")\n"
       recheckCode = recheckCode .. "  if (nextTime and (not recheckTime or nextTime < recheckTime) and nextTime >= now) then\n"
       recheckCode = recheckCode .. "    recheckTime = nextTime\n";
       recheckCode = recheckCode .. "  end\n"
@@ -435,8 +456,10 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
         local propertyData = properties and properties[change.property]
         if (propertyData and propertyData.type) then
           if (propertyData.setter) then
-            ret = ret .. "      propertyChanges['" .. change.property .. "'] = " .. formatValueForAssignment(propertyData.type, change.value) .. "\n";
-            if (debug) then ret = ret .. "      print('- " .. change.property .. " " .. formatValueForAssignment(propertyData.type, change.value) .. "')\n"; end
+            ret = ret .. "      propertyChanges['" .. change.property .. "'] = "
+                      .. formatValueForAssignment(propertyData.type, change.value) .. "\n"
+            if (debug) then ret = ret .. "      print('- " .. change.property .. " "
+                      .. formatValueForAssignment(propertyData.type, change.value) .. "')\n" end
           elseif (propertyData.action) then
             local pathToCustomFunction = "nil";
             local pathToFormatter = "nil"
@@ -444,16 +467,20 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
               and Private.ExecEnv.customConditionsFunctions[id][conditionNumber]
               and  Private.ExecEnv.customConditionsFunctions[id][conditionNumber].changes
               and Private.ExecEnv.customConditionsFunctions[id][conditionNumber].changes[changeNum]) then
-              pathToCustomFunction = string.format("Private.ExecEnv.customConditionsFunctions[%q][%s].changes[%s]", id, conditionNumber, changeNum);
+              pathToCustomFunction = string.format("Private.ExecEnv.customConditionsFunctions[%q][%s].changes[%s]",
+                                                   id, conditionNumber, changeNum);
             end
             if Private.ExecEnv.conditionTextFormatters[id]
               and Private.ExecEnv.conditionTextFormatters[id][conditionNumber]
               and Private.ExecEnv.conditionTextFormatters[id][conditionNumber].changes
               and Private.ExecEnv.conditionTextFormatters[id][conditionNumber].changes[changeNum] then
-              pathToFormatter = string.format("Private.ExecEnv.conditionTextFormatters[%q][%s].changes[%s]", id, conditionNumber, changeNum);
+              pathToFormatter = string.format("Private.ExecEnv.conditionTextFormatters[%q][%s].changes[%s]",
+                                              id, conditionNumber, changeNum);
             end
-            ret = ret .. "     region:" .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction, pathToFormatter) .. ")" .. "\n";
-            if (debug) then ret = ret .. "     print('# " .. propertyData.action .. "(" .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction, pathToFormatter) .. "')\n"; end
+            ret = ret .. "     region:" .. propertyData.action .. "("
+                         .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction, pathToFormatter) .. ")" .. "\n";
+            if (debug) then ret = ret .. "     print('# " .. propertyData.action .. "("
+                         .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction, pathToFormatter) .. "')\n"; end
           end
         end
       end
@@ -465,8 +492,10 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
         local propertyData = properties and properties[change.property]
         if (propertyData and propertyData.type and propertyData.setter) then
           ret = ret .. "      if(propertyChanges['" .. change.property .. "'] ~= nil) then\n"
-          ret = ret .. "        propertyChanges['" .. change.property .. "'] = " .. formatValueForAssignment(propertyData.type, change.value) .. "\n";
-          if (debug) then ret = ret .. "        print('- " .. change.property .. " " .. formatValueForAssignment(propertyData.type,  change.value) .. "')\n"; end
+          ret = ret .. "        propertyChanges['" .. change.property .. "'] = "
+                       .. formatValueForAssignment(propertyData.type, change.value) .. "\n"
+          if (debug) then ret = ret .. "        print('- " .. change.property .. " "
+                       .. formatValueForAssignment(propertyData.type,  change.value) .. "')\n" end
           ret = ret .. "      end\n"
         end
       end
@@ -496,7 +525,9 @@ function Private.GetSubRegionProperties(data, properties)
       if subProperties then
         for key, property in pairs(subProperties) do
           subIndex[key] = subIndex[key] and subIndex[key] + 1 or 1
-          property.display = { subIndex[key] .. ". " .. subRegionTypeData.displayName, property.display, property.defaultProperty }
+          property.display = { subIndex[key] .. ". " .. subRegionTypeData.displayName,
+                               property.display,
+                               property.defaultProperty }
           properties["sub." .. index .. "." .. key ] = property;
         end
       end

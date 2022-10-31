@@ -11,23 +11,96 @@ Private.frames = {}
 --- @field id auraId
 --- @field cloneId string?
 
+--- @alias non_transmissable_field table<string, non_transmissable_field|boolean>
+
+--- @class multiUnitUnits
+--- @field nameplate table<string, boolean>
+--- @field boss table<string, boolean>
+--- @field arena table<string, boolean>
+--- @field group table<string, boolean>
+--- @field party table<string, boolean>
+--- @field raid table<string, boolean>
+
 --- @class Private
---- @field ActivateAuraEnvironment fun(id: auraId?, cloneId: string?, state: state?, states: state[]?, onlyConfig: boolean?)
+--- @field ActivateAuraEnvironment fun(id: auraId?, cloneId: string?, state: state?, states: state[]?, config: boolean?)
 --- @field ActivateAuraEnvironmentForRegion fun(region: table, onlyConfig: boolean?)
+--- @field AddToWatchedTriggerDelay fun(id: auraId, triggerNum: number)
+--- @field anchor_frame_types table<anchorFrameTypes, string>
+--- @field anchor_frame_types_group table<anchorFrameTypes, string>
 --- @field AuraWarnings AuraWarnings
 --- @field AuraEnvironmentWrappedSystem AuraEnvironmentWrappedSystem
 --- @field callbacks callbacks
---- @field DebugLog debugLog
+--- @field CanHaveTooltip fun(data: auraData): boolean
+--- @field ContainsCustomPlaceHolder fun(input: string): boolean
+--- @field ContainsAnyPlaceHolders fun(input: string): boolean
+--- @field ContainsPlaceHolders fun(input: string, placeholders: string): boolean
 --- @field clones table<auraId, table<string, table>>
+--- @field customActionsFunctions table<auraId, table<string, function?>>
+--- @field DebugLog debugLog
+--- @field EnsureRegion fun(id: auraId, cloneId: string?)
 --- @field ExecEnv table
+--- @field FixGroupChildrenOrderForGroup fun(data: auraData)
+--- @field frames table<string, table>
+--- @field GetDataByUID fun(uid: uid): auraData
+--- @field GetErrorHandlerId fun(id: auraId, context: string): function
+--- @field GetErrorHandlerUid fun(uid: uid, context: string): function
+--- @field GetRegionByUID fun(uid: uid, cloneId: string): Region
+--- @field glow_types table<string, string>
+--- @field inverse_point_types table<string, string>
+--- @field IsCLEUSubevent fun(subevent: string): boolean
+--- @field item_slot_types string[]
 --- @field LibSpecWrapper LibSpecWrapper
+--- @field linked table<auraId, number>
+--- @field LoadFunction fun(input: string): function
+--- @field LoadOptions fun(msg: string?)
+--- @field multiUnitUnits multiUnitUnits
+--- @field non_transmissable_fields table<string, non_transmissable_field>
+--- @field non_transmissable_fields_v2000 table<string, non_transmissable_field>
+--- @field orientation_types table<string, string>
+--- @field orientation_with_circle_types table<string, string>
+--- @field point_types table<string, string>
+--- @field PreShowModels fun()
+--- @field QuotedString fun(input: string): string
 --- @field regions table<auraId, table>
+--- @field reset_ranged_swing_spells table<number, boolean>
+--- @field reset_swing_spells table<number, boolean>
+--- @field noreset_swing_spells table<number, boolean>
+--- @field RunCustomTextFunc fun(region: table, f: function)
+--- @field spark_rotation_types table<string, string>
+--- @field spec_types string[]
+--- @field spec_types_3 string[]
+--- @field spec_types_2 string[]
+--- @field StartProfileAura fun(id: auraId)
+--- @field StartProfileSystem fun(system: string)
+--- @field StopProfileAura fun(id: auraId)
+--- @field StopProfileSystem fun(system: string)
+--- @field tick_placement_modes table<string, string>
+--- @field TraverseAll fun(data: auraData): fun(): auraData, auraData
+--- @field TraverseAllChildren fun(data: auraData): fun(): auraData, auraData
+--- @field TraverseGroups fun(data: auraData): fun(): auraData, auraData
+--- @field TraverseLeafs fun(data: auraData): fun(): auraData, auraData
+--- @field TraverseLeafsOrAura fun(data: auraData): fun(): auraData, auraData
+--- @field TraverseParents fun(data: auraData): fun(): auraData, auraData
+--- @field TraverseSubGroups fun(data: auraData): fun(): auraData, auraData
 --- @field UIDtoID fun(uid: uid): auraId
+--- @field UnitEventList table<string, boolean>
+--- @field UnitPlayerControlledFixed fun(unit: string): boolean
+--- @field UpdatedTriggerState fun(id: auraId)
+--- @field watched_trigger_events table<auraId, table<integer, table<integer, boolean>>>
 
 --- @alias triggerTypes
 --- | "aura"
 --- | "aura2"
 --- | "custom"
+
+--- @alias anchorFrameTypes
+--- | "SCREEN"
+--- | "PRD"
+--- | "MOUSE"
+--- | "SELECTFRAME"
+--- | "NAMEPLATE"
+--- | "UNITFRAME"
+--- | "CUSTOM"
 
 --- @class triggerData
 --- @field buffShowOn string
@@ -92,6 +165,7 @@ Private.frames = {}
 
 
 --- @class auraData
+--- @field anchorFrameType anchorFrameTypes?
 --- @field arcLength number
 --- @field actions actions
 --- @field conditions conditionData[]|nil
@@ -108,6 +182,57 @@ Private.frames = {}
 --- @field subRegions subRegionData|nil
 --- @field triggers triggerUntriggerData[]
 --- @field url string|nil
+
+--- @class LibCustomGlow-1.0
+--- @field ButtonGlow_Start fun(frame: Frame)
+--- @field ButtonGlow_Stop fun(frame: Frame)
+--- @field AutoCastGlow_Start fun(frame: Frame)
+--- @field AutoCastGlow_Stop fun(frame: Frame)
+--- @field PixelGlow_Start fun(frame: Frame)
+--- @field PixelGlow_Stop fun(frame: Frame)
+
+--- @class LibGetFrame-1.0
+--- @field GetUnitFrame fun(unit: string)
+--- @field GetUnitNameplate fun(unit: string)
+--- @field StartProfile fun()
+--- @field StopProfile fun()
+--- @field GetProfileData fun(): table
+
+--- @class LibSerialize
+--- @field SerializeEx fun(self: LibSerialize,options: table, input: any)
+--- @field Deserialize fun(self: LibSerialize, input: string): table
+
+--- @class LibClassicDurations
+--- @field RegisterFrame fun(self: LibClassicDurations, frame: string)
+--- @field Register fun(self: LibClassicDurations, frame: string)
+--- @field GetAuraDurationByUnit fun(self: LibClassicDurations, unit: string, spellId: number, source: string?, name: string?)
+
+--- @class LibDeflate
+--- @field CompressDeflate fun(self: LibDeflate, input: string, options: table): string
+--- @field EncodeForPrint fun(self: LibDeflate, input: string): string)
+--- @field EncodeForWoWAddonChannel fun(self: LibDeflate, input: string): string
+--- @field DecodeForPrint fun(self: LibDeflate, input: string): string
+--- @field DecodeForWoWAddonChannel fun(self: LibDeflate, input: string): string
+--- @field DecompressDeflate fun(self: LibDeflate, input: string): string
+
+--- @class LibDBIcon-1.0
+--- @field Hide fun(self: LibDBIcon-1.0, name: string)
+--- @field Register fun(self: LibDBIcon-1.0, name: string, broker: table, options: table)
+--- @field Show fun(self: LibDBIcon-1.0, name: string)
+
+--- @class LibSharedMedia-3.0
+--- @field Fetch fun(self: LibSharedMedia-3.0, mediaType: string, name: string)
+--- @field HashTable fun(self: LibSharedMedia-3.0, mediaType: string): table<string, string>
+--- @field Register fun(self: LibSharedMedia-3.0, mediaType: string, name: string, path: string|number, flags: number?)
+--- @field RegisterCallback fun(self: LibSharedMedia-3.0, callbackType: string, callback: fun(_: any, mediaType: string, key: string))
+--- @field LOCALE_BIT_western number
+--- @field LOCALE_BIT_ruRU number
+
+--- @class LibCompress
+--- @field Decompress fun(self: LibCompress, input: string): string
+
+--- @class AceTimer-3.0
+--- @field Embed fun(self: AceTimer-3.0, t: table)
 
 WeakAuras.normalWidth = 1.3
 WeakAuras.halfWidth = WeakAuras.normalWidth / 2
@@ -239,13 +364,17 @@ function WeakAuras.IsLibsOK()
 end
 
 if not WeakAuras.IsLibsOK() then
-  C_Timer.After(1, function() WeakAuras.prettyPrint("WeakAuras is missing necessary libraries. Please reinstall a proper package.") end)
+  C_Timer.After(1, function()
+    WeakAuras.prettyPrint("WeakAuras is missing necessary libraries. Please reinstall a proper package.")
+  end)
 end
 
 -- These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile
+--- @type fun(regionType: string, createFunction: function, modifyFunction: function, defaults: table, properties: table|function|nil, validate: function?))
 function WeakAuras.RegisterRegionType()
 end
 
+--- @type fun(regionType: string, createOptions: function, icon: string|function, displayName: string, createThumbnail: function?, modifyThumbnail: function?, description: string?, templates: table?, getAnchors: function?)
 function WeakAuras.RegisterRegionOptions()
 end
 
@@ -270,6 +399,7 @@ end
 Private.ExecEnv = {}
 
 -- If WeakAuras shuts down due to being installed on the wrong target, keep the bindings from erroring
+--- @type fun(type: string)
 function WeakAuras.StartProfile()
 end
 
@@ -283,3 +413,4 @@ function WeakAuras.CountWagoUpdates()
   -- XXX this is to work around the Companion app trying to use our stuff!
   return 0
 end
+

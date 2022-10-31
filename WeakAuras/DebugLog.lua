@@ -67,7 +67,9 @@ function Private.DebugLog.Print(uid, text, ...)
     end
 
     if #log > 1000 then
-      Private.AuraWarnings.UpdateWarning(uid, "Debug Log", "warning", L["Debug Log contains more than 1000 entries"], true)
+      Private.AuraWarnings.UpdateWarning(uid, "Debug Log", "warning",
+                                         L["Debug Log contains more than 1000 entries"],
+                                         true)
     end
   end
 end

@@ -303,7 +303,8 @@ local function modify(parent, region, data)
     region.background:SetBaseTexture(backgroundTexture);
     region.background:SetFrame(backgroundTexture, region.backgroundFrame or 1);
     region.background:SetDesaturated(data.desaturateBackground)
-    region.background:SetVertexColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
+    region.background:SetVertexColor(data.backgroundColor[1], data.backgroundColor[2],
+                                     data.backgroundColor[3], data.backgroundColor[4])
     region.background:SetBlendMode(data.blendMode);
 
     if (data.hideBackground) then

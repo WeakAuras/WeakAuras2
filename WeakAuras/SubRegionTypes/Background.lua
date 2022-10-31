@@ -23,7 +23,8 @@ do
         region.parent = parent
     end
 
-    WeakAuras.RegisterSubRegionType("subbackground", L["Background"], subSupports, subCreate, subModify, noop, noop, {}, nil, {}, false);
+    WeakAuras.RegisterSubRegionType("subbackground", L["Background"], subSupports, subCreate, subModify,
+                                    noop, noop, {}, nil, {}, false)
 end
 
 -- Foreground for aurabar
@@ -53,5 +54,6 @@ do
         region.parent = parent
     end
 
-    WeakAuras.RegisterSubRegionType("subforeground", L["Foreground"], subSupports, subCreate, subModify, noop, noop, {}, nil, {}, false);
+    WeakAuras.RegisterSubRegionType("subforeground", L["Foreground"], subSupports, subCreate, subModify,
+                                    noop, noop, {}, nil, {}, false)
 end

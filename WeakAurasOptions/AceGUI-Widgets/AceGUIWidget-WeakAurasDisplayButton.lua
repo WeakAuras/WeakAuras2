@@ -1818,7 +1818,9 @@ local function Constructor()
   downgrouptexture:SetAllPoints(downgroup);
   downgroup:SetNormalTexture(downgrouptexture);
   downgroup:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp");
-  downgroup:SetScript("OnEnter", function() Show_Tooltip(button, L["Move Down"], L["Move this display down in its group's order"]) end);
+  downgroup:SetScript("OnEnter", function()
+    Show_Tooltip(button, L["Move Down"], L["Move this display down in its group's order"])
+  end)
   downgroup:SetScript("OnLeave", Hide_Tooltip);
   downgroup:Hide();
 
