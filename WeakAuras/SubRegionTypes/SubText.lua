@@ -193,24 +193,6 @@ local function modify(parent, region, parentData, data, first)
   region:SetParent(parent)
   local text = region.text;
 
-  -- Legacy members in icon
-  -- Can we remove them with 9.0 ?
-  if parentData.regionType == "icon" then
-    if not parent.stacks then
-      parent.stacks = text
-    elseif not parent.text2 then
-      parent.text2 = text
-    end
-  elseif parentData.regionType == "aurabar" then
-    if not parent.timer then
-      parent.timer = text
-    elseif not parent.text then
-      parent.text = text
-    elseif not parent.stacks then
-      parent.stacks = text
-    end
-  end
-
   local fontPath = SharedMedia:Fetch("font", data.text_font);
   text:SetFont(fontPath, data.text_fontSize, data.text_fontType);
   if not text:GetFont() then -- Font invalid, set the font but keep the setting
