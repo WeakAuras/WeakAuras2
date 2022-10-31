@@ -3840,12 +3840,26 @@ do
 end
 
 function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
-  local tooltip = WeakAuras.GetHiddenTooltip();
-  tooltip:ClearLines();
-  tooltip:SetUnitAura(unit, index, filter);
-  local tooltipTextLine = select(5, tooltip:GetRegions())
+  local tooltipText = ""
+  if WeakAuras.IsRetail() then
+    local tooltipData = C_TooltipInfo.GetUnitAura(unit, index, filter)
+    local secondLine = tooltipData.lines[2] -- This is the line we want
+    if secondLine then
+      for _, arg in ipairs(secondLine.args) do
+        if arg.field == "leftText" then
+          tooltipText = arg.stringVal or ""
+        end
+      end
+    end
+  else
+    local tooltip = WeakAuras.GetHiddenTooltip();
+    tooltip:ClearLines();
+    tooltip:SetUnitAura(unit, index, filter);
+    local tooltipTextLine = select(5, tooltip:GetRegions())
+    tooltipText = tooltipTextLine and tooltipTextLine:GetObjectType() == "FontString" and tooltipTextLine:GetText() or "";
+  end
 
-  local tooltipText = tooltipTextLine and tooltipTextLine:GetObjectType() == "FontString" and tooltipTextLine:GetText() or "";
+
   local debuffType = "none";
   local found = false;
   local tooltipSize = {};
