@@ -214,6 +214,10 @@ function OptionsPrivate.CreateFrame()
     if OptionsPrivate.Private.personalRessourceDisplayFrame then
       OptionsPrivate.Private.personalRessourceDisplayFrame:OptionsClosed()
     end
+
+    if frame.moversizer then
+      frame.moversizer:OptionsClosed()
+    end
   end)
 
   local width, height

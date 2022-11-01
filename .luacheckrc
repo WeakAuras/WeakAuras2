@@ -70,6 +70,7 @@ globals = {
 	-- FrameXML misc
 	"BackdropTemplateMixin",
 	"C_Timer",
+	"C_EditMode",
 	"ChatFrame_AddMessageEventFilter",
 	"Clamp",
 	"COMBAT_TEXT_SCROLL_FUNCTION",
@@ -83,6 +84,7 @@ globals = {
 	"CreateVector3D",
 	"DEFAULT_CHAT_FRAME",
 	"DevTools_Dump",
+	"EditModeUtil",
 	"GameTooltip_Hide",
 	"GameTooltip_SetDefaultAnchor",
 	"GameTooltip_UnitColor",

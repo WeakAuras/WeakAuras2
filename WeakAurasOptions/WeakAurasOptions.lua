@@ -807,6 +807,10 @@ function WeakAuras.ShowOptions(msg)
     OptionsPrivate.Private.personalRessourceDisplayFrame:OptionsOpened();
   end
 
+  if frame.moversizer then
+    frame.moversizer:OptionsOpened()
+  end
+
   if not(firstLoad) then
     -- Show what was last shown
     local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
@@ -837,6 +841,7 @@ function WeakAuras.ShowOptions(msg)
   if firstLoad then
     frame:ShowTip()
   end
+
 end
 
 function OptionsPrivate.UpdateOptions()
