@@ -4001,6 +4001,7 @@ globals = {
 	"GetMaterialTextColors",
 	"GetMaxUIPanelsWidth",
 	"GetMeleeMissChance",
+	"GetMeleeHaste",
 	"GetMessageTypeColor",
 	"GetMessageTypeState",
 	"GetMoneyString",

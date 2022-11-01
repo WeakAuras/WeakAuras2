@@ -8561,6 +8561,16 @@ Private.event_prototypes = {
         conditionType = "number"
       },
       {
+        name = "meleehastepercent",
+        display = L["Melee Haste (%)"],
+        type = "number",
+        init = "GetMeleeHaste()",
+        store = true,
+        conditionType = "number",
+        enable = WeakAuras.IsWrathClassic(),
+        hidden = not WeakAuras.IsWrathClassic()
+      },
+      {
         name = "expertiserating",
         display = L["Expertise Rating"],
         type = "number",
