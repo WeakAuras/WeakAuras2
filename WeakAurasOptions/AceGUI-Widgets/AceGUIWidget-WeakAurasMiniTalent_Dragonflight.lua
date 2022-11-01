@@ -1,6 +1,10 @@
+local AddonName, OptionsPrivate = ...
+
 if not WeakAuras.IsLibsOK() then
   return
 end
+
+local keepOpenForReload = {}
 
 local widgetType, widgetVersion = "WeakAurasMiniTalent", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
@@ -215,6 +219,7 @@ end
 local methods = {
   OnAcquire = function(self)
     self:SetDisabled(false)
+    self.acquired = true
   end,
 
   OnRelease = function(self)
@@ -224,6 +229,7 @@ local methods = {
     self.linePool:ReleaseAll()
     self.value = nil
     self.list = nil
+    self.acquired = false
   end,
 
   SetList = function(self, list)
@@ -331,11 +337,15 @@ local methods = {
   SetLabel = function(self, text) end,
   SetMultiselect = function(self, multi) end,
 
-  ToggleView = function(self)
-    if not self.open then
-      self.open = true
+  ToggleView = function(self, force)
+    if force ~= nil then
+      self.open = force
     else
-      self.open = nil
+      if not self.open then
+        self.open = true
+      else
+        self.open = nil
+      end
     end
     TalentFrame_Update(self)
     self.parent:DoLayout()
@@ -397,6 +407,30 @@ local function Constructor()
     widget[method] = func
   end
   talentFrame.obj = widget
+
+  local function OnBeforeReload()
+    if widget.acquired then
+      local user = widget:GetUserDataTable()
+      if user and user.path then
+        keepOpenForReload[user.path[#user.path]] = widget.open
+      end
+    end
+  end
+
+  local function OnAfterReload()
+    if widget.acquired then
+      local user = widget:GetUserDataTable()
+      if user and user.path then
+        if keepOpenForReload[user.path[#user.path]] then
+          widget:ToggleView(true)
+          keepOpenForReload[user.path[#user.path]] = nil
+        end
+      end
+    end
+  end
+
+  OptionsPrivate.Private.callbacks:RegisterCallback("BeforeReload", OnBeforeReload)
+  OptionsPrivate.Private.callbacks:RegisterCallback("AfterReload", OnAfterReload)
 
   return AceGUI:RegisterAsWidget(widget)
 end

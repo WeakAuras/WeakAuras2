@@ -686,6 +686,29 @@ if WeakAuras.IsClassicOrBCCOrWrath() then
   end
 end
 
+if WeakAuras.IsRetail() then
+  function WeakAuras.CheckTalentSpellId(spellId)
+    local configId = C_ClassTalents.GetActiveConfigID()
+    local configInfo = C_Traits.GetConfigInfo(configId)
+    for _, treeId in ipairs(configInfo.treeIDs) do
+      local nodes = C_Traits.GetTreeNodes(treeId)
+      for _, nodeId in ipairs(nodes) do
+        local node = C_Traits.GetNodeInfo(configId, nodeId)
+        if node.ID ~= 0 then
+          for _, talentId in ipairs(node.entryIDs) do
+            local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
+            local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
+            if definitionInfo.spellID == spellId then
+              local spellName, _, icon = GetSpellInfo(spellId)
+              return spellName, icon, node.activeRank
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
 function WeakAuras.CheckPvpTalentByIndex(index)
   local checkTalentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1)
   if checkTalentSlotInfo then
@@ -6002,14 +6025,13 @@ Private.event_prototypes = {
         if (trigger.talent.multi) then
           local ret = [[
             local active = false;
-            local activeIcon;
-            local activeName;
-            local _
+            local activeIcon, activeName, _
           ]]
           if WeakAuras.IsRetail() then
             ret = ret .. [[
               local index
               local firstLoop = true
+              local rank = 0
             ]]
           else
             ret = ret .. [[
@@ -6038,34 +6060,35 @@ Private.event_prototypes = {
               local ret2 = [[
                 local spellId = %s
                 local shouldBeActive = %s
-                local hasTalent = IsPlayerSpell(spellId)
                 if spellId then
-                  activeName, _, activeIcon = GetSpellInfo(spellId)
-                end
-                if hasTalent then
-                  if shouldBeActive then
-                    if firstLoop then
-                      active = true
+                  local hasTalent = IsPlayerSpell(spellId)
+                  activeName, activeIcon, rank = WeakAuras.CheckTalentSpellId(spellId)
+                  if activeName ~= nil then
+                    local hasTalent = rank > 0
+                    if hasTalent then
+                      if shouldBeActive then
+                        if firstLoop then
+                          active = true
+                        else
+                          active = active and true
+                        end
+                      else
+                        active = false
+                      end
+                      firstLoop = false
                     else
-                      active = active and true
-                    end
-                  else
-                    active = false
-                  end
-                  firstLoop = false
-                elseif hasTalent == false then
-                  if shouldBeActive then
-                    active = false
-                  else
-                    if firstLoop then
-                      active = true
-                    else
-                      active = active and true
+                      if shouldBeActive then
+                        active = false
+                      else
+                        if firstLoop then
+                          active = true
+                        else
+                          active = active and true
+                        end
+                      end
+                      firstLoop = false
                     end
                   end
-                  firstLoop = false
-                else
-                  -- nil case means talent index in data is not known for this class/spec
                 end
               ]]
               ret = ret .. ret2:format(index, value and "true" or "false")
@@ -6172,6 +6195,7 @@ Private.event_prototypes = {
           end
         end,
         test = "active",
+        reloadOptions = true,
       },
       {
         name = "inverse",
@@ -6194,6 +6218,32 @@ Private.event_prototypes = {
         init = "activeName",
         store = "true",
         test = "true"
+      },
+      {
+        display = L["Rank"],
+        desc = L["Check if a single talent match a Rank"],
+        name = "stacks",
+        type = "number",
+        conditionType = "number",
+        init = "rank",
+        store = true,
+        enable = function(trigger)
+          if WeakAuras.IsRetail() then
+            if trigger.use_class and trigger.class
+            and trigger.use_spec and trigger.spec
+            and trigger.use_talent == false
+            and trigger.talent and type(trigger.talent.multi) == "table"
+            then
+              local count, value = 0
+              for _, v in pairs(trigger.talent.multi) do
+                value = v
+                count = count + 1
+              end
+              return count == 1 and value == true
+            end
+          end
+          return false
+        end,
       },
     },
     automaticrequired = true,
