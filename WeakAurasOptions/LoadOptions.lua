@@ -835,7 +835,13 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               end
               WeakAuras.Add(data);
               if (reloadOptions) then
+                -- Hack specifally for dragon flight mini talent
+                -- That widget needs to be informed before and
+                -- after a reload
+                OptionsPrivate.Private.callbacks:Fire("BeforeReload")
                 WeakAuras.ClearAndUpdateOptions(data.id)
+                WeakAuras.FillOptions()
+                OptionsPrivate.Private.callbacks:Fire("AfterReload")
               end
               OptionsPrivate.Private.ScanForLoads({[data.id] = true});
               WeakAuras.UpdateThumbnail(data);
