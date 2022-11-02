@@ -7349,20 +7349,12 @@ Private.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      if not trigger.use_inverse then
-        local name = GetItemInfo(trigger.itemName);
-        return name;
-      else
-        return nil;
-      end
+      local name = GetItemInfo(trigger.itemName);
+      return name;
     end,
     iconFunc = function(trigger)
-      if not trigger.use_inverse then
-        local _, _, _, _, icon = GetItemInfoInstant(trigger.itemName or 0);
-        return icon;
-      else
-        return nil;
-      end
+      local _, _, _, _, icon = GetItemInfoInstant(trigger.itemName or 0);
+      return icon;
     end,
     hasItemID = true,
     automaticrequired = true
