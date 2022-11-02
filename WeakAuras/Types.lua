@@ -3613,7 +3613,20 @@ if WeakAuras.IsRetail() then
     ["columns"] = 8
   }
 
-  for _, profession in ipairs({"Tailoring", "Blacksmithing", "Jewelcrafting", "Leatherworking", "Enchanting"}) do
+  local professions = {
+    "Blacksmithing",
+    "Enchanting",
+    "Tailoring",
+    "Jewelcrafting",
+    "Alchemy",
+    "Leatherworking",
+    "Engineering",
+    "Herbalism",
+    "Mining",
+    "Skinning",
+    "Inscription",
+  }
+  for _, profession in ipairs(professions) do
     local name = ("SpecDial_Pip_Flipbook_%s"):format(profession)
     WeakAuras.StopMotion.texture_data[name] = {
       ["count"] = 24,
@@ -3625,6 +3638,13 @@ if WeakAuras.IsRetail() then
     WeakAuras.StopMotion.texture_data[name] = {
       ["count"] = 16,
       ["rows"] = 4,
+      ["columns"] = 6
+    }
+    WeakAuras.StopMotion.texture_types.Blizzard[name] = name
+    name = ("SpecDial_Fill_Flipbook_%s"):format(profession)
+    WeakAuras.StopMotion.texture_data[name] = {
+      ["count"] = 36,
+      ["rows"] = 6,
       ["columns"] = 6
     }
     WeakAuras.StopMotion.texture_types.Blizzard[name] = name
