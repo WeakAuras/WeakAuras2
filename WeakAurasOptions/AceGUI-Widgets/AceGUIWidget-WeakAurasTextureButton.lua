@@ -28,9 +28,10 @@ local methods = {
   end,
   ["OnRelease"] = function(self)
     self:ClearPick();
+    self:SetOnUpdate()
     self.texture:SetTexture();
   end,
-  ["SetTexture"] = function(self, texturePath, name)
+  ["SetTexture"] = function(self, texturePath, name, IsStopMotion)
     self.texture:SetTexCoord(0, 1, 0, 1)
     if GetAtlasInfo(texturePath) then
       self.texture:SetAtlas(texturePath);
@@ -41,6 +42,7 @@ local methods = {
     end
     self.texture.path = texturePath;
     self.texture.name = name;
+    self.texture.IsStopMotion = IsStopMotion
   end,
   ["ChangeTexture"] = function(self, r, g, b, a, rotate, discrete_rotation, rotation, mirror, blendMode)
     if not self.texture.IsAtlas then
@@ -73,7 +75,7 @@ local methods = {
     self.texture:SetBlendMode(blendMode);
   end,
   ["SetTexCoord"] = function(self, left, right, top, bottom)
-    if self.texture.IsAtlas then
+    if self.texture.IsAtlas and not self.texture.IsStopMotion then
       self.texture:SetAtlas(self.texture.path)
     else
       self.texture:SetTexCoord(left, right, top, bottom);

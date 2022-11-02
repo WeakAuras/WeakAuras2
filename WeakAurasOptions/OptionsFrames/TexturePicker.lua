@@ -61,16 +61,15 @@ local function GetAll(baseObject, path, property, default)
   return result
 end
 
-local function SetAll(baseObject, path, property, value)
+local function SetAll(baseObject, path, property, value, width, height)
   local valueFromPath = OptionsPrivate.Private.ValueFromPath
   for child in OptionsPrivate.Private.TraverseLeafsOrAura(baseObject) do
     local object = valueFromPath(child, path)
       if object then
         object[property] = value
-        local atlasInfo = GetAtlasInfo(value)
-        if atlasInfo then
-          child.width = atlasInfo.width
-          child.height = atlasInfo.height
+        if width and height then
+          child.width = width
+          child.height = height
         end
         WeakAuras.Add(child)
         WeakAuras.ClearAndUpdateOptions(child.id)
@@ -246,20 +245,28 @@ local function ConstructTexturePicker(frame)
 
   function group.Pick(self, texturePath)
     local pickedwidget;
-    for index, widget in ipairs(scroll.children) do
+    for index, widget in ipairs(group.textureWidgets) do
       widget:ClearPick();
       if(widget:GetTexturePath() == texturePath) then
         pickedwidget = widget;
       end
     end
+    local width, height
     if(pickedwidget) then
       pickedwidget:Pick();
+      if not pickedwidget.texture.IsStopMotion then
+        local atlasInfo = GetAtlasInfo(pickedwidget.texture.path)
+        if atlasInfo then
+          width = atlasInfo.width
+          height = atlasInfo.height
+        end
+      end
     end
 
     wipe(group.selectedTextures)
     group.selectedTextures[texturePath] = true
 
-    SetAll(self.baseObject, self.path, self.properties.texture, texturePath)
+    SetAll(self.baseObject, self.path, self.properties.texture, texturePath, width, height)
 
     group:UpdateList();
     local status = dropdown.status or dropdown.localstatus
