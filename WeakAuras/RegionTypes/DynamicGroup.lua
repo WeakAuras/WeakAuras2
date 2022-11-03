@@ -798,7 +798,7 @@ local function modify(parent, region, data)
   region:SetScale(data.scale and data.scale > 0 and data.scale <= 10 and data.scale or 1)
   WeakAuras.regionPrototype.modify(parent, region, data)
 
-  if data.border and (data.grow ~= "CUSTOM" and not data.useAnchorPerUnit) then
+  if data.border and not data.useAnchorPerUnit then
     local background = region.background
     background:SetBackdrop({
       edgeFile = data.borderEdge ~= "None" and SharedMedia:Fetch("border", data.borderEdge) or "",
