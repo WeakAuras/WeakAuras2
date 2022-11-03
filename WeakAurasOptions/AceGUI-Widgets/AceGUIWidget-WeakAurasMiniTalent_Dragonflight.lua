@@ -278,30 +278,30 @@ local methods = {
     local talentWidth = 1612
     local talentHeight = 856
     local talentIconSize = 36
-    local LeftPannelCenter = { x = talentWidth / 4, y = talentHeight / 2 }
-    local RightPannelCenter = { x = (talentWidth / 4) * 3, y = talentHeight / 2 }
-    local pannelScaleW = 1.5
-    local pannelScaleH = 1.5
+    local LeftPanelCenter = { x = talentWidth / 4, y = talentHeight / 2 }
+    local RightPanelCenter = { x = (talentWidth / 4) * 3, y = talentHeight / 2 }
+    local panelScaleW = 1.5
+    local panelScaleH = 1.5
     self.scale = self.saveSize.fullWidth / talentWidth
     for _, b in pairs(self.buttons) do
-      if b.posX < talentWidth / 2 then -- left pannel
-        b.posX = b.posX - LeftPannelCenter.x
-        b.posX = b.posX * pannelScaleW
-        b.posX = b.posX + LeftPannelCenter.x - talentIconSize / 2
-        b.posY = b.posY - LeftPannelCenter.y
-        b.posY = b.posY * pannelScaleH
-        b.posY = b.posY + LeftPannelCenter.y * pannelScaleH
-      else                     -- right pannel
-        b.posX = b.posX - RightPannelCenter.x
-        b.posX = b.posX * pannelScaleW
-        b.posX = b.posX + RightPannelCenter.x + talentIconSize / 2
-        b.posY = b.posY - RightPannelCenter.y
-        b.posY = b.posY * pannelScaleH
-        b.posY = b.posY + RightPannelCenter.y * pannelScaleH
+      if b.posX < talentWidth / 2 then -- left panel
+        b.posX = b.posX - LeftPanelCenter.x
+        b.posX = b.posX * panelScaleW
+        b.posX = b.posX + LeftPanelCenter.x - talentIconSize / 2
+        b.posY = b.posY - LeftPanelCenter.y
+        b.posY = b.posY * panelScaleH
+        b.posY = b.posY + LeftPanelCenter.y * panelScaleH
+      else                     -- right panel
+        b.posX = b.posX - RightPanelCenter.x
+        b.posX = b.posX * panelScaleW
+        b.posX = b.posX + RightPanelCenter.x + talentIconSize / 2
+        b.posY = b.posY - RightPanelCenter.y
+        b.posY = b.posY * panelScaleH
+        b.posY = b.posY + RightPanelCenter.y * panelScaleH
       end
     end
 
-    self.saveSize.fullHeight = talentHeight * self.scale * pannelScaleW
+    self.saveSize.fullHeight = talentHeight * self.scale * panelScaleW
     if self.list[999] then
       self.background:SetAtlas(self.list[999])
       self.background:SetBlendMode("ADD")
