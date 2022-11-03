@@ -2449,7 +2449,7 @@ end
 function Private.AddMany(tbl, takeSnapshots)
   --- @type table<auraId, auraData>
   local idtable = {};
-  --- @type table<auraId, boolean> The anchoring targetes of other auras
+  --- @type table<auraId, boolean> The anchoring targets of other auras
   local anchorTargets = {}
   for _, data in ipairs(tbl) do
     -- There was an unfortunate bug in update.lua in 2022 that resulted
