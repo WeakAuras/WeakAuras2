@@ -2449,7 +2449,7 @@ end
 function Private.AddMany(tbl, takeSnapshots)
   --- @type table<auraId, auraData>
   local idtable = {};
-  --- @type table<auraId, boolean> The anchoring targets of other auras
+  --- @type table<auraId, auraId> The anchoring targets of other auras, key is the anchor, value is the aura that is anchoring
   local anchorTargets = {}
   for _, data in ipairs(tbl) do
     -- There was an unfortunate bug in update.lua in 2022 that resulted
@@ -2461,7 +2461,23 @@ function Private.AddMany(tbl, takeSnapshots)
     end
     idtable[data.id] = data;
     if data.anchorFrameType == "SELECTFRAME" and data.anchorFrameFrame and data.anchorFrameFrame:sub(1, 10) == "WeakAuras:" then
-      anchorTargets[data.anchorFrameFrame:sub(11)] = true
+      anchorTargets[data.anchorFrameFrame:sub(11)] = data.id
+    end
+  end
+
+  -- Now fix up anchors, see #3971, where aura p was anchored to aura c and where c was a child of p, thus c was anchored to p
+  -- The game used to detect such anchoring circles. We can't detect all of them, but at least detect the one from the ticket.
+  for target, source in pairs(anchorTargets) do
+    -- We walk up the parent's of target, to check for source
+    local parent = target
+    if idtable[target] then
+      while(parent) do
+        if parent == target then
+          WeakAuras.prettyPrint(L["Warning: Anchoring to your own child '%s' in aura '%s' is imposssible."]:format(target, source))
+          idtable[source].anchorFrameType = "SCREEN"
+        end
+        parent = idtable[parent].parent
+      end
     end
   end
 
@@ -5342,6 +5358,17 @@ local function GetAnchorFrame(data, region, parent)
       if (frame_name == id) then
         return parent;
       end
+
+      local targetData = WeakAuras.GetData(frame_name)
+      if targetData then
+        for parentData in Private.TraverseParents(targetData) do
+          if parentData.id == data.id then
+            WeakAuras.prettyPrint(L["Warning: Anchoring to your own child '%s' in aura '%s' is imposssible."]:format(frame_name, data.id))
+            return parent
+          end
+        end
+      end
+
       if(Private.regions[frame_name]) then
         return Private.regions[frame_name].region;
       end
