@@ -2892,7 +2892,7 @@ local function pAdd(data, simpleChange)
   else
     Private.DebugLog.SetEnabled(data.uid, data.information.debugLog)
 
-    if (data.controlledChildren) then
+    if Private.IsGroupType(data) then
       Private.ClearAuraEnvironment(id);
       for parent in Private.TraverseParents(data) do
         Private.ClearAuraEnvironment(parent.id);
