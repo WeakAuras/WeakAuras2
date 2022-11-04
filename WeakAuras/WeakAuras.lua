@@ -4346,6 +4346,15 @@ function Private.AddToWatchedTriggerDelay(id, triggernum)
   tinsert(delayed_watched_trigger[id], triggernum)
 end
 
+Private.callbacks:RegisterCallback("Delete", function(_, uid, id)
+  delayed_watched_trigger[id] = nil
+end)
+
+Private.callbacks:RegisterCallback("Rename", function(_, uid, oldId, newId)
+  delayed_watched_trigger[newId] = delayed_watched_trigger[oldId]
+  delayed_watched_trigger[oldId] = nil
+end)
+
 function Private.SendDelayedWatchedTriggers()
   for id in pairs(delayed_watched_trigger) do
     local watched = delayed_watched_trigger[id]
