@@ -36,7 +36,6 @@ end
 Scripts
 -------------------------------------------------------------------------------]]
 local function Frame_OnMouseDown(frame)
-	frame.obj.editbox:EnableMouseWheel(true)
 	AceGUI:ClearFocus()
 end
 
@@ -80,11 +79,16 @@ local function EditBox_OnEnterPressed(frame)
 end
 
 local function EditBox_OnEnter(frame)
-	frame:SetBackdropBorderColor(0.5, 0.5, 0.5, 1)
+	frame.obj:Fire("OnEnter")
 end
 
 local function EditBox_OnLeave(frame)
-	frame:SetBackdropBorderColor(0.3, 0.3, 0.3, 0.8)
+	frame.obj:Fire("OnLeave")
+end
+
+local function Frame_OnShowFocus(frame)
+	frame.obj.editbox:SetFocus()
+	frame:SetScript("OnShow", nil)
 end
 
 --[[-----------------------------------------------------------------------------
@@ -100,7 +104,9 @@ local methods = {
 		self:SetValue(0)
 	end,
 
-	-- ["OnRelease"] = nil,
+	["OnRelease"] = function(self)
+		self:ClearFocus()
+	end,
 
 	["SetDisabled"] = function(self, disabled)
 		self.disabled = disabled
@@ -150,53 +156,59 @@ local methods = {
 	["SetIsPercent"] = function(self, value)
 		self.ispercent = value
 		UpdateText(self)
-	end
+	end,
+
+	["ClearFocus"] = function(self)
+		self.editbox:ClearFocus()
+		self.frame:SetScript("OnShow", nil)
+		self.editbox:EnableMouseWheel(false)
+	end,
+
+	["SetFocus"] = function(self)
+		self.editbox:SetFocus()
+		if not self.frame:IsShown() then
+			self.frame:SetScript("OnShow", Frame_OnShowFocus)
+		end
+		self.editbox:EnableMouseWheel(true)
+	end,
 }
 
 --[[-----------------------------------------------------------------------------
 Constructor
 -------------------------------------------------------------------------------]]
-local ManualBackdrop = {
-	bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
-	edgeFile = "Interface\\ChatFrame\\ChatFrameBackground",
-	tile = true, edgeSize = 1, tileSize = 5,
-}
-
 local function Constructor()
 	local frame = CreateFrame("Frame", nil, UIParent)
 
 	frame:EnableMouse(true)
 	frame:SetScript("OnMouseDown", Frame_OnMouseDown)
 
-	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+	local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
 	label:SetPoint("TOPLEFT")
 	label:SetPoint("TOPRIGHT")
-	label:SetJustifyH("CENTER")
-	label:SetHeight(15)
+	label:SetJustifyH("LEFT")
+	label:SetHeight(18)
 
 	local leftbutton = CreateFrame("Button", nil, frame)
-  leftbutton:SetSize(16, 18)
+  leftbutton:SetSize(11, 14)
   leftbutton:SetNormalTexture("UI-ScrollBar-ScrollLeftButton-Up")
   leftbutton:SetPushedTexture("UI-ScrollBar-ScrollLeftButton-Down")
   leftbutton:SetDisabledTexture("UI-ScrollBar-ScrollLeftButton-Disabled")
   leftbutton:SetScript("OnClick", SpinBox_OnValueDown)
 
   local rightbutton = CreateFrame("Button", nil, frame)
-  rightbutton:SetSize(16, 18)
+  rightbutton:SetSize(11, 14)
   rightbutton:SetNormalTexture("UI-ScrollBar-ScrollRightButton-Up")
   rightbutton:SetPushedTexture("UI-ScrollBar-ScrollRightButton-Down")
   rightbutton:SetDisabledTexture("UI-ScrollBar-ScrollRightButton-Disabled")
   rightbutton:SetScript("OnClick", SpinBox_OnValueUp)
 
-	local editbox = CreateFrame("EditBox", nil, frame, "BackdropTemplate")
+	local editbox = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
 	editbox:SetAutoFocus(false)
-	editbox:SetFontObject(GameFontHighlightSmall)
-	editbox:SetHeight(14)
+	editbox:SetFontObject(ChatFontNormal)
+	editbox:SetHeight(19)
 	editbox:SetJustifyH("CENTER")
 	editbox:EnableMouse(true)
-	editbox:SetBackdrop(ManualBackdrop)
-	editbox:SetBackdropColor(0, 0, 0, 0.5)
-	editbox:SetBackdropBorderColor(0.3, 0.3, 0.30, 0.80)
+	editbox:SetTextInsets(0, 0, 3, 3)
 	editbox:SetScript("OnEnter", EditBox_OnEnter)
 	editbox:SetScript("OnLeave", EditBox_OnLeave)
 	editbox:SetScript("OnEnterPressed", EditBox_OnEnterPressed)
@@ -246,17 +258,16 @@ local function Constructor()
 	end)
 
 
-  leftbutton:SetPoint("LEFT")
-  rightbutton:SetPoint("RIGHT")
-  editbox:SetPoint("LEFT", leftbutton, "RIGHT")
-  editbox:SetPoint("RIGHT", rightbutton, "LEFT")
+  leftbutton:SetPoint("TOPLEFT", 2, -18)
+  rightbutton:SetPoint("TOPRIGHT", -2, -18)
+  editbox:SetPoint("LEFT", leftbutton, "RIGHT", 8, 0)
+  editbox:SetPoint("RIGHT", rightbutton, "LEFT", -2, 0)
 
 	local widget = {
 		label       = label,
 		editbox     = editbox,
     leftbutton  = leftbutton,
     rightbutton = rightbutton,
-		alignoffset = 25,
 		frame       = frame,
 		type        = Type
 	}
