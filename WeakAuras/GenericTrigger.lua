@@ -762,6 +762,7 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
 end
 
 function Private.ScanEventsWatchedTrigger(id, watchedTriggernums)
+  if #watchedTriggernums == 0 then return end
   Private.StartProfileAura(id);
   Private.ActivateAuraEnvironment(id);
   local updateTriggerState = false
