@@ -2905,6 +2905,8 @@ local function pAdd(data, simpleChange)
       loadEvents["GROUP"] = loadEvents["GROUP"] or {}
       loadEvents["GROUP"][id] = true
     else -- Non group aura
+      -- Make sure that we don't have a controlledChildren member.
+      data.controlledChildren = nil
       local visible
       if (WeakAuras.IsOptionsOpen()) then
         visible = Private.FakeStatesFor(id, false)
