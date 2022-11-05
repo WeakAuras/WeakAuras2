@@ -2475,7 +2475,7 @@ function Private.AddMany(tbl, takeSnapshots)
     local parent = target
     if idtable[target] then
       while(parent) do
-        if parent == target then
+        if parent == source then
           WeakAuras.prettyPrint(L["Warning: Anchoring to your own child '%s' in aura '%s' is imposssible."]:format(target, source))
           idtable[source].anchorFrameType = "SCREEN"
         end
