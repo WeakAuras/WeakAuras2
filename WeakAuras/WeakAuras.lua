@@ -1986,6 +1986,9 @@ function WeakAuras.Delete(data)
     Private.regions[id].region:Collapse()
     Private.CancelAnimation(Private.regions[id].region, true, true, true, true, true, true)
 
+    -- Groups have a empty Collapse method so, we need to hide them here
+    Private.regions[id].region:Hide();
+
     Private.regions[id].region = nil
     Private.regions[id] = nil
   end
