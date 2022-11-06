@@ -72,6 +72,10 @@ local gridSelfPoints = {
   DR = "TOPLEFT",
   LD = "TOPRIGHT",
   DL = "TOPRIGHT",
+  HD = "TOP",
+  HU = "BOTTOM",
+  VR = "LEFT",
+  VL = "RIGHT",
 }
 
 local function createOptions(id, data)
@@ -258,7 +262,7 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = function()
         if not data.gridType then return "" end
-        if data.gridType:find("^[RL]") then
+        if data.gridType:find("^[RLH]") then
           return L["Row Width"]
         else
           return L["Column Height"]
