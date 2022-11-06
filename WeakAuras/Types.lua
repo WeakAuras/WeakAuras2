@@ -2114,6 +2114,10 @@ Private.grid_types = {
   DR = L["Down, then Right"],
   LD = L["Left, then Down"],
   DL = L["Down, then Left"],
+  HD = L["Centered Horizontal, then Down"],
+  HU = L["Centered Horizontal, then Up"],
+  VR = L["Centered Vertical, then Right"],
+  VL = L["Centered Vertical, then Left"],
 }
 
 Private.text_rotate_types = {

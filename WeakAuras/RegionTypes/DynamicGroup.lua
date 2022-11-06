@@ -697,9 +697,9 @@ local growers = {
     local gridWidth = data.gridWidth
     local rowSpace = data.rowSpace
     local colSpace = data.columnSpace
-    local rowFirst = (gridType:find("^[RL]")) ~= nil
+    local rowFirst = (gridType:find("^[RLH]")) ~= nil
     local limit = data.useLimit and data.limit or math.huge
-    local rowMul, colMul
+    local rowMul, colMul, horizontal, vertical
     if gridType:find("D") then
       rowMul = -1
     else
@@ -709,6 +709,12 @@ local growers = {
       colMul = -1
     else
       colMul = 1
+    end
+    if gridType:find("H") then
+      horizontal = true
+    end
+    if gridType:find("V") then
+      vertical = true
     end
     local primary = {
       -- x direction
@@ -743,6 +749,8 @@ local growers = {
         secondary.current = 0
         secondary.max = 0
         newPositions[frame] = {}
+        local minX, maxX, minY, maxY
+        local start
         for i, regionData in ipairs(regionDatas) do
           if i <= numVisible then
             newPositions[frame][regionData] = {
@@ -750,13 +758,50 @@ local growers = {
               [secondary.coord] = secondary.current,
               [3] = true
             }
+            local x, y = newPositions[frame][regionData][1], newPositions[frame][regionData][2]
+            if minX == nil then
+              minX, maxX = x, x
+              minY, maxY = y, y
+              start = i
+            else
+              minX, maxX = math.min(minX, x), math.max(maxX, x)
+              minY, maxY = math.min(minY, y), math.max(maxY, y)
+            end
             secondary.max = max(secondary.max, getDimension(regionData, secondary.dim))
             if i % gridWidth == 0 then
+              if horizontal then
+                local offsetX = (maxX - minX) / 2
+                for j = start, i do
+                  newPositions[frame][regionDatas[j]][1] = newPositions[frame][regionDatas[j]][1] - offsetX
+                end
+              end
+              if vertical then
+                local offsetY = (maxY - minY) / 2
+                for j = start, i do
+                  newPositions[frame][regionDatas[j]][2] = newPositions[frame][regionDatas[j]][2] - offsetY
+                end
+              end
               primary.current = 0
               secondary.current = secondary.current + (secondary.space + secondary.max) * secondary.mul
               secondary.max = 0
+              minX, maxX = nil, nil
+              minY, maxY = nil, nil
             else
               primary.current = primary.current + (primary.space + getDimension(regionData, primary.dim)) * primary.mul
+            end
+          end
+        end
+        if (horizontal or vertical) and minX then
+          local offsetX = (maxX - minX) / 2
+          local offsetY = (maxY - minY) / 2
+          for j = start, #regionDatas do
+            if j <= numVisible then
+              if horizontal then
+                newPositions[frame][regionDatas[j]][1] = newPositions[frame][regionDatas[j]][1] - offsetX
+              end
+              if vertical then
+                newPositions[frame][regionDatas[j]][2] = newPositions[frame][regionDatas[j]][2] - offsetY
+              end
             end
           end
         end
