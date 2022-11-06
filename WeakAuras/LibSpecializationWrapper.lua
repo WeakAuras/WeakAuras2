@@ -103,7 +103,8 @@ if LibSpec then
     if UnitIsUnit(unit, "player") then
       return LibSpec:MySpecialization()
     end
-    return unpack(nameToSpecMap[GetUnitName(unit, true)])
+    local data = nameToSpecMap[GetUnitName(unit, true)]
+    return data and unpack(data) or nil
   end
 else -- non retail
   function Private.LibSpecWrapper.Register(f)
