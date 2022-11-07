@@ -226,7 +226,7 @@ end
 -- Duplicated because Private does not exist when we want to create the first thumnail
 local function ModelSetTransformFixed(self, tx, ty, tz, rx, ry, rz, s)
   -- In Dragonflight the api changed, this converts to the new api
-  self:SetTransform(CreateVector3D(tx, ty, tz), CreateVector3D(rx, ry, rz), s)
+  self:SetTransform(CreateVector3D(tx, ty, tz), CreateVector3D(rx, ry, rz), -s)
 end
 
 local function createThumbnail()
