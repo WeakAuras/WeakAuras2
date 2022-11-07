@@ -699,7 +699,7 @@ local growers = {
     local colSpace = data.columnSpace
     local rowFirst = (gridType:find("^[RLH]")) ~= nil
     local limit = data.useLimit and data.limit or math.huge
-    local rowMul, colMul, horizontal, vertical
+    local rowMul, colMul, primary_horizontal, secondary_horizontal, primary_vertical, secondary_vertical
     if gridType:find("D") then
       rowMul = -1
     else
@@ -710,11 +710,15 @@ local growers = {
     else
       colMul = 1
     end
-    if gridType:find("H") then
-      horizontal = true
+    if gridType:sub(1, 1) == "H" then
+      primary_horizontal = true
+    elseif gridType:sub(2, 2) == "H" then
+      secondary_horizontal = true
     end
-    if gridType:find("V") then
-      vertical = true
+    if gridType:sub(1, 1) == "V" then
+      primary_vertical = true
+    elseif gridType:sub(2, 2) == "V" then
+      secondary_vertical = true
     end
     local primary = {
       -- x direction
@@ -749,7 +753,7 @@ local growers = {
         secondary.current = 0
         secondary.max = 0
         newPositions[frame] = {}
-        local minX, maxX, minY, maxY
+        local minX, maxX, minY, maxY, totalMinX, totalMaxX, totalMinY, totalMaxY
         local start
         for i, regionData in ipairs(regionDatas) do
           if i <= numVisible then
@@ -760,22 +764,27 @@ local growers = {
             }
             local x, y = newPositions[frame][regionData][1], newPositions[frame][regionData][2]
             if minX == nil then
-              minX, maxX = x, x
-              minY, maxY = y, y
+              minX, maxX, minY, maxY = x, x, y, y
               start = i
             else
               minX, maxX = math.min(minX, x), math.max(maxX, x)
               minY, maxY = math.min(minY, y), math.max(maxY, y)
             end
+            if totalMinX == nil then
+              totalMinX, totalMaxX, totalMinY, totalMaxY = x, x, y, y
+            else
+              totalMinX, totalMaxX = math.min(totalMinX, x), math.max(totalMaxX, x)
+              totalMinY, totalMaxY = math.min(totalMinY, y), math.max(totalMaxY, y)
+            end
             secondary.max = max(secondary.max, getDimension(regionData, secondary.dim))
             if i % gridWidth == 0 then
-              if horizontal then
+              if primary_horizontal then
                 local offsetX = (maxX - minX) / 2
                 for j = start, i do
                   newPositions[frame][regionDatas[j]][1] = newPositions[frame][regionDatas[j]][1] - offsetX
                 end
               end
-              if vertical then
+              if primary_vertical then
                 local offsetY = (maxY - minY) / 2
                 for j = start, i do
                   newPositions[frame][regionDatas[j]][2] = newPositions[frame][regionDatas[j]][2] - offsetY
@@ -791,15 +800,29 @@ local growers = {
             end
           end
         end
-        if (horizontal or vertical) and minX then
+        if (primary_horizontal or primary_vertical) and minX then
           local offsetX = (maxX - minX) / 2
           local offsetY = (maxY - minY) / 2
           for j = start, #regionDatas do
             if j <= numVisible then
-              if horizontal then
+              if primary_horizontal then
                 newPositions[frame][regionDatas[j]][1] = newPositions[frame][regionDatas[j]][1] - offsetX
               end
-              if vertical then
+              if primary_vertical then
+                newPositions[frame][regionDatas[j]][2] = newPositions[frame][regionDatas[j]][2] - offsetY
+              end
+            end
+          end
+        end
+        if (secondary_horizontal or secondary_vertical) and totalMinX then
+          local offsetX = (totalMaxX - totalMinX) / 2
+          local offsetY = (totalMaxY - totalMinY) / 2
+          for j = 1, #regionDatas do
+            if j <= numVisible then
+              if secondary_horizontal then
+                newPositions[frame][regionDatas[j]][1] = newPositions[frame][regionDatas[j]][1] - offsetX
+              end
+              if secondary_vertical then
                 newPositions[frame][regionDatas[j]][2] = newPositions[frame][regionDatas[j]][2] - offsetY
               end
             end
