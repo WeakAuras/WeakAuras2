@@ -876,7 +876,7 @@ function Private.ExecEnv.CheckRaidFlags(flags, flagToCheck)
 end
 
 function WeakAuras.IsSpellKnownForLoad(spell, exact)
-  local result = IsPlayerSpell(spell) or IsSpellKnown(spell, true) or IsUsableSpell(spell)
+  local result = IsPlayerSpell(spell) or IsSpellKnownOrOverridesKnown(spell, true)
   if exact or result then
     return result
   end
@@ -892,9 +892,9 @@ end
 
 function WeakAuras.IsSpellKnown(spell, pet)
   if (pet) then
-    return IsSpellKnown(spell, pet);
+    return IsSpellKnownOrOverridesKnown(spell, pet);
   end
-  return IsPlayerSpell(spell) or IsSpellKnown(spell);
+  return IsPlayerSpell(spell) or IsSpellKnownOrOverridesKnown(spell);
 end
 
 function WeakAuras.IsSpellKnownIncludingPet(spell)
