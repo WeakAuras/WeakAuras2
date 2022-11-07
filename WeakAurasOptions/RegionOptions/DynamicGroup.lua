@@ -76,6 +76,12 @@ local gridSelfPoints = {
   HU = "BOTTOM",
   VR = "LEFT",
   VL = "RIGHT",
+  DH = "TOP",
+  UH = "BOTTOM",
+  LV = "RIGHT",
+  RV = "LEFT",
+  HV = "CENTER",
+  VH = "CENTER",
 }
 
 local function createOptions(id, data)
