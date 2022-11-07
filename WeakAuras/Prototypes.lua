@@ -876,7 +876,7 @@ function Private.ExecEnv.CheckRaidFlags(flags, flagToCheck)
 end
 
 function WeakAuras.IsSpellKnownForLoad(spell, exact)
-  local result = IsPlayerSpell(spell) or IsSpellKnown(spell, true)
+  local result = IsPlayerSpell(spell) or IsSpellKnown(spell, true) or IsUsableSpell(spell)
   if exact or result then
     return result
   end
