@@ -15,12 +15,12 @@ local default = {
   model_y = 0,
   model_z = 0,
   -- SetTransform
-  model_st_tx = 0,
+  model_st_tx = 40,
   model_st_ty = 0,
   model_st_tz = 0,
-  model_st_rx = 270,
+  model_st_rx = 90,
   model_st_ry = 0,
-  model_st_rz = 0,
+  model_st_rz = 90,
   model_st_us = 40,
   width = 200,
   height = 200,
@@ -108,7 +108,7 @@ end
 
 function Private.ModelSetTransformFixed(self, tx, ty, tz, rx, ry, rz, s)
   -- In Dragonflight the api changed, this converts to the new api
-  self:SetTransform(CreateVector3D(tx, ty, tz), CreateVector3D(rx, ry, rz), s)
+  self:SetTransform(CreateVector3D(tx, ty, tz), CreateVector3D(rx, ry, rz), -s)
 end
 
 local function CreateModel()
