@@ -15,6 +15,11 @@ local tonumber, pairs = tonumber, pairs
 local PlaySound = PlaySound
 local CreateFrame, UIParent = CreateFrame, UIParent
 
+local editBoxLeftOffset = -4
+local editBoxExtraWidth = 3
+local fadeInDuration = 1/10
+local fadeInProgress = false
+
 --[[-----------------------------------------------------------------------------
 Support functions
 -------------------------------------------------------------------------------]]
@@ -33,13 +38,54 @@ local function UpdateButtons(self)
   self.rightbutton:SetEnabled(value < self.max)
 end
 
+local function UpdateProgressBar(self)
+  local value = self:GetValue() or 0
+  local p = 0
+  if self.min < self.max then
+    p = (value - self.min) / (self.max - self.min)
+  end
+  p = Clamp(p, 0, 1)
+  self.progressBar:SetWidth(p * (self.editbox:GetWidth() + editBoxExtraWidth))
+end
+
+local function UpdateHandleColor(self)
+  if self.fadeInStart then
+    self.progressOpacity = Clamp(GetTime() - self.fadeInStart, 0, fadeInDuration) / fadeInDuration
+  end
+  if self.progressBarHandle.mouseDown then
+    self.progressBarHandleTexture:SetColorTexture(0.6, 0.6, 0, 1)
+  elseif MouseIsOver(self.progressBarHandle) then
+    self.progressBarHandleTexture:SetColorTexture(0.8, 0.8, 0, 1)
+  else
+    self.progressBarHandleTexture:SetColorTexture(0.4, 0.4, 0, 1)
+  end
+  if fadeInProgress then
+    self.progressBar:SetColorTexture(0.25, 0.25, 0.25, 1 * self.progressOpacity)
+  end
+end
+
+local function UpdateHandleVisibility(self)
+  if MouseIsOver(self.frame) and not self.editbox:HasFocus() then
+    self.progressBarHandle:Show()
+    if fadeInProgress then
+      self.progressBar:Show()
+    end
+    if not self.fadeInStart then
+      self.fadeInStart = GetTime()
+    end
+    UpdateHandleColor(self)
+  else
+    self.fadeInStart = nil
+    self.progressBarHandle:Hide()
+    if fadeInProgress then
+      self.progressBar:Hide()
+    end
+  end
+end
+
 --[[-----------------------------------------------------------------------------
 Scripts
 -------------------------------------------------------------------------------]]
-local function Frame_OnMouseDown()
-  AceGUI:ClearFocus()
-end
-
 local function SpinBox_OnValueDown(frame)
   local self = frame.obj
   --self.editbox:SetFocus()
@@ -77,7 +123,6 @@ local function EditBox_OnEnterPressed(frame)
   if value then
     PlaySound(856) -- SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON
     self:SetValue(value)
-    --self:Fire("OnMouseUp", value)
   end
 end
 
@@ -89,47 +134,52 @@ local function EditBox_OnLeave(frame)
   frame.obj:Fire("OnLeave")
 end
 
-local function EditBox_OnMouseDown(frame, button)
+local function Frame_OnEnter(frame)
+  UpdateHandleVisibility(frame.obj)
+end
+
+local function EditBox_OnSizeChanged(frame)
+  UpdateProgressBar(frame.obj)
+end
+
+
+local function ProgressBarHandle_OnUpdate(frame, elapsed)
+  UpdateHandleColor(frame.obj)
+  if not IsMouseButtonDown("LeftButton") then
+    frame.mouseDown = false
+  end
+  if frame.mouseDown then
+    frame.timeElapsed = frame.timeElapsed + elapsed
+    if frame.timeElapsed > 0.1 then
+      local currentX = GetCursorPosition()
+      local deltaX = currentX - frame.startX
+      deltaX = deltaX / frame.obj.editbox:GetEffectiveScale()
+      if abs(deltaX) < 3 then
+        return
+      end
+
+      local p = deltaX / (frame.obj.editbox:GetWidth() + editBoxExtraWidth)
+      local delta =  p * (frame.obj.max - frame.obj.min)
+      local step = frame.obj.step
+      local v = frame.originalValue + delta
+      v = v - v % step
+      v = Clamp(v, frame.obj.min, frame.obj.max)
+      frame.obj:SetValue(v)
+      frame.timeElapsed = 0
+    end
+  else
+    UpdateHandleVisibility(frame.obj)
+  end
+end
+
+local function ProgressBarHandle_OnMouseDown(frame, button)
   if button ~= "LeftButton" then
     return
   end
-  local x = GetCursorPosition()
-  local timeElapsed = 0
-  if not frame.onupdate then
-    frame.onupdate = CreateFrame("Frame")
-  end
-  frame.onupdate:SetScript("OnUpdate", function(_, elapsed)
-    timeElapsed = timeElapsed + elapsed
-    if timeElapsed > 0.1 then
-      local new_x = GetCursorPosition()
-      local value = frame:GetText()
-      if frame.obj.ispercent then
-        value = value:gsub("%%", "")
-        value = tonumber(value) / 100 + (new_x > x and 1 or -1)
-        value = math_max(frame.obj.min, value)
-        value = math_min(frame.obj.max, value)
-        frame:SetText(value .. "%%")
-        EditBox_OnEnterPressed(frame)
-      else
-        value = tonumber(value) + (new_x > x and 1 or -1)
-        value = math_max(frame.obj.min, value)
-        value = math_min(frame.obj.max, value)
-        frame:SetText(value, frame.obj.min, frame.obj.max)
-        EditBox_OnEnterPressed(frame)
-      end
-      timeElapsed = 0
-    end
-  end)
-  frame.onupdate:Show()
-end
-
-local function EditBox_OnMouseUp(frame, button)
-  if button == "LeftButton" then
-    if frame.onupdate then
-      frame.onupdate:SetScript("OnUpdate", nil)
-    end
-    EditBox_OnEnterPressed(frame)
-  end
+  frame.startX = GetCursorPosition()
+  frame.originalValue = frame.obj:GetValue()
+  frame.timeElapsed = 0
+  frame.mouseDown = true
 end
 
 --[[-----------------------------------------------------------------------------
@@ -143,6 +193,7 @@ local methods = {
     self:SetIsPercent(nil)
     self:SetSpinBoxValues(0, 100, 1)
     self:SetValue(0)
+    self.progressOpacity = 0
   end,
 
   ["OnRelease"] = function(self)
@@ -170,6 +221,7 @@ local methods = {
     self.value = value
     UpdateText(self)
     UpdateButtons(self)
+    UpdateProgressBar(self)
     if changed then
       self:Fire("OnValueChanged", value)
     end
@@ -201,11 +253,14 @@ local methods = {
 
   ["ClearFocus"] = function(self)
     self.editbox:ClearFocus()
-    self.frame:SetScript("OnShow", nil)
   end,
 
   ["SetFocus"] = function(self)
     self.editbox:SetFocus()
+    self.progressBarHandle:Hide()
+    if fadeInProgress then
+      self.progressBar:Hide()
+    end
   end,
 }
 
@@ -214,9 +269,7 @@ Constructor
 -------------------------------------------------------------------------------]]
 local function Constructor()
   local frame = CreateFrame("Frame", nil, UIParent)
-
-  frame:EnableMouse(true)
-  frame:SetScript("OnMouseDown", Frame_OnMouseDown)
+  frame:SetScript("OnEnter", Frame_OnEnter)
 
   local label = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
   label:SetPoint("TOPLEFT")
@@ -226,26 +279,16 @@ local function Constructor()
 
   local leftbutton = CreateFrame("Button", nil, frame)
   leftbutton:SetSize(16, 16)
-  --leftbutton:SetNormalTexture("UI-ScrollBar-ScrollLeftButton-Up")
-  --leftbutton:SetPushedTexture("UI-ScrollBar-ScrollLeftButton-Down")
-  --leftbutton:SetDisabledTexture("UI-ScrollBar-ScrollLeftButton-Disabled")
 	leftbutton:SetNormalAtlas("common-button-dropdown-open")
 	leftbutton:SetPushedAtlas("common-button-dropdown-openpressed")
 	leftbutton:SetDisabledTexture("common-button-dropdown-open")
-	--leftbutton:SetNormalAtlas("minimal_sliderbar_button_left")
-	--leftbutton:SetPushedAtlas("common-button-dropdown-openpressed")
   leftbutton:SetScript("OnClick", SpinBox_OnValueDown)
 
   local rightbutton = CreateFrame("Button", nil, frame)
   rightbutton:SetSize(16, 16)
-  --rightbutton:SetNormalTexture("UI-ScrollBar-ScrollRightButton-Up")
-  --rightbutton:SetPushedTexture("UI-ScrollBar-ScrollRightButton-Down")
-  --rightbutton:SetDisabledTexture("UI-ScrollBar-ScrollRightButton-Disabled")
 	rightbutton:SetNormalAtlas("common-button-dropdown-closed")
 	rightbutton:SetPushedAtlas("common-button-dropdown-closedpressed")
 	rightbutton:SetDisabledTexture("common-button-dropdown-closed")
-	--rightbutton:SetNormalAtlas("minimal_sliderbar_button_right")
-	--rightbutton:SetPushedAtlas("common-button-dropdown-closedpressed")
   rightbutton:SetScript("OnClick", SpinBox_OnValueUp)
 
   local editbox = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
@@ -261,6 +304,10 @@ local function Constructor()
   editbox:SetScript("OnEscapePressed", EditBox_OnEscapePressed)
   editbox:SetScript("OnEditFocusGained", function(frame)
     AceGUI:SetFocus(frame.obj)
+    UpdateHandleVisibility(frame.obj)
+  end)
+  editbox:SetScript("OnEditFocusLost", function(frame)
+    UpdateHandleVisibility(frame.obj)
   end)
   editbox:SetScript("OnMouseWheel", function(self, delta)
     if self:HasFocus() then
@@ -271,27 +318,54 @@ local function Constructor()
       end
     end
   end)
-
-  editbox:SetScript("OnMouseDown", EditBox_OnMouseDown)
-  editbox:SetScript("OnMouseUp", EditBox_OnMouseUp)
+  editbox:SetScript("OnSizeChanged", EditBox_OnSizeChanged)
 
   leftbutton:SetPoint("TOPLEFT", 2, -18)
   rightbutton:SetPoint("TOPRIGHT", -2, -18)
   editbox:SetPoint("LEFT", leftbutton, "RIGHT", 8, 0)
   editbox:SetPoint("RIGHT", rightbutton, "LEFT", -2, 0)
 
+  local progressBar = editbox:CreateTexture(nil, "ARTWORK")
+  progressBar:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White")
+  progressBar:SetColorTexture(0.25, 0.25, 0.25, 1)
+  progressBar:SetPoint("TOPLEFT", editbox, "TOPLEFT", editBoxLeftOffset, -1)
+  progressBar:SetPoint("BOTTOMLEFT", editbox, "BOTTOMLEFT", editBoxLeftOffset, 1)
+  progressBar:SetWidth(0)
+  if fadeInProgress then
+    progressBar:Hide()
+  end
+
+  local progressBarHandle = CreateFrame("Frame", nil, editbox)
+  progressBarHandle:SetPoint("TOP", progressBar, "TOP", 0, 2)
+  progressBarHandle:SetPoint("BOTTOM", progressBar, "BOTTOM", 0, -2)
+  progressBarHandle:SetPoint("LEFT", progressBar, "RIGHT", -4, 0)
+  progressBarHandle:SetPoint("RIGHT", progressBar, "RIGHT", 4, 0)
+  progressBarHandle:EnableMouse(true)
+  progressBarHandle:Hide()
+  progressBarHandle:SetScript("OnMouseDown", ProgressBarHandle_OnMouseDown)
+  progressBarHandle:SetScript("OnUpdate", ProgressBarHandle_OnUpdate)
+
+  local progressBarHandleTexture = progressBarHandle:CreateTexture(nil, "ARTWORK")
+  progressBarHandleTexture:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White")
+  progressBarHandleTexture:SetColorTexture(0.8, 0.8, 0, 0.8)
+  progressBarHandleTexture:SetPoint("TOPLEFT", progressBarHandle, "TOPLEFT", 2, -2)
+  progressBarHandleTexture:SetPoint("BOTTOMRIGHT", progressBarHandle, "BOTTOMRIGHT", -2, 2)
+
   local widget = {
     label = label,
     editbox = editbox,
     leftbutton = leftbutton,
     rightbutton = rightbutton,
+    progressBar = progressBar,
+    progressBarHandle = progressBarHandle,
+    progressBarHandleTexture = progressBarHandleTexture,
     frame = frame,
     type = Type,
   }
   for method, func in pairs(methods) do
     widget[method] = func
   end
-  editbox.obj, leftbutton.obj, rightbutton.obj = widget, widget, widget
+  editbox.obj, leftbutton.obj, rightbutton.obj, frame.obj, progressBarHandle.obj = widget, widget, widget, widget, widget
 
   return AceGUI:RegisterAsWidget(widget)
 end
