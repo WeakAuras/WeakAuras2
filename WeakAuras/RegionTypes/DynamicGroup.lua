@@ -1331,12 +1331,15 @@ local function modify(parent, region, data)
         self.currentWidth = width
         self.currentHeight = height
 
-        local regionLeft = region:GetLeft()
-        local regionBottom = region:GetBottom()
-        self.background:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT", minX + -1 * data.borderOffset - regionLeft,
-                                                                     minY + -1 * data.borderOffset - regionBottom)
-        self.background:SetPoint("TOPRIGHT", region, "BOTTOMLEFT", maxX + data.borderOffset - regionLeft,
-                                                                   maxY + data.borderOffset - regionBottom)
+        if data.border and not data.useAnchorPerUnit then
+          local regionLeft = SafeGetPos(region, region.GetLeft) or minX
+          local regionBottom = SafeGetPos(region, region.GetBottom) or minY
+          if regionLeft and regionBottom then
+            self.background:ClearAllPoints()
+            self.background:SetPoint("BOTTOMLEFT", region, "BOTTOMLEFT", minX + -1 * data.borderOffset - regionLeft, minY + -1 * data.borderOffset - regionBottom)
+            self.background:SetPoint("TOPRIGHT", region, "BOTTOMLEFT", maxX + data.borderOffset - regionLeft, maxY + data.borderOffset - regionBottom)
+          end
+        end
       else
         self:Hide()
       end
