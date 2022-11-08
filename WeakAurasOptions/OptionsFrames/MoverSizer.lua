@@ -383,7 +383,7 @@ local function BuildAlignLines(mover)
 
   for k, v in pairs(OptionsPrivate.displayButtons) do
     local region = WeakAuras.GetRegion(v.data.id)
-    if not skipIds[k] and v.view.visibility ~= 0 and region then
+    if not skipIds[k] and v.view.visibility ~= 0 and region and not region:IsAnchoringRestricted() then
       local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
       if not IsControlKeyDown() then
         tinsert(x, (region:GetLeft() or 0) * scale)
