@@ -335,9 +335,7 @@ function OptionsPrivate.GetInformationOptions(data)
   if isGroup and not isTmpGroup then
     sameDebugLog = true
     commonDebugLog = data.information.debugLog and true or false
-    print("fetch ONE GROUP")
   else
-    print("fectch not a group")
     for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
       --- @type boolean
       local effectiveDebugLog = child.information.debugLog and true or false
@@ -363,9 +361,7 @@ function OptionsPrivate.GetInformationOptions(data)
       if isGroup and not isTmpGroup then
         data.information.debugLog = v
         WeakAuras.Add(data)
-        print("Set one group")
       else
-        print("not a group")
         for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
           child.information.debugLog = v
           WeakAuras.Add(child)
@@ -390,7 +386,6 @@ function OptionsPrivate.GetInformationOptions(data)
         --- @type boolean
         local haveLogs = false
         if isGroup and not isTmpGroup then
-          print("gather from one")
           local auraLog = OptionsPrivate.Private.DebugLog.GetLogs(data.uid)
           if auraLog then
             haveLogs = true
@@ -403,7 +398,6 @@ function OptionsPrivate.GetInformationOptions(data)
             fullMessage = fullMessage .. "\n" .. L["Debug Log:"] .. "\n" .. auraLog .. "\n\n"
           end
         else
-          print("Gather from all")
           for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
             --- @type string
             local auraLog = OptionsPrivate.Private.DebugLog.GetLogs(child.uid)
