@@ -161,16 +161,27 @@ function OptionsPrivate.CreateFrame()
   frame.window = "default"
 
   local xOffset, yOffset
+
   if db.frame then
-    xOffset, yOffset = db.frame.xOffset, db.frame.yOffset
+    -- Convert from old settings to new
+    odb.frame = db.frame
+    if odb.frame.xOffset and odb.frame.yOffset then
+      odb.frame.xOffset = odb.frame.xOffset + GetScreenWidth() - (odb.frame.width or defaultWidth) / 2
+      odb.frame.yOffset = odb.frame.yOffset + GetScreenHeight()
+    end
+    db.frame = nil
+  end
+
+  if odb.frame then
+    xOffset, yOffset = odb.frame.xOffset, odb.frame.yOffset
   end
 
   if not (xOffset and yOffset) then
-    xOffset = (defaultWidth - GetScreenWidth()) / 2
-    yOffset = (defaultHeight - GetScreenHeight()) / 2
+    xOffset = GetScreenWidth() / 2
+    yOffset = GetScreenHeight() - defaultHeight / 2
   end
 
-  frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", xOffset, yOffset)
+  frame:SetPoint("TOP", UIParent, "BOTTOMLEFT", xOffset, yOffset)
   frame:Hide()
 
   frame:SetScript("OnHide", function()
@@ -204,8 +215,8 @@ function OptionsPrivate.CreateFrame()
 
   local width, height
 
-  if db.frame then
-    width, height = db.frame.width, db.frame.height
+  if odb.frame then
+    width, height = odb.frame.width, odb.frame.height
   end
 
   if not (width and height) then
@@ -225,7 +236,7 @@ function OptionsPrivate.CreateFrame()
   closebutton:SetScript("OnClick", WeakAuras.HideOptions)
 
   local title = CreateFrame("Frame", nil, frame)
-
+  title:SetClampedToScreen(true)
   local titleText = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 
   titleText:SetText("WeakAuras " .. WeakAuras.versionString)
@@ -236,27 +247,15 @@ function OptionsPrivate.CreateFrame()
 
 
   local function commitWindowChanges()
-    local xOffset = frame:GetRight() - GetScreenWidth()
-    local yOffset = frame:GetTop() - GetScreenHeight()
-    if title:GetRight() > GetScreenWidth() then
-      xOffset = xOffset + (GetScreenWidth() - title:GetRight())
-    elseif title:GetLeft() < 0 then
-      xOffset = xOffset + (0 - title:GetLeft())
-    end
-    if title:GetTop() > GetScreenHeight() then
-      yOffset = yOffset + (GetScreenHeight() - title:GetTop())
-    elseif title:GetBottom() < 0 then
-      yOffset = yOffset + (0 - title:GetBottom())
-    end
-    db.frame = db.frame or {}
-    db.frame.xOffset = xOffset
-    db.frame.yOffset = yOffset
+    local xOffset = frame:GetRight()-(frame:GetWidth()/2)
+    local yOffset = frame:GetTop()
+    odb.frame = odb.frame or {}
+    odb.frame.xOffset = xOffset
+    odb.frame.yOffset = yOffset
     if not frame.minimized then
-      db.frame.width = frame:GetWidth()
-      db.frame.height = frame:GetHeight()
+      odb.frame.width = frame:GetWidth()
+      odb.frame.height = frame:GetHeight()
     end
-    frame:ClearAllPoints()
-    frame:SetPoint("TOPRIGHT", UIParent, "TOPRIGHT", xOffset, yOffset)
   end
 
   title:EnableMouse(true)
@@ -394,12 +393,12 @@ function OptionsPrivate.CreateFrame()
   minimizebutton:SetScript("OnClick", function()
     if frame.minimized then
       frame.minimized = nil
-      if db.frame then
-        if not db.frame.height or db.frame.height < 240 then
-          db.frame.height = 500
+      if odb.frame then
+        if not odb.frame.height or odb.frame.height < 240 then
+          odb.frame.height = 500
         end
       end
-      frame:SetHeight(db.frame and db.frame.height or 500)
+      frame:SetHeight(odb.frame and odb.frame.height or 500)
       minimizebutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up.blp")
       minimizebutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down.blp")
 
