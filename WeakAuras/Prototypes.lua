@@ -700,7 +700,11 @@ if WeakAuras.IsRetail() then
             local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
             if definitionInfo.spellID == spellId then
               local spellName, _, icon = GetSpellInfo(spellId)
-              return spellName, icon, node.activeRank
+              local rank = node.activeRank
+              if node.activeEntry then
+                rank = node.activeEntry.entryID == talentId and node.activeEntry.rank or 0
+              end
+              return spellName, icon, rank
             end
           end
         end
