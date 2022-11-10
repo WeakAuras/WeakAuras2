@@ -279,16 +279,26 @@ local function Constructor()
 
   local leftbutton = CreateFrame("Button", nil, frame)
   leftbutton:SetSize(16, 16)
-	leftbutton:SetNormalAtlas("common-button-dropdown-open")
+	leftbutton:SetNormalAtlas("AlliedRace-UnlockingFrame-ZoomOut")
+	leftbutton:SetPushedAtlas("AlliedRace-UnlockingFrame-ZoomOut")
+	leftbutton:SetDisabledAtlas("AlliedRace-UnlockingFrame-ZoomOut")
+  --[[
+  leftbutton:SetNormalAtlas("common-button-dropdown-open")
 	leftbutton:SetPushedAtlas("common-button-dropdown-openpressed")
 	leftbutton:SetDisabledTexture("common-button-dropdown-open")
+  ]]
   leftbutton:SetScript("OnClick", SpinBox_OnValueDown)
 
   local rightbutton = CreateFrame("Button", nil, frame)
   rightbutton:SetSize(16, 16)
-	rightbutton:SetNormalAtlas("common-button-dropdown-closed")
+	rightbutton:SetNormalAtlas("AlliedRace-UnlockingFrame-ZoomIn")
+	rightbutton:SetPushedAtlas("AlliedRace-UnlockingFrame-ZoomIn")
+	rightbutton:SetDisabledAtlas("AlliedRace-UnlockingFrame-ZoomIn")
+  --[[
+  rightbutton:SetNormalAtlas("common-button-dropdown-closed")
 	rightbutton:SetPushedAtlas("common-button-dropdown-closedpressed")
 	rightbutton:SetDisabledTexture("common-button-dropdown-closed")
+  ]]
   rightbutton:SetScript("OnClick", SpinBox_OnValueUp)
 
   local editbox = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
