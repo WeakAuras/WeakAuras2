@@ -15,10 +15,10 @@ local tonumber, pairs = tonumber, pairs
 local PlaySound = PlaySound
 local CreateFrame, UIParent = CreateFrame, UIParent
 
-local editBoxLeftOffset = -4
-local editBoxExtraWidth = 3
-local fadeInDuration = 1/10
-local fadeInProgress = false
+local progressLeftOffset = WeakAuras.IsClassicOrBCCOrWrath() and -2 or -3
+local progressExtraWidth = WeakAuras.IsClassicOrBCCOrWrath() and -2 or 0
+local progressTopOffset = WeakAuras.IsClassicOrBCCOrWrath() and -3 or -2
+local progressBottomOffset = WeakAuras.IsClassicOrBCCOrWrath() and 3 or 2
 
 --[[-----------------------------------------------------------------------------
 Support functions
@@ -41,17 +41,18 @@ end
 local function UpdateProgressBar(self)
   local value = self:GetValue() or 0
   local p = 0
-  if self.min < self.max then
-    p = (value - self.min) / (self.max - self.min)
+  if self.min and self.max then
+    if self.min < self.max then
+      p = (value - self.min) / (self.max - self.min)
+    end
   end
   p = Clamp(p, 0, 1)
-  self.progressBar:SetWidth(p * (self.editbox:GetWidth() + editBoxExtraWidth))
+  local w = p * (self.frame:GetWidth() - 45 + progressExtraWidth)
+  self.progressBar:SetWidth(max(w, 1))
+  self.progressBar:SetTexCoord(0, p , 0, 1)
 end
 
 local function UpdateHandleColor(self)
-  if self.fadeInStart then
-    self.progressOpacity = Clamp(GetTime() - self.fadeInStart, 0, fadeInDuration) / fadeInDuration
-  end
   if self.progressBarHandle.mouseDown then
     self.progressBarHandleTexture:SetColorTexture(0.6, 0.6, 0, 1)
   elseif MouseIsOver(self.progressBarHandle) then
@@ -59,27 +60,14 @@ local function UpdateHandleColor(self)
   else
     self.progressBarHandleTexture:SetColorTexture(0.4, 0.4, 0, 1)
   end
-  if fadeInProgress then
-    self.progressBar:SetColorTexture(0.25, 0.25, 0.25, 1 * self.progressOpacity)
-  end
 end
 
 local function UpdateHandleVisibility(self)
   if MouseIsOver(self.frame) and not self.editbox:HasFocus() then
     self.progressBarHandle:Show()
-    if fadeInProgress then
-      self.progressBar:Show()
-    end
-    if not self.fadeInStart then
-      self.fadeInStart = GetTime()
-    end
     UpdateHandleColor(self)
   else
-    self.fadeInStart = nil
     self.progressBarHandle:Hide()
-    if fadeInProgress then
-      self.progressBar:Hide()
-    end
   end
 end
 
@@ -138,11 +126,6 @@ local function Frame_OnEnter(frame)
   UpdateHandleVisibility(frame.obj)
 end
 
-local function EditBox_OnSizeChanged(frame)
-  UpdateProgressBar(frame.obj)
-end
-
-
 local function ProgressBarHandle_OnUpdate(frame, elapsed)
   UpdateHandleColor(frame.obj)
   if not IsMouseButtonDown("LeftButton") then
@@ -154,11 +137,8 @@ local function ProgressBarHandle_OnUpdate(frame, elapsed)
       local currentX = GetCursorPosition()
       local deltaX = currentX - frame.startX
       deltaX = deltaX / frame.obj.editbox:GetEffectiveScale()
-      if abs(deltaX) < 3 then
-        return
-      end
 
-      local p = deltaX / (frame.obj.editbox:GetWidth() + editBoxExtraWidth)
+      local p = deltaX / (frame.obj.frame:GetWidth() - 45 + progressExtraWidth)
       local delta =  p * (frame.obj.max - frame.obj.min)
       local step = frame.obj.step
       local v = frame.originalValue + delta
@@ -198,6 +178,10 @@ local methods = {
 
   ["OnRelease"] = function(self)
     self:ClearFocus()
+  end,
+
+  ["OnWidthSet"] = function(self, width)
+    UpdateProgressBar(self)
   end,
 
   ["SetDisabled"] = function(self, disabled)
@@ -244,6 +228,7 @@ local methods = {
     self.max = max or 100
     self.step = step or 1
     UpdateButtons(self)
+    UpdateProgressBar(self)
   end,
 
   ["SetIsPercent"] = function(self, value)
@@ -258,9 +243,6 @@ local methods = {
   ["SetFocus"] = function(self)
     self.editbox:SetFocus()
     self.progressBarHandle:Hide()
-    if fadeInProgress then
-      self.progressBar:Hide()
-    end
   end,
 }
 
@@ -279,26 +261,18 @@ local function Constructor()
 
   local leftbutton = CreateFrame("Button", nil, frame)
   leftbutton:SetSize(16, 16)
-	leftbutton:SetNormalAtlas("AlliedRace-UnlockingFrame-ZoomOut")
-	leftbutton:SetPushedAtlas("AlliedRace-UnlockingFrame-ZoomOut")
-	leftbutton:SetDisabledAtlas("AlliedRace-UnlockingFrame-ZoomOut")
-  --[[
-  leftbutton:SetNormalAtlas("common-button-dropdown-open")
-	leftbutton:SetPushedAtlas("common-button-dropdown-openpressed")
-	leftbutton:SetDisabledTexture("common-button-dropdown-open")
-  ]]
+	leftbutton:SetNormalTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\spinboxleft")
+  leftbutton:SetHighlightTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\spinboxlefth")
+	leftbutton:SetPushedTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\spinboxleftp")
+	leftbutton:SetDisabledTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\spinboxleftp")
   leftbutton:SetScript("OnClick", SpinBox_OnValueDown)
 
   local rightbutton = CreateFrame("Button", nil, frame)
   rightbutton:SetSize(16, 16)
-	rightbutton:SetNormalAtlas("AlliedRace-UnlockingFrame-ZoomIn")
-	rightbutton:SetPushedAtlas("AlliedRace-UnlockingFrame-ZoomIn")
-	rightbutton:SetDisabledAtlas("AlliedRace-UnlockingFrame-ZoomIn")
-  --[[
-  rightbutton:SetNormalAtlas("common-button-dropdown-closed")
-	rightbutton:SetPushedAtlas("common-button-dropdown-closedpressed")
-	rightbutton:SetDisabledTexture("common-button-dropdown-closed")
-  ]]
+	rightbutton:SetNormalTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\spinboxright")
+  rightbutton:SetHighlightTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\spinboxrighth")
+	rightbutton:SetPushedTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\spinboxrightp")
+	rightbutton:SetDisabledTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\spinboxrightp")
   rightbutton:SetScript("OnClick", SpinBox_OnValueUp)
 
   local editbox = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
@@ -328,22 +302,18 @@ local function Constructor()
       end
     end
   end)
-  editbox:SetScript("OnSizeChanged", EditBox_OnSizeChanged)
 
   leftbutton:SetPoint("TOPLEFT", 2, -18)
   rightbutton:SetPoint("TOPRIGHT", -2, -18)
   editbox:SetPoint("LEFT", leftbutton, "RIGHT", 8, 0)
   editbox:SetPoint("RIGHT", rightbutton, "LEFT", -2, 0)
 
-  local progressBar = editbox:CreateTexture(nil, "ARTWORK")
-  progressBar:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_White")
-  progressBar:SetColorTexture(0.25, 0.25, 0.25, 1)
-  progressBar:SetPoint("TOPLEFT", editbox, "TOPLEFT", editBoxLeftOffset, -1)
-  progressBar:SetPoint("BOTTOMLEFT", editbox, "BOTTOMLEFT", editBoxLeftOffset, 1)
+  local progressBar = editbox:CreateTexture(nil, "ARTWORK", nil)
+  progressBar:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\spinboxoverlay")
+  progressBar:SetVertexColor(0.50, 0.50, 0.50, 1)
+  progressBar:SetPoint("TOPLEFT", editbox, "TOPLEFT", progressLeftOffset, progressTopOffset)
+  progressBar:SetPoint("BOTTOMLEFT", editbox, "BOTTOMLEFT", progressLeftOffset, progressBottomOffset)
   progressBar:SetWidth(0)
-  if fadeInProgress then
-    progressBar:Hide()
-  end
 
   local progressBarHandle = CreateFrame("Frame", nil, editbox)
   progressBarHandle:SetPoint("TOP", progressBar, "TOP", 0, 2)

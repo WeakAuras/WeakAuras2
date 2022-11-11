@@ -69,6 +69,7 @@ local function createOptions(id, data)
     },
     alpha = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Alpha"],
       order = 25,
@@ -85,6 +86,7 @@ local function createOptions(id, data)
     },
     rotation = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Rotation"],
       min = 0,
@@ -96,6 +98,7 @@ local function createOptions(id, data)
     },
     discrete_rotation = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Discrete Rotation"],
       min = 0,

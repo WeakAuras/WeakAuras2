@@ -94,6 +94,7 @@ local function createOptions(id, data)
     },
     backgroundOffset = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Background Offset"],
       min = 0,
@@ -137,6 +138,7 @@ local function createOptions(id, data)
     },
     user_x = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       order = 42,
       name = L["Re-center X"],
@@ -147,6 +149,7 @@ local function createOptions(id, data)
     },
     user_y = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       order = 44,
       name = L["Re-center Y"],
@@ -157,6 +160,7 @@ local function createOptions(id, data)
     },
     startAngle = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       order = 42,
       name = L["Start Angle"],
@@ -167,6 +171,7 @@ local function createOptions(id, data)
     },
     endAngle = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       order = 44,
       name = L["End Angle"],
@@ -177,6 +182,7 @@ local function createOptions(id, data)
     },
     crop_x = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Crop X"],
       order = 46,
@@ -194,6 +200,7 @@ local function createOptions(id, data)
     },
     crop_y = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Crop Y"],
       order = 47,
@@ -211,6 +218,7 @@ local function createOptions(id, data)
     },
     rotation = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Rotation"],
       order = 52,
@@ -220,6 +228,7 @@ local function createOptions(id, data)
     },
     alpha = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Alpha"],
       order = 48,
@@ -251,6 +260,7 @@ local function createOptions(id, data)
     },
     slant = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Slant Amount"],
       order = 55.4,

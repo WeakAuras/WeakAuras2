@@ -198,6 +198,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       start_sound_repeat = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Repeat After"],
         order = 8.2,
@@ -358,6 +359,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       start_glow_lines = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Lines & Particles"],
         order = 10.81,
@@ -377,6 +379,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       start_glow_frequency = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Frequency"],
         order = 10.82,
@@ -396,6 +399,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       start_glow_length = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Length"],
         order = 10.83,
@@ -414,6 +418,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       start_glow_thickness = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Thickness"],
         order = 10.84,
@@ -432,6 +437,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       start_glow_XOffset = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["X-Offset"],
         order = 10.85,
@@ -448,6 +454,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       start_glow_YOffset = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Y-Offset"],
         order = 10.86,
@@ -464,6 +471,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       start_glow_scale = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Scale"],
         order = 10.87,
@@ -752,6 +760,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       finish_glow_lines = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Lines & Particles"],
         order = 30.81,
@@ -771,6 +780,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       finish_glow_frequency = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Frequency"],
         order = 30.82,
@@ -790,6 +800,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       finish_glow_length = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Length"],
         order = 30.83,
@@ -808,6 +819,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       finish_glow_thickness = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Thickness"],
         order = 30.84,
@@ -826,6 +838,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       finish_glow_XOffset = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["X-Offset"],
         order = 30.85,
@@ -842,6 +855,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       finish_glow_YOffset = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Y-Offset"],
         order = 30.86,
@@ -858,6 +872,7 @@ function OptionsPrivate.GetActionOptions(data)
       },
       finish_glow_scale = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Scale"],
         order = 30.87,

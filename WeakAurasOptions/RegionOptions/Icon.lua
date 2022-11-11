@@ -124,6 +124,7 @@ local function createOptions(id, data)
     },
     alpha = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth - indentWidth,
       name = L["Alpha"],
       order = 7.03,
@@ -135,6 +136,7 @@ local function createOptions(id, data)
     },
     zoom = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Zoom"],
       order = 7.04,
@@ -153,6 +155,7 @@ local function createOptions(id, data)
     },
     iconInset = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth - indentWidth,
       name = L["Icon Inset"],
       order = 7.06,

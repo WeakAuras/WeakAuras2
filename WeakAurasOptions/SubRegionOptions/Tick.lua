@@ -40,6 +40,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     tick_thickness = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Thickness"],
       order = 5,
@@ -104,6 +105,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     tick_length = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Length"],
       order = 8,
@@ -167,6 +169,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     tick_rotation = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Rotation"],
       min = 0,
@@ -184,6 +187,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     tick_xOffset = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["x-Offset"],
       order = 16,
@@ -193,6 +197,7 @@ local function createOptions(parentData, data, index, subIndex)
     },
     tick_yOffset = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["y-Offset"],
       order = 17,
