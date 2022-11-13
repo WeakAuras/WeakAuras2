@@ -115,11 +115,17 @@ local function EditBox_OnEnterPressed(frame)
 end
 
 local function EditBox_OnEnter(frame)
-  frame.obj:Fire("OnEnter")
+  frame.onEntered = true
+  if not frame.obj.progressBarHandle.mouseDown then
+    frame.obj:Fire("OnEnter")
+  end
 end
 
 local function EditBox_OnLeave(frame)
-  frame.obj:Fire("OnLeave")
+  if frame.onEntered then
+    frame.obj:Fire("OnLeave")
+  end
+  frame.onEntered = false
 end
 
 local function Frame_OnEnter(frame)
