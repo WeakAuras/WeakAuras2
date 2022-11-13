@@ -130,6 +130,12 @@ local function formatValueForCall(type, property)
 end
 
 
+function Private.ExecEnv.CancelConditionCheck(uid, cloneId)
+  if conditionChecksTimers.recheckHandle[uid] and conditionChecksTimers.recheckHandle[uid][cloneId] then
+    timer:CancelTimer(conditionChecksTimers.recheckHandle[uid][cloneId])
+    conditionChecksTimers.recheckHandle[uid][cloneId] = nil
+  end
+end
 
 function Private.ExecEnv.ScheduleConditionCheck(time, uid, cloneId)
   conditionChecksTimers.recheckTime[uid] = conditionChecksTimers.recheckTime[uid] or {}
@@ -258,21 +264,22 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
         end
       end
     elseif (cType == "timer" and value and op) then
+      local triggerState = "state[" .. trigger .. "]"
+      local varString = triggerState .. string.format("[%q]", variable)
+      local remaingTime = "(" .. triggerState .. ".paused and (" .. triggerState .. ".remaining or 0) or (" .. varString .. " - now)" .. ")"
       if useModRate then
+        local modRateString = "(state[" .. trigger .. "].modRate or 1.0)"
+
         if (op == "==") then
-          check = stateCheck .. stateVariableCheck .. "abs(((state[" .. trigger .. "]" .. string.format("[%q]", variable)
-                  .. "- now) " .. "/ (state[" .. trigger .. "].modRate or 1.0))" .. " -" .. value .. ") < 0.05"
+          check = stateCheck .. stateVariableCheck .. "abs((" .. remaingTime .. "-" .. value .. ")/" .. modRateString .. ") < 0.05"
         else
-          check = stateCheck .. stateVariableCheck .. "((state[" .. trigger .. "]" .. string.format("[%q]", variable)
-                  .. "- now) / (state[" .. trigger .. "].modRate or 1.0))" .. op .. value;
+          check = stateCheck .. stateVariableCheck .. remaingTime .. "/" .. modRateString .. op .. value
         end
       else
         if (op == "==") then
-          check = stateCheck .. stateVariableCheck .. "abs(state[" .. trigger .. "]" .. string.format("[%q]", variable)
-                  .. "- now -" .. value .. ") < 0.05";
+          check = stateCheck .. stateVariableCheck .. "abs(" .. remaingTime .. "-" .. value .. ") < 0.05"
         else
-          check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable)
-                  .. "- now" .. op .. value;
+          check = stateCheck .. stateVariableCheck .. remaingTime .. op .. value
         end
       end
     elseif (cType == "elapsedTimer" and value and op) then
@@ -357,9 +364,9 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
     -- If adding a new condition type, don't forget to adjust the validator in the options code
 
     if (cType == "timer" and value) then
-      recheckCode = "  nextTime = state[" .. trigger .. "] and state[" .. trigger .. "]"
-                    .. string.format("[%q]",  variable) .. " and (state[" .. trigger .. "]"
-                    .. string.format("[%q]",  variable) .. " - " .. value .. ")\n"
+      recheckCode = "  nextTime = state[" .. trigger .. "] and not state[" .. trigger .. "].paused"
+                    .. " and state[" .. trigger .. "]" .. string.format("[%q]",  variable)
+                    .. " and (state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. " - " .. value .. ")\n"
       recheckCode = recheckCode .. "  if (nextTime and (not recheckTime or nextTime < recheckTime) and nextTime >= now) then\n"
       recheckCode = recheckCode .. "    recheckTime = nextTime\n";
       recheckCode = recheckCode .. "  end\n"
@@ -683,6 +690,8 @@ local function ConstructConditionFunction(data)
 
   ret = ret .. "  if (recheckTime) then\n"
   ret = ret .. "    Private.ExecEnv.ScheduleConditionCheck(recheckTime, uid, cloneId);\n"
+  ret = ret .. "  else\n"
+  ret = ret .. "    Private.ExecEnv.CancelConditionCheck(uid, cloneId)"
   ret = ret .. "  end\n"
 
   local properties = Private.GetProperties(data);
