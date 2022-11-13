@@ -63,7 +63,7 @@ local function UpdateHandleColor(self)
 end
 
 local function UpdateHandleVisibility(self)
-  if MouseIsOver(self.frame) and not self.editbox:HasFocus() then
+  if MouseIsOver(self.frame) then
     self.progressBarHandle:Show()
     UpdateHandleColor(self)
   else
