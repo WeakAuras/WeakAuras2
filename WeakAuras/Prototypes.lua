@@ -879,26 +879,40 @@ function Private.ExecEnv.CheckRaidFlags(flags, flagToCheck)
   end
 end
 
+local function IsSpellKnownOrOverridesAndBaseIsKnown(spell, pet)
+  if IsSpellKnown(spell, pet) then
+    return true
+  end
+  local baseSpell = FindBaseSpellByID(spell)
+  if baseSpell and baseSpell ~= spell then
+    if FindSpellOverrideByID(baseSpell) == spell then
+      return IsSpellKnown(baseSpell, pet)
+    end
+  end
+end
+
 function WeakAuras.IsSpellKnownForLoad(spell, exact)
-  local result = IsPlayerSpell(spell) or IsSpellKnownOrOverridesKnown(spell, true)
+  local result = IsPlayerSpell(spell)
+                 or IsSpellKnownOrOverridesAndBaseIsKnown(spell, false)
+                 or IsSpellKnownOrOverridesAndBaseIsKnown(spell, true)
   if exact or result then
     return result
   end
   -- Dance through the spellname to the current spell id
-  spell = GetSpellInfo(spell)
-  if (spell) then
-    spell = select(7, GetSpellInfo(spell))
-  end
-  if spell then
-    return WeakAuras.IsSpellKnown(spell)
+  local spellName = GetSpellInfo(spell)
+  if (spellName) then
+    local otherSpell = select(7, GetSpellInfo(spellName))
+    if otherSpell and otherSpell ~= spell then
+      return WeakAuras.IsSpellKnownForLoad(otherSpell)
+    end
   end
 end
 
 function WeakAuras.IsSpellKnown(spell, pet)
   if (pet) then
-    return IsSpellKnownOrOverridesKnown(spell, pet);
+    return IsSpellKnownOrOverridesAndBaseIsKnown(spell, true)
   end
-  return IsPlayerSpell(spell) or IsSpellKnownOrOverridesKnown(spell);
+  return IsPlayerSpell(spell) or IsSpellKnownOrOverridesAndBaseIsKnown(spell, false)
 end
 
 function WeakAuras.IsSpellKnownIncludingPet(spell)
@@ -908,19 +922,7 @@ function WeakAuras.IsSpellKnownIncludingPet(spell)
   if (not spell) then
     return false;
   end
-  if (WeakAuras.IsSpellKnown(spell) or WeakAuras.IsSpellKnown(spell, true)) then
-    return true;
-  end
-  -- WORKAROUND brain damage around void eruption
-  -- In shadow form void eruption is overridden by void bolt, yet IsSpellKnown for void bolt
-  -- returns false, whereas it returns true for void eruption
-  local baseSpell = FindBaseSpellByID(spell);
-  if (not baseSpell) then
-    return false;
-  end
-  if (baseSpell ~= spell) then
-    return WeakAuras.IsSpellKnown(baseSpell) or WeakAuras.IsSpellKnown(baseSpell, true);
-  end
+  return WeakAuras.IsSpellKnown(spell, false) or WeakAuras.IsSpellKnown(spell, true)
 end
 
 function Private.ExecEnv.CompareSpellIds(a, b, exactCheck)
