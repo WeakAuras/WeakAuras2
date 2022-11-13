@@ -149,6 +149,12 @@ function OptionsPrivate.GetDisplayOptions(data)
 
     local options = flattenRegionOptions(regionOption, true)
 
+    for _, option in pairs(options) do
+      if option.type == "range" then
+        option.control = "WeakAurasSpinBox"
+      end
+    end
+
     local region = {
       type = "group",
       name = L["Display"],

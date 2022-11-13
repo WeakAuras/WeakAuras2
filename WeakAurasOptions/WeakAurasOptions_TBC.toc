@@ -92,3 +92,4 @@ AceGUI-Widgets\AceGUIContainer-WeakAurasInlineGroup.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasExpandAnchor.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasSpacer.lua
 AceGUI-Widgets\AceGuiWidget-WeakAurasProgressBar.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasSpinBox.lua

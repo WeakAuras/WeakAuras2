@@ -108,6 +108,7 @@ local function createOptions(id, data)
     },
     alpha = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Bar Alpha"],
       order = 39.3,
@@ -212,6 +213,7 @@ local function createOptions(id, data)
     },
     zoom = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Zoom"],
       order = 40.91,
@@ -298,6 +300,7 @@ local function createOptions(id, data)
     },
     sparkWidth = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Width"],
       order = 44.6,
@@ -309,6 +312,7 @@ local function createOptions(id, data)
     },
     sparkHeight = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Height"],
       order = 44.7,
@@ -320,6 +324,7 @@ local function createOptions(id, data)
     },
     sparkOffsetX = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["X Offset"],
       order = 44.8,
@@ -331,6 +336,7 @@ local function createOptions(id, data)
     },
     sparkOffsetY = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Y Offset"],
       order = 44.9,
@@ -351,6 +357,7 @@ local function createOptions(id, data)
     },
     sparkRotation = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Rotation"],
       min = 0,

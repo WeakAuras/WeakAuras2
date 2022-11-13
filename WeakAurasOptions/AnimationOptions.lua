@@ -196,6 +196,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       },
       start_easeStrength = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Ease Strength"],
         order = 33.8,
@@ -223,6 +224,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       -- text editor added below
       start_alpha = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.doubleWidth,
         name = L["Alpha"],
         order = 36,
@@ -250,6 +252,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       -- texteditor added below
       start_x = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["X Offset"],
         order = 40,
@@ -261,6 +264,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       },
       start_y = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Y Offset"],
         order = 41,
@@ -294,6 +298,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       -- texteditor added below
       start_scalex = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["X Scale"],
         order = 44,
@@ -307,6 +312,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       },
       start_scaley = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Y Scale"],
         order = 45,
@@ -340,6 +346,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       -- texteditor added below
       start_rotate = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.doubleWidth,
         name = L["Angle"],
         order = 48,
@@ -467,6 +474,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       },
       main_easeStrength = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Ease Strength"],
         order = 53.8,
@@ -494,6 +502,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       -- texteditor added below
       main_alpha = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.doubleWidth,
         name = L["Alpha"],
         order = 56,
@@ -521,6 +530,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       -- texteditor added below
       main_x = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["X Offset"],
         order = 60,
@@ -532,6 +542,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       },
       main_y = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Y Offset"],
         order = 61,
@@ -563,6 +574,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       -- texteditor added below
       main_scalex = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["X Scale"],
         order = 64,
@@ -576,6 +588,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       },
       main_scaley = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Y Scale"],
         order = 65,
@@ -609,6 +622,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       -- text editor added below
       main_rotate = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.doubleWidth,
         name = L["Angle"],
         order = 68,
@@ -709,6 +723,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       },
       finish_easeStrength = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Ease Strength"],
         order = 73.8,
@@ -736,6 +751,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       -- texteditor added below
       finish_alpha = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.doubleWidth,
         name = L["Alpha"],
         order = 76,
@@ -763,6 +779,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       -- texteditor added below
       finish_x = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["X Offset"],
         order = 80,
@@ -774,6 +791,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       },
       finish_y = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Y Offset"],
         order = 81,
@@ -805,6 +823,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       -- texteditor added below
       finish_scalex = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["X Scale"],
         order = 84,
@@ -818,6 +837,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       },
       finish_scaley = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Y Scale"],
         order = 85,
@@ -851,6 +871,7 @@ function OptionsPrivate.GetAnimationOptions(data)
       -- texteditor added below
       finish_rotate = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.doubleWidth,
         name = L["Angle"],
         order = 88,

@@ -444,6 +444,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       local properties = allProperties.propertyMap[property];
       if (properties.min or properties.softMin) and (properties.max or properties.softMax) then
         args["condition" .. i .. "value" .. j].type = "range";
+        args["condition" .. i .. "value" .. j].control = "WeakAurasSpinBox"
         args["condition" .. i .. "value" .. j].min = properties.min;
         args["condition" .. i .. "value" .. j].softMin = properties.softMin;
         args["condition" .. i .. "value" .. j].max = properties.max;
@@ -586,6 +587,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     args["condition" .. i .. "value" .. j .. "sound_repeat"] = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       min = 0,
       softMax = 60,
@@ -1157,6 +1159,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_lines"] = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_lines", L["Lines & Particles"], L["Lines & Particles"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_lines", propertyType),
@@ -1175,6 +1178,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_frequency"] = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_frequency", L["Frequency"], L["Frequency"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frequency", propertyType),
@@ -1193,6 +1197,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_length"] = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_length", L["Length"], L["Length"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_length", propertyType),
@@ -1211,6 +1216,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_thickness"] = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_thickness", L["Thickness"], L["Thickness"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_thickness", propertyType),
@@ -1229,6 +1235,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_XOffset"] = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_XOffset", L["X-Offset"], L["X-Offset"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_XOffset", propertyType),
@@ -1247,6 +1254,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_YOffset"] = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_YOffset", L["Y-Offset"], L["Y-Offset"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_YOffset", propertyType),
@@ -1265,6 +1273,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_scale"] = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_scale", L["Scale"], L["Scale"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_scale", propertyType),

@@ -190,6 +190,7 @@ local function createDistributeAlignOptions(id, data)
     },
     distribute_h = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Distribute Horizontally"],
       order = 20,
@@ -273,6 +274,7 @@ local function createDistributeAlignOptions(id, data)
     },
     distribute_v = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Distribute Vertically"],
       order = 25,
@@ -356,6 +358,7 @@ local function createDistributeAlignOptions(id, data)
     },
     space_h = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Space Horizontally"],
       order = 30,
@@ -439,6 +442,7 @@ local function createDistributeAlignOptions(id, data)
     },
     space_v = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Space Vertically"],
       order = 35,
@@ -560,6 +564,7 @@ local function createOptions(id, data)
     -- Alignment/Distribute options are added below
     scale = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Group Scale"],
       order = 45,

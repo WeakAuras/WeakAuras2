@@ -229,6 +229,7 @@ Private.format_types = {
       })
       addOption(symbol .. "_abbreviate_max", {
         type = "range",
+        control = "WeakAurasSpinBox",
         name = L["Max Char "],
         width = WeakAuras.normalWidth,
         min = 1,
@@ -264,6 +265,7 @@ Private.format_types = {
 
       addOption(symbol .. "_time_dynamic_threshold", {
         type = "range",
+        control = "WeakAurasSpinBox",
         min = 0,
         max = 60,
         step = 1,
@@ -452,6 +454,7 @@ Private.format_types = {
       })
       addOption(symbol .. "_abbreviate_max", {
         type = "range",
+        control = "WeakAurasSpinBox",
         name = L["Max Char "],
         width = WeakAuras.normalWidth,
         min = 1,
@@ -579,6 +582,7 @@ Private.format_types = {
       })
       addOption(symbol .. "_abbreviate_max", {
         type = "range",
+        control = "WeakAurasSpinBox",
         name = L["Max Char "],
         width = WeakAuras.normalWidth,
         min = 1,

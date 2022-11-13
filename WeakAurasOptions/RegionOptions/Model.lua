@@ -39,6 +39,7 @@ local function createOptions(id, data)
     },
     sequence = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Animation Sequence"],
       min = 0,
@@ -63,6 +64,7 @@ local function createOptions(id, data)
     -- old settings
     model_z = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Z Offset"],
       softMin = -20,
@@ -74,6 +76,7 @@ local function createOptions(id, data)
     },
     model_x = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["X Offset"],
       softMin = -20,
@@ -85,6 +88,7 @@ local function createOptions(id, data)
     },
     model_y = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Y Offset"],
       softMin = -20,
@@ -96,6 +100,7 @@ local function createOptions(id, data)
     },
     rotation = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Rotation"],
       min = 0,
@@ -108,6 +113,7 @@ local function createOptions(id, data)
     -- New Settings
     model_st_tx = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["X Offset"],
       softMin = -1000,
@@ -119,6 +125,7 @@ local function createOptions(id, data)
     },
     model_st_ty = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Y Offset"],
       softMin = -1000,
@@ -130,6 +137,7 @@ local function createOptions(id, data)
     },
     model_st_tz = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Z Offset"],
       softMin = -1000,
@@ -141,6 +149,7 @@ local function createOptions(id, data)
     },
     model_st_rx = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["X Rotation"],
       min = 0,
@@ -152,6 +161,7 @@ local function createOptions(id, data)
     },
     model_st_ry = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Y Rotation"],
       min = 0,
@@ -163,6 +173,7 @@ local function createOptions(id, data)
     },
     model_st_rz = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Z Rotation"],
       min = 0,
@@ -174,6 +185,7 @@ local function createOptions(id, data)
     },
     model_st_us = {
       type = "range",
+      control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Scale"],
       min = 5,

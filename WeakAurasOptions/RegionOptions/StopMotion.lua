@@ -296,6 +296,7 @@ local function createOptions(id, data)
         },
         startPercent = {
             type = "range",
+            control = "WeakAurasSpinBox",
             width = WeakAuras.normalWidth,
             name = L["Animation Start"],
             min = 0,
@@ -306,6 +307,7 @@ local function createOptions(id, data)
         },
         endPercent = {
             type = "range",
+            control = "WeakAurasSpinBox",
             width = WeakAuras.normalWidth,
             name = L["Animation End"],
             min = 0,
@@ -316,6 +318,7 @@ local function createOptions(id, data)
         },
         frameRate = {
            type = "range",
+           control = "WeakAurasSpinBox",
            width = WeakAuras.normalWidth,
            name = L["Frame Rate"],
            min = 3,
@@ -553,6 +556,7 @@ local function createOptions(id, data)
       },
       backgroundPercent = {
         type = "range",
+        control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
         name = L["Selected Frame"],
         min = 0,
