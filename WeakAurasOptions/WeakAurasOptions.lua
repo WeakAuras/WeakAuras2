@@ -894,7 +894,7 @@ function OptionsPrivate.ConvertDisplay(data, newType)
   local visibility = displayButtons[id]:GetVisibility();
   displayButtons[id]:PriorityHide(2);
 
-  if OptionsPrivate.Private.regions[id] then
+  if OptionsPrivate.Private.regions[id] and OptionsPrivate.Private.regions[id].region then
     OptionsPrivate.Private.regions[id].region:Collapse()
   end
   OptionsPrivate.Private.CollapseAllClones(id);

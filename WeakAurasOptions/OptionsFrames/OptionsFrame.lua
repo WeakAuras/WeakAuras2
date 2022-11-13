@@ -191,12 +191,14 @@ function OptionsPrivate.CreateFrame()
 
 
     for id, data in pairs(OptionsPrivate.Private.regions) do
-      data.region:Collapse()
-      data.region:OptionsClosed()
-      if OptionsPrivate.Private.clones[id] then
-        for _, cloneRegion in pairs(OptionsPrivate.Private.clones[id]) do
-          cloneRegion:Collapse()
-          cloneRegion:OptionsClosed()
+      if data.region then
+        data.region:Collapse()
+        data.region:OptionsClosed()
+        if OptionsPrivate.Private.clones[id] then
+          for _, cloneRegion in pairs(OptionsPrivate.Private.clones[id]) do
+            cloneRegion:Collapse()
+            cloneRegion:OptionsClosed()
+          end
         end
       end
     end
