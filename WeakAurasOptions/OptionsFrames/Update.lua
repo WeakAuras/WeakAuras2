@@ -182,15 +182,15 @@ local function recurseUpdate(data, chunk)
   end
 end
 
-local ignoredForDiffChecking -- Needs to be created lazily
-local function RecurseDiff(ours, theirs)
+local function RecurseDiff(ours, theirs, ignoredForDiffChecking)
   local diff, seen, same = {}, {}, true
   for key, ourVal in pairs(ours) do
-    if not ignoredForDiffChecking[key] then
+    if type(ignoredForDiffChecking) ~= table or ignoredForDiffChecking[key] ~= true then
       seen[key] = true
       local theirVal = theirs[key]
       if type(ourVal) == "table" and type(theirVal) == "table" then
-        local diffVal = RecurseDiff(ourVal, theirVal)
+        local diffVal = RecurseDiff(ourVal, theirVal,
+                                    type(ignoredForDiffChecking) == table and ignoredForDiffChecking[key] or nil)
         if diffVal then
           diff[key] = diffVal
           same = false
@@ -207,7 +207,7 @@ local function RecurseDiff(ours, theirs)
     end
   end
   for key, theirVal in pairs(theirs) do
-    if not seen[key] and not ignoredForDiffChecking[key] then
+    if not seen[key] and (type(ignoredForDiffChecking) ~= table or ignoredForDiffChecking[key] ~= true) then
       diff[key] = theirVal
       same = false
     end
@@ -243,15 +243,13 @@ local function DebugPrintDiff(diff)
 end
 
 local function Diff(ours, theirs)
-  if not ignoredForDiffChecking then
-    ignoredForDiffChecking = CreateFromMixins(OptionsPrivate.Private.internal_fields,
-    OptionsPrivate.Private.non_transmissable_fields)
-  end
+  local ignoredForDiffChecking = CreateFromMixins(OptionsPrivate.Private.internal_fields,
+                                                  OptionsPrivate.Private.non_transmissable_fields)
 
   -- generates a diff which WeakAuras.Update can use
   local debug = false
   if not ours or not theirs then return end
-  local diff = RecurseDiff(ours, theirs)
+  local diff = RecurseDiff(ours, theirs, ignoredForDiffChecking)
   if diff then
     if debug then
       DebugPrintDiff(diff, ours.id, theirs.id)
