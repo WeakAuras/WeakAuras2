@@ -51,7 +51,7 @@ function OptionsPrivate.StartFrameChooser(data, path)
           focusName = nil;
           local focusIsGroup = false;
           for id, regionData in pairs(OptionsPrivate.Private.regions) do
-            if(regionData.region:IsVisible() and MouseIsOver(regionData.region)) then
+            if(regionData.region and regionData.region:IsVisible() and MouseIsOver(regionData.region)) then
               local isGroup = regionData.regionType == "group" or regionData.regionType == "dynamicgroup";
               if (not focusName or (not isGroup and focusIsGroup)) then
                 focus = regionData.region;

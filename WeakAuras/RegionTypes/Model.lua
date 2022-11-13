@@ -326,7 +326,7 @@ do
     Private.StartProfileSystem("model");
     for id, data in pairs(Private.regions) do
       Private.StartProfileAura(id);
-      if data.region.toShow then
+      if data.region and data.region.toShow then
         if (data.regionType == "model") then
           data.region:PreShow();
         end
