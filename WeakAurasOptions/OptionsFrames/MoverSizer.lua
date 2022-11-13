@@ -637,7 +637,7 @@ local function ConstructMoverSizer(parent)
         data.yOffset = dY / scale
       end
       region:ResetPosition()
-      WeakAuras.Add(data, nil, true)
+      WeakAuras.Add(data)
       WeakAuras.UpdateThumbnail(data)
       local xOff, yOff
       mover.selfPoint, mover.anchor, mover.anchorPoint, xOff, yOff = region:GetPoint(1)
