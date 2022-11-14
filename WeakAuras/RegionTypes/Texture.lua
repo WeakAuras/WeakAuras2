@@ -225,7 +225,7 @@ local function modify(parent, region, data)
     region.texture:SetDesaturated(b);
   end
 
-  if data.rotate and not region.texture.IsAtlas then
+  if data.rotate then
     function region:Rotate(degrees)
       region.rotation = degrees;
       DoTexCoord();

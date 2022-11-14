@@ -99,7 +99,7 @@ local function ConstructTexturePicker(frame)
   dropdown.list = {};
   dropdown:SetGroupList(dropdown.list);
 
-  local scroll = AceGUI:Create("ScrollFrame");
+  local scroll = AceGUI:Create("WeakAurasScrollArea");
   scroll:SetWidth(540);
   dropdown:AddChild(scroll);
 
@@ -110,10 +110,11 @@ local function ConstructTexturePicker(frame)
       widget:Release()
     end
     wipe(group.textureWidgets)
+    local viewportWidth, viewportHeight = scroll:GetViewportSize()
 
-    local texturesPerRow = floor(scroll.content:GetWidth() / 128)
-    local topRow = floor((scroll.content.offset or 0) / 128)
-    local bottomRow = topRow + ceil(scroll.frame:GetHeight() / 128)
+    local texturesPerRow = floor(viewportWidth / 128)
+    local topRow = floor(scroll:GetContentOffset() / 128)
+    local bottomRow = topRow + ceil(viewportHeight / 128)
 
     local first = topRow * texturesPerRow + 1
     local last = first + (bottomRow - topRow + 1) * texturesPerRow - 1
@@ -149,30 +150,9 @@ local function ConstructTexturePicker(frame)
     end
   end
 
-  -- hook SetPoint of content
-  local oldSetPoint = scroll.content.SetPoint
-  scroll.content.SetPoint = function(self, point, x, y, ...)
-    oldSetPoint(self, point, x, y, ...)
-    self.offset = y
-    -- We rely on AceGUI not changing how it scrolls the actual content!
-    if point == "TOPRIGHT" then
-      UpdateShownWidgets()
-    end
-  end
-
-  AceGUI:RegisterLayout("WeakAurasTexturePickerLayout",
-    function(content, children)
-      local texturesPerRow = floor(content:GetWidth() / 128)
-      if texturesPerRow == 0 then
-        texturesPerRow = 1
-      end
-      local totalHeight = ceil(#group.selectedGroupSorted / texturesPerRow) * 128
-
-      if(content.obj.LayoutFinished) then
-        content.obj:LayoutFinished(nil, totalHeight);
-      end
+  scroll:SetCallback("ContentScrolled", function(self)
+    UpdateShownWidgets()
   end)
-  scroll:SetLayout("WeakAurasTexturePickerLayout")
 
   local function texturePickerGroupSelected(widget, event, uniquevalue, filter)
     group.selectedGroupSorted = {}
@@ -196,7 +176,14 @@ local function ConstructTexturePicker(frame)
         end
     end)
 
-    scroll:DoLayout()
+    local viewportWidth = scroll:GetViewportSize()
+    local texturesPerRow = floor(viewportWidth / 128)
+    if texturesPerRow == 0 then
+      texturesPerRow = 1
+    end
+    local totalHeight = ceil(#group.selectedGroupSorted / texturesPerRow) * 128
+    scroll:SetContentHeight(totalHeight)
+
     UpdateShownWidgets()
   end
 

@@ -28,7 +28,7 @@ local methods = {
   end,
   ["OnRelease"] = function(self)
     self:ClearPick();
-    self:SetOnUpdate()
+    self:SetOnUpdate(nil)
     self.texture:SetTexture();
   end,
   ["SetTexture"] = function(self, texturePath, name, IsStopMotion)
