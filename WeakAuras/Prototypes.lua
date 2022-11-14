@@ -9473,7 +9473,6 @@ if WeakAuras.IsClassicOrBCCOrWrath() then
   end
   if not WeakAuras.IsWrathClassic() then
     Private.event_prototypes["Death Knight Rune"] = nil
-    Private.event_prototypes["Crowd Controlled"] = nil
   end
   Private.event_prototypes["Alternate Power"] = nil
   Private.event_prototypes["Equipment Set"] = nil
