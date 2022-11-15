@@ -1807,6 +1807,13 @@ Private.texture_types = {
     ["Interface\\AddOns\\WeakAuras\\Media\\Textures\\logo_256.tga"] = "WeakAuras logo 256px"
   }
 }
+
+if Private.AtlasList then
+  Private.texture_types["Blizzard Atlas"] = {}
+  for _, atlas in ipairs(Private.AtlasList) do
+    Private.texture_types["Blizzard Atlas"][atlas] = atlas
+  end
+end
 local BuildInfo = select(4, GetBuildInfo())
 if BuildInfo <= 80100 then -- 8.1.5
   Private.texture_types.Sparks["worldstate-capturebar-spark-green"] = "Capture Bar Green Spark"

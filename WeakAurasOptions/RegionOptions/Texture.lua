@@ -2,6 +2,11 @@ if not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
+local GetAtlasInfo = C_Texture and C_Texture.GetAtlasInfo or GetAtlasInfo
+
+local function IsAtlas(input)
+  return type(input) == "string" and GetAtlasInfo(input) ~= nil
+end
 
 local function createOptions(id, data)
   local options = {
@@ -65,7 +70,8 @@ local function createOptions(id, data)
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Mirror"],
-      order = 20
+      order = 20,
+      hidden = IsAtlas(data.texture)
     },
     alpha = {
       type = "range",
@@ -82,7 +88,8 @@ local function createOptions(id, data)
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Allow Full Rotation"],
-      order = 30
+      order = 30,
+      hidden = IsAtlas(data.texture)
     },
     rotation = {
       type = "range",
@@ -94,7 +101,7 @@ local function createOptions(id, data)
       step = 1,
       bigStep = 3,
       order = 35,
-      hidden = function() return not data.rotate end
+      hidden = function() return not data.rotate or IsAtlas(data.texture) end,
     },
     discrete_rotation = {
       type = "range",
@@ -105,14 +112,15 @@ local function createOptions(id, data)
       max = 360,
       step = 90,
       order = 35,
-      hidden = function() return data.rotate end
+      hidden = function() return data.rotate or IsAtlas(data.texture) end,
     },
     textureWrapMode = {
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Texture Wrap"],
       order = 36,
-      values = OptionsPrivate.Private.texture_wrap_types
+      values = OptionsPrivate.Private.texture_wrap_types,
+      hidden = IsAtlas(data.texture)
     },
     endHeader = {
       type = "header",
@@ -161,6 +169,9 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
   region.texture:SetVertexColor(data.color[1], data.color[2], data.color[3], data.color[4]);
   region.texture:SetBlendMode(data.blendMode);
 
+  if region.texture.IsAtlas then
+    return
+  end
   local ulx,uly , llx,lly , urx,ury , lrx,lry;
   if(data.rotate) then
     local angle = rad(135 - data.rotation);

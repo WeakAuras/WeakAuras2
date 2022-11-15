@@ -4,7 +4,7 @@ local AddonName, Private = ...
 
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
-local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
+local GetAtlasInfo = C_Texture and C_Texture.GetAtlasInfo or GetAtlasInfo
 
 WeakAuras.regionPrototype = {};
 
@@ -975,7 +975,9 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
 end
 
 function WeakAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
-  if type(path) == "string" and GetAtlasInfo(path) then
+  texture:SetTexCoord(0, 1, 0, 1)
+  texture.IsAtlas = type(path) == "string" and GetAtlasInfo(path) ~= nil
+  if texture.IsAtlas then
     return texture:SetAtlas(path);
   else
     if (texture.wrapModeH and texture.wrapModeH ~= wrapModeH) or (texture.wrapModeV and texture.wrapModeV ~= wrapModeV) then

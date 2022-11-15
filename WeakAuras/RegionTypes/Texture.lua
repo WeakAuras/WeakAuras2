@@ -3,6 +3,7 @@ if not WeakAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 
 local L = WeakAuras.L;
+local GetAtlasInfo = C_Texture and  C_Texture.GetAtlasInfo or GetAtlasInfo
 
 local default = {
   texture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
@@ -112,6 +113,7 @@ local function modify(parent, region, data)
   region.mirror = data.mirror
 
   local function DoTexCoord()
+    if region.texture.IsAtlas then return end
     local mirror_h, mirror_v = region.mirror_h, region.mirror_v;
     if(region.mirror) then
       mirror_h = not mirror_h;
@@ -223,7 +225,7 @@ local function modify(parent, region, data)
     region.texture:SetDesaturated(b);
   end
 
-  if(data.rotate) then
+  if data.rotate then
     function region:Rotate(degrees)
       region.rotation = degrees;
       DoTexCoord();
