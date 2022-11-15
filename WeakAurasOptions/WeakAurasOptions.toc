@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
 ## Version: @project-version@

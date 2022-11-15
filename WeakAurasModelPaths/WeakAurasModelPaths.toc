@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: WeakAuras Model Paths
 ## Author: The WeakAuras Team
 ## Version: @project-version@
