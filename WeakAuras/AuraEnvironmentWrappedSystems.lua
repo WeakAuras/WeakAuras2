@@ -34,6 +34,7 @@ local WrapData = {
 }
 
 --- @type fun(id: auraId, cloneId: string, system: any, funcs: {name: string, arg: number}[])
+--- @return table wrappedSystem
 local function Wrap(id, cloneId, system, funcs)
   local wrappedSystem = {}
   for _, data in ipairs(funcs) do
@@ -67,4 +68,3 @@ Private.AuraEnvironmentWrappedSystem.Get = function(systemName, id, cloneId)
     or Wrap(id, cloneId, _G[systemName], WrapData[systemName])
   return wrappers[id][cloneIdKey][systemName]
 end
-

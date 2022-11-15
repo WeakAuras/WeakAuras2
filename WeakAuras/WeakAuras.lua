@@ -5580,6 +5580,7 @@ end
 
 -- WORKAROUND
 -- UnitPlayerControlled doesn't work if the target is "too" far away
+--- @return boolean?
 function Private.UnitPlayerControlledFixed(unit)
   local guid = UnitGUID(unit)
   return guid and guid:sub(1, 6) == "Player"
