@@ -975,9 +975,9 @@ function WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, pare
 end
 
 function WeakAuras.SetTextureOrAtlas(texture, path, wrapModeH, wrapModeV)
-  texture:SetTexCoord(0, 1, 0, 1)
   texture.IsAtlas = type(path) == "string" and GetAtlasInfo(path) ~= nil
   if texture.IsAtlas then
+    texture:SetTexCoord(0, 1, 0, 1)
     return texture:SetAtlas(path);
   else
     if (texture.wrapModeH and texture.wrapModeH ~= wrapModeH) or (texture.wrapModeV and texture.wrapModeV ~= wrapModeV) then
