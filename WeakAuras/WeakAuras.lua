@@ -5295,10 +5295,16 @@ local function tryAnchorAgain()
     local region = WeakAuras.GetRegion(id);
     if (data and region) then
       local parent = WeakAurasFrame;
-      if (data.parent and WeakAuras.GetData(data.parent) and Private.EnsureRegion(data.parent)) then
-        parent = Private.regions[data.parent].region;
+      local parentData
+      if data.parent then
+        parentData = WeakAuras.GetData(data.parent)
+        if parentData and Private.EnsureRegion(data.parent) then
+          parent = Private.regions[data.parent].region
+        end
       end
-      Private.AnchorFrame(data, region, parent);
+      if not parentData or parentData.regionType ~= "dynamicgroup" then
+        Private.AnchorFrame(data, region, parent)
+      end
     end
   end
 end
