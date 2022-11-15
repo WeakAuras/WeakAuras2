@@ -4,6 +4,10 @@
   "ignoreRegExpList": [
     "\\((.+?)\\)"
   ],
+  "ignorePaths": [
+    "WeakAurasModelPaths",
+    "WeakAuras/Types*.lua"
+  ],
   "words": [
     "Adamantite",
     "Ahn'Qiraj",
@@ -277,6 +281,7 @@
     "Transmisson",
     "tremove",
     "triggernum",
+    "Triggernums",
     "tsize",
     "tsort",
     "uids",
