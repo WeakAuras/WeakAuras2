@@ -966,7 +966,7 @@ local funcs = {
       orientVertical(self);
     end
   end,
-  UpdateEffectiveOrientation = function(self)
+  UpdateEffectiveOrientation = function(self, force)
     local orientation = self.orientation
 
     if self.flipX then
@@ -984,7 +984,7 @@ local funcs = {
       end
     end
 
-    if orientation ~= self.effectiveOrientation then
+    if orientation ~= self.effectiveOrientation or force then
       self.effectiveOrientation = orientation
       self:ReOrient()
     end
@@ -1344,7 +1344,7 @@ local function modify(parent, region, data)
     self:SetHeight(self.bar.totalHeight);
     icon:SetHeight(self.bar.iconHeight);
 
-    region:UpdateEffectiveOrientation()
+    region:UpdateEffectiveOrientation(true)
   end
   --  region:Scale(1.0, 1.0);
   if data.smoothProgress then
