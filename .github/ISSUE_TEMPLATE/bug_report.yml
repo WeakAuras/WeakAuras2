@@ -60,7 +60,7 @@ body:
 - type: textarea
   attributes:
     label: Reproduction Steps
-    description: Please list out the steps to reproduce your bug.
+    description: Please list out the steps to reproduce your bug. Please verify that your reproduction steps are enough to reproduce the problem.
     placeholder: |
       1. Go to '...'
       2. Click on '....'
