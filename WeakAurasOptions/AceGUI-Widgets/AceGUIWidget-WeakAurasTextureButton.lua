@@ -33,10 +33,19 @@ local methods = {
   end,
   ["SetTexture"] = function(self, texturePath, name, IsStopMotion)
     self.texture:SetTexCoord(0, 1, 0, 1)
-    if GetAtlasInfo(texturePath) then
-      self.texture:SetAtlas(texturePath);
+    local atlasInfo = GetAtlasInfo(texturePath)
+    if atlasInfo then
+      self.texture:SetAtlas(texturePath, false);
       self.texture.IsAtlas = true
+      if atlasInfo.width > atlasInfo.height then
+        self.texture:SetSize(120, 120 * (atlasInfo.height / atlasInfo.width))
+      elseif atlasInfo.height > atlasInfo.width then
+        self.texture:SetSize(120 * (atlasInfo.width / atlasInfo.height), 120)
+      else
+        self.texture:SetSize(120, 120)
+      end
     else
+      self.texture:SetSize(120, 120)
       self.texture:SetTexture(texturePath, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE");
       self.texture.IsAtlas = nil
     end
@@ -127,8 +136,8 @@ local function Constructor()
   button:SetHighlightTexture(highlighttexture);
 
   local texture = button:CreateTexture(nil, "OVERLAY");
-  texture:SetPoint("BOTTOMLEFT", button, 4, 4);
-  texture:SetPoint("TOPRIGHT", button, -4, -4);
+  texture:SetPoint("CENTER")
+  texture:SetSize(120, 120)
 
   button:SetScript("OnEnter", function() Show_Tooltip(button, texture.name, texture.path:gsub("\\", "\n")) end);
   button:SetScript("OnLeave", Hide_Tooltip);
