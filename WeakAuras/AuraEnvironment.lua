@@ -530,7 +530,7 @@ local exec_env_custom = setmetatable({},
                               or C_Timer
     elseif blockedFunctions[k] then
       blocked(k)
-      return function() end
+      return function(_) end
     elseif blockedTables[k] then
       blocked(k)
       return {}
@@ -576,7 +576,7 @@ local exec_env_builtin = setmetatable({},
       return PrivateForBuiltIn
     elseif blockedFunctions[k] then
       blocked(k)
-      return function() end
+      return function(_) end
     elseif blockedTables[k] then
       blocked(k)
       return {}

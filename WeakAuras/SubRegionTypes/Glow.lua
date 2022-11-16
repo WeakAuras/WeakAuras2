@@ -4,6 +4,7 @@ local AddonName, Private = ...
 
 local LCG = LibStub("LibCustomGlow-1.0")
 
+---@type Masque?, number?
 local MSQ, MSQ_Version = LibStub("Masque", true);
 if MSQ then
   if MSQ_Version <= 80100 then

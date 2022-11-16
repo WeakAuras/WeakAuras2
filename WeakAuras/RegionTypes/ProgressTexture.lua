@@ -416,7 +416,7 @@ local function createTexCoord(texture)
     if (edge1 == edge2) then
       self:MoveCorner(width, height, endCorner1, angleToCoord(angle2));
     else
-      self:MoveCorner(width, height, endCorner1, defaultTexCoord[endCorner1 .. "x"], defaultTexCoord[endCorner1 .. "y"]);
+      self:MoveCorner(width, height, endCorner1, defaultTexCoord[endCorner1 .. "x"], defaultTexCoord[endCorner1 .. "y"])
     end
 
     self:MoveCorner(width, height, endCorner2, angleToCoord(angle2));
@@ -461,10 +461,14 @@ local function createTexCoord(texture)
   end
 
   function coord:Transform(scalex, scaley, rotation, mirror_h, mirror_v, user_x, user_y)
-    coord.ULx, coord.ULy = TransformPoint(coord.ULx, coord.ULy, scalex, scaley, rotation, mirror_h, mirror_v, user_x, user_y);
-    coord.LLx, coord.LLy = TransformPoint(coord.LLx, coord.LLy, scalex, scaley, rotation, mirror_h, mirror_v, user_x, user_y);
-    coord.URx, coord.URy = TransformPoint(coord.URx, coord.URy, scalex, scaley, rotation, mirror_h, mirror_v, user_x, user_y);
-    coord.LRx, coord.LRy = TransformPoint(coord.LRx, coord.LRy, scalex, scaley, rotation, mirror_h, mirror_v, user_x, user_y);
+    coord.ULx, coord.ULy = TransformPoint(coord.ULx, coord.ULy, scalex, scaley,
+                                          rotation, mirror_h, mirror_v, user_x, user_y)
+    coord.LLx, coord.LLy = TransformPoint(coord.LLx, coord.LLy, scalex, scaley,
+                                          rotation, mirror_h, mirror_v, user_x, user_y)
+    coord.URx, coord.URy = TransformPoint(coord.URx, coord.URy, scalex, scaley,
+                                          rotation, mirror_h, mirror_v, user_x, user_y)
+    coord.LRx, coord.LRy = TransformPoint(coord.LRx, coord.LRy, scalex, scaley,
+                                          rotation, mirror_h, mirror_v, user_x, user_y)
   end
 
   return coord;
@@ -621,7 +625,8 @@ local textureFunctions = {
   end,
 
   SetOrientation = function(self, orientation, compress, slanted, slant, slantFirst, slantMode)
-    self.SetValueFunction = slanted and self.SetValueFunctionsSlanted[orientation] or self.SetValueFunctions[orientation];
+    self.SetValueFunction = slanted and self.SetValueFunctionsSlanted[orientation]
+                            or self.SetValueFunctions[orientation]
     self.compress = compress;
     self.slanted = slanted;
     self.slant = slant;

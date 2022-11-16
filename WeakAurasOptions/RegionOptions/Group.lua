@@ -66,6 +66,7 @@ local function createDistributeAlignOptions(id, data)
         if(#data.controlledChildren < 1) then
           return nil;
         end
+        ---@type AnchorPoint?, AnchorPoint?, AnchorPoint?
         local alignedCenter, alignedRight, alignedLeft = "CENTER", "RIGHT", "LEFT";
         for index, childId in pairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childId);
@@ -132,6 +133,7 @@ local function createDistributeAlignOptions(id, data)
         if(#data.controlledChildren < 1) then
           return nil;
         end
+        ---@type AnchorPoint?, AnchorPoint?, AnchorPoint?
         local alignedCenter, alignedBottom, alignedTop = "CENTER", "RIGHT", "LEFT";
         for index, childId in pairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childId);
@@ -704,4 +706,5 @@ local function createIcon()
 end
 
 -- Register new region type options with WeakAuras
-WeakAuras.RegisterRegionOptions("group", createOptions, createIcon, L["Group"], createThumbnail, modifyThumbnail, L["Controls the positioning and configuration of multiple displays at the same time"]);
+WeakAuras.RegisterRegionOptions("group", createOptions, createIcon, L["Group"], createThumbnail, modifyThumbnail,
+                                L["Controls the positioning and configuration of multiple displays at the same time"])
