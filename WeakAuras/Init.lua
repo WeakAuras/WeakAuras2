@@ -21,6 +21,8 @@ Private.frames = {}
 --- @field party table<string, boolean>
 --- @field raid table<string, boolean>
 
+--- @alias traverseFunction fun(): auraData
+
 --- @class Private
 --- @field ActivateAuraEnvironment fun(id: auraId?, cloneId: string?, state: state?, states: state[]?, config: boolean?)
 --- @field ActivateAuraEnvironmentForRegion fun(region: table, onlyConfig: boolean?)
@@ -37,7 +39,7 @@ Private.frames = {}
 --- @field clones table<auraId, table<string, table>>
 --- @field customActionsFunctions table<auraId, table<string, function?>>
 --- @field DebugLog debugLog
---- @field EnsureRegion fun(id: auraId, cloneId: string?)
+--- @field EnsureRegion fun(id: auraId, cloneId: string?): Frame
 --- @field ExecEnv table
 --- @field FixGroupChildrenOrderForGroup fun(data: auraData)
 --- @field frames table<string, table>
@@ -52,7 +54,7 @@ Private.frames = {}
 --- @field LibSpecWrapper LibSpecWrapper
 --- @field linked table<auraId, number>
 --- @field LoadFunction fun(input: string): function
---- @field LoadOptions fun(msg: string?)
+--- @field LoadOptions fun(msg: string?): boolean
 --- @field multiUnitUnits multiUnitUnits
 --- @field non_transmissable_fields table<string, non_transmissable_field>
 --- @field non_transmissable_fields_v2000 table<string, non_transmissable_field>
@@ -65,7 +67,7 @@ Private.frames = {}
 --- @field reset_ranged_swing_spells table<number, boolean>
 --- @field reset_swing_spells table<number, boolean>
 --- @field noreset_swing_spells table<number, boolean>
---- @field RunCustomTextFunc fun(region: table, f: function)
+--- @field RunCustomTextFunc fun(region: table, f: function): string?
 --- @field spark_rotation_types table<string, string>
 --- @field spec_types string[]
 --- @field spec_types_3 string[]
@@ -75,13 +77,13 @@ Private.frames = {}
 --- @field StopProfileAura fun(id: auraId)
 --- @field StopProfileSystem fun(system: string)
 --- @field tick_placement_modes table<string, string>
---- @field TraverseAll fun(data: auraData): fun(): auraData, auraData
---- @field TraverseAllChildren fun(data: auraData): fun(): auraData, auraData
---- @field TraverseGroups fun(data: auraData): fun(): auraData, auraData
---- @field TraverseLeafs fun(data: auraData): fun(): auraData, auraData
---- @field TraverseLeafsOrAura fun(data: auraData): fun(): auraData, auraData
---- @field TraverseParents fun(data: auraData): fun(): auraData, auraData
---- @field TraverseSubGroups fun(data: auraData): fun(): auraData, auraData
+--- @field TraverseAll fun(data: auraData): traverseFunction, auraData
+--- @field TraverseAllChildren fun(data: auraData): traverseFunction, auraData
+--- @field TraverseGroups fun(data: auraData): traverseFunction, auraData
+--- @field TraverseLeafs fun(data: auraData): traverseFunction, auraData
+--- @field TraverseLeafsOrAura fun(data: auraData): traverseFunction, auraData
+--- @field TraverseParents fun(data: auraData): traverseFunction, auraData
+--- @field TraverseSubGroups fun(data: auraData): traverseFunction, auraData
 --- @field UIDtoID fun(uid: uid): auraId
 --- @field UnitEventList table<string, boolean>
 --- @field UnitPlayerControlledFixed fun(unit: string): boolean
@@ -371,23 +373,23 @@ end
 
 -- These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile
 --- @type fun(regionType: string, createFunction: function, modifyFunction: function, defaults: table, properties: table|function|nil, validate: function?))
-function WeakAuras.RegisterRegionType()
+function WeakAuras.RegisterRegionType(_, _, _ ,_)
 end
 
 --- @type fun(regionType: string, createOptions: function, icon: string|function, displayName: string, createThumbnail: function?, modifyThumbnail: function?, description: string?, templates: table?, getAnchors: function?)
-function WeakAuras.RegisterRegionOptions()
+function WeakAuras.RegisterRegionOptions(_, _ , _ ,_ )
 end
 
-function Private.StartProfileSystem()
+function Private.StartProfileSystem(_)
 end
 
-function Private.StartProfileAura()
+function Private.StartProfileAura(_)
 end
 
-function Private.StopProfileSystem()
+function Private.StopProfileSystem(_)
 end
 
-function Private.StopProfileAura()
+function Private.StopProfileAura(_)
 end
 
 function Private.StartProfileUID()
@@ -400,7 +402,7 @@ Private.ExecEnv = {}
 
 -- If WeakAuras shuts down due to being installed on the wrong target, keep the bindings from erroring
 --- @type fun(type: string)
-function WeakAuras.StartProfile()
+function WeakAuras.StartProfile(_)
 end
 
 function WeakAuras.StopProfile()

@@ -6238,7 +6238,7 @@ Private.event_prototypes = {
             and trigger.use_talent == false
             and trigger.talent and type(trigger.talent.multi) == "table"
             then
-              local count, value = 0
+              local count, value = 0, nil
               for _, v in pairs(trigger.talent.multi) do
                 value = v
                 count = count + 1

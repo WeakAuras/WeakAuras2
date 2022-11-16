@@ -430,4 +430,5 @@ if WeakAuras.IsRetail() then
   })
 end
 
-WeakAuras.RegisterRegionOptions("model", createOptions, createIcon, L["Model"], createThumbnail, modifyThumbnail, L["Shows a 3D model from the game files"], templates);
+WeakAuras.RegisterRegionOptions("model", createOptions, createIcon, L["Model"], createThumbnail, modifyThumbnail,
+                                L["Shows a 3D model from the game files"], templates);

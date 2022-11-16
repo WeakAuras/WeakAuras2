@@ -166,7 +166,9 @@ function spellCache.Load(data)
     num = num + 1;
   end
 
-  if(num < 39000 or metaData.locale ~= locale or metaData.build ~= build or metaData.version ~= version or not metaData.spellCacheStrings) then
+  if(num < 39000 or metaData.locale ~= locale or metaData.build ~= build
+     or metaData.version ~= version or not metaData.spellCacheStrings)
+  then
     metaData.build = build;
     metaData.locale = locale;
     metaData.version = version;

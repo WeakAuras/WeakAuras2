@@ -1692,6 +1692,7 @@ function Private.ScanForLoadsGroup(toCheck)
     local data = WeakAuras.GetData(id)
     if(data.controlledChildren) then
       if(#data.controlledChildren > 0) then
+        ---@type boolean?
         local any_loaded = false;
         for child in Private.TraverseLeafs(data) do
           if(loaded[child.id] ~= nil) then
@@ -3196,9 +3197,6 @@ local function EnsureRegion(id)
 end
 
 --- Ensures that a region/clone exists and returns it
----@param id auraId
----@param cloneId string|nil
----@return table?
 function Private.EnsureRegion(id, cloneId)
   -- Even if we are asked to only create a clone, we create the default region
   -- too.
