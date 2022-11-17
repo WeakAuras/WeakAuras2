@@ -165,25 +165,80 @@ Private.frames = {}
 --- @field ignoreOptionsEventErrors boolean|nil
 --- @field groupOffset boolean|nil
 
+--- @alias dynamicGroupCenterType
+--- | "LR"
+--- | "RL"
+--- | "CLR"
+--- | "CRL"
+
+--- @alias dynamicGroupGridType
+--- | "RU"
+--- | "UR"
+--- | "LU"
+--- | "UL"
+--- | "RD"
+--- | "DR"
+--- | "LD"
+--- | "DL"
+--- | "HD"
+--- | "HU"
+--- | "VR"
+--- | "VL"
+--- | "DH"
+--- | "UH"
+--- | "LV"
+--- | "RV"
+--- | "HV"
+--- | "VH"
+
+--- @alias dynamicGroupCircularTypes
+--- | "RADIUS"
+--- | "SPACING"
+
+--- @alias ColorArray {[1]: number, [2]: number, [3]: number, [4]: number }
 
 --- @class auraData
 --- @field anchorFrameType anchorFrameTypes?
---- @field arcLength number
---- @field actions actions
---- @field conditions conditionData[]|nil
---- @field controlledChildren auraId[]|nil
---- @field displayText string|nil
---- @field grow string|nil
+--- @field animate boolean?
+--- @field arcLength number?
+--- @field actions actions?
+--- @field border boolean?
+--- @field borderBackdrop string?
+--- @field borderColor ColorArray?
+--- @field borderEdge string?
+--- @field borderOffset number?
+--- @field borderInset number?
+--- @field borderSize number?
+--- @field centerType dynamicGroupCenterType?
+--- @field conditions conditionData[]?
+--- @field constantFactor dynamicGroupCircularTypes
+--- @field controlledChildren auraId[]?
+--- @field displayText string?
+--- @field frameStrata number?
+--- @field fullCircle boolean?
+--- @field gridType dynamicGroupGridType?
+--- @field gridWidth number?
+--- @field rowSpace number?
+--- @field columnSpace number?
+--- @field grow string?
 --- @field id auraId
 --- @field internalVersion number
 --- @field information information
 --- @field load load
---- @field orientation string|nil
---- @field parent auraId|nil
+--- @field limit number?
+--- @field orientation string?
+--- @field parent auraId?
+--- @field radius number?
+--- @field rotation number?
 --- @field regionType regionTypes
---- @field subRegions subRegionData|nil
+--- @field scale number?
+--- @field selfPoint AnchorPoint
+--- @field subRegions subRegionData?
 --- @field triggers triggerUntriggerData[]
---- @field url string|nil
+--- @field url string?
+--- @field useLimit boolean?
+--- @field xOffset number?
+--- @field yOffset number?
 
 --- @class LibCustomGlow-1.0
 --- @field ButtonGlow_Start fun(frame: Frame)

@@ -37,6 +37,7 @@ local default = {
   useLimit = false,
   limit = 5,
   gridType = "RD",
+  centerType = "LR",
   gridWidth = 5,
   rowSpace = 1,
   columnSpace = 1
@@ -408,6 +409,76 @@ local anchorers = {
   end
 }
 
+-- Names are based on the Left->Right layout,
+local centeredIndexerStart = {
+  -- Left to right, e.g: 1 2 3 4
+  ["LR"] = function(maxIndex)
+    return maxIndex > 0 and 1 or nil
+  end,
+  ["RL"] = function(maxIndex)
+    return maxIndex > 0 and maxIndex or nil
+  end,
+  -- Center -> Left -> Right, e.g: 4 2 1 3
+  ["CLR"] = function(maxIndex)
+    if maxIndex >= 3 then
+      return maxIndex - maxIndex % 2
+    else
+      return maxIndex
+    end
+  end,
+  -- Center -> Right -> Left, e.g: 3 1 2 4
+  ["CRL"] = function(maxIndex)
+    if maxIndex % 2 == 1 then
+      return maxIndex
+    else
+     return maxIndex - 1
+    end
+  end
+}
+
+local centeredIndexerNext = {
+  ["LR"] = function(index, maxIndex)
+    index = index + 1
+    return index <= maxIndex and index or nil
+  end,
+  ["RL"] = function(index, maxIndex)
+    index = index - 1
+    return index > 0 and index or nil
+  end,
+  ["CLR"] = function(index, maxIndex)
+    -- Center -> Left -> Right
+    -- So even -> odd
+    if index % 2 == 0 then
+      index = index - 2
+      if index == 0 then
+        index = 1
+      end
+    else
+      index = index + 2
+    end
+    if index > maxIndex then
+      return nil
+    end
+    return index
+  end,
+  ["CRL"] = function(index, maxIndex)
+    -- Center -> Right -> Left
+    -- So odd -> even
+    if index % 2 == 1 then
+      index = index - 2
+      if index == -1 then
+        index = 2
+      end
+    else
+      index = index + 2
+    end
+    if index > maxIndex then
+      return nil
+    end
+    return index
+  end,
+}
+
 local function createAnchorPerUnitFunc(data)
   local anchorer = anchorers[data.anchorPerUnit] or anchorers.NAMEPLATE
   return anchorer(data)
@@ -536,6 +607,8 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local midX, midY = 0, 0
     local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
+    local FirstIndex = centeredIndexerStart[data.centerType]
+    local NextIndex = centeredIndexerNext[data.centerType]
     return function(newPositions, activeRegions)
       local frames = {}
       if anchorPerUnitFunc then
@@ -552,13 +625,16 @@ local growers = {
         end
         local x, y = midX - totalWidth/2, midY - (stagger * (numVisible - 1)/2)
         newPositions[frame] = {}
-        for i, regionData in ipairs(regionDatas) do
-          if i <= numVisible then
-            x = x + (regionData.dimensions.width) / 2
-            newPositions[frame][regionData] = { x, y, true }
-            x = x + (regionData.dimensions.width) / 2 + space
-            y = y + stagger
-          end
+
+        --- @type integer?
+        local i = FirstIndex(numVisible)
+        while i do
+          local regionData = regionDatas[i]
+          x = x + (regionData.dimensions.width) / 2
+          newPositions[frame][regionData] = { x, y, true }
+          x = x + (regionData.dimensions.width) / 2 + space
+          y = y + stagger
+          i = NextIndex(i, numVisible)
         end
       end
     end
@@ -569,6 +645,8 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local midX, midY = 0, 0
     local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
+    local FirstIndex = centeredIndexerStart[data.centerType]
+    local NextIndex = centeredIndexerNext[data.centerType]
     return function(newPositions, activeRegions)
       local frames = {}
       if anchorPerUnitFunc then
@@ -585,13 +663,14 @@ local growers = {
         end
         local x, y = midX - (stagger * (numVisible - 1)/2), midY - totalHeight/2
         newPositions[frame] = {}
-        for i, regionData in ipairs(regionDatas) do
-          if i <= numVisible then
-            y = y + (regionData.dimensions.height) / 2
-            newPositions[frame][regionData] = { x, y, true }
-            x = x + stagger
-            y = y + (regionData.dimensions.height) / 2 + space
-          end
+        local i = FirstIndex(numVisible)
+        while i do
+          local regionData = regionDatas[i]
+          y = y + (regionData.dimensions.height) / 2
+          newPositions[frame][regionData] = { x, y, true }
+          x = x + stagger
+          y = y + (regionData.dimensions.height) / 2 + space
+          i = NextIndex(i, numVisible)
         end
       end
     end
