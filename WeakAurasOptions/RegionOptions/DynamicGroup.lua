@@ -201,6 +201,20 @@ local function createOptions(id, data)
         OptionsPrivate.ResetMoverSizer()
       end,
     },
+    centerType = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Aura Order"],
+      order = 3,
+      values = function()
+        if data.grow == "HORIZONTAL" then
+         return OptionsPrivate.Private.centered_types_h
+        else
+          return OptionsPrivate.Private.centered_types_v
+        end
+      end,
+      hidden = function() return data.grow ~= "HORIZONTAL" and data.grow ~= "VERTICAL" end,
+    },
     -- circle grow options
     constantFactor = {
       type = "select",
