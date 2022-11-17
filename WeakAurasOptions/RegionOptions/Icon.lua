@@ -244,6 +244,21 @@ local function createOptions(id, data)
       disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data); end,
       hidden = function() return not data.cooldown end,
     },
+    ccWarning = {
+      type = "description",
+      width = WeakAuras.doubleWidth,
+      name = function()
+        if OmniCC then
+          return L["The addon OmniCC is enabled. It might add cooldown numbers to the swipe. You can configure these in the OmniCC settings"]
+        elseif ElvUI then
+          return L["The addon ElvUI is enabled. It might add cooldown numbers to the swipe. You can configure these in the ElvUI settings"]
+        else
+          return L["Cooldown Numbers might be added by WoW. You can configure these in the game settings."]
+        end
+      end,
+      order = 11.7,
+      hidden = function() return data.cooldownTextDisabled end
+    },
     endHeader = {
       type = "header",
       order = 100,
