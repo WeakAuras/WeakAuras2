@@ -130,7 +130,7 @@ local function ConstructTexturePicker(frame)
         else
           textureWidget:SetTexture(texturePath, textureName);
           local d = group.textureData;
-          textureWidget:ChangeTexture(d.r, d.g, d.b, d.a, d.rotate, d.discrete_rotation, d.rotation, d.mirror, d.blendMode);
+          textureWidget:ChangeTexture(d.r, d.g, d.b, d.a, d.texRotation, d.auraRotation, d.mirror, d.blendMode)
         end
         if group.selectedTextures[texturePath] then
           textureWidget:Pick()
@@ -284,9 +284,8 @@ local function ConstructTexturePicker(frame)
       g = colorAll[2] or 1,
       b = colorAll[3] or 1,
       a = colorAll[4] or 1,
-      rotate = GetAll(baseObject, path, properties.rotate, true),
-      discrete_rotation = GetAll(baseObject, path, properties.discrete_rotation, 0),
-      rotation = GetAll(baseObject, path, properties.rotation, 0),
+      auraRotation = GetAll(baseObject, path, properties.auraRotation, 0),
+      texRotation = GetAll(baseObject, path, properties.rotation, 0),
       mirror = GetAll(baseObject, path, properties.mirror, false),
       blendMode = GetAll(baseObject, path, properties.blendMode, "ADD")
     }

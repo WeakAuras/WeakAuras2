@@ -1603,5 +1603,20 @@ function Private.Modernize(data)
       end
     end
   end
+
+  if data.internalVersion < 60 then
+    -- convert texture rotation
+    if data.regionType == "texture" then
+      if data.rotate then
+        -- Full Rotate is enabled
+        data.legacyZoomOut = true
+      else
+        -- Discreete Rotation
+        data.rotation = data.discrete_rotation
+      end
+      data.discrete_rotation = nil
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
