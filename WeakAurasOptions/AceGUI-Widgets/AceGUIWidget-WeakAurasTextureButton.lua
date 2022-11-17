@@ -53,25 +53,13 @@ local methods = {
     self.texture.name = name;
     self.texture.IsStopMotion = IsStopMotion
   end,
-  ["ChangeTexture"] = function(self, r, g, b, a, rotate, discrete_rotation, rotation, mirror, blendMode)
+  ["ChangeTexture"] = function(self, r, g, b, a, texRotation, auraRotation, mirror, blendMode)
     if not self.texture.IsAtlas then
       local ulx,uly , llx,lly , urx,ury , lrx,lry;
-      if(rotate) then
-        local angle = rad(135 - rotation);
-        local vx = math.cos(angle);
-        local vy = math.sin(angle);
-        ulx,uly , llx,lly , urx,ury , lrx,lry = 0.5+vx,0.5-vy , 0.5-vy,0.5-vx , 0.5+vy,0.5+vx , 0.5-vx,0.5+vy;
-      else
-        if(discrete_rotation == 0 or discrete_rotation == 360) then
-          ulx,uly , llx,lly , urx,ury , lrx,lry = 0,0 , 0,1 , 1,0 , 1,1;
-        elseif(discrete_rotation == 90) then
-          ulx,uly , llx,lly , urx,ury , lrx,lry = 1,0 , 0,0 , 1,1 , 0,1;
-        elseif(discrete_rotation == 180) then
-          ulx,uly , llx,lly , urx,ury , lrx,lry = 1,1 , 1,0 , 0,1 , 0,0;
-        elseif(discrete_rotation == 270) then
-          ulx,uly , llx,lly , urx,ury , lrx,lry = 0,1 , 1,1 , 0,0 , 1,0;
-        end
-      end
+      local angle = rad(135 - texRotation)
+      local vx = math.cos(angle);
+      local vy = math.sin(angle);
+      ulx,uly , llx,lly , urx,ury , lrx,lry = 0.5+vx,0.5-vy , 0.5-vy,0.5-vx , 0.5+vy,0.5+vx , 0.5-vx,0.5+vy;
       if(mirror) then
         self.texture:SetTexCoord(urx,ury , lrx,lry , ulx,uly , llx,lly);
       else
@@ -82,6 +70,7 @@ local methods = {
     end
     self.texture:SetVertexColor(r, g, b, a);
     self.texture:SetBlendMode(blendMode);
+    self.texture:SetRotation(auraRotation / 180 * math.pi)
   end,
   ["SetTexCoord"] = function(self, left, right, top, bottom)
     if self.texture.IsAtlas and not self.texture.IsStopMotion then
