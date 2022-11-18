@@ -5993,7 +5993,7 @@ Private.event_prototypes = {
           "PLAYER_TALENT_UPDATE"
         }
       elseif WeakAuras.IsRetail() then
-        events = { "TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE" }
+        events = { "TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE", "PLAYER_SPECIALIZATION_CHANGED" }
       end
       return {
         ["events"] = events
