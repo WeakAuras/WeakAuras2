@@ -109,6 +109,8 @@ local auraBarAnchorInverse = {
 local function create()
   local subRegion = CreateFrame("Frame", nil, UIParent)
   subRegion.texture = subRegion:CreateTexture()
+  subRegion.texture:SetSnapToPixelGrid(false)
+  subRegion.texture:SetTexelSnappingBias(0)
   subRegion.texture:SetDrawLayer("ARTWORK", 3)
   subRegion.texture:SetAllPoints(subRegion)
   return subRegion
