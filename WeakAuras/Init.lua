@@ -389,6 +389,7 @@ do
     "LibDBIcon-1.0",
     "LibGetFrame-1.0",
     "LibSerialize",
+    "LibUIDropDownMenu-4.0"
   }
   if WeakAuras.IsClassic() then
     tinsert(LibStubLibs, "LibClassicSpellActionCount-1.0")

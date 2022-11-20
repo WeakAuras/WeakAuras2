@@ -4,8 +4,9 @@ local L = WeakAuras.L
 
 local pairs, next, type, unpack = pairs, next, type, unpack
 
-local Type, Version = "WeakAurasPendingUpdateButton", 3
+local Type, Version = "WeakAurasPendingUpdateButton", 4
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
+local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then
   return
@@ -73,7 +74,7 @@ local methods = {
     self.frame:SetScript("OnMouseUp", function()
       Hide_Tooltip()
       self:SetMenu()
-      EasyMenu(self.menu, WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU")
+      LibDD:EasyMenu(self.menu, WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU")
     end)
 
     self.frame:SetScript("OnEnter", function()

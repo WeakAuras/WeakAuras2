@@ -8,6 +8,7 @@ local error = error
 local Type, Version = "WeakAurasDisplayButton", 59
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
+local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 local L = WeakAuras.L;
 local fullName;
@@ -109,7 +110,7 @@ clipboard.copyEverythingEntry = {
   text = L["Everything"],
   notCheckable = true,
   func = function()
-    WeakAuras_DropDownMenu:Hide();
+    LibDD:CloseDropDownMenus()
     CopyToClipboard("all", L["Paste Settings"])
   end
 };
@@ -118,7 +119,7 @@ clipboard.copyGroupEntry = {
   text = L["Group"],
   notCheckable = true,
   func = function()
-    WeakAuras_DropDownMenu:Hide();
+    LibDD:CloseDropDownMenus()
     CopyToClipboard("display", L["Paste Group Settings"])
   end
 };
@@ -127,7 +128,7 @@ clipboard.copyDisplayEntry = {
   text = L["Display"],
   notCheckable = true,
   func = function()
-    WeakAuras_DropDownMenu:Hide();
+    LibDD:CloseDropDownMenus()
     CopyToClipboard("display", L["Paste Display Settings"])
   end
 };
@@ -136,7 +137,7 @@ clipboard.copyTriggerEntry = {
   text = L["Trigger"],
   notCheckable = true,
   func = function()
-    WeakAuras_DropDownMenu:Hide();
+    LibDD:CloseDropDownMenus()
     CopyToClipboard("trigger", L["Paste Trigger Settings"])
   end
 };
@@ -145,7 +146,7 @@ clipboard.copyConditionsEntry = {
   text = L["Conditions"],
   notCheckable = true,
   func = function()
-    WeakAuras_DropDownMenu:Hide();
+    LibDD:CloseDropDownMenus()
     CopyToClipboard("condition", L["Paste Condition Settings"])
   end
 };
@@ -154,7 +155,7 @@ clipboard.copyLoadEntry = {
   text = L["Load"],
   notCheckable = true,
   func = function()
-    WeakAuras_DropDownMenu:Hide();
+    LibDD:CloseDropDownMenus()
     CopyToClipboard("load", L["Paste Load Settings"])
   end
 };
@@ -163,7 +164,7 @@ clipboard.copyActionsEntry = {
   text = L["Actions"],
   notCheckable = true,
   func = function()
-    WeakAuras_DropDownMenu:Hide();
+    LibDD:CloseDropDownMenus()
     CopyToClipboard("action", L["Paste Action Settings"])
   end
 };
@@ -172,7 +173,7 @@ clipboard.copyAnimationsEntry = {
   text = L["Animations"],
   notCheckable = true,
   func = function()
-    WeakAuras_DropDownMenu:Hide();
+    LibDD:CloseDropDownMenus()
     CopyToClipboard("animation", L["Paste Animations Settings"])
   end
 };
@@ -181,7 +182,7 @@ clipboard.copyAuthorOptionsEntry = {
   text = L["Author Options"],
   notCheckable = true,
   func = function()
-    WeakAuras_DropDownMenu:Hide();
+    LibDD:CloseDropDownMenus()
     CopyToClipboard("authorOptions", L["Paste Author Options Settings"])
   end
 };
@@ -190,7 +191,7 @@ clipboard.copyUserConfigEntry = {
   text = L["Custom Configuration"],
   notCheckable = true,
   func = function()
-    WeakAuras_DropDownMenu:Hide();
+    LibDD:CloseDropDownMenus()
     CopyToClipboard("config", L["Paste Custom Configuration"])
   end
 };
@@ -491,10 +492,10 @@ local methods = {
         if(mouseButton == "RightButton") then
           Hide_Tooltip();
           if(OptionsPrivate.IsDisplayPicked(self.data.id) and OptionsPrivate.IsPickedMultiple()) then
-            EasyMenu(OptionsPrivate.MultipleDisplayTooltipMenu(), WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
+            LibDD:EasyMenu(OptionsPrivate.MultipleDisplayTooltipMenu(), WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
           else
             UpdateClipboardMenuEntry(self.data);
-            EasyMenu(self.menu, WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
+            LibDD:EasyMenu(self.menu, WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU");
             if not(OptionsPrivate.IsDisplayPicked(self.data.id)) then
               if self.data.controlledChildren then
                 WeakAuras.PickDisplay(self.data.id, "group")
@@ -853,7 +854,7 @@ local methods = {
             notCheckable = true,
             func = function()
               OptionsPrivate.ConvertDisplay(self.data, regionType);
-              WeakAuras_DropDownMenu:Hide();
+              LibDD:CloseDropDownMenus()
             end
           });
         end
@@ -911,7 +912,7 @@ local methods = {
     tinsert(self.menu, {
       text = L["Close"],
       notCheckable = true,
-      func = function() WeakAuras_DropDownMenu:Hide() end
+      func = function() LibDD:CloseDropDownMenus() end
     });
     if(self.data.controlledChildren) then
       self.loaded:Hide();

@@ -13,6 +13,7 @@ local GetScreenWidth, GetScreenHeight, CreateFrame, UnitName
 local AceGUI = LibStub("AceGUI-3.0")
 local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
@@ -132,7 +133,7 @@ local minWidth = 750
 local minHeight = 240
 
 function OptionsPrivate.CreateFrame()
-  CreateFrame("Frame", "WeakAuras_DropDownMenu", nil, "UIDropDownMenuTemplate")
+  LibDD:Create_UIDropDownMenu("WeakAuras_DropDownMenu", nil)
   local frame
   local db = OptionsPrivate.savedVars.db
   local odb = OptionsPrivate.savedVars.odb

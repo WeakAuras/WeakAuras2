@@ -29,6 +29,7 @@ externals:
     url: https://github.com/rossnichols/LibSerialize
     tag: v1.0.0
   WeakAuras/Libs/LibSpecialization: https://repos.curseforge.com/wow/libspecialization/trunk/LibSpecialization
+  WeakAuras/Libs/LibUIDropDownMenu: https://repos.wowace.com/wow/libuidropdownmenu/trunk/LibUIDropDownMenu
 
 enable-nolib-creation: no
 

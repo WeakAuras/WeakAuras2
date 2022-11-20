@@ -21,4 +21,5 @@
   <Script file="Libs\LibGetFrame-1.0\LibGetFrame-1.0.lua"/>
   <Include file="Libs\Archivist\Archivist.xml"/>
   <Include file="Libs\LibSerialize\lib.xml"/>
+  <Include file="Libs\LibUIDropDownMenu\LibUIDropDownMenu.xml"/>
 </Ui>
