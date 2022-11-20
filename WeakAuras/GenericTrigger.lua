@@ -4210,6 +4210,7 @@ do
     or class == "HUNTER" or class == "SHAMAN"
     or class == "MAGE" or class == "PRIEST" or class == "WARLOCK"
     or class == "DEATHKNIGHT" or class == "PALADIN" or class == "WARRIOR"
+    or class == "EVOKER"
   then
     function WeakAuras.CalculatedGcdDuration()
       local haste = GetHaste()
