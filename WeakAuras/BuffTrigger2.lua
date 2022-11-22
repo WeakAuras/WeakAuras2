@@ -1723,6 +1723,7 @@ local function ScanGroupUnit(time, matchDataChanged, unitType, unit)
   end
 end
 
+local debugPrintsForScanUnit = {}
 local function ScanUnit(time, arg1)
   if (Private.multiUnitUnits.raid[arg1] and IsInRaid()) then
     ScanGroupUnit(time, matchDataChanged, "group", arg1)
@@ -1731,6 +1732,10 @@ local function ScanUnit(time, arg1)
   elseif Private.multiUnitUnits.boss[arg1] then
     ScanGroupUnit(time, matchDataChanged, "boss", arg1)
   elseif Private.multiUnitUnits.arena[arg1] then
+    if not debugPrintsForScanUnit[arg1] then
+      print("ScanUnit", "arena", arg1)
+      debugPrintsForScanUnit[arg1] = true
+    end
     ScanGroupUnit(time, matchDataChanged, "arena", arg1)
   elseif arg1:sub(1, 9) == "nameplate" then
     ScanGroupUnit(time, matchDataChanged, "nameplate", arg1)
@@ -1797,14 +1802,22 @@ local function RemoveScanFuncs(triggerInfo, filter, unit, scanFuncName, scanFunc
 end
 
 local function RecheckActive(triggerInfo, unit, unitsToRemoveScan)
+  local debug = false
+  if triggerInfo.unit == "arena" then
+    debug = true
+  end
   local isSelf, role, inParty, class
   local unitExists = UnitExistsFixed(unit)
+  if debug then
+    print("    RecheckActive unit:", unit, "exists:", unitExists)
+  end
   if unitExists and TriggerInfoApplies(triggerInfo, unit) then
     if (not activeGroupScanFuncs[unit] or not activeGroupScanFuncs[unit][triggerInfo]) then
       triggerInfo.maxUnitCount = triggerInfo.maxUnitCount + 1
       if triggerInfo.debuffType == "BOTH" then
         AddScanFuncs(triggerInfo, "HELPFUL", unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
         AddScanFuncs(triggerInfo, "HARMFUL", unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
+        if debug then print("   adding", triggerInfo) end
       else
         AddScanFuncs(triggerInfo, triggerInfo.debuffType, unit, scanFuncNameGroup, scanFuncSpellIdGroup, scanFuncGeneralGroup)
       end
@@ -1836,6 +1849,9 @@ local function RecheckActive(triggerInfo, unit, unitsToRemoveScan)
 end
 
 local function RecheckActiveForUnitType(unitType, unit, unitsToRemoveScan)
+  if unitType == "arena" then
+    print("  RecheckActiveForUnitType", unitType, unit, #groupScanFuncs[unitType])
+  end
   if groupScanFuncs[unitType] then
     for i, triggerInfo in ipairs(groupScanFuncs[unitType]) do
       RecheckActive(triggerInfo, unit, unitsToRemoveScan)
@@ -1891,7 +1907,10 @@ local function EventHandler(frame, event, arg1, arg2, ...)
       end
     end
   elseif event =="ARENA_OPPONENT_UPDATE" then
-    for unit in GetAllUnits("arena", true) do
+    print("###################")
+    print("###################")
+    print("ARENA_OPPONENT_UPDATE")
+    for unit in GetAllUnits("arena", true, nil, true) do
       RecheckActiveForUnitType("arena", unit, deactivatedTriggerInfos)
       if not UnitExistsFixed(unit) then
         tinsert(unitsToRemove, unit)
@@ -2130,6 +2149,10 @@ local function LoadAura(id, triggernum, triggerInfo)
   if triggerInfo.fetchRaidMark then
     raidMarkScanFuncs[id] = raidMarkScanFuncs[id]  or {}
     tinsert(raidMarkScanFuncs[id], triggerInfo)
+  end
+
+  if triggerInfo.unit == "arena" then
+    print("LoadAura", id, triggernum, triggerInfo, triggerInfo.groupTrigger)
   end
 
   if triggerInfo.groupTrigger then
