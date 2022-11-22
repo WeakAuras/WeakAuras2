@@ -122,8 +122,15 @@ if WeakAuras.IsBCCOrWrathOrRetail() then
     cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
     cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
     cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
+    cacheEmpoweredFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
     cacheEmpoweredFrame:SetScript("OnEvent", function(_, event, unit, ...)
-      if event == "UNIT_SPELLCAST_EMPOWER_START" or event == "UNIT_SPELLCAST_EMPOWER_UPDATE" then
+      if event == "PLAYER_TARGET_CHANGED" then
+        unit = "target"
+      end
+      if event == "UNIT_SPELLCAST_EMPOWER_START"
+      or event == "UNIT_SPELLCAST_EMPOWER_UPDATE"
+      or (event == "PLAYER_TARGET_CHANGED" and (select(10, UnitChannelInfo(unit)) or 0 > 0))
+      then
         cacheEmpowered[unit] = {GetUnitEmpowerHoldAtMaxTime(unit), UnitChannelInfo(unit)}
       else
         cacheEmpowered[unit] = nil
