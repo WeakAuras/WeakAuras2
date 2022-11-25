@@ -480,6 +480,11 @@ function Private.ActivateEvent(id, triggernum, data, state, errorHandler)
       if (state.duration ~= arg1) then
         state.duration = arg1;
       end
+      -- The Icon's SetCooldown requires that the **startTime** is positive, so ensure that
+      -- the expirationTime is bigger than the duration
+      if arg2 <= arg1 then
+        arg2 = arg1
+      end
       if (state.expirationTime ~= arg2) then
         state.expirationTime = arg2;
         changed = true;
