@@ -4580,7 +4580,7 @@ Private.event_prototypes = {
         type = "spell",
         init = "arg",
         showExactOption = true,
-        test = "spellname == spellName"
+        test = "Private.ExecEnv.CompareSpellIds(spellName, %s, %s)",
       }
     },
     nameFunc = function(trigger)
@@ -4641,7 +4641,7 @@ Private.event_prototypes = {
         type = "spell",
         init = "arg",
         showExactOption = true,
-        test = "spell == spellName"
+        test = "Private.ExecEnv.CompareSpellIds(spellName, %s, %s)",
       },
       {
         name = "direction",
