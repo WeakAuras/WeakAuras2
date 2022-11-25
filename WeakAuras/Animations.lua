@@ -122,7 +122,8 @@ local function UpdateAnimations()
       startR, startG, startB, startA = startR or 1, startG or 1, startB or 1, startA or 1;
       local ok, r, g, b, a = xpcall(anim.colorFunc, errorHandler, progress, startR, startG, startB, startA, anim.colorR, anim.colorG, anim.colorB, anim.colorA);
       if (ok) then
-        anim.region:ColorAnim(r, g, b, a);
+        local errorHandler = Private.GetErrorHandlerId(anim.region.id, "Custom Color")
+        xpcall(anim.region.ColorAnim, errorHandler, anim.region, r, g, b, a)
       end
     end
     Private.ActivateAuraEnvironment(nil);
