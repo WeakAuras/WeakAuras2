@@ -1012,10 +1012,10 @@ local function create(parent)
   local fg = bar:CreateTexture(nil, "ARTWORK");
   fg:SetSnapToPixelGrid(false)
   fg:SetTexelSnappingBias(0)
-  local bg = bar:CreateTexture(nil, "ARTWORK");
+  local bg = region:CreateTexture(nil, "ARTWORK");
   bg:SetSnapToPixelGrid(false)
   bg:SetTexelSnappingBias(0)
-  bg:SetAllPoints();
+  bg:SetAllPoints(bar);
   local fgFrame = CreateFrame("Frame", nil, bar)
   local spark = bar:CreateTexture(nil, "ARTWORK");
   spark:SetSnapToPixelGrid(false)
