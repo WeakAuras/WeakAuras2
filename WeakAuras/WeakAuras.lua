@@ -3843,7 +3843,7 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   local tooltipText = ""
   if WeakAuras.IsRetail() then
     local tooltipData = C_TooltipInfo.GetUnitAura(unit, index, filter)
-    local secondLine = tooltipData.lines[2] -- This is the line we want
+    local secondLine = tooltipData and tooltipData.lines[2] -- This is the line we want
     if secondLine then
       for _, arg in ipairs(secondLine.args) do
         if arg.field == "leftText" then
