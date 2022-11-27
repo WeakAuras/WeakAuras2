@@ -119,8 +119,6 @@ local function GetProperties(data)
 end
 
 local function GetTexCoord(region, texWidth, aspectRatio, xOffset, yOffset)
-  xOffset = xOffset or 0
-  yOffset = yOffset or 0
   region.currentCoord = region.currentCoord or {}
   local usesMasque = false
   if region.MSQGroup then
@@ -378,8 +376,8 @@ local function modify(parent, region, data)
   region.scaley = 1;
   region.keepAspectRatio = data.keepAspectRatio;
   region.zoom = data.zoom;
-  region.texXOffset = data.texXOffset
-  region.texYOffset = data.texYOffset
+  region.texXOffset = data.texXOffset or 0
+  region.texYOffset = data.texYOffset or 0
   region:UpdateSize()
 
   icon:SetDesaturated(data.desaturate);
