@@ -118,7 +118,9 @@ local function GetProperties(data)
   return result
 end
 
-local function GetTexCoord(region, texWidth, aspectRatio)
+local function GetTexCoord(region, texWidth, aspectRatio, xOffset, yOffset)
+  xOffset = xOffset or 0
+  yOffset = yOffset or 0
   region.currentCoord = region.currentCoord or {}
   local usesMasque = false
   if region.MSQGroup then
@@ -139,8 +141,11 @@ local function GetTexCoord(region, texWidth, aspectRatio)
   local xRatio = aspectRatio < 1 and aspectRatio or 1;
   local yRatio = aspectRatio > 1 and 1 / aspectRatio or 1;
   for i, coord in ipairs(region.currentCoord) do
-    local aspectRatio = (i % 2 == 1) and xRatio or yRatio;
-    region.currentCoord[i] = (coord - 0.5) * texWidth * aspectRatio + 0.5;
+    if(i % 2 == 1) then
+      region.currentCoord[i] = (coord - 0.5) * texWidth * xRatio + 0.5 - xOffset;
+    else
+      region.currentCoord[i] = (coord - 0.5) * texWidth * yRatio + 0.5 - yOffset;
+    end
   end
 
   return unpack(region.currentCoord)
@@ -349,7 +354,8 @@ local function modify(parent, region, data)
       region.MSQGroup:ReSkin(button)
     end
 
-    local ulx, uly, llx, lly, urx, ury, lrx, lry = GetTexCoord(region, texWidth, aspectRatio)
+    local ulx, uly, llx, lly, urx, ury, lrx, lry
+      = GetTexCoord(region, texWidth, aspectRatio, region.texXOffset, -region.texYOffset)
 
     if(mirror_h) then
       if(mirror_v) then
@@ -372,6 +378,8 @@ local function modify(parent, region, data)
   region.scaley = 1;
   region.keepAspectRatio = data.keepAspectRatio;
   region.zoom = data.zoom;
+  region.texXOffset = data.texXOffset
+  region.texYOffset = data.texYOffset
   region:UpdateSize()
 
   icon:SetDesaturated(data.desaturate);
