@@ -75,6 +75,7 @@ globals = {
 	"CombatLogGetCurrentEventInfo",
 	"CombatText_AddMessage",
 	"CooldownFrame_Set",
+	"CreateColor",
 	"CreateFromMixins",
 	"CreateTextureMarkup",
 	"CreateObjectPool",

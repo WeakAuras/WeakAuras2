@@ -1348,6 +1348,11 @@ Private.orientation_with_circle_types = {
   ANTICLOCKWISE = L["Anticlockwise"]
 }
 
+Private.gradient_orientations = {
+  HORIZONTAL = L["Horizontal"],
+  VERTICAL = L["Vertical"]
+}
+
 Private.spec_types = {
   [1] = SPECIALIZATION.." 1",
   [2] = SPECIALIZATION.." 2",
