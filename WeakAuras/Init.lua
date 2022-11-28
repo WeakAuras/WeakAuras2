@@ -50,6 +50,7 @@ Private.frames = {}
 --- @field glow_types table<string, string>
 --- @field inverse_point_types table<string, string>
 --- @field IsCLEUSubevent fun(subevent: string): boolean
+--- @field IsDragonriding fun(): boolean
 --- @field item_slot_types string[]
 --- @field LibSpecWrapper LibSpecWrapper
 --- @field linked table<auraId, number>

@@ -1139,6 +1139,17 @@ Private.load_prototype = {
       events = {"VEHICLE_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "UPDATE_OVERRIDE_ACTIONBAR", "UPDATE_VEHICLE_ACTIONBAR"}
     },
     {
+      name = "dragonriding",
+      display = L["Dragonriding"],
+      type = "tristate",
+      init = WeakAuras.IsRetail() and "arg" or nil,
+      width = WeakAuras.doubleWidth,
+      optional = true,
+      enable = WeakAuras.IsRetail(),
+      hidden = not WeakAuras.IsRetail(),
+      events = {"WA_DRAGONRIDING_UPDATE"}
+    },
+    {
       name = "ingroup",
       display = L["Group Type"],
       type = "multiselect",
