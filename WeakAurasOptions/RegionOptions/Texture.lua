@@ -37,49 +37,36 @@ local function createOptions(id, data)
       control = "WeakAurasIcon",
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
     },
-    desaturate = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Desaturate"],
-      order = 2,
-    },
-    space2 = {
-      type = "execute",
-      name = "",
-      width = WeakAuras.normalWidth,
-      order = 5,
-      image = function() return "", 0, 0 end,
-    },
     color = {
       type = "color",
       width = WeakAuras.normalWidth,
       name = L["Color"],
       hasAlpha = true,
-      order = 10
+      order = 2
     },
-    blendMode = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Blend Mode"],
-      order = 12,
-      values = OptionsPrivate.Private.blend_types
-    },
-    mirror = {
+    desaturate = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Mirror"],
-      order = 20,
+      name = L["Desaturate"],
+      order = 3,
     },
     alpha = {
       type = "range",
       control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Alpha"],
-      order = 21,
+      order = 4,
       min = 0,
       max = 1,
       bigStep = 0.01,
       isPercent = true
+    },
+    blendMode = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Blend Mode"],
+      order = 5,
+      values = OptionsPrivate.Private.blend_types
     },
     rotation = {
       type = "range",
@@ -90,20 +77,27 @@ local function createOptions(id, data)
       max = 360,
       step = 1,
       bigStep = 3,
-      order = 22,
+      order = 6,
+    },
+    mirror = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Mirror"],
+      order = 7,
     },
     legacyZoomOut = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Legacy Zoom Out"],
       desc = L["Rotating a texture around arbitary angles used to require a zoom out. This is no longer required, this option only exist for compatibility with previous behaviour."],
-      order = 23,
+      order = 8,
+      hidden = IsAtlas(data.texture)
     },
     textureWrapMode = {
       type = "select",
       width = WeakAuras.normalWidth,
       name = L["Texture Wrap"],
-      order = 36,
+      order = 9,
       values = OptionsPrivate.Private.texture_wrap_types,
       hidden = IsAtlas(data.texture)
     },
