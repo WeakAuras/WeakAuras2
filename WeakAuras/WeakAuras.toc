@@ -52,6 +52,7 @@ AuraWarnings.lua
 AuraEnvironment.lua
 AuraEnvironmentWrappedSystems.lua
 DebugLog.lua
+Dragonriding.lua
 
 # Region support
 RegionTypes\RegionPrototype.lua

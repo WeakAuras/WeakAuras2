@@ -1207,6 +1207,7 @@ globals = {
 	"C_Vignettes.GetNumVignettes",
 	"C_Vignettes.GetVignetteGUID",
 	"C_Vignettes.GetVignetteInfoFromInstanceID",
+	"C_UnitAuras",
 	"C_VoiceChat",
 	"C_WowTokenPublic",
 	"C_WowTokenPublic.BuyToken",
