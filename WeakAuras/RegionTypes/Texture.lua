@@ -116,7 +116,7 @@ local function modify(parent, region, data)
       mirror_h = not mirror_h;
     end
     local ulx,uly , llx,lly , urx,ury , lrx,lry = 0,0, 0,1, 1,0, 1,1
-    if data.legacyZoomOut then
+    if data.legacyZoomOut and not region.texture.IsAtlas then
       ulx,uly , llx,lly , urx,ury , lrx,lry = GetLegacyFullRotateTexCoord()
     end
     if(mirror_h) then
