@@ -518,6 +518,9 @@ function WeakAuras.Import(inData, target, callbackFunc)
     else
       target = targetData
     end
+    if data.uid and data.uid ~= target.uid then
+      return false, "Invalid update target, uids don't match."
+    end
   end
   WeakAuras.PreAdd(data)
   if children then
