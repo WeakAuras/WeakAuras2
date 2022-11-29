@@ -99,7 +99,10 @@ local methods = {
                 func = function()
                   local auraData = WeakAuras.GetData(auraId)
                   if auraData then
-                    WeakAuras.Import(self.companionData.encoded, auraData)
+                    local success, error = WeakAuras.Import(self.companionData.encoded, auraData)
+                    if not success then
+                      WeakAuras.prettyPrint(error)
+                    end
                   end
                 end
               },
