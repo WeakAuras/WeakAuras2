@@ -1210,8 +1210,7 @@ local function modify(parent, region, data)
   end
 
   function region:Rotate(angle)
-    region.rotation = angle or 0;
-    local texRotation = region.texRotation / 180 * math.pi
+    region.texRotation = angle or 0
     if (data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE") then
       region.foregroundSpinner:UpdateSize();
       region.backgroundSpinner:UpdateSize();
@@ -1230,7 +1229,7 @@ local function modify(parent, region, data)
   region:Rotate(data.rotation)
 
   function region:GetRotation()
-    return region.rotation;
+    return region.texRotation
   end
 
   function region:Color(r, g, b, a)
