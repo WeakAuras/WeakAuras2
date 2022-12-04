@@ -11,7 +11,7 @@ function Private.InitializeEncounterAndZoneLists()
   if encounter_list ~= "" then
     return
   end
-	for tier = EJ_GetCurrentTier(), EJ_GetNumTiers() do
+	for tier = 10, EJ_GetNumTiers() do
 		EJ_SelectTier(tier)
 		local tierName = EJ_GetTierInfo(tier)
 		for _, inRaid in ipairs({false, true}) do
