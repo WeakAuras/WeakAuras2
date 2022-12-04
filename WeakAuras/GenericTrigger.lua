@@ -2395,6 +2395,10 @@ do
   end
 
   function Private.CheckItemCooldowns()
+    -- TODO remove this once fixed on WOTLK PTR
+    if WeakAuras.IsWrathClassic() and GetItemCooldown == nil then
+      return
+    end
     for id, _ in pairs(items) do
       local startTime, duration, enabled = GetItemCooldown(id);
       if (duration == 0) then
@@ -2601,6 +2605,10 @@ do
   end
 
   function WeakAuras.WatchItemCooldown(id)
+    -- TODO remove this once fixed on WOTLK PTR
+    if WeakAuras.IsWrathClassic() and GetItemCooldown == nil then
+      return
+    end
     if not(cdReadyFrame) then
       Private.InitCooldownReady();
     end
