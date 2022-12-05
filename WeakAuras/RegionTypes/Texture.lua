@@ -111,6 +111,7 @@ local function modify(parent, region, data)
   region.mirror = data.mirror
 
   local function DoTexCoord()
+    if region.texture.IsAtlas then return end
     local mirror_h, mirror_v = region.mirror_h, region.mirror_v;
     if(region.mirror) then
       mirror_h = not mirror_h;
