@@ -36,55 +36,56 @@ local function createOptions(id, data)
       control = "WeakAurasIcon",
       image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
     },
-    desaturate = {
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      name = L["Desaturate"],
-      order = 2,
-    },
-    space2 = {
-      type = "execute",
-      name = "",
-      width = WeakAuras.normalWidth,
-      order = 5,
-      image = function() return "", 0, 0 end,
-    },
     color = {
       type = "color",
       width = WeakAuras.normalWidth,
       name = L["Color"],
       hasAlpha = true,
-      order = 10
+      order = 2
     },
-    blendMode = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Blend Mode"],
-      order = 12,
-      values = OptionsPrivate.Private.blend_types
-    },
-    mirror = {
+    desaturate = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Mirror"],
-      order = 20
+      name = L["Desaturate"],
+      order = 3,
     },
     alpha = {
       type = "range",
       control = "WeakAurasSpinBox",
       width = WeakAuras.normalWidth,
       name = L["Alpha"],
-      order = 25,
+      order = 4,
       min = 0,
       max = 1,
       bigStep = 0.01,
       isPercent = true
     },
+    blendMode = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Blend Mode"],
+      order = 5,
+      values = OptionsPrivate.Private.blend_types
+    },
+    mirror = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Mirror"],
+      order = 6
+    },
+    textureWrapMode = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = L["Texture Wrap"],
+      order = 7,
+      values = OptionsPrivate.Private.texture_wrap_types,
+      hidden = IsAtlas(data.texture)
+    },
     rotate = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Allow Full Rotation"],
-      order = 30,
+      order = 8,
       hidden = IsAtlas(data.texture)
     },
     rotation = {
@@ -96,7 +97,7 @@ local function createOptions(id, data)
       max = 360,
       step = 1,
       bigStep = 3,
-      order = 35,
+      order = 9,
       hidden = function() return not (data.rotate and not IsAtlas(data.texture)) end,
     },
     discrete_rotation = {
@@ -107,16 +108,8 @@ local function createOptions(id, data)
       min = 0,
       max = 360,
       step = 90,
-      order = 35,
+      order = 10,
       hidden = function() return not (not data.rotate or IsAtlas(data.texture)) end,
-    },
-    textureWrapMode = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Texture Wrap"],
-      order = 36,
-      values = OptionsPrivate.Private.texture_wrap_types,
-      hidden = IsAtlas(data.texture)
     },
     endHeader = {
       type = "header",
