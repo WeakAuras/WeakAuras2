@@ -237,6 +237,7 @@ end
 
 local function Show_Tooltip(owner, line1, line2)
   GameTooltip:SetOwner(owner, "ANCHOR_NONE");
+  GameTooltip:ClearAllPoints()
   GameTooltip:SetPoint("LEFT", owner, "RIGHT");
   GameTooltip:ClearLines();
   GameTooltip:AddLine(line1);
@@ -246,6 +247,7 @@ end
 
 local function Show_Long_Tooltip(owner, description)
   GameTooltip:SetOwner(owner, "ANCHOR_NONE");
+  GameTooltip:ClearAllPoints()
   GameTooltip:SetPoint("LEFT", owner, "RIGHT");
   GameTooltip:ClearLines();
   local line = 1;
