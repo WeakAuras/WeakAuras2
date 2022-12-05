@@ -54,6 +54,7 @@ body:
     description: |
       Do you have an error log of what happened? If you don't see any errors, make sure that error reporting is enabled (`/console scriptErrors 1`) or install [BugSack](https://www.curseforge.com/wow/addons/bugsack) & [BugGrabber](https://www.curseforge.com/wow/addons/bug-grabber), yes both are needed.
       Note that if the error looks like `[string "--[[ Error in ' my awesome aura' ]` then the bug is in the aura that got mentioned, not in WeakAuras itself.
+    render: true
   validations:
     required: false
 
@@ -91,6 +92,7 @@ body:
     label: Export String
     description: If you do not know which aura is causing issues for you, please attach a ZIP archive of your WeakAuras SavedVariables file, it's the `WeakAuras.lua` file in `World of Warcraft\_retail_\WTF\Account\YOUR_ACCOUNT\SavedVariables\`. In case you do, please export the string and paste it below.
     placeholder: Paste your exported WeakAuras string here.
+    render: true
   validations:
     required: false
 
