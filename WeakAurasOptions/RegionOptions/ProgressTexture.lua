@@ -27,7 +27,7 @@ local function createOptions(id, data)
           auraRotation = "auraRotation",
           mirror = "mirror",
           blendMode = "blendMode"
-        }, OptionsPrivate.Private.texture_types);
+        }, OptionsPrivate.Private.texture_types, nil, true)
       end,
       imageWidth = 24,
       imageHeight = 24,
@@ -55,7 +55,7 @@ local function createOptions(id, data)
           auraRotation = "auraRotation",
           mirror = "mirror",
           blendMode = "blendMode"
-        }, OptionsPrivate.Private.texture_types);
+        }, OptionsPrivate.Private.texture_types, nil, true)
       end,
       disabled = function() return data.sameTexture; end,
       imageWidth = 24,
