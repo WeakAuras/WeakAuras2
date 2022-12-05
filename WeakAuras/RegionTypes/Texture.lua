@@ -28,6 +28,11 @@ WeakAuras.regionPrototype.AddAlphaToDefault(default);
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
+local GetAtlasInfo = C_Texture and C_Texture.GetAtlasInfo or GetAtlasInfo
+local function IsAtlas(input)
+  return type(input) == "string" and GetAtlasInfo(input) ~= nil
+end
+
 local properties = {
   color = {
     display = L["Color"],
@@ -111,13 +116,12 @@ local function modify(parent, region, data)
   region.mirror = data.mirror
 
   local function DoTexCoord()
-    if region.texture.IsAtlas then return end
     local mirror_h, mirror_v = region.mirror_h, region.mirror_v;
     if(region.mirror) then
       mirror_h = not mirror_h;
     end
     local ulx,uly , llx,lly , urx,ury , lrx,lry;
-    if(data.rotate) then
+    if(data.rotate and not IsAtlas(data.texture)) then
       ulx,uly , llx,lly , urx,ury , lrx,lry = GetRotatedPoints(region.rotation);
     else
       if(data.discrete_rotation == 0 or data.discrete_rotation == 360) then
