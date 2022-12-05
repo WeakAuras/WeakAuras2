@@ -1061,16 +1061,18 @@ local function create(parent)
     region:SetMinResize(1, 1)
   end
 
+  local fgFrame = CreateFrame("Frame", nil, region)
+  fgFrame:SetClipsChildren(true)
+
   -- Create statusbar (inherit prototype)
   local bar = CreateFrame("Frame", nil, region);
   Mixin(bar, SmoothStatusBarMixin);
+
   local bg = region:CreateTexture(nil, "ARTWORK");
   bg:SetSnapToPixelGrid(false)
   bg:SetTexelSnappingBias(0)
   bg:SetAllPoints(bar);
 
-  local fgFrame = CreateFrame("Frame", nil, bar)
-  fgFrame:SetClipsChildren(true)
   local fg = fgFrame:CreateTexture(nil, "ARTWORK");
   fg:SetSnapToPixelGrid(false)
   fg:SetTexelSnappingBias(0)
