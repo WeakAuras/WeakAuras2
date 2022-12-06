@@ -268,8 +268,8 @@ local barPrototype = {
 
     -- Set alignment
     self.fgFrame:ClearAllPoints()
-    self.fgFrame:SetPoint(self.align1);
-    self.fgFrame:SetPoint(self.align2);
+    self.fgFrame:SetPoint(self.align1, self, self.align1)
+    self.fgFrame:SetPoint(self.align2, self, self.align2)
 
     self.spark:SetPoint("CENTER", self.fgFrame, self.alignSpark, self.spark.sparkOffsetX or 0, self.spark.sparkOffsetY or 0);
 
