@@ -8,6 +8,7 @@ local L = WeakAuras.L;
 local encounter_list = ""
 local zoneId_list = ""
 function Private.InitializeEncounterAndZoneLists()
+	local currTier = EJ_GetCurrentTier()
   if encounter_list ~= "" then
     return
   end
@@ -59,6 +60,7 @@ function Private.InitializeEncounterAndZoneLists()
 			end
 		end
 	end
+	EJ_SelectTier(currTier) -- restore previously selected tier
 
   encounter_list = encounter_list:sub(1, -3) .. "\n\n" .. L["Supports multiple entries, separated by commas\n"]
 end
