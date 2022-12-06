@@ -469,7 +469,6 @@ local FakeWeakAurasMixin = {
     -- Note these shouldn't exist in the WeakAuras namespace, but moving them takes a bit of effort,
     -- so for now just block them and clean them up later
     genericTriggerTypes = true,
-    newFeatureString = true,
     spellCache = true,
     StopMotion = true,
   },
