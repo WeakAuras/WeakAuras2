@@ -41,6 +41,7 @@ Transmission.lua
 Modernize.lua
 Animations.lua
 Conditions.lua
+AnchorToWeakAuras.lua
 
 # Trigger systems
 LibSpecializationWrapper.lua

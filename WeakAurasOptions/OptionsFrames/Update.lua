@@ -284,26 +284,37 @@ end
 local function BuildUidMap(data, children, type)
   children = children or {}
   -- The eventual result
+
+  --- @class UidMapData
+  --- @field originalName auraId The original id of the aura
+  --- @field id auraId The current id of the aura, might have changed due to ids being unique
+  --- @field data auraData The raw data, is non-authoritative on e.g. id, controlledChildren, parent, sortHybridTable
+  --- @field controlledChildren uid[] A array of child uids
+  --- @field parent uid The parent uid
+  --- @field sortHybrid boolean? optional bool !! the parent's sortHybridTable is split up and recorded per aura:
+  ---                            nil, if the parent is not a dynamic group
+  ---                            false/true based on the sortHybridTable of the dynamic group
+  --- @field anchorFrameFrame uid? uid of the anchor iff the aura is anchored to another aura that is part of the same
+  ---                              import, otherwise nil
+  --- @field matchedUid uid? for "update", the matched uid. Is from a different domain!
+  --- @field diff any  for "update", the diff and the categories of that diff between the aura and its match
+  --- @field index number helpers that transport data between phase 1 and 2
+  --- @field total number helpers that transport data between phase 1 and 2
+  --- @field parentIsDynamicGroup boolean helpers that transport data between phase 1 and 2
+
+  --- @class UidMap
+  --- @field map table<uid, UidMapData>
+  --- @field type "new"|"old"
+  --- @field root uid uid of the root
+  --- @field totalCount number
+  --- @field idToUid table<auraId, uid> maps from id to uid
+
+  --- @type UidMap
   local uidMap = {
-    map = { -- per uid
-      -- originalName: The original id of the aura
-      -- id: The current id of the aura, might have changed due to ids being unique
-      -- data: The raw data, contains non-authoritative information on e.g. id, controlledChildren, parent, sortHybridTable
-      -- controlledChildren: A array of child uids
-      -- parent: The parent uid
-      -- sortHybrid: optional bool !! the parent's sortHybridTable is split up and recorded per aura:
-      --             nil, if the parent is not a dynamic group
-      --             false/true based on the sortHybridTable of the dynamic group
-
-      -- matchedUid: for "update", the matched uid. Is from a different domain!
-      -- diff, categories: for "update", the diff and the categories of that diff between the aura and its match
-
-      -- index, total, parentIsDynamicGroup: helpers that transport data between phase 1 and 2
+    --- @type table<uid, UidMapData>
+    map = {
     },
     type = type -- Either old or new, only used for error checking
-    -- root: uid of the root
-    -- totalCount: count of members
-    -- idToUid maps from id to uid
   }
   uidMap.root = data.uid
   uidMap.totalCount = #children + 1
@@ -341,6 +352,18 @@ local function BuildUidMap(data, children, type)
     if data.parent then
       uidMap.map[data.uid].parent = idToUid[data.parent]
     end
+
+    -- Handle anchorFrameFrame
+    if data.anchorFrameType == "SELECTFRAME"
+     and data.anchorFrameFrame
+     and data.anchorFrameFrame:sub(1, 10) == "WeakAuras:"
+  then
+    local target = data.anchorFrameFrame:sub(11)
+    if idToUid[target] then
+      uidMap.map[data.uid].anchorFrameFrame = idToUid[target]
+    end
+  end
+
   end
 
   local function handleSortHybridTable(data)
@@ -502,6 +525,13 @@ local function BuildUidMap(data, children, type)
       end
     else
       data.controlledChildren = nil
+    end
+
+    if self.map[uid].anchorFrameFrame then
+      local target = self:GetIdFor(self.map[uid].anchorFrameFrame)
+      if target then
+        data.anchorFrameFrame = "WeakAuras:" .. target
+      end
     end
 
     if data.regionType == "dynamicgroup" then
