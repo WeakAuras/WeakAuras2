@@ -8436,8 +8436,9 @@ Private.event_prototypes = {
       {
         name = L["Latency"],
         func = function(trigger, state)
-          if not Private.LAST_CURRENT_SPELL_CAST_START or not Private.LAST_CURRENT_SPELL_CAST_CHANGED then return 0, 0 end
-          return 0, Private.LAST_CURRENT_SPELL_CAST_START - Private.LAST_CURRENT_SPELL_CAST_CHANGED
+          local latency = WeakAuras.GetCastLatency()
+          if not latency then return 0, 0 end
+          return 0, latency
         end,
         enable = function(trigger)
           return trigger.use_showLatency and trigger.unit == "player"

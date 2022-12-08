@@ -3529,6 +3529,7 @@ end
 -- Cast Latency
 do
   local castLatencyFrame
+
   function WeakAuras.WatchForCastLatency()
     if not castLatencyFrame then
       castLatencyFrame = CreateFrame("Frame")
@@ -3536,35 +3537,37 @@ do
       castLatencyFrame:RegisterEvent("CURRENT_SPELL_CAST_CHANGED")
       castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
       castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_START", "player")
-
       castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_STOP", "player")
       castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_CHANNEL_STOP", "player")
       castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
+      castLatencyFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player")
 
       -- on dragonflight UNIT_SPELLCAST_EMPOWER_START and UNIT_SPELLCAST_EMPOWER_STOP OnEvent are
       -- triggered from cacheEmpoweredFrame after updating cache use by WeakAuras.UnitChannelInfo
 
       castLatencyFrame:SetScript("OnEvent", function(self, event)
-        if event == "UNIT_SPELLCAST_START" then
-          Private.LAST_CURRENT_SPELL_CAST_START = select(4, WeakAuras.UnitCastingInfo("player")) / 1000
-        elseif event == "UNIT_SPELLCAST_CHANNEL_START" then
-          Private.LAST_CURRENT_SPELL_CAST_START = select(4, WeakAuras.UnitChannelInfo("player")) / 1000
-        elseif event == "UNIT_SPELLCAST_EMPOWER_START" then
-          Private.LAST_CURRENT_SPELL_CAST_START = select(4, WeakAuras.UnitChannelInfo("player")) / 1000
-        elseif event == "CURRENT_SPELL_CAST_CHANGED" then
-          -- We want to store the CURRENT_SPELL_CAST_CHANGED time
-          -- that was the last before the actual START event
-          -- This prevents updating the CURRENT_SPELL_CAST_CHANGED time after
-          -- we got the start time
-          if not Private.LAST_CURRENT_SPELL_CAST_START then
-            Private.LAST_CURRENT_SPELL_CAST_CHANGED = GetTime()
-          end
-        else -- STOP EVENTS
-          Private.LAST_CURRENT_SPELL_CAST_START = nil
+        if event == "CURRENT_SPELL_CAST_CHANGED" then
+          castLatencyFrame.sendTime = GetTime()
+          return
+        end
+        if event == "UNIT_SPELLCAST_SUCCEEDED" then
+          castLatencyFrame.sendTime = nil
+          return
+        end
+
+        if castLatencyFrame.sendTime then
+          castLatencyFrame.timeDiff = (GetTime() - castLatencyFrame.sendTime)
+        else
+          castLatencyFrame.timeDiff = nil
         end
       end)
     end
   end
+
+  function WeakAuras.GetCastLatency()
+    return castLatencyFrame.timeDiff
+  end
+
 end
 
 do
