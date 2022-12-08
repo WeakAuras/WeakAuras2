@@ -321,7 +321,6 @@ local barPrototype = {
       for index, additionalBar in ipairs(self.additionalBars) do
         if (not self.extraTextures[index]) then
           local extraTexture = self:CreateTexture(nil, "ARTWORK");
-          extraTexture:SetSnapToPixelGrid(false)
           extraTexture:SetTexelSnappingBias(0)
           extraTexture:SetDrawLayer("ARTWORK", min(index, 7));
           self.extraTextures[index] = extraTexture;
@@ -1069,12 +1068,10 @@ local function create(parent)
   Mixin(bar, SmoothStatusBarMixin);
 
   local bg = region:CreateTexture(nil, "ARTWORK");
-  bg:SetSnapToPixelGrid(false)
   bg:SetTexelSnappingBias(0)
   bg:SetAllPoints(bar);
 
   local fg = fgFrame:CreateTexture(nil, "ARTWORK");
-  fg:SetSnapToPixelGrid(false)
   fg:SetTexelSnappingBias(0)
   fg:SetAllPoints(bar)
 
