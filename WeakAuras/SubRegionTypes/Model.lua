@@ -234,7 +234,7 @@ local function modify(parent, region, parentData, data, first)
   local anchor
   if parentData.regionType == "aurabar" then
     if data.bar_model_clip then
-      anchor = parent.bar.fgFrame
+      anchor = parent.bar.fgMask
     else
       anchor = parent.bar
     end
