@@ -2773,7 +2773,16 @@ Private.item_slot_types = {
   [15] = BACKSLOT,
   [16] = MAINHANDSLOT,
   [17] = SECONDARYHANDSLOT,
-  [19] = TABARDSLOT
+  [19] = TABARDSLOT,
+  [20] = L["1. Professsion Tool"],
+  [21] = L["1. Profession 1. Accessory"],
+  [22] = L["1. Profession 2. Accessory"],
+  [23] = L["2. Professsion Tool"],
+  [24] = L["2. Profession 1. Accessory"],
+  [25] = L["2. Profession 2. Accessory"],
+  [26] = COOKINGTOOLSLOT,
+  [27] = COOKINGGEAR0SLOT,
+  [28] = FISHINGTOOLSLOT,
 }
 
 Private.charges_change_type = {
@@ -3751,6 +3760,9 @@ if WeakAuras.IsClassic() then
   Private.threat_unit_types.focus = nil
   Private.item_slot_types[0] = AMMOSLOT
   Private.item_slot_types[18] = RANGEDSLOT
+  for slot = 20, 28 do
+    Private.item_slot_types[slot] = nil
+  end
   Private.talent_extra_option_types[0] = nil
   Private.talent_extra_option_types[2] = nil
 
@@ -3772,6 +3784,9 @@ end
 if WeakAuras.IsBCCOrWrath() then
   Private.item_slot_types[0] = AMMOSLOT
   Private.item_slot_types[18] = RANGEDSLOT
+  for slot = 20, 28 do
+    Private.item_slot_types[slot] = nil
+  end
   Private.talent_extra_option_types[0] = nil
   Private.talent_extra_option_types[2] = nil
   Private.multiUnitId.boss = nil
