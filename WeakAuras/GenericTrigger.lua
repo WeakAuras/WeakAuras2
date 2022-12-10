@@ -3375,7 +3375,8 @@ function WeakAuras.GetSpellCost(powerTypeToCheck)
   if spellID then
     local costTable = GetSpellPowerCost(spellID);
     for _, costInfo in pairs(costTable) do
-      if costInfo.type == powerTypeToCheck then
+      -- When there is no required aura for a power cost, the API returns an aura ID of 0 and false for hasRequiredAura despite being valid.
+      if costInfo.type == powerTypeToCheck and (costInfo.requiredAuraID == 0 or costInfo.hasRequiredAura) then
         return costInfo.cost;
       end
     end
