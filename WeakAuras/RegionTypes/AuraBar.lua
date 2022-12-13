@@ -554,11 +554,11 @@ local barPrototype = {
   end,
 
   ["SetForegroundGradient"] = function(self, orientation, r1, g1, b1, a1, r2, g2, b2, a2)
-    if WeakAuras.IsRetail() then
+    if self.fg.SetGradientAlpha then
+      self.fg:SetGradientAlpha(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
+    else
       self.fg:SetGradient(orientation, CreateColor(r1, g1, b1, a1),
                                        CreateColor(r2, g2, b2, a2))
-    else
-      self.fg:SetGradientAlpha(orientation, r1, g1, b1, a1, r2, g2, b2, a2)
     end
   end,
 
