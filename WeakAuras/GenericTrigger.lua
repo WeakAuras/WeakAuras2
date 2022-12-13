@@ -2349,7 +2349,7 @@ do
 
     local chargesChanged = spellCharges[id] ~= charges or spellCounts[id] ~= spellCount
                            or spellChargesMax[id] ~= maxCharges
-    local chargesDifference = (charges or spellCount or 0) - (spellCharges[id] or spellCount or 0)
+    local chargesDifference = (charges or spellCount or 0) - (spellCharges[id] or spellCounts[id] or 0)
     spellCharges[id] = charges;
     spellChargesMax[id] = maxCharges;
     spellCounts[id] = spellCount
