@@ -104,7 +104,11 @@ if LibSpec then
       return LibSpec:MySpecialization()
     end
     local data = nameToSpecMap[GetUnitName(unit, true)]
-    return data and unpack(data) or nil
+    if data then
+      return unpack(data)
+    else
+      return nil
+    end
   end
 else -- non retail
   function Private.LibSpecWrapper.Register(f)
