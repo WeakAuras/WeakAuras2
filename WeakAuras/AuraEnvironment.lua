@@ -471,6 +471,10 @@ local FakeWeakAurasMixin = {
     genericTriggerTypes = true,
     spellCache = true,
     StopMotion = true,
+    -- We block the loaded table, even though it doesn't exist anymore,
+    -- because some versions of ZT Tracker overwrote region:Collpase() and
+    -- checked for WeakAuras.loaded in there
+    loaded = true
   },
   override = {
     me = GetUnitName("player", true),
