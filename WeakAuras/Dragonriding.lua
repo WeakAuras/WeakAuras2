@@ -7,9 +7,8 @@ local isDragonriding = nil
 local function HandleEvent(self, event, arg1)
   local dragonridingSpellIds = C_MountJournal.GetCollectedDragonridingMounts()
   local oldIsDragonriding = isDragonriding
-  if not IsMounted() then
-    isDragonriding = false
-  else
+  isDragonriding = false
+  if IsMounted() then
     for _, mountId in ipairs(dragonridingSpellIds) do
       local spellId = select(2, C_MountJournal.GetMountInfoByID(mountId))
       if C_UnitAuras.GetPlayerAuraBySpellID(spellId) then
