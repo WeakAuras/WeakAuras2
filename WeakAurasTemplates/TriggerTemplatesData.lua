@@ -3958,7 +3958,7 @@ templates.class.DRUID = {
         { spell = 69369, type = "buff", unit = "player", talent = 16974 }, -- Predatory Swiftness
         { spell = 77761, type = "buff", unit = "player", talent = 106898 }, -- Stampeding Roar
         { spell = 102401, type = "buff", unit = "player", talent = 102401 }, -- Wild Charge
-        { spell = 102543, type = "buff", unit = "player", talent = 102543 }, -- Incarnation: Avatar of Ashamane
+        { spell = 102543, type = "buff", unit = "player", talent = 102543, exactSpellId = true }, -- Incarnation: Avatar of Ashamane
         { spell = 106951, type = "buff", unit = "player", talent = 106951 }, -- Berserk
         { spell = 124974, type = "buff", unit = "player", talent = 124974 }, -- Nature's Vigil
         { spell = 135700, type = "buff", unit = "player" }, -- Clearcasting
@@ -3975,6 +3975,7 @@ templates.class.DRUID = {
         { spell = 391722, type = "buff", unit = "player", talent = 202031 }, -- Sabertooth
         { spell = 391873, type = "buff", unit = "player", talent = 391872 }, -- Tiger's Tenacity
         { spell = 391876, type = "buff", unit = "player", talent = 391875 }, -- Frantic Momentum
+        { spell = 391882, type = "buff", unit = "player", talent = 391881 }, -- Apex Predator's Craving
         { spell = 391955, type = "buff", unit = "player", talent = 391947 }, -- Protective Growth
         { spell = 391974, type = "buff", unit = "player", talent = 384667 }, -- Sudden Ambush
         { spell = 393897, type = "buff", unit = "player", talent = 377801 }, -- Tireless Pursuit
