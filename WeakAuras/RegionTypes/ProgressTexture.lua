@@ -1300,6 +1300,14 @@ local function modify(parent, region, data)
     end
   end
 
+  if data.smoothProgress then
+    region.PreShow = function()
+      region.smoothProgress:ResetSmoothedValue();
+    end
+  else
+    region.PreShow = nil
+  end
+
   function region:Update()
     local state = region.state
 
