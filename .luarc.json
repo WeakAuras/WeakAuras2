@@ -53,6 +53,7 @@
         "FINGER1SLOT_UNIQUE",
         "FONT_COLOR_CODE_CLOSE",
         "GameFontHighlight",
+        "GameFontHighlightLarge",
         "GameFontNormal",
         "GameFontNormalHuge",
         "GameTooltip",

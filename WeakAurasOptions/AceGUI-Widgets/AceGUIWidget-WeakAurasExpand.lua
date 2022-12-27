@@ -38,6 +38,7 @@ local methods = {
 		self:SetHeight(110)
 		self:SetWidth(110)
 		self:SetLabel()
+		self:SetFontObject(GameFontHighlightLarge)
 		self:SetImage(nil)
 		self:SetImageSize(64, 64)
 		self:SetDisabled(false)
