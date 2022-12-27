@@ -3059,6 +3059,14 @@ Private.event_prototypes = {
         conditionType = "number"
       },
       {
+        name = "maxpower",
+        display = WeakAuras.newFeatureString .. L["Max Power"],
+        type = "number",
+        init = "total",
+        store = true,
+        conditionType = "number"
+      },
+      {
         name = "name",
         display = L["Unit Name"],
         type = "string",
