@@ -2474,6 +2474,14 @@ Private.event_prototypes = {
         conditionType = "number"
       },
       {
+        name = "maxhealth",
+        display = WeakAuras.newFeatureString .. L["Max Health"],
+        type = "number",
+        init = "total",
+        store = true,
+        conditionType = "number"
+      },
+      {
         name = "showAbsorb",
         display = L["Show Absorb"],
         type = "toggle",
