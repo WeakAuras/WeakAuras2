@@ -1452,6 +1452,14 @@ Private.load_prototype = {
       showExactOption = true
     },
     {
+      name = "not_spellknown",
+      display = WeakAuras.newFeatureString .. L["|cFFFF0000Not|r Spell Known"],
+      type = "spell",
+      test = "not WeakAuras.IsSpellKnownForLoad(%s, %s)",
+      events = WeakAuras.IsWrathClassic() and {"SPELLS_CHANGED", "UNIT_PET", "PLAYER_TALENT_UPDATE"} or {"SPELLS_CHANGED", "UNIT_PET"},
+      showExactOption = true
+    },
+    {
       name = "race",
       display = L["Player Race"],
       type = "multiselect",
