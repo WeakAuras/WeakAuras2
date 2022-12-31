@@ -3420,11 +3420,12 @@ do
                   if arg.field == "leftText" then
                     local text = arg.stringVal;
                     if(text) then
-                      local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+.+%)$");
+                      -- Format based on ITEM_ENCHANT_TIME_LEFT_MIN, ITEM_ENCHANT_TIME_LEFT_SEC
+                      local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+%D+%)$");
                       if(name and name ~= "") then
                         return name, shortenedName;
                       end
-                      _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+.+%）$");
+                      _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+%D+%）$");
                       if(name and name ~= "") then
                         return name, shortenedName;
                       end
@@ -3444,11 +3445,11 @@ do
             if(v:GetObjectType() == "FontString") then
               local text = v:GetText();
               if(text) then
-                local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+.+%)$");
+                local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+%D+%)$");
                 if(name and name ~= "") then
                   return name, shortenedName;
                 end
-                _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+.+%）$");
+                _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+.%D%）$");
                 if(name and name ~= "") then
                   return name, shortenedName;
                 end
