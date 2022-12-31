@@ -96,7 +96,7 @@ function WeakAuras.UnitExistsFixed(unit, smart)
     return nameplateExists[unit]
   end
   if smart and IsInRaid() then
-    if unit:sub(1, 5) == "party" or unit == "player" then
+    if unit:sub(1, 5) == "party" or unit == "player" or unit == "pet" then
       return false
     end
   end
