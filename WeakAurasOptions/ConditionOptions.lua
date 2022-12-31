@@ -187,13 +187,22 @@ local function filterUsedProperties(indexToProperty, allDisplays, usedProperties
   return filtered;
 end
 
+--- @type number? the time at which the last sound was played, so that we don't play
+---  a sound from each setter
+local lastPlayedSoundFromSet
 local function wrapWithPlaySound(func, kit)
   return function(info, v)
     func(info, v);
     if (tonumber(v)) then
-      pcall(PlaySound, tonumber(v), "Master");
+      if lastPlayedSoundFromSet ~= GetTime() then
+        pcall(PlaySound, tonumber(v), "Master")
+        lastPlayedSoundFromSet = GetTime()
+      end
     else
-      pcall(PlaySoundFile, v, "Master");
+      if lastPlayedSoundFromSet ~= GetTime() then
+        pcall(PlaySoundFile, v, "Master")
+        lastPlayedSoundFromSet = GetTime()
+      end
     end
   end
 end
