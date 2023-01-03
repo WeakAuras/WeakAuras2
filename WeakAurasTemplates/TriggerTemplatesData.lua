@@ -3424,6 +3424,7 @@ templates.class.MONK = {
         { spell = 196608, type = "buff", unit = "player", talent = 196607 }, -- Eye of the Tiger
         { spell = 215479, type = "buff", unit = "player", talent = 322120 }, -- Shuffle
         { spell = 228563, type = "buff", unit = "player", talent = 196736 }, -- Blackout Combo
+        { spell = 325092, type = "buff", unit = "player", talent = 322510 }, -- Purified Chi
         { spell = 322507, type = "buff", unit = "player", talent = 322507 }, -- Celestial Brew
         { spell = 325153, type = "buff", unit = "player", talent = 325153 }, -- Exploding Keg
         { spell = 325190, type = "buff", unit = "player", talent = 325177 }, -- Celestial Flames
