@@ -376,6 +376,7 @@ local function createAbilityTrigger(triggers, position, item, genericShowOn)
       spellName = item.spell,
       use_genericShowOn = true,
       genericShowOn = genericShowOn,
+      use_exact_spellName = item.exactSpellId
     }
   };
   if genericShowOn == "showOnReady" then
