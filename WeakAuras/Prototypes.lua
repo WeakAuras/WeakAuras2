@@ -123,13 +123,19 @@ if WeakAuras.IsBCCOrWrathOrRetail() then
     cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
     cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
     cacheEmpoweredFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+    cacheEmpoweredFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
     cacheEmpoweredFrame:SetScript("OnEvent", function(_, event, unit, ...)
       if event == "PLAYER_TARGET_CHANGED" then
         unit = "target"
+      elseif event == "PLAYER_FOCUS_CHANGED" then
+        unit = "focus"
       end
       if event == "UNIT_SPELLCAST_EMPOWER_START"
       or event == "UNIT_SPELLCAST_EMPOWER_UPDATE"
-      or (event == "PLAYER_TARGET_CHANGED" and (select(10, UnitChannelInfo(unit)) or 0 > 0))
+      or (
+        (event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_FOCUS_CHANGED")
+        and (select(10, UnitChannelInfo(unit)) or 0) > 0  -- 10th arg of UnitChannelInfo is numStages for empowered spells
+      )
       then
         cacheEmpowered[unit] = {GetUnitEmpowerHoldAtMaxTime(unit), UnitChannelInfo(unit)}
       else
