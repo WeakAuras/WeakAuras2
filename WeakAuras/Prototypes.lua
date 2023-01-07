@@ -111,7 +111,10 @@ if WeakAuras.IsBCCOrWrathOrRetail() then
       if name == nil and cacheEmpowered[unit] then
         local holdAtMaxTime
         holdAtMaxTime, name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = unpack(cacheEmpowered[unit])
-        if endTime + holdAtMaxTime < GetTime() then -- invalidate too old data
+        if endTime == nil
+        or holdAtMaxTime == nil
+        or endTime + holdAtMaxTime < GetTime()
+        then -- invalid or too old data
           cacheEmpowered[unit] = nil
           return nil
         end
