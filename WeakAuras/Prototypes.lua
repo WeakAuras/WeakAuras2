@@ -9711,10 +9711,3 @@ Private.UnitEventList = {
   PLAYER_XP_UPDATE = true,
   PVP_TIMER_UPDATE = true
 }
-
--- TODO: GetItemCooldown is missing on WOTLK PTR as now (04/12/2022)
--- remove this once it's fixed
-if WeakAuras.IsWrathClassic() and GetItemCooldown == nil then
-  Private.event_prototypes["Cooldown Progress (Item)"] = nil
-  Private.event_prototypes["Cooldown Ready (Item)"] = nil
-end
