@@ -1631,5 +1631,16 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 62 then
+    if data.regionType == "dynamicgroup" then
+      if data.sort == "CUSTOM" and type(data.sortOn) ~= "string" then
+        data.sortOn = "changed"
+      end
+      if data.grow == "CUSTOM" and type(data.growOn) ~= "string" then
+        data.growOn = "changed"
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
