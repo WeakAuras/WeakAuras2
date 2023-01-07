@@ -114,6 +114,8 @@ local function create(parent)
   region.sortedChildren = {}
   region.controlledChildren = {}
   region.updatedChildren = {}
+  region.sortStates = {}
+  region.growStates = {}
   local background = CreateFrame("Frame", nil, region, "BackdropTemplate")
   region.background = background
   region.selfPoint = "TOPLEFT"
@@ -274,7 +276,7 @@ local sorters = {
     return WeakAuras.ComposeSorts(
       WeakAuras.SortAscending({"dataIndex"}),
       WeakAuras.SortAscending({"region", "state", "index"})
-    )
+    ), { index = true }
   end,
   hybrid = function(data)
     local sortHybridTable = data.sortHybridTable or {}
@@ -305,23 +307,31 @@ local sorters = {
       sortHybridStatus,
       sortExpirationTime,
       WeakAuras.SortAscending({"dataIndex"})
-    )
+    ), {expirationTime = true}
   end,
   ascending = function(data)
     return WeakAuras.ComposeSorts(
       WeakAuras.SortAscending({"region", "state", "expirationTime"}),
       WeakAuras.SortAscending({"dataIndex"})
-    )
+    ), {expirationTime = true}
   end,
   descending = function(data)
     return WeakAuras.ComposeSorts(
       WeakAuras.SortDescending({"region", "state", "expirationTime"}),
       WeakAuras.SortAscending({"dataIndex"})
-    )
+    ), {expirationTime = true}
   end,
   custom = function(data)
     local sortStr = data.customSort or ""
     local sortFunc = WeakAuras.LoadFunction("return " .. sortStr) or noop
+    local sortOn = nil
+    local events = WeakAuras.split(data.sortOn or "")
+    if #events > 0 then
+      sortOn = {}
+      for _, event in ipairs(events) do
+        events[event] = true
+      end
+    end
     return function(a, b)
       Private.ActivateAuraEnvironment(data.id)
       local ok, result = xpcall(sortFunc, Private.GetErrorHandlerId(data.id, L["Custom Sort"]), a, b)
@@ -329,7 +339,7 @@ local sorters = {
       if ok then
         return result
       end
-    end
+    end, sortOn
   end
 }
 WeakAuras.SortFunctions = sorters
@@ -913,6 +923,14 @@ local growers = {
   CUSTOM = function(data)
     local growStr = data.customGrow or ""
     local growFunc = WeakAuras.LoadFunction("return " .. growStr) or noop
+    local growOn = nil
+    local events = WeakAuras.split(data.growOn or "")
+    if #events > 0 then
+      growOn = {}
+      for _, event in ipairs(events) do
+        events[event] = true
+      end
+    end
     return function(newPositions, activeRegions)
       Private.ActivateAuraEnvironment(data.id)
       local ok = xpcall(growFunc, Private.GetErrorHandlerId(data.id, L["Custom Grow"]), newPositions, activeRegions)
@@ -920,7 +938,7 @@ local growers = {
       if not ok then
         wipe(newPositions)
       end
-    end
+    end, growOn
   end
 }
 WeakAuras.GrowFunctions = growers
@@ -937,6 +955,50 @@ local function SafeGetPos(region, func)
   local ok, value1, value2 = xpcall(func, nullErrorHandler, region)
   if ok then
     return value1, value2
+  end
+end
+
+local function isDifferent(regionData, cache, events)
+  local id = regionData.id
+  local cloneId = regionData.cloneId or ""
+  local state = regionData.region.state
+  if not events then
+    return false
+  elseif events.changed then
+    return true -- escape hatch, not super recommended
+  else
+    local isDifferent = false
+    if not cache[id] then
+      isDifferent = true
+      local cachedState = {}
+      cache[id] = {[cloneId] = cachedState}
+      for event in pairs(events) do
+        cachedState[event] = state[event]
+      end
+    elseif not cache[id][cloneId] then
+      isDifferent = true
+      local cachedState = {}
+      cache[id][cloneId] = cachedState
+      for event in pairs(events) do
+        cachedState[event] = state[event]
+      end
+    else
+      local cachedState = cache[id][cloneId]
+      for event in pairs(events) do
+        if regionData.region.state[event] ~= cachedState[event] then
+          cachedState[event] = regionData.region.state[event]
+          isDifferent = true
+        end
+      end
+    end
+    return isDifferent
+  end
+end
+
+local function clearCache(cache, id, cloneId)
+  cloneId = cloneId or ""
+  if cache[id] then
+    cache[id][cloneId] = nil
   end
 end
 
@@ -1067,6 +1129,8 @@ local function modify(parent, region, data)
       Private.StartProfileAura(data.id)
       self.needToReload = false
       self.sortedChildren = {}
+      self.sortStates = {}
+      self.growStates = {}
       self.controlledChildren = {}
       self.updatedChildren = {}
       self.controlPoints:ReleaseAll()
@@ -1130,9 +1194,14 @@ local function modify(parent, region, data)
     -- if it has been, then don't insert it again
     if not regionData.active and self.updatedChildren[regionData] == nil then
       tinsert(self.sortedChildren, regionData)
+      self.updatedChildren[regionData] = true
+      self:SortUpdatedChildren()
+    elseif isDifferent(regionData, self.sortStates, self.sortOn) then
+      self.updatedChildren[regionData] = true
+      self:SortUpdatedChildren()
+    elseif isDifferent(regionData, self.growStates, self.growOn) then
+      self:PositionChildren()
     end
-    self.updatedChildren[regionData] = true
-    self:SortUpdatedChildren()
   end
 
   function region:RemoveChild(childID, cloneID)
@@ -1142,6 +1211,8 @@ local function modify(parent, region, data)
     if not regionData then return end
     releaseRegionData(regionData)
     self.updatedChildren[regionData] = false
+    clearCache(self.sortStates, childID, cloneID)
+    clearCache(self.growStates, childID, cloneID)
     self:SortUpdatedChildren()
   end
 
@@ -1152,10 +1223,12 @@ local function modify(parent, region, data)
     if regionData and not regionData.region.toShow then
       self.updatedChildren[regionData] = false
     end
+    clearCache(self.sortStates, childID, cloneID)
+    clearCache(self.growStates, childID, cloneID)
     self:SortUpdatedChildren()
   end
 
-  region.sortFunc = createSortFunc(data)
+  region.sortFunc, region.sortOn = createSortFunc(data)
 
   function region:SortUpdatedChildren()
     -- iterates through cache to insert all updated children in the right spot
@@ -1200,7 +1273,7 @@ local function modify(parent, region, data)
     end
   end
 
-  region.growFunc = createGrowFunc(data)
+  region.growFunc, region.growOn = createGrowFunc(data)
   region.anchorPerUnit = data.useAnchorPerUnit and data.anchorPerUnit
 
   local animate = data.animate

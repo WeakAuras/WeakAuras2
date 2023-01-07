@@ -139,6 +139,23 @@ local function createOptions(id, data)
         OptionsPrivate.ResetMoverSizer()
       end,
     },
+    growOn = {
+      type = "input",
+      width = WeakAuras.doubleWidth,
+      name = L["Run on..."],
+      desc = L["You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the Grow Code on.\n\nWeakAuras will always run custom grow code if you include 'changed' in this list, or when a region is added, removed, or re-ordered."],
+      order = 2 - 0.1,
+      get = function()
+        return data.growOn or ""
+      end,
+      hidden = function() return data.grow ~= "CUSTOM" end,
+      set = function(info, v)
+        data.growOn = v
+        WeakAuras.Add(data)
+        WeakAuras.ClearAndUpdateOptions(data.id)
+        OptionsPrivate.ResetMoverSizer()
+      end
+    },
     useAnchorPerUnit = {
       type = "toggle",
       order = 1.5,
@@ -360,6 +377,23 @@ local function createOptions(id, data)
       name = L["Sort"],
       order = 20,
       values = OptionsPrivate.Private.group_sort_types
+    },
+    sortOn = {
+      type = "input",
+      width = WeakAuras.doubleWidth,
+      name = L["Run on..."],
+      desc = L["You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the sort code on.WeakAuras will always run custom sort code if you include 'changed' in this list, or when a region is added, removed."],
+      order = 21 - 0.1,
+      get = function()
+        return data.sortOn or ""
+      end,
+      hidden = function() return data.sort ~= "custom" end,
+      set = function(info, v)
+        data.sortOn = v
+        WeakAuras.Add(data)
+        WeakAuras.ClearAndUpdateOptions(data.id)
+        OptionsPrivate.ResetMoverSizer()
+      end
     },
     -- custom sort option added below
     hybridPosition = {
