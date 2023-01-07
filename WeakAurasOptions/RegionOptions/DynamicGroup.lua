@@ -143,7 +143,7 @@ local function createOptions(id, data)
       type = "input",
       width = WeakAuras.doubleWidth,
       name = L["Run on..."],
-      desc = L["WeakAuras will always run custom grow code when a region is added, removed, or re-ordered.\n\nYou can add a comma-separated list of state values here that (when changed) WeakAuras should also run the Grow Code on."],
+      desc = L["You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the Grow Code on.\n\nWeakAuras will always run custom grow code if you include 'changed' in this list, or when a region is added, removed, or re-ordered."],
       order = 2 - 0.1,
       get = function()
         return data.growOn or ""
@@ -382,12 +382,12 @@ local function createOptions(id, data)
       type = "input",
       width = WeakAuras.doubleWidth,
       name = L["Run on..."],
-      desc = L["WeakAuras will always run custom sort code when a region is added or removed.\n\nYou can add a comma-separated list of state values here that (when changed) WeakAuras should also run the sort code on."],
+      desc = L["You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the sort code on.WeakAuras will always run custom sort code if you include 'changed' in this list, or when a region is added, removed."],
       order = 21 - 0.1,
       get = function()
         return data.sortOn or ""
       end,
-      hidden = function() return data.sort ~= "CUSTOM" end,
+      hidden = function() return data.sort ~= "custom" end,
       set = function(info, v)
         data.sortOn = v
         WeakAuras.Add(data)

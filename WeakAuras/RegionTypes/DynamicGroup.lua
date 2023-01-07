@@ -983,7 +983,7 @@ local function isDifferent(regionData, cache, events)
         cachedState[event] = state[event]
       end
     else
-      local cachedState = cache[regionData.id][regionData.cloneId]
+      local cachedState = cache[id][cloneId]
       for event in pairs(events) do
         if regionData.region.state[event] ~= cachedState[event] then
           cachedState[event] = regionData.region.state[event]
