@@ -703,29 +703,70 @@ if WeakAuras.IsClassicOrBCCOrWrath() then
 end
 
 if WeakAuras.IsRetail() then
-  function WeakAuras.CheckTalentSpellId(spellId)
+  local talentCheckFrame = CreateFrame("Frame")
+  Private.frames["WeakAuras talentCheckFrame"] = talentCheckFrame
+  talentCheckFrame:RegisterEvent("TRAIT_CONFIG_CREATED")
+  talentCheckFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
+  talentCheckFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
+  talentCheckFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+
+  local selectedTalents = {}
+
+  Private.CheckTalentsForLoad = function(event)
+    Private.StartProfileSystem("talent")
+    selectedTalents = {}
     local configId = C_ClassTalents.GetActiveConfigID()
-    local configInfo = C_Traits.GetConfigInfo(configId)
-    for _, treeId in ipairs(configInfo.treeIDs) do
-      local nodes = C_Traits.GetTreeNodes(treeId)
-      for _, nodeId in ipairs(nodes) do
-        local node = C_Traits.GetNodeInfo(configId, nodeId)
-        if node.ID ~= 0 then
-          for _, talentId in ipairs(node.entryIDs) do
-            local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
-            local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
-            if definitionInfo.spellID == spellId then
-              local spellName, _, icon = GetSpellInfo(spellId)
-              local rank = node.activeRank
-              if node.activeEntry then
-                rank = node.activeEntry.entryID == talentId and node.activeEntry.rank or 0
+    if configId then
+      local configInfo = C_Traits.GetConfigInfo(configId)
+      if configInfo then
+        for _, treeId in ipairs(configInfo.treeIDs) do
+          local nodes = C_Traits.GetTreeNodes(treeId)
+          for _, nodeId in ipairs(nodes) do
+            local node = C_Traits.GetNodeInfo(configId, nodeId)
+            if node.ID ~= 0 then
+              for _, talentId in ipairs(node.entryIDs) do
+                local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
+                local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
+                local rank = node.activeRank
+                if node.activeEntry then
+                  rank = node.activeEntry.entryID == talentId and node.activeEntry.rank or 0
+                end
+                if definitionInfo.spellID then
+                  selectedTalents[definitionInfo.spellID] = rank
+                end
               end
-              return spellName, icon, rank
             end
           end
         end
       end
     end
+    Private.ScanForLoads(nil, "WA_TALENT_UPDATE")
+    WeakAuras.ScanEvents("WA_TALENT_UPDATE")
+
+    if (event == "WA_DELAYED_PLAYER_ENTERING_WORLD" or event == "PLAYER_TALENT_UPDATE") then
+      C_Timer.After(1, Private.UpdateTalentInfo)
+    end
+
+    Private.StopProfileSystem("talent")
+  end
+
+  talentCheckFrame:SetScript("OnEvent", Private.CheckTalentsForLoad)
+
+  function WeakAuras.GetTalentSpellId(spellId)
+    if selectedTalents[spellId] then
+      local spellName, _, icon = GetSpellInfo(spellId)
+      local rank = selectedTalents[spellId]
+      return spellName, icon, rank
+    end
+  end
+
+  function WeakAuras.CheckTalentSpellId(spellId)
+    if selectedTalents[spellId] then
+      local spellName, _, icon = GetSpellInfo(spellId)
+      local rank = selectedTalents[spellId]
+      return rank > 0
+    end
+    return false
   end
 end
 
@@ -1219,7 +1260,7 @@ Private.load_prototype = {
       display = L["Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = WeakAuras.IsRetail() and "WeakAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
+      test = WeakAuras.IsRetail() and "WeakAuras.CheckTalentSpellId(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
       enableTest = function(trigger, talent, arg)
         if WeakAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
@@ -1242,7 +1283,7 @@ Private.load_prototype = {
       end or nil,
       events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
-        or (WeakAuras.IsRetail() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"}),
+        or (WeakAuras.IsRetail() and {"WA_TALENT_UPDATE"}),
       inverse = function(load)
         -- Check for multi select!
         return WeakAuras.IsClassicOrBCC() and (load.talent_extraOption == 2 or load.talent_extraOption == 3)
@@ -1276,7 +1317,7 @@ Private.load_prototype = {
       display = WeakAuras.IsWrathOrRetail() and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = WeakAuras.IsRetail() and "WeakAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
+      test = WeakAuras.IsRetail() and "WeakAuras.CheckTalentSpellId(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
       enableTest = function(trigger, talent, arg)
         if WeakAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
@@ -1299,7 +1340,7 @@ Private.load_prototype = {
       end or nil,
       events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
-        or (WeakAuras.IsRetail() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"}),
+        or (WeakAuras.IsRetail() and {"WA_TALENT_UPDATE"}),
       inverse = function(load)
         return WeakAuras.IsClassicOrBCC() and (load.talent2_extraOption == 2 or load.talent2_extraOption == 3)
       end,
@@ -1335,7 +1376,7 @@ Private.load_prototype = {
       display = WeakAuras.IsWrathOrRetail() and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
-      test = WeakAuras.IsRetail() and "WeakAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
+      test = WeakAuras.IsRetail() and "WeakAuras.CheckTalentSpellId(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
       enableTest = function(trigger, talent, arg)
         if WeakAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
@@ -1358,7 +1399,7 @@ Private.load_prototype = {
       end or nil,
       events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
-        or (WeakAuras.IsRetail() and {"TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE"}),
+        or (WeakAuras.IsRetail() and {"WA_TALENT_UPDATE"}),
       inverse = function(load)
         return WeakAuras.IsClassicOrBCC() and (load.talent3_extraOption == 2 or load.talent3_extraOption == 3)
       end,
@@ -6059,12 +6100,13 @@ Private.event_prototypes = {
           "PLAYER_TALENT_UPDATE"
         }
       elseif WeakAuras.IsRetail() then
-        events = { "TRAIT_CONFIG_CREATED", "TRAIT_CONFIG_UPDATED", "PLAYER_TALENT_UPDATE", "PLAYER_SPECIALIZATION_CHANGED" }
+        -- nothing
       end
       return {
         ["events"] = events
       }
     end,
+    internal_events = WeakAuras.IsRetail() and  {"WA_TALENT_UPDATE"} or nil,
     force_events = (WeakAuras.IsRetail() and "TRAIT_CONFIG_UPDATED") or "CHARACTER_POINTS_CHANGED",
     name = L["Talent Known"],
     init = function(trigger)
@@ -6132,7 +6174,7 @@ Private.event_prototypes = {
                 local shouldBeActive = %s
                 if spellId then
                   local hasTalent = IsPlayerSpell(spellId)
-                  activeName, activeIcon, rank = WeakAuras.CheckTalentSpellId(spellId)
+                  activeName, activeIcon, rank = WeakAuras.GetTalentSpellId(spellId)
                   if activeName ~= nil then
                     local hasTalent = rank > 0
                     if hasTalent then
