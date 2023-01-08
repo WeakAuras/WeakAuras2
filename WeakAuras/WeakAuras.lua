@@ -2618,7 +2618,12 @@ local function validateUserConfig(data, options, config)
       local optionClass = Private.author_option_classes[option.type]
       if optionClass ~= "group" then
         local option = options[authorOptionKeys[key]]
-        if type(value) ~= type(option.default) then
+        if option.type == "media" then
+          -- sounds can be number or string, other kinds of media can only be string
+          if type(value) ~= "string" and (type(value) ~= "number" or option.mediaType ~= "sound") then
+            config[key] = option.default
+          end
+        elseif type(value) ~= type(option.default) then
           -- if type mismatch then we know that it can't be right
           if type(option.default) ~= "table" then
             config[key] = option.default

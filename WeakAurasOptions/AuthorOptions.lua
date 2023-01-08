@@ -975,6 +975,64 @@ typeControlAdders = {
       step = 1
     }
   end,
+  media = function(options, args, data, order, prefix, i)
+    local option = options[i]
+    args[prefix .. "mediaType"] = {
+      type = "select",
+      width = WeakAuras.normalWidth,
+      name = name(option, "mediaType", L["Media Type"]),
+      desc = desc(option, "mediaType"),
+      values = OptionsPrivate.Private.shared_media_types,
+      order = order(),
+      get = get(option, "mediaType"),
+      set = function(_, value)
+        for _, optionData in pairs(option.references) do
+          local childOption = optionData.options[optionData.index]
+          local childData = optionData.data
+          childOption.mediaType = value
+          childOption.default = OptionsPrivate.Private.author_option_media_defaults[value]
+          WeakAuras.Add(childData)
+        end
+        WeakAuras.ClearAndUpdateOptions(data.id, true)
+      end
+    }
+    args[prefix .. "default"] = {
+      type = "select",
+      width = WeakAuras.doubleWidth,
+      name = name(option, "default", L["Default"]),
+      desc = desc(option, "default"),
+      values = function()
+        if option.mediaType == "sound" then
+          return OptionsPrivate.Private.sound_file_types
+        else
+          return AceGUIWidgetLSMlists[option.mediaType]
+        end
+      end,
+      sorting = function()
+        if option.mediaType == "sound" then
+          return OptionsPrivate.Private.SortOrderForValues(OptionsPrivate.Private.sound_file_types)
+        else
+          return nil
+        end
+      end,
+      dialogControl = OptionsPrivate.Private.author_option_media_controls[option.mediaType],
+      order = order(),
+      get = get(option, "default"),
+      set = function(_, value)
+        if option.mediaType == "sound" then
+          -- do this outside the deref loop, so we don't play the sound a million times
+          PlaySoundFile(value)
+        end
+        for _, optionData in pairs(option.references) do
+          local childOption = optionData.options[optionData.index]
+          local childData = optionData.data
+          childOption.default = value
+          WeakAuras.Add(childData)
+        end
+        WeakAuras.ClearAndUpdateOptions(data.id, true)
+      end
+    }
+  end,
   multiselect = function(options, args, data, order, prefix, i)
     local option = options[i]
     local values = getValues(option)
@@ -2283,6 +2341,29 @@ local function addUserModeOption(options, args, data, order, prefix, i)
         end
         WeakAuras.ClearAndUpdateOptions(data.id, true)
       end
+    elseif optionType == "media" then
+      userOption.type = "select"
+      userOption.dialogControl = OptionsPrivate.Private.author_option_media_controls[option.mediaType]
+      userOption.values = function()
+        if option.mediaType == "sound" then
+          return OptionsPrivate.Private.sound_file_types
+        else
+          return AceGUIWidgetLSMlists[option.mediaType]
+        end
+      end
+
+      userOption.set = function(_, value)
+        if option.mediaType == "sound" then
+          PlaySoundFile(value)
+        end
+        for _, optionData in pairs(option.references) do
+          local childData = optionData.data
+          local childConfig = optionData.config
+          childConfig[option.key] = value
+          WeakAuras.Add(childData)
+        end
+        WeakAuras.ClearAndUpdateOptions(data.id, true)
+      end
     end
   elseif optionClass == "noninteractive" then
     if optionType == "header" then
@@ -2361,6 +2442,7 @@ local significantFieldsForMerge = {
   groupType = true,
   limitType = true,
   size = true,
+  mediaType = true,
 }
 
 -- these fields are special cases, generally reserved for when the UI displays something based on the merged options
