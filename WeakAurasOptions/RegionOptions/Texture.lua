@@ -98,18 +98,6 @@ local function createOptions(id, data)
       step = 1,
       bigStep = 3,
       order = 9,
-      hidden = function() return not (data.rotate and not IsAtlas(data.texture)) end,
-    },
-    discrete_rotation = {
-      type = "range",
-      control = "WeakAurasSpinBox",
-      width = WeakAuras.normalWidth,
-      name = L["Discrete Rotation"],
-      min = 0,
-      max = 360,
-      step = 90,
-      order = 10,
-      hidden = function() return not (not data.rotate or IsAtlas(data.texture)) end,
     },
     endHeader = {
       type = "header",
@@ -141,6 +129,16 @@ local function createThumbnail()
   return borderframe;
 end
 
+local SQRT2 = sqrt(2)
+local function GetRotatedPoints(degrees, scaleForFullRotate)
+  local angle = rad(135 - degrees);
+  local factor = scaleForFullRotate and 1 or SQRT2
+  local vx = math.cos(angle) / factor
+  local vy = math.sin(angle) / factor
+
+  return 0.5+vx,0.5-vy , 0.5-vy,0.5-vx , 0.5+vy,0.5+vx , 0.5-vx,0.5+vy
+end
+
 local function modifyThumbnail(parent, region, data, fullModify, size)
   size = size or 30;
   local scale;
@@ -158,27 +156,7 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
   region.texture:SetVertexColor(data.color[1], data.color[2], data.color[3], data.color[4]);
   region.texture:SetBlendMode(data.blendMode);
 
-  if region.texture.IsAtlas then
-    return
-  end
-  local ulx,uly , llx,lly , urx,ury , lrx,lry;
-  if(data.rotate) then
-    local angle = rad(135 - data.rotation);
-    local vx = math.cos(angle);
-    local vy = math.sin(angle);
-
-    ulx,uly , llx,lly , urx,ury , lrx,lry = 0.5+vx,0.5-vy , 0.5-vy,0.5-vx , 0.5+vy,0.5+vx , 0.5-vx,0.5+vy;
-  else
-    if(data.discrete_rotation == 0 or data.discrete_rotation == 360) then
-      ulx,uly , llx,lly , urx,ury , lrx,lry = 0,0 , 0,1 , 1,0 , 1,1;
-    elseif(data.discrete_rotation == 90) then
-      ulx,uly , llx,lly , urx,ury , lrx,lry = 1,0 , 0,0 , 1,1 , 0,1;
-    elseif(data.discrete_rotation == 180) then
-      ulx,uly , llx,lly , urx,ury , lrx,lry = 1,1 , 1,0 , 0,1 , 0,0;
-    elseif(data.discrete_rotation == 270) then
-      ulx,uly , llx,lly , urx,ury , lrx,lry = 0,1 , 1,1 , 0,0 , 1,0;
-    end
-  end
+  local ulx,uly , llx,lly , urx,ury , lrx,lry = GetRotatedPoints(data.rotation, data.rotate)
   if(data.mirror) then
     region.texture:SetTexCoord(urx,ury , lrx,lry , ulx,uly , llx,lly);
   else

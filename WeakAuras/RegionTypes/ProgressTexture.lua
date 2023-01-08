@@ -126,7 +126,16 @@ local properties = {
   mirror = {
     display = L["Mirror"],
     setter = "SetMirror",
-    type = "bool"
+    type = "bool",
+  },
+  rotation = {
+    display = L["Texture Rotation"],
+    setter = "SetTexRotation",
+    type = "number",
+    min = 0,
+    max = 360,
+    bigStep = 1,
+    default = 0
   }
 }
 
@@ -209,7 +218,7 @@ function spinnerFunctions.SetProgress(self, region, angle1, angle2)
 
   local crop_x = region.crop_x or 1;
   local crop_y = region.crop_y or 1;
-  local texRotation = region.texRotation or 0
+  local texRotation = region.effectiveTexRotation or 0
   local mirror_h = region.mirror_h or false;
   if region.mirror then
     mirror_h = not mirror_h
@@ -687,7 +696,7 @@ local textureFunctions = {
     local region = self.region;
     local crop_x = region.crop_x or 1;
     local crop_y = region.crop_y or 1;
-    local texRotation = region.texRotation or 0
+    local texRotation = region.effectiveTexRotation or 0
     local mirror_h = region.mirror_h or false;
     if region.mirror then
       mirror_h = not mirror_h
@@ -1209,8 +1218,8 @@ local function modify(parent, region, data)
     DoPosition(region)
   end
 
-  function region:Rotate(angle)
-    region.texRotation = angle or 0
+  function region:UpdateEffectiveRotation()
+    region.effectiveTexRotation = region.texAnimationRotation or region.texRotation
     if (data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE") then
       region.foregroundSpinner:UpdateSize();
       region.backgroundSpinner:UpdateSize();
@@ -1226,9 +1235,19 @@ local function modify(parent, region, data)
     end
   end
 
-  region:Rotate(data.rotation)
+  function region:SetAnimRotation(angle)
+    region.texAnimationRotation = angle
+    region:UpdateEffectiveRotation()
+  end
 
-  function region:GetRotation()
+  function region:SetTexRotation(angle)
+    region.texRotation = angle
+    region:UpdateEffectiveRotation()
+  end
+
+  region:SetTexRotation(data.rotation)
+
+  function region:GetBaseRotation()
     return region.texRotation
   end
 

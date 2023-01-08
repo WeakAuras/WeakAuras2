@@ -1642,5 +1642,18 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 63 then
+    if data.regionType == "texture" then
+      local GetAtlasInfo = C_Texture and C_Texture.GetAtlasInfo or GetAtlasInfo
+      local function IsAtlas(input)
+        return type(input) == "string" and GetAtlasInfo(input) ~= nil
+      end
+
+      if not data.rotate or IsAtlas(data.texture) then
+        data.rotation = data.discrete_rotation
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
