@@ -309,18 +309,6 @@ local function modify(parent, region, parentData, data, first)
   region.FrameTick = FrameTick
   region.TimerTick = TimerTick
 
-  if Update then
-    parent.subRegionEvents:AddSubscriber("Update", region)
-  end
-
-  if FrameTick then
-    parent.subRegionEvents:AddSubscriber("FrameTick", region)
-  end
-
-  if TimerTick then
-    parent.subRegionEvents:AddSubscriber("TimerTick", region)
-  end
-
   if not UpdateText then
     if text:GetFont() then
       local textStr = data.text_text
@@ -357,7 +345,29 @@ local function modify(parent, region, parentData, data, first)
   function region:SetVisible(visible)
     if visible then
       self:Show()
+      if self.Update then
+        parent.subRegionEvents:AddSubscriber("Update", region)
+      end
+
+      if self.FrameTick then
+        parent.subRegionEvents:AddSubscriber("FrameTick", region)
+      end
+
+      if self.TimerTick then
+        parent.subRegionEvents:AddSubscriber("TimerTick", region)
+      end
     else
+      if self.Update then
+        parent.subRegionEvents:RemoveSubscriber("Update", region)
+      end
+
+      if self.FrameTick then
+        parent.subRegionEvents:RemoveSubscriber("FrameTick", region)
+      end
+
+      if self.TimerTick then
+        parent.subRegionEvents:RemoveSubscriber("TimerTick", region)
+      end
       self:Hide()
     end
   end
