@@ -87,6 +87,7 @@
         "MAINASSIST",
         "MAINHANDSLOT",
         "MAINTANK",
+        "Masque",
         "MAX_NUM_TALENTS",
         "MAX_SPELL_SCHOOLS",
         "MAX_TALENT_TIERS",
@@ -195,7 +196,10 @@
         "WeakAurasCompanion",
         "WeakAurasOptions",
         "WorldFrame",
-        "WRISTSLOT"
+        "WRISTSLOT",
+        "COOKINGTOOLSLOT",
+        "COOKINGGEAR0SLOT",
+        "FISHINGTOOLSLOT"
     ],
     "runtime.version": "Lua 5.1",
     "workspace.ignoreDir": [
