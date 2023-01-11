@@ -4,8 +4,8 @@ local AddonName, Private = ...
 
 local LCG = LibStub("LibCustomGlow-1.0")
 
-local MSQ = LibStub("Masque", true);
-local L = WeakAuras.L;
+local MSQ = LibStub("Masque", true)
+local L = WeakAuras.L
 
 local default = function(parentType)
   local options = {
@@ -181,16 +181,16 @@ local funcs = {
       if (visible) then
         self.__MSQ_Shape = self:GetParent().button.__MSQ_Shape
         self:Show()
-        glowStart(self, self, color);
+        glowStart(self, self, color)
       else
-        self.glowStop(self);
+        self.glowStop(self)
         self:Hide()
       end
     elseif (visible) then
       self:Show()
-      glowStart(self, self, color);
+      glowStart(self, self, color)
     else
-      self.glowStop(self);
+      self.glowStop(self)
       self:Hide()
     end
   end,
