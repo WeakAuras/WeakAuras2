@@ -102,6 +102,7 @@ globals = {
 	"STATICPOPUP_NUMDIALOGS",
 	"StaticPopup_Show",
 	"StaticPopupDialogs",
+	"TableHasAnyEntries",
 	"tIndexOf",
 	"UISpecialFrames",
 

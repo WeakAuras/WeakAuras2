@@ -223,6 +223,11 @@ local function modify(parent, region, data)
   region.Update = Update
   region.FrameTick = FrameTick
   region.TimerTick = TimerTick
+  if TimerTick then
+    region.subRegionEvents:AddSubscriber("TimerTick", region, true)
+  else
+    region.subRegionEvents:RemoveSubscriber("TimerTick", region)
+  end
 
   if not UpdateText then
     local textStr = data.displayText

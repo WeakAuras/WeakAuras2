@@ -452,6 +452,9 @@ local function modify(parent, region, data)
     end;
 
     region.FrameTick = onUpdate;
+    if region.FrameTick then
+      region.subRegionEvents:AddSubscriber("FrameTick", region, true)
+    end
 
     function region:Update()
       if region.state.paused then
