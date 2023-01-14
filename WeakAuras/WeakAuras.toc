@@ -54,6 +54,7 @@ AuraEnvironment.lua
 AuraEnvironmentWrappedSystems.lua
 DebugLog.lua
 Dragonriding.lua
+SubscribableObject.lua
 
 # Region support
 RegionTypes\RegionPrototype.lua

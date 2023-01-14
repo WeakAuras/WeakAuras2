@@ -199,13 +199,11 @@ local funcs = {
     then
       if not self.TimerTick then
         self.TimerTick = self.UpdateTickPlacement
-        self.parent:UpdateRegionHasTimerTick()
         self.parent.subRegionEvents:AddSubscriber("TimerTick", self)
       end
     else
       if self.TimerTick then
         self.TimerTick = nil
-        self.parent:UpdateRegionHasTimerTick()
         self.parent.subRegionEvents:RemoveSubscriber("TimerTick", self)
       end
     end

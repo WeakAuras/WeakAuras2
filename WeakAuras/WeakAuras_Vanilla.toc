@@ -54,6 +54,7 @@ AuraWarnings.lua
 AuraEnvironment.lua
 AuraEnvironmentWrappedSystems.lua
 DebugLog.lua
+SubscribableObject.lua
 
 # Region support
 RegionTypes\RegionPrototype.lua
