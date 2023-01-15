@@ -1021,7 +1021,7 @@ typeControlAdders = {
       set = function(_, value)
         if option.mediaType == "sound" then
           -- do this outside the deref loop, so we don't play the sound a million times
-          PlaySoundFile(value)
+          PlaySoundFile(value, "Master")
         end
         for _, optionData in pairs(option.references) do
           local childOption = optionData.options[optionData.index]
@@ -2354,7 +2354,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
 
       userOption.set = function(_, value)
         if option.mediaType == "sound" then
-          PlaySoundFile(value)
+          PlaySoundFile(value, "Master")
         end
         for _, optionData in pairs(option.references) do
           local childData = optionData.data
