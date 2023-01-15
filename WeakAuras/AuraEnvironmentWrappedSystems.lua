@@ -1,6 +1,7 @@
 if not WeakAuras.IsLibsOK() then return end
 --- @type string, Private
 local AddonName, Private = ...
+local L = WeakAuras.L
 
 --- @class AuraEnvironmentWrappedSystem
 --- @field Get fun(systemName: string, id: auraId, cloneId: string?): any
@@ -46,7 +47,7 @@ local function Wrap(id, cloneId, system, funcs)
           local region = WeakAuras.GetRegion(id, cloneId)
           if region then
             Private.ActivateAuraEnvironmentForRegion(region)
-            oldArg(...)
+            xpcall(oldArg, Private.GetErrorHandlerId(id, L["Callback function"]), ...)
             Private.ActivateAuraEnvironment()
           else
             oldArg(...)
