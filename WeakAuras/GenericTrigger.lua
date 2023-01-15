@@ -3417,11 +3417,11 @@ do
                     local text = arg.stringVal;
                     if(text) then
                       -- Format based on ITEM_ENCHANT_TIME_LEFT_MIN, ITEM_ENCHANT_TIME_LEFT_SEC
-                      local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+%D+%)$");
+                      local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+%D.+%)$");
                       if(name and name ~= "") then
                         return name, shortenedName;
                       end
-                      _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+%D+%）$");
+                      _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+%D.+%）$");
                       if(name and name ~= "") then
                         return name, shortenedName;
                       end
