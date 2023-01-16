@@ -50,7 +50,10 @@ local SubscribableObject =
   --- @type fun(self: SubscribableObject, event: string, subscriber: frame)
   RemoveSubscriber = function(self, event, subscriber)
     if self.events[event] then
-      tremove(self.events[event], tIndexOf(self.events[event], subscriber))
+      local index = tIndexOf(self.events[event], subscriber)
+      if index then
+        tremove(self.events[event], index)
+      end
       if not TableHasAnyEntries(self.events[event]) then
         if self.callbacks[event] then
           self.callbacks[event]()
