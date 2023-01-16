@@ -53,10 +53,10 @@ local SubscribableObject =
       local index = tIndexOf(self.events[event], subscriber)
       if index then
         tremove(self.events[event], index)
-      end
-      if not TableHasAnyEntries(self.events[event]) then
-        if self.callbacks[event] then
-          self.callbacks[event]()
+        if not TableHasAnyEntries(self.events[event]) then
+          if self.callbacks[event] then
+            self.callbacks[event]()
+          end
         end
       end
     end
