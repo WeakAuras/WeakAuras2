@@ -299,8 +299,6 @@ local function CreateNewGroupFromSelection(regionType, resetChildPositions)
     local oldParentData = WeakAuras.GetData(oldParent)
     if (oldParent) then
       local oldIndex = childButton:GetGroupOrder()
-      print("CHILD ID", childId, "OLD PARENT", oldParent, "OLD INDEX", oldIndex)
-      print("###", oldParentData.controlledChildren[oldIndex])
 
       tremove(oldParentData.controlledChildren, oldIndex)
       WeakAuras.Add(oldParentData)
