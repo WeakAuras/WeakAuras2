@@ -241,6 +241,7 @@ local function modify(parent, region, parentData, data, first)
       parent.customTextFunc = nil
     end
     parent.values.custom = nil
+    parent.values.lastCustomTextUpdate = nil
   end
 
   local UpdateText
@@ -265,16 +266,13 @@ local function modify(parent, region, parentData, data, first)
   end
 
   local Update
-  if first and parent.customTextFunc then
-    if UpdateText then
-      Update = function()
+  if parent.customTextFunc and UpdateText then
+    Update = function()
+      if parent.values.lastCustomTextUpdate ~= GetTime() then
         parent.values.custom = Private.RunCustomTextFunc(parent, parent.customTextFunc)
-        UpdateText()
+        parent.values.lastCustomTextUpdate = GetTime()
       end
-    else
-      Update = function()
-        parent.values.custom = Private.RunCustomTextFunc(parent, parent.customTextFunc)
-      end
+      UpdateText()
     end
   else
     Update = UpdateText
@@ -287,20 +285,13 @@ local function modify(parent, region, parentData, data, first)
 
   local FrameTick
   if parent.customTextFunc and parentData.customTextUpdate == "update" then
-    if first then
-      if Private.ContainsCustomPlaceHolder(data.text_text) then
-        FrameTick = function()
+    if Private.ContainsCustomPlaceHolder(data.text_text) then
+      FrameTick = function()
+        if parent.values.lastCustomTextUpdate ~= GetTime() then
           parent.values.custom = Private.RunCustomTextFunc(parent, parent.customTextFunc)
-          UpdateText()
+          parent.values.lastCustomTextUpdate = GetTime()
         end
-      else
-        FrameTick = function()
-          parent.values.custom = Private.RunCustomTextFunc(parent, parent.customTextFunc)
-        end
-      end
-    else
-      if Private.ContainsCustomPlaceHolder(data.text_text) then
-        FrameTick = UpdateText
+        UpdateText()
       end
     end
   end
@@ -355,6 +346,9 @@ local function modify(parent, region, parentData, data, first)
 
       if self.TimerTick then
         parent.subRegionEvents:AddSubscriber("TimerTick", region)
+      end
+      if self.Update then
+        self:Update()
       end
     else
       if self.Update then
