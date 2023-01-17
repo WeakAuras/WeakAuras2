@@ -1,4 +1,4 @@
-## Interface: 30400
+## Interface: 30401
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
 ## Version: @project-version@
