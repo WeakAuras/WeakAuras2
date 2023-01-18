@@ -229,12 +229,6 @@ local function modify(parent, region, data)
     region.subRegionEvents:RemoveSubscriber("TimerTick", region)
   end
 
-  if FrameTick then
-    region.subRegionEvents:AddSubscriber("FrameTick", region)
-  else
-    region.subRegionEvents:RemoveSubscriber("FrameTick", region)
-  end
-
   if not UpdateText then
     local textStr = data.displayText
     textStr = textStr:gsub("\\n", "\n");
