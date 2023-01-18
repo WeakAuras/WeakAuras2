@@ -4726,6 +4726,7 @@ local function ValueForSymbol(symbol, region, customFunc, regionState, regionSta
         return tostring(value) or ""
       end
     end
+    return ""
   else
     local value = (useHiddenStates or regionState.show) and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState, formatters[symbol]);
     return value or ""
