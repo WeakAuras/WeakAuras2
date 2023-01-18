@@ -1633,7 +1633,7 @@ function Private.Modernize(data)
 
   if data.internalVersion < 62 then
     if data.regionType == "dynamicgroup" then
-      if data.sort == "CUSTOM" and type(data.sortOn) ~= "string" then
+      if data.sort == "custom" and type(data.sortOn) ~= "string" then
         data.sortOn = "changed"
       end
       if data.grow == "CUSTOM" and type(data.growOn) ~= "string" then

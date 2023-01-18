@@ -329,7 +329,7 @@ local sorters = {
     if #events > 0 then
       sortOn = {}
       for _, event in ipairs(events) do
-        events[event] = true
+        sortOn[event] = true
       end
     end
     return function(a, b)
@@ -928,7 +928,7 @@ local growers = {
     if #events > 0 then
       growOn = {}
       for _, event in ipairs(events) do
-        events[event] = true
+        growOn[event] = true
       end
     end
     return function(newPositions, activeRegions)
@@ -986,7 +986,7 @@ local function isDifferent(regionData, cache, events)
       local cachedState = cache[id][cloneId]
       for event in pairs(events) do
         if regionData.region.state[event] ~= cachedState[event] then
-          cachedState[event] = regionData.region.state[event]
+          cachedState[event] = state[event]
           isDifferent = true
         end
       end
