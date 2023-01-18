@@ -320,8 +320,6 @@ local function modify(parent, region, parentData, data, first)
                       region.color_anim_b or b, region.color_anim_a or a)
   end
 
-  region:Color(data.text_color[1], data.text_color[2], data.text_color[3], data.text_color[4]);
-
   function region:SetTextHeight(size)
     local fontPath = SharedMedia:Fetch("font", data.text_font);
     if not text:GetFont() then -- Font invalid, set the font but keep the setting
@@ -347,7 +345,7 @@ local function modify(parent, region, parentData, data, first)
       if self.TimerTick then
         parent.subRegionEvents:AddSubscriber("TimerTick", region)
       end
-      if self.Update then
+      if self.Update and parent.state then
         self:Update()
       end
     else
@@ -365,8 +363,6 @@ local function modify(parent, region, parentData, data, first)
       self:Hide()
     end
   end
-
-  region:SetVisible(data.text_visible)
 
   local selfPoint = data.text_selfPoint
   if selfPoint == "AUTO" then
@@ -404,9 +400,6 @@ local function modify(parent, region, parentData, data, first)
                            (self.text_anchorXOffset or 0) + xo, (self.text_anchorYOffset or 0) + yo)
   end
 
-  region:UpdateAnchor()
-  animRotate(text, textDegrees, selfPoint)
-
   if textDegrees == 0 then
     region.UpdateAnchorOnTextChange = function() end
   else
@@ -428,6 +421,11 @@ local function modify(parent, region, parentData, data, first)
     self.text_anchorYOffset = yOffset
     self:UpdateAnchor()
   end
+
+  region:Color(data.text_color[1], data.text_color[2], data.text_color[3], data.text_color[4]);
+  region:SetVisible(data.text_visible)
+  region:UpdateAnchor()
+  animRotate(text, textDegrees, selfPoint)
 end
 
 local function addDefaultsForNewAura(data)
