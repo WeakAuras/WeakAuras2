@@ -3383,7 +3383,7 @@ local function actionGlowStart(actions, frame, id)
       actions.glow_thickness,
       actions.glow_XOffset,
       actions.glow_YOffset,
-      actions.glow_border,
+      actions.glow_border and true or false,
       id
     )
   elseif actions.glow_type == "ACShine" then
