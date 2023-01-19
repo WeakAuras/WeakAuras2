@@ -1631,16 +1631,7 @@ function Private.Modernize(data)
     end
   end
 
-  if data.internalVersion < 62 then
-    if data.regionType == "dynamicgroup" then
-      if data.sort == "CUSTOM" and type(data.sortOn) ~= "string" then
-        data.sortOn = "changed"
-      end
-      if data.grow == "CUSTOM" and type(data.growOn) ~= "string" then
-        data.growOn = "changed"
-      end
-    end
-  end
+  -- version 62 became 64 to fix a broken modernize
 
   if data.internalVersion < 63 then
     if data.regionType == "texture" then
@@ -1651,6 +1642,17 @@ function Private.Modernize(data)
 
       if not data.rotate or IsAtlas(data.texture) then
         data.rotation = data.discrete_rotation
+      end
+    end
+  end
+
+  if data.internalVersion < 64 then
+    if data.regionType == "dynamicgroup" then
+      if data.sort == "custom" and type(data.sortOn) ~= "string" or data.sortOn == "" then
+        data.sortOn = "changed"
+      end
+      if data.grow == "CUSTOM" and type(data.growOn) ~= "string" then
+        data.growOn = "changed"
       end
     end
   end
