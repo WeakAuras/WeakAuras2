@@ -114,7 +114,7 @@ local function Constructor()
     tile = true, tileSize = 16, edgeSize = 16,
     insets = { left = 4, right = 4, top = 4, bottom = 4 }
   });
-  button:SetBackdropColor(0.1,0.1,0.1);
+  button:SetBackdropColor(0.1,0.1,0.1,0.2);
   button:SetBackdropBorderColor(0.4,0.4,0.4);
 
   local highlighttexture = button:CreateTexture(nil, "OVERLAY");

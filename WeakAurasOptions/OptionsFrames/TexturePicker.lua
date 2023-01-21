@@ -187,7 +187,7 @@ local function ConstructTexturePicker(frame)
     UpdateShownWidgets()
   end
 
-  local input = CreateFrame("EditBox", nil, group.frame, "InputBoxTemplate");
+  local input = CreateFrame("EditBox", nil, group.frame, "SearchBoxTemplate");
   input:SetScript("OnTextChanged", function(...)
     local status = dropdown.status or dropdown.localstatus
     texturePickerGroupSelected(nil, nil, status.selected, input:GetText())
@@ -201,14 +201,9 @@ local function ConstructTexturePicker(frame)
     local status = dropdown.status or dropdown.localstatus
     texturePickerGroupSelected(nil, nil, status.selected, input:GetText())
   end);
-  input:SetWidth(170);
+  input:SetWidth(200);
   input:SetHeight(15);
-  input:SetPoint("BOTTOMRIGHT", dropdown.frame, "TOPRIGHT", -12, -25);
-
-  local inputLabel = input:CreateFontString(nil, "OVERLAY", "GameFontNormal");
-  inputLabel:SetText(L["Search"]);
-  inputLabel:SetJustifyH("RIGHT");
-  inputLabel:SetPoint("BOTTOMLEFT", input, "TOPLEFT", 0, 5);
+  input:SetPoint("TOPRIGHT", dropdown.frame, "TOPRIGHT", -210, 0);
 
   dropdown:SetCallback("OnGroupSelected", function(widget, event, uniquevalue)
     texturePickerGroupSelected(widget, event, uniquevalue, input:GetText())
