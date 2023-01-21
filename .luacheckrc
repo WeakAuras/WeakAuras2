@@ -128,6 +128,7 @@ globals = {
 	"GameFontNormalHuge",
 	"GameFontHighlight",
 	"GameFontHighlightLarge",
+	"GameFontHighlightSmall",
 	"FONT_COLOR_CODE_CLOSE",
 	"ICON_TAG_LIST",
 	"MAX_PVP_TALENT_COLUMNS",

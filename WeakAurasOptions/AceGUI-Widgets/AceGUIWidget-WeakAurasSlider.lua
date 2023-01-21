@@ -121,7 +121,7 @@ local methods = {
 		self.slider:SetEnabled(not disabled)
 		--[[
 		if disabled then
-			
+
 			self.slider:EnableMouse(false)
 			self.label:SetTextColor(.5, .5, .5)
 			self.hightext:SetTextColor(.5, .5, .5)
