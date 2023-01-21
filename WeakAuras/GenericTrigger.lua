@@ -3563,7 +3563,7 @@ do
   end
 
   function WeakAuras.GetCastLatency()
-    return castLatencyFrame.timeDiff
+    return castLatencyFrame and castLatencyFrame.timeDiff or 0
   end
 
 end
