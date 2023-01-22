@@ -732,7 +732,11 @@ if WeakAuras.IsRetail() then
                   rank = node.activeEntry.entryID == talentId and node.activeEntry.rank or 0
                 end
                 if definitionInfo.spellID then
-                  selectedTalents[definitionInfo.spellID] = rank
+                  if selectedTalents[definitionInfo.spellID] then
+                    selectedTalents[definitionInfo.spellID] = max(rank, selectedTalents[definitionInfo.spellID])
+                  else
+                    selectedTalents[definitionInfo.spellID] = rank
+                  end
                 end
               end
             end
