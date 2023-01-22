@@ -90,7 +90,7 @@ local function ConstructTexturePicker(frame)
   group.categories = {};
   group.textureWidgets = {}
 
-  local dropdown = AceGUI:Create("WeakAurasDropdownGroup");
+  local dropdown = AceGUI:Create("DropdownGroup");
   dropdown:SetLayout("fill");
   dropdown.width = "fill";
   dropdown:SetHeight(390);

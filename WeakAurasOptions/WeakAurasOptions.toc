@@ -73,7 +73,6 @@ OptionsFrames\FrameChooser.lua
 # Dragonflight widgets
 AceGUI-Widgets\AceGUIWidget-WeakAurasCheckBox.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasSlider.lua
-AceGUI-Widgets\AceGUIWidget-WeakAurasDropDown.lua
 
 AceGUI-Widgets\AceGUIWidget-WeakAurasExpand.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasExpandSmall.lua
