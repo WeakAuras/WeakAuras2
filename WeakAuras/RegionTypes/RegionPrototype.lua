@@ -400,6 +400,7 @@ end
 
 local function FrameTick(self)
   Private.StartProfileAura(self.id)
+  self.values.lastCustomTextUpdate = nil
   self.subRegionEvents:Notify("FrameTick")
   Private.StopProfileAura(self.id)
 end
