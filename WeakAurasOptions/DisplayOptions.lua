@@ -149,7 +149,9 @@ function OptionsPrivate.GetDisplayOptions(data)
     end
 
     local options = flattenRegionOptions(regionOption, true)
-    dragonflightWidgets(options)
+    if WeakAuras.IsRetail() then
+      dragonflightWidgets(options)
+    end
 
     for _, option in pairs(options) do
       if option.type == "range" then
