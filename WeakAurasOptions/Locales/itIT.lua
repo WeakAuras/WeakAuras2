@@ -1,6 +1,6 @@
 if not WeakAuras.IsLibsOK() then return end
 
-if GetLocale() ~= "itIT" then
+if (GAME_LOCALE or GetLocale()) ~= "itIT" then
   return
 end
 

@@ -1,4 +1,4 @@
-if GetLocale() ~= "ptBR" then
+if (GAME_LOCALE or GetLocale()) ~= "ptBR" then
   return
 end
 
