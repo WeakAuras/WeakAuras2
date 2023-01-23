@@ -65,6 +65,7 @@ globals = {
 	"KuiNameplatesCore",
 	"KuiNameplatesPlayerAnchor",
 	"Plater",
+	"GAME_LOCALE",
 
 	-- FrameXML misc
 	"BackdropTemplateMixin",
