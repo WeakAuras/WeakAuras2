@@ -1269,13 +1269,18 @@ function GenericTrigger.Add(data, region)
               overlayFuncs = {};
               local dest = 1;
               for i, v in ipairs(prototype.overlayFuncs) do
-                if (v.enable(trigger)) then
+                local enable = true
+                if type(v.enable) == "function" then
+                  enable = v.enable(trigger)
+                elseif type(v.enable) == "boolean" then
+                  enable = v.enable
+                end
+                if enable then
                   overlayFuncs[dest] = v.func;
                   dest = dest + 1;
                 end
               end
             end
-
 
             if (prototype.automaticrequired) then
               untriggerFunc = trueFunction
@@ -3776,7 +3781,13 @@ function GenericTrigger.GetOverlayInfo(data, triggernum)
     result = {};
     local dest = 1;
     for i, v in ipairs(Private.event_prototypes[trigger.event].overlayFuncs) do
-      if (v.enable(trigger)) then
+      local enable = true
+      if type(v.enable) == "function" then
+        enable = v.enable(trigger)
+      elseif type(v.enable) == "boolean" then
+        enable = v.enable
+      end
+      if enable then
         result[dest] = v.name;
         dest = dest + 1;
       end

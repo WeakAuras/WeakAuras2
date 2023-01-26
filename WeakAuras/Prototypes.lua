@@ -8212,7 +8212,7 @@ Private.event_prototypes = {
       },
       {
         name = "charged",
-        display = L["Charged Empowered Cast"],
+        display = L["Empowered Cast Fully Charged"],
         hidden = true,
         init = "stage == stageTotal",
         test = "true",
@@ -8530,7 +8530,7 @@ Private.event_prototypes = {
           if not state.stageTotal or state.stageTotal < 1 then return 0, 0 end
           return state.duration - state.stagesData[1].start, state.duration - state.stagesData[1].finish
         end,
-        enable = WeakAuras.IsRetail
+        enable = WeakAuras.IsRetail()
       },
       {
         name = L["Empowered 2"],
@@ -8538,7 +8538,7 @@ Private.event_prototypes = {
           if not state.stageTotal or state.stageTotal < 2 then return 0, 0 end
           return state.duration - state.stagesData[2].start, state.duration - state.stagesData[2].finish
         end,
-        enable = WeakAuras.IsRetail
+        enable = WeakAuras.IsRetail()
       },
       {
         name = L["Empowered 3"],
@@ -8546,7 +8546,7 @@ Private.event_prototypes = {
           if not state.stageTotal or state.stageTotal < 3 then return 0, 0 end
           return state.duration - state.stagesData[3].start, state.duration - state.stagesData[3].finish
         end,
-        enable = WeakAuras.IsRetail
+        enable = WeakAuras.IsRetail()
       },
       {
         name = L["Empowered 4"],
@@ -8554,7 +8554,7 @@ Private.event_prototypes = {
           if not state.stageTotal or state.stageTotal < 4 then return 0, 0 end
           return state.duration - state.stagesData[4].start, state.duration - state.stagesData[4].finish
         end,
-        enable = WeakAuras.IsRetail
+        enable = WeakAuras.IsRetail()
       },
       {
         name = L["Empowered 5"],
@@ -8562,7 +8562,15 @@ Private.event_prototypes = {
           if not state.stageTotal or state.stageTotal < 5 then return 0, 0 end
           return state.duration - state.stagesData[5].start, state.duration - state.stagesData[5].finish
         end,
-        enable = WeakAuras.IsRetail
+        enable = WeakAuras.IsRetail()
+      },
+      {
+        name = L["Empowered Fully Charged"],
+        func = function(trigger, state)
+          if not state.stageTotal or not trigger.use_showChargedDuration then return 0, 0 end
+          return state.duration - state.stagesData[state.stageTotal].finish, 0
+        end,
+        enable = WeakAuras.IsRetail()
       }
     },
     automaticrequired = true,
