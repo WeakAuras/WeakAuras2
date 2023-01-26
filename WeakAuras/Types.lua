@@ -863,6 +863,8 @@ Private.unit_types = {
 Private.unit_types_bufftrigger_2 = {
   player = L["Player"],
   target = L["Target"],
+  softenemy = L["Soft Enemy"],
+  softfriend = L["Soft Friend"],
   focus = L["Focus"],
   softenemy = L["Soft Enemy"],
   softfriend = L["Soft Friend"],
@@ -3372,9 +3374,12 @@ for i = 1, 4 do
   Private.multiUnitUnits.party["partypet"..i] = true
 end
 
-if WeakAuras.IsRetail() then
+if WeakAuras.IsWrathOrRetail() then
   Private.baseUnitId["softenemy"] = true
   Private.baseUnitId["softfriend"] = true
+end
+
+if WeakAuras.IsRetail() then
   for i = 1, 10 do
     Private.baseUnitId["boss"..i] = true
     Private.multiUnitUnits.boss["boss"..i] = true
@@ -3803,6 +3808,8 @@ if WeakAuras.IsClassicEra() then
   wipe(Private.multiUnitUnits.boss)
   wipe(Private.multiUnitUnits.arena)
   Private.unit_types.focus = nil
+  Private.unit_types_bufftrigger_2.softenemy = nil
+  Private.unit_types_bufftrigger_2.softfriend = nil
   Private.unit_types_bufftrigger_2.focus = nil
   Private.unit_types_bufftrigger_2.boss = nil
   Private.unit_types_bufftrigger_2.arena = nil
