@@ -1967,7 +1967,7 @@ Buff2Frame:RegisterEvent("UNIT_PET")
 Buff2Frame:RegisterEvent("RAID_TARGET_UPDATE")
 if not WeakAuras.IsClassic() then
   Buff2Frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
-  if WeakAuras.IsRetail() then
+  if WeakAuras.IsWrathOrRetail() then
     Buff2Frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
   end
   Buff2Frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
