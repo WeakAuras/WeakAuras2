@@ -8190,7 +8190,8 @@ Private.event_prototypes = {
         display = L["Show charged duration for empowered casts"],
         type = "toggle",
         enable = WeakAuras.IsRetail(),
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        reloadOptions = true,
       },
       {
         name = "stage",
@@ -8570,7 +8571,9 @@ Private.event_prototypes = {
           if not state.stageTotal or not trigger.use_showChargedDuration then return 0, 0 end
           return state.duration - state.stagesData[state.stageTotal].finish, 0
         end,
-        enable = WeakAuras.IsRetail()
+        enable = function(trigger)
+          return WeakAuras.IsRetail() and trigger.use_showChargedDuration
+        end
       }
     },
     automaticrequired = true,
