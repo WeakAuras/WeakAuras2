@@ -1846,12 +1846,6 @@ end
 local Buff2Frame = CreateFrame("Frame")
 Private.frames["WeakAuras Buff2 Frame"] = Buff2Frame
 
-local playerTargetEvents = {
-  PLAYER_TARGET_CHANGED = "target",
-  PLAYER_FOCUS_CHANGED = "focus",
-  PLAYER_SOFT_ENEMY_CHANGED = "softenemy",
-  PLAYER_SOFT_FRIEND_CHANGED = "softfriend",
-}
 
 local function EventHandler(frame, event, arg1, arg2, ...)
   Private.StartProfileSystem("bufftrigger2")
@@ -1860,7 +1854,7 @@ local function EventHandler(frame, event, arg1, arg2, ...)
   local unitsToRemove = {}
 
   local time = GetTime()
-  local targetUnit = playerTargetEvents[event]
+  local targetUnit = Private.player_target_events[event]
   if targetUnit then
     ScanGroupUnit(time, matchDataChanged, nil, targetUnit)
     if not UnitExistsFixed(targetUnit) then
@@ -1971,6 +1965,8 @@ Buff2Frame:RegisterEvent("RAID_TARGET_UPDATE")
 if not WeakAuras.IsClassicEra() then
   Buff2Frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
   if WeakAuras.IsWrathOrRetail() then
+    Buff2Frame:RegisterEvent("PLAYER_SOFT_ENEMY_CHANGED")
+    Buff2Frame:RegisterEvent("PLAYER_SOFT_FRIEND_CHANGED")
     Buff2Frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
   end
   Buff2Frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
@@ -1981,8 +1977,6 @@ else
   end)
 end
 Buff2Frame:RegisterEvent("PLAYER_TARGET_CHANGED")
-Buff2Frame:RegisterEvent("PLAYER_SOFT_ENEMY_CHANGED")
-Buff2Frame:RegisterEvent("PLAYER_SOFT_FRIEND_CHANGED")
 Buff2Frame:RegisterEvent("ENCOUNTER_START")
 Buff2Frame:RegisterEvent("ENCOUNTER_END")
 Buff2Frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
@@ -3533,9 +3527,9 @@ function BuffTrigger.InitMultiAura()
     multiAuraFrame:RegisterEvent("UNIT_TARGET")
     multiAuraFrame:RegisterEvent("UNIT_AURA")
     multiAuraFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-    multiAuraFrame:RegisterEvent("PLAYER_SOFT_ENEMY_CHANGED")
-    multiAuraFrame:RegisterEvent("PLAYER_SOFT_FRIEND_CHANGED")
     if not WeakAuras.IsClassicEra() then
+      multiAuraFrame:RegisterEvent("PLAYER_SOFT_ENEMY_CHANGED")
+      multiAuraFrame:RegisterEvent("PLAYER_SOFT_FRIEND_CHANGED")
       multiAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
     end
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
@@ -3552,8 +3546,8 @@ function BuffTrigger.HandleMultiEvent(frame, event, ...)
     CombatLog(CombatLogGetCurrentEventInfo())
   elseif event == "UNIT_TARGET" then
     TrackUid(...)
-  elseif playerTargetEvents[event] then
-    TrackUid(playerTargetEvents[event])
+  elseif Private.player_target_events[event] then
+    TrackUid(Private.player_target_events[event])
   elseif event == "NAME_PLATE_UNIT_ADDED" then
     TrackUid(...)
   elseif event == "NAME_PLATE_UNIT_REMOVED" then
