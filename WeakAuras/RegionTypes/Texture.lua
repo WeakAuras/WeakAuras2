@@ -4,6 +4,11 @@ local AddonName, Private = ...
 
 local L = WeakAuras.L;
 
+local GetAtlasInfo = C_Texture and C_Texture.GetAtlasInfo or GetAtlasInfo
+local function IsAtlas(input)
+  return type(input) == "string" and GetAtlasInfo(input) ~= nil
+end
+
 local default = {
   texture = "Interface\\Addons\\WeakAuras\\PowerAurasMedia\\Auras\\Aura3",
   desaturate = false,
@@ -109,6 +114,7 @@ end
 local function modify(parent, region, data)
   WeakAuras.regionPrototype.modify(parent, region, data);
   WeakAuras.SetTextureOrAtlas(region.texture, data.texture, data.textureWrapMode, data.textureWrapMode);
+  region.isAtlas = IsAtlas(data.texture)
   region.texture:SetDesaturated(data.desaturate)
   region:SetWidth(data.width);
   region:SetHeight(data.height);
@@ -125,7 +131,8 @@ local function modify(parent, region, data)
     if(region.mirror) then
       mirror_h = not mirror_h;
     end
-    local ulx,uly , llx,lly , urx,ury , lrx,lry = GetRotatedPoints(region.effectiveRotation, data.rotate)
+    local ulx,uly , llx,lly , urx,ury , lrx,lry
+      = GetRotatedPoints(region.effectiveRotation, data.rotate and not region.isAtlas)
     if(mirror_h) then
       if(mirror_v) then
         region.texture:SetTexCoord(lrx,lry , urx,ury , llx,lly , ulx,uly);
@@ -183,6 +190,11 @@ local function modify(parent, region, data)
   function region:Update()
     if region.state.texture then
       WeakAuras.SetTextureOrAtlas(region.texture, region.state.texture, data.textureWrapMode, data.textureWrapMode)
+      local newIsAtlas = IsAtlas(region.state.texture)
+      if region.isAtlas ~= newIsAtlas then
+        region.isAtlas = newIsAtlas
+        region:DoTexCoord()
+      end
     end
   end
 
