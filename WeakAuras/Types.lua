@@ -838,7 +838,6 @@ Private.aura_types = {
   DEBUFF = L["Debuff"],
 }
 
-
 Private.debuff_class_types = {
   magic = L["Magic"],
   curse = L["Curse"],
@@ -848,26 +847,30 @@ Private.debuff_class_types = {
   none = L["None"]
 }
 
-Private.unit_types = {
-  player = L["Player"],
+Private.player_target_events = {
+  PLAYER_TARGET_CHANGED = "target",
+  PLAYER_FOCUS_CHANGED = "focus",
+  PLAYER_SOFT_ENEMY_CHANGED = "softenemy",
+  PLAYER_SOFT_FRIEND_CHANGED = "softfriend",
+}
+
+local target_unit_types = {
   target = L["Target"],
   focus = L["Focus"],
   softenemy = L["Soft Enemy"],
   softfriend = L["Soft Friend"],
+}
+
+Private.unit_types = Mixin({
+  player = L["Player"],
   group = L["Group"],
   member = L["Specific Unit"],
   pet = L["Pet"],
   multi = L["Multi-target"]
-}
+}, target_unit_types)
 
-Private.unit_types_bufftrigger_2 = {
+Private.unit_types_bufftrigger_2 = Mixin({
   player = L["Player"],
-  target = L["Target"],
-  softenemy = L["Soft Enemy"],
-  softfriend = L["Soft Friend"],
-  focus = L["Focus"],
-  softenemy = L["Soft Enemy"],
-  softfriend = L["Soft Friend"],
   group = L["Smart Group"],
   raid = L["Raid"],
   party = L["Party"],
@@ -877,24 +880,16 @@ Private.unit_types_bufftrigger_2 = {
   pet = L["Pet"],
   member = L["Specific Unit"],
   multi = L["Multi-target"]
-}
+}, target_unit_types)
 
-Private.actual_unit_types_with_specific = {
+Private.actual_unit_types_with_specific = Mixin({
   player = L["Player"],
-  target = L["Target"],
-  focus = L["Focus"],
-  softenemy = L["Soft Enemy"],
-  softfriend = L["Soft Friend"],
   pet = L["Pet"],
   member = L["Specific Unit"]
-}
+}, target_unit_types)
 
-Private.actual_unit_types_cast = {
+Private.actual_unit_types_cast = Mixin({
   player = L["Player"],
-  target = L["Target"],
-  focus = L["Focus"],
-  softenemy = L["Soft Enemy"],
-  softfriend = L["Soft Friend"],
   group = L["Smart Group"],
   party = L["Party"],
   raid = L["Raid"],
@@ -903,15 +898,11 @@ Private.actual_unit_types_cast = {
   nameplate = L["Nameplate"],
   pet = L["Pet"],
   member = L["Specific Unit"],
-}
+}, target_unit_types)
 
 Private.actual_unit_types_cast_tooltip = L["• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.\n• |cff00ff00Specific Unit|r lets you provide a specific valid unitID to watch.\n|cffff0000Note|r: The game will not fire events for all valid unitIDs, making some untrackable by this trigger.\n• |cffffff00Party|r, |cffffff00Raid|r, |cffffff00Boss|r, |cffffff00Arena|r, and |cffffff00Nameplate|r can match multiple corresponding unitIDs.\n• |cffffff00Smart Group|r adjusts to your current group type, matching just the \"player\" when solo, \"party\" units (including \"player\") in a party or \"raid\" units in a raid.\n\n|cffffff00*|r Yellow Unit settings will create clones for each matching unit while this trigger is providing Dynamic Info to the Aura."]
 
 Private.threat_unit_types = {
-  target = L["Target"],
-  focus = L["Focus"],
-  softenemy = L["Soft Enemy"],
-  softfriend = L["Soft Friend"],
   nameplate = L["Nameplate"],
   boss = L["Boss"],
   member = L["Specific Unit"],
@@ -919,19 +910,8 @@ Private.threat_unit_types = {
 }
 
 Private.unit_types_range_check = {
-  target = L["Target"],
-  focus = L["Focus"],
-  softenemy = L["Soft Enemy"],
-  softfriend = L["Soft Friend"],
   pet = L["Pet"],
   member = L["Specific Unit"]
-}
-
-Private.player_target_events = {
-  PLAYER_TARGET_CHANGED = "target",
-  PLAYER_FOCUS_CHANGED = "focus",
-  PLAYER_SOFT_ENEMY_CHANGED = "softenemy",
-  PLAYER_SOFT_FRIEND_CHANGED = "softfriend",
 }
 
 Private.unit_threat_situation_types = {
