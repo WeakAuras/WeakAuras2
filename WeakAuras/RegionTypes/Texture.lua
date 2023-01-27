@@ -125,7 +125,8 @@ local function modify(parent, region, data)
     if(region.mirror) then
       mirror_h = not mirror_h;
     end
-    local ulx,uly , llx,lly , urx,ury , lrx,lry = GetRotatedPoints(region.effectiveRotation, data.rotate)
+    local ulx,uly , llx,lly , urx,ury , lrx,lry
+      = GetRotatedPoints(region.effectiveRotation, data.rotate and not region.texture.IsAtlas)
     if(mirror_h) then
       if(mirror_v) then
         region.texture:SetTexCoord(lrx,lry , urx,ury , llx,lly , ulx,uly);
@@ -182,7 +183,11 @@ local function modify(parent, region, data)
 
   function region:Update()
     if region.state.texture then
+      local oldIsAtlas = region.texture.IsAtlas
       WeakAuras.SetTextureOrAtlas(region.texture, region.state.texture, data.textureWrapMode, data.textureWrapMode)
+      if region.texture.IsAtlas ~= oldIsAtlas then
+        region:DoTexCoord()
+      end
     end
   end
 
