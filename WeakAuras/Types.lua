@@ -856,10 +856,16 @@ Private.player_target_events = {
 
 local target_unit_types = {
   target = L["Target"],
-  focus = L["Focus"],
-  softenemy = L["Soft Enemy"],
-  softfriend = L["Soft Friend"],
 }
+
+if not WeakAuras.IsClassic() then
+  target_unit_types.focus = L["Focus"]
+end
+
+if WeakAuras.IsWrathOrRetail() then
+  target_unit_types.softenemy = L["Soft Enemy"]
+  target_unit_types.softfriend = L["Soft Friend"]
+end
 
 Private.unit_types = Mixin({
   player = L["Player"],
@@ -3787,18 +3793,10 @@ if WeakAuras.IsClassicEra() then
   Private.multiUnitId.arena = nil
   wipe(Private.multiUnitUnits.boss)
   wipe(Private.multiUnitUnits.arena)
-  Private.unit_types.focus = nil
-  Private.unit_types_bufftrigger_2.softenemy = nil
-  Private.unit_types_bufftrigger_2.softfriend = nil
-  Private.unit_types_bufftrigger_2.focus = nil
   Private.unit_types_bufftrigger_2.boss = nil
   Private.unit_types_bufftrigger_2.arena = nil
-  Private.actual_unit_types_with_specific.focus = nil
   Private.actual_unit_types_cast.boss = nil
   Private.actual_unit_types_cast.arena = nil
-  Private.actual_unit_types_cast.focus = nil
-  Private.unit_types_range_check.focus = nil
-  Private.threat_unit_types.focus = nil
   Private.item_slot_types[0] = AMMOSLOT
   Private.item_slot_types[18] = RANGEDSLOT
   for slot = 20, 28 do
