@@ -2517,6 +2517,11 @@ function BuffTrigger.Add(data)
 
       local combineMode = "showOne"
       local perUnitMode
+
+      if WeakAuras.IsUntrackableSoftTarget(trigger.unit) then
+        Private.AuraWarnings.UpdateWarning(data.uid, "", "info", L["A trigger in this aura is set up to track a soft target unit, but you don't have the CVars set up for this to work correctly. Consider either changing the unit tracked, or enabling the %s CVar."]:format(Private.soft_target_cvars[trigger.unit]))
+      end
+
       if not IsSingleMissing(trigger) and trigger.showClones then
         if IsGroupTrigger(trigger) and trigger.combinePerUnit then
           combineMode = "showPerUnit"

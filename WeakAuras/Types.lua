@@ -854,6 +854,11 @@ Private.player_target_events = {
   PLAYER_SOFT_FRIEND_CHANGED = "softfriend",
 }
 
+Private.soft_target_cvars = {
+  softenemy = "SoftTargetEnemy",
+  softfriend = "SoftTargetFriend"
+}
+
 local target_unit_types = {
   target = L["Target"],
 }

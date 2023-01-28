@@ -260,6 +260,15 @@ local function GetBuffTriggerOptions(data, triggernum)
       order = 10.4,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "member" and WeakAuras.UntrackableUnit(trigger.specificUnit)) end
     },
+    warnSoftTarget = {
+      type = "description",
+      width = WeakAuras.doubleWidth,
+      name = function()
+        return L["|cFFFF0000Note:|r The unit '%s' requires soft target cvars to be enabled."]:format(trigger.unit or "")
+      end,
+      order = 10.4,
+      hidden = function() return not WeakAuras.IsUntrackableSoftTarget(trigger.unit) end
+    },
     useDebuffType = {
       type = "toggle",
       width = WeakAuras.normalWidth,
