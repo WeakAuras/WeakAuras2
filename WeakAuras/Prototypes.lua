@@ -1786,6 +1786,7 @@ local function AddTargetConditionEvents(result, useFocus)
     end
   end
   tinsert(result, "PLAYER_TARGET_CHANGED")
+  return result
 end
 
 local unitHelperFunctions = {
