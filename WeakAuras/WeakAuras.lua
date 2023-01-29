@@ -5372,6 +5372,10 @@ local function GetAnchorFrame(data, region, parent)
     return parent;
   end
 
+  if (anchorFrameType == "UIPARENT") then
+    return UIParent;
+  end
+
   if (anchorFrameType == "PRD") then
     Private.ensurePRDFrame();
     personalRessourceDisplayFrame:anchorFrame(id, anchorFrameType);
@@ -5475,7 +5479,7 @@ function Private.AnchorFrame(data, region, parent)
     local anchorParent = GetAnchorFrame(data, region, parent);
     if not anchorParent then return end
     if (data.anchorFrameParent or data.anchorFrameParent == nil
-        or data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE") then
+        or data.anchorFrameType == "SCREEN" or data.anchorFrameType == "UIPARENT" or data.anchorFrameType == "MOUSE") then
       xpcall(region.SetParent, Private.GetErrorHandlerId(data.id, L["Anchoring"]), region, anchorParent);
     else
       region:SetParent(parent or WeakAurasFrame);
@@ -5483,7 +5487,7 @@ function Private.AnchorFrame(data, region, parent)
 
     local anchorPoint = data.anchorPoint
     if data.parent then
-      if data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE" then
+      if data.anchorFrameType == "SCREEN" or data.anchorFrameType == "UIPARENT" or data.anchorFrameType == "MOUSE" then
         anchorPoint = "CENTER"
       end
     else
