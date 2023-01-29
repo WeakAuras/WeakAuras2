@@ -1073,6 +1073,10 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       values = (data.regionType == "group" or data.regionType == "dynamicgroup")
                 and OptionsPrivate.Private.anchor_frame_types_group
                 or OptionsPrivate.Private.anchor_frame_types,
+      sorting = OptionsPrivate.Private.SortOrderForValues(
+                (data.regionType == "group" or data.regionType == "dynamicgroup")
+                and OptionsPrivate.Private.anchor_frame_types_group
+                or OptionsPrivate.Private.anchor_frame_types),
     },
     anchorFrameParent = {
       type = "toggle",
