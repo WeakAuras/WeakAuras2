@@ -54,7 +54,7 @@ local function PreShow(self)
 
   -- Adjust model
   local modelId
-  if not WeakAuras.IsRetail() then
+  if WeakAuras.IsClassic() then
     modelId = data.model_path
   else
     modelId = tonumber(data.model_fileId)
@@ -119,7 +119,7 @@ local function AcquireModel(region, data)
 
   -- Adjust model
   local modelId
-  if not WeakAuras.IsRetail() then
+  if WeakAuras.IsClassic() then
     modelId = data.model_path
   else
     modelId = tonumber(data.model_fileId)

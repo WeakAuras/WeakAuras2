@@ -5520,7 +5520,7 @@ function Private.FindUnusedId(prefix)
 end
 
 function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayInfo)
-  if not WeakAuras.IsRetail() then
+  if WeakAuras.IsClassic() then
     if isDisplayInfo then
       pcall(frame.SetDisplayInfo, frame, tonumber(model_path))
     elseif isUnit then
