@@ -326,10 +326,6 @@ function WeakAuras.IsClassic()
   return flavor == 1
 end
 
-function WeakAuras.IsBCC()
-  return flavor == 2
-end
-
 function WeakAuras.IsWrathClassic()
   return flavor == 3
 end
@@ -338,20 +334,8 @@ function WeakAuras.IsRetail()
   return flavor == 10
 end
 
-function WeakAuras.IsClassicOrBCC()
-  return WeakAuras.IsClassic() or WeakAuras.IsBCC()
-end
-
-function WeakAuras.IsClassicOrBCCOrWrath()
-  return WeakAuras.IsClassic() or WeakAuras.IsBCC() or WeakAuras.IsWrathClassic()
-end
-
-function WeakAuras.IsBCCOrWrath()
-  return WeakAuras.IsBCC() or WeakAuras.IsWrathClassic()
-end
-
-function WeakAuras.IsBCCOrWrathOrRetail()
-  return WeakAuras.IsBCC() or WeakAuras.IsWrathClassic() or WeakAuras.IsRetail()
+function WeakAuras.IsClassicOrWrath()
+  return WeakAuras.IsClassic() or WeakAuras.IsWrathClassic()
 end
 
 function WeakAuras.IsWrathOrRetail()

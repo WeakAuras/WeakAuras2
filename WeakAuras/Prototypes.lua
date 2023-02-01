@@ -91,7 +91,7 @@ if WeakAuras.IsClassic() then
   LibClassicCasterino = LibStub("LibClassicCasterino")
 end
 
-if WeakAuras.IsBCCOrWrathOrRetail() then
+if WeakAuras.IsWrathOrRetail() then
   WeakAuras.UnitCastingInfo = UnitCastingInfo
 else
   WeakAuras.UnitCastingInfo = function(unit)
@@ -103,7 +103,7 @@ else
   end
 end
 
-if WeakAuras.IsBCCOrWrathOrRetail() then
+if WeakAuras.IsWrathOrRetail() then
   if WeakAuras.IsRetail() then
     local cacheEmpowered = {}
     WeakAuras.UnitChannelInfo = function(unit)
@@ -169,7 +169,7 @@ local constants = {
   nameRealmFilterDesc = L[" Filter formats: 'Name', 'Name-Realm', '-Realm'. \n\nSupports multiple entries, separated by commas\nCan use \\ to escape -."],
 }
 
-if WeakAuras.IsClassicOrBCCOrWrath() then
+if WeakAuras.IsClassicOrWrath() then
   WeakAuras.UnitRaidRole = function(unit)
     local raidID = UnitInRaid(unit)
     if raidID then
@@ -684,7 +684,7 @@ for classID = 1, 20 do -- GetNumClasses not supported by wow classic
   end
 end
 
-if WeakAuras.IsClassicOrBCCOrWrath() then
+if WeakAuras.IsClassicOrWrath() then
   function WeakAuras.CheckTalentByIndex(index, extraOption)
     local tab = ceil(index / MAX_NUM_TALENTS)
     local num_talent = (index - 1) % MAX_NUM_TALENTS + 1
@@ -1173,12 +1173,12 @@ Private.load_prototype = {
     },
     {
       name = "vehicle",
-      display = (WeakAuras.IsClassicOrBCC()) and L["On Taxi"] or L["In Vehicle"],
+      display = (WeakAuras.IsClassic()) and L["On Taxi"] or L["In Vehicle"],
       type = "tristate",
       init = "arg",
       width = WeakAuras.normalWidth,
       optional = true,
-      events = (WeakAuras.IsClassicOrBCC()) and {"UNIT_FLAGS"}
+      events = (WeakAuras.IsClassic()) and {"UNIT_FLAGS"}
                or {"VEHICLE_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "UPDATE_OVERRIDE_ACTIONBAR", "UNIT_FLAGS"}
     },
     {
@@ -1285,14 +1285,14 @@ Private.load_prototype = {
           return Private.talentInfo[specId][key][2]
         end
       end or nil,
-      events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
+      events = (WeakAuras.IsClassic() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
         or (WeakAuras.IsRetail() and {"WA_TALENT_UPDATE"}),
       inverse = function(load)
         -- Check for multi select!
-        return WeakAuras.IsClassicOrBCC() and (load.talent_extraOption == 2 or load.talent_extraOption == 3)
+        return WeakAuras.IsClassic() and (load.talent_extraOption == 2 or load.talent_extraOption == 3)
       end,
-      extraOption = WeakAuras.IsClassicOrBCC() and {
+      extraOption = WeakAuras.IsClassic() and {
         display = "",
         values = function()
           return Private.talent_extra_option_types
@@ -1305,13 +1305,13 @@ Private.load_prototype = {
       orConjunctionGroup = WeakAuras.IsWrathOrRetail() and "talent",
       multiUseControlWhenFalse = WeakAuras.IsWrathOrRetail(),
       enable = function(trigger)
-        return WeakAuras.IsClassicOrBCC()
+        return WeakAuras.IsClassic()
             or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
             or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
       end,
       hidden = function(trigger)
         return not (
-            WeakAuras.IsClassicOrBCC()
+            WeakAuras.IsClassic()
             or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
             or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil))
       end,
@@ -1342,13 +1342,13 @@ Private.load_prototype = {
           return Private.talentInfo[specId][key][2]
         end
       end or nil,
-      events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
+      events = (WeakAuras.IsClassic() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
         or (WeakAuras.IsRetail() and {"WA_TALENT_UPDATE"}),
       inverse = function(load)
-        return WeakAuras.IsClassicOrBCC() and (load.talent2_extraOption == 2 or load.talent2_extraOption == 3)
+        return WeakAuras.IsClassic() and (load.talent2_extraOption == 2 or load.talent2_extraOption == 3)
       end,
-      extraOption = WeakAuras.IsClassicOrBCC() and {
+      extraOption = WeakAuras.IsClassic() and {
         display = "",
         values = function()
           return Private.talent_extra_option_types
@@ -1362,14 +1362,14 @@ Private.load_prototype = {
       multiUseControlWhenFalse = WeakAuras.IsWrathOrRetail(),
       enable = function(trigger)
         return (trigger.use_talent ~= nil or trigger.use_talent2 ~= nil) and (
-          WeakAuras.IsClassicOrBCC()
+          WeakAuras.IsClassic()
           or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
           or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
         )
       end,
       hidden = function(trigger)
         return not((trigger.use_talent ~= nil or trigger.use_talent2 ~= nil) and (
-          WeakAuras.IsClassicOrBCC()
+          WeakAuras.IsClassic()
           or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
           or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil))
         )
@@ -1401,13 +1401,13 @@ Private.load_prototype = {
           return Private.talentInfo[specId][key][2]
         end
       end or nil,
-      events = (WeakAuras.IsClassicOrBCC() and {"CHARACTER_POINTS_CHANGED"})
+      events = (WeakAuras.IsClassic() and {"CHARACTER_POINTS_CHANGED"})
         or (WeakAuras.IsWrathClassic() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
         or (WeakAuras.IsRetail() and {"WA_TALENT_UPDATE"}),
       inverse = function(load)
-        return WeakAuras.IsClassicOrBCC() and (load.talent3_extraOption == 2 or load.talent3_extraOption == 3)
+        return WeakAuras.IsClassic() and (load.talent3_extraOption == 2 or load.talent3_extraOption == 3)
       end,
-      extraOption = WeakAuras.IsClassicOrBCC() and {
+      extraOption = WeakAuras.IsClassic() and {
         display = "",
         values = function()
           return Private.talent_extra_option_types
@@ -1421,14 +1421,14 @@ Private.load_prototype = {
       multiUseControlWhenFalse = WeakAuras.IsWrathOrRetail(),
       enable = function(trigger)
         return ((trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil) and (
-          WeakAuras.IsClassicOrBCC()
+          WeakAuras.IsClassic()
           or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
           or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
         )
       end,
       hidden = function(trigger)
         return not(((trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil) and (
-          WeakAuras.IsClassicOrBCC()
+          WeakAuras.IsClassic()
           or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
           or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
         ))
@@ -1631,8 +1631,8 @@ Private.load_prototype = {
       display = L["Raid Role"],
       type = "multiselect",
       values = "raid_role_types",
-      init = WeakAuras.IsClassicOrBCCOrWrath() and "arg" or nil,
-      enable = WeakAuras.IsClassicOrBCCOrWrath(),
+      init = WeakAuras.IsClassicOrWrath() and "arg" or nil,
+      enable = WeakAuras.IsClassicOrWrath(),
       hidden = WeakAuras.IsRetail(),
       events = {"PLAYER_ROLES_ASSIGNED"}
     },
@@ -2008,7 +2008,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsClassicOrBCCOrWrath() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsClassicOrWrath() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
@@ -2429,7 +2429,7 @@ Private.event_prototypes = {
     events = function(trigger)
       local unit = trigger.unit
       local result = {}
-      if WeakAuras.IsClassicOrBCCOrWrath() then
+      if WeakAuras.IsClassicOrWrath() then
         AddUnitEventForEvents(result, unit, "UNIT_HEALTH_FREQUENT")
       else
         AddUnitEventForEvents(result, unit, "UNIT_HEALTH")
@@ -2702,7 +2702,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsClassicOrBCCOrWrath() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsClassicOrWrath() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
@@ -6092,7 +6092,7 @@ Private.event_prototypes = {
     type = "unit",
     events = function()
       local events
-      if WeakAuras.IsClassicOrBCC() then
+      if WeakAuras.IsClassic() then
         events = {
           "CHARACTER_POINTS_CHANGED",
           "SPELLS_CHANGED"
@@ -6156,7 +6156,7 @@ Private.event_prototypes = {
             ]]
           end
           for index, value in pairs(trigger.talent.multi) do
-            if WeakAuras.IsClassicOrBCCOrWrath() then
+            if WeakAuras.IsClassicOrWrath() then
               local tier = index and ceil(index / MAX_NUM_TALENTS)
               local column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
               local ret2 = [[
@@ -7626,8 +7626,6 @@ Private.event_prototypes = {
             return L["Set IDs can be found on websites such as wowhead.com/item-sets"]
           elseif WeakAuras.IsClassic() then
             return L["Set IDs can be found on websites such as classic.wowhead.com/item-sets"]
-          elseif WeakAuras.IsBCC() then
-            return L["Set IDs can be found on websites such as tbc.wowhead.com/item-sets"]
           elseif WeakAuras.IsWrathClassic() then
             return L["Set IDs can be found on websites such as wowhead.com/wotlk/item-sets"]
           end
@@ -8171,10 +8169,9 @@ Private.event_prototypes = {
         name = "interruptible",
         display = L["Interruptible"],
         type = "tristate",
-        enable = function(trigger) return not WeakAuras.IsBCC() and not trigger.use_inverse end,
+        enable = function(trigger) return not trigger.use_inverse end,
         store = true,
         conditionType = "bool",
-        hidden = WeakAuras.IsBCC()
       },
       {
         name = "empowered",
@@ -8631,7 +8628,7 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitStat('player', LE_UNIT_STAT_STRENGTH)",
         store = true,
-        enable = WeakAuras.IsClassicOrBCCOrWrath(),
+        enable = WeakAuras.IsClassicOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8641,7 +8638,7 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitStat('player', LE_UNIT_STAT_AGILITY)",
         store = true,
-        enable = WeakAuras.IsClassicOrBCCOrWrath(),
+        enable = WeakAuras.IsClassicOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8651,7 +8648,7 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitStat('player', LE_UNIT_STAT_INTELLECT)",
         store = true,
-        enable = WeakAuras.IsClassicOrBCCOrWrath(),
+        enable = WeakAuras.IsClassicOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8661,7 +8658,7 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitStat('player', 5)",
         store = true,
-        enable = WeakAuras.IsClassicOrBCCOrWrath(),
+        enable = WeakAuras.IsClassicOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8679,9 +8676,9 @@ Private.event_prototypes = {
         type = "number",
         init = "max(GetCombatRating(CR_CRIT_MELEE), GetCombatRating(CR_CRIT_RANGED), GetCombatRating(CR_CRIT_SPELL))",
         store = true,
-        enable = WeakAuras.IsBCCOrWrathOrRetail(),
+        enable = WeakAuras.IsWrathOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsBCCOrWrathOrRetail()
+        hidden = not WeakAuras.IsWrathOrRetail()
       },
       {
         name = "criticalpercent",
@@ -8697,9 +8694,9 @@ Private.event_prototypes = {
         type = "number",
         init = "max(GetCombatRating(CR_HIT_MELEE), GetCombatRating(CR_HIT_RANGED), GetCombatRating(CR_HIT_SPELL))",
         store = true,
-        enable = WeakAuras.IsBCCOrWrath(),
+        enable = WeakAuras.IsWrathClassic(),
         conditionType = "number",
-        hidden = not WeakAuras.IsBCCOrWrath()
+        hidden = not WeakAuras.IsWrathClassic()
       },
       {
         name = "hitpercent",
@@ -8708,8 +8705,8 @@ Private.event_prototypes = {
         init = "WeakAuras.GetHitChance()",
         store = true,
         conditionType = "number",
-        enable = WeakAuras.IsBCCOrWrath(),
-        hidden = not WeakAuras.IsBCCOrWrath()
+        enable = WeakAuras.IsWrathClassic(),
+        hidden = not WeakAuras.IsWrathClassic()
       },
       {
         name = "hasterating",
@@ -8717,9 +8714,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_HASTE_SPELL)",
         store = true,
-        enable = WeakAuras.IsBCCOrWrathOrRetail(),
+        enable = WeakAuras.IsWrathOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsBCCOrWrathOrRetail()
+        hidden = not WeakAuras.IsWrathOrRetail()
       },
       {
         name = "hastepercent",
@@ -8863,7 +8860,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 1))",
         store = true,
-        enable = WeakAuras.IsClassicOrBCCOrWrath(),
+        enable = WeakAuras.IsClassicOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8873,7 +8870,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 2))",
         store = true,
-        enable = WeakAuras.IsClassicOrBCCOrWrath(),
+        enable = WeakAuras.IsClassicOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8883,7 +8880,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 3))",
         store = true,
-        enable = WeakAuras.IsClassicOrBCCOrWrath(),
+        enable = WeakAuras.IsClassicOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8893,7 +8890,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 4))",
         store = true,
-        enable = WeakAuras.IsClassicOrBCCOrWrath(),
+        enable = WeakAuras.IsClassicOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8903,7 +8900,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 5))",
         store = true,
-        enable = WeakAuras.IsClassicOrBCCOrWrath(),
+        enable = WeakAuras.IsClassicOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8913,7 +8910,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 6))",
         store = true,
-        enable = WeakAuras.IsClassicOrBCCOrWrath(),
+        enable = WeakAuras.IsClassicOrWrath(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail()
       },
@@ -8996,9 +8993,9 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitDefense('player') + select(2, UnitDefense('player'))",
         store = true,
-        enable = WeakAuras.IsBCCOrWrath(),
+        enable = WeakAuras.IsWrathClassic(),
         conditionType = "number",
-        hidden = not WeakAuras.IsBCCOrWrath()
+        hidden = not WeakAuras.IsWrathClassic()
       },
       {
         name = "dodgerating",
@@ -9006,9 +9003,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_DODGE)",
         store = true,
-        enable = WeakAuras.IsBCCOrWrathOrRetail(),
+        enable = WeakAuras.IsWrathOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsBCCOrWrathOrRetail()
+        hidden = not WeakAuras.IsWrathOrRetail()
       },
       {
         name = "dodgepercent",
@@ -9024,9 +9021,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_PARRY)",
         store = true,
-        enable = WeakAuras.IsBCCOrWrathOrRetail(),
+        enable = WeakAuras.IsWrathOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsBCCOrWrathOrRetail()
+        hidden = not WeakAuras.IsWrathOrRetail()
       },
       {
         name = "parrypercent",
@@ -9096,9 +9093,9 @@ Private.event_prototypes = {
         type = "number",
         init = "PaperDollFrame_GetArmorReduction(select(2, UnitArmor('player')), UnitEffectiveLevel and UnitEffectiveLevel('player') or UnitLevel('player'))",
         store = true,
-        enable = WeakAuras.IsBCCOrWrathOrRetail(),
+        enable = WeakAuras.IsWrathOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsBCCOrWrathOrRetail()
+        hidden = not WeakAuras.IsWrathOrRetail()
       },
       {
         name = "armortargetpercent",
@@ -9141,7 +9138,7 @@ Private.event_prototypes = {
       local unit_events = {}
       local pet_unit_events = {}
       if trigger.use_vehicle ~= nil then
-        if WeakAuras.IsClassicOrBCC() then
+        if WeakAuras.IsClassic() then
           tinsert(unit_events, "UNIT_FLAGS")
         else
           tinsert(unit_events, "UNIT_ENTERED_VEHICLE")
@@ -9610,7 +9607,7 @@ Private.event_prototypes = {
   },
 };
 
-if WeakAuras.IsClassicOrBCCOrWrath() then
+if WeakAuras.IsClassicOrWrath() then
   if not UnitDetailedThreatSituation then
     Private.event_prototypes["Threat Situation"] = nil
   end
