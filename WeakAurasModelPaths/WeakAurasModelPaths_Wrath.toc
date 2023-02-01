@@ -13,4 +13,4 @@
 ## LoadOnDemand: 1
 ## Dependencies: WeakAuras, WeakAurasOptions
 
-ModelPathsBCC.lua
+ModelPathsWrath.lua

@@ -1,7 +1,7 @@
 --[[-----------------------------------------------------------------------------
 Spin Box Widget
 -------------------------------------------------------------------------------]]
-local Type, Version = "WeakAurasSpinBox", 2
+local Type, Version = "WeakAurasSpinBox", 3
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then
   return
@@ -15,10 +15,10 @@ local tonumber, pairs = tonumber, pairs
 local PlaySound = PlaySound
 local CreateFrame, UIParent = CreateFrame, UIParent
 
-local progressLeftOffset = WeakAuras.IsClassicOrBCCOrWrath() and -2 or -3
-local progressExtraWidth = WeakAuras.IsClassicOrBCCOrWrath() and -2 or 0
-local progressTopOffset = WeakAuras.IsClassicOrBCCOrWrath() and -3 or -2
-local progressBottomOffset = WeakAuras.IsClassicOrBCCOrWrath() and 3 or 2
+local progressLeftOffset = WeakAuras.IsClassicOrWrath() and -2 or -3
+local progressExtraWidth = WeakAuras.IsClassicOrWrath() and -2 or 0
+local progressTopOffset = WeakAuras.IsClassicOrWrath() and -3 or -2
+local progressBottomOffset = WeakAuras.IsClassicOrWrath() and 3 or 2
 
 --[[-----------------------------------------------------------------------------
 Support functions

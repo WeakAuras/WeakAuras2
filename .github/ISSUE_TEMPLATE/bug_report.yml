@@ -32,7 +32,6 @@ body:
       - Retail (Default)
       - Beta (Dragonflight)
       - Classic
-      - The Burning Crusade
       - Wrath of the Lich King Classic
   validations:
     required: true
