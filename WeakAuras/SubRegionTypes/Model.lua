@@ -60,7 +60,7 @@ local function PreShow(self)
     modelId = tonumber(data.model_fileId)
   end
   if modelId then
-    self:SetModel(modelId)
+    pcall(self.SetModel, self, modelId)
   end
 
   self:ClearTransform()
@@ -125,7 +125,7 @@ local function AcquireModel(region, data)
     modelId = tonumber(data.model_fileId)
   end
   if modelId then
-    model:SetModel(modelId)
+    pcall(model.SetModel, model, modelId)
   end
 
   model:ClearTransform()
