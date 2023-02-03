@@ -80,7 +80,7 @@ Private.group_hybrid_sort_types = {
   descending = L["Descending"]
 }
 
-if WeakAuras.IsClassic() then
+if WeakAuras.IsClassicEra() then
   Private.time_format_types = {
     [0] = L["WeakAuras Built-In (63:42 | 3:07 | 10 | 2.4)"],
     [1] = L["Blizzard (2h | 3m | 10s | 2.4)"],
@@ -941,7 +941,7 @@ do
     [6] = true,
     [7] = true,
     [8] = true,
-    [9] = not WeakAuras.IsClassicOrWrath() and true or nil, -- Goblin
+    [9] = not WeakAuras.IsClassicEraOrWrath() and true or nil, -- Goblin
     [10] = true,
     [11] = true,
     [22] = true,
@@ -1827,7 +1827,7 @@ if BuildInfo <= 80100 then -- 8.1.5
   Private.texture_types.Sparks["worldstate-capturebar-spark-green"] = "Capture Bar Green Spark"
   Private.texture_types.Sparks["worldstate-capturebar-spark-yellow"] = "Capture Bar Yellow Spark"
 end
-if WeakAuras.IsClassic() then -- Classic
+if WeakAuras.IsClassicEra() then -- Classic
   Private.texture_types["Blizzard Alerts"] = nil
   do
     local beams = Private.texture_types["Beams"]
@@ -2068,7 +2068,7 @@ Private.swing_types = {
   ["off"] = SECONDARYHANDSLOT
 }
 
-if WeakAuras.IsClassicOrWrath() then
+if WeakAuras.IsClassicEraOrWrath() then
   Private.swing_types["ranged"] = RANGEDSLOT
 end
 
@@ -2279,7 +2279,7 @@ Private.instance_types = {
   ratedarena = L["Rated Arena"]
 }
 
-if WeakAuras.IsClassic() then
+if WeakAuras.IsClassicEra() then
   Private.instance_types["ratedpvp"] = nil
   Private.instance_types["arena"] = nil
   Private.instance_types["ratedarena"] = nil
@@ -2403,7 +2403,7 @@ elseif WeakAuras.IsWrathClassic() then
 end
 
 
-if WeakAuras.IsClassicOrWrath() then
+if WeakAuras.IsClassicEraOrWrath() then
   Private.raid_role_types = {
     MAINTANK = "|TInterface\\GroupFrame\\UI-Group-maintankIcon:16:16|t "..MAINTANK,
     MAINASSIST = "|TInterface\\GroupFrame\\UI-Group-mainassistIcon:16:16|t "..MAINASSIST,
@@ -2711,7 +2711,7 @@ Private.pet_behavior_types = {
   assist = PET_MODE_ASSIST
 }
 
-if WeakAuras.IsClassicOrWrath() then
+if WeakAuras.IsClassicEraOrWrath() then
   Private.pet_behavior_types.aggressive = PET_MODE_AGGRESSIVE
   Private.pet_behavior_types.assist = nil
 end
@@ -3466,7 +3466,7 @@ skippedWeaponTypes[11] = true -- Bear Claws
 skippedWeaponTypes[12] = true -- Cat Claws
 skippedWeaponTypes[14] = true -- Misc
 skippedWeaponTypes[17] = true -- Spears
-if WeakAuras.IsClassicOrWrath() then
+if WeakAuras.IsClassicEraOrWrath() then
   skippedWeaponTypes[9] = true -- Glaives
 else
   skippedWeaponTypes[16] = true -- Thrown
@@ -3774,7 +3774,7 @@ WeakAuras.StopMotion.animation_types = {
 }
 
 
-if WeakAuras.IsClassic() then
+if WeakAuras.IsClassicEra() then
   Private.baseUnitId.focus = nil
   Private.baseUnitId.vehicle = nil
   Private.multiUnitId.boss = nil

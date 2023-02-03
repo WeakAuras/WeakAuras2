@@ -60,7 +60,7 @@ local pairs, next, type = pairs, next, type
 local UnitAura = UnitAura
 
 local LCD
-if WeakAuras.IsClassic() then
+if WeakAuras.IsClassicEra() then
   LCD = LibStub("LibClassicDurations")
   LCD:Register("WeakAuras")
   UnitAura = LCD.UnitAuraWithBuffs
@@ -1965,7 +1965,7 @@ Buff2Frame:RegisterEvent("UNIT_FLAGS")
 Buff2Frame:RegisterEvent("PLAYER_FLAGS_CHANGED")
 Buff2Frame:RegisterEvent("UNIT_PET")
 Buff2Frame:RegisterEvent("RAID_TARGET_UPDATE")
-if not WeakAuras.IsClassic() then
+if not WeakAuras.IsClassicEra() then
   Buff2Frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
   if WeakAuras.IsWrathOrRetail() then
     Buff2Frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
@@ -2597,7 +2597,7 @@ function BuffTrigger.Add(data)
       local groupTrigger = trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
       local effectiveIgnoreSelf = (groupTrigger or trigger.unit == "nameplate") and trigger.ignoreSelf
       local effectiveGroupRole = WeakAuras.IsWrathOrRetail() and (groupTrigger and trigger.useGroupRole and trigger.group_role) or nil
-      local effectiveRaidRole = WeakAuras.IsClassicOrWrath() and (groupTrigger and trigger.useRaidRole and trigger.raid_role) or nil
+      local effectiveRaidRole = WeakAuras.IsClassicEraOrWrath() and (groupTrigger and trigger.useRaidRole and trigger.raid_role) or nil
       local effectiveClass = groupTrigger and trigger.useClass and trigger.class
       local effectiveSpecId = WeakAuras.IsRetail() and (groupTrigger and trigger.useActualSpec and trigger.actualSpec) or nil
       local effectiveArenaSpec = WeakAuras.IsRetail() and (trigger.unit == "arena" and trigger.useArenaSpec and trigger.arena_spec) or nil
@@ -3528,7 +3528,7 @@ function BuffTrigger.InitMultiAura()
     multiAuraFrame:RegisterEvent("UNIT_TARGET")
     multiAuraFrame:RegisterEvent("UNIT_AURA")
     multiAuraFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-    if not WeakAuras.IsClassic() then
+    if not WeakAuras.IsClassicEra() then
       multiAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
     end
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")

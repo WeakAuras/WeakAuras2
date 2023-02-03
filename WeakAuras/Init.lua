@@ -322,7 +322,7 @@ WeakAuras.buildTime = buildTime
 WeakAuras.newFeatureString = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t"
 WeakAuras.BuildInfo = select(4, GetBuildInfo())
 
-function WeakAuras.IsClassic()
+function WeakAuras.IsClassicEra()
   return flavor == 1
 end
 
@@ -334,8 +334,8 @@ function WeakAuras.IsRetail()
   return flavor == 10
 end
 
-function WeakAuras.IsClassicOrWrath()
-  return WeakAuras.IsClassic() or WeakAuras.IsWrathClassic()
+function WeakAuras.IsClassicEraOrWrath()
+  return WeakAuras.IsClassicEra() or WeakAuras.IsWrathClassic()
 end
 
 function WeakAuras.IsWrathOrRetail()
@@ -377,7 +377,7 @@ do
     "LibSerialize",
     "LibUIDropDownMenu-4.0"
   }
-  if WeakAuras.IsClassic() then
+  if WeakAuras.IsClassicEra() then
     tinsert(LibStubLibs, "LibClassicSpellActionCount-1.0")
     tinsert(LibStubLibs, "LibClassicCasterino")
     tinsert(LibStubLibs, "LibClassicDurations")

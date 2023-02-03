@@ -12,6 +12,6 @@
 locales.xml
 
 TriggerTemplates.lua
-TriggerTemplatesDataClassic.lua
+TriggerTemplatesDataClassicEra.lua
 
 AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua

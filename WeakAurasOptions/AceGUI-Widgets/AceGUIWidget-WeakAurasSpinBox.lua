@@ -15,10 +15,10 @@ local tonumber, pairs = tonumber, pairs
 local PlaySound = PlaySound
 local CreateFrame, UIParent = CreateFrame, UIParent
 
-local progressLeftOffset = WeakAuras.IsClassicOrWrath() and -2 or -3
-local progressExtraWidth = WeakAuras.IsClassicOrWrath() and -2 or 0
-local progressTopOffset = WeakAuras.IsClassicOrWrath() and -3 or -2
-local progressBottomOffset = WeakAuras.IsClassicOrWrath() and 3 or 2
+local progressLeftOffset = WeakAuras.IsClassicEraOrWrath() and -2 or -3
+local progressExtraWidth = WeakAuras.IsClassicEraOrWrath() and -2 or 0
+local progressTopOffset = WeakAuras.IsClassicEraOrWrath() and -3 or -2
+local progressBottomOffset = WeakAuras.IsClassicEraOrWrath() and 3 or 2
 
 --[[-----------------------------------------------------------------------------
 Support functions

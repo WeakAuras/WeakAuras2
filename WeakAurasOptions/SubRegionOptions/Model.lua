@@ -18,14 +18,14 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.doubleWidth - 0.15,
       name = L["Model"],
       order =  10,
-      hidden = WeakAuras.IsClassic()
+      hidden = WeakAuras.IsClassicEra()
     },
     model_path = {
       type = "input",
       width = WeakAuras.doubleWidth - 0.15,
       name = L["Model"],
       order =  10.5,
-      hidden = not WeakAuras.IsClassic()
+      hidden = not WeakAuras.IsClassicEra()
     },
     chooseModel = {
       type = "execute",
