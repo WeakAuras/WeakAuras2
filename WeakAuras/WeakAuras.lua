@@ -5635,8 +5635,10 @@ do
   trackableUnits["focus"] = true
   trackableUnits["pet"] = true
   trackableUnits["vehicle"] = true
-  trackableUnits["softenemy"] = true
-  trackableUnits["softfriend"] = true
+  if WeakAuras.IsWrathOrRetail() then
+    trackableUnits["softenemy"] = true
+    trackableUnits["softfriend"] = true
+  end
   for i = 1, 5 do
     trackableUnits["arena" .. i] = true
     trackableUnits["arenapet" .. i] = true
