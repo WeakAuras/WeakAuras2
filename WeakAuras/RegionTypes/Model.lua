@@ -147,7 +147,7 @@ local function ConfigureModel(region, model, data)
     model:RegisterEvent("UNIT_MODEL_CHANGED");
 
     local unit
-    if WeakAuras.IsClassic() then
+    if WeakAuras.IsClassicEra() then
       unit = data.model_path
     else
       unit = data.model_fileId
@@ -155,7 +155,7 @@ local function ConfigureModel(region, model, data)
 
     if (unit == "target") then
       model:RegisterEvent("PLAYER_TARGET_CHANGED");
-    elseif not WeakAuras.IsClassic() and unit == "focus" then
+    elseif not WeakAuras.IsClassicEra() and unit == "focus" then
       model:RegisterEvent("PLAYER_FOCUS_CHANGED");
     end
     model:SetScript("OnEvent", function(self, event, unitId)
@@ -174,7 +174,7 @@ local function ConfigureModel(region, model, data)
   else
     model:UnregisterEvent("UNIT_MODEL_CHANGED");
     model:UnregisterEvent("PLAYER_TARGET_CHANGED");
-    if not WeakAuras.IsClassic() then
+    if not WeakAuras.IsClassicEra() then
       model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
     end
     model:SetScript("OnEvent", nil);
@@ -200,7 +200,7 @@ local function ReleaseModel(model)
   model:Hide()
   model:UnregisterEvent("UNIT_MODEL_CHANGED");
   model:UnregisterEvent("PLAYER_TARGET_CHANGED");
-  if not WeakAuras.IsClassic() then
+  if not WeakAuras.IsClassicEra() then
     model:UnregisterEvent("PLAYER_FOCUS_CHANGED");
   end
   model:SetScript("OnEvent", nil);

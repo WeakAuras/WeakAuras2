@@ -852,7 +852,7 @@ local function CreateTalentCache()
 
   Private.talent_types_specific[player_class] = Private.talent_types_specific[player_class] or {};
 
-  if WeakAuras.IsClassicOrWrath() then
+  if WeakAuras.IsClassicEraOrWrath() then
     for tab = 1, GetNumTalentTabs() do
       for num_talent = 1, GetNumTalents(tab) do
         local talentName, talentIcon = GetTalentInfo(tab, num_talent);
@@ -1575,7 +1575,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     raidMemberType = raidMemberType + 2
   end
 
-  if WeakAuras.IsClassicOrWrath() then
+  if WeakAuras.IsClassicEraOrWrath() then
     local raidID = UnitInRaid("player")
     if raidID then
       raidRole = select(10, GetRaidRosterInfo(raidID))
@@ -1636,7 +1636,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     if (data and not data.controlledChildren) then
       local loadFunc = loadFuncs[id];
       local loadOpt = loadFuncsForOptions[id];
-      if WeakAuras.IsClassic() then
+      if WeakAuras.IsClassicEra() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole, raidMemberType)
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, encounter_id, size, raidRole, raidMemberType)
       elseif WeakAuras.IsWrathClassic() then
@@ -5517,7 +5517,7 @@ function Private.FindUnusedId(prefix)
 end
 
 function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayInfo)
-  if WeakAuras.IsClassic() then
+  if WeakAuras.IsClassicEra() then
     if isDisplayInfo then
       pcall(frame.SetDisplayInfo, frame, tonumber(model_path))
     elseif isUnit then

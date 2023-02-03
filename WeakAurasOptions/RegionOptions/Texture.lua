@@ -229,7 +229,7 @@ local templates = {
   },
 }
 
-if WeakAuras.IsClassic() then
+if WeakAuras.IsClassicEra() then
   table.remove(templates, 2)
 end
 

@@ -6,7 +6,7 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
 local LCD
-if WeakAuras.IsClassic() then
+if WeakAuras.IsClassicEra() then
   LCD = LibStub("LibClassicDurations")
   LCD:RegisterFrame("WeakAuras")
 end
@@ -29,7 +29,7 @@ local WA_GetUnitAura = function(unit, spell, filter)
   end
 end
 
-if WeakAuras.IsClassic() then
+if WeakAuras.IsClassicEra() then
   local WA_GetUnitAuraBase = WA_GetUnitAura
   WA_GetUnitAura = function(unit, spell, filter)
     local name, icon, count, debuffType, duration, expirationTime, source, isStealable, nameplateShowPersonal, spellId,

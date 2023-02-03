@@ -109,7 +109,7 @@ local function create(parent)
     return frame;
 end
 
-local GetAtlasInfo = WeakAuras.IsClassic() and GetAtlasInfo or C_Texture.GetAtlasInfo
+local GetAtlasInfo = WeakAuras.IsClassicEra() and GetAtlasInfo or C_Texture.GetAtlasInfo
 local function SetTextureViaAtlas(self, texture)
   if type(texture) == "string" and GetAtlasInfo(texture) then
     self:SetAtlas(texture);

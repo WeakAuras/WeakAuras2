@@ -71,7 +71,7 @@ local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 local GenericTrigger = {};
 local LCSA
-if WeakAuras.IsClassic() then
+if WeakAuras.IsClassicEra() then
   LCSA = LibStub("LibClassicSpellActionCount-1.0")
 end
 
@@ -1559,7 +1559,7 @@ local oldPowerTriggers = {
 do
   local mh = GetInventorySlotInfo("MainHandSlot")
   local oh = GetInventorySlotInfo("SecondaryHandSlot")
-  local ranged = WeakAuras.IsClassicOrWrath() and GetInventorySlotInfo("RangedSlot")
+  local ranged = WeakAuras.IsClassicEraOrWrath() and GetInventorySlotInfo("RangedSlot")
 
   local swingTimerFrame;
   local lastSwingMain, lastSwingOff, lastSwingRange;
@@ -1750,7 +1750,7 @@ do
         end)
       end
       if Private.reset_ranged_swing_spells[spell] then
-        if WeakAuras.IsClassicOrWrath() then
+        if WeakAuras.IsClassicEraOrWrath() then
           swingStart("ranged")
         else
           swingStart("main")
@@ -1782,7 +1782,7 @@ do
       swingTimerFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
       swingTimerFrame:RegisterUnitEvent("UNIT_ATTACK_SPEED", "player");
       swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
-      if WeakAuras.IsClassicOrWrath() then
+      if WeakAuras.IsClassicEraOrWrath() then
         swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
         swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
         swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")
@@ -1853,7 +1853,7 @@ do
   local function CheckGCD()
     local event;
     local startTime, duration, _, modRate
-    if WeakAuras.IsClassicOrWrath() then
+    if WeakAuras.IsClassicEraOrWrath() then
       startTime, duration = GetSpellCooldown(29515);
       shootStart, shootDuration = GetSpellCooldown(5019)
     else
@@ -1936,7 +1936,7 @@ do
 
     if duration > 0 then
       if (startTime == gcdStart and duration == gcdDuration)
-          or (WeakAuras.IsClassicOrWrath() and duration == shootDuration and startTime == shootStart)
+          or (WeakAuras.IsClassicEraOrWrath() and duration == shootDuration and startTime == shootStart)
       then
         -- GCD cooldown, this could mean that the spell reset!
         if self.expirationTime[id] and self.expirationTime[id] > endTime and self.expirationTime[id] ~= 0 then
@@ -2306,7 +2306,7 @@ do
     end
 
     local count
-    if WeakAuras.IsClassic() then
+    if WeakAuras.IsClassicEra() then
       count = LCSA:GetSpellReagentCount(id)
     else
       count = GetSpellCount(id)
@@ -2729,7 +2729,7 @@ function WeakAuras.WatchUnitChange(unit)
 
     Private.frames["Unit Change Frame"] = watchUnitChange;
     watchUnitChange:RegisterEvent("PLAYER_TARGET_CHANGED")
-    if not WeakAuras.IsClassic() then
+    if not WeakAuras.IsClassicEra() then
       watchUnitChange:RegisterEvent("PLAYER_FOCUS_CHANGED");
     else
       watchUnitChange:RegisterEvent("PLAYER_ROLES_ASSIGNED")
@@ -2797,7 +2797,7 @@ function WeakAuras.WatchUnitChange(unit)
             if inRaidChanged then
               WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
             else
-              if WeakAuras.IsClassicOrWrath() then
+              if WeakAuras.IsClassicEraOrWrath() then
                 local newRaidRole = WeakAuras.UnitRaidRole(unit)
                 if watchUnitChange.unitRaidRole[unit] ~= newRaidRole then
                   watchUnitChange.unitRaidRole[unit] = newRaidRole
@@ -3406,7 +3406,7 @@ do
       tenchFrame = CreateFrame("Frame");
       tenchFrame:RegisterEvent("UNIT_INVENTORY_CHANGED");
       tenchFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
-      if WeakAuras.IsClassicOrWrath() then
+      if WeakAuras.IsClassicEraOrWrath() then
         tenchFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
       end
 
