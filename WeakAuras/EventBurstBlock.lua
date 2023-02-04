@@ -7,33 +7,20 @@ local debug = 2
 local function Init(frame)
   frame.burstBlock = CreateFrame("Frame")
   frame.burstBlock.parent = frame
+  frame.burstBlock.events = {}
   frame.burstBlock.lastEvent = {}
+  frame.burstBlock.event_groups_count = 0
   frame.burstBlock:SetScript("OnEvent", function(self, event, ...)
     local now = GetTime()
-    -- check if event is part of a group of events
-    local groupIndex
-    if self.groups then
-      for i, group in ipairs(self.groups) do
-        if group[event] then
-          groupIndex = i
-          break
-        end
-      end
-    end
-    if groupIndex and self.groups[groupIndex].lastEvent ~= now then
-      self.groups[groupIndex].lastEvent = now
+    local groupIndex = self.events[event]
+    if self.lastEvent[groupIndex] ~= now then
+      self.lastEvent[groupIndex] = now
       self.parent:GetScript("OnEvent")(self.parent, event, ...)
       if debug > 1 then
-        print("BurstBlock RUN", frame:GetName() or nil, now, true, event, ...)
-      end
-    elseif groupIndex == nil and self.lastEvent[event] ~= now then
-      self.lastEvent[event] = now
-      self.parent:GetScript("OnEvent")(self.parent, event, ...)
-      if debug > 1 then
-        print("BurstBlock RUN", frame:GetName() or nil, now, false, event, ...)
+        print("BurstBlock RUN", frame:GetName() or nil, now, event, ...)
       end
     elseif debug > 0 then
-      print("BurstBlock BLOCK", frame:GetName() or nil, now, groupIndex and true or false, event, ...)
+      print("BurstBlock BLOCK", frame:GetName() or nil, now, event, ...)
     end
   end)
 end
@@ -44,16 +31,11 @@ local BurstBlockRegisterEvent = function(self, ...)
     Init(self)
   end
   local num_events = select("#", ...)
-  if num_events > 1 then
-    self.burstBlock.groups = self.burstBlock.groups or {}
-    tinsert(self.burstBlock.groups, { lastEvent = 0 })
-  end
+  self.burstBlock.event_groups_count = self.burstBlock.event_groups_count + 1
   for i = 1, num_events do
     local event = select(i, ...)
+    self.burstBlock.events[event] = self.burstBlock.event_groups_count
     self.burstBlock:RegisterEvent(event)
-    if num_events > 1 then
-      self.burstBlock.groups[#self.burstBlock.groups][event] = true
-    end
   end
 end
 
