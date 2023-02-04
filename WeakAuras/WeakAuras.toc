@@ -27,6 +27,7 @@ Libs\LibSpecialization\LibSpecialization.lua
 
 Init.lua
 locales.xml
+EventBurstBlock.lua
 ArchiveTypes\Repository.lua
 DefaultOptions.lua
 

@@ -2004,29 +2004,39 @@ do
 
   function Private.InitCooldownReady()
     cdReadyFrame = CreateFrame("Frame");
+    Mixin(cdReadyFrame, Private.EventBurstBlock)
     cdReadyFrame.inWorld = 0
     Private.frames["Cooldown Trigger Handler"] = cdReadyFrame
+    local groupedEvents = {
+      "SPELL_UPDATE_COOLDOWN",
+      "SPELL_UPDATE_CHARGES",
+      "ACTIONBAR_UPDATE_COOLDOWN"
+    }
     if WeakAuras.IsRetail() then
-      cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
-      cdReadyFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
-      cdReadyFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
+      table.insert(groupedEvents, "RUNE_POWER_UPDATE")
+      table.insert(groupedEvents, "PLAYER_TALENT_UPDATE")
+      table.insert(groupedEvents, "PLAYER_PVP_TALENT_UPDATE")
     else
-      cdReadyFrame:RegisterEvent("CHARACTER_POINTS_CHANGED");
+      table.insert(groupedEvents, "CHARACTER_POINTS_CHANGED")
     end
-    cdReadyFrame:RegisterEvent("SPELL_UPDATE_COOLDOWN");
-    cdReadyFrame:RegisterEvent("SPELL_UPDATE_CHARGES");
+    if WeakAuras.IsWrathClassic() then
+      table.insert(groupedEvents, "RUNE_POWER_UPDATE");
+      table.insert(groupedEvents, "RUNE_TYPE_UPDATE");
+    end
+    cdReadyFrame:BurstBlockRegisterEvent(unpack(groupedEvents));
+
+    local itemGroupedEvents = {
+      "UNIT_INVENTORY_CHANGED",
+      "BAG_UPDATE_DELAYED",
+      "PLAYER_EQUIPMENT_CHANGED"
+    }
+    cdReadyFrame:BurstBlockRegisterEvent(unpack(itemGroupedEvents));
+
+    cdReadyFrame:BurstBlockRegisterEvent("SPELLS_CHANGED");
     cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
-    cdReadyFrame:RegisterEvent("BAG_UPDATE_DELAYED");
-    cdReadyFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
-    cdReadyFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
-    cdReadyFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
-    cdReadyFrame:RegisterEvent("SPELLS_CHANGED");
     cdReadyFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
     cdReadyFrame:RegisterEvent("PLAYER_LEAVING_WORLD")
-    if WeakAuras.IsWrathClassic() then
-      cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
-      cdReadyFrame:RegisterEvent("RUNE_TYPE_UPDATE");
-    end
+
     cdReadyFrame.HandleEvent = function(self, event, ...)
       if (event == "PLAYER_ENTERING_WORLD") then
         cdReadyFrame.inWorld = GetTime()
