@@ -2502,14 +2502,44 @@ local function EqualZero(x)
   return x == 0
 end
 
+local function InitProblems()
+  return {
+    untrackableSoftTarget = {
+      severity = "info",
+      message = L["A trigger in this aura is set up to track a soft target unit, but you don't have the CVars set up for this to work correctly. Consider either changing the unit tracked, or configuring the Soft Target CVars."],
+      flagged = false,
+      check = function(trigger)
+        return WeakAuras.IsUntrackableSoftTarget(trigger.unit)
+      end
+    }
+  }
+end
+
+local function CheckProblems(trigger, problems)
+  for _, problem in pairs(problems) do
+    if not problem.flagged and problem.check(trigger) then
+      problem.flagged = true
+    end
+  end
+end
+
+local function PublishProblems(problems, uid)
+  for key, problem in pairs(problems) do
+    if problem.flagged then
+      Private.AuraWarnings.UpdateWarning(uid, key, problem.severity, problem.message, problem.printOnConsole)
+    end
+  end
+end
+
 --- Adds an aura, setting up internal data structures for all buff triggers.
---- @param data table
+--- @param data auraData
 function BuffTrigger.Add(data)
   local id = data.id
 
   triggerInfos[id] = nil
+  local problems = InitProblems()
   for triggernum, triggerData in ipairs(data.triggers) do
-    local trigger, untrigger = triggerData.trigger, triggerData.untrigger
+    local trigger = triggerData.trigger
     if trigger.type == "aura2" then
 
       trigger.unit = trigger.unit or "player"
@@ -2518,9 +2548,7 @@ function BuffTrigger.Add(data)
       local combineMode = "showOne"
       local perUnitMode
 
-      if WeakAuras.IsUntrackableSoftTarget(trigger.unit) then
-        Private.AuraWarnings.UpdateWarning(data.uid, "", "info", L["A trigger in this aura is set up to track a soft target unit, but you don't have the CVars set up for this to work correctly. Consider either changing the unit tracked, or enabling the %s CVar."]:format(Private.soft_target_cvars[trigger.unit]))
-      end
+      CheckProblems(trigger, problems)
 
       if not IsSingleMissing(trigger) and trigger.showClones then
         if IsGroupTrigger(trigger) and trigger.combinePerUnit then
@@ -2686,6 +2714,7 @@ function BuffTrigger.Add(data)
       triggerInfos[id][triggernum] = triggerInformation
     end
   end
+  PublishProblems(problems, data.uid)
 end
 
 --- Returns whether the trigger can have a duration.
