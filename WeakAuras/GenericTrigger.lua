@@ -760,6 +760,7 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
     local updateTriggerState = false;
     for triggernum, data in pairs(triggers) do
       if not (data.statesParameter == "one" or data.statesParameter == "unit")
+      or tContains(data.internal_events, event)
       or Private.EventBurstBlock.BurstBlockGenericTriggerEvent(id, triggernum, event)
       then
         local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
