@@ -2519,6 +2519,7 @@ local function CheckProblems(trigger, problems)
   for _, problem in pairs(problems) do
     if not problem.flagged and problem.check(trigger) then
       problem.flagged = true
+      break
     end
   end
 end
@@ -2527,6 +2528,8 @@ local function PublishProblems(problems, uid)
   for key, problem in pairs(problems) do
     if problem.flagged then
       Private.AuraWarnings.UpdateWarning(uid, key, problem.severity, problem.message, problem.printOnConsole)
+    else
+      Private.AuraWarnings.UpdateWarning(uid, key)
     end
   end
 end
