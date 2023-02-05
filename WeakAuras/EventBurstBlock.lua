@@ -2,7 +2,7 @@ if not WeakAuras.IsLibsOK() then return end
 --- @type string, Private
 local AddonName, Private = ...
 
-local debug = 1
+local debug = 0
 
 local function Init(frame)
   frame.burstBlock = CreateFrame("Frame")
