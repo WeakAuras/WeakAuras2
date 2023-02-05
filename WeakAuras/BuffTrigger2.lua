@@ -1844,6 +1844,7 @@ local function RecheckActiveForUnitType(unitType, unit, unitsToRemoveScan)
 end
 
 local Buff2Frame = CreateFrame("Frame")
+Mixin(Buff2Frame, Private.EventBurstBlock)
 Private.frames["WeakAuras Buff2 Frame"] = Buff2Frame
 
 local function EventHandler(frame, event, arg1, arg2, ...)
@@ -1960,15 +1961,13 @@ end
 
 Buff2Frame:RegisterEvent("UNIT_AURA")
 Buff2Frame:RegisterEvent("UNIT_FACTION")
-Buff2Frame:RegisterEvent("UNIT_NAME_UPDATE")
-Buff2Frame:RegisterEvent("UNIT_FLAGS")
-Buff2Frame:RegisterEvent("PLAYER_FLAGS_CHANGED")
+Buff2Frame:BurstBlockRegisterEvent({"UNIT_FLAGS", "UNIT_NAME_UPDATE", "PLAYER_FLAGS_CHANGED"}, true)
 Buff2Frame:RegisterEvent("UNIT_PET")
-Buff2Frame:RegisterEvent("RAID_TARGET_UPDATE")
+Buff2Frame:BurstBlockRegisterEvent({"RAID_TARGET_UPDATE"})
 if not WeakAuras.IsClassicEra() then
   Buff2Frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
   if WeakAuras.IsWrathOrRetail() then
-    Buff2Frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
+    Buff2Frame:BurstBlockRegisterEvent({"ARENA_OPPONENT_UPDATE"})
   end
   Buff2Frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
   Buff2Frame:RegisterEvent("UNIT_EXITED_VEHICLE")
@@ -1978,12 +1977,10 @@ else
   end)
 end
 Buff2Frame:RegisterEvent("PLAYER_TARGET_CHANGED")
-Buff2Frame:RegisterEvent("ENCOUNTER_START")
-Buff2Frame:RegisterEvent("ENCOUNTER_END")
-Buff2Frame:RegisterEvent("INSTANCE_ENCOUNTER_ENGAGE_UNIT")
+Buff2Frame:BurstBlockRegisterEvent({"ENCOUNTER_START", "ENCOUNTER_END", "INSTANCE_ENCOUNTER_ENGAGE_UNIT"})
 Buff2Frame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
 Buff2Frame:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
-Buff2Frame:RegisterEvent("GROUP_ROSTER_UPDATE")
+Buff2Frame:BurstBlockRegisterEvent({"GROUP_ROSTER_UPDATE"})
 Buff2Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 Buff2Frame:RegisterEvent("PARTY_MEMBER_DISABLE")
 Buff2Frame:RegisterEvent("PARTY_MEMBER_ENABLE")

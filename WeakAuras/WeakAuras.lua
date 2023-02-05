@@ -1721,48 +1721,51 @@ function Private.ScanForLoads(toCheck, event, arg1, ...)
 end
 
 local loadFrame = CreateFrame("Frame");
+Mixin(loadFrame, Private.EventBurstBlock)
 Private.frames["Display Load Handling"] = loadFrame;
 
 loadFrame:RegisterEvent("ENCOUNTER_START");
 loadFrame:RegisterEvent("ENCOUNTER_END");
+loadFrame:RegisterEvent("PLAYER_LEVEL_UP");
 
+local groupedEvents = {}
 if WeakAuras.IsRetail() then
-  loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
-  loadFrame:RegisterEvent("PLAYER_PVP_TALENT_UPDATE");
-  loadFrame:RegisterEvent("PLAYER_DIFFICULTY_CHANGED");
-  loadFrame:RegisterEvent("PET_BATTLE_OPENING_START");
-  loadFrame:RegisterEvent("PET_BATTLE_CLOSE");
-  loadFrame:RegisterEvent("VEHICLE_UPDATE");
-  loadFrame:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR")
-  loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR");
-  loadFrame:RegisterEvent("CHALLENGE_MODE_COMPLETED")
-  loadFrame:RegisterEvent("CHALLENGE_MODE_START")
-  loadFrame:RegisterEvent("TRAIT_CONFIG_CREATED")
-  loadFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
+  table.insert(groupedEvents, "PLAYER_TALENT_UPDATE");
+  table.insert(groupedEvents, "PLAYER_PVP_TALENT_UPDATE");
+  table.insert(groupedEvents, "PLAYER_DIFFICULTY_CHANGED");
+  table.insert(groupedEvents, "PET_BATTLE_OPENING_START");
+  table.insert(groupedEvents, "PET_BATTLE_CLOSE");
+  table.insert(groupedEvents, "VEHICLE_UPDATE");
+  table.insert(groupedEvents, "UPDATE_VEHICLE_ACTIONBAR")
+  table.insert(groupedEvents, "UPDATE_OVERRIDE_ACTIONBAR");
+  table.insert(groupedEvents, "CHALLENGE_MODE_COMPLETED")
+  table.insert(groupedEvents, "CHALLENGE_MODE_START")
+  table.insert(groupedEvents, "TRAIT_CONFIG_CREATED")
+  table.insert(groupedEvents, "TRAIT_CONFIG_UPDATED")
 else
-  loadFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
+  table.insert(groupedEvents, "CHARACTER_POINTS_CHANGED")
 end
 if WeakAuras.IsWrathClassic() then
-  loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
-  loadFrame:RegisterEvent("VEHICLE_UPDATE");
-  loadFrame:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR")
-  loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR");
+  table.insert(groupedEvents, "PLAYER_TALENT_UPDATE");
+  table.insert(groupedEvents, "VEHICLE_UPDATE");
+  table.insert(groupedEvents, "UPDATE_VEHICLE_ACTIONBAR")
+  table.insert(groupedEvents, "UPDATE_OVERRIDE_ACTIONBAR");
 end
-loadFrame:RegisterEvent("GROUP_ROSTER_UPDATE");
-loadFrame:RegisterEvent("ZONE_CHANGED");
-loadFrame:RegisterEvent("ZONE_CHANGED_INDOORS");
-loadFrame:RegisterEvent("ZONE_CHANGED_NEW_AREA");
-loadFrame:RegisterEvent("PLAYER_LEVEL_UP");
-loadFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
-loadFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
-loadFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED");
-loadFrame:RegisterEvent("SPELLS_CHANGED");
-loadFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
-loadFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
-loadFrame:RegisterEvent("PLAYER_DEAD")
-loadFrame:RegisterEvent("PLAYER_ALIVE")
-loadFrame:RegisterEvent("PLAYER_UNGHOST")
-loadFrame:RegisterEvent("PARTY_LEADER_CHANGED")
+table.insert(groupedEvents, "GROUP_ROSTER_UPDATE");
+table.insert(groupedEvents, "ZONE_CHANGED");
+table.insert(groupedEvents, "ZONE_CHANGED_INDOORS");
+table.insert(groupedEvents, "ZONE_CHANGED_NEW_AREA");
+table.insert(groupedEvents, "PLAYER_REGEN_DISABLED");
+table.insert(groupedEvents, "PLAYER_REGEN_ENABLED");
+table.insert(groupedEvents, "PLAYER_ROLES_ASSIGNED");
+table.insert(groupedEvents, "SPELLS_CHANGED");
+table.insert(groupedEvents, "UNIT_INVENTORY_CHANGED")
+table.insert(groupedEvents, "PLAYER_EQUIPMENT_CHANGED")
+table.insert(groupedEvents, "PLAYER_DEAD")
+table.insert(groupedEvents, "PLAYER_ALIVE")
+table.insert(groupedEvents, "PLAYER_UNGHOST")
+table.insert(groupedEvents, "PARTY_LEADER_CHANGED")
+loadFrame:BurstBlockRegisterEvent(groupedEvents)
 
 if WeakAuras.IsRetail() then
   Private.callbacks:RegisterCallback("WA_DRAGONRIDING_UPDATE", function ()

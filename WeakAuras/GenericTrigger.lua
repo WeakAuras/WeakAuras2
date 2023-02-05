@@ -755,9 +755,11 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
     Private.ActivateAuraEnvironment(id);
     local updateTriggerState = false;
     for triggernum, data in pairs(triggers) do
-      local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-      if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
-        updateTriggerState = true;
+      if data.statesParameter ~= "one" or Private.EventBurstBlock.BurstBlockGenericTriggerEvent(id, triggernum, event) then
+        local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+        if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
+          updateTriggerState = true;
+        end
       end
     end
     if (updateTriggerState) then
@@ -2023,16 +2025,16 @@ do
       table.insert(groupedEvents, "RUNE_POWER_UPDATE");
       table.insert(groupedEvents, "RUNE_TYPE_UPDATE");
     end
-    cdReadyFrame:BurstBlockRegisterEvent(unpack(groupedEvents));
+    cdReadyFrame:BurstBlockRegisterEvent(groupedEvents);
 
     local itemGroupedEvents = {
       "UNIT_INVENTORY_CHANGED",
       "BAG_UPDATE_DELAYED",
       "PLAYER_EQUIPMENT_CHANGED"
     }
-    cdReadyFrame:BurstBlockRegisterEvent(unpack(itemGroupedEvents));
+    cdReadyFrame:BurstBlockRegisterEvent(itemGroupedEvents);
 
-    cdReadyFrame:BurstBlockRegisterEvent("SPELLS_CHANGED");
+    cdReadyFrame:BurstBlockRegisterEvent({"SPELLS_CHANGED"});
     cdReadyFrame:RegisterEvent("UNIT_SPELLCAST_SENT");
     cdReadyFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
     cdReadyFrame:RegisterEvent("PLAYER_LEAVING_WORLD")

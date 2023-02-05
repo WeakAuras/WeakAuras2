@@ -2,19 +2,35 @@ if not WeakAuras.IsLibsOK() then return end
 --- @type string, Private
 local AddonName, Private = ...
 
-local debug = 2
+local debug = 1
 
 local function Init(frame)
   frame.burstBlock = CreateFrame("Frame")
   frame.burstBlock.parent = frame
   frame.burstBlock.events = {}
+  frame.burstBlock.eventsIndexedOnArg1 = {}
   frame.burstBlock.lastEvent = {}
   frame.burstBlock.event_groups_count = 0
   frame.burstBlock:SetScript("OnEvent", function(self, event, ...)
     local now = GetTime()
+    local arg1 = ...
     local groupIndex = self.events[event]
-    if self.lastEvent[groupIndex] ~= now then
+    local groupIndexOnArg1 = self.eventsIndexedOnArg1[event]
+    if groupIndex and self.lastEvent[groupIndex] ~= now then
       self.lastEvent[groupIndex] = now
+      local script = self.parent:GetScript("OnEvent")
+      if type(script) == "function" then
+        script(self.parent, event, ...)
+      end
+      if debug > 1 then
+        print("BurstBlock RUN", frame:GetName() or nil, now, event, ...)
+      end
+    elseif groupIndexOnArg1 and (
+      not self.lastEvent[groupIndexOnArg1]
+      or self.lastEvent[groupIndexOnArg1][arg1] ~= now
+    ) then
+      self.lastEvent[groupIndexOnArg1] = self.lastEvent[groupIndexOnArg1] or {}
+      self.lastEvent[groupIndexOnArg1][arg1] = now
       self.parent:GetScript("OnEvent")(self.parent, event, ...)
       if debug > 1 then
         print("BurstBlock RUN", frame:GetName() or nil, now, event, ...)
@@ -25,16 +41,18 @@ local function Init(frame)
   end)
 end
 
--- OnEvent script is run only once per frame per event, or once per frame per group of events if multiple events are registered at once
-local BurstBlockRegisterEvent = function(self, ...)
+-- OnEvent script is run only once per frame per group of events registered at once
+local BurstBlockRegisterEvent = function(self, events, indexedOnArg1)
   if self.burstBlock == nil then
     Init(self)
   end
-  local num_events = select("#", ...)
   self.burstBlock.event_groups_count = self.burstBlock.event_groups_count + 1
-  for i = 1, num_events do
-    local event = select(i, ...)
-    self.burstBlock.events[event] = self.burstBlock.event_groups_count
+  for _, event in ipairs(events) do
+    if indexedOnArg1 then
+      self.burstBlock.eventsIndexedOnArg1[event] = self.burstBlock.event_groups_count
+    else
+      self.burstBlock.events[event] = self.burstBlock.event_groups_count
+    end
     self.burstBlock:RegisterEvent(event)
   end
 end
@@ -56,8 +74,24 @@ local BurstBlockUnregisterEvent = function(self, event)
 end
 ]]
 
+local ids = {}
+local BurstBlockGenericTriggerEvent = function(id, triggernum, event)
+  local now = GetTime()
+  ids[id] = ids[id] or {}
+  if ids[id][triggernum] ~= now then
+    ids[id][triggernum] = now
+    return true
+  else
+    if debug > 0 then
+      print("BurstBlock BLOCK generictrigger", id, triggernum, event)
+    end
+    return false
+  end
+end
+
 Private.EventBurstBlock = {
   BurstBlockRegisterEvent = BurstBlockRegisterEvent,
+  BurstBlockGenericTriggerEvent = BurstBlockGenericTriggerEvent
   --BurstBlockUnregisterEvent = BurstBlockUnregisterEvent
   --UnregisterUnitEvent = function() end,
   --RegisterUnitEvent = function() end,
