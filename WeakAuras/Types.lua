@@ -838,7 +838,6 @@ Private.aura_types = {
   DEBUFF = L["Debuff"],
 }
 
-
 Private.debuff_class_types = {
   magic = L["Magic"],
   curse = L["Curse"],
@@ -848,20 +847,41 @@ Private.debuff_class_types = {
   none = L["None"]
 }
 
-Private.unit_types = {
-  player = L["Player"],
+Private.player_target_events = {
+  PLAYER_TARGET_CHANGED = "target",
+  PLAYER_FOCUS_CHANGED = "focus",
+  PLAYER_SOFT_ENEMY_CHANGED = "softenemy",
+  PLAYER_SOFT_FRIEND_CHANGED = "softfriend",
+}
+
+Private.soft_target_cvars = {
+  softenemy = "SoftTargetEnemy",
+  softfriend = "SoftTargetFriend"
+}
+
+local target_unit_types = {
   target = L["Target"],
-  focus = L["Focus"],
+}
+
+if not WeakAuras.IsClassic() then
+  target_unit_types.focus = L["Focus"]
+end
+
+if WeakAuras.IsWrathOrRetail() then
+  target_unit_types.softenemy = L["Soft Enemy"]
+  target_unit_types.softfriend = L["Soft Friend"]
+end
+
+Private.unit_types = Mixin({
+  player = L["Player"],
   group = L["Group"],
   member = L["Specific Unit"],
   pet = L["Pet"],
   multi = L["Multi-target"]
-}
+}, target_unit_types)
 
-Private.unit_types_bufftrigger_2 = {
+Private.unit_types_bufftrigger_2 = Mixin({
   player = L["Player"],
-  target = L["Target"],
-  focus = L["Focus"],
   group = L["Smart Group"],
   raid = L["Raid"],
   party = L["Party"],
@@ -871,20 +891,16 @@ Private.unit_types_bufftrigger_2 = {
   pet = L["Pet"],
   member = L["Specific Unit"],
   multi = L["Multi-target"]
-}
+}, target_unit_types)
 
-Private.actual_unit_types_with_specific = {
+Private.actual_unit_types_with_specific = Mixin({
   player = L["Player"],
-  target = L["Target"],
-  focus = L["Focus"],
   pet = L["Pet"],
   member = L["Specific Unit"]
-}
+}, target_unit_types)
 
-Private.actual_unit_types_cast = {
+Private.actual_unit_types_cast = Mixin({
   player = L["Player"],
-  target = L["Target"],
-  focus = L["Focus"],
   group = L["Smart Group"],
   party = L["Party"],
   raid = L["Raid"],
@@ -893,25 +909,21 @@ Private.actual_unit_types_cast = {
   nameplate = L["Nameplate"],
   pet = L["Pet"],
   member = L["Specific Unit"],
-}
+}, target_unit_types)
 
 Private.actual_unit_types_cast_tooltip = L["• |cff00ff00Player|r, |cff00ff00Target|r, |cff00ff00Focus|r, and |cff00ff00Pet|r correspond directly to those individual unitIDs.\n• |cff00ff00Specific Unit|r lets you provide a specific valid unitID to watch.\n|cffff0000Note|r: The game will not fire events for all valid unitIDs, making some untrackable by this trigger.\n• |cffffff00Party|r, |cffffff00Raid|r, |cffffff00Boss|r, |cffffff00Arena|r, and |cffffff00Nameplate|r can match multiple corresponding unitIDs.\n• |cffffff00Smart Group|r adjusts to your current group type, matching just the \"player\" when solo, \"party\" units (including \"player\") in a party or \"raid\" units in a raid.\n\n|cffffff00*|r Yellow Unit settings will create clones for each matching unit while this trigger is providing Dynamic Info to the Aura."]
 
-Private.threat_unit_types = {
-  target = L["Target"],
-  focus = L["Focus"],
+Private.threat_unit_types = Mixin({
   nameplate = L["Nameplate"],
   boss = L["Boss"],
   member = L["Specific Unit"],
   none = L["At Least One Enemy"]
-}
+}, target_unit_types)
 
-Private.unit_types_range_check = {
-  target = L["Target"],
-  focus = L["Focus"],
+Private.unit_types_range_check = Mixin({
   pet = L["Pet"],
   member = L["Specific Unit"]
-}
+}, target_unit_types)
 
 Private.unit_threat_situation_types = {
   [-1] = L["Not On Threat Table"],
@@ -3353,6 +3365,11 @@ for i = 1, 4 do
   Private.multiUnitUnits.party["partypet"..i] = true
 end
 
+if WeakAuras.IsWrathOrRetail() then
+  Private.baseUnitId["softenemy"] = true
+  Private.baseUnitId["softfriend"] = true
+end
+
 if WeakAuras.IsRetail() then
   for i = 1, 10 do
     Private.baseUnitId["boss"..i] = true
@@ -3781,16 +3798,10 @@ if WeakAuras.IsClassicEra() then
   Private.multiUnitId.arena = nil
   wipe(Private.multiUnitUnits.boss)
   wipe(Private.multiUnitUnits.arena)
-  Private.unit_types.focus = nil
-  Private.unit_types_bufftrigger_2.focus = nil
   Private.unit_types_bufftrigger_2.boss = nil
   Private.unit_types_bufftrigger_2.arena = nil
-  Private.actual_unit_types_with_specific.focus = nil
   Private.actual_unit_types_cast.boss = nil
   Private.actual_unit_types_cast.arena = nil
-  Private.actual_unit_types_cast.focus = nil
-  Private.unit_types_range_check.focus = nil
-  Private.threat_unit_types.focus = nil
   Private.item_slot_types[0] = AMMOSLOT
   Private.item_slot_types[18] = RANGEDSLOT
   for slot = 20, 28 do

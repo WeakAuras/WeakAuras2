@@ -5635,7 +5635,10 @@ do
   trackableUnits["focus"] = true
   trackableUnits["pet"] = true
   trackableUnits["vehicle"] = true
-
+  if WeakAuras.IsWrathOrRetail() then
+    trackableUnits["softenemy"] = true
+    trackableUnits["softfriend"] = true
+  end
   for i = 1, 5 do
     trackableUnits["arena" .. i] = true
     trackableUnits["arenapet" .. i] = true
@@ -5654,6 +5657,16 @@ do
     trackableUnits["raid" .. i] = true
     trackableUnits["raidpet" .. i] = true
     trackableUnits["nameplate" .. i] = true
+  end
+
+  function WeakAuras.IsUntrackableSoftTarget(unit)
+    if not Private.soft_target_cvars[unit] then return end
+    -- technically this is incorrect if user doesn't have KBM and sets CVar to "2" (KBM only)
+    -- but, there doesn't seem to be a way to detect 'user lacks KBM'
+    -- anyways, the intersection of people who know how to set cvars and also don't have KBM for WoW is probably nil
+    -- that might change if WoW ever ends up on playstation & friends, but also hell might freeze over so who knows
+    local threshold = C_GamePad.IsEnabled() and 1 or 2
+    return (tonumber(C_CVar.GetCVar(Private.soft_target_cvars[unit])) or 0) < threshold
   end
 
   function WeakAuras.UntrackableUnit(unit)

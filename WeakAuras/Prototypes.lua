@@ -126,17 +126,17 @@ if WeakAuras.IsWrathOrRetail() then
     cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
     cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
     cacheEmpoweredFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+    cacheEmpoweredFrame:RegisterEvent("PLAYER_SOFT_FRIEND_CHANGED")
+    cacheEmpoweredFrame:RegisterEvent("PLAYER_SOFT_ENEMY_CHANGED")
     cacheEmpoweredFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
     cacheEmpoweredFrame:SetScript("OnEvent", function(_, event, unit, ...)
-      if event == "PLAYER_TARGET_CHANGED" then
-        unit = "target"
-      elseif event == "PLAYER_FOCUS_CHANGED" then
-        unit = "focus"
+      if Private.player_target_events[event] then
+        unit = Private.player_target_events[event]
       end
       if event == "UNIT_SPELLCAST_EMPOWER_START"
       or event == "UNIT_SPELLCAST_EMPOWER_UPDATE"
       or (
-        (event == "PLAYER_TARGET_CHANGED" or event == "PLAYER_FOCUS_CHANGED")
+        (Private.player_target_events[event])
         and (select(10, UnitChannelInfo(unit)) or 0) > 0  -- 10th arg of UnitChannelInfo is numStages for empowered spells
       )
       then
@@ -1775,6 +1775,18 @@ local function AddUnitEventForEvents(result, unit, event)
     end
     tinsert(result.events, event)
   end
+end
+
+local function AddTargetConditionEvents(result, useFocus)
+  if WeakAuras.IsWrathOrRetail() then
+    tinsert(result, "PLAYER_SOFT_ENEMY_CHANGED")
+    tinsert(result, "PLAYER_SOFT_FRIEND_CHANGED")
+    if useFocus then
+      tinsert(result, "PLAYER_FOCUS_CHANGED")
+    end
+  end
+  tinsert(result, "PLAYER_TARGET_CHANGED")
+  return result
 end
 
 local unitHelperFunctions = {
@@ -4566,11 +4578,10 @@ Private.event_prototypes = {
         conditionTest = function(state, needle)
           return state and state.show and (IsUsableSpell(state.spellname) == (needle == 1))
         end,
-        conditionEvents = {
+        conditionEvents = AddTargetConditionEvents({
           "SPELL_UPDATE_USABLE",
-          "PLAYER_TARGET_CHANGED",
           "UNIT_POWER_FREQUENT:player"
-        },
+        }),
       },
       {
         name = "insufficientResources",
@@ -4581,11 +4592,10 @@ Private.event_prototypes = {
         conditionTest = function(state, needle)
           return state and state.show and (select(2, IsUsableSpell(state.spellname)) == (needle == 1));
         end,
-        conditionEvents = {
+        conditionEvents = AddTargetConditionEvents({
           "SPELL_UPDATE_USABLE",
-          "PLAYER_TARGET_CHANGED",
           "UNIT_POWER_FREQUENT:player"
-        },
+        }),
       },
       {
         name = "spellInRange",
@@ -4596,10 +4606,9 @@ Private.event_prototypes = {
         conditionTest = function(state, needle)
           return state and state.show and (UnitExists('target') and state.spellname and WeakAuras.IsSpellInRange(state.spellname, 'target') == needle)
         end,
-        conditionEvents = {
-          "PLAYER_TARGET_CHANGED",
+        conditionEvents = AddTargetConditionEvents({
           "WA_SPELL_RANGECHECK",
-        },
+        }),
       },
       {
         hidden = true,
@@ -4905,10 +4914,9 @@ Private.event_prototypes = {
         conditionTest = function(state, needle)
           return state and state.show and (UnitExists('target') and IsItemInRange(state.itemname, 'target')) == (needle == 1)
         end,
-        conditionEvents = {
-          "PLAYER_TARGET_CHANGED",
+        conditionEvents = AddTargetConditionEvents({
           "WA_SPELL_RANGECHECK",
-        }
+        })
       },
       {
         hidden = true,
@@ -5917,6 +5925,9 @@ Private.event_prototypes = {
       }
       if WeakAuras.IsWrathClassic() then
         tinsert(events, "RUNE_TYPE_UPDATE")
+      else
+        tinsert(events, "PLAYER_SOFT_ENEMY_CHANGED")
+        tinsert(events, "PLAYER_SOFT_FRIEND_CHANGED")
       end
 
       return {
@@ -6049,10 +6060,9 @@ Private.event_prototypes = {
         conditionTest = function(state, needle)
           return state and state.show and (UnitExists('target') and state.spellName and WeakAuras.IsSpellInRange(state.spellName, 'target') == needle)
         end,
-        conditionEvents = {
-          "PLAYER_TARGET_CHANGED",
+        conditionEvents = AddTargetConditionEvents({
           "WA_SPELL_RANGECHECK",
-        }
+        })
       },
       {
         hidden = true,

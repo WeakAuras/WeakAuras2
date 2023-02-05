@@ -1846,6 +1846,7 @@ end
 local Buff2Frame = CreateFrame("Frame")
 Private.frames["WeakAuras Buff2 Frame"] = Buff2Frame
 
+
 local function EventHandler(frame, event, arg1, arg2, ...)
   Private.StartProfileSystem("bufftrigger2")
 
@@ -1853,15 +1854,11 @@ local function EventHandler(frame, event, arg1, arg2, ...)
   local unitsToRemove = {}
 
   local time = GetTime()
-  if event == "PLAYER_TARGET_CHANGED" then
-    ScanGroupUnit(time, matchDataChanged, nil, "target")
-    if not UnitExistsFixed("target") then
-      tinsert(unitsToRemove, "target")
-    end
-  elseif event == "PLAYER_FOCUS_CHANGED" then
-    ScanGroupUnit(time, matchDataChanged, nil, "focus")
-    if not UnitExistsFixed("focus") then
-      tinsert(unitsToRemove, "focus")
+  local targetUnit = Private.player_target_events[event]
+  if targetUnit then
+    ScanGroupUnit(time, matchDataChanged, nil, targetUnit)
+    if not UnitExistsFixed(targetUnit) then
+      tinsert(unitsToRemove, targetUnit)
     end
   elseif event == "UNIT_PET" then
     local pet = WeakAuras.unitToPetUnit[arg1]
@@ -1968,6 +1965,8 @@ Buff2Frame:RegisterEvent("RAID_TARGET_UPDATE")
 if not WeakAuras.IsClassicEra() then
   Buff2Frame:RegisterEvent("PLAYER_FOCUS_CHANGED")
   if WeakAuras.IsWrathOrRetail() then
+    Buff2Frame:RegisterEvent("PLAYER_SOFT_ENEMY_CHANGED")
+    Buff2Frame:RegisterEvent("PLAYER_SOFT_FRIEND_CHANGED")
     Buff2Frame:RegisterEvent("ARENA_OPPONENT_UPDATE")
   end
   Buff2Frame:RegisterEvent("UNIT_ENTERED_VEHICLE")
@@ -2503,14 +2502,47 @@ local function EqualZero(x)
   return x == 0
 end
 
+local function InitProblems()
+  return {
+    untrackableSoftTarget = {
+      severity = "info",
+      message = L["A trigger in this aura is set up to track a soft target unit, but you don't have the CVars set up for this to work correctly. Consider either changing the unit tracked, or configuring the Soft Target CVars."],
+      flagged = false,
+      check = function(trigger)
+        return WeakAuras.IsUntrackableSoftTarget(trigger.unit)
+      end
+    }
+  }
+end
+
+local function CheckProblems(trigger, problems)
+  for _, problem in pairs(problems) do
+    if not problem.flagged and problem.check(trigger) then
+      problem.flagged = true
+      break
+    end
+  end
+end
+
+local function PublishProblems(problems, uid)
+  for key, problem in pairs(problems) do
+    if problem.flagged then
+      Private.AuraWarnings.UpdateWarning(uid, key, problem.severity, problem.message, problem.printOnConsole)
+    else
+      Private.AuraWarnings.UpdateWarning(uid, key)
+    end
+  end
+end
+
 --- Adds an aura, setting up internal data structures for all buff triggers.
---- @param data table
+--- @param data auraData
 function BuffTrigger.Add(data)
   local id = data.id
 
   triggerInfos[id] = nil
+  local problems = InitProblems()
   for triggernum, triggerData in ipairs(data.triggers) do
-    local trigger, untrigger = triggerData.trigger, triggerData.untrigger
+    local trigger = triggerData.trigger
     if trigger.type == "aura2" then
 
       trigger.unit = trigger.unit or "player"
@@ -2518,6 +2550,9 @@ function BuffTrigger.Add(data)
 
       local combineMode = "showOne"
       local perUnitMode
+
+      CheckProblems(trigger, problems)
+
       if not IsSingleMissing(trigger) and trigger.showClones then
         if IsGroupTrigger(trigger) and trigger.combinePerUnit then
           combineMode = "showPerUnit"
@@ -2682,6 +2717,7 @@ function BuffTrigger.Add(data)
       triggerInfos[id][triggernum] = triggerInformation
     end
   end
+  PublishProblems(problems, data.uid)
 end
 
 --- Returns whether the trigger can have a duration.
@@ -3529,6 +3565,8 @@ function BuffTrigger.InitMultiAura()
     multiAuraFrame:RegisterEvent("UNIT_AURA")
     multiAuraFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
     if not WeakAuras.IsClassicEra() then
+      multiAuraFrame:RegisterEvent("PLAYER_SOFT_ENEMY_CHANGED")
+      multiAuraFrame:RegisterEvent("PLAYER_SOFT_FRIEND_CHANGED")
       multiAuraFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
     end
     multiAuraFrame:RegisterEvent("NAME_PLATE_UNIT_ADDED")
@@ -3545,10 +3583,8 @@ function BuffTrigger.HandleMultiEvent(frame, event, ...)
     CombatLog(CombatLogGetCurrentEventInfo())
   elseif event == "UNIT_TARGET" then
     TrackUid(...)
-  elseif event == "PLAYER_TARGET_CHANGED" then
-    TrackUid("target")
-  elseif event == "PLAYER_FOCUS_CHANGED" then
-    TrackUid("focus")
+  elseif Private.player_target_events[event] then
+    TrackUid(Private.player_target_events[event])
   elseif event == "NAME_PLATE_UNIT_ADDED" then
     TrackUid(...)
   elseif event == "NAME_PLATE_UNIT_REMOVED" then
