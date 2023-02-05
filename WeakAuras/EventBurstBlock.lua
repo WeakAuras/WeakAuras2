@@ -74,24 +74,47 @@ local BurstBlockUnregisterEvent = function(self, event)
 end
 ]]
 
-local ids = {}
-local BurstBlockGenericTriggerEvent = function(id, triggernum, event)
-  local now = GetTime()
-  ids[id] = ids[id] or {}
-  if ids[id][triggernum] ~= now then
-    ids[id][triggernum] = now
-    return true
-  else
-    if debug > 0 then
-      print("BurstBlock BLOCK generictrigger", id, triggernum, event)
+local BurstBlockGenericTriggerEvent
+do
+  local ids = {}
+  BurstBlockGenericTriggerEvent = function(id, triggernum, event)
+    local now = GetTime()
+    ids[id] = ids[id] or {}
+    if ids[id][triggernum] ~= now then
+      ids[id][triggernum] = now
+      return true
+    else
+      if debug > 0 then
+        print("BurstBlock BLOCK generictrigger", id, triggernum, event)
+      end
+      return false
     end
-    return false
+  end
+end
+
+local BurstBlockGenericTriggerUnitEvent
+do
+  local ids = {}
+  BurstBlockGenericTriggerUnitEvent = function(id, triggernum, event, unit)
+    local now = GetTime()
+    ids[id] = ids[id] or {}
+    ids[id][triggernum] = ids[id][triggernum] or {}
+    if ids[id][triggernum][unit] ~= now then
+      ids[id][triggernum][unit] = now
+      return true
+    else
+      if debug > 0 then
+        print("BurstBlock BLOCK generictrigger", id, triggernum, event, unit)
+      end
+      return false
+    end
   end
 end
 
 Private.EventBurstBlock = {
   BurstBlockRegisterEvent = BurstBlockRegisterEvent,
-  BurstBlockGenericTriggerEvent = BurstBlockGenericTriggerEvent
+  BurstBlockGenericTriggerEvent = BurstBlockGenericTriggerEvent,
+  BurstBlockGenericTriggerUnitEvent = BurstBlockGenericTriggerUnitEvent
   --BurstBlockUnregisterEvent = BurstBlockUnregisterEvent
   --UnregisterUnitEvent = function() end,
   --RegisterUnitEvent = function() end,

@@ -733,9 +733,13 @@ function WeakAuras.ScanUnitEvents(event, unit, ...)
         Private.ActivateAuraEnvironment(id);
         local updateTriggerState = false;
         for triggernum, data in pairs(triggers) do
-          local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-          if (RunTriggerFunc(allStates, data, id, triggernum, event, unit, ...)) then
-            updateTriggerState = true;
+          if not (data.statesParameter == "one" or data.statesParameter == "unit")
+          or Private.EventBurstBlock.BurstBlockGenericTriggerUnitEvent(id, triggernum, event, unit)
+          then
+            local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+            if (RunTriggerFunc(allStates, data, id, triggernum, event, unit, ...)) then
+              updateTriggerState = true;
+            end
           end
         end
         if (updateTriggerState) then
@@ -755,7 +759,9 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
     Private.ActivateAuraEnvironment(id);
     local updateTriggerState = false;
     for triggernum, data in pairs(triggers) do
-      if data.statesParameter ~= "one" or Private.EventBurstBlock.BurstBlockGenericTriggerEvent(id, triggernum, event) then
+      if not (data.statesParameter == "one" or data.statesParameter == "unit")
+      or Private.EventBurstBlock.BurstBlockGenericTriggerEvent(id, triggernum, event)
+      then
         local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
         if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
           updateTriggerState = true;
