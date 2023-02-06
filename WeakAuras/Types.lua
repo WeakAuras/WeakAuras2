@@ -863,7 +863,7 @@ local target_unit_types = {
   target = L["Target"],
 }
 
-if not WeakAuras.IsClassic() then
+if not WeakAuras.IsClassicEra() then
   target_unit_types.focus = L["Focus"]
 end
 
