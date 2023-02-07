@@ -605,9 +605,9 @@ local function GetBuffTriggerOptions(data, triggernum)
       end,
       desc = function()
         local value = trigger.ownOnly
-        if value == nil then return L["Only match auras cast by the player or his pet"]
-        elseif value == false then return L["Only match auras cast by people other than the player or his pet"]
-        else return L["Only match auras cast by the player or his pet"] end
+        if value == nil then return L["Only match auras cast by the player or their pet"]
+        elseif value == false then return L["Only match auras cast by people other than the player or their pet"]
+        else return L["Only match auras cast by the player or their pet"] end
       end,
       get = function()
         local value = trigger.ownOnly
