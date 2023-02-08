@@ -123,14 +123,16 @@ templates.class.EVOKER = {
         { spell = 351338, type = "ability", requiresTarget = true, talent = 351338 }, -- Quell
         { spell = 355913, type = "ability" }, -- Emerald Blossom
         { spell = 356995, type = "ability", overlayGlow = true, requiresTarget = true }, -- Disintegrate
-        { spell = 357208, type = "ability", overlayGlow = true }, -- Fire Breath
+        { spell = 357208, type = "ability", overlayGlow = true, talent = {-375783}, exactSpellId = true, titleSuffix = L["Max 3"] }, -- Fire Breath
+        { spell = 382266, type = "ability", overlayGlow = true, talent = {375783}, exactSpellId = true, titleSuffix = L["Max 4"] }, -- Fire Breath
         { spell = 357210, type = "ability", buff = true }, -- Deep Breath
         { spell = 357211, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 357211 }, -- Pyre
         { spell = 357214, type = "ability" }, -- Wing Buffet
         { spell = 358267, type = "ability", charges = true, buff = true, overlayGlow = true }, -- Hover
         { spell = 358385, type = "ability", talent = 358385 }, -- Landslide
         { spell = 358733, type = "ability", buff = true }, -- Glide
-        { spell = 359073, type = "ability", overlayGlow = true, requiresTarget = true, talent = 359073 }, -- Eternity Surge
+        { spell = 359073, type = "ability", overlayGlow = true, requiresTarget = true, talent = {359073, -375783}, exactSpellId = true, titleSuffix = L["Max 3"] }, -- Eternity Surge
+        { spell = 382411, type = "ability", overlayGlow = true, requiresTarget = true, talent = {359073, 375783}, exactSpellId = true, titleSuffix = L["Max 4"] }, -- Eternity Surge
         { spell = 360806, type = "ability", requiresTarget = true, talent = 360806 }, -- Sleep Walk
         { spell = 360995, type = "ability", requiresTarget = true, talent = 360995 }, -- Verdant Embrace
         { spell = 361469, type = "ability", requiresTarget = true }, -- Living Flame
@@ -246,10 +248,12 @@ templates.class.EVOKER = {
       args = {
         { spell = 351338, type = "ability", requiresTarget = true, talent = 351338 }, -- Quell
         { spell = 355913, type = "ability", overlayGlow = true }, -- Emerald Blossom
-        { spell = 355936, type = "ability", overlayGlow = true, talent = 355936 }, -- Dream Breath
+        { spell = 355936, type = "ability", overlayGlow = true, talent = {355936, -375783}, exactSpellId = true, titleSuffix = L["Max 3"] }, -- Dream Breath
+        { spell = 382614, type = "ability", overlayGlow = true, talent = {355936, 375783}, exactSpellId = true, titleSuffix = L["Max 4"] }, -- Dream Breath
         { spell = 356995, type = "ability", overlayGlow = true, requiresTarget = true }, -- Disintegrate
         { spell = 357170, type = "ability", buff = true, debuff = true, talent = 357170 }, -- Time Dilation
-        { spell = 357208, type = "ability", overlayGlow = true }, -- Fire Breath
+        { spell = 357208, type = "ability", overlayGlow = true, talent = {-375783}, exactSpellId = true, titleSuffix = L["Max 3"] }, -- Fire Breath
+        { spell = 382266, type = "ability", overlayGlow = true, talent = {375783}, exactSpellId = true, titleSuffix = L["Max 4"] }, -- Fire Breath
         { spell = 357210, type = "ability", buff = true }, -- Deep Breath
         { spell = 357214, type = "ability" }, -- Wing Buffet
         { spell = 358267, type = "ability", charges = true, buff = true, overlayGlow = true }, -- Hover
@@ -266,7 +270,6 @@ templates.class.EVOKER = {
         { spell = 364342, type = "ability" }, -- Blessing of the Bronze
         { spell = 364343, type = "ability", buff = true, debuff = true, overlayGlow = true, talent = 364343 }, -- Echo
         { spell = 366155, type = "ability", charges = true, buff = true, talent = 366155 }, -- Reversion
-        { spell = 367226, type = "ability", overlayGlow = true, talent = 367226 }, -- Spiritbloom
         { spell = 368970, type = "ability" }, -- Tail Swipe
         { spell = 369536, type = "ability", buff = true, usable = true }, -- Soar
         { spell = 370537, type = "ability", buff = true, usable = true, talent = 370537 }, -- Stasis
@@ -280,9 +283,8 @@ templates.class.EVOKER = {
         { spell = 374968, type = "ability", talent = 374968 }, -- Time Spiral
         { spell = 376743, type = "ability", charges = true }, -- Surge Forward
         { spell = 376744, type = "ability" }, -- Skyward Ascent
-        { spell = 382266, type = "ability", overlayGlow = true }, -- Fire Breath
-        { spell = 382614, type = "ability", overlayGlow = true, talent = 355936 }, -- Dream Breath
-        { spell = 382731, type = "ability", overlayGlow = true, talent = 367226 }, -- Spiritbloom
+        { spell = 367226, type = "ability", overlayGlow = true, talent = {367226, -375783 }, exactSpellId = true, titleSuffix = L["Max 3"] }, -- Spiritbloom
+        { spell = 382731, type = "ability", overlayGlow = true, talent = {367226, 375783 }, exactSpellId = true, titleSuffix = L["Max 4"] }, -- Spiritbloom
         { spell = 390386, type = "ability", buff = true }, -- Fury of the Aspects
       },
       icon = 4622474
@@ -5288,19 +5290,19 @@ local function handleItem(item)
     end
   end
   if (item.talent) then
-    item.load = item.load or {};
+    item.load = item.load or {}
+    item.load.use_talent = false
+    item.load.talent = { multi = {} }
     if type(item.talent) == "table" then
-      item.load.talent = { multi = {} };
       for _,v in pairs(item.talent) do
-        item.load.talent.multi[v] = true;
+        if v > 0 then
+          item.load.talent.multi[v] = true
+        else
+          item.load.talent.multi[-v] = false
+        end
       end
-      item.load.use_talent = false;
     else
-      item.load.talent = {
-        single = item.talent,
-        multi = {};
-      };
-      item.load.use_talent = true;
+      item.load.talent.multi[item.talent] = true
     end
   end
   if (item.pvptalent) then
