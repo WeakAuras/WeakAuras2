@@ -6,7 +6,9 @@
   ],
   "ignorePaths": [
     "WeakAurasModelPaths",
-    "WeakAuras/Types*.lua"
+    "WeakAuras/Types*.lua",
+    "WeakAuras/Libs",
+    ".luacheckrc"
   ],
   "words": [
     "Adamantite",
