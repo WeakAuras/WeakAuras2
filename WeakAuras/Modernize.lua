@@ -1657,5 +1657,16 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 65 then
+    for triggerId, triggerData in ipairs(data.triggers) do
+      if triggerData.trigger.type == "item"
+      and triggerData.trigger.event == "Item Count"
+      and type(triggerData.trigger.itemName) == "number"
+      then
+        triggerData.trigger.use_exact_itemName = true
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end

@@ -511,7 +511,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           options["exact"..name] = {
             type = "toggle",
             width = WeakAuras.normalWidth - 0.1,
-            name = L["Exact Spell Match"],
+            name = arg.type == "item" and L["Exact Item Match"] or L["Exact Spell Match"],
             order = order,
             hidden = hidden,
             get = function()
@@ -562,17 +562,20 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           disabled = function() return not trigger["use_"..realname]; end,
           get = function()
             if(arg.type == "item") then
+              local useExactSpellId = (arg.showExactOption and trigger["use_exact_"..realname])
               if(trigger["use_"..realname] and trigger[realname] and trigger[realname] ~= "") then
-                local name = GetItemInfo(trigger[realname]);
-                if(name) then
-                  return name;
-                else
+                if useExactSpellId then
                   local itemId = tonumber(trigger[realname])
                   if itemId and itemId ~= 0 then
                     return tostring(trigger[realname])
                   end
-                  return L["Invalid Item Name/ID/Link"];
+                else
+                  local name = GetItemInfo(trigger[realname]);
+                  if(name) then
+                    return name;
+                  end
                 end
+                return useExactSpellId and L["Invalid Item ID"] or L["Invalid Item Name/ID/Link"];
               else
                 return nil;
               end
