@@ -185,7 +185,7 @@ end
 local function RecurseDiff(ours, theirs, ignoredForDiffChecking)
   local diff, seen, same = {}, {}, true
   for key, ourVal in pairs(ours) do
-    if type(ignoredForDiffChecking) ~= table or ignoredForDiffChecking[key] ~= true then
+    if not (type(ignoredForDiffChecking) == "table" and ignoredForDiffChecking[key] == true) then
       seen[key] = true
       local theirVal = theirs[key]
       if type(ourVal) == "table" and type(theirVal) == "table" then
@@ -207,7 +207,7 @@ local function RecurseDiff(ours, theirs, ignoredForDiffChecking)
     end
   end
   for key, theirVal in pairs(theirs) do
-    if not seen[key] and (type(ignoredForDiffChecking) ~= table or ignoredForDiffChecking[key] ~= true) then
+    if not seen[key] and not (type(ignoredForDiffChecking) == "table" and ignoredForDiffChecking[key] == true) then
       diff[key] = theirVal
       same = false
     end
@@ -230,10 +230,10 @@ local function RecurseSerial(lines, depth, chunk)
   end
 end
 
-local function DebugPrintDiff(diff)
+local function DebugPrintDiff(diff, id, uid)
   local lines = {
     "==========================",
-    "Diff detected: ",
+    string.format("Diff detected for %q (%s):", id, uid),
     "{",
   }
   RecurseSerial(lines, 1, diff)
@@ -252,7 +252,7 @@ local function Diff(ours, theirs)
   local diff = RecurseDiff(ours, theirs, ignoredForDiffChecking)
   if diff then
     if debug then
-      DebugPrintDiff(diff, ours.id, theirs.id)
+      DebugPrintDiff(diff, theirs.id, theirs.uid)
     end
     return diff
   end
