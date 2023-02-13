@@ -3115,7 +3115,9 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
     }
   end
 
-  if not IsGroupTrigger(trigger) and trigger.matchesShowOn == "showAlways" then
+  if not IsGroupTrigger(trigger) and trigger.matchesShowOn == "showAlways"
+    or IsGroupTrigger(trigger) and trigger.showClones and trigger.unit ~= "multi" and trigger.combinePerUnit
+  then
     result["buffed"] = {
       display = L["Aura(s) Found"],
       type = "bool",
