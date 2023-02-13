@@ -3846,6 +3846,49 @@ do
   end
 end
 
+function WeakAuras.GetAuraInstanceTooltipInfo(unit, auraInstanceId, filter)
+  if WeakAuras.IsRetail() then
+    local tooltipText = ""
+    local tooltipData
+    if filter == "HELPFUL" then
+      tooltipData = C_TooltipInfo.GetUnitBuffByAuraInstanceID(unit, auraInstanceId, filter)
+    else
+      tooltipData = C_TooltipInfo.GetUnitDebuffByAuraInstanceID(unit, auraInstanceId, filter)
+    end
+    local secondLine = tooltipData and tooltipData.lines[2] -- This is the line we want
+    if secondLine then
+      for _, arg in ipairs(secondLine.args) do
+        if arg.field == "leftText" then
+          tooltipText = arg.stringVal or ""
+        end
+      end
+    end
+    return Private.ParseTooltipText(tooltipText)
+  end
+end
+
+function Private.ParseTooltipText(tooltipText)
+  local debuffType = "none";
+  local tooltipSize = {};
+  if(tooltipText) then
+    for t in tooltipText:gmatch("(%d[%d%.,]*)") do
+      if (LARGE_NUMBER_SEPERATOR == ",") then
+        t = t:gsub(",", "");
+      else
+        t = t:gsub("%.", "");
+        t = t:gsub(",", ".");
+      end
+      tinsert(tooltipSize, tonumber(t));
+    end
+  end
+
+  if (#tooltipSize) then
+    return tooltipText, debuffType, unpack(tooltipSize);
+  else
+    return tooltipText, debuffType, 0;
+  end
+end
+
 function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   local tooltipText = ""
   if WeakAuras.IsRetail() then
@@ -3866,27 +3909,7 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
     tooltipText = tooltipTextLine and tooltipTextLine:GetObjectType() == "FontString" and tooltipTextLine:GetText() or "";
   end
 
-
-  local debuffType = "none";
-  local found = false;
-  local tooltipSize = {};
-  if(tooltipText) then
-    for t in tooltipText:gmatch("(%d[%d%.,]*)") do
-      if (LARGE_NUMBER_SEPERATOR == ",") then
-        t = t:gsub(",", "");
-      else
-        t = t:gsub("%.", "");
-        t = t:gsub(",", ".");
-      end
-      tinsert(tooltipSize, tonumber(t));
-    end
-  end
-
-  if (#tooltipSize) then
-    return tooltipText, debuffType, unpack(tooltipSize);
-  else
-    return tooltipText, debuffType, 0;
-  end
+  return Private.ParseTooltipText(tooltipText)
 end
 
 local FrameTimes = {};
