@@ -528,7 +528,9 @@ local function BuildUidMap(data, children, type)
     end
 
     if self.map[uid].anchorFrameFrame then
-      local target = self:GetIdFor(self.map[uid].anchorFrameFrame)
+      data.anchorFrameFrame = nil
+      local anchorUid = self.map[uid].anchorFrameFrame
+      local target = self:Contains(anchorUid) and self:GetIdFor(anchorUid)
       if target then
         data.anchorFrameFrame = "WeakAuras:" .. target
       end
@@ -1638,6 +1640,7 @@ local methods = {
             oldData.sortHybridTable = newData.sortHybridTable
             oldData.uid = uid
             oldData.id = matchInfo.newUidMap:GetIdFor(uid)
+            oldData.anchorFrameFrame = newData.anchorFrameFrame
             return oldData
           else
             return matchInfo.newUidMap:GetPhase2Data(uid)
