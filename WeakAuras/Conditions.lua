@@ -910,6 +910,7 @@ function Private.RegisterForGlobalConditions(uid)
       if (not dynamicConditionsFrame.onUpdate) then
         dynamicConditionsFrame:SetScript("OnUpdate", handleDynamicConditionsOnUpdate);
         dynamicConditionsFrame.onUpdate = true;
+        handleDynamicConditionsOnUpdate(dynamicConditionsFrame, event)
       end
     else
       local unitEvent, unit = event:match("([^:]+):([^:]+)")
@@ -920,8 +921,10 @@ function Private.RegisterForGlobalConditions(uid)
           dynamicConditionsFrame.units[unit]:SetScript("OnEvent", handleDynamicConditionsPerUnit);
         end
         pcall(dynamicConditionsFrame.units[unit].RegisterUnitEvent, dynamicConditionsFrame.units[unit], unitEvent, unit);
+        handleDynamicConditionsPerUnit(dynamicConditionsFrame, event, unit)
       else
         pcall(dynamicConditionsFrame.RegisterEvent, dynamicConditionsFrame, event);
+        handleDynamicConditions(dynamicConditionsFrame, event)
       end
     end
   end
