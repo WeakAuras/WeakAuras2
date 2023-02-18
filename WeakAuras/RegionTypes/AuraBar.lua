@@ -297,10 +297,10 @@ local barPrototype = {
     -- Create statusbar illusion
     if (self.horizontal) then
       local xProgress = self:GetRealSize() * progress;
-      self.fgMask:SetWidth(xProgress > 0.0001 and (xProgress + 0.1) or 0.0001);
+      self.fgMask:SetWidth(xProgress > 0.0001 and (xProgress + 0.1) or 0.1);
     else
       local yProgress = select(2, self:GetRealSize()) * progress;
-      self.fgMask:SetHeight(yProgress > 0.0001 and (yProgress + 0.1) or 0.0001);
+      self.fgMask:SetHeight(yProgress > 0.0001 and (yProgress + 0.1) or 0.1);
     end
 
     local sparkHidden = self.spark.sparkHidden;
