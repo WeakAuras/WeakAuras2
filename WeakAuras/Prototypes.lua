@@ -8575,7 +8575,11 @@ Private.event_prototypes = {
       {
         name = L["Empowered Fully Charged"],
         func = function(trigger, state)
-          if not state.stageTotal or not trigger.use_showChargedDuration then return 0, 0 end
+          if not state.stageTotal or not state.stagesData[state.stageTotal]
+            or not trigger.use_showChargedDuration
+          then
+            return 0, 0
+          end
           return state.duration - state.stagesData[state.stageTotal].finish, 0
         end,
         enable = function(trigger)
