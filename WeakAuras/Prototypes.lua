@@ -6717,11 +6717,11 @@ Private.event_prototypes = {
           itemName = GetItemInfo(itemName)
         end
         local count = GetItemCount(itemName, %s, %s);
-        local quality, qualityTexture
+        local reagentQuality, reagentQualityTexture
         if WeakAuras.IsRetail() and itemName then
-          quality = C_TradeSkillUI.GetItemReagentQualityByItemInfo(itemName)
-          if quality then
-            qualityTexture = CreateAtlasMarkupWithAtlasSize("Professions-Icon-Quality-Tier" .. quality .. "-Small")
+          reagentQuality = C_TradeSkillUI.GetItemReagentQualityByItemInfo(itemName)
+          if reagentQuality then
+            reagentQualityTexture = CreateAtlasMarkupWithAtlasSize("Professions-Icon-Quality-Tier" .. reagentQuality .. "-Small")
           end
         end
       ]];
@@ -6818,8 +6818,8 @@ Private.event_prototypes = {
         test = "true"
       },
       {
-        name = "quality",
-        display = L["Item Quality"],
+        name = "reagentQuality ",
+        display = L["Reagent Quality"],
         store = true,
         test = "true",
         enable = WeakAuras.IsRetail(),
@@ -6827,8 +6827,8 @@ Private.event_prototypes = {
         hidden = true
       },
       {
-        name = "qualityTexture",
-        display = L["Quality Texture"],
+        name = "reagentQualityTexture",
+        display = L["Reagent Quality Texture"],
         store = true,
         test = "true",
         enable = WeakAuras.IsRetail(),
