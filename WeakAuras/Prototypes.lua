@@ -6795,7 +6795,7 @@ Private.event_prototypes = {
       },
       {
         name = "name",
-        init = "C_Item.GetItemNameByID(itemName) or itemName",
+        init = "itemName and itemName ~= '' and C_Item.GetItemNameByID(itemName) or itemName",
         hidden = true,
         store = true,
         test = "true"
