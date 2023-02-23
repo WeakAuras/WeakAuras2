@@ -6742,6 +6742,16 @@ Private.event_prototypes = {
         test = "true"
       },
       {
+        name = "name",
+        display = L["Name"],
+        init = "itemName",
+        type = "string",
+        hidden = true,
+        store = true,
+        test = "true",
+        conditionType = "string"
+      },
+      {
         name = "includeBank",
         display = L["Include Bank"],
         type = "toggle",
@@ -6760,31 +6770,38 @@ Private.event_prototypes = {
       },
       {
         name = "stacks",
+        display = L["Stacks"],
         init = "count",
         hidden = true,
         store = true,
-        test = "true"
+        test = "true",
+        conditionType = "number"
       },
       {
         name = "value",
         init = "count",
         hidden = true,
         store = true,
-        test = "true"
+        test = "true",
+        display = L["Progress Value"],
+        conditionType = "number"
       },
       {
         name = "total",
         init = 0,
         hidden = true,
         store = true,
-        test = "true"
+        test = "true",
+        display = L["Progress Total"],
+        conditionType = "number"
       },
       {
         name = "progressType",
         init = "'static'",
         hidden = true,
         store = true,
-        test = "true"
+        test = "true",
+        conditionType = "number"
       },
       {
         name = "icon",
