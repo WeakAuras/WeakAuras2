@@ -3373,14 +3373,35 @@ function Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTote
   return true
 end
 
-function WeakAuras.GetSpellCost(powerTypeToCheck)
-  local spellID = select(9, WeakAuras.UnitCastingInfo("player"))
-  if spellID then
-    local costTable = GetSpellPowerCost(spellID);
-    for _, costInfo in pairs(costTable) do
-      -- When there is no required aura for a power cost, the API returns an aura ID of 0 and false for hasRequiredAura despite being valid.
-      if costInfo.type == powerTypeToCheck and (costInfo.requiredAuraID == 0 or costInfo.hasRequiredAura) then
-        return costInfo.cost;
+do
+  local classQueueableSpells = {
+    WARRIOR = 78,        -- Heroic Strike
+    HUNTER = 2973,       -- Raptor Strike
+    DRUID = 6807,        -- Maul
+    DEATHKNIGHT = 56815, -- Rune Strike
+  }
+  local class = select(2, UnitClass("player"))
+  local queueableSpell
+  local updateQueueableSpell = function()
+    -- Set the stored spell id to the highest rank of our class's queueable spell
+    queueableSpell = select(7, GetSpellInfo(GetSpellInfo(classQueueableSpells[class])))
+  end
+  local queueableSpellFrame = CreateFrame("Frame")
+  queueableSpellFrame:RegisterEvent("SPELLS_CHANGED")
+  queueableSpellFrame:SetScript("OnEvent", updateQueueableSpell)
+
+  function WeakAuras.GetSpellCost(powerTypeToCheck)
+    local spellID = select(9, WeakAuras.UnitCastingInfo("player"))
+    if not spellID and queueableSpell and IsCurrentSpell(queueableSpell) then
+      spellID = queueableSpell
+    end
+    if spellID then
+      local costTable = GetSpellPowerCost(spellID);
+      for _, costInfo in pairs(costTable) do
+        -- When there is no required aura for a power cost, the API returns an aura ID of 0 and false for hasRequiredAura despite being valid.
+        if costInfo.type == powerTypeToCheck and (costInfo.requiredAuraID == 0 or costInfo.hasRequiredAura) then
+          return costInfo.cost;
+        end
       end
     end
   end

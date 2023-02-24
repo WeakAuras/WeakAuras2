@@ -2859,6 +2859,7 @@ Private.event_prototypes = {
         AddUnitEventForEvents(result, "player", "UNIT_SPELLCAST_STOP")
         AddUnitEventForEvents(result, "player", "UNIT_SPELLCAST_FAILED")
         AddUnitEventForEvents(result, "player", "UNIT_SPELLCAST_SUCCEEDED")
+        AddUnitEventForEvents(result, false, "CURRENT_SPELL_CAST_CHANGED")
       end
       if trigger.use_powertype and trigger.powertype == 99 then
         AddUnitEventForEvents(result, unit, "UNIT_ABSORB_AMOUNT_CHANGED")
@@ -2894,6 +2895,7 @@ Private.event_prototypes = {
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
       local ret = [=[
+        unit = type(unit) == "string" and unit or "player"
         unit = string.lower(unit)
         local name, realm = WeakAuras.UnitNameWithRealm(unit)
         local smart = %s
@@ -2932,7 +2934,7 @@ Private.event_prototypes = {
               state.cost = cost
               state.changed = true
             end
-          elseif ( (event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_SUCCEEDED") and unit == "player") then
+          elseif ( (event == "UNIT_SPELLCAST_START" or event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_FAILED" or event == "UNIT_SPELLCAST_SUCCEEDED") and unit == "player") or event == "CURRENT_SPELL_CAST_CHANGED" then
             local cost = WeakAuras.GetSpellCost(powerTypeToCheck)
             if state.cost ~= cost then
               state.cost = cost
@@ -2972,7 +2974,7 @@ Private.event_prototypes = {
 
       return ret
     end,
-    statesParameter = "unit",
+    statesParameter = "one",
     args = {
       {
         name = "unit",
