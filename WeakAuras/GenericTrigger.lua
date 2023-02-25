@@ -3374,27 +3374,41 @@ function Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTote
 end
 
 do
-  local classQueueableSpells = {
-    WARRIOR = 78,        -- Heroic Strike
-    HUNTER = 2973,       -- Raptor Strike
-    DRUID = 6807,        -- Maul
-    DEATHKNIGHT = 56815, -- Rune Strike
-  }
-  local class = select(2, UnitClass("player"))
-  local queueableSpell
-  local updateQueueableSpell = function()
-    -- Set the stored spell id to the highest rank of our class's queueable spell
-    queueableSpell = select(7, GetSpellInfo(GetSpellInfo(classQueueableSpells[class])))
+  local queuableSpells
+  if WeakAuras.IsClassicEraOrWrath() then
+    local classQueueableSpells = {
+      ["WARRIOR"] = {
+        78,    -- Heroic Strike
+        845,   -- Cleave
+      },
+      ["HUNTER"] = {
+        2973,  -- Raptor Strike
+      },
+      ["DRUID"] = {
+        6807,  -- Maul
+      },
+      ["DEATHKNIGHT"] = {
+        56815, -- Rune Strike
+      },
+    }
+    local class = select(2, UnitClass("player"))
+    queuableSpells = classQueueableSpells[class]
   end
-  local queueableSpellFrame = CreateFrame("Frame")
-  queueableSpellFrame:RegisterEvent("SPELLS_CHANGED")
-  queueableSpellFrame:SetScript("OnEvent", updateQueueableSpell)
+  local function GetQueuedSpell()
+    if queuableSpells then
+      for _, spellID in ipairs(queuableSpells) do
+        -- Check the highest known rank
+        local maxRank = select(7, GetSpellInfo(GetSpellInfo(spellID)))
+        if IsCurrentSpell(maxRank) then
+          return maxRank
+        end
+      end
+    end
+  end
 
   function WeakAuras.GetSpellCost(powerTypeToCheck)
     local spellID = select(9, WeakAuras.UnitCastingInfo("player"))
-    if not spellID and queueableSpell and IsCurrentSpell(queueableSpell) then
-      spellID = queueableSpell
-    end
+    spellID = spellID or GetQueuedSpell()
     if spellID then
       local costTable = GetSpellPowerCost(spellID);
       for _, costInfo in pairs(costTable) do
