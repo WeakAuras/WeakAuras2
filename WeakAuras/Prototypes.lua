@@ -2859,7 +2859,9 @@ Private.event_prototypes = {
         AddUnitEventForEvents(result, "player", "UNIT_SPELLCAST_STOP")
         AddUnitEventForEvents(result, "player", "UNIT_SPELLCAST_FAILED")
         AddUnitEventForEvents(result, "player", "UNIT_SPELLCAST_SUCCEEDED")
-        AddUnitEventForEvents(result, false, "CURRENT_SPELL_CAST_CHANGED")
+        if WeakAuras.IsClassicEraOrWrath() then
+          AddUnitEventForEvents(result, false, "CURRENT_SPELL_CAST_CHANGED")
+        end
       end
       if trigger.use_powertype and trigger.powertype == 99 then
         AddUnitEventForEvents(result, unit, "UNIT_ABSORB_AMOUNT_CHANGED")
