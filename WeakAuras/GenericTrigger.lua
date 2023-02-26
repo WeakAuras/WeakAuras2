@@ -584,7 +584,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           arg1 = data.trigger.unit
         end
       end
-      if arg1 then
+      if arg1 ~= nil then
         if Private.multiUnitUnits[data.trigger.unit] then
           unitForUnitTrigger = arg1
           cloneIdForUnitTrigger = arg1
