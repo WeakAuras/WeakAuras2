@@ -2976,7 +2976,7 @@ Private.event_prototypes = {
 
       return ret
     end,
-    statesParameter = "one",
+    statesParameter = "unit",
     args = {
       {
         name = "unit",
