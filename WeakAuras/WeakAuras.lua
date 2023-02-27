@@ -4320,7 +4320,6 @@ end
 
 local function evaluateTriggerStateTriggers(id)
   local result = false;
-  Private.ActivateAuraEnvironment(id);
 
   if WeakAuras.IsOptionsOpen() then
     -- While the options are open ignore the combination function
@@ -4333,12 +4332,12 @@ local function evaluateTriggerStateTriggers(id)
     result = true;
   else
     if (triggerState[id].disjunctive == "custom" and triggerState[id].triggerLogicFunc) then
+      Private.ActivateAuraEnvironment(id)
       local ok, returnValue = xpcall(triggerState[id].triggerLogicFunc, Private.GetErrorHandlerId(id, L["Custom Trigger Combination"]), triggerState[id].triggers);
+      Private.ActivateAuraEnvironment()
       result = ok and returnValue;
     end
   end
-
-  Private.ActivateAuraEnvironment();
 
   return result;
 end
