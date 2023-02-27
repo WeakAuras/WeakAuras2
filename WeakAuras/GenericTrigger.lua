@@ -4203,6 +4203,7 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
       state.expirationTime = math.huge;
       state.value = nil;
       state.total = nil;
+      Private.ActivateAuraEnvironment(nil)
       return;
     end
     arg1 = type(arg1) == "number" and arg1 or 0;
