@@ -3402,18 +3402,21 @@ if WeakAuras.IsClassicEraOrWrath() then
       queuedSpellFrame:RegisterEvent("CURRENT_SPELL_CAST_CHANGED")
 
       queuedSpellFrame:SetScript("OnEvent", function(self, event)
-        self.queuedSpell = nil
+        local newQueuedSpell
         if queueableSpells then
           for _, spellID in ipairs(queueableSpells) do
             -- Check the highest known rank
             local maxRank = select(7, GetSpellInfo(GetSpellInfo(spellID)))
             if IsCurrentSpell(maxRank) then
-              self.queuedSpell = maxRank
+              newQueuedSpell = maxRank
               break
             end
           end
         end
-        WeakAuras.ScanEvents("WA_UNIT_QUEUED_SPELL_CHANGED", "player")
+        if newQueuedSpell ~= self.queuedSpell then
+          self.queuedSpell = newQueuedSpell
+          WeakAuras.ScanEvents("WA_UNIT_QUEUED_SPELL_CHANGED", "player")
+        end
       end)
     end
   end
