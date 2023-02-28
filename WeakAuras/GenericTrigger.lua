@@ -3374,27 +3374,25 @@ function Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTote
 end
 
 -- Queueable Spells
-do
+if WeakAuras.IsClassicEraOrWrath() then
   local queueableSpells
-  if WeakAuras.IsClassicEraOrWrath() then
-    local classQueueableSpells = {
-      ["WARRIOR"] = {
-        78,    -- Heroic Strike
-        845,   -- Cleave
-      },
-      ["HUNTER"] = {
-        2973,  -- Raptor Strike
-      },
-      ["DRUID"] = {
-        6807,  -- Maul
-      },
-      ["DEATHKNIGHT"] = {
-        56815, -- Rune Strike
-      },
-    }
-    local class = select(2, UnitClass("player"))
-    queueableSpells = classQueueableSpells[class]
-  end
+  local classQueueableSpells = {
+    ["WARRIOR"] = {
+      78,    -- Heroic Strike
+      845,   -- Cleave
+    },
+    ["HUNTER"] = {
+      2973,  -- Raptor Strike
+    },
+    ["DRUID"] = {
+      6807,  -- Maul
+    },
+    ["DEATHKNIGHT"] = {
+      56815, -- Rune Strike
+    },
+  }
+  local class = select(2, UnitClass("player"))
+  queueableSpells = classQueueableSpells[class]
 
   local queuedSpellFrame
   function WeakAuras.WatchForQueuedSpell()
@@ -3427,7 +3425,9 @@ end
 
 function WeakAuras.GetSpellCost(powerTypeToCheck)
   local spellID = select(9, WeakAuras.UnitCastingInfo("player"))
-  spellID = spellID or WeakAuras.GetQueuedSpell()
+  if WeakAuras.IsClassicEraOrWrath() and not spellID then
+    spellID = WeakAuras.GetQueuedSpell()
+  end
   if spellID then
     local costTable = GetSpellPowerCost(spellID);
     for _, costInfo in pairs(costTable) do
