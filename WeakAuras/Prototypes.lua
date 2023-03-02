@@ -4159,7 +4159,8 @@ Private.event_prototypes = {
         test = "true"
       },
     },
-    timedrequired = true
+    delayEvents = true,
+    timedrequired = true,
   },
   ["Spell Activation Overlay"] = {
     type = "spell",
@@ -7196,6 +7197,8 @@ Private.event_prototypes = {
         reloadOptions = true
       },
     },
+    countEvents = true,
+    delayEvents = true,
     timedrequired = true
   },
   ["Spell Cast Succeeded"] = {
@@ -7237,6 +7240,8 @@ Private.event_prototypes = {
         test = "true"
       },
     },
+    countEvents = true,
+    delayEvents = true,
     timedrequired = true
   },
   ["Ready Check"] = {
@@ -7246,6 +7251,7 @@ Private.event_prototypes = {
     },
     name = L["Ready Check"],
     args = {},
+    delayEvents = true,
     timedrequired = true
   },
   ["Combat Events"] = {
@@ -7267,6 +7273,8 @@ Private.event_prototypes = {
         test = "event == %q"
       }
     },
+    countEvents = true,
+    delayEvents = true,
     timedrequired = true
   },
   ["Death Knight Rune"] = {
