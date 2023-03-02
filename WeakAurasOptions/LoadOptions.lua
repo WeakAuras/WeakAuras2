@@ -879,6 +879,38 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
     end
   end
 
+  if prototype.delayEvents then
+    options.use_delay = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Delay"],
+      order = order,
+      get = function()
+        return trigger.use_delay
+      end,
+      set = function(info, v)
+        trigger.use_delay = v
+        WeakAuras.Add(data)
+      end
+    };
+    order = order + 1;
+    options.delay = {
+      type = "input",
+      width = WeakAuras.normalWidth,
+      name = L["Delay"],
+      order = order,
+      disabled = function() return not trigger.use_delay end,
+      validate = ValidateNumeric,
+      get = function()
+        return trigger.delay and tostring(trigger.delay)
+      end,
+      set = function(info, v)
+        trigger.delay = tonumber(v)
+        WeakAuras.Add(data)
+      end
+    };
+    order = order + 1;
+  end
   if prototype.timedrequired then
     options.unevent = {
       type = "select",
