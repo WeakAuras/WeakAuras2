@@ -256,9 +256,17 @@ function ConstructFunction(prototype, trigger)
 
   local input;
   if (prototype.statesParameter) then
-    input = {"state", "event"};
+    if prototype.countEvents then
+      input = {"state", "counter", "event"};
+    else
+      input = {"state", "event"};
+    end
   else
-    input = {"event"};
+    if prototype.countEvents then
+      input = {"counter", "event"};
+    else
+      input = {"event"};
+    end
   end
 
   local required = {};
@@ -325,6 +333,16 @@ function ConstructFunction(prototype, trigger)
   if (prototype.statesParameter == "all") then
     ret = ret .. "  state[cloneId] = state[cloneId] or {}\n"
     ret = ret .. "  state = state[cloneId]\n"
+    ret = ret .. "  state.changed = true\n"
+  end
+
+  if prototype.countEvents then
+    ret = ret .. "  local count = counter:GetNext()\n"
+    if trigger.use_count and type(trigger.count) == "string" and trigger.count ~= "" then
+      ret = ret .. "  local match = counter:Match()"
+      ret = ret .. "  if not match then return false end\n"
+    end
+    ret = ret .. "  state.count = count\n"
     ret = ret .. "  state.changed = true\n"
   end
 
@@ -553,7 +571,12 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
   if(data.triggerFunc) then
     local untriggerCheck = false;
     if (data.statesParameter == "full") then
-      local ok, returnValue = xpcall(data.triggerFunc, errorHandler, allStates, event, arg1, arg2, ...);
+      local ok, returnValue
+      if data.counter then
+        ok, returnValue = xpcall(data.triggerFunc, errorHandler, allStates, data.counter, event, arg1, arg2, ...);
+      else
+        ok, returnValue = xpcall(data.triggerFunc, errorHandler, allStates, event, arg1, arg2, ...);
+      end
       if (ok and returnValue) then
         updateTriggerState = true;
       end
@@ -565,7 +588,12 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         end
       end
     elseif (data.statesParameter == "all") then
-      local ok, returnValue = xpcall(data.triggerFunc, errorHandler, allStates, event, arg1, arg2, ...);
+      local ok, returnValue
+      if data.counter then
+        ok, returnValue = xpcall(data.triggerFunc, errorHandler, allStates, data.counter, event, arg1, arg2, ...);
+      else
+        ok, returnValue = xpcall(data.triggerFunc, errorHandler, allStates, event, arg1, arg2, ...);
+      end
       if( (ok and returnValue) or optionsEvent) then
         for id, state in pairs(allStates) do
           if (state.changed) then
@@ -595,7 +623,12 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         end
         allStates[cloneIdForUnitTrigger] = allStates[cloneIdForUnitTrigger] or {};
         local state = allStates[cloneIdForUnitTrigger];
-        local ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, unitForUnitTrigger, arg1, arg2, ...);
+        local ok, returnValue
+        if data.counter then
+          ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, data.counter, event, unitForUnitTrigger, arg1, arg2, ...);
+        else
+          ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, unitForUnitTrigger, arg1, arg2, ...);
+        end
         if (ok and returnValue) or optionsEvent then
           if(Private.ActivateEvent(id, triggernum, data, state)) then
             updateTriggerState = true;
@@ -607,7 +640,12 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
     elseif (data.statesParameter == "one") then
       allStates[""] = allStates[""] or {};
       local state = allStates[""];
-      local ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, arg1, arg2, ...);
+      local ok, returnValue
+      if data.counter then
+        ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, data.counter, event, arg1, arg2, ...);
+      else
+        ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, arg1, arg2, ...);
+      end
       if (ok and returnValue) or optionsEvent then
         if(Private.ActivateEvent(id, triggernum, data, state, (optionsEvent and data.ignoreOptionsEventErrors) and ignoreErrorHandler or nil)) then
           updateTriggerState = true;
@@ -616,7 +654,12 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         untriggerCheck = true;
       end
     else
-      local ok, returnValue = xpcall(data.triggerFunc, errorHandler, event, arg1, arg2, ...);
+      local ok, returnValue
+      if data.counter then
+        ok, returnValue = xpcall(data.triggerFunc, errorHandler, data.counter, event, arg1, arg2, ...);
+      else
+        ok, returnValue = xpcall(data.triggerFunc, errorHandler, event, arg1, arg2, ...);
+      end
       if (ok and returnValue) or optionsEvent then
         allStates[""] = allStates[""] or {};
         local state = allStates[""];
@@ -760,7 +803,7 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
       local delay = GenericTrigger.GetDelay(data)
       if delay == 0 then
         if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
-          updateTriggerState = true;
+          updateTriggerState = true
         end
       else
         Private.RunTriggerFuncWithDelay(delay, id, triggernum, data, event, arg1, arg2, ...)
@@ -998,6 +1041,7 @@ function GenericTrigger.UnloadDisplays(toUnload)
         auras[id] = nil;
       end
     end
+
     Private.CancelDelayedTrigger(id);
     Private.UnregisterEveryFrameUpdate(id);
   end
@@ -1205,6 +1249,10 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
           end
         end
 
+        if data.counter then
+          data.counter:Reset()
+        end
+
         LoadEvent(id, triggernum, data);
       end
     end
@@ -1254,6 +1302,79 @@ end
 function GenericTrigger.FinishLoadUnload()
 end
 
+do
+  local function ParseCron(pattern)
+    local tests = {}
+    for test in pattern:gmatch("[^ ,]+") do
+      local startString, endString, intervalString = test:match("(%d*)-?(%d*)/?(%d*)")
+      local intervalNumber = tonumber(intervalString)
+      local startNumber = startString == "" and 0 or tonumber(startString) or 0
+      local endNumber = tonumber(endString)
+      if not endNumber then
+        endNumber = intervalNumber and math.huge or startNumber
+      end
+      intervalNumber = intervalNumber or 1
+
+      tinsert(tests, {
+        startNumber = startNumber,
+        endNumber = endNumber,
+        intervalNumber = intervalNumber,
+        Match = function(self, count)
+          return (count >= self.startNumber and count <= self.endNumber and (count - self.startNumber) % self.intervalNumber == 0)
+        end
+      })
+    end
+    return tests
+  end
+
+  function Private.CreateTriggerCounter(pattern)
+    local counter = {
+      count = 0,
+      tests = {
+
+      },
+      fastMatches = {
+      },
+      Reset = function(self)
+        self.count = 0
+      end,
+      GetNext = function(self)
+        self.count = self.count + 1
+        return self.count
+      end,
+    }
+    if pattern then
+      counter.tests = ParseCron(pattern)
+      counter.RunTests = function(self, count)
+        for _, test in ipairs(self.tests) do
+          if test:Match(count) then
+            return true
+          end
+        end
+        return false
+      end
+
+      for i = 1, 20 do
+        counter.fastMatches[i] = counter.RunTests(counter, i)
+      end
+
+      counter.Match = function(self)
+        if self.count <= 20 then
+          return counter.fastMatches[self.count]
+        end
+        return self:RunTests(self.count)
+      end
+
+    else
+      counter.Match = function(self)
+        return true
+      end
+    end
+
+    return counter
+  end
+end
+
 --- Adds a display, creating all internal data structures for all triggers.
 --- @param data auraData
 --- @param region table
@@ -1281,6 +1402,7 @@ function GenericTrigger.Add(data, region)
         local prototype = nil
         local automaticAutoHide
         local duration
+        local counter
         if(Private.category_event_prototype[triggerType]) then
           if not(trigger.event) then
             error("Improper arguments to WeakAuras.Add - trigger type is \"event\" but event is not defined");
@@ -1340,6 +1462,14 @@ function GenericTrigger.Add(data, region)
               duration = tonumber(trigger.duration or "1")
             else
               WeakAuras.prettyPrint("Invalid Prototype found: " .. prototype.name)
+            end
+
+            if prototype.countEvents then
+              if trigger.use_count and type(trigger.count) == "string" and trigger.count ~= "" then
+                counter = Private.CreateTriggerCounter(trigger.count)
+              else
+                counter = Private.CreateTriggerCounter()
+              end
             end
 
             if(prototype) then
@@ -1523,7 +1653,8 @@ function GenericTrigger.Add(data, region)
           automaticAutoHide = automaticAutoHide,
           tsuConditionVariables = tsuConditionVariables,
           prototype = prototype,
-          ignoreOptionsEventErrors = data.information.ignoreOptionsEventErrors
+          ignoreOptionsEventErrors = data.information.ignoreOptionsEventErrors,
+          counter = counter
         };
       end
     end
@@ -4070,6 +4201,10 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
           additional = additional .. "|cFFFF0000%".. triggernum .. "." .. v.name .. "|r - " .. v.display .. "\n";
         end
       end
+      if Private.event_prototypes[trigger.event].countEvents then
+        found = true;
+        additional = additional .. "|cFFFF0000%".. triggernum .. ".count|r - " .. L["Count"] .. "\n";
+      end
 
       if (found) then
         ret = ret .. additional;
@@ -4231,6 +4366,13 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
             end
           end
         end
+      end
+
+      if Private.event_prototypes[trigger.event].countEvents then
+        result.count = {
+          display = L["Count"],
+          type = "number"
+        }
       end
 
       return result;

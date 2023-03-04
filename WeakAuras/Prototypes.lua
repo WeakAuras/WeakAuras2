@@ -4159,6 +4159,7 @@ Private.event_prototypes = {
         test = "true"
       },
     },
+    countEvents = true,
     delayEvents = true,
     timedrequired = true,
   },
@@ -7251,6 +7252,7 @@ Private.event_prototypes = {
     },
     name = L["Ready Check"],
     args = {},
+    statesParameter = "one",
     delayEvents = true,
     timedrequired = true
   },
@@ -7273,6 +7275,7 @@ Private.event_prototypes = {
         test = "event == %q"
       }
     },
+    statesParameter = "one",
     countEvents = true,
     delayEvents = true,
     timedrequired = true

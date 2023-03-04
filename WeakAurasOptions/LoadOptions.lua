@@ -879,6 +879,38 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
     end
   end
 
+  if prototype.countEvents then
+    options.use_count = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Count"],
+      order = order,
+      get = function()
+        return trigger.use_count
+      end,
+      set = function(info, v)
+        trigger.use_count = v
+        WeakAuras.Add(data)
+      end
+    };
+    order = order + 1;
+    options.count = {
+      type = "input",
+      width = WeakAuras.normalWidth,
+      name = L["Count"],
+      desc = L["Occurence of the event, reset when aura is unloaded\nCan be a range of values\nCan have multiple values separated by a comma or a space\n\nExamples:\n2nd 5th and 6th events: 2, 5, 6\n2nd to 6th: 2-6\nevery 2 events: /2\nevery 3 events starting from 2nd: 2/3\nevery 3 events starting from 2nd and ending at 11th: 2-11/3"],
+      order = order,
+      disabled = function() return not trigger.use_count end,
+      get = function()
+        return trigger.count
+      end,
+      set = function(info, v)
+        trigger.count = v
+        WeakAuras.Add(data)
+      end
+    };
+    order = order + 1;
+  end
   if prototype.delayEvents then
     options.use_delay = {
       type = "toggle",
