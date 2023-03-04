@@ -883,7 +883,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
     options.use_count = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Count"],
+      name = WeakAuras.newFeatureString .. L["Count"],
       order = order,
       get = function()
         return trigger.use_count
@@ -915,7 +915,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
     options.use_delay = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Delay"],
+      name = WeakAuras.newFeatureString .. L["Delay"],
       order = order,
       get = function()
         return trigger.use_delay
