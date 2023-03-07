@@ -766,9 +766,8 @@ if WeakAuras.IsRetail() then
 
   function WeakAuras.CheckTalentSpellId(spellId)
     if selectedTalents[spellId] then
-      local spellName, _, icon = GetSpellInfo(spellId)
-      local rank = selectedTalents[spellId]
-      return rank > 0
+      -- test rank
+      return selectedTalents[spellId] > 0
     end
     return false
   end
