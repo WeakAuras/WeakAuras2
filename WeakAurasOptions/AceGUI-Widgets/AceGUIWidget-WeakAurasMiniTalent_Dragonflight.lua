@@ -6,7 +6,7 @@ end
 
 local keepOpenForReload = {}
 
-local widgetType, widgetVersion = "WeakAurasMiniTalent", 2
+local widgetType, widgetVersion = "WeakAurasMiniTalent", 3
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(widgetType) or 0) >= widgetVersion then
   return
@@ -19,7 +19,7 @@ local buttonSizePadded = 45
 local function Button_ShowToolTip(self)
   if self.spellId then
     GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-    GameTooltip:SetSpellByID(self.spellId)
+    GameTooltip:SetSpellByID(self.spellId, false, false, true)
   end
 end
 local function Button_HideToolTip()
@@ -250,7 +250,7 @@ local methods = {
         self.talentIdToButton[talentId] = button
         local spellId = data[2]
         button.spellId = spellId
-        local icon = select(3, GetSpellInfo(spellId))
+        local icon = select(8, GetSpellInfo(spellId))
         if icon then
           button:SetNormalTexture(icon)
         end
