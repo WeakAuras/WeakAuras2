@@ -357,7 +357,7 @@ function ConstructFunction(prototype, trigger)
   return ret;
 end
 
-function Private.EndEvent(id, triggernum, force, state)
+function Private.EndEvent(state)
   if state then
     if (state.show ~= false and state.show ~= nil) then
       state.show = false;
@@ -678,7 +678,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           if ok and returnValue then
             for id, state in pairs(allStates) do
               if (state.changed) then
-                if (Private.EndEvent(id, triggernum, nil, state)) then
+                if (Private.EndEvent(state)) then
                   updateTriggerState = true;
                 end
               end
@@ -692,7 +692,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
             if state then
               local ok, returnValue =  xpcall(data.untriggerFunc, errorHandler, state, event, unitForUnitTrigger, arg2, ...);
               if ok and returnValue then
-                if (Private.EndEvent(id, triggernum, nil, state)) then
+                if (Private.EndEvent(state)) then
                   updateTriggerState = true;
                 end
               end
@@ -710,7 +710,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         if data.untriggerFunc then
           local ok, returnValue = xpcall(data.untriggerFunc, errorHandler, state, event, arg1, arg2, ...);
           if (ok and returnValue) then
-            if (Private.EndEvent(id, triggernum, nil, state)) then
+            if (Private.EndEvent(state)) then
               updateTriggerState = true;
             end
           end
@@ -721,7 +721,7 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           if ok and returnValue then
             allStates[""] = allStates[""] or {};
             local state = allStates[""];
-            if(Private.EndEvent(id, triggernum, nil, state)) then
+            if(Private.EndEvent(state)) then
               updateTriggerState = true;
             end
           end
