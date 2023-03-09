@@ -1383,6 +1383,8 @@ function GenericTrigger.Add(data, region)
   events[id] = nil;
   watched_trigger_events[id] = nil
 
+  local warnAboutCLEUEvents = false
+
   for triggernum, triggerData in ipairs(data.triggers) do
     local trigger, untrigger = triggerData.trigger, triggerData.untrigger
     local triggerType;
@@ -1557,6 +1559,9 @@ function GenericTrigger.Add(data, region)
               local isCLEU = false
               local isTrigger = false
               local isUnitEvent = false
+              if event == "CLEU" or event == "COMBAT_LOG_EVENT_UNFILTERED" then
+                warnAboutCLEUEvents = true
+              end
               for i in event:gmatch("[^:]+") do
                 if not trueEvent then
                   trueEvent = string.upper(i)
@@ -1658,6 +1663,14 @@ function GenericTrigger.Add(data, region)
         };
       end
     end
+  end
+
+  if warnAboutCLEUEvents then
+    Private.AuraWarnings.UpdateWarning(data.uid, "spamy_event_warning", "warning",
+                L["COMBAT_LOG_EVENT_UNFILTERED with no filter can trigger frame drops in raid environment. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Custom-Triggers#events"],
+                  true)
+  else
+    Private.AuraWarnings.UpdateWarning(data.uid, "spamy_event_warning")
   end
 end
 
