@@ -104,6 +104,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       type = "description",
       name = function()
         local events = trigger.custom_type == "event" and trigger.events2 or trigger.events
+        -- Check for errors
         for _, event in pairs(WeakAuras.split(events)) do
           local trueEvent
           for i in event:gmatch("[^:]+") do
@@ -131,6 +132,13 @@ local function GetCustomTriggerOptions(data, triggernum)
             end
           end
         end
+
+        -- Check for warnings
+        for _, event in pairs(WeakAuras.split(events)) do
+          if event == "CLEU" or event == "COMBAT_LOG_EVENT_UNFILTERED" then
+            return "|cFFFF0000"..L["COMBAT_LOG_EVENT_UNFILTERED with no filter can trigger frame drops in raid environment."]
+          end
+        end
         return ""
       end,
       width = WeakAuras.doubleWidth,
@@ -145,6 +153,7 @@ local function GetCustomTriggerOptions(data, triggernum)
           return true
         end
         local events = trigger.custom_type == "event" and trigger.events2 or trigger.events
+        -- Check for errors
         for _, event in pairs(WeakAuras.split(events)) do
           local trueEvent
           for i in event:gmatch("[^:]+") do
@@ -169,6 +178,12 @@ local function GetCustomTriggerOptions(data, triggernum)
                 end
               end
             end
+          end
+        end
+        -- Check for warnings
+        for _, event in pairs(WeakAuras.split(events)) do
+          if event == "CLEU" or event == "COMBAT_LOG_EVENT_UNFILTERED" then
+            return false
           end
         end
         return true
