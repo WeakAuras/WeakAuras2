@@ -61,6 +61,10 @@ Private.character_types = {
   npc = L["Non-player Character"]
 }
 
+Private.spec_position_types = {
+  RANGED = L["Ranged"],
+  MELEE = L["Melee"]
+}
 
 Private.group_sort_types = {
   ascending = L["Ascending"],

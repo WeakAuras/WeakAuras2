@@ -1626,6 +1626,16 @@ Private.load_prototype = {
       events = {"PLAYER_ROLES_ASSIGNED", "PLAYER_TALENT_UPDATE"}
     },
     {
+      name = "spec_position",
+      display = WeakAuras.newFeatureString .. L["Spec Position"],
+      type = "multiselect",
+      values = "spec_position_types",
+      init = WeakAuras.IsRetail() and "arg" or nil,
+      enable = WeakAuras.IsRetail(),
+      hidden = not WeakAuras.IsRetail(),
+      events = {"ACTIVE_TALENT_GROUP_CHANGED"}
+    },
+    {
       name = "raid_role",
       display = L["Raid Role"],
       type = "multiselect",

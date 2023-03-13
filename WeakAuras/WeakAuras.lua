@@ -1556,7 +1556,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
 
   local player, realm, zone = UnitName("player"), GetRealmName(), GetRealZoneText()
   --- @type boolean|number, boolean|number, boolean|string, boolean|string
-  local spec, specId, role, raidRole = false, false, false, false
+  local specId, role, position, raidRole = false, false, false, false
   local inPetBattle, vehicle, vehicleUi = false, false, false
   local dragonriding
   local zoneId = C_Map.GetBestMapForUnit("player")
@@ -1580,7 +1580,6 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     if raidID then
       raidRole = select(10, GetRaidRosterInfo(raidID))
     end
-    spec = 1
     role = "none"
     if WeakAuras.IsWrathClassic() then
       role = UnitGroupRolesAssigned("player")
@@ -1594,9 +1593,7 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     end
   else
     dragonriding = Private.IsDragonriding()
-    spec = GetSpecialization()
-    specId = GetSpecializationInfo(spec)
-    role = select(5, GetSpecializationInfo(spec))
+    specId, role, position = Private.LibSpecWrapper.SpecRolePositionForUnit("player")
     inPetBattle = C_PetBattles.IsInBattle()
     vehicle = UnitInVehicle('player') or UnitOnTaxi('player')
     vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar() or HasVehicleActionBar()
@@ -1643,8 +1640,8 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, vehicleUi, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidRole, raidMemberType)
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, vehicleUi, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidRole, raidMemberType)
       elseif WeakAuras.IsRetail() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, group, player, realm, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidMemberType, affixes)
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, group, player, realm, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidMemberType, affixes)
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, group, player, realm, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, position, raidMemberType, affixes)
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, group, player, realm, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, position, raidMemberType, affixes)
       end
 
       if(shouldBeLoaded and not loaded[id]) then
