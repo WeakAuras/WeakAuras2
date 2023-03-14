@@ -748,7 +748,14 @@ if WeakAuras.IsRetail() then
     WeakAuras.ScanEvents("WA_TALENT_UPDATE")
 
     if (event == "WA_DELAYED_PLAYER_ENTERING_WORLD" or event == "PLAYER_TALENT_UPDATE") then
-      C_Timer.After(1, Private.UpdateTalentInfo)
+      C_Timer.After(1, function()
+        local spec = GetSpecialization()
+        if type(spec) == "number" and spec > 0 then
+          local specId = GetSpecializationInfo(spec)
+          Private.talentInfo[specId] = nil
+          Private.GetTalentData(specId)
+        end
+      end)
     end
 
     Private.StopProfileSystem("talent")
@@ -1049,13 +1056,13 @@ local function valuesForTalentFunction(trigger)
     if WeakAuras.IsRetail() then
       local single_class_and_spec = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
       if single_class_and_spec then
-        return Private.talentInfo[single_class_and_spec]
+        return Private.GetTalentData(single_class_and_spec)
       else
         -- this should never happen
         return {}
       end
     elseif WeakAuras.IsWrathClassic() then
-      return Private.talentInfo[single_class]
+      return Private.GetTalentData(single_class)
     else -- classic & tbc
       if single_class and Private.talent_types_specific[single_class] then
         return Private.talent_types_specific[single_class]
@@ -1267,10 +1274,13 @@ Private.load_prototype = {
       enableTest = function(trigger, talent, arg)
         if WeakAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
-          if specId and type(Private.talentInfo[specId]) == "table" then
-            for _, v in ipairs(Private.talentInfo[specId]) do
-              if talent == v[2] then
-                return true
+          if specId then
+            local talentData = Private.GetTalentData(specId)
+            if type(talentData) == "table" then
+              for _, v in ipairs(talentData) do
+                if talent == v[2] then
+                  return true
+                end
               end
             end
           end
@@ -1280,8 +1290,11 @@ Private.load_prototype = {
       end,
       multiConvertKey = WeakAuras.IsRetail() and function(trigger, key)
         local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
-        if specId and type(Private.talentInfo[specId]) == "table" and Private.talentInfo[specId][key] then
-          return Private.talentInfo[specId][key][2]
+        if specId then
+          local talentData = Private.GetTalentData(specId)
+          if type(talentData) == "table" and talentData[key] then
+            return talentData[key][2]
+          end
         end
       end or nil,
       events = (WeakAuras.IsClassicEra() and {"CHARACTER_POINTS_CHANGED"})
@@ -1324,10 +1337,13 @@ Private.load_prototype = {
       enableTest = function(trigger, talent, arg)
         if WeakAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
-          if specId and type(Private.talentInfo[specId]) == "table" then
-            for _, v in ipairs(Private.talentInfo[specId]) do
-              if talent == v[2] then
-                return true
+          if specId then
+            local talentData = Private.GetTalentData(specId)
+            if type(talentData) == "table" then
+              for _, v in ipairs(talentData) do
+                if talent == v[2] then
+                  return true
+                end
               end
             end
           end
@@ -1337,8 +1353,11 @@ Private.load_prototype = {
       end,
       multiConvertKey = WeakAuras.IsRetail() and function(trigger, key)
         local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
-        if specId and type(Private.talentInfo[specId]) == "table" and Private.talentInfo[specId][key] then
-          return Private.talentInfo[specId][key][2]
+        if specId then
+          local talentData = Private.GetTalentData(specId)
+          if type(talentData) == "table" and talentData[key] then
+            return talentData[key][2]
+          end
         end
       end or nil,
       events = (WeakAuras.IsClassicEra() and {"CHARACTER_POINTS_CHANGED"})
@@ -1383,10 +1402,13 @@ Private.load_prototype = {
       enableTest = function(trigger, talent, arg)
         if WeakAuras.IsRetail() then
           local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
-          if specId and type(Private.talentInfo[specId]) == "table" then
-            for _, v in ipairs(Private.talentInfo[specId]) do
-              if talent == v[2] then
-                return true
+          if specId then
+            local talentData = Private.GetTalentData(specId)
+            if type(talentData) == "table" then
+              for _, v in ipairs(talentData) do
+                if talent == v[2] then
+                  return true
+                end
               end
             end
           end
@@ -1396,8 +1418,11 @@ Private.load_prototype = {
       end,
       multiConvertKey = WeakAuras.IsRetail() and function(trigger, key)
         local specId = Private.checkForSingleLoadCondition(trigger, "class_and_spec")
-        if specId and type(Private.talentInfo[specId]) == "table" and Private.talentInfo[specId][key] then
-          return Private.talentInfo[specId][key][2]
+        if specId then
+          local talentData = Private.GetTalentData(specId)
+          if type(talentData) == "table" and talentData[key] then
+            return talentData[key][2]
+          end
         end
       end or nil,
       events = (WeakAuras.IsClassicEra() and {"CHARACTER_POINTS_CHANGED"})
@@ -6302,8 +6327,11 @@ Private.event_prototypes = {
             end
             if classId and trigger.spec then
               local specId = GetSpecializationInfoForClassID(classId, trigger.spec)
-              if specId and Private.talentInfo[specId] then
-                return Private.talentInfo[specId]
+              if specId then
+                local talentData = Private.GetTalentData(specId)
+                if talentData then
+                  return talentData
+                end
               end
             end
             return {}
@@ -6329,8 +6357,11 @@ Private.event_prototypes = {
           end
           if classId and trigger.spec then
             local specId = GetSpecializationInfoForClassID(classId, trigger.spec)
-            if specId and Private.talentInfo[specId] and Private.talentInfo[specId][key] then
-              return Private.talentInfo[specId][key][2]
+            if specId then
+              local talentData = Private.GetTalentData(specId)
+              if type(talentData) == "table" and talentData[key] then
+                return talentData[key][2]
+              end
             end
           end
         end or nil,
