@@ -356,9 +356,9 @@ local function SetAnimAlpha(self, alpha)
   end
   self.animAlpha = alpha;
   if (WeakAuras.IsOptionsOpen()) then
-    self:SetAlpha(max(self.animAlpha or self.alpha or 1, 0.5));
+    xpcall(self.SetAlpha, Private.GetErrorHandlerId(self.id, L["Custom Fade Animation"]), self, max(self.animAlpha or self.alpha or 1, 0.5))
   else
-    self:SetAlpha(self.animAlpha or self.alpha or 1);
+    xpcall(self.SetAlpha, Private.GetErrorHandlerId(self.id, L["Custom Fade Animation"]), self, self.animAlpha or self.alpha or 1)
   end
   self.subRegionEvents:Notify("AlphaChanged")
 end
