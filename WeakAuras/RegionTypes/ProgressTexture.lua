@@ -115,7 +115,7 @@ local properties = {
     type = "number",
     min = 0,
     max = 360,
-    step = 10,
+    bigStep = 10,
     default = 0
   },
   inverse = {
