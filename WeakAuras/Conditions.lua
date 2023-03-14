@@ -799,20 +799,20 @@ local function runDynamicConditionFunctions(funcs)
   end
 end
 
-local function handleDynamicConditions(self, event)
+local function handleDynamicConditions(self, event, onlyUpdateState)
   Private.StartProfileSystem("dynamic conditions")
   if (globalDynamicConditionFuncs[event]) then
     for i, func in ipairs(globalDynamicConditionFuncs[event]) do
       func(globalConditionState);
     end
   end
-  if (dynamicConditions[event]) then
+  if (dynamicConditions[event] and not onlyUpdateState) then
     runDynamicConditionFunctions(dynamicConditions[event]);
   end
   Private.StopProfileSystem("dynamic conditions")
 end
 
-local function handleDynamicConditionsPerUnit(self, event, unit)
+local function handleDynamicConditionsPerUnit(self, event, unit, onlyUpdateState)
   Private.StartProfileSystem("dynamic conditions")
   if unit then
     local unitEvent = event..":"..unit
@@ -821,7 +821,7 @@ local function handleDynamicConditionsPerUnit(self, event, unit)
         func(globalConditionState);
       end
     end
-    if (dynamicConditions[unitEvent]) then
+    if (dynamicConditions[unitEvent] and not onlyUpdateState) then
       runDynamicConditionFunctions(dynamicConditions[unitEvent]);
     end
   end
@@ -910,7 +910,6 @@ function Private.RegisterForGlobalConditions(uid)
       if (not dynamicConditionsFrame.onUpdate) then
         dynamicConditionsFrame:SetScript("OnUpdate", handleDynamicConditionsOnUpdate);
         dynamicConditionsFrame.onUpdate = true;
-        handleDynamicConditionsOnUpdate(dynamicConditionsFrame, event)
       end
     else
       local unitEvent, unit = event:match("([^:]+):([^:]+)")
@@ -921,10 +920,10 @@ function Private.RegisterForGlobalConditions(uid)
           dynamicConditionsFrame.units[unit]:SetScript("OnEvent", handleDynamicConditionsPerUnit);
         end
         pcall(dynamicConditionsFrame.units[unit].RegisterUnitEvent, dynamicConditionsFrame.units[unit], unitEvent, unit);
-        handleDynamicConditionsPerUnit(dynamicConditionsFrame, event, unit)
+        handleDynamicConditionsPerUnit(dynamicConditionsFrame, event, unit, true)
       else
         pcall(dynamicConditionsFrame.RegisterEvent, dynamicConditionsFrame, event);
-        handleDynamicConditions(dynamicConditionsFrame, event)
+        handleDynamicConditions(dynamicConditionsFrame, event, true)
       end
     end
   end
