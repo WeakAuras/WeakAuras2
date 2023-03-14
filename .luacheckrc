@@ -31,6 +31,7 @@ ignore = {
 globals = {
 	"_G",
 	"bit",
+	"Constants",
 
 	-- misc custom
 	"AceGUIWeakAurasMultiLineEditBoxInsertLink",

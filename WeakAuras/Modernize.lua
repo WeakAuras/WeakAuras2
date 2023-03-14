@@ -1554,8 +1554,11 @@ function Private.Modernize(data)
         if load[field] and load[field].multi then
           local newData = {}
           for key, value in pairs(load[field].multi) do
-            if value ~= nil and Private.talentInfo[specId] and Private.talentInfo[specId][key] then
-              newData[Private.talentInfo[specId][key][2]] = value
+            if value ~= nil then
+              local talentData = Private.GetTalentData(specId)
+              if type(talentData) == "table" and talentData[key] then
+                newData[talentData[key][2]] = value
+              end
             end
           end
           load[field].multi = newData
@@ -1578,8 +1581,11 @@ function Private.Modernize(data)
         if load[field] and load[field].multi then
           local newData = {}
           for key, value in pairs(load[field].multi) do
-            if value ~= nil and Private.talentInfo[specId] and Private.talentInfo[specId][key] then
-              newData[Private.talentInfo[specId][key][2]] = value
+            if value ~= nil then
+              local talentData = Private.GetTalentData(specId)
+              if type(talentData) == "table" and talentData[key] then
+                newData[talentData[key][2]] = value
+              end
             end
           end
           load[field].multi = newData
