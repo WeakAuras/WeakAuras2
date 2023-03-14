@@ -1667,8 +1667,7 @@ function GenericTrigger.Add(data, region)
 
   if warnAboutCLEUEvents then
     Private.AuraWarnings.UpdateWarning(data.uid, "spamy_event_warning", "warning",
-                L["COMBAT_LOG_EVENT_UNFILTERED with no filter can trigger frame drops in raid environment. Find more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Custom-Triggers#events"],
-                  true)
+                L["COMBAT_LOG_EVENT_UNFILTERED without a filter is generally advised against as it’s very performance costly.\nFind more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Custom-Triggers#events"])
   else
     Private.AuraWarnings.UpdateWarning(data.uid, "spamy_event_warning")
   end
