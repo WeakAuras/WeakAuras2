@@ -6154,7 +6154,7 @@ Private.event_prototypes = {
           local column = %s;
           local active = false
           local name, icon, _, _, rank = GetTalentInfo(tier, column)
-          if rank > 0 then
+          if rank and rank > 0 then
             active = true;
             activeName = name;
             activeIcon = icon;
