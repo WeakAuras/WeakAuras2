@@ -186,7 +186,7 @@ local function modify(parent, region, data)
       local oldIsAtlas = region.texture.IsAtlas
       WeakAuras.SetTextureOrAtlas(region.texture, region.state.texture, data.textureWrapMode, data.textureWrapMode)
       if region.texture.IsAtlas ~= oldIsAtlas then
-        region:DoTexCoord()
+        DoTexCoord()
       end
     end
   end
