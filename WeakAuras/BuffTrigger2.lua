@@ -65,7 +65,7 @@ if WeakAuras.IsClassicEra() then
   UnitAura = LCD.UnitAuraWithBuffs
 end
 
-local newAPI = false
+local newAPI = WeakAuras.IsRetail()
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
@@ -1548,6 +1548,9 @@ do
   local _time, _unit, _filter
 
   local function HandleAura(aura)
+    if (not aura or not aura.name) then
+      return
+    end
     local debuffClass = aura.dispelName
     if debuffClass == nil then
       debuffClass = "none"
@@ -1684,6 +1687,9 @@ do
   local _matchDataChanged, _time, _unit, _filter, _scanFuncNameGroup, _scanFuncSpellIdGroup, _scanFuncGeneralGroup, _scanFuncName, _scanFuncSpellId, _scanFuncGeneral
 
   local function HandleAura(aura)
+    if (not aura or not aura.name) then
+      return
+    end
     local debuffClass = aura.dispelName
     if debuffClass == nil then
       debuffClass = "none"
@@ -3593,6 +3599,9 @@ local AugmentMatchDataMulti
 do
   local _matchData, _unit, _sourceGUID, _nameKey, _spellKey
   local function HandleAura(aura)
+    if (not aura or not aura.name) then
+      return
+    end
     local debuffClass = aura.dispelName
     if debuffClass == nil then
       debuffClass = "none"
@@ -3710,6 +3719,9 @@ local CheckAurasMulti
 do
   local _base, _unit
   local function HandleAura(aura)
+    if (not aura or not aura.name) then
+      return
+    end
     local debuffClass = aura.dispelName
     if debuffClass == nil then
       debuffClass = "none"
