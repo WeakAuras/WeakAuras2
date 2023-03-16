@@ -1559,7 +1559,7 @@ do
     else
       debuffClass = string.lower(debuffClass)
     end
-    UpdateMatchData(_time, matchDataChanged, _unit, nil, aura.auraInstanceID, _filter, aura.name, aura.icon, aura.applications, debuffClass, aura.duration, aura.expirationTime, aura.sourceUnit, aura.isStealable, aura.isBossAura, aura.isFromPlayerorPlayerPet, aura.spellId, aura.timeMod, aura.points)
+    UpdateMatchData(_time, matchDataChanged, _unit, nil, aura.auraInstanceID, _filter, aura.name, aura.icon, aura.applications, debuffClass, aura.duration, aura.expirationTime, aura.sourceUnit, aura.isStealable, aura.isBossAura, aura.isFromPlayerOrPlayerPet, aura.spellId, aura.timeMod, aura.points)
   end
 
   PrepareMatchData = function(unit, filter)
@@ -1700,7 +1700,7 @@ do
     end
 
     local name, spellId, auraInstanceID = aura.name, aura.spellId, aura.auraInstanceID
-    local updatedMatchData = UpdateMatchData(_time, _matchDataChanged, _unit, nil, auraInstanceID, _filter, name, aura.icon, aura.applications, debuffClass, aura.duration, aura.expirationTime, aura.sourceUnit, aura.isStealable, aura.isBossAura, aura.isFromPlayerorPlayerPet, spellId, aura.timeMod, aura.points)
+    local updatedMatchData = UpdateMatchData(_time, _matchDataChanged, _unit, nil, auraInstanceID, _filter, name, aura.icon, aura.applications, debuffClass, aura.duration, aura.expirationTime, aura.sourceUnit, aura.isStealable, aura.isBossAura, aura.isFromPlayerOrPlayerPet, spellId, aura.timeMod, aura.points)
 
     if updatedMatchData then -- Aura data changed, check against triggerInfos
       CheckScanFuncs(_scanFuncName and _scanFuncName[name], _unit, _filter, auraInstanceID)
@@ -3614,7 +3614,7 @@ do
     local name = aura.name
     local spellId = aura.spellId
     if (name == _nameKey or spellId == _spellKey) and _sourceGUID == auraSourceGuid then
-      local changed = AugmentMatchDataMultiWith(_matchData, _unit, name, aura.icon, aura.applications, debuffClass, aura.duration, aura.expirationTime, aura.sourceUnit, aura.isStealable, aura.isBossAura, aura.isFromPlayerorPlayerPet, spellId, aura.timeMod)
+      local changed = AugmentMatchDataMultiWith(_matchData, _unit, name, aura.icon, aura.applications, debuffClass, aura.duration, aura.expirationTime, aura.sourceUnit, aura.isStealable, aura.isBossAura, aura.isFromPlayerOrPlayerPet, spellId, aura.timeMod)
       return changed
     end
   end
@@ -3734,7 +3734,7 @@ do
     local name = aura.name
     local spellId = aura.spellId
     if _base[name] and _base[name][auraCasterGUID] then
-      local changed = AugmentMatchDataMultiWith(_base[name][auraCasterGUID], _unit, name, aura.icon, aura.applications, debuffClass, aura.duration, aura.expirationTime, aura.sourceUnit, aura.isStealable, aura.isBossAura, aura.isFromPlayerorPlayerPet, spellId, aura.timeMod)
+      local changed = AugmentMatchDataMultiWith(_base[name][auraCasterGUID], _unit, name, aura.icon, aura.applications, debuffClass, aura.duration, aura.expirationTime, aura.sourceUnit, aura.isStealable, aura.isBossAura, aura.isFromPlayerOrPlayerPet, spellId, aura.timeMod)
       if changed then
         for id, idData in pairs(_base[name][auraCasterGUID].auras) do
           for triggernum in pairs(idData) do
@@ -3745,7 +3745,7 @@ do
       end
     end
     if _base[spellId] and _base[spellId][auraCasterGUID] then
-      local changed = AugmentMatchDataMultiWith(_base[spellId][auraCasterGUID], _unit, aura.name, aura.icon, aura.applications, debuffClass, aura.duration, aura.expirationTime, aura.sourceUnit, aura.isStealable, aura.isBossAura, aura.isFromPlayerorPlayerPet, spellId, aura.timeMod)
+      local changed = AugmentMatchDataMultiWith(_base[spellId][auraCasterGUID], _unit, aura.name, aura.icon, aura.applications, debuffClass, aura.duration, aura.expirationTime, aura.sourceUnit, aura.isStealable, aura.isBossAura, aura.isFromPlayerOrPlayerPet, spellId, aura.timeMod)
       if changed then
         for id, idData in pairs(_base[spellId][auraCasterGUID].auras) do
           for triggernum in pairs(idData) do
