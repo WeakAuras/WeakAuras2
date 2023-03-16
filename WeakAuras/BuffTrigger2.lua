@@ -65,7 +65,7 @@ if WeakAuras.IsClassicEra() then
   UnitAura = LCD.UnitAuraWithBuffs
 end
 
-local newAPI = WeakAuras.IsRetail()
+local newAPI = false
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
