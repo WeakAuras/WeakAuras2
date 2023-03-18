@@ -7213,26 +7213,32 @@ Private.event_prototypes = {
   },
   ["Spell Cast Succeeded"] = {
     type = "event",
-    events = {
-      ["events"] = {"UNIT_SPELLCAST_SUCCEEDED"}
-    },
+    events = function(trigger)
+      local result = {}
+      local unit = trigger.unit
+      AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_SUCCEEDED")
+      return result
+    end,
     name = L["Spell Cast Succeeded"],
-    statesParameter = "one",
+    statesParameter = "unit",
     args = {
       {
         name = "unit",
         init = "arg",
         display = L["Caster Unit"],
         type = "unit",
-        test = "UnitIsUnit(unit or '', %q)",
-        values = "actual_unit_types_with_specific",
+        test = "true",
+        values = "actual_unit_types_cast",
         store = true,
         conditionType = "select",
         conditionTest = function(state, needle, op)
           return state and state.show and (UnitIsUnit(needle, state.unit or '') == (op == "=="))
         end
       },
-      {}, -- castGUID
+      {
+      },
+      { -- castGUID
+      },
       {
         name = "spellId",
         display = L["Spell Id"],
