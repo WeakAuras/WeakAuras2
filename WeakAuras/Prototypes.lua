@@ -7255,6 +7255,13 @@ Private.event_prototypes = {
         store = true,
         test = "true"
       },
+      {
+        name = "name",
+        hidden = true,
+        init = "GetSpellInfo(spellId)",
+        store = true,
+        test = "true"
+      },
     },
     countEvents = true,
     delayEvents = true,
