@@ -325,6 +325,8 @@ WeakAuras.BuildInfo = select(4, GetBuildInfo())
 function WeakAuras.IsClassicEra()
   return flavor == 1
 end
+-- save compatibility with old auras
+WeakAuras.IsClassic = WeakAuras.IsClassicEra
 
 function WeakAuras.IsWrathClassic()
   return flavor == 3
