@@ -1,4 +1,4 @@
-## Interface: 100005
+## Interface: 100007
 ## Title: WeakAuras Model Paths
 ## Author: The WeakAuras Team
 ## Version: @project-version@
