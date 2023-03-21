@@ -1789,6 +1789,8 @@ function addAuthorModeOption(options, args, data, order, prefix, i)
           local dereferencedParent = parent.references[id].options[parent.references[id].index]
           if dereferencedParent.nameSource == optionData.index then
             dereferencedParent.nameSource = 0
+          elseif dereferencedParent.nameSource > optionData.index then
+            dereferencedParent.nameSource = dereferencedParent.nameSource - 1
           end
         end
         WeakAuras.Add(childData)
