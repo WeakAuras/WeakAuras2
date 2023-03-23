@@ -1327,7 +1327,7 @@ do
     return tests
   end
 
-  function Private.CreateTriggerCounter(pattern)
+  function Private.ExecEnv.CreateTriggerCounter(pattern)
     local counter = {
       count = 0,
       tests = {
@@ -1341,6 +1341,9 @@ do
       GetNext = function(self)
         self.count = self.count + 1
         return self.count
+      end,
+      SetCount = function(self, count)
+        self.count = count
       end,
     }
     if pattern then
@@ -1468,9 +1471,9 @@ function GenericTrigger.Add(data, region)
 
             if prototype.countEvents then
               if trigger.use_count and type(trigger.count) == "string" and trigger.count ~= "" then
-                counter = Private.CreateTriggerCounter(trigger.count)
+                counter = Private.ExecEnv.CreateTriggerCounter(trigger.count)
               else
-                counter = Private.CreateTriggerCounter()
+                counter = Private.ExecEnv.CreateTriggerCounter()
               end
             end
 
@@ -3186,7 +3189,7 @@ do
     end
   end
 
-  function Private.ExecEnv.DBMTimerMatches(timerId, id, message, operator, spellId, dbmType, count)
+  function Private.ExecEnv.DBMTimerMatches(timerId, id, message, operator, spellId, dbmType, counter)
     if not bars[timerId] then
       return false
     end
@@ -3213,8 +3216,11 @@ do
         end
       end
     end
-    if count and count ~= "" and count ~= v.count then
-      return false
+    if counter then
+      counter:SetCount(tonumber(v.count) or 0)
+      if not counter:Match() then
+        return false
+      end
     end
     if dbmType and dbmType ~= v.dbmType then
       return false
@@ -3463,7 +3469,7 @@ do
     state.isCooldown = bar.isCooldown
   end
 
-  function Private.ExecEnv.BigWigsTimerMatches(id, message, operator, spellId, count, cast, cooldown)
+  function Private.ExecEnv.BigWigsTimerMatches(id, message, operator, spellId, counter, cast, cooldown)
     if not bars[id] then
       return false
     end
@@ -3488,8 +3494,11 @@ do
         end
       end
     end
-    if count and count ~= "" and count ~= v.count then
-      return false
+    if counter then
+      counter:SetCount(tonumber(v.count) or 0)
+      if not counter:Match() then
+        return false
+      end
     end
     if cast ~= nil and v.cast ~= cast then
       return false
@@ -3512,10 +3521,10 @@ do
     return bars[id]
   end
 
-  function WeakAuras.GetBigWigsTimer(text, operator, spellId, extendTimer, count, cast)
+  function WeakAuras.GetBigWigsTimer(text, operator, spellId, extendTimer, counter, cast)
     local bestMatch
     for id, bar in pairs(bars) do
-      if Private.ExecEnv.BigWigsTimerMatches(id, text, operator, spellId, count, cast)
+      if Private.ExecEnv.BigWigsTimerMatches(id, text, operator, spellId, counter, cast)
       and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
       and bar.expirationTime + extendTimer > GetTime()
       then
