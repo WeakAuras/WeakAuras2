@@ -3854,10 +3854,14 @@ function WeakAuras.GetAuraInstanceTooltipInfo(unit, auraInstanceId, filter)
     end
     local secondLine = tooltipData and tooltipData.lines[2] -- This is the line we want
     if secondLine then
-      for _, arg in ipairs(secondLine.args) do
-        if arg.field == "leftText" then
-          tooltipText = arg.stringVal or ""
+      if type(secondLine.args) == "table" then
+        for _, arg in ipairs(secondLine.args) do
+          if arg.field == "leftText" then
+            tooltipText = arg.stringVal or ""
+          end
         end
+      elseif secondLine.leftText then
+        tooltipText = secondLine.leftText
       end
     end
     return Private.ParseTooltipText(tooltipText)
