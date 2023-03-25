@@ -1511,6 +1511,7 @@ templates.class.ROGUE = {
         { spell = 703, type = "debuff", unit = "target" }, -- Garrote
         { spell = 1776, type = "debuff", unit = "target", talent = 1776 }, -- Gouge
         { spell = 1833, type = "debuff", unit = "target" }, -- Cheap Shot
+        { spell = 1943, type = "debuff", unit = "target" }, -- Rupture
         { spell = 121411, type = "debuff", unit = "target", talent = 121411 }, -- Crimson Tempest
         { spell = 137619, type = "debuff", unit = "target", talent = 137619 }, -- Marked for Death
         { spell = 212183, type = "debuff", unit = "target" }, -- Smoke Bomb
@@ -1533,7 +1534,6 @@ templates.class.ROGUE = {
         { spell = 1784, type = "ability", buff = true }, -- Stealth
         { spell = 1833, type = "ability", requiresTarget = true, usable = true }, -- Cheap Shot
         { spell = 1856, type = "ability", usable = true }, -- Vanish
-        { spell = 1943, type = "ability", overlayGlow = true, requiresTarget = true, usable = true }, -- Rupture
         { spell = 1966, type = "ability", buff = true, usable = true, talent = 1966 }, -- Feint
         { spell = 2094, type = "ability", requiresTarget = true, usable = true, talent = 2094 }, -- Blind
         { spell = 2983, type = "ability", buff = true, usable = true }, -- Sprint
