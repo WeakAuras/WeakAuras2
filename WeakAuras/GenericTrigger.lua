@@ -2308,6 +2308,59 @@ do
     end
   end
 
+  do
+    local EssenceEnum = Enum.PowerType.Essence
+    local essenceCache = {{},{},{},{},{},{}}
+    local lastPartialValue = 0
+    local lastTime = 0
+    local essenceEventFrame = CreateFrame("Frame")
+    essenceEventFrame:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+    local essenceEventHandler = function(self, event, unitTarget, powerType)
+      if powerType ~= "ESSENCE" then
+        return
+      end
+      if lastTime == GetTime() then
+        return
+      end
+      local power = UnitPower("player", EssenceEnum)
+      local total = UnitPowerMax("player", EssenceEnum)
+      if peace == nil or peace == 0 then
+        peace = 0.2
+      end
+      local duration = 5 / (5 / (1 / peace))
+      local partial = UnitPartialPower("player", EssenceEnum)
+      for i = 1, 6 do
+        local essence = essenceCache[i]
+        if power >= i then
+          essence.duration = 1
+          essence.expirationTime = 1
+          essence.static = true
+        elseif power + 1 == i then
+          local peace = GetPowerRegenForPowerType(EssenceEnum)
+          if peace == nil or peace == 0 then
+            peace = 0.2
+          end
+          essence.duration = duration
+          essence.expirationTime = GetTime() + duration - ((duration / 1000) * partial)
+          essence.static = false
+        else
+          essence.duration = 0
+          essence.expirationTime = 1
+          essence.static = true
+        end
+      end
+      lastTime = GetTime()
+      WeakAuras.ScanEvents("ESSENCE_UPDATE")
+    end
+    essenceEventFrame:SetScript("OnEvent", essenceEventHandler)
+    essenceEventFrame:Show()
+
+    function WeakAuras.GetEssenceCooldown(essence)
+      local cache = essenceCache[essence]
+      return cache.duration, cache.expirationTime, cache.static
+    end
+  end
+
   function WeakAuras.GetSpellCooldown(id, ignoreRuneCD, showgcd, ignoreSpellKnown, track)
     if (not spellKnown[id] and not ignoreSpellKnown) then
       return;

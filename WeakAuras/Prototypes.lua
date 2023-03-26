@@ -7308,6 +7308,55 @@ Private.event_prototypes = {
     delayEvents = true,
     timedrequired = true
   },
+  ["Evoker Essence"] = {
+    type = "unit",
+    events = {},
+    internal_events = {
+      "ESSENCE_UPDATE",
+    },
+    force_events = "ESSENCE_UPDATE",
+    name = L["Evoker Essence"],
+    statesParameter = "one",
+    init = function(trigger)
+      trigger.essence = trigger.essence or 0
+      ret = [[
+        local essence = %s
+        local duration, expirationTime, static = WeakAuras.GetEssenceCooldown(essence)
+        local genericShowOn = %s
+        local ready = static and duration == 1
+        local onCooldown = not static or duration == 0
+      ]]
+      return ret:format(
+        trigger.essence,
+        "[[" .. (trigger.genericShowOn or "") .. "]]"
+      );
+    end,
+    args = {
+      {
+        name = "essence",
+        display = L["Essence"],
+        type = "select",
+        values = "essence_specific_types",
+        test = "(genericShowOn == \"showOnReady\" and ready) " ..
+        "or (genericShowOn == \"showOnCooldown\" and onCooldown) " ..
+        "or (genericShowOn == \"showAlways\")",
+        reloadOptions = true
+      },
+      {
+        name = "genericShowOn",
+        display =  L["Show"],
+        type = "select",
+        values = "cooldown_progress_behavior_types",
+        test = "true",
+        enable = function(trigger) return trigger.use_essence end,
+        required = true
+      },
+    },
+    durationFunc = function(trigger)
+      return WeakAuras.GetEssenceCooldown(trigger.essence)
+    end,
+    automaticrequired = true,
+  },
   ["Death Knight Rune"] = {
     type = "unit",
     events = function()
