@@ -1648,11 +1648,16 @@ local function CleanUpMatchDataForUnit(unit, filter)
     for index, data in pairs(matchData[unit][filter]) do
       matchData[unit][filter][index] = nil
       for id, triggerData in pairs(data.auras) do
-       for triggernum in pairs(triggerData) do
-         matchDataByTrigger[id][triggernum][unit][index] = nil
-         matchDataChanged[id] = matchDataChanged[id] or {}
-         matchDataChanged[id][triggernum] = true
-       end
+        for triggernum in pairs(triggerData) do
+          if matchDataByTrigger[id] and matchDataByTrigger[id][triggernum]
+             and matchDataByTrigger[id][triggernum][unit]
+             and matchDataByTrigger[id][triggernum][unit][index]
+          then
+            matchDataByTrigger[id][triggernum][unit][index] = nil
+            matchDataChanged[id] = matchDataChanged[id] or {}
+            matchDataChanged[id][triggernum] = true
+          end
+        end
       end
     end
   end
