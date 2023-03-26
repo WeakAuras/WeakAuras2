@@ -1900,9 +1900,7 @@ Private.event_prototypes = {
         AddUnitChangeInternalEvents(trigger.unitisunit, result)
       end
       AddUnitRoleChangeInternalEvents(unit, result)
-      if trigger.use_specId then
-        AddUnitSpecChangeInternalEvents(unit, result)
-      end
+      AddUnitSpecChangeInternalEvents(unit, result)
       return result
     end,
     force_events = unitHelperFunctions.UnitChangedForceEvents,
@@ -2481,9 +2479,7 @@ Private.event_prototypes = {
       if includePets ~= "PetsOnly" then
         AddUnitRoleChangeInternalEvents(unit, result)
       end
-      if trigger.use_specId then
-        AddUnitSpecChangeInternalEvents(unit, result)
-      end
+      AddUnitSpecChangeInternalEvents(unit, result)
       return result
     end,
     force_events = unitHelperFunctions.UnitChangedForceEventsWithPets,
@@ -2893,9 +2889,7 @@ Private.event_prototypes = {
       if includePets ~= "PetsOnly" then
         AddUnitRoleChangeInternalEvents(unit, result)
       end
-      if trigger.use_specId then
-        AddUnitSpecChangeInternalEvents(unit, result)
-      end
+      AddUnitSpecChangeInternalEvents(unit, result)
       if WeakAuras.IsClassicEraOrWrath() and trigger.use_showCost and trigger.unit == "player" then
         tinsert(result, "WA_UNIT_QUEUED_SPELL_CHANGED");
       end
@@ -3400,9 +3394,7 @@ Private.event_prototypes = {
       local result = { }
       AddUnitChangeInternalEvents(unit, result)
       AddUnitRoleChangeInternalEvents(unit, result)
-      if trigger.use_specId then
-        AddUnitSpecChangeInternalEvents(unit, result)
-      end
+      AddUnitSpecChangeInternalEvents(unit, result)
       return result
     end,
     force_events = unitHelperFunctions.UnitChangedForceEvents,
