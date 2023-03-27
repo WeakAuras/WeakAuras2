@@ -777,9 +777,14 @@ function WeakAuras.ScanUnitEvents(event, unit, ...)
         Private.ActivateAuraEnvironment(id);
         local updateTriggerState = false;
         for triggernum, data in pairs(triggers) do
-          local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-          if (RunTriggerFunc(allStates, data, id, triggernum, event, unit, ...)) then
-            updateTriggerState = true;
+          local delay = GenericTrigger.GetDelay(data)
+          if delay == 0 then
+            local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+            if (RunTriggerFunc(allStates, data, id, triggernum, event, unit, ...)) then
+              updateTriggerState = true;
+            end
+          else
+            Private.RunTriggerFuncWithDelay(delay, id, triggernum, data, event, unit, ...)
           end
         end
         if (updateTriggerState) then
@@ -799,9 +804,9 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
     Private.ActivateAuraEnvironment(id);
     local updateTriggerState = false;
     for triggernum, data in pairs(triggers) do
-      local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
       local delay = GenericTrigger.GetDelay(data)
       if delay == 0 then
+        local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
         if (RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2, ...)) then
           updateTriggerState = true
         end
