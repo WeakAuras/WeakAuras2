@@ -188,7 +188,7 @@ function SlashCmdList.WEAKAURAS(input)
   elseif msg == "pcancel" then
     WeakAuras.CancelScheduledProfile()
   elseif msg == "minimap" then
-    Private.ToggleMinimap();
+    WeakAuras.ToggleMinimap();
   elseif msg == "help" then
     Private.PrintHelp();
   elseif msg == "repair" then
@@ -200,7 +200,7 @@ end
 
 if not WeakAuras.IsLibsOK() then return end
 
-function Private.ToggleMinimap()
+function WeakAuras.ToggleMinimap()
   WeakAurasSaved.minimap.hide = not WeakAurasSaved.minimap.hide
   if WeakAurasSaved.minimap.hide then
     LDBIcon:Hide("WeakAuras");
@@ -964,7 +964,7 @@ function Private.CountWagoUpdates()
   return updatedSlugsCount
 end
 
-local function tooltip_draw()
+local function tooltip_draw(isAddonCompartment)
   local tooltip = GameTooltip;
   tooltip:ClearLines();
   tooltip:AddDoubleLine("WeakAuras", versionString);
@@ -985,9 +985,13 @@ local function tooltip_draw()
     end
   end
   tooltip:AddLine(L["|cffeda55fRight-Click|r to toggle performance profiling window."], 0.2, 1, 0.2);
-  tooltip:AddLine(L["|cffeda55fMiddle-Click|r to toggle the minimap icon on or off."], 0.2, 1, 0.2);
+  if not isAddonCompartment then
+    tooltip:AddLine(L["|cffeda55fMiddle-Click|r to toggle the minimap icon on or off."], 0.2, 1, 0.2);
+  end
   tooltip:Show();
 end
+
+WeakAuras.GenerateTooltip = tooltip_draw;
 
 local colorFrame = CreateFrame("Frame");
 Private.frames["LDB Icon Recoloring"] = colorFrame;
@@ -1024,7 +1028,7 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
         WeakAuras.OpenOptions();
       end
     elseif(button == 'MiddleButton') then
-      Private.ToggleMinimap();
+      WeakAuras.ToggleMinimap();
     else
       WeakAuras.RealTimeProfilingWindow:Toggle()
     end

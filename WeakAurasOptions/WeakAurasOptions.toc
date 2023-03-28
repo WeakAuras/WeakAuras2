@@ -2,6 +2,7 @@
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
 ## Version: @project-version@
+## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp
 ## Notes: Options for WeakAuras
 ## Notes-esES: Opciones para WeakAuras
 ## Notes-deDE: Optionen für WeakAuras

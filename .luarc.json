@@ -201,7 +201,8 @@
     "COOKINGGEAR0SLOT",
     "FISHINGTOOLSLOT",
     "GAME_LOCALE",
-    "TableHasAnyEntries"
+    "TableHasAnyEntries",
+    "AddonCompartmentFrame"
   ],
   "runtime.version": "Lua 5.1",
   "workspace.ignoreDir": [

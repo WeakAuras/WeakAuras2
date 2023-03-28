@@ -2,6 +2,7 @@
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
 ## Version: @project-version@
+## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp
 ## Notes: Templates for WeakAuras
 ## X-Category: Interface Enhancements
 ## Globe-Main: WeakAuras
