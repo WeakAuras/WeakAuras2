@@ -2068,6 +2068,10 @@ local function EventHandler(frame, event, arg1, arg2, ...)
       RecheckActiveForUnitType("boss", unit, deactivatedTriggerInfos)
       if not UnitExistsFixed(unit) then
         tinsert(unitsToRemove, unit)
+      else
+        if newAPI then
+          ScanUnit(time, unit)
+        end
       end
     end
   elseif event =="ARENA_OPPONENT_UPDATE" then
