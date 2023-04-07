@@ -4008,19 +4008,12 @@ do
   local playerMovingFrame = nil
   local moving;
 
-  local function PlayerMoveUpdate(self, event)
+  local function PlayerMoveUpdate()
     Private.StartProfileSystem("generictrigger");
-    -- channeling e.g. Mind Flay results in lots of PLAYER_STARTED_MOVING, PLAYER_STOPPED_MOVING
-    -- for each frame
-    -- So check after 0.01 s if IsPlayerMoving() actually returns something different.
-    timer:ScheduleTimer(function()
-      Private.StartProfileSystem("generictrigger");
-      if (moving ~= IsPlayerMoving() or moving == nil) then
-        moving = IsPlayerMoving();
-        WeakAuras.ScanEvents("PLAYER_MOVING_UPDATE")
-      end
-      Private.StopProfileSystem("generictrigger");
-    end, 0.01);
+    if (moving ~= IsPlayerMoving() or moving == nil) then
+      moving = IsPlayerMoving();
+      WeakAuras.ScanEvents("PLAYER_MOVING_UPDATE")
+    end
     Private.StopProfileSystem("generictrigger");
   end
 
@@ -4039,9 +4032,7 @@ do
       playerMovingFrame = CreateFrame("Frame");
       Private.frames["Player Moving Frame"] =  playerMovingFrame;
     end
-    playerMovingFrame:RegisterEvent("PLAYER_STARTED_MOVING");
-    playerMovingFrame:RegisterEvent("PLAYER_STOPPED_MOVING");
-    playerMovingFrame:SetScript("OnEvent", PlayerMoveUpdate)
+    playerMovingFrame:SetScript("OnUpdate", PlayerMoveUpdate)
   end
 
   function WeakAuras.WatchPlayerMoveSpeed()
