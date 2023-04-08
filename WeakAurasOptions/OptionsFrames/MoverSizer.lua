@@ -1,7 +1,6 @@
 if not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
-local createGrid = false -- Creates grid lines matching blizzard's grid. Seems not worth it
 local createCenterLines = true --- Creates only the middle lines
 local showNormalLines = false -- Show all alignment lines all the time
 local highlightColor = { 1, 1, 0 } -- The color of lines that are we are currently aligned too
@@ -43,15 +42,18 @@ end
 local function moveOnePxl(direction)
   if mover and mover.moving then
     local data = mover.moving.data
+    local physicalWidth, physicalHeight = GetPhysicalScreenSize();
+    local oneX = GetScreenWidth() / physicalWidth
+    local oneY = GetScreenHeight() / physicalHeight
     if data then
       if direction == "top" then
-        data.yOffset = data.yOffset + 1
+        data.yOffset = data.yOffset + oneY
       elseif direction == "bottom" then
-        data.yOffset = data.yOffset - 1
+        data.yOffset = data.yOffset - oneY
       elseif direction == "left" then
-        data.xOffset = data.xOffset - 1
+        data.xOffset = data.xOffset - oneX
       elseif direction == "right" then
-        data.xOffset = data.xOffset + 1
+        data.xOffset = data.xOffset + oneX
       end
       WeakAuras.Add(data, nil, true)
       WeakAuras.UpdateThumbnail(data)
@@ -626,47 +628,29 @@ AlignmentLines.horizontalLines = {}
 --- @type table<number, LineInformation>
 AlignmentLines.verticalLines = {}
 
----@param self AlignmentLines
----@param sizerPoint AnchorPoint?
-AlignmentLines.CreateGridLines = function(self, sizerPoint)
-  if not createGrid then
-    return
+--- @type fun(input: number): number
+local function RoundSmallDifference(input)
+  local r = Round(input)
+  if (abs(r - input) < 0.1) then
+    return r
   end
-  local midX, midY = UIParent:GetCenter()
-  local gridSize = 40
-  local accountSettings = C_EditMode.GetAccountSettings()
-  if accountSettings then
-    local accountSettingsMap = EditModeUtil:GetSettingMapFromSettings(accountSettings)
-    if accountSettingsMap
-      and accountSettingsMap[Enum.EditModeAccountSetting.GridSpacing]
-      and accountSettingsMap[Enum.EditModeAccountSetting.GridSpacing].value
-    then
-      gridSize = accountSettingsMap[Enum.EditModeAccountSetting.GridSpacing].value
-    end
-  end
+  return input
+end
 
-  local firstX = Round(midX % gridSize)
-  local firstY = Round(midY % gridSize)
+--- @type fun(input: number): number
+local function AlignToPixelX(virX)
+  local physicalWidth, physicalHeight = GetPhysicalScreenSize();
+  local virtualWidth = GetScreenWidth()
+  local phyX = virX * physicalWidth / virtualWidth
+  return Round(10 * Round(phyX) * virtualWidth / physicalWidth) / 10
+end
 
-  if not sizerPoint or sizerPoint:find("LEFT", 1) or sizerPoint:find("RIGHT", 1) then
-    for x = firstX, UIParent:GetWidth(), gridSize do
-      local line = CreateLineInformation(x, true)
-      line:SetStartPoint("TOPLEFT", UIParent, x, 0)
-      line:SetEndPoint("BOTTOMLEFT", UIParent, x, 0)
-      line:SetThickness(2)
-      self.verticalLines[x] = line
-    end
-  end
-
-  if not sizerPoint or sizerPoint:find("BOTTOM") or sizerPoint:find("TOP") then
-    for y = firstY, UIParent:GetHeight(), gridSize do
-      local line = CreateLineInformation(y, true)
-      line:SetStartPoint("BOTTOMLEFT", UIParent, 0, y)
-      line:SetEndPoint("BOTTOMRIGHT", UIParent, 0, y)
-      line:SetThickness(2)
-      self.horizontalLines[y] = line
-    end
-  end
+--- @type fun(input: number): number
+local function AlignToPixelY(virY)
+  local physicalWidth, physicalHeight = GetPhysicalScreenSize();
+  local virtualHeight = GetScreenHeight()
+  local phyY = virY * physicalHeight / virtualHeight
+  return Round(10 * Round(phyY) * virtualHeight / physicalHeight) / 10
 end
 
 ---@param self AlignmentLines
@@ -677,8 +661,8 @@ AlignmentLines.CreateMiddleLines = function(self, sizerPoint)
   end
 
   local midX, midY = UIParent:GetCenter()
-  midX = Round(midX)
-  midY = Round(midY)
+  midX = RoundSmallDifference(midX)
+  midY = RoundSmallDifference(midY)
   if not sizerPoint or sizerPoint:find("LEFT", 1) or sizerPoint:find("RIGHT", 1) then
     local line = CreateLineInformation(midX, true)
     line:SetStartPoint("TOPLEFT", UIParent, midX, 0)
@@ -719,16 +703,16 @@ AlignmentLines.CreateLineInformation = function(self, data, sizerPoint)
     then
       local scale = region:GetEffectiveScale() / UIParent:GetEffectiveScale()
       local left = region:GetLeft()
-      left = left and left * scale or nil
+      left = left and AlignToPixelX(left * scale) or nil
       local right = region:GetRight()
-      right = right and right * scale or nil
+      right = right and AlignToPixelX(right * scale) or nil
       local top = region:GetTop()
-      top = top and top * scale or nil
+      top = top and AlignToPixelY(top * scale) or nil
       local bottom = region:GetBottom()
-      bottom = bottom and bottom * scale or nil
+      bottom = bottom and AlignToPixelY(bottom * scale) or nil
       local centerX, centerY = region:GetCenter()
-      centerX = centerX and centerX * scale or nil
-      centerY = centerY and centerY * scale or nil
+      centerX = AlignToPixelX(centerX and centerX * scale) or nil
+      centerY = AlignToPixelY(centerY and centerY * scale) or nil
 
       if v.data.regionType == "group" then
         -- This is the correct code for groups, but it is disabled above
@@ -858,7 +842,6 @@ AlignmentLines.CreateLines = function(self, data, sizerPoint)
   local align = (WeakAurasOptionsSaved.magnetAlign and not IsShiftKeyDown())
                     or (not WeakAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
   if align then
-    self:CreateGridLines(sizerPoint)
     self:CreateMiddleLines()
 
     local auraVerticalLinesInfo, auraHorizontalLinesInfo = self:CreateLineInformation(data, sizerPoint)
