@@ -7319,19 +7319,27 @@ Private.event_prototypes = {
     statesParameter = "one",
     init = function(trigger)
       trigger.essence = trigger.essence or 0
-      ret = [[
-        local essence = %s
-        local duration, expirationTime, static = WeakAuras.GetEssenceCooldown(essence)
+      local ret = [[
+        local triggerEssence = %s
+        local duration, expirationTime, remaining, paused, essence, total = WeakAuras.GetEssenceCooldown(triggerEssence)
         local genericShowOn = %s
-        local ready = static and duration == 1
-        local onCooldown = not static or duration == 0
+        local ready = paused
+        local onCooldown = not paused
       ]]
       return ret:format(
-        trigger.essence,
-        "[[" .. (trigger.genericShowOn or "") .. "]]"
+        trigger.use_essence and trigger.essence or "nil",
+        trigger.use_essence and trigger.essence and ("[[" .. (trigger.genericShowOn or "") .. "]]") or "[[showAlways]]"
       );
     end,
     args = {
+      {
+        name = "note",
+        type = "description",
+        display = "",
+        text = function()
+          return L["Note: This trigger relies on the WoW API, which returns incorrect information in some cases."]
+        end
+      },
       {
         name = "essence",
         display = L["Essence"],
@@ -7351,10 +7359,58 @@ Private.event_prototypes = {
         enable = function(trigger) return trigger.use_essence end,
         required = true
       },
+      {
+        name = "progressType",
+        hidden = true,
+        init = "'timed'",
+        store = true,
+        test = "true"
+      },
+      {
+        name = "duration",
+        hidden = true,
+        init = "duration",
+        test = "true",
+        store = true
+      },
+      {
+        name = "expirationTime",
+        init = "expirationTime",
+        hidden = true,
+        test = "true",
+        store = true
+      },
+      {
+        name = "remaining",
+        init = "remaining",
+        hidden = true,
+        test = "true",
+        store = true
+      },
+      {
+        name = "paused",
+        init = "paused",
+        hidden = true,
+        test = "true",
+        store = true
+      },
+      {
+        name = "essence",
+        display = L["Current Essence"],
+        hidden = true,
+        init = "essence",
+        test = "true",
+        store = true
+      },
+      {
+        name = "total",
+        display = L["Total Essence"],
+        hidden = true,
+        init = "total",
+        test = "true",
+        store = true
+      },
     },
-    durationFunc = function(trigger)
-      return WeakAuras.GetEssenceCooldown(trigger.essence)
-    end,
     automaticrequired = true,
   },
   ["Death Knight Rune"] = {

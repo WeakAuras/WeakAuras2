@@ -2311,15 +2311,16 @@ do
   do
     local EssenceEnum = Enum.PowerType.Essence
     local essenceCache = {{},{},{},{},{},{}}
-    local lastPartialValue = 0
+    local lastFullValue = 0
     local lastTime = 0
     local essenceEventFrame = CreateFrame("Frame")
-    essenceEventFrame:RegisterUnitEvent("UNIT_POWER_UPDATE", "player")
+    essenceEventFrame:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player")
     local essenceEventHandler = function(self, event, unitTarget, powerType)
       if powerType ~= "ESSENCE" then
         return
       end
-      if lastTime == GetTime() then
+      local now = GetTime()
+      if lastTime == now then
         return
       end
       local power = UnitPower("player", EssenceEnum)
@@ -2328,39 +2329,66 @@ do
       if peace == nil or peace == 0 then
         peace = 0.2
       end
-      local duration = 5 / (5 / (1 / peace))
-      local partial = UnitPartialPower("player", EssenceEnum)
+      local duration = 1 / peace
+      local partial = UnitPartialPower("player", EssenceEnum) / 1000
+
+      if (partial == 0) then
+        lastFullValue = now
+      elseif power ~= total then
+        -- UnitPartialPower is a rather poor api, which returns incorrect values
+        -- This almost mirrors what the default ui does, in that the default ui
+        -- starts an animation and only uses UnitPartialPower when that animation's
+        -- progress differs from UnitPartialPower by 0.1
+        -- This here uses a similar logic. We sync whenever partial is 0
+        -- and then estimate based on that. And as long as that
+        -- estimate is within 0.1 of UnitPartialPower we prefer the estimate
+        local estimatedPartial = (now - lastFullValue) / duration
+        estimatedPartial = estimatedPartial - floor(estimatedPartial)
+        if abs(estimatedPartial - partial) < 0.1 then
+          partial = estimatedPartial
+        end
+      end
       for i = 1, 6 do
         local essence = essenceCache[i]
         if power >= i then
-          essence.duration = 1
-          essence.expirationTime = 1
-          essence.static = true
-        elseif power + 1 == i then
-          if peace == nil or peace == 0 then
-            peace = 0.2
-          end
           essence.duration = duration
-          essence.expirationTime = GetTime() + duration - ((duration / 1000) * partial)
-          essence.static = false
+          essence.expirationTime = math.huge
+          essence.remaining = 0
+          essence.paused = true
+        elseif power + 1 == i then
+          essence.duration = duration
+          essence.expirationTime = GetTime() + (1 - partial) * duration
+          essence.paused = false
         else
-          essence.duration = 0
-          essence.expirationTime = 1
-          essence.static = true
+          essence.duration = duration
+          essence.expirationTime = GetTime() + (1 - partial) * duration + (i - 1 - power) * duration
+          essence.remaining = duration
+          essence.paused = false
         end
       end
-      lastTime = GetTime()
+      lastTime = now
       WeakAuras.ScanEvents("ESSENCE_UPDATE")
     end
     essenceEventFrame:SetScript("OnEvent", essenceEventHandler)
     essenceEventFrame:Show()
 
     function WeakAuras.GetEssenceCooldown(essence)
-      local cache = essenceCache[essence]
-      if cache then
-        return cache.duration, cache.expirationTime, cache.static
+      local power = UnitPower("player", EssenceEnum)
+      local total = UnitPowerMax("player", Enum.PowerType.Essence)
+      if essence then
+        local cache = essenceCache[essence]
+        if cache and essence <= total then
+          return cache.duration, cache.expirationTime, cache.remaining, cache.paused, power, total
+        else
+          return nil, nil, nil, nil, essence, total
+        end
       else
-        return 1, 1, true
+        local cache = essenceCache[total]
+        if cache and cache.duration then
+          return total * cache.duration, cache.expirationTime, cache.remaining, cache.paused, power, total
+        else
+          return nil, nil, nil, nil, power, total
+        end
       end
     end
   end
