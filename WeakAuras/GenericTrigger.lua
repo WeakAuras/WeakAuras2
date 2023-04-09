@@ -2324,6 +2324,7 @@ do
       end
       local power = UnitPower("player", EssenceEnum)
       local total = UnitPowerMax("player", EssenceEnum)
+      local peace = GetPowerRegenForPowerType(EssenceEnum)
       if peace == nil or peace == 0 then
         peace = 0.2
       end
@@ -2336,7 +2337,6 @@ do
           essence.expirationTime = 1
           essence.static = true
         elseif power + 1 == i then
-          local peace = GetPowerRegenForPowerType(EssenceEnum)
           if peace == nil or peace == 0 then
             peace = 0.2
           end
@@ -2357,7 +2357,11 @@ do
 
     function WeakAuras.GetEssenceCooldown(essence)
       local cache = essenceCache[essence]
-      return cache.duration, cache.expirationTime, cache.static
+      if cache then
+        return cache.duration, cache.expirationTime, cache.static
+      else
+        return 1, 1, true
+      end
     end
   end
 
