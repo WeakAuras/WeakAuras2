@@ -2308,15 +2308,22 @@ do
     end
   end
 
-  do
+  local initEssenceCooldown = false
+  function WeakAuras.InitEssenceCooldown()
+    if initEssenceCooldown then
+      return true
+    end
     local EssenceEnum = Enum.PowerType.Essence
     local essenceCache = {{},{},{},{},{},{}}
     local lastFullValue = 0
     local lastTime = 0
     local essenceEventFrame = CreateFrame("Frame")
     essenceEventFrame:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player")
+    essenceEventFrame:RegisterUnitEvent("UNIT_MAXPOWER", "player")
+    essenceEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+    essenceEventFrame:RegisterEvent("PLAYER_LEAVING_WORLD")
     local essenceEventHandler = function(self, event, unitTarget, powerType)
-      if powerType ~= "ESSENCE" then
+      if powerType and powerType ~= "ESSENCE" then
         return
       end
       local now = GetTime()
@@ -2350,7 +2357,12 @@ do
       end
       for i = 1, 6 do
         local essence = essenceCache[i]
-        if power >= i then
+        if i > total then
+          essence.duration = nil
+          essence.expirationTime = nil
+          essence.remaining = nil
+          essence.paused = nil
+        elseif power >= i then
           essence.duration = duration
           essence.expirationTime = math.huge
           essence.remaining = 0
@@ -2391,6 +2403,9 @@ do
         end
       end
     end
+
+    essenceEventHandler()
+    initEssenceCooldown = true
   end
 
   function WeakAuras.GetSpellCooldown(id, ignoreRuneCD, showgcd, ignoreSpellKnown, track)

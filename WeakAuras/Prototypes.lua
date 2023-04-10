@@ -7312,10 +7312,13 @@ Private.event_prototypes = {
     type = "unit",
     events = {},
     internal_events = {
-      "ESSENCE_UPDATE",
+      "ESSENCE_UPDATE"
     },
     force_events = "ESSENCE_UPDATE",
     name = L["Evoker Essence"],
+    loadFunc = function()
+      WeakAuras.InitEssenceCooldown()
+    end,
     statesParameter = "one",
     init = function(trigger)
       trigger.essence = trigger.essence or 0
@@ -7324,7 +7327,7 @@ Private.event_prototypes = {
         local duration, expirationTime, remaining, paused, essence, total = WeakAuras.GetEssenceCooldown(triggerEssence)
         local genericShowOn = %s
         local ready = paused
-        local onCooldown = not paused
+        local onCooldown = paused == false
       ]]
       return ret:format(
         trigger.use_essence and trigger.essence or "nil",
@@ -7347,7 +7350,7 @@ Private.event_prototypes = {
         values = "essence_specific_types",
         test = "(genericShowOn == \"showOnReady\" and ready) " ..
         "or (genericShowOn == \"showOnCooldown\" and onCooldown) " ..
-        "or (genericShowOn == \"showAlways\")",
+        "or (genericShowOn == \"showAlways\" and paused ~= nil)",
         reloadOptions = true
       },
       {
@@ -7358,6 +7361,29 @@ Private.event_prototypes = {
         test = "true",
         enable = function(trigger) return trigger.use_essence end,
         required = true
+      },
+      {
+        hidden = true,
+        name = "onCooldown",
+        test = "true",
+        display = L["On Cooldown"],
+        values = function()
+          return {
+            showOnCooldown = L["On Cooldown"],
+            showOnReady = L["Not on Cooldown"],
+            showOnCharging = L["Charging"]
+          }
+        end,
+        conditionType = "select",
+        conditionTest = function(state, needle)
+          if needle == "showOnCooldown" then
+            return state and state.show and state.expirationTime and state.expirationTime > GetTime()
+          elseif needle == "showOnCharging" then
+            return state and state.show and state.expirationTime and state.expirationTime > GetTime() and state.essence == state.triggerEssence - 1
+          elseif needle == "showOnReady" then
+            return state and state.show and state.expirationTime == math.huge
+          end
+        end,
       },
       {
         name = "progressType",
@@ -7391,6 +7417,13 @@ Private.event_prototypes = {
         name = "paused",
         init = "paused",
         hidden = true,
+        test = "true",
+        store = true
+      },
+      {
+        name = "triggerEssence",
+        hidden = true,
+        init = "triggerEssence",
         test = "true",
         store = true
       },
