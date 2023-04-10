@@ -7367,23 +7367,23 @@ Private.event_prototypes = {
         name = "onCooldown",
         test = "true",
         display = L["On Cooldown"],
-        values = function()
-          return {
-            showOnCooldown = L["On Cooldown"],
-            showOnReady = L["Not on Cooldown"],
-            showOnCharging = L["Charging"]
-          }
-        end,
-        conditionType = "select",
+        conditionType = "bool",
         conditionTest = function(state, needle)
-          if needle == "showOnCooldown" then
-            return state and state.show and state.expirationTime and state.expirationTime > GetTime()
-          elseif needle == "showOnCharging" then
-            return state and state.show and state.expirationTime and state.expirationTime > GetTime() and state.essence == state.triggerEssence - 1
-          elseif needle == "showOnReady" then
-            return state and state.show and state.expirationTime == math.huge
-          end
+          return state and state.show and state.expirationTime and (state.expirationTime == math.huge) == (needle == 0)
         end,
+      },
+      {
+        hidden = true,
+        name = "charging",
+        test = "true",
+        display = L["Charging"],
+        conditionType = "bool",
+        conditionTest = function(state, needle)
+          return state and state.show and (state.essence == state.triggerEssence - 1) == (needle == 1)
+        end,
+        enable = function(trigger)
+          return trigger.use_essence and type(trigger.essence) == "number"
+        end
       },
       {
         name = "progressType",

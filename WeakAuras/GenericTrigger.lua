@@ -2330,6 +2330,7 @@ do
       if lastTime == now then
         return
       end
+      Private.StartProfileSystem("generictrigger essence")
       local power = UnitPower("player", EssenceEnum)
       local total = UnitPowerMax("player", EssenceEnum)
       local peace = GetPowerRegenForPowerType(EssenceEnum)
@@ -2379,6 +2380,7 @@ do
         end
       end
       lastTime = now
+      Private.StopProfileSystem("generictrigger essence")
       WeakAuras.ScanEvents("ESSENCE_UPDATE")
     end
     essenceEventFrame:SetScript("OnEvent", essenceEventHandler)
