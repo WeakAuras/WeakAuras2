@@ -326,7 +326,14 @@ end
 
 local function dragonflightWidgets(allOptions)
   for optionGroup, options in pairs(allOptions) do
-    if options.type == "toggle" then
+    if options.type == "range" and options.control == "WeakAurasSpinBox" then
+      options.control = "WeakAurasSlider"
+    elseif options.control then
+      -- Don't override explicit contro
+      if options.type == "toggle" or options.type == "range" or options.type == "list" then
+        print("Not overriding", options.control)
+      end
+    elseif options.type == "toggle" then
       options.control = "WeakAurasCheckBox"
     elseif options.type == "range" then
       options.control = "WeakAurasSlider"
