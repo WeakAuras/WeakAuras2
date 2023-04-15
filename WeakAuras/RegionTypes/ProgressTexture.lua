@@ -813,6 +813,7 @@ local function convertToProgress(rprogress, additionalProgress, adjustMin, total
   local startProgress = 0;
   local endProgress = 0;
 
+
   if (additionalProgress.min and additionalProgress.max) then
     if (totalWidth ~= 0) then
       startProgress = (additionalProgress.min - adjustMin) / totalWidth;
@@ -862,11 +863,10 @@ local function SetAdditionalProgress(self, additionalProgress, min, max, inverse
   local effectiveInverse = (inverse and not self.inverseDirection) or (not inverse and self.inverseDirection);
 
   if (additionalProgress) then
+    local totalWidth = max - min;
     ensureExtraTextures(self, #additionalProgress);
     for index, additionalProgress in ipairs(additionalProgress) do
       local extraTexture = self.extraTextures[index];
-
-      local totalWidth = max - min;
       local startProgress, endProgress = convertToProgress(self.progress, additionalProgress, min, totalWidth, effectiveInverse, self.overlayclip);
       if ((endProgress - startProgress) == 0) then
         extraTexture:Hide();
@@ -1332,6 +1332,7 @@ local function modify(parent, region, data)
     local state = region.state
 
     local max
+    local adjustMin
     if state.progressType == "timed" then
       local expirationTime
       if state.paused == true then
@@ -1358,7 +1359,7 @@ local function modify(parent, region, data)
       if region.adjustedMinRelPercent then
         region.adjustedMinRel = region.adjustedMinRelPercent * duration
       end
-      local adjustMin = region.adjustedMin or region.adjustedMinRel or 0;
+      adjustMin = region.adjustedMin or region.adjustedMinRel or 0;
       if duration == 0 then
         max = 0
       elseif region.adjustedMax then
@@ -1381,7 +1382,7 @@ local function modify(parent, region, data)
       if region.adjustedMinRelPercent then
         region.adjustedMinRel = region.adjustedMinRelPercent * total
       end
-      local adjustMin = region.adjustedMin or region.adjustedMinRel or 0;
+      adjustMin = region.adjustedMin or region.adjustedMinRel or 0;
 
       if region.adjustedMax then
         max = region.adjustedMax
@@ -1410,7 +1411,7 @@ local function modify(parent, region, data)
 
     max = max or 0
 
-    region:SetAdditionalProgress(state.additionalProgress, region.adjustMin or 0, region.state.duration ~= 0 and max or state.total or state.duration or 0, state.inverse)
+    region:SetAdditionalProgress(state.additionalProgress, adjustMin or 0, region.state.duration ~= 0 and max or state.total or state.duration or 0, state.inverse)
 
     if state.texture then
       region:SetTexture(state.texture)
