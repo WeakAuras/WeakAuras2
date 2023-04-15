@@ -7324,8 +7324,8 @@ Private.event_prototypes = {
       trigger.essence = trigger.essence or 0
       local ret = [[
         local triggerEssence = %s
-        local duration, expirationTime, remaining, paused, essence, total = WeakAuras.GetEssenceCooldown(triggerEssence)
         local genericShowOn = %s
+        local duration, expirationTime, remaining, paused, essence, total = WeakAuras.GetEssenceCooldown(triggerEssence)
         local ready = paused
         local onCooldown = paused == false
       ]]
@@ -7371,6 +7371,9 @@ Private.event_prototypes = {
         conditionTest = function(state, needle)
           return state and state.show and state.expirationTime and (state.expirationTime == math.huge) == (needle == 0)
         end,
+        enable = function(trigger)
+          return trigger.use_essence and type(trigger.essence) == "number" and trigger.essence > 0
+        end
       },
       {
         hidden = true,
@@ -7382,7 +7385,7 @@ Private.event_prototypes = {
           return state and state.show and (state.essence == state.triggerEssence - 1) == (needle == 1)
         end,
         enable = function(trigger)
-          return trigger.use_essence and type(trigger.essence) == "number"
+          return trigger.use_essence and type(trigger.essence) == "number" and trigger.essence > 0
         end
       },
       {

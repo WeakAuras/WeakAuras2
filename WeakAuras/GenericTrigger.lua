@@ -2309,12 +2309,12 @@ do
   end
 
   local initEssenceCooldown = false
+  local essenceCache = {{},{},{},{},{},{}}
   function WeakAuras.InitEssenceCooldown()
     if initEssenceCooldown then
       return true
     end
     local EssenceEnum = Enum.PowerType.Essence
-    local essenceCache = {{},{},{},{},{},{}}
     local lastFullValue = 0
     local lastTime = 0
     local essenceEventFrame = CreateFrame("Frame")
@@ -2386,28 +2386,28 @@ do
     essenceEventFrame:SetScript("OnEvent", essenceEventHandler)
     essenceEventFrame:Show()
 
-    function WeakAuras.GetEssenceCooldown(essence)
-      local power = UnitPower("player", EssenceEnum)
-      local total = UnitPowerMax("player", Enum.PowerType.Essence)
-      if essence then
-        local cache = essenceCache[essence]
-        if cache and essence <= total then
-          return cache.duration, cache.expirationTime, cache.remaining, cache.paused, power, total
-        else
-          return nil, nil, nil, nil, essence, total
-        end
-      else
-        local cache = essenceCache[total]
-        if cache and cache.duration then
-          return total * cache.duration, cache.expirationTime, cache.remaining, cache.paused, power, total
-        else
-          return nil, nil, nil, nil, power, total
-        end
-      end
-    end
-
     essenceEventHandler()
     initEssenceCooldown = true
+  end
+
+  function WeakAuras.GetEssenceCooldown(essence)
+    local power = UnitPower("player", Enum.PowerType.Essence)
+    local total = UnitPowerMax("player", Enum.PowerType.Essence)
+    if essence then
+      local cache = essenceCache[essence]
+      if cache and essence <= total then
+        return cache.duration, cache.expirationTime, cache.remaining, cache.paused, power, total
+      else
+        return nil, nil, nil, nil, essence, total
+      end
+    else
+      local cache = essenceCache[total]
+      if cache and cache.duration then
+        return total * cache.duration, cache.expirationTime, cache.remaining, cache.paused, power, total
+      else
+        return nil, nil, nil, nil, power, total
+      end
+    end
   end
 
   function WeakAuras.GetSpellCooldown(id, ignoreRuneCD, showgcd, ignoreSpellKnown, track)
