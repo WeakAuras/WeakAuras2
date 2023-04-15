@@ -3661,6 +3661,7 @@ globals = {
 	"UnitPowerBarTimerInfo",
 	"UnitPowerDisplayMod",
 	"UnitPowerMax",
+	"UnitPartialPower",
 	"UnitPowerType",
 	"UnitPrestige",
 	"UnitRace",

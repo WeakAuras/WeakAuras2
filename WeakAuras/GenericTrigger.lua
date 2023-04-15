@@ -2308,6 +2308,108 @@ do
     end
   end
 
+  local initEssenceCooldown = false
+  local essenceCache = {{},{},{},{},{},{}}
+  function WeakAuras.InitEssenceCooldown()
+    if initEssenceCooldown then
+      return true
+    end
+    local EssenceEnum = Enum.PowerType.Essence
+    local lastFullValue = 0
+    local lastTime = 0
+    local essenceEventFrame = CreateFrame("Frame")
+    essenceEventFrame:RegisterUnitEvent("UNIT_POWER_FREQUENT", "player")
+    essenceEventFrame:RegisterUnitEvent("UNIT_MAXPOWER", "player")
+    essenceEventFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+    essenceEventFrame:RegisterEvent("PLAYER_LEAVING_WORLD")
+    local essenceEventHandler = function(self, event, unitTarget, powerType)
+      if powerType and powerType ~= "ESSENCE" then
+        return
+      end
+      local now = GetTime()
+      if lastTime == now then
+        return
+      end
+      Private.StartProfileSystem("generictrigger essence")
+      local power = UnitPower("player", EssenceEnum)
+      local total = UnitPowerMax("player", EssenceEnum)
+      local peace = GetPowerRegenForPowerType(EssenceEnum)
+      if peace == nil or peace == 0 then
+        peace = 0.2
+      end
+      local duration = 1 / peace
+      local partial = UnitPartialPower("player", EssenceEnum) / 1000
+
+      if (partial == 0) then
+        lastFullValue = now
+      elseif power ~= total then
+        -- UnitPartialPower is a rather poor api, which returns incorrect values
+        -- This almost mirrors what the default ui does, in that the default ui
+        -- starts an animation and only uses UnitPartialPower when that animation's
+        -- progress differs from UnitPartialPower by 0.1
+        -- This here uses a similar logic. We sync whenever partial is 0
+        -- and then estimate based on that. And as long as that
+        -- estimate is within 0.1 of UnitPartialPower we prefer the estimate
+        local estimatedPartial = (now - lastFullValue) / duration
+        estimatedPartial = estimatedPartial - floor(estimatedPartial)
+        if abs(estimatedPartial - partial) < 0.1 then
+          partial = estimatedPartial
+        end
+      end
+      for i = 1, 6 do
+        local essence = essenceCache[i]
+        if i > total then
+          essence.duration = nil
+          essence.expirationTime = nil
+          essence.remaining = nil
+          essence.paused = nil
+        elseif power >= i then
+          essence.duration = duration
+          essence.expirationTime = math.huge
+          essence.remaining = 0
+          essence.paused = true
+        elseif power + 1 == i then
+          essence.duration = duration
+          essence.expirationTime = GetTime() + (1 - partial) * duration
+          essence.paused = false
+        else
+          essence.duration = duration
+          essence.expirationTime = GetTime() + (1 - partial) * duration + (i - 1 - power) * duration
+          essence.remaining = duration
+          essence.paused = false
+        end
+      end
+      lastTime = now
+      Private.StopProfileSystem("generictrigger essence")
+      WeakAuras.ScanEvents("ESSENCE_UPDATE")
+    end
+    essenceEventFrame:SetScript("OnEvent", essenceEventHandler)
+    essenceEventFrame:Show()
+
+    essenceEventHandler()
+    initEssenceCooldown = true
+  end
+
+  function WeakAuras.GetEssenceCooldown(essence)
+    local power = UnitPower("player", Enum.PowerType.Essence)
+    local total = UnitPowerMax("player", Enum.PowerType.Essence)
+    if essence then
+      local cache = essenceCache[essence]
+      if cache and essence <= total then
+        return cache.duration, cache.expirationTime, cache.remaining, cache.paused, power, total
+      else
+        return nil, nil, nil, nil, essence, total
+      end
+    else
+      local cache = essenceCache[total]
+      if cache and cache.duration then
+        return total * cache.duration, cache.expirationTime, cache.remaining, cache.paused, power, total
+      else
+        return nil, nil, nil, nil, power, total
+      end
+    end
+  end
+
   function WeakAuras.GetSpellCooldown(id, ignoreRuneCD, showgcd, ignoreSpellKnown, track)
     if (not spellKnown[id] and not ignoreSpellKnown) then
       return;

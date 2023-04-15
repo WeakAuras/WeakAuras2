@@ -7308,6 +7308,147 @@ Private.event_prototypes = {
     delayEvents = true,
     timedrequired = true
   },
+  ["Evoker Essence"] = {
+    type = "unit",
+    events = {},
+    internal_events = {
+      "ESSENCE_UPDATE"
+    },
+    force_events = "ESSENCE_UPDATE",
+    name = L["Evoker Essence"],
+    loadFunc = function()
+      WeakAuras.InitEssenceCooldown()
+    end,
+    statesParameter = "one",
+    init = function(trigger)
+      trigger.essence = trigger.essence or 0
+      local ret = [[
+        local triggerEssence = %s
+        local genericShowOn = %s
+        local duration, expirationTime, remaining, paused, essence, total = WeakAuras.GetEssenceCooldown(triggerEssence)
+        local ready = paused
+        local onCooldown = paused == false
+      ]]
+      return ret:format(
+        trigger.use_essence and trigger.essence or "nil",
+        trigger.use_essence and trigger.essence and ("[[" .. (trigger.genericShowOn or "") .. "]]") or "[[showAlways]]"
+      );
+    end,
+    args = {
+      {
+        name = "note",
+        type = "description",
+        display = "",
+        text = function()
+          return L["Note: This trigger relies on the WoW API, which returns incorrect information in some cases."]
+        end
+      },
+      {
+        name = "essence",
+        display = L["Essence"],
+        type = "select",
+        values = "essence_specific_types",
+        test = "(genericShowOn == \"showOnReady\" and ready) " ..
+        "or (genericShowOn == \"showOnCooldown\" and onCooldown) " ..
+        "or (genericShowOn == \"showAlways\" and paused ~= nil)",
+        reloadOptions = true
+      },
+      {
+        name = "genericShowOn",
+        display =  L["Show"],
+        type = "select",
+        values = "cooldown_progress_behavior_types",
+        test = "true",
+        enable = function(trigger) return trigger.use_essence end,
+        required = true
+      },
+      {
+        hidden = true,
+        name = "onCooldown",
+        test = "true",
+        display = L["On Cooldown"],
+        conditionType = "bool",
+        conditionTest = function(state, needle)
+          return state and state.show and state.expirationTime and (state.expirationTime == math.huge) == (needle == 0)
+        end,
+        enable = function(trigger)
+          return trigger.use_essence and type(trigger.essence) == "number" and trigger.essence > 0
+        end
+      },
+      {
+        hidden = true,
+        name = "charging",
+        test = "true",
+        display = L["Charging"],
+        conditionType = "bool",
+        conditionTest = function(state, needle)
+          return state and state.show and (state.essence == state.triggerEssence - 1) == (needle == 1)
+        end,
+        enable = function(trigger)
+          return trigger.use_essence and type(trigger.essence) == "number" and trigger.essence > 0
+        end
+      },
+      {
+        name = "progressType",
+        hidden = true,
+        init = "'timed'",
+        store = true,
+        test = "true"
+      },
+      {
+        name = "duration",
+        hidden = true,
+        init = "duration",
+        test = "true",
+        store = true
+      },
+      {
+        name = "expirationTime",
+        init = "expirationTime",
+        hidden = true,
+        test = "true",
+        store = true
+      },
+      {
+        name = "remaining",
+        init = "remaining",
+        hidden = true,
+        test = "true",
+        store = true
+      },
+      {
+        name = "paused",
+        init = "paused",
+        hidden = true,
+        test = "true",
+        store = true
+      },
+      {
+        name = "triggerEssence",
+        hidden = true,
+        init = "triggerEssence",
+        test = "true",
+        store = true
+      },
+      {
+        name = "essence",
+        display = L["Current Essence"],
+        hidden = true,
+        init = "essence",
+        test = "true",
+        store = true
+      },
+      {
+        name = "total",
+        display = L["Total Essence"],
+        hidden = true,
+        init = "total",
+        test = "true",
+        store = true
+      },
+    },
+    automaticrequired = true,
+  },
   ["Death Knight Rune"] = {
     type = "unit",
     events = function()
