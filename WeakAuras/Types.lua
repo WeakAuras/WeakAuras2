@@ -2831,6 +2831,11 @@ Private.combat_event_type = {
   PLAYER_REGEN_DISABLED = L["Entering"]
 }
 
+Private.encounter_event_type = {
+  ENCOUNTER_END = L["Leaving"],
+  ENCOUNTER_START = L["Entering"]
+}
+
 Private.bool_types = {
   [0] = L["False"],
   [1] = L["True"]
