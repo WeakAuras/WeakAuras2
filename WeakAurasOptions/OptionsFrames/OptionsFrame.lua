@@ -485,7 +485,7 @@ function OptionsPrivate.CreateFrame()
 
   frame.HideTip = function(self)
     self.tipFrameIsVisible = false
-    self.tipFrame.Hide()
+    self.tipFrame:Hide()
     self.buttonsContainer.frame:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 17, 12)
     self.container.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 10)
   end
