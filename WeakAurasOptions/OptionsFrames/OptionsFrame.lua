@@ -476,17 +476,6 @@ function OptionsPrivate.CreateFrame()
     companionButton:SetPoint("RIGHT", wagoButton, "LEFT", -10, 0)
   end
 
-
-
-
-  -- Disable for now
-  --local closeTipButton = CreateFrame("Button", nil, tipFrame.frame, "UIPanelCloseButton")
-  --closeTipButton:SetScript("OnClick", function()
-  --  frame:HideTip()
-  --end)
-  --closeTipButton:SetPoint("TOPRIGHT", tipFrame.frame, "TOPRIGHT", 0, 6)
-  --closeTipButton:Show()
-
   frame.ShowTip = function(self)
     self.tipFrameIsVisible = true
     self.tipFrame:Show()
