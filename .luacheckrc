@@ -3928,6 +3928,7 @@ globals = {
 	"BuildMultilineTooltip",
 	"BuildNewLineListString",
 	"ButtonInventorySlot",
+	"ButtonFrameTemplate_HidePortrait",
 	"C_ClassColor.GetClassColor",
 	"CRFFlowFilterFunc",
 	"CRFGroupFilterFunc",
