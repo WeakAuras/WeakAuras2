@@ -460,7 +460,7 @@ function OptionsPrivate.CreateFrame()
   tipPopupCtrlC:SetJustifyV("TOP")
   tipPopupCtrlC:SetText(L["Press Ctrl+C to copy the URL"])
 
-  local function ToggleTip(referenceWidget, url, title, description)
+  local function ToggleTip(referenceWidget, url, title, description, rightAligned)
     if tipPopup:IsVisible() and urlWidget.text == url then
       tipPopup:Hide()
       return
@@ -474,16 +474,21 @@ function OptionsPrivate.CreateFrame()
     tipPopup:SetWidth(400)
     tipPopup:SetHeight(26 + tipPopupTitle:GetHeight() + tipPopupLabel:GetHeight() + urlWidget:GetHeight() + tipPopupCtrlC:GetHeight())
 
-    tipPopup:SetPoint("BOTTOMLEFT", referenceWidget.frame, "TOPLEFT", -6, 4)
+    tipPopup:ClearAllPoints();
+    if rightAligned then
+      tipPopup:SetPoint("BOTTOMRIGHT", referenceWidget.frame, "TOPRIGHT", 6, 4)
+    else
+      tipPopup:SetPoint("BOTTOMLEFT", referenceWidget.frame, "TOPLEFT", -6, 4)
+    end
     tipPopup:Show()
   end
 
-  local addFooter = function(title, texture, url, description)
+  local addFooter = function(title, texture, url, description, rightAligned)
     local button = AceGUI:Create("WeakAurasToolbarButton")
     button:SetText(title)
     button:SetTexture(texture)
     button:SetCallback("OnClick", function()
-      ToggleTip(button, url, title, description)
+      ToggleTip(button, url, title, description, rightAligned)
     end)
     button.frame:Show()
     return button.frame
@@ -500,12 +505,12 @@ function OptionsPrivate.CreateFrame()
   documentationButton:SetPoint("LEFT", discordButton, "RIGHT", 10, 0)
 
   local reportbugButton = addFooter(L["Found a Bug?"], [[Interface\AddOns\WeakAuras\Media\Textures\bug_report.tga]], "https://github.com/WeakAuras/WeakAuras2/issues/new?assignees=&labels=%F0%9F%90%9B+Bug&template=bug_report.md&title=",
-            L["Report bugs on our issue tracker."])
+            L["Report bugs on our issue tracker."], true)
   reportbugButton:SetParent(tipFrame)
   reportbugButton:SetPoint("RIGHT", tipFrame, "RIGHT")
 
   local wagoButton = addFooter(L["Find Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wago.tga]], "https://wago.io",
-            L["Browse Wago, the largest collection of auras."])
+            L["Browse Wago, the largest collection of auras."], true)
   wagoButton:SetParent(tipFrame)
   wagoButton:SetPoint("RIGHT", reportbugButton, "LEFT", -10, 0)
 
