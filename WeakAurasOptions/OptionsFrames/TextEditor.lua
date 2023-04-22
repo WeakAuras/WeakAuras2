@@ -421,10 +421,12 @@ local function ConstructTextEditor(frame)
   end
 
   -- Make sidebar for snippets
-  local snippetsFrame = CreateFrame("Frame", "WeakAurasSnippets", group.frame, "BackdropTemplate")
+  local snippetsFrame = CreateFrame("Frame", "WeakAurasSnippets", group.frame, "PortraitFrameTemplate")
+  ButtonFrameTemplate_HidePortrait(snippetsFrame)
   snippetsFrame:SetPoint("TOPLEFT", group.frame, "TOPRIGHT", 20, 0)
   snippetsFrame:SetPoint("BOTTOMLEFT", group.frame, "BOTTOMRIGHT", 20, 0)
   snippetsFrame:SetWidth(250)
+  --[[
   snippetsFrame:SetBackdrop(
     {
       bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
@@ -436,11 +438,11 @@ local function ConstructTextEditor(frame)
     }
   )
   snippetsFrame:SetBackdropColor(0, 0, 0, 1)
-
+]]
   -- Add button to save new snippet
   local AddSnippetButton = CreateFrame("Button", nil, snippetsFrame, "UIPanelButtonTemplate")
-  AddSnippetButton:SetPoint("TOPLEFT", snippetsFrame, "TOPLEFT", 13, -10)
-  AddSnippetButton:SetPoint("TOPRIGHT", snippetsFrame, "TOPRIGHT", -13, -10)
+  AddSnippetButton:SetPoint("TOPLEFT", snippetsFrame, "TOPLEFT", 13, -25)
+  AddSnippetButton:SetPoint("TOPRIGHT", snippetsFrame, "TOPRIGHT", -13, -25)
   AddSnippetButton:SetHeight(20)
   AddSnippetButton:SetText(L["Add Snippet"])
   AddSnippetButton:RegisterForClicks("LeftButtonUp")
@@ -452,7 +454,7 @@ local function ConstructTextEditor(frame)
   snippetsScrollContainer:SetFullHeight(true)
   snippetsScrollContainer:SetLayout("Fill")
   snippetsScrollContainer.frame:SetParent(snippetsFrame)
-  snippetsScrollContainer.frame:SetPoint("TOPLEFT", snippetsFrame, "TOPLEFT", 17, -35)
+  snippetsScrollContainer.frame:SetPoint("TOPLEFT", snippetsFrame, "TOPLEFT", 17, -50)
   snippetsScrollContainer.frame:SetPoint("BOTTOMRIGHT", snippetsFrame, "BOTTOMRIGHT", -10, 10)
   local snippetsScroll = AceGUI:Create("ScrollFrame")
   snippetsScroll:SetLayout("List")
