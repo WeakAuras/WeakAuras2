@@ -213,9 +213,10 @@ function OptionsPrivate.CreateFrame()
 
 
   local function commitWindowChanges()
-    local xOffset = frame:GetRight() - GetScreenWidth()
-    local yOffset = frame:GetTop() - GetScreenHeight()
-    odb.frame = db.frame or {}
+    local xOffset = frame:GetRight()-(frame:GetWidth()/2)
+    local yOffset = frame:GetTop()
+    odb.frame = odb.frame or {}
+
     odb.frame.xOffset = xOffset
     odb.frame.yOffset = yOffset
     if not frame.minimized then
