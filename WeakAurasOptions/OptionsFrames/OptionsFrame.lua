@@ -87,13 +87,7 @@ local defaultHeight = 665
 local minWidth = 750
 local minHeight = 240
 
-function OptionsPrivate.SetTitle(title)
-  local text = "WeakAuras " .. WeakAuras.versionString
-  if title and title ~= "" then
-    text = ("%s - %s"):format(text, title)
-  end
-  WeakAurasOptionsTitleText:SetText(text)
-end
+
 
 function OptionsPrivate.CreateFrame()
   LibDD:Create_UIDropDownMenu("WeakAuras_DropDownMenu", nil)
@@ -102,6 +96,14 @@ function OptionsPrivate.CreateFrame()
   local odb = OptionsPrivate.savedVars.odb
   -------- Mostly Copied from AceGUIContainer-Frame--------
   frame = CreateFrame("Frame", "WeakAurasOptions", UIParent, "PortraitFrameTemplate") -- PortraitFrameTemplateMinimizable
+
+  function OptionsPrivate.SetTitle(title)
+    local text = "WeakAuras " .. WeakAuras.versionString
+    if title and title ~= "" then
+      text = ("%s - %s"):format(text, title)
+    end
+    frame:SetTitle(text)
+  end
 
   tinsert(UISpecialFrames, frame:GetName())
   frame:EnableMouse(true)
@@ -219,6 +221,7 @@ function OptionsPrivate.CreateFrame()
 
   frame.UpdateFrameVisible = function(self)
     if self.minimized then
+      self:GetTitleText():Hide()
       self.buttonsContainer.frame:Hide()
       self.texturePicker.frame:Hide()
       self.iconPicker.frame:Hide()
@@ -239,7 +242,7 @@ function OptionsPrivate.CreateFrame()
       self.tipFrame:Hide()
       self.bottomRightResizer:Hide()
     else
-      --self.bottomLeftResizer:Show()
+      self:GetTitleText():Show()
       self.bottomRightResizer:Show()
       if self.window == "default" then
         OptionsPrivate.SetTitle()
@@ -337,6 +340,7 @@ function OptionsPrivate.CreateFrame()
   end
 
 
+
   local minimizebutton = CreateFrame("Button", nil, frame, "MaximizeMinimizeButtonFrameTemplate")
   minimizebutton:SetPoint("RIGHT", frame.CloseButton, "LEFT", 0, 0)
   minimizebutton:SetOnMaximizedCallback(function()
@@ -345,7 +349,6 @@ function OptionsPrivate.CreateFrame()
     frame:SetWidth(odb.frame and odb.frame.width or defaultWidth)
     frame.buttonsScroll:DoLayout()
     frame:UpdateFrameVisible()
-    WeakAurasOptionsTitleText:Show()
   end)
   minimizebutton:SetOnMinimizedCallback(function()
     commitWindowChanges()
@@ -353,7 +356,6 @@ function OptionsPrivate.CreateFrame()
     frame:SetHeight(75)
     frame:SetWidth(160)
     frame:UpdateFrameVisible()
-    WeakAurasOptionsTitleText:Hide()
   end)
 
   local tipFrame = CreateFrame("Frame", nil, frame)
