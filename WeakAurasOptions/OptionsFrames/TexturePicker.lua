@@ -203,7 +203,7 @@ local function ConstructTexturePicker(frame)
   end);
   input:SetWidth(200);
   input:SetHeight(15);
-  input:SetPoint("TOPRIGHT", dropdown.frame, "TOPRIGHT", -210, 0);
+  input:SetPoint("TOPRIGHT", group.frame, "TOPRIGHT", -3, -10);
 
   dropdown:SetCallback("OnGroupSelected", function(widget, event, uniquevalue)
     texturePickerGroupSelected(widget, event, uniquevalue, input:GetText())
