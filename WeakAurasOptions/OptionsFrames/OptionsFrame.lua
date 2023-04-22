@@ -192,34 +192,16 @@ function OptionsPrivate.CreateFrame()
   frame:SetWidth(width)
   frame:SetHeight(height)
 
-  --local close = CreateDecoration(frame)
-  --close:SetPoint("TOPRIGHT", -30, 12)
 
-  --local closebutton = CreateFrame("Button", nil, close, "UIPanelCloseButton")
-  --closebutton:SetPoint("CENTER", close, "CENTER", 1, -1)
-  --closebutton:SetScript("OnClick", WeakAuras.HideOptions)
-
-  --local title = CreateFrame("Frame", nil, frame)
-
-  --local titleText = title:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-
-  --titleText:SetText("WeakAuras " .. WeakAuras.versionString)
-  --frame:SetTitle("WeakAuras " .. WeakAuras.versionString)
   OptionsPrivate.SetTitle()
 
-  --local titleBG = CreateDecorationWide(frame, max(120, titleText:GetWidth()))
-  --titleBG:SetPoint("TOP", 0, 24)
-  --titleText:SetPoint("TOP", titleBG, "TOP", 0, -14)
-
-
   local function commitWindowChanges()
-    local xOffset = frame:GetRight()-(frame:GetWidth()/2)
-    local yOffset = frame:GetTop()
-    odb.frame = odb.frame or {}
-
-    odb.frame.xOffset = xOffset
-    odb.frame.yOffset = yOffset
     if not frame.minimized then
+      local xOffset = frame:GetRight()-(frame:GetWidth()/2)
+      local yOffset = frame:GetTop()
+      odb.frame = odb.frame or {}
+      odb.frame.xOffset = xOffset
+      odb.frame.yOffset = yOffset
       odb.frame.width = frame:GetWidth()
       odb.frame.height = frame:GetHeight()
     end
@@ -233,13 +215,7 @@ function OptionsPrivate.CreateFrame()
     commitWindowChanges()
   end)
 
-  --frame.bottomLeftResizer = CreateFrameSizer(frame, commitWindowChanges, "BOTTOMLEFT")
   frame.bottomRightResizer = CreateFrameSizer(frame, commitWindowChanges, "BOTTOMRIGHT")
-
-  --[[
-  local minimize = CreateDecoration(frame)
-  minimize:SetPoint("TOPRIGHT", -65, 12)
-  ]]
 
   frame.UpdateFrameVisible = function(self)
     if self.minimized then
@@ -360,57 +336,25 @@ function OptionsPrivate.CreateFrame()
     end
   end
 
-  --[[ temporary button
+
   local minimizebutton = CreateFrame("Button", nil, frame, "MaximizeMinimizeButtonFrameTemplate")
-  minimizebutton:SetPoint("RIGHT", WeakAurasOptionsCloseButton, "LEFT", 8.5, 0)
+  minimizebutton:SetPoint("RIGHT", frame.CloseButton, "LEFT", 0, 0)
   minimizebutton:SetOnMaximizedCallback(function()
     frame.minimized = false
-    if db.frame then
-      if not db.frame.height or db.frame.height < 240 then
-        db.frame.height = 500
-      end
-    end
-    frame:SetHeight(db.frame and db.frame.height or 500)
+    frame:SetHeight(odb.frame and odb.frame.height or defaultHeight)
+    frame:SetWidth(odb.frame and odb.frame.width or defaultWidth)
     frame.buttonsScroll:DoLayout()
     frame:UpdateFrameVisible()
+    WeakAurasOptionsTitleText:Show()
   end)
   minimizebutton:SetOnMinimizedCallback(function()
+    commitWindowChanges()
     frame.minimized = true
-    frame:SetHeight(25)
+    frame:SetHeight(75)
+    frame:SetWidth(160)
     frame:UpdateFrameVisible()
+    WeakAurasOptionsTitleText:Hide()
   end)
-  ]]
-
-  --[[ old button
-  minimizebutton:SetWidth(30)
-  minimizebutton:SetHeight(30)
-  minimizebutton:SetPoint("CENTER", minimize, "CENTER", 1, -1)
-  minimizebutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up.blp")
-  minimizebutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down.blp")
-  minimizebutton:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp")
-
-  minimizebutton:SetScript("OnClick", function()
-    if frame.minimized then
-      frame.minimized = nil
-      if odb.frame then
-        if not odb.frame.height or odb.frame.height < 240 then
-          odb.frame.height = 500
-        end
-      end
-      frame:SetHeight(odb.frame and odb.frame.height or 500)
-      minimizebutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Up.blp")
-      minimizebutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-CollapseButton-Down.blp")
-
-      frame.buttonsScroll:DoLayout()
-    else
-      frame.minimized = true
-      frame:SetHeight(40)
-      minimizebutton:SetNormalTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Up.blp")
-      minimizebutton:SetPushedTexture("Interface\\BUTTONS\\UI-Panel-ExpandButton-Down.blp")
-    end
-    frame:UpdateFrameVisible()
-  end)
-  ]]
 
   local tipFrame = CreateFrame("Frame", nil, frame)
   tipFrame:SetPoint("TOPLEFT", frame, "BOTTOMLEFT", 17, 30)
