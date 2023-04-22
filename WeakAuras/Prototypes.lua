@@ -7324,7 +7324,54 @@ Private.event_prototypes = {
         display = L["Type"],
         type = "select",
         values = "encounter_event_type",
-        test = "event == %q"
+        test = "event == %q",
+        reloadOptions = true
+      },
+      {
+        name = "encounterId",
+        display = L["Id"],
+        type = "string",
+        validate = WeakAuras.ValidateNumeric,
+        conditionType = "number",
+        store = true,
+        init = "arg"
+      },
+      {
+        name = "encounterName",
+        display = L["Name"],
+        type = "string",
+        conditionType = "string",
+        store = true,
+        init = "arg"
+      },
+      {
+        name = "difficulty",
+        display = L["Difficulty"],
+        type = "select",
+        values = "difficulty_types",
+        test = "%q == WeakAuras.InstanceDifficulty()",
+        conditionType = "select",
+        conditionTest = function(state, needle)
+          return WeakAuras.InstanceDifficulty() == needle
+        end,
+        store = true,
+        init = "arg"
+      },
+      {},
+      {
+        name = "success",
+        display = L["Success"],
+        type = "toggle",
+        conditionType = "bool",
+        enable = function(trigger)
+          return trigger.eventtype == "ENCOUNTER_END"
+        end,
+        store = true,
+        test = "success == 1",
+        conditionTest = function(state, needle)
+          return state and (state.success == needle)
+        end,
+        init = "arg"
       }
     },
     statesParameter = "one",
