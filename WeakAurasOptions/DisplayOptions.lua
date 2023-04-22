@@ -13,7 +13,6 @@ local disabledAll = OptionsPrivate.commonOptions.CreateDisabledAll("region")
 local hiddenAll = OptionsPrivate.commonOptions.CreateHiddenAll("region")
 local getAll = OptionsPrivate.commonOptions.CreateGetAll("region")
 local setAll = OptionsPrivate.commonOptions.CreateSetAll("region", getAll)
-local dragonflightWidgets = OptionsPrivate.commonOptions.dragonflightWidgets
 
 local function AddSubRegion(data, subRegionName)
   for data in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
@@ -149,9 +148,6 @@ function OptionsPrivate.GetDisplayOptions(data)
     end
 
     local options = flattenRegionOptions(regionOption, true)
-    if WeakAuras.IsRetail() then
-      dragonflightWidgets(options)
-    end
 
     for _, option in pairs(options) do
       if option.type == "range" then
