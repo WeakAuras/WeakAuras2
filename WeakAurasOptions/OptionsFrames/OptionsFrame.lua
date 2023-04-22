@@ -114,7 +114,8 @@ function OptionsPrivate.CreateFrame()
   end
   frame:SetFrameStrata("DIALOG")
   --frame:SetPortraitTextureRaw([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]])
-  WeakAurasOptionsPortrait:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]]) -- workaround for classic
+  frame.PortraitContainer.portrait:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]]) -- workaround for classic
+
   frame.window = "default"
 
   local xOffset, yOffset

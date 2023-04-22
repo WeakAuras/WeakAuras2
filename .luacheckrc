@@ -52,7 +52,6 @@ globals = {
 	"WeakAurasSaved",
 	"WeakAurasTimers",
 	"WeakAurasArchive",
-	"WeakAurasOptionsPortrait",
 	"WeakAurasOptionsTitleText",
 
 	-- Third Party Addons/Libs
