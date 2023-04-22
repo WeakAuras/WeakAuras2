@@ -108,7 +108,9 @@ local function ConstructIconPicker(frame)
   local icon = AceGUI:Create("WeakAurasIconButton");
   icon.frame:Disable();
   icon.frame:SetParent(group.frame);
-  icon.frame:SetPoint("BOTTOMLEFT", group.frame, "TOPLEFT", 15, -15);
+  icon.frame:SetPoint("BOTTOMLEFT", group.frame, "TOPLEFT", 44, -15);
+  icon:SetHeight(36)
+  icon:SetWidth(36)
 
   local iconLabel = input:CreateFontString(nil, "OVERLAY", "GameFontNormalHuge");
   iconLabel:SetNonSpaceWrap("true");
