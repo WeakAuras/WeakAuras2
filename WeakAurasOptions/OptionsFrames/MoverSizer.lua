@@ -711,8 +711,8 @@ AlignmentLines.CreateLineInformation = function(self, data, sizerPoint)
       local bottom = region:GetBottom()
       bottom = bottom and AlignToPixelY(bottom * scale) or nil
       local centerX, centerY = region:GetCenter()
-      centerX = AlignToPixelX(centerX and centerX * scale) or nil
-      centerY = AlignToPixelY(centerY and centerY * scale) or nil
+      centerX = centerX and AlignToPixelX(centerX * scale) or nil
+      centerY = centerY and AlignToPixelY(centerY * scale) or nil
 
       if v.data.regionType == "group" then
         -- This is the correct code for groups, but it is disabled above
