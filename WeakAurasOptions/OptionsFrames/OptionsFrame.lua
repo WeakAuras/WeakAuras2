@@ -94,8 +94,8 @@ function OptionsPrivate.CreateFrame()
   local frame
   local db = OptionsPrivate.savedVars.db
   local odb = OptionsPrivate.savedVars.odb
-  -------- Mostly Copied from AceGUIContainer-Frame--------
-  frame = CreateFrame("Frame", "WeakAurasOptions", UIParent, "PortraitFrameTemplate") -- PortraitFrameTemplateMinimizable
+
+  frame = CreateFrame("Frame", "WeakAurasOptions", UIParent, "PortraitFrameTemplate")
 
   function OptionsPrivate.SetTitle(title)
     local text = "WeakAuras " .. WeakAuras.versionString
@@ -115,8 +115,8 @@ function OptionsPrivate.CreateFrame()
     frame:SetMinResize(minWidth, minHeight)
   end
   frame:SetFrameStrata("DIALOG")
-  --frame:SetPortraitTextureRaw([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]])
-  frame.PortraitContainer.portrait:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]]) -- workaround for classic
+  -- Workaround classic issue
+  frame.PortraitContainer.portrait:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]])
 
   frame.window = "default"
 
@@ -570,7 +570,6 @@ function OptionsPrivate.CreateFrame()
 
   local magnetButton = AceGUI:Create("WeakAurasToolbarButton")
   magnetButton:SetText(L["Magnetically Align"])
-  --magnetButton:SetTooltip(L["Magnetically Align"])
   magnetButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\magnetic")
   magnetButton:SetCallback("OnClick", function(self)
     if WeakAurasOptionsSaved.magnetAlign then
@@ -593,7 +592,6 @@ function OptionsPrivate.CreateFrame()
 
   local lockButton = AceGUI:Create("WeakAurasToolbarButton")
   lockButton:SetText(L["Lock Positions"])
-  --lockButton:SetTooltip(L["Lock Positions"])
   lockButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\lockPosition")
   lockButton:SetCallback("OnClick", function(self)
     if WeakAurasOptionsSaved.lockPositions then
