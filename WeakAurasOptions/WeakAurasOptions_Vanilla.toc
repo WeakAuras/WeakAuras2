@@ -70,8 +70,6 @@ OptionsFrames\DebugLogFrame.lua
 OptionsFrames\MoverSizer.lua
 OptionsFrames\FrameChooser.lua
 
-AceGUI-Widgets\AceGUIWidget-WeakAurasCheckBox.lua
-
 AceGUI-Widgets\AceGUIWidget-WeakAurasExpand.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasExpandSmall.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasIcon.lua
