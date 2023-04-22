@@ -228,22 +228,6 @@ local function ConstructTextEditor(frame)
   helpButton:SetWidth(100)
   helpButton:SetText(L["Help"])
 
-  local urlText = CreateFrame("EditBox", nil, group.frame)
-  urlText:SetFrameLevel(cancel:GetFrameLevel() + 1)
-  urlText:SetFont(STANDARD_TEXT_FONT, 12, "")
-  urlText:EnableMouse(true)
-  urlText:SetAutoFocus(false)
-  urlText:SetCountInvisibleLetters(false)
-  urlText:Hide()
-
-  local urlCopyLabel = urlText:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall")
-  urlCopyLabel:SetPoint("BOTTOMLEFT", group.frame, "BOTTOMLEFT", 12, -20)
-  urlCopyLabel:SetText(L["Press Ctrl+C to copy"])
-  urlCopyLabel:Hide()
-
-  urlText:SetPoint("TOPLEFT", urlCopyLabel, "TOPRIGHT", 12, 0)
-  urlText:SetPoint("RIGHT", settings_frame, "LEFT")
-
   local dropdown = LibDD:Create_UIDropDownMenu("SettingsMenuFrame", settings_frame)
 
 
@@ -573,35 +557,9 @@ local function ConstructTextEditor(frame)
   editorLineText:SetText(L["Line"])
   editorLineText:SetPoint("RIGHT", editorLine, "LEFT", -8, 0)
 
-  urlText:SetScript(
-    "OnChar",
-    function(self)
-      self:SetText(group.url)
-      self:HighlightText()
-    end
-  )
-  urlText:SetScript(
-    "OnEscapePressed",
-    function()
-      urlText:ClearFocus()
-      urlText:Hide()
-      urlCopyLabel:Hide()
-      helpButton:Show()
-      editor:SetFocus()
-    end
-  )
-
-  helpButton:SetScript(
-    "OnClick",
-    function()
-      urlText:Show()
-      urlText:SetFocus()
-      urlText:HighlightText()
-      urlCopyLabel:Show()
-      helpButton:Hide()
-      editorError:Hide()
-    end
-  )
+  helpButton:SetScript("OnClick", function()
+    OptionsPrivate.ToggleTip(helpButton, group.url, L["Help"], "")
+  end)
 
   local oldOnCursorChanged = editor.editBox:GetScript("OnCursorChanged")
   editor.editBox:SetScript(
@@ -643,9 +601,6 @@ local function ConstructTextEditor(frame)
     self.reloadOptions = reloadOptions
     self.setOnParent = setOnParent
     self.url = url
-    urlText:SetText(url or "")
-    urlText:Hide()
-    urlCopyLabel:Hide()
     if url then
       helpButton:Show()
     else
@@ -695,8 +650,6 @@ local function ConstructTextEditor(frame)
             end
           end
           if errorString then
-            urlText:Hide()
-            urlCopyLabel:Hide()
             if self.url then
               helpButton:Show()
             end

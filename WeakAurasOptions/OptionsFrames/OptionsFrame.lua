@@ -428,19 +428,21 @@ function OptionsPrivate.CreateFrame()
 
     tipPopup:ClearAllPoints();
     if rightAligned then
-      tipPopup:SetPoint("BOTTOMRIGHT", referenceWidget.frame, "TOPRIGHT", 6, 4)
+      tipPopup:SetPoint("BOTTOMRIGHT", referenceWidget, "TOPRIGHT", 6, 4)
     else
-      tipPopup:SetPoint("BOTTOMLEFT", referenceWidget.frame, "TOPLEFT", -6, 4)
+      tipPopup:SetPoint("BOTTOMLEFT", referenceWidget, "TOPLEFT", -6, 4)
     end
     tipPopup:Show()
   end
+
+  OptionsPrivate.ToggleTip = ToggleTip
 
   local addFooter = function(title, texture, url, description, rightAligned)
     local button = AceGUI:Create("WeakAurasToolbarButton")
     button:SetText(title)
     button:SetTexture(texture)
     button:SetCallback("OnClick", function()
-      ToggleTip(button, url, title, description, rightAligned)
+      ToggleTip(button.frame, url, title, description, rightAligned)
     end)
     button.frame:Show()
     return button.frame
