@@ -224,12 +224,10 @@ function OptionsPrivate.CreateFrame()
     end
   end
 
-  frame:SetScript("OnMouseDown", function()
-    frame:SetAlpha(0.3)
+  frame.TitleContainer:SetScript("OnMouseDown", function()
     frame:StartMoving()
   end)
-  frame:SetScript("OnMouseUp", function()
-    frame:SetAlpha(1)
+  frame.TitleContainer:SetScript("OnMouseUp", function()
     frame:StopMovingOrSizing()
     commitWindowChanges()
   end)
