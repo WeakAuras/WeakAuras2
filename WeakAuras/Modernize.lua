@@ -1674,5 +1674,65 @@ function Private.Modernize(data)
     end
   end
 
+  local function spellIdToTalent(specId, spellId)
+    local talents = Private.GetTalentData(specId)
+    for _, talent in ipairs(talents) do
+      if talent[2] == spellId then
+        return talent[1]
+      end
+    end
+  end
+
+  if data.internalVersion < 66 then
+    if WeakAuras.IsRetail() then
+      for triggerId, triggerData in ipairs(data.triggers) do
+        if triggerData.trigger.type == "unit"
+          and triggerData.trigger.event == "Talent Known"
+          and triggerData.trigger.talent
+          and triggerData.trigger.talent.multi
+        then
+          local classId
+          for i = 1, GetNumClasses() do
+            if select(2, GetClassInfo(i)) == triggerData.trigger.class then
+              classId = i
+            end
+          end
+          if classId and triggerData.trigger.spec then
+            local specId = GetSpecializationInfoForClassID(classId, triggerData.trigger.spec)
+            if specId then
+              local newMulti = { }
+              for spellId, value in pairs(triggerData.trigger.talent.multi) do
+                local talentId = spellIdToTalent(specId, spellId)
+                if talentId then
+                  newMulti[talentId] = value
+                end
+              end
+              triggerData.trigger.talent.multi = newMulti
+            end
+          end
+        end
+      end
+      local specId = Private.checkForSingleLoadCondition(data.load, "class_and_spec")
+
+
+      if specId then
+        for _, property in ipairs({"talent", "talent2", "talent3"}) do
+          local use = "use_" .. property
+          if data.load[use] ~= nil and data.load[property] and data.load[property].multi then
+            local newMulti = { }
+            for spellId, value in pairs(data.load[property].multi) do
+              local talentId = spellIdToTalent(specId, spellId)
+              if talentId then
+                newMulti[talentId] = value
+              end
+            end
+            data.load[property].multi = newMulti
+          end
+
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
