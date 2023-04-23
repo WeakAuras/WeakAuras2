@@ -102,7 +102,7 @@ function OptionsPrivate.CreateFrame()
     if title and title ~= "" then
       text = ("%s - %s"):format(text, title)
     end
-    frame:SetTitle(text)
+    WeakAurasOptionsTitleText:SetText(text)
   end
 
   tinsert(UISpecialFrames, frame:GetName())
@@ -116,7 +116,7 @@ function OptionsPrivate.CreateFrame()
   end
   frame:SetFrameStrata("DIALOG")
   -- Workaround classic issue
-  frame.PortraitContainer.portrait:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]])
+  WeakAurasOptionsPortrait:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]])
 
   frame.window = "default"
 
@@ -209,6 +209,11 @@ function OptionsPrivate.CreateFrame()
     end
   end
 
+  if not frame.TitleContainer then
+    frame.TitleContainer = CreateFrame("Frame", nil, frame)
+    frame.TitleContainer:SetAllPoints(frame.TitleBg)
+  end
+
   frame.TitleContainer:SetScript("OnMouseDown", function()
     frame:StartMoving()
   end)
@@ -217,11 +222,12 @@ function OptionsPrivate.CreateFrame()
     commitWindowChanges()
   end)
 
+
   frame.bottomRightResizer = CreateFrameSizer(frame, commitWindowChanges, "BOTTOMRIGHT")
 
   frame.UpdateFrameVisible = function(self)
     if self.minimized then
-      self:GetTitleText():Hide()
+      WeakAurasOptionsTitleText:Hide()
       self.buttonsContainer.frame:Hide()
       self.texturePicker.frame:Hide()
       self.iconPicker.frame:Hide()
@@ -242,7 +248,7 @@ function OptionsPrivate.CreateFrame()
       self.tipFrame:Hide()
       self.bottomRightResizer:Hide()
     else
-      self:GetTitleText():Show()
+      WeakAurasOptionsTitleText:Show()
       self.bottomRightResizer:Show()
       if self.window == "default" then
         OptionsPrivate.SetTitle()
@@ -342,7 +348,7 @@ function OptionsPrivate.CreateFrame()
 
 
   local minimizebutton = CreateFrame("Button", nil, frame, "MaximizeMinimizeButtonFrameTemplate")
-  minimizebutton:SetPoint("RIGHT", frame.CloseButton, "LEFT", 0, 0)
+  minimizebutton:SetPoint("RIGHT", frame.CloseButton, "LEFT", WeakAuras.IsClassicEraOrWrath() and  10 or 0, 0)
   minimizebutton:SetOnMaximizedCallback(function()
     frame.minimized = false
     local right, top = frame:GetRight(), frame:GetTop()
