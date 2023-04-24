@@ -1,11 +1,8 @@
 if not WeakAuras.IsLibsOK() then return end
 local AddonName, OptionsPrivate = ...
 
--- Lua APIs
-local strtrim, strsub = strtrim, strsub
-
 -- WoW APIs
-local GetTime, CreateFrame = GetTime, CreateFrame
+local CreateFrame = CreateFrame
 
 local AceGUI = LibStub("AceGUI-3.0")
 
@@ -17,16 +14,10 @@ local debugLog
 local function ConstructDebugLog(frame)
   local group = AceGUI:Create("WeakAurasInlineGroup");
   group.frame:SetParent(frame);
-  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -16);
-  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -16, 46);
+  group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 17, -63);
+  group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 46);
   group.frame:Hide();
   group:SetLayout("flow");
-
-  local title = AceGUI:Create("Label")
-  title:SetFontObject(GameFontNormalHuge)
-  title:SetFullWidth(true)
-  title:SetText(L["Debug Console"])
-  group:AddChild(title)
 
   local copyLabel = AceGUI:Create("Label")
   copyLabel:SetFontObject(GameFontNormal)
@@ -45,7 +36,7 @@ local function ConstructDebugLog(frame)
 
   local close = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate");
   close:SetScript("OnClick", function() group:Close() end);
-  close:SetPoint("BOTTOMRIGHT", -20, -24);
+  close:SetPoint("BOTTOMRIGHT", -20, -24)
   close:SetFrameLevel(close:GetFrameLevel() + 1)
   close:SetHeight(20);
   close:SetWidth(100);

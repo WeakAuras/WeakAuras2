@@ -1606,3 +1606,4 @@ OptionsPrivate.commonOptions.AddCodeOption = AddCodeOption
 
 OptionsPrivate.commonOptions.AddCommonTriggerOptions = AddCommonTriggerOptions
 OptionsPrivate.commonOptions.AddTriggerGetterSetter = AddTriggerGetterSetter
+
