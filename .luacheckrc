@@ -54,6 +54,9 @@ globals = {
 	"WeakAurasArchive",
 	"WeakAurasOptionsPortrait",
 	"WeakAurasOptionsTitleText",
+	"WeakAurasProfilingReportTitleText",
+	"WeakAurasRealTimeProfiling",
+	"WeakAurasRealTimeProfilingTitleText",
 	-- Third Party Addons/Libs
 	"BigWigs",
 	"BigWigsLoader",
