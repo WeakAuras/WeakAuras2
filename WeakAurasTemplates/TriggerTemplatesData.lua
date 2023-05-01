@@ -3624,6 +3624,7 @@ templates.class.MONK = {
         { spell = 126892, type = "ability", usable = true }, -- Zen Pilgrimage
         { spell = 191837, type = "ability", charges = true, talent = 191837 }, -- Essence Font
         { spell = 196725, type = "ability", talent = 196725 }, -- Refreshing Jade Wind
+        { spell = 197908, type = "ability", buff = true, talent = 197908 }, -- Mana Tee
         { spell = 198898, type = "ability", talent = 198898 }, -- Song of Chi-Ji
         { spell = 322101, type = "ability", talent = 322101 }, -- Expel Harm
         { spell = 322109, type = "ability", requiresTarget = true, usable = true, talent = 322113 }, -- Touch of Death
