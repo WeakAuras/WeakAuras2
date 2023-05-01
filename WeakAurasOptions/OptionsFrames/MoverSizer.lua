@@ -1482,21 +1482,6 @@ local function ConstructMoverSizer(parent)
       self.currentAlpha = newAlpha
     end
 
-    local align = (WeakAurasOptionsSaved.magnetAlign and not IsShiftKeyDown())
-                  or (not WeakAurasOptionsSaved.magnetAlign and IsShiftKeyDown())
-    if align then
-      self.alignGoalAlpha = 1
-    else
-      self.alignGoalAlpha = 0.1
-    end
-
-    if self.alignCurrentAlpha ~= self.alignGoalAlpha then
-      self.alignCurrentAlpha = self.alignCurrentAlpha or self:GetAlpha()
-      local newAlpha = (self.alignCurrentAlpha < self.alignGoalAlpha) and self.alignCurrentAlpha + (elaps * 4) or self.alignCurrentAlpha - (elaps * 4)
-      newAlpha = (newAlpha > 1 and 1) or (newAlpha < 0.1 and 0.1) or newAlpha
-      self.alignCurrentAlpha = newAlpha
-    end
-
     local db = OptionsPrivate.savedVars.db
     local region = self.moving.region
     local data = self.moving.data
