@@ -1239,7 +1239,6 @@ local function ConstructMoverSizer(parent)
       end
       region:StartMoving()
       mover.isMoving = true
-      mover:SetScript("OnUpdate", mover.onUpdate)
       mover.onUpdate(mover, 0)
       mover.text:Show()
       -- build list of alignment coordinates
@@ -1264,7 +1263,6 @@ local function ConstructMoverSizer(parent)
       end
       region:StopMovingOrSizing()
       mover.isMoving = false
-      mover:SetScript("OnUpdate", nil)
       mover.text:Hide()
       AlignmentLines:CleanUpLines()
       AlignmentLines:Hide()
@@ -1586,6 +1584,7 @@ local function ConstructMoverSizer(parent)
   frame.OptionsOpened = function()
     mover:Show()
     mover:RegisterEvent("MODIFIER_STATE_CHANGED")
+    mover:SetScript("OnUpdate", mover.onUpdate)
     AlignmentLines:Show()
     HighlightFrame:Show()
   end
