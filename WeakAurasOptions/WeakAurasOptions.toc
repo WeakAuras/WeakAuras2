@@ -1,4 +1,4 @@
-## Interface: 100007
+## Interface: 100100
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
 ## Version: @project-version@
