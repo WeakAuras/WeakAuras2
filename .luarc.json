@@ -202,7 +202,13 @@
     "FISHINGTOOLSLOT",
     "GAME_LOCALE",
     "TableHasAnyEntries",
-    "AddonCompartmentFrame"
+    "AddonCompartmentFrame",
+    "ButtonFrameTemplate_HidePortrait",
+    "WeakAurasProfilingReportTitleText",
+    "WeakAurasRealTimeProfiling",
+    "WeakAurasRealTimeProfilingTitleText",
+    "WeakAurasOptionsTitleText",
+    "WeakAurasOptionsPortrait"
   ],
   "runtime.version": "Lua 5.1",
   "workspace.ignoreDir": [

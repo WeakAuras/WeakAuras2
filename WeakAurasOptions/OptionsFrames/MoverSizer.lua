@@ -583,7 +583,7 @@ local LineInformationFuncs = {
         if auraPos then
           local dist = distance(auraPos, self.position)
           if dist < MAGNETIC_ALIGNMENT then
-            -- Same side: 100 as a base, meaning these lines are heavly preferred to lines
+            -- Same side: 100 as a base, meaning these lines are heavily preferred to lines
             -- for other sides
             score = max(score, 100 + (MAGNETIC_ALIGNMENT - dist))
           elseif mirrorPos then
