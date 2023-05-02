@@ -1,11 +1,14 @@
 name: "Bug Report"
 description: Create a report to help us improve
-labels: '🐛 Bug'
+labels: ['🐛 Bug']
 body:
-- type: markdown
+- type: checkboxes
   attributes:
-    value: |
-      Please [search for existing issues](https://github.com/WeakAuras/WeakAuras2/issues) before creating a new one.
+    label: Is there an existing issue for this?
+    description: Please [search for existing issues](https://github.com/WeakAuras/WeakAuras2/issues) to see if an open or closed one already exists for the bug you encountered. If a bug exists and it is closed as complete it may not yet be in a stable release.
+    options:
+    - label: I have searched the existing open and closed issues
+      required: true
 
 - type: textarea
   attributes:
@@ -42,10 +45,8 @@ body:
     label: Tested with only WeakAuras
     description: Did you try having WeakAuras as the only enabled addon and everything else (especially something like ElvUI) disabled?
     options:
-      - label: "Yes"
-      - label: "No"
-  validations:
-    required: true
+    - label: "Yes"
+      required: true
 
 - type: textarea
   attributes:
