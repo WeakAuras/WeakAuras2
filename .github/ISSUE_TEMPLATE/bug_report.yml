@@ -7,7 +7,7 @@ body:
     label: Is there an existing issue for this?
     description: Please [search for existing issues](https://github.com/WeakAuras/WeakAuras2/issues) to see if an open or closed one already exists for the bug you encountered. If a bug exists and it is closed as complete it may not yet be in a stable release.
     options:
-    - label: I have searched the existing open and closed issues
+    - label: I have searched the existing open and closed issues.
       required: true
 
 - type: textarea
@@ -22,7 +22,7 @@ body:
     label: WeakAuras Version
     description: |
       You can see the current version in the title bar of the options window, if the options do not open, check the CurseForge app or the `## Version:` field in the WeakAuras.toc file.
-    placeholder: "WeakAuras 2.2.0"
+    placeholder: "WeakAuras 5.5.0"
   validations:
     required: true
 
@@ -33,9 +33,21 @@ body:
     description: What version of World of Warcraft are are you running?
     options:
       - Retail (Default)
-      - Beta (Dragonflight)
+      - Beta (WoW 11.0)
       - Classic
       - Wrath of the Lich King Classic
+  validations:
+    required: true
+
+- type: dropdown
+  id: region
+  attributes:
+    label: World of Warcraft Region
+    description: Which region are you playing World of Warcraft in?
+    options:
+      - US/NA
+      - EU
+      - TW/Asia
   validations:
     required: true
 
@@ -54,7 +66,7 @@ body:
     description: |
       Do you have an error log of what happened? If you don't see any errors, make sure that error reporting is enabled (`/console scriptErrors 1`) or install [BugSack](https://www.curseforge.com/wow/addons/bugsack) & [BugGrabber](https://www.curseforge.com/wow/addons/bug-grabber), yes both are needed.
       Note that if the error looks like `[string "--[[ Error in ' my awesome aura' ]` then the bug is in the aura that got mentioned, not in WeakAuras itself.
-    render: true
+    render: Text
   validations:
     required: false
 
@@ -75,7 +87,7 @@ body:
     label: Last Good Version
     description: |
       Was it working in a previous version? If yes, which was the last good one?
-    placeholder: "WeakAuras 2.1.0"
+    placeholder: "WeakAuras 5.5.0"
   validations:
     required: false
 
@@ -92,7 +104,7 @@ body:
     label: Export String
     description: If you do not know which aura is causing issues for you, please attach a ZIP archive of your WeakAuras SavedVariables file, it's the `WeakAuras.lua` file in `World of Warcraft\_retail_\WTF\Account\YOUR_ACCOUNT\SavedVariables\`. In case you do, please export the string and paste it below.
     placeholder: Paste your exported WeakAuras string here.
-    render: true
+    render: Text
   validations:
     required: false
 
