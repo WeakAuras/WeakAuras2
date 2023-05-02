@@ -1062,7 +1062,7 @@ local function valuesForTalentFunction(trigger)
         return {}
       end
     elseif WeakAuras.IsWrathClassic() then
-      return Private.GetTalentData(single_class)
+      return Private.talentInfo[single_class]
     else -- classic & tbc
       if single_class and Private.talent_types_specific[single_class] then
         return Private.talent_types_specific[single_class]
