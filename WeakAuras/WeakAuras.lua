@@ -3867,16 +3867,8 @@ function WeakAuras.GetAuraInstanceTooltipInfo(unit, auraInstanceId, filter)
       tooltipData = C_TooltipInfo.GetUnitDebuffByAuraInstanceID(unit, auraInstanceId, filter)
     end
     local secondLine = tooltipData and tooltipData.lines[2] -- This is the line we want
-    if secondLine then
-      if type(secondLine.args) == "table" then
-        for _, arg in ipairs(secondLine.args) do
-          if arg.field == "leftText" then
-            tooltipText = arg.stringVal or ""
-          end
-        end
-      elseif secondLine.leftText then
-        tooltipText = secondLine.leftText
-      end
+    if secondLine and secondLine.leftText then
+      tooltipText = secondLine.leftText
     end
     return Private.ParseTooltipText(tooltipText)
   end
@@ -3909,12 +3901,8 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
   if WeakAuras.IsRetail() then
     local tooltipData = C_TooltipInfo.GetUnitAura(unit, index, filter)
     local secondLine = tooltipData and tooltipData.lines[2] -- This is the line we want
-    if secondLine then
-      for _, arg in ipairs(secondLine.args) do
-        if arg.field == "leftText" then
-          tooltipText = arg.stringVal or ""
-        end
-      end
+    if secondLine and secondLine.leftText then
+      tooltipText = secondLine.leftText
     end
   else
     local tooltip = WeakAuras.GetHiddenTooltip();
