@@ -3804,22 +3804,15 @@ do
           local tooltipData = C_TooltipInfo.GetInventoryItem("player", id)
           if tooltipData and tooltipData.lines then
             for _, line in ipairs(tooltipData.lines) do
-              if line.args then
-                for _, arg in ipairs(line.args) do
-                  if arg.field == "leftText" then
-                    local text = arg.stringVal;
-                    if(text) then
-                      -- Format based on ITEM_ENCHANT_TIME_LEFT_MIN, ITEM_ENCHANT_TIME_LEFT_SEC
-                      local _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*) ?%(%d+%D.+%)$");
-                      if(name and name ~= "") then
-                        return name, shortenedName;
-                      end
-                      _, _, name, shortenedName = text:find("^((.-) ?+?[VI%d]*)%（%d+%D.+%）$");
-                      if(name and name ~= "") then
-                        return name, shortenedName;
-                      end
-                    end
-                  end
+              if line.leftText then
+                -- Format based on ITEM_ENCHANT_TIME_LEFT_MIN, ITEM_ENCHANT_TIME_LEFT_SEC
+                local _, _, name, shortenedName = line.leftText:find("^((.-) ?+?[VI%d]*) ?%(%d+%D.+%)$");
+                if(name and name ~= "") then
+                  return name, shortenedName;
+                end
+                _, _, name, shortenedName = line.leftText:find("^((.-) ?+?[VI%d]*)%（%d+%D.+%）$");
+                if(name and name ~= "") then
+                  return name, shortenedName;
                 end
               end
             end
