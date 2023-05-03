@@ -388,6 +388,7 @@ do
       text = AddonName,
       icon = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon.blp",
       registerForAnyClick = true,
+      notCheckable = true,
       func = function(btn, arg1, arg2, checked, mouseButton)
         if mouseButton == "LeftButton" then
           if IsShiftKeyDown() then
