@@ -4,6 +4,8 @@ WeakAuras = {}
 WeakAuras.L = {}
 Private.frames = {}
 
+local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
+
 --- @alias uid string
 --- @alias auraId string
 
