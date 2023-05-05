@@ -4,6 +4,7 @@ WeakAuras_Options.lua
 WeakAuras_Templates.lua
 WeakAuras/Libs/*
 !WeakAuras/Libs/LibDeflate
+!WeakAuras/Libs/TaintLess
 format.bat
 **/desktop.ini
 .DS_Store
