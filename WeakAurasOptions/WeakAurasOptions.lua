@@ -494,6 +494,39 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_IGNORE_UPDATES"] = {
   preferredindex = STATICPOPUP_NUMDIALOGS,
 }
 
+StaticPopupDialogs["WEAKAURAS_CONFIRM_UNIGNORE_UPDATES"] = {
+  text = L["Do you want to stop ignoring all future updates for this aura"],
+  button1 = L["Yes"],
+  button2 = L["Cancel"],
+  OnAccept = function(self)
+    if self.data then
+      local auraData = WeakAuras.GetData(self.data)
+      if auraData then
+        for child in OptionsPrivate.Private.TraverseAll(auraData) do
+          child.ignoreWagoUpdate = false
+        end
+      end
+      OptionsPrivate.SortDisplayButtons(nil, true)
+    end
+  end,
+  OnCancel = function(self) end,
+  whileDead = true,
+  preferredindex = STATICPOPUP_NUMDIALOGS,
+}
+
+function OptionsPrivate.IsWagoUpdateIgnored(auraId)
+    local isIgnored = false 
+    local auraData = WeakAuras.GetData(auraId)
+      if auraData then
+        for child in OptionsPrivate.Private.TraverseAll(auraData) do
+          if(child.ignoreWagoUpdate == true) then
+            isIgnored = true
+          end
+        end
+      end
+    return isIgnored
+end
+
 function OptionsPrivate.ConfirmDelete(toDelete, parents)
   if toDelete then
     local warningForm = L["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"]
@@ -1025,7 +1058,7 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
       button:ResetLinkedAuras()
     end
     for id, aura in pairs(WeakAurasSaved.displays) do
-      if not aura.ignoreWagoUpdate and aura.url and aura.url ~= "" then
+      if (aura.ignoreWagoUpdate and aura.ignoreWagoUpdate == true or not aura.ignoreWagoUpdate) and aura.url and aura.url ~= "" then
         local slug, version = aura.url:match("wago.io/([^/]+)/([0-9]+)")
         if not slug and not version then
           slug = aura.url:match("wago.io/([^/]+)$")
