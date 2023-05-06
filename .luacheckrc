@@ -1673,6 +1673,7 @@ globals = {
 	"ForceLogout",
 	"ForceQuit",
 	"FrameXML_Debug",
+	"FrameDeltaLerp",
 	"GMEuropaBugsEnabled",
 	"GMEuropaComplaintsEnabled",
 	"GMEuropaSuggestionsEnabled",
