@@ -2230,10 +2230,14 @@ Private.event_prototypes = {
 
             if C_Reputation.IsFactionParagon(factionID) then
               local currentValue, threshold, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
-              bottomValue, topValue = 0, threshold
-              earnedValue = currentValue %% threshold
-              if hasRewardPending then
-                earnedValue = earnedValue + threshold
+              if currentValue then
+                bottomValue, topValue = 0, threshold
+                earnedValue = currentValue %% threshold
+                if hasRewardPending then
+                  earnedValue = earnedValue + threshold
+                end
+              else
+                currentValue, bottomValue, topValue, earnedValue = 0, 0, 0, 0
               end
             end
           end
