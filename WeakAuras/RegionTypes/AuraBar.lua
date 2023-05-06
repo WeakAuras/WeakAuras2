@@ -1073,7 +1073,7 @@ local function create(parent)
   end
 
   local bar = CreateFrame("Frame", nil, region);
-  Mixin(bar, SmoothStatusBarMixin);
+  Mixin(bar, Private.SmoothStatusBarMixin);
 
   -- Now create a bunch of textures
   local bg = region:CreateTexture(nil, "ARTWORK");

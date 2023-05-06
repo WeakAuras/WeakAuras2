@@ -58,6 +58,7 @@ Dragonriding.lua
 SubscribableObject.lua
 
 # Region support
+RegionTypes\SmoothStatusBarMixin.lua
 RegionTypes\RegionPrototype.lua
 RegionTypes\ProgressTexture.lua
 RegionTypes\Texture.lua
