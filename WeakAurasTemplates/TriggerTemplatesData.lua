@@ -2067,22 +2067,30 @@ templates.class.PRIEST = {
         { spell = 41635, type = "buff", unit = "player", talent = 33076 }, -- Prayer of Mending
         { spell = 47585, type = "buff", unit = "player", talent = 47585 }, -- Dispersion
         { spell = 65081, type = "buff", unit = "player", talent = 64129 }, -- Body and Soul
-        { spell = 87160, type = "buff", unit = "player", talent = 162448 }, -- Surge of Darkness
         { spell = 111759, type = "buff", unit = "player" }, -- Levitate
         { spell = 114255, type = "buff", unit = "player", talent = 109186 }, -- Surge of Light
+        { spell = 121557, type = "buff", unit = "player", talent = 121536 }, -- Angelic Feather
         { spell = 193065, type = "buff", unit = "player", talent = 193063 }, -- Protective Light
+        { spell = 194249, type = "buff", unit = "player" }, -- Voidform
         { spell = 232698, type = "buff", unit = "player" }, -- Shadowform
-        { spell = 280398, type = "buff", unit = "player", talent = 280391 }, -- Sins of the Many
+        { spell = 341282, type = "buff", unit = "player", talent = 341273 }, -- Unfurling Darkness
+        { spell = 373204, type = "buff", unit = "player", talent = 373202 }, -- Mind Devourer
+        { spell = 373213, type = "buff", unit = "player", talent = 373212 }, -- Insidious Ire
+        { spell = 373276, type = "buff", unit = "player", talent = 373273 }, -- Idol of Yogg-Saron
         { spell = 375981, type = "buff", unit = "player", talent = 375888 }, -- Shadowy Insight
         { spell = 377066, type = "buff", unit = "player", talent = 377065 }, -- Mental Fortitude
+        { spell = 390617, type = "buff", unit = "player", talent = 390615 }, -- From Darkness Comes Light
         { spell = 390636, type = "buff", unit = "player", talent = 390622 }, -- Rhapsody
         { spell = 390677, type = "buff", unit = "player", talent = 390676 }, -- Inspiration
+        { spell = 390933, type = "buff", unit = "player", talent = 377438 }, -- Words of the Pious
+        { spell = 390978, type = "buff", unit = "player", talent = 390972 }, -- Twist of Fate
         { spell = 391092, type = "buff", unit = "player", talent = 391090 }, -- Mind Melt
         { spell = 391099, type = "buff", unit = "player", talent = 391095 }, -- Dark Evangelism
         { spell = 391109, type = "buff", unit = "player", talent = 391109 }, -- Dark Ascension
-        { spell = 391243, type = "buff", unit = "player", talent = 391242 }, -- Coalescing Shadows
-        { spell = 391314, type = "buff", unit = "player" }, -- Catharsis
         { spell = 391401, type = "buff", unit = "player", talent = 391399 }, -- Mind Flay: Insanity
+        { spell = 392511, type = "buff", unit = "player", talent = 392507 }, -- Deathspeaker
+        { spell = 393919, type = "buff", unit = "player", talent = 375767 }, -- Screams of the Void
+        { spell = 407468, type = "buff", unit = "player", talent = 391399 }, -- Mind Spike: Insanity
       },
       icon = 237566
     },
@@ -2094,12 +2102,12 @@ templates.class.PRIEST = {
         { spell = 15407, type = "debuff", unit = "target" }, -- Mind Flay
         { spell = 15487, type = "debuff", unit = "target", talent = 15487 }, -- Silence
         { spell = 34914, type = "debuff", unit = "target" }, -- Vampiric Touch
-        { spell = 48045, type = "debuff", unit = "target", talent = 48045 }, -- Mind Sear
         { spell = 64044, type = "debuff", unit = "target", talent = 64044 }, -- Psychic Horror
-        { spell = 199845, type = "debuff", unit = "target" }, -- Psyflay
+        { spell = 114404, type = "debuff", unit = "target" }, -- Void Tendril's Grasp
         { spell = 263165, type = "debuff", unit = "target", talent = 263165 }, -- Void Torrent
         { spell = 322098, type = "debuff", unit = "target", talent = 321291 }, -- Death and Madness
         { spell = 335467, type = "debuff", unit = "target", talent = 335467 }, -- Devouring Plague
+        { spell = 373281, type = "debuff", unit = "target" }, -- Echoing Void
         { spell = 375901, type = "debuff", unit = "target", talent = 375901 }, -- Mindgames
         { spell = 390669, type = "debuff", unit = "target", talent = 390668 }, -- Apathy
         { spell = 391403, type = "debuff", unit = "target", talent = 391399 }, -- Mind Flay: Insanity
@@ -2116,27 +2124,29 @@ templates.class.PRIEST = {
         { spell = 589, type = "ability", requiresTarget = true }, -- Shadow Word: Pain
         { spell = 8092, type = "ability", charges = true, overlayGlow = true, requiresTarget = true }, -- Mind Blast
         { spell = 8122, type = "ability" }, -- Psychic Scream
-        { spell = 10060, type = "ability", buff = true, talent = 10060 }, -- Power Infusion
+        { spell = 10060, type = "ability", buff = true, debuff = true, talent = 10060 }, -- Power Infusion
         { spell = 15286, type = "ability", buff = true, talent = 15286 }, -- Vampiric Embrace
-        { spell = 15407, type = "ability", requiresTarget = true }, -- Mind Flay
+        { spell = 15407, type = "ability", overlayGlow = true, requiresTarget = true }, -- Mind Flay
         { spell = 15487, type = "ability", requiresTarget = true, talent = 15487 }, -- Silence
         { spell = 32375, type = "ability", talent = 32375 }, -- Mass Dispel
-        { spell = 32379, type = "ability", overlayGlow = true, requiresTarget = true, talent = 32379 }, -- Shadow Word: Death
+        { spell = 32379, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 32379 }, -- Shadow Word: Death
         { spell = 33076, type = "ability", talent = 33076 }, -- Prayer of Mending
         { spell = 34433, type = "ability", requiresTarget = true, totem = true, talent = 34433 }, -- Shadowfiend
-        { spell = 34914, type = "ability", requiresTarget = true }, -- Vampiric Touch
+        { spell = 34914, type = "ability", overlayGlow = true, requiresTarget = true }, -- Vampiric Touch
         { spell = 47585, type = "ability", buff = true, talent = 47585 }, -- Dispersion
-        { spell = 48045, type = "ability", requiresTarget = true, usable = true, talent = 48045 }, -- Mind Sear
         { spell = 64044, type = "ability", requiresTarget = true, talent = 64044 }, -- Psychic Horror
         { spell = 73510, type = "ability", overlayGlow = true, requiresTarget = true, talent = 73510 }, -- Mind Spike
-        { spell = 120644, type = "ability", talent = 120644 }, -- Halo
+        { spell = 108920, type = "ability", talent = 108920 }, -- Void Tendrils
         { spell = 121536, type = "ability", charges = true, talent = 121536 }, -- Angelic Feather
         { spell = 122121, type = "ability", talent = 122121 }, -- Divine Star
+        { spell = 194249, type = "ability", buff = true }, -- Voidform
         { spell = 200174, type = "ability", requiresTarget = true, totem = true, talent = 200174 }, -- Mindbender
+        { spell = 205364, type = "ability", talent = 205364 }, -- Dominate Mind
         { spell = 205385, type = "ability", talent = 205385 }, -- Shadow Crash
+        { spell = 205448, type = "ability" }, -- Void Bolt
+        { spell = 228260, type = "ability", requiresTarget = true, talent = 228260 }, -- Void Eruption
         { spell = 263165, type = "ability", requiresTarget = true, talent = 263165 }, -- Void Torrent
-        { spell = 335467, type = "ability", requiresTarget = true, usable = true, talent = 335467 }, -- Devouring Plague
-        { spell = 341374, type = "ability", requiresTarget = true, talent = 341374 }, -- Damnation
+        { spell = 335467, type = "ability", overlayGlow = true, requiresTarget = true, talent = 335467 }, -- Devouring Plague
         { spell = 373481, type = "ability", talent = 373481 }, -- Power Word: Life
         { spell = 375901, type = "ability", requiresTarget = true, talent = 375901 }, -- Mindgames
         { spell = 391109, type = "ability", buff = true, talent = 391109 }, -- Dark Ascension
