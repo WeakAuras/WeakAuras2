@@ -2005,7 +2005,11 @@ end
 do
   local cdReadyFrame;
 
+  --- @type table<number|string, boolean> Tracks which spells we want to fetch information on,
   local spells = {};
+  --- @type table<number, boolean>
+  local checkOverrideSpell = {}
+  --- @type table<number, boolean>
   local spellKnown = {};
 
   local spellCharges = {};
@@ -2410,7 +2414,13 @@ do
     end
   end
 
-  function WeakAuras.GetSpellCooldown(id, ignoreRuneCD, showgcd, ignoreSpellKnown, track)
+  function WeakAuras.GetSpellCooldown(id, ignoreRuneCD, showgcd, ignoreSpellKnown, track, followOverride)
+    if followOverride then
+      if spellDetails[id] then
+        id = spellDetails[id].override or id
+      end
+    end
+
     if (not spellKnown[id] and not ignoreSpellKnown) then
       return;
     end
@@ -2441,7 +2451,13 @@ do
     return startTime, duration, gcdCooldown, readyTime, modRate
   end
 
-  function WeakAuras.GetSpellCharges(id, ignoreSpellKnown)
+  function WeakAuras.GetSpellCharges(id, ignoreSpellKnown, followoverride)
+    if followoverride then
+      if spellDetails[id] then
+        id = spellDetails[id].override or id
+      end
+    end
+
     if (not spellKnown[id] and not ignoreSpellKnown) then
       return;
     end
@@ -2642,6 +2658,24 @@ do
   end
 
   function Private.CheckSpellKnown()
+    local overrides = {}
+    -- First check for overrides, if we don't yet track a specific override, add it
+    for id, _ in pairs(checkOverrideSpell) do
+      local override
+      if type(id) == "number" then
+        override = FindSpellOverrideByID(id)
+      else
+        local spellId = select(7, GetSpellInfo(id))
+        if spellId then
+          override = FindSpellOverrideByID(spellId)
+        end
+      end
+      if id ~= override and override and not spells[override] then
+        WeakAuras.WatchSpellCooldown(override, false, false)
+      end
+      overrides[id] = override
+    end
+
     for id, _ in pairs(spells) do
       local known = WeakAuras.IsSpellKnownIncludingPet(id);
       local changed = false
@@ -2664,10 +2698,17 @@ do
         changed = true
       end
 
+      if checkOverrideSpell[id] then
+        local override = overrides[id]
+        if spellDetails[id].override ~= override then
+          spellDetails[id].override = override
+          changed = true
+        end
+      end
+
       if changed and not WeakAuras.IsPaused() then
         WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id)
       end
-
     end
   end
 
@@ -2893,7 +2934,7 @@ do
     end
   end
 
-  function WeakAuras.WatchSpellCooldown(id, ignoreRunes)
+  function WeakAuras.WatchSpellCooldown(id, ignoreRunes, followoverride)
     if not(cdReadyFrame) then
       Private.InitCooldownReady();
     end
@@ -2906,16 +2947,26 @@ do
       end
     end
 
-    if (spells[id]) then
+    if (spells[id] and not followoverride or checkOverrideSpell[id]) then
       return;
     end
     spells[id] = true;
+    checkOverrideSpell[id] = followoverride
     local name, _, icon, _, _, _, spellId = GetSpellInfo(id)
     spellDetails[id] = {
       name = name,
       icon = icon,
       id = spellId
     }
+
+    if followoverride then
+      if type(id) == "number" then
+        spellDetails[id].override = FindSpellOverrideByID(id)
+      else
+        spellDetails[id].override = spellId and FindSpellOverrideByID(spellId) or nil
+      end
+    end
+
     spellKnown[id] = WeakAuras.IsSpellKnownIncludingPet(id);
 
     local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
@@ -2935,6 +2986,13 @@ do
       spellCdsOnlyCooldownRune:HandleSpell(id, startTimeCooldown, durationCooldown, modRate)
     end
     spellCdsCharges:HandleSpell(id, startTimeCharges, durationCharges, modRateCharges)
+
+    if spellDetails[id].override then
+      -- If this spell is overriden and the option is on, track the overriden spell too
+      if spellDetails[id].override ~= id then
+        WeakAuras.WatchSpellCooldown(spellDetails[id].override, false, false)
+      end
+    end
   end
 
   function WeakAuras.WatchItemCooldown(id)
