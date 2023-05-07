@@ -3929,12 +3929,12 @@ do
       -- on dragonflight UNIT_SPELLCAST_EMPOWER_START and UNIT_SPELLCAST_EMPOWER_STOP OnEvent are
       -- triggered from cacheEmpoweredFrame after updating cache use by WeakAuras.UnitChannelInfo
 
-      castLatencyFrame:SetScript("OnEvent", function(self, event)
+      castLatencyFrame:SetScript("OnEvent", function(self, event, ...)
         if event == "CURRENT_SPELL_CAST_CHANGED" then
           castLatencyFrame.sendTime = GetTime()
           return
         end
-        if event == "UNIT_SPELLCAST_SUCCEEDED" then
+        if event == "UNIT_SPELLCAST_SUCCEEDED" or event == "UNIT_SPELLCAST_STOP" or event == "UNIT_SPELLCAST_CHANNEL_STOP" or event == "UNIT_SPELLCAST_INTERRUPTED" then
           castLatencyFrame.sendTime = nil
           return
         end
