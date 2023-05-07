@@ -5411,18 +5411,20 @@ local function GetAnchorFrame(data, region, parent)
   end
 
   if (anchorFrameType == "NAMEPLATE") then
-    local unit = region.state.unit
-    local frame = unit and WeakAuras.GetUnitNameplate(unit)
-    if frame then return frame end
-    if WeakAuras.IsOptionsOpen() then
-      Private.ensurePRDFrame()
-      personalRessourceDisplayFrame:anchorFrame(id, anchorFrameType)
-      return personalRessourceDisplayFrame
+    local unit = region.state and region.state.unit
+    if unit then
+      local frame = unit and WeakAuras.GetUnitNameplate(unit)
+      if frame then return frame end
+      if WeakAuras.IsOptionsOpen() then
+        Private.ensurePRDFrame()
+        personalRessourceDisplayFrame:anchorFrame(id, anchorFrameType)
+        return personalRessourceDisplayFrame
+      end
     end
   end
 
   if (anchorFrameType == "UNITFRAME") then
-    local unit = region.state.unit
+    local unit = region.state and region.state.unit
     if unit then
       local frame = WeakAuras.GetUnitFrame(unit) or WeakAuras.HiddenFrames
       if frame then
