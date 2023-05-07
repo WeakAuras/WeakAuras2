@@ -8582,7 +8582,7 @@ Private.event_prototypes = {
         name = "empowered",
         display = L["Empowered"],
         type = "tristate",
-        enable = WeakAuras.IsRetail(),
+        enable = WeakAuras.IsRetail() and function(trigger) return not trigger.use_inverse end or false,
         store = true,
         conditionType = "bool",
         hidden = not WeakAuras.IsRetail()
@@ -8591,7 +8591,7 @@ Private.event_prototypes = {
         name = "showChargedDuration",
         display = L["Show charged duration for empowered casts"],
         type = "toggle",
-        enable = WeakAuras.IsRetail(),
+        enable = WeakAuras.IsRetail() and function(trigger) return not trigger.use_inverse end or false,
         hidden = not WeakAuras.IsRetail(),
         reloadOptions = true,
       },
@@ -8599,7 +8599,7 @@ Private.event_prototypes = {
         name = "stage",
         display = L["Current Stage"],
         type = "number",
-        enable = WeakAuras.IsRetail(),
+        enable = WeakAuras.IsRetail() and function(trigger) return not trigger.use_inverse end or false,
         store = true,
         conditionType = "number",
         hidden = not WeakAuras.IsRetail()
@@ -8608,7 +8608,7 @@ Private.event_prototypes = {
         name = "stageTotal",
         display = L["Total Stages"],
         type = "number",
-        enable = WeakAuras.IsRetail(),
+        enable = WeakAuras.IsRetail() and function(trigger) return not trigger.use_inverse end or false,
         store = true,
         conditionType = "number",
         hidden = not WeakAuras.IsRetail()
@@ -8619,7 +8619,7 @@ Private.event_prototypes = {
         hidden = true,
         init = "stage == stageTotal",
         test = "true",
-        enable = WeakAuras.IsRetail(),
+        enable = WeakAuras.IsRetail() and function(trigger) return not trigger.use_inverse end or false,
         store = true,
         type = "toggle",
         conditionType = "bool",
@@ -8882,7 +8882,7 @@ Private.event_prototypes = {
         type = "toggle",
         test = "true",
         enable = function(trigger)
-          return trigger.unit == "player"
+          return trigger.unit == "player" and not trigger.use_inverse
         end,
         reloadOptions = true
       },
