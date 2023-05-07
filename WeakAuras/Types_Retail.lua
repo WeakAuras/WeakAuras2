@@ -173,6 +173,15 @@ end
 
 Private.talentInfo = {}
 
+local function GetClassId(classFile)
+	for classID = 1, GetNumClasses() do
+		local _, thisClassFile = GetClassInfo(classID)
+		if classFile == thisClassFile then
+			return classID
+		end
+	end
+end
+
 function Private.GetTalentData(specId)
   if Private.talentInfo[specId] then
 		return Private.talentInfo[specId]
@@ -215,7 +224,8 @@ function Private.GetTalentData(specId)
       end
     end
   end
-	local classID = select(6, GetSpecializationInfoByID(specId))
+	local classFile = select(6, GetSpecializationInfoByID(specId))
+	local classID = GetClassId(classFile)
   local classOffsets = classIDToOffsets[classID]
   local basePanOffsetX = initialBasePanOffsetX - (classOffsets and classOffsets.extraOffsetX or 0)
   local basePanOffsetY = initialBasePanOffsetY - (classOffsets and classOffsets.extraOffsetY or 0)
