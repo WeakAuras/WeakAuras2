@@ -4268,12 +4268,13 @@ Private.event_prototypes = {
     loadFunc = function(trigger)
       trigger.spellName = trigger.spellName or 0;
       local spellName;
+      local followoverride = trigger.genericShowOn ~= "showOnReady" and trigger.use_followoverride
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
         spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
       end
-      WeakAuras.WatchSpellCooldown(spellName, trigger.use_matchedRune);
+      WeakAuras.WatchSpellCooldown(spellName, trigger.use_matchedRune, followoverride)
       if (trigger.use_showgcd) then
         WeakAuras.WatchGCD();
       end
@@ -4293,9 +4294,10 @@ Private.event_prototypes = {
         local showgcd = %s;
         local showlossofcontrol = %s;
         local ignoreSpellKnown = %s;
+        local followoverride = %s
         local track = %q
-        local startTime, duration, gcdCooldown, readyTime, modRate = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track);
-        local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown);
+        local startTime, duration, gcdCooldown, readyTime, modRate = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track, followoverride)
+        local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown, followoverride)
         local stacks = maxCharges and maxCharges ~= 1 and charges or (spellCount and spellCount > 0 and spellCount) or nil;
         if showlossofcontrol and startTime and duration then
           local locStart, locDuration = GetSpellLossOfControlCooldown(spellname);
@@ -4330,6 +4332,7 @@ Private.event_prototypes = {
         (trigger.use_showgcd and "true" or "false"),
         (trigger.use_showlossofcontrol and "true" or "false"),
         (trigger.use_ignoreSpellKnown and "true" or "false"),
+        (trigger.use_followoverride and "true" or "false"),
         (trigger.track or "auto"),
         showOnCheck
       );
@@ -4442,6 +4445,13 @@ Private.event_prototypes = {
             elseif trigger.track == "cooldown" then
               text = L["Tracking Only Cooldown"]
             end
+
+            if trigger.genericShowOn ~= "showOnReady"
+              and trigger.use_followoverride
+            then
+              text = text .. L["Show Override"]
+            end
+
             if trigger.use_showgcd then
               if text ~= "" then text = text .. "; " end
               text = text .. L["Show GCD"]
@@ -4492,6 +4502,16 @@ Private.event_prototypes = {
         type = "toggle",
         test = "true",
         collapse = "extra Cooldown Progress (Spell)"
+      },
+      {
+        name = "followoverride",
+        display = L["Show Override Spell"],
+        type = "toggle",
+        test = "true",
+        collapse = "extra Cooldown Progress (Spell)",
+        enable = function(trigger)
+          return (trigger.genericShowOn ~= "showOnReady")
+        end,
       },
       {
         name = "showlossofcontrol",
