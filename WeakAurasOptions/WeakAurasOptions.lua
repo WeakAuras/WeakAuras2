@@ -1058,7 +1058,7 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
       button:ResetLinkedAuras()
     end
     for id, aura in pairs(WeakAurasSaved.displays) do
-      if (aura.ignoreWagoUpdate and aura.ignoreWagoUpdate == true or not aura.ignoreWagoUpdate) and aura.url and aura.url ~= "" then
+      if not aura.ignoreWagoUpdate and aura.url and aura.url ~= "" then
         local slug, version = aura.url:match("wago.io/([^/]+)/([0-9]+)")
         if not slug and not version then
           slug = aura.url:match("wago.io/([^/]+)$")
