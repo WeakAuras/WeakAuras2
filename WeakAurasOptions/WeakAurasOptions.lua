@@ -511,7 +511,6 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_UNIGNORE_UPDATES"] = {
         WeakAuras.ClearAndUpdateOptions(self.data)
       end
       OptionsPrivate.SortDisplayButtons(nil, true)
-      
     end
   end,
   OnCancel = function(self) end,
