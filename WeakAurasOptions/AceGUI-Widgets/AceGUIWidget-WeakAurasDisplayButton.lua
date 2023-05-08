@@ -900,7 +900,6 @@ local methods = {
         func = function() self.callbacks.ToggleIgnoreWagoUpdate(self.data.id) end
       });
     end
-      
     tinsert(self.menu, {
       text = " ",
       notClickable = true,
