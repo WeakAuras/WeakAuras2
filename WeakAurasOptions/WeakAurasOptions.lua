@@ -503,7 +503,7 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_UNIGNORE_UPDATES"] = {
       local auraData = WeakAuras.GetData(self.data)
       if auraData then
         for child in OptionsPrivate.Private.TraverseAll(auraData) do
-          child.ignoreWagoUpdate = false
+          child.ignoreWagoUpdate = nil
         end
       end
       OptionsPrivate.SortDisplayButtons(nil, true)
