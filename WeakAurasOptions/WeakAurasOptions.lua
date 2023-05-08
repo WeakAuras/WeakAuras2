@@ -484,7 +484,9 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_IGNORE_UPDATES"] = {
       if auraData then
         for child in OptionsPrivate.Private.TraverseAll(auraData) do
           child.ignoreWagoUpdate = true
+          OptionsPrivate.ClearOptions(child.id)
         end
+        WeakAuras.ClearAndUpdateOptions(self.data)
       end
       OptionsPrivate.SortDisplayButtons(nil, true)
     end
@@ -504,9 +506,12 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_UNIGNORE_UPDATES"] = {
       if auraData then
         for child in OptionsPrivate.Private.TraverseAll(auraData) do
           child.ignoreWagoUpdate = nil
+          OptionsPrivate.ClearOptions(child.id)
         end
+        WeakAuras.ClearAndUpdateOptions(self.data)
       end
       OptionsPrivate.SortDisplayButtons(nil, true)
+      
     end
   end,
   OnCancel = function(self) end,

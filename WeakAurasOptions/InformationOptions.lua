@@ -100,6 +100,24 @@ function OptionsPrivate.GetInformationOptions(data)
     }
     order = order + 1
   end
+  if OptionsPrivate.HasWagoUrl(data.id) then
+    args.ignoreWagoUpdate = {
+      type = "toggle",
+      name = L["Ignore Wago Update"],
+      width = WeakAuras.doubleWidth,
+      get = function() return OptionsPrivate.IsWagoUpdateIgnored(data.id) end,
+      set = function(info, v)
+        if OptionsPrivate.IsWagoUpdateIgnored(data.id) then
+          StaticPopup_Show("WEAKAURAS_CONFIRM_UNIGNORE_UPDATES", "", "", data.id)
+        else
+          StaticPopup_Show("WEAKAURAS_CONFIRM_IGNORE_UPDATES", "", "", data.id)
+        end
+        WeakAuras.ClearAndUpdateOptions(data.id)
+      end,
+      order = order
+    }
+    order = order + 1
+  end
 
 
   -- Description
