@@ -515,16 +515,15 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_UNIGNORE_UPDATES"] = {
 }
 
 function OptionsPrivate.IsWagoUpdateIgnored(auraId)
-    local isIgnored = false
     local auraData = WeakAuras.GetData(auraId)
       if auraData then
         for child in OptionsPrivate.Private.TraverseAll(auraData) do
           if(child.ignoreWagoUpdate == true) then
-            isIgnored = true
+            return true
           end
         end
       end
-    return isIgnored
+    return false
 end
 
 function OptionsPrivate.ConfirmDelete(toDelete, parents)
