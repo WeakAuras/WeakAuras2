@@ -670,7 +670,7 @@ local methods = {
       OptionsPrivate.Ungroup(self.data);
     end
 
-    function self.callbacks.IgnoreWagoUpdate(auraId)
+    function self.callbacks.ToggleIgnoreWagoUpdate(auraId)
       if OptionsPrivate.IsWagoUpdateIgnored(auraId) then
         StaticPopup_Show("WEAKAURAS_CONFIRM_UNIGNORE_UPDATES", "", "", auraId)
       else
@@ -893,12 +893,12 @@ local methods = {
       notCheckable = true,
       func = function() OptionsPrivate.ExportToTable(self.data.id) end
     });
-     tinsert(self.menu, {
+    tinsert(self.menu, {
       text = L["Ignore Wago Update"],
       checked = function() return OptionsPrivate.IsWagoUpdateIgnored(self.data.id) end,
-      func = function() self.callbacks.IgnoreWagoUpdate(self.data.id) end
+      func = function() self.callbacks.ToggleIgnoreWagoUpdate(self.data.id) end
     });
-
+      
     tinsert(self.menu, {
       text = " ",
       notClickable = true,
