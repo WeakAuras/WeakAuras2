@@ -526,6 +526,18 @@ function OptionsPrivate.IsWagoUpdateIgnored(auraId)
     return false
 end
 
+function OptionsPrivate.HasWagoUrl(auraId)
+  local auraData = WeakAuras.GetData(auraId)
+    if auraData then
+      for child in OptionsPrivate.Private.TraverseAll(auraData) do
+        if(child.url and child.url ~= "") then
+          return true
+        end
+      end
+    end
+  return false
+end
+
 function OptionsPrivate.ConfirmDelete(toDelete, parents)
   if toDelete then
     local warningForm = L["You are about to delete %d aura(s). |cFFFF0000This cannot be undone!|r Would you like to continue?"]

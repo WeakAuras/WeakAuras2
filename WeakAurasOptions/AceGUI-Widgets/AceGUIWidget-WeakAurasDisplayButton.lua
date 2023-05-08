@@ -893,11 +893,13 @@ local methods = {
       notCheckable = true,
       func = function() OptionsPrivate.ExportToTable(self.data.id) end
     });
-    tinsert(self.menu, {
-      text = L["Ignore Wago Update"],
-      checked = function() return OptionsPrivate.IsWagoUpdateIgnored(self.data.id) end,
-      func = function() self.callbacks.ToggleIgnoreWagoUpdate(self.data.id) end
-    });
+    if OptionsPrivate.HasWagoUrl(self.data.id) then
+      tinsert(self.menu, {
+        text = L["Ignore Wago Update"],
+        checked = function() return OptionsPrivate.IsWagoUpdateIgnored(self.data.id) end,
+        func = function() self.callbacks.ToggleIgnoreWagoUpdate(self.data.id) end
+      });
+    end
       
     tinsert(self.menu, {
       text = " ",
