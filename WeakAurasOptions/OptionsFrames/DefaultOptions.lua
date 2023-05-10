@@ -7,11 +7,49 @@ local AddonName, OptionsPrivate = ...
 local CreateFrame = CreateFrame
 
 local AceGUI = LibStub("AceGUI-3.0")
+local LDBIconcon = LibStub("LibDBIcon-1.0")
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
-print("yo")
+local fonts = {
+  displayText = "%p",
+  outline = "OUTLINE",
+  color = { 1, 1, 1, 1 },
+  justify = "LEFT",
+  selfPoint = "BOTTOM",
+  anchorPoint = "CENTER",
+  anchorFrameType = "SCREEN",
+  xOffset = 0,
+  yOffset = 0,
+  font = defaultFont,
+  fontSize = defaultFontSize,
+  frameStrata = 1,
+  customTextUpdate = "event",
+  automaticWidth = "Auto",
+  fixedWidth = 200,
+  wordWrap = "WordWrap",
+  shadowColor = { 0, 0, 0, 1 },
+  shadowXOffset = 1,
+  shadowYOffset = -1,
+}
+
+local font_properties = {
+  color = {
+    display = L["Color"],
+    setter = "Color",
+    type = "color",
+  },
+  fontSize = {
+    display = L["Font Size"],
+    setter = "SetTextHeight",
+    type = "number",
+    min = 6,
+    softMax = 72,
+    step = 1,
+    default = 12,
+  },
+}
 
 local function ConstructDefaultOptions(frame)
   local group = AceGUI:Create("WeakAurasInlineGroup")
@@ -20,6 +58,70 @@ local function ConstructDefaultOptions(frame)
   group.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 46)
   group.frame:Hide()
   group:SetLayout("flow")
+
+  local fontHeading = AceGUI:Create("Heading")
+  fontHeading:SetText(L["Default Font Settings"])
+  fontHeading:SetRelativeWidth(0.7)
+  group:AddChild(fontHeading)
+
+  group:AddChild(AceGUI:Create("WeakAurasSpacer"))
+
+  local buttonHeading = AceGUI:Create("Heading")
+  buttonHeading:SetText(L["Minimap Button Settings"])
+  buttonHeading:SetRelativeWidth(0.7)
+  group:AddChild(buttonHeading)
+
+  local buttonLabel = AceGUI:Create("Label")
+  buttonLabel:SetFontObject(GameFontHighlight)
+  buttonLabel:SetFullWidth(true)
+  buttonLabel:SetText(L["Select where WeakAuras' menu icon is displayed."])
+  group:AddChild(buttonLabel)
+
+  local dropdown = AceGUI:Create("DropdownGroup")
+  dropdown:SetLayout("fill")
+  dropdown.width = "fill"
+  dropdown:SetHeight(390)
+  group:AddChild(dropdown)
+  dropdown.list = {
+    [0] = L["None"],
+    [1] = L["Minimap"],
+    [2] = L["Add-On Compartment"],
+  }
+  dropdown:SetGroupList(dropdown.list)
+
+  local Options = {
+    Icon = {
+      type = "select",
+      name = L["Menu Icon"],
+      desc = L["Select where WeakAuras' menu icon is displayed."],
+      values = {
+        [0] = L["None"],
+        [1] = L["Minimap"],
+        [2] = L["Add-On Compartment"],
+      },
+      get = function()
+        return WeakAurasSaved.db.LDB.position or 0
+      end,
+      set = function(i, v)
+        local LDBIcon = WeakAurasSaved.LDBIcon
+        if v == 1 then
+          LDBIcon:Show(AddonName)
+          LDBIcon:RemoveButtonFromCompartment(AddonName)
+        elseif v == 2 then
+          LDBIcon:Hide(AddonName)
+          LDBIcon:AddButtonToCompartment(AddonName)
+        else
+          LDBIcon:Hide(AddonName)
+          LDBIcon:RemoveButtonFromCompartment(AddonName)
+        end
+        WeakAurasSaved.db.LDB.position = v
+      end,
+      order = 5,
+      disabled = function()
+        return not WeakAurasSaved.LDBIcon
+      end,
+    },
+  }
 
   local close = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate")
   close:SetScript("OnClick", function()
