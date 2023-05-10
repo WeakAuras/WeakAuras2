@@ -8,47 +8,49 @@ local CreateFrame = CreateFrame
 
 local AceGUI = LibStub("AceGUI-3.0")
 local LDBIconcon = LibStub("LibDBIcon-1.0")
+local LSM = LibStub("LibSharedMedia-3.0")
 
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
+local defaultFont = WeakAuras.defaultFont
+local defaultFontSize = WeakAuras.defaultFontSize
 
-local fonts = {
-  displayText = "%p",
-  outline = "OUTLINE",
-  color = { 1, 1, 1, 1 },
-  justify = "LEFT",
-  selfPoint = "BOTTOM",
-  anchorPoint = "CENTER",
-  anchorFrameType = "SCREEN",
-  xOffset = 0,
-  yOffset = 0,
-  font = defaultFont,
-  fontSize = defaultFontSize,
-  frameStrata = 1,
-  customTextUpdate = "event",
-  automaticWidth = "Auto",
-  fixedWidth = 200,
-  wordWrap = "WordWrap",
-  shadowColor = { 0, 0, 0, 1 },
-  shadowXOffset = 1,
-  shadowYOffset = -1,
+--[[
+TODO:
+For first release:
+    - Add a "Reset" button to reset the default options to the old defaults
+    - Make the Minimap button dropdown work
+    - Make the font options work
+    - Make the bar texture options work
+    - Add the transparency slider
+]]
+
+local font = {
+  type = "select",
+  width = WeakAuras.normalWidth,
+  dialogControl = "LSM30_Font",
+  name = L["Font"],
+  order = 45,
+  values = AceGUIWidgetLSMlists.font,
 }
 
-local font_properties = {
-  color = {
-    display = L["Color"],
-    setter = "Color",
-    type = "color",
-  },
-  fontSize = {
-    display = L["Font Size"],
-    setter = "SetTextHeight",
-    type = "number",
-    min = 6,
-    softMax = 72,
-    step = 1,
-    default = 12,
-  },
+local fontSize = {
+  type = "range",
+  control = "WeakAurasSpinBox",
+  width = WeakAuras.normalWidth,
+  name = L["Size"],
+  order = 46,
+  min = 6,
+  softMax = 72,
+  step = 1,
+}
+
+local color = {
+  type = "color",
+  width = WeakAuras.normalWidth,
+  name = L["Text Color"],
+  hasAlpha = true,
+  order = 47,
 }
 
 local function ConstructDefaultOptions(frame)
