@@ -888,6 +888,10 @@ function OptionsPrivate.OpenDebugLog(text)
   frame.debugLog:Open(text)
 end
 
+function OptionsPrivate.OpenDefaultOptions(text)
+  frame.defaultOptions:Open()
+end
+
 function OptionsPrivate.OpenUpdate(data, children, target, sender, callbackFunc)
   return frame.update:Open(data, children, target, sender, callbackFunc)
 end

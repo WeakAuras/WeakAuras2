@@ -208,7 +208,8 @@
     "WeakAurasRealTimeProfiling",
     "WeakAurasRealTimeProfilingTitleText",
     "WeakAurasOptionsTitleText",
-    "WeakAurasOptionsPortrait"
+    "WeakAurasOptionsPortrait",
+    "C_AddOns"
   ],
   "runtime.version": "Lua 5.1",
   "workspace.ignoreDir": [

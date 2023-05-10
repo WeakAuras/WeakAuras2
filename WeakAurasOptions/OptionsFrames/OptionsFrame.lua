@@ -115,6 +115,9 @@ function OptionsPrivate.CreateFrame()
     frame:SetMinResize(minWidth, minHeight)
   end
   frame:SetFrameStrata("DIALOG")
+  frame:SetScript("OnMouseDown", function(self)
+    OptionsPrivate.OpenDefaultOptions()
+  end)
   -- Workaround classic issue
   WeakAurasOptionsPortrait:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]])
 
@@ -237,6 +240,7 @@ function OptionsPrivate.CreateFrame()
       self.texteditor.frame:Hide()
       self.codereview.frame:Hide()
       self.debugLog.frame:Hide()
+      self.defaultOptions.frame:Hide()
       if self.newView then
         self.newView.frame:Hide()
       end
@@ -325,6 +329,12 @@ function OptionsPrivate.CreateFrame()
         self.debugLog.frame:Show()
       else
         self.debugLog.frame:Hide()
+      end
+      if self.window == "defaultOptions" then
+        OptionsPrivate.SetTitle(L["Default Options"])
+        self.defaultOptions.frame:Show()
+      else
+        self.defaultOptions.frame:Hide()
       end
       if self.window == "default" then
         if self.loadProgessVisible then
@@ -518,6 +528,7 @@ function OptionsPrivate.CreateFrame()
   frame.codereview = OptionsPrivate.CodeReview(frame)
   frame.update = OptionsPrivate.UpdateFrame(frame)
   frame.debugLog = OptionsPrivate.DebugLog(frame)
+  frame.defaultOptions = OptionsPrivate.DefaultOptions(frame)
 
   frame.moversizer, frame.mover = OptionsPrivate.MoverSizer(frame)
 
