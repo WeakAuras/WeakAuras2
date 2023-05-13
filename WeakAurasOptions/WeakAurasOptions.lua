@@ -488,6 +488,7 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_IGNORE_UPDATES"] = {
         end
         WeakAuras.ClearAndUpdateOptions(self.data)
       end
+      WeakAuras.FillOptions()
       OptionsPrivate.SortDisplayButtons(nil, true)
     end
   end,
@@ -510,6 +511,7 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_UNIGNORE_UPDATES"] = {
         end
         WeakAuras.ClearAndUpdateOptions(self.data)
       end
+      WeakAuras.FillOptions()
       OptionsPrivate.SortDisplayButtons(nil, true)
     end
   end,

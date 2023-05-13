@@ -112,7 +112,6 @@ function OptionsPrivate.GetInformationOptions(data)
         else
           StaticPopup_Show("WEAKAURAS_CONFIRM_IGNORE_UPDATES", "", "", data.id)
         end
-        WeakAuras.ClearAndUpdateOptions(data.id)
       end,
       order = order
     }
