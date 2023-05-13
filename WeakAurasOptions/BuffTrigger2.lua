@@ -632,7 +632,7 @@ local function GetBuffTriggerOptions(data, triggernum)
     fetchTooltip = {
       type = "toggle",
       name = L["Fetch Tooltip Information"],
-      desc = L["This adds %tooltip, %tooltip1, %tooltip2, %tooltip3 as text replacements and also allows filtering based on the tooltip content/values."],
+      desc = L["This adds %tooltip, %tooltip1, %tooltip2, %tooltip3 and %tooltip4 as text replacements and also allows filtering based on the tooltip content/values."],
       order = 64.5,
       width = WeakAuras.doubleWidth,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and not IsSingleMissing(trigger)) end

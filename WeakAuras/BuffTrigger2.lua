@@ -261,15 +261,15 @@ local function UpdateToolTipDataInMatchData(matchData, time)
   local changed = false
 
   if matchData.unit and matchData.auraInstanceID then
-    local tooltip, _, tooltip1, tooltip2, tooltip3 = WeakAuras.GetAuraInstanceTooltipInfo(matchData.unit, matchData.auraInstanceID, matchData.filter)
+    local tooltip, _, tooltip1, tooltip2, tooltip3, tooltip4 = WeakAuras.GetAuraInstanceTooltipInfo(matchData.unit, matchData.auraInstanceID, matchData.filter)
     changed = matchData.tooltip ~= tooltip or matchData.tooltip1 ~= tooltip1
-      or matchData.tooltip2 ~= tooltip2 or matchData.tooltip3 ~= tooltip3
-    matchData.tooltip, matchData.tooltip1, matchData.tooltip2, matchData.tooltip3 = tooltip, tooltip1, tooltip2, tooltip3
+      or matchData.tooltip2 ~= tooltip2 or matchData.tooltip3 ~= tooltip3 or matchData.tooltip4 ~= tooltip4
+    matchData.tooltip, matchData.tooltip1, matchData.tooltip2, matchData.tooltip3, matchData.tooltip4 = tooltip, tooltip1, tooltip2, tooltip3, tooltip4
   elseif matchData.unit and matchData.index and matchData.filter then
-    local tooltip, _, tooltip1, tooltip2, tooltip3 = WeakAuras.GetAuraTooltipInfo(matchData.unit, matchData.index, matchData.filter)
+    local tooltip, _, tooltip1, tooltip2, tooltip3, tooltip4 = WeakAuras.GetAuraTooltipInfo(matchData.unit, matchData.index, matchData.filter)
     changed = matchData.tooltip ~= tooltip or matchData.tooltip1 ~= tooltip1
-      or matchData.tooltip2 ~= tooltip2 or matchData.tooltip3 ~= tooltip3
-    matchData.tooltip, matchData.tooltip1, matchData.tooltip2, matchData.tooltip3 = tooltip, tooltip1, tooltip2, tooltip3
+      or matchData.tooltip2 ~= tooltip2 or matchData.tooltip3 ~= tooltip3 or matchData.tooltip4 ~= tooltip4
+    matchData.tooltip, matchData.tooltip1, matchData.tooltip2, matchData.tooltip3, matchData.tooltip4 = tooltip, tooltip1, tooltip2, tooltip3, tooltip4
   end
 
   matchData.tooltipUpdated = time
@@ -576,6 +576,7 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
       tooltip1 = bestMatch.tooltip1,
       tooltip2 = bestMatch.tooltip2,
       tooltip3 = bestMatch.tooltip3,
+      tooltip4 = bestMatch.tooltip4,
       points = bestMatch.points,
       affected = affected,
       unaffected = unaffected,
@@ -730,6 +731,11 @@ local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, mat
 
     if state.tooltip3 ~= bestMatch.tooltip3 then
       state.tooltip3 = bestMatch.tooltip3
+      changed = true
+    end
+
+    if state.tooltip4 ~= bestMatch.tooltip4 then
+      state.tooltip4 = bestMatch.tooltip4
       changed = true
     end
 
@@ -922,8 +928,8 @@ local function UpdateStateWithNoMatch(time, triggerStates, triggerInfo, cloneId,
       changed = true
     end
 
-    if state.tooltip or state.tooltip1 or state.tooltip2 or state.tooltip3 then
-      state.tooltip, state.tooltip1, state.tooltip2, state.tooltip3 = nil, nil, nil, nil
+    if state.tooltip or state.tooltip1 or state.tooltip2 or state.tooltip3 or state.tooltip4 then
+      state.tooltip, state.tooltip1, state.tooltip2, state.tooltip3, state.tooltip4 = nil, nil, nil, nil, nil
       changed = true
     end
 
@@ -3063,6 +3069,7 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
     ret = ret .. "|cFFFF0000%".. triggernum .. ".tooltip1|r - " .. L["First Value of Tooltip Text"] .. "\n"
     ret = ret .. "|cFFFF0000%".. triggernum .. ".tooltip2|r - " .. L["Second Value of Tooltip Text"] .. "\n"
     ret = ret .. "|cFFFF0000%".. triggernum .. ".tooltip3|r - " .. L["Third Value of Tooltip Text"] .. "\n"
+    ret = ret .. "|cFFFF0000%".. triggernum .. ".tooltip4|r - " .. L["Fourth Value of Tooltip Text"] .. "\n"
   end
 
   if WeakAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole then
@@ -3175,6 +3182,10 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
     }
     result["tooltip3"] = {
       display = L["Tooltip Value 3"],
+      type = "number"
+    }
+    result["tooltip4"] = {
+      display = L["Tooltip Value 4"],
       type = "number"
     }
   end
