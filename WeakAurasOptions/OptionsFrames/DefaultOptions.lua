@@ -7,7 +7,7 @@ local AddonName, OptionsPrivate = ...
 local CreateFrame = CreateFrame
 
 local AceGUI = LibStub("AceGUI-3.0")
-local LDBIconcon = LibStub("LibDBIcon-1.0")
+local LDBIcon = LibStub("LibDBIcon-1.0")
 local LSM = LibStub("LibSharedMedia-3.0")
 
 local WeakAuras = WeakAuras
@@ -89,41 +89,25 @@ local function ConstructDefaultOptions(frame)
     [1] = L["Minimap"],
     [2] = L["Add-On Compartment"],
   }
+  -- dropdown:SetValue(dropdown.list[WeakAurasSaved.minimap.position] or dropdown.list[1])
+  if not LDBIcon:IsButtonCompartmentAvailable() then
+    tremove(dropdown.list, 2)
+  end
   dropdown:SetGroupList(dropdown.list)
-
-  local Options = {
-    Icon = {
-      type = "select",
-      name = L["Menu Icon"],
-      desc = L["Select where WeakAuras' menu icon is displayed."],
-      values = {
-        [0] = L["None"],
-        [1] = L["Minimap"],
-        [2] = L["Add-On Compartment"],
-      },
-      get = function()
-        return WeakAurasSaved.db.LDB.position or 0
-      end,
-      set = function(i, v)
-        local LDBIcon = WeakAurasSaved.LDBIcon
-        if v == 1 then
-          LDBIcon:Show(AddonName)
-          LDBIcon:RemoveButtonFromCompartment(AddonName)
-        elseif v == 2 then
-          LDBIcon:Hide(AddonName)
-          LDBIcon:AddButtonToCompartment(AddonName)
-        else
-          LDBIcon:Hide(AddonName)
-          LDBIcon:RemoveButtonFromCompartment(AddonName)
-        end
-        WeakAurasSaved.db.LDB.position = v
-      end,
-      order = 5,
-      disabled = function()
-        return not WeakAurasSaved.LDBIcon
-      end,
-    },
-  }
+  dropdown:SetCallback("OnGroupSelected", function(widget, event, uniquevalue)
+    print("value", uniquevalue)
+    if uniquevalue == 1 then
+      LDBIcon:Show("WeakAuras")
+      LDBIcon:RemoveButtonFromCompartment("WeakAuras")
+    elseif uniquevalue == 2 then
+      LDBIcon:Hide("WeakAuras")
+      LDBIcon:AddButtonToCompartment("WeakAuras")
+    else
+      LDBIcon:Hide("WeakAuras")
+      LDBIcon:RemoveButtonFromCompartment("WeakAuras")
+    end
+    WeakAurasSaved.minimap.position = uniquevalue
+  end)
 
   local close = CreateFrame("Button", nil, group.frame, "UIPanelButtonTemplate")
   close:SetScript("OnClick", function()

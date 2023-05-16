@@ -1069,6 +1069,8 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
   iconB = 1
 });
 
+WeakAuras.Broker_WeakAuras = Broker_WeakAuras;
+
 do -- Archive stuff
   local Archivist = select(2, ...).Archivist
   local function OpenArchive()
@@ -1254,7 +1256,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       elseif db.lastArchiveClear < time() - 86400 then
         Private.CleanArchive(db.historyCutoff, db.migrationCutoff);
       end
-      db.minimap = db.minimap or { hide = false };
+      db.minimap = db.minimap or { position = 1 };
       LDBIcon:Register("WeakAuras", Broker_WeakAuras, db.minimap);
     end
   elseif(event == "PLAYER_LOGIN") then
