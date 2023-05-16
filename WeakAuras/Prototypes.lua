@@ -7508,7 +7508,7 @@ Private.event_prototypes = {
         display = L["Charging"],
         conditionType = "bool",
         conditionTest = function(state, needle)
-          return state and state.show and (state.essence == state.triggerEssence - 1) == (needle == 1)
+          return state and state.show and (state.essence == (state.triggerEssence or 0) - 1) == (needle == 1)
         end,
         enable = function(trigger)
           return trigger.use_essence and type(trigger.essence) == "number" and trigger.essence > 0
