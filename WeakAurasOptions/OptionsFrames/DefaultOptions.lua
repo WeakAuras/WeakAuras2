@@ -76,7 +76,7 @@ local function ConstructDefaultOptions(frame)
   local buttonLabel = AceGUI:Create("Label")
   buttonLabel:SetFontObject(GameFontHighlight)
   buttonLabel:SetFullWidth(true)
-  buttonLabel:SetText(L["Select where WeakAuras' menu icon is displayed."])
+  buttonLabel:SetText(L["Select where the WeakAuras menu icon is displayed."])
   group:AddChild(buttonLabel)
 
   local dropdown = AceGUI:Create("DropdownGroup")
@@ -89,13 +89,12 @@ local function ConstructDefaultOptions(frame)
     [1] = L["Minimap"],
     [2] = L["Add-On Compartment"],
   }
-  -- dropdown:SetValue(dropdown.list[WeakAurasSaved.minimap.position] or dropdown.list[1])
+  dropdown.dropdown:SetText(dropdown.list[WeakAurasSaved.minimap.position] or dropdown.list[1])
   if not LDBIcon:IsButtonCompartmentAvailable() then
     tremove(dropdown.list, 2)
   end
   dropdown:SetGroupList(dropdown.list)
   dropdown:SetCallback("OnGroupSelected", function(widget, event, uniquevalue)
-    print("value", uniquevalue)
     if uniquevalue == 1 then
       LDBIcon:Show("WeakAuras")
       LDBIcon:RemoveButtonFromCompartment("WeakAuras")
