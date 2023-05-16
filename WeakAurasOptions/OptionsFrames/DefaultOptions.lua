@@ -19,7 +19,7 @@ local defaultFontSize = WeakAuras.defaultFontSize
 TODO:
 For first release:
     - Add a "Reset" button to reset the default options to the old defaults
-    - Make the Minimap button dropdown work
+    - Wipe old `hide` option on the SV?
     - Make the font options work
     - Make the bar texture options work
     - Add the transparency slider
@@ -87,7 +87,7 @@ local function ConstructDefaultOptions(frame)
   dropdown.list = {
     [0] = L["None"],
     [1] = L["Minimap"],
-    [2] = L["Add-On Compartment"],
+    [2] = L["AddOn Compartment"],
   }
   dropdown.dropdown:SetText(dropdown.list[WeakAurasSaved.minimap.position] or dropdown.list[1])
   if not LDBIcon:IsButtonCompartmentAvailable() then

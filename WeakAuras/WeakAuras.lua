@@ -159,7 +159,6 @@ end
 function Private.PrintHelp()
   print(L["Usage:"])
   print(L["/wa help - Show this message"])
-  print(L["/wa minimap - Toggle the minimap icon"])
   print(L["/wa pstart - Start profiling. Optionally include a duration in seconds after which profiling automatically stops. To profile the next combat/encounter, pass a \"combat\" or \"encounter\" argument."])
   print(L["/wa pstop - Finish profiling"])
   print(L["/wa pprint - Show the results from the most recent profiling"])
@@ -187,8 +186,6 @@ function SlashCmdList.WEAKAURAS(input)
     WeakAuras.PrintProfile();
   elseif msg == "pcancel" then
     WeakAuras.CancelScheduledProfile()
-  elseif msg == "minimap" then
-    WeakAuras.ToggleMinimap();
   elseif msg == "help" then
     Private.PrintHelp();
   elseif msg == "repair" then
@@ -199,16 +196,6 @@ function SlashCmdList.WEAKAURAS(input)
 end
 
 if not WeakAuras.IsLibsOK() then return end
-
-function WeakAuras.ToggleMinimap()
-  WeakAurasSaved.minimap.hide = not WeakAurasSaved.minimap.hide
-  if WeakAurasSaved.minimap.hide then
-    LDBIcon:Hide("WeakAuras");
-    prettyPrint(L["Use /wa minimap to show the minimap icon again."])
-  else
-    LDBIcon:Show("WeakAuras");
-  end
-end
 
 BINDING_HEADER_WEAKAURAS = ADDON_NAME
 BINDING_NAME_WEAKAURASTOGGLE = L["Toggle Options Window"]
@@ -964,7 +951,7 @@ function Private.CountWagoUpdates()
   return updatedSlugsCount
 end
 
-local function tooltip_draw(isAddonCompartment)
+local function GenerateTooltip()
   local tooltip = GameTooltip;
   tooltip:ClearLines();
   tooltip:AddDoubleLine("WeakAuras", versionString);
@@ -985,13 +972,8 @@ local function tooltip_draw(isAddonCompartment)
     end
   end
   tooltip:AddLine(L["|cffeda55fRight-Click|r to toggle performance profiling window."], 0.2, 1, 0.2);
-  if not isAddonCompartment then
-    tooltip:AddLine(L["|cffeda55fMiddle-Click|r to toggle the minimap icon on or off."], 0.2, 1, 0.2);
-  end
   tooltip:Show();
 end
-
-WeakAuras.GenerateTooltip = tooltip_draw;
 
 local colorFrame = CreateFrame("Frame");
 Private.frames["LDB Icon Recoloring"] = colorFrame;
@@ -1027,12 +1009,10 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
       else
         WeakAuras.OpenOptions();
       end
-    elseif(button == 'MiddleButton') then
-      WeakAuras.ToggleMinimap();
     else
       WeakAuras.RealTimeProfilingWindow:Toggle()
     end
-    tooltip_draw()
+    GenerateTooltip()
   end,
   OnEnter = function(self)
     colorFrame:SetScript("OnUpdate", function(self, elaps)
@@ -1052,12 +1032,12 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
       elapsed = elapsed + elap;
       if(elapsed > delay) then
         elapsed = 0;
-        tooltip_draw();
+        GenerateTooltip()
       end
     end);
     GameTooltip:SetOwner(self, "ANCHOR_NONE");
     GameTooltip:SetPoint(getAnchors(self))
-    tooltip_draw();
+    GenerateTooltip()
   end,
   OnLeave = function(self)
     colorFrame:SetScript("OnUpdate", nil);
@@ -1068,8 +1048,6 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
   iconG = 0,
   iconB = 1
 });
-
-WeakAuras.Broker_WeakAuras = Broker_WeakAuras;
 
 do -- Archive stuff
   local Archivist = select(2, ...).Archivist
