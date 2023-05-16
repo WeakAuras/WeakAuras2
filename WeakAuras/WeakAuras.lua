@@ -1256,8 +1256,18 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
       elseif db.lastArchiveClear < time() - 86400 then
         Private.CleanArchive(db.historyCutoff, db.migrationCutoff);
       end
-      db.minimap = db.minimap or { position = 1 };
-      LDBIcon:Register("WeakAuras", Broker_WeakAuras, db.minimap);
+
+      if not db.minimap.position or db.minimap.position == 1 then
+        showMinimapIcon = { hide = false }
+      else
+        showMinimapIcon = { hide = true }
+      end
+
+      LDBIcon:Register("WeakAuras", Broker_WeakAuras, showMinimapIcon)
+
+      if db.minimap.position == 2 then
+        LDBIcon:AddButtonToCompartment("WeakAuras")
+      end
     end
   elseif(event == "PLAYER_LOGIN") then
     local dbIsValid, takeNewSnapshots
