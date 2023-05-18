@@ -22,6 +22,7 @@
     "BINDING_HEADER_RAID_TARGET",
     "BNGetFriendGameAccountInfo",
     "BNGetNumFriendGameAccounts",
+    "C_AddOns",
     "C_Traits",
     "ChatFontNormal",
     "ChatFrame_AddMessageEventFilter",
