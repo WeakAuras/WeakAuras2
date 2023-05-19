@@ -176,7 +176,11 @@ local blockedFunctions = {
   GuildUninvite = true,
   securecall = true,
   DeleteCursorItem = true,
-  ChatEdit_SendText = true
+  ChatEdit_SendText = true,
+  GetButtonMetatable = true,
+  GetEditBoxMetatable = true,
+  GetFontStringMetatable = true,
+  GetFrameMetaTable = true,
 }
 
 local blockedTables = {
