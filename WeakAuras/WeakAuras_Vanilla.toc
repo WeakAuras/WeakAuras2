@@ -22,9 +22,6 @@
 # External code + initialization
 embeds.xml
 
-# TaintLess
-Libs\TaintLess\TaintLess.xml
-
 # Client flavor specific libs
 Libs\LibClassicDurations\LibClassicDurations.xml
 Libs\LibClassicCasterino\LibClassicCasterino.lua
