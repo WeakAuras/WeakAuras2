@@ -30,6 +30,9 @@ externals:
     tag: v1.0.0
   WeakAuras/Libs/LibSpecialization: https://repos.curseforge.com/wow/libspecialization/trunk/LibSpecialization
   WeakAuras/Libs/LibUIDropDownMenu: https://repos.wowace.com/wow/libuidropdownmenu/trunk/LibUIDropDownMenu
+  WeakAuras/Libs/TaintLess:
+    url: https://www.townlong-yak.com/addons.git/taintless
+    commit: default
 
 enable-nolib-creation: no
 

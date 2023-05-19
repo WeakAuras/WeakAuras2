@@ -23,6 +23,9 @@
 # External code + initialization
 embeds.xml
 
+# TaintLess
+Libs\TaintLess\TaintLess.xml
+
 # Client flavor specific libs
 Libs\LibSpecialization\LibSpecialization.lua
 
