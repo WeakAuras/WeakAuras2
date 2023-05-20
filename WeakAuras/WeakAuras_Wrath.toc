@@ -22,6 +22,9 @@
 # External code + initialization
 embeds.xml
 
+# TaintLess
+Libs\TaintLess\TaintLess.xml
+
 Init.lua
 locales.xml
 ArchiveTypes\Repository.lua
