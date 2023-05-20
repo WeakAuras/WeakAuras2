@@ -180,7 +180,7 @@ local blockedFunctions = {
   GetButtonMetatable = true,
   GetEditBoxMetatable = true,
   GetFontStringMetatable = true,
-  GetFrameMetaTable = true,
+  GetFrameMetatable = true,
 }
 
 local blockedTables = {
