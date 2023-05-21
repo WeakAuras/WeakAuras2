@@ -3915,6 +3915,11 @@ function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
   local trigger = data.triggers[triggernum].trigger
   if trigger.useName and trigger.auranames then
     for index, name in pairs(trigger.auranames) do
+      if index > 10 then
+        tinsert(namestable, {" ", "[...]"})
+        break
+      end
+
       local left = " "
       if(index == 1) then
         if(#trigger.auranames > 0) then
@@ -3939,6 +3944,11 @@ function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
 
   if trigger.useExactSpellId and  trigger.auraspellids then
     for index, spellId in pairs(trigger.auraspellids) do
+      if index > 10 then
+        tinsert(namestable, {" ", "[...]"})
+        break
+      end
+
       local left = " "
       if index == 1 then
         if #trigger.auraspellids > 0 then
