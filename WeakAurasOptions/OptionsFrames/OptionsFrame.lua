@@ -246,6 +246,7 @@ function OptionsPrivate.CreateFrame()
       self.toolbarContainer:Hide()
       self.filterInput:Hide();
       self.tipFrame:Hide()
+      self:HideTip()
       self.bottomRightResizer:Hide()
     else
       WeakAurasOptionsTitleText:Show()
@@ -254,15 +255,11 @@ function OptionsPrivate.CreateFrame()
         OptionsPrivate.SetTitle()
         self.buttonsContainer.frame:Show()
         self.container.frame:Show()
-        if self.tipFrameIsVisible then
-          self.tipFrame:Show()
-        else
-          self.tipFrame:Hide()
-        end
+        self:ShowTip()
       else
         self.buttonsContainer.frame:Hide()
         self.container.frame:Hide()
-        self.tipFrame:Hide()
+        self:HideTip()
       end
 
       if self.window == "texture" then
@@ -483,14 +480,12 @@ function OptionsPrivate.CreateFrame()
   end
 
   frame.ShowTip = function(self)
-    self.tipFrameIsVisible = true
     self.tipFrame:Show()
     self.buttonsContainer.frame:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 17, 30)
     self.container.frame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -17, 28)
   end
 
   frame.HideTip = function(self)
-    self.tipFrameIsVisible = false
     self.tipFrame:Hide()
     self.buttonsContainer.frame:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 17, 12)
     self.container.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 10)
