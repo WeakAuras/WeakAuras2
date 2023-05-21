@@ -226,6 +226,7 @@ function OptionsPrivate.CreateFrame()
   frame.bottomRightResizer = CreateFrameSizer(frame, commitWindowChanges, "BOTTOMRIGHT")
 
   frame.UpdateFrameVisible = function(self)
+    self.tipPopup:Hide()
     if self.minimized then
       WeakAurasOptionsTitleText:Hide()
       self.buttonsContainer.frame:Hide()
@@ -386,6 +387,7 @@ function OptionsPrivate.CreateFrame()
   tipPopup:SetBackdropColor(0, 0, 0, 0.8)
   --tipPopup:SetHeight(100)
   tipPopup:Hide()
+  frame.tipPopup = tipPopup
 
   local tipPopupTitle = tipPopup:CreateFontString(nil, "BACKGROUND", "GameFontNormalLarge")
   tipPopupTitle:SetPoint("TOPLEFT", tipPopup, "TOPLEFT", 10, -10)
