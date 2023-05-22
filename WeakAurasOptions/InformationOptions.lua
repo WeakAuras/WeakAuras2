@@ -103,7 +103,7 @@ function OptionsPrivate.GetInformationOptions(data)
   if OptionsPrivate.HasWagoUrl(data.id) then
     args.ignoreWagoUpdate = {
       type = "toggle",
-      name = L["Ignore Wago Update"],
+      name = L["Ignore Wago updates"],
       width = WeakAuras.doubleWidth,
       get = function() return OptionsPrivate.IsWagoUpdateIgnored(data.id) end,
       set = function(info, v)
