@@ -104,33 +104,25 @@ function OptionsPrivate.GetInformationOptions(data)
     args.ignoreWagoUpdate = {
       type = "toggle",
       name = L["Ignore Wago updates"],
-      desc = OptionsPrivate.IsWagoUpdateIgnored(data.id) and L["Do you want to stop ignoring all future updates for this aura"] or L["Do you want to ignore all future updates for this aura"]
+      desc = OptionsPrivate.IsWagoUpdateIgnored(data.id) and L["Do you want to stop ignoring all future updates for this aura"] or L["Do you want to ignore all future updates for this aura"],
       width = WeakAuras.doubleWidth,
       get = function() return OptionsPrivate.IsWagoUpdateIgnored(data.id) end,
       set = function(info, v)
-        if OptionsPrivate.IsWagoUpdateIgnored(data.id) then
-          local auraData = WeakAuras.GetData(self.data)
+          local auraData = WeakAuras.GetData(data.id)
           if auraData then
             for child in OptionsPrivate.Private.TraverseAll(auraData) do
-              child.ignoreWagoUpdate = nil
+              if OptionsPrivate.IsWagoUpdateIgnored(data.id) then
+                child.ignoreWagoUpdate = nil
+              else
+                child.ignoreWagoUpdate = true
+              end
               OptionsPrivate.ClearOptions(child.id)
             end
-            WeakAuras.ClearAndUpdateOptions(self.data)
+            WeakAuras.ClearAndUpdateOptions(data.id)
           end
           WeakAuras.FillOptions()
           OptionsPrivate.SortDisplayButtons(nil, true)
-        else
-          local auraData = WeakAuras.GetData(self.data)
-          if auraData then
-            for child in OptionsPrivate.Private.TraverseAll(auraData) do
-              child.ignoreWagoUpdate = true
-              OptionsPrivate.ClearOptions(child.id)
-            end
-            WeakAuras.ClearAndUpdateOptions(self.data)
-          end
-          WeakAuras.FillOptions()
-          OptionsPrivate.SortDisplayButtons(nil, true)
-        end
+
       end,
       order = order
     }
