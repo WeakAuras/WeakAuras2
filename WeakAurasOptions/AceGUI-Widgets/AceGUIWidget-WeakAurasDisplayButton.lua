@@ -670,14 +670,6 @@ local methods = {
       OptionsPrivate.Ungroup(self.data);
     end
 
-    function self.callbacks.ToggleIgnoreWagoUpdate(auraId)
-      if OptionsPrivate.IsWagoUpdateIgnored(auraId) then
-        StaticPopup_Show("WEAKAURAS_CONFIRM_UNIGNORE_UPDATES", "", "", auraId)
-      else
-        StaticPopup_Show("WEAKAURAS_CONFIRM_IGNORE_UPDATES", "", "", auraId)
-      end
-    end
-
     function self.callbacks.OnUpGroupClick()
       if (WeakAuras.IsImporting()) then return end;
       if(self.data.parent) then
@@ -893,6 +885,7 @@ local methods = {
       notCheckable = true,
       func = function() OptionsPrivate.ExportToTable(self.data.id) end
     });
+
     tinsert(self.menu, {
       text = " ",
       notClickable = true,
