@@ -474,52 +474,6 @@ StaticPopupDialogs["WEAKAURAS_CONFIRM_DELETE"] = {
   preferredindex = STATICPOPUP_NUMDIALOGS,
 }
 
-StaticPopupDialogs["WEAKAURAS_CONFIRM_IGNORE_UPDATES"] = {
-  text = L["Do you want to ignore all future updates for this aura"],
-  button1 = L["Yes"],
-  button2 = L["Cancel"],
-  OnAccept = function(self)
-    if self.data then
-      local auraData = WeakAuras.GetData(self.data)
-      if auraData then
-        for child in OptionsPrivate.Private.TraverseAll(auraData) do
-          child.ignoreWagoUpdate = true
-          OptionsPrivate.ClearOptions(child.id)
-        end
-        WeakAuras.ClearAndUpdateOptions(self.data)
-      end
-      WeakAuras.FillOptions()
-      OptionsPrivate.SortDisplayButtons(nil, true)
-    end
-  end,
-  OnCancel = function(self) end,
-  whileDead = true,
-  preferredindex = STATICPOPUP_NUMDIALOGS,
-}
-
-StaticPopupDialogs["WEAKAURAS_CONFIRM_UNIGNORE_UPDATES"] = {
-  text = L["Do you want to stop ignoring all future updates for this aura"],
-  button1 = L["Yes"],
-  button2 = L["Cancel"],
-  OnAccept = function(self)
-    if self.data then
-      local auraData = WeakAuras.GetData(self.data)
-      if auraData then
-        for child in OptionsPrivate.Private.TraverseAll(auraData) do
-          child.ignoreWagoUpdate = nil
-          OptionsPrivate.ClearOptions(child.id)
-        end
-        WeakAuras.ClearAndUpdateOptions(self.data)
-      end
-      WeakAuras.FillOptions()
-      OptionsPrivate.SortDisplayButtons(nil, true)
-    end
-  end,
-  OnCancel = function(self) end,
-  whileDead = true,
-  preferredindex = STATICPOPUP_NUMDIALOGS,
-}
-
 function OptionsPrivate.IsWagoUpdateIgnored(auraId)
     local auraData = WeakAuras.GetData(auraId)
       if auraData then
