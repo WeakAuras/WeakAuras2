@@ -24,6 +24,7 @@
     "BNGetNumFriendGameAccounts",
     "C_AddOns",
     "C_Traits",
+    "C_PlayerInfo",
     "ChatFontNormal",
     "ChatFrame_AddMessageEventFilter",
     "CHESTSLOT",
