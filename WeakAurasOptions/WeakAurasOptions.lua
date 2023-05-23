@@ -478,7 +478,7 @@ function OptionsPrivate.IsWagoUpdateIgnored(auraId)
     local auraData = WeakAuras.GetData(auraId)
       if auraData then
         for child in OptionsPrivate.Private.TraverseAll(auraData) do
-          if(child.ignoreWagoUpdate == true) then
+          if child.ignoreWagoUpdate then
             return true
           end
         end
@@ -490,7 +490,7 @@ function OptionsPrivate.HasWagoUrl(auraId)
   local auraData = WeakAuras.GetData(auraId)
     if auraData then
       for child in OptionsPrivate.Private.TraverseAll(auraData) do
-        if(child.url and child.url ~= "") then
+        if child.url and child.url ~= "" then
           return true
         end
       end
