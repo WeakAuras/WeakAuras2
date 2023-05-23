@@ -108,11 +108,11 @@ function OptionsPrivate.GetInformationOptions(data)
       width = WeakAuras.doubleWidth,
       get = function() return OptionsPrivate.IsWagoUpdateIgnored(data.id) end,
       set = function(info, v)
-          local auraData = WeakAuras.GetData(data.id)    
+          local auraData = WeakAuras.GetData(data.id)
           if auraData then
             local IgnoreUpdate
             if OptionsPrivate.IsWagoUpdateIgnored(data.id) then
-              IgnoreUpdate = nil    
+              IgnoreUpdate = nil
             else
               IgnoreUpdate = true
             end
