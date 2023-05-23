@@ -100,6 +100,36 @@ function OptionsPrivate.GetInformationOptions(data)
     }
     order = order + 1
   end
+  if OptionsPrivate.HasWagoUrl(data.id) then
+    args.ignoreWagoUpdate = {
+      type = "toggle",
+      name = L["Ignore Wago updates"],
+      desc = OptionsPrivate.IsWagoUpdateIgnored(data.id) and L["Do you want to stop ignoring all future updates for this aura"] or L["Do you want to ignore all future updates for this aura"],
+      width = WeakAuras.doubleWidth,
+      get = function() return OptionsPrivate.IsWagoUpdateIgnored(data.id) end,
+      set = function(info, v)
+          local auraData = WeakAuras.GetData(data.id)
+          if auraData then
+            local IgnoreUpdate
+            if OptionsPrivate.IsWagoUpdateIgnored(data.id) then
+              IgnoreUpdate = nil
+            else
+              IgnoreUpdate = true
+            end
+            for child in OptionsPrivate.Private.TraverseAll(auraData) do
+              child.ignoreWagoUpdate = IgnoreUpdate
+              OptionsPrivate.ClearOptions(child.id)
+            end
+            WeakAuras.ClearAndUpdateOptions(data.id)
+          end
+          WeakAuras.FillOptions()
+          OptionsPrivate.SortDisplayButtons(nil, true)
+
+      end,
+      order = order
+    }
+    order = order + 1
+  end
 
 
   -- Description
