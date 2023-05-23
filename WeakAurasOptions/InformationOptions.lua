@@ -108,14 +108,16 @@ function OptionsPrivate.GetInformationOptions(data)
       width = WeakAuras.doubleWidth,
       get = function() return OptionsPrivate.IsWagoUpdateIgnored(data.id) end,
       set = function(info, v)
-          local auraData = WeakAuras.GetData(data.id)
+          local auraData = WeakAuras.GetData(data.id)    
           if auraData then
+            local IgnoreUpdate
+            if OptionsPrivate.IsWagoUpdateIgnored(data.id) then
+              IgnoreUpdate = nil    
+            else
+              IgnoreUpdate = true
+            end
             for child in OptionsPrivate.Private.TraverseAll(auraData) do
-              if OptionsPrivate.IsWagoUpdateIgnored(data.id) then
-                child.ignoreWagoUpdate = nil
-              else
-                child.ignoreWagoUpdate = true
-              end
+              child.ignoreWagoUpdate = IgnoreUpdate
               OptionsPrivate.ClearOptions(child.id)
             end
             WeakAuras.ClearAndUpdateOptions(data.id)
