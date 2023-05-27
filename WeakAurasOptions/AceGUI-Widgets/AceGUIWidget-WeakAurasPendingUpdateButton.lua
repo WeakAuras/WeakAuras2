@@ -4,7 +4,7 @@ local L = WeakAuras.L
 
 local pairs, next, type, unpack = pairs, next, type, unpack
 
-local Type, Version = "WeakAurasPendingUpdateButton", 4
+local Type, Version = "WeakAurasPendingUpdateButton", 5
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
@@ -100,7 +100,7 @@ local methods = {
                   local auraData = WeakAuras.GetData(auraId)
                   if auraData then
                     local success, error = WeakAuras.Import(self.companionData.encoded, auraData)
-                    if not success then
+                    if not success and error ~= nil then
                       WeakAuras.prettyPrint(error)
                     end
                   end
