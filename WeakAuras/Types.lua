@@ -3330,6 +3330,13 @@ Private.glow_types = {
   buttonOverlay = L["Action Button Glow"],
 }
 
+if WeakAuras.IsRetail() then
+  local build = select(4, GetBuildInfo())
+  if build >= 100105 then
+    Private.glow_types.Proc = L["Proc Glow"]
+  end
+end
+
 Private.font_sizes = {
   small = L["Small"],
   medium = L["Medium"],
