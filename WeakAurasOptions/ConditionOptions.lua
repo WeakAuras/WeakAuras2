@@ -1065,6 +1065,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     local glowTypesExcepButtonOverlay = CopyTable(OptionsPrivate.Private.glow_types)
     glowTypesExcepButtonOverlay["buttonOverlay"] = nil
+    glowTypesExcepButtonOverlay["Proc"] = nil
 
     args["condition" .. i .. "value" .. j .. "glow_action"] = {
       type = "select",

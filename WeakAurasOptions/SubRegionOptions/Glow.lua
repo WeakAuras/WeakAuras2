@@ -76,6 +76,14 @@ local function createOptions(parentData, data, index, subIndex)
           if data.glowBorder then
             line = L["%s, Border"]:format(line)
           end
+        elseif data.glowType == "Proc" then
+          line = ("%s %s, Duration: %d"):format(line, color, data.glowDuration)
+          if data.glowStartAnim then
+            line = L["%s, Start Animation"]:format(line)
+          end
+          if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
+            line = L["%s, offset: %0.2f;%0.2f"]:format(line, data.glowXOffset, data.glowYOffset)
+          end
         end
         return line
       end,
@@ -126,6 +134,13 @@ local function createOptions(parentData, data, index, subIndex)
       order = 8,
       hidden = hiddenGlowExtra,
     },
+    glowStartAnim = {
+      type = "toggle",
+      width = WeakAuras.normalWidth - indentWidth,
+      name = L["Start Animation"],
+      order = 8.5,
+      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Proc" end
+    },
     glowLines = {
       type = "range",
       control = "WeakAurasSpinBox",
@@ -135,7 +150,7 @@ local function createOptions(parentData, data, index, subIndex)
       min = 1,
       softMax = 30,
       step = 1,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
+      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" or data.glowType == "Proc" end,
     },
     glowFrequency = {
       type = "range",
@@ -146,7 +161,18 @@ local function createOptions(parentData, data, index, subIndex)
       softMin = -2,
       softMax = 2,
       step = 0.05,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" end,
+      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" or data.glowType == "Proc" end,
+    },
+    glowDuration = {
+      type = "range",
+      control = "WeakAurasSpinBox",
+      width = WeakAuras.normalWidth,
+      name = L["Duration"],
+      order = 10,
+      softMin = 0.01,
+      softMax = 3,
+      step = 0.05,
+      hidden = function() return hiddenGlowExtra() or data.glowType ~= "Proc" end,
     },
     glow_space3 = {
       type = "description",
