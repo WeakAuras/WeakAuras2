@@ -2212,6 +2212,8 @@ local function UnloadAura(scanFuncName, id)
           if triggerInfo.id == id or not id then
             if triggerInfo.nextScheduledCheckHandle then
               timer:CancelTimer(triggerInfo.nextScheduledCheckHandle)
+              triggerInfo.nextScheduledCheck = nil
+              triggerInfo.nextScheduledCheckHandle = nil
             end
             nameData[triggerInfo] = nil
           end
@@ -2238,6 +2240,8 @@ local function UnloadGeneral(scanFuncGeneral, id)
         if triggerInfo.id == id or not id then
           if triggerInfo.nextScheduledCheckHandle then
             timer:CancelTimer(triggerInfo.nextScheduledCheckHandle)
+            triggerInfo.nextScheduledCheck = nil
+            triggerInfo.nextScheduledCheckHandle = nil
           end
           debuffData[triggerInfo] = nil
         end
