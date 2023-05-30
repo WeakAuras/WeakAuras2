@@ -8,8 +8,8 @@ local insert = table.insert
 
 -- WoW APIs
 local GetTalentInfo, IsAddOnLoaded, InCombatLockdown = GetTalentInfo, IsAddOnLoaded, InCombatLockdown
-local LoadAddOn, UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
-  = LoadAddOn, UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
+local LoadAddOn, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
+  = LoadAddOn, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
 local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
   = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
 local UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
@@ -72,6 +72,17 @@ local LDB = LibStub("LibDataBroker-1.1")
 local LDBIcon = LibStub("LibDBIcon-1.0")
 local LCG = LibStub("LibCustomGlow-1.0")
 local LGF = LibStub("LibGetFrame-1.0")
+
+local LibCustomNames = IsAddOnLoaded("LibCustomNames") and LibStub("LibCustomNames") -- optional addon
+if LibCustomNames then
+  WeakAuras.GetName = LibCustomNames.Get
+  WeakAuras.UnitName = LibCustomNames.UnitName
+  WeakAuras.GetUnitName = LibCustomNames.GetUnitName
+else
+  WeakAuras.GetName = function(name) return name end
+  WeakAuras.UnitName = UnitName
+  WeakAuras.GetUnitName = GetUnitName
+end
 
 local timer = WeakAurasTimers
 WeakAuras.timer = timer
