@@ -188,7 +188,8 @@ local function ConstructTexturePicker(frame)
   end
 
   local input = CreateFrame("EditBox", nil, group.frame, "SearchBoxTemplate");
-  input:SetScript("OnTextChanged", function(...)
+  input:SetScript("OnTextChanged", function(self, ...)
+    SearchBoxTemplate_OnTextChanged(self)
     local status = dropdown.status or dropdown.localstatus
     texturePickerGroupSelected(nil, nil, status.selected, input:GetText())
   end);
