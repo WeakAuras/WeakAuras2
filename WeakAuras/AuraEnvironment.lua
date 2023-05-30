@@ -68,7 +68,7 @@ end
 -- Wrapping a unit's name in its class colour is very common in custom Auras
 local WA_ClassColorName = function(unit)
   if unit and UnitExists(unit) then
-    local name = UnitName(unit)
+    local name = WeakAuras.UnitName(unit)
     local _, class = UnitClass(unit)
     if not class then
       return name
