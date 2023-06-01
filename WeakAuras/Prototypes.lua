@@ -5597,7 +5597,8 @@ Private.event_prototypes = {
       {
         name = "spellId",
         init = "arg",
-        display = L["Spell Id"],
+        display = L["Key"],
+        desc = L["The 'Key' value can be found in the BigWigs options of a specific spell"],
         type = "longstring"
       },
       {
@@ -5770,7 +5771,8 @@ Private.event_prototypes = {
     args = {
       {
         name = "spellId",
-        display = L["Spell Id"],
+        display = L["Key"],
+        desc = L["The 'Key' value can be found in the BigWigs options of a specific spell"],
         type = "string",
         conditionType = "string",
       },
