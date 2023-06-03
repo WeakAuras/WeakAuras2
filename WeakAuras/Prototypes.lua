@@ -5761,7 +5761,7 @@ Private.event_prototypes = {
         trigger.use_cloneId and "true" or "false",
         trigger.use_extend and tonumber(trigger.extend or 0) or 0,
         trigger.use_remaining and "true" or "false",
-        trigger.remaining or 0,
+        type(trigger.remaining) == "number" and trigger.remaining or 0,
         trigger.use_cast == nil and "nil" or trigger.use_cast and "true" or "false",
         trigger.use_isCooldown == nil and "nil" or trigger.use_isCooldown and "true" or "false",
         trigger.remaining_operator or "<"
