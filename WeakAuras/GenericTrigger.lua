@@ -3364,11 +3364,8 @@ do
         end
       end
       WeakAuras.ScanEvents("DBM_TimerUpdate", id)
-    elseif event == "DBM_SetStage" then
-      local mod, modId, stage, encounterId, stageTotal = ...
-      currentStage = stage
-      currentStageTotal = stageTotal
-      WeakAuras.ScanEvents("DBM_SetStage", ...)
+    elseif event == "DBM_SetStage" or event == "DBM_Pull" or event == "DBM_Wipe" or event == "DBM_Kill" then
+      WeakAuras.ScanEvents("DBM_SetStage")
     else -- DBM_Announce
       WeakAuras.ScanEvents(event, ...)
     end
@@ -3414,7 +3411,7 @@ do
   end
 
   function WeakAuras.GetDBMStage()
-    return currentStage, currentStageTotal
+    return DBM:GetStage()
   end
 
   function WeakAuras.GetDBMTimerById(id)

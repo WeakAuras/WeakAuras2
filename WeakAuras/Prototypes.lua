@@ -5271,9 +5271,12 @@ Private.event_prototypes = {
     internal_events = {
       "DBM_SetStage"
     },
+    force_events = "DBM_SetStage",
     name = L["DBM Stage"],
     init = function(trigger)
-      WeakAuras.RegisterDBMCallback("DBM_SetStage");
+      WeakAuras.RegisterDBMCallback("DBM_SetStage")
+      WeakAuras.RegisterDBMCallback("DBM_Pull")
+      WeakAuras.RegisterDBMCallback("DBM_Kill")
       return ""
     end,
     args = {
