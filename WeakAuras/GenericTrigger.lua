@@ -3610,6 +3610,18 @@ do
     if BigWigsLoader then
       BigWigsLoader.RegisterMessage(WeakAuras, event, bigWigsEventCallback)
       registeredBigWigsEvents[event] = true
+      if event == "BigWigs_SetStage" then
+        -- on init of BigWigs_SetStage callback, we want to fetch currentStage in case we are already in an encounter when this is run
+        if BigWigs and BigWigs.IterateBossModules then
+          local stage = 0
+          for _, module in BigWigs:IterateBossModules() do
+            if module:IsEngaged() then
+              stage = math.max(stage, module:GetStage() or 1)
+            end
+          end
+          currentStage = stage
+        end
+      end
     end
   end
 
