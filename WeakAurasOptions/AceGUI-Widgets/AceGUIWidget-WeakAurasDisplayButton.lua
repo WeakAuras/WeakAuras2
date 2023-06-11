@@ -980,6 +980,9 @@ local methods = {
         for index, childId in pairs(data.controlledChildren) do
           tinsert(namestable, indent .. childId);
           local childData = WeakAuras.GetData(childId)
+          if not childData then
+            return
+          end
           if (childData.controlledChildren) then
             addChildrenNames(childData, indent .. "  ")
           end
@@ -1003,9 +1006,6 @@ local methods = {
       end
     else
       OptionsPrivate.Private.GetTriggerDescription(data, -1, namestable)
-    end
-    if(OptionsPrivate.Private.CanHaveClones(data)) then
-      tinsert(namestable, {" ", "|cFF00FF00"..L["Auto-cloning enabled"]})
     end
 
     local hasDescription = data.desc and data.desc ~= "";
@@ -1066,11 +1066,13 @@ local methods = {
     end
   end,
   ["StopGrouping"] = function(self)
-    self.grouping = nil;
-    self:UpdateIconsVisible()
-    self:SetNormalTooltip();
-    self.frame:SetScript("OnClick", self.callbacks.OnClickNormal);
-    self:Enable();
+    if self.grouping then
+      self.grouping = nil
+      self:UpdateIconsVisible()
+      self:SetNormalTooltip()
+      self.frame:SetScript("OnClick", self.callbacks.OnClickNormal)
+      self:Enable()
+    end
   end,
   ["Ungroup"] = function(self)
     if (WeakAuras.IsImporting()) then return end;

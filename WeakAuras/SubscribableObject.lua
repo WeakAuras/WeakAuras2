@@ -16,7 +16,12 @@ local L = WeakAuras.L
 --- @field SetOnSubscriptionStatusChanged fun(self: SubscribableObject, event: string, cb: fun())
 --- @field Notify fun(self: SubscribableObject, event: type, ...: any)
 --- @field HasSubscribers fun(self: SubscribableObject, event: string): boolean
-local SubscribableObject = {
+local SubscribableObject =
+{
+  events = {},
+  subscribers = {},
+  callbacks = {},
+
   --- @type fun(self: SubscribableObject)
   ClearSubscribers = function(self)
     self.events = {}
@@ -95,12 +100,5 @@ local SubscribableObject = {
 }
 
 function Private.CreateSubscribableObject()
-  local system = {}
-  for f, func in pairs(SubscribableObject) do
-    system[f] = func
-    system.events = {}
-    system.subscribers = {}
-    system.callbacks = {}
-  end
-  return system
+  return CopyTable(SubscribableObject)
 end

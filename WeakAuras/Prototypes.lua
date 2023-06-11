@@ -2359,11 +2359,12 @@ Private.event_prototypes = {
         test = "WeakAuras.UnitExistsFixed(unit, smart) and specificUnitCheck"
       }
     },
-    automaticrequired = true
+    automaticrequired = true,
+    progressType = "none"
   },
   ["Faction Reputation"] = {
     type = "unit",
-    canHaveDuration = false,
+    progressType = "static",
     events = {
       ["events"] = {
         "UPDATE_FACTION",
@@ -2496,6 +2497,7 @@ Private.event_prototypes = {
         hidden = true,
         test = "true",
         conditionType = "number",
+        progressTotal = "total",
       },
       {
         name = "standingId",
@@ -2530,7 +2532,8 @@ Private.event_prototypes = {
         test = "true",
         conditionType = "number",
         enable = WeakAuras.IsRetail(),
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        progressTotal = "friendshipMaxRank"
       },
       {
         name = "friendshipMaxRank",
@@ -2555,7 +2558,7 @@ Private.event_prototypes = {
   },
   ["Experience"] = {
     type = "unit",
-    canHaveDuration = false,
+    progressType = "static",
     events = {
       ["events"] = {
         "PLAYER_XP_UPDATE",
@@ -2593,6 +2596,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        progressTotal = "totalXP"
       },
       {
         name = "totalXP",
@@ -2689,7 +2693,7 @@ Private.event_prototypes = {
   ["Health"] = {
     type = "unit",
     includePets = "true",
-    canHaveDuration = true,
+    progressType = "static",
     events = function(trigger)
       local unit = trigger.unit
       local result = {}
@@ -2768,6 +2772,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        progressTotal = "maxhealth"
       },
       {
         name = "value",
@@ -2813,6 +2818,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        progressTotal = "total"
       },
       {
         name = "maxhealth",
@@ -2828,16 +2834,16 @@ Private.event_prototypes = {
       },
       {
         name = "showAbsorb",
-        display = L["Show Absorb"],
+        display = L["Fetch Absorb"],
         type = "toggle",
         test = "true",
         reloadOptions = true,
         enable = WeakAuras.IsRetail(),
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
       },
       {
         name = "absorbMode",
-        display = L["Absorb Display"],
+        display = L["Absorb Overlay"],
         type = "select",
         test = "true",
         values = "absorb_modes",
@@ -2847,7 +2853,7 @@ Private.event_prototypes = {
       },
       {
         name = "showHealAbsorb",
-        display = L["Show Heal Absorb"],
+        display = L["Fetch Heal Absorb"],
         type = "toggle",
         test = "true",
         reloadOptions = true,
@@ -2856,7 +2862,7 @@ Private.event_prototypes = {
       },
       {
         name = "absorbHealMode",
-        display = L["Absorb Heal Display"],
+        display = L["Absorb Heal Overlay"],
         type = "select",
         test = "true",
         values = "absorb_modes",
@@ -2877,6 +2883,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        progressTotal = "total"
       },
       {
         name = "healabsorb",
@@ -2898,6 +2905,7 @@ Private.event_prototypes = {
         type = "toggle",
         test = "true",
         reloadOptions = true,
+        progressTotal = "total"
       },
       {
         name = "healprediction",
@@ -3148,7 +3156,7 @@ Private.event_prototypes = {
   },
   ["Power"] = {
     type = "unit",
-    canHaveDuration = true,
+    progressType = "static",
     events = function(trigger)
       local unit = trigger.unit
       local result = {}
@@ -3442,6 +3450,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        progressTotal = "total"
       },
       {
         name = "value",
@@ -3495,6 +3504,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        progressTotal = "total"
       },
       {
         name = "maxpower",
@@ -3755,7 +3765,7 @@ Private.event_prototypes = {
   },
   ["Alternate Power"] = {
     type = "unit",
-    canHaveDuration = true,
+    progressType = "static",
     events = function(trigger)
       local unit = trigger.unit
       local result = {}
@@ -3814,6 +3824,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        progressTotal = "total"
       },
       {
         name = "value",
@@ -4336,6 +4347,7 @@ Private.event_prototypes = {
         conditionType = "number",
         type = "spell",
         showExactOption = false,
+        noProgressSource = true
       },
       {
         name = "spellName",
@@ -4426,7 +4438,8 @@ Private.event_prototypes = {
         type = "spell",
         showExactOption = false,
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        noProgressSource = true
       },
       {
         name = "extraSpellName",
@@ -4636,6 +4649,7 @@ Private.event_prototypes = {
     countEvents = true,
     delayEvents = true,
     timedrequired = true,
+    progressType = "timed"
   },
   ["Spell Activation Overlay"] = {
     type = "spell",
@@ -4681,7 +4695,8 @@ Private.event_prototypes = {
       local _, _, icon = GetSpellInfo(trigger.spellName or 0);
       return icon;
     end,
-    automaticrequired = true
+    automaticrequired = true,
+    progressType = "static"
   },
   ["Cooldown Progress (Spell)"] = {
     type = "spell",
@@ -4884,7 +4899,7 @@ Private.event_prototypes = {
       return ret;
     end,
     statesParameter = "one",
-    canHaveDuration = "timed",
+    progressType = "timed",
     useModRate = true,
     args = {
       {
@@ -5018,7 +5033,8 @@ Private.event_prototypes = {
         display = L["Charges"],
         type = "number",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        progressTotal = "maxCharges"
       },
       {
         name = "spellCount",
@@ -5224,7 +5240,8 @@ Private.event_prototypes = {
       return icon;
     end,
     hasSpellID = true,
-    timedrequired = true
+    timedrequired = true,
+    progressType = "timed"
   },
   ["Charges Changed"] = {
     type = "spell",
@@ -5308,7 +5325,8 @@ Private.event_prototypes = {
       return icon;
     end,
     hasSpellID = true,
-    timedrequired = true
+    timedrequired = true,
+    progressType = "timed"
   },
   ["Cooldown Progress (Item)"] = {
     type = "item",
@@ -5473,6 +5491,7 @@ Private.event_prototypes = {
     end,
     hasItemID = true,
     automaticrequired = true,
+    progressType = "timed"
   },
   ["Cooldown Progress (Equipment Slot)"] = {
     type = "item",
@@ -5631,6 +5650,7 @@ Private.event_prototypes = {
       return GetInventoryItemTexture("player", trigger.itemSlot or 0) or "Interface\\Icons\\INV_Misc_QuestionMark";
     end,
     automaticrequired = true,
+    progressType = "timed"
   },
   ["Cooldown Ready (Item)"] = {
     type = "item",
@@ -5668,7 +5688,8 @@ Private.event_prototypes = {
       return icon;
     end,
     hasItemID = true,
-    timedrequired = true
+    timedrequired = true,
+    progressType = "timed"
   },
   ["Cooldown Ready (Equipment Slot)"] = {
     type = "item",
@@ -5704,7 +5725,8 @@ Private.event_prototypes = {
       return GetInventoryItemTexture("player", trigger.itemSlot or 0) or "Interface\\Icons\\INV_Misc_QuestionMark";
     end,
     hasItemID = true,
-    timedrequired = true
+    timedrequired = true,
+    progressType = "timed"
   },
   ["GTFO"] = {
     type = "addons",
@@ -5724,7 +5746,8 @@ Private.event_prototypes = {
         conditionType = "select"
       },
     },
-    timedrequired = true
+    timedrequired = true,
+    progressType = "timed"
   },
   ["Global Cooldown"] = {
     type = "spell",
@@ -5775,6 +5798,7 @@ Private.event_prototypes = {
     end,
     hasSpellID = true,
     automaticrequired = true,
+    progressType = "timed"
   },
   ["Swing Timer"] = {
     type = "unit",
@@ -5885,7 +5909,7 @@ Private.event_prototypes = {
       }
     },
     automaticrequired = true,
-    canHaveDuration = true,
+    progressType = "timed",
     statesParameter = "one"
   },
   ["Action Usable"] = {
@@ -5982,7 +6006,7 @@ Private.event_prototypes = {
         type = "number",
         enable = function(trigger) return not(trigger.use_inverse) end,
         store = true,
-        conditionType = "number"
+        conditionType = "number",
       },
       {
         name = "spellCount",
@@ -5990,7 +6014,7 @@ Private.event_prototypes = {
         type = "number",
         enable = function(trigger) return not(trigger.use_inverse) end,
         store = true,
-        conditionType = "number"
+        conditionType = "number",
       },
       {
         hidden = true,
@@ -6068,7 +6092,8 @@ Private.event_prototypes = {
       end
     end,
     hasSpellID = true,
-    automaticrequired = true
+    automaticrequired = true,
+    progressType = "none"
   },
   ["Talent Known"] = {
     type = "unit",
@@ -6351,6 +6376,7 @@ Private.event_prototypes = {
     },
     automaticrequired = true,
     statesParameter = "one",
+    progressType = "none"
   },
   ["PvP Talent Selected"] = {
     type = "unit",
@@ -6451,6 +6477,7 @@ Private.event_prototypes = {
     },
     automaticrequired = true,
     statesParameter = "one",
+    progressType = "none"
   },
   ["Class/Spec"] = {
     type = "unit",
@@ -6491,6 +6518,7 @@ Private.event_prototypes = {
     },
     automaticrequired = true,
     statesParameter = "one",
+    progressType = "none"
   },
   ["Loot Specialization"] = {
     type = "unit",
@@ -6548,6 +6576,7 @@ Private.event_prototypes = {
     },
     automaticrequired = true,
     statesParameter = "one",
+    progressType = "none"
   },
   ["Totem"] = {
     type = "spell",
@@ -6563,7 +6592,7 @@ Private.event_prototypes = {
     force_events = "PLAYER_ENTERING_WORLD",
     name = L["Totem"],
     statesParameter = "full",
-    canHaveDuration = "timed",
+    progressType = "timed",
     triggerFunction = function(trigger)
       local ret = [[return
       function (states)
@@ -6836,7 +6865,6 @@ Private.event_prototypes = {
         hidden = true,
         store = true,
         test = "true",
-        conditionType = "number"
       },
       {
         name = "icon",
@@ -6872,7 +6900,8 @@ Private.event_prototypes = {
     },
     statesParameter = "one",
     hasItemID = true,
-    automaticrequired = true
+    automaticrequired = true,
+    progressType = "static"
   },
   ["Stance/Form/Aura"] = {
     type = "unit",
@@ -6971,7 +7000,8 @@ Private.event_prototypes = {
       end
       return icon or "136116"
     end,
-    automaticrequired = true
+    automaticrequired = true,
+    progressType = "none"
   },
   ["Weapon Enchant"] = {
     type = "item",
@@ -7127,7 +7157,7 @@ Private.event_prototypes = {
       }
     },
     automaticrequired = true,
-    canHaveDuration = true,
+    progressType = "timed",
     statesParameter = "one"
   },
   ["Chat Message"] = {
@@ -7232,7 +7262,8 @@ Private.event_prototypes = {
     },
     countEvents = true,
     delayEvents = true,
-    timedrequired = true
+    timedrequired = true,
+    progressType = "timed"
   },
   ["Spell Cast Succeeded"] = {
     type = "event",
@@ -7274,7 +7305,8 @@ Private.event_prototypes = {
         },
         preamble = "local spellChecker = Private.ExecEnv.CreateSpellChecker()",
         test = "spellChecker:Check(spellId)",
-        conditionType = "number"
+        conditionType = "number",
+        noProgressSource = true
       },
       {
         name = "icon",
@@ -7293,7 +7325,8 @@ Private.event_prototypes = {
     },
     countEvents = true,
     delayEvents = true,
-    timedrequired = true
+    timedrequired = true,
+    progressType = "timed"
   },
   ["Ready Check"] = {
     type = "event",
@@ -7304,7 +7337,8 @@ Private.event_prototypes = {
     args = {},
     statesParameter = "one",
     delayEvents = true,
-    timedrequired = true
+    timedrequired = true,
+    progressType = "timed"
   },
   ["Combat Events"] = {
     type = "event",
@@ -7328,7 +7362,8 @@ Private.event_prototypes = {
     statesParameter = "one",
     countEvents = true,
     delayEvents = true,
-    timedrequired = true
+    timedrequired = true,
+    progressType = "timed"
   },
   ["Encounter Events"] = {
     type = "event",
@@ -7399,7 +7434,8 @@ Private.event_prototypes = {
     statesParameter = "one",
     countEvents = true,
     delayEvents = true,
-    timedrequired = true
+    timedrequired = true,
+    progressType = "timed"
   },
   ["Evoker Essence"] = {
     type = "unit",
@@ -7541,6 +7577,7 @@ Private.event_prototypes = {
       },
     },
     automaticrequired = true,
+    progressType = "timed"
   },
   ["Death Knight Rune"] = {
     type = "unit",
@@ -7784,6 +7821,13 @@ Private.event_prototypes = {
       end
     end,
     automaticrequired = true,
+    progressType = function(trigger)
+      if trigger.use_rune then
+        return "timed"
+      else
+        return "static"
+      end
+    end
   },
   ["Item Equipped"] = {
     type = "item",
@@ -7844,7 +7888,8 @@ Private.event_prototypes = {
       return icon;
     end,
     hasItemID = true,
-    automaticrequired = true
+    automaticrequired = true,
+    progressType = "none"
   },
   ["Item Type Equipped"] = {
     type = "item",
@@ -7889,7 +7934,8 @@ Private.event_prototypes = {
         test = "Private.ExecEnv.IsEquippedItemType(%s, itemSlot)"
       },
     },
-    automaticrequired = true
+    automaticrequired = true,
+    progressType = "none"
   },
   ["Item Bonus Id Equipped"] = {
     type = "item",
@@ -7931,6 +7977,7 @@ Private.event_prototypes = {
         required = true,
         desc = L["Supports multiple entries, separated by commas"],
         conditionType = "number",
+        noProgressSource = true
       },
       {
         name = "legendaryIcon",
@@ -7964,6 +8011,7 @@ Private.event_prototypes = {
         test = "true",
         conditionType = "number",
         operator_types = "only_equal",
+        noProgressSource = true
       },
       {
         name = "itemSlot",
@@ -7992,7 +8040,8 @@ Private.event_prototypes = {
         test = "not inverse == (itemBonusId and slotValidation or false)",
       }
     },
-    automaticrequired = true
+    automaticrequired = true,
+    progressType = "none"
   },
   ["Item Set"] = {
     type = "item",
@@ -8042,7 +8091,8 @@ Private.event_prototypes = {
     end,
     nameFunc = function(trigger)
       return select(3, WeakAuras.GetNumSetItemsEquipped(trigger.itemSetId and tonumber(trigger.itemSetId) or 0));
-    end
+    end,
+    progressType = "static"
   },
   ["Equipment Set"] = {
     type = "item",
@@ -8111,7 +8161,8 @@ Private.event_prototypes = {
       return numEquipped, numItems, true;
     end,
     hasItemID = true,
-    automaticrequired = true
+    automaticrequired = true,
+    progressType = "static"
   },
   ["Threat Situation"] = {
     type = "unit",
@@ -8153,7 +8204,7 @@ Private.event_prototypes = {
       ]];
       return ret .. unitHelperFunctions.SpecificUnitCheck(trigger);
     end,
-    canHaveDuration = true,
+    progressType = "static",
     statesParameter = "unit",
     args = {
       {
@@ -8300,7 +8351,6 @@ Private.event_prototypes = {
     },
     force_events = "LOSS_OF_CONTROL_UPDATE",
     name = L["Crowd Controlled"],
-    canHaveDuration = true,
     statesParameter = "one",
     init = function(trigger)
       local ret = [=[
@@ -8395,6 +8445,7 @@ Private.event_prototypes = {
         operator_types = "only_equal",
         store = true,
         test = "true",
+        noProgressSource = true
       },
       {
         name = "lockoutSchool",
@@ -8435,6 +8486,7 @@ Private.event_prototypes = {
       },
     },
     automaticrequired = true,
+    progressType = "timed"
   },
   ["Cast"] = {
     type = "unit",
@@ -8482,7 +8534,7 @@ Private.event_prototypes = {
       end
     end,
     force_events = unitHelperFunctions.UnitChangedForceEventsWithPets,
-    canHaveDuration = "timed",
+    progressType = "timed",
     name = L["Cast"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
@@ -8605,7 +8657,8 @@ Private.event_prototypes = {
         conditionType = "number",
         store = true,
         test = "true",
-        hidden = true
+        hidden = true,
+        noProgressSource = true
       },
       {
         name = "spell",
@@ -9822,7 +9875,8 @@ Private.event_prototypes = {
         },
       },
     },
-    automaticrequired = true
+    automaticrequired = true,
+    progressType = "none"
   },
   ["Conditions"] = {
     type = "unit",
@@ -10010,7 +10064,8 @@ Private.event_prototypes = {
         hidden = not WeakAuras.IsRetail(),
       },
     },
-    automaticrequired = true
+    automaticrequired = true,
+    progressType = "none"
   },
 
   ["Spell Known"] = {
@@ -10092,7 +10147,8 @@ Private.event_prototypes = {
       local _, _, icon = GetSpellInfo(trigger.spellName or 0);
       return icon;
     end,
-    automaticrequired = true
+    automaticrequired = true,
+    progressType = "none"
   },
 
   ["Pet Behavior"] = {
@@ -10189,7 +10245,8 @@ Private.event_prototypes = {
         test = "true"
       },
     },
-    automaticrequired = true
+    automaticrequired = true,
+    progressType = "none"
   },
 
   ["Queued Action"] = {
@@ -10239,7 +10296,8 @@ Private.event_prototypes = {
       local _, _, icon = GetSpellInfo(trigger.spellName or 0);
       return icon;
     end,
-    automaticrequired = true
+    automaticrequired = true,
+    progressType = "none"
   },
 
   ["Range Check"] = {
@@ -10319,11 +10377,12 @@ Private.event_prototypes = {
         test = "UnitExists(unit)"
       }
     },
-    automaticrequired = true
+    automaticrequired = true,
+    progressType = "none"
   },
   ["Currency"] = {
     type = "unit",
-    canHaveDuration = false,
+    progressType = "static",
     events = {
       ["events"] = {
         "CHAT_MSG_CURRENCY",
@@ -10428,7 +10487,7 @@ Private.event_prototypes = {
         enable = function(trigger)
           local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
           return currencyInfo and currencyInfo.quantityEarnedThisWeek and currencyInfo.quantityEarnedThisWeek > 0
-        end
+        end,
       },
       {
         name = "totalEarned",
@@ -10440,7 +10499,7 @@ Private.event_prototypes = {
         enable = function(trigger)
           local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
           return currencyInfo and currencyInfo.useTotalEarnedForMaxQty and currencyInfo.totalEarned and currencyInfo.totalEarned > 0
-        end
+        end,
       },
       -- Various Capped properties
       {-- quantity / maxQuantity cap

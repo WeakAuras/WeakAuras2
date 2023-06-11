@@ -305,7 +305,7 @@ local function modify(parent, region, parentData, data, first)
     end
     return data[fullKey]
   end
-  region.subTextFormatters = Private.CreateFormatters(texts, getter)
+  region.subTextFormatters = Private.CreateFormatters(texts, getter, false, parentData)
 
   function region:ConfigureTextUpdate()
     local UpdateText
@@ -334,12 +334,11 @@ local function modify(parent, region, parentData, data, first)
       Update = UpdateText
     end
 
-    local TimerTick
+    local FrameTick
     if Private.ContainsPlaceHolders(region.text_text, "p") then
-      TimerTick = UpdateText
+      FrameTick = UpdateText
     end
 
-    local FrameTick
     if parent.customTextFunc and parentData.customTextUpdate == "update" then
       if Private.ContainsCustomPlaceHolder(region.text_text) then
         FrameTick = function()
@@ -354,7 +353,6 @@ local function modify(parent, region, parentData, data, first)
 
     region.Update = Update
     region.FrameTick = FrameTick
-    region.TimerTick = TimerTick
 
     if not UpdateText then
       if text:GetFont() then
@@ -380,13 +378,6 @@ local function modify(parent, region, parentData, data, first)
       end
     else
       parent.subRegionEvents:RemoveSubscriber("FrameTick", region)
-    end
-    if self.TimerTick then
-      if visible then
-        parent.subRegionEvents:AddSubscriber("TimerTick", region)
-      end
-    else
-      parent.subRegionEvents:RemoveSubscriber("TimerTick", region)
     end
     if self.Update and parent.state and visible then
       self:Update()

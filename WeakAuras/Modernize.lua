@@ -1990,6 +1990,29 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 71 then
+    if data.regionType == 'icon' or data.regionType == 'aurabar'
+       or data.regionType == 'progresstexture'
+       or data.regionType == 'stopmotion'
+    then
+      data.progressSource = {-1, ""}
+    else
+      data.progressSource = nil
+    end
+    if data.subRegions then
+      for index, subRegionData in ipairs(data.subRegions) do
+        if subRegionData.type == "subtick" then
+          local tick_placement = subRegionData.tick_placement
+          subRegionData.tick_placements = {}
+          subRegionData.tick_placements[1] = tick_placement
+          subRegionData.progressSources = {{-2, ""}}
+          subRegionData.tick_placement = nil
+        end
+      end
+    end
+
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 

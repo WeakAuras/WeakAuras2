@@ -1,7 +1,7 @@
 --- @type string, Private
 local AddonName, Private = ...
 
-local internalVersion = 70
+local internalVersion = 71
 
 -- Lua APIs
 local insert = table.insert
@@ -3244,22 +3244,16 @@ function Private.SetRegion(data, cloneId)
       local anim_cancelled = loginFinished and Private.CancelAnimation(region, true, true, true, true, true, true);
 
       regionTypes[regionType].modify(parent, region, data);
-      Private.regionPrototype.AddSetDurationInfo(region);
+      Private.regionPrototype.AddSetDurationInfo(region, data.uid)
       Private.regionPrototype.AddExpandFunction(data, region, cloneId, parent, parent.regionType)
 
       data.animation = data.animation or {};
       data.animation.start = data.animation.start or {type = "none"};
       data.animation.main = data.animation.main or {type = "none"};
       data.animation.finish = data.animation.finish or {type = "none"};
-      if(Private.CanHaveDuration(data)) then
-        data.animation.start.duration_type = data.animation.start.duration_type or "seconds";
-        data.animation.main.duration_type = data.animation.main.duration_type or "seconds";
-        data.animation.finish.duration_type = data.animation.finish.duration_type or "seconds";
-      else
-        data.animation.start.duration_type = "seconds";
-        data.animation.main.duration_type = "seconds";
-        data.animation.finish.duration_type = "seconds";
-      end
+      data.animation.start.duration_type = data.animation.start.duration_type or "seconds"
+      data.animation.main.duration_type = data.animation.main.duration_type or "seconds"
+      data.animation.finish.duration_type = data.animation.finish.duration_type or "seconds"
 
       if(cloneId) then
         clonePool[regionType] = clonePool[regionType] or {};
@@ -3831,8 +3825,6 @@ local function wrapTriggerSystemFunction(functionName, mode)
   return func;
 end
 
-Private.CanHaveDuration = wrapTriggerSystemFunction("CanHaveDuration", "firstValue");
-Private.CanHaveClones = wrapTriggerSystemFunction("CanHaveClones", "or");
 Private.CanHaveTooltip = wrapTriggerSystemFunction("CanHaveTooltip", "or");
 -- This has to be in WeakAuras for now, because GetNameAndIcon can be called from the options
 -- before the Options has access to Private
@@ -3841,7 +3833,7 @@ Private.GetTriggerDescription = wrapTriggerSystemFunction("GetTriggerDescription
 
 local wrappedGetOverlayInfo = wrapTriggerSystemFunction("GetOverlayInfo", "table");
 
-Private.GetAdditionalProperties = function(data, triggernum, ...)
+Private.GetAdditionalProperties = function(data)
   local additionalProperties = ""
   for i = 1, #data.triggers do
     local triggerSystem = GetTriggerSystem(data, i);
@@ -3864,6 +3856,122 @@ Private.GetAdditionalProperties = function(data, triggernum, ...)
   end
   return additionalProperties
 end
+
+Private.GetProgressSources = function(data)
+  local values = {}
+  if Private.IsGroupType(data) then
+    return values
+  end
+  for i = 1, #data.triggers do
+    local triggerSystem = GetTriggerSystem(data, i);
+    if (triggerSystem) then
+      triggerSystem.GetProgressSources(data, i, values)
+    end
+  end
+  return values
+end
+
+Private.GetProgressSourceFor = function(data, trigger, property)
+  local values = {}
+  local triggerSystem = GetTriggerSystem(data, trigger);
+  if (triggerSystem) then
+    triggerSystem.GetProgressSources(data, trigger, values)
+    for _, v in ipairs(values) do
+      if v.property == property then
+        return {trigger, v.type, v.property, v.total, v.modRate, v.inverse, v.paused, v.remaining}
+      end
+    end
+  end
+  return nil
+end
+
+-- In the aura data we only store trigger + property
+-- But for the region we don't want to gather necessary meta data all the time
+-- So we collect that in region:modify + on creation of the conditions function
+Private.AddProgressSourceMetaData = function(data, progressSource)
+  if not progressSource then
+    return {}
+  end
+  local trigger = progressSource[1]
+  local property = progressSource[2]
+  if trigger == -2 then
+    return {-2, "auto", ""}
+  elseif trigger == -1 then
+    return {-1, "auto", ""}
+  elseif trigger == 0 then
+    return {0, "manual", progressSource[3], progressSource[4]}
+  else
+    return Private.GetProgressSourceFor(data, trigger, property)
+  end
+end
+
+-- ProgressSource values
+-- For AceOptions to work correctly progress sources need to be comparable
+-- via ==. We use a constants table so that identical tables use the same table
+-- Additional while data.progressSource does contain additional data e.g. for manual progress
+-- This is only for the progress source combobox, which only cares about the first or first two values
+-- The greatness of the hacks knows no bounds
+-- The constants table has weak keys
+do
+  local function CompareProgressValueTables(a, b)
+    -- For auto/manual progreess, only compare a[] with b[1]
+    if a[1] == -1 or a[1] == 0 then
+      return a[1] == b[1]
+    end
+    -- Only care about trigger + property
+    return a[1] == b[1] and a[2] == b[2]
+  end
+
+  local progressValueConstants = {}
+  setmetatable(progressValueConstants, {_mode = "v"})
+
+  function Private.GetProgressValueConstant(v)
+    if v == nil then
+      return v
+    end
+
+    -- This uses pairs because there could be empty slots
+    for _, constant in pairs(progressValueConstants) do
+      if CompareProgressValueTables(v, constant) then
+        return constant
+      end
+    end
+    -- And this inserts into the first empty slot for the array
+    tinsert(progressValueConstants, v)
+    return v
+  end
+end
+
+function Private.GetProgressSourcesForUi(data, subelement)
+  local values
+
+  if subelement then
+    -- Sub elements Automatic means to use the main auras' progress
+    values = {
+      [{-2, ""}] = L["Automatic"]
+    }
+  else
+    values = {
+      [{-1, ""}] = L["Automatic"],
+      [{0, ""}] = L["Manual"],
+    }
+  end
+
+  local triggerValues = Private.GetProgressSources(data)
+  for _, e in ipairs(triggerValues) do
+    if e.trigger and e.property then
+      values[{e.trigger, e.property}] = {L["Trigger %s"]:format(e.trigger), e.display}
+    end
+  end
+
+  local result = {}
+  for k, v in pairs(values) do
+    result[Private.GetProgressValueConstant(k)] = v
+  end
+
+  return result
+end
+
 
 function Private.GetOverlayInfo(data, triggernum)
   local overlayInfo;
@@ -4398,59 +4506,67 @@ do
   end
 end
 
-local function startStopTimers(id, cloneId, triggernum, state)
-  if (state.show) then
-    if (state.autoHide and state.duration and state.duration > 0 and not state.paused) then -- autohide, update timer
-      timers[id] = timers[id] or {};
-      timers[id][triggernum] = timers[id][triggernum] or {};
-      timers[id][triggernum][cloneId] = timers[id][triggernum][cloneId] or {};
-      local record = timers[id][triggernum][cloneId];
-      if (state.expirationTime == nil) then
-        state.expirationTime = GetTime() + state.duration;
-      end
-      if (record.expirationTime ~= state.expirationTime or record.state ~= state) then
-        if (record.handle ~= nil) then
-          timer:CancelTimer(record.handle);
-        end
-
-        record.handle = timer:ScheduleTimerFixed(
-          function()
-            if (state.show ~= false and state.show ~= nil) then
-              state.show = false;
-              state.changed = true;
-
-              -- if the trigger has updated then check to see if it is flagged for WatchedTrigger and send to queue if it is
-              if Private.watched_trigger_events[id] and Private.watched_trigger_events[id][triggernum] then
-                Private.AddToWatchedTriggerDelay(id, triggernum)
-              end
-
-              Private.UpdatedTriggerState(id);
-            end
-          end,
-          state.expirationTime - GetTime());
-        record.expirationTime = state.expirationTime;
-        record.state = state
-      end
-    else -- no auto hide, delete timer
-      if (timers[id] and timers[id][triggernum] and timers[id][triggernum][cloneId]) then
-        local record = timers[id][triggernum][cloneId];
-        if (record.handle) then
-          timer:CancelTimer(record.handle);
-        end
-        record.handle = nil;
-        record.expirationTime = nil;
-        record.state = nil
-      end
+--- @type fun(id: auraId, triggernum: integer, cloneId: string)
+local function stopAutoHideTimer(id, triggernum, cloneId)
+  if(timers[id] and timers[id][triggernum] and timers[id][triggernum][cloneId]) then
+    local record = timers[id][triggernum][cloneId];
+    if (record.handle) then
+      timer:CancelTimer(record.handle);
     end
-  else -- not shown
-    if(timers[id] and timers[id][triggernum] and timers[id][triggernum][cloneId]) then
-      local record = timers[id][triggernum][cloneId];
-      if (record.handle) then
-        timer:CancelTimer(record.handle);
-      end
-      record.handle = nil;
-      record.expirationTime = nil;
-      record.state = nil
+    record.handle = nil;
+    record.expirationTime = nil;
+    record.state = nil
+  end
+end
+
+--- @type fun(id: auraId, triggernum: integer, cloneId: string, state: state)
+local function startStopTimers(id, cloneId, triggernum, state)
+  if not state.show or not state.autoHide then
+    stopAutoHideTimer(id, triggernum, cloneId)
+    return
+  end
+
+  -- state.autoHide can be a timer, or a boolean
+  -- if it's a bool, for backwards compability we look at paused
+  local expirationTime
+  if type(state.autoHide) == "boolean" then
+    if state.paused then
+      stopAutoHideTimer(id, triggernum, cloneId)
+      return
+    else
+      expirationTime = state.expirationTime
+    end
+  elseif type(state.autoHide) == "number" then
+    expirationTime = state.autoHide
+  end
+
+  timers[id] = timers[id] or {};
+  timers[id][triggernum] = timers[id][triggernum] or {};
+  timers[id][triggernum][cloneId] = timers[id][triggernum][cloneId] or {};
+  local record = timers[id][triggernum][cloneId];
+  if (record.expirationTime ~= expirationTime or record.state ~= state) then
+    if (record.handle ~= nil) then
+      timer:CancelTimer(record.handle);
+    end
+
+    if expirationTime then
+      record.handle = timer:ScheduleTimerFixed(
+        function()
+          if (state.show ~= false and state.show ~= nil) then
+            state.show = false;
+            state.changed = true;
+
+            -- if the trigger has updated then check to see if it is flagged for WatchedTrigger and send to queue if it is
+            if Private.watched_trigger_events[id] and Private.watched_trigger_events[id][triggernum] then
+              Private.AddToWatchedTriggerDelay(id, triggernum)
+            end
+
+            Private.UpdatedTriggerState(id);
+          end
+        end,
+        expirationTime - GetTime());
+      record.expirationTime = expirationTime;
+      record.state = state
     end
   end
 end
@@ -4529,7 +4645,6 @@ local function ApplyStatesToRegions(id, activeTrigger, states)
       local applyChanges = not region.toShow or state.changed or region.state ~= state
       region.state = state
       region.states = region.states or {}
-      local needsTimerTick = false
       for triggernum = -1, triggerState[id].numTriggers do
         local triggerState
         if triggernum == activeTrigger then
@@ -4545,10 +4660,7 @@ local function ApplyStatesToRegions(id, activeTrigger, states)
         end
 
         region.states[triggernum] = triggerState
-        needsTimerTick = needsTimerTick or (triggerState and triggerState.show and triggerState.progressType == "timed")
       end
-
-      region:SetTriggerProvidesTimer(needsTimerTick)
 
       if (applyChanges) then
         ApplyStateToRegion(id, cloneId, region, parent);
@@ -4732,7 +4844,7 @@ function Private.RunCustomTextFunc(region, customFunc)
   return custom
 end
 
-local function ReplaceValuePlaceHolders(textStr, region, customFunc, state, formatter)
+local function ReplaceValuePlaceHolders(textStr, region, customFunc, state, formatter, trigger)
   local value;
   if string.sub(textStr, 1, 1) == "c" then
     local custom
@@ -4764,7 +4876,7 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc, state, form
     end
     value = variable.get(state)
     if formatter then
-      value = formatter(value, state)
+      value = formatter(value, state, trigger)
     elseif variable.func then
       value = variable.func(value)
     end
@@ -4898,12 +5010,12 @@ local function ValueForSymbol(symbol, region, customFunc, regionState, regionSta
         if regionStates[triggerNum][sym] then
           local value = regionStates[triggerNum][sym]
           if formatters[symbol] then
-            return tostring(formatters[symbol](value, regionStates[triggerNum]) or "") or ""
+            return tostring(formatters[symbol](value, regionStates[triggerNum], triggerNum) or "") or ""
           else
             return tostring(value) or ""
           end
         else
-          local value = ReplaceValuePlaceHolders(sym, region, customFunc, regionStates[triggerNum], formatters[symbol]);
+          local value = ReplaceValuePlaceHolders(sym, region, customFunc, regionStates[triggerNum], formatters[symbol], triggerNum);
           return value or ""
         end
       end
@@ -4913,14 +5025,16 @@ local function ValueForSymbol(symbol, region, customFunc, regionState, regionSta
     if(useHiddenStates or regionState.show) then
       local value = regionState[symbol]
       if formatters[symbol] then
-        return tostring(formatters[symbol](value, regionState) or "") or ""
+        return tostring(formatters[symbol](value, regionState, triggerState[regionState.id].activeTrigger) or "") or ""
       else
         return tostring(value) or ""
       end
     end
     return ""
   else
-    local value = (useHiddenStates or regionState.show) and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState, formatters[symbol]);
+    local activeTrigger = triggerState[regionState.id].activeTrigger
+    local value = (useHiddenStates or regionState.show)
+                  and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState, formatters[symbol], activeTrigger)
     return value or ""
   end
 end
@@ -5056,7 +5170,7 @@ function Private.ParseTextStr(textStr, symbolCallback)
   end
 end
 
-function Private.CreateFormatters(input, getter, withoutColor)
+function Private.CreateFormatters(input, getter, withoutColor, data)
   local seenSymbols = {}
   local formatters = {}
 
@@ -5070,7 +5184,7 @@ function Private.CreateFormatters(input, getter, withoutColor)
         local default = (sym == "p" or sym == "t") and "timed" or "none"
         local selectedFormat = getter(symbol ..  "_format", default)
         if (Private.format_types[selectedFormat]) then
-          formatters[symbol] = Private.format_types[selectedFormat].CreateFormatter(symbol, getter, withoutColor)
+          formatters[symbol] = Private.format_types[selectedFormat].CreateFormatter(symbol, getter, withoutColor, data)
         end
       end
     end
@@ -6049,8 +6163,8 @@ end
 
 function Private.IconSources(data)
   local values = {
-    [-1] = L["Dynamic Information"],
-    [0] = L["Fallback Icon"],
+    [-1] = L["Automatic"],
+    [0] = L["Manual Icon"],
   }
 
   for i = 1, #data.triggers do

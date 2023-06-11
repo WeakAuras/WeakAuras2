@@ -28,14 +28,8 @@ Updates all buff triggers in data.
 # Helper functions mainly for the WeakAuras Options #
 #####################################################
 
-CanHaveDuration(data, triggernum)
-Returns whether the trigger can have a duration.
-
 GetOverlayInfo(data, triggernum)
 Returns a table containing all overlays. Currently there aren't any
-
-CanHaveClones(data, triggernum)
-Returns whether the trigger can have clones.
 
 CanHaveTooltip(data, triggernum)
 Returns the type of tooltip to show for the trigger.
@@ -3220,13 +3214,6 @@ function BuffTrigger.Add(data)
   PublishProblems(problems, data.uid)
 end
 
---- Returns whether the trigger can have a duration.
---- @param data table
---- @param triggernum number
-function BuffTrigger.CanHaveDuration(data, triggernum)
-  return "timed"
-end
-
 --- Returns a table containing the names of all overlays
 --- @param data table
 --- @param triggernum number
@@ -3238,7 +3225,7 @@ end
 --- @param data table
 --- @param triggernum number
 --- @return boolean
-function BuffTrigger.CanHaveClones(data, triggernum)
+local function CanHaveClones(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   if not IsSingleMissing(trigger) and trigger.showClones then
     return true
@@ -3369,6 +3356,13 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
     ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip4|r - " .. L["Fourth Value of Tooltip Text"] .. "\n"
   end
 
+  if trigger.unit ~= "multi" then
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".stackGainTime|r - " .. L["Since Stack Gain"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".stackLostTime|r - " .. L["Since Stack Lost"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".initialTime|r - " .. L["Since Apply"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".refreshTime|r - " .. L["Since Apply/Refresh"] .. "\n"
+  end
+
   if WeakAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole then
     ret = ret .. "|cFFFFCC00%".. triggernum .. ".role|r - " .. L["Assigned Role"] .. "\n"
     ret = ret .. "|cFFFFCC00%".. triggernum .. ".roleIcon|r - " .. L["Assigned Role Icon"] .. "\n"
@@ -3386,6 +3380,97 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
   end
 
   return ret
+end
+
+function BuffTrigger.GetProgressSources(data, triggernum, values)
+  local trigger = data.triggers[triggernum].trigger
+  tinsert(values, {
+    trigger = triggernum,
+    property = "matchCount",
+    type = "number",
+    display = L["Match Count"]
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "matchCountPerUnit",
+    type = "number",
+    display =  L["Match Count per Unit"]
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "unitCount",
+    type = "number",
+    display = L["Units Affected"],
+    total = trigger.unit ~= "multi" and "maxUnitCount" or nil
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "stacks",
+    type = "number",
+    display = L["Stacks"]
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "totalStacks",
+    type = "number",
+    display = L["Total stacks over all matches"]
+  })
+
+  if not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip then
+    tinsert(values, {
+      trigger = triggernum,
+      property = "tooltip1",
+      type = "number",
+      display = L["Tooltip 1"]
+    })
+    tinsert(values, {
+      trigger = triggernum,
+      property = "tooltip2",
+      type = "number",
+      display = L["Tooltip 2"]
+    })
+    tinsert(values, {
+      trigger = triggernum,
+      property = "tooltip3",
+      type = "number",
+      display = L["Tooltip 3"]
+    })
+  end
+
+  tinsert(values, {
+    trigger = triggernum,
+    property = "expirationTime",
+    type = "timer",
+    display = L["Timed Progress"],
+    total = "duration",
+    modRate = "modRate",
+    paused = "paused",
+    remaining = "remaining"
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "stackGainTime",
+    type = "elapsedTimer",
+    display = L["Time since stack gain"],
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "stackLostTime",
+    type = "elapsedTimer",
+    display = L["Time since stack lost"],
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "initialTime",
+    type = "elapsedTimer",
+    display = L["Time since initial application"],
+  })
+  tinsert(values, {
+    trigger = triggernum,
+    property = "refreshTime",
+    type = "elapsedTimer",
+    display = L["Time since last refresh"],
+  })
 end
 
 function BuffTrigger.GetTriggerConditions(data, triggernum)
@@ -4287,7 +4372,7 @@ function BuffTrigger.CreateFakeStates(id, triggernum)
   state.progressType = "timed"
   state.stacks = 1
   allStates[""] = state
-  if BuffTrigger.CanHaveClones(data, triggernum) then
+  if CanHaveClones(data, triggernum) then
     for i = 1, 2 do
       local state = {}
       BuffTrigger.CreateFallbackState(data, triggernum, state)

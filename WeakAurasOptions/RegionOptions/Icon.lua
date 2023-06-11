@@ -36,7 +36,7 @@ local function createOptions(id, data)
     displayIcon = {
       type = "input",
       width = WeakAuras.normalWidth - 0.15,
-      name = L["Fallback Icon"],
+      name = L["Manual Icon"],
       order = 4,
       get = function()
         return data.displayIcon and tostring(data.displayIcon) or "";
@@ -230,8 +230,7 @@ local function createOptions(id, data)
       name = L["Enable Swipe"],
       order = 11.1,
       desc = L["Enable the \"Swipe\" radial overlay"],
-      disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data); end,
-      get = function() return OptionsPrivate.Private.CanHaveDuration(data) and data.cooldown; end
+      get = function() return data.cooldown; end
     },
     inverse = {
       type = "toggle",
@@ -239,8 +238,7 @@ local function createOptions(id, data)
       name = L["Inverse"],
       order = 11.2,
       desc = L["Invert the direction of progress"],
-      disabled = function() return not (OptionsPrivate.Private.CanHaveDuration(data) and data.cooldown); end,
-      get = function() return data.inverse and OptionsPrivate.Private.CanHaveDuration(data) and data.cooldown; end,
+      get = function() return data.inverse and data.cooldown; end,
       hidden = function() return not data.cooldown end
     },
     cooldownSwipe = {
@@ -249,7 +247,6 @@ local function createOptions(id, data)
       name = L["Show \"Swipe\""],
       order = 11.3,
       desc = "|TInterface\\AddOns\\WeakAuras\\Media\\Textures\\swipe-example:30|t\n"..L["Enable \"swipe\" part of the overlay"],
-      disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data) end,
       hidden = function() return not data.cooldown end,
     },
     cooldownEdge = {
@@ -258,7 +255,6 @@ local function createOptions(id, data)
       name = L["Show \"Edge\""],
       order = 11.4,
       desc = "|TInterface\\AddOns\\WeakAuras\\Media\\Textures\\edge-example:30|t\n"..L["Enable \"Edge\" part of the overlay"],
-      disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data) end,
       hidden = function() return not data.cooldown end,
     },
     cooldownTextDisabled = {
@@ -267,7 +263,6 @@ local function createOptions(id, data)
       name = L["Hide Timer Text"],
       order = 11.5,
       desc = L["A timer will automatically be displayed according to default Interface Settings (overridden by some addons).\nEnable this setting if you want this timer to be hidden, or when using a WeakAuras text to display the timer"],
-      disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data); end,
       hidden = function() return not data.cooldown end,
     },
     useCooldownModRate = {
@@ -276,7 +271,6 @@ local function createOptions(id, data)
       name = L["Blizzard Cooldown Reduction"],
       order = 11.6,
       desc = L["Cooldown Reduction changes the duration of seconds instead of showing the real time seconds."],
-      disabled = function() return not OptionsPrivate.Private.CanHaveDuration(data); end,
       hidden = function() return not data.cooldown end,
     },
     ccWarning = {
@@ -303,6 +297,7 @@ local function createOptions(id, data)
 
   return {
     icon = options,
+    progressOptions = OptionsPrivate.commonOptions.ProgressOptions(data),
     position = OptionsPrivate.commonOptions.PositionOptions(id, data),
   };
 end

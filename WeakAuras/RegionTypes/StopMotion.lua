@@ -6,6 +6,7 @@ local texture_data = WeakAuras.StopMotion.texture_data;
 local L = WeakAuras.L;
 
 local default = {
+    progressSource = {-1, "" },
     foregroundTexture = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion",
     backgroundTexture = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion",
     desaturateBackground = false,
@@ -41,6 +42,8 @@ local default = {
     customBackgroundColumns = 16,
     hideBackground = true
 };
+
+Private.regionPrototype.AddProgressSourceToDefault(default)
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
@@ -85,8 +88,15 @@ local properties = {
 
 Private.regionPrototype.AddProperties(properties, default);
 
+local function GetProperties(data)
+  local result = CopyTable(properties)
+  result.progressSource.values = Private.GetProgressSourcesForUi(data)
+  return result
+end
+
 local function create(parent)
     local frame = CreateFrame("Frame", nil, UIParent);
+    --- @cast frame WARegion
     frame.regionType = "stopmotion"
     frame:SetMovable(true);
     frame:SetResizable(true);
@@ -157,10 +167,115 @@ local function SetFrameViaFrames(self, texture, frame)
     self:SetTexture(texture .. format("%03d", frame));
 end
 
+local function SetProgress(self, progress)
+  local frames
+  local startFrame = self.startFrame
+  local endFrame = self.endFrame
+  local inverse = self.inverseDirection
+  if (endFrame >= startFrame) then
+    frames = endFrame - startFrame + 1
+  else
+    frames = startFrame - endFrame + 1
+    startFrame, endFrame = endFrame, startFrame
+    inverse = not inverse
+  end
+  local frame = floor( (frames - 1) * progress) + startFrame
+
+  if (inverse) then
+    frame = endFrame - frame + startFrame;
+  end
+
+  if (frame > endFrame) then
+    frame = endFrame
+     end
+  if (frame < startFrame) then
+    frame = startFrame
+  end
+  self.foreground:SetFrame(self.foregroundTexture, frame);
+end
+
+local FrameTickFunctions = {
+  progressTimer = function(self)
+    Private.StartProfileSystem("stopmotion")
+    Private.StartProfileAura(self.id)
+    local remaining = self.expirationTime - GetTime()
+    local progress = 1 - (remaining / self.duration)
+
+    self:SetProgress(progress)
+
+    Private.StopProfileAura(self.id)
+    Private.StopProfileSystem("stopmotion")
+  end,
+  timed = function(self)
+    if (not self.startTime) then return end
+
+    Private.StartProfileSystem("stopmotion")
+    Private.StartProfileAura(self.id)
+
+    local timeSinceStart = (GetTime() - self.startTime)
+    local newCurrentFrame = floor(timeSinceStart * (self.frameRate or 15))
+    if (newCurrentFrame == self.currentFrame) then
+      Private.StopProfileAura(self.id)
+      Private.StopProfileSystem("stopmotion")
+      return
+    end
+
+    self.currentFrame = newCurrentFrame
+
+    local frames
+    local startFrame = self.startFrame
+    local endFrame = self.endFrame
+    local inverse = self.inverseDirection
+    if (endFrame >= startFrame) then
+      frames = endFrame - startFrame + 1
+    else
+      frames = startFrame - endFrame + 1
+      startFrame, endFrame = endFrame, startFrame
+      inverse = not inverse
+    end
+
+    local frame = 0
+    if (self.animationType == "loop") then
+      frame = (newCurrentFrame % frames) + startFrame
+    elseif (self.animationType == "bounce") then
+      local direction = floor(newCurrentFrame / frames) % 2
+      if (direction == 0) then
+          frame = (newCurrentFrame % frames) + startFrame
+      else
+          frame = endFrame - (newCurrentFrame % frames)
+      end
+    elseif (self.animationType == "once") then
+      frame = newCurrentFrame + startFrame
+      if (frame > endFrame) then
+        frame = endFrame
+      end
+    end
+    if (inverse) then
+      frame = endFrame - frame + startFrame
+    end
+
+    if (frame > endFrame) then
+      frame = endFrame
+      end
+    if (frame < startFrame) then
+      frame = startFrame
+    end
+    self.foreground:SetFrame(self.foregroundTexture, frame)
+
+    Private.StopProfileAura(self.id)
+    Private.StopProfileSystem("stopmotion")
+  end,
+}
+
 local function modify(parent, region, data)
     Private.regionPrototype.modify(parent, region, data);
     region.foreground = region.foreground or {}
     region.background = region.background or {}
+    region.frameRate = data.frameRate
+    region.inverseDirection = data.inverse
+    region.animationType = data.animationType
+    region.foregroundTexture = data.foregroundTexture
+    region.FrameTick = nil
     local pattern = "%.x(%d+)y(%d+)f(%d+)%.[tb][gl][ap]"
     local pattern2 = "%.x(%d+)y(%d+)f(%d+)w(%d+)h(%d+)W(%d+)H(%d+)%.[tb][gl][ap]"
 
@@ -372,101 +487,52 @@ local function modify(parent, region, data)
 
     function region:PreShow()
       region.startTime = GetTime();
+      if region.FrameTick then
+        region:FrameTick()
+      end
     end
 
-    local function onUpdate()
-      if (not region.startTime) then return end
+    region.SetProgress = SetProgress
 
-      Private.StartProfileAura(region.id);
-      Private.StartProfileSystem("stopmotion")
-      local timeSinceStart = (GetTime() - region.startTime);
-      local newCurrentFrame = floor(timeSinceStart * (data.frameRate or 15));
-      if (newCurrentFrame == region.currentFrame) then
-        Private.StopProfileAura(region.id);
-        Private.StopProfileSystem("stopmotion")
-        return;
-      end
-
-      region.currentFrame = newCurrentFrame;
-
-      local frames;
-      local startFrame = region.startFrame;
-      local endFrame = region.endFrame;
-      local inverse = data.inverse;
-      if (endFrame >= startFrame) then
-        frames = endFrame - startFrame + 1;
-      else
-        frames = startFrame - endFrame + 1;
-        startFrame, endFrame = endFrame, startFrame;
-        inverse = not inverse;
-      end
-
-      local frame = 0;
-      if (data.animationType == "loop") then
-          frame = (newCurrentFrame % frames) + startFrame;
-      elseif (data.animationType == "bounce") then
-          local direction = floor(newCurrentFrame / frames) % 2;
-          if (direction == 0) then
-              frame = (newCurrentFrame % frames) + startFrame;
-          else
-              frame = endFrame - (newCurrentFrame % frames);
-          end
-      elseif (data.animationType == "once") then
-          frame = newCurrentFrame + startFrame
-          if (frame > endFrame) then
-            frame = endFrame;
-          end
-      elseif (data.animationType == "progress") then
-        if (not region.state) then
-          -- Do nothing
-        elseif (region.state.progressType == "static") then
-          local value = region.state.value or 0
-          local total = region.state.total ~= 0 and region.state.total or 1
-          frame = floor((frames - 1) * value / total) + startFrame;
-        else
-          local remaining
-          if region.state.paused then
-            remaining = region.state.remaining or 0;
-          else
-            remaining = region.state.expirationTime and (region.state.expirationTime - GetTime()) or 0;
-          end
-          local progress = region.state.duration and region.state.duration > 0 and (1 - (remaining / region.state.duration)) or 0;
-          frame = floor( (frames - 1) * progress) + startFrame;
-        end
-      end
-
-      if (inverse) then
-        frame = endFrame - frame + startFrame;
-      end
-
-      if (frame > endFrame) then
-        frame = endFrame
-         end
-      if (frame < startFrame) then
-        frame = startFrame
-      end
-      region.foreground:SetFrame(data.foregroundTexture, frame);
-
-      Private.StopProfileAura(region.id);
-      Private.StopProfileSystem("stopmotion")
-    end;
-
-    region.FrameTick = onUpdate;
-    if region.FrameTick then
+    if data.animationType == "loop" or data.animationType == "bounce" or data.animationType == "once" then
+      region.FrameTick = FrameTickFunctions.timed
       region.subRegionEvents:AddSubscriber("FrameTick", region, true)
-    end
+      function region:Update()
+      end
+    elseif data.animationType == "progress" then
+      function region:Update()
+        region:UpdateProgress()
+      end
 
-    function region:Update()
-      if region.state.paused then
-        if not region.paused then
-          region:Pause()
+      function region:UpdateValue()
+        local progress = 0;
+        if (self.total ~= 0) then
+          progress = self.value / self.total
         end
-      else
-        if region.paused then
-          region:Resume()
+        self:SetProgress(progress)
+        if self.FrameTick then
+          self.FrameTick = nil
+          self.subRegionEvents:RemoveSubscriber("FrameTick", self)
         end
       end
-      onUpdate();
+
+      function region:UpdateTime()
+        if self.paused and self.FrameTick then
+          self.FrameTick = nil
+          self.subRegionEvents:RemoveSubscriber("FrameTick", self)
+        end
+        self.expirationTime = self.expirationTime
+        self.duration = self.duration
+        if not self.paused then
+          if not self.FrameTick then
+            self.FrameTick = FrameTickFunctions.progressTimer
+            self.subRegionEvents:AddSubscriber("FrameTick", self)
+          end
+
+          self:FrameTick()
+        end
+
+      end
     end
 
     function region:SetForegroundDesaturated(b)
@@ -496,4 +562,4 @@ local function validate(data)
   Private.EnforceSubregionExists(data, "subbackground")
 end
 
-Private.RegisterRegionType("stopmotion", create, modify, default, properties, validate);
+Private.RegisterRegionType("stopmotion", create, modify, default, GetProperties, validate);
