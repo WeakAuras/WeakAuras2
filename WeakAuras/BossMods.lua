@@ -377,6 +377,7 @@ Private.event_prototypes["DBM Stage"] = {
   },
   automaticrequired = true,
   statesParameter = "one",
+  progressType = "none"
 }
 Private.category_event_prototype.addons["DBM Stage"] = L["DBM Stage"]
 
@@ -433,7 +434,8 @@ Private.event_prototypes["DBM Announce"] = {
       init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
     },
   },
-  timedrequired = true
+  timedrequired = true,
+  progressType = "timed"
 }
 Private.category_event_prototype.addons["DBM Announce"] = L["DBM Announce"]
 
@@ -445,7 +447,7 @@ Private.event_prototypes["DBM Timer"] = {
   },
   force_events = "DBM_TimerForce",
   name = L["DBM Timer"],
-  canHaveDuration = "timed",
+  progressType = "timed",
   triggerFunction = function(trigger)
     Private.ExecEnv.BossMods.DBM:RegisterTimer()
     local ret = [=[
@@ -1008,6 +1010,7 @@ Private.event_prototypes["BigWigs Stage"] = {
   },
   automaticrequired = true,
   statesParameter = "one",
+  progressType = "none"
 }
 Private.category_event_prototype.addons["BigWigs Stage"] = L["BigWigs Stage"]
 
@@ -1073,7 +1076,8 @@ Private.event_prototypes["BigWigs Message"] = {
       init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
     },
   },
-  timedrequired = true
+  timedrequired = true,
+  progressType = "timed"
 }
 Private.category_event_prototype.addons["BigWigs Message"] = L["BigWigs Message"]
 
@@ -1085,7 +1089,7 @@ Private.event_prototypes["BigWigs Timer"] = {
   },
   force_events = "BigWigs_Timer_Force",
   name = L["BigWigs Timer"],
-  canHaveDuration = "timed",
+  progressType = "timed",
   triggerFunction = function(trigger)
     Private.ExecEnv.BossMods.BigWigs:RegisterTimer()
     local ret = [=[
@@ -1351,6 +1355,7 @@ Private.event_prototypes["Boss Mod Stage"] = {
   },
   automaticrequired = true,
   statesParameter = "one",
+  progressType = "none"
 }
 Private.category_event_prototype.addons["Boss Mod Stage"] = L["Boss Mod Stage"]
 
@@ -1383,7 +1388,7 @@ Private.event_prototypes["Boss Mod Stage (Event)"] = {
     },
   },
   statesParameter = "one",
-  canHaveDuration = "timed",
+  progressType = "timed",
   delayEvents = true,
   timedrequired = true
 }
@@ -1464,7 +1469,8 @@ Private.event_prototypes["Boss Mod Announce"] = {
       text = ActiveBossModText
     },
   },
-  timedrequired = true
+  timedrequired = true,
+  progressType = "timed"
 }
 Private.category_event_prototype.addons["Boss Mod Announce"] = L["Boss Mod Announce"]
 
@@ -1476,7 +1482,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
   },
   force_events = "BossMod_TimerForce",
   name = L["Boss Mod Timer"],
-  canHaveDuration = "timed",
+  progressType = "timed",
   triggerFunction = function(trigger)
     Private.ExecEnv.BossMods.Generic:RegisterTimer()
     local ret = [=[

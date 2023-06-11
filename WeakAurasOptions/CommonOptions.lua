@@ -1046,6 +1046,153 @@ local function CreateExecuteAll(subOption)
   end
 end
 
+local function ProgressOptions(data)
+  local order = 1
+  local options = {
+    __title = L["Progress Settings"],
+    __order = 98,
+  }
+
+  options.progressSource = {
+    type = "select",
+    width = WeakAuras.doubleWidth,
+    name = L["Progress Source"],
+    order = order,
+    control = "WeakAurasTwoColumnDropdown",
+    values = OptionsPrivate.Private.GetProgressSourcesForUi(data),
+    get = function(info)
+      return OptionsPrivate.Private.GetProgressValueConstant(data.progressSource)
+    end,
+    set = function(info, value)
+      if value then
+        data.progressSource = data.progressSource or {}
+        -- Copy only trigger + property
+        data.progressSource[1] = value[1]
+        data.progressSource[2] = value[2]
+      else
+        data.progressSource = nil
+      end
+      WeakAuras.Add(data)
+    end
+  }
+
+  options.progressSourceWarning = {
+    type = "description",
+    width = WeakAuras.doubleWidth,
+    name = L["Note: This progress source does not provide a total value/duration. A total value/duration must be set via \"Set Maximum Progress\""],
+    order = order + 0.5,
+    hidden = function()
+      local progressSource = OptionsPrivate.Private.AddProgressSourceMetaData(data, data.progressSource)
+      -- Auto progress, Manual Progress or the progress source has a total property
+      if not progressSource or progressSource[2] == "auto" or progressSource[1] == 0 or progressSource[4] ~= nil then
+        return true
+      end
+      return false
+    end
+  }
+
+  local function hiddenManual()
+    if data.progressSource and data.progressSource[1] == 0 then
+      return false
+    end
+    return true
+  end
+
+  options.progressSourceManualValue = {
+    type = "range",
+    control = "WeakAurasSpinBox",
+    width = WeakAuras.normalWidth,
+    name = L["Value"],
+    order = order + 0.7,
+    min = 0,
+    softMax = 100,
+    bigStep = 1,
+    hidden = hiddenManual,
+    get = function(info)
+      return data.progressSource and data.progressSource[3] or 0
+    end,
+    set = function(info, value)
+      data.progressSource = data.progressSource or {}
+      data.progressSource[3] = value
+      WeakAuras.Add(data)
+    end
+  }
+
+  options.progressSourceManualTotal = {
+    type = "range",
+    control = "WeakAurasSpinBox",
+    width = WeakAuras.normalWidth,
+    name = L["Total"],
+    order = order + 0.8,
+    min = 0,
+    softMax = 100,
+    bigStep = 1,
+    hidden = hiddenManual,
+    get = function(info)
+      return data.progressSource and data.progressSource[4] or 100
+    end,
+    set = function(info, value)
+      data.progressSource = data.progressSource or {}
+      data.progressSource[4] = value
+      WeakAuras.Add(data)
+    end
+  }
+
+  options.useAdjustededMin = {
+    type = "toggle",
+    width = WeakAuras.normalWidth,
+    name = L["Set Minimum Progress"],
+    desc = L["Values/Remaining Time below this value are displayed as zero progress."],
+    order = order + 1
+  };
+
+  options.adjustedMin = {
+    type = "input",
+    validate = WeakAuras.ValidateNumericOrPercent,
+    width = WeakAuras.normalWidth,
+    order = order + 2,
+    name = L["Minimum"],
+    hidden = function() return not data.useAdjustededMin end,
+    desc = L["Enter static or relative values with %"]
+  };
+
+  options.useAdjustedMinSpacer = {
+    type = "description",
+    width = WeakAuras.normalWidth,
+    name = "",
+    order = order + 3,
+    hidden = function() return not (not data.useAdjustededMin and data.useAdjustededMax) end,
+  }
+
+  options.useAdjustededMax = {
+    type = "toggle",
+    width = WeakAuras.normalWidth,
+    name = L["Set Maximum Progress"],
+    desc = L["Values/Remaining Time above this value are displayed as full progress."],
+    order = order + 4
+  }
+
+  options.adjustedMax = {
+    type = "input",
+    width = WeakAuras.normalWidth,
+    validate = WeakAuras.ValidateNumericOrPercent,
+    order = order + 5,
+    name = L["Maximum"],
+    hidden = function() return not data.useAdjustededMax end,
+    desc = L["Enter static or relative values with %"]
+  }
+
+  options.useAdjustedMaxSpacer = {
+    type = "description",
+    width = WeakAuras.normalWidth,
+    name = "",
+    order = order + 6,
+    hidden = function() return not (data.useAdjustededMin and not data.useAdjustededMax) end,
+  }
+
+  return options
+end
+
 local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, group)
   local metaOrder = 99
   local function IsParentDynamicGroup()
@@ -1626,6 +1773,7 @@ OptionsPrivate.commonOptions.CreateSetAll = CreateSetAll
 OptionsPrivate.commonOptions.CreateExecuteAll = CreateExecuteAll
 
 OptionsPrivate.commonOptions.PositionOptions = PositionOptions
+OptionsPrivate.commonOptions.ProgressOptions = ProgressOptions
 OptionsPrivate.commonOptions.BorderOptions = BorderOptions
 OptionsPrivate.commonOptions.AddCodeOption = AddCodeOption
 

@@ -370,7 +370,7 @@ Private.format_types = {
         disabled = function() return get(symbol .. "_time_format", 0) ~= 0 end
       })
     end,
-    CreateFormatter = function(symbol, get)
+    CreateFormatter = function(symbol, get, wihoutColor, data)
       local format = get(symbol .. "_time_format", 0)
       local threshold = get(symbol .. "_time_dynamic_threshold", 60)
       local precision = get(symbol .. "_time_precision", 1)
@@ -385,9 +385,45 @@ Private.format_types = {
       end
       local mainFormater = simpleFormatters.time[format]
 
+      local modRateProperty = {}
+      if modRate then
+        -- For the mod rate support, we need to know which state member is the modRate, as
+        -- different progressSources can have different modRates
+        -- Here, we only collect the names, so that the actual formatter can quickly lookup
+        -- the property
+        -- This is somewhat complicated by legacy behaviour (for %p, %t) and that %foo, can
+        -- be the foo of different triggers that might use different modRate properties
+        local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
+        triggerNum = triggerNum and tonumber(triggerNum)
+
+        if triggerNum then
+          if sym == "p" or sym == "t" then
+            modRateProperty[triggerNum] = "modRate"
+          else
+            local progressSource = Private.AddProgressSourceMetaData(data, { triggerNum, sym })
+            if progressSource and progressSource[5] then
+              modRateProperty[triggerNum] = progressSource[5]
+            end
+          end
+        else
+          if symbol == "p" or symbol == "t" then
+            for i = 1, #data.triggers do
+              modRateProperty[i] = "modRate"
+            end
+          else
+             for i = 1, #data.triggers do
+              local progressSource = Private.AddProgressSourceMetaData(data, { i, symbol })
+              if progressSource and progressSource[5] then
+                modRateProperty[i] = progressSource[5]
+              end
+            end
+          end
+        end
+      end
+
       local formatter
       if threshold == 0 then
-        formatter = function(value, state)
+        formatter = function(value, state, trigger)
           if type(value) ~= 'number' or value == math.huge then
             return ""
           end
@@ -395,23 +431,23 @@ Private.format_types = {
             return ""
           end
 
-          if modRate then
-            value = value / (state.modRate or 1.0)
+          if modRate and trigger and modRateProperty[trigger] then
+            value = value / (state[modRateProperty[trigger]] or 1.0)
           end
 
           return mainFormater(value)
         end
       else
         local formatString = "%." .. precision .. "f"
-        formatter = function(value, state)
+        formatter = function(value, state, trigger)
           if type(value) ~= 'number' or value == math.huge then
             return ""
           end
           if value <= 0 then
             return ""
           end
-          if modRate then
-            value = value / (state.modRate or 1.0)
+          if modRate and trigger and modRateProperty[trigger] then
+            value = value / (state[modRateProperty[trigger]] or 1.0)
           end
           if value < threshold then
             return string.format(formatString, value)
@@ -427,11 +463,11 @@ Private.format_types = {
         -- Special case %p and %t. Since due to how the formatting
         -- work previously, the time formatter only formats %p and %t
         -- if the progress type is timed!
-        return function(value, state)
+        return function(value, state, trigger)
           if not state or state.progressType ~= "timed" then
             return value
           end
-          return formatter(value, state)
+          return formatter(value, state, trigger)
         end
       else
         return formatter

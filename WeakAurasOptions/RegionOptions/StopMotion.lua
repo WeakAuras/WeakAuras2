@@ -576,17 +576,11 @@ local function createOptions(id, data)
       }
     };
 
-    if OptionsPrivate.commonOptions then
-      return {
-        stopmotion = options,
-        position = OptionsPrivate.commonOptions.PositionOptions(id, data, 2),
-      };
-    else
-      return {
-        stopmotion = options,
-        position = WeakAuras.PositionOptions(id, data, 2),
-      };
-    end
+    return {
+      stopmotion = options,
+      progressOptions = OptionsPrivate.commonOptions.ProgressOptions(data),
+      position = OptionsPrivate.commonOptions.PositionOptions(id, data, 2),
+    }
 end
 
 local function createThumbnail()

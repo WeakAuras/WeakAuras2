@@ -14,6 +14,18 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field cloneId string?
 --- @field show boolean?
 --- @field changed boolean?
+--- @field paused boolean?
+--- @field remaining number?
+--- @field autoHide boolean|string|nil
+--- @field progressType "timed"|"static"|nil
+--- @field expirationTime number?
+--- @field duration number?
+--- @field name any?
+--- @field icon any?
+--- @field value number?
+--- @field total number?
+--- @field inverse boolean?
+
 
 --- @alias non_transmissable_field table<string, non_transmissable_field|boolean>
 
@@ -26,6 +38,11 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field raid table<string, boolean>
 
 --- @alias traverseFunction fun(): auraData
+
+---@class WARegion : Frame
+---@field state state
+---@field states state[]
+---@field regionType string
 
 --- @class Private
 --- @field ActivateAuraEnvironment fun(id: auraId?, cloneId: string?, state: state?, states: state[]?, config: boolean?)
@@ -50,7 +67,7 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field DebugLog debugLog
 --- @field dynamic_texts table<string, table>
 --- @field EndEvent fun(state: state): boolean?
---- @field EnsureRegion fun(id: auraId, cloneId: string?): Frame
+--- @field EnsureRegion fun(id: auraId, cloneId: string?): WARegion
 --- @field ExecEnv table
 --- @field event_prototypes table<string, prototypeData>
 --- @field event_categories table<string, {name: string, default: string }>
@@ -179,6 +196,7 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 ---@field internal_events (fun(tigger: triggerData): table)|nil
 ---@field name string
 ---@field statesParamater "unit"|"one"|"all"|nil
+---@field progressType "timed"|"static"|"none"
 
 --- @class triggerUntriggerData
 --- @field trigger triggerData

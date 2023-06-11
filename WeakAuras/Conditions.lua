@@ -35,7 +35,7 @@ end
 
 Private.callbacks:RegisterCallback("Delete", OnDelete)
 
-local function formatValueForAssignment(vType, value, pathToCustomFunction, pathToFormatters)
+local function formatValueForAssignment(vType, value, pathToCustomFunction, pathToFormatters, data)
   if (value == nil) then
     value = false;
   end
@@ -50,6 +50,43 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
       return tostring(value)
     end
     return "nil"
+  elseif vType == "progressSource" then
+    if type(value) == "table" then
+      local progressSource = Private.AddProgressSourceMetaData(data, value)
+      local trigger = progressSource[1] or -1
+      local progressType = progressSource[2] or "auto"
+      local property = progressSource[3]
+      local totalProperty = progressSource[4]
+      local modRateProperty = progressSource[5]
+      local inverseProperty = progressSource[6]
+      local pausedProperty = progressSource[7]
+      local remainingProperty = progressSource[8]
+
+      if trigger == 0 then
+        -- Manual progress
+        local serialized = string.format("{%s, %s, %s, %s}",
+            trigger,
+            Private.QuotedString(progressType),
+            property or "0",     -- Actually: value
+            totalProperty or "100" -- Actually: total
+        )
+        return serialized
+      else
+        local serialized = string.format("{%s, %s, %s, %s, %s, %s, %s, %s}",
+            trigger,
+            Private.QuotedString(progressType),
+            Private.QuotedString(property or "nil"),
+            totalProperty and Private.QuotedString(totalProperty) or "nil",
+            modRateProperty and Private.QuotedString(modRateProperty) or "nil",
+            inverseProperty and Private.QuotedString(inverseProperty) or "nil",
+            pausedProperty and Private.QuotedString(pausedProperty) or "nil",
+            remainingProperty and Private.QuotedString(remainingProperty) or "nil"
+        )
+        return serialized
+      end
+    else
+      return "nil"
+    end
   elseif (vType == "icon") then
     if type(value) == "string" then
       return string.format("%s", Private.QuotedString(value))
@@ -127,7 +164,9 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
 end
 
 local function formatValueForCall(type, property)
-  if (type == "bool" or type == "number" or type == "list" or type == "icon" or type == "string") then
+  if type == "bool" or type == "number" or type == "list" or type == "icon" or type == "string"
+    or type == "progressSource"
+  then
     return "propertyChanges['" .. property .. "']";
   elseif (type == "color") then
     local pcp = "propertyChanges['" .. property .. "']";
@@ -175,7 +214,8 @@ function Private.ExecEnv.CallCustomConditionTest(uid, testFunctionNumber, ...)
   end
 end
 
-local function CreateTestForCondition(uid, input, allConditionsTemplate, usedStates)
+local function CreateTestForCondition(data, input, allConditionsTemplate, usedStates)
+  local uid = data.uid
   local trigger = input and input.trigger;
   local variable = input and input.variable;
   local op = input and input.op;
@@ -188,7 +228,7 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
     local test = {};
     if (input.checks) then
       for i, subcheck in ipairs(input.checks) do
-        local subtest, subrecheckCode = CreateTestForCondition(uid, subcheck, allConditionsTemplate, usedStates);
+        local subtest, subrecheckCode = CreateTestForCondition(data, subcheck, allConditionsTemplate, usedStates);
         if (subtest) then
           tinsert(test, "(" .. subtest .. ")");
         end
@@ -212,9 +252,18 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
 
     local conditionTemplate = allConditionsTemplate[trigger] and allConditionsTemplate[trigger][variable];
     local cType = conditionTemplate and conditionTemplate.type;
-    local useModRate = conditionTemplate and conditionTemplate.useModRate
     local test = conditionTemplate and conditionTemplate.test;
     local preamble = conditionTemplate and conditionTemplate.preamble;
+    local progressSource
+    local modRateProperty
+    local pausedProperty
+    local remainingProperty
+    if cType == "timer" then
+      progressSource = Private.GetProgressSourceFor(data, trigger, variable)
+      modRateProperty = progressSource and progressSource[5]
+      pausedProperty = progressSource and progressSource[7]
+      remainingProperty = progressSource[8]
+    end
 
     local stateCheck = "state[" .. trigger .. "] and state[" .. trigger .. "].show and ";
     local stateVariableCheck = string.format("state[" .. trigger .. "][%q]", variable) .. "~= nil and ";
@@ -260,34 +309,29 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
       check = "true"
     elseif (cType == "number" and value and op) then
       local v = tonumber(value)
-
       if (v) then
-        if useModRate then
-          check = stateCheck .. stateVariableCheck .. "(state[" .. trigger .. "]" .. string.format("[%q]", variable)
-                  .. "/ (state[" .. trigger .. "].modRate or 1.0))" .. op .. v;
-        else
           check = stateCheck .. stateVariableCheck .. "state[" .. trigger .. "]" .. string.format("[%q]", variable)
                   .. op .. v;
-        end
       end
     elseif (cType == "timer" and value and op) then
       local triggerState = "state[" .. trigger .. "]"
       local varString = triggerState .. string.format("[%q]", variable)
-      local remainingTime = "(" .. triggerState .. ".paused and (" .. triggerState .. ".remaining or 0) or (" .. varString .. " - now)" .. ")"
-      if useModRate then
-        local modRateString = "(state[" .. trigger .. "].modRate or 1.0)"
+      local remainingTime = "(" .. varString .. " - now)"
+      if pausedProperty and remainingProperty then
+        local pausedString = "state[" .. trigger .. "]" .. string.format("[%q]", pausedProperty)
+        local remainingString = "(state[" .. trigger .. "]" .. string.format("[%q]", remainingProperty) .. " or 0)"
 
-        if (op == "==") then
-          check = stateCheck .. stateVariableCheck .. "abs((" .. remainingTime .. "-" .. value .. ")/" .. modRateString .. ") < 0.05"
-        else
-          check = stateCheck .. stateVariableCheck .. remainingTime .. "/" .. modRateString .. op .. value
-        end
+        remainingTime = "((" .. pausedString .. " and " .. remainingString .. ") or " ..  remainingTime .. ")"
+      end
+
+      local divideModRate = modRateProperty
+            and  " / (state[" .. trigger .. "]" .. string.format("[%q]",  modRateProperty) .. " or 1.0)"
+            or ""
+
+      if (op == "==") then
+        check = stateCheck .. stateVariableCheck .. "abs((" .. remainingTime .. "-" .. value .. ")" .. divideModRate .. ") < 0.05"
       else
-        if (op == "==") then
-          check = stateCheck .. stateVariableCheck .. "abs(" .. remainingTime .. "-" .. value .. ") < 0.05"
-        else
-          check = stateCheck .. stateVariableCheck .. remainingTime .. op .. value
-        end
+        check = stateCheck .. stateVariableCheck .. remainingTime .. divideModRate .. op .. value
       end
     elseif (cType == "elapsedTimer" and value and op) then
       if (op == "==") then
@@ -371,15 +415,18 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
     -- If adding a new condition type, don't forget to adjust the validator in the options code
 
     if (cType == "timer" and value) then
-      if useModRate then
-        recheckCode = "  nextTime = state[" .. trigger .. "] and not state[" .. trigger .. "].paused"
-        .. " and state[" .. trigger .. "]" .. string.format("[%q]",  variable)
-        .. " and (state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. " - " .. value .. " * (state[" .. trigger .. "].modRate or 1.0))\n"
-      else
-        recheckCode = "  nextTime = state[" .. trigger .. "] and not state[" .. trigger .. "].paused"
-        .. " and state[" .. trigger .. "]" .. string.format("[%q]",  variable)
-        .. " and (state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. " - " .. value .. ")\n"
-      end
+      local variableString =  "state[" .. trigger .. "]" .. string.format("[%q]",  variable)
+      local multiplyModRate = modRateProperty
+            and  " * (state[" .. trigger .. "]" .. string.format("[%q]",  modRateProperty) .. " or 1.0)"
+            or ""
+      local andNotPaused = pausedProperty
+            and "and not " .. "state[" .. trigger .. "]" .. string.format("[%q]",  pausedProperty)
+            or ""
+
+      recheckCode = "  nextTime = state[" .. trigger .. "] " .. andNotPaused
+      .. " and " .. variableString
+      .. " and " .. "(" .. variableString .. " - " .. value .. multiplyModRate .. ")\n"
+
       recheckCode = recheckCode .. "  if (nextTime and (not recheckTime or nextTime < recheckTime) and nextTime >= now) then\n"
       recheckCode = recheckCode .. "    recheckTime = nextTime\n";
       recheckCode = recheckCode .. "  end\n"
@@ -394,9 +441,9 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
   return check, recheckCode;
 end
 
-local function CreateCheckCondition(uid, ret, condition, conditionNumber, allConditionsTemplate, nextIsLinked, debug)
+local function CreateCheckCondition(data, ret, condition, conditionNumber, allConditionsTemplate, nextIsLinked, debug)
   local usedStates = {};
-  local check, recheckCode = CreateTestForCondition(uid, condition.check, allConditionsTemplate, usedStates);
+  local check, recheckCode = CreateTestForCondition(data, condition.check, allConditionsTemplate, usedStates);
   if not check then
     check = "false"
   end
@@ -454,8 +501,16 @@ local function CreateDeactivateCondition(ret, condition, conditionNumber, data, 
         local propertyData = properties and properties[change.property]
         if (propertyData and propertyData.type and propertyData.setter) then
           usedProperties[change.property] = true;
-          ret = ret .. "    propertyChanges['" .. change.property .. "'] = " .. formatValueForAssignment(propertyData.type, GetBaseProperty(data, change.property)) .. "\n";
-          if (debug) then ret = ret .. "    print('- " .. change.property .. " " ..formatValueForAssignment(propertyData.type,  GetBaseProperty(data, change.property)) .. "')\n"; end
+          ret = ret .. "    propertyChanges['" .. change.property .. "'] = "
+                .. formatValueForAssignment(propertyData.type, GetBaseProperty(data, change.property),
+                                            nil, nil, data)
+                .. "\n";
+          if (debug) then
+            ret = ret .. "    print('- " .. change.property .. " "
+                      .. formatValueForAssignment(propertyData.type, GetBaseProperty(data, change.property),
+                                                 nil, nil, data)
+                      .. "')\n";
+          end
         end
       end
     end
@@ -465,7 +520,7 @@ local function CreateDeactivateCondition(ret, condition, conditionNumber, data, 
   return ret;
 end
 
-local function CreateActivateCondition(ret, id, condition, conditionNumber, properties, debug)
+local function CreateActivateCondition(ret, id, condition, conditionNumber, data, properties, debug)
   if (condition.changes) then
     ret = ret .. "  if (newActiveConditions[" .. conditionNumber .. "]) then\n"
     ret = ret .. "    if (not activatedConditions[".. conditionNumber .. "]) then\n"
@@ -477,9 +532,11 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
         if (propertyData and propertyData.type) then
           if (propertyData.setter) then
             ret = ret .. "      propertyChanges['" .. change.property .. "'] = "
-                      .. formatValueForAssignment(propertyData.type, change.value) .. "\n"
-            if (debug) then ret = ret .. "      print('- " .. change.property .. " "
-                      .. formatValueForAssignment(propertyData.type, change.value) .. "')\n" end
+                      .. formatValueForAssignment(propertyData.type, change.value, nil, nil, data) .. "\n"
+            if (debug) then
+              ret = ret .. "      print('- " .. change.property .. " "
+                         .. formatValueForAssignment(propertyData.type, change.value, nil, nil, data) .. "')\n"
+            end
           elseif (propertyData.action) then
             local pathToCustomFunction = "nil";
             local pathToFormatter = "nil"
@@ -498,9 +555,15 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
                                               id, conditionNumber, changeNum);
             end
             ret = ret .. "     region:" .. propertyData.action .. "("
-                         .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction, pathToFormatter) .. ")" .. "\n";
-            if (debug) then ret = ret .. "     print('# " .. propertyData.action .. "("
-                         .. formatValueForAssignment(propertyData.type, change.value, pathToCustomFunction, pathToFormatter) .. "')\n"; end
+                      .. formatValueForAssignment(propertyData.type, change.value,
+                                                  pathToCustomFunction, pathToFormatter, data)
+                      .. ")" .. "\n";
+            if (debug) then
+              ret = ret .. "     print('# " .. propertyData.action .. "("
+                        .. formatValueForAssignment(propertyData.type, change.value,
+                                                    pathToCustomFunction, pathToFormatter, data)
+                        .. "')\n";
+            end
           end
         end
       end
@@ -513,9 +576,9 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, prop
         if (propertyData and propertyData.type and propertyData.setter) then
           ret = ret .. "      if(propertyChanges['" .. change.property .. "'] ~= nil) then\n"
           ret = ret .. "        propertyChanges['" .. change.property .. "'] = "
-                       .. formatValueForAssignment(propertyData.type, change.value) .. "\n"
+                       .. formatValueForAssignment(propertyData.type, change.value, nil, nil, data) .. "\n"
           if (debug) then ret = ret .. "        print('- " .. change.property .. " "
-                       .. formatValueForAssignment(propertyData.type,  change.value) .. "')\n" end
+                       .. formatValueForAssignment(propertyData.type,  change.value, nil, nil, data) .. "')\n" end
           ret = ret .. "      end\n"
         end
       end
@@ -600,7 +663,7 @@ function Private.LoadConditionPropertyFunctions(data)
               end
               return change.value[fullKey]
             end
-            local formatters = change.value and Private.CreateFormatters(change.value.message, getter, true)
+            local formatters = change.value and Private.CreateFormatters(change.value.message, getter, true, data)
             Private.ExecEnv.conditionTextFormatters[id] = Private.ExecEnv.conditionTextFormatters[id] or {}
             Private.ExecEnv.conditionTextFormatters[id][conditionNumber] = Private.ExecEnv.conditionTextFormatters[id][conditionNumber] or {};
             Private.ExecEnv.conditionTextFormatters[id][conditionNumber].changes = Private.ExecEnv.conditionTextFormatters[id][conditionNumber].changes or {};
@@ -692,7 +755,7 @@ local function ConstructConditionFunction(data)
     for conditionNumber, condition in ipairs(data.conditions) do
       local nextIsLinked = data.conditions[conditionNumber + 1] and data.conditions[conditionNumber + 1].linked
       local additionalRecheckCode
-      ret, additionalRecheckCode = CreateCheckCondition(data.uid, ret, condition, conditionNumber, allConditionsTemplate, nextIsLinked, debug)
+      ret, additionalRecheckCode = CreateCheckCondition(data, ret, condition, conditionNumber, allConditionsTemplate, nextIsLinked, debug)
       if additionalRecheckCode then
         recheckCode = recheckCode .. "\n" .. additionalRecheckCode
       end
@@ -722,7 +785,7 @@ local function ConstructConditionFunction(data)
   -- Third Loop deals with conditions that are newly active
   if (data.conditions) then
     for conditionNumber, condition in ipairs(data.conditions) do
-      ret = CreateActivateCondition(ret, data.id, condition, conditionNumber, properties, debug)
+      ret = CreateActivateCondition(ret, data.id, condition, conditionNumber, data, properties, debug)
     end
   end
 
