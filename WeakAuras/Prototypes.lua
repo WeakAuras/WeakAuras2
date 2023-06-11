@@ -752,8 +752,10 @@ if WeakAuras.IsRetail() then
         local spec = GetSpecialization()
         if type(spec) == "number" and spec > 0 then
           local specId = GetSpecializationInfo(spec)
-          Private.talentInfo[specId] = nil
-          Private.GetTalentData(specId)
+          if specId then
+            Private.talentInfo[specId] = nil
+            Private.GetTalentData(specId)
+          end
         end
       end)
     end
