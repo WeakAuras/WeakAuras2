@@ -185,26 +185,39 @@ local function SoundPlayHelper(self)
   end
 
   if (options.sound == " custom") then
-    if (options.sound_path) then
-      local ok, _, handle = pcall(PlaySoundFile, options.sound_path, options.sound_channel or "Master");
-      if ok then
-        self.soundHandle = handle;
-      end
+    local ok, _, handle = pcall(PlaySoundFile, options.sound_path, options.sound_channel or "Master")
+    if ok then
+      self.soundHandle = handle
     end
   elseif (options.sound == " KitID") then
-    if (options.sound_kit_id) then
-      local ok, _, handle = pcall(PlaySound,options.sound_kit_id, options.sound_channel or "Master");
-      if ok then
-        self.soundHandle = handle;
-      end
+    local ok, _, handle = pcall(PlaySound,options.sound_kit_id, options.sound_channel or "Master")
+    if ok then
+      self.soundHandle = handle
     end
   else
-    local ok, _, handle = pcall(PlaySoundFile, options.sound, options.sound_channel or "Master");
+    local ok, _, handle = pcall(PlaySoundFile, options.sound, options.sound_channel or "Master")
     if ok then
-      self.soundHandle = handle;
+      self.soundHandle = handle
     end
   end
   Private.StopProfileSystem("sound");
+end
+
+local function hasSound(options)
+  if (options.sound == " custom") then
+    if (options.sound_path and options.sound_path ~= "") then
+      return true
+    end
+  elseif (options.sound == " KitID") then
+    if (options.sound_kit_id and options.sound_kit_id ~= "") then
+      return true
+    end
+  else
+    if options.sound and options.sound ~= "" then
+      return true
+    end
+  end
+  return false
 end
 
 local function SoundPlay(self, options)
@@ -212,6 +225,11 @@ local function SoundPlay(self, options)
     return
   end
   Private.StartProfileSystem("sound");
+  if not hasSound(options) then
+    Private.StopProfileSystem("sound")
+    return
+  end
+
   self:SoundStop();
   self:SoundRepeatStop();
 
