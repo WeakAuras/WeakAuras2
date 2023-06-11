@@ -202,7 +202,7 @@ local function createOptions(id, data)
     },
   };
 
-  if WeakAuras.BuildInfo > 80100 then
+  if not WeakAuras.IsClassic() then
     options.modelDisplayInfo = {
       type = "toggle",
       width = WeakAuras.normalWidth,
