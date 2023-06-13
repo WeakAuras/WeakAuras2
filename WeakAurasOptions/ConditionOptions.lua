@@ -1401,14 +1401,14 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
     local isFirst = path[#path] == 1;
     if (isFirst) then
       if (needsTriggerName) then
-        optionsName = optionsName .. string.format(L["Trigger %s"], check.trigger);
+        optionsName = optionsName .. OptionsPrivate.GetTriggerTitle(data, check.trigger)
       end
     else
       if (needsTriggerName) then
         if (parentType == "AND") then
-          optionsName = optionsName .. string.format(L["and Trigger %s"], check.trigger);
+          optionsName = optionsName .. string.format(L["and %s"], OptionsPrivate.GetTriggerTitle(data, check.trigger));
         else
-          optionsName = optionsName .. string.format(L["or Trigger %s"], check.trigger);
+          optionsName = optionsName .. string.format(L["or %s"], OptionsPrivate.GetTriggerTitle(data, check.trigger));
         end
       end
     end
@@ -1416,9 +1416,9 @@ local function addControlsForIfLine(args, order, data, conditionVariable, totalA
     local isLinked = conditions[i].linked and i > 1
     if (needsTriggerName) then
       if isLinked then
-        optionsName = optionsName .. string.format(L["Else If Trigger %s"], check.trigger);
+        optionsName = optionsName .. string.format(L["Else If %s"], OptionsPrivate.GetTriggerTitle(data, check.trigger));
       else
-        optionsName = optionsName .. string.format(L["If Trigger %s"], check.trigger);
+        optionsName = optionsName .. string.format(L["If %s"], OptionsPrivate.GetTriggerTitle(data, check.trigger));
       end
     else
         optionsName = optionsName .. (isLinked and L["Else If"] or L["If"])
@@ -2315,7 +2315,7 @@ local function mergeConditionTemplates(allConditionTemplates, auraConditionsTemp
   end
 end
 
-local function createConditionTemplatesValueList(allConditionTemplates, numTriggers, excludeCombinations)
+local function createConditionTemplatesValueList(allConditionTemplates, numTriggers, excludeCombinations, data)
   local conditionTemplates = {};
   conditionTemplates.all = allConditionTemplates;
   conditionTemplates.indexToTrigger = {};
@@ -2345,7 +2345,7 @@ local function createConditionTemplatesValueList(allConditionTemplates, numTrigg
           elseif (triggernum == -1) then
             conditionTemplates.display[index]  = string.format(L["Global Conditions"]);
           else
-            conditionTemplates.display[index]  = string.format(L["Trigger %d"], triggernum);
+            conditionTemplates.display[index]  = OptionsPrivate.GetTriggerTitle(data, triggernum)
           end
           index = index + 1;
 
@@ -2404,7 +2404,7 @@ local function createConditionTemplates(data)
   }
   allConditionTemplates[-1] = OptionsPrivate.Private.GetGlobalConditions();
 
-  local conditionTemplates = createConditionTemplatesValueList(allConditionTemplates, numTriggers);
+  local conditionTemplates = createConditionTemplatesValueList(allConditionTemplates, numTriggers, nil, data);
 
   if (data.controlledChildren) then
     conditionTemplates.displayWithCopy = CopyTable(conditionTemplates.display);
@@ -2414,7 +2414,7 @@ local function createConditionTemplates(data)
     conditionTemplates.indexToVariable[9998] = "COPY";
   end
 
-  local conditionTemplateWithoutCombinations = createConditionTemplatesValueList(allConditionTemplates, numTriggers, true);
+  local conditionTemplateWithoutCombinations = createConditionTemplatesValueList(allConditionTemplates, numTriggers, true, data);
 
   return conditionTemplates, conditionTemplateWithoutCombinations;
 end

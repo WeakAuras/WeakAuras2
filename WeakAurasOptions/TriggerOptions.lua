@@ -253,10 +253,30 @@ function OptionsPrivate.ClearTriggerExpandState()
   maxTriggerNumForExpand = 0
 end
 
+function OptionsPrivate.GetTriggerTitle(data, triggernum)
+  if data.triggers[triggernum] then
+    local trigger = data.triggers[triggernum].trigger
+    if trigger then
+      local event_prototype = OptionsPrivate.Private.event_prototypes[trigger.event]
+      local triggerType = trigger.type
+      local name
+      if triggerType == "aura2" then
+        name = L["Aura"]
+      elseif triggerType == "custom" then
+        name = L["Custom"]
+      else
+        name = event_prototype.name
+      end
+      return L["Trigger %i: %s"]:format(triggernum, name)
+    end
+  end
+  return L["Trigger %i"]:format(triggernum)
+end
+
 local triggerDeleteDialogOpen = false
 
 function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
-  options.__title = L["Trigger %s"]:format(triggernum)
+  options.__title = OptionsPrivate.GetTriggerTitle(data, triggernum)
   options.__order = triggernum * 10
   options.__collapsed = #data.triggers > 1
   options.__isCollapsed = function()
