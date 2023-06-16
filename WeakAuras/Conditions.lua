@@ -537,7 +537,7 @@ function Private.GetSubRegionProperties(data, properties)
       if subProperties then
         for key, property in pairs(subProperties) do
           subIndex[key] = subIndex[key] and subIndex[key] + 1 or 1
-          property.display = { subIndex[key] .. ". " .. subRegionTypeData.displayName,
+          property.display = { subRegionTypeData.displayName .. " " .. subIndex[key],
                                property.display,
                                property.defaultProperty }
           properties["sub." .. index .. "." .. key ] = property;

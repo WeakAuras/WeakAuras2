@@ -3,7 +3,7 @@ Button Widget for our Expand button
 -------------------------------------------------------------------------------]]
 if not WeakAuras.IsLibsOK() then return end
 
-local Type, Version = "WeakAurasExpand", 5
+local Type, Version = "WeakAurasExpand", 6
 
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
@@ -30,6 +30,12 @@ local function Button_OnClick(frame, button)
 	AceGUI:ClearFocus()
 end
 
+local function OnFrameShow(frame)
+	local self = frame.obj
+	local fontObject = self.userdata and self.userdata.option and self.userdata.option.fontObject
+	self:SetFontObject(fontObject or GameFontHighlightLarge)
+end
+
 --[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
@@ -38,7 +44,6 @@ local methods = {
 		self:SetHeight(110)
 		self:SetWidth(110)
 		self:SetLabel()
-		self:SetFontObject(GameFontHighlightLarge)
 		self:SetImage(nil)
 		self:SetImageSize(64, 64)
 		self:SetDisabled(false)
@@ -111,6 +116,7 @@ local function Constructor()
 	frame:SetScript("OnEnter", Control_OnEnter)
 	frame:SetScript("OnLeave", Control_OnLeave)
 	frame:SetScript("OnClick", Button_OnClick)
+	frame:SetScript("OnShow", OnFrameShow)
 
 	local image = frame:CreateTexture(nil, "BACKGROUND")
 	image:SetWidth(64)
@@ -119,7 +125,7 @@ local function Constructor()
 
 	local label = frame:CreateFontString(nil, "BACKGROUND", "GameFontHighlightLarge")
 	label:SetJustifyH("LEFT")
-	label:SetJustifyV("TOP")
+	label:SetJustifyV("MIDDLE")
 	label:SetPoint("LEFT", image, "RIGHT", 5, 0)
 	label:SetPoint("TOP")
 	label:SetPoint("BOTTOM")

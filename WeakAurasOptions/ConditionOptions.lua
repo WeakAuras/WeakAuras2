@@ -1977,6 +1977,49 @@ local function fixUpLinkedInFirstCondition(conditions)
   end
 end
 
+local function formatConditionTitle(text, propertyType, value)
+  if propertyType == "color" and type(value) == "table" then
+    local r, g, b = unpack(value)
+    r, g, b = r or 1, g or 1, b or 1
+    return ("|cFF%2x%2x%2x%s|r"):format(r * 220 + 35, g * 220 + 35, b * 220 + 35, text)
+  elseif propertyType == "bool" then
+    return ("%s: %s"):format(text, value and L["ON"] or L["OFF"])
+  elseif propertyType == "sound" and type(value) == "table" and type(value.sound) == "string" and value.sound ~= "" then
+    if OptionsPrivate.Private.sound_types[value.sound] then
+      return ("%s: %s"):format(text, OptionsPrivate.Private.sound_types[value.sound])
+    end
+  elseif value ~= nil and type(value) ~= "table" then
+    return ("%s: %s"):format(text, value)
+  end
+  return text
+end
+
+local function GetConditionTitle(changes, conditionnum, allProperties)
+  if type(changes) == "table" and #changes > 0 then
+    local outs = {}
+    for i, change in ipairs(changes) do
+      local property = change.property
+      if property and allProperties.propertyMap[property] then
+        local display = allProperties.propertyMap[property].display
+        local propertyType = allProperties.propertyMap[property].type
+        local title
+        if type(display) == "string" then
+          title = display
+        elseif type(display) == "table" then
+          title = ("%s %s"):format(display[1], display[2])
+        end
+        if title then
+          tinsert(outs, formatConditionTitle(title, propertyType, change.value))
+        end
+      end
+    end
+    if #outs > 0 then
+      return L["%i. %s"]:format(conditionnum, table.concat(outs, ", "))
+    end
+  end
+  return L["%i."]:format(conditionnum)
+end
+
 local function addControlsForCondition(args, order, data, conditionVariable, totalAuraCount, conditions, i, conditionTemplates, conditionTemplateWithoutCombinations, allProperties)
   if (not conditions[i].check) then
     return order;
@@ -1998,7 +2041,7 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
 
   args["condition" .. i .. "header"] = {
     type = "execute",
-    name = L["Condition %i"]:format(i),
+    name = GetConditionTitle(conditions[i].changes, i, allProperties),
     order = order,
     width = WeakAuras.doubleWidth - 0.6,
     func = function()
@@ -2016,7 +2059,8 @@ local function addControlsForCondition(args, order, data, conditionVariable, tot
     image = collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand" or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\collapse" ,
     imageWidth = 18,
     imageHeight = 18,
-    control = "WeakAurasExpand"
+    control = "WeakAurasExpand",
+    fontObject = GameFontHighlight
   };
   order = order + 1;
 
