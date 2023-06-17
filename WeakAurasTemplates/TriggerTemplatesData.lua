@@ -2451,6 +2451,7 @@ templates.class.SHAMAN = {
         { spell = 53390, type = "buff", unit = "player", talent = 101899 }, -- Tidal Waves
         { spell = 58875, type = "buff", unit = "player", talent = 101983 }, -- Spirit Walk
         { spell = 61295, type = "buff", unit = "player", talent = 101905 }, -- Riptide
+        { spell = 73685, type = "buff", unit = "player", talent = 101918 }, -- Unleash Life
         { spell = 73920, type = "buff", unit = "player", talent = 101923 }, -- Healing Rain
         { spell = 77762, type = "buff", unit = "player", talent = 101894 }, -- Lava Surge
         { spell = 79206, type = "buff", unit = "player", talent = 101955 }, -- Spiritwalker's Grace
@@ -2515,6 +2516,7 @@ templates.class.SHAMAN = {
         { spell = 57994, type = "ability", requiresTarget = true, talent = 101957 }, -- Wind Shear
         { spell = 58875, type = "ability", buff = true, talent = 101983 }, -- Spirit Walk
         { spell = 61295, type = "ability", charges = true, buff = true, talent = 101905 }, -- Riptide
+        { spell = 73685, type = "ability", buff = true, talent = 101918 }, -- Unleash Life
         { spell = 73899, type = "ability", requiresTarget = true }, -- Primal Strike
         { spell = 73920, type = "ability", buff = true, talent = 101923 }, -- Healing Rain
         { spell = 79206, type = "ability", buff = true, talent = 101955 }, -- Spiritwalker's Grace
