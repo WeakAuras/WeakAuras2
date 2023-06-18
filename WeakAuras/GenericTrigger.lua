@@ -3600,6 +3600,9 @@ do
       local addon, stage = ...
       currentStage = stage
       WeakAuras.ScanEvents("BigWigs_SetStage", ...)
+    elseif event == "BigWigs_OnBossWipe" or event == "BigWigs_OnBossWin" then
+      currentStage = 0
+      WeakAuras.ScanEvents("BigWigs_SetStage", ...)
     end
   end
 
