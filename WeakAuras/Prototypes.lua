@@ -5557,6 +5557,8 @@ Private.event_prototypes = {
     name = L["BigWigs Stage"],
     init = function(trigger)
       WeakAuras.RegisterBigWigsCallback("BigWigs_SetStage");
+      WeakAuras.RegisterBigWigsCallback("BigWigs_OnBossWipe");
+      WeakAuras.RegisterBigWigsCallback("BigWigs_OnBossWin");
       return ""
     end,
     args = {
