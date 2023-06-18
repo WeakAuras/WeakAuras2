@@ -1617,7 +1617,7 @@ function Private.Modernize(data)
         -- Full Rotate is enabled
         data.legacyZoomOut = true
       else
-        -- Discreete Rotation
+        -- Discrete Rotation
         data.rotation = data.discrete_rotation
       end
       data.discrete_rotation = nil

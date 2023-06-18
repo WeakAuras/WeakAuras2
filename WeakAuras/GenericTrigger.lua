@@ -1674,10 +1674,10 @@ function GenericTrigger.Add(data, region)
   end
 
   if warnAboutCLEUEvents then
-    Private.AuraWarnings.UpdateWarning(data.uid, "spamy_event_warning", "warning",
+    Private.AuraWarnings.UpdateWarning(data.uid, "spammy_event_warning", "warning",
                 L["COMBAT_LOG_EVENT_UNFILTERED without a filter is generally advised against as it’s very performance costly.\nFind more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Custom-Triggers#events"])
   else
-    Private.AuraWarnings.UpdateWarning(data.uid, "spamy_event_warning")
+    Private.AuraWarnings.UpdateWarning(data.uid, "spammy_event_warning")
   end
 end
 
@@ -2988,7 +2988,7 @@ do
     spellCdsCharges:HandleSpell(id, startTimeCharges, durationCharges, modRateCharges)
 
     if spellDetails[id].override then
-      -- If this spell is overriden and the option is on, track the overriden spell too
+      -- If this spell is overridden and the option is on, track the overridden spell too
       if spellDetails[id].override ~= id then
         WeakAuras.WatchSpellCooldown(spellDetails[id].override, false, false)
       end

@@ -172,7 +172,7 @@ function spellCache.Load(data)
     metaData.build = build;
     metaData.locale = locale;
     metaData.version = version;
-    metaData.spellCacheAchivements = true
+    metaData.spellCacheAchievements = true
     metaData.spellCacheStrings = true
     metaData.needsRebuild = true
     wipe(cache)

@@ -271,20 +271,20 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
     elseif (cType == "timer" and value and op) then
       local triggerState = "state[" .. trigger .. "]"
       local varString = triggerState .. string.format("[%q]", variable)
-      local remaingTime = "(" .. triggerState .. ".paused and (" .. triggerState .. ".remaining or 0) or (" .. varString .. " - now)" .. ")"
+      local remainingTime = "(" .. triggerState .. ".paused and (" .. triggerState .. ".remaining or 0) or (" .. varString .. " - now)" .. ")"
       if useModRate then
         local modRateString = "(state[" .. trigger .. "].modRate or 1.0)"
 
         if (op == "==") then
-          check = stateCheck .. stateVariableCheck .. "abs((" .. remaingTime .. "-" .. value .. ")/" .. modRateString .. ") < 0.05"
+          check = stateCheck .. stateVariableCheck .. "abs((" .. remainingTime .. "-" .. value .. ")/" .. modRateString .. ") < 0.05"
         else
-          check = stateCheck .. stateVariableCheck .. remaingTime .. "/" .. modRateString .. op .. value
+          check = stateCheck .. stateVariableCheck .. remainingTime .. "/" .. modRateString .. op .. value
         end
       else
         if (op == "==") then
-          check = stateCheck .. stateVariableCheck .. "abs(" .. remaingTime .. "-" .. value .. ") < 0.05"
+          check = stateCheck .. stateVariableCheck .. "abs(" .. remainingTime .. "-" .. value .. ") < 0.05"
         else
-          check = stateCheck .. stateVariableCheck .. remaingTime .. op .. value
+          check = stateCheck .. stateVariableCheck .. remainingTime .. op .. value
         end
       end
     elseif (cType == "elapsedTimer" and value and op) then
@@ -804,7 +804,7 @@ local function runDynamicConditionFunctions(funcs)
   end
 end
 
-local function UpdateDynamicConditonsStates(self, event)
+local function UpdateDynamicConditionsStates(self, event)
   if (globalDynamicConditionFuncs[event]) then
     for i, func in ipairs(globalDynamicConditionFuncs[event]) do
       func(globalConditionState);
@@ -814,7 +814,7 @@ end
 
 local function handleDynamicConditions(self, event)
   Private.StartProfileSystem("dynamic conditions")
-  UpdateDynamicConditonsStates(self, event)
+  UpdateDynamicConditionsStates(self, event)
   if (dynamicConditions[event]) then
     runDynamicConditionFunctions(dynamicConditions[event]);
   end
@@ -939,7 +939,7 @@ function Private.RegisterForGlobalConditions(uid)
         UpdateDynamicConditionsPerUnitState(dynamicConditionsFrame, event, unit)
       else
         pcall(dynamicConditionsFrame.RegisterEvent, dynamicConditionsFrame, event);
-        UpdateDynamicConditonsStates(dynamicConditionsFrame, event)
+        UpdateDynamicConditionsStates(dynamicConditionsFrame, event)
       end
     end
   end
