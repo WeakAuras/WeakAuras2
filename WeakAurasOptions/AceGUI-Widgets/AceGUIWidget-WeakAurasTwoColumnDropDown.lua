@@ -1,6 +1,6 @@
 if not WeakAuras.IsLibsOK() then return end
 
-local Type, Version = "WeakAurasTwoColumnDropdown", 4
+local Type, Version = "WeakAurasTwoColumnDropdown", 5
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -47,6 +47,35 @@ AceGUI:RegisterLayout("TwoColumn",
     safecall(content.obj.LayoutFinished, content.obj, nil, height)
   end)
 
+local secondLevelMt = {} -- Tag for our tables
+local function CreateSecondLevelTable()
+  local t = {}
+  setmetatable(t, secondLevelMt)
+  return t
+end
+
+local function IsSecondLevelTable(t)
+  return getmetatable(t) == secondLevelMt
+end
+
+local function CompareValues(a, b)
+  if type(a) == "table" and type(b) == "table" then
+    for ak, av in pairs(a) do
+      if b[ak] ~= av then
+        return false
+      end
+    end
+    for bk, bv in pairs(b) do
+      if a[bk] ~= bv then
+        return false
+      end
+    end
+    return true
+  else
+    return a == b
+  end
+end
+
 local methods = {
   ["OnAcquire"] = function(widget)
     local firstDropdown = AceGUI:Create("Dropdown")
@@ -73,7 +102,7 @@ local methods = {
     local OnFirstDropdownValueChanged = function(self, event, value)
       local displayName = widget.userdata.firstList[value]
       local treeValue = widget.userdata.tree[displayName]
-      if type(treeValue) == "table" then
+      if IsSecondLevelTable(treeValue) then
         local oldValue
         if widget.userdata.secondList then
           local v = widget.secondDropDown:GetValue()
@@ -153,15 +182,15 @@ local methods = {
   end,
   ["SetValue"] = function(self, value)
     for displayName, treeValue in pairs(self.userdata.tree) do
-      if treeValue == value then
+      if CompareValues(treeValue, value) then
         self.firstDropdown:SetRelativeWidth(1)
         self.secondDropDown.userdata.hideMe = true
         self:DoLayout()
         self.firstDropdown:SetValue(tIndexOf(self.userdata.firstList, displayName))
         return
-      elseif type(treeValue) == "table" then
+      elseif IsSecondLevelTable(treeValue) then
         for displayName2, key in pairs(treeValue) do
-          if (key == value) then
+          if CompareValues(key, value) then
             self.firstDropdown:SetRelativeWidth(0.5)
             self.secondDropDown:SetRelativeWidth(0.5)
             self.secondDropDown.userdata.hideMe = false
@@ -187,7 +216,7 @@ local methods = {
     if not treeValue then
       return nil
     end
-    if type(treeValue) ~= "table" then
+    if not IsSecondLevelTable(treeValue) then
       return treeValue
     end
 
@@ -204,7 +233,7 @@ local methods = {
       if type(displayName) == "table" then
         local base = displayName[1]
         local suffix = displayName[2]
-        tree[base] = tree[base] or {}
+        tree[base] = tree[base] or CreateSecondLevelTable()
         tree[base][suffix] = key
         if displayName[3] == true then
           self.secondDropDown.userdata.defaultSelection[base] = suffix
