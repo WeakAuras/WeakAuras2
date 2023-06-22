@@ -3411,7 +3411,10 @@ do
   end
 
   function WeakAuras.GetDBMStage()
-    return DBM:GetStage()
+    if DBM then
+      return DBM:GetStage()
+    end
+    return 0, 0
   end
 
   function WeakAuras.GetDBMTimerById(id)
