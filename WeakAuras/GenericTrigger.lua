@@ -3265,7 +3265,7 @@ do
 
   local function dbmEventCallback(event, ...)
     if event == "DBM_TimerStart" then
-      local id, msg, duration, icon, timerType, spellId, dbmType = ...
+      local id, msg, duration, icon, timerType, spellId, dbmType, _, _, _, _, _, timerCount = ...
       local now = GetTime()
       local expirationTime = now + duration
       bars[id] = bars[id] or {}
@@ -3276,7 +3276,7 @@ do
       bar.icon = icon
       bar.timerType = timerType
       bar.spellId = tostring(spellId)
-      bar.count = msg:match("%((%d+)%)") or msg:match("（(%d+)）") or "0"
+      bar.count = timerCount and tostring(timerCount) or "0"
       bar.dbmType = dbmType
 
       local barOptions = DBT.Options or DBM.Bars.options
