@@ -204,6 +204,9 @@ local function SoundPlayHelper(self)
 end
 
 local function hasSound(options)
+  if options.sound_type == "Stop" then
+    return true
+  end
   if (options.sound == " custom") then
     if (options.sound_path and options.sound_path ~= "") then
       return true
