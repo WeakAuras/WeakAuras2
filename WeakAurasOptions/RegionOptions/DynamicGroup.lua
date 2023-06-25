@@ -177,6 +177,25 @@ local function createOptions(id, data)
       hidden = function() return data.grow == "CUSTOM" end,
       disabled = function() return not data.useAnchorPerUnit end
     },
+    anchorOn = {
+      type = "input",
+      width = WeakAuras.doubleWidth,
+      name = L["Run on..."],
+      desc = L["You can add a comma-separated list of state values here that (when changed) WeakAuras should also run the Anchor Code on.\n\nWeakAuras will always run custom anchor code if you include 'changed' in this list, or when a region is added, removed, or re-ordered."],
+      order = 1.61,
+      get = function()
+        return data.anchorOn or ""
+      end,
+      hidden = function()
+        return not(data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM")
+      end,
+      set = function(info, v)
+        data.anchorOn = v
+        WeakAuras.Add(data)
+        WeakAuras.ClearAndUpdateOptions(data.id)
+        OptionsPrivate.ResetMoverSizer()
+      end
+    },
     -- custom grow option added below
     align = {
       type = "select",

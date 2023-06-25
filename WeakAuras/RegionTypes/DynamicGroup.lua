@@ -392,7 +392,7 @@ local anchorers = {
           tinsert(frames[Private.personalRessourceDisplayFrame], regionData)
         end
       end
-    end
+    end, {unit = true }
   end,
   ["UNITFRAME"] = function(data)
     return function(frames, activeRegions)
@@ -406,16 +406,26 @@ local anchorers = {
           end
         end
       end
-    end
+    end, {unit = true }
   end,
   ["CUSTOM"] = function(data)
     local anchorStr = data.customAnchorPerUnit or ""
     local anchorFunc = WeakAuras.LoadFunction("return " .. anchorStr) or noop
+
+    local anchorOn = nil
+    local events = WeakAuras.split(data.anchorOn or "")
+    if #events > 0 then
+      anchorOn = {}
+      for _, event in ipairs(events) do
+        anchorOn[event] = true
+      end
+    end
+
     return function(frames, activeRegions)
       Private.ActivateAuraEnvironment(data.id)
       xpcall(anchorFunc, Private.GetErrorHandlerUid(data.uid, L["Custom Anchor"]), frames, activeRegions)
       Private.ActivateAuraEnvironment()
-    end
+    end, anchorOn
   end
 }
 
@@ -505,7 +515,10 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = staggerCoefficient(data.align, data.stagger)
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
+    local anchorPerUnitFunc, anchorOn
+    if data.useAnchorPerUnit then
+      anchorPerUnitFunc, anchorOn = createAnchorPerUnitFunc(data)
+    end
     return function(newPositions, activeRegions)
       local frames = {}
       if anchorPerUnitFunc then
@@ -525,7 +538,7 @@ local growers = {
           end
         end
       end
-    end
+    end, anchorOn
   end,
   RIGHT = function(data)
     local stagger = data.stagger or 0
@@ -533,7 +546,10 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = 1 - staggerCoefficient(data.align, stagger)
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
+    local anchorPerUnitFunc, anchorOn
+    if data.useAnchorPerUnit then
+      anchorPerUnitFunc, anchorOn = createAnchorPerUnitFunc(data)
+    end
     return function(newPositions, activeRegions)
       local frames = {}
       if anchorPerUnitFunc then
@@ -553,7 +569,7 @@ local growers = {
           end
         end
       end
-    end
+    end, anchorOn
   end,
   UP = function(data)
     local stagger = data.stagger or 0
@@ -561,7 +577,10 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = 1 - staggerCoefficient(data.align, stagger)
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
+    local anchorPerUnitFunc, anchorOn
+    if data.useAnchorPerUnit then
+      anchorPerUnitFunc, anchorOn = createAnchorPerUnitFunc(data)
+    end
     return function(newPositions, activeRegions)
       local frames = {}
       if anchorPerUnitFunc then
@@ -581,7 +600,7 @@ local growers = {
           end
         end
       end
-    end
+    end, anchorOn
   end,
   DOWN = function(data)
     local stagger = data.stagger or 0
@@ -589,7 +608,10 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local startX, startY = 0, 0
     local coeff = staggerCoefficient(data.align, stagger)
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
+    local anchorPerUnitFunc, anchorOn
+    if data.useAnchorPerUnit then
+      anchorPerUnitFunc, anchorOn = createAnchorPerUnitFunc(data)
+    end
     return function(newPositions, activeRegions)
       local frames = {}
       if anchorPerUnitFunc then
@@ -609,14 +631,17 @@ local growers = {
           end
         end
       end
-    end
+    end, anchorOn
   end,
   HORIZONTAL = function(data)
     local stagger = data.stagger or 0
     local space = data.space or 0
     local limit = data.useLimit and data.limit or math.huge
     local midX, midY = 0, 0
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
+    local anchorPerUnitFunc, anchorOn
+    if data.useAnchorPerUnit then
+      anchorPerUnitFunc, anchorOn = createAnchorPerUnitFunc(data)
+    end
     local FirstIndex = centeredIndexerStart[data.centerType]
     local NextIndex = centeredIndexerNext[data.centerType]
     return function(newPositions, activeRegions)
@@ -647,14 +672,17 @@ local growers = {
           i = NextIndex(i, numVisible)
         end
       end
-    end
+    end, anchorOn
   end,
   VERTICAL = function(data)
     local stagger = -(data.stagger or 0)
     local space = data.space or 0
     local limit = data.useLimit and data.limit or math.huge
     local midX, midY = 0, 0
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
+    local anchorPerUnitFunc, anchorOn
+    if data.useAnchorPerUnit then
+      anchorPerUnitFunc, anchorOn = createAnchorPerUnitFunc(data)
+    end
     local FirstIndex = centeredIndexerStart[data.centerType]
     local NextIndex = centeredIndexerNext[data.centerType]
     return function(newPositions, activeRegions)
@@ -683,7 +711,7 @@ local growers = {
           i = NextIndex(i, numVisible)
         end
       end
-    end
+    end, anchorOn
   end,
   CIRCLE = function(data)
     local oX, oY = 0, 0
@@ -693,7 +721,10 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local sAngle = (data.rotation or 0) * math.pi / 180
     local arc = (data.fullCircle and 360 or data.arcLength or 0) * math.pi / 180
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
+    local anchorPerUnitFunc, anchorOn
+    if data.useAnchorPerUnit then
+      anchorPerUnitFunc, anchorOn = createAnchorPerUnitFunc(data)
+    end
     return function(newPositions, activeRegions)
       local frames = {}
       if anchorPerUnitFunc then
@@ -731,7 +762,7 @@ local growers = {
           end
         end
       end
-    end
+    end, anchorOn
   end,
   COUNTERCIRCLE = function(data)
     local oX, oY = 0, 0
@@ -741,7 +772,10 @@ local growers = {
     local limit = data.useLimit and data.limit or math.huge
     local sAngle = (data.rotation or 0) * math.pi / 180
     local arc = (data.fullCircle and 360 or data.arcLength or 0) * math.pi / 180
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
+    local anchorPerUnitFunc, anchorOn
+    if data.useAnchorPerUnit then
+      anchorPerUnitFunc, anchorOn = createAnchorPerUnitFunc(data)
+    end
     return function(newPositions, activeRegions)
       local frames = {}
       if anchorPerUnitFunc then
@@ -779,7 +813,7 @@ local growers = {
           end
         end
       end
-    end
+    end, anchorOn
   end,
   GRID = function(data)
     local gridType = data.gridType
@@ -828,7 +862,10 @@ local growers = {
     if not rowFirst then
       primary, secondary = secondary, primary
     end
-    local anchorPerUnitFunc = data.useAnchorPerUnit and createAnchorPerUnitFunc(data)
+    local anchorPerUnitFunc, anchorOn
+    if data.useAnchorPerUnit then
+      anchorPerUnitFunc, anchorOn = createAnchorPerUnitFunc(data)
+    end
     return function(newPositions, activeRegions)
       local frames = {}
       if anchorPerUnitFunc then
@@ -918,7 +955,7 @@ local growers = {
           end
         end
       end
-    end
+    end, anchorOn
   end,
   CUSTOM = function(data)
     local growStr = data.customGrow or ""
