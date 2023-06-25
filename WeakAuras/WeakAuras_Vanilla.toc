@@ -48,6 +48,7 @@ AnchorToWeakAuras.lua
 # Trigger systems
 BuffTrigger2.lua
 GenericTrigger.lua
+BossMods.lua
 
 # Helper Systems
 AuraWarnings.lua
