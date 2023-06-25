@@ -3234,8 +3234,13 @@ function WeakAuras.GetEquipmentSetInfo(itemSetName, partial)
   return bestMatchName, bestMatchIcon, bestMatchNumEquipped, bestMatchNumItems;
 end
 
+Private.ExecEnv.BossMods = {}
+WeakAuras.BossMods = {}
+
 -- DBM
 do
+  Private.ExecEnv.BossMods.DBM = {}
+  WeakAuras.BossMods.DBM = {}
   local registeredDBMEvents = {}
   local bars = {}
   local nextExpire -- time of next expiring timer
@@ -3371,7 +3376,7 @@ do
     end
   end
 
-  function Private.ExecEnv.DBMTimerMatches(timerId, id, message, operator, spellId, dbmType, counter)
+  function Private.ExecEnv.BossMods.DBM.TimerMatches(timerId, id, message, operator, spellId, dbmType, counter)
     if not bars[timerId] then
       return false
     end
@@ -3410,25 +3415,25 @@ do
     return true
   end
 
-  function WeakAuras.GetDBMStage()
+  function Private.ExecEnv.BossMods.DBM.GetStage()
     if DBM then
       return DBM:GetStage()
     end
     return 0, 0
   end
 
-  function WeakAuras.GetDBMTimerById(id)
+  function Private.ExecEnv.BossMods.DBM.GetTimerById(id)
     return bars[id]
   end
 
-  function WeakAuras.GetAllDBMTimers()
+  function Private.ExecEnv.BossMods.DBM.GetAllTimers()
     return bars
   end
 
-  function WeakAuras.GetDBMTimer(id, message, operator, spellId, extendTimer, dbmType, count)
+  function Private.ExecEnv.BossMods.DBM.GetTimer(id, message, operator, spellId, extendTimer, dbmType, count)
     local bestMatch
     for timerId, bar in pairs(bars) do
-      if Private.ExecEnv.DBMTimerMatches(timerId, id, message, operator, spellId, dbmType, count)
+      if Private.ExecEnv.BossMods.DBM.TimerMatches(timerId, id, message, operator, spellId, dbmType, count)
       and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
       and bar.expirationTime + extendTimer > GetTime()
       then
@@ -3438,7 +3443,7 @@ do
     return bestMatch
   end
 
-  function Private.ExecEnv.CopyBarToState(bar, states, id, extendTimer)
+  function Private.ExecEnv.BossMods.DBM.CopyBarToState(bar, states, id, extendTimer)
     extendTimer = extendTimer or 0
     if extendTimer + bar.duration < 0 then return end
     states[id] = states[id] or {}
@@ -3464,7 +3469,7 @@ do
     state.remaining = bar.remaining
   end
 
-  function WeakAuras.RegisterDBMCallback(event)
+  function Private.ExecEnv.BossMods.DBM.RegisterCallback(event)
     if registeredDBMEvents[event] then
       return
     end
@@ -3474,7 +3479,17 @@ do
     end
   end
 
-  function WeakAuras.GetDBMTimers()
+  function Private.ExecEnv.BossMods.DBM.RegisterTimer()
+    Private.ExecEnv.BossMods.DBM.RegisterCallback("DBM_TimerStart")
+    Private.ExecEnv.BossMods.DBM.RegisterCallback("DBM_TimerStop")
+    Private.ExecEnv.BossMods.DBM.RegisterCallback("DBM_TimerPause")
+    Private.ExecEnv.BossMods.DBM.RegisterCallback("DBM_TimerResume")
+    Private.ExecEnv.BossMods.DBM.RegisterCallback("DBM_TimerUpdate")
+    Private.ExecEnv.BossMods.DBM.RegisterCallback("wipe")
+    Private.ExecEnv.BossMods.DBM.RegisterCallback("kill")
+  end
+
+  function WeakAuras.BossMods.DBM.GetDBMTimers()
     return bars
   end
 
@@ -3484,7 +3499,7 @@ do
     scheduled_scans[fireTime] = nil
     WeakAuras.ScanEvents("DBM_TimerUpdate")
   end
-  function Private.ExecEnv.ScheduleDbmCheck(fireTime)
+  function Private.ExecEnv.BossMods.DBM.ScheduleCheck(fireTime)
     if not scheduled_scans[fireTime] then
       scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doDbmScan, fireTime - GetTime() + 0.1, fireTime)
     end
@@ -3493,6 +3508,8 @@ end
 
 -- BigWigs
 do
+  Private.ExecEnv.BossMods.BigWigs = {}
+  WeakAuras.BossMods.BigWigs = {}
   local registeredBigWigsEvents = {}
   local bars = {}
   local nextExpire -- time of next expiring timer
@@ -3609,7 +3626,7 @@ do
     end
   end
 
-  function WeakAuras.RegisterBigWigsCallback(event)
+  function Private.ExecEnv.BossMods.BigWigs.RegisterCallback(event)
     if registeredBigWigsEvents[event] then
       return
     end
@@ -3631,16 +3648,16 @@ do
     end
   end
 
-  function WeakAuras.RegisterBigWigsTimer()
-    WeakAuras.RegisterBigWigsCallback("BigWigs_StartBar")
-    WeakAuras.RegisterBigWigsCallback("BigWigs_StopBar")
-    WeakAuras.RegisterBigWigsCallback("BigWigs_StopBars")
-    WeakAuras.RegisterBigWigsCallback("BigWigs_OnBossDisable")
-    WeakAuras.RegisterBigWigsCallback("BigWigs_PauseBar")
-    WeakAuras.RegisterBigWigsCallback("BigWigs_ResumeBar")
+  function Private.ExecEnv.BossMods.BigWigs.RegisterTimer()
+    Private.ExecEnv.BossMods.BigWigs.RegisterCallback("BigWigs_StartBar")
+    Private.ExecEnv.BossMods.BigWigs.RegisterCallback("BigWigs_StopBar")
+    Private.ExecEnv.BossMods.BigWigs.RegisterCallback("BigWigs_StopBars")
+    Private.ExecEnv.BossMods.BigWigs.RegisterCallback("BigWigs_OnBossDisable")
+    Private.ExecEnv.BossMods.BigWigs.RegisterCallback("BigWigs_PauseBar")
+    Private.ExecEnv.BossMods.BigWigs.RegisterCallback("BigWigs_ResumeBar")
   end
 
-  function Private.ExecEnv.CopyBigWigsTimerToState(bar, states, id, extendTimer)
+  function Private.ExecEnv.BossMods.BigWigs.CopyBarToState(bar, states, id, extendTimer)
     extendTimer = extendTimer or 0
     if extendTimer + bar.duration < 0 then return end
     states[id] = states[id] or {}
@@ -3669,7 +3686,7 @@ do
     state.isCooldown = bar.isCooldown
   end
 
-  function Private.ExecEnv.BigWigsTimerMatches(id, message, operator, spellId, counter, cast, cooldown)
+  function Private.ExecEnv.BossMods.BigWigs.TimerMatches(id, message, operator, spellId, counter, cast, cooldown)
     if not bars[id] then
       return false
     end
@@ -3709,22 +3726,22 @@ do
     return true
   end
 
-  function WeakAuras.GetBigWigsStage()
+  function Private.ExecEnv.BossMods.BigWigs.GetStage()
     return currentStage
   end
 
-  function WeakAuras.GetAllBigWigsTimers()
+  function Private.ExecEnv.BossMods.BigWigs.GetAllTimers()
     return bars
   end
 
-  function WeakAuras.GetBigWigsTimerById(id)
+  function Private.ExecEnv.BossMods.BigWigs.GetTimerById(id)
     return bars[id]
   end
 
-  function WeakAuras.GetBigWigsTimer(text, operator, spellId, extendTimer, counter, cast)
+  function Private.ExecEnv.BossMods.BigWigs.GetTimer(text, operator, spellId, extendTimer, counter, cast)
     local bestMatch
     for id, bar in pairs(bars) do
-      if Private.ExecEnv.BigWigsTimerMatches(id, text, operator, spellId, counter, cast)
+      if Private.ExecEnv.BossMods.BigWigs.TimerMatches(id, text, operator, spellId, counter, cast)
       and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
       and bar.expirationTime + extendTimer > GetTime()
       then
@@ -3741,7 +3758,7 @@ do
     WeakAuras.ScanEvents("BigWigs_Timer_Update")
   end
 
-  function Private.ExecEnv.ScheduleBigWigsCheck(fireTime)
+  function Private.ExecEnv.BossMods.BigWigs.ScheduleCheck(fireTime)
     if not scheduled_scans[fireTime] then
       scheduled_scans[fireTime] = timer:ScheduleTimerFixed(doBigWigsScan, fireTime - GetTime() + 0.1, fireTime)
     end
