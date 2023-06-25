@@ -13,8 +13,6 @@ do
   local bars = {}
   local nextExpire -- time of next expiring timer
   local recheckTimer -- handle of timer
-  local currentStage = 0 -- can do 1>2>1>2>1>...
-  local currentStageTotal = 0 -- always 1>2>3>4>...
   local function dbmRecheckTimers()
     local now = GetTime()
     nextExpire = nil
@@ -312,7 +310,6 @@ do
       local now = GetTime()
       local expirationTime = now + duration
 
-      local newBar
       bars[text] = bars[text] or {}
       local bar = bars[text]
       bar.addon = addon
@@ -459,7 +456,6 @@ do
     end
 
     local v = bars[id]
-    local bestMatch
     if spellId and spellId ~= "" and spellId ~= v.spellId then
       return false
     end
