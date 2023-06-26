@@ -5440,7 +5440,7 @@ Private.event_prototypes = {
             or event == "DBM_TimerPause"
             or event == "DBM_TimerResume"
             then
-              if Private.ExecEnv.BossMods.DBM:TimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, counter) then
+              if Private.ExecEnv.BossMods.DBM:TimerMatches(triggerId, triggerText, triggerTextOperator, triggerSpellId, counter, id, triggerDbmType) then
                 local bar = Private.ExecEnv.BossMods.DBM:GetTimerById(id)
                 if bar then
                   copyOrSchedule(bar, cloneId)
@@ -5454,7 +5454,7 @@ Private.event_prototypes = {
               end
             elseif event == "DBM_TimerUpdate" then
               for id, bar in pairs(Private.ExecEnv.BossMods.DBM:GetAllTimers()) do
-                if Private.ExecEnv.BossMods.DBM:TimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, counter) then
+                if Private.ExecEnv.BossMods.DBM:TimerMatches(triggerId, triggerText, triggerTextOperator, triggerSpellId, counter, id, triggerDbmType) then
                   copyOrSchedule(bar, id)
                 else
                   local state = states[id]
@@ -5470,7 +5470,7 @@ Private.event_prototypes = {
             elseif event == "DBM_TimerForce" then
               wipe(states)
               for id, bar in pairs(Private.ExecEnv.BossMods.DBM:GetAllTimers()) do
-                if Private.ExecEnv.BossMods.DBM:TimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, counter) then
+                if Private.ExecEnv.BossMods.DBM:TimerMatches(triggerId, triggerText, triggerTextOperator, triggerSpellId, counter, id, triggerDbmType) then
                   copyOrSchedule(bar, cloneId)
                 end
               end
@@ -5478,13 +5478,13 @@ Private.event_prototypes = {
           else
             if event == "DBM_TimerStart" or event == "DBM_TimerUpdate" then
               if extendTimer ~= 0 then
-                if Private.ExecEnv.BossMods.DBM.TimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, counter) then
+                if Private.ExecEnv.BossMods.DBM:TimerMatches(triggerId, triggerText, triggerTextOperator, triggerSpellId, counter, id, triggerDbmType) then
                   local bar = Private.ExecEnv.BossMods.DBM:GetTimerById(id)
                   Private.ExecEnv.BossMods.DBM:ScheduleCheck(bar.expirationTime + extendTimer)
                 end
               end
             end
-            local bar = Private.ExecEnv.BossMods.DBM:GetTimer(triggerId, triggerText, triggerTextOperator, triggerSpellId, extendTimer, triggerDbmType, counter)
+            local bar = Private.ExecEnv.BossMods.DBM:GetTimer(triggerId, triggerText, triggerTextOperator, triggerSpellId, extendTimer, counter, triggerDbmType)
             if bar then
               if extendTimer == 0
                 or not (state and state.show)

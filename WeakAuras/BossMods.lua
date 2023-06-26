@@ -39,7 +39,7 @@ Private.ExecEnv.BossMods.DBM = {
     state.remaining = bar.remaining
   end,
 
-  TimerMatches = function(self, timerId, id, message, operator, spellId, dbmType, counter)
+  TimerMatches = function(self, id, message, operator, spellId, counter, timerId, dbmType)
     if not self.bars[timerId] then
       return false
     end
@@ -93,10 +93,10 @@ Private.ExecEnv.BossMods.DBM = {
     return self.bars[id]
   end,
 
-  GetTimer = function(self, id, message, operator, spellId, extendTimer, dbmType, count)
+  GetTimer = function(self, id, message, operator, spellId, extendTimer, count, dbmType)
     local bestMatch
     for timerId, bar in pairs(self.bars) do
-      if self:TimerMatches(timerId, id, message, operator, spellId, dbmType, count)
+      if self:TimerMatches(id, message, operator, spellId, count, timerId, dbmType)
       and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
       and bar.expirationTime + extendTimer > GetTime()
       then
