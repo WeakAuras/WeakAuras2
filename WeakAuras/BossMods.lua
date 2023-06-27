@@ -1174,22 +1174,24 @@ Private.event_prototypes["BigWigs Timer"] = {
 Private.category_event_prototype.addons["BigWigs Timer"] = L["BigWigs Timer"]
 
 -- Unified
-if BigWigsLoader then
+if BigWigsLoader or not DBM then
   Private.ExecEnv.BossMods.Generic = Private.ExecEnv.BossMods.BigWigs
   Private.ExecEnv.BossMods.BigWigs.isGeneric = true
+  Private.ExecEnv.BossMods.BigWigs.isInstalled = BigWigsLoader ~= nil
 elseif DBM then
   Private.ExecEnv.BossMods.Generic = Private.ExecEnv.BossMods.DBM
   Private.ExecEnv.BossMods.DBM.isGeneric = true
+  Private.ExecEnv.BossMods.DBM.isInstalled = true
 end
 
-Private.event_prototypes["BossMod Stage"] = {
+Private.event_prototypes["Boss Mod Stage"] = {
   type = "addons",
   events = {},
   internal_events = {
     "BossMod_SetStage"
   },
   force_events = "BossMod_SetStage",
-  name = L["BossMod Stage"],
+  name = L["Boss Mod Stage"],
   init = function(trigger)
     Private.ExecEnv.BossMods.Generic:RegisterStage()
     return ""
@@ -1202,20 +1204,36 @@ Private.event_prototypes["BossMod Stage"] = {
       type = "number",
       conditionType = "number",
       store = true,
-    }
+    },
+    {
+      name = "note",
+      type = "description",
+      display = "",
+      text = function()
+        local ret = L["Note: This trigger will use BigWigs or DBM, in that order if both are installed.\n\nActive boss mod addon: "]
+        if Private.ExecEnv.BossMods.BigWigs.isInstalled then
+          ret = ret .. "BigWigs"
+        elseif Private.ExecEnv.BossMods.DBM.isInstalled then
+          ret = ret .. "DBM"
+        else
+          ret = ret .. L["none detected"]
+        end
+        return ret
+      end
+    },
   },
   automaticrequired = true,
   statesParameter = "one",
 }
-Private.category_event_prototype.addons["BossMod Stage"] = L["BossMod Stage"]
+Private.category_event_prototype.addons["Boss Mod Stage"] = L["Boss Mod Stage"]
 
-Private.event_prototypes["BossMod Announce"] = {
+Private.event_prototypes["Boss Mod Announce"] = {
   type = "addons",
   events = {},
   internal_events = {
     "BossMod_Announce"
   },
-  name = L["BossMod Announce"],
+  name = L["Boss Mod Announce"],
   init = function(trigger)
     Private.ExecEnv.BossMods.Generic:RegisterMessage();
     local ret = "local use_cloneId = %s;"
@@ -1252,19 +1270,35 @@ Private.event_prototypes["BossMod Announce"] = {
       test = "true",
       init = "use_cloneId and WeakAuras.GetUniqueCloneId() or ''"
     },
+    {
+      name = "note",
+      type = "description",
+      display = "",
+      text = function()
+        local ret = L["Note: This trigger will use BigWigs or DBM, in that order if both are installed.\n\nActive boss mod addon: "]
+        if Private.ExecEnv.BossMods.BigWigs.isInstalled then
+          ret = ret .. "BigWigs"
+        elseif Private.ExecEnv.BossMods.DBM.isInstalled then
+          ret = ret .. "DBM"
+        else
+          ret = ret .. L["none detected"]
+        end
+        return ret
+      end
+    },
   },
   timedrequired = true
 }
-Private.category_event_prototype.addons["BossMod Announce"] = L["BossMod Announce"]
+Private.category_event_prototype.addons["Boss Mod Announce"] = L["Boss Mod Announce"]
 
-Private.event_prototypes["BossMod Timer"] = {
+Private.event_prototypes["Boss Mod Timer"] = {
   type = "addons",
   events = {},
   internal_events = {
     "BossMod_TimerStart", "BossMod_TimerStop", "BossMod_TimerStopAll", "BossMod_TimerUpdate", "BossMod_TimerForce", "BossMod_TimerResume", "BossMod_TimerPause"
   },
   force_events = "BossMod_TimerForce",
-  name = L["BossMod Timer"],
+  name = L["Boss Mod Timer"],
   canHaveDuration = "timed",
   triggerFunction = function(trigger)
     Private.ExecEnv.BossMods.Generic:RegisterTimer()
@@ -1439,8 +1473,24 @@ Private.event_prototypes["BossMod Timer"] = {
       name = "cloneId",
       display = L["Clone per Event"],
       type = "toggle"
-    }
+    },
+    {
+      name = "note",
+      type = "description",
+      display = "",
+      text = function()
+        local ret = L["Note: This trigger will use BigWigs or DBM, in that order if both are installed.\n\nActive boss mod addon: "]
+        if Private.ExecEnv.BossMods.BigWigs.isInstalled then
+          ret = ret .. "BigWigs"
+        elseif Private.ExecEnv.BossMods.DBM.isInstalled then
+          ret = ret .. "DBM"
+        else
+          ret = ret .. L["none detected"]
+        end
+        return ret
+      end
+    },
   },
   automaticrequired = true,
 }
-Private.category_event_prototype.addons["BossMod Timer"] = L["BossMod Timer"]
+Private.category_event_prototype.addons["Boss Mod Timer"] = L["Boss Mod Timer"]
