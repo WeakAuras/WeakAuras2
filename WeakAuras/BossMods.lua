@@ -1184,6 +1184,9 @@ elseif DBM then
   Private.ExecEnv.BossMods.DBM.isInstalled = true
 end
 
+-- make Private.ExecEnv.BossMods.Generic.GetStage public
+WeakAuras.GetBossStage = Private.ExecEnv.BossMods.Generic.GetStage
+
 Private.event_prototypes["Boss Mod Stage"] = {
   type = "addons",
   events = {},
