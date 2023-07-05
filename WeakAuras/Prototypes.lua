@@ -5453,7 +5453,7 @@ Private.event_prototypes = {
               if extendTimer ~= 0 then
                 if Private.ExecEnv.DBMTimerMatches(id, triggerId, triggerText, triggerTextOperator, triggerSpellId, triggerDbmType, counter) then
                   local bar = WeakAuras.GetDBMTimerById(id)
-                  WeakAuras.ScheduleDbmCheck(bar.expirationTime + extendTimer)
+                  Private.ExecEnv.ScheduleDbmCheck(bar.expirationTime + extendTimer)
                 end
               end
             end
