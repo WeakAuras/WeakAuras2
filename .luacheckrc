@@ -84,6 +84,7 @@ globals = {
 	"CooldownFrame_Set",
 	"CreateColor",
 	"CreateFromMixins",
+	"CreateColorFromHexString",
 	"CreateTextureMarkup",
 	"CreateObjectPool",
 	"CreateVector3D",
