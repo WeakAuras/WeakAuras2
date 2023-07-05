@@ -1497,3 +1497,11 @@ Private.event_prototypes["Boss Mod Timer"] = {
   automaticrequired = true,
 }
 Private.category_event_prototype.addons["Boss Mod Timer"] = L["Boss Mod Timer"]
+
+-- deprecated functions for compatibility for custom coded auras
+WeakAuras.GetAllDBMTimers = Private.ExecEnv.DBM.GetAllTimers
+WeakAuras.GetDBMTimerById = Private.ExecEnv.DBM.GetTimerById
+WeakAuras.GetDBMTimer = Private.ExecEnv.DBM.GetTimer
+WeakAuras.GetBigWigsTimerById = Private.ExecEnv.BigWigs.GetTimerById
+WeakAuras.GetAllBigWigsTimers = Private.ExecEnv.BigWigs.GetAllTimers
+WeakAuras.GetBigWigsStage = Private.ExecEnv.BigWigs.GetStage
