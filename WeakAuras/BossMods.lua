@@ -823,7 +823,7 @@ Private.ExecEnv.BossMods.BigWigs = {
       end
     elseif event == "BigWigs_OnBossWipe" or event == "BigWigs_OnBossWin" then
       self.currentStage = 0
-      WeakAuras.ScanEvents("BigWigs_SetStage", ...)
+      WeakAuras.ScanEvents("BigWigs_SetStage", 0)
       if self.isGeneric then
         WeakAuras.ScanEvents("BossMod_SetStage")
       end
