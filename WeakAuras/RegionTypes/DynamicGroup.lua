@@ -1345,12 +1345,21 @@ local function modify(parent, region, data)
 
       local controlPoint = regionData.controlPoint
       controlPoint:ClearAnchorPoint()
-      controlPoint:SetAnchorPoint(
-        data.selfPoint,
-        frame == "" and self.relativeTo or frame,
-        data.anchorPoint,
-        x + data.xOffset, y + data.yOffset
-      )
+      if frame == "" then
+        controlPoint:SetAnchorPoint(
+          data.selfPoint,
+          self,
+          data.selfPoint,
+          x, y
+        )
+      else
+        controlPoint:SetAnchorPoint(
+          data.selfPoint,
+          frame,
+          data.anchorPoint,
+          x + data.xOffset, y + data.yOffset
+        )
+      end
       controlPoint:SetShown(show and frame ~= WeakAuras.HiddenFrames)
       controlPoint:SetWidth(regionData.dimensions.width)
       controlPoint:SetHeight(regionData.dimensions.height)
