@@ -131,6 +131,7 @@ end
 
 local SQRT2 = sqrt(2)
 local function GetRotatedPoints(degrees, scaleForFullRotate)
+  degrees = degrees or 0
   local angle = rad(135 - degrees);
   local factor = scaleForFullRotate and 1 or SQRT2
   local vx = math.cos(angle) / factor
