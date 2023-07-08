@@ -1,7 +1,7 @@
 --[[-----------------------------------------------------------------------------
 Spin Box Widget
 -------------------------------------------------------------------------------]]
-local Type, Version = "WeakAurasSpinBox", 3
+local Type, Version = "WeakAurasSpinBox", 4
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then
   return
@@ -81,7 +81,7 @@ local function SpinBox_OnValueDown(frame)
   local step = self.step or 1
   value = math_max(self.min, value - step)
   PlaySound(856) -- SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON
-  self:SetValue(value)
+  self:SetValue(value, true)
 end
 
 local function SpinBox_OnValueUp(frame)
@@ -91,7 +91,7 @@ local function SpinBox_OnValueUp(frame)
   local step = self.step or 1
   value = math_min(self.max, value + step)
   PlaySound(856) -- SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON
-  self:SetValue(value)
+  self:SetValue(value, true)
 end
 
 local function EditBox_OnEscapePressed(frame)
@@ -110,7 +110,7 @@ local function EditBox_OnEnterPressed(frame)
 
   if value then
     PlaySound(856) -- SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON
-    self:SetValue(value)
+    self:SetValue(value, true)
   end
   frame:ClearFocus()
 end
@@ -136,7 +136,10 @@ end
 local function ProgressBarHandle_OnUpdate(frame, elapsed)
   UpdateHandleColor(frame.obj)
   if not IsMouseButtonDown("LeftButton") then
-    frame.mouseDown = false
+    if frame.mouseDown then
+      frame.obj:SetValue(frame.obj:GetValue(), true)
+      frame.mouseDown = false
+    end
   end
   if frame.mouseDown then
     frame.timeElapsed = frame.timeElapsed + elapsed
@@ -151,7 +154,7 @@ local function ProgressBarHandle_OnUpdate(frame, elapsed)
       local v = frame.originalValue + delta
       v = v - v % step
       v = Clamp(v, frame.obj.min, frame.obj.max)
-      frame.obj:SetValue(v)
+      frame.obj:SetValue(v, false)
       frame.timeElapsed = 0
     end
   else
@@ -207,12 +210,19 @@ local methods = {
     end
   end,
 
-  ["SetValue"] = function(self, value)
+  ["SetValue"] = function(self, value, reload)
     self.value = value
     UpdateText(self)
     UpdateButtons(self)
     UpdateProgressBar(self)
-    self:Fire("OnValueChanged", value)
+    -- In AceOptions the range is treated differently from other widget types
+    -- Whereas for other widgets OnValueChanged leads to a reload, this is done only
+    -- on OnMouseUp for ranges. (Probably to not reload the options while dragging)
+    if reload then
+      self:Fire("OnMouseUp", value)
+    else
+      self:Fire("OnValueChanged", value)
+    end
   end,
 
   ["GetValue"] = function(self)
