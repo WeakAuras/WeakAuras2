@@ -1022,13 +1022,49 @@ function WeakAuras.UseUnitPowerThirdArg(powerType)
   return nil;
 end
 
+do
+-- A small helper to fire WA_DELAYED_SET_INFORMATION if GetNumSetItemsEquipped couldn't give
+-- accurate information due to item information being unavailable
+  local waitingFor = { }
+
+  local itemDataLoadFrame = CreateFrame("Frame")
+
+  itemDataLoadFrame:SetScript("OnEvent", function(frame, event, itemId, success)
+    if waitingFor[itemId] then
+      waitingFor[itemId] = nil
+      if success then
+        WeakAuras.ScanEvents("WA_DELAYED_SET_INFORMATION")
+      end
+      if next(waitingFor) == nil then
+        itemDataLoadFrame:UnregisterEvent("GET_ITEM_INFO_RECEIVED")
+      end
+    end
+  end)
+
+  -- Returns the set id OR causes WA_DELAYED_SET_INFORMATION after the item information is available
+  function Private.GetSetId(itemId)
+    if itemId  then
+      local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, setID = GetItemInfo(itemId)
+      if not name then
+        if next(waitingFor) == nil then
+          itemDataLoadFrame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
+        end
+        waitingFor[itemId] = true
+      else
+        return setID
+      end
+    end
+  end
+
+end
+
 function WeakAuras.GetNumSetItemsEquipped(setID)
   if not setID or not type(setID) == "number" then return end
   local equipped = 0
   local setName = GetItemSetInfo(setID)
   for i = 1, 18 do
     local item = GetInventoryItemID("player", i)
-    if item and select(16, GetItemInfo(item)) == setID then
+    if Private.GetSetId(item) == setID then
       equipped = equipped + 1
     end
   end
@@ -8010,7 +8046,8 @@ Private.event_prototypes = {
     events = {
       ["events"] = {"PLAYER_EQUIPMENT_CHANGED"}
     },
-    internal_events = {"WA_DELAYED_PLAYER_ENTERING_WORLD"},
+    internal_events = {"WA_DELAYED_PLAYER_ENTERING_WORLD",
+                       "WA_DELAYED_SET_INFORMATION"},
     force_events = "PLAYER_EQUIPMENT_CHANGED",
     name = L["Item Set Equipped"],
     automaticrequired = true,
