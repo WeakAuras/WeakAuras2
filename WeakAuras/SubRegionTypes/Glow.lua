@@ -7,8 +7,9 @@ local LCG = LibStub("LibCustomGlow-1.0")
 local MSQ = LibStub("Masque", true)
 local L = WeakAuras.L
 
-local default = function(parentType)
-  local options = {
+local baseDefaults = {
+  icon = {
+    ["type"] = "subglow",
     glow = false,
     useGlowColor = false,
     glowColor = {1, 1, 1, 1},
@@ -21,12 +22,46 @@ local default = function(parentType)
     glowBorder = false,
     glowXOffset = 0,
     glowYOffset = 0,
+  },
+  aurabar = {
+    ["type"] = "subglow",
+    glow = false,
+    useGlowColor = false,
+    glowColor = {1, 1, 1, 1},
+    glowType = "Pixel",
+    glowLines = 8,
+    glowFrequency = 0.25,
+    glowLength = 10,
+    glowThickness = 1,
+    glowScale = 1,
+    glowBorder = false,
+    glowXOffset = 0,
+    glowYOffset = 0,
+    glow_anchor = "bar"
   }
-  if parentType == "aurabar" then
-    options["glowType"] = "Pixel"
-    options["glow_anchor"] = "bar"
+}
+
+local mappings = {
+  icon = {
+    base = baseDefaults.icon,
+    map = {
+    }
+  },
+  aurabar = {
+    base = baseDefaults.aurabar,
+    map = {
+    }
+  }
+}
+
+local defaultsCache = Private.CreateDefaultsCache(mappings)
+
+local default = function(parentType, action)
+  if parentType == "icon" then
+    return defaultsCache:GetDefault(action, "icon")
+  else
+    return defaultsCache:GetDefault(action, "aurabar")
   end
-  return options
 end
 
 local properties = {
@@ -352,44 +387,6 @@ local function modify(parent, region, parentData, data, first)
   region:SetScript("OnSizeChanged", region.UpdateSize)
 end
 
--- This is used by the templates to add glow
-function Private.getDefaultGlow(regionType)
-  if regionType == "aurabar" then
-    return {
-      ["type"] = "subglow",
-      glow = false,
-      useGlowColor = false,
-      glowColor = {1, 1, 1, 1},
-      glowType = "Pixel",
-      glowLines = 8,
-      glowFrequency = 0.25,
-      glowLength = 10,
-      glowThickness = 1,
-      glowScale = 1,
-      glowBorder = false,
-      glowXOffset = 0,
-      glowYOffset = 0,
-      glow_anchor = "bar"
-    }
-  elseif regionType == "icon" then
-    return {
-      ["type"] = "subglow",
-      glow = false,
-      useGlowColor = false,
-      glowColor = {1, 1, 1, 1},
-      glowType = "buttonOverlay",
-      glowLines = 8,
-      glowFrequency = 0.25,
-      glowLength = 10,
-      glowThickness = 1,
-      glowScale = 1,
-      glowBorder = false,
-      glowXOffset = 0,
-      glowYOffset = 0,
-    }
-  end
-end
-
 local function supports(regionType)
   return regionType == "icon"
          or regionType == "aurabar"
@@ -397,23 +394,13 @@ end
 
 local function addDefaultsForNewAura(data)
   if data.regionType == "icon" then
-    tinsert(data.subRegions, {
-      ["type"] = "subglow",
-      glow = false,
-      useGlowColor = false,
-      glowColor = {1, 1, 1, 1},
-      glowType = "buttonOverlay",
-      glowLines = 8,
-      glowFrequency = 0.25,
-      glowLength = 10,
-      glowThickness = 1,
-      glowScale = 1,
-      glowBorder = false,
-      glowXOffset = 0,
-      glowYOffset = 0,
-    })
+    local glow = CopyTable(default("icon", "new"))
+    tinsert(data.subRegions, glow)
   end
 end
 
+-- TODO createDefaultOptions for glow
+-- Glow Type! Glow Settings ?
+
 WeakAuras.RegisterSubRegionType("subglow", L["Glow"], supports, create, modify, onAcquire, onRelease,
-                                default, addDefaultsForNewAura, properties)
+                                default, addDefaultsForNewAura, properties);

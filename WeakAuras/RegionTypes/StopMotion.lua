@@ -5,7 +5,7 @@ local AddonName, Private = ...
 local texture_data = WeakAuras.StopMotion.texture_data;
 local L = WeakAuras.L;
 
-local default = {
+local baseDefault = {
     foregroundTexture = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion",
     backgroundTexture = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion",
     desaturateBackground = false,
@@ -83,7 +83,11 @@ local properties = {
   },
 }
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+WeakAuras.regionPrototype.AddProperties(properties, baseDefault);
+
+local function default()
+  return baseDefault
+end
 
 local function create(parent)
     local frame = CreateFrame("Frame", nil, UIParent);

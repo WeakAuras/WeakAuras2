@@ -525,5 +525,160 @@ local function createOptions(parentData, data, index, subIndex)
   return options, commonTextOptions
 end
 
+local function createDefaultOptions(width)
+  local options = {
+    __title = L["Text Sub Element Default Options"],
+
+    subtext_pb_header_line = {
+      type = "header",
+      name = "",
+      order = 1,
+    },
+
+    subtext_pb_header = {
+      type = "description",
+      name = L["Progress Bar"],
+      order = 1.1,
+      fontSize = "large"
+    },
+
+    subtext_pb_font = {
+      name = L["Font"],
+      path = {'subRegion', 'subtext', 'pb_text_font'},
+      applyType = "subregion",
+      default = "Friz Quadrata TT",
+      type = "select",
+      width = width,
+      dialogControl = "LSM30_Font",
+      values = AceGUIWidgetLSMlists.font,
+      order = 2,
+    },
+    subtext_pb_fontSize = {
+      name = L["Size"],
+      path = {'subRegion', 'subtext', 'pb_text_fontSize'},
+      applyType = "subregion",
+      default = 12,
+
+      type = "range",
+      width = width,
+      min = 6,
+      softMax = 72,
+      step = 1,
+      order = 3,
+    },
+    subtext_pb_fontType = {
+      name = L["Font Flags"],
+      path = {'subRegion', 'subtext', 'pb_text_fontType'},
+      applyType = "subregion",
+      default = "None",
+
+      type = "select",
+      width = width,
+      values = OptionsPrivate.Private.font_flags,
+      order = 4,
+    },
+
+    subtext_icon_header_line = {
+      type = "header",
+      name = "",
+      order = 5,
+    },
+
+    subtext_icon_header = {
+      type = "description",
+      name = L["Icon"],
+      order = 5.1,
+      fontSize = "large"
+    },
+
+    subtext_icon_font = {
+      name = L["Font"],
+      path = {'subRegion', 'subtext', 'icon_text_font'},
+      applyType = "subregion",
+      default = "Friz Quadrata TT",
+      type = "select",
+      width = width,
+      dialogControl = "LSM30_Font",
+      values = AceGUIWidgetLSMlists.font,
+      order = 6,
+    },
+    subtext_icon_fontSize = {
+      name = L["Size"],
+      path = {'subRegion', 'subtext', 'icon_text_fontSize'},
+      applyType = "subregion",
+      default = 12,
+
+      type = "range",
+      width = width,
+      min = 6,
+      softMax = 72,
+      step = 1,
+      order = 7,
+    },
+    subtext_icon_fontType = {
+      name = L["Font Flags"],
+      path = {'subRegion', 'subtext', 'icon_text_fontType'},
+      applyType = "subregion",
+      default = "None",
+
+      type = "select",
+      width = width,
+      values = OptionsPrivate.Private.font_flags,
+      order = 8,
+    },
+
+    subtext_other_header_line = {
+      type = "header",
+      name = "",
+      order = 9,
+    },
+
+    subtext_other_header = {
+      type = "description",
+      name = L["Other"],
+      order = 9.1,
+      fontSize = "large"
+    },
+
+    subtext_other_font = {
+      name = L["Font"],
+      path = {'subRegion', 'subtext', 'other_text_font'},
+      applyType = "subregion",
+      default = "Friz Quadrata TT",
+      type = "select",
+      width = width,
+      dialogControl = "LSM30_Font",
+      values = AceGUIWidgetLSMlists.font,
+      order = 10,
+    },
+    subtext_other_fontSize = {
+      name = L["Size"],
+      path = {'subRegion', 'subtext', 'other_text_fontSize'},
+      applyType = "subregion",
+      default = 12,
+
+      type = "range",
+      width = width,
+      min = 6,
+      softMax = 72,
+      step = 1,
+      order = 11,
+    },
+    subtext_other_fontType = {
+      name = L["Font Flags"],
+      path = {'subRegion', 'subtext', 'other_text_fontType'},
+      applyType = "subregion",
+      default = "None",
+
+      type = "select",
+      width = width,
+      values = OptionsPrivate.Private.font_flags,
+      order = 12,
+    }
+  }
+  return options
+end
+
+WeakAuras.RegisterDefaultsOptions(createDefaultOptions)
 WeakAuras.RegisterSubRegionOptions("subtext", createOptions,
- L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"])
+  L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"])

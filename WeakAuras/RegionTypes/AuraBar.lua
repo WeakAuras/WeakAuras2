@@ -6,7 +6,7 @@ local SharedMedia = LibStub("LibSharedMedia-3.0");
 local L = WeakAuras.L;
 
 -- Default settings
-local default = {
+local baseDefault = {
   icon = false,
   desaturate = false,
   iconSource = -1,
@@ -42,8 +42,9 @@ local default = {
   zoom = 0
 };
 
-WeakAuras.regionPrototype.AddAdjustedDurationToDefault(default);
-WeakAuras.regionPrototype.AddAlphaToDefault(default);
+WeakAuras.regionPrototype.AddAdjustedDurationToDefault(baseDefault);
+WeakAuras.regionPrototype.AddAlphaToDefault(baseDefault);
+
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
@@ -152,7 +153,23 @@ local properties = {
   },
 };
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+WeakAuras.regionPrototype.AddProperties(properties, baseDefault);
+
+local mappings = {
+  normal = {
+    base = baseDefault,
+    map = {
+      [{'region', 'aurabar', 'icon'}] = "icon",
+      [{'region', 'aurabar', 'texture'}] = "texture",
+    }
+  }
+}
+
+local defaultsCache = Private.CreateDefaultsCache(mappings)
+
+local function default(action)
+  return defaultsCache:GetDefault(action, "normal")
+end
 
 local function GetProperties(data)
   local overlayInfo = Private.GetOverlayInfo(data);

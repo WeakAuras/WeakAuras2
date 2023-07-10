@@ -47,6 +47,7 @@ LoadOptions.lua
 ActionOptions.lua
 AnimationOptions.lua
 InformationOptions.lua
+DefaultOptions.lua
 
 BuffTrigger2.lua
 GenericTrigger.lua
@@ -66,6 +67,7 @@ OptionsFrames\TextEditor.lua
 OptionsFrames\TexturePicker.lua
 OptionsFrames\Update.lua
 OptionsFrames\DebugLogFrame.lua
+OptionsFrames\SettingsView.lua
 
 # Misc frames
 OptionsFrames\MoverSizer.lua

@@ -87,7 +87,7 @@ local function setFuncs(option, input)
   end
 end
 
-local function addCollapsibleHeader(options, key, input, order, isGroupTab)
+local function addCollapsibleHeader(options, key, input, order, isGroupTab, width)
   if input.__noHeader then
     return
   end
@@ -121,7 +121,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
     end
   end
 
-  local titleWidth = WeakAuras.doubleWidth - (hasAdd and 0.15 or 0) - (hasDelete and 0.15 or 0)  - (hasUp and 0.15 or 0)
+  local titleWidth = width - (hasAdd and 0.15 or 0) - (hasDelete and 0.15 or 0)  - (hasUp and 0.15 or 0)
                      - (hasDown and 0.15 or 0) - (hasDuplicate and 0.15 or 0) - (hasApplyTemplate and 0.15 or 0)
 
   options[key .. "collapseSpacer"] = {
@@ -278,14 +278,16 @@ local function copyOptionTable(input, orderAdjustment, collapsedFunc)
   return resultOption;
 end
 
-local flattenRegionOptions = function(allOptions, isGroupTab)
+local flattenRegionOptions = function(allOptions, isGroupTab, width)
   local result = {};
   local base = 1000;
+
+  width = width or WeakAuras.doubleWidth
 
   for optionGroup, options in pairs(allOptions) do
     local groupBase = base * options.__order
 
-    local collapsedFunc = addCollapsibleHeader(result, optionGroup, options, groupBase, isGroupTab)
+    local collapsedFunc = addCollapsibleHeader(result, optionGroup, options, groupBase, isGroupTab, width)
 
     for optionName, option in pairs(options) do
       if not optionName:find("^__") then

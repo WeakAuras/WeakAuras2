@@ -5,7 +5,7 @@ local AddonName, Private = ...
 local SharedMedia = LibStub("LibSharedMedia-3.0");
 
 -- Default settings
-local default = {
+local baseDefault = {
   controlledChildren = {},
   anchorPoint = "CENTER",
   anchorFrameType = "SCREEN",
@@ -21,7 +21,11 @@ local default = {
   borderSize = 2,
   borderBackdrop = "Blizzard Tooltip",
   scale = 1,
-};
+}
+
+local function default()
+  return baseDefault
+end
 
 -- Called when first creating a new region/display
 local function create(parent)

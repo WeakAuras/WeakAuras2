@@ -7,60 +7,121 @@ local L = WeakAuras.L;
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20
 
-local defaultFont = WeakAuras.defaultFont
-local defaultFontSize = WeakAuras.defaultFontSize
+local baseDefaults = {
+  -- No Shadow, but Outline
+  icon = {
+    ["type"] = "subtext",
+    text_text = "%p",
+    text_color = {1, 1, 1, 1},
+    text_font = "Friz Quadrata TT",
+    text_fontSize = 12,
+    text_fontType = "OUTLINE",
+    text_visible = true,
+    text_justify = "CENTER",
 
-local default = function(parentType)
+    text_selfPoint = "AUTO",
+    text_anchorPoint = "CENTER",
+    anchorXOffset = 0,
+    anchorYOffset = 0,
+
+    text_shadowColor = { 0, 0, 0, 1},
+    text_shadowXOffset = 0,
+    text_shadowYOffset = 0,
+    rotateText = "NONE",
+
+    text_automaticWidth = "Auto",
+    text_fixedWidth = 64,
+    text_wordWrap = "WordWrap",
+  },
+  -- With Shadow, without Outline
+  aurabar = {
+    ["type"] = "subtext",
+    text_text = "%n",
+    text_color = {1, 1, 1, 1},
+    text_font = "Friz Quadrata TT",
+    text_fontSize = 12,
+    text_fontType = "None",
+    text_visible = true,
+    text_justify = "CENTER",
+
+    text_selfPoint = "AUTO",
+    text_anchorPoint = "CENTER",
+    anchorXOffset = 0,
+    anchorYOffset = 0,
+
+    text_shadowColor = { 0, 0, 0, 1},
+    text_shadowXOffset = 1,
+    text_shadowYOffset = -1,
+    rotateText = "NONE",
+
+    text_automaticWidth = "Auto",
+    text_fixedWidth = 64,
+    text_wordWrap = "WordWrap",
+  },
+  -- With Shadow, without Outline
+  other = {
+    ["type"] = "subtext",
+    text_text = "%n",
+    text_color = {1, 1, 1, 1},
+    text_font = "Friz Quadrata TT",
+    text_fontSize = 12,
+    text_fontType = "None",
+    text_visible = true,
+    text_justify = "CENTER",
+
+    text_selfPoint = "AUTO",
+    text_anchorPoint = "BOTTOMLEFT",
+    anchorXOffset = 0,
+    anchorYOffset = 0,
+
+    text_shadowColor = { 0, 0, 0, 1},
+    text_shadowXOffset = 1,
+    text_shadowYOffset = -1,
+    rotateText = "NONE",
+
+    text_automaticWidth = "Auto",
+    text_fixedWidth = 64,
+    text_wordWrap = "WordWrap",
+  }
+}
+
+local mappings = {
+  icon = {
+    base = baseDefaults.icon,
+    map = {
+      [{'subRegion', 'subtext', 'icon_text_font'}] = "text_font",
+      [{'subRegion', 'subtext', 'icon_text_fontSize'}] = "text_fontSize",
+      [{'subRegion', 'subtext', 'icon_text_fontType'}] = "text_fontType",
+    }
+  },
+  aurabar = {
+    base = baseDefaults.aurabar,
+    map = {
+      [{'subRegion', 'subtext', 'pb_text_font'}] = "text_font",
+      [{'subRegion', 'subtext', 'pb_text_fontSize'}] = "text_fontSize",
+      [{'subRegion', 'subtext', 'pb_text_fontType'}] = "text_fontType",
+    }
+  },
+  other = {
+    base = baseDefaults.other,
+    map = {
+      [{'subRegion', 'subtext', 'other_text_font'}] = "text_font",
+      [{'subRegion', 'subtext', 'other_text_fontSize'}] = "text_fontSize",
+      [{'subRegion', 'subtext', 'other_text_fontType'}] = "text_fontType",
+    }
+  }
+}
+
+local defaultsCache = Private.CreateDefaultsCache(mappings)
+
+-- TODO callers need to copy!
+local default = function(parentType, action)
   if parentType == "icon" then
-    -- No Shadow, but Outline
-    return {
-      text_text = "%p",
-      text_color = {1, 1, 1, 1},
-      text_font = defaultFont,
-      text_fontSize = defaultFontSize,
-      text_fontType = "OUTLINE",
-      text_visible = true,
-      text_justify = "CENTER",
-
-      text_selfPoint = "AUTO",
-      text_anchorPoint = "CENTER",
-      anchorXOffset = 0,
-      anchorYOffset = 0,
-
-      text_shadowColor = { 0, 0, 0, 1},
-      text_shadowXOffset = 0,
-      text_shadowYOffset = 0,
-      rotateText = "NONE",
-
-      text_automaticWidth = "Auto",
-      text_fixedWidth = 64,
-      text_wordWrap = "WordWrap",
-    }
+    return defaultsCache:GetDefault(action, "icon")
+  elseif parentType == "aurabar" then
+    return defaultsCache:GetDefault(action, "aurabar")
   else
-    -- With Shadow, without Outline
-    return {
-      text_text = "%n",
-      text_color = {1, 1, 1, 1},
-      text_font = defaultFont,
-      text_fontSize = defaultFontSize,
-      text_fontType = "None",
-      text_visible = true,
-      text_justify = "CENTER",
-
-      text_selfPoint = "AUTO",
-      text_anchorPoint = parentType == "aurabar" and "INNER_RIGHT" or "BOTTOMLEFT",
-      anchorXOffset = 0,
-      anchorYOffset = 0,
-
-      text_shadowColor = { 0, 0, 0, 1},
-      text_shadowXOffset = 1,
-      text_shadowYOffset = -1,
-      rotateText = "NONE",
-
-      text_automaticWidth = "Auto",
-      text_fixedWidth = 64,
-      text_wordWrap = "WordWrap",
-    }
+    return defaultsCache:GetDefault(action, "other")
   end
 end
 
@@ -465,73 +526,29 @@ local function modify(parent, region, parentData, data, first)
   animRotate(text, textDegrees, selfPoint)
 end
 
+-- TODO 5 ways that defaults ought to be used:
+-- New Aura
+-- Default Sub Regions on New Aura
+-- New Sub Element
+-- Import
+-- Templates
+-- Each needs to ensure that the defaults are applied and that tables are not reused!
 local function addDefaultsForNewAura(data)
   if data.regionType == "aurabar" then
-    tinsert(data.subRegions, {
-      ["type"] = "subtext",
-      text_text = "%p",
-      text_color = {1, 1, 1, 1},
-      text_font = defaultFont,
-      text_fontSize = defaultFontSize,
-      text_fontType = "None",
-      text_justify = "CENTER",
-      text_visible = true,
+    local text1 = CopyTable(default("aurabar", "new"))
+    text1.text_text = "%p"
+    text1.text_anchorPoint = "INNER_LEFT"
+    tinsert(data.subRegions, text1);
 
-      text_selfPoint = "AUTO",
-      text_anchorPoint = "INNER_LEFT",
-      anchorXOffset = 0,
-      anchorYOffset = 0,
-
-      text_shadowColor = { 0, 0, 0, 1},
-      text_shadowXOffset = 1,
-      text_shadowYOffset = -1,
-
-      rotateText = "NONE",
-    });
-
-    tinsert(data.subRegions, {
-      ["type"] = "subtext",
-      text_text = "%n",
-      text_color = {1, 1, 1, 1},
-      text_font = defaultFont,
-      text_fontSize = defaultFontSize,
-      text_fontType = "None",
-      text_justify = "CENTER",
-      text_visible = true,
-
-      text_selfPoint = "AUTO",
-      text_anchorPoint = "INNER_RIGHT",
-      anchorXOffset = 0,
-      anchorYOffset = 0,
-
-      text_shadowColor = { 0, 0, 0, 1},
-      text_shadowXOffset = 1,
-      text_shadowYOffset = -1,
-
-      rotateText = "NONE",
-    });
+    local text2 = CopyTable(default("aurabar", "new"))
+    text2.text_text = "%n"
+    text2.text_anchorPoint = "INNER_RIGHT"
+    tinsert(data.subRegions, text2);
   elseif data.regionType == "icon" then
-    tinsert(data.subRegions, {
-      ["type"] = "subtext",
-      text_text = "%s",
-      text_color = {1, 1, 1, 1},
-      text_font = defaultFont,
-      text_fontSize = defaultFontSize,
-      text_fontType = "OUTLINE",
-      text_justify = "CENTER",
-      text_visible = true,
-
-      text_selfPoint = "AUTO",
-      text_anchorPoint = "INNER_BOTTOMRIGHT",
-      anchorXOffset = 0,
-      anchorYOffset = 0,
-
-      text_shadowColor = { 0, 0, 0, 1},
-      text_shadowXOffset = 0,
-      text_shadowYOffset = 0,
-
-      rotateText = "NONE",
-    });
+    local text = CopyTable(default("icon", "new"))
+    text.text_text = "%s"
+    text.text_anchorPoint = "INNER_BOTTOMRIGHT"
+    tinsert(data.subRegions, text);
   end
 end
 

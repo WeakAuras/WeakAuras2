@@ -54,7 +54,11 @@ local function changes(property, regionType)
       value = true,
       property = "sub."..subregionPos..".glow"
     };
-  elseif TemplatePrivate.Private.regionTypes[regionType].default[property] == nil then
+  end
+
+  -- TODO check that templates filtering condition changes work
+  local defaults = TemplatePrivate.Private.GetDefaultsForRegion(regionType, "template")
+  if defaults[property] == nil then
     return nil;
   elseif property == "cooldownSwipe" then
     return {
@@ -530,7 +534,7 @@ local function subTypesFor(item, regionType)
   local dataGlow = {}
   if regionType == "aurabar" then
     dataGlow.subRegions = {
-      [1] = TemplatePrivate.Private.getDefaultGlow(regionType)
+      [1] = TemplatePrivate.Private.GetDefaultsForSubRegion("glow", regionType, "template")
     }
   end
   if (item.type == "ability") then
@@ -1214,17 +1218,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
   TemplatePrivate.Private = Private
 
   -- Enrich Display templates with default values
-  for regionType, regionData in pairs(TemplatePrivate.Private.regionOptions) do
-    if (regionData.templates) then
-      for _, item in ipairs(regionData.templates) do
-        for k, v in pairs(TemplatePrivate.Private.regionTypes[regionType].default) do
-          if (item.data[k] == nil) then
-            item.data[k] = v
-          end
-        end
-      end
-    end
-  end
+  -- TODO needs to happen on aura creation
 
   local newView = AceGUI:Create("InlineGroup");
   newView.frame:SetParent(frame);

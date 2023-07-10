@@ -428,4 +428,55 @@ local templates = {
   }
 }
 
+local function createDefaultOptions(width)
+  local options = {
+    __title = L["Text Region Default Options"],
+
+    text_header_line = {
+      type = "header",
+      name = "",
+      order = 1,
+    },
+
+    font = {
+      name = L["Font"],
+      path = {'region', 'text', 'font'},
+      applyType = "region",
+      default = "Friz Quadrata TT",
+      type = "select",
+      width = width,
+      dialogControl = "LSM30_Font",
+      values = AceGUIWidgetLSMlists.font,
+      order = 2,
+    },
+    fontSize = {
+      name = L["Size"],
+      path = {'region', 'text', 'fontSize'},
+      applyType = "region",
+      default = 12,
+
+      type = "range",
+      width = width,
+      min = 6,
+      softMax = 72,
+      step = 1,
+      order = 3,
+    },
+    fontType = {
+      name = L["Font Flags"],
+      path = {'region', 'text', 'outline'},
+      applyType = "region",
+      default = "None",
+
+      type = "select",
+      width = width,
+      values = OptionsPrivate.Private.font_flags,
+      order = 4,
+    },
+  }
+  return options
+end
+
+WeakAuras.RegisterDefaultsOptions(createDefaultOptions)
+
 WeakAuras.RegisterRegionOptions("text", createOptions, createIcon, L["Text"], createThumbnail, modifyThumbnail, L["Shows one or more lines of text, which can include dynamic information such as progress or stacks"], templates);

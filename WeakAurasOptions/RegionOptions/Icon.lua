@@ -518,7 +518,49 @@ local function GetAnchors(data)
   return anchorPoints;
 end
 
+local function createDefaultOptions(width)
+  local options = {
+    __title = L["Icon Default Options"],
+
+    zoom = {
+      name = L["Zoom"],
+      path = {'region', 'icon', 'zoom'},
+      applyType = "region",
+      default = 0,
+      type = "range",
+      width = width,
+      order = 2,
+      min = 0,
+      max = 1,
+      step = 0.01,
+      isPercent = true
+    },
+    cooldown = {
+      name = L["Cooldown"],
+      path = {'region', 'icon', 'cooldown'},
+      applyType = "newregion",
+      default = false,
+
+      type = "toggle",
+      width = width,
+      order = 3,
+    },
+    cooldownTextDisabled = {
+      name = L["Cooldown Text Disabled"],
+      path = {'region', 'icon', 'cooldownTextDisabled'},
+      applyType = "newregion",
+      default = false,
+
+      type = "toggle",
+      width = width,
+      order = 4,
+    },
+  }
+  return options
+end
+
+WeakAuras.RegisterDefaultsOptions(createDefaultOptions)
+
 WeakAuras.RegisterRegionOptions("icon", createOptions, "interface\\icons\\spell_holy_sealofsalvation.blp", L["Icon"],
                                 createThumbnail, modifyThumbnail,
-                                L["Shows a spell icon with an optional cooldown overlay"],
-                                templates, GetAnchors);
+                                L["Shows a spell icon with an optional cooldown overlay"], templates, GetAnchors)

@@ -446,7 +446,7 @@ end
 WeakAuras.regionPrototype.AnchorSubRegion = AnchorSubRegion
 
 function WeakAuras.regionPrototype.create(region)
-  local defaultsForRegion = Private.regionTypes[region.regionType] and Private.regionTypes[region.regionType].default;
+  local defaultsForRegion = Private.GetDefaultsForRegion(region.regionType, "validate")
   region.SoundPlay = SoundPlay;
   region.SoundStop = SoundStop;
   region.SoundRepeatStop = SoundRepeatStop;
@@ -495,13 +495,12 @@ end
 function WeakAuras.regionPrototype.modify(parent, region, data)
   region.state = nil
   region.states = nil
+  local defaultsForRegion = Private.GetDefaultsForRegion(region.regionType, "validate")
   region.subRegionEvents:ClearSubscribers()
   region.subRegionEvents:ClearCallbacks()
   Private.FrameTick:RemoveSubscriber("FrameTick", region)
 
-  local defaultsForRegion = Private.regionTypes[data.regionType] and Private.regionTypes[data.regionType].default;
-
-  if region.SetRegionAlpha then
+  if (region.SetRegionAlpha) then
     region:SetRegionAlpha(data.alpha)
   end
 
