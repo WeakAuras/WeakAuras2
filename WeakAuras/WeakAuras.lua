@@ -3415,7 +3415,14 @@ local function actionGlowStart(actions, frame, id)
       id
     )
   elseif actions.glow_type == "Proc" then
-    LCG.ProcGlow_Start(glow_frame, actions.startAnim)
+    LCG.ProcGlow_Start(glow_frame, {
+      color = color,
+      startAnim = actions.glow_startAnim and true or false,
+      xOffset = actions.glow_XOffset,
+      yOffset = actions.glow_YOffset,
+      duration = actions.glow_duration or 1,
+      key = id
+  })
   end
 end
 
