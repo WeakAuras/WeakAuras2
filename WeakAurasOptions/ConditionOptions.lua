@@ -1065,7 +1065,9 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
     local glowTypesExcepButtonOverlay = CopyTable(OptionsPrivate.Private.glow_types)
     glowTypesExcepButtonOverlay["buttonOverlay"] = nil
-    glowTypesExcepButtonOverlay["Proc"] = nil
+    local glowTypesExcepButtonOverlayAndProc = CopyTable(OptionsPrivate.Private.glow_types)
+    glowTypesExcepButtonOverlayAndProc["buttonOverlay"] = nil
+    glowTypesExcepButtonOverlayAndProc["Proc"] = nil
 
     args["condition" .. i .. "value" .. j .. "glow_action"] = {
       type = "select",
@@ -1180,6 +1182,40 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       disabled = function() return not anyGlowExternal("use_glow_color", true) end
     }
     order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_startAnim"] = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_startAnim", L["Start Animation"], L["Start Animation"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_startAnim", propertyType),
+      order = order,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_startAnim;
+      end,
+      set = setValueComplex("glow_startAnim"),
+      hidden = function()
+        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", "Proc"))
+      end
+    }
+    order = order + 1
+    args["condition" .. i .. "value" .. j .. "glow_duration"] = {
+      type = "range",
+      control = "WeakAurasSpinBox",
+      width = WeakAuras.normalWidth,
+      name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_duration", L["Duration"], L["Duration"]),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_duration", propertyType),
+      order = order,
+      softMin = 0.01,
+      softMax = 3,
+      step = 0.05,
+      get = function()
+        return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_duration or 1;
+      end,
+      set = setValueComplex("glow_duration"),
+      hidden = function()
+        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", "Proc"))
+      end,
+    }
+    order = order + 1
     args["condition" .. i .. "value" .. j .. "glow_lines"] = {
       type = "range",
       control = "WeakAurasSpinBox",
@@ -1195,7 +1231,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       end,
       set = setValueComplex("glow_lines"),
       hidden = function()
-        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", glowTypesExcepButtonOverlay))
+        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", glowTypesExcepButtonOverlayAndProc))
       end,
     }
     order = order + 1
@@ -1214,7 +1250,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       end,
       set = setValueComplex("glow_frequency"),
       hidden = function()
-        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", glowTypesExcepButtonOverlay))
+        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", glowTypesExcepButtonOverlayAndProc))
       end,
     }
     order = order + 1
@@ -1290,7 +1326,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       end,
       set = setValueComplex("glow_YOffset"),
       hidden = function()
-        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", "Pixel"))
+        return not (anyGlowExternal("glow_action", "show") and anyGlowExternal("glow_type", glowTypesExcepButtonOverlay))
       end,
     }
     order = order + 1
@@ -2624,7 +2660,7 @@ local function SubPropertiesForChange(change)
       "glow_action", "glow_frame_type", "glow_type",
       "glow_frame", "choose_glow_frame",
       "use_glow_color", "glow_color",
-      "glow_lines", "glow_frequency", "glow_length", "glow_thickness", "glow_XOffset", "glow_YOffset",
+      "glow_startAnim", "glow_duration", "glow_lines", "glow_frequency", "glow_length", "glow_thickness", "glow_XOffset", "glow_YOffset",
       "glow_scale", "glow_border"
     }
   elseif change.property == "chat" then
