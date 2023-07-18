@@ -192,13 +192,6 @@ Private.ExecEnv.BossMods.DBM = {
       if self.isGeneric then
         WeakAuras.ScanEvents("BossMod_TimerStop", timerId)
       end
-    elseif event == "kill" or event == "wipe" then -- Wipe or kill, removing all timers
-      local timerId = ...
-      wipe(self.bars)
-      WeakAuras.ScanEvents("DBM_TimerStopAll", timerId)
-      if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_TimerStopAll", timerId)
-      end
     elseif event == "DBM_TimerPause" then
       local timerId = ...
       local bar = self.bars[timerId]
@@ -279,8 +272,6 @@ Private.ExecEnv.BossMods.DBM = {
     self:RegisterCallback("DBM_TimerPause")
     self:RegisterCallback("DBM_TimerResume")
     self:RegisterCallback("DBM_TimerUpdate")
-    self:RegisterCallback("wipe")
-    self:RegisterCallback("kill")
   end,
 
   RegisterMessage = function(self)
