@@ -74,7 +74,11 @@ Private.ExecEnv.BossMods.DBM = {
         return false
       end
     end
-    if dbmType and dbmType ~= v.dbmType then
+    if dbmType == "noCastBar" then
+      if v.dbmType:find("^cast") then
+        return false
+      end
+    elseif dbmType and dbmType ~= v.dbmType then
       return false
     end
     return true
@@ -1311,6 +1315,8 @@ Private.event_prototypes["Boss Mod Timer"] = {
       local extraArg1
       if isBW then
         extraArg1 = false -- set "cast" arg to false
+      elseif isDBM then
+        extraArg1 = "noCastBar"
       end
       return function (states, event, timerId)
         local triggerSpellId = %q
