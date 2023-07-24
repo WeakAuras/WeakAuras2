@@ -2139,6 +2139,13 @@ local function EventHandler(frame, event, arg1, arg2, ...)
     end
   elseif event == "RAID_TARGET_UPDATE" then
     ScanRaidMarkScanFunc(matchDataChanged)
+  elseif event == "UNIT_TARGETABLE_CHANGED" then
+    local exists = UnitExistsFixed(arg1)
+    if not exists then
+      tinsert(unitsToRemove, arg1)
+    else
+      ScanUnit(time, arg1)
+    end
   end
 
   DeactivateScanFuncs(deactivatedTriggerInfos)
@@ -2196,6 +2203,7 @@ Buff2Frame:RegisterEvent("GROUP_ROSTER_UPDATE")
 Buff2Frame:RegisterEvent("PLAYER_ENTERING_WORLD")
 Buff2Frame:RegisterEvent("PARTY_MEMBER_DISABLE")
 Buff2Frame:RegisterEvent("PARTY_MEMBER_ENABLE")
+Buff2Frame:RegisterEvent("UNIT_TARGETABLE_CHANGED")
 Buff2Frame:SetScript("OnEvent", EventHandler)
 
 Buff2Frame:SetScript("OnUpdate", function()
