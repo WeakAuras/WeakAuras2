@@ -779,9 +779,7 @@ templates.class.PALADIN = {
         { spell = 32223, type = "buff", unit = "player" }, -- Crusader Aura
         { spell = 53563, type = "buff", unit = "player" }, -- Beacon of Light
         { spell = 54149, type = "buff", unit = "player" }, -- Infusion of Light
-        { spell = 96231, type = "buff", unit = "player", talent = 102591 }, -- Rebuke
         { spell = 121183, type = "buff", unit = "player" }, -- Contemplation
-        { spell = 122773, type = "buff", unit = "player", talent = 102561 }, -- Light's Hammer
         { spell = 148039, type = "buff", unit = "player", talent = 102537 }, -- Barrier of Faith
         { spell = 156910, type = "buff", unit = "player", talent = 102533 }, -- Beacon of Faith
         { spell = 183435, type = "buff", unit = "player" }, -- Retribution Aura
@@ -791,12 +789,9 @@ templates.class.PALADIN = {
         { spell = 200656, type = "buff", unit = "player", talent = 102574 }, -- Power of the Silver Hand
         { spell = 210294, type = "buff", unit = "player", talent = 102551 }, -- Divine Favor
         { spell = 211210, type = "buff", unit = "player", talent = 102546 }, -- Protection of Tyr
-        { spell = 214202, type = "buff", unit = "player", talent = 102541 }, -- Rule of Law
         { spell = 216331, type = "buff", unit = "player", talent = 102568 }, -- Avenging Crusader
         { spell = 221886, type = "buff", unit = "player", talent = 102625 }, -- Divine Steed
-        { spell = 223306, type = "buff", unit = "player", talent = 102543 }, -- Bestow Faith
         { spell = 223819, type = "buff", unit = "player", talent = 115489 }, -- Divine Purpose
-        { spell = 227723, type = "buff", unit = "player" }, -- Mana Divining Stone
         { spell = 287280, type = "buff", unit = "player", talent = 102581 }, -- Glimmer of Light
         { spell = 317920, type = "buff", unit = "player" }, -- Concentration Aura
         { spell = 383389, type = "buff", unit = "player", talent = 102575 }, -- Relentless Inquisitor
@@ -804,14 +799,18 @@ templates.class.PALADIN = {
         { spell = 385127, type = "buff", unit = "player" }, -- Blessing of Dawn
         { spell = 386730, type = "buff", unit = "player", talent = 115466 }, -- Divine Resonance
         { spell = 387178, type = "buff", unit = "player", talent = 102576 }, -- Empyrean Legacy
+        { spell = 387815, type = "buff", unit = "player", talent = 102539 }, -- Untempered Dedication
         { spell = 388007, type = "buff", unit = "player", talent = 102579 }, -- Blessing of Summer
         { spell = 388019, type = "buff", unit = "player", talent = 102538 }, -- Maraad's Dying Breath
         { spell = 392939, type = "buff", unit = "player", talent = 102565 }, -- Veneration
         { spell = 394709, type = "buff", unit = "player", talent = 102544 }, -- Unending Light
-        { spell = 397734, type = "buff", unit = "player" }, -- Word of a Worthy Ally
         { spell = 400745, type = "buff", unit = "player", talent = 102601 }, -- Afterimage
         { spell = 405790, type = "buff", unit = "player", talent = 115169 }, -- Fading Light
-        { spell = 408770, type = "buff", unit = "player" }, -- Flash of Inspiration
+        { spell = 414273, type = "buff", unit = "player", talent = 115876 }, -- Hand of Divinity
+        { spell = 414196, type = "buff", unit = "player", talent = 116205 }, -- Awakening
+        { spell = 414204, type = "buff", unit = "player", talent = 102581 }, -- Rising Sunlight
+        { spell = 414444 , type = "buff", unit = "player", talent = 102541, exactSpellId = true, titleSuffix = L["< 4 stacks"] }, -- Shining Righteousness
+        { spell = 414445 , type = "buff", unit = "player", talent = 102541, exactSpellId = true, titleSuffix = L["5 stacks"] }, -- Shining Righteousness
       },
       icon = 135964
     },
@@ -849,7 +848,6 @@ templates.class.PALADIN = {
         { spell = 62124, type = "ability", requiresTarget = true }, -- Hand of Reckoning
         { spell = 82326, type = "ability", charges = true, overlayGlow = true, talent = 102550 }, -- Holy Light
         { spell = 96231, type = "ability", buff = true, requiresTarget = true, talent = 102591 }, -- Rebuke
-        { spell = 114158, type = "ability", talent = 102561 }, -- Light's Hammer
         { spell = 114165, type = "ability", talent = 102560 }, -- Holy Prism
         { spell = 115750, type = "ability", talent = 102584 }, -- Blinding Light
         { spell = 121183, type = "ability", buff = true }, -- Contemplation
@@ -858,14 +856,15 @@ templates.class.PALADIN = {
         { spell = 200025, type = "ability", buff = true, talent = 102532 }, -- Beacon of Virtue
         { spell = 200652, type = "ability", buff = true, talent = 102573 }, -- Tyr's Deliverance
         { spell = 210294, type = "ability", buff = true, usable = true, talent = 102551 }, -- Divine Favor
-        { spell = 214202, type = "ability", charges = true, buff = true, talent = 102541 }, -- Rule of Law
         { spell = 216331, type = "ability", buff = true, talent = 102568 }, -- Avenging Crusader
-        { spell = 223306, type = "ability", buff = true, talent = 102543 }, -- Bestow Faith
         { spell = 275773, type = "ability", requiresTarget = true }, -- Judgment
         { spell = 375576, type = "ability", requiresTarget = true, talent = 102465 }, -- Divine Toll
         { spell = 388007, type = "ability", buff = true, talent = 102579 }, -- Blessing of Summer
         { spell = 388010, type = "ability" }, -- Blessing of Autumn
         { spell = 391054, type = "ability" }, -- Intercession
+        { spell = 414273, type = "ability", buff = true, talent = 115876}, -- Hand of Divinity
+        { spell = 414170, type = "ability", talent = 102563 }, -- Daybreak
+
       },
       icon = 135972
     },
@@ -910,7 +909,6 @@ templates.class.PALADIN = {
         { spell = 209388, type = "buff", unit = "player", talent = 102468 }, -- Bulwark of Order
         { spell = 221886, type = "buff", unit = "player", talent = 102625 }, -- Divine Steed
         { spell = 223819, type = "buff", unit = "player", talent = 115490 }, -- Divine Purpose
-        { spell = 227723, type = "buff", unit = "player" }, -- Mana Divining Stone
         { spell = 280375, type = "buff", unit = "player", talent = 102462 }, -- Redoubt
         { spell = 317920, type = "buff", unit = "player" }, -- Concentration Aura
         { spell = 378412, type = "buff", unit = "player", talent = 102472 }, -- Light of the Titans
@@ -927,10 +925,8 @@ templates.class.PALADIN = {
         { spell = 389539, type = "buff", unit = "player", talent = 102447 }, -- Sentinel
         { spell = 393019, type = "buff", unit = "player", talent = 102439 }, -- Inspiring Vanguard
         { spell = 393038, type = "buff", unit = "player", talent = 102461 }, -- Strength in Adversity
-        { spell = 397734, type = "buff", unit = "player" }, -- Word of a Worthy Ally
         { spell = 400745, type = "buff", unit = "player", talent = 115480 }, -- Afterimage
         { spell = 405790, type = "buff", unit = "player", talent = 115169 }, -- Fading Light
-        { spell = 408770, type = "buff", unit = "player" }, -- Flash of Inspiration
       },
       icon = 236265
     },
@@ -1024,7 +1020,6 @@ templates.class.PALADIN = {
         { spell = 121183, type = "buff", unit = "player" }, -- Contemplation
         { spell = 184662, type = "buff", unit = "player", talent = 102519 }, -- Shield of Vengeance
         { spell = 221886, type = "buff", unit = "player", talent = 102625 }, -- Divine Steed
-        { spell = 227723, type = "buff", unit = "player" }, -- Mana Divining Stone
         { spell = 231895, type = "buff", unit = "player", talent = 102496 }, -- Crusade
         { spell = 326733, type = "buff", unit = "player", talent = 115051 }, -- Empyrean Power
         { spell = 383329, type = "buff", unit = "player", talent = 102504 }, -- Final Verdict
@@ -1032,14 +1027,12 @@ templates.class.PALADIN = {
         { spell = 385126, type = "buff", unit = "player" }, -- Blessing of Dusk
         { spell = 385127, type = "buff", unit = "player" }, -- Blessing of Dawn
         { spell = 387178, type = "buff", unit = "player", talent = 115438 }, -- Empyrean Legacy
-        { spell = 397734, type = "buff", unit = "player" }, -- Word of a Worthy Ally
         { spell = 400745, type = "buff", unit = "player", talent = 115482 }, -- Afterimage
         { spell = 403876, type = "buff", unit = "player" }, -- Divine Protection
         { spell = 403976, type = "buff", unit = "player", talent = 115164 }, -- Inquisitor's Ire
         { spell = 405790, type = "buff", unit = "player", talent = 115169 }, -- Fading Light
         { spell = 406975, type = "buff", unit = "player", talent = 102514 }, -- Divine Arbiter
         { spell = 407065, type = "buff", unit = "player", talent = 115475 }, -- Rush of Light
-        { spell = 408770, type = "buff", unit = "player" }, -- Flash of Inspiration
       },
       icon = 135993
     },
