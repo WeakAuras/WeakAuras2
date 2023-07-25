@@ -721,6 +721,11 @@ local function replaceNameDescFuncs(intable, data, subOption)
                       if(type(display) == "number") then
                         display = math.floor(display * 100) / 100;
                       else
+                        local nullBytePos = display:find("\0", nil, true)
+                        if nullBytePos then
+                          display = display:sub(1, nullBytePos - 1)
+                        end
+
                         if #display > 50 then
                           display = display:sub(1, 50) .. "..."
                         end

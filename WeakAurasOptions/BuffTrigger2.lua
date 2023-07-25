@@ -166,7 +166,15 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
       desc = desc,
       order = baseOrder + i / 100 + 0.0003,
       hidden = hiddenFunction,
-      get = function(info) return trigger[optionKey] and trigger[optionKey][i] end,
+      get = function(info)
+        local rawString = trigger[optionKey] and trigger[optionKey][i] or ""
+        local spellName, _, _, _, _, _, spellID = GetSpellInfo(WeakAuras.SafeToNumber(rawString))
+        if spellName and spellID then
+          return ("%s (%s)"):format(spellID, spellName) .. "\0" .. rawString
+        else
+          return rawString .. "\0" .. rawString
+        end
+      end,
       set = function(info, v)
         trigger[optionKey] = trigger[optionKey] or {}
         if v == "" then
@@ -189,7 +197,9 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
         WeakAuras.UpdateThumbnail(data)
         WeakAuras.ClearAndUpdateOptions(data.id)
       end,
-      validate = isExactSpellId and WeakAuras.ValidateNumeric or nil
+      validate = isExactSpellId and WeakAuras.ValidateNumeric or nil,
+      control = "WeakAurasInputFocus",
+      getWithFocus = function() return trigger[optionKey] and trigger[optionKey][i] or "" end
     }
   end
   -- VALIDATE ?
