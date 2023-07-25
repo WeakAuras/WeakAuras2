@@ -3933,14 +3933,15 @@ Private.event_prototypes = {
       {
         name = "spellId",
         display = L["Spell Id"],
-        type = "string",
         init = "arg",
         enable = function(trigger)
           return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
         end,
         test = WeakAuras.IsClassicEra() and "GetSpellInfo(%q) == spellName" or nil,
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        type = "spell",
+        showExactOption = false,
       },
       {
         name = "spellName",

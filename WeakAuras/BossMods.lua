@@ -381,7 +381,10 @@ Private.event_prototypes["DBM Announce"] = {
       name = "spellId",
       init = "arg",
       display = L["Spell Id"],
-      type = "string"
+      type = "spell",
+      noValidation = true,
+      showExactOption = false,
+      negativeIsEJ = true
     },
     {
       name = "message",
@@ -584,9 +587,12 @@ Private.event_prototypes["DBM Timer"] = {
     {
       name = "spellId",
       display = L["Spell Id"],
-      type = "string",
       store = true,
-      conditionType = "string"
+      type = "spell",
+      conditionType = "string",
+      noValidation = true,
+      showExactOption = false,
+      negativeIsEJ = true
     },
     {
       name = "message",
@@ -986,7 +992,11 @@ Private.event_prototypes["BigWigs Message"] = {
       init = "arg",
       display = L["Key"],
       desc = L["The 'Key' value can be found in the BigWigs options of a specific spell"],
-      type = "longstring"
+      type = "spell",
+      conditionType = "string",
+      noValidation = true,
+      showExactOption = false,
+      negativeIsEJ = true
     },
     {
       name = "text",
@@ -1175,8 +1185,11 @@ Private.event_prototypes["BigWigs Timer"] = {
       name = "spellId",
       display = L["Key"],
       desc = L["The 'Key' value can be found in the BigWigs options of a specific spell"],
-      type = "string",
+      type = "spell",
       conditionType = "string",
+      noValidation = true,
+      showExactOption = false,
+      negativeIsEJ = true
     },
     {
       name = "text",
@@ -1339,9 +1352,12 @@ Private.event_prototypes["Boss Mod Announce"] = {
       name = "spellId",
       init = "arg",
       display = L["Key"],
-      type = "string",
       store = true,
-      conditionType = "string"
+      type = "spell",
+      conditionType = "string",
+      noValidation = true,
+      showExactOption = false,
+      negativeIsEJ = true
     },
     {
       name = "message",
@@ -1544,9 +1560,12 @@ Private.event_prototypes["Boss Mod Timer"] = {
     {
       name = "spellId",
       display = L["Key"],
-      type = "string",
       store = true,
-      conditionType = "string"
+      type = "spell",
+      conditionType = "string",
+      noValidation = true,
+      showExactOption = false,
+      negativeIsEJ = true
     },
     {
       name = "message",
