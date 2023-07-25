@@ -510,7 +510,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         if (arg.showExactOption) then
           options["exact"..name] = {
             type = "toggle",
-            width = WeakAuras.normalWidth - 0.1,
+            width = WeakAuras.normalWidth + 0.1,
             name = arg.type == "item" and L["Exact Item Match"] or L["Exact Spell Match"],
             order = order,
             hidden = hidden,
@@ -539,6 +539,15 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                 local icon = spellCache.GetIcon(trigger[realname]);
                 return icon and tostring(icon) or "", 18, 18;
               elseif(arg.type == "spell") then
+                if arg.negativeIsEJ and WeakAuras.IsRetail() then
+                  local key = WeakAuras.SafeToNumber(trigger[realname])
+                  if key and key < 0 then
+                    local tbl = C_EncounterJournal.GetSectionInfo(-key)
+                    if tbl and tbl.abilityIcon then
+                      return tostring(tbl.abilityIcon) or "", 18, 18;
+                    end
+                  end
+                end
                 local _, _, icon = GetSpellInfo(trigger[realname]);
                 return icon and tostring(icon) or "", 18, 18;
               elseif(arg.type == "item") then
@@ -583,17 +592,27 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               local useExactSpellId = (arg.showExactOption and trigger["use_exact_"..realname])
               if(trigger["use_"..realname]) then
                 if (trigger[realname] and trigger[realname] ~= "") then
-                  if useExactSpellId then
-                    local spellId = tonumber(trigger[realname])
-                    if (spellId and spellId ~= 0) then
-                      return tostring(spellId);
+                  local spellID = WeakAuras.SafeToNumber(trigger[realname])
+                  if spellID then
+                    if arg.negativeIsEJ and WeakAuras.IsRetail() and spellID < 0 then
+                      local tbl = C_EncounterJournal.GetSectionInfo(-spellID)
+                      if tbl and tbl.title then
+                        return ("%s (%s)"):format(spellID, tbl.title)
+                      end
                     end
-                  else
-                    local name = GetSpellInfo(trigger[realname]);
-                    if(name) then
-                      return name;
+                    local spellName = GetSpellInfo(WeakAuras.SafeToNumber(trigger[realname]))
+                    if spellName then
+                      return ("%s (%s)"):format(spellID, spellName)
+                    end
+                  elseif not useExactSpellId then
+                    local spellName = GetSpellInfo(trigger[realname])
+                    if spellName then
+                      return spellName
                     end
                   end
+                end
+                if arg.noValidation then
+                  return trigger[realname]
                 end
                 return useExactSpellId and L["Invalid Spell ID"] or L["Invalid Spell Name/ID/Link"];
               else
@@ -605,12 +624,14 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           end,
           set = function(info, v)
             local fixedInput = v;
-            if(arg.type == "aura") then
-              fixedInput = WeakAuras.spellCache.CorrectAuraName(v);
-            elseif(arg.type == "spell") then
-              fixedInput = CorrectSpellName(v);
-            elseif(arg.type == "item") then
-              fixedInput = CorrectItemName(v);
+            if not arg.noValidation then
+              if(arg.type == "aura") then
+                fixedInput = WeakAuras.spellCache.CorrectAuraName(v);
+              elseif(arg.type == "spell") then
+                fixedInput = CorrectSpellName(v);
+              elseif(arg.type == "item") then
+                fixedInput = CorrectItemName(v);
+              end
             end
             trigger[realname] = fixedInput;
             WeakAuras.Add(data);
@@ -620,7 +641,9 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
             OptionsPrivate.SortDisplayButtons(nil, true);
-          end
+          end,
+          control = "WeakAurasInputFocus",
+          getWithFocus = function() return trigger[realname] or "" end
         };
         order = order + 1;
       elseif(arg.type == "select" or arg.type == "unit") then

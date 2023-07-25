@@ -94,4 +94,4 @@ AceGUI-Widgets\AceGUIWidget-WeakAurasSpacer.lua
 AceGUI-Widgets\AceGuiWidget-WeakAurasProgressBar.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasSpinBox.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasScrollArea.lua
-
+AceGUI-Widgets\AceGUIWidget-WeakAurasInputFocus.lua
