@@ -817,6 +817,64 @@ function WeakAuras.ValidateNumeric(info, val)
   return true
 end
 
+function WeakAuras.ValidateTime(info, val)
+  if val ~= nil and val ~= "" then
+    if not tonumber(val) then
+      if val:sub(1,1) == "-" then
+        val = val:sub(2, #val)
+      end
+      return (val:match("^%d+:%d+:[%d%.]+$") or val:match("^%d+:[%d+%.]+$")) and true or false
+    elseif tonumber(val) >= 2^31 then
+      return false
+    end
+  end
+  return true
+end
+
+function WeakAuras.TimeToSeconds(val)
+  if tonumber(val) then
+    return tonumber(val)
+  else
+    local sign = 1
+    if val:sub(1,1) == "-" then
+      sign = -1
+      val = val:sub(2, #val)
+    end
+    local h, m, s = val:match("^(%d+):(%d+):([%d%.]+)$")
+    if h and m and s then
+      return (h*3600 + m*60 + s) * sign
+    else
+      local m, s = val:match("^(%d+):([%d%.]+)$")
+      if m and s then
+        return (m*60 + s) * sign
+      end
+    end
+  end
+end
+
+Private.tinySecondFormat = function(value)
+  if type(value) == "string" then value = tonumber(value) end
+  if type(value) == "number" then
+     local negative = value < 0
+     value = math.abs(value)
+     local fraction = value - math.floor(value)
+     local ret
+     if value > 3600 then
+        ret = ("%i:%02i:%02i"):format(math.floor(value / 3600), math.floor((value % 3600) / 60), value % 60)
+     elseif value > 60 then
+        ret = ("%i:%02i"):format(math.floor(value / 60), value % 60)
+     else
+        ret = ("%i"):format(value)
+     end
+     local negSign = negative and "-" or ""
+     if fraction > 0 then
+        return negSign .. ret .. tostring(Round(fraction * 100) / 100):sub(2)
+     else
+        return negSign .. ret
+     end
+  end
+end
+
 function Private.ExecEnv.ParseStringCheck(input)
   if not input then return end
   local matcher = {
