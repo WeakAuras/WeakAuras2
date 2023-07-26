@@ -955,12 +955,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       name = L["Delay"],
       order = order,
       disabled = function() return not trigger.use_delay end,
-      validate = ValidateNumeric,
+      validate = WeakAuras.ValidateTime,
       get = function()
-        return trigger.delay and tostring(trigger.delay)
+        return OptionsPrivate.Private.tinySecondFormat(trigger.delay)
       end,
       set = function(info, v)
-        trigger.delay = tonumber(v)
+        trigger.delay = WeakAuras.TimeToSeconds(v)
         WeakAuras.Add(data)
       end
     };
@@ -986,14 +986,15 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       type = "input",
       width = WeakAuras.normalWidth,
       name = L["Duration (s)"],
+      validate = WeakAuras.ValidateTime,
       order = order,
       get = function()
-        return trigger.duration
+        return OptionsPrivate.Private.tinySecondFormat(trigger.duration)
       end,
       set = function(info, v)
-        trigger.duration = v
+        trigger.duration = tostring(WeakAuras.TimeToSeconds(v))
         WeakAuras.Add(data)
-      end,
+      end
     }
     order = order + 1;
   end
