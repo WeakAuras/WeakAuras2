@@ -315,7 +315,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
       end
       if(arg.type == "spell" or arg.type == "aura" or arg.type == "item") then
         if not arg.showExactOption then
-          options["use_"..name].width = arg.width or WeakAuras.normalWidth - 0.1;
+          options["use_"..name].width = (arg.width or WeakAuras.normalWidth) - 0.2;
         end
       end
 
@@ -510,7 +510,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         if (arg.showExactOption) then
           options["exact"..name] = {
             type = "toggle",
-            width = WeakAuras.normalWidth + 0.1,
+            width = WeakAuras.normalWidth,
             name = arg.type == "item" and L["Exact Item Match"] or L["Exact Spell Match"],
             order = order,
             hidden = hidden,
@@ -529,7 +529,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         end
         options["icon"..name] = {
           type = "execute",
-          width = 0.1,
+          width = 0.2,
           name = "",
           order = order,
           hidden = hidden,
@@ -563,7 +563,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         order = order + 1;
         options[name] = {
           type = "input",
-          width = arg.showExactOption and WeakAuras.doubleWidth or WeakAuras.normalWidth,
+          width = (arg.showExactOption and WeakAuras.doubleWidth or WeakAuras.normalWidth) - (arg.showExactOption and 0.2 or 0),
           name = arg.display,
           order = order,
           hidden = hidden,
