@@ -3204,6 +3204,9 @@ Private.author_option_media_controls = {
   background = "LSM30_Background",
   font = "LSM30_Font"
 }
+Private.author_option_media_itemControls = {
+  sound = "WeakAurasMediaSound"
+}
 Private.array_entry_name_types = {
   [-1] = L["Fixed Names"],
   [0] = L["Entry Order"],
