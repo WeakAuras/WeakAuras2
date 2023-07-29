@@ -137,9 +137,10 @@ Private.ExecEnv.BossMods.DBM = {
 
   EventCallback = function(self, event, ...)
     if event == "DBM_Announce" then
-      WeakAuras.ScanEvents("DBM_Announce", ...)
+      local spellId = select(4, ...)
+      WeakAuras.ScanEvents("DBM_Announce", spellId, ...)
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_Announce", ...)
+        WeakAuras.ScanEvents("BossMod_Announce", spellId, ...)
       end
     elseif event == "DBM_TimerStart" then
       local timerId, msg, duration, icon, timerType, spellId, dbmType, _, _, _, _, _, timerCount = ...
@@ -357,6 +358,12 @@ Private.event_prototypes["DBM Announce"] = {
   statesParameter = "all",
   args = {
     {
+      name = "spellId",
+      init = "arg",
+      display = L["Spell Id"],
+      type = "string"
+    },
+    {
       name = "message",
       init = "arg",
       display = L["Message"],
@@ -394,7 +401,7 @@ Private.event_prototypes["DBM Timer"] = {
   type = "addons",
   events = {},
   internal_events = {
-    "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerStopAll", "DBM_TimerUpdate", "DBM_TimerForce", "DBM_TimerResume", "DBM_TimerPause"
+    "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerUpdate", "DBM_TimerForce", "DBM_TimerResume", "DBM_TimerPause"
   },
   force_events = "DBM_TimerForce",
   name = L["DBM Timer"],
@@ -718,7 +725,7 @@ Private.ExecEnv.BossMods.BigWigs = {
     if event == "BigWigs_Message" then
       WeakAuras.ScanEvents("BigWigs_Message", ...)
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_Announce", ...)
+        WeakAuras.ScanEvents("BossMod_Announce", select(2, ...))
       end
     elseif event == "BigWigs_StartBar" then
       local addon, spellId, text, duration, icon, isCD = ...
@@ -1242,6 +1249,13 @@ Private.event_prototypes["Boss Mod Announce"] = {
   statesParameter = "all",
   args = {
     {
+      name = "spellId",
+      display = L["Key"],
+      type = "string",
+      store = true,
+      conditionType = "string"
+    },
+    {
       name = "message",
       init = "arg",
       display = L["Message"],
@@ -1295,7 +1309,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
   type = "addons",
   events = {},
   internal_events = {
-    "BossMod_TimerStart", "BossMod_TimerStop", "BossMod_TimerStopAll", "BossMod_TimerUpdate", "BossMod_TimerForce", "BossMod_TimerResume", "BossMod_TimerPause"
+    "BossMod_TimerStart", "BossMod_TimerStop", "BossMod_TimerUpdate", "BossMod_TimerForce", "BossMod_TimerResume", "BossMod_TimerPause"
   },
   force_events = "BossMod_TimerForce",
   name = L["Boss Mod Timer"],
@@ -1312,11 +1326,11 @@ Private.event_prototypes["Boss Mod Timer"] = {
       end
       local isBW = Private.ExecEnv.BossMods.Generic == Private.ExecEnv.BossMods.BigWigs
       local isDBM = Private.ExecEnv.BossMods.Generic == Private.ExecEnv.BossMods.DBM
-      local extraArg1
+      local extraArg1, extraArg2
       if isBW then
         extraArg1 = false -- set "cast" arg to false
       elseif isDBM then
-        extraArg1 = "noCastBar"
+        extraArg2 = "noCastBar"
       end
       return function (states, event, timerId)
         local triggerSpellId = %q
@@ -1360,7 +1374,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
           or event == "BossMod_TimerPause"
           or event == "BossMod_TimerResume"
           then
-            if Private.ExecEnv.BossMods.Generic:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, extraArg1) then
+            if Private.ExecEnv.BossMods.Generic:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, extraArg1, extraArg2) then
               local bar = Private.ExecEnv.BossMods.Generic:GetTimerById(timerId)
               if bar then
                 copyOrSchedule(bar, cloneId)
@@ -1374,7 +1388,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
             end
           elseif event == "BossMod_TimerUpdate" then
             for timerId, bar in pairs(Private.ExecEnv.BossMods.Generic:GetAllTimers()) do
-              if Private.ExecEnv.BossMods.Generic:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, extraArg1) then
+              if Private.ExecEnv.BossMods.Generic:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, extraArg1, extraArg2) then
                 copyOrSchedule(bar, timerId)
               else
                 local state = states[timerId]
@@ -1390,7 +1404,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
           elseif event == "BossMod_TimerForce" then
             wipe(states)
             for timerId, bar in pairs(Private.ExecEnv.BossMods.Generic:GetAllTimers()) do
-              if Private.ExecEnv.BossMods.Generic:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, extraArg1) then
+              if Private.ExecEnv.BossMods.Generic:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, extraArg1, extraArg2) then
                 copyOrSchedule(bar, cloneId)
               end
             end
@@ -1398,7 +1412,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
         else
           if event == "BossMod_TimerStart" or event == "BossMod_TimerUpdate" then
             if extendTimer ~= 0 then
-              if Private.ExecEnv.BossMods.Generic:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, extraArg1) then
+              if Private.ExecEnv.BossMods.Generic:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, extraArg1, extraArg2) then
                 local bar = Private.ExecEnv.BossMods.Generic:GetTimerById(timerId)
                 Private.ExecEnv.BossMods.Generic:ScheduleCheck(bar.expirationTime + extendTimer)
               end
@@ -1504,5 +1518,5 @@ WeakAuras.GetDBMTimer = function(...) return Private.ExecEnv.BossMods.DBM:GetTim
 WeakAuras.GetBigWigsTimerById = function(...) return Private.ExecEnv.BossMods.BigWigs:GetTimerById(...) end
 WeakAuras.GetAllBigWigsTimers = function() return Private.ExecEnv.BossMods.BigWigs:GetAllTimers() end
 WeakAuras.GetBigWigsStage = function(...) return Private.ExecEnv.BossMods.BigWigs:GetStage(...) end
-WeakAuras.RegisterBigWigsTimer = function() end
-WeakAuras.RegisterDBMCallback = function() end
+WeakAuras.RegisterBigWigsTimer = function() Private.ExecEnv.BossMods.BigWigs:RegisterTimer() end
+WeakAuras.RegisterDBMCallback = function() Private.ExecEnv.BossMods.DBM:RegisterTimer() end
