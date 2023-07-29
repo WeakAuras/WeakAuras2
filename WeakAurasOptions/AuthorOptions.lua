@@ -1016,6 +1016,7 @@ typeControlAdders = {
         end
       end,
       dialogControl = OptionsPrivate.Private.author_option_media_controls[option.mediaType],
+      itemControl = OptionsPrivate.Private.author_option_media_itemControls[option.mediaType],
       order = order(),
       get = get(option, "default"),
       set = function(_, value)
@@ -2346,6 +2347,7 @@ local function addUserModeOption(options, args, data, order, prefix, i)
     elseif optionType == "media" then
       userOption.type = "select"
       userOption.dialogControl = OptionsPrivate.Private.author_option_media_controls[option.mediaType]
+      userOption.itemControl = OptionsPrivate.Private.author_option_media_itemControls[option.mediaType]
       userOption.values = function()
         if option.mediaType == "sound" then
           return OptionsPrivate.Private.sound_file_types

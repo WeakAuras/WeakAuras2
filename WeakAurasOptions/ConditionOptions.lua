@@ -581,6 +581,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       width = WeakAuras.normalWidth,
       values = OptionsPrivate.Private.sound_types,
       sorting = OptionsPrivate.Private.SortOrderForValues(OptionsPrivate.Private.sound_types),
+      itemControl = "WeakAurasMediaSound",
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "sound", L["Differences"]),
       desc = descIfNoValue2(data, conditions[i].changes[j], "value", "sound", propertyType, OptionsPrivate.Private.sound_types),
       order = order,

@@ -96,3 +96,4 @@ AceGUI-Widgets\AceGUIWidget-WeakAurasSpinBox.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasMiniTalent_Wrath.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasScrollArea.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasInputFocus.lua
+AceGUI-Widgets\AceGuiWidget-WeakAurasMediaSound.lua
