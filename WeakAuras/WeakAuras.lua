@@ -4909,7 +4909,8 @@ end
 function Private.CreateFormatters(input, getter, withoutColor)
   local seenSymbols = {}
   local formatters = {}
-  Private.ParseTextStr(input, function(symbol)
+
+  local parseFn = function(symbol)
     if not seenSymbols[symbol] then
       local _, sym = string.match(symbol, "(.+)%.(.+)")
       sym = sym or symbol
@@ -4924,7 +4925,15 @@ function Private.CreateFormatters(input, getter, withoutColor)
       end
     end
     seenSymbols[symbol] = true
-  end)
+  end
+
+  if type(input) == "string" then
+    Private.ParseTextStr(input, parseFn)
+  elseif type(input) == "table" then
+    for _, v in ipairs(input) do
+      Private.ParseTextStr(v, parseFn)
+    end
+  end
 
   return formatters
 end
