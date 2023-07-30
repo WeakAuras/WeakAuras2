@@ -12,6 +12,30 @@ local hiddenFontExtra = function()
 end
 
 local function createOptions(id, data)
+  local function hideCustomTextOption()
+    if OptionsPrivate.Private.ContainsCustomPlaceHolder(data.displayText) then
+      return false
+    end
+
+    if type(data.conditions) == "table" then
+      for _, condition in ipairs(data.conditions) do
+        if type(condition.changes) == "table" then
+          for _, change in ipairs(condition.changes) do
+            if type(change.property) == "string"
+            and change.property == "displayText"
+            and type(change.value) == "string"
+            and OptionsPrivate.Private.ContainsCustomPlaceHolder(change.value)
+            then
+              return false
+            end
+          end
+        end
+      end
+    end
+
+    return true
+  end
+
   local options = {
     __title = L["Text Settings"],
     __order = 1,
@@ -38,7 +62,7 @@ local function createOptions(id, data)
     customTextUpdate = {
       type = "select",
       width = WeakAuras.doubleWidth,
-      hidden = function() return not OptionsPrivate.Private.ContainsCustomPlaceHolder(data.displayText); end,
+      hidden = hideCustomTextOption,
       name = L["Update Custom Text On..."],
       values = OptionsPrivate.Private.text_check_types,
       order = 36
@@ -267,7 +291,7 @@ local function createOptions(id, data)
   };
 
   OptionsPrivate.commonOptions.AddCodeOption(options, data, L["Custom Function"], "customText", "https://github.com/WeakAuras/WeakAuras2/wiki/Custom-Code-Blocks#custom-text",
-                          37, function() return not OptionsPrivate.Private.ContainsCustomPlaceHolder(data.displayText) end, {"customText"}, false);
+                          37, hideCustomTextOption, {"customText"}, false);
 
   -- Add Text Format Options
   local hidden = function()
@@ -299,11 +323,29 @@ local function createOptions(id, data)
   end
 
   for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+    local texts = {}
+    if child.displayText ~= "" then
+      tinsert(texts, child.displayText)
+    end
+    for _, condition in ipairs(child.conditions) do
+      if type(condition.changes) == "table" then
+        for _, change in ipairs(condition.changes) do
+          if type(change.property) == "string"
+          and change.property == "displayText"
+          and type(change.value) == "string"
+          and change.value ~= ""
+          then
+            tinsert(texts, change.value)
+          end
+        end
+      end
+    end
+
     local get = function(key)
       return child["displayText_format_" .. key]
     end
-    local input = child.displayText
-    OptionsPrivate.AddTextFormatOption(input, true, get, addOption, hidden, setHidden, false, index, total)
+
+    OptionsPrivate.AddTextFormatOption(texts, true, get, addOption, hidden, setHidden, false, index, total)
     index = index + 1
   end
 

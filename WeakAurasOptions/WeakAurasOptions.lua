@@ -1912,7 +1912,8 @@ function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, h
 
 
   local seenSymbols = {}
-  OptionsPrivate.Private.ParseTextStr(input, function(symbol)
+
+  local parseFn = function(symbol)
     if not seenSymbols[symbol] then
       local _, sym = string.match(symbol, "(.+)%.(.+)")
       sym = sym or symbol
@@ -1942,7 +1943,15 @@ function OptionsPrivate.AddTextFormatOption(input, withHeader, get, addOption, h
         seenSymbols[symbol] = true
       end
     end
-  end)
+  end
+
+  if type(input) == "table" then
+    for _, txt in ipairs(input) do
+      OptionsPrivate.Private.ParseTextStr(txt, parseFn)
+    end
+  else
+    OptionsPrivate.Private.ParseTextStr(input, parseFn)
+  end
 
   if withHeader and (not index or index == total) then
     addOption("header_anchor",
