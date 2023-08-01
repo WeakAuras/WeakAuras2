@@ -9600,17 +9600,11 @@ Private.event_prototypes = {
         tinsert(events, "GROUP_ROSTER_UPDATE")
       end
 
-      if trigger.use_instance_size ~= nil then
-        tinsert(events, "ZONE_CHANGED")
-        tinsert(events, "ZONE_CHANGED_INDOORS")
-        tinsert(events, "ZONE_CHANGED_NEW_AREA")
-      end
-
-      if trigger.use_instance_difficulty ~= nil or trigger.use_instance_type then
+      if trigger.use_instance_difficulty ~= nil
+         or trigger.use_instance_type ~= nil
+         or trigger.use_instance_size ~= nil
+      then
         tinsert(events, "PLAYER_DIFFICULTY_CHANGED")
-        tinsert(events, "ZONE_CHANGED")
-        tinsert(events, "ZONE_CHANGED_INDOORS")
-        tinsert(events, "ZONE_CHANGED_NEW_AREA")
       end
 
       return {
@@ -9626,6 +9620,13 @@ Private.event_prototypes = {
 
       if (trigger.use_ismoving ~= nil) then
         tinsert(events, "PLAYER_MOVING_UPDATE");
+      end
+
+      if trigger.use_instance_difficulty ~= nil
+         or trigger.use_instance_type ~= nil
+         or trigger.use_instance_size ~= nil
+      then
+        tinsert(events, "WA_DELAYED_PLAYER_ENTERING_WORLD")
       end
 
       if (trigger.use_HasPet ~= nil) then
