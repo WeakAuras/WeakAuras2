@@ -1254,6 +1254,51 @@ Private.event_prototypes["Boss Mod Stage"] = {
 }
 Private.category_event_prototype.addons["Boss Mod Stage"] = L["Boss Mod Stage"]
 
+Private.event_prototypes["Boss Mod Stage (Event)"] = {
+  type = "event",
+  events = {
+    ["events"] = {
+      "BossMod_SetStage",
+    }
+  },
+  name = L["Boss Mod Stage (Event)"],
+  init = function(trigger)
+    Private.ExecEnv.BossMods.Generic:RegisterStage()
+    return ""
+  end,
+  args = {
+    {
+      name = "stage",
+      init = "Private.ExecEnv.BossMods.Generic:GetStage()",
+      display = L["Stage"],
+      type = "number",
+      conditionType = "number",
+      store = true,
+    },
+    {
+      name = "note",
+      type = "description",
+      display = "",
+      text = function()
+        local ret = L["Note: This trigger will use BigWigs or DBM, in that order if both are installed.\n\nActive boss mod addon: "]
+        if Private.ExecEnv.BossMods.BigWigs.isInstalled then
+          ret = ret .. "BigWigs"
+        elseif Private.ExecEnv.BossMods.DBM.isInstalled then
+          ret = ret .. "DBM"
+        else
+          ret = ret .. L["none detected"]
+        end
+        return ret
+      end
+    },
+  },
+  statesParameter = "one",
+  canHaveDuration = "timed",
+  delayEvents = true,
+  timedrequired = true
+}
+Private.category_event_prototype.addons["Boss Mod Stage (Event)"] = L["Boss Mod Stage (Event)"]
+
 Private.event_prototypes["Boss Mod Announce"] = {
   type = "addons",
   events = {},
