@@ -494,14 +494,14 @@ Private.format_types = {
 
       if realm == "never" then
         nameFunc = function(unit)
-          return unit and UnitName(unit)
+          return unit and WeakAuras.UnitName(unit)
         end
       elseif realm == "star" then
         nameFunc = function(unit)
           if not unit then
             return ""
           end
-          local name, realm = UnitName(unit)
+          local name, realm = WeakAuras.UnitName(unit)
           if realm then
             return name .. "*"
           end
@@ -512,7 +512,7 @@ Private.format_types = {
           if not unit then
             return ""
           end
-          local name, realm = UnitName(unit)
+          local name, realm = WeakAuras.UnitName(unit)
           if realm then
             return name .. "-" .. realm
           end
@@ -523,7 +523,7 @@ Private.format_types = {
           if not unit then
             return ""
           end
-          local name, realm = WeakAuras.UnitNameWithRealm(unit)
+          local name, realm = WeakAuras.UnitNameWithRealmCustomName(unit)
           return name .. "-" .. realm
         end
       end
@@ -619,10 +619,11 @@ Private.format_types = {
 
       if realm == "never" then
         nameFunc = function(name, realm)
-          return name
+          return WeakAuras.GetName(name)
         end
       elseif realm == "star" then
         nameFunc = function(name, realm)
+          name = WeakAuras.GetName(name)
           if realm ~= "" then
             return name .. "*"
           end
@@ -630,6 +631,7 @@ Private.format_types = {
         end
       elseif realm == "differentServer" then
         nameFunc = function(name, realm)
+          name = WeakAuras.GetName(name)
           if realm ~= "" then
             return name .. "-" .. realm
           end
@@ -637,6 +639,7 @@ Private.format_types = {
         end
       elseif realm == "always" then
         nameFunc = function(name, realm)
+          name = WeakAuras.GetName(name)
           if realm == "" then
             realm = select(2, WeakAuras.UnitNameWithRealm("player"))
           end
