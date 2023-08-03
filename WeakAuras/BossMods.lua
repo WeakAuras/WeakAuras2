@@ -684,10 +684,10 @@ Private.ExecEnv.BossMods.BigWigs = {
     return self.bars[timerId]
   end,
 
-  GetTimer = function(self, text, operator, spellId, extendTimer, counter, cast)
+  GetTimer = function(self, text, operator, spellId, extendTimer, counter, cast, cooldown)
     local bestMatch
     for timerId, bar in pairs(self.bars) do
-      if self:TimerMatches(timerId, text, operator, spellId, counter, cast)
+      if self:TimerMatches(timerId, text, operator, spellId, counter, cast, cooldown)
       and (bestMatch == nil or bar.expirationTime < bestMatch.expirationTime)
       and bar.expirationTime + extendTimer > GetTime()
       then
@@ -725,7 +725,8 @@ Private.ExecEnv.BossMods.BigWigs = {
     if event == "BigWigs_Message" then
       WeakAuras.ScanEvents("BigWigs_Message", ...)
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_Announce", select(2, ...))
+        local _, spellId, text, _, icon = ...
+        WeakAuras.ScanEvents("BossMod_Announce", spellId, text, icon)
       end
     elseif event == "BigWigs_StartBar" then
       local addon, spellId, text, duration, icon, isCD = ...
@@ -1057,14 +1058,14 @@ Private.event_prototypes["BigWigs Timer"] = {
             end
           elseif event == "BigWigs_Timer_Update" then
             for timerId, bar in pairs(Private.ExecEnv.BossMods.BigWigs:GetAllTimers()) do
-              if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast) then
+              if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast, triggerIsCooldown) then
                 copyOrSchedule(bar, timerId)
               end
             end
           elseif event == "BigWigs_Timer_Force" then
             wipe(states)
             for timerId, bar in pairs(Private.ExecEnv.BossMods.BigWigs:GetAllTimers()) do
-              if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast) then
+              if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast, triggerIsCooldown) then
                 copyOrSchedule(bar, timerId)
               end
             end
@@ -1072,13 +1073,13 @@ Private.event_prototypes["BigWigs Timer"] = {
         else
           if event == "BigWigs_StartBar" then
             if extendTimer ~= 0 then
-              if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast) then
+              if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast, triggerIsCooldown) then
                 local bar = Private.ExecEnv.BossMods.BigWigs:GetTimerById(timerId)
                 Private.ExecEnv.BossMods.BigWigs:ScheduleCheck(bar.expirationTime + extendTimer)
               end
             end
           end
-          local bar = Private.ExecEnv.BossMods.BigWigs:GetTimer(triggerText, triggerTextOperator, triggerSpellId, extendTimer, counter, triggerCast)
+          local bar = Private.ExecEnv.BossMods.BigWigs:GetTimer(triggerText, triggerTextOperator, triggerSpellId, extendTimer, counter, triggerCast, triggerIsCooldown)
           if bar then
             if extendTimer == 0
               or not (state and state.show)
@@ -1250,6 +1251,7 @@ Private.event_prototypes["Boss Mod Announce"] = {
   args = {
     {
       name = "spellId",
+      init = "arg",
       display = L["Key"],
       type = "string",
       store = true,
@@ -1418,7 +1420,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
               end
             end
           end
-          local bar = Private.ExecEnv.BossMods.Generic:GetTimer(triggerText, triggerTextOperator, triggerSpellId, extendTimer, counter)
+          local bar = Private.ExecEnv.BossMods.Generic:GetTimer(triggerText, triggerTextOperator, triggerSpellId, extendTimer, counter, extraArg1, extraArg2)
           if bar then
             if extendTimer == 0
               or not (state and state.show)
