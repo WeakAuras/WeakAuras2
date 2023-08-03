@@ -464,6 +464,7 @@ Private.event_prototypes["DBM Timer"] = {
               local bar = Private.ExecEnv.BossMods.DBM:GetTimerById(timerId)
               if bar then
                 copyOrSchedule(bar, cloneId)
+                return true
               end
             end
           elseif event == "DBM_TimerStop" and state then
@@ -471,11 +472,14 @@ Private.event_prototypes["DBM Timer"] = {
             if state.extend == 0 or bar_remainingTime > 0.2 then
               state.show = false
               state.changed = true
+              return true
             end
           elseif event == "DBM_TimerUpdate" then
+            local changed
             for timerId, bar in pairs(Private.ExecEnv.BossMods.DBM:GetAllTimers()) do
               if Private.ExecEnv.BossMods.DBM:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerId, triggerDbmType) then
                 copyOrSchedule(bar, timerId)
+                changed = true
               else
                 local state = states[timerId]
                 if state then
@@ -483,17 +487,22 @@ Private.event_prototypes["DBM Timer"] = {
                   if state.extend == 0 or bar_remainingTime > 0.2 then
                     state.show = false
                     state.changed = true
+                    changed = true
                   end
                 end
               end
             end
+            return changed
           elseif event == "DBM_TimerForce" then
             wipe(states)
+            local changed
             for timerId, bar in pairs(Private.ExecEnv.BossMods.DBM:GetAllTimers()) do
               if Private.ExecEnv.BossMods.DBM:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerId, triggerDbmType) then
                 copyOrSchedule(bar, cloneId)
+                changed = true
               end
             end
+            return changed
           end
         else
           if event == "DBM_TimerStart" or event == "DBM_TimerUpdate" then
@@ -511,6 +520,7 @@ Private.event_prototypes["DBM Timer"] = {
               or (state and state.show and state.expirationTime > (bar.expirationTime + extendTimer))
             then
               copyOrSchedule(bar, cloneId)
+              return true
             end
           else
             if state and state.show then
@@ -518,11 +528,11 @@ Private.event_prototypes["DBM Timer"] = {
               if state.extend == 0 or bar_remainingTime > 0.2 then
                 state.show = false
                 state.changed = true
+                return true
               end
             end
           end
         end
-        return true
       end
       ]=]
 
@@ -1048,6 +1058,7 @@ Private.event_prototypes["BigWigs Timer"] = {
               local bar = Private.ExecEnv.BossMods.BigWigs:GetTimerById(timerId)
               if bar then
                 copyOrSchedule(bar, cloneId)
+                return true
               end
             end
           elseif event == "BigWigs_StopBar" and state then
@@ -1055,20 +1066,27 @@ Private.event_prototypes["BigWigs Timer"] = {
             if state.extend == 0 or bar_remainingTime > 0.2 then
               state.show = false
               state.changed = true
+              return true
             end
           elseif event == "BigWigs_Timer_Update" then
+            local changed
             for timerId, bar in pairs(Private.ExecEnv.BossMods.BigWigs:GetAllTimers()) do
               if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast, triggerIsCooldown) then
                 copyOrSchedule(bar, timerId)
+                changed = true
               end
             end
+            return changed
           elseif event == "BigWigs_Timer_Force" then
             wipe(states)
+            local changed
             for timerId, bar in pairs(Private.ExecEnv.BossMods.BigWigs:GetAllTimers()) do
               if Private.ExecEnv.BossMods.BigWigs:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerCast, triggerIsCooldown) then
                 copyOrSchedule(bar, timerId)
+                changed = true
               end
             end
+            return changed
           end
         else
           if event == "BigWigs_StartBar" then
@@ -1086,6 +1104,7 @@ Private.event_prototypes["BigWigs Timer"] = {
               or (state and state.show and state.expirationTime > (bar.expirationTime + extendTimer))
             then
               copyOrSchedule(bar, cloneId)
+              return true
             end
           else
             if state and state.show then
@@ -1093,11 +1112,11 @@ Private.event_prototypes["BigWigs Timer"] = {
               if state.extend == 0 or bar_remainingTime > 0.2 then
                 state.show = false
                 state.changed = true
+                return true
               end
             end
           end
         end
-        return true
       end
     ]=]
     return ret:format(
@@ -1380,6 +1399,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
               local bar = Private.ExecEnv.BossMods.Generic:GetTimerById(timerId)
               if bar then
                 copyOrSchedule(bar, cloneId)
+                return true
               end
             end
           elseif event == "BossMod_TimerStop" and state then
@@ -1387,11 +1407,14 @@ Private.event_prototypes["Boss Mod Timer"] = {
             if state.extend == 0 or bar_remainingTime > 0.2 then
               state.show = false
               state.changed = true
+              return true
             end
           elseif event == "BossMod_TimerUpdate" then
+            local changed
             for timerId, bar in pairs(Private.ExecEnv.BossMods.Generic:GetAllTimers()) do
               if Private.ExecEnv.BossMods.Generic:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, extraArg1, extraArg2) then
                 copyOrSchedule(bar, timerId)
+                changed = true
               else
                 local state = states[timerId]
                 if state then
@@ -1399,17 +1422,22 @@ Private.event_prototypes["Boss Mod Timer"] = {
                   if state.extend == 0 or bar_remainingTime > 0.2 then
                     state.show = false
                     state.changed = true
+                    changed = true
                   end
                 end
               end
             end
+            return changed
           elseif event == "BossMod_TimerForce" then
             wipe(states)
+            local changed
             for timerId, bar in pairs(Private.ExecEnv.BossMods.Generic:GetAllTimers()) do
               if Private.ExecEnv.BossMods.Generic:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, extraArg1, extraArg2) then
                 copyOrSchedule(bar, cloneId)
+                changed = true
               end
             end
+            return changed
           end
         else
           if event == "BossMod_TimerStart" or event == "BossMod_TimerUpdate" then
@@ -1427,6 +1455,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
               or (state and state.show and state.expirationTime > (bar.expirationTime + extendTimer))
             then
               copyOrSchedule(bar, cloneId)
+              return true
             end
           else
             if state and state.show then
@@ -1434,11 +1463,11 @@ Private.event_prototypes["Boss Mod Timer"] = {
               if state.extend == 0 or bar_remainingTime > 0.2 then
                 state.show = false
                 state.changed = true
+                return true
               end
             end
           end
         end
-        return true
       end
       ]=]
 
