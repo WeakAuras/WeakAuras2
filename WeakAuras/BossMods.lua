@@ -174,7 +174,7 @@ Private.ExecEnv.BossMods.DBM = {
       else
         -- Compability code for DBM versions from around Aberrus
         -- Can be removed once we can assume newer versions
-        local barOptions = DBT.Options or DBM.Bars.options
+        local barOptions = DBT.Options
 
         if dbmType == 1 then
           r, g, b = barOptions.StartColorAR, barOptions.StartColorAG, barOptions.StartColorAB
