@@ -500,7 +500,16 @@ local FakeWeakAurasMixin = {
     clones = MakeDeprecated(Private.clones, "clones",
                 L["Using WeakAuras.clones is deprecated. Use WeakAuras.GetRegion(id, cloneId) instead."]),
     regions = MakeDeprecated(Private.regions, "regions",
-                L["Using WeakAuras.regions is deprecated. Use WeakAuras.GetRegion(id) instead."])
+                L["Using WeakAuras.regions is deprecated. Use WeakAuras.GetRegion(id) instead."]),
+    GetAllDBMTimers = function() return Private.ExecEnv.BossMods.DBM:GetAllTimers() end,
+    GetDBMTimerById = function(...) return Private.ExecEnv.BossMods.DBM:GetTimerById(...) end,
+    GetDBMTimer = function(...) return Private.ExecEnv.BossMods.DBM:GetTimer(...) end,
+    GetBigWigsTimerById = function(...) return Private.ExecEnv.BossMods.BigWigs:GetTimerById(...) end,
+    GetAllBigWigsTimers = function() return Private.ExecEnv.BossMods.BigWigs:GetAllTimers() end,
+    GetBigWigsStage = function(...) return Private.ExecEnv.BossMods.BigWigs:GetStage(...) end,
+    RegisterBigWigsTimer = function() Private.ExecEnv.BossMods.BigWigs:RegisterTimer() end,
+    RegisterDBMCallback = function() Private.ExecEnv.BossMods.DBM:RegisterTimer() end,
+    GetBossStage = function() return Private.ExecEnv.BossMods.Generic:GetStage() end
   },
   blocked = blocked,
   setBlocked = function()

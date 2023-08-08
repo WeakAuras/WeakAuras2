@@ -17,7 +17,7 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WeakAurasSaved
-## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibButtonGlow-1.0, LibSpellRange-1.0, LibRangeCheck-2.0, LibDBIcon-1.0, LibClassicDurations, LibClassicCasterino, LibGetFrame-1.0, !LibUIDropDownMenu, !!AddonLocale
+## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibButtonGlow-1.0, LibSpellRange-1.0, LibRangeCheck-2.0, LibDBIcon-1.0, LibClassicDurations, LibClassicCasterino, LibGetFrame-1.0, !LibUIDropDownMenu, !!AddonLocale, BigWigs, DBM-Core
 
 # External code + initialization
 embeds.xml
@@ -46,6 +46,7 @@ AnchorToWeakAuras.lua
 # Trigger systems
 BuffTrigger2.lua
 GenericTrigger.lua
+BossMods.lua
 
 # Helper Systems
 AuraWarnings.lua
