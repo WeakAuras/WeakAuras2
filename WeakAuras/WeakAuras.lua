@@ -1,7 +1,7 @@
 --- @type string, Private
 local AddonName, Private = ...
 
-local internalVersion = 66
+local internalVersion = 67
 
 -- Lua APIs
 local insert = table.insert
@@ -604,6 +604,128 @@ local function EvalBooleanArg(arg, trigger, default)
   end
 end
 
+local function singleTest(arg, trigger, use, name, value, operator, use_exact)
+  local number = value and tonumber(value) or nil
+  if(arg.type == "tristate") then
+    if(use == false) then
+      return "(not "..name..")";
+    elseif(use) then
+      if(arg.test) then
+        return "("..arg.test:format(value)..")";
+      else
+        return name;
+      end
+    end
+  elseif(arg.type == "tristatestring") then
+    if(use == false) then
+      return "("..name.. "~=".. (number or string.format("%s", Private.QuotedString(value or ""))) .. ")"
+    elseif(use) then
+      return "("..name.. "==".. (number or string.format("%s", Private.QuotedString(value or ""))) .. ")"
+    end
+  elseif(arg.type == "multiselect") then
+    if arg.multiNoSingle then
+      -- convert single to multi
+      -- this is a lazy migration because multiNoSingle is not set for all game versions
+      if use == true then
+        trigger["use_"..name] = false
+        trigger[name] = trigger[name] or {}
+        trigger[name].multi = {};
+        if trigger[name].single ~= nil then
+          trigger[name].multi[trigger[name].single] = true;
+          trigger[name].single = nil
+        end
+      end
+    end
+    if(use == false) then -- multi selection
+      local any = false;
+      if (value and value.multi) then
+        local test = "(";
+        for value, positive in pairs(value.multi) do
+          local arg1 = tonumber(value) or ("[["..value.."]]")
+          local arg2
+          if arg.extraOption then
+            arg2 = trigger[name .. "_extraOption"] or 0
+          elseif arg.multiTristate then
+            arg2 = positive and 4 or 5
+          end
+          local testEnabled = true
+          if type(arg.enableTest) == "function" then
+            testEnabled = arg.enableTest(trigger, arg1, arg2)
+          end
+          if testEnabled then
+            local check
+            if not arg.test then
+              check = name.."=="..arg1
+            else
+              check = arg.test:format(arg1, arg2)
+            end
+            if arg.multiAll then
+              test = test..check.." and "
+            else
+              test = test..check.." or  "
+            end
+            any = true;
+          end
+        end
+        if(any) then
+          test = test:sub(1, -6);
+        else
+          test = "(false";
+        end
+        test = test..")"
+        if arg.inverse then
+          if type(arg.inverse) == "boolean" then
+            test = "not " .. test
+          elseif type(arg.inverse) == "function" then
+            if arg.inverse(trigger) then
+              test = "not " .. test
+            end
+          end
+        end
+        return test
+      end
+    elseif(use) then -- single selection
+      local value = value and value.single or nil;
+      if not arg.test then
+        return value and "("..name.."=="..(tonumber(value) or ("[["..value.."]]"))..")";
+      else
+        return value and "("..arg.test:format(tonumber(value) or ("[["..value.."]]"))..")";
+      end
+    end
+  elseif(arg.type == "toggle") then
+    if(use) then
+      if(arg.test) then
+        return "("..arg.test:format(value)..")";
+      else
+        return name;
+      end
+    end
+  elseif (arg.type == "spell") then
+    if arg.showExactOption then
+      return "("..arg.test:format(value, tostring(use_exact) or "false") ..")";
+    else
+      return "("..arg.test:format(value)..")";
+    end
+  elseif(arg.test) then
+    return "("..arg.test:format(value)..")";
+  elseif(arg.type == "longstring" and operator) then
+    if(operator == "==") then
+      return "("..name.."==[["..value.."]])";
+    else
+      return "("..name..":"..operator:format(value)..")";
+    end
+  elseif(arg.type == "number") then
+    if number then
+      return "("..name..(operator or "==").. number ..")";
+    end
+  else
+    if(type(value) == "table") then
+      value = "error";
+    end
+    return "("..name..(operator or "==")..(number or ("[["..(value or "").."]]"))..")";
+  end
+end
+
 -- Used for the load function, could be simplified a bit
 -- It used to be also used for the generic trigger system
 local function ConstructFunction(prototype, trigger, skipOptional)
@@ -631,128 +753,43 @@ local function ConstructFunction(prototype, trigger, skipOptional)
     if(enable) then
       if (arg.optional and skipOptional) then
       -- Do nothing
-      elseif(arg.type == "tristate" or arg.type == "toggle" or arg.type == "tristatestring"
-              or (arg.type == "multiselect" and trigger["use_"..name] ~= nil)
-              or ((trigger["use_"..name] or arg.required) and trigger[name])) then
-        local number = trigger[name] and tonumber(trigger[name]);
+      elseif arg.type == "tristate"
+        or arg.type == "toggle"
+        or arg.type == "tristatestring"
+        or (arg.type == "multiselect" and trigger["use_"..name] ~= nil)
+        or ((trigger["use_"..name] or arg.required) and trigger[name])
+      then
         local test;
-        if(arg.type == "tristate") then
-          if(trigger["use_"..name] == false) then
-            test = "(not "..name..")";
-          elseif(trigger["use_"..name]) then
-            if(arg.test) then
-              test = "("..arg.test:format(trigger[name])..")";
+
+        if arg.multiEntry then
+          if type(trigger[name]) == "table" and #trigger[name] > 0 then
+            test = ""
+            for i, value in ipairs(trigger[name]) do
+              local operator = name and type(trigger[name.."_operator"]) == "table" and trigger[name.."_operator"][i]
+              local use_exact = name and type(trigger["use_exact_" .. name]) == "table" and trigger["use_exact_" .. name][i]
+              local use = name and trigger["use_"..name]
+              local single = singleTest(arg, trigger, use, name, value, operator, use_exact)
+              if single then
+                if test ~= "" then
+                  test = test .. arg.multiEntry.operator
+                end
+                test = test .. single
+              end
+            end
+            if test == "" then
+              test = nil
             else
-              test = name;
+              test = "(" .. test .. ")"
             end
-          end
-        elseif(arg.type == "tristatestring") then
-          if(trigger["use_"..name] == false) then
-            test = "("..name.. "~=".. (number or string.format("%s", Private.QuotedString(trigger[name] or ""))) .. ")"
-          elseif(trigger["use_"..name]) then
-            test = "("..name.. "==".. (number or string.format("%s", Private.QuotedString(trigger[name] or ""))) .. ")"
-          end
-        elseif(arg.type == "multiselect") then
-          if arg.multiNoSingle then
-            -- convert single to multi
-            -- this is a lazy migration because multiNoSingle is not set for all game versions
-            if trigger["use_"..name] == true then
-              trigger["use_"..name] = false
-              trigger[name] = trigger[name] or {}
-              trigger[name].multi = {};
-              if trigger[name].single ~= nil then
-                trigger[name].multi[trigger[name].single] = true;
-                trigger[name].single = nil
-              end
-            end
-          end
-          if(trigger["use_"..name] == false) then -- multi selection
-            local any = false;
-            if (trigger[name] and trigger[name].multi) then
-              test = "(";
-              for value, positive in pairs(trigger[name].multi) do
-                local arg1 = tonumber(value) or ("[["..value.."]]")
-                local arg2
-                if arg.extraOption then
-                  arg2 = trigger[name .. "_extraOption"] or 0
-                elseif arg.multiTristate then
-                  arg2 = positive and 4 or 5
-                end
-                local testEnabled = true
-                if type(arg.enableTest) == "function" then
-                  testEnabled = arg.enableTest(trigger, arg1, arg2)
-                end
-                if testEnabled then
-                  local check
-                  if not arg.test then
-                    check = name.."=="..arg1
-                  else
-                    check = arg.test:format(arg1, arg2)
-                  end
-                  if arg.multiAll then
-                    test = test..check.." and "
-                  else
-                    test = test..check.." or  "
-                  end
-                  any = true;
-                end
-              end
-              if(any) then
-                test = test:sub(1, -6);
-              else
-                test = "(false";
-              end
-              test = test..")"
-              if arg.inverse then
-                if type(arg.inverse) == "boolean" then
-                  test = "not " .. test
-                elseif type(arg.inverse) == "function" then
-                  if arg.inverse(trigger) then
-                    test = "not " .. test
-                  end
-                end
-              end
-            end
-          elseif(trigger["use_"..name]) then -- single selection
-            local value = trigger[name] and trigger[name].single;
-            if not arg.test then
-              test = trigger[name] and trigger[name].single and "("..name.."=="..(tonumber(value) or ("[["..value.."]]"))..")";
-            else
-              test = trigger[name] and trigger[name].single and "("..arg.test:format(tonumber(value) or ("[["..value.."]]"))..")";
-            end
-          end
-        elseif(arg.type == "toggle") then
-          if(trigger["use_"..name]) then
-            if(arg.test) then
-              test = "("..arg.test:format(trigger[name])..")";
-            else
-              test = name;
-            end
-          end
-        elseif (arg.type == "spell") then
-          if arg.showExactOption then
-            test = "("..arg.test:format(trigger[name], tostring(trigger["use_exact_" .. name]) or "false") ..")";
-          else
-            test = "("..arg.test:format(trigger[name])..")";
-          end
-        elseif(arg.test) then
-          test = "("..arg.test:format(trigger[name])..")";
-        elseif(arg.type == "longstring" and trigger[name.."_operator"]) then
-          if(trigger[name.."_operator"] == "==") then
-            test = "("..name.."==[["..trigger[name].."]])";
-          else
-            test = "("..name..":"..trigger[name.."_operator"]:format(trigger[name])..")";
-          end
-        elseif(arg.type == "number") then
-          if number then
-            test = "("..name..(trigger[name.."_operator"] or "==").. number ..")";
           end
         else
-          if(type(trigger[name]) == "table") then
-            trigger[name] = "error";
-          end
-          test = "("..name..(trigger[name.."_operator"] or "==")..(number or ("[["..(trigger[name] or "").."]]"))..")";
+          local value = trigger[name]
+          local operator = name and trigger[name.."_operator"]
+          local use_exact = name and trigger["use_exact_" .. name]
+          local use = name and trigger["use_"..name]
+          test = singleTest(arg, trigger, use, name, value, operator, use_exact)
         end
+
         if (arg.preamble) then
           preambles = preambles .. arg.preamble:format(trigger[name]) .. "\n"
         end
@@ -761,9 +798,9 @@ local function ConstructFunction(prototype, trigger, skipOptional)
           if(arg.required) then
             tinsert(required, test);
           elseif test ~= nil then
-            if arg.orConjunctionGroup  then
+            if arg.orConjunctionGroup then
               orConjunctionGroups[arg.orConjunctionGroup ] = orConjunctionGroups[arg.orConjunctionGroup ] or {}
-              tinsert(orConjunctionGroups[arg.orConjunctionGroup ], "("..test..")")
+              tinsert(orConjunctionGroups[arg.orConjunctionGroup ], test)
             else
               tinsert(tests, test);
             end
@@ -1645,14 +1682,14 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
       local loadFunc = loadFuncs[id];
       local loadOpt = loadFuncsForOptions[id];
       if WeakAuras.IsClassicEra() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, raidRole, raidMemberType)
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, raidRole, raidMemberType)
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, vehicle, class, player, realm, race, faction, playerLevel, raidRole, group, raidMemberType, zone, zoneId, encounter_id, size)
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, vehicle, class, player, realm, race, faction, playerLevel, raidRole, group, raidMemberType, zone, zoneId, encounter_id, size)
       elseif WeakAuras.IsWrathClassic() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, vehicle, vehicleUi, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidRole, raidMemberType)
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, vehicle, vehicleUi, group, player, realm, class, race, faction, playerLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, raidRole, raidMemberType)
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, vehicle, vehicleUi, class, player, realm, race, faction, playerLevel, role, raidRole, group, raidMemberType, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex)
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, vehicle, vehicleUi, class, player, realm, race, faction, playerLevel, role, raidRole, group, raidMemberType, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex)
       elseif WeakAuras.IsRetail() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, group, player, realm, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, position, raidMemberType, affixes)
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, inEncounter, alive, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, group, player, realm, specId, race, faction, playerLevel, effectiveLevel, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, role, position, raidMemberType, affixes)
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, specId, player, realm, race, faction, playerLevel, effectiveLevel, role, position, group, raidMemberType, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, affixes)
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, specId, player, realm, race, faction, playerLevel, effectiveLevel, role, position, group, raidMemberType, zone, zoneId, zonegroupId, encounter_id, size, difficulty, difficultyIndex, affixes)
       end
 
       if(shouldBeLoaded and not loaded[id]) then
@@ -5853,6 +5890,32 @@ end
 
 function WeakAuras.IsAuraLoaded(id)
   return Private.loaded[id]
+end
+
+function Private.ExecEnv.CreateSpellChecker()
+  local matcher = {
+    names = {},
+    spellIds = {},
+    AddName = function(self, name)
+      local spellId = tonumber(name)
+      if spellId then
+        name = GetSpellInfo(spellId)
+        if name then
+          self.names[name] = true
+        end
+      else
+        self.names[name] = true
+      end
+    end,
+    AddExact = function(self, spellId)
+      spellId = tonumber(spellId)
+      self.spellIds[spellId] = true
+    end,
+    Check = function(self, spellId)
+      return self.spellIds[spellId] or self.names[GetSpellInfo(spellId)]
+    end
+  }
+  return matcher
 end
 
 function Private.IconSources(data)

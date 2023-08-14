@@ -894,11 +894,11 @@ function Private.ExecEnv.ParseStringCheck(input)
     if escaped then
       escaped = false
     elseif c == '\\' then
-      partial = partial .. input:sub(start, i -1)
+      partial = partial .. input:sub(start, i - 1)
       start = i + 1
       escaped = true
     elseif c == "," then
-      matcher:Add(partial .. input:sub(start, i -1):trim())
+      matcher:Add(partial .. input:sub(start, i - 1):trim())
       start = i + 1
       partial = ""
     end
@@ -1210,6 +1210,11 @@ Private.load_prototype = {
   --     optional: whether the test is relevant for the options classification between loaded and unloaded, defaults to false
   args = {
     {
+      name ="generalTitle",
+      display = L["General"],
+      type = "description",
+    },
+    {
       name = "combat",
       display = L["In Combat"],
       type = "tristate",
@@ -1219,13 +1224,11 @@ Private.load_prototype = {
       events = {"PLAYER_REGEN_DISABLED", "PLAYER_REGEN_ENABLED"}
     },
     {
-      name = "encounter",
-      display = L["In Encounter"],
-      type = "tristate",
+      name = "never",
+      display = L["Never"],
+      type = "toggle",
       width = WeakAuras.normalWidth,
-      init = "arg",
-      optional = true,
-      events = {"ENCOUNTER_START", "ENCOUNTER_END"}
+      test = "false",
     },
     {
       name = "alive",
@@ -1237,8 +1240,17 @@ Private.load_prototype = {
       events = {"PLAYER_DEAD", "PLAYER_ALIVE", "PLAYER_UNGHOST"}
     },
     {
+      name = "encounter",
+      display = L["In Encounter"],
+      type = "tristate",
+      width = WeakAuras.normalWidth,
+      init = "arg",
+      optional = true,
+      events = {"ENCOUNTER_START", "ENCOUNTER_END"}
+    },
+    {
       name = "warmode",
-      display = L["War Mode Active"],
+      display = L["In War Mode"],
       type = "tristate",
       init = WeakAuras.IsRetail() and "arg" or nil,
       width = WeakAuras.normalWidth,
@@ -1246,13 +1258,6 @@ Private.load_prototype = {
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
       events = {"PLAYER_FLAGS_CHANGED"}
-    },
-    {
-      name = "never",
-      display = L["Never"],
-      type = "toggle",
-      width = WeakAuras.normalWidth,
-      test = "false",
     },
     {
       name = "petbattle",
@@ -1298,41 +1303,9 @@ Private.load_prototype = {
       events = {"WA_DRAGONRIDING_UPDATE"}
     },
     {
-      name = "ingroup",
-      display = L["Group Type"],
-      type = "multiselect",
-      width = WeakAuras.normalWidth,
-      init = "arg",
-      values = "group_types",
-      events = {"GROUP_ROSTER_UPDATE"}
-    },
-    {
-      name = "player",
-      init = "arg",
-      enable = false,
-      hidden = true
-    },
-    {
-      name = "realm",
-      init = "arg",
-      enable = false,
-      hidden = true
-    },
-    {
-      name = "namerealm",
-      display = L["Player Name/Realm"],
-      type = "string",
-      test = "nameRealmChecker:Check(player, realm)",
-      preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
-      desc = constants.nameRealmFilterDesc,
-    },
-    {
-      name = "ignoreNameRealm",
-      display = L["|cFFFF0000Not|r Player Name/Realm"],
-      type = "string",
-      test = "not nameRealmIgnoreChecker:Check(player, realm)",
-      preamble = "local nameRealmIgnoreChecker = Private.ExecEnv.ParseNameCheck(%q)",
-      desc = constants.nameRealmFilterDesc,
+      name ="playerTitle",
+      display = L["Player"],
+      type = "description",
     },
     {
       name = "class",
@@ -1626,6 +1599,36 @@ Private.load_prototype = {
       showExactOption = true
     },
     {
+      name = "player",
+      init = "arg",
+      enable = false,
+      hidden = true
+    },
+    {
+      name = "realm",
+      init = "arg",
+      enable = false,
+      hidden = true
+    },
+    {
+      name = "namerealm",
+      display = L["Player Name/Realm"],
+      type = "string",
+      multiline = true,
+      test = "nameRealmChecker:Check(player, realm)",
+      preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
+      desc = constants.nameRealmFilterDesc,
+    },
+    {
+      name = "ignoreNameRealm",
+      display = L["|cFFFF0000Not|r Player Name/Realm"],
+      type = "string",
+      multiline = true,
+      test = "not nameRealmIgnoreChecker:Check(player, realm)",
+      preamble = "local nameRealmIgnoreChecker = Private.ExecEnv.ParseNameCheck(%q)",
+      desc = constants.nameRealmFilterDesc,
+    },
+    {
       name = "race",
       display = L["Player Race"],
       type = "multiselect",
@@ -1644,7 +1647,11 @@ Private.load_prototype = {
       display = L["Player Level"],
       type = "number",
       init = "arg",
-      events = {"PLAYER_LEVEL_UP"}
+      events = {"PLAYER_LEVEL_UP"},
+      multiEntry = {
+        operator = "and",
+        limit = 2
+      },
     },
     {
       name = "effectiveLevel",
@@ -1654,77 +1661,11 @@ Private.load_prototype = {
       desc = L["The effective level differs from the level in e.g. Time Walking dungeons."],
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
-      events = {"PLAYER_LEVEL_UP", "UNIT_FLAGS", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
-    },
-    {
-      name = "zone",
-      display = L["Zone Name"],
-      type = "string",
-      init = "arg",
-      preamble = "local checker = Private.ExecEnv.ParseStringCheck(%q)",
-      test = "checker:Check(zone)",
-      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
-      desc = L["Supports multiple entries, separated by commas. Escape ',' with \\"]
-    },
-    {
-      name = "zoneId",
-      enable = false,
-      hidden = true,
-      init = "arg",
-    },
-    {
-      name = "zonegroupId",
-      enable = false,
-      hidden = true,
-      init = "arg",
-    },
-    {
-      name = "zoneIds",
-      display = L["Zone ID(s)"],
-      type = "string",
-      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
-      desc = get_zoneId_list,
-      preamble = "local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q)",
-      test = "zoneChecker:Check(zoneId, zonegroupId)"
-    },
-    {
-      name = "encounterid",
-      display = L["Encounter ID(s)"],
-      type = "string",
-      init = "arg",
-      desc = Private.get_encounters_list,
-      test = "WeakAuras.CheckNumericIds(%q, encounterid)",
-      events = {"ENCOUNTER_START", "ENCOUNTER_END"}
-    },
-    {
-      name = "size",
-      display = L["Instance Size Type"],
-      type = "multiselect",
-      values = "instance_types",
-      sorted = true,
-      init = "arg",
-      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
-    },
-    {
-      name = "difficulty",
-      display = L["Instance Difficulty"],
-      type = "multiselect",
-      values = "difficulty_types",
-      init = not WeakAuras.IsClassicEra() and "arg" or nil,
-      enable = not WeakAuras.IsClassicEra(),
-      hidden = WeakAuras.IsClassicEra(),
-      events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
-    },
-    {
-      name = "instance_type",
-      display = L["Instance Type"],
-      type = "multiselect",
-      values = "instance_difficulty_types",
-      sorted = true,
-      init = not WeakAuras.IsClassicEra() and "arg" or nil,
-      enable = not WeakAuras.IsClassicEra(),
-      hidden = WeakAuras.IsClassicEra(),
-      events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"},
+      events = {"PLAYER_LEVEL_UP", "UNIT_FLAGS", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"},
+      multiEntry = {
+        operator = "and",
+        limit = 2
+      },
     },
     {
       name = "role",
@@ -1757,6 +1698,15 @@ Private.load_prototype = {
       events = {"PLAYER_ROLES_ASSIGNED"}
     },
     {
+      name = "ingroup",
+      display = L["Group Type"],
+      type = "multiselect",
+      width = WeakAuras.normalWidth,
+      init = "arg",
+      values = "group_types",
+      events = {"GROUP_ROSTER_UPDATE"}
+    },
+    {
       name = "group_leader",
       display = WeakAuras.newFeatureString .. L["Group Leader/Assist"],
       type = "multiselect",
@@ -1765,6 +1715,84 @@ Private.load_prototype = {
       width = WeakAuras.doubleWidth,
       values = "group_member_types",
       test = "Private.ExecEnv.CheckGroupMemberType(%s, group_leader)"
+    },
+    {
+      name ="locationTitle",
+      display = L["Location"],
+      type = "description",
+    },
+    {
+      name = "zone",
+      display = L["Zone Name"],
+      type = "string",
+      multiline = true,
+      init = "arg",
+      preamble = "local checker = Private.ExecEnv.ParseStringCheck(%q)",
+      test = "checker:Check(zone)",
+      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
+      desc = L["Supports multiple entries, separated by commas. Escape ',' with \\"]
+    },
+    {
+      name = "zoneId",
+      enable = false,
+      hidden = true,
+      init = "arg",
+    },
+    {
+      name = "zonegroupId",
+      enable = false,
+      hidden = true,
+      init = "arg",
+    },
+    {
+      name = "zoneIds",
+      display = L["Zone ID(s)"],
+      type = "string",
+      multiline = true,
+      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
+      desc = get_zoneId_list,
+      preamble = "local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q)",
+      test = "zoneChecker:Check(zoneId, zonegroupId)",
+    },
+    {
+      name = "encounterid",
+      display = L["Encounter ID(s)"],
+      type = "string",
+      init = "arg",
+      multiline = true,
+      desc = Private.get_encounters_list,
+      test = "WeakAuras.CheckNumericIds(%q, encounterid)",
+      events = {"ENCOUNTER_START", "ENCOUNTER_END"},
+    },
+    {
+      name = "size",
+      display = L["Instance Size Type"],
+      type = "multiselect",
+      values = "instance_types",
+      sorted = true,
+      init = "arg",
+      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
+    },
+    {
+      name = "difficulty",
+      display = L["Instance Difficulty"],
+      type = "multiselect",
+      values = "difficulty_types",
+      init = not WeakAuras.IsClassicEra() and "arg" or nil,
+      enable = not WeakAuras.IsClassicEra(),
+      hidden = WeakAuras.IsClassicEra(),
+      events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
+    },
+    {
+      name = "instance_type",
+      display = L["Instance Type"],
+      type = "multiselect",
+      values = "instance_difficulty_types",
+      sorted = true,
+      init = not WeakAuras.IsClassicEra() and "arg" or nil,
+      enable = not WeakAuras.IsClassicEra(),
+      hidden = WeakAuras.IsClassicEra(),
+      events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"},
     },
     {
       name = "affixes",
@@ -1776,6 +1804,11 @@ Private.load_prototype = {
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
       events = {"CHALLENGE_MODE_START", "CHALLENGE_MODE_COMPLETED"},
+    },
+    {
+      name ="equipmentTitle",
+      display = L["Equipment"],
+      type = "description",
     },
     {
       name = "itemequiped",
@@ -2075,6 +2108,7 @@ Private.event_prototypes = {
         display = L["Unit Name/Realm"],
         desc = constants.nameRealmFilterDesc,
         type = "string",
+        multiline = true,
         preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "nameRealmChecker:Check(name, realm)",
         conditionType = "string",
@@ -2212,15 +2246,30 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitLevel(unit)",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "npcId",
         display = L["Npc ID"],
         type = "string",
+        multiline = true,
         store = true,
+        init = "select(6, strsplit('-', UnitGUID(unit) or ''))",
         conditionType = "string",
-        test = "select(6, strsplit('-', UnitGUID(unit) or '')) == %q",
+        preamble = "local npcIdChecker = Private.ExecEnv.ParseStringCheck(%q)",
+        test = "npcIdChecker:Check(npcId)",
+        conditionPreamble = function(input)
+          return Private.ExecEnv.ParseStringCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.npcId)
+        end,
+        operator_types = "none",
+        desc = L["Supports multiple entries, separated by commas"]
       },
       {
         name = "attackable",
@@ -2471,6 +2520,10 @@ Private.event_prototypes = {
         store = true,
         init = [[UnitLevel("player")]],
         conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "currentXP",
@@ -2479,6 +2532,10 @@ Private.event_prototypes = {
         store = true,
         init = [[UnitXP("player")]],
         conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "totalXP",
@@ -2487,6 +2544,10 @@ Private.event_prototypes = {
         store = true,
         init = [[UnitXPMax("player")]],
         conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "value",
@@ -2517,7 +2578,11 @@ Private.event_prototypes = {
         type = "number",
         init = "total ~= 0 and (value / total) * 100 or nil",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "showRested",
@@ -2533,6 +2598,10 @@ Private.event_prototypes = {
         type = "number",
         store = true,
         conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "percentrested",
@@ -2541,6 +2610,10 @@ Private.event_prototypes = {
         type = "number",
         store = true,
         conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
     },
     overlayFuncs = {
@@ -2630,7 +2703,11 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitHealth(unit)",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "value",
@@ -2659,7 +2736,11 @@ Private.event_prototypes = {
         type = "number",
         init = "total ~= 0 and (value / total) * 100 or nil",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "deficit",
@@ -2667,7 +2748,11 @@ Private.event_prototypes = {
         type = "number",
         init = "total - value",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "maxhealth",
@@ -2675,7 +2760,11 @@ Private.event_prototypes = {
         type = "number",
         init = "total",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "showAbsorb",
@@ -2716,13 +2805,6 @@ Private.event_prototypes = {
         hidden = not WeakAuras.IsRetail()
       },
       {
-        name = "showIncomingHeal",
-        display = L["Show Incoming Heal"],
-        type = "toggle",
-        test = "true",
-        reloadOptions = true,
-      },
-      {
         name = "absorb",
         type = "number",
         display = L["Absorb"],
@@ -2730,7 +2812,11 @@ Private.event_prototypes = {
         store = true,
         conditionType = "number",
         enable = function(trigger) return WeakAuras.IsRetail() and trigger.use_showAbsorb end,
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "healabsorb",
@@ -2740,7 +2826,18 @@ Private.event_prototypes = {
         store = true,
         conditionType = "number",
         enable = function(trigger) return WeakAuras.IsRetail() and trigger.use_showHealAbsorb end,
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
+      },
+      {
+        name = "showIncomingHeal",
+        display = L["Show Incoming Heal"],
+        type = "toggle",
+        test = "true",
+        reloadOptions = true,
       },
       {
         name = "healprediction",
@@ -2750,6 +2847,10 @@ Private.event_prototypes = {
         store = true,
         conditionType = "number",
         enable = function(trigger) return trigger.use_showIncomingHeal end,
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "name",
@@ -2771,6 +2872,7 @@ Private.event_prototypes = {
         name = "namerealm",
         display = L["Unit Name/Realm"],
         type = "string",
+        multiline = true,
         preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "nameRealmChecker:Check(name, realm)",
         conditionType = "string",
@@ -2787,9 +2889,20 @@ Private.event_prototypes = {
         name = "npcId",
         display = L["Npc ID"],
         type = "string",
+        multiline = true,
         store = true,
+        init = "select(6, strsplit('-', UnitGUID(unit) or ''))",
         conditionType = "string",
-        test = "select(6, strsplit('-', UnitGUID(unit) or '')) == %q",
+        preamble = "local npcIdChecker = Private.ExecEnv.ParseStringCheck(%q)",
+        test = "npcIdChecker:Check(npcId)",
+        conditionPreamble = function(input)
+          return Private.ExecEnv.ParseStringCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.npcId)
+        end,
+        operator_types = "none",
+        desc = L["Supports multiple entries, separated by commas"]
       },
       {
         name = "class",
@@ -3214,6 +3327,10 @@ Private.event_prototypes = {
                                      or "UnitPower(unit, powerType, powerThirdArg) / WeakAuras.UnitPowerDisplayMod(powerTypeToCheck)",
         store = true,
         conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "value",
@@ -3250,7 +3367,11 @@ Private.event_prototypes = {
         type = "number",
         init = "total ~= 0 and (value / total) * 100 or nil",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "deficit",
@@ -3258,7 +3379,11 @@ Private.event_prototypes = {
         type = "number",
         init = "total - value",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "maxpower",
@@ -3266,7 +3391,11 @@ Private.event_prototypes = {
         type = "number",
         init = "total",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "name",
@@ -3288,6 +3417,7 @@ Private.event_prototypes = {
         name = "namerealm",
         display = L["Unit Name/Realm"],
         type = "string",
+        multiline = true,
         preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "nameRealmChecker:Check(name, realm)",
         conditionType = "string",
@@ -3304,9 +3434,20 @@ Private.event_prototypes = {
         name = "npcId",
         display = L["Npc ID"],
         type = "string",
+        multiline = true,
         store = true,
+        init = "select(6, strsplit('-', UnitGUID(unit) or ''))",
         conditionType = "string",
-        test = "select(6, strsplit('-', UnitGUID(unit) or '')) == %q",
+        preamble = "local npcIdChecker = Private.ExecEnv.ParseStringCheck(%q)",
+        test = "npcIdChecker:Check(npcId)",
+        conditionPreamble = function(input)
+          return Private.ExecEnv.ParseStringCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.npcId)
+        end,
+        operator_types = "none",
+        desc = L["Supports multiple entries, separated by commas"]
       },
       {
         name = "class",
@@ -3593,6 +3734,7 @@ Private.event_prototypes = {
         name = "namerealm",
         display = L["Unit Name/Realm"],
         type = "string",
+        multiline = true,
         preamble = "local nameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "nameRealmChecker:Check(unitname, unitrealm)",
         conditionType = "string",
@@ -3768,15 +3910,32 @@ Private.event_prototypes = {
         name = "sourceName",
         display = L["Source Name"],
         type = "string",
+        multiline = true,
         init = "arg",
         store = true,
-        conditionType = "string"
+        conditionType = "string",
+        preamble = "local sourceNameChecker = Private.ExecEnv.ParseStringCheck(%q)",
+        test = "sourceNameChecker:Check(sourceName)",
+        desc = L["Supports multiple entries, separated by commas"],
       },
       {
         name = "sourceNpcId",
         display = L["Source NPC Id"],
         type = "string",
-        test = "select(6, strsplit('-', sourceGUID or '')) == %q",
+        multiline = true,
+        init = "select(6, strsplit('-', sourceGUID or ''))",
+        store = true,
+        conditionType = "string",
+        preamble = "local sourceNpcIdChecker = Private.ExecEnv.ParseStringCheck(%q)",
+        test = "sourceNpcIdChecker:Check(sourceNpcId)",
+        conditionPreamble = function(input)
+          return Private.ExecEnv.ParseStringCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.sourceNpcId)
+        end,
+        operator_types = "none",
+        desc = L["Supports multiple entries, separated by commas"],
         enable = function(trigger)
           return not (trigger.subeventPrefix == "ENVIRONMENTAL")
         end,
@@ -3872,18 +4031,35 @@ Private.event_prototypes = {
         name = "destName",
         display = L["Destination Name"],
         type = "string",
+        multiline = true,
         init = "arg",
+        store = true,
+        conditionType = "string",
+        preamble = "local destNameChecker = Private.ExecEnv.ParseStringCheck(%q)",
+        test = "destNameChecker:Check(destName)",
+        desc = L["Supports multiple entries, separated by commas"],
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end,
-        store = true,
-        conditionType = "string"
       },
       {
         name = "destNpcId",
         display = L["Destination NPC Id"],
         type = "string",
-        test = "select(6, strsplit('-', destGUID or '')) == %q",
+        multiline = true,
+        init = "select(6, strsplit('-', destGUID or ''))",
+        store = true,
+        conditionType = "string",
+        preamble = "local destNpcIdChecker = Private.ExecEnv.ParseStringCheck(%q)",
+        test = "destNpcIdChecker:Check(destNpcId)",
+        conditionPreamble = function(input)
+          return Private.ExecEnv.ParseStringCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.destNpcId)
+        end,
+        operator_types = "none",
+        desc = L["Supports multiple entries, separated by commas"],
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end,
@@ -3992,8 +4168,15 @@ Private.event_prototypes = {
         enable = function(trigger)
           return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
         end,
-        test = WeakAuras.IsClassicEra() and "GetSpellInfo(%q) == spellName" or nil,
         store = true,
+        preambleGroup = "spell",
+        preamble = "local spellChecker = Private.ExecEnv.CreateSpellChecker()",
+        multiEntry = {
+          operator = "preamble",
+          preambleAdd = WeakAuras.IsClassicEra() and "spellChecker:AddName(%q)" or "spellChecker:AddExact(%q)"
+        },
+        test = WeakAuras.IsClassicEra() and "spellChecker:Check(spellName)" or "spellChecker:Check(spellId)",
+        testGroup = "spell",
         conditionType = "number",
         type = "spell",
         showExactOption = false,
@@ -4007,6 +4190,14 @@ Private.event_prototypes = {
           return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
         end,
         store = true,
+        preambleGroup = "spell",
+        preamble = "local spellChecker = Private.ExecEnv.CreateSpellChecker()",
+        multiEntry = {
+          operator = "preamble",
+          preambleAdd = "spellChecker:AddName(%q)"
+        },
+        test = WeakAuras.IsClassicEra() and "spellChecker:Check(spellName)" or "spellChecker:Check(spellId)",
+        testGroup = "spell",
         conditionType = "string"
       },
       {
@@ -4835,7 +5026,7 @@ Private.event_prototypes = {
         type = "spell",
         init = "arg",
         showExactOption = true,
-        test = "Private.ExecEnv.CompareSpellIds(spellName, %s, %s)",
+        test = "Private.ExecEnv.CompareSpellIds(spellName, %q, %s)",
       }
     },
     nameFunc = function(trigger)
@@ -4896,7 +5087,7 @@ Private.event_prototypes = {
         type = "spell",
         init = "arg",
         showExactOption = true,
-        test = "Private.ExecEnv.CompareSpellIds(spellName, %s, %s)",
+        test = "Private.ExecEnv.CompareSpellIds(spellName, %q, %s)",
       },
       {
         name = "direction",
@@ -6833,12 +7024,17 @@ Private.event_prototypes = {
       {
         name = "spellId",
         display = L["Spell Id"],
-        type = "string",
+        type = "spell",
         init = "arg",
         store = true,
+        multiEntry = {
+          operator = "preamble",
+          preambleAdd = "spellChecker:AddExact(%q)"
+        },
+        preamble = "local spellChecker = Private.ExecEnv.CreateSpellChecker()",
+        test = "spellChecker:Check(spellId)",
         conditionType = "number"
       },
-
       {
         name = "icon",
         hidden = true,
@@ -7729,6 +7925,10 @@ Private.event_prototypes = {
         store = true,
         conditionType = "number",
         enable = function(trigger) return trigger.unit ~= "none" end,
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "rawthreatpct",
@@ -7738,6 +7938,10 @@ Private.event_prototypes = {
         store = true,
         conditionType = "number",
         enable = function(trigger) return trigger.unit ~= "none" end,
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "threatvalue",
@@ -7747,6 +7951,10 @@ Private.event_prototypes = {
         store = true,
         conditionType = "number",
         enable = function(trigger) return trigger.unit ~= "none" end,
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "value",
@@ -8075,22 +8283,50 @@ Private.event_prototypes = {
         store = true
       },
       {
-        name = "spellId",
-        display = L["Spell"],
+        name = "spellNames",
+        display = L["Name(s)"],
         type = "spell",
         enable = function(trigger) return not trigger.use_inverse end,
+        preambleGroup = "spell",
+        preamble = "local spellChecker = Private.ExecEnv.CreateSpellChecker()",
+        multiEntry = {
+          operator = "preamble",
+          preambleAdd = "spellChecker:AddName(%q)"
+        },
+        test = "spellChecker:Check(spellId)",
+        testGroup = "spell",
+        noValidation = true,
+      },
+      {
+        name = "spellIds",
+        display = L["Exact Spell ID(s)"],
+        type = "spell",
+        enable = function(trigger) return not trigger.use_inverse end,
+        preambleGroup = "spell",
+        preamble = "local spellChecker = Private.ExecEnv.CreateSpellChecker()",
+        multiEntry = {
+          operator = "preamble",
+          preambleAdd = "spellChecker:AddExact(%q)"
+        },
+        test = "spellChecker:Check(spellId)",
+        testGroup = "spell",
+      },
+      {
+        name = "spellId",
+        display = L["Spell ID"],
         conditionType = "number",
-        showExactOption = true,
-        test = "Private.ExecEnv.CompareSpellIds(spellId, %s, %s)",
         store = true,
+        test = "true",
+        hidden = true
       },
       {
         name = "spell",
-        display = L["Legacy Spellname"],
+        display = L["Spellname"],
         type = "string",
-        enable = function(trigger) return not trigger.use_inverse end,
         conditionType = "string",
         store = true,
+        test = "true",
+        hidden = true
       },
       {
         name = "castType",
@@ -8133,7 +8369,11 @@ Private.event_prototypes = {
         enable = WeakAuras.IsRetail() and function(trigger) return not trigger.use_inverse end or false,
         store = true,
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "stageTotal",
@@ -8214,12 +8454,23 @@ Private.event_prototypes = {
         name = "npcId",
         display = L["Npc ID"],
         type = "string",
+        multiline = true,
         store = true,
+        init = "select(6, strsplit('-', UnitGUID(unit) or ''))",
         conditionType = "string",
-        test = "select(6, strsplit('-', UnitGUID(unit) or '')) == %q",
+        preamble = "local npcIdChecker = Private.ExecEnv.ParseStringCheck(%q)",
+        test = "npcIdChecker:Check(npcId)",
+        conditionPreamble = function(input)
+          return Private.ExecEnv.ParseStringCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.npcId)
+        end,
+        operator_types = "none",
+        desc = L["Supports multiple entries, separated by commas"],
         enable = function(trigger)
           return not trigger.use_inverse
-        end
+        end,
       },
       {
         name = "class",
@@ -8346,6 +8597,7 @@ Private.event_prototypes = {
         name = "sourceNameRealm",
         display = L["Source Unit Name/Realm"],
         type = "string",
+        multiline = true,
         preamble = "local sourceNameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "sourceNameRealmChecker:Check(sourceName, sourceRealm)",
         conditionType = "string",
@@ -8394,6 +8646,7 @@ Private.event_prototypes = {
         name = "destNameRealm",
         display = L["Name/Realm of Caster's Target"],
         type = "string",
+        multiline = true,
         preamble = "local destNameRealmChecker = Private.ExecEnv.ParseNameCheck(%q)",
         test = "destNameRealmChecker:Check(destName, destRealm)",
         conditionType = "string",
@@ -8560,7 +8813,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "strength",
@@ -8570,7 +8827,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsClassicEraOrWrath(),
         conditionType = "number",
-        hidden = WeakAuras.IsRetail()
+        hidden = WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "agility",
@@ -8580,7 +8841,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsClassicEraOrWrath(),
         conditionType = "number",
-        hidden = WeakAuras.IsRetail()
+        hidden = WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "intellect",
@@ -8590,7 +8855,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsClassicEraOrWrath(),
         conditionType = "number",
-        hidden = WeakAuras.IsRetail()
+        hidden = WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "spirit",
@@ -8600,7 +8869,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsClassicEraOrWrath(),
         conditionType = "number",
-        hidden = WeakAuras.IsRetail()
+        hidden = WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "stamina",
@@ -8608,7 +8881,11 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitStat('player', LE_UNIT_STAT_STAMINA)) * GetUnitMaxHealthModifier('player')",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "criticalrating",
@@ -8618,7 +8895,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsWrathOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathOrRetail()
+        hidden = not WeakAuras.IsWrathOrRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "criticalpercent",
@@ -8626,7 +8907,11 @@ Private.event_prototypes = {
         type = "number",
         init = "WeakAuras.GetCritChance()",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "hitrating",
@@ -8636,7 +8921,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsWrathClassic(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathClassic()
+        hidden = not WeakAuras.IsWrathClassic(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "hitpercent",
@@ -8646,7 +8935,11 @@ Private.event_prototypes = {
         store = true,
         conditionType = "number",
         enable = WeakAuras.IsWrathClassic(),
-        hidden = not WeakAuras.IsWrathClassic()
+        hidden = not WeakAuras.IsWrathClassic(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "hasterating",
@@ -8656,7 +8949,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsWrathOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathOrRetail()
+        hidden = not WeakAuras.IsWrathOrRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "hastepercent",
@@ -8664,7 +8961,11 @@ Private.event_prototypes = {
         type = "number",
         init = "GetHaste()",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "meleehastepercent",
@@ -8674,7 +8975,11 @@ Private.event_prototypes = {
         store = true,
         conditionType = "number",
         enable = WeakAuras.IsWrathClassic(),
-        hidden = not WeakAuras.IsWrathClassic()
+        hidden = not WeakAuras.IsWrathClassic(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "expertiserating",
@@ -8684,7 +8989,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsWrathClassic(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathClassic()
+        hidden = not WeakAuras.IsWrathClassic(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "expertisebonus",
@@ -8694,7 +9003,11 @@ Private.event_prototypes = {
         store = true,
         conditionType = "number",
         enable = WeakAuras.IsWrathClassic(),
-        hidden = not WeakAuras.IsWrathClassic()
+        hidden = not WeakAuras.IsWrathClassic(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "armorpenrating",
@@ -8704,7 +9017,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsWrathClassic(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathClassic()
+        hidden = not WeakAuras.IsWrathClassic(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "armorpenpercent",
@@ -8714,7 +9031,11 @@ Private.event_prototypes = {
         store = true,
         conditionType = "number",
         enable = WeakAuras.IsWrathClassic(),
-        hidden = not WeakAuras.IsWrathClassic()
+        hidden = not WeakAuras.IsWrathClassic(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "resiliencerating",
@@ -8724,7 +9045,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsWrathClassic(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathClassic()
+        hidden = not WeakAuras.IsWrathClassic(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "resiliencepercent",
@@ -8734,7 +9059,11 @@ Private.event_prototypes = {
         store = true,
         conditionType = "number",
         enable = WeakAuras.IsWrathClassic(),
-        hidden = not WeakAuras.IsWrathClassic()
+        hidden = not WeakAuras.IsWrathClassic(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "spellpenpercent",
@@ -8744,7 +9073,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsWrathClassic(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathClassic()
+        hidden = not WeakAuras.IsWrathClassic(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "masteryrating",
@@ -8754,7 +9087,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "masterypercent",
@@ -8764,7 +9101,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "versatilityrating",
@@ -8774,7 +9115,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "versatilitypercent",
@@ -8784,7 +9129,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "attackpower",
@@ -8792,7 +9141,11 @@ Private.event_prototypes = {
         type = "number",
         init = "WeakAuras.GetEffectiveAttackPower()",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "resistanceholy",
@@ -8802,7 +9155,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsClassicEraOrWrath(),
         conditionType = "number",
-        hidden = WeakAuras.IsRetail()
+        hidden = WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "resistancefire",
@@ -8812,7 +9169,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsClassicEraOrWrath(),
         conditionType = "number",
-        hidden = WeakAuras.IsRetail()
+        hidden = WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "resistancenature",
@@ -8822,7 +9183,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsClassicEraOrWrath(),
         conditionType = "number",
-        hidden = WeakAuras.IsRetail()
+        hidden = WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "resistancefrost",
@@ -8832,7 +9197,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsClassicEraOrWrath(),
         conditionType = "number",
-        hidden = WeakAuras.IsRetail()
+        hidden = WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "resistanceshadow",
@@ -8842,7 +9211,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsClassicEraOrWrath(),
         conditionType = "number",
-        hidden = WeakAuras.IsRetail()
+        hidden = WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "resistancearcane",
@@ -8852,7 +9225,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsClassicEraOrWrath(),
         conditionType = "number",
-        hidden = WeakAuras.IsRetail()
+        hidden = WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "leechrating",
@@ -8862,7 +9239,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "leechpercent",
@@ -8872,7 +9253,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "movespeedrating",
@@ -8882,7 +9267,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "moveSpeed",
@@ -8897,7 +9286,11 @@ Private.event_prototypes = {
         type = "number",
         init = "GetUnitSpeed('player') / 7 * 100",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "runspeedpercent",
@@ -8905,7 +9298,11 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, GetUnitSpeed('player')) / 7 * 100",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "avoidancerating",
@@ -8915,7 +9312,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "avoidancepercent",
@@ -8925,7 +9326,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "defense",
@@ -8935,7 +9340,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsWrathClassic(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathClassic()
+        hidden = not WeakAuras.IsWrathClassic(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "dodgerating",
@@ -8945,7 +9354,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsWrathOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathOrRetail()
+        hidden = not WeakAuras.IsWrathOrRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "dodgepercent",
@@ -8953,7 +9366,11 @@ Private.event_prototypes = {
         type = "number",
         init = "GetDodgeChance()",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "parryrating",
@@ -8963,7 +9380,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsWrathOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathOrRetail()
+        hidden = not WeakAuras.IsWrathOrRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "parrypercent",
@@ -8971,7 +9392,11 @@ Private.event_prototypes = {
         type = "number",
         init = "GetParryChance()",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "blockpercent",
@@ -8979,7 +9404,11 @@ Private.event_prototypes = {
         type = "number",
         init = "GetBlockChance()",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "blocktargetpercent",
@@ -8989,7 +9418,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "blockvalue",
@@ -8997,7 +9430,11 @@ Private.event_prototypes = {
         type = "number",
         init = "GetShieldBlock()",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "staggerpercent",
@@ -9007,7 +9444,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "staggertargetpercent",
@@ -9017,7 +9458,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "armorrating",
@@ -9025,7 +9470,11 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitArmor('player'))",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "armorpercent",
@@ -9035,7 +9484,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsWrathOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathOrRetail()
+        hidden = not WeakAuras.IsWrathOrRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "armortargetpercent",
@@ -9045,7 +9498,11 @@ Private.event_prototypes = {
         store = true,
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsRetail()
+        hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
     },
     automaticrequired = true

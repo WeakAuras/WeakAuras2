@@ -594,7 +594,7 @@ Private.event_prototypes["DBM Timer"] = {
     return ret:format(
       trigger.use_count and trigger.count or "",
       trigger.use_id and trigger.id or "",
-      trigger.use_spellId and trigger.spellId or "",
+      trigger.use_spellId and tostring(trigger.spellId) or "",
       trigger.use_message and trigger.message or "",
       trigger.use_message and trigger.message_operator or "",
       trigger.use_cloneId and "true" or "false",
@@ -1220,7 +1220,7 @@ Private.event_prototypes["BigWigs Timer"] = {
     ]=]
     return ret:format(
       trigger.use_count and trigger.count or "",
-      trigger.use_spellId and trigger.spellId or "",
+      trigger.use_spellId and tostring(trigger.spellId) or "",
       trigger.use_text and trigger.text or "",
       trigger.use_text and trigger.text_operator or "",
       trigger.use_cloneId and "true" or "false",
@@ -1609,7 +1609,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
 
     return ret:format(
       trigger.use_count and trigger.count or "",
-      trigger.use_spellId and trigger.spellId or "",
+      trigger.use_spellId and tostring(trigger.spellId) or "",
       trigger.use_message and trigger.message or "",
       trigger.use_message and trigger.message_operator or "",
       trigger.use_cloneId and "true" or "false",
