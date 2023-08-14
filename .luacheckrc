@@ -35,6 +35,7 @@ globals = {
 
 	-- misc custom
 	"AceGUIWeakAurasMultiLineEditBoxInsertLink",
+	"AceGUIWeakAurasMultiLineEditBoxWithEnterInsertLink",
 	"AceGUIWidgetLSMlists",
 	"CUSTOM_CLASS_COLORS",
 	"LibStub",
