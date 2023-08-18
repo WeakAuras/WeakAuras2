@@ -71,53 +71,11 @@ local methods = {
 
     self.menu = {}
 
-    self.frame:SetScript("OnMouseUp", function()
-      Hide_Tooltip()
-      self:SetMenu()
-      LibDD:EasyMenu(self.menu, WeakAuras_DropDownMenu, self.frame, 0, 0, "MENU")
-    end)
-
     self.frame:SetScript("OnEnter", function()
       self:SetNormalTooltip()
       Show_Long_Tooltip(self.frame, self.frame.description)
     end)
     self.frame:SetScript("OnLeave", Hide_Tooltip)
-  end,
-  ["SetMenu"] = function(self)
-    wipe(self.menu)
-    for auraId in pairs(self.linkedAuras) do
-      if not self.linkedChildren[auraId] then
-        tinsert(self.menu,
-          {
-            text = auraId,
-            notCheckable = true,
-            hasArrow = true,
-            menuList = {
-              {
-                text = L["Update"],
-                notCheckable = true,
-                func = function()
-                  local auraData = WeakAuras.GetData(auraId)
-                  if auraData then
-                    local success, error = WeakAuras.Import(self.companionData.encoded, auraData)
-                    if not success and error ~= nil then
-                      WeakAuras.prettyPrint(error)
-                    end
-                  end
-                end
-              },
-              {
-                text = L["Ignore updates"],
-                notCheckable = true,
-                func = function()
-                  StaticPopup_Show("WEAKAURAS_CONFIRM_IGNORE_UPDATES", "", "", auraId)
-                end
-              }
-            }
-          }
-        )
-      end
-    end
   end,
   ["SetLogo"] = function(self, path)
     self.frame.updateLogo.tex:SetTexture(path)
