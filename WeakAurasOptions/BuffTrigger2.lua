@@ -199,7 +199,6 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
       end,
       validate = isExactSpellId and WeakAuras.ValidateNumeric or nil,
       control = "WeakAurasInputFocus",
-      getWithFocus = function() return trigger[optionKey] and trigger[optionKey][i] or "" end
     }
   end
   -- VALIDATE ?
