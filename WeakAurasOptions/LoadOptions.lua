@@ -643,7 +643,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             OptionsPrivate.SortDisplayButtons(nil, true);
           end,
           control = "WeakAurasInputFocus",
-          getWithFocus = function() return trigger[realname] or "" end
         };
         order = order + 1;
       elseif(arg.type == "select" or arg.type == "unit") then
