@@ -228,6 +228,7 @@ Private.ExecEnv.BossMods.DBM = {
         if bar.scheduledScanExpireAt == nil or bar.scheduledScanExpireAt <= GetTime() then
           self.bars[timerId] = nil
         end
+        bar.expired = true
         WeakAuras.ScanEvents("DBM_TimerStop", timerId)
         if self.isGeneric then
           WeakAuras.ScanEvents("BossMod_TimerStop", timerId)
