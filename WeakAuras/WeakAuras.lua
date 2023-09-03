@@ -5538,7 +5538,7 @@ function Private.AnchorFrame(data, region, parent)
 
     local anchorPoint = data.anchorPoint
     if data.parent then
-      if data.anchorFrameType == "SCREEN" or data.anchorFrameType == "UIPARENT" or data.anchorFrameType == "MOUSE" then
+      if data.anchorFrameType == "SCREEN" or data.anchorFrameType == "MOUSE" then
         anchorPoint = "CENTER"
       end
     else
