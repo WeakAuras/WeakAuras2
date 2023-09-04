@@ -584,7 +584,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                     return name;
                   end
                 end
-                return useExactSpellId and L["Invalid Item ID"] or L["Invalid Item Name/ID/Link"];
+                return (useExactSpellId and L["Invalid Item ID"] or L["Invalid Item Name/ID/Link"]) .. "\0"
               else
                 return nil;
               end
@@ -597,12 +597,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                     if arg.negativeIsEJ and WeakAuras.IsRetail() and spellID < 0 then
                       local tbl = C_EncounterJournal.GetSectionInfo(-spellID)
                       if tbl and tbl.title then
-                        return ("%s (%s)"):format(spellID, tbl.title)
+                        return ("%s (%s)"):format(spellID, tbl.title) .. "\0" .. (trigger[realname] or "")
                       end
                     end
                     local spellName = GetSpellInfo(WeakAuras.SafeToNumber(trigger[realname]))
                     if spellName then
-                      return ("%s (%s)"):format(spellID, spellName)
+                      return ("%s (%s)"):format(spellID, spellName) .. "\0" .. (trigger[realname] or "")
                     end
                   elseif not useExactSpellId then
                     local spellName = GetSpellInfo(trigger[realname])
@@ -614,7 +614,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                 if arg.noValidation then
                   return trigger[realname]
                 end
-                return useExactSpellId and L["Invalid Spell ID"] or L["Invalid Spell Name/ID/Link"];
+                return (useExactSpellId and L["Invalid Spell ID"] or L["Invalid Spell Name/ID/Link"]) .. "\0"
               else
                 return nil;
               end
