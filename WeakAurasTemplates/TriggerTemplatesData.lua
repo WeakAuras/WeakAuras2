@@ -4429,6 +4429,7 @@ templates.class.DRUID = {
         { spell = 102351, type = "ability", buff = true, talent = 103104 }, -- Cenarion Ward
         { spell = 102359, type = "ability", requiresTarget = true, talent = 103322 }, -- Mass Entanglement
         { spell = 102401, type = "ability", buff = true, requiresTarget = true, talent = 103276 }, -- Wild Charge
+        { spell = 102693, type = "ability", requiresTarget = true, duration = 15, talent = 117102 }, -- Grove Guardians
         { spell = 102793, type = "ability", talent = 103321 }, -- Ursol's Vortex
         { spell = 106832, type = "ability", requiresTarget = true, talent = 103301 }, -- Thrash
         { spell = 106839, type = "ability", requiresTarget = true, talent = 103302 }, -- Skull Bash
