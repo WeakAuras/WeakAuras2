@@ -597,12 +597,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                     if arg.negativeIsEJ and WeakAuras.IsRetail() and spellID < 0 then
                       local tbl = C_EncounterJournal.GetSectionInfo(-spellID)
                       if tbl and tbl.title then
-                        return ("%s (%s)"):format(spellID, tbl.title) .. "\0" .. (trigger[realname] or "")
+                        return ("%s (%s)"):format(spellID, tbl.title) .. "\0" .. value
                       end
                     end
                     local spellName = GetSpellInfo(WeakAuras.SafeToNumber(trigger[realname]))
                     if spellName then
-                      return ("%s (%s)"):format(spellID, spellName) .. "\0" .. (trigger[realname] or "")
+                      return ("%s (%s)"):format(spellID, spellName) .. "\0" .. value
                     end
                   elseif not useExactSpellId then
                     local spellName = GetSpellInfo(trigger[realname])
