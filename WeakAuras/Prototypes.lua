@@ -9555,6 +9555,7 @@ if WeakAuras.IsClassicEraOrWrath() then
   if not WeakAuras.IsWrathClassic() then
     Private.event_prototypes["Death Knight Rune"] = nil
   end
+  Private.event_prototypes["Evoker Essence"] = nil
   Private.event_prototypes["Alternate Power"] = nil
   Private.event_prototypes["Equipment Set"] = nil
   Private.event_prototypes["Spell Activation Overlay"] = nil
