@@ -178,7 +178,7 @@ function OptionsPrivate.GetActionOptions(data)
         name = L["Voice"],
         order = 3.2,
         disabled = function() return not data.actions.start.do_message end,
-        hidden = function() return (WeakAuras.IsClassicEra()) or data.actions.start.message_type ~= "TTS" end,
+        hidden = function() return data.actions.start.message_type ~= "TTS" end,
         values = OptionsPrivate.Private.tts_voices,
         desc = L["Available Voices are system specific"]
       },
@@ -635,7 +635,7 @@ function OptionsPrivate.GetActionOptions(data)
         name = L["Voice"],
         order = 23.2,
         disabled = function() return not data.actions.finish.do_message end,
-        hidden = function() return (WeakAuras.IsClassicEra()) or data.actions.finish.message_type ~= "TTS" end,
+        hidden = function() return data.actions.finish.message_type ~= "TTS" end,
         values = OptionsPrivate.Private.tts_voices,
         desc = L["Available Voices are system specific"]
       },
