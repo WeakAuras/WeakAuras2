@@ -187,7 +187,6 @@ function WeakAuras.RaidFlagToIndex(flag)
 end
 
 local function get_zoneId_list()
-  if WeakAuras.IsClassicEra() then return "" end
   local currentmap_id = C_Map.GetBestMapForUnit("player")
   if not currentmap_id then
     return ("%s\n\n%s"):format(
@@ -1671,20 +1670,18 @@ Private.load_prototype = {
       name = "zoneId",
       enable = false,
       hidden = true,
-      init = not WeakAuras.IsClassicEra() and "arg" or nil,
+      init = "arg",
     },
     {
       name = "zonegroupId",
       enable = false,
       hidden = true,
-      init = not WeakAuras.IsClassicEra() and "arg" or nil,
+      init = "arg",
     },
     {
       name = "zoneIds",
       display = L["Zone ID(s)"],
       type = "string",
-      enable = not WeakAuras.IsClassicEra(),
-      hidden = WeakAuras.IsClassicEra(),
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
       desc = get_zoneId_list,
       preamble = "local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q)",
