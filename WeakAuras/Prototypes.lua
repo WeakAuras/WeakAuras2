@@ -1902,12 +1902,12 @@ end
 
 local function AddTargetConditionEvents(result, useFocus)
   if WeakAuras.IsWrathOrRetail() then
-    tinsert(result, "PLAYER_SOFT_ENEMY_CHANGED")
-    tinsert(result, "PLAYER_SOFT_FRIEND_CHANGED")
     if useFocus then
       tinsert(result, "PLAYER_FOCUS_CHANGED")
     end
   end
+  tinsert(result, "PLAYER_SOFT_ENEMY_CHANGED")
+  tinsert(result, "PLAYER_SOFT_FRIEND_CHANGED")
   tinsert(result, "PLAYER_TARGET_CHANGED")
   return result
 end
@@ -5531,12 +5531,11 @@ Private.event_prototypes = {
         "SPELL_UPDATE_USABLE",
         "PLAYER_TARGET_CHANGED",
         "RUNE_POWER_UPDATE",
+        "PLAYER_SOFT_ENEMY_CHANGED",
+        "PLAYER_SOFT_FRIEND_CHANGED"
       }
       if WeakAuras.IsWrathClassic() then
         tinsert(events, "RUNE_TYPE_UPDATE")
-      else
-        tinsert(events, "PLAYER_SOFT_ENEMY_CHANGED")
-        tinsert(events, "PLAYER_SOFT_FRIEND_CHANGED")
       end
 
       return {

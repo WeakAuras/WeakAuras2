@@ -865,15 +865,12 @@ Private.soft_target_cvars = {
 
 local target_unit_types = {
   target = L["Target"],
+  softenemy = L["Soft Enemy"],
+  softfriend = L["Soft Friend"]
 }
 
 if not WeakAuras.IsClassicEra() then
   target_unit_types.focus = L["Focus"]
-end
-
-if WeakAuras.IsWrathOrRetail() then
-  target_unit_types.softenemy = L["Soft Enemy"]
-  target_unit_types.softfriend = L["Soft Friend"]
 end
 
 Private.unit_types = Mixin({
@@ -3352,7 +3349,9 @@ Private.baseUnitId = {
   ["target"] = true,
   ["pet"] = true,
   ["focus"] = true,
-  ["vehicle"] = true
+  ["vehicle"] = true,
+  ["softenemy"] = true,
+  ["softfriend"] = true
 }
 
 Private.multiUnitId = {
@@ -3390,11 +3389,6 @@ for i = 1, 4 do
   Private.multiUnitUnits.party["party"..i] = true
   Private.multiUnitUnits.group["partypet"..i] = true
   Private.multiUnitUnits.party["partypet"..i] = true
-end
-
-if WeakAuras.IsWrathOrRetail() then
-  Private.baseUnitId["softenemy"] = true
-  Private.baseUnitId["softfriend"] = true
 end
 
 if WeakAuras.IsRetail() then
