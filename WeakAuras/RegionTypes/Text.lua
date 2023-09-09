@@ -16,6 +16,7 @@ local default = {
   selfPoint = "BOTTOM",
   anchorPoint = "CENTER",
   anchorFrameType = "SCREEN",
+  anchorFrameParent = true,
   xOffset = 0,
   yOffset = 0,
   font = defaultFont,

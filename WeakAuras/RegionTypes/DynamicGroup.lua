@@ -25,6 +25,7 @@ local default = {
   animate = false,
   anchorPoint = "CENTER",
   anchorFrameType = "SCREEN",
+  anchorFrameParent = true,
   xOffset = 0,
   yOffset = 0,
   radius = 200,

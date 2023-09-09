@@ -9,6 +9,7 @@ local default = {
   controlledChildren = {},
   anchorPoint = "CENTER",
   anchorFrameType = "SCREEN",
+  anchorFrameParent = true,
   xOffset = 0,
   yOffset = 0,
   frameStrata = 1,
