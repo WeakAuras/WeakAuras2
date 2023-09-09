@@ -694,6 +694,17 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, unitForUnitTrigger, arg1, arg2, ...);
         end
         if (ok and returnValue) or optionsEvent then
+          if optionsEvent then
+            if Private.event_prototypes[data.event].GetNameAndIcon then
+              local name, icon = Private.event_prototypes[data.event].GetNameAndIcon(data.trigger)
+              if state.name == nil then
+                state.name = name
+              end
+              if state.icon == nil then
+                state.icon = icon
+              end
+            end
+          end
           if(Private.ActivateEvent(id, triggernum, data, state)) then
             updateTriggerState = true;
           end
@@ -3856,11 +3867,15 @@ function GenericTrigger.GetNameAndIcon(data, triggernum)
   local icon, name
   if (Private.category_event_prototype[trigger.type]) then
     if(trigger.event and Private.event_prototypes[trigger.event]) then
-      if(Private.event_prototypes[trigger.event].iconFunc) then
-        icon = Private.event_prototypes[trigger.event].iconFunc(trigger);
-      end
-      if(Private.event_prototypes[trigger.event].nameFunc) then
-        name = Private.event_prototypes[trigger.event].nameFunc(trigger);
+      if (Private.event_prototypes[trigger.event].GetNameAndIcon) then
+        return Private.event_prototypes[trigger.event].GetNameAndIcon(trigger)
+      else
+        if(Private.event_prototypes[trigger.event].iconFunc) then
+          icon = Private.event_prototypes[trigger.event].iconFunc(trigger);
+        end
+        if(Private.event_prototypes[trigger.event].nameFunc) then
+          name = Private.event_prototypes[trigger.event].nameFunc(trigger);
+        end
       end
     end
   end
@@ -4204,13 +4219,20 @@ function GenericTrigger.CreateFallbackState(data, triggernum, state)
 
   Private.ActivateAuraEnvironment(data.id, "", state);
   local trigger = data.triggers[triggernum].trigger
-  if (event.nameFunc) then
-    local ok, name = xpcall(event.nameFunc, Private.GetErrorHandlerUid(data.uid, L["Name Function (fallback state)"]), trigger);
+
+  if event.GetNameAndIcon then
+    local ok, name, icon = xpcall(event.GetNameAndIcon, Private.GetErrorHandlerUid(data.uid, L["GetNameAndIcon Function (fallback state)"]), trigger);
     state.name = ok and name or nil;
-  end
-  if (event.iconFunc) then
-    local ok, icon = xpcall(event.iconFunc, Private.GetErrorHandlerUid(data.uid, L["Icon Function (fallback state)"]), trigger);
     state.icon = ok and icon or nil;
+  else
+    if (event.nameFunc) then
+      local ok, name = xpcall(event.nameFunc, Private.GetErrorHandlerUid(data.uid, L["Name Function (fallback state)"]), trigger);
+      state.name = ok and name or nil;
+    end
+    if (event.iconFunc) then
+      local ok, icon = xpcall(event.iconFunc, Private.GetErrorHandlerUid(data.uid, L["Icon Function (fallback state)"]), trigger);
+      state.icon = ok and icon or nil;
+    end
   end
 
   if (event.textureFunc ) then
