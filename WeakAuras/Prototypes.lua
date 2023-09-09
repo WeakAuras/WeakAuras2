@@ -1613,7 +1613,7 @@ Private.load_prototype = {
       name = "spellknown",
       display = L["Spell Known"],
       type = "spell",
-      test = "WeakAuras.IsSpellKnownForLoad(%s, %s)",
+      test = "WeakAuras.IsSpellKnownForLoad(%q, %s)",
       events = WeakAuras.IsWrathClassic() and {"SPELLS_CHANGED", "UNIT_PET", "PLAYER_TALENT_UPDATE"} or {"SPELLS_CHANGED", "UNIT_PET"},
       showExactOption = true
     },
@@ -1621,7 +1621,7 @@ Private.load_prototype = {
       name = "not_spellknown",
       display = WeakAuras.newFeatureString .. L["|cFFFF0000Not|r Spell Known"],
       type = "spell",
-      test = "not WeakAuras.IsSpellKnownForLoad(%s, %s)",
+      test = "not WeakAuras.IsSpellKnownForLoad(%q, %s)",
       events = WeakAuras.IsWrathClassic() and {"SPELLS_CHANGED", "UNIT_PET", "PLAYER_TALENT_UPDATE"} or {"SPELLS_CHANGED", "UNIT_PET"},
       showExactOption = true
     },
