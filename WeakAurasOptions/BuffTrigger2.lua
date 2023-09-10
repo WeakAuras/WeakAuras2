@@ -1035,6 +1035,13 @@ local function GetBuffTriggerOptions(data, triggernum)
       width = WeakAuras.doubleWidth,
       hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")) end
     },
+    inRange = {
+      type = "toggle",
+      name = L["Ignore out of casting range"],
+      order = 69.81,
+      width = WeakAuras.doubleWidth,
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and WeakAuras.IsRetail()) end
+    },
     ignoreInvisible = {
       type = "toggle",
       name = L["Ignore out of checking range"],
