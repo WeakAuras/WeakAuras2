@@ -3763,7 +3763,7 @@ end
 function GenericTrigger.GetDelay(data)
   if data.event then
     local prototype = Private.event_prototypes[data.event]
-    if prototype and prototype.delayEvents then
+    if prototype and prototype.type == data.type and prototype.delayEvents then
       local trigger = data.trigger
       if trigger.use_delay and type(trigger.delay) == "number" and trigger.delay > 0 then
         return trigger.delay
