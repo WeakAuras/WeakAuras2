@@ -1956,6 +1956,17 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 68 then
+    if data.parent then
+      local parentData = WeakAuras.GetData(data.parent)
+      if parentData and parentData.regionType == "dynamicgroup" then
+        if data.anchorFrameParent == nil then
+          data.anchorFrameParent = false
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 

@@ -1090,7 +1090,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       desc = L["Sets the anchored frame as the aura's parent, causing the aura to inherit attributes such as visibility and scale."],
       order = 71,
       get = function()
-        return data.anchorFrameParent
+        return data.anchorFrameParent or data.anchorFrameParent == nil;
       end,
       hidden = function()
         return not IsGroupByFrame() and (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "UIPARENT" or data.anchorFrameType == "MOUSE" or IsParentDynamicGroup());
