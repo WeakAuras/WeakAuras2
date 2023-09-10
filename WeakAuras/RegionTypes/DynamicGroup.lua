@@ -25,7 +25,6 @@ local default = {
   animate = false,
   anchorPoint = "CENTER",
   anchorFrameType = "SCREEN",
-  anchorFrameParent = true,
   xOffset = 0,
   yOffset = 0,
   radius = 200,
@@ -1364,7 +1363,7 @@ local function modify(parent, region, data)
       controlPoint:SetShown(show and frame ~= WeakAuras.HiddenFrames)
       controlPoint:SetWidth(regionData.dimensions.width)
       controlPoint:SetHeight(regionData.dimensions.height)
-      if data.anchorFrameParent then
+      if data.anchorFrameParent or data.anchorFrameParent == nil then
         controlPoint:SetParent(frame == "" and self.relativeTo or frame)
       else
         controlPoint:SetParent(self)

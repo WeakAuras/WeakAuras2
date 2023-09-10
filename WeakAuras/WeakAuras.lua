@@ -1,7 +1,7 @@
 --- @type string, Private
 local AddonName, Private = ...
 
-local internalVersion = 67
+local internalVersion = 68
 
 -- Lua APIs
 local insert = table.insert
@@ -5566,7 +5566,7 @@ function Private.AnchorFrame(data, region, parent)
   else
     local anchorParent = GetAnchorFrame(data, region, parent);
     if not anchorParent then return end
-    if (data.anchorFrameParent
+    if (data.anchorFrameParent or data.anchorFrameParent == nil
         or data.anchorFrameType == "SCREEN" or data.anchorFrameType == "UIPARENT" or data.anchorFrameType == "MOUSE") then
       xpcall(region.SetParent, Private.GetErrorHandlerId(data.id, L["Anchoring"]), region, anchorParent);
     else
