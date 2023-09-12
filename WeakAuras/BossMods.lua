@@ -156,11 +156,11 @@ Private.ExecEnv.BossMods.DBM = {
 
   EventCallback = function(self, event, ...)
     if event == "DBM_Announce" then
-      local spellId = select(4, ...)
-      WeakAuras.ScanEvents("DBM_Announce", spellId, ...)
+      local message, icon, _, spellId, _, count = ...
+      WeakAuras.ScanEvents("DBM_Announce", spellId, message, icon)
       if self.isGeneric then
-        local message, icon = ...
-        WeakAuras.ScanEvents("BossMod_Announce", spellId, message, icon)
+        count = count and tostring(count) or "0"
+        WeakAuras.ScanEvents("BossMod_Announce", spellId, message, icon, count)
       end
     elseif event == "DBM_TimerStart" then
       local timerId, msg, duration, icon, timerType, spellId, dbmType, _, _, _, _, _, timerCount = ...
@@ -812,7 +812,8 @@ Private.ExecEnv.BossMods.BigWigs = {
       WeakAuras.ScanEvents("BigWigs_Message", ...)
       if self.isGeneric then
         local _, spellId, text, _, icon = ...
-        WeakAuras.ScanEvents("BossMod_Announce", spellId, text, icon)
+        local count = text and text:match("%((%d+)%)") or text:match("（(%d+)）") or "0"
+        WeakAuras.ScanEvents("BossMod_Announce", spellId, text, icon, count)
       end
     elseif event == "BigWigs_StartBar" then
       local addon, spellId, text, duration, icon, isCD = ...
@@ -1433,6 +1434,20 @@ Private.event_prototypes["Boss Mod Announce"] = {
       store = true,
       hidden = true,
       test = "true"
+    },
+    {
+      name = "count",
+      init = "arg",
+      display = L["Count"],
+      desc = L["Occurrence of the event\nCan be a range of values\nCan have multiple values separated by a comma or a space\n\nExamples:\n2nd 5th and 6th events: 2, 5, 6\n2nd to 6th: 2-6\nevery 2 events: /2\nevery 3 events starting from 2nd: 2/3\nevery 3 events starting from 2nd and ending at 11th: 2-11/3\n\nWorks only if Boss Mod addon show counter"],
+      type = "string",
+      preamble = "local counter = Private.ExecEnv.CreateTriggerCounter(%q)",
+      test = "counter:SetCount(tonumber(count) or 0) == nil and counter:Match()",
+      conditionTest = function(state, needle, op, preamble)
+        return preamble:Check(state.count)
+      end,
+      store = true,
+      conditionType = "string",
     },
     {
       name = "cloneId",
