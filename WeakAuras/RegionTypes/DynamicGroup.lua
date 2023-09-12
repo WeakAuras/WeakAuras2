@@ -1363,7 +1363,7 @@ local function modify(parent, region, data)
       controlPoint:SetShown(show and frame ~= WeakAuras.HiddenFrames)
       controlPoint:SetWidth(regionData.dimensions.width)
       controlPoint:SetHeight(regionData.dimensions.height)
-      if data.anchorFrameParent or data.anchorFrameParent == nil then
+      if (data.anchorFrameParent or data.anchorFrameParent == nil) and not (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "UIPARENT" or data.anchorFrameType == "MOUSE") and not data.useAnchorPerUnit then
         controlPoint:SetParent(frame == "" and self.relativeTo or frame)
       else
         controlPoint:SetParent(self)
