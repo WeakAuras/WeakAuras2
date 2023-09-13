@@ -499,6 +499,18 @@ function WeakAuras.Import(inData, target, callbackFunc)
     return nil, "Invalid import data."
   end
 
+  local highestVersion = data.internalVersion or 0
+  if children then
+    for _, child in ipairs(children) do
+      highestVersion = max(highestVersion, child.internalVersion or 0)
+    end
+  end
+  if highestVersion > WeakAuras.InternalVersion() then
+    -- Do not run PreAdd but still show Import Window
+    tooltipLoading = nil;
+    return ImportNow(data, children, target, nil, callbackFunc)
+  end
+
   if version < 2000 then
     if children then
       data.controlledChildren = {}
@@ -509,7 +521,6 @@ function WeakAuras.Import(inData, target, callbackFunc)
     end
   end
 
-  local status, msg = true, ""
   if type(target) ~= 'nil' then
     local uid = type(target) == 'table' and target.uid or target
     local targetData = Private.GetDataByUID(uid)
