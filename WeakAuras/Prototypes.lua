@@ -9657,6 +9657,7 @@ Private.event_prototypes = {
       if trigger.use_instance_difficulty ~= nil
          or trigger.use_instance_type ~= nil
          or trigger.use_instance_size ~= nil
+         or trigger.use_pvpflagged ~= nil
       then
         tinsert(events, "WA_DELAYED_PLAYER_ENTERING_WORLD")
       end
