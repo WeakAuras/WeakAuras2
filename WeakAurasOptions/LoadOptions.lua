@@ -418,134 +418,27 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             options["spacer_"..name..suffix].width = WeakAuras.normalWidth
           end
           local disabled = not trigger["use_"..realname]
-          if disabled then
-            options[name..suffix] = {
-              type = "description",
-              name = "",
-              width = WeakAuras.normalWidth,
-              order = order,
-              hidden = hidden,
-            }
-            order = order + 1
-          else
-            if (not arg.noOperator) then
-              options[name.."_operator"..suffix] = {
-                type = "select",
-                width = WeakAuras.halfWidth,
-                name = L["Operator"],
-                order = order,
-                hidden = hidden,
-                values = arg.operator_types == "without_equal" and OptionsPrivate.Private.operator_types_without_equal or OptionsPrivate.Private.operator_types,
-
-                get = function()
-                  return getValue(trigger, "use_"..realname, realname.."_operator", multiEntry, entryNumber)
-                end,
-                set = function(info, v)
-                  setValue(trigger, realname.."_operator", v, multiEntry, entryNumber)
-                  WeakAuras.Add(data);
-                  if (reloadOptions) then
-                    WeakAuras.ClearAndUpdateOptions(data.id)
-                  end
-                  OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-                  WeakAuras.UpdateThumbnail(data);
-                  OptionsPrivate.SortDisplayButtons(nil, true);
-                end
-              };
-              order = order + 1;
-            end
-            options[name..suffix] = {
-              type = "input",
-              width = arg.noOperator and WeakAuras.normalWidth or WeakAuras.halfWidth,
-              validate = ValidateNumeric,
-              name = arg.display,
-              order = order,
-              hidden = hidden,
-              desc = arg.desc,
-              get = function() return getValue(trigger, "use_"..realname, realname, multiEntry, entryNumber) end,
-              set = function(info, v)
-                setValue(trigger, realname, v, multiEntry, entryNumber)
-                WeakAuras.Add(data);
-                if (reloadOptions) then
-                  WeakAuras.ClearAndUpdateOptions(data.id)
-                end
-                OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-                WeakAuras.UpdateThumbnail(data);
-                OptionsPrivate.SortDisplayButtons(nil, true);
-              end
-            };
-            order = order + 1;
-          end
-        elseif(arg.type == "string" or arg.type == "tristatestring") then
-          if not arg.multiline and entryNumber > 1 then
-            options["spacer_"..name..suffix].width = WeakAuras.normalWidth
-          end
-
-          local disabled
-          if arg.type == "string" then
-            disabled = not trigger["use_"..realname]
-          else
-            disabled = trigger["use_"..realname] == nil
-          end
-
-          if disabled then
-            options[name..suffix] = {
-              type = "description",
-              name = "",
-              width = WeakAuras.normalWidth,
-              order = order,
-              hidden = hidden,
-            }
-            order = order + 1
-          else
-            options[name..suffix] = {
-              type = "input",
-              width = arg.multiline and WeakAuras.doubleWidth or WeakAuras.normalWidth,
-              name = arg.display,
-              order = order,
-              hidden = hidden,
-              validate = validate,
-              desc = arg.desc,
-              multiline = arg.multiline,
-              control = arg.multiline and "WeakAuras-MultiLineEditBoxWithEnter" or nil,
-              get = function()
-                return getValue(trigger, "use_"..realname, realname, multiEntry, entryNumber, arg.type == "tristatestring")
-              end,
-              set = function(info, v)
-                setValue(trigger, realname, v, multiEntry, entryNumber)
-                WeakAuras.Add(data);
-                if (reloadOptions) then
-                  WeakAuras.ClearAndUpdateOptions(data.id)
-                end
-                OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-                WeakAuras.UpdateThumbnail(data);
-                OptionsPrivate.SortDisplayButtons(nil, true);
-              end
-            };
-            order = order + 1
-          end
-        elseif(arg.type == "longstring") then
-          if entryNumber > 1 then
-            options["spacer_"..name..suffix].width = WeakAuras.normalWidth
-          end
-          local disabled = not trigger["use_"..realname]
-          if disabled then
-            options[name..suffix] = {
-              type = "description",
-              name = "",
-              width = WeakAuras.normalWidth,
-              order = order,
-              hidden = hidden,
-            }
-            order = order + 1;
-          else
+          options[name..suffix .. "dummy"] = {
+            type = "description",
+            name = "",
+            width = WeakAuras.normalWidth,
+            order = order,
+            hidden = not disabled or hidden,
+            hiddenAllIfAnyHidden = true
+          }
+          order = order + 1
+          if (not arg.noOperator) then
             options[name.."_operator"..suffix] = {
               type = "select",
-              width = WeakAuras.normalWidth,
+              width = WeakAuras.halfWidth,
               name = L["Operator"],
               order = order,
-              hidden = hidden,
-              values = OptionsPrivate.Private.string_operator_types,
-              get = function() return getValue(trigger, "use_"..realname, realname.."_operator", multiEntry, entryNumber) end,
+              hidden = disabled or hidden,
+              values = arg.operator_types == "without_equal" and OptionsPrivate.Private.operator_types_without_equal or OptionsPrivate.Private.operator_types,
+
+              get = function()
+                return getValue(trigger, "use_"..realname, realname.."_operator", multiEntry, entryNumber)
+              end,
               set = function(info, v)
                 setValue(trigger, realname.."_operator", v, multiEntry, entryNumber)
                 WeakAuras.Add(data);
@@ -558,419 +451,514 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               end
             };
             order = order + 1;
-            options[name..suffix] = {
-              type = "input",
-              width = WeakAuras.doubleWidth,
-              name = arg.display,
-              order = order,
-              hidden = hidden,
-              validate = validate,
-              get = function() return getValue(trigger, "use_"..realname, realname, multiEntry, entryNumber) end,
-              set = function(info, v)
-                setValue(trigger, realname, v, multiEntry, entryNumber)
-                WeakAuras.Add(data);
-                if (reloadOptions) then
-                  WeakAuras.ClearAndUpdateOptions(data.id)
-                end
-                OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-                WeakAuras.UpdateThumbnail(data);
-                OptionsPrivate.SortDisplayButtons(nil, true);
-              end
-            };
-            order = order + 1;
           end
+          options[name..suffix] = {
+            type = "input",
+            width = arg.noOperator and WeakAuras.normalWidth or WeakAuras.halfWidth,
+            validate = ValidateNumeric,
+            name = arg.display,
+            order = order,
+            hidden = disabled or hidden,
+            desc = arg.desc,
+            get = function() return getValue(trigger, "use_"..realname, realname, multiEntry, entryNumber) end,
+            set = function(info, v)
+              setValue(trigger, realname, v, multiEntry, entryNumber)
+              WeakAuras.Add(data);
+              if (reloadOptions) then
+                WeakAuras.ClearAndUpdateOptions(data.id)
+              end
+              OptionsPrivate.Private.ScanForLoads({[data.id] = true});
+              WeakAuras.UpdateThumbnail(data);
+              OptionsPrivate.SortDisplayButtons(nil, true);
+            end
+          };
+          order = order + 1;
+        elseif(arg.type == "string" or arg.type == "tristatestring") then
+          if not arg.multiline and entryNumber > 1 then
+            options["spacer_"..name..suffix].width = WeakAuras.normalWidth
+          end
+
+          local disabled
+          if arg.type == "string" then
+            disabled = not trigger["use_"..realname]
+          else
+            disabled = trigger["use_"..realname] == nil
+          end
+
+          options[name..suffix.."dummy"] = {
+            type = "description",
+            name = "",
+            width = WeakAuras.normalWidth,
+            order = order,
+            hidden = not disabled or hidden,
+            hiddenAllIfAnyHidden = true
+          }
+          order = order + 1
+          options[name..suffix] = {
+            type = "input",
+            width = arg.multiline and WeakAuras.doubleWidth or WeakAuras.normalWidth,
+            name = arg.display,
+            order = order,
+            hidden = disabled or hidden,
+            validate = validate,
+            desc = arg.desc,
+            multiline = arg.multiline,
+            control = arg.multiline and "WeakAuras-MultiLineEditBoxWithEnter" or nil,
+            get = function()
+              return getValue(trigger, "use_"..realname, realname, multiEntry, entryNumber, arg.type == "tristatestring")
+            end,
+            set = function(info, v)
+              setValue(trigger, realname, v, multiEntry, entryNumber)
+              WeakAuras.Add(data);
+              if (reloadOptions) then
+                WeakAuras.ClearAndUpdateOptions(data.id)
+              end
+              OptionsPrivate.Private.ScanForLoads({[data.id] = true});
+              WeakAuras.UpdateThumbnail(data);
+              OptionsPrivate.SortDisplayButtons(nil, true);
+            end
+          };
+          order = order + 1
+        elseif(arg.type == "longstring") then
+          if entryNumber > 1 then
+            options["spacer_"..name..suffix].width = WeakAuras.normalWidth
+          end
+          local disabled = not trigger["use_"..realname]
+          options[name..suffix.."dummy"] = {
+            type = "description",
+            name = "",
+            width = WeakAuras.normalWidth,
+            order = order,
+            hidden = not disabled or hidden,
+            hiddenAllIfAnyHidden = true
+          }
+          order = order + 1;
+          options[name.."_operator"..suffix] = {
+            type = "select",
+            width = WeakAuras.normalWidth,
+            name = L["Operator"],
+            order = order,
+            hidden = disabled or hidden,
+            values = OptionsPrivate.Private.string_operator_types,
+            get = function() return getValue(trigger, "use_"..realname, realname.."_operator", multiEntry, entryNumber) end,
+            set = function(info, v)
+              setValue(trigger, realname.."_operator", v, multiEntry, entryNumber)
+              WeakAuras.Add(data);
+              if (reloadOptions) then
+                WeakAuras.ClearAndUpdateOptions(data.id)
+              end
+              OptionsPrivate.Private.ScanForLoads({[data.id] = true});
+              WeakAuras.UpdateThumbnail(data);
+              OptionsPrivate.SortDisplayButtons(nil, true);
+            end
+          };
+          order = order + 1;
+          options[name..suffix] = {
+            type = "input",
+            width = WeakAuras.doubleWidth,
+            name = arg.display,
+            order = order,
+            hidden = disabled or hidden,
+            validate = validate,
+            get = function() return getValue(trigger, "use_"..realname, realname, multiEntry, entryNumber) end,
+            set = function(info, v)
+              setValue(trigger, realname, v, multiEntry, entryNumber)
+              WeakAuras.Add(data);
+              if (reloadOptions) then
+                WeakAuras.ClearAndUpdateOptions(data.id)
+              end
+              OptionsPrivate.Private.ScanForLoads({[data.id] = true});
+              WeakAuras.UpdateThumbnail(data);
+              OptionsPrivate.SortDisplayButtons(nil, true);
+            end
+          };
+          order = order + 1;
         elseif(arg.type == "spell" or arg.type == "aura" or arg.type == "item") then
           if entryNumber > 1 then
             options["spacer_"..name..suffix].width = WeakAuras.normalWidth - (arg.showExactOption and 0 or 0.2)
           end
           local disabled = not trigger["use_"..realname]
-          if disabled then
-            options[name..suffix] = {
-              type = "description",
-              name = "",
+          options[name..suffix.."dummy"] = {
+            type = "description",
+            name = "",
+            width = WeakAuras.normalWidth,
+            order = order,
+            hidden = not disabled or hidden,
+            hiddenAllIfAnyHidden = true
+          }
+          order = order + 1
+          if (arg.showExactOption) then
+            options["exact"..name..suffix] = {
+              type = "toggle",
               width = WeakAuras.normalWidth,
+              name = arg.type == "item" and L["Exact Item Match"] or L["Exact Spell Match"],
               order = order,
-              hidden = hidden,
-            }
-            order = order + 1
-          else
-            if (arg.showExactOption) then
-              options["exact"..name..suffix] = {
-                type = "toggle",
-                width = WeakAuras.normalWidth,
-                name = arg.type == "item" and L["Exact Item Match"] or L["Exact Spell Match"],
-                order = order,
-                hidden = hidden,
-                get = function()
-                  return getValue(trigger, nil, "use_exact_"..realname, multiEntry, entryNumber)
-                end,
-                set = function(info, v)
-                  setValue(trigger, "use_exact_"..realname, v, multiEntry, entryNumber)
-                  WeakAuras.Add(data);
-                  OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-                  WeakAuras.UpdateThumbnail(data);
-                  OptionsPrivate.SortDisplayButtons(nil, true);
-                end,
-              };
-              order = order + 1;
-            end
-            options["icon"..name..suffix] = {
-              type = "execute",
-              width = 0.2,
-              name = "",
-              order = order,
-              hidden = hidden,
-              image = function()
-                local value = getValue(trigger, "use_"..realname, realname, multiEntry, entryNumber)
-                if value then
-                  if(arg.type == "aura") then
-                    local icon = spellCache.GetIcon(value);
-                    return icon and tostring(icon) or "", 18, 18;
-                  elseif(arg.type == "spell") then
-                    if arg.negativeIsEJ and WeakAuras.IsRetail() then
-                      local key = WeakAuras.SafeToNumber(value)
-                      if key and key < 0 then
-                        local tbl = C_EncounterJournal.GetSectionInfo(-key)
-                        if tbl and tbl.abilityIcon then
-                          return tostring(tbl.abilityIcon) or "", 18, 18;
-                        end
-                      end
-                    end
-                    local _, _, icon = GetSpellInfo(value);
-                    return icon and tostring(icon) or "", 18, 18;
-                  elseif(arg.type == "item") then
-                    local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(value);
-                    return icon and tostring(icon) or "", 18, 18;
-                  end
-                else
-                  return "", 18, 18;
-                end
-              end,
-              disabled = function()
-                local value = getValue(trigger, nil, realname, multiEntry, entryNumber)
-                return not ((arg.type == "aura" and value and spellCache.GetIcon(value)) or (arg.type == "spell" and value and GetSpellInfo(value)) or (arg.type == "item" and value and GetItemIcon(value)))
-              end
-            };
-            order = order + 1;
-            options[name..suffix] = {
-              type = "input",
-              width = (arg.showExactOption and WeakAuras.doubleWidth or WeakAuras.normalWidth) - (arg.showExactOption and 0.2 or 0),
-              name = arg.display,
-              order = order,
-              hidden = hidden,
-              validate = validate,
+              hidden = disabled or hidden,
               get = function()
-                local value = getValue(trigger, "use_"..realname, realname, multiEntry, entryNumber)
-                if(arg.type == "item") then
-                  local useExactSpellId = (arg.showExactOption and getValue(trigger, nil, "use_exact_"..realname, multiEntry, entryNumber))
-                  if value and value ~= "" then
-                    if useExactSpellId then
-                      local itemId = tonumber(value)
-                      if itemId and itemId ~= 0 then
-                        return tostring(value)
-                      end
-                    else
-                      local name = GetItemInfo(value);
-                      if name then
-                        return name;
-                      end
-                    end
-                    return (useExactSpellId and L["Invalid Item ID"] or L["Invalid Item Name/ID/Link"]) .. "\0"
-                  else
-                    return nil;
-                  end
-                elseif(arg.type == "spell") then
-                  local useExactSpellId = (arg.showExactOption and getValue(trigger, nil, "use_exact_"..realname, multiEntry, entryNumber))
-                  if value and value ~= "" then
-                    local spellID = WeakAuras.SafeToNumber(value)
-                    if spellID then
-                      if arg.negativeIsEJ and WeakAuras.IsRetail() and spellID < 0 then
-                        local tbl = C_EncounterJournal.GetSectionInfo(-spellID)
-                        if tbl and tbl.title then
-                          return ("%s (%s)"):format(spellID, tbl.title) .. "\0" .. value
-                        end
-                      end
-                      local spellName = GetSpellInfo(WeakAuras.SafeToNumber(value))
-                      if spellName then
-                        return ("%s (%s)"):format(spellID, spellName) .. "\0" .. value
-                      end
-                    elseif not useExactSpellId then
-                      local spellName = GetSpellInfo(value)
-                      if spellName then
-                        return spellName
-                      end
-                    end
-                  end
-                  if arg.noValidation then
-                    return value
-                  end
-                  if value == nil then
-                    return nil
-                  end
-                  return (useExactSpellId and L["Invalid Spell ID"] or L["Invalid Spell Name/ID/Link"]) .. "\0"
-                else
-                  return value or nil
-                end
+                return getValue(trigger, nil, "use_exact_"..realname, multiEntry, entryNumber)
               end,
               set = function(info, v)
-                local fixedInput = v;
-                if not arg.noValidation then
-                  if(arg.type == "aura") then
-                    fixedInput = WeakAuras.spellCache.CorrectAuraName(v);
-                  elseif(arg.type == "spell") then
-                    fixedInput = CorrectSpellName(v);
-                  elseif(arg.type == "item") then
-                    fixedInput = CorrectItemName(v);
-                  end
-                end
-                setValue(trigger, realname, fixedInput, multiEntry, entryNumber)
+                setValue(trigger, "use_exact_"..realname, v, multiEntry, entryNumber)
                 WeakAuras.Add(data);
-                if (reloadOptions) then
-                  WeakAuras.ClearAndUpdateOptions(data.id)
-                end
                 OptionsPrivate.Private.ScanForLoads({[data.id] = true});
                 WeakAuras.UpdateThumbnail(data);
                 OptionsPrivate.SortDisplayButtons(nil, true);
               end,
-              control = "WeakAurasInputFocus",
             };
             order = order + 1;
           end
+          options["icon"..name..suffix] = {
+            type = "execute",
+            width = 0.2,
+            name = "",
+            order = order,
+            hidden = disabled or hidden,
+            image = function()
+              local value = getValue(trigger, "use_"..realname, realname, multiEntry, entryNumber)
+              if value then
+                if(arg.type == "aura") then
+                  local icon = spellCache.GetIcon(value);
+                  return icon and tostring(icon) or "", 18, 18;
+                elseif(arg.type == "spell") then
+                  if arg.negativeIsEJ and WeakAuras.IsRetail() then
+                    local key = WeakAuras.SafeToNumber(value)
+                    if key and key < 0 then
+                      local tbl = C_EncounterJournal.GetSectionInfo(-key)
+                      if tbl and tbl.abilityIcon then
+                        return tostring(tbl.abilityIcon) or "", 18, 18;
+                      end
+                    end
+                  end
+                  local _, _, icon = GetSpellInfo(value);
+                  return icon and tostring(icon) or "", 18, 18;
+                elseif(arg.type == "item") then
+                  local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(value);
+                  return icon and tostring(icon) or "", 18, 18;
+                end
+              else
+                return "", 18, 18;
+              end
+            end,
+            disabled = function()
+              local value = getValue(trigger, nil, realname, multiEntry, entryNumber)
+              return not ((arg.type == "aura" and value and spellCache.GetIcon(value)) or (arg.type == "spell" and value and GetSpellInfo(value)) or (arg.type == "item" and value and GetItemIcon(value)))
+            end
+          };
+          order = order + 1;
+          options[name..suffix] = {
+            type = "input",
+            width = (arg.showExactOption and WeakAuras.doubleWidth or WeakAuras.normalWidth) - (arg.showExactOption and 0.2 or 0),
+            name = arg.display,
+            order = order,
+            hidden = disabled or hidden,
+            validate = validate,
+            get = function()
+              local value = getValue(trigger, "use_"..realname, realname, multiEntry, entryNumber)
+              if(arg.type == "item") then
+                local useExactSpellId = (arg.showExactOption and getValue(trigger, nil, "use_exact_"..realname, multiEntry, entryNumber))
+                if value and value ~= "" then
+                  if useExactSpellId then
+                    local itemId = tonumber(value)
+                    if itemId and itemId ~= 0 then
+                      return tostring(value)
+                    end
+                  else
+                    local name = GetItemInfo(value);
+                    if name then
+                      return name;
+                    end
+                  end
+                  return (useExactSpellId and L["Invalid Item ID"] or L["Invalid Item Name/ID/Link"]) .. "\0"
+                else
+                  return nil;
+                end
+              elseif(arg.type == "spell") then
+                local useExactSpellId = (arg.showExactOption and getValue(trigger, nil, "use_exact_"..realname, multiEntry, entryNumber))
+                if value and value ~= "" then
+                  local spellID = WeakAuras.SafeToNumber(value)
+                  if spellID then
+                    if arg.negativeIsEJ and WeakAuras.IsRetail() and spellID < 0 then
+                      local tbl = C_EncounterJournal.GetSectionInfo(-spellID)
+                      if tbl and tbl.title then
+                        return ("%s (%s)"):format(spellID, tbl.title) .. "\0" .. value
+                      end
+                    end
+                    local spellName = GetSpellInfo(WeakAuras.SafeToNumber(value))
+                    if spellName then
+                      return ("%s (%s)"):format(spellID, spellName) .. "\0" .. value
+                    end
+                  elseif not useExactSpellId then
+                    local spellName = GetSpellInfo(value)
+                    if spellName then
+                      return spellName
+                    end
+                  end
+                end
+                if arg.noValidation then
+                  return value
+                end
+                if value == nil then
+                  return nil
+                end
+                return (useExactSpellId and L["Invalid Spell ID"] or L["Invalid Spell Name/ID/Link"]) .. "\0"
+              else
+                return value or nil
+              end
+            end,
+            set = function(info, v)
+              local fixedInput = v;
+              if not arg.noValidation then
+                if(arg.type == "aura") then
+                  fixedInput = WeakAuras.spellCache.CorrectAuraName(v);
+                elseif(arg.type == "spell") then
+                  fixedInput = CorrectSpellName(v);
+                elseif(arg.type == "item") then
+                  fixedInput = CorrectItemName(v);
+                end
+              end
+              setValue(trigger, realname, fixedInput, multiEntry, entryNumber)
+              WeakAuras.Add(data);
+              if (reloadOptions) then
+                WeakAuras.ClearAndUpdateOptions(data.id)
+              end
+              OptionsPrivate.Private.ScanForLoads({[data.id] = true});
+              WeakAuras.UpdateThumbnail(data);
+              OptionsPrivate.SortDisplayButtons(nil, true);
+            end,
+            control = "WeakAurasInputFocus",
+          };
+          order = order + 1;
         elseif(arg.type == "select" or arg.type == "unit") then
           if entryNumber > 1 then
             options["spacer_"..name..suffix].width = WeakAuras.normalWidth
           end
 
           local disabled = not trigger["use_"..realname]
-          if disabled then
-            options[name..suffix] = {
-              type = "description",
-              name = "",
-              width = WeakAuras.normalWidth,
-              order = order,
-              hidden = hidden,
-            }
-            order = order + 1
+          options[name..suffix.."dummy"] = {
+            type = "description",
+            name = "",
+            width = WeakAuras.normalWidth,
+            order = order,
+            hidden = not disabled or hidden,
+            hiddenAllIfAnyHidden = true
+          }
+          order = order + 1
+          local values;
+          if(type(arg.values) == "function") then
+            values = arg.values(trigger);
           else
-            local values;
-            if(type(arg.values) == "function") then
-              values = arg.values(trigger);
+            if OptionsPrivate.Private[arg.values] then
+              values = OptionsPrivate.Private[arg.values]
             else
-              if OptionsPrivate.Private[arg.values] then
-                values = OptionsPrivate.Private[arg.values]
-              else
-                values = WeakAuras[arg.values];
-              end
+              values = WeakAuras[arg.values];
             end
-            local sortOrder = arg.sorted and OptionsPrivate.Private.SortOrderForValues(values) or nil
-            options[name..suffix] = {
-              type = "select",
+          end
+          local sortOrder = arg.sorted and OptionsPrivate.Private.SortOrderForValues(values) or nil
+          options[name..suffix] = {
+            type = "select",
+            width = WeakAuras.normalWidth,
+            name = arg.display,
+            order = order,
+            hidden = disabled or hidden,
+            values = values,
+            sorting = sortOrder,
+            desc = arg.desc,
+
+            get = function()
+              if(arg.type == "unit" and trigger["use_specific_"..realname]) then
+                return "member";
+              end
+
+              if (not trigger["use_"..realname]) then
+                return nil;
+              end
+
+              if (arg.default and (not trigger[realname] or not values[trigger[realname]])) then
+                trigger[realname] = arg.default;
+                return arg.default;
+              end
+
+              return trigger[realname] or nil;
+            end,
+            set = function(info, v)
+              setValue(trigger, realname, v, multiEntry, entryNumber)
+              if(arg.type == "unit" and v == "member") then
+                trigger["use_specific_"..realname] = true;
+                trigger[realname] = UnitName("player");
+              else
+                trigger["use_specific_"..realname] = nil;
+              end
+              WeakAuras.Add(data);
+              if (reloadOptions) then
+                WeakAuras.ClearAndUpdateOptions(data.id)
+              end
+              OptionsPrivate.Private.ScanForLoads({[data.id] = true});
+              WeakAuras.UpdateThumbnail(data);
+              OptionsPrivate.SortDisplayButtons(nil, true);
+            end
+          };
+          if (arg.control) then
+            options[name .. suffix].control = arg.control;
+          end
+          order = order + 1;
+          if(arg.type == "unit") then
+            options["use_specific_"..name..suffix] = {
+              type = "toggle",
               width = WeakAuras.normalWidth,
-              name = arg.display,
+              name = L["Specific Unit"],
               order = order,
-              hidden = hidden,
-              values = values,
-              sorting = sortOrder,
-              desc = arg.desc,
-
-              get = function()
-                if(arg.type == "unit" and trigger["use_specific_"..realname]) then
-                  return "member";
-                end
-
-                if (not trigger["use_"..realname]) then
-                  return nil;
-                end
-
-                if (arg.default and (not trigger[realname] or not values[trigger[realname]])) then
-                  trigger[realname] = arg.default;
-                  return arg.default;
-                end
-
-                return trigger[realname] or nil;
-              end,
+              hidden = disabled or function()
+                return (not trigger["use_specific_"..realname] and trigger[realname] ~= "member")
+                      or (type(hidden) == "function" and hidden(trigger))
+                      or (type(hidden) ~= "function" and hidden)
+                end,
+              get = function() return true end,
               set = function(info, v)
-                setValue(trigger, realname, v, multiEntry, entryNumber)
-                if(arg.type == "unit" and v == "member") then
-                  trigger["use_specific_"..realname] = true;
-                  trigger[realname] = UnitName("player");
-                else
-                  trigger["use_specific_"..realname] = nil;
-                end
+                trigger["use_specific_"..realname] = nil;
+                options[name .. suffix].set(info, "player");
+                WeakAuras.Add(data)
+              end
+            }
+            order = order + 1;
+            options["specific_"..name..suffix] = {
+              type = "input",
+              width = WeakAuras.normalWidth,
+              name = L["Specific Unit"],
+              desc = L["Can be a UID (e.g., party1)."],
+              order = order,
+              hidden = disabled or function() return (not trigger["use_specific_"..realname] and trigger[realname] ~= "member") or (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) end,
+              get = function() return trigger[realname] end,
+              set = function(info, v)
+                trigger[realname] = v;
                 WeakAuras.Add(data);
                 if (reloadOptions) then
                   WeakAuras.ClearAndUpdateOptions(data.id)
                 end
-                OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-                WeakAuras.UpdateThumbnail(data);
-                OptionsPrivate.SortDisplayButtons(nil, true);
               end
             };
-            if (arg.control) then
-              options[name .. suffix].control = arg.control;
-            end
             order = order + 1;
-            if(arg.type == "unit") then
-              options["use_specific_"..name..suffix] = {
-                type = "toggle",
-                width = WeakAuras.normalWidth,
-                name = L["Specific Unit"],
-                order = order,
-                hidden = function()
-                  return (not trigger["use_specific_"..realname] and trigger[realname] ~= "member")
-                        or (type(hidden) == "function" and hidden(trigger))
-                        or (type(hidden) ~= "function" and hidden)
-                  end,
-                get = function() return true end,
-                set = function(info, v)
-                  trigger["use_specific_"..realname] = nil;
-                  options[name .. suffix].set(info, "player");
-                  WeakAuras.Add(data)
-                end
-              }
-              order = order + 1;
-              options["specific_"..name..suffix] = {
-                type = "input",
-                width = WeakAuras.normalWidth,
-                name = L["Specific Unit"],
-                desc = L["Can be a UID (e.g., party1)."],
-                order = order,
-                hidden = function() return (not trigger["use_specific_"..realname] and trigger[realname] ~= "member") or (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) end,
-                get = function() return trigger[realname] end,
-                set = function(info, v)
-                  trigger[realname] = v;
-                  WeakAuras.Add(data);
-                  if (reloadOptions) then
-                    WeakAuras.ClearAndUpdateOptions(data.id)
-                  end
-                end
-              };
-              order = order + 1;
-            end
           end
         elseif(arg.type == "multiselect") then
           if entryNumber > 1 then
             options["spacer_"..name..suffix].width = WeakAuras.normalWidth
           end
           local disabled = trigger["use_"..realname] == nil
-          if disabled then
-            options[name..suffix] = {
-              type = "description",
-              name = "",
-              width = WeakAuras.normalWidth,
+          options[name..suffix.."dummy"] = {
+            type = "description",
+            name = "",
+            width = WeakAuras.normalWidth,
+            order = order,
+            hidden = not disabled or hidden,
+            hiddenAllIfAnyHidden = true
+          }
+          order = order + 1
+          local values;
+          if(type(arg.values) == "function") then
+            values = arg.values(trigger);
+          else
+            if OptionsPrivate.Private[arg.values] then
+              values = OptionsPrivate.Private[arg.values]
+            else
+              values = WeakAuras[arg.values];
+            end
+          end
+          local sortOrder = arg.sorted and OptionsPrivate.Private.SortOrderForValues(values) or nil
+          options[name..suffix] = {
+            type = "select",
+            width = WeakAuras.normalWidth,
+            name = arg.display,
+            order = order,
+            values = values,
+            sorting = sortOrder,
+            control = arg.control,
+            hidden = disabled or function()
+              return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] == false;
+            end,
+            get = function() return trigger["use_"..realname] and trigger[realname] and trigger[realname].single or nil; end,
+            set = function(info, v)
+              trigger[realname] = trigger[realname] or {};
+              trigger[realname].single = v;
+              WeakAuras.Add(data);
+              if (reloadOptions) then
+                WeakAuras.ClearAndUpdateOptions(data.id)
+              end
+              OptionsPrivate.Private.ScanForLoads({[data.id] = true});
+              WeakAuras.UpdateThumbnail(data);
+              OptionsPrivate.SortDisplayButtons(nil, true);
+            end
+          };
+
+          if arg.extraOption then
+            options["multiselect_extraOption_" .. name..suffix] =
+            {
+              name = arg.extraOption.display,
+              type = "select",
+              values = arg.extraOption.values,
               order = order,
-              hidden = hidden,
+              width = WeakAuras.normalWidth,
+              hidden = disabled or function() return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] ~= false; end,
+              get = function(info, v)
+                return trigger[realname .. "_extraOption"] or 0
+              end,
+              set = function(info, v)
+                trigger[realname .. "_extraOption"] = v
+                WeakAuras.Add(data)
+                OptionsPrivate.Private.ScanForLoads({[data.id] = true})
+                OptionsPrivate.SortDisplayButtons(nil, true)
+              end
             }
             order = order + 1
-          else
-            local values;
-            if(type(arg.values) == "function") then
-              values = arg.values(trigger);
-            else
-              if OptionsPrivate.Private[arg.values] then
-                values = OptionsPrivate.Private[arg.values]
-              else
-                values = WeakAuras[arg.values];
+          end
+
+          options["multiselect_"..name..suffix] = {
+            type = "multiselect",
+            name = arg.display,
+            width = WeakAuras.doubleWidth,
+            order = order,
+            hidden = disabled or function() return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] ~= false; end,
+            values = values,
+            control = arg.multiUseControlWhenFalse and arg.control,
+            multiTristate = arg.multiTristate,
+            get = function(info, v)
+              if(trigger["use_"..realname] == false and trigger[realname] and trigger[realname].multi) then
+                if arg.multiConvertKey then
+                  v = arg.multiConvertKey(trigger, v)
+                end
+                if v then
+                  return trigger[realname].multi[v];
+                end
               end
-            end
-            local sortOrder = arg.sorted and OptionsPrivate.Private.SortOrderForValues(values) or nil
-            options[name..suffix] = {
-              type = "select",
-              width = WeakAuras.normalWidth,
-              name = arg.display,
-              order = order,
-              values = values,
-              sorting = sortOrder,
-              control = arg.control,
-              hidden = function()
-                return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] == false;
-              end,
-              get = function() return trigger["use_"..realname] and trigger[realname] and trigger[realname].single or nil; end,
-              set = function(info, v)
-                trigger[realname] = trigger[realname] or {};
-                trigger[realname].single = v;
+            end,
+            set = function(info, v, calledFromSetAll)
+              if arg.multiConvertKey then
+                v = arg.multiConvertKey(trigger, v)
+              end
+              if v then
+                trigger[realname].multi = trigger[realname].multi or {};
+                if (calledFromSetAll or arg.multiTristate) then
+                  trigger[realname].multi[v] = calledFromSetAll;
+                elseif(trigger[realname].multi[v]) then
+                  trigger[realname].multi[v] = nil;
+                else
+                  trigger[realname].multi[v] = true;
+                end
                 WeakAuras.Add(data);
                 if (reloadOptions) then
+                  -- Hack specifally for dragon flight mini talent
+                  -- That widget needs to be informed before and
+                  -- after a reload
+                  OptionsPrivate.Private.callbacks:Fire("BeforeReload")
                   WeakAuras.ClearAndUpdateOptions(data.id)
+                  WeakAuras.FillOptions()
+                  OptionsPrivate.Private.callbacks:Fire("AfterReload")
                 end
                 OptionsPrivate.Private.ScanForLoads({[data.id] = true});
                 WeakAuras.UpdateThumbnail(data);
                 OptionsPrivate.SortDisplayButtons(nil, true);
               end
-            };
-
-            if arg.extraOption then
-              options["multiselect_extraOption_" .. name..suffix] =
-              {
-                name = arg.extraOption.display,
-                type = "select",
-                values = arg.extraOption.values,
-                order = order,
-                width = WeakAuras.normalWidth,
-                hidden = function() return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] ~= false; end,
-                get = function(info, v)
-                  return trigger[realname .. "_extraOption"] or 0
-                end,
-                set = function(info, v)
-                  trigger[realname .. "_extraOption"] = v
-                  WeakAuras.Add(data)
-                  OptionsPrivate.Private.ScanForLoads({[data.id] = true})
-                  OptionsPrivate.SortDisplayButtons(nil, true)
-                end
-              }
-              order = order + 1
             end
-
-            options["multiselect_"..name..suffix] = {
-              type = "multiselect",
-              name = arg.display,
-              width = WeakAuras.doubleWidth,
-              order = order,
-              hidden = function() return (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) or trigger["use_"..realname] ~= false; end,
-              values = values,
-              control = arg.multiUseControlWhenFalse and arg.control,
-              multiTristate = arg.multiTristate,
-              get = function(info, v)
-                if(trigger["use_"..realname] == false and trigger[realname] and trigger[realname].multi) then
-                  if arg.multiConvertKey then
-                    v = arg.multiConvertKey(trigger, v)
-                  end
-                  if v then
-                    return trigger[realname].multi[v];
-                  end
-                end
-              end,
-              set = function(info, v, calledFromSetAll)
-                if arg.multiConvertKey then
-                  v = arg.multiConvertKey(trigger, v)
-                end
-                if v then
-                  trigger[realname].multi = trigger[realname].multi or {};
-                  if (calledFromSetAll or arg.multiTristate) then
-                    trigger[realname].multi[v] = calledFromSetAll;
-                  elseif(trigger[realname].multi[v]) then
-                    trigger[realname].multi[v] = nil;
-                  else
-                    trigger[realname].multi[v] = true;
-                  end
-                  WeakAuras.Add(data);
-                  if (reloadOptions) then
-                    -- Hack specifally for dragon flight mini talent
-                    -- That widget needs to be informed before and
-                    -- after a reload
-                    OptionsPrivate.Private.callbacks:Fire("BeforeReload")
-                    WeakAuras.ClearAndUpdateOptions(data.id)
-                    WeakAuras.FillOptions()
-                    OptionsPrivate.Private.callbacks:Fire("AfterReload")
-                  end
-                  OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-                  WeakAuras.UpdateThumbnail(data);
-                  OptionsPrivate.SortDisplayButtons(nil, true);
-                end
-              end
-            };
-            order = order + 1;
-          end
+          };
+          order = order + 1;
         end
       end
     end
@@ -1000,11 +988,13 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
 
     local disabled = not trigger.use_count
     if disabled then
-      options.count = {
+      options.countDummy = {
         type = "description",
         name = "",
         width = WeakAuras.normalWidth,
         order = order,
+        hidden = not disabled,
+        hiddenAllIfAnyHidden = true
       }
       order = order + 1
     else
@@ -1020,7 +1010,8 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         set = function(info, v)
           trigger.count = v
           WeakAuras.Add(data)
-        end
+        end,
+        hidden = disabled
       };
       order = order + 1;
     end
@@ -1044,11 +1035,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
 
     local disabled = not trigger.use_delay
     if disabled then
-      options.delay = {
+      options.delayDummy = {
         type = "description",
         name = "",
         width = WeakAuras.normalWidth,
         order = order,
+        hiddenAllIfAnyHidden = true
       }
       order = order + 1
     else

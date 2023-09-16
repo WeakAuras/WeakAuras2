@@ -374,8 +374,17 @@ end
 
 local function CreateHiddenAll(subOption)
   return function(data, info)
+    local mainOptions = OptionsPrivate.EnsureOptions(data, subOption)
+    for i=1,#info do
+      mainOptions = mainOptions.args[info[i]];
+    end
+
     if(#data.controlledChildren == 0) then
-      return true;
+      if mainOptions.hiddenAllIfAnyHidden then
+        return false
+      else
+        return true
+      end
     end
 
     for child in  OptionsPrivate.Private.TraverseLeafs(data) do
@@ -387,13 +396,24 @@ local function CreateHiddenAll(subOption)
         childOptionTable[i] = childOption;
       end
       if (childOption) then
-        if (not hiddenChild(childOptionTable, info)) then
-          return false;
+        local childHidden = hiddenChild(childOptionTable, info)
+        if mainOptions.hiddenAllIfAnyHidden then
+          if childHidden then
+            return true
+          end
+        else
+          if not childHidden then
+            return false
+          end
         end
       end
     end
 
-    return true;
+    if mainOptions.hiddenAllIfAnyHidden then
+      return false
+    else
+      return true
+    end
   end
 end
 
