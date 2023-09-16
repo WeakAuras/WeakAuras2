@@ -670,13 +670,6 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
         untriggerCheck = true;
       end
     elseif (data.statesParameter == "unit") then
-      if optionsEvent then
-        if Private.multiUnitUnits[data.trigger.unit] then
-          arg1 = next(Private.multiUnitUnits[data.trigger.unit])
-        else
-          arg1 = data.trigger.unit
-        end
-      end
       if arg1 then
         if Private.multiUnitUnits[data.trigger.unit] then
           unitForUnitTrigger = arg1
@@ -694,17 +687,6 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
           ok, returnValue = xpcall(data.triggerFunc, errorHandler, state, event, unitForUnitTrigger, arg1, arg2, ...);
         end
         if (ok and returnValue) or optionsEvent then
-          if optionsEvent then
-            if Private.event_prototypes[data.event].GetNameAndIcon then
-              local name, icon = Private.event_prototypes[data.event].GetNameAndIcon(data.trigger)
-              if state.name == nil then
-                state.name = name
-              end
-              if state.icon == nil then
-                state.icon = icon
-              end
-            end
-          end
           if(Private.ActivateEvent(id, triggernum, data, state)) then
             updateTriggerState = true;
           end
@@ -967,7 +949,12 @@ function Private.ScanEventsWatchedTrigger(id, watchedTriggernums)
   Private.ActivateAuraEnvironment(nil)
 end
 
-local function AddFakeTime(state)
+local function AddFakeInformation(state, eventData)
+  state.autoHide = false
+  local canHaveDuration = eventData.prototype and eventData.prototype.canHaveDuration == "timed"
+  if canHaveDuration and state.expirationTime == nil then
+    state.progressType = "timed"
+  end
   if state.progressType == "timed" then
     if state.expirationTime and state.expirationTime ~= math.huge and state.expirationTime > GetTime() then
       return
@@ -976,38 +963,52 @@ local function AddFakeTime(state)
     state.expirationTime = GetTime() + 7
     state.duration = 7
   end
+  if eventData.prototype and eventData.prototype.GetNameAndIcon then
+    local name, icon = Private.event_prototypes[eventData.event].GetNameAndIcon(eventData.trigger)
+    if state.name == nil then
+      state.name = name
+    end
+    if state.icon == nil then
+      state.icon = icon
+    end
+  end
 end
 
 function GenericTrigger.CreateFakeStates(id, triggernum)
   local data = WeakAuras.GetData(id)
+  local eventData = events[id][triggernum]
 
   Private.ActivateAuraEnvironment(id);
   local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-  RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, "OPTIONS")
 
-  local canHaveDuration = events[id][triggernum].prototype and events[id][triggernum].prototype.canHaveDuration == "timed"
+
+  local arg1
+  if eventData.statesParameter == "unit" then
+    local unit = eventData.trigger.unit
+    if Private.multiUnitUnits[unit] then
+      arg1 = next(Private.multiUnitUnits[unit])
+    else
+      arg1 = unit
+    end
+  end
+
+  RunTriggerFunc(allStates, eventData, id, triggernum, "OPTIONS", arg1)
 
   local shown = 0
   for id, state in pairs(allStates) do
     if state.show then
       shown = shown + 1
     end
-    state.autoHide = false
-    if canHaveDuration and state.expirationTime == nil then
-      state.progressType = "timed"
-    end
-    AddFakeTime(state)
+
+    AddFakeInformation(state, eventData)
   end
 
   if shown == 0 then
     local state = {}
     GenericTrigger.CreateFallbackState(data, triggernum, state)
     allStates[""] = state
-    state.autoHide = false
-    if canHaveDuration and state.expirationTime == nil then
-      state.progressType = "timed"
-    end
-    AddFakeTime(state)
+
+    AddFakeInformation(state, eventData)
   end
 
   Private.ActivateAuraEnvironment(nil);
