@@ -3352,7 +3352,7 @@ function Private.HandleChatAction(message_type, message, message_dest, message_d
         C_VoiceChat.SpeakText(
           validVoice and voice or 0,
           message,
-          0,
+          1,
           C_TTSSettings and C_TTSSettings.GetSpeechRate() or 0,
           C_TTSSettings and C_TTSSettings.GetSpeechVolume() or 100
         );
