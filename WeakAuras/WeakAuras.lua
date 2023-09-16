@@ -3350,7 +3350,7 @@ function Private.HandleChatAction(message_type, message, message_dest, message_d
     if not Private.SquelchingActions() then
       pcall(function()
         C_VoiceChat.SpeakText(
-          validVoice and voice or 0,
+          validVoice and voice or next(Private.tts_voices) or 0,
           message,
           1,
           C_TTSSettings and C_TTSSettings.GetSpeechRate() or 0,
