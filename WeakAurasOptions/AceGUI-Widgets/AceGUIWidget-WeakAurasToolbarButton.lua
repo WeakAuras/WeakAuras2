@@ -3,7 +3,7 @@ if not WeakAuras.IsLibsOK() then return end
 ToolbarButton Widget, based on AceGUI Button
 Graphical Button.
 -------------------------------------------------------------------------------]]
-local Type, Version = "WeakAurasToolbarButton", 6
+local Type, Version = "WeakAurasToolbarButton", 7
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -62,6 +62,10 @@ local methods = {
 			self:SetWidth(16)
 		end
 	end,
+
+  ["GetText"] = function(self)
+    return self.text:GetText()
+  end,
 
 	["SetTooltip"] = function(self, text)
 		self.frame.tooltip = text

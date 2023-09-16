@@ -871,6 +871,12 @@ function WeakAuras.ShowOptions(msg)
     frame:ShowTip()
   end
 
+  -- TODO depend on what is visible?
+  if not OptionsPrivate.TTSFocus:HasFocus() then
+    -- TODO this doesn't select any aura, because the aura list is built on loading
+    -- and thus we give the focus too early
+    OptionsPrivate.TTSFocus:SetFocus(frame.buttonsScroll)
+  end
 end
 
 function OptionsPrivate.UpdateOptions()

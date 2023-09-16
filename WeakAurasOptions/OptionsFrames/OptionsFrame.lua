@@ -87,8 +87,6 @@ local defaultHeight = 665
 local minWidth = 750
 local minHeight = 240
 
-
-
 function OptionsPrivate.CreateFrame()
   LibDD:Create_UIDropDownMenu("WeakAuras_DropDownMenu", nil)
   local frame
@@ -96,6 +94,19 @@ function OptionsPrivate.CreateFrame()
   local odb = OptionsPrivate.savedVars.odb
 
   frame = CreateFrame("Frame", "WeakAurasOptions", UIParent, "PortraitFrameTemplate")
+  frame:EnableKeyboard(true)
+  frame:SetScript("OnKeyDown", function(self, key)
+    print("OnKeyDown", key)
+    if key == "ESCAPE" then
+      WeakAuras.HideOptions()
+    elseif key == "TAB" then
+      OptionsPrivate.TTSFocus:MoveFocus(IsShiftKeyDown())
+    elseif key == "SPACE" and IsControlKeyDown() then
+      OptionsPrivate.TTSFocus:ReadFocus()
+    elseif key == "LEFT" or key == "RIGHT" or key == "UP" or key == "DOWN" or key == "SPACE" then
+      OptionsPrivate.TTSFocus:ForwardKeyToFocus(key)
+    end
+  end)
   local color = CreateColorFromHexString("ff1f1e21") -- PANEL_BACKGROUND_COLOR
   local r, g, b = color:GetRGB()
   frame.Bg:SetColorTexture(r, g, b, 0.8)
@@ -453,44 +464,54 @@ function OptionsPrivate.CreateFrame()
       ToggleTip(button.frame, url, title, description, rightAligned)
     end)
     button.frame:Show()
-    return button.frame
+    return button
   end
 
   local discordButton = addFooter(L["Join Discord"], [[Interface\AddOns\WeakAuras\Media\Textures\discord.tga]], "https://discord.gg/weakauras",
             L["Chat with WeakAuras experts on our Discord server."])
-  discordButton:SetParent(tipFrame)
-  discordButton:SetPoint("LEFT", tipFrame, "LEFT")
+  discordButton.frame:SetParent(tipFrame)
+  discordButton.frame:SetPoint("LEFT", tipFrame, "LEFT")
+  frame.discordButton = discordButton
 
   local documentationButton = addFooter(L["Documentation"], [[Interface\AddOns\WeakAuras\Media\Textures\GitHub.tga]], "https://github.com/WeakAuras/WeakAuras2/wiki",
             L["Check out our wiki for a large collection of examples and snippets."])
-  documentationButton:SetParent(tipFrame)
-  documentationButton:SetPoint("LEFT", discordButton, "RIGHT", 10, 0)
+  documentationButton.frame:SetParent(tipFrame)
+  documentationButton.frame:SetPoint("LEFT", discordButton.frame, "RIGHT", 10, 0)
+  OptionsPrivate.TTSFocus:SetNextFocus(discordButton, documentationButton)
 
   local reportbugButton = addFooter(L["Found a Bug?"], [[Interface\AddOns\WeakAuras\Media\Textures\bug_report.tga]], "https://github.com/WeakAuras/WeakAuras2/issues/new?assignees=&labels=%F0%9F%90%9B+Bug&template=bug_report.md&title=",
             L["Report bugs on our issue tracker."], true)
-  reportbugButton:SetParent(tipFrame)
-  reportbugButton:SetPoint("RIGHT", tipFrame, "RIGHT")
+  reportbugButton.frame:SetParent(tipFrame)
+  reportbugButton.frame:SetPoint("RIGHT", tipFrame, "RIGHT")
+
 
   local wagoButton = addFooter(L["Find Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wago.tga]], "https://wago.io",
             L["Browse Wago, the largest collection of auras."], true)
-  wagoButton:SetParent(tipFrame)
-  wagoButton:SetPoint("RIGHT", reportbugButton, "LEFT", -10, 0)
+  wagoButton.frame:SetParent(tipFrame)
+  wagoButton.frame:SetPoint("RIGHT", reportbugButton.frame, "LEFT", -10, 0)
+  OptionsPrivate.TTSFocus:SetNextFocus(documentationButton, wagoButton)
+  OptionsPrivate.TTSFocus:SetNextFocus(wagoButton, reportbugButton)
+
 
   local companionButton
   if not OptionsPrivate.Private.CompanionData.slugs then
     companionButton = addFooter(L["Update Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]], "https://weakauras.wtf",
             L["Keep your Wago imports up to date with the Companion App."])
-    companionButton:SetParent(tipFrame)
-    companionButton:SetPoint("RIGHT", wagoButton, "LEFT", -10, 0)
+    companionButton.frame:SetParent(tipFrame)
+    companionButton.frame:SetPoint("RIGHT", wagoButton.frame, "LEFT", -10, 0)
+    OptionsPrivate.TTSFocus:SetNextFocus(documentationButton, companionButton)
+    OptionsPrivate.TTSFocus:SetNextFocus(companionButton, wagoButton)
   end
 
   frame.ShowTip = function(self)
+    -- TODO give focus
     self.tipFrame:Show()
     self.buttonsContainer.frame:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 17, 30)
     self.container.frame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -17, 28)
   end
 
   frame.HideTip = function(self)
+    -- TODO give focus
     self.tipFrame:Hide()
     self.buttonsContainer.frame:SetPoint("BOTTOMLEFT", frame, "BOTTOMLEFT", 17, 12)
     self.container.frame:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -17, 10)
@@ -534,6 +555,25 @@ function OptionsPrivate.CreateFrame()
   filterInput:SetFont(STANDARD_TEXT_FONT, 10, "")
   frame.filterInput = filterInput
   filterInput:Hide()
+  filterInput:SetScript("OnTabPressed", function()
+    OptionsPrivate.TTSFocus:MoveFocus(IsShiftKeyDown())
+  end)
+  filterInput:SetScript("OnSpacePressed", function()
+    -- TOOD can't prevent space from beeing entered into filter box...
+    if IsControlKeyDown() then
+      OptionsPrivate.TTSFocus:ReadFocus()
+    end
+  end)
+
+  filterInput.ttsDescription = function()
+    local text = filterInput:GetText()
+    if text == "" then
+      return L["Filter Aura List"]
+    else
+      return L["Filter Aura: %s"]:format(text)
+    end
+  end
+
 
   -- Left Side Container
   local buttonsContainer = AceGUI:Create("InlineGroup")
@@ -558,6 +598,7 @@ function OptionsPrivate.CreateFrame()
   importButton.frame:Show()
   importButton:SetPoint("RIGHT", filterInput, "RIGHT")
   importButton:SetPoint("BOTTOM", frame, "TOP", 0, -55)
+  importButton.ttsDescription = L["Import a Aura"]
 
   local newButton = AceGUI:Create("WeakAurasToolbarButton")
   newButton:SetText(L["New Aura"])
@@ -565,10 +606,14 @@ function OptionsPrivate.CreateFrame()
   newButton.frame:SetParent(toolbarContainer)
   newButton.frame:Show()
   newButton:SetPoint("RIGHT", importButton.frame, "LEFT", -10, 0)
+  newButton.ttsDescription = L["Create a New Aura"]
   frame.toolbarContainer = toolbarContainer
+  OptionsPrivate.TTSFocus:SetNextFocus(newButton, importButton)
+  OptionsPrivate.TTSFocus:SetNextFocus(reportbugButton, newButton)
 
   newButton:SetCallback("OnClick", function()
     frame:NewAura()
+    OptionsPrivate.TTSFocus:SetFocus(frame.premadeAuraButton)
   end)
 
   local magnetButton = AceGUI:Create("WeakAurasToolbarButton")
@@ -592,6 +637,9 @@ function OptionsPrivate.CreateFrame()
   magnetButton.frame:SetParent(toolbarContainer)
   magnetButton.frame:Show()
   magnetButton:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -17, -55)
+  magnetButton.ttsDescription = function()
+    return WeakAurasOptionsSaved.magnetAlign and L["Disable Magnetic Align"] or L["Enable Magnetic Align"]
+  end
 
   local lockButton = AceGUI:Create("WeakAurasToolbarButton")
   lockButton:SetText(L["Lock Positions"])
@@ -613,6 +661,13 @@ function OptionsPrivate.CreateFrame()
   lockButton.frame:SetParent(toolbarContainer)
   lockButton.frame:Show()
   lockButton:SetPoint("RIGHT", magnetButton.frame, "LEFT", -10, 0)
+  lockButton.ttsDescription = function()
+    return WeakAurasOptionsSaved.lockPositions and L["Unlock Aura Positions"] or L["Lock Aura Positions"]
+  end
+
+  OptionsPrivate.TTSFocus:SetNextFocus(importButton, lockButton)
+  OptionsPrivate.TTSFocus:SetNextFocus(lockButton, magnetButton)
+  OptionsPrivate.TTSFocus:SetNextFocus(magnetButton, filterInput)
 
   local loadProgress = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
   loadProgress:SetPoint("TOP", buttonsContainer.frame, "TOP", 0, -4)
@@ -623,7 +678,6 @@ function OptionsPrivate.CreateFrame()
     self.loadProgessVisible = visible
     self:UpdateFrameVisible()
   end
-
 
   local buttonsScroll = AceGUI:Create("ScrollFrame")
   buttonsScroll:SetLayout("ButtonsScrollLayout")
@@ -641,6 +695,43 @@ function OptionsPrivate.CreateFrame()
     buttonsScroll:DoLayout()
   end
   frame.buttonsScroll = buttonsScroll
+  buttonsScroll.ttsDescription = function()
+    -- TODO using pickedDisplay is wrong, can't select pending install/update buttons that way
+    -- though should be kept in sync with pickedDisplay
+    if type(frame.pickedDisplay) == "string" then
+      return L["Aura List: %s %s"]:format("Current Aura", frame.pickedDisplay)
+    else
+      return L["Aura List"]
+    end
+  end
+  buttonsScroll.SetFocus = function()
+    if frame.pickedDisplay == nil then
+      for _, button in ipairs(buttonsScroll.children) do
+        if button.frame.id then
+          WeakAuras.PickDisplay(button.frame.id)
+          break;
+        end
+      end
+    end
+  end
+  buttonsScroll.ttsKeyHandler = function(self, key)
+    if key == "UP" or key == "DOWN" then
+      if frame.pickedDisplay ~= nil then
+        for index, button in ipairs(buttonsScroll.children) do
+          if button.frame.id == frame.pickedDisplay then
+            -- Found it
+            local toPick = buttonsScroll.children[index + (key == "UP" and -1 or 1)]
+            if toPick then
+              WeakAuras.PickDisplay(toPick.frame.id)
+            end
+            OptionsPrivate.TTSFocus:ReadFocus()
+            break;
+          end
+        end
+      end
+    end
+  end
+  OptionsPrivate.TTSFocus:SetNextFocus(filterInput, buttonsScroll)
 
   function buttonsScroll:GetScrollPos()
     local status = self.status or self.localstatus
@@ -678,6 +769,7 @@ function OptionsPrivate.CreateFrame()
 
     status.scrollvalue = status.offset / ((height - viewheight) / 1000.0)
   end
+
 
   -- Ready to Install section
   local pendingInstallButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
@@ -1004,7 +1096,51 @@ function OptionsPrivate.CreateFrame()
       end)
 
     AceConfigDialog:Open("WeakAuras", group)
+
+    local prev = tabsWidget
+
+    local function recurseList(list)
+      for i, widget in ipairs(list) do
+        print("###", i, widget)
+        OptionsPrivate.TTSFocus:SetNextFocus(prev, widget)
+        prev = widget
+        if widget.children then
+          recurseList(widget.children)
+        end
+      end
+    end
+    recurseList(group.children)
+
+    OptionsPrivate.TTSFocus:SetNextFocus(prev, frame.discordButton)
+
     tabsWidget:SetTitle("")
+
+    OptionsPrivate.TTSFocus:SetNextFocus(frame.buttonsScroll, tabsWidget)
+    -- TODO polluting widget
+    tabsWidget.ttsDescription = function()
+      local status = tabsWidget.status or tabsWidget.localstatus
+      for i, v in ipairs(tabsWidget.tabs) do
+        if v.value == status.selected then
+          return L["Tab %s"]:format(v.Text:GetText())
+        end
+      end
+    end
+    tabsWidget.ttsKeyHandler = function(self, key)
+      local status = tabsWidget.status or tabsWidget.localstatus
+      if key == "UP" or key == "DOWN" then
+        for i, v in ipairs(tabsWidget.tabs) do
+          if v.value == status.selected then
+            local prevTab = tabsWidget.tabs[i + (key == "UP" and -1 or 1)]
+            if prevTab then
+              tabsWidget:SelectTab(prevTab.value)
+              OptionsPrivate.TTSFocus:ReadFocus()
+            end
+            break;
+          end
+        end
+      end
+
+    end
 
     if data.controlledChildren and #data.controlledChildren == 0 then
       WeakAurasOptions:NewAura()
@@ -1138,6 +1274,7 @@ function OptionsPrivate.CreateFrame()
         OptionsPrivate.OpenTriggerTemplate(nil, self:GetTargetAura())
       end)
       containerScroll:AddChild(button)
+      frame.premadeAuraButton = button
 
       local spacer1Label = AceGUI:Create("Label")
       spacer1Label:SetText("")
@@ -1176,6 +1313,7 @@ function OptionsPrivate.CreateFrame()
       return OptionsPrivate.Private.regionOptions[a].displayName < OptionsPrivate.Private.regionOptions[b].displayName
     end)
 
+    local lastButton = frame.premadeAuraButton
     for index, regionType in ipairs(regionTypesSorted) do
       if (targetIsDynamicGroup and (regionType == "group" or regionType == "dynamicgroup")) then
         -- Dynamic groups can't contain group/dynamic groups
@@ -1191,6 +1329,7 @@ function OptionsPrivate.CreateFrame()
           WeakAuras.NewAura(nil, regionType, self:GetTargetAura())
         end)
         containerScroll:AddChild(button)
+        OptionsPrivate.TTSFocus:SetNextFocus(lastButton, button)
       end
     end
 

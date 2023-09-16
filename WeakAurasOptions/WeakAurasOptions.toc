@@ -70,6 +70,7 @@ OptionsFrames\DebugLogFrame.lua
 # Misc frames
 OptionsFrames\MoverSizer.lua
 OptionsFrames\FrameChooser.lua
+OptionsFrames\TTSFocus.lua
 
 AceGUI-Widgets\AceGUIWidget-WeakAurasExpand.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasExpandSmall.lua
