@@ -8766,6 +8766,36 @@ Private.event_prototypes = {
         end
       }
     },
+    GetNameAndIcon = function(trigger)
+      local name, icon, spellId, _
+      if trigger.use_spellNames and type(trigger.spellNames == "table") then
+        for _, spellName in ipairs(trigger.spellNames) do
+          spellId = WeakAuras.SafeToNumber(spellName)
+          if spellId then
+            name, _, icon = GetSpellInfo(spellName)
+            if name and icon then
+              return name, icon
+            end
+          elseif not tonumber(spellName) then
+            name, _, icon = GetSpellInfo(spellName)
+            if name and icon then
+              return name, icon
+            end
+          end
+        end
+      end
+      if trigger.use_spellIds and type(trigger.spellIds == "table") then
+        for _, spellIdString in ipairs(trigger.spellIds) do
+          spellId = WeakAuras.SafeToNumber(spellIdString)
+          if spellId then
+            name, _, icon = GetSpellInfo(spellIdString)
+            if name and icon then
+              return name, icon
+            end
+          end
+        end
+      end
+    end,
     automaticrequired = true,
   },
   ["Character Stats"] = {
