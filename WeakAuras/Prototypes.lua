@@ -2228,6 +2228,7 @@ Private.event_prototypes = {
       {
         name = "inRange",
         display = L["In Range"],
+        desc = L["Uses UnitInRange() to check if in range. Matches default raid frames out of range behavior, which is between 25 to 40 yards depending on your class and spec."],
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
@@ -3027,6 +3028,7 @@ Private.event_prototypes = {
       {
         name = "inRange",
         display = L["In Range"],
+        desc = L["Uses UnitInRange() to check if in range. Matches default raid frames out of range behavior, which is between 25 to 40 yards depending on your class and spec."],
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
@@ -3585,6 +3587,7 @@ Private.event_prototypes = {
       {
         name = "inRange",
         display = L["In Range"],
+        desc = L["Uses UnitInRange() to check if in range. Matches default raid frames out of range behavior, which is between 25 to 40 yards depending on your class and spec."],
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
@@ -3892,6 +3895,7 @@ Private.event_prototypes = {
       {
         name = "inRange",
         display = L["In Range"],
+        desc = L["Uses UnitInRange() to check if in range. Matches default raid frames out of range behavior, which is between 25 to 40 yards depending on your class and spec."],
         type = "toggle",
         width = WeakAuras.doubleWidth,
         enable = function(trigger)
