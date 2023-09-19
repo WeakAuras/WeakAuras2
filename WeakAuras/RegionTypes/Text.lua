@@ -53,7 +53,7 @@ local properties = {
   },
 }
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+Private.regionPrototype.AddProperties(properties, default);
 
 local function GetProperties(data)
   return properties;
@@ -72,13 +72,13 @@ local function create(parent)
   region.duration = 0;
   region.expirationTime = math.huge;
 
-  WeakAuras.regionPrototype.create(region);
+  Private.regionPrototype.create(region);
 
   return region;
 end
 
 local function modify(parent, region, data)
-  WeakAuras.regionPrototype.modify(parent, region, data);
+  Private.regionPrototype.modify(parent, region, data);
   local text = region.text;
 
   local fontPath = SharedMedia:Fetch("font", data.font);
@@ -330,7 +330,7 @@ local function modify(parent, region, data)
   region.displayText = data.displayText
   region:ConfigureTextUpdate()
   region:ConfigureSubscribers()
-  WeakAuras.regionPrototype.modifyFinish(parent, region, data);
+  Private.regionPrototype.modifyFinish(parent, region, data);
 end
 
 local function validate(data)
@@ -342,7 +342,7 @@ WeakAuras.RegisterRegionType("text", create, modify, default, GetProperties, val
 -- Fallback region type
 
 local function fallbackmodify(parent, region, data)
-  WeakAuras.regionPrototype.modify(parent, region, data);
+  Private.regionPrototype.modify(parent, region, data);
   local text = region.text;
 
   text:SetFont(STANDARD_TEXT_FONT, data.fontSize, data.outline and "OUTLINE" or nil);
@@ -358,7 +358,7 @@ local function fallbackmodify(parent, region, data)
 
   region.Update = function() end
 
-  WeakAuras.regionPrototype.modifyFinish(parent, region, data);
+  Private.regionPrototype.modifyFinish(parent, region, data);
 end
 
 WeakAuras.RegisterRegionType("fallback", create, fallbackmodify, default);

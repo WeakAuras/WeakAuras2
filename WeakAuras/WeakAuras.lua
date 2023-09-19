@@ -3164,8 +3164,8 @@ function Private.SetRegion(data, cloneId)
       local anim_cancelled = loginFinished and Private.CancelAnimation(region, true, true, true, true, true, true);
 
       regionTypes[regionType].modify(parent, region, data);
-      WeakAuras.regionPrototype.AddSetDurationInfo(region);
-      WeakAuras.regionPrototype.AddExpandFunction(data, region, cloneId, parent, parent.regionType)
+      Private.regionPrototype.AddSetDurationInfo(region);
+      Private.regionPrototype.AddExpandFunction(data, region, cloneId, parent, parent.regionType)
 
       data.animation = data.animation or {};
       data.animation.start = data.animation.start or {type = "none"};
