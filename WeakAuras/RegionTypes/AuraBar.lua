@@ -42,8 +42,8 @@ local default = {
   zoom = 0
 };
 
-WeakAuras.regionPrototype.AddAdjustedDurationToDefault(default);
-WeakAuras.regionPrototype.AddAlphaToDefault(default);
+Private.regionPrototype.AddAdjustedDurationToDefault(default);
+Private.regionPrototype.AddAlphaToDefault(default);
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
@@ -152,7 +152,7 @@ local properties = {
   },
 };
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+Private.regionPrototype.AddProperties(properties, default);
 
 local function GetProperties(data)
   local overlayInfo = Private.GetOverlayInfo(data);
@@ -1129,7 +1129,7 @@ local function create(parent)
     end
   end
 
-  WeakAuras.regionPrototype.create(region);
+  Private.regionPrototype.create(region);
 
   for k, f in pairs(funcs) do
     region[k] = f
@@ -1153,7 +1153,7 @@ local function modify(parent, region, data)
   region.text = nil
   region.stacks = nil
 
-  WeakAuras.regionPrototype.modify(parent, region, data);
+  Private.regionPrototype.modify(parent, region, data);
   -- Localize
   local bar, iconFrame, icon = region.bar, region.iconFrame, region.icon;
 
@@ -1417,7 +1417,7 @@ local function modify(parent, region, data)
   --- Update internal bar alignment
   region.bar:Update();
 
-  WeakAuras.regionPrototype.modifyFinish(parent, region, data);
+  Private.regionPrototype.modifyFinish(parent, region, data);
 end
 
 local function validate(data)

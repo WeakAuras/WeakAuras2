@@ -121,7 +121,7 @@ local function create(parent)
   region.selfPoint = "TOPLEFT"
   region.controlPoints = CreateObjectPool(createControlPoint, releaseControlPoint)
   region.controlPoints.parent = region
-  WeakAuras.regionPrototype.create(region)
+  Private.regionPrototype.create(region)
   region.suspended = 0
 
   local oldSetFrameLevel = region.SetFrameLevel
@@ -1042,7 +1042,7 @@ end
 local function modify(parent, region, data)
   Private.FixGroupChildrenOrderForGroup(data)
   region:SetScale(data.scale and data.scale > 0 and data.scale <= 10 and data.scale or 1)
-  WeakAuras.regionPrototype.modify(parent, region, data)
+  Private.regionPrototype.modify(parent, region, data)
 
   if data.border and not data.useAnchorPerUnit then
     local background = region.background
@@ -1553,7 +1553,7 @@ local function modify(parent, region, data)
 
   region:ReloadControlledChildren()
 
-  WeakAuras.regionPrototype.modifyFinish(parent, region, data)
+  Private.regionPrototype.modifyFinish(parent, region, data)
 end
 
 WeakAuras.RegisterRegionType("dynamicgroup", create, modify, default)

@@ -23,7 +23,7 @@ local default = {
   frameStrata = 1
 };
 
-WeakAuras.regionPrototype.AddAlphaToDefault(default);
+Private.regionPrototype.AddAlphaToDefault(default);
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
@@ -72,7 +72,7 @@ local properties = {
   }
 }
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+Private.regionPrototype.AddProperties(properties, default);
 
 local function create(parent)
   local region = CreateFrame("Frame", nil, UIParent);
@@ -91,7 +91,7 @@ local function create(parent)
   region.texture = texture;
   texture:SetAllPoints(region);
 
-  WeakAuras.regionPrototype.create(region);
+  Private.regionPrototype.create(region);
 
   return region;
 end
@@ -107,7 +107,7 @@ local function GetRotatedPoints(degrees, scaleForFullRotate)
 end
 
 local function modify(parent, region, data)
-  WeakAuras.regionPrototype.modify(parent, region, data);
+  Private.regionPrototype.modify(parent, region, data);
   WeakAuras.SetTextureOrAtlas(region.texture, data.texture, data.textureWrapMode, data.textureWrapMode);
   region.texture:SetDesaturated(data.desaturate)
   region:SetWidth(data.width);
@@ -247,7 +247,7 @@ local function modify(parent, region, data)
   end
   region:SetRotation(data.rotation)
 
-  WeakAuras.regionPrototype.modifyFinish(parent, region, data);
+  Private.regionPrototype.modifyFinish(parent, region, data);
 end
 
 local function validate(data)

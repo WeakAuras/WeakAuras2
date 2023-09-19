@@ -34,7 +34,7 @@ local default = {
   useCooldownModRate = true
 };
 
-WeakAuras.regionPrototype.AddAlphaToDefault(default);
+Private.regionPrototype.AddAlphaToDefault(default);
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
@@ -110,7 +110,7 @@ local properties = {
   }
 };
 
-WeakAuras.regionPrototype.AddProperties(properties, default);
+Private.regionPrototype.AddProperties(properties, default);
 
 local function GetProperties(data)
   local result = CopyTable(properties)
@@ -151,7 +151,7 @@ end
 
 local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
   if anchorType == "area" then
-    WeakAuras.regionPrototype.AnchorSubRegion(selfPoint == "region" and self or self.icon,
+    Private.regionPrototype.AnchorSubRegion(selfPoint == "region" and self or self.icon,
                     subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
   else
     subRegion:ClearAllPoints()
@@ -286,7 +286,7 @@ local function create(parent, data)
     end
   end
 
-  WeakAuras.regionPrototype.create(region);
+  Private.regionPrototype.create(region);
 
   region.AnchorSubRegion = AnchorSubRegion
 
@@ -298,7 +298,7 @@ local function modify(parent, region, data)
   region.stacks = nil
   region.text2 = nil
 
-  WeakAuras.regionPrototype.modify(parent, region, data);
+  Private.regionPrototype.modify(parent, region, data);
 
   local button, icon, cooldown = region.button, region.icon, region.cooldown;
 
@@ -648,7 +648,7 @@ local function modify(parent, region, data)
     end
   end
 
-  WeakAuras.regionPrototype.modifyFinish(parent, region, data);
+  Private.regionPrototype.modifyFinish(parent, region, data);
 
   --- WORKAROUND
   -- This fixes a issue with barmodels not appearing on icons if the

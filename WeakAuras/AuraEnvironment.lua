@@ -472,7 +472,6 @@ local FakeWeakAurasMixin = {
   },
   blockedTables = {
     ModelPaths = true,
-    regionPrototype = true,
     RealTimeProfilingWindow = true,
     -- Note these shouldn't exist in the WeakAuras namespace, but moving them takes a bit of effort,
     -- so for now just block them and clean them up later
