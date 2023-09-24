@@ -116,6 +116,17 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field type triggerTypes
 --- @field use_showOn boolean|nil
 --- @field use_alwaystrue boolean|nil
+--- @field subeventPrefix string?
+--- @field subeventSuffix string?
+
+---@class prototypeData
+---@field durationFunc fun(trigger: triggerData): number, number, boolean?
+---@field init fun(trigger: triggerData)
+---@field useModRate boolean?
+---@field timedrequired boolean?
+---@field GetNameAndIcon fun(trigger: triggerData): string?, string?
+---@field iconFunc fun(trigger: triggerData): string?
+---@field nameFunc fun(trigger: triggerData): string?
 
 
 --- @class triggerUntriggerData
