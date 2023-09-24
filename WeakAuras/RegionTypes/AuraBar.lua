@@ -1063,6 +1063,7 @@ local funcs = {
 local function create(parent)
   -- Create overall region (containing everything else)
   local region = CreateFrame("Frame", nil, parent);
+  --- @cast region table|Frame
   region.regionType = "aurabar"
   region:SetMovable(true);
   region:SetResizable(true);
@@ -1073,6 +1074,7 @@ local function create(parent)
   end
 
   local bar = CreateFrame("Frame", nil, region);
+  --- @cast bar table|Frame
   Mixin(bar, Private.SmoothStatusBarMixin);
 
   -- Now create a bunch of textures

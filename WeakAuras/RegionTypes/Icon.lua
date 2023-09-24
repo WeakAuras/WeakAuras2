@@ -193,6 +193,7 @@ local function create(parent, data)
   local font = "GameFontHighlight";
 
   local region = CreateFrame("Frame", nil, parent);
+  --- @cast region table|Frame
   region.regionType = "icon"
   region:SetMovable(true);
   region:SetResizable(true);
@@ -228,6 +229,7 @@ local function create(parent, data)
   local button
   if MSQ then
     button = CreateFrame("Button", nil, region)
+    --- @cast button table|Button
     button.data = data
     region.button = button;
     button:EnableMouse(false);

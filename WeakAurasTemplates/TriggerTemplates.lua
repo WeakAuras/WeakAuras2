@@ -459,6 +459,7 @@ end
 local function createThumbnail(parent)
   -- Preview frame
   local borderframe = CreateFrame("Frame", nil, parent);
+  --- @cast borderframe table|Frame
   borderframe:SetWidth(32);
   borderframe:SetHeight(32);
 
@@ -470,6 +471,7 @@ local function createThumbnail(parent)
 
   -- Main region
   local region = CreateFrame("Frame", nil, borderframe);
+  --- @cast region table|Frame
   borderframe.region = region;
 
   -- Preview children
