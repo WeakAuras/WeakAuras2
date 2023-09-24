@@ -709,7 +709,7 @@ if WeakAuras.IsRetail() then
   talentCheckFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
   talentCheckFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
 
-  --- @type table<number, {rank: number, spellId: number}
+  --- @type table<number, {rank: number, spellId: number}>
   local selectedTalentsById = {}
 
   Private.CheckTalentsForLoad = function(event)
@@ -5497,7 +5497,7 @@ Private.event_prototypes = {
     nameFunc = function(trigger)
       local item = GetInventoryItemID("player", trigger.itemSlot or 0);
       if (item) then
-        return GetItemInfo(item);
+        return (GetItemInfo(item))
       end
     end,
     stacksFunc = function(trigger)
@@ -5575,7 +5575,7 @@ Private.event_prototypes = {
     nameFunc = function(trigger)
       local item = GetInventoryItemID("player", trigger.itemSlot or 0);
       if (item) then
-        return GetItemInfo(item)
+        return (GetItemInfo(item))
       else
         return ""
       end
@@ -9855,7 +9855,7 @@ Private.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      return GetSpellInfo(trigger.spellName or 0)
+      return (GetSpellInfo(trigger.spellName or 0))
     end,
     iconFunc = function(trigger)
       local _, _, icon = GetSpellInfo(trigger.spellName or 0);

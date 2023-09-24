@@ -314,10 +314,11 @@ local function BuildUidMap(data, children, type)
     --- @type table<uid, UidMapData>
     map = {
     },
-    type = type -- Either old or new, only used for error checking
+    type = type, -- Either old or new, only used for error checking
+    root = data.uid,
+    totalCount = #children + 1,
+    idToUid = {}
   }
-  uidMap.root = data.uid
-  uidMap.totalCount = #children + 1
 
   -- Build helper map from id to uid
   local idToUid = {}
