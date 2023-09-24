@@ -964,7 +964,7 @@ local function AddFakeInformation(state, eventData)
     state.duration = 7
   end
   if eventData.prototype and eventData.prototype.GetNameAndIcon then
-    local name, icon = Private.event_prototypes[eventData.event].GetNameAndIcon(eventData.trigger)
+    local name, icon = eventData.prototype.GetNameAndIcon(eventData.trigger)
     if state.name == nil then
       state.name = name
     end
@@ -3734,31 +3734,37 @@ function WeakAuras.GetUniqueCloneId()
   return uniqueId;
 end
 
+--- @type fun(trigger: triggerData) : prototypeData
+function GenericTrigger.GetPrototype(trigger)
+  if trigger.type and trigger.event then
+    if Private.category_event_prototype[trigger.type] then
+      return Private.event_prototypes[trigger.event]
+    end
+  end
+end
+
+--- @type fun(data: auraData, triggernum: number) : "timed"|boolean, boolean?
 function GenericTrigger.CanHaveDuration(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
-  if (Private.category_event_prototype[trigger.type]) then
-    if trigger.event then
-      local prototype = Private.event_prototypes[trigger.event]
-      if prototype then
-        if prototype.durationFunc then
-          if(type(prototype.init) == "function") then
-            prototype.init(trigger);
-          end
-          local current, maximum, custom = prototype.durationFunc(trigger);
-          current = type(current) ~= "number" and current or 0
-          maximum = type(maximum) ~= "number" and maximum or 0
-          if(custom) then
-            return {current = current, maximum = maximum};
-          else
-            return "timed";
-          end
-        elseif prototype.canHaveDuration then
-          return prototype.canHaveDuration, prototype.useModRate
-        elseif prototype.timedrequired then
-          return "timed"
-        end
+  local prototype = GenericTrigger.GetPrototype(trigger)
+  if prototype then
+    if prototype.durationFunc then
+      if(type(prototype.init) == "function") then
+        prototype.init(trigger);
       end
+      local current, maximum, custom = prototype.durationFunc(trigger);
+      current = type(current) ~= "number" and current or 0
+      maximum = type(maximum) ~= "number" and maximum or 0
+      if(custom) then
+        return {current = current, maximum = maximum};
+      else
+        return "timed";
+      end
+    elseif prototype.canHaveDuration then
+      return prototype.canHaveDuration, prototype.useModRate
+    elseif prototype.timedrequired then
+      return "timed"
     end
   elseif (trigger.type == "custom") then
     if trigger.custom_type == "event" and trigger.custom_hide == "timed" and trigger.duration then
@@ -3772,10 +3778,11 @@ function GenericTrigger.CanHaveDuration(data, triggernum)
   return false
 end
 
+--- @type fun(data: auraData): number?
 function GenericTrigger.GetDelay(data)
   if data.event then
-    local prototype = Private.event_prototypes[data.event]
-    if prototype and prototype.type == data.type and prototype.delayEvents then
+    local prototype = GenericTrigger.GetPrototype(data.trigger)
+    if prototype and prototype.delayEvents then
       local trigger = data.trigger
       if trigger.use_delay and type(trigger.delay) == "number" and trigger.delay > 0 then
         return trigger.delay
@@ -3793,17 +3800,18 @@ function GenericTrigger.GetTsuConditionVariables(id, triggernum)
 end
 
 --- Returns a table containing the names of all overlays
---- @param data table
+--- @param data auraData
 --- @param triggernum number
 function GenericTrigger.GetOverlayInfo(data, triggernum)
   local result;
 
   local trigger = data.triggers[triggernum].trigger
 
-  if (trigger.type ~= "custom" and trigger.event and Private.event_prototypes[trigger.event] and Private.event_prototypes[trigger.event].overlayFuncs) then
+  local prototype = GenericTrigger.GetPrototype(trigger)
+  if (prototype and prototype.overlayFuncs) then
     result = {};
     local dest = 1;
-    for i, v in ipairs(Private.event_prototypes[trigger.event].overlayFuncs) do
+    for i, v in ipairs(prototype.overlayFuncs) do
       local enable = true
       if type(v.enable) == "function" then
         enable = v.enable(trigger)
@@ -3863,20 +3871,20 @@ function GenericTrigger.CanHaveClones(data)
   return false;
 end
 
+--- @type fun(data: auraData, triggernum: number): string?, string?
 function GenericTrigger.GetNameAndIcon(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   local icon, name
-  if (Private.category_event_prototype[trigger.type]) then
-    if(trigger.event and Private.event_prototypes[trigger.event]) then
-      if (Private.event_prototypes[trigger.event].GetNameAndIcon) then
-        return Private.event_prototypes[trigger.event].GetNameAndIcon(trigger)
-      else
-        if(Private.event_prototypes[trigger.event].iconFunc) then
-          icon = Private.event_prototypes[trigger.event].iconFunc(trigger);
-        end
-        if(Private.event_prototypes[trigger.event].nameFunc) then
-          name = Private.event_prototypes[trigger.event].nameFunc(trigger);
-        end
+  local prototype = GenericTrigger.GetPrototype(trigger)
+  if prototype then
+    if prototype.GetNameAndIcon then
+      return prototype.GetNameAndIcon(trigger)
+    else
+      if prototype.iconFunc then
+        icon = prototype.iconFunc(trigger)
+      end
+      if prototype.nameFunc then
+        name = prototype.nameFunc(trigger)
       end
     end
   end
@@ -3885,18 +3893,17 @@ function GenericTrigger.GetNameAndIcon(data, triggernum)
 end
 
 ---Returns the type of tooltip to show for the trigger.
---- @param data table
+--- @param data auraData
 --- @param triggernum number
 --- @return boolean|string
 function GenericTrigger.CanHaveTooltip(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
-  if (Private.category_event_prototype[trigger.type]) then
-    if (trigger.event and Private.event_prototypes[trigger.event]) then
-      if(Private.event_prototypes[trigger.event].hasSpellID) then
-        return "spell";
-      elseif(Private.event_prototypes[trigger.event].hasItemID) then
-        return "item";
-      end
+  local prototype = GenericTrigger.GetPrototype(trigger)
+  if prototype then
+    if prototype.hasSpellID then
+      return "spell";
+    elseif prototype.hasItemID then
+      return "item";
     end
   end
 
@@ -3939,47 +3946,46 @@ function GenericTrigger.SetToolTip(trigger, state)
     end
   end
 
-  if (Private.category_event_prototype[trigger.type]) then
-    if (trigger.event and Private.event_prototypes[trigger.event]) then
-      if(Private.event_prototypes[trigger.event].hasSpellID) then
-        GameTooltip:SetSpellByID(trigger.spellName);
-        return true
-      elseif(Private.event_prototypes[trigger.event].hasItemID) then
-        GameTooltip:SetHyperlink("item:"..trigger.itemName..":0:0:0:0:0:0:0")
-        return true
-      end
+  local prototype = GenericTrigger.GetPrototype(trigger)
+  if prototype then
+    if prototype.hasSpellID then
+      GameTooltip:SetSpellByID(trigger.spellName);
+      return true
+    elseif prototype.hasItemID then
+      GameTooltip:SetHyperlink("item:"..trigger.itemName..":0:0:0:0:0:0:0")
+      return true
     end
   end
   return false
 end
 
+--- @type fun(data: auraData, triggernum: number): string
 function GenericTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   local ret = "";
-  if (Private.category_event_prototype[trigger.type]) then
-    if (trigger.event and Private.event_prototypes[trigger.event]) then
-      local found = false;
-      local additional = ""
-      for _, v in pairs(Private.event_prototypes[trigger.event].args) do
-        local enable = true
-        if(type(v.enable) == "function") then
-          enable = v.enable(trigger)
-        elseif type(v.enable) == "boolean" then
-          enable = v.enable
-        end
-        if (enable and v.store and v.name and v.display) then
-          found = true;
-          additional = additional .. "|cFFFF0000%".. triggernum .. "." .. v.name .. "|r - " .. v.display .. "\n";
-        end
+  local prototype = GenericTrigger.GetPrototype(trigger)
+  if prototype then
+    local found = false;
+    local additional = ""
+    for _, v in pairs(prototype.args) do
+      local enable = true
+      if(type(v.enable) == "function") then
+        enable = v.enable(trigger)
+      elseif type(v.enable) == "boolean" then
+        enable = v.enable
       end
-      if Private.event_prototypes[trigger.event].countEvents then
+      if (enable and v.store and v.name and v.display) then
         found = true;
-        additional = additional .. "|cFFFF0000%".. triggernum .. ".count|r - " .. L["Count"] .. "\n";
+        additional = additional .. "|cFFFF0000%".. triggernum .. "." .. v.name .. "|r - " .. v.display .. "\n";
       end
+    end
+    if prototype.countEvents then
+      found = true;
+      additional = additional .. "|cFFFF0000%".. triggernum .. ".count|r - " .. L["Count"] .. "\n";
+    end
 
-      if (found) then
-        ret = ret .. additional;
-      end
+    if (found) then
+      ret = ret .. additional;
     end
   else
     if (trigger.custom_type == "stateupdate") then
@@ -4064,98 +4070,98 @@ function Private.ExpandCustomVariables(variables)
   end
 end
 
+--- @type fun(data: auraData, triggernum: number): table
 function GenericTrigger.GetTriggerConditions(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
-  if (Private.category_event_prototype[trigger.type]) then
-    if (trigger.event and Private.event_prototypes[trigger.event]) then
-      local result = {};
+  local prototype = GenericTrigger.GetPrototype(trigger)
+  if prototype then
+    local result = {};
 
-      local canHaveDuration, modRated = GenericTrigger.CanHaveDuration(data, triggernum);
-      local timedDuration = canHaveDuration;
-      local valueDuration = canHaveDuration;
-      if (canHaveDuration == "timed") then
-        valueDuration = false;
-      elseif (type(canHaveDuration) == "table") then
-        timedDuration = false;
+    local canHaveDuration, modRated = GenericTrigger.CanHaveDuration(data, triggernum);
+    local timedDuration = canHaveDuration;
+    local valueDuration = canHaveDuration;
+    if (canHaveDuration == "timed") then
+      valueDuration = false;
+    elseif (type(canHaveDuration) == "table") then
+      timedDuration = false;
+    end
+
+    if (timedDuration) then
+      if modRated then
+        result.expirationTime = commonConditions.expirationTimeModRate;
+        result.duration = commonConditions.durationModRate;
+      else
+        result.expirationTime = commonConditions.expirationTime;
+        result.duration = commonConditions.duration;
       end
+      result.paused = commonConditions.paused
+    end
 
-      if (timedDuration) then
-        if modRated then
-          result.expirationTime = commonConditions.expirationTimeModRate;
-          result.duration = commonConditions.durationModRate;
-        else
-          result.expirationTime = commonConditions.expirationTime;
-          result.duration = commonConditions.duration;
-        end
-        result.paused = commonConditions.paused
-      end
+    if (valueDuration) then
+      result.value = commonConditions.value;
+      result.total = commonConditions.total;
+    end
 
-      if (valueDuration) then
-        result.value = commonConditions.value;
-        result.total = commonConditions.total;
-      end
+    if prototype.stacksFunc then
+      result.stacks = commonConditions.stacks;
+    end
 
-      if (Private.event_prototypes[trigger.event].stacksFunc) then
-        result.stacks = commonConditions.stacks;
-      end
+    if prototype.nameFunc then
+      result.name = commonConditions.name;
+    end
 
-      if (Private.event_prototypes[trigger.event].nameFunc) then
-        result.name = commonConditions.name;
-      end
-
-      for _, v in pairs(Private.event_prototypes[trigger.event].args) do
-        if (v.conditionType and v.name and v.display) then
-          local enable = true;
-          if (v.enable ~= nil) then
-            if type(v.enable) == "function" then
-              enable = v.enable(trigger);
-            elseif type(v.enable) == "boolean" then
-              enable = v.enable
-            end
+    for _, v in pairs(prototype.args) do
+      if (v.conditionType and v.name and v.display) then
+        local enable = true;
+        if (v.enable ~= nil) then
+          if type(v.enable) == "function" then
+            enable = v.enable(trigger);
+          elseif type(v.enable) == "boolean" then
+            enable = v.enable
           end
+        end
 
-          if (enable) then
-            result[v.name] = {
-              display = v.display,
-              type = v.conditionType
-            }
-            if (result[v.name].type == "select" or result[v.name].type == "unit") then
-              if (v.conditionValues) then
-                result[v.name].values = Private[v.conditionValues] or WeakAuras[v.conditionValues];
+        if (enable) then
+          result[v.name] = {
+            display = v.display,
+            type = v.conditionType
+          }
+          if (result[v.name].type == "select" or result[v.name].type == "unit") then
+            if (v.conditionValues) then
+              result[v.name].values = Private[v.conditionValues] or WeakAuras[v.conditionValues];
+            else
+              if type(v.values) == "function" then
+                result[v.name].values = v.values()
               else
-                if type(v.values) == "function" then
-                  result[v.name].values = v.values()
-                else
-                  result[v.name].values = Private[v.values] or WeakAuras[v.values];
-                end
+                result[v.name].values = Private[v.values] or WeakAuras[v.values];
               end
             end
-            if (v.conditionPreamble) then
-              result[v.name].preamble = v.conditionPreamble;
-            end
-            if (v.conditionTest) then
-              result[v.name].test = v.conditionTest;
-            end
-            if (v.conditionEvents) then
-              result[v.name].events = v.conditionEvents;
-            end
-            if (v.operator_types) then
-              result[v.name].operator_types = v.operator_types;
-            end
+          end
+          if (v.conditionPreamble) then
+            result[v.name].preamble = v.conditionPreamble;
+          end
+          if (v.conditionTest) then
+            result[v.name].test = v.conditionTest;
+          end
+          if (v.conditionEvents) then
+            result[v.name].events = v.conditionEvents;
+          end
+          if (v.operator_types) then
+            result[v.name].operator_types = v.operator_types;
           end
         end
       end
-
-      if Private.event_prototypes[trigger.event].countEvents then
-        result.count = {
-          display = L["Count"],
-          type = "number"
-        }
-      end
-
-      return result;
     end
+
+    if prototype.countEvents then
+      result.count = {
+        display = L["Count"],
+        type = "number"
+      }
+    end
+
+    return result;
   elseif(trigger.type == "custom") then
     if (trigger.custom_type == "status" or trigger.custom_type == "event") then
       local result = {};
@@ -4303,8 +4309,9 @@ end
 
 function GenericTrigger.GetTriggerDescription(data, triggernum, namestable)
   local trigger = data.triggers[triggernum].trigger
-  if (Private.category_event_prototype[trigger.type]) then
-    tinsert(namestable, {L["Trigger:"], (Private.event_prototypes[trigger.event].name or L["Undefined"])});
+  local prototype = GenericTrigger.GetPrototype(trigger)
+  if prototype then
+    tinsert(namestable, {L["Trigger:"], (prototype.name or L["Undefined"])});
     if(trigger.event == "Combat Log" and trigger.subeventPrefix and trigger.subeventSuffix) then
       tinsert(namestable, {L["Message type:"], (Private.subevent_prefix_types[trigger.subeventPrefix] or L["Undefined"]).." "..(Private.subevent_suffix_types[trigger.subeventSuffix] or L["Undefined"])});
     end
