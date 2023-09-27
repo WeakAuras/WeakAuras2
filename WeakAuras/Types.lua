@@ -3398,14 +3398,11 @@ for i = 1, 4 do
   Private.multiUnitUnits.party["partypet"..i] = true
 end
 
-if WeakAuras.IsRetail() then
+if WeakAuras.IsWrathOrRetail() then
   for i = 1, 10 do
     Private.baseUnitId["boss"..i] = true
     Private.multiUnitUnits.boss["boss"..i] = true
   end
-end
-
-if WeakAuras.IsWrathOrRetail() then
   for i = 1, 5 do
     Private.baseUnitId["arena"..i] = true
     Private.multiUnitUnits.arena["arena"..i] = true
@@ -3861,10 +3858,6 @@ if WeakAuras.IsWrathClassic() then
   end
   Private.talent_extra_option_types[0] = nil
   Private.talent_extra_option_types[2] = nil
-  Private.multiUnitId.boss = nil
-  wipe(Private.multiUnitUnits.boss)
-  Private.unit_types_bufftrigger_2.boss = nil
-  Private.actual_unit_types_cast.boss = nil
 
   local reset_swing_spell_list = {
     1464, 8820, 11604, 11605, 25241, 25242, -- Slam
