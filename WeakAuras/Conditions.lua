@@ -371,9 +371,15 @@ local function CreateTestForCondition(uid, input, allConditionsTemplate, usedSta
     -- If adding a new condition type, don't forget to adjust the validator in the options code
 
     if (cType == "timer" and value) then
-      recheckCode = "  nextTime = state[" .. trigger .. "] and not state[" .. trigger .. "].paused"
-                    .. " and state[" .. trigger .. "]" .. string.format("[%q]",  variable)
-                    .. " and (state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. " - " .. value .. ")\n"
+      if useModRate then
+        recheckCode = "  nextTime = state[" .. trigger .. "] and not state[" .. trigger .. "].paused"
+        .. " and state[" .. trigger .. "]" .. string.format("[%q]",  variable)
+        .. " and (state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. " - " .. value .. " * (state[" .. trigger .. "].modRate or 1.0))\n"
+      else
+        recheckCode = "  nextTime = state[" .. trigger .. "] and not state[" .. trigger .. "].paused"
+        .. " and state[" .. trigger .. "]" .. string.format("[%q]",  variable)
+        .. " and (state[" .. trigger .. "]" .. string.format("[%q]",  variable) .. " - " .. value .. ")\n"
+      end
       recheckCode = recheckCode .. "  if (nextTime and (not recheckTime or nextTime < recheckTime) and nextTime >= now) then\n"
       recheckCode = recheckCode .. "    recheckTime = nextTime\n";
       recheckCode = recheckCode .. "  end\n"
