@@ -3921,11 +3921,14 @@ function WeakAuras.GetAuraInstanceTooltipInfo(unit, auraInstanceId, filter)
     else
       tooltipData = C_TooltipInfo.GetUnitDebuffByAuraInstanceID(unit, auraInstanceId, filter)
     end
-    local secondLine = tooltipData and tooltipData.lines[2] -- This is the line we want
+    if not tooltipData then
+      return nil, "", "none", 0
+    end
+    local secondLine = tooltipData.lines[2] -- This is the line we want
     if secondLine and secondLine.leftText then
       tooltipText = secondLine.leftText
     end
-    return Private.ParseTooltipText(tooltipText)
+    return tooltipData.dataInstanceID, Private.ParseTooltipText(tooltipText)
   end
 end
 

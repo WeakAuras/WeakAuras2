@@ -260,6 +260,117 @@ local function MatchesTriggerInfoMulti(triggerInfo, sourceGUID)
   end
 end
 
+local function CheckScanFuncs(scanFuncs, unit, filter, key)
+  if scanFuncs then
+    for triggerInfo in pairs(scanFuncs) do
+      if triggerInfo.fetchTooltip then
+        local md = matchData[unit][filter][key]
+        md:UpdateTooltip(GetTime())
+      end
+      if not triggerInfo.scanFunc or triggerInfo.scanFunc(time, matchData[unit][filter][key]) then
+        local id = triggerInfo.id
+        local triggernum = triggerInfo.triggernum
+        ReferenceMatchData(id, triggernum, unit, filter, key)
+        matchDataChanged[id] = matchDataChanged[id] or {}
+        matchDataChanged[id][triggernum] = true
+      end
+    end
+  end
+end
+
+local TooltipHelper
+if newAPI then
+  ---@class TooltipHelper
+  ---@field count number
+  ---@field tracks table<string, table<fun(data: any), any>>
+  TooltipHelper = {
+    count = 0,
+    frame = CreateFrame("Frame"),
+    tracks = {
+
+    },
+    --- @type fun(self: TooltipHelper, dataInstanceId: number, matchData: table)
+    Track = function(self, dataInstanceID, matchData)
+      self.tracks[dataInstanceID] = self.tracks[dataInstanceID] or {}
+      if not self.tracks[dataInstanceID][matchData] then
+        self.count = self.count + 1
+        self.tracks[dataInstanceID][matchData] = true
+        if self.count == 1 then
+          self.frame:RegisterEvent("TOOLTIP_DATA_UPDATE")
+        end
+      end
+    end,
+    --- @type fun(self: TooltipHelper, dataInstanceId: number, matchData: table)
+    Untrack = function(self, dataInstanceID, matchData)
+      if self.tracks[dataInstanceID] then
+        if self.tracks[dataInstanceID][matchData] then
+          self.count = self.count - 1
+          self.tracks[dataInstanceID][matchData] = nil
+          if not next(self.tracks[dataInstanceID]) then
+            self.tracks[dataInstanceID] = nil
+          end
+          if self.count == 0 then
+            self.frame:UnregisterEvent("TOOLTIP_DATA_UPDATE")
+          end
+        end
+      end
+    end,
+    --- @type fun(self: TooltipHelper)
+    Clear = function(self)
+      self.tracks = {}
+      self.frame:UnregisterEvent("TOOLTIP_DATA_UPDATE")
+      self.count = 0
+    end,
+
+    --- @type fun(self: TooltipHelper, matchData: table)
+    HandleMatchData = function(self, matchData)
+      if matchData:UpdateTooltip(GetTime()) then
+        local unit = matchData.unit
+        local key = matchData.auraInstanceID
+        local filter = matchData.filter
+        for id, triggerData in pairs(matchData.auras) do
+          for triggernum in pairs(triggerData) do
+            local matchDataByTriggerAndUnit = GetSubTable(matchDataByTrigger, id, triggernum, unit)
+            if matchDataByTriggerAndUnit and matchDataByTriggerAndUnit[key] then
+              matchDataByTriggerAndUnit[key] = nil
+              matchDataChanged[id] = matchDataChanged[id] or {}
+              matchDataChanged[id][triggernum] = true
+            end
+          end
+        end
+        wipe(matchData.auras)
+
+        local sfn = GetSubTable(scanFuncName, unit, filter, matchData.name)
+        local sfng = GetSubTable(scanFuncNameGroup, unit, filter, matchData.name)
+        local sfs = GetSubTable(scanFuncSpellId, unit, filter, matchData.spellId)
+        local sfsg = GetSubTable(scanFuncSpellIdGroup, unit, filter, matchData.spellId)
+        local sfg = GetSubTable(scanFuncGeneral, unit, filter)
+        local sfgg = GetSubTable(scanFuncGeneralGroup, unit, filter)
+
+        CheckScanFuncs(sfn, unit, filter, key)
+        CheckScanFuncs(sfng, unit, filter, key)
+        CheckScanFuncs(sfs, unit, filter, key)
+        CheckScanFuncs(sfsg, unit, filter, key)
+        CheckScanFuncs(sfg, unit, filter, key)
+        CheckScanFuncs(sfgg, unit, filter, key)
+      end
+    end,
+
+    --- @type fun(self: TooltipHelper, dataInstanceID: number)
+    HandleEvent = function(self, dataInstanceID)
+      if self.tracks[dataInstanceID] then
+        for callbackData in pairs(self.tracks[dataInstanceID]) do
+          self:HandleMatchData(callbackData)
+        end
+      end
+    end
+  }
+
+  TooltipHelper.frame:SetScript("OnEvent", function(frame, event, dataInstanceID)
+    TooltipHelper:HandleEvent(dataInstanceID)
+  end)
+end
+
 local function UpdateToolTipDataInMatchData(matchData, time)
   if matchData.tooltipUpdated == time then
     return
@@ -267,10 +378,21 @@ local function UpdateToolTipDataInMatchData(matchData, time)
   local changed = false
 
   if matchData.unit and matchData.auraInstanceID then
-    local tooltip, _, tooltip1, tooltip2, tooltip3, tooltip4 = WeakAuras.GetAuraInstanceTooltipInfo(matchData.unit, matchData.auraInstanceID, matchData.filter)
+    local dataInstanceID, tooltip, _, tooltip1, tooltip2, tooltip3, tooltip4 = WeakAuras.GetAuraInstanceTooltipInfo(matchData.unit, matchData.auraInstanceID, matchData.filter)
     changed = matchData.tooltip ~= tooltip or matchData.tooltip1 ~= tooltip1
       or matchData.tooltip2 ~= tooltip2 or matchData.tooltip3 ~= tooltip3 or matchData.tooltip4 ~= tooltip4
     matchData.tooltip, matchData.tooltip1, matchData.tooltip2, matchData.tooltip3, matchData.tooltip4 = tooltip, tooltip1, tooltip2, tooltip3, tooltip4
+
+    local oldDataInstanceId = matchData.dataInstanceID
+    matchData.dataInstanceID = dataInstanceID
+    if dataInstanceID ~= oldDataInstanceId then
+      if dataInstanceID then
+        TooltipHelper:Track(dataInstanceID, matchData)
+      end
+      if oldDataInstanceId then
+        TooltipHelper:Untrack(oldDataInstanceId, matchData)
+      end
+    end
   elseif matchData.unit and matchData.index and matchData.filter then
     local tooltip, _, tooltip1, tooltip2, tooltip3, tooltip4 = WeakAuras.GetAuraTooltipInfo(matchData.unit, matchData.index, matchData.filter)
     changed = matchData.tooltip ~= tooltip or matchData.tooltip1 ~= tooltip1
@@ -1640,6 +1762,9 @@ local function CleanUpOutdatedMatchData(removeIndex, unit, filter)
             matchDataChanged[id][triggernum] = true
           end
         end
+        if data.dataInstanceID then
+          TooltipHelper:Untrack(data.dataInstanceID, data)
+        end
         matchData[unit][filter][auraInstanceID] = nil
       end
     end
@@ -1679,6 +1804,9 @@ local function CleanUpMatchDataForUnit(unit, filter)
           end
         end
       end
+      if data.dataInstanceID then
+        TooltipHelper:Untrack(data.dataInstanceID, data)
+      end
     end
   end
 end
@@ -1701,22 +1829,7 @@ local function DeactivateScanFuncs(toDeactivate)
   end
 end
 
-local function CheckScanFuncs(scanFuncs, unit, filter, key)
-  if scanFuncs then
-    for triggerInfo in pairs(scanFuncs) do
-      if triggerInfo.fetchTooltip then
-        matchData[unit][filter][key]:UpdateTooltip(GetTime())
-      end
-      if not triggerInfo.scanFunc or triggerInfo.scanFunc(time, matchData[unit][filter][key]) then
-        local id = triggerInfo.id
-        local triggernum = triggerInfo.triggernum
-        ReferenceMatchData(id, triggernum, unit, filter, key)
-        matchDataChanged[id] = matchDataChanged[id] or {}
-        matchDataChanged[id][triggernum] = true
-      end
-    end
-  end
-end
+
 
 local ScanUnitWithFilter
 do
@@ -1794,6 +1907,9 @@ do
                       matchDataChanged[id] = matchDataChanged[id] or {}
                       matchDataChanged[id][triggernum] = true
                     end
+                  end
+                  if data.dataInstanceID then
+                    TooltipHelper:Untrack(data.dataInstanceID, data)
                   end
                 end
               end
@@ -2153,13 +2269,16 @@ local function EventHandler(frame, event, arg1, arg2, ...)
     end
 
     if arg1 then
-      -- Initial login has a bug where the tooltip information is not available,
-      -- so update tooltips 2s after login
-      C_Timer.After(2, function()
-        for unit, matchtDataPerUnit in pairs(matchData) do
-          EventHandler(frame, "UNIT_AURA", unit)
-        end
-      end)
+      -- Initial login has an where the tooltip information is not available,
+      -- so update tooltips 2s after login.
+      -- With newApi we have TOOLTIP_DATA_UPDATE to update the tooltips
+      if not newAPI then
+        C_Timer.After(3, function()
+          for unit, matchtDataPerUnit in pairs(matchData) do
+            EventHandler(frame, "UNIT_AURA", unit)
+          end
+        end)
+      end
     end
 
   elseif event == "RAID_TARGET_UPDATE" then
@@ -2412,6 +2531,10 @@ function BuffTrigger.UnloadAll()
   if WeakAuras.IsRetail() then
     -- TODO change this when more events are handled by system, or when range check will be supported on other version than Retail
     PerUnitFrames:UnregisterAll()
+  end
+
+  if newAPI then
+    TooltipHelper:Clear()
   end
 
   wipe(scanFuncName)
