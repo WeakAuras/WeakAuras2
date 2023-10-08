@@ -5916,6 +5916,9 @@ function Private.ExecEnv.CreateSpellChecker()
     end,
     Check = function(self, spellId)
       return self.spellIds[spellId] or self.names[GetSpellInfo(spellId)]
+    end,
+    CheckName = function(self, name)
+      return self.names[name]
     end
   }
   return matcher
