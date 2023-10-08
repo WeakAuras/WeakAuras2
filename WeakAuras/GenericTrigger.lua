@@ -3633,22 +3633,23 @@ end
 
 -- Player Moving
 do
+  --- @class PlayerMovingFrame
+  --- @field moving integer|nil
+  --- @field speed integer|nil
+
+  --- @type PlayerMovingFrame|Frame|nil
   local playerMovingFrame = nil
-  local moving;
 
   local function PlayerMoveUpdate()
     Private.StartProfileSystem("generictrigger");
-    if (moving ~= IsPlayerMoving() or moving == nil) then
-      moving = IsPlayerMoving();
+    local moving = IsPlayerMoving()
+    if (playerMovingFrame.moving ~= moving or playerMovingFrame.moving == nil) then
+      playerMovingFrame.moving = moving
       WeakAuras.ScanEvents("PLAYER_MOVING_UPDATE")
     end
-    Private.StopProfileSystem("generictrigger");
-  end
 
-  local function PlayerMoveSpeedUpdate()
-    Private.StartProfileSystem("generictrigger");
     local speed = GetUnitSpeed("player")
-    if speed ~= playerMovingFrame.speed then
+    if playerMovingFrame.speed ~= speed then
       playerMovingFrame.speed = speed
       WeakAuras.ScanEvents("PLAYER_MOVE_SPEED_UPDATE")
     end
@@ -3658,18 +3659,11 @@ do
   function WeakAuras.WatchForPlayerMoving()
     if not(playerMovingFrame) then
       playerMovingFrame = CreateFrame("Frame");
+      --- @cast playerMovingFrame PlayerMovingFrame
       Private.frames["Player Moving Frame"] =  playerMovingFrame;
+      playerMovingFrame.speed = GetUnitSpeed("player")
     end
     playerMovingFrame:SetScript("OnUpdate", PlayerMoveUpdate)
-  end
-
-  function WeakAuras.WatchPlayerMoveSpeed()
-    if not(playerMovingFrame) then
-      playerMovingFrame = CreateFrame("Frame");
-      Private.frames["Player Moving Frame"] =  playerMovingFrame;
-    end
-    playerMovingFrame.speed = GetUnitSpeed("player")
-    playerMovingFrame:SetScript("OnUpdate", PlayerMoveSpeedUpdate)
   end
 end
 

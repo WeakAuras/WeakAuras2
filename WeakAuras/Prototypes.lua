@@ -8867,7 +8867,7 @@ Private.event_prototypes = {
       }
     },
     internal_events = function(trigger, untrigger)
-      local events = { "WA_DELAYED_PLAYER_ENTERING_WORLD", "PLAYER_MOVING_UPDATE" }
+      local events = { "WA_DELAYED_PLAYER_ENTERING_WORLD" }
       if trigger.use_moveSpeed then
         tinsert(events, "PLAYER_MOVE_SPEED_UPDATE")
       end
@@ -8875,9 +8875,8 @@ Private.event_prototypes = {
     end,
     loadFunc = function(trigger)
       if trigger.use_moveSpeed then
-        WeakAuras.WatchPlayerMoveSpeed()
+        WeakAuras.WatchForPlayerMoving()
       end
-      WeakAuras.WatchForPlayerMoving()
     end,
     init = function()
       local ret = [[
