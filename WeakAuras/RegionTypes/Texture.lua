@@ -254,4 +254,4 @@ local function validate(data)
   Private.EnforceSubregionExists(data, "subbackground")
 end
 
-WeakAuras.RegisterRegionType("texture", create, modify, default, properties, validate);
+Private.RegisterRegionType("texture", create, modify, default, properties, validate);
