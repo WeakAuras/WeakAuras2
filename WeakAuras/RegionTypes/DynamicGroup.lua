@@ -1564,4 +1564,4 @@ local function modify(parent, region, data)
   Private.regionPrototype.modifyFinish(parent, region, data)
 end
 
-WeakAuras.RegisterRegionType("dynamicgroup", create, modify, default)
+Private.RegisterRegionType("dynamicgroup", create, modify, default)

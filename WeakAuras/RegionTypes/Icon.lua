@@ -663,4 +663,4 @@ local function validate(data)
   Private.EnforceSubregionExists(data, "subbackground")
 end
 
-WeakAuras.RegisterRegionType("icon", create, modify, default, GetProperties, validate)
+Private.RegisterRegionType("icon", create, modify, default, GetProperties, validate)

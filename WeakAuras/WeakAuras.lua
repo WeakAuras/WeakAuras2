@@ -372,27 +372,27 @@ function Private.validate(input, default)
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field
-function WeakAuras.RegisterRegionType(name, createFunction, modifyFunction, default, properties, validate)
+function Private.RegisterRegionType(name, createFunction, modifyFunction, default, properties, validate)
   if not(name) then
-    error("Improper arguments to WeakAuras.RegisterRegionType - name is not defined", 2);
+    error("Improper arguments to Private.RegisterRegionType - name is not defined", 2);
   elseif(type(name) ~= "string") then
-    error("Improper arguments to WeakAuras.RegisterRegionType - name is not a string", 2);
+    error("Improper arguments to Private.RegisterRegionType - name is not a string", 2);
   elseif not(createFunction) then
-    error("Improper arguments to WeakAuras.RegisterRegionType - creation function is not defined", 2);
+    error("Improper arguments to Private.RegisterRegionType - creation function is not defined", 2);
   elseif(type(createFunction) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterRegionType - creation function is not a function", 2);
+    error("Improper arguments to Private.RegisterRegionType - creation function is not a function", 2);
   elseif not(modifyFunction) then
-    error("Improper arguments to WeakAuras.RegisterRegionType - modification function is not defined", 2);
+    error("Improper arguments to Private.RegisterRegionType - modification function is not defined", 2);
   elseif(type(modifyFunction) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterRegionType - modification function is not a function", 2)
+    error("Improper arguments to Private.RegisterRegionType - modification function is not a function", 2)
   elseif not(default) then
-    error("Improper arguments to WeakAuras.RegisterRegionType - default options are not defined", 2);
+    error("Improper arguments to Private.RegisterRegionType - default options are not defined", 2);
   elseif(type(default) ~= "table") then
-    error("Improper arguments to WeakAuras.RegisterRegionType - default options are not a table", 2);
+    error("Improper arguments to Private.RegisterRegionType - default options are not a table", 2);
   elseif(type(default) ~= "table" and type(default) ~= "nil") then
-    error("Improper arguments to WeakAuras.RegisterRegionType - properties options are not a table", 2);
+    error("Improper arguments to Private.RegisterRegionType - properties options are not a table", 2);
   elseif(regionTypes[name]) then
-    error("Improper arguments to WeakAuras.RegisterRegionType - region type \""..name.."\" already defined", 2);
+    error("Improper arguments to Private.RegisterRegionType - region type \""..name.."\" already defined", 2);
   else
     regionTypes[name] = {
       create = createFunction,

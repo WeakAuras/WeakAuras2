@@ -505,7 +505,7 @@ end
 
 -- These function stubs are defined here to reduce the number of errors that occur if WeakAuras.lua fails to compile
 --- @type fun(regionType: string, createFunction: function, modifyFunction: function, defaults: table, properties: table|function|nil, validate: function?))
-function WeakAuras.RegisterRegionType(_, _, _ ,_)
+function Private.RegisterRegionType(_, _, _ ,_)
 end
 
 --- @type fun(regionType: string, createOptions: function, icon: string|function, displayName: string, createThumbnail: function?, modifyThumbnail: function?, description: string?, templates: table?, getAnchors: function?)

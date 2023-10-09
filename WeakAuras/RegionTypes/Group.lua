@@ -184,4 +184,4 @@ local function modify(parent, region, data)
 end
 
 -- Register new region type with WeakAuras
-WeakAuras.RegisterRegionType("group", create, modify, default);
+Private.RegisterRegionType("group", create, modify, default);
