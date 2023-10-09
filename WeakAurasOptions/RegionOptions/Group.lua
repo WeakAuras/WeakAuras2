@@ -706,5 +706,8 @@ local function createIcon()
 end
 
 -- Register new region type options with WeakAuras
-WeakAuras.RegisterRegionOptions("group", createOptions, createIcon, L["Group"], createThumbnail, modifyThumbnail,
-                                L["Controls the positioning and configuration of multiple displays at the same time"])
+OptionsPrivate.registerRegions = OptionsPrivate.registerRegions or {}
+table.insert(OptionsPrivate.registerRegions, function()
+  OptionsPrivate.Private.RegisterRegionOptions("group", createOptions, createIcon, L["Group"], createThumbnail, modifyThumbnail,
+                                              L["Controls the positioning and configuration of multiple displays at the same time"])
+end)

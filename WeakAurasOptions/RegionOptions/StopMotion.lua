@@ -745,5 +745,8 @@ local function createIcon()
     return thumbnail;
 end
 
-WeakAuras.RegisterRegionOptions("stopmotion", createOptions, createIcon, L["Stop Motion"],
-                                createThumbnail, modifyThumbnail, L["Shows a stop motion texture"]);
+OptionsPrivate.registerRegions = OptionsPrivate.registerRegions or {}
+table.insert(OptionsPrivate.registerRegions, function()
+  OptionsPrivate.Private.RegisterRegionOptions("stopmotion", createOptions, createIcon, L["Stop Motion"],
+                                      createThumbnail, modifyThumbnail, L["Shows a stop motion texture"]);
+end)
