@@ -392,7 +392,7 @@ local function modify(parent, region, parentData, data, first)
   end
 
   if data.use_texture then
-    WeakAuras.SetTextureOrAtlas(region.texture, data.tick_texture, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+    Private.SetTextureOrAtlas(region.texture, data.tick_texture, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
   end
 
   region:SetVisible(data.tick_visible)
