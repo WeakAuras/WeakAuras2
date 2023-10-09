@@ -153,7 +153,7 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
     region.texture:SetHeight(scale * data.height);
   end
 
-  WeakAuras.SetTextureOrAtlas(region.texture, data.texture, data.textureWrapMode, data.textureWrapMode);
+  OptionsPrivate.Private.SetTextureOrAtlas(region.texture, data.texture, data.textureWrapMode, data.textureWrapMode);
   region.texture:SetVertexColor(data.color[1], data.color[2], data.color[3], data.color[4]);
   region.texture:SetBlendMode(data.blendMode);
 

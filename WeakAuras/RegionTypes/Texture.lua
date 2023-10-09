@@ -108,7 +108,7 @@ end
 
 local function modify(parent, region, data)
   Private.regionPrototype.modify(parent, region, data);
-  WeakAuras.SetTextureOrAtlas(region.texture, data.texture, data.textureWrapMode, data.textureWrapMode);
+  Private.SetTextureOrAtlas(region.texture, data.texture, data.textureWrapMode, data.textureWrapMode);
   region.texture:SetDesaturated(data.desaturate)
   region:SetWidth(data.width);
   region:SetHeight(data.height);
@@ -184,7 +184,7 @@ local function modify(parent, region, data)
   function region:Update()
     if region.state.texture then
       local oldIsAtlas = region.texture.IsAtlas
-      WeakAuras.SetTextureOrAtlas(region.texture, region.state.texture, data.textureWrapMode, data.textureWrapMode)
+      Private.SetTextureOrAtlas(region.texture, region.state.texture, data.textureWrapMode, data.textureWrapMode)
       if region.texture.IsAtlas ~= oldIsAtlas then
         DoTexCoord()
       end
