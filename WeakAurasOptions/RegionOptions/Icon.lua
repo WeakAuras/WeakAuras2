@@ -518,7 +518,10 @@ local function GetAnchors(data)
   return anchorPoints;
 end
 
-WeakAuras.RegisterRegionOptions("icon", createOptions, "interface\\icons\\spell_holy_sealofsalvation.blp", L["Icon"],
-                                createThumbnail, modifyThumbnail,
-                                L["Shows a spell icon with an optional cooldown overlay"],
-                                templates, GetAnchors);
+OptionsPrivate.registerRegions = OptionsPrivate.registerRegions or {}
+table.insert(OptionsPrivate.registerRegions, function()
+  OptionsPrivate.Private.RegisterRegionOptions("icon", createOptions, "interface\\icons\\spell_holy_sealofsalvation.blp", L["Icon"],
+                                  createThumbnail, modifyThumbnail,
+                                  L["Shows a spell icon with an optional cooldown overlay"],
+                                  templates, GetAnchors);
+end)

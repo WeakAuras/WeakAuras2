@@ -467,27 +467,27 @@ function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, cre
 end
 
 ---@diagnostic disable-next-line: duplicate-set-field
-function WeakAuras.RegisterRegionOptions(name, createFunction, icon, displayName, createThumbnail, modifyThumbnail, description, templates, getAnchors)
+function Private.RegisterRegionOptions(name, createFunction, icon, displayName, createThumbnail, modifyThumbnail, description, templates, getAnchors)
   if not(name) then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - name is not defined", 2);
+    error("Improper arguments to Private.RegisterRegionOptions - name is not defined", 2);
   elseif(type(name) ~= "string") then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - name is not a string", 2);
+    error("Improper arguments to Private.RegisterRegionOptions - name is not a string", 2);
   elseif not(createFunction) then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - creation function is not defined", 2);
+    error("Improper arguments to Private.RegisterRegionOptions - creation function is not defined", 2);
   elseif(type(createFunction) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - creation function is not a function", 2);
+    error("Improper arguments to Private.RegisterRegionOptions - creation function is not a function", 2);
   elseif not(icon) then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - icon is not defined", 2);
+    error("Improper arguments to Private.RegisterRegionOptions - icon is not defined", 2);
   elseif not(type(icon) == "string" or type(icon) == "function") then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - icon is not a string or a function", 2)
+    error("Improper arguments to Private.RegisterRegionOptions - icon is not a string or a function", 2)
   elseif not(displayName) then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - display name is not defined".." "..name, 2);
+    error("Improper arguments to Private.RegisterRegionOptions - display name is not defined".." "..name, 2);
   elseif(type(displayName) ~= "string") then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - display name is not a string", 2);
+    error("Improper arguments to Private.RegisterRegionOptions - display name is not a string", 2);
   elseif (getAnchors and type(getAnchors) ~= "function") then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - anchors is not a function", 2);
+    error("Improper arguments to Private.RegisterRegionOptions - anchors is not a function", 2);
   elseif(regionOptions[name]) then
-    error("Improper arguments to WeakAuras.RegisterRegionOptions - region type \""..name.."\" already defined", 2);
+    error("Improper arguments to Private.RegisterRegionOptions - region type \""..name.."\" already defined", 2);
   else
     local templateIcon
     if (type(icon) == "function") then
