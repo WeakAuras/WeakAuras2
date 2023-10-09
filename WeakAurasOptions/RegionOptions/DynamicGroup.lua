@@ -276,7 +276,18 @@ local function createOptions(id, data)
       width = WeakAuras.normalWidth,
       name = L["Full Circle"],
       order = 7,
-      hidden = function() return data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE" end
+      hidden = function() return (data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE") or data.constantFactor == "ANGLE" end
+    },
+    stepAngle = {
+      type = "range",
+      control = "WeakAurasSpinBox",
+      width = WeakAuras.normalWidth,
+      name = L["Angle Between Auras"],
+      order = 12,
+      min = 0,
+      max = 180,
+      bigStep = 1,
+      hidden = function() return data.grow == "CUSTOM" or not((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "ANGLE") end
     },
     arcLength = {
       type = "range",
@@ -288,7 +299,7 @@ local function createOptions(id, data)
       max = 360,
       bigStep = 3,
       disabled = function() return data.fullCircle end,
-      hidden = function() return data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE" end
+      hidden = function() return (data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE") or data.constantFactor == "ANGLE" end
     },
     radius = {
       type = "range",
@@ -299,7 +310,7 @@ local function createOptions(id, data)
       softMin = 0,
       softMax = 500,
       bigStep = 1,
-      hidden = function() return data.grow == "CUSTOM" or not((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS") end
+      hidden = function() return data.grow == "CUSTOM" or not((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" ) and data.constantFactor ~= "SPACING") end
     },
     -- grid grow options
     gridType = {
@@ -369,7 +380,7 @@ local function createOptions(id, data)
       hidden = function()
         return data.grow == "CUSTOM"
             or data.grow == "GRID"
-            or ((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS")
+            or ((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor ~= "SPACING")
       end
     },
     stagger = {
