@@ -473,6 +473,9 @@ do
         GameTooltip:Show()
         WeakAuras.GenerateTooltip(true)
       end,
+      funcOnLeave = function()
+        GameTooltip:Hide()
+      end,
     })
   end
   for _, lib in ipairs(StandAloneLibs) do
