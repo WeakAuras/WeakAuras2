@@ -1372,7 +1372,19 @@ local function modify(parent, region, data)
         )
       )
       then
-        controlPoint:SetParent(frame == "" and self.relativeTo or frame)
+        local parent
+        if frame == "" then
+          parent = self.relativeTo
+        else
+          if type(frame) == "string" then
+            parent = _G[frame]
+          else
+            parent = frame
+          end
+        end
+        if parent and parent.IsObjectType and parent:IsObjectType("Frame") then
+          controlPoint:SetParent(parent)
+        end
       else
         controlPoint:SetParent(self)
       end
