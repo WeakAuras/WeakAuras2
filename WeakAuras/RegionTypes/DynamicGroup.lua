@@ -1391,9 +1391,11 @@ local function modify(parent, region, data)
         end
         if parent and parent.IsObjectType and parent:IsObjectType("Frame") then
           controlPoint:SetParent(parent)
+          controlPoint:SetScale(data.scale and data.scale > 0 and data.scale <= 10 and data.scale or 1)
         end
       else
         controlPoint:SetParent(self)
+        controlPoint:SetScale(1)
       end
       if self.anchorPerUnit == "UNITFRAME" then
         Private.dyngroup_unitframe_monitor[regionData] = frame
