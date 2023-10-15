@@ -258,7 +258,7 @@ local function createOptions(id, data)
       name = L["Constant Factor"],
       order = 4,
       values = OptionsPrivate.Private.circular_group_constant_factor_types,
-      hidden = function() return data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE" end
+      hidden = function() return not(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") end
     },
     rotation = {
       type = "range",
@@ -269,14 +269,31 @@ local function createOptions(id, data)
       min = 0,
       max = 360,
       bigStep = 3,
-      hidden = function() return data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE" end
+      hidden = function() return not(data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") end
     },
     fullCircle = {
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Full Circle"],
       order = 7,
-      hidden = function() return data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE" end
+      hidden = function()
+        return not(
+          (data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE")
+          and (data.constantFactor == "RADIUS" or data.constantFactor == "SPACING"))
+        end
+    },
+    stepAngle = {
+      type = "range",
+      control = "WeakAurasSpinBox",
+      width = WeakAuras.normalWidth,
+      name = L["Angle Between Auras"],
+      order = 12,
+      min = 0,
+      max = 180,
+      bigStep = 1,
+      hidden = function()
+        return not((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "ANGLE")
+      end
     },
     arcLength = {
       type = "range",
@@ -288,7 +305,11 @@ local function createOptions(id, data)
       max = 360,
       bigStep = 3,
       disabled = function() return data.fullCircle end,
-      hidden = function() return data.grow ~= "CIRCLE" and data.grow ~= "COUNTERCIRCLE" end
+      hidden = function()
+        return not(
+          (data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE")
+          and (data.constantFactor == "RADIUS" or data.constantFactor == "SPACING"))
+        end
     },
     radius = {
       type = "range",
@@ -299,7 +320,11 @@ local function createOptions(id, data)
       softMin = 0,
       softMax = 500,
       bigStep = 1,
-      hidden = function() return data.grow == "CUSTOM" or not((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS") end
+      hidden = function()
+        return not(
+          (data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE")
+          and (data.constantFactor == "RADIUS" or data.constantFactor == "ANGLE"))
+        end
     },
     -- grid grow options
     gridType = {
@@ -367,9 +392,12 @@ local function createOptions(id, data)
       softMax = 300,
       bigStep = 1,
       hidden = function()
-        return data.grow == "CUSTOM"
-            or data.grow == "GRID"
-            or ((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE") and data.constantFactor == "RADIUS")
+        return not(
+          data.grow == "LEFT" or data.grow == "RIGHT"
+          or data.grow == "UP" or data.grow == "DOWN"
+          or data.grow == "HORIZONTAL" or data.grow == "VERTICAL"
+          or ((data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE")
+              and (data.constantFactor == "SPACING")))
       end
     },
     stagger = {
