@@ -1707,6 +1707,17 @@ Private.load_prototype = {
       events = {"GROUP_ROSTER_UPDATE"}
     },
     {
+      name = "groupSize",
+      display = L["Group Size"],
+      type = "number",
+      init = "arg",
+      events = {"GROUP_ROSTER_UPDATE"},
+      multiEntry = {
+        operator = "and",
+        limit = 2
+      },
+    },
+    {
       name = "group_leader",
       display = WeakAuras.newFeatureString .. L["Group Leader/Assist"],
       type = "multiselect",
