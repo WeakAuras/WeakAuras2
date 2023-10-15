@@ -2517,10 +2517,12 @@ do
 
     if (showgcd) then
       if ((gcdStart or 0) + (gcdDuration or 0) > startTime + duration) then
+        if startTime == 0 then
+          gcdCooldown = true
+        end
         startTime = gcdStart;
         duration = gcdDuration;
         modRate = gcdModrate
-        gcdCooldown = true;
       end
     end
 
@@ -2549,9 +2551,11 @@ do
     end
     if (showgcd) then
       if ((gcdStart or 0) + (gcdDuration or 0) > startTime + duration) then
+        if startTime == 0 then
+          gcdCooldown = true
+        end
         startTime = gcdStart;
         duration = gcdDuration;
-        gcdCooldown = true;
       end
     end
     return startTime, duration, enabled, gcdCooldown;
@@ -2583,9 +2587,11 @@ do
 
     if (showgcd) then
       if ((gcdStart or 0) + (gcdDuration or 0) > startTime + duration) then
+        if startTime == 0 then
+          gcdCooldown = true
+        end
         startTime = gcdStart;
         duration = gcdDuration;
-        gcdCooldown = true;
       end
     end
     return startTime, duration, enabled, gcdCooldown;
