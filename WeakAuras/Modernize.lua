@@ -1734,13 +1734,14 @@ function Private.Modernize(data)
     end
   end
 
-  if data.internalVersion < 67 then
-    local function migrateToTable(tab, field)
-      local value = tab[field]
-      if value ~= nil and type(value) ~= "table" then
-        tab[field] = { value }
-      end
+  local function migrateToTable(tab, field)
+    local value = tab[field]
+    if value ~= nil and type(value) ~= "table" then
+      tab[field] = { value }
     end
+  end
+
+  if data.internalVersion < 67 then
     do
       local trigger_migration = {
         ["Cast"] = {
@@ -1965,6 +1966,10 @@ function Private.Modernize(data)
         end
       end
     end
+  end
+
+  if data.internalVersion < 69 then
+    migrateToTable(data.load, "itemequiped")
   end
 
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
