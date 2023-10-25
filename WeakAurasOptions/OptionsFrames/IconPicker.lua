@@ -32,18 +32,6 @@ local function ConstructIconPicker(frame)
   local function iconPickerFill(subname, doSort)
     scroll:ReleaseChildren();
 
-    -- Work around special numbers such as inf and nan
-    if (tonumber(subname)) then
-      local spellId = tonumber(subname);
-      if (abs(spellId) < math.huge and tostring(spellId) ~= "nan") then
-        subname = GetSpellInfo(spellId)
-      end
-    end
-
-    if subname then
-      subname = subname:lower();
-    end
-
     local usedIcons = {};
     local AddButton = function(name, icon)
       local button = AceGUI:Create("WeakAurasIconButton");
@@ -56,6 +44,24 @@ local function ConstructIconPicker(frame)
 
       usedIcons[icon] = true;
     end
+
+    -- Work around special numbers such as inf and nan
+    if (tonumber(subname)) then
+      local spellId = tonumber(subname);
+      if (abs(spellId) < math.huge and tostring(spellId) ~= "nan") then
+        local name, _, icon = GetSpellInfo(spellId)
+        if name then
+          AddButton(name, icon)
+        end
+        return;
+      end
+    end
+
+    if subname then
+      subname = subname:lower();
+    end
+
+
 
     local num = 0;
     if(subname and subname ~= "") then
