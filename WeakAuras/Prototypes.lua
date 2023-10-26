@@ -10215,6 +10215,209 @@ Private.event_prototypes = {
     },
     automaticrequired = true
   },
+  ["Currency"] = {
+    type = "unit",
+    canHaveDuration = true,
+    events = {
+      ["events"] = {
+        "CHAT_MSG_CURRENCY",
+      }
+    },
+    force_events = "CHAT_MSG_CURRENCY",
+    name = L["Currency"],
+    init = function(trigger)
+      local ret = [=[
+        local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(%d)
+        if not currencyInfo then
+          currencyInfo = C_CurrencyInfo.GetCurrencyInfo(1) --Currency Token Test Token 4
+          currencyInfo.iconFileID = "Interface\\Icons\\INV_Misc_QuestionMark" --We don't want the user to think their input was valid
+        end
+      ]=]
+        return ret:format(trigger.currencyId or 1)
+    end,
+    statesParameter = "one",
+    args = {
+      {
+        name = "currencyId",
+        type = "string",
+        required = true,
+        display = L["Currency ID"],
+        store = true,
+        test = "true",
+        validate = WeakAuras.ValidateNumeric
+      },
+      {
+        name = "name",
+        init = "currencyInfo.name",
+        hidden = true,
+        store = true,
+        test = "true",
+      },
+      {
+        name = "quantity",
+        init = "currencyInfo.quantity",
+        type = "number",
+        display = L["Quantity"],
+        store = true,
+        conditionType = "number",
+      },
+      {
+        name = "value",
+        init = "quantity",
+        hidden = true,
+        store = true,
+        test = "true",
+      },
+      {
+        name = "total",
+        init = "currencyInfo.maxQuantity",
+        hidden = true,
+        store = true,
+        test = "true",
+      },
+      {
+        name = "progressType",
+        init = "'static'",
+        hidden = true,
+        store = true,
+        test = "true",
+      },
+      {
+        name = "icon",
+        init = "currencyInfo.iconFileID",
+        store = true,
+        hidden = true,
+        test = "true",
+      },
+      {
+        name = "maxQuantity",
+        init = "currencyInfo.maxQuantity",
+        type = "number",
+        display = L["Maximum Quantity"],
+        store = true,
+        conditionType = "number",
+      },
+      {
+        name = "capped",
+        init = [[quantity > 0 and quantity >= maxQuantity]],
+        type = "toggle",
+        display = L["Capped"],
+        store = true,
+        conditionType = "bool",
+      },
+      {
+        name = "canEarnPerWeek",
+        init = "currencyInfo.canEarnPerWeek",
+        type = "toggle",
+        display = L["Has weekly maximum"],
+        store = true,
+        conditionType = "bool",
+      },
+      {
+        name = "quantityEarnedThisWeek",
+        init = "currencyInfo.quantityEarnedThisWeek",
+        type = "number",
+        display = L["Quantity earned this week"],
+        store = true,
+        conditionType = "number",
+        enable = function(trigger) return trigger.use_canEarnPerWeek end,
+        test = "true",
+      },
+      {
+        name = "maxWeeklyQuantity",
+        init = "currencyInfo.maxWeeklyQuantity",
+        store = true,
+        hidden = true,
+        test = "true",
+      },
+      {
+        name = "weeklyCapped",
+        init = [[quantityEarnedThisWeek >= maxWeeklyQuantity]],
+        type = "toggle",
+        display = L["Capped this week"],
+        store = true,
+        conditionType = "bool",
+        enable = function(trigger) return trigger.use_canEarnPerWeek end,
+        test = "true",
+      },
+      {
+        name = "description",
+        init = "currencyInfo.description",
+        type = "string",
+        display = L["Description"],
+        store = true,
+        hidden = true,
+        test = "true",
+        conditionType = "string",
+      },
+      {
+        name = "isHeader",
+        init = "currencyInfo.isHeader",
+        type = "toggle",
+        display = L["Is Header"],
+        store = true,
+        hidden = true,
+        test = "true",
+        conditionType = "bool",
+      },
+      {
+        name = "isTypeUnused",
+        init = "currencyInfo.isTypeUnused",
+        type = "toggle",
+        display = L["Is Type Unused"],
+        store = true,
+        hidden = true,
+        test = "true",
+        conditionType = "bool",
+      },
+      {
+        name = "isShowInBackpack",
+        init = "currencyInfo.isShowInBackpack",
+        type = "toggle",
+        display = L["Is Show in Backpack"],
+        store = true,
+        hidden = true,
+        test = "true",
+        conditionType = "bool",
+      },
+      {
+        name = "qualityId",
+        init = "currencyInfo.quality",
+        type = "number",
+        display = L["Quality Id"],
+        hidden = true,
+        test = "true",
+      },
+      {
+        name = "quality",
+        init = "currencyInfo.quality",
+        type = "number",
+        display = L["Quality"],
+        store = true,
+        hidden = true,
+        test = "true",
+        values = "item_quality_types",
+        conditionType = "select",
+      },
+      {
+        name = "qualityName",
+        init = [=[_G["ITEM_QUALITY".. qualityId .."_DESC"]]=],
+        display = L["Quality Name"],
+        hidden = true,
+        store = true,
+        test = "true",
+      },
+      {
+        name = "discovered",
+        init = "currencyInfo.discovered",
+        type = "toggle",
+        display = L["Discovered"],
+        store = true,
+        conditionType = "bool",
+      },
+    },
+    automaticrequired = true
+  },
 };
 
 if WeakAuras.IsClassicEraOrWrath() then
