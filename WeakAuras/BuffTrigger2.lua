@@ -142,6 +142,13 @@ local function UnitIsVisibleFixed(unit)
   return unitVisible[unit]
 end
 
+local function UnitInRangeFixed(unit)
+  local inRange, checked = UnitInRange(unit)
+  return inRange or not checked
+end
+
+Private.ExecEnv.UnitInRangeFixed = UnitInRangeFixed
+
 local function UnitInSubgroupOrPlayer(unit, includePets)
   if includePets == nil then
     return UnitInSubgroup(unit) or UnitIsUnit("player", unit)
@@ -1308,6 +1315,8 @@ local function MaxUnitCount(triggerInfo)
   end
 end
 
+
+
 local function TriggerInfoApplies(triggerInfo, unit)
   local controllingUnit = unit
   if WeakAuras.UnitIsPet(unit) then
@@ -1400,7 +1409,7 @@ local function TriggerInfoApplies(triggerInfo, unit)
     return false
   end
 
-  if triggerInfo.inRange and not UnitInRange(unit) then
+  if triggerInfo.inRange and not UnitInRangeFixed(unit) then
     return false
   end
 
