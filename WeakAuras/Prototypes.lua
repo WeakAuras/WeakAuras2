@@ -2258,7 +2258,7 @@ Private.event_prototypes = {
         enable = function(trigger)
           return WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end,
-        init = "UnitInRange(unit)"
+        init = "Private.ExecEnv.UnitInRangeFixed(unit)"
       },
       {
         name = "hostility",
@@ -3058,7 +3058,7 @@ Private.event_prototypes = {
         enable = function(trigger)
           return WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end,
-        init = "UnitInRange(unit)"
+        init = "Private.ExecEnv.UnitInRangeFixed(unit)"
       },
       {
         name = "nameplateType",
@@ -3617,7 +3617,7 @@ Private.event_prototypes = {
         enable = function(trigger)
           return WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end,
-        init = "UnitInRange(unit)"
+        init = "Private.ExecEnv.UnitInRangeFixed(unit)"
       },
       {
         name = "nameplateType",
@@ -3925,7 +3925,7 @@ Private.event_prototypes = {
         enable = function(trigger)
           return WeakAuras.IsRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end,
-        init = "UnitInRange(unit)"
+        init = "Private.ExecEnv.UnitInRangeFixed(unit)"
       },
       {
         name = "nameplateType",
