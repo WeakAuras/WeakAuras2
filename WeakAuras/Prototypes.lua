@@ -10221,6 +10221,7 @@ Private.event_prototypes = {
     events = {
       ["events"] = {
         "CHAT_MSG_CURRENCY",
+        "CURRENCY_DISPLAY_UPDATE",
       }
     },
     force_events = "CHAT_MSG_CURRENCY",
