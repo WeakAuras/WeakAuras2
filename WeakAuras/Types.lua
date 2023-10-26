@@ -1320,6 +1320,18 @@ for id, str in pairs(Private.combatlog_spell_school_types) do
   Private.combatlog_spell_school_types_for_ui[id] = ("%.3d - %s"):format(id, str)
 end
 
+Private.item_quality_types = {
+  [0] = ITEM_QUALITY0_DESC,
+  [1] = ITEM_QUALITY1_DESC,
+  [2] = ITEM_QUALITY2_DESC,
+  [3] = ITEM_QUALITY3_DESC,
+  [4] = ITEM_QUALITY4_DESC,
+  [5] = ITEM_QUALITY5_DESC,
+  [6] = ITEM_QUALITY6_DESC,
+  [7] = ITEM_QUALITY7_DESC,
+  [8] = ITEM_QUALITY8_DESC,
+}
+
 Private.combatlog_raid_mark_check_type = {
   [0] = RAID_TARGET_NONE,
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1:14|t " .. RAID_TARGET_1, -- Star
