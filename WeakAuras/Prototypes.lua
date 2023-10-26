@@ -10224,7 +10224,7 @@ Private.event_prototypes = {
       }
     },
     force_events = "CHAT_MSG_CURRENCY",
-    name = L["Currency"],
+    name = WeakAuras.newFeatureString..L["Currency"],
     init = function(trigger)
       local ret = [=[
         local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(%d)
