@@ -1000,9 +1000,9 @@ local function GetBuffTriggerOptions(data, triggernum)
       type = "input",
       width = WeakAuras.normalWidth,
       name = L["Npc ID"],
-      validate = ValidateNumeric,
       hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and trigger.useNpcId) end,
-      order = 69.32
+      order = 69.32,
+      desc = L["Supports multiple entries, separated by commas"]
     },
     npcIdSpace = {
       type = "description",
