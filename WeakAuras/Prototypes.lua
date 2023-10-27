@@ -10336,7 +10336,6 @@ Private.event_prototypes = {
         hidden = true,
         test = "true",
         conditionType = "string",
-      },
       {
         name = "isHeader",
         init = "currencyInfo.isHeader",
@@ -10347,25 +10346,6 @@ Private.event_prototypes = {
         test = "true",
         conditionType = "bool",
       },
-      {
-        name = "isTypeUnused",
-        init = "currencyInfo.isTypeUnused",
-        type = "toggle",
-        display = L["Is Type Unused"],
-        store = true,
-        hidden = true,
-        test = "true",
-        conditionType = "bool",
-      },
-      {
-        name = "isShowInBackpack",
-        init = "currencyInfo.isShowInBackpack",
-        type = "toggle",
-        display = L["Is Show in Backpack"],
-        store = true,
-        hidden = true,
-        test = "true",
-        conditionType = "bool",
       },
       {
         name = "qualityId",
