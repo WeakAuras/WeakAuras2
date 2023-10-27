@@ -10336,16 +10336,6 @@ Private.event_prototypes = {
         hidden = true,
         test = "true",
         conditionType = "string",
-      {
-        name = "isHeader",
-        init = "currencyInfo.isHeader",
-        type = "toggle",
-        display = L["Is Header"],
-        store = true,
-        hidden = true,
-        test = "true",
-        conditionType = "bool",
-      },
       },
       {
         name = "qualityId",
