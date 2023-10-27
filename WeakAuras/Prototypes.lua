@@ -10335,7 +10335,6 @@ Private.event_prototypes = {
         store = true,
         hidden = true,
         test = "true",
-        conditionType = "string",
       },
       {
         name = "qualityId",
