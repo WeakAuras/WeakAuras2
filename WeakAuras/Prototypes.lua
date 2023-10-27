@@ -10261,6 +10261,7 @@ Private.event_prototypes = {
         display = L["Quantity"],
         store = true,
         test = "true",
+        conditionType = "number",
       },
       {
         name = "total",
