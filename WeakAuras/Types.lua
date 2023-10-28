@@ -1398,8 +1398,9 @@ local function update_specs()
       if tabName then
         tinsert(WeakAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
         if WeakAuras.IsRetail() then
+          local classColor = WA_GetClassColor(classFileName)
           Private.spec_types_all[specId] = CreateAtlasMarkup(GetClassAtlas(classFileName:lower()))
-          .. "|T"..(icon or "error")..":0|t "..(tabName or "error");
+          .. "|T"..(icon or "error")..":0|t "..(WrapTextInColorCode(tabName, classColor) or "error");
         end
       end
     end
