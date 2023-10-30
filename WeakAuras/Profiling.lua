@@ -348,6 +348,24 @@ local function TotalProfileTime(map)
   return total
 end
 
+local function unitEventToMultiUnit(event)
+  local count
+  event, count = event:gsub("nameplate%d+$", "nameplate")
+  if count == 1 then return event end
+  event, count = event:gsub("boss%d$", "boss")
+  if count == 1 then return event end
+  event, count = event:gsub("arena%d$", "arena")
+  if count == 1 then return event end
+  event, count = event:gsub("raid%d+$", "group")
+  if count == 1 then return event end
+  event, count = event:gsub("raidpet%d+$", "group")
+  if count == 1 then return event end
+  event, count = event:gsub("party%d$", "party")
+  if count == 1 then return event end
+  event, count = event:gsub("partypet%d$", "party")
+  return event
+end
+
 function WeakAuras.PrintProfile()
   local popup = ProfilePopup()
   if not profileData.systems.time then
@@ -394,9 +412,25 @@ function WeakAuras.PrintProfile()
   popup:AddText("")
   popup:AddText("|cff9900ffSystems:|r")
 
-  for i, k in ipairs(SortProfileMap(profileData.systems)) do
+  -- make a new table for system data with multiUnits grouped
+  local systemRegrouped = {}
+  for k, v in pairs(profileData.systems) do
+    local event = unitEventToMultiUnit(k)
+    if systemRegrouped[event] == nil then
+      systemRegrouped[event] = CopyTable(v)
+    else
+      if v.elapsed then
+        systemRegrouped[event].elapsed = (systemRegrouped[event].elapsed or 0) + v.elapsed
+      end
+      if v.spike then
+        systemRegrouped[event].spike = (systemRegrouped[event].spike or 0) + v.spike
+      end
+    end
+  end
+
+  for i, k in ipairs(SortProfileMap(systemRegrouped)) do
     if (k ~= "time" and k ~= "wa") then
-      PrintOneProfile(popup, k, profileData.systems[k], profileData.systems.wa.elapsed)
+      PrintOneProfile(popup, k, systemRegrouped[k], profileData.systems.wa.elapsed)
     end
   end
 
