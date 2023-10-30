@@ -7955,6 +7955,7 @@ Private.event_prototypes = {
       trigger.unit = trigger.unit or "target";
       local ret = [[
         unit = string.lower(unit)
+        local name = UnitName(unit, false)
         local ok = true
         local aggro, status, threatpct, rawthreatpct, threatvalue, threattotal
         if unit and unit ~= "none" then
@@ -8037,6 +8038,43 @@ Private.event_prototypes = {
         },
       },
       {
+        name = "name",
+        display = L["Unit Name"],
+        type = "string",
+        store = true,
+        multiline = true,
+        preamble = "local nameChecker = Private.ExecEnv.ParseStringCheck(%q)",
+        test = "nameChecker:Check(name)",
+        conditionType = "string",
+        conditionPreamble = function(input)
+          return Private.ExecEnv.ParseStringCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.name)
+        end,
+        operator_types = "none",
+        desc = L["Supports multiple entries, separated by commas"]
+      },
+      {
+        name = "npcId",
+        display = L["Npc ID"],
+        type = "string",
+        multiline = true,
+        store = true,
+        init = "select(6, strsplit('-', UnitGUID(unit) or ''))",
+        conditionType = "string",
+        preamble = "local npcIdChecker = Private.ExecEnv.ParseStringCheck(%q)",
+        test = "npcIdChecker:Check(npcId)",
+        conditionPreamble = function(input)
+          return Private.ExecEnv.ParseStringCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.npcId)
+        end,
+        operator_types = "none",
+        desc = L["Supports multiple entries, separated by commas"]
+      },
+      {
         name = "value",
         hidden = true,
         init = "threatvalue",
@@ -8063,7 +8101,7 @@ Private.event_prototypes = {
       },
       {
         hidden = true,
-        test = "WeakAuras.UnitExistsFixed(unit, smart) and specificUnitCheck"
+        test = "WeakAuras.UnitExistsFixed(unit, false) and specificUnitCheck"
       }
     },
     automaticrequired = true
