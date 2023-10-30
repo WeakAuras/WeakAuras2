@@ -1332,6 +1332,20 @@ Private.item_quality_types = {
   [8] = ITEM_QUALITY8_DESC,
 }
 
+Private.discovered_currencies = {}
+Private.discovered_currencies_sorted = {}
+for index = 1, C_CurrencyInfo.GetCurrencyListSize() do
+  local CurrencyInfo = C_CurrencyInfo.GetCurrencyListInfo(index)
+  local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
+  if currencyLink then
+     local currencyID = C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
+     Private.discovered_currencies[currencyID] = CurrencyInfo.name
+     tinsert(Private.discovered_currencies_sorted, CurrencyInfo.name)
+  end
+end
+Private.discovered_currencies["member"] = "|Tinterface\\common\\ui-searchbox-icon:0:0:0:-2|t"..L["Specific Currency"];
+Private.discovered_currencies_sorted["member"] = "|Tinterface\\common\\ui-searchbox-icon:0:0:0:-2|t"..L["Specific Currency"];
+
 Private.combatlog_raid_mark_check_type = {
   [0] = RAID_TARGET_NONE,
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1:14|t " .. RAID_TARGET_1, -- Star

@@ -10240,12 +10240,13 @@ Private.event_prototypes = {
     args = {
       {
         name = "currencyId",
-        type = "string",
+        type = "currency",
+        values = "discovered_currencies",
+        sorted = true,
         required = true,
-        display = L["Currency ID"],
+        display = L["Currency"],
         store = true,
         test = "true",
-        validate = WeakAuras.ValidateNumeric
       },
       {
         name = "name",
