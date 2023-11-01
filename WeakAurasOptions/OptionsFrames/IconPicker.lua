@@ -50,7 +50,7 @@ local function ConstructIconPicker(frame)
       local spellId = tonumber(subname);
       if (abs(spellId) < math.huge and tostring(spellId) ~= "nan") then
         local name, _, icon = GetSpellInfo(spellId)
-        if name then
+        if name and icon then
           AddButton(name, icon)
         end
         return;
