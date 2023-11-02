@@ -10243,6 +10243,18 @@ Private.event_prototypes = {
         type = "currency",
         values = "discovered_currencies",
         sorted = true,
+        sortOrder = function(Private)
+          local sortOrder = {}
+          for key, value in pairs(Private.discovered_currencies) do
+            tinsert(sortOrder, key)
+          end
+          table.sort(sortOrder, function(aKey, bKey)
+            local aValue = Private.discovered_currencies_sorted[aKey]
+            local bValue = Private.discovered_currencies_sorted[bKey]
+            return aValue < bValue
+          end)
+          return sortOrder
+        end,
         required = true,
         display = L["Currency"],
         store = true,

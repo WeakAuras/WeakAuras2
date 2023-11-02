@@ -1338,13 +1338,14 @@ for index = 1, C_CurrencyInfo.GetCurrencyListSize() do
   local CurrencyInfo = C_CurrencyInfo.GetCurrencyListInfo(index)
   local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
   if currencyLink then
-     local currencyID = C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
-     Private.discovered_currencies[currencyID] = CurrencyInfo.name
-     tinsert(Private.discovered_currencies_sorted, CurrencyInfo.name)
+    local currencyID = C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
+    local icon = CurrencyInfo.iconFileID or "Interface\\Icons\\INV_Misc_QuestionMark" --iconFileID not available on first login
+    Private.discovered_currencies[currencyID] = ("|T%s:16|t %s"):format(icon, CurrencyInfo.name)
+    Private.discovered_currencies_sorted[currencyID] = index
   end
 end
 Private.discovered_currencies["member"] = "|Tinterface\\common\\ui-searchbox-icon:0:0:0:-2|t"..L["Specific Currency"];
-Private.discovered_currencies_sorted["member"] = "|Tinterface\\common\\ui-searchbox-icon:0:0:0:-2|t"..L["Specific Currency"];
+Private.discovered_currencies_sorted["member"] = -1;
 
 Private.combatlog_raid_mark_check_type = {
   [0] = RAID_TARGET_NONE,
