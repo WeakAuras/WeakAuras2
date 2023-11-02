@@ -10288,7 +10288,7 @@ Private.event_prototypes = {
       },
       {
         name = "capped",
-        init = [[value > 0 and value >= total]],
+        init = [[total > 0 and value >= total]],
         type = "toggle",
         display = L["Capped"],
         store = true,
