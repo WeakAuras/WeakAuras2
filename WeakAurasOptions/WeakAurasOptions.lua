@@ -1138,6 +1138,12 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
       child:DisableLoaded();
     end
 
+    if child.data.load.use_never then
+      child.background:SetVertexColor(1, 0.12, 0.12, 0.25)
+    else
+      child.background:SetVertexColor(0.5, 0.5, 0.5, 0.25)
+    end
+
     if useTextFilter then
       if(id:lower():find(filter, 1, true)) then
         aurasMatchingFilter[id] = true
