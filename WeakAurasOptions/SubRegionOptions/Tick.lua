@@ -167,9 +167,12 @@ local function createOptions(parentData, data, index, subIndex)
       width = 0.15,
       order = 12.5,
       func = function()
-        OptionsPrivate.OpenTexturePicker(parentData, {
-          "subRegions", index
-        }, {
+        local path = { "subRegions", index }
+        local paths = {}
+        for child in OptionsPrivate.Private.TraverseLeafsOrAura(parentData) do
+          paths[child.id] = path
+        end
+        OptionsPrivate.OpenTexturePicker(parentData, paths, {
           texture = "tick_texture",
           color = "tick_color",
           blendMode = "tick_blend_mode"

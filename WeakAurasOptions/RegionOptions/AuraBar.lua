@@ -268,7 +268,12 @@ local function createOptions(id, data)
       width = 0.15,
       order = 44.1,
       func = function()
-        OptionsPrivate.OpenTexturePicker(data, {}, {
+        local path = {}
+        local paths = {}
+        for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+          paths[child.id] = path
+        end
+        OptionsPrivate.OpenTexturePicker(data, paths, {
           texture = "sparkTexture",
           color = "sparkColor",
           rotation = "sparkRotation",
