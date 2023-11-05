@@ -6540,7 +6540,8 @@ Private.event_prototypes = {
         display = L["Totem Name"],
         type = "string",
         conditionType = "string",
-        store = true
+        store = true,
+        desc = L["Enter a name or a spellId"]
       },
       {
         name = "totemNamePattern",
