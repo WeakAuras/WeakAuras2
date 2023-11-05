@@ -1127,7 +1127,6 @@ templates.class.HUNTER = {
         { spell = 118922, type = "buff", unit = "player", talent = 100634 }, -- Posthaste
         { spell = 186257, type = "buff", unit = "player" }, -- Aspect of the Cheetah
         { spell = 186265, type = "buff", unit = "player" }, -- Aspect of the Turtle
-        { spell = 193530, type = "buff", unit = "player", talent = 100664 }, -- Aspect of the Wild
         { spell = 199483, type = "buff", unit = "player", talent = 100647 }, -- Camouflage
         { spell = 202748, type = "buff", unit = "player" }, -- Survival Tactics
         { spell = 212704, type = "buff", unit = "player" }, -- The Beast Within
@@ -1186,6 +1185,7 @@ templates.class.HUNTER = {
         { spell = 392061, type = "debuff", unit = "target", talent = 100652 }, -- Wailing Arrow
         { spell = 393456, type = "debuff", unit = "target", talent = 100692 }, -- Entrapment
         { spell = 393480, type = "debuff", unit = "target" }, -- Sentinel
+        { spell = 424567, type = "debuff", unit = "target" }, -- Wild Instincts
       },
       icon = 135860
     },
@@ -1219,7 +1219,6 @@ templates.class.HUNTER = {
         { spell = 187650, type = "ability" }, -- Freezing Trap
         { spell = 187698, type = "ability", talent = 100641 }, -- Tar Trap
         { spell = 193455, type = "ability", requiresTarget = true, usable = true, talent = 100663 }, -- Cobra Shot
-        { spell = 193530, type = "ability", buff = true, requiresTarget = true, talent = 100664 }, -- Aspect of the Wild
         { spell = 199483, type = "ability", buff = true, talent = 100647 }, -- Camouflage
         { spell = 201430, type = "ability", talent = 100629 }, -- Stampede
         { spell = 212431, type = "ability", requiresTarget = true, talent = 100626 }, -- Explosive Shot
@@ -1586,7 +1585,7 @@ templates.class.ROGUE = {
         { spell = 11327, type = "buff", unit = "player" }, -- Vanish
         { spell = 31224, type = "buff", unit = "player", talent = 112585 }, -- Cloak of Shadows
         { spell = 32645, type = "buff", unit = "player" }, -- Envenom
-        { spell = 36554, type = "buff", unit = "player", talent = 112583 }, -- Shadowstep
+        { spell = 36554, type = "buff", unit = "player" }, -- Shadowstep
         { spell = 108211, type = "buff", unit = "player", talent = 112650 }, -- Leeching Poison
         { spell = 114018, type = "buff", unit = "player" }, -- Shroud of Concealment
         { spell = 185311, type = "buff", unit = "player" }, -- Crimson Vial
@@ -1596,7 +1595,7 @@ templates.class.ROGUE = {
         { spell = 315496, type = "buff", unit = "player" }, -- Slice and Dice
         { spell = 315584, type = "buff", unit = "player" }, -- Instant Poison
         { spell = 323560, type = "buff", unit = "player", talent = 112525 }, -- Echoing Reprimand
-        { spell = 381802, type = "buff", unit = "player", talent = 112667 }, -- Indiscriminate Carnage
+        { spell = 385754, type = "buff", unit = "player", talent = 112667 }, -- Indiscriminate Carnage
         { spell = 382245, type = "buff", unit = "player", talent = 112639 }, -- Cold Blood
         { spell = 392401, type = "buff", unit = "player", talent = 112673 }, -- Improved Garrote
         { spell = 393971, type = "buff", unit = "player", talent = 112579 }, -- Soothing Darkness
@@ -1612,11 +1611,11 @@ templates.class.ROGUE = {
         { spell = 1833, type = "debuff", unit = "target" }, -- Cheap Shot
         { spell = 1943, type = "debuff", unit = "target" }, -- Rupture
         { spell = 121411, type = "debuff", unit = "target", talent = 112517 }, -- Crimson Tempest
-        { spell = 137619, type = "debuff", unit = "target", talent = 112641 }, -- Marked for Death
         { spell = 212183, type = "debuff", unit = "target" }, -- Smoke Bomb
         { spell = 360194, type = "debuff", unit = "target", talent = 112662 }, -- Deathmark
         { spell = 381628, type = "debuff", unit = "target", talent = 112674 }, -- Internal Bleeding
         { spell = 385627, type = "debuff", unit = "target", talent = 114736 }, -- Kingsbane
+        { spell = 421976, type = "debuff", unit = "target", talent = 117137 }, -- Caustic Spatter
       },
       icon = 132302
     },
@@ -1641,16 +1640,13 @@ templates.class.ROGUE = {
         { spell = 8676, type = "ability", requiresTarget = true, usable = true }, -- Ambush
         { spell = 31224, type = "ability", buff = true, usable = true, talent = 112585 }, -- Cloak of Shadows
         { spell = 32645, type = "ability", buff = true, requiresTarget = true, usable = true }, -- Envenom
-        { spell = 36554, type = "ability", charges = true, buff = true, requiresTarget = true, usable = true, talent = 112583 }, -- Shadowstep
+        { spell = 36554, type = "ability", charges = true, buff = true, requiresTarget = true, usable = true }, -- Shadowstep
         { spell = 114018, type = "ability", buff = true, usable = true }, -- Shroud of Concealment
-        { spell = 137619, type = "ability", requiresTarget = true, talent = 112641 }, -- Marked for Death
         { spell = 185311, type = "ability", buff = true, usable = true }, -- Crimson Vial
         { spell = 185313, type = "ability", talent = 112577 }, -- Shadow Dance
         { spell = 185565, type = "ability", requiresTarget = true, usable = true }, -- Poisoned Knife
-        { spell = 200806, type = "ability", requiresTarget = true, usable = true, talent = 112672 }, -- Exsanguinate
         { spell = 360194, type = "ability", requiresTarget = true, usable = true, talent = 112662 }, -- Deathmark
         { spell = 381623, type = "ability", charges = true, talent = 112648 }, -- Thistle Tea
-        { spell = 381802, type = "ability", buff = true, usable = true, talent = 112667 }, -- Indiscriminate Carnage
         { spell = 382245, type = "ability", buff = true, usable = true, talent = 112639 }, -- Cold Blood
         { spell = 385408, type = "ability", requiresTarget = true, usable = true, talent = 112507 }, -- Sepsis
         { spell = 385424, type = "ability", charges = true, requiresTarget = true, talent = 112506 }, -- Serrated Bone Spike
@@ -1695,10 +1691,10 @@ templates.class.ROGUE = {
         { spell = 8679, type = "buff", unit = "player" }, -- Wound Poison
         { spell = 11327, type = "buff", unit = "player" }, -- Vanish
         { spell = 13750, type = "buff", unit = "player", talent = 112545 }, -- Adrenaline Rush
-        { spell = 13877, type = "buff", unit = "player", talent = 112561 }, -- Blade Flurry
+        { spell = 13877, type = "buff", unit = "player" }, -- Blade Flurry
         { spell = 31224, type = "buff", unit = "player", talent = 112585 }, -- Cloak of Shadows
         { spell = 36554, type = "buff", unit = "player", talent = 112583 }, -- Shadowstep
-        { spell = 51690, type = "buff", unit = "player", talent = 112551 }, -- Killing Spree
+        { spell = 51690, type = "buff", unit = "player", talent = 117149 }, -- Killing Spree
         { spell = 185311, type = "buff", unit = "player" }, -- Crimson Vial
         { spell = 185422, type = "buff", unit = "player", talent = 112577 }, -- Shadow Dance
         { spell = 193356, type = "buff", unit = "player" }, -- Broadside
@@ -1730,11 +1726,9 @@ templates.class.ROGUE = {
         { spell = 2094, type = "debuff", unit = "target", talent = 112572 }, -- Blind
         { spell = 3409, type = "debuff", unit = "target" }, -- Crippling Poison
         { spell = 8680, type = "debuff", unit = "target" }, -- Wound Poison
-        { spell = 137619, type = "debuff", unit = "target", talent = 112641 }, -- Marked for Death
         { spell = 185763, type = "debuff", unit = "target" }, -- Pistol Shot
         { spell = 212183, type = "debuff", unit = "target" }, -- Smoke Bomb
         { spell = 315341, type = "debuff", unit = "target" }, -- Between the Eyes
-        { spell = 316220, type = "debuff", unit = "target", talent = 112578 }, -- Find Weakness
         { spell = 385408, type = "debuff", unit = "target", talent = 112565 }, -- Sepsis
         { spell = 392388, type = "debuff", unit = "target", talent = 112655 }, -- Atrophic Poison
       },
@@ -1759,20 +1753,19 @@ templates.class.ROGUE = {
         { spell = 5938, type = "ability", requiresTarget = true, talent = 112630 }, -- Shiv
         { spell = 8676, type = "ability", requiresTarget = true, usable = true }, -- Ambush
         { spell = 13750, type = "ability", buff = true, talent = 112545 }, -- Adrenaline Rush
-        { spell = 13877, type = "ability", buff = true, talent = 112561 }, -- Blade Flurry
+        { spell = 13877, type = "ability", buff = true }, -- Blade Flurry
         { spell = 31224, type = "ability", buff = true, talent = 112585 }, -- Cloak of Shadows
         { spell = 36554, type = "ability", charges = true, buff = true, requiresTarget = true, talent = 112583 }, -- Shadowstep
-        { spell = 51690, type = "ability", buff = true, requiresTarget = true, talent = 112551 }, -- Killing Spree
+        { spell = 51690, type = "ability", buff = true, requiresTarget = true, talent = 117149 }, -- Killing Spree
         { spell = 114018, type = "ability", usable = true }, -- Shroud of Concealment
-        { spell = 137619, type = "ability", requiresTarget = true, talent = 112641 }, -- Marked for Death
         { spell = 185311, type = "ability", buff = true }, -- Crimson Vial
         { spell = 185313, type = "ability", talent = 112577 }, -- Shadow Dance
         { spell = 185763, type = "ability", requiresTarget = true }, -- Pistol Shot
         { spell = 193315, type = "ability", requiresTarget = true }, -- Sinister Strike
-        { spell = 195457, type = "ability", talent = 112570 }, -- Grappling Hook
+        { spell = 195457, type = "ability" }, -- Grappling Hook
         { spell = 271877, type = "ability", requiresTarget = true, usable = true, talent = 112530 }, -- Blade Rush
         { spell = 315341, type = "ability", requiresTarget = true }, -- Between the Eyes
-        { spell = 315508, type = "ability", talent = 112543 }, -- Roll the Bones
+        { spell = 315508, type = "ability" }, -- Roll the Bones
         { spell = 381623, type = "ability", charges = true, buff = true, talent = 112648 }, -- Thistle Tea
         { spell = 381989, type = "ability", talent = 112538 }, -- Keep It Rolling
         { spell = 382245, type = "ability", buff = true, usable = true, talent = 112639 }, -- Cold Blood
@@ -1817,11 +1810,12 @@ templates.class.ROGUE = {
         { spell = 8679, type = "buff", unit = "player" }, -- Wound Poison
         { spell = 11327, type = "buff", unit = "player" }, -- Vanish
         { spell = 31224, type = "buff", unit = "player", talent = 112585 }, -- Cloak of Shadows
-        { spell = 36554, type = "buff", unit = "player", talent = 112583 }, -- Shadowstep
+        { spell = 36554, type = "buff", unit = "player" }, -- Shadowstep
         { spell = 121471, type = "buff", unit = "player", talent = 112614 }, -- Shadow Blades
         { spell = 185311, type = "buff", unit = "player" }, -- Crimson Vial
         { spell = 185422, type = "buff", unit = "player", talent = 112577 }, -- Shadow Dance
         { spell = 193538, type = "buff", unit = "player", talent = 112643 }, -- Alacrity
+        { spell = 196911, type = "buff", unit = "player" }, -- Shadow Techniques
         { spell = 199027, type = "buff", unit = "player" }, -- Veil of Midnight
         { spell = 212283, type = "buff", unit = "player" }, -- Symbols of Death
         { spell = 257506, type = "buff", unit = "player", talent = 112586 }, -- Shot in the Dark
@@ -1840,6 +1834,9 @@ templates.class.ROGUE = {
         { spell = 393969, type = "buff", unit = "player", talent = 112618 }, -- Danse Macabre
         { spell = 393971, type = "buff", unit = "player", talent = 112579 }, -- Soothing Darkness
         { spell = 394254, type = "buff", unit = "player", talent = 112595 }, -- Perforated Veins
+        { spell = 426593, type = "buff", unit = "player", talent = 117169 }, -- Goremaw's Bite
+        { spell = 428389, type = "buff", unit = "player", talent = 117753 }, -- Terrifying Pace
+        { spell = 428488, type = "buff", unit = "player", talent = 112599 }, -- Exhilarating Execution
       },
       icon = 376022
     },
@@ -1852,7 +1849,6 @@ templates.class.ROGUE = {
         { spell = 2094, type = "debuff", unit = "target", talent = 112572 }, -- Blind
         { spell = 3409, type = "debuff", unit = "target" }, -- Crippling Poison
         { spell = 8680, type = "debuff", unit = "target" }, -- Wound Poison
-        { spell = 137619, type = "debuff", unit = "target", talent = 112641 }, -- Marked for Death
         { spell = 206760, type = "debuff", unit = "target" }, -- Shadow's Grasp
         { spell = 212183, type = "debuff", unit = "target" }, -- Smoke Bomb
         { spell = 316220, type = "debuff", unit = "target", talent = 112578 }, -- Find Weakness
@@ -1881,11 +1877,10 @@ templates.class.ROGUE = {
         { spell = 5277, type = "ability", buff = true, talent = 112657 }, -- Evasion
         { spell = 5938, type = "ability", requiresTarget = true, talent = 112630 }, -- Shiv
         { spell = 31224, type = "ability", buff = true, talent = 112585 }, -- Cloak of Shadows
-        { spell = 36554, type = "ability", charges = true, buff = true, requiresTarget = true, talent = 112583 }, -- Shadowstep
+        { spell = 36554, type = "ability", charges = true, buff = true, requiresTarget = true }, -- Shadowstep
         { spell = 114014, type = "ability", requiresTarget = true }, -- Shuriken Toss
         { spell = 114018, type = "ability", usable = true }, -- Shroud of Concealment
         { spell = 121471, type = "ability", buff = true, talent = 112614 }, -- Shadow Blades
-        { spell = 137619, type = "ability", requiresTarget = true, talent = 112641 }, -- Marked for Death
         { spell = 185311, type = "ability", buff = true }, -- Crimson Vial
         { spell = 185313, type = "ability", charges = true, talent = 112577 }, -- Shadow Dance
         { spell = 185438, type = "ability", requiresTarget = true, usable = true }, -- Shadowstrike
@@ -1952,7 +1947,7 @@ templates.class.PRIEST = {
         { spell = 198069, type = "buff", unit = "player", talent = 103724 }, -- Power of the Dark Side
         { spell = 322105, type = "buff", unit = "player", talent = 103706 }, -- Shadow Covenant
         { spell = 358134, type = "buff", unit = "player" }, -- Star Burst
-        { spell = 373181, type = "buff", unit = "player", talent = 103697 }, -- Harsh Discipline
+        { spell = 373183, type = "buff", unit = "player", talent = 103697 }, -- Harsh Discipline
         { spell = 390636, type = "buff", unit = "player", talent = 103850 }, -- Rhapsody
         { spell = 390677, type = "buff", unit = "player", talent = 103846 }, -- Inspiration
         { spell = 390692, type = "buff", unit = "player", talent = 103729 }, -- Borrowed Time
@@ -1967,6 +1962,7 @@ templates.class.PRIEST = {
         { spell = 589, type = "debuff", unit = "target" }, -- Shadow Word: Pain
         { spell = 2096, type = "debuff", unit = "target" }, -- Mind Vision
         { spell = 8122, type = "debuff", unit = "target" }, -- Psychic Scream
+        { spell = 135924, type = "debuff", unit = "target", talent = 108225 }, -- Sanctuary
         { spell = 204213, type = "debuff", unit = "target", talent = 103718 }, -- Purge the Wicked
         { spell = 214621, type = "debuff", unit = "target", talent = 103704 }, -- Schism
         { spell = 375901, type = "debuff", unit = "target", talent = 103837 }, -- Mindgames
@@ -2002,16 +1998,14 @@ templates.class.PRIEST = {
         { spell = 121536, type = "ability", charges = true, talent = 103853 }, -- Angelic Feather
         { spell = 122121, type = "ability", talent = 103831 }, -- Divine Star
         { spell = 123040, type = "ability", talent = 103710, totem = true }, -- Mindbender
-        { spell = 129250, type = "ability", requiresTarget = true, talent = 103716 }, -- Power Word: Solace
         { spell = 194509, type = "ability", charges = true, talent = 103722 }, -- Power Word: Radiance
         { spell = 204197, type = "ability", requiresTarget = true, talent = 103718 }, -- Purge the Wicked
         { spell = 205364, type = "ability", talent = 103678 }, -- Dominate Mind
-        { spell = 214621, type = "ability", requiresTarget = true, talent = 103704 }, -- Schism
-        { spell = 314867, type = "ability", talent = 103706 }, -- Shadow Covenant
         { spell = 373129, type = "ability" }, -- Dark Reprimand
         { spell = 373178, type = "ability", requiresTarget = true, talent = 103700 }, -- Light's Wrath
         { spell = 373481, type = "ability", talent = 103822 }, -- Power Word: Life
         { spell = 375901, type = "ability", requiresTarget = true, talent = 103837 }, -- Mindgames
+        { spell = 421453, type = "ability", buff = true, talent = 103700 }, -- Ultimate Penitence
       },
       icon = 136224
     },
@@ -3226,7 +3220,7 @@ templates.class.WARLOCK = {
         { spell = 171982, type = "buff", unit = "player" }, -- Demonic Synergy
         { spell = 205146, type = "buff", unit = "player", talent = 91535 }, -- Demonic Calling
         { spell = 221705, type = "buff", unit = "player" }, -- Casting Circle
-        { spell = 264173, type = "buff", unit = "player" }, -- Demonic Core
+        { spell = 264173, type = "buff", unit = "player", talent = 91544 }, -- Demonic Core
         { spell = 265273, type = "buff", unit = "player" }, -- Demonic Power
         { spell = 267218, type = "buff", unit = "player", talent = 91515 }, -- Nether Portal
         { spell = 328774, type = "buff", unit = "player", talent = 91442 }, -- Amplify Curse
@@ -3393,7 +3387,6 @@ templates.class.WARLOCK = {
         { spell = 387263, type = "buff", unit = "player", talent = 91485 }, -- Flashpoint
         { spell = 387283, type = "buff", unit = "player", talent = 91478 }, -- Power Overwhelming
         { spell = 387356, type = "buff", unit = "player", talent = 91473 }, -- Crashing Chaos
-        { spell = 387409, type = "buff", unit = "player", talent = 91480 }, -- Madness of the Azj'Aqir
         { spell = 387570, type = "buff", unit = "player", talent = 91474 }, -- Rolling Havoc
         { spell = 387626, type = "buff", unit = "player", talent = 91469 }, -- Soulburn
         { spell = 388068, type = "buff", unit = "player", talent = 91427 }, -- Inquisitor's Gaze
@@ -3535,6 +3528,7 @@ templates.class.MONK = {
         { spell = 392883, type = "buff", unit = "player", talent = 101513 }, -- Vivacious Vivification
         { spell = 393515, type = "buff", unit = "player", talent = 101445 }, -- Pretense of Instability
         { spell = 394112, type = "buff", unit = "player", talent = 101534 }, -- Escape from Reality
+        { spell = 427269, type = "buff", unit = "player", talent = 101374 }, -- Healing Elixir
       },
       icon = 613398
     },
@@ -3585,7 +3579,6 @@ templates.class.MONK = {
         { spell = 119996, type = "ability" }, -- Transcendence: Transfer
         { spell = 121253, type = "ability", charges = true, requiresTarget = true, talent = 101451 }, -- Keg Smash
         { spell = 122278, type = "ability", buff = true, talent = 101522 }, -- Dampen Harm
-        { spell = 122281, type = "ability", charges = true, talent = 101458 }, -- Healing Elixir
         { spell = 122783, type = "ability", buff = true, talent = 101515 }, -- Diffuse Magic
         { spell = 123986, type = "ability", talent = 101527 }, -- Chi Burst
         { spell = 126892, type = "ability" }, -- Zen Pilgrimage
@@ -3922,7 +3915,6 @@ templates.class.DRUID = {
         { spell = 393903, type = "buff", unit = "player", talent = 103313 }, -- Ursine Vigor
         { spell = 393942, type = "buff", unit = "player" }, -- Starweaver's Warp
         { spell = 393944, type = "buff", unit = "player" }, -- Starweaver's Weft
-        { spell = 393955, type = "buff", unit = "player" }, -- Rattled Stars
         { spell = 393959, type = "buff", unit = "player", talent = 109857 }, -- Nature's Grace
         { spell = 393961, type = "buff", unit = "player", talent = 109855 }, -- Primordial Arcanic Pulsar
         { spell = 394049, type = "buff", unit = "player", talent = 109848 }, -- Balance of All Things
@@ -4495,7 +4487,8 @@ templates.class.DEMONHUNTER = {
         { spell = 390145, type = "buff", unit = "player", talent = 112929 }, -- Inner Demon
         { spell = 390195, type = "buff", unit = "player", talent = 112958 }, -- Chaos Theory
         { spell = 391215, type = "buff", unit = "player", talent = 112950 }, -- Initiative
-        { spell = 391430, type = "buff", unit = "player", talent = 112931 }, -- Fodder to the Flame
+        { spell = 427641, type = "buff", unit = "player", talent = 117744 }, -- Inertia
+
       },
       icon = 1247266
     },
@@ -4507,15 +4500,15 @@ templates.class.DEMONHUNTER = {
         { spell = 185245, type = "debuff", unit = "target" }, -- Torment
         { spell = 198813, type = "debuff", unit = "target", talent = 112853 }, -- Vengeful Retreat
         { spell = 200166, type = "debuff", unit = "target" }, -- Metamorphosis
-        { spell = 204598, type = "debuff", unit = "target", talent = 112854 }, -- Sigil of Flame
+        { spell = 204598, type = "debuff", unit = "target" }, -- Sigil of Flame
         { spell = 207685, type = "debuff", unit = "target", talent = 112859 }, -- Sigil of Misery
-        { spell = 211881, type = "debuff", unit = "target", talent = 115246 }, -- Fel Eruption
+        { spell = 211881, type = "debuff", unit = "target" }, -- Fel Eruption
         { spell = 213405, type = "debuff", unit = "target", talent = 112912 }, -- Master of the Glaive
         { spell = 258883, type = "debuff", unit = "target", talent = 112824 }, -- Trail of Ruin
         { spell = 320338, type = "debuff", unit = "target", talent = 112956 }, -- Essence Break
         { spell = 370966, type = "debuff", unit = "target", talent = 112837 }, -- The Hunt
         { spell = 390155, type = "debuff", unit = "target", talent = 112934 }, -- Serrated Glaive
-        { spell = 390181, type = "debuff", unit = "target", talent = 112829 }, -- Soulrend
+        { spell = 390181, type = "debuff", unit = "target", talent = 112829 }, -- Soulscar
       },
       icon = 1392554
     },
@@ -4538,10 +4531,10 @@ templates.class.DEMONHUNTER = {
         { spell = 198589, type = "ability", usable = true }, -- Blur
         { spell = 198793, type = "ability", usable = true, talent = 112853 }, -- Vengeful Retreat
         { spell = 203720, type = "ability", charges = true }, -- Demon Spikes
-        { spell = 204596, type = "ability", usable = true, talent = 112854 }, -- Sigil of Flame
+        { spell = 204596, type = "ability", usable = true }, -- Sigil of Flame
         { spell = 207684, type = "ability", usable = true, talent = 112859 }, -- Sigil of Misery
         { spell = 210152, type = "ability" }, -- Death Sweep
-        { spell = 211881, type = "ability", requiresTarget = true, usable = true, talent = 115246 }, -- Fel Eruption
+        { spell = 211881, type = "ability", requiresTarget = true, usable = true }, -- Fel Eruption
         { spell = 217832, type = "ability", usable = true, talent = 112927 }, -- Imprison
         { spell = 232893, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 112842 }, -- Felblade
         { spell = 258860, type = "ability", talent = 112956 }, -- Essence Break
@@ -4551,7 +4544,7 @@ templates.class.DEMONHUNTER = {
         { spell = 342817, type = "ability", usable = true, talent = 112946 }, -- Glaive Tempest
         { spell = 344865, type = "ability", charges = true, overlayGlow = true }, -- Fel Rush
         { spell = 370965, type = "ability", requiresTarget = true, usable = true, talent = 112837 }, -- The Hunt
-        { spell = 390163, type = "ability", usable = true, talent = 112930 }, -- Elysian Decree
+        { spell = 390163, type = "ability", usable = true, talent = 117755 }, -- Elysian Decree
       },
       icon = 1305156
     },
@@ -4604,7 +4597,7 @@ templates.class.DEMONHUNTER = {
         { spell = 185245, type = "debuff", unit = "target" }, -- Torment
         { spell = 198813, type = "debuff", unit = "target", talent = 112853 }, -- Vengeful Retreat
         { spell = 204490, type = "debuff", unit = "target", talent = 112904 }, -- Sigil of Silence
-        { spell = 204598, type = "debuff", unit = "target", talent = 112854 }, -- Sigil of Flame
+        { spell = 204598, type = "debuff", unit = "target" }, -- Sigil of Flame
         { spell = 204843, type = "debuff", unit = "target", talent = 112867 }, -- Sigil of Chains
         { spell = 206891, type = "debuff", unit = "target" }, -- Focused Assault
         { spell = 207407, type = "debuff", unit = "target", talent = 112898 }, -- Soul Carver
@@ -4634,8 +4627,7 @@ templates.class.DEMONHUNTER = {
         { spell = 203782, type = "ability", requiresTarget = true }, -- Shear
         { spell = 204021, type = "ability", charges = true, requiresTarget = true, talent = 112864 }, -- Fiery Brand
         { spell = 204157, type = "ability", charges = true, requiresTarget = true }, -- Throw Glaive
-        { spell = 204513, type = "ability", talent = 112854 }, -- Sigil of Flame
-        { spell = 204596, type = "ability", talent = 112854 }, -- Sigil of Flame
+        { spell = 204596, type = "ability" }, -- Sigil of Flame
         { spell = 207407, type = "ability", requiresTarget = true, talent = 112898 }, -- Soul Carver
         { spell = 212084, type = "ability", talent = 112908 }, -- Fel Devastation
         { spell = 207665, type = "ability", talent = 112867 }, -- Sigil of Chains
