@@ -94,7 +94,7 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
       return tostring(value)
     end
     return "nil"
-  elseif (vType == "string") then
+  elseif (vType == "string" or vType == "texture") then
     if type(value) == "string" then
       return string.format("%s", Private.QuotedString(value))
     end
@@ -164,7 +164,7 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
 end
 
 local function formatValueForCall(type, property)
-  if type == "bool" or type == "number" or type == "list" or type == "icon" or type == "string"
+  if type == "bool" or type == "number" or type == "list" or type == "icon" or type == "string" or type == "texture"
     or type == "progressSource"
   then
     return "propertyChanges['" .. property .. "']";

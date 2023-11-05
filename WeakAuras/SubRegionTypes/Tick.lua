@@ -85,6 +85,17 @@ local properties = {
     type = "bool",
     default = true,
   },
+  tick_use_texture = {
+    display = L["Use Texture"],
+    setter = "SetUseTexture",
+    type = "bool",
+    default = true,
+  },
+  tick_texture = {
+    display = L["Texture"],
+    setter = "SetTexture",
+    type = "texture"
+  }
 }
 
 local function GetProperties(parentData, data)
@@ -404,6 +415,31 @@ local funcs = {
       end
     end
   end,
+  UpdateTexture = function(self)
+    if self.use_texture then
+      for _, tick in ipairs(self.ticks) do
+        Private.SetTextureOrAtlas(tick, self.tick_texture, "CLAMPTOBLACKADDITIVE", "CLAMPTOBLACKADDITIVE")
+      end
+    else
+      for _, tick in ipairs(self.ticks) do
+        tick:SetColorTexture(self.tick_color[1], self.tick_color[2], self.tick_color[3], self.tick_color[4])
+      end
+    end
+  end,
+  SetTexture = function(self, texture)
+    if self.tick_texture == texture then
+      return
+    end
+    self.tick_texture = texture
+    self:UpdateTexture()
+  end,
+  SetUseTexture = function(self, use)
+    if self.use_texture == use then
+      return
+    end
+    self.use_texture = use
+    self:UpdateTexture()
+  end
 }
 
 local function modify(parent, region, parentData, data, first)

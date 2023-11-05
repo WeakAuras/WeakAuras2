@@ -515,7 +515,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
         args["condition" .. i .. "value" .. j].validate = WeakAuras.ValidateNumeric;
       end
     end
-  elseif (propertyType == "string") then
+  elseif (propertyType == "string" or propertyType == "texture") then
     args["condition" .. i .. "value" .. j] = {
       type = "input",
       width = WeakAuras.normalWidth,
@@ -528,6 +528,35 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       set = setValue
     }
     order = order + 1;
+    if propertyType == "texture" then
+      args["condition" .. i .. "value" .. j].width =  WeakAuras.normalWidth - 0.15
+      args["condition" .. i .. "value_browse" .. j] = {
+        type = "execute",
+        name = L["Choose"],
+        width = 0.15,
+        order = order,
+        func = function()
+          if data.controlledChildren then
+            local paths = {}
+            for id, reference in pairs(conditions[i].changes[j].references) do
+              paths[id] = {"conditions", conditions[i].check.references[id].conditionIndex, "changes", reference.changeIndex}
+            end
+            OptionsPrivate.OpenTexturePicker(data, paths,
+                                             {texture = "value"},
+                                             OptionsPrivate.Private.texture_types)
+          else
+            OptionsPrivate.OpenTexturePicker(data, {[data.id] = { "conditions", i, "changes", j } },
+                                             {texture = "value"},
+                                             OptionsPrivate.Private.texture_types)
+          end
+        end,
+        imageWidth = 24,
+        imageHeight = 24,
+        control = "WeakAurasIcon",
+        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+      }
+      order = order + 1;
+    end
   elseif (propertyType == "icon") then
     args["condition" .. i .. "value" .. j] = {
       type = "input",
