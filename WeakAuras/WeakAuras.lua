@@ -4052,10 +4052,11 @@ end
 
 function Private.FixGroupChildrenOrderForGroup(data)
   local frameLevel = 1;
+  local offset = data.regionType == "dynamicgroup" and 0 or 4
   if data.parent == nil then
     for child in Private.TraverseAll(data) do
       SetFrameLevel(child.id, frameLevel);
-      frameLevel = frameLevel + 4;
+      frameLevel = frameLevel + offset;
     end
   end
 end
