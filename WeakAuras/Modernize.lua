@@ -1972,6 +1972,24 @@ function Private.Modernize(data)
     migrateToTable(data.load, "itemequiped")
   end
 
+  if data.internalVersion < 70 then
+    local trigger_migration = {
+      Power = {
+        "power",
+        "power_operator"
+      }
+    }
+    for _, triggerData in ipairs(data.triggers) do
+      local t = triggerData.trigger
+      local fieldsToMigrate = trigger_migration[t.event]
+      if fieldsToMigrate then
+        for _, field in ipairs(fieldsToMigrate) do
+          migrateToTable(t, field)
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 
