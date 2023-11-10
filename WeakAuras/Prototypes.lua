@@ -3753,7 +3753,11 @@ Private.event_prototypes = {
         name = "power",
         display = L["Alternate Power"],
         type = "number",
-        init = "UnitPower(unit, 10)"
+        init = "UnitPower(unit, 10)",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
       },
       {
         name = "value",
