@@ -10217,7 +10217,7 @@ Private.event_prototypes = {
   },
   ["Currency"] = {
     type = "unit",
-    canHaveDuration = true,
+    canHaveDuration = false,
     events = {
       ["events"] = {
         "CHAT_MSG_CURRENCY",
@@ -10234,23 +10234,26 @@ Private.event_prototypes = {
           currencyInfo.iconFileID = "Interface\\Icons\\INV_Misc_QuestionMark" --We don't want the user to think their input was valid
         end
       ]=]
-        return ret:format(trigger.currencyId or 1)
+      return ret:format(trigger.currencyId or 1)
     end,
     statesParameter = "one",
     args = {
       {
         name = "currencyId",
         type = "currency",
-        values = "discovered_currencies",
+        itemControl = "Dropdown-Currency",
+        values = Private.GetDiscoveredCurencies,
+        headers = Private.GetDiscoveredCurenciesHeaders,
         sorted = true,
-        sortOrder = function(Private)
+        sortOrder = function()
+          local discovered_currencies_sorted = Private.GetDiscoveredCurenciesSorted()
           local sortOrder = {}
-          for key, value in pairs(Private.discovered_currencies) do
+          for key, value in pairs(Private.GetDiscoveredCurencies()) do
             tinsert(sortOrder, key)
           end
           table.sort(sortOrder, function(aKey, bKey)
-            local aValue = Private.discovered_currencies_sorted[aKey]
-            local bValue = Private.discovered_currencies_sorted[bKey]
+            local aValue = discovered_currencies_sorted[aKey]
+            local bValue = discovered_currencies_sorted[bKey]
             return aValue < bValue
           end)
           return sortOrder
@@ -10280,9 +10283,9 @@ Private.event_prototypes = {
         name = "total",
         init = "currencyInfo.maxQuantity",
         type = "number",
-        display = L["Maximum Quantity"],
+        hidden = true,
         store = true,
-        conditionType = "number",
+        test = "true",
       },
       {
         name = "progressType",
@@ -10299,20 +10302,16 @@ Private.event_prototypes = {
         test = "true",
       },
       {
-        name = "capped",
-        init = [[total > 0 and value >= total]],
-        type = "toggle",
-        display = L["Capped"],
+        name = "maxQuantity",
+        init = "currencyInfo.maxQuantity",
+        type = "number",
+        display = L["Max Quantity"],
         store = true,
-        conditionType = "bool",
-      },
-      {
-        name = "canEarnPerWeek",
-        init = "currencyInfo.canEarnPerWeek",
-        type = "toggle",
-        display = L["Has weekly maximum"],
-        store = true,
-        conditionType = "bool",
+        conditionType = "number",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.maxQuantity and currencyInfo.maxQuantity > 0
+        end
       },
       {
         name = "quantityEarnedThisWeek",
@@ -10321,25 +10320,59 @@ Private.event_prototypes = {
         display = L["Quantity earned this week"],
         store = true,
         conditionType = "number",
-        enable = function(trigger) return trigger.use_canEarnPerWeek end,
-        test = "true",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.quantityEarnedThisWeek and currencyInfo.quantityEarnedThisWeek > 0
+        end
       },
       {
-        name = "maxWeeklyQuantity",
-        init = "currencyInfo.maxWeeklyQuantity",
+        name = "totalEarned",
+        init = "currencyInfo.totalEarned",
+        type = "number",
+        display = L["Total Earned in this Season"],
         store = true,
-        hidden = true,
-        test = "true",
+        conditionType = "number",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.useTotalEarnedForMaxQty and currencyInfo.totalEarned and currencyInfo.totalEarned > 0
+        end
       },
-      {
-        name = "weeklyCapped",
-        init = [[quantityEarnedThisWeek >= maxWeeklyQuantity]],
-        type = "toggle",
-        display = L["Capped this week"],
+      -- Various Capped properties
+      {-- quantity / maxQuantity cap
+        name = "capped",
+        init = [[currencyInfo.maxQuantity > 0 and currencyInfo.quantity >= currencyInfo.maxQuantity]],
+        type = "tristate",
+        display = L["Capped"],
         store = true,
         conditionType = "bool",
-        enable = function(trigger) return trigger.use_canEarnPerWeek end,
-        test = "true",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.useTotalEarnedForMaxQty == false
+        end
+      },
+      {-- "Season" Cap: totalEarned / maxQuantity
+        name = "seasonCapped",
+        init = [[currencyInfo.maxQuantity > 0 and currencyInfo.totalEarned >= currencyInfo.maxQuantity]],
+        type = "tristate",
+        display = L["Capped at Season Max"],
+        store = true,
+        conditionType = "bool",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.useTotalEarnedForMaxQty == true
+        end
+      },
+      {-- "Weekly" Cap: quantityEarnedThisWeek / maxWeeklyQuantity
+        name = "weeklyCapped",
+        init = [[currencyInfo.maxWeeklyQuantity > 0 and currencyInfo.quantityEarnedThisWeek >= currencyInfo.maxWeeklyQuantity]],
+        type = "tristate",
+        display = L["Capped at Weekly Max"],
+        store = true,
+        conditionType = "bool",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.maxWeeklyQuantity and currencyInfo.maxWeeklyQuantity > 0
+        end
       },
       {
         name = "description",
@@ -10351,36 +10384,18 @@ Private.event_prototypes = {
         test = "true",
       },
       {
-        name = "qualityId",
+        name = "quality",
         init = "currencyInfo.quality",
         type = "number",
         display = L["Quality Id"],
         hidden = true,
         test = "true",
-      },
-      {
-        name = "quality",
-        init = "currencyInfo.quality",
-        type = "number",
-        display = L["Quality"],
-        store = true,
-        hidden = true,
-        test = "true",
-        values = "item_quality_types",
-        conditionType = "select",
-      },
-      {
-        name = "qualityName",
-        init = [=[_G["ITEM_QUALITY".. qualityId .."_DESC"]]=],
-        display = L["Quality Name"],
-        hidden = true,
-        store = true,
-        test = "true",
+        store = true
       },
       {
         name = "discovered",
         init = "currencyInfo.discovered",
-        type = "toggle",
+        type = "tristate",
         display = L["Discovered"],
         store = true,
         conditionType = "bool",

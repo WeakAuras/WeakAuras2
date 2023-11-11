@@ -1332,20 +1332,47 @@ Private.item_quality_types = {
   [8] = ITEM_QUALITY8_DESC,
 }
 
-Private.discovered_currencies = {}
-Private.discovered_currencies_sorted = {}
-for index = 1, C_CurrencyInfo.GetCurrencyListSize() do
-  local CurrencyInfo = C_CurrencyInfo.GetCurrencyListInfo(index)
-  local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
-  if currencyLink then
-    local currencyID = C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
-    local icon = CurrencyInfo.iconFileID or "Interface\\Icons\\INV_Misc_QuestionMark" --iconFileID not available on first login
-    Private.discovered_currencies[currencyID] = ("|T%s:16|t %s"):format(icon, CurrencyInfo.name)
-    Private.discovered_currencies_sorted[currencyID] = index
+local function InitializeCurrencies()
+  if Private.discovered_currencies then
+    return
   end
+  Private.discovered_currencies = {}
+  Private.discovered_currencies_sorted = {}
+  Private.discovered_currencies_headers = {}
+  for index = 1, C_CurrencyInfo.GetCurrencyListSize() do
+    local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
+    local currencyInfo = C_CurrencyInfo.GetCurrencyListInfo(index)
+
+    if currencyLink then
+      local currencyID = C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
+      local icon = currencyInfo.iconFileID or "Interface\\Icons\\INV_Misc_QuestionMark" --iconFileID not available on first login
+      Private.discovered_currencies[currencyID] = "|T" .. icon .. ":0|t" .. currencyInfo.name
+      Private.discovered_currencies_sorted[currencyID] = index
+    elseif currencyInfo.isHeader then
+      Private.discovered_currencies[currencyInfo.name] = currencyInfo.name
+      Private.discovered_currencies_sorted[currencyInfo.name] = index
+      Private.discovered_currencies_headers[currencyInfo.name] = true
+    end
+  end
+
+  Private.discovered_currencies["member"] = "|Tinterface\\common\\ui-searchbox-icon:0:0:0:-2|t"..L["Specific Currency"];
+  Private.discovered_currencies_sorted["member"] = -1;
 end
-Private.discovered_currencies["member"] = "|Tinterface\\common\\ui-searchbox-icon:0:0:0:-2|t"..L["Specific Currency"];
-Private.discovered_currencies_sorted["member"] = -1;
+
+Private.GetDiscoveredCurencies = function()
+  InitializeCurrencies()
+  return Private.discovered_currencies
+end
+
+Private.GetDiscoveredCurenciesSorted  = function()
+  InitializeCurrencies()
+  return Private.discovered_currencies_sorted
+end
+
+Private.GetDiscoveredCurenciesHeaders  = function()
+  InitializeCurrencies()
+  return Private.discovered_currencies_headers
+end
 
 Private.combatlog_raid_mark_check_type = {
   [0] = RAID_TARGET_NONE,

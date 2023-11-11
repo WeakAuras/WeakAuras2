@@ -763,6 +763,8 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             values = values,
             sorting = sortOrder,
             desc = arg.desc,
+            itemControl = arg.itemControl,
+            headers = arg.headers,
 
             get = function()
               if((arg.type == "unit" or arg.type == "currency") and trigger["use_specific_"..realname]) then
