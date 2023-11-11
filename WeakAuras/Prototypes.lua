@@ -4033,8 +4033,10 @@ Private.event_prototypes = {
         store = true,
         test = "Private.ExecEnv.CheckCombatLogFlags(sourceFlags, %q)",
         conditionType = "select",
-        conditionTest = function(state, needle)
-          return state and state.show and Private.ExecEnv.CheckCombatLogFlags(state.sourceFlags, needle);
+        conditionTest = function(state, needle, op)
+          if state and state.show then
+            return Private.ExecEnv.CheckCombatLogFlags(state.sourceFlags, needle)  == (op == "==")
+          end
         end
       },
       {
@@ -4044,8 +4046,10 @@ Private.event_prototypes = {
         values = "combatlog_flags_check_reaction",
         test = "Private.ExecEnv.CheckCombatLogFlagsReaction(sourceFlags, %q)",
         conditionType = "select",
-        conditionTest = function(state, needle)
-          return state and state.show and Private.ExecEnv.CheckCombatLogFlagsReaction(state.sourceFlags, needle);
+        conditionTest = function(state, needle, op)
+          if state and state.show then
+            return Private.ExecEnv.CheckCombatLogFlagsReaction(state.sourceFlags, needle)  == (op == "==")
+          end
         end
       },
       {
@@ -4055,8 +4059,10 @@ Private.event_prototypes = {
         values = "combatlog_flags_check_object_type",
         test = "Private.ExecEnv.CheckCombatLogFlagsObjectType(sourceFlags, %q)",
         conditionType = "select",
-        conditionTest = function(state, needle)
-          return state and state.show and Private.ExecEnv.CheckCombatLogFlagsObjectType(state.sourceFlags, needle);
+        conditionTest = function(state, needle, op)
+          if state and state.show then
+            return Private.ExecEnv.CheckCombatLogFlagsObjectType(state.sourceFlags, needle) == (op == "==")
+          end
         end
       },
       {
@@ -4068,8 +4074,10 @@ Private.event_prototypes = {
         store = true,
         test = "Private.ExecEnv.CheckRaidFlags(sourceRaidFlags, %q)",
         conditionType = "select",
-        conditionTest = function(state, needle)
-          return state and state.show and Private.ExecEnv.CheckRaidFlags(state.sourceRaidFlags, needle);
+        conditionTest = function(state, needle, op)
+          if state and state.show then
+            return Private.ExecEnv.CheckRaidFlags(state.sourceRaidFlags, needle) == (op == "==")
+          end
         end
       },
       {
@@ -4162,8 +4170,10 @@ Private.event_prototypes = {
         store = true,
         test = "Private.ExecEnv.CheckCombatLogFlags(destFlags, %q)",
         conditionType = "select",
-        conditionTest = function(state, needle)
-          return state and state.show and Private.ExecEnv.CheckCombatLogFlags(state.destFlags, needle);
+        conditionTest = function(state, needle, op)
+          if state and state.show then
+            return Private.ExecEnv.CheckCombatLogFlags(state.destFlags, needle) == (op == "==")
+          end
         end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
@@ -4176,8 +4186,10 @@ Private.event_prototypes = {
         values = "combatlog_flags_check_reaction",
         test = "Private.ExecEnv.CheckCombatLogFlagsReaction(destFlags, %q)",
         conditionType = "select",
-        conditionTest = function(state, needle)
-          return state and state.show and Private.ExecEnv.CheckCombatLogFlagsReaction(state.destFlags, needle);
+        conditionTest = function(state, needle, op)
+          if state and state.show then
+            return Private.ExecEnv.CheckCombatLogFlagsReaction(state.destFlags, needle) == (op == "==")
+          end
         end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
@@ -4190,8 +4202,10 @@ Private.event_prototypes = {
         values = "combatlog_flags_check_object_type",
         test = "Private.ExecEnv.CheckCombatLogFlagsObjectType(destFlags, %q)",
         conditionType = "select",
-        conditionTest = function(state, needle)
-          return state and state.show and Private.ExecEnv.CheckCombatLogFlagsObjectType(state.destFlags, needle);
+        conditionTest = function(state, needle, op)
+          if state and state.show then
+            return Private.ExecEnv.CheckCombatLogFlagsObjectType(state.destFlags, needle) == (op == "==")
+          end
         end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
@@ -4211,8 +4225,10 @@ Private.event_prototypes = {
         store = true,
         test = "Private.ExecEnv.CheckRaidFlags(destRaidFlags, %q)",
         conditionType = "select",
-        conditionTest = function(state, needle)
-          return state and state.show and Private.ExecEnv.CheckRaidFlags(state.destRaidFlags, needle);
+        conditionTest = function(state, needle, op)
+          if state and state.show then
+            return Private.ExecEnv.CheckRaidFlags(state.destRaidFlags, needle) == (op == "==")
+          end
         end,
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
