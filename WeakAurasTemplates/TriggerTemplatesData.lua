@@ -1141,7 +1141,7 @@ templates.class.HUNTER = {
         { spell = 268877, type = "buff", unit = "player", talent = 100670 }, -- Beast Cleave
         { spell = 281036, type = "buff", unit = "player", talent = 100673 }, -- Dire Beast
         { spell = 321297, type = "buff", unit = "player" }, -- Eyes of the Beast
-        { spell = 359844, type = "buff", unit = "player", talent = 100682 }, -- Call of the Wild
+        { spell = 359844, type = "buff", exactSpellId = true, unit = "player", talent = 100682 }, -- Call of the Wild
         { spell = 378215, type = "buff", unit = "player", talent = 100665 }, -- Hunter's Prey
         { spell = 385540, type = "buff", unit = "player", talent = 100619 }, -- Rejuvenating Wind
         { spell = 388045, type = "buff", unit = "player", talent = 100520 }, -- Sentinel Owl
@@ -1235,7 +1235,7 @@ templates.class.HUNTER = {
         { spell = 272678, type = "ability" }, -- Primal Rage
         { spell = 320976, type = "ability", requiresTarget = true, talent = 100539 }, -- Kill Shot
         { spell = 321530, type = "ability", requiresTarget = true, talent = 100525 }, -- Bloodshed
-        { spell = 359844, type = "ability", buff = true, requiresTarget = true, talent = 100682 }, -- Call of the Wild
+        { spell = 359844, type = "ability", buff = true, exactSpellId = true, requiresTarget = true, talent = 100682 }, -- Call of the Wild
         { spell = 375891, type = "ability", requiresTarget = true, talent = 100628 }, -- Death Chakram
         { spell = 388045, type = "ability", charges = true, buff = true, talent = 100520 }, -- Sentinel Owl
         { spell = 392060, type = "ability", requiresTarget = true, talent = 100652 }, -- Wailing Arrow
@@ -1704,6 +1704,7 @@ templates.class.ROGUE = {
         { spell = 198368, type = "buff", unit = "player" }, -- Take Your Cut
         { spell = 199603, type = "buff", unit = "player" }, -- Skull and Crossbones
         { spell = 271896, type = "buff", unit = "player", talent = 112530 }, -- Blade Rush
+        { spell = 315341, type = "buff", unit = "player" }, -- Between the Eyes
         { spell = 315496, type = "buff", unit = "player" }, -- Slice and Dice
         { spell = 315584, type = "buff", unit = "player" }, -- Instant Poison
         { spell = 323558, type = "buff", unit = "player", talent = 112525 }, -- Echoing Reprimand
@@ -1728,7 +1729,6 @@ templates.class.ROGUE = {
         { spell = 8680, type = "debuff", unit = "target" }, -- Wound Poison
         { spell = 185763, type = "debuff", unit = "target" }, -- Pistol Shot
         { spell = 212183, type = "debuff", unit = "target" }, -- Smoke Bomb
-        { spell = 315341, type = "debuff", unit = "target" }, -- Between the Eyes
         { spell = 385408, type = "debuff", unit = "target", talent = 112565 }, -- Sepsis
         { spell = 392388, type = "debuff", unit = "target", talent = 112655 }, -- Atrophic Poison
       },
@@ -2757,7 +2757,6 @@ templates.class.MAGE = {
         { spell = 110959, type = "ability", talent = 80152 }, -- Greater Invisibility
         { spell = 113724, type = "ability", talent = 80144 }, -- Ring of Frost
         { spell = 114923, type = "ability", requiresTarget = true, talent = 80199 }, -- Nether Tempest
-        { spell = 116011, type = "ability", totem = true, talent = 80171 }, -- Rune of Power
         { spell = 153561, type = "ability", talent = 80146 }, -- Meteor
         { spell = 153626, type = "ability", charges = true, talent = 80308 }, -- Arcane Orb
         { spell = 157980, type = "ability", requiresTarget = true, talent = 80290 }, -- Supernova
@@ -2883,11 +2882,10 @@ templates.class.MAGE = {
         { spell = 108853, type = "ability", charges = true, requiresTarget = true, talent = 80282 }, -- Fire Blast
         { spell = 110959, type = "ability", talent = 80152 }, -- Greater Invisibility
         { spell = 113724, type = "ability", talent = 80144 }, -- Ring of Frost
-        { spell = 116011, type = "ability", totem = true, talent = 80171 }, -- Rune of Power
         { spell = 153561, type = "ability", talent = 80146 }, -- Meteor
         { spell = 157981, type = "ability", talent = 80160 }, -- Blast Wave
         { spell = 157997, type = "ability", requiresTarget = true, talent = 80186 }, -- Ice Nova
-        { spell = 190319, type = "ability", buff = true, totem = true, talent = 80275 }, -- Combustion
+        { spell = 190319, type = "ability", buff = true, talent = 80275 }, -- Combustion
         { spell = 190336, type = "ability" }, -- Conjure Refreshment
         { spell = 212653, type = "ability", charges = true, talent = 80163 }, -- Shimmer
         { spell = 235313, type = "ability", buff = true, talent = 80178 }, -- Blazing Barrier
@@ -3007,7 +3005,6 @@ templates.class.MAGE = {
         { spell = 108853, type = "ability", requiresTarget = true }, -- Fire Blast
         { spell = 110959, type = "ability", talent = 80152 }, -- Greater Invisibility
         { spell = 113724, type = "ability", talent = 80144 }, -- Ring of Frost
-        { spell = 116011, type = "ability", totem = true, talent = 80171 }, -- Rune of Power
         { spell = 135029, type = "ability" }, -- Water Jet
         { spell = 153561, type = "ability", talent = 80146 }, -- Meteor
         { spell = 153595, type = "ability", requiresTarget = true, talent = 80249 }, -- Comet Storm
@@ -4341,6 +4338,7 @@ templates.class.DRUID = {
         { spell = 114108, type = "buff", unit = "player", talent = 103113 }, -- Soul of the Forest
         { spell = 117679, type = "buff", unit = "player" }, -- Incarnation
         { spell = 132158, type = "buff", unit = "player", talent = 103101 }, -- Nature's Swiftness
+        { spell = 145205, type = "buff", unit = "player", talent = 103111 }, -- Efflorescence
         { spell = 155777, type = "buff", unit = "player" }, -- Rejuvenation (Germination)
         { spell = 157982, type = "buff", unit = "player", talent = 103108 }, -- Tranquility
         { spell = 192081, type = "buff", unit = "player", talent = 103305 }, -- Ironfur
@@ -5210,9 +5208,6 @@ for i = 1, 4 do
   tinsert(templates.class.DRUID[i][resourceSection].args, createSimplePowerTemplate(3)); -- Energy
   tinsert(templates.class.DRUID[i][resourceSection].args, createSimplePowerTemplate(4)); -- Combo Points
 end
-
--- Efflorescence aka Mushroom
--- tinsert(templates.class.DRUID[4][3].args,  {spell = 145205, type = "totem"});
 
 -- Demon Hunter
 tinsert(templates.class.DEMONHUNTER[1][resourceSection].args, createSimplePowerTemplate(17));
