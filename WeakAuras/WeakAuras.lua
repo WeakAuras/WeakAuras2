@@ -4057,11 +4057,9 @@ function Private.FixGroupChildrenOrderForGroup(data)
   else
     frameLevel, offset = 1, 4
   end
-  if data.parent == nil then
-    for child in Private.TraverseAll(data) do
-      SetFrameLevel(child.id, frameLevel);
-      frameLevel = frameLevel + offset;
-    end
+  for child in Private.TraverseLeafs(data) do
+    SetFrameLevel(child.id, frameLevel);
+    frameLevel = frameLevel + offset;
   end
 end
 
