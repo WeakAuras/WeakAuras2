@@ -15,7 +15,7 @@ externals:
   WeakAuras/Libs/LibDataBroker-1.1: https://github.com/tekkub/libdatabroker-1-1
   WeakAuras/Libs/LibCompress: https://repos.curseforge.com/wow/libcompress/trunk
   WeakAuras/Libs/LibSpellRange-1.0: https://github.com/ascott18/LibSpellRange-1.0
-  WeakAuras/Libs/LibRangeCheck-2.0: https://github.com/WeakAuras/LibRangeCheck-2.0/
+  WeakAuras/Libs/LibRangeCheck-3.0: https://github.com/WeakAuras/LibRangeCheck-3.0/
   WeakAuras/Libs/LibCustomGlow-1.0: https://github.com/Stanzilla/LibCustomGlow
   WeakAuras/Libs/LibDBIcon-1.0: https://repos.curseforge.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
   WeakAuras/Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame

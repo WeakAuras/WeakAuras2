@@ -14,7 +14,7 @@
   <Script file="Libs\LibCompress\LibCompress.lua"/>
   <Script file="Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
   <Script file="Libs\LibSpellRange-1.0\LibSpellRange-1.0.lua"/>
-  <Script file="Libs\LibRangeCheck-2.0\LibRangeCheck-2.0.lua"/>
+  <Script file="Libs\LibRangeCheck-3.0\LibRangeCheck-3.0.lua"/>
   <Script file="Libs\LibDeflate\LibDeflate.lua"/>
   <Include file="Libs\LibCustomGlow-1.0\LibCustomGlow-1.0.xml"/>
   <Script file="Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua"/>
