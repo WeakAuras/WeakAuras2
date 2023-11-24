@@ -2101,7 +2101,7 @@ templates.class.PRIEST = {
         { spell = 32379, type = "ability", overlayGlow = true, requiresTarget = true, talent = 103864 }, -- Shadow Word: Death
         { spell = 33076, type = "ability", talent = 103870 }, -- Prayer of Mending
         { spell = 34433, type = "ability", requiresTarget = true, totem = true, talent = 103865 }, -- Shadowfiend
-        { spell = 34861, type = "ability", overlayGlow = true, talent = 103767 }, -- Holy Word: Sanctify
+        { spell = 34861, type = "ability", overlayGlow = true, talent = 103766 }, -- Holy Word: Sanctify
         { spell = 47788, type = "ability", buff = true, talent = 103774 }, -- Guardian Spirit
         { spell = 64843, type = "ability", buff = true, talent = 103755 }, -- Divine Hymn
         { spell = 64901, type = "ability", buff = true, talent = 103751 }, -- Symbol of Hope
