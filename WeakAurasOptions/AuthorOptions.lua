@@ -2356,6 +2356,14 @@ local function addUserModeOption(options, args, data, order, prefix, i)
         end
       end
 
+      userOption.sorting = function()
+        if option.mediaType == "sound" then
+          return OptionsPrivate.Private.SortOrderForValues(OptionsPrivate.Private.sound_file_types)
+        else
+          return nil
+        end
+      end
+
       userOption.set = function(_, value)
         if option.mediaType == "sound" then
           PlaySoundFile(value, "Master")
