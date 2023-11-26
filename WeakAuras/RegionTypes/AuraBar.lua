@@ -49,12 +49,12 @@ local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ce
 
 local properties = {
   barColor = {
-    display = L["Bar Color"],
+    display = L["Bar Color/Gradient Start"],
     setter = "Color",
     type = "color",
   },
   barColor2 = {
-    display = L["Gradient Color"],
+    display = L["Gradient End"],
     setter = "SetBarColor2",
     type = "color",
   },
