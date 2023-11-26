@@ -3102,11 +3102,11 @@ end
 function Private.SetRegion(data, cloneId)
   local regionType = data.regionType;
   if not(regionType) then
-    error("Improper arguments to Private.SetRegion - regionType not defined");
+    error("Improper arguments to Private.SetRegion - regionType not defined in ".. data.id)
   else
     if(not regionTypes[regionType]) then
       regionType = "fallback";
-      print("Improper arguments to WeakAuras.CreateRegion - regionType \""..data.regionType.."\" is not supported");
+      print("Improper arguments to WeakAuras.CreateRegion - regionType \""..data.regionType.."\" is not supported in ".. data.id)
     end
 
     local id = data.id;
