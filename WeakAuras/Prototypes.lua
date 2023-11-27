@@ -3192,12 +3192,13 @@ Private.event_prototypes = {
         local name, realm = WeakAuras.UnitNameWithRealm(unit)
         local smart = %s
         local powerType = %s;
+        local measureChargedComboPoints = %s
         local unitPowerType = UnitPowerType(unit);
         local powerTypeToCheck = powerType or unitPowerType;
         local powerThirdArg = WeakAuras.UseUnitPowerThirdArg(powerTypeToCheck);
         if not WeakAuras.IsRetail() and powerType == 99 then powerType = 1 end
       ]=];
-      ret = ret:format(trigger.unit == "group" and "true" or "false", trigger.use_powertype and trigger.powertype or "nil");
+      ret = ret:format(trigger.unit == "group" and "true" or "false", trigger.use_powertype and trigger.powertype or "nil", trigger.use_measureChargedComboPoints and "true" or "false");
 
       ret = ret .. unitHelperFunctions.SpecificUnitCheck(trigger)
 
@@ -3321,6 +3322,17 @@ Private.event_prototypes = {
         hidden = not WeakAuras.IsRetail()
       },
       {
+        name = "measureChargedComboPoints",
+        display = L["Use Value of Charged Combo Points"],
+        type = "toggle",
+        test = "true",
+        reloadOptions = true,
+        enable = function(trigger)
+          return WeakAuras.IsRetail() and trigger.unit == 'player' and trigger.use_powertype and trigger.powertype == 4
+        end,
+        hidden = not WeakAuras.IsRetail()
+      },
+      {
         name = "chargedComboPoint1",
         type = "number",
         display = L["Charged Combo Point 1"],
@@ -3379,7 +3391,7 @@ Private.event_prototypes = {
         display = L["Power"],
         type = "number",
         init = not WeakAuras.IsRetail() and "powerType == 4 and GetComboPoints(unit, unit .. '-target') or UnitPower(unit, powerType, powerThirdArg)"
-                                     or "UnitPower(unit, powerType, powerThirdArg) / WeakAuras.UnitPowerDisplayMod(powerTypeToCheck)",
+                                     or "(measureChargedComboPoints and (tContains(GetUnitChargedPowerPoints(unit) or {}, UnitPower(unit, powerType, powerThirdArg)) and 7 or UnitPower(unit, powerType, powerThirdArg)) or UnitPower(unit, powerType, powerThirdArg)) / WeakAuras.UnitPowerDisplayMod(powerTypeToCheck)",
         store = true,
         conditionType = "number",
         multiEntry = {
@@ -7260,114 +7272,6 @@ Private.event_prototypes = {
     countEvents = true,
     delayEvents = true,
     timedrequired = true
-  },
-  ["Effective Combo Points"] = {
-    type = "unit",
-    canHaveDuration = false,
-    events = function(trigger)
-      local unit = "player"
-      local result = {}
-      AddUnitEventForEvents(result, unit, "UNIT_POWER_FREQUENT")
-      AddUnitEventForEvents(result, unit, "UNIT_MAXPOWER")
-      AddUnitEventForEvents(result, unit, "UNIT_DISPLAYPOWER")
-      AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
-
-      if WeakAuras.IsRetail() then
-        AddUnitEventForEvents(result, unit, "UNIT_POWER_POINT_CHARGE")
-      else
-        AddUnitEventForEvents(result, unit, "UNIT_TARGET")
-      end
-      return result;
-    end,
-    internal_events = {},
-    force_events = {{"UNIT_CHANGED_player", "player"}},
-    name = L["Effective Combo Points"],
-    init = function(trigger)
-      return ""
-    end,
-    statesParameter = "one",
-    args = {
-      {
-        name = "power",
-        display = L["Power"],
-        type = "number",
-        init = not WeakAuras.IsRetail() and "powerType == 4 and GetComboPoints('player', 'player-target') or UnitPower('player', 4)"
-        or "(tContains(GetUnitChargedPowerPoints('player') or {}, UnitPower('player', 4)) and 7 or UnitPower('player', 4)) / WeakAuras.UnitPowerDisplayMod(4)",
-        store = true,
-        conditionType = "number",
-        multiEntry = {
-          operator = "and",
-          limit = 2
-        },
-      },
-      {
-        name = "value",
-        hidden = true,
-        init = "power",
-        store = true,
-        test = "true"
-      },
-      {
-        name = "total",
-        hidden = true,
-        init = not WeakAuras.IsRetail() and "(math.max(1, UnitPowerMax('player', 4))"
-                                      or "math.max(1, UnitPowerMax('player', 4)) / WeakAuras.UnitPowerDisplayMod(4)",
-        store = true,
-        test = "true"
-      },
-      {
-        name = "stacks",
-        hidden = true,
-        init = "power",
-        store = true,
-        test = "true"
-      },
-      {
-        name = "progressType",
-        hidden = true,
-        init = "'static'",
-        store = true,
-        test = "true"
-      },
-      {
-        name = "percentpower",
-        display = L["Power (%)"],
-        type = "number",
-        init = "total ~= 0 and (value / total) * 100 or nil",
-        store = true,
-        conditionType = "number",
-        multiEntry = {
-          operator = "and",
-          limit = 2
-        },
-      },
-      {
-        name = "deficit",
-        display = L["Power Deficit"],
-        type = "number",
-        init = "total - value",
-        store = true,
-        conditionType = "number",
-        multiEntry = {
-          operator = "and",
-          limit = 2
-        },
-      },
-      {
-        name = "maxpower",
-        display = WeakAuras.newFeatureString .. L["Max Power"],
-        type = "number",
-        init = "total",
-        store = true,
-        conditionType = "number",
-        multiEntry = {
-          operator = "and",
-          limit = 2
-        },
-      },
-    },
-    overlayFuncs = {},
-    automaticrequired = true
   },
   ["Evoker Essence"] = {
     type = "unit",
