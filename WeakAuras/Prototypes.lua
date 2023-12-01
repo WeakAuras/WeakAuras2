@@ -3239,6 +3239,7 @@ Private.event_prototypes = {
           and trigger.unit == 'player' and trigger.use_powertype and trigger.powertype == 4
       then
         ret = ret .. [[
+          local comboPoint = UnitPower(unit, 4)
           local chargedComboPoint = GetUnitChargedPowerPoints('player') or {}
           if state.chargedComboPoint1 ~= chargedComboPoint[1] then
             state.chargedComboPoint = chargedComboPoint[1] -- For backwards compability
@@ -3260,8 +3261,23 @@ Private.event_prototypes = {
             state.chargedComboPoint4 = chargedComboPoint[4]
             state.changed = true
           end
-
+          local currentCharged = tContains(chargedComboPoint, comboPoint)
+          if state.currentCharged ~= currentCharged then
+            state.currentCharged = currentCharged
+            state.changed = true
+          end
         ]]
+
+        if trigger.use_chargedAsSeven then
+          ret = ret .. [[
+            local UnitPower = function()
+              if tContains(chargedComboPoint, comboPoint) then
+                return 7
+              end
+              return comboPoint
+            end
+          ]]
+        end
       end
 
       return ret
@@ -3319,6 +3335,27 @@ Private.event_prototypes = {
           return WeakAuras.IsRetail() and trigger.unit == 'player' and trigger.use_powertype and trigger.powertype == 4
         end,
         hidden = not WeakAuras.IsRetail()
+      },
+      {
+        name = "chargedAsSeven",
+        display = L["Treat charged combo point as 7 combo points"],
+        type = "toggle",
+        test = "true",
+        enable = function(trigger)
+          return WeakAuras.IsRetail() and trigger.unit == 'player' and trigger.use_powertype and trigger.powertype == 4
+        end,
+        hidden = not WeakAuras.IsRetail()
+      },
+      {
+        name = "currentCharged",
+        type = "bool",
+        display = L["Current Combo Point charged"],
+        conditionType = "bool",
+        enable = function(trigger)
+          return WeakAuras.IsRetail() and trigger.unit == 'player'and trigger.use_powertype and trigger.powertype == 4
+        end,
+        hidden = true,
+        test = "true"
       },
       {
         name = "chargedComboPoint1",
