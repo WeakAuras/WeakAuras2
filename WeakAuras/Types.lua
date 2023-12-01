@@ -2520,7 +2520,8 @@ Private.chat_message_types = {
   CHAT_MSG_SAY = L["Say"],
   CHAT_MSG_WHISPER = L["Whisper"],
   CHAT_MSG_YELL = L["Yell"],
-  CHAT_MSG_SYSTEM = L["System"]
+  CHAT_MSG_SYSTEM = L["System"],
+  CHAT_MSG_LOOT = L["Loot"],
 }
 
 Private.send_chat_message_types = {
