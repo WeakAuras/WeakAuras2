@@ -57,7 +57,14 @@ local methods = {
     self.linkedChildren = {}
 
     function self.callbacks.OnUpdateClick()
-      WeakAuras.Import(self.companionData.encoded)
+      local linkedAuras = {}
+      for auraId in pairs(self.linkedAuras) do
+        if not self.linkedChildren[auraId] then
+          tinsert(linkedAuras, auraId)
+        end
+      end
+
+      WeakAuras.Import(self.companionData.encoded, nil, nil, linkedAuras)
     end
 
     self:SetTitle(self.companionData.name)

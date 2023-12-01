@@ -920,8 +920,8 @@ function OptionsPrivate.OpenDebugLog(text)
   frame.debugLog:Open(text)
 end
 
-function OptionsPrivate.OpenUpdate(data, children, target, sender, callbackFunc)
-  return frame.update:Open(data, children, target, sender, callbackFunc)
+function OptionsPrivate.OpenUpdate(data, children, target, linkedAuras, sender, callbackFunc)
+  return frame.update:Open(data, children, target, linkedAuras, sender, callbackFunc)
 end
 
 function OptionsPrivate.ConvertDisplay(data, newType)

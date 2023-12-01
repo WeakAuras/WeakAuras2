@@ -1292,7 +1292,7 @@ local function AddAuraList(container, uidMap, list, expandText)
 end
 
 local methods = {
-  Open = function(self, data, children, target, sender, callbackFunc)
+  Open = function(self, data, children, target, linkedAuras, sender, callbackFunc)
     if(self.optionsWindow.window == "importexport") then
       self.optionsWindow.importexport:Close();
     elseif(self.optionsWindow.window == "texture") then
@@ -1309,6 +1309,7 @@ local methods = {
       data = data,
       children = children or {},
       target = target,
+      linkedAuras = linkedAuras,
       sender = sender
     }
     self.userChoices = {
@@ -1455,6 +1456,23 @@ local methods = {
       scamCheckText:SetText(L["This aura contains custom Lua code.\nMake sure you can trust the person who sent it!"])
       scamCheckText:SetColor(1, 0, 0)
       self:AddChild(scamCheckText)
+    end
+
+    if linkedAuras and next(linkedAuras) then
+      self:AddChild(AceGUI:Create("WeakAurasSpacer"))
+
+      local linkedAurasText = AceGUI:Create("Label")
+      linkedAurasText:SetFontObject(GameFontHighlight)
+      linkedAurasText:SetFullWidth(true)
+
+      local auraIdText = table.concat(self.pendingData.linkedAuras, ", ")
+      if #self.pendingData.linkedAuras == 1 then
+        linkedAurasText:SetText(L["This aura is marked as an update to an aura '%s', but cannot be used to update that aura. This usually happens if an aura is moved out of a group."]:format(auraIdText))
+      else
+        linkedAurasText:SetText(L["This aura is marked as an update to auras '%s', but cannot be used to update them. This usually happens if an aura is moved out of a group."]:format(auraIdText))
+      end
+      linkedAurasText:SetColor(1, 0, 0)
+      self:AddChild(linkedAurasText)
     end
 
     local currentBuild = floor(WeakAuras.BuildInfo / 10000)
