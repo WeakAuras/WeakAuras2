@@ -59,6 +59,9 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field frames table<string, table>
 --- @field function_strings table<string, string>
 --- @field GetDataByUID fun(uid: uid): auraData
+--- @field GetDiscoveredCurencies fun(): table<number|string, string>
+--- @field GetDiscoveredCurenciesSorted fun(): table<number|string, number>
+--- @field GetDiscoveredCurenciesHeaders fun(): table<string, boolean>
 --- @field GetErrorHandlerId fun(id: auraId, context: string): function
 --- @field GetErrorHandlerUid fun(uid: uid, context: string): function
 --- @field GetRegionByUID fun(uid: uid, cloneId: string): Region

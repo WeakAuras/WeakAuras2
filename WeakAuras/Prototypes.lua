@@ -10215,6 +10215,194 @@ Private.event_prototypes = {
     },
     automaticrequired = true
   },
+  ["Currency"] = {
+    type = "unit",
+    canHaveDuration = false,
+    events = {
+      ["events"] = {
+        "CHAT_MSG_CURRENCY",
+        "CURRENCY_DISPLAY_UPDATE",
+      }
+    },
+    force_events = "CHAT_MSG_CURRENCY",
+    name = WeakAuras.newFeatureString..L["Currency"],
+    init = function(trigger)
+      local ret = [=[
+        local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(%d)
+        if not currencyInfo then
+          currencyInfo = C_CurrencyInfo.GetCurrencyInfo(1) --Currency Token Test Token 4
+          currencyInfo.iconFileID = "Interface\\Icons\\INV_Misc_QuestionMark" --We don't want the user to think their input was valid
+        end
+      ]=]
+      return ret:format(trigger.currencyId or 1)
+    end,
+    statesParameter = "one",
+    args = {
+      {
+        name = "currencyId",
+        type = "currency",
+        itemControl = "Dropdown-Currency",
+        values = Private.GetDiscoveredCurencies,
+        headers = Private.GetDiscoveredCurenciesHeaders,
+        sorted = true,
+        sortOrder = function()
+          local discovered_currencies_sorted = Private.GetDiscoveredCurenciesSorted()
+          local sortOrder = {}
+          for key, value in pairs(Private.GetDiscoveredCurencies()) do
+            tinsert(sortOrder, key)
+          end
+          table.sort(sortOrder, function(aKey, bKey)
+            local aValue = discovered_currencies_sorted[aKey]
+            local bValue = discovered_currencies_sorted[bKey]
+            return aValue < bValue
+          end)
+          return sortOrder
+        end,
+        required = true,
+        display = L["Currency"],
+        store = true,
+        test = "true",
+      },
+      {
+        name = "name",
+        init = "currencyInfo.name",
+        hidden = true,
+        store = true,
+        test = "true",
+      },
+      {
+        name = "value",
+        init = "currencyInfo.quantity",
+        type = "number",
+        display = L["Quantity"],
+        store = true,
+        test = "true",
+        conditionType = "number",
+      },
+      {
+        name = "total",
+        init = "currencyInfo.maxQuantity",
+        type = "number",
+        hidden = true,
+        store = true,
+        test = "true",
+      },
+      {
+        name = "progressType",
+        init = "'static'",
+        hidden = true,
+        store = true,
+        test = "true",
+      },
+      {
+        name = "icon",
+        init = "currencyInfo.iconFileID",
+        store = true,
+        hidden = true,
+        test = "true",
+      },
+      {
+        name = "maxQuantity",
+        init = "currencyInfo.maxQuantity",
+        type = "number",
+        display = L["Max Quantity"],
+        store = true,
+        conditionType = "number",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.maxQuantity and currencyInfo.maxQuantity > 0
+        end
+      },
+      {
+        name = "quantityEarnedThisWeek",
+        init = "currencyInfo.quantityEarnedThisWeek",
+        type = "number",
+        display = L["Quantity earned this week"],
+        store = true,
+        conditionType = "number",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.quantityEarnedThisWeek and currencyInfo.quantityEarnedThisWeek > 0
+        end
+      },
+      {
+        name = "totalEarned",
+        init = "currencyInfo.totalEarned",
+        type = "number",
+        display = L["Total Earned in this Season"],
+        store = true,
+        conditionType = "number",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.useTotalEarnedForMaxQty and currencyInfo.totalEarned and currencyInfo.totalEarned > 0
+        end
+      },
+      -- Various Capped properties
+      {-- quantity / maxQuantity cap
+        name = "capped",
+        init = [[currencyInfo.maxQuantity > 0 and currencyInfo.quantity >= currencyInfo.maxQuantity]],
+        type = "tristate",
+        display = L["Capped"],
+        store = true,
+        conditionType = "bool",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.useTotalEarnedForMaxQty == false
+        end
+      },
+      {-- "Season" Cap: totalEarned / maxQuantity
+        name = "seasonCapped",
+        init = [[currencyInfo.maxQuantity > 0 and currencyInfo.totalEarned >= currencyInfo.maxQuantity]],
+        type = "tristate",
+        display = L["Capped at Season Max"],
+        store = true,
+        conditionType = "bool",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.useTotalEarnedForMaxQty == true
+        end
+      },
+      {-- "Weekly" Cap: quantityEarnedThisWeek / maxWeeklyQuantity
+        name = "weeklyCapped",
+        init = [[currencyInfo.maxWeeklyQuantity > 0 and currencyInfo.quantityEarnedThisWeek >= currencyInfo.maxWeeklyQuantity]],
+        type = "tristate",
+        display = L["Capped at Weekly Max"],
+        store = true,
+        conditionType = "bool",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.maxWeeklyQuantity and currencyInfo.maxWeeklyQuantity > 0
+        end
+      },
+      {
+        name = "description",
+        init = "currencyInfo.description",
+        type = "string",
+        display = L["Description"],
+        store = true,
+        hidden = true,
+        test = "true",
+      },
+      {
+        name = "quality",
+        init = "currencyInfo.quality",
+        type = "number",
+        display = L["Quality Id"],
+        hidden = true,
+        test = "true",
+        store = true
+      },
+      {
+        name = "discovered",
+        init = "currencyInfo.discovered",
+        type = "tristate",
+        display = L["Discovered"],
+        store = true,
+        conditionType = "bool",
+      },
+    },
+    automaticrequired = true
+  },
 };
 
 if WeakAuras.IsClassicEraOrWrath() then

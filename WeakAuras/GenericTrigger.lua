@@ -335,6 +335,9 @@ function ConstructFunction(prototype, trigger)
     init = "";
   end
   for index, arg in pairs(prototype.args) do
+    if(type(arg.sortOrder) == "function") then
+      arg.sortOrder = arg.sortOrder()
+    end
     local enable = arg.type ~= "description";
     if(type(arg.enable) == "function") then
       enable = arg.enable(trigger);
@@ -4423,6 +4426,15 @@ WeakAuras.GetHitChance = function()
   local ranged = (GetCombatRatingBonus(CR_HIT_RANGED) or 0) + (GetHitModifier() or 0)
   local spell = (GetCombatRatingBonus(CR_HIT_SPELL) or 0) + (GetSpellHitModifier() or 0)
   return max(melee, ranged, spell)
+end
+
+Private.GetCurrencyInfoForTrigger = function(trigger)
+  if trigger.currencyId then
+    local currencyId = tonumber(trigger.currencyId)
+    if currencyId then
+      return C_CurrencyInfo.GetCurrencyInfo(currencyId)
+    end
+  end
 end
 
 

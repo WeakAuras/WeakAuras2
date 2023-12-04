@@ -1320,6 +1320,60 @@ for id, str in pairs(Private.combatlog_spell_school_types) do
   Private.combatlog_spell_school_types_for_ui[id] = ("%.3d - %s"):format(id, str)
 end
 
+Private.item_quality_types = {
+  [0] = ITEM_QUALITY0_DESC,
+  [1] = ITEM_QUALITY1_DESC,
+  [2] = ITEM_QUALITY2_DESC,
+  [3] = ITEM_QUALITY3_DESC,
+  [4] = ITEM_QUALITY4_DESC,
+  [5] = ITEM_QUALITY5_DESC,
+  [6] = ITEM_QUALITY6_DESC,
+  [7] = ITEM_QUALITY7_DESC,
+  [8] = ITEM_QUALITY8_DESC,
+}
+
+local function InitializeCurrencies()
+  if Private.discovered_currencies then
+    return
+  end
+  Private.discovered_currencies = {}
+  Private.discovered_currencies_sorted = {}
+  Private.discovered_currencies_headers = {}
+  for index = 1, C_CurrencyInfo.GetCurrencyListSize() do
+    local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
+    local currencyInfo = C_CurrencyInfo.GetCurrencyListInfo(index)
+
+    if currencyLink then
+      local currencyID = C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
+      local icon = currencyInfo.iconFileID or "Interface\\Icons\\INV_Misc_QuestionMark" --iconFileID not available on first login
+      Private.discovered_currencies[currencyID] = "|T" .. icon .. ":0|t" .. currencyInfo.name
+      Private.discovered_currencies_sorted[currencyID] = index
+    elseif currencyInfo.isHeader then
+      Private.discovered_currencies[currencyInfo.name] = currencyInfo.name
+      Private.discovered_currencies_sorted[currencyInfo.name] = index
+      Private.discovered_currencies_headers[currencyInfo.name] = true
+    end
+  end
+
+  Private.discovered_currencies["member"] = "|Tinterface\\common\\ui-searchbox-icon:0:0:0:-2|t"..L["Specific Currency"];
+  Private.discovered_currencies_sorted["member"] = -1;
+end
+
+Private.GetDiscoveredCurencies = function()
+  InitializeCurrencies()
+  return Private.discovered_currencies
+end
+
+Private.GetDiscoveredCurenciesSorted  = function()
+  InitializeCurrencies()
+  return Private.discovered_currencies_sorted
+end
+
+Private.GetDiscoveredCurenciesHeaders  = function()
+  InitializeCurrencies()
+  return Private.discovered_currencies_headers
+end
+
 Private.combatlog_raid_mark_check_type = {
   [0] = RAID_TARGET_NONE,
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1:14|t " .. RAID_TARGET_1, -- Star
