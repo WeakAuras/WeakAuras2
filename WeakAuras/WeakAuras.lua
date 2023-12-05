@@ -4058,9 +4058,12 @@ function Private.FixGroupChildrenOrderForGroup(data)
   else
     frameLevel, offset = 2, 4
   end
-  for child in Private.TraverseLeafs(data) do
-    SetFrameLevel(child.id, frameLevel);
-    frameLevel = frameLevel + offset;
+  for _, childId in ipairs(data.controlledChildren) do
+    local data = WeakAuras.GetData(childId)
+    if data.regionType ~= "group" and data.regionType ~= "dynamicgroup" then
+      SetFrameLevel(childId, frameLevel);
+      frameLevel = frameLevel + offset;
+    end
   end
 end
 
