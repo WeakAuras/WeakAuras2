@@ -1378,6 +1378,61 @@ Private.GetDiscoveredCurenciesHeaders  = function()
   return Private.discovered_currencies_headers
 end
 
+local function InitializeReputations()
+  if Private.reputations then
+    return
+  end
+
+  Private.reputations = {}
+  Private.reputations_sorted = {}
+  Private.reputations_headers = {}
+
+  local collapsed = {}
+  for i = 1, GetNumFactions() do
+    local name, _, _, _, _, _, _, _, _, isCollapsed = GetFactionInfo(i)
+    if isCollapsed then
+      collapsed[name] = true
+    end
+  end
+
+  ExpandAllFactionHeaders()
+  for i = 1, GetNumFactions() do
+    local name, _, _, _, _, _, _, _, isHeader, _, hasRep, _, _, factionID = GetFactionInfo(i)
+    if hasRep or not isHeader then
+      if factionID then
+        Private.reputations[factionID] = name
+        Private.reputations_sorted[factionID] = i
+      end
+    else
+      Private.reputations[name] = name
+      Private.reputations_sorted[name] = i
+      Private.reputations_headers[name] = true
+    end
+  end
+
+  for i = GetNumFactions(), 1, -1 do
+    local name = GetFactionInfo(i)
+    if collapsed[name] then
+      CollapseFactionHeader(i)
+    end
+  end
+end
+
+Private.GetReputations = function()
+  InitializeReputations()
+  return Private.reputations
+end
+
+Private.GetReputationsSorted  = function()
+  InitializeReputations()
+  return Private.reputations_sorted
+end
+
+Private.GetReputationsHeaders  = function()
+  InitializeReputations()
+  return Private.reputations_headers
+end
+
 Private.combatlog_raid_mark_check_type = {
   [0] = RAID_TARGET_NONE,
   "|TInterface\\TARGETINGFRAME\\UI-RaidTargetingIcon_1:14|t " .. RAID_TARGET_1, -- Star

@@ -50,15 +50,29 @@ local function Frame_OnShow(self)
   if isHeader then
     self:SetScript("OnClick", nil)
     self.obj.text:SetTextColor(1, 1, 0)
-    self.obj.text:SetPoint("TOPLEFT", self, "TOPLEFT", 7, 0)
-    self.obj.icon:Hide()
     self.obj.useHighlight = false
+
+    self.obj.text:ClearAllPoints()
+    self.obj.text:SetPoint("TOPLEFT", self, "TOPLEFT", 7, 0)
+    self.obj.text:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -8, 0)
+    self.obj.icon:Hide()
   else
     self:SetScript("OnClick", Frame_OnClick)
     self.obj.text:SetTextColor(1, 1, 1)
-    self.obj.text:SetPoint("TOPLEFT", self, "TOPLEFT", 34, 0)
-    self.obj.icon:Show()
     self.obj.useHighlight = true
+
+    if self.obj.hasIcon then
+      self.obj.icon:Show()
+      self.obj.text:ClearAllPoints()
+      self.obj.text:SetPoint("TOPLEFT", self, "TOPLEFT", 34, 0)
+      self.obj.text:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -8, 0)
+    else
+      self.obj.icon:Hide()
+      self.obj.text:ClearAllPoints()
+      self.obj.text:SetPoint("TOPLEFT", self, "TOPLEFT", 18, 0)
+      self.obj.text:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -8, 0)
+    end
+
   end
   UpdateToggle(self.obj)
 end
@@ -77,14 +91,17 @@ end
 local function SetText(self, text)
   text = text or ""
   local pos = text:find("|t", 1, true)
+
   if pos then
     ItemBase.SetText(self, text:sub(pos + 2))
 
     local firstColon = text:find(":", 1, true)
     local icon = text:sub(3, firstColon - 1)
     self.icon:SetTexture(icon)
+    self.hasIcon = true
   else
     ItemBase.SetText(self, text)
+    self.hasIcon = false
   end
   self.fullText = text
 end
@@ -93,7 +110,7 @@ end
 local function Constructor()
   local self = ItemBase.Create(widgetType)
 
-  self.text:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 34)
+  self.text:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 34, 0)
 
   self.icon = self.frame:CreateTexture(nil, "OVERLAY")
   self.icon:SetPoint("TOPLEFT", self.frame, "TOPLEFT", 18, -2)
