@@ -137,6 +137,9 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
   local positionsForCollapseAnchor = {}
   for index, arg in pairs(prototype.args) do
     local hidden = nil;
+    if(type(arg.sortOrder) == "function") then
+      arg.sortOrder = arg.sortOrder()
+    end
     if(arg.collapse and isCollapsedFunctions[arg.collapse] and type(arg[hiddenProperty]) == "function") then
       local isCollapsed = isCollapsedFunctions[arg.collapse]
       if hiddenProperty == "hidden" then
