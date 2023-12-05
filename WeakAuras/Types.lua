@@ -1339,6 +1339,18 @@ local function InitializeCurrencies()
   Private.discovered_currencies = {}
   Private.discovered_currencies_sorted = {}
   Private.discovered_currencies_headers = {}
+
+  --expand all collapsed headers and save collapsed header indexes
+  local collapsedHeaders = {}
+  for index = 1, C_CurrencyInfo.GetCurrencyListSize() do
+    local currencyInfo = C_CurrencyInfo.GetCurrencyListInfo(index)
+    if currencyInfo and currencyInfo.isHeader and not currencyInfo.isHeaderExpanded then
+        C_CurrencyInfo.ExpandCurrencyList(index, true)
+        tinsert(collapsedHeaders, index)
+    end
+  end
+
+  --loop again with all headers expanded
   for index = 1, C_CurrencyInfo.GetCurrencyListSize() do
     local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
     local currencyInfo = C_CurrencyInfo.GetCurrencyListInfo(index)
@@ -1357,6 +1369,12 @@ local function InitializeCurrencies()
 
   Private.discovered_currencies["member"] = "|Tinterface\\common\\ui-searchbox-icon:0:0:0:-2|t"..L["Specific Currency"];
   Private.discovered_currencies_sorted["member"] = -1;
+
+  --restore collapsed headers
+  for i=1, #collapsedHeaders do
+    local headerIndex = collapsedHeaders[#collapsedHeaders + 1 - i] --reverseloop to prevent index jumping
+    C_CurrencyInfo.ExpandCurrencyList(headerIndex, false)
+  end
 end
 
 Private.GetDiscoveredCurencies = function()
