@@ -335,9 +335,6 @@ function ConstructFunction(prototype, trigger)
     init = "";
   end
   for index, arg in pairs(prototype.args) do
-    if(type(arg.sortOrder) == "function") then
-      arg.sortOrder = arg.sortOrder()
-    end
     local enable = arg.type ~= "description";
     if(type(arg.enable) == "function") then
       enable = arg.enable(trigger);

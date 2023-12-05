@@ -1320,18 +1320,6 @@ for id, str in pairs(Private.combatlog_spell_school_types) do
   Private.combatlog_spell_school_types_for_ui[id] = ("%.3d - %s"):format(id, str)
 end
 
-Private.item_quality_types = {
-  [0] = ITEM_QUALITY0_DESC,
-  [1] = ITEM_QUALITY1_DESC,
-  [2] = ITEM_QUALITY2_DESC,
-  [3] = ITEM_QUALITY3_DESC,
-  [4] = ITEM_QUALITY4_DESC,
-  [5] = ITEM_QUALITY5_DESC,
-  [6] = ITEM_QUALITY6_DESC,
-  [7] = ITEM_QUALITY7_DESC,
-  [8] = ITEM_QUALITY8_DESC,
-}
-
 local function InitializeCurrencies()
   if Private.discovered_currencies then
     return
@@ -1339,6 +1327,15 @@ local function InitializeCurrencies()
   Private.discovered_currencies = {}
   Private.discovered_currencies_sorted = {}
   Private.discovered_currencies_headers = {}
+  local expanded = {}
+  for index = C_CurrencyInfo.GetCurrencyListSize(), 1, -1 do
+    local currencyInfo = C_CurrencyInfo.GetCurrencyListInfo(index)
+    if currencyInfo.isHeader and not currencyInfo.isHeaderExpanded then
+      C_CurrencyInfo.ExpandCurrencyList(index, true)
+      expanded[currencyInfo.name] = true
+    end
+  end
+
   for index = 1, C_CurrencyInfo.GetCurrencyListSize() do
     local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
     local currencyInfo = C_CurrencyInfo.GetCurrencyListInfo(index)
@@ -1352,6 +1349,13 @@ local function InitializeCurrencies()
       Private.discovered_currencies[currencyInfo.name] = currencyInfo.name
       Private.discovered_currencies_sorted[currencyInfo.name] = index
       Private.discovered_currencies_headers[currencyInfo.name] = true
+    end
+  end
+
+  for index = C_CurrencyInfo.GetCurrencyListSize(), 1, -1 do
+    local currencyInfo = C_CurrencyInfo.GetCurrencyListInfo(index)
+    if currencyInfo.isHeader and expanded[currencyInfo.name] then
+      C_CurrencyInfo.ExpandCurrencyList(index, false)
     end
   end
 
