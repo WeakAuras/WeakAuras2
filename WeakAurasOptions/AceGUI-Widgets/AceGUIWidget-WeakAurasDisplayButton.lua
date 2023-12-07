@@ -1418,15 +1418,10 @@ local methods = {
   ["GetGroupOrder"] = function(self)
     return self.frame.dgrouporder;
   end,
-  ["DisableLoaded"] = function(self)
-    self.loaded.title = L["Not Loaded"];
-    self.loaded.desc = L["This display is not currently loaded"];
-    self.loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Disabled.blp");
-  end,
-  ["EnableLoaded"] = function(self)
-    self.loaded.title = L["Loaded"];
-    self.loaded.desc = L["This display is currently loaded"];
-    self.loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Up.blp");
+  ["SetLoaded"] = function(self, color, title, description)
+    self.loaded.title = title;
+    self.loaded.desc = description;
+    self.loaded:GetNormalTexture():SetVertexColor(unpack(color))
   end,
   ["Pick"] = function(self)
     self.frame:LockHighlight();
@@ -1731,9 +1726,8 @@ local function Constructor()
   loaded:SetHeight(16);
   loaded:SetPoint("BOTTOM", button, "BOTTOM");
   loaded:SetPoint("LEFT", icon, "RIGHT", 0, 0);
-  loaded:SetNormalTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Up.blp");
-  loaded:SetDisabledTexture("Interface\\BUTTONS\\UI-GuildButton-OfficerNote-Disabled.blp");
-  --loaded:SetHighlightTexture("Interface\\BUTTONS\\UI-Panel-MinimizeButton-Highlight.blp");
+  loaded:SetNormalTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\loaded");
+  loaded:GetNormalTexture():SetVertexColor(0, 0, 0, 0) -- transparent
   loaded.title = L["Loaded"];
   loaded.desc = L["This display is currently loaded"];
   loaded:SetScript("OnEnter", function() Show_Tooltip(button, loaded.title, loaded.desc) end);
