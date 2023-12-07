@@ -727,7 +727,7 @@ function OptionsPrivate.CreateFrame()
 
   -- Loaded section
   local loadedButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
-  loadedButton:SetText(L["Loaded"])
+  loadedButton:SetText(L["Loaded/Standby"])
   loadedButton:Disable()
   loadedButton:EnableExpand()
   if odb.loadedCollapse then
@@ -1275,7 +1275,7 @@ function OptionsPrivate.CreateFrame()
       end
     end
 
-    if self.pickedDisplay == id then
+    if self.pickedDisplay == id and (self.pickedDisplay == tab or tab == nil) then
       return
     end
 

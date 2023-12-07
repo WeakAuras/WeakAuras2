@@ -1132,10 +1132,12 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
   local visible = {}
 
   for id, child in pairs(displayButtons) do
-    if(OptionsPrivate.Private.loaded[id]) then
-      child:EnableLoaded();
+    if OptionsPrivate.Private.loaded[id] == true then
+      child:SetLoaded({0, 0.68, 0.30, 1}, L["Loaded"], L["This display is currently loaded"])
+    elseif OptionsPrivate.Private.loaded[id] == false then
+      child:SetLoaded({0.96, 0.82, 0.16, 1}, L["Standby"], L["This display is on standby, it will be loaded when needed."])
     else
-      child:DisableLoaded();
+      child:SetLoaded({0.6, 0.6, 0.6, 1}, L["Not Loaded"],L["This display is not currently loaded"])
     end
 
     if useTextFilter then

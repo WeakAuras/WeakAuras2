@@ -1716,19 +1716,22 @@ Private.load_prototype = {
       preamble = "local checker = Private.ExecEnv.ParseStringCheck(%q)",
       test = "checker:Check(zone)",
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
-      desc = L["Supports multiple entries, separated by commas. Escape ',' with \\"]
+      desc = L["Supports multiple entries, separated by commas. Escape ',' with \\"],
+      optional = true,
     },
     {
       name = "zoneId",
       enable = false,
       hidden = true,
       init = "arg",
+      optional = true,
     },
     {
       name = "zonegroupId",
       enable = false,
       hidden = true,
       init = "arg",
+      optional = true,
     },
     {
       name = "zoneIds",
@@ -1739,6 +1742,7 @@ Private.load_prototype = {
       desc = get_zoneId_list,
       preamble = "local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q)",
       test = "zoneChecker:Check(zoneId, zonegroupId)",
+      optional = true,
     },
     {
       name = "encounterid",
@@ -1749,6 +1753,7 @@ Private.load_prototype = {
       desc = Private.get_encounters_list,
       test = "WeakAuras.CheckNumericIds(%q, encounterid)",
       events = {"ENCOUNTER_START", "ENCOUNTER_END"},
+      optional = true,
     },
     {
       name = "size",
@@ -1757,7 +1762,8 @@ Private.load_prototype = {
       values = "instance_types",
       sorted = true,
       init = "arg",
-      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
+      events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"},
+      optional = true,
     },
     {
       name = "difficulty",
@@ -1767,7 +1773,8 @@ Private.load_prototype = {
       init = not WeakAuras.IsClassicEra() and "arg" or nil,
       enable = not WeakAuras.IsClassicEra(),
       hidden = WeakAuras.IsClassicEra(),
-      events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"}
+      events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"},
+      optional = true,
     },
     {
       name = "instance_type",
@@ -1779,6 +1786,7 @@ Private.load_prototype = {
       enable = not WeakAuras.IsClassicEra(),
       hidden = WeakAuras.IsClassicEra(),
       events = {"PLAYER_DIFFICULTY_CHANGED", "ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA"},
+      optional = true,
     },
     {
       name = "affixes",
@@ -1790,6 +1798,7 @@ Private.load_prototype = {
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
       events = {"CHALLENGE_MODE_START", "CHALLENGE_MODE_COMPLETED"},
+      optional = true,
     },
     {
       name ="equipmentTitle",
