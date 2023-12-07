@@ -9770,7 +9770,7 @@ Private.event_prototypes = {
 
       if trigger.use_loot_specialization_id ~= nil then
         tinsert(events, "PLAYER_LOOT_SPEC_UPDATED")
-        tinsert(events, "PLAYER_TALENT_UPDATE")
+        tinsert(events, "PLAYER_SPECIALIZATION_CHANGED")
       end
 
       return {
@@ -9913,7 +9913,7 @@ Private.event_prototypes = {
         name = "loot_specialization_id",
         display = L["Loot Specialization"],
         type = "multiselect",
-        init = "WeakAuras.IsRetail() and (GetLootSpecialization() == 0 and GetSpecializationInfo(GetSpecialization()) or GetLootSpecialization())",
+        init = "GetLootSpecialization() == 0 and GetSpecializationInfo(GetSpecialization()) or GetLootSpecialization()",
         values = "spec_types_all",
         enable = WeakAuras.IsRetail(),
         hidden = not WeakAuras.IsRetail(),
@@ -9922,7 +9922,7 @@ Private.event_prototypes = {
         name = "lootSpec",
         display = L["Loot Specialization"],
         type = "string",
-        init = "WeakAuras.IsRetail() and select(2, GetSpecializationInfoByID(loot_specialization_id))",
+        init = "select(2, GetSpecializationInfoByID(loot_specialization_id))",
         enable = "loot_specialization_id",
         hidden = true,
         store = true,
