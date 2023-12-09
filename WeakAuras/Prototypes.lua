@@ -6416,7 +6416,7 @@ Private.event_prototypes = {
   ["Class/Spec"] = {
     type = "unit",
     events = function()
-      local events = { "PLAYER_TALENT_UPDATE" }
+      local events = { "PLAYER_TALENT_UPDATE", "PLAYER_LOOT_SPEC_UPDATED", "PLAYER_SPECIALIZATION_CHANGED" }
       return {
         ["events"] = events
       }
@@ -6426,6 +6426,11 @@ Private.event_prototypes = {
     init = function(trigger)
       return [[
          local specId, specName, _, specIcon = GetSpecializationInfo(GetSpecialization())
+         local lootSpecId = GetLootSpecialization()
+         if lootSpecId == 0 then --Player chose 'Current Specialization'
+          lootSpecId = specId
+         end
+         local _, lootSpecName = GetSpecializationInfoByID(lootSpecId)
       ]]
     end,
     args = {
@@ -6448,6 +6453,22 @@ Private.event_prototypes = {
         init = "specName",
         store = "true",
         test = "true"
+      },
+      {
+        name = "lootSpecId",
+        display = L["Loot Specialization"],
+        type = "multiselect",
+        init = "lootSpecId",
+        values = "spec_types_all",
+      },
+      {
+        name = "lootSpec",
+        display = L["Loot Specialization"],
+        type = "string",
+        init = "lootSpecName",
+        hidden = true,
+        store = true,
+        test = "true",
       },
     },
     automaticrequired = true,
@@ -9768,11 +9789,6 @@ Private.event_prototypes = {
         tinsert(events, "PLAYER_DIFFICULTY_CHANGED")
       end
 
-      if trigger.use_loot_specialization_id ~= nil then
-        tinsert(events, "PLAYER_LOOT_SPEC_UPDATED")
-        tinsert(events, "PLAYER_SPECIALIZATION_CHANGED")
-      end
-
       return {
         ["events"] = events,
         ["unit_events"] = {
@@ -9812,7 +9828,6 @@ Private.event_prototypes = {
     init = function(trigger)
       return "";
     end,
-    statesParameter = "one",
     args = {
       {
         name = "alwaystrue",
@@ -9908,25 +9923,6 @@ Private.event_prototypes = {
         init = "WeakAuras.InstanceTypeRaw()",
         enable = WeakAuras.IsRetail(),
         hidden = not WeakAuras.IsRetail(),
-      },
-      {
-        name = "loot_specialization_id",
-        display = L["Loot Specialization"],
-        type = "multiselect",
-        init = "GetLootSpecialization() == 0 and GetSpecializationInfo(GetSpecialization()) or GetLootSpecialization()",
-        values = "spec_types_all",
-        enable = WeakAuras.IsRetail(),
-        hidden = not WeakAuras.IsRetail(),
-      },
-      {
-        name = "lootSpec",
-        display = L["Loot Specialization"],
-        type = "string",
-        init = "select(2, GetSpecializationInfoByID(loot_specialization_id))",
-        enable = "loot_specialization_id",
-        hidden = true,
-        store = true,
-        test = "true",
       },
     },
     automaticrequired = true
