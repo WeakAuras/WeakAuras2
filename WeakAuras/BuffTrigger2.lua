@@ -3412,7 +3412,7 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
   }
 
   result["unitCaster"] = {
-    display = L["Caster"],
+    display = L["Caster Unit"],
     type = "string"
   }
 
