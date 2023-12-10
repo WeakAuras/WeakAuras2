@@ -2723,28 +2723,6 @@ local function validateUserConfig(data, options, config)
   end
 end
 
-local function removeSpellNames(data)
-  local trigger
-  for i = 1, #data.triggers do
-    trigger = data.triggers[i].trigger
-    if trigger and trigger.type == "aura" then
-      if type(trigger.spellName) == "number" then
-        trigger.realSpellName = GetSpellInfo(trigger.spellName) or trigger.realSpellName
-      end
-      if (trigger.spellId) then
-        trigger.name = GetSpellInfo(trigger.spellId) or trigger.name;
-      end
-      if (trigger.spellIds) then
-        for i = 1, 10 do
-          if (trigger.spellIds[i]) then
-            trigger.names = trigger.names or {};
-            trigger.names[i] = GetSpellInfo(trigger.spellIds[i]) or trigger.names[i];
-          end
-        end
-      end
-    end
-  end
-end
 
 local oldDataStub = {
   -- note: this is the minimal data stub which prevents false positives in diff upon reimporting an aura.
@@ -2912,7 +2890,6 @@ function WeakAuras.PreAdd(data)
     end
   end
   validateUserConfig(data, data.authorOptions, data.config)
-  removeSpellNames(data)
   data.init_started = nil
   data.init_completed = nil
   data.expanded = nil
