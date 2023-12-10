@@ -1320,10 +1320,21 @@ for id, str in pairs(Private.combatlog_spell_school_types) do
   Private.combatlog_spell_school_types_for_ui[id] = ("%.3d - %s"):format(id, str)
 end
 
-Private.GetCurrencyListInfo = function(index)
-  if WeakAuras.IsRetail() then
-    return C_CurrencyInfo.GetCurrencyListInfo(index)
-  elseif WeakAuras.IsWrathClassic() then
+if WeakAuras.IsRetail() then
+  Private.GetCurrencyListSize = C_CurrencyInfo.GetCurrencyListSize
+  Private.GetCurrencyIDFromLink = C_CurrencyInfo.GetCurrencyIDFromLink
+  Private.ExpandCurrencyList = C_CurrencyInfo.ExpandCurrencyList
+  Private.GetCurrencyListInfo = C_CurrencyInfo.GetCurrencyListInfo
+elseif WeakAuras.IsWrathClassic() then
+  Private.GetCurrencyListSize = GetCurrencyListSize
+  Private.GetCurrencyIDFromLink = function(currencyLink)
+    local currencyID = string.match(currencyLink, "|Hcurrency:(%d+):")
+    return currencyID
+  end
+  Private.ExpandCurrencyList = function(index, expand)
+    ExpandCurrencyList(index, expand and 1 or 0)
+  end
+  Private.GetCurrencyListInfo = function(index)
     local name, isHeader, isExpanded, isUnused, isWatched, _, icon, _, hasWeeklyLimit, _, _, itemID = GetCurrencyListInfo(index)
     local currentAmount, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity
     if itemID then
@@ -1350,31 +1361,6 @@ Private.GetCurrencyListInfo = function(index)
       useTotalEarnedForMaxQty = false,
     }
     return currencyInfo
-  end
-end
-
-if WeakAuras.IsRetail() then
-  Private.GetCurrencyListSize = C_CurrencyInfo.GetCurrencyListSize
-elseif WeakAuras.IsWrathClassic() then
-  Private.GetCurrencyListSize = GetCurrencyListSize
-end
-
-Private.ExpandCurrencyList = function(index, expand)
-  if WeakAuras.IsRetail() then
-    return C_CurrencyInfo.ExpandCurrencyList(index, expand)
-  end
-  if WeakAuras.IsWrathClassic() then
-    return ExpandCurrencyList(index, expand and 1 or 0)
-  end
-end
-
-Private.GetCurrencyIDFromLink = function(currencyLink)
-  if WeakAuras.IsRetail() then
-    return C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
-  end
-  if WeakAuras.IsWrathClassic() then
-    local currencyID = string.match(currencyLink, "|Hcurrency:(%d+):")
-    return currencyID
   end
 end
 
