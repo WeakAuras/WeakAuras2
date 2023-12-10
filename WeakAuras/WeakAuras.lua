@@ -2965,6 +2965,8 @@ function WeakAuras.PreAdd(data)
     Private.validate(data, oldDataStub2)
   end
 
+  xpcall(Private.Modernize, Private.GetErrorHandlerId(data.id, L["Modernize"]), data)
+
   local default = data.regionType and Private.regionTypes[data.regionType] and Private.regionTypes[data.regionType].default
   if default then
     Private.validate(data, default)
@@ -2975,7 +2977,6 @@ function WeakAuras.PreAdd(data)
     regionValidate(data)
   end
 
-  Private.Modernize(data);
   Private.validate(data, Private.data_stub);
   if data.subRegions then
     for _, subRegionData in ipairs(data.subRegions) do
