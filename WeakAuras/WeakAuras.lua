@@ -351,13 +351,6 @@ Private.ExecEnv.conditionHelpers = {}
 
 local load_prototype = Private.load_prototype;
 
-local levelColors = {
-  [0] = "|cFFFFFFFF",
-  [1] = "|cFF40FF40",
-  [2] = "|cFF6060FF",
-  [3] = "|cFFFF4040"
-};
-
 function Private.validate(input, default)
   for field, defaultValue in pairs(default) do
     if(type(defaultValue) == "table" and type(input[field]) ~= "table") then
