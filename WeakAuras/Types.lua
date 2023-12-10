@@ -1363,7 +1363,7 @@ end
 
 Private.ExpandCurrencyList = function(index, expand)
   if WeakAuras.IsRetail() then
-    return C_CurrencyInfo.GetCurrencyListLink(index, expand)
+    return C_CurrencyInfo.ExpandCurrencyList(index, expand)
   end
   if WeakAuras.IsWrathClassic() then
     return ExpandCurrencyList(index, expand)
