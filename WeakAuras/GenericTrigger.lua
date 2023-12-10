@@ -4425,11 +4425,40 @@ WeakAuras.GetHitChance = function()
   return max(melee, ranged, spell)
 end
 
+Private.ExecEnv.GetCurrencyInfo = function(id)
+  if WeakAuras.IsRetail() then
+    return C_CurrencyInfo.GetCurrencyInfo(id)
+  elseif WeakAuras.IsWrathClassic() then
+    local name, currentAmount, texture, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity = GetCurrencyInfo(id)
+    local currencyInfo = {
+      name = name,
+      description = "",
+      isHeader = false,
+      isHeaderExpanded = false,
+      isTypeUnused = false,
+      isShowInBackpack = false,
+      quantity = currentAmount,
+      trackedQuantity = 0,
+      iconFileID = texture,
+      maxQuantity = totalMax,
+      canEarnPerWeek = weeklyMax > 0,
+      quantityEarnedThisWeek = earnedThisWeek,
+      isTradeable = false,
+      quality = rarity,
+      maxWeeklyQuantity = weeklyMax,
+      totalEarned = 0,
+      discovered = isDiscovered,
+      useTotalEarnedForMaxQty = false,
+    }
+    return currencyInfo
+  end
+end
+
 Private.GetCurrencyInfoForTrigger = function(trigger)
   if trigger.currencyId then
     local currencyId = tonumber(trigger.currencyId)
     if currencyId then
-      return C_CurrencyInfo.GetCurrencyInfo(currencyId)
+      return Private.ExecEnv.GetCurrencyInfo(currencyId)
     end
   end
 end
