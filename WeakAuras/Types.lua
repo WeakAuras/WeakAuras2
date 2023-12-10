@@ -1324,29 +1324,31 @@ Private.GetCurrencyListInfo = function(index)
   if WeakAuras.IsRetail() then
     return C_CurrencyInfo.GetCurrencyListInfo(index)
   elseif WeakAuras.IsWrathClassic() then
-    local name, isHeader, isExpanded, isUnused, isWatched, _, icon, _, hasWeeklyLimit, _, _, itemID = GetCurrencyListInfo(index)
-    local _, currentAmount, _, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity = itemID and GetCurrencyInfo(itemID)
-    local currencyInfo = {
-      name = name,
-      description = "",
-      isHeader = isHeader,
-      isHeaderExpanded = isExpanded,
-      isTypeUnused = isUnused,
-      isShowInBackpack = isWatched,
-      quantity = currentAmount,
-      trackedQuantity = 0,
-      iconFileID = icon,
-      maxQuantity = totalMax,
-      canEarnPerWeek = hasWeeklyLimit,
-      quantityEarnedThisWeek = earnedThisWeek,
-      isTradeable = false,
-      quality = rarity,
-      maxWeeklyQuantity = weeklyMax,
-      totalEarned = 0,
-      discovered = isDiscovered,
-      useTotalEarnedForMaxQty = false,
-    }
-    return currencyInfo
+    local _, isHeader, isExpanded, isUnused, isWatched, _, icon, _, hasWeeklyLimit, _, _, itemID = GetCurrencyListInfo(index)
+    local name, currentAmount, _, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity = itemID and GetCurrencyInfo(itemID)
+    if name then
+      local currencyInfo = {
+        name = name,
+        description = "",
+        isHeader = isHeader,
+        isHeaderExpanded = isExpanded,
+        isTypeUnused = isUnused,
+        isShowInBackpack = isWatched,
+        quantity = currentAmount,
+        trackedQuantity = 0,
+        iconFileID = icon,
+        maxQuantity = totalMax,
+        canEarnPerWeek = hasWeeklyLimit,
+        quantityEarnedThisWeek = earnedThisWeek,
+        isTradeable = false,
+        quality = rarity,
+        maxWeeklyQuantity = weeklyMax,
+        totalEarned = 0,
+        discovered = isDiscovered,
+        useTotalEarnedForMaxQty = false,
+      }
+      return currencyInfo
+    end
   end
 end
 
