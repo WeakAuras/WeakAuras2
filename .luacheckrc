@@ -2832,6 +2832,7 @@ globals = {
 	"IsFlying",
 	"IsGMClient",
 	"IsGuildLeader",
+	"IsGuildMember",
 	"IsGuildRankAssignmentAllowed",
 	"IsHarmfulItem",
 	"IsHarmfulSpell",
