@@ -10353,7 +10353,7 @@ Private.event_prototypes = {
         conditionType = "bool",
         enable = function(trigger)
           local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
-          return currencyInfo and currencyInfo.useTotalEarnedForMaxQty == false
+          return currencyInfo and currencyInfo.maxQuantity and currencyInfo.maxQuantity > 0
         end
       },
       {-- "Season" Cap: totalEarned / maxQuantity
