@@ -1324,9 +1324,9 @@ Private.GetCurrencyListInfo = function(index)
   if WeakAuras.IsRetail() then
     return C_CurrencyInfo.GetCurrencyListInfo(index)
   elseif WeakAuras.IsWrathClassic() then
-    local _, isHeader, isExpanded, isUnused, isWatched, _, icon, _, hasWeeklyLimit, _, _, itemID = GetCurrencyListInfo(index)
-    local name, currentAmount, _, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity = itemID and GetCurrencyInfo(itemID)
-    if name then
+    local name, isHeader, isExpanded, isUnused, isWatched, _, icon, _, hasWeeklyLimit, _, _, itemID = GetCurrencyListInfo(index)
+    if itemID then
+      local _, currentAmount, _, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity = GetCurrencyInfo(itemID)
       local currencyInfo = {
         name = name,
         description = "",
