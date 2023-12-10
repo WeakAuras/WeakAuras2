@@ -1325,40 +1325,38 @@ Private.GetCurrencyListInfo = function(index)
     return C_CurrencyInfo.GetCurrencyListInfo(index)
   elseif WeakAuras.IsWrathClassic() then
     local name, isHeader, isExpanded, isUnused, isWatched, _, icon, _, hasWeeklyLimit, _, _, itemID = GetCurrencyListInfo(index)
+    local currentAmount, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity
     if itemID then
-      local _, currentAmount, _, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity = GetCurrencyInfo(itemID)
-      local currencyInfo = {
-        name = name,
-        description = "",
-        isHeader = isHeader,
-        isHeaderExpanded = isExpanded,
-        isTypeUnused = isUnused,
-        isShowInBackpack = isWatched,
-        quantity = currentAmount,
-        trackedQuantity = 0,
-        iconFileID = icon,
-        maxQuantity = totalMax,
-        canEarnPerWeek = hasWeeklyLimit,
-        quantityEarnedThisWeek = earnedThisWeek,
-        isTradeable = false,
-        quality = rarity,
-        maxWeeklyQuantity = weeklyMax,
-        totalEarned = 0,
-        discovered = isDiscovered,
-        useTotalEarnedForMaxQty = false,
-      }
-      return currencyInfo
+      _, currentAmount, _, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity = GetCurrencyInfo(itemID)
     end
+    local currencyInfo = {
+      name = name,
+      description = "",
+      isHeader = isHeader,
+      isHeaderExpanded = isExpanded,
+      isTypeUnused = isUnused,
+      isShowInBackpack = isWatched,
+      quantity = currentAmount,
+      trackedQuantity = 0,
+      iconFileID = icon,
+      maxQuantity = totalMax,
+      canEarnPerWeek = hasWeeklyLimit,
+      quantityEarnedThisWeek = earnedThisWeek,
+      isTradeable = false,
+      quality = rarity,
+      maxWeeklyQuantity = weeklyMax,
+      totalEarned = 0,
+      discovered = isDiscovered,
+      useTotalEarnedForMaxQty = false,
+    }
+    return currencyInfo
   end
 end
 
-Private.GetCurrencyListSize = function()
-  if WeakAuras.IsRetail() then
-    return C_CurrencyInfo.GetCurrencyListSize()
-  end
-  if WeakAuras.IsWrathClassic() then
-    return GetCurrencyListSize()
-  end
+if WeakAuras.IsRetail() then
+  Private.GetCurrencyListSize = C_CurrencyInfo.GetCurrencyListSize
+elseif WeakAuras.IsWrathClassic() then
+  Private.GetCurrencyListSize = GetCurrencyListSize
 end
 
 Private.ExpandCurrencyList = function(index, expand)
@@ -1366,7 +1364,7 @@ Private.ExpandCurrencyList = function(index, expand)
     return C_CurrencyInfo.ExpandCurrencyList(index, expand)
   end
   if WeakAuras.IsWrathClassic() then
-    return ExpandCurrencyList(index, expand)
+    return ExpandCurrencyList(index, expand and 1 or 0)
   end
 end
 
