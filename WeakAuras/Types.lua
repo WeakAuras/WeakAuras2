@@ -1320,6 +1320,50 @@ for id, str in pairs(Private.combatlog_spell_school_types) do
   Private.combatlog_spell_school_types_for_ui[id] = ("%.3d - %s"):format(id, str)
 end
 
+if WeakAuras.IsRetail() then
+  Private.GetCurrencyListSize = C_CurrencyInfo.GetCurrencyListSize
+  Private.GetCurrencyIDFromLink = C_CurrencyInfo.GetCurrencyIDFromLink
+  Private.ExpandCurrencyList = C_CurrencyInfo.ExpandCurrencyList
+  Private.GetCurrencyListInfo = C_CurrencyInfo.GetCurrencyListInfo
+elseif WeakAuras.IsWrathClassic() then
+  Private.GetCurrencyListSize = GetCurrencyListSize
+  Private.GetCurrencyIDFromLink = function(currencyLink)
+    local currencyID = string.match(currencyLink, "|Hcurrency:(%d+):")
+    return currencyID
+  end
+  Private.ExpandCurrencyList = function(index, expand)
+    ExpandCurrencyList(index, expand and 1 or 0)
+  end
+  Private.GetCurrencyListInfo = function(index)
+    local name, isHeader, isExpanded, isUnused, isWatched, _, icon, _, hasWeeklyLimit, _, _, itemID = GetCurrencyListInfo(index)
+    local currentAmount, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity
+    if itemID then
+      _, currentAmount, _, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity = GetCurrencyInfo(itemID)
+    end
+    local currencyInfo = {
+      name = name,
+      description = "",
+      isHeader = isHeader,
+      isHeaderExpanded = isExpanded,
+      isTypeUnused = isUnused,
+      isShowInBackpack = isWatched,
+      quantity = currentAmount,
+      trackedQuantity = 0,
+      iconFileID = icon,
+      maxQuantity = totalMax,
+      canEarnPerWeek = hasWeeklyLimit,
+      quantityEarnedThisWeek = earnedThisWeek,
+      isTradeable = false,
+      quality = rarity,
+      maxWeeklyQuantity = weeklyMax,
+      totalEarned = 0,
+      discovered = isDiscovered,
+      useTotalEarnedForMaxQty = false,
+    }
+    return currencyInfo
+  end
+end
+
 local function InitializeCurrencies()
   if Private.discovered_currencies then
     return
@@ -1328,20 +1372,21 @@ local function InitializeCurrencies()
   Private.discovered_currencies_sorted = {}
   Private.discovered_currencies_headers = {}
   local expanded = {}
-  for index = C_CurrencyInfo.GetCurrencyListSize(), 1, -1 do
-    local currencyInfo = C_CurrencyInfo.GetCurrencyListInfo(index)
+
+  for index = Private.GetCurrencyListSize(), 1, -1 do
+    local currencyInfo = Private.GetCurrencyListInfo(index)
     if currencyInfo.isHeader and not currencyInfo.isHeaderExpanded then
-      C_CurrencyInfo.ExpandCurrencyList(index, true)
+      Private.ExpandCurrencyList(index, true)
       expanded[currencyInfo.name] = true
     end
   end
 
-  for index = 1, C_CurrencyInfo.GetCurrencyListSize() do
+  for index = 1, Private.GetCurrencyListSize() do
     local currencyLink = C_CurrencyInfo.GetCurrencyListLink(index)
-    local currencyInfo = C_CurrencyInfo.GetCurrencyListInfo(index)
+    local currencyInfo = Private.GetCurrencyListInfo(index)
 
     if currencyLink then
-      local currencyID = C_CurrencyInfo.GetCurrencyIDFromLink(currencyLink)
+      local currencyID = Private.GetCurrencyIDFromLink(currencyLink)
       local icon = currencyInfo.iconFileID or "Interface\\Icons\\INV_Misc_QuestionMark" --iconFileID not available on first login
       Private.discovered_currencies[currencyID] = "|T" .. icon .. ":0|t" .. currencyInfo.name
       Private.discovered_currencies_sorted[currencyID] = index
@@ -1352,10 +1397,10 @@ local function InitializeCurrencies()
     end
   end
 
-  for index = C_CurrencyInfo.GetCurrencyListSize(), 1, -1 do
-    local currencyInfo = C_CurrencyInfo.GetCurrencyListInfo(index)
+  for index = Private.GetCurrencyListSize(), 1, -1 do
+    local currencyInfo = Private.GetCurrencyListInfo(index)
     if currencyInfo.isHeader and expanded[currencyInfo.name] then
-      C_CurrencyInfo.ExpandCurrencyList(index, false)
+      Private.ExpandCurrencyList(index, false)
     end
   end
 

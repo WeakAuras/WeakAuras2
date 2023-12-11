@@ -10234,9 +10234,9 @@ Private.event_prototypes = {
     name = WeakAuras.newFeatureString..L["Currency"],
     init = function(trigger)
       local ret = [=[
-        local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(%d)
+        local currencyInfo = Private.ExecEnv.GetCurrencyInfo(%d)
         if not currencyInfo then
-          currencyInfo = C_CurrencyInfo.GetCurrencyInfo(1) --Currency Token Test Token 4
+          currencyInfo = Private.ExecEnv.GetCurrencyInfo(1) --Currency Token Test Token 4
           currencyInfo.iconFileID = "Interface\\Icons\\INV_Misc_QuestionMark" --We don't want the user to think their input was valid
         end
       ]=]
@@ -10417,6 +10417,7 @@ if WeakAuras.IsClassicEraOrWrath() then
   end
   if not WeakAuras.IsWrathClassic() then
     Private.event_prototypes["Death Knight Rune"] = nil
+    Private.event_prototypes["Currency"] = nil
   end
   Private.event_prototypes["Evoker Essence"] = nil
   Private.event_prototypes["Alternate Power"] = nil
