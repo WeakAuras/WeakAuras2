@@ -3676,9 +3676,9 @@ end
 -- Item Count
 local itemCountWatchFrame
 function WeakAuras.RegisterItemCountWatch()
-  if not itemCountWatchFrame)then
+  if not itemCountWatchFrame then
     itemCountWatchFrame = CreateFrame("Frame")
-    itemCountWatchFrame:RegisterEvent("BAG_UPDATE_COOLDOWN")
+    itemCountWatchFrame:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
     itemCountWatchFrame:RegisterEvent("BAG_UPDATE_DELAYED")
     local batchUpdateCount = function()
       itemCountWatchFrame:SetScript("OnUpdate", nil)
@@ -3686,9 +3686,9 @@ function WeakAuras.RegisterItemCountWatch()
     end
     itemCountWatchFrame:SetScript("OnEvent", function(self, event)
       Private.StartProfileSystem("generictrigger")
-      if event == "BAG_UPDATE_COOLDOWN" then
+      if event == "ACTIONBAR_UPDATE_COOLDOWN" then
         -- workaround to blizzard bug: refreshing healthstones from soulwell dont trigger BAG_UPDATE_DELAYED
-        -- so, we fake it by listening to B_U_C and checking on next frame
+        -- so, we fake it by listening to A_U_C and checking on next frame
         itemCountWatchFrame:SetScript("OnUpdate", batchUpdateCount)
       else
         -- if we *do* get a B_U_D, then cancel our fake one
