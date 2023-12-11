@@ -4423,6 +4423,20 @@ Private.ExecEnv.GetItemSubClassInfo = function(i)
   return GetItemSubClassInfo(classId, subClassId)
 end
 
+Private.ExecEnv.IsEquippedItemType = function(itemType, itemSlot)
+  if itemSlot then
+    local itemId = GetInventoryItemID("player", itemSlot)
+    if itemId then
+      local triggerSubClassId = itemType % 256
+      local triggerClassId = (itemType - triggerSubClassId) / 256
+      local _, _, _, _, _, classId, subclassId = GetItemInfoInstant(itemId)
+      return classId == triggerClassId and subclassId == triggerSubClassId
+    end
+  else
+    return IsEquippedItemType(Private.ExecEnv.GetItemSubClassInfo(itemType))
+  end
+end
+
 WeakAuras.GetCritChance = function()
   -- Based on what the wow paper doll does
   local spellCrit = 0
