@@ -10270,7 +10270,6 @@ Private.event_prototypes = {
         type = "number",
         display = L["Quantity"],
         store = true,
-        test = "true",
         conditionType = "number",
       },
       {
