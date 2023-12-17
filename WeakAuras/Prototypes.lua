@@ -4408,7 +4408,6 @@ Private.event_prototypes = {
         enable = function(trigger)
           return trigger.subeventSuffix and (trigger.subeventSuffix == "_ABSORBED" or trigger.subeventSuffix == "_INTERRUPT" or trigger.subeventSuffix == "_DISPEL" or trigger.subeventSuffix == "_DISPEL_FAILED" or trigger.subeventSuffix == "_STOLEN" or trigger.subeventSuffix == "_AURA_BROKEN_SPELL")
         end,
-        test = WeakAuras.IsClassicEra() and "GetSpellInfo(%q) == extraSpellName" or nil,
         type = "spell",
         showExactOption = false,
         store = true,
@@ -4613,7 +4612,7 @@ Private.event_prototypes = {
       {
         hidden = true,
         name = "icon",
-        init = "(WeakAuras.IsClassicEra() and spellName and select(3, GetSpellInfo(spellName))) or (spellId and select(3, GetSpellInfo(spellId))) or 'Interface\\\\Icons\\\\INV_Misc_QuestionMark'",
+        init = "(spellId and select(3, GetSpellInfo(spellId))) or 'Interface\\\\Icons\\\\INV_Misc_QuestionMark'",
         store = true,
         test = "true"
       },
