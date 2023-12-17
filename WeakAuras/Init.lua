@@ -443,7 +443,6 @@ do
     "LibUIDropDownMenu-4.0"
   }
   if WeakAuras.IsClassicEra() then
-    tinsert(LibStubLibs, "LibClassicSpellActionCount-1.0")
     tinsert(LibStubLibs, "LibClassicCasterino")
     tinsert(LibStubLibs, "LibClassicDurations")
   end

@@ -25,7 +25,6 @@ embeds.xml
 # Client flavor specific libs
 Libs\LibClassicDurations\LibClassicDurations.xml
 Libs\LibClassicCasterino\LibClassicCasterino.lua
-Libs\LibClassicSpellActionCount-1.0\LibClassicSpellActionCount-1.0.lua
 
 Init.lua
 locales.xml

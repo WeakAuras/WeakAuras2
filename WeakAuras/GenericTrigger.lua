@@ -70,10 +70,6 @@ local aceEvents = WeakAurasAceEvents
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 local GenericTrigger = {};
-local LCSA
-if WeakAuras.IsClassicEra() then
-  LCSA = LibStub("LibClassicSpellActionCount-1.0")
-end
 
 local event_prototypes = Private.event_prototypes;
 
@@ -2727,12 +2723,7 @@ do
       end
     end
 
-    local count
-    if WeakAuras.IsClassicEra() then
-      count = LCSA:GetSpellReagentCount(id)
-    else
-      count = GetSpellCount(id)
-    end
+    local count = GetSpellCount(id)
 
     return charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
            startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
