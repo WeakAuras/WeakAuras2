@@ -4316,9 +4316,9 @@ Private.event_prototypes = {
         preamble = "local spellChecker = Private.ExecEnv.CreateSpellChecker()",
         multiEntry = {
           operator = "preamble",
-          preambleAdd = WeakAuras.IsClassicEra() and "spellChecker:AddName(%q)" or "spellChecker:AddExact(%q)"
+          preambleAdd = "spellChecker:AddExact(%q)"
         },
-        test = WeakAuras.IsClassicEra() and "spellChecker:CheckName(spellName)" or "spellChecker:Check(spellId)",
+        test = "spellChecker:Check(spellId)",
         testGroup = "spell",
         conditionType = "number",
         type = "spell",
@@ -4339,7 +4339,7 @@ Private.event_prototypes = {
           operator = "preamble",
           preambleAdd = "spellChecker:AddName(%q)"
         },
-        test = WeakAuras.IsClassicEra() and "spellChecker:CheckName(spellName)" or "spellChecker:Check(spellId)",
+        test = "spellChecker:Check(spellId)",
         testGroup = "spell",
         conditionType = "string"
       },
