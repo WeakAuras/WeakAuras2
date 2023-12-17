@@ -437,9 +437,6 @@ do
     "LibSerialize",
     "LibUIDropDownMenu-4.0"
   }
-  if WeakAuras.IsClassicEra() then
-    tinsert(LibStubLibs, "LibClassicCasterino")
-  end
   if WeakAuras.IsRetail() then
     tinsert(LibStubLibs, "LibSpecialization")
     AddonCompartmentFrame:RegisterAddon({

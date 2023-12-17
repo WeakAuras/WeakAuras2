@@ -86,83 +86,58 @@ function WeakAuras.UnitDetailedThreatSituation(unit1, unit2)
   end
 end
 
-local LibClassicCasterino
-if WeakAuras.IsClassicEra() then
-  LibClassicCasterino = LibStub("LibClassicCasterino")
-end
+WeakAuras.UnitCastingInfo = UnitCastingInfo
 
-if WeakAuras.IsWrathOrRetail() then
-  WeakAuras.UnitCastingInfo = UnitCastingInfo
-else
-  WeakAuras.UnitCastingInfo = function(unit)
-    if UnitIsUnit(unit, "player") then
-      return UnitCastingInfo("player")
-    else
-      return LibClassicCasterino:UnitCastingInfo(unit)
-    end
-  end
-end
-
-if WeakAuras.IsWrathOrRetail() then
-  if WeakAuras.IsRetail() then
-    local cacheEmpowered = {}
-    WeakAuras.UnitChannelInfo = function(unit)
-      local name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = UnitChannelInfo(unit)
-      if name == nil and cacheEmpowered[unit] then
-        local holdAtMaxTime
-        holdAtMaxTime, name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = unpack(cacheEmpowered[unit])
-        if endTime == nil
-        or holdAtMaxTime == nil
-        or endTime + holdAtMaxTime < GetTime()
-        then -- invalid or too old data
-          cacheEmpowered[unit] = nil
-          return nil
-        end
-      end
-      return name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages
-    end
-    local cacheEmpoweredFrame = CreateFrame("Frame")
-    cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
-    cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
-    cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
-    cacheEmpoweredFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
-    cacheEmpoweredFrame:RegisterEvent("PLAYER_SOFT_FRIEND_CHANGED")
-    cacheEmpoweredFrame:RegisterEvent("PLAYER_SOFT_ENEMY_CHANGED")
-    cacheEmpoweredFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
-    cacheEmpoweredFrame:SetScript("OnEvent", function(_, event, unit, ...)
-      if Private.player_target_events[event] then
-        unit = Private.player_target_events[event]
-      end
-      if event == "UNIT_SPELLCAST_EMPOWER_START"
-      or event == "UNIT_SPELLCAST_EMPOWER_UPDATE"
-      or (
-        (Private.player_target_events[event])
-        and (select(10, UnitChannelInfo(unit)) or 0) > 0  -- 10th arg of UnitChannelInfo is numStages for empowered spells
-      )
-      then
-        cacheEmpowered[unit] = {GetUnitEmpowerHoldAtMaxTime(unit), UnitChannelInfo(unit)}
-      else
-        cacheEmpowered[unit] = nil
-      end
-      if unit == "player" and event == "UNIT_SPELLCAST_EMPOWER_START" or event == "UNIT_SPELLCAST_EMPOWER_STOP" then
-        local castLatencyFrame = Private.frames["Cast Latency Handler"]
-        if castLatencyFrame then
-          castLatencyFrame:GetScript("OnEvent")(nil, event, unit, ...)
-        end
-      end
-      WeakAuras.ScanUnitEvents(event.."_FAKE", unit, ...)
-    end)
-  else
-    WeakAuras.UnitChannelInfo = UnitChannelInfo
-  end
-else
+if WeakAuras.IsRetail() then
+  local cacheEmpowered = {}
   WeakAuras.UnitChannelInfo = function(unit)
-    if UnitIsUnit(unit, "player") then
-      return UnitChannelInfo("player")
-    else
-      return LibClassicCasterino:UnitChannelInfo(unit)
+    local name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = UnitChannelInfo(unit)
+    if name == nil and cacheEmpowered[unit] then
+      local holdAtMaxTime
+      holdAtMaxTime, name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages = unpack(cacheEmpowered[unit])
+      if endTime == nil
+      or holdAtMaxTime == nil
+      or endTime + holdAtMaxTime < GetTime()
+      then -- invalid or too old data
+        cacheEmpowered[unit] = nil
+        return nil
+      end
     end
+    return name, text, texture, startTime, endTime, isTradeSkill, notInterruptible, spellID, _, numStages
   end
+  local cacheEmpoweredFrame = CreateFrame("Frame")
+  cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_START")
+  cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_UPDATE")
+  cacheEmpoweredFrame:RegisterEvent("UNIT_SPELLCAST_EMPOWER_STOP")
+  cacheEmpoweredFrame:RegisterEvent("PLAYER_TARGET_CHANGED")
+  cacheEmpoweredFrame:RegisterEvent("PLAYER_SOFT_FRIEND_CHANGED")
+  cacheEmpoweredFrame:RegisterEvent("PLAYER_SOFT_ENEMY_CHANGED")
+  cacheEmpoweredFrame:RegisterEvent("PLAYER_FOCUS_CHANGED")
+  cacheEmpoweredFrame:SetScript("OnEvent", function(_, event, unit, ...)
+    if Private.player_target_events[event] then
+      unit = Private.player_target_events[event]
+    end
+    if event == "UNIT_SPELLCAST_EMPOWER_START"
+    or event == "UNIT_SPELLCAST_EMPOWER_UPDATE"
+    or (
+      (Private.player_target_events[event])
+      and (select(10, UnitChannelInfo(unit)) or 0) > 0  -- 10th arg of UnitChannelInfo is numStages for empowered spells
+    )
+    then
+      cacheEmpowered[unit] = {GetUnitEmpowerHoldAtMaxTime(unit), UnitChannelInfo(unit)}
+    else
+      cacheEmpowered[unit] = nil
+    end
+    if unit == "player" and event == "UNIT_SPELLCAST_EMPOWER_START" or event == "UNIT_SPELLCAST_EMPOWER_STOP" then
+      local castLatencyFrame = Private.frames["Cast Latency Handler"]
+      if castLatencyFrame then
+        castLatencyFrame:GetScript("OnEvent")(nil, event, unit, ...)
+      end
+    end
+    WeakAuras.ScanUnitEvents(event.."_FAKE", unit, ...)
+  end)
+else
+  WeakAuras.UnitChannelInfo = UnitChannelInfo
 end
 
 local constants = {
@@ -8363,15 +8338,6 @@ Private.event_prototypes = {
         AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_START_FAKE")
         AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_UPDATE_FAKE")
         AddUnitEventForEvents(result, unit, "UNIT_SPELLCAST_EMPOWER_STOP_FAKE")
-      end
-      if WeakAuras.IsClassicEra() and unit ~= "player" then
-        LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_START", WeakAuras.ScanUnitEvents)
-        LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_DELAYED", WeakAuras.ScanUnitEvents) -- only for player
-        LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_STOP", WeakAuras.ScanUnitEvents)
-        LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_CHANNEL_START", WeakAuras.ScanUnitEvents)
-        LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_CHANNEL_UPDATE", WeakAuras.ScanUnitEvents) -- only for player
-        LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_CHANNEL_STOP", WeakAuras.ScanUnitEvents)
-        LibClassicCasterino.RegisterCallback("WeakAuras", "UNIT_SPELLCAST_INTERRUPTED", WeakAuras.ScanUnitEvents)
       end
       AddUnitEventForEvents(result, unit, "UNIT_TARGET")
       return result
