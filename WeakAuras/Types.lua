@@ -85,18 +85,11 @@ Private.group_hybrid_sort_types = {
   descending = L["Descending"]
 }
 
-if WeakAuras.IsClassicEra() then
-  Private.time_format_types = {
-    [0] = L["WeakAuras Built-In (63:42 | 3:07 | 10 | 2.4)"],
-    [1] = L["Blizzard (2h | 3m | 10s | 2.4)"],
-  }
-else
-  Private.time_format_types = {
-    [0] = L["WeakAuras Built-In (63:42 | 3:07 | 10 | 2.4)"],
-    [1] = L["Old Blizzard (2h | 3m | 10s | 2.4)"],
-    [2] = L["Modern Blizzard (1h 3m | 3m 7s | 10s | 2.4)"],
-  }
-end
+Private.time_format_types = {
+  [0] = L["WeakAuras Built-In (63:42 | 3:07 | 10 | 2.4)"],
+  [1] = L["Old Blizzard (2h | 3m | 10s | 2.4)"],
+  [2] = L["Modern Blizzard (1h 3m | 3m 7s | 10s | 2.4)"],
+}
 
 Private.time_precision_types = {
   [1] = "12.3",
@@ -135,30 +128,28 @@ Private.unit_realm_name_types = {
 }
 
 local timeFormatter = {}
-if WeakAuras.IsRetail() then
-  Mixin(timeFormatter, SecondsFormatterMixin)
-  timeFormatter:Init(0, SecondsFormatter.Abbreviation.OneLetter)
+Mixin(timeFormatter, SecondsFormatterMixin)
+timeFormatter:Init(0, SecondsFormatter.Abbreviation.OneLetter)
 
-  -- The default time formatter adds a space between the value and the unit
-  -- While there is a API to strip it, that API does not work on all locales, e.g. german
-  -- Thus, copy the interval descriptions, strip the whitespace from them
-  -- and hack the timeFormatter to use our interval descriptions
-  local timeFormatIntervalDescriptionFixed = {}
-  timeFormatIntervalDescriptionFixed = CopyTable(SecondsFormatter.IntervalDescription)
-  for i, interval in ipairs(timeFormatIntervalDescriptionFixed) do
-    interval.formatString = CopyTable(SecondsFormatter.IntervalDescription[i].formatString)
-    for j, formatString in ipairs(interval.formatString) do
-      interval.formatString[j] = formatString:gsub(" ", "")
-    end
+-- The default time formatter adds a space between the value and the unit
+-- While there is a API to strip it, that API does not work on all locales, e.g. german
+-- Thus, copy the interval descriptions, strip the whitespace from them
+-- and hack the timeFormatter to use our interval descriptions
+local timeFormatIntervalDescriptionFixed = {}
+timeFormatIntervalDescriptionFixed = CopyTable(SecondsFormatter.IntervalDescription)
+for i, interval in ipairs(timeFormatIntervalDescriptionFixed) do
+  interval.formatString = CopyTable(SecondsFormatter.IntervalDescription[i].formatString)
+  for j, formatString in ipairs(interval.formatString) do
+    interval.formatString[j] = formatString:gsub(" ", "")
   end
+end
 
-  timeFormatter.GetIntervalDescription = function(self, interval)
-    return timeFormatIntervalDescriptionFixed[interval]
-  end
+timeFormatter.GetIntervalDescription = function(self, interval)
+  return timeFormatIntervalDescriptionFixed[interval]
+end
 
-  timeFormatter.GetMaxInterval = function(self)
-    return #timeFormatIntervalDescriptionFixed
-  end
+timeFormatter.GetMaxInterval = function(self)
+  return #timeFormatIntervalDescriptionFixed
 end
 
 local simpleFormatters = {
