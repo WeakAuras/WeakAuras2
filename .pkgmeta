@@ -19,7 +19,6 @@ externals:
   WeakAuras/Libs/LibCustomGlow-1.0: https://github.com/Stanzilla/LibCustomGlow
   WeakAuras/Libs/LibDBIcon-1.0: https://repos.curseforge.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
   WeakAuras/Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
-  WeakAuras/Libs/LibClassicDurations: https://github.com/rgd87/LibClassicDurations
   WeakAuras/Libs/LibClassicCasterino: https://github.com/rgd87/LibClassicCasterino
   WeakAuras/Libs/Archivist:
     url: https://github.com/emptyrivers/Archivist
