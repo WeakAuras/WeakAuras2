@@ -3,12 +3,12 @@ if not WeakAuras.IsLibsOK() then return end
 local AddonName, Private = ...
 local L = WeakAuras.L;
 
+local function noop()
+end
+
 do
   local function subSupports(regionType)
     return regionType ~= "group" and regionType ~= "dynamicgroup"
-  end
-
-  local function noop()
   end
 
   local function subSetFrameLevel(self, level)
@@ -32,9 +32,6 @@ end
 do
   local function subSupports(regionType)
     return regionType == "aurabar"
-  end
-
-  local function noop()
   end
 
   local function subSetFrameLevel(self, level)
