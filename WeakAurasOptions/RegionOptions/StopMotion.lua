@@ -682,7 +682,7 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
     local texture = data.foregroundTexture or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion";
 
     if (region.foreground.rows and region.foreground.columns) then
-      region.texture:SetTexture(texture);
+      OptionsPrivate.Private.SetTextureOrAtlas(region.texture, texture)
       local frameScaleW, frameScaleH = 1, 1
       if region.foreground.fileWidth and region.foreground.frameWidth
         and region.foreground.fileWidth > 0 and region.foreground.frameWidth > 0
