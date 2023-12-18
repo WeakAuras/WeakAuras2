@@ -234,7 +234,7 @@ local function ConstructTexturePicker(frame)
         pickedwidget = widget;
       end
     end
-    local width, height
+    local width, height, flipbookInfo
     if(pickedwidget) then
       pickedwidget:Pick();
       if not pickedwidget.texture.IsStopMotion then
@@ -242,6 +242,12 @@ local function ConstructTexturePicker(frame)
         if atlasInfo then
           width = atlasInfo.width
           height = atlasInfo.height
+        end
+      else
+        flipbookInfo = OptionsPrivate.GetFlipbookTileSize(pickedwidget.texture.path)
+        if flipbookInfo then
+          width = flipbookInfo.tileWidth
+          height = flipbookInfo.tileHeight
         end
       end
     end
