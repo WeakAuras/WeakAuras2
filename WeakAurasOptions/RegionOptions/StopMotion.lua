@@ -130,7 +130,7 @@ local function createOptions(id, data)
                   color = "foregroundColor",
                   mirror = "mirror",
                   blendMode = "blendMode"
-                }, texture_types, setTextureFunc);
+                }, texture_types, setTextureFunc, true);
             end,
             imageWidth = 24,
             imageHeight = 24,
@@ -383,7 +383,7 @@ local function createOptions(id, data)
                   color = "backgroundColor",
                   mirror = "mirror",
                   blendMode = "blendMode"
-                }, texture_types, setTextureFunc);
+                }, texture_types, setTextureFunc, true);
             end,
             disabled = function() return data.sameTexture or data.hideBackground; end,
             hidden = function() return data.hideBackground end,
