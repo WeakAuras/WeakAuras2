@@ -160,7 +160,7 @@ local function ConstructTexturePicker(frame)
       filter = filter:lower()
     end
     for texturePath, textureName in pairs(group.textures[uniquevalue]) do
-      if filter == nil or filter == "" or textureName:lower():match(filter) then
+      if filter == nil or filter == "" or textureName:lower():find(filter, 1, true) then
         tinsert(group.selectedGroupSorted, {texturePath, textureName})
       end
     end
