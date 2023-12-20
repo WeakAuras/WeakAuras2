@@ -4383,6 +4383,7 @@ Private.event_prototypes = {
         enable = function(trigger)
           return trigger.subeventSuffix and (trigger.subeventSuffix == "_ABSORBED" or trigger.subeventSuffix == "_INTERRUPT" or trigger.subeventSuffix == "_DISPEL" or trigger.subeventSuffix == "_DISPEL_FAILED" or trigger.subeventSuffix == "_STOLEN" or trigger.subeventSuffix == "_AURA_BROKEN_SPELL")
         end,
+        test = WeakAuras.IsClassicEra() and "GetSpellInfo(%q) == extraSpellName" or nil,
         type = "spell",
         showExactOption = false,
         store = true,
