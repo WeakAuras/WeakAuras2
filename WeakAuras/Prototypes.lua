@@ -8346,11 +8346,6 @@ Private.event_prototypes = {
     internal_events = function(trigger)
       local unit = trigger.unit
       local result = {}
-      if WeakAuras.IsClassicEra() and unit ~= "player" then
-        tinsert(result, "UNIT_SPELLCAST_START")
-        tinsert(result, "UNIT_SPELLCAST_DELAYED")
-        tinsert(result, "UNIT_SPELLCAST_CHANNEL_START")
-      end
       if unit == "nameplate" and trigger.use_onUpdateUnitTarget then
         tinsert(result, "WA_UNIT_TARGET_NAME_PLATE")
       end
