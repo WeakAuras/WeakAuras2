@@ -681,6 +681,37 @@ templates.class.WARLOCK = {
   }
 }
 
+if SoD then
+  local warlock = templates.class.WARLOCK[1]
+  local buffs = warlock[1].args
+  local debuffs = warlock[2].args
+  local abilities = warlock[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=403666/lake-of-fire
+  table.insert(debuffs, { spell = 403666, type = "debuff", unit = "target", known = true })
+  -- 2/12 https://www.wowhead.com/classic/spell=403668/master-channeler
+  table.insert(debuffs, { spell = 689, type = "debuff", unit = "target", known = true, titleSuffix = L["Master Channeler Rune"] })
+  -- 3/12 https://www.wowhead.com/classic/spell=403511/soul-siphon
+  -- 4/12 https://www.wowhead.com/classic/spell=412727/demonic-tactics
+  -- 5/12 https://www.wowhead.com/classic/spell=412689/everlasting-affliction
+  -- 6/12 https://www.wowhead.com/classic/spell=412758/incinerate
+  table.insert(abilities, { spell = 412758, type = "ability", requiresTarget = true, buff = true, known = true })
+  -- 7/12 https://www.wowhead.com/classic/spell=425463/demonic-grace
+  table.insert(buffs, { spell = 425463, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 425463, type = "ability", buff = true, known = true })
+  -- 8/12 https://www.wowhead.com/classic/spell=425464/demonic-pact
+  table.insert(buffs, { spell = 425464, type = "buff", unit = "player", known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=403789/metamorphosis TODO: add meta's skills
+  table.insert(buffs, { spell = 403789, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 403789, type = "ability", buff = true, known = true })
+  -- 10/12 https://www.wowhead.com/classic/spell=403628/shadow-bolt-volley
+  -- 11/12 https://www.wowhead.com/classic/spell=403629/chaos-bolt
+  table.insert(abilities, { spell = 403629, type = "ability", requiresTarget = true, known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=403501/haunt
+  table.insert(debuffs, { spell = 403501, type = "debuff", unit = "target", known = true })
+  table.insert(abilities, { spell = 403501, type = "ability", requiresTarget = true, debuff = true, known = true })
+end
+
 templates.class.DRUID = {
   [1] = {
     [1] = {
