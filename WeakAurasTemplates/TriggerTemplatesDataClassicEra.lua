@@ -831,6 +831,40 @@ templates.class.DRUID = {
   }
 }
 
+if SoD then
+  local druid = templates.class.DRUID[1]
+  local buffs = druid[1].args
+  local debuffs = druid[2].args
+  local abilities = druid[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=414677/living-seed
+  table.insert(buffs, { spell = 414677, type = "buff", unit = "player", known = true })
+  -- 2/12 https://www.wowhead.com/classic/spell=407977/wild-strikes
+  -- 3/12 https://www.wowhead.com/classic/spell=414799/fury-of-stormrage
+  table.insert(buffs, { spell = 414799, type = "buff", unit = "player", known = true })
+  -- 4/12 https://www.wowhead.com/classic/spell=411115/survival-of-the-fittest
+  -- 5/12 https://www.wowhead.com/classic/spell=417157/starsurge
+  table.insert(abilities, { spell = 417157, type = "ability", requiresTarget = true, known = true })
+  -- 6/12 https://www.wowhead.com/classic/spell=408124/lifebloom
+  table.insert(buffs, { spell = 408124, type = "buff", unit = "player", known = true })
+  -- 7/12 https://www.wowhead.com/classic/spell=410176/skull-bash
+  table.insert(abilities, { spell = 410176, type = "ability", requiresTarget = true, known = true })
+  -- 8/12 https://www.wowhead.com/classic/spell=407988/savage-roar
+  table.insert(buffs, { spell = 407988, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 407988, type = "ability", requiresTarget = true, form = 3, known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=414684/sunfire
+  table.insert(debuffs, { spell = 414684, type = "debuff", unit = "target", known = true })
+  table.insert(abilities, { spell = 414684, type = "ability", requiresTarget = true, debuff = true, known = true })
+  -- 10/12 https://www.wowhead.com/classic/spell=414644/lacerate
+  table.insert(debuffs, { spell = 414644, type = "debuff", unit = "target", known = true })
+  table.insert(abilities, { spell = 414644, type = "ability", requiresTarget = true, debuff = true, form = 1, known = true })
+  -- 11/12 https://www.wowhead.com/classic/spell=408120/wild-growth
+  table.insert(buffs, { spell = 408120, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 408120, type = "ability", buff = true, known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=409828/mangle
+  table.insert(abilities, { spell = 409828, type = "ability", requiresTarget = true, debuff = true, known = true })
+  table.insert(debuffs, { spell = 409828, type = "debuff", unit = "target", known = true })
+end
 
 -- General Section
 tinsert(templates.general.args, {
