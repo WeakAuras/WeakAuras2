@@ -134,6 +134,30 @@ templates.class.WARRIOR = {
   }
 }
 
+if SoD then
+  local warrior = templates.class.WARRIOR[1]
+  local buffs = warrior[1].args
+  local debuffs = warrior[2].args
+  local abilities = warrior[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=402877/flagellation
+  table.insert(buffs, { spell = 402877, type = "buff", unit = "player", known = true })
+  -- 2/12 https://www.wowhead.com/classic/spell=412507/blood-frenzy
+  -- 3/12 https://www.wowhead.com/classic/spell=402911/raging-blow
+  table.insert(abilities, { spell = 402911, type = "ability", usable = true, known = true })
+  -- 4/12 https://www.wowhead.com/classic/spell=425421/warbringer
+  -- 5/12 https://www.wowhead.com/classic/spell=403219/furious-thunder
+  -- 6/12 https://www.wowhead.com/classic/spell=425418/consumed-by-rage same buff name as Enrage's talent
+  -- 7/12 https://www.wowhead.com/classic/spell=425412/frenzied-assault
+  -- 8/12 https://www.wowhead.com/classic/spell=402927/victory-rush
+  table.insert(abilities, { spell = 425336, type = "ability", usable = true, known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=403218/endless-rage
+  -- 10/12 https://www.wowhead.com/classic/spell=403196/devastate
+  -- 11/12 https://www.wowhead.com/classic/spell=413404/single-minded-fury
+  -- 12/12 https://www.wowhead.com/classic/spell=429765/quick-strike
+  table.insert(abilities, { spell = 429765, type = "ability", requiresTarget = true, known = true })
+end
+
 templates.class.PALADIN = {
   [1] = {
     [1] = {
