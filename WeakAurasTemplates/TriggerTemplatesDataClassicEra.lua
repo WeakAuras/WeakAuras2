@@ -518,6 +518,38 @@ templates.class.SHAMAN = {
   }
 }
 
+if SoD then
+  local shaman = templates.class.SHAMAN[1]
+  local buffs = shaman[1].args
+  local debuffs = shaman[2].args
+  local abilities = shaman[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=408496/dual-wield-specialization
+  -- 2/12 https://www.wowhead.com/classic/spell=408524/shield-mastery
+  -- 3/12 https://www.wowhead.com/classic/spell=408438/overload
+  -- 4/12 https://www.wowhead.com/classic/spell=415236/healing-rain
+  table.insert(abilities, { spell = 415236, type = "ability", duration = 10, known = true })
+  -- 5/12 https://www.wowhead.com/classic/spell=409324/ancestral-guidance
+  table.insert(buffs, { spell = 409324, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 409324, type = "ability", buff = true, known = true })
+  -- 6/12 https://www.wowhead.com/classic/spell=408514/earth-shield
+  table.insert(buffs, { spell = 408514, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 408514, type = "ability", buff = true, known = true })
+  -- 7/12 https://www.wowhead.com/classic/spell=408531/way-of-earth
+  -- 8/12 https://www.wowhead.com/classic/spell=425336/shamanistic-rage
+  table.insert(buffs, { spell = 425336, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 425336, type = "ability", buff = true, known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=408510/water-shield
+  table.insert(buffs, { spell = 408510, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 408510, type = "ability", buff = true, known = true })
+  -- 10/12 https://www.wowhead.com/classic/spell=408490/lava-burst
+  table.insert(abilities, { spell = 414644, type = "ability", requiresTarget = true, known = true })
+  -- 11/12 https://www.wowhead.com/classic/spell=408507/lava-lash
+  table.insert(abilities, { spell = 408507, type = "ability", requiresTarget = true, known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=425339/molten-blast
+  table.insert(abilities, { spell = 425339, type = "ability", known = true })
+end
+
 templates.class.MAGE = {
   [1] = {
     [1] = {
