@@ -4,6 +4,9 @@ if not WeakAuras.IsClassicEra() then return end
 local L = WeakAuras.L
 local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
 
+
+local SoD = C_Seasons and C_Seasons.GetActiveSeason and C_Seasons.GetActiveSeason() == 2
+
 -- The templates tables are created on demand
 local templates =
   {
@@ -560,6 +563,41 @@ templates.class.MAGE = {
   }
 }
 
+if SoD then
+  local mage = templates.class.MAGE[1]
+  local buffs = mage[1].args
+  local debuffs = mage[2].args
+  local abilities = mage[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=412286/burnout
+  -- 2/12 https://www.wowhead.com/classic/spell=400647/fingers-of-frost
+  table.insert(buffs, { spell = 400647, type = "buff", unit = "player", known = true })
+  -- 3/12 https://www.wowhead.com/classic/spell=401417/regeneration
+  table.insert(buffs, { spell = 400735, type = "buff", unit = "player" }) -- temporal beacon
+  table.insert(abilities, { spell = 401417, type = "ability", known = true })
+  -- 4/12 https://www.wowhead.com/classic/spell=412324/enlightenment
+  table.insert(buffs, { spell = 412326, type = "buff", exactSpellId = true, unit = "player", titleSuffix = L["dps buff"] })
+  table.insert(buffs, { spell = 412325, type = "buff", exactSpellId = true, unit = "player", titleSuffix = L["regen buff"] })
+  -- 5/12 https://www.wowhead.com/classic/spell=425121/icy-veins
+  table.insert(buffs, { spell = 425121, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 425121, type = "ability", buff = true, known = true })
+  -- 6/12 https://www.wowhead.com/classic/spell=425124/arcane-surge
+  table.insert(abilities, { spell = 425124, type = "ability", buff = true, known = true })
+  -- 7/12 https://www.wowhead.com/classic/spell=412510/mass-regeneration
+  table.insert(abilities, { spell = 412510, type = "ability", })
+  -- 8/12 https://www.wowhead.com/classic/spell=401556/living-flame
+  table.insert(abilities, { spell = 401556, type = "ability", duration = 20, known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=401462/rewind-time
+  table.insert(abilities, { spell = 401462, type = "ability", known = true })
+  -- 10/12 https://www.wowhead.com/classic/spell=400613/living-bomb
+  table.insert(abilities, { spell = 401462, type = "ability", requiresTarget = true, debuff = true, known = true })
+  -- 11/12 https://www.wowhead.com/classic/spell=400574/arcane-blast
+  table.insert(debuffs, { spell = 400574, type = "debuff", unit = "player", known = true })
+  table.insert(abilities, { spell = 400574, type = "ability", requiresTarget = true, debuff = true, unit = "player", known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=400640/ice-lance
+  table.insert(abilities, { spell = 400640, type = "ability", requiresTarget = true, known = true })
+end
+
 templates.class.WARLOCK = {
   [1] = {
     [1] = {
@@ -963,6 +1001,11 @@ local function handleItem(item)
       single = item.pvptalent,
       multi = {};
     }
+  end
+  if (item.known) then
+    item.load = item.load or {};
+    item.load.use_spellknown = true;
+    item.load.spellknown = item.spell;
   end
   if (item.covenant) then
     item.load = item.load or {}
