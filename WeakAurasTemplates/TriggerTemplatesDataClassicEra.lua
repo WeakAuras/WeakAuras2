@@ -278,6 +278,36 @@ templates.class.HUNTER = {
   }
 }
 
+if SoD then
+  local hunter = templates.class.HUNTER[1]
+  local buffs = hunter[1].args
+  local debuffs = hunter[2].args
+  local abilities = hunter[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=409580/heart-of-the-lion
+  table.insert(buffs, { spell = 409580, type = "buff", unit = "player", known = true })
+  -- 2/12 https://www.wowhead.com/classic/spell=409428/master-marksman
+  -- 3/12 https://www.wowhead.com/classic/spell=415370/lone-wolf
+  -- 4/12 https://www.wowhead.com/classic/spell=425713/cobra-strikes
+  table.insert(buffs, { spell = 425713, type = "buff", unit = "target", known = true })
+  -- 5/12 https://www.wowhead.com/classic/spell=409379/kill-command
+  table.insert(buffs, { spell = 409379, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 409379, type = "ability", buff = true, known = true })
+  -- 6/12 https://www.wowhead.com/classic/spell=415399/sniper-training
+  table.insert(buffs, { spell = 415399, type = "buff", unit = "player", known = true })
+  -- 7/12 https://www.wowhead.com/classic/spell=425738/serpent-spread
+  -- 8/12 https://www.wowhead.com/classic/spell=415320/flanking-strike
+  table.insert(buffs, { spell = 415320, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 415320, type = "ability", buff = true, known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=409368/beast-mastery
+  -- 10/12 https://www.wowhead.com/classic/spell=409433/chimera-shot
+  table.insert(abilities, { spell = 409433, type = "ability", requiresTarget = true, known = true })
+  -- 11/12 https://www.wowhead.com/classic/spell=409552/explosive-shot
+  table.insert(abilities, { spell = 409552, type = "ability", requiresTarget = true, known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=425711/carve
+  table.insert(abilities, { spell = 409552, type = "ability", known = true })
+end
+
 templates.class.ROGUE = {
   [1] = {
     [1] = {
