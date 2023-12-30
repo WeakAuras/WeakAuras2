@@ -434,6 +434,40 @@ templates.class.ROGUE = {
   }
 }
 
+if SoD then
+  local rogue = templates.class.ROGUE[1]
+  local buffs = rogue[1].args
+  local debuffs = rogue[2].args
+  local abilities = rogue[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=399965/deadly-brew
+  -- 2/12 https://www.wowhead.com/classic/spell=400014/just-a-flesh-wound
+  -- 3/12 https://www.wowhead.com/classic/spell=398196/quick-draw
+  table.insert(abilities, { spell = 398196, type = "ability", requiresTarget = true, debuff = true, known = true })
+  -- 4/12 https://www.wowhead.com/classic/spell=424925/slaughter-from-the-shadows
+  -- 5/12 https://www.wowhead.com/classic/spell=400009/between-the-eyes
+  table.insert(debuffs, { spell = 400012, type = "debuff", unit = "target", known = true })
+  table.insert(abilities, { spell = 400009, type = "ability", requiresTarget = true, usable = true, debuff = true, known = true })
+  -- 6/12 https://www.wowhead.com/classic/spell=400012/blade-dance
+  table.insert(buffs, { spell = 400012, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 400012, type = "ability", usable = true, buff = true, known = true })
+  -- 7/12 https://www.wowhead.com/classic/spell=399963/envenom
+  table.insert(buffs, { spell = 399963, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 399963, type = "ability", requiresTarget = true, usable = true, buff = true, known = true })
+  -- 8/12 https://www.wowhead.com/classic/spell=399960/mutilate
+  table.insert(abilities, { spell = 399960, type = "ability", requiresTarget = true, usable = true, known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=399985/shadowstrike
+  table.insert(abilities, { spell = 399985, type = "ability", requiresTarget = true, usable = true, known = true })
+  -- 10/12 https://www.wowhead.com/classic/spell=424785/saber-slash
+  table.insert(debuffs, { spell = 424785, type = "debuff", unit = "target", known = true })
+  table.insert(abilities, { spell = 424785, type = "ability", requiresTarget = true, debuff = true, known = true })
+  -- 11/12 https://www.wowhead.com/classic/spell=424800/shiv
+  table.insert(abilities, { spell = 424800, type = "ability", requiresTarget = true, known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=424919/main-gauche
+  table.insert(buffs, { spell = 424919, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 424919, type = "ability", requiresTarget = true, buff = true, known = true })
+end
+
 templates.class.PRIEST = {
   [1] = {
     [1] = {
