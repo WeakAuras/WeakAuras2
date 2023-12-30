@@ -529,6 +529,38 @@ templates.class.PRIEST = {
   }
 }
 
+if SoD then
+  local priest = templates.class.PRIEST[1]
+  local buffs = priest[1].args
+  local debuffs = priest[2].args
+  local abilities = priest[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=425204/void-plague
+  table.insert(debuffs, { spell = 425204, type = "debuff", unit = "target", known = true })
+  table.insert(abilities, { spell = 425204, type = "ability", requiresTarget = true, debuff = true, known = true })
+  -- 2/12 https://www.wowhead.com/classic/spell=413248/serendipity
+  table.insert(buffs, { spell = 413248, type = "buff", unit = "player", known = true })
+  -- 3/12 https://www.wowhead.com/classic/spell=415739/strength-of-soul
+  -- 4/12 https://www.wowhead.com/classic/spell=425198/twisted-faith
+  -- 5/12 https://www.wowhead.com/classic/spell=425207/power-word-barrier
+  table.insert(buffs, { spell = 425207, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 425207, type = "ability", duration = 10, known = true })
+  -- 6/12 https://www.wowhead.com/classic/spell=401969/shared-pain
+  -- 7/12 https://www.wowhead.com/classic/spell=402799/homunculi
+  table.insert(buffs, { spell = 402799, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 402799, type = "ability", buff = true, known = true })
+  -- 8/12 https://www.wowhead.com/classic/spell=401859/prayer-of-mending
+  table.insert(abilities, { spell = 401859, type = "ability", known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=402174/penance
+  table.insert(abilities, { spell = 402174, type = "ability", requiresTarget = true, known = true })
+  -- 10/12 https://www.wowhead.com/classic/spell=413259/mind-sear
+  table.insert(abilities, { spell = 413259, type = "ability", requiresTarget = true, known = true })
+  -- 11/12 https://www.wowhead.com/classic/spell=401946/circle-of-healing
+  table.insert(abilities, { spell = 401946, type = "ability", known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=401955/shadow-word-death
+  table.insert(abilities, { spell = 401955, type = "ability", requiresTarget = true, known = true })
+end
+
 templates.class.SHAMAN = {
   [1] = {
     [1] = {
