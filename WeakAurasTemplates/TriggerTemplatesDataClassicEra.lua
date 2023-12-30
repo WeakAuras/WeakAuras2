@@ -222,6 +222,37 @@ templates.class.PALADIN = {
   }
 }
 
+if SoD then
+  local paladin = templates.class.PALADIN[1]
+  local buffs = paladin[1].args
+  local debuffs = paladin[2].args
+  local abilities = paladin[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=407798/seal-of-martyrdom
+  table.insert(abilities, { spell = 407798, type = "ability", buff = true, known = true})
+  -- 2/12 https://www.wowhead.com/classic/spell=407778/divine-storm
+  table.insert(abilities, { spell = 407778, type = "ability", buff = true, known = true})
+  -- 3/12 https://www.wowhead.com/classic/spell=425600/horn-of-lordaeron
+  table.insert(buffs, { spell = 425600, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 425600, type = "ability", buff = true, known = true})
+  -- 4/12 https://www.wowhead.com/classic/spell=425589/aegis
+  table.insert(buffs, { spell = 425589, type = "buff", unit = "player", known = true })
+  -- 5/12 https://www.wowhead.com/classic/spell=407804/divine-sacrifice
+  table.insert(buffs, { spell = 407804, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 407804, type = "ability", buff = true, known = true})
+  -- 6/12 https://www.wowhead.com/classic/spell=407880/inspiration-exemplar
+  -- 7/12 https://www.wowhead.com/classic/spell=407669/avengers-shield
+  table.insert(abilities, { spell = 407669, type = "ability", requiresTarget = true, known = true})
+  -- 8/12 https://www.wowhead.com/classic/spell=415076/exorcist
+  -- 9/12 https://www.wowhead.com/classic/spell=425609/rebuke
+  table.insert(abilities, { spell = 425609, type = "ability", requiresTarget = true, known = true})
+  -- 10/12 https://www.wowhead.com/classic/spell=407613/beacon-of-light
+  -- 11/12 https://www.wowhead.com/classic/spell=407676/crusader-strike
+  table.insert(abilities, { spell = 407676, type = "ability", requiresTarget = true, known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=407631/hand-of-reckoning
+  table.insert(abilities, { spell = 407631, type = "ability", debuff = true, known = true })
+end
+
 templates.class.HUNTER = {
   [1] = {
     [1] = {
