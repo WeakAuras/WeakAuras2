@@ -163,19 +163,20 @@ end
 
 local function get_zoneId_list()
   local currentmap_id = C_Map.GetBestMapForUnit("player")
-  if not currentmap_id then
-    return ("%s\n\n%s"):format(
-      Private.get_zoneId_list(),
-      L["Supports multiple entries, separated by commas. Group Zone IDs must be prefixed with 'g', e.g. g277."]
-    )
+  local instanceId = select(8, GetInstanceInfo())
+  local bottomText = L["Supports multiple entries, separated by commas. Group Zone IDs must be prefixed with 'g', e.g. g277. Supports Area IDs from https://wago.tools/db2/AreaTable prefixed with 'a'. Supports Instance IDs prefixed with 'i'."]
+  if not instanceId and not currentmap_id then
+    return ("%s\n\n%s"):format(Private.get_zoneId_list(), bottomText)
+  elseif not currentmap_id then
+    return ("%s|cffffd200%s|r%s: %d\n\n%s"):format(Private.get_zoneId_list(), L["Current Instance"], L["Instace Id"], instanceId, bottomText)
   end
   local currentmap_info = C_Map.GetMapInfo(currentmap_id)
   local currentmap_name = currentmap_info and currentmap_info.name or ""
   local currentmap_zone_name = ""
   local mapGroupId = C_Map.GetMapGroupID(currentmap_id)
   if mapGroupId then
-    currentmap_zone_name = string.format("|cffffd200%s|r%s: g%d\n\n",
-                                         L["Current Zone Group\n"], currentmap_name, mapGroupId)
+    currentmap_zone_name = string.format("|cffffd200%s|r\n%s: g%d\n\n",
+                                         L["Current Zone Group"], currentmap_name, mapGroupId)
 
     -- if map is in a group, its real name is (or should be?) found in GetMapGroupMembersInfo
     for k, map in ipairs(C_Map.GetMapGroupMembersInfo(mapGroupId)) do
@@ -186,13 +187,16 @@ local function get_zoneId_list()
     end
   end
 
-  return ("%s|cffffd200%s|r%s: %d\n\n%s%s"):format(
+  return ("%s|cffffd200%s|r\n%s: %d\n\n%s|cffffd200%s|r\n%s: %d\n\n%s"):format(
     Private.get_zoneId_list(),
-    L["Current Zone\n"],
+    L["Current Zone"],
     currentmap_name,
     currentmap_id,
     currentmap_zone_name,
-    L["Supports multiple entries, separated by commas. Group Zone IDs must be prefixed with 'g', e.g. g277."]
+    L["Current Instance"],
+    L["Instance Id"],
+    instanceId,
+    bottomText
   )
 end
 
@@ -1734,14 +1738,28 @@ Private.load_prototype = {
       optional = true,
     },
     {
+      name = "instanceId",
+      enable = false,
+      hidden = true,
+      init = "arg",
+      optional = true,
+    },
+    {
+      name = "minimapZoneText",
+      enable = false,
+      hidden = true,
+      init = "arg",
+      optional = true,
+    },
+    {
       name = "zoneIds",
-      display = L["Zone ID(s)"],
+      display = L["Player Location ID(s)"],
       type = "string",
       multiline = true,
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
       desc = get_zoneId_list,
       preamble = "local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q)",
-      test = "zoneChecker:Check(zoneId, zonegroupId)",
+      test = "zoneChecker:Check(zoneId, zonegroupId, instanceId, minimapZoneText)",
       optional = true,
     },
     {
