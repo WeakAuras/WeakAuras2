@@ -681,6 +681,7 @@ Private.ExecEnv.BossMods.BigWigs = {
     state.addon = bar.addon
     state.spellId = bar.spellId
     state.text = bar.text
+    state.message = bar.text
     state.name = bar.text
     state.duration = bar.duration + extendTimer
     state.expirationTime = bar.expirationTime + extendTimer
