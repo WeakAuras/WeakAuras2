@@ -478,6 +478,11 @@ templates.class.PRIEST = {
         { spell = 21562, type = "buff", unit = "player"}, -- Power Word: Fortitude
         { spell = 2096, type = "buff", unit = "player"}, -- Mind Vision
         { spell = 1706, type = "buff", unit = "player"}, -- Levitate
+        { spell = 19266, type = "buff", unit = "player", titleSuffix = L["(Undead)"] }, -- Touch of Weakness
+        { spell = 19312, type = "buff", unit = "player", titleSuffix = L["(Troll)"] }, -- Shadowguard
+        { spell = 6346, type = "buff", unit = "player", titleSuffix = L["(Dwarf)"] }, -- Fear Ward
+        { spell = 19275, type = "buff", unit = "player", titleSuffix = L["(Human)"] }, -- Feedback
+        { spell = 19293, type = "buff", unit = "player", titleSuffix = L["(Night Elf)"] }, -- Elune's Grace
       },
       icon = 135940
     },
@@ -488,6 +493,8 @@ templates.class.PRIEST = {
         { spell = 2096, type = "debuff", unit = "target"}, -- Mind Vision
         { spell = 589, type = "debuff", unit = "target"}, -- Shadow Word: Pain
         { spell = 9484, type = "debuff", unit = "multi" }, -- Shackle Undead
+        { spell = 19280, type = "debuff", unit = "target", titleSuffix = L["(Undead)"] }, -- Devouring Plague
+        { spell = 25816, type = "debuff", unit = "target", titleSuffix = L["(Troll)"] }, -- Hex of Weakness
       },
       icon = 136207
     },
@@ -512,7 +519,10 @@ templates.class.PRIEST = {
         { spell = 14751, type = "ability", buff = true, talent = 7}, -- Inner Focus
         { spell = 14914, type = "ability", debuff = true, requireTarget = true}, -- Holy Fire
         { spell = 15487, type = "ability", debuff = true, requireTarget = true, talent = 52}, -- Silence
-
+        { spell = 19243, type = "ability", titleSuffix = L["(Dwarf/Human)"]}, -- Desperate Prayer
+        { spell = 19305, type = "ability", requireTarget = true, titleSuffix = L["(Night Elf)"]}, -- Starshards
+        { spell = 19280, type = "ability", requireTarget = true, debuff = true, titleSuffix = L["(Undead)"] }, -- Devouring Plague
+        { spell = 6346, type = "ability", buff = true, titleSuffix = L["(Dwarf)"] }, -- Fear Ward
       },
       icon = 136224
     },
