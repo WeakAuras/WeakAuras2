@@ -3172,6 +3172,7 @@ Private.update_categories = {
       "url",
       "desc",
       "version",
+      "semver"
     },
     default = true,
     label = L["Meta Data"],
