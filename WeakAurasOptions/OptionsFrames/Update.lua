@@ -1058,6 +1058,7 @@ local function BuildDiffsHelper(uid, newUidMap, oldUidMap, matchInfo)
       SetCategories(matchInfo.activeCategories, categories)
 
       matchInfo.diffs[uid] = true
+      matchInfo.categories[uid] = categories
       if isGroup then
         matchInfo.modifiedGroupCount = matchInfo.modifiedGroupCount + 1
       else
@@ -1173,6 +1174,7 @@ local function BuildDiffs(newUidMap, oldUidMap)
     deletedCount = 0,
     deletedGroupCount = 0,
     diffs = {}, -- Contains diffs for new uids
+    categories = {}, -- Contains categories for uids
     unmodified = {}, -- Contains new uids that had a empty diff
     added = {}, -- Contains new uids that were added
     deleted = {}, -- Contains old uids that were removed
@@ -1243,7 +1245,21 @@ local function MatchInfo(data, children, target)
   return matchInfo
 end
 
-local function AddAuraList(container, uidMap, list, expandText)
+local function CategoriesToDisplayText(categories)
+  local categoriesDisplayTexts = {}
+  for _, category in ipairs(OptionsPrivate.Private.update_categories) do
+    if categories[category.name] then
+      tinsert(categoriesDisplayTexts, category.label)
+    end
+  end
+  if #categoriesDisplayTexts > 0 then
+    return table.concat(categoriesDisplayTexts, ", ")
+  else
+    return nil
+  end
+end
+
+local function AddAuraList(container, uidMap, list, categories, expandText)
   local expand = AceGUI:Create("WeakAurasExpand")
   local collapsed = true
   local image = collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand"
@@ -1262,7 +1278,16 @@ local function AddAuraList(container, uidMap, list, expandText)
 
   local sortedNames = {}
   for uid in pairs(list) do
-    tinsert(sortedNames, uidMap:GetIdFor(uid))
+    if categories[uid] then
+      local categoriesText = CategoriesToDisplayText(categories[uid])
+      if categoriesText then
+        tinsert(sortedNames, L["%s (%s)"]:format(uidMap:GetIdFor(uid), categoriesText))
+      else
+        tinsert(sortedNames, uidMap:GetIdFor(uid))
+      end
+    else
+      tinsert(sortedNames, uidMap:GetIdFor(uid))
+    end
   end
   table.sort(sortedNames)
 
@@ -1369,13 +1394,13 @@ local methods = {
           local matchInfoText = L["This is a modified version of your group: |cff9900FF%s|r"]:format(oldRootId)
           matchInfoResult:SetText(matchInfoText)
           if matchInfo.addedCount ~= 0 then
-            AddAuraList(self, matchInfo.newUidMap, matchInfo.added, L["%d |4aura:auras; added"]:format(matchInfo.addedCount))
+            AddAuraList(self, matchInfo.newUidMap, matchInfo.added, {}, L["%d |4aura:auras; added"]:format(matchInfo.addedCount))
           end
           if matchInfo.modifiedCount ~= 0 then
-            AddAuraList(self, matchInfo.oldUidMap, matchInfo.diffs, L["%d |4aura:auras; modified"]:format(matchInfo.modifiedCount))
+            AddAuraList(self, matchInfo.oldUidMap, matchInfo.diffs, matchInfo.categories, L["%d |4aura:auras; modified"]:format(matchInfo.modifiedCount))
           end
           if matchInfo.deletedCount ~= 0 then
-            AddAuraList(self, matchInfo.oldUidMap, matchInfo.deleted, L["%d |4aura:auras; deleted"]:format(matchInfo.deletedCount))
+            AddAuraList(self, matchInfo.oldUidMap, matchInfo.deleted, {}, L["%d |4aura:auras; deleted"]:format(matchInfo.deletedCount))
           end
         else
           matchInfoResult:SetText(L["This is a modified version of your aura, |cff9900FF%s.|r"]:format(oldRootId))
