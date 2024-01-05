@@ -10390,6 +10390,10 @@ Private.event_prototypes = {
         conditionType = "bool",
       },
     },
+    GetNameAndIcon = function(trigger)
+      local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+      return currencyInfo and currencyInfo.name, currencyInfo and currencyInfo.iconFileID
+    end,
     automaticrequired = true
   },
 };
