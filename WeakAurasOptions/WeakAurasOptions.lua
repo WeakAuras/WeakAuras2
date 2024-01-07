@@ -635,7 +635,7 @@ local function GetSortedOptionsLists()
       tinsert(to_sort, id);
     end
   end
-  table.sort(to_sort, function(a, b) return a < b end);
+  table.sort(to_sort, function(a, b) return a:lower() < b:lower() end)
   for _, id in ipairs(to_sort) do
     local data = WeakAuras.GetData(id);
     for child in OptionsPrivate.Private.TraverseAll(data) do
@@ -651,7 +651,7 @@ local function GetSortedOptionsLists()
       tinsert(to_sort, id);
     end
   end
-  table.sort(to_sort, function(a, b) return a < b end);
+  table.sort(to_sort, function(a, b) return a:lower() < b:lower() end)
   for _, id in ipairs(to_sort) do
     local data = WeakAuras.GetData(id);
     for child in OptionsPrivate.Private.TraverseAll(data) do
@@ -1162,7 +1162,7 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
   end
 
   if frame.loadedButton:GetExpanded() then
-    table.sort(topLevelLoadedAuras)
+    table.sort(topLevelLoadedAuras, function(a, b) return a:lower() < b:lower() end)
     for _, id in ipairs(topLevelLoadedAuras) do
       if aurasMatchingFilter[id] then
         addButton(displayButtons[id], aurasMatchingFilter, visible)
@@ -1173,7 +1173,7 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
   tinsert(frame.buttonsScroll.children, frame.unloadedButton);
 
   if frame.unloadedButton:GetExpanded() then
-    table.sort(topLevelUnloadedAuras)
+    table.sort(topLevelUnloadedAuras, function(a, b) return a:lower() < b:lower() end)
     for _, id in ipairs(topLevelUnloadedAuras) do
       if aurasMatchingFilter[id] then
         addButton(displayButtons[id], aurasMatchingFilter, visible)
