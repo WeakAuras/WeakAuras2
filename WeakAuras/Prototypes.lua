@@ -1683,7 +1683,8 @@ Private.load_prototype = {
       width = WeakAuras.normalWidth,
       init = "arg",
       values = "group_types",
-      events = {"GROUP_ROSTER_UPDATE"}
+      events = {"GROUP_ROSTER_UPDATE"},
+      optional = true,
     },
     {
       name = "groupSize",
@@ -1695,6 +1696,7 @@ Private.load_prototype = {
         operator = "and",
         limit = 2
       },
+      optional = true,
     },
     {
       name = "group_leader",
@@ -1704,7 +1706,8 @@ Private.load_prototype = {
       events = {"PARTY_LEADER_CHANGED", "GROUP_ROSTER_UPDATE"},
       width = WeakAuras.doubleWidth,
       values = "group_member_types",
-      test = "Private.ExecEnv.CheckGroupMemberType(%s, group_leader)"
+      test = "Private.ExecEnv.CheckGroupMemberType(%s, group_leader)",
+      optional = true,
     },
     {
       name ="locationTitle",
