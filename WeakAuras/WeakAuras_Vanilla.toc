@@ -28,6 +28,7 @@ ArchiveTypes\Repository.lua
 DefaultOptions.lua
 
 # Core files
+Atlas_Vanilla.lua
 Types_Vanilla.lua
 Types.lua
 Prototypes.lua

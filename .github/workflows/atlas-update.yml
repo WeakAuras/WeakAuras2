@@ -1,0 +1,39 @@
+name: Create Atlas file list update pull request
+
+on:
+  schedule:
+    - cron:  '0 10 * * 1'
+
+  workflow_dispatch:
+
+jobs:
+  atlasUpdate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leafo/gh-actions-lua@v10
+      - uses: leafo/gh-actions-luarocks@v4
+
+      - name: Lua rocks
+        run: |
+          luarocks install --server=https://luarocks.org/manifests/fouriertransformer ftcsv
+        shell: bash
+
+      - name: Update Atlas files from wago.tools
+        run: |
+          cd .github/scripts/
+          ./wagotools-atlas.sh
+        shell: bash
+
+      - name: Cleanup luarocks
+        run: |
+             rm -rf .luarocks
+
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          branch: update-atlasfiles
+          commit-message: Update atlas file list from wago.tools
+          title: Update atlas file list from wago.tools
+          delete-branch: true

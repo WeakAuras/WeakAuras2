@@ -35,6 +35,7 @@ ArchiveTypes\Repository.lua
 DefaultOptions.lua
 
 # Core files
+Atlas_Retail.lua
 Types_Retail.lua
 Types.lua
 Prototypes.lua
