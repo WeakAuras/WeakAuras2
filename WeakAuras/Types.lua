@@ -685,7 +685,7 @@ Private.format_types = {
         if abbreviateFunc then
           return function(guid)
             local ok, _, class, _, _, _, name, realm = pcall(GetPlayerInfoByGUID, guid)
-            if ok then
+            if ok and name then
               local name = abbreviateFunc(nameFunc(name, realm))
               return colorFunc(class, name)
             end
@@ -693,7 +693,7 @@ Private.format_types = {
         else
           return function(guid)
             local ok, _, class, _, _, _, name, realm = pcall(GetPlayerInfoByGUID, guid)
-            if ok then
+            if ok and name then
               return colorFunc(class, nameFunc(name, realm))
             end
           end
@@ -702,14 +702,14 @@ Private.format_types = {
         if abbreviateFunc then
           return function(guid)
             local ok, _, class, _, _, _, name, realm = pcall(GetPlayerInfoByGUID, guid)
-            if ok then
+            if ok and name then
               return abbreviateFunc(nameFunc(name, realm))
             end
           end
         else
           return function(guid)
             local ok, _, class, _, _, _, name, realm = pcall(GetPlayerInfoByGUID, guid)
-            if ok then
+            if ok and name then
               return nameFunc(name, realm)
             end
           end
