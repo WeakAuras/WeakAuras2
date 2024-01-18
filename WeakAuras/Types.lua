@@ -152,7 +152,7 @@ timeFormatter.GetMaxInterval = function(self)
   return #timeFormatIntervalDescriptionFixed
 end
 
---local AbbreviateNumbers = AbbreviateNumbers
+local AbbreviateNumbers = AbbreviateNumbers
 local gameLocale = GetLocale()
 if gameLocale == "koKR" or gameLocale == "zhCN" or gameLocale == "zhTW" then
   -- Work around https://github.com/Stanzilla/WoWUIBugs/issues/515
