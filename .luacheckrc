@@ -1556,6 +1556,7 @@ globals = {
 	"CreateFont",
 	"CreateForbiddenFrame",
 	"CreateFrame",
+	"CreateFramePool",
 	"CreateMacro",
 	"CreateNewRaidProfile",
 	"CursorCanGoInSlot",
