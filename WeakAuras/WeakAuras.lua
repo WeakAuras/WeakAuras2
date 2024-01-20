@@ -4509,6 +4509,15 @@ function Private.UpdatedTriggerState(id)
       end
     end
   end
+  if (newActiveTrigger == Private.trigger_modes.last_active) then
+    -- Mode is last active trigger, so find a active trigger
+    for i = triggerState[id].numTriggers, 1, -1 do
+      if (triggerState[id].triggers[i]) then
+        newActiveTrigger = i;
+        break;
+      end
+    end
+  end
 
   local oldShow = triggerState[id].show;
   triggerState[id].activeTrigger = newActiveTrigger;

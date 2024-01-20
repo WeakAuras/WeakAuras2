@@ -852,6 +852,7 @@ Private.trigger_require_types_one = {
 
 Private.trigger_modes = {
   ["first_active"] = -10,
+  ["last_active"] = -5,
 }
 
 Private.debuff_types = {

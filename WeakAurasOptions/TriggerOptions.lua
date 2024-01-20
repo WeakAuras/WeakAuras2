@@ -65,6 +65,7 @@ local function GetGlobalOptions(data)
       values = function()
         local vals = {};
         vals[OptionsPrivate.Private.trigger_modes.first_active] = L["Dynamic information from first active trigger"];
+        vals[OptionsPrivate.Private.trigger_modes.last_active] = L["Dynamic information from last active trigger"];
         for i = 1, #data.triggers do
           vals[i] = L["Dynamic information from Trigger %i"]:format(i);
         end
