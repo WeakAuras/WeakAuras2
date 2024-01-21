@@ -2538,11 +2538,16 @@ function Private.AddMany(tbl, takeSnapshots)
   coroutine.yield()
   local groups = {}
   for _, data in ipairs(order) do
-    WeakAuras.Add(data, takeSnapshots);
-    coroutine.yield()
+    WeakAuras.PreAdd(data)
     if data.regionType == "dynamicgroup" or data.regionType == "group" then
       groups[data] = true
     end
+    coroutine.yield()
+  end
+
+  for _, data in ipairs(order) do
+    WeakAuras.Add(data, takeSnapshots);
+    coroutine.yield()
   end
 
   for id in pairs(anchorTargets) do
