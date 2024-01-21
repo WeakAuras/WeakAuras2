@@ -6,6 +6,17 @@ local texture_data = WeakAuras.StopMotion.texture_data;
 local animation_types = WeakAuras.StopMotion.animation_types;
 local setTile = WeakAuras.setTile
 
+-- Returns value only for Blizzard flipbooks
+function OptionsPrivate.GetFlipbookTileSize(name)
+  if texture_data[name] then
+    if texture_data[name].isBlizzardFlipbook then
+      if texture_data[name].tileWidth and texture_data[name].tileHeight then
+        return {["tileWidth"] = texture_data[name].tileWidth, ["tileHeight"] = texture_data[name].tileHeight}
+      end
+    end
+  end
+end
+
 local function setTextureFunc(textureWidget, texturePath, textureName)
   local data = texture_data[texturePath];
   if not(data) then
@@ -119,7 +130,7 @@ local function createOptions(id, data)
                   color = "foregroundColor",
                   mirror = "mirror",
                   blendMode = "blendMode"
-                }, texture_types, setTextureFunc);
+                }, texture_types, setTextureFunc, true);
             end,
             imageWidth = 24,
             imageHeight = 24,
@@ -372,7 +383,7 @@ local function createOptions(id, data)
                   color = "backgroundColor",
                   mirror = "mirror",
                   blendMode = "blendMode"
-                }, texture_types, setTextureFunc);
+                }, texture_types, setTextureFunc, true);
             end,
             disabled = function() return data.sameTexture or data.hideBackground; end,
             hidden = function() return data.hideBackground end,
@@ -671,7 +682,7 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
     local texture = data.foregroundTexture or "Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion";
 
     if (region.foreground.rows and region.foreground.columns) then
-      region.texture:SetTexture(texture);
+      OptionsPrivate.Private.SetTextureOrAtlas(region.texture, texture)
       local frameScaleW, frameScaleH = 1, 1
       if region.foreground.fileWidth and region.foreground.frameWidth
         and region.foreground.fileWidth > 0 and region.foreground.frameWidth > 0

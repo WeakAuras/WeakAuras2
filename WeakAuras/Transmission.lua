@@ -162,7 +162,8 @@ local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
   until(done)
   if newMsg ~= "" then
     local trimmedPlayer = Ambiguate(player, "none")
-    if event == "CHAT_MSG_WHISPER" and not UnitInRaid(trimmedPlayer) and not UnitInParty(trimmedPlayer) then -- XXX: Need a guild check
+    local guid = select(5, ...)
+    if event == "CHAT_MSG_WHISPER" and not UnitInRaid(trimmedPlayer) and not UnitInParty(trimmedPlayer) and not (IsGuildMember and IsGuildMember(guid)) then
       local _, num = BNGetNumFriends()
       for i=1, num do
         if C_BattleNet then -- introduced in 8.2.5 PTR

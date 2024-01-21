@@ -1,6 +1,7 @@
 if not WeakAuras.IsLibsOK() then return end
+local AddonName, OptionsPrivate = ...
 
-local Type, Version = "WeakAurasTextureButton", 25
+local Type, Version = "WeakAurasTextureButton", 26
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local GetAtlasInfo = C_Texture and  C_Texture.GetAtlasInfo or GetAtlasInfo
@@ -37,10 +38,19 @@ local methods = {
     if atlasInfo then
       self.texture:SetAtlas(texturePath, false);
       self.texture.IsAtlas = true
-      if atlasInfo.width > atlasInfo.height then
-        self.texture:SetSize(120, 120 * (atlasInfo.height / atlasInfo.width))
-      elseif atlasInfo.height > atlasInfo.width then
-        self.texture:SetSize(120 * (atlasInfo.width / atlasInfo.height), 120)
+      local width = atlasInfo.width
+      local height = atlasInfo.height
+      if IsStopMotion then
+        local flipbookInfo = OptionsPrivate.GetFlipbookTileSize(texturePath)
+        if flipbookInfo then
+          width = flipbookInfo.tileWidth
+          height = flipbookInfo.tileHeight
+        end
+      end
+      if width > height then
+        self.texture:SetSize(120, 120 * (height / width))
+      elseif height > width then
+        self.texture:SetSize(120 * (width / height), 120)
       else
         self.texture:SetSize(120, 120)
       end

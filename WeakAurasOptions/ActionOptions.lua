@@ -12,15 +12,8 @@ local hiddenAll = OptionsPrivate.commonOptions.CreateHiddenAll("action")
 local getAll = OptionsPrivate.commonOptions.CreateGetAll("action")
 local setAll = OptionsPrivate.commonOptions.CreateSetAll("action", getAll)
 
-local RestrictedChannelCheck
-if WeakAuras.IsClassicEra() then
-  RestrictedChannelCheck = function()
-    return false
-  end
-else
-  RestrictedChannelCheck = function(data)
-    return data.message_type == "SAY" or data.message_type == "YELL" or data.message_type == "SMARTRAID"
-  end
+local RestrictedChannelCheck = function(data)
+  return data.message_type == "SAY" or data.message_type == "YELL" or data.message_type == "SMARTRAID"
 end
 
 --- @type number? the time at which the last sound was played, so that we don't play

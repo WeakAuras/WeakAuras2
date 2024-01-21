@@ -681,6 +681,7 @@ Private.ExecEnv.BossMods.BigWigs = {
     state.addon = bar.addon
     state.spellId = bar.spellId
     state.text = bar.text
+    state.message = bar.text
     state.name = bar.text
     state.duration = bar.duration + extendTimer
     state.expirationTime = bar.expirationTime + extendTimer
@@ -1033,8 +1034,8 @@ Private.event_prototypes["BigWigs Message"] = {
     {
       name = "spellId",
       init = "arg",
-      display = L["Key"],
-      desc = L["The 'Key' value can be found in the BigWigs options of a specific spell"],
+      display = L["ID"],
+      desc = L["The 'ID' value can be found in the BigWigs options of a specific spell"],
       type = "spell",
       conditionType = "string",
       noValidation = true,
@@ -1237,8 +1238,8 @@ Private.event_prototypes["BigWigs Timer"] = {
   args = {
     {
       name = "spellId",
-      display = L["Key"],
-      desc = L["The 'Key' value can be found in the BigWigs options of a specific spell"],
+      display = L["ID"],
+      desc = L["The 'ID' value can be found in the BigWigs options of a specific spell"],
       type = "spell",
       conditionType = "string",
       noValidation = true,
@@ -1405,7 +1406,7 @@ Private.event_prototypes["Boss Mod Announce"] = {
     {
       name = "spellId",
       init = "arg",
-      display = L["Key"],
+      display = L["ID"],
       store = true,
       type = "spell",
       conditionType = "string",
@@ -1638,7 +1639,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
   args = {
     {
       name = "spellId",
-      display = L["Key"],
+      display = L["ID"],
       store = true,
       type = "spell",
       conditionType = "string",

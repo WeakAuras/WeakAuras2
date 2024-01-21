@@ -4,6 +4,9 @@ if not WeakAuras.IsClassicEra() then return end
 local L = WeakAuras.L
 local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
 
+
+local SoD = C_Seasons and C_Seasons.GetActiveSeason and C_Seasons.GetActiveSeason() == 2
+
 -- The templates tables are created on demand
 local templates =
   {
@@ -131,6 +134,30 @@ templates.class.WARRIOR = {
   }
 }
 
+if SoD then
+  local warrior = templates.class.WARRIOR[1]
+  local buffs = warrior[1].args
+  local debuffs = warrior[2].args
+  local abilities = warrior[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=402877/flagellation
+  table.insert(buffs, { spell = 402877, type = "buff", unit = "player", known = true })
+  -- 2/12 https://www.wowhead.com/classic/spell=412507/blood-frenzy
+  -- 3/12 https://www.wowhead.com/classic/spell=402911/raging-blow
+  table.insert(abilities, { spell = 402911, type = "ability", usable = true, known = true })
+  -- 4/12 https://www.wowhead.com/classic/spell=425421/warbringer
+  -- 5/12 https://www.wowhead.com/classic/spell=403219/furious-thunder
+  -- 6/12 https://www.wowhead.com/classic/spell=425418/consumed-by-rage same buff name as Enrage's talent
+  -- 7/12 https://www.wowhead.com/classic/spell=425412/frenzied-assault
+  -- 8/12 https://www.wowhead.com/classic/spell=402927/victory-rush
+  table.insert(abilities, { spell = 425336, type = "ability", usable = true, known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=403218/endless-rage
+  -- 10/12 https://www.wowhead.com/classic/spell=403196/devastate
+  -- 11/12 https://www.wowhead.com/classic/spell=413404/single-minded-fury
+  -- 12/12 https://www.wowhead.com/classic/spell=429765/quick-strike
+  table.insert(abilities, { spell = 429765, type = "ability", requiresTarget = true, known = true })
+end
+
 templates.class.PALADIN = {
   [1] = {
     [1] = {
@@ -194,6 +221,37 @@ templates.class.PALADIN = {
     },
   }
 }
+
+if SoD then
+  local paladin = templates.class.PALADIN[1]
+  local buffs = paladin[1].args
+  local debuffs = paladin[2].args
+  local abilities = paladin[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=407798/seal-of-martyrdom
+  table.insert(abilities, { spell = 407798, type = "ability", buff = true, known = true})
+  -- 2/12 https://www.wowhead.com/classic/spell=407778/divine-storm
+  table.insert(abilities, { spell = 407778, type = "ability", buff = true, known = true})
+  -- 3/12 https://www.wowhead.com/classic/spell=425600/horn-of-lordaeron
+  table.insert(buffs, { spell = 425600, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 425600, type = "ability", buff = true, known = true})
+  -- 4/12 https://www.wowhead.com/classic/spell=425589/aegis
+  table.insert(buffs, { spell = 425589, type = "buff", unit = "player", known = true })
+  -- 5/12 https://www.wowhead.com/classic/spell=407804/divine-sacrifice
+  table.insert(buffs, { spell = 407804, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 407804, type = "ability", buff = true, known = true})
+  -- 6/12 https://www.wowhead.com/classic/spell=407880/inspiration-exemplar
+  -- 7/12 https://www.wowhead.com/classic/spell=407669/avengers-shield
+  table.insert(abilities, { spell = 407669, type = "ability", requiresTarget = true, known = true})
+  -- 8/12 https://www.wowhead.com/classic/spell=415076/exorcist
+  -- 9/12 https://www.wowhead.com/classic/spell=425609/rebuke
+  table.insert(abilities, { spell = 425609, type = "ability", requiresTarget = true, known = true})
+  -- 10/12 https://www.wowhead.com/classic/spell=407613/beacon-of-light
+  -- 11/12 https://www.wowhead.com/classic/spell=407676/crusader-strike
+  table.insert(abilities, { spell = 407676, type = "ability", requiresTarget = true, known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=407631/hand-of-reckoning
+  table.insert(abilities, { spell = 407631, type = "ability", debuff = true, known = true })
+end
 
 templates.class.HUNTER = {
   [1] = {
@@ -275,6 +333,36 @@ templates.class.HUNTER = {
   }
 }
 
+if SoD then
+  local hunter = templates.class.HUNTER[1]
+  local buffs = hunter[1].args
+  local debuffs = hunter[2].args
+  local abilities = hunter[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=409580/heart-of-the-lion
+  table.insert(buffs, { spell = 409580, type = "buff", unit = "player", known = true })
+  -- 2/12 https://www.wowhead.com/classic/spell=409428/master-marksman
+  -- 3/12 https://www.wowhead.com/classic/spell=415370/lone-wolf
+  -- 4/12 https://www.wowhead.com/classic/spell=425713/cobra-strikes
+  table.insert(buffs, { spell = 425713, type = "buff", unit = "target", known = true })
+  -- 5/12 https://www.wowhead.com/classic/spell=409379/kill-command
+  table.insert(buffs, { spell = 409379, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 409379, type = "ability", buff = true, known = true })
+  -- 6/12 https://www.wowhead.com/classic/spell=415399/sniper-training
+  table.insert(buffs, { spell = 415399, type = "buff", unit = "player", known = true })
+  -- 7/12 https://www.wowhead.com/classic/spell=425738/serpent-spread
+  -- 8/12 https://www.wowhead.com/classic/spell=415320/flanking-strike
+  table.insert(buffs, { spell = 415320, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 415320, type = "ability", buff = true, known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=409368/beast-mastery
+  -- 10/12 https://www.wowhead.com/classic/spell=409433/chimera-shot
+  table.insert(abilities, { spell = 409433, type = "ability", requiresTarget = true, known = true })
+  -- 11/12 https://www.wowhead.com/classic/spell=409552/explosive-shot
+  table.insert(abilities, { spell = 409552, type = "ability", requiresTarget = true, known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=425711/carve
+  table.insert(abilities, { spell = 409552, type = "ability", known = true })
+end
+
 templates.class.ROGUE = {
   [1] = {
     [1] = {
@@ -346,6 +434,40 @@ templates.class.ROGUE = {
   }
 }
 
+if SoD then
+  local rogue = templates.class.ROGUE[1]
+  local buffs = rogue[1].args
+  local debuffs = rogue[2].args
+  local abilities = rogue[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=399965/deadly-brew
+  -- 2/12 https://www.wowhead.com/classic/spell=400014/just-a-flesh-wound
+  -- 3/12 https://www.wowhead.com/classic/spell=398196/quick-draw
+  table.insert(abilities, { spell = 398196, type = "ability", requiresTarget = true, debuff = true, known = true })
+  -- 4/12 https://www.wowhead.com/classic/spell=424925/slaughter-from-the-shadows
+  -- 5/12 https://www.wowhead.com/classic/spell=400009/between-the-eyes
+  table.insert(debuffs, { spell = 400012, type = "debuff", unit = "target", known = true })
+  table.insert(abilities, { spell = 400009, type = "ability", requiresTarget = true, usable = true, debuff = true, known = true })
+  -- 6/12 https://www.wowhead.com/classic/spell=400012/blade-dance
+  table.insert(buffs, { spell = 400012, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 400012, type = "ability", usable = true, buff = true, known = true })
+  -- 7/12 https://www.wowhead.com/classic/spell=399963/envenom
+  table.insert(buffs, { spell = 399963, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 399963, type = "ability", requiresTarget = true, usable = true, buff = true, known = true })
+  -- 8/12 https://www.wowhead.com/classic/spell=399960/mutilate
+  table.insert(abilities, { spell = 399960, type = "ability", requiresTarget = true, usable = true, known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=399985/shadowstrike
+  table.insert(abilities, { spell = 399985, type = "ability", requiresTarget = true, usable = true, known = true })
+  -- 10/12 https://www.wowhead.com/classic/spell=424785/saber-slash
+  table.insert(debuffs, { spell = 424785, type = "debuff", unit = "target", known = true })
+  table.insert(abilities, { spell = 424785, type = "ability", requiresTarget = true, debuff = true, known = true })
+  -- 11/12 https://www.wowhead.com/classic/spell=424800/shiv
+  table.insert(abilities, { spell = 424800, type = "ability", requiresTarget = true, known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=424919/main-gauche
+  table.insert(buffs, { spell = 424919, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 424919, type = "ability", requiresTarget = true, buff = true, known = true })
+end
+
 templates.class.PRIEST = {
   [1] = {
     [1] = {
@@ -356,6 +478,11 @@ templates.class.PRIEST = {
         { spell = 21562, type = "buff", unit = "player"}, -- Power Word: Fortitude
         { spell = 2096, type = "buff", unit = "player"}, -- Mind Vision
         { spell = 1706, type = "buff", unit = "player"}, -- Levitate
+        { spell = 19266, type = "buff", unit = "player", titleSuffix = L["(Undead)"] }, -- Touch of Weakness
+        { spell = 19312, type = "buff", unit = "player", titleSuffix = L["(Troll)"] }, -- Shadowguard
+        { spell = 6346, type = "buff", unit = "player", titleSuffix = L["(Dwarf)"] }, -- Fear Ward
+        { spell = 19275, type = "buff", unit = "player", titleSuffix = L["(Human)"] }, -- Feedback
+        { spell = 19293, type = "buff", unit = "player", titleSuffix = L["(Night Elf)"] }, -- Elune's Grace
       },
       icon = 135940
     },
@@ -366,6 +493,8 @@ templates.class.PRIEST = {
         { spell = 2096, type = "debuff", unit = "target"}, -- Mind Vision
         { spell = 589, type = "debuff", unit = "target"}, -- Shadow Word: Pain
         { spell = 9484, type = "debuff", unit = "multi" }, -- Shackle Undead
+        { spell = 19280, type = "debuff", unit = "target", titleSuffix = L["(Undead)"] }, -- Devouring Plague
+        { spell = 25816, type = "debuff", unit = "target", titleSuffix = L["(Troll)"] }, -- Hex of Weakness
       },
       icon = 136207
     },
@@ -390,7 +519,10 @@ templates.class.PRIEST = {
         { spell = 14751, type = "ability", buff = true, talent = 7}, -- Inner Focus
         { spell = 14914, type = "ability", debuff = true, requireTarget = true}, -- Holy Fire
         { spell = 15487, type = "ability", debuff = true, requireTarget = true, talent = 52}, -- Silence
-
+        { spell = 19243, type = "ability", titleSuffix = L["(Dwarf/Human)"]}, -- Desperate Prayer
+        { spell = 19305, type = "ability", requireTarget = true, titleSuffix = L["(Night Elf)"]}, -- Starshards
+        { spell = 19280, type = "ability", requireTarget = true, debuff = true, titleSuffix = L["(Undead)"] }, -- Devouring Plague
+        { spell = 6346, type = "ability", buff = true, titleSuffix = L["(Dwarf)"] }, -- Fear Ward
       },
       icon = 136224
     },
@@ -406,6 +538,38 @@ templates.class.PRIEST = {
     },
   }
 }
+
+if SoD then
+  local priest = templates.class.PRIEST[1]
+  local buffs = priest[1].args
+  local debuffs = priest[2].args
+  local abilities = priest[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=425204/void-plague
+  table.insert(debuffs, { spell = 425204, type = "debuff", unit = "target", known = true })
+  table.insert(abilities, { spell = 425204, type = "ability", requiresTarget = true, debuff = true, known = true })
+  -- 2/12 https://www.wowhead.com/classic/spell=413248/serendipity
+  table.insert(buffs, { spell = 413248, type = "buff", unit = "player", known = true })
+  -- 3/12 https://www.wowhead.com/classic/spell=415739/strength-of-soul
+  -- 4/12 https://www.wowhead.com/classic/spell=425198/twisted-faith
+  -- 5/12 https://www.wowhead.com/classic/spell=425207/power-word-barrier
+  table.insert(buffs, { spell = 425207, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 425207, type = "ability", duration = 10, known = true })
+  -- 6/12 https://www.wowhead.com/classic/spell=401969/shared-pain
+  -- 7/12 https://www.wowhead.com/classic/spell=402799/homunculi
+  table.insert(buffs, { spell = 402799, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 402799, type = "ability", buff = true, known = true })
+  -- 8/12 https://www.wowhead.com/classic/spell=401859/prayer-of-mending
+  table.insert(abilities, { spell = 401859, type = "ability", known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=402174/penance
+  table.insert(abilities, { spell = 402174, type = "ability", requiresTarget = true, known = true })
+  -- 10/12 https://www.wowhead.com/classic/spell=413259/mind-sear
+  table.insert(abilities, { spell = 413259, type = "ability", requiresTarget = true, known = true })
+  -- 11/12 https://www.wowhead.com/classic/spell=401946/circle-of-healing
+  table.insert(abilities, { spell = 401946, type = "ability", known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=401955/shadow-word-death
+  table.insert(abilities, { spell = 401955, type = "ability", requiresTarget = true, known = true })
+end
 
 templates.class.SHAMAN = {
   [1] = {
@@ -485,6 +649,38 @@ templates.class.SHAMAN = {
   }
 }
 
+if SoD then
+  local shaman = templates.class.SHAMAN[1]
+  local buffs = shaman[1].args
+  local debuffs = shaman[2].args
+  local abilities = shaman[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=408496/dual-wield-specialization
+  -- 2/12 https://www.wowhead.com/classic/spell=408524/shield-mastery
+  -- 3/12 https://www.wowhead.com/classic/spell=408438/overload
+  -- 4/12 https://www.wowhead.com/classic/spell=415236/healing-rain
+  table.insert(abilities, { spell = 415236, type = "ability", duration = 10, known = true })
+  -- 5/12 https://www.wowhead.com/classic/spell=409324/ancestral-guidance
+  table.insert(buffs, { spell = 409324, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 409324, type = "ability", buff = true, known = true })
+  -- 6/12 https://www.wowhead.com/classic/spell=408514/earth-shield
+  table.insert(buffs, { spell = 408514, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 408514, type = "ability", buff = true, known = true })
+  -- 7/12 https://www.wowhead.com/classic/spell=408531/way-of-earth
+  -- 8/12 https://www.wowhead.com/classic/spell=425336/shamanistic-rage
+  table.insert(buffs, { spell = 425336, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 425336, type = "ability", buff = true, known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=408510/water-shield
+  table.insert(buffs, { spell = 408510, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 408510, type = "ability", buff = true, known = true })
+  -- 10/12 https://www.wowhead.com/classic/spell=408490/lava-burst
+  table.insert(abilities, { spell = 414644, type = "ability", requiresTarget = true, known = true })
+  -- 11/12 https://www.wowhead.com/classic/spell=408507/lava-lash
+  table.insert(abilities, { spell = 408507, type = "ability", requiresTarget = true, known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=425339/molten-blast
+  table.insert(abilities, { spell = 425339, type = "ability", known = true })
+end
+
 templates.class.MAGE = {
   [1] = {
     [1] = {
@@ -559,6 +755,41 @@ templates.class.MAGE = {
     },
   }
 }
+
+if SoD then
+  local mage = templates.class.MAGE[1]
+  local buffs = mage[1].args
+  local debuffs = mage[2].args
+  local abilities = mage[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=412286/burnout
+  -- 2/12 https://www.wowhead.com/classic/spell=400647/fingers-of-frost
+  table.insert(buffs, { spell = 400647, type = "buff", unit = "player", known = true })
+  -- 3/12 https://www.wowhead.com/classic/spell=401417/regeneration
+  table.insert(buffs, { spell = 400735, type = "buff", unit = "player" }) -- temporal beacon
+  table.insert(abilities, { spell = 401417, type = "ability", known = true })
+  -- 4/12 https://www.wowhead.com/classic/spell=412324/enlightenment
+  table.insert(buffs, { spell = 412326, type = "buff", exactSpellId = true, unit = "player", titleSuffix = L["dps buff"] })
+  table.insert(buffs, { spell = 412325, type = "buff", exactSpellId = true, unit = "player", titleSuffix = L["regen buff"] })
+  -- 5/12 https://www.wowhead.com/classic/spell=425121/icy-veins
+  table.insert(buffs, { spell = 425121, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 425121, type = "ability", buff = true, known = true })
+  -- 6/12 https://www.wowhead.com/classic/spell=425124/arcane-surge
+  table.insert(abilities, { spell = 425124, type = "ability", buff = true, known = true })
+  -- 7/12 https://www.wowhead.com/classic/spell=412510/mass-regeneration
+  table.insert(abilities, { spell = 412510, type = "ability", })
+  -- 8/12 https://www.wowhead.com/classic/spell=401556/living-flame
+  table.insert(abilities, { spell = 401556, type = "ability", duration = 20, known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=401462/rewind-time
+  table.insert(abilities, { spell = 401462, type = "ability", known = true })
+  -- 10/12 https://www.wowhead.com/classic/spell=400613/living-bomb
+  table.insert(abilities, { spell = 401462, type = "ability", requiresTarget = true, debuff = true, known = true })
+  -- 11/12 https://www.wowhead.com/classic/spell=400574/arcane-blast
+  table.insert(debuffs, { spell = 400574, type = "debuff", unit = "player", known = true })
+  table.insert(abilities, { spell = 400574, type = "ability", requiresTarget = true, debuff = true, unit = "player", known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=400640/ice-lance
+  table.insert(abilities, { spell = 400640, type = "ability", requiresTarget = true, known = true })
+end
 
 templates.class.WARLOCK = {
   [1] = {
@@ -642,6 +873,37 @@ templates.class.WARLOCK = {
     },
   }
 }
+
+if SoD then
+  local warlock = templates.class.WARLOCK[1]
+  local buffs = warlock[1].args
+  local debuffs = warlock[2].args
+  local abilities = warlock[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=403666/lake-of-fire
+  table.insert(debuffs, { spell = 403666, type = "debuff", unit = "target", known = true })
+  -- 2/12 https://www.wowhead.com/classic/spell=403668/master-channeler
+  table.insert(debuffs, { spell = 689, type = "debuff", unit = "target", known = true, titleSuffix = L["Master Channeler Rune"] })
+  -- 3/12 https://www.wowhead.com/classic/spell=403511/soul-siphon
+  -- 4/12 https://www.wowhead.com/classic/spell=412727/demonic-tactics
+  -- 5/12 https://www.wowhead.com/classic/spell=412689/everlasting-affliction
+  -- 6/12 https://www.wowhead.com/classic/spell=412758/incinerate
+  table.insert(abilities, { spell = 412758, type = "ability", requiresTarget = true, buff = true, known = true })
+  -- 7/12 https://www.wowhead.com/classic/spell=425463/demonic-grace
+  table.insert(buffs, { spell = 425463, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 425463, type = "ability", buff = true, known = true })
+  -- 8/12 https://www.wowhead.com/classic/spell=425464/demonic-pact
+  table.insert(buffs, { spell = 425464, type = "buff", unit = "player", known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=403789/metamorphosis TODO: add meta's skills
+  table.insert(buffs, { spell = 403789, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 403789, type = "ability", buff = true, known = true })
+  -- 10/12 https://www.wowhead.com/classic/spell=403628/shadow-bolt-volley
+  -- 11/12 https://www.wowhead.com/classic/spell=403629/chaos-bolt
+  table.insert(abilities, { spell = 403629, type = "ability", requiresTarget = true, known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=403501/haunt
+  table.insert(debuffs, { spell = 403501, type = "debuff", unit = "target", known = true })
+  table.insert(abilities, { spell = 403501, type = "ability", requiresTarget = true, debuff = true, known = true })
+end
 
 templates.class.DRUID = {
   [1] = {
@@ -732,6 +994,40 @@ templates.class.DRUID = {
   }
 }
 
+if SoD then
+  local druid = templates.class.DRUID[1]
+  local buffs = druid[1].args
+  local debuffs = druid[2].args
+  local abilities = druid[3].args
+
+  -- 1/12 https://www.wowhead.com/classic/spell=414677/living-seed
+  table.insert(buffs, { spell = 414677, type = "buff", unit = "player", known = true })
+  -- 2/12 https://www.wowhead.com/classic/spell=407977/wild-strikes
+  -- 3/12 https://www.wowhead.com/classic/spell=414799/fury-of-stormrage
+  table.insert(buffs, { spell = 414799, type = "buff", unit = "player", known = true })
+  -- 4/12 https://www.wowhead.com/classic/spell=411115/survival-of-the-fittest
+  -- 5/12 https://www.wowhead.com/classic/spell=417157/starsurge
+  table.insert(abilities, { spell = 417157, type = "ability", requiresTarget = true, known = true })
+  -- 6/12 https://www.wowhead.com/classic/spell=408124/lifebloom
+  table.insert(buffs, { spell = 408124, type = "buff", unit = "player", known = true })
+  -- 7/12 https://www.wowhead.com/classic/spell=410176/skull-bash
+  table.insert(abilities, { spell = 410176, type = "ability", requiresTarget = true, known = true })
+  -- 8/12 https://www.wowhead.com/classic/spell=407988/savage-roar
+  table.insert(buffs, { spell = 407988, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 407988, type = "ability", requiresTarget = true, form = 3, known = true })
+  -- 9/12 https://www.wowhead.com/classic/spell=414684/sunfire
+  table.insert(debuffs, { spell = 414684, type = "debuff", unit = "target", known = true })
+  table.insert(abilities, { spell = 414684, type = "ability", requiresTarget = true, debuff = true, known = true })
+  -- 10/12 https://www.wowhead.com/classic/spell=414644/lacerate
+  table.insert(debuffs, { spell = 414644, type = "debuff", unit = "target", known = true })
+  table.insert(abilities, { spell = 414644, type = "ability", requiresTarget = true, debuff = true, form = 1, known = true })
+  -- 11/12 https://www.wowhead.com/classic/spell=408120/wild-growth
+  table.insert(buffs, { spell = 408120, type = "buff", unit = "player", known = true })
+  table.insert(abilities, { spell = 408120, type = "ability", buff = true, known = true })
+  -- 12/12 https://www.wowhead.com/classic/spell=409828/mangle
+  table.insert(abilities, { spell = 409828, type = "ability", requiresTarget = true, debuff = true, known = true })
+  table.insert(debuffs, { spell = 409828, type = "debuff", unit = "target", known = true })
+end
 
 -- General Section
 tinsert(templates.general.args, {
@@ -963,6 +1259,11 @@ local function handleItem(item)
       single = item.pvptalent,
       multi = {};
     }
+  end
+  if (item.known) then
+    item.load = item.load or {};
+    item.load.use_spellknown = true;
+    item.load.spellknown = item.spell;
   end
   if (item.covenant) then
     item.load = item.load or {}

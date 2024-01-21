@@ -298,6 +298,7 @@ local function BuildUidMap(data, children, type)
   ---                              import, otherwise nil
   --- @field matchedUid uid? for "update", the matched uid. Is from a different domain!
   --- @field diff any  for "update", the diff and the categories of that diff between the aura and its match
+  --- @field categories the categories
   --- @field index number helpers that transport data between phase 1 and 2
   --- @field total number helpers that transport data between phase 1 and 2
   --- @field parentIsDynamicGroup boolean helpers that transport data between phase 1 and 2
@@ -1006,7 +1007,17 @@ local function SetCategories(globalCategories, categories)
   end
 end
 
-
+local function OnlyMetaDataCategory(categories)
+  local metaData = false
+  for category in pairs(categories) do
+    if category == "metadata" then
+      metaData = true
+    else
+      return false
+    end
+  end
+  return metaData
+end
 
 local function GetCategories(diff, isRoot)
   local categories = {}
@@ -1016,6 +1027,7 @@ local function GetCategories(diff, isRoot)
       categories[category] = true
     end
   end
+
   return categories
 end
 
@@ -1057,11 +1069,22 @@ local function BuildDiffsHelper(uid, newUidMap, oldUidMap, matchInfo)
       oldUidMap:SetDiff(matchedUid, diff, categories)
       SetCategories(matchInfo.activeCategories, categories)
 
-      matchInfo.diffs[uid] = true
-      if isGroup then
-        matchInfo.modifiedGroupCount = matchInfo.modifiedGroupCount + 1
+      matchInfo.categories[uid] = categories
+
+      if OnlyMetaDataCategory(categories) then
+        matchInfo.onlyMetaDataModified[uid] = true
+        if isGroup then
+          matchInfo.modifiedMetaDataGroupCount = matchInfo.modifiedMetaDataGroupCount + 1
+        else
+          matchInfo.modifiedMetaDataCount = matchInfo.modifiedMetaDataCount + 1
+        end
       else
-        matchInfo.modifiedCount = matchInfo.modifiedCount + 1
+        matchInfo.modified[uid] = true
+        if isGroup then
+          matchInfo.modifiedGroupCount = matchInfo.modifiedGroupCount + 1
+        else
+          matchInfo.modifiedCount = matchInfo.modifiedCount + 1
+        end
       end
     else
       matchInfo.unmodified[uid] = true
@@ -1155,6 +1178,8 @@ end
 local function hasChanges(matchInfo)
   return matchInfo.modifiedCount > 0
          or matchInfo.modifiedGroupCount > 0
+         or matchInfo.modifiedMetaDataCount > 0
+         or matchInfo.modifiedMetaDataGroupCount > 0
          or matchInfo.addedCount > 0
          or matchInfo.addedGroupCount > 0
          or matchInfo.deletedCount > 0
@@ -1166,13 +1191,17 @@ local function BuildDiffs(newUidMap, oldUidMap)
   local matchInfo = {
     modifiedCount = 0,
     modifiedGroupCount = 0,
+    modifiedMetaDataCount = 0,
+    modifiedMetaDataGroupCount = 0,
     unmodifiedCount = 0,
     unmodifiedGroupCount = 0,
     addedCount = 0,
     addedGroupCount = 0,
     deletedCount = 0,
     deletedGroupCount = 0,
-    diffs = {}, -- Contains diffs for new uids
+    modified = {}, -- Contains uids that were modified
+    onlyMetaDataModified = {}, -- Contains uids that are only metadata modified
+    categories = {}, -- Contains categories for uids
     unmodified = {}, -- Contains new uids that had a empty diff
     added = {}, -- Contains new uids that were added
     deleted = {}, -- Contains old uids that were removed
@@ -1243,7 +1272,21 @@ local function MatchInfo(data, children, target)
   return matchInfo
 end
 
-local function AddAuraList(container, uidMap, list, expandText)
+local function CategoriesToDisplayText(categories)
+  local categoriesDisplayTexts = {}
+  for _, category in ipairs(OptionsPrivate.Private.update_categories) do
+    if categories[category.name] then
+      tinsert(categoriesDisplayTexts, category.label)
+    end
+  end
+  if #categoriesDisplayTexts > 0 then
+    return table.concat(categoriesDisplayTexts, ", ")
+  else
+    return nil
+  end
+end
+
+local function AddAuraList(container, uidMap, list, categories, expandText)
   local expand = AceGUI:Create("WeakAurasExpand")
   local collapsed = true
   local image = collapsed and "Interface\\AddOns\\WeakAuras\\Media\\Textures\\expand"
@@ -1262,7 +1305,16 @@ local function AddAuraList(container, uidMap, list, expandText)
 
   local sortedNames = {}
   for uid in pairs(list) do
-    tinsert(sortedNames, uidMap:GetIdFor(uid))
+    if categories[uid] then
+      local categoriesText = CategoriesToDisplayText(categories[uid])
+      if categoriesText then
+        tinsert(sortedNames, L["%s (%s)"]:format(uidMap:GetIdFor(uid), categoriesText))
+      else
+        tinsert(sortedNames, uidMap:GetIdFor(uid))
+      end
+    else
+      tinsert(sortedNames, uidMap:GetIdFor(uid))
+    end
   end
   table.sort(sortedNames)
 
@@ -1369,13 +1421,22 @@ local methods = {
           local matchInfoText = L["This is a modified version of your group: |cff9900FF%s|r"]:format(oldRootId)
           matchInfoResult:SetText(matchInfoText)
           if matchInfo.addedCount ~= 0 then
-            AddAuraList(self, matchInfo.newUidMap, matchInfo.added, L["%d |4aura:auras; added"]:format(matchInfo.addedCount))
+            AddAuraList(self, matchInfo.newUidMap, matchInfo.added, {},
+                        L["%d |4aura:auras; added"]:format(matchInfo.addedCount))
           end
-          if matchInfo.modifiedCount ~= 0 then
-            AddAuraList(self, matchInfo.oldUidMap, matchInfo.diffs, L["%d |4aura:auras; modified"]:format(matchInfo.modifiedCount))
+          local modifiedCount = matchInfo.modifiedCount + matchInfo.modifiedGroupCount
+          if modifiedCount ~= 0  then
+            AddAuraList(self, matchInfo.oldUidMap, matchInfo.modified, matchInfo.categories,
+                        L["%d |4aura:auras; modified"]:format(modifiedCount))
+          end
+          local onlyMetaDataModifiedCount = matchInfo.modifiedMetaDataCount + matchInfo.modifiedMetaDataGroupCount
+          if onlyMetaDataModifiedCount ~= 0 then
+            AddAuraList(self, matchInfo.oldUidMap, matchInfo.onlyMetaDataModified, {},
+                        L["%d |4aura:auras; with meta data modified"]:format(onlyMetaDataModifiedCount))
           end
           if matchInfo.deletedCount ~= 0 then
-            AddAuraList(self, matchInfo.oldUidMap, matchInfo.deleted, L["%d |4aura:auras; deleted"]:format(matchInfo.deletedCount))
+            AddAuraList(self, matchInfo.oldUidMap, matchInfo.deleted, {},
+                        L["%d |4aura:auras; deleted"]:format(matchInfo.deletedCount))
           end
         else
           matchInfoResult:SetText(L["This is a modified version of your aura, |cff9900FF%s.|r"]:format(oldRootId))

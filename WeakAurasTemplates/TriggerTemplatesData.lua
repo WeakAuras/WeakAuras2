@@ -2684,7 +2684,7 @@ templates.class.MAGE = {
         { spell = 45438, type = "buff", unit = "player", talent = 80181 }, -- Ice Block
         { spell = 80353, type = "buff", unit = "player" }, -- Time Warp
         { spell = 108839, type = "buff", unit = "player", talent = 80162 }, -- Ice Floes
-        { spell = 110960, type = "buff", unit = "player", talent = 80152 }, -- Greater Invisibility
+        { spell = 110960, type = "buff", unit = "player", talent = 115877 }, -- Greater Invisibility
         { spell = 116014, type = "buff", unit = "player", talent = 80171 }, -- Rune of Power
         { spell = 116267, type = "buff", unit = "player", talent = 80172 }, -- Incanter's Flow
         { spell = 205025, type = "buff", unit = "player", talent = 80208 }, -- Presence of Mind
@@ -2754,7 +2754,7 @@ templates.class.MAGE = {
         { spell = 80353, type = "ability", buff = true }, -- Time Warp
         { spell = 108839, type = "ability", charges = true, buff = true, talent = 80162 }, -- Ice Floes
         { spell = 108853, type = "ability", requiresTarget = true }, -- Fire Blast
-        { spell = 110959, type = "ability", talent = 80152 }, -- Greater Invisibility
+        { spell = 110959, type = "ability", talent = 115877 }, -- Greater Invisibility
         { spell = 113724, type = "ability", talent = 80144 }, -- Ring of Frost
         { spell = 114923, type = "ability", requiresTarget = true, talent = 80199 }, -- Nether Tempest
         { spell = 153561, type = "ability", talent = 80146 }, -- Meteor
@@ -2816,7 +2816,7 @@ templates.class.MAGE = {
         { spell = 48108, type = "buff", unit = "player" }, -- Hot Streak!
         { spell = 80353, type = "buff", unit = "player" }, -- Time Warp
         { spell = 108839, type = "buff", unit = "player", talent = 80162 }, -- Ice Floes
-        { spell = 110960, type = "buff", unit = "player", talent = 80152 }, -- Greater Invisibility
+        { spell = 110960, type = "buff", unit = "player", talent = 115877 }, -- Greater Invisibility
         { spell = 116014, type = "buff", unit = "player", talent = 80171 }, -- Rune of Power
         { spell = 116267, type = "buff", unit = "player", talent = 80172 }, -- Incanter's Flow
         { spell = 190319, type = "buff", unit = "player", talent = 80275 }, -- Combustion
@@ -2880,7 +2880,7 @@ templates.class.MAGE = {
         { spell = 80353, type = "ability", buff = true }, -- Time Warp
         { spell = 108839, type = "ability", charges = true, buff = true, talent = 80162 }, -- Ice Floes
         { spell = 108853, type = "ability", charges = true, requiresTarget = true, talent = 80282 }, -- Fire Blast
-        { spell = 110959, type = "ability", talent = 80152 }, -- Greater Invisibility
+        { spell = 110959, type = "ability", talent = 115877 }, -- Greater Invisibility
         { spell = 113724, type = "ability", talent = 80144 }, -- Ring of Frost
         { spell = 153561, type = "ability", talent = 80146 }, -- Meteor
         { spell = 157981, type = "ability", talent = 80160 }, -- Blast Wave
@@ -2932,7 +2932,7 @@ templates.class.MAGE = {
         { spell = 45438, type = "buff", unit = "player", talent = 80181 }, -- Ice Block
         { spell = 80353, type = "buff", unit = "player" }, -- Time Warp
         { spell = 108839, type = "buff", unit = "player", talent = 80162 }, -- Ice Floes
-        { spell = 110960, type = "buff", unit = "player", talent = 80152 }, -- Greater Invisibility
+        { spell = 110960, type = "buff", unit = "player", talent = 115877 }, -- Greater Invisibility
         { spell = 116014, type = "buff", unit = "player", talent = 80171 }, -- Rune of Power
         { spell = 116267, type = "buff", unit = "player", talent = 80172 }, -- Incanter's Flow
         { spell = 190446, type = "buff", unit = "player", talent = 80244 }, -- Brain Freeze
@@ -3003,7 +3003,7 @@ templates.class.MAGE = {
         { spell = 84714, type = "ability", talent = 80242 }, -- Frozen Orb
         { spell = 108839, type = "ability", charges = true, buff = true, talent = 80162 }, -- Ice Floes
         { spell = 108853, type = "ability", requiresTarget = true }, -- Fire Blast
-        { spell = 110959, type = "ability", talent = 80152 }, -- Greater Invisibility
+        { spell = 110959, type = "ability", talent = 115877 }, -- Greater Invisibility
         { spell = 113724, type = "ability", talent = 80144 }, -- Ring of Frost
         { spell = 135029, type = "ability" }, -- Water Jet
         { spell = 153561, type = "ability", talent = 80146 }, -- Meteor
