@@ -6427,7 +6427,7 @@ Private.event_prototypes = {
   ["Class/Spec"] = {
     type = "unit",
     events = function()
-      local events = { "PLAYER_TALENT_UPDATE", "PLAYER_LOOT_SPEC_UPDATED", "PLAYER_SPECIALIZATION_CHANGED" }
+      local events = { "PLAYER_TALENT_UPDATE" }
       return {
         ["events"] = events
       }
@@ -6437,11 +6437,6 @@ Private.event_prototypes = {
     init = function(trigger)
       return [[
          local specId, specName, _, specIcon = GetSpecializationInfo(GetSpecialization())
-         local lootSpecId = GetLootSpecialization()
-         if lootSpecId == 0 then --Player chose 'Current Specialization'
-          lootSpecId = specId
-         end
-         local _, lootSpecName = GetSpecializationInfoByID(lootSpecId)
       ]]
     end,
     args = {
@@ -6465,20 +6460,61 @@ Private.event_prototypes = {
         store = "true",
         test = "true"
       },
+    },
+    automaticrequired = true,
+    statesParameter = "one",
+  },
+  ["Loot Specialization"] = {
+    type = "unit",
+    events = function()
+      local events = {"PLAYER_LOOT_SPEC_UPDATED", "PLAYER_SPECIALIZATION_CHANGED" }
+      return {
+        ["events"] = events
+      }
+    end,
+    force_events = "PLAYER_LOOT_SPEC_UPDATED",
+    name = L["Loot Specialization"],
+    init = function(trigger)
+      return [[
+         local lootSpecId = GetLootSpecialization()
+         local currentSpecId = GetSpecializationInfo(GetSpecialization())
+         if lootSpecId == 0 then --Player chose 'Current Specialization'
+          lootSpecId = currentSpecId
+         end
+         local _, lootSpecName, _, lootSpecIcon = GetSpecializationInfoByID(lootSpecId)
+      ]]
+    end,
+    args = {
       {
-        name = "lootSpecId",
+        name = "name",
         display = L["Loot Specialization"],
         type = "multiselect",
         init = "lootSpecId",
         values = "spec_types_all",
+        conditionType = "select",
+        store = true,
       },
       {
-        name = "lootSpec",
-        display = L["Loot Specialization"],
-        type = "string",
-        init = "lootSpecName",
+        name = "lootSpecId",
+        display = L["Loot Specialization Id"],
+        init = "lootSpecId",
         hidden = true,
         store = true,
+        test = "true",
+      },
+      {
+        name = "isCurrentSpec",
+        display = L["Is Current Specialization"],
+        init = "lootSpecId == currentSpecId",
+        type = "tristate",
+        conditionType = "bool",
+        store = true,
+      },
+      {
+        hidden = true,
+        name = "icon",
+        init = "lootSpecIcon",
+        store = "true",
         test = "true",
       },
     },
@@ -10463,6 +10499,7 @@ if WeakAuras.IsClassicEraOrWrath() then
   Private.event_prototypes["Spell Activation Overlay"] = nil
   Private.event_prototypes["PvP Talent Selected"] = nil
   Private.event_prototypes["Class/Spec"] = nil
+  Private.event_prototypes["Loot Specialization"] = nil
 else
   Private.event_prototypes["Queued Action"] = nil
 end
