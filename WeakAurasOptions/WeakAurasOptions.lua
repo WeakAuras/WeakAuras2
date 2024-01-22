@@ -971,19 +971,18 @@ function OptionsPrivate.UpdateButtonsScroll()
   frame.buttonsScroll:DoLayout()
 end
 
-local function addButton(button, aurasMatchingFilter, visible, list)
+local function addButton(button, aurasMatchingFilter, visible)
   button.frame:Show();
   if button.AcquireThumbnail then
     button:AcquireThumbnail()
   end
   tinsert(frame.buttonsScroll.children, button);
-  tinsert(list, button)
   visible[button] = true
 
   if button.data.controlledChildren and button:GetExpanded() then
     for _, childId in ipairs(button.data.controlledChildren) do
       if aurasMatchingFilter[childId] then
-        addButton(displayButtons[childId], aurasMatchingFilter, visible, list)
+        addButton(displayButtons[childId], aurasMatchingFilter, visible)
       end
     end
   end
@@ -1154,7 +1153,7 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
 
     if not child:GetGroup() then
       -- Top Level aura
-      if OptionsPrivate.Private.loaded[child.data.id] ~= nil then
+      if OptionsPrivate.Private.loaded[id] ~= nil then
         tinsert(topLevelLoadedAuras, id)
       else
         tinsert(topLevelUnloadedAuras, id)
@@ -1167,8 +1166,14 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
     table.sort(topLevelLoadedAuras, function(a, b) return a:lower() < b:lower() end)
     for _, id in ipairs(topLevelLoadedAuras) do
       if aurasMatchingFilter[id] then
-        addButton(displayButtons[id], aurasMatchingFilter, visible, frame.loadedButton.childButtons)
+        addButton(displayButtons[id], aurasMatchingFilter, visible)
       end
+    end
+  end
+
+  for _, id in ipairs(topLevelLoadedAuras) do
+    for child in OptionsPrivate.Private.TraverseAllChildren(WeakAuras.GetData(id)) do
+      tinsert(frame.loadedButton.childButtons, displayButtons[child.id])
     end
   end
 
@@ -1179,8 +1184,14 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
     table.sort(topLevelUnloadedAuras, function(a, b) return a:lower() < b:lower() end)
     for _, id in ipairs(topLevelUnloadedAuras) do
       if aurasMatchingFilter[id] then
-        addButton(displayButtons[id], aurasMatchingFilter, visible, frame.unloadedButton.childButtons)
+        addButton(displayButtons[id], aurasMatchingFilter, visible)
       end
+    end
+  end
+
+  for _, id in ipairs(topLevelUnloadedAuras) do
+    for child in OptionsPrivate.Private.TraverseAllChildren(WeakAuras.GetData(id)) do
+      tinsert(frame.unloadedButton.childButtons, displayButtons[child.id])
     end
   end
 

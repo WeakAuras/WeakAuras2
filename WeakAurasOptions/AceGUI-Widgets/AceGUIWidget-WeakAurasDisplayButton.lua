@@ -1423,6 +1423,15 @@ local methods = {
     self.loaded.desc = description;
     self.loaded:GetNormalTexture():SetVertexColor(unpack(color))
   end,
+  ["IsLoaded"] = function(self)
+    return OptionsPrivate.Private.loaded[self.data.id] == true
+  end,
+  ["IsStandby"] = function(self)
+    return OptionsPrivate.Private.loaded[self.data.id] == false
+  end,
+  ["IsUnloaded"] = function(self)
+    return OptionsPrivate.Private.loaded[self.data.id] == nil
+  end,
   ["Pick"] = function(self)
     self.frame:LockHighlight();
     self:PriorityShow(1);
