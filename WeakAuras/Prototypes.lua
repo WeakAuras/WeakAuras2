@@ -6464,6 +6464,63 @@ Private.event_prototypes = {
     automaticrequired = true,
     statesParameter = "one",
   },
+  ["Loot Specialization"] = {
+    type = "unit",
+    events = function()
+      local events = {"PLAYER_LOOT_SPEC_UPDATED", "PLAYER_SPECIALIZATION_CHANGED" }
+      return {
+        ["events"] = events
+      }
+    end,
+    force_events = "PLAYER_LOOT_SPEC_UPDATED",
+    name = L["Loot Specialization"],
+    init = function(trigger)
+      return [[
+         local lootSpecId = GetLootSpecialization()
+         local currentSpecId = GetSpecializationInfo(GetSpecialization())
+         if lootSpecId == 0 then --Player chose 'Current Specialization'
+          lootSpecId = currentSpecId
+         end
+         local _, lootSpecName, _, lootSpecIcon = GetSpecializationInfoByID(lootSpecId)
+      ]]
+    end,
+    args = {
+      {
+        name = "lootSpecId",
+        display = L["Loot Specialization Id"],
+        type = "multiselect",
+        init = "lootSpecId",
+        values = "spec_types_all",
+        conditionType = "select",
+        store = true,
+      },
+      {
+        name = "name",
+        display = L["Loot Specialization Name"],
+        init = "lootSpecName",
+        hidden = true,
+        store = true,
+        test = "true",
+      },
+      {
+        name = "isCurrentSpec",
+        display = L["Is Current Specialization"],
+        init = "lootSpecId == currentSpecId",
+        type = "tristate",
+        conditionType = "bool",
+        store = true,
+      },
+      {
+        hidden = true,
+        name = "icon",
+        init = "lootSpecIcon",
+        store = "true",
+        test = "true",
+      },
+    },
+    automaticrequired = true,
+    statesParameter = "one",
+  },
   ["Totem"] = {
     type = "spell",
     events = {
@@ -10442,6 +10499,7 @@ if WeakAuras.IsClassicEraOrWrath() then
   Private.event_prototypes["Spell Activation Overlay"] = nil
   Private.event_prototypes["PvP Talent Selected"] = nil
   Private.event_prototypes["Class/Spec"] = nil
+  Private.event_prototypes["Loot Specialization"] = nil
 else
   Private.event_prototypes["Queued Action"] = nil
 end
