@@ -5,6 +5,7 @@ local AddonName, Private = ...
 --- @alias AuraWarningSeverity
 --- | "info"
 --- | "sound"
+--- | "tts"
 --- | "warning"
 --- | "error"
 
@@ -63,14 +64,16 @@ end
 local severityLevel = {
   info = 0,
   sound = 1,
-  warning = 2,
-  error = 3
+  tts = 2,
+  warning = 3,
+  error = 4
 }
 
 --- @type table<AuraWarningSeverity, string>
 local icons = {
   info = [[Interface/friendsframe/informationicon.blp]],
   sound = [[chatframe-button-icon-voicechat]],
+  tts = [[chatframe-button-icon-tts]],
   warning = [[Interface/buttons/adventureguidemicrobuttonalert.blp]],
   error =  [[Interface/DialogFrame/UI-Dialog-Icon-AlertNew]]
 }
@@ -79,6 +82,7 @@ local icons = {
 local titles = {
   info = L["Information"],
   sound = L["Sound"],
+  tts = L["Text To Speech"],
   warning = L["Warning"],
   error = L["Error"],
 }
@@ -142,6 +146,7 @@ function Private.AuraWarnings.FormatWarnings(uid)
   result = AddMessages(result, messagePerSeverity["error"], icons["error"], mixedSeverity)
   result = AddMessages(result, messagePerSeverity["warning"], icons["warning"], mixedSeverity)
   result = AddMessages(result, messagePerSeverity["sound"], icons["sound"], mixedSeverity)
+  result = AddMessages(result, messagePerSeverity["tts"], icons["tts"], mixedSeverity)
   result = AddMessages(result, messagePerSeverity["info"], icons["info"], mixedSeverity)
   return icons[maxSeverity], titles[maxSeverity], result
 end
