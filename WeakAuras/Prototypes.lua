@@ -6486,8 +6486,8 @@ Private.event_prototypes = {
     end,
     args = {
       {
-        name = "name",
-        display = L["Loot Specialization"],
+        name = "lootSpecId",
+        display = L["Loot Specialization Id"],
         type = "multiselect",
         init = "lootSpecId",
         values = "spec_types_all",
@@ -6495,9 +6495,9 @@ Private.event_prototypes = {
         store = true,
       },
       {
-        name = "lootSpecId",
-        display = L["Loot Specialization Id"],
-        init = "lootSpecId",
+        name = "name",
+        display = L["Loot Specialization Name"],
+        init = "lootSpecName",
         hidden = true,
         store = true,
         test = "true",
