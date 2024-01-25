@@ -74,8 +74,8 @@ local icons = {
   info = [[Interface/friendsframe/informationicon.blp]],
   sound = [[chatframe-button-icon-voicechat]],
   tts = [[chatframe-button-icon-tts]],
-  warning = [[Interface/buttons/adventureguidemicrobuttonalert.blp]],
-  error =  [[Interface/DialogFrame/UI-Dialog-Icon-AlertNew]]
+  warning = [[services-icon-warning]],
+  error = [[Interface/HELPFRAME/HelpIcon-Bug]]
 }
 
 --- @type table<AuraWarningSeverity, string>
@@ -149,4 +149,43 @@ function Private.AuraWarnings.FormatWarnings(uid)
   result = AddMessages(result, messagePerSeverity["tts"], icons["tts"], mixedSeverity)
   result = AddMessages(result, messagePerSeverity["info"], icons["info"], mixedSeverity)
   return icons[maxSeverity], titles[maxSeverity], result
+end
+
+function Private.AuraWarnings.GetAllWarnings(uid)
+  local results = {}
+  local thisWarnings
+  local data = Private.GetDataByUID(uid)
+  if data.regionType == "group" or data.regionType == "dynamicgroup" then
+    thisWarnings = {}
+    for child in Private.TraverseLeafs(data) do
+      local childWarnings = warnings[child.uid]
+      if childWarnings then
+        for key, warning in pairs(childWarnings) do
+          if not thisWarnings[key] then
+            thisWarnings[key] = {
+              severity = warning.severity,
+              message = warning.message,
+              auraId = child.id
+            }
+          end
+        end
+      end
+    end
+  else
+    thisWarnings = CopyTable(warnings[uid])
+    local auraId = Private.UIDtoID(uid)
+    for key in pairs(thisWarnings) do
+      thisWarnings[key].auraId = auraId
+    end
+  end
+  for key, warning in pairs(thisWarnings) do
+    results[warning.severity] = {
+      icon = icons[warning.severity],
+      prio = 5 + severityLevel[warning.severity],
+      title = warning.severity,
+      message = warning.message,
+      auraId = warning.auraId
+    }
+  end
+  return results
 end
