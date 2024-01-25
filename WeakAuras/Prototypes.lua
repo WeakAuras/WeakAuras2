@@ -4332,7 +4332,8 @@ Private.event_prototypes = {
       {
         name = "spellName",
         display = L["Spell Name"],
-        type = "string",
+        type = "spell",
+        noValidation = true,
         init = "arg",
         enable = function(trigger)
           return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE"))
@@ -4422,7 +4423,8 @@ Private.event_prototypes = {
       {
         name = "extraSpellName",
         display = L["Extra Spell Name"],
-        type = "string",
+        type = "spell",
+        noValidation = true,
         init = "arg",
         enable = function(trigger)
           return trigger.subeventSuffix and (trigger.subeventSuffix == "_ABSORBED" or trigger.subeventSuffix == "_INTERRUPT" or trigger.subeventSuffix == "_DISPEL" or trigger.subeventSuffix == "_DISPEL_FAILED" or trigger.subeventSuffix == "_STOLEN" or trigger.subeventSuffix == "_AURA_BROKEN_SPELL")
