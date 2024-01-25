@@ -1104,10 +1104,11 @@ local methods = {
     end
     WeakAuras.ClearAndUpdateOptions(self.data.id);
     WeakAuras.UpdateGroupOrders(parentData);
+    local parentButton = OptionsPrivate.GetDisplayButton(parentData.id)
     if(#parentData.controlledChildren == 0) then
-      local parentButton = OptionsPrivate.GetDisplayButton(parentData.id)
       parentButton:DisableExpand()
     end
+    parentButton:UpdateParentWarning()
 
     for child in OptionsPrivate.Private.TraverseAllChildren(self.data) do
       local button = OptionsPrivate.GetDisplayButton(child.id)
