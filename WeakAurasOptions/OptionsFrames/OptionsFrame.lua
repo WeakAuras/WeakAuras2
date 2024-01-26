@@ -11,8 +11,8 @@ local GetScreenWidth, GetScreenHeight, CreateFrame, UnitName
   = GetScreenWidth, GetScreenHeight, CreateFrame, UnitName
 
 local AceGUI = LibStub("AceGUI-3.0")
-local AceConfig = LibStub("AceConfig-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
+local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 local WeakAuras = WeakAuras
@@ -914,7 +914,7 @@ function OptionsPrivate.CreateFrame()
 
     local optionTable = self:EnsureOptions(data, self.selectedTab)
     if optionTable then
-      AceConfig:RegisterOptionsTable("WeakAuras", optionTable)
+      AceConfigRegistry:RegisterOptionsTable("WeakAuras", optionTable, true)
     end
   end
 
