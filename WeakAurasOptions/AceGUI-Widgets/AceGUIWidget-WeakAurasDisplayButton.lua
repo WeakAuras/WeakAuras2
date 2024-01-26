@@ -1450,7 +1450,7 @@ local methods = {
     if warnings then
       for severity, warning in pairs(warnings) do
         local onClick = function()
-          WeakAuras.PickDisplay(warning.auraId, "information")
+          WeakAuras.PickDisplay(warning.auraId, warning.tab)
         end
         self:UpdateStatusIcon(severity, warning.prio, warning.icon, warning.title, warning.message, onClick)
       end

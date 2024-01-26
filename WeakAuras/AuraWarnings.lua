@@ -78,6 +78,14 @@ local icons = {
   error = [[Interface/HELPFRAME/HelpIcon-Bug]]
 }
 
+local tabs = {
+  tts_condition = "conditions",
+  sound_condition = "conditions",
+  tts_action = "action",
+  sound_action = "action",
+  spammy_event_warning = "trigger"
+}
+
 --- @type table<AuraWarningSeverity, string>
 local titles = {
   info = L["Information"],
@@ -184,7 +192,8 @@ function Private.AuraWarnings.GetAllWarnings(uid)
       prio = 5 + severityLevel[warning.severity],
       title = warning.severity,
       message = warning.message,
-      auraId = warning.auraId
+      auraId = warning.auraId,
+      tab = tabs[key] or "information"
     }
   end
   return results
