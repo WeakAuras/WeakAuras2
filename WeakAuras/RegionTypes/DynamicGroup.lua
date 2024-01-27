@@ -44,6 +44,8 @@ local default = {
   columnSpace = 1
 }
 
+Private.regionPrototype.AddAlphaToDefault(default);
+
 local controlPointFunctions = {
   ["SetAnchorPoint"] = function(self, point, relativeFrame, relativePoint, offsetX, offsetY)
     self:ClearAllPoints();

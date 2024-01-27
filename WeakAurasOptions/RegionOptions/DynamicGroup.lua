@@ -511,6 +511,12 @@ local function createOptions(id, data)
       name = L["Animated Expand and Collapse"],
       order = 27
     },
+    spacer = {
+      type = "description",
+      width = WeakAuras.normalWidth,
+      name = "",
+      order = 27.5
+    },
     scale = {
       type = "range",
       control = "WeakAurasSpinBox",
@@ -533,6 +539,17 @@ local function createOptions(id, data)
         WeakAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
+    },
+    alpha = {
+      type = "range",
+      control = "WeakAurasSpinBox",
+      width = WeakAuras.normalWidth,
+      name = L["Group Alpha"],
+      order = 29,
+      min = 0,
+      max = 1,
+      bigStep = 0.01,
+      isPercent = true
     },
     endHeader = {
       type = "header",
