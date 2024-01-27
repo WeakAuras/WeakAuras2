@@ -587,6 +587,17 @@ local function createOptions(id, data)
         OptionsPrivate.ResetMoverSizer();
       end
     },
+    alpha = {
+      type = "range",
+      control = "WeakAurasSpinBox",
+      width = WeakAuras.normalWidth,
+      name = L["Group Alpha"],
+      order = 46,
+      min = 0,
+      max = 1,
+      bigStep = 0.01,
+      isPercent = true
+    },
     endHeader = {
       type = "header",
       order = 100,
