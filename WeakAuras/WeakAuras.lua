@@ -193,6 +193,9 @@ function SlashCmdList.WEAKAURAS(input)
     Private.PrintHelp();
   elseif msg == "repair" then
     StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "user"})
+  elseif msg == "optin" then
+    Private.EnableExperiments(true)
+    prettyPrint(L["Experimental mode active! If you have any problems with an experimental feature, please let us know via a ticket on Github!"])
   else
     WeakAuras.OpenOptions(msg);
   end

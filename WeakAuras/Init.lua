@@ -49,6 +49,7 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field customActionsFunctions table<auraId, table<string, function?>>
 --- @field DebugLog debugLog
 --- @field dynamic_texts table<string, table>
+--- @field EnableExperiments fun(enabled: boolean)
 --- @field EndEvent fun(state: state): boolean?
 --- @field EnsureRegion fun(id: auraId, cloneId: string?): Frame
 --- @field ExecEnv table
@@ -386,6 +387,10 @@ WeakAuras.BuildInfo = select(4, GetBuildInfo())
 
 function WeakAuras.IsExperimental()
   return experimental
+end
+
+function Private.EnableExperiments(enabled)
+  experimental = enabled
 end
 
 function WeakAuras.IsClassicEra()
