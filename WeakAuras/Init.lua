@@ -357,7 +357,7 @@ WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
 local versionString = "@project-version@"
 local buildTime = "@build-time@"
-
+local experimental = false
 local flavorFromToc = GetAddOnMetadata("WeakAuras", "X-Flavor")
 local flavorFromTocToNumber = {
   Vanilla = 1,
@@ -371,13 +371,22 @@ local flavor = flavorFromTocToNumber[flavorFromToc]
 if versionStringFromToc == "@project-version@" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
+  experimental = true
 end
 --@end-debug@
+
+--[[@experimental@
+experimental = true
+--@end-experimental@]]
 
 WeakAuras.versionString = versionStringFromToc
 WeakAuras.buildTime = buildTime
 WeakAuras.newFeatureString = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t"
 WeakAuras.BuildInfo = select(4, GetBuildInfo())
+
+function WeakAuras.IsExperimental()
+  return experimental
+end
 
 function WeakAuras.IsClassicEra()
   return flavor == 1

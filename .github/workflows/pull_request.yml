@@ -20,6 +20,11 @@ jobs:
       - name: Update Build Date
         run: sed -i "s/@build-time@/`date +%Y%m%d%H%M%S`/" WeakAuras/Init.lua
 
+      - name: Flag Experimental Build
+        run: |
+          sed -i "s/--[[@experimental@/--@experimental@/" WeakAuras/Init.lua
+          sed -i "s/--@end-experimental@]]/--@end-experimental/ WeakAuras/Init.lua
+
       - name: Create Package
         uses: BigWigsMods/packager@v2
         with:
