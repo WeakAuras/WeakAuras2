@@ -25,7 +25,7 @@ jobs:
         with:
           args: -d -z
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: WeakAuras-PR#${{ github.event.number }}-${{ github.sha }}
           path: .release/
