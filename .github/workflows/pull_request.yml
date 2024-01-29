@@ -9,7 +9,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 200
+          fetch-depth: 0
 
       - name: Install and run Luacheck
         uses: nebularg/actions-luacheck@v1
