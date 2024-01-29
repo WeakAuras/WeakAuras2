@@ -164,7 +164,7 @@ end
 local function get_zoneId_list()
   local currentmap_id = C_Map.GetBestMapForUnit("player")
   local instanceId = select(8, GetInstanceInfo())
-  local bottomText = L["Supports multiple entries, separated by commas. Group Zone IDs must be prefixed with 'g', e.g. g277. Supports Area IDs from https://wago.tools/db2/AreaTable prefixed with 'a'. Supports Instance IDs prefixed with 'i'."]
+  local bottomText = L["Supports multiple entries, separated by commas. \nGroup Zone IDs must be prefixed with 'g', e.g. g277. \nParent Zone IDs must be prefixed with 'p'. \nSupports Area IDs from https://wago.tools/db2/AreaTable prefixed with 'a'. \nSupports Instance IDs prefixed with 'i'."]
   if not instanceId and not currentmap_id then
     return ("%s\n\n%s"):format(Private.get_zoneId_list(), bottomText)
   elseif not currentmap_id then
@@ -173,6 +173,7 @@ local function get_zoneId_list()
   local currentmap_info = C_Map.GetMapInfo(currentmap_id)
   local currentmap_name = currentmap_info and currentmap_info.name or ""
   local currentmap_zone_name = ""
+  local parentmap_zone_name = ""
   local mapGroupId = C_Map.GetMapGroupID(currentmap_id)
   if mapGroupId then
     currentmap_zone_name = string.format("|cffffd200%s|r\n%s: g%d\n\n",
@@ -186,12 +187,19 @@ local function get_zoneId_list()
       end
     end
   end
+  if currentmap_info and currentmap_info.parentMapID > 0  then
+    local parentmap_info = C_Map.GetMapInfo(currentmap_info.parentMapID)
+    local parentmap_name = parentmap_info and parentmap_info.name or ""
+    parentmap_zone_name = string.format("|cffffd200%s|r\n%s: p%d\n\n",
+                                         L["Parent Zone"], parentmap_name, currentmap_info.parentMapID)
+  end
 
-  return ("%s|cffffd200%s|r\n%s: %d\n\n%s|cffffd200%s|r\n%s: %d\n\n%s"):format(
+  return ("%s|cffffd200%s|r\n%s: %d\n\n%s%s|cffffd200%s|r\n%s: %d\n\n%s"):format(
     Private.get_zoneId_list(),
     L["Current Zone"],
     currentmap_name,
     currentmap_id,
+    parentmap_zone_name,
     currentmap_zone_name,
     L["Current Instance"],
     L["Instance Id"],

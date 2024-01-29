@@ -5953,6 +5953,12 @@ function Private.ExecEnv.ParseZoneCheck(input)
         local prevChar = input:sub(start - 1, start - 1)
         if prevChar == 'g' or prevChar == 'G' then
           self.zoneGroupIds[id] = true
+        elseif prevChar == 'p' or prevChar == 'P' then
+          self.zoneIds[id] = true
+          local info = C_Map.GetMapChildrenInfo(id, nil, true)
+          for _,childInfo in pairs(info) do
+             self.zoneIds[childInfo.mapID] = true
+          end
         elseif prevChar == 'a' or prevChar == 'A' then
           self.areaNames[C_Map.GetAreaInfo(id)] = true
         elseif prevChar == 'i' or prevChar == 'I' then
