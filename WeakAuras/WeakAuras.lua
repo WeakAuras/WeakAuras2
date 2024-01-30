@@ -1174,6 +1174,7 @@ function Private.Login(initialTime, takeNewSnapshots)
     Private.Pause();
 
     db.features = db.features or {}
+    Private.Features:Hydrate()
     if db.history then
       local histRepo = WeakAuras.LoadFromArchive("Repository", "history")
       local migrationRepo = WeakAuras.LoadFromArchive("Repository", "migration")

@@ -30,7 +30,7 @@ end
 
 ---@param id string
 function Features:Enable(id)
-  if self.__feats[id] then
+  if self:Exists(id) and not self.__feats[id].enabled then
     self.__feats[id].enabled = true
     if self.__feats[id].persist then
       Private.db.features[id] = true
@@ -41,12 +41,24 @@ end
 
 ---@param id string
 function Features:Disable(id)
-  if self.__feats[id] then
+  if self:Exists(id) and self.__feats[id].enabled then
     self.__feats[id].enabled = false
     if self.__feats[id].persist then
       Private.db.features[id] = false
     end
     self.__feats[id].sub:Notify("DISABLED")
+  end
+end
+
+-- enable persisted features from the db
+function Features:Hydrate()
+  for id, enabled in (Private.db.features) do
+    if not self:Exists(id) then
+      Private.db.features[id] = nil
+    end
+    if enabled then
+      self:Enable(id)
+    end
   end
 end
 
