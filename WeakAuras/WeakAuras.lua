@@ -194,8 +194,18 @@ function SlashCmdList.WEAKAURAS(input)
   elseif msg == "repair" then
     StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "user"})
   elseif msg == "optin" then
-    Private.EnableExperiments(true)
-    prettyPrint(L["Experimental mode active! If you have any problems with an experimental feature, please let us know via a ticket on Github!"])
+    local feature = args[1]
+    if not Private.Features:Exists(feature) then
+      print(L["Unknown feature '%s'"]:format(feature))
+    else
+      if Private.Features:Enabled(feature) then
+        Private.Features:Disable(feature)
+        prettyPrint(L["Disabled feature '%s'"]:format(feature))
+      else
+        Private.Features:Enable(feature)
+        prettyPrint(L["Enabled feature '%s'"]:format(feature))
+      end
+    end
   else
     WeakAuras.OpenOptions(msg);
   end
@@ -1163,6 +1173,7 @@ function Private.Login(initialTime, takeNewSnapshots)
   local loginThread = coroutine.create(function()
     Private.Pause();
 
+    db.features = db.features or {}
     if db.history then
       local histRepo = WeakAuras.LoadFromArchive("Repository", "history")
       local migrationRepo = WeakAuras.LoadFromArchive("Repository", "migration")

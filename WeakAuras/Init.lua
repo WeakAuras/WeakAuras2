@@ -55,6 +55,7 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field ExecEnv table
 --- @field event_prototypes table<string, prototypeData>
 --- @field event_categories table<string, {name: string, default: string }>
+--- @field Features Features
 --- @field FindUnusedId fun(prefix: string?): string
 --- @field FixGroupChildrenOrderForGroup fun(data: auraData)
 --- @field frames table<string, table>
@@ -368,30 +369,32 @@ local flavorFromTocToNumber = {
 }
 local flavor = flavorFromTocToNumber[flavorFromToc]
 
+if versionString:find("alpha") then
+  WeakAuras.buildType = "alpha"
+elseif versionString:find("beta") then
+  WeakAuras.buildType = "beta"
+else
+  WeakAuras.buildType = "release"
+end
+
+--[[@experimental@
+WeakAuras.buildType = "pr"
+--@end-experimental@]]
+
+
 --@debug@
 if versionStringFromToc == "@project-version@" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
-  experimental = true
+  WeakAuras.BuildType = "dev"
 end
 --@end-debug@
 
---[[@experimental@
-experimental = true
---@end-experimental@]]
 
 WeakAuras.versionString = versionStringFromToc
 WeakAuras.buildTime = buildTime
 WeakAuras.newFeatureString = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t"
 WeakAuras.BuildInfo = select(4, GetBuildInfo())
-
-function WeakAuras.IsExperimental()
-  return experimental
-end
-
-function Private.EnableExperiments(enabled)
-  experimental = enabled
-end
 
 function WeakAuras.IsClassicEra()
   return flavor == 1

@@ -29,6 +29,7 @@ Init.lua
 locales.xml
 ArchiveTypes\Repository.lua
 DefaultOptions.lua
+Features.lua
 
 # Core files
 Atlas_Wrath.lua
