@@ -90,6 +90,13 @@ function Features:AuraCanFunction(data)
   return enabled, reasons
 end
 
+function Features:Subscribe(id, callback)
+  if self:Exists(id) then
+    self.__feats[id].sub:AddSubscriber("ENABLED", callback)
+    self.__feats[id].sub:AddSubscriber("DISABLED", callback)
+  end
+end
+
 -- sample debug feature
 Features:Register({
   id = "debug",
