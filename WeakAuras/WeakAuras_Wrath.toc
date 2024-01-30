@@ -29,9 +29,10 @@ Init.lua
 locales.xml
 ArchiveTypes\Repository.lua
 DefaultOptions.lua
-Features.lua
 
 # Core files
+SubscribableObject.lua
+Features.lua
 Atlas_Wrath.lua
 Types_Wrath.lua
 Types.lua
@@ -55,7 +56,6 @@ AuraWarnings.lua
 AuraEnvironment.lua
 AuraEnvironmentWrappedSystems.lua
 DebugLog.lua
-SubscribableObject.lua
 
 # Region support
 RegionTypes\SmoothStatusBarMixin.lua

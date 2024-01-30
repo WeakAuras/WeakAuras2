@@ -1172,9 +1172,6 @@ end
 function Private.Login(initialTime, takeNewSnapshots)
   local loginThread = coroutine.create(function()
     Private.Pause();
-
-    db.features = db.features or {}
-    Private.Features:Hydrate()
     if db.history then
       local histRepo = WeakAuras.LoadFromArchive("Repository", "history")
       local migrationRepo = WeakAuras.LoadFromArchive("Repository", "migration")
@@ -1187,6 +1184,10 @@ function Private.Login(initialTime, takeNewSnapshots)
       db.history = nil
       coroutine.yield();
     end
+
+    
+    Private.Features:Hydrate()
+    coroutine.yield()
 
     local toAdd = {};
     loginFinished = false
@@ -1280,7 +1281,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     if(addon == ADDON_NAME) then
       WeakAurasSaved = WeakAurasSaved or {};
       db = WeakAurasSaved;
-
+      Private.db = db
       -- Defines the action squelch period after login
       -- Stored in SavedVariables so it can be changed by the user if they find it necessary
       db.login_squelch_time = db.login_squelch_time or 10;
@@ -1293,6 +1294,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       db.displays = db.displays or {};
       db.registered = db.registered or {};
+      db.features = db.features or {}
       db.migrationCutoff = db.migrationCutoff or 730
       db.historyCutoff = db.historyCutoff or 730
 

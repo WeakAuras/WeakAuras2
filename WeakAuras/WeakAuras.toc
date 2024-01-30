@@ -33,9 +33,10 @@ Init.lua
 locales.xml
 ArchiveTypes\Repository.lua
 DefaultOptions.lua
-Features.lua
 
 # Core files
+SubscribableObject.lua
+Features.lua
 Atlas_Retail.lua
 Types_Retail.lua
 Types.lua
@@ -61,7 +62,6 @@ AuraEnvironment.lua
 AuraEnvironmentWrappedSystems.lua
 DebugLog.lua
 Dragonriding.lua
-SubscribableObject.lua
 
 # Region support
 RegionTypes\SmoothStatusBarMixin.lua
