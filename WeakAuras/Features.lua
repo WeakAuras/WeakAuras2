@@ -80,7 +80,7 @@ end
 -- hides a function behind a feature flag
 function Features:Wrap(id, func)
   return function(...)
-    if self:IsFeatureEnabled(id) then
+    if self:Enabled(id) then
       return func(...)
     end
   end
