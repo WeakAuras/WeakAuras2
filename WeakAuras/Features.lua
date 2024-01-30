@@ -52,7 +52,7 @@ end
 
 -- enable persisted features from the db
 function Features:Hydrate()
-  for id, enabled in (Private.db.features) do
+  for id, enabled in pairs(Private.db.features) do
     if not self:Exists(id) then
       Private.db.features[id] = nil
     end
@@ -68,7 +68,7 @@ function Features:Register(feature)
     self.__feats[feature.id] = feature
     feature.sub = Private.CreateSubscribableObject()
     for _, buildType in ipairs(feature.autoEnable or {}) do
-      if Private.buildType == buildType then
+      if WeakAuras.buildType == buildType then
         self:Enable(feature.id)
       end
     end
@@ -109,9 +109,8 @@ function Features:Subscribe(id, callback)
   end
 end
 
--- sample debug feature
+
 Features:Register({
   id = "debug",
   autoEnable = {"dev"}
 })
-

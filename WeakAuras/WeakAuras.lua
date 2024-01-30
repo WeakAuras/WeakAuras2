@@ -1185,7 +1185,7 @@ function Private.Login(initialTime, takeNewSnapshots)
       coroutine.yield();
     end
 
-    
+
     Private.Features:Hydrate()
     coroutine.yield()
 

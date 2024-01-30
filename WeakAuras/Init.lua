@@ -386,7 +386,7 @@ WeakAuras.buildType = "pr"
 if versionStringFromToc == "@project-version@" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
-  WeakAuras.BuildType = "dev"
+  WeakAuras.buildType = "dev"
 end
 --@end-debug@
 
