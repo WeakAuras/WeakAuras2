@@ -50,7 +50,7 @@ function Features:Disable(id)
   end
 end
 
--- enable persisted features from the db
+---enable persisted features from the db
 function Features:Hydrate()
   for id, enabled in pairs(Private.db.features) do
     if not self:Exists(id) then

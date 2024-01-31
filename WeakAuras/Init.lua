@@ -49,7 +49,6 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field customActionsFunctions table<auraId, table<string, function?>>
 --- @field DebugLog debugLog
 --- @field dynamic_texts table<string, table>
---- @field EnableExperiments fun(enabled: boolean)
 --- @field EndEvent fun(state: state): boolean?
 --- @field EnsureRegion fun(id: auraId, cloneId: string?): Frame
 --- @field ExecEnv table
@@ -359,7 +358,7 @@ WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
 local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
 local versionString = "@project-version@"
 local buildTime = "@build-time@"
-local experimental = false
+
 local flavorFromToc = GetAddOnMetadata("WeakAuras", "X-Flavor")
 local flavorFromTocToNumber = {
   Vanilla = 1,
@@ -369,19 +368,6 @@ local flavorFromTocToNumber = {
 }
 local flavor = flavorFromTocToNumber[flavorFromToc]
 
-if versionString:find("alpha") then
-  WeakAuras.buildType = "alpha"
-elseif versionString:find("beta") then
-  WeakAuras.buildType = "beta"
-else
-  WeakAuras.buildType = "release"
-end
-
---[[@experimental@
-WeakAuras.buildType = "pr"
---@end-experimental@]]
-
-
 --@debug@
 if versionStringFromToc == "@project-version@" then
   versionStringFromToc = "Dev"
@@ -390,6 +376,19 @@ if versionStringFromToc == "@project-version@" then
 end
 --@end-debug@
 
+--[[@experimental@
+WeakAuras.buildType = "pr"
+--@end-experimental@]]
+
+--[[@alpha@
+WeakAuras.buildType = "alpha"
+--@end-alpha]]
+
+if versionString:find("beta") then
+  WeakAuras.buildType = "beta"
+else
+  WeakAuras.buildType = "release"
+end
 
 WeakAuras.versionString = versionStringFromToc
 WeakAuras.buildTime = buildTime

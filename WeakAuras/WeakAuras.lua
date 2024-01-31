@@ -193,10 +193,13 @@ function SlashCmdList.WEAKAURAS(input)
     Private.PrintHelp();
   elseif msg == "repair" then
     StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "user"})
-  elseif msg == "optin" then
+  elseif msg == "ff" then
     local feature = args[1]
-    if not Private.Features:Exists(feature) then
-      print(L["Unknown feature '%s'"]:format(feature))
+    if feature == nil then
+      local disabledFeatures = table.concat(Private.Features:ListDisabled(), "|")
+      prettyPrint(L["Syntax /wa optin <%s>"]:format(disabledFeatures))
+    elseif not Private.Features:Exists(feature) then
+      prettyPrint(L["Unknown feature '%s'"]:format(feature)) -- or same as previous block
     else
       if Private.Features:Enabled(feature) then
         Private.Features:Disable(feature)
