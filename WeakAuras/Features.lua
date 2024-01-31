@@ -77,7 +77,7 @@ end
 
 ---@param id string
 ---@param func function
--- hides a function behind a feature flag
+---hides a function behind a feature flag
 function Features:Wrap(id, func)
   return function(...)
     if self:Enabled(id) then
