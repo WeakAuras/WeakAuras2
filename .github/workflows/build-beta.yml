@@ -46,7 +46,7 @@ jobs:
         with:
           args: -zg retail
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: WeakAuras-DF
           path: .release/
