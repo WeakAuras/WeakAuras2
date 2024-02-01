@@ -316,14 +316,32 @@ local function PrintOneProfile(popup, name, map, total)
   if map.count ~= 0 then
     popup:AddText(name .. "  ERROR: count is not zero:" .. " " .. map.count)
   end
+
   local percent = ""
   if total then
     percent = ", " .. string.format("%.2f", 100 * map.elapsed / total) .. "%"
   end
+
   local spikeInfo = ""
+  
   if map.spike then
-    spikeInfo = string.format("(%.2fms)", map.spike)
+    local color
+    local r, g, b, a
+
+    if map.spike < 2 then
+      r, g, b, a = WeakAuras.GetHSVTransition(map.spike / 2, 0, 1, 0, 1, 1, 1, 0, 1)
+    elseif map.spike >= 2 and map.spike < 3 then
+      r, g, b, a = WeakAuras.GetHSVTransition((map.spike - 2) , 1, 1, 0, 1, 1, 0.65, 0, 1)
+    else 
+      r, g, b, a = WeakAuras.GetHSVTransition(1, 1, 0, 0, 1, 1, 0, 0, 1)
+    end
+
+    color = string.format("|cff%02x%02x%02x", r * 255, g * 255, b * 255)
+    spikeInfo = string.format("%s(%.2fms)|r", color, map.spike)
+  else
+    spikeInfo = "" -- handle no map.spike
   end
+
   popup:AddText(string.format("%s |cff999999%.2fms%s %s|r", name, map.elapsed, percent, spikeInfo))
 end
 
