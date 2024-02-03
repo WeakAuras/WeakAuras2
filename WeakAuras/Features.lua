@@ -50,6 +50,21 @@ function Features:Disable(id)
   end
 end
 
+---@return {id: string, enabled: boolean}[]
+function Features:ListFeatures()
+  local list = {}
+  for id, feature in pairs(self.__feats) do
+    table.insert(list, {
+      id = id,
+      enabled = feature.enabled
+    })
+  end
+  table.sort(list, function(a, b)
+    return a.id < b.id
+  end)
+  return list
+end
+
 ---enable persisted features from the db
 function Features:Hydrate()
   for id, enabled in pairs(Private.db.features) do

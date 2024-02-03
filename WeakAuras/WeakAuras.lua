@@ -196,10 +196,15 @@ function SlashCmdList.WEAKAURAS(input)
   elseif msg == "ff" then
     local feature = args[1]
     if feature == nil then
-      local disabledFeatures = table.concat(Private.Features:ListDisabled(), "|")
-      prettyPrint(L["Syntax /wa optin <%s>"]:format(disabledFeatures))
+      local features = Private.Features:ListFeatures()
+      local summary = {}
+      for _, feature in ipairs(features) do
+        table.insert(summary, ("|c%s%s|r"):format(feature.enabled and "ff00ff00" or "ffff0000", feature.id))
+      end
+      prettyPrint(L["Syntax /wa ff <feature>"])
+      prettyPrint(L["Available features: %s"]:format(table.concat(summary, ", ")))
     elseif not Private.Features:Exists(feature) then
-      prettyPrint(L["Unknown feature '%s'"]:format(feature)) -- or same as previous block
+      prettyPrint(L["Unknown feature '%s'"]:format(feature))
     else
       if Private.Features:Enabled(feature) then
         Private.Features:Disable(feature)
