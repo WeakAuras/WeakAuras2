@@ -384,11 +384,13 @@ WeakAuras.buildType = "pr"
 WeakAuras.buildType = "alpha"
 --@end-alpha]]
 
+--[[@non-alpha@
 if versionString:find("beta") then
   WeakAuras.buildType = "beta"
 else
   WeakAuras.buildType = "release"
 end
+--@end-non-alpha@]]
 
 WeakAuras.versionString = versionStringFromToc
 WeakAuras.buildTime = buildTime
