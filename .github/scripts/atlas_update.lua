@@ -46,15 +46,22 @@ end
 --  print("Found +", name)
 --end
 
+local sortedNames = {}
+for name in pairs(validNames) do
+  table.insert(sortedNames, name)
+end
+
+table.sort(sortedNames)
+
 local output = io.open(outputFileName, "w+")
 output:write("if not WeakAuras.IsLibsOK() then return end\n")
 output:write("--- @type string, Private\n")
 output:write("local AddonName, Private = ...\n")
-output:write("Private.AtlasList = {")
-for name in pairs(validNames) do
+output:write("Private.AtlasList = {\n")
+for i, name in ipairs(sortedNames) do
   output:write('"')
   output:write(name)
-  output:write('",')
+  output:write('",\n')
 end
 output:write("}\n")
 io.close(output)
