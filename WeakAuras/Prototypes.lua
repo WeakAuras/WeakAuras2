@@ -4732,7 +4732,7 @@ Private.event_prototypes = {
         local ignoreSpellKnown = %s;
         local followoverride = %s
         local track = %q
-        local startTime, duration, gcdCooldown, readyTime, modRate = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track, followoverride)
+        local startTime, duration, gcdCooldown, readyTime, modRate, paused = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track, followoverride)
         local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown, followoverride)
         local stacks = maxCharges and maxCharges ~= 1 and charges or (spellCount and spellCount > 0 and spellCount) or nil;
         if showlossofcontrol and startTime and duration then
@@ -4775,9 +4775,27 @@ Private.event_prototypes = {
 
       if (not trigger.use_trackcharge or not trigger.trackcharge or trigger.trackcharge == "") then
         ret = ret .. [=[
-          if (state.expirationTime ~= expirationTime) then
-            state.expirationTime = expirationTime;
-            state.changed = true;
+          if paused then
+            if not state.paused then
+              state.paused = true
+              state.expirationTime = nil
+              state.changed = true
+            end
+            if state.remaining ~= startTime then
+              state.remaining = startTime
+              state.changed = true
+            end
+          else
+            if (state.expirationTime ~= expirationTime) then
+              state.expirationTime = expirationTime;
+              state.changed = true;
+            end
+
+            if state.paused then
+              state.paused = false
+              state.remaining = nil
+              state.changed = true
+            end
           end
           if (state.duration ~= duration) then
             state.duration = duration;
@@ -4789,7 +4807,7 @@ Private.event_prototypes = {
           end
           state.progressType = 'timed';
         ]=];
-      else
+      else -- Tracking charges
         local ret2 = [=[
           local trackedCharge = %s
           if (charges < trackedCharge) then
@@ -4843,7 +4861,7 @@ Private.event_prototypes = {
       if(trigger.use_remaining and trigger.genericShowOn ~= "showOnReady") then
         local ret2 = [[
           local remaining = 0;
-          if (expirationTime and expirationTime > 0) then
+          if (not paused and expirationTime and expirationTime > 0) then
             remaining = expirationTime - GetTime();
             local remainingModRate = remaining / (modRate or 1);
             local remainingCheck = %s;
@@ -5056,7 +5074,7 @@ Private.event_prototypes = {
         display = L["On Cooldown"],
         conditionType = "bool",
         conditionTest = function(state, needle)
-          return state and state.show and (not state.gcdCooldown and state.expirationTime and state.expirationTime > GetTime()) == (needle == 1)
+          return state and state.show and (state.paused or (not state.gcdCooldown and state.expirationTime and state.expirationTime > GetTime())) == (needle == 1)
         end,
       },
       {
@@ -5911,12 +5929,12 @@ Private.event_prototypes = {
       trigger.realSpellName = spellName; -- Cache
       local ret = [=[
         local spellName = %s
-        local startTime, duration, gcdCooldown, readyTime = WeakAuras.GetSpellCooldown(spellName);
+        local startTime, duration, gcdCooldown, readyTime, paused = WeakAuras.GetSpellCooldown(spellName);
         local charges, _, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellName);
         if (charges == nil) then
           charges = (duration == 0 or gcdCooldown) and 1 or 0;
         end
-        local ready = startTime == 0 or charges > 0
+        local ready = (startTime == 0 and not paused) or charges > 0
         local active = IsUsableSpell(spellName) and ready
       ]=]
       if(trigger.use_targetRequired) then
