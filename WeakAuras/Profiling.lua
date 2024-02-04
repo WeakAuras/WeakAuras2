@@ -347,6 +347,9 @@ local function SortProfileMap(map)
   end
 
   sort(result, function(a, b)
+    if map[a].spike and map[b].spike then
+      return map[a].spike > map[b].spike
+    end
     return map[a].elapsed > map[b].elapsed
   end)
 
