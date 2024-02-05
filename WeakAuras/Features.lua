@@ -117,10 +117,17 @@ function Features:AuraCanFunction(data)
   return enabled, reasons
 end
 
-function Features:Subscribe(id, callback)
+---@param id string
+---@param enable function
+---@param disable function
+function Features:Subscribe(id, enable, disable)
+  local tbl = {
+    Enable = enable,
+    Disable = disable
+  }
   if self:Exists(id) then
-    self.__feats[id].sub:AddSubscriber("ENABLED", callback)
-    self.__feats[id].sub:AddSubscriber("DISABLED", callback)
+    self.__feats[id].sub:AddSubscriber("Enable", tbl)
+    self.__feats[id].sub:AddSubscriber("Disable", tbl)
   end
 end
 
