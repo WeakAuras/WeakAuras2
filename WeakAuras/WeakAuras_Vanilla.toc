@@ -44,7 +44,7 @@ Modernize.lua
 Animations.lua
 Conditions.lua
 AnchorToWeakAuras.lua
-
+TimeMachine.lua
 # Trigger systems
 BuffTrigger2.lua
 GenericTrigger.lua

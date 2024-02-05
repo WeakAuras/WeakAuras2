@@ -52,6 +52,7 @@ Modernize.lua
 Animations.lua
 Conditions.lua
 AnchorToWeakAuras.lua
+TimeMachine.lua
 
 # Trigger systems
 LibSpecializationWrapper.lua
