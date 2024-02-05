@@ -161,3 +161,9 @@ Features:Register({
   id = "debug",
   autoEnable = {"dev"}
 })
+
+Features:Register({
+  id = "undo",
+  autoEnable = {"dev", "pr"},
+  persist = true
+})
