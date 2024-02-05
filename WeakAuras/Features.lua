@@ -164,6 +164,10 @@ Features:Register({
   autoEnable = {"dev"}
 })
 
+Private.DebugPrint = Features:Wrap("debug", function(...)
+  print(...)
+end)
+
 Features:Register({
   id = "undo",
   autoEnable = {"dev", "pr"},
