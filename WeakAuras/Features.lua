@@ -14,7 +14,10 @@ local addon, Private = ...
 ---@class Features
 local Features = {
   ---@type table<string, feature>
-  __feats = {}
+  __feats = {},
+  hydrated = false,
+  ---@type {[string]: true}
+  toPersist = {}
 }
 Private.Features = Features
 
@@ -29,11 +32,16 @@ function Features:Enabled(id)
 end
 
 ---@param id string
-function Features:Enable(id)
+---@param auto? boolean
+function Features:Enable(id, auto)
   if self:Exists(id) and not self.__feats[id].enabled then
     self.__feats[id].enabled = true
-    if self.__feats[id].persist then
-      Private.db.features[id] = true
+    if self.__feats[id].persist and not auto then
+      if self.hydrated then
+        Private.db.features[id] = true
+      else
+        self.toPersist[id] = true
+      end
     end
     self.__feats[id].sub:Notify("Enable")
   end
@@ -67,12 +75,20 @@ end
 
 ---enable persisted features from the db
 function Features:Hydrate()
+  self.hydrated = true
   for id, enabled in pairs(Private.db.features) do
     if not self:Exists(id) then
       Private.db.features[id] = nil
     end
     if enabled then
       self:Enable(id)
+    else
+      self:Disable(id)
+    end
+  end
+  for id, persist in pairs(self.toPersist) do
+    if persist then
+      Private.db.features[id] = true
     end
   end
 end
@@ -84,7 +100,7 @@ function Features:Register(feature)
     feature.sub = Private.CreateSubscribableObject()
     for _, buildType in ipairs(feature.autoEnable or {}) do
       if WeakAuras.buildType == buildType then
-        self:Enable(feature.id)
+        self:Enable(feature.id, true)
       end
     end
   end
