@@ -35,7 +35,7 @@ function Features:Enable(id)
     if self.__feats[id].persist then
       Private.db.features[id] = true
     end
-    self.__feats[id].sub:Notify("ENABLED")
+    self.__feats[id].sub:Notify("Enable")
   end
 end
 
@@ -46,7 +46,7 @@ function Features:Disable(id)
     if self.__feats[id].persist then
       Private.db.features[id] = false
     end
-    self.__feats[id].sub:Notify("DISABLED")
+    self.__feats[id].sub:Notify("Disable")
   end
 end
 
