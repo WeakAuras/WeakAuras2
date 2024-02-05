@@ -628,8 +628,11 @@ function OptionsPrivate.CreateFrame()
   undoButton:SetText(L["Undo"])
   undoButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\upleft")
   undoButton:SetCallback("OnClick", function()
-    --WeakAurasOptionsSaved.undoStack:Undo()
-    WeakAuras.prettyPrint(L["Undo not yet implemented"])
+    OptionsPrivate.Private.DebugPrint("undoing change on", frame.pickedDisplay)
+    OptionsPrivate.Private.TimeMachine:StepBackward()
+    frame:ClearOptions(frame.pickedDisplay)
+    frame:ClearAndUpdateOptions(frame.pickedDisplay)
+    frame:FillOptions()
   end)
   undoButton.frame:SetParent(toolbarContainer)
   undoButton.frame:SetShown(OptionsPrivate.Private.Features:Enabled("undo"))
@@ -639,8 +642,9 @@ function OptionsPrivate.CreateFrame()
   redoButton:SetText(L["Redo"])
   redoButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\upright")
   redoButton:SetCallback("OnClick", function()
-    --WeakAurasOptionsSaved.undoStack:Redo()
-    WeakAuras.prettyPrint(L["Redo not yet implemented"])
+    OptionsPrivate.Private.TimeMachine:StepForward()
+    frame:ClearAndUpdateOptions(frame.pickedDisplay)
+    frame:FillOptions()
   end)
   redoButton.frame:SetParent(toolbarContainer)
   redoButton.frame:SetShown(OptionsPrivate.Private.Features:Enabled("undo"))
@@ -888,6 +892,7 @@ function OptionsPrivate.CreateFrame()
 
 
   frame.ClearOptions = function(self, id)
+    OptionsPrivate.Private.DebugPrint("Clearing options for", id)
     aceOptions[id] = nil
     OptionsPrivate.commonOptionsCache:Clear()
     if type(id) == "string" then
@@ -904,6 +909,7 @@ function OptionsPrivate.CreateFrame()
   end
 
   frame.ClearAndUpdateOptions = function(self, id, clearChildren)
+    OptionsPrivate.Private.DebugPrint("Clearing and updating options for", id)
     frame:ClearOptions(id)
 
     if clearChildren then

@@ -77,11 +77,13 @@ function OptionsPrivate.GetInformationOptions(data)
       return sameURL and commonURL or ""
     end,
     set = function(info, v)
+      local auras, changes = {}, {}
       for child in traverseForUrl(data) do
-        child.url = v
-        WeakAuras.Add(child)
+        table.insert(auras, child)
+        table.insert(changes, {set = {url = v}})
         OptionsPrivate.ClearOptions(child.id)
       end
+      OptionsPrivate.Private.TimeMachine:Commit(auras, changes)
 
       WeakAuras.ClearAndUpdateOptions(data.id)
     end,
