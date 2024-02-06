@@ -628,7 +628,6 @@ function OptionsPrivate.CreateFrame()
   undoButton:SetText(L["Undo"])
   undoButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\upleft")
   undoButton:SetCallback("OnClick", function()
-    OptionsPrivate.Private.DebugPrint("undoing change on", frame.pickedDisplay)
     OptionsPrivate.Private.TimeMachine:StepBackward()
     frame:ClearOptions(frame.pickedDisplay)
     frame:ClearAndUpdateOptions(frame.pickedDisplay)
@@ -892,7 +891,6 @@ function OptionsPrivate.CreateFrame()
 
 
   frame.ClearOptions = function(self, id)
-    OptionsPrivate.Private.DebugPrint("Clearing options for", id)
     aceOptions[id] = nil
     OptionsPrivate.commonOptionsCache:Clear()
     if type(id) == "string" then
@@ -909,7 +907,6 @@ function OptionsPrivate.CreateFrame()
   end
 
   frame.ClearAndUpdateOptions = function(self, id, clearChildren)
-    OptionsPrivate.Private.DebugPrint("Clearing and updating options for", id)
     frame:ClearOptions(id)
 
     if clearChildren then
