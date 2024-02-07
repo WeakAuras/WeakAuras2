@@ -77,11 +77,15 @@ function OptionsPrivate.GetInformationOptions(data)
       return sameURL and commonURL or ""
     end,
     set = function(info, v)
+      ---@type actionRecord[]
       local delta = {}
       for child in traverseForUrl(data) do
-        delta[child.uid] = delta[child.uid] or {}
-        delta[child.uid].set = delta[child.uid].set or {}
-        delta[child.uid].set.url = v
+        table.insert(delta, {
+          uid = child.uid,
+          actionType = "set",
+          path = "url",
+          payload = v
+        })
         OptionsPrivate.ClearOptions(child.id)
       end
       OptionsPrivate.Private.TimeMachine:Commit(delta)
