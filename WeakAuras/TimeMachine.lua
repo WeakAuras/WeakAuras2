@@ -8,6 +8,7 @@ local TimeMachine = {
     forward = {},
     backward = {}
   },
+  transaction = false,
   ---@type change[]
   changes = {},
   ---@type table<actionType, Action>
@@ -138,6 +139,11 @@ local function keyPathToString(path)
   end
 end
 
+function TimeMachine:StartTransaction()
+  self:Reject()
+  self.transaction = true
+end
+
 ---@param record actionRecord
 function TimeMachine:Append(record)
   local action = self.actions[record.actionType]
@@ -159,12 +165,23 @@ function TimeMachine:Append(record)
   Private.DebugPrint("Backward action", actionType, "for", record.uid, "at", keyPathToString(path), "with", payload)
   table.insert(self.next.forward, record)
   table.insert(self.next.backward, inverseRecord)
+  if not self.transaction then
+    self:Commit()
+  end
 end
 
 ---@param records actionRecord[]
 function TimeMachine:AppendMany(records)
+  local commit = false
+  if not self.transaction then
+    self:StartTransaction()
+    commit = true
+  end
   for _, record in ipairs(records) do
     self:Append(record)
+  end
+  if commit then
+    self:Commit()
   end
 end
 
@@ -176,16 +193,15 @@ function TimeMachine:Reject()
 end
 
 function TimeMachine:Commit()
-  if self.index < #self.changes then
-    for i = self.index + 1, #self.changes do
-      self.changes[i] = nil
-    end
+  while self.index < #self.changes do
+    table.remove(self.changes)
   end
   table.insert(self.changes, self.next)
   self.next = {
     forward = {},
     backward = {}
   }
+  self.transaction = false
   return self:StepForward()
 end
 
