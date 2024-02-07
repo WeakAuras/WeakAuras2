@@ -22,24 +22,31 @@ local function WA_GetClassColor(classFilename)
   return "ffffffff"
 end
 
+--- @class Private
+--- @field glow_action_types table<string, string>
 Private.glow_action_types = {
   show = L["Show"],
   hide = L["Hide"]
 }
 
+--- @class Private
+--- @field glow_frame_types table<string, string>
 Private.glow_frame_types = {
   UNITFRAME = L["Unit Frame"],
   NAMEPLATE = L["Nameplate"],
   FRAMESELECTOR = L["Frame Selector"]
 }
 
---- @type table<dynamicGroupCircularTypes, string>
+--- @class Private
+--- @field circular_group_constant_factor_types table<dynamicGroupCircularTypes, string>
 Private.circular_group_constant_factor_types = {
   ANGLE = L["Angle and Radius"],
   RADIUS = L["Radius"],
   SPACING = L["Spacing"]
 }
 
+--- @class Private
+--- @field frame_strata_types table<number, string>
 Private.frame_strata_types = {
   [1] = L["Inherited"],
   [2] = "BACKGROUND",
@@ -52,21 +59,29 @@ Private.frame_strata_types = {
   [9] = "TOOLTIP"
 }
 
+--- @class Private
+--- @field hostility_types table<string, string>
 Private.hostility_types = {
   hostile = L["Hostile"],
   friendly = L["Friendly"]
 }
 
+--- @class Private
+--- @field character_types table<string, string>
 Private.character_types = {
   player = L["Player Character"],
   npc = L["Non-player Character"]
 }
 
+--- @class Private
+--- @field spec_position_types table<string, string>
 Private.spec_position_types = {
   RANGED = L["Ranged"],
   MELEE = L["Melee"]
 }
 
+--- @class Private
+--- @field group_sort_types table<string, string>
 Private.group_sort_types = {
   ascending = L["Ascending"],
   descending = L["Descending"],
@@ -75,28 +90,38 @@ Private.group_sort_types = {
   custom = L["Custom"]
 }
 
+--- @class Private
+--- @field group_hybrid_position_types table<string, string>
 Private.group_hybrid_position_types = {
   hybridFirst = L["Marked First"],
   hybridLast = L["Marked Last"]
 }
 
+--- @class Private
+--- @field group_hybrid_sort_types table<string, string>
 Private.group_hybrid_sort_types = {
   ascending = L["Ascending"],
   descending = L["Descending"]
 }
 
+--- @class Private
+--- @field time_format_types table<number, string>
 Private.time_format_types = {
   [0] = L["WeakAuras Built-In (63:42 | 3:07 | 10 | 2.4)"],
   [1] = L["Old Blizzard (2h | 3m | 10s | 2.4)"],
   [2] = L["Modern Blizzard (1h 3m | 3m 7s | 10s | 2.4)"],
 }
 
+--- @class Private
+--- @field time_precision_types table<number, string>
 Private.time_precision_types = {
   [1] = "12.3",
   [2] = "12.34",
   [3] = "12.345",
 }
 
+--- @class Private
+--- @field precision_types table<number, string>
 Private.precision_types = {
   [0] = "12",
   [1] = "12.3",
@@ -104,22 +129,30 @@ Private.precision_types = {
   [3] = "12.345",
 }
 
+--- @class Private
+--- @field big_number_types table<string, string>
 Private.big_number_types = {
   ["AbbreviateNumbers"] = L["AbbreviateNumbers (Blizzard)"],
   ["AbbreviateLargeNumbers"] = L["AbbreviateLargeNumbers (Blizzard)"]
 }
 
+--- @class Private
+--- @field round_types table<string, string>
 Private.round_types = {
   floor = L["Floor"],
   ceil = L["Ceil"],
   round = L["Round"]
 }
 
+--- @class Private
+--- @field unit_color_types table<string, string>
 Private.unit_color_types = {
   none = L["None"],
   class = L["Class"]
 }
 
+--- @class Private
+--- @field unit_realm_name_types table<string, string>
 Private.unit_realm_name_types = {
   never = L["Never"],
   star = L["* Suffix"],
@@ -1343,6 +1376,8 @@ Private.combatlog_spell_school_types = {
   [127] = STRING_SCHOOL_CHAOS,
 }
 
+--- @class Private
+--- @field combatlog_spell_school_types_for_ui table<number, string>
 Private.combatlog_spell_school_types_for_ui = {}
 for id, str in pairs(Private.combatlog_spell_school_types) do
   Private.combatlog_spell_school_types_for_ui[id] = ("%.3d - %s"):format(id, str)

@@ -9,10 +9,6 @@ local AddonName, Private = ...
 --- | "warning"
 --- | "error"
 
---- @class AuraWarnings
---- @field UpdateWarning fun(uid: uid, key: string, severity: AuraWarningSeverity?, message: string?, printOnConsole: boolean?)
---- @field FormatWarnings fun(uid: uid): string?, string?, string?
-
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 
@@ -27,7 +23,16 @@ local function OnDelete(event, uid)
 end
 
 Private.callbacks:RegisterCallback("Delete", OnDelete)
-Private.AuraWarnings = {}
+
+--- @class AuraWarnings
+--- @field UpdateWarning fun(uid: uid, key: string, severity: AuraWarningSeverity?, message: string?, printOnConsole: boolean?)
+--- @field FormatWarnings fun(uid: uid): string?, string?, string?
+Private.AuraWarnings = {
+  UpdateWarning = function(uid, key, severity, message, printOnConsole)
+  end,
+  FormatWarnings = function(uid)
+  end
+}
 
 function Private.AuraWarnings.UpdateWarning(uid, key, severity, message, printOnConsole)
   if not uid then
