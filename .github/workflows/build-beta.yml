@@ -17,6 +17,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Hack around https://github.com/actions/checkout/issues/290
+        run: |
+          git fetch --tags --force
+
       - name: Install and run Luacheck
         uses: nebularg/actions-luacheck@v1
         with:
