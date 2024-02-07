@@ -190,7 +190,7 @@ function Private.AuraWarnings.GetAllWarnings(uid)
     results[warning.severity] = {
       icon = icons[warning.severity],
       prio = 5 + severityLevel[warning.severity],
-      title = warning.severity,
+      title = titles[warning.severity] or warning.severity,
       message = warning.message,
       auraId = warning.auraId,
       tab = tabs[key] or "information"
