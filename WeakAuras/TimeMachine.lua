@@ -18,10 +18,15 @@ Private.TimeMachine = TimeMachine
 ---@alias Action<T> fun(data: table, path: keyPath, payload: T)
 ---@alias Inverter<T, S> fun(data: table, path: keyPath, payload?: T): actionType, keyPath, S?
 ---@alias actionType string
----@alias delta table<actionType, table<keyPath, any>>
+---@class actionRecord
+---@field uid uid
+---@field actionType actionType
+---@field path keyPath
+---@field payload any
+
 ---@class change
----@field forward table<uid, delta>
----@field backward table<uid, delta>
+---@field forward actionRecord[]
+---@field backward actionRecord[]
 
 ---@param data table
 ---@param path keyPath
@@ -39,6 +44,14 @@ local function resolveKey(data, path)
   return tbl, path[#path]
 end
 
+local function copy(tbl, key)
+  if type(tbl[key]) == "table" then
+    return CopyTable(tbl[key])
+  else
+    return tbl[key]
+  end
+end
+
 ---@type Action<any>
 function TimeMachine.actions.set(data, path, value)
   local tbl, key = resolveKey(data, path)
@@ -51,7 +64,7 @@ function TimeMachine.inverters.set(data, path)
   if tbl[key] == nil then
     return 'unset', path, nil
   else
-    return 'set', path, tbl[key]
+    return 'set', path, copy(tbl, key)
   end
 end
 
@@ -85,7 +98,7 @@ end
 ---@type Inverter<number, {index: number, value: any}>
 function TimeMachine.inverters.remove(data, path, payload)
   local tbl, key = resolveKey(data, path)
-  return 'insert', path, {index = payload, value = tbl[key][payload]}
+  return 'insert', path, {index = payload, value = copy(tbl[key], payload)}
 end
 
 ---@type Action<{[1]: number, [2]: number}>
@@ -111,6 +124,7 @@ function TimeMachine.inverters.move(data, path, payload)
   return 'move', path, {payload[2], payload[1]}
 end
 
+---@param path keyPath
 local function keyPathToString(path)
   if type(path) == 'table' then
     return table.concat(path, '.')
@@ -119,49 +133,48 @@ local function keyPathToString(path)
   end
 end
 
----@param forwardDeltas table<uid, delta>
-function TimeMachine:Commit(forwardDeltas)
-  ---@type change
+---@param forward actionRecord[]
+function TimeMachine:Commit(forward)
   local change = {
-    forward = forwardDeltas,
+    forward = forward,
     backward = {}
   }
-  for uid, delta in pairs(forwardDeltas) do
-    change.backward[uid] = change.backward[uid] or {}
-    for action, changes in pairs(delta) do
-      if not self.actions[action] then
-        error("Invalid action: " .. action)
-      end
-      for k, v in pairs(changes) do
-        Private.DebugPrint('forward change is:', action, keyPathToString(k), v)
-        local actionType, path, payload = self.inverters[action](Private.GetDataByUID(uid), k, v)
-        Private.DebugPrint('backwards change is:', actionType, keyPathToString(path), payload)
-        change.backward[uid][actionType] = change.backward[uid][actionType] or {}
-        change.backward[uid][actionType][path] = payload
-      end
+  for i = 1, #forward do
+    local action = forward[i].actionType
+    local inverter = self.inverters[action]
+    if not inverter then
+      error("No inverter for action: " .. action)
     end
-  end
-  for i = self.index, #self.changes do
-    self.changes[i] = nil
+    local actionType, path, payload = inverter(Private.GetDataByUID(forward[i].uid), forward[i].path, forward[i].payload)
+    Private.DebugPrint("Forward action is", forward[i].uid, action, keyPathToString(forward[i].path), forward[i].payload)
+    Private.DebugPrint("Backward action is", forward[i].uid, actionType, keyPathToString(path), payload)
+    change.backward[#forward - i + 1] = {
+      uid = forward[i].uid,
+      actionType = actionType,
+      path = path,
+      payload = payload
+    }
   end
   table.insert(self.changes, change)
   return self:StepForward()
 end
 
----@param delta delta
+---@param records actionRecord[]
 ---@param doAdds boolean
-function TimeMachine:Apply(delta, doAdds)
-  for uid, changes in pairs(delta) do
-    local data = Private.GetDataByUID(uid)
-    for action, changes in pairs(changes) do
-      if not self.actions[action] then
-        error("Invalid action: " .. action)
-      end
-      for k, v in pairs(changes) do
-        self.actions[action](data, k, v)
-      end
+function TimeMachine:Apply(records, doAdds)
+  local changedData = {}
+  for _, record in ipairs(records) do
+    local action = self.actions[record.actionType]
+    if not action then
+      error("No action for actionType: " .. record.actionType)
     end
-    if doAdds then
+    local data = Private.GetDataByUID(record.uid)
+    action(data, record.path, record.payload)
+    changedData[record.uid] = true
+  end
+  if doAdds then
+    for uid in pairs(changedData) do
+      local data = Private.GetDataByUID(uid)
       WeakAuras.Add(data)
     end
   end
@@ -191,5 +204,3 @@ function TimeMachine:TravelTo(index)
   end
   self.index = index
 end
-
-
