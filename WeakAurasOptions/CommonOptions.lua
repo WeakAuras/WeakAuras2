@@ -978,6 +978,7 @@ end
 
 local function CreateSetAll(subOption, getAll)
   return function(data, info, ...)
+    OptionsPrivate.Private.TimeMachine:StartTransaction()
     OptionsPrivate.Private.pauseOptionsProcessing(true);
     local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
     local before = getAll(data, info, ...)
@@ -989,7 +990,6 @@ local function CreateSetAll(subOption, getAll)
         childOption = childOption.args[info[i]];
         childOptionTable[i] = childOption;
       end
-
       if (childOption and not disabledOrHiddenChild(childOptionTable, info)) then
         for i=#childOptionTable,0,-1 do
           local optionTable = childOptionTable[i]
@@ -1016,7 +1016,7 @@ local function CreateSetAll(subOption, getAll)
         end
       end
     end
-
+    OptionsPrivate.Private.TimeMachine:Commit()
     OptionsPrivate.Private.ResumeAllDynamicGroups(suspended)
     OptionsPrivate.Private.pauseOptionsProcessing(false);
     OptionsPrivate.Private.ScanForLoads();
