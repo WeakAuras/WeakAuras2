@@ -77,10 +77,8 @@ function OptionsPrivate.GetInformationOptions(data)
       return sameURL and commonURL or ""
     end,
     set = function(info, v)
-      ---@type actionRecord[]
-      local delta = {}
       for child in traverseForUrl(data) do
-        table.insert(delta, {
+        OptionsPrivate.Private.TimeMachine:Append({
           uid = child.uid,
           actionType = "set",
           path = "url",
@@ -88,7 +86,7 @@ function OptionsPrivate.GetInformationOptions(data)
         })
         OptionsPrivate.ClearOptions(child.id)
       end
-      OptionsPrivate.Private.TimeMachine:Commit(delta)
+      OptionsPrivate.Private.TimeMachine:Commit()
 
       WeakAuras.ClearAndUpdateOptions(data.id)
     end,

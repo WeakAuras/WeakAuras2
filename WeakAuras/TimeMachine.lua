@@ -3,6 +3,11 @@ local _, Private = ...
 
 
 local TimeMachine = {
+  ---@type change
+  next = {
+    forward = {},
+    backward = {}
+  },
   ---@type change[]
   changes = {},
   ---@type table<actionType, Action>
@@ -133,29 +138,54 @@ local function keyPathToString(path)
   end
 end
 
----@param forward actionRecord[]
-function TimeMachine:Commit(forward)
-  local change = {
-    forward = forward,
+---@param record actionRecord
+function TimeMachine:Append(record)
+  local action = self.actions[record.actionType]
+  Private.DebugPrint("Forward action", record.actionType, "for", record.uid, "at", keyPathToString(record.path), "with", record.payload)
+  if not action then
+    error("No action for actionType: " .. record.actionType)
+  end
+  local inverter = self.inverters[record.actionType]
+  if not inverter then
+    error("No inverter for action: " .. record.actionType)
+  end
+  local actionType, path, payload = inverter(Private.GetDataByUID(record.uid), record.path, record.payload)
+  local inverseRecord = {
+    uid = record.uid,
+    actionType = actionType,
+    path = path,
+    payload = payload
+  }
+  Private.DebugPrint("Backward action", actionType, "for", record.uid, "at", keyPathToString(path), "with", payload)
+  table.insert(self.next.forward, record)
+  table.insert(self.next.backward, inverseRecord)
+end
+
+---@param records actionRecord[]
+function TimeMachine:AppendMany(records)
+  for _, record in ipairs(records) do
+    self:Append(record)
+  end
+end
+
+function TimeMachine:Reject()
+  self.next = {
+    forward = {},
     backward = {}
   }
-  for i = 1, #forward do
-    local action = forward[i].actionType
-    local inverter = self.inverters[action]
-    if not inverter then
-      error("No inverter for action: " .. action)
+end
+
+function TimeMachine:Commit()
+  if self.index < #self.changes then
+    for i = self.index + 1, #self.changes do
+      self.changes[i] = nil
     end
-    local actionType, path, payload = inverter(Private.GetDataByUID(forward[i].uid), forward[i].path, forward[i].payload)
-    Private.DebugPrint("Forward action is", forward[i].uid, action, keyPathToString(forward[i].path), forward[i].payload)
-    Private.DebugPrint("Backward action is", forward[i].uid, actionType, keyPathToString(path), payload)
-    change.backward[#forward - i + 1] = {
-      uid = forward[i].uid,
-      actionType = actionType,
-      path = path,
-      payload = payload
-    }
   end
-  table.insert(self.changes, change)
+  table.insert(self.changes, self.next)
+  self.next = {
+    forward = {},
+    backward = {}
+  }
   return self:StepForward()
 end
 
