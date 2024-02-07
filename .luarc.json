@@ -210,7 +210,15 @@
     "WeakAurasRealTimeProfiling",
     "WeakAurasRealTimeProfilingTitleText",
     "WeakAurasOptionsTitleText",
-    "WeakAurasOptionsPortrait"
+    "WeakAurasOptionsPortrait",
+    "C_Seasons",
+    "UnitAura",
+    "GetCurrencyInfo",
+    "SECOND_NUMBER_CAP_NO_SPACE",
+    "GetCurrencyListSize",
+    "FIRST_NUMBER_CAP_NO_SPACE",
+    "CreateFramePool",
+    "AceGUIWeakAurasMultiLineEditBoxWithEnterInsertLink"
   ],
   "runtime.version": "Lua 5.1",
   "workspace.ignoreDir": [

@@ -298,7 +298,7 @@ local function BuildUidMap(data, children, type)
   ---                              import, otherwise nil
   --- @field matchedUid uid? for "update", the matched uid. Is from a different domain!
   --- @field diff any  for "update", the diff and the categories of that diff between the aura and its match
-  --- @field categories the categories
+  --- @field categories table the categories
   --- @field index number helpers that transport data between phase 1 and 2
   --- @field total number helpers that transport data between phase 1 and 2
   --- @field parentIsDynamicGroup boolean helpers that transport data between phase 1 and 2
