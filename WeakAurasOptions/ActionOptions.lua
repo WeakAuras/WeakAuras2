@@ -52,17 +52,12 @@ function OptionsPrivate.GetActionOptions(data)
     set = function(info, v, g, b, a)
       local split = info[#info]:find("_");
       local field, value = info[#info]:sub(1, split-1), info[#info]:sub(split+1);
-      data.actions = data.actions or {};
-      data.actions[field] = data.actions[field] or {};
-      if (info.type == "color") then
-        if not data.actions[field][value] or type(data.actions[field][value]) ~= "table" then
-          data.actions[field][value] = {}
-        end
-        local c = data.actions[field][value]
-        c[1], c[2], c[3], c[4] = v, g, b, a;
-      else
-        data.actions[field][value] = v;
-      end
+      OptionsPrivate.Private.TimeMachine:Append({
+        uid = data.uid,
+        actionType = "set",
+        path = {"actions", field, value},
+        payload = info.type == "color" and {v, g, b, a} or v
+      })
       if(value == "sound" or value == "sound_path") then
         if lastPlayedSoundFromSet ~= GetTime() then
           pcall(PlaySoundFile, v, "Master")
@@ -74,7 +69,6 @@ function OptionsPrivate.GetActionOptions(data)
           lastPlayedSoundFromSet = GetTime()
         end
       end
-      WeakAuras.Add(data);
       if(value == "message") then
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
