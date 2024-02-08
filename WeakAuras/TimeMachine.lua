@@ -67,21 +67,7 @@ end
 ---@type Inverter<any, any>
 function TimeMachine.inverters.set(data, path)
   local tbl, key = resolveKey(data, path)
-  if tbl[key] == nil then
-    return 'unset', path, nil
-  else
-    return 'set', path, copy(tbl, key)
-  end
-end
-
----@type Action<nil> 'sugar' for set(nil), since tables can't have nil as a value
-function TimeMachine.actions.unset(data, path)
-  return TimeMachine.actions.set(data, path, nil)
-end
-
----@type Inverter<nil, any>
-function TimeMachine.inverters.unset(data, path)
-  return TimeMachine.inverters.set(data, path)
+  return 'set', path, copy(tbl, key)
 end
 
 ---@type Action<{index: number, value: any}>
