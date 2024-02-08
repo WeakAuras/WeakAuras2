@@ -60,26 +60,32 @@ commonOptionsCache.Clear = function(self)
 end
 
 
-local parsePrefix = function(input, data, create)
+local prefixToPath = function(input)
   local subRegionIndex, property = string.match(input, "^sub%.(%d+)%..-%.(.+)")
   subRegionIndex = tonumber(subRegionIndex)
   if subRegionIndex then
-    if create then
-      data.subRegions = data.subRegions or {}
-      data.subRegions[subRegionIndex] = data.subRegions[subRegionIndex] or {}
-    else
-      if not data.subRegions or not data.subRegions[subRegionIndex] then
-        return nil
-      end
-    end
-    return data.subRegions[subRegionIndex], property
+    return {"subRegions", subRegionIndex, property}
   end
-  local index = string.find(input, ".", 1, true);
+  local index = string.find(input, ".", 1, true)
   if (index) then
-    return data, string.sub(input, index + 1);
+    return {string.sub(input, index + 1)}
   end
-  return data, input
+  return {input}
 end
+
+local pathToDataKey = function(data, path)
+  local tbl = data
+  local i = 1
+  while i < #path do
+    tbl = tbl[path[i]]
+    if not tbl then
+      return nil
+    end
+    i = i + 1
+  end
+  return tbl, path[#path]
+end
+
 
 local function setFuncs(option, input)
   if type(input) == "function" then
@@ -2082,7 +2088,8 @@ end
 
 
 OptionsPrivate.commonOptions = {}
-OptionsPrivate.commonOptions.parsePrefix = parsePrefix
+OptionsPrivate.commonOptions.prefixToPath = prefixToPath
+OptionsPrivate.commonOptions.pathToDataKey = pathToDataKey
 OptionsPrivate.commonOptions.flattenRegionOptions = flattenRegionOptions
 OptionsPrivate.commonOptions.fixMetaOrders = fixMetaOrders
 OptionsPrivate.commonOptions.removeFuncs = removeFuncs
