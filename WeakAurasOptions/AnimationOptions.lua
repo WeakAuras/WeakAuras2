@@ -83,7 +83,7 @@ function OptionsPrivate.GetAnimationOptions(data)
         uid = data.uid,
         actionType = "set",
         path = {"animation", field, value},
-        value = v
+        payload = v
       })
       --TODO : move this somewhere else so that animations work properly even on batched transactions
       if(field == "main") then
@@ -393,25 +393,25 @@ function OptionsPrivate.GetAnimationOptions(data)
                 uid = data.uid,
                 actionType = "set",
                 path = {"animation", "start", "colorR"},
-                value = r
+                payload = r
               },
               {
                 uid = data.uid,
                 actionType = "set",
                 path = {"animation", "start", "colorG"},
-                value = g
+                payload = g
               },
               {
                 uid = data.uid,
                 actionType = "set",
                 path = {"animation", "start", "colorB"},
-                value = b
+                payload = b
               },
               {
                 uid = data.uid,
                 actionType = "set",
                 path = {"animation", "start", "colorA"},
-                value = a
+                payload = a
               }
             }
           )
@@ -680,25 +680,25 @@ function OptionsPrivate.GetAnimationOptions(data)
               uid = data.uid,
               actionType = "set",
               path = {"animation", "main", "colorR"},
-              value = r
+              payload = r
             },
             {
               uid = data.uid,
               actionType = "set",
               path = {"animation", "main", "colorG"},
-              value = g
+              payload = g
             },
             {
               uid = data.uid,
               actionType = "set",
               path = {"animation", "main", "colorB"},
-              value = b
+              payload = b
             },
             {
               uid = data.uid,
               actionType = "set",
               path = {"animation", "main", "colorA"},
-              value = a
+              payload = a
             }
           })
         end
@@ -951,25 +951,25 @@ function OptionsPrivate.GetAnimationOptions(data)
               uid = data.uid,
               actionType = "set",
               path = {"animation", "finish", "colorR"},
-              value = r
+              payload = r
             },
             {
               uid = data.uid,
               actionType = "set",
               path = {"animation", "finish", "colorG"},
-              value = g
+              payload = g
             },
             {
               uid = data.uid,
               actionType = "set",
               path = {"animation", "finish", "colorB"},
-              value = b
+              payload = b
             },
             {
               uid = data.uid,
               actionType = "set",
               path = {"animation", "finish", "colorA"},
-              value = a
+              payload = a
             }
           })
         end

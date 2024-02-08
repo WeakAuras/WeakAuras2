@@ -291,12 +291,12 @@ function OptionsPrivate.GetDisplayOptions(data)
     region.set = function(info, ...)
       OptionsPrivate.Private.TimeMachine:StartTransaction()
       setAll(data, info, ...);
+      OptionsPrivate.Private.TimeMachine:Commit()
       if(type(data.id) == "string") then
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
       end
-      OptionsPrivate.Private.TimeMachine:Commit()
     end
     region.hidden = function(info, ...) return hiddenAll(data, info, ...); end;
     region.disabled = function(info, ...) return disabledAll(data, info, ...); end;
