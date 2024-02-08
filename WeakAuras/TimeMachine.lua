@@ -1,7 +1,7 @@
 ---@type string, Private
 local _, Private = ...
 
-
+---@class TimeMachine
 local TimeMachine = {
   ---@type change
   next = {
