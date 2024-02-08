@@ -4,7 +4,8 @@ local L = WeakAuras.L
 
 local flattenRegionOptions = OptionsPrivate.commonOptions.flattenRegionOptions
 local fixMetaOrders = OptionsPrivate.commonOptions.fixMetaOrders
-local parsePrefix = OptionsPrivate.commonOptions.parsePrefix
+local prefixToPath = OptionsPrivate.commonOptions.prefixToPath
+local pathToDataKey = OptionsPrivate.commonOptions.pathToDataKey
 local removeFuncs = OptionsPrivate.commonOptions.removeFuncs
 local replaceNameDescFuncs = OptionsPrivate.commonOptions.replaceNameDescFuncs
 local replaceImageFuncs = OptionsPrivate.commonOptions.replaceImageFuncs
@@ -160,30 +161,27 @@ function OptionsPrivate.GetDisplayOptions(data)
       name = L["Display"],
       order = 10,
       get = function(info)
-        local base, property = parsePrefix(info[#info], data);
-        if not base then
-          return nil
-        end
+        local path = prefixToPath(info[#info]);
+        local base, property = pathToDataKey(data, path)
         if(info.type == "color") then
-          base[property] = base[property] or {};
-          local c = base[property];
-          return c[1], c[2], c[3], c[4];
+          base[property] = base[property] or {}
+          local c = base[property]
+          return c[1], c[2], c[3], c[4]
         else
           return base[property];
         end
       end,
       set = function(info, v, g, b, a)
-        local base, property = parsePrefix(info[#info], data, true);
-        if(info.type == "color") then
-          base[property] = base[property] or {};
-          local c = base[property];
-          c[1], c[2], c[3], c[4] = v, g, b, a;
-        elseif(info.type == "toggle") then
-          base[property] = v;
-        else
-          base[property] = (v ~= "" and v) or nil;
-        end
-        WeakAuras.Add(data);
+        local path = prefixToPath(info[#info])
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "set",
+          path = path,
+          payload = info.type == "color" and {v, g, b, a}
+          or info.type == "toggle" and v
+          or (v ~= "" and v)
+          or nil,
+        })
         WeakAuras.UpdateThumbnail(data);
         OptionsPrivate.Private.AddParents(data)
         OptionsPrivate.ResetMoverSizer();
@@ -287,12 +285,14 @@ function OptionsPrivate.GetDisplayOptions(data)
 
     region.get = function(info, ...) return getAll(data, info, ...); end;
     region.set = function(info, ...)
+      OptionsPrivate.Private.TimeMachine:StartTransaction()
       setAll(data, info, ...);
       if(type(data.id) == "string") then
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
       end
+      OptionsPrivate.Private.TimeMachine:Commit()
     end
     region.hidden = function(info, ...) return hiddenAll(data, info, ...); end;
     region.disabled = function(info, ...) return disabledAll(data, info, ...); end;
