@@ -1,4 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
+---@type string, OptionsPrivate
 local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
@@ -76,9 +77,13 @@ function OptionsPrivate.GetAnimationOptions(data)
     set = function(info, v)
       local split = info[#info]:find("_");
       local field, value = info[#info]:sub(1, split-1), info[#info]:sub(split+1);
-      data.animation = data.animation or {};
-      data.animation[field] = data.animation[field] or {};
-      data.animation[field][value] = v;
+      OptionsPrivate.Private.TimeMachine:Append({
+        uid = data.uid,
+        actionType = "set",
+        path = {"animation", field, value},
+        value = v
+      })
+      --TODO : move this somewhere else so that animations work properly even on batched transactions
       if(field == "main") then
         local region = OptionsPrivate.Private.EnsureRegion(id)
         OptionsPrivate.Private.Animate("display", data.uid, "main", data.animation.main, region, false, nil, true);
@@ -89,7 +94,6 @@ function OptionsPrivate.GetAnimationOptions(data)
           end
         end
       end
-      WeakAuras.Add(data);
     end,
     disabled = function(info, v)
       local split = info[#info]:find("_");
@@ -380,10 +384,35 @@ function OptionsPrivate.GetAnimationOptions(data)
             data.animation.start.colorA or 1;
         end,
         set = function(info, r, g, b, a)
-          data.animation.start.colorR = r;
-          data.animation.start.colorG = g;
-          data.animation.start.colorB = b;
-          data.animation.start.colorA = a;
+          OptionsPrivate.Private.TimeMachine:AppendMany(
+            -- todo: maybe condense these values into 1 table?
+            {
+              {
+                uid = data.uid,
+                actionType = "set",
+                path = {"animation", "start", "colorR"},
+                value = r
+              },
+              {
+                uid = data.uid,
+                actionType = "set",
+                path = {"animation", "start", "colorG"},
+                value = g
+              },
+              {
+                uid = data.uid,
+                actionType = "set",
+                path = {"animation", "start", "colorB"},
+                value = b
+              },
+              {
+                uid = data.uid,
+                actionType = "set",
+                path = {"animation", "start", "colorA"},
+                value = a
+              }
+            }
+          )
         end
       },
       main_header = {
@@ -644,10 +673,32 @@ function OptionsPrivate.GetAnimationOptions(data)
             data.animation.main.colorA or 1;
         end,
         set = function(info, r, g, b, a)
-          data.animation.main.colorR = r;
-          data.animation.main.colorG = g;
-          data.animation.main.colorB = b;
-          data.animation.main.colorA = a;
+          OptionsPrivate.Private.TimeMachine:AppendMany({
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "main", "colorR"},
+              value = r
+            },
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "main", "colorG"},
+              value = g
+            },
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "main", "colorB"},
+              value = b
+            },
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "main", "colorA"},
+              value = a
+            }
+          })
         end
       },
       finish_header = {
@@ -893,10 +944,32 @@ function OptionsPrivate.GetAnimationOptions(data)
             data.animation.finish.colorA or 1;
         end,
         set = function(info, r, g, b, a)
-          data.animation.finish.colorR = r;
-          data.animation.finish.colorG = g;
-          data.animation.finish.colorB = b;
-          data.animation.finish.colorA = a;
+          OptionsPrivate.Private.TimeMachine:AppendMany({
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "finish", "colorR"},
+              value = r
+            },
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "finish", "colorG"},
+              value = g
+            },
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "finish", "colorB"},
+              value = b
+            },
+            {
+              uid = data.uid,
+              actionType = "set",
+              path = {"animation", "finish", "colorA"},
+              value = a
+            }
+          })
         end
       }
     }
@@ -1060,7 +1133,9 @@ function OptionsPrivate.GetAnimationOptions(data)
 
     animation.get = function(info, ...) return getAll(data, info, ...); end;
     animation.set = function(info, ...)
+      OptionsPrivate.Private.TimeMachine:StartTransaction()
       setAll(data, info, ...);
+      OptionsPrivate.Private.TimeMachine:Commit()
       if(type(data.id) == "string") then
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
