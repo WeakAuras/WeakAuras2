@@ -218,7 +218,9 @@
     "GetCurrencyListSize",
     "FIRST_NUMBER_CAP_NO_SPACE",
     "CreateFramePool",
-    "AceGUIWeakAurasMultiLineEditBoxWithEnterInsertLink"
+    "AceGUIWeakAurasMultiLineEditBoxWithEnterInsertLink",
+    "ExpandCurrencyList",
+    "GetCurrencyListInfo"
   ],
   "runtime.version": "Lua 5.1",
   "workspace.ignoreDir": [

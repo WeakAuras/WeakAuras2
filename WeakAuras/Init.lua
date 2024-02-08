@@ -59,9 +59,6 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field frames table<string, table>
 --- @field function_strings table<string, string>
 --- @field GetDataByUID fun(uid: uid): auraData
---- @field GetDiscoveredCurrencies fun(): table<number|string, string>
---- @field GetDiscoveredCurrenciesSorted fun(): table<number|string, number>
---- @field GetDiscoveredCurrenciesHeaders fun(): table<string, boolean>
 --- @field GetErrorHandlerId fun(id: auraId, context: string): function
 --- @field GetErrorHandlerUid fun(uid: uid, context: string): function
 --- @field GetRegionByUID fun(uid: uid, cloneId: string): Region
@@ -83,7 +80,6 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field orientation_types table<string, string>
 --- @field orientation_with_circle_types table<string, string>
 --- @field ParseNumber fun (numString: string|number): number?, string?
---- @field point_types table<string, string>
 --- @field PreShowModels fun()
 --- @field PrintHelp fun()
 --- @field QuotedString fun(input: string): string
