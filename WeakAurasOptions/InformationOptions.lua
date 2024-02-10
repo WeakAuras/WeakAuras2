@@ -86,7 +86,8 @@ function OptionsPrivate.GetInformationOptions(data)
           uid = child.uid,
           actionType = "set",
           path = "url",
-          payload = v
+          payload = v,
+          effect = false
         })
         OptionsPrivate.ClearOptions(child.id)
       end
@@ -131,7 +132,8 @@ function OptionsPrivate.GetInformationOptions(data)
                 uid = child.uid,
                 actionType = "set",
                 path = "ignoreWagoUpdate",
-                payload = ignoreUpdate
+                payload = ignoreUpdate,
+                effect = false
               })
               OptionsPrivate.ClearOptions(child.id)
             end
@@ -167,7 +169,6 @@ function OptionsPrivate.GetInformationOptions(data)
           path = "desc",
           payload = v
         })
-        WeakAuras.Add(data)
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
     }

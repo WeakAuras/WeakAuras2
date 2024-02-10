@@ -17,18 +17,26 @@ local TimeMachine = {
   inverters = {},
   index = 0
 }
+
 Private.TimeMachine = TimeMachine
 
 ---@alias key string | number
 ---@alias keyPath key | (key)[]
 ---@alias Action<T> fun(data: table, path: keyPath, payload: T)
----@alias Inverter<T, S> fun(data: table, path: keyPath, payload?: T): actionType, keyPath, S?
+---@alias Inverter<T, S> fun(data: table, path: keyPath, payload?: T): actionType, keyPath, S
 ---@alias actionType string
+
 ---@class actionRecord
 ---@field uid uid
 ---@field actionType actionType
 ---@field path keyPath
 ---@field payload any
+---@field effect? sideEffect | false
+
+---@class sideEffect
+---@field tag string
+---@field func function
+
 
 ---@class change
 ---@field forward actionRecord[]
@@ -56,6 +64,15 @@ local function copy(tbl, key)
   else
     return tbl[key]
   end
+end
+
+---@type Action<nil>
+function TimeMachine.actions.none(data, path)
+end
+
+---@type Inverter<nil, nil>
+function TimeMachine.inverters.none(data, path)
+  return 'none', path, nil
 end
 
 ---@type Action<any>
@@ -179,6 +196,7 @@ function TimeMachine:Reject()
 end
 
 function TimeMachine:Commit()
+  if not self.transaction then return end
   while self.index < #self.changes do
     table.remove(self.changes)
   end
@@ -192,9 +210,9 @@ function TimeMachine:Commit()
 end
 
 ---@param records actionRecord[]
----@param doAdds boolean
-function TimeMachine:Apply(records, doAdds)
-  local changedData = {}
+---@param skipEffects? boolean
+function TimeMachine:Apply(records, skipEffects)
+  local effects = {}
   for _, record in ipairs(records) do
     local action = self.actions[record.actionType]
     if not action then
@@ -202,11 +220,19 @@ function TimeMachine:Apply(records, doAdds)
     end
     local data = Private.GetDataByUID(record.uid)
     action(data, record.path, record.payload)
-    changedData[record.uid] = true
+    if record.effect ~= false then
+      effects[record.uid] = effects[record.uid] or {}
+      if record.effect then
+        effects[record.uid][record.effect.tag] = record.effect.func
+      end
+    end
   end
-  if doAdds then
-    for uid in pairs(changedData) do
+  if not skipEffects then
+    for uid, effect in pairs(effects) do
       local data = Private.GetDataByUID(uid)
+      for _, func in pairs(effect) do
+        func(data)
+      end
       WeakAuras.Add(data)
     end
   end
@@ -215,13 +241,13 @@ end
 function TimeMachine:StepForward()
   if self.index < #self.changes then
     self.index = self.index + 1
-    self:Apply(self.changes[self.index].forward, true)
+    self:Apply(self.changes[self.index].forward)
   end
 end
 
 function TimeMachine:StepBackward()
   if self.index > 0 then
-    self:Apply(self.changes[self.index].backward, true)
+    self:Apply(self.changes[self.index].backward)
     self.index = self.index - 1
   end
 end
@@ -232,7 +258,7 @@ function TimeMachine:TravelTo(index)
   end
   local direction = index > self.index and "forward" or "backward"
   for i = self.index, index, direction == "forward" and 1 or -1 do
-    self:Apply(self.changes[i][direction], i == index)
+    self:Apply(self.changes[i][direction], i ~= index)
   end
   self.index = index
 end
