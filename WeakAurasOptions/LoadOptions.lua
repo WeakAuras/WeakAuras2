@@ -221,17 +221,24 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             else return "true"; end
           end,
           set = function(info, v)
+            local path = "use_"..realname
+            local payload
             if(v) then
-              trigger["use_"..realname] = true;
+              payload = true;
             else
-              local value = trigger["use_"..realname];
+              local value = trigger[path]
               if(value == false) then
-                trigger["use_"..realname] = nil;
+                payload = nil
               else
-                trigger["use_"..realname] = false
+                payload = false
               end
             end
-            WeakAuras.Add(data);
+            OptionsPrivate.Private.TimeMachine:Append({
+              uid = data.uid,
+              actionType = "set",
+              path = path,
+              payload = payload
+            })
             WeakAuras.ClearAndUpdateOptions(data.id)
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
