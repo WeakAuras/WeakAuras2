@@ -1,6 +1,9 @@
 if not WeakAuras.IsLibsOK() then return end
+---@type string, OptionsPrivate
 local AddonName, OptionsPrivate = ...
 
+---@class OptionsPrivate
+---@field Private Private
 -- Lua APIs
 local tinsert, tremove, wipe = table.insert, table.remove, wipe
 local pairs, type = pairs, type
