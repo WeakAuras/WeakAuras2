@@ -2541,34 +2541,57 @@ function Private.AddMany(tbl, takeSnapshots)
 
   local order = loadOrder(tbl, idtable)
   coroutine.yield()
-  local groups = {}
-  for _, data in ipairs(order) do
-    WeakAuras.PreAdd(data)
-    if data.regionType == "dynamicgroup" or data.regionType == "group" then
-      groups[data] = true
+
+  if takeSnapshots then
+    for _, data in ipairs(order) do
+      Private.SetMigrationSnapshot(data.uid, data)
+      coroutine.yield()
     end
-    coroutine.yield()
+  end
+
+  local groups = {}
+  local bads = {}
+  for _, data in ipairs(order) do
+    if data.parent and bads[data.parent] then
+      bads[data.id] = true
+    else
+      local ok = xpcall(WeakAuras.PreAdd, geterrorhandler(), data)
+      if not ok then
+        prettyPrint(L["Unable to modernize aura '%s'. This is probably due to corrupt data or a bad migration, please report this to the WeakAuras team."]:format(data.id))
+        if data.regionType == "dynamicgroup" or data.regionType == "group" then
+          prettyPrint(L["All children of this aura will also not be loaded, to minimize the chance of further corruption."])
+        end
+        bads[data.id] = true
+      elseif data.regionType == "dynamicgroup" or data.regionType == "group" then
+        groups[data] = true
+      end
+      coroutine.yield()
+    end
   end
 
   for _, data in ipairs(order) do
-    WeakAuras.Add(data, takeSnapshots);
-    coroutine.yield()
+    if not bads[data.id] then
+      WeakAuras.Add(data)
+      coroutine.yield()
+    end
   end
 
   for id in pairs(anchorTargets) do
     local data = idtable[id]
-    if data and (data.parent == nil or idtable[data.parent].regionType ~= "dynamicgroup") then
+    if data and not bads[data.id] and (data.parent == nil or idtable[data.parent].regionType ~= "dynamicgroup") then
       Private.EnsureRegion(id)
     end
   end
 
   for data in pairs(groups) do
-    if data.type == "dynamicgroup" then
-      if Private.regions[data.id] and Private.regions[data.id].region then
-        Private.regions[data.id].region:ReloadControlledChildren()
+    if not bads[data.id] then
+      if data.type == "dynamicgroup" then
+        if Private.regions[data.id] and Private.regions[data.id].region then
+          Private.regions[data.id].region:ReloadControlledChildren()
+        end
+      else
+        WeakAuras.Add(data)
       end
-    else
-      WeakAuras.Add(data)
     end
     coroutine.yield();
   end
@@ -3081,12 +3104,8 @@ local function pAdd(data, simpleChange)
 end
 
 function WeakAuras.Add(data, takeSnapshot, simpleChange)
-  local snapshot
   if takeSnapshot or (data.internalVersion or 0) < internalVersion then
-    snapshot = CopyTable(data)
-  end
-  if takeSnapshot then
-    Private.SetMigrationSnapshot(data.uid, snapshot)
+    Private.SetMigrationSnapshot(data.uid, data)
   end
   local ok = xpcall(WeakAuras.PreAdd, Private.GetErrorHandlerUid(data.uid, "PreAdd"), data)
   if ok then
