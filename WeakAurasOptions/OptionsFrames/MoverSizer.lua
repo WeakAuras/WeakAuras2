@@ -55,7 +55,7 @@ local function moveOnePxl(direction)
       elseif direction == "right" then
         data.xOffset = data.xOffset + oneX
       end
-      WeakAuras.Add(data, nil, true)
+      WeakAuras.Add(data, true)
       WeakAuras.UpdateThumbnail(data)
       OptionsPrivate.ResetMoverSizer()
       OptionsPrivate.Private.AddParents(data)
@@ -1345,7 +1345,7 @@ local function ConstructMoverSizer(parent)
             frame:SizingSetData(data, region:GetWidth(), region:GetHeight(), 0, 0, scale)
           end
           region:ResetPosition()
-          WeakAuras.Add(data, nil, true)
+          WeakAuras.Add(data, true)
           frame:ScaleCorners(region:GetWidth(), region:GetHeight())
           WeakAuras.FillOptions()
         end)
@@ -1383,7 +1383,7 @@ local function ConstructMoverSizer(parent)
         frame:SizingSetData(data, width, height, deltaX, deltaY, scale)
 
         region:ResetPosition()
-        WeakAuras.Add(data, nil, true)
+        WeakAuras.Add(data, true)
         OptionsPrivate.Private.AddParents(data)
         WeakAuras.UpdateThumbnail(data)
 
