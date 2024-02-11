@@ -39,7 +39,7 @@ local function OnRename(_, uid, oldId, newId)
       local data = WeakAuras.GetData(attached)
       if data then
         data.anchorFrameFrame = "WeakAuras:" .. newId
-        WeakAuras.Add(data, nil, true)
+        WeakAuras.Add(data, true)
       end
 
       attachedToTarget[attached] = newId

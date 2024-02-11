@@ -3103,8 +3103,8 @@ local function pAdd(data, simpleChange)
   end
 end
 
-function WeakAuras.Add(data, takeSnapshot, simpleChange)
-  if takeSnapshot or (data.internalVersion or 0) < internalVersion then
+function WeakAuras.Add(data, simpleChange)
+  if (data.internalVersion or 0) < internalVersion then
     Private.SetMigrationSnapshot(data.uid, data)
   end
   local ok = xpcall(WeakAuras.PreAdd, Private.GetErrorHandlerUid(data.uid, "PreAdd"), data)
