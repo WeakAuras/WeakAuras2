@@ -173,9 +173,9 @@ function SlashCmdList.WEAKAURAS(input)
 
   for v in string.gmatch(input, "%S+") do
     if not msg then
-      msg = v
+      msg = v:lower()
     else
-      insert(args, v)
+      insert(args, v:lower())
     end
   end
 
@@ -193,25 +193,44 @@ function SlashCmdList.WEAKAURAS(input)
     Private.PrintHelp();
   elseif msg == "repair" then
     StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "user"})
-  elseif msg == "ff" then
-    local feature = args[1]
-    if feature == nil then
+  elseif msg == "ff" or msg == "feat" or msg == "feature" then
+    if #args < 2 then
       local features = Private.Features:ListFeatures()
       local summary = {}
       for _, feature in ipairs(features) do
         table.insert(summary, ("|c%s%s|r"):format(feature.enabled and "ff00ff00" or "ffff0000", feature.id))
       end
-      prettyPrint(L["Syntax /wa ff <feature>"])
+      prettyPrint(L["Syntax /wa feature <toggle|on|enable|disable|off> <feature>"])
       prettyPrint(L["Available features: %s"]:format(table.concat(summary, ", ")))
-    elseif not Private.Features:Exists(feature) then
-      prettyPrint(L["Unknown feature '%s'"]:format(feature))
     else
-      if Private.Features:Enabled(feature) then
-        Private.Features:Disable(feature)
-        prettyPrint(L["Disabled feature '%s'"]:format(feature))
+      local action = ({
+        toggle = "toggle",
+        on = "enable",
+        enable = "enable",
+        disable = "disable",
+        off = "disable"
+      })[args[1]]
+      if not action then
+        prettyPrint(L["Unknown action %q"]:format(args[1]))
       else
-        Private.Features:Enable(feature)
-        prettyPrint(L["Enabled feature '%s'"]:format(feature))
+        local feature = args[2]
+        if not Private.Features:Exists(feature) then
+          prettyPrint(L["Unknown feature %q"]:format(feature))
+        elseif not Private.Features:Enabled(feature) then
+          if action ~= "disable" then
+            Private.Features:Enable(feature)
+            prettyPrint(L["Enabled feature %q"]:format(feature))
+          else
+            prettyPrint(L["Feature %q is already disabled"]:format(feature))
+          end
+        elseif Private.Features:Enabled(feature) then
+          if action ~= "enable" then
+            Private.Features:Disable(feature)
+            prettyPrint(L["Disabled feature %q"]:format(feature))
+          else
+            prettyPrint(L["Feature %q is already enabled"]:format(feature))
+          end
+        end
       end
     end
   else
