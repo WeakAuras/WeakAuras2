@@ -376,10 +376,11 @@ if versionStringFromToc == "@project-version@" then
 end
 --@end-debug@
 
---[[@experimental@
+--[=====[@experimental@
 WeakAuras.buildType = "pr"
---@end-experimental@]]
+--@end-experimental@]=====]
 
+--@non-experimental@
 --[[@alpha@
 WeakAuras.buildType = "alpha"
 --@end-alpha]]
@@ -391,6 +392,7 @@ else
   WeakAuras.buildType = "release"
 end
 --@end-non-alpha@]]
+--@end-non-experimental@
 
 WeakAuras.versionString = versionStringFromToc
 WeakAuras.buildTime = buildTime
