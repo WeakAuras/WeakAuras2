@@ -3308,7 +3308,7 @@ templates.class.WARLOCK = {
         { spell = 134477, type = "ability", unit = "pet", buff = true, debuff = true }, -- Threatening Presence
         { spell = 196277, type = "ability", charges = true, requiresTarget = true, usable = true, talent = 91520 }, -- Implosion
         { spell = 234153, type = "ability", requiresTarget = true }, -- Drain Life
-        { spell = 264057, type = "ability", requiresTarget = true, talent = 91537 }, -- Soul Strike
+        { spell = 264057, type = "ability", requiresTarget = true, talent = 91538 }, -- Soul Strike
         { spell = 264119, type = "ability", totem = true, talent = 91538 }, -- Summon Vilefiend
         { spell = 264130, type = "ability", talent = 91521 }, -- Power Siphon
         { spell = 264178, type = "ability", overlayGlow = true, requiresTarget = true, talent = 91544 }, -- Demonbolt
