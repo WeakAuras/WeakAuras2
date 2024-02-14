@@ -12,12 +12,12 @@ local addon, Private = ...
 ---@field sub? SubscribableObject
 
 ---@class Features
+---@field private db? table<string, boolean>
+---@field private __feats table<string, feature>
+---@field private hydrated boolean
 local Features = {
-  ---@type table<string, feature>
   __feats = {},
   hydrated = false,
-  ---@type {[string]: true}
-  toPersist = {}
 }
 Private.Features = Features
 
@@ -28,20 +28,18 @@ end
 
 ---@param id string
 function Features:Enabled(id)
-    return self:Exists(id) and self.__feats[id].enabled
+    return self.hydrated and self:Exists(id) and self.__feats[id].enabled
 end
 
 ---@param id string
----@param auto? boolean
-function Features:Enable(id, auto)
-  if self:Exists(id) and not self.__feats[id].enabled then
+function Features:Enable(id)
+  if not self:Exists(id) then return end
+  if not self.hydrated then
+    error("Cannot enable a feature before hydration", 2)
+  elseif not self.__feats[id].enabled then
     self.__feats[id].enabled = true
-    if self.__feats[id].persist and not auto then
-      if self.hydrated then
-        Private.db.features[id] = true
-      else
-        self.toPersist[id] = true
-      end
+    if self.__feats[id].persist then
+      self.db[id] = true
     end
     self.__feats[id].sub:Notify("Enable")
   end
@@ -49,10 +47,13 @@ end
 
 ---@param id string
 function Features:Disable(id)
-  if self:Exists(id) and self.__feats[id].enabled then
+  if not self:Exists(id) then return end
+  if not self.hydrated then
+    error("Cannot disable a feature before hydration", 2)
+  elseif self.__feats[id].enabled then
     self.__feats[id].enabled = false
     if self.__feats[id].persist then
-      Private.db.features[id] = false
+      self.db[id] = false
     end
     self.__feats[id].sub:Notify("Disable")
   end
@@ -60,6 +61,7 @@ end
 
 ---@return {id: string, enabled: boolean}[]
 function Features:ListFeatures()
+  if not self.hydrated then return {} end
   local list = {}
   for id, feature in pairs(self.__feats) do
     table.insert(list, {
@@ -73,46 +75,53 @@ function Features:ListFeatures()
   return list
 end
 
----enable persisted features from the db
 function Features:Hydrate()
-  self.hydrated = true
-  for id, enabled in pairs(Private.db.features) do
-    if not self:Exists(id) then
-      Private.db.features[id] = nil
-    end
-    if enabled then
-      self:Enable(id)
+  self.db = Private.db.features
+  for id, feature in pairs(self.__feats) do
+    local enable = false
+    if self.db[id] ~= nil then
+      enable = self.db[id]
     else
-      self:Disable(id)
+      for _, buildType in ipairs(feature.autoEnable or {}) do
+        if WeakAuras.buildType == buildType then
+          enable = true
+          break
+        end
+      end
     end
+    feature.enabled = enable
   end
-  for id, persist in pairs(self.toPersist) do
-    if persist then
-      Private.db.features[id] = true
-    end
+  self.hydrated = true
+  for _, feature in pairs(self.__feats) do
+    -- cannot notify before hydrated flag is set, or we risk consumers getting wrong information
+    feature.sub:Notify(feature.enabled and "Enable" or "Disable")
   end
 end
 
 ---@param feature feature
 function Features:Register(feature)
+  if self.hydrated then
+    error("Cannot register a feature after hydration", 2)
+  end
   if not self.__feats[feature.id] then
     self.__feats[feature.id] = feature
     feature.sub = Private.CreateSubscribableObject()
-    for _, buildType in ipairs(feature.autoEnable or {}) do
-      if WeakAuras.buildType == buildType then
-        self:Enable(feature.id, true)
-      end
-    end
   end
 end
 
 ---@param id string
----@param func function
----hides a function behind a feature flag
-function Features:Wrap(id, func)
+---@param enabledFunc function
+---@param disabledFunc? function
+---hide a code path behind a feature flag,
+---optionally provide a disabled path
+function Features:Wrap(id, enabledFunc, disabledFunc)
   return function(...)
     if self:Enabled(id) then
-      return func(...)
+      return enabledFunc(...)
+    else
+      if disabledFunc then
+        return disabledFunc(...)
+      end
     end
   end
 end
