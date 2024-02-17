@@ -368,6 +368,21 @@ local flavorFromTocToNumber = {
 }
 local flavor = flavorFromTocToNumber[flavorFromToc]
 
+
+if not versionString:find("beta", 1, true) then
+  WeakAuras.buildType = "release"
+else
+  WeakAuras.buildType = "beta"
+end
+
+--@alpha@
+WeakAuras.buildType = "alpha"
+--@end-alpha
+
+--@experimental@
+WeakAuras.buildType = "pr"
+--@end-experimental@
+
 --@debug@
 if versionStringFromToc == "@project-version@" then
   versionStringFromToc = "Dev"
@@ -375,24 +390,6 @@ if versionStringFromToc == "@project-version@" then
   WeakAuras.buildType = "dev"
 end
 --@end-debug@
-
---[=====[@experimental@
-WeakAuras.buildType = "pr"
---@end-experimental@]=====]
-
---@non-experimental@
---[[@alpha@
-WeakAuras.buildType = "alpha"
---@end-alpha]]
-
---[[@non-alpha@
-if versionString:find("beta") then
-  WeakAuras.buildType = "beta"
-else
-  WeakAuras.buildType = "release"
-end
---@end-non-alpha@]]
---@end-non-experimental@
 
 WeakAuras.versionString = versionStringFromToc
 WeakAuras.buildTime = buildTime
