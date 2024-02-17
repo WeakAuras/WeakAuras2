@@ -173,9 +173,9 @@ function SlashCmdList.WEAKAURAS(input)
 
   for v in string.gmatch(input, "%S+") do
     if not msg then
-      msg = v
+      msg = v:lower()
     else
-      insert(args, v)
+      insert(args, v:lower())
     end
   end
 
@@ -193,6 +193,46 @@ function SlashCmdList.WEAKAURAS(input)
     Private.PrintHelp();
   elseif msg == "repair" then
     StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "user"})
+  elseif msg == "ff" or msg == "feat" or msg == "feature" then
+    if #args < 2 then
+      local features = Private.Features:ListFeatures()
+      local summary = {}
+      for _, feature in ipairs(features) do
+        table.insert(summary, ("|c%s%s|r"):format(feature.enabled and "ff00ff00" or "ffff0000", feature.id))
+      end
+      prettyPrint(L["Syntax /wa feature <toggle|on|enable|disable|off> <feature>"])
+      prettyPrint(L["Available features: %s"]:format(table.concat(summary, ", ")))
+    else
+      local action = ({
+        toggle = "toggle",
+        on = "enable",
+        enable = "enable",
+        disable = "disable",
+        off = "disable"
+      })[args[1]]
+      if not action then
+        prettyPrint(L["Unknown action %q"]:format(args[1]))
+      else
+        local feature = args[2]
+        if not Private.Features:Exists(feature) then
+          prettyPrint(L["Unknown feature %q"]:format(feature))
+        elseif not Private.Features:Enabled(feature) then
+          if action ~= "disable" then
+            Private.Features:Enable(feature)
+            prettyPrint(L["Enabled feature %q"]:format(feature))
+          else
+            prettyPrint(L["Feature %q is already disabled"]:format(feature))
+          end
+        elseif Private.Features:Enabled(feature) then
+          if action ~= "enable" then
+            Private.Features:Disable(feature)
+            prettyPrint(L["Disabled feature %q"]:format(feature))
+          else
+            prettyPrint(L["Feature %q is already enabled"]:format(feature))
+          end
+        end
+      end
+    end
   else
     WeakAuras.OpenOptions(msg);
   end
@@ -1159,7 +1199,6 @@ end
 function Private.Login(initialTime, takeNewSnapshots)
   local loginThread = coroutine.create(function()
     Private.Pause();
-
     if db.history then
       local histRepo = WeakAuras.LoadFromArchive("Repository", "history")
       local migrationRepo = WeakAuras.LoadFromArchive("Repository", "migration")
@@ -1172,6 +1211,10 @@ function Private.Login(initialTime, takeNewSnapshots)
       db.history = nil
       coroutine.yield();
     end
+
+
+    Private.Features:Hydrate()
+    coroutine.yield()
 
     local toAdd = {};
     loginFinished = false
@@ -1265,7 +1308,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
     if(addon == ADDON_NAME) then
       WeakAurasSaved = WeakAurasSaved or {};
       db = WeakAurasSaved;
-
+      Private.db = db
       -- Defines the action squelch period after login
       -- Stored in SavedVariables so it can be changed by the user if they find it necessary
       db.login_squelch_time = db.login_squelch_time or 10;
@@ -1278,6 +1321,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
 
       db.displays = db.displays or {};
       db.registered = db.registered or {};
+      db.features = db.features or {}
       db.migrationCutoff = db.migrationCutoff or 730
       db.historyCutoff = db.historyCutoff or 730
 

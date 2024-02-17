@@ -54,6 +54,7 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field ExecEnv table
 --- @field event_prototypes table<string, prototypeData>
 --- @field event_categories table<string, {name: string, default: string }>
+--- @field Features Features
 --- @field FindUnusedId fun(prefix: string?): string
 --- @field FixGroupChildrenOrderForGroup fun(data: auraData)
 --- @field frames table<string, table>
@@ -371,8 +372,27 @@ local flavor = flavorFromTocToNumber[flavorFromToc]
 if versionStringFromToc == "@project-version@" then
   versionStringFromToc = "Dev"
   buildTime = "Dev"
+  WeakAuras.buildType = "dev"
 end
 --@end-debug@
+
+--[=====[@experimental@
+WeakAuras.buildType = "pr"
+--@end-experimental@]=====]
+
+--@non-experimental@
+--[[@alpha@
+WeakAuras.buildType = "alpha"
+--@end-alpha]]
+
+--[[@non-alpha@
+if versionString:find("beta") then
+  WeakAuras.buildType = "beta"
+else
+  WeakAuras.buildType = "release"
+end
+--@end-non-alpha@]]
+--@end-non-experimental@
 
 WeakAuras.versionString = versionStringFromToc
 WeakAuras.buildTime = buildTime

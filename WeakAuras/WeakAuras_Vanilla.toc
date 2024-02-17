@@ -28,6 +28,8 @@ ArchiveTypes\Repository.lua
 DefaultOptions.lua
 
 # Core files
+SubscribableObject.lua
+Features.lua
 Atlas_Vanilla.lua
 Types_Vanilla.lua
 Types.lua
@@ -51,7 +53,6 @@ AuraWarnings.lua
 AuraEnvironment.lua
 AuraEnvironmentWrappedSystems.lua
 DebugLog.lua
-SubscribableObject.lua
 
 # Region support
 RegionTypes\SmoothStatusBarMixin.lua
