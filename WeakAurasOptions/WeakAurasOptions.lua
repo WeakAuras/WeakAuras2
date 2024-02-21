@@ -1207,7 +1207,7 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
   end
 
   for _, id in ipairs(topLevelLoadedAuras) do
-    for child in OptionsPrivate.Private.TraverseAllChildren(WeakAuras.GetData(id)) do
+    for child in OptionsPrivate.Private.TraverseLeafsOrAura(WeakAuras.GetData(id)) do
       tinsert(frame.loadedButton.childButtons, displayButtons[child.id])
     end
   end
@@ -1225,7 +1225,7 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
   end
 
   for _, id in ipairs(topLevelUnloadedAuras) do
-    for child in OptionsPrivate.Private.TraverseAllChildren(WeakAuras.GetData(id)) do
+    for child in OptionsPrivate.Private.TraverseLeafsOrAura(WeakAuras.GetData(id)) do
       tinsert(frame.unloadedButton.childButtons, displayButtons[child.id])
     end
   end
