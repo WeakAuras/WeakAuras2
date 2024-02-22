@@ -3343,46 +3343,46 @@ end
 function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
-  local ret =  "|cFFFF0000%".. triggernum .. ".spellId|r - " .. L["Spell ID"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".debuffClass|r - " .. L["Debuff Class"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".debuffClassIcon|r - " .. L["Debuff Class Icon"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".unitCaster|r - " .. L["Caster Unit"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".casterName|r - " .. L["Caster Name"] .. "\n"
+  local ret =  "|cFFFFCC00%".. triggernum .. ".spellId|r - " .. L["Spell ID"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".debuffClass|r - " .. L["Debuff Class"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".debuffClassIcon|r - " .. L["Debuff Class Icon"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".unitCaster|r - " .. L["Caster Unit"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".casterName|r - " .. L["Caster Name"] .. "\n"
   if trigger.unit ~= "multi" then
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".unit|r - " .. L["Unit"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".unit|r - " .. L["Unit"] .. "\n"
   end
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".unitName|r - " .. L["Unit Name"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".matchCount|r - " .. L["Match Count"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".matchCountPerUnit|r - " .. L["Match Count per Unit"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".unitCount|r - " .. L["Units Affected"] .. "\n"
-  ret = ret .. "|cFFFF0000%".. triggernum .. ".totalStacks|r - " .. L["Total stacks over all matches"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".unitName|r - " .. L["Unit Name"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".matchCount|r - " .. L["Match Count"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".matchCountPerUnit|r - " .. L["Match Count per Unit"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".unitCount|r - " .. L["Units Affected"] .. "\n"
+  ret = ret .. "|cFFFFCC00%".. triggernum .. ".totalStacks|r - " .. L["Total stacks over all matches"] .. "\n"
 
   if trigger.unit ~= "multi" then
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".maxUnitCount|r - " .. L["Total Units"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".maxUnitCount|r - " .. L["Total Units"] .. "\n"
   end
 
   if not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip then
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".tooltip|r - " .. L["Tooltip"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".tooltip1|r - " .. L["First Value of Tooltip Text"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".tooltip2|r - " .. L["Second Value of Tooltip Text"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".tooltip3|r - " .. L["Third Value of Tooltip Text"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".tooltip4|r - " .. L["Fourth Value of Tooltip Text"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip|r - " .. L["Tooltip"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip1|r - " .. L["First Value of Tooltip Text"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip2|r - " .. L["Second Value of Tooltip Text"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip3|r - " .. L["Third Value of Tooltip Text"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip4|r - " .. L["Fourth Value of Tooltip Text"] .. "\n"
   end
 
   if WeakAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole then
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".role|r - " .. L["Assigned Role"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".roleIcon|r - " .. L["Assigned Role Icon"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".role|r - " .. L["Assigned Role"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".roleIcon|r - " .. L["Assigned Role Icon"] .. "\n"
   end
 
   if trigger.unit ~= "multi" and trigger.fetchRaidMark then
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".raidMark|r - " .. L["Raid Mark"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".raidMark|r - " .. L["Raid Mark"] .. "\n"
   end
 
   if (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useAffected then
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".affected|r - " .. L["Names of affected Players"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".unaffected|r - " .. L["Names of unaffected Players"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".affectedUnits|r - " .. L["Units of affected Players in a table format"] .. "\n"
-    ret = ret .. "|cFFFF0000%".. triggernum .. ".unaffectedUnits|r - " .. L["Units of unaffected Players in a table format"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".affected|r - " .. L["Names of affected Players"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".unaffected|r - " .. L["Names of unaffected Players"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".affectedUnits|r - " .. L["Units of affected Players in a table format"] .. "\n"
+    ret = ret .. "|cFFFFCC00%".. triggernum .. ".unaffectedUnits|r - " .. L["Units of unaffected Players in a table format"] .. "\n"
   end
 
   return ret
