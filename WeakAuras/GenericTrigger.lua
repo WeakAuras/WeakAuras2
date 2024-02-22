@@ -2393,7 +2393,9 @@ do
         end
       elseif(event == "SPELL_UPDATE_COOLDOWN" or event == "RUNE_POWER_UPDATE"
         or event == "PLAYER_TALENT_UPDATE" or event == "PLAYER_PVP_TALENT_UPDATE"
-        or event == "CHARACTER_POINTS_CHANGED" or event == "RUNE_TYPE_UPDATE") then
+        or event == "CHARACTER_POINTS_CHANGED" or event == "RUNE_TYPE_UPDATE")
+        or event == "SPELL_UPDATE_USABLE"
+      then
         if event == "SPELL_UPDATE_COOLDOWN" then
           mark_ACTIONBAR_UPDATE_COOLDOWN = nil
         end
@@ -2751,6 +2753,17 @@ do
 
     -- Default to GetSpellCharges
     local unifiedCooldownBecauseRune, cooldownBecauseRune = false, false;
+    -- Paused cooldowns are:
+    -- Spells like Presence of Mind/Nature's Swiftness that start their cooldown after the effect is consumed
+    -- But also oddly some Evoker spells
+    -- Presence of Might is on 0.0001 enabled == 0 cooldown while prepared
+    -- For Evoker, using an empowered spell puts spells on pause. Some spells are put on an entirely bogus 0.5 paused cd
+    -- Others the real cd (that continues ticking) is paused.
+    -- We treat anything with less than 0.5 as not on cd, and hope for the best.
+    if enabled == 0 and durationCooldown <= 0.5 then
+      startTimeCooldown, durationCooldown, enabled = 0, 0, 1
+    end
+
 
     local onNonGCDCD = durationCooldown and startTimeCooldown and durationCooldown > 0 and (durationCooldown ~= gcdDuration or startTimeCooldown ~= gcdStart);
     if (onNonGCDCD) then
