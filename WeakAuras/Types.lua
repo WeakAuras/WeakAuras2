@@ -498,7 +498,7 @@ Private.format_types = {
     end
   },
   Unit = {
-    display = L["Formats |cFFFF0000%unit|r"],
+    display = L["Formats |cFFFFCC00%unit|r"],
     AddOptions = function(symbol, hidden, addOption, get, withoutColor)
       if not withoutColor then
         addOption(symbol .. "_color", {
@@ -626,7 +626,7 @@ Private.format_types = {
     end
   },
   guid = {
-    display = L["Formats Player's |cFFFF0000%guid|r"],
+    display = L["Formats Player's |cFFFFCC00%guid|r"],
     AddOptions = function(symbol, hidden, addOption, get, withoutColor)
       if not withoutColor then
         addOption(symbol .. "_color", {
