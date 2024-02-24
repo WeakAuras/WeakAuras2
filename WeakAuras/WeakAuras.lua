@@ -637,7 +637,7 @@ local function EvalBooleanArg(arg, trigger, default)
   end
 end
 
-local function singleTest(arg, trigger, use, name, value, operator, use_exact)
+local function singleTest(arg, trigger, use, name, value, operator, use_exact, caseInsensitive)
   local number = value and tonumber(value) or nil
   if(arg.type == "tristate") then
     if(use == false) then
@@ -743,9 +743,18 @@ local function singleTest(arg, trigger, use, name, value, operator, use_exact)
     return "("..arg.test:format(value)..")";
   elseif(arg.type == "longstring" and operator) then
     if(operator == "==") then
-      return "("..name.."==[["..value.."]])";
+      if caseInsensitive then
+        return ("(%s and %s:lower() == [[%s]]:lower())"):format(name, name, value)
+      else
+        return "("..name.."==[["..value.."]])";
+      end
     else
-      return "("..name..":"..operator:format(value)..")";
+      if caseInsensitive then
+        local op = operator:format(value:lower())
+        return ("(%s:lower():%s)"):format(name, op)
+      else
+        return "("..name..":"..operator:format(value)..")";
+      end
     end
   elseif(arg.type == "number") then
     if number then
@@ -799,9 +808,10 @@ local function ConstructFunction(prototype, trigger, skipOptional)
             test = ""
             for i, value in ipairs(trigger[name]) do
               local operator = name and type(trigger[name.."_operator"]) == "table" and trigger[name.."_operator"][i]
+              local caseInsensitive = name and type(trigger[name.."_caseInsensitive"]) == "table" and trigger[name.."_caseInsensitive"][i]
               local use_exact = name and type(trigger["use_exact_" .. name]) == "table" and trigger["use_exact_" .. name][i]
               local use = name and trigger["use_"..name]
-              local single = singleTest(arg, trigger, use, name, value, operator, use_exact)
+              local single = singleTest(arg, trigger, use, name, value, operator, use_exact, caseInsensitive)
               if single then
                 if test ~= "" then
                   test = test .. arg.multiEntry.operator
@@ -818,9 +828,10 @@ local function ConstructFunction(prototype, trigger, skipOptional)
         else
           local value = trigger[name]
           local operator = name and trigger[name.."_operator"]
+          local caseInsensitive = name and trigger[name.."_caseInsensitive"]
           local use_exact = name and trigger["use_exact_" .. name]
           local use = name and trigger["use_"..name]
-          test = singleTest(arg, trigger, use, name, value, operator, use_exact)
+          test = singleTest(arg, trigger, use, name, value, operator, use_exact, caseInsensitive)
         end
 
         if (arg.preamble) then
