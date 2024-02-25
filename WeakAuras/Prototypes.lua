@@ -164,7 +164,7 @@ end
 local function get_zoneId_list()
   local currentmap_id = C_Map.GetBestMapForUnit("player")
   local instanceId = select(8, GetInstanceInfo())
-  local bottomText = L["Supports multiple entries, separated by commas. \nGroup Zone IDs must be prefixed with 'g', e.g. g277. \nParent Zone IDs must be prefixed with 'p'. \nSupports Area IDs from https://wago.tools/db2/AreaTable prefixed with 'a'. \nSupports Instance IDs prefixed with 'i'."]
+  local bottomText = L["Supports multiple entries, separated by commas. To include child zone ids, prefix with 'c', e.g. 'c2022'.\nGroup Zone IDs must be prefixed with 'g', e.g. 'g277'. \nSupports Area IDs from https://wago.tools/db2/AreaTable prefixed with 'a'. \nSupports Instance IDs prefixed with 'i'."]
   if not instanceId and not currentmap_id then
     return ("%s\n\n%s"):format(Private.get_zoneId_list(), bottomText)
   elseif not currentmap_id then
@@ -190,7 +190,7 @@ local function get_zoneId_list()
   if currentmap_info and currentmap_info.parentMapID > 0  then
     local parentmap_info = C_Map.GetMapInfo(currentmap_info.parentMapID)
     local parentmap_name = parentmap_info and parentmap_info.name or ""
-    parentmap_zone_name = string.format("|cffffd200%s|r\n%s: p%d\n\n",
+    parentmap_zone_name = string.format("|cffffd200%s|r\n%s: c%d\n\n",
                                          L["Parent Zone"], parentmap_name, currentmap_info.parentMapID)
   end
 
