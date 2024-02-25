@@ -551,6 +551,20 @@ local function createOptions(id, data)
       bigStep = 0.01,
       isPercent = true
     },
+    sharedFrameLevel = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Flat Framelevels"],
+      desc = L["The group and all direct children will share the same base frame level."],
+      order = 30,
+      set = function(info, v)
+        data.sharedFrameLevel = v
+        WeakAuras.Add(data)
+        for parent in OptionsPrivate.Private.TraverseParents(data) do
+          WeakAuras.Add(parent)
+        end
+      end
+    },
     endHeader = {
       type = "header",
       order = 100,
