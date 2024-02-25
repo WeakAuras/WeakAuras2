@@ -4128,21 +4128,35 @@ local function SetFrameLevel(id, frameLevel)
   Private.frameLevels[id] = frameLevel;
 end
 
-function Private.FixGroupChildrenOrderForGroup(data)
-  SetFrameLevel(data.id, 0)
-  local frameLevel, offset
-  if data.regionType == "dynamicgroup" then
-    frameLevel, offset = 5, 0
+local function FixGroupChildrenOrderImpl(data, frameLevel)
+  SetFrameLevel(data.id, frameLevel)
+  local offset
+  if data.sharedFrameLevel then
+    offset = 0
   else
-    frameLevel, offset = 2, 4
+    offset = 4
   end
   for _, childId in ipairs(data.controlledChildren) do
-    local data = WeakAuras.GetData(childId)
-    if data.regionType ~= "group" and data.regionType ~= "dynamicgroup" then
-      SetFrameLevel(childId, frameLevel);
-      frameLevel = frameLevel + offset;
+    local childData = WeakAuras.GetData(childId)
+    if childData.regionType ~= "group" and childData.regionType ~= "dynamicgroup" then
+      frameLevel = frameLevel + offset
+      SetFrameLevel(childId, frameLevel)
+    else
+      frameLevel = frameLevel + offset
+      local endFrameLevel = FixGroupChildrenOrderImpl(childData, frameLevel)
+      if not data.sharedFrameLevel then
+        frameLevel = endFrameLevel
+      end
     end
   end
+  return frameLevel
+end
+
+function Private.FixGroupChildrenOrderForGroup(data)
+  if data.parent then
+    return
+  end
+  FixGroupChildrenOrderImpl(data, 0)
 end
 
 local function GetFrameLevelFor(id)
