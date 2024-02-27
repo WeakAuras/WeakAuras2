@@ -3613,6 +3613,73 @@ do
   LGF.RegisterCallback("WeakAuras", "FRAME_UNIT_REMOVED", frame_monitor_callback)
 end
 
+local anchor_action_bar_monitor
+do
+  local function actionBarFrameMonitorCallback(self, event, slotId)
+    local new_frame
+    if (
+      event == "UPDATE_BONUS_ACTIONBAR" or
+      event == "ACTIONBAR_PAGE_CHANGED"
+    ) then
+      if (type(anchor_action_bar_monitor) == "table") then
+        for region, data in pairs(anchor_action_bar_monitor) do
+          new_frame =
+            ActionButtonUtil.GetActionButtonBySpellID(
+              data.data.anchorFrameActionButtonSpellId,
+              false
+            ) or
+            WeakAuras.HiddenFrames
+          if (new_frame ~= data.frame) then
+            Private.AnchorFrame(data.data, region, data.parent)
+          end
+        end
+      end
+      return
+    end
+
+    local ACTIONBAR_SLOT_CHANGED = event == "ACTIONBAR_SLOT_CHANGED"
+
+    if (not ACTIONBAR_SLOT_CHANGED) then
+      return
+    end
+    
+    local _, actionSlotSpellId = GetActionInfo(slotId)
+
+    if (type(anchor_action_bar_monitor) == "table") then
+      for region, data in pairs(anchor_action_bar_monitor) do
+        if (
+          -- Something has been added to or removed from this slot meaning this
+          -- item has been removed or replaced.
+          data.frame.action == slotId or
+          -- Some other action slot now has this spell ID
+          actionSlotSpellId == data.data.anchorFrameActionButtonSpellId
+        ) then
+          new_frame =
+            ActionButtonUtil.GetActionButtonBySpellID(
+              data.data.anchorFrameActionButtonSpellId,
+              false
+            ) or
+            WeakAuras.HiddenFrames
+          if (new_frame ~= data.frame) then
+            Private.AnchorFrame(data.data, region, data.parent)
+          end
+        end
+      end
+    end
+  end
+  local actionBarMonitorFrame = CreateFrame("Frame", "WeakAurasActionBarMonitorFrame")
+
+  -- surgical
+  actionBarMonitorFrame:RegisterEvent("ACTIONBAR_SLOT_CHANGED")
+  -- general
+  actionBarMonitorFrame:RegisterUnitEvent("ACTIONBAR_PAGE_CHANGED")
+  actionBarMonitorFrame:RegisterEvent("UPDATE_BONUS_ACTIONBAR")
+  actionBarMonitorFrame:RegisterEvent("SPELLS_CHANGED")
+  
+  actionBarMonitorFrame:SetScript("OnEvent", actionBarFrameMonitorCallback)
+  actionBarMonitorFrame:Show()
+end
+
 function Private.HandleGlowAction(actions, region)
   if actions.glow_action
   and (
@@ -5587,6 +5654,25 @@ local function GetAnchorFrame(data, region, parent)
         }
         return frame
       end
+    end
+  end
+
+  if (anchorFrameType == "ACTION_BUTTON_SPELL") then
+    local actionButtonSpellFrame =
+      ActionButtonUtil.GetActionButtonBySpellID(
+        data.anchorFrameActionButtonSpellId,
+        false
+      ) or
+      WeakAuras.HiddenFrames
+
+    if (actionButtonSpellFrame) then
+      anchor_action_bar_monitor = anchor_action_bar_monitor or {}
+      anchor_action_bar_monitor[region] = {
+        data = data,
+        parent = parent,
+        frame = actionButtonSpellFrame
+      }
+      return actionButtonSpellFrame
     end
   end
 

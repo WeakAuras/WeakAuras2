@@ -1113,7 +1113,15 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
         return data.anchorFrameParent or data.anchorFrameParent == nil;
       end,
       hidden = function()
-        return not IsGroupByFrame() and (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "UIPARENT" or data.anchorFrameType == "MOUSE" or IsParentDynamicGroup());
+        return
+          not IsGroupByFrame() and
+          (
+            data.anchorFrameType == "SCREEN" or
+            data.anchorFrameType == "UIPARENT" or
+            data.anchorFrameType == "MOUSE" or
+            data.anchorFrameType == "ACTION_BUTTON_SPELL" or
+            IsParentDynamicGroup()
+          );
       end,
     },
     anchorFrameSpaceOne = {
@@ -1123,8 +1131,37 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       order = 72,
       image = function() return "", 0, 0 end,
       hidden = function()
-        return IsParentDynamicGroup() or not (data.anchorFrameType == "SCREEN" or data.anchorFrameType == "UIPARENT" or data.anchorFrameType == "MOUSE" or IsGroupByFrame())
+        return
+          IsParentDynamicGroup() or
+          not (
+            data.anchorFrameType == "SCREEN" or
+            data.anchorFrameType == "UIPARENT" or
+            data.anchorFrameType == "MOUSE" or
+            data.anchorFrameType == "ACTION_BUTTON_SPELL" or
+            IsGroupByFrame()
+          )
       end,
+    },
+    anchorFrameActionButtonSpell = {
+      type = "input",
+      width = WeakAuras.doubleWidth,
+      name = L["Spell"],
+      order = 72,
+      set = function(info, value)
+        if (WeakAuras.IsSpellKnownIncludingPet(value)) then
+          data.anchorFrameActionButtonSpellId = select(7, GetSpellInfo(value))
+          WeakAuras.Add(data)
+        end
+      end,
+      get = function()
+        return GetSpellInfo(data.anchorFrameActionButtonSpellId)
+      end,
+      hidden = function()
+        if (IsParentDynamicGroup() or IsGroupByFrame()) then
+          return true
+        end
+        return not (data.anchorFrameType == "ACTION_BUTTON_SPELL")
+      end
     },
     -- Input field to select frame to anchor on
     anchorFrameFrame = {

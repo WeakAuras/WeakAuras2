@@ -4,6 +4,7 @@ local L = WeakAuras.L
 
 -- Options translation
 L["1 Match"] = "1 Match"
+L["Action Button (Spell)"] = "Action Button (Spell)"
 L["Actions"] = "Actions"
 L["Activate when the given aura(s) |cFFFF0000can't|r be found"] = "Activate when the given aura(s) |cFFFF0000can't|r be found"
 L["Add a new display"] = "Add a new display"
