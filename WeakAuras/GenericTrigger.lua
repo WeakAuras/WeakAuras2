@@ -151,12 +151,26 @@ function TestForLongString(trigger, arg)
   local name = arg.name;
   local test;
   local needle = trigger[name]
+  local caseInsensitive = arg.canBeCaseInsensitive and trigger[name .. "_caseInsensitive"]
+  print("###", arg.name, ":", caseInsensitive, "from", arg.canBeCaseInsensitive, trigger[name .. "_caseInsensitive"])
   if(trigger[name.."_operator"] == "==") then
-    test = ("(%s == %s)"):format(name, Private.QuotedString(needle))
+    if caseInsensitive then
+      test = ("(%s and (%s):lower() == (%s):lower())"):format(name, name, Private.QuotedString(needle))
+    else
+      test = ("(%s == %s)"):format(name, Private.QuotedString(needle))
+    end
   elseif(trigger[name.."_operator"] == "find('%s')") then
-    test = "(" .. name .. " and " .. name .. string.format(":find(%s, 1, true)", Private.QuotedString(needle)) .. ")"
+    if caseInsensitive then
+      test = ("(%s and %s:lower():find((%s):lower(), 1, true))"):format(name, name, Private.QuotedString(needle))
+    else
+      test = ("(%s and %s:find(%s, 1, true))"):format(name, name, Private.QuotedString(needle))
+    end
   elseif(trigger[name.."_operator"] == "match('%s')") then
-    test = "(" .. name .. " and " .. name .. string.format(":match(%s)", Private.QuotedString(needle)) .. ")"
+    if caseInsensitive then
+      test = ("(%s and %s:lower():match((%s):lower()))"):format(name, name, Private.QuotedString(needle))
+    else
+      test = ("(%s and %s:match(%s))"):format(name, name, Private.QuotedString(needle))
+    end
   end
   return test;
 end

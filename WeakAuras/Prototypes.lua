@@ -7197,6 +7197,7 @@ Private.event_prototypes = {
         display = L["Message"],
         init = "arg",
         type = "longstring",
+        canBeCaseInsensitive = true,
         store = true,
         conditionType = "string",
       },

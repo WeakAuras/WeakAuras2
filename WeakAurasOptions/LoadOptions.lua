@@ -558,7 +558,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           order = order + 1;
           options[name..suffix] = {
             type = "input",
-            width = WeakAuras.doubleWidth,
+            width = arg.canBeCaseInsensitive and WeakAuras.normalWidth or WeakAuras.doubleWidth,
             name = arg.display,
             order = order,
             hidden = disabled or hidden,
@@ -576,6 +576,27 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             end
           };
           order = order + 1;
+          if arg.canBeCaseInsensitive then
+            options[name.."_caseInsensitive"..suffix] = {
+              type = "toggle",
+              width = WeakAuras.normalWidth,
+              name = L["Case Insensitive"],
+              order = order,
+              hidden = disabled or hidden,
+              get = function() return getValue(trigger, "use_"..realname, realname.."_caseInsensitive", multiEntry, entryNumber) end,
+              set = function(info, v)
+                setValue(trigger, realname.."_caseInsensitive", v, multiEntry, entryNumber)
+                WeakAuras.Add(data);
+                if (reloadOptions) then
+                  WeakAuras.ClearAndUpdateOptions(data.id)
+                end
+                OptionsPrivate.Private.ScanForLoads({[data.id] = true});
+                WeakAuras.UpdateThumbnail(data);
+                OptionsPrivate.SortDisplayButtons(nil, true);
+              end
+            };
+            order = order + 1;
+          end
         elseif(arg.type == "spell" or arg.type == "aura" or arg.type == "item") then
           if entryNumber > 1 then
             options["spacer_"..name..suffix].width = WeakAuras.normalWidth - (arg.showExactOption and 0 or 0.2)
