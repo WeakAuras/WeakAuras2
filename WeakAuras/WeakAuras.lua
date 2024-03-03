@@ -808,7 +808,7 @@ local function ConstructFunction(prototype, trigger, skipOptional)
             test = ""
             for i, value in ipairs(trigger[name]) do
               local operator = name and type(trigger[name.."_operator"]) == "table" and trigger[name.."_operator"][i]
-              local caseInsensitive = name and type(trigger[name.."_caseInsensitive"]) == "table" and trigger[name.."_caseInsensitive"][i]
+              local caseInsensitive = name and arg.canBeCaseInsensitive and type(trigger[name.."_caseInsensitive"]) == "table" and trigger[name.."_caseInsensitive"][i]
               local use_exact = name and type(trigger["use_exact_" .. name]) == "table" and trigger["use_exact_" .. name][i]
               local use = name and trigger["use_"..name]
               local single = singleTest(arg, trigger, use, name, value, operator, use_exact, caseInsensitive)

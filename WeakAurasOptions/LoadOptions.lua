@@ -558,7 +558,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           order = order + 1;
           options[name..suffix] = {
             type = "input",
-            width = arg.canBeCanInsensitive and WeakAuras.normalWidth or WeakAuras.doubleWidth,
+            width = arg.canBeCaseInsensitive and WeakAuras.normalWidth or WeakAuras.doubleWidth,
             name = arg.display,
             order = order,
             hidden = disabled or hidden,
@@ -576,7 +576,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             end
           };
           order = order + 1;
-          if arg.canBeCanInsensitive then
+          if arg.canBeCaseInsensitive then
             options[name.."_caseInsensitive"..suffix] = {
               type = "toggle",
               width = WeakAuras.normalWidth,
