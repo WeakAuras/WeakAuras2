@@ -485,7 +485,11 @@ local methods = {
               fullName = name
             end
           end
-          editbox:Insert("[WeakAuras: "..fullName.." - "..self.data.id.."]");
+          local url = ""
+          if self.data.url then
+            url = " ".. self.data.url
+          end
+          editbox:Insert("[WeakAuras: "..fullName.." - "..self.data.id.."]"..url)
           OptionsPrivate.Private.linked = OptionsPrivate.Private.linked or {}
           OptionsPrivate.Private.linked[self.data.id] = GetTime()
         elseif not self.data.controlledChildren then

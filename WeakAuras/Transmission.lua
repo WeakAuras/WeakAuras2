@@ -157,6 +157,7 @@ local function filterFunc(_, event, msg, player, l, cs, t, flag, channelId, ...)
       newMsg = newMsg.."|Hgarrmission:weakauras|h|cFF8800FF["..characterName.." |r|cFF8800FF- "..displayName.."]|h|r";
       remaining = remaining:sub(finish + 1);
     else
+      newMsg = newMsg .. remaining
       done = true;
     end
   until(done)
