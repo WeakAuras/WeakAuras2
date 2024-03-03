@@ -1792,13 +1792,13 @@ function Private.ScanForLoadsGroup(toCheck)
     if(data.controlledChildren) then
       if(#data.controlledChildren > 0) then
         ---@type boolean?
-        local any_loaded = false;
+        local any_loaded = nil
         for child in Private.TraverseLeafs(data) do
-          if(loaded[child.id] ~= nil) then
+          if loaded[child.id] then
             any_loaded = true;
             break;
-          else
-            any_loaded = nil
+          elseif loaded[child.id] == false then
+            any_loaded = false;
           end
         end
         if any_loaded then

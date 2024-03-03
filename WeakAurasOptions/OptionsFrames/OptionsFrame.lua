@@ -727,7 +727,7 @@ function OptionsPrivate.CreateFrame()
 
   -- Loaded section
   local loadedButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
-  loadedButton:SetText(L["Loaded/Standby"])
+  loadedButton:SetText(L["Loaded"])
   loadedButton:Disable()
   loadedButton:EnableExpand()
   if odb.loadedCollapse then
@@ -791,6 +791,68 @@ function OptionsPrivate.CreateFrame()
   loadedButton:SetViewDescription(L["Toggle the visibility of all loaded displays"])
   loadedButton.childButtons = {}
   frame.loadedButton = loadedButton
+
+  -- Standby section
+  local standbyButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
+  standbyButton:SetText(L["Standby"])
+  standbyButton:Disable()
+  standbyButton:EnableExpand()
+  if odb.standbyCollapse then
+    standbyButton:Collapse()
+  else
+    standbyButton:Expand()
+  end
+  standbyButton:SetOnExpandCollapse(function()
+    if standbyButton:GetExpanded() then
+      odb.standbyCollapse = nil
+    else
+      odb.standbyCollapse = true
+    end
+    OptionsPrivate.SortDisplayButtons()
+  end)
+  standbyButton:SetExpandDescription(L["Expand all standby displays"])
+  standbyButton:SetCollapseDescription(L["Collapse all standy displays"])
+  standbyButton:SetViewClick(function()
+    local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
+    if standbyButton.view.visibility == 2 then
+      for _, child in ipairs(standbyButton.childButtons) do
+        child:PriorityHide(2)
+      end
+      standbyButton:PriorityHide(2)
+    else
+      for _, child in ipairs(standbyButton.childButtons) do
+        child:PriorityShow(2)
+      end
+      standbyButton:PriorityShow(2)
+    end
+    OptionsPrivate.Private.ResumeAllDynamicGroups(suspended)
+  end)
+  standbyButton.RecheckVisibility = function(self)
+    local none, all = true, true
+    for _, child in ipairs(standbyButton.childButtons) do
+      if child:GetVisibility() ~= 2 then
+        all = false
+      end
+      if child:GetVisibility() ~= 0 then
+        none = false
+      end
+    end
+    local newVisibility
+    if all then
+      newVisibility = 2
+    elseif none then
+      newVisibility = 0
+    else
+      newVisibility = 1
+    end
+    if newVisibility ~= self.view.visibility then
+      self.view.visibility = newVisibility
+      self:UpdateViewTexture()
+    end
+  end
+  standbyButton:SetViewDescription(L["Toggle the visibility of all standby displays"])
+  standbyButton.childButtons = {}
+  frame.standbyButton = standbyButton
 
   -- Not Loaded section
   local unloadedButton = AceGUI:Create("WeakAurasLoadedHeaderButton")
@@ -1057,6 +1119,7 @@ function OptionsPrivate.CreateFrame()
     frame.pickedOption = nil
     wipe(tempGroup.controlledChildren)
     loadedButton:ClearPick(noHide)
+    standbyButton:ClearPick(noHide)
     unloadedButton:ClearPick(noHide)
     container:ReleaseChildren()
     self.moversizer:Hide()
@@ -1258,10 +1321,15 @@ function OptionsPrivate.CreateFrame()
     -- Always expand even if already picked
     ExpandParents(data)
 
-    if OptionsPrivate.Private.loaded[id] ~= nil then
+    if OptionsPrivate.Private.loaded[id] then
       -- Under loaded
       if not loadedButton:GetExpanded() then
         loadedButton:Expand()
+      end
+    elseif OptionsPrivate.Private.loaded[id] == false then
+      -- Under standby
+      if not standbyButton:GetExpanded() then
+        standbyButton:Expand()
       end
     else
       -- Under Unloaded

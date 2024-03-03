@@ -687,6 +687,7 @@ local function LayoutDisplayButtons(msg)
     frame.buttonsScroll:AddChild(frame.pendingUpdateButton);
   end
   frame.buttonsScroll:AddChild(frame.loadedButton);
+  frame.buttonsScroll:AddChild(frame.standbyButton);
   frame.buttonsScroll:AddChild(frame.unloadedButton);
 
   local func2 = function()
@@ -1140,6 +1141,7 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
   local aurasMatchingFilter = {}
   local useTextFilter = filter and filter ~= ""
   local topLevelLoadedAuras = {}
+  local topLevelStandbyAuras = {}
   local topLevelUnloadedAuras = {}
   local visible = {}
 
@@ -1188,8 +1190,10 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
 
     if not child:GetGroup() then
       -- Top Level aura
-      if OptionsPrivate.Private.loaded[id] ~= nil then
+      if OptionsPrivate.Private.loaded[id] then
         tinsert(topLevelLoadedAuras, id)
+      elseif OptionsPrivate.Private.loaded[id] == false then
+        tinsert(topLevelStandbyAuras, id)
       else
         tinsert(topLevelUnloadedAuras, id)
       end
@@ -1209,6 +1213,24 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
   for _, id in ipairs(topLevelLoadedAuras) do
     for child in OptionsPrivate.Private.TraverseLeafsOrAura(WeakAuras.GetData(id)) do
       tinsert(frame.loadedButton.childButtons, displayButtons[child.id])
+    end
+  end
+
+  tinsert(frame.buttonsScroll.children, frame.standbyButton);
+
+  wipe(frame.standbyButton.childButtons)
+  if frame.standbyButton:GetExpanded() then
+    table.sort(topLevelStandbyAuras, function(a, b) return a:lower() < b:lower() end)
+    for _, id in ipairs(topLevelStandbyAuras) do
+      if aurasMatchingFilter[id] then
+        addButton(displayButtons[id], aurasMatchingFilter, visible)
+      end
+    end
+  end
+
+  for _, id in ipairs(topLevelStandbyAuras) do
+    for child in OptionsPrivate.Private.TraverseAllChildren(WeakAuras.GetData(id)) do
+      tinsert(frame.standbyButton.childButtons, displayButtons[child.id])
     end
   end
 
