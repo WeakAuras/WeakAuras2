@@ -169,7 +169,7 @@ function TimeMachine:Append(record)
   table.insert(self.next.forward, record)
   table.insert(self.next.backward, inverseRecord)
   if not self.transaction then
-    self:Commit()
+    self:Commit(true)
   end
 end
 
@@ -193,10 +193,12 @@ function TimeMachine:Reject()
     forward = {},
     backward = {}
   }
+  self.transaction = false
 end
 
-function TimeMachine:Commit()
-  if not self.transaction then return end
+---@param instant? boolean
+function TimeMachine:Commit(instant)
+  if not self.transaction and not instant then return end
   while self.index < #self.changes do
     table.remove(self.changes)
   end
