@@ -132,12 +132,6 @@ function OptionsPrivate.GetActionOptions(data)
                      or data.actions.start.message_type == "ERROR")
         end,
         get = function() return data.actions.start.r or 1, data.actions.start.g or 1, data.actions.start.b or 1 end,
-        set = function(info, r, g, b)
-          data.actions.start.r = r;
-          data.actions.start.g = g;
-          data.actions.start.b = b;
-          WeakAuras.Add(data);
-        end
       },
       start_message_dest = {
         type = "input",
@@ -592,12 +586,6 @@ function OptionsPrivate.GetActionOptions(data)
               or data.actions.finish.message_type == "ERROR")
             end,
         get = function() return data.actions.finish.r or 1, data.actions.finish.g or 1, data.actions.finish.b or 1 end,
-        set = function(info, r, g, b)
-          data.actions.finish.r = r;
-          data.actions.finish.g = g;
-          data.actions.finish.b = b;
-          WeakAuras.Add(data);
-        end
       },
       finish_message_dest = {
         type = "input",
