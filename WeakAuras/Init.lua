@@ -377,7 +377,7 @@ end
 
 --@alpha@
 WeakAuras.buildType = "alpha"
---@end-alpha
+--@end-alpha@
 
 --@experimental@
 WeakAuras.buildType = "pr"
