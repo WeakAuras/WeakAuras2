@@ -152,7 +152,6 @@ function TestForLongString(trigger, arg)
   local test;
   local needle = trigger[name]
   local caseInsensitive = arg.canBeCaseInsensitive and trigger[name .. "_caseInsensitive"]
-  print("###", arg.name, ":", caseInsensitive, "from", arg.canBeCaseInsensitive, trigger[name .. "_caseInsensitive"])
   if(trigger[name.."_operator"] == "==") then
     if caseInsensitive then
       test = ("(%s and (%s):lower() == (%s):lower())"):format(name, name, Private.QuotedString(needle))
