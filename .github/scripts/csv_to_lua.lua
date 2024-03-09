@@ -4,17 +4,22 @@
 
 local releases = {
   wow_classic_era = {
-    input = "wow_classic_era_list.csv", -- get it from https://wow.tools/casc/listfile/download/csv/build?buildConfig=9ad6ad5306deb8eed364b64cc628ac98
+    input = "wow_classic_era.csv",
     output = "ModelPathsClassic.lua",
     generate = true
   },
   wow_classic = {
-    input = "wow_classic_list.csv", -- get it from https://wow.tools/casc/listfile/download/csv/build?buildConfig=9ad6ad5306deb8eed364b64cc628ac98
-    output = "ModelPathsBCC.lua",
+    input = "wow_classic.csv",
+    output = "ModelPathsWrath.lua",
+    generate = true
+  },
+  wow_classic_beta = {
+    input = "wow_classic_beta.csv",
+    output = "ModelPathsCata.lua",
     generate = true
   },
   wow = {
-    input = "wow_list.csv", -- get it from https://wow.tools/casc/listfile/download/csv/build?buildConfig=26291f284f42494375d511d1fc120216 (last retail build when i write that)
+    input = "wow.csv",
     output = "ModelPaths.lua",
     generate = true
   }
@@ -23,7 +28,7 @@ local releases = {
 require "table"
 
 if not arg[1] or not releases[arg[1]] then
-  print(arg[0], "<wow|wow_classic|wow_classic_era>")
+  print(arg[0], "<wow|wow_classic|wow_classic_beta|wow_classic_era>")
   return
 end
 
@@ -122,9 +127,9 @@ local info = releases[arg[1]]
 if info and info.generate then
   local models = {}
   for line in io.lines(info.input) do
-    local fileid, file = line:match("(%d*);(.*)")
+    local fileId, file = line:match("(%d*);(.*)")
     if file and file:match("%.m2$") then
-      recurseSet(models, file, fileid)
+      recurseSet(models, file, fileId)
     end
   end
 
