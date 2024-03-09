@@ -441,6 +441,18 @@ function WeakAuras.IsWrathOrCataOrRetail()
   return WeakAuras.IsRetail() or WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic()
 end
 
+function WeakAuras.IsWrathOrCata()
+  return WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic()
+end
+
+function WeakAuras.IsCataOrRetail()
+  return WeakAuras.IsCataClassic() or WeakAuras.IsRetail()
+end
+
+function WeakAuras.IsClassicEraOrWrathOrCata()
+  return WeakAuras.IsClassicEra() or WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic()
+end
+
 WeakAuras.prettyPrint = function(...)
   print("|cff9900ffWeakAuras:|r ", ...)
 end
