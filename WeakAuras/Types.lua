@@ -2929,7 +2929,7 @@ end
 
 ---@class Private
 ---@field role_types table<string, string>
-if WeakAuras.IsWrathOrRetail() then
+if WeakAuras.IsWrathOrCataOrRetail() then
   Private.role_types = {
     TANK = INLINE_TANK_ICON.." "..TANK,
     DAMAGER = INLINE_DAMAGER_ICON.." "..DAMAGER,
@@ -4007,7 +4007,7 @@ for i = 1, 4 do
   Private.multiUnitUnits.party["partypet"..i] = true
 end
 
-if WeakAuras.IsWrathOrRetail() then
+if WeakAuras.IsWrathOrCataOrRetail() then
   for i = 1, 10 do
     Private.baseUnitId["boss"..i] = true
     Private.multiUnitUnits.boss["boss"..i] = true

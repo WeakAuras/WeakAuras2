@@ -3116,7 +3116,7 @@ do
 
     if not id or id == 0 then return end
 
-    if ignoreRunes and WeakAuras.IsWrathOrRetail() then
+    if ignoreRunes and WeakAuras.IsWrathOrCataOrRetail() then
       for i = 1, 6 do
         WeakAuras.WatchRuneCooldown(i);
       end
@@ -3363,7 +3363,7 @@ function WeakAuras.WatchUnitChange(unit)
                   WeakAuras.ScanEvents("UNIT_ROLE_CHANGED_" .. unit, unit)
                 end
               end
-              if WeakAuras.IsWrathOrRetail() then
+              if WeakAuras.IsWrathOrCataOrRetail() then
                 local newRole = UnitGroupRolesAssigned(unit)
                 if watchUnitChange.unitRoles[unit] ~= newRole then
                   watchUnitChange.unitRoles[unit] = newRole

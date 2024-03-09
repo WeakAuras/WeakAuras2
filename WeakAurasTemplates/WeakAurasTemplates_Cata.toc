@@ -1,0 +1,18 @@
+## Interface: 40400
+## Title: WeakAuras Templates
+## Author: The WeakAuras Team
+## Version: @project-version@
+## Notes: Templates for WeakAuras
+## X-Category: Interface Enhancements
+## Globe-Main: WeakAuras
+## DefaultState: Enabled
+## LoadOnDemand: 1
+## Dependencies: WeakAuras, WeakAurasOptions
+## AllowLoadGameType: cata
+
+locales.xml
+
+TriggerTemplates.lua
+TriggerTemplatesDataWrath.lua
+
+AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua
