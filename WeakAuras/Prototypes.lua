@@ -1271,11 +1271,11 @@ Private.load_prototype = {
       name = "vehicleUi",
       display = L["Has Vehicle UI"],
       type = "tristate",
-      init = WeakAuras.IsWrathOrRetail() and "arg" or nil,
+      init = WeakAuras.IsWrathOrCataOrRetail() and "arg" or nil,
       width = WeakAuras.normalWidth,
       optional = true,
-      enable = WeakAuras.IsWrathOrRetail(),
-      hidden = not WeakAuras.IsWrathOrRetail(),
+      enable = WeakAuras.IsWrathOrCataOrRetail(),
+      hidden = not WeakAuras.IsWrathOrCataOrRetail(),
       events = {"VEHICLE_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "UPDATE_OVERRIDE_ACTIONBAR", "UPDATE_VEHICLE_ACTIONBAR"}
     },
     {
@@ -1358,12 +1358,12 @@ Private.load_prototype = {
           return Private.talent_extra_option_types
         end
       },
-      control = WeakAuras.IsWrathOrRetail() and "WeakAurasMiniTalent" or nil,
-      multiNoSingle = WeakAuras.IsWrathOrRetail(), -- no single mode
-      multiTristate = WeakAuras.IsWrathOrRetail(), -- values can be true/false/nil
-      multiAll = WeakAuras.IsWrathOrRetail(), -- require all tests
-      orConjunctionGroup = WeakAuras.IsWrathOrRetail() and "talent",
-      multiUseControlWhenFalse = WeakAuras.IsWrathOrRetail(),
+      control = WeakAuras.IsWrathOrCataOrRetail() and "WeakAurasMiniTalent" or nil,
+      multiNoSingle = WeakAuras.IsWrathOrCataOrRetail(), -- no single mode
+      multiTristate = WeakAuras.IsWrathOrCataOrRetail(), -- values can be true/false/nil
+      multiAll = WeakAuras.IsWrathOrCataOrRetail(), -- require all tests
+      orConjunctionGroup = WeakAuras.IsWrathOrCataOrRetail() and "talent",
+      multiUseControlWhenFalse = WeakAuras.IsWrathOrCataOrRetail(),
       enable = function(trigger)
         return WeakAuras.IsClassicEra()
             or (WeakAuras.IsWrathClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
@@ -1378,7 +1378,7 @@ Private.load_prototype = {
     },
     {
       name = "talent2",
-      display = WeakAuras.IsWrathOrRetail() and L["Or Talent"] or L["And Talent"],
+      display = WeakAuras.IsWrathOrCataOrRetail() and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
       test = WeakAuras.IsRetail() and "WeakAuras.CheckTalentId(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
@@ -1420,12 +1420,12 @@ Private.load_prototype = {
           return Private.talent_extra_option_types
         end,
       },
-      control = WeakAuras.IsWrathOrRetail() and "WeakAurasMiniTalent" or nil,
-      multiNoSingle = WeakAuras.IsWrathOrRetail(), -- no single mode
-      multiTristate = WeakAuras.IsWrathOrRetail(), -- values can be true/false/nil
-      multiAll = WeakAuras.IsWrathOrRetail(), -- require all tests
-      orConjunctionGroup  = WeakAuras.IsWrathOrRetail() and "talent",
-      multiUseControlWhenFalse = WeakAuras.IsWrathOrRetail(),
+      control = WeakAuras.IsWrathOrCataOrRetail() and "WeakAurasMiniTalent" or nil,
+      multiNoSingle = WeakAuras.IsWrathOrCataOrRetail(), -- no single mode
+      multiTristate = WeakAuras.IsWrathOrCataOrRetail(), -- values can be true/false/nil
+      multiAll = WeakAuras.IsWrathOrCataOrRetail(), -- require all tests
+      orConjunctionGroup  = WeakAuras.IsWrathOrCataOrRetail() and "talent",
+      multiUseControlWhenFalse = WeakAuras.IsWrathOrCataOrRetail(),
       enable = function(trigger)
         return (trigger.use_talent ~= nil or trigger.use_talent2 ~= nil) and (
           WeakAuras.IsClassicEra()
@@ -1443,7 +1443,7 @@ Private.load_prototype = {
     },
     {
       name = "talent3",
-      display = WeakAuras.IsWrathOrRetail() and L["Or Talent"] or L["And Talent"],
+      display = WeakAuras.IsWrathOrCataOrRetail() and L["Or Talent"] or L["And Talent"],
       type = "multiselect",
       values = valuesForTalentFunction,
       test = WeakAuras.IsRetail() and "WeakAuras.CheckTalentId(%d) == (%d == 4)" or "WeakAuras.CheckTalentByIndex(%d, %d)",
@@ -1485,12 +1485,12 @@ Private.load_prototype = {
           return Private.talent_extra_option_types
         end,
       },
-      control = WeakAuras.IsWrathOrRetail() and "WeakAurasMiniTalent" or nil,
-      multiNoSingle = WeakAuras.IsWrathOrRetail(), -- no single mode
-      multiTristate = WeakAuras.IsWrathOrRetail(), -- values can be true/false/nil
-      multiAll = WeakAuras.IsWrathOrRetail(), -- require all tests
-      orConjunctionGroup  = WeakAuras.IsWrathOrRetail() and "talent",
-      multiUseControlWhenFalse = WeakAuras.IsWrathOrRetail(),
+      control = WeakAuras.IsWrathOrCataOrRetail() and "WeakAurasMiniTalent" or nil,
+      multiNoSingle = WeakAuras.IsWrathOrCataOrRetail(), -- no single mode
+      multiTristate = WeakAuras.IsWrathOrCataOrRetail(), -- values can be true/false/nil
+      multiAll = WeakAuras.IsWrathOrCataOrRetail(), -- require all tests
+      orConjunctionGroup  = WeakAuras.IsWrathOrCataOrRetail() and "talent",
+      multiUseControlWhenFalse = WeakAuras.IsWrathOrCataOrRetail(),
       enable = function(trigger)
         return ((trigger.use_talent ~= nil and trigger.use_talent2 ~= nil) or trigger.use_talent3 ~= nil) and (
           WeakAuras.IsClassicEra()
@@ -1659,9 +1659,9 @@ Private.load_prototype = {
       display = WeakAuras.IsWrathClassic() and L["Assigned Role"] or L["Spec Role"],
       type = "multiselect",
       values = "role_types",
-      init = WeakAuras.IsWrathOrRetail() and "arg" or nil,
-      enable = WeakAuras.IsWrathOrRetail(),
-      hidden = not WeakAuras.IsWrathOrRetail(),
+      init = WeakAuras.IsWrathOrCataOrRetail() and "arg" or nil,
+      enable = WeakAuras.IsWrathOrCataOrRetail(),
+      hidden = not WeakAuras.IsWrathOrCataOrRetail(),
       events = {"PLAYER_ROLES_ASSIGNED", "PLAYER_TALENT_UPDATE"}
     },
     {
@@ -1968,7 +1968,7 @@ local function AddUnitEventForEvents(result, unit, event)
 end
 
 local function AddTargetConditionEvents(result, useFocus)
-  if WeakAuras.IsWrathOrRetail() then
+  if WeakAuras.IsWrathOrCataOrRetail() then
     if useFocus then
       tinsert(result, "PLAYER_FOCUS_CHANGED")
     end
@@ -2200,7 +2200,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsWrathOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsWrathOrCataOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
@@ -3003,7 +3003,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsWrathOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsWrathOrCataOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
@@ -3601,7 +3601,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsWrathOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsWrathOrCataOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
@@ -3925,7 +3925,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsWrathOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsWrathOrCataOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end
       },
       {
@@ -6868,7 +6868,7 @@ Private.event_prototypes = {
       },
       {
         name = "icon",
-        init = "GetItemIcon(itemName)",
+        init = "GetItemIcon(itemName or '')",
         hidden = true,
         store = true,
         test = "true"
@@ -8834,7 +8834,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsWrathOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return WeakAuras.IsWrathOrCataOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
                  and not trigger.use_inverse
         end
       },
@@ -9263,9 +9263,9 @@ Private.event_prototypes = {
         type = "number",
         init = "max(GetCombatRating(CR_CRIT_MELEE), GetCombatRating(CR_CRIT_RANGED), GetCombatRating(CR_CRIT_SPELL))",
         store = true,
-        enable = WeakAuras.IsWrathOrRetail(),
+        enable = WeakAuras.IsWrathOrCataOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathOrRetail(),
+        hidden = not WeakAuras.IsWrathOrCataOrRetail(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -9317,9 +9317,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_HASTE_SPELL)",
         store = true,
-        enable = WeakAuras.IsWrathOrRetail(),
+        enable = WeakAuras.IsWrathOrCataOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathOrRetail(),
+        hidden = not WeakAuras.IsWrathOrCataOrRetail(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -9722,9 +9722,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_DODGE)",
         store = true,
-        enable = WeakAuras.IsWrathOrRetail(),
+        enable = WeakAuras.IsWrathOrCataOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathOrRetail(),
+        hidden = not WeakAuras.IsWrathOrCataOrRetail(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -9748,9 +9748,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_PARRY)",
         store = true,
-        enable = WeakAuras.IsWrathOrRetail(),
+        enable = WeakAuras.IsWrathOrCataOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathOrRetail(),
+        hidden = not WeakAuras.IsWrathOrCataOrRetail(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -9852,9 +9852,9 @@ Private.event_prototypes = {
         type = "number",
         init = "PaperDollFrame_GetArmorReduction(select(2, UnitArmor('player')), UnitEffectiveLevel and UnitEffectiveLevel('player') or UnitLevel('player'))",
         store = true,
-        enable = WeakAuras.IsWrathOrRetail(),
+        enable = WeakAuras.IsWrathOrCataOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsWrathOrRetail(),
+        hidden = not WeakAuras.IsWrathOrCataOrRetail(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -9996,9 +9996,9 @@ Private.event_prototypes = {
       },
       {
         name = "vehicle",
-        display = not WeakAuras.IsWrathOrRetail() and L["On Taxi"] or L["In Vehicle"],
+        display = not WeakAuras.IsWrathOrCataOrRetail() and L["On Taxi"] or L["In Vehicle"],
         type = "tristate",
-        init = not WeakAuras.IsWrathOrRetail() and "UnitOnTaxi('player')" or "UnitInVehicle('player')",
+        init = not WeakAuras.IsWrathOrCataOrRetail() and "UnitOnTaxi('player')" or "UnitInVehicle('player')",
       },
       {
         name = "resting",

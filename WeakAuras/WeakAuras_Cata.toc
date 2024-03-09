@@ -1,0 +1,80 @@
+## Interface: 40400
+## Title: WeakAuras
+## Author: The WeakAuras Team
+## Version: @project-version@
+## X-Flavor: Cata
+## Notes: A powerful, comprehensive utility for displaying graphics and information based on buffs, debuffs, and other triggers.
+## Notes-esES: Potente y completa aplicación que te permitirá mostrar por pantalla múltiples diseños, basados en beneficios, perjuicios y otros activadores.
+## Notes-deDE: Ein leistungsfähiges, umfassendes Addon zur grafischen Darstellung von Informationen von Auren, Cooldowns, Timern und vielem mehr.
+## Notes-ruRU: Мощный, многосторонний инструмент для отображения графики и информации, основанной на баффах, дебаффах и других триггерах.
+## Notes-zhTW: 一個強大且全面實用的顯示圖形和訊息基於增益，減益和其它觸發。
+## X-Category: Interface Enhancements
+## Globe-Post: WeakAurasOptions, WeakAurasModelPaths, WeakAurasTemplates
+## X-Website: https://www.curseforge.com/wow/addons/weakauras
+## X-Curse-Project-ID: 65387
+## X-WoWI-ID: 24910
+## X-Wago-ID: VBNBxKx5
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariables: WeakAurasSaved
+## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibButtonGlow-1.0, LibSpellRange-1.0, LibRangeCheck-3.0, LibDBIcon-1.0, LibGetFrame-1.0, !LibUIDropDownMenu, !!AddonLocale, BigWigs, DBM-Core
+## AllowLoadGameType: cata
+
+# External code + initialization
+embeds.xml
+
+# TaintLess
+Libs\TaintLess\TaintLess.xml
+
+Init.lua
+locales.xml
+ArchiveTypes\Repository.lua
+DefaultOptions.lua
+
+# Core files
+SubscribableObject.lua
+Features.lua
+Atlas_Wrath.lua
+Types_Wrath.lua
+Types.lua
+Prototypes.lua
+Profiling.lua
+WeakAuras.lua
+History.lua
+Transmission.lua
+Modernize.lua
+Animations.lua
+Conditions.lua
+AnchorToWeakAuras.lua
+
+# Trigger systems
+BuffTrigger2.lua
+GenericTrigger.lua
+BossMods.lua
+
+# Helper Systems
+AuraWarnings.lua
+AuraEnvironment.lua
+AuraEnvironmentWrappedSystems.lua
+DebugLog.lua
+
+# Region support
+RegionTypes\SmoothStatusBarMixin.lua
+RegionTypes\RegionPrototype.lua
+RegionTypes\ProgressTexture.lua
+RegionTypes\Texture.lua
+RegionTypes\AuraBar.lua
+RegionTypes\Icon.lua
+RegionTypes\Text.lua
+RegionTypes\Group.lua
+RegionTypes\DynamicGroup.lua
+RegionTypes\StopMotion.lua
+RegionTypes\Model.lua
+
+# Sub-region support
+SubRegionTypes\Background.lua
+SubRegionTypes\SubText.lua
+SubRegionTypes\Border.lua
+SubRegionTypes\Glow.lua
+SubRegionTypes\Tick.lua
+SubRegionTypes\Model.lua

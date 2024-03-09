@@ -220,7 +220,7 @@ local function ConstructModelPicker(frame)
   group:AddChild(modelTree);
 
   local model = CreateFrame("PlayerModel", nil, group.content);
-  model.SetTransformFixed = model.GetResizeBounds and OptionsPrivate.Private.ModelSetTransformFixed or model.SetTransform -- TODO change test to WeakAuras.IsWrathOrRetail() after 3.4.1 release
+  model.SetTransformFixed = model.GetResizeBounds and OptionsPrivate.Private.ModelSetTransformFixed or model.SetTransform -- TODO change test to WeakAuras.IsWrathOrCataOrRetail() after 3.4.1 release
   model:SetAllPoints(modelTree.content);
   model:SetFrameStrata("FULLSCREEN");
   group.model = model;
