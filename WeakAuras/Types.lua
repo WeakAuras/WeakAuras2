@@ -1442,6 +1442,12 @@ Private.power_types = {
 if WeakAuras.IsRetail() then
   Private.power_types[99] = STAGGER
   Private.power_types[19] = POWER_TYPE_ESSENCE
+elseif WeakAuras.IsCataClassic() then
+  Private.power_types[12] = nil
+  Private.power_types[13] = nil
+  Private.power_types[16] = nil
+  Private.power_types[17] = nil
+  Private.power_types[18] = nil
 end
 
 ---@class Private
@@ -1553,7 +1559,7 @@ if WeakAuras.IsRetail() then
   Private.GetCurrencyIDFromLink = C_CurrencyInfo.GetCurrencyIDFromLink
   Private.ExpandCurrencyList = C_CurrencyInfo.ExpandCurrencyList
   Private.GetCurrencyListInfo = C_CurrencyInfo.GetCurrencyListInfo
-elseif WeakAuras.IsWrathClassic() then
+elseif WeakAuras.IsWrathOrCata() then
   Private.GetCurrencyListSize = GetCurrencyListSize
   Private.GetCurrencyIDFromLink = function(currencyLink)
     local currencyID = string.match(currencyLink, "|Hcurrency:(%d+):")
@@ -2295,7 +2301,7 @@ if WeakAuras.IsClassicEra() then -- Classic
       runes[tostring(v)] = nil
     end
   end
-elseif WeakAuras.IsWrathClassic() then
+elseif WeakAuras.IsWrathOrCata() then
   Private.texture_types["Blizzard Alerts"] = nil
   do
     local beams = Private.texture_types["Beams"]
@@ -2532,7 +2538,7 @@ end
 ---@class Private
 ---@field rune_specific_types table<number, string>
 ---@field essence_specific_types table<number, string>
-if WeakAuras.IsWrathClassic() then
+if WeakAuras.IsWrathOrCata() then
   Private.rune_specific_types = {
     [1] = L["Blood Rune #1"],
     [2] = L["Blood Rune #2"],
@@ -2915,11 +2921,18 @@ elseif WeakAuras.IsWrathClassic() then
     normal = PLAYER_DIFFICULTY1,
     heroic = PLAYER_DIFFICULTY2,
   }
+elseif WeakAuras.IsCataClassic() then
+  Private.difficulty_types = {
+    none = L["None"],
+    lfr = PLAYER_DIFFICULTY3,
+    normal = PLAYER_DIFFICULTY1,
+    heroic = PLAYER_DIFFICULTY2,
+  }
 end
 
 ---@class Private
 ---@field raid_role_types table<string, string>
-if WeakAuras.IsClassicEraOrWrath() then
+if WeakAuras.IsClassicEraOrWrathOrCata() then
   Private.raid_role_types = {
     MAINTANK = "|TInterface\\GroupFrame\\UI-Group-maintankIcon:16:16|t "..MAINTANK,
     MAINASSIST = "|TInterface\\GroupFrame\\UI-Group-mainassistIcon:16:16|t "..MAINASSIST,
@@ -4766,9 +4779,11 @@ if WeakAuras.IsClassicEra() then
   end
 end
 
-if WeakAuras.IsWrathClassic() then
-  Private.item_slot_types[0] = AMMOSLOT
-  Private.item_slot_types[18] = RANGEDSLOT
+if WeakAuras.IsWrathOrCata() then
+  if not WeakAuras.IsCataClassic() then
+    Private.item_slot_types[0] = AMMOSLOT
+    Private.item_slot_types[18] = RANGEDSLOT
+  end
   for slot = 20, 28 do
     Private.item_slot_types[slot] = nil
   end
