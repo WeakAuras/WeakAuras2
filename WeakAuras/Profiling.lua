@@ -300,7 +300,9 @@ end
 local function TotalProfileTime(map)
   local total = 0
   for k, v in pairs(map) do
-    total = total + v.elapsed
+    if (k ~= "time" and k ~= "wa") then
+      total = total + v.elapsed
+    end
   end
   return total
 end
@@ -441,12 +443,18 @@ local function ApplyAlternateState(frame, alternate)
   end
 end
 
+local modes = {
+  L["Auras"],
+  L["Systems"]
+}
 WeakAurasProfilingMixin = {}
 
 function WeakAurasProfilingMixin:OnLoad()
   ButtonFrameTemplate_HidePortrait(self)
   self:SetTitle(L["WeakAuras Profiling"])
   self:SetSize(500, 300)
+  self.mode = 1
+  UIDropDownMenu_SetText(self.buttons.modeDropDown, modes[1])
 
   self.buttons.report:SetText(L["Report Summary"])
   self.buttons.report.tooltip = L["A detailed overview of your auras and WeakAuras systems\nCopy the whole text to Weakaura's Discord if you need assistance."]
@@ -493,6 +501,7 @@ function WeakAurasProfilingMixin:OnLoad()
   self.ScrollBox:SetDataProvider(self.bars)
 
   self:InitDropDown()
+  self:InitModeDropDown()
   self:SetScript("OnEvent", AutoStartStopProfiling)
 
   --[[
@@ -599,6 +608,33 @@ function WeakAurasProfilingMixin:InitDropDown()
 	end)
 end
 
+local function selectMode(self, mode)
+  local parent = self:GetParent()
+  local profilingFrame = parent.dropdown.Button:GetParent():GetParent():GetParent()
+  profilingFrame.mode = mode
+  UIDropDownMenu_SetText(profilingFrame.buttons.modeDropDown, modes[mode])
+  profilingFrame:ResetBars()
+  profilingFrame:RefreshBars(nil, true)
+end
+
+function WeakAurasProfilingMixin:InitModeDropDown()
+  local function Initializer(dropDown, level)
+		for i = 1, 2 do
+			local info = UIDropDownMenu_CreateInfo()
+			info.text = modes[i]
+			info.func = selectMode
+      info.checked = i == self.mode
+      info.arg1 = i
+			UIDropDownMenu_AddButton(info)
+		end
+	end
+
+	local dropDown = self.buttons.modeDropDown
+  UIDropDownMenu_SetWidth(dropDown, 120)
+  UIDropDownMenu_JustifyText(dropDown, "LEFT")
+  UIDropDownMenu_Initialize(dropDown, Initializer)
+end
+
 function WeakAurasProfilingMixin:OnShow()
   --[[ 3x WeakAuras/Profiling.lua:593: Action[SetPoint] failed because[SetPoint would result in anchor family connection]: attempted from: WeakAurasProfilingFrame:SetPoint.
   if WeakAurasSaved.RealTimeProfilingWindow then
@@ -613,26 +649,49 @@ end
 
 
 local lastRefresh
-function WeakAurasProfilingMixin:RefreshBars()
-  if not lastRefresh or lastRefresh < GetTime() - 1 then
+function WeakAurasProfilingMixin:RefreshBars(_, force)
+  if force or (not lastRefresh or lastRefresh < GetTime() - 1) then
     lastRefresh = GetTime()
   else
     return
   end
 
-  if not profileData.systems.time or profileData.systems.time.count == 0 then
+  if not profileData.systems.time then
     return
   end
 
-  local total = TotalProfileTime(profileData.auras)
-  for i, name in ipairs(SortProfileMap(profileData.auras)) do
+  local data
+  if self.mode == 1 then -- auras
+    data = profileData.auras
+  elseif self.mode == 2 then -- systems
+    data = {}
+    for k, v in pairs(profileData.systems) do
+      if (k ~= "time" and k ~= "wa") then
+        local event = unitEventToMultiUnit(k)
+        if data[event] == nil then
+          data[event] = CopyTable(v)
+        else
+          if v.elapsed then
+            data[event].elapsed = (data[event].elapsed or 0) + v.elapsed
+          end
+          if v.spike then
+            data[event].spike = (data[event].spike or 0) + v.spike
+          end
+        end
+      end
+    end
+  end
+
+  local total = TotalProfileTime(data)
+  for _, name in ipairs(SortProfileMap(data)) do
     if (name ~= "time" and name ~= "wa") then
-      local elapsed = profileData.auras[name].elapsed
+      local elapsed = data[name].elapsed
       local pct = 100 * elapsed / total
-      local spike = profileData.auras[name].spike
+      local spike = data[name].spike
       self:UpdateBar(name, elapsed, pct, spike)
     end
   end
+
   self.bars:Sort()
   if profileData.systems.wa then
     local timespent = debugprofilestop() - profileData.systems.time.start

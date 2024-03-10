@@ -128,6 +128,13 @@
             </Scripts>
           </Button>
 
+					<Frame parentKey="modeDropDown" inherits="UIDropDownMenuTemplate">
+						<Size x="120" y="20"/>
+						<Anchors>
+							<Anchor point="RIGHT" x="-130" />
+						</Anchors>
+					</Frame>
+
           <DropDownToggleButton parentKey="start" inherits="UIResettableDropdownButtonTemplate">
             <Size x="120" y="20"/>
             <Anchors>
