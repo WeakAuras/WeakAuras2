@@ -185,7 +185,6 @@
       </Layer>
     </Layers>
     <Scripts>
-      <OnLoad method="OnLoad"/>
       <OnShow method="OnShow"/>
     </Scripts>
   </Frame>
@@ -242,7 +241,7 @@
       </ScrollFrame>
     </Frames>
     <Scripts>
-      <OnLoad method="OnLoad"/>
+      <OnLoad method="OnShow"/>
     </Scripts>
   </Frame>
 </Ui>

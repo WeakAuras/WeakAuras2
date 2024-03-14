@@ -41,7 +41,10 @@ table_to_string = function(tbl, depth)
 end
 
 WeakAurasProfilingReportMixin = {}
-function WeakAurasProfilingReportMixin:OnLoad()
+function WeakAurasProfilingReportMixin:OnShow()
+  if self.initialised then return end
+  self.initialised = true
+
   ButtonFrameTemplate_HidePortrait(self)
   self:SetTitle(L["WeakAuras Profiling Report"])
   self:SetSize(500, 300)
@@ -449,7 +452,10 @@ local modes = {
 }
 WeakAurasProfilingMixin = {}
 
-function WeakAurasProfilingMixin:OnLoad()
+function WeakAurasProfilingMixin:OnShow()
+  if self.initialised then return end
+  self.initialised = true
+
   ButtonFrameTemplate_HidePortrait(self)
   self:SetTitle(L["WeakAuras Profiling"])
   self:SetSize(500, 300)
@@ -635,7 +641,8 @@ function WeakAurasProfilingMixin:InitModeDropDown()
   UIDropDownMenu_Initialize(dropDown, Initializer)
 end
 
-function WeakAurasProfilingMixin:OnShow()
+
+--function WeakAurasProfilingMixin:OnShow()
   --[[ 3x WeakAuras/Profiling.lua:593: Action[SetPoint] failed because[SetPoint would result in anchor family connection]: attempted from: WeakAurasProfilingFrame:SetPoint.
   if WeakAurasSaved.RealTimeProfilingWindow then
     self:SetPoint("TOPLEFT", UIParent, "TOPLEFT",
@@ -645,7 +652,7 @@ function WeakAurasProfilingMixin:OnShow()
     self:SetPoint("TOPLEFT", UIParent, "TOPLEFT")
   end
   ]]
-end
+--end
 
 
 local lastRefresh
