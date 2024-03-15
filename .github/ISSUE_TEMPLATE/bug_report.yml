@@ -51,14 +51,25 @@ body:
   validations:
     required: true
 
-- type: checkboxes
+- type: dropdown
   id: testing
   attributes:
     label: Tested with only WeakAuras
-    description: Did you try having WeakAuras as the only enabled addon and everything else (especially something like ElvUI) disabled?
+    description: |
+      Sometimes, other addons can interfere with WeakAuras. We recommend testing with only WeakAuras enabled to see if the issue persists.
+      You can use the [Bisector Addon](https://www.curseforge.com/wow/addons/bisector) to make this easier. After installing that addon:
+      1. Type in game: `/bisect start +WeakAuras !WeakAurasCompanion`. Your UI should reload.
+      2. Test if the issue is still present:
+        - **YES** Type `/bisect bad`. A window should appear with some text. Copy that text and paste it in the Bisector Report field below.
+        - **NO** Type `/bisect good`. A window should appear with some text. You can either:
+          - Copy that text and paste it in the Bisector Report field below.
+          - Type `/bisect continue` to try to find which addon is causing the issue. Follow the prompts that Bisector prints in your chat.
+      3. Type in game `/bisect reset` to restore your addons to their original state.
     options:
-    - label: "Yes"
-      required: true
+      - I got this issue with only WeakAuras enabled
+      - I have a Bisector Report
+  validations:
+    required: true
 
 - type: textarea
   attributes:
@@ -108,4 +119,11 @@ body:
   validations:
     required: false
 
+- type: textarea
+  attributes:
+    label: Bisector Report
+    description: If you have a Bisector Report, please paste it here.
+    render: Text
+  validations:
+    required: false
 
