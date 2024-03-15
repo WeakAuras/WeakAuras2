@@ -185,6 +185,7 @@ function WeakAuras.StartProfile(startType)
   profileData.auras = {}
   profileData.systems.time = {}
   profileData.systems.time.start = debugprofilestop()
+  profileData.systems.time.elapsed = nil
   profileData.systems.time.count = 1
 
   Private.StartProfileSystem = StartProfileSystem
@@ -550,7 +551,11 @@ function WeakAurasProfilingMixin:OnShow()
     end
   end)
 ]]
-  self:SetScript("OnUpdate", self.RefreshBars)
+  self:SetScript("OnUpdate", function()
+    if profileData.systems.time and profileData.systems.time.count > 0 then
+      self:RefreshBars()
+    end
+  end)
   self:UpdateButtons()
 end
 
@@ -706,12 +711,7 @@ function WeakAurasProfilingMixin:RefreshBars(_, force)
 
   self.bars:Sort()
   if profileData.systems.wa then
-    local timespent = debugprofilestop() - profileData.systems.time.start
-    self.stats:SetText(("|cFFFFFFFFTime in WA: %.2fs / %ds (%.1f%%)"):format(
-      profileData.systems.wa.elapsed / 1000,
-      timespent / 1000,
-      100 * profileData.systems.wa.elapsed / timespent
-    ))
+    local timespent = profileData.systems.time.elapsed or (debugprofilestop() - profileData.systems.time.start)
     self.stats:SetText(
       ("|cFFFFFFFFTime in WA: %.2fs / %ds (%.1f%%)"):format(profileData.systems.wa.elapsed / 1000, timespent / 1000, 100 * profileData.systems.wa.elapsed / timespent)
     )
