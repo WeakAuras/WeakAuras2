@@ -81,7 +81,7 @@
       </Frame>
 
       <Frame parentKey="buttons" hidden="false">
-        <Size y="25"/>
+        <Size y="30"/>
         <Anchors>
           <Anchor point="TOPLEFT" relativeKey="$parent.TitleBar" relativePoint="BOTTOMLEFT" />
           <Anchor point="TOPRIGHT" relativeKey="$parent.TitleBar" relativePoint="BOTTOMRIGHT"/>
@@ -89,9 +89,9 @@
 
         <Frames>
           <Button parentKey="report" inherits="UIPanelButtonTemplate">
-            <Size x="120" y="20"/>
+            <Size x="120" y="26"/>
             <Anchors>
-              <Anchor point="LEFT" x="15"/>
+              <Anchor point="TOPLEFT" x="15"/>
             </Anchors>
             <Scripts>
               <OnClick function="WeakAurasProfilingResultButton_OnClick"/>
@@ -109,9 +109,9 @@
           </Button>
 
           <Button parentKey="stop" inherits="UIPanelButtonTemplate">
-            <Size x="120" y="20"/>
+            <Size x="120" y="26"/>
             <Anchors>
-              <Anchor point="RIGHT" x="-10"/>
+              <Anchor point="TOPRIGHT" x="-10"/>
             </Anchors>
             <Scripts>
               <OnClick function="WeakAurasProfilingStopButton_OnClick"/>
@@ -129,16 +129,16 @@
           </Button>
 
           <Frame parentKey="modeDropDown" inherits="UIDropDownMenuTemplate">
-            <Size x="120" y="20"/>
+            <Size x="120" y="26"/>
             <Anchors>
-              <Anchor point="RIGHT" x="-130" />
+              <Anchor point="TOP"/>
             </Anchors>
           </Frame>
 
           <DropDownToggleButton parentKey="start" inherits="UIResettableDropdownButtonTemplate">
-            <Size x="120" y="20"/>
+            <Size x="120" y="26"/>
             <Anchors>
-              <Anchor point="RIGHT" x="-10"/>
+              <Anchor point="TOPRIGHT" x="-10"/>
             </Anchors>
           </DropDownToggleButton>
           <Frame parentKey="startDropDown" inherits="UIDropDownMenuTemplate"/>
