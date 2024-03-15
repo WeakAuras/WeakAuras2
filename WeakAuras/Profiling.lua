@@ -1,4 +1,6 @@
-if not WeakAuras.IsLibsOK() then return end
+if not WeakAuras.IsLibsOK() then
+  return
+end
 --- @type string, Private
 local AddonName, Private = ...
 
@@ -26,15 +28,14 @@ table_to_string = function(tbl, depth)
       elseif type(v) == "function" then
         v = "function"
       elseif type(v) == "string" then
-        v = '"'.. v ..'"'
+        v = '"' .. v .. '"'
       end
 
       if type(k) == "string" then
-        k = '"' .. k ..'"'
+        k = '"' .. k .. '"'
       end
 
-      str = (str and str .. "|cff999999,|r " or "|cff999999{|r ") .. "|cffffff99["
-            .. tostring(k) .. "]|r |cff999999=|r |cffffffff" .. tostring(v) .. "|r"
+      str = (str and str .. "|cff999999,|r " or "|cff999999{|r ") .. "|cffffff99[" .. tostring(k) .. "]|r |cff999999=|r |cffffffff" .. tostring(v) .. "|r"
     end
   end
   return (str or "{ ") .. " }"
@@ -42,7 +43,9 @@ end
 
 WeakAurasProfilingReportMixin = {}
 function WeakAurasProfilingReportMixin:OnShow()
-  if self.initialised then return end
+  if self.initialised then
+    return
+  end
   self.initialised = true
 
   ButtonFrameTemplate_HidePortrait(self)
@@ -55,7 +58,9 @@ function WeakAurasProfilingReportMixin:ClearText()
 end
 
 function WeakAurasProfilingReportMixin:AddText(v)
-  if not v then return end
+  if not v then
+    return
+  end
   --- @type string?
   local m = self.ScrollBox.messageFrame:GetText()
   if m ~= "" then
@@ -129,7 +134,9 @@ function Private.ProfileRenameAura(oldid, id)
 end
 
 local RegisterProfile = function(startType)
-  if startType == "boss" then startType = "encounter" end
+  if startType == "boss" then
+    startType = "encounter"
+  end
   local delayedStart
   if startType == "encounter" then
     WeakAurasProfilingFrame:UnregisterAllEvents()
@@ -189,11 +196,10 @@ function WeakAuras.StartProfile(startType)
   LGF.StartProfile()
 end
 
-local function doNothing()
-end
+local function doNothing() end
 
 function WeakAuras.StopProfile()
-  if (currentProfileState ~= "profiling") then
+  if currentProfileState ~= "profiling" then
     prettyPrint(L["Profiling not running."])
     return
   end
@@ -224,7 +230,7 @@ function WeakAuras.StopProfile()
 end
 
 function WeakAuras.ToggleProfile()
-  if (not profileData.systems.time or profileData.systems.time.count ~= 1) then
+  if not profileData.systems.time or profileData.systems.time.count ~= 1 then
     WeakAuras.StartProfile()
   else
     WeakAuras.StopProfile()
@@ -303,7 +309,7 @@ end
 local function TotalProfileTime(map)
   local total = 0
   for k, v in pairs(map) do
-    if (k ~= "time" and k ~= "wa") then
+    if k ~= "time" and k ~= "wa" then
       total = total + v.elapsed
     end
   end
@@ -313,17 +319,29 @@ end
 local function unitEventToMultiUnit(event)
   local count
   event, count = event:gsub("nameplate%d+$", "nameplate")
-  if count == 1 then return event end
+  if count == 1 then
+    return event
+  end
   event, count = event:gsub("boss%d$", "boss")
-  if count == 1 then return event end
+  if count == 1 then
+    return event
+  end
   event, count = event:gsub("arena%d$", "arena")
-  if count == 1 then return event end
+  if count == 1 then
+    return event
+  end
   event, count = event:gsub("raid%d+$", "group")
-  if count == 1 then return event end
+  if count == 1 then
+    return event
+  end
   event, count = event:gsub("raidpet%d+$", "group")
-  if count == 1 then return event end
+  if count == 1 then
+    return event
+  end
   event, count = event:gsub("party%d$", "party")
-  if count == 1 then return event end
+  if count == 1 then
+    return event
+  end
   event, count = event:gsub("partypet%d$", "party")
   return event
 end
@@ -347,8 +365,7 @@ function WeakAuras.PrintProfile()
   else
     popup:SetParent(UIParent)
     if WeakAurasSaved.ProfilingWindow then
-      popup:SetPoint("TOPLEFT", UIParent, "TOPLEFT", WeakAurasSaved.ProfilingWindow.xOffset or 0,
-                                                     WeakAurasSaved.ProfilingWindow.yOffset or 0)
+      popup:SetPoint("TOPLEFT", UIParent, "TOPLEFT", WeakAurasSaved.ProfilingWindow.xOffset or 0, WeakAurasSaved.ProfilingWindow.yOffset or 0)
     else
       popup:SetPoint("CENTER")
     end
@@ -358,8 +375,7 @@ function WeakAuras.PrintProfile()
 
   PrintOneProfile(popup, "|cff9900ffTotal time:|r", profileData.systems.time)
   PrintOneProfile(popup, "|cff9900ffTime inside WA:|r", profileData.systems.wa)
-  popup:AddText(string.format("|cff9900ffTime spent inside WA:|r %.2f%%",
-                              100 * profileData.systems.wa.elapsed / profileData.systems.time.elapsed))
+  popup:AddText(string.format("|cff9900ffTime spent inside WA:|r %.2f%%", 100 * profileData.systems.wa.elapsed / profileData.systems.time.elapsed))
 
   popup:AddText("")
   popup:AddText("Note: Not every aspect of each aura can be tracked.")
@@ -368,7 +384,7 @@ function WeakAuras.PrintProfile()
   popup:AddText("")
   popup:AddText("|cff9900ffAuras:|r")
   local total = TotalProfileTime(profileData.auras)
-  popup:AddText("Total time attributed to auras: ", floor(total) .."ms")
+  popup:AddText("Total time attributed to auras: ", floor(total) .. "ms")
   for _, k in ipairs(SortProfileMap(profileData.auras), "spike") do
     PrintOneProfile(popup, k, profileData.auras[k], total)
   end
@@ -393,7 +409,7 @@ function WeakAuras.PrintProfile()
   end
 
   for i, k in ipairs(SortProfileMap(systemRegrouped)) do
-    if (k ~= "time" and k ~= "wa") then
+    if k ~= "time" and k ~= "wa" then
       PrintOneProfile(popup, k, systemRegrouped[k], profileData.systems.wa.elapsed)
     end
   end
@@ -409,33 +425,33 @@ end
 
 WeakAurasProfilingLineMixin = {
   spikeTooltip = L["Maximum time used on a single frame"],
-  timeTooltip = L["Cumulated time used during profiling"]
+  timeTooltip = L["Cumulated time used during profiling"],
 }
 
 function WeakAurasProfilingLineMixin:Init(e)
   -- button.pct:SetText(pct)
-	self.progressBar.name:SetText(e.name)
+  self.progressBar.name:SetText(e.name)
   self.time:SetText(("%.2fms"):format(e.time))
-	self.spike:SetText(ColoredSpike(e.spike))
+  self.spike:SetText(ColoredSpike(e.spike))
   self.progressBar:SetValue(e.pct)
 end
 
 local COLUMN_INFO = {
-	{
-		title = L["Name"],
-		width = 300,
-		attribute = "name",
-	},
-	{
-		title = L["Time"],
-		width = 80,
-		attribute = "time",
-	},
-	{
-		title = L["Spike"],
-		width = 80,
-		attribute = "spike",
-	}
+  {
+    title = L["Name"],
+    width = 300,
+    attribute = "name",
+  },
+  {
+    title = L["Time"],
+    width = 80,
+    attribute = "time",
+  },
+  {
+    title = L["Spike"],
+    width = 80,
+    attribute = "spike",
+  },
 }
 
 local function ApplyAlternateState(frame, alternate)
@@ -448,12 +464,14 @@ end
 
 local modes = {
   L["Auras"],
-  L["Systems"]
+  L["Systems"],
 }
 WeakAurasProfilingMixin = {}
 
 function WeakAurasProfilingMixin:OnShow()
-  if self.initialised then return end
+  if self.initialised then
+    return
+  end
   self.initialised = true
 
   ButtonFrameTemplate_HidePortrait(self)
@@ -495,15 +513,15 @@ function WeakAurasProfilingMixin:OnShow()
   self.ColumnDisplay:LayoutColumns(COLUMN_INFO)
 
   local view = CreateScrollBoxListLinearView()
-	view:SetElementInitializer("WeakAurasProfilingLineTemplate", function(frame, elementData)
-		frame:Init(elementData)
-	end)
-	ScrollUtil.InitScrollBoxListWithScrollBar(self.ScrollBox, self.ScrollBar, view)
+  view:SetElementInitializer("WeakAurasProfilingLineTemplate", function(frame, elementData)
+    frame:Init(elementData)
+  end)
+  ScrollUtil.InitScrollBoxListWithScrollBar(self.ScrollBox, self.ScrollBar, view)
   ScrollUtil.RegisterAlternateRowBehavior(self.ScrollBox, ApplyAlternateState)
 
   self.sortField = "time"
-	self.bars = CreateDataProvider()
-	self:SortByColumnIndex(2)
+  self.bars = CreateDataProvider()
+  self:SortByColumnIndex(2)
   self.ScrollBox:SetDataProvider(self.bars)
 
   self:InitDropDown()
@@ -593,25 +611,25 @@ function WeakAurasProfilingMixin:InitDropDown()
         func = nextCombatButton_OnClick,
       },
     }
-		for _, entry in ipairs(entries) do
-			local info = UIDropDownMenu_CreateInfo()
-			info.notCheckable = true
-			info.text = entry.text
-			info.func = entry.func
-			UIDropDownMenu_AddButton(info)
-		end
-	end
+    for _, entry in ipairs(entries) do
+      local info = UIDropDownMenu_CreateInfo()
+      info.notCheckable = true
+      info.text = entry.text
+      info.func = entry.func
+      UIDropDownMenu_AddButton(info)
+    end
+  end
 
-	local dropDown = self.buttons.startDropDown
+  local dropDown = self.buttons.startDropDown
   local dropDownButton = self.buttons.start
-	UIDropDownMenu_SetInitializeFunction(dropDown, Initializer)
-	UIDropDownMenu_SetDisplayMode(dropDown, "MENU")
+  UIDropDownMenu_SetInitializeFunction(dropDown, Initializer)
+  UIDropDownMenu_SetDisplayMode(dropDown, "MENU")
 
-	dropDownButton.Text:SetText(L["Start Profiling"])
-	dropDownButton:SetScript("OnMouseDown", function(o, button)
-		UIMenuButtonStretchMixin.OnMouseDown(dropDownButton, button)
-		ToggleDropDownMenu(1, nil, dropDown, dropDownButton, 130, 20)
-	end)
+  dropDownButton.Text:SetText(L["Start Profiling"])
+  dropDownButton:SetScript("OnMouseDown", function(o, button)
+    UIMenuButtonStretchMixin.OnMouseDown(dropDownButton, button)
+    ToggleDropDownMenu(1, nil, dropDown, dropDownButton, 130, 20)
+  end)
 end
 
 local function selectMode(self, mode)
@@ -625,34 +643,21 @@ end
 
 function WeakAurasProfilingMixin:InitModeDropDown()
   local function Initializer(dropDown, level)
-		for i = 1, 2 do
-			local info = UIDropDownMenu_CreateInfo()
-			info.text = modes[i]
-			info.func = selectMode
+    for i = 1, 2 do
+      local info = UIDropDownMenu_CreateInfo()
+      info.text = modes[i]
+      info.func = selectMode
       info.checked = i == self.mode
       info.arg1 = i
-			UIDropDownMenu_AddButton(info)
-		end
-	end
+      UIDropDownMenu_AddButton(info)
+    end
+  end
 
-	local dropDown = self.buttons.modeDropDown
+  local dropDown = self.buttons.modeDropDown
   UIDropDownMenu_SetWidth(dropDown, 120)
   UIDropDownMenu_JustifyText(dropDown, "LEFT")
   UIDropDownMenu_Initialize(dropDown, Initializer)
 end
-
-
---function WeakAurasProfilingMixin:OnShow()
-  --[[ 3x WeakAuras/Profiling.lua:593: Action[SetPoint] failed because[SetPoint would result in anchor family connection]: attempted from: WeakAurasProfilingFrame:SetPoint.
-  if WeakAurasSaved.RealTimeProfilingWindow then
-    self:SetPoint("TOPLEFT", UIParent, "TOPLEFT",
-                  WeakAurasSaved.RealTimeProfilingWindow.xOffset or 0,
-                  WeakAurasSaved.RealTimeProfilingWindow.yOffset or 0)
-  else
-    self:SetPoint("TOPLEFT", UIParent, "TOPLEFT")
-  end
-  ]]
---end
 
 
 local lastRefresh
@@ -673,7 +678,7 @@ function WeakAurasProfilingMixin:RefreshBars(_, force)
   elseif self.mode == 2 then -- systems
     data = {}
     for k, v in pairs(profileData.systems) do
-      if (k ~= "time" and k ~= "wa") then
+      if k ~= "time" and k ~= "wa" then
         local event = unitEventToMultiUnit(k)
         if data[event] == nil then
           data[event] = CopyTable(v)
@@ -691,7 +696,7 @@ function WeakAurasProfilingMixin:RefreshBars(_, force)
 
   local total = TotalProfileTime(data)
   for _, name in ipairs(SortProfileMap(data)) do
-    if (name ~= "time" and name ~= "wa") then
+    if name ~= "time" and name ~= "wa" then
       local elapsed = data[name].elapsed
       local pct = 100 * elapsed / total
       local spike = data[name].spike
@@ -707,6 +712,9 @@ function WeakAurasProfilingMixin:RefreshBars(_, force)
       timespent / 1000,
       100 * profileData.systems.wa.elapsed / timespent
     ))
+    self.stats:SetText(
+      ("|cFFFFFFFFTime in WA: %.2fs / %ds (%.1f%%)"):format(profileData.systems.wa.elapsed / 1000, timespent / 1000, 100 * profileData.systems.wa.elapsed / timespent)
+    )
   end
 end
 
@@ -715,23 +723,22 @@ function WeakAurasProfilingMixin:ResetBars()
 end
 
 function WeakAurasProfilingMixin:UpdateBar(name, time, pct, spike)
-	local elementData = self.bars:FindElementDataByPredicate(function(elementData)
-		return elementData.name == name
-	end)
-	if elementData then
-		elementData.time = time
+  local elementData = self.bars:FindElementDataByPredicate(function(elementData)
+    return elementData.name == name
+  end)
+  if elementData then
+    elementData.time = time
     elementData.pct = pct
     elementData.spike = spike
-		local button = WeakAurasProfilingFrame.ScrollBox:FindFrame(elementData)
-		if button then
-			button.time:SetText(("%.2fms"):format(time))
-      -- button.pct:SetText(pct)
+    local button = WeakAurasProfilingFrame.ScrollBox:FindFrame(elementData)
+    if button then
+      button.time:SetText(("%.2fms"):format(time))
       button.spike:SetText(ColoredSpike(spike))
       button.progressBar:SetValue(pct)
-		end
-	else
-		self.bars:Insert({ name = name, time = time, pct = pct, spike = spike })
-	end
+    end
+  else
+    self.bars:Insert({ name = name, time = time, pct = pct, spike = spike })
+  end
 end
 
 function WeakAurasProfilingMixin:SortByColumnIndex(index)
@@ -759,7 +766,7 @@ function WeakAurasProfilingMixin:SortByColumnIndex(index)
     else
       return lhsF < rhsF
     end
-	end)
+  end)
 end
 
 function WeakAurasProfilingMixin:UpdateButtons()
@@ -800,5 +807,5 @@ function WeakAurasProfilingMixin:Toggle()
 end
 
 function WeakAurasProfilingColumnDisplay_OnClick(self, columnIndex)
-	self:GetParent():SortByColumnIndex(columnIndex)
+  self:GetParent():SortByColumnIndex(columnIndex)
 end

@@ -128,12 +128,12 @@
             </Scripts>
           </Button>
 
-					<Frame parentKey="modeDropDown" inherits="UIDropDownMenuTemplate">
-						<Size x="120" y="20"/>
-						<Anchors>
-							<Anchor point="RIGHT" x="-130" />
-						</Anchors>
-					</Frame>
+          <Frame parentKey="modeDropDown" inherits="UIDropDownMenuTemplate">
+            <Size x="120" y="20"/>
+            <Anchors>
+              <Anchor point="RIGHT" x="-130" />
+            </Anchors>
+          </Frame>
 
           <DropDownToggleButton parentKey="start" inherits="UIResettableDropdownButtonTemplate">
             <Size x="120" y="20"/>
@@ -145,15 +145,15 @@
         </Frames>
       </Frame>
 
-			<Frame parentKey="ColumnDisplay" useParentLevel="true" inherits="ColumnDisplayTemplate">
-				<Anchors>
-					<Anchor point="TOPLEFT" x="10" y="-30"/>
+      <Frame parentKey="ColumnDisplay" useParentLevel="true" inherits="ColumnDisplayTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" x="10" y="-30"/>
           <Anchor point="TOPRIGHT" x="-5" y="-30"/>
-				</Anchors>
-				<KeyValues>
-					<KeyValue key="sortingFunction" value="WeakAurasProfilingColumnDisplay_OnClick" type="global"/>
-				</KeyValues>
-			</Frame>
+        </Anchors>
+        <KeyValues>
+          <KeyValue key="sortingFunction" value="WeakAurasProfilingColumnDisplay_OnClick" type="global"/>
+        </KeyValues>
+      </Frame>
 
       <Frame parentKey="ScrollBox" inherits="WowScrollBoxList">
         <Anchors>
