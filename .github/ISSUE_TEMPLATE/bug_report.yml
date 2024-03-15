@@ -51,14 +51,24 @@ body:
   validations:
     required: true
 
-- type: checkboxes
+- type: dropdown
   id: testing
   attributes:
     label: Tested with only WeakAuras
-    description: Did you try having WeakAuras as the only enabled addon and everything else (especially something like ElvUI) disabled?
+    description: Did you try having WeakAuras as the only enabled addon? Or, did you run a [Bisector](https://www.curseforge.com/wow/addons/bisector) test to see if the issue is caused by another addon?
     options:
-    - label: "Yes"
-      required: true
+      - I did neither of these 😱
+      - I tested with only WeakAuras enabled
+      - I have a Bisector Report
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Bisector Report
+    description: If you have a Bisector Report, please paste it here.
+  validations:
+    required: false
 
 - type: textarea
   attributes:
