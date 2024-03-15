@@ -67,6 +67,7 @@ body:
   attributes:
     label: Bisector Report
     description: If you have a Bisector Report, please paste it here.
+    render: Text
   validations:
     required: false
 
