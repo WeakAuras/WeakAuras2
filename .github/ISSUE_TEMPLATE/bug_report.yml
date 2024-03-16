@@ -55,9 +55,10 @@ body:
   id: testing
   attributes:
     label: Tested with only WeakAuras
-    description: Did you try having WeakAuras as the only enabled addon? Or, did you run a [Bisector](https://www.curseforge.com/wow/addons/bisector) test to see if the issue is caused by another addon?
+    description: |
+      Did you try having WeakAuras as the only enabled addon? Or, did you run a [Bisector](https://www.curseforge.com/wow/addons/bisector) test to see if the issue is caused by another addon?
+      Protip: You can test with only WeakAuras enabled using Bisector too! See [here](https://github.com/emptyrivers/wow-bisector?tab=readme-ov-file#quick-start), and use the hint "+WeakAuras !WeakAurasCompanion"
     options:
-      - I did neither of these 😱
       - I tested with only WeakAuras enabled
       - I have a Bisector Report
   validations:
