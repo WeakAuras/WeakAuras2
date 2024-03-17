@@ -178,7 +178,7 @@ local function modify(parent, region, data)
     containsCustomText = true
   end
 
-  local formatters
+  local formatters, everyFrameFormatters
   do
     local getter = function(key, default)
       local fullKey = "displayText_format_" .. key
@@ -210,7 +210,7 @@ local function modify(parent, region, data)
       end
     end
 
-    formatters = Private.CreateFormatters(texts, getter, false, data)
+    formatters, everyFrameFormatters = Private.CreateFormatters(texts, getter, false, data)
   end
 
   local customTextFunc = nil
@@ -243,7 +243,9 @@ local function modify(parent, region, data)
     end
 
     local FrameTick
-    if Private.ContainsPlaceHolders(self.displayText, "p") then
+    if Private.ContainsPlaceHolders(self.displayText, "p")
+      or Private.AnyEveryFrameFormatters(self.displayText, everyFrameFormatters)
+    then
       FrameTick = UpdateText
     end
 
