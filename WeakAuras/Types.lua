@@ -386,35 +386,54 @@ Private.format_types = {
       local mainFormater = simpleFormatters.time[format]
 
       local modRateProperty = {}
-      if modRate then
-        -- For the mod rate support, we need to know which state member is the modRate, as
-        -- different progressSources can have different modRates
-        -- Here, we only collect the names, so that the actual formatter can quickly lookup
-        -- the property
-        -- This is somewhat complicated by legacy behaviour (for %p, %t) and that %foo, can
-        -- be the foo of different triggers that might use different modRate properties
-        local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
-        triggerNum = triggerNum and tonumber(triggerNum)
+      local timePointProperty = {}
 
-        if triggerNum then
-          if sym == "p" or sym == "t" then
+      -- For the mod rate support, we need to know which state member is the modRate, as
+      -- different progressSources can have different modRates
+      -- Here, we only collect the names, so that the actual formatter can quickly lookup
+      -- the property
+      -- This is somewhat complicated by legacy behaviour (for %p, %t) and that %foo, can
+      -- be the foo of different triggers that might use different modRate properties
+      -- Similarly to distinguish between time formaters for durations and timepoints,
+      -- we maintain a lookup table for time points
+      -- Timepoint formatters need to run every frame, so we rturn true if we
+      -- are formatting a timepoint
+      local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
+      triggerNum = triggerNum and tonumber(triggerNum)
+      sym = sym or symbol
+
+      if triggerNum then
+        if sym == "p" or sym == "t" then
+          if modRate then
             modRateProperty[triggerNum] = "modRate"
-          else
-            local progressSource = Private.AddProgressSourceMetaData(data, { triggerNum, sym })
-            if progressSource and progressSource[5] then
+          end
+        else
+          local progressSource = Private.GetProgressSourceFor(data, triggerNum, sym)
+          if progressSource then
+            if modRate and progressSource[5] then
               modRateProperty[triggerNum] = progressSource[5]
+            end
+            if progressSource[2] == "timer" or progressSource[2] == "elapsedTimer" then
+              timePointProperty[triggerNum] = true
+            end
+          end
+        end
+      else
+        if symbol == "p" or symbol == "t" then
+          for i = 1, #data.triggers do
+            if modRate then
+              modRateProperty[i] = "modRate"
             end
           end
         else
-          if symbol == "p" or symbol == "t" then
-            for i = 1, #data.triggers do
-              modRateProperty[i] = "modRate"
-            end
-          else
-             for i = 1, #data.triggers do
-              local progressSource = Private.AddProgressSourceMetaData(data, { i, symbol })
-              if progressSource and progressSource[5] then
+          for i = 1, #data.triggers do
+            local progressSource = Private.GetProgressSourceFor(data, i, symbol)
+            if progressSource then
+              if modRate and progressSource[5] then
                 modRateProperty[i] = progressSource[5]
+              end
+              if progressSource[2] == "timer" or progressSource[2] == "elapsedTimer" then
+                timePointProperty[i] = true
               end
             end
           end
@@ -427,6 +446,11 @@ Private.format_types = {
           if type(value) ~= 'number' or value == math.huge then
             return ""
           end
+
+          if timePointProperty[trigger] then
+            value = abs(GetTime() - value)
+          end
+
           if value <= 0 then
             return ""
           end
@@ -443,6 +467,11 @@ Private.format_types = {
           if type(value) ~= 'number' or value == math.huge then
             return ""
           end
+
+          if timePointProperty[trigger] then
+            value = abs(GetTime() - value)
+          end
+
           if value <= 0 then
             return ""
           end
@@ -457,8 +486,6 @@ Private.format_types = {
         end
       end
 
-      local triggerNum, sym = string.match(symbol, "(.+)%.(.+)")
-      sym = sym or symbol
       if sym == "p" or sym == "t" then
         -- Special case %p and %t. Since due to how the formatting
         -- work previously, the time formatter only formats %p and %t
@@ -468,9 +495,9 @@ Private.format_types = {
             return value
           end
           return formatter(value, state, trigger)
-        end
+        end, next(timePointProperty) ~= nil
       else
-        return formatter
+        return formatter, next(timePointProperty) ~= nil
       end
     end
   },

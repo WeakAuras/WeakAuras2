@@ -305,7 +305,7 @@ local function modify(parent, region, parentData, data, first)
     end
     return data[fullKey]
   end
-  region.subTextFormatters = Private.CreateFormatters(texts, getter, false, parentData)
+  region.subTextFormatters, region.everyFrameFormatters = Private.CreateFormatters(texts, getter, false, parentData)
 
   function region:ConfigureTextUpdate()
     local UpdateText
@@ -335,7 +335,9 @@ local function modify(parent, region, parentData, data, first)
     end
 
     local FrameTick
-    if Private.ContainsPlaceHolders(region.text_text, "p") then
+    if Private.ContainsPlaceHolders(region.text_text, "p")
+       or Private.AnyEveryFrameFormatters(region.text_text, region.everyFrameFormatters)
+    then
       FrameTick = UpdateText
     end
 
