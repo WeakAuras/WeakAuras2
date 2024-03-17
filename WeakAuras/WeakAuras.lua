@@ -1269,6 +1269,7 @@ function Private.Login(initialTime, takeNewSnapshots)
     for _, region in pairs(Private.regions) do
       if (region.region and region.region.RunDelayedActions) then
         region.region:RunDelayedActions();
+        coroutine.yield()
       end
     end
   end)
