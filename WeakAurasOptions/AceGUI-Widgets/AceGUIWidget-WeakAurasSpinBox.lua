@@ -295,6 +295,7 @@ local function Constructor()
   editbox:SetHeight(19)
   editbox:SetJustifyH("CENTER")
   editbox:EnableMouse(true)
+  editbox:EnableMouseWheel(false)
   editbox:SetTextInsets(0, 0, 3, 3)
   editbox:SetScript("OnEnter", EditBox_OnEnter)
   editbox:SetScript("OnLeave", EditBox_OnLeave)
@@ -306,15 +307,6 @@ local function Constructor()
   end)
   editbox:SetScript("OnEditFocusLost", function(frame)
     UpdateHandleVisibility(frame.obj)
-  end)
-  editbox:SetScript("OnMouseWheel", function(self, delta)
-    if self:HasFocus() then
-      if delta == 1 then
-        SpinBox_OnValueUp(self)
-      else
-        SpinBox_OnValueDown(self)
-      end
-    end
   end)
 
   leftbutton:SetPoint("TOPLEFT", 2, -18)
