@@ -2874,6 +2874,16 @@ do
   end
 end
 
+Private.map_types = {
+  [Enum.UIMapType.Cosmic] = L["Cosmic"],
+  [Enum.UIMapType.World] = L["World"],
+  [Enum.UIMapType.Continent] = L["Continent"],
+  [Enum.UIMapType.Zone] = L["Zone"],
+  [Enum.UIMapType.Dungeon] = L["Dungeon"],
+  [Enum.UIMapType.Micro] = L["Micro"],
+  [Enum.UIMapType.Orphan] = L["Orphan"],
+}
+
 ---@class Private
 ---@field TocToExpansion table<number, string>
 Private.TocToExpansion = {

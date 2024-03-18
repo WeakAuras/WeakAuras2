@@ -1,7 +1,7 @@
 --- @type string, Private
 local AddonName, Private = ...
 
-local internalVersion = 71
+local internalVersion = 72
 
 -- Lua APIs
 local insert = table.insert
@@ -6096,7 +6096,7 @@ function Private.ExecEnv.ParseNameCheck(name)
   return matches
 end
 
-function Private.ExecEnv.ParseZoneCheck(input)
+function Private.ExecEnv.ParseZoneCheck(input, recursive)
   if not input then return end
 
   local matcher = {
@@ -6111,9 +6111,12 @@ function Private.ExecEnv.ParseZoneCheck(input)
           self.zoneGroupIds[id] = true
         elseif prevChar == 'c' or prevChar == 'C' then
           self.zoneIds[id] = true
-          local info = C_Map.GetMapChildrenInfo(id, nil, true)
-          for _,childInfo in pairs(info) do
-             self.zoneIds[childInfo.mapID] = true
+          self.isChildFilter = true
+          local info = C_Map.GetMapChildrenInfo(id, nil, recursive)
+          if info then
+            for _,childInfo in pairs(info) do
+              self.zoneIds[childInfo.mapID] = true
+            end
           end
         elseif prevChar == 'a' or prevChar == 'A' then
           self.areaNames[C_Map.GetAreaInfo(id)] = true
@@ -6127,7 +6130,8 @@ function Private.ExecEnv.ParseZoneCheck(input)
     zoneIds = {},
     zoneGroupIds = {},
     instanceIds = {},
-    areaNames = {}
+    areaNames = {},
+    isChildFilter = false
   }
 
   local start = input:find('%d', 1)

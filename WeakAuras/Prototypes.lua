@@ -194,7 +194,7 @@ local function get_zoneId_list()
                                          L["Parent Zone"], parentmap_name, currentmap_info.parentMapID)
   end
 
-  return ("%s|cffffd200%s|r\n%s: %d\n\n%s%s|cffffd200%s|r\n%s: %d\n\n%s"):format(
+  return ("%s|cffffd200%s|r\n%s: %d\n\n%s%s|cffffd200%s|r\n%s: i%d\n\n%s"):format(
     Private.get_zoneId_list(),
     L["Current Zone"],
     currentmap_name,
@@ -1769,7 +1769,7 @@ Private.load_prototype = {
       multiline = true,
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
       desc = get_zoneId_list,
-      preamble = "local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q)",
+      preamble = "local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q, true)",
       test = "zoneChecker:Check(zoneId, zonegroupId, instanceId, minimapZoneText)",
       optional = true,
     },
@@ -9921,13 +9921,6 @@ Private.event_prototypes = {
         tinsert(events, "GROUP_ROSTER_UPDATE")
       end
 
-      if trigger.use_instance_difficulty ~= nil
-         or trigger.use_instance_type ~= nil
-         or trigger.use_instance_size ~= nil
-      then
-        tinsert(events, "PLAYER_DIFFICULTY_CHANGED")
-      end
-
       return {
         ["events"] = events,
         ["unit_events"] = {
@@ -9943,11 +9936,7 @@ Private.event_prototypes = {
         tinsert(events, "PLAYER_MOVING_UPDATE");
       end
 
-      if trigger.use_instance_difficulty ~= nil
-         or trigger.use_instance_type ~= nil
-         or trigger.use_instance_size ~= nil
-         or trigger.use_pvpflagged ~= nil
-      then
+      if trigger.use_pvpflagged ~= nil then
         tinsert(events, "WA_DELAYED_PLAYER_ENTERING_WORLD")
       end
 
@@ -10036,32 +10025,6 @@ Private.event_prototypes = {
         type = "multiselect",
         values = "group_types",
         init = "Private.ExecEnv.GroupType()",
-      },
-      {
-        name = "instance_size",
-        display = L["Instance Size Type"],
-        type = "multiselect",
-        values = "instance_types",
-        sorted = true,
-        init = "WeakAuras.InstanceType()",
-      },
-      {
-        name = "instance_difficulty",
-        display = L["Instance Difficulty"],
-        type = "multiselect",
-        values = "difficulty_types",
-        init = "WeakAuras.InstanceDifficulty()",
-        enable = WeakAuras.IsRetail(),
-        hidden = not WeakAuras.IsRetail(),
-      },
-      {
-        name = "instance_type",
-        display = L["Instance Type"],
-        type = "multiselect",
-        values = "instance_difficulty_types",
-        init = "WeakAuras.InstanceTypeRaw()",
-        enable = WeakAuras.IsRetail(),
-        hidden = not WeakAuras.IsRetail(),
       },
     },
     automaticrequired = true,
@@ -10570,6 +10533,166 @@ Private.event_prototypes = {
       return currencyInfo and currencyInfo.name, currencyInfo and currencyInfo.iconFileID
     end,
     automaticrequired = true
+  },
+  ["Player Location"] = {
+    type = "unit",
+    events = function(trigger, untrigger)
+      local events = {}
+      if trigger.use_zoneIds ~= nil
+        or trigger.use_zone ~= nil
+        or trigger.use_subzone ~= nil
+      then
+        tinsert(events, "ZONE_CHANGED")
+        tinsert(events, "ZONE_CHANGED_INDOORS")
+        tinsert(events, "ZONE_CHANGED_NEW_AREA")
+        tinsert(events, "VEHICLE_UPDATE")
+      end
+      if trigger.use_indoors ~= nil then
+        tinsert(events, "MINIMAP_UPDATE_ZOOM")
+        tinsert(events, "ZONE_CHANGED_INDOORS")
+      end
+      if trigger.use_instanceDifficulty ~= nil
+         or trigger.use_instance_type ~= nil
+         or trigger.use_instance_size ~= nil
+      then
+        tinsert(events, "PLAYER_DIFFICULTY_CHANGED")
+      end
+      return {
+        ["events"] = events,
+      }
+    end,
+    internal_events = function(trigger, untrigger)
+      local events = { "CONDITIONS_CHECK",};
+      if trigger.use_instance_difficulty ~= nil
+         or trigger.use_instance_type ~= nil
+         or trigger.use_instance_size ~= nil
+      then
+        tinsert(events, "WA_DELAYED_PLAYER_ENTERING_WORLD")
+      end
+      return events;
+    end,
+    force_events = "CONDITIONS_CHECK,",
+    name = L["Player Location"],
+    init = function(trigger)
+      local ret = [=[
+        local recursive = %s
+        local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q, recursive)
+
+        local uiMapId = C_Map.GetBestMapForUnit("player")
+        local zonegroupId = uiMapId and C_Map.GetMapGroupID(uiMapId)
+        local instanceName, _, _, _, _, _, _, instanceId = GetInstanceInfo()
+        local minimapZoneText = GetMinimapZoneText()
+
+        local zoneText = GetZoneText()
+        local mapInfo = C_Map.GetMapInfo(uiMapId)
+        local isIndoors = IsIndoors()
+      ]=]
+      return ret:format(trigger.use_recursive and "true" or "nil", trigger.zoneIds or 0)
+    end,
+    statesParameter = "one",
+    args = {
+      {
+        name = "zoneIds",
+        display = L["Player Location ID(s)"],
+        type = "string",
+        multiline = true,
+        desc = get_zoneId_list,
+        test = "zoneChecker:Check(uiMapId, zonegroupId, instanceId, minimapZoneText)",
+      },
+      {
+        name = "recursive",
+        display = L["Recursive"],
+        desc = L["Enable this to recurse on each child map until it finds a match. Disable this to only include direct descendants."],
+        type = "toggle",
+        test = "true",
+        enable = function(trigger)
+          if trigger.use_zoneIds then
+            local zoneChecker = Private.ExecEnv.ParseZoneCheck(trigger.zoneIds)
+            return zoneChecker and zoneChecker.isChildFilter
+          end
+        end,
+      },
+      {
+        name = "zone",
+        display = L["Zone Name"],
+        type = "string",
+        conditionType = "string",
+        store = true,
+        init = "zoneText",
+        multiEntry = {
+          operator = "or",
+        }
+      },
+      {
+        name = "subzone",
+        display = L["Subzone Name"],
+        desc = L["Name of the (sub-)zone currently shown above the minimap."],
+        type = "string",
+        conditionType = "string",
+        store = true,
+        init = "minimapZoneText",
+        multiEntry = {
+          operator = "or",
+        },
+      },
+      {
+        name = "mapType",
+        display = L["Map Type"],
+        type = "select",
+        conditionType = "select",
+        init = "mapInfo.mapType",
+        values = "map_types",
+        store = true,
+      },
+      {
+        name = "indoors",
+        display = L["Indoors"],
+        type = "toggle",
+        conditionType = "boolean",
+        init = "isIndoors",
+      },
+      {
+        name = "instanceTitle",
+        display = L["Instance Filters"],
+        type = "description",
+      },
+      {
+        name = "instance",
+        display = L["Instance Name"],
+        test = "true",
+        hidden = "true",
+        store = true,
+      },
+      {
+        name = "instance_size",
+        display = L["Instance Size Type"],
+        type = "multiselect",
+        values = "instance_types",
+        sorted = true,
+        init = "WeakAuras.InstanceType()",
+      },
+      {
+        name = "instanceDifficulty",
+        display = L["Instance Difficulty"],
+        type = "multiselect",
+        values = "difficulty_types",
+        init = "WeakAuras.InstanceDifficulty()",
+        store = true,
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail(),
+      },
+      {
+        name = "instance_type",
+        display = L["Instance Type"],
+        type = "multiselect",
+        values = "instance_difficulty_types",
+        init = "WeakAuras.InstanceTypeRaw()",
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail(),
+      },
+    },
+    automaticrequired = true,
+    progressType = none
   },
 };
 
