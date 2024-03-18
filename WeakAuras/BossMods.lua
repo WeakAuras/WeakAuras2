@@ -290,6 +290,12 @@ Private.ExecEnv.BossMods.DBM = {
       if self.isGeneric then
         WeakAuras.ScanEvents("BossMod_TimerUpdate", timerId)
       end
+    elseif event == "DBM_TimerUpdateIcon" then
+      local timerId, icon = ...
+      local bar = self.bars[timerId]
+      if bar then
+        bar.icon = icon
+      end
     elseif event == "DBM_SetStage" or event == "DBM_Pull" or event == "DBM_Wipe" or event == "DBM_Kill" then
       WeakAuras.ScanEvents("DBM_SetStage")
       if self.isGeneric then
@@ -314,6 +320,7 @@ Private.ExecEnv.BossMods.DBM = {
     self:RegisterCallback("DBM_TimerPause")
     self:RegisterCallback("DBM_TimerResume")
     self:RegisterCallback("DBM_TimerUpdate")
+    self:RegisterCallback("DBM_TimerUpdateIcon")
   end,
 
   RegisterMessage = function(self)
