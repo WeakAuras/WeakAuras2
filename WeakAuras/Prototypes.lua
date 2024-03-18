@@ -10692,7 +10692,7 @@ Private.event_prototypes = {
       },
     },
     automaticrequired = true,
-    progressType = none
+    progressType = "none"
   },
 };
 
