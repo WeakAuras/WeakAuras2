@@ -296,6 +296,7 @@ Private.ExecEnv.BossMods.DBM = {
       if bar then
         bar.icon = icon
       end
+      WeakAuras.ScanEvents("DBM_TimerUpdateIcon")
     elseif event == "DBM_SetStage" or event == "DBM_Pull" or event == "DBM_Wipe" or event == "DBM_Kill" then
       WeakAuras.ScanEvents("DBM_SetStage")
       if self.isGeneric then
