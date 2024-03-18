@@ -10541,6 +10541,7 @@ Private.event_prototypes = {
       if trigger.use_zoneIds ~= nil
         or trigger.use_zone ~= nil
         or trigger.use_subzone ~= nil
+        or trigger.use_mapType ~= nil
       then
         tinsert(events, "ZONE_CHANGED")
         tinsert(events, "ZONE_CHANGED_INDOORS")
@@ -10562,7 +10563,7 @@ Private.event_prototypes = {
       }
     end,
     internal_events = function(trigger, untrigger)
-      local events = { "CONDITIONS_CHECK",};
+      local events = { "INSTANCE_LOCATION_CHECK"};
       if trigger.use_instance_difficulty ~= nil
          or trigger.use_instance_type ~= nil
          or trigger.use_instance_size ~= nil
@@ -10571,7 +10572,7 @@ Private.event_prototypes = {
       end
       return events;
     end,
-    force_events = "CONDITIONS_CHECK,",
+    force_events = "INSTANCE_LOCATION_CHECK",
     name = L["Player Location"],
     init = function(trigger)
       local ret = [=[
