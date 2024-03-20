@@ -4833,21 +4833,7 @@ Private.event_prototypes = {
       else -- Tracking charges
         local ret2 = [=[
           local trackedCharge = %s
-          if (charges < trackedCharge) then
-            if (state.value ~= duration) then
-              state.value = duration;
-              state.changed = true;
-            end
-            if (state.total ~= duration) then
-              state.total = duration;
-              state.changed = true;
-            end
-
-            state.expirationTime = nil;
-            state.duration = nil;
-            state.modRate = nil
-            state.progressType = 'static';
-          elseif (charges > trackedCharge) then
+          if (charges > trackedCharge) then
             if (state.expirationTime ~= 0) then
               state.expirationTime = 0;
               state.changed = true;
@@ -4861,6 +4847,9 @@ Private.event_prototypes = {
             state.total = nil;
             state.progressType = 'timed';
           else
+            if duration then
+              expirationTime = expirationTime + (trackedCharge - charges) * duration
+            end
             if (state.expirationTime ~= expirationTime) then
               state.expirationTime = expirationTime;
               state.changed = true;
