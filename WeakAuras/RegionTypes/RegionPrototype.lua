@@ -439,7 +439,9 @@ local function UpdateProgressFromState(self, minMaxConfig, state, progressSource
     end
 
     local max
-    if minMaxConfig.adjustedMax then
+    if duration == 0 then
+      max = 0
+    elseif minMaxConfig.adjustedMax then
       max = minMaxConfig.adjustedMax
     elseif minMaxConfig.adjustedMaxRelPercent then
       max = minMaxConfig.adjustedMaxRelPercent * duration
