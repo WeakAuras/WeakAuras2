@@ -3298,46 +3298,21 @@ local function EnsureRegion(id)
 
     -- The region doesn't yet exist
     -- But we must also ensure that our parents exists
-    -- and as an additional wrinkle, for dynamic groups, all children must exist!
-    -- and we have to call ReloadControlledChildren at the end
 
     -- So we go up the list of parents and collect auras that must be created
     -- If we find a parent already exists, we can stop
-    -- And dynamic groups require creating all children, thus we don't need
-    -- to care which path we came to them
     --- @type auraId[]
     local aurasToCreate = {}
-    --- @type auraId[]
-    local dynamicGroups = {}
 
-    creatingRegions = true
     while(id) do
       local data = WeakAuras.GetData(id)
-      if (data.regionType == "dynamicgroup") then
-        wipe(aurasToCreate)
-        tinsert(aurasToCreate, data.id)
-        tinsert(dynamicGroups, data.id)
-      else
-        tinsert(aurasToCreate, data.id)
-      end
+      tinsert(aurasToCreate, data.id)
       id = data.parent
     end
-
 
     for _, toCreateId in ipairs_reverse(aurasToCreate) do
       local data = WeakAuras.GetData(toCreateId)
       Private.SetRegion(data)
-      if (data.regionType == "dynamicgroup") then
-        for child in Private.TraverseAllChildren(data) do
-          Private.SetRegion(child)
-        end
-      end
-    end
-
-    creatingRegions = false
-    for _, dynamicGroupId in ipairs_reverse(dynamicGroups) do
-      local dgRegion = Private.regions[dynamicGroupId].region
-      dgRegion:ReloadControlledChildren()
     end
   end
   return Private.regions[id] and Private.regions[id].region
