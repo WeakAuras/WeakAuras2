@@ -5800,13 +5800,14 @@ end
 
 local anchorFrameDeferred = {}
 
-function Private.AnchorFrame(data, region, parent)
+function Private.AnchorFrame(data, region, parent, force)
   if data.anchorFrameType == "CUSTOM"
   and (data.regionType == "group" or data.regionType == "dynamicgroup")
   and not WeakAuras.IsLoginFinished()
+  and not force
   then
     if not anchorFrameDeferred[data.id] then
-      loginQueue[#loginQueue + 1] = {Private.AnchorFrame, {data, region, parent}}
+      loginQueue[#loginQueue + 1] = {Private.AnchorFrame, {data, region, parent, true}}
       anchorFrameDeferred[data.id] = true
     end
   else
