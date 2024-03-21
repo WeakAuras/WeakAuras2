@@ -1,9 +1,8 @@
-## Interface: 100206
+## Interface: 40400
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
 ## Version: @project-version@
-## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp
-## X-Flavor: Mainline
+## X-Flavor: Cata
 ## Notes: A powerful, comprehensive utility for displaying graphics and information based on buffs, debuffs, and other triggers.
 ## Notes-esES: Potente y completa aplicación que te permitirá mostrar por pantalla múltiples diseños, basados en beneficios, perjuicios y otros activadores.
 ## Notes-deDE: Ein leistungsfähiges, umfassendes Addon zur grafischen Darstellung von Informationen von Auren, Cooldowns, Timern und vielem mehr.
@@ -18,16 +17,14 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 0
 ## SavedVariables: WeakAurasSaved
-## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibButtonGlow-1.0, LibSpellRange-1.0, LibRangeCheck-3.0, LibDBIcon-1.0, LibGetFrame-1.0, LibSpecialization, !LibUIDropDownMenu, !!AddonLocale, BigWigs, DBM-Core
+## OptionalDeps: Ace3, LibCompress, LibSharedMedia-3.0, AceGUI-3.0-SharedMediaWidgets, Masque, GTFO, LibButtonGlow-1.0, LibSpellRange-1.0, LibRangeCheck-3.0, LibDBIcon-1.0, LibGetFrame-1.0, !LibUIDropDownMenu, !!AddonLocale, BigWigs, DBM-Core
+## AllowLoadGameType: cata
 
 # External code + initialization
 embeds.xml
 
 # TaintLess
 Libs\TaintLess\TaintLess.xml
-
-# Client flavor specific libs
-Libs\LibSpecialization\LibSpecialization.lua
 
 Init.lua
 locales.xml
@@ -37,8 +34,8 @@ DefaultOptions.lua
 # Core files
 SubscribableObject.lua
 Features.lua
-Atlas_Retail.lua
-Types_Retail.lua
+Atlas_Cata.lua
+Types_Cata.lua
 Types.lua
 Prototypes.lua
 Profiling.lua
@@ -51,7 +48,6 @@ Conditions.lua
 AnchorToWeakAuras.lua
 
 # Trigger systems
-LibSpecializationWrapper.lua
 BuffTrigger2.lua
 GenericTrigger.lua
 BossMods.lua
@@ -61,7 +57,6 @@ AuraWarnings.lua
 AuraEnvironment.lua
 AuraEnvironmentWrappedSystems.lua
 DebugLog.lua
-Dragonriding.lua
 
 # Region support
 RegionTypes\SmoothStatusBarMixin.lua
@@ -83,6 +78,3 @@ SubRegionTypes\Border.lua
 SubRegionTypes\Glow.lua
 SubRegionTypes\Tick.lua
 SubRegionTypes\Model.lua
-
-# Misc
-Legendaries.lua

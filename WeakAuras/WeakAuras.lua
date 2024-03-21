@@ -935,7 +935,7 @@ local function CreateTalentCache()
 
   Private.talent_types_specific[player_class] = Private.talent_types_specific[player_class] or {};
 
-  if WeakAuras.IsClassicEraOrWrath() then
+  if WeakAuras.IsClassicEraOrWrathOrCata() then
     for tab = 1, GetNumTalentTabs() do
       for num_talent = 1, GetNumTalents(tab) do
         local talentName, talentIcon = GetTalentInfo(tab, num_talent);
@@ -944,7 +944,7 @@ local function CreateTalentCache()
           Private.talent_types_specific[player_class][talentId] = "|T"..talentIcon..":0|t "..talentName
         end
       end
-   end
+    end
   else
     local spec = GetSpecialization()
     Private.talent_types_specific[player_class][spec] = Private.talent_types_specific[player_class][spec] or {};
@@ -1678,13 +1678,13 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     raidMemberType = raidMemberType + 2
   end
 
-  if WeakAuras.IsClassicEraOrWrath() then
+  if WeakAuras.IsClassicEraOrWrathOrCata() then
     local raidID = UnitInRaid("player")
     if raidID then
       raidRole = select(10, GetRaidRosterInfo(raidID))
     end
     role = "none"
-    if WeakAuras.IsWrathClassic() then
+    if WeakAuras.IsWrathOrCata() then
       role = UnitGroupRolesAssigned("player")
       if role == "NONE" then
         role = GetTalentGroupRole(GetActiveTalentGroup()) or "NONE"
@@ -1741,6 +1741,9 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, vehicle, class, player, realm, race, faction, playerLevel, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size)
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, vehicle, class, player, realm, race, faction, playerLevel, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size)
       elseif WeakAuras.IsWrathClassic() then
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, vehicle, vehicleUi, class, player, realm, race, faction, playerLevel, role, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, vehicle, vehicleUi, class, player, realm, race, faction, playerLevel, role, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
+      elseif WeakAuras.IsCataClassic() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, vehicle, vehicleUi, class, player, realm, race, faction, playerLevel, role, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, vehicle, vehicleUi, class, player, realm, race, faction, playerLevel, role, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
       elseif WeakAuras.IsRetail() then
@@ -1843,7 +1846,7 @@ if WeakAuras.IsRetail() then
 else
   loadFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
 end
-if WeakAuras.IsWrathClassic() then
+if WeakAuras.IsWrathOrCata() then
   loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
   loadFrame:RegisterEvent("VEHICLE_UPDATE");
   loadFrame:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR")
@@ -1877,7 +1880,7 @@ local unitLoadFrame = CreateFrame("Frame");
 Private.frames["Display Load Handling 2"] = unitLoadFrame;
 
 unitLoadFrame:RegisterUnitEvent("UNIT_FLAGS", "player");
-if WeakAuras.IsWrathOrRetail() then
+if WeakAuras.IsWrathOrCataOrRetail() then
   unitLoadFrame:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player");
   unitLoadFrame:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player");
   unitLoadFrame:RegisterUnitEvent("PLAYER_FLAGS_CHANGED", "player");
@@ -3295,46 +3298,21 @@ local function EnsureRegion(id)
 
     -- The region doesn't yet exist
     -- But we must also ensure that our parents exists
-    -- and as an additional wrinkle, for dynamic groups, all children must exist!
-    -- and we have to call ReloadControlledChildren at the end
 
     -- So we go up the list of parents and collect auras that must be created
     -- If we find a parent already exists, we can stop
-    -- And dynamic groups require creating all children, thus we don't need
-    -- to care which path we came to them
     --- @type auraId[]
     local aurasToCreate = {}
-    --- @type auraId[]
-    local dynamicGroups = {}
 
-    creatingRegions = true
     while(id) do
       local data = WeakAuras.GetData(id)
-      if (data.regionType == "dynamicgroup") then
-        wipe(aurasToCreate)
-        tinsert(aurasToCreate, data.id)
-        tinsert(dynamicGroups, data.id)
-      else
-        tinsert(aurasToCreate, data.id)
-      end
+      tinsert(aurasToCreate, data.id)
       id = data.parent
     end
-
 
     for _, toCreateId in ipairs_reverse(aurasToCreate) do
       local data = WeakAuras.GetData(toCreateId)
       Private.SetRegion(data)
-      if (data.regionType == "dynamicgroup") then
-        for child in Private.TraverseAllChildren(data) do
-          Private.SetRegion(child)
-        end
-      end
-    end
-
-    creatingRegions = false
-    for _, dynamicGroupId in ipairs_reverse(dynamicGroups) do
-      local dgRegion = Private.regions[dynamicGroupId].region
-      dgRegion:ReloadControlledChildren()
     end
   end
   return Private.regions[id] and Private.regions[id].region
@@ -5797,13 +5775,14 @@ end
 
 local anchorFrameDeferred = {}
 
-function Private.AnchorFrame(data, region, parent)
+function Private.AnchorFrame(data, region, parent, force)
   if data.anchorFrameType == "CUSTOM"
   and (data.regionType == "group" or data.regionType == "dynamicgroup")
   and not WeakAuras.IsLoginFinished()
+  and not force
   then
     if not anchorFrameDeferred[data.id] then
-      loginQueue[#loginQueue + 1] = {Private.AnchorFrame, {data, region, parent}}
+      loginQueue[#loginQueue + 1] = {Private.AnchorFrame, {data, region, parent, true}}
       anchorFrameDeferred[data.id] = true
     end
   else

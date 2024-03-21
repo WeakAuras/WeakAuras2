@@ -1,8 +1,7 @@
-## Interface: 100206
+## Interface: 40400
 ## Title: WeakAuras Model Paths
 ## Author: The WeakAuras Team
 ## Version: @project-version@
-## IconTexture: Interface\AddOns\WeakAuras\Media\Textures\icon.blp
 ## Notes: Model paths for WeakAuras
 ## Notes-esES: Las rutas de archivos de modelos en 3D para WeakAuras
 ## Notes-deDE: 3D-Model Pfade für WeakAuras
@@ -13,5 +12,6 @@
 ## DefaultState: Enabled
 ## LoadOnDemand: 1
 ## Dependencies: WeakAuras, WeakAurasOptions
+## AllowLoadGameType: cata
 
-ModelPaths.lua
+ModelPathsWrath.lua

@@ -2375,7 +2375,7 @@ do
     cdReadyFrame:RegisterEvent("SPELLS_CHANGED");
     cdReadyFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
     cdReadyFrame:RegisterEvent("PLAYER_LEAVING_WORLD")
-    if WeakAuras.IsWrathClassic() then
+    if WeakAuras.IsWrathOrCata() then
       cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
       cdReadyFrame:RegisterEvent("RUNE_TYPE_UPDATE");
     end
@@ -3116,7 +3116,7 @@ do
 
     if not id or id == 0 then return end
 
-    if ignoreRunes and WeakAuras.IsWrathOrRetail() then
+    if ignoreRunes and WeakAuras.IsWrathOrCataOrRetail() then
       for i = 1, 6 do
         WeakAuras.WatchRuneCooldown(i);
       end
@@ -3363,7 +3363,7 @@ function WeakAuras.WatchUnitChange(unit)
                   WeakAuras.ScanEvents("UNIT_ROLE_CHANGED_" .. unit, unit)
                 end
               end
-              if WeakAuras.IsWrathOrRetail() then
+              if WeakAuras.IsWrathOrCataOrRetail() then
                 local newRole = UnitGroupRolesAssigned(unit)
                 if watchUnitChange.unitRoles[unit] ~= newRole then
                   watchUnitChange.unitRoles[unit] = newRole
@@ -4519,7 +4519,7 @@ end
 
 WeakAuras.CheckForItemEquipped = function(itemName, specificSlot)
   if not specificSlot then
-    return IsEquippedItem(itemName)
+    return IsEquippedItem(itemName or '')
   else
     local item = Item:CreateFromEquipmentSlot(specificSlot)
     if item and not item:IsItemEmpty() then
@@ -4544,7 +4544,7 @@ Private.ExecEnv.IsEquippedItemType = function(itemType, itemSlot)
       return classId == triggerClassId and subclassId == triggerSubClassId
     end
   else
-    return IsEquippedItemType(Private.ExecEnv.GetItemSubClassInfo(itemType))
+    return IsEquippedItemType(Private.ExecEnv.GetItemSubClassInfo(itemType) or '')
   end
 end
 
@@ -4567,7 +4567,7 @@ end
 Private.ExecEnv.GetCurrencyInfo = function(id)
   if WeakAuras.IsRetail() then
     return C_CurrencyInfo.GetCurrencyInfo(id)
-  elseif WeakAuras.IsWrathClassic() then
+  elseif WeakAuras.IsWrathOrCata() then
     local name, currentAmount, texture, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity = GetCurrencyInfo(id)
     local currencyInfo = {
       name = name,

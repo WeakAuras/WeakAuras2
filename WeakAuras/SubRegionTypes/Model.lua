@@ -79,7 +79,7 @@ end
 local function CreateModel()
   local model =  CreateFrame("PlayerModel", nil, UIParent)
   model.PreShow = PreShow;
-  model.SetTransformFixed = model.GetResizeBounds and Private.ModelSetTransformFixed or model.SetTransform  -- TODO change test to WeakAuras.IsWrathOrRetail() after 3.4.1 release
+  model.SetTransformFixed = model.GetResizeBounds and Private.ModelSetTransformFixed or model.SetTransform  -- TODO change test to WeakAuras.IsWrathOrCataOrRetail() after 3.4.1 release
   return model
 end
 
