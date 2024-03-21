@@ -2946,6 +2946,13 @@ do
   function Private.CheckItemCooldowns()
     for id, _ in pairs(items) do
       local startTime, duration, enabled = GetItemCooldown(id);
+      -- In 10.26. the apis return values changed from 1,0 for enabled to true, false
+      -- We should adjust once its on all versions
+      if enabled == false then
+        enabled = 0
+      elseif enabled == true then
+        enabled = 1
+      end
       if (duration == 0) then
         enabled = 1;
       end
