@@ -2017,23 +2017,14 @@ function Private.Modernize(data)
   if data.internalVersion < 72 then
     local new_triggers = {}
     local delete_triggers = {}
-    local condition_filters = {
-      "alwaystrue",
-      "incombat",
-      "pvpflagged",
-      "alive",
-      "vehicle",
-      "resting",
-      "mounted",
-      "HasPet",
-      "ismoving",
-      "afk",
-      "ingroup",
+    local instance_filters = {
+      "instance_size",
+      "instance_difficulty",
+      "instance_type",
     }
 
     for i, triggerData in ipairs(data.triggers) do
       local t = triggerData.trigger
-      local canRemoveTrigger = true
 
       -- Check for a Conditions trigger with instance filters
       if t.event == "Conditions" and (
@@ -2041,33 +2032,23 @@ function Private.Modernize(data)
         or t.use_instance_difficulty
         or t.use_instance_type
       ) then -- Create a new trigger object
-        local new = CopyTable(triggerData)
-        new.trigger.event = "Player Location"
-        new.trigger.use_instanceDifficulty = new.trigger.use_instance_difficulty
-        new.trigger.use_instance_difficulty = nil
-        new.trigger.instanceDifficulty = new.trigger.instance_difficulty
-        new.trigger.instance_difficulty = nil
-
-        -- Remove any condition filters from the new trigger
-        for _, name in ipairs(condition_filters) do
-          if t["use_"..name] ~= nil then
-            canRemoveTrigger = false
+        local new = {
+          trigger = {
+            event = "Player Location",
+            type = "unit",
+          }
+        }
+        -- Add instance filters to new trigger object
+        for _, name in ipairs(instance_filters) do
+          local new_name = name
+          if name == "instance_difficulty" then
+            new_name = "instanceDifficulty"
           end
-          new.trigger[name] = nil
-          new.trigger["use_"..name] = nil
+          new.trigger[new_name] = t[name]
+          new.trigger["use_"..new_name] = t["use_"..name]
         end
         tinsert(new_triggers, new)
       end
-
-      -- the remaining conditions trigger has no active filters and the trigger can be removed
-      if canRemoveTrigger then
-        delete_triggers[i] = true
-      end
-    end
-
-    -- Remove triggers
-    for i in pairs(delete_triggers) do
-      data.triggers[i] = nil
     end
 
     -- Add triggers

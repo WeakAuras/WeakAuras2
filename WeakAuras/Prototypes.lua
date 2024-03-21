@@ -9911,6 +9911,12 @@ Private.event_prototypes = {
       if trigger.use_ingroup ~= nil then
         tinsert(events, "GROUP_ROSTER_UPDATE")
       end
+      if trigger.use_instance_difficulty ~= nil
+         or trigger.use_instance_type ~= nil
+         or trigger.use_instance_size ~= nil
+      then
+        tinsert(events, "PLAYER_DIFFICULTY_CHANGED")
+      end
 
       return {
         ["events"] = events,
@@ -9927,7 +9933,11 @@ Private.event_prototypes = {
         tinsert(events, "PLAYER_MOVING_UPDATE");
       end
 
-      if trigger.use_pvpflagged ~= nil then
+      if trigger.use_instance_difficulty ~= nil
+        or trigger.use_instance_type ~= nil
+        or trigger.use_instance_size ~= nil
+        or trigger.use_pvpflagged ~= nil
+      then
         tinsert(events, "WA_DELAYED_PLAYER_ENTERING_WORLD")
       end
 
@@ -10016,6 +10026,32 @@ Private.event_prototypes = {
         type = "multiselect",
         values = "group_types",
         init = "Private.ExecEnv.GroupType()",
+      },
+      {
+        name = "instance_size",
+        display = L["Instance Size Type"].." "..L["|cffff0000deprecated|r"],
+        type = "multiselect",
+        values = "instance_types",
+        sorted = true,
+        init = "WeakAuras.InstanceType()",
+      },
+      {
+        name = "instance_difficulty",
+        display = L["Instance Difficulty"].." "..L["|cffff0000deprecated|r"],
+        type = "multiselect",
+        values = "difficulty_types",
+        init = "WeakAuras.InstanceDifficulty()",
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail(),
+      },
+      {
+        name = "instance_type",
+        display = L["Instance Type"].." "..L["|cffff0000deprecated|r"],
+        type = "multiselect",
+        values = "instance_difficulty_types",
+        init = "WeakAuras.InstanceTypeRaw()",
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail(),
       },
     },
     automaticrequired = true,
