@@ -8780,7 +8780,10 @@ Private.event_prototypes = {
         hidden = true,
         init = "not empowered",
         test = "true",
-        store = true
+        store = true,
+        enable = function(trigger)
+          return not trigger.use_inverse
+        end
       },
       {
         name = "npcId",
