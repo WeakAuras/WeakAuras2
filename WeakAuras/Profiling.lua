@@ -529,28 +529,6 @@ function WeakAurasProfilingMixin:OnShow()
   self:InitModeDropDown()
   self:SetScript("OnEvent", AutoStartStopProfiling)
 
-  --[[
-  self:SetScript("OnMouseDown", function(self, button)
-    if button == "LeftButton" and not self.is_moving then
-      self:StartMoving()
-      self.is_moving = true
-    elseif button == "RightButton" then
-      self:Stop()
-    end
-  end)
-
-  self:SetScript("OnMouseUp", function(self, button)
-    if button == "LeftButton" and self.is_moving then
-      self:StopMovingOrSizing()
-      local xOffset = self:GetLeft()
-      local yOffset = self:GetTop() - GetScreenHeight()
-      WeakAurasSaved.RealTimeProfilingWindow = WeakAurasSaved.RealTimeProfilingWindow or {}
-      WeakAurasSaved.RealTimeProfilingWindow.xOffset = xOffset
-      WeakAurasSaved.RealTimeProfilingWindow.yOffset = yOffset
-      self.is_moving = nil
-    end
-  end)
-]]
   self:SetScript("OnUpdate", function()
     if profileData.systems.time and profileData.systems.time.count > 0 then
       self:RefreshBars()

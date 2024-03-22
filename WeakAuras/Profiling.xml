@@ -78,6 +78,38 @@
           <Anchor point="TOPLEFT"/>
           <Anchor point="TOPRIGHT"/>
         </Anchors>
+        <Scripts>
+          <OnMouseDown>
+            if button == "LeftButton" then
+              self.is_moving = true
+              local parent = self:GetParent()
+              parent:ClearAllPoints()
+              parent:StartMoving()
+            end
+          </OnMouseDown>
+          <OnMouseUp>
+            if button == "LeftButton" and self.is_moving then
+              self.is_moving = nil
+              local parent = self:GetParent()
+              parent:StopMovingOrSizing()
+              local xOffset = parent:GetLeft()
+              local yOffset = parent:GetTop() - GetScreenHeight()
+              WeakAurasSaved.RealTimeProfilingWindow = WeakAurasSaved.RealTimeProfilingWindow or {}
+              WeakAurasSaved.RealTimeProfilingWindow.xOffset = xOffset
+              WeakAurasSaved.RealTimeProfilingWindow.yOffset = yOffset
+            end
+          </OnMouseUp>
+          <OnShow>
+            local data = WeakAurasSaved.RealTimeProfilingWindow
+            local parent = self:GetParent()
+            parent:ClearAllPoints()
+            if data then
+              parent:SetPoint("TOPLEFT", UIParent, "TOPLEFT", data.xOffset or 0, data.yOffset or 0)
+            else
+              parent:SetPoint("CENTER")
+            end
+          </OnShow>
+        </Scripts>
       </Frame>
 
       <Frame parentKey="buttons" hidden="false">
