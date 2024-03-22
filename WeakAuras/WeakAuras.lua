@@ -4513,6 +4513,10 @@ local function startStopTimers(id, cloneId, triggernum, state)
       stopAutoHideTimer(id, triggernum, cloneId)
       return
     else
+      if state.expirationTime == nil and type(state.duration) == "number" then
+        -- Set the expiration time, because users rely on that, even though it's wrong to do
+        state.expirationTime = GetTime() + state.duration
+      end
       expirationTime = state.expirationTime
     end
   elseif type(state.autoHide) == "number" then
