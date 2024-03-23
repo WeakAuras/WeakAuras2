@@ -189,6 +189,7 @@ local function modify(parent, region, data)
         DoTexCoord()
       end
     end
+    region:UpdateProgress()
   end
 
   function region:Color(r, g, b, a)

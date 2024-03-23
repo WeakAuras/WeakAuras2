@@ -613,6 +613,7 @@ local function modify(parent, region, data)
     region.UpdateTime = nil
 
     function region:Update()
+      region:UpdateProgress()
       region:UpdateIcon()
     end
   end
