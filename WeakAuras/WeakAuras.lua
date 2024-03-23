@@ -1113,7 +1113,7 @@ Broker_WeakAuras = LDB:NewDataObject("WeakAuras", {
     elseif(button == 'MiddleButton') then
       WeakAuras.ToggleMinimap();
     else
-      WeakAuras.RealTimeProfilingWindow:Toggle()
+      WeakAurasProfilingFrame:Toggle()
     end
     tooltip_draw()
   end,

@@ -42,6 +42,7 @@ Types_Retail.lua
 Types.lua
 Prototypes.lua
 Profiling.lua
+Profiling.xml
 WeakAuras.lua
 History.lua
 Transmission.lua
