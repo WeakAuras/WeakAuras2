@@ -382,7 +382,9 @@ function Private.Animate(namespace, uid, type, anim, region, inverse, onFinished
       last_update = GetTime()
       updatingAnimations = true;
     end
-    RunAnimation(key, animation, 0, GetTime())
+    C_Timer.After(0, function()
+      RunAnimation(key, animation, 0, GetTime())
+    end)
     return true;
   else
     if(animations[key]) then
