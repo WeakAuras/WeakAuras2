@@ -1045,13 +1045,14 @@ local function FrameTick(self)
   if (duration ~= 0) then
     local remaining = expirationTime - GetTime();
     progress = remaining / duration;
-    local inversed = (not inverse and self.inverseDirection) or (inverse and not self.inverseDirection);
+    local inversed = not inverse ~= not self.inverseDirection
     if(inversed) then
       progress = 1 - progress;
     end
   end
 
   progress = progress > 0.0001 and progress or 0.0001;
+
   if (self.useSmoothProgress) then
     self.smoothProgress:SetSmoothedValue(progress);
   else
@@ -1302,12 +1303,13 @@ local function modify(parent, region, data)
 
   region:Color(data.foregroundColor[1], data.foregroundColor[2], data.foregroundColor[3], data.foregroundColor[4]);
 
+
   function region:UpdateTime()
     local progress = 1;
     if (self.duration ~= 0) then
       local remaining = self.expirationTime - GetTime()
       progress = remaining / self.duration
-      local inversed = self.inverse ~= region.inverseDirection
+      local inversed = not self.inverse ~= not region.inverseDirection
       if(inversed) then
         progress = 1 - progress;
       end
