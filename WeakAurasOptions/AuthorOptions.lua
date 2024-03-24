@@ -59,6 +59,7 @@
       step (optional) -> like bigStep, but applies to number input as well
 ]]
 if not WeakAuras.IsLibsOK() then return end
+---@type string, OptionsPrivate
 local AddonName, OptionsPrivate = ...
 
 local WeakAuras = WeakAuras
