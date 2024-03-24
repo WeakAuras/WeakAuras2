@@ -1,4 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
+---@type string, OptionsPrivate
 local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
@@ -1009,8 +1010,12 @@ function OptionsPrivate.GetActionOptions(data)
     local reload = option.reloadOptions
     option.reloadOptions = nil
     option.set = function(info, v)
-      data.actions.start["message_format_" .. key] = v
-      WeakAuras.Add(data)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = {"actions", "start", "message_format_" .. key},
+        payload = v
+      })
       if reload then
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
@@ -1072,8 +1077,12 @@ function OptionsPrivate.GetActionOptions(data)
     local reload = option.reloadOptions
     option.reloadOptions = nil
     option.set = function(info, v)
-      data.actions.finish["message_format_" .. key] = v
-      WeakAuras.Add(data)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = {"actions", "finish", "message_format_" .. key},
+        payload = v
+      })
       if reload then
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
