@@ -181,6 +181,12 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
       set = function(info, v)
         trigger[optionKey] = trigger[optionKey] or {}
         if v == "" then
+          OptionsPrivate.Private.TimeMachine:Append({
+            actionType = "remove",
+            uid = data.uid,
+            path = { "triggers", triggernum, "trigger", optionKey },
+            payload = i
+          })
           shiftTable(trigger[optionKey], i)
         else
           if isExactSpellId then
