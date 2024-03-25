@@ -79,9 +79,9 @@ local function CanHaveMatchCheck(trigger)
   return trigger.showClones
 end
 
-local function CreateNameOptions(aura_options, data, trigger, size, isExactSpellId, isIgnoreList, prefix, baseOrder, useKey, optionKey, name, desc, inverse)
+local function CreateNameOptions(aura_options, data, triggernum, size, isExactSpellId, isIgnoreList, prefix, baseOrder, useKey, optionKey, name, desc, inverse)
   local spellCache = WeakAuras.spellCache
-
+  local trigger = data.triggers[triggernum].trigger
   for i = 1, size do
     local hiddenFunction
     if isIgnoreList then
@@ -190,21 +190,34 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
             path = { "triggers", triggernum, "trigger", optionKey },
             payload = i
           })
-          shiftTable(trigger[optionKey], i)
         else
           if isExactSpellId then
-            trigger[optionKey][i] = v
+            OptionsPrivate.Private.TimeMachine:Append({
+              actionType = "set",
+              uid = data.uid,
+              path = { "triggers", triggernum, "trigger", optionKey, i },
+              payload = v
+            })
           else
             local _, spellId = WeakAuras.spellCache.CorrectAuraName(v)
             if spellId then
-              trigger[optionKey][i] = tostring(spellId)
+              OptionsPrivate.Private.TimeMachine:Append({
+                actionType = "set",
+                uid = data.uid,
+                path = { "triggers", triggernum, "trigger", optionKey, i },
+                payload = tostring(spellId)
+              })
             else
-              trigger[optionKey][i] = spellCache.BestKeyMatch(v)
+              OptionsPrivate.Private.TimeMachine:Append({
+                actionType = "set",
+                uid = data.uid,
+                path = { "triggers", triggernum, "trigger", optionKey, i },
+                payload = spellCache.BestKeyMatch(v)
+              })
             end
           end
         end
 
-        WeakAuras.Add(data)
         WeakAuras.UpdateThumbnail(data)
         WeakAuras.ClearAndUpdateOptions(data.id)
       end,
@@ -547,14 +560,23 @@ local function GetBuffTriggerOptions(data, triggernum)
         else return "true" end
       end,
       set = function(info, v)
+        local payload
         if v then
-          trigger.use_stealable = true
+          payload = true
         else
           local value = trigger.use_stealable
-          if value == false then trigger.use_stealable = nil
-          else trigger.use_stealable = false end
+          if value == false then
+            payload = nil
+          else
+            payload = false
+          end
         end
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = { "triggers", triggernum, "trigger", "use_stealable" },
+          payload = payload
+        })
       end
     },
     use_isBossDebuff = {
@@ -575,14 +597,22 @@ local function GetBuffTriggerOptions(data, triggernum)
         else return "true" end
       end,
       set = function(info, v)
+        local payload
         if v then
-          trigger.use_isBossDebuff = true
+          payload = true
         else
-          local value = trigger.use_isBossDebuff
-          if value == false then trigger.use_isBossDebuff = nil
-          else trigger.use_isBossDebuff = false end
+          if trigger.use_isBossDebuff == false then
+            payload = nil
+          else
+            payload = false
+          end
         end
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = { "triggers", triggernum, "trigger", "use_isBossDebuff" },
+          payload = payload
+        })
       end
     },
     use_castByPlayer = {
@@ -604,14 +634,22 @@ local function GetBuffTriggerOptions(data, triggernum)
         else return "true" end
       end,
       set = function(info, v)
+        local payload
         if v then
-          trigger.use_castByPlayer = true
+          payload = true
         else
-          local value = trigger.use_castByPlayer
-          if value == false then trigger.use_castByPlayer = nil
-          else trigger.use_castByPlayer = false end
+          if trigger.use_castByPlayer == false then
+            payload = nil
+          else
+            payload = false
+          end
         end
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = { "triggers", triggernum, "trigger", "use_castByPlayer" },
+          payload = payload
+        })
       end
     },
     ownOnly = {
@@ -636,14 +674,22 @@ local function GetBuffTriggerOptions(data, triggernum)
         else return "true" end
       end,
       set = function(info, v)
+        local payload
         if v then
-          trigger.ownOnly = true
+          payload = true
         else
-          local value = trigger.ownOnly
-          if value == false then trigger.ownOnly = nil
-          else trigger.ownOnly = false end
+          if trigger.ownOnly == false then
+            payload = nil
+          else
+            payload = false
+          end
         end
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = { "triggers", triggernum, "trigger", "ownOnly" },
+          payload = payload
+        })
       end,
       order = 64.3,
       hidden = function() return not trigger.type == "aura2" end
@@ -1247,8 +1293,12 @@ local function GetBuffTriggerOptions(data, triggernum)
       hidden = function() return not (trigger.type == "aura2" and not IsSingleMissing(trigger)) end,
       width = WeakAuras.doubleWidth,
       set = function(info, v)
-        trigger.showClones = v
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = { "triggers", triggernum, "trigger", "showClones" },
+          payload = v
+        })
       end
     },
     combinePerUnit = {
@@ -1347,25 +1397,25 @@ local function GetBuffTriggerOptions(data, triggernum)
   local ignoreNameOptionSize = CountNames(data, triggernum, "ignoreAuraNames") + 1
   local ignoreSpellOptionsSize = CountNames(data, triggernum, "ignoreAuraSpellids") + 1
 
-  CreateNameOptions(aura_options, data, trigger, nameOptionSize,
+  CreateNameOptions(aura_options, data, triggernum, nameOptionSize,
                     false, false, "name", 12, "useName", "auranames",
                     L["Aura Name"],
                     L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."],
                     IsSingleMissing(trigger))
 
 
-  CreateNameOptions(aura_options, data, trigger, spellOptionsSize,
+  CreateNameOptions(aura_options, data, triggernum, spellOptionsSize,
                     true, false, "spellid", 22, "useExactSpellId", "auraspellids",
                     L["Spell ID"], L["Enter a Spell ID. You can use the addon idTip to determine spell ids."],
                     IsSingleMissing(trigger))
 
-  CreateNameOptions(aura_options, data, trigger, ignoreNameOptionSize,
+  CreateNameOptions(aura_options, data, triggernum, ignoreNameOptionSize,
                     false, true, "ignorename", 32, "useIgnoreName", "ignoreAuraNames",
                     L["Ignored Aura Name"],
                     L["Enter an Aura Name, partial Aura Name, or Spell ID. A Spell ID will match any spells with the same name."],
                     IsSingleMissing(trigger))
 
-  CreateNameOptions(aura_options, data, trigger, ignoreSpellOptionsSize,
+  CreateNameOptions(aura_options, data, triggernum, ignoreSpellOptionsSize,
                     true, true, "ignorespellid", 42, "useIgnoreExactSpellId", "ignoreAuraSpellids",
                     L["Ignored Spell ID"], L["Enter a Spell ID. You can use the addon idTip to determine spell ids."],
                     IsSingleMissing(trigger))
