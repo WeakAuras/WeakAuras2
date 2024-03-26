@@ -167,8 +167,18 @@
             </Anchors>
           </Frame>
 
-          <DropDownToggleButton parentKey="start" inherits="UIResettableDropdownButtonTemplate">
+          <DropDownToggleButton parentKey="start" inherits="UIMenuButtonStretchTemplate">
             <Size x="120" y="26"/>
+            <Layers>
+              <Layer level="ARTWORK">
+                <Texture parentKey="Icon" file="Interface\ChatFrame\ChatFrameExpandArrow">
+                  <Size x="10" y="12"/>
+                  <Anchors>
+                    <Anchor point="RIGHT" relativeKey="$parent.Right" relativePoint="RIGHT" x="-5"/>
+                  </Anchors>
+                </Texture>
+              </Layer>
+            </Layers>
             <Anchors>
               <Anchor point="TOPRIGHT" x="-10"/>
             </Anchors>
@@ -239,9 +249,7 @@
       </Frame>
       <ScrollFrame parentKey="ScrollBox" inherits="ScrollFrameTemplate">
         <KeyValues>
-          <KeyValue key="scrollBarX" value="6" type="number"/>
-          <KeyValue key="scrollBarTopY" value="-5" type="number"/>
-          <KeyValue key="scrollBarBottomY" value="5" type="number"/>
+          <KeyValue key="scrollBarX" value="-5" type="number"/>
         </KeyValues>
         <Anchors>
           <Anchor point="TOPLEFT" relativeKey="$parent.TitleBar" relativePoint="BOTTOMLEFT" x="15" y="-5"/>
