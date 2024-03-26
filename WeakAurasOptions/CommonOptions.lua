@@ -1092,14 +1092,28 @@ local function ProgressOptions(data)
     end,
     set = function(info, value)
       if value then
-        data.progressSource = data.progressSource or {}
-        -- Copy only trigger + property
-        data.progressSource[1] = value[1]
-        data.progressSource[2] = value[2]
+        OptionsPrivate.Private.TimeMachine:AppendMany({
+          {
+            actionType = "set",
+            uid = data.uid,
+            path = {"progressSource", 1},
+            payload = value[1]
+          },
+          {
+            actionType = "set",
+            uid = data.uid,
+            path = {"progressSource", 2},
+            payload = value[2]
+          }
+        })
       else
-        data.progressSource = nil
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = {"progressSource"},
+          payload = nil
+        })
       end
-      WeakAuras.Add(data)
     end
   }
 
@@ -1139,9 +1153,12 @@ local function ProgressOptions(data)
       return data.progressSource and data.progressSource[3] or 0
     end,
     set = function(info, value)
-      data.progressSource = data.progressSource or {}
-      data.progressSource[3] = value
-      WeakAuras.Add(data)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = {"progressSource", 3},
+        payload = value
+      })
     end
   }
 
@@ -1159,9 +1176,12 @@ local function ProgressOptions(data)
       return data.progressSource and data.progressSource[4] or 100
     end,
     set = function(info, value)
-      data.progressSource = data.progressSource or {}
-      data.progressSource[4] = value
-      WeakAuras.Add(data)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = {"progressSource", 4},
+        payload = value
+      })
     end
   }
 
@@ -1428,8 +1448,12 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       bigStep = 10,
       get = function() return data.xOffset end,
       set = function(info, v)
-        data.xOffset = v;
-        WeakAuras.Add(data);
+        OptionsPrivate.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = {"xOffset"},
+          payload = v
+        })
         WeakAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
         OptionsPrivate.Private.AddParents(data)
@@ -1448,8 +1472,12 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       bigStep = 10,
       get = function() return data.yOffset end,
       set = function(info, v)
-        data.yOffset = v;
-        WeakAuras.Add(data);
+        OptionsPrivate.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = {"yOffset"},
+          payload = v
+        })
         WeakAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
         OptionsPrivate.Private.AddParents(data)
@@ -1915,15 +1943,12 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
       extraFunctions = options.extraFunctions,
     },
     set = function(info, v)
-      local subdata = data;
-      for i = 1, #path -1 do
-        local key = path[i];
-        subdata[key] = subdata[key] or {};
-        subdata = subdata[key];
-      end
-
-      subdata[path[#path]] = v;
-      WeakAuras.Add(data);
+      OptionsPrivate.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = path,
+        payload = v
+      })
       if (options.extraSetFunction) then
         options.extraSetFunction();
       end
@@ -2019,14 +2044,26 @@ local function AddCommonTriggerOptions(options, data, triggernum, doubleWidth)
       return trigger.type
     end,
     set = function(info, v)
-      trigger.type = v;
+      local changes = {
+        {
+          actionType = "set",
+          uid = data.uid,
+          path = {"triggers", triggernum, "trigger", "type"},
+          payload = v
+        }
+      }
       local prototype = trigger.event and OptionsPrivate.Private.event_prototypes[trigger.event];
       if OptionsPrivate.Private.event_categories[v] and OptionsPrivate.Private.event_categories[v].default then
         if not prototype or prototype.type ~= v then
-          trigger.event = OptionsPrivate.Private.event_categories[v].default
+          changes[#changes + 1] = {
+            actionType = "set",
+            uid = data.uid,
+            path = {"triggers", triggernum, "trigger", "event"},
+            payload = OptionsPrivate.Private.event_categories[v].default
+          }
         end
       end
-      WeakAuras.Add(data);
+      OptionsPrivate.TimeMachine:AppendMany(changes)
       WeakAuras.UpdateThumbnail(data);
       WeakAuras.ClearAndUpdateOptions(data.id);
     end,
@@ -2052,33 +2089,47 @@ local function AddTriggerGetterSetter(options, data, triggernum)
     if type(option) == "table" and not option.set then
       if option.type == "multiselect" then
         option.set = function(info, index, value)
-          if type(trigger[key]) ~= "table" then
-            trigger[key] = {}
-          end
+          local payload
           if value ~= nil then
             if value then
-              trigger[key][index] = true
+              payload = true
             else
-              trigger[key][index] = nil
+              payload = nil
             end
           else
             if trigger[key][index] then
-              trigger[key][index] = nil
+              payload = nil
             else
-              trigger[key][index] = true
+              payload = true
             end
           end
-          if next(trigger[key]) == nil then
-            trigger[key] = nil
+          if payload == nil
+            and (next(trigger[key]) == nil or next(trigger[key], (next(trigger[key]))) == nil)
+          then
+            OptionsPrivate.TimeMachine:Append({
+              actionType = "set",
+              uid = data.uid,
+              path = {"triggers", triggernum, "trigger", key},
+              payload = nil
+            })
+          else
+            OptionsPrivate.TimeMachine:Append({
+              actionType = "set",
+              uid = data.uid,
+              path = {"triggers", triggernum, "trigger", key, index},
+              payload = payload
+            })
           end
-
-          WeakAuras.Add(data)
           WeakAuras.ClearAndUpdateOptions(data.id)
         end
       else
         option.set = function(info, v)
-          trigger[key] = v
-          WeakAuras.Add(data)
+          OptionsPrivate.TimeMachine:Append({
+            actionType = "set",
+            uid = data.uid,
+            path = {"triggers", triggernum, "trigger", key},
+            payload = v
+          })
           WeakAuras.ClearAndUpdateOptions(data.id)
         end
       end

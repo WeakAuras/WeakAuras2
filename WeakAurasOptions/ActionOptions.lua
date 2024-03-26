@@ -1265,7 +1265,9 @@ function OptionsPrivate.GetActionOptions(data)
 
     action.get = function(info, ...) return getAll(data, info, ...); end;
     action.set = function(info, ...)
+      OptionsPrivate.Private.TimeMachine:StartTransaction()
       setAll(data, info, ...);
+      OptionsPrivate.Private.TimeMachine:Commit()
       if(type(data.id) == "string") then
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
