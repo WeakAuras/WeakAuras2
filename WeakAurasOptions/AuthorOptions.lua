@@ -2571,14 +2571,19 @@ local function addUserModeOption(options, args, data, order, prefix, i)
           name = L["Reset Entry"],
           order = order(),
           func = function()
+            OptionsPrivate.Private.TimeMachine:StartTransaction()
             for id, optionData in pairs(option.references) do
               local childOption = optionData.options[optionData.index]
               local childData = optionData.data
               local childPage = getPage(id, optionData.path)
-              local childConfigList = optionData.config[childOption.key]
-              childConfigList[childPage] = {}
-              WeakAuras.Add(childData)
+              OptionsPrivate.Private.TimeMachine:Append({
+                uid = childData.uid,
+                actionType = "set",
+                path = expandSubOptionsPath(optionData.path, childPage),
+                payload = {},
+              })
             end
+            OptionsPrivate.Private.TimeMachine:Commit()
             WeakAuras.ClearAndUpdateOptions(data.id, true)
           end,
           width = 0.15,
@@ -2593,17 +2598,26 @@ local function addUserModeOption(options, args, data, order, prefix, i)
             name = L["Add Entry"],
             order = order(),
             func = function()
+              OptionsPrivate.Private.TimeMachine:StartTransaction()
               for id, optionData in pairs(option.references) do
                 local childOption = optionData.options[optionData.index]
                 local childConfigList = optionData.config[childOption.key]
                 local childData = optionData.data
                 if childOption.limitType == "none" or #childConfigList < childOption.size then
-                  tinsert(childConfigList, {})
                   setPage(id, optionData.path, #childConfigList)
-                  -- we do need to Add here, so that the new entry can get its default values
-                  WeakAuras.Add(childData)
+                  tinsert(childConfigList, {})
+                  OptionsPrivate.Private.TimeMachine:Append({
+                    uid = childData.uid,
+                    actionType = "insert",
+                    path = expandSubOptionsPath(optionData.path),
+                    payload = {
+                      index = #childConfigList,
+                      value = {}
+                    }
+                  })
                 end
               end
+              OptionsPrivate.Private.TimeMachine:Commit()
               WeakAuras.ClearAndUpdateOptions(data.id, true)
             end,
             disabled = function()
@@ -2631,17 +2645,23 @@ local function addUserModeOption(options, args, data, order, prefix, i)
             order = order(),
             confirm = true,
             func = function()
+              OptionsPrivate.Private.TimeMachine:StartTransaction()
               for id, optionData in pairs(option.references) do
                 local childOption = optionData.options[optionData.index]
                 local childConfigList = optionData.config[childOption.key]
                 local childData = optionData.data
                 local page = getPage(id, optionData.path)
                 if #childConfigList ~= 0 then
-                  tremove(childConfigList, page)
+                  OptionsPrivate.Private.TimeMachine:Append({
+                    uid = childData.uid,
+                    actionType = "remove",
+                    path = expandSubOptionsPath(optionData.path),
+                    payload = page,
+                  })
                   setPage(id, optionData.path, min(#childConfigList, page))
-                  WeakAuras.Add(childData)
                 end
               end
+              OptionsPrivate.Private.TimeMachine:Commit()
               WeakAuras.ClearAndUpdateOptions(data.id, true)
             end,
             disabled = function()
@@ -2660,17 +2680,23 @@ local function addUserModeOption(options, args, data, order, prefix, i)
             name = L["Move Entry Up"],
             order = order(),
             func = function()
+              OptionsPrivate.Private.TimeMachine:StartTransaction()
               for id, optionData in pairs(option.references) do
                 local childOption = optionData.options[optionData.index]
                 local childConfigList = optionData.config[childOption.key]
                 local childData = optionData.data
                 local childPage = getPage(id, optionData.path, #childConfigList)
                 if childConfigList[childPage] then
-                  childConfigList[childPage], childConfigList[childPage - 1] = childConfigList[childPage - 1], childConfigList[childPage]
+                  OptionsPrivate.Private.TimeMachine:Append({
+                    uid = childData.uid,
+                    actionType = "swap",
+                    path = expandSubOptionsPath(optionData.path),
+                    payload = {childPage, childPage - 1}
+                  })
                   setPage(id, optionData.path, childPage - 1)
-                  WeakAuras.Add(childData)
                 end
               end
+              OptionsPrivate.Private.TimeMachine:Commit()
               WeakAuras.ClearAndUpdateOptions(data.id, true)
             end,
             disabled = function()
@@ -2691,17 +2717,23 @@ local function addUserModeOption(options, args, data, order, prefix, i)
             name = L["Move Entry Down"],
             order = order(),
             func = function()
+              OptionsPrivate.Private.TimeMachine:StartTransaction()
               for id, optionData in pairs(option.references) do
                 local childOption = optionData.options[optionData.index]
                 local childConfigList = optionData.config[childOption.key]
                 local childData = optionData.data
                 local childPage = getPage(id, optionData.path, #childConfigList)
                 if childConfigList[childPage] then
-                  childConfigList[childPage], childConfigList[childPage + 1] = childConfigList[childPage + 1], childConfigList[childPage]
+                  OptionsPrivate.Private.TimeMachine:Append({
+                    uid = childData.uid,
+                    actionType = "swap",
+                    path = expandSubOptionsPath(optionData.path),
+                    payload = {childPage, childPage + 1}
+                  })
                   setPage(id, optionData.path, childPage + 1)
-                  WeakAuras.Add(childData)
                 end
               end
+              OptionsPrivate.Private.TimeMachine:Commit()
               WeakAuras.ClearAndUpdateOptions(data.id, true)
             end,
             disabled = function()
@@ -3224,11 +3256,17 @@ function OptionsPrivate.GetAuthorOptions(data)
       desc = L["Reset all options to their default values."],
       order = order(),
       func = function()
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
         for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
-          child.config = {} -- config validation in Add() will set all the needed keys to their defaults
+          OptionsPrivate.Private.TimeMachine:Append({
+            uid = child.uid,
+            actionType = "set",
+            path = {"config"},
+            payload = {}, -- config validation in Add() will set all the needed keys to their defaults
+          })
           OptionsPrivate.ResetCollapsed(child.id, "config")
-          WeakAuras.Add(child)
         end
+        OptionsPrivate.Private.TimeMachine:Commit()
         WeakAuras.ClearAndUpdateOptions(data.id, true)
       end,
       disabled = function()
