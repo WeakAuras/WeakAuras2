@@ -84,11 +84,7 @@ local function create(parent)
   region.regionType = "model"
   region:SetMovable(true);
   region:SetResizable(true);
-  if region.SetResizeBounds then
-    region:SetResizeBounds(1, 1)
-  else
-    region:SetMinResize(1, 1)
-  end
+  region:SetResizeBounds(1, 1)
 
   -- Border region
   local border = CreateFrame("Frame", nil, region, "BackdropTemplate");
@@ -113,7 +109,7 @@ end
 
 local function CreateModel()
   local frame = CreateFrame("PlayerModel", nil, UIParent)
-  frame.SetTransformFixed = frame.GetResizeBounds and Private.ModelSetTransformFixed or frame.SetTransform -- TODO change test to WeakAuras.IsWrathOrCataOrRetail() after 3.4.1 release
+  frame.SetTransformFixed = Private.ModelSetTransformFixed
   return frame
 end
 

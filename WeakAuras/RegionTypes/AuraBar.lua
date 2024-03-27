@@ -1087,11 +1087,7 @@ local function create(parent)
   region.regionType = "aurabar"
   region:SetMovable(true);
   region:SetResizable(true);
-  if region.SetResizeBounds then
-    region:SetResizeBounds(1, 1)
-  else
-    region:SetMinResize(1, 1)
-  end
+  region:SetResizeBounds(1, 1)
 
   local bar = CreateFrame("Frame", nil, region);
   --- @cast bar table|Frame
