@@ -53,12 +53,7 @@ local function PreShow(self)
   self:Show()
 
   -- Adjust model
-  local modelId
-  if WeakAuras.IsClassicEra() then
-    modelId = data.model_path
-  else
-    modelId = tonumber(data.model_fileId)
-  end
+  local modelId = tonumber(data.model_fileId)
   if modelId then
     pcall(self.SetModel, self, modelId)
   end
@@ -117,12 +112,7 @@ local function AcquireModel(region, data)
   model:Show()
 
   -- Adjust model
-  local modelId
-  if WeakAuras.IsClassicEra() then
-    modelId = data.model_path
-  else
-    modelId = tonumber(data.model_fileId)
-  end
+  local modelId = tonumber(data.model_fileId)
   if modelId then
     pcall(model.SetModel, model, modelId)
   end
