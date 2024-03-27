@@ -2010,7 +2010,14 @@ function Private.Modernize(data)
         end
       end
     end
+  end
 
+  if data.internalVersion < 72 then
+    if WeakAuras.IsClassic() then
+      if data.model_path and data.modelIsUnit then
+        data.model_fileId = data.model_path
+      end
+    end
   end
 
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())

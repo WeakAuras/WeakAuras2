@@ -142,12 +142,7 @@ local function ConfigureModel(region, model, data)
   if data.modelIsUnit then
     model:RegisterEvent("UNIT_MODEL_CHANGED");
 
-    local unit
-    if WeakAuras.IsClassicEra() then
-      unit = data.model_path
-    else
-      unit = data.model_fileId
-    end
+    local unit = data.model_fileId
 
     if (unit == "target") then
       model:RegisterEvent("PLAYER_TARGET_CHANGED");
@@ -231,9 +226,9 @@ local function modify(parent, region, data)
       bgFile = SharedMedia:Fetch("background", data.borderBackdrop),
       insets = {
         left     = data.borderInset,
-        right     = data.borderInset,
-        top     = data.borderInset,
-        bottom     = data.borderInset,
+        right    = data.borderInset,
+        top      = data.borderInset,
+        bottom   = data.borderInset,
       },
     });
     border:SetBackdropBorderColor(data.borderColor[1], data.borderColor[2], data.borderColor[3], data.borderColor[4]);
