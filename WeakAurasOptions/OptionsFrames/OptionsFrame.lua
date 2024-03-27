@@ -112,11 +112,7 @@ function OptionsPrivate.CreateFrame()
   frame:EnableMouse(true)
   frame:SetMovable(true)
   frame:SetResizable(true)
-  if frame.SetResizeBounds then
-    frame:SetResizeBounds(minWidth, minHeight)
-  else
-    frame:SetMinResize(minWidth, minHeight)
-  end
+  frame:SetResizeBounds(minWidth, minHeight)
   frame:SetFrameStrata("DIALOG")
   -- Workaround classic issue
   WeakAurasOptionsPortrait:SetTexture([[Interface\AddOns\WeakAuras\Media\Textures\logo_256_round.tga]])

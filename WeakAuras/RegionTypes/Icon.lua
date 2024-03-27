@@ -200,11 +200,7 @@ local function create(parent, data)
   region.regionType = "icon"
   region:SetMovable(true);
   region:SetResizable(true);
-  if region.SetResizeBounds then
-    region:SetResizeBounds(1, 1)
-  else
-    region:SetMinResize(1, 1)
-  end
+  region:SetResizeBounds(1, 1)
 
   function region.UpdateInnerOuterSize()
     local width = region.width * math.abs(region.scalex);
