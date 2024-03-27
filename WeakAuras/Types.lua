@@ -1443,11 +1443,13 @@ if WeakAuras.IsRetail() then
   Private.power_types[99] = STAGGER
   Private.power_types[19] = POWER_TYPE_ESSENCE
 elseif WeakAuras.IsCataClassic() then
+  Private.power_types[8] = nil
   Private.power_types[12] = nil
   Private.power_types[13] = nil
   Private.power_types[16] = nil
   Private.power_types[17] = nil
   Private.power_types[18] = nil
+  Private.power_types[26] = L["Eclipse"] -- couldn't find a localised global
 end
 
 ---@class Private
