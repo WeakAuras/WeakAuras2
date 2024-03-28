@@ -1,0 +1,178 @@
+# description of this workflow, can be anything you want
+name: Send Release Notifcations
+
+# we need to let GitHub know _when_ we want to release, typically only when we create a new tag.
+# this will target only tags, and not all pushes to the master branch.
+# this part can be heavily customized to your liking, like targeting only tags that match a certain word,
+# other branches or even pullrequests.
+# 'workflow_dispatch' allows us to re-run a failed job.
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+# a workflow is built up as jobs, and within these jobs are steps
+jobs:
+
+## Note: this is slightly messy, there might be a better way to do this, but im not sure how.
+## There are 2 options, either send all notifications as part of a single 'job'
+## or send each notification as seperate jobs.
+## The benefit of seperate jobs is that we can re-run specific social medias compeltely seperately from each other
+## this allows us to just kick off a specific notification without triggering the others.
+## the downside is mainly configuration bloat.  There are a lot of repeated tasks here
+## (such as clone, generate changelog, generate twitter text, save the info)
+## maybe someone smarter than me can help me understand how to save the changelog and twitter text once into a ENV var and use it across differnet jobs.
+
+############### DISCORD ####################
+  # "release-notifcations" is a job, you can name it anything you want
+  discord-release-notifcations:
+    # we can run our steps on pretty much anything, but the "ubuntu-latest" image is a safe bet
+    runs-on: ubuntu-latest
+
+    # specify the environment variables used by the packager, matching the secrets from the project on GitHub
+    env:
+      MESSAGE: "New WeakAuras Release"
+
+    # "steps" holds a list of all the steps needed to package and release our AddOn
+    steps:
+      # we first have to clone the AddOn project, this is a required step
+      - name: Clone project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # gets git history for changelogs
+
+      - name: Generate Changelog
+        id: Changelog
+        run: ./generate_changelog.sh
+
+      - name: save changelog in variable
+        uses: pCYSl5EDgo/cat@master
+        id: readChanglog
+        with:
+          path: CHANGELOG.md
+
+    # using Discord webhook to send release information
+      - name: Discord Release Webhook Action
+        uses: tsickert/discord-webhook@v5.4.0
+        if: success()
+        with:
+          webhook-url: ${{ secrets.RELEASE_WEBHOOK_URL }}
+          embed-title: ${{ env.MESSAGE }}
+          embed-url: https://github.com/WeakAuras/WeakAuras2/releases/latest
+          embed-description:  ${{ steps.readChanglog.outputs.text }}
+
+############### TWITTER ####################
+  twitter-release-notifcations:
+    # we can run our steps on pretty much anything, but the "ubuntu-latest" image is a safe bet
+    runs-on: ubuntu-latest
+
+    # specify the environment variables used by the packager, matching the secrets from the project on GitHub
+    env:
+      MESSAGE: "New WeakAuras Release"
+
+    # "steps" holds a list of all the steps needed to package and release our AddOn
+    steps:
+      # we first have to clone the AddOn project, this is a required step
+      - name: Clone project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # gets git history for changelogs
+
+      - name: Generate Changelog
+        id: Changelog
+        run: ./generate_changelog.sh
+
+      - name: Generate Twitter Text
+        id: twitter_post
+        run: /usr/bin/env python3 .github/scripts/generate_twitter_post.py
+
+      - name: save twitter post to variable
+        uses: pCYSl5EDgo/cat@master
+        id: readTweet
+        with:
+          path: twitter_post.txt
+
+      - name: Twitter Notification
+        uses: nearform-actions/github-action-notify-twitter@master
+        with:
+          message: ${{ steps.readTweet.outputs.text }}
+          twitter-app-key: ${{ secrets.TWITTER_API_KEY }}
+          twitter-app-secret: ${{ secrets.TWITTER_API_KEY_SECRET }}
+          twitter-access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          twitter-access-token-secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+
+############### MASTODON ####################
+  mastodon-release-notifcations:
+    # we can run our steps on pretty much anything, but the "ubuntu-latest" image is a safe bet
+    runs-on: ubuntu-latest
+
+    # specify the environment variables used by the packager, matching the secrets from the project on GitHub
+    env:
+      MESSAGE: "New WeakAuras Release"
+
+    # "steps" holds a list of all the steps needed to package and release our AddOn
+    steps:
+      # we first have to clone the AddOn project, this is a required step
+      - name: Clone project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # gets git history for changelogs
+
+      - name: Generate Changelog
+        id: Changelog
+        run: ./generate_changelog.sh
+
+      - name: Generate Twitter Text
+        id: twitter_post
+        run: /usr/bin/env python3 .github/scripts/generate_twitter_post.py
+
+      - name: save twitter post to variable
+        uses: pCYSl5EDgo/cat@master
+        id: readTweet
+        with:
+          path: twitter_post.txt
+
+      - name: Mastodon Notification
+        id: mastodon
+        uses: cbrgm/mastodon-github-action@v2.0.5
+        with:
+          access-token: ${{ secrets.MASTODON_ACCESS_TOKEN }} # access token
+          url: ${{ secrets.MASTODON_URL }} # https://example.social
+          message: ${{ steps.readTweet.outputs.text }}
+
+############### BLUESKY ####################
+  bluesky-release-notifcations:
+    # we can run our steps on pretty much anything, but the "ubuntu-latest" image is a safe bet
+    runs-on: ubuntu-latest
+
+    # specify the environment variables used by the packager, matching the secrets from the project on GitHub
+    env:
+      MESSAGE: "New WeakAuras Release"
+
+    # "steps" holds a list of all the steps needed to package and release our AddOn
+    steps:
+      # we first have to clone the AddOn project, this is a required step
+      - name: Clone project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # gets git history for changelogs
+
+      - name: Generate Changelog
+        id: Changelog
+        run: ./generate_changelog.sh
+
+      - name: Generate Twitter Text
+        id: twitter_post
+        run: /usr/bin/env python3 .github/scripts/generate_twitter_post.py
+
+      - name: save twitter post to variable
+        uses: pCYSl5EDgo/cat@master
+        id: readTweet
+        with:
+          path: twitter_post.txt
+
+      - uses: myConsciousness/bluesky-post@v5
+        with:
+          text: ${{ steps.readTweet.outputs.text }}
+          identifier: ${{ secrets.BLUESKY_IDENTIFIER }}
+          password: ${{ secrets.BLUESKY_PASSWORD }}

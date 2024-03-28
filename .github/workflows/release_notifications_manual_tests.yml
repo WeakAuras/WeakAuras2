@@ -1,0 +1,78 @@
+# description of this workflow, can be anything you want
+name: Send TEST Release Notifcations
+
+# 'workflow_dispatch' means it will only be manually triggerd via actions menu.
+on:
+  workflow_dispatch:
+
+# a workflow is built up as jobs, and within these jobs are steps
+jobs:
+  # "release-notifcations" is a job, you can name it anything you want
+  test-release-notifcations:
+    # we can run our steps on pretty much anything, but the "ubuntu-latest" image is a safe bet
+    runs-on: ubuntu-latest
+
+    # specify the environment variables used by the packager, matching the secrets from the project on GitHub
+    env:
+      MESSAGE: "TEST NOTIFICATION"
+
+    # "steps" holds a list of all the steps needed to package and release our AddOn
+    steps:
+      # we first have to clone the AddOn project, this is a required step
+      - name: Clone project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # gets git history for changelogs
+
+      - name: Generate Changelog
+        id: Changelog
+        run: ./generate_changelog.sh
+
+      - name: Generate Twitter Text
+        id: twitter_post
+        run: /usr/bin/env python3 .github/scripts/generate_twitter_post.py -c .github/scripts/test_files/large_changelog_example.md
+
+      - name: save changelog in variable
+        uses: pCYSl5EDgo/cat@master
+        id: readChanglog
+        with:
+          path: .github/scripts/test_files/large_changelog_example.md
+
+      - name: save twitter post to variable
+        uses: pCYSl5EDgo/cat@master
+        id: readTweet
+        with:
+          path: twitter_post.txt
+
+    # using Discord webhook to send release information
+      - name: Discord Release Webhook Action
+        uses: tsickert/discord-webhook@v5.4.0
+        if: success()
+        with:
+          webhook-url: ${{ secrets.TEST_RELEASE_WEBHOOK_URL }}
+          embed-title: ${{ env.MESSAGE }}
+          embed-url: https://github.com/WeakAuras/WeakAuras2/releases/latest
+          embed-description:  ${{ steps.readChanglog.outputs.text }}
+
+      - name: Twitter Notification
+        uses: nearform-actions/github-action-notify-twitter@master
+        with:
+          message: ${{ steps.readTweet.outputs.text }}
+          twitter-app-key: ${{ secrets.TEST_TWITTER_API_KEY }}
+          twitter-app-secret: ${{ secrets.TEST_TWITTER_API_KEY_SECRET }}
+          twitter-access-token: ${{ secrets.TEST_TWITTER_ACCESS_TOKEN }}
+          twitter-access-token-secret: ${{ secrets.TEST_TWITTER_ACCESS_TOKEN_SECRET }}
+
+      - name: Send toot to Mastodon
+        id: mastodon
+        uses: cbrgm/mastodon-github-action@v2.0.5
+        with:
+          access-token: ${{ secrets.TEST_MASTODON_ACCESS_TOKEN }} # access token
+          url: ${{ secrets.TEST_MASTODON_URL }} # https://example.social
+          message: ${{ steps.readTweet.outputs.text }}
+
+      - uses: myConsciousness/bluesky-post@v5
+        with:
+          text: ${{ steps.readTweet.outputs.text }}
+          identifier: ${{ secrets.TEST_BLUESKY_IDENTIFIER }}
+          password: ${{ secrets.TEST_BLUESKY_PASSWORD }}
