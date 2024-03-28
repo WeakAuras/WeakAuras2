@@ -45,6 +45,7 @@
 ---  - action: The action function, called on activating a condition
 --   - type: The type
 if not WeakAuras.IsLibsOK() then return end
+---@type string, OptionsPrivate
 local AddonName, OptionsPrivate = ...
 
 local WeakAuras = WeakAuras;

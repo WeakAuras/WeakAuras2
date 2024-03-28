@@ -1,4 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
+---@type string, OptionsPrivate
 local AddonName, OptionsPrivate = ...
 
 -- WoW APIs

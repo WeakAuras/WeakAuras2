@@ -1,4 +1,5 @@
 local L = WeakAuras.L
+---@type string, OptionsPrivate
 local AddonName, OptionsPrivate = ...
 
 local texture_types = WeakAuras.StopMotion.texture_types;

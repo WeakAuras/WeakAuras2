@@ -2,6 +2,7 @@
 Anchor for a Expandable section
 -------------------------------------------------------------------------------]]
 if not WeakAuras.IsLibsOK() then return end
+---@type string, OptionsPrivate
 local AddonName, OptionsPrivate = ...
 local Type, Version = "WeakAurasExpandAnchor", 3
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)

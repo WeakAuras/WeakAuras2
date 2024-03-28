@@ -1,4 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
+---@type string, OptionsPrivate
 local AddonName, OptionsPrivate = ...
 
 -- Lua APIs
@@ -18,6 +19,8 @@ local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local ADDON_NAME = "WeakAurasOptions";
 
+---@class OptionsPrivate
+---@field Private Private
 local displayButtons = {};
 OptionsPrivate.displayButtons = displayButtons;
 

@@ -1,4 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
+---@type string, OptionsPrivate
 local AddonName, OptionsPrivate = ...
 
 local L = WeakAuras.L
@@ -77,11 +78,18 @@ function OptionsPrivate.GetInformationOptions(data)
       return sameURL and commonURL or ""
     end,
     set = function(info, v)
+      OptionsPrivate.Private.TimeMachine:StartTransaction()
       for child in traverseForUrl(data) do
-        child.url = v
-        WeakAuras.Add(child)
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = child.uid,
+          actionType = "set",
+          path = "url",
+          payload = v,
+          effect = false
+        })
         OptionsPrivate.ClearOptions(child.id)
       end
+      OptionsPrivate.Private.TimeMachine:Commit()
 
       WeakAuras.ClearAndUpdateOptions(data.id)
     end,
@@ -116,10 +124,18 @@ function OptionsPrivate.GetInformationOptions(data)
             else
               ignoreUpdate = true
             end
+            OptionsPrivate.Private.TimeMachine:StartTransaction()
             for child in OptionsPrivate.Private.TraverseAll(auraData) do
-              child.ignoreWagoUpdate = ignoreUpdate
+              OptionsPrivate.Private.TimeMachine:Append({
+                uid = child.uid,
+                actionType = "set",
+                path = "ignoreWagoUpdate",
+                payload = ignoreUpdate,
+                effect = false
+              })
               OptionsPrivate.ClearOptions(child.id)
             end
+            OptionsPrivate.Private.TimeMachine:Commit()
             WeakAuras.ClearAndUpdateOptions(data.id)
           end
           OptionsPrivate.SortDisplayButtons(nil, true)
@@ -145,8 +161,12 @@ function OptionsPrivate.GetInformationOptions(data)
         return data.desc
       end,
       set = function(info, v)
-        data.desc = v
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "set",
+          path = "desc",
+          payload = v
+        })
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
     }
@@ -269,17 +289,27 @@ function OptionsPrivate.GetInformationOptions(data)
         end,
         set = function(info, v)
           if propertyData.onParent then
-            data.information[property] = v
-            WeakAuras.Add(data)
+            OptionsPrivate.Private.TimeMachine:Append({
+              uid = data.uid,
+              actionType = "set",
+              path = {"information", property},
+              payload = v
+            })
             OptionsPrivate.ClearOptions(data.id)
           else
+            OptionsPrivate.Private.TimeMachine:StartTransaction()
             for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
               if not propertyData.regionType or propertyData.regionType == child.regionType then
-                child.information[property] = v
-                WeakAuras.Add(child)
+                OptionsPrivate.Private.TimeMachine:Append({
+                  uid = child.uid,
+                  actionType = "set",
+                  path = {"information", property},
+                  payload = v
+                })
                 OptionsPrivate.ClearOptions(child.id)
               end
             end
+            OptionsPrivate.Private.TimeMachine:Commit()
           end
           WeakAuras.ClearAndUpdateOptions(data.id)
         end,
@@ -388,14 +418,24 @@ function OptionsPrivate.GetInformationOptions(data)
     end,
     set = function(info, v)
       if isGroup and not isTmpGroup then
-        data.information.debugLog = v
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "set",
+          path = {"information", "debugLog"},
+          payload = v
+        })
       else
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
         for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
-          child.information.debugLog = v
-          WeakAuras.Add(child)
+          OptionsPrivate.Private.TimeMachine:Append({
+            uid = child.uid,
+            actionType = "set",
+            path = {"information", "debugLog"},
+            payload = v
+          })
           OptionsPrivate.ClearOptions(child.id)
         end
+        OptionsPrivate.Private.TimeMachine:Commit()
       end
 
       WeakAuras.ClearAndUpdateOptions(data.id)

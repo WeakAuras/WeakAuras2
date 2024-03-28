@@ -1,3 +1,4 @@
+---@type string, OptionsPrivate
 local AddonName, OptionsPrivate = ...
 
 if not WeakAuras.IsLibsOK() then

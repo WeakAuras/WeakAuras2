@@ -1,4 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
+---@type string, OptionsPrivate
 local AddonName, OptionsPrivate = ...
 local GetAtlasInfo = C_Texture and  C_Texture.GetAtlasInfo or GetAtlasInfo
 
