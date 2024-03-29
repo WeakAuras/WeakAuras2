@@ -52,6 +52,11 @@ local function resolveKey(data, path)
   local tbl = data
   local i = 1
   while i < #path do
+    if tbl[path[i]] == nil then
+      tbl[path[i]] = {}
+    elseif type(tbl[path[i]]) ~= 'table' then
+      error("Path is not valid: " .. table.concat(path, '.') .. " at " .. path[i])
+    end
     tbl = tbl[path[i]]
     i = i + 1
   end
