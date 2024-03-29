@@ -334,11 +334,11 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
       local default = allProperties.propertyMap[property].default;
       if (data.controlledChildren) then
-        OptionsPrivate.TimeMachine:StartTransaction()
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
         for id, reference in pairs(conditions[i].changes[j].references) do
           local auraData = WeakAuras.GetData(id);
           local conditionIndex = conditions[i].check.references[id].conditionIndex;
-          OptionsPrivate.TimeMachine:AppendMany({
+          OptionsPrivate.Private.TimeMachine:AppendMany({
             {
               actionType = "set",
               uid = auraData.uid,
@@ -354,12 +354,12 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
           })
           OptionsPrivate.ClearOptions(auraData.id)
         end
-        OptionsPrivate.TimeMachine:Commit()
+        OptionsPrivate.Private.TimeMachine:Commit()
         -- ? does this do anything? Shouldn't AceConfig refill after the set() which "blows away" this change?
         conditions[i].changes[j].property = property
         WeakAuras.ClearAndUpdateOptions(data.id)
       else
-        OptionsPrivate.TimeMachine:AppendMany({
+        OptionsPrivate.Private.TimeMachine:AppendMany({
           {
             actionType = "set",
             uid = data.uid,
@@ -1724,8 +1724,8 @@ local function expandPath(...)
     local fragment = select(i, ...);
     if type(fragment) == "table" then
       for j = 1, #fragment do
-        tinsert(path, fragment[j])
         tinsert(path, "checks")
+        tinsert(path, fragment[j])
       end
     else
       tinsert(path, (select(i, ...)))
@@ -1917,7 +1917,7 @@ local function addControlsForIfLine(args, order, data, totalAuraCount, condition
             OptionsPrivate.Private.TimeMachine:Append({
               actionType = "remove",
               uid = auraData.uid,
-              path = expandPath("conditions", path, "check"),
+              path = expandPath("conditions", reference.conditionIndex, "check", path),
               payload = reference.conditionIndex
             })
             WeakAuras.ClearAndUpdateOptions(auraData.id)
@@ -1926,7 +1926,7 @@ local function addControlsForIfLine(args, order, data, totalAuraCount, condition
           OptionsPrivate.Private.TimeMachine:Append({
             actionType = "remove",
             uid = data.uid,
-            path = expandPath("conditions", path, "check"),
+            path = expandPath("conditions", i, "check", path),
             payload = i
           })
           WeakAuras.ClearAndUpdateOptions(data.id)
@@ -1950,19 +1950,19 @@ local function addControlsForIfLine(args, order, data, totalAuraCount, condition
             {
               actionType = "set",
               uid = auraData.uid,
-              path = expandPath("conditions", reference.conditionIndex, path, "check", "trigger"),
+              path = expandPath("conditions", reference.conditionIndex, "check", path, "trigger"),
               payload = trigger
             },
             {
               actionType = "set",
               uid = auraData.uid,
-              path = expandPath("conditions", reference.conditionIndex, path, "check", "variable"),
+              path = expandPath("conditions", reference.conditionIndex, "check", path, "variable"),
               payload = variable
             },
             {
               actionType = "set",
               uid = auraData.uid,
-              path = expandPath("conditions", reference.conditionIndex, path, "check", "value"),
+              path = expandPath("conditions", reference.conditionIndex, "check", path, "value"),
               payload = nil
             }
           })
@@ -1981,13 +1981,13 @@ local function addControlsForIfLine(args, order, data, totalAuraCount, condition
           {
             actionType = "set",
             uid = data.uid,
-            path = expandPath("conditions", i, path, "check", "trigger"),
+            path = expandPath("conditions", i, "check", path, "trigger"),
             payload = trigger
           },
           {
             actionType = "set",
             uid = data.uid,
-            path = expandPath("conditions", i, path, "check", "variable"),
+            path = expandPath("conditions", i, "check", path, "variable"),
             payload = variable
           }
         })
@@ -1996,13 +1996,13 @@ local function addControlsForIfLine(args, order, data, totalAuraCount, condition
           OptionsPrivate.Private.TimeMachine:Append({
             actionType = "set",
             uid = data.uid,
-            path = expandPath("conditions", i, path, "check", "value"),
+            path = expandPath("conditions", i, "check", path, "value"),
             payload = nil
           })
         end
-        WeakAuras.ClearAndUpdateOptions(data.id)
       end
       OptionsPrivate.Private.TimeMachine:Commit()
+      WeakAuras.ClearAndUpdateOptions(data.id)
     end,
     get = function()
       local trigger = check and check.trigger;
@@ -2050,7 +2050,7 @@ local function addControlsForIfLine(args, order, data, totalAuraCount, condition
             OptionsPrivate.Private.TimeMachine:Append({
               actionType = "set",
               uid = auraData.uid,
-              path = expandPath("conditions", path, "check", field),
+              path = expandPath("conditions", reference.conditionIndex, "check", path, field),
               payload = v
             })
             OptionsPrivate.ClearOptions(auraData.id)
@@ -2065,7 +2065,7 @@ local function addControlsForIfLine(args, order, data, totalAuraCount, condition
           OptionsPrivate.Private.TimeMachine:Append({
             actionType = "set",
             uid = data.uid,
-            path = expandPath("conditions", path, "check", field),
+            path = expandPath("conditions", i, "check", path, field),
             payload = v
           })
           WeakAuras.ClearAndUpdateOptions(data.id)
@@ -2523,7 +2523,7 @@ local function addControlsForCondition(args, order, data, totalAuraCount, condit
             tinsert(records, {
               actionType = "swap",
               uid = auraData.uid,
-              path = {"conditions", index},
+              path = {"conditions"},
               payload = {
                 index,
                 index - 1
@@ -2552,7 +2552,7 @@ local function addControlsForCondition(args, order, data, totalAuraCount, condit
           tinsert(records, {
             actionType = "swap",
             uid = data.uid,
-            path = {"conditions", i},
+            path = {"conditions"},
             payload = {
               i,
               i - 1
@@ -2609,7 +2609,7 @@ local function addControlsForCondition(args, order, data, totalAuraCount, condit
             tinsert(records, {
               actionType = "swap",
               uid = auraData.uid,
-              path = {"conditions", index},
+              path = {"conditions"},
               payload = {
                 index,
                 index + 1
@@ -2637,7 +2637,7 @@ local function addControlsForCondition(args, order, data, totalAuraCount, condit
           tinsert(records, {
             actionType = "swap",
             uid = data.uid,
-            path = {"conditions", i},
+            path = {"conditions"},
             payload = {
               i,
               i + 1
