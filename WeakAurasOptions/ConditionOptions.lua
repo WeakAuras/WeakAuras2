@@ -3331,7 +3331,7 @@ function OptionsPrivate.GetConditionOptions(data)
             index = #child.conditions + 1,
             value = {
               check = {},
-              changes = {}
+              changes = { {} }
             }
           }
         })
