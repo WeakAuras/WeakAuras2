@@ -3434,7 +3434,6 @@ function OptionsPrivate.GetConditionOptions(data)
             }
           }
         })
-        WeakAuras.Add(child);
         OptionsPrivate.ClearOptions(child.id)
       end
       OptionsPrivate.Private.TimeMachine:Commit()
