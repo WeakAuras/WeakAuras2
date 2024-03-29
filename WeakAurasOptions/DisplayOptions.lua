@@ -19,6 +19,7 @@ local getAll = OptionsPrivate.commonOptions.CreateGetAll("region")
 local setAll = OptionsPrivate.commonOptions.CreateSetAll("region", getAll)
 
 local function AddSubRegion(data, subRegionName)
+  OptionsPrivate.Private.TimeMachine:StartTransaction()
   for data in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
     data.subRegions = data.subRegions or {}
     if OptionsPrivate.Private.subRegionTypes[subRegionName] and OptionsPrivate.Private.subRegionTypes[subRegionName] then
@@ -26,12 +27,20 @@ local function AddSubRegion(data, subRegionName)
         local default = OptionsPrivate.Private.subRegionTypes[subRegionName].default
         local subRegionData = type(default) == "function" and default(data.regionType) or CopyTable(default)
         subRegionData.type = subRegionName
-        tinsert(data.subRegions, subRegionData)
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "insert",
+          path = {"subRegions"},
+          payload = {
+            index = #data.subRegions + 1,
+            value = subRegionData
+          }
+        })
         OptionsPrivate.ClearOptions(data.id)
       end
     end
   end
+  OptionsPrivate.Private.TimeMachine:Commit()
   WeakAuras.ClearAndUpdateOptions(data.id)
 end
 
@@ -293,6 +302,7 @@ function OptionsPrivate.GetDisplayOptions(data)
       setAll(data, info, ...);
       OptionsPrivate.Private.TimeMachine:Commit()
       if(type(data.id) == "string") then
+        -- ? not sure exactly what this does...
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
