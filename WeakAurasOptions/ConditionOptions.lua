@@ -264,6 +264,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
     set = function(info, index)
       local property = allProperties.indexToProperty[index];
       if (property == "COPY") then
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
         for child in OptionsPrivate.Private.TraverseLeafs(data) do
           if (conditions[i].changes[j].references[child.id]) then
           -- Already exist
@@ -287,27 +288,45 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
             local reference = conditions[i].check.references[child.id]
             if reference then
               local conditionIndex = reference.conditionIndex;
-              tinsert(child.conditions[conditionIndex].changes, insertPoint, change);
-              WeakAuras.Add(child);
+              OptionsPrivate.Private.TimeMachine:Append({
+                actionType = "insert",
+                uid = child.uid,
+                path = {"conditions", conditionIndex, "changes"},
+                payload = {
+                  index = insertPoint,
+                  value = change
+                }
+              })
               OptionsPrivate.ClearOptions(child.id)
             end
           end
         end
+        OptionsPrivate.Private.TimeMachine:Commit()
         WeakAuras.ClearAndUpdateOptions(data.id)
         return;
       elseif (property == "DELETE") then
         if (data.controlledChildren) then
+          OptionsPrivate.Private.TimeMachine:StartTransaction()
           for id, reference in pairs(conditions[i].changes[j].references) do
             local auraData = WeakAuras.GetData(id);
             local conditionIndex = conditions[i].check.references[id].conditionIndex;
-            tremove(auraData.conditions[conditionIndex].changes, reference.changeIndex);
-            WeakAuras.Add(auraData);
+            OptionsPrivate.Private.TimeMachine:Append({
+              actionType = "remove",
+              uid = auraData.uid,
+              path = {"conditions", conditionIndex, "changes"},
+              payload = reference.changeIndex
+            })
             OptionsPrivate.ClearOptions(auraData.id)
           end
+          OptionsPrivate.Private.TimeMachine:Commit()
           WeakAuras.ClearAndUpdateOptions(data.id)
         else
-          tremove(conditions[i].changes, j);
-          WeakAuras.Add(data);
+          OptionsPrivate.Private.TimeMachine:Append({
+            actionType = "remove",
+            uid = data.uid,
+            path = {"conditions", i, "changes"},
+            payload = j
+          })
           WeakAuras.ClearAndUpdateOptions(data.id)
         end
         return;
@@ -315,20 +334,45 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
 
       local default = allProperties.propertyMap[property].default;
       if (data.controlledChildren) then
+        OptionsPrivate.TimeMachine:StartTransaction()
         for id, reference in pairs(conditions[i].changes[j].references) do
           local auraData = WeakAuras.GetData(id);
           local conditionIndex = conditions[i].check.references[id].conditionIndex;
-          auraData.conditions[conditionIndex].changes[reference.changeIndex].property = property;
-          auraData.conditions[conditionIndex].changes[reference.changeIndex].value = default;
-          WeakAuras.Add(auraData);
+          OptionsPrivate.TimeMachine:AppendMany({
+            {
+              actionType = "set",
+              uid = auraData.uid,
+              path = {"conditions", conditionIndex, "changes", reference.changeIndex, "property"},
+              payload = property
+            },
+            {
+              actionType = "set",
+              uid = auraData.uid,
+              path = {"conditions", conditionIndex, "changes", reference.changeIndex, "value"},
+              payload = default
+            }
+          })
           OptionsPrivate.ClearOptions(auraData.id)
         end
-        conditions[i].changes[j].property = property;
+        OptionsPrivate.TimeMachine:Commit()
+        -- ? does this do anything? Shouldn't AceConfig refill after the set() which "blows away" this change?
+        conditions[i].changes[j].property = property
         WeakAuras.ClearAndUpdateOptions(data.id)
       else
-        conditions[i].changes[j].property = property;
-        conditions[i].changes[j].value = default;
-        WeakAuras.Add(data);
+        OptionsPrivate.TimeMachine:AppendMany({
+          {
+            actionType = "set",
+            uid = data.uid,
+            path = {"conditions", i, "changes", j, "property"},
+            payload = property
+          },
+          {
+            actionType = "set",
+            uid = data.uid,
+            path = {"conditions", i, "changes", j, "value"},
+            payload = default
+          }
+        })
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
     end
@@ -342,37 +386,51 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
   local setValueColorComplex;
   if (data.controlledChildren) then
     setValue = function(info, v)
+      OptionsPrivate.Private.TimeMachine:StartTransaction()
       for id, reference in pairs(conditions[i].changes[j].references) do
         local auraData = WeakAuras.GetData(id);
         local conditionIndex = conditions[i].check.references[id].conditionIndex;
-        auraData.conditions[conditionIndex].changes[reference.changeIndex].value = v;
-        WeakAuras.Add(auraData);
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = auraData.uid,
+          path = {"conditions", conditionIndex, "changes", reference.changeIndex, "value"},
+          payload = v
+        })
         OptionsPrivate.ClearOptions(auraData.id)
       end
+      OptionsPrivate.Private.TimeMachine:Commit()
       conditions[i].changes[j].value = v;
       WeakAuras.ClearAndUpdateOptions(data.id)
     end
     setValueTable = function(info, v)
+      OptionsPrivate.Private.TimeMachine:StartTransaction()
       for id, reference in pairs(conditions[i].changes[j].references) do
         local auraData = WeakAuras.GetData(id)
         local conditionIndex = conditions[i].check.references[id].conditionIndex
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = auraData.uid,
+          path = {"conditions", conditionIndex, "changes", reference.changeIndex, "value"},
+          payload = CopyTable(v)
+        })
         auraData.conditions[conditionIndex].changes[reference.changeIndex].value = CopyTable(v)
-        WeakAuras.Add(auraData)
         OptionsPrivate.ClearOptions(auraData.id)
       end
       conditions[i].changes[j].value = CopyTable(v)
+      OptionsPrivate.Private.TimeMachine:Commit()
       WeakAuras.ClearAndUpdateOptions(data.id)
     end
     setValueColor = function(info, r, g, b, a)
+      OptionsPrivate.Private.TimeMachine:StartTransaction()
       for id, reference in pairs(conditions[i].changes[j].references) do
         local auraData = WeakAuras.GetData(id);
         local conditionIndex = conditions[i].check.references[id].conditionIndex;
-        auraData.conditions[conditionIndex].changes[reference.changeIndex].value = auraData.conditions[conditionIndex].changes[reference.changeIndex].value or {};
-        auraData.conditions[conditionIndex].changes[reference.changeIndex].value[1] = r;
-        auraData.conditions[conditionIndex].changes[reference.changeIndex].value[2] = g;
-        auraData.conditions[conditionIndex].changes[reference.changeIndex].value[3] = b;
-        auraData.conditions[conditionIndex].changes[reference.changeIndex].value[4] = a;
-        WeakAuras.Add(auraData);
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = auraData.uid,
+          path = {"conditions", conditionIndex, "changes", reference.changeIndex, "value"},
+          payload = {r, g, b, a}
+        })
         OptionsPrivate.ClearOptions(auraData.id)
       end
       conditions[i].changes[j].value = conditions[i].changes[j].value or {};
@@ -380,45 +438,49 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       conditions[i].changes[j].value[2] = g;
       conditions[i].changes[j].value[3] = b;
       conditions[i].changes[j].value[4] = a;
+      OptionsPrivate.Private.TimeMachine:Commit()
       WeakAuras.ClearAndUpdateOptions(data.id)
     end
 
     setValueComplex = function(property)
       return function(info, v)
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
         for id, reference in pairs(conditions[i].changes[j].references) do
           local auraData = WeakAuras.GetData(id);
           local conditionIndex = conditions[i].check.references[id].conditionIndex;
           if (type(auraData.conditions[conditionIndex].changes[reference.changeIndex].value) ~= "table") then
             auraData.conditions[conditionIndex].changes[reference.changeIndex].value = {};
           end
+          OptionsPrivate.Private.TimeMachine:Append({
+            actionType = "set",
+            uid = auraData.uid,
+            path = {"conditions", conditionIndex, "changes", reference.changeIndex, "value", property},
+            payload = v
+          })
           auraData.conditions[conditionIndex].changes[reference.changeIndex].value[property] = v;
-          WeakAuras.Add(auraData);
           OptionsPrivate.ClearOptions(auraData.id)
         end
         if (type(conditions[i].changes[j].value) ~= "table") then
           conditions[i].changes[j].value = {};
         end
         conditions[i].changes[j].value[property] = v;
+        OptionsPrivate.Private.TimeMachine:Commit()
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
     end
 
     setValueColorComplex = function(property)
       return function(info, r, g, b, a)
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
         for id, reference in pairs(conditions[i].changes[j].references) do
           local auraData = WeakAuras.GetData(id);
           local conditionIndex = conditions[i].check.references[id].conditionIndex;
-          if (type(auraData.conditions[conditionIndex].changes[reference.changeIndex].value) ~= "table") then
-            auraData.conditions[conditionIndex].changes[reference.changeIndex].value = {};
-          end
-          if (type(auraData.conditions[conditionIndex].changes[reference.changeIndex].value[property]) ~= "table") then
-            auraData.conditions[conditionIndex].changes[reference.changeIndex].value[property] = {};
-          end
-          auraData.conditions[conditionIndex].changes[reference.changeIndex].value[property][1] = r;
-          auraData.conditions[conditionIndex].changes[reference.changeIndex].value[property][2] = g;
-          auraData.conditions[conditionIndex].changes[reference.changeIndex].value[property][3] = b;
-          auraData.conditions[conditionIndex].changes[reference.changeIndex].value[property][4] = a;
-          WeakAuras.Add(auraData);
+          OptionsPrivate.Private.TimeMachine:Append({
+            actionType = "set",
+            uid = auraData.uid,
+            path = {"conditions", conditionIndex, "changes", reference.changeIndex, "value", property},
+            payload = {r, g, b, a}
+          })
           OptionsPrivate.ClearOptions(auraData.id)
         end
         if (type(conditions[i].changes[j].value) ~= "table") then
@@ -431,54 +493,60 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
         conditions[i].changes[j].value[property][2] = g;
         conditions[i].changes[j].value[property][3] = b;
         conditions[i].changes[j].value[property][4] = a;
+        OptionsPrivate.Private.TimeMachine:Commit()
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
     end
   else
     setValue = function(info, v)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = {"conditions", i, "changes", j, "value"},
+        payload = v
+      })
       conditions[i].changes[j].value = v;
-      WeakAuras.Add(data);
       WeakAuras.ClearAndUpdateOptions(data.id)
     end
     setValueTable = function(info, v)
-      conditions[i].changes[j].value = CopyTable(v)
-      WeakAuras.Add(data)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = {"conditions", i, "changes", j, "value"},
+        payload = CopyTable(v)
+      })
       WeakAuras.ClearAndUpdateOptions(data.id)
     end
     setValueColor = function(info, r, g, b, a)
-      conditions[i].changes[j].value = conditions[i].changes[j].value or {};
-      conditions[i].changes[j].value[1] = r;
-      conditions[i].changes[j].value[2] = g;
-      conditions[i].changes[j].value[3] = b;
-      conditions[i].changes[j].value[4] = a;
-      WeakAuras.Add(data);
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = {"conditions", i, "changes", j, "value"},
+        payload = {r, g, b, a}
+      })
       WeakAuras.ClearAndUpdateOptions(data.id)
     end
 
     setValueComplex = function(property)
       return function(info, v)
-        if (type (conditions[i].changes[j].value) ~= "table") then
-          conditions[i].changes[j].value = {};
-        end
-        conditions[i].changes[j].value[property] = v;
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = {"conditions", i, "changes", j, "value", property},
+          payload = v
+        })
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
     end
 
     setValueColorComplex = function(property)
       return function(info, r, g, b, a)
-        if (type (conditions[i].changes[j].value) ~= "table") then
-          conditions[i].changes[j].value = {};
-        end
-        if (type (conditions[i].changes[j].value[property]) ~= "table") then
-          conditions[i].changes[j].value[property] = {};
-        end
-        conditions[i].changes[j].value[property][1] = r;
-        conditions[i].changes[j].value[property][2] = g;
-        conditions[i].changes[j].value[property][3] = b;
-        conditions[i].changes[j].value[property][4] = a;
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = {"conditions", i, "changes", j, "value", property},
+          payload = {r, g, b, a}
+        })
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
     end
@@ -1648,6 +1716,18 @@ local function checkSameValue(samevalue, propertyType)
   end
 end
 
+local function expandPath(path, ...)
+  local bigPath = {"conditions"}
+  for i = 1, #path do
+    tinsert(bigPath, path[i])
+    tinsert(bigPath, "checks")
+  end
+  for i = 1, select("#", ...) do
+    tinsert(bigPath, select(i, ...))
+  end
+  return bigPath
+end
+
 local function getOrCreateSubCheck(base, path)
   for _, i in ipairs(path) do
     base.checks = base.checks or {};
@@ -1770,6 +1850,7 @@ local function addControlsForIfLine(args, order, data, totalAuraCount, condition
     width = normalWidth;
     set = function(info, v)
       if (conditionTemplatesToUse.indexToTrigger[v] == "COPY") then
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
         for child in OptionsPrivate.Private.TraverseLeafs(data) do
           if (conditions[i].check.references[child.id]) then
           -- Already exists
@@ -1808,29 +1889,43 @@ local function addControlsForIfLine(args, order, data, totalAuraCount, condition
                 tinsert(condition.changes, copy);
               end
             end
-
-            tinsert(child.conditions, insertPoint, condition);
-            WeakAuras.Add(child);
+            OptionsPrivate.Private.TimeMachine:Append({
+              actionType = "insert",
+              uid = child.uid,
+              path = {"conditions", insertPoint},
+              payload = condition
+            })
             OptionsPrivate.ClearOptions(child.id)
           end
         end
+        OptionsPrivate.Private.TimeMachine:Commit()
         WeakAuras.ClearAndUpdateOptions(data.id)
         return;
       end
 
       if (conditionTemplatesToUse.indexToTrigger[v] == "REMOVE") then
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
         if (data.controlledChildren) then
           for id, reference in pairs(conditions[i].check.references) do
             local auraData = WeakAuras.GetData(id);
-            removeSubCheck(auraData.conditions[reference.conditionIndex].check, path);
-            WeakAuras.Add(auraData)
+            OptionsPrivate.Private.TimeMachine:Append({
+              actionType = "remove",
+              uid = auraData.uid,
+              path = expandPath(path, "check"),
+              payload = reference.conditionIndex
+            })
             WeakAuras.ClearAndUpdateOptions(auraData.id)
           end
         else
-          removeSubCheck(conditions[i].check, path);
-          WeakAuras.Add(data)
+          OptionsPrivate.Private.TimeMachine:Append({
+            actionType = "remove",
+            uid = data.uid,
+            path = expandPath(path, "check"),
+            payload = i
+          })
           WeakAuras.ClearAndUpdateOptions(data.id)
         end
+        OptionsPrivate.Private.TimeMachine:Commit()
         return;
       end
 
@@ -1840,14 +1935,31 @@ local function addControlsForIfLine(args, order, data, totalAuraCount, condition
         return;
       end
 
+      OptionsPrivate.Private.TimeMachine:StartTransaction()
       if (data.controlledChildren) then
         for id, reference in pairs(conditions[i].check.references) do
           local auraData = WeakAuras.GetData(id);
           local childCheck = getOrCreateSubCheck(auraData.conditions[reference.conditionIndex].check, path);
-          childCheck.variable = variable;
-          childCheck.trigger = trigger;
-          childCheck.value = nil;
-          WeakAuras.Add(auraData);
+          OptionsPrivate.Private.TimeMachine:AppendMany({
+            {
+              actionType = "set",
+              uid = auraData.uid,
+              path = expandPath(path, "check", "trigger"),
+              payload = trigger
+            },
+            {
+              actionType = "set",
+              uid = auraData.uid,
+              path = expandPath(path, "check", "variable"),
+              payload = variable
+            },
+            {
+              actionType = "set",
+              uid = auraData.uid,
+              path = expandPath(path, "check", "value"),
+              payload = nil
+            }
+          })
           OptionsPrivate.ClearOptions(auraData.id)
         end
         WeakAuras.ClearAndUpdateOptions(data.id)
@@ -1859,15 +1971,31 @@ local function addControlsForIfLine(args, order, data, totalAuraCount, condition
           local templatesForTriggerAndCondition = templatesForTrigger and templatesForTrigger[check.variable];
           oldType = templatesForTriggerAndCondition and templatesForTriggerAndCondition.type;
         end
-        check.variable = variable;
-        check.trigger = trigger;
-        local newType = conditionTemplatesToUse.all[trigger][variable].type;
+        OptionsPrivate.Private.TimeMachine:AppendMany({
+          {
+            actionType = "set",
+            uid = data.uid,
+            path = expandPath(path, "check", "trigger"),
+            payload = trigger
+          },
+          {
+            actionType = "set",
+            uid = data.uid,
+            path = expandPath(path, "check", "variable"),
+            payload = variable
+          }
+        })
         if (newType ~= oldType) then
-          check.value = nil;
+          OptionsPrivate.Private.TimeMachine:Append({
+            actionType = "set",
+            uid = data.uid,
+            path = expandPath(path, "check", "value"),
+            payload = nil
+          })
         end
-        WeakAuras.Add(data);
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
+      OptionsPrivate.Private.TimeMachine:Commit()
     end,
     get = function()
       local trigger = check and check.trigger;
@@ -1908,22 +2036,31 @@ local function addControlsForIfLine(args, order, data, totalAuraCount, condition
     local function makeSetter(field)
       if (data.controlledChildren) then
         return function(info, v)
+          OptionsPrivate.Private.TimeMachine:StartTransaction()
           check = getOrCreateSubCheck(conditions[i].check, path);
           for id, reference in pairs(conditions[i].check.references) do
             local auraData = WeakAuras.GetData(id);
-            local childCheck = getOrCreateSubCheck(auraData.conditions[reference.conditionIndex].check, path);
-            childCheck[field] = v;
-            WeakAuras.Add(auraData);
+            OptionsPrivate.Private.TimeMachine:Append({
+              actionType = "set",
+              uid = auraData.uid,
+              path = expandPath(path, "check", field),
+              payload = v
+            })
             OptionsPrivate.ClearOptions(auraData.id)
           end
           check[field] = v;
+          OptionsPrivate.Private.TimeMachine:Commit()
           WeakAuras.ClearAndUpdateOptions(data.id)
         end
       else
         return function(info, v)
           check = getOrCreateSubCheck(conditions[i].check, path);
-          check[field] = v;
-          WeakAuras.Add(data);
+          OptionsPrivate.Private.TimeMachine:Append({
+            actionType = "set",
+            uid = data.uid,
+            path = expandPath(path, "check", field),
+            payload = v
+          })
           WeakAuras.ClearAndUpdateOptions(data.id)
         end
       end
@@ -2376,27 +2513,59 @@ local function addControlsForCondition(args, order, data, totalAuraCount, condit
     end,
     func = function()
       if (data.controlledChildren) then
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
         for id, reference in pairs(conditions[i].check.references) do
           local auraData = WeakAuras.GetData(id);
           local index = reference.conditionIndex;
           if (index > 1) then
-            local tmp = auraData.conditions[reference.conditionIndex];
-            tremove(auraData.conditions, reference.conditionIndex);
-            tinsert(auraData.conditions, reference.conditionIndex - 1, tmp);
-            fixUpLinkedInFirstCondition(auraData.conditions)
-            WeakAuras.Add(auraData);
+            local records = {}
+            tinsert(records, {
+              actionType = "swap",
+              uid = auraData.uid,
+              path = {"conditions", index},
+              payload = {
+                index,
+                index - 1
+              }
+            })
+            if index == 2 and conditions[2].linked then
+              -- might be a bit confusing in this order?
+              -- but after the swap above, the second condition is now the first condition
+              tinsert(records, {
+                actionType = "set",
+                uid = auraData.uid,
+                path = {"conditions", 1, "linked"},
+                payload = false
+              })
+            end
+            OptionsPrivate.Private.TimeMachine:AppendMany(records)
             OptionsPrivate.MoveCollapseDataUp(auraData.id, "condition", {reference.conditionIndex})
             OptionsPrivate.ClearOptions(auraData.id)
           end
         end
+        OptionsPrivate.Private.TimeMachine:Commit()
         WeakAuras.ClearAndUpdateOptions(data.id)
       else
         if (i > 1) then
-          local tmp = conditions[i];
-          tremove(conditions, i);
-          tinsert(conditions, i - 1, tmp);
-          fixUpLinkedInFirstCondition(conditions)
-          WeakAuras.Add(data);
+          local records = {}
+          tinsert(records, {
+            actionType = "swap",
+            uid = data.uid,
+            path = {"conditions", i},
+            payload = {
+              i,
+              i - 1
+            }
+          })
+          if i == 2 and conditions[2].linked then
+            tinsert(records, {
+              actionType = "set",
+              uid = data.uid,
+              path = {"conditions", 1, "linked"},
+              payload = false
+            })
+          end
+          OptionsPrivate.Private.TimeMachine:AppendMany(records)
           OptionsPrivate.MoveCollapseDataUp(data.id, "condition", {i})
           WeakAuras.ClearAndUpdateOptions(data.id)
         end
@@ -2430,28 +2599,58 @@ local function addControlsForCondition(args, order, data, totalAuraCount, condit
     end,
     func = function()
       if (data.controlledChildren) then
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
         for id, reference in pairs(conditions[i].check.references) do
           local auraData = WeakAuras.GetData(id);
           local index = reference.conditionIndex;
           if (index < #auraData.conditions) then
-            local tmp = auraData.conditions[reference.conditionIndex];
-            tremove(auraData.conditions, reference.conditionIndex);
-            tinsert(auraData.conditions, reference.conditionIndex + 1, tmp);
-            fixUpLinkedInFirstCondition(auraData.conditions)
-            WeakAuras.Add(auraData);
+            local records = {}
+            tinsert(records, {
+              actionType = "swap",
+              uid = auraData.uid,
+              path = {"conditions", index},
+              payload = {
+                index,
+                index + 1
+              }
+            })
+            if index == 1 and #auraData.conditions > 1 and auraData.conditions[2].linked then
+              tinsert(records, {
+                actionType = "set",
+                uid = auraData.uid,
+                path = {"conditions", 1, "linked"},
+                payload = false
+              })
+            end
+            OptionsPrivate.Private.TimeMachine:AppendMany(records)
             OptionsPrivate.MoveCollapseDataDown(auraData.id, "condition", {reference.conditionIndex})
             OptionsPrivate.ClearOptions(auraData.id)
           end
         end
+        OptionsPrivate.Private.TimeMachine:Commit()
         WeakAuras.ClearAndUpdateOptions(data.id)
         return;
       else
         if (i < #conditions) then
-          local tmp = conditions[i];
-          tremove(conditions, i);
-          tinsert(conditions, i + 1, tmp);
-          fixUpLinkedInFirstCondition(conditions)
-          WeakAuras.Add(data);
+          local records = {}
+          tinsert(records, {
+            actionType = "swap",
+            uid = data.uid,
+            path = {"conditions", i},
+            payload = {
+              i,
+              i + 1
+            }
+          })
+          if i == 1 and #conditions > 1 and conditions[2].linked then
+            tinsert(records, {
+              actionType = "set",
+              uid = data.uid,
+              path = {"conditions", 1, "linked"},
+              payload = false
+            })
+          end
+          OptionsPrivate.Private.TimeMachine:AppendMany(records)
           OptionsPrivate.MoveCollapseDataDown(data.id, "condition", {i})
           WeakAuras.ClearAndUpdateOptions(data.id)
           return;
@@ -2472,20 +2671,36 @@ local function addControlsForCondition(args, order, data, totalAuraCount, condit
     order = order,
     func = function()
       if (data.controlledChildren) then
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
         for id, reference in pairs(conditions[i].check.references) do
           local auraData = WeakAuras.GetData(id);
           local clone = CopyTable(auraData.conditions[reference.conditionIndex])
-          tinsert(auraData.conditions, reference.conditionIndex + 1, clone);
-          WeakAuras.Add(auraData);
+          OptionsPrivate.Private.TimeMachine:Append({
+            actionType = "insert",
+            uid = auraData.uid,
+            path = {"conditions"},
+            payload = {
+              index = reference.conditionIndex + 1,
+              value = clone
+            }
+          })
           OptionsPrivate.DuplicateCollapseData(auraData.id, "condition", {reference.conditionIndex})
           OptionsPrivate.ClearOptions(auraData.id)
         end
+        OptionsPrivate.Private.TimeMachine:Commit()
         WeakAuras.ClearAndUpdateOptions(data.id)
         return;
       else
         local clone = CopyTable(conditions[i])
-        tinsert(conditions, i + 1, clone);
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "insert",
+          uid = data.uid,
+          path = {"conditions"},
+          payload = {
+            index = i + 1,
+            value = clone
+          }
+        })
         OptionsPrivate.DuplicateCollapseData(data.id, "condition", {i})
         WeakAuras.ClearAndUpdateOptions(data.id)
         return;
@@ -2505,11 +2720,25 @@ local function addControlsForCondition(args, order, data, totalAuraCount, condit
     order = order,
     func = function()
       if (data.controlledChildren) then
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
         for id, reference in pairs(conditions[i].check.references) do
           local auraData = WeakAuras.GetData(id);
-          tremove(auraData.conditions, reference.conditionIndex);
-          fixUpLinkedInFirstCondition(auraData.conditions)
-          WeakAuras.Add(auraData);
+          local records = {}
+          tinsert(records, {
+            actionType = "remove",
+            uid = auraData.uid,
+            path = {"conditions"},
+            payload = reference.conditionIndex
+          })
+          if reference.conditionIndex == 1 and auraData.conditons[2] ~= nil and auraData.conditions[2].linked then
+            tinsert(records, {
+              actionType = "set",
+              uid = auraData.uid,
+              path = {"conditions", 1, "linked"},
+              payload = false
+            })
+          end
+          OptionsPrivate.Private.TimeMachine:AppendMany(records)
           OptionsPrivate.RemoveCollapsed(auraData.id, "condition", {reference.conditionIndex})
           OptionsPrivate.ClearOptions(auraData.id)
         end
@@ -2518,7 +2747,22 @@ local function addControlsForCondition(args, order, data, totalAuraCount, condit
       else
         tremove(conditions, i);
         fixUpLinkedInFirstCondition(conditions)
-        WeakAuras.Add(data);
+        local records = {}
+        tinsert(records, {
+          actionType = "remove",
+          uid = data.uid,
+          path = {"conditions"},
+          payload = i
+        })
+        if i == 1 and conditions[2] and conditions[2].linked then
+          tinsert(records, {
+            actionType = "set",
+            uid = data.uid,
+            path = {"conditions", 1, "linked"},
+            payload = false
+          })
+        end
+        OptionsPrivate.Private.TimeMachine:AppendMany(records)
         OptionsPrivate.RemoveCollapsed(data.id, "condition", {i})
         WeakAuras.ClearAndUpdateOptions(data.id)
         return;
@@ -2559,18 +2803,33 @@ local function addControlsForCondition(args, order, data, totalAuraCount, condit
     order = order,
     func = function()
       if (data.controlledChildren) then
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
         for id, reference in pairs(conditions[i].check.references) do
           local auradata = WeakAuras.GetData(id);
-          auradata.conditions[reference.conditionIndex].changes = auradata.conditions[reference.conditionIndex].changes or {}
-          tinsert(auradata.conditions[reference.conditionIndex].changes, {})
-          WeakAuras.Add(auradata);
+          OptionsPrivate.Private.TimeMachine:Append({
+            actionType = "insert",
+            uid = auradata.uid,
+            path = {"conditions", reference.conditionIndex, "changes"},
+            payload = {
+              index = #auradata.conditions[reference.conditionIndex].changes,
+              value = {}
+            }
+          })
           OptionsPrivate.ClearOptions(auradata.id)
         end
         WeakAuras.ClearAndUpdateOptions(data.id)
       else
         conditions[i].changes = conditions[i].changes or {};
         conditions[i].changes[#conditions[i].changes + 1] = {};
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "insert",
+          uid = data.uid,
+          path = {"conditions", i, "changes"},
+          payload = {
+            index = #conditions[i].changes,
+            value = {}
+          }
+        })
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
     end
@@ -2606,21 +2865,31 @@ local function addControlsForCondition(args, order, data, totalAuraCount, condit
         return isLinked
       end,
       set = function()
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
         if (data.controlledChildren) then
           for id, reference in pairs(conditions[i].check.references) do
             local auradata = WeakAuras.GetData(id);
             if reference.conditionIndex > 1 then
-              auradata.conditions[reference.conditionIndex].linked = not isLinked
-              WeakAuras.Add(auradata);
+              OptionsPrivate.Private.TimeMachine:Append({
+                actionType = "set",
+                uid = auradata.uid,
+                path = {"conditions", reference.conditionIndex, "linked"},
+                payload = not isLinked
+              })
               OptionsPrivate.ClearOptions(auradata.id)
             end
           end
           WeakAuras.ClearAndUpdateOptions(data.id)
         else
-          conditions[i].linked = not isLinked
-          WeakAuras.Add(data);
+          OptionsPrivate.Private.TimeMachine:Append({
+            actionType = "set",
+            uid = data.uid,
+            path = {"conditions", i, "linked"},
+            payload = not isLinked
+          })
           WeakAuras.ClearAndUpdateOptions(data.id)
         end
+        OptionsPrivate.Private.TimeMachine:Commit()
       end
     }
     order = order + 1;
