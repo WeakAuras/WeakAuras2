@@ -50,24 +50,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       order = 8,
       values = OptionsPrivate.Private.check_types,
       hidden = function() return not (trigger.type == "custom"
-        and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
-        and trigger.check ~= "update")
-      end,
-      get = function() return trigger.check end,
-      set = function(info, v)
-        trigger.check = v;
-        WeakAuras.Add(data);
-      end
-    },
-    check2 = {
-      type = "select",
-      name = L["Check On..."],
-      order = 9,
-      width = WeakAuras.doubleWidth,
-      values = OptionsPrivate.Private.check_types,
-      hidden = function() return not (trigger.type == "custom"
-        and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
-        and trigger.check == "update")
+        and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate"))
       end,
       get = function() return trigger.check end,
       set = function(info, v)
