@@ -1886,6 +1886,7 @@ local function addControlsForIfLine(args, order, data, totalAuraCount, condition
             payload = variable
           }
         })
+        local newType = conditionTemplatesToUse.all[trigger][variable].type
         if (newType ~= oldType) then
           OptionsPrivate.Private.TimeMachine:Append({
             actionType = "set",
