@@ -4049,7 +4049,7 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
       elseif type(v.enable) == "boolean" then
         enable = v.enable
       end
-      if (enable and v.store and v.name and v.display) then
+      if (enable and v.store and v.name and v.display and v.conditionType ~= "bool") then
         found = true;
         additional = additional .. "|cFFFFCC00%".. triggernum .. "." .. v.name .. "|r - " .. v.display .. "\n";
       end
