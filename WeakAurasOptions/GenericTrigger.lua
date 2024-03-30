@@ -65,27 +65,17 @@ local function GetCustomTriggerOptions(data, triggernum)
       LAAC = { disableFunctions = true, disableSystems = true },
       width = WeakAuras.doubleWidth,
       name = L["Event(s)"],
-      desc = L["Custom trigger status tooltip"],
+      desc = function()
+        if trigger.custom_type == "event" then
+          return L["Custom trigger event tooltip"]
+        else
+          return L["Custom trigger status tooltip"]
+        end
+      end,
       order = 8.1,
       hidden = function() return not (trigger.type == "custom"
         and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
         and trigger.check ~= "update") end,
-      get = function() return trigger.events end,
-      set = function(info, v)
-        trigger.events = v;
-        WeakAuras.Add(data);
-      end
-    },
-    events2 = {
-      type = "input",
-      multiline = true,
-      control = "WeakAuras-MultiLineEditBoxWithEnter",
-      LAAC = { disableFunctions = true, disableSystems = true },
-      name = L["Event(s)"],
-      desc = L["Custom trigger event tooltip"],
-      width = WeakAuras.doubleWidth,
-      order = 9.1,
-      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event") end,
       get = function() return trigger.events end,
       set = function(info, v)
         trigger.events = v;
@@ -187,22 +177,9 @@ local function GetCustomTriggerOptions(data, triggernum)
       width = WeakAuras.normalWidth,
       name = L["Hide"],
       order = 12,
-      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide ~= "custom") end,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event") end,
       values = OptionsPrivate.Private.eventend_types,
-      get = function() trigger.custom_hide = trigger.custom_hide or "timed"; return trigger.custom_hide end,
-      set = function(info, v)
-        trigger.custom_hide = v;
-        WeakAuras.Add(data);
-      end
-    },
-    custom_hide2 = {
-      type = "select",
-      name = L["Hide"],
-      order = 12,
-      width = WeakAuras.doubleWidth,
-      hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event" and trigger.custom_hide == "custom") end,
-      values = OptionsPrivate.Private.eventend_types,
-      get = function() return trigger.custom_hide end,
+      get = function() return trigger.custom_hide or "timed" end,
       set = function(info, v)
         trigger.custom_hide = v;
         WeakAuras.Add(data);
