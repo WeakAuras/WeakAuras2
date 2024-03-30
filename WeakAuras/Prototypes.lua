@@ -2563,6 +2563,8 @@ Private.event_prototypes = {
         display = L["Capped"],
         type = "tristate",
         init = "isCapped",
+        conditionType = "bool",
+        store = true,
       },
       {
         name = "atWarWith",
@@ -2593,7 +2595,7 @@ Private.event_prototypes = {
         display = L["Friendship Rank"],
         type = "number",
         init = "friendshipRank",
-        store = "true",
+        store = true,
         conditionType = "number",
         enable = WeakAuras.IsRetail() and function(trigger)
           local repInfo = trigger.factionID and C_GossipInfo.GetFriendshipReputation(trigger.factionID);
@@ -2607,7 +2609,7 @@ Private.event_prototypes = {
         display = L["Friendship Max Rank"],
         type = "number",
         init = "friendshipMaxRank",
-        store = "true",
+        store = true,
         conditionType = "number",
         enable = WeakAuras.IsRetail() and function(trigger)
           local repInfo = trigger.factionID and C_GossipInfo.GetFriendshipReputation(trigger.factionID);
