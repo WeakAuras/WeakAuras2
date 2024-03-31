@@ -296,7 +296,10 @@ Private.ExecEnv.BossMods.DBM = {
       if bar then
         bar.icon = icon
       end
-      WeakAuras.ScanEvents("DBM_TimerUpdateIcon")
+      WeakAuras.ScanEvents("DBM_TimerUpdateIcon", timerId)
+      if self.isGeneric then
+        WeakAuras.ScanEvents("BossMod_TimerUpdateIcon", timerId)
+      end
     elseif event == "DBM_SetStage" or event == "DBM_Pull" or event == "DBM_Wipe" or event == "DBM_Kill" then
       WeakAuras.ScanEvents("DBM_SetStage")
       if self.isGeneric then
@@ -449,7 +452,8 @@ Private.event_prototypes["DBM Timer"] = {
   type = "addons",
   events = {},
   internal_events = {
-    "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerUpdate", "DBM_TimerForce", "DBM_TimerResume", "DBM_TimerPause"
+    "DBM_TimerStart", "DBM_TimerStop", "DBM_TimerUpdate", "DBM_TimerForce", "DBM_TimerResume", "DBM_TimerPause",
+    "DBM_TimerUpdateIcon"
   },
   force_events = "DBM_TimerForce",
   name = L["DBM Timer"],
@@ -536,7 +540,7 @@ Private.event_prototypes["DBM Timer"] = {
               state.changed = true
               return true
             end
-          elseif event == "DBM_TimerUpdate" then
+          elseif event == "DBM_TimerUpdate" or event == "DBM_TimerUpdateIcon" then
             local changed
             for timerId, bar in pairs(Private.ExecEnv.BossMods.DBM:GetAllTimers()) do
               if Private.ExecEnv.BossMods.DBM:TimerMatches(timerId, triggerText, triggerTextOperator, triggerSpellId, counter, triggerId, triggerDbmType) then
@@ -1480,7 +1484,8 @@ Private.event_prototypes["Boss Mod Timer"] = {
   type = "addons",
   events = {},
   internal_events = {
-    "BossMod_TimerStart", "BossMod_TimerStop", "BossMod_TimerUpdate", "BossMod_TimerForce", "BossMod_TimerResume", "BossMod_TimerPause"
+    "BossMod_TimerStart", "BossMod_TimerStop", "BossMod_TimerUpdate", "BossMod_TimerForce", "BossMod_TimerResume",
+    "BossMod_TimerPause", "BossMod_TimerUpdateIcon"
   },
   force_events = "BossMod_TimerForce",
   name = L["Boss Mod Timer"],
@@ -1568,7 +1573,7 @@ Private.event_prototypes["Boss Mod Timer"] = {
               state.changed = true
               return true
             end
-          elseif event == "BossMod_TimerUpdate" then
+          elseif event == "BossMod_TimerUpdate" or event == "BossMod_TimerUpdateIcon" then
             local changed
             for timerId, bar in pairs(Private.ExecEnv.BossMods.Generic:GetAllTimers()) do
               if Private.ExecEnv.BossMods.Generic:TimerMatchesGeneric(timerId, triggerText, triggerTextOperator, triggerSpellId, counter) then
