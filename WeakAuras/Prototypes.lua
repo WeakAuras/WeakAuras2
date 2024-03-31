@@ -2428,19 +2428,17 @@ Private.event_prototypes = {
           end
 
           -- check if this is a faction with a paragon track
+          local paragonRewardPending = false
           local isParagon = factionID and C_Reputation.IsFactionParagon(factionID)
           if isParagon then
             local paragonCurrentValue, paragonBarMax, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
             if paragonCurrentValue then
               minValue, maxValue = 0, paragonBarMax
               currentValue = paragonCurrentValue %% paragonBarMax
-              if hasRewardPending then
-                currentValue = currentValue + paragonBarMax
-              end
+              paragonRewardPending = hasRewardPending
             else
               minValue, maxValue, currentValue = 0, 0, 0
             end
-            isCapped = hasRewardPending
           end
         ]=]
       end
@@ -2591,6 +2589,16 @@ Private.event_prototypes = {
         display = L["Is Paragon Reputation"],
         type = "tristate",
         init = "isParagon",
+        store = true,
+        conditionType = "bool",
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail(),
+      },
+      {
+        name = "paragonRewardPending",
+        display = L["Paragon Reward Pending"],
+        type = "tristate",
+        init = "paragonRewardPending",
         store = true,
         conditionType = "bool",
         enable = WeakAuras.IsRetail(),
