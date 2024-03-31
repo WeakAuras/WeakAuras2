@@ -2386,10 +2386,12 @@ Private.event_prototypes = {
         if tonumber(standingID) then
            standing = GetText("FACTION_STANDING_LABEL"..standingID, UnitSex("player"))
         end
-        local isCapped = standingID == MAX_REPUTATION_REACTION
+        local isCapped = standingID == 8
       ]=]
       if WeakAuras.IsRetail() then
         ret = ret .. [=[
+          isCapped = standingID == MAX_REPUTATION_REACTION
+
           -- check if this is a friendship faction
           local friendshipRank, friendshipMaxRank
           local repInfo = factionID and C_GossipInfo.GetFriendshipReputation(factionID);
@@ -2431,7 +2433,11 @@ Private.event_prototypes = {
           if ( isParagon ) then
             paragonCurrentValue, paragonBarMax, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
             local level = math.floor(paragonCurrentValue/paragonBarMax)-(hasRewardPending and 1 or 0)
-            realParagonValue = tonumber(string.sub( paragonCurrentValue, string.len( level ) + 1 ))
+            if level > 0 then
+              realParagonValue = tonumber(string.sub(paragonCurrentValue, string.len( level ) + 1 ))
+           else
+              realParagonValue = paragonCurrentValue
+           end
             minValue, maxValue, currentValue = 0, paragonBarMax, realParagonValue
             isCapped = currentValue >= maxValue
           end
@@ -2498,7 +2504,6 @@ Private.event_prototypes = {
         type = "number",
         store = true,
         init = [[currentValue - minValue]],
-        test = "true",
         conditionType = "number",
         progressTotal = "total",
         multiEntry = {
@@ -2512,7 +2517,6 @@ Private.event_prototypes = {
         type = "number",
         store = true,
         init = [[maxValue - minValue]],
-        test = "true",
         conditionType = "number",
         noProgressSource = true,
         multiEntry = {
@@ -2526,7 +2530,6 @@ Private.event_prototypes = {
         type = "number",
         init = "total ~= 0 and (value / total) * 100 or nil",
         store = true,
-        test = "true",
         conditionType = "number",
         noProgressSource = true,
         multiEntry = {
@@ -2567,10 +2570,12 @@ Private.event_prototypes = {
         store = true,
       },
       {
-        name = "atWarWith",
-        display = L["At War With"],
+        name = "atWar",
+        display = L["At War"],
         type = "tristate",
         init = "atWarWith",
+        conditionType = "bool",
+        store = true,
       },
       {
         name = "hasBonusRepGain",
