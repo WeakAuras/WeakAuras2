@@ -1763,8 +1763,7 @@ Constructor
 -------------------------------------------------------------------------------]]
 
 local function Constructor()
-  local name = "WeakAurasDisplayButton"..AceGUI:GetNextWidgetNum(Type);
-  local button = CreateFrame("Button", name, UIParent, "OptionsListButtonTemplate");
+  local button = CreateFrame("Button", nil, UIParent, "OptionsListButtonTemplate");
   button:SetHeight(32);
   button:SetWidth(1000);
   button.dgroup = nil;
