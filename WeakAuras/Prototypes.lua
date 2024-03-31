@@ -3203,6 +3203,9 @@ Private.event_prototypes = {
       if WeakAuras.IsClassicEraOrWrath() and trigger.use_showCost and trigger.unit == "player" then
         tinsert(result, "WA_UNIT_QUEUED_SPELL_CHANGED");
       end
+      if WeakAuras.IsCataClassic() and trigger.unit == "player" and trigger.use_powertype and trigger.powertype == 26 then
+        tinsert(result, "ECLIPSE_DIRECTION_CHANGE");
+      end
       return result
     end,
     loadFunc = function(trigger)
@@ -3437,6 +3440,18 @@ Private.event_prototypes = {
           return trigger.use_powertype and trigger.powertype == 99
         end,
         test = "true"
+      },
+      {
+        name = "eclipseDirection",
+        display = L["Eclipse Direction"],
+        type = "select",
+        values = "eclipse_direction_types",
+        init = "GetEclipseDirection()",
+        conditionType = "select",
+        store = true,
+        enable = function(trigger)
+          return WeakAuras.IsCataClassic() and trigger.unit == "player" and trigger.use_powertype and trigger.powertype == 26
+        end,
       },
       {
         name = "power",
