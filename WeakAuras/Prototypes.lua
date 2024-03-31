@@ -2437,10 +2437,10 @@ Private.event_prototypes = {
               if hasRewardPending then
                 currentValue = currentValue + paragonBarMax
               end
-              isCapped = currentValue >= maxValue
             else
               minValue, maxValue, currentValue = 0, 0, 0
             end
+            isCapped = hasRewardPending
           end
         ]=]
       end
