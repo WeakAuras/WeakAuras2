@@ -1450,6 +1450,14 @@ elseif WeakAuras.IsCataClassic() then
   Private.power_types[17] = nil
   Private.power_types[18] = nil
   Private.power_types[26] = L["Eclipse"] -- couldn't find a localised global
+
+  ---@class Private
+  ---@field eclipse_direction_types table<string, string>
+  Private.eclipse_direction_types = {
+    none = L["None"],
+    sun = L["Sun"],
+    moon = L["Moon"]
+  }
 end
 
 ---@class Private
