@@ -2395,9 +2395,9 @@ Private.event_prototypes = {
           -- check if this is a friendship faction
           local friendshipRank, friendshipMaxRank
           local repInfo = factionID and C_GossipInfo.GetFriendshipReputation(factionID);
-          if (repInfo and repInfo.friendshipFactionID > 0) then
+          if repInfo and repInfo.friendshipFactionID > 0 then
             standing = repInfo.reaction
-            if ( repInfo.nextThreshold ) then
+            if repInfo.nextThreshold then
               minValue, maxValue, currentValue = repInfo.reactionThreshold, repInfo.nextThreshold, repInfo.standing
             else
               -- max rank, make it look like a full bar
@@ -2415,7 +2415,7 @@ Private.event_prototypes = {
           -- check if this is a Major faction (renown)
           local renownLevel, maxRenownLevel, isWeeklyRenownCapped
           local isMajorFaction = factionID and C_Reputation.IsMajorFaction(factionID)
-          if ( isMajorFaction ) then
+          if isMajorFaction then
             local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID)
             minValue, maxValue = 0, majorFactionData.renownLevelThreshold
             isCapped = C_MajorFactions.HasMaximumRenown(factionID)
@@ -2428,18 +2428,19 @@ Private.event_prototypes = {
           end
 
           -- check if this is a faction with a paragon track
-          local isParagon = C_Reputation.IsFactionParagon(factionID)
-          local paragonCurrentValue, paragonBarMax, rewardQuestID, hasRewardPending, tooLowLevelForParagon, realParagonValue
-          if ( isParagon ) then
-            paragonCurrentValue, paragonBarMax, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
-            local level = math.floor(paragonCurrentValue/paragonBarMax)-(hasRewardPending and 1 or 0)
-            if level > 0 then
-              realParagonValue = tonumber(string.sub(paragonCurrentValue, string.len( level ) + 1 ))
-           else
-              realParagonValue = paragonCurrentValue
-           end
-            minValue, maxValue, currentValue = 0, paragonBarMax, realParagonValue
-            isCapped = currentValue >= maxValue
+          local isParagon = factionID and C_Reputation.IsFactionParagon(factionID)
+          if isParagon then
+            local paragonCurrentValue, paragonBarMax, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
+            if paragonCurrentValue then
+              minValue, maxValue = 0, paragonBarMax
+              currentValue = paragonCurrentValue %% paragonBarMax
+              if hasRewardPending then
+                currentValue = currentValue + paragonBarMax
+              end
+              isCapped = currentValue >= maxValue
+            else
+              minValue, maxValue, currentValue = 0, 0, 0
+            end
           end
         ]=]
       end
