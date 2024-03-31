@@ -2386,7 +2386,7 @@ Private.event_prototypes = {
         if tonumber(standingID) then
            standing = GetText("FACTION_STANDING_LABEL"..standingID, UnitSex("player"))
         end
-        local isCapped = standingID == 8
+        local isCapped = standingID == 8 and currentValue >= 42999
       ]=]
       if WeakAuras.IsRetail() then
         ret = ret .. [=[
