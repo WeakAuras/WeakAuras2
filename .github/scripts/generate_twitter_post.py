@@ -8,8 +8,10 @@ from pathlib import Path
 WEAKAURAS_URL_RELEASE_URL = "https://github.com/WeakAuras/WeakAuras2/releases/tag/{tag}"
 MAX_POST_LENGTH = 280
 
-POST_TEMPLATE = """New Release published: {tag}
+POST_TEMPLATE = """WeakAuras {tag} released:
+
 {highlight_content}
+
 {url}
 """
 
@@ -95,7 +97,7 @@ parser.add_argument(
     dest="changelog_path",
     action="store",
     default="./CHANGELOG.md",
-    help="specifies where the changelog file is",
+    help="Specifies where the changelog file is. Default is ./CHANGELOG.md.",
     required=False,
     type=str,
 )

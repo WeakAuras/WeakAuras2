@@ -23,7 +23,7 @@ jobs:
         id: Changelog
         run: ./generate_changelog.sh
 
-      - name: save changelog in variable
+      - name: Save Changelog in Variable
         uses: pCYSl5EDgo/cat@master
         id: readChanglog
         with:
@@ -33,7 +33,7 @@ jobs:
         id: twitter_post
         run: /usr/bin/env python3 .github/scripts/generate_twitter_post.py
 
-      - name: save twitter post to variable
+      - name: Save Twitter Post in Variable
         uses: pCYSl5EDgo/cat@master
         id: readTweet
         with:
@@ -48,7 +48,8 @@ jobs:
       MESSAGE: "New WeakAuras Release"
 
     steps:
-      - name: Discord Release Webhook Action
+      - name: Send Discord Notification
+        id: discord
         uses: tsickert/discord-webhook@v5.4.0
         if: success()
         with:
@@ -62,8 +63,9 @@ jobs:
     needs: release-notification-output
 
     steps:
-      - name: Twitter Notification
-        uses: nearform-actions/github-action-notify-twitter@master
+      - name: Send Twitter Notification
+        id: twitter
+        uses: nearform-actions/github-action-notify-twitter@v1
         with:
           message: ${{needs.release-notification-output.outputs.tweetText}}
           twitter-app-key: ${{ secrets.TWITTER_API_KEY }}
@@ -76,7 +78,7 @@ jobs:
     needs: release-notification-output
 
     steps:
-      - name: Mastodon Notification
+      - name: Send Mastodon Notification
         id: mastodon
         uses: cbrgm/mastodon-github-action@v2.0.5
         with:
@@ -89,7 +91,9 @@ jobs:
     needs: release-notification-output
 
     steps:
-      - uses: myConsciousness/bluesky-post@v5
+      - name: Send Bluesky Notification
+        id: bluesky
+        uses: myConsciousness/bluesky-post@v5
         with:
           text: ${{needs.release-notification-output.outputs.tweetText}}
           identifier: ${{ secrets.BLUESKY_IDENTIFIER }}
