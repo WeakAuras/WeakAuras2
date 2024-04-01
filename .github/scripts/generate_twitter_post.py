@@ -8,7 +8,7 @@ from pathlib import Path
 WEAKAURAS_URL_RELEASE_URL = "https://github.com/WeakAuras/WeakAuras2/releases/tag/{tag}"
 MAX_POST_LENGTH = 280
 
-POST_TEMPLATE = """New Release: {tag}
+POST_TEMPLATE = """New Release published: {tag}
 {highlight_content}
 {url}
 """
@@ -39,7 +39,7 @@ def get_changelog_text(changelog_file):
         print('Could not find "Highlights" content.')
         print(content)
         print("=======================================")
-        print("Going to provide an empty content")
+        print("Going to provide an empty content.")
         return ""
 
     return match.group(1).strip()
@@ -85,10 +85,9 @@ def write_post_to_file(post):
         twitter_post.write(post)
 
 
-#### START #####
 parser = argparse.ArgumentParser(
     prog="generate_twitter_post",
-    description="Reads a changelog file and generates a post suitible for social media sites",
+    description="Reads a changelog file and generates a post suitable for social media sites",
 )
 parser.add_argument(
     "-c",
@@ -96,7 +95,7 @@ parser.add_argument(
     dest="changelog_path",
     action="store",
     default="./CHANGELOG.md",
-    help="specifiys where the changelog file is",
+    help="specifies where the changelog file is",
     required=False,
     type=str,
 )

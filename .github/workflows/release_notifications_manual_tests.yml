@@ -1,5 +1,5 @@
 # description of this workflow, can be anything you want
-name: Send TEST Release Notification
+name: Send TEST Release Notifications
 
 # 'workflow_dispatch' means it will only be manually triggerd via actions menu.
 on:
@@ -66,7 +66,7 @@ jobs:
         uses: tsickert/discord-webhook@v5.4.0
         if: success()
         with:
-          webhook-url: ${{ secrets.TEST_RELEASE_WEBHOOK_URL }}
+          webhook-url: ${{ secrets.RELEASE_WEBHOOK_URL }}
           embed-title: ${{ env.MESSAGE }}
           embed-url: https://github.com/WeakAuras/WeakAuras2/releases/latest
           embed-description:  ${{needs.test-release-notification-output.outputs.changeLogText}}
@@ -83,10 +83,10 @@ jobs:
         uses: nearform-actions/github-action-notify-twitter@master
         with:
           message: ${{needs.test-release-notification-output.outputs.tweetText}}
-          twitter-app-key: ${{ secrets.TEST_TWITTER_API_KEY }}
-          twitter-app-secret: ${{ secrets.TEST_TWITTER_API_KEY_SECRET }}
-          twitter-access-token: ${{ secrets.TEST_TWITTER_ACCESS_TOKEN }}
-          twitter-access-token-secret: ${{ secrets.TEST_TWITTER_ACCESS_TOKEN_SECRET }}
+          twitter-app-key: ${{ secrets.TWITTER_API_KEY }}
+          twitter-app-secret: ${{ secrets.TWITTER_API_KEY_SECRET }}
+          twitter-access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          twitter-access-token-secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
 
 ############### MASTODON ####################
   test-mastodon-release-notification:
@@ -100,8 +100,8 @@ jobs:
         id: mastodon
         uses: cbrgm/mastodon-github-action@v2.0.5
         with:
-          access-token: ${{ secrets.TEST_MASTODON_ACCESS_TOKEN }} # access token
-          url: ${{ secrets.TEST_MASTODON_URL }} # https://example.social
+          access-token: ${{ secrets.MASTODON_ACCESS_TOKEN }} # access token
+          url: ${{ secrets.MASTODON_URL }} # https://example.social
           message: ${{needs.test-release-notification-output.outputs.tweetText}}
 
 ############### BLUESKY ####################
@@ -115,5 +115,5 @@ jobs:
       - uses: myConsciousness/bluesky-post@v5
         with:
           text: ${{needs.test-release-notification-output.outputs.tweetText}}
-          identifier: ${{ secrets.TEST_BLUESKY_IDENTIFIER }}
-          password: ${{ secrets.TEST_BLUESKY_PASSWORD }}
+          identifier: ${{ secrets.BLUESKY_IDENTIFIER }}
+          password: ${{ secrets.BLUESKY_PASSWORD }}
