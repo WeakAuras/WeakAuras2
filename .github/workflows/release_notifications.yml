@@ -14,10 +14,14 @@ jobs:
       tweetText: ${{ steps.readTweet.outputs.text }}
 
     steps:
-      - name: Clone project
+      - name: Clone Project
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # gets git history for changelogs
+
+      - name: Hack around https://github.com/actions/checkout/issues/290
+        run: |
+          git fetch --tags --force
 
       - name: Generate Changelog
         id: Changelog
@@ -38,7 +42,6 @@ jobs:
         id: readTweet
         with:
             path: twitter_post.txt
-
 
   discord-release-notification:
     runs-on: ubuntu-latest
@@ -82,8 +85,8 @@ jobs:
         id: mastodon
         uses: cbrgm/mastodon-github-action@v2.0.5
         with:
-          access-token: ${{ secrets.MASTODON_ACCESS_TOKEN }} # access token
-          url: ${{ secrets.MASTODON_URL }} # https://example.social
+          access-token: ${{ secrets.MASTODON_ACCESS_TOKEN }}
+          url: ${{ secrets.MASTODON_URL }}
           message: ${{needs.release-notification-output.outputs.tweetText}}
 
   bluesky-release-notification:

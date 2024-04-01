@@ -24,10 +24,14 @@ jobs:
     # "steps" holds a list of all the steps needed to package and release our AddOn
     steps:
       # we first have to clone the AddOn project, this is a required step
-      - name: Clone project
+      - name: Clone Project
         uses: actions/checkout@v4
         with:
           fetch-depth: 0  # gets git history for changelogs
+
+      - name: Hack around https://github.com/actions/checkout/issues/290
+        run: |
+          git fetch --tags --force
 
       # save the output of the changelog into a variable.
       - name: save changelog in variable
