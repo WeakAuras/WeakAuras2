@@ -31,7 +31,7 @@ jobs:
 
       # save the output of the changelog into a variable.
       - name: save changelog in variable
-        uses: pCYSl5EDgo/cat@master
+        uses: Stanzilla/cat@2.0.1
         id: readChanglog
         with:
           path: .github/scripts/test_files/large_changelog_example.md # use the custom large changelog
@@ -44,7 +44,7 @@ jobs:
 
       # save the generated information into a variable.
       - name: save twitter post to variable
-        uses: pCYSl5EDgo/cat@master
+        uses: Stanzilla/cat@2.0.1
         id: readTweet
         with:
             path: twitter_post.txt
