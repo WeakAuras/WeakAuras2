@@ -1,0 +1,119 @@
+# description of this workflow, can be anything you want
+name: Send TEST Release Notifications
+
+# 'workflow_dispatch' means it will only be manually triggerd via actions menu.
+on:
+  workflow_dispatch:
+
+# a workflow is built up as jobs, and within these jobs are steps
+jobs:
+  ## We seperate each item into different 'jobs'.  The first job will get all the text that we need
+  ## the subsequent jobs will require the text from the first, and then send it to their approporate channels.
+  ## This allows us to reun-run specific social media sites seperately incase of errors.
+
+  # "release-notification" is a job, you can name it anything you want
+  test-release-notification-output:
+    # we can run our steps on pretty much anything, but the "ubuntu-latest" image is a safe bet
+    runs-on: ubuntu-latest
+
+    # output documentation: https://docs.github.com/en/actions/using-jobs/defining-outputs-for-jobs
+    outputs:
+      changeLogText: ${{ steps.readChanglog.outputs.text }}
+      tweetText: ${{ steps.readTweet.outputs.text }}
+
+    # "steps" holds a list of all the steps needed to package and release our AddOn
+    steps:
+      # we first have to clone the AddOn project, this is a required step
+      - name: Clone project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # gets git history for changelogs
+
+      # save the output of the changelog into a variable.
+      - name: save changelog in variable
+        uses: pCYSl5EDgo/cat@master
+        id: readChanglog
+        with:
+          path: .github/scripts/test_files/large_changelog_example.md # use the custom large changelog
+
+      # generate the text for twitter or other social media
+      - name: Generate Twitter Text
+        id: twitter_post
+        # pass in the large changelog into the twitter script.
+        run: /usr/bin/env python3 .github/scripts/generate_twitter_post.py -c .github/scripts/test_files/large_changelog_example.md
+
+      # save the generated information into a variable.
+      - name: save twitter post to variable
+        uses: pCYSl5EDgo/cat@master
+        id: readTweet
+        with:
+            path: twitter_post.txt
+
+############### DISCORD ####################
+  test-discord-release-notification:
+    # we can run our steps on pretty much anything, but the "ubuntu-latest" image is a safe bet
+    runs-on: ubuntu-latest
+    needs: test-release-notification-output
+
+    # specify the environment variables used by the packager, matching the secrets from the project on GitHub
+    env:
+      MESSAGE: "TEST NOTIFICATION"
+
+    # "steps" holds a list of all the steps needed to package and release our AddOn
+    steps:
+    # using Discord webhook to send release information
+      - name: Discord Release Webhook Action
+        uses: tsickert/discord-webhook@v5.4.0
+        if: success()
+        with:
+          webhook-url: ${{ secrets.RELEASE_WEBHOOK_URL }}
+          embed-title: ${{ env.MESSAGE }}
+          embed-url: https://github.com/WeakAuras/WeakAuras2/releases/latest
+          embed-description:  ${{needs.test-release-notification-output.outputs.changeLogText}}
+
+############### TWITTER ####################
+  test-twitter-release-notification:
+    # we can run our steps on pretty much anything, but the "ubuntu-latest" image is a safe bet
+    runs-on: ubuntu-latest
+    needs: test-release-notification-output
+
+    # "steps" holds a list of all the steps needed to package and release our AddOn
+    steps:
+      - name: Twitter Notification
+        uses: nearform-actions/github-action-notify-twitter@master
+        with:
+          message: ${{needs.test-release-notification-output.outputs.tweetText}}
+          twitter-app-key: ${{ secrets.TWITTER_API_KEY }}
+          twitter-app-secret: ${{ secrets.TWITTER_API_KEY_SECRET }}
+          twitter-access-token: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          twitter-access-token-secret: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+
+############### MASTODON ####################
+  test-mastodon-release-notification:
+    # we can run our steps on pretty much anything, but the "ubuntu-latest" image is a safe bet
+    runs-on: ubuntu-latest
+    needs: test-release-notification-output
+
+    # "steps" holds a list of all the steps needed to package and release our AddOn
+    steps:
+      - name: Mastodon Notification
+        id: mastodon
+        uses: cbrgm/mastodon-github-action@v2.0.5
+        with:
+          access-token: ${{ secrets.MASTODON_ACCESS_TOKEN }} # access token
+          url: ${{ secrets.MASTODON_URL }} # https://example.social
+          message: ${{needs.test-release-notification-output.outputs.tweetText}}
+
+############### BLUESKY ####################
+  test-bluesky-release-notification:
+    # we can run our steps on pretty much anything, but the "ubuntu-latest" image is a safe bet
+    runs-on: ubuntu-latest
+    needs: test-release-notification-output
+
+    # "steps" holds a list of all the steps needed to package and release our AddOn
+    steps:
+      - uses: myConsciousness/bluesky-post@v5
+        with:
+          text: ${{needs.test-release-notification-output.outputs.tweetText}}
+          identifier: ${{ secrets.BLUESKY_IDENTIFIER }}
+          password: ${{ secrets.BLUESKY_PASSWORD }}
