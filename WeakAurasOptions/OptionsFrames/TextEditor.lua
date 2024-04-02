@@ -424,25 +424,12 @@ local function ConstructTextEditor(frame)
     end
   end
 
+  local apiSearchFrame
   -- Make sidebar for snippets
   local snippetsFrame = CreateFrame("Frame", "WeakAurasSnippets", group.frame, "PortraitFrameTemplate")
   ButtonFrameTemplate_HidePortrait(snippetsFrame)
-  snippetsFrame:SetPoint("TOPLEFT", group.frame, "TOPRIGHT", 20, 0)
-  snippetsFrame:SetPoint("BOTTOMLEFT", group.frame, "BOTTOMRIGHT", 20, 0)
   snippetsFrame:SetWidth(250)
-  --[[
-  snippetsFrame:SetBackdrop(
-    {
-      bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
-      edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
-      tile = true,
-      tileSize = 32,
-      edgeSize = 32,
-      insets = {left = 8, right = 8, top = 8, bottom = 8}
-    }
-  )
-  snippetsFrame:SetBackdropColor(0, 0, 0, 1)
-]]
+
   -- Add button to save new snippet
   local AddSnippetButton = CreateFrame("Button", nil, snippetsFrame, "UIPanelButtonTemplate")
   AddSnippetButton:SetPoint("TOPLEFT", snippetsFrame, "TOPLEFT", 13, -25)
@@ -478,9 +465,22 @@ local function ConstructTextEditor(frame)
     "OnClick",
     function(self, button, down)
       if not snippetsFrame:IsShown() then
+        snippetsFrame:ClearAllPoints()
+        if apiSearchFrame and apiSearchFrame:IsShown() then
+          snippetsFrame:SetPoint("TOPLEFT", apiSearchFrame, "TOPRIGHT", 10, 0)
+          snippetsFrame:SetPoint("BOTTOMLEFT", apiSearchFrame, "BOTTOMRIGHT", 10, 0)
+        else
+          snippetsFrame:SetPoint("TOPLEFT", group.frame, "TOPRIGHT", 20, 0)
+          snippetsFrame:SetPoint("BOTTOMLEFT", group.frame, "BOTTOMRIGHT", 20, 0)
+        end
         snippetsFrame:Show()
         UpdateSnippets(snippetsScroll)
       else
+        if apiSearchFrame and apiSearchFrame:IsShown() then
+          apiSearchFrame:ClearAllPoints()
+          apiSearchFrame:SetPoint("TOPLEFT", group.frame, "TOPRIGHT", 20, 0)
+          apiSearchFrame:SetPoint("BOTTOMLEFT", group.frame, "BOTTOMRIGHT", 20, 0)
+        end
         snippetsFrame:Hide()
       end
     end
@@ -507,6 +507,185 @@ local function ConstructTextEditor(frame)
         UpdateSnippets(snippetsScroll)
         end
       end
+  )
+
+  -- Make ApiSearch button
+  local apiSearchButton = CreateFrame("Button", "WAAPISearchButton", group.frame, "UIPanelButtonTemplate")
+  apiSearchButton:SetPoint("BOTTOMRIGHT", editor.frame, "TOPRIGHT", -20, 15)
+  apiSearchButton:SetFrameLevel(group.frame:GetFrameLevel() + 2)
+  apiSearchButton:SetHeight(20)
+  apiSearchButton:SetWidth(100)
+  apiSearchButton:SetText(L["Search API"])
+  apiSearchButton:RegisterForClicks("LeftButtonUp")
+
+  -- Make sidebar for apiSearch
+  apiSearchFrame = CreateFrame("Frame", "WeakAurasAPISearchFrame", group.frame, "PortraitFrameTemplate")
+  ButtonFrameTemplate_HidePortrait(apiSearchFrame)
+  apiSearchFrame:SetWidth(350)
+
+  local makeAPISearch
+
+  -- filter line
+  local filterInput = CreateFrame("EditBox", "WeakAurasAPISearchFilterInput", apiSearchFrame, "SearchBoxTemplate")
+  filterInput:SetScript("OnTextChanged", function(self)
+    SearchBoxTemplate_OnTextChanged(self)
+    makeAPISearch(filterInput:GetText())
+  end)
+  filterInput:SetHeight(15)
+  filterInput:SetPoint("TOPLEFT", apiSearchFrame, "TOPLEFT", 10, -30)
+  filterInput:SetPoint("TOPRIGHT", apiSearchFrame, "TOPRIGHT", -10, -30)
+  filterInput:SetFont(STANDARD_TEXT_FONT, 10, "")
+
+  local apiSearchScrollContainer = AceGUI:Create("SimpleGroup")
+  apiSearchScrollContainer:SetFullWidth(true)
+  apiSearchScrollContainer:SetFullHeight(true)
+  apiSearchScrollContainer:SetLayout("Fill")
+  apiSearchScrollContainer.frame:SetParent(apiSearchFrame)
+  apiSearchScrollContainer.frame:SetPoint("TOPLEFT", apiSearchFrame, "TOPLEFT", 5, -60)
+  apiSearchScrollContainer.frame:SetPoint("BOTTOMRIGHT", apiSearchFrame, "BOTTOMRIGHT", -5, 10)
+
+  local apiSearchScroll = AceGUI:Create("ScrollFrame")
+  apiSearchScroll:SetLayout("List")
+  apiSearchScrollContainer:AddChild(apiSearchScroll)
+  apiSearchScroll:FixScroll(true)
+  apiSearchScroll.scrollframe:SetScript(
+    "OnScrollRangeChanged",
+    function(frame)
+      frame.obj:DoLayout()
+    end
+  )
+
+  makeAPISearch = function(apiToSearchFor)
+    apiSearchScroll:ReleaseChildren()
+
+    -- load documation addon
+    local apiAddonName = "Blizzard_APIDocumentation"
+    local _, loaded = C_AddOns.IsAddOnLoaded(apiAddonName)
+    if not loaded then
+      C_AddOns.LoadAddOn(apiAddonName)
+    end
+    if #APIDocumentation.systems == 0 then
+      APIDocumentation_LoadUI()
+    end
+
+    -- show list of namespaces by default
+    if not apiToSearchFor or #apiToSearchFor < 3 then
+      for i, systemInfo in ipairs(APIDocumentation.systems) do
+        if systemInfo.Namespace and #systemInfo.Functions > 0 then
+          local button = AceGUI:Create("WeakAurasSnippetButton")
+          local name = systemInfo.Namespace
+          button:SetTitle(name)
+          button:SetEditable(false)
+          button:SetHeight(20)
+          button:SetRelativeWidth(1)
+          button:SetDescription()
+          button:SetCallback("OnClick", function()
+            filterInput:SetText(name)
+          end)
+          apiSearchScroll:AddChild(button)
+        end
+      end
+    else
+      local results = {}
+
+      -- if search field is set to the name of namespace, show all functions
+      local foundSystem = false
+      apiToSearchForLower = apiToSearchFor:lower();
+      for _, systemInfo in ipairs(APIDocumentation.systems) do
+        -- search for namespaceName or namespaceName.functionName
+        local nsName, rest = apiToSearchForLower:match("^([%w%_]+)(.*)")
+        if nsName and systemInfo.Namespace and systemInfo.Namespace:lower():match(nsName) then
+          foundSystem = true
+          local funcName = rest and rest:match("^%.([%w%_]+)")
+          for _, apiInfo in ipairs(systemInfo.Functions) do
+            if funcName then
+              if apiInfo:MatchesSearchString(funcName) then
+                tinsert(results, apiInfo)
+              end
+            else
+              tinsert(results, apiInfo)
+            end
+          end
+        end
+      end
+
+      -- otherwise show a list of functions matching search field
+      if not foundSystem then
+        APIDocumentation:AddAllMatches(APIDocumentation.functions, results, apiToSearchFor)
+      end
+
+      for i, apiInfo in ipairs(results) do
+        -- ace doesn't like gigantic list of widgets
+        if i > 100 then
+          local label = AceGUI:Create("Label")
+          label:SetText(L["Too much results (%s)"]:format(#results))
+          label:SetHeight(20)
+          apiSearchScroll:AddChild(label)
+          break
+        else
+          local button = AceGUI:Create("WeakAurasSnippetButton")
+          local name = apiInfo:GetFullName()
+          button:SetTitle(name)
+          button:SetEditable(false)
+          button:SetHeight(20)
+          button:SetRelativeWidth(1)
+          local desc = table.concat(apiInfo:GetDetailedOutputLines(), "\n")
+          button:SetDescription(desc)
+          button:SetCallback("OnClick", function()
+            -- completion of text
+            local text, cursorPosition = IndentationLib.stripWowColorsWithPos(
+              originalGetText(editor.editBox),
+              editor.editBox:GetCursorPosition()
+            )
+            local name = IndentationLib.stripWowColors(name)
+            local beforeCursor = ""
+            local i = cursorPosition - 1
+            while i > 0 and text:sub(i, i):find("[%w%.%_]") do
+              beforeCursor = text:sub(i, i) .. beforeCursor
+              i = i - 1
+            end
+            if name:sub(1, #beforeCursor):lower() == beforeCursor:lower() then
+              text = text:sub(1, i) .. name .. text:sub(cursorPosition, #text)
+              --editor.editBox:Insert(name:sub(#beforeCursor + 1, #name))
+              editor.editBox:SetText(text)
+              editor.editBox:SetCursorPosition(i + #name)
+            else
+              editor.editBox:Insert(name)
+            end
+            editor:SetFocus()
+          end)
+          apiSearchScroll:AddChild(button)
+        end
+      end
+    end
+  end
+
+  apiSearchFrame:Hide()
+
+  -- Toggle the side bar on click
+  apiSearchButton:SetScript(
+    "OnClick",
+    function()
+      if not apiSearchFrame:IsShown() then
+        apiSearchFrame:Show()
+        apiSearchFrame:ClearAllPoints()
+        filterInput:SetFocus()
+        if snippetsFrame and snippetsFrame:IsShown() then
+          apiSearchFrame:SetPoint("TOPLEFT", snippetsFrame, "TOPRIGHT", 10, 0)
+          apiSearchFrame:SetPoint("BOTTOMLEFT", snippetsFrame, "BOTTOMRIGHT", 10, 0)
+        else
+          apiSearchFrame:SetPoint("TOPLEFT", group.frame, "TOPRIGHT", 20, 0)
+          apiSearchFrame:SetPoint("BOTTOMLEFT", group.frame, "BOTTOMRIGHT", 20, 0)
+        end
+      else
+        apiSearchFrame:Hide()
+        if snippetsFrame and snippetsFrame:IsShown() then
+          snippetsFrame:ClearAllPoints()
+          snippetsFrame:SetPoint("TOPLEFT", group.frame, "TOPRIGHT", 20, 0)
+          snippetsFrame:SetPoint("BOTTOMLEFT", group.frame, "BOTTOMRIGHT", 20, 0)
+        end
+      end
+    end
   )
 
   -- CTRL + S saves and closes
@@ -572,12 +751,31 @@ local function ConstructTextEditor(frame)
     "OnCursorChanged",
     function(...)
       oldOnCursorChanged(...)
-      local cursorPosition = editor.editBox:GetCursorPosition()
       local next = -1
       local line = 0
+      local text, cursorPosition = IndentationLib.stripWowColorsWithPos(
+        originalGetText(editor.editBox),
+        editor.editBox:GetCursorPosition()
+      )
       while (next and cursorPosition >= next) do
-        next = originalGetText(editor.editBox):find("[\n]", next + 1)
+        next = text:find("[\n]", next + 1)
         line = line + 1
+      end
+      if apiSearchFrame and apiSearchFrame:IsShown() then
+        local beforeCursor = ""
+        local i = cursorPosition - 1
+        while i > 0 and text:sub(i, i):find("[%w%.%_]") do
+          beforeCursor = text:sub(i, i) .. beforeCursor
+          i = i - 1
+        end
+        local afterCursor = ""
+        local j = cursorPosition
+        while j < #text and text:sub(j, j):find("[%w%.%_]") do
+          afterCursor = afterCursor .. text:sub(j, j)
+          j = j + 1
+        end
+        local currentWord = beforeCursor .. afterCursor
+        filterInput:SetText(currentWord)
       end
       editorLine:SetNumber(line)
     end
