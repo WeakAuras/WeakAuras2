@@ -506,7 +506,7 @@ do
         elseif mouseButton == "MiddleButton" then
           WeakAuras.ToggleMinimap()
         else
-          WeakAuras.RealTimeProfilingWindow:Toggle()
+          WeakAurasProfilingFrame:Toggle()
         end
       end,
       funcOnEnter = function()

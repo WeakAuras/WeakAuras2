@@ -3,7 +3,7 @@
     WeakAuras.OpenOptions()
   </Binding>
   <Binding name="WEAKAURASPROFILINGTOGGLE" Category="BINDING_HEADER_WEAKAURAS">
-    WeakAuras.RealTimeProfilingWindow:Toggle()
+    WeakAurasProfilingFrame:Toggle()
   </Binding>
   <Binding name="WEAKAURASPRINTPROFILING" Category="BINDING_HEADER_WEAKAURAS">
     WeakAuras.PrintProfile()
