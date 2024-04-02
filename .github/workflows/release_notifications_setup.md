@@ -12,7 +12,7 @@ An important part of the yml is the following block:
 on:
   workflow_dispatch:
   release:
-  types: [published]
+    types: [published]
 ```
 
 where `workflow_dispatch` will tell GitHub Actions that this job can be run manually, allowing you to run it at will, and the `release` portion saying when a GitHub Release is published. This is the part that will automatically run a release is made.
@@ -27,7 +27,7 @@ There is also a [release_notifications_manual_tests.yml](release_notifications_m
 
 ## Where to save your 'secrets'
 
-GitHub has pretty decent [documentation](https://docs.GitHub.com/en/actions/security-guides/using-secrets-in-GitHub-actions) for how the secrets work, but i will give a short explanation here.
+GitHub has pretty decent [documentation](https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions) for how the secrets work, but i will give a short explanation here.
 
 From your repo go to Settings -> Secrets and variables -> Actions:
 ![secrets and variables](https://i.imgur.com/IR9PDAG.png)

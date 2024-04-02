@@ -220,7 +220,10 @@
     "CreateFramePool",
     "AceGUIWeakAurasMultiLineEditBoxWithEnterInsertLink",
     "ExpandCurrencyList",
-    "GetCurrencyListInfo"
+    "GetCurrencyListInfo",
+    "WeakAurasProfilingFrame",
+    "WeakAurasProfilingReport",
+    "ScrollUtil"
   ],
   "runtime.version": "Lua 5.1",
   "workspace.ignoreDir": [
