@@ -2814,7 +2814,7 @@ end
 ---@field instance_difficulty_types table
 Private.instance_difficulty_types = {}
 
-do
+if WeakAuras.IsRetail() then
   -- Fill out instance_difficulty_types automatically.
   -- Unfortunately the names BLizzard gives are not entirely unique,
   -- so try hard to disambiguate them via the type, and if nothing works by
@@ -2870,14 +2870,9 @@ do
     [174] = L["Heroic Party"],
     [175] = L["10 Player Raid"],
     [176] = L["25 Player Raid"],
-    [184] = L["Normal Party"],
-    [185] = L["20 Player Raid"],
-    [186] = L["40 Player Raid"],
     [192] = L["Dungeon (Mythic+)"], -- "Challenge Level 1" TODO: check if this label is correct
     [193] = L["10 Player Raid (Heroic)"],
     [194] = L["25 Player Raid (Heroic)"],
-    [197] = L["10 Player Raid"],
-    [198] = L["Normal Party"],
   }
 
   for i = 1, 200 do
