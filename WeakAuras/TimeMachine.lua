@@ -92,10 +92,14 @@ function TimeMachine.inverters.set(data, path)
   return 'set', path, copy(tbl, key)
 end
 
----@type Action<{index: number, value: any}>
+---@type Action<{index: number?, value: any}>
 function TimeMachine.actions.insert(data, path, payload)
   local tbl, key = resolveKey(data, path)
-  table.insert(tbl[key], payload.index, payload.value)
+  if payload.index == nil then
+    table.insert(tbl[key], payload.value)
+  else
+    table.insert(tbl[key], payload.index, payload.value)
+  end
 end
 
 ---@type Inverter<{index: number, value: any}, number>
@@ -103,16 +107,20 @@ function TimeMachine.inverters.insert(data, path, payload)
   return 'remove', path, payload.index
 end
 
----@type Action<number>
+---@type Action<number | nil>
 function TimeMachine.actions.remove(data, path, payload)
   local tbl, key = resolveKey(data, path)
-  table.remove(tbl[key], payload)
+  if payload == nil then
+    table.remove(tbl[key])
+  else
+    table.remove(tbl[key], payload)
+  end
 end
 
----@type Inverter<number, {index: number, value: any}>
+---@type Inverter<number, {index: number?, value: any}>
 function TimeMachine.inverters.remove(data, path, payload)
   local tbl, key = resolveKey(data, path)
-  return 'insert', path, {index = payload, value = copy(tbl[key], payload)}
+  return 'insert', path, {index = payload, value = copy(tbl[key], payload or #tbl[key])}
 end
 
 ---@type Action<{[1]: number, [2]: number}>
