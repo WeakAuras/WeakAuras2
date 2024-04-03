@@ -168,7 +168,7 @@ local function get_zoneId_list()
   if not instanceId and not currentmap_id then
     return ("%s\n\n%s"):format(Private.get_zoneId_list(), bottomText)
   elseif not currentmap_id then
-    return ("%s|cffffd200%s|r%s: %d\n\n%s"):format(Private.get_zoneId_list(), L["Current Instance"], L["Instace Id"], instanceId, bottomText)
+    return ("%s|cffffd200%s|r\n%s: %d\n\n%s"):format(Private.get_zoneId_list(), L["Current Instance"], L["Instance Id"], instanceId, bottomText)
   end
   local currentmap_info = C_Map.GetMapInfo(currentmap_id)
   local currentmap_name = currentmap_info and currentmap_info.name or ""
