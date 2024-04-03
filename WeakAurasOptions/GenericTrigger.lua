@@ -431,8 +431,12 @@ local function GetGenericTriggerOptions(data, triggernum)
         return trigger.event
       end,
       set = function(info, v)
-        trigger.event = v
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = {"triggers", triggernum, "trigger", "event"},
+          payload = v
+        })
         WeakAuras.ClearAndUpdateOptions(data.id)
       end,
     }
@@ -456,8 +460,12 @@ local function GetGenericTriggerOptions(data, triggernum)
         return trigger.subeventPrefix
       end,
       set = function(info, v)
-        trigger.subeventPrefix = v
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = {"triggers", triggernum, "trigger", "subeventPrefix"},
+          payload = v
+        })
       end
     },
     subeventSuffix = {
