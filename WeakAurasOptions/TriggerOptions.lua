@@ -55,8 +55,12 @@ local function GetGlobalOptions(data)
         end
       end,
       set = function(info, v)
-        data.triggers.disjunctive = v;
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "set",
+          path = {"triggers", "disjunctive"},
+          payload = v
+        })
       end
     },
     -- custom trigger combiner text editor added below
@@ -77,8 +81,12 @@ local function GetGlobalOptions(data)
         return data.triggers.activeTriggerMode or OptionsPrivate.Private.trigger_modes.first_active;
       end,
       set = function(info, v)
-        data.triggers.activeTriggerMode = v;
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "set",
+          path = {"triggers", "activeTriggerMode"},
+          payload = v
+        })
         WeakAuras.UpdateThumbnail(data);
       end,
       hidden = function() return #data.triggers <= 1 end
@@ -139,7 +147,18 @@ local function AddOptions(allOptions, data)
             untrigger = {
             }
           })
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "add",
+          path = {"triggers"},
+          payload = {
+            value = {
+              trigger = {
+                type = "aura2"
+              },
+            }
+          }
+        })
         OptionsPrivate.SetCollapsed(collapsedId, "trigger", #data.triggers, false)
         maxTriggerNumForExpand = max(maxTriggerNumForExpand, #data.triggers)
         WeakAuras.ClearAndUpdateOptions(data.id)
@@ -224,26 +243,49 @@ local function DeleteConditionsForTrigger(data, triggernum)
   end
 end
 
-local function moveTriggerDownConditionCheck(check, i)
-  if (check.trigger == i) then
-    check.trigger = i + 1;
-  elseif (check.trigger == i  + 1) then
-    check.trigger = i;
+---@type fun(records: actionRecord[], path: keyPath, check: conditionCheck, triggernum: number)
+local function moveTriggerDownConditionCheck(records, path, check, triggernum)
+  if (check.trigger == triggernum) then
+    tinsert(records, {
+      uid = check.uid,
+      actionType = "set",
+      path = path,
+      payload = triggernum + 1
+    })
+  elseif (check.trigger == triggernum  + 1) then
+    tinsert(records, {
+      uid = check.uid,
+      actionType = "set",
+      path = {"trigger"},
+      payload = triggernum
+    })
   end
   if (check.checks) then
-    for _, subCheck in ipairs(check.checks) do
-      moveTriggerDownConditionCheck(subCheck, i);
+    path[#path + 1], path[#path + 2] = "checks", triggernum
+    for k, subCheck in ipairs(check.checks) do
+      path[#path] = k
+      moveTriggerDownConditionCheck(records, path, subCheck, triggernum)
     end
+    path[#path], path[#path - 1] = nil, nil
   end
 end
 
+---@type fun(data: auraData, i: number): boolean
 local function moveTriggerDownImpl(data, i)
   if (i < 1 or i >= #data.triggers) then
     return false;
   end
-  data.triggers[i], data.triggers[i + 1] = data.triggers[i + 1], data.triggers[i]
-  for _, condition in ipairs(data.conditions) do
-    moveTriggerDownConditionCheck(condition.check, i);
+  ---@type actionRecord[]
+  local records = {{
+    uid = data.uid,
+    actionType = "swap",
+    path = {"triggers"},
+    payload = {i, i + 1}
+  }}
+  local path = {"conditions", 0}
+  for j, condition in ipairs(data.conditions) do
+    path[#path] = j
+    moveTriggerDownConditionCheck(records, path, condition.check, i);
   end
 
   return true;
@@ -299,7 +341,6 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
     end,
     func = function()
       if (moveTriggerDownImpl(data, triggernum - 1)) then
-        WeakAuras.Add(data);
         OptionsPrivate.MoveCollapseDataUp(collapsedId, "trigger", {triggernum})
         WeakAuras.ClearAndUpdateOptions(data.id);
       end
@@ -312,7 +353,6 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
     end,
     func = function()
       if (moveTriggerDownImpl(data, triggernum)) then
-        WeakAuras.Add(data);
         OptionsPrivate.MoveCollapseDataDown(collapsedId, "trigger", {triggernum})
         WeakAuras.ClearAndUpdateOptions(data.id);
       end
@@ -320,8 +360,15 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
   }
   options.__duplicate = function()
     local trigger = CopyTable(data.triggers[triggernum])
-    tinsert(data.triggers, trigger)
-    WeakAuras.Add(data)
+    OptionsPrivate.Private.TimeMachine:Append({
+      uid = data.uid,
+      actionType = "insert",
+      path = {"triggers"},
+      payload = {
+        index = triggernum + 1,
+        value = trigger
+      }
+    })
     WeakAuras.ClearAndUpdateOptions(data.id)
   end
   options.__delete = {
