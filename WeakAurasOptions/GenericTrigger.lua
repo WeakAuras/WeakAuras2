@@ -6,22 +6,16 @@ local OptionsPrivate = select(2, ...)
 
 local L = WeakAuras.L;
 
+---@param data auraData
+---@param triggernum number
 local function GetCustomTriggerOptions(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   local function appendToTriggerPath(...)
-    local ret = {...};
-    tinsert(ret, 1, "trigger");
-    tinsert(ret, 1, triggernum);
-    tinsert(ret, 1, "triggers");
-    return ret;
+    return {"triggers", triggernum, "trigger", ...}
   end
 
   local function appendToUntriggerPath(...)
-    local ret = {...};
-    tinsert(ret, 1, "untrigger");
-    tinsert(ret, 1, triggernum);
-    tinsert(ret, 1, "triggers");
-    return ret;
+    return {"triggers", triggernum, "untrigger", ...}
   end
 
   local customOptions =
@@ -37,8 +31,12 @@ local function GetCustomTriggerOptions(data, triggernum)
         return trigger.custom_type
       end,
       set = function(info, v)
-        trigger.custom_type = v;
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = appendToTriggerPath("custom_type"),
+          payload = v
+        })
         WeakAuras.UpdateThumbnail(data);
         WeakAuras.ClearAndUpdateOptions(data.id);
       end
@@ -54,8 +52,12 @@ local function GetCustomTriggerOptions(data, triggernum)
       end,
       get = function() return trigger.check end,
       set = function(info, v)
-        trigger.check = v;
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = appendToTriggerPath("check"),
+          payload = v
+        })
       end
     },
     events = {
@@ -78,8 +80,12 @@ local function GetCustomTriggerOptions(data, triggernum)
         and trigger.check ~= "update") end,
       get = function() return trigger.events end,
       set = function(info, v)
-        trigger.events = v;
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = appendToTriggerPath("events"),
+          payload = v
+        })
       end
     },
     event_customError = {
@@ -181,8 +187,12 @@ local function GetCustomTriggerOptions(data, triggernum)
       values = OptionsPrivate.Private.eventend_types,
       get = function() return trigger.custom_hide or "timed" end,
       set = function(info, v)
-        trigger.custom_hide = v;
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = appendToTriggerPath("custom_hide"),
+          payload = v
+        })
       end
     },
     dynamicDuration = {
@@ -195,8 +205,12 @@ local function GetCustomTriggerOptions(data, triggernum)
         return trigger.dynamicDuration
       end,
       set = function(info, v)
-        trigger.dynamicDuration = v;
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = appendToTriggerPath("dynamicDuration"),
+          payload = v
+        })
         WeakAuras.ClearAndUpdateOptions(data.id);
       end
     },
@@ -210,8 +224,12 @@ local function GetCustomTriggerOptions(data, triggernum)
         return trigger.duration
       end,
       set = function(info, v)
-        trigger.duration = v
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = appendToTriggerPath("duration"),
+          payload = v
+        })
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
     },
