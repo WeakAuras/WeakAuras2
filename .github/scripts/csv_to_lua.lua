@@ -1,4 +1,3 @@
-
 -- usage:
 -- # lua.exe ./list_to_table.lua <release>
 
@@ -6,26 +5,26 @@ local releases = {
   wow_classic_era = {
     input = "wow_classic_era.csv",
     output = "ModelPathsClassic.lua",
-    generate = true
+    generate = true,
   },
   wow_classic = {
     input = "wow_classic.csv",
     output = "ModelPathsWrath.lua",
-    generate = true
+    generate = true,
   },
   wow_classic_beta = {
     input = "wow_classic_beta.csv",
     output = "ModelPathsCata.lua",
-    generate = true
+    generate = true,
   },
   wow = {
     input = "wow.csv",
     output = "ModelPaths.lua",
-    generate = true
-  }
+    generate = true,
+  },
 }
 
-require "table"
+require("table")
 
 if not arg[1] or not releases[arg[1]] then
   print(arg[0], "<wow|wow_classic|wow_classic_beta|wow_classic_era>")
@@ -45,9 +44,9 @@ local function recurseSet(var, key, value)
       end
     end
     table.insert(var, idx, {
-          value = key,
-          text = key,
-          fileId = tostring(value),
+      value = key,
+      text = key,
+      fileId = tostring(value),
     })
   elseif todo == nil then
     local idx = 1
@@ -59,19 +58,19 @@ local function recurseSet(var, key, value)
       end
     end
     table.insert(var, idx, {
-           value = subkey,
-           text = subkey,
-           fileId = tostring(value),
-     })
+      value = subkey,
+      text = subkey,
+      fileId = tostring(value),
+    })
   else
-     local tab
-     for k, v in pairs(var) do
-        if v.value == subkey then
-           tab = var[k].children
-           break
-        end
-     end
-     if tab == nil then
+    local tab
+    for k, v in pairs(var) do
+      if v.value == subkey then
+        tab = var[k].children
+        break
+      end
+    end
+    if tab == nil then
       local idx = 1
       for k, v in pairs(var) do
         if subkey > v.value then
@@ -80,15 +79,15 @@ local function recurseSet(var, key, value)
           break
         end
       end
-        tab = {
-           value = subkey,
-           text = subkey,
-           children = {},
-        }
-        table.insert(var, idx, tab)
-        tab = tab.children
-     end
-     recurseSet(tab, todo, value)
+      tab = {
+        value = subkey,
+        text = subkey,
+        children = {},
+      }
+      table.insert(var, idx, tab)
+      tab = tab.children
+    end
+    recurseSet(tab, todo, value)
   end
 end
 
@@ -103,21 +102,32 @@ local function serializeTable(val, name, skipnewlines, depth)
   end
 
   if type(val) == "table" then
-      tmp = tmp .. "{" .. (not skipnewlines and "\n" or "")
+    tmp = tmp .. "{" .. (not skipnewlines and "\n" or "")
 
-      for k, v in pairs(val) do
-          tmp =  tmp .. serializeTable(v, k, skipnewlines, depth + 1) .. "," .. (not skipnewlines and "\n" or "")
-      end
+    -- Get the keys
+    local keys = {}
+    for k in pairs(val) do
+      table.insert(keys, k)
+    end
 
-      tmp = tmp .. string.rep(" ", depth) .. "}"
+    -- Sort the keys
+    table.sort(keys)
+
+    -- Iterate over the sorted keys
+    for _, k in ipairs(keys) do
+      local v = val[k]
+      tmp = tmp .. serializeTable(v, k, skipnewlines, depth + 1) .. "," .. (not skipnewlines and "\n" or "")
+    end
+
+    tmp = tmp .. string.rep(" ", depth) .. "}"
   elseif type(val) == "number" then
-      tmp = tmp .. tostring(val)
+    tmp = tmp .. tostring(val)
   elseif type(val) == "string" then
-      tmp = tmp .. string.format("%q", val)
+    tmp = tmp .. string.format("%q", val)
   elseif type(val) == "boolean" then
-      tmp = tmp .. (val and "true" or "false")
+    tmp = tmp .. (val and "true" or "false")
   else
-      tmp = tmp .. "\"[unserializable datatype:" .. type(val) .. "]\""
+    tmp = tmp .. '"[unserializable datatype:' .. type(val) .. ']"'
   end
 
   return tmp
