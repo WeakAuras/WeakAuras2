@@ -2020,50 +2020,6 @@ function Private.Modernize(data)
     end
   end
 
-  -- Version 72 moves instance filters from a conditions trigger to a player location trigger
-  if data.internalVersion < 72 then
-    local new_triggers = {}
-    local delete_triggers = {}
-    local instance_filters = {
-      "instance_size",
-      "instance_difficulty",
-      "instance_type",
-    }
-
-    for i, triggerData in ipairs(data.triggers) do
-      local t = triggerData.trigger
-
-      -- Check for a Conditions trigger with instance filters
-      if t.event == "Conditions" and (
-        t.use_instance_size
-        or t.use_instance_difficulty
-        or t.use_instance_type
-      ) then -- Create a new trigger object
-        local new = {
-          trigger = {
-            event = "Player Location",
-            type = "unit",
-          }
-        }
-        -- Add instance filters to new trigger object
-        for _, name in ipairs(instance_filters) do
-          local new_name = name
-          if name == "instance_difficulty" then
-            new_name = "instanceDifficulty"
-          end
-          new.trigger[new_name] = t[name]
-          new.trigger["use_"..new_name] = t["use_"..name]
-        end
-        tinsert(new_triggers, new)
-      end
-    end
-
-    -- Add triggers
-    for _,triggerData in ipairs(new_triggers) do
-      tinsert(data.triggers, triggerData)
-    end
-  end
-
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 
