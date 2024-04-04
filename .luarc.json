@@ -224,7 +224,21 @@
     "GetCurrencyListInfo",
     "WeakAurasProfilingFrame",
     "WeakAurasProfilingReport",
-    "ScrollUtil"
+    "ScrollUtil",
+    "UIDropDownMenu_SetText",
+    "UIDropDownMenu",
+    "UIDropDownMenu_SetInitializeFunction",
+    "UIDropDownMenu_SetDisplayMode",
+    "UIDropDownMenu_CreateInfo",
+    "UIDropDownMenu_AddButton",
+    "UIDropDownMenu_Initialize",
+    "UIDropDownMenu_SetSelectedValue",
+    "UIDropDownMenu_JustifyText",
+    "UIDropDownMenu_SetWidth",
+    "CreateScrollBoxListLinearView",
+    "CreateDataProvider",
+    "UIMenuButtonStretchMixin",
+    "ToggleDropDownMenu"
   ],
   "runtime.version": "Lua 5.1",
   "workspace.ignoreDir": [

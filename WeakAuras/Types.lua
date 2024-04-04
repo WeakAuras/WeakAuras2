@@ -3133,7 +3133,6 @@ LSM:Register("font", "Fira Sans Medium", "Interface\\Addons\\WeakAuras\\Media\\F
 -- register plain white border
 LSM:Register("border", "Square Full White", [[Interface\AddOns\WeakAuras\Media\Textures\Square_FullWhite.tga]])
 
---
 LSM:Register("statusbar", "Clean", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Clean]])
 LSM:Register("statusbar", "Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes]])
 LSM:Register("statusbar", "Thick Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes_Thick]])
@@ -3673,9 +3672,9 @@ Private.array_entry_name_types = {
   -- the rest is auto-populated with indices which are valid entry name sources
 }
 
+-- option types which can be used to generate entry names on arrays
 ---@type table<string, boolean>
 Private.name_source_option_types = {
-  -- option types which can be used to generate entry names on arrays
   input = true,
   number = true,
   range = true,
@@ -3811,8 +3810,8 @@ Private.font_sizes = {
   large = L["Large"],
 }
 
----@type table<string, boolean>
 -- unitIds registerable with RegisterUnitEvent
+---@type table<string, boolean>
 Private.baseUnitId = {
   ["player"] = true,
   ["target"] = true,
