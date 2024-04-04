@@ -266,12 +266,21 @@ local simpleFormatters = {
   },
 }
 
----@type table<string, {display: string, AddOptions: fun(symbol: string, hidden: boolean, addOption: fun(string, table), get: fun(string): any), CreateFormatter: fun(symbol: string, get: fun(string): any): fun(value: any, state: table): any}>
+---@alias optionAdder fun(name: string, option: table)
+---@alias optionGetter fun(name: string): any
+---@alias formatter fun(input: any): string
+
+---@class FormatType
+---@field display string
+---@field AddOptions fun(symbol: string, hidden: boolean, addOption: optionAdder, get: optionGetter)
+---@field CreateFormatter fun(symbol: string, get: optionGetter, withoutColor: boolean, data: table): formatter?, boolean?
+
+---@type table<string, FormatType>
 Private.format_types = {
   none = {
     display = L["None"],
     AddOptions = function() end,
-    CreateFormatter = function() end
+    CreateFormatter = function() return nil end
   },
   string = {
     display = L["String"],
@@ -1495,10 +1504,6 @@ for id, str in pairs(Private.combatlog_spell_school_types) do
   Private.combatlog_spell_school_types_for_ui[id] = ("%.3d - %s"):format(id, str)
 end
 
----@type fun(): number
----@field GetCurrencyIDFromLink fun(currencyLink: string): number
----@field ExpandCurrencyList fun(index: number, expand: boolean): any
----@field GetCurrencyListInfo fun(index: number): table
 if WeakAuras.IsRetail() then
   Private.GetCurrencyListSize = C_CurrencyInfo.GetCurrencyListSize
   Private.GetCurrencyIDFromLink = C_CurrencyInfo.GetCurrencyIDFromLink
@@ -1506,13 +1511,16 @@ if WeakAuras.IsRetail() then
   Private.GetCurrencyListInfo = C_CurrencyInfo.GetCurrencyListInfo
 elseif WeakAuras.IsWrathOrCata() then
   Private.GetCurrencyListSize = GetCurrencyListSize
+  ---@type fun(currencyLink: string): number?
   Private.GetCurrencyIDFromLink = function(currencyLink)
     local currencyID = string.match(currencyLink, "|Hcurrency:(%d+):")
-    return currencyID
+    return tonumber(currencyID)
   end
+  ---@type fun(index: number, expand: boolean)
   Private.ExpandCurrencyList = function(index, expand)
     ExpandCurrencyList(index, expand and 1 or 0)
   end
+  ---@type fun(index: number): CurrencyInfo
   Private.GetCurrencyListInfo = function(index)
     local name, isHeader, isExpanded, isUnused, isWatched, _, icon, _, hasWeeklyLimit, _, _, itemID = GetCurrencyListInfo(index)
     local currentAmount, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity
@@ -1543,15 +1551,15 @@ elseif WeakAuras.IsWrathOrCata() then
   end
 end
 
----@type table<number, string>
----@field discovered_currencies_sorted table<number, number>
----@field discovered_currencies_headers table<string, boolean>
 local function InitializeCurrencies()
   if Private.discovered_currencies then
     return
   end
+  ---@type table<number, string>
   Private.discovered_currencies = {}
+  ---@type table<number, number>
   Private.discovered_currencies_sorted = {}
+  ---@type table<string, boolean>
   Private.discovered_currencies_headers = {}
   local expanded = {}
 
@@ -1608,16 +1616,16 @@ Private.GetDiscoveredCurrenciesHeaders  = function()
   return Private.discovered_currencies_headers
 end
 
----@type table<number, string>
----@field reputations_sorted table<number, number>
----@field reputations_headers table<string, boolean>
 local function InitializeReputations()
   if Private.reputations then
     return
   end
 
+  ---@type table<number, string>
   Private.reputations = {}
+  ---@type table<number, number>
   Private.reputations_sorted = {}
+  ---@type table<string, boolean>
   Private.reputations_headers = {}
 
   local collapsed = {}
@@ -2454,9 +2462,8 @@ if WeakAuras.IsClassicEraOrWrath() then
   Private.swing_types["ranged"] = RANGEDSLOT
 end
 
----@type table<number, string>
----@field essence_specific_types table<number, string>
 if WeakAuras.IsWrathOrCata() then
+  ---@type string[]
   Private.rune_specific_types = {
     [1] = L["Blood Rune #1"],
     [2] = L["Blood Rune #2"],
@@ -2466,6 +2473,7 @@ if WeakAuras.IsWrathOrCata() then
     [6] = L["Frost Rune #2"],
   }
 else
+  ---@type string[]
   Private.rune_specific_types = {
     [1] = L["Rune #1"],
     [2] = L["Rune #2"],
@@ -2474,6 +2482,7 @@ else
     [5] = L["Rune #5"],
     [6] = L["Rune #6"]
   }
+  ---@type string[]
   Private.essence_specific_types = {
     [1] = L["Essence #1"],
     [2] = L["Essence #2"],
