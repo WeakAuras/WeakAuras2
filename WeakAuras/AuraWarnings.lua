@@ -1,6 +1,8 @@
 if not WeakAuras.IsLibsOK() then return end
---- @type string, Private
-local AddonName, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 
 --- @alias AuraWarningSeverity
 --- | "info"
@@ -9,6 +11,7 @@ local AddonName, Private = ...
 --- | "warning"
 --- | "error"
 
+---@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 

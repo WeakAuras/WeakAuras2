@@ -1,6 +1,8 @@
 if not WeakAuras.IsLibsOK() then return end
---- @type string, Private
-local AddonName, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 
 -- This is a more or less 1:1 copy of SmoothStatusBarMixin except that it
 -- doesn't clamp the targetValue in ProcessSmoothStatusBars, because that's incorrect for us

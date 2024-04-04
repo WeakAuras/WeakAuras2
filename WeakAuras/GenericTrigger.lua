@@ -46,8 +46,10 @@ GetTriggerConditions(data, triggernum)
 Returns potential conditions that this trigger provides.
 ]]--
 if not WeakAuras.IsLibsOK() then return end
---- @type string, Private
-local AddonName, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 
 -- Lua APIs
 local tinsert, tconcat, wipe = table.insert, table.concat, wipe
@@ -63,6 +65,7 @@ WeakAurasAceEvents = setmetatable({}, {__tostring=function() return "WeakAuras" 
 LibStub("AceEvent-3.0"):Embed(WeakAurasAceEvents);
 local aceEvents = WeakAurasAceEvents
 
+---@class WeakAuras
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 local GenericTrigger = {};
@@ -500,8 +503,7 @@ local function callFunctionForActivateEvent(func, trigger, state, property, erro
   end
 end
 
---- @class Private
---- @field ActivateEvent fun(id, triggernum, data, state, errorHandler)
+---@type fun(id, triggernum, data, state, errorHandler)
 function Private.ActivateEvent(id, triggernum, data, state, errorHandler)
   local changed = state.changed or false;
   if (state.show ~= true) then
@@ -890,8 +892,7 @@ do
     end
   end
 
-  --- @class Private
-  --- @field RunTriggerFuncWithDelay fun(delay, id, triggernum, data, event, ...)
+---@type fun(delay, id, triggernum, data, event, ...)
   function Private.RunTriggerFuncWithDelay(delay, id, triggernum, data, event, ...)
     delayTimerEvents[id] = delayTimerEvents[id] or {}
     delayTimerEvents[id][triggernum] = delayTimerEvents[id][triggernum] or {}
@@ -900,8 +901,7 @@ do
   end
 end
 
---- @class Private
---- @field CancelDelayedTrigger fun(id)
+---@type fun(id)
 function Private.CancelDelayedTrigger(id)
   if delayTimerEvents[id] then
     for triggernum, timers in pairs(delayTimerEvents[id]) do
@@ -913,16 +913,14 @@ function Private.CancelDelayedTrigger(id)
   end
 end
 
---- @class Private
---- @field CancelAllDelayedTriggers fun()
+---@type fun()
 function Private.CancelAllDelayedTriggers()
   for id in pairs(delayTimerEvents) do
     Private.CancelDelayedTrigger(id)
   end
 end
 
---- @class Private
---- @field ScanEventsWatchedTrigger fun(id, watchedTriggernums)
+---@type fun(id, watchedTriggernums)
 function Private.ScanEventsWatchedTrigger(id, watchedTriggernums)
   if #watchedTriggernums == 0 then return end
   Private.StartProfileAura(id);
@@ -1815,8 +1813,7 @@ do
   Private.frames["Custom Trigger Every Frame Updater"] = update_frame;
   local updating = false;
 
-  --- @class Private
-  --- @field RegisterEveryFrameUpdate fun(id)
+---@type fun(id)
   function Private.RegisterEveryFrameUpdate(id)
     if not(update_clients[id]) then
       update_clients[id] = true;
@@ -1835,15 +1832,13 @@ do
     end
   end
 
-  --- @class Private
-  --- @field EveryFrameUpdateRename fun(oldid, newid)
+---@type fun(oldid, newid)
   function Private.EveryFrameUpdateRename(oldid, newid)
     update_clients[newid] = update_clients[oldid];
     update_clients[oldid] = nil;
   end
 
-  --- @class Private
-  --- @field UnregisterEveryFrameUpdate fun(id)
+---@type fun(id)
   function Private.UnregisterEveryFrameUpdate(id)
     if(update_clients[id]) then
       update_clients[id] = nil;
@@ -1855,8 +1850,7 @@ do
     end
   end
 
-  --- @class Private
-  --- @field UnregisterAllEveryFrameUpdate fun()
+---@type fun()
   function Private.UnregisterAllEveryFrameUpdate()
     if (not update_frame) then
       return;
@@ -2375,8 +2369,7 @@ do
   local spellDetails = {}
   local mark_ACTIONBAR_UPDATE_COOLDOWN, mark_PLAYER_ENTERING_WORLD
 
-  --- @class Private
-  --- @field InitCooldownReady fun()
+---@type fun()
   function Private.InitCooldownReady()
     cdReadyFrame = CreateFrame("Frame");
     cdReadyFrame.inWorld = 0
@@ -2719,8 +2712,7 @@ do
     WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_READY", id);
   end
 
-  --- @class Private
-  --- @field CheckRuneCooldown fun()
+---@type fun()
   function Private.CheckRuneCooldown()
     local runeDuration = -100;
     for id, _ in pairs(runes) do
@@ -2844,8 +2836,7 @@ do
            count, unifiedModRate, modRate, modRateCharges, enabled == 0
   end
 
-  --- @class Private
-  --- @field CheckSpellKnown fun()
+---@type fun()
   function Private.CheckSpellKnown()
     local overrides = {}
     -- First check for overrides, if we don't yet track a specific override, add it
@@ -2901,8 +2892,7 @@ do
     end
   end
 
-  --- @class Private
-  --- @field CheckSpellCooldown fun(id, runeDuration)
+---@type fun(id, runeDuration)
   function Private.CheckSpellCooldown(id, runeDuration)
     local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
           startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
@@ -2956,16 +2946,14 @@ do
     end
   end
 
-  --- @class Private
-  --- @field CheckSpellCooldows fun(runeDuration)
+---@type fun(runeDuration)
   function Private.CheckSpellCooldows(runeDuration)
     for id, _ in pairs(spells) do
       Private.CheckSpellCooldown(id, runeDuration)
     end
   end
 
-  --- @class Private
-  --- @field CheckItemCooldowns fun()
+---@type fun()
   function Private.CheckItemCooldowns()
     for id, _ in pairs(items) do
       local startTime, duration, enabled = GetItemCooldown(id);
@@ -3036,8 +3024,7 @@ do
     end
   end
 
-  --- @class Private
-  --- @field CheckItemSlotCooldowns fun()
+---@type fun()
   function Private.CheckItemSlotCooldowns()
     for id, itemId in pairs(itemSlots) do
       local startTime, duration, enable = GetInventoryItemCooldown("player", id);
@@ -3095,8 +3082,7 @@ do
     end
   end
 
-  --- @class Private
-  --- @field CheckCooldownReady fun()
+---@type fun()
   function Private.CheckCooldownReady()
     CheckGCD();
     local runeDuration = Private.CheckRuneCooldown();
@@ -4187,8 +4173,7 @@ local commonConditions = {
   }
 }
 
---- @class Private
---- @field ExpandCustomVariables fun(variables: table)
+---@type fun(variables: table)
 function Private.ExpandCustomVariables(variables)
   -- Make the life of tsu authors easier, by automatically filling in the details for
   -- expirationTime, duration, value, total, stacks, if those exists but aren't a table value
@@ -4623,8 +4608,7 @@ Private.ExecEnv.GetCurrencyInfo = function(id)
   end
 end
 
---- @class Private
---- @field GetCurrencyInfoForTrigger fun(trigger: triggerData)
+---@type fun(trigger: triggerData)
 Private.GetCurrencyInfoForTrigger = function(trigger)
   if trigger.currencyId then
     local currencyId = tonumber(trigger.currencyId)
