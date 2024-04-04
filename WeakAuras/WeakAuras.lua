@@ -1,5 +1,7 @@
---- @type string, Private
-local AddonName, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 
 local internalVersion = 72
 

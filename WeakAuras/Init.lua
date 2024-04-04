@@ -1,5 +1,7 @@
---- @type string, Private
-local AddonName, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 WeakAuras = {}
 WeakAuras.L = {}
 Private.frames = {}
@@ -554,8 +556,7 @@ end
 function Private.RegisterRegionType(_, _, _ ,_)
 end
 
---- @class Private
---- @field RegisterRegionOptions fun(regionType: string, createOptions: function, icon: string|function, displayName: string, createThumbnail: function?, modifyThumbnail: function?, description: string?, templates: table?, getAnchors: function?)
+---@type fun(regionType: string, createOptions: function, icon: string|function, displayName: string, createThumbnail: function?, modifyThumbnail: function?, description: string?, templates: table?, getAnchors: function?)
 function Private.RegisterRegionOptions(_, _ , _ ,_ )
 end
 
@@ -571,13 +572,11 @@ end
 function Private.StopProfileAura(_)
 end
 
---- @class Private
---- @field StartProfileUID fun()
+---@type fun()
 function Private.StartProfileUID()
 end
 
---- @class Private
---- @field StopProfileUID fun()
+---@type fun()
 function Private.StopProfileUID()
 end
 
