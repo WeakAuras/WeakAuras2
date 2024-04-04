@@ -10698,7 +10698,7 @@ Private.event_prototypes = {
     end,
     automaticrequired = true
   },
-  ["Player Location"] = {
+  ["Location"] = {
     type = "unit",
     events = function(trigger, untrigger)
       local events = {}
@@ -10737,7 +10737,7 @@ Private.event_prototypes = {
       return events;
     end,
     force_events = "INSTANCE_LOCATION_CHECK",
-    name = L["Player Location"],
+    name = WeakAuras.newFeatureString..L["Location"],
     init = function(trigger)
       local ret = [=[
         local recursive = %s

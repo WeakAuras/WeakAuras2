@@ -1799,8 +1799,8 @@ function GenericTrigger.Add(data, region)
         L["Instance Size Type"],
         L["Instance Difficulty"],
         L["Instance Type"],
-        L["These instance filters have been migrated to a Player Location trigger and will be removed from the Condition trigger in a future update."],
-        L["Change your aura to use the new Player Location trigger or join the WeakAuras Discord server for help."]
+        L["These instance filters have been migrated to a Location trigger and will be removed from the Condition trigger in a future update."],
+        L["Change your aura to use the new Location trigger or join the WeakAuras Discord server for help."]
       )
     )
   else
