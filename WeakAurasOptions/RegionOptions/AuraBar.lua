@@ -29,43 +29,61 @@ local function createOptions(id, data)
       order = 25,
       values = OptionsPrivate.Private.orientation_types,
       set = function(info, v)
-        if(
-          (
-          data.orientation:find("INVERSE")
-          and not v:find("INVERSE")
-          )
-          or (
-          v:find("INVERSE")
-          and not data.orientation:find("INVERSE")
-          )
-          ) then
-          data.icon_side = data.icon_side == "LEFT" and "RIGHT" or "LEFT";
+        ---@type actionRecord[]
+        local records = {}
+        if (data.orientation:find("INVERSE") and not v:find("INVERSE"))
+        or (v:find("INVERSE") and not data.orientation:find("INVERSE"))
+        then
+          tinsert(records, {
+            actionType = "set",
+            uid = data.uid,
+            path = "icon_side",
+            payload = data.icon_side == "LEFT" and "RIGHT" or "LEFT"
+          })
         end
 
-        if(
-          (
-          data.orientation:find("HORIZONTAL")
-          and v:find("VERTICAL")
-          )
-          or (
-          data.orientation:find("VERTICAL")
-          and v:find("HORIZONTAL")
-          )
-          ) then
-          local temp = data.width;
-          data.width = data.height;
-          data.height = temp;
-          data.icon_side = data.icon_side == "LEFT" and "RIGHT" or "LEFT";
-
-          if(data.rotateText == "LEFT" or data.rotateText == "RIGHT") then
-            data.rotateText = "NONE";
-          elseif(data.rotateText == "NONE") then
-            data.rotateText = "LEFT"
+        if (data.orientation:find("HORIZONTAL") and v:find("VERTICAL"))
+        or (data.orientation:find("VERTICAL") and v:find("HORIZONTAL"))
+        then
+          tinsert(records, {
+            actionType = "set",
+            uid = data.uid,
+            path = "width",
+            payload = data.height
+          })
+          tinsert(records, {
+            actionType = "set",
+            uid = data.uid,
+            path = "height",
+            payload = data.width
+          })
+          if #records <= 2 then
+            -- yes, this is magic... we're doing it because
+            -- behavior is that if either this or above branch is taken,
+            -- then we flipflop icon_side
+            -- doing that twice would be weird
+            tinsert(records, {
+              actionType = "set",
+              uid = data.uid,
+              path = "icon_side",
+              payload = data.icon_side == "LEFT" and "RIGHT" or "LEFT"
+            })
           end
+          tinsert(records, {
+            actionType = "set",
+            uid = data.uid,
+            path = "rotateText",
+            payload = data.rotateText == "NONE" and "LEFT" or "NONE"
+          })
         end
 
-        data.orientation = v;
-        WeakAuras.Add(data);
+        tinsert(records, {
+          actionType = "set",
+          uid = data.uid,
+          path = "orientation",
+          payload = v
+        })
+        OptionsPrivate.Private.TimeMachine:AppendMany(records)
         WeakAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
       end
