@@ -1,5 +1,7 @@
----@type string, Private
-local _, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 
 ---@class TimeMachine
 local TimeMachine = {
