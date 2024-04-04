@@ -8,7 +8,8 @@
     "cast-type-mismatch",
     "param-type-mismatch",
     "assign-type-mismatch",
-    "return-type-mismatch"
+    "return-type-mismatch",
+    "invisible"
   ],
   "diagnostics.globals": [
     "AbbreviateLargeNumbers",
