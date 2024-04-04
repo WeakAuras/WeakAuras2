@@ -138,18 +138,9 @@ local function AddOptions(allOptions, data)
       name = L["Add Trigger"],
       order = 1,
       func = function()
-        tinsert(data.triggers,
-          {
-            trigger =
-            {
-              type = "aura2"
-            },
-            untrigger = {
-            }
-          })
         OptionsPrivate.Private.TimeMachine:Append({
           uid = data.uid,
-          actionType = "add",
+          actionType = "insert",
           path = {"triggers"},
           payload = {
             value = {
@@ -414,11 +405,11 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
             }
           }
           DeleteConditionsForTrigger(records, child, triggernum)
-          OptionsPrivate.Private.TimeMachine:Append(records)
+          OptionsPrivate.Private.TimeMachine:AppendMany(records)
           OptionsPrivate.RemoveCollapsed(collapsedId, "trigger", {triggernum})
-          OptionsPrivate.ClearOptions(child.id)
         end
-        WeakAuras.FillOptions()
+        WeakAuras.ClearAndUpdateOptions(data.id)
+        -- WeakAuras.FillOptions()
       end
 
     end
