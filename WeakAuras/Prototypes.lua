@@ -8278,7 +8278,7 @@ Private.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      return WeakAuras.GetEquipmentSetInfo(trigger.use_itemSetName and trigger.itemSetName or nil, trigger.use_partial);
+      return (WeakAuras.GetEquipmentSetInfo(trigger.use_itemSetName and trigger.itemSetName or nil, trigger.use_partial));
     end,
     iconFunc = function(trigger)
       local _, icon = WeakAuras.GetEquipmentSetInfo(trigger.use_itemSetName and trigger.itemSetName or nil, trigger.use_partial);
