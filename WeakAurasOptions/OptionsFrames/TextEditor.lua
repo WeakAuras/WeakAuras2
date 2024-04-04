@@ -590,7 +590,7 @@ local function ConstructTextEditor(frame)
 
       -- if search field is set to the name of namespace, show all functions
       local foundSystem = false
-      apiToSearchForLower = apiToSearchFor:lower();
+      local apiToSearchForLower = apiToSearchFor:lower();
       for _, systemInfo in ipairs(APIDocumentation.systems) do
         -- search for namespaceName or namespaceName.functionName
         local nsName, rest = apiToSearchForLower:match("^([%w%_]+)(.*)")
