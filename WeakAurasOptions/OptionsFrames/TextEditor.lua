@@ -524,12 +524,22 @@ local function ConstructTextEditor(frame)
   apiSearchFrame:SetWidth(350)
 
   local makeAPISearch
+  local APISearchTextChangeDelay = 0.3
+  local APISearchCTimer
 
   -- filter line
   local filterInput = CreateFrame("EditBox", "WeakAurasAPISearchFilterInput", apiSearchFrame, "SearchBoxTemplate")
   filterInput:SetScript("OnTextChanged", function(self)
     SearchBoxTemplate_OnTextChanged(self)
-    makeAPISearch(filterInput:GetText())
+    if APISearchCTimer then
+      APISearchCTimer:Cancel()
+    end
+    APISearchCTimer = C_Timer.NewTimer(
+      APISearchTextChangeDelay,
+      function()
+        makeAPISearch(filterInput:GetText())
+      end
+    )
   end)
   filterInput:SetHeight(15)
   filterInput:SetPoint("TOPLEFT", apiSearchFrame, "TOPLEFT", 10, -30)
@@ -556,6 +566,7 @@ local function ConstructTextEditor(frame)
   )
 
   makeAPISearch = function(apiToSearchFor)
+    print("search")
     apiSearchScroll:ReleaseChildren()
 
     -- load documation addon
