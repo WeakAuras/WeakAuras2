@@ -566,7 +566,6 @@ local function ConstructTextEditor(frame)
   )
 
   makeAPISearch = function(apiToSearchFor)
-    print("search")
     apiSearchScroll:ReleaseChildren()
 
     -- load documation addon
@@ -617,12 +616,18 @@ local function ConstructTextEditor(frame)
               tinsert(results, apiInfo)
             end
           end
+          if rest == "" then
+            for _, apiInfo in ipairs(systemInfo.Events) do
+              tinsert(results, apiInfo)
+            end
+          end
         end
       end
 
       -- otherwise show a list of functions matching search field
       if not foundSystem then
-        APIDocumentation:AddAllMatches(APIDocumentation.functions, results, apiToSearchFor)
+        APIDocumentation:AddAllMatches(APIDocumentation.functions, results, apiToSearchForLower)
+        APIDocumentation:AddAllMatches(APIDocumentation.events, results, apiToSearchForLower)
       end
 
       for i, apiInfo in ipairs(results) do
@@ -635,7 +640,12 @@ local function ConstructTextEditor(frame)
           break
         else
           local button = AceGUI:Create("WeakAurasSnippetButton")
-          local name = apiInfo:GetFullName()
+          local name
+          if apiInfo.Type == "Function" then
+            name = apiInfo:GetFullName()
+          elseif apiInfo.Type == "Event" then
+            name = apiInfo.LiteralName
+          end
           button:SetTitle(name)
           button:SetEditable(false)
           button:SetHeight(20)
