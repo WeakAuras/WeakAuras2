@@ -10727,7 +10727,7 @@ Private.event_prototypes = {
       }
     end,
     internal_events = function(trigger, untrigger)
-      local events = { "INSTANCE_LOCATION_CHECK"};
+      local events = {"INSTANCE_LOCATION_CHECK"};
       if trigger.use_instance_difficulty ~= nil
          or trigger.use_instance_type ~= nil
          or trigger.use_instance_size ~= nil
@@ -10749,7 +10749,7 @@ Private.event_prototypes = {
         local minimapZoneText = GetMinimapZoneText()
 
         local zoneText = GetZoneText()
-        local mapInfo = C_Map.GetMapInfo(uiMapId)
+        local mapInfo = uiMapId and C_Map.GetMapInfo(uiMapId)
         local isIndoors = IsIndoors()
       ]=]
       return ret:format(trigger.use_recursive and "true" or "nil", trigger.zoneIds or 0)
@@ -10776,6 +10776,16 @@ Private.event_prototypes = {
             return zoneChecker and zoneChecker.isChildFilter
           end
         end,
+      },
+      {
+        name = "zoneId",
+        display = L["Zone ID"],
+        conditionType = "number",
+        init = "uiMapId",
+        store = true,
+        hidden = true,
+        test = "true",
+        noProgressSource = true,
       },
       {
         name = "zone",
@@ -10805,16 +10815,17 @@ Private.event_prototypes = {
         display = L["Map Type"],
         type = "select",
         conditionType = "select",
-        init = "mapInfo.mapType",
+        init = "mapInfo and mapInfo.mapType",
         values = "map_types",
         store = true,
       },
       {
         name = "indoors",
         display = L["Indoors"],
-        type = "toggle",
-        conditionType = "boolean",
+        type = "tristate",
+        conditionType = "bool",
         init = "isIndoors",
+        store = true,
       },
       {
         name = "instanceTitle",
@@ -10829,12 +10840,14 @@ Private.event_prototypes = {
         store = true,
       },
       {
-        name = "instance_size",
+        name = "instanceSize",
         display = L["Instance Size Type"],
         type = "multiselect",
         values = "instance_types",
         sorted = true,
         init = "WeakAuras.InstanceType()",
+        conditionType = "select",
+        store = true,
       },
       {
         name = "instanceDifficulty",
@@ -10842,16 +10855,19 @@ Private.event_prototypes = {
         type = "multiselect",
         values = "difficulty_types",
         init = "WeakAuras.InstanceDifficulty()",
+        conditionType = "select",
         store = true,
         enable = WeakAuras.IsRetail(),
         hidden = not WeakAuras.IsRetail(),
       },
       {
-        name = "instance_type",
+        name = "instanceType",
         display = L["Instance Type"],
         type = "multiselect",
         values = "instance_difficulty_types",
         init = "WeakAuras.InstanceTypeRaw()",
+        conditionType = "select",
+        store = true,
         enable = WeakAuras.IsRetail(),
         hidden = not WeakAuras.IsRetail(),
       },
