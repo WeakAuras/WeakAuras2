@@ -282,8 +282,8 @@ local funcs = {
           else
             tick_placement = self.progressData[i].expirationTime - GetTime() + self.tick_placements[i]
           end
-        elseif self.progressType == "static" then
-          tick_placement = self.progressData[i].value + self.progressData[i].tick_placements[i]
+        elseif self.progressData[i].progressType == "static" then
+          tick_placement = self.progressData[i].value + self.tick_placements[i]
         end
       end
     end

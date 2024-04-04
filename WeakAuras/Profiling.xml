@@ -1,0 +1,287 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\..\FrameXML\UI_shared.xsd">
+
+  <Frame name="WeakAurasProfilingLineTemplate" mixin="WeakAurasProfilingLineMixin" virtual="true">
+    <Size y="20"/>
+    <Layers>
+      <Layer level="overlay">
+        <FontString parentKey="time" font="Interface\AddOns\WeakAuras\Media\Fonts\FiraMono-Medium.ttf" justifyH="RIGHT">
+          <Size x="60" y="0"/>
+          <FontHeight val="12"/>
+          <Anchors>
+            <Anchor x="305" y="-2"/>
+          </Anchors>
+          <Scripts>
+            <OnEnter>
+              GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+              GameTooltip:AddLine(self:GetParent().timeTooltip, 1, 1, 1, true)
+              GameTooltip:Show()
+            </OnEnter>
+            <OnLeave>
+              GameTooltip:Hide()
+            </OnLeave>
+          </Scripts>
+        </FontString>
+        <FontString parentKey="spike" font="Interface\AddOns\WeakAuras\Media\Fonts\FiraMono-Medium.ttf" justifyH="RIGHT">
+          <Size x="60" y="0"/>
+          <FontHeight val="12"/>
+          <Anchors>
+            <Anchor x="385" y="-2"/>
+          </Anchors>
+          <Scripts>
+            <OnEnter>
+              GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+              GameTooltip:AddLine(self:GetParent().spikeTooltip, 1, 1, 1, true)
+              GameTooltip:Show()
+            </OnEnter>
+            <OnLeave>
+              GameTooltip:Hide()
+            </OnLeave>
+          </Scripts>
+        </FontString>
+      </Layer>
+    </Layers>
+    <Frames>
+      <StatusBar parentKey="progressBar" drawLayer="BACKGROUND" minValue="0" maxValue="100" defaultValue="0">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeKey="$parent" x="1" y="0"/>
+          <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" relativeKey="$parent" x="299" y="0"/>
+        </Anchors>
+        <BarTexture file="Interface\Addons\WeakAuras\Media\Textures\Square_FullWhite.tga"/>
+        <Layers>
+          <Layer level="OVERLAY">
+            <FontString parentKey="name" font="Interface\AddOns\WeakAuras\Media\Fonts\FiraMono-Medium.ttf" justifyH="LEFT">
+              <Color r="1.0" g="0.82" b="0"/>
+              <FontHeight val="12"/>
+              <Size x="300" y="0"/>
+              <Anchors>
+                <Anchor point="LEFT" x="5"/>
+              </Anchors>
+            </FontString>
+          </Layer>
+        </Layers>
+      </StatusBar>
+    </Frames>
+  </Frame>
+
+  <Frame name="WeakAurasProfilingFrame" mixin="WeakAurasProfilingMixin" inherits="PortraitFrameTemplate" parent="UIParent" toplevel="true" movable="true" enableMouse="true" clampedToScreen="true" frameStrata="DIALOG" hidden="true">
+    <Size x="450" y="400"/>
+    <Anchors>
+      <Anchor point="CENTER"/>
+    </Anchors>
+
+    <Frames>
+      <Frame parentKey="TitleBar" inherits="PanelDragBarTemplate">
+        <Size y="32"/>
+        <Anchors>
+          <Anchor point="TOPLEFT"/>
+          <Anchor point="TOPRIGHT"/>
+        </Anchors>
+        <Scripts>
+          <OnMouseDown>
+            if button == "LeftButton" then
+              self.is_moving = true
+              local parent = self:GetParent()
+              parent:ClearAllPoints()
+              parent:StartMoving()
+            end
+          </OnMouseDown>
+          <OnMouseUp>
+            if button == "LeftButton" and self.is_moving then
+              self.is_moving = nil
+              local parent = self:GetParent()
+              parent:StopMovingOrSizing()
+              local xOffset = parent:GetLeft()
+              local yOffset = parent:GetTop() - GetScreenHeight()
+              WeakAurasSaved.RealTimeProfilingWindow = WeakAurasSaved.RealTimeProfilingWindow or {}
+              WeakAurasSaved.RealTimeProfilingWindow.xOffset = xOffset
+              WeakAurasSaved.RealTimeProfilingWindow.yOffset = yOffset
+            end
+          </OnMouseUp>
+          <OnShow>
+            local data = WeakAurasSaved.RealTimeProfilingWindow
+            local parent = self:GetParent()
+            parent:ClearAllPoints()
+            if data then
+              parent:SetPoint("TOPLEFT", UIParent, "TOPLEFT", data.xOffset or 0, data.yOffset or 0)
+            else
+              parent:SetPoint("CENTER")
+            end
+          </OnShow>
+        </Scripts>
+      </Frame>
+
+      <Frame parentKey="buttons" hidden="false">
+        <Size y="30"/>
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.TitleBar" relativePoint="BOTTOMLEFT" />
+          <Anchor point="TOPRIGHT" relativeKey="$parent.TitleBar" relativePoint="BOTTOMRIGHT"/>
+        </Anchors>
+
+        <Frames>
+          <Button parentKey="report" inherits="UIPanelButtonTemplate">
+            <Size x="120" y="26"/>
+            <Anchors>
+              <Anchor point="TOPLEFT" x="15"/>
+            </Anchors>
+            <Scripts>
+              <OnClick function="WeakAurasProfilingResultButton_OnClick"/>
+              <OnEnter>
+                if self.tooltip then
+                  GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                  GameTooltip:AddLine(self.tooltip, 1, 1, 1, true)
+                  GameTooltip:Show()
+                end
+              </OnEnter>
+              <OnLeave>
+                GameTooltip:Hide()
+              </OnLeave>
+            </Scripts>
+          </Button>
+
+          <Button parentKey="stop" inherits="UIPanelButtonTemplate">
+            <Size x="120" y="26"/>
+            <Anchors>
+              <Anchor point="TOPRIGHT" x="-10"/>
+            </Anchors>
+            <Scripts>
+              <OnClick function="WeakAurasProfilingStopButton_OnClick"/>
+              <OnEnter>
+                if self.tooltip then
+                  GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
+                  GameTooltip:AddLine(self.tooltip, 1, 1, 1, true)
+                  GameTooltip:Show()
+                end
+              </OnEnter>
+              <OnLeave>
+                GameTooltip:Hide()
+              </OnLeave>
+            </Scripts>
+          </Button>
+
+          <Frame parentKey="modeDropDown" inherits="UIDropDownMenuTemplate">
+            <Size x="120" y="26"/>
+            <Anchors>
+              <Anchor point="TOP"/>
+            </Anchors>
+          </Frame>
+
+          <DropDownToggleButton parentKey="start" inherits="UIMenuButtonStretchTemplate">
+            <Size x="120" y="26"/>
+            <Layers>
+              <Layer level="ARTWORK">
+                <Texture parentKey="Icon" file="Interface\ChatFrame\ChatFrameExpandArrow">
+                  <Size x="10" y="12"/>
+                  <Anchors>
+                    <Anchor point="RIGHT" relativeKey="$parent.Right" relativePoint="RIGHT" x="-5"/>
+                  </Anchors>
+                </Texture>
+              </Layer>
+            </Layers>
+            <Anchors>
+              <Anchor point="TOPRIGHT" x="-10"/>
+            </Anchors>
+          </DropDownToggleButton>
+          <Frame parentKey="startDropDown" inherits="UIDropDownMenuTemplate"/>
+        </Frames>
+      </Frame>
+
+      <Frame parentKey="ColumnDisplay" useParentLevel="true" inherits="ColumnDisplayTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT" x="10" y="-30"/>
+          <Anchor point="TOPRIGHT" x="-5" y="-30"/>
+        </Anchors>
+        <KeyValues>
+          <KeyValue key="sortingFunction" value="WeakAurasProfilingColumnDisplay_OnClick" type="global"/>
+        </KeyValues>
+      </Frame>
+
+      <Frame parentKey="ScrollBox" inherits="WowScrollBoxList">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.ColumnDisplay" relativePoint="BOTTOMLEFT" x="5" />
+          <Anchor point="BOTTOMRIGHT" x="-30" y="22"/>
+        </Anchors>
+        <Layers>
+          <Layer level="BACKGROUND">
+            <Texture>
+              <Color r=".03" g=".03" b=".03" a="0.5"/>
+            </Texture>
+          </Layer>
+        </Layers>
+      </Frame>
+      <EventFrame parentKey="ScrollBar" inherits="WowTrimScrollBar">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.ScrollBox" relativePoint="TOPRIGHT"/>
+          <Anchor point="BOTTOMLEFT" relativeKey="$parent.ScrollBox" relativePoint="BOTTOMRIGHT"/>
+        </Anchors>
+      </EventFrame>
+    </Frames>
+    <Layers>
+      <Layer level="overlay">
+        <FontString parentKey="stats" inherits="GameFontNormal" justifyH="LEFT">
+          <Anchors>
+            <Anchor point="BOTTOMLEFT" x="15" y="5"/>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+    <Scripts>
+      <OnShow method="OnShow"/>
+    </Scripts>
+  </Frame>
+
+  <Frame name="WeakAurasProfilingReport" mixin="WeakAurasProfilingReportMixin" parent="WeakAurasProfilingFrame" movable="true" inherits="PortraitFrameTemplate" enableMouse="true" clampedToScreen="true" frameStrata="DIALOG" hidden="true">
+    <Size x="450" y="400"/>
+    <HitRectInsets>
+      <RelInset top="8" bottom="8" right="8" left="8" />
+    </HitRectInsets>
+    <Anchors>
+      <Anchor point="RIGHT"/>
+    </Anchors>
+    <Frames>
+      <Frame parentKey="TitleBar" inherits="PanelDragBarTemplate">
+        <Size y="32"/>
+        <Anchors>
+          <Anchor point="TOPLEFT"/>
+          <Anchor point="TOPRIGHT"/>
+        </Anchors>
+      </Frame>
+      <ScrollFrame parentKey="ScrollBox" inherits="ScrollFrameTemplate">
+        <KeyValues>
+          <KeyValue key="scrollBarX" value="-5" type="number"/>
+        </KeyValues>
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeKey="$parent.TitleBar" relativePoint="BOTTOMLEFT" x="15" y="-5"/>
+          <Anchor point="BOTTOMRIGHT" x="-30" y="15"/>
+        </Anchors>
+        <ScrollChild>
+          <EditBox parentKey="messageFrame" multiLine="true" autoFocus="false">
+            <Size x="435" y="1"/>
+            <TextInsets left="5" right="5" bottom="5" top="5" />
+            <Anchors>
+              <Anchor point="TOPLEFT"/>
+              <Anchor point="BOTTOMRIGHT"/>
+            </Anchors>
+            <Layers>
+              <Layer level="BACKGROUND">
+                <Texture>
+                  <Color r=".03" g=".03" b=".03" a="0.5"/>
+                </Texture>
+              </Layer>
+            </Layers>
+            <Scripts>
+              <OnChar>
+                self:SetText(self.originalText)
+              </OnChar>
+            </Scripts>
+            <FontString inherits="GameFontHighlight"/>
+          </EditBox>
+        </ScrollChild>
+      </ScrollFrame>
+    </Frames>
+    <Scripts>
+      <OnLoad method="OnShow"/>
+    </Scripts>
+  </Frame>
+</Ui>

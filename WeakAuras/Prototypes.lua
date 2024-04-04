@@ -168,7 +168,7 @@ local function get_zoneId_list()
   if not instanceId and not currentmap_id then
     return ("%s\n\n%s"):format(Private.get_zoneId_list(), bottomText)
   elseif not currentmap_id then
-    return ("%s|cffffd200%s|r%s: %d\n\n%s"):format(Private.get_zoneId_list(), L["Current Instance"], L["Instace Id"], instanceId, bottomText)
+    return ("%s|cffffd200%s|r\n%s: %d\n\n%s"):format(Private.get_zoneId_list(), L["Current Instance"], L["Instance Id"], instanceId, bottomText)
   end
   local currentmap_info = C_Map.GetMapInfo(currentmap_id)
   local currentmap_name = currentmap_info and currentmap_info.name or ""
@@ -2373,67 +2373,85 @@ Private.event_prototypes = {
     internal_events = {"WA_DELAYED_PLAYER_ENTERING_WORLD"},
     force_events = "UPDATE_FACTION",
     name = L["Faction Reputation"],
+    statesParameter = "one",
+    automaticrequired = true,
     init = function(trigger)
       local ret = [=[
-        local factionID = %q
         local useWatched = %s
-        local name, description, standingId, bottomValue, topValue, earnedValue, _
-        if useWatched then
-          name, standingId, bottomValue, topValue, earnedValue, factionID = GetWatchedFactionInfo()
-        else
-          name, description, standingId, bottomValue, topValue, earnedValue, _, _, _, _, _, _, _, factionID = GetFactionInfoByID(factionID)
-        end
+        local factionID = useWatched and select(6, GetWatchedFactionInfo()) or %q
+        local minValue, maxValue, currentValue
+        local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive = GetFactionInfoByID(factionID)
+        minValue, maxValue, currentValue = barMin, barMax, barValue
         local standing
-        if tonumber(standingId) then
-           standing = GetText("FACTION_STANDING_LABEL"..standingId, UnitSex("player"))
+        if tonumber(standingID) then
+           standing = GetText("FACTION_STANDING_LABEL"..standingID, UnitSex("player"))
         end
+        local isCapped = standingID == 8 and currentValue >= 42999
       ]=]
       if WeakAuras.IsRetail() then
         ret = ret .. [=[
-          local friendshipRank, friendshipMaxRank
-          if factionID then
-            local repInfo = factionID and C_GossipInfo.GetFriendshipReputation(factionID)
-            if repInfo and repInfo.friendshipFactionID > 0 then
-              standing = repInfo.reaction
-              if repInfo.nextThreshold then
-                bottomValue, topValue, earnedValue = repInfo.reactionThreshold, repInfo.nextThreshold, repInfo.standing
-              else
-                -- max rank, make it look like a full bar
-                bottomValue, topValue, earnedValue = 0, 1, 1
-              end
-              local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID)
-              if rankInfo.maxLevel > 0 then
-                friendshipRank, friendshipMaxRank = rankInfo.currentLevel, rankInfo.maxLevel
-              else
-                friendshipRank, friendshipMaxRank = 1, 1
-              end
-            elseif C_Reputation.IsMajorFaction(factionID) then
-              local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID)
-              local isCapped = C_MajorFactions.HasMaximumRenown(factionID)
-              bottomValue, topValue = 0, majorFactionData.renownLevelThreshold
-              earnedValue = isCapped and majorFactionData.renownLevelThreshold or majorFactionData.renownReputationEarned or 0
-              standing = RENOWN_LEVEL_LABEL .. majorFactionData.renownLevel
-            end
+          isCapped = standingID == MAX_REPUTATION_REACTION
 
-            if C_Reputation.IsFactionParagon(factionID) then
-              local currentValue, threshold, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
-              if currentValue then
-                bottomValue, topValue = 0, threshold
-                earnedValue = currentValue %% threshold
-                if hasRewardPending then
-                  earnedValue = earnedValue + threshold
-                end
-              else
-                currentValue, bottomValue, topValue, earnedValue = 0, 0, 0, 0
-              end
+          -- check if this is a friendship faction
+          local friendshipRank, friendshipMaxRank
+          local repInfo = factionID and C_GossipInfo.GetFriendshipReputation(factionID);
+          if repInfo and repInfo.friendshipFactionID > 0 then
+            standing = repInfo.reaction
+            if repInfo.nextThreshold then
+              minValue, maxValue, currentValue = repInfo.reactionThreshold, repInfo.nextThreshold, repInfo.standing
+            else
+              -- max rank, make it look like a full bar
+              minValue, maxValue, currentValue = 0, 1, 1
+              isCapped = true
+            end
+            local rankInfo = C_GossipInfo.GetFriendshipReputationRanks(factionID)
+            if rankInfo.maxLevel > 0 then
+              friendshipRank, friendshipMaxRank = rankInfo.currentLevel, rankInfo.maxLevel
+            else
+              friendshipRank, friendshipMaxRank = 1, 1
+            end
+          end
+
+          -- check if this is a Major faction (renown)
+          local renownLevel, maxRenownLevel, isWeeklyRenownCapped
+          local isMajorFaction = factionID and C_Reputation.IsMajorFaction(factionID)
+          if isMajorFaction then
+            local majorFactionData = C_MajorFactions.GetMajorFactionData(factionID)
+            minValue, maxValue = 0, majorFactionData.renownLevelThreshold
+            isCapped = C_MajorFactions.HasMaximumRenown(factionID)
+		        currentValue = isCapped and majorFactionData.renownLevelThreshold or majorFactionData.renownReputationEarned or 0
+            standing = RENOWN_LEVEL_LABEL .. majorFactionData.renownLevel
+            renownLevel = majorFactionData.renownLevel
+            local renownLevels = C_MajorFactions.GetRenownLevels(factionID)
+            maxRenownLevel = renownLevels and renownLevels[#renownLevels].level
+            isWeeklyRenownCapped = C_MajorFactions.IsWeeklyRenownCapped(factionID)
+          end
+
+          -- check if this is a faction with a paragon track
+          local paragonRewardPending = false
+          local isParagon = factionID and C_Reputation.IsFactionParagon(factionID)
+          if isParagon then
+            local paragonCurrentValue, paragonBarMax, rewardQuestID, hasRewardPending, tooLowLevelForParagon = C_Reputation.GetFactionParagonInfo(factionID)
+            if paragonCurrentValue then
+              minValue, maxValue = 0, paragonBarMax
+              currentValue = paragonCurrentValue %% paragonBarMax
+              paragonRewardPending = hasRewardPending
+            else
+              minValue, maxValue, currentValue = 0, 0, 0
             end
           end
         ]=]
       end
-      return ret:format(trigger.factionID or 0, trigger.use_watched and "true" or "false")
+      return ret:format(trigger.use_watched and "true" or "false", trigger.factionID or 0)
     end,
-    statesParameter = "one",
     args = {
+      {
+        name = "progressType",
+        hidden = true,
+        init = "'static'",
+        store = true,
+        test = "true"
+      },
       {
         name = "watched",
         display = L["Use Watched Faction"],
@@ -2467,37 +2485,65 @@ Private.event_prototypes = {
         enable = function(trigger)
           return not trigger.use_watched
         end,
+        reloadOptions = true,
         test = "true",
       },
       {
         name = "name",
         display = L["Faction Name"],
         type = "string",
-        store = "true",
+        store = true,
         hidden = "true",
         init = "name",
         test = "true"
       },
       {
-        name = "total",
-        display = L["Total"],
-        type = "number",
-        store = true,
-        init = [[topValue - bottomValue]],
-        hidden = true,
-        test = "true",
-        conditionType = "number",
-      },
-      {
         name = "value",
-        display = L["Value"],
+        display = L["Reputation"],
         type = "number",
         store = true,
-        init = [[earnedValue - bottomValue]],
-        hidden = true,
-        test = "true",
+        init = [[currentValue - minValue]],
         conditionType = "number",
         progressTotal = "total",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
+      },
+      {
+        name = "total",
+        display = L["Total Reputation"],
+        type = "number",
+        store = true,
+        init = [[maxValue - minValue]],
+        conditionType = "number",
+        noProgressSource = true,
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
+      },
+      {
+        name = "percentRep",
+        display = L["Reputation (%)"],
+        type = "number",
+        init = "total ~= 0 and (value / total) * 100 or nil",
+        store = true,
+        conditionType = "number",
+        noProgressSource = true,
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
+      },
+      {
+        name = "standing",
+        display = L["Standing"],
+        type = "string",
+        init = "standing",
+        store = true,
+        hidden = "true",
+        test = "true"
       },
       {
         name = "standingId",
@@ -2510,51 +2556,124 @@ Private.event_prototypes = {
           end
           return ret
         end,
-        init = "standingId",
-        store = "true",
+        init = "standingID",
+        store = true,
         conditionType = "select",
       },
       {
-        name = "standing",
-        display = L["Standing"],
-        type = "string",
-        init = "standing",
-        store = "true",
-        hidden = "true",
-        test = "true"
+        name = "capped",
+        display = L["Capped"],
+        type = "tristate",
+        init = "isCapped",
+        conditionType = "bool",
+        store = true,
+      },
+      {
+        name = "atWar",
+        display = L["At War"],
+        type = "tristate",
+        init = "atWarWith",
+        conditionType = "bool",
+        store = true,
+      },
+      {
+        name = "hasBonusRepGain",
+        display = L["Bonus Reputation Gain"],
+        type = "tristate",
+        init = "hasBonusRepGain",
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail(),
+      },
+      {
+        name = "isParagon",
+        display = L["Is Paragon Reputation"],
+        type = "tristate",
+        init = "isParagon",
+        store = true,
+        conditionType = "bool",
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail(),
+      },
+      {
+        name = "paragonRewardPending",
+        display = L["Paragon Reward Pending"],
+        type = "tristate",
+        init = "paragonRewardPending",
+        store = true,
+        conditionType = "bool",
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail(),
       },
       {
         name = "friendshipRank",
         display = L["Friendship Rank"],
         type = "number",
         init = "friendshipRank",
-        store = "true",
-        test = "true",
+        store = true,
         conditionType = "number",
-        enable = WeakAuras.IsRetail(),
+        enable = WeakAuras.IsRetail() and function(trigger)
+          local repInfo = trigger.factionID and C_GossipInfo.GetFriendshipReputation(trigger.factionID);
+          return repInfo and repInfo.friendshipFactionID > 0
+        end,
         hidden = not WeakAuras.IsRetail(),
-        progressTotal = "friendshipMaxRank"
+        progressTotal = "friendshipMaxRank",
       },
       {
         name = "friendshipMaxRank",
         display = L["Friendship Max Rank"],
         type = "number",
         init = "friendshipMaxRank",
-        store = "true",
-        test = "true",
+        store = true,
         conditionType = "number",
-        enable = WeakAuras.IsRetail(),
-        hidden = not WeakAuras.IsRetail()
+        enable = WeakAuras.IsRetail() and function(trigger)
+          local repInfo = trigger.factionID and C_GossipInfo.GetFriendshipReputation(trigger.factionID);
+          return repInfo and repInfo.friendshipFactionID > 0
+        end,
+        hidden = not WeakAuras.IsRetail(),
+        noProgressSource = true,
       },
       {
-        name = "progressType",
-        hidden = true,
-        init = "'static'",
+        name = "renownLevel",
+        display = L["Renown Level"],
+        type = "number",
+        conditionType = "number",
+        init = "renownLevel",
         store = true,
-        test = "true"
+        enable = WeakAuras.IsRetail() and function(trigger)
+          local majorFactionData = trigger.factionID and C_MajorFactions.GetMajorFactionData(trigger.factionID)
+          return majorFactionData and majorFactionData.renownLevel
+        end,
+        hidden = not WeakAuras.IsRetail(),
+        progressTotal = "maxRenownLevel",
       },
-    },
-    automaticrequired = true
+      {
+        name = "maxRenownLevel",
+        display = L["Renown Max Level"],
+        type = "number",
+        conditionType = "number",
+        init = "maxRenownLevel",
+        store = true,
+        enable = WeakAuras.IsRetail() and function(trigger)
+          local majorFactionData = trigger.factionID and C_MajorFactions.GetMajorFactionData(trigger.factionID)
+          return majorFactionData and majorFactionData.renownLevel
+        end,
+        hidden = not WeakAuras.IsRetail(),
+        noProgressSource = true,
+      },
+      {
+        name = "isWeeklyRenownCapped",
+        display = L["Is Weekly Renown Capped"],
+        type = "tristate",
+        conditionType = "bool",
+        init = "isWeeklyRenownCapped",
+        store = true,
+        enable = WeakAuras.IsRetail() and function(trigger)
+          local majorFactionData = trigger.factionID and C_MajorFactions.GetMajorFactionData(trigger.factionID)
+          return majorFactionData and majorFactionData.renownLevel
+        end,
+        hidden = not WeakAuras.IsRetail(),
+      },
+    }
   },
   ["Experience"] = {
     type = "unit",
@@ -3203,6 +3322,9 @@ Private.event_prototypes = {
       if WeakAuras.IsClassicEraOrWrath() and trigger.use_showCost and trigger.unit == "player" then
         tinsert(result, "WA_UNIT_QUEUED_SPELL_CHANGED");
       end
+      if WeakAuras.IsCataClassic() and trigger.unit == "player" and trigger.use_powertype and trigger.powertype == 26 then
+        tinsert(result, "ECLIPSE_DIRECTION_CHANGE");
+      end
       return result
     end,
     loadFunc = function(trigger)
@@ -3437,6 +3559,18 @@ Private.event_prototypes = {
           return trigger.use_powertype and trigger.powertype == 99
         end,
         test = "true"
+      },
+      {
+        name = "eclipseDirection",
+        display = L["Eclipse Direction"],
+        type = "select",
+        values = "eclipse_direction_types",
+        init = "GetEclipseDirection()",
+        conditionType = "select",
+        store = true,
+        enable = function(trigger)
+          return WeakAuras.IsCataClassic() and trigger.unit == "player" and trigger.use_powertype and trigger.powertype == 26
+        end,
       },
       {
         name = "power",
@@ -8780,7 +8914,10 @@ Private.event_prototypes = {
         hidden = true,
         init = "not empowered",
         test = "true",
-        store = true
+        store = true,
+        enable = function(trigger)
+          return not trigger.use_inverse
+        end
       },
       {
         name = "npcId",

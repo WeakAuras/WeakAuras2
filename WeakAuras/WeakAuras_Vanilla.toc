@@ -1,4 +1,4 @@
-## Interface: 11501
+## Interface: 11502
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
 ## Version: @project-version@
@@ -35,6 +35,7 @@ Types_Vanilla.lua
 Types.lua
 Prototypes.lua
 Profiling.lua
+Profiling.xml
 WeakAuras.lua
 History.lua
 Transmission.lua

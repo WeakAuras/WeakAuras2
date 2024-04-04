@@ -651,12 +651,7 @@ local function Constructor()
 	treeframe:EnableMouseWheel(true)
 
 	treeframe:SetResizable(true)
-	if treeframe.SetResizeBounds then
-		treeframe:SetResizeBounds(100, 1, 400, 1600)
-	else
-		treeframe:SetMinResize(100, 1)
-		treeframe:SetMaxResize(400, 1600)
-	end
+	treeframe:SetResizeBounds(100, 1, 400, 1600)
 	treeframe:SetScript("OnUpdate", FirstFrameUpdate)
 	treeframe:SetScript("OnSizeChanged", Tree_OnSizeChanged)
 	treeframe:SetScript("OnMouseWheel", Tree_OnMouseWheel)

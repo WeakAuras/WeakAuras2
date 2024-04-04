@@ -1443,11 +1443,21 @@ if WeakAuras.IsRetail() then
   Private.power_types[99] = STAGGER
   Private.power_types[19] = POWER_TYPE_ESSENCE
 elseif WeakAuras.IsCataClassic() then
+  Private.power_types[8] = nil
   Private.power_types[12] = nil
   Private.power_types[13] = nil
   Private.power_types[16] = nil
   Private.power_types[17] = nil
   Private.power_types[18] = nil
+  Private.power_types[26] = L["Eclipse"] -- couldn't find a localised global
+
+  ---@class Private
+  ---@field eclipse_direction_types table<string, string>
+  Private.eclipse_direction_types = {
+    none = L["None"],
+    sun = L["Sun"],
+    moon = L["Moon"]
+  }
 end
 
 ---@class Private
@@ -2804,7 +2814,7 @@ end
 ---@field instance_difficulty_types table
 Private.instance_difficulty_types = {}
 
-do
+if WeakAuras.IsRetail() then
   -- Fill out instance_difficulty_types automatically.
   -- Unfortunately the names BLizzard gives are not entirely unique,
   -- so try hard to disambiguate them via the type, and if nothing works by
