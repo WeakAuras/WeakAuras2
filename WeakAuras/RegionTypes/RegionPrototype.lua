@@ -4,6 +4,7 @@ local AddonName = ...
 ---@class Private
 local Private = select(2, ...)
 
+---@class WeakAuras
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 local GetAtlasInfo = C_Texture and C_Texture.GetAtlasInfo or GetAtlasInfo

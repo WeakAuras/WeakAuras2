@@ -17,6 +17,7 @@ local pairs = pairs
 -- WoW APIs
 local IsShiftKeyDown, CreateFrame =  IsShiftKeyDown, CreateFrame
 
+---@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 

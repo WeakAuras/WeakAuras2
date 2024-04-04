@@ -10,6 +10,7 @@ local pairs, error, coroutine = pairs, error, coroutine
 -- WoW APIs
 local GetSpellInfo, IsSpellKnown = GetSpellInfo, IsSpellKnown
 
+---@class WeakAuras
 local WeakAuras = WeakAuras
 
 local spellCache = {}

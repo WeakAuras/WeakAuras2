@@ -2,7 +2,10 @@
 local AddonName = ...
 ---@class Private
 local Private = select(2, ...)
+
+---@class WeakAuras
 WeakAuras = {}
+---@type table<string, string>
 WeakAuras.L = {}
 Private.frames = {}
 

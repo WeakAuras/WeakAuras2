@@ -56,6 +56,7 @@ local UnitAura = UnitAura
 
 local newAPI = WeakAuras.IsRetail()
 
+---@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local timer = WeakAuras.timer

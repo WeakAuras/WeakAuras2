@@ -11,6 +11,7 @@ local Private = select(2, ...)
 --- | "warning"
 --- | "error"
 
+---@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 

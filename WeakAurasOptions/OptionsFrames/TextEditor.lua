@@ -18,6 +18,7 @@ local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 local IndentationLib = IndentationLib
 
+---@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 

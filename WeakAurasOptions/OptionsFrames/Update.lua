@@ -6,6 +6,7 @@ local OptionsPrivate = select(2, ...)
 
 local AceGUI = LibStub("AceGUI-3.0")
 
+---@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 

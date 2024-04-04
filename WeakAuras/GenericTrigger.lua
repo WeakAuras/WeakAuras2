@@ -65,6 +65,7 @@ WeakAurasAceEvents = setmetatable({}, {__tostring=function() return "WeakAuras" 
 LibStub("AceEvent-3.0"):Embed(WeakAurasAceEvents);
 local aceEvents = WeakAurasAceEvents
 
+---@class WeakAuras
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 local GenericTrigger = {};
