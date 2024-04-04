@@ -1,6 +1,8 @@
 if not WeakAuras.IsLibsOK() then return end
---- @type string, Private
-local AddonName, Private = ...
+---@type string
+local AddonName = ...
+---@class Private
+local Private = select(2, ...)
 
 -- Lua APIs
 local tinsert, tsort = table.insert, table.sort
@@ -18,6 +20,7 @@ local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitC
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
 local MAX_NUM_TALENTS = MAX_NUM_TALENTS or 20
 
+---@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 

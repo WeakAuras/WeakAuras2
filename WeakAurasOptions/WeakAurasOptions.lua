@@ -1,5 +1,8 @@
 if not WeakAuras.IsLibsOK() then return end
-local AddonName, OptionsPrivate = ...
+---@type string
+local AddonName = ...
+---@class OptionsPrivate
+local OptionsPrivate = select(2, ...)
 
 -- Lua APIs
 local tinsert, tremove, wipe = table.insert, table.remove, wipe
@@ -14,6 +17,7 @@ local CreateFrame, IsAddOnLoaded, LoadAddOn = CreateFrame, IsAddOnLoaded, LoadAd
 
 local AceGUI = LibStub("AceGUI-3.0")
 
+---@class WeakAuras
 local WeakAuras = WeakAuras
 local L = WeakAuras.L
 local ADDON_NAME = "WeakAurasOptions";
@@ -567,6 +571,7 @@ local function OptionsFrame()
   end
 end
 
+---@type fun(msg: string, Private: Private)
 function WeakAuras.ToggleOptions(msg, Private)
   if not Private then
     return
