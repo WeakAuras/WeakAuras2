@@ -40,7 +40,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {
@@ -49,7 +49,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer|unknown", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {
@@ -58,7 +58,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {
@@ -72,7 +72,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -87,7 +87,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean|unknown", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -102,7 +102,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -116,8 +116,8 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
+    { Name = "undefined", Type = "bool", Nilable = false },
+    { Name = "undefined", Type = "unknown", Nilable = true },
    },
   },
   {
@@ -133,7 +133,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean|nil", Nilable = true },
+    { Name = "undefined", Type = "bool", Nilable = true },
    },
   },
   {
@@ -148,7 +148,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean|nil", Nilable = true },
+    { Name = "undefined", Type = "bool", Nilable = true },
    },
   },
   {
@@ -162,7 +162,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -195,7 +195,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {
@@ -243,7 +243,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "string", Nilable = false },
+    { Name = "undefined", Type = "cstring", Nilable = false },
    },
   },
   {
@@ -315,10 +315,10 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "string|unknown", Nilable = false },
-    { Name = "undefined", Type = "string", Nilable = false },
-    { Name = "undefined", Type = "integer|unknown", Nilable = false },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "cstring", Nilable = false },
+    { Name = "undefined", Type = "cstring", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {
@@ -335,8 +335,8 @@ local WeakAurasAPI =
    Returns =
    {
     { Name = "undefined", Type = "unknown", Nilable = false },
-    { Name = "undefined", Type = "string", Nilable = false },
-    { Name = "undefined", Type = "integer|unknown", Nilable = false },
+    { Name = "undefined", Type = "cstring", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {
@@ -351,12 +351,12 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "string", Nilable = false },
+    { Name = "undefined", Type = "cstring", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
-    { Name = "undefined", Type = "string", Nilable = false },
+    { Name = "undefined", Type = "cstring", Nilable = false },
    },
   },
   {
@@ -365,7 +365,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {
@@ -378,7 +378,7 @@ local WeakAurasAPI =
 
    Arguments =
    {
-    { Name = "id", Type = "string", Nilable = false },
+    { Name = "id", Type = "cstring", Nilable = false },
    },
 
    Returns =
@@ -407,10 +407,10 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "integer", Nilable = false },
-    { Name = "undefined", Type = "integer", Nilable = false },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {
@@ -424,10 +424,10 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
     { Name = "undefined", Type = "unknown", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
    },
@@ -438,10 +438,10 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer", Nilable = false },
-    { Name = "undefined", Type = "number|unknown", Nilable = false },
-    { Name = "undefined", Type = "string", Nilable = false },
-    { Name = "undefined", Type = "string", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "cstring", Nilable = false },
+    { Name = "undefined", Type = "cstring", Nilable = false },
     { Name = "undefined", Type = "number", Nilable = false },
    },
   },
@@ -495,10 +495,10 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer", Nilable = false },
-    { Name = "undefined", Type = "integer", Nilable = false },
-    { Name = "undefined", Type = "integer", Nilable = false },
-    { Name = "undefined", Type = "boolean|unknown", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -513,10 +513,10 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer", Nilable = false },
-    { Name = "undefined", Type = "integer", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
-    { Name = "undefined", Type = "boolean|unknown", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -530,8 +530,8 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "string", Nilable = false },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
+    { Name = "undefined", Type = "cstring", Nilable = false },
+    { Name = "undefined", Type = "unknown", Nilable = true },
    },
   },
   {
@@ -544,7 +544,7 @@ local WeakAurasAPI =
     { Name = "undefined", Type = "unknown", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
-    { Name = "undefined", Type = "string", Nilable = false },
+    { Name = "undefined", Type = "cstring", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
    },
@@ -564,9 +564,9 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer|nil", Nilable = true },
-    { Name = "undefined", Type = "integer|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
+    { Name = "undefined", Type = "number", Nilable = true },
+    { Name = "undefined", Type = "number", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
    },
   },
   {
@@ -579,7 +579,7 @@ local WeakAurasAPI =
     { Name = "undefined", Type = "unknown", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
-    { Name = "undefined", Type = "string", Nilable = false },
+    { Name = "undefined", Type = "cstring", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
    },
@@ -595,7 +595,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "string", Nilable = false },
+    { Name = "undefined", Type = "cstring", Nilable = false },
    },
   },
   {
@@ -641,8 +641,8 @@ local WeakAurasAPI =
 
    Arguments =
    {
-    { Name = "id", Type = "string", Nilable = false },
-    { Name = "cloneId", Type = "string|nil", Nilable = true },
+    { Name = "id", Type = "cstring", Nilable = false },
+    { Name = "cloneId", Type = "cstring", Nilable = true },
    },
 
    Returns =
@@ -661,8 +661,8 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer|unknown", Nilable = false },
-    { Name = "undefined", Type = "integer|unknown", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {
@@ -678,11 +678,11 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
    },
   },
   {
@@ -701,12 +701,12 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer|unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "integer|unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "boolean|unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "number|nil", Nilable = true },
-    { Name = "undefined", Type = "boolean|nil", Nilable = true },
+    { Name = "undefined", Type = "number", Nilable = true },
+    { Name = "undefined", Type = "number", Nilable = true },
+    { Name = "undefined", Type = "bool", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "number", Nilable = true },
+    { Name = "undefined", Type = "bool", Nilable = true },
    },
   },
   {
@@ -721,21 +721,21 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown", Nilable = false },
-    { Name = "undefined", Type = "number", Nilable = false },
-    { Name = "undefined", Type = "integer", Nilable = false },
-    { Name = "undefined", Type = "boolean", Nilable = false },
-    { Name = "undefined", Type = "number", Nilable = false },
-    { Name = "undefined", Type = "integer", Nilable = false },
-    { Name = "undefined", Type = "boolean", Nilable = false },
-    { Name = "undefined", Type = "integer", Nilable = false },
-    { Name = "undefined", Type = "integer", Nilable = false },
+    { Name = "undefined", Type = "unknown", Nilable = true },
     { Name = "undefined", Type = "unknown", Nilable = false },
     { Name = "undefined", Type = "number", Nilable = false },
     { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
     { Name = "undefined", Type = "number", Nilable = false },
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "unknown", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -763,10 +763,10 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer", Nilable = false },
-    { Name = "undefined", Type = "number|unknown", Nilable = false },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
    },
   },
   {
@@ -821,7 +821,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {
@@ -851,8 +851,8 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean|nil", Nilable = true },
-    { Name = "undefined", Type = "string|nil", Nilable = true },
+    { Name = "undefined", Type = "bool", Nilable = true },
+    { Name = "undefined", Type = "cstring", Nilable = true },
    },
   },
   {
@@ -861,7 +861,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -870,7 +870,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -892,7 +892,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "string|unknown", Nilable = false },
+    { Name = "undefined", Type = "cstring", Nilable = false },
     { Name = "undefined", Type = "nil", Nilable = true },
    },
   },
@@ -911,7 +911,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {
@@ -953,7 +953,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -962,7 +962,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -971,7 +971,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -980,7 +980,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -989,7 +989,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -998,7 +998,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1007,7 +1007,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1016,7 +1016,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1025,7 +1025,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1034,7 +1034,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1043,7 +1043,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1052,7 +1052,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1066,7 +1066,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean|unknown", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1075,7 +1075,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1100,7 +1100,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean|unknown", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1115,7 +1115,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean|unknown", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1129,7 +1129,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean|unknown", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1143,7 +1143,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean|nil", Nilable = true },
+    { Name = "undefined", Type = "bool", Nilable = true },
    },
   },
   {
@@ -1152,7 +1152,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1161,7 +1161,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1170,7 +1170,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1376,7 +1376,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "number|nil", Nilable = true },
+    { Name = "undefined", Type = "number", Nilable = true },
    },
   },
   {
@@ -1486,7 +1486,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean|nil", Nilable = true },
+    { Name = "undefined", Type = "bool", Nilable = true },
    },
   },
   {
@@ -1501,7 +1501,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean|nil", Nilable = true },
+    { Name = "undefined", Type = "bool", Nilable = true },
    },
   },
   {
@@ -1516,7 +1516,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean|nil", Nilable = true },
+    { Name = "undefined", Type = "bool", Nilable = true },
    },
   },
   {
@@ -1559,7 +1559,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "string", Nilable = false },
+    { Name = "undefined", Type = "cstring", Nilable = false },
    },
   },
   {
@@ -1568,7 +1568,7 @@ local WeakAurasAPI =
 
    Arguments =
    {
-    { Name = "_", Type = "string", Nilable = false },
+    { Name = "_", Type = "cstring", Nilable = false },
    },
   },
   {
@@ -1577,7 +1577,7 @@ local WeakAurasAPI =
 
    Arguments =
    {
-    { Name = "startType", Type = "string", Nilable = false },
+    { Name = "startType", Type = "cstring", Nilable = false },
    },
   },
   {
@@ -1603,7 +1603,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "number|unknown", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {
@@ -1620,7 +1620,7 @@ local WeakAurasAPI =
 
    Arguments =
    {
-    { Name = "msg", Type = "string", Nilable = false },
+    { Name = "msg", Type = "cstring", Nilable = false },
     { Name = "Private", Type = "Private", Nilable = false },
    },
   },
@@ -1639,16 +1639,16 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
-    { Name = "undefined", Type = "unknown|nil", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
    },
   },
   {
@@ -1682,7 +1682,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean|unknown", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1696,7 +1696,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1710,7 +1710,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "string", Nilable = false },
+    { Name = "undefined", Type = "cstring", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
    },
   },
@@ -1725,7 +1725,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {
@@ -1753,7 +1753,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {
@@ -1767,7 +1767,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1799,7 +1799,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean|nil", Nilable = true },
+    { Name = "undefined", Type = "bool", Nilable = true },
    },
   },
   {
@@ -1814,7 +1814,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1829,7 +1829,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1844,7 +1844,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "boolean", Nilable = false },
+    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1933,7 +1933,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "integer", Nilable = false },
+    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {

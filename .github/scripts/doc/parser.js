@@ -14,6 +14,26 @@ local WeakAurasAPI =
  Namespace = "WeakAuras",`
 )
 
+function isNilable(obj) {
+  return obj.view.match("nil|\\?") ? "true" : "false"
+}
+
+function wowType(obj) {
+  if (obj.view.match("string")) {
+    return "cstring";
+  }
+  if (obj.view.match("boolean")) {
+    return "bool";
+  }
+  if (obj.view.match("integer|number")) {
+    return "number";
+  }
+  if (obj.view === "unknown|nil") {
+    return "unknown"
+  }
+  return obj.view;
+}
+
 const data = fs.readFileSync('doc.json', { encoding: 'utf8', flags: 'r' });
 const obj = JSON.parse(data);
 for (const entry of obj) {
@@ -32,8 +52,7 @@ for (const entry of obj) {
             console.log(`   Arguments =`);
             console.log(`   {`);
             for (const arg of args) {
-              const nilable = arg.view.match("nil") ? "true" : "false"
-              console.log(`    { Name = "${arg.name}", Type = "${arg.view}", Nilable = ${nilable} },`);
+              console.log(`    { Name = "${arg.name}", Type = "${wowType(arg)}", Nilable = ${isNilable(arg)} },`);
             };
             console.log(`   },`);
           }
@@ -43,8 +62,7 @@ for (const entry of obj) {
             console.log(`   Returns =`);
             console.log(`   {`);
             for (const ret of returns) {
-              const nilable = ret.view.match("nil") ? "true" : "false"
-              console.log(`    { Name = "${ret.name}", Type = "${ret.view}", Nilable = ${nilable} },`);
+              console.log(`    { Name = "${ret.name}", Type = "${wowType(ret)}", Nilable = ${isNilable(ret)} },`);
             };
             console.log(`   },`);
           }
