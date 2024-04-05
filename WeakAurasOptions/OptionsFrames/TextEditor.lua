@@ -577,6 +577,7 @@ local function ConstructTextEditor(frame)
     if #APIDocumentation.systems == 0 then
       APIDocumentation_LoadUI()
     end
+    OptionsPrivate.LoadDocumentation()
 
     -- show list of namespaces by default
     if not apiToSearchFor or #apiToSearchFor < 3 then
