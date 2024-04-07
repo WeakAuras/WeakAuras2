@@ -1352,8 +1352,10 @@ function OptionsPrivate.CreateFrame()
 
     for _, id in ipairs(batchSelection) do
       if not alreadySelected[id] then
-        displayButtons[id]:Pick()
-        tinsert(tempGroup.controlledChildren, id)
+        if displayButtons[id].frame:IsVisible() then
+          displayButtons[id]:Pick()
+          tinsert(tempGroup.controlledChildren, id)
+        end
       end
     end
     frame:ClearOptions(tempGroup.id)
