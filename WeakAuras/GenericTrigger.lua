@@ -1514,7 +1514,6 @@ function GenericTrigger.Add(data, region)
   watched_trigger_events[id] = nil
 
   local warnAboutCLEUEvents = false
-  local warnAboutDeprecatedInstanceFilters = false
 
   for triggernum, triggerData in ipairs(data.triggers) do
     local trigger, untrigger = triggerData.trigger, triggerData.untrigger
@@ -1634,14 +1633,6 @@ function GenericTrigger.Add(data, region)
 
               if prototype.includePets then
                 includePets = trigger.use_includePets == true and trigger.includePets or nil
-              end
-
-              if trigger.event == "Conditions" and (
-                trigger.use_instance_size ~= nil
-                or trigger.use_instance_difficulty ~= nil
-                or trigger.use_instance_type ~= nil
-              ) then
-                warnAboutDeprecatedInstanceFilters = true
               end
             end
           end
@@ -1808,21 +1799,6 @@ function GenericTrigger.Add(data, region)
                 L["COMBAT_LOG_EVENT_UNFILTERED without a filter is generally advised against as it’s very performance costly.\nFind more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Custom-Triggers#events"])
   else
     Private.AuraWarnings.UpdateWarning(data.uid, "spammy_event_warning")
-  end
-
-  if warnAboutDeprecatedInstanceFilters then
-    Private.AuraWarnings.UpdateWarning(data.uid, "deprecated_instance_filter", "warning",
-      string.format("%s\n|cffff0000%s\n%s\n%s|r\n\n%s\n%s",
-        L["This aura contains a |cffff0000Conditions trigger|r with one of the following deprecated filters:"],
-        L["Instance Size Type"],
-        L["Instance Difficulty"],
-        L["Instance Type"],
-        L["These instance filters have been migrated to a Location trigger and will be removed from the Condition trigger in a future update."],
-        L["Change your aura to use the new Location trigger or join the WeakAuras Discord server for help."]
-      )
-    )
-  else
-    Private.AuraWarnings.UpdateWarning(data.uid, "deprecated_instance_filter")
   end
 end
 
