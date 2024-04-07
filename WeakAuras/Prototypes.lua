@@ -10735,9 +10735,7 @@ Private.event_prototypes = {
         local zonegroupId = uiMapId and C_Map.GetMapGroupID(uiMapId)
         local instanceName, _, _, _, _, _, _, instanceId = GetInstanceInfo()
         local minimapZoneText = GetMinimapZoneText()
-
         local zoneText = GetZoneText()
-        local mapInfo = uiMapId and C_Map.GetMapInfo(uiMapId)
         local isIndoors = IsIndoors()
       ]=]
       return ret
@@ -10785,15 +10783,6 @@ Private.event_prototypes = {
         multiEntry = {
           operator = "or",
         },
-      },
-      {
-        name = "mapType",
-        display = L["Map Type"],
-        type = "select",
-        conditionType = "select",
-        init = "mapInfo and mapInfo.mapType",
-        values = "map_types",
-        store = true,
       },
       {
         name = "indoors",

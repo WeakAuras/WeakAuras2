@@ -2785,17 +2785,6 @@ if WeakAuras.IsRetail() then
 end
 
 ---@type table<number, string>
-Private.map_types = {
-  [Enum.UIMapType.Cosmic] = L["Cosmic"],
-  [Enum.UIMapType.World] = L["World"],
-  [Enum.UIMapType.Continent] = L["Continent"],
-  [Enum.UIMapType.Zone] = L["Zone"],
-  [Enum.UIMapType.Dungeon] = L["Dungeon"],
-  [Enum.UIMapType.Micro] = L["Micro"],
-  [Enum.UIMapType.Orphan] = L["Orphan"],
-}
-
----@type table<number, string>
 Private.TocToExpansion = {
    [1] = L["Classic"],
    [2] = L["Burning Crusade"],
