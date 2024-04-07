@@ -10703,32 +10703,16 @@ Private.event_prototypes = {
   },
   ["Location"] = {
     type = "unit",
-    events = function(trigger, untrigger)
-      local events = {}
-      if trigger.use_zoneIds ~= nil
-        or trigger.use_zone ~= nil
-        or trigger.use_subzone ~= nil
-        or trigger.use_mapType ~= nil
-      then
-        tinsert(events, "ZONE_CHANGED")
-        tinsert(events, "ZONE_CHANGED_INDOORS")
-        tinsert(events, "ZONE_CHANGED_NEW_AREA")
-        tinsert(events, "VEHICLE_UPDATE")
-      end
-      if trigger.use_indoors ~= nil then
-        tinsert(events, "MINIMAP_UPDATE_ZOOM")
-        tinsert(events, "ZONE_CHANGED_INDOORS")
-      end
-      if trigger.use_instanceDifficulty ~= nil
-         or trigger.use_instance_type ~= nil
-         or trigger.use_instance_size ~= nil
-      then
-        tinsert(events, "PLAYER_DIFFICULTY_CHANGED")
-      end
-      return {
-        ["events"] = events,
+    events = {
+      ["events"] = {
+        "ZONE_CHANGED",
+        "ZONE_CHANGED_INDOORS",
+        "ZONE_CHANGED_NEW_AREA",
+        "VEHICLE_UPDATE",
+        "MINIMAP_UPDATE_ZOOM",
+        "PLAYER_DIFFICULTY_CHANGED",
       }
-    end,
+    },
     internal_events = function(trigger, untrigger)
       local events = {"INSTANCE_LOCATION_CHECK"};
       if trigger.use_instance_difficulty ~= nil
