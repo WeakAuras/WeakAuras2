@@ -1772,7 +1772,7 @@ Private.load_prototype = {
       multiline = true,
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
       desc = get_zoneId_list,
-      preamble = "local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q, true)",
+      preamble = "local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q)",
       test = "zoneChecker:Check(zoneId, zonegroupId, instanceId, minimapZoneText)",
       optional = true,
     },
@@ -10727,9 +10727,6 @@ Private.event_prototypes = {
     name = WeakAuras.newFeatureString..L["Location"],
     init = function(trigger)
       local ret = [=[
-        local recursive = %s
-        local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q, recursive)
-
         local uiMapId = C_Map.GetBestMapForUnit("player")
         local zonegroupId = uiMapId and C_Map.GetMapGroupID(uiMapId)
         local instanceName, _, _, _, _, _, _, instanceId = GetInstanceInfo()
@@ -10739,7 +10736,7 @@ Private.event_prototypes = {
         local mapInfo = uiMapId and C_Map.GetMapInfo(uiMapId)
         local isIndoors = IsIndoors()
       ]=]
-      return ret:format(trigger.use_recursive and "true" or "nil", trigger.zoneIds or 0)
+      return ret
     end,
     statesParameter = "one",
     args = {
@@ -10749,20 +10746,8 @@ Private.event_prototypes = {
         type = "string",
         multiline = true,
         desc = get_zoneId_list,
+        preamble = "local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q)",
         test = "zoneChecker:Check(uiMapId, zonegroupId, instanceId, minimapZoneText)",
-      },
-      {
-        name = "recursive",
-        display = L["Recursive"],
-        desc = L["Enable this to recurse on each child map until it finds a match. Disable this to only include direct descendants."],
-        type = "toggle",
-        test = "true",
-        enable = function(trigger)
-          if trigger.use_zoneIds then
-            local zoneChecker = Private.ExecEnv.ParseZoneCheck(trigger.zoneIds)
-            return zoneChecker and zoneChecker.isChildFilter
-          end
-        end,
       },
       {
         name = "zoneId",

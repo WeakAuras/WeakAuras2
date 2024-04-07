@@ -6072,7 +6072,7 @@ function Private.ExecEnv.ParseNameCheck(name)
   return matches
 end
 
-function Private.ExecEnv.ParseZoneCheck(input, recursive)
+function Private.ExecEnv.ParseZoneCheck(input)
   if not input then return end
 
   local matcher = {
@@ -6087,8 +6087,7 @@ function Private.ExecEnv.ParseZoneCheck(input, recursive)
           self.zoneGroupIds[id] = true
         elseif prevChar == 'c' or prevChar == 'C' then
           self.zoneIds[id] = true
-          self.isChildFilter = true
-          local info = C_Map.GetMapChildrenInfo(id, nil, recursive)
+          local info = C_Map.GetMapChildrenInfo(id, nil, true)
           if info then
             for _,childInfo in pairs(info) do
               self.zoneIds[childInfo.mapID] = true
@@ -6107,7 +6106,6 @@ function Private.ExecEnv.ParseZoneCheck(input, recursive)
     zoneGroupIds = {},
     instanceIds = {},
     areaNames = {},
-    isChildFilter = false
   }
 
   local start = input:find('%d', 1) or 1
