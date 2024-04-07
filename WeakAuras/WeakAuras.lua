@@ -6110,7 +6110,7 @@ function Private.ExecEnv.ParseZoneCheck(input, recursive)
     isChildFilter = false
   }
 
-  local start = input:find('%d', 1)
+  local start = input:find('%d', 1) or 1
   local last = input:find('%D', start)
   while (last) do
     matcher:AddId(input, start, last - 1)
