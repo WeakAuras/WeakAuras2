@@ -10750,12 +10750,30 @@ Private.event_prototypes = {
         desc = get_zoneId_list,
         preamble = "local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q)",
         test = "zoneChecker:Check(uiMapId, zonegroupId, instanceId, minimapZoneText)",
+        conditionType = "string",
+        conditionPreamble = function(input)
+          return Private.ExecEnv.ParseZoneCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.zoneId, state.zonegroupId, state.instanceId, state.subzone)
+        end,
+        operator_types = "none",
       },
       {
         name = "zoneId",
         display = L["Zone ID"],
         conditionType = "number",
         init = "uiMapId",
+        store = true,
+        hidden = true,
+        test = "true",
+        noProgressSource = true,
+      },
+      {
+        name = "zonegroupId",
+        display = L["Zone Group ID"],
+        conditionType = "number",
+        init = "zonegroupId",
         store = true,
         hidden = true,
         test = "true",
@@ -10796,6 +10814,16 @@ Private.event_prototypes = {
         name = "instanceTitle",
         display = L["Instance Filters"],
         type = "description",
+      },
+      {
+        name = "instanceId",
+        display = L["Instance ID"],
+        conditionType = "number",
+        init = "instanceId",
+        store = true,
+        hidden = true,
+        test = "true",
+        noProgressSource = true,
       },
       {
         name = "instance",
