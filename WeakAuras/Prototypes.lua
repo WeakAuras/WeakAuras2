@@ -10762,22 +10762,18 @@ Private.event_prototypes = {
       {
         name = "zoneId",
         display = L["Zone ID"],
-        conditionType = "number",
         init = "uiMapId",
         store = true,
         hidden = true,
         test = "true",
-        noProgressSource = true,
       },
       {
         name = "zonegroupId",
         display = L["Zone Group ID"],
-        conditionType = "number",
         init = "zonegroupId",
         store = true,
         hidden = true,
         test = "true",
-        noProgressSource = true,
       },
       {
         name = "zone",
@@ -10818,12 +10814,10 @@ Private.event_prototypes = {
       {
         name = "instanceId",
         display = L["Instance ID"],
-        conditionType = "number",
         init = "instanceId",
         store = true,
         hidden = true,
         test = "true",
-        noProgressSource = true,
       },
       {
         name = "instance",
