@@ -293,8 +293,8 @@ local function BuildUidMap(data, children, type)
   --- @field originalName auraId The original id of the aura
   --- @field id auraId The current id of the aura, might have changed due to ids being unique
   --- @field data auraData The raw data, is non-authoritative on e.g. id, controlledChildren, parent, sortHybridTable
-  --- @field controlledChildren uid[] A array of child uids
-  --- @field parent uid The parent uid
+  --- @field controlledChildren? uid[] A array of child uids
+  --- @field parent? uid The parent uid
   --- @field sortHybrid boolean? optional bool !! the parent's sortHybridTable is split up and recorded per aura:
   ---                            nil, if the parent is not a dynamic group
   ---                            false/true based on the sortHybridTable of the dynamic group
@@ -302,10 +302,10 @@ local function BuildUidMap(data, children, type)
   ---                              import, otherwise nil
   --- @field matchedUid uid? for "update", the matched uid. Is from a different domain!
   --- @field diff any  for "update", the diff and the categories of that diff between the aura and its match
-  --- @field categories table the categories
-  --- @field index number helpers that transport data between phase 1 and 2
-  --- @field total number helpers that transport data between phase 1 and 2
-  --- @field parentIsDynamicGroup boolean helpers that transport data between phase 1 and 2
+  --- @field categories? table the categories
+  --- @field index? number helpers that transport data between phase 1 and 2
+  --- @field total? number helpers that transport data between phase 1 and 2
+  --- @field parentIsDynamicGroup? boolean helpers that transport data between phase 1 and 2
 
   --- @class UidMap
   --- @field map table<uid, UidMapData>
@@ -313,8 +313,6 @@ local function BuildUidMap(data, children, type)
   --- @field root uid uid of the root
   --- @field totalCount number
   --- @field idToUid table<auraId, uid> maps from id to uid
-
-  --- @type UidMap
   local uidMap = {
     --- @type table<uid, UidMapData>
     map = {
@@ -2166,6 +2164,7 @@ local methods = {
 
 local updateFrame
 local function ConstructUpdateFrame(frame)
+  ---@class GroupUpdateFrame: AceGUIFrame
   local group = AceGUI:Create("ScrollFrame");
   group.frame:SetParent(frame);
   group.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 16, -63);

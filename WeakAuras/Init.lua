@@ -31,7 +31,6 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field total number?
 --- @field inverse boolean?
 
-
 --- @alias non_transmissable_field table<string, non_transmissable_field|boolean>
 
 --- @class multiUnitUnits
@@ -142,7 +141,6 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 --- @field watched_trigger_events table<auraId, table<integer, table<integer, boolean>>>
 --- @field RegisterRegionType fun(regionType: string, createFunction: function, modifyFunction: function, defaults: table, properties: table|function|nil, validate: function?))
 
-
 --- @alias triggerTypes
 --- | "aura"
 --- | "aura2"
@@ -187,7 +185,6 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 ---@field desc string?
 ---@field store boolean?
 ---@field test string?
-
 
 ---@class prototypeData
 ---@field durationFunc (fun(trigger: triggerData): number, number, boolean?)|nil
@@ -560,6 +557,7 @@ function Private.RegisterRegionType(_, _, _ ,_)
 end
 
 ---@type fun(regionType: string, createOptions: function, icon: string|function, displayName: string, createThumbnail: function?, modifyThumbnail: function?, description: string?, templates: table?, getAnchors: function?)
+---@diagnostic disable-next-line: duplicate-set-field
 function Private.RegisterRegionOptions(_, _ , _ ,_ )
 end
 
@@ -587,12 +585,15 @@ Private.ExecEnv = {}
 
 -- If WeakAuras shuts down due to being installed on the wrong target, keep the bindings from erroring
 --- @type fun(type: string)
+---@diagnostic disable-next-line: duplicate-set-field
 function WeakAuras.StartProfile(_)
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function WeakAuras.StopProfile()
 end
 
+---@diagnostic disable-next-line: duplicate-set-field
 function WeakAuras.PrintProfile()
 end
 
