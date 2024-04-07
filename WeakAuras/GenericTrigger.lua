@@ -104,7 +104,7 @@ function WeakAuras.UnitExistsFixed(unit, smart)
 end
 
 ---@param input string
----@return string[] splitedString
+---@return string[] subStrings
 function WeakAuras.split(input)
   input = input or "";
   local ret = {};
