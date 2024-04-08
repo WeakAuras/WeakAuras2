@@ -1,8 +1,6 @@
 if not WeakAuras.IsLibsOK() then return end
----@type string
-local AddonName = ...
----@class Private
-local Private = select(2, ...)
+--- @type string, Private
+local AddonName, Private = ...
 Private.AtlasList = {
 "!Achievement-Wood-NineSlice-EdgeLeft",
 "!Achievement-Wood-NineSlice-EdgeRight",
