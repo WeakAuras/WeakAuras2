@@ -2026,7 +2026,9 @@ function Private.Modernize(data)
     if data.conditions then
       for conditionIndex, condition in ipairs(data.conditions) do
         for changeIndex, change in ipairs(condition.changes) do
-          change.property = string.gsub(change.property, "(sub.%d.tick_placement)(%d)", "%1s.%2")
+          if type(change.property) == "string" then
+            change.property = string.gsub(change.property, "(sub.%d.tick_placement)(%d)", "%1s.%2")
+          end
         end
       end
     end
