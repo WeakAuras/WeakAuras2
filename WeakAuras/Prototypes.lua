@@ -10719,9 +10719,9 @@ Private.event_prototypes = {
     },
     internal_events = function(trigger, untrigger)
       local events = {"INSTANCE_LOCATION_CHECK"};
-      if trigger.use_instance_difficulty ~= nil
-         or trigger.use_instance_type ~= nil
-         or trigger.use_instance_size ~= nil
+      if trigger.use_instanceDifficulty ~= nil
+         or trigger.use_instanceType ~= nil
+         or trigger.use_instanceSize ~= nil
       then
         tinsert(events, "WA_DELAYED_PLAYER_ENTERING_WORLD")
       end
