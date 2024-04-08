@@ -28,7 +28,7 @@ jobs:
         run: ./generate_changelog.sh
 
       - name: Save Changelog in Variable
-        uses: Stanzilla/cat@2.0.1
+        uses: Stanzilla/cat@2.0.2
         id: readChanglog
         with:
           path: CHANGELOG.md
@@ -38,7 +38,7 @@ jobs:
         run: /usr/bin/env python3 .github/scripts/generate_twitter_post.py
 
       - name: Save Twitter Post in Variable
-        uses: Stanzilla/cat@2.0.1
+        uses: Stanzilla/cat@2.0.2
         id: readTweet
         with:
             path: twitter_post.txt
