@@ -1348,8 +1348,7 @@ Private.load_prototype = {
           end
         end
       end or nil,
-      events = (WeakAuras.IsClassicEra() and {"CHARACTER_POINTS_CHANGED"})
-        or (WeakAuras.IsWrathOrCata() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE"})
+      events = (WeakAuras.IsClassicEraOrWrathOrCata() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE", "ACTIVE_TALENT_GROUP_CHANGED"})
         or (WeakAuras.IsRetail() and {"WA_TALENT_UPDATE"}),
       inverse = function(load)
         -- Check for multi select!
