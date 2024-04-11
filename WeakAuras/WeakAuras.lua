@@ -2551,24 +2551,6 @@ local function loadOrder(tbl, idtable)
     if(data.parent) then
       if(idtable[data.parent]) then
         if depends[data.parent] then
-          -- There was an unfortunate bug in update.lua in 2022 that resulted
-          -- in auras having a circular dependencies
-          -- Fix one of the two known cases here
-          -- We can probably remove this code in 2023 again
-          for d in pairs(depends) do
-            local uid = idtable[d].uid
-            if uid == "fjtz3A6LwBW" then -- Fojji - Deathknight UI, need to fixup a lot
-              local cycleRoot = d
-              idtable[cycleRoot].parent = nil
-
-              for d in pairs(depends) do
-                tDeleteItem(idtable[d].controlledChildren, cycleRoot)
-              end
-
-              return loadOrder(tbl, idtable)
-            end
-            coroutine.yield()
-          end
           error("Circular dependency in Private.AddMany between "..table.concat(depends, ", "));
         else
           if not(loaded[data.parent]) then
