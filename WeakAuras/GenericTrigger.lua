@@ -2845,7 +2845,7 @@ do
       startTimeCooldown = startTimeCooldown - 2^32 / 1000
     end
 
-    -- Default to
+    -- Default to GetSpellCharges
     ---@type boolean?
     local unifiedCooldownBecauseRune = false
     ---@type boolean?
