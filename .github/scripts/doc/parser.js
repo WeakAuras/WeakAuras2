@@ -20,7 +20,7 @@ function isNilable(obj) {
 
 function wowType(obj) {
   if (obj.view.match("string")) {
-    return "cstring";
+    return "string";
   }
   if (obj.view.match("boolean")) {
     return "bool";
@@ -30,6 +30,9 @@ function wowType(obj) {
   }
   if (obj.view === "unknown|nil") {
     return "unknown"
+  }
+  if (obj.view === "(\"friendly\"|\"hostile\")?") { // i dont know how to handle this alias properly
+    return "string"
   }
   return obj.view;
 }
