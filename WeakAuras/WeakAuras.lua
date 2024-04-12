@@ -373,6 +373,8 @@ do
   end
 end
 
+---@param unit UnitToken
+---@return boolean isPet
 WeakAuras.UnitIsPet = function(unit)
   return WeakAuras.petUnitToUnit[unit] ~= nil
 end
@@ -2065,6 +2067,7 @@ function Private.UIDtoID(uid)
   return UIDtoID[uid]
 end
 
+---@private
 function WeakAuras.Delete(data)
   local id = data.id;
   local uid = data.uid
@@ -3178,6 +3181,7 @@ function pAdd(data, simpleChange)
   end
 end
 
+---@private
 function WeakAuras.Add(data, simpleChange)
   if (data.internalVersion or 0) < internalVersion then
     Private.SetMigrationSnapshot(data.uid, data)
@@ -5874,8 +5878,10 @@ function Private.IsCLEUSubevent(subevent)
   return false
 end
 
--- SafeToNumber converts a string to number, but only if it fits into a unsigned 32bit integer
--- The C api often takes only 32bit values, and complains if passed a value outside
+--- SafeToNumber converts a string to number, but only if it fits into a unsigned 32bit integer
+--- The C api often takes only 32bit values, and complains if passed a value outside
+---@param input any
+---@return number|nil number
 function WeakAuras.SafeToNumber(input)
   local nr = tonumber(input)
   return nr and (nr < 2147483648 and nr > -2147483649) and nr or nil
@@ -5892,6 +5898,8 @@ local textSymbols = {
   ["{rt8}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:0|t "
 }
 
+---@param txt string
+---@return string result
 function WeakAuras.ReplaceRaidMarkerSymbols(txt)
   local start = 1
 
@@ -5979,6 +5987,8 @@ do
     trackableUnits["nameplate" .. i] = true
   end
 
+  ---@param unit UnitToken
+  ---@return boolean result
   function WeakAuras.IsUntrackableSoftTarget(unit)
     if not Private.soft_target_cvars[unit] then return end
     -- technically this is incorrect if user doesn't have KBM and sets CVar to "2" (KBM only)
@@ -5989,6 +5999,8 @@ do
     return (tonumber(C_CVar.GetCVar(Private.soft_target_cvars[unit])) or 0) < threshold
   end
 
+  ---@param unit UnitToken
+  ---@return boolean result
   function WeakAuras.UntrackableUnit(unit)
     return not trackableUnits[unit]
   end
@@ -5996,6 +6008,9 @@ end
 
 do
   local ownRealm = select(2, UnitFullName("player"))
+  ---@param unit UnitToken
+  ---@return string name
+  ---@return string realm
   function WeakAuras.UnitNameWithRealm(unit)
     ownRealm = ownRealm or select(2, UnitFullName("player"))
     local name, realm = UnitFullName(unit)
@@ -6187,11 +6202,14 @@ end
 
 -- Helper function to make the templates not care, how the generic triggers
 -- are categorized
+---@private
 function WeakAuras.GetTriggerCategoryFor(triggerType)
   local prototype = Private.event_prototypes[triggerType]
   return prototype and prototype.type
 end
 
+---@param unit UnitToken
+---@return number stagger
 function WeakAuras.UnitStagger(unit)
   return UnitStagger(unit) or 0
 end
