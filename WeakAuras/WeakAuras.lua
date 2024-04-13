@@ -442,6 +442,18 @@ function Private.RegisterRegionType(name, createFunction, modifyFunction, defaul
   end
 end
 
+---@private
+---@param name string
+---@param displayName string
+---@param supportFunction function
+---@param createFunction function
+---@param modifyFunction function
+---@param onAcquire function
+---@param onRelease function
+---@param default table
+---@param addDefaultsForNewAura function
+---@param properties table
+---@param supportsAdd boolean
 function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, createFunction, modifyFunction, onAcquire, onRelease, default, addDefaultsForNewAura, properties, supportsAdd)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterSubRegionType - name is not defined", 2);
@@ -568,6 +580,10 @@ function Private.RegisterRegionOptions(name, createFunction, icon, displayName, 
   end
 end
 
+---@private
+---@param name string
+---@param createFunction function
+---@param description string
 function WeakAuras.RegisterSubRegionOptions(name, createFunction, description)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterSubRegionOptions - name is not defined", 2);
@@ -1511,6 +1527,10 @@ end
 
 local function CreateEncounterTable(encounter_id)
   local _, _, _, _, _, _, _, instanceId = GetInstanceInfo()
+  ---@class CurrentEncounter
+  ---@field encounterId number
+  ---@field zone_id number
+  ---@field boss_guids number[]
   WeakAuras.CurrentEncounter = {
     id = encounter_id,
     zone_id = instanceId,
@@ -1609,14 +1629,17 @@ local function GetInstanceTypeAndSize()
   return "none", "none", nil, nil, nil
 end
 
+---@return string instanceType
 function WeakAuras.InstanceType()
-  return GetInstanceTypeAndSize(), nil
+  return (GetInstanceTypeAndSize())
 end
 
+---@return string difficulty
 function WeakAuras.InstanceDifficulty()
   return select(2, GetInstanceTypeAndSize())
 end
 
+---@return number? difficultyID
 function WeakAuras.InstanceTypeRaw()
   return select(5, GetInstanceTypeAndSize())
 end

@@ -3352,9 +3352,8 @@ end
 local watchUnitChange
 
 -- Nameplates only distinguish between friends and everyone else
----@alias reaction "hostile" | "friendly"
 ---@param unit UnitToken
----@return reaction? reaction
+---@return string? reaction
 function WeakAuras.GetPlayerReaction(unit)
   local r = UnitReaction("player", unit)
   if r then
