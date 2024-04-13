@@ -3,7 +3,7 @@ local AddonName = ...
 ---@class Private
 local Private = select(2, ...)
 
-local internalVersion = 72
+local internalVersion = 73
 
 -- Lua APIs
 local insert = table.insert
@@ -1848,9 +1848,11 @@ if WeakAuras.IsRetail() then
   loadFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
 else
   loadFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
-end
-if WeakAuras.IsWrathOrCata() then
   loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+  loadFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+end
+
+if WeakAuras.IsWrathOrCata() then
   loadFrame:RegisterEvent("VEHICLE_UPDATE");
   loadFrame:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR")
   loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR");
@@ -2564,6 +2566,9 @@ local function loadOrder(tbl, idtable)
   return order
 end
 
+---@type fun(data: auraData)
+local pAdd
+
 ---@param tbl auraData[]
 ---@param takeSnapshots boolean
 function Private.AddMany(tbl, takeSnapshots)
@@ -2617,7 +2622,7 @@ function Private.AddMany(tbl, takeSnapshots)
     if data.parent and bads[data.parent] then
       bads[data.id] = true
     else
-      local ok = xpcall(WeakAuras.PreAdd, geterrorhandler(), data)
+      local ok = xpcall(WeakAuras.PreAdd, Private.GetErrorHandlerUid(data.uid, "PreAdd"), data)
       if not ok then
         prettyPrint(L["Unable to modernize aura '%s'. This is probably due to corrupt data or a bad migration, please report this to the WeakAuras team."]:format(data.id))
         if data.regionType == "dynamicgroup" or data.regionType == "group" then
@@ -2633,9 +2638,16 @@ function Private.AddMany(tbl, takeSnapshots)
 
   for _, data in ipairs(order) do
     if not bads[data.id] then
-      WeakAuras.Add(data)
-      coroutine.yield()
+      if data.parent and bads[data.parent] then
+        bads[data.id] = true
+      else
+        local ok = xpcall(pAdd, Private.GetErrorHandlerUid(data.uid, "pAdd"), data)
+        if not ok then
+          bads[data.id] = true
+        end
+      end
     end
+    coroutine.yield()
   end
 
   for id in pairs(anchorTargets) do
@@ -3008,7 +3020,7 @@ function WeakAuras.PreAdd(data)
   data.expanded = nil
 end
 
-local function pAdd(data, simpleChange)
+function pAdd(data, simpleChange)
   local id = data.id;
   if not(id) then
     error("Improper arguments to WeakAuras.Add - id not defined");

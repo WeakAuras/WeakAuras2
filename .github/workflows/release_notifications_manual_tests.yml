@@ -35,7 +35,7 @@ jobs:
 
       # save the output of the changelog into a variable.
       - name: save changelog in variable
-        uses: Stanzilla/cat@2.0.1
+        uses: Stanzilla/cat@2.0.2
         id: readChanglog
         with:
           path: .github/scripts/test_files/large_changelog_example.md # use the custom large changelog
@@ -48,7 +48,7 @@ jobs:
 
       # save the generated information into a variable.
       - name: save twitter post to variable
-        uses: Stanzilla/cat@2.0.1
+        uses: Stanzilla/cat@2.0.2
         id: readTweet
         with:
             path: twitter_post.txt
@@ -67,7 +67,7 @@ jobs:
     steps:
     # using Discord webhook to send release information
       - name: Discord Release Webhook Action
-        uses: tsickert/discord-webhook@v5.5.0
+        uses: tsickert/discord-webhook@v6.0.0
         if: success()
         with:
           webhook-url: ${{ secrets.RELEASE_WEBHOOK_URL }}
@@ -102,7 +102,7 @@ jobs:
     steps:
       - name: Mastodon Notification
         id: mastodon
-        uses: cbrgm/mastodon-github-action@v2.0.5
+        uses: cbrgm/mastodon-github-action@v2.0.6
         with:
           access-token: ${{ secrets.MASTODON_ACCESS_TOKEN }} # access token
           url: ${{ secrets.MASTODON_URL }} # https://example.social
