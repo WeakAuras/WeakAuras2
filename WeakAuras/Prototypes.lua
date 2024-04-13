@@ -10711,21 +10711,11 @@ Private.event_prototypes = {
         "ZONE_CHANGED",
         "ZONE_CHANGED_INDOORS",
         "ZONE_CHANGED_NEW_AREA",
-        "VEHICLE_UPDATE",
         "MINIMAP_UPDATE_ZOOM",
         "PLAYER_DIFFICULTY_CHANGED",
       }
     },
-    internal_events = function(trigger, untrigger)
-      local events = {"INSTANCE_LOCATION_CHECK"};
-      if trigger.use_instanceDifficulty ~= nil
-         or trigger.use_instanceType ~= nil
-         or trigger.use_instanceSize ~= nil
-      then
-        tinsert(events, "WA_DELAYED_PLAYER_ENTERING_WORLD")
-      end
-      return events;
-    end,
+    internal_events = {"INSTANCE_LOCATION_CHECK"},
     force_events = "INSTANCE_LOCATION_CHECK",
     name = WeakAuras.newFeatureString..L["Location"],
     init = function(trigger)
