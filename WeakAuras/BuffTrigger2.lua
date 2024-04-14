@@ -664,6 +664,24 @@ local function FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
   return bestMatch, matchCount, stackCount, nextCheck
 end
 
+--- Deprecated in 10.1.5
+local GetTexCoordsForRole = function(role)
+  local textureHeight, textureWidth = 256, 256
+  local roleHeight, roleWidth = 67, 67
+
+  if ( role == "GUIDE" ) then
+    return GetTexCoordsByGrid(1, 1, textureWidth, textureHeight, roleWidth, roleHeight)
+  elseif ( role == "TANK" ) then
+    return GetTexCoordsByGrid(1, 2, textureWidth, textureHeight, roleWidth, roleHeight)
+  elseif ( role == "HEALER" ) then
+    return GetTexCoordsByGrid(2, 1, textureWidth, textureHeight, roleWidth, roleHeight)
+  elseif ( role == "DAMAGER" ) then
+    return GetTexCoordsByGrid(2, 2, textureWidth, textureHeight, roleWidth, roleHeight)
+  else
+    error("Unknown role: "..tostring(role))
+  end
+end
+
 local roleIcons = {
   DAMAGER = CreateTextureMarkup([=[Interface\LFGFrame\UI-LFG-ICON-ROLES]=], 256, 256, 0, 0, GetTexCoordsForRole("DAMAGER")),
   HEALER = CreateTextureMarkup([=[Interface\LFGFrame\UI-LFG-ICON-ROLES]=], 256, 256, 0, 0, GetTexCoordsForRole("HEALER")),

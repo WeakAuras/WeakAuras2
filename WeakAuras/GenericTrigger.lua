@@ -56,7 +56,6 @@ local tinsert, tconcat, wipe = table.insert, table.concat, wipe
 local tostring, pairs, type = tostring, pairs, type
 local error, setmetatable = error, setmetatable
 local CombatLogGetCurrentEventInfo = CombatLogGetCurrentEventInfo;
-local GetItemCooldown = GetItemCooldown or (C_Container and C_Container.GetItemCooldown) or nil
 
 -- WoW APIs
 local IsPlayerMoving = IsPlayerMoving
@@ -1907,7 +1906,7 @@ do
   function WeakAuras.GetSwingTimerInfo(hand)
     if(hand == "main") then
       local itemId = GetInventoryItemID("player", mh);
-      local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
+      local name, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemId or 0);
       if(lastSwingMain) then
         return swingDurationMain, lastSwingMain + swingDurationMain - mainSwingOffset, name, icon;
       elseif WeakAuras.IsRetail() and lastSwingRange then
@@ -1917,7 +1916,7 @@ do
       end
     elseif(hand == "off") then
       local itemId = GetInventoryItemID("player", oh);
-      local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
+      local name, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemId or 0);
       if(lastSwingOff) then
         return swingDurationOff, lastSwingOff + swingDurationOff, name, icon;
       else
@@ -1925,7 +1924,7 @@ do
       end
     elseif(hand == "ranged") then
       local itemId = GetInventoryItemID("player", ranged);
-      local name, _, _, _, _, _, _, _, _, icon = GetItemInfo(itemId or 0);
+      local name, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(itemId or 0);
       if (lastSwingRange) then
         return swingDurationRange, lastSwingRange + swingDurationRange, name, icon;
       else
@@ -3015,7 +3014,7 @@ do
   ---@type fun()
   function Private.CheckItemCooldowns()
     for id, _ in pairs(items) do
-      local startTime, duration, enabled = GetItemCooldown(id);
+      local startTime, duration, enabled = C_Container.GetItemCooldown(id);
       -- TODO: In 10.2.6 the apis return values changed from 1,0 for enabled to true, false
       -- We should adjust once its on all versions
       if enabled == false then
@@ -3260,7 +3259,7 @@ do
       items[id] = true;
       -- TODO: In 10.2.6 the apis return values changed from 1,0 for enabled to true, false
       -- We should adjust once its on all versions
-      local startTime, duration, enabled = GetItemCooldown(id);
+      local startTime, duration, enabled = C_Container.GetItemCooldown(id);
       if (duration == 0) then
         enabled = 1;
       end
@@ -4618,7 +4617,7 @@ WeakAuras.GetBonusIdInfo = function(ids, specificSlot)
     for slot in pairs(checkSlots) do
       local itemLink = GetInventoryItemLink('player', slot)
       if itemLink and findIdInLink(id, itemLink, 1) then
-        local itemID, _, _, _, icon = GetItemInfoInstant(itemLink)
+        local itemID, _, _, _, icon = C_Item.GetItemInfoInstant(itemLink)
         local itemName = itemLink:match("%[(.*)%]")
         return id, itemID, itemName, icon, slot, Private.item_slot_types[slot]
       end
@@ -4631,7 +4630,7 @@ end
 ---@return boolean|nil isItemEquipped
 WeakAuras.CheckForItemEquipped = function(itemName, specificSlot)
   if not specificSlot then
-    return IsEquippedItem(itemName or '')
+    return C_Item.IsEquippedItem(itemName or '')
   else
     local item = Item:CreateFromEquipmentSlot(specificSlot)
     if item and not item:IsItemEmpty() then
@@ -4643,7 +4642,7 @@ end
 Private.ExecEnv.GetItemSubClassInfo = function(i)
   local subClassId = i % 256
   local classId = (i - subClassId) / 256
-  return GetItemSubClassInfo(classId, subClassId)
+  return C_Item.GetItemSubClassInfo(classId, subClassId)
 end
 
 Private.ExecEnv.IsEquippedItemType = function(itemType, itemSlot)
@@ -4652,11 +4651,11 @@ Private.ExecEnv.IsEquippedItemType = function(itemType, itemSlot)
     if itemId then
       local triggerSubClassId = itemType % 256
       local triggerClassId = (itemType - triggerSubClassId) / 256
-      local _, _, _, _, _, classId, subclassId = GetItemInfoInstant(itemId)
+      local _, _, _, _, _, classId, subclassId = C_Item.GetItemInfoInstant(itemId)
       return classId == triggerClassId and subclassId == triggerSubClassId
     end
   else
-    return IsEquippedItemType(Private.ExecEnv.GetItemSubClassInfo(itemType) or '')
+    return C_Item.IsEquippedItemType(Private.ExecEnv.GetItemSubClassInfo(itemType) or '')
   end
 end
 

@@ -3,7 +3,7 @@ local AddonName, TemplatePrivate = ...
 local WeakAuras = WeakAuras
 if not WeakAuras.IsClassicEra() then return end
 local L = WeakAuras.L
-local GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetItemInfo, GetSpellDescription, C_Timer, Spell
+local GetSpellInfo, tinsert, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetSpellDescription, C_Timer, Spell
 
 
 local SoD = C_Seasons and C_Seasons.GetActiveSeason and C_Seasons.GetActiveSeason() == 2
@@ -1197,7 +1197,7 @@ local function handleItem(item)
   if (item.spell) then
     local name, icon, _;
     if (item.type == "item") then
-      name, _, _, _, _, _, _, _, _, icon = GetItemInfo(item.spell);
+      name, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(item.spell);
       if (name == nil) then
         name = L["Unknown Item"] .. " " .. tostring(item.spell);
         waitingForItemInfo = true;
@@ -1220,7 +1220,7 @@ local function handleItem(item)
       item.title = item.titlePrefix .. item.title;
     end
     if (item.titleItemPrefix) then
-      local prefix = GetItemInfo(item.titleItemPrefix);
+      local prefix = C_Item.GetItemInfo(item.titleItemPrefix);
       if (prefix) then
         item.title = prefix .. "-" .. item.title;
       else

@@ -8,13 +8,13 @@ local Private = select(2, ...)
 local tinsert, tsort = table.insert, table.sort
 local tostring = tostring
 local select, pairs, type = select, pairs, type
-local ceil, min = ceil, min
+local ceil = ceil
 
 -- WoW APIs
 local GetTalentInfo = GetTalentInfo
-local GetNumSpecializationsForClassID, GetSpecialization = GetNumSpecializationsForClassID, GetSpecialization
+local GetSpecialization = GetSpecialization
 local UnitClass = UnitClass
-local GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon = GetSpellInfo, GetItemInfo, GetItemCount, GetItemIcon
+local GetSpellInfo = GetSpellInfo
 local GetShapeshiftFormInfo, GetShapeshiftForm = GetShapeshiftFormInfo, GetShapeshiftForm
 local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitCastingInfo, UnitChannelInfo
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
@@ -1150,7 +1150,7 @@ do
   -- Returns the set id OR causes WA_DELAYED_SET_INFORMATION after the item information is available
   function Private.GetSetId(itemId)
     if itemId  then
-      local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, setID = GetItemInfo(itemId)
+      local name, _, _, _, _, _, _, _, _, _, _, _, _, _, _, setID = C_Item.GetItemInfo(itemId)
       if not name then
         if next(waitingFor) == nil then
           itemDataLoadFrame:RegisterEvent("GET_ITEM_INFO_RECEIVED")
@@ -1907,7 +1907,7 @@ Private.load_prototype = {
       multiEntry = {
         operator = "or"
       },
-      test = "IsEquippedItem(GetItemInfo(%s) or '')",
+      test = "C_Item.IsEquippedItem(C_Item.GetItemInfo(%s) or '')",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"}
     },
     {
@@ -1917,14 +1917,14 @@ Private.load_prototype = {
       multiEntry = {
         operator = "or"
       },
-      test = "not IsEquippedItem(GetItemInfo(%s) or '')",
+      test = "not C_Item.IsEquippedItem(C_Item.GetItemInfo(%s) or '')",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"}
     },
     {
       name = "itemtypeequipped",
       display = L["Item Type Equipped"],
       type = "multiselect",
-      test = "IsEquippedItemType(Private.ExecEnv.GetItemSubClassInfo(%s) or '')",
+      test = "C_Item.IsEquippedItemType(Private.ExecEnv.GetItemSubClassInfo(%s) or '')",
       events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
       values = "item_weapon_types"
     },
@@ -5767,7 +5767,7 @@ Private.event_prototypes = {
         test = "true",
         conditionType = "bool",
         conditionTest = function(state, needle)
-          return state and state.show and (UnitExists('target') and IsItemInRange(state.itemname, 'target')) == (needle == 1)
+          return state and state.show and (UnitExists('target') and C_Item.IsItemInRange(state.itemname, 'target')) == (needle == 1)
         end,
         conditionEvents = AddTargetConditionEvents({
           "WA_SPELL_RANGECHECK",
@@ -5793,7 +5793,7 @@ Private.event_prototypes = {
       return duration, startTime + duration;
     end,
     nameFunc = function(trigger)
-      local name = GetItemInfo(trigger.itemName or 0);
+      local name = C_Item.GetItemInfo(trigger.itemName or 0);
       if(name) then
         return name;
       else
@@ -5801,7 +5801,7 @@ Private.event_prototypes = {
       end
     end,
     iconFunc = function(trigger)
-      local _, _, _, _, icon = GetItemInfoInstant(trigger.itemName or 0);
+      local _, _, _, _, icon = C_Item.GetItemInfoInstant(trigger.itemName or 0);
       return icon;
     end,
     hasItemID = true,
@@ -5951,7 +5951,7 @@ Private.event_prototypes = {
     nameFunc = function(trigger)
       local item = GetInventoryItemID("player", trigger.itemSlot or 0);
       if (item) then
-        return (GetItemInfo(item))
+        return (C_Item.GetItemInfo(item))
       end
     end,
     stacksFunc = function(trigger)
@@ -5991,7 +5991,7 @@ Private.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      local name = GetItemInfo(trigger.itemName or 0);
+      local name = C_Item.GetItemInfo(trigger.itemName or 0);
       if(name) then
         return name;
       else
@@ -5999,7 +5999,7 @@ Private.event_prototypes = {
       end
     end,
     iconFunc = function(trigger)
-      local _, _, _, _, icon = GetItemInfoInstant(trigger.itemName or 0);
+      local _, _, _, _, icon = C_Item.GetItemInfoInstant(trigger.itemName or 0);
       return icon;
     end,
     hasItemID = true,
@@ -6031,7 +6031,7 @@ Private.event_prototypes = {
     nameFunc = function(trigger)
       local item = GetInventoryItemID("player", trigger.itemSlot or 0);
       if (item) then
-        return (GetItemInfo(item))
+        return (C_Item.GetItemInfo(item))
       else
         return ""
       end
@@ -7093,9 +7093,9 @@ Private.event_prototypes = {
         local itemName = %s
         local exactSpellMatch = %s
         if not exactSpellMatch and tonumber(itemName) then
-          itemName = GetItemInfo(itemName)
+          itemName = C_Item.GetItemInfo(itemName)
         end
-        local count = GetItemCount(itemName or "", %s, %s);
+        local count = C_Item.GetItemCount(itemName or "", %s, %s);
         local reagentQuality, reagentQualityTexture
         if WeakAuras.IsRetail() and itemName then
           reagentQuality = C_TradeSkillUI.GetItemReagentQualityByItemInfo(itemName)
@@ -7183,7 +7183,7 @@ Private.event_prototypes = {
       },
       {
         name = "icon",
-        init = "GetItemIcon(itemName or '')",
+        init = "C_Item.GetItemIconByID(itemName or '')",
         hidden = true,
         store = true,
         test = "true"
@@ -8171,7 +8171,7 @@ Private.event_prototypes = {
 
       local ret = [[
         local inverse = %s;
-        local itemName = GetItemInfo(%s);
+        local itemName = C_Item.GetItemInfo(%s);
         local itemSlot = %s;
         local equipped = WeakAuras.CheckForItemEquipped(itemName, itemSlot);
       ]];
@@ -8205,11 +8205,11 @@ Private.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      local name = GetItemInfo(trigger.itemName);
+      local name = C_Item.GetItemInfo(trigger.itemName);
       return name;
     end,
     iconFunc = function(trigger)
-      local _, _, _, _, icon = GetItemInfoInstant(trigger.itemName or 0);
+      local _, _, _, _, icon = C_Item.GetItemInfoInstant(trigger.itemName or 0);
       return icon;
     end,
     hasItemID = true,

@@ -62,7 +62,7 @@ local function CorrectItemName(input)
   if(inputId) then
     return inputId;
   elseif(input) then
-    local _, link = GetItemInfo(input);
+    local _, link = C_Item.GetItemInfo(input);
     if(link) then
       local itemId = link:match("item:(%d+)");
       return tonumber(itemId);
@@ -669,7 +669,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                   local _, _, icon = GetSpellInfo(value);
                   return icon and tostring(icon) or "", 18, 18;
                 elseif(arg.type == "item") then
-                  local _, _, _, _, _, _, _, _, _, icon = GetItemInfo(value);
+                  local _, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(value);
                   return icon and tostring(icon) or "", 18, 18;
                 end
               else
@@ -678,7 +678,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             end,
             disabled = function()
               local value = getValue(trigger, nil, realname, multiEntry, entryNumber)
-              return not ((arg.type == "aura" and value and spellCache.GetIcon(value)) or (arg.type == "spell" and value and GetSpellInfo(value)) or (arg.type == "item" and value and GetItemIcon(value or '')))
+              return not ((arg.type == "aura" and value and spellCache.GetIcon(value)) or (arg.type == "spell" and value and GetSpellInfo(value)) or (arg.type == "item" and value and C_Item.GetItemIconByID(value or '')))
             end
           };
           order = order + 1;
@@ -700,7 +700,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                       return tostring(value)
                     end
                   else
-                    local name = GetItemInfo(value);
+                    local name = C_Item.GetItemInfo(value);
                     if name then
                       return name;
                     end
