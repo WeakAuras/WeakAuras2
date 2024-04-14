@@ -9,8 +9,6 @@ WeakAuras = {}
 WeakAuras.L = {}
 Private.frames = {}
 
-local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetadata
-
 --- @alias uid string
 --- @alias auraId string
 
@@ -375,11 +373,11 @@ local GetAddOnMetadata = C_AddOns and C_AddOns.GetAddOnMetadata or GetAddOnMetad
 WeakAuras.normalWidth = 1.3
 WeakAuras.halfWidth = WeakAuras.normalWidth / 2
 WeakAuras.doubleWidth = WeakAuras.normalWidth * 2
-local versionStringFromToc = GetAddOnMetadata("WeakAuras", "Version")
+local versionStringFromToc = C_AddOns.GetAddOnMetadata("WeakAuras", "Version")
 local versionString = "@project-version@"
 local buildTime = "@build-time@"
 
-local flavorFromToc = GetAddOnMetadata("WeakAuras", "X-Flavor")
+local flavorFromToc = C_AddOns.GetAddOnMetadata("WeakAuras", "X-Flavor")
 local flavorFromTocToNumber = {
   Vanilla = 1,
   TBC = 2,
@@ -470,8 +468,8 @@ WeakAuras.prettyPrint = function(...)
 end
 
 -- Force enable WeakAurasCompanion and Archive because some addon managers interfere with it
-EnableAddOn("WeakAurasCompanion")
-EnableAddOn("WeakAurasArchive")
+C_AddOns.EnableAddOn("WeakAurasCompanion")
+C_AddOns.EnableAddOn("WeakAurasArchive")
 
 local libsAreOk = true
 do

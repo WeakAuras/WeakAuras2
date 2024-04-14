@@ -1829,13 +1829,13 @@ Private.loss_of_control_types = {
 
 ---@type table<number, string>
 Private.main_spell_schools = {
-  [1] = GetSchoolString(1),
-  [2] = GetSchoolString(2),
-  [4] = GetSchoolString(4),
-  [8] = GetSchoolString(8),
-  [16] = GetSchoolString(16),
-  [32] = GetSchoolString(32),
-  [64] = GetSchoolString(64),
+  [1] = C_Spell.GetSchoolString(1),
+  [2] = C_Spell.GetSchoolString(2),
+  [4] = C_Spell.GetSchoolString(4),
+  [8] = C_Spell.GetSchoolString(8),
+  [16] = C_Spell.GetSchoolString(16),
+  [32] = C_Spell.GetSchoolString(32),
+  [64] = C_Spell.GetSchoolString(64),
 }
 
 ---@type table<string, table<string, string>>
@@ -3990,12 +3990,12 @@ end
 
 for i = 0, 20 do
   if not skippedWeaponTypes[i] then
-    Private.item_weapon_types[2 * 256 + i] = GetItemSubClassInfo(2, i)
+    Private.item_weapon_types[2 * 256 + i] = C_Item.GetItemSubClassInfo(2, i)
   end
 end
 
 -- Shields
-Private.item_weapon_types[4 * 256 + 6] = GetItemSubClassInfo(4, 6)
+Private.item_weapon_types[4 * 256 + 6] = C_Item.GetItemSubClassInfo(4, 6)
 WeakAuras.item_weapon_types = Private.item_weapon_types
 
 WeakAuras.StopMotion = {}
