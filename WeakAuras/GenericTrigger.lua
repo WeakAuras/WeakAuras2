@@ -863,6 +863,7 @@ function WeakAuras.ScanUnitEvents(event, unit, ...)
   Private.StopProfileSystem("generictrigger " .. event .. " " .. unit)
 end
 
+---@private
 ---@param event_list table<string>
 ---@param event string
 ---@param arg1? any
@@ -2105,6 +2106,7 @@ do
     Private.StopProfileSystem("generictrigger swing");
   end
 
+  ---@private
   function WeakAuras.InitSwingTimer()
     if not(swingTimerFrame) then
       swingTimerFrame = CreateFrame("Frame");
@@ -2485,6 +2487,7 @@ do
 
   local initEssenceCooldown = false
   local essenceCache = {{},{},{},{},{},{}}
+  ---@private
   function WeakAuras.InitEssenceCooldown()
     if initEssenceCooldown then
       return true
@@ -2843,8 +2846,11 @@ do
       startTimeCooldown = startTimeCooldown - 2^32 / 1000
     end
 
-    -- Default to GetSpellCharges
-    local unifiedCooldownBecauseRune, cooldownBecauseRune = false, false;
+    -- Default to
+    ---@type boolean?
+    local unifiedCooldownBecauseRune = false
+    ---@type boolean?
+    local cooldownBecauseRune = false
     -- Paused cooldowns are:
     -- Spells like Presence of Mind/Nature's Swiftness that start their cooldown after the effect is consumed
     -- But also oddly some Evoker spells
@@ -3145,12 +3151,14 @@ do
     Private.CheckItemSlotCooldowns();
   end
 
+  ---@private
   function WeakAuras.WatchGCD()
     if not(cdReadyFrame) then
       Private.InitCooldownReady();
     end
   end
 
+  ---@private
   function WeakAuras.WatchRuneCooldown(id)
     if not(cdReadyFrame) then
       Private.InitCooldownReady();
@@ -3179,6 +3187,7 @@ do
     end
   end
 
+  ---@private
   function WeakAuras.WatchSpellCooldown(id, ignoreRunes, followoverride)
     if not(cdReadyFrame) then
       Private.InitCooldownReady();
@@ -3240,6 +3249,7 @@ do
     end
   end
 
+  ---@private
   function WeakAuras.WatchItemCooldown(id)
     if not(cdReadyFrame) then
       Private.InitCooldownReady();
@@ -3271,6 +3281,7 @@ do
     end
   end
 
+  ---@private
   function WeakAuras.WatchItemSlotCooldown(id)
     if not(cdReadyFrame) then
       Private.InitCooldownReady();
@@ -3320,6 +3331,7 @@ do
     end);
   end
 
+  ---@private
   function WeakAuras.WatchSpellActivation(id)
     if (not id) then
       return;
@@ -3340,9 +3352,8 @@ end
 local watchUnitChange
 
 -- Nameplates only distinguish between friends and everyone else
----@alias reaction "hostile" | "friendly"
 ---@param unit UnitToken
----@return reaction? reaction
+---@return string? reaction
 function WeakAuras.GetPlayerReaction(unit)
   local r = UnitReaction("player", unit)
   if r then
@@ -3564,11 +3575,14 @@ if WeakAuras.IsClassicEraOrWrath() then
     end
   end
 
+  ---@return integer? spellID
   function WeakAuras.GetQueuedSpell()
     return queuedSpellFrame and queuedSpellFrame.queuedSpell
   end
 end
 
+---@param powerTypeToCheck integer
+---@return number? cost
 function WeakAuras.GetSpellCost(powerTypeToCheck)
   local spellID = select(9, WeakAuras.UnitCastingInfo("player"))
   if WeakAuras.IsClassicEraOrWrath() and not spellID then
@@ -3602,6 +3616,7 @@ do
   Private.frames["Temporary Enchant Handler"] = tenchFrame;
   local tenchTip;
 
+  ---@private
   function WeakAuras.TenchInit()
     if not(tenchFrame) then
       tenchFrame = CreateFrame("Frame");
@@ -3710,6 +3725,7 @@ end
 do
   local petFrame = nil
   Private.frames["Pet Use Handler"] = petFrame;
+  ---@private
   function WeakAuras.WatchForPetDeath()
     if not(petFrame) then
       petFrame = CreateFrame("Frame");
@@ -3727,6 +3743,7 @@ end
 do
   local castLatencyFrame
 
+  ---@private
   function WeakAuras.WatchForCastLatency()
     if not castLatencyFrame then
       ---@class CastLatencyFrame: FrameScriptObject
@@ -3762,6 +3779,7 @@ do
     end
   end
 
+  ---@return number castLatencyF
   function WeakAuras.GetCastLatency()
     return castLatencyFrame and castLatencyFrame.timeDiff or 0
   end
@@ -3799,6 +3817,7 @@ do
   end
 
   Private.frames["Nameplate Target Handler"] = nameplateTargetFrame
+  ---@private
   function WeakAuras.WatchForNameplateTargetChange()
     if not nameplateTargetFrame then
       nameplateTargetFrame = CreateFrame("Frame")
@@ -3835,6 +3854,7 @@ do
     Private.StopProfileSystem("generictrigger");
   end
 
+  ---@private
   function WeakAuras.WatchForPlayerMoving()
     if not(playerMovingFrame) then
       playerMovingFrame = CreateFrame("Frame");
@@ -3848,6 +3868,7 @@ end
 
 -- Item Count
 local itemCountWatchFrame
+---@private
 function WeakAuras.RegisterItemCountWatch()
   if not itemCountWatchFrame then
     itemCountWatchFrame = CreateFrame("Frame")
@@ -3916,6 +3937,7 @@ do
 end
 
 local uniqueId = 0;
+---@return integer cloneId
 function WeakAuras.GetUniqueCloneId()
   uniqueId = (uniqueId + 1) % 1000000;
   return uniqueId;
