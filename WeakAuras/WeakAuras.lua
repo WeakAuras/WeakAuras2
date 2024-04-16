@@ -6106,7 +6106,10 @@ function Private.ExecEnv.ParseZoneCheck(input)
             end
           end
         elseif prevChar == 'a' or prevChar == 'A' then
-          self.areaNames[C_Map.GetAreaInfo(id)] = true
+          local areaName = C_Map.GetAreaInfo(id)
+          if areaName then
+            self.areaNames[areaName] = true
+          end
         elseif prevChar == 'i' or prevChar == 'I' then
           self.instanceIds[id] = true
         else
@@ -6120,16 +6123,18 @@ function Private.ExecEnv.ParseZoneCheck(input)
     areaNames = {},
   }
 
-  local start = input:find('%d', 1) or 1
-  local last = input:find('%D', start)
-  while (last) do
-    matcher:AddId(input, start, last - 1)
-    start = input:find('%d', last + 1)
-    last = input:find('%D', start)
-  end
+  local start = input:find('%d', 1)
+  if start then
+    local last = input:find('%D', start)
+    while (last) do
+      matcher:AddId(input, start, last - 1)
+      start = input:find('%d', last + 1) or #input + 1
+      last = input:find('%D', start)
+    end
 
-  last = #input
-  matcher:AddId(input, start, last)
+    last = #input
+    matcher:AddId(input, start, last)
+  end
   return matcher
 end
 
