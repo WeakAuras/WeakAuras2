@@ -988,7 +988,7 @@ local function ProgressType(data, triggernum)
     elseif (trigger.customDuration and trigger.customDuration ~= "") then
       return "timed";
     elseif (trigger.custom_type == "stateupdate") then
-      return "timed";
+      return false
     end
   end
   return false
