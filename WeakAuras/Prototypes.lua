@@ -149,6 +149,8 @@ local constants = {
 }
 
 if WeakAuras.IsClassicEraOrWrathOrCata() then
+  ---@param unit UnitToken
+  ---@return string? role
   WeakAuras.UnitRaidRole = function(unit)
     local raidID = UnitInRaid(unit)
     if raidID then
@@ -157,10 +159,14 @@ if WeakAuras.IsClassicEraOrWrathOrCata() then
   end
 end
 
+---@param school integer
+---@return string school
 function WeakAuras.SpellSchool(school)
   return Private.combatlog_spell_school_types[school] or ""
 end
 
+---@param flag integer
+---@return integer index
 function WeakAuras.RaidFlagToIndex(flag)
   return Private.combatlog_raidFlags[flag] or 0
 end
@@ -246,6 +252,19 @@ local hsvFrame = CreateFrame("ColorSelect")
 
 -- HSV transition, for a much prettier color transition in many cases
 -- see http://www.wowinterface.com/forums/showthread.php?t=48236
+---@param perc number
+---@param r1 number
+---@param g1 number
+---@param b1 number
+---@param a1 number
+---@param r2 number
+---@param g2 number
+---@param b2 number
+---@param a2 number
+---@return number r
+---@return number g
+---@return number b
+---@return number a
 function WeakAuras.GetHSVTransition(perc, r1, g1, b1, a1, r2, g2, b2, a2)
   --get hsv color for colorA
   hsvFrame:SetColorRGB(r1, g1, b1)
@@ -675,6 +694,9 @@ for classID = 1, 20 do -- GetNumClasses not supported by wow classic
 end
 
 if WeakAuras.IsClassicEraOrWrathOrCata() then
+  ---@param index integer
+  ---@param extraOption boolean?
+  ---@return boolean? hasTalent
   function WeakAuras.CheckTalentByIndex(index, extraOption)
     local tab = ceil(index / MAX_NUM_TALENTS)
     local num_talent = (index - 1) % MAX_NUM_TALENTS + 1
@@ -753,6 +775,11 @@ if WeakAuras.IsRetail() then
 
   talentCheckFrame:SetScript("OnEvent", Private.CheckTalentsForLoad)
 
+  ---@param talentId integer
+  ---@return string? spellName
+  ---@return number? icon
+  ---@return number? spellId
+  ---@return number? rank
   function WeakAuras.GetTalentById(talentId)
     if selectedTalentsById[talentId] then
       local spellName, _, icon = GetSpellInfo(selectedTalentsById[talentId].spellId)
@@ -760,11 +787,16 @@ if WeakAuras.IsRetail() then
     end
   end
 
+  ---@param talentId integer
+  ---@return boolean hasTalent
   function WeakAuras.CheckTalentId(talentId)
     return selectedTalentsById[talentId] and selectedTalentsById[talentId].rank > 0
   end
 end
 
+---@param index integer
+---@return boolean hasTalent
+---@return number? talentId
 function WeakAuras.CheckPvpTalentByIndex(index)
   local checkTalentSlotInfo = C_SpecializationInfo.GetPvpTalentSlotInfo(1)
   if checkTalentSlotInfo then
@@ -780,6 +812,9 @@ function WeakAuras.CheckPvpTalentByIndex(index)
   return false
 end
 
+---@param loadids string
+---@param currentId string
+---@return boolean result
 function WeakAuras.CheckNumericIds(loadids, currentId)
   if (not loadids or not currentId) then
     return false;
@@ -800,6 +835,9 @@ function WeakAuras.CheckNumericIds(loadids, currentId)
   return false;
 end
 
+---@param info any?
+---@param val any
+---@return boolean isNumeric
 function WeakAuras.ValidateNumeric(info, val)
   if val ~= nil and val ~= "" and (not tonumber(val) or tonumber(val) >= 2^31) then
     return false;
@@ -807,6 +845,9 @@ function WeakAuras.ValidateNumeric(info, val)
   return true
 end
 
+---@param info any?
+---@param val any
+---@return boolean isTime
 function WeakAuras.ValidateTime(info, val)
   if val ~= nil and val ~= "" then
     if not tonumber(val) then
@@ -821,6 +862,8 @@ function WeakAuras.ValidateTime(info, val)
   return true
 end
 
+---@param val number|string
+---@return number? result
 function WeakAuras.TimeToSeconds(val)
   if tonumber(val) then
     return tonumber(val)
@@ -899,6 +942,9 @@ function Private.ExecEnv.ParseStringCheck(input)
   return matcher
 end
 
+---@param info any?
+---@param val string
+---@return boolean result
 function WeakAuras.ValidateNumericOrPercent(info, val)
   if val ~= nil and val ~= "" then
     local percent = string.match(val, "(%d+)%%")
@@ -1001,6 +1047,8 @@ local function IsSpellKnownOrOverridesAndBaseIsKnown(spell, pet)
   end
 end
 
+---@param spell string|number
+---@return boolean result
 function WeakAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(spell)
   if IsPlayerSpell(spell) then
     return true
@@ -1014,6 +1062,7 @@ function WeakAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(spell)
   return false
 end
 
+---@private
 function WeakAuras.IsSpellKnownForLoad(spell, exact)
   local result = IsPlayerSpell(spell)
                  or IsSpellKnownOrOverridesAndBaseIsKnown(spell, false)
@@ -1031,6 +1080,9 @@ function WeakAuras.IsSpellKnownForLoad(spell, exact)
   end
 end
 
+---@param spell string|number
+---@param pet boolean?
+---@return boolean result
 function WeakAuras.IsSpellKnown(spell, pet)
   if (pet) then
     return IsSpellKnownOrOverridesAndBaseIsKnown(spell, true)
@@ -1038,6 +1090,8 @@ function WeakAuras.IsSpellKnown(spell, pet)
   return IsPlayerSpell(spell) or IsSpellKnownOrOverridesAndBaseIsKnown(spell, false)
 end
 
+---@param spell string|number
+---@return boolean result
 function WeakAuras.IsSpellKnownIncludingPet(spell)
   if (not tonumber(spell)) then
     spell = select(7, GetSpellInfo(spell));
@@ -1056,6 +1110,8 @@ function Private.ExecEnv.CompareSpellIds(a, b, exactCheck)
   end
 end
 
+---@param powerType integer
+---@return integer
 function WeakAuras.UnitPowerDisplayMod(powerType)
   if (powerType == 7) then
     return 10;
@@ -1063,6 +1119,8 @@ function WeakAuras.UnitPowerDisplayMod(powerType)
   return 1;
 end
 
+---@param powerType integer
+---@return boolean?
 function WeakAuras.UseUnitPowerThirdArg(powerType)
   if (powerType == 7) then
     return true;
@@ -1106,6 +1164,10 @@ do
 
 end
 
+---@param setID integer
+---@return integer? quantity
+---@return integer? maxQuantity
+---@return string? setName
 function WeakAuras.GetNumSetItemsEquipped(setID)
   if not setID or not type(setID) == "number" then return end
   local equipped = 0
@@ -1119,6 +1181,7 @@ function WeakAuras.GetNumSetItemsEquipped(setID)
   return equipped, 18, setName
 end
 
+---@return number result
 function WeakAuras.GetEffectiveAttackPower()
   local base, pos, neg = UnitAttackPower("player")
   return base + pos + neg

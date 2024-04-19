@@ -2036,6 +2036,7 @@ Private.AtlasList = {
 "SliderBar-NineSlice-CornerTopRight",
 "SmallQuestBang",
 "Spinner_Ring",
+"Spinner_Shadow",
 "Spinner_Sparks",
 "StableMaster",
 "Start-VersusSplash",

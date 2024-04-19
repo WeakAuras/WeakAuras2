@@ -417,44 +417,54 @@ WeakAuras.buildTime = buildTime
 WeakAuras.newFeatureString = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0|t"
 WeakAuras.BuildInfo = select(4, GetBuildInfo())
 
+---@return boolean result
 function WeakAuras.IsClassicEra()
   return flavor == 1
 end
 -- save compatibility with old auras
 WeakAuras.IsClassic = WeakAuras.IsClassicEra
 
+---@return boolean result
 function WeakAuras.IsWrathClassic()
   return flavor == 3
 end
 
+---@return boolean result
 function WeakAuras.IsCataClassic()
   return flavor == 4
 end
 
+---@return boolean result
 function WeakAuras.IsRetail()
   return flavor == 10
 end
 
+---@return boolean result
 function WeakAuras.IsClassicEraOrWrath()
   return WeakAuras.IsClassicEra() or WeakAuras.IsWrathClassic()
 end
 
+---@return boolean result
 function WeakAuras.IsWrathOrCataOrRetail()
   return WeakAuras.IsRetail() or WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic()
 end
 
+---@return boolean result
 function WeakAuras.IsWrathOrCata()
   return WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic()
 end
 
+---@return boolean result
 function WeakAuras.IsCataOrRetail()
   return WeakAuras.IsCataClassic() or WeakAuras.IsRetail()
 end
 
+---@return boolean result
 function WeakAuras.IsClassicEraOrWrathOrCata()
   return WeakAuras.IsClassicEra() or WeakAuras.IsWrathClassic() or WeakAuras.IsCataClassic()
 end
 
+---@param ... string
 WeakAuras.prettyPrint = function(...)
   print("|cff9900ffWeakAuras:|r ", ...)
 end

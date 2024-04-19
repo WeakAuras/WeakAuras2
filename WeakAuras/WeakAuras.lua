@@ -373,6 +373,8 @@ do
   end
 end
 
+---@param unit UnitToken
+---@return boolean isPet
 WeakAuras.UnitIsPet = function(unit)
   return WeakAuras.petUnitToUnit[unit] ~= nil
 end
@@ -440,6 +442,18 @@ function Private.RegisterRegionType(name, createFunction, modifyFunction, defaul
   end
 end
 
+---@private
+---@param name string
+---@param displayName string
+---@param supportFunction function
+---@param createFunction function
+---@param modifyFunction function
+---@param onAcquire function
+---@param onRelease function
+---@param default table
+---@param addDefaultsForNewAura function
+---@param properties table
+---@param supportsAdd boolean
 function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, createFunction, modifyFunction, onAcquire, onRelease, default, addDefaultsForNewAura, properties, supportsAdd)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterSubRegionType - name is not defined", 2);
@@ -566,6 +580,10 @@ function Private.RegisterRegionOptions(name, createFunction, icon, displayName, 
   end
 end
 
+---@private
+---@param name string
+---@param createFunction function
+---@param description string
 function WeakAuras.RegisterSubRegionOptions(name, createFunction, description)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterSubRegionOptions - name is not defined", 2);
@@ -1509,6 +1527,10 @@ end
 
 local function CreateEncounterTable(encounter_id)
   local _, _, _, _, _, _, _, instanceId = GetInstanceInfo()
+  ---@class CurrentEncounter
+  ---@field encounterId number
+  ---@field zone_id number
+  ---@field boss_guids number[]
   WeakAuras.CurrentEncounter = {
     id = encounter_id,
     zone_id = instanceId,
@@ -1607,14 +1629,17 @@ local function GetInstanceTypeAndSize()
   return "none", "none", nil, nil, nil
 end
 
+---@return string instanceType
 function WeakAuras.InstanceType()
-  return GetInstanceTypeAndSize(), nil
+  return (GetInstanceTypeAndSize())
 end
 
+---@return string difficulty
 function WeakAuras.InstanceDifficulty()
   return select(2, GetInstanceTypeAndSize())
 end
 
+---@return number? difficultyID
 function WeakAuras.InstanceTypeRaw()
   return select(5, GetInstanceTypeAndSize())
 end
@@ -2065,6 +2090,7 @@ function Private.UIDtoID(uid)
   return UIDtoID[uid]
 end
 
+---@private
 function WeakAuras.Delete(data)
   local id = data.id;
   local uid = data.uid
@@ -3178,6 +3204,7 @@ function pAdd(data, simpleChange)
   end
 end
 
+---@private
 function WeakAuras.Add(data, simpleChange)
   if (data.internalVersion or 0) < internalVersion then
     Private.SetMigrationSnapshot(data.uid, data)
@@ -5874,8 +5901,10 @@ function Private.IsCLEUSubevent(subevent)
   return false
 end
 
--- SafeToNumber converts a string to number, but only if it fits into a unsigned 32bit integer
--- The C api often takes only 32bit values, and complains if passed a value outside
+--- SafeToNumber converts a string to number, but only if it fits into a unsigned 32bit integer
+--- The C api often takes only 32bit values, and complains if passed a value outside
+---@param input any
+---@return number|nil number
 function WeakAuras.SafeToNumber(input)
   local nr = tonumber(input)
   return nr and (nr < 2147483648 and nr > -2147483649) and nr or nil
@@ -5892,6 +5921,8 @@ local textSymbols = {
   ["{rt8}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:0|t "
 }
 
+---@param txt string
+---@return string result
 function WeakAuras.ReplaceRaidMarkerSymbols(txt)
   local start = 1
 
@@ -5979,6 +6010,8 @@ do
     trackableUnits["nameplate" .. i] = true
   end
 
+  ---@param unit UnitToken
+  ---@return boolean result
   function WeakAuras.IsUntrackableSoftTarget(unit)
     if not Private.soft_target_cvars[unit] then return end
     -- technically this is incorrect if user doesn't have KBM and sets CVar to "2" (KBM only)
@@ -5989,6 +6022,8 @@ do
     return (tonumber(C_CVar.GetCVar(Private.soft_target_cvars[unit])) or 0) < threshold
   end
 
+  ---@param unit UnitToken
+  ---@return boolean result
   function WeakAuras.UntrackableUnit(unit)
     return not trackableUnits[unit]
   end
@@ -5996,6 +6031,9 @@ end
 
 do
   local ownRealm = select(2, UnitFullName("player"))
+  ---@param unit UnitToken
+  ---@return string name
+  ---@return string realm
   function WeakAuras.UnitNameWithRealm(unit)
     ownRealm = ownRealm or select(2, UnitFullName("player"))
     local name, realm = UnitFullName(unit)
@@ -6194,11 +6232,14 @@ end
 
 -- Helper function to make the templates not care, how the generic triggers
 -- are categorized
+---@private
 function WeakAuras.GetTriggerCategoryFor(triggerType)
   local prototype = Private.event_prototypes[triggerType]
   return prototype and prototype.type
 end
 
+---@param unit UnitToken
+---@return number stagger
 function WeakAuras.UnitStagger(unit)
   return UnitStagger(unit) or 0
 end
