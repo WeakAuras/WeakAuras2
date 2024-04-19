@@ -10774,7 +10774,6 @@ Private.event_prototypes = {
         "ZONE_CHANGED",
         "ZONE_CHANGED_INDOORS",
         "ZONE_CHANGED_NEW_AREA",
-        "MINIMAP_UPDATE_ZOOM",
         "PLAYER_DIFFICULTY_CHANGED",
       }
     },
@@ -10788,7 +10787,6 @@ Private.event_prototypes = {
         local instanceName, _, _, _, _, _, _, instanceId = GetInstanceInfo()
         local minimapZoneText = GetMinimapZoneText()
         local zoneText = GetZoneText()
-        local isIndoors = IsIndoors()
       ]=]
       return ret
     end,
@@ -10849,14 +10847,6 @@ Private.event_prototypes = {
         multiEntry = {
           operator = "or",
         },
-      },
-      {
-        name = "indoors",
-        display = L["Indoors"],
-        type = "tristate",
-        conditionType = "bool",
-        init = "isIndoors",
-        store = true,
       },
       {
         name = "instanceTitle",
