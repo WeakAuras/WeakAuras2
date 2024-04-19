@@ -7,7 +7,7 @@ local AddonName = ...
 ---@class OptionsPrivate
 local OptionsPrivate = select(2, ...)
 
-local Type, Version = "WeakAurasExpandSmall", 3
+local Type, Version = "WeakAurasExpandSmall", 4
 
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
@@ -194,7 +194,7 @@ local function Constructor()
 
   local label = frame:CreateFontString(nil, "BACKGROUND", "GameFontHighlight")
   label:SetJustifyH("LEFT")
-  label:SetJustifyV("CENTER")
+  label:SetJustifyV("MIDDLE")
   label:SetPoint("RIGHT")
   label:SetPoint("TOP")
   label:SetPoint("BOTTOM")
