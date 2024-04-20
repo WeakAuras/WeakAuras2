@@ -565,6 +565,29 @@ local function ConstructTextEditor(frame)
     end
   )
 
+  local snippetOnClickCallback = function(self)
+    -- completion of text
+    local text, cursorPosition = IndentationLib.stripWowColorsWithPos(
+      originalGetText(self.editor.editBox),
+      self.editor.editBox:GetCursorPosition()
+    )
+    local name = IndentationLib.stripWowColors(self.name)
+    local beforeCursor = ""
+    local i = cursorPosition - 1
+    while i > 0 and text:sub(i, i):find("[%w%.%_]") do
+      beforeCursor = text:sub(i, i) .. beforeCursor
+      i = i - 1
+    end
+    if name:sub(1, #beforeCursor):lower() == beforeCursor:lower() then
+      text = text:sub(1, i) .. name .. text:sub(cursorPosition, #text)
+      self.editor.editBox:SetText(text)
+      self.editor.editBox:SetCursorPosition(i + #name)
+    else
+      self.editor.editBox:Insert(name)
+    end
+    self.editor:SetFocus()
+  end
+
   makeAPISearch = function(apiToSearchFor)
     apiSearchScroll:ReleaseChildren()
 
@@ -653,29 +676,9 @@ local function ConstructTextEditor(frame)
           button:SetRelativeWidth(1)
           local desc = table.concat(apiInfo:GetDetailedOutputLines(), "\n")
           button:SetDescription(desc)
-          button:SetCallback("OnClick", function()
-            -- completion of text
-            local text, cursorPosition = IndentationLib.stripWowColorsWithPos(
-              originalGetText(editor.editBox),
-              editor.editBox:GetCursorPosition()
-            )
-            local name = IndentationLib.stripWowColors(name)
-            local beforeCursor = ""
-            local i = cursorPosition - 1
-            while i > 0 and text:sub(i, i):find("[%w%.%_]") do
-              beforeCursor = text:sub(i, i) .. beforeCursor
-              i = i - 1
-            end
-            if name:sub(1, #beforeCursor):lower() == beforeCursor:lower() then
-              text = text:sub(1, i) .. name .. text:sub(cursorPosition, #text)
-              --editor.editBox:Insert(name:sub(#beforeCursor + 1, #name))
-              editor.editBox:SetText(text)
-              editor.editBox:SetCursorPosition(i + #name)
-            else
-              editor.editBox:Insert(name)
-            end
-            editor:SetFocus()
-          end)
+          button.name = name
+          button.editor = editor
+          button:SetCallback("OnClick", snippetOnClickCallback)
           apiSearchScroll:AddChild(button)
         end
       end
