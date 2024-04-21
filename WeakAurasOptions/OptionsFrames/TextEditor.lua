@@ -578,19 +578,27 @@ local function ConstructTextEditor(frame)
       beforeCursor = text:sub(i, i) .. beforeCursor
       i = i - 1
     end
-    if name:sub(1, #beforeCursor):lower() == beforeCursor:lower() then
-      text = text:sub(1, i) .. name .. text:sub(cursorPosition, #text)
-      self.editor.editBox:SetText(text)
-      self.editor.editBox:SetCursorPosition(i + #name)
-    else
-      self.editor.editBox:Insert(name)
+    local afterCursor = ""
+    local j = cursorPosition
+    while j < #text and text:sub(j, j):find("[%w%.%_]") do
+      afterCursor = afterCursor .. text:sub(j, j)
+      j = j + 1
     end
+    text = text:sub(1, i) .. name .. text:sub(cursorPosition, #text)
+    self.editor.editBox:SetText(text)
+    self.editor.editBox:SetCursorPosition(i + #name)
     self.editor:SetFocus()
   end
 
+  local apis = CreateDataProvider()
+  local intellisenseScrollBox, intellisenseScrollBoxScrollbar
+  local intellisenseLines = 7
+  local hiddenString = editor.editBox:CreateFontString()
+  hiddenString:SetFontObject(editor.editBox:GetFontObject())
+
   makeAPISearch = function(apiToSearchFor)
     apiSearchScroll:ReleaseChildren()
-
+    apis:Flush()
     -- load documation addon
     local apiAddonName = "Blizzard_APIDocumentation"
     local _, loaded = C_AddOns.IsAddOnLoaded(apiAddonName)
@@ -658,9 +666,11 @@ local function ConstructTextEditor(frame)
         -- ace doesn't like gigantic list of widgets
         if i > 100 then
           local label = AceGUI:Create("Label")
-          label:SetText(L["Too much results (%s)"]:format(#results))
+          local text = L["Too much results (%s)"]:format(#results)
+          label:SetText(text)
           label:SetHeight(20)
           apiSearchScroll:AddChild(label)
+          apis:Insert({ name = text })
           break
         else
           local button = AceGUI:Create("WeakAurasSnippetButton")
@@ -680,8 +690,23 @@ local function ConstructTextEditor(frame)
           button.editor = editor
           button:SetCallback("OnClick", snippetOnClickCallback)
           apiSearchScroll:AddChild(button)
+          apis:Insert({ name = name, apiInfo = apiInfo })
         end
       end
+      intellisenseScrollBox:SetHeight(math.min(apis:GetSize(), intellisenseLines) * 20)
+      local widgetWidth = 0
+      for _, elementData in apis:Enumerate() do
+        hiddenString:SetText(elementData.name)
+        widgetWidth = math.max(widgetWidth, hiddenString:GetStringWidth())
+      end
+      intellisenseScrollBox:SetWidth(widgetWidth)
+    end
+    if apis:IsEmpty() then
+      intellisenseScrollBox:Hide()
+      intellisenseScrollBoxScrollbar:Hide()
+    else
+      intellisenseScrollBox:Show()
+      intellisenseScrollBoxScrollbar:SetShown(apis:GetSize() > intellisenseLines)
     end
   end
 
@@ -771,11 +796,62 @@ local function ConstructTextEditor(frame)
     OptionsPrivate.ToggleTip(helpButton, group.url, L["Help"], "")
   end)
 
+
+  intellisenseScrollBox = CreateFrame("Frame", nil, editor.editBox, "WowScrollBoxList")
+  intellisenseScrollBox:SetSize(400, 150)
+  intellisenseScrollBox:Hide()
+
+  local background = intellisenseScrollBox:CreateTexture(nil, "BACKGROUND")
+  background:SetColorTexture(.3, .3, .3, .9)
+  background:SetAllPoints()
+
+  intellisenseScrollBoxScrollbar = CreateFrame("EventFrame", nil, editor.editBox, "WowTrimScrollBar")
+  intellisenseScrollBoxScrollbar:SetPoint("TOPLEFT", intellisenseScrollBox, "TOPRIGHT")
+  intellisenseScrollBoxScrollbar:SetPoint("BOTTOMLEFT", intellisenseScrollBox, "BOTTOMRIGHT")
+  intellisenseScrollBoxScrollbar:Hide()
+
+  local view = CreateScrollBoxListLinearView()
+  view:SetElementInitializer("WeakAurasAPILineTemplate", function(frame, elementData)
+    frame:Init(elementData)
+  end)
+  ScrollUtil.InitScrollBoxListWithScrollBar(intellisenseScrollBox, intellisenseScrollBoxScrollbar, view)
+
+  WeakAurasAPILineMixin = {}
+
+  local function showTooltip(self)
+    if self.apiInfo then
+      GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT", 0, 20)
+      GameTooltip:ClearLines()
+      for _, line in ipairs(self.apiInfo:GetDetailedOutputLines()) do
+        GameTooltip:AddLine(line)
+      end
+      GameTooltip:Show()
+    end
+  end
+  local function hideTooltip(self)
+    GameTooltip:Hide()
+    GameTooltip:ClearLines()
+  end
+
+  function WeakAurasAPILineMixin:Init(elementData)
+    self.button.name = elementData.name
+    self.button.editor = editor
+    self.button.apiInfo = elementData.apiInfo
+    self.button:SetText(elementData.name)
+    self.button:SetScript("OnClick", snippetOnClickCallback)
+    self.button:SetScript("OnEnter", showTooltip)
+    self.button:SetScript("OnLeave", hideTooltip)
+  end
+
+  intellisenseScrollBox:SetDataProvider(apis)
+
   local oldOnCursorChanged = editor.editBox:GetScript("OnCursorChanged")
   editor.editBox:SetScript(
     "OnCursorChanged",
-    function(...)
-      oldOnCursorChanged(...)
+    function(self, x, y, w, h)
+      oldOnCursorChanged(self, x, y, w, h)
+      intellisenseScrollBox:ClearAllPoints()
+      intellisenseScrollBox:SetPoint("TOPLEFT", self, "TOPLEFT", x, y - h)
       local next = -1
       local line = 0
       local text, cursorPosition = IndentationLib.stripWowColorsWithPos(
