@@ -284,7 +284,8 @@ function OptionsPrivate.GetActionOptions(data)
         values = {
           UNITFRAME = L["Unit Frame"],
           NAMEPLATE = L["Nameplate"],
-          FRAMESELECTOR = L["Frame Selector"]
+          FRAMESELECTOR = L["Frame Selector"],
+          PARENTFRAME = L["Parent Frame"]
         },
         hidden = function()
           return not data.actions.start.do_glow
@@ -722,7 +723,8 @@ function OptionsPrivate.GetActionOptions(data)
         values = {
           UNITFRAME = L["Unit Frame"],
           NAMEPLATE = L["Nameplate"],
-          FRAMESELECTOR = L["Frame Selector"]
+          FRAMESELECTOR = L["Frame Selector"],
+          PARENTFRAME = L["Parent Frame"]
         },
         hidden = function()
           return not data.actions.finish.do_glow
