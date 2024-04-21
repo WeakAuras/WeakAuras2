@@ -281,12 +281,7 @@ function OptionsPrivate.GetActionOptions(data)
         end,
         name = L["Glow Frame Type"],
         order = 10.3,
-        values = {
-          UNITFRAME = L["Unit Frame"],
-          NAMEPLATE = L["Nameplate"],
-          FRAMESELECTOR = L["Frame Selector"],
-          PARENTFRAME = L["Parent Frame"]
-        },
+        values = OptionsPrivate.Private.glow_frame_types,
         hidden = function()
           return not data.actions.start.do_glow
           or data.actions.start.glow_action == nil
@@ -720,12 +715,7 @@ function OptionsPrivate.GetActionOptions(data)
         end,
         name = L["Glow Frame Type"],
         order = 30.3,
-        values = {
-          UNITFRAME = L["Unit Frame"],
-          NAMEPLATE = L["Nameplate"],
-          FRAMESELECTOR = L["Frame Selector"],
-          PARENTFRAME = L["Parent Frame"]
-        },
+        values = OptionsPrivate.Private.glow_frame_types,
         hidden = function()
           return not data.actions.finish.do_glow
           or data.actions.finish.glow_action == nil
