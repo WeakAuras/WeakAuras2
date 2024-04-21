@@ -145,6 +145,7 @@ end
 
 local constants = {
   nameRealmFilterDesc = L[" Filter formats: 'Name', 'Name-Realm', '-Realm'. \n\nSupports multiple entries, separated by commas\nCan use \\ to escape -."],
+  instanceFilterDeprecated = L["This filter has been moved to the Location trigger. Change your aura to use the new Location trigger or join the WeakAuras Discord server for help."],
 }
 
 if WeakAuras.IsClassicEraOrWrathOrCata() then
@@ -203,7 +204,7 @@ local function get_zoneId_list()
                                          L["Parent Zone"], parentmap_name, currentmap_info.parentMapID)
   end
 
-  return ("%s|cffffd200%s|r\n%s: %d\n\n%s%s|cffffd200%s|r\n%s: %d\n\n%s"):format(
+  return ("%s|cffffd200%s|r\n%s: %d\n\n%s%s|cffffd200%s|r\n%s: i%d\n\n%s"):format(
     Private.get_zoneId_list(),
     L["Current Zone"],
     currentmap_name,
@@ -10113,7 +10114,6 @@ Private.event_prototypes = {
       if trigger.use_ingroup ~= nil then
         tinsert(events, "GROUP_ROSTER_UPDATE")
       end
-
       if trigger.use_instance_difficulty ~= nil
          or trigger.use_instance_type ~= nil
          or trigger.use_instance_size ~= nil
@@ -10137,9 +10137,9 @@ Private.event_prototypes = {
       end
 
       if trigger.use_instance_difficulty ~= nil
-         or trigger.use_instance_type ~= nil
-         or trigger.use_instance_size ~= nil
-         or trigger.use_pvpflagged ~= nil
+        or trigger.use_instance_type ~= nil
+        or trigger.use_instance_size ~= nil
+        or trigger.use_pvpflagged ~= nil
       then
         tinsert(events, "WA_DELAYED_PLAYER_ENTERING_WORLD")
       end
@@ -10232,7 +10232,8 @@ Private.event_prototypes = {
       },
       {
         name = "instance_size",
-        display = L["Instance Size Type"],
+        display = L["Instance Size Type"].." "..L["|cffff0000deprecated|r"],
+        desc = constants.instanceFilterDeprecated,
         type = "multiselect",
         values = "instance_types",
         sorted = true,
@@ -10240,7 +10241,8 @@ Private.event_prototypes = {
       },
       {
         name = "instance_difficulty",
-        display = L["Instance Difficulty"],
+        display = L["Instance Difficulty"].." "..L["|cffff0000deprecated|r"],
+        desc = constants.instanceFilterDeprecated,
         type = "multiselect",
         values = "difficulty_types",
         init = "WeakAuras.InstanceDifficulty()",
@@ -10249,7 +10251,8 @@ Private.event_prototypes = {
       },
       {
         name = "instance_type",
-        display = L["Instance Type"],
+        display = L["Instance Type"].." "..L["|cffff0000deprecated|r"],
+        desc = constants.instanceFilterDeprecated,
         type = "multiselect",
         values = "instance_difficulty_types",
         init = "WeakAuras.InstanceTypeRaw()",
@@ -10763,6 +10766,143 @@ Private.event_prototypes = {
       return currencyInfo and currencyInfo.name, currencyInfo and currencyInfo.iconFileID
     end,
     automaticrequired = true
+  },
+  ["Location"] = {
+    type = "unit",
+    events = {
+      ["events"] = {
+        "ZONE_CHANGED",
+        "ZONE_CHANGED_INDOORS",
+        "ZONE_CHANGED_NEW_AREA",
+        "PLAYER_DIFFICULTY_CHANGED",
+      }
+    },
+    internal_events = {"INSTANCE_LOCATION_CHECK"},
+    force_events = "INSTANCE_LOCATION_CHECK",
+    name = WeakAuras.newFeatureString..L["Location"],
+    init = function(trigger)
+      local ret = [=[
+        local uiMapId = C_Map.GetBestMapForUnit("player")
+        local zonegroupId = uiMapId and C_Map.GetMapGroupID(uiMapId)
+        local instanceName, _, _, _, _, _, _, instanceId = GetInstanceInfo()
+        local minimapZoneText = GetMinimapZoneText()
+        local zoneText = GetZoneText()
+      ]=]
+      return ret
+    end,
+    statesParameter = "one",
+    args = {
+      {
+        name = "zoneIds",
+        display = L["Player Location ID(s)"],
+        type = "string",
+        multiline = true,
+        desc = get_zoneId_list,
+        preamble = "local zoneChecker = Private.ExecEnv.ParseZoneCheck(%q)",
+        test = "zoneChecker:Check(uiMapId, zonegroupId, instanceId, minimapZoneText)",
+        conditionType = "string",
+        conditionPreamble = function(input)
+          return Private.ExecEnv.ParseZoneCheck(input)
+        end,
+        conditionTest = function(state, needle, op, preamble)
+          return preamble:Check(state.zoneId, state.zonegroupId, state.instanceId, state.subzone)
+        end,
+        operator_types = "none",
+      },
+      {
+        name = "zoneId",
+        display = L["Zone ID"],
+        init = "uiMapId",
+        store = true,
+        hidden = true,
+        test = "true",
+      },
+      {
+        name = "zonegroupId",
+        display = L["Zone Group ID"],
+        init = "zonegroupId",
+        store = true,
+        hidden = true,
+        test = "true",
+      },
+      {
+        name = "zone",
+        display = L["Zone Name"],
+        type = "string",
+        conditionType = "string",
+        store = true,
+        init = "zoneText",
+        multiEntry = {
+          operator = "or",
+        }
+      },
+      {
+        name = "subzone",
+        display = L["Subzone Name"],
+        desc = L["Name of the (sub-)zone currently shown above the minimap."],
+        type = "string",
+        conditionType = "string",
+        store = true,
+        init = "minimapZoneText",
+        multiEntry = {
+          operator = "or",
+        },
+      },
+      {
+        name = "instanceTitle",
+        display = L["Instance Filters"],
+        type = "description",
+      },
+      {
+        name = "instanceId",
+        display = L["Instance ID"],
+        init = "instanceId",
+        store = true,
+        hidden = true,
+        test = "true",
+      },
+      {
+        name = "instance",
+        display = L["Instance Name"],
+        test = "true",
+        hidden = "true",
+        store = true,
+      },
+      {
+        name = "instanceSize",
+        display = L["Instance Size Type"],
+        type = "multiselect",
+        values = "instance_types",
+        sorted = true,
+        init = "WeakAuras.InstanceType()",
+        conditionType = "select",
+        store = true,
+      },
+      {
+        name = "instanceDifficulty",
+        display = L["Instance Difficulty"],
+        type = "multiselect",
+        values = "difficulty_types",
+        init = "WeakAuras.InstanceDifficulty()",
+        conditionType = "select",
+        store = true,
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail(),
+      },
+      {
+        name = "instanceType",
+        display = L["Instance Type"],
+        type = "multiselect",
+        values = "instance_difficulty_types",
+        init = "WeakAuras.InstanceTypeRaw()",
+        conditionType = "select",
+        store = true,
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail(),
+      },
+    },
+    automaticrequired = true,
+    progressType = "none"
   },
 };
 

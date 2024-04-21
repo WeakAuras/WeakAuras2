@@ -1632,7 +1632,6 @@ function GenericTrigger.Add(data, region)
                 force_events = force_events(trigger, untrigger)
               end
 
-
               if prototype.includePets then
                 includePets = trigger.use_includePets == true and trigger.includePets or nil
               end

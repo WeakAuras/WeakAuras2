@@ -6138,11 +6138,16 @@ function Private.ExecEnv.ParseZoneCheck(input)
         elseif prevChar == 'c' or prevChar == 'C' then
           self.zoneIds[id] = true
           local info = C_Map.GetMapChildrenInfo(id, nil, true)
-          for _,childInfo in pairs(info) do
-             self.zoneIds[childInfo.mapID] = true
+          if info then
+            for _,childInfo in pairs(info) do
+              self.zoneIds[childInfo.mapID] = true
+            end
           end
         elseif prevChar == 'a' or prevChar == 'A' then
-          self.areaNames[C_Map.GetAreaInfo(id)] = true
+          local areaName = C_Map.GetAreaInfo(id)
+          if areaName then
+            self.areaNames[areaName] = true
+          end
         elseif prevChar == 'i' or prevChar == 'I' then
           self.instanceIds[id] = true
         else
@@ -6153,19 +6158,21 @@ function Private.ExecEnv.ParseZoneCheck(input)
     zoneIds = {},
     zoneGroupIds = {},
     instanceIds = {},
-    areaNames = {}
+    areaNames = {},
   }
 
   local start = input:find('%d', 1)
-  local last = input:find('%D', start)
-  while (last) do
-    matcher:AddId(input, start, last - 1)
-    start = input:find('%d', last + 1)
-    last = input:find('%D', start)
-  end
+  if start then
+    local last = input:find('%D', start)
+    while (last) do
+      matcher:AddId(input, start, last - 1)
+      start = input:find('%d', last + 1) or #input + 1
+      last = input:find('%D', start)
+    end
 
-  last = #input
-  matcher:AddId(input, start, last)
+    last = #input
+    matcher:AddId(input, start, last)
+  end
   return matcher
 end
 
