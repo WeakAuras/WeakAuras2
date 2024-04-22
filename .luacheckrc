@@ -1005,6 +1005,7 @@ globals = {
 	"C_RecruitAFriend.GetRecruitInfo",
 	"C_RecruitAFriend.IsSendingEnabled",
 	"C_RecruitAFriend.SendRecruit",
+	"C_Reputation",
 	"C_Scenario",
 	"C_Scenario.GetBonusStepRewardQuestID",
 	"C_Scenario.GetBonusSteps",
