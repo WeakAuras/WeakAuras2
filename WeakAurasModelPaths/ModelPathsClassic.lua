@@ -18710,6 +18710,51 @@ WeakAuras.ModelPaths = {
  {
   children = {
    {
+    fileId = "1733364",
+    text = "8fx_nazmir_bloodtroll_basickit_casthand.m2",
+    value = "8fx_nazmir_bloodtroll_basickit_casthand.m2",
+   },
+   {
+    fileId = "2032201",
+    text = "8fx_nazmir_bloodtroll_basickit_cone.m2",
+    value = "8fx_nazmir_bloodtroll_basickit_cone.m2",
+   },
+   {
+    fileId = "1725600",
+    text = "8fx_nazmir_bloodtroll_basickit_precasthand.m2",
+    value = "8fx_nazmir_bloodtroll_basickit_precasthand.m2",
+   },
+   {
+    fileId = "2066466",
+    text = "8fx_nazmir_bloodtroll_basickit_shield.m2",
+    value = "8fx_nazmir_bloodtroll_basickit_shield.m2",
+   },
+   {
+    fileId = "1777740",
+    text = "8fx_nazmir_bloodtroll_damagestate_statechest.m2",
+    value = "8fx_nazmir_bloodtroll_damagestate_statechest.m2",
+   },
+   {
+    fileId = "1733368",
+    text = "8fx_nazmir_bloodtroll_impactlow_chest.m2",
+    value = "8fx_nazmir_bloodtroll_impactlow_chest.m2",
+   },
+   {
+    fileId = "1728831",
+    text = "8fx_nazmir_bloodtroll_novahigh_impactworld.m2",
+    value = "8fx_nazmir_bloodtroll_novahigh_impactworld.m2",
+   },
+   {
+    fileId = "1843255",
+    text = "8fx_priestessalunza_taintedblood_missile.m2",
+    value = "8fx_priestessalunza_taintedblood_missile.m2",
+   },
+   {
+    fileId = "2066495",
+    text = "8fx_uldir_bloodofghuun_liquify_aura.m2",
+    value = "8fx_uldir_bloodofghuun_liquify_aura.m2",
+   },
+   {
     fileId = "165529",
     text = "abolishmagic_base.m2",
     value = "abolishmagic_base.m2",
