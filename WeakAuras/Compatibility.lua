@@ -25,3 +25,53 @@ else
   WeakAuras.GetSpellName = C_Spell.GetSpellName
   WeakAuras.GetSpellIcon = C_Spell.GetSpellTexture
 end
+
+WeakAuras.GetNumFactions = C_Reputation.GetNumFactions or GetNumFactions
+
+WeakAuras.GetFactionDataByIndex = C_Reputation.GetFactionDataByIndex or function(index)
+  local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive = GetFactionInfo(index)
+  return {
+    factionID = factionID,
+    name = name,
+    description = description,
+    reaction = standingID,
+    currentReactionThreshold = barMin,
+    nextReactionThreshold = barMax,
+    currentStanding = barValue,
+    atWarWith = atWarWith,
+    canToggleAtWar = canToggleAtWar,
+    isChild = isChild,
+    isHeader = isHeader,
+    isHeaderWithRep = hasRep,
+    isCollapsed = isCollapsed,
+    isWatched = isWatched,
+    hasBonusRepGain = hasBonusRepGain,
+    canSetInactive = canSetInactive,
+    isAccountWide = nil
+  }
+end
+
+WeakAuras.GetFactionDataByID = C_Reputation.GetFactionDataByID or function(ID)
+  local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive = GetFactionInfoByID(ID)
+  return {
+    factionID = factionID,
+    name = name,
+    description = description,
+    reaction = standingID,
+    currentReactionThreshold = barMin,
+    nextReactionThreshold = barMax,
+    currentStanding = barValue,
+    atWarWith = atWarWith,
+    canToggleAtWar = canToggleAtWar,
+    isChild = isChild,
+    isHeader = isHeader,
+    isHeaderWithRep = hasRep,
+    isCollapsed = isCollapsed,
+    isWatched = isWatched,
+    hasBonusRepGain = hasBonusRepGain,
+    canSetInactive = canSetInactive,
+    isAccountWide = nil
+  }
+end
+WeakAuras.ExpandAllFactionHeaders = C_Reputation.ExpandAllFactionHeaders or ExpandAllFactionHeaders
+WeakAuras.CollapseFactionHeader = C_Reputation.CollapseFactionHeader or CollapseFactionHeader

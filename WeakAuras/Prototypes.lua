@@ -2445,7 +2445,12 @@ Private.event_prototypes = {
         local useWatched = %s
         local factionID = useWatched and select(6, GetWatchedFactionInfo()) or %q
         local minValue, maxValue, currentValue
-        local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive = GetFactionInfoByID(factionID)
+        local factionData = WeakAuras.GetFactionDataByID(factionID)
+        local name, description = factionData.name, factionData.description
+        local standingID = factionData.reaction
+        local hasRep = factionData.isHeaderWithRep
+        local barMin, barMax, barValue = factionData.currentReactionThreshold, factionData.nextReactionThreshold, factionData.currentStanding
+        local atWarWith, canToggleAtWar, isHeader, isCollapsed, isWatched, isChild, hasBonusRepGain, canSetInactive = factionData.atWarWith, factionData. canToggleAtWar, factionData.isHeader, factionData.isCollapsed, factionData.isWatched, factionData.isChild, factionData.hasBonusRepGain, factionData.canSetInactive
         minValue, maxValue, currentValue = barMin, barMax, barValue
         local standing
         if tonumber(standingID) then

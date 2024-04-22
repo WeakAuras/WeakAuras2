@@ -1630,32 +1630,34 @@ local function InitializeReputations()
   Private.reputations_headers = {}
 
   local collapsed = {}
-  for i = 1, GetNumFactions() do
-    local name, _, _, _, _, _, _, _, _, isCollapsed = GetFactionInfo(i)
-    if isCollapsed then
-      collapsed[name] = true
+  for i = 1, WeakAuras.GetNumFactions() do
+    local factionData = WeakAuras.GetFactionDataByIndex(i)
+    if factionData.isCollapsed then
+      collapsed[factionData.name] = true
     end
   end
 
-  ExpandAllFactionHeaders()
-  for i = 1, GetNumFactions() do
-    local name, _, _, _, _, _, _, _, isHeader, _, hasRep, _, _, factionID = GetFactionInfo(i)
-    if hasRep or not isHeader then
+  WeakAuras.ExpandAllFactionHeaders()
+  for i = 1, WeakAuras.GetNumFactions() do
+    local factionData = WeakAuras.GetFactionDataByIndex(i)
+    if factionData.currentStanding > 0 or not factionData.isHeader then
+      local factionID = factionData.factionID
       if factionID then
-        Private.reputations[factionID] = name
+        Private.reputations[factionID] = factionData.name
         Private.reputations_sorted[factionID] = i
       end
     else
+      local name = factionData.name
       Private.reputations[name] = name
       Private.reputations_sorted[name] = i
       Private.reputations_headers[name] = true
     end
   end
 
-  for i = GetNumFactions(), 1, -1 do
-    local name = GetFactionInfo(i)
-    if collapsed[name] then
-      CollapseFactionHeader(i)
+  for i = WeakAuras.GetNumFactions(), 1, -1 do
+    local factionData = WeakAuras.GetFactionDataByIndex(i)
+    if collapsed[factionData.name] then
+      WeakAuras.CollapseFactionHeader(i)
     end
   end
 end
