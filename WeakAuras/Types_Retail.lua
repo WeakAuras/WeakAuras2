@@ -203,26 +203,28 @@ function Private.GetTalentData(specId)
         for idx, talentId in ipairs(node.entryIDs) do
           local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
           local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
-          local spellName = WeakAuras.GetSpellName(definitionInfo.spellID)
-          if spellName then
-            local talentData = {
-              talentId,
-              definitionInfo.spellID,
-              { node.posX, node.posY, idx, #node.entryIDs },
-              {}
-            }
-            for _, edge in pairs(node.visibleEdges) do
-              local targetNodeId = edge.targetNode
-              local targetNode = C_Traits.GetNodeInfo(configId, targetNodeId)
-              local targetNodeTalentId1 = targetNode.entryIDs[1]
-              if targetNodeTalentId1 then
-                -- add as target 1st talentId
-                -- because we don't save nodes
-                tinsert(talentData[4], targetNodeTalentId1)
-              end
-            end
-            tinsert(specData, talentData)
-          end
+					if definitionInfo.spellID then
+						local spellName = WeakAuras.GetSpellName(definitionInfo.spellID)
+						if spellName then
+							local talentData = {
+								talentId,
+								definitionInfo.spellID,
+								{ node.posX, node.posY, idx, #node.entryIDs },
+								{}
+							}
+							for _, edge in pairs(node.visibleEdges) do
+								local targetNodeId = edge.targetNode
+								local targetNode = C_Traits.GetNodeInfo(configId, targetNodeId)
+								local targetNodeTalentId1 = targetNode.entryIDs[1]
+								if targetNodeTalentId1 then
+									-- add as target 1st talentId
+									-- because we don't save nodes
+									tinsert(talentData[4], targetNodeTalentId1)
+								end
+							end
+							tinsert(specData, talentData)
+						end
+					end
         end
       end
     end

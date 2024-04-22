@@ -738,15 +738,17 @@ if WeakAuras.IsRetail() then
             if node.ID ~= 0 then
               for _, talentId in ipairs(node.entryIDs) do
                 local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
-                local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
-                local rank = node.activeRank
-                if node.activeEntry then
-                  rank = node.activeEntry.entryID == talentId and node.activeEntry.rank or 0
+                if entryInfo.definitionID then
+                  local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
+                  local rank = node.activeRank
+                  if node.activeEntry then
+                    rank = node.activeEntry.entryID == talentId and node.activeEntry.rank or 0
+                  end
+                  selectedTalentsById[talentId] = {
+                    rank = rank,
+                    spellId = definitionInfo.spellID
+                  }
                 end
-                selectedTalentsById[talentId] = {
-                  rank = rank,
-                  spellId = definitionInfo.spellID
-                }
               end
             end
           end
