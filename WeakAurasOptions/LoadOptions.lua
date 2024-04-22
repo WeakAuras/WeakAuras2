@@ -22,14 +22,14 @@ local spellCache = WeakAuras.spellCache;
 local function CorrectSpellName(input)
   local inputId = tonumber(input);
   if(inputId) then
-    local name = GetSpellInfo(inputId);
+    local name = WeakAuras.GetSpellName(inputId);
     if(name) then
       return inputId;
     else
       return nil;
     end
   elseif WeakAuras.IsClassicEra() and input then
-    local _, _, _, _, _, _, spellId = GetSpellInfo(input)
+    local _, _, _, _, _, _, spellId = WeakAuras.GetSpellInfo(input)
     if spellId then
       return spellId
     end
@@ -38,7 +38,7 @@ local function CorrectSpellName(input)
     if(input:sub(1,1) == "\124") then
       link = input;
     else
-      link = GetSpellLink(input);
+      link = (GetSpellLink and GetSpellLink(input)) or (C_Spell and C_Spell.GetSpellLink and C_Spell.GetSpellLink(input));
     end
     if(link) and link ~= "" then
       local itemId = link:match("spell:(%d+)");
@@ -47,7 +47,7 @@ local function CorrectSpellName(input)
       for tier = 1, MAX_TALENT_TIERS do
         for column = 1, NUM_TALENT_COLUMNS do
           local _, _, _, _, _, spellId = GetTalentInfo(tier, column, 1)
-          local name = GetSpellInfo(spellId);
+          local name = WeakAuras.GetSpellName(spellId);
           if name == input then
             return spellId;
           end
@@ -666,7 +666,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                       end
                     end
                   end
-                  local _, _, icon = GetSpellInfo(value);
+                  local icon = WeakAuras.GetSpellIcon(value);
                   return icon and tostring(icon) or "", 18, 18;
                 elseif(arg.type == "item") then
                   local _, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(value);
@@ -678,7 +678,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             end,
             disabled = function()
               local value = getValue(trigger, nil, realname, multiEntry, entryNumber)
-              return not ((arg.type == "aura" and value and spellCache.GetIcon(value)) or (arg.type == "spell" and value and GetSpellInfo(value)) or (arg.type == "item" and value and C_Item.GetItemIconByID(value or '')))
+              return not ((arg.type == "aura" and value and spellCache.GetIcon(value)) or (arg.type == "spell" and value and WeakAuras.GetSpellName(value)) or (arg.type == "item" and value and C_Item.GetItemIconByID(value or '')))
             end
           };
           order = order + 1;
@@ -720,12 +720,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                         return ("%s (%s)"):format(spellID, tbl.title) .. "\0" .. value
                       end
                     end
-                    local spellName = GetSpellInfo(WeakAuras.SafeToNumber(value))
+                    local spellName = WeakAuras.GetSpellName(WeakAuras.SafeToNumber(value))
                     if spellName then
                       return ("%s (%s)"):format(spellID, spellName) .. "\0" .. value
                     end
                   elseif not useExactSpellId and not arg.noValidation then
-                    local spellName = GetSpellInfo(value)
+                    local spellName = WeakAuras.GetSpellName(value)
                     if spellName then
                       return spellName
                     end

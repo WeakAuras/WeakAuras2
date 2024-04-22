@@ -1150,7 +1150,7 @@ local function update_forms()
   for i = 1, GetNumShapeshiftForms() do
     local _, _, _, id = GetShapeshiftFormInfo(i);
     if(id) then
-      local name = GetSpellInfo(id);
+      local name = WeakAuras.GetSpellName(id);
       if(name) then
         Private.form_types[i] = i.." - "..name
       end

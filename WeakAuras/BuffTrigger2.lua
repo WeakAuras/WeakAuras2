@@ -2949,7 +2949,7 @@ local function createScanFunc(trigger)
     local names = {}
     for index, spellName in ipairs(trigger.ignoreAuraNames) do
       local spellId = WeakAuras.SafeToNumber(spellName)
-      local name = GetSpellInfo(spellId) or spellName
+      local name = spellId and WeakAuras.GetSpellName(spellId) or spellName
       tinsert(names, name)
     end
 
@@ -3092,7 +3092,7 @@ function BuffTrigger.Add(data)
         names = {}
         for index, spellName in ipairs(trigger.auranames) do
           local spellId = WeakAuras.SafeToNumber(spellName)
-          names[index] = GetSpellInfo(spellId) or spellName
+          names[index] = spellId and WeakAuras.GetSpellName(spellId) or spellName
         end
       end
 
@@ -3298,12 +3298,12 @@ function BuffTrigger.GetNameAndIconSimple(data, triggernum)
     for index, spellName in ipairs(trigger.auranames) do
       local spellId = WeakAuras.SafeToNumber(spellName)
       if spellId then
-        name, _, icon = GetSpellInfo(spellName)
+        name, _, icon = WeakAuras.GetSpellInfo(spellName)
         if name and icon then
           return name, icon
         end
       elseif not tonumber(spellName) then
-        name, _, icon = GetSpellInfo(spellName)
+        name, _, icon = WeakAuras.GetSpellInfo(spellName)
         if (name and icon) then
           return name, icon
         end
@@ -3315,7 +3315,7 @@ function BuffTrigger.GetNameAndIconSimple(data, triggernum)
     for index, spellIdString in ipairs(trigger.auraspellids) do
       local spellId = spellIdString ~= "" and tonumber(spellIdString)
       if spellId then
-        name, _, icon = GetSpellInfo(spellIdString)
+        name, _, icon = WeakAuras.GetSpellInfo(spellIdString)
         if name and icon then
           return name, icon
         end
@@ -3903,7 +3903,7 @@ end
 
 local function UpdateMatchDataMulti(time, base, key, event, sourceGUID, sourceName, destGUID, destName, spellId, spellName, amount)
   local updated = false
-  local icon = spellId and select(3, GetSpellInfo(spellId))
+  local icon = spellId and WeakAuras.GetSpellIcon(spellId)
   ScheduleMultiCleanUp(destGUID, time + 60)
   if not base[key] or not base[key][sourceGUID] then
     updated = true
@@ -4350,7 +4350,7 @@ function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
       local icon
       local spellId = WeakAuras.SafeToNumber(name)
       if spellId then
-        icon = select(3, GetSpellInfo(spellId))
+        icon = WeakAuras.GetSpellIcon(spellId)
       else
         icon = WeakAuras.spellCache.GetIcon(name)
       end
@@ -4377,7 +4377,7 @@ function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
         end
       end
 
-      local icon = select(3, GetSpellInfo(spellId)) or "Interface\\Icons\\INV_Misc_QuestionMark"
+      local icon = WeakAuras.GetSpellIcon(spellId) or "Interface\\Icons\\INV_Misc_QuestionMark"
       tinsert(namestable, {left, spellId, icon})
     end
   end

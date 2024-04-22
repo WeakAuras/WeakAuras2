@@ -14,8 +14,8 @@ local UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
   = UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
 local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
   = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
-local UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
-  = UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
+local UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI
+  = UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI
 local SendChatMessage, UnitInBattleground, UnitInRaid, UnitInParty, GetTime
   = SendChatMessage, UnitInBattleground, UnitInRaid, UnitInParty, GetTime
 local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
@@ -6183,7 +6183,7 @@ function Private.ExecEnv.CreateSpellChecker()
     AddName = function(self, name)
       local spellId = tonumber(name)
       if spellId then
-        name = GetSpellInfo(spellId)
+        name = WeakAuras.GetSpellName(spellId)
         if name then
           self.names[name] = true
         end
@@ -6196,7 +6196,9 @@ function Private.ExecEnv.CreateSpellChecker()
       self.spellIds[spellId] = true
     end,
     Check = function(self, spellId)
-      return self.spellIds[spellId] or self.names[GetSpellInfo(spellId)]
+      if spellId then
+        return self.spellIds[spellId] or self.names[WeakAuras.GetSpellName(spellId)]
+      end
     end,
     CheckName = function(self, name)
       return self.names[name]

@@ -165,7 +165,7 @@ function Private.GetTalentInfo(specId)
   local talentInfo = Private.talentInfo[specId]
   if talentInfo then
     for talentId, talentData in pairs(talentInfo) do
-      local spellName, _, icon = GetSpellInfo(talentData[1])
+      local spellName, _, icon = WeakAuras.GetSpellInfo(talentData[1])
       if spellName then
         talents[talentId] = ("|T"..icon..":16|t " .. spellName)
       end
@@ -203,7 +203,7 @@ function Private.GetTalentData(specId)
         for idx, talentId in ipairs(node.entryIDs) do
           local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
           local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
-          local spellName = GetSpellInfo(definitionInfo.spellID)
+          local spellName = WeakAuras.GetSpellName(definitionInfo.spellID)
           if spellName then
             local talentData = {
               talentId,

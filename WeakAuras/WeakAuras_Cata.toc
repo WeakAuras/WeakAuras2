@@ -27,6 +27,7 @@ embeds.xml
 Libs\TaintLess\TaintLess.xml
 
 Init.lua
+Compatibility.lua
 locales.xml
 ArchiveTypes\Repository.lua
 DefaultOptions.lua

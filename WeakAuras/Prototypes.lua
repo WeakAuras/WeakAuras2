@@ -14,7 +14,6 @@ local ceil = ceil
 local GetTalentInfo = GetTalentInfo
 local GetSpecialization = GetSpecialization
 local UnitClass = UnitClass
-local GetSpellInfo = GetSpellInfo
 local GetShapeshiftFormInfo, GetShapeshiftForm = GetShapeshiftFormInfo, GetShapeshiftForm
 local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitCastingInfo, UnitChannelInfo
 local UnitDetailedThreatSituation = UnitDetailedThreatSituation
@@ -782,7 +781,7 @@ if WeakAuras.IsRetail() then
   ---@return number? rank
   function WeakAuras.GetTalentById(talentId)
     if selectedTalentsById[talentId] then
-      local spellName, _, icon = GetSpellInfo(selectedTalentsById[talentId].spellId)
+      local spellName, _, icon = WeakAuras.GetSpellInfo(selectedTalentsById[talentId].spellId)
       return spellName, icon, selectedTalentsById[talentId].spellId, selectedTalentsById[talentId].rank
     end
   end
@@ -1071,9 +1070,9 @@ function WeakAuras.IsSpellKnownForLoad(spell, exact)
     return result
   end
   -- Dance through the spellname to the current spell id
-  local spellName = GetSpellInfo(spell)
+  local spellName = WeakAuras.GetSpellName(spell or "")
   if (spellName) then
-    local otherSpell = select(7, GetSpellInfo(spellName))
+    local otherSpell = select(7, WeakAuras.GetSpellInfo(spellName))
     if otherSpell and otherSpell ~= spell then
       return WeakAuras.IsSpellKnownForLoad(otherSpell)
     end
@@ -1094,7 +1093,7 @@ end
 ---@return boolean result
 function WeakAuras.IsSpellKnownIncludingPet(spell)
   if (not tonumber(spell)) then
-    spell = select(7, GetSpellInfo(spell));
+    spell = select(7, WeakAuras.GetSpellInfo(spell));
   end
   if (not spell) then
     return false;
@@ -1106,7 +1105,7 @@ function Private.ExecEnv.CompareSpellIds(a, b, exactCheck)
   if exactCheck then
     return tonumber(a) == tonumber(b)
   else
-    return GetSpellInfo(a) == GetSpellInfo(b)
+    return WeakAuras.GetSpellName(a or "") == WeakAuras.GetSpellName(b or "")
   end
 end
 
@@ -4749,7 +4748,7 @@ Private.event_prototypes = {
         enable = function(trigger)
           return trigger.subeventSuffix and (trigger.subeventSuffix == "_ABSORBED" or trigger.subeventSuffix == "_INTERRUPT" or trigger.subeventSuffix == "_DISPEL" or trigger.subeventSuffix == "_DISPEL_FAILED" or trigger.subeventSuffix == "_STOLEN" or trigger.subeventSuffix == "_AURA_BROKEN_SPELL")
         end,
-        test = WeakAuras.IsClassicEra() and "GetSpellInfo(%q) == extraSpellName" or nil,
+        test = WeakAuras.IsClassicEra() and "WeakAuras.GetSpellName(%q or '') == extraSpellName" or nil,
         type = "spell",
         showExactOption = false,
         store = true,
@@ -4961,7 +4960,7 @@ Private.event_prototypes = {
       {
         hidden = true,
         name = "icon",
-        init = "(spellId and select(3, GetSpellInfo(spellId))) or 'Interface\\\\Icons\\\\INV_Misc_QuestionMark'",
+        init = "(spellId and WeakAuras.GetSpellIcon(spellId)) or 'Interface\\\\Icons\\\\INV_Misc_QuestionMark'",
         store = true,
         test = "true"
       },
@@ -4984,7 +4983,7 @@ Private.event_prototypes = {
       if (trigger.use_exact_spellName) then
         WeakAuras.WatchSpellActivation(tonumber(trigger.spellName));
       else
-        WeakAuras.WatchSpellActivation(type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName);
+        WeakAuras.WatchSpellActivation(type(trigger.spellName) == "number" and WeakAuras.GetSpellName(trigger.spellName) or trigger.spellName);
       end
     end,
     init = function(trigger)
@@ -4993,7 +4992,7 @@ Private.event_prototypes = {
         spellName = trigger.spellName
         return string.format("local spellName = %s\n", tonumber(spellName) or "nil");
       else
-        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = type(trigger.spellName) == "number" and WeakAuras.GetSpellName(trigger.spellName) or trigger.spellName;
         return string.format("local spellName = %q\n", spellName or "");
       end
     end,
@@ -5012,8 +5011,7 @@ Private.event_prototypes = {
       }
     },
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
-      return icon;
+      return WeakAuras.GetSpellInfo(trigger.spellName or 0);
     end,
     automaticrequired = true,
     progressType = "static"
@@ -5051,7 +5049,7 @@ Private.event_prototypes = {
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
-        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = type(trigger.spellName) == "number" and WeakAuras.GetSpellName(trigger.spellName) or trigger.spellName;
       end
       WeakAuras.WatchSpellCooldown(spellName, trigger.use_matchedRune, followoverride)
       if (trigger.use_showgcd) then
@@ -5064,7 +5062,7 @@ Private.event_prototypes = {
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
-        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = type(trigger.spellName) == "number" and WeakAuras.GetSpellName(trigger.spellName) or trigger.spellName;
       end
       trigger.realSpellName = spellName; -- Cache
       local ret = [=[
@@ -5469,20 +5467,20 @@ Private.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      local name = GetSpellInfo(trigger.realSpellName or 0);
+      local name = WeakAuras.GetSpellName(trigger.realSpellName or 0);
       if(name) then
         return name;
       end
-      name = GetSpellInfo(trigger.spellName or 0);
+      name = WeakAuras.GetSpellName(trigger.spellName or 0);
       if (name) then
         return name;
       end
       return "Invalid";
     end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.realSpellName or 0);
+      local icon = WeakAuras.GetSpellIcon(trigger.realSpellName or 0);
       if (not icon) then
-        icon = select(3, GetSpellInfo(trigger.spellName or 0));
+        icon = WeakAuras.GetSpellIcon(trigger.spellName or 0);
       end
       return icon;
     end,
@@ -5502,7 +5500,7 @@ Private.event_prototypes = {
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
-        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = type(trigger.spellName) == "number" and WeakAuras.GetSpellName(trigger.spellName) or trigger.spellName;
       end
       trigger.realSpellName = spellName; -- Cache
       WeakAuras.WatchSpellCooldown(spellName);
@@ -5513,7 +5511,7 @@ Private.event_prototypes = {
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
-        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = type(trigger.spellName) == "number" and WeakAuras.GetSpellName(trigger.spellName) or trigger.spellName;
       end
 
       if (type(spellName) == "string") then
@@ -5537,20 +5535,20 @@ Private.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      local name = GetSpellInfo(trigger.realSpellName or 0);
+      local name = WeakAuras.GetSpellName(trigger.realSpellName or 0);
       if(name) then
         return name;
       end
-      name = GetSpellInfo(trigger.spellName or 0);
+      name = WeakAuras.GetSpellName(trigger.spellName or 0);
       if (name) then
         return name;
       end
       return "Invalid";
     end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.realSpellName or 0);
+      local icon = WeakAuras.GetSpellIcon(trigger.realSpellName or 0);
       if (not icon) then
-        icon = select(3, GetSpellInfo(trigger.spellName or 0));
+        icon = WeakAuras.GetSpellIcon(trigger.spellName or 0);
       end
       return icon;
     end,
@@ -5571,7 +5569,7 @@ Private.event_prototypes = {
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
-        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = type(trigger.spellName) == "number" and WeakAuras.GetSpellName(trigger.spellName) or trigger.spellName;
       end
       trigger.realSpellName = spellName; -- Cache
       WeakAuras.WatchSpellCooldown(spellName);
@@ -5581,7 +5579,7 @@ Private.event_prototypes = {
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
-        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = type(trigger.spellName) == "number" and WeakAuras.GetSpellName(trigger.spellName) or trigger.spellName;
       end
       spellName = string.format("%q", spellName or "");
       return string.format("local spell = %s;\n", spellName);
@@ -5622,20 +5620,20 @@ Private.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      local name = GetSpellInfo(trigger.realSpellName or 0);
+      local name = WeakAuras.GetSpellName(trigger.realSpellName or 0);
       if(name) then
         return name;
       end
-      name = GetSpellInfo(trigger.spellName or 0);
+      name = WeakAuras.GetSpellName(trigger.spellName or 0);
       if (name) then
         return name;
       end
       return "Invalid";
     end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.realSpellName or 0);
+      local icon = WeakAuras.GetSpellIcon(trigger.realSpellName or 0);
       if (not icon) then
-        icon = select(3, GetSpellInfo(trigger.spellName or 0));
+        icon = WeakAuras.GetSpellIcon(trigger.spellName or 0);
       end
       return icon;
     end,
@@ -6260,7 +6258,7 @@ Private.event_prototypes = {
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
-        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = type(trigger.spellName) == "number" and WeakAuras.GetSpellName(trigger.spellName) or trigger.spellName;
       end
       trigger.realSpellName = spellName; -- Cache
       WeakAuras.WatchSpellCooldown(spellName);
@@ -6271,7 +6269,7 @@ Private.event_prototypes = {
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
-        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = type(trigger.spellName) == "number" and WeakAuras.GetSpellName(trigger.spellName) or trigger.spellName;
       end
       trigger.realSpellName = spellName; -- Cache
       local ret = [=[
@@ -6381,20 +6379,20 @@ Private.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      local name = GetSpellInfo(trigger.realSpellName or 0);
+      local name = WeakAuras.GetSpellName(trigger.realSpellName or 0);
       if(name) then
         return name;
       end
-      name = GetSpellInfo(trigger.spellName or 0);
+      name = WeakAuras.GetSpellName(trigger.spellName or 0);
       if (name) then
         return name;
       end
       return "Invalid";
     end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.realSpellName or 0);
+      local icon = WeakAuras.GetSpellIcon(trigger.realSpellName or 0);
       if (not icon) then
-        icon = select(3, GetSpellInfo(trigger.spellName or 0));
+        icon = WeakAuras.GetSpellIcon(trigger.spellName or 0);
       end
       return icon;
     end,
@@ -6934,7 +6932,7 @@ Private.event_prototypes = {
           if (inverse) then
             active = not active;
             if (triggerTotemName) then
-              icon = select(3, GetSpellInfo(triggerTotemName));
+              icon = WeakAuras.GetSpellIcon(triggerTotemName);
             end
           elseif (active and remainingCheck) then
             local expirationTime = startTime and (startTime + duration) or 0;
@@ -6974,7 +6972,7 @@ Private.event_prototypes = {
           state.name = triggerTotemName;
           state.totemName = triggerTotemName;
           if (triggerTotemName) then
-            state.icon = select(3, GetSpellInfo(triggerTotemName));
+            state.icon = WeakAuras.GetSpellIcon(triggerTotemName)
           end
         else -- check all slots
           for i = 1, 5 do
@@ -7014,7 +7012,7 @@ Private.event_prototypes = {
         return true;
       end
       ]];
-      local totemName = tonumber(trigger.totemName) and GetSpellInfo(tonumber(trigger.totemName)) or trigger.totemName;
+      local totemName = tonumber(trigger.totemName) and WeakAuras.GetSpellName(tonumber(trigger.totemName)) or trigger.totemName;
       ret = ret:format(trigger.use_totemType and tonumber(trigger.totemType) or "nil",
         trigger.use_totemName and totemName or "",
         trigger.use_totemNamePattern and trigger.totemNamePattern or "",
@@ -7638,14 +7636,14 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "select(3, GetSpellInfo(spellId))",
+        init = "WeakAuras.GetSpellIcon(spellId or 0)",
         store = true,
         test = "true"
       },
       {
         name = "name",
         hidden = true,
-        init = "GetSpellInfo(spellId)",
+        init = "WeakAuras.GetSpellName(spellId or 0)",
         store = true,
         test = "true"
       },
@@ -8700,7 +8698,7 @@ Private.event_prototypes = {
               or (data.locType == controlType and (controlType ~= "SCHOOL_INTERRUPT" or ((not use_interruptSchool) or bit.band(data.lockoutSchool, interruptSchool) > 0)))
               then
                 spellId = data.spellID
-                spellName, _, icon = GetSpellInfo(data.spellID)
+                spellName, _, icon = WeakAuras.GetSpellInfo(data.spellID)
                 duration = data.duration
                 if data.startTime and data.duration then
                   expirationTime = data.startTime + data.duration
@@ -9466,12 +9464,12 @@ Private.event_prototypes = {
         for _, spellName in ipairs(trigger.spellNames) do
           spellId = WeakAuras.SafeToNumber(spellName)
           if spellId then
-            name, _, icon = GetSpellInfo(spellName)
+            name, _, icon = WeakAuras.GetSpellInfo(spellName)
             if name and icon then
               return name, icon
             end
           elseif not tonumber(spellName) then
-            name, _, icon = GetSpellInfo(spellName)
+            name, _, icon = WeakAuras.GetSpellInfo(spellName)
             if name and icon then
               return name, icon
             end
@@ -9482,7 +9480,7 @@ Private.event_prototypes = {
         for _, spellIdString in ipairs(trigger.spellIds) do
           spellId = WeakAuras.SafeToNumber(spellIdString)
           if spellId then
-            name, _, icon = GetSpellInfo(spellIdString)
+            name, _, icon = WeakAuras.GetSpellInfo(spellIdString)
             if name and icon then
               return name, icon
             end
@@ -10406,9 +10404,9 @@ Private.event_prototypes = {
         ]]
         ret = ret:format(spellName)
       else
-        local name = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName or "";
+        local name = type(trigger.spellName) == "number" and WeakAuras.GetSpellName(trigger.spellName) or trigger.spellName or "";
         ret = [[
-          local spellName = select(7, GetSpellInfo(%q));
+          local spellName = select(7, WeakAuras.GetSpellInfo(%q));
         ]]
         ret = ret:format(name)
       end
@@ -10453,11 +10451,10 @@ Private.event_prototypes = {
       }
     },
     nameFunc = function(trigger)
-      return (GetSpellInfo(trigger.spellName or 0))
+      return WeakAuras.GetSpellName(trigger.spellName or 0)
     end,
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
-      return icon;
+      return WeakAuras.GetSpellIcon(trigger.spellName or 0);
     end,
     automaticrequired = true,
     progressType = "none"
@@ -10577,11 +10574,11 @@ Private.event_prototypes = {
       if trigger.use_exact_spellName then
         spellName = trigger.spellName
       else
-        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName
+        spellName = type(trigger.spellName) == "number" and WeakAuras.GetSpellInfo(trigger.spellName) or trigger.spellName
       end
       local ret = [=[
         local spellname = %q
-        local spellid = select(7, GetSpellInfo(spellname))
+        local spellid = select(7, WeakAuras.GetSpellInfo(spellname))
         local button
         if spellid then
             local slotList = C_ActionBar.FindSpellActionButtons(spellid)
@@ -10605,8 +10602,7 @@ Private.event_prototypes = {
       },
     },
     iconFunc = function(trigger)
-      local _, _, icon = GetSpellInfo(trigger.spellName or 0);
-      return icon;
+      return WeakAuras.GetSpellIcon(trigger.spellName or 0);
     end,
     automaticrequired = true,
     progressType = "none"

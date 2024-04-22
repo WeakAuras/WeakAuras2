@@ -5179,7 +5179,7 @@ for i = 1, 4 do
   });
 end
 for j, id in ipairs({5487, 768, 783, 114282, 1394966}) do
-  local title, _, icon = GetSpellInfo(id)
+  local title, _, icon = WeakAuras.GetSpellInfo(id)
   if title then
     for i = 1, 4 do
       tinsert(templates.class.DRUID[i][resourceSection].args, {
@@ -5333,7 +5333,7 @@ local function handleItem(item)
         waitingForItemInfo = true;
       end
     else
-      name, _, icon = GetSpellInfo(item.spell);
+      name, _, icon = WeakAuras.GetSpellInfo(item.spell);
       if (name == nil) then
         name = L["Unknown Spell"] .. " " .. tostring(item.spell);
       end
@@ -5485,7 +5485,7 @@ local function fixupIcons()
         if section.args then
           for _, item in pairs(section.args) do
             if (item.spell and (not item.type ~= "item")) then
-              local icon = select(3, GetSpellInfo(item.spell));
+              local icon = WeakAuras.GetSpellIcon(item.spell)
               if (icon) then
                 item.icon = icon;
               end

@@ -2454,9 +2454,9 @@ do
       elseif(event == "UNIT_SPELLCAST_SENT") then
         local unit, guid, castGUID, name = ...;
         if(unit == "player") then
-          name = GetSpellInfo(name);
+          name = WeakAuras.GetSpellName(name);
           if(gcdSpellName ~= name) then
-            local icon = GetSpellTexture(name);
+            local icon = WeakAuras.GetSpellIcon(name);
             gcdSpellName = name;
             gcdSpellIcon = icon;
             if not WeakAuras.IsPaused() then
@@ -2922,7 +2922,7 @@ do
       if type(id) == "number" then
         override = FindSpellOverrideByID(id)
       else
-        local spellId = select(7, GetSpellInfo(id))
+        local spellId = select(7, WeakAuras.GetSpellInfo(id))
         if spellId then
           override = FindSpellOverrideByID(spellId)
         end
@@ -2941,7 +2941,7 @@ do
         changed = true
       end
 
-      local name, _, icon, _, _, _, spellId = GetSpellInfo(id)
+      local name, _, icon, _, _, _, spellId = WeakAuras.GetSpellInfo(id)
       if spellDetails[id].name ~= name then
         spellDetails[id].name = name
         changed = true
@@ -3223,7 +3223,7 @@ do
     end
     spells[id] = true;
     checkOverrideSpell[id] = followoverride
-    local name, _, icon, _, _, _, spellId = GetSpellInfo(id)
+    local name, _, icon, _, _, _, spellId = WeakAuras.GetSpellInfo(id)
     spellDetails[id] = {
       name = name,
       icon = icon,
@@ -3334,7 +3334,7 @@ do
     spellActivationFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
     spellActivationFrame:SetScript("OnEvent", function(self, event, spell)
       Private.StartProfileSystem("generictrigger");
-      local spellName = GetSpellInfo(spell)
+      local spellName = WeakAuras.GetSpellName(spell)
       if (spellActivationSpells[spell] or spellActivationSpells[spellName]) then
         local active = (event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
         spellActivationSpellsCurrent[spell] = active
@@ -3577,7 +3577,7 @@ if WeakAuras.IsClassicEra() then
         if queueableSpells then
           for _, spellID in ipairs(queueableSpells) do
             -- Check the highest known rank
-            local maxRank = select(7, GetSpellInfo(GetSpellInfo(spellID)))
+            local maxRank = select(7, WeakAuras.GetSpellInfo(WeakAuras.GetSpellName(spellID)))
             if IsCurrentSpell(maxRank) then
               newQueuedSpell = maxRank
               break
