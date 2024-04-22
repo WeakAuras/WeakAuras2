@@ -253,7 +253,7 @@ local methods = {
         self.talentIdToButton[talentId] = button
         local spellId = data[2]
         button.spellId = spellId
-        local icon = select(8, GetSpellInfo(spellId))
+        local icon = select(8, WeakAuras.GetSpellInfo(spellId))
         if icon then
           button:SetNormalTexture(icon)
         end

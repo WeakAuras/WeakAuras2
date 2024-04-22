@@ -8,7 +8,7 @@ if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 local pairs = pairs
 
 -- WoW APIs
-local GetCursorInfo, GetSpellInfo, ClearCursor = GetCursorInfo, GetSpellInfo, ClearCursor
+local GetCursorInfo, ClearCursor = GetCursorInfo, ClearCursor
 local CreateFrame, UIParent = CreateFrame, UIParent
 local _G = _G
 
@@ -103,10 +103,10 @@ local function OnMouseUp(self)                                                  
 end
 
 local function OnReceiveDrag(self)                                               -- EditBox / ScrollFrame
-  local type, id, info = GetCursorInfo()
-  if type == "spell" then
-    info = GetSpellInfo(id, info)
-  elseif type ~= "item" then
+  local infoType, spellIndex, bookType, info = GetCursorInfo()
+  if infoType == "spell" then
+    info = WeakAuras.GetSpellName(info)
+  elseif infoType ~= "item" then
     return
   end
   ClearCursor()

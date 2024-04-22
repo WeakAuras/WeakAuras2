@@ -30,6 +30,7 @@ Libs\TaintLess\TaintLess.xml
 Libs\LibSpecialization\LibSpecialization.lua
 
 Init.lua
+Compatibility.lua
 locales.xml
 ArchiveTypes\Repository.lua
 DefaultOptions.lua

@@ -8,7 +8,7 @@ local OptionsPrivate = select(2, ...)
 local pairs, error, coroutine = pairs, error, coroutine
 
 -- WoW APIs
-local GetSpellInfo, IsSpellKnown = GetSpellInfo, IsSpellKnown
+local IsSpellKnown = IsSpellKnown
 
 ---@class WeakAuras
 local WeakAuras = WeakAuras
@@ -37,7 +37,8 @@ function spellCache.Build()
     local misses = 0
     while misses < 80000 do
       id = id + 1
-      local name, _, icon = GetSpellInfo(id)
+      local name = WeakAuras.GetSpellName(id)
+      local icon = WeakAuras.GetSpellIcon(id)
 
       if(icon == 136243) then -- 136243 is the a gear icon, we can ignore those spells
         misses = 0;
@@ -243,7 +244,7 @@ function spellCache.CorrectAuraName(input)
 
   local spellId = WeakAuras.SafeToNumber(input);
   if(spellId) then
-    local name, _, icon = GetSpellInfo(spellId);
+    local name, _, icon = WeakAuras.GetSpellInfo(spellId);
     if(name) then
       spellCache.AddIcon(name, spellId, icon)
       return name, spellId;
