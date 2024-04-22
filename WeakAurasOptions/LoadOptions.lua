@@ -337,6 +337,15 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           hidden = hidden,
         }
         order = order + 1;
+      elseif (arg.type == "header") then
+        options["header_"..name] = {
+          type = "header",
+          width = WeakAuras.doubleWidth,
+          name = arg.display,
+          order = order,
+          hidden = hidden,
+        }
+        order = order + 1
       else
         options["use_"..name] = {
           type = "toggle",

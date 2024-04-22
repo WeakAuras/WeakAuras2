@@ -2651,6 +2651,13 @@ Private.event_prototypes = {
         hidden = not WeakAuras.IsRetail(),
       },
       {
+        type = "header",
+        name = "paragonReputationHeader",
+        display = L["Paragon Reputation Filters"],
+        enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail(),
+      },
+      {
         name = "isParagon",
         display = L["Is Paragon Reputation"],
         type = "tristate",
@@ -2668,6 +2675,16 @@ Private.event_prototypes = {
         store = true,
         conditionType = "bool",
         enable = WeakAuras.IsRetail(),
+        hidden = not WeakAuras.IsRetail(),
+      },
+      {
+        type = "header",
+        name = "friendshipReputationHeader",
+        display = L["Friendship Reputation Filters"],
+        enable = WeakAuras.IsRetail() and function(trigger)
+          local repInfo = trigger.factionID and C_GossipInfo.GetFriendshipReputation(trigger.factionID);
+          return repInfo and repInfo.friendshipFactionID > 0
+        end,
         hidden = not WeakAuras.IsRetail(),
       },
       {
@@ -2697,6 +2714,16 @@ Private.event_prototypes = {
         end,
         hidden = not WeakAuras.IsRetail(),
         noProgressSource = true,
+      },
+      {
+        type = "header",
+        name = "renownReputationHeader",
+        display = L["Renown Reputation Filters"],
+        enable = WeakAuras.IsRetail() and function(trigger)
+          local majorFactionData = trigger.factionID and C_MajorFactions.GetMajorFactionData(trigger.factionID)
+          return majorFactionData and majorFactionData.renownLevel
+        end,
+        hidden = not WeakAuras.IsRetail(),
       },
       {
         name = "renownLevel",
@@ -2829,6 +2856,11 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+      },
+      {
+        type = "header",
+        name = "restedExperienceHeader",
+        display = L["Rested Experience Filters"],
       },
       {
         name = "showRested",
@@ -3018,6 +3050,11 @@ Private.event_prototypes = {
         },
       },
       {
+        type = "header",
+        name = "absorbAndHealingHeader",
+        display = L["Absorb and Healing Filters"],
+      },
+      {
         name = "showAbsorb",
         display = L["Fetch Absorb"],
         type = "toggle",
@@ -3104,6 +3141,11 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+      },
+      {
+        type = "header",
+        name = "unitCharacteristicsHeader",
+        display = L["Unit Characteristics Filters"],
       },
       {
         name = "name",
@@ -3219,6 +3261,14 @@ Private.event_prototypes = {
         hidden = true,
         test = "true",
         init = "raidMarkIndex > 0 and '{rt'..raidMarkIndex..'}' or ''"
+      },
+      {
+        type = "header",
+        name = "miscellaneousHeader",
+        display = L["Miscellaneous"],
+        enable = function(trigger)
+          return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end,
       },
       {
         name = "includePets",
@@ -3735,6 +3785,11 @@ Private.event_prototypes = {
         test = "true"
       },
       {
+        type = "header",
+        name = "unitCharacteristicsHeader",
+        display = L["Unit Characteristics Filters"],
+      },
+      {
         name = "namerealm",
         display = L["Unit Name/Realm"],
         type = "string",
@@ -3832,6 +3887,14 @@ Private.event_prototypes = {
         hidden = true,
         test = "true",
         init = "raidMarkIndex > 0 and '{rt'..raidMarkIndex..'}' or ''"
+      },
+      {
+        type = "header",
+        name = "miscellaneousHeader",
+        display = L["Miscellaneous"],
+        enable = function(trigger)
+          return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end,
       },
       {
         name = "includePets",
@@ -4158,6 +4221,14 @@ Private.event_prototypes = {
         init = "raidMarkIndex > 0 and '{rt'..raidMarkIndex..'}' or ''"
       },
       {
+        type = "header",
+        name = "miscellaneousHeader",
+        display = L["Miscellaneous"],
+        enable = function(trigger)
+          return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end,
+      },
+      {
         name = "ignoreSelf",
         display = L["Ignore Self"],
         type = "toggle",
@@ -4234,6 +4305,11 @@ Private.event_prototypes = {
       {}, -- timestamp ignored with _ argument
       {}, -- messageType ignored with _ argument (it is checked before the dynamic function)
       {}, -- hideCaster ignored with _ argument
+      {
+        type = "header",
+        name = "sourceHeader",
+        display = L["Source Filters"],
+      },
       {
         name = "sourceGUID",
         init = "arg",
@@ -4362,6 +4438,14 @@ Private.event_prototypes = {
         init = "sourceRaidMarkIndex > 0 and '{rt'..sourceRaidMarkIndex..'}' or ''",
         store = true,
         hidden = true,
+      },
+      {
+        type = "header",
+        name = "destHeader",
+        display = L["Destination Filters"],
+        enable = function(trigger)
+          return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
+        end,
       },
       {
         name = "destGUID",
@@ -4529,6 +4613,14 @@ Private.event_prototypes = {
         end,
       },
       {
+        type = "header",
+        name = "prefixHeader",
+        display = L["Prefix Filters"],
+        enable = function(trigger)
+          return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE") or trigger.subeventPrefix == "ENVIRONMENTAL")
+        end,
+      },
+      {
         name = "spellId",
         display = L["Spell Id"],
         init = "arg",
@@ -4594,6 +4686,34 @@ Private.event_prototypes = {
         end,
         store = true,
         conditionType = "select"
+      },
+      {
+        type = "header",
+        name = "suffixHeader",
+        display = L["Suffix Filters"],
+        enable = function(trigger)
+          return trigger.subeventSuffix and (
+            (
+              trigger.subeventSuffix == "_ABSORBED"
+              or trigger.subeventSuffix == "_INTERRUPT"
+              or trigger.subeventSuffix == "_DISPEL"
+              or trigger.subeventSuffix == "_DISPEL_FAILED"
+              or trigger.subeventSuffix == "_STOLEN"
+              or trigger.subeventSuffix == "_AURA_BROKEN_SPELL"
+              or trigger.subeventSuffix == "_DAMAGE"
+              or trigger.subeventSuffix == "_HEAL"
+              or trigger.subeventSuffix == "_ENERGIZE"
+              or trigger.subeventSuffix == "_DRAIN"
+              or trigger.subeventSuffix == "_LEECH"
+              or trigger.subeventSuffix == "_DAMAGE"
+              or trigger.subeventSuffix == "_MISSED"
+              or trigger.subeventSuffix == "_EXTRA_ATTACKS"
+              or trigger.subeventSuffix == "_CAST_FAILED"
+              or trigger.subeventSuffix:find("DOSE")
+              or trigger.subeventSuffix:find("AURA")
+            ) or (trigger.subeventPrefix and trigger.subeventPrefix:find("DAMAGE"))
+          )
+        end,
       },
       {
         name = "missType",
@@ -4831,6 +4951,11 @@ Private.event_prototypes = {
           return trigger.subeventSuffix == "_CAST_FAILED"
         end
       }, -- failedType ignored with _ argument - theoretically this is not necessary because it is the last argument in the event, but it is added here for completeness
+      {
+        type = "header",
+        name = "miscellaneousHeader",
+        display = L["Miscellaneous"],
+      },
       {
         name = "cloneId",
         display = L["Clone per Event"],
@@ -8464,6 +8589,11 @@ Private.event_prototypes = {
         },
       },
       {
+        type = "header",
+        name = "unitCharacteristicsHeader",
+        display = L["Unit Characteristics Filters"],
+      },
+      {
         name = "name",
         display = L["Unit Name"],
         type = "string",
@@ -8877,6 +9007,20 @@ Private.event_prototypes = {
         store = true,
         conditionType = "bool",
       },
+
+      {
+        name = "remaining",
+        display = L["Remaining Time"],
+        type = "number",
+        enable = function(trigger) return not trigger.use_inverse end,
+      },
+      {
+        type = "header",
+        name = "empoweredHeader",
+        display = L["Empowered Cast Filters"],
+        enable = WeakAuras.IsRetail() and function(trigger) return not trigger.use_inverse end or false,
+        hidden = not WeakAuras.IsRetail()
+      },
       {
         name = "empowered",
         display = L["Empowered"],
@@ -8926,12 +9070,6 @@ Private.event_prototypes = {
         store = true,
         type = "toggle",
         conditionType = "bool",
-      },
-      {
-        name = "remaining",
-        display = L["Remaining Time"],
-        type = "number",
-        enable = function(trigger) return not trigger.use_inverse end,
       },
       {
         name = "name",
@@ -8984,6 +9122,11 @@ Private.event_prototypes = {
         enable = function(trigger)
           return not trigger.use_inverse
         end
+      },
+      {
+        type = "header",
+        name = "unitCharacteristicsHeader",
+        display = L["Unit Characteristics Filters"],
       },
       {
         name = "npcId",
@@ -9061,27 +9204,6 @@ Private.event_prototypes = {
         hidden = true,
         test = "true",
         init = "raidMarkIndex > 0 and '{rt'..raidMarkIndex..'}' or ''"
-      },
-      {
-        name = "includePets",
-        display = L["Include Pets"],
-        type = "select",
-        values = "include_pets_types",
-        width = WeakAuras.normalWidth,
-        test = "true",
-        enable = function(trigger)
-          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
-        end
-      },
-      {
-        name = "ignoreSelf",
-        display = L["Ignore Self"],
-        type = "toggle",
-        width = WeakAuras.doubleWidth,
-        enable = function(trigger)
-          return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
-        end,
-        init = "not UnitIsUnit(\"player\", unit)"
       },
       {
         name = "nameplateType",
@@ -9196,6 +9318,11 @@ Private.event_prototypes = {
         desc = constants.nameRealmFilterDesc,
       },
       {
+        type = "header",
+        name = "miscellaneousHeader",
+        display = L["Miscellaneous"],
+      },
+      {
         name = "showLatency",
         display = L["Overlay Latency"],
         type = "toggle",
@@ -9204,6 +9331,27 @@ Private.event_prototypes = {
           return trigger.unit == "player" and not trigger.use_inverse
         end,
         reloadOptions = true
+      },
+      {
+        name = "includePets",
+        display = L["Include Pets"],
+        type = "select",
+        values = "include_pets_types",
+        width = WeakAuras.normalWidth,
+        test = "true",
+        enable = function(trigger)
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end
+      },
+      {
+        name = "ignoreSelf",
+        display = L["Ignore Self"],
+        type = "toggle",
+        width = WeakAuras.doubleWidth,
+        enable = function(trigger)
+          return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
+        end,
+        init = "not UnitIsUnit(\"player\", unit)"
       },
       {
         name = "onUpdateUnitTarget",
@@ -9370,6 +9518,11 @@ Private.event_prototypes = {
     statesParameter = "one",
     args = {
       {
+        type = "header",
+        name = "primaryStatsHeader",
+        display = L["Primary Stats Filters"],
+      },
+      {
         name = "mainstat",
         display = L["Main Stat"],
         type = "number",
@@ -9450,6 +9603,11 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+      },
+      {
+        type = "header",
+        name = "secondaryStatsHeader",
+        display = L["Secondary Stats Filters"],
       },
       {
         name = "criticalrating",
@@ -9712,88 +9870,9 @@ Private.event_prototypes = {
         },
       },
       {
-        name = "resistanceholy",
-        display = L["Holy Resistance"],
-        type = "number",
-        init = "select(2, UnitResistance('player', 1))",
-        store = true,
-        enable = WeakAuras.IsClassicEraOrWrathOrCata(),
-        conditionType = "number",
-        hidden = WeakAuras.IsRetail(),
-        multiEntry = {
-          operator = "and",
-          limit = 2
-        },
-      },
-      {
-        name = "resistancefire",
-        display = L["Fire Resistance"],
-        type = "number",
-        init = "select(2, UnitResistance('player', 2))",
-        store = true,
-        enable = WeakAuras.IsClassicEraOrWrathOrCata(),
-        conditionType = "number",
-        hidden = WeakAuras.IsRetail(),
-        multiEntry = {
-          operator = "and",
-          limit = 2
-        },
-      },
-      {
-        name = "resistancenature",
-        display = L["Nature Resistance"],
-        type = "number",
-        init = "select(2, UnitResistance('player', 3))",
-        store = true,
-        enable = WeakAuras.IsClassicEraOrWrathOrCata(),
-        conditionType = "number",
-        hidden = WeakAuras.IsRetail(),
-        multiEntry = {
-          operator = "and",
-          limit = 2
-        },
-      },
-      {
-        name = "resistancefrost",
-        display = L["Frost Resistance"],
-        type = "number",
-        init = "select(2, UnitResistance('player', 4))",
-        store = true,
-        enable = WeakAuras.IsClassicEraOrWrathOrCata(),
-        conditionType = "number",
-        hidden = WeakAuras.IsRetail(),
-        multiEntry = {
-          operator = "and",
-          limit = 2
-        },
-      },
-      {
-        name = "resistanceshadow",
-        display = L["Shadow Resistance"],
-        type = "number",
-        init = "select(2, UnitResistance('player', 5))",
-        store = true,
-        enable = WeakAuras.IsClassicEraOrWrathOrCata(),
-        conditionType = "number",
-        hidden = WeakAuras.IsRetail(),
-        multiEntry = {
-          operator = "and",
-          limit = 2
-        },
-      },
-      {
-        name = "resistancearcane",
-        display = L["Arcane Resistance"],
-        type = "number",
-        init = "select(2, UnitResistance('player', 6))",
-        store = true,
-        enable = WeakAuras.IsClassicEraOrWrathOrCata(),
-        conditionType = "number",
-        hidden = WeakAuras.IsRetail(),
-        multiEntry = {
-          operator = "and",
-          limit = 2
-        },
+        type = "header",
+        name = "tertiaryStatsHeader",
+        display = L["Tertiary Stats Filters"],
       },
       {
         name = "leechrating",
@@ -9895,6 +9974,11 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+      },
+      {
+        type = "header",
+        name = "defensiveStatsHeader",
+        display = L["Defensive Stats Filters"],
       },
       {
         name = "defense",
@@ -10063,6 +10147,97 @@ Private.event_prototypes = {
         enable = WeakAuras.IsRetail(),
         conditionType = "number",
         hidden = not WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
+      },
+      {
+        type = "header",
+        name = "resistanceHeader",
+        display = L["Resistance Filters"],
+        hidden = WeakAuras.IsRetail(),
+        enable = WeakAuras.IsClassicEraOrWrathOrCata(),
+      },
+      {
+        name = "resistanceholy",
+        display = L["Holy Resistance"],
+        type = "number",
+        init = "select(2, UnitResistance('player', 1))",
+        store = true,
+        enable = WeakAuras.IsClassicEraOrWrathOrCata(),
+        conditionType = "number",
+        hidden = WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
+      },
+      {
+        name = "resistancefire",
+        display = L["Fire Resistance"],
+        type = "number",
+        init = "select(2, UnitResistance('player', 2))",
+        store = true,
+        enable = WeakAuras.IsClassicEraOrWrathOrCata(),
+        conditionType = "number",
+        hidden = WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
+      },
+      {
+        name = "resistancenature",
+        display = L["Nature Resistance"],
+        type = "number",
+        init = "select(2, UnitResistance('player', 3))",
+        store = true,
+        enable = WeakAuras.IsClassicEraOrWrathOrCata(),
+        conditionType = "number",
+        hidden = WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
+      },
+      {
+        name = "resistancefrost",
+        display = L["Frost Resistance"],
+        type = "number",
+        init = "select(2, UnitResistance('player', 4))",
+        store = true,
+        enable = WeakAuras.IsClassicEraOrWrathOrCata(),
+        conditionType = "number",
+        hidden = WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
+      },
+      {
+        name = "resistanceshadow",
+        display = L["Shadow Resistance"],
+        type = "number",
+        init = "select(2, UnitResistance('player', 5))",
+        store = true,
+        enable = WeakAuras.IsClassicEraOrWrathOrCata(),
+        conditionType = "number",
+        hidden = WeakAuras.IsRetail(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
+      },
+      {
+        name = "resistancearcane",
+        display = L["Arcane Resistance"],
+        type = "number",
+        init = "select(2, UnitResistance('player', 6))",
+        store = true,
+        enable = WeakAuras.IsClassicEraOrWrathOrCata(),
+        conditionType = "number",
+        hidden = WeakAuras.IsRetail(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10849,9 +11024,9 @@ Private.event_prototypes = {
         },
       },
       {
-        name = "instanceTitle",
+        type = "header",
+        name = "instanceHeader",
         display = L["Instance Filters"],
-        type = "description",
       },
       {
         name = "instanceId",
