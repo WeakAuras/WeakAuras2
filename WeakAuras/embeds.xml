@@ -22,4 +22,5 @@
   <Include file="Libs\Archivist\Archivist.xml"/>
   <Include file="Libs\LibSerialize\lib.xml"/>
   <Include file="Libs\LibUIDropDownMenu\LibUIDropDownMenu.xml"/>
+  <Include file="Libs\APIDoc-1.0\APIDoc-1.0.xml"/>
 </Ui>

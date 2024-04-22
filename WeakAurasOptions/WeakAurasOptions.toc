@@ -65,7 +65,6 @@ OptionsFrames\IconPicker.lua
 OptionsFrames\ImportExport.lua
 OptionsFrames\ModelPicker.lua
 OptionsFrames\TextEditor.lua
-WeakAurasWidgetTemplate.xml
 OptionsFrames\TexturePicker.lua
 OptionsFrames\Update.lua
 OptionsFrames\DebugLogFrame.lua
