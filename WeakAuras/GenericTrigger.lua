@@ -2192,8 +2192,15 @@ do
     if WeakAuras.IsClassicEra() then
       startTime, duration = GetSpellCooldown(29515);
       shootStart, shootDuration = GetSpellCooldown(5019)
-    else
+    elseif GetSpellCooldown then
       startTime, duration, _, modRate = GetSpellCooldown(61304);
+    else
+      local spellCooldownInfo = C_Spell.GetSpellCooldown(61304);
+      if spellCooldownInfo then
+        startTime = spellCooldownInfo.startTime
+        duration = spellCooldownInfo.duration
+        modRate = spellCooldownInfo.modRate
+      end
     end
     if(duration and duration > 0) then
       if not(gcdStart) then
@@ -2820,7 +2827,19 @@ do
   ---@param id string
   ---@param runeDuration? number
   function WeakAuras.GetSpellCooldownUnified(id, runeDuration)
-    local startTimeCooldown, durationCooldown, enabled, modRate = GetSpellCooldown(id)
+    local startTimeCooldown, durationCooldown, enabled, modRate
+    if GetSpellCooldown then
+      startTimeCooldown, durationCooldown, enabled, modRate = GetSpellCooldown(id)
+    else
+      local spellCooldownInfo = C_Spell.GetSpellCooldown(id);
+      if spellCooldownInfo then
+        startTimeCooldown = spellCooldownInfo.startTime
+        durationCooldown = spellCooldownInfo.duration
+        enabled = spellCooldownInfo.isEnabled
+        modRate = spellCooldownInfo.modRate
+      end
+    end
+
     local charges, maxCharges, startTimeCharges, durationCharges, modRateCharges = GetSpellCharges(id);
 
     startTimeCooldown = startTimeCooldown or 0;
