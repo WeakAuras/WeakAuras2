@@ -82,6 +82,7 @@ WeakAuras.timer = timer
 local loginQueue = {}
 local queueshowooc
 
+---@return integer version
 function WeakAuras.InternalVersion()
   return internalVersion;
 end
@@ -151,6 +152,7 @@ function Private.LoadOptions(msg)
   return true;
 end
 
+---@private
 function WeakAuras.OpenOptions(msg)
   if Private.NeedToRepairDatabase() then
     StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "downgrade"})
@@ -243,6 +245,7 @@ end
 
 if not WeakAuras.IsLibsOK() then return end
 
+---@private
 function WeakAuras.ToggleMinimap()
   WeakAurasSaved.minimap.hide = not WeakAurasSaved.minimap.hide
   if WeakAurasSaved.minimap.hide then
