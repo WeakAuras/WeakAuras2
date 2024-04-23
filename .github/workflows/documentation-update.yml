@@ -1,27 +1,22 @@
 name: Regenerate Type Definitions
 
 on:
-  [pull_request, pull_request_target]
-
-permissions: write-all
+  push:
+    branches:
+      - main
+  pull_request_target:
 
 jobs:
   typeDefinitionsUpdate:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout WeakAuras
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.pull_request.head.ref }}
+          ref: ${{ github.head_ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
-          persist-credentials: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
-
-      # - name: Checkout PR
-      #   env:
-      #     GH_TOKEN: ${{ secrets.PAT_GITHUB }}
-      #   run: gh pr checkout ${{ github.event.pull_request.number }}
 
       - name: Set up Homebrew
         id: set-up-homebrew
@@ -38,11 +33,6 @@ jobs:
         shell: bash
 
       - name: Push Changes to PR
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
-          git commit -am "Update generated types from ${GITHUB_SHA:0:7}" || true
-          git config --local --unset-all "http.https://github.com/.extraheader"
-          git push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update generated types from ${GITHUB_SHA:0:7}"
