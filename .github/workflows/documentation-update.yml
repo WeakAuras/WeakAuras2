@@ -14,11 +14,12 @@ jobs:
       - name: Checkout WeakAuras
         uses: actions/checkout@v4
         with:
+          repository: 'WeakAuras/WeakAuras'
           token: ${{ secrets.PAT_GITHUB }}
 
       - name: Checkout PR
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
         run: gh pr checkout ${{ github.event.pull_request.number }}
 
       - name: Set up Homebrew
