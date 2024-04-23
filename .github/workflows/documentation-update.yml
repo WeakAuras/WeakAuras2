@@ -1,7 +1,7 @@
 name: Regenerate Type Definitions
 
 on:
-  pull_request
+  pull_request_target
 
 jobs:
   typeDefinitionsUpdate:
@@ -33,7 +33,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
           git commit -am "Update generated types from ${GITHUB_SHA:0:7}" || true
           git push
