@@ -1,7 +1,11 @@
 name: Regenerate Type Definitions
 
 on:
-  pull_request_target
+  [pull_request, pull_request_target]
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   typeDefinitionsUpdate:
