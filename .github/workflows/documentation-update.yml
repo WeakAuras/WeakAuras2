@@ -16,10 +16,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
 
-      - name: Checkout PR
-        env:
-          GH_TOKEN: ${{ secrets.PAT_GITHUB }}
-        run: gh pr checkout ${{ github.event.pull_request.number }}
+      # - name: Checkout PR
+      #   env:
+      #     GH_TOKEN: ${{ secrets.PAT_GITHUB }}
+      #   run: gh pr checkout ${{ github.event.pull_request.number }}
 
       - name: Set up Homebrew
         id: set-up-homebrew
