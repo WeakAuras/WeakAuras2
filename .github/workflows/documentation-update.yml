@@ -4,9 +4,12 @@ on:
   pull_request
 
 jobs:
-  atlasUpdate:
+  typeDefinitionsUpdate:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout WeakAuras
+        uses: actions/checkout@v4
+
       - name: Checkout PR
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
