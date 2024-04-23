@@ -16,6 +16,8 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
+          persist-credentials: false
+          token: ${{ secrets.PAT_GITHUB }}
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
 
