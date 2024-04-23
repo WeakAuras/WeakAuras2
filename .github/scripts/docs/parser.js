@@ -40,6 +40,7 @@ function wowType(obj) {
 const data = fs.readFileSync('doc.json', { encoding: 'utf8', flags: 'r' });
 const obj = JSON.parse(data);
 for (const entry of obj) {
+  if (entry.name === "WeakAuras") {
     if (entry.fields) {
       console.log(` Functions =`);
       console.log(` {`);
@@ -73,6 +74,7 @@ for (const entry of obj) {
       };
       console.log(` },`);
     }
+  }
 }
 
 console.log(
