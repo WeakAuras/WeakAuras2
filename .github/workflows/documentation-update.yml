@@ -10,15 +10,15 @@ permissions:
 jobs:
   typeDefinitionsUpdate:
     runs-on: ubuntu-latest
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
+
     steps:
       - name: Checkout WeakAuras
         uses: actions/checkout@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
 
       - name: Checkout PR
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
         run: gh pr checkout ${{ github.event.pull_request.number }}
 
       - name: Set up Homebrew
@@ -36,8 +36,6 @@ jobs:
         shell: bash
 
       - name: Push Changes to PR
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
