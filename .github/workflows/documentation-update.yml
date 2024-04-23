@@ -13,9 +13,8 @@ jobs:
     steps:
       - name: Checkout WeakAuras
         uses: actions/checkout@v4
-        with:
-          repository: 'WeakAuras/WeakAuras'
-          token: ${{ secrets.PAT_GITHUB }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
 
       - name: Checkout PR
         env:
