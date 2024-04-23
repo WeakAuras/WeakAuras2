@@ -3,9 +3,7 @@ name: Regenerate Type Definitions
 on:
   [pull_request, pull_request_target]
 
-permissions:
-  contents: write
-  pull-requests: write
+permissions: write-all
 
 jobs:
   typeDefinitionsUpdate:
@@ -17,7 +15,6 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
           repository: ${{ github.event.pull_request.head.repo.full_name }}
           persist-credentials: false
-          token: ${{ secrets.PAT_GITHUB }}
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_GITHUB }}
 
@@ -47,4 +44,5 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
           git commit -am "Update generated types from ${GITHUB_SHA:0:7}" || true
+          git config --local --unset-all "http.https://github.com/.extraheader"
           git push
