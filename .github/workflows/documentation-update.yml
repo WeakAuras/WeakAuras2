@@ -1,56 +1,32 @@
-name: Update Documentation
+name: Regenerate Type Definitions
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - WeakAurasOptions/WeakAurasAPI.lua
+  pull_request
 
 jobs:
   atlasUpdate:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout WeakAuras
-        uses: actions/checkout@v4
-        with:
-          repository: WeakAuras/WeakAuras
-          path: WeakAuras
-
-      - name: Checkout WeakAuras Wiki
-        uses: actions/checkout@v4
-        with:
-          repository: WeakAuras/WeakAuras.wiki
-          path: wiki
+      - name: Checkout PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr checkout ${{ github.event.pull_request.number }}
 
       - name: Install LuaLS
         run: |
           brew install lua-language-server
 
-      - name: Update Documentation Files
+      - name: Regenerate Type Definitions
         run: |
           cd .github/scripts/docs
           ./update-documentation-files.sh
         shell: bash
 
-      - name: Copy Documentation Files
+      - name: Push Changes to PR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cp -av .github/scripts/docs/docs.md wiki/API-Documentation.md
-        shell: bash
-
-      - name: Update Wiki
-        run: |
-          cd wiki
           git config user.name "${{ github.actor }}"
           git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
-          git commit -am "Update API Docs from ${GITHUB_SHA:0:7}" || true
+          git commit -am "Update generated types from ${GITHUB_SHA:0:7}" || true
           git push
-
-      # - name: Create Pull Request
-      #   uses: peter-evans/create-pull-request@v6
-      #   with:
-      #     branch: update-docs
-      #     commit-message: Update Documentation Files
-      #     title: Update Documentation Files
-      #     body: Update Documentation Files
-      #     delete-branch: true

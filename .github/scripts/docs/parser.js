@@ -37,7 +37,7 @@ function wowType(obj) {
   return obj.view;
 }
 
-const data = fs.readFileSync('output.json', { encoding: 'utf8', flags: 'r' });
+const data = fs.readFileSync('doc.json', { encoding: 'utf8', flags: 'r' });
 const obj = JSON.parse(data);
 for (const entry of obj) {
     if (entry.fields) {
