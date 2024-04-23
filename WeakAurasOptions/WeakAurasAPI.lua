@@ -12,16 +12,6 @@ local WeakAurasAPI =
  Functions =
  {
   {
-   Name = "Add",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "data", Type = "any", Nilable = false },
-    { Name = "simpleChange", Type = "any", Nilable = false },
-   },
-  },
-  {
    Name = "AddCompanionData",
    Type = "Function",
 
@@ -224,15 +214,6 @@ local WeakAurasAPI =
    },
   },
   {
-   Name = "Delete",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "data", Type = "any", Nilable = false },
-   },
-  },
-  {
    Name = "EnsureString",
    Type = "Function",
 
@@ -319,6 +300,14 @@ local WeakAurasAPI =
     { Name = "undefined", Type = "string", Nilable = false },
     { Name = "undefined", Type = "string", Nilable = false },
     { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
    },
   },
   {
@@ -337,6 +326,14 @@ local WeakAurasAPI =
     { Name = "undefined", Type = "unknown", Nilable = false },
     { Name = "undefined", Type = "string", Nilable = false },
     { Name = "undefined", Type = "number", Nilable = false },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
+    { Name = "undefined", Type = "unknown", Nilable = true },
    },
   },
   {
@@ -797,20 +794,6 @@ local WeakAurasAPI =
    },
   },
   {
-   Name = "GetTriggerCategoryFor",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "triggerType", Type = "any", Nilable = false },
-   },
-
-   Returns =
-   {
-    { Name = "undefined", Type = "unknown", Nilable = false },
-   },
-  },
-  {
    Name = "GetTriggerStateForTrigger",
    Type = "Function",
 
@@ -875,25 +858,12 @@ local WeakAurasAPI =
    },
   },
   {
-   Name = "InitEssenceCooldown",
-   Type = "Function",
-
-   Returns =
-   {
-    { Name = "undefined", Type = "bool", Nilable = false },
-   },
-  },
-  {
-   Name = "InitSwingTimer",
-   Type = "Function",
-  },
-  {
    Name = "InstanceDifficulty",
    Type = "Function",
 
    Returns =
    {
-    { Name = "undefined", Type = "unknown", Nilable = false },
+    { Name = "difficulty", Type = "string", Nilable = false },
    },
   },
   {
@@ -902,8 +872,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "string", Nilable = false },
-    { Name = "undefined", Type = "nil", Nilable = true },
+    { Name = "instanceType", Type = "string", Nilable = false },
    },
   },
   {
@@ -912,7 +881,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "unknown", Nilable = false },
+    { Name = "difficultyID", Type = "number", Nilable = true },
    },
   },
   {
@@ -1114,21 +1083,6 @@ local WeakAurasAPI =
    },
   },
   {
-   Name = "IsSpellKnownForLoad",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "spell", Type = "any", Nilable = false },
-    { Name = "exact", Type = "any", Nilable = false },
-   },
-
-   Returns =
-   {
-    { Name = "undefined", Type = "bool", Nilable = false },
-   },
-  },
-  {
    Name = "IsSpellKnownIncludingPet",
    Type = "Function",
 
@@ -1298,40 +1252,6 @@ local WeakAurasAPI =
    },
   },
   {
-   Name = "RegisterItemCountWatch",
-   Type = "Function",
-  },
-  {
-   Name = "RegisterSubRegionOptions",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "name", Type = "any", Nilable = false },
-    { Name = "createFunction", Type = "any", Nilable = false },
-    { Name = "description", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "RegisterSubRegionType",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "name", Type = "any", Nilable = false },
-    { Name = "displayName", Type = "any", Nilable = false },
-    { Name = "supportFunction", Type = "any", Nilable = false },
-    { Name = "createFunction", Type = "any", Nilable = false },
-    { Name = "modifyFunction", Type = "any", Nilable = false },
-    { Name = "onAcquire", Type = "any", Nilable = false },
-    { Name = "onRelease", Type = "any", Nilable = false },
-    { Name = "default", Type = "any", Nilable = false },
-    { Name = "addDefaultsForNewAura", Type = "any", Nilable = false },
-    { Name = "properties", Type = "any", Nilable = false },
-    { Name = "supportsAdd", Type = "any", Nilable = false },
-   },
-  },
-  {
    Name = "RegisterTriggerSystem",
    Type = "Function",
 
@@ -1386,7 +1306,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "number", Nilable = true },
+    { Name = "number", Type = "number", Nilable = true },
    },
   },
   {
@@ -1395,19 +1315,6 @@ local WeakAurasAPI =
 
    Arguments =
    {
-    { Name = "event", Type = "string", Nilable = false },
-    { Name = "arg1", Type = "any", Nilable = false },
-    { Name = "arg2", Type = "any", Nilable = false },
-    { Name = "undefined", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "ScanEventsInternal",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "event_list", Type = "string", Nilable = false },
     { Name = "event", Type = "string", Nilable = false },
     { Name = "arg1", Type = "any", Nilable = false },
     { Name = "arg2", Type = "any", Nilable = false },
@@ -1599,10 +1506,6 @@ local WeakAurasAPI =
    Type = "Function",
   },
   {
-   Name = "TenchInit",
-   Type = "Function",
-  },
-  {
    Name = "TimeToSeconds",
    Type = "Function",
 
@@ -1706,7 +1609,7 @@ local WeakAurasAPI =
 
    Returns =
    {
-    { Name = "undefined", Type = "bool", Nilable = false },
+    { Name = "isPet", Type = "bool", Nilable = false },
    },
   },
   {
@@ -1858,75 +1761,8 @@ local WeakAurasAPI =
    },
   },
   {
-   Name = "WatchForCastLatency",
-   Type = "Function",
-  },
-  {
-   Name = "WatchForNameplateTargetChange",
-   Type = "Function",
-  },
-  {
-   Name = "WatchForPetDeath",
-   Type = "Function",
-  },
-  {
-   Name = "WatchForPlayerMoving",
-   Type = "Function",
-  },
-  {
    Name = "WatchForQueuedSpell",
    Type = "Function",
-  },
-  {
-   Name = "WatchGCD",
-   Type = "Function",
-  },
-  {
-   Name = "WatchItemCooldown",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "id", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "WatchItemSlotCooldown",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "id", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "WatchRuneCooldown",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "id", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "WatchSpellActivation",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "id", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "WatchSpellCooldown",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "id", Type = "any", Nilable = false },
-    { Name = "ignoreRunes", Type = "any", Nilable = false },
-    { Name = "followoverride", Type = "any", Nilable = false },
-   },
   },
   {
    Name = "WatchUnitChange",

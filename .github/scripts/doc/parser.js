@@ -45,7 +45,7 @@ for (const entry of obj) {
       console.log(` Functions =`);
       console.log(` {`);
       for (const field of entry.fields) {
-        if (field?.extends?.type === "function") {
+        if (field?.extends?.type === "function" && field?.visible === "public") {
           console.log(`  {`);
           console.log(`   Name = "${field.name}",`);
           console.log(`   Type = "Function",`);
