@@ -31,16 +31,15 @@ function wowType(obj) {
   if (obj.view === "unknown|nil") {
     return "unknown"
   }
-  if (obj.view === "(\"friendly\"|\"hostile\")?") { // i dont know how to handle this alias properly
+  if (obj.view === "(\"friendly\"|\"hostile\")?") { // I don't know how to handle this alias properly
     return "string"
   }
   return obj.view;
 }
 
-const data = fs.readFileSync('doc.json', { encoding: 'utf8', flags: 'r' });
+const data = fs.readFileSync('output.json', { encoding: 'utf8', flags: 'r' });
 const obj = JSON.parse(data);
 for (const entry of obj) {
-  if (entry.name === "WeakAuras") {
     if (entry.fields) {
       console.log(` Functions =`);
       console.log(` {`);
@@ -74,7 +73,6 @@ for (const entry of obj) {
       };
       console.log(` },`);
     }
-  }
 }
 
 console.log(
