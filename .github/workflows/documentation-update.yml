@@ -1,9 +1,11 @@
-name: Create Documentation Update Pull Request
+name: Update Documentation
 
 on:
-  schedule:
-    - cron: "0 10 * * 1"
-  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - WeakAurasOptions/WeakAurasAPI.lua
 
 jobs:
   atlasUpdate:
@@ -11,6 +13,9 @@ jobs:
     steps:
       - name: Checkout WeakAuras
         uses: actions/checkout@v4
+        with:
+          repository: WeakAuras/WeakAuras
+          path: WeakAuras
 
       - name: Checkout WeakAuras Wiki
         uses: actions/checkout@v4
