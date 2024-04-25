@@ -1,9 +1,9 @@
 name: Send Release Notifications
 
+# See https://github.com/WeakAuras/WeakAuras2/wiki/%5BTEAM-INTERNAL%5D-Setting-up-Release-Notification-Hooks
+
 on:
   workflow_dispatch:
-  release:
-    types: [published]
 
 jobs:
   release-notification-output:

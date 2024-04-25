@@ -238,7 +238,8 @@
     "CreateScrollBoxListLinearView",
     "CreateDataProvider",
     "UIMenuButtonStretchMixin",
-    "ToggleDropDownMenu"
+    "ToggleDropDownMenu",
+    "APIDocumentation"
   ],
   "runtime.version": "Lua 5.1",
   "workspace.ignoreDir": [

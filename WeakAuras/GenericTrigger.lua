@@ -3019,11 +3019,14 @@ do
       -- TODO: In 10.2.6 the apis return values changed from 1,0 for enabled to true, false
       -- We should adjust once its on all versions
       if enabled == false then
+        ---@diagnostic disable-next-line: cast-local-type
         enabled = 0
       elseif enabled == true then
+        ---@diagnostic disable-next-line: cast-local-type
         enabled = 1
       end
       if (duration == 0) then
+        ---@diagnostic disable-next-line: cast-local-type
         enabled = 1;
       end
       if (enabled == 0) then
@@ -3262,6 +3265,7 @@ do
       -- We should adjust once its on all versions
       local startTime, duration, enabled = GetItemCooldown(id);
       if (duration == 0) then
+        ---@diagnostic disable-next-line: cast-local-type
         enabled = 1;
       end
       if (enabled == 0) then

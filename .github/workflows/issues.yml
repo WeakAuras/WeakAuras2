@@ -5,7 +5,7 @@ on:
     types: [opened, edited]
 
 jobs:
-  auto_close_issues:
+  auto-close-issues:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

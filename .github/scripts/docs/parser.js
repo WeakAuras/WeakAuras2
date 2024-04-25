@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 
 console.log(
 `if not WeakAuras.IsLibsOK() then return end
@@ -37,7 +38,7 @@ function wowType(obj) {
   return obj.view;
 }
 
-const data = fs.readFileSync('doc.json', { encoding: 'utf8', flags: 'r' });
+const data = fs.readFileSync(path.join(__dirname, 'doc.json'), { encoding: 'utf8', flags: 'r' });
 const obj = JSON.parse(data);
 for (const entry of obj) {
   if (entry.name === "WeakAuras") {

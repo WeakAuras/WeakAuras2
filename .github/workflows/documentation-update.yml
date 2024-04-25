@@ -7,7 +7,7 @@ on:
   pull_request_target:
 
 jobs:
-  typeDefinitionsUpdate:
+  type-definitions-update:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -28,8 +28,7 @@ jobs:
 
       - name: Regenerate Type Definitions
         run: |
-          cd .github/scripts/docs
-          ./update-documentation-files.sh
+          ./.github/scripts/docs/update-documentation-files.sh
         shell: bash
 
       - name: Push Changes to PR
