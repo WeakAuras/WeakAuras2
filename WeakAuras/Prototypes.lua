@@ -2008,7 +2008,7 @@ Private.load_prototype = {
   }
 };
 
-local function AddUnitChangeInternalEvents(triggerUnit, t, includePets)
+local function AddUnitChangeInternalEvents(triggerUnit, t, includePets, unitisunit)
   if (triggerUnit == nil) then
     return
   end
@@ -2024,6 +2024,9 @@ local function AddUnitChangeInternalEvents(triggerUnit, t, includePets)
         isPet = WeakAuras.UnitIsPet(unit)
         if (includePets ~= nil and isPet) or (includePets ~= "PetsOnly" and not isPet) then
           tinsert(t, "UNIT_CHANGED_" .. string.lower(unit))
+          if unitisunit then
+            tinsert(t, "UNIT_IS_UNIT_CHANGED_" .. string.lower(unitisunit))
+          end
           WeakAuras.WatchUnitChange(unit)
         end
       end
@@ -2206,10 +2209,7 @@ Private.event_prototypes = {
     internal_events = function(trigger)
       local unit = trigger.unit
       local result = {}
-      AddUnitChangeInternalEvents(unit, result)
-      if trigger.unitisunit then
-        AddUnitChangeInternalEvents(trigger.unitisunit, result)
-      end
+      AddUnitChangeInternalEvents(unit, result, nil, trigger.use_unitisunit and trigger.unitisunit or nil)
       AddUnitRoleChangeInternalEvents(unit, result)
       AddUnitSpecChangeInternalEvents(unit, result)
       return result
@@ -2240,19 +2240,25 @@ Private.event_prototypes = {
         values = "actual_unit_types_cast",
         desc = Private.actual_unit_types_cast_tooltip,
         test = "true",
-        store = true
+        store = true,
+        reloadOptions = true,
       },
       {
         name = "unitisunit",
         display = L["Unit is Unit"],
         type = "unit",
         init = "UnitIsUnit(unit, extraUnit)",
-        values = "actual_unit_types_with_specific",
+        values = function(trigger)
+          if Private.multiUnitUnits[trigger.unit] then
+            return Private.actual_unit_types
+          else
+            return Private.actual_unit_types_with_specific
+          end
+        end,
         test = "unitisunit",
         store = true,
         conditionType = "bool",
         desc = function() return L["Can be used for e.g. checking if \"boss1target\" is the same as \"player\"."] end,
-        enable = function(trigger) return not Private.multiUnitUnits[trigger.unit] end
       },
       {
         name = "name",

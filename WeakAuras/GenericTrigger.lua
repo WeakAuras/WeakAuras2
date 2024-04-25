@@ -3390,6 +3390,7 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange.inRaid = IsInRaid()
     watchUnitChange.nameplateFaction = {}
     watchUnitChange.raidmark = {}
+    watchUnitChange.unitIsUnit = {}
 
     Private.frames["Unit Change Frame"] = watchUnitChange;
     watchUnitChange:RegisterEvent("PLAYER_TARGET_CHANGED")
@@ -3410,8 +3411,57 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange:RegisterEvent("UNIT_PET")
     watchUnitChange:RegisterEvent("RAID_TARGET_UPDATE")
 
+    local function testMultiUnitIsUnit(unitA, unitB)
+      if unitA and unitB then
+        local prev = watchUnitChange.unitIsUnit[unitA] and watchUnitChange.unitIsUnit[unitA][unitB]
+        local now = UnitIsUnit(unitA, unitB)
+        if prev ~= now then
+          watchUnitChange.unitIsUnit[unitA] = watchUnitChange.unitIsUnit[unitA] or {}
+          watchUnitChange.unitIsUnit[unitA][unitB] = now
+          if prev ~= nil and now ~= nil then
+            WeakAuras.ScanEvents("UNIT_IS_UNIT_CHANGED_" .. unitB, unitA)
+          end
+        end
+      elseif unitA then
+        if Private.multiUnitUnits[unitA] then
+          for u in pairs(Private.multiUnitUnits[unitA]) do
+            testMultiUnitIsUnit(u)
+          end
+        else
+          for k in pairs(Private.actual_unit_types) do
+            testMultiUnitIsUnit(unitA, k)
+          end
+        end
+      elseif unitB then
+        for _, units in pairs(Private.multiUnitUnits) do
+          for k in pairs(units) do
+            testMultiUnitIsUnit(k, unitB)
+          end
+        end
+      else
+        for k in pairs(Private.multiUnitUnits) do
+          testMultiUnitIsUnit(k)
+        end
+      end
+    end
+
     watchUnitChange:SetScript("OnEvent", function(self, event, unit)
       Private.StartProfileSystem("generictrigger unit change");
+      if event == "PLAYER_ENTERING_WORLD" then
+        testMultiUnitIsUnit()
+      elseif event == "NAME_PLATE_UNIT_ADDED" or event == "NAME_PLATE_UNIT_REMOVED" then
+        testMultiUnitIsUnit(unit)
+      elseif event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" then
+        testMultiUnitIsUnit("boss")
+      elseif event == "PLAYER_TARGET_CHANGED" then
+        testMultiUnitIsUnit(nil, "target")
+      elseif event == "PLAYER_FOCUS_CHANGED" then
+        testMultiUnitIsUnit(nil, "focus")
+      elseif event == "PLAYER_SOFT_ENEMY_CHANGED" then
+        testMultiUnitIsUnit(nil, "softenemy")
+      elseif event == "PLAYER_SOFT_FRIEND_CHANGED" then
+        testMultiUnitIsUnit(nil, "softfriend")
+      end
       if event == "NAME_PLATE_UNIT_ADDED" or event == "NAME_PLATE_UNIT_REMOVED" then
         local newGuid = WeakAuras.UnitExistsFixed(unit) and UnitGUID(unit) or ""
         local newMarker = GetRaidTargetIndex(unit) or 0
