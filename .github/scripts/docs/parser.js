@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const namespace = "WeakAuras"
 
 console.log(
 `if not WeakAuras.IsLibsOK() then return end
@@ -12,7 +13,10 @@ local WeakAurasAPI =
 {
  Name = "WeakAuras",
  Type = "System",
- Namespace = "WeakAuras",`
+ Namespace = "WeakAuras",
+
+ Functions =
+ {`
 )
 
 function isNilable(obj) {
@@ -40,46 +44,75 @@ function wowType(obj) {
 
 const data = fs.readFileSync(path.join(__dirname, 'doc.json'), { encoding: 'utf8', flags: 'r' });
 const obj = JSON.parse(data);
+const allFunctions = new Object;
 for (const entry of obj) {
-  if (entry.name === "WeakAuras") {
+  if (entry.name === namespace) {
     if (entry.fields) {
-      console.log(` Functions =`);
-      console.log(` {`);
       for (const field of entry.fields) {
         if (field?.extends?.type === "function" && field?.visible === "public") {
-          console.log(`  {`);
-          console.log(`   Name = "${field.name}",`);
-          console.log(`   Type = "Function",`);
+          const currFunction = new Object;
           const args = field?.extends?.args
           if (args && args.length > 0) {
-            console.log("");
-            console.log(`   Arguments =`);
-            console.log(`   {`);
+            currFunction.arguments = new Array;
             for (const arg of args) {
-              console.log(`    { Name = "${arg.name}", Type = "${wowType(arg)}", Nilable = ${isNilable(arg)} },`);
+              currFunction.arguments.push({ name: arg.name, type: wowType(arg), nilable: isNilable(arg)});
             };
-            console.log(`   },`);
           }
           const returns = field?.extends?.returns
           if (returns && returns.length > 0) {
-            console.log("");
-            console.log(`   Returns =`);
-            console.log(`   {`);
+            currFunction.returns = new Array;
             for (const ret of returns) {
-              console.log(`    { Name = "${ret.name}", Type = "${wowType(ret)}", Nilable = ${isNilable(ret)} },`);
+              currFunction.returns.push({ name: ret.name, type: wowType(ret), nilable: isNilable(ret)})
             };
-            console.log(`   },`);
           }
-          console.log(`  },`);
+          // if there is already a function with this name, we check if the new has more args or returns
+          if (allFunctions[field.name]) {
+            const currArgs = currFunction.args ? currFunction.args.length : 0
+            const oldArgs = allFunctions[field.name].args ? allFunctions[field.name].length : 0
+            const currRets = currFunction.returns ? currFunction.returns.length : 0
+            const oldRets = allFunctions[field.name].returns ? allFunctions[field.name].returns.length : 0
+            if (currArgs > oldArgs || currRets > oldRets) {
+              allFunctions[field.name] = currFunction
+            }
+          } else {
+            allFunctions[field.name] = currFunction
+          }
         }
       };
-      console.log(` },`);
     }
   }
 }
 
+for (var key in allFunctions) {
+  const currFunction = allFunctions[key]
+  console.log(`  {`);
+  console.log(`   Name = "${key}",`);
+  console.log(`   Type = "Function",`);
+  if (currFunction.arguments) {
+    console.log("");
+    console.log(`   Arguments =`);
+    console.log(`   {`);
+    for (const arg of currFunction.arguments) {
+      console.log(`    { Name = "${arg.name}", Type = "${arg.type}", Nilable = ${arg.nilable} },`);
+    };
+    console.log(`   },`);
+  }
+  if (currFunction.returns) {
+    console.log("");
+    console.log(`   Returns =`);
+    console.log(`   {`);
+    for (const ret of currFunction.returns) {
+      console.log(`    { Name = "${ret.name}", Type = "${ret.type}", Nilable = ${ret.nilable} },`);
+    };
+    console.log(`   },`);
+  }
+  console.log(`  },`);
+}
+
 console.log(
 `
+ },
+
  Events =
  {
  },

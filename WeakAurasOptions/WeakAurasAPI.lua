@@ -9,6 +9,7 @@ local WeakAurasAPI =
  Name = "WeakAuras",
  Type = "System",
  Namespace = "WeakAuras",
+
  Functions =
  {
   {
@@ -18,28 +19,6 @@ local WeakAurasAPI =
    Arguments =
    {
     { Name = "data", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "CalculatedGcdDuration",
-   Type = "Function",
-  },
-  {
-   Name = "CalculatedGcdDuration",
-   Type = "Function",
-
-   Returns =
-   {
-    { Name = "undefined", Type = "number", Nilable = false },
-   },
-  },
-  {
-   Name = "CalculatedGcdDuration",
-   Type = "Function",
-
-   Returns =
-   {
-    { Name = "undefined", Type = "number", Nilable = false },
    },
   },
   {
@@ -1017,15 +996,6 @@ local WeakAurasAPI =
    },
   },
   {
-   Name = "IsOptionsOpen",
-   Type = "Function",
-
-   Returns =
-   {
-    { Name = "undefined", Type = "bool", Nilable = false },
-   },
-  },
-  {
    Name = "IsPaused",
    Type = "Function",
 
@@ -1201,10 +1171,6 @@ local WeakAurasAPI =
    {
     { Name = "data", Type = "any", Nilable = false },
    },
-  },
-  {
-   Name = "PrintProfile",
-   Type = "Function",
   },
   {
    Name = "PrintProfile",
@@ -1478,19 +1444,6 @@ local WeakAurasAPI =
    {
     { Name = "_", Type = "string", Nilable = false },
    },
-  },
-  {
-   Name = "StartProfile",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "startType", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "StopProfile",
-   Type = "Function",
   },
   {
    Name = "StopProfile",
@@ -1792,6 +1745,7 @@ local WeakAurasAPI =
     { Name = "subStrings", Type = "string", Nilable = false },
    },
   },
+
  },
 
  Events =
