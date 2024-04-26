@@ -36,7 +36,8 @@ Private.glow_action_types = {
 Private.glow_frame_types = {
   UNITFRAME = L["Unit Frame"],
   NAMEPLATE = L["Nameplate"],
-  FRAMESELECTOR = L["Frame Selector"]
+  FRAMESELECTOR = L["Frame Selector"],
+  PARENTFRAME = L["Parent Frame"]
 }
 
 ---@type table<dynamicGroupCircularTypes, string>

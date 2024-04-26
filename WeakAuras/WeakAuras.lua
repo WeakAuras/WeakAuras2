@@ -3648,6 +3648,7 @@ function Private.HandleGlowAction(actions, region)
       and region.state.unit
     )
     or (actions.glow_frame_type == "FRAMESELECTOR" and actions.glow_frame)
+    or (actions.glow_frame_type == "PARENTFRAME" and region:GetParent())
   )
   then
     local glow_frame, should_glow_frame
@@ -3670,6 +3671,9 @@ function Private.HandleGlowAction(actions, region)
       should_glow_frame = true
     elseif actions.glow_frame_type == "NAMEPLATE" and region.state.unit then
       glow_frame = WeakAuras.GetUnitNameplate(region.state.unit)
+      should_glow_frame = true
+    elseif actions.glow_frame_type == "PARENTFRAME" then
+      glow_frame = region:GetParent()
       should_glow_frame = true
     end
 
