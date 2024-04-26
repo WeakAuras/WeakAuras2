@@ -1754,18 +1754,17 @@ WeakAuras.spec_types_specific = {}
 ---@type table<number, string>
 Private.spec_types_all = {}
 local function update_specs()
+  local cataFix = WeakAuras.IsCataClassic() and -1 or 0 -- see https://github.com/Stanzilla/WoWUIBugs/issues/559
   for classFileName, classID in pairs(WeakAuras.class_ids) do
     WeakAuras.spec_types_specific[classFileName] = {}
-    local numSpecs = GetNumSpecializationsForClassID(classID)
-    for i=1, numSpecs do
-      local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i);
+    local numSpecs = WeakAuras.IsCataClassic() and 3 or GetNumSpecializationsForClassID(classID)
+    for i = 1, numSpecs do
+      local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i + cataFix);
       if tabName then
         tinsert(WeakAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
-        if WeakAuras.IsRetail() then
-          local classColor = WA_GetClassColor(classFileName)
-          Private.spec_types_all[specId] = CreateAtlasMarkup(GetClassAtlas(classFileName:lower()))
-          .. "|T"..(icon or "error")..":0|t "..(WrapTextInColorCode(tabName, classColor) or "error");
-        end
+        local classColor = WA_GetClassColor(classFileName)
+        Private.spec_types_all[specId] = CreateAtlasMarkup(GetClassAtlas(classFileName:lower()))
+        .. "|T"..(icon or "error")..":0|t "..(WrapTextInColorCode(tabName, classColor) or "error");
       end
     end
   end
@@ -1773,7 +1772,7 @@ end
 
 ---@type table<number, string>
 Private.talent_types = {}
-if WeakAuras.IsRetail() then
+if WeakAuras.IsCataOrRetail() then
   local spec_frame = CreateFrame("Frame");
   spec_frame:RegisterEvent("PLAYER_LOGIN")
   spec_frame:SetScript("OnEvent", update_specs);
