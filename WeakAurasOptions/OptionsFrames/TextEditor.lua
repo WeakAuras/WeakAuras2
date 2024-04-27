@@ -191,7 +191,7 @@ local function ConstructTextEditor(frame)
   -- display we ned the original, so save it here.
   local originalGetText = editor.editBox.GetText
   set_scheme()
-  APIDocLib.enable(editor.editBox)
+  APIDocLib:enable(editor.editBox)
   OptionsPrivate.LoadDocumentation()
   IndentationLib.enable(editor.editBox, color_scheme, WeakAurasSaved.editor_tab_spaces)
 
@@ -581,14 +581,14 @@ local function ConstructTextEditor(frame)
   makeAPISearch = function(apiToSearchFor)
     apiSearchScroll:ReleaseChildren()
     if not apiToSearchFor or #apiToSearchFor < 3 then
-      APIDocLib.ListSystems()
+      APIDocLib:ListSystems()
     else
-      APIDocLib.Search(apiToSearchFor)
+      APIDocLib:Search(apiToSearchFor)
     end
-    for i, element in APIDocLib.apis:Enumerate() do
+    for i, element in APIDocLib.data:Enumerate() do
       if i > 100 then
         local label = AceGUI:Create("Label")
-        local text = L["Too much results (%s)"]:format(APIDocLib.apis:GetSize())
+        local text = L["Too much results (%s)"]:format(APIDocLib.data:GetSize())
         label:SetText(text)
         label:SetHeight(20)
         apiSearchScroll:AddChild(label)
@@ -608,7 +608,7 @@ local function ConstructTextEditor(frame)
         button:SetEditable(false)
         button:SetHeight(20)
         button:SetRelativeWidth(1)
-        if apiInfo.GetDetailedOutputLines then
+        if apiInfo.Type ~= "System" and apiInfo.GetDetailedOutputLines then
           local desc = table.concat(apiInfo:GetDetailedOutputLines(), "\n")
           button:SetDescription(desc)
         end
