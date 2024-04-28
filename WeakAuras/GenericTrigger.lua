@@ -2986,7 +2986,7 @@ do
     if not cooldownBecauseRune then
       changed = spellCdsOnlyCooldownRune:HandleSpell(id, startTimeCooldown, durationCooldown, modRate, paused) or changed
     end
-    local chargeChanged, chargeNowReady = spellCdsCharges:HandleSpell(id, startTimeCharges, durationCharges, modRateCharges, paused)
+    local chargeChanged, chargeNowReady = spellCdsCharges:HandleSpell(id, startTimeCharges, durationCharges, modRateCharges)
     changed = chargeChanged or changed
     nowReady = chargeNowReady or nowReady
 

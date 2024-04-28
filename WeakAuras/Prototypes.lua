@@ -4983,6 +4983,12 @@ Private.event_prototypes = {
         showOnCheck = "startTime ~= nil";
       end
 
+      local trackSpecificCharge = trigger.use_trackcharge and trigger.trackcharge and trigger.trackcharge ~= ""
+      local track = trigger.track or "auto"
+      if track == "auto" and trackSpecificCharge then
+        track = "charges"
+      end
+
       if (type(spellName) == "string") then
         spellName = "[[" .. spellName .. "]]";
       end
@@ -4992,11 +4998,11 @@ Private.event_prototypes = {
         (trigger.use_showlossofcontrol and "true" or "false"),
         (trigger.use_ignoreSpellKnown and "true" or "false"),
         (trigger.use_followoverride and "true" or "false"),
-        (trigger.track or "auto"),
+        track,
         showOnCheck
       );
 
-      if (not trigger.use_trackcharge or not trigger.trackcharge or trigger.trackcharge == "") then
+      if (not trackSpecificCharge) then
         ret = ret .. [=[
           if paused then
             if not state.paused then
