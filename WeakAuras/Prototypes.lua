@@ -7248,10 +7248,10 @@ Private.event_prototypes = {
 
       return ret:format(trigger.weapon or "main",
       trigger.use_enchant and trigger.enchant or "",
-      showOnActive and trigger.use_stack and tonumber(trigger.stack or 0) or "nil",
+      showOnActive and trigger.use_stacks and tonumber(trigger.stacks or 0) or "nil",
       showOnActive and trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
       trigger.showOn or "showOnActive",
-      trigger.stack_operator or "<",
+      trigger.stacks_operator or "<",
       trigger.remaining_operator or "<")
     end,
     args = {
@@ -7275,6 +7275,7 @@ Private.event_prototypes = {
         name = "stacks",
         display = L["Stack Count"],
         type = "number",
+        conditionType = "number",
         test = "true",
         enable = function(trigger)
           return not WeakAuras.IsRetail() and (not trigger.showOn or trigger.showOn == "showOnActive")
