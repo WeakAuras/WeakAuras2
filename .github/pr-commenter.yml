@@ -1,0 +1,12 @@
+comment:
+  on-update: recreate
+
+  snippets:
+    - id: advertise_build_url_{{ build_id }}
+      files:
+        - '*/*'
+      glob-options:
+        dot: true
+      body: |
+        {{#build_id}}An experimental build of WeakAuras with the changes in this pull request is available [here](https://nightly.link/{{repository}}/actions/artifacts/{{build_id}}.zip).{{/build_id}}
+        {{^build_id}}Experimental build was unsuccessful. See the logs for details.{{/build_id}}
