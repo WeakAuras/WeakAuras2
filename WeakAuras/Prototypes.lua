@@ -2653,7 +2653,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "paragonReputationHeader",
-        display = L["Paragon Reputation Filters"],
+        display = L["Paragon Reputation"],
         enable = WeakAuras.IsRetail(),
         hidden = not WeakAuras.IsRetail(),
       },
@@ -2680,7 +2680,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "friendshipReputationHeader",
-        display = L["Friendship Reputation Filters"],
+        display = L["Friendship Reputation"],
         enable = WeakAuras.IsRetail() and function(trigger)
           local repInfo = trigger.factionID and C_GossipInfo.GetFriendshipReputation(trigger.factionID);
           return repInfo and repInfo.friendshipFactionID > 0
@@ -2718,7 +2718,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "renownReputationHeader",
-        display = L["Renown Reputation Filters"],
+        display = L["Renown Reputation"],
         enable = WeakAuras.IsRetail() and function(trigger)
           local majorFactionData = trigger.factionID and C_MajorFactions.GetMajorFactionData(trigger.factionID)
           return majorFactionData and majorFactionData.renownLevel
@@ -2860,7 +2860,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "restedExperienceHeader",
-        display = L["Rested Experience Filters"],
+        display = L["Rested Experience"],
       },
       {
         name = "showRested",
@@ -3052,7 +3052,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "absorbAndHealingHeader",
-        display = L["Absorb and Healing Filters"],
+        display = L["Absorb and Healing"],
       },
       {
         name = "showAbsorb",
@@ -3145,7 +3145,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "unitCharacteristicsHeader",
-        display = L["Unit Characteristics Filters"],
+        display = L["Unit Characteristics"],
       },
       {
         name = "name",
@@ -3787,7 +3787,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "unitCharacteristicsHeader",
-        display = L["Unit Characteristics Filters"],
+        display = L["Unit Characteristics"],
       },
       {
         name = "namerealm",
@@ -4308,7 +4308,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "sourceHeader",
-        display = L["Source Filters"],
+        display = L["Source Info"],
       },
       {
         name = "sourceGUID",
@@ -4442,7 +4442,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "destHeader",
-        display = L["Destination Filters"],
+        display = L["Destination Info"],
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end,
@@ -4614,10 +4614,33 @@ Private.event_prototypes = {
       },
       {
         type = "header",
-        name = "prefixHeader",
-        display = L["Prefix Filters"],
+        name = "subeventHeader",
+        display = L["Subevent Info"],
         enable = function(trigger)
-          return trigger.subeventPrefix and (trigger.subeventPrefix:find("SPELL") or trigger.subeventPrefix == "RANGE" or trigger.subeventPrefix:find("DAMAGE") or trigger.subeventPrefix == "ENVIRONMENTAL")
+          return trigger.subeventPrefix and (
+            trigger.subeventPrefix == "RANGE"
+            or trigger.subeventPrefix == "ENVIRONMENTAL"
+            or trigger.subeventPrefix:find("DAMAGE")
+            or trigger.subeventPrefix:find("SPELL"))
+
+            or trigger.subeventSuffix and (
+              trigger.subeventSuffix == "_ABSORBED"
+              or trigger.subeventSuffix == "_INTERRUPT"
+              or trigger.subeventSuffix == "_DISPEL"
+              or trigger.subeventSuffix == "_DISPEL_FAILED"
+              or trigger.subeventSuffix == "_STOLEN"
+              or trigger.subeventSuffix == "_AURA_BROKEN_SPELL"
+              or trigger.subeventSuffix == "_DAMAGE"
+              or trigger.subeventSuffix == "_HEAL"
+              or trigger.subeventSuffix == "_ENERGIZE"
+              or trigger.subeventSuffix == "_DRAIN"
+              or trigger.subeventSuffix == "_LEECH"
+              or trigger.subeventSuffix == "_DAMAGE"
+              or trigger.subeventSuffix == "_MISSED"
+              or trigger.subeventSuffix == "_EXTRA_ATTACKS"
+              or trigger.subeventSuffix == "_CAST_FAILED"
+              or trigger.subeventSuffix:find("DOSE")
+              or trigger.subeventSuffix:find("AURA"))
         end,
       },
       {
@@ -4686,34 +4709,6 @@ Private.event_prototypes = {
         end,
         store = true,
         conditionType = "select"
-      },
-      {
-        type = "header",
-        name = "suffixHeader",
-        display = L["Suffix Filters"],
-        enable = function(trigger)
-          return trigger.subeventSuffix and (
-            (
-              trigger.subeventSuffix == "_ABSORBED"
-              or trigger.subeventSuffix == "_INTERRUPT"
-              or trigger.subeventSuffix == "_DISPEL"
-              or trigger.subeventSuffix == "_DISPEL_FAILED"
-              or trigger.subeventSuffix == "_STOLEN"
-              or trigger.subeventSuffix == "_AURA_BROKEN_SPELL"
-              or trigger.subeventSuffix == "_DAMAGE"
-              or trigger.subeventSuffix == "_HEAL"
-              or trigger.subeventSuffix == "_ENERGIZE"
-              or trigger.subeventSuffix == "_DRAIN"
-              or trigger.subeventSuffix == "_LEECH"
-              or trigger.subeventSuffix == "_DAMAGE"
-              or trigger.subeventSuffix == "_MISSED"
-              or trigger.subeventSuffix == "_EXTRA_ATTACKS"
-              or trigger.subeventSuffix == "_CAST_FAILED"
-              or trigger.subeventSuffix:find("DOSE")
-              or trigger.subeventSuffix:find("AURA")
-            ) or (trigger.subeventPrefix and trigger.subeventPrefix:find("DAMAGE"))
-          )
-        end,
       },
       {
         name = "missType",
@@ -8607,7 +8602,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "unitCharacteristicsHeader",
-        display = L["Unit Characteristics Filters"],
+        display = L["Unit Characteristics"],
       },
       {
         name = "name",
@@ -9033,7 +9028,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "empoweredHeader",
-        display = L["Empowered Cast Filters"],
+        display = L["Empowered Cast"],
         enable = WeakAuras.IsRetail() and function(trigger) return not trigger.use_inverse end or false,
         hidden = not WeakAuras.IsRetail()
       },
@@ -9142,7 +9137,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "unitCharacteristicsHeader",
-        display = L["Unit Characteristics Filters"],
+        display = L["Unit Characteristics"],
       },
       {
         name = "npcId",
@@ -9536,7 +9531,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "primaryStatsHeader",
-        display = L["Primary Stats Filters"],
+        display = L["Primary Stats"],
       },
       {
         name = "mainstat",
@@ -9623,7 +9618,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "secondaryStatsHeader",
-        display = L["Secondary Stats Filters"],
+        display = L["Secondary Stats"],
       },
       {
         name = "criticalrating",
@@ -9888,7 +9883,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "tertiaryStatsHeader",
-        display = L["Tertiary Stats Filters"],
+        display = L["Tertiary Stats"],
       },
       {
         name = "leechrating",
@@ -9994,7 +9989,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "defensiveStatsHeader",
-        display = L["Defensive Stats Filters"],
+        display = L["Defensive Stats"],
       },
       {
         name = "defense",
@@ -10171,7 +10166,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "resistanceHeader",
-        display = L["Resistance Filters"],
+        display = L["Resistances"],
         hidden = WeakAuras.IsRetail(),
         enable = WeakAuras.IsClassicEraOrWrathOrCata(),
       },
@@ -11042,7 +11037,7 @@ Private.event_prototypes = {
       {
         type = "header",
         name = "instanceHeader",
-        display = L["Instance Filters"],
+        display = L["Instance Info"],
       },
       {
         name = "instanceId",
