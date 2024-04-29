@@ -8,5 +8,5 @@ comment:
       glob-options:
         dot: true
       body: |
-        {{#build_id}}An experimental build of WeakAuras with the changes in this pull request is available [here](https://github.com/{{repository}}/actions/runs/{{run_id}}/artifacts/{{build_id}}).{{/build_id}}
+        {{#build_id}}An experimental build of WeakAuras with the changes in this pull request is available [here](https://nightly.link/{{repository}}/actions/artifacts/{{build_id}}.zip).{{/build_id}}
         {{^build_id}}Experimental build was unsuccessful. See the logs for details.{{/build_id}}
