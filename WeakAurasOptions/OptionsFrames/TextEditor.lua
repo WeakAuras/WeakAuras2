@@ -586,15 +586,8 @@ local function ConstructTextEditor(frame)
       APIDocLib:Search(apiToSearchFor)
     end
     for i, element in APIDocLib.data:Enumerate() do
-      if i > 100 then
-        local label = AceGUI:Create("Label")
-        local text = L["Too much results (%s)"]:format(APIDocLib.data:GetSize())
-        label:SetText(text)
-        label:SetHeight(20)
-        apiSearchScroll:AddChild(label)
-        break
-      else
-        local apiInfo = element.apiInfo
+      local apiInfo = element.apiInfo
+      if apiInfo then
         local button = AceGUI:Create("WeakAurasSnippetButton")
         local name
         if apiInfo.Type == "Function" then
@@ -611,6 +604,8 @@ local function ConstructTextEditor(frame)
         if apiInfo.Type ~= "System" and apiInfo.GetDetailedOutputLines then
           local desc = table.concat(apiInfo:GetDetailedOutputLines(), "\n")
           button:SetDescription(desc)
+        else
+          button:SetDescription()
         end
         button.name = name
         button.editor = editor
