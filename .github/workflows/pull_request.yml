@@ -1,6 +1,8 @@
 name: CI-PR
 
-on: [pull_request]
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, labeled]
 
 jobs:
   build:
@@ -32,9 +34,25 @@ jobs:
           args: -d -z
 
       - uses: actions/upload-artifact@v4
+        id: upload-artifact
         with:
           name: WeakAuras-PR#${{ github.event.number }}-${{ github.sha }}
           path: .release/
+
+      - name: test
+        run: echo "test :o ${{ steps.upload-artifact.outputs.artifact-url }} "
+
+      - uses: exercism/pr-commenter-action@v1.5.1
+        if: ${{ contains(github.event.pull_request.labels.*.name, '🆕 Feature Preview') }}
+        with:
+          github-token: ${{ github.token }}
+          config-file: ".github/pr-commenter.yml"
+          template-variables: |
+            {
+              "repository": "${{ github.repository }}",
+              "build_id": "${{ steps.upload-artifact.outputs.artifact-id }}",
+              "run_id": "${{ github.run_id }}"
+            }
 
       - name: Send Status to Discord
         uses: nebularg/actions-discord-webhook@v1
