@@ -320,6 +320,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           order = order,
           hidden = hidden,
         }
+        order = order + 1;
         options["description_title_"..name] = {
           type = "description",
           width = WeakAuras.doubleWidth,

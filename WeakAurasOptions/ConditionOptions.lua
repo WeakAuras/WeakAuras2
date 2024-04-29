@@ -1246,11 +1246,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       values = OptionsPrivate.Private.glow_frame_types,
       width = WeakAuras.normalWidth,
       name = blueIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame_type", L["Glow Frame Type"], L["Glow Frame Type"]),
-      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame_type", propertyType, {
-        UNITFRAME = L["Unit Frame"],
-        NAMEPLATE = L["Nameplate"],
-        FRAMESELECTOR = L["Frame Selector"]
-      }),
+      desc = descIfNoValue2(data, conditions[i].changes[j], "value", "glow_frame_type", propertyType, OptionsPrivate.Private.glow_frame_types),
       order = order,
       get = function()
         return type(conditions[i].changes[j].value) == "table" and conditions[i].changes[j].value.glow_frame_type;

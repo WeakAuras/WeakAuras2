@@ -553,7 +553,8 @@ end
 
 local function crossRealmSendCommMessage(prefix, text, target, queueName, callbackFn, callbackArg)
   local chattype = "WHISPER"
-  if target and not UnitIsSameServer(target) then
+  -- WORKAROUND https://github.com/Stanzilla/WoWUIBugs/issues/535, and use RAID/PARTY comms for connected realms
+  if target and (UnitRealmRelationship(target) or 0) ~= 1 then
     if UnitInRaid(target) then
       chattype = "RAID"
       text = ("§§%s:%s"):format(target, text)

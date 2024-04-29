@@ -988,7 +988,7 @@ local function ProgressType(data, triggernum)
     elseif (trigger.customDuration and trigger.customDuration ~= "") then
       return "timed";
     elseif (trigger.custom_type == "stateupdate") then
-      return "timed";
+      return false
     end
   end
   return false
@@ -2986,7 +2986,7 @@ do
     if not cooldownBecauseRune then
       changed = spellCdsOnlyCooldownRune:HandleSpell(id, startTimeCooldown, durationCooldown, modRate, paused) or changed
     end
-    local chargeChanged, chargeNowReady = spellCdsCharges:HandleSpell(id, startTimeCharges, durationCharges, modRateCharges, paused)
+    local chargeChanged, chargeNowReady = spellCdsCharges:HandleSpell(id, startTimeCharges, durationCharges, modRateCharges)
     changed = chargeChanged or changed
     nowReady = chargeNowReady or nowReady
 

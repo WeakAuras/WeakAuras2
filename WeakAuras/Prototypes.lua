@@ -1375,9 +1375,9 @@ Private.load_prototype = {
       display = L["Class and Specialization"],
       type = "multiselect",
       values = "spec_types_all",
-      init = WeakAuras.IsRetail() and "arg" or nil,
-      enable = WeakAuras.IsRetail(),
-      hidden = not WeakAuras.IsRetail(),
+      init = WeakAuras.IsCataOrRetail() and "arg" or nil,
+      enable = WeakAuras.IsCataOrRetail(),
+      hidden = not WeakAuras.IsCataOrRetail(),
       events = {"PLAYER_TALENT_UPDATE"}
     },
     {
@@ -5108,6 +5108,12 @@ Private.event_prototypes = {
         showOnCheck = "startTime ~= nil";
       end
 
+      local trackSpecificCharge = trigger.use_trackcharge and trigger.trackcharge and trigger.trackcharge ~= ""
+      local track = trigger.track or "auto"
+      if track == "auto" and trackSpecificCharge then
+        track = "charges"
+      end
+
       if (type(spellName) == "string") then
         spellName = "[[" .. spellName .. "]]";
       end
@@ -5117,11 +5123,11 @@ Private.event_prototypes = {
         (trigger.use_showlossofcontrol and "true" or "false"),
         (trigger.use_ignoreSpellKnown and "true" or "false"),
         (trigger.use_followoverride and "true" or "false"),
-        (trigger.track or "auto"),
+        track,
         showOnCheck
       );
 
-      if (not trigger.use_trackcharge or not trigger.trackcharge or trigger.trackcharge == "") then
+      if (not trackSpecificCharge) then
         ret = ret .. [=[
           if paused then
             if not state.paused then
@@ -7272,6 +7278,15 @@ Private.event_prototypes = {
     statesParameter = "one",
     args = {
       {
+        name = "note",
+        type = "description",
+        display = "",
+        text = function()
+          return L["Note: This trigger internally stores the shape shift positon, and thus is incompatible with learning stances on the fly, like e.g. the Gladiator Rune."]
+        end,
+        hidden = not (C_Seasons and C_Seasons.GetActiveSeason and C_Seasons.GetActiveSeason() == 2),
+      },
+      {
         name = "form",
         display = L["Form"],
         type = "multiselect",
@@ -7364,10 +7379,10 @@ Private.event_prototypes = {
 
       return ret:format(trigger.weapon or "main",
       trigger.use_enchant and trigger.enchant or "",
-      showOnActive and trigger.use_stack and tonumber(trigger.stack or 0) or "nil",
+      showOnActive and trigger.use_stacks and tonumber(trigger.stacks or 0) or "nil",
       showOnActive and trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
       trigger.showOn or "showOnActive",
-      trigger.stack_operator or "<",
+      trigger.stacks_operator or "<",
       trigger.remaining_operator or "<")
     end,
     args = {
@@ -7391,6 +7406,7 @@ Private.event_prototypes = {
         name = "stacks",
         display = L["Stack Count"],
         type = "number",
+        conditionType = "number",
         test = "true",
         enable = function(trigger)
           return not WeakAuras.IsRetail() and (not trigger.showOn or trigger.showOn == "showOnActive")
