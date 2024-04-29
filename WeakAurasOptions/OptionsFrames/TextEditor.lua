@@ -17,7 +17,7 @@ local SharedMedia = LibStub("LibSharedMedia-3.0")
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
 
 local IndentationLib = IndentationLib
-local APIDocLib = LibStub("APIDoc-1.0")
+local LAAC = LibStub("LibAPIAutoComplete-1.0")
 
 ---@class WeakAuras
 local WeakAuras = WeakAuras
@@ -191,7 +191,7 @@ local function ConstructTextEditor(frame)
   -- display we ned the original, so save it here.
   local originalGetText = editor.editBox.GetText
   set_scheme()
-  APIDocLib:enable(editor.editBox)
+  LAAC:enable(editor.editBox)
   OptionsPrivate.LoadDocumentation()
   IndentationLib.enable(editor.editBox, color_scheme, WeakAurasSaved.editor_tab_spaces)
 
@@ -581,11 +581,11 @@ local function ConstructTextEditor(frame)
   makeAPISearch = function(apiToSearchFor)
     apiSearchScroll:ReleaseChildren()
     if not apiToSearchFor or #apiToSearchFor < 3 then
-      APIDocLib:ListSystems()
+      LAAC:ListSystems()
     else
-      APIDocLib:Search(apiToSearchFor)
+      LAAC:Search(apiToSearchFor)
     end
-    for i, element in APIDocLib.data:Enumerate() do
+    for i, element in LAAC.data:Enumerate() do
       local apiInfo = element.apiInfo
       if apiInfo then
         local button = AceGUI:Create("WeakAurasSnippetButton")
