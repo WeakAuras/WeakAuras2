@@ -168,21 +168,6 @@ local WeakAurasAPI =
    },
   },
   {
-   Name = "CreateTemplateView",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "Private", Type = "any", Nilable = false },
-    { Name = "frame", Type = "any", Nilable = false },
-   },
-
-   Returns =
-   {
-    { Name = "undefined", Type = "unknown", Nilable = false },
-   },
-  },
-  {
    Name = "DeepMixin",
    Type = "Function",
 
@@ -205,10 +190,6 @@ local WeakAurasAPI =
    {
     { Name = "undefined", Type = "string", Nilable = false },
    },
-  },
-  {
-   Name = "FillOptions",
-   Type = "Function",
   },
   {
    Name = "GcdSpellName",
@@ -452,15 +433,6 @@ local WeakAurasAPI =
    },
   },
   {
-   Name = "GetHiddenTooltip",
-   Type = "Function",
-
-   Returns =
-   {
-    { Name = "undefined", Type = "unknown", Nilable = false },
-   },
-  },
-  {
    Name = "GetHitChance",
    Type = "Function",
 
@@ -534,10 +506,6 @@ local WeakAurasAPI =
     { Name = "undefined", Type = "unknown", Nilable = false },
     { Name = "undefined", Type = "unknown", Nilable = false },
    },
-  },
-  {
-   Name = "GetMoverSizerId",
-   Type = "Function",
   },
   {
    Name = "GetNumSetItemsEquipped",
@@ -806,10 +774,6 @@ local WeakAurasAPI =
    },
   },
   {
-   Name = "HideOptions",
-   Type = "Function",
-  },
-  {
    Name = "Import",
    Type = "Function",
 
@@ -825,15 +789,6 @@ local WeakAurasAPI =
    {
     { Name = "undefined", Type = "bool", Nilable = true },
     { Name = "undefined", Type = "string", Nilable = true },
-   },
-  },
-  {
-   Name = "InLoadingScreen",
-   Type = "Function",
-
-   Returns =
-   {
-    { Name = "undefined", Type = "bool", Nilable = false },
    },
   },
   {
@@ -961,15 +916,6 @@ local WeakAurasAPI =
   },
   {
    Name = "IsImporting",
-   Type = "Function",
-
-   Returns =
-   {
-    { Name = "undefined", Type = "bool", Nilable = false },
-   },
-  },
-  {
-   Name = "IsLibsOK",
    Type = "Function",
 
    Returns =
@@ -1108,41 +1054,6 @@ local WeakAurasAPI =
    },
   },
   {
-   Name = "LoadFromArchive",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "storeType", Type = "any", Nilable = false },
-    { Name = "storeID", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "LoadFunction",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "string", Type = "any", Nilable = false },
-   },
-
-   Returns =
-   {
-    { Name = "undefined", Type = "unknown", Nilable = false },
-   },
-  },
-  {
-   Name = "NewAura",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "sourceData", Type = "any", Nilable = false },
-    { Name = "regionType", Type = "any", Nilable = false },
-    { Name = "targetId", Type = "any", Nilable = false },
-   },
-  },
-  {
    Name = "NewDisplayButton",
    Type = "Function",
 
@@ -1153,46 +1064,8 @@ local WeakAurasAPI =
    },
   },
   {
-   Name = "PickDisplay",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "id", Type = "any", Nilable = false },
-    { Name = "tab", Type = "any", Nilable = false },
-    { Name = "noHide", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "PreAdd",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "data", Type = "any", Nilable = false },
-   },
-  },
-  {
    Name = "PrintProfile",
    Type = "Function",
-  },
-  {
-   Name = "ProfileDisplays",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "all", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "ProfileFrames",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "all", Type = "any", Nilable = false },
-   },
   },
   {
    Name = "RaidFlagToIndex",
@@ -1206,36 +1079,6 @@ local WeakAurasAPI =
    Returns =
    {
     { Name = "index", Type = "number", Nilable = false },
-   },
-  },
-  {
-   Name = "RegisterTriggerSystem",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "types", Type = "any", Nilable = false },
-    { Name = "triggerSystem", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "RegisterTriggerSystemOptions",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "types", Type = "any", Nilable = false },
-    { Name = "func", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "Rename",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "data", Type = "any", Nilable = false },
-    { Name = "newid", Type = "any", Nilable = false },
    },
   },
   {
@@ -1279,17 +1122,6 @@ local WeakAurasAPI =
    },
   },
   {
-   Name = "ScanUnitEvents",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "event", Type = "string", Nilable = false },
-    { Name = "unit", Type = "UnitToken", Nilable = false },
-    { Name = "undefined", Type = "any", Nilable = false },
-   },
-  },
-  {
    Name = "SetModel",
    Type = "Function",
 
@@ -1300,24 +1132,6 @@ local WeakAurasAPI =
     { Name = "model_fileId", Type = "any", Nilable = false },
     { Name = "isUnit", Type = "any", Nilable = false },
     { Name = "isDisplayInfo", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "SetMoverSizer",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "id", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "ShowOptions",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "msg", Type = "any", Nilable = false },
    },
   },
   {
@@ -1461,20 +1275,6 @@ local WeakAurasAPI =
    Returns =
    {
     { Name = "result", Type = "number", Nilable = true },
-   },
-  },
-  {
-   Name = "Toggle",
-   Type = "Function",
-  },
-  {
-   Name = "ToggleOptions",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "msg", Type = "string", Nilable = false },
-    { Name = "Private", Type = "Private", Nilable = false },
    },
   },
   {
@@ -1624,24 +1424,6 @@ local WeakAurasAPI =
    },
   },
   {
-   Name = "UpdateGroupOrders",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "data", Type = "any", Nilable = false },
-   },
-  },
-  {
-   Name = "UpdateThumbnail",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "data", Type = "any", Nilable = false },
-   },
-  },
-  {
    Name = "UseUnitPowerThirdArg",
    Type = "Function",
 
@@ -1698,19 +1480,6 @@ local WeakAurasAPI =
    Returns =
    {
     { Name = "isTime", Type = "bool", Nilable = false },
-   },
-  },
-  {
-   Name = "WatchForQueuedSpell",
-   Type = "Function",
-  },
-  {
-   Name = "WatchUnitChange",
-   Type = "Function",
-
-   Arguments =
-   {
-    { Name = "unit", Type = "UnitToken", Nilable = false },
    },
   },
   {

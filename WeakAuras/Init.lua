@@ -551,6 +551,7 @@ do
   end
 end
 
+---@private
 function WeakAuras.IsLibsOK()
   return libsAreOk
 end

@@ -571,6 +571,7 @@ local function OptionsFrame()
   end
 end
 
+---@private
 ---@type fun(msg: string, Private: Private)
 function WeakAuras.ToggleOptions(msg, Private)
   if not Private then
@@ -613,6 +614,7 @@ function WeakAuras.ToggleOptions(msg, Private)
   end
 end
 
+---@private
 function WeakAuras.HideOptions()
   if(frame) then
     frame:Hide()
@@ -817,6 +819,7 @@ function OptionsPrivate.DeleteAuras(auras, parents)
   OptionsPrivate.Private.dynFrame:AddAction("Deleting Auras", co1)
 end
 
+---@private
 function WeakAuras.ShowOptions(msg)
   local firstLoad = not(frame);
   OptionsPrivate.Private.Pause();
@@ -905,6 +908,7 @@ function OptionsPrivate.ClearOptions(id)
   frame:ClearOptions(id)
 end
 
+---@private
 function WeakAuras.FillOptions()
   frame:FillOptions()
 end
@@ -973,6 +977,7 @@ function WeakAuras.NewDisplayButton(data, massEdit)
   end
 end
 
+---@private
 function WeakAuras.UpdateGroupOrders(data)
   if(data.controlledChildren) then
     local total = #data.controlledChildren;
@@ -1272,6 +1277,7 @@ function OptionsPrivate.IsDisplayPicked(id)
   end
 end
 
+---@private
 function WeakAuras.PickDisplay(id, tab, noHide)
   frame:PickDisplay(id, tab, noHide)
   OptionsPrivate.UpdateButtonsScroll()
@@ -1675,6 +1681,7 @@ function OptionsPrivate.DropIndicator()
   return indicator
 end
 
+---@private
 function WeakAuras.UpdateThumbnail(data)
   local id = data.id
   local button = displayButtons[id]
@@ -1731,6 +1738,7 @@ function OptionsPrivate.ResetMoverSizer()
   end
 end
 
+---@private
 function WeakAuras.SetMoverSizer(id)
   OptionsPrivate.Private.EnsureRegion(id)
   if OptionsPrivate.Private.regions[id].region.toShow then
@@ -1745,6 +1753,7 @@ function WeakAuras.SetMoverSizer(id)
   end
 end
 
+---@private
 function WeakAuras.GetMoverSizerId()
   return frame.moversizer:GetCurrentId()
 end
@@ -1758,6 +1767,7 @@ local function AddDefaultSubRegions(data)
   end
 end
 
+---@private
 function WeakAuras.NewAura(sourceData, regionType, targetId)
   local function ensure(t, k, v)
     return t and k and v and t[k] == v
