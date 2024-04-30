@@ -54,7 +54,43 @@ local tinsert, wipe = table.insert, wipe
 local pairs, next, type = pairs, next, type
 local UnitAura = UnitAura
 
-local newAPI = WeakAuras.IsRetail()
+local newAPI = WeakAuras.IsCataOrRetail()
+
+if WeakAuras.IsCataClassic() then
+  -- missing code in AuraUtil https://github.com/Stanzilla/WoWUIBugs/issues/561
+  local function ForEachAuraHelper(unit, filter, func, usePackedAura, continuationToken, ...)
+    -- continuationToken is the first return value of UnitAuraSlots()
+    local n = select('#', ...);
+    for i=1, n do
+      local slot = select(i, ...);
+      local done;
+      local auraInfo = C_UnitAuras.GetAuraDataBySlot(unit, slot);
+      if usePackedAura then
+        done = func(auraInfo);
+      else
+        done = func(AuraUtil.UnpackAuraData(auraInfo));
+      end
+      if done then
+        -- if func returns true then no further slots are needed, so don't return continuationToken
+        return nil;
+      end
+    end
+    return continuationToken;
+  end
+
+  function Private.ForEachAura(unit, filter, maxCount, func, usePackedAura)
+    if maxCount and maxCount <= 0 then
+      return;
+    end
+    local continuationToken;
+    repeat
+      -- continuationToken is the first return value of UnitAuraSltos
+      continuationToken = ForEachAuraHelper(unit, filter, func, usePackedAura, C_UnitAuras.GetAuraSlots(unit, filter, maxCount, continuationToken));
+    until continuationToken == nil;
+  end
+else
+  Private.ForEachAura = AuraUtil.ForEachAura
+end
 
 ---@class WeakAuras
 local WeakAuras = WeakAuras
@@ -1731,7 +1767,7 @@ do
         _time = GetTime()
         _unit = unit
         _filter = filter
-        AuraUtil.ForEachAura(unit, filter, nil, HandleAura, true)
+        Private.ForEachAura(unit, filter, nil, HandleAura, true)
       else
         local time = GetTime()
         local index = 1
@@ -1929,7 +1965,7 @@ do
           -- full
           -- clean first
           CleanUpOutdatedMatchData(nil, unit, filter)
-          AuraUtil.ForEachAura(unit, filter, nil, HandleAura, true)
+          Private.ForEachAura(unit, filter, nil, HandleAura, true)
         end
       else
         local index = 1
@@ -3246,6 +3282,9 @@ end
 
 --- @return boolean
 function BuffTrigger.SetToolTip(trigger, state)
+  if WeakAuras.IsCataClassic() then -- Cataclysm GameTooltip doesnt have API for AuraInstanceID https://github.com/Stanzilla/WoWUIBugs/issues/561
+    return false
+  end
   if newAPI then
     if not state.unit or not state.auraInstanceID then
       return false
@@ -4063,7 +4102,7 @@ do
   AugmentMatchDataMulti = function(matchData, unit, filter, sourceGUID, nameKey, spellKey)
     if newAPI then
       _matchData, _unit, _sourceGUID, _nameKey, _spellKey = matchData, unit, sourceGUID, nameKey, spellKey
-      AuraUtil.ForEachAura(unit, filter, nil, HandleAura, true)
+      Private.ForEachAura(unit, filter, nil, HandleAura, true)
     else
       local index = 1
       while true do
@@ -4202,7 +4241,7 @@ do
     if newAPI then
       _base = base
       _unit = unit
-      AuraUtil.ForEachAura(unit, filter, nil, HandleAura, true)
+      Private.ForEachAura(unit, filter, nil, HandleAura, true)
     else
       local index = 1
       while true do
