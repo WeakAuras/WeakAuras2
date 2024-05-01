@@ -665,9 +665,9 @@ local function FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
 end
 
 local roleIcons = {
-  DAMAGER = CreateTextureMarkup([=[Interface\LFGFrame\UI-LFG-ICON-ROLES]=], 256, 256, 0, 0, GetTexCoordsForRole("DAMAGER")),
-  HEALER = CreateTextureMarkup([=[Interface\LFGFrame\UI-LFG-ICON-ROLES]=], 256, 256, 0, 0, GetTexCoordsForRole("HEALER")),
-  TANK = CreateTextureMarkup([=[Interface\LFGFrame\UI-LFG-ICON-ROLES]=], 256, 256, 0, 0, GetTexCoordsForRole("TANK"))
+  DAMAGER = CreateTextureMarkup([=[Interface\LFGFrame\UI-LFG-ICON-ROLES]=], 256, 256, 0, 0, GetTexCoordsByGrid(2, 2, 256, 256, 67, 67)),
+  HEALER = CreateTextureMarkup([=[Interface\LFGFrame\UI-LFG-ICON-ROLES]=], 256, 256, 0, 0, GetTexCoordsByGrid(2, 1, 256, 256, 67, 67)),
+  TANK = CreateTextureMarkup([=[Interface\LFGFrame\UI-LFG-ICON-ROLES]=], 256, 256, 0, 0, GetTexCoordsByGrid(1, 2, 256, 256, 67, 67))
 }
 
 local function UpdateStateWithMatch(time, bestMatch, triggerStates, cloneId, matchCount, unitCount, maxUnitCount, matchCountPerUnit, totalStacks, affected, affectedUnits, unaffected, unaffectedUnits, role, raidMark)
