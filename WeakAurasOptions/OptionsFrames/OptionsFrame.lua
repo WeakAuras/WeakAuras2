@@ -17,6 +17,7 @@ local AceGUI = LibStub("AceGUI-3.0")
 local AceConfigDialog = LibStub("AceConfigDialog-3.0")
 local AceConfigRegistry = LibStub("AceConfigRegistry-3.0")
 local LibDD = LibStub:GetLibrary("LibUIDropDownMenu-4.0")
+local SharedMedia = LibStub("LibSharedMedia-3.0")
 
 ---@class WeakAuras
 local WeakAuras = WeakAuras
@@ -374,15 +375,33 @@ function OptionsPrivate.CreateFrame()
   tipPopupTitle:SetJustifyV("TOP")
 
   local tipPopupLabel = tipPopup:CreateFontString(nil, "BACKGROUND", "GameFontWhite")
+  local fontPath = SharedMedia:Fetch("font", "Fira Sans Medium")
+  if (fontPath) then
+    tipPopupLabel:SetFont(fontPath, 12)
+  end
   tipPopupLabel:SetPoint("TOPLEFT", tipPopupTitle, "BOTTOMLEFT", 0, -6)
   tipPopupLabel:SetPoint("TOPRIGHT", tipPopupTitle, "BOTTOMRIGHT", 0, -6)
   tipPopupLabel:SetJustifyH("LEFT")
   tipPopupLabel:SetJustifyV("TOP")
 
+  local tipPopupLabelCJ = tipPopup:CreateFontString(nil, "BACKGROUND", "GameFontWhite")
+  tipPopupLabelCJ:SetFont("Fonts\\ARKai_T.ttf", 12)
+  tipPopupLabelCJ:SetPoint("TOPLEFT", tipPopupLabel, "BOTTOMLEFT", 0, 0)
+  tipPopupLabelCJ:SetPoint("TOPRIGHT", tipPopupLabel, "BOTTOMRIGHT", 0, 0)
+  tipPopupLabelCJ:SetJustifyH("LEFT")
+  tipPopupLabelCJ:SetJustifyV("TOP")
+
+  local tipPopupLabelK = tipPopup:CreateFontString(nil, "BACKGROUND", "GameFontWhite")
+  tipPopupLabelK:SetFont("Fonts\\K_Pagetext.TTF", 12)
+  tipPopupLabelK:SetPoint("TOPLEFT", tipPopupLabelCJ, "BOTTOMLEFT", 0, 0)
+  tipPopupLabelK:SetPoint("TOPRIGHT", tipPopupLabelCJ, "BOTTOMRIGHT", 0, 0)
+  tipPopupLabelK:SetJustifyH("LEFT")
+  tipPopupLabelK:SetJustifyV("TOP")
+
   local urlWidget = CreateFrame("EditBox", nil, tipPopup, "InputBoxTemplate")
   urlWidget:SetFont(STANDARD_TEXT_FONT, 12, "")
-  urlWidget:SetPoint("TOPLEFT", tipPopupLabel, "BOTTOMLEFT", 6, 0)
-  urlWidget:SetPoint("TOPRIGHT", tipPopupLabel, "BOTTOMRIGHT", 0, 0)
+  urlWidget:SetPoint("TOPLEFT", tipPopupLabelK, "BOTTOMLEFT", 6, 0)
+  urlWidget:SetPoint("TOPRIGHT", tipPopupLabelK, "BOTTOMRIGHT", 0, 0)
   urlWidget:SetScript("OnChar", function() urlWidget:SetText(urlWidget.text); urlWidget:HighlightText(); end);
   urlWidget:SetScript("OnMouseUp", function() urlWidget:HighlightText(); end);
   urlWidget:SetScript("OnEscapePressed", function() tipPopup:Hide() end)
@@ -395,7 +414,9 @@ function OptionsPrivate.CreateFrame()
   tipPopupCtrlC:SetJustifyV("TOP")
   tipPopupCtrlC:SetText(L["Press Ctrl+C to copy the URL"])
 
-  local function ToggleTip(referenceWidget, url, title, description, rightAligned)
+  --- @type fun(referenceWidget: frame, title: string, texture: string, url: string, description: string, descriptionCJ: string?, descriptionK: string?, rightAligned: boolean?, width: number?)
+  local function ToggleTip(referenceWidget, url, title, description, descriptionCJ, descriptionK, rightAligned, width)
+    width = width or 400
     if tipPopup:IsVisible() and urlWidget.text == url then
       tipPopup:Hide()
       return
@@ -404,10 +425,9 @@ function OptionsPrivate.CreateFrame()
     urlWidget:SetText(url)
     tipPopupTitle:SetText(title)
     tipPopupLabel:SetText(description)
+    tipPopupLabelCJ:SetText(descriptionCJ)
+    tipPopupLabelK:SetText(descriptionK)
     urlWidget:HighlightText()
-
-    tipPopup:SetWidth(400)
-    tipPopup:SetHeight(26 + tipPopupTitle:GetHeight() + tipPopupLabel:GetHeight() + urlWidget:GetHeight() + tipPopupCtrlC:GetHeight())
 
     tipPopup:ClearAllPoints();
     if rightAligned then
@@ -415,21 +435,70 @@ function OptionsPrivate.CreateFrame()
     else
       tipPopup:SetPoint("BOTTOMLEFT", referenceWidget, "TOPLEFT", -6, 4)
     end
+
+    tipPopup:SetWidth(width)
     tipPopup:Show()
+    tipPopup:SetHeight(26 + tipPopupTitle:GetHeight() + tipPopupLabel:GetHeight() + tipPopupLabelCJ:GetHeight() + tipPopupLabelK:GetHeight()
+                       + urlWidget:GetHeight() + tipPopupCtrlC:GetHeight())
+    -- This does somehow fix an issue where the first popup after a game restart doesn't show up.
+    -- This isn't reproducable after a simple ui reload, so no idea what goes wrong, but with this line here,
+    -- it seems to work.
+    tipPopupLabel:GetRect()
+    tipPopupLabelCJ:GetRect()
+    tipPopupLabelK:GetRect()
   end
 
   OptionsPrivate.ToggleTip = ToggleTip
 
-  local addFooter = function(title, texture, url, description, rightAligned)
+  --- @type fun(title: string, texture: string, url: string, description: string, descriptionCJ: string?, descriptionK: string?, rightAligned: boolean?, width: number?)
+  local addFooter = function(title, texture, url, description, descriptionCJ, descriptionK, rightAligned, width)
     local button = AceGUI:Create("WeakAurasToolbarButton")
     button:SetText(title)
     button:SetTexture(texture)
     button:SetCallback("OnClick", function()
-      ToggleTip(button.frame, url, title, description, rightAligned)
+      ToggleTip(button.frame, url, title, description, descriptionCJ, descriptionK, rightAligned, width)
     end)
     button.frame:Show()
     return button.frame
   end
+
+  local function lineWrapDiscordList(list)
+    local patreonLines = {}
+    local lineLength = 0
+    local currentLine = {}
+    for _, patreon in ipairs(list) do
+      if lineLength + #patreon + 2 * #currentLine > 130 then
+        tinsert(patreonLines, table.concat(currentLine, ", ") .. ", ")
+        currentLine = {}
+        tinsert(currentLine, patreon)
+        lineLength = #patreon
+      else
+        lineLength = lineLength + #patreon
+        tinsert(currentLine, patreon)
+      end
+    end
+    if #currentLine > 0 then
+      tinsert(patreonLines, table.concat(currentLine, ", "))
+    end
+    return table.concat(patreonLines, "\n")
+  end
+
+  local thanksList = L["We thank"] .. "\n"
+                     .. L["All maintainers of the libraries we use, especially:"] .. "\n"
+                     .. "• " .. L["Ace: Funkeh, Nevcairiel"] .. "\n"
+                     .. "• " .. L["LibCompress: Galmok"]  .. "\n"
+                     .. "• " .. L["LibCustomGlow: Dooez"] .. "\n"
+                     .. "• " .. L["LibDeflate: Yoursafety"] .. "\n"
+                     .. "• " .. L["LibDispel: Simpy"] .. "\n"
+                     .. "• " .. L["LibSerialize: Sanjo"] .. "\n"
+                     .. "• " .. L["LibSpecialization: Funkeh"] .. "\n"
+                     .. "• " .. L["Our translators (too many to name)"] .. "\n"
+                     .. "• " .. L["And our Patreons, Discord Regulars and Subscribers, and Friends of the Addon:"] .. "\n"
+
+  thanksList = thanksList .. lineWrapDiscordList(OptionsPrivate.Private.DiscordList)
+
+  local thanksListCJ = lineWrapDiscordList(OptionsPrivate.Private.DiscordListCJ)
+  local thanksListK = lineWrapDiscordList(OptionsPrivate.Private.DiscordListK)
 
   local discordButton = addFooter(L["Join Discord"], [[Interface\AddOns\WeakAuras\Media\Textures\discord.tga]], "https://discord.gg/weakauras",
             L["Chat with WeakAuras experts on our Discord server."])
@@ -441,13 +510,18 @@ function OptionsPrivate.CreateFrame()
   documentationButton:SetParent(tipFrame)
   documentationButton:SetPoint("LEFT", discordButton, "RIGHT", 10, 0)
 
+  local thanksButton = addFooter(L["Thanks"], [[Interface\AddOns\WeakAuras\Media\Textures\waheart.tga]],
+                                 "https://www.patreon.com/WeakAuras", thanksList, thanksListCJ, thanksListK, nil, 800)
+  thanksButton:SetParent(tipFrame)
+  thanksButton:SetPoint("LEFT", documentationButton, "RIGHT", 10, 0)
+
   local reportbugButton = addFooter(L["Found a Bug?"], [[Interface\AddOns\WeakAuras\Media\Textures\bug_report.tga]], "https://github.com/WeakAuras/WeakAuras2/issues/new?assignees=&labels=%F0%9F%90%9B+Bug&template=bug_report.md&title=",
-            L["Report bugs on our issue tracker."], true)
+            L["Report bugs on our issue tracker."], nil, nil, true)
   reportbugButton:SetParent(tipFrame)
   reportbugButton:SetPoint("RIGHT", tipFrame, "RIGHT")
 
   local wagoButton = addFooter(L["Find Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wago.tga]], "https://wago.io",
-            L["Browse Wago, the largest collection of auras."], true)
+            L["Browse Wago, the largest collection of auras."], nil, nil, true)
   wagoButton:SetParent(tipFrame)
   wagoButton:SetPoint("RIGHT", reportbugButton, "LEFT", -10, 0)
 
