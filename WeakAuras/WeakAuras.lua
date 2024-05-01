@@ -3,7 +3,7 @@ local AddonName = ...
 ---@class Private
 local Private = select(2, ...)
 
-local internalVersion = 72
+local internalVersion = 73
 
 -- Lua APIs
 local insert = table.insert
@@ -373,6 +373,8 @@ do
   end
 end
 
+---@param unit UnitToken
+---@return boolean isPet
 WeakAuras.UnitIsPet = function(unit)
   return WeakAuras.petUnitToUnit[unit] ~= nil
 end
@@ -440,6 +442,18 @@ function Private.RegisterRegionType(name, createFunction, modifyFunction, defaul
   end
 end
 
+---@private
+---@param name string
+---@param displayName string
+---@param supportFunction function
+---@param createFunction function
+---@param modifyFunction function
+---@param onAcquire function
+---@param onRelease function
+---@param default table
+---@param addDefaultsForNewAura function
+---@param properties table
+---@param supportsAdd boolean
 function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, createFunction, modifyFunction, onAcquire, onRelease, default, addDefaultsForNewAura, properties, supportsAdd)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterSubRegionType - name is not defined", 2);
@@ -566,6 +580,10 @@ function Private.RegisterRegionOptions(name, createFunction, icon, displayName, 
   end
 end
 
+---@private
+---@param name string
+---@param createFunction function
+---@param description string
 function WeakAuras.RegisterSubRegionOptions(name, createFunction, description)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterSubRegionOptions - name is not defined", 2);
@@ -1509,6 +1527,10 @@ end
 
 local function CreateEncounterTable(encounter_id)
   local _, _, _, _, _, _, _, instanceId = GetInstanceInfo()
+  ---@class CurrentEncounter
+  ---@field encounterId number
+  ---@field zone_id number
+  ---@field boss_guids number[]
   WeakAuras.CurrentEncounter = {
     id = encounter_id,
     zone_id = instanceId,
@@ -1607,14 +1629,17 @@ local function GetInstanceTypeAndSize()
   return "none", "none", nil, nil, nil
 end
 
+---@return string instanceType
 function WeakAuras.InstanceType()
-  return GetInstanceTypeAndSize(), nil
+  return (GetInstanceTypeAndSize())
 end
 
+---@return string difficulty
 function WeakAuras.InstanceDifficulty()
   return select(2, GetInstanceTypeAndSize())
 end
 
+---@return number? difficultyID
 function WeakAuras.InstanceTypeRaw()
   return select(5, GetInstanceTypeAndSize())
 end
@@ -1697,6 +1722,12 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     else
       vehicle = UnitOnTaxi('player')
     end
+    if WeakAuras.IsCataClassic() then
+      local specIndex = GetPrimaryTalentTree()
+      if specIndex then
+        specId = GetTalentTabInfo(specIndex)
+      end
+    end
   else
     dragonriding = Private.IsDragonriding()
     specId, role, position = Private.LibSpecWrapper.SpecRolePositionForUnit("player")
@@ -1747,8 +1778,8 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, vehicle, vehicleUi, class, player, realm, race, faction, playerLevel, role, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, vehicle, vehicleUi, class, player, realm, race, faction, playerLevel, role, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
       elseif WeakAuras.IsCataClassic() then
-        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, vehicle, vehicleUi, class, player, realm, race, faction, playerLevel, role, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
-        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, vehicle, vehicleUi, class, player, realm, race, faction, playerLevel, role, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
+        shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, vehicle, vehicleUi, class, specId, player, realm, race, faction, playerLevel, role, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
+        couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, vehicle, vehicleUi, class, specId, player, realm, race, faction, playerLevel, role, raidRole, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex)
       elseif WeakAuras.IsRetail() then
         shouldBeLoaded = loadFunc and loadFunc("ScanForLoads_Auras", inCombat, alive, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, specId, player, realm, race, faction, playerLevel, effectiveLevel, role, position, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex, affixes)
         couldBeLoaded =  loadOpt and loadOpt("ScanForLoads_Auras",   inCombat, alive, inEncounter, warmodeActive, inPetBattle, vehicle, vehicleUi, dragonriding, specId, player, realm, race, faction, playerLevel, effectiveLevel, role, position, group, groupSize, raidMemberType, zone, zoneId, zonegroupId, instanceId, minimapText, encounter_id, size, difficulty, difficultyIndex, affixes)
@@ -1848,9 +1879,11 @@ if WeakAuras.IsRetail() then
   loadFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
 else
   loadFrame:RegisterEvent("CHARACTER_POINTS_CHANGED")
-end
-if WeakAuras.IsWrathOrCata() then
   loadFrame:RegisterEvent("PLAYER_TALENT_UPDATE");
+  loadFrame:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED");
+end
+
+if WeakAuras.IsWrathOrCata() then
   loadFrame:RegisterEvent("VEHICLE_UPDATE");
   loadFrame:RegisterEvent("UPDATE_VEHICLE_ACTIONBAR")
   loadFrame:RegisterEvent("UPDATE_OVERRIDE_ACTIONBAR");
@@ -2063,6 +2096,7 @@ function Private.UIDtoID(uid)
   return UIDtoID[uid]
 end
 
+---@private
 function WeakAuras.Delete(data)
   local id = data.id;
   local uid = data.uid
@@ -2517,24 +2551,6 @@ local function loadOrder(tbl, idtable)
     if(data.parent) then
       if(idtable[data.parent]) then
         if depends[data.parent] then
-          -- There was an unfortunate bug in update.lua in 2022 that resulted
-          -- in auras having a circular dependencies
-          -- Fix one of the two known cases here
-          -- We can probably remove this code in 2023 again
-          for d in pairs(depends) do
-            local uid = idtable[d].uid
-            if uid == "fjtz3A6LwBW" then -- Fojji - Deathknight UI, need to fixup a lot
-              local cycleRoot = d
-              idtable[cycleRoot].parent = nil
-
-              for d in pairs(depends) do
-                tDeleteItem(idtable[d].controlledChildren, cycleRoot)
-              end
-
-              return loadOrder(tbl, idtable)
-            end
-            coroutine.yield()
-          end
           error("Circular dependency in Private.AddMany between "..table.concat(depends, ", "));
         else
           if not(loaded[data.parent]) then
@@ -2563,6 +2579,9 @@ local function loadOrder(tbl, idtable)
 
   return order
 end
+
+---@type fun(data: auraData)
+local pAdd
 
 ---@param tbl auraData[]
 ---@param takeSnapshots boolean
@@ -2617,7 +2636,7 @@ function Private.AddMany(tbl, takeSnapshots)
     if data.parent and bads[data.parent] then
       bads[data.id] = true
     else
-      local ok = xpcall(WeakAuras.PreAdd, geterrorhandler(), data)
+      local ok = xpcall(WeakAuras.PreAdd, Private.GetErrorHandlerUid(data.uid, "PreAdd"), data)
       if not ok then
         prettyPrint(L["Unable to modernize aura '%s'. This is probably due to corrupt data or a bad migration, please report this to the WeakAuras team."]:format(data.id))
         if data.regionType == "dynamicgroup" or data.regionType == "group" then
@@ -2633,9 +2652,16 @@ function Private.AddMany(tbl, takeSnapshots)
 
   for _, data in ipairs(order) do
     if not bads[data.id] then
-      WeakAuras.Add(data)
-      coroutine.yield()
+      if data.parent and bads[data.parent] then
+        bads[data.id] = true
+      else
+        local ok = xpcall(pAdd, Private.GetErrorHandlerUid(data.uid, "pAdd"), data)
+        if not ok then
+          bads[data.id] = true
+        end
+      end
     end
+    coroutine.yield()
   end
 
   for id in pairs(anchorTargets) do
@@ -3008,7 +3034,7 @@ function WeakAuras.PreAdd(data)
   data.expanded = nil
 end
 
-local function pAdd(data, simpleChange)
+function pAdd(data, simpleChange)
   local id = data.id;
   if not(id) then
     error("Improper arguments to WeakAuras.Add - id not defined");
@@ -3166,6 +3192,7 @@ local function pAdd(data, simpleChange)
   end
 end
 
+---@private
 function WeakAuras.Add(data, simpleChange)
   if (data.internalVersion or 0) < internalVersion then
     Private.SetMigrationSnapshot(data.uid, data)
@@ -3609,6 +3636,7 @@ function Private.HandleGlowAction(actions, region)
       and region.state.unit
     )
     or (actions.glow_frame_type == "FRAMESELECTOR" and actions.glow_frame)
+    or (actions.glow_frame_type == "PARENTFRAME" and region:GetParent())
   )
   then
     local glow_frame, should_glow_frame
@@ -3631,6 +3659,9 @@ function Private.HandleGlowAction(actions, region)
       should_glow_frame = true
     elseif actions.glow_frame_type == "NAMEPLATE" and region.state.unit then
       glow_frame = WeakAuras.GetUnitNameplate(region.state.unit)
+      should_glow_frame = true
+    elseif actions.glow_frame_type == "PARENTFRAME" then
+      glow_frame = region:GetParent()
       should_glow_frame = true
     end
 
@@ -5862,8 +5893,10 @@ function Private.IsCLEUSubevent(subevent)
   return false
 end
 
--- SafeToNumber converts a string to number, but only if it fits into a unsigned 32bit integer
--- The C api often takes only 32bit values, and complains if passed a value outside
+--- SafeToNumber converts a string to number, but only if it fits into a unsigned 32bit integer
+--- The C api often takes only 32bit values, and complains if passed a value outside
+---@param input any
+---@return number|nil number
 function WeakAuras.SafeToNumber(input)
   local nr = tonumber(input)
   return nr and (nr < 2147483648 and nr > -2147483649) and nr or nil
@@ -5880,6 +5913,8 @@ local textSymbols = {
   ["{rt8}"]      = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_8:0|t "
 }
 
+---@param txt string
+---@return string result
 function WeakAuras.ReplaceRaidMarkerSymbols(txt)
   local start = 1
 
@@ -5967,6 +6002,8 @@ do
     trackableUnits["nameplate" .. i] = true
   end
 
+  ---@param unit UnitToken
+  ---@return boolean result
   function WeakAuras.IsUntrackableSoftTarget(unit)
     if not Private.soft_target_cvars[unit] then return end
     -- technically this is incorrect if user doesn't have KBM and sets CVar to "2" (KBM only)
@@ -5977,6 +6014,8 @@ do
     return (tonumber(C_CVar.GetCVar(Private.soft_target_cvars[unit])) or 0) < threshold
   end
 
+  ---@param unit UnitToken
+  ---@return boolean result
   function WeakAuras.UntrackableUnit(unit)
     return not trackableUnits[unit]
   end
@@ -5984,6 +6023,9 @@ end
 
 do
   local ownRealm = select(2, UnitFullName("player"))
+  ---@param unit UnitToken
+  ---@return string name
+  ---@return string realm
   function WeakAuras.UnitNameWithRealm(unit)
     ownRealm = ownRealm or select(2, UnitFullName("player"))
     local name, realm = UnitFullName(unit)
@@ -6088,11 +6130,16 @@ function Private.ExecEnv.ParseZoneCheck(input)
         elseif prevChar == 'c' or prevChar == 'C' then
           self.zoneIds[id] = true
           local info = C_Map.GetMapChildrenInfo(id, nil, true)
-          for _,childInfo in pairs(info) do
-             self.zoneIds[childInfo.mapID] = true
+          if info then
+            for _,childInfo in pairs(info) do
+              self.zoneIds[childInfo.mapID] = true
+            end
           end
         elseif prevChar == 'a' or prevChar == 'A' then
-          self.areaNames[C_Map.GetAreaInfo(id)] = true
+          local areaName = C_Map.GetAreaInfo(id)
+          if areaName then
+            self.areaNames[areaName] = true
+          end
         elseif prevChar == 'i' or prevChar == 'I' then
           self.instanceIds[id] = true
         else
@@ -6103,19 +6150,21 @@ function Private.ExecEnv.ParseZoneCheck(input)
     zoneIds = {},
     zoneGroupIds = {},
     instanceIds = {},
-    areaNames = {}
+    areaNames = {},
   }
 
   local start = input:find('%d', 1)
-  local last = input:find('%D', start)
-  while (last) do
-    matcher:AddId(input, start, last - 1)
-    start = input:find('%d', last + 1)
-    last = input:find('%D', start)
-  end
+  if start then
+    local last = input:find('%D', start)
+    while (last) do
+      matcher:AddId(input, start, last - 1)
+      start = input:find('%d', last + 1) or #input + 1
+      last = input:find('%D', start)
+    end
 
-  last = #input
-  matcher:AddId(input, start, last)
+    last = #input
+    matcher:AddId(input, start, last)
+  end
   return matcher
 end
 
@@ -6175,11 +6224,14 @@ end
 
 -- Helper function to make the templates not care, how the generic triggers
 -- are categorized
+---@private
 function WeakAuras.GetTriggerCategoryFor(triggerType)
   local prototype = Private.event_prototypes[triggerType]
   return prototype and prototype.type
 end
 
+---@param unit UnitToken
+---@return number stagger
 function WeakAuras.UnitStagger(unit)
   return UnitStagger(unit) or 0
 end

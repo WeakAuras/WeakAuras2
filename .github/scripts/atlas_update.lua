@@ -56,8 +56,10 @@ table.sort(sortedNames)
 
 local output = io.open(outputFileName, "w+")
 output:write("if not WeakAuras.IsLibsOK() then return end\n")
-output:write("--- @type string, Private\n")
-output:write("local AddonName, Private = ...\n")
+output:write("---@type string\n")
+output:write("local AddonName = ...\n")
+output:write("---@class Private\n")
+output:write("local Private = select(2, ...)\n")
 output:write("Private.AtlasList = {\n")
 for i, name in ipairs(sortedNames) do
   output:write('"')

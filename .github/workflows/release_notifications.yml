@@ -28,7 +28,7 @@ jobs:
         run: ./generate_changelog.sh
 
       - name: Save Changelog in Variable
-        uses: Stanzilla/cat@2.0.1
+        uses: Stanzilla/cat@2.0.2
         id: readChanglog
         with:
           path: CHANGELOG.md
@@ -38,7 +38,7 @@ jobs:
         run: /usr/bin/env python3 .github/scripts/generate_twitter_post.py
 
       - name: Save Twitter Post in Variable
-        uses: Stanzilla/cat@2.0.1
+        uses: Stanzilla/cat@2.0.2
         id: readTweet
         with:
             path: twitter_post.txt
@@ -53,7 +53,7 @@ jobs:
     steps:
       - name: Send Discord Notification
         id: discord
-        uses: tsickert/discord-webhook@v5.5.0
+        uses: tsickert/discord-webhook@v6.0.0
         if: success()
         with:
           webhook-url: ${{ secrets.RELEASE_WEBHOOK_URL }}
@@ -83,7 +83,7 @@ jobs:
     steps:
       - name: Send Mastodon Notification
         id: mastodon
-        uses: cbrgm/mastodon-github-action@v2.0.5
+        uses: cbrgm/mastodon-github-action@v2.0.6
         with:
           access-token: ${{ secrets.MASTODON_ACCESS_TOKEN }}
           url: ${{ secrets.MASTODON_URL }}

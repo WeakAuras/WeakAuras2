@@ -1,0 +1,28 @@
+name: Create WeakAurasModelPaths Update Pull Request
+
+on:
+  schedule:
+    - cron: "0 10 * * 1"
+  workflow_dispatch:
+
+jobs:
+  modelPathsUpdate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: leafo/gh-actions-lua@v10
+
+      - name: Update WeakAurasModelPaths from wago.tools
+        run: |
+          cd .github/scripts/
+          ./update-model-paths.sh
+        shell: bash
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: update-modelpaths
+          commit-message: Update WeakAurasModelPaths from wago.tools
+          title: Update WeakAurasModelPaths from wago.tools
+          body: Update WeakAurasModelPaths from wago.tools
+          delete-branch: true

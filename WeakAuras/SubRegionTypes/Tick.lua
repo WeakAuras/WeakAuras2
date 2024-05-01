@@ -104,7 +104,7 @@ local function GetProperties(parentData, data)
   local result = CopyTable(properties)
   for i in ipairs(data.tick_placements) do
 
-    result["tick_placement" .. i] = {
+    result["tick_placements." .. i] = {
       display = #data.tick_placements > 1 and L["Placement %i"]:format(i) or L["Placement"],
       setter = "SetTickPlacementAt",
       type = "number",

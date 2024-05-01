@@ -277,7 +277,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           width = WeakAuras.normalWidth,
           name = arg.display,
           desc = function()
-            if arg.multiNoSingle then return arg.desc end
+            if arg.multiNoSingle or arg.desc then return arg.desc end
             local v = trigger["use_"..realname];
             if(v == true) then
               return L["Multiselect single tooltip"];
@@ -354,6 +354,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           order = order,
           hidden = hidden,
         }
+        order = order + 1;
         options["description_title_"..name] = {
           type = "description",
           width = WeakAuras.doubleWidth,
@@ -371,6 +372,15 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           hidden = hidden,
         }
         order = order + 1;
+      elseif (arg.type == "header") then
+        options["header_"..name] = {
+          type = "header",
+          width = WeakAuras.doubleWidth,
+          name = arg.display,
+          order = order,
+          hidden = hidden,
+        }
+        order = order + 1
       else
         options["use_"..name] = {
           type = "toggle",

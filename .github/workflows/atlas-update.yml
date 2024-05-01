@@ -3,7 +3,6 @@ name: Create Atlas File List Update Pull Request
 on:
   schedule:
     - cron: "0 10 * * 1"
-
   workflow_dispatch:
 
 jobs:
@@ -22,7 +21,7 @@ jobs:
       - name: Update Atlas Files from wago.tools
         run: |
           cd .github/scripts/
-          ./wagotools-atlas.sh
+          ./update-atlas-files.sh
         shell: bash
 
       - name: Cleanup Luarocks
@@ -35,4 +34,5 @@ jobs:
           branch: update-atlasfiles
           commit-message: Update Atlas File List from wago.tools
           title: Update Atlas File List from wago.tools
+          body: Update Atlas File List from wago.tools
           delete-branch: true

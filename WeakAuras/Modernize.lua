@@ -2022,6 +2022,18 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 73 then
+    if data.conditions then
+      for conditionIndex, condition in ipairs(data.conditions) do
+        for changeIndex, change in ipairs(condition.changes) do
+          if type(change.property) == "string" then
+            change.property = string.gsub(change.property, "(sub.%d.tick_placement)(%d)", "%1s.%2")
+          end
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 

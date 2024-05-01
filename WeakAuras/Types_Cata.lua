@@ -9,139 +9,61 @@ local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
 local encounter_list = ""
-function Private.InitializeEncounterAndZoneLists() -- TODO
+local zoneId_list = ""
+function Private.InitializeEncounterAndZoneLists()
+	local currTier = EJ_GetCurrentTier()
   if encounter_list ~= "" then
     return
   end
-  local raids = {
-    {
-      L["Vault of Archavon"],
-      {
-        { L["Archavon the Stone Watcher"], 772 },
-        { L["Emalon the Storm Watcher"], 774 },
-        { L["Koralon the Flame Watcher"], 776 },
-        { L["Toravon the Ice Watcher"], 885 },
-      }
-    },
-    {
-      L["Naxxramas"],
-      {
-        -- The Arachnid Quarter
-        { L["Anub'Rekhan"], 1107 },
-        { L["Grand Widow Faerlina"], 1110 },
-        { L["Maexxna"], 1116 },
-        -- The Plague Quarter
-        { L["Noth the Plaguebringer"], 1117 },
-        { L["Heigan the Unclean"], 1112 },
-        { L["Loatheb"], 1115 },
-        -- The Military Quarter
-        { L["Instructor Razuvious"], 1113 },
-        { L["Gothik the Harvester"], 1109 },
-        { L["The Four Horsemen"], 1121 },
-        -- The Construct Quarter
-        { L["Patchwerk"], 1118 },
-        { L["Grobbulus"], 1111 },
-        { L["Gluth"], 1108 },
-        { L["Thaddius"], 1120 },
-        -- Frostwyrm Lair
-        { L["Sapphiron"], 1119 },
-        { L["Kel'Thuzad"], 1114 }
-      }
-    },
-    {
-      L["The Obsidian Sanctum"],
-      {
-        { L["Tenebron"], 736 },
-        { L["Shadron"], 738 },
-        { L["Vesperon"], 740 },
-        { L["Sartharion"], 742 },
-      }
-    },
-    {
-      L["The Eye of Eternity"],
-      {
-        { L["Malygos"], 734 },
-      }
-    },
-    {
-      L["Ulduar"],
-      {
-        -- The Siege of Ulduar
-        { L["Flame Leviathan"], 744 },
-        { L["Ignis the Furnace Master"], 745 },
-        { L["Razorscale"], 746 },
-        { L["XT-002 Deconstructor"], 747 },
-        -- The Antechamber of Ulduar
-        { L["Assembly of Iron"], 748 },
-        { L["Kologarn"], 749 },
-        { L["Auriaya"], 750 },
-        -- The Keepers of Ulduar
-        { L["Freya"], 753 },
-        { L["Hodir"], 751 },
-        { L["Mimiron"], 754 },
-        { L["Thorim"], 752 },
-        -- The Descent into Madness
-        { L["General Vezax"], 755 },
-        { L["Yogg-Saron"], 756 },
-        -- Celestial Planetarium
-        { L["Algalon the Observer"], 757 },
-      }
-    },
-    {
-      L["Trial of the Crusader"],
-      {
-        { L["Northrend Beasts"], 629 },
-        { L["Lord Jaraxxus"], 633 },
-        { L["Faction Champions"], 637 },
-        { L["Val'kyr Twins"], 641 },
-        { L["Anub'arak"], 645 },
-      }
-    },
-    {
-      L["Onyxia's Lair"],
-      {
-        { L["Onyxia"], 1084 },
-      }
-    },
-    {
-      L["Icecrown Citadel"],
-      {
-        -- The Lower Spire
-        { L["Lord Marrowgar"], 845 },
-        { L["Lady Deathwhisper"], 846 },
-        { L["Gunship Battle"], 847 },
-        { L["Deathbringer Saurfang"], 848 },
-        -- The Plagueworks
-        { L["Festergut"], 849 },
-        { L["Rotface"], 850 },
-        { L["Professor Putricide"], 851 },
-        -- The Crimson Hall
-        { L["Blood Prince Council"], 852 },
-        { L["Blood-Queen Lana'thel"], 853 },
-        -- The Frostwing Halls
-        { L["Valithria Dreamwalker"], 854 },
-        { L["Sindragosa"], 855 },
-        -- The Frozen Throne
-        { L["The Lich King"], 856 },
-      }
-    },
-    {
-      L["The Ruby Sanctum"],
-      {
-        { L["Baltharus the Warborn"], 890 },
-        { L["General Zarithrian"], 893 },
-        { L["Saviana Ragefire"], 891 },
-        { L["Halion"], 887 },
-      }
-    },
-  }
-  for _, raid in ipairs(raids) do
-    encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, raid[1])
-    for _, boss in ipairs(raid[2]) do
-        encounter_list = ("%s%s: %d\n"):format(encounter_list, boss[1], boss[2])
-    end
-    encounter_list = encounter_list .. "\n"
-  end
+	for tier = EJ_GetNumTiers(), EJ_GetNumTiers() do
+		EJ_SelectTier(tier)
+		local tierName = EJ_GetTierInfo(tier)
+		for _, inRaid in ipairs({false, true}) do
+			local instance_index = 1
+			local instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
+			local title = ("%s %s"):format(tierName , inRaid and L["Raids"] or L["Dungeons"])
+			local zones = ""
+			while instance_id do
+				EJ_SelectInstance(instance_id)
+				local instance_name, _, _, _, _, _, dungeonAreaMapID = EJ_GetInstanceInfo(instance_id)
+				local ej_index = 1
+				local boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
+
+				-- zone ids
+				if dungeonAreaMapID and dungeonAreaMapID ~= 0 then
+					local mapGroupId = C_Map.GetMapGroupID(dungeonAreaMapID)
+					if mapGroupId then -- If there's a group id, only list that one
+						zones = ("%s%s: g%d\n"):format(zones, instance_name, mapGroupId)
+					else
+						zones = ("%s%s: %d\n"):format(zones, instance_name, dungeonAreaMapID)
+					end
+				end
+
+				-- Encounter ids
+				if inRaid then
+					while boss do
+						if encounter_id then
+							if instance_name then
+								encounter_list = ("%s|cffffd200%s|r\n"):format(encounter_list, instance_name)
+								instance_name = nil -- Only add it once per section
+							end
+							encounter_list = ("%s%s: %d\n"):format(encounter_list, boss, encounter_id)
+						end
+						ej_index = ej_index + 1
+						boss, _, _, _, _, _, encounter_id = EJ_GetEncounterInfoByIndex(ej_index, instance_id)
+					end
+					encounter_list = encounter_list .. "\n"
+				end
+				instance_index = instance_index + 1
+				instance_id = EJ_GetInstanceByIndex(instance_index, inRaid)
+			end
+			if zones ~= "" then
+				zoneId_list = ("%s|cffffd200%s|r\n"):format(zoneId_list, title)
+				zoneId_list = zoneId_list .. zones.. "\n"
+			end
+		end
+	end
+	EJ_SelectTier(currTier) -- restore previously selected tier
 
   encounter_list = encounter_list:sub(1, -3) .. "\n\n" .. L["Supports multiple entries, separated by commas\n"]
 end
@@ -151,7 +73,7 @@ function Private.get_encounters_list()
 end
 
 function Private.get_zoneId_list()
-  return ""
+  return zoneId_list
 end
 
 Private.talentInfo = {
