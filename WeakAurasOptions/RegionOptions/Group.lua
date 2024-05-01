@@ -90,38 +90,85 @@ local function createDistributeAlignOptions(id, data)
         return (alignedCenter or alignedRight or alignedLeft);
       end,
       set = function(info, v)
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
+        local records = {} ---@type actionRecord[]
         for index, childId in pairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childId);
           local childRegion = WeakAuras.GetRegion(childId)
           if(childData and childRegion) then
             if(v == "CENTER") then
               if(childData.selfPoint:find("LEFT")) then
-                childData.xOffset = 0 - (getWidth(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = 0 - (getWidth(childData, childRegion) / 2)
+                })
               elseif(childData.selfPoint:find("RIGHT")) then
-                childData.xOffset = 0 + (getWidth(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = 0 + (getWidth(childData, childRegion) / 2)
+                })
               else
-                childData.xOffset = 0;
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = 0
+                })
               end
             elseif(v == "LEFT") then
               if(childData.selfPoint:find("LEFT")) then
-                childData.xOffset = 0;
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = 0
+                })
               elseif(childData.selfPoint:find("RIGHT")) then
-                childData.xOffset = 0 + getWidth(childData, childRegion);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = 0 - getWidth(childData, childRegion)
+                })
               else
-                childData.xOffset = 0 + (getWidth(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = 0 - (getWidth(childData, childRegion) / 2)
+                })
               end
             elseif(v == "RIGHT") then
               if(childData.selfPoint:find("LEFT")) then
-                childData.xOffset = 0 - getWidth(childData, childRegion);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = 0 + getWidth(childData, childRegion)
+                })
               elseif(childData.selfPoint:find("RIGHT")) then
-                childData.xOffset = 0;
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = 0
+                })
               else
-                childData.xOffset = 0 - (getWidth(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = 0 + (getWidth(childData, childRegion) / 2)
+                })
               end
             end
-            WeakAuras.Add(childData);
           end
         end
+        OptionsPrivate.Private.TimeMachine:Commit()
         WeakAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
@@ -157,39 +204,85 @@ local function createDistributeAlignOptions(id, data)
         return alignedCenter or alignedBottom or alignedTop;
       end,
       set = function(info, v)
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
+        local records = {} ---@type actionRecord[]
         for index, childId in pairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childId);
           local childRegion = WeakAuras.GetRegion(childId)
           if(childData and childRegion) then
             if(v == "CENTER") then
               if(childData.selfPoint:find("BOTTOM")) then
-                childData.yOffset = 0 - (getHeight(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = 0 - (getHeight(childData, childRegion) / 2)
+                })
               elseif(childData.selfPoint:find("TOP")) then
-                childData.yOffset = 0 + (getHeight(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = 0 + (getHeight(childData, childRegion) / 2)
+                })
               else
-                childData.yOffset = 0;
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = 0
+                })
               end
             elseif(v == "RIGHT") then
               if(childData.selfPoint:find("BOTTOM")) then
-                childData.yOffset = 0;
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = 0 - getHeight(childData, childRegion)
+                })
               elseif(childData.selfPoint:find("TOP")) then
-                childData.yOffset = 0 + getHeight(childData, childRegion);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = 0
+                })
               else
-                childData.yOffset = 0 + (getHeight(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = 0 - (getHeight(childData, childRegion) / 2)
+                })
               end
             elseif(v == "LEFT") then
               if(childData.selfPoint:find("BOTTOM")) then
-                childData.yOffset = 0 - ( childData.height or childRegion.height);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = 0 + getHeight(childData, childRegion)
+                })
               elseif(childData.selfPoint:find("TOP")) then
-                childData.yOffset = 0;
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = 0
+                })
               else
-                childData.yOffset = 0 - (getHeight(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = 0 + (getHeight(childData, childRegion) / 2)
+                })
               end
             end
-            WeakAuras.Add(childData);
           end
         end
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Commit()
         OptionsPrivate.ResetMoverSizer();
       end
     },
@@ -245,6 +338,8 @@ local function createDistributeAlignOptions(id, data)
         return spaced;
       end,
       set = function(info, v)
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
+        local records = {} ---@type actionRecord[]
         local xOffset = 0;
         for index, childId in pairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childId);
@@ -252,27 +347,56 @@ local function createDistributeAlignOptions(id, data)
           if(childData and childRegion) then
             if(v > 0) then
               if(childData.selfPoint:find("LEFT")) then
-                childData.xOffset = xOffset;
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = xOffset
+                })
               elseif(childData.selfPoint:find("RIGHT")) then
-                childData.xOffset = xOffset + getWidth(childData, childRegion);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = xOffset + getWidth(childData, childRegion)
+                })
               else
-                childData.xOffset = xOffset + (getWidth(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = xOffset + (getWidth(childData, childRegion) / 2)
+                })
               end
               xOffset = xOffset + v;
             elseif(v < 0) then
               if(childData.selfPoint:find("LEFT")) then
-                childData.xOffset = xOffset - getWidth(childData, childRegion);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = xOffset - getWidth(childData, childRegion)
+                })
               elseif(childData.selfPoint:find("RIGHT")) then
-                childData.xOffset = xOffset;
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = xOffset
+                })
               else
-                childData.xOffset = xOffset - (getWidth(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = xOffset - (getWidth(childData, childRegion) / 2)
+                })
               end
               xOffset = xOffset + v;
             end
-            WeakAuras.Add(childData);
           end
         end
-
+        OptionsPrivate.Private.TimeMachine:Commit()
         WeakAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
@@ -329,6 +453,8 @@ local function createDistributeAlignOptions(id, data)
         return spaced;
       end,
       set = function(info, v)
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
+        local records = {} ---@type actionRecord[]
         local yOffset = 0;
         for index, childId in pairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childId);
@@ -336,27 +462,56 @@ local function createDistributeAlignOptions(id, data)
           if(childData and childRegion) then
             if(v > 0) then
               if(childData.selfPoint:find("BOTTOM")) then
-                childData.yOffset = yOffset;
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = yOffset
+                })
               elseif(childData.selfPoint:find("TOP")) then
-                childData.yOffset = yOffset + getHeight(childData, childRegion);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = yOffset + getHeight(childData, childRegion)
+                })
               else
-                childData.yOffset = yOffset + (getHeight(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = yOffset + (getHeight(childData, childRegion) / 2)
+                })
               end
               yOffset = yOffset + v;
             elseif(v < 0) then
               if(childData.selfPoint:find("BOTTOM")) then
-                childData.yOffset = yOffset - getHeight(childData, childRegion);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = yOffset - getHeight(childData, childRegion)
+                })
               elseif(childData.selfPoint:find("TOP")) then
-                childData.yOffset = yOffset;
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = yOffset
+                })
               else
-                childData.yOffset = yOffset - (getHeight(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = yOffset - (getHeight(childData, childRegion) / 2)
+                })
               end
               yOffset = yOffset + v;
             end
-            WeakAuras.Add(childData);
           end
         end
-
+        OptionsPrivate.Private.TimeMachine:Commit()
         WeakAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
@@ -413,6 +568,8 @@ local function createDistributeAlignOptions(id, data)
         return spaced;
       end,
       set = function(info, v)
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
+        local records = {} ---@type actionRecord[]
         local xOffset = 0;
         for index, childId in pairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childId);
@@ -420,27 +577,56 @@ local function createDistributeAlignOptions(id, data)
           if(childData and childRegion) then
             if(v >= 0) then
               if(childData.selfPoint:find("LEFT")) then
-                childData.xOffset = xOffset;
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = xOffset
+                })
               elseif(childData.selfPoint:find("RIGHT")) then
-                childData.xOffset = xOffset + getWidth(childData, childRegion);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = xOffset + getWidth(childData, childRegion)
+                })
               else
-                childData.xOffset = xOffset + (getWidth(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = xOffset + (getWidth(childData, childRegion) / 2)
+                })
               end
               xOffset = xOffset + v + getWidth(childData, childRegion);
             elseif(v < 0) then
               if(childData.selfPoint:find("LEFT")) then
-                childData.xOffset = xOffset - getWidth(childData, childRegion);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = xOffset - getWidth(childData, childRegion)
+                })
               elseif(childData.selfPoint:find("RIGHT")) then
-                childData.xOffset = xOffset;
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = xOffset
+                })
               else
-                childData.xOffset = xOffset - (getWidth(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "xOffset",
+                  payload = xOffset - (getWidth(childData, childRegion) / 2)
+                })
               end
               xOffset = xOffset + v - getWidth(childData, childRegion);
             end
-            WeakAuras.Add(childData);
           end
         end
-
+        OptionsPrivate.Private.TimeMachine:Commit()
         WeakAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
@@ -497,6 +683,8 @@ local function createDistributeAlignOptions(id, data)
         return spaced;
       end,
       set = function(info, v)
+        OptionsPrivate.Private.TimeMachine:StartTransaction()
+        local records = {} ---@type actionRecord[]
         local yOffset = 0;
         for index, childId in pairs(data.controlledChildren) do
           local childData = WeakAuras.GetData(childId);
@@ -504,27 +692,56 @@ local function createDistributeAlignOptions(id, data)
           if(childData and childRegion) then
             if(v >= 0) then
               if(childData.selfPoint:find("BOTTOM")) then
-                childData.yOffset = yOffset;
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = yOffset
+                })
               elseif(childData.selfPoint:find("TOP")) then
-                childData.yOffset = yOffset + getHeight(childData, childRegion);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = yOffset + getHeight(childData, childRegion)
+                })
               else
-                childData.yOffset = yOffset + (getHeight(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = yOffset + (getHeight(childData, childRegion) / 2)
+                })
               end
               yOffset = yOffset + v + getHeight(childData, childRegion);
             elseif(v < 0) then
               if(childData.selfPoint:find("BOTTOM")) then
-                childData.yOffset = yOffset - getHeight(childData, childRegion);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = yOffset - getHeight(childData, childRegion)
+                })
               elseif(childData.selfPoint:find("TOP")) then
-                childData.yOffset = yOffset;
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = yOffset
+                })
               else
-                childData.yOffset = yOffset - (getHeight(childData, childRegion) / 2);
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = yOffset - (getHeight(childData, childRegion) / 2)
+                })
               end
               yOffset = yOffset + v - getHeight(childData, childRegion);
             end
-            WeakAuras.Add(childData);
           end
         end
-
+        OptionsPrivate.Private.TimeMachine:Commit()
         WeakAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
@@ -581,12 +798,27 @@ local function createOptions(id, data)
         return data.scale or 1
       end,
       set = function(info, v)
-        data.scale = data.scale or 1
-        local change = 1 - (v/data.scale)
-        data.xOffset = data.xOffset/(1-change)
-        data.yOffset = data.yOffset/(1-change)
-        data.scale = v
-        WeakAuras.Add(data);
+        local oldScale = data.scale or 1
+        OptionsPrivate.Private.TimeMachine:AppendMany({
+          {
+            uid = data.uid,
+            actionType = "set",
+            path = "scale",
+            payload = v
+          },
+          {
+            uid = data.uid,
+            actionType = "set",
+            path = "xOffset",
+            payload = data.xOffset * (1 - (v/oldScale))
+          },
+          {
+            uid = data.uid,
+            actionType = "set",
+            path = "yOffset",
+            payload = data.yOffset * (1 - (v/oldScale))
+          }
+        })
         OptionsPrivate.ResetMoverSizer();
       end
     },
@@ -608,8 +840,12 @@ local function createOptions(id, data)
       desc = L["The group and all direct children will share the same base frame level."],
       order = 47,
       set = function(info, v)
-        data.sharedFrameLevel = v
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "set",
+          path = "sharedFrameLevel",
+          payload = v
+        })
         for parent in OptionsPrivate.Private.TraverseParents(data) do
           WeakAuras.Add(parent)
         end
