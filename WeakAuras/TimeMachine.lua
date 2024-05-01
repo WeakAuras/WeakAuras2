@@ -94,6 +94,24 @@ function TimeMachine.inverters.set(data, path)
   return 'set', path, copy(tbl, key)
 end
 
+---@type Action<table<string, any>>
+function TimeMachine.actions.setmany(data, path, values)
+  local tbl, key = resolveKey(data, path)
+  for k, v in pairs(values) do
+    tbl[key][k] = v
+  end
+end
+
+---@type Inverter<table<string, any>, table<string, any>>
+function TimeMachine.inverters.setmany(data, path, values)
+  local tbl, key = resolveKey(data, path)
+  local inverse = {}
+  for k, v in pairs(values) do
+    inverse[k] = copy(tbl[key], k)
+  end
+  return 'setmany', path, inverse
+end
+
 ---@type Action<{index: number?, value: any}>
 function TimeMachine.actions.insert(data, path, payload)
   local tbl, key = resolveKey(data, path)
