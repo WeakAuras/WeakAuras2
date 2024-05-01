@@ -1,0 +1,42 @@
+name: Create Discord Name Update Pull Request
+
+on:
+  schedule:
+    - cron: "0 10 * * 1"
+  workflow_dispatch:
+
+jobs:
+  discordUpdate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install discord pip
+        run: |
+          pip install discord.py
+        shell: bash
+      - name: Update Discord list
+        run: |
+          /usr/bin/env python3 .github/scripts/discordupdate.py
+        shell: bash
+        env:
+          DISCORD_ACCESS_TOKEN: ${{ secrets.DISCORD_ACCESS_TOKEN}}
+
+      - name: Save Commit Body in Variable
+        uses: Stanzilla/cat@2.0.2
+        id: readCommitBody
+        with:
+          path: commit-body.txt
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: update-discordlist
+          commit-message: Update Discord List
+          title: Update Discord List
+          body: ${{ steps.readCommitBody.outputs.text }}
+          delete-branch: true
+          add-paths: WeakAuras/DiscordList.lua
+
