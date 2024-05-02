@@ -2451,6 +2451,9 @@ Private.weapon_types = {
   ["main"] = MAINHANDSLOT,
   ["off"] = SECONDARYHANDSLOT
 }
+if WeakAuras.IsCataClassic() then
+  Private.weapon_types.ranged = RANGEDSLOT
+end
 
 ---@type table<string, string>
 Private.swing_types = {
