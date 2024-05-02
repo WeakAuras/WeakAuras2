@@ -3599,9 +3599,10 @@ end
 
 -- Weapon Enchants
 do
+  local isCata = WeakAuras.IsCataClassic()
+
   local mh = GetInventorySlotInfo("MainHandSlot")
   local oh = GetInventorySlotInfo("SecondaryHandSlot")
-  local rw = GetInventorySlotInfo("RANGEDSLOT")
 
   local mh_name, mh_shortenedName, mh_exp, mh_dur, mh_charges, mh_EnchantID;
   ---@type string?
@@ -3611,9 +3612,12 @@ do
   ---@type string?
   local oh_icon = GetInventoryItemTexture("player", oh) or "Interface\\Icons\\INV_Misc_QuestionMark"
 
-  local rw_exp, rw_dur, rw_name, rw_shortenedName, rw_charges, rw_EnchantID;
+  local rw, rw_icon, rw_exp, rw_dur, rw_name, rw_shortenedName, rw_charges, rw_EnchantID;
   ---@type string?
-  local rw_icon = GetInventoryItemTexture("player", rw) or "Interface\\Icons\\INV_Misc_QuestionMark"
+  if isCata then
+    rw = GetInventorySlotInfo("RANGEDSLOT")
+    rw_icon = GetInventoryItemTexture("player", rw) or "Interface\\Icons\\INV_Misc_QuestionMark"
+  end
 
   local tenchFrame = nil
   Private.frames["Temporary Enchant Handler"] = tenchFrame;
@@ -3702,15 +3706,17 @@ do
           end
           oh_icon = GetInventoryItemTexture("player", oh)
         end
-        if(math.abs((rw_exp or 0) - (rw_exp_new or 0)) > 1) then
-          rw_exp = rw_exp_new;
-          rw_dur = rw_rem and rw_rem / 1000;
-          if rw_exp then
-            rw_name, rw_shortenedName = getTenchName(rw)
-          else
-            rw_name, rw_shortenedName = "None", "None"
+        if isCata then
+          if(math.abs((rw_exp or 0) - (rw_exp_new or 0)) > 1) then
+            rw_exp = rw_exp_new;
+            rw_dur = rw_rem and rw_rem / 1000;
+            if rw_exp then
+              rw_name, rw_shortenedName = getTenchName(rw)
+            else
+              rw_name, rw_shortenedName = "None", "None"
+            end
+            rw_icon = GetInventoryItemTexture("player", rw)
           end
-          rw_icon = GetInventoryItemTexture("player", rw)
         end
         WeakAuras.ScanEvents("TENCH_UPDATE");
         Private.StopProfileSystem("generictrigger");
