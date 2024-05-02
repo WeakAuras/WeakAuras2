@@ -1537,7 +1537,7 @@ local function modify(parent, region, data)
       Private.StartProfileSystem("dynamicgroup")
       Private.StartProfileAura(data.id)
       local numVisible, minX, maxX, maxY, minY = 0, nil, nil, nil, nil
-      local isRestricted = pcall(region.GetLeft, region) == false
+      local isRestricted = region:IsAnchoringRestricted()
       if isRestricted then
         -- workaround for restricted anchor families (mostly PRD)
         -- if region is in a restricted anchor family, we're not allowed to get the rect of its children
