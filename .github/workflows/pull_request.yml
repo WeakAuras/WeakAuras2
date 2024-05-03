@@ -1,14 +1,20 @@
 name: CI-PR
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened, reopened, synchronize, labeled]
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions-cool/check-user-permission@v2
+        id: check-permission
+        with:
+          require: write
+          username: ${{ github.triggering_actor }}
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -34,13 +40,14 @@ jobs:
           args: -d -z
 
       - uses: actions/upload-artifact@v4
+        if: ${{ steps.check-permission.outputs.require-result == 'true'}}
         id: upload-artifact
         with:
           name: WeakAuras-PR#${{ github.event.number }}-${{ github.sha }}
           path: .release/
 
       - uses: exercism/pr-commenter-action@v1.5.1
-        if: ${{ contains(github.event.pull_request.labels.*.name, '🆕 Feature Preview') }}
+        if: ${{ steps.check-permission.outputs.require-result == 'true' && contains(github.event.pull_request.labels.*.name, '🆕 Feature Preview') }}
         with:
           github-token: ${{ github.token }}
           config-file: ".github/pr-commenter.yml"
