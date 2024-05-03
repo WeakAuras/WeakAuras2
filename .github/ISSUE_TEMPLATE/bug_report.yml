@@ -34,8 +34,8 @@ body:
     options:
       - Retail (Default)
       - Beta (WoW 11.0)
-      - Classic
-      - Wrath of the Lich King Classic
+      - Classic Era
+      - Cataclysm Classic
   validations:
     required: true
 
