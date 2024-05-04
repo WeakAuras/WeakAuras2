@@ -132,10 +132,10 @@ local function SoundRepeatStop(self)
   Private.StopProfileSystem("sound");
 end
 
-local function SoundStop(self)
+local function SoundStop(self, fadeoutTime)
   Private.StartProfileSystem("sound");
   if (self.soundHandle) then
-    StopSound(self.soundHandle);
+    StopSound(self.soundHandle, fadeoutTime);
   end
   Private.StopProfileSystem("sound");
 end
@@ -203,7 +203,8 @@ local function SoundPlay(self, options)
     return
   end
 
-  self:SoundStop();
+  local fadeoutTime = options.sound_type == "Stop" and options.sound_fade and options.sound_fade * 1000 or 0
+  self:SoundStop(fadeoutTime);
   self:SoundRepeatStop();
 
   self.soundOptions = options;
