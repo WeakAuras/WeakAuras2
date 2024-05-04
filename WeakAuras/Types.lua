@@ -2711,7 +2711,7 @@ end
 ---@type table
 Private.instance_difficulty_types = {}
 
-if WeakAuras.IsRetail() then
+if not WeakAuras.IsClassicEra() then
   -- Fill out instance_difficulty_types automatically.
   -- Unfortunately the names BLizzard gives are not entirely unique,
   -- so try hard to disambiguate them via the type, and if nothing works by
