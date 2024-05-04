@@ -5442,6 +5442,11 @@ function Private.ensurePRDFrame()
   personalRessourceDisplayFrame = CreateFrame("Frame", "WeakAurasAttachToPRD", UIParent);
   personalRessourceDisplayFrame:Hide();
   personalRessourceDisplayFrame.attachedVisibleFrames = {};
+  -- force an early frame draw; otherwise this frame won't be drawn until the next frame,
+  -- and any attached auras won't have a valid rect
+  personalRessourceDisplayFrame:SetPoint("CENTER", UIParent, "CENTER");
+  personalRessourceDisplayFrame:SetSize(16, 16)
+  personalRessourceDisplayFrame:GetSize()
   Private.personalRessourceDisplayFrame = personalRessourceDisplayFrame;
 
   local moverFrame = CreateFrame("Frame", "WeakAurasPRDMoverFrame", personalRessourceDisplayFrame);

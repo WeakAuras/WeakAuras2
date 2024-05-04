@@ -650,6 +650,7 @@ function Private.regionPrototype.create(region)
   region.RunCode = RunCode;
   region.GlowExternal = GlowExternal;
 
+  region.ReAnchor = UpdatePosition;
   region.SetAnchor = SetAnchor;
   region.SetOffset = SetOffset;
   region.SetXOffset = SetXOffset;
