@@ -124,13 +124,14 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
     end
   elseif(vType == "sound") then
     if (value and type(value) == "table") then
-      return string.format("{ sound = %s, sound_channel = %s, sound_path = %s, sound_kit_id = %s, sound_type = %s, %s}",
+      return string.format("{ sound = %s, sound_channel = %s, sound_path = %s, sound_kit_id = %s, sound_type = %s, %s, %s}",
         Private.QuotedString(tostring(value.sound or "")),
         Private.QuotedString(tostring(value.sound_channel or "")),
         Private.QuotedString(tostring(value.sound_path or "")),
         Private.QuotedString(tostring(value.sound_kit_id or "")),
         Private.QuotedString(tostring(value.sound_type or "")),
-        value.sound_repeat and "sound_repeat = " .. tostring(value.sound_repeat) or "nil");
+        value.sound_repeat and "sound_repeat = " .. tostring(value.sound_repeat) or "nil",
+        value.sound_fade and "sound_fade = " .. tostring(value.sound_fade) or "nil");
     end
   elseif(vType == "customcode") then
     return string.format("%s", pathToCustomFunction);

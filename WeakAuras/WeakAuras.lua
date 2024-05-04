@@ -3732,7 +3732,8 @@ function Private.PerformActions(data, when, region)
 
   if (actions.stop_sound) then
     if (region.SoundStop) then
-      region:SoundStop();
+      local fadeoutTime = actions.do_sound_fade and actions.stop_sound_fade and actions.stop_sound_fade * 1000 or 0
+      region:SoundStop(fadeoutTime);
     end
   end
 
