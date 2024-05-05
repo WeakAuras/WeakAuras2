@@ -710,9 +710,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                   return nil;
                 end
               elseif(arg.type == "spell") then
-                if arg.noValidation then
-                  return value and tostring(value)
-                end
                 local useExactSpellId = (arg.showExactOption and getValue(trigger, nil, "use_exact_"..realname, multiEntry, entryNumber))
                 if value and value ~= "" then
                   local spellID = WeakAuras.SafeToNumber(value)
@@ -727,12 +724,15 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                     if spellName then
                       return ("%s (%s)"):format(spellID, spellName) .. "\0" .. value
                     end
-                  elseif not useExactSpellId then
+                  elseif not useExactSpellId and not arg.noValidation then
                     local spellName = GetSpellInfo(value)
                     if spellName then
                       return spellName
                     end
                   end
+                end
+                if arg.noValidation then
+                  return value and tostring(value)
                 end
                 if value == nil then
                   return nil
