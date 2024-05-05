@@ -103,6 +103,7 @@ globals = {
 	"GetClassColoredTextForUnit",
 	"Lerp",
 	"Mixin",
+	"PowerBarColor",
 	"ipairs_reverse",
 	"Round",
 	"SafePack",
