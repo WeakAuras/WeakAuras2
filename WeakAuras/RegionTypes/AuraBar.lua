@@ -404,10 +404,10 @@ local barPrototype = {
 
           local texture = self.additionalBarsTextures and self.additionalBarsTextures[index];
           if texture then
-            local texturePath = SharedMedia:Fetch("statusbar", texture) or ""
-            extraTexture:SetTexture(texturePath, extraTextureWrapMode, extraTextureWrapMode)
+            local texturePath = SharedMedia:Fetch("statusbar_atlas", texture) or SharedMedia:Fetch("statusbar", texture) or ""
+            Private.SetTextureOrAtlas(extraTexture, texturePath, extraTextureWrapMode, extraTextureWrapMode)
           else
-            extraTexture:SetTexture(self:GetStatusBarTexture(), extraTextureWrapMode, extraTextureWrapMode);
+            Private.SetTextureOrAtlas(extraTexture, self:GetStatusBarTexture(), extraTextureWrapMode, extraTextureWrapMode)
           end
 
           local xOffset = 0;
@@ -553,10 +553,10 @@ local barPrototype = {
 
   -- Blizzard like SetStatusBarTexture
   ["SetStatusBarTexture"] = function(self, texture)
-    self.fg:SetTexture(texture);
-    self.bg:SetTexture(texture);
+    Private.SetTextureOrAtlas(self.fg, texture)
+    Private.SetTextureOrAtlas(self.bg, texture)
     for index, extraTexture in ipairs(self.extraTextures) do
-      extraTexture:SetTexture(texture, extraTextureWrapMode, extraTextureWrapMode);
+      Private.SetTextureOrAtlas(extraTexture, texture, extraTextureWrapMode, extraTextureWrapMode)
     end
   end,
 
@@ -1210,7 +1210,12 @@ local function modify(parent, region, data)
   end
 
   -- Update texture settings
-  local texturePath = SharedMedia:Fetch("statusbar", data.texture) or "";
+  local texturePath
+  if data.textureSource == "Picker" then
+    texturePath = data.textureInput or ""
+  else
+    texturePath = SharedMedia:Fetch("statusbar_atlas", data.texture) or SharedMedia:Fetch("statusbar", data.texture) or ""
+  end
   bar:SetStatusBarTexture(texturePath);
   bar:SetBackgroundColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
   -- Update spark settings

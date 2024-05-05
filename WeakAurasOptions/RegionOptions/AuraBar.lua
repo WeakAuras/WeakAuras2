@@ -9,18 +9,71 @@ local L = WeakAuras.L;
 
 -- Create region options table
 local function createOptions(id, data)
+  local statusbarList = {}
+  Mixin(statusbarList, SharedMedia:HashTable("statusbar"))
+  Mixin(statusbarList, SharedMedia:HashTable("statusbar_atlas"))
+
   -- Region options
   local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
   local options = {
     __title = L["Progress Bar Settings"],
     __order = 1,
-    texture = {
+    textureSource = {
       type = "select",
-      dialogControl = "LSM30_Statusbar",
       order = 1,
       width = WeakAuras.doubleWidth,
+      name = L["Texture Selection Mode"],
+      values = {
+        LSM = L["LibSharedMedia"],
+        Picker = L["Texture Picker"]
+      },
+      get = function()
+        return data.textureSource or "LSM"
+      end,
+    },
+    texture = {
+      type = "select",
+      dialogControl = "WA_LSM30_StatusbarAtlas",
+      order = 2,
+      width = WeakAuras.doubleWidth,
       name = L["Bar Texture"],
-      values = AceGUIWidgetLSMlists.statusbar
+      values = statusbarList,
+      hidden = function()
+        return data.textureSource == "Picker"
+      end
+    },
+    textureInput = {
+      type = "input",
+      width = WeakAuras.doubleWidth - 0.15,
+      name = L["Texture"],
+      order = 3,
+      hidden = function()
+        return data.textureSource ~= "Picker"
+      end
+    },
+    chooseTexture = {
+      type = "execute",
+      name = L["Choose"],
+      width = 0.15,
+      order = 4,
+      func = function()
+        local path = {}
+        local paths = {}
+        for child in OptionsPrivate.Private.TraverseLeafsOrAura(data) do
+          paths[child.id] = path
+        end
+        OptionsPrivate.OpenTexturePicker(data, paths, {
+          texture = "textureInput",
+          color = "color",
+        }, OptionsPrivate.Private.texture_types, nil, true)
+      end,
+      imageWidth = 24,
+      imageHeight = 24,
+      control = "WeakAurasIcon",
+      image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\browse",
+      hidden = function()
+        return data.textureSource ~= "Picker"
+      end
     },
     orientation = {
       type = "select",
@@ -556,7 +609,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, width, hei
   end
 
   -- Fake status-bar style
-  texture:SetTexture(SharedMedia:Fetch("statusbar", data.texture));
+  OptionsPrivate.Private.SetTextureOrAtlas(texture, SharedMedia:Fetch("statusbar_atlas", data.texture) or SharedMedia:Fetch("statusbar", data.texture))
   texture:SetVertexColor(data.barColor[1], data.barColor[2], data.barColor[3], data.barColor[4]);
 
   -- Fake icon size

@@ -3151,6 +3151,30 @@ LSM:Register("statusbar", "Thick Stripes", [[Interface\AddOns\WeakAuras\Media\Te
 LSM:Register("statusbar", "Thin Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes_Thin]])
 LSM:Register("border", "Drop Shadow", [[Interface\AddOns\WeakAuras\Media\Textures\Border_DropShadow]])
 
+if PowerBarColor then
+  local function capitalizeFirstLetter(str)
+    -- Split the string into words separated by underscores
+    local words = {}
+    for word in string.gmatch(str, "[^_]+") do
+      table.insert(words, word)
+    end
+    -- Capitalize the first letter of each word
+    for i, word in ipairs(words) do
+      words[i] = word:sub(1, 1):upper() .. word:sub(2):lower()
+    end
+    return table.concat(words, " ")
+  end
+
+  for power, data in pairs(PowerBarColor) do
+    if type(power) == "string" and data.atlas then
+      local name = "Blizzard " .. capitalizeFirstLetter(power)
+      LSM:Register("statusbar_atlas", name, data.atlas)
+    elseif data.atlasElementName then
+      LSM:Register("statusbar_atlas", "Blizzard " .. data.atlasElementName, "UI-HUD-UnitFrame-Player-PortraitOff-Bar-" .. data.atlasElementName)
+    end
+  end
+end
+
 ---@type table<string, string>
 Private.duration_types = {
   seconds = L["Seconds"],
