@@ -827,6 +827,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   Private.StopProfileSystem("generictrigger " .. orgEvent )
 end
 
+---@private
 ---@param event string
 ---@param unit UnitToken
 ---@param ... any
@@ -2844,7 +2845,7 @@ do
       startTimeCooldown = startTimeCooldown - 2^32 / 1000
     end
 
-    -- Default to
+    -- Default to GetSpellCharges
     ---@type boolean?
     local unifiedCooldownBecauseRune = false
     ---@type boolean?
@@ -3018,11 +3019,14 @@ do
       -- TODO: In 10.2.6 the apis return values changed from 1,0 for enabled to true, false
       -- We should adjust once its on all versions
       if enabled == false then
+        ---@diagnostic disable-next-line: cast-local-type
         enabled = 0
       elseif enabled == true then
+        ---@diagnostic disable-next-line: cast-local-type
         enabled = 1
       end
       if (duration == 0) then
+        ---@diagnostic disable-next-line: cast-local-type
         enabled = 1;
       end
       if (enabled == 0) then
@@ -3261,6 +3265,7 @@ do
       -- We should adjust once its on all versions
       local startTime, duration, enabled = C_Container.GetItemCooldown(id);
       if (duration == 0) then
+        ---@diagnostic disable-next-line: cast-local-type
         enabled = 1;
       end
       if (enabled == 0) then
@@ -3359,6 +3364,7 @@ function WeakAuras.GetPlayerReaction(unit)
   end
 end
 
+---@private
 ---@param unit UnitToken
 function WeakAuras.WatchUnitChange(unit)
   unit = string.lower(unit)
@@ -3547,6 +3553,7 @@ if WeakAuras.IsClassicEraOrWrath() then
   queueableSpells = classQueueableSpells[class]
 
   local queuedSpellFrame
+  ---@private
   function WeakAuras.WatchForQueuedSpell()
     if not queuedSpellFrame then
       queuedSpellFrame = CreateFrame("Frame")

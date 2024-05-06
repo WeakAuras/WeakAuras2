@@ -201,6 +201,8 @@ globals = {
 	"AreDangerousScriptsAllowed",
 	"AreInvasionsAvailable",
 	"AreTalentsLocked",
+	"APIDocumentation",
+	"APIDocumentation_LoadUI",
 	"AscendStop",
 	"AssistUnit",
 	"AttachGlyphToSpell",

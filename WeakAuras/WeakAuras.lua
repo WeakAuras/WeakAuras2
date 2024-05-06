@@ -82,6 +82,7 @@ WeakAuras.timer = timer
 local loginQueue = {}
 local queueshowooc
 
+---@return integer version
 function WeakAuras.InternalVersion()
   return internalVersion;
 end
@@ -151,6 +152,7 @@ function Private.LoadOptions(msg)
   return true;
 end
 
+---@private
 function WeakAuras.OpenOptions(msg)
   if Private.NeedToRepairDatabase() then
     StaticPopup_Show("WEAKAURAS_CONFIRM_REPAIR", nil, nil, {reason = "downgrade"})
@@ -243,6 +245,7 @@ end
 
 if not WeakAuras.IsLibsOK() then return end
 
+---@private
 function WeakAuras.ToggleMinimap()
   WeakAurasSaved.minimap.hide = not WeakAurasSaved.minimap.hide
   if WeakAurasSaved.minimap.hide then
@@ -1194,6 +1197,7 @@ do -- Archive stuff
     return Archivist
   end
 
+  ---@private
   function WeakAuras.LoadFromArchive(storeType, storeID)
     local Archive = OpenArchive()
     return Archive:Load(storeType, storeID)
@@ -1464,6 +1468,7 @@ function Private.Pause()
   paused = true;
 end
 
+---@private
 function WeakAuras.Toggle()
   if(paused) then
     Private.Resume();
@@ -1476,6 +1481,7 @@ function Private.SquelchingActions()
   return squelch_actions;
 end
 
+---@private
 function WeakAuras.InLoadingScreen()
   return in_loading_screen;
 end
@@ -2191,6 +2197,7 @@ function WeakAuras.Delete(data)
   Private.callbacks:Fire("Delete", uid, id, parentUid, parentId)
 end
 
+---@private
 function WeakAuras.Rename(data, newid)
   local oldid = data.id
   if(data.parent) then
@@ -2988,6 +2995,7 @@ function Private.UpdateSoundIcon(data)
   end
 end
 
+---@private
 function WeakAuras.PreAdd(data)
   if not data then return end
   -- Readd what Compress removed before version 8
@@ -4101,6 +4109,7 @@ end
 
 do
   local hiddenTooltip;
+  ---@private
   function WeakAuras.GetHiddenTooltip()
     if not(hiddenTooltip) then
       hiddenTooltip = CreateFrame("GameTooltip", "WeakAurasTooltip", nil, "GameTooltipTemplate");
@@ -4176,6 +4185,7 @@ function WeakAuras.GetAuraTooltipInfo(unit, index, filter)
 end
 
 local FrameTimes = {};
+---@private
 function WeakAuras.ProfileFrames(all)
   UpdateAddOnCPUUsage();
   for name, frame in pairs(Private.frames) do
@@ -4189,6 +4199,7 @@ function WeakAuras.ProfileFrames(all)
 end
 
 local DisplayTimes = {};
+---@private
 function WeakAuras.ProfileDisplays(all)
   UpdateAddOnCPUUsage();
   for id, regionData in pairs(Private.regions) do
@@ -4384,6 +4395,7 @@ end
 
 Private.dynFrame = dynFrame;
 
+---@private
 function WeakAuras.RegisterTriggerSystem(types, triggerSystem)
   for _, v in ipairs(types) do
     triggerTypes[v] = triggerSystem;
@@ -4391,6 +4403,7 @@ function WeakAuras.RegisterTriggerSystem(types, triggerSystem)
   tinsert(triggerSystems, triggerSystem);
 end
 
+---@private
 function WeakAuras.RegisterTriggerSystemOptions(types, func)
   for _, v in ipairs(types) do
     Private.triggerTypesOptions[v] = func;

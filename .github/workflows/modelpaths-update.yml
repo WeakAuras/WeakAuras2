@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  modelPathsUpdate:
+  modelpaths-update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
