@@ -453,7 +453,7 @@ end
 ---@param default table
 ---@param addDefaultsForNewAura function
 ---@param properties table
----@param supportsAdd boolean
+---@param supportsAdd? boolean
 function WeakAuras.RegisterSubRegionType(name, displayName, supportFunction, createFunction, modifyFunction, onAcquire, onRelease, default, addDefaultsForNewAura, properties, supportsAdd)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterSubRegionType - name is not defined", 2);
@@ -3928,7 +3928,7 @@ end
 -- The constants table has weak keys
 do
   local function CompareProgressValueTables(a, b)
-    -- For auto/manual progreess, only compare a[] with b[1]
+    -- For auto/manual progress, only compare a[] with b[1]
     if a[1] == -1 or a[1] == 0 then
       return a[1] == b[1]
     end
@@ -5304,6 +5304,7 @@ local function ensureMouseFrame()
   if (mouseFrame) then
     return;
   end
+  ---@class Frame
   mouseFrame = CreateFrame("Frame", "WeakAurasAttachToMouseFrame", UIParent);
   mouseFrame.attachedVisibleFrames = {};
   mouseFrame:SetWidth(1);
@@ -6009,7 +6010,7 @@ do
   end
 
   ---@param unit UnitToken
-  ---@return boolean result
+  ---@return boolean? result
   function WeakAuras.IsUntrackableSoftTarget(unit)
     if not Private.soft_target_cvars[unit] then return end
     -- technically this is incorrect if user doesn't have KBM and sets CVar to "2" (KBM only)

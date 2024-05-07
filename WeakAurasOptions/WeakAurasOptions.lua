@@ -1624,6 +1624,7 @@ end
 function OptionsPrivate.DropIndicator()
   local indicator = frame.dropIndicator
   if not indicator then
+    ---@class Frame
     indicator = CreateFrame("Frame", "WeakAuras_DropIndicator")
     indicator:SetHeight(4)
     indicator:SetFrameStrata("FULLSCREEN")

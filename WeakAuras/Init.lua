@@ -192,8 +192,8 @@ Private.frames = {}
 ---@field GetNameAndIcon (fun(trigger: triggerData): string?, string?)|nil
 ---@field iconFunc (fun(trigger: triggerData): string?)|nil
 ---@field nameFunc (fun(trigger: triggerData): string?)|nil
----@field events (fun(tigger: triggerData): table)|nil
----@field internal_events (fun(tigger: triggerData): table)|nil
+---@field events (fun(trigger: triggerData): table)|nil
+---@field internal_events (fun(trigger: triggerData): table)|nil
 ---@field name string
 ---@field statesParamater "unit"|"one"|"all"|nil
 ---@field progressType "timed"|"static"|"none"

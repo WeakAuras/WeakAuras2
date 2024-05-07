@@ -1049,13 +1049,13 @@ local methods = {
       Show_Long_Tooltip(self.frame, self.frame.description);
     end
   end,
-  ["StartGrouping"] = function(self, groupingData, selected, groupingGroup, childOfGrouing)
+  ["StartGrouping"] = function(self, groupingData, selected, groupingGroup, childOfGrouping)
     self.grouping = groupingData;
     self:UpdateIconsVisible()
     if(selected) then
       self.frame:SetScript("OnClick", self.callbacks.OnClickGroupingSelf);
       self:SetDescription(L["Cancel"], L["Do not group this display"]);
-    elseif (childOfGrouing) then
+    elseif (childOfGrouping) then
       self:Disable();
     else
       if(self.data.regionType == "dynamicgroup" and groupingGroup) then
@@ -1767,6 +1767,7 @@ Constructor
 
 local function Constructor()
   local name = "WeakAurasDisplayButton"..AceGUI:GetNextWidgetNum(Type);
+  ---@class Button
   local button = CreateFrame("Button", name, UIParent, "OptionsListButtonTemplate");
   button:SetHeight(32);
   button:SetWidth(1000);
@@ -1806,6 +1807,7 @@ local function Constructor()
 
   button.description = {};
 
+  ---@class Button
   local view = CreateFrame("Button", nil, button);
   button.view = view;
   view:SetWidth(16);
@@ -1915,6 +1917,7 @@ local function Constructor()
   downgroup:SetScript("OnLeave", Hide_Tooltip);
   downgroup:Hide();
 
+  ---@class Button
   local expand = CreateFrame("Button", nil, button);
   button.expand = expand;
   expand.expanded = true;

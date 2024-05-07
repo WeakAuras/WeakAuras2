@@ -2649,8 +2649,8 @@ do
   end
 
   ---@param id string
-  ---@param ignoreSpellKnown boolean
-  ---@param followoverride boolean
+  ---@param ignoreSpellKnown? boolean
+  ---@param followoverride? boolean
   ---@return integer? charges
   ---@return integer? chargesMax
   ---@return integer? count

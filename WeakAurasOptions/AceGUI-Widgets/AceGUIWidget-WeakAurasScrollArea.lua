@@ -1,7 +1,7 @@
 --[[-----------------------------------------------------------------------------
 ScrollArea Widget
 Plain widget that scrolls a content widget and doesn't grow in height.
-Heavly based on AceGUIContainer-ScrollFrame
+Heavily based on AceGUIContainer-ScrollFrame
 -------------------------------------------------------------------------------]]
 local Type, Version = "WeakAurasScrollArea", 1
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
@@ -103,7 +103,7 @@ local methods = {
 		local status = self.localstatus
 		local height, viewheight = self.scrollframe:GetHeight(), self.content:GetHeight()
 		local offset = status.offset or 0
-		-- Give us a margin of error of 2 pixels to stop some conditions that i would blame on floating point inaccuracys
+		-- Give us a margin of error of 2 pixels to stop some conditions that i would blame on floating point inaccuracies
 		-- No-one is going to miss 2 pixels at the bottom of the frame, anyhow!
 		if viewheight < height + 2 then
 			if self.scrollBarShown then

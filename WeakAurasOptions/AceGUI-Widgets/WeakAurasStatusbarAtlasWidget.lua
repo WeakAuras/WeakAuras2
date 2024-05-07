@@ -31,6 +31,7 @@ do
 		if next(contentFrameCache) then
 			frame = table.remove(contentFrameCache)
 		else
+      ---@class Button
 			frame = CreateFrame("Button", nil, UIParent)
 				--frame:SetWidth(200)
 				frame:SetHeight(18)

@@ -255,7 +255,7 @@ local funcs = {
       if self.parentRegionType ~= "aurabar" then
         self.parent:AnchorSubRegion(self, "area", "region")
       end
-    else -- noop function in case of unsuported glow
+    else -- noop function in case of unsupported glow
       self.glowStart = function() end
       self.glowStop = function() end
     end

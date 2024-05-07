@@ -238,7 +238,9 @@
     "CreateScrollBoxListLinearView",
     "CreateDataProvider",
     "UIMenuButtonStretchMixin",
-    "ToggleDropDownMenu"
+    "ToggleDropDownMenu",
+    "GetPrimaryTalentTree",
+    "GetTalentTabInfo"
   ],
   "runtime.version": "Lua 5.1",
   "workspace.ignoreDir": [

@@ -2302,7 +2302,7 @@ local function EventHandler(frame, event, arg1, arg2, ...)
       -- With newApi we have TOOLTIP_DATA_UPDATE to update the tooltips
       if not newAPI then
         C_Timer.After(3, function()
-          for unit, matchtDataPerUnit in pairs(matchData) do
+          for unit, matchDataPerUnit in pairs(matchData) do
             EventHandler(frame, "UNIT_AURA", unit)
           end
         end)
@@ -2398,7 +2398,7 @@ local PerUnitFrames = {
     -- We check whether we are already registered for the given pet mode,
     -- and unregister as needed by tracking the number of calls to Register with different
     -- petModes
-    -- All of the dancing is to not register for UNIT_IN_RANGE_UPDATE for pets unless explictly asked for
+    -- All of the dancing is to not register for UNIT_IN_RANGE_UPDATE for pets unless explicitly asked for
     local unitTypePetMode = GetOrCreateSubTable(self.unitTypePetMode, event, unitType)
     --- @type any
     local mode = false
