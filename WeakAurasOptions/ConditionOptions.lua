@@ -668,7 +668,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
         return true
       end
 
-      args["condition" .. i .. "progressSoruceManualValue" .. j] = {
+      args["condition" .. i .. "progressSourceManualValue" .. j] = {
         type = "range",
         control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
@@ -686,7 +686,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       }
       order = order + 1
 
-      args["condition" .. i .. "progressSoruceManualTotal" .. j] = {
+      args["condition" .. i .. "progressSourceManualTotal" .. j] = {
         type = "range",
         control = "WeakAurasSpinBox",
         width = WeakAuras.normalWidth,
