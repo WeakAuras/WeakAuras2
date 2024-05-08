@@ -2025,7 +2025,7 @@ local function AddUnitChangeInternalEvents(triggerUnit, t, includePets, unitisun
         if (includePets ~= nil and isPet) or (includePets ~= "PetsOnly" and not isPet) then
           tinsert(t, "UNIT_CHANGED_" .. string.lower(unit))
           if unitisunit then
-            tinsert(t, "UNIT_IS_UNIT_CHANGED_" .. string.lower(unitisunit))
+            tinsert(t, "UNIT_IS_UNIT_CHANGED_" .. string.lower(unit) .. "_" .. string.lower(unitisunit))
           end
           WeakAuras.WatchUnitChange(unit)
         end

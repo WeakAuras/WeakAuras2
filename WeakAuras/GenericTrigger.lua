@@ -3384,7 +3384,8 @@ function WeakAuras.WatchUnitChange(unit)
   if not watchUnitChange then
     ---@class UnitChangeFrame: FrameScriptObject
     watchUnitChange = CreateFrame("Frame");
-    watchUnitChange.unitChangeGUIDS = {}
+    watchUnitChange.unitIdToGUID = {}
+    watchUnitChange.GUIDToUnitIds = {}
     watchUnitChange.unitRoles = {}
     watchUnitChange.unitRaidRole = {}
     watchUnitChange.inRaid = IsInRaid()
@@ -3411,134 +3412,164 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange:RegisterEvent("UNIT_PET")
     watchUnitChange:RegisterEvent("RAID_TARGET_UPDATE")
 
-    local function testMultiUnitIsUnit(unitA, unitB)
-      if unitA and unitB then
-        local prev = watchUnitChange.unitIsUnit[unitA] and watchUnitChange.unitIsUnit[unitA][unitB]
-        local now = UnitIsUnit(unitA, unitB)
-        if prev ~= now then
-          watchUnitChange.unitIsUnit[unitA] = watchUnitChange.unitIsUnit[unitA] or {}
-          watchUnitChange.unitIsUnit[unitA][unitB] = now
-          if prev ~= nil and now ~= nil then
-            WeakAuras.ScanEvents("UNIT_IS_UNIT_CHANGED_" .. unitB, unitA)
+    local function unitUpdate(unitA, eventsToSend)
+      local oldGUID = watchUnitChange.unitIdToGUID[unitA]
+      local newGUID = WeakAuras.UnitExistsFixed(unitA) and UnitGUID(unitA)
+      if oldGUID ~= newGUID then
+        eventsToSend["UNIT_CHANGED_" .. unitA] = unitA
+        if watchUnitChange.GUIDToUnitIds[oldGUID] then
+          for unitB in pairs(watchUnitChange.GUIDToUnitIds[oldGUID]) do
+            eventsToSend["UNIT_IS_UNIT_CHANGED_" .. unitA .. "_" .. unitB] = unitA
+            eventsToSend["UNIT_IS_UNIT_CHANGED_" .. unitB .. "_" .. unitA] = unitB
           end
         end
-      elseif unitA then
-        if Private.multiUnitUnits[unitA] then
-          for u in pairs(Private.multiUnitUnits[unitA]) do
-            testMultiUnitIsUnit(u)
-          end
-        else
-          for k in pairs(Private.actual_unit_types) do
-            testMultiUnitIsUnit(unitA, k)
+        if watchUnitChange.GUIDToUnitIds[newGUID] then
+          for unitB in pairs(watchUnitChange.GUIDToUnitIds[newGUID]) do
+            eventsToSend["UNIT_IS_UNIT_CHANGED_" .. unitA .. "_" .. unitB] = unitA
+            eventsToSend["UNIT_IS_UNIT_CHANGED_" .. unitB .. "_" .. unitA] = unitB
           end
         end
-      elseif unitB then
-        for _, units in pairs(Private.multiUnitUnits) do
-          for k in pairs(units) do
-            testMultiUnitIsUnit(k, unitB)
-          end
+      end
+      -- update data
+      if oldGUID and watchUnitChange.GUIDToUnitIds[oldGUID] then
+        watchUnitChange.GUIDToUnitIds[oldGUID][unitA] = nil
+        if next(watchUnitChange.GUIDToUnitIds[oldGUID]) == nil then
+          watchUnitChange.GUIDToUnitIds[oldGUID] = nil
         end
-      else
-        for k in pairs(Private.multiUnitUnits) do
-          testMultiUnitIsUnit(k)
+      end
+      if newGUID then
+        watchUnitChange.GUIDToUnitIds[newGUID] = watchUnitChange.GUIDToUnitIds[newGUID] or {}
+        watchUnitChange.GUIDToUnitIds[newGUID][unitA] = true
+      end
+      watchUnitChange.unitIdToGUID[unitA] = newGUID
+    end
+
+    local function markerUpdate(unit, eventsToSend)
+      local oldMarker = watchUnitChange.raidmark[unit]
+      local newMarker = GetRaidTargetIndex(unit) or 0
+      if newMarker ~= oldMarker then
+        eventsToSend["UNIT_CHANGED_" .. unit] = unit
+        watchUnitChange.raidmark[unit] = newMarker
+      end
+    end
+
+    local function reactionUpdate(unit, eventsToSend)
+      local oldReaction = watchUnitChange.nameplateFaction[unit]
+      local newReaction = WeakAuras.GetPlayerReaction(unit)
+      if oldReaction ~= newReaction then
+        eventsToSend["UNIT_CHANGED_" .. unit] = unit
+        watchUnitChange.nameplateFaction[unit] = newReaction
+      end
+    end
+
+    local function roleUpdate(unit, eventsToSend)
+      if WeakAuras.IsClassicEra() then
+        local oldRaidRole = watchUnitChange.unitRaidRole[unit]
+        local newRaidRole = WeakAuras.UnitRaidRole(unit)
+        if oldRaidRole ~= newRaidRole then
+          eventsToSend["UNIT_ROLE_CHANGED_" .. unit] = unit
+          watchUnitChange.unitRaidRole[unit] = newRaidRole
+        end
+      end
+      if WeakAuras.IsCataOrRetail() then
+        local oldRole = watchUnitChange.unitRoles[unit]
+        local newRole = UnitGroupRolesAssigned(unit)
+        if oldRole ~= newRole then
+          eventsToSend["UNIT_ROLE_CHANGED_" .. unit] = unit
+          watchUnitChange.unitRoles[unit] = newRole
         end
       end
     end
 
     watchUnitChange:SetScript("OnEvent", function(self, event, unit)
       Private.StartProfileSystem("generictrigger unit change");
+      local eventsToSend = {}
       if event == "PLAYER_ENTERING_WORLD" then
-        testMultiUnitIsUnit()
-      elseif event == "NAME_PLATE_UNIT_ADDED" or event == "NAME_PLATE_UNIT_REMOVED" then
-        testMultiUnitIsUnit(unit)
-      elseif event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" then
-        testMultiUnitIsUnit("boss")
-      elseif event == "PLAYER_TARGET_CHANGED" then
-        testMultiUnitIsUnit(nil, "target")
-      elseif event == "PLAYER_FOCUS_CHANGED" then
-        testMultiUnitIsUnit(nil, "focus")
-      elseif event == "PLAYER_SOFT_ENEMY_CHANGED" then
-        testMultiUnitIsUnit(nil, "softenemy")
-      elseif event == "PLAYER_SOFT_FRIEND_CHANGED" then
-        testMultiUnitIsUnit(nil, "softfriend")
-      end
-      if event == "NAME_PLATE_UNIT_ADDED" or event == "NAME_PLATE_UNIT_REMOVED" then
-        local newGuid = WeakAuras.UnitExistsFixed(unit) and UnitGUID(unit) or ""
-        local newMarker = GetRaidTargetIndex(unit) or 0
-        if newGuid ~= watchUnitChange.unitChangeGUIDS[unit] then
-          WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
-          watchUnitChange.unitChangeGUIDS[unit] = newGuid
-          watchUnitChange.raidmark[unit] = newMarker
+        for unit in pairs(watchUnitChange.unitIdToGUID) do
+          unitUpdate(unit, eventsToSend)
+          markerUpdate(unit, eventsToSend)
+          reactionUpdate(unit, eventsToSend)
         end
-        if event == "NAME_PLATE_UNIT_ADDED" then
-          watchUnitChange.nameplateFaction[unit] = WeakAuras.GetPlayerReaction(unit)
+      elseif event == "NAME_PLATE_UNIT_ADDED" then
+        unitUpdate(unit, eventsToSend)
+        markerUpdate(unit, eventsToSend)
+        reactionUpdate(unit, eventsToSend)
+      elseif event == "NAME_PLATE_UNIT_REMOVED" then
+        unitUpdate(unit, eventsToSend)
+        markerUpdate(unit, eventsToSend)
+        reactionUpdate(unit, eventsToSend)
+      elseif event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" then
+        for i = 1, 5 do
+          local unit = "boss" .. i
+          unitUpdate(unit, eventsToSend)
+          markerUpdate(unit, eventsToSend)
+          reactionUpdate(unit, eventsToSend)
+        end
+      elseif event == "PLAYER_TARGET_CHANGED" then
+        unitUpdate("target", eventsToSend)
+        markerUpdate("target", eventsToSend)
+        reactionUpdate("target", eventsToSend)
+      elseif event == "PLAYER_FOCUS_CHANGED" then
+        unitUpdate("focus", eventsToSend)
+        markerUpdate("focus", eventsToSend)
+        reactionUpdate("focus", eventsToSend)
+      elseif event == "PLAYER_SOFT_ENEMY_CHANGED" then
+        unitUpdate("softenemy", eventsToSend)
+        markerUpdate("softenemy", eventsToSend)
+        reactionUpdate("softenemy", eventsToSend)
+      elseif event == "PLAYER_SOFT_FRIEND_CHANGED" then
+        unitUpdate("softfriend", eventsToSend)
+        markerUpdate("softfriend", eventsToSend)
+        reactionUpdate("softfriend", eventsToSend)
+      elseif event == "RAID_TARGET_UPDATE" then
+        for unit in pairs(watchUnitChange.raidmark) do
+          markerUpdate(unit, eventsToSend)
         end
       elseif event == "UNIT_FACTION" then
         if unit:sub(1, 9) == "nameplate" then
-          local reaction = WeakAuras.GetPlayerReaction(unit)
-          if reaction ~= watchUnitChange.nameplateFaction[unit] then
-            watchUnitChange.nameplateFaction[unit] = reaction
-            WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
-          end
+          reactionUpdate(unit, eventsToSend)
         end
       elseif event == "UNIT_PET" then
         local pet = WeakAuras.unitToPetUnit[unit]
         if pet then
-          WeakAuras.ScanEvents("UNIT_CHANGED_" .. pet, pet)
+          eventsToSend["UNIT_CHANGED_" .. pet] = pet
         end
-      elseif event == "RAID_TARGET_UPDATE" then
-        for unit, marker in pairs(watchUnitChange.raidmark) do
-          local newMarker = GetRaidTargetIndex(unit) or 0
-          if marker ~= newMarker then
-            watchUnitChange.raidmark[unit] = newMarker
-            WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
+      elseif event == "PLAYER_ROLES_ASSIGNED" then
+        roleUpdate(unit, eventsToSend)
+      elseif event == "UNIT_TARGET" then
+        -- i dont know why this event is register
+      elseif event == "GROUP_ROSTER_UPDATE" then
+        for unit in pairs(watchUnitChange.unitIdToGUID) do
+          if Private.multiUnitUnits.raid[unit] or Private.multiUnitUnits.group[unit] then
+            unitUpdate(unit, eventsToSend)
+            markerUpdate(unit, eventsToSend)
+            reactionUpdate(unit, eventsToSend)
           end
         end
-      else
         local inRaid = IsInRaid()
         local inRaidChanged = inRaid ~= watchUnitChange.inRaid
-
-        for unit, guid in pairs(watchUnitChange.unitChangeGUIDS) do
-          local newGuid = WeakAuras.UnitExistsFixed(unit) and UnitGUID(unit) or ""
-          local newMarker = GetRaidTargetIndex(unit) or 0
-          if guid ~= newGuid
-          or newMarker ~= watchUnitChange.raidmark[unit]
-          or event == "PLAYER_ENTERING_WORLD"
-          then
-            WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
-            watchUnitChange.unitChangeGUIDS[unit] = newGuid
-            watchUnitChange.raidmark[unit] = newMarker
-          elseif Private.multiUnitUnits.group[unit] then
-            -- If in raid changed we send a UNIT_CHANGED for the group units
-            if inRaidChanged then
-              WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
-            else
-              if WeakAuras.IsClassicEra() then
-                local newRaidRole = WeakAuras.UnitRaidRole(unit)
-                if watchUnitChange.unitRaidRole[unit] ~= newRaidRole then
-                  watchUnitChange.unitRaidRole[unit] = newRaidRole
-                  WeakAuras.ScanEvents("UNIT_ROLE_CHANGED_" .. unit, unit)
-                end
-              end
-              if WeakAuras.IsCataOrRetail() then
-                local newRole = UnitGroupRolesAssigned(unit)
-                if watchUnitChange.unitRoles[unit] ~= newRole then
-                  watchUnitChange.unitRoles[unit] = newRole
-                  WeakAuras.ScanEvents("UNIT_ROLE_CHANGED_" .. unit, unit)
-                end
-              end
+        if inRaidChanged then
+          for unit in pairs(Private.multiUnitUnits.group) do
+            if watchUnitChange.unitIdToGUID[unit] then
+              eventsToSend["UNIT_CHANGED_" .. unit] = unit
             end
           end
+          watchUnitChange.inRaid = inRaid
         end
-        watchUnitChange.inRaid = inRaid
       end
+
+      -- send events
+      for event, unit in pairs(eventsToSend) do
+        WeakAuras.ScanEvents(event, unit)
+      end
+
       Private.StopProfileSystem("generictrigger unit change");
     end)
   end
-  watchUnitChange.unitChangeGUIDS = watchUnitChange.unitChangeGUIDS or {}
-  watchUnitChange.unitChangeGUIDS[unit] = UnitGUID(unit) or ""
+  watchUnitChange.unitIdToGUID[unit] = UnitGUID(unit) or ""
   watchUnitChange.raidmark = watchUnitChange.raidmark or {}
   watchUnitChange.raidmark[unit] = GetRaidTargetIndex(unit) or 0
+  watchUnitChange.inRaid = IsInRaid()
 end
 
 function WeakAuras.GetEquipmentSetInfo(itemSetName, partial)
