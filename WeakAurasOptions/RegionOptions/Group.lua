@@ -169,7 +169,6 @@ local function createDistributeAlignOptions(id, data)
           end
         end
         OptionsPrivate.Private.TimeMachine:Commit()
-        WeakAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
     },
@@ -397,7 +396,6 @@ local function createDistributeAlignOptions(id, data)
           end
         end
         OptionsPrivate.Private.TimeMachine:Commit()
-        WeakAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
     },
@@ -512,7 +510,6 @@ local function createDistributeAlignOptions(id, data)
           end
         end
         OptionsPrivate.Private.TimeMachine:Commit()
-        WeakAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
     },
@@ -627,7 +624,6 @@ local function createDistributeAlignOptions(id, data)
           end
         end
         OptionsPrivate.Private.TimeMachine:Commit()
-        WeakAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
     },
@@ -742,7 +738,6 @@ local function createDistributeAlignOptions(id, data)
           end
         end
         OptionsPrivate.Private.TimeMachine:Commit()
-        WeakAuras.Add(data);
         OptionsPrivate.ResetMoverSizer();
       end
     }
@@ -765,8 +760,12 @@ local function createOptions(id, data)
         return data.groupIcon and tostring(data.groupIcon) or ""
       end,
       set = function(info, v)
-        data.groupIcon = v
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "set",
+          path = "groupIcon",
+          payload = v
+        })
         WeakAuras.UpdateThumbnail(data)
       end
     },
