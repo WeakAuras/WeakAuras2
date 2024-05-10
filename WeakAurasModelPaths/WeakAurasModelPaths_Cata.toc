@@ -14,4 +14,4 @@
 ## Dependencies: WeakAuras, WeakAurasOptions
 ## AllowLoadGameType: cata
 
-ModelPathsWrath.lua
+ModelPathsCata.lua

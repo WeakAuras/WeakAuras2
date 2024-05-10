@@ -1886,7 +1886,7 @@ local oldPowerTriggers = {
 do
   local mh = GetInventorySlotInfo("MainHandSlot")
   local oh = GetInventorySlotInfo("SecondaryHandSlot")
-  local ranged = WeakAuras.IsClassicEraOrWrath() and GetInventorySlotInfo("RangedSlot")
+  local ranged = WeakAuras.IsClassicEra() and GetInventorySlotInfo("RangedSlot")
 
   local swingTimerFrame;
   local lastSwingMain, lastSwingOff, lastSwingRange;
@@ -2081,7 +2081,7 @@ do
         end)
       end
       if Private.reset_ranged_swing_spells[spell] then
-        if WeakAuras.IsClassicEraOrWrath() then
+        if WeakAuras.IsClassicEra() then
           swingStart("ranged")
         else
           swingStart("main")
@@ -2114,7 +2114,7 @@ do
       swingTimerFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
       swingTimerFrame:RegisterUnitEvent("UNIT_ATTACK_SPEED", "player");
       swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player");
-      if WeakAuras.IsClassicEraOrWrath() then
+      if WeakAuras.IsClassicEra() then
         swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_START", "player")
         swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_INTERRUPTED", "player")
         swingTimerFrame:RegisterUnitEvent("UNIT_SPELLCAST_FAILED", "player")
@@ -2189,7 +2189,7 @@ do
   local function CheckGCD()
     local event;
     local startTime, duration, _, modRate
-    if WeakAuras.IsClassicEraOrWrath() then
+    if WeakAuras.IsClassicEra() then
       startTime, duration = GetSpellCooldown(29515);
       shootStart, shootDuration = GetSpellCooldown(5019)
     else
@@ -2298,7 +2298,7 @@ do
 
     if duration > 0 then
       if (startTime == gcdStart and duration == gcdDuration)
-          or (WeakAuras.IsClassicEraOrWrath() and duration == shootDuration and startTime == shootStart)
+          or (WeakAuras.IsClassicEra() and duration == shootDuration and startTime == shootStart)
       then
         -- GCD cooldown, this could mean that the spell reset!
         if self.expirationTime[id] and self.expirationTime[id] > endTime and self.expirationTime[id] ~= 0 then
@@ -2394,7 +2394,7 @@ do
     cdReadyFrame:RegisterEvent("SPELLS_CHANGED");
     cdReadyFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
     cdReadyFrame:RegisterEvent("PLAYER_LEAVING_WORLD")
-    if WeakAuras.IsWrathOrCata() then
+    if WeakAuras.IsCataClassic() then
       cdReadyFrame:RegisterEvent("RUNE_POWER_UPDATE");
       cdReadyFrame:RegisterEvent("RUNE_TYPE_UPDATE");
     end
@@ -3193,7 +3193,7 @@ do
 
     if not id or id == 0 then return end
 
-    if ignoreRunes and WeakAuras.IsWrathOrCataOrRetail() then
+    if ignoreRunes and WeakAuras.IsCataOrRetail() then
       for i = 1, 6 do
         WeakAuras.WatchRuneCooldown(i);
       end
@@ -3444,14 +3444,14 @@ function WeakAuras.WatchUnitChange(unit)
             if inRaidChanged then
               WeakAuras.ScanEvents("UNIT_CHANGED_" .. unit, unit)
             else
-              if WeakAuras.IsClassicEraOrWrath() then
+              if WeakAuras.IsClassicEra() then
                 local newRaidRole = WeakAuras.UnitRaidRole(unit)
                 if watchUnitChange.unitRaidRole[unit] ~= newRaidRole then
                   watchUnitChange.unitRaidRole[unit] = newRaidRole
                   WeakAuras.ScanEvents("UNIT_ROLE_CHANGED_" .. unit, unit)
                 end
               end
-              if WeakAuras.IsWrathOrCataOrRetail() then
+              if WeakAuras.IsCataOrRetail() then
                 local newRole = UnitGroupRolesAssigned(unit)
                 if watchUnitChange.unitRoles[unit] ~= newRole then
                   watchUnitChange.unitRoles[unit] = newRole
@@ -3526,7 +3526,7 @@ function Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTote
 end
 
 -- Queueable Spells
-if WeakAuras.IsClassicEraOrWrath() then
+if WeakAuras.IsClassicEra() then
   local queueableSpells
   local classQueueableSpells = {
     ["WARRIOR"] = {
@@ -3583,7 +3583,7 @@ end
 ---@return number? cost
 function WeakAuras.GetSpellCost(powerTypeToCheck)
   local spellID = select(9, WeakAuras.UnitCastingInfo("player"))
-  if WeakAuras.IsClassicEraOrWrath() and not spellID then
+  if WeakAuras.IsClassicEra() and not spellID then
     spellID = WeakAuras.GetQueuedSpell()
   end
   if spellID then
@@ -3629,7 +3629,7 @@ do
       tenchFrame = CreateFrame("Frame");
       tenchFrame:RegisterEvent("UNIT_INVENTORY_CHANGED");
       tenchFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
-      if WeakAuras.IsClassicEraOrWrath() then
+      if WeakAuras.IsClassicEra() then
         tenchFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
       end
 
@@ -4706,7 +4706,7 @@ end
 Private.ExecEnv.GetCurrencyInfo = function(id)
   if WeakAuras.IsRetail() then
     return C_CurrencyInfo.GetCurrencyInfo(id)
-  elseif WeakAuras.IsWrathOrCata() then
+  elseif WeakAuras.IsCataClassic() then
     local name, currentAmount, texture, earnedThisWeek, weeklyMax, totalMax, isDiscovered, rarity = GetCurrencyInfo(id)
     local currencyInfo = {
       name = name,
