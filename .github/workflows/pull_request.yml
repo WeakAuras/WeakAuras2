@@ -5,19 +5,27 @@ on:
     types: [opened, reopened, synchronize, labeled]
 
 jobs:
-  build:
-
+  permission_check:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions-cool/check-user-permission@v2
         id: check-permission
         with:
           require: write
           username: ${{ github.triggering_actor }}
+    outputs:
+      require-result: ${{ steps.check-permission.outputs.require-result }}
+
+  build:
+    runs-on: ubuntu-latest
+    needs: [permission_check]
+    outputs:
+      artifact-id: ${{ steps.upload-artifact.outputs.artifact-id}}
+    steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Install and run Luacheck
         uses: nebularg/actions-luacheck@v1
@@ -40,21 +48,25 @@ jobs:
           args: -d -z
 
       - uses: actions/upload-artifact@v4
-        if: ${{ steps.check-permission.outputs.require-result == 'true'}}
+        if: ${{ needs.permission_check.outputs.require-result == 'true' && contains(github.event.pull_request.labels.*.name, '🆕 Feature Preview')}}
         id: upload-artifact
         with:
           name: WeakAuras-PR#${{ github.event.number }}-${{ github.sha }}
           path: .release/
 
+  advertise:
+    runs-on: ubuntu-latest
+    needs: [permission_check, build]
+    if: ${{ needs.permission_check.outputs.require-result == 'true' && needs.build.result == 'success' && contains(github.event.pull_request.labels.*.name, '🆕 Feature Preview')}}
+    steps:
       - uses: exercism/pr-commenter-action@v1.5.1
-        if: ${{ steps.check-permission.outputs.require-result == 'true' && contains(github.event.pull_request.labels.*.name, '🆕 Feature Preview') }}
         with:
           github-token: ${{ github.token }}
           config-file: ".github/pr-commenter.yml"
           template-variables: |
             {
               "repository": "${{ github.repository }}",
-              "build_id": "${{ steps.upload-artifact.outputs.artifact-id }}",
+              "build_id": "${{ needs.build.outputs.artifact-id }}",
               "run_id": "${{ github.run_id }}"
             }
 
