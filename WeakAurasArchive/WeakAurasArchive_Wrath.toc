@@ -1,7 +1,0 @@
-## Interface: 30403
-## Title: WeakAuras Archive
-## Author: The WeakAuras Team
-## Version: @project-version@
-## LoadOnDemand: 1
-## SavedVariables: WeakAurasArchive
-## Dependencies: WeakAuras
