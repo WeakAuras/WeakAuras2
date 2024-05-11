@@ -624,6 +624,41 @@ function OptionsPrivate.CreateFrame()
     self:UpdateFrameVisible()
   end
 
+  local undoButton = AceGUI:Create("WeakAurasToolbarButton")
+  undoButton:SetText(L["Undo"])
+  undoButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\upleft")
+  undoButton:SetCallback("OnClick", function()
+    OptionsPrivate.Private.TimeMachine:StepBackward()
+    frame:ClearOptions(frame.pickedDisplay)
+    frame:ClearAndUpdateOptions(frame.pickedDisplay)
+    frame:FillOptions()
+  end)
+  undoButton.frame:SetParent(toolbarContainer)
+  undoButton.frame:SetShown(OptionsPrivate.Private.Features:Enabled("undo"))
+  undoButton:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 55, -55)
+
+  local redoButton = AceGUI:Create("WeakAurasToolbarButton")
+  redoButton:SetText(L["Redo"])
+  redoButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\upright")
+  redoButton:SetCallback("OnClick", function()
+    OptionsPrivate.Private.TimeMachine:StepForward()
+    frame:ClearAndUpdateOptions(frame.pickedDisplay)
+    frame:FillOptions()
+  end)
+  redoButton.frame:SetParent(toolbarContainer)
+  redoButton.frame:SetShown(OptionsPrivate.Private.Features:Enabled("undo"))
+  redoButton:SetPoint("LEFT", undoButton.frame, "RIGHT", 10, 0)
+
+  OptionsPrivate.Private.Features:Subscribe("undo",
+    function()
+      undoButton.frame:Show()
+      redoButton.frame:Show()
+    end,
+    function()
+      undoButton.frame:Hide()
+      redoButton.frame:Hide()
+    end
+  )
 
   local buttonsScroll = AceGUI:Create("ScrollFrame")
   buttonsScroll:SetLayout("ButtonsScrollLayout")

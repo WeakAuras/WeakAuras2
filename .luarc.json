@@ -12,6 +12,7 @@
     "invisible"
   ],
   "diagnostics.globals": [
+    "WeakAuras",
     "AbbreviateLargeNumbers",
     "ACCEPT",
     "AceGUIWeakAurasMultiLineEditBoxInsertLink",

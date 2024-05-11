@@ -87,3 +87,4 @@ SubRegionTypes\Model.lua
 
 # Misc
 Legendaries.lua
+TimeMachine.lua

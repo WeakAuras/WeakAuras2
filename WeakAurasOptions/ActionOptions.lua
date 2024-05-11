@@ -51,17 +51,12 @@ function OptionsPrivate.GetActionOptions(data)
     set = function(info, v, g, b, a)
       local split = info[#info]:find("_");
       local field, value = info[#info]:sub(1, split-1), info[#info]:sub(split+1);
-      data.actions = data.actions or {};
-      data.actions[field] = data.actions[field] or {};
-      if (info.type == "color") then
-        if not data.actions[field][value] or type(data.actions[field][value]) ~= "table" then
-          data.actions[field][value] = {}
-        end
-        local c = data.actions[field][value]
-        c[1], c[2], c[3], c[4] = v, g, b, a;
-      else
-        data.actions[field][value] = v;
-      end
+      OptionsPrivate.Private.TimeMachine:Append({
+        uid = data.uid,
+        actionType = "set",
+        path = {"actions", field, value},
+        payload = info.type == "color" and {v, g, b, a} or v
+      })
       if(value == "sound" or value == "sound_path") then
         if lastPlayedSoundFromSet ~= GetTime() then
           pcall(PlaySoundFile, v, "Master")
@@ -73,7 +68,6 @@ function OptionsPrivate.GetActionOptions(data)
           lastPlayedSoundFromSet = GetTime()
         end
       end
-      WeakAuras.Add(data);
       if(value == "message") then
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
@@ -141,12 +135,6 @@ function OptionsPrivate.GetActionOptions(data)
                      or data.actions.start.message_type == "ERROR")
         end,
         get = function() return data.actions.start.r or 1, data.actions.start.g or 1, data.actions.start.b or 1 end,
-        set = function(info, r, g, b)
-          data.actions.start.r = r;
-          data.actions.start.g = g;
-          data.actions.start.b = b;
-          WeakAuras.Add(data);
-        end
       },
       start_message_dest = {
         type = "input",
@@ -597,12 +585,6 @@ function OptionsPrivate.GetActionOptions(data)
               or data.actions.finish.message_type == "ERROR")
             end,
         get = function() return data.actions.finish.r or 1, data.actions.finish.g or 1, data.actions.finish.b or 1 end,
-        set = function(info, r, g, b)
-          data.actions.finish.r = r;
-          data.actions.finish.g = g;
-          data.actions.finish.b = b;
-          WeakAuras.Add(data);
-        end
       },
       finish_message_dest = {
         type = "input",
@@ -1047,8 +1029,12 @@ function OptionsPrivate.GetActionOptions(data)
     local reload = option.reloadOptions
     option.reloadOptions = nil
     option.set = function(info, v)
-      data.actions.start["message_format_" .. key] = v
-      WeakAuras.Add(data)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = {"actions", "start", "message_format_" .. key},
+        payload = v
+      })
       if reload then
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
@@ -1110,8 +1096,12 @@ function OptionsPrivate.GetActionOptions(data)
     local reload = option.reloadOptions
     option.reloadOptions = nil
     option.set = function(info, v)
-      data.actions.finish["message_format_" .. key] = v
-      WeakAuras.Add(data)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = {"actions", "finish", "message_format_" .. key},
+        payload = v
+      })
       if reload then
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
@@ -1153,7 +1143,9 @@ function OptionsPrivate.GetActionOptions(data)
 
     action.get = function(info, ...) return getAll(data, info, ...); end;
     action.set = function(info, ...)
+      OptionsPrivate.Private.TimeMachine:StartTransaction()
       setAll(data, info, ...);
+      OptionsPrivate.Private.TimeMachine:Commit()
       if(type(data.id) == "string") then
         WeakAuras.Add(data);
         WeakAuras.UpdateThumbnail(data);

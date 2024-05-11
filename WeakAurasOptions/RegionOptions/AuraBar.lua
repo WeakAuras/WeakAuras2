@@ -82,43 +82,61 @@ local function createOptions(id, data)
       order = 25,
       values = OptionsPrivate.Private.orientation_types,
       set = function(info, v)
-        if(
-          (
-          data.orientation:find("INVERSE")
-          and not v:find("INVERSE")
-          )
-          or (
-          v:find("INVERSE")
-          and not data.orientation:find("INVERSE")
-          )
-          ) then
-          data.icon_side = data.icon_side == "LEFT" and "RIGHT" or "LEFT";
+        ---@type actionRecord[]
+        local records = {}
+        if (data.orientation:find("INVERSE") and not v:find("INVERSE"))
+        or (v:find("INVERSE") and not data.orientation:find("INVERSE"))
+        then
+          tinsert(records, {
+            actionType = "set",
+            uid = data.uid,
+            path = "icon_side",
+            payload = data.icon_side == "LEFT" and "RIGHT" or "LEFT"
+          })
         end
 
-        if(
-          (
-          data.orientation:find("HORIZONTAL")
-          and v:find("VERTICAL")
-          )
-          or (
-          data.orientation:find("VERTICAL")
-          and v:find("HORIZONTAL")
-          )
-          ) then
-          local temp = data.width;
-          data.width = data.height;
-          data.height = temp;
-          data.icon_side = data.icon_side == "LEFT" and "RIGHT" or "LEFT";
-
-          if(data.rotateText == "LEFT" or data.rotateText == "RIGHT") then
-            data.rotateText = "NONE";
-          elseif(data.rotateText == "NONE") then
-            data.rotateText = "LEFT"
+        if (data.orientation:find("HORIZONTAL") and v:find("VERTICAL"))
+        or (data.orientation:find("VERTICAL") and v:find("HORIZONTAL"))
+        then
+          tinsert(records, {
+            actionType = "set",
+            uid = data.uid,
+            path = "width",
+            payload = data.height
+          })
+          tinsert(records, {
+            actionType = "set",
+            uid = data.uid,
+            path = "height",
+            payload = data.width
+          })
+          if #records <= 2 then
+            -- yes, this is magic... we're doing it because
+            -- behavior is that if either this or above branch is taken,
+            -- then we flipflop icon_side
+            -- doing that twice would be weird
+            tinsert(records, {
+              actionType = "set",
+              uid = data.uid,
+              path = "icon_side",
+              payload = data.icon_side == "LEFT" and "RIGHT" or "LEFT"
+            })
           end
+          tinsert(records, {
+            actionType = "set",
+            uid = data.uid,
+            path = "rotateText",
+            payload = data.rotateText == "NONE" and "LEFT" or "NONE"
+          })
         end
 
-        data.orientation = v;
-        WeakAuras.Add(data);
+        tinsert(records, {
+          actionType = "set",
+          uid = data.uid,
+          path = "orientation",
+          payload = v
+        })
+        OptionsPrivate.Private.TimeMachine:AppendMany(records)
         WeakAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
       end
@@ -212,22 +230,6 @@ local function createOptions(id, data)
       hidden = function() return data.orientation:find("VERTICAL") or not data.icon end,
       order = 40.3,
     },
-    icon_side2 = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Icon Position"],
-      values = OptionsPrivate.Private.rotated_icon_side_types,
-      hidden = function() return data.orientation:find("HORIZONTAL") or not data.icon end,
-      order = 40.3,
-      get = function()
-        return data.icon_side;
-      end,
-      set = function(info, v)
-        data.icon_side = v;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
-      end
-    },
     iconSource = {
       type = "select",
       width = WeakAuras.normalWidth,
@@ -246,8 +248,12 @@ local function createOptions(id, data)
         return data.displayIcon and tostring(data.displayIcon) or "";
       end,
       set = function(info, v)
-        data.displayIcon = v;
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = "displayIcon",
+          payload = v
+        })
         WeakAuras.UpdateThumbnail(data);
       end,
       hidden = function() return not data.icon end,
@@ -492,8 +498,12 @@ local function createOptions(id, data)
           if (not data.overlaysTexture) then
             data.overlaysTexture = {};
           end
-          data.overlaysTexture[id] = texture;
-          WeakAuras.Add(data);
+          OptionsPrivate.Private.TimeMachine:Append({
+            actionType = "set",
+            uid = data.uid,
+            path = {"overlaysTexture", id},
+            payload = texture
+          })
         end,
         get = function()
           if data.overlaysTexture and data.overlaysTexture[id] then
@@ -517,8 +527,12 @@ local function createOptions(id, data)
           if (not data.overlays) then
             data.overlays = {};
           end
-          data.overlays[id] = { r, g, b, a};
-          WeakAuras.Add(data);
+          OptionsPrivate.Private.TimeMachine:Append({
+            actionType = "set",
+            uid = data.uid,
+            path = {"overlays", id},
+            payload = { r, g, b, a }
+          })
         end
       }
       index = index + 0.01

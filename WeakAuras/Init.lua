@@ -121,6 +121,7 @@ Private.frames = {}
 --- @field subRegionOptions table<string, table>
 --- @field subRegionTypes table<string, table>
 --- @field tick_placement_modes table<string, string>
+--- @field TimeMachine TimeMachine
 --- @field tinySecondFormat fun(value: string|number): string?
 --- @field TraverseAll fun(data: auraData): traverseFunction, auraData
 --- @field TraverseAllChildren fun(data: auraData): traverseFunction, auraData
