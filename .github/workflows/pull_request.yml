@@ -59,12 +59,16 @@ jobs:
     needs: [permission_check, build]
     if: ${{ needs.permission_check.outputs.require-result == 'true' && needs.build.result == 'success' && contains(github.event.pull_request.labels.*.name, '🆕 Feature Preview')}}
     steps:
+      - id: datestr
+        run: echo "datestr=$(date)" >> $GITHUB_OUTPUT
+
       - uses: exercism/pr-commenter-action@v1.5.1
         with:
           github-token: ${{ github.token }}
           config-file: ".github/pr-commenter.yml"
           template-variables: |
             {
+              "datestr": "${{ steps.datestr.outputs.datestr }}",
               "repository": "${{ github.repository }}",
               "build_id": "${{ needs.build.outputs.artifact-id }}",
               "run_id": "${{ github.run_id }}"

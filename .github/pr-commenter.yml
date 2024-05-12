@@ -1,5 +1,5 @@
 comment:
-  on-update: recreate
+  on-update: edit
 
   glob-options:
     dot: true
@@ -8,5 +8,8 @@ comment:
       files:
         - '**'
       body: |
-        {{#build_id}}An experimental build of WeakAuras with the changes in this pull request is available [here](https://nightly.link/{{repository}}/actions/artifacts/{{build_id}}.zip).{{/build_id}}
+        {{#build_id}}
+          An experimental build of WeakAuras with the changes in this pull request is available [here](https://nightly.link/{{repository}}/actions/artifacts/{{build_id}}.zip).
+          Build Time: {{datestr}}
+        {{/build_id}}
         {{^build_id}}Experimental build was unsuccessful. See the logs for details.{{/build_id}}
