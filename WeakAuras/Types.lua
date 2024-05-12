@@ -4604,6 +4604,39 @@ if WeakAuras.IsRetail() then
       end
     end
   end
+
+  -- Dragonriding
+  do
+    local flipbooks = {
+      fill = {
+        pattern = "%s_fill_flipbook", duration = 1.2, rows = 5, columns = 4, count = 20,
+      },
+      filled = {
+        pattern = "%s_filled_flipbook", duration = 0.6, rows = 2, columns = 4, count = 8
+      },
+      burst = {
+        pattern = "%s_burst_flipbook", duration = 0.55, rows = 4, columns = 4, count = 16
+      },
+      decorLeft = {
+        pattern = "%s_decor_flipbook_left", duration = 0.3, rows = 2, columns = 4, count = 8
+      },
+      decorRight = {
+        pattern = "%s_decor_flipbook_right", duration = 0.3, rows = 2, columns = 4, count = 8
+      },
+    }
+
+    local kitName = "dragonriding_sgvigor"
+    for _, flipbook in pairs(flipbooks) do
+      local name = flipbook.pattern:format(kitName)
+      WeakAuras.StopMotion.texture_data[name] = {
+        rows = flipbook.rows,
+        columns = flipbook.columns,
+        count = flipbook.count,
+        isBlizzardFlipbook = true
+      }
+      WeakAuras.StopMotion.texture_types.Blizzard[name] = name
+    end
+  end
 end
 
 WeakAuras.StopMotion.animation_types = {
