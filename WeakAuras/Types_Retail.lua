@@ -240,3 +240,202 @@ function Private.GetTalentData(specId)
   return specData
 end
 
+WeakAuras.StopMotion = {
+	texture_data = {},
+	texture_types = {
+		Blizzard = {}
+	}
+}
+local texture_data = {}
+
+local replacementString = {}
+-- Action bar GCD
+texture_data["UI-HUD-ActionBar-GCD-Flipbook-2x"] = { rows = 11, columns = 2, count = 22 }
+-- Arcane shock
+texture_data["UF-Arcane-ShockFX"] = { rows = 5, columns = 6, count = 28 }
+-- Checkmark
+texture_data["activities-checkmark_flipbook-large"] = { rows = 2, columns = 4, count = 8 }
+-- Chi wind
+texture_data["UF-Chi-WindFX"] = { rows = 3, columns = 6, count = 17 }
+-- Death knight runes
+replacementString = {
+	"Blood",
+	"Default",
+	"Frost",
+	"Unholy"
+}
+for _, v in ipairs(replacementString) do
+	local name = ("UF-DKRunes-%sDeplete"):format(v)
+	texture_data[name] = { rows = 4, columns = 6, count = 23 }
+end
+-- Dice
+texture_data["lootroll-animdice"] = { rows = 9, columns = 5, count = 44 }
+-- Dragonriding vigor
+texture_data["dragonriding_vigor_fill_flipbook"] = { rows = 5, columns = 4, count = 20 }
+-- Druid combo points
+texture_data["UF-DruidCP-Slash"] = { rows = 3, columns = 8, count = 20 }
+-- Essence spinner
+texture_data["UF-Essence-Flipbook-FX-Circ"] = { rows = 3, columns = 10, count = 29 }
+-- Experience bars
+replacementString = {
+	"Rested",
+	"Reputation",
+	"Experience",
+	"Honor",
+	"ArtifactPower"
+}
+for _, v in ipairs(replacementString) do
+	local name = ("UI-HUD-ExperienceBar-Fill-%s-2x-Flipbook"):format(v)
+	texture_data[name] = { rows = 30, columns = 1, count = 30 }
+end
+replacementString = {
+	"Rested",
+	"Reputation",
+	"XP",
+	"Faction-Orange",
+	"ArtifactPower"
+}
+for _, v in ipairs(replacementString) do
+	local name = ("UI-HUD-ExperienceBar-Flare-%s-2x-Flipbook"):format(v)
+	texture_data[name] = { rows = 7, columns = 4, count = 28 }
+end
+-- Great vault unlocking
+texture_data["greatVault-unlocked-anim"] = { rows = 11, columns = 5, count = 54 }
+-- Group finder eye
+texture_data["groupfinder-eye-flipbook-initial"] = { rows = 5, columns = 11, count = 52 }
+texture_data["groupfinder-eye-flipbook-searching"] = { rows = 8, columns = 11, count = 80 }
+texture_data["groupfinder-eye-flipbook-mouseover"] = { rows = 1, columns = 12, count = 12 }
+texture_data["groupfinder-eye-flipbook-foundfx"] = { rows = 5, columns = 15, count = 75 }
+texture_data["groupfinder-eye-flipbook-found-initial"] = { rows = 7, columns = 11, count = 70 }
+texture_data["groupfinder-eye-flipbook-found-loop"] = { rows = 4, columns = 11, count = 41 }
+texture_data["groupfinder-eye-flipbook-poke-initial"] = { rows = 6, columns = 11, count = 66 }
+texture_data["groupfinder-eye-flipbook-poke-loop"] = { rows = 6, columns = 11, count = 62 }
+texture_data["groupfinder-eye-flipbook-poke-end"] = { rows = 4, columns = 11, count = 38 }
+-- Holy power runes
+for i = 1, 5 do
+	local name = ("UF-HolyPower-DepleteRune%d"):format(i)
+	texture_data[name] = { rows = 5, columns = 6, count = 26 }
+end
+
+-- Loot roll reveal
+texture_data["lootroll-animreveal-a"] = { rows = 2, columns = 6, count = 12 }
+-- Mail
+texture_data["UI-HUD-Minimap-Mail-New-Flipbook-2x"] = { rows = 5, columns = 4, count = 20 }
+texture_data["UI-HUD-Minimap-Mail-Reminder-Flipbook-2x"] = { rows = 3, columns = 4, count = 12 }
+-- Ping markers
+replacementString = {
+	"Assist",
+	"Attack",
+	"OnMyWay",
+	"Warning",
+	"NonThreat",
+	"Threat"
+}
+for _, v in ipairs(replacementString) do
+	local name = ("Ping_Marker_FlipBook_%s"):format(v)
+	texture_data[name] = { rows = 4, columns = 6, count = 21 }
+end
+-- Player rest
+texture_data["UI-HUD-UnitFrame-Player-Rest-Flipbook"] = { rows = 7, columns = 6, count = 42 }
+-- Priest void bar
+texture_data["Unit_Priest_Void_Fill_Flipbook"] = { rows = 9, columns = 5, count = 45 }
+-- Professions
+replacementString = {
+	"Alchemy",
+	"Blacksmithing",
+	"Cooking",
+	"Engineering",
+	"Fishing",
+	"Herbalism",
+	"Inscription",
+	"Leatherworking",
+	"Mining",
+	"Skinning",
+	"Tailoring"
+}
+for _, v in ipairs(replacementString) do
+	local name = ("Skillbar_Fill_Flipbook_%s"):format(v)
+	texture_data[name] = { rows = 30, columns = 2, count = 60 }
+end
+texture_data["Skillbar_Fill_Flipbook_Enchanting"] = { rows = 37, columns = 2, count = 74 }
+texture_data["Skillbar_Fill_Flipbook_Jewelcrafting"] = { rows = 22, columns = 2, count = 44 }
+replacementString = {
+	"Alchemy",
+	"Blacksmithing",
+	"Enchanting",
+	"Engineering",
+	"Herbalism",
+	"Inscription",
+	"Jewelcrafting",
+	"Leatherworking",
+	"Mining",
+	"Skinning",
+	"Tailoring"
+}
+for _, v in ipairs(replacementString) do
+	local name = ("SpecDial_Fill_Flipbook_%s"):format(v)
+	texture_data[name] = { rows = 6, columns = 6, count = 36 }
+	name = ("SpecDial_Pip_Flipbook_%s"):format(v)
+	texture_data[name] = { rows = 4, columns = 4, count = 16 }
+	name = ("SpecDial_EndPip_Flipbook_%s"):format(v)
+	texture_data[name] = { rows = 4, columns = 6, count = 24 }
+end
+for i = 1, 5 do
+	local name = ("GemAppear_T%d_Flipbook"):format(i)
+	texture_data[name] = { rows = 3, columns = 4, count = 12 }
+	name = ("Quality-BarFill-Flipbook-T%d-x2"):format(i)
+	texture_data[name] = { rows = 15, columns = 4, count = 60 }
+end
+for i = 1, 4 do
+	local name = ("GemDissolve_T%d_Flipbook"):format(i)
+	texture_data[name] = { rows = 3, columns = 4, count = 12 }
+end
+-- Rogue combo points
+replacementString = {
+	"Red",
+	"Blue"
+}
+for _, v in ipairs(replacementString) do
+	local name = ("UF-RogueCP-Slash-%s"):format(v)
+	texture_data[name] = { rows = 3, columns = 6, count = 17 }
+end
+-- Soul shards
+replacementString = {
+	"A",
+	"B",
+	"C"
+}
+for _, v in ipairs(replacementString) do
+	local name = ("UF-SoulShards-Flipbook-Deplete%s"):format(v)
+	texture_data[name] = { rows = 3, columns = 6, count = 15 }
+end
+texture_data["UF-SoulShards-Flipbook-Soul"] = { rows = 3, columns = 7, count = 18 }
+-- Dragonriding
+do
+	local flipbooks = {
+		{ pattern = "%s_fill_flipbook", duration = 1.2, rows = 5, columns = 4, count = 20 },
+		{ pattern = "%s_filled_flipbook", duration = 0.6, rows = 2, columns = 4, count = 8 },
+		{ pattern = "%s_burst_flipbook", duration = 0.55, rows = 4, columns = 4, count = 16 },
+		{ pattern = "%s_decor_flipbook_left", duration = 0.3, rows = 2, columns = 4, count = 8 },
+		{ pattern = "%s_decor_flipbook_right", duration = 0.3, rows = 2, columns = 4, count = 8 },
+	}
+	local kitName = "dragonriding_sgvigor"
+	for _, flipbook in ipairs(flipbooks) do
+		local name = flipbook.pattern:format(kitName)
+		texture_data[name] = { rows = flipbook.rows, columns = flipbook.columns, count = flipbook.count }
+	end
+end
+
+-- Supplement the data
+for k, v in pairs(texture_data) do
+	local atlasInfo = C_Texture.GetAtlasInfo(k)
+	if atlasInfo then
+		if atlasInfo.rawSize then
+			v.tileWidth = atlasInfo.rawSize.x / v.columns
+			v.tileHeight = atlasInfo.rawSize.y / v.rows
+		end
+		v.isBlizzardFlipbook = true
+		WeakAuras.StopMotion.texture_data[k] = v
+		WeakAuras.StopMotion.texture_types.Blizzard[k] = k
+	end
+end
