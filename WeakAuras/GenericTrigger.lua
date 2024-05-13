@@ -1309,6 +1309,15 @@ function LoadEvent(id, triggernum, data)
       loaded_events[event][id][triggernum] = data;
     end
   end
+  -- this special internal_events function is run when aura load instead of when it is added
+  if data.loadInternalEventFunc then
+    local internal_events = data.loadInternalEventFunc(data.trigger)
+    for index, event in pairs(internal_events) do
+      loaded_events[event] = loaded_events[event] or {};
+      loaded_events[event][id] = loaded_events[event][id] or {};
+      loaded_events[event][id][triggernum] = data;
+    end
+  end
   if data.unit_events then
     local includePets = data.includePets
     for unit, events in pairs(data.unit_events) do
@@ -1529,7 +1538,7 @@ function GenericTrigger.Add(data, region)
         local trigger_subevents = {};
         ---@type boolean|string|table
         local force_events = false;
-        local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc, loadFunc;
+        local durationFunc, overlayFuncs, nameFunc, iconFunc, textureFunc, stacksFunc, loadFunc, loadInternalEventFunc;
         local tsuConditionVariables;
         local prototype = nil
         local automaticAutoHide
@@ -1569,6 +1578,7 @@ function GenericTrigger.Add(data, region)
             textureFunc = prototype.textureFunc;
             stacksFunc = prototype.stacksFunc;
             loadFunc = prototype.loadFunc;
+            loadInternalEventFunc = prototype.loadInternalEventFunc;
 
             if (prototype.overlayFuncs) then
               overlayFuncs = {};
@@ -1771,6 +1781,7 @@ function GenericTrigger.Add(data, region)
           event = trigger.event,
           events = trigger_events,
           internal_events = internal_events,
+          loadInternalEventFunc = loadInternalEventFunc,
           force_events = force_events,
           unit_events = trigger_unit_events,
           includePets = includePets,
@@ -2762,14 +2773,14 @@ do
     itemCdDurs[id] = nil;
     itemCdExps[id] = nil;
     itemCdEnabled[id] = 1;
-    WeakAuras.ScanEvents("ITEM_COOLDOWN_READY", id);
+    WeakAuras.ScanEvents("ITEM_COOLDOWN_READY:" .. id, id);
   end
 
   local function ItemSlotCooldownFinished(id)
     itemSlotsCdHandles[id] = nil;
     itemSlotsCdDurs[id] = nil;
     itemSlotsCdExps[id] = nil;
-    WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_READY", id);
+    WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_READY:" .. id, id);
   end
 
   ---@type fun()
@@ -2964,7 +2975,7 @@ do
       end
 
       if changed and not WeakAuras.IsPaused() then
-        WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id)
+        WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED:" .. id, id)
       end
     end
   end
@@ -3010,15 +3021,15 @@ do
 
     if not WeakAuras.IsPaused() then
       if nowReady then
-        WeakAuras.ScanEvents("SPELL_COOLDOWN_READY", id);
+        WeakAuras.ScanEvents("SPELL_COOLDOWN_READY:" .. id, id)
       end
 
       if changed or chargesChanged then
-        WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED", id);
+        WeakAuras.ScanEvents("SPELL_COOLDOWN_CHANGED:" .. id, id)
       end
 
       if (chargesDifference ~= 0 ) then
-        WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or spellCount or 0);
+        WeakAuras.ScanEvents("SPELL_CHARGES_CHANGED:" .. id, id, chargesDifference, charges or spellCount or 0);
       end
     end
   end
@@ -3066,7 +3077,7 @@ do
           itemCdExps[id] = endTime;
           itemCdHandles[id] = timer:ScheduleTimerFixed(ItemCooldownFinished, endTime - time, id);
           if not WeakAuras.IsPaused() then
-            WeakAuras.ScanEvents("ITEM_COOLDOWN_STARTED", id)
+            WeakAuras.ScanEvents("ITEM_COOLDOWN_STARTED:" .. id, id)
           end
           itemCdEnabledChanged = false;
         elseif(itemCdExps[id] ~= endTime) then
@@ -3078,7 +3089,7 @@ do
           itemCdExps[id] = endTime;
           itemCdHandles[id] = timer:ScheduleTimerFixed(ItemCooldownFinished, endTime - time, id);
           if not WeakAuras.IsPaused() then
-            WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id)
+            WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED:" .. id, id)
           end
           itemCdEnabledChanged = false;
         end
@@ -3096,7 +3107,7 @@ do
         end
       end
       if (itemCdEnabledChanged and not WeakAuras.IsPaused()) then
-        WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED", id);
+        WeakAuras.ScanEvents("ITEM_COOLDOWN_CHANGED:" .. id, id);
       end
     end
   end
@@ -3122,7 +3133,7 @@ do
           itemSlotsCdExps[id] = endTime;
           itemSlotsCdHandles[id] = timer:ScheduleTimerFixed(ItemSlotCooldownFinished, endTime - time, id);
           if not WeakAuras.IsPaused() then
-            WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_STARTED", id)
+            WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_STARTED:" .. id, id)
           end
         elseif(itemSlotsCdExps[id] ~= endTime) then
           -- Cooldown is now different
@@ -3133,7 +3144,7 @@ do
           itemSlotsCdExps[id] = endTime;
           itemSlotsCdHandles[id] = timer:ScheduleTimerFixed(ItemSlotCooldownFinished, endTime - time, id);
           if not WeakAuras.IsPaused() then
-            WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_CHANGED", id)
+            WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_CHANGED:" .. id, id)
           end
         end
       elseif(duration > 0) then
@@ -3152,7 +3163,7 @@ do
       local newItemId = GetInventoryItemID("player", id);
       if (itemId ~= newItemId) then
         if not WeakAuras.IsPaused() then
-          WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_ITEM_CHANGED")
+          WeakAuras.ScanEvents("ITEM_SLOT_COOLDOWN_ITEM_CHANGED:" .. id, id)
         end
         itemSlots[id] = newItemId or 0;
       end
@@ -3340,7 +3351,8 @@ do
         spellActivationSpellsCurrent[spell] = active
         spellActivationSpellsCurrent[spellName] = active
         if not WeakAuras.IsPaused() then
-          WeakAuras.ScanEvents("WA_UPDATE_OVERLAY_GLOW", spell)
+          WeakAuras.ScanEvents("WA_UPDATE_OVERLAY_GLOW:" .. spell, spell)
+          WeakAuras.ScanEvents("WA_UPDATE_OVERLAY_GLOW:" .. spellName, spell)
         end
       end
 
