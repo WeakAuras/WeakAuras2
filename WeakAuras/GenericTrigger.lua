@@ -3016,7 +3016,7 @@ do
   end
 
   ---@type fun(runeDuration)
-  function Private.CheckSpellCooldows(runeDuration)
+  function Private.CheckSpellCooldowns(runeDuration)
     for id, _ in pairs(spells) do
       Private.CheckSpellCooldown(id, runeDuration)
     end
@@ -3155,7 +3155,7 @@ do
   function Private.CheckCooldownReady()
     CheckGCD();
     local runeDuration = Private.CheckRuneCooldown();
-    Private.CheckSpellCooldows(runeDuration);
+    Private.CheckSpellCooldowns(runeDuration);
     Private.CheckItemCooldowns();
     Private.CheckItemSlotCooldowns();
   end
