@@ -793,16 +793,25 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
   return updateTriggerState;
 end
 
+---ScanEvents may receive composed events like `event:spellId`
+---For system profiling we want extract the event
+---@param composedEvent string
+---@return string
+local function getGameEventFromComposedEvent(composedEvent)
+  local separatorPosition = composedEvent:find(":", 1, true)
+  return separatorPosition == nil and composedEvent or composedEvent:sub(1, separatorPosition - 1)
+end
+
 ---@param event string
 ---@param arg1? any
 ---@param arg2? any
 ---@param ... any
 function WeakAuras.ScanEvents(event, arg1, arg2, ...)
-  local orgEvent = event;
-  Private.StartProfileSystem("generictrigger " .. orgEvent )
+  local system = getGameEventFromComposedEvent(event)
+  Private.StartProfileSystem("generictrigger " .. system)
   local event_list = loaded_events[event];
   if (not event_list) then
-    Private.StopProfileSystem("generictrigger " .. orgEvent )
+    Private.StopProfileSystem("generictrigger " .. system)
     return
   end
   if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
@@ -810,7 +819,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
 
     event_list = event_list[arg2];
     if (not event_list) then
-      Private.StopProfileSystem("generictrigger " .. orgEvent )
+      Private.StopProfileSystem("generictrigger " .. system)
       return;
     end
     WeakAuras.ScanEventsInternal(event_list, event, CombatLogGetCurrentEventInfo());
@@ -824,7 +833,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   else
     WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ...);
   end
-  Private.StopProfileSystem("generictrigger " .. orgEvent )
+  Private.StopProfileSystem("generictrigger " .. system)
 end
 
 ---@param event string
@@ -3325,7 +3334,7 @@ do
     spellActivationFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW");
     spellActivationFrame:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE");
     spellActivationFrame:SetScript("OnEvent", function(self, event, spell)
-      Private.StartProfileSystem("generictrigger");
+      Private.StartProfileSystem("generictrigger spell activation");
       local spellName = Private.ExecEnv.GetSpellName(spell)
       if (spellActivationSpells[spell] or spellActivationSpells[spellName]) then
         local active = (event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
@@ -3337,7 +3346,7 @@ do
         end
       end
 
-      Private.StopProfileSystem("generictrigger");
+      Private.StopProfileSystem("generictrigger spell activation");
     end);
   end
 
@@ -3691,7 +3700,7 @@ do
       end
 
       local function tenchUpdate()
-        Private.StartProfileSystem("generictrigger");
+        Private.StartProfileSystem("generictrigger temporary enchant");
         local _, mh_rem, oh_rem, rw_rem
         _, mh_rem, mh_charges, mh_EnchantID, _, oh_rem, oh_charges, oh_EnchantID, _, rw_rem, rw_charges, rw_EnchantID = GetWeaponEnchantInfo();
         local time = GetTime();
@@ -3731,13 +3740,13 @@ do
           end
         end
         WeakAuras.ScanEvents("TENCH_UPDATE");
-        Private.StopProfileSystem("generictrigger");
+        Private.StopProfileSystem("generictrigger temporary enchant");
       end
 
       tenchFrame:SetScript("OnEvent", function()
-        Private.StartProfileSystem("generictrigger");
+        Private.StartProfileSystem("generictrigger temporary enchant");
         timer:ScheduleTimer(tenchUpdate, 0.1);
-        Private.StopProfileSystem("generictrigger");
+        Private.StopProfileSystem("generictrigger temporary enchant");
       end);
 
       tenchUpdate();
@@ -3767,9 +3776,9 @@ do
       petFrame = CreateFrame("Frame");
       petFrame:RegisterUnitEvent("UNIT_PET", "player")
       petFrame:SetScript("OnEvent", function(event, unit)
-        Private.StartProfileSystem("generictrigger")
+        Private.StartProfileSystem("generictrigger pet update")
         WeakAuras.ScanEvents("PET_UPDATE", "pet")
-        Private.StopProfileSystem("generictrigger")
+        Private.StopProfileSystem("generictrigger pet update")
       end)
     end
   end
@@ -3875,7 +3884,7 @@ do
   local playerMovingFrame = nil
 
   local function PlayerMoveUpdate()
-    Private.StartProfileSystem("generictrigger");
+    Private.StartProfileSystem("generictrigger player moving");
     local moving = IsPlayerMoving()
     if (playerMovingFrame.moving ~= moving or playerMovingFrame.moving == nil) then
       playerMovingFrame.moving = moving
@@ -3887,7 +3896,7 @@ do
       playerMovingFrame.speed = speed
       WeakAuras.ScanEvents("PLAYER_MOVE_SPEED_UPDATE")
     end
-    Private.StopProfileSystem("generictrigger");
+    Private.StopProfileSystem("generictrigger player moving");
   end
 
   ---@private
