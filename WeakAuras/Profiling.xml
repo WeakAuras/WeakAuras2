@@ -6,16 +6,16 @@
     <Size y="20"/>
     <Layers>
       <Layer level="overlay">
-        <FontString parentKey="time" font="Interface\AddOns\WeakAuras\Media\Fonts\FiraMono-Medium.ttf" justifyH="RIGHT">
-          <Size x="60" y="0"/>
+        <FontString parentKey="spike" font="Interface\AddOns\WeakAuras\Media\Fonts\FiraMono-Medium.ttf" justifyH="RIGHT">
+          <Size x="100" y="0"/>
           <FontHeight val="12"/>
           <Anchors>
-            <Anchor x="305" y="-2"/>
+            <Anchor point="RIGHT" x= "-5" y="-2"/>
           </Anchors>
           <Scripts>
             <OnEnter>
               GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-              GameTooltip:AddLine(self:GetParent().timeTooltip, 1, 1, 1, true)
+              GameTooltip:AddLine(self:GetParent().spikeTooltip, 1, 1, 1, true)
               GameTooltip:Show()
             </OnEnter>
             <OnLeave>
@@ -23,16 +23,16 @@
             </OnLeave>
           </Scripts>
         </FontString>
-        <FontString parentKey="spike" font="Interface\AddOns\WeakAuras\Media\Fonts\FiraMono-Medium.ttf" justifyH="RIGHT">
-          <Size x="60" y="0"/>
+        <FontString parentKey="time" font="Interface\AddOns\WeakAuras\Media\Fonts\FiraMono-Medium.ttf" justifyH="RIGHT">
+          <Size x="100" y="0"/>
           <FontHeight val="12"/>
           <Anchors>
-            <Anchor x="385" y="-2"/>
+            <Anchor point="RIGHT" relativeKey="$parent.spike" relativePoint="LEFT" y="-2"/>
           </Anchors>
           <Scripts>
             <OnEnter>
               GameTooltip:SetOwner(self, "ANCHOR_RIGHT")
-              GameTooltip:AddLine(self:GetParent().spikeTooltip, 1, 1, 1, true)
+              GameTooltip:AddLine(self:GetParent().timeTooltip, 1, 1, 1, true)
               GameTooltip:Show()
             </OnEnter>
             <OnLeave>
@@ -46,17 +46,17 @@
       <StatusBar parentKey="progressBar" drawLayer="BACKGROUND" minValue="0" maxValue="100" defaultValue="0">
         <Anchors>
           <Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeKey="$parent" x="1" y="0"/>
-          <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" relativeKey="$parent" x="299" y="0"/>
+          <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" relativeKey="$parent.time" x="-2" y="0"/>
         </Anchors>
         <BarTexture file="Interface\Addons\WeakAuras\Media\Textures\Square_FullWhite.tga"/>
         <Layers>
           <Layer level="OVERLAY">
-            <FontString parentKey="name" font="Interface\AddOns\WeakAuras\Media\Fonts\FiraMono-Medium.ttf" justifyH="LEFT">
+            <FontString parentKey="name" font="Interface\AddOns\WeakAuras\Media\Fonts\FiraMono-Medium.ttf" justifyH="LEFT" wordwrap="false">
               <Color r="1.0" g="0.82" b="0"/>
               <FontHeight val="12"/>
-              <Size x="300" y="0"/>
               <Anchors>
                 <Anchor point="LEFT" x="5"/>
+                <Anchor point="RIGHT" relativeKey="$parent.$parent.time" relativePoint="LEFT" x="-2" y="0"/>
               </Anchors>
             </FontString>
           </Layer>
@@ -65,7 +65,7 @@
     </Frames>
   </Frame>
 
-  <Frame name="WeakAurasProfilingFrame" mixin="WeakAurasProfilingMixin" inherits="PortraitFrameTemplate" parent="UIParent" toplevel="true" movable="true" enableMouse="true" clampedToScreen="true" frameStrata="DIALOG" hidden="true">
+  <Frame name="WeakAurasProfilingFrame" mixin="WeakAurasProfilingMixin" inherits="PortraitFrameTemplate" parent="UIParent" toplevel="true" movable="true" resizable="true" enableMouse="true" clampedToScreen="true" frameStrata="DIALOG" hidden="true">
     <Size x="450" y="400"/>
     <Anchors>
       <Anchor point="CENTER"/>
@@ -186,6 +186,12 @@
           <Frame parentKey="startDropDown" inherits="UIDropDownMenuTemplate"/>
         </Frames>
       </Frame>
+
+      <Button parentKey="ResizeButton" inherits="PanelResizeButtonTemplate">
+        <Anchors>
+          <Anchor point="BOTTOMRIGHT" x="-4" y="4"/>
+        </Anchors>
+      </Button>
 
       <Frame parentKey="ColumnDisplay" useParentLevel="true" inherits="ColumnDisplayTemplate">
         <Anchors>
