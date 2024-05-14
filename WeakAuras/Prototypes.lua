@@ -8269,8 +8269,10 @@ Private.event_prototypes = {
     type = "item",
     events = {
       ["events"] = {
-        "UNIT_INVENTORY_CHANGED",
         "PLAYER_EQUIPMENT_CHANGED",
+      },
+      ["unit_events"] = {
+        ["player"] = {"UNIT_INVENTORY_CHANGED"}
       }
     },
     internal_events = { "WA_DELAYED_PLAYER_ENTERING_WORLD", },
@@ -8331,8 +8333,10 @@ Private.event_prototypes = {
     type = "item",
     events = {
       ["events"] = {
-        "UNIT_INVENTORY_CHANGED",
         "PLAYER_EQUIPMENT_CHANGED",
+      },
+      ["unit_events"] = {
+        ["player"] = {"UNIT_INVENTORY_CHANGED"}
       }
     },
     init = function(trigger)
@@ -8377,8 +8381,10 @@ Private.event_prototypes = {
     type = "item",
     events = {
       ["events"] = {
-        "UNIT_INVENTORY_CHANGED",
         "PLAYER_EQUIPMENT_CHANGED",
+      },
+      ["unit_events"] = {
+        ["player"] = {"UNIT_INVENTORY_CHANGED"}
       }
     },
     internal_events = { "WA_DELAYED_PLAYER_ENTERING_WORLD", },
