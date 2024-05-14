@@ -1869,25 +1869,6 @@ do
   end
 end
 
-local combatLogUpgrade = {
-  ["sourceunit"] = "sourceUnit",
-  ["source"] = "sourceName",
-  ["destunit"] = "destUnit",
-  ["dest"] = "destName"
-}
-
-local oldPowerTriggers = {
-  ["Combo Points"] = 4,
-  ["Holy Power"] = 9,
-  ["Insanity"] = 13,
-  ["Chi Power"] = 12,
-  ["Astral Power"] = 8,
-  ["Maelstrom"] =  11,
-  ["Arcane Charges"] = 16,
-  ["Fury"] = 17,
-  ["Pain"] = 18,
-  ["Shards"] = 7,
-}
 
 --#############################
 --# Support code for triggers #
