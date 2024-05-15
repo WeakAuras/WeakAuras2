@@ -1663,8 +1663,8 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
   local encounter_id = WeakAuras.CurrentEncounter and WeakAuras.CurrentEncounter.id or 0
 
   if (event == "ENCOUNTER_START") then
-    encounter_id = tonumber (arg1)
-    CreateEncounterTable (encounter_id)
+    encounter_id = tonumber(arg1)
+    CreateEncounterTable(encounter_id)
   elseif (event == "ENCOUNTER_END") then
     encounter_id = 0
     DestroyEncounterTable()
