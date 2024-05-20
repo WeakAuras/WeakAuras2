@@ -2936,6 +2936,13 @@ Private.chat_message_types = {
 }
 
 ---@type table<string, string>
+Private.chat_message_leader_event = {
+  CHAT_MSG_INSTANCE_CHAT = "CHAT_MSG_INSTANCE_CHAT_LEADER",
+  CHAT_MSG_PARTY = "CHAT_MSG_PARTY_LEADER",
+  CHAT_MSG_RAID = "CHAT_MSG_RAID_LEADER"
+}
+
+---@type table<string, string>
 Private.send_chat_message_types = {
   WHISPER = L["Whisper"],
   SAY = L["Say"],
