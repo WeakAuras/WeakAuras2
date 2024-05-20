@@ -7491,7 +7491,11 @@ Private.event_prototypes = {
     type = "event",
     events = function(trigger)
       if trigger.use_messageType and trigger.messageType and Private.chat_message_types[trigger.messageType] then
-        return { ["events"] = {trigger.messageType} }
+        local events = {trigger.messageType}
+        if Private.chat_message_leader_event[trigger.messageType] then
+          table.insert(events, Private.chat_message_leader_event[trigger.messageType])
+        end
+        return { events = events }
       end
       return {
         ["events"] = {
