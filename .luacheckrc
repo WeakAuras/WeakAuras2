@@ -2232,6 +2232,7 @@ globals = {
 	"GetMouseButtonClicked",
 	"GetMouseButtonName",
 	"GetMouseClickFocus",
+	"GetMouseFoci",
 	"GetMouseFocus",
 	"GetMouseMotionFocus",
 	"GetMovieDownloadProgress",
