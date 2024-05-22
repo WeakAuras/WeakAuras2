@@ -3923,7 +3923,7 @@ end
 -- LibSpecWrapper
 -- We always register, because it's probably not that often called, and ScanEvents checks
 -- early if anyone wants the event
-if WeakAuras.IsRetail() then
+if WeakAuras.IsCataOrRetail() then
   Private.LibSpecWrapper.Register(function(unit)
     WeakAuras.ScanEvents("UNIT_SPEC_CHANGED_" .. unit, unit)
   end)

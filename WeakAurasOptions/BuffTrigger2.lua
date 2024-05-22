@@ -788,7 +788,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       order = 66.3,
       hidden = function() return
         not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
-        and WeakAuras.IsRetail())
+        and WeakAuras.IsCataOrRetail())
       end,
     },
     actualSpec = {
@@ -801,7 +801,7 @@ local function GetBuffTriggerOptions(data, triggernum)
         return not (trigger.type == "aura2"
                     and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
                     and trigger.useActualSpec
-                    and WeakAuras.IsRetail())
+                    and WeakAuras.IsCataOrRetail())
       end,
       order = 66.4
     },
@@ -814,7 +814,7 @@ local function GetBuffTriggerOptions(data, triggernum)
         return not (trigger.type == "aura2"
                     and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
                     and not trigger.useActualSpec
-                    and WeakAuras.IsRetail())
+                    and WeakAuras.IsCataOrRetail())
       end
     },
 
@@ -842,7 +842,7 @@ local function GetBuffTriggerOptions(data, triggernum)
     group_roleSpace = {
       type = "description",
       name = "",
-      order = 67.2,
+      order = 67.3,
       width = WeakAuras.normalWidth,
       hidden = function() return
         not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useGroupRole)
@@ -853,7 +853,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Filter by Raid Role"],
-      order = 67.1,
+      order = 67.4,
       hidden = function() return
         not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"))
         or WeakAuras.IsRetail()
@@ -868,12 +868,12 @@ local function GetBuffTriggerOptions(data, triggernum)
         not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useRaidRole)
         or WeakAuras.IsRetail()
       end,
-      order = 67.2
+      order = 67.5
     },
     raid_roleSpace = {
       type = "description",
       name = "",
-      order = 67.2,
+      order = 67.6,
       width = WeakAuras.normalWidth,
       hidden = function() return
         not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and not trigger.useRaidRole)
@@ -884,7 +884,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       type = "toggle",
       width = WeakAuras.normalWidth,
       name = L["Filter by Arena Spec"],
-      order = 67.3,
+      order = 67.8,
       hidden = function() return
         not (WeakAuras.IsRetail() and trigger.type == "aura2" and trigger.unit == "arena")
       end
@@ -897,12 +897,12 @@ local function GetBuffTriggerOptions(data, triggernum)
       hidden = function()
         return not (WeakAuras.IsRetail() and trigger.type == "aura2" and trigger.unit == "arena" and trigger.useArenaSpec)
       end,
-      order = 67.4
+      order = 67.9
     },
     arena_specSpace = {
       type = "description",
       name = "",
-      order = 67.4,
+      order = 67.91,
       width = WeakAuras.normalWidth,
       hidden = function()
         return not (WeakAuras.IsRetail() and trigger.type == "aura2" and trigger.unit == "arena" and not trigger.useArenaSpec)
