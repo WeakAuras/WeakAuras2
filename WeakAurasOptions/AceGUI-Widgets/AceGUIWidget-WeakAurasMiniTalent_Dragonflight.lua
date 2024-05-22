@@ -257,10 +257,10 @@ local methods = {
         if icon then
           button:SetNormalTexture(icon)
         end
-        local multiTalent, multiTalentTotal = 0, 0
-        button.posX, button.posY, multiTalent, multiTalentTotal = unpack(data[3])
-        button.posX = button.posX / 10 - extraOffset.offsetX
-        button.posY = button.posY / 10 - extraOffset.offsetY
+        local multiTalent, multiTalentTotal, subTreePosition = 0, 0, nil
+        button.posX, button.posY, multiTalent, multiTalentTotal, subTreePosition = unpack(data[3])
+        button.posX = button.posX / 10 - (extraOffset and extraOffset.offsetX or 0)
+        button.posY = button.posY / 10 - (extraOffset and extraOffset.offsetY or 0)
         if multiTalentTotal > 1 then
           if multiTalent == 1 then
             button.offset = "left"
@@ -270,6 +270,9 @@ local methods = {
         else
           button.offset = nil
         end
+        if subTreePosition then
+          button.side = subTreePosition == 1 and "left" or "right"
+        end
         button.targets = data[4]
         button:UpdateTexture()
         button:ClearAllPoints()
@@ -278,33 +281,53 @@ local methods = {
     end
 
     -- zoom both panel in their center
-    local talentWidth = 1612
-    local talentHeight = 856
+    local isSubTree = self.list[1001]
+    local talentWidth
+    local talentHeight
     local talentIconSize = 36
-    local LeftPanelCenter = { x = talentWidth / 4, y = talentHeight / 2 }
-    local RightPanelCenter = { x = (talentWidth / 4) * 3, y = talentHeight / 2 }
-    local panelScaleW = 1.5
-    local panelScaleH = 1.5
-    self.scale = self.saveSize.fullWidth / talentWidth
-    for _, b in pairs(self.buttons) do
-      if b.posX < talentWidth / 2 then -- left panel
-        b.posX = b.posX - LeftPanelCenter.x
-        b.posX = b.posX * panelScaleW
-        b.posX = b.posX + LeftPanelCenter.x - talentIconSize / 2
-        b.posY = b.posY - LeftPanelCenter.y
-        b.posY = b.posY * panelScaleH
-        b.posY = b.posY + LeftPanelCenter.y * panelScaleH
-      else                     -- right panel
-        b.posX = b.posX - RightPanelCenter.x
-        b.posX = b.posX * panelScaleW
-        b.posX = b.posX + RightPanelCenter.x + talentIconSize / 2
-        b.posY = b.posY - RightPanelCenter.y
-        b.posY = b.posY * panelScaleH
-        b.posY = b.posY + RightPanelCenter.y * panelScaleH
+    local scale
+    if not isSubTree then
+      talentWidth = 1612
+      talentHeight = 856
+      local cutmid = 120
+      local LeftPanelCenter = { x = (talentWidth / 2 - cutmid) / 2, y = talentHeight / 2 }
+      local RightPanelCenter = { x = ((talentWidth / 2 + cutmid) + talentWidth) / 2 , y = talentHeight / 2 }
+      scale = 1.3
+      for _, b in pairs(self.buttons) do
+        if b.posX < talentWidth / 2 then -- left panel
+          b.posX = b.posX - LeftPanelCenter.x
+          b.posX = b.posX * scale
+          b.posX = b.posX + LeftPanelCenter.x - talentIconSize / 2
+          b.posY = b.posY - LeftPanelCenter.y
+          b.posY = b.posY * scale
+          b.posY = b.posY + LeftPanelCenter.y * scale
+        else                     -- right panel
+          b.posX = b.posX - RightPanelCenter.x
+          b.posX = b.posX * scale
+          b.posX = b.posX + RightPanelCenter.x + talentIconSize / 2
+          b.posY = b.posY - RightPanelCenter.y
+          b.posY = b.posY * scale
+          b.posY = b.posY + RightPanelCenter.y * scale
+        end
+      end
+    else
+      talentWidth = 200
+      talentHeight = 300
+      local midLeft, midRight = talentWidth / 4, (talentWidth / 4) * 3
+      scale = 0.3
+      for _, b in pairs(self.buttons) do
+        b.posX = b.posX * scale
+        b.posY = b.posY * scale
+        b.posY = b.posY + 10
+        if b.side == "left" then
+          b.posX = b.posX + midLeft
+        else
+          b.posX = b.posX + midRight
+        end
       end
     end
-
-    self.saveSize.fullHeight = talentHeight * self.scale * panelScaleW
+    self.scale = self.saveSize.fullWidth / talentWidth
+    self.saveSize.fullHeight = talentHeight * self.scale * scale
     if self.list[999] then
       self.background:SetAtlas(self.list[999])
       self.background:SetBlendMode("ADD")

@@ -442,6 +442,11 @@ function WeakAuras.IsCataOrRetail()
   return WeakAuras.IsCataClassic() or WeakAuras.IsRetail()
 end
 
+---@return boolean result
+function WeakAuras.IsTWW()
+  return WeakAuras.BuildInfo >= 110000
+end
+
 ---@param ... string
 WeakAuras.prettyPrint = function(...)
   print("|cff9900ffWeakAuras:|r ", ...)
