@@ -143,7 +143,7 @@ local backgroundAlias = {
 }
 
 local classIDToOffsets = {
-	[1] = { extraOffsetX = 30, extraOffsetY = 31, }, -- Warrior
+	[1] = { extraOffsetX = WeakAuras.IsTWW() and 60 or 30, extraOffsetY = 31, }, -- Warrior
 	[2] = { extraOffsetX = -60, extraOffsetY = -29, }, -- Paladin
 	[3] = { extraOffsetX = 0, extraOffsetY = -29, }, -- Hunter
 	[4] = { extraOffsetX = 30, extraOffsetY = -29, }, -- Rogue
@@ -185,24 +185,28 @@ local function GetClassId(classFile)
 	end
 end
 
+
+
 function Private.GetTalentData(specId)
-  if Private.talentInfo[specId] then
-		return Private.talentInfo[specId]
+	if Private.talentInfo[specId] then
+		return unpack(Private.talentInfo[specId])
 	end
-  local specData = {}
+	local configId = Constants.TraitConsts.VIEW_TRAIT_CONFIG_ID
+	local specData = {}
+	local heroData = {}
 	C_ClassTalents.InitializeViewLoadout(specId, 70)
 	C_ClassTalents.ViewLoadout({})
-  local configId = Constants.TraitConsts.VIEW_TRAIT_CONFIG_ID
-  local configInfo = C_Traits.GetConfigInfo(configId)
-  if configInfo == nil then return end
-  for _, treeId in ipairs(configInfo.treeIDs) do
-    local nodes = C_Traits.GetTreeNodes(treeId)
-    for _, nodeId in ipairs(nodes) do
-      local node = C_Traits.GetNodeInfo(configId, nodeId)
-      if node and node.ID ~= 0 then
-        for idx, talentId in ipairs(node.entryIDs) do
-          local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
-          local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
+	local configInfo = C_Traits.GetConfigInfo(configId)
+	local subTreeIDs = WeakAuras.IsTWW() and C_ClassTalents.GetHeroTalentSpecsForClassSpec(configId, specId) or {}
+	if configInfo == nil then return end
+	for _, treeId in ipairs(configInfo.treeIDs) do
+		local nodes = C_Traits.GetTreeNodes(treeId)
+		for _, nodeId in ipairs(nodes) do
+			local node = C_Traits.GetNodeInfo(configId, nodeId)
+			if node and node.ID ~= 0 then
+				for idx, talentId in ipairs(node.entryIDs) do
+					local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
+					local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
 					if definitionInfo.spellID then
 						local spellName = WeakAuras.GetSpellName(definitionInfo.spellID)
 						if spellName then
@@ -222,22 +226,33 @@ function Private.GetTalentData(specId)
 									tinsert(talentData[4], targetNodeTalentId1)
 								end
 							end
-							tinsert(specData, talentData)
+							if node.subTreeID then
+								local subTreeInfo = C_Traits.GetSubTreeInfo(configId, node.subTreeID)
+								talentData[3][1] = node.posX - subTreeInfo.posX
+								talentData[3][2] = node.posY - subTreeInfo.posY
+								talentData[3][5] = tIndexOf(subTreeIDs, node.subTreeID)
+								tinsert(heroData, talentData)
+							else
+								tinsert(specData, talentData)
+							end
 						end
 					end
-        end
-      end
-    end
-  end
+				end
+			end
+		end
+	end
+
 	local classFile = select(6, GetSpecializationInfoByID(specId))
 	local classID = GetClassId(classFile)
-  local classOffsets = classIDToOffsets[classID]
-  local basePanOffsetX = initialBasePanOffsetX - (classOffsets and classOffsets.extraOffsetX or 0)
-  local basePanOffsetY = initialBasePanOffsetY - (classOffsets and classOffsets.extraOffsetY or 0)
-  specData[999] = backgroundAlias[specId]
+	local classOffsets = classIDToOffsets[classID]
+	local basePanOffsetX = initialBasePanOffsetX - (classOffsets and classOffsets.extraOffsetX or 0)
+	local basePanOffsetY = initialBasePanOffsetY - (classOffsets and classOffsets.extraOffsetY or 0)
+	specData[999] = backgroundAlias[specId]
 	specData[1000] = { offsetX = basePanOffsetX, offsetY = basePanOffsetY }
-	Private.talentInfo[specId] = specData
-  return specData
+	heroData[999] = backgroundAlias[specId]
+	heroData[1001] = true
+	Private.talentInfo[specId] = { specData, heroData }
+	return specData, heroData
 end
 
 WeakAuras.StopMotion = {
