@@ -30,6 +30,11 @@ Private.regionPrototype.AddAlphaToDefault(default);
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
 local properties = {
+  texture = {
+    display = L["Texture"],
+    setter = "SetTexture",
+    type = "texture",
+  },
   color = {
     display = L["Color"],
     setter = "Color",
@@ -106,7 +111,6 @@ end
 
 local function modify(parent, region, data)
   Private.regionPrototype.modify(parent, region, data);
-  Private.SetTextureOrAtlas(region.texture, data.texture, data.textureWrapMode, data.textureWrapMode);
   region.texture:SetDesaturated(data.desaturate)
   region:SetWidth(data.width);
   region:SetHeight(data.height);
@@ -180,15 +184,24 @@ local function modify(parent, region, data)
   end
 
   function region:Update()
-    if region.state.texture then
-      local oldIsAtlas = region.texture.IsAtlas
-      Private.SetTextureOrAtlas(region.texture, region.state.texture, data.textureWrapMode, data.textureWrapMode)
-      if region.texture.IsAtlas ~= oldIsAtlas then
-        DoTexCoord()
-      end
+    if self.state.texture then
+      self:SetTexture(self.state.texture)
     end
-    region:UpdateProgress()
+    self:UpdateProgress()
   end
+
+  function region:SetTexture(texture)
+    if self.textureName == texture then
+      return
+    end
+    self.textureName = texture
+    local oldIsAtlas = self.texture.IsAtlas
+    Private.SetTextureOrAtlas(self.texture, self.textureName, data.textureWrapMode, data.textureWrapMode);
+    if self.texture.IsAtlas ~= oldIsAtlas then
+      DoTexCoord()
+    end
+  end
+  region:SetTexture(data.texture)
 
   function region:Color(r, g, b, a)
     region.color_r = r;

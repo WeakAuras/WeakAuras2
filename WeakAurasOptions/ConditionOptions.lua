@@ -54,6 +54,8 @@ local OptionsPrivate = select(2, ...)
 local WeakAuras = WeakAuras;
 local L = WeakAuras.L;
 
+local SharedMedia = LibStub("LibSharedMedia-3.0");
+
 local function addSpace(args, order)
   args["space" .. order] = {
     type = "description",
@@ -618,12 +620,23 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       set = setValueColor
     }
     order = order + 1;
-  elseif (propertyType == "list" or property == "progressSource") then
+  elseif (propertyType == "list" or propertyType == "progressSource" or propertyType == "textureLSM") then
     local values = property and allProperties.propertyMap[property] and allProperties.propertyMap[property].values;
+    local dialogControl
+
+    if propertyType == "textureLSM" then
+      dialogControl = "WA_LSM30_StatusbarAtlas"
+      local statusbarList = {}
+      Mixin(statusbarList, SharedMedia:HashTable("statusbar"))
+      Mixin(statusbarList, SharedMedia:HashTable("statusbar_atlas"))
+      values = statusbarList
+    end
+
     args["condition" .. i .. "value" .. j] = {
       type = "select",
       width = WeakAuras.normalWidth,
       values = values,
+      dialogControl = dialogControl,
       name =  blueIfNoValue(data, conditions[i].changes[j], "value", L["Differences"], ""),
       desc =  descIfNoValue(data, conditions[i].changes[j], "value", propertyType, values),
       order = order,

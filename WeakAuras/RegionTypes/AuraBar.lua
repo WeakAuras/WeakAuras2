@@ -14,6 +14,7 @@ local default = {
   iconSource = -1,
   progressSource = {-1, "" },
   texture = "Blizzard",
+  textureSource = "LSM",
   width = 200,
   height = 15,
   orientation = "HORIZONTAL",
@@ -51,6 +52,25 @@ Private.regionPrototype.AddAlphaToDefault(default);
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
 local properties = {
+  textureSource = {
+    display = {L["Bar Texture"], L["Selection Mode"]},
+    setter = "SetStatusBarTextureMode",
+    type = "list",
+    values = {
+      LSM = L["LibSharedMedia"],
+      Picker = L["Texture Picker"]
+    }
+  },
+  textureInput = {
+    display = {L["Bar Texture"], L["Texture Picker"]},
+    setter = "SetStatusBarTextureInput",
+    type = "texture",
+  },
+  texture = {
+    display = {L["Bar Texture"], L["LibSharedMedia"]},
+    setter = "SetStatusBarTextureLSM",
+    type = "textureLSM",
+  },
   barColor = {
     display = L["Bar Color/Gradient Start"],
     setter = "Color",
@@ -925,6 +945,40 @@ local funcs = {
     end
   end,
 
+  SetStatusBarTextureMode = function(self, mode)
+    if self.textureSource == mode then
+      return
+    end
+    self.textureSource = mode
+    self:UpdateStatusBarTexture()
+  end,
+
+  SetStatusBarTextureInput = function(self, texture)
+    if self.textureInput == texture then
+      return
+    end
+    self.textureInput = texture
+    self:UpdateStatusBarTexture()
+  end,
+
+  SetStatusBarTextureLSM = function(self, texture)
+    if self.texture == texture then
+      return
+    end
+    self.texture = texture
+    self:UpdateStatusBarTexture()
+  end,
+
+  UpdateStatusBarTexture = function(self)
+    local texturePath
+    if self.textureSource == "Picker" then
+      texturePath = self.textureInput or ""
+    else
+      texturePath = SharedMedia:Fetch("statusbar_atlas", self.texture) or SharedMedia:Fetch("statusbar", self.texture) or ""
+    end
+    self.bar:SetStatusBarTexture(texturePath)
+  end,
+
   SetIconVisible = function(self, iconVisible)
     if (self.iconVisible == iconVisible) then
       return
@@ -1210,13 +1264,11 @@ local function modify(parent, region, data)
   end
 
   -- Update texture settings
-  local texturePath
-  if data.textureSource == "Picker" then
-    texturePath = data.textureInput or ""
-  else
-    texturePath = SharedMedia:Fetch("statusbar_atlas", data.texture) or SharedMedia:Fetch("statusbar", data.texture) or ""
-  end
-  bar:SetStatusBarTexture(texturePath);
+  region.textureSource = data.textureSource
+  region.texture = data.texture
+  region.textureInput = data.textureInput
+
+  region:UpdateStatusBarTexture();
   bar:SetBackgroundColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
   -- Update spark settings
   Private.SetTextureOrAtlas(bar.spark, data.sparkTexture);
