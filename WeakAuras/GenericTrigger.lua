@@ -4137,6 +4137,14 @@ function GenericTrigger.SetToolTip(trigger, state)
     elseif (state.unit and state.unitAuraIndex) then
       GameTooltip:SetUnitAura(state.unit, state.unitAuraIndex, state.unitAuraFilter)
       return true
+    elseif (state.unit and state.auraInstanceID) then
+      if state.filter == "HELPFUL" then
+        GameTooltip:SetUnitBuffByAuraInstanceID(state.unit, state.auraInstanceID, state.unitAuraFilter)
+      elseif state.filter == "HARMFUL" then
+        GameTooltip:SetUnitDebuffByAuraInstanceID(state.unit, state.auraInstanceID, state.unitDebuffFilter)
+      end
+      return true
+    end
     end
   end
 
