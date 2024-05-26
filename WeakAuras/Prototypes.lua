@@ -1178,7 +1178,7 @@ end
 function WeakAuras.GetNumSetItemsEquipped(setID)
   if not setID or not type(setID) == "number" then return end
   local equipped = 0
-  local setName = GetItemSetInfo(setID)
+  local setName = C_Item.GetItemSetInfo(setID)
   for i = 1, 18 do
     local item = GetInventoryItemID("player", i)
     if Private.GetSetId(item) == setID then
