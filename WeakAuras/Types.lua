@@ -1150,7 +1150,7 @@ local function update_forms()
   for i = 1, GetNumShapeshiftForms() do
     local _, _, _, id = GetShapeshiftFormInfo(i);
     if(id) then
-      local name = WeakAuras.GetSpellName(id);
+      local name = Private.ExecEnv.GetSpellName(id);
       if(name) then
         Private.form_types[i] = i.." - "..name
       end
@@ -1630,16 +1630,16 @@ local function InitializeReputations()
   Private.reputations_headers = {}
 
   local collapsed = {}
-  for i = 1, WeakAuras.GetNumFactions() do
-    local factionData = WeakAuras.GetFactionDataByIndex(i)
+  for i = 1, Private.ExecEnv.GetNumFactions() do
+    local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
     if factionData.isCollapsed then
       collapsed[factionData.name] = true
     end
   end
 
-  WeakAuras.ExpandAllFactionHeaders()
-  for i = 1, WeakAuras.GetNumFactions() do
-    local factionData = WeakAuras.GetFactionDataByIndex(i)
+  Private.ExecEnv.ExpandAllFactionHeaders()
+  for i = 1, Private.ExecEnv.GetNumFactions() do
+    local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
     if factionData.currentStanding > 0 or not factionData.isHeader then
       local factionID = factionData.factionID
       if factionID then
@@ -1654,10 +1654,10 @@ local function InitializeReputations()
     end
   end
 
-  for i = WeakAuras.GetNumFactions(), 1, -1 do
-    local factionData = WeakAuras.GetFactionDataByIndex(i)
+  for i = Private.ExecEnv.GetNumFactions(), 1, -1 do
+    local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
     if collapsed[factionData.name] then
-      WeakAuras.CollapseFactionHeader(i)
+      Private.ExecEnv.CollapseFactionHeader(i)
     end
   end
 end

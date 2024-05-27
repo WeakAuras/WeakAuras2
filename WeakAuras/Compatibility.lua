@@ -6,14 +6,12 @@ local AddonName = ...
 ---@class Private
 local Private = select(2, ...)
 
-local WeakAuras = WeakAuras
-
 if GetSpellInfo then
-  WeakAuras.GetSpellInfo = GetSpellInfo
-  WeakAuras.GetSpellName = GetSpellInfo
-  WeakAuras.GetSpellIcon = GetSpellTexture
+  Private.ExecEnv.GetSpellInfo = GetSpellInfo
+  Private.ExecEnv.GetSpellName = GetSpellInfo
+  Private.ExecEnv.GetSpellIcon = GetSpellTexture
 else
-  WeakAuras.GetSpellInfo = function(spellID)
+  Private.ExecEnv.GetSpellInfo = function(spellID)
     if not spellID then
       return nil
     end
@@ -22,13 +20,13 @@ else
       return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID
     end
   end
-  WeakAuras.GetSpellName = C_Spell.GetSpellName
-  WeakAuras.GetSpellIcon = C_Spell.GetSpellTexture
+  Private.ExecEnv.GetSpellName = C_Spell.GetSpellName
+  Private.ExecEnv.GetSpellIcon = C_Spell.GetSpellTexture
 end
 
-WeakAuras.GetNumFactions = C_Reputation.GetNumFactions or GetNumFactions
+Private.ExecEnv.GetNumFactions = C_Reputation.GetNumFactions or GetNumFactions
 
-WeakAuras.GetFactionDataByIndex = C_Reputation.GetFactionDataByIndex or function(index)
+Private.ExecEnv.GetFactionDataByIndex = C_Reputation.GetFactionDataByIndex or function(index)
   local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive = GetFactionInfo(index)
   return {
     factionID = factionID,
@@ -51,7 +49,7 @@ WeakAuras.GetFactionDataByIndex = C_Reputation.GetFactionDataByIndex or function
   }
 end
 
-WeakAuras.GetFactionDataByID = C_Reputation.GetFactionDataByID or function(ID)
+Private.ExecEnv.GetFactionDataByID = C_Reputation.GetFactionDataByID or function(ID)
   local name, description, standingID, barMin, barMax, barValue, atWarWith, canToggleAtWar, isHeader, isCollapsed, hasRep, isWatched, isChild, factionID, hasBonusRepGain, canSetInactive = GetFactionInfoByID(ID)
   return {
     factionID = factionID,
@@ -73,5 +71,5 @@ WeakAuras.GetFactionDataByID = C_Reputation.GetFactionDataByID or function(ID)
     isAccountWide = nil
   }
 end
-WeakAuras.ExpandAllFactionHeaders = C_Reputation.ExpandAllFactionHeaders or ExpandAllFactionHeaders
-WeakAuras.CollapseFactionHeader = C_Reputation.CollapseFactionHeader or CollapseFactionHeader
+Private.ExecEnv.ExpandAllFactionHeaders = C_Reputation.ExpandAllFactionHeaders or ExpandAllFactionHeaders
+Private.ExecEnv.CollapseFactionHeader = C_Reputation.CollapseFactionHeader or CollapseFactionHeader

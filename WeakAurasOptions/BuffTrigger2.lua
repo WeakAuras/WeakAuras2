@@ -24,7 +24,7 @@ local function getAuraMatchesList(name)
   if ids then
     local descText = ""
     for id, _ in pairs(ids) do
-      local icon = WeakAuras.GetSpellIcon(id)
+      local icon = OptionsPrivate.Private.ExecEnv.GetSpellIcon(id)
       if icon then
         if descText == "" then
           descText = "|T"..icon..":0|t: "..id
@@ -116,20 +116,20 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
 
     if isExactSpellId then
       aura_options[iconOption].name = function()
-        return WeakAuras.GetSpellName(WeakAuras.SafeToNumber(trigger[optionKey] and trigger[optionKey][i]) or "")
+        return OptionsPrivate.Private.ExecEnv.GetSpellName(WeakAuras.SafeToNumber(trigger[optionKey] and trigger[optionKey][i]) or "")
       end
       aura_options[iconOption].image = function()
-        local icon = WeakAuras.GetSpellIcon(trigger[optionKey] and trigger[optionKey][i] or "")
+        local icon = OptionsPrivate.Private.ExecEnv.GetSpellIcon(trigger[optionKey] and trigger[optionKey][i] or "")
         return icon and tostring(icon) or "", 18, 18
       end
       aura_options[iconOption].disabled = function()
-        return not trigger[optionKey] or not trigger[optionKey][i] or not WeakAuras.GetSpellIcon(trigger[optionKey] and trigger[optionKey][i])
+        return not trigger[optionKey] or not trigger[optionKey][i] or not OptionsPrivate.Private.ExecEnv.GetSpellIcon(trigger[optionKey] and trigger[optionKey][i])
       end
     else
       aura_options[iconOption].name = function()
         local spellId = trigger[optionKey] and trigger[optionKey][i] and WeakAuras.SafeToNumber(trigger[optionKey][i])
         if spellId then
-          return getAuraMatchesLabel(WeakAuras.GetSpellName(spellId))
+          return getAuraMatchesLabel(OptionsPrivate.Private.ExecEnv.GetSpellName(spellId))
         else
           return getAuraMatchesLabel(trigger[optionKey] and trigger[optionKey][i])
         end
@@ -138,7 +138,7 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
       aura_options[iconOption].desc = function()
         local spellId = trigger[optionKey] and trigger[optionKey][i] and WeakAuras.SafeToNumber(trigger[optionKey][i])
         if spellId then
-          local name = WeakAuras.GetSpellName(spellId)
+          local name = OptionsPrivate.Private.ExecEnv.GetSpellName(spellId)
           if name then
             local auraDesc = getAuraMatchesList(name)
             if auraDesc then
@@ -154,7 +154,7 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
         local icon
         local spellId = trigger[optionKey] and trigger[optionKey][i] and WeakAuras.SafeToNumber(trigger[optionKey][i])
         if spellId then
-          icon = WeakAuras.GetSpellIcon(spellId)
+          icon = OptionsPrivate.Private.ExecEnv.GetSpellIcon(spellId)
         else
           icon = spellCache.GetIcon(trigger[optionKey] and trigger[optionKey][i])
         end
@@ -171,7 +171,7 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
       hidden = hiddenFunction,
       get = function(info)
         local rawString = trigger[optionKey] and trigger[optionKey][i] or ""
-        local spellName, _, _, _, _, _, spellID = WeakAuras.GetSpellInfo(WeakAuras.SafeToNumber(rawString))
+        local spellName, _, _, _, _, _, spellID = OptionsPrivate.Private.ExecEnv.GetSpellInfo(WeakAuras.SafeToNumber(rawString))
         if spellName and spellID then
           return ("%s (%s)"):format(spellID, spellName) .. "\0" .. rawString
         else
