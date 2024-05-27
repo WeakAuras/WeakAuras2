@@ -424,7 +424,7 @@ local barPrototype = {
 
           local texture = self.additionalBarsTextures and self.additionalBarsTextures[index];
           if texture then
-            local texturePath = SharedMedia:Fetch("statusbar_atlas", texture) or SharedMedia:Fetch("statusbar", texture) or ""
+            local texturePath = SharedMedia:Fetch("statusbar_atlas", texture, true) or SharedMedia:Fetch("statusbar", texture) or ""
             Private.SetTextureOrAtlas(extraTexture, texturePath, extraTextureWrapMode, extraTextureWrapMode)
           else
             Private.SetTextureOrAtlas(extraTexture, self:GetStatusBarTexture(), extraTextureWrapMode, extraTextureWrapMode)
@@ -974,7 +974,7 @@ local funcs = {
     if self.textureSource == "Picker" then
       texturePath = self.textureInput or ""
     else
-      texturePath = SharedMedia:Fetch("statusbar_atlas", self.texture) or SharedMedia:Fetch("statusbar", self.texture) or ""
+      texturePath = SharedMedia:Fetch("statusbar_atlas", self.texture, true) or SharedMedia:Fetch("statusbar", self.texture) or ""
     end
     self.bar:SetStatusBarTexture(texturePath)
   end,
