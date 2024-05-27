@@ -1726,6 +1726,104 @@ function OptionsPrivate.OpenTriggerTemplate(data, targetId)
   end
 end
 
+OptionsPrivate.currentDynamicTextInput = false;
+
+local BaseDynamicTextCodes = {
+  {triggerNum = 0, name = "p", desc = L["Progress - The remaining time of a timer, or a non-timer value"]},
+  {triggerNum = 0, name = "t", desc = L["Total - The maximum duration of a timer, or a maximum non-timer value"]},
+  {triggerNum = 0, name = "n", desc = L["Name - The name of the display (usually an aura name), or the display's ID if there is no dynamic name"]},
+  {triggerNum = 0, name = "i", desc = L["Icon - The icon associated with the display"]},
+  {triggerNum = 0, name = "s", desc = L["Stacks - The number of stacks of an aura (usually)"]},
+  {triggerNum = 0, name = "c", desc = L["Custom - Allows you to define a custom Lua function that returns a list of string values. %c1 will be replaced by the first value returned, %c2 by the second, etc."]},
+  {triggerNum = 0, name = "%", desc = L["% - To show a percent sign"]},
+}
+
+function OptionsPrivate.UpdateTextReplacements(frame, data)
+  frame.scrollList:ReleaseChildren()
+
+  local _, props = OptionsPrivate.Private.GetAdditionalProperties(data)
+  local sortedProps = {}
+  for triggerNum, triggerProps in pairs(props) do
+    if next(props[triggerNum]) then
+      table.insert(sortedProps, {type = "header", triggerNum = triggerNum, name = OptionsPrivate.GetTriggerTitle(data, triggerNum)})
+      for name, desc in pairs(triggerProps) do
+        table.insert(sortedProps, {triggerNum = triggerNum, name = name, desc = desc})
+      end
+  end
+  end
+  table.sort(sortedProps, function(a, b)
+    if a.triggerNum == b.triggerNum then
+      if (a.type == "header" and b.type ~= "header") then
+        return true
+      elseif (a.type ~= "header" and b.type == "header") then
+        return false
+      else
+        return a.name < b.name
+      end
+    else
+      return a.triggerNum < b.triggerNum
+    end
+  end)
+  local finalProps = {
+    {type = "header", name = "Global Properties"}
+  }
+  tAppendAll(finalProps, BaseDynamicTextCodes)
+  tAppendAll(finalProps, sortedProps)
+
+  -- Create a modified WeakAurasSnippetButton for each property and add it to ScrollList
+  for i, prop in ipairs(finalProps) do
+    if prop.type and prop.type == "header" then
+      local heading = AceGUI:Create("Heading")
+      heading:SetText(prop.name)
+      heading:SetRelativeWidth(1)
+      heading.label:SetFontObject(GameFontNormalSmall2)
+      frame.scrollList:AddChild(heading)
+    else
+      local button = AceGUI:Create("WeakAurasSnippetButton")
+      local propIndex = prop.triggerNum > 0 and string.format("%s", prop.triggerNum) or ""
+      local propPrefix = prop.triggerNum > 0 and string.format("%%%s.", propIndex) or "%"
+      button:SetTitle(string.format("|cFFFFCC00%s|r%s", propPrefix, prop.name))
+      button:SetRelativeWidth(1)
+      button.title:SetFontObject(GameFontNormal)
+      button.frame:SetHeight(28)
+
+      -- Modify highlight textures hover and push and remove normal texture
+      button.ntex:SetTexture(nil)
+      button.htex:SetTexture(nil)
+      button.ptex:SetTexture(nil)
+      button.htex:SetAtlas("Options_List_Hover")
+      button.htex:SetVertexColor(1, 1, 1, 1)
+      button.ptex:SetAtlas("Options_List_Active")
+
+      -- Set Tooltip
+      button.frame:SetScript("OnEnter", function(frame)
+        local tooltip = GameTooltip
+        tooltip:SetWidth(300)
+        tooltip:SetOwner(frame, "ANCHOR_RIGHT")
+        tooltip:ClearLines()
+        tooltip:AddLine(string.format("%s%s", propPrefix, prop.name))
+        tooltip:AddLine(prop.desc, 1, 1, 1, true)
+        tooltip:AddLine("\n")
+        tooltip:AddLine(prop.triggerNum > 0 and L["Dynamic text label"] or L["Dynamic text label global"], 0.8, 0.8, 0.8, true)
+        tooltip:Show()
+        frame.obj:Fire("OnEnter")
+      end)
+
+      -- Insert dynamic text property on click
+      button:SetCallback("OnClick", function()
+        local insertProp = prop.name == "%" and "%%" or string.format("%%{%s}", prop.name)
+        if prop.triggerNum > 0 then
+          insertProp = string.format("%%{%d.%s}", propIndex, prop.name)
+        end
+        OptionsPrivate.currentDynamicTextInput.editbox:Insert(insertProp)
+        OptionsPrivate.currentDynamicTextInput.editbox:SetFocus()
+      end)
+
+      frame.scrollList:AddChild(button)
+    end
+  end
+end
+
 function OptionsPrivate.ResetMoverSizer()
   if(frame and frame.mover and frame.moversizer and frame.mover.moving.region and frame.mover.moving.data) then
     frame.moversizer:SetToRegion(frame.mover.moving.region, frame.mover.moving.data);

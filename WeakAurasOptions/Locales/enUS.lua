@@ -173,6 +173,8 @@ There are several special codes available to make this text dynamic:
 
 By default these show the information from the trigger selected via dynamic information. The information from a specific trigger can be shown via e.g. %2.p.
 ]=]
+L["Dynamic text label global"] = "By default this shows the information from the trigger selected via dynamic information. The information from a specific trigger can be shown via e.g. %2.p."
+L["Dynamic text label"] = "The trigger number is optional. When no trigger number is specified, the trigger selected via dynamic information will be used."
 L["Enabled"] = "Enabled"
 L["Enter an aura name, partial aura name, or spell id"] = "Enter an aura name, partial aura name, or spell id"
 L["Event Type"] = "Event Type"

@@ -101,6 +101,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
   local hasDown = input.__down
   local hasDuplicate = input.__duplicate
   local hasApplyTemplate = input.__applyTemplate
+  local hasDynamicTextCodes = input.__dynamicTextCodes
   local defaultCollapsed = input.__collapsed
   local hiddenFunc = input.__hidden
   local notcollapsable = input.__notcollapsable
@@ -125,7 +126,7 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
   end
 
   local titleWidth = WeakAuras.doubleWidth - (hasAdd and 0.15 or 0) - (hasDelete and 0.15 or 0)  - (hasUp and 0.15 or 0)
-                     - (hasDown and 0.15 or 0) - (hasDuplicate and 0.15 or 0) - (hasApplyTemplate and 0.15 or 0)
+                     - (hasDown and 0.15 or 0) - (hasDuplicate and 0.15 or 0) - (hasApplyTemplate and 0.15 or 0) - (hasDynamicTextCodes and 0.15 or 0)
 
   options[key .. "collapseSpacer"] = {
     type = marginTop and "header" or "description",
@@ -243,6 +244,22 @@ local function addCollapsibleHeader(options, key, input, order, isGroupTab)
         hidden = hiddenFunc
       }
       setFuncs(options[key .. "applyTemplate"], input.__applyTemplate)
+    end
+
+    if hasDynamicTextCodes then
+      options[key .. "dynamicTextCodesButton"] = {
+        type = "execute",
+        name = L["Dynamic Text Replacements"],
+        desc = L["There are several special codes available to make this text dynamic. Click to view a list with all dynamic text codes."],
+        order = order + 0.8,
+        width = 0.15,
+        hidden = hiddenFunc,
+        imageWidth = 24,
+        imageHeight = 24,
+        control = "WeakAurasIcon",
+        image = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\sidebar",
+      }
+      setFuncs(options[key .. "dynamicTextCodesButton"], input.__dynamicTextCodes)
     end
   end
 

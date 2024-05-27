@@ -4157,6 +4157,7 @@ end
 function GenericTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   local ret = "";
+  local additionalProperties = {}
   local prototype = GenericTrigger.GetPrototype(trigger)
   if prototype then
     local found = false;
@@ -4171,11 +4172,13 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
       if (enable and v.store and v.name and v.display and v.conditionType ~= "bool") then
         found = true;
         additional = additional .. "|cFFFFCC00%".. triggernum .. "." .. v.name .. "|r - " .. v.display .. "\n";
+        additionalProperties[v.name] = v.display
       end
     end
     if prototype.countEvents then
       found = true;
       additional = additional .. "|cFFFFCC00%".. triggernum .. ".count|r - " .. L["Count"] .. "\n";
+      additionalProperties.count = L["Count"]
     end
 
     if (found) then
@@ -4189,6 +4192,7 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
           if (type(varData) == "table") then
             if varData.display then
               ret = ret .. "|cFFFFCC00%".. triggernum .. "." .. var .. "|r - " .. varData.display .. "\n"
+              additionalProperties[var] = varData.display
             end
           end
         end
@@ -4196,7 +4200,7 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
     end
   end
 
-  return ret;
+  return ret, additionalProperties;
 end
 
 function GenericTrigger.GetProgressSources(data, triggernum, values)

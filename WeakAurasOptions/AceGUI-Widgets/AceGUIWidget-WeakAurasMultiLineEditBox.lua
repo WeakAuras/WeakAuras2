@@ -169,6 +169,10 @@ local function OnFrameShow(frame)
     end
   end
 
+  if option and option.callbacks and option.callbacks.OnShow then
+    option.callbacks.OnShow(self)
+  end
+
   for i = numExtraButtons + 1, #self.extraButtons do
     self.extraButtons[i]:Hide();
   end
@@ -178,6 +182,11 @@ local function OnEditFocusGained(frame)
   AceGUI:SetFocus(frame.obj)
   frame.obj:Fire("OnEditFocusGained")
   frame.obj.scrollFrame:EnableMouseWheel(true);
+
+  local option = frame.obj.userdata.option
+  if option and option.callbacks and option.callbacks.OnEditFocusGained then
+    option.callbacks.OnEditFocusGained(frame.obj)
+  end
 end
 
 --[[-----------------------------------------------------------------------------
@@ -370,6 +379,7 @@ local function Constructor()
     button      = button,
     extraButtons = extraButtons,
     editBox     = editBox,
+    editbox     = editBox,
     frame       = frame,
     label       = label,
     labelHeight = 10,

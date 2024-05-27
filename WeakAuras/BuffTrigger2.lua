@@ -3350,57 +3350,65 @@ end
 --- @return string @additional properties
 function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
+  local props = {}
+  local ret = ""
 
-  local ret =  "|cFFFFCC00%".. triggernum .. ".spellId|r - " .. L["Spell ID"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".debuffClass|r - " .. L["Debuff Class"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".debuffClassIcon|r - " .. L["Debuff Class Icon"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".unitCaster|r - " .. L["Caster Unit"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".casterName|r - " .. L["Caster Name"] .. "\n"
+  props["spellId"] = L["Spell ID"]
+  props["debuffClass"] = L["Debuff Class"]
+  props["debuffClassIcon"] = L["Debuff Class Icon"]
+  props["unitCaster"] = L["Caster Unit"]
+  props["casterName"] = L["Caster Name"]
+
   if trigger.unit ~= "multi" then
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".unit|r - " .. L["Unit"] .. "\n"
+    props["unit"] = L["Unit"]
   end
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".unitName|r - " .. L["Unit Name"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".matchCount|r - " .. L["Match Count"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".matchCountPerUnit|r - " .. L["Match Count per Unit"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".unitCount|r - " .. L["Units Affected"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".totalStacks|r - " .. L["Total stacks over all matches"] .. "\n"
+
+  props["unitName"] = L["Unit Name"]
+  props["matchCount"] = L["Match Count"]
+  props["matchCountPerUnit"] = L["Match Count per Unit"]
+  props["unitCount"] = L["Units Affected"]
+  props["totalStacks"] = L["Total stacks over all matches"]
 
   if trigger.unit ~= "multi" then
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".maxUnitCount|r - " .. L["Total Units"] .. "\n"
+    props["maxUnitCount"] = L["Total Units"]
   end
 
   if not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip then
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip|r - " .. L["Tooltip"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip1|r - " .. L["First Value of Tooltip Text"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip2|r - " .. L["Second Value of Tooltip Text"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip3|r - " .. L["Third Value of Tooltip Text"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip4|r - " .. L["Fourth Value of Tooltip Text"] .. "\n"
+    props["tooltip"] = L["Tooltip"]
+    props["tooltip1"] = L["First Value of Tooltip Text"]
+    props["tooltip2"] = L["Second Value of Tooltip Text"]
+    props["tooltip3"] = L["Third Value of Tooltip Text"]
+    props["tooltip4"] = L["Fourth Value of Tooltip Text"]
   end
 
   if trigger.unit ~= "multi" then
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".stackGainTime|r - " .. L["Since Stack Gain"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".stackLostTime|r - " .. L["Since Stack Lost"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".initialTime|r - " .. L["Since Apply"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".refreshTime|r - " .. L["Since Apply/Refresh"] .. "\n"
+    props["stackGainTime"] = L["Since Stack Gain"]
+    props["stackLostTime"] = L["Since Stack Lost"]
+    props["initialTime"] = L["Since Apply"]
+    props["refreshTime"] = L["Since Apply/Refresh"]
   end
 
   if WeakAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole then
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".role|r - " .. L["Assigned Role"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".roleIcon|r - " .. L["Assigned Role Icon"] .. "\n"
+    props["role"] = L["Assigned Role"]
+    props["roleIcon"] = L["Assigned Role Icon"]
   end
 
   if trigger.unit ~= "multi" and trigger.fetchRaidMark then
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".raidMark|r - " .. L["Raid Mark"] .. "\n"
+    props["raidMark"] = L["Raid Mark"]
   end
 
   if (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useAffected then
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".affected|r - " .. L["Names of affected Players"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".unaffected|r - " .. L["Names of unaffected Players"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".affectedUnits|r - " .. L["Units of affected Players in a table format"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".unaffectedUnits|r - " .. L["Units of unaffected Players in a table format"] .. "\n"
+    props["affected"] = L["Names of affected Players"]
+    props["unaffected"] = L["Names of unaffected Players"]
+    props["affectedUnits"] = L["Units of affected Players in a table format"]
+    props["unaffectedUnits"] = L["Units of unaffected Players in a table format"]
   end
 
-  return ret
+  for prop, desc in pairs(props) do
+    ret = ret .. string.format("|cFFFFCC00%%%s.%s|r - %s\n", triggernum, prop, desc)
+  end
+
+  return ret, props
 end
 
 function BuffTrigger.GetProgressSources(data, triggernum, values)

@@ -176,7 +176,7 @@ local function Constructor()
   ptex:SetColorTexture(1, 1, 1, 0.2)
   htex:SetAllPoints(ntex)
   button:SetPushedTexture(ptex)
-  button.ptext = ptex
+  button.ptex = ptex
 
   local delHighlight = deleteButton:CreateTexture()
   delHighlight:SetTexture([[Interface\Buttons\CancelButton-Highlight]])
@@ -223,6 +223,7 @@ local function Constructor()
     title = title,
     frame = button,
     type = Type,
+    ntex = ntex,
     htex = htex,
     ptex = ptex,
     deleteButton = deleteButton,
