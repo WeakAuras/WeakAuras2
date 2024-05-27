@@ -1,6 +1,9 @@
 if not WeakAuras.IsLibsOK() then return end
 
-local Type, Version = "WeakAurasMultiLineEditBox", 36
+---@class OptionsPrivate
+local OptionsPrivate = select(2, ...)
+
+local Type, Version = "WeakAurasMultiLineEditBox", 37
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -105,7 +108,7 @@ end
 local function OnReceiveDrag(self)                                               -- EditBox / ScrollFrame
   local infoType, spellIndex, bookType, info = GetCursorInfo()
   if infoType == "spell" then
-    info = WeakAuras.GetSpellName(info)
+    info = OptionsPrivate.Private.ExecEnv.GetSpellName(info)
   elseif infoType ~= "item" then
     return
   end

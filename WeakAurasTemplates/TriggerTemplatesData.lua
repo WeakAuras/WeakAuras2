@@ -3,7 +3,23 @@ local AddonName, TemplatePrivate = ...
 local WeakAuras = WeakAuras
 if not WeakAuras.IsRetail() then return end
 local L = WeakAuras.L
-local GetSpellInfo, tinsert, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetSpellDescription, C_Timer, Spell
+local tinsert, C_Timer, Spell = tinsert, C_Timer, Spell
+
+local GetSpellInfo, GetSpellIcon, GetSpellDescription = GetSpellInfo, GetSpellTexture, GetSpellDescription
+-- TWW Compatibility, we don't use functions from Compatibility.lua because TemplatePrivate.Private isn't set yet
+if GetSpellInfo == nil then
+  GetSpellInfo = function(spellID)
+    if not spellID then
+      return nil
+    end
+    local spellInfo = C_Spell.GetSpellInfo(spellID)
+    if spellInfo then
+      return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID
+    end
+  end
+  GetSpellIcon = C_Spell.GetSpellTexture
+  GetSpellDescription = C_Spell.GetSpellDescription
+end
 
 -- The templates tables are created on demand
 local templates =
@@ -5179,7 +5195,7 @@ for i = 1, 4 do
   });
 end
 for j, id in ipairs({5487, 768, 783, 114282, 1394966}) do
-  local title, _, icon = WeakAuras.GetSpellInfo(id)
+  local title, _, icon = GetSpellInfo(id)
   if title then
     for i = 1, 4 do
       tinsert(templates.class.DRUID[i][resourceSection].args, {
@@ -5333,7 +5349,7 @@ local function handleItem(item)
         waitingForItemInfo = true;
       end
     else
-      name, _, icon = WeakAuras.GetSpellInfo(item.spell);
+      name, _, icon = GetSpellInfo(item.spell);
       if (name == nil) then
         name = L["Unknown Spell"] .. " " .. tostring(item.spell);
       end
@@ -5485,7 +5501,7 @@ local function fixupIcons()
         if section.args then
           for _, item in pairs(section.args) do
             if (item.spell and (not item.type ~= "item")) then
-              local icon = WeakAuras.GetSpellIcon(item.spell)
+              local icon = GetSpellIcon(item.spell)
               if (icon) then
                 item.icon = icon;
               end

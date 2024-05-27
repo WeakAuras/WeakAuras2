@@ -6176,7 +6176,7 @@ function Private.ExecEnv.CreateSpellChecker()
     AddName = function(self, name)
       local spellId = tonumber(name)
       if spellId then
-        name = WeakAuras.GetSpellName(spellId)
+        name = Private.ExecEnv.GetSpellName(spellId)
         if name then
           self.names[name] = true
         end
@@ -6190,7 +6190,7 @@ function Private.ExecEnv.CreateSpellChecker()
     end,
     Check = function(self, spellId)
       if spellId then
-        return self.spellIds[spellId] or self.names[WeakAuras.GetSpellName(spellId)]
+        return self.spellIds[spellId] or self.names[Private.ExecEnv.GetSpellName(spellId)]
       end
     end,
     CheckName = function(self, name)

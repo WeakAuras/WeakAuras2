@@ -22,14 +22,14 @@ local spellCache = WeakAuras.spellCache;
 local function CorrectSpellName(input)
   local inputId = tonumber(input);
   if(inputId) then
-    local name = WeakAuras.GetSpellName(inputId);
+    local name = OptionsPrivate.Private.ExecEnv.GetSpellName(inputId);
     if(name) then
       return inputId;
     else
       return nil;
     end
   elseif WeakAuras.IsClassicEra() and input then
-    local _, _, _, _, _, _, spellId = WeakAuras.GetSpellInfo(input)
+    local _, _, _, _, _, _, spellId = OptionsPrivate.Private.ExecEnv.GetSpellInfo(input)
     if spellId then
       return spellId
     end
@@ -656,7 +656,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                       end
                     end
                   end
-                  local icon = WeakAuras.GetSpellIcon(value);
+                  local icon = OptionsPrivate.Private.ExecEnv.GetSpellIcon(value);
                   return icon and tostring(icon) or "", 18, 18;
                 elseif(arg.type == "item") then
                   local _, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(value);
@@ -668,7 +668,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             end,
             disabled = function()
               local value = getValue(trigger, nil, realname, multiEntry, entryNumber)
-              return not ((arg.type == "aura" and value and spellCache.GetIcon(value)) or (arg.type == "spell" and value and WeakAuras.GetSpellName(value)) or (arg.type == "item" and value and C_Item.GetItemIconByID(value or '')))
+              return not ((arg.type == "aura" and value and spellCache.GetIcon(value)) or (arg.type == "spell" and value and OptionsPrivate.Private.ExecEnv.GetSpellName(value)) or (arg.type == "item" and value and C_Item.GetItemIconByID(value or '')))
             end
           };
           order = order + 1;
@@ -710,12 +710,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                         return ("%s (%s)"):format(spellID, tbl.title) .. "\0" .. value
                       end
                     end
-                    local spellName = WeakAuras.GetSpellName(WeakAuras.SafeToNumber(value))
+                    local spellName = OptionsPrivate.Private.ExecEnv.GetSpellName(WeakAuras.SafeToNumber(value))
                     if spellName then
                       return ("%s (%s)"):format(spellID, spellName) .. "\0" .. value
                     end
                   elseif not useExactSpellId and not arg.noValidation then
-                    local spellName = WeakAuras.GetSpellName(value)
+                    local spellName = OptionsPrivate.Private.ExecEnv.GetSpellName(value)
                     if spellName then
                       return spellName
                     end

@@ -53,7 +53,7 @@ local function ConstructIconPicker(frame)
     if (tonumber(subname)) then
       local spellId = tonumber(subname);
       if (abs(spellId) < math.huge and tostring(spellId) ~= "nan") then
-        local name, _, icon = WeakAuras.GetSpellInfo(spellId)
+        local name, _, icon = OptionsPrivate.Private.ExecEnv.GetSpellInfo(spellId)
         if name and icon then
           AddButton(name, icon)
         end

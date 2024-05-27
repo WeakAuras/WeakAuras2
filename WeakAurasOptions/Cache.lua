@@ -37,8 +37,8 @@ function spellCache.Build()
     local misses = 0
     while misses < 80000 do
       id = id + 1
-      local name = WeakAuras.GetSpellName(id)
-      local icon = WeakAuras.GetSpellIcon(id)
+      local name = OptionsPrivate.Private.ExecEnv.GetSpellName(id)
+      local icon = OptionsPrivate.Private.ExecEnv.GetSpellIcon(id)
 
       if(icon == 136243) then -- 136243 is the a gear icon, we can ignore those spells
         misses = 0;
@@ -244,7 +244,7 @@ function spellCache.CorrectAuraName(input)
 
   local spellId = WeakAuras.SafeToNumber(input);
   if(spellId) then
-    local name, _, icon = WeakAuras.GetSpellInfo(spellId);
+    local name, _, icon = OptionsPrivate.Private.ExecEnv.GetSpellInfo(spellId);
     if(name) then
       spellCache.AddIcon(name, spellId, icon)
       return name, spellId;
