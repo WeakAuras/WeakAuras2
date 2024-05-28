@@ -1804,7 +1804,12 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
         tooltip:AddLine(string.format("%s%s", propPrefix, prop.name))
         tooltip:AddLine(prop.desc, 1, 1, 1, true)
         tooltip:AddLine("\n")
-        tooltip:AddLine(prop.triggerNum > 0 and L["Dynamic text label"] or L["Dynamic text label global"], 0.8, 0.8, 0.8, true)
+        tooltip:AddLine(
+          prop.triggerNum > 0
+          and L["The trigger number is optional. When no trigger number is specified, the trigger selected via dynamic information will be used."]
+          or L["By default this shows the information from the trigger selected via dynamic information. The information from a specific trigger can be shown via e.g. %2.p."],
+          0.8, 0.8, 0.8,
+          true)
         tooltip:Show()
         frame.obj:Fire("OnEnter")
       end)
