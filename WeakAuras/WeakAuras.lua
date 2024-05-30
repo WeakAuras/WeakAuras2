@@ -3838,31 +3838,17 @@ Private.GetTriggerDescription = wrapTriggerSystemFunction("GetTriggerDescription
 local wrappedGetOverlayInfo = wrapTriggerSystemFunction("GetOverlayInfo", "table");
 
 Private.GetAdditionalProperties = function(data)
-  local additionalProperties = ""
   local props = {}
   for i = 1, #data.triggers do
     local triggerSystem = GetTriggerSystem(data, i);
     if (triggerSystem) then
-      local add, raw = triggerSystem.GetAdditionalProperties(data, i)
-      if (add and add ~= "") then
-        if additionalProperties ~= "" then
-          additionalProperties = additionalProperties .. "\n"
-        end
-        additionalProperties = additionalProperties .. add;
-      end
-      if raw then
-        props[i] = raw
+      local triggerProps = triggerSystem.GetAdditionalProperties(data, i)
+      if triggerProps then
+        props[i] = triggerProps
       end
     end
   end
-
-  if additionalProperties ~= "" then
-    additionalProperties = "\n\n"
-                  .. L["Additional Trigger Replacements"] .. "\n"
-                  .. additionalProperties .. "\n\n"
-                  .. L["The trigger number is optional, and uses the trigger providing dynamic information if not specified."]
-  end
-  return additionalProperties, props
+  return props
 end
 
 Private.GetProgressSources = function(data)

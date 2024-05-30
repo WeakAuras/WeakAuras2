@@ -1741,7 +1741,7 @@ local BaseDynamicTextCodes = {
 function OptionsPrivate.UpdateTextReplacements(frame, data)
   frame.scrollList:ReleaseChildren()
 
-  local _, props = OptionsPrivate.Private.GetAdditionalProperties(data)
+  local props = OptionsPrivate.Private.GetAdditionalProperties(data)
   local sortedProps = {
     {type = "header", triggerNum = 0, name = "Global Properties"}
   }

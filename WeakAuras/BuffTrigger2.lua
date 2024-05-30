@@ -3347,11 +3347,10 @@ end
 --- Returns the tooltip text for additional properties.
 --- @param data table
 --- @param triggernum number
---- @return string @additional properties
+--- @return table @additional properties
 function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
   local props = {}
-  local ret = ""
 
   props["spellId"] = L["Spell ID"]
   props["debuffClass"] = L["Debuff Class"]
@@ -3404,11 +3403,7 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
     props["unaffectedUnits"] = L["Units of unaffected Players in a table format"]
   end
 
-  for prop, desc in pairs(props) do
-    ret = ret .. string.format("|cFFFFCC00%%%s.%s|r - %s\n", triggernum, prop, desc)
-  end
-
-  return ret, props
+  return props
 end
 
 function BuffTrigger.GetProgressSources(data, triggernum, values)

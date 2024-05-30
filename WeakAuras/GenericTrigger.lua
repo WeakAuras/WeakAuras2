@@ -4153,15 +4153,12 @@ function GenericTrigger.SetToolTip(trigger, state)
   return false
 end
 
----@type fun(data: auraData, triggernum: number): string
+---@type fun(data: auraData, triggernum: number): table
 function GenericTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
-  local ret = "";
-  local additionalProperties = {}
+  local props = {}
   local prototype = GenericTrigger.GetPrototype(trigger)
   if prototype then
-    local found = false;
-    local additional = ""
     for _, v in pairs(prototype.args) do
       local enable = true
       if(type(v.enable) == "function") then
@@ -4170,37 +4167,25 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
         enable = v.enable
       end
       if (enable and v.store and v.name and v.display and v.conditionType ~= "bool") then
-        found = true;
-        additional = additional .. "|cFFFFCC00%".. triggernum .. "." .. v.name .. "|r - " .. v.display .. "\n";
-        additionalProperties[v.name] = v.display
+        props[v.name] = v.display
       end
     end
     if prototype.countEvents then
-      found = true;
-      additional = additional .. "|cFFFFCC00%".. triggernum .. ".count|r - " .. L["Count"] .. "\n";
-      additionalProperties.count = L["Count"]
-    end
-
-    if (found) then
-      ret = ret .. additional;
+      props.count = L["Count"]
     end
   else
     if (trigger.custom_type == "stateupdate") then
       local variables = GenericTrigger.GetTsuConditionVariables(data.id, triggernum)
       if (type(variables) == "table") then
         for var, varData in pairs(variables) do
-          if (type(varData) == "table") then
-            if varData.display then
-              ret = ret .. "|cFFFFCC00%".. triggernum .. "." .. var .. "|r - " .. varData.display .. "\n"
-              additionalProperties[var] = varData.display
-            end
+          if (type(varData) == "table") and varData.display then
+            props[var] = varData.display
           end
         end
       end
     end
   end
-
-  return ret, additionalProperties;
+  return props;
 end
 
 function GenericTrigger.GetProgressSources(data, triggernum, values)
