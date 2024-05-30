@@ -1804,7 +1804,7 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
         button:SetTitle(string.format("|cFFFFCC00%s|r%s", propPrefix, prop.name))
       end
       if prop.type == "mini" or prop.type == "marker" then
-        button:SetRelativeWidth(1/prop.n)
+        button:SetRelativeWidth((1/prop.n) - 1e-10)
       else
         button:SetRelativeWidth(1)
       end
