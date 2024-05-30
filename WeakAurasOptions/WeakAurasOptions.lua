@@ -1729,61 +1729,86 @@ end
 OptionsPrivate.currentDynamicTextInput = false;
 
 local BaseDynamicTextCodes = {
-  {triggerNum = 0, name = "p", desc = L["Progress - The remaining time of a timer, or a non-timer value"]},
-  {triggerNum = 0, name = "t", desc = L["Total - The maximum duration of a timer, or a maximum non-timer value"]},
-  {triggerNum = 0, name = "n", desc = L["Name - The name of the display (usually an aura name), or the display's ID if there is no dynamic name"]},
-  {triggerNum = 0, name = "i", desc = L["Icon - The icon associated with the display"]},
-  {triggerNum = 0, name = "s", desc = L["Stacks - The number of stacks of an aura (usually)"]},
-  {triggerNum = 0, name = "c", desc = L["Custom - Allows you to define a custom Lua function that returns a list of string values. %c1 will be replaced by the first value returned, %c2 by the second, etc."]},
-  {triggerNum = 0, name = "%", desc = L["% - To show a percent sign"]},
+  {type = "mini", triggerNum = 0, name = "p", o = 1, desc = L["Progress - The remaining time of a timer, or a non-timer value"]},
+  {type = "mini", triggerNum = 0, name = "t", o = 2, desc = L["Total - The maximum duration of a timer, or a maximum non-timer value"]},
+  {type = "mini", triggerNum = 0, name = "n", o = 3, desc = L["Name - The name of the display (usually an aura name), or the display's ID if there is no dynamic name"]},
+  {type = "mini", triggerNum = 0, name = "i", o = 4, desc = L["Icon - The icon associated with the display"]},
+  {type = "mini", triggerNum = 0, name = "s", o = 5, desc = L["Stacks - The number of stacks of an aura (usually)"]},
+  {type = "mini", triggerNum = 0, name = "c", o = 6, desc = L["Custom - Allows you to define a custom Lua function that returns a list of string values. %c1 will be replaced by the first value returned, %c2 by the second, etc."]},
+  {type = "mini", triggerNum = 0, name = "%", o = 7, desc = L["% - To show a percent sign"]},
 }
 
 function OptionsPrivate.UpdateTextReplacements(frame, data)
   frame.scrollList:ReleaseChildren()
 
   local _, props = OptionsPrivate.Private.GetAdditionalProperties(data)
-  local sortedProps = {}
+  local sortedProps = {
+    {type = "header", triggerNum = 0, name = "Global Properties"}
+  }
+  for i = 1, 8 do
+    tinsert(sortedProps, {type = "marker", triggerNum = 0, name = "{rt"..i.."}", o = i, desc = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_"..i..":0|t"})
+  end
+  tAppendAll(sortedProps, BaseDynamicTextCodes)
   for triggerNum, triggerProps in pairs(props) do
     if next(props[triggerNum]) then
       table.insert(sortedProps, {type = "header", triggerNum = triggerNum, name = OptionsPrivate.GetTriggerTitle(data, triggerNum)})
+      for i = 1, 5 do
+        local prop = CopyTable(BaseDynamicTextCodes[i])
+        prop.triggerNum = triggerNum
+        table.insert(sortedProps, prop)
+      end
       for name, desc in pairs(triggerProps) do
         table.insert(sortedProps, {triggerNum = triggerNum, name = name, desc = desc})
       end
-  end
+    end
   end
   table.sort(sortedProps, function(a, b)
-    if a.triggerNum == b.triggerNum then
-      if (a.type == "header" and b.type ~= "header") then
-        return true
-      elseif (a.type ~= "header" and b.type == "header") then
-        return false
-      else
-        return a.name < b.name
-      end
-    else
+    if a.triggerNum ~= b.triggerNum then
       return a.triggerNum < b.triggerNum
+    elseif a.type ~= b.type then
+      return (a.type or "z") < (b.type or "z")
+    elseif a.type == "marker" and b.type == "marker" then
+      return a.o < b.o
+    elseif a.type == "mini" and b.type == "mini" then
+      return a.o < b.o
+    else
+      return a.name < b.name
     end
   end)
-  local finalProps = {
-    {type = "header", name = "Global Properties"}
-  }
-  tAppendAll(finalProps, BaseDynamicTextCodes)
-  tAppendAll(finalProps, sortedProps)
 
   -- Create a modified WeakAurasSnippetButton for each property and add it to ScrollList
-  for i, prop in ipairs(finalProps) do
-    if prop.type and prop.type == "header" then
+  local lastType, miniGroup
+  for i, prop in ipairs(sortedProps) do
+    if prop.type == "header" then
       local heading = AceGUI:Create("Heading")
       heading:SetText(prop.name)
       heading:SetRelativeWidth(1)
       heading.label:SetFontObject(GameFontNormalSmall2)
       frame.scrollList:AddChild(heading)
     else
+      if ((prop.type == "mini" or prop.type == "marker") and prop.type ~= lastType)
+      or (prop.type == "mini" and prop.o == 6)
+      then
+        miniGroup = AceGUI:Create("SimpleGroup")
+        miniGroup:SetLayout("Flow")
+        miniGroup:SetAutoAdjustHeight(true)
+        frame.scrollList:AddChild(miniGroup)
+      end
       local button = AceGUI:Create("WeakAurasSnippetButton")
-      local propIndex = prop.triggerNum > 0 and string.format("%s", prop.triggerNum) or ""
-      local propPrefix = prop.triggerNum > 0 and string.format("%%%s.", propIndex) or "%"
-      button:SetTitle(string.format("|cFFFFCC00%s|r%s", propPrefix, prop.name))
-      button:SetRelativeWidth(1)
+      local propIndex = prop.triggerNum > 0 and ("%s"):format(prop.triggerNum) or ""
+      local propPrefix = prop.triggerNum > 0 and ("%%%s."):format(propIndex) or "%"
+      if prop.type == "marker" then
+        button:SetTitle(prop.desc)
+      else
+        button:SetTitle(string.format("|cFFFFCC00%s|r%s", propPrefix, prop.name))
+      end
+      if prop.type == "mini" then
+        button:SetWidth(40)
+      elseif prop.type == "marker" then
+        button:SetWidth(25)
+      else
+        button:SetRelativeWidth(1)
+      end
       button.title:SetFontObject(GameFontNormal)
       button.frame:SetHeight(28)
 
@@ -1796,36 +1821,51 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
       button.ptex:SetAtlas("Options_List_Active")
 
       -- Set Tooltip
-      button.frame:SetScript("OnEnter", function(frame)
-        local tooltip = GameTooltip
-        tooltip:SetWidth(300)
-        tooltip:SetOwner(frame, "ANCHOR_RIGHT")
-        tooltip:ClearLines()
-        tooltip:AddLine(string.format("%s%s", propPrefix, prop.name))
-        tooltip:AddLine(prop.desc, 1, 1, 1, true)
-        tooltip:AddLine("\n")
-        tooltip:AddLine(
-          prop.triggerNum > 0
-          and L["The trigger number is optional. When no trigger number is specified, the trigger selected via dynamic information will be used."]
-          or L["By default this shows the information from the trigger selected via dynamic information. The information from a specific trigger can be shown via e.g. %2.p."],
-          0.8, 0.8, 0.8,
-          true)
-        tooltip:Show()
-        frame.obj:Fire("OnEnter")
-      end)
+      if prop.type ~= "marker" then
+        button.frame:SetScript("OnEnter", function(frame)
+          local tooltip = GameTooltip
+          tooltip:SetWidth(300)
+          tooltip:SetOwner(frame, "ANCHOR_RIGHT")
+          tooltip:ClearLines()
+          tooltip:AddLine(("%s%s"):format(propPrefix, prop.name))
+          tooltip:AddLine(prop.desc, 1, 1, 1, true)
+          tooltip:AddLine("\n")
+          tooltip:AddLine(
+            prop.triggerNum > 0
+            and L["The trigger number is optional. When no trigger number is specified, the trigger selected via dynamic information will be used."]
+            or L["By default this shows the information from the trigger selected via dynamic information. The information from a specific trigger can be shown via e.g. %2.p."],
+            0.8, 0.8, 0.8,
+            true)
+          tooltip:Show()
+          frame.obj:Fire("OnEnter")
+        end)
+      else
+        button.frame:SetScript("OnEnter", nil)
+      end
 
       -- Insert dynamic text property on click
       button:SetCallback("OnClick", function()
-        local insertProp = prop.name == "%" and "%%" or string.format("%%{%s}", prop.name)
-        if prop.triggerNum > 0 then
-          insertProp = string.format("%%{%d.%s}", propIndex, prop.name)
+        local insertProp
+        if prop.type == "marker" then
+          insertProp = prop.name
+        else
+          insertProp = prop.name == "%" and "%%" or ("%%{%s}"):format(prop.name)
+          if prop.triggerNum > 0 then
+            insertProp = string.format("%%{%d.%s}", propIndex, prop.name)
+          end
         end
+
         OptionsPrivate.currentDynamicTextInput.editbox:Insert(insertProp)
         OptionsPrivate.currentDynamicTextInput.editbox:SetFocus()
       end)
 
-      frame.scrollList:AddChild(button)
+      if prop.type == "mini" or prop.type == "marker" then
+        miniGroup:AddChild(button)
+      else
+        frame.scrollList:AddChild(button)
+      end
     end
+    lastType = prop.type
   end
 end
 
