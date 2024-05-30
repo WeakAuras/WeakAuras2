@@ -1729,13 +1729,13 @@ end
 OptionsPrivate.currentDynamicTextInput = false;
 
 local BaseDynamicTextCodes = {
-  {type = "mini", triggerNum = 0, name = "p", o = 1, desc = L["Progress - The remaining time of a timer, or a non-timer value"]},
-  {type = "mini", triggerNum = 0, name = "t", o = 2, desc = L["Total - The maximum duration of a timer, or a maximum non-timer value"]},
-  {type = "mini", triggerNum = 0, name = "n", o = 3, desc = L["Name - The name of the display (usually an aura name), or the display's ID if there is no dynamic name"]},
-  {type = "mini", triggerNum = 0, name = "i", o = 4, desc = L["Icon - The icon associated with the display"]},
-  {type = "mini", triggerNum = 0, name = "s", o = 5, desc = L["Stacks - The number of stacks of an aura (usually)"]},
-  {type = "mini", triggerNum = 0, name = "c", o = 6, desc = L["Custom - Allows you to define a custom Lua function that returns a list of string values. %c1 will be replaced by the first value returned, %c2 by the second, etc."]},
-  {type = "mini", triggerNum = 0, name = "%", o = 7, desc = L["% - To show a percent sign"]},
+  {type = "mini", triggerNum = 0, name = "p", o = 1, n = 7, desc = L["Progress - The remaining time of a timer, or a non-timer value"]},
+  {type = "mini", triggerNum = 0, name = "t", o = 2, n = 7, desc = L["Total - The maximum duration of a timer, or a maximum non-timer value"]},
+  {type = "mini", triggerNum = 0, name = "n", o = 3, n = 7, desc = L["Name - The name of the display (usually an aura name), or the display's ID if there is no dynamic name"]},
+  {type = "mini", triggerNum = 0, name = "i", o = 4, n = 7, desc = L["Icon - The icon associated with the display"]},
+  {type = "mini", triggerNum = 0, name = "s", o = 5, n = 7, desc = L["Stacks - The number of stacks of an aura (usually)"]},
+  {type = "mini", triggerNum = 0, name = "c", o = 6, n = 7, desc = L["Custom - Allows you to define a custom Lua function that returns a list of string values. %c1 will be replaced by the first value returned, %c2 by the second, etc."]},
+  {type = "mini", triggerNum = 0, name = "%", o = 7, n = 7, desc = L["% - To show a percent sign"]},
 }
 
 function OptionsPrivate.UpdateTextReplacements(frame, data)
@@ -1746,7 +1746,7 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
     {type = "header", triggerNum = 0, name = "Global Properties"}
   }
   for i = 1, 8 do
-    tinsert(sortedProps, {type = "marker", triggerNum = 0, name = "{rt"..i.."}", o = i, desc = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_"..i..":0|t"})
+    tinsert(sortedProps, {type = "marker", triggerNum = 0, name = "{rt"..i.."}", o = i, n = 8, desc = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_"..i..":0|t"})
   end
   tAppendAll(sortedProps, BaseDynamicTextCodes)
   for triggerNum, triggerProps in pairs(props) do
@@ -1755,6 +1755,7 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
       for i = 1, 5 do
         local prop = CopyTable(BaseDynamicTextCodes[i])
         prop.triggerNum = triggerNum
+        prop.n = 5
         table.insert(sortedProps, prop)
       end
       for name, desc in pairs(triggerProps) do
@@ -1787,11 +1788,11 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
       frame.scrollList:AddChild(heading)
     else
       if ((prop.type == "mini" or prop.type == "marker") and prop.type ~= lastType)
-      or (prop.type == "mini" and prop.o == 6)
       then
         miniGroup = AceGUI:Create("SimpleGroup")
         miniGroup:SetLayout("Flow")
         miniGroup:SetAutoAdjustHeight(true)
+        miniGroup:SetRelativeWidth(1)
         frame.scrollList:AddChild(miniGroup)
       end
       local button = AceGUI:Create("WeakAurasSnippetButton")
@@ -1802,10 +1803,8 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
       else
         button:SetTitle(string.format("|cFFFFCC00%s|r%s", propPrefix, prop.name))
       end
-      if prop.type == "mini" then
-        button:SetWidth(40)
-      elseif prop.type == "marker" then
-        button:SetWidth(25)
+      if prop.type == "mini" or prop.type == "marker" then
+        button:SetRelativeWidth(1/prop.n)
       else
         button:SetRelativeWidth(1)
       end
