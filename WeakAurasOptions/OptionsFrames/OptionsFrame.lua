@@ -900,10 +900,20 @@ function OptionsPrivate.CreateFrame()
   dynamicTextCodesLabel.frame:SetParent(dynamicTextCodesFrame)
   dynamicTextCodesLabel.frame:Show()
 
+  local dynamicTextCodesScrollContainer = AceGUI:Create("SimpleGroup")
+  dynamicTextCodesScrollContainer.frame:SetParent(dynamicTextCodesFrame)
+  dynamicTextCodesScrollContainer.frame:SetPoint("TOP", dynamicTextCodesLabel.frame, "BOTTOM", 0, -15)
+  dynamicTextCodesScrollContainer.frame:SetPoint("LEFT", dynamicTextCodesFrame, "LEFT", 15, 0)
+  dynamicTextCodesScrollContainer.frame:SetPoint("BOTTOMRIGHT", dynamicTextCodesFrame, "BOTTOMRIGHT", -15, 5)
+  dynamicTextCodesScrollContainer:SetFullWidth(true)
+  dynamicTextCodesScrollContainer:SetFullHeight(true)
+  dynamicTextCodesScrollContainer:SetLayout("Fill")
+
+
   local dynamicTextCodesScrollList = AceGUI:Create("ScrollFrame")
   dynamicTextCodesScrollList:SetLayout("List")
-  dynamicTextCodesScrollList:SetPoint("TOPLEFT", dynamicTextCodesLabel.frame, "BOTTOMLEFT", 0, -15)
-  dynamicTextCodesScrollList:SetPoint("BOTTOMRIGHT", dynamicTextCodesFrame, "BOTTOMRIGHT", -25, 20)
+  dynamicTextCodesScrollList:SetPoint("TOPLEFT", dynamicTextCodesScrollContainer.frame, "TOPLEFT")
+  dynamicTextCodesScrollList:SetPoint("BOTTOMRIGHT", dynamicTextCodesScrollContainer.frame, "BOTTOMRIGHT")
   dynamicTextCodesScrollList.frame:SetParent(dynamicTextCodesFrame)
   dynamicTextCodesScrollList:FixScroll()
   dynamicTextCodesScrollList.scrollframe:SetScript(
@@ -912,15 +922,17 @@ function OptionsPrivate.CreateFrame()
       frame.obj:DoLayout()
     end
   )
+
   dynamicTextCodesScrollList.scrollframe:SetScript(
     "OnSizeChanged",
     function(frame)
       if frame.obj.scrollBarShown then
-        frame.obj.content.width = frame.obj.content.original_width - 5
-        frame.obj.scrollframe:SetPoint("BOTTOMRIGHT", -5, 0)
+        frame.obj.content.width = frame.obj.content.original_width - 10
+        frame.obj.scrollframe:SetPoint("BOTTOMRIGHT", -10, 0)
       end
     end
   )
+
 
   dynamicTextCodesFrame.scrollList = dynamicTextCodesScrollList
   dynamicTextCodesFrame.label = dynamicTextCodesLabel
