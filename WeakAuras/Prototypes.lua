@@ -2026,12 +2026,17 @@ local function AddUnitChangeInternalEvents(triggerUnit, t, includePets, unitisun
           tinsert(t, "UNIT_CHANGED_" .. string.lower(unit))
           if unitisunit then
             tinsert(t, "UNIT_IS_UNIT_CHANGED_" .. string.lower(unit) .. "_" .. string.lower(unitisunit))
+            WeakAuras.WatchUnitChange(unitisunit)
           end
           WeakAuras.WatchUnitChange(unit)
         end
       end
     else
       tinsert(t, "UNIT_CHANGED_" .. string.lower(triggerUnit))
+      if unitisunit then
+        tinsert(t, "UNIT_IS_UNIT_CHANGED_" .. string.lower(triggerUnit) .. "_" .. string.lower(unitisunit))
+        WeakAuras.WatchUnitChange(unitisunit)
+      end
       WeakAuras.WatchUnitChange(triggerUnit)
     end
   end
@@ -2256,8 +2261,6 @@ Private.event_prototypes = {
           end
         end,
         test = "unitisunit",
-        store = true,
-        conditionType = "bool",
         desc = function() return L["Can be used for e.g. checking if \"boss1target\" is the same as \"player\"."] end,
       },
       {
@@ -3402,9 +3405,6 @@ Private.event_prototypes = {
         values = "hostility_types",
         conditionType = "select",
         store = true,
-        enable = function(trigger)
-          return trigger.unit == "nameplate"
-        end
       },
       {
         name = "name",
@@ -4028,9 +4028,6 @@ Private.event_prototypes = {
         values = "hostility_types",
         store = true,
         conditionType = "select",
-        enable = function(trigger)
-          return trigger.unit == "nameplate"
-        end
       },
       {
         hidden = true,
@@ -4349,9 +4346,6 @@ Private.event_prototypes = {
         values = "hostility_types",
         store = true,
         conditionType = "select",
-        enable = function(trigger)
-          return trigger.unit == "nameplate"
-        end
       },
       {
         hidden = true,
@@ -9299,9 +9293,6 @@ Private.event_prototypes = {
         values = "hostility_types",
         store = true,
         conditionType = "select",
-        enable = function(trigger)
-           return trigger.unit == "nameplate"
-         end
       },
       {
         name = "sourceUnit",

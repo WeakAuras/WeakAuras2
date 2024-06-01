@@ -979,7 +979,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       width = WeakAuras.normalWidth,
       name = L["Hostility"],
       values = OptionsPrivate.Private.hostility_types,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and trigger.useHostility) end,
+      hidden = function() return not (trigger.type == "aura2" and trigger.useHostility) end,
       order = 69.2
     },
     hostilitySpace = {
