@@ -3398,7 +3398,6 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange:RegisterEvent("PLAYER_TARGET_CHANGED")
     if not WeakAuras.IsClassicEra() then
       watchUnitChange:RegisterEvent("PLAYER_FOCUS_CHANGED")
-    else
       watchUnitChange:RegisterEvent("PLAYER_ROLES_ASSIGNED")
     end
     watchUnitChange:RegisterEvent("PLAYER_SOFT_ENEMY_CHANGED")
@@ -3575,10 +3574,12 @@ function WeakAuras.WatchUnitChange(unit)
           eventsToSend["UNIT_CHANGED_" .. pet] = pet
         end
       elseif event == "PLAYER_ROLES_ASSIGNED" then
-        if not watchUnitChange.trackedUnits[unit] then
-          return
+        print("### PLAYER_ROLES_ASSIGNED")
+        for unit in pairs(Private.multiUnitUnits.group) do
+          if watchUnitChange.trackedUnits[unit] then
+            roleUpdate(unit, eventsToSend)
+          end
         end
-        roleUpdate(unit, eventsToSend)
       elseif event == "UNIT_TARGET" then
         local unitTarget = unit .. "target"
         if not watchUnitChange.trackedUnits[unitTarget] then
@@ -3615,7 +3616,7 @@ function WeakAuras.WatchUnitChange(unit)
       Private.StopProfileSystem("generictrigger unit change");
     end)
   end
-  local guid = UnitGUID(unit) or ""
+  local guid = UnitGUID(unit)
   watchUnitChange.trackedUnits[unit] = true
   watchUnitChange.unitIdToGUID[unit] = guid
   if guid then
