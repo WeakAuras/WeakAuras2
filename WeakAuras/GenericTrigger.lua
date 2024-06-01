@@ -3574,7 +3574,6 @@ function WeakAuras.WatchUnitChange(unit)
           eventsToSend["UNIT_CHANGED_" .. pet] = pet
         end
       elseif event == "PLAYER_ROLES_ASSIGNED" then
-        print("### PLAYER_ROLES_ASSIGNED")
         for unit in pairs(Private.multiUnitUnits.group) do
           if watchUnitChange.trackedUnits[unit] then
             roleUpdate(unit, eventsToSend)
@@ -3615,6 +3614,9 @@ function WeakAuras.WatchUnitChange(unit)
 
       Private.StopProfileSystem("generictrigger unit change");
     end)
+  end
+  if watchUnitChange.trackedUnits[unit] then
+    return
   end
   local guid = UnitGUID(unit)
   watchUnitChange.trackedUnits[unit] = true
