@@ -10862,12 +10862,20 @@ Private.event_prototypes = {
     name = WeakAuras.newFeatureString..L["Currency"],
     init = function(trigger)
       local ret = [=[
-        local currencyInfo = Private.ExecEnv.GetCurrencyInfo(%d)
+        local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(%d)
         if not currencyInfo then
-          currencyInfo = Private.ExecEnv.GetCurrencyInfo(1) --Currency Token Test Token 4
+          currencyInfo = C_CurrencyInfo.GetCurrencyInfo(1) --Currency Token Test Token 4
           currencyInfo.iconFileID = "Interface\\Icons\\INV_Misc_QuestionMark" --We don't want the user to think their input was valid
         end
       ]=]
+      -- WORKAROUND https://github.com/WeakAuras/WeakAuras2/issues/5106
+      if WeakAuras.IsCataClassic() then
+        ret = ret .. [=[
+          if currencyInfo.quantityEarnedThisWeek then
+            currencyInfo.quantityEarnedThisWeek = currencyInfo.quantityEarnedThisWeek / 100
+          end
+        ]=]
+      end
       return ret:format(trigger.currencyId or 1)
     end,
     statesParameter = "one",
@@ -11179,13 +11187,16 @@ Private.event_prototypes = {
   },
 };
 
+if WeakAuras.IsClassicEra() then
+  Private.event_prototypes["Death Knight Rune"] = nil
+  Private.event_prototypes["Currency"] = nil
+end
+if WeakAuras.IsCataClassic() then
+  Private.event_prototypes["Swing Timer"] = nil
+end
 if WeakAuras.IsClassicOrCata() then
   if not UnitDetailedThreatSituation then
     Private.event_prototypes["Threat Situation"] = nil
-  end
-  if not WeakAuras.IsCataClassic() then
-    Private.event_prototypes["Death Knight Rune"] = nil
-    Private.event_prototypes["Currency"] = nil
   end
   Private.event_prototypes["Evoker Essence"] = nil
   Private.event_prototypes["Alternate Power"] = nil
@@ -11194,12 +11205,9 @@ if WeakAuras.IsClassicOrCata() then
   Private.event_prototypes["PvP Talent Selected"] = nil
   Private.event_prototypes["Class/Spec"] = nil
   Private.event_prototypes["Loot Specialization"] = nil
-else
-  Private.event_prototypes["Queued Action"] = nil
 end
-
-if WeakAuras.IsCataClassic() then
-  Private.event_prototypes["Swing Timer"] = nil
+if WeakAuras.IsRetail() then
+  Private.event_prototypes["Queued Action"] = nil
 end
 
 Private.category_event_prototype = {}
