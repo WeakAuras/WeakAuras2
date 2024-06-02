@@ -1032,6 +1032,12 @@ Private.unit_types_bufftrigger_2 = Mixin({
 }, target_unit_types)
 
 ---@type table<string, string>
+Private.actual_unit_types = Mixin({
+  player = L["Player"],
+  pet = L["Pet"],
+}, target_unit_types)
+
+---@type table<string, string>
 Private.actual_unit_types_with_specific = Mixin({
   player = L["Player"],
   pet = L["Pet"],

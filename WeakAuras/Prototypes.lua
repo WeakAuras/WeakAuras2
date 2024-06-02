@@ -2008,14 +2008,13 @@ Private.load_prototype = {
   }
 };
 
-local function AddUnitChangeInternalEvents(triggerUnit, t, includePets)
+local function AddUnitChangeInternalEvents(triggerUnit, t, includePets, unitisunit)
   if (triggerUnit == nil) then
     return
   end
   if (triggerUnit == "multi") then
     -- Handled by normal events"
   elseif triggerUnit == "pet" then
-    WeakAuras.WatchForPetDeath();
     tinsert(t, "PET_UPDATE")
   else
     if Private.multiUnitUnits[triggerUnit] then
@@ -2024,11 +2023,44 @@ local function AddUnitChangeInternalEvents(triggerUnit, t, includePets)
         isPet = WeakAuras.UnitIsPet(unit)
         if (includePets ~= nil and isPet) or (includePets ~= "PetsOnly" and not isPet) then
           tinsert(t, "UNIT_CHANGED_" .. string.lower(unit))
-          WeakAuras.WatchUnitChange(unit)
+          if unitisunit then
+            tinsert(t, "UNIT_IS_UNIT_CHANGED_" .. string.lower(unit) .. "_" .. string.lower(unitisunit))
+          end
         end
       end
     else
       tinsert(t, "UNIT_CHANGED_" .. string.lower(triggerUnit))
+      if unitisunit then
+        tinsert(t, "UNIT_IS_UNIT_CHANGED_" .. string.lower(triggerUnit) .. "_" .. string.lower(unitisunit))
+      end
+    end
+  end
+end
+
+local function AddWatchedUnits(triggerUnit, includePets, unitisunit)
+  if (triggerUnit == nil) then
+    return
+  end
+  if (triggerUnit == "multi") then
+    -- Handled by normal events"
+  elseif triggerUnit == "pet" then
+    WeakAuras.WatchForPetDeath();
+  else
+    if Private.multiUnitUnits[triggerUnit] then
+      local isPet
+      for unit in pairs(Private.multiUnitUnits[triggerUnit]) do
+        isPet = WeakAuras.UnitIsPet(unit)
+        if (includePets ~= nil and isPet) or (includePets ~= "PetsOnly" and not isPet) then
+          if unitisunit then
+            WeakAuras.WatchUnitChange(unitisunit)
+          end
+          WeakAuras.WatchUnitChange(unit)
+        end
+      end
+    else
+      if unitisunit then
+        WeakAuras.WatchUnitChange(unitisunit)
+      end
       WeakAuras.WatchUnitChange(triggerUnit)
     end
   end
@@ -2206,13 +2238,13 @@ Private.event_prototypes = {
     internal_events = function(trigger)
       local unit = trigger.unit
       local result = {}
-      AddUnitChangeInternalEvents(unit, result)
-      if trigger.unitisunit then
-        AddUnitChangeInternalEvents(trigger.unitisunit, result)
-      end
+      AddUnitChangeInternalEvents(unit, result, nil, trigger.use_unitisunit and trigger.unitisunit or nil)
       AddUnitRoleChangeInternalEvents(unit, result)
       AddUnitSpecChangeInternalEvents(unit, result)
       return result
+    end,
+    loadFunc = function(trigger)
+      AddWatchedUnits(trigger.unit, nil, trigger.use_unitisunit and trigger.unitisunit or nil)
     end,
     force_events = unitHelperFunctions.UnitChangedForceEvents,
     name = L["Unit Characteristics"],
@@ -2240,19 +2272,23 @@ Private.event_prototypes = {
         values = "actual_unit_types_cast",
         desc = Private.actual_unit_types_cast_tooltip,
         test = "true",
-        store = true
+        store = true,
+        reloadOptions = true,
       },
       {
         name = "unitisunit",
         display = L["Unit is Unit"],
         type = "unit",
         init = "UnitIsUnit(unit, extraUnit)",
-        values = "actual_unit_types_with_specific",
+        values = function(trigger)
+          if Private.multiUnitUnits[trigger.unit] then
+            return Private.actual_unit_types
+          else
+            return Private.actual_unit_types_with_specific
+          end
+        end,
         test = "unitisunit",
-        store = true,
-        conditionType = "bool",
         desc = function() return L["Can be used for e.g. checking if \"boss1target\" is the same as \"player\"."] end,
-        enable = function(trigger) return not Private.multiUnitUnits[trigger.unit] end
       },
       {
         name = "name",
@@ -3017,6 +3053,10 @@ Private.event_prototypes = {
       AddUnitSpecChangeInternalEvents(unit, result)
       return result
     end,
+    loadFunc = function(trigger)
+      local includePets = trigger.use_includePets == true and trigger.includePets or nil
+      AddWatchedUnits(trigger.unit, includePets)
+    end,
     force_events = unitHelperFunctions.UnitChangedForceEventsWithPets,
     name = L["Health"],
     init = function(trigger)
@@ -3396,9 +3436,6 @@ Private.event_prototypes = {
         values = "hostility_types",
         conditionType = "select",
         store = true,
-        enable = function(trigger)
-          return trigger.unit == "nameplate"
-        end
       },
       {
         name = "name",
@@ -3513,6 +3550,8 @@ Private.event_prototypes = {
       if WeakAuras.IsClassicEra() and trigger.use_showCost and trigger.unit == "player" then
         WeakAuras.WatchForQueuedSpell()
       end
+      local includePets = trigger.use_includePets == true and trigger.includePets or nil
+      AddWatchedUnits(trigger.unit, includePets)
     end,
     force_events = unitHelperFunctions.UnitChangedForceEventsWithPets,
     name = L["Power"],
@@ -4022,9 +4061,6 @@ Private.event_prototypes = {
         values = "hostility_types",
         store = true,
         conditionType = "select",
-        enable = function(trigger)
-          return trigger.unit == "nameplate"
-        end
       },
       {
         hidden = true,
@@ -4116,6 +4152,9 @@ Private.event_prototypes = {
       AddUnitRoleChangeInternalEvents(unit, result)
       AddUnitSpecChangeInternalEvents(unit, result)
       return result
+    end,
+    loadFunc = function(trigger)
+      AddWatchedUnits(trigger.unit)
     end,
     force_events = unitHelperFunctions.UnitChangedForceEvents,
     name = L["Alternate Power"],
@@ -4343,9 +4382,6 @@ Private.event_prototypes = {
         values = "hostility_types",
         store = true,
         conditionType = "select",
-        enable = function(trigger)
-          return trigger.unit == "nameplate"
-        end
       },
       {
         hidden = true,
@@ -8626,6 +8662,12 @@ Private.event_prototypes = {
       end
       return result
     end,
+    loadFunc = function(trigger)
+      local unit = trigger.unit
+      if unit and unit ~= "none" then
+        AddWatchedUnits(unit)
+      end
+    end,
     force_events = unitHelperFunctions.UnitChangedForceEvents,
     name = L["Threat Situation"],
     init = function(trigger)
@@ -8979,6 +9021,8 @@ Private.event_prototypes = {
       if trigger.unit == "nameplate" and trigger.use_onUpdateUnitTarget then
         WeakAuras.WatchForNameplateTargetChange()
       end
+      local includePets = trigger.use_includePets == true and trigger.includePets or nil
+      AddWatchedUnits(trigger.unit, includePets)
     end,
     force_events = unitHelperFunctions.UnitChangedForceEventsWithPets,
     progressType = "timed",
@@ -9339,9 +9383,6 @@ Private.event_prototypes = {
         values = "hostility_types",
         store = true,
         conditionType = "select",
-        enable = function(trigger)
-           return trigger.unit == "nameplate"
-         end
       },
       {
         name = "sourceUnit",
@@ -10386,6 +10427,9 @@ Private.event_prototypes = {
     loadFunc = function(trigger)
       if (trigger.use_ismoving ~= nil) then
         WeakAuras.WatchForPlayerMoving();
+      end
+      if (trigger.use_HasPet ~= nil) then
+        AddWatchedUnits("pet")
       end
     end,
     init = function(trigger)
