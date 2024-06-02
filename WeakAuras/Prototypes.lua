@@ -10777,10 +10777,15 @@ Private.event_prototypes = {
           currencyInfo = C_CurrencyInfo.GetCurrencyInfo(1) --Currency Token Test Token 4
           currencyInfo.iconFileID = "Interface\\Icons\\INV_Misc_QuestionMark" --We don't want the user to think their input was valid
         end
-        if WeakAuras.IsCataClassic() and currencyInfo.quantityEarnedThisWeek then
-          currencyInfo.quantityEarnedThisWeek = currencyInfo.quantityEarnedThisWeek / 100
-        end
       ]=]
+      -- WORKAROUND https://github.com/WeakAuras/WeakAuras2/issues/5106
+      if WeakAuras.IsCataClassic() then
+        ret = ret .. [=[
+          if currencyInfo.quantityEarnedThisWeek then
+            currencyInfo.quantityEarnedThisWeek = currencyInfo.quantityEarnedThisWeek / 100
+          end
+        ]=]
+      end
       return ret:format(trigger.currencyId or 1)
     end,
     statesParameter = "one",
