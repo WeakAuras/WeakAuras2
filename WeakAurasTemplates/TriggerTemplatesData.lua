@@ -817,7 +817,7 @@ templates.class.PALADIN = {
         { spell = 386730, type = "buff", unit = "player", talent = 115466 }, -- Divine Resonance
         { spell = 387178, type = "buff", unit = "player", talent = 102576 }, -- Empyrean Legacy
         { spell = 387815, type = "buff", unit = "player", talent = 102539 }, -- Untempered Dedication
-        { spell = 388007, type = "buff", unit = "player", talent = 102579 }, -- Blessing of Summer
+        { spell = 388007, type = "buff", unit = "player", talent = 116183 }, -- Blessing of Summer
         { spell = 388019, type = "buff", unit = "player", talent = 102538 }, -- Maraad's Dying Breath
         { spell = 392939, type = "buff", unit = "player", talent = 102565 }, -- Veneration
         { spell = 394709, type = "buff", unit = "player", talent = 102544 }, -- Unending Light
@@ -876,7 +876,7 @@ templates.class.PALADIN = {
         { spell = 216331, type = "ability", buff = true, talent = 102568 }, -- Avenging Crusader
         { spell = 275773, type = "ability", requiresTarget = true }, -- Judgment
         { spell = 375576, type = "ability", requiresTarget = true, talent = 102465 }, -- Divine Toll
-        { spell = 388007, type = "ability", buff = true, talent = 102579 }, -- Blessing of Summer
+        { spell = 388007, type = "ability", buff = true, talent = 116183 }, -- Blessing of Summer
         { spell = 388010, type = "ability" }, -- Blessing of Autumn
         { spell = 391054, type = "ability" }, -- Intercession
         { spell = 414273, type = "ability", buff = true, talent = 115876}, -- Hand of Divinity
