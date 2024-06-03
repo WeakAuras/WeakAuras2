@@ -5082,7 +5082,7 @@ Private.event_prototypes = {
       if (trigger.use_exact_spellName) then
         name = tonumber(trigger.spellName)
       else
-        name = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName
+        name = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName
       end
       return { "WA_UPDATE_OVERLAY_GLOW:" .. name }
     end,
@@ -5142,7 +5142,7 @@ Private.event_prototypes = {
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
-        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
       end
       local events = {
         "SPELL_COOLDOWN_CHANGED:" .. spellName,
@@ -5613,7 +5613,7 @@ Private.event_prototypes = {
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
-        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
       end
       return { "SPELL_COOLDOWN_READY:" .. spellName }
     end,
@@ -5689,7 +5689,7 @@ Private.event_prototypes = {
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
-        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
       end
       return { "SPELL_CHARGES_CHANGED:" .. spellName }
     end,
@@ -6388,7 +6388,7 @@ Private.event_prototypes = {
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName
       else
-        spellName = type(trigger.spellName) == "number" and GetSpellInfo(trigger.spellName) or trigger.spellName;
+        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
       end
       return { "SPELL_COOLDOWN_CHANGED:" .. spellName }
     end,
