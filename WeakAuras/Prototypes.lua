@@ -4280,7 +4280,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsCataOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end,
         desc = L["Requires syncing the specialization via LibSpecialization."],
       },
@@ -4293,7 +4293,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsCataOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end
       },
       {
@@ -11190,6 +11190,7 @@ Private.event_prototypes = {
 if WeakAuras.IsClassicEra() then
   Private.event_prototypes["Death Knight Rune"] = nil
   Private.event_prototypes["Currency"] = nil
+  Private.event_prototypes["Alternate Power"] = nil
 end
 if WeakAuras.IsCataClassic() then
   Private.event_prototypes["Swing Timer"] = nil
@@ -11199,7 +11200,6 @@ if WeakAuras.IsClassicOrCata() then
     Private.event_prototypes["Threat Situation"] = nil
   end
   Private.event_prototypes["Evoker Essence"] = nil
-  Private.event_prototypes["Alternate Power"] = nil
   Private.event_prototypes["Equipment Set"] = nil
   Private.event_prototypes["Spell Activation Overlay"] = nil
   Private.event_prototypes["PvP Talent Selected"] = nil
