@@ -3417,6 +3417,7 @@ Private.AtlasList = {
 "shop-card-bundle-starseekers",
 "shop-card-darkcover",
 "shop-card-full-BCC-darkportalpassupgrade",
+"shop-card-full-aa44",
 "shop-card-full-bfadeluxe",
 "shop-card-full-classicwotlk-goodies-heroictoepic2",
 "shop-card-full-classicwotlk-goodies2",

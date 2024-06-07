@@ -14,8 +14,8 @@ local UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
   = UnitName, GetRealmName, UnitRace, UnitFactionGroup, IsInRaid
 local UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
   = UnitClass, UnitExists, UnitGUID, UnitAffectingCombat, GetInstanceInfo, IsInInstance
-local UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
-  = UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI, GetSpellInfo
+local UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI
+  = UnitIsUnit, GetRaidRosterInfo, GetSpecialization, UnitInVehicle, UnitHasVehicleUI
 local SendChatMessage, UnitInBattleground, UnitInRaid, UnitInParty, GetTime
   = SendChatMessage, UnitInBattleground, UnitInRaid, UnitInParty, GetTime
 local CreateFrame, IsShiftKeyDown, GetScreenWidth, GetScreenHeight, GetCursorPosition, UpdateAddOnCPUUsage, GetFrameCPUUsage, debugprofilestop
@@ -1887,7 +1887,7 @@ loadFrame:RegisterEvent("PLAYER_REGEN_DISABLED");
 loadFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
 loadFrame:RegisterEvent("PLAYER_ROLES_ASSIGNED");
 loadFrame:RegisterEvent("SPELLS_CHANGED");
-loadFrame:RegisterEvent("UNIT_INVENTORY_CHANGED")
+loadFrame:RegisterUnitEvent("UNIT_INVENTORY_CHANGED", "player")
 loadFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
 loadFrame:RegisterEvent("PLAYER_DEAD")
 loadFrame:RegisterEvent("PLAYER_ALIVE")
@@ -6166,7 +6166,7 @@ function Private.ExecEnv.CreateSpellChecker()
     AddName = function(self, name)
       local spellId = tonumber(name)
       if spellId then
-        name = GetSpellInfo(spellId)
+        name = Private.ExecEnv.GetSpellName(spellId)
         if name then
           self.names[name] = true
         end
@@ -6179,7 +6179,9 @@ function Private.ExecEnv.CreateSpellChecker()
       self.spellIds[spellId] = true
     end,
     Check = function(self, spellId)
-      return self.spellIds[spellId] or self.names[GetSpellInfo(spellId)]
+      if spellId then
+        return self.spellIds[spellId] or self.names[Private.ExecEnv.GetSpellName(spellId)]
+      end
     end,
     CheckName = function(self, name)
       return self.names[name]

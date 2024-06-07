@@ -10,10 +10,13 @@ local Private = select(2, ...)
 --- @field MySpecialization fun(): number, string, string
 local LibSpec = LibStub("LibSpecialization")
 
---- @alias specData {[1]: number, [2]: string, [3]: string}
+--- @alias specData {[1]: number, [2]: string, [3]: string, [4]: string}
 
 --- @type table<string, specData>
 local nameToSpecMap = {}
+
+local nameToTalents = {}
+
 --- @type table<string, string>
 local nameToUnitMap = {
   [GetUnitName("player", true)] = "player"
@@ -26,11 +29,13 @@ local subscribers = {}
 --- @field Register fun(callback: fun(unit: string))
 --- @field SpecForUnit fun(unit: string): number?
 --- @field SpecRolePositionForUnit fun(unit: string): number?, string?, string?
+--- @field CheckTalentForUnit fun(unit: string, talentId: number): boolean?
 
 Private.LibSpecWrapper = {
   Register = function(callback) end,
   SpecForUnit = function(unit) end,
-  SpecRolePositionForUnit = function(unit) end
+  SpecRolePositionForUnit = function(unit) end,
+  CheckTalentForUnit = function(unit) end,
 }
 if LibSpec then
   local frame = CreateFrame("Frame")
@@ -69,12 +74,13 @@ if LibSpec then
   ---@param role string
   ---@param position string
   ---@param sender string
-  ---@param channel string
-  local function LibSpecCallback(specId, role, position, sender, channel)
+  ---@param talentString string
+  local function LibSpecCallback(specId, role, position, sender, talentString)
     if nameToSpecMap[sender]
        and nameToSpecMap[sender][1] == specId
        and nameToSpecMap[sender][2] == role
        and nameToSpecMap[sender][3] == position
+       and nameToSpecMap[sender][4] == talentString
     then
       return
     end
@@ -83,7 +89,8 @@ if LibSpec then
       return
     end
 
-    nameToSpecMap[sender] = {specId, role, position}
+    nameToSpecMap[sender] = {specId, role, position, talentString}
+    nameToTalents[sender] = nil
     for _, f in ipairs(subscribers) do
       f(nameToUnitMap[sender])
     end
@@ -116,6 +123,93 @@ if LibSpec then
       return nil
     end
   end
+
+  local function ReadLoadoutHeader(importStream)
+    local bitWidthHeaderVersion = 8
+    local bitWidthSpecID = 16
+    local headerBitWidth = bitWidthHeaderVersion + bitWidthSpecID + 128;
+
+    local importStreamTotalBits = importStream:GetNumberOfBits();
+    if( importStreamTotalBits < headerBitWidth) then
+      return false, 0, 0, 0;
+    end
+    local serializationVersion = importStream:ExtractValue(bitWidthHeaderVersion);
+    local specID = importStream:ExtractValue(bitWidthSpecID);
+
+    -- treeHash is a 128bit hash, passed as an array of 16, 8-bit values
+    local treeHash = {};
+    for i=1,16,1 do
+      treeHash[i] = importStream:ExtractValue(8);
+    end
+    return true, serializationVersion, specID, treeHash;
+  end
+
+  function Private.LibSpecWrapper.CheckTalentForUnit(unit, talentId)
+    if UnitIsUnit(unit, "player") then
+      return select(4, WeakAuras.GetTalentById(talentId))
+    end
+    local unitName = GetUnitName(unit, true)
+    if not nameToTalents[unitName] then
+      -- Parse Talent String once and store which talents are selected
+      if not nameToSpecMap[unitName] then return nil end
+      local talentString = nameToSpecMap[unitName][4]
+      if not talentString then return nil end
+
+      local importStream = CreateAndInitFromMixin(ImportDataStreamMixin, talentString)
+      local headerValid, serializationVersion, specID, treeHash = ReadLoadoutHeader(importStream);
+      local currentSerializationVersion = C_Traits.GetLoadoutSerializationVersion();
+      if(not headerValid) then
+        return nil
+      end
+      if(serializationVersion ~= currentSerializationVersion or serializationVersion ~= 1) then
+        return nil
+      end
+
+      local treeID = C_ClassTalents.GetTraitTreeForSpec(specID)
+
+      local results = {};
+      local bitWidthRanksPurchased = 6
+
+      local _, _, talentsData = Private.GetTalentData(specID)
+      local treeNodes = C_Traits.GetTreeNodes(treeID);
+      for _, nodeId in ipairs(treeNodes) do
+        local nodeSelectedValue = importStream:ExtractValue(1)
+        local isNodeSelected = nodeSelectedValue == 1
+        local isPartiallyRanked = false
+        local partialRanksPurchased = 0
+        local isChoiceNode = false
+        local choiceNodeSelection = 1
+
+        if(isNodeSelected) then
+          local isPartiallyRankedValue = importStream:ExtractValue(1)
+          isPartiallyRanked = isPartiallyRankedValue == 1;
+          if(isPartiallyRanked) then
+            partialRanksPurchased = importStream:ExtractValue(bitWidthRanksPurchased)
+          end
+          local isChoiceNodeValue = importStream:ExtractValue(1)
+          isChoiceNode = isChoiceNodeValue == 1
+          if(isChoiceNode) then
+            choiceNodeSelection = importStream:ExtractValue(2) + 1
+          end
+        end
+
+        local talentData = talentsData and talentsData[nodeId] and talentsData[nodeId][choiceNodeSelection]
+        if talentData then
+          results[talentData[1]] = isPartiallyRanked and partialRanksPurchased or nodeSelectedValue
+        end
+        if isChoiceNode then
+          local unselectedChoiceNodeIdx = choiceNodeSelection == 1 and 2 or 1
+          local unselctedTalentData = talentsData and talentsData[nodeId] and talentsData[nodeId][unselectedChoiceNodeIdx]
+          results[unselctedTalentData[1]] = 0
+        end
+      end
+      nameToTalents[unitName] = results
+    end
+
+    if nameToTalents[unitName] then
+      return nameToTalents[unitName][talentId]
+    end
+  end
 else -- non retail
   function Private.LibSpecWrapper.Register(f)
 
@@ -128,8 +222,13 @@ else -- non retail
   function Private.LibSpecWrapper.SpecRolePositionForUnit(unit)
     return nil
   end
+
+  function Private.LibSpecWrapper.CheckTalentForUnit(unit)
+    return nil
+  end
 end
 
 -- Export for GenericTrigger
 WeakAuras.SpecForUnit = Private.LibSpecWrapper.SpecForUnit
 WeakAuras.SpecRolePositionForUnit = Private.LibSpecWrapper.SpecRolePositionForUnit
+WeakAuras.CheckTalentForUnit = Private.LibSpecWrapper.CheckTalentForUnit

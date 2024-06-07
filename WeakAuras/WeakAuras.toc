@@ -1,4 +1,4 @@
-## Interface: 100207
+## Interface: 100207, 110000
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
 ## Version: @project-version@
@@ -30,6 +30,7 @@ Libs\TaintLess\TaintLess.xml
 Libs\LibSpecialization\LibSpecialization.lua
 
 Init.lua
+Compatibility.lua
 locales.xml
 ArchiveTypes\Repository.lua
 DefaultOptions.lua

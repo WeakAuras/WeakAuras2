@@ -3,7 +3,23 @@ local AddonName, TemplatePrivate = ...
 local WeakAuras = WeakAuras
 if not WeakAuras.IsRetail() then return end
 local L = WeakAuras.L
-local GetSpellInfo, tinsert, GetSpellDescription, C_Timer, Spell = GetSpellInfo, tinsert, GetSpellDescription, C_Timer, Spell
+local tinsert, C_Timer, Spell = tinsert, C_Timer, Spell
+
+local GetSpellInfo, GetSpellIcon, GetSpellDescription = GetSpellInfo, GetSpellTexture, GetSpellDescription
+-- TWW Compatibility, we don't use functions from Compatibility.lua because TemplatePrivate.Private isn't set yet
+if GetSpellInfo == nil then
+  GetSpellInfo = function(spellID)
+    if not spellID then
+      return nil
+    end
+    local spellInfo = C_Spell.GetSpellInfo(spellID)
+    if spellInfo then
+      return spellInfo.name, nil, spellInfo.iconID, spellInfo.castTime, spellInfo.minRange, spellInfo.maxRange, spellInfo.spellID, spellInfo.originalIconID
+    end
+  end
+  GetSpellIcon = C_Spell.GetSpellTexture
+  GetSpellDescription = C_Spell.GetSpellDescription
+end
 
 -- The templates tables are created on demand
 local templates =
@@ -801,7 +817,7 @@ templates.class.PALADIN = {
         { spell = 386730, type = "buff", unit = "player", talent = 115466 }, -- Divine Resonance
         { spell = 387178, type = "buff", unit = "player", talent = 102576 }, -- Empyrean Legacy
         { spell = 387815, type = "buff", unit = "player", talent = 102539 }, -- Untempered Dedication
-        { spell = 388007, type = "buff", unit = "player", talent = 102579 }, -- Blessing of Summer
+        { spell = 388007, type = "buff", unit = "player", talent = 116183 }, -- Blessing of Summer
         { spell = 388019, type = "buff", unit = "player", talent = 102538 }, -- Maraad's Dying Breath
         { spell = 392939, type = "buff", unit = "player", talent = 102565 }, -- Veneration
         { spell = 394709, type = "buff", unit = "player", talent = 102544 }, -- Unending Light
@@ -860,7 +876,7 @@ templates.class.PALADIN = {
         { spell = 216331, type = "ability", buff = true, talent = 102568 }, -- Avenging Crusader
         { spell = 275773, type = "ability", requiresTarget = true }, -- Judgment
         { spell = 375576, type = "ability", requiresTarget = true, talent = 102465 }, -- Divine Toll
-        { spell = 388007, type = "ability", buff = true, talent = 102579 }, -- Blessing of Summer
+        { spell = 388007, type = "ability", buff = true, talent = 116183 }, -- Blessing of Summer
         { spell = 388010, type = "ability" }, -- Blessing of Autumn
         { spell = 391054, type = "ability" }, -- Intercession
         { spell = 414273, type = "ability", buff = true, talent = 115876}, -- Hand of Divinity
@@ -5485,7 +5501,7 @@ local function fixupIcons()
         if section.args then
           for _, item in pairs(section.args) do
             if (item.spell and (not item.type ~= "item")) then
-              local icon = select(3, GetSpellInfo(item.spell));
+              local icon = GetSpellIcon(item.spell)
               if (icon) then
                 item.icon = icon;
               end
