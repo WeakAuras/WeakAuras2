@@ -1721,6 +1721,8 @@ function GenericTrigger.Add(data, region)
                     tinsert(trigger_subevents, subevent)
                     hasParam = true
                   end
+                elseif Private.InternalEventByIDList[trueEvent] then
+                  tinsert(trigger_events, trueEvent..":"..i)
                 elseif trueEvent:match("^UNIT_") or Private.UnitEventList[trueEvent] then
                   isUnitEvent = true
 
