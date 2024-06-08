@@ -1649,17 +1649,14 @@ local function InitializeReputations()
 
   -- Dynamic expansion of all collapsed headers
   local collapsed = {}
-  local keepExpanding = true
-  while keepExpanding do
-    keepExpanding = false
-    for i = Private.ExecEnv.GetNumFactions(), 1, -1 do
-      local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
-      if factionData.isHeader and factionData.isCollapsed then
-        Private.ExecEnv.ExpandFactionHeader(i)
-        collapsed[factionData.name] = true
-        keepExpanding = true
-      end
+  local index = 1
+  while index <= Private.ExecEnv.GetNumFactions() do
+    local factionData = Private.ExecEnv.GetFactionDataByIndex(index)
+    if factionData.isHeader and factionData.isCollapsed then
+      Private.ExecEnv.ExpandFactionHeader(index)
+      collapsed[factionData.name] = true
     end
+    index = index + 1
   end
 
   -- Process all faction data
