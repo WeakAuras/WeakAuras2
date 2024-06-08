@@ -1131,8 +1131,8 @@ function HandleEvent(frame, event, arg1, arg2, ...)
   end
   if (event == "PLAYER_ENTERING_WORLD") then
     timer:ScheduleTimer(function()
-      Private.StartProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
       HandleEvent(frame, "WA_DELAYED_PLAYER_ENTERING_WORLD", arg1, arg2)
+      Private.StartProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
       Private.CheckCooldownReady();
       Private.StopProfileSystem("generictrigger WA_DELAYED_PLAYER_ENTERING_WORLD");
       Private.PreShowModels()
@@ -3525,6 +3525,7 @@ function WeakAuras.WatchUnitChange(unit)
         end
       elseif event == "NAME_PLATE_UNIT_ADDED" then
         if not watchUnitChange.trackedUnits[unit] then
+          Private.StopProfileSystem("generictrigger unit change");
           return
         end
         unitUpdate(unit, eventsToSend)
@@ -3532,6 +3533,7 @@ function WeakAuras.WatchUnitChange(unit)
         reactionInit(unit)
       elseif event == "NAME_PLATE_UNIT_REMOVED" then
         if not watchUnitChange.trackedUnits[unit] then
+          Private.StopProfileSystem("generictrigger unit change");
           return
         end
         unitUpdate(unit, eventsToSend)
@@ -3548,6 +3550,7 @@ function WeakAuras.WatchUnitChange(unit)
         end
       elseif event == "PLAYER_TARGET_CHANGED" then
         if not watchUnitChange.trackedUnits["target"] then
+          Private.StopProfileSystem("generictrigger unit change");
           return
         end
         unitUpdate("target", eventsToSend)
@@ -3555,6 +3558,7 @@ function WeakAuras.WatchUnitChange(unit)
         reactionInit("target")
       elseif event == "PLAYER_FOCUS_CHANGED" then
         if not watchUnitChange.trackedUnits["focus"] then
+          Private.StopProfileSystem("generictrigger unit change");
           return
         end
         unitUpdate("focus", eventsToSend)
@@ -3562,6 +3566,7 @@ function WeakAuras.WatchUnitChange(unit)
         reactionInit("focus")
       elseif event == "PLAYER_SOFT_ENEMY_CHANGED" then
         if not watchUnitChange.trackedUnits["softenemy"] then
+          Private.StopProfileSystem("generictrigger unit change");
           return
         end
         unitUpdate("softenemy", eventsToSend)
@@ -3569,6 +3574,7 @@ function WeakAuras.WatchUnitChange(unit)
         reactionInit("softenemy")
       elseif event == "PLAYER_SOFT_FRIEND_CHANGED" then
         if not watchUnitChange.trackedUnits["softfriend"] then
+          Private.StopProfileSystem("generictrigger unit change");
           return
         end
         unitUpdate("softfriend", eventsToSend)
@@ -3596,6 +3602,7 @@ function WeakAuras.WatchUnitChange(unit)
       elseif event == "UNIT_TARGET" then
         local unitTarget = unit .. "target"
         if not watchUnitChange.trackedUnits[unitTarget] then
+          Private.StopProfileSystem("generictrigger unit change");
           return
         end
         unitUpdate(unitTarget, eventsToSend)
