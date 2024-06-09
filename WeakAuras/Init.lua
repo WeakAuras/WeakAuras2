@@ -197,7 +197,7 @@ Private.frames = {}
 ---@field events (fun(trigger: triggerData): table)|nil
 ---@field internal_events (fun(trigger: triggerData): table)|nil
 ---@field name string
----@field statesParamater "unit"|"one"|"all"|nil
+---@field statesParameter "unit"|"one"|"all"|nil
 ---@field progressType "timed"|"static"|"none"
 
 --- @class triggerUntriggerData
