@@ -2937,7 +2937,7 @@ do
       else
         local spellId = select(7, Private.ExecEnv.GetSpellInfo(id))
         if spellId then
-          override = FindSpellOverrideByID(spellId)
+          override = Private.ExecEnv.GetSpellName(FindSpellOverrideByID(spellId))
         end
       end
       if id ~= override and override and not spells[override] then
@@ -2976,8 +2976,32 @@ do
         end
       end
 
+      local baseSpell
+      if type(id) == "number" then
+        baseSpell = FindBaseSpellByID(id)
+        if baseSpell == id or not checkOverrideSpell[baseSpell] then
+          baseSpell = nil
+        end
+      else
+        local spellId = select(7, Private.ExecEnv.GetSpellInfo(id))
+        if spellId then
+          baseSpell = Private.ExecEnv.GetSpellName(FindBaseSpellByID(spellId))
+        end
+        if baseSpell == id or not checkOverrideSpell[baseSpell] then
+          baseSpell = nil
+        end
+      end
+
+      if spellDetails[id].baseSpell ~= baseSpell then
+        spellDetails[id].baseSpell = baseSpell
+        changed = true
+      end
+
       if changed and not WeakAuras.IsPaused() then
-        Private.ScanEventsByID("SPELL_COOLDOWN_CHANGED", id)
+        Private.ScanEventsByID("SPELL_COOLDOWN_CHANGED", id, id)
+        if baseSpell then
+          Private.ScanEventsByID("SPELL_COOLDOWN_CHANGED", baseSpell, id)
+        end
       end
     end
   end
@@ -3023,15 +3047,27 @@ do
 
     if not WeakAuras.IsPaused() then
       if nowReady then
-        Private.ScanEventsByID("SPELL_COOLDOWN_READY", id)
+        Private.ScanEventsByID("SPELL_COOLDOWN_READY", id, id)
+        local baseSpell = spellDetails[id].baseSpell
+        if (baseSpell) then
+          Private.ScanEventsByID("SPELL_COOLDOWN_READY", baseSpell, id)
+        end
       end
 
       if changed or chargesChanged then
-        Private.ScanEventsByID("SPELL_COOLDOWN_CHANGED", id)
+        Private.ScanEventsByID("SPELL_COOLDOWN_CHANGED", id, id)
+        local baseSpell = spellDetails[id].baseSpell
+        if (baseSpell) then
+          Private.ScanEventsByID("SPELL_COOLDOWN_CHANGED", baseSpell, id)
+        end
       end
 
       if (chargesDifference ~= 0 ) then
-        Private.ScanEventsByID("SPELL_CHARGES_CHANGED", id, chargesDifference, charges or spellCount or 0);
+        Private.ScanEventsByID("SPELL_CHARGES_CHANGED", id, id, chargesDifference, charges or spellCount or 0);
+        local baseSpell = spellDetails[id].baseSpell
+        if (baseSpell) then
+          Private.ScanEventsByID("SPELL_CHARGES_CHANGED", baseSpell, id, chargesDifference, charges or spellCount or 0);
+        end
       end
     end
   end
@@ -3235,7 +3271,7 @@ do
       return;
     end
     spells[id] = true;
-    checkOverrideSpell[id] = followoverride
+    checkOverrideSpell[id] = followoverride or checkOverrideSpell[id]
     local name, _, icon, _, _, _, spellId = Private.ExecEnv.GetSpellInfo(id)
     spellDetails[id] = {
       name = name,

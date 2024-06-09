@@ -2034,6 +2034,17 @@ function Private.Modernize(data)
     end
   end
 
+  if data.internalVersion < 74 then
+    for _, triggerData in ipairs(data.triggers) do
+      local t = triggerData.trigger
+      if t.type == "spell" and t.event == "Cooldown Progress (Spell)" then
+        if t.use_exact_spellName then
+          t.use_ignoreoverride = true
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 

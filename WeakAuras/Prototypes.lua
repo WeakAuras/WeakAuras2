@@ -5161,7 +5161,7 @@ Private.event_prototypes = {
     loadFunc = function(trigger)
       trigger.spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0;
       local spellName;
-      local followoverride = trigger.genericShowOn ~= "showOnReady" and trigger.use_followoverride
+      local followoverride = not trigger.use_ignoreoverride
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
@@ -5224,14 +5224,14 @@ Private.event_prototypes = {
       end
 
       if (type(spellName) == "string") then
-        spellName = "[[" .. spellName .. "]]";
+        spellName = string.format("%q", spellName)
       end
       ret = ret:format(spellName,
         (trigger.use_matchedRune and "true" or "false"),
         (trigger.use_showgcd and "true" or "false"),
         (trigger.use_showlossofcontrol and "true" or "false"),
         (trigger.use_ignoreSpellKnown and "true" or "false"),
-        (trigger.use_followoverride and "true" or "false"),
+        (not trigger.use_ignoreoverride and "true" or "false"),
         track,
         showOnCheck
       );
@@ -5353,10 +5353,9 @@ Private.event_prototypes = {
               text = L["Tracking Only Cooldown"]
             end
 
-            if trigger.genericShowOn ~= "showOnReady"
-              and trigger.use_followoverride
+            if trigger.use_ignoreoverride
             then
-              text = text .. L["Show Override"]
+              text = text .. L["Ignore Spell Override"]
             end
 
             if trigger.use_showgcd then
@@ -5411,14 +5410,11 @@ Private.event_prototypes = {
         collapse = "extra Cooldown Progress (Spell)"
       },
       {
-        name = "followoverride",
-        display = L["Show Override Spell"],
+        name = "ignoreoverride",
+        display = L["Ignore Spell Override"],
         type = "toggle",
         test = "true",
         collapse = "extra Cooldown Progress (Spell)",
-        enable = function(trigger)
-          return (trigger.genericShowOn ~= "showOnReady")
-        end,
       },
       {
         name = "showlossofcontrol",
@@ -5621,13 +5617,14 @@ Private.event_prototypes = {
     loadFunc = function(trigger)
       trigger.spellName = trigger.spellName or 0;
       local spellName;
+      local followoverride = not trigger.use_ignoreoverride
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
         spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
       end
       trigger.realSpellName = spellName; -- Cache
-      WeakAuras.WatchSpellCooldown(spellName);
+      WeakAuras.WatchSpellCooldown(spellName, false, followoverride)
     end,
     init = function(trigger)
       trigger.spellName = trigger.spellName or 0;
@@ -5639,13 +5636,23 @@ Private.event_prototypes = {
       end
 
       if (type(spellName) == "string") then
-        spellName = "[[" .. spellName .. "]]";
+        spellName = string.format("%q", spellName)
       end
 
       local ret = [=[
         local spellname = %s
+        local useExact = %s
+        local followoverride = %s
+        local match
+        if followoverride then
+          match = Private.ExecEnv.CompareSpellIds(spellname, spellName, useExact)
+        else
+          match = Private.ExecEnv.CompareSpellIds(spellname, overrideSpell, useExact)
+        end
       ]=]
-      return ret:format(spellName);
+      return ret:format(spellName,
+                        trigger.use_exact_spellName and "true" or "false",
+                        not trigger.use_ignoreoverride and "true" or "false")
     end,
     args = {
       {
@@ -5655,8 +5662,20 @@ Private.event_prototypes = {
         type = "spell",
         init = "arg",
         showExactOption = true,
-        test = "Private.ExecEnv.CompareSpellIds(spellName, %q, %s)",
-      }
+        test = "match",
+      },
+      {
+        name = "overrideSpell",
+        init = "arg",
+        hidden = true,
+        test = "true"
+      },
+      {
+        name = "ignoreoverride",
+        display = L["Ignore Spell Override"],
+        type = "toggle",
+        test = "true",
+      },
     },
     nameFunc = function(trigger)
       local name = Private.ExecEnv.GetSpellName(trigger.realSpellName or 0);
@@ -5697,23 +5716,40 @@ Private.event_prototypes = {
     loadFunc = function(trigger)
       trigger.spellName = trigger.spellName or 0;
       local spellName;
+      local followoverride = not trigger.use_ignoreoverride
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
         spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
       end
       trigger.realSpellName = spellName; -- Cache
-      WeakAuras.WatchSpellCooldown(spellName);
+      WeakAuras.WatchSpellCooldown(spellName, false, followoverride)
     end,
     init = function(trigger)
       local spellName;
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
+        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName
+        spellName = spellName or ""
       end
-      spellName = string.format("%q", spellName or "");
-      return string.format("local spell = %s;\n", spellName);
+      if (type(spellName) == "string") then
+        spellName = string.format("%q", spellName)
+      end
+      local ret = [=[
+        local spellname = %s
+        local useExact = %s
+        local followoverride = %s
+        local match
+        if followoverride then
+          match = Private.ExecEnv.CompareSpellIds(spellname, spellName, useExact)
+        else
+          match = Private.ExecEnv.CompareSpellIds(spellname, overrideSpell, useExact)
+        end
+      ]=]
+      return ret:format(spellName,
+                        trigger.use_exact_spellName and "true" or "false",
+                        not trigger.use_ignoreoverride and "true" or "false")
     end,
     statesParameter = "one",
     args = {
@@ -5724,7 +5760,19 @@ Private.event_prototypes = {
         type = "spell",
         init = "arg",
         showExactOption = true,
-        test = "Private.ExecEnv.CompareSpellIds(spellName, %q, %s)",
+        test = "match",
+      },
+      {
+        name = "overrideSpell",
+        init = "arg",
+        hidden = true,
+        test = "true"
+      },
+      {
+        name = "ignoreoverride",
+        display = L["Ignore Spell Override"],
+        type = "toggle",
+        test = "true",
       },
       {
         name = "direction",
@@ -6398,13 +6446,14 @@ Private.event_prototypes = {
     loadFunc = function(trigger)
       trigger.spellName = trigger.spellName or 0;
       local spellName;
+      local followoverride = not trigger.use_ignoreoverride
       if (trigger.use_exact_spellName) then
         spellName = trigger.spellName;
       else
         spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
       end
       trigger.realSpellName = spellName; -- Cache
-      WeakAuras.WatchSpellCooldown(spellName);
+      WeakAuras.WatchSpellCooldown(spellName, false, followoverride)
     end,
     init = function(trigger)
       trigger.spellName = trigger.spellName or 0;
@@ -6417,8 +6466,9 @@ Private.event_prototypes = {
       trigger.realSpellName = spellName; -- Cache
       local ret = [=[
         local spellName = %s
-        local startTime, duration, gcdCooldown, readyTime, paused = WeakAuras.GetSpellCooldown(spellName);
-        local charges, _, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellName);
+        local followoverride = %s
+        local startTime, duration, gcdCooldown, readyTime, paused = WeakAuras.GetSpellCooldown(spellName, nil, nil, nil, nil, followoverride)
+        local charges, _, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellName, nil, followoverride)
         if (charges == nil) then
           charges = (duration == 0 or gcdCooldown) and 1 or 0;
         end
@@ -6433,10 +6483,11 @@ Private.event_prototypes = {
       end
 
       if (type(spellName) == "string") then
-        spellName = "[[" .. spellName .. "]]";
+        spellName = string.format("%q", spellName)
       end
 
-      return ret:format(spellName)
+      return ret:format(spellName,
+                        not trigger.use_ignoreoverride and "true" or "false")
     end,
     args = {
       {
@@ -6447,6 +6498,12 @@ Private.event_prototypes = {
         test = "true",
         showExactOption = true,
         store = true
+      },
+      {
+        name = "ignoreoverride",
+        display = L["Ignore Spell Override"],
+        type = "toggle",
+        test = "true",
       },
       -- This parameter uses the IsSpellInRange API function, but it does not check spell range at all
       -- IsSpellInRange returns nil for invalid targets, 0 for out of range, 1 for in range (0 and 1 are both "positive" values)
