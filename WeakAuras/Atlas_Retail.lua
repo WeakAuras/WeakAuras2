@@ -9162,6 +9162,7 @@ Private.AtlasList = {
 "shop-card-full-blizzconvirtualticket",
 "shop-card-full-blizzconvirtualticket2020",
 "shop-card-full-cf67",
+"shop-card-full-cm40",
 "shop-card-full-dk33",
 "shop-card-full-dr1",
 "shop-card-full-fm24",
