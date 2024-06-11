@@ -24,6 +24,12 @@ else
   Private.ExecEnv.GetSpellIcon = C_Spell.GetSpellTexture
 end
 
+if IsUsableSpell then
+  Private.ExecEnv.IsUsableSpell = IsUsableSpell
+else
+  Private.ExecEnv.IsUsableSpell = C_Spell.IsSpellUsable
+end
+
 Private.ExecEnv.GetNumFactions = C_Reputation.GetNumFactions or GetNumFactions
 
 Private.ExecEnv.GetFactionDataByIndex = C_Reputation.GetFactionDataByIndex or function(index)
