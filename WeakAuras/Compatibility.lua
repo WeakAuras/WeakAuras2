@@ -71,5 +71,7 @@ Private.ExecEnv.GetFactionDataByID = C_Reputation.GetFactionDataByID or function
     isAccountWide = nil
   }
 end
-Private.ExecEnv.ExpandAllFactionHeaders = C_Reputation.ExpandAllFactionHeaders or ExpandAllFactionHeaders
+Private.ExecEnv.ExpandFactionHeader = C_Reputation.ExpandFactionHeader or ExpandFactionHeader
 Private.ExecEnv.CollapseFactionHeader = C_Reputation.CollapseFactionHeader or CollapseFactionHeader
+Private.ExecEnv.AreLegacyReputationsShown = C_Reputation.AreLegacyReputationsShown or function() return true end
+Private.ExecEnv.GetReputationSortType = C_Reputation.GetReputationSortType or function() return 0 end;

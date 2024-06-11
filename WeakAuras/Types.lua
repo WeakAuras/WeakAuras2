@@ -1635,15 +1635,31 @@ local function InitializeReputations()
   ---@type table<string, boolean>
   Private.reputations_headers = {}
 
-  local collapsed = {}
-  for i = 1, Private.ExecEnv.GetNumFactions() do
-    local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
-    if factionData.isCollapsed then
-      collapsed[factionData.name] = true
-    end
+  -- Ensure all factions are shown by adjusting filters
+  local showLegacy = true
+  if not Private.ExecEnv.AreLegacyReputationsShown() then
+    showLegacy = false
+    C_Reputation.SetLegacyReputationsShown(true)
+  end
+  local sortType = 0
+  if Private.ExecEnv.GetReputationSortType() > 0 then
+    sortType = Private.ExecEnv.GetReputationSortType()
+    C_Reputation.SetReputationSortType(0)
   end
 
-  Private.ExecEnv.ExpandAllFactionHeaders()
+  -- Dynamic expansion of all collapsed headers
+  local collapsed = {}
+  local index = 1
+  while index <= Private.ExecEnv.GetNumFactions() do
+    local factionData = Private.ExecEnv.GetFactionDataByIndex(index)
+    if factionData.isHeader and factionData.isCollapsed then
+      Private.ExecEnv.ExpandFactionHeader(index)
+      collapsed[factionData.name] = true
+    end
+    index = index + 1
+  end
+
+  -- Process all faction data
   for i = 1, Private.ExecEnv.GetNumFactions() do
     local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
     if factionData.currentStanding > 0 or not factionData.isHeader then
@@ -1660,11 +1676,20 @@ local function InitializeReputations()
     end
   end
 
+  -- Collapse headers back to their original state
   for i = Private.ExecEnv.GetNumFactions(), 1, -1 do
     local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
     if collapsed[factionData.name] then
       Private.ExecEnv.CollapseFactionHeader(i)
     end
+  end
+
+  -- Restore filters if they were changed
+  if not showLegacy then
+    C_Reputation.SetLegacyReputationsShown(false)
+  end
+  if sortType > 0 then
+    C_Reputation.SetReputationSortType(sortType)
   end
 end
 
