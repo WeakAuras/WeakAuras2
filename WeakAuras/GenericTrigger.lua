@@ -3801,6 +3801,8 @@ if WeakAuras.IsClassicEra() then
   end
 end
 
+local GetSpellPowerCost = GetSpellPowerCost or C_Spell and C_Spell.GetSpellPowerCost
+
 ---@param powerTypeToCheck integer
 ---@return number? cost
 function WeakAuras.GetSpellCost(powerTypeToCheck)
