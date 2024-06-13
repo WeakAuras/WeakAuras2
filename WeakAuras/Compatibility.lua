@@ -9,7 +9,6 @@ local Private = select(2, ...)
 if GetSpellInfo then
   Private.ExecEnv.GetSpellInfo = GetSpellInfo
   Private.ExecEnv.GetSpellName = GetSpellInfo
-  Private.ExecEnv.GetSpellIcon = GetSpellTexture
 else
   Private.ExecEnv.GetSpellInfo = function(spellID)
     if not spellID then
@@ -21,6 +20,11 @@ else
     end
   end
   Private.ExecEnv.GetSpellName = C_Spell.GetSpellName
+end
+
+if GetSpellTexture then
+  Private.ExecEnv.GetSpellIcon = GetSpellTexture
+else
   Private.ExecEnv.GetSpellIcon = C_Spell.GetSpellTexture
 end
 

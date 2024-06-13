@@ -459,7 +459,6 @@ C_AddOns.EnableAddOn("WeakAurasCompanion")
 C_AddOns.EnableAddOn("WeakAurasArchive")
 
 local libsAreOk = true
-local noIncompatibleAddon = true
 do
   local StandAloneLibs = {
     "Archivist",
@@ -518,12 +517,6 @@ do
         GameTooltip:Hide()
       end,
     })
-    if C_AddOns.IsAddOnLoaded("!!WWAddOnsFix") then
-      noIncompatibleAddon = false
-      C_Timer.After(1, function()
-        WeakAuras.prettyPrint("Incompatible addon detected: please disable '!!WWAddOnsFix'")
-      end)
-    end
   end
   for _, lib in ipairs(StandAloneLibs) do
     if not lib then
@@ -544,7 +537,7 @@ do
 end
 
 function WeakAuras.IsLibsOK()
-  return libsAreOk and noIncompatibleAddon
+  return libsAreOk
 end
 
 if not libsAreOk then
