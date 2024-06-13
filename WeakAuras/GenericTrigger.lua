@@ -2855,7 +2855,7 @@ do
       if spellCooldownInfo then
         startTimeCooldown = spellCooldownInfo.startTime
         durationCooldown = spellCooldownInfo.duration
-        enabled = spellCooldownInfo.isEnabled
+        enabled = spellCooldownInfo.isEnabled and 1 or 0
         modRate = spellCooldownInfo.modRate
       end
     end
