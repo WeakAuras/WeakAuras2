@@ -451,19 +451,19 @@ local function CreateCheckCondition(data, ret, condition, conditionNumber, allCo
     check = "false"
   end
   if condition.linked and conditionNumber > 1 then
-    ret = ret .. "      elseif (" .. check .. ") then\n";
+    table.insert(ret, "      elseif (" .. check .. ") then\n")
   else
-    ret = ret .. "      if (" .. check .. ") then\n";
+    table.insert(ret, "      if (" .. check .. ") then\n")
   end
-  ret = ret .. "        newActiveConditions[" .. conditionNumber .. "] = true;\n";
+  table.insert(ret, "        newActiveConditions[" .. conditionNumber .. "] = true;\n")
   if not nextIsLinked then
-    ret = ret .. "      end\n";
+    table.insert(ret, "      end\n")
   end
 
   if (check) then
-    ret = ret .. "\n";
+    table.insert(ret, "\n")
   end
-  return ret, recheckCode;
+  return recheckCode;
 end
 
 local function ParseProperty(property)
@@ -497,27 +497,27 @@ end
 
 local function CreateDeactivateCondition(ret, condition, conditionNumber, data, properties, usedProperties, debug)
   if (condition.changes) then
-    ret = ret .. "  if (activatedConditions[".. conditionNumber .. "] and not newActiveConditions[" .. conditionNumber .. "]) then\n"
-    if (debug) then ret = ret .. "    print('Deactivating condition " .. conditionNumber .. "' )\n"; end
+    table.insert(ret, "  if (activatedConditions[".. conditionNumber .. "] and not newActiveConditions[" .. conditionNumber .. "]) then\n")
+    if (debug) then table.insert(ret, "    print('Deactivating condition " .. conditionNumber .. "' )\n") end
     for changeNum, change in ipairs(condition.changes) do
       if (change.property) then
         local propertyData = properties and properties[change.property]
         if (propertyData and propertyData.type and propertyData.setter) then
           usedProperties[change.property] = true;
-          ret = ret .. "    propertyChanges['" .. change.property .. "'] = "
+          table.insert(ret, "    propertyChanges['" .. change.property .. "'] = "
                 .. formatValueForAssignment(propertyData.type, GetBaseProperty(data, change.property),
                                             nil, nil, data)
-                .. "\n";
+                .. "\n")
           if (debug) then
-            ret = ret .. "    print('- " .. change.property .. " "
+            table.insert(ret, "    print('- " .. change.property .. " "
                       .. formatValueForAssignment(propertyData.type, GetBaseProperty(data, change.property),
                                                  nil, nil, data)
-                      .. "')\n";
+                      .. "')\n")
           end
         end
       end
     end
-    ret = ret .. "  end\n"
+    table.insert(ret, "  end\n")
   end
 
   return ret;
@@ -525,20 +525,20 @@ end
 
 local function CreateActivateCondition(ret, id, condition, conditionNumber, data, properties, debug)
   if (condition.changes) then
-    ret = ret .. "  if (newActiveConditions[" .. conditionNumber .. "]) then\n"
-    ret = ret .. "    if (not activatedConditions[".. conditionNumber .. "]) then\n"
-    if (debug) then ret = ret .. "      print('Activating condition " .. conditionNumber .. "' )\n"; end
+    table.insert(ret, "  if (newActiveConditions[" .. conditionNumber .. "]) then\n")
+    table.insert(ret, "    if (not activatedConditions[".. conditionNumber .. "]) then\n")
+    if (debug) then table.insert(ret, "      print('Activating condition " .. conditionNumber .. "' )\n") end
     -- non active => active
     for changeNum, change in ipairs(condition.changes) do
       if (change.property) then
         local propertyData = properties and properties[change.property]
         if (propertyData and propertyData.type) then
           if (propertyData.setter) then
-            ret = ret .. "      propertyChanges['" .. change.property .. "'] = "
-                      .. formatValueForAssignment(propertyData.type, change.value, nil, nil, data) .. "\n"
+            table.insert(ret, "      propertyChanges['" .. change.property .. "'] = "
+                      .. formatValueForAssignment(propertyData.type, change.value, nil, nil, data) .. "\n")
             if (debug) then
-              ret = ret .. "      print('- " .. change.property .. " "
-                         .. formatValueForAssignment(propertyData.type, change.value, nil, nil, data) .. "')\n"
+              table.insert(ret, "      print('- " .. change.property .. " "
+                         .. formatValueForAssignment(propertyData.type, change.value, nil, nil, data) .. "')\n")
             end
           elseif (propertyData.action) then
             local pathToCustomFunction = "nil";
@@ -557,39 +557,39 @@ local function CreateActivateCondition(ret, id, condition, conditionNumber, data
               pathToFormatter = string.format("Private.ExecEnv.conditionTextFormatters[%q][%s].changes[%s]",
                                               id, conditionNumber, changeNum);
             end
-            ret = ret .. "     region:" .. propertyData.action .. "("
+            table.insert(ret, "     region:" .. propertyData.action .. "("
                       .. formatValueForAssignment(propertyData.type, change.value,
                                                   pathToCustomFunction, pathToFormatter, data)
-                      .. ")" .. "\n";
+                      .. ")" .. "\n")
             if (debug) then
-              ret = ret .. "     print('# " .. propertyData.action .. "("
+              table.insert(ret, "     print('# " .. propertyData.action .. "("
                         .. formatValueForAssignment(propertyData.type, change.value,
                                                     pathToCustomFunction, pathToFormatter, data)
-                        .. "')\n";
+                        .. "')\n")
             end
           end
         end
       end
     end
-    ret = ret .. "    else\n"
+    table.insert(ret, "    else\n")
     -- active => active, only override properties
     for changeNum, change in ipairs(condition.changes) do
       if (change.property) then
         local propertyData = properties and properties[change.property]
         if (propertyData and propertyData.type and propertyData.setter) then
-          ret = ret .. "      if(propertyChanges['" .. change.property .. "'] ~= nil) then\n"
-          ret = ret .. "        propertyChanges['" .. change.property .. "'] = "
-                       .. formatValueForAssignment(propertyData.type, change.value, nil, nil, data) .. "\n"
-          if (debug) then ret = ret .. "        print('- " .. change.property .. " "
-                       .. formatValueForAssignment(propertyData.type,  change.value, nil, nil, data) .. "')\n" end
-          ret = ret .. "      end\n"
+          table.insert(ret, "      if(propertyChanges['" .. change.property .. "'] ~= nil) then\n")
+          table.insert(ret, "        propertyChanges['" .. change.property .. "'] = "
+                       .. formatValueForAssignment(propertyData.type, change.value, nil, nil, data) .. "\n")
+          if (debug) then table.insert(ret, "        print('- " .. change.property .. " "
+                       .. formatValueForAssignment(propertyData.type,  change.value, nil, nil, data) .. "')\n") end
+          table.insert(ret, "      end\n")
         end
       end
     end
-    ret = ret .. "    end\n"
-    ret = ret .. "  end\n"
-    ret = ret .. "\n";
-    ret = ret .. "  activatedConditions[".. conditionNumber .. "] = newActiveConditions[" .. conditionNumber .. "]\n";
+    table.insert(ret, "    end\n")
+    table.insert(ret, "  end\n")
+    table.insert(ret, "\n")
+    table.insert(ret, "  activatedConditions[".. conditionNumber .. "] = newActiveConditions[" .. conditionNumber .. "]\n")
   end
 
   return ret;
@@ -725,82 +725,81 @@ function Private.GetGlobalConditions()
 end
 
 local function ConstructConditionFunction(data)
-  local debug = false;
+  local debug = false
   if (not data.conditions or #data.conditions == 0) then
-    return nil;
+    return nil
   end
 
-  local usedProperties = {};
+  local usedProperties = {}
 
-  local allConditionsTemplate = Private.GetTriggerConditions(data);
-  allConditionsTemplate[-1] = Private.GetGlobalConditions();
+  local allConditionsTemplate = Private.GetTriggerConditions(data)
+  allConditionsTemplate[-1] = Private.GetGlobalConditions()
 
-  local ret = "";
-  ret = ret .. "local newActiveConditions = {};\n"
-  ret = ret .. "local propertyChanges = {};\n"
-  ret = ret .. "local nextTime;\n"
-  ret = ret .. string.format("local uid = %q\n", data.uid)
-  ret = ret .. "return function(region, hideRegion)\n";
-  if (debug) then ret = ret .. "  print('check conditions for:', region.id, region.cloneId)\n"; end
-  ret = ret .. "  local id = region.id\n";
-  ret = ret .. "  local cloneId = region.cloneId or ''\n";
-  ret = ret .. "  local state = region.states\n"
-  ret = ret .. "  local activatedConditions = WeakAuras.GetActiveConditions(id, cloneId)\n";
-  ret = ret .. "  wipe(newActiveConditions)\n";
-  ret = ret .. "  local recheckTime;\n"
-  ret = ret .. "  local now = GetTime();\n"
+  local ret = {""}
+  table.insert(ret, "local newActiveConditions = {};\n")
+  table.insert(ret, "local propertyChanges = {};\n")
+  table.insert(ret, "local nextTime;\n")
+  table.insert(ret, string.format("local uid = %q\n", data.uid))
+  table.insert(ret, "return function(region, hideRegion)\n")
+  if (debug) then table.insert(ret, "  print('check conditions for:', region.id, region.cloneId)\n") end
+  table.insert(ret, "  local id = region.id\n")
+  table.insert(ret, "  local cloneId = region.cloneId or ''\n")
+  table.insert(ret, "  local state = region.states\n")
+  table.insert(ret, "  local activatedConditions = WeakAuras.GetActiveConditions(id, cloneId)\n")
+  table.insert(ret, "  wipe(newActiveConditions)\n")
+  table.insert(ret, "  local recheckTime;\n")
+  table.insert(ret, "  local now = GetTime();\n")
 
   -- First Loop gather which conditions are active
-  ret = ret .. "  if (not hideRegion) then\n"
-  local recheckCode = ""
+  table.insert(ret, "  if (not hideRegion) then\n")
+  local recheckCode = {}
   if (data.conditions) then
     Private.ExecEnv.conditionHelpers[data.uid] = nil
     for conditionNumber, condition in ipairs(data.conditions) do
       local nextIsLinked = data.conditions[conditionNumber + 1] and data.conditions[conditionNumber + 1].linked
-      local additionalRecheckCode
-      ret, additionalRecheckCode = CreateCheckCondition(data, ret, condition, conditionNumber, allConditionsTemplate, nextIsLinked, debug)
+      local additionalRecheckCode = CreateCheckCondition(data, ret, condition, conditionNumber, allConditionsTemplate, nextIsLinked, debug)
       if additionalRecheckCode then
-        recheckCode = recheckCode .. "\n" .. additionalRecheckCode
+        table.insert(recheckCode, additionalRecheckCode)
       end
     end
   end
-  ret = ret .. recheckCode
-  ret = ret .. "  end\n";
+  table.insert(ret, table.concat(recheckCode))
+  table.insert(ret, "  end\n")
 
-  ret = ret .. "  if (recheckTime) then\n"
-  ret = ret .. "    Private.ExecEnv.ScheduleConditionCheck(recheckTime, uid, cloneId);\n"
-  ret = ret .. "  else\n"
-  ret = ret .. "    Private.ExecEnv.CancelConditionCheck(uid, cloneId)"
-  ret = ret .. "  end\n"
+  table.insert(ret, "  if (recheckTime) then\n")
+  table.insert(ret, "    Private.ExecEnv.ScheduleConditionCheck(recheckTime, uid, cloneId);\n")
+  table.insert(ret, "  else\n")
+  table.insert(ret, "    Private.ExecEnv.CancelConditionCheck(uid, cloneId)")
+  table.insert(ret, "  end\n")
 
-  local properties = Private.GetProperties(data);
+  local properties = Private.GetProperties(data)
 
   -- Now build a property + change list
   -- Second Loop deals with conditions that are no longer active
-  ret = ret .. "  wipe(propertyChanges)\n"
+  table.insert(ret, "  wipe(propertyChanges)\n")
   if (data.conditions) then
     for conditionNumber, condition in ipairs(data.conditions) do
-      ret = CreateDeactivateCondition(ret, condition, conditionNumber, data, properties, usedProperties, debug)
+      CreateDeactivateCondition(ret, condition, conditionNumber, data, properties, usedProperties, debug)
     end
   end
-  ret = ret .. "\n";
+  table.insert(ret, "\n")
 
   -- Third Loop deals with conditions that are newly active
   if (data.conditions) then
     for conditionNumber, condition in ipairs(data.conditions) do
-      ret = CreateActivateCondition(ret, data.id, condition, conditionNumber, data, properties, debug)
+      CreateActivateCondition(ret, data.id, condition, conditionNumber, data, properties, debug)
     end
   end
 
   -- Last apply changes to region
   for property, _  in pairs(usedProperties) do
-    ret = ret .. "  if(propertyChanges['" .. property .. "'] ~= nil) then\n"
-    local arg1 = "";
+    table.insert(ret, "  if(propertyChanges['" .. property .. "'] ~= nil) then\n")
+    local arg1 = ""
     if (properties[property].arg1) then
       if (type(properties[property].arg1) == "number") then
-        arg1 = tostring(properties[property].arg1) .. ", ";
+        arg1 = tostring(properties[property].arg1) .. ", "
       else
-        arg1 = "'" .. properties[property].arg1 .. "', ";
+        arg1 = "'" .. properties[property].arg1 .. "', "
       end
     end
 
@@ -810,13 +809,13 @@ local function ConstructConditionFunction(data)
       base = "region.subRegions[" .. subIndex .. "]:"
     end
 
-    ret = ret .. "    " .. base .. properties[property].setter .. "(" .. arg1 .. formatValueForCall(properties[property].type, property)  .. ")\n";
-    if (debug) then ret = ret .. "    print('Calling "  .. properties[property].setter ..  " with', " .. arg1 ..  formatValueForCall(properties[property].type, property) .. ")\n"; end
-    ret = ret .. "  end\n";
+    table.insert(ret, "    " .. base .. properties[property].setter .. "(" .. arg1 .. formatValueForCall(properties[property].type, property)  .. ")\n")
+    if (debug) then table.insert(ret, "    print('Calling "  .. properties[property].setter ..  " with', " .. arg1 ..  formatValueForCall(properties[property].type, property) .. ")\n") end
+    table.insert(ret, "  end\n")
   end
-  ret = ret .. "end\n";
+  table.insert(ret, "end\n")
 
-  return ret;
+  return table.concat(ret)
 end
 
 local function CancelTimers(uid)

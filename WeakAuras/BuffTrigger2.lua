@@ -2795,11 +2795,11 @@ local function createScanFunc(trigger)
     return nil
   end
 
-  local preamble = ""
+  local preamble = {""}
 
-  local ret = [=[
+  local ret = {[=[
     return function(time, matchData)
-  ]=]
+  ]=]}
 
   if use_total then
     local ret2 = [=[
@@ -2807,7 +2807,7 @@ local function createScanFunc(trigger)
         return false
       end
     ]=]
-    ret = ret .. ret2:format(trigger.totalOperator or ">=", tonumber(trigger.total) or 0)
+    table.insert(ret, ret2:format(trigger.totalOperator or ">=", tonumber(trigger.total) or 0))
   end
 
   if useStacks then
@@ -2816,49 +2816,49 @@ local function createScanFunc(trigger)
         return false
       end
     ]=]
-    ret = ret .. ret2:format(trigger.stacksOperator or ">=", tonumber(trigger.stacks) or 0)
+    table.insert(ret, ret2:format(trigger.stacksOperator or ">=", tonumber(trigger.stacks) or 0))
   end
 
   if use_stealable then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if not matchData.isStealable then
         return false
       end
-    ]=]
+    ]=])
   elseif use_stealable == false then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if matchData.isStealable then
         return false
       end
-    ]=]
+    ]=])
   end
 
   if use_isBossDebuff then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if not matchData.isBossDebuff then
         return false
       end
-    ]=]
+    ]=])
   elseif use_isBossDebuff == false then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if matchData.isBossDebuff then
         return false
       end
-    ]=]
+    ]=])
   end
 
   if use_castByPlayer then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if not matchData.isCastByPlayer then
         return false
       end
-    ]=]
+    ]=])
   elseif use_castByPlayer == false then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if matchData.isCastByPlayer then
         return false
       end
-    ]=]
+    ]=])
   end
 
   if use_debuffClass then
@@ -2868,21 +2868,21 @@ local function createScanFunc(trigger)
         return false
       end
     ]=]
-    ret = ret .. ret2:format(trigger.debuffClass and type(trigger.debuffClass) == "table" and Private.SerializeTable(trigger.debuffClass) or "{}")
+    table.insert(ret, ret2:format(trigger.debuffClass and type(trigger.debuffClass) == "table" and Private.SerializeTable(trigger.debuffClass) or "{}"))
   end
 
   if trigger.ownOnly then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if matchData.unitCaster ~= 'player' and matchData.unitCaster ~= 'pet' and matchData.unitCaster ~= 'vehicle' then
         return false
       end
-    ]=]
+    ]=])
   elseif trigger.ownOnly == false then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if matchData.unitCaster == 'player' or matchData.unitCaster == 'pet' or matchData.unitCaster == 'vehicle' then
         return false
       end
-    ]=]
+    ]=])
   end
 
   if use_tooltip and trigger.tooltip_operator and trigger.tooltip then
@@ -2892,21 +2892,21 @@ local function createScanFunc(trigger)
         return false
       end
       ]=]
-      ret = ret .. ret2:format(Private.QuotedString(trigger.tooltip))
+      table.insert(ret, ret2:format(Private.QuotedString(trigger.tooltip)))
     elseif trigger.tooltip_operator == "find('%s')" then
       local ret2 = [=[
       if not matchData.tooltip or not matchData.tooltip:find(%s, 1, true) then
         return false
       end
       ]=]
-      ret = ret .. ret2:format(Private.QuotedString(trigger.tooltip))
+      table.insert(ret, ret2:format(Private.QuotedString(trigger.tooltip)))
     elseif trigger.tooltip_operator == "match('%s')" then
       local ret2 = [=[
       if not matchData.tooltip or not matchData.tooltip:match(%s) then
         return false
       end
       ]=]
-      ret = ret .. ret2:format(Private.QuotedString(trigger.tooltip))
+      table.insert(ret, ret2:format(Private.QuotedString(trigger.tooltip)))
     end
   end
 
@@ -2917,7 +2917,7 @@ local function createScanFunc(trigger)
         return false
       end
     ]=]
-    ret = ret .. ret2:format(property, property, trigger.tooltipValue_operator, trigger.tooltipValue)
+    table.insert(ret, ret2:format(property, property, trigger.tooltipValue_operator, trigger.tooltipValue))
   end
 
   if trigger.useNamePattern and trigger.namePattern_operator and trigger.namePattern_name then
@@ -2927,21 +2927,21 @@ local function createScanFunc(trigger)
         return false
       end
       ]=]
-      ret = ret .. ret2:format(Private.QuotedString(trigger.namePattern_name))
+      table.insert(ret, ret2:format(Private.QuotedString(trigger.namePattern_name)))
     elseif trigger.namePattern_operator == "find('%s')" then
       local ret2 = [=[
       if not matchData.name:find(%s, 1, true) then
         return false
       end
       ]=]
-      ret = ret .. ret2:format(Private.QuotedString(trigger.namePattern_name))
+      table.insert(ret, ret2:format(Private.QuotedString(trigger.namePattern_name)))
     elseif trigger.namePattern_operator == "match('%s')" then
       local ret2 = [=[
       if not matchData.name:match(%s) then
         return false
       end
       ]=]
-      ret = ret .. ret2:format(Private.QuotedString(trigger.namePattern_name))
+      table.insert(ret, ret2:format(Private.QuotedString(trigger.namePattern_name)))
     end
   end
 
@@ -2953,40 +2953,40 @@ local function createScanFunc(trigger)
       tinsert(names, name)
     end
 
-    preamble = preamble .. "local ignoreNames = {\n"
+    table.insert(preamble, "local ignoreNames = {\n")
     for index, name in ipairs(names) do
-      preamble = preamble .. string.format("  [%q] = true,\n", name)
+      table.insert(preamble, string.format("  [%q] = true,\n", name))
     end
-    preamble = preamble .. "}\n"
-    ret = ret .. [=[
+    table.insert(preamble, "}\n")
+    table.insert(ret, [=[
       if ignoreNames[matchData.name] then
         return false
       end
-    ]=]
+    ]=])
   end
 
   if use_ignore_spellId then
-    preamble = preamble .. "local ignoreSpellId = {\n"
+    table.insert(preamble, "local ignoreSpellId = {\n")
     for index, spellId in ipairs(trigger.ignoreAuraSpellids) do
       local spell = WeakAuras.SafeToNumber(spellId)
       if spell then
         preamble = preamble .. string.format("  [%s]  = true,\n", spell)
       end
     end
-    preamble = preamble .. "}\n"
-    ret = ret .. [=[
+    table.insert(preamble, "}\n")
+    table.insert(ret, [=[
       if ignoreSpellId[matchData.spellId] then
         return false
       end
-    ]=]
+    ]=])
   end
 
-  ret = ret .. [=[
+  table.insert(ret, [=[
       return true
     end
-  ]=]
+  ]=])
 
-  local func, err = loadstring(preamble .. ret)
+  local func, err = loadstring(table.concat(preamble) .. table.concat(ret))
 
   if func then
     return func()
@@ -3351,56 +3351,56 @@ end
 function BuffTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
 
-  local ret =  "|cFFFFCC00%".. triggernum .. ".spellId|r - " .. L["Spell ID"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".debuffClass|r - " .. L["Debuff Class"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".debuffClassIcon|r - " .. L["Debuff Class Icon"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".unitCaster|r - " .. L["Caster Unit"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".casterName|r - " .. L["Caster Name"] .. "\n"
+  local ret =  {"|cFFFFCC00%".. triggernum .. ".spellId|r - " .. L["Spell ID"] .. "\n"}
+  table.insert(ret, "|cFFFFCC00%".. triggernum .. ".debuffClass|r - " .. L["Debuff Class"] .. "\n")
+  table.insert(ret, "|cFFFFCC00%".. triggernum .. ".debuffClassIcon|r - " .. L["Debuff Class Icon"] .. "\n")
+  table.insert(ret, "|cFFFFCC00%".. triggernum .. ".unitCaster|r - " .. L["Caster Unit"] .. "\n")
+  table.insert(ret, "|cFFFFCC00%".. triggernum .. ".casterName|r - " .. L["Caster Name"] .. "\n")
   if trigger.unit ~= "multi" then
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".unit|r - " .. L["Unit"] .. "\n"
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".unit|r - " .. L["Unit"] .. "\n")
   end
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".unitName|r - " .. L["Unit Name"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".matchCount|r - " .. L["Match Count"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".matchCountPerUnit|r - " .. L["Match Count per Unit"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".unitCount|r - " .. L["Units Affected"] .. "\n"
-  ret = ret .. "|cFFFFCC00%".. triggernum .. ".totalStacks|r - " .. L["Total stacks over all matches"] .. "\n"
+  table.insert(ret, "|cFFFFCC00%".. triggernum .. ".unitName|r - " .. L["Unit Name"] .. "\n")
+  table.insert(ret, "|cFFFFCC00%".. triggernum .. ".matchCount|r - " .. L["Match Count"] .. "\n")
+  table.insert(ret, "|cFFFFCC00%".. triggernum .. ".matchCountPerUnit|r - " .. L["Match Count per Unit"] .. "\n")
+  table.insert(ret, "|cFFFFCC00%".. triggernum .. ".unitCount|r - " .. L["Units Affected"] .. "\n")
+  table.insert(ret, "|cFFFFCC00%".. triggernum .. ".totalStacks|r - " .. L["Total stacks over all matches"] .. "\n")
 
   if trigger.unit ~= "multi" then
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".maxUnitCount|r - " .. L["Total Units"] .. "\n"
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".maxUnitCount|r - " .. L["Total Units"] .. "\n")
   end
 
   if not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip then
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip|r - " .. L["Tooltip"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip1|r - " .. L["First Value of Tooltip Text"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip2|r - " .. L["Second Value of Tooltip Text"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip3|r - " .. L["Third Value of Tooltip Text"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".tooltip4|r - " .. L["Fourth Value of Tooltip Text"] .. "\n"
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".tooltip|r - " .. L["Tooltip"] .. "\n")
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".tooltip1|r - " .. L["First Value of Tooltip Text"] .. "\n")
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".tooltip2|r - " .. L["Second Value of Tooltip Text"] .. "\n")
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".tooltip3|r - " .. L["Third Value of Tooltip Text"] .. "\n")
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".tooltip4|r - " .. L["Fourth Value of Tooltip Text"] .. "\n")
   end
 
   if trigger.unit ~= "multi" then
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".stackGainTime|r - " .. L["Since Stack Gain"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".stackLostTime|r - " .. L["Since Stack Lost"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".initialTime|r - " .. L["Since Apply"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".refreshTime|r - " .. L["Since Apply/Refresh"] .. "\n"
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".stackGainTime|r - " .. L["Since Stack Gain"] .. "\n")
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".stackLostTime|r - " .. L["Since Stack Lost"] .. "\n")
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".initialTime|r - " .. L["Since Apply"] .. "\n")
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".refreshTime|r - " .. L["Since Apply/Refresh"] .. "\n")
   end
 
   if WeakAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole then
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".role|r - " .. L["Assigned Role"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".roleIcon|r - " .. L["Assigned Role Icon"] .. "\n"
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".role|r - " .. L["Assigned Role"] .. "\n")
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".roleIcon|r - " .. L["Assigned Role Icon"] .. "\n")
   end
 
   if trigger.unit ~= "multi" and trigger.fetchRaidMark then
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".raidMark|r - " .. L["Raid Mark"] .. "\n"
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".raidMark|r - " .. L["Raid Mark"] .. "\n")
   end
 
   if (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party") and trigger.useAffected then
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".affected|r - " .. L["Names of affected Players"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".unaffected|r - " .. L["Names of unaffected Players"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".affectedUnits|r - " .. L["Units of affected Players in a table format"] .. "\n"
-    ret = ret .. "|cFFFFCC00%".. triggernum .. ".unaffectedUnits|r - " .. L["Units of unaffected Players in a table format"] .. "\n"
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".affected|r - " .. L["Names of affected Players"] .. "\n")
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".unaffected|r - " .. L["Names of unaffected Players"] .. "\n")
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".affectedUnits|r - " .. L["Units of affected Players in a table format"] .. "\n")
+    table.insert(ret, "|cFFFFCC00%".. triggernum .. ".unaffectedUnits|r - " .. L["Units of unaffected Players in a table format"] .. "\n")
   end
 
-  return ret
+  return table.concat(ret)
 end
 
 function BuffTrigger.GetProgressSources(data, triggernum, values)

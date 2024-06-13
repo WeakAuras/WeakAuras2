@@ -393,44 +393,46 @@ function ConstructFunction(prototype, trigger)
     tinsert(tests, "("..table.concat(orConjunctionGroup, " or ")..")")
   end
 
-  local ret = preambles .. "return function("..tconcat(input, ", ")..")\n";
-  ret = ret..(init or "");
+  local ret = {preambles .. "return function("..tconcat(input, ", ")..")\n"}
+  if init then
+    table.insert(ret, init)
+  end
+  if #debug > 0 then
+    table.insert(ret, tconcat(debug, "\n") or "")
+  end
 
-  ret = ret..(#debug > 0 and tconcat(debug, "\n") or "");
-
-  ret = ret.."if(";
-  ret = ret..((#required > 0) and tconcat(required, " and ").." and " or "");
-  ret = ret..(#tests > 0 and tconcat(tests, " and ") or "true");
-  ret = ret..") then\n";
+  table.insert(ret, "if("..((#required > 0) and tconcat(required, " and ").." and " or ""))
+  table.insert(ret, #tests > 0 and tconcat(tests, " and ") or "true")
+  table.insert(ret, ") then\n")
   if(#debug > 0) then
-    ret = ret.."print('ret: true');\n";
+    table.insert("print('ret: true');\n")
   end
 
   if (prototype.statesParameter == "all") then
-    ret = ret .. "  state[cloneId] = state[cloneId] or {}\n"
-    ret = ret .. "  state = state[cloneId]\n"
-    ret = ret .. "  state.changed = true\n"
+    table.insert(ret, "  state[cloneId] = state[cloneId] or {}\n")
+    table.insert(ret, "  state = state[cloneId]\n")
+    table.insert(ret, "  state.changed = true\n")
   end
 
   if prototype.countEvents then
-    ret = ret .. "  local count = counter:GetNext()\n"
+    table.insert(ret, "  local count = counter:GetNext()\n")
     if trigger.use_count and type(trigger.count) == "string" and trigger.count ~= "" then
-      ret = ret .. "  local match = counter:Match()"
-      ret = ret .. "  if not match then return false end\n"
+      table.insert(ret, "  local match = counter:Match()")
+      table.insert(ret, "  if not match then return false end\n")
     end
-    ret = ret .. "  state.count = count\n"
-    ret = ret .. "  state.changed = true\n"
+    table.insert(ret, "  state.count = count\n")
+    table.insert(ret, "  state.changed = true\n")
   end
 
   for _, v in ipairs(store) do
-    ret = ret .. "    if (state." .. v .. " ~= " .. v .. ") then\n"
-    ret = ret .. "      state." .. v .. " = " .. v .. "\n"
-    ret = ret .. "      state.changed = true\n"
-    ret = ret .. "    end\n"
+    table.insert(ret, "    if (state." .. v .. " ~= " .. v .. ") then\n")
+    table.insert(ret, "      state." .. v .. " = " .. v .. "\n")
+    table.insert(ret, "      state.changed = true\n")
+    table.insert(ret, "    end\n")
   end
-  ret = ret.."return true else return false end end";
+  table.insert(ret, "return true else return false end end")
 
-  return ret;
+  return table.concat(ret);
 end
 
 function Private.EndEvent(state)
@@ -4382,11 +4384,9 @@ end
 ---@type fun(data: auraData, triggernum: number): string
 function GenericTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
-  local ret = "";
+  local ret = {""};
   local prototype = GenericTrigger.GetPrototype(trigger)
   if prototype then
-    local found = false;
-    local additional = ""
     for _, v in pairs(prototype.args) do
       local enable = true
       if(type(v.enable) == "function") then
@@ -4395,18 +4395,13 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
         enable = v.enable
       end
       if (enable and v.store and v.name and v.display and v.conditionType ~= "bool") then
-        found = true;
-        additional = additional .. "|cFFFFCC00%".. triggernum .. "." .. v.name .. "|r - " .. v.display .. "\n";
+        table.insert(ret .. "|cFFFFCC00%".. triggernum .. "." .. v.name .. "|r - " .. v.display .. "\n")
       end
     end
     if prototype.countEvents then
-      found = true;
-      additional = additional .. "|cFFFFCC00%".. triggernum .. ".count|r - " .. L["Count"] .. "\n";
+      table.insert(ret, "|cFFFFCC00%".. triggernum .. ".count|r - " .. L["Count"] .. "\n")
     end
 
-    if (found) then
-      ret = ret .. additional;
-    end
   else
     if (trigger.custom_type == "stateupdate") then
       local variables = GenericTrigger.GetTsuConditionVariables(data.id, triggernum)
@@ -4414,7 +4409,7 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
         for var, varData in pairs(variables) do
           if (type(varData) == "table") then
             if varData.display then
-              ret = ret .. "|cFFFFCC00%".. triggernum .. "." .. var .. "|r - " .. varData.display .. "\n"
+              table.insert(ret, "|cFFFFCC00%".. triggernum .. "." .. var .. "|r - " .. varData.display .. "\n")
             end
           end
         end
@@ -4422,7 +4417,7 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
     end
   end
 
-  return ret;
+  return table.concat(ret);
 end
 
 function GenericTrigger.GetProgressSources(data, triggernum, values)

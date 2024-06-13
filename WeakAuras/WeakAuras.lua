@@ -888,24 +888,19 @@ local function ConstructFunction(prototype, trigger, skipOptional)
   for _, orConjunctionGroup  in pairs(orConjunctionGroups) do
     tinsert(tests, "("..table.concat(orConjunctionGroup , " or ")..")")
   end
-  local ret = preambles .. "return function("..table.concat(input, ", ")..")\n";
-  ret = ret..(init or "");
-  -- Enable to debug load function inputs
-  --ret = ret .. "print('INPUTS')"
-  --for _, i in ipairs(input) do
-  --  ret = ret .. "print('" .. i .. "'," .. i .. ")"
-  --end
-  ret = ret..(#debug > 0 and table.concat(debug, "\n") or "");
-  ret = ret.."if(";
-  ret = ret..((#required > 0) and table.concat(required, " and ").." and " or "");
-  ret = ret..(#tests > 0 and table.concat(tests, " and ") or "true");
-  ret = ret..") then\n";
+  local ret = {preambles .. "return function("..table.concat(input, ", ")..")\n"};
+  table.insert(ret, (init or ""));
+  table.insert(ret, (#debug > 0 and table.concat(debug, "\n") or ""));
+  table.insert(ret, "if(");
+  table.insert(ret, ((#required > 0) and table.concat(required, " and ").." and " or ""));
+  table.insert(ret, (#tests > 0 and table.concat(tests, " and ") or "true"));
+  table.insert(ret, ") then\n");
   if(#debug > 0) then
-    ret = ret.."print('ret: true');\n";
+    table.insert(ret, "print('ret: true');\n");
   end
-  ret = ret.."return true else return false end end";
+  table.insert(ret, "return true else return false end end");
 
-  return ret, events;
+  return table.concat(ret), events;
 end
 
 function WeakAuras.GetActiveConditions(id, cloneId)
