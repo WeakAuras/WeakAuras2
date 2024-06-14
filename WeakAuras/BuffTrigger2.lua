@@ -3204,7 +3204,7 @@ function BuffTrigger.Add(data)
         compareFunc = trigger.combineMode == "showHighest" and highestExpirationTime or lowestExpirationTime,
         unitExists = showIfInvalidUnit,
         fetchTooltip = not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip,
-        fetchRole = WeakAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole,
+        fetchRole = WeakAuras.IsCataOrRetail() and trigger.unit ~= "multi" and trigger.fetchRole,
         fetchRaidMark = trigger.unit ~= "multi" and trigger.fetchRaidMark,
         groupTrigger = IsGroupTrigger(trigger),
         ignoreSelf = effectiveIgnoreSelf,
@@ -3384,7 +3384,7 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
     table.insert(ret, "|cFFFFCC00%".. triggernum .. ".refreshTime|r - " .. L["Since Apply/Refresh"] .. "\n")
   end
 
-  if WeakAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole then
+  if WeakAuras.IsCataOrRetail() and trigger.unit ~= "multi" and trigger.fetchRole then
     table.insert(ret, "|cFFFFCC00%".. triggernum .. ".role|r - " .. L["Assigned Role"] .. "\n")
     table.insert(ret, "|cFFFFCC00%".. triggernum .. ".roleIcon|r - " .. L["Assigned Role Icon"] .. "\n")
   end
