@@ -2970,7 +2970,7 @@ local function createScanFunc(trigger)
     for index, spellId in ipairs(trigger.ignoreAuraSpellids) do
       local spell = WeakAuras.SafeToNumber(spellId)
       if spell then
-        preamble = preamble .. string.format("  [%s]  = true,\n", spell)
+        table.insert(preamble, string.format("  [%s]  = true,\n", spell))
       end
     end
     table.insert(preamble, "}\n")
