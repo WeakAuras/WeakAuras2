@@ -2852,12 +2852,15 @@ do
     local startTimeCooldown, durationCooldown, enabled, modRate
     if GetSpellCooldown then
       startTimeCooldown, durationCooldown, enabled, modRate = GetSpellCooldown(id)
+      if type(enabled) == "number" then
+        enabled = enabled == 1 and true or false
+      end
     else
       local spellCooldownInfo = C_Spell.GetSpellCooldown(id);
       if spellCooldownInfo then
         startTimeCooldown = spellCooldownInfo.startTime
         durationCooldown = spellCooldownInfo.duration
-        enabled = spellCooldownInfo.isEnabled and 1 or 0
+        enabled = spellCooldownInfo.isEnabled
         modRate = spellCooldownInfo.modRate
       end
     end
@@ -2897,8 +2900,8 @@ do
     -- For Evoker, using an empowered spell puts spells on pause. Some spells are put on an entirely bogus 0.5 paused cd
     -- Others the real cd (that continues ticking) is paused.
     -- We treat anything with less than 0.5 as not on cd, and hope for the best.
-    if enabled == 0 and durationCooldown <= 0.5 then
-      startTimeCooldown, durationCooldown, enabled = 0, 0, 1
+    if not enabled and durationCooldown <= 0.5 then
+      startTimeCooldown, durationCooldown, enabled = 0, 0, true
     end
 
     local onNonGCDCD = durationCooldown and startTimeCooldown and durationCooldown > 0 and (durationCooldown ~= gcdDuration or startTimeCooldown ~= gcdStart);
@@ -2932,7 +2935,7 @@ do
 
     return charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
            startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
-           count, unifiedModRate, modRate, modRateCharges, enabled == 0
+           count, unifiedModRate, modRate, modRateCharges, not enabled
   end
 
   ---@type fun()
