@@ -124,9 +124,12 @@ Private.precision_types = {
 ---@type table<string, string>
 Private.big_number_types = {
   ["AbbreviateNumbers"] = L["AbbreviateNumbers (Blizzard)"],
-  ["AbbreviateLargeNumbers"] = L["AbbreviateLargeNumbers (Blizzard)"]
+  ["AbbreviateLargeNumbers"] = L["AbbreviateLargeNumbers (Blizzard)"],
+  ["BreakUpLargeNumbers"] = L["BreakUpLargeNumbers (Blizzard)"],
 }
-
+if WeakAuras.IsClassicEra() then
+  Private.big_number_types.BreakUpLargeNumbers = nil
+end
 ---@type table<string, string>
 Private.round_types = {
   floor = L["Floor"],
@@ -218,6 +221,10 @@ local simpleFormatters = {
   AbbreviateLargeNumbers = function(value)
     if type(value) == "string" then value = tonumber(value) end
     return (type(value) == "number") and AbbreviateLargeNumbers(Round(value)) or value
+  end,
+  BreakUpLargeNumbers = function(value)
+    if type(value) == "string" then value = tonumber(value) end
+    return (type(value) == "number") and BreakUpLargeNumbers(value) or value
   end,
   floor = function(value)
     if type(value) == "string" then value = tonumber(value) end
@@ -517,6 +524,8 @@ Private.format_types = {
       local format = get(symbol .. "_big_number_format", "AbbreviateNumbers")
       if (format == "AbbreviateNumbers") then
         return simpleFormatters.AbbreviateNumbers
+      elseif (format == "BreakUpLargeNumbers") then
+        return simpleFormatters.BreakUpLargeNumbers
       end
       return simpleFormatters.AbbreviateLargeNumbers
     end
