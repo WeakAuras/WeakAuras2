@@ -6813,13 +6813,14 @@ Private.event_prototypes = {
     force_events = (WeakAuras.IsRetail() and "TRAIT_CONFIG_UPDATED") or "CHARACTER_POINTS_CHANGED",
     name = L["Talent Known"],
     init = function(trigger)
-      local inverse = trigger.use_inverse;
+      local inverse = trigger.use_inverse and not WeakAuras.IsRetail()
+      local ret = {}
       if (trigger.use_talent) then
         -- Single selection
         local index = trigger.talent and trigger.talent.single;
         local tier = index and ceil(index / MAX_NUM_TALENTS)
         local column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
-        local ret = [[
+        table.insert(ret, ([[
           local tier = %s;
           local column = %s;
           local active = false
@@ -6829,36 +6830,34 @@ Private.event_prototypes = {
             activeName = name;
             activeIcon = icon;
           end
-        ]]
+        ]]):format(tier or 0, column or 0))
         if (inverse) then
-          ret = ret .. [[
-          active = not (active);
-          ]]
+          table.insert(ret, [[
+            active = not (active);
+          ]])
         end
-        return ret:format(tier or 0, column or 0)
       elseif (trigger.use_talent == false) then
         if (trigger.talent.multi) then
-          local ret = [[
-            local active = false;
+          table.insert(ret, [[
+            local active = true
             local activeIcon, activeName, _
-          ]]
+          ]])
           if WeakAuras.IsRetail() then
-            ret = ret .. [[
+            table.insert(ret, [[
               local index
-              local firstLoop = true
               local rank = 0
-            ]]
+            ]])
           else
-            ret = ret .. [[
+            table.insert(ret, [[
               local tier
               local column
-            ]]
+            ]])
           end
           for index, value in pairs(trigger.talent.multi) do
             if WeakAuras.IsClassicOrCata() then
               local tier = index and ceil(index / MAX_NUM_TALENTS)
               local column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
-              local ret2 = [[
+              table.insert(ret, ([[
                 if (not active) then
                   tier = %s
                   column = %s
@@ -6869,54 +6868,58 @@ Private.event_prototypes = {
                     activeIcon = icon;
                   end
                 end
-              ]]
-              ret = ret .. ret2:format(tier, column)
+              ]]):format(tier, column))
             elseif WeakAuras.IsRetail() then
-              local ret2 = [[
+              table.insert(ret, ([[
                 local talentId = %s
                 local shouldBeActive = %s
                 if talentId then
                   activeName, activeIcon, _, rank = WeakAuras.GetTalentById(talentId)
                   if activeName ~= nil then
-                    local hasTalent = rank > 0
-                    if hasTalent then
-                      if shouldBeActive then
-                        if firstLoop then
-                          active = true
-                        else
-                          active = active and true
-                        end
-                      else
-                        active = false
-                      end
-                      firstLoop = false
-                    else
-                      if shouldBeActive then
-                        active = false
-                      else
-                        if firstLoop then
-                          active = true
-                        else
-                          active = active and true
-                        end
-                      end
-                      firstLoop = false
+                    if rank > 0 ~= shouldBeActive then
+                      active = false
                     end
                   end
                 end
-              ]]
-              ret = ret .. ret2:format(index, value and "true" or "false")
+              ]]):format(index, value and "true" or "false"))
             end
           end
           if (inverse) then
-            ret = ret .. [[
-            active = not (active);
-            ]]
+            table.insert(ret, [[
+              active = not (active);
+            ]])
           end
-          return ret;
         end
       end
-      return "";
+      if (WeakAuras.IsTWW() and trigger.use_herotalent == false) then
+        if (trigger.talent.multi) then
+          table.insert(ret, [[
+            local heroActive = true
+            local activeIcon, activeName, _
+            local index
+          ]])
+          for index, value in pairs(trigger.herotalent.multi) do
+            table.insert(ret, ([[
+              local talentId = %s
+              local shouldBeActive = %s
+              if talentId then
+                activeName, activeIcon, _, rank = WeakAuras.GetTalentById(talentId)
+                if activeName ~= nil then
+                  if rank > 0 ~= shouldBeActive then
+                    heroActive = false
+                  end
+                end
+              end
+            ]]):format(index, value and "true" or "false"))
+          end
+          if (inverse) then
+            table.insert(ret, [[
+              heroActive = not (heroActive);
+            ]])
+          end
+        end
+      end
+      return table.concat(ret)
     end,
     args = {
       {
@@ -7018,28 +7021,6 @@ Private.event_prototypes = {
         reloadOptions = true,
       },
       {
-        name = "inverse",
-        display = L["Inverse"],
-        type = "toggle",
-        test = "true",
-        enable = not WeakAuras.IsRetail(),
-        hidden = WeakAuras.IsRetail(),
-      },
-      {
-        hidden = true,
-        name = "icon",
-        init = "activeIcon",
-        store = "true",
-        test = "true"
-      },
-      {
-        hidden = true,
-        name = "name",
-        init = "activeName",
-        store = "true",
-        test = "true"
-      },
-      {
         display = L["Rank"],
         desc = L["Check if a single talent match a Rank"],
         name = "stacks",
@@ -7064,6 +7045,78 @@ Private.event_prototypes = {
           end
           return false
         end,
+      },
+      {
+        name = "herotalent",
+        display = L["Hero Talent"],
+        type = "multiselect",
+        values = function(trigger)
+          local classId
+          for i = 1, GetNumClasses() do
+            if select(2, GetClassInfo(i)) == trigger.class then
+              classId = i
+            end
+          end
+          if classId and trigger.spec then
+            local specId = GetSpecializationInfoForClassID(classId, trigger.spec)
+            if specId then
+              local _, heroData = Private.GetTalentData(specId)
+              if heroData then
+                return heroData
+              end
+            end
+          end
+          return {}
+        end,
+        multiUseControlWhenFalse = true,
+        multiAll = true,
+        multiNoSingle = true,
+        multiTristate = true,
+        control = "WeakAurasMiniTalent",
+        multiConvertKey = function(trigger, key)
+          local classId
+          for i = 1, GetNumClasses() do
+            if select(2, GetClassInfo(i)) == trigger.class then
+              classId = i
+            end
+          end
+          if classId and trigger.spec then
+            local specId = GetSpecializationInfoForClassID(classId, trigger.spec)
+            if specId then
+              local _, heroData = Private.GetTalentData(specId)
+              if type(heroData) == "table" and type(heroData[key]) == "table" then
+                return heroData[key][1]
+              end
+            end
+          end
+        end,
+        enable = function(trigger)
+          return WeakAuras.IsTWW() and trigger.use_class and trigger.class and trigger.use_spec and trigger.spec and true or false
+        end,
+        test = "heroActive",
+        reloadOptions = true,
+      },
+      {
+        name = "inverse",
+        display = L["Inverse"],
+        type = "toggle",
+        test = "true",
+        enable = not WeakAuras.IsRetail(),
+        hidden = WeakAuras.IsRetail(),
+      },
+      {
+        hidden = true,
+        name = "icon",
+        init = "activeIcon",
+        store = "true",
+        test = "true"
+      },
+      {
+        hidden = true,
+        name = "name",
+        init = "activeName",
+        store = "true",
+        test = "true"
       },
     },
     automaticrequired = true,
