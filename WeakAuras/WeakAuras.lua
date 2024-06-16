@@ -3545,7 +3545,7 @@ do
 
     if type(glow_frame_monitor) == "table" then
       for region, data in pairs(glow_frame_monitor) do
-        if region.state and region.state.unit == unit
+        if region.state and UnitIsUnit(region.state.unit, unit)
         and ((data.frame ~= frame) and (FRAME_UNIT_ADDED or FRAME_UNIT_UPDATE))
         or ((data.frame == frame) and FRAME_UNIT_REMOVED)
         then
