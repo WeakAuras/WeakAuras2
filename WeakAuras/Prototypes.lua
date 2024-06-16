@@ -5617,10 +5617,12 @@ Private.event_prototypes = {
       },
       {
         name = "name",
+        display = L["Name"],
         hidden = true,
         init = "name",
         test = "true",
-        store = true
+        store = true,
+        conditionType = "string"
       },
       {
         name = "icon",
@@ -5724,10 +5726,12 @@ Private.event_prototypes = {
       },
       {
         name = "name",
+        display = L["Name"],
         hidden = true,
         init = "name",
         test = "true",
-        store = true
+        store = true,
+        conditionType = "string"
       },
       {
         name = "icon",
@@ -5853,10 +5857,12 @@ Private.event_prototypes = {
       },
       {
         name = "name",
+        display = L["Name"],
         hidden = true,
         init = "name",
         test = "true",
-        store = true
+        store = true,
+        conditionType = "string"
       },
       {
         name = "icon",
@@ -6014,10 +6020,12 @@ Private.event_prototypes = {
       },
       {
         name = "name",
+        display = L["Name"],
         hidden = true,
         init = "name",
         test = "true",
-        store = true
+        store = true,
+        conditionType = "string"
       },
       {
         name = "icon",
@@ -6215,10 +6223,12 @@ Private.event_prototypes = {
       },
       {
         name = "name",
+        display = L["Name"],
         hidden = true,
         init = "name",
         test = "true",
-        store = true
+        store = true,
+        conditionType = "string"
       },
       {
         name = "icon",
@@ -6229,10 +6239,12 @@ Private.event_prototypes = {
       },
       {
         name = "stacks",
+        display = L["Stacks"],
         init = "stacks",
         hidden = true,
         test = "true",
-        store = true
+        store = true,
+        conditionType = "number"
       },
       {
         hidden = true,
@@ -6296,10 +6308,12 @@ Private.event_prototypes = {
       },
       {
         name = "name",
+        display = L["Name"],
         hidden = true,
         init = "name",
         test = "true",
-        store = true
+        store = true,
+        conditionType = "string"
       },
       {
         name = "icon",
@@ -6354,10 +6368,12 @@ Private.event_prototypes = {
       },
       {
         name = "name",
+        display = L["Name"],
         hidden = true,
         init = "name",
         test = "true",
-        store = true
+        store = true,
+        conditionType = "string"
       },
       {
         name = "icon",
@@ -6425,10 +6441,12 @@ Private.event_prototypes = {
       },
       {
         name = "name",
+        display = L["Name"],
         hidden = true,
         init = "name",
         test = "true",
-        store = true
+        store = true,
+        conditionType = "string"
       },
       {
         name = "icon",
@@ -6759,10 +6777,12 @@ Private.event_prototypes = {
       },
       {
         name = "name",
+        display = L["Name"],
         hidden = true,
         init = "name",
         test = "true",
-        store = true
+        store = true,
+        conditionType = "string"
       },
       {
         name = "icon",
@@ -6773,10 +6793,12 @@ Private.event_prototypes = {
       },
       {
         name = "stacks",
+        display = L["Stacks"],
         hidden = true,
         init = "stacks",
         test = "true",
-        store = true
+        store = true,
+        conditionType = "number"
       },
       {
         hidden = true,
@@ -8640,10 +8662,12 @@ Private.event_prototypes = {
       },
       {
         name = "name",
+        display = L["Name"],
         hidden = true,
         init = "itemName",
         test = "true",
-        store = true
+        store = true,
+        conditionType = "string"
       },
       {
         name = "icon",
@@ -8890,10 +8914,12 @@ Private.event_prototypes = {
       },
       {
         name = "name",
+        display = L["Name"],
         hidden = true,
         init = "name",
         store = true,
-        test = "true"
+        test = "true",
+        conditionType = "string"
       },
     },
     progressType = "static"
@@ -8955,10 +8981,12 @@ Private.event_prototypes = {
       },
       {
         name = "name",
+        display = L["Name"],
         hidden = true,
         init = "name",
         test = "true",
-        store = true
+        store = true,
+        conditionType = "string"
       },
       {
         name = "icon",
@@ -10967,10 +10995,12 @@ Private.event_prototypes = {
       },
       {
         name = "name",
+        display = L["Name"],
         hidden = true,
         init = "name",
         test = "true",
-        store = true
+        store = true,
+        conditionType = "string"
       },
       {
         name = "icon",
