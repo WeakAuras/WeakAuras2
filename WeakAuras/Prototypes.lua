@@ -6892,7 +6892,7 @@ Private.event_prototypes = {
         end
       end
       if (WeakAuras.IsTWW() and trigger.use_herotalent == false) then
-        if (trigger.talent.multi) then
+        if (trigger.herotalent.multi) then
           table.insert(ret, [[
             local heroActive = true
             local activeIcon, activeName, _
