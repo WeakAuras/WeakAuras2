@@ -3502,6 +3502,10 @@ Private.event_prototypes = {
       if trigger.use_powertype and trigger.powertype == 4 then
         if WeakAuras.IsRetail() then
           AddUnitEventForEvents(result, unit, "UNIT_POWER_POINT_CHARGE")
+        elseif WeakAuras.IsCataClassic() then
+          result.events = result.events or {}
+          tinsert(result.events, "COMBO_TARGET_CHANGED")
+          AddUnitEventForEvents(result, unit, "UNIT_TARGET")
         else
           AddUnitEventForEvents(result, unit, "UNIT_TARGET")
         end
