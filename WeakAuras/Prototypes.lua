@@ -1117,24 +1117,6 @@ function Private.ExecEnv.CompareSpellIds(a, b, exactCheck)
   end
 end
 
----@param powerType integer
----@return integer
-function WeakAuras.UnitPowerDisplayMod(powerType)
-  if (powerType == 7) then
-    return 10;
-  end
-  return 1;
-end
-
----@param powerType integer
----@return boolean?
-function WeakAuras.UseUnitPowerThirdArg(powerType)
-  if (powerType == 7) then
-    return true;
-  end
-  return nil;
-end
-
 do
 -- A small helper to fire WA_DELAYED_SET_INFORMATION if GetNumSetItemsEquipped couldn't give
 -- accurate information due to item information being unavailable
@@ -3565,9 +3547,41 @@ Private.event_prototypes = {
         local powerType = %s;
         local unitPowerType = UnitPowerType(unit);
         local powerTypeToCheck = powerType or unitPowerType;
-        local powerThirdArg = WeakAuras.UseUnitPowerThirdArg(powerTypeToCheck);
         if not WeakAuras.IsRetail() and powerType == 99 then powerType = 1 end
       ]=]):format(trigger.unit == "group" and "true" or "false", trigger.use_powertype and trigger.powertype or "nil"))
+
+      local powerType = trigger.use_powertype and trigger.powertype or nil
+      if WeakAuras.IsRetail() then
+        if powerType == 7 then
+          -- Soul Shards, this mirrors the ShardBar in the wow sources
+          table.insert(ret, [[
+            local shardModifier = UnitPowerDisplayMod(powerType)
+            local power = UnitPower(unit, powerType, true) / shardModifier
+            local total = math.max(1, UnitPowerMax(unit, powerType, true)) / shardModifier
+            if GetSpecialization() ~= SPEC_WARLOCK_DESTRUCTION then
+              power = floor(power)
+            end
+          ]])
+        else
+          table.insert(ret, [[
+            local power = UnitPower(unit, powerType)
+            local total = math.max(1, UnitPowerMax(unit, powerType))
+          ]])
+        end
+      else
+        -- Combo Points
+        if powerType == 4 then
+          table.insert(ret, [[
+            local power = GetComboPoints(unit, unit .. '-target')
+            local total = math.max(1, UnitPowerMax(unit, 14))
+          ]])
+        else
+          table.insert(ret, [[
+            local power = UnitPower(unit, powerType)
+            local total = math.max(1, UnitPowerMax(unit, powerType))
+          ]])
+        end
+      end
 
       table.insert(ret, unitHelperFunctions.SpecificUnitCheck(trigger))
 
@@ -3797,8 +3811,7 @@ Private.event_prototypes = {
         name = "power",
         display = L["Power"],
         type = "number",
-        init = not WeakAuras.IsRetail() and "powerType == 4 and GetComboPoints(unit, unit .. '-target') or UnitPower(unit, powerType, powerThirdArg)"
-                                     or "UnitPower(unit, powerType, powerThirdArg) / WeakAuras.UnitPowerDisplayMod(powerTypeToCheck)",
+        init = "power",
         store = true,
         conditionType = "number",
         multiEntry = {
@@ -3817,8 +3830,7 @@ Private.event_prototypes = {
       {
         name = "total",
         hidden = true,
-        init = not WeakAuras.IsRetail() and "powerType == 4 and (math.max(1, UnitPowerMax(unit, 14))) or math.max(1, UnitPowerMax(unit, powerType, powerThirdArg))"
-                                      or "math.max(1, UnitPowerMax(unit, powerType, powerThirdArg)) / WeakAuras.UnitPowerDisplayMod(powerTypeToCheck)",
+        init = "total",
         store = true,
         test = "true"
       },
