@@ -9,6 +9,8 @@ local L = WeakAuras.L;
 
 local default = {
     progressSource = {-1, "" },
+    adjustedMax = "",
+    adjustedMin = "",
     foregroundTexture = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion",
     backgroundTexture = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\stopmotion",
     desaturateBackground = false,
