@@ -3994,6 +3994,21 @@ do
   end
 end
 
+do
+  local watchFrame
+  function Private.WatchCOMBO_TARGET_CHANGED()
+    if not watchFrame then
+      watchFrame = CreateFrame("Frame")
+      watchFrame:RegisterEvent("COMBO_TARGET_CHANGED")
+      watchFrame:SetScript("OnEvent", function()
+        Private.StartProfileSystem("generictrigger COMBO_TARGET_CHANGED")
+        WeakAuras.ScanEvents("WA_COMBO_TARGET_CHANGED", "player")
+        Private.StopProfileSystem("generictrigger COMBO_TARGET_CHANGED")
+      end)
+    end
+  end
+end
+
 -- Cast Latency
 do
   local castLatencyFrame

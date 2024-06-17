@@ -3503,8 +3503,6 @@ Private.event_prototypes = {
         if WeakAuras.IsRetail() then
           AddUnitEventForEvents(result, unit, "UNIT_POWER_POINT_CHARGE")
         elseif WeakAuras.IsCataClassic() then
-          result.events = result.events or {}
-          tinsert(result.events, "COMBO_TARGET_CHANGED")
           AddUnitEventForEvents(result, unit, "UNIT_TARGET")
         else
           AddUnitEventForEvents(result, unit, "UNIT_TARGET")
@@ -3529,6 +3527,10 @@ Private.event_prototypes = {
       end
       if WeakAuras.IsCataClassic() and trigger.unit == "player" and trigger.use_powertype and trigger.powertype == 26 then
         tinsert(result, "ECLIPSE_DIRECTION_CHANGE");
+      end
+      if WeakAuras.IsCataClassic() and trigger.unit == "player" and trigger.use_powertype and trigger.powertype == 4 then
+        Private.WatchCOMBO_TARGET_CHANGED()
+        tinsert(result, "WA_COMBO_TARGET_CHANGED");
       end
       return result
     end,
