@@ -6233,12 +6233,6 @@ function WeakAuras.GetTriggerCategoryFor(triggerType)
   return prototype and prototype.type
 end
 
----@param unit UnitToken
----@return number stagger
-function WeakAuras.UnitStagger(unit)
-  return UnitStagger(unit) or 0
-end
-
 function Private.SortOrderForValues(values)
   local sortOrder = {}
   for key, value in pairs(values) do
