@@ -3562,6 +3562,54 @@ Private.event_prototypes = {
               power = floor(power)
             end
           ]])
+        elseif powerType == 99 then
+          table.insert(ret, ([[
+            local power = UnitStagger(unit) or 0
+            local scaleStagger = %s
+            local total = math.max(1, UnitHealthMax(unit) * scaleStagger)
+          ]]):format(trigger.use_scaleStagger and trigger.scaleStagger or 1))
+        elseif powerType == 4 and trigger.unit == 'player' then
+          table.insert(ret, ([[
+            local chargedAsSeven = %s
+            local comboPoint = UnitPower(unit, 4)
+            local chargedComboPoint = GetUnitChargedPowerPoints('player') or {}
+            if state.chargedComboPoint1 ~= chargedComboPoint[1] then
+              state.chargedComboPoint = chargedComboPoint[1] -- For backwards compability
+              state.chargedComboPoint1 = chargedComboPoint[1]
+              state.changed = true
+            end
+
+            if state.chargedComboPoint2 ~= chargedComboPoint[2] then
+              state.chargedComboPoint2 = chargedComboPoint[2]
+              state.changed = true
+            end
+
+            if state.chargedComboPoint3 ~= chargedComboPoint[3] then
+              state.chargedComboPoint3 = chargedComboPoint[3]
+              state.changed = true
+            end
+
+            if state.chargedComboPoint4 ~= chargedComboPoint[4] then
+              state.chargedComboPoint4 = chargedComboPoint[4]
+              state.changed = true
+            end
+            local currentCharged = tContains(chargedComboPoint, comboPoint)
+            if state.currentCharged ~= currentCharged then
+              state.currentCharged = currentCharged
+              state.changed = true
+            end
+            local power
+            if chargedAsSeven then
+              if tContains(chargedComboPoint, comboPoint) then
+                power = 7
+              else
+                power = comboPoint
+              end
+            else
+              power = UnitPower(unit, powerType)
+            end
+            local total = math.max(1, UnitPowerMax(unit, powerType))
+          ]]):format(trigger.use_chargedAsSeven and "true" or "false"))
         else
           table.insert(ret, [[
             local power = UnitPower(unit, powerType)
@@ -3585,22 +3633,6 @@ Private.event_prototypes = {
 
       table.insert(ret, unitHelperFunctions.SpecificUnitCheck(trigger))
 
-      if (trigger.use_powertype and trigger.powertype == 99 and WeakAuras.IsRetail()) then
-        table.insert(ret, [[
-          local UnitPower = WeakAuras.UnitStagger
-        ]])
-        if (trigger.use_scaleStagger and trigger.scaleStagger) then
-          table.insert(ret, ([[
-            local UnitPowerMax = function(unit)
-              return UnitHealthMax(unit) * %s
-            end
-          ]]):format(trigger.scaleStagger))
-        else
-          table.insert(ret, [[
-            local UnitPowerMax = UnitHealthMax;
-          ]])
-        end
-      end
       local canEnableShowCost = (not trigger.use_powertype or trigger.powertype ~= 99) and trigger.unit == "player";
       if (canEnableShowCost and trigger.use_showCost) then
         table.insert(ret, [[
@@ -3618,50 +3650,6 @@ Private.event_prototypes = {
             end
           end
         ]])
-      end
-      if WeakAuras.IsRetail()
-          and trigger.unit == 'player' and trigger.use_powertype and trigger.powertype == 4
-      then
-        table.insert(ret, [[
-          local comboPoint = UnitPower(unit, 4)
-          local chargedComboPoint = GetUnitChargedPowerPoints('player') or {}
-          if state.chargedComboPoint1 ~= chargedComboPoint[1] then
-            state.chargedComboPoint = chargedComboPoint[1] -- For backwards compability
-            state.chargedComboPoint1 = chargedComboPoint[1]
-            state.changed = true
-          end
-
-          if state.chargedComboPoint2 ~= chargedComboPoint[2] then
-            state.chargedComboPoint2 = chargedComboPoint[2]
-            state.changed = true
-          end
-
-          if state.chargedComboPoint3 ~= chargedComboPoint[3] then
-            state.chargedComboPoint3 = chargedComboPoint[3]
-            state.changed = true
-          end
-
-          if state.chargedComboPoint4 ~= chargedComboPoint[4] then
-            state.chargedComboPoint4 = chargedComboPoint[4]
-            state.changed = true
-          end
-          local currentCharged = tContains(chargedComboPoint, comboPoint)
-          if state.currentCharged ~= currentCharged then
-            state.currentCharged = currentCharged
-            state.changed = true
-          end
-        ]])
-
-        if trigger.use_chargedAsSeven then
-          table.insert(ret, [[
-            local UnitPower = function()
-              if tContains(chargedComboPoint, comboPoint) then
-                return 7
-              end
-              return comboPoint
-            end
-          ]])
-        end
       end
 
       return table.concat(ret)
