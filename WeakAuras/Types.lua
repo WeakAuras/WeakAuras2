@@ -1131,6 +1131,8 @@ do
     [37] = true,
     [52] = true, -- Dracthyr
     [70] = true, -- Dracthyr
+    [84] = true, -- Earthen
+    [85] = true, -- Earthen
   }
 
   for raceId, enabled in pairs(races) do
