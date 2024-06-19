@@ -3174,8 +3174,23 @@ LSM.RegisterCallback(WeakAuras, "LibSharedMedia_Registered", function(_, mediaty
       Private.sound_types[path] = key
       Private.sound_file_types[path] = key
     end
+  elseif mediatype == "statusbar" or mediatype == "statusbar_atlas" then
+    local path = LSM:Fetch(mediatype, key)
+    if path then
+      Private.texture_types["LibSharedMedia Textures"][path] = key
+    end
   end
 end)
+
+Private.texture_types["LibSharedMedia Textures"] = {}
+for _, mediaType in ipairs{"statusbar", "statusbar_atlas"} do
+  local mediaTable = LSM:HashTable(mediaType)
+  if mediaTable then
+    for name, path in pairs(mediaTable) do
+      Private.texture_types["LibSharedMedia Textures"][path] = name
+    end
+  end
+end
 
 -- register options font
 LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraMono-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
@@ -3211,11 +3226,16 @@ if PowerBarColor then
   end
 
   for power, data in pairs(PowerBarColor) do
+    local name, path
     if type(power) == "string" and data.atlas then
-      local name = "Blizzard " .. capitalizeFirstLetter(power)
-      LSM:Register("statusbar_atlas", name, data.atlas)
+      name = "Blizzard " .. capitalizeFirstLetter(power)
+      path = data.atlas
     elseif data.atlasElementName then
-      LSM:Register("statusbar_atlas", "Blizzard " .. data.atlasElementName, "UI-HUD-UnitFrame-Player-PortraitOff-Bar-" .. data.atlasElementName)
+      name = "Blizzard " .. data.atlasElementName
+      path = "UI-HUD-UnitFrame-Player-PortraitOff-Bar-" .. data.atlasElementName
+    end
+    if name and path then
+      LSM:Register("statusbar_atlas", name, path)
     end
   end
 end
