@@ -617,15 +617,19 @@ local function ConstructTextEditor(frame)
     local lowerWord = word:lower()
     local results = {}
 
-    -- if search field is set to the name of namespace, show all functions
-    local foundSystem = false
+    -- if search match name of namespace, show all functions & events for the namespace, and also show all other functions & events matching the search
+    -- if search is composed with name of a namespace and a word separated by a dot, show matching function for matching namespace
+
+    local nsName, rest = lowerWord:match("^([%w%_]+)(.*)")
+    local funcName = rest and rest:match("^%.([%w%_]+)")
+
     for _, systemInfo in ipairs(APIDocumentation.systems) do
       -- search for namespaceName or namespaceName.functionName
-      local nsName, rest = lowerWord:match("^([%w%_]+)(.*)")
-      if nsName and systemInfo.Namespace and systemInfo.Namespace:lower():match(nsName) then
-        foundSystem = true
-        local funcName = rest and rest:match("^%.([%w%_]+)")
-        for _, apiInfo in ipairs(systemInfo.Functions) do
+      local systemMatch = nsName and #nsName >= 4
+        and systemInfo.Namespace and systemInfo.Namespace:lower():match(nsName)
+
+      for _, apiInfo in ipairs(systemInfo.Functions) do
+        if systemMatch then
           if funcName then
             if apiInfo:MatchesSearchString(funcName) then
               addLine(results, apiInfo)
@@ -633,38 +637,43 @@ local function ConstructTextEditor(frame)
           else
             addLine(results, apiInfo)
           end
+        else
+          if apiInfo:MatchesSearchString(lowerWord) then
+            addLine(results, apiInfo)
+          end
         end
-        if rest == "" then
-          for _, apiInfo in ipairs(systemInfo.Events) do
+      end
+
+      if systemMatch and rest == "" then
+        for _, apiInfo in ipairs(systemInfo.Events) do
+          addLine(results, apiInfo)
+        end
+      else
+        for _, apiInfo in ipairs(systemInfo.Events) do
+          if apiInfo:MatchesSearchString(lowerWord) then
             addLine(results, apiInfo)
           end
         end
       end
     end
 
-    -- otherwise show a list of functions matching search field
-    if not foundSystem then
-      local tmp = {}
-      APIDocumentation:AddAllMatches(APIDocumentation.functions, tmp, lowerWord)
-      APIDocumentation:AddAllMatches(APIDocumentation.events, tmp, lowerWord)
-
-      for _, apiInfo in ipairs(tmp) do
-        addLine(results, apiInfo)
-      end
-    end
-
     return results
   end
 
+  local lastSearch = nil
   makeAPISearch = function(apiToSearchFor)
-    apiSearchScroll:ReleaseChildren()
     loadBlizzardAPIDocumentation()
     local results
-    if not apiToSearchFor or #apiToSearchFor < 3 then
+    if not apiToSearchFor or #apiToSearchFor < 4 then
+      if lastSearch == "" then return end
       results = APIListSystems()
+      lastSearch = ""
     else
+      if lastSearch == apiToSearchFor then return end
       results = APISearch(apiToSearchFor)
+      lastSearch = apiToSearchFor
     end
+    apiSearchScroll:ReleaseChildren()
     for _, element in ipairs(results) do
       local apiInfo = element.apiInfo
       if apiInfo then
