@@ -9,7 +9,8 @@ comment:
         - '**'
       body: |
         {{#build_id}}
-          An experimental build of WeakAuras with the changes in this pull request is available [here](https://nightly.link/{{repository}}/actions/artifacts/{{build_id}}.zip).
-          Build Time: {{datestr}}
+          An experimental build of WeakAuras with the changes in this pull request is available [here](https://nightly.link/{{{repository}}}/actions/artifacts/{{{build_id}}}.zip).
+          Build Time: {{{datestr}}}
+          Commit: {{{commitSha}}}
         {{/build_id}}
         {{^build_id}}Experimental build was unsuccessful. See the logs for details.{{/build_id}}
