@@ -3,7 +3,7 @@ local AddonName = ...
 ---@class Private
 local Private = select(2, ...)
 
-local internalVersion = 74
+local internalVersion = 75
 
 -- Lua APIs
 local insert = table.insert
@@ -2608,8 +2608,12 @@ function Private.AddMany(tbl, takeSnapshots)
   local order = loadOrder(tbl, idtable)
   coroutine.yield()
 
+  local oldSnapshots = {}
   if takeSnapshots then
     for _, data in ipairs(order) do
+      if Private.ModernizeNeedsOldSnapshot(data) then
+        oldSnapshots[data.uid] = Private.GetMigrationSnapshot(data.uid)
+      end
       Private.SetMigrationSnapshot(data.uid, data)
       coroutine.yield()
     end
@@ -2621,7 +2625,8 @@ function Private.AddMany(tbl, takeSnapshots)
     if data.parent and bads[data.parent] then
       bads[data.id] = true
     else
-      local ok = xpcall(WeakAuras.PreAdd, Private.GetErrorHandlerUid(data.uid, "PreAdd"), data)
+      local oldSnapshot = oldSnapshots[data.uid] or nil
+      local ok = xpcall(WeakAuras.PreAdd, Private.GetErrorHandlerUid(data.uid, "PreAdd"), data, oldSnapshot)
       if not ok then
         prettyPrint(L["Unable to modernize aura '%s'. This is probably due to corrupt data or a bad migration, please report this to the WeakAuras team."]:format(data.id))
         if data.regionType == "dynamicgroup" or data.regionType == "group" then
@@ -2973,7 +2978,7 @@ function Private.UpdateSoundIcon(data)
   end
 end
 
-function WeakAuras.PreAdd(data)
+function WeakAuras.PreAdd(data, snapshot)
   if not data then return end
   -- Readd what Compress removed before version 8
   if (not data.internalVersion or data.internalVersion < 7) then
@@ -2982,7 +2987,7 @@ function WeakAuras.PreAdd(data)
     Private.validate(data, oldDataStub2)
   end
 
-  xpcall(Private.Modernize, Private.GetErrorHandlerId(data.id, L["Modernize"]), data)
+  xpcall(Private.Modernize, Private.GetErrorHandlerId(data.id, L["Modernize"]), data, snapshot)
 
   local default = data.regionType and Private.regionTypes[data.regionType] and Private.regionTypes[data.regionType].default
   if default then
@@ -3179,10 +3184,14 @@ end
 
 ---@private
 function WeakAuras.Add(data, simpleChange)
+  local oldSnapshot
+  if Private.ModernizeNeedsOldSnapshot(data) then
+    oldSnapshot = Private.GetMigrationSnapshot(data.uid)
+  end
   if (data.internalVersion or 0) < internalVersion then
     Private.SetMigrationSnapshot(data.uid, data)
   end
-  local ok = xpcall(WeakAuras.PreAdd, Private.GetErrorHandlerUid(data.uid, "PreAdd"), data)
+  local ok = xpcall(WeakAuras.PreAdd, Private.GetErrorHandlerUid(data.uid, "PreAdd"), data, oldSnapshot)
   if ok then
     pAdd(data, simpleChange)
   end
