@@ -1619,7 +1619,7 @@ local methods = {
     end
   end,
   Import = function(self)
-    OptionsPrivate.Private.dynFrame:AddAction("import", coroutine.create(function()
+    OptionsPrivate.Private.Threads:Add("import", coroutine.create(function()
       self:ImportImpl()
     end))
   end,
