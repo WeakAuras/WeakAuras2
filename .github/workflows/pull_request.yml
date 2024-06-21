@@ -69,6 +69,7 @@ jobs:
           template-variables: |
             {
               "datestr": "${{ steps.datestr.outputs.datestr }}",
+              "sha": "${{ github.event.pull_request.head.sha }}",
               "repository": "${{ github.repository }}",
               "build_id": "${{ needs.build.outputs.artifact-id }}",
               "run_id": "${{ github.run_id }}"
