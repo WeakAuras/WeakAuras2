@@ -3481,14 +3481,18 @@ function WeakAuras.WatchUnitChange(unit)
         eventsToSend["UNIT_CHANGED_" .. unitA] = unitA
         if watchUnitChange.GUIDToUnitIds[oldGUID] then
           for unitB in pairs(watchUnitChange.GUIDToUnitIds[oldGUID]) do
-            eventsToSend["UNIT_IS_UNIT_CHANGED_" .. unitA .. "_" .. unitB] = unitA
-            eventsToSend["UNIT_IS_UNIT_CHANGED_" .. unitB .. "_" .. unitA] = unitB
+            if unitA ~= unitB then
+              eventsToSend["UNIT_IS_UNIT_CHANGED_" .. unitA .. "_" .. unitB] = unitA
+              eventsToSend["UNIT_IS_UNIT_CHANGED_" .. unitB .. "_" .. unitA] = unitB
+            end
           end
         end
         if watchUnitChange.GUIDToUnitIds[newGUID] then
           for unitB in pairs(watchUnitChange.GUIDToUnitIds[newGUID]) do
-            eventsToSend["UNIT_IS_UNIT_CHANGED_" .. unitA .. "_" .. unitB] = unitA
-            eventsToSend["UNIT_IS_UNIT_CHANGED_" .. unitB .. "_" .. unitA] = unitB
+            if unitA ~= unitB then
+              eventsToSend["UNIT_IS_UNIT_CHANGED_" .. unitA .. "_" .. unitB] = unitA
+              eventsToSend["UNIT_IS_UNIT_CHANGED_" .. unitB .. "_" .. unitA] = unitB
+            end
           end
         end
       end
@@ -3562,80 +3566,50 @@ function WeakAuras.WatchUnitChange(unit)
       end
     end
 
+    local function handleUnit(unit, eventsToSend, ...)
+      if watchUnitChange.trackedUnits[unit] then
+        local fn
+        for i = 1, select("#", ...) do
+          fn = select(i, ...)
+          fn(unit, eventsToSend)
+        end
+      end
+    end
+
     watchUnitChange:SetScript("OnEvent", function(self, event, unit)
       Private.StartProfileSystem("generictrigger unit change");
       local eventsToSend = {}
       if event == "PLAYER_ENTERING_WORLD" then
         for unit in pairs(watchUnitChange.unitIdToGUID) do
-          unitUpdate(unit, eventsToSend)
-          markerUpdate(unit, eventsToSend)
-          reactionUpdate(unit, eventsToSend)
+          handleUnit(unit, eventsToSend, unitUpdate, markerUpdate, reactionUpdate)
         end
       elseif event == "NAME_PLATE_UNIT_ADDED" then
-        if not watchUnitChange.trackedUnits[unit] then
-          Private.StopProfileSystem("generictrigger unit change");
-          return
-        end
-        unitUpdate(unit, eventsToSend)
-        markerInit(unit)
-        reactionInit(unit)
+        handleUnit(unit, eventsToSend, unitUpdate, markerInit, reactionInit)
       elseif event == "NAME_PLATE_UNIT_REMOVED" then
-        if not watchUnitChange.trackedUnits[unit] then
-          Private.StopProfileSystem("generictrigger unit change");
-          return
-        end
-        unitUpdate(unit, eventsToSend)
-        markerClear(unit)
-        reactionClear(unit)
+        handleUnit(unit, eventsToSend, unitUpdate, markerClear, reactionClear)
       elseif event == "INSTANCE_ENCOUNTER_ENGAGE_UNIT" then
         for i = 1, 5 do
-          local unit = "boss" .. i
-          if watchUnitChange.trackedUnits[unit] then
-            unitUpdate(unit, eventsToSend)
-            markerInit(unit)
-            reactionInit(unit)
-          end
+          handleUnit("boss" .. i, eventsToSend, unitUpdate, markerInit, reactionInit)
+          handleUnit("boss" .. i .. "target", eventsToSend, unitUpdate, markerInit, reactionInit)
         end
       elseif event == "PLAYER_TARGET_CHANGED" then
-        if not watchUnitChange.trackedUnits["target"] then
-          Private.StopProfileSystem("generictrigger unit change");
-          return
-        end
-        unitUpdate("target", eventsToSend)
-        markerInit("target")
-        reactionInit("target")
+        handleUnit("target", eventsToSend, unitUpdate, markerInit, reactionInit)
+        handleUnit("targettarget", eventsToSend, unitUpdate, markerInit, reactionInit)
       elseif event == "PLAYER_FOCUS_CHANGED" then
-        if not watchUnitChange.trackedUnits["focus"] then
-          Private.StopProfileSystem("generictrigger unit change");
-          return
-        end
-        unitUpdate("focus", eventsToSend)
-        markerInit("focus")
-        reactionInit("focus")
+        handleUnit("focus", eventsToSend, unitUpdate, markerInit, reactionInit)
+        handleUnit("focustarget", eventsToSend, unitUpdate, markerInit, reactionInit)
       elseif event == "PLAYER_SOFT_ENEMY_CHANGED" then
-        if not watchUnitChange.trackedUnits["softenemy"] then
-          Private.StopProfileSystem("generictrigger unit change");
-          return
-        end
-        unitUpdate("softenemy", eventsToSend)
-        markerInit("softenemy")
-        reactionInit("softenemy")
+        handleUnit("softenemy", eventsToSend, unitUpdate, markerInit, reactionInit)
+        handleUnit("softenemytarget", eventsToSend, unitUpdate, markerInit, reactionInit)
       elseif event == "PLAYER_SOFT_FRIEND_CHANGED" then
-        if not watchUnitChange.trackedUnits["softfriend"] then
-          Private.StopProfileSystem("generictrigger unit change");
-          return
-        end
-        unitUpdate("softfriend", eventsToSend)
-        markerInit("softfriend")
-        reactionInit("softfriend")
+        handleUnit("softfriend", eventsToSend, unitUpdate, markerInit, reactionInit)
+        handleUnit("softfriendtarget", eventsToSend, unitUpdate, markerInit, reactionInit)
       elseif event == "RAID_TARGET_UPDATE" then
         for unit in pairs(watchUnitChange.raidmark) do
-          markerUpdate(unit, eventsToSend)
+          handleUnit(unit, eventsToSend, markerUpdate)
         end
       elseif event == "UNIT_FACTION" then
-        if watchUnitChange.trackedUnits[unit] then
-          reactionUpdate(unit, eventsToSend)
-        end
+        handleUnit(unit, eventsToSend, reactionUpdate)
       elseif event == "UNIT_PET" then
         local pet = WeakAuras.unitToPetUnit[unit]
         if pet and watchUnitChange.trackedUnits[pet] then
@@ -3643,26 +3617,13 @@ function WeakAuras.WatchUnitChange(unit)
         end
       elseif event == "PLAYER_ROLES_ASSIGNED" then
         for unit in pairs(Private.multiUnitUnits.group) do
-          if watchUnitChange.trackedUnits[unit] then
-            roleUpdate(unit, eventsToSend)
-          end
+          handleUnit(unit, eventsToSend, roleUpdate)
         end
       elseif event == "UNIT_TARGET" then
-        local unitTarget = unit .. "target"
-        if not watchUnitChange.trackedUnits[unitTarget] then
-          Private.StopProfileSystem("generictrigger unit change");
-          return
-        end
-        unitUpdate(unitTarget, eventsToSend)
-        markerInit(unitTarget)
-        reactionInit(unitTarget)
+        handleUnit(unit .. "target", eventsToSend, unitUpdate, markerInit, reactionInit)
       elseif event == "GROUP_ROSTER_UPDATE" then
         for unit in pairs(Private.multiUnitUnits.group) do
-          if watchUnitChange.trackedUnits[unit] then
-            unitUpdate(unit, eventsToSend)
-            markerInit(unit, eventsToSend)
-            reactionInit(unit, eventsToSend)
-          end
+          handleUnit(unit, eventsToSend, unitUpdate, markerInit, reactionInit)
         end
         local inRaid = IsInRaid()
         local inRaidChanged = inRaid ~= watchUnitChange.inRaid
