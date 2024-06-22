@@ -2938,6 +2938,11 @@ do
            count, unifiedModRate, modRate, modRateCharges, not enabled
   end
 
+  local function FindSpellOverrideByIDOrNil(spellId)
+    local override = FindSpellOverrideByID(spellId)
+    return override ~= spellId and override or nil
+  end
+
   ---@type fun()
   function Private.CheckSpellKnown()
     local overrides = {}
@@ -2945,14 +2950,15 @@ do
     for id, _ in pairs(checkOverrideSpell) do
       local override
       if type(id) == "number" then
-        override = FindSpellOverrideByID(id)
+        override = FindSpellOverrideByIDOrNil(id)
       else
         local spellId = select(7, Private.ExecEnv.GetSpellInfo(id))
         if spellId then
-          override = Private.ExecEnv.GetSpellName(FindSpellOverrideByID(spellId))
+          local overrideSpellId = FindSpellOverrideByIDOrNil(spellId)
+          override = overrideSpellId and Private.ExecEnv.GetSpellName(overrideSpellId) or nil
         end
       end
-      if id ~= override and override and not spells[override] then
+      if override and not spells[override] then
         WeakAuras.WatchSpellCooldown(override, false, false)
       end
       overrides[id] = override
@@ -3293,9 +3299,12 @@ do
 
     if followoverride then
       if type(id) == "number" then
-        spellDetails[id].override = FindSpellOverrideByID(id)
+        spellDetails[id].override = FindSpellOverrideByIDOrNil(id)
       else
-        spellDetails[id].override = spellId and FindSpellOverrideByID(spellId) or nil
+        if spellId then
+          local overrideSpellId = FindSpellOverrideByIDOrNil(spellId)
+          spellDetails[id].override = overrideSpellId and Private.ExecEnv.GetSpellName(overrideSpellId) or nil
+        end
       end
     end
 
