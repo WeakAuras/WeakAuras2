@@ -6336,9 +6336,11 @@ Private.event_prototypes = {
   ["Cooldown Ready (Equipment Slot)"] = {
     type = "item",
     events = {},
-    internal_events = {
-      "ITEM_SLOT_COOLDOWN_READY"
-    },
+    internal_events = function(trigger)
+      return {
+        "ITEM_SLOT_COOLDOWN_READY:" .. (trigger.itemSlot or 0)
+      }
+    end,
     name = L["Cooldown Ready Event (Slot)"],
     loadFunc  = function(trigger)
       WeakAuras.WatchItemSlotCooldown(trigger.itemSlot);
