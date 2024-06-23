@@ -2201,6 +2201,24 @@ Private.event_categories = {
   }
 }
 
+local GetNameAndIconForSpellName = function(trigger)
+  if (trigger.use_exact_spellName) then
+    local spellName = tonumber(trigger.spellName)
+    local name, _, icon = Private.ExecEnv.GetSpellInfo(spellName)
+    return name, icon
+  else
+    local spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName
+    local name, _, icon = Private.ExecEnv.GetSpellInfo(spellName)
+    if name and icon then
+      return name, icon
+    end
+    if type(trigger.spellName) == "number" then
+      local name, _, icon = Private.ExecEnv.GetSpellInfo(trigger.spellName)
+      return name, icon
+    end
+  end
+end
+
 Private.event_prototypes = {
   ["Unit Characteristics"] = {
     type = "unit",
@@ -5119,18 +5137,7 @@ Private.event_prototypes = {
         return string.format(ret, spellName or "");
       end
     end,
-    GetNameAndIcon = function(trigger)
-      local spellName
-      if (trigger.use_exact_spellName) then
-        spellName = tonumber(trigger.spellName)
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName
-      end
-      if spellName then
-        local name, _, icon = Private.ExecEnv.GetSpellInfo(spellName)
-        return name, icon
-      end
-    end,
+    GetNameAndIcon = GetNameAndIconForSpellName,
     statesParameter = "one",
     args = {
       {
@@ -5359,18 +5366,7 @@ Private.event_prototypes = {
 
       return table.concat(ret)
     end,
-    GetNameAndIcon = function(trigger)
-      local spellName
-      if (trigger.use_exact_spellName) then
-        spellName = tonumber(trigger.spellName)
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName
-      end
-      if spellName then
-        local name, _, icon = Private.ExecEnv.GetSpellInfo(spellName)
-        return name, icon
-      end
-    end,
+    GetNameAndIcon = GetNameAndIconForSpellName,
     statesParameter = "one",
     progressType = "timed",
     useModRate = true,
@@ -5695,18 +5691,7 @@ Private.event_prototypes = {
                         trigger.use_exact_spellName and "true" or "false",
                         not trigger.use_ignoreoverride and "true" or "false")
     end,
-    GetNameAndIcon = function(trigger)
-      local spellName
-      if (trigger.use_exact_spellName) then
-        spellName = tonumber(trigger.spellName)
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName
-      end
-      if spellName then
-        local name, _, icon = Private.ExecEnv.GetSpellInfo(spellName)
-        return name, icon
-      end
-    end,
+    GetNameAndIcon = GetNameAndIconForSpellName,
     statesParameter = "one",
     args = {
       {
@@ -5804,18 +5789,7 @@ Private.event_prototypes = {
                         not trigger.use_ignoreoverride and "true" or "false")
     end,
     statesParameter = "one",
-    GetNameAndIcon = function(trigger)
-      local spellName
-      if (trigger.use_exact_spellName) then
-        spellName = tonumber(trigger.spellName)
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName
-      end
-      if spellName then
-        local name, _, icon = Private.ExecEnv.GetSpellInfo(spellName)
-        return name, icon
-      end
-    end,
+    GetNameAndIcon = GetNameAndIconForSpellName,
     args = {
       {
         name = "spellName",
@@ -6687,18 +6661,7 @@ Private.event_prototypes = {
       return ret:format(spellName,
                         not trigger.use_ignoreoverride and "true" or "false")
     end,
-    GetNameAndIcon = function(trigger)
-      local spellName
-      if (trigger.use_exact_spellName) then
-        spellName = tonumber(trigger.spellName)
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName
-      end
-      if spellName then
-        local name, _, icon = Private.ExecEnv.GetSpellInfo(spellName)
-        return name, icon
-      end
-    end,
+    GetNameAndIcon = GetNameAndIconForSpellName,
     args = {
       {
         name = "spellName",
