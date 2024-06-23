@@ -144,6 +144,11 @@ if LibSpec then
     return true, serializationVersion, specID, treeHash;
   end
 
+  local validSerializationVersions = {
+    [1] = true,
+    [2] = true
+  }
+
   function Private.LibSpecWrapper.CheckTalentForUnit(unit, talentId)
     if UnitIsUnit(unit, "player") then
       return select(4, WeakAuras.GetTalentById(talentId))
@@ -161,7 +166,7 @@ if LibSpec then
       if(not headerValid) then
         return nil
       end
-      if(serializationVersion ~= currentSerializationVersion or serializationVersion ~= 1) then
+      if(serializationVersion ~= currentSerializationVersion or not validSerializationVersions[serializationVersion]) then
         return nil
       end
 
@@ -181,21 +186,42 @@ if LibSpec then
         local choiceNodeSelection = 1
 
         if(isNodeSelected) then
-          local isPartiallyRankedValue = importStream:ExtractValue(1)
-          isPartiallyRanked = isPartiallyRankedValue == 1;
-          if(isPartiallyRanked) then
-            partialRanksPurchased = importStream:ExtractValue(bitWidthRanksPurchased)
-          end
-          local isChoiceNodeValue = importStream:ExtractValue(1)
-          isChoiceNode = isChoiceNodeValue == 1
-          if(isChoiceNode) then
-            choiceNodeSelection = importStream:ExtractValue(2) + 1
+          if serializationVersion == 2 then
+            local nodePurchasedValue = importStream:ExtractValue(1)
+            local isNodePurchased = nodePurchasedValue == 1
+            if(isNodePurchased) then
+              local isPartiallyRankedValue = importStream:ExtractValue(1)
+              isPartiallyRanked = isPartiallyRankedValue == 1
+              if(isPartiallyRanked) then
+                partialRanksPurchased = importStream:ExtractValue(bitWidthRanksPurchased)
+              end
+              local isChoiceNodeValue = importStream:ExtractValue(1)
+              isChoiceNode = isChoiceNodeValue == 1
+              if(isChoiceNode) then
+                choiceNodeSelection = importStream:ExtractValue(2) + 1
+              end
+            end
+          else
+            local isPartiallyRankedValue = importStream:ExtractValue(1)
+            isPartiallyRanked = isPartiallyRankedValue == 1
+            if(isPartiallyRanked) then
+              partialRanksPurchased = importStream:ExtractValue(bitWidthRanksPurchased)
+            end
+            local isChoiceNodeValue = importStream:ExtractValue(1)
+            isChoiceNode = isChoiceNodeValue == 1
+            if(isChoiceNode) then
+              choiceNodeSelection = importStream:ExtractValue(2) + 1
+            end
           end
         end
 
         local talentData = talentsData and talentsData[nodeId] and talentsData[nodeId][choiceNodeSelection]
         if talentData then
-          results[talentData[1]] = isPartiallyRanked and partialRanksPurchased or nodeSelectedValue
+          if isPartiallyRanked then
+            results[talentData[1]] = partialRanksPurchased
+          else
+            results[talentData[1]] = nodeSelectedValue == 1 and talentData[5] or 0
+          end
         end
         if isChoiceNode then
           local unselectedChoiceNodeIdx = choiceNodeSelection == 1 and 2 or 1
