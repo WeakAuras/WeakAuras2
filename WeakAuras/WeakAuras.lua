@@ -3554,7 +3554,7 @@ do
 
     if type(glow_frame_monitor) == "table" then
       for region, data in pairs(glow_frame_monitor) do
-        if region.state and UnitIsUnit(region.state.unit, unit)
+        if region.state and type(region.state.unit) == "string" and UnitIsUnit(region.state.unit, unit)
         and ((data.frame ~= frame) and (FRAME_UNIT_ADDED or FRAME_UNIT_UPDATE))
         or ((data.frame == frame) and FRAME_UNIT_REMOVED)
         then
@@ -3585,7 +3585,7 @@ do
     end
     if type(anchor_unitframe_monitor) == "table" then
       for region, data in pairs(anchor_unitframe_monitor) do
-        if region.state and region.state.unit == unit
+        if region.state and type(region.state.unit) == "string" and UnitIsUnit(region.state.unit, unit)
         and ((data.frame ~= frame) and (FRAME_UNIT_ADDED or FRAME_UNIT_UPDATE))
         or ((data.frame == frame) and FRAME_UNIT_REMOVED)
         then
@@ -3599,7 +3599,7 @@ do
       end
     end
     for regionData, data_frame in pairs(Private.dyngroup_unitframe_monitor) do
-      if regionData.region.state and regionData.region.state.unit == unit
+      if regionData.region.state and type(regionData.region.state.unit) == "string" and UnitIsUnit(regionData.region.state.unit, unit)
       and ((data_frame ~= frame) and (FRAME_UNIT_ADDED or FRAME_UNIT_UPDATE))
       or ((data_frame == frame) and FRAME_UNIT_REMOVED)
       then
