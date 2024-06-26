@@ -469,7 +469,6 @@ do
     "AceConfig-3.0",
     "AceConsole-3.0",
     "AceGUI-3.0",
-    "AceEvent-3.0",
     "AceGUISharedMediaWidgets-1.0",
     "AceTimer-3.0",
     "AceSerializer-3.0",
