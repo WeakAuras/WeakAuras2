@@ -3469,6 +3469,7 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange:RegisterEvent("PLAYER_TARGET_CHANGED")
     if not WeakAuras.IsClassicEra() then
       watchUnitChange:RegisterEvent("PLAYER_FOCUS_CHANGED")
+      watchUnitChange:RegisterEvent("ARENA_OPPONENT_UPDATE")
     end
     watchUnitChange:RegisterEvent("PLAYER_ROLES_ASSIGNED")
     watchUnitChange:RegisterEvent("PLAYER_SOFT_ENEMY_CHANGED")
@@ -3600,6 +3601,11 @@ function WeakAuras.WatchUnitChange(unit)
         for i = 1, 5 do
           handleUnit("boss" .. i, eventsToSend, unitUpdate, markerInit, reactionInit)
           handleUnit("boss" .. i .. "target", eventsToSend, unitUpdate, markerInit, reactionInit)
+        end
+      elseif event == "ARENA_OPPONENT_UPDATE" then
+        for i = 1, 5 do
+          handleUnit("arena" .. i, eventsToSend, unitUpdate, markerInit, reactionInit)
+          handleUnit("arena" .. i .. "target", eventsToSend, unitUpdate, markerInit, reactionInit)
         end
       elseif event == "PLAYER_TARGET_CHANGED" then
         handleUnit("target", eventsToSend, unitUpdate, markerInit, reactionInit)
