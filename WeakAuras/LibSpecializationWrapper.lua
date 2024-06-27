@@ -225,8 +225,10 @@ if LibSpec then
         end
         if isChoiceNode then
           local unselectedChoiceNodeIdx = choiceNodeSelection == 1 and 2 or 1
-          local unselctedTalentData = talentsData and talentsData[nodeId] and talentsData[nodeId][unselectedChoiceNodeIdx]
-          results[unselctedTalentData[1]] = 0
+          local unselectedTalentData = talentsData and talentsData[nodeId] and talentsData[nodeId][unselectedChoiceNodeIdx]
+          if unselectedTalentData then
+            results[unselectedTalentData[1]] = 0
+          end
         end
       end
       nameToTalents[unitName] = results
