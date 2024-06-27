@@ -4538,7 +4538,9 @@ function WeakAuras.GetTriggerStateForTrigger(id, triggernum)
   if (triggernum == -1) then
     return Private.GetGlobalConditionState();
   end
-  triggerState[id][triggernum] = triggerState[id][triggernum] or {}
+  if triggerState[id][triggernum] == nil then
+    triggerState[id][triggernum] = setmetatable({}, Private.allstatesMetatable)
+  end
   return triggerState[id][triggernum];
 end
 
