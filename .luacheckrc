@@ -90,6 +90,7 @@ globals = {
 	"CombatLogGetCurrentEventInfo",
 	"CombatText_AddMessage",
 	"CooldownFrame_Set",
+	"ColorMixin",
 	"CreateColor",
 	"CreateAndInitFromMixin",
 	"CreateFromMixins",
