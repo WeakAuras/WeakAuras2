@@ -39,18 +39,30 @@ local removeAll = function(states)
   return changed
 end
 
+local function recurseUpdate(t1, t2)
+  local changed = false
+  for k, v in pairs(t2) do
+    if type(v) == "table" and type(t1[k]) == "table" then
+      if recurseUpdate(t1[k], v) then
+        changed = true
+      end
+    else
+      if t1[k] ~= v then
+        t1[k] = v
+        changed = true
+      end
+    end
+  end
+  return changed
+end
+
 ---@type fun(states: states, newState: state, key: key): boolean
 local update = function(states, newState, key)
   local changed = false
   local state = states[key]
   if state then
     fixMissingFields(newState)
-    for k, v in pairs(newState) do
-      if state[k] ~= v then
-        state[k] = v
-        changed = true
-      end
-    end
+    changed = recurseUpdate(state, newState)
     if changed then
       state.changed = true
     end
