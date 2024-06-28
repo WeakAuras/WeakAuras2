@@ -23,6 +23,7 @@ local remove = function(states, key)
   if state then
     state.show = false
     state.changed = true
+    states.__changed = true
     changed = true
   end
   return changed
@@ -35,6 +36,9 @@ local removeAll = function(states)
     state.show = false
     state.changed = true
     changed = true
+  end
+  if changed then
+    states.__changed = true
   end
   return changed
 end
@@ -65,6 +69,7 @@ local update = function(states, key, newState)
     changed = recurseUpdate(state, newState)
     if changed then
       state.changed = true
+      states.__changed = true
     end
   end
   return changed
@@ -74,6 +79,7 @@ end
 local create = function(states, key, newState)
   states[key] = newState
   states[key].changed = true
+  states.__changed = true
   fixMissingFields(states[key])
   return true
 end

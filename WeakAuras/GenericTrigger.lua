@@ -670,9 +670,10 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
       else
         ok, returnValue = xpcall(data.triggerFunc, errorHandler, allStates, event, arg1, arg2, ...);
       end
-      if (ok and returnValue) then
+      if (ok and (returnValue or (returnValue ~= false and allStates.__changed))) then
         updateTriggerState = true;
       end
+      allStates.__changed = nil
       for key, state in pairs(allStates) do
         if (type(state) ~= "table") then
           errorHandler(string.format(L["All States table contains a non table at key: '%s'."], key))
