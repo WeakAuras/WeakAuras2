@@ -56,8 +56,8 @@ local function recurseUpdate(t1, t2)
   return changed
 end
 
----@type fun(states: states, newState: state, key: key): boolean
-local update = function(states, newState, key)
+---@type fun(states: states, key: key, newState: state): boolean
+local update = function(states, key, newState)
   local changed = false
   local state = states[key]
   if state then
@@ -70,21 +70,21 @@ local update = function(states, newState, key)
   return changed
 end
 
----@type fun(states: states, newState: state, key: key): boolean
-local create = function(states, newState, key)
+---@type fun(states: states, key: key, newState: state): boolean
+local create = function(states, key, newState)
   states[key] = newState
   states[key].changed = true
   fixMissingFields(states[key])
   return true
 end
 
----@type fun(states: states, newState: state, key: key?): boolean
-local createOrUpdate = function(states, newState, key)
+---@type fun(states: states, key: key?, newState: state): boolean
+local createOrUpdate = function(states, key, newState)
   key = key or ""
   if states[key] then
-    return update(states, newState, key)
+    return update(states, key, newState)
   else
-    return create(states, newState, key)
+    return create(states, key, newState)
   end
 end
 

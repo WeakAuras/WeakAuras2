@@ -136,7 +136,7 @@ end]=]
     name = "Trigger State Updater",
     snippet = [=[
 function(allstates, event, ...)
-    return allstates:Update({
+    return allstates:Update("", {
         show = true,
         changed = true,
         progressType = "static"||"timed",
