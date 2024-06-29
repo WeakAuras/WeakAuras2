@@ -1235,7 +1235,7 @@ function Private.Login(takeNewSnapshots)
       for uid, hist in pairs(db.history) do
         local histStore = histRepo:Set(uid, hist.data)
         local migrationStore = migrationRepo:Set(uid, hist.migration)
-        coroutine.yield(1000)
+        coroutine.yield(1000, "login move old history")
       end
       -- history is now in archive so we can shrink WeakAurasSaved
       db.history = nil
@@ -1243,7 +1243,7 @@ function Private.Login(takeNewSnapshots)
 
 
     Private.Features:Hydrate()
-    coroutine.yield(3000)
+    coroutine.yield(3000, "login check uid corruption")
 
     local toAdd = {};
     loginFinished = false
@@ -1279,7 +1279,7 @@ function Private.Login(takeNewSnapshots)
       else
         nextCallback()
       end
-      coroutine.yield(1000);
+      coroutine.yield(1000, "login post login callbacks");
       nextCallback = loginQueue[1];
     end
 
@@ -1288,7 +1288,7 @@ function Private.Login(takeNewSnapshots)
     for _, region in pairs(Private.regions) do
       if (region.region and region.region.RunDelayedActions) then
         region.region:RunDelayedActions();
-        coroutine.yield(500)
+        coroutine.yield(500, "login delayed region actions");
       end
     end
   end)
@@ -2356,7 +2356,7 @@ local function RepairDatabase()
       if snapshot then
         newDB[id] = nil
         newDB[snapshot.id] = snapshot
-        coroutine.yield(1000)
+        coroutine.yield(1000, "repair get snapshot")
       end
     end
     db.displays = newDB
@@ -2525,9 +2525,9 @@ local function loadOrder(tbl, idtable)
           if not(loaded[data.parent]) then
             local dependsOut = CopyTable(depends)
             dependsOut[data.parent] = true
-            coroutine.yield(100)
+            coroutine.yield(100, "sort deps")
             load(data.parent, dependsOut)
-            coroutine.yield(100)
+            coroutine.yield(100, "sort deps")
           end
         end
       else
@@ -2535,7 +2535,7 @@ local function loadOrder(tbl, idtable)
       end
     end
     if not(loaded[id]) then
-      coroutine.yield(100);
+      coroutine.yield(100, "sort deps");
       loaded[id] = true;
       tinsert(order, idtable[id])
     end
@@ -2543,7 +2543,7 @@ local function loadOrder(tbl, idtable)
 
   for id, data in pairs(idtable) do
     load(id, {});
-    coroutine.yield(100)
+    coroutine.yield(100, "sort deps")
   end
 
   return order
@@ -2599,7 +2599,7 @@ function Private.AddMany(tbl, takeSnapshots)
         oldSnapshots[data.uid] = Private.GetMigrationSnapshot(data.uid)
       end
       Private.SetMigrationSnapshot(data.uid, data)
-      coroutine.yield(500)
+      coroutine.yield(2000, "addmany snapshot")
     end
   end
 
@@ -2620,7 +2620,7 @@ function Private.AddMany(tbl, takeSnapshots)
       elseif data.regionType == "dynamicgroup" or data.regionType == "group" then
         groups[data] = true
       end
-      coroutine.yield(1000)
+      coroutine.yield(1000, "addmany modernize")
     end
   end
 
@@ -2635,14 +2635,14 @@ function Private.AddMany(tbl, takeSnapshots)
         end
       end
     end
-    coroutine.yield(2000)
+    coroutine.yield(2000, "addmany add")
   end
 
   for id in pairs(anchorTargets) do
     local data = idtable[id]
     if data and not bads[data.id] and (data.parent == nil or idtable[data.parent].regionType ~= "dynamicgroup") then
       Private.EnsureRegion(id)
-      coroutine.yield(100)
+      coroutine.yield(100, "addmany ensure anchor")
     end
   end
 
@@ -2656,7 +2656,7 @@ function Private.AddMany(tbl, takeSnapshots)
         WeakAuras.Add(data)
       end
     end
-    coroutine.yield(1000);
+    coroutine.yield(1000, "addmany reload dynamic group");
   end
 end
 
@@ -4305,15 +4305,18 @@ local threads = {
   size = 0,
   ---@type table<string, threadPriority>
   prios = {},
-  ---@type table<string, thread>
+  ---@type table<string, threadData>
   instant = {},
-  ---@type table<string, thread>
+  ---@type table<string, threadData>
   urgent = {},
-  ---@type table<string, thread>
+  ---@type table<string, threadData>
   normal = {},
-  ---@type table<string, thread>
+  ---@type table<string, threadData>
   background = {},
 };
+---@class threadData
+---@field thread thread
+---@field sequence table<string, number> to help debug problems in threads
 do
 
   ---@alias threadPriority 'urgent' | 'normal' | 'background'
@@ -4358,28 +4361,30 @@ do
   end
 
 
-  ---@param pool table<string, thread>
+  ---@param pool table<string, threadData>
   ---@param finish number
   ---@param defaultEstimate number
   local function runThreadPool(pool, finish, defaultEstimate)
     local start = debugprofilestop()
     if finish <= start then return end
     local estimates = {}
-    local ok, val
+    local ok, val1, val2
     local continue = false
     repeat
       continue = false
-      for name, thread in pairs(pool) do
+      for name, threadData in pairs(pool) do
         local estimate = estimates[name] or defaultEstimate
         if debugprofilestop() + estimate > finish then
           break
         else
           continue = true
-          ok, val = coroutine.resume(thread)
+          ok, val1, val2 = coroutine.resume(threadData.thread)
           if not ok then
-            geterrorhandler()(val .. '\n' .. debugstack(thread))
-          elseif coroutine.status(thread) ~= "dead" then
-            estimates[name] = type(val) == "number" and val or defaultEstimate
+            geterrorhandler()(val1 .. '\n' .. debugstack(threadData.thread))
+          elseif coroutine.status(threadData.thread) ~= "dead" then
+            estimates[name] = type(val1) == "number" and val1 or defaultEstimate
+            local sequence = val2 or ""
+            threadData.sequence[sequence] = (threadData.sequence[sequence] or 0) + 1
           else
             threads:Remove(name)
           end
