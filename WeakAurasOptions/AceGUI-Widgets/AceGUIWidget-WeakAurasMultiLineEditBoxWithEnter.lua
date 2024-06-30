@@ -7,6 +7,7 @@ local OptionsPrivate = select(2, ...)
 local Type, Version = "WeakAuras-MultiLineEditBoxWithEnter", 2
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
+local LAAC = LibStub("LibAPIAutoComplete-1.0")
 
 -- Lua APIs
 local pairs = pairs
@@ -88,6 +89,10 @@ local function OnEditFocusLost(self)                                            
   self:HighlightText(0, 0)
   self.obj:Fire("OnEditFocusLost")
   self.obj.scrollFrame:EnableMouseWheel(false);
+  local option = self.obj.userdata.option
+  if option and option.LAAC then
+    LAAC:disable(self)
+  end
 end
 
 local function OnEnter(self)                                                     -- EditBox / ScrollFrame
@@ -171,6 +176,10 @@ local function OnEditFocusGained(frame)
   AceGUI:SetFocus(frame.obj)
   frame.obj:Fire("OnEditFocusGained")
   frame.obj.scrollFrame:EnableMouseWheel(true);
+  local option = frame.obj.userdata.option
+  if option and option.LAAC then
+    LAAC:enable(frame, option.LAAC)
+  end
 end
 
 --[[-----------------------------------------------------------------------------

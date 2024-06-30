@@ -21,4 +21,5 @@
   <Include file="Libs\Archivist\Archivist.xml"/>
   <Include file="Libs\LibSerialize\lib.xml"/>
   <Include file="Libs\LibUIDropDownMenu\LibUIDropDownMenu.xml"/>
+  <Include file="Libs\LibAPIAutoComplete-1.0\LibAPIAutoComplete-1.0.xml"/>
 </Ui>

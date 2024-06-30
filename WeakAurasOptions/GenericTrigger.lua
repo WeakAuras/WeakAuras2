@@ -79,6 +79,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       type = "input",
       multiline = true,
       control = "WeakAuras-MultiLineEditBoxWithEnter",
+      LAAC = { disableFunctions = true, disableSystems = true },
       width = WeakAuras.doubleWidth,
       name = L["Event(s)"],
       desc = L["Custom trigger status tooltip"],
