@@ -169,7 +169,7 @@ local function Constructor()
 
   local ptex = button:CreateTexture()
   ptex:SetColorTexture(1, 1, 1, 0.2)
-  htex:SetAllPoints(ntex)
+  ptex:SetAllPoints(ntex)
   button:SetPushedTexture(ptex)
   button.ptex = ptex
 
