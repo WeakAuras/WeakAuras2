@@ -1810,14 +1810,7 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
       end
       button.title:SetFontObject(GameFontNormal)
       button.frame:SetHeight(28)
-
-      -- Modify highlight textures hover and push and remove normal texture
-      button.ntex:SetTexture(nil)
-      button.htex:SetTexture(nil)
-      button.ptex:SetTexture(nil)
-      button.htex:SetAtlas("Options_List_Hover")
-      button.htex:SetVertexColor(1, 1, 1, 1)
-      button.ptex:SetAtlas("Options_List_Active")
+      button:SetDynamicTextStyle()
 
       -- Set Tooltip
       if prop.type ~= "marker" then

@@ -70,6 +70,12 @@ local methods = {
     self:SetDisabled(false)
     self:SetTitle()
     self:SetEditable(false)
+
+    self.ntex:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp")
+    self.ntex:SetVertexColor(0.8, 0.8, 0.8, 0.25)
+    self.htex:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp")
+    self.htex:SetVertexColor(0.3, 0.5, 1, 0.5)
+    self.ptex:SetColorTexture(1, 1, 1, 0.2)
   end,
   -- ["OnRelease"] = nil,
 
@@ -114,6 +120,12 @@ local methods = {
       self.renameEditBox:HighlightText()
       self.renameEditBox:SetFocus()
     end
+  end,
+  ["SetDynamicTextStyle"] = function(self)
+    self.ntex:SetTexture(nil)
+    self.htex:SetAtlas("Options_List_Hover")
+    self.htex:SetVertexColor(1, 1, 1, 1)
+    self.ptex:SetAtlas("Options_List_Active")
   end
 }
 
@@ -153,22 +165,17 @@ local function Constructor()
   button.title = title
 
   local ntex = button:CreateTexture()
-  ntex:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp")
-  ntex:SetVertexColor(0.8, 0.8, 0.8, 0.25)
   ntex:SetPoint("TOPLEFT", 0, -1)
   ntex:SetPoint("BOTTOMRIGHT", 0, 1)
   button:SetNormalTexture(ntex)
 
   local htex = button:CreateTexture()
-  htex:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp")
-  htex:SetVertexColor(0.3, 0.5, 1, 0.5)
   htex:SetBlendMode("ADD")
   htex:SetAllPoints(ntex)
   button:SetHighlightTexture(htex)
   button.htex = htex
 
   local ptex = button:CreateTexture()
-  ptex:SetColorTexture(1, 1, 1, 0.2)
   ptex:SetAllPoints(ntex)
   button:SetPushedTexture(ptex)
   button.ptex = ptex
