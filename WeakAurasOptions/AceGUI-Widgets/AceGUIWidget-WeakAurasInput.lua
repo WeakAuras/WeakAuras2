@@ -23,8 +23,8 @@ end
 local function Constructor()
   local widget = AceGUI:Create("EditBox")
   widget.type = Type
-  widget.editbox:SetScript("OnEditFocusGained", OnEditFocusGained)
-  widget.editbox:SetScript("OnShow", OnShow)
+  widget.editbox:HookScript("OnEditFocusGained", OnEditFocusGained)
+  widget.editbox:HookScript("OnShow", OnShow)
   return widget
 end
 
