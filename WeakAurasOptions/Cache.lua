@@ -90,7 +90,7 @@ function spellCache.Build()
 
     metaData.needsRebuild = false
   end)
-  OptionsPrivate.Private.dynFrame:AddAction("spellCache", co)
+  OptionsPrivate.Private.Threads:Add("spellCache", co)
 end
 
 function spellCache.GetIcon(name)
