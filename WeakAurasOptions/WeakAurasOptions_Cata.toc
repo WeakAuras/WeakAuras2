@@ -15,6 +15,7 @@
 ## SavedVariables: WeakAurasOptionsSaved
 ## AllowLoadGameType: cata
 
+embeds.xml
 locales.xml
 
 ForAllIndentsAndPurposes.lua
