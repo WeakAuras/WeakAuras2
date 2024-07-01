@@ -15,6 +15,7 @@
 ## Dependencies: WeakAuras
 ## SavedVariables: WeakAurasOptionsSaved
 
+embeds.xml
 locales.xml
 
 ForAllIndentsAndPurposes.lua
