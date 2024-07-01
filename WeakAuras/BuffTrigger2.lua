@@ -2795,11 +2795,11 @@ local function createScanFunc(trigger)
     return nil
   end
 
-  local preamble = ""
+  local preamble = {""}
 
-  local ret = [=[
+  local ret = {[=[
     return function(time, matchData)
-  ]=]
+  ]=]}
 
   if use_total then
     local ret2 = [=[
@@ -2807,7 +2807,7 @@ local function createScanFunc(trigger)
         return false
       end
     ]=]
-    ret = ret .. ret2:format(trigger.totalOperator or ">=", tonumber(trigger.total) or 0)
+    table.insert(ret, ret2:format(trigger.totalOperator or ">=", tonumber(trigger.total) or 0))
   end
 
   if useStacks then
@@ -2816,49 +2816,49 @@ local function createScanFunc(trigger)
         return false
       end
     ]=]
-    ret = ret .. ret2:format(trigger.stacksOperator or ">=", tonumber(trigger.stacks) or 0)
+    table.insert(ret, ret2:format(trigger.stacksOperator or ">=", tonumber(trigger.stacks) or 0))
   end
 
   if use_stealable then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if not matchData.isStealable then
         return false
       end
-    ]=]
+    ]=])
   elseif use_stealable == false then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if matchData.isStealable then
         return false
       end
-    ]=]
+    ]=])
   end
 
   if use_isBossDebuff then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if not matchData.isBossDebuff then
         return false
       end
-    ]=]
+    ]=])
   elseif use_isBossDebuff == false then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if matchData.isBossDebuff then
         return false
       end
-    ]=]
+    ]=])
   end
 
   if use_castByPlayer then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if not matchData.isCastByPlayer then
         return false
       end
-    ]=]
+    ]=])
   elseif use_castByPlayer == false then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if matchData.isCastByPlayer then
         return false
       end
-    ]=]
+    ]=])
   end
 
   if use_debuffClass then
@@ -2868,21 +2868,21 @@ local function createScanFunc(trigger)
         return false
       end
     ]=]
-    ret = ret .. ret2:format(trigger.debuffClass and type(trigger.debuffClass) == "table" and Private.SerializeTable(trigger.debuffClass) or "{}")
+    table.insert(ret, ret2:format(trigger.debuffClass and type(trigger.debuffClass) == "table" and Private.SerializeTable(trigger.debuffClass) or "{}"))
   end
 
   if trigger.ownOnly then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if matchData.unitCaster ~= 'player' and matchData.unitCaster ~= 'pet' and matchData.unitCaster ~= 'vehicle' then
         return false
       end
-    ]=]
+    ]=])
   elseif trigger.ownOnly == false then
-    ret = ret .. [=[
+    table.insert(ret, [=[
       if matchData.unitCaster == 'player' or matchData.unitCaster == 'pet' or matchData.unitCaster == 'vehicle' then
         return false
       end
-    ]=]
+    ]=])
   end
 
   if use_tooltip and trigger.tooltip_operator and trigger.tooltip then
@@ -2892,21 +2892,21 @@ local function createScanFunc(trigger)
         return false
       end
       ]=]
-      ret = ret .. ret2:format(Private.QuotedString(trigger.tooltip))
+      table.insert(ret, ret2:format(Private.QuotedString(trigger.tooltip)))
     elseif trigger.tooltip_operator == "find('%s')" then
       local ret2 = [=[
       if not matchData.tooltip or not matchData.tooltip:find(%s, 1, true) then
         return false
       end
       ]=]
-      ret = ret .. ret2:format(Private.QuotedString(trigger.tooltip))
+      table.insert(ret, ret2:format(Private.QuotedString(trigger.tooltip)))
     elseif trigger.tooltip_operator == "match('%s')" then
       local ret2 = [=[
       if not matchData.tooltip or not matchData.tooltip:match(%s) then
         return false
       end
       ]=]
-      ret = ret .. ret2:format(Private.QuotedString(trigger.tooltip))
+      table.insert(ret, ret2:format(Private.QuotedString(trigger.tooltip)))
     end
   end
 
@@ -2917,7 +2917,7 @@ local function createScanFunc(trigger)
         return false
       end
     ]=]
-    ret = ret .. ret2:format(property, property, trigger.tooltipValue_operator, trigger.tooltipValue)
+    table.insert(ret, ret2:format(property, property, trigger.tooltipValue_operator, trigger.tooltipValue))
   end
 
   if trigger.useNamePattern and trigger.namePattern_operator and trigger.namePattern_name then
@@ -2927,21 +2927,21 @@ local function createScanFunc(trigger)
         return false
       end
       ]=]
-      ret = ret .. ret2:format(Private.QuotedString(trigger.namePattern_name))
+      table.insert(ret, ret2:format(Private.QuotedString(trigger.namePattern_name)))
     elseif trigger.namePattern_operator == "find('%s')" then
       local ret2 = [=[
       if not matchData.name:find(%s, 1, true) then
         return false
       end
       ]=]
-      ret = ret .. ret2:format(Private.QuotedString(trigger.namePattern_name))
+      table.insert(ret, ret2:format(Private.QuotedString(trigger.namePattern_name)))
     elseif trigger.namePattern_operator == "match('%s')" then
       local ret2 = [=[
       if not matchData.name:match(%s) then
         return false
       end
       ]=]
-      ret = ret .. ret2:format(Private.QuotedString(trigger.namePattern_name))
+      table.insert(ret, ret2:format(Private.QuotedString(trigger.namePattern_name)))
     end
   end
 
@@ -2953,40 +2953,40 @@ local function createScanFunc(trigger)
       tinsert(names, name)
     end
 
-    preamble = preamble .. "local ignoreNames = {\n"
+    table.insert(preamble, "local ignoreNames = {\n")
     for index, name in ipairs(names) do
-      preamble = preamble .. string.format("  [%q] = true,\n", name)
+      table.insert(preamble, string.format("  [%q] = true,\n", name))
     end
-    preamble = preamble .. "}\n"
-    ret = ret .. [=[
+    table.insert(preamble, "}\n")
+    table.insert(ret, [=[
       if ignoreNames[matchData.name] then
         return false
       end
-    ]=]
+    ]=])
   end
 
   if use_ignore_spellId then
-    preamble = preamble .. "local ignoreSpellId = {\n"
+    table.insert(preamble, "local ignoreSpellId = {\n")
     for index, spellId in ipairs(trigger.ignoreAuraSpellids) do
       local spell = WeakAuras.SafeToNumber(spellId)
       if spell then
-        preamble = preamble .. string.format("  [%s]  = true,\n", spell)
+        table.insert(preamble, string.format("  [%s]  = true,\n", spell))
       end
     end
-    preamble = preamble .. "}\n"
-    ret = ret .. [=[
+    table.insert(preamble, "}\n")
+    table.insert(ret, [=[
       if ignoreSpellId[matchData.spellId] then
         return false
       end
-    ]=]
+    ]=])
   end
 
-  ret = ret .. [=[
+  table.insert(ret, [=[
       return true
     end
-  ]=]
+  ]=])
 
-  local func, err = loadstring(preamble .. ret)
+  local func, err = loadstring(table.concat(preamble) .. table.concat(ret))
 
   if func then
     return func()
@@ -3204,7 +3204,7 @@ function BuffTrigger.Add(data)
         compareFunc = trigger.combineMode == "showHighest" and highestExpirationTime or lowestExpirationTime,
         unitExists = showIfInvalidUnit,
         fetchTooltip = not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip,
-        fetchRole = WeakAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole,
+        fetchRole = WeakAuras.IsCataOrRetail() and trigger.unit ~= "multi" and trigger.fetchRole,
         fetchRaidMark = trigger.unit ~= "multi" and trigger.fetchRaidMark,
         groupTrigger = IsGroupTrigger(trigger),
         ignoreSelf = effectiveIgnoreSelf,

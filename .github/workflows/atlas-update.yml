@@ -7,6 +7,7 @@ on:
 
 jobs:
   atlasUpdate:
+    if: github.repository == 'WeakAuras/WeakAuras2'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

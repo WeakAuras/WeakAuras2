@@ -9,7 +9,6 @@ local Private = select(2, ...)
 if GetSpellInfo then
   Private.ExecEnv.GetSpellInfo = GetSpellInfo
   Private.ExecEnv.GetSpellName = GetSpellInfo
-  Private.ExecEnv.GetSpellIcon = GetSpellTexture
 else
   Private.ExecEnv.GetSpellInfo = function(spellID)
     if not spellID then
@@ -21,7 +20,18 @@ else
     end
   end
   Private.ExecEnv.GetSpellName = C_Spell.GetSpellName
+end
+
+if GetSpellTexture then
+  Private.ExecEnv.GetSpellIcon = GetSpellTexture
+else
   Private.ExecEnv.GetSpellIcon = C_Spell.GetSpellTexture
+end
+
+if IsUsableSpell then
+  Private.ExecEnv.IsUsableSpell = IsUsableSpell
+else
+  Private.ExecEnv.IsUsableSpell = C_Spell.IsSpellUsable
 end
 
 Private.ExecEnv.GetNumFactions = C_Reputation.GetNumFactions or GetNumFactions
@@ -71,5 +81,7 @@ Private.ExecEnv.GetFactionDataByID = C_Reputation.GetFactionDataByID or function
     isAccountWide = nil
   }
 end
-Private.ExecEnv.ExpandAllFactionHeaders = C_Reputation.ExpandAllFactionHeaders or ExpandAllFactionHeaders
+Private.ExecEnv.ExpandFactionHeader = C_Reputation.ExpandFactionHeader or ExpandFactionHeader
 Private.ExecEnv.CollapseFactionHeader = C_Reputation.CollapseFactionHeader or CollapseFactionHeader
+Private.ExecEnv.AreLegacyReputationsShown = C_Reputation.AreLegacyReputationsShown or function() return true end
+Private.ExecEnv.GetReputationSortType = C_Reputation.GetReputationSortType or function() return 0 end;

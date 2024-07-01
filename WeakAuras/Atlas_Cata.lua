@@ -3421,6 +3421,7 @@ Private.AtlasList = {
 "shop-card-full-bfadeluxe",
 "shop-card-full-classicwotlk-goodies-heroictoepic2",
 "shop-card-full-classicwotlk-goodies2",
+"shop-card-full-gametimebundle-90day",
 "shop-card-full-legiondeluxe",
 "shop-card-full-tf1h",
 "shop-card-full-tf2e",

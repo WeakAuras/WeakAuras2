@@ -124,9 +124,12 @@ Private.precision_types = {
 ---@type table<string, string>
 Private.big_number_types = {
   ["AbbreviateNumbers"] = L["AbbreviateNumbers (Blizzard)"],
-  ["AbbreviateLargeNumbers"] = L["AbbreviateLargeNumbers (Blizzard)"]
+  ["AbbreviateLargeNumbers"] = L["AbbreviateLargeNumbers (Blizzard)"],
+  ["BreakUpLargeNumbers"] = L["BreakUpLargeNumbers (Blizzard)"],
 }
-
+if WeakAuras.IsClassicEra() then
+  Private.big_number_types.BreakUpLargeNumbers = nil
+end
 ---@type table<string, string>
 Private.round_types = {
   floor = L["Floor"],
@@ -218,6 +221,10 @@ local simpleFormatters = {
   AbbreviateLargeNumbers = function(value)
     if type(value) == "string" then value = tonumber(value) end
     return (type(value) == "number") and AbbreviateLargeNumbers(Round(value)) or value
+  end,
+  BreakUpLargeNumbers = function(value)
+    if type(value) == "string" then value = tonumber(value) end
+    return (type(value) == "number") and BreakUpLargeNumbers(value) or value
   end,
   floor = function(value)
     if type(value) == "string" then value = tonumber(value) end
@@ -517,6 +524,8 @@ Private.format_types = {
       local format = get(symbol .. "_big_number_format", "AbbreviateNumbers")
       if (format == "AbbreviateNumbers") then
         return simpleFormatters.AbbreviateNumbers
+      elseif (format == "BreakUpLargeNumbers") then
+        return simpleFormatters.BreakUpLargeNumbers
       end
       return simpleFormatters.AbbreviateLargeNumbers
     end
@@ -1122,6 +1131,8 @@ do
     [37] = true,
     [52] = true, -- Dracthyr
     [70] = true, -- Dracthyr
+    [84] = true, -- Earthen
+    [85] = true, -- Earthen
   }
 
   for raceId, enabled in pairs(races) do
@@ -1635,15 +1646,31 @@ local function InitializeReputations()
   ---@type table<string, boolean>
   Private.reputations_headers = {}
 
-  local collapsed = {}
-  for i = 1, Private.ExecEnv.GetNumFactions() do
-    local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
-    if factionData.isCollapsed then
-      collapsed[factionData.name] = true
-    end
+  -- Ensure all factions are shown by adjusting filters
+  local showLegacy = true
+  if not Private.ExecEnv.AreLegacyReputationsShown() then
+    showLegacy = false
+    C_Reputation.SetLegacyReputationsShown(true)
+  end
+  local sortType = 0
+  if Private.ExecEnv.GetReputationSortType() > 0 then
+    sortType = Private.ExecEnv.GetReputationSortType()
+    C_Reputation.SetReputationSortType(0)
   end
 
-  Private.ExecEnv.ExpandAllFactionHeaders()
+  -- Dynamic expansion of all collapsed headers
+  local collapsed = {}
+  local index = 1
+  while index <= Private.ExecEnv.GetNumFactions() do
+    local factionData = Private.ExecEnv.GetFactionDataByIndex(index)
+    if factionData.isHeader and factionData.isCollapsed then
+      Private.ExecEnv.ExpandFactionHeader(index)
+      collapsed[factionData.name] = true
+    end
+    index = index + 1
+  end
+
+  -- Process all faction data
   for i = 1, Private.ExecEnv.GetNumFactions() do
     local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
     if factionData.currentStanding > 0 or not factionData.isHeader then
@@ -1660,11 +1687,20 @@ local function InitializeReputations()
     end
   end
 
+  -- Collapse headers back to their original state
   for i = Private.ExecEnv.GetNumFactions(), 1, -1 do
     local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
     if collapsed[factionData.name] then
       Private.ExecEnv.CollapseFactionHeader(i)
     end
+  end
+
+  -- Restore filters if they were changed
+  if not showLegacy then
+    C_Reputation.SetLegacyReputationsShown(false)
+  end
+  if sortType > 0 then
+    C_Reputation.SetReputationSortType(sortType)
   end
 end
 
@@ -2806,7 +2842,8 @@ Private.TocToExpansion = {
    [7] = L["Legion"],
    [8] = L["Battle for Azeroth"],
    [9] = L["Shadowlands"],
-  [10] = L["Dragonflight"]
+  [10] = L["Dragonflight"],
+  [11] = L["The War Within"]
 }
 
 ---@type table<string, string>
@@ -3139,8 +3176,23 @@ LSM.RegisterCallback(WeakAuras, "LibSharedMedia_Registered", function(_, mediaty
       Private.sound_types[path] = key
       Private.sound_file_types[path] = key
     end
+  elseif mediatype == "statusbar" or mediatype == "statusbar_atlas" then
+    local path = LSM:Fetch(mediatype, key)
+    if path then
+      Private.texture_types["LibSharedMedia Textures"][path] = key
+    end
   end
 end)
+
+Private.texture_types["LibSharedMedia Textures"] = {}
+for _, mediaType in ipairs{"statusbar", "statusbar_atlas"} do
+  local mediaTable = LSM:HashTable(mediaType)
+  if mediaTable then
+    for name, path in pairs(mediaTable) do
+      Private.texture_types["LibSharedMedia Textures"][path] = name
+    end
+  end
+end
 
 -- register options font
 LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraMono-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
@@ -3149,7 +3201,8 @@ LSM:Register("font", "Fira Sans Black", "Interface\\Addons\\WeakAuras\\Media\\Fo
 LSM:Register("font", "Fira Sans Condensed Black", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraSansCondensed-Black.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 LSM:Register("font", "Fira Sans Condensed Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraSansCondensed-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 LSM:Register("font", "Fira Sans Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraSans-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
-
+LSM:Register("font", "PT Sans Narrow Regular", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\PTSansNarrow-Regular.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
+LSM:Register("font", "PT Sans Narrow Bold", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\PTSansNarrow-Bold.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 
 -- register plain white border
 LSM:Register("border", "Square Full White", [[Interface\AddOns\WeakAuras\Media\Textures\Square_FullWhite.tga]])
@@ -3175,11 +3228,16 @@ if PowerBarColor then
   end
 
   for power, data in pairs(PowerBarColor) do
+    local name, path
     if type(power) == "string" and data.atlas then
-      local name = "Blizzard " .. capitalizeFirstLetter(power)
-      LSM:Register("statusbar_atlas", name, data.atlas)
+      name = "Blizzard " .. capitalizeFirstLetter(power)
+      path = data.atlas
     elseif data.atlasElementName then
-      LSM:Register("statusbar_atlas", "Blizzard " .. data.atlasElementName, "UI-HUD-UnitFrame-Player-PortraitOff-Bar-" .. data.atlasElementName)
+      name = "Blizzard " .. data.atlasElementName
+      path = "UI-HUD-UnitFrame-Player-PortraitOff-Bar-" .. data.atlasElementName
+    end
+    if name and path then
+      LSM:Register("statusbar_atlas", name, path)
     end
   end
 end

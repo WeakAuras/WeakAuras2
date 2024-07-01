@@ -476,6 +476,7 @@ local modes = {
 WeakAurasProfilingMixin = {}
 
 local MinPanelWidth, MinPanelHeight = 500, 300
+local MinPanelMinimizedWidth, MinPanelMinimizedHeight = 250, 80
 function WeakAurasProfilingMixin:OnShow()
   if self.initialised then
     return
@@ -485,7 +486,8 @@ function WeakAurasProfilingMixin:OnShow()
   ButtonFrameTemplate_HidePortrait(self)
   self:SetTitle(L["WeakAuras Profiling"])
   self:SetSize(MinPanelWidth, MinPanelHeight)
-  self.ResizeButton:Init(self, MinPanelWidth, MinPanelHeight);
+  self.ResizeButton:Init(self, MinPanelMinimizedWidth, MinPanelMinimizedHeight)
+  self:SetResizeBounds(MinPanelWidth, MinPanelHeight)
   self.mode = 1
   UIDropDownMenu_SetText(self.buttons.modeDropDown, modes[1])
 
@@ -497,17 +499,20 @@ function WeakAurasProfilingMixin:OnShow()
   minimizeButton:SetOnMaximizedCallback(function()
     self.minimized = false
     self.buttons:Show()
+    self.ResizeButton:Show()
     self.ColumnDisplay:Show()
     self.ScrollBox:Show()
     self.ScrollBar:Show()
     self.stats:Show()
     self:ClearAllPoints()
     self:SetPoint("TOPRIGHT", UIParent, "BOTTOMLEFT", self.right, self.top)
-    self:SetHeight(self.prevHeight)
+    self:SetHeight(self.prevHeight > MinPanelHeight and self.prevHeight or MinPanelHeight)
+    self:SetWidth(self.prevWidth > MinPanelWidth and self.prevWidth or MinPanelWidth)
   end)
   minimizeButton:SetOnMinimizedCallback(function()
     self.minimized = true
     self.buttons:Hide()
+    self.ResizeButton:Hide()
     self.ColumnDisplay:Hide()
     self.ScrollBox:Hide()
     self.ScrollBar:Hide()
@@ -516,7 +521,9 @@ function WeakAurasProfilingMixin:OnShow()
     self:ClearAllPoints()
     self:SetPoint("TOPRIGHT", UIParent, "BOTTOMLEFT", self.right, self.top)
     self.prevHeight = self:GetHeight()
-    self:SetHeight(60)
+    self.prevWidth = self:GetWidth()
+    self:SetHeight(MinPanelMinimizedHeight)
+    self:SetWidth(MinPanelMinimizedWidth)
   end)
 
   self.ColumnDisplay:LayoutColumns(COLUMN_INFO)
@@ -809,7 +816,10 @@ end
 
 function WeakAurasProfilingMixin:Toggle()
   if self:IsShown() then
-    self:Stop()
+    if currentProfileState == "profiling" then
+      self:Stop()
+    end
+    self:Hide()
   else
     self:Start()
   end

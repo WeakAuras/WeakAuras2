@@ -421,7 +421,7 @@ function Private.getDefaultGlow(regionType)
       glowYOffset = 0,
       glow_anchor = "bar"
     }
-  elseif regionType == "icon" then
+  else
     return {
       ["type"] = "subglow",
       glow = false,
@@ -441,9 +441,14 @@ function Private.getDefaultGlow(regionType)
   end
 end
 
+local supportedRegion = {
+  icon = true,
+  aurabar = true,
+  texture = true,
+  progresstexture = true
+}
 local function supports(regionType)
-  return regionType == "icon"
-         or regionType == "aurabar"
+  return supportedRegion[regionType]
 end
 
 local function addDefaultsForNewAura(data)

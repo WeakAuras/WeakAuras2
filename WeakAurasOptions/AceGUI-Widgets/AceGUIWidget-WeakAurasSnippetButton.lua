@@ -27,7 +27,6 @@ local function Button_OnClick(frame, ...)
     PlaySound(852) -- SOUNDKIT.IG_MAINMENU_OPTION
     frame.title:Hide()
     frame.renameEditBox:Show()
-    frame.renameEditBox:Enable()
     frame.renameEditBox:SetText(frame.title:GetText())
     frame.renameEditBox:HighlightText()
     frame.renameEditBox:SetFocus()
@@ -59,9 +58,6 @@ local function Control_OnLeave(frame)
 end
 
 local function rename_complete(self, ...)
-  self:ClearFocus()
-  AceGUI:ClearFocus()
-  self:Disable()
   self:Hide()
   self:GetParent().obj:Fire("OnEnterPressed", ...)
 end
@@ -114,7 +110,6 @@ local methods = {
       AceGUI:ClearFocus()
       self.title:Hide()
       self.renameEditBox:Show()
-      self.renameEditBox:Enable()
       self.renameEditBox:SetText(self.title:GetText())
       self.renameEditBox:HighlightText()
       self.renameEditBox:SetFocus()
@@ -194,14 +189,12 @@ local function Constructor()
   renameEditBox:SetHeight(14)
   renameEditBox:SetPoint("TOPLEFT", title, "TOPLEFT")
   renameEditBox:SetPoint("BOTTOMRIGHT", title, "BOTTOMRIGHT")
-  renameEditBox:Disable()
   renameEditBox:Hide()
   renameEditBox:SetScript(
     "OnEscapePressed",
     function(self)
       self:ClearFocus()
       AceGUI:ClearFocus()
-      self:Disable()
       self:Hide()
       title:Show()
     end
@@ -209,9 +202,6 @@ local function Constructor()
   renameEditBox:SetScript(
     "OnEditFocusLost",
     function(self)
-      self:ClearFocus()
-      AceGUI:ClearFocus()
-      self:Disable()
       self:Hide()
       title:Show()
     end

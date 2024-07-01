@@ -524,7 +524,8 @@ local overridden = {
 }
 
 local env_getglobal_custom
-local exec_env_custom = setmetatable({},
+-- WORKAROUND ColorMixin not being found in our environemnt #5071
+local exec_env_custom = setmetatable({ColorMixin = ColorMixin},
 {
   __index = function(t, k)
     if k == "_G" then

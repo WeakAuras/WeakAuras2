@@ -1163,7 +1163,14 @@ local function ProgressOptions(data)
     width = WeakAuras.normalWidth,
     name = L["Set Minimum Progress"],
     desc = L["Values/Remaining Time below this value are displayed as zero progress."],
-    order = order + 1
+    order = order + 1,
+    set = function(info, value)
+      data.useAdjustededMin = value
+      if not value then
+        data.adjustedMin = ""
+      end
+      WeakAuras.Add(data)
+    end
   };
 
   options.adjustedMin = {
@@ -1189,7 +1196,14 @@ local function ProgressOptions(data)
     width = WeakAuras.normalWidth,
     name = L["Set Maximum Progress"],
     desc = L["Values/Remaining Time above this value are displayed as full progress."],
-    order = order + 4
+    order = order + 4,
+    set = function(info, value)
+      data.useAdjustededMax = value
+      if not value then
+        data.adjustedMax = ""
+      end
+      WeakAuras.Add(data)
+    end
   }
 
   options.adjustedMax = {

@@ -1,3 +1,5 @@
+if not WeakAuras.IsLibsOK() then return end
+
 ---@type string, Private
 local addon, Private = ...
 

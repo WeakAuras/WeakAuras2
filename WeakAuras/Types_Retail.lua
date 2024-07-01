@@ -216,7 +216,8 @@ function Private.GetTalentData(specId)
 								talentId,
 								definitionInfo.spellID,
 								{ node.posX, node.posY, idx, #node.entryIDs },
-								{}
+								{}, -- Target if it exists,
+								node.maxRanks
 							}
 							specDataByNodeId[node.ID] = specDataByNodeId[node.ID] or {}
 							specDataByNodeId[node.ID][idx] = talentData
