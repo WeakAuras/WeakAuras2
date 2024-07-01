@@ -2,11 +2,6 @@ package-as: WeakAuras
 
 externals:
   WeakAuras/Libs/LibStub: https://repos.curseforge.com/wow/libstub/trunk
-  WeakAuras/Libs/CallbackHandler-1.0: https://repos.curseforge.com/wow/callbackhandler/trunk/CallbackHandler-1.0
-  WeakAuras/Libs/AceConfig-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceConfig-3.0
-  WeakAuras/Libs/AceConsole-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceConsole-3.0
-  WeakAuras/Libs/AceGUI-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceGUI-3.0
-  WeakAuras/Libs/AceGUI-3.0-SharedMediaWidgets: https://repos.curseforge.com/wow/ace-gui-3-0-shared-media-widgets/trunk/AceGUI-3.0-SharedMediaWidgets
   WeakAuras/Libs/AceTimer-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceTimer-3.0
   WeakAuras/Libs/AceSerializer-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceSerializer-3.0
   WeakAuras/Libs/AceComm-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceComm-3.0
@@ -15,7 +10,6 @@ externals:
   WeakAuras/Libs/LibCompress: https://repos.curseforge.com/wow/libcompress/trunk
   WeakAuras/Libs/LibSpellRange-1.0: https://github.com/ascott18/LibSpellRange-1.0
   WeakAuras/Libs/LibRangeCheck-3.0: https://github.com/WeakAuras/LibRangeCheck-3.0/
-  WeakAuras/Libs/LibAPIAutoComplete-1.0: https://github.com/WeakAuras/LibAPIAutoComplete-1.0/
   WeakAuras/Libs/LibCustomGlow-1.0: https://github.com/Stanzilla/LibCustomGlow
   WeakAuras/Libs/LibDBIcon-1.0: https://repos.curseforge.com/wow/libdbicon-1-0/trunk/LibDBIcon-1.0
   WeakAuras/Libs/LibGetFrame-1.0: https://github.com/mrbuds/LibGetFrame
@@ -26,10 +20,14 @@ externals:
     url: https://github.com/rossnichols/LibSerialize
     tag: v1.0.0
   WeakAuras/Libs/LibSpecialization: https://repos.curseforge.com/wow/libspecialization/trunk/LibSpecialization
-  WeakAuras/Libs/LibUIDropDownMenu: https://repos.wowace.com/wow/libuidropdownmenu/trunk/LibUIDropDownMenu
   WeakAuras/Libs/TaintLess:
     url: https://www.townlong-yak.com/addons.git/taintless
     commit: default
+  WeakAurasOptions/Libs/AceConfig-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceConfig-3.0
+  WeakAurasOptions/Libs/AceGUI-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceGUI-3.0
+  WeakAurasOptions/Libs/AceGUI-3.0-SharedMediaWidgets: https://repos.curseforge.com/wow/ace-gui-3-0-shared-media-widgets/trunk/AceGUI-3.0-SharedMediaWidgets
+  WeakAurasOptions/Libs/LibUIDropDownMenu: https://repos.wowace.com/wow/libuidropdownmenu/trunk/LibUIDropDownMenu
+  WeakAurasOptions/Libs/LibAPIAutoComplete-1.0: https://github.com/WeakAuras/LibAPIAutoComplete-1.0/
 
 enable-nolib-creation: no
 
@@ -54,4 +52,4 @@ move-folders:
   WeakAuras/WeakAurasTemplates: WeakAurasTemplates
   WeakAuras/WeakAurasArchive: WeakAurasArchive
   WeakAuras/Libs/LibRangeCheck-3.0/LibRangeCheck-3.0: WeakAuras/Libs/LibRangeCheck-3.0
-  WeakAuras/Libs/LibAPIAutoComplete-1.0/LibAPIAutoComplete-1.0: WeakAuras/Libs/LibAPIAutoComplete-1.0
+  WeakAurasOptions/Libs/LibAPIAutoComplete-1.0/LibAPIAutoComplete-1.0: WeakAurasOptions/Libs/LibAPIAutoComplete-1.0

@@ -1,0 +1,8 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+  <Include file="Libs\AceGUI-3.0\AceGUI-3.0.xml"/>
+  <Include file="Libs\AceConfig-3.0\AceConfig-3.0.xml"/>
+  <Include file="Libs\AceGUI-3.0-SharedMediaWidgets\widget.xml"/>
+  <Include file="Libs\LibUIDropDownMenu\LibUIDropDownMenu.xml"/>
+  <Include file="Libs\LibAPIAutoComplete-1.0\LibAPIAutoComplete-1.0.xml"/>
+</Ui>

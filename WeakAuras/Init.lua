@@ -465,11 +465,6 @@ do
     "LibStub"
   }
   local LibStubLibs = {
-    "CallbackHandler-1.0",
-    "AceConfig-3.0",
-    "AceConsole-3.0",
-    "AceGUI-3.0",
-    "AceGUISharedMediaWidgets-1.0",
     "AceTimer-3.0",
     "AceSerializer-3.0",
     "AceComm-3.0",
@@ -481,7 +476,6 @@ do
     "LibDBIcon-1.0",
     "LibGetFrame-1.0",
     "LibSerialize",
-    "LibUIDropDownMenu-4.0"
   }
   if WeakAuras.IsRetail() then
     tinsert(LibStubLibs, "LibSpecialization")
