@@ -4162,6 +4162,7 @@ if WeakAuras.IsClassicEra() then
 end
 
 if WeakAuras.IsCataClassic() then
+  Private.item_slot_types[18] = RELICSLOT
   for slot = 20, 28 do
     Private.item_slot_types[slot] = nil
   end
