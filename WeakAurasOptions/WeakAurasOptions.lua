@@ -1843,9 +1843,16 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
         if prop.type == "marker" then
           insertProp = prop.name
         else
-          insertProp = prop.name == "%" and "%%" or ("%%{%s}"):format(prop.name)
-          if prop.triggerNum > 0 then
-            insertProp = string.format("%%{%d.%s}", propIndex, prop.name)
+          if IsShiftKeyDown() then
+            insertProp = prop.name == "%" and "%%" or ("%%{%s}"):format(prop.name)
+            if prop.triggerNum > 0 then
+              insertProp = string.format("%%{%d.%s}", propIndex, prop.name)
+            end
+          else
+            insertProp = prop.name == "%" and "%%" or ("%%%s"):format(prop.name)
+            if prop.triggerNum > 0 then
+              insertProp = string.format("%%%d.%s", propIndex, prop.name)
+            end
           end
         end
 
