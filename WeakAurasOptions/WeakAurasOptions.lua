@@ -1729,53 +1729,74 @@ end
 OptionsPrivate.currentDynamicTextInput = false;
 
 local BaseDynamicTextCodes = {
-  {type = "mini", triggerNum = 0, name = "p", o = 1, n = 7, desc = L["Progress - The remaining time of a timer, or a non-timer value"]},
-  {type = "mini", triggerNum = 0, name = "t", o = 2, n = 7, desc = L["Total - The maximum duration of a timer, or a maximum non-timer value"]},
-  {type = "mini", triggerNum = 0, name = "n", o = 3, n = 7, desc = L["Name - The name of the display (usually an aura name), or the display's ID if there is no dynamic name"]},
-  {type = "mini", triggerNum = 0, name = "i", o = 4, n = 7, desc = L["Icon - The icon associated with the display"]},
-  {type = "mini", triggerNum = 0, name = "s", o = 5, n = 7, desc = L["Stacks - The number of stacks of an aura (usually)"]},
-  {type = "mini", triggerNum = 0, name = "c", o = 6, n = 7, desc = L["Custom - Allows you to define a custom Lua function that returns a list of string values. %c1 will be replaced by the first value returned, %c2 by the second, etc."]},
-  {type = "mini", triggerNum = 0, name = "%", o = 7, n = 7, desc = L["% - To show a percent sign"]},
+  trigger = {
+    {type = "mini", name = "p", desc = L["Progress - The remaining time of a timer, or a non-timer value"]},
+    {type = "mini", name = "t", desc = L["Total - The maximum duration of a timer, or a maximum non-timer value"]},
+    {type = "mini", name = "n", desc = L["Name - The name of the display (usually an aura name), or the display's ID if there is no dynamic name"]},
+    {type = "mini", name = "i", desc = L["Icon - The icon associated with the display"]},
+    {type = "mini", name = "s", desc = L["Stacks - The number of stacks of an aura (usually)"]},
+  },
+  global = {
+    {type = "mini", name = "c", desc = L["Custom - Allows you to define a custom Lua function that returns a list of string values. %c1 will be replaced by the first value returned, %c2 by the second, etc."]},
+    {type = "mini", name = "%", desc = L["% - To show a percent sign"]},
+  }
 }
 
 function OptionsPrivate.UpdateTextReplacements(frame, data)
   frame.scrollList:ReleaseChildren()
 
   local props = OptionsPrivate.Private.GetAdditionalProperties(data)
-  local sortedProps = {
-    {type = "header", triggerNum = 0, name = "Global Properties"}
-  }
-  for i = 1, 8 do
-    tinsert(sortedProps, {type = "marker", triggerNum = 0, name = "{rt"..i.."}", o = i, n = 8, desc = "|TInterface\\TargetingFrame\\UI-RaidTargetingIcon_"..i..":0|t"})
+  local sortedProps = {}
+
+  -- Add global header and markers
+  table.insert(sortedProps, {type = "header", triggerNum = 0, name = "Global Properties"})
+  for index, icon in ipairs(ICON_LIST) do
+    table.insert(sortedProps, {type = "marker", triggerNum = 0, name = "{rt"..index.."}", desc = icon..":0|t", widthFraction = #ICON_LIST})
   end
-  tAppendAll(sortedProps, BaseDynamicTextCodes)
+
+  -- Add base dynamic text codes
+  local globalProps = {}
+  tAppendAll(globalProps, CopyTable(BaseDynamicTextCodes.trigger))
+  tAppendAll(globalProps, CopyTable(BaseDynamicTextCodes.global))
+  for _, prop in ipairs(globalProps) do
+    prop.widthFraction = #globalProps
+    prop.triggerNum = 0
+    table.insert(sortedProps, prop)
+  end
+
+  -- Process each trigger's properties
   for triggerNum, triggerProps in pairs(props) do
-    if next(props[triggerNum]) then
+    if next(triggerProps) then
+      -- Create a temporary table for this trigger's properties
+      local tempProps = {}
+
+      -- Add the properties to the temporary table
+      for name, desc in pairs(triggerProps) do
+        table.insert(tempProps, {triggerNum = triggerNum, name = name, desc = desc})
+      end
+
+      -- Sort the temporary table by name
+      table.sort(tempProps, function(a, b)
+        return a.name < b.name
+      end)
+
+      -- Add a header for the trigger
       table.insert(sortedProps, {type = "header", triggerNum = triggerNum, name = OptionsPrivate.GetTriggerTitle(data, triggerNum)})
-      for i = 1, 5 do
-        local prop = CopyTable(BaseDynamicTextCodes[i])
+
+      -- Add the base properties for the trigger
+      for _, v in ipairs(BaseDynamicTextCodes.trigger) do
+        local prop = CopyTable(v)
+        prop.widthFraction = #BaseDynamicTextCodes.trigger
         prop.triggerNum = triggerNum
-        prop.n = 5
         table.insert(sortedProps, prop)
       end
-      for name, desc in pairs(triggerProps) do
-        table.insert(sortedProps, {triggerNum = triggerNum, name = name, desc = desc})
+
+      -- Add the sorted properties to the sortedProps table
+      for _, prop in ipairs(tempProps) do
+        table.insert(sortedProps, prop)
       end
     end
   end
-  table.sort(sortedProps, function(a, b)
-    if a.triggerNum ~= b.triggerNum then
-      return a.triggerNum < b.triggerNum
-    elseif a.type ~= b.type then
-      return (a.type or "z") < (b.type or "z")
-    elseif a.type == "marker" and b.type == "marker" then
-      return a.o < b.o
-    elseif a.type == "mini" and b.type == "mini" then
-      return a.o < b.o
-    else
-      return a.name < b.name
-    end
-  end)
 
   -- Create a modified WeakAurasSnippetButton for each property and add it to ScrollList
   local lastType, miniGroup
@@ -1804,7 +1825,7 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
         button:SetTitle(string.format("|cFFFFCC00%s|r%s", propPrefix, prop.name))
       end
       if prop.type == "mini" or prop.type == "marker" then
-        button:SetRelativeWidth((1/prop.n) - 1e-10)
+        button:SetRelativeWidth((1/prop.widthFraction) - 1e-10)
       else
         button:SetRelativeWidth(1)
       end
