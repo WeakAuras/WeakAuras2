@@ -1821,13 +1821,15 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
           tooltip:ClearLines()
           tooltip:AddLine(("%s%s"):format(propPrefix, prop.name))
           tooltip:AddLine(prop.desc, 1, 1, 1, true)
-          tooltip:AddLine("\n")
-          tooltip:AddLine(
-            prop.triggerNum > 0
-            and L["The trigger number is optional. When no trigger number is specified, the trigger selected via dynamic information will be used."]
-            or L["By default this shows the information from the trigger selected via dynamic information. The information from a specific trigger can be shown via e.g. %2.p."],
-            0.8, 0.8, 0.8,
-            true)
+          if prop.name ~= "c" and prop.name ~= "%" then
+            tooltip:AddLine("\n")
+            tooltip:AddLine(
+              prop.triggerNum > 0
+              and L["The trigger number is optional. When no trigger number is specified, the trigger selected via dynamic information will be used."]
+              or L["By default this shows the information from the trigger selected via dynamic information. The information from a specific trigger can be shown via e.g. %2.p."],
+              0.8, 0.8, 0.8,
+              true)
+          end
           tooltip:Show()
           frame.obj:Fire("OnEnter")
         end)
