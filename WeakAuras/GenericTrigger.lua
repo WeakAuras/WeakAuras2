@@ -4386,10 +4386,10 @@ function GenericTrigger.SetToolTip(trigger, state)
   return false
 end
 
----@type fun(data: auraData, triggernum: number): string
+---@type fun(data: auraData, triggernum: number): table
 function GenericTrigger.GetAdditionalProperties(data, triggernum)
   local trigger = data.triggers[triggernum].trigger
-  local ret = {""};
+  local props = {}
   local prototype = GenericTrigger.GetPrototype(trigger)
   if prototype then
     for _, v in pairs(prototype.args) do
@@ -4400,29 +4400,25 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
         enable = v.enable
       end
       if (enable and v.store and v.name and v.display and v.conditionType ~= "bool") then
-        table.insert(ret, "|cFFFFCC00%".. triggernum .. "." .. v.name .. "|r - " .. v.display .. "\n")
+        props[v.name] = v.display
       end
     end
     if prototype.countEvents then
-      table.insert(ret, "|cFFFFCC00%".. triggernum .. ".count|r - " .. L["Count"] .. "\n")
+      props.count = L["Count"]
     end
-
   else
     if (trigger.custom_type == "stateupdate") then
       local variables = GenericTrigger.GetTsuConditionVariables(data.id, triggernum)
       if (type(variables) == "table") then
         for var, varData in pairs(variables) do
-          if (type(varData) == "table") then
-            if varData.display then
-              table.insert(ret, "|cFFFFCC00%".. triggernum .. "." .. var .. "|r - " .. varData.display .. "\n")
-            end
+          if (type(varData) == "table") and varData.display then
+            props[var] = varData.display
           end
         end
       end
     end
   end
-
-  return table.concat(ret);
+  return props;
 end
 
 function GenericTrigger.GetProgressSources(data, triggernum, values)

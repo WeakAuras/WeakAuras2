@@ -3,7 +3,7 @@ if not WeakAuras.IsLibsOK() then return end
 SnippetButton Widget, based on AceGUI Button (and WA ToolbarButton)
 Graphical Button.
 -------------------------------------------------------------------------------]]
-local Type, Version = "WeakAurasSnippetButton", 2
+local Type, Version = "WeakAurasSnippetButton", 3
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then
   return
@@ -70,6 +70,12 @@ local methods = {
     self:SetDisabled(false)
     self:SetTitle()
     self:SetEditable(false)
+
+    self.ntex:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp")
+    self.ntex:SetVertexColor(0.8, 0.8, 0.8, 0.25)
+    self.htex:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp")
+    self.htex:SetVertexColor(0.3, 0.5, 1, 0.5)
+    self.ptex:SetColorTexture(1, 1, 1, 0.2)
   end,
   -- ["OnRelease"] = nil,
 
@@ -114,6 +120,12 @@ local methods = {
       self.renameEditBox:HighlightText()
       self.renameEditBox:SetFocus()
     end
+  end,
+  ["SetDynamicTextStyle"] = function(self)
+    self.ntex:SetTexture(nil)
+    self.htex:SetAtlas("Options_List_Hover")
+    self.htex:SetVertexColor(1, 1, 1, 1)
+    self.ptex:SetAtlas("Options_List_Active")
   end
 }
 
@@ -153,25 +165,20 @@ local function Constructor()
   button.title = title
 
   local ntex = button:CreateTexture()
-  ntex:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp")
-  ntex:SetVertexColor(0.8, 0.8, 0.8, 0.25)
   ntex:SetPoint("TOPLEFT", 0, -1)
   ntex:SetPoint("BOTTOMRIGHT", 0, 1)
   button:SetNormalTexture(ntex)
 
   local htex = button:CreateTexture()
-  htex:SetTexture("Interface\\BUTTONS\\UI-Listbox-Highlight2.blp")
-  htex:SetVertexColor(0.3, 0.5, 1, 0.5)
   htex:SetBlendMode("ADD")
   htex:SetAllPoints(ntex)
   button:SetHighlightTexture(htex)
   button.htex = htex
 
   local ptex = button:CreateTexture()
-  ptex:SetColorTexture(1, 1, 1, 0.2)
-  htex:SetAllPoints(ntex)
+  ptex:SetAllPoints(ntex)
   button:SetPushedTexture(ptex)
-  button.ptext = ptex
+  button.ptex = ptex
 
   local delHighlight = deleteButton:CreateTexture()
   delHighlight:SetTexture([[Interface\Buttons\CancelButton-Highlight]])
@@ -213,6 +220,7 @@ local function Constructor()
     title = title,
     frame = button,
     type = Type,
+    ntex = ntex,
     htex = htex,
     ptex = ptex,
     deleteButton = deleteButton,
