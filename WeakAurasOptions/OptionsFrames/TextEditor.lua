@@ -824,9 +824,15 @@ local function ConstructTextEditor(frame)
       helpButton:Hide()
     end
     if (frame.window == "texture") then
-      frame.texturePicker:CancelClose()
+      local texturepicker = OptionsPrivate.TexturePicker(frame, true)
+      if texturepicker then
+        texturepicker:CancelClose()
+      end
     elseif (frame.window == "icon") then
-      frame.iconPicker:CancelClose()
+      local iconpicker = OptionsPrivate.IconPicker(frame, true)
+      if iconpicker then
+        iconpicker:CancelClose()
+      end
     end
     frame.window = "texteditor"
     frame:UpdateFrameVisible()
@@ -993,7 +999,7 @@ local function ConstructTextEditor(frame)
   return group
 end
 
-function OptionsPrivate.TextEditor(frame)
-  textEditor = textEditor or ConstructTextEditor(frame)
+function OptionsPrivate.TextEditor(frame, noConstruct)
+  textEditor = textEditor or (not noConstruct and ConstructTextEditor(frame))
   return textEditor
 end

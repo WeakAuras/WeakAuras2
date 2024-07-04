@@ -2210,7 +2210,7 @@ local function ConstructUpdateFrame(frame)
   return group
 end
 
-function OptionsPrivate.UpdateFrame(frame)
-  updateFrame = updateFrame or ConstructUpdateFrame(frame)
+function OptionsPrivate.UpdateFrame(frame, noConstruct)
+  updateFrame = updateFrame or (not noConstruct and ConstructUpdateFrame(frame))
   return updateFrame
 end

@@ -69,7 +69,7 @@ local function ConstructDebugLog(frame)
   return group
 end
 
-function OptionsPrivate.DebugLog(frame)
-  debugLog = debugLog or ConstructDebugLog(frame)
+function OptionsPrivate.DebugLog(frame, noConstruct)
+  debugLog = debugLog or (not noConstruct and ConstructDebugLog(frame))
   return debugLog
 end

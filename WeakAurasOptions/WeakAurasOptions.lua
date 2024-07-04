@@ -884,7 +884,10 @@ function WeakAuras.ShowOptions(msg)
   end
 
   if (frame.window == "codereview") then
-    frame.codereview:Close();
+    local codereview = OptionsPrivate.CodeReview(frame, true)
+    if codereview then
+      codereview:Close();
+    end
   end
 
   if firstLoad then
@@ -918,27 +921,27 @@ function OptionsPrivate.GetPickedDisplay()
 end
 
 function OptionsPrivate.OpenTextEditor(...)
-  frame.texteditor:Open(...);
+  OptionsPrivate.TextEditor(frame):Open(...);
 end
 
 function OptionsPrivate.ExportToString(id)
-  frame.importexport:Open("export", id);
+  OptionsPrivate.ImportExport(frame):Open("export", id);
 end
 
 function OptionsPrivate.ExportToTable(id)
-  frame.importexport:Open("table", id);
+  OptionsPrivate.ImportExport(frame):Open("table", id);
 end
 
 function OptionsPrivate.ImportFromString()
-  frame.importexport:Open("import");
+  OptionsPrivate.ImportExport(frame):Open("import");
 end
 
 function OptionsPrivate.OpenDebugLog(text)
-  frame.debugLog:Open(text)
+  OptionsPrivate.DebugLog(frame):Open(text)
 end
 
 function OptionsPrivate.OpenUpdate(data, children, target, linkedAuras, sender, callbackFunc)
-  return frame.update:Open(data, children, target, linkedAuras, sender, callbackFunc)
+  return OptionsPrivate.UpdateFrame:Open(data, children, target, linkedAuras, sender, callbackFunc)
 end
 
 function OptionsPrivate.ConvertDisplay(data, newType)
@@ -1686,11 +1689,11 @@ function WeakAuras.UpdateThumbnail(data)
 end
 
 function OptionsPrivate.OpenTexturePicker(baseObject, paths, properties, textures, SetTextureFunc, adjustSize)
-  frame.texturePicker:Open(baseObject, paths, properties, textures, SetTextureFunc, adjustSize)
+   OptionsPrivate.TexturePicker(frame):Open(baseObject, paths, properties, textures, SetTextureFunc, adjustSize)
 end
 
 function OptionsPrivate.OpenIconPicker(baseObject, paths, groupIcon)
-  frame.iconPicker:Open(baseObject, paths, groupIcon)
+  OptionsPrivate.IconPicker(frame):Open(baseObject, paths, groupIcon)
 end
 
 function OptionsPrivate.OpenModelPicker(baseObject, path)
@@ -1701,13 +1704,13 @@ function OptionsPrivate.OpenModelPicker(baseObject, path)
       WeakAuras.prettyPrint(string.format(L["ModelPaths could not be loaded, the addon is %s"], reason));
       WeakAuras.ModelPaths = {};
     end
-    frame.modelPicker.modelTree:SetTree(WeakAuras.ModelPaths);
+    OptionsPrivate.ModelPicker(frame).modelTree:SetTree(WeakAuras.ModelPaths)
   end
-  frame.modelPicker:Open(baseObject, path);
+  OptionsPrivate.ModelPicker(frame):Open(baseObject, path);
 end
 
 function OptionsPrivate.OpenCodeReview(data)
-  frame.codereview:Open(data);
+  OptionsPrivate.CodeReview(frame):Open(data);
 end
 
 function OptionsPrivate.OpenTriggerTemplate(data, targetId)

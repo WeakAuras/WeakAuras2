@@ -40,11 +40,20 @@ local function ConstructImportExport(frame)
 
   function group.Open(self, mode, id)
     if(frame.window == "texture") then
-      frame.texturePicker:CancelClose();
+      local texturepicker = OptionsPrivate.TexturePicker(frame, true)
+      if texturepicker then
+        texturepicker:CancelClose();
+      end
     elseif(frame.window == "icon") then
-      frame.iconPicker:CancelClose();
+      local iconpicker = OptionsPrivate.IconPicker(frame, true)
+      if iconpicker then
+        iconpicker:CancelClose();
+      end
     elseif(frame.window == "model") then
-      frame.modelPicker:CancelClose();
+      local modelpicker = OptionsPrivate.ModelPicker(frame, true)
+      if modelpicker then
+        modelpicker:CancelClose();
+      end
     end
     frame.window = "importexport";
     frame:UpdateFrameVisible()
@@ -100,7 +109,7 @@ local function ConstructImportExport(frame)
   return group
 end
 
-function OptionsPrivate.ImportExport(frame)
-  importexport = importexport or ConstructImportExport(frame)
+function OptionsPrivate.ImportExport(frame, noConstruct)
+  importexport = importexport or (not noConstruct and ConstructImportExport(frame))
   return importexport
 end
