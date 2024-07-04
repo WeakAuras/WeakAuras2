@@ -218,7 +218,7 @@ local function ConstructIconPicker(frame)
   return group
 end
 
-function OptionsPrivate.IconPicker(frame)
-  iconPicker = iconPicker or ConstructIconPicker(frame)
+function OptionsPrivate.IconPicker(frame, noConstruct)
+  iconPicker = iconPicker or (not noConstruct and ConstructIconPicker(frame))
   return iconPicker
 end

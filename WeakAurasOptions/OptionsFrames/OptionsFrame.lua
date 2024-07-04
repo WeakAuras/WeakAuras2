@@ -237,14 +237,12 @@ function OptionsPrivate.CreateFrame()
     if self.minimized then
       WeakAurasOptionsTitleText:Hide()
       self.buttonsContainer.frame:Hide()
-      self.texturePicker.frame:Hide()
-      self.iconPicker.frame:Hide()
-      self.modelPicker.frame:Hide()
-      self.importexport.frame:Hide()
-      self.update.frame:Hide()
-      self.texteditor.frame:Hide()
-      self.codereview.frame:Hide()
-      self.debugLog.frame:Hide()
+      for _, fn in ipairs({"TexturePicker", "IconPicker", "ModelPicker", "ImportExport", "TextEditor", "CodeReview", "UpdateFrame", "DebugLog"}) do
+        local obj = OptionsPrivate[fn](self, true)
+        if obj then
+          obj.frame:Hide()
+        end
+      end
       if self.newView then
         self.newView.frame:Hide()
       end
@@ -271,48 +269,31 @@ function OptionsPrivate.CreateFrame()
         self.dynamicTextCodesFrame:Hide()
         self:HideTip()
       end
+      local widgets = {
+        { window = "texture",      title = L["Texture Picker"],       fn = "TexturePicker" },
+        { window = "icon",         title = L["Icon Picker"],          fn = "IconPicker" },
+        { window = "model",        title = L["Model Picker"],         fn = "ModelPicker" },
+        { window = "importexport", title = L["Import / Export"],      fn = "ImportExport" },
+        { window = "texteditor",   title = L["Code Editor"],          fn = "TextEditor" },
+        { window = "codereview",   title = L["Custom Code Viewer"],   fn = "CodeReview" },
+        { window = "debuglog",     title = L["Debug Log"],            fn = "DebugLog" },
+        { window = "update",       title = L["Update"],               fn = "UpdateFrame" },
+      }
 
-      if self.window == "texture" then
-        OptionsPrivate.SetTitle(L["Texture Picker"])
-        self.texturePicker.frame:Show()
-      else
-        self.texturePicker.frame:Hide()
+      for _, widget in ipairs(widgets) do
+        local obj = OptionsPrivate[widget.fn](self, true)
+        if self.window == widget.window then
+          OptionsPrivate.SetTitle(widget.title)
+          if obj then
+            obj.frame:Show()
+          end
+        else
+          if obj then
+            obj.frame:Hide()
+          end
+        end
       end
 
-      if self.window == "icon" then
-        OptionsPrivate.SetTitle(L["Icon Picker"])
-        self.iconPicker.frame:Show()
-      else
-        self.iconPicker.frame:Hide()
-      end
-
-      if self.window == "model" then
-        OptionsPrivate.SetTitle(L["Model Picker"])
-        self.modelPicker.frame:Show()
-      else
-        self.modelPicker.frame:Hide()
-      end
-
-      if self.window == "importexport" then
-        OptionsPrivate.SetTitle(L["Import / Export"])
-        self.importexport.frame:Show()
-      else
-        self.importexport.frame:Hide()
-      end
-
-      if self.window == "texteditor" then
-        OptionsPrivate.SetTitle(L["Code Editor"])
-        self.texteditor.frame:Show()
-      else
-        self.texteditor.frame:Hide()
-      end
-
-      if self.window == "codereview" then
-        OptionsPrivate.SetTitle(L["Custom Code Viewer"])
-        self.codereview.frame:Show()
-      else
-        self.codereview.frame:Hide()
-      end
       if self.window == "newView" then
         OptionsPrivate.SetTitle(L["New Template"])
         self.newView.frame:Show()
@@ -320,18 +301,6 @@ function OptionsPrivate.CreateFrame()
         if self.newView then
           self.newView.frame:Hide()
         end
-      end
-      if self.window == "update" then
-        OptionsPrivate.SetTitle(L["Update"])
-        self.update.frame:Show()
-      else
-        self.update.frame:Hide()
-      end
-      if self.window == "debuglog" then
-        OptionsPrivate.SetTitle(L["Debug Log"])
-        self.debugLog.frame:Show()
-      else
-        self.debugLog.frame:Hide()
       end
       if self.window == "default" then
         if self.loadProgessVisible then
@@ -515,16 +484,6 @@ function OptionsPrivate.CreateFrame()
   container.content:SetPoint("TOPLEFT", 0, -28)
   container.content:SetPoint("BOTTOMRIGHT", 0, 0)
   frame.container = container
-
-  frame.texturePicker = OptionsPrivate.TexturePicker(frame)
-  frame.iconPicker = OptionsPrivate.IconPicker(frame)
-  frame.modelPicker = OptionsPrivate.ModelPicker(frame)
-  frame.importexport = OptionsPrivate.ImportExport(frame)
-  frame.texteditor = OptionsPrivate.TextEditor(frame)
-  frame.codereview = OptionsPrivate.CodeReview(frame)
-  frame.update = OptionsPrivate.UpdateFrame(frame)
-  frame.debugLog = OptionsPrivate.DebugLog(frame)
-
   frame.moversizer, frame.mover = OptionsPrivate.MoverSizer(frame)
 
   -- filter line

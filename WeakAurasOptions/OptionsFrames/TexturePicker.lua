@@ -358,7 +358,7 @@ local function ConstructTexturePicker(frame)
   return group
 end
 
-function OptionsPrivate.TexturePicker(frame)
-  texturePicker = texturePicker or ConstructTexturePicker(frame)
+function OptionsPrivate.TexturePicker(frame, noConstruct)
+  texturePicker = texturePicker or (not noConstruct and ConstructTexturePicker(frame))
   return texturePicker
 end
