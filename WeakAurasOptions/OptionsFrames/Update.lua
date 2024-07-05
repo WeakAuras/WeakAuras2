@@ -1347,14 +1347,28 @@ end
 
 local methods = {
   Open = function(self, data, children, target, linkedAuras, sender, callbackFunc)
-    if(self.optionsWindow.window == "importexport") then
-      self.optionsWindow.importexport:Close();
-    elseif(self.optionsWindow.window == "texture") then
-      self.optionsWindow.texturePicker:CancelClose();
-    elseif(self.optionsWindow.window == "icon") then
-      self.optionsWindow.iconPicker:CancelClose();
-    elseif(self.optionsWindow.window == "model") then
-      self.optionsWindow.modelPicker:CancelClose();
+    local optionsWindow =  self.optionsWindow
+    local optionsWindowTitle = self.optionsWindow.window
+    if(optionsWindowTitle == "importexport") then
+      local importexport = OptionsPrivate.ImportExport(optionsWindow, true)
+      if importexport then
+        importexport:Close();
+      end
+    elseif(optionsWindowTitle == "texture") then
+      local texturepicker = OptionsPrivate.TexturePicker(optionsWindow, true)
+      if texturepicker then
+        texturepicker:CancelClose();
+      end
+    elseif(optionsWindowTitle == "icon") then
+      local iconpicker = OptionsPrivate.IconPicker(optionsWindow, true)
+      if iconpicker then
+        iconpicker:CancelClose();
+      end
+    elseif(optionsWindowTitle == "model") then
+      local modelpicker = OptionsPrivate.ModelPicker(optionsWindow, true)
+      if modelpicker then
+        modelpicker:CancelClose();
+      end
     end
     self.optionsWindow.window = "update"
     self.optionsWindow:UpdateFrameVisible()
