@@ -465,6 +465,7 @@ do
     "LibStub"
   }
   local LibStubLibs = {
+    "CallbackHandler-1.0",
     "AceTimer-3.0",
     "AceSerializer-3.0",
     "AceComm-3.0",
