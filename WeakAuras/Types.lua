@@ -2817,9 +2817,13 @@ if not WeakAuras.IsClassicEra() then
     [192] = L["Dungeon (Mythic+)"], -- "Challenge Level 1" TODO: check if this label is correct
     [193] = L["10 Player Raid (Heroic)"],
     [194] = L["25 Player Raid (Heroic)"],
+    [205] = L["Follower Dungeon"],
+    [208] = L["Delve"],
+    [216] = L["Quest Party"],
+    [220] = L["Story Raid"]
   }
 
-  for i = 1, 200 do
+  for i = 1, 220 do
     local name, type = GetDifficultyInfo(i)
     if name then
       if instance_difficulty_names[i] then
