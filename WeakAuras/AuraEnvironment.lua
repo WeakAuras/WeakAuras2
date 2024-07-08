@@ -646,6 +646,7 @@ end
 local function_cache_custom = CreateFunctionCache(exec_env_custom)
 local function_cache_builtin = CreateFunctionCache(exec_env_builtin)
 
+---@private
 function WeakAuras.LoadFunction(string)
   return function_cache_custom:Load(string)
 end
