@@ -524,8 +524,17 @@ local overridden = {
 }
 
 local env_getglobal_custom
--- WORKAROUND ColorMixin not being found in our environemnt #5071
-local exec_env_custom = setmetatable({ColorMixin = ColorMixin},
+-- WORKAROUND API which return Mixin'd values need those mixin "rawgettable" in caller's fenv #5071
+local exec_env_custom = setmetatable({
+  ColorMixin = ColorMixin,
+  Vector2DMixin = Vector2DMixin,
+  Vector3DMixin = Vector3DMixin,
+  ItemLocationMixin = ItemLocationMixin,
+  ItemTransmogInfoMixin = ItemTransmogInfoMixin,
+  TransmogPendingInfoMixin = TransmogPendingInfoMixin,
+  TransmogLocationMixin = TransmogLocationMixin,
+  PlayerLocationMixin = PlayerLocationMixin,
+},
 {
   __index = function(t, k)
     if k == "_G" then
