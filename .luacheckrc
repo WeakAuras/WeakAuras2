@@ -126,6 +126,13 @@ globals = {
 	"TableHasAnyEntries",
 	"tIndexOf",
 	"UISpecialFrames",
+	"Vector2DMixin",
+	"Vector3DMixin",
+	"ItemLocationMixin",
+	"ItemTransmogInfoMixin",
+	"TransmogPendingInfoMixin",
+	"TransmogLocationMixin",
+	"PlayerLocationMixin",
 
 
 	-- FrameXML frames
