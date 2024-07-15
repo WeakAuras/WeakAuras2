@@ -160,7 +160,13 @@ function OptionsPrivate.GetActionOptions(data)
         callbacks = {
           OnEditFocusGained = function(self)
             local widget = dynamicTextInputs["start_message_dest"]
-            OptionsPrivate.ToggleTextReplacements(data, true, widget)
+            OptionsPrivate.ToggleTextReplacements(data, widget, "OnEditFocusGained")
+          end,
+          OnEditFocusLost = function(self)
+            OptionsPrivate.ToggleTextReplacements(nil, "OnEditFocusLost")
+          end,
+          OnEnterPressed = function(self)
+            OptionsPrivate.ToggleTextReplacements(nil, "OnEnterPressed")
           end,
           OnShow = function(self)
             dynamicTextInputs["start_message_dest"] = self
@@ -177,7 +183,7 @@ function OptionsPrivate.GetActionOptions(data)
         hidden = function() return data.actions.start.message_type ~= "WHISPER" end,
         func = function()
           local widget = dynamicTextInputs["start_message_dest"]
-          OptionsPrivate.ToggleTextReplacements(data, nil, widget)
+          OptionsPrivate.ToggleTextReplacements(data, widget, "ToggleButton")
         end,
         imageWidth = 24,
         imageHeight = 24,
@@ -213,7 +219,13 @@ function OptionsPrivate.GetActionOptions(data)
         callbacks = {
           OnEditFocusGained = function(self)
             local widget = dynamicTextInputs["start_message"]
-            OptionsPrivate.ToggleTextReplacements(data, true, widget)
+            OptionsPrivate.ToggleTextReplacements(data, widget, "OnEditFocusGained")
+          end,
+          OnEditFocusLost = function(self)
+            OptionsPrivate.ToggleTextReplacements(nil, "OnEditFocusLost")
+          end,
+          OnEnterPressed = function(self)
+            OptionsPrivate.ToggleTextReplacements(nil, "OnEnterPressed")
           end,
           OnShow = function(self)
             dynamicTextInputs["start_message"] = self
@@ -229,7 +241,7 @@ function OptionsPrivate.GetActionOptions(data)
         disabled = function() return not data.actions.start.do_message end,
         func = function()
           local widget = dynamicTextInputs["start_message"]
-          OptionsPrivate.ToggleTextReplacements(data, nil, widget)
+          OptionsPrivate.ToggleTextReplacements(data, widget, "ToggleButton")
         end,
         imageWidth = 24,
         imageHeight = 24,
@@ -663,7 +675,13 @@ function OptionsPrivate.GetActionOptions(data)
         callbacks = {
           OnEditFocusGained = function(self)
             local widget = dynamicTextInputs["finish_message_dest"]
-            OptionsPrivate.ToggleTextReplacements(data, true, widget)
+            OptionsPrivate.ToggleTextReplacements(data, widget, "OnEditFocusGained")
+          end,
+          OnEditFocusLost = function(self)
+            OptionsPrivate.ToggleTextReplacements(nil, "OnEditFocusLost")
+          end,
+          OnEnterPressed = function(self)
+            OptionsPrivate.ToggleTextReplacements(nil, "OnEnterPressed")
           end,
           OnShow = function(self)
             dynamicTextInputs["finish_message_dest"] = self
@@ -680,7 +698,7 @@ function OptionsPrivate.GetActionOptions(data)
         hidden = function() return data.actions.finish.message_type ~= "WHISPER" end,
         func = function()
           local widget = dynamicTextInputs["finish_message_dest"]
-          OptionsPrivate.ToggleTextReplacements(data, nil, widget)
+          OptionsPrivate.ToggleTextReplacements(data, widget, "ToggleButton")
         end,
         imageWidth = 24,
         imageHeight = 24,
@@ -716,7 +734,13 @@ function OptionsPrivate.GetActionOptions(data)
         callbacks = {
           OnEditFocusGained = function(self)
             local widget = dynamicTextInputs["finish_message"]
-            OptionsPrivate.ToggleTextReplacements(data, true, widget)
+            OptionsPrivate.ToggleTextReplacements(data, widget, "OnEditFocusGained")
+          end,
+          OnEditFocusLost = function(self)
+            OptionsPrivate.ToggleTextReplacements(nil, "OnEditFocusLost")
+          end,
+          OnEnterPressed = function(self)
+            OptionsPrivate.ToggleTextReplacements(nil, "OnEnterPressed")
           end,
           OnShow = function(self)
             dynamicTextInputs["finish_message"] = self
@@ -732,7 +756,7 @@ function OptionsPrivate.GetActionOptions(data)
         disabled = function() return not data.actions.finish.do_message end,
         func = function()
           local widget = dynamicTextInputs["finish_message"]
-          OptionsPrivate.ToggleTextReplacements(data, nil, widget)
+          OptionsPrivate.ToggleTextReplacements(data, widget, "ToggleButton")
         end,
         imageWidth = 24,
         imageHeight = 24,
