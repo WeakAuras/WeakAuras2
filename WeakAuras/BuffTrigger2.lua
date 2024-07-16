@@ -3387,7 +3387,7 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
     props["refreshTime"] = L["Since Apply/Refresh"]
   end
 
-  if WeakAuras.IsRetail() and trigger.unit ~= "multi" and trigger.fetchRole then
+  if WeakAuras.IsCataOrRetail() and trigger.unit ~= "multi" and trigger.fetchRole then
     props["role"] = L["Assigned Role"]
     props["roleIcon"] = L["Assigned Role Icon"]
   end
