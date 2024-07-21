@@ -1833,14 +1833,6 @@ else
 end
 
 ---@type table<number, string>
-Private.pvp_talent_types = {}
-if WeakAuras.IsRetail() then
-  for i = 1,10 do
-    tinsert(Private.pvp_talent_types, string.format(L["PvP Talent %i"], i));
-  end
-end
-
----@type table<number, string>
 Private.talent_extra_option_types = {
     [0] = L["Talent Known"],
     [1] = L["Talent Selected"],
