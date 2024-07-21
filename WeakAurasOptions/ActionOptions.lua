@@ -163,10 +163,10 @@ function OptionsPrivate.GetActionOptions(data)
             OptionsPrivate.ToggleTextReplacements(data, widget, "OnEditFocusGained")
           end,
           OnEditFocusLost = function(self)
-            OptionsPrivate.ToggleTextReplacements(nil, "OnEditFocusLost")
+            OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEditFocusLost")
           end,
           OnEnterPressed = function(self)
-            OptionsPrivate.ToggleTextReplacements(nil, "OnEnterPressed")
+            OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEnterPressed")
           end,
           OnShow = function(self)
             dynamicTextInputs["start_message_dest"] = self
@@ -222,10 +222,10 @@ function OptionsPrivate.GetActionOptions(data)
             OptionsPrivate.ToggleTextReplacements(data, widget, "OnEditFocusGained")
           end,
           OnEditFocusLost = function(self)
-            OptionsPrivate.ToggleTextReplacements(nil, "OnEditFocusLost")
+            OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEditFocusLost")
           end,
           OnEnterPressed = function(self)
-            OptionsPrivate.ToggleTextReplacements(nil, "OnEnterPressed")
+            OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEnterPressed")
           end,
           OnShow = function(self)
             dynamicTextInputs["start_message"] = self
@@ -678,10 +678,10 @@ function OptionsPrivate.GetActionOptions(data)
             OptionsPrivate.ToggleTextReplacements(data, widget, "OnEditFocusGained")
           end,
           OnEditFocusLost = function(self)
-            OptionsPrivate.ToggleTextReplacements(nil, "OnEditFocusLost")
+            OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEditFocusLost")
           end,
           OnEnterPressed = function(self)
-            OptionsPrivate.ToggleTextReplacements(nil, "OnEnterPressed")
+            OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEnterPressed")
           end,
           OnShow = function(self)
             dynamicTextInputs["finish_message_dest"] = self
@@ -737,10 +737,10 @@ function OptionsPrivate.GetActionOptions(data)
             OptionsPrivate.ToggleTextReplacements(data, widget, "OnEditFocusGained")
           end,
           OnEditFocusLost = function(self)
-            OptionsPrivate.ToggleTextReplacements(nil, "OnEditFocusLost")
+            OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEditFocusLost")
           end,
           OnEnterPressed = function(self)
-            OptionsPrivate.ToggleTextReplacements(nil, "OnEnterPressed")
+            OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEnterPressed")
           end,
           OnShow = function(self)
             dynamicTextInputs["finish_message"] = self

@@ -975,10 +975,10 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
           OptionsPrivate.ToggleTextReplacements(data, widget, "OnEditFocusGained")
         end,
         OnEditFocusLost = function(self)
-          OptionsPrivate.ToggleTextReplacements(nil, "OnEditFocusLost")
+          OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEditFocusLost")
         end,
         OnEnterPressed = function(self)
-          OptionsPrivate.ToggleTextReplacements(nil, "OnEnterPressed")
+          OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEnterPressed")
         end,
         OnShow = function(self)
           dynamicTextInputs["condition" .. i .. "value" .. j .. "message dest"] = self
@@ -1058,10 +1058,10 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
           OptionsPrivate.ToggleTextReplacements(data, widget, "OnEditFocusGained")
         end,
         OnEditFocusLost = function(self)
-          OptionsPrivate.ToggleTextReplacements(nil, "OnEditFocusLost")
+          OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEditFocusLost")
         end,
         OnEnterPressed = function(self)
-          OptionsPrivate.ToggleTextReplacements(nil, "OnEnterPressed")
+          OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEnterPressed")
         end,
         OnShow = function(self)
           dynamicTextInputs["condition" .. i .. "value" .. j .. "message"] = self
