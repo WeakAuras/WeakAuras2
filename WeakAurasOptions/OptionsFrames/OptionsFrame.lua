@@ -917,14 +917,14 @@ function OptionsPrivate.CreateFrame()
       time = currentTime,
     }
 
-    if event == "OnEditFocusGained" or not dynamicTextCodesFrame:IsShown() then
+    if event == "OnEnterPressed" then
+      dynamicTextCodesFrame:Hide()
+    elseif event == "OnEditFocusGained" or not dynamicTextCodesFrame:IsShown() then
       dynamicTextCodesFrame:Show()
       if OptionsPrivate.currentDynamicTextInput ~= widget then
         OptionsPrivate.UpdateTextReplacements(dynamicTextCodesFrame, data)
       end
       OptionsPrivate.currentDynamicTextInput = widget
-    elseif event == "OnEnterPressed" then
-      dynamicTextCodesFrame:Hide()
     elseif not dynamicTextCodesFrame:IsMouseOver() then -- Prevents hiding when clicking inside the frame
       dynamicTextCodesFrame:Hide()
     end
