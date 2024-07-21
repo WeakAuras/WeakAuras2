@@ -161,17 +161,22 @@ local function modify(parent, region, data)
         if text:GetFont() then
           text:SetText(WeakAuras.ReplaceRaidMarkerSymbols(textStr));
         end
-      end
-      local width = text:GetWidth();
-      local height = text:GetStringHeight();
-      if(width ~= region.width or height ~= region.height ) then
-        region.width = width;
-        region.height = height;
-        region:SetWidth(region.width);
-        region:SetHeight(region.height);
-        if(data.parent and Private.regions[data.parent].region.PositionChildren) then
-          Private.regions[data.parent].region:PositionChildren();
+        -- If the text changes we need to figure out the text size
+        -- To unset scaling we need to temporarily detach the text from
+        -- the region
+        text:SetParent(UIParent)
+        local width = text:GetWidth();
+        local height = text:GetStringHeight();
+        if(width ~= region.width or height ~= region.height ) then
+          region.width = width
+          region.height = height
+          region:SetWidth(region.width);
+          region:SetHeight(region.height);
+          if(data.parent and Private.regions[data.parent].region.PositionChildren) then
+            Private.regions[data.parent].region:PositionChildren();
+          end
         end
+        text:SetParent(region)
       end
     end
   end
