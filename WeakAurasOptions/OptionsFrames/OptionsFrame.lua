@@ -898,13 +898,16 @@ function OptionsPrivate.CreateFrame()
   dynamicTextCodesFrame:Hide()
 
   function OptionsPrivate.ToggleTextReplacements(data, widget, event)
-    -- This throttle prevents double toggling as a result from OnEditFocusLost
+    -- If the text edit has focus when the user clicks on the button, we'll get two events:
+    -- a) The OnEditFocusLost
+    -- b) The ToggleButton OnClick event
+    -- Since we want to hide the text replacement window in that case,
+    -- ignore the ToggleButton if it is directly after the  OnEditFocusLost
     local currentTime = GetTime()
-    if event ~= "OnEditFocusGained"
-    and dynamicTextCodesFrame.lastCaller
-    and dynamicTextCodesFrame.lastCaller.event == "OnEditFocusLost"
-    and currentTime - dynamicTextCodesFrame.lastCaller.time < 0.1
-    and not (event == "OnEnterPressed" and dynamicTextCodesFrame:IsMouseOver())
+    if event == "ToggleButton"
+      and dynamicTextCodesFrame.lastCaller
+      and dynamicTextCodesFrame.lastCaller.event == "OnEditFocusLost"
+      and currentTime - dynamicTextCodesFrame.lastCaller.time < 0.2
     then
       return
     end
