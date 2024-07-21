@@ -7943,7 +7943,8 @@ Private.event_prototypes = {
           "CHAT_MSG_YELL",
           "CHAT_MSG_SYSTEM",
           "CHAT_MSG_TEXT_EMOTE",
-          "CHAT_MSG_LOOT"
+          "CHAT_MSG_LOOT",
+          "CHAT_MSG_COMMUNITIES_CHANNEL"
         }
       }
     end,
