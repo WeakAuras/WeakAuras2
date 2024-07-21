@@ -4411,8 +4411,8 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
       local variables = GenericTrigger.GetTsuConditionVariables(data.id, triggernum)
       if (type(variables) == "table") then
         for var, varData in pairs(variables) do
-          if (type(varData) == "table") and varData.display then
-            props[var] = varData.display
+          if (type(varData) == "table") then
+            props[var] = varData.display or var
           end
         end
       end

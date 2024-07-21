@@ -62,7 +62,13 @@ local function createOptions(parentData, data, index, subIndex)
       callbacks = {
         OnEditFocusGained = function(self)
           local widget = dynamicTextInputs[subIndex]
-          OptionsPrivate.ToggleTextReplacements(parentData, true, widget)
+          OptionsPrivate.ToggleTextReplacements(parentData, widget, "OnEditFocusGained")
+        end,
+        OnEditFocusLost = function(self)
+          OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEditFocusLost")
+        end,
+        OnEnterPressed = function(self)
+          OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEnterPressed")
         end,
         OnShow = function(self)
           dynamicTextInputs[subIndex] = self
@@ -77,7 +83,7 @@ local function createOptions(parentData, data, index, subIndex)
       order = 11.1,
       func = function()
         local widget = dynamicTextInputs[subIndex]
-        OptionsPrivate.ToggleTextReplacements(parentData, nil, widget)
+        OptionsPrivate.ToggleTextReplacements(parentData, widget, "ToggleButton")
       end,
       imageWidth = 24,
       imageHeight = 24,

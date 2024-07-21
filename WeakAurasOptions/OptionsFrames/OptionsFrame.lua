@@ -897,14 +897,35 @@ function OptionsPrivate.CreateFrame()
   dynamicTextCodesFrame.label = dynamicTextCodesLabel
   dynamicTextCodesFrame:Hide()
 
-  function OptionsPrivate.ToggleTextReplacements(data, show, widget)
-    if show or not dynamicTextCodesFrame:IsShown() then
+  function OptionsPrivate.ToggleTextReplacements(data, widget, event)
+    -- If the text edit has focus when the user clicks on the button, we'll get two events:
+    -- a) The OnEditFocusLost
+    -- b) The ToggleButton OnClick event
+    -- Since we want to hide the text replacement window in that case,
+    -- ignore the ToggleButton if it is directly after the  OnEditFocusLost
+    local currentTime = GetTime()
+    if event == "ToggleButton"
+      and dynamicTextCodesFrame.lastCaller
+      and dynamicTextCodesFrame.lastCaller.event == "OnEditFocusLost"
+      and currentTime - dynamicTextCodesFrame.lastCaller.time < 0.2
+    then
+      return
+    end
+
+    dynamicTextCodesFrame.lastCaller = {
+      event = event,
+      time = currentTime,
+    }
+
+    if event == "OnEditFocusGained" or not dynamicTextCodesFrame:IsShown() then
       dynamicTextCodesFrame:Show()
       if OptionsPrivate.currentDynamicTextInput ~= widget then
         OptionsPrivate.UpdateTextReplacements(dynamicTextCodesFrame, data)
       end
       OptionsPrivate.currentDynamicTextInput = widget
-    else
+    elseif event == "OnEnterPressed" then
+      dynamicTextCodesFrame:Hide()
+    elseif not dynamicTextCodesFrame:IsMouseOver() then -- Prevents hiding when clicking inside the frame
       dynamicTextCodesFrame:Hide()
     end
   end
