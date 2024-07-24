@@ -81,6 +81,19 @@ Private.ExecEnv.GetFactionDataByID = C_Reputation.GetFactionDataByID or function
     isAccountWide = nil
   }
 end
+
+-- GetWatchedFactionData behaves differentlly, but we only need the Id, so do a trival wrapper
+if C_Reputation.GetWatchedFactionData then
+  Private.ExecEnv.GetWatchedFactionId = function()
+    local data = C_Reputation.GetWatchedFactionData()
+    return data and data.factionID or nil
+  end
+else
+  Private.ExecEnv.GetWatchedFactionId = function()
+    return select(6, GetWatchedFactionInfo())
+  end
+end
+
 Private.ExecEnv.ExpandFactionHeader = C_Reputation.ExpandFactionHeader or ExpandFactionHeader
 Private.ExecEnv.CollapseFactionHeader = C_Reputation.CollapseFactionHeader or CollapseFactionHeader
 Private.ExecEnv.AreLegacyReputationsShown = C_Reputation.AreLegacyReputationsShown or function() return true end

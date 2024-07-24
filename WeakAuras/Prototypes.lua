@@ -2548,19 +2548,8 @@ Private.event_prototypes = {
     automaticrequired = true,
     init = function(trigger)
       local ret = [=[
-        local useWatched = %s;
-      ]=]
-      if WeakAuras.IsTWW() then
-        ret = ret .. [=[
-          local watchedFactionData = C_Reputation.GetWatchedFactionData()
-          local factionID = useWatched and watchedFactionData and watchedFactionData.factionID or %q;
-        ]=]
-      else
-        ret = ret .. [=[
-          local factionID = useWatched and select(6, GetWatchedFactionInfo()) or %q;
-        ]=]
-      end
-      ret = ret .. [=[
+        local useWatched = %s
+        local factionID = useWatched and Private.ExecEnv.GetWatchedFactionId() or %q
         local minValue, maxValue, currentValue
         local factionData = Private.ExecEnv.GetFactionDataByID(factionID)
         local name, description = factionData.name, factionData.description
