@@ -132,7 +132,8 @@ globals = {
 	"ItemTransmogInfoMixin",
 	"TransmogPendingInfoMixin",
 	"TransmogLocationMixin",
-	"PlayerLocationMixin",
+    "PlayerLocationMixin",
+	"MenuUtil",
 
 
 	-- FrameXML frames

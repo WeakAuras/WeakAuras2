@@ -240,7 +240,8 @@
     "UIMenuButtonStretchMixin",
     "ToggleDropDownMenu",
     "GetPrimaryTalentTree",
-    "GetTalentTabInfo"
+    "GetTalentTabInfo",
+    "MenuUtil"
   ],
   "runtime.version": "Lua 5.1",
   "workspace.ignoreDir": [
