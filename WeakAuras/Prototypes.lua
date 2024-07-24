@@ -2547,14 +2547,20 @@ Private.event_prototypes = {
     statesParameter = "one",
     automaticrequired = true,
     init = function(trigger)
-	local ret 
-	if WeakAuras.IsTWW() then 
-       ret = [=[
-        local useWatched = %s
-
-		local factionID = useWatched and C_Reputation.GetWatchedFactionData()["factionID"] or %q
-			
-
+      local ret = [=[
+        local useWatched = %s;
+      ]=]
+      if WeakAuras.IsTWW() then
+        ret = ret .. [=[
+          local watchedFactionData = C_Reputation.GetWatchedFactionData()
+          local factionID = useWatched and watchedFactionData and watchedFactionData.factionID or %q;
+        ]=]
+      else
+        ret = ret .. [=[
+          local factionID = useWatched and select(6, GetWatchedFactionInfo()) or %q;
+        ]=]
+      end
+      ret = ret .. [=[
         local minValue, maxValue, currentValue
         local factionData = Private.ExecEnv.GetFactionDataByID(factionID)
         local name, description = factionData.name, factionData.description
@@ -2569,28 +2575,6 @@ Private.event_prototypes = {
         end
         local isCapped = standingID == 8 and currentValue >= 42999
       ]=]
-  else
-       ret = [=[
-        local useWatched = %s
-
-		local factionID = useWatched and select(6, GetWatchedFactionInfo()) or %q
-			
-
-        local minValue, maxValue, currentValue
-        local factionData = Private.ExecEnv.GetFactionDataByID(factionID)
-        local name, description = factionData.name, factionData.description
-        local standingID = factionData.reaction
-        local hasRep = factionData.isHeaderWithRep
-        local barMin, barMax, barValue = factionData.currentReactionThreshold, factionData.nextReactionThreshold, factionData.currentStanding
-        local atWarWith, canToggleAtWar, isHeader, isCollapsed, isWatched, isChild, hasBonusRepGain, canSetInactive = factionData.atWarWith, factionData. canToggleAtWar, factionData.isHeader, factionData.isCollapsed, factionData.isWatched, factionData.isChild, factionData.hasBonusRepGain, factionData.canSetInactive
-        minValue, maxValue, currentValue = barMin, barMax, barValue
-        local standing
-        if tonumber(standingID) then
-           standing = GetText("FACTION_STANDING_LABEL"..standingID, UnitSex("player"))
-        end
-        local isCapped = standingID == 8 and currentValue >= 42999
-      ]=]
-  end	
       if WeakAuras.IsRetail() then
         ret = ret .. [=[
           isCapped = standingID == MAX_REPUTATION_REACTION
