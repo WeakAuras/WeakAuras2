@@ -2611,6 +2611,17 @@ do
     end
   end
 
+
+  ---@param identifier string | number
+  ---@return number? startTime, number? duration
+  function WeakAuras.GetSpellLossOfControlCooldown(identifier)
+    if WeakAuras.IsTWW() then
+      return C_Spell.GetSpellLossOfControlCooldown(identifier)
+    else
+      return GetSpellLossOfControlCooldown(identifier)
+    end
+  end
+
   ---@param id string
   ---@param ignoreRuneCD boolean
   ---@param showgcd boolean
