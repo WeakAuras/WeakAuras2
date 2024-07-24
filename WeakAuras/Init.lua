@@ -485,7 +485,8 @@ do
       icon = "Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon.blp",
       registerForAnyClick = true,
       notCheckable = true,
-      func = function(btn, arg1, arg2, checked, mouseButton)
+      func = function(button, menuInputData, menu)
+        local mouseButton = menuInputData.buttonName
         if mouseButton == "LeftButton" then
           if IsShiftKeyDown() then
             if not (WeakAuras.IsOptionsOpen()) then
@@ -500,15 +501,13 @@ do
           WeakAurasProfilingFrame:Toggle()
         end
       end,
-      funcOnEnter = function()
-        GameTooltip:SetOwner(AddonCompartmentFrame, "ANCHOR_TOPRIGHT")
-        GameTooltip:SetText(AddonName)
-        GameTooltip:AddLine(WeakAuras.L["|cffeda55fLeft-Click|r to toggle showing the main window."], 1, 1, 1, true)
-        GameTooltip:Show()
-        WeakAuras.GenerateTooltip(true)
+      funcOnEnter = function(button)
+        MenuUtil.ShowTooltip(button, function(tooltip)
+          WeakAuras.GenerateTooltip(true, tooltip)
+        end)
       end,
-      funcOnLeave = function()
-        GameTooltip:Hide()
+      funcOnLeave = function(button)
+        MenuUtil.HideTooltip(button)
       end,
     })
   end
