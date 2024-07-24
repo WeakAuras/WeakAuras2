@@ -2549,7 +2549,7 @@ Private.event_prototypes = {
     init = function(trigger)
       local ret = [=[
         local useWatched = %s
-        local factionID = useWatched and select(6, GetWatchedFactionInfo()) or %q
+        local factionID = useWatched and Private.ExecEnv.GetWatchedFactionId() or %q
         local minValue, maxValue, currentValue
         local factionData = Private.ExecEnv.GetFactionDataByID(factionID)
         local name, description = factionData.name, factionData.description
