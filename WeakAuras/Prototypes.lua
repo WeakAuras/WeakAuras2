@@ -5260,7 +5260,7 @@ Private.event_prototypes = {
         local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown, followoverride)
         local stacks = maxCharges and maxCharges ~= 1 and charges or (spellCount and spellCount > 0 and spellCount) or nil;
         if showlossofcontrol and startTime and duration then
-          local locStart, locDuration = GetSpellLossOfControlCooldown(spellname);
+          local locStart, locDuration = WeakAuras.GetSpellLossOfControlCooldown(spellname);
           if locStart and locDuration and (locStart + locDuration) > (startTime + duration) then
             startTime = locStart
             duration = locDuration
