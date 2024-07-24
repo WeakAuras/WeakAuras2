@@ -5116,6 +5116,7 @@ Private.event_prototypes = {
       else
         name = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName
       end
+      if name == nil then return {} end
       return { "WA_UPDATE_OVERLAY_GLOW:" .. name }
     end,
     force_events = "WA_UPDATE_OVERLAY_GLOW",
@@ -5190,6 +5191,7 @@ Private.event_prototypes = {
       else
         spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
       end
+      if spellName == nil then return {} end
       local events = {
         "SPELL_COOLDOWN_CHANGED:" .. spellName,
         "COOLDOWN_REMAINING_CHECK:" .. spellName,
@@ -5656,6 +5658,7 @@ Private.event_prototypes = {
       else
         spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
       end
+      if spellName == nil then return {} end
       return { "SPELL_COOLDOWN_READY:" .. spellName }
     end,
     name = L["Cooldown Ready Event"],
@@ -5755,6 +5758,7 @@ Private.event_prototypes = {
       else
         spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
       end
+      if spellName == nil then return {} end
       return { "SPELL_CHARGES_CHANGED:" .. spellName }
     end,
     name = L["Charges Changed Event"],
@@ -6616,6 +6620,7 @@ Private.event_prototypes = {
       else
         spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
       end
+      if spellName == nil then return {} end
       return { "SPELL_COOLDOWN_CHANGED:" .. spellName }
     end,
     force_events = "SPELL_UPDATE_USABLE",
