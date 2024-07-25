@@ -4912,7 +4912,7 @@ local function ReplaceValuePlaceHolders(textStr, region, customFunc, state, form
     end
   end
 
-  return value or "";
+  return type(value) ~= "table" and value or ""
 end
 
 -- States:
