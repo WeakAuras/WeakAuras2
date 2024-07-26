@@ -5937,7 +5937,6 @@ Private.event_prototypes = {
           end
         ]];
         ret = ret..ret2:format(timeRemaining or 0, itemName);
-
       end
       return ret:format(itemName,
                         trigger.use_showgcd and "true" or "false",
