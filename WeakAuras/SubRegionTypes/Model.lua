@@ -27,7 +27,6 @@ local default = function(parentType)
     model_st_us = 40,
 
     model_fileId = "235338",
-    model_path = "spells/arcanepower_state_chest.m2",
     bar_model_clip = true
   }
 end
