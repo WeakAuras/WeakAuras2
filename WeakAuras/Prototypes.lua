@@ -6141,11 +6141,12 @@ Private.event_prototypes = {
         ]]
         if timeType == "percent" then
           ret2 = ret2..[[
-          local remainingCheck = %s;
+
+            local remainingCheck = %s * (duration or 0);
           ]]
         else
           ret2 = ret2..[[
-          local remainingCheck = %s * (duration or 0);
+            local remainingCheck = %s;
           ]]
         end
         ret2 = ret2..[[
