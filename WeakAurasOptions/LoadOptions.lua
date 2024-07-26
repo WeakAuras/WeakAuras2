@@ -16,6 +16,7 @@ local getAll = OptionsPrivate.commonOptions.CreateGetAll("load")
 local setAll = OptionsPrivate.commonOptions.CreateSetAll("load", getAll)
 
 local ValidateNumeric = WeakAuras.ValidateNumeric;
+local ValidateNumericOrPercent = WeakAuras.ValidateNumericOrPercent;
 
 local spellCache = WeakAuras.spellCache;
 
@@ -461,7 +462,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           options[name..suffix] = {
             type = "input",
             width = arg.noOperator and WeakAuras.normalWidth or WeakAuras.halfWidth,
-            validate = ValidateNumeric,
+            validate = (name == "remaining" and ValidateNumericOrPercent) or ValidateNumeric,
             name = arg.display,
             order = order,
             hidden = disabled or hidden,
