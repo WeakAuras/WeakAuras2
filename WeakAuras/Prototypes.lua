@@ -2552,6 +2552,8 @@ Private.event_prototypes = {
         local factionID = useWatched and Private.ExecEnv.GetWatchedFactionId() or %q
         local minValue, maxValue, currentValue
         local factionData = Private.ExecEnv.GetFactionDataByID(factionID)
+        if not factionData then return end;
+
         local name, description = factionData.name, factionData.description
         local standingID = factionData.reaction
         local hasRep = factionData.isHeaderWithRep
