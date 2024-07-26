@@ -5362,18 +5362,26 @@ Private.event_prototypes = {
         ]=]):format(trackedCharge - 1))
       end
       if(trigger.use_remaining and trigger.genericShowOn ~= "showOnReady") then
-        table.insert(ret, ([[
+        local timeRemaining, timeType = Private.ParseNumber(trigger.remaining)
+        local ret2 = [[
           local remaining = 0;
           if (not paused and expirationTime and expirationTime > 0) then
             remaining = expirationTime - GetTime();
             local remainingModRate = remaining / (modRate or 1);
-            local remainingCheck = %s;
-            if(remainingModRate >= remainingCheck and remainingModRate > 0) then
-              local event = "COOLDOWN_REMAINING_CHECK:" .. %s
-              Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck * (modRate or 1), event);
-            end
+        ]]
+        if timeType == "percent" then
+          ret2 = ret2..[[local remainingCheck = %s * (duration or 0);]]
+        else
+          ret2 = ret2..[[local remainingCheck = %s;]]
+        end
+        ret2 = ret2..[[
+          if(remainingModRate >= remainingCheck and remainingModRate > 0) then
+            local event = "COOLDOWN_REMAINING_CHECK:" .. %s
+            Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck * (modRate or 1), event);
           end
-        ]]):format(tonumber(trigger.remaining or 0) or 0, spellName))
+        end
+        ]]
+        table.insert(ret,ret2:format(timeRemaining or 0, spellName))
       end
 
       return table.concat(ret)
@@ -5909,15 +5917,27 @@ Private.event_prototypes = {
         state.itemname = itemname;
       ]=];
       if(trigger.use_remaining and trigger.genericShowOn ~= "showOnReady") then
+        local timeRemaining, timeType = Private.ParseNumber(trigger.remaining)
         local ret2 = [[
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
-          local remainingCheck = %s;
+        ]]
+        if timeType == "percent" then
+          ret2 = ret2..[[
+            local remainingCheck = %s * (duration or 0);
+          ]]
+        else
+          ret2 = ret2..[[
+            local remainingCheck = %s;
+          ]]
+        end
+        ret2 = ret2..[[
           if(remaining >= remainingCheck and remaining > 0) then
             local event = "COOLDOWN_REMAINING_CHECK:" .. %s
             Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck, event);
           end
         ]];
-        ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0, itemName);
+        ret = ret..ret2:format(timeRemaining or 0, itemName);
+
       end
       return ret:format(itemName,
                         trigger.use_showgcd and "true" or "false",
@@ -6115,15 +6135,28 @@ Private.event_prototypes = {
         end
       ]];
       if(trigger.use_remaining and trigger.genericShowOn ~= "showOnReady") then
+        local timeRemaining, timeType = Private.ParseNumber(trigger.remaining)
         local ret2 = [[
           local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
+        ]]
+        if timeType == "percent" then
+          ret2 = ret2..[[
           local remainingCheck = %s;
+          ]]
+        else
+          ret2 = ret2..[[
+          local remainingCheck = %s * (duration or 0);
+          ]]
+        end
+        ret2 = ret2..[[
+          local remaining = expirationTime > 0 and (expirationTime - GetTime()) or 0;
           if(remaining >= remainingCheck and remaining > 0) then
             local event = "COOLDOWN_REMAINING_CHECK:" .. %s
             Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck, event);
           end
         ]];
-        ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0, trigger.itemSlot or 0);
+        ret = ret..ret2:format(timeRemaining or 0, trigger.itemSlot or 0);
+
       end
       return ret:format(trigger.use_showgcd and "true" or "false",
                         trigger.itemSlot or "0",
@@ -6493,22 +6526,36 @@ Private.event_prototypes = {
       WeakAuras.InitSwingTimer();
     end,
     init = function(trigger)
-      local ret = [=[
-        local inverse = %s;
-        local hand = %q;
-        local triggerRemaining = %s
-        local duration, expirationTime, name, icon = WeakAuras.GetSwingTimerInfo(hand)
-        local remaining = expirationTime and expirationTime - GetTime()
-        local remainingCheck = not triggerRemaining or remaining and remaining %s triggerRemaining
+      local timeRemaining, timeType = Private.ParseNumber(trigger.remaining or 0)
 
-        if triggerRemaining and remaining and remaining >= triggerRemaining and remaining > 0 then
-          Private.ExecEnv.ScheduleScan(expirationTime - triggerRemaining, "SWING_TIMER_UPDATE")
-        end
-      ]=];
+        local ret = [=[
+          local inverse = %s;
+          local hand = %q;
+
+          local duration, expirationTime, name, icon = WeakAuras.GetSwingTimerInfo(hand)
+          ]=]
+          if timeType == "percent" then
+            ret = ret..[[
+              local triggerRemaining = %s * duration or nil;
+            ]]
+          else
+            ret = ret..[[
+              local triggerRemaining = %s
+            ]]
+          end
+          ret = ret..[[
+            local remaining = expirationTime and expirationTime - GetTime()
+            local remainingCheck = not triggerRemaining or remaining and remaining %s triggerRemaining
+            if triggerRemaining and remaining and remaining >= triggerRemaining and remaining > 0 then
+              Private.ExecEnv.ScheduleScan(expirationTime - triggerRemaining, "SWING_TIMER_UPDATE")
+            end
+          ]];
+
+
       return ret:format(
         (trigger.use_inverse and "true" or "false"),
         trigger.hand or "main",
-        trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
+        trigger.use_remaining and (timeRemaining or 0) or "nil",
         trigger.remaining_operator or "<"
       );
     end,
@@ -7345,22 +7392,31 @@ Private.event_prototypes = {
     statesParameter = "full",
     progressType = "timed",
     triggerFunction = function(trigger)
+      local timeRemaining, timeType = Private.ParseNumber(trigger.remaining)
       local ret = [[return
-      function (states)
-        local totemType = %s;
-        local triggerTotemName = %q
-        local triggerTotemPattern = %q
-        local triggerTotemPatternOperator = %q
-        local clone = %s
-        local inverse = %s
-        local remainingCheck = %s
-
+        function (states)
+          local totemType = %s;
+          local triggerTotemName = %q
+          local triggerTotemPattern = %q
+          local triggerTotemPatternOperator = %q
+          local clone = %s
+          local inverse = %s
+          local remainingCheck = %s
+      ]]
+      if timeType == "percent" then
+        ret = ret..[[
+          local percent = true
+        ]]
+      end
+      ret = ret .. [[
         local function checkActive(remaining)
           return remaining %s remainingCheck;
         end
-
         if (totemType) then -- Check a specific totem slot
           local _, totemName, startTime, duration, icon = GetTotemInfo(totemType);
+          if remainingCheck and percent then
+            remainingCheck = remainingCheck * duration
+          end
           active = (startTime and startTime ~= 0);
 
           if not Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
@@ -7396,6 +7452,9 @@ Private.event_prototypes = {
           local found = false;
           for i = 1, 5 do
             local _, totemName, startTime, duration, icon = GetTotemInfo(i);
+            if remainingCheck and percent then
+              remainingCheck = remainingCheck * duration
+            end
             if ((startTime and startTime ~= 0) and
               Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator)
             ) then
@@ -7415,6 +7474,9 @@ Private.event_prototypes = {
         else -- check all slots
           for i = 1, 5 do
             local _, totemName, startTime, duration, icon = GetTotemInfo(i);
+            if remainingCheck and percent then
+              remainingCheck = remainingCheck * duration
+            end
             active = (startTime and startTime ~= 0);
 
             if not Private.ExecEnv.CheckTotemName(totemName, triggerTotemName, triggerTotemPattern, triggerTotemPatternOperator) then
@@ -7457,7 +7519,7 @@ Private.event_prototypes = {
         trigger.use_totemNamePattern and trigger.totemNamePattern_operator or "",
         trigger.use_clones and "true" or "false",
         trigger.use_inverse and "true" or "false",
-        trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
+        trigger.use_remaining and (timeRemaining or 0) or "nil",
         trigger.use_remaining and trigger.remaining_operator or "<");
       return ret;
     end,
@@ -7769,7 +7831,7 @@ Private.event_prototypes = {
     name = WeakAuras.IsRetail() and L["Weapon Enchant / Fishing Lure"] or L["Weapon Enchant"],
     init = function(trigger)
       WeakAuras.TenchInit();
-
+      local timeRemaining, timeType = Private.ParseNumber(trigger.remaining)
       local ret = [[
         local triggerWeaponType = %q
         local triggerName = %q
@@ -7785,6 +7847,13 @@ Private.event_prototypes = {
         elseif triggerWeaponType == "ranged" and WeakAuras.IsCataClassic() then
           expirationTime, duration, name, shortenedName, icon, stacks, enchantID = WeakAuras.GetRangeTenchInfo()
         end
+      ]]
+      if timeType == "percent" then
+        ret = ret..[[
+          triggerRemaining = triggerRemaining * (duration or 0)
+        ]]
+      end
+      ret = ret..[[
 
         local remaining = expirationTime and expirationTime - GetTime()
 
@@ -7809,7 +7878,7 @@ Private.event_prototypes = {
       return ret:format(trigger.weapon or "main",
       trigger.use_enchant and trigger.enchant or "",
       showOnActive and trigger.use_stacks and tonumber(trigger.stacks or 0) or "nil",
-      showOnActive and trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
+      showOnActive and trigger.use_remaining and (timeRemaining or 0) or "nil",
       trigger.showOn or "showOnActive",
       trigger.stacks_operator or "<",
       trigger.remaining_operator or "<")
@@ -8423,15 +8492,23 @@ Private.event_prototypes = {
         ]];
       end
       if trigger.use_remaining then
+        local timeRemaining, timeType = Private.ParseNumber(trigger.remaining)
         local ret2 = [[
           local expirationTime = startTime + duration
           local remaining = expirationTime - GetTime();
           local remainingCheck = %s;
+        ]]
+        if timeType == "percent" then
+          ret2 = ret2..[[
+            remainingCheck = remainingCheck * duration;
+          ]]
+        end
+        ret2 = ret2..[[
           if(remaining >= remainingCheck and remaining > 0) then
             Private.ExecEnv.ScheduleScan(expirationTime - remainingCheck);
           end
         ]];
-        ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
+        ret = ret..ret2:format(timeRemaining or 0);
       end
       if WeakAuras.IsCataClassic() then
         return ret:format(
@@ -9399,6 +9476,7 @@ Private.event_prototypes = {
     name = L["Cast"],
     init = function(trigger)
       trigger.unit = trigger.unit or "player";
+      local timeRemaining, timeType = Private.ParseNumber(trigger.remaining)
       local ret = [=[
         unit = string.lower(unit)
         local destUnit = unit .. '-target'
@@ -9414,14 +9492,20 @@ Private.event_prototypes = {
         local stage = 0
         local stagesData = {}
 
-        local show, expirationTime, castType, spell, icon, startTime, endTime, interruptible, spellId, remaining, _, stageTotal
 
+        local show, expirationTime, castType, spell, icon, startTime, endTime, interruptible, spellId, remaining, _, stageTotal, duration
         spell, _, icon, startTime, endTime, _, _, interruptible, spellId = WeakAuras.UnitCastingInfo(unit)
+
+
         if spell then
+          duration = ((endTime or 0) - (startTime or 0))/1000
           castType = "cast"
         else
           spell, _, icon, startTime, endTime, _, interruptible, spellId, _, stageTotal = WeakAuras.UnitChannelInfo(unit)
+
+
           if spell then
+            duration = ((endTime or 0) - (startTime or 0))/1000
             castType = "channel"
             if stageTotal and stageTotal > 0 then
               empowered = true
@@ -9449,13 +9533,21 @@ Private.event_prototypes = {
         interruptible = not interruptible
         expirationTime = endTime and endTime > 0 and (endTime / 1000) or 0
         remaining = expirationTime - GetTime()
-
+      ]=]
+      if timeType == "percent" then
+        ret = ret..[=[
+          if remainingCheck then
+            remainingCheck = remainingCheck * (duration or 0)
+          end
+        ]=]
+      end
+      ret = ret..[=[
         if remainingCheck and remaining >= remainingCheck and remaining > 0 then
           Private.ExecEnv.ScheduleCastCheck(expirationTime - remainingCheck, unit)
         end
       ]=];
       ret = ret:format(trigger.unit == "group" and "true" or "false",
-                        trigger.use_remaining and tonumber(trigger.remaining or 0) or "nil",
+                        trigger.use_remaining and (timeRemaining or 0) or "nil",
                         trigger.use_inverse and "true" or "false",
                         trigger.use_showChargedDuration and "true" or "false"
                       );

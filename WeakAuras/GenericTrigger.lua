@@ -211,7 +211,7 @@ function TestForMultiSelect(trigger, arg)
 end
 
 local function singleTest(arg, trigger, name, value, operator, use_exact)
-  local number = tonumber(value)
+  local number, numberType = Private.ParseNumber(value)
   if(arg.type == "tristate") then
     return TestForTriState(trigger, arg);
   elseif(arg.type == "multiselect") then
@@ -235,7 +235,11 @@ local function singleTest(arg, trigger, name, value, operator, use_exact)
   elseif (arg.type == "string" or arg.type == "select") then
     return "(".. name .." and "..name.."==" ..(number or ("\""..(tostring(value) or "").."\""))..")";
   elseif (arg.type == "number") then
-    return "(".. name .." and "..name..(operator or "==")..(number or 0) ..")";
+    if numberType == "percent" then
+      return "(duration == 0 or ("..name.." and "..name..(operator or "==")..(number or 0).."* duration".."))";
+    else
+      return "(".. name .." and "..name..(operator or "==")..(number or 0) ..")";
+    end
   else
     -- Should be unused
     return "(".. name .." and "..name..(operator or "==")..(number or ("\""..(tostring(value) or 0).."\""))..")";
