@@ -194,9 +194,7 @@ local funcs = {
 
 local function create()
   local subRegion = CreateFrame("Frame", nil, UIParent)
-  if not WeakAuras.IsTWW() then
-    subRegion:SetClipsChildren(true)
-  end
+  subRegion:SetClipsChildren(true)
 
   for k, v in pairs(funcs) do
     subRegion[k] = v
