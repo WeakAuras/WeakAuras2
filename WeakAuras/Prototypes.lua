@@ -6141,7 +6141,6 @@ Private.event_prototypes = {
         ]]
         if timeType == "percent" then
           ret2 = ret2..[[
-
             local remainingCheck = %s * (duration or 0);
           ]]
         else
@@ -6157,7 +6156,6 @@ Private.event_prototypes = {
           end
         ]];
         ret = ret..ret2:format(timeRemaining or 0, trigger.itemSlot or 0);
-
       end
       return ret:format(trigger.use_showgcd and "true" or "false",
                         trigger.itemSlot or "0",
@@ -6528,11 +6526,9 @@ Private.event_prototypes = {
     end,
     init = function(trigger)
       local timeRemaining, timeType = Private.ParseNumber(trigger.remaining or 0)
-
         local ret = [=[
           local inverse = %s;
           local hand = %q;
-
           local duration, expirationTime, name, icon = WeakAuras.GetSwingTimerInfo(hand)
           ]=]
           if timeType == "percent" then
@@ -6551,8 +6547,6 @@ Private.event_prototypes = {
               Private.ExecEnv.ScheduleScan(expirationTime - triggerRemaining, "SWING_TIMER_UPDATE")
             end
           ]];
-
-
       return ret:format(
         (trigger.use_inverse and "true" or "false"),
         trigger.hand or "main",
@@ -9493,24 +9487,18 @@ Private.event_prototypes = {
         local stage = 0
         local stagesData = {}
 
-
         local show, expirationTime, castType, spell, icon, startTime, endTime, interruptible, spellId, remaining, _, stageTotal, duration
         spell, _, icon, startTime, endTime, _, _, interruptible, spellId = WeakAuras.UnitCastingInfo(unit)
-
-
         if spell then
           duration = ((endTime or 0) - (startTime or 0))/1000
           castType = "cast"
         else
           spell, _, icon, startTime, endTime, _, interruptible, spellId, _, stageTotal = WeakAuras.UnitChannelInfo(unit)
-
-
           if spell then
             duration = ((endTime or 0) - (startTime or 0))/1000
             castType = "channel"
             if stageTotal and stageTotal > 0 then
               empowered = true
-
               local lastFinish = 0
               for i = 1, stageTotal do
                 stagesData[i] = {
