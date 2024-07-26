@@ -16,7 +16,7 @@ local function createOptions(parentData, data, index, subIndex)
       name = L["Show Model"],
       order = 9,
     },
-    model_path = {
+    model_fileId = {
       type = "input",
       width = WeakAuras.doubleWidth - 0.15,
       name = L["Model"],
