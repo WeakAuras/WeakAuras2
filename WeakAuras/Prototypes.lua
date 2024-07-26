@@ -7251,6 +7251,8 @@ Private.event_prototypes = {
         display = L["Class and Specialization"],
         type = "multiselect",
         values = "spec_types_all",
+        store = "true",
+        conditionType = "select"
       },
       {
         hidden = true,
