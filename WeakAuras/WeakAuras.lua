@@ -5881,7 +5881,7 @@ function Private.FindUnusedId(prefix)
   return id
 end
 
-function WeakAuras.SetModel(frame, model_path, model_fileId, isUnit, isDisplayInfo)
+function WeakAuras.SetModel(frame, unused, model_fileId, isUnit, isDisplayInfo)
   if isDisplayInfo then
     pcall(frame.SetDisplayInfo, frame, tonumber(model_fileId))
   elseif isUnit then

@@ -9,7 +9,6 @@ local L = WeakAuras.L;
 
 -- Default settings
 local default = {
-  model_path = "spells/arcanepower_state_chest.m2", -- arthas is not a thing on classic
   model_fileId = "122968", -- Creature/Arthaslichking/arthaslichking.m2
   modelIsUnit = false,
   api = false, -- false ==> SetPosition + SetFacing; true ==> SetTransform
@@ -129,7 +128,7 @@ local function ConfigureModel(region, model, data)
   model:Show()
 
   -- Adjust model
-  WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
+  WeakAuras.SetModel(model, nil, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
   model:SetPortraitZoom(data.portraitZoom and 1 or 0);
   model:ClearTransform()
   if data.api then
@@ -154,7 +153,7 @@ local function ConfigureModel(region, model, data)
     model:SetScript("OnEvent", function(self, event, unitId)
       Private.StartProfileSystem("model");
       if (event ~= "UNIT_MODEL_CHANGED" or UnitIsUnit(unitId, unit)) then
-        WeakAuras.SetModel(model, data.model_path, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
+        WeakAuras.SetModel(model, nil, data.model_fileId, data.modelIsUnit, data.modelDisplayInfo)
         if data.advance then
           model:SetAnimation(data.sequence)
         else
