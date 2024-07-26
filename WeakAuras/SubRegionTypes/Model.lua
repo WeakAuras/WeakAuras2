@@ -193,6 +193,7 @@ local funcs = {
 
 local function create()
   local subRegion = CreateFrame("Frame", nil, UIParent)
+  subRegion:SetFlattensRenderLayers(true)
   if not WeakAuras.IsTWW() then
     subRegion:SetClipsChildren(true)
   end
