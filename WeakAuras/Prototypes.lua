@@ -5162,7 +5162,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
@@ -5641,7 +5641,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
@@ -5740,7 +5740,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
@@ -5861,7 +5861,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
@@ -6024,7 +6024,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
@@ -6227,7 +6227,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
@@ -6312,7 +6312,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
@@ -6374,7 +6374,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
@@ -6447,7 +6447,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
@@ -6563,7 +6563,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
@@ -6773,7 +6773,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
@@ -7874,7 +7874,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
@@ -8659,7 +8659,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
@@ -8784,7 +8784,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = "true",
-        init = "icon or 'Interface/Icons/INV_Misc_QuestionMark'",
+        init = "icon",
         store = "true",
         test = "true",
       },
@@ -8978,7 +8978,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
@@ -9621,7 +9621,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
@@ -10992,7 +10992,7 @@ Private.event_prototypes = {
       {
         name = "icon",
         hidden = true,
-        init = "icon or 'Interface\\AddOns\\WeakAuras\\Media\\Textures\\icon'",
+        init = "icon",
         test = "true",
         store = true
       },
