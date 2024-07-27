@@ -1111,14 +1111,6 @@ function WeakAuras.IsSpellKnownIncludingPet(spell)
   return WeakAuras.IsSpellKnown(spell, false) or WeakAuras.IsSpellKnown(spell, true)
 end
 
-function Private.ExecEnv.CompareSpellIds(a, b, exactCheck)
-  if exactCheck then
-    return tonumber(a) == tonumber(b)
-  else
-    return Private.ExecEnv.GetSpellName(a or "") == Private.ExecEnv.GetSpellName(b or "")
-  end
-end
-
 do
 -- A small helper to fire WA_DELAYED_SET_INFORMATION if GetNumSetItemsEquipped couldn't give
 -- accurate information due to item information being unavailable
@@ -2210,21 +2202,9 @@ Private.event_categories = {
 }
 
 local GetNameAndIconForSpellName = function(trigger)
-  if (trigger.use_exact_spellName) then
-    local spellName = tonumber(trigger.spellName)
-    local name, _, icon = Private.ExecEnv.GetSpellInfo(spellName)
-    return name, icon
-  else
-    local spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName
-    local name, _, icon = Private.ExecEnv.GetSpellInfo(spellName)
-    if name and icon then
-      return name, icon
-    end
-    if type(trigger.spellName) == "number" then
-      local name, _, icon = Private.ExecEnv.GetSpellInfo(trigger.spellName)
-      return name, icon
-    end
-  end
+  local effectiveSpellId = Private.ExecEnv.GetEffectiveSpellId(trigger.spellName, trigger.use_exact_spellName, not trigger.use_ignoreoverride)
+  local name, _, icon = Private.ExecEnv.GetSpellInfo(effectiveSpellId)
+  return name, icon
 end
 
 Private.event_prototypes = {
@@ -5186,13 +5166,7 @@ Private.event_prototypes = {
       end
     end,
     loadInternalEventFunc = function(trigger, untrigger)
-      trigger.spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0;
-      local spellName;
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
-      end
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0;
       if spellName == nil then return {} end
       local events = {
         "SPELL_COOLDOWN_CHANGED:" .. spellName,
@@ -5209,27 +5183,16 @@ Private.event_prototypes = {
     force_events = "SPELL_COOLDOWN_FORCE",
     name = L["Cooldown/Charges/Count"],
     loadFunc = function(trigger)
-      trigger.spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0;
-      local spellName;
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0;
+      local exactMatch = trigger.use_exact_spellName
       local followoverride = not trigger.use_ignoreoverride
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
-      end
-      WeakAuras.WatchSpellCooldown(spellName, trigger.use_matchedRune, followoverride)
+      WeakAuras.WatchSpellCooldown(spellName, trigger.use_matchedRune, exactMatch, followoverride)
       if (trigger.use_showgcd) then
         WeakAuras.WatchGCD();
       end
     end,
     init = function(trigger)
-      trigger.spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0;
-      local spellName;
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
-      end
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
       local ret = {}
 
       local showOnCheck = "false";
@@ -5257,11 +5220,13 @@ Private.event_prototypes = {
         local showgcd = %s;
         local showlossofcontrol = %s;
         local ignoreSpellKnown = %s;
+        local useExact = %s
         local followoverride = %s
         local track = %q
-        local name, _, icon = Private.ExecEnv.GetSpellInfo(spellname)
-        local startTime, duration, gcdCooldown, readyTime, modRate, paused = WeakAuras.GetSpellCooldown(spellname, ignoreRuneCD, showgcd, ignoreSpellKnown, track, followoverride)
-        local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellname, ignoreSpellKnown, followoverride)
+        local effectiveSpellId = Private.ExecEnv.GetEffectiveSpellId(spellname, useExact, followoverride)
+        local name, _, icon = Private.ExecEnv.GetSpellInfo(effectiveSpellId)
+        local startTime, duration, gcdCooldown, readyTime, modRate, paused = WeakAuras.GetSpellCooldown(effectiveSpellId, ignoreRuneCD, showgcd, ignoreSpellKnown, track)
+        local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(effectiveSpellId, ignoreSpellKnown)
         local stacks = maxCharges and maxCharges ~= 1 and charges or (spellCount and spellCount > 0 and spellCount) or nil;
         if showlossofcontrol and startTime and duration then
           local locStart, locDuration = WeakAuras.GetSpellLossOfControlCooldown(spellname);
@@ -5283,6 +5248,7 @@ Private.event_prototypes = {
         (trigger.use_showgcd and "true" or "false"),
         (trigger.use_showlossofcontrol and "true" or "false"),
         (trigger.use_ignoreSpellKnown and "true" or "false"),
+        (trigger.use_exact_spellName and "true" or "false"),
         (not trigger.use_ignoreoverride and "true" or "false"),
         track,
         showOnCheck
@@ -5653,52 +5619,26 @@ Private.event_prototypes = {
     type = "spell",
     events = {},
     loadInternalEventFunc = function(trigger, untrigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName;
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
-      end
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
       if spellName == nil then return {} end
       return { "SPELL_COOLDOWN_READY:" .. spellName }
     end,
     name = L["Cooldown Ready Event"],
     loadFunc = function(trigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName;
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      local useExact = trigger.use_exact_spellName
       local followoverride = not trigger.use_ignoreoverride
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
-      end
-      WeakAuras.WatchSpellCooldown(spellName, false, followoverride)
+      WeakAuras.WatchSpellCooldown(spellName, false, useExact, followoverride)
     end,
     init = function(trigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName;
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
-      end
-
-      if (type(spellName) == "string") then
-        spellName = string.format("%q", spellName)
-      end
-
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
       local ret = [=[
-        local spellname = %s
-        local name, _, icon = Private.ExecEnv.GetSpellInfo(spellname)
+        local triggerSpellName = %s
         local useExact = %s
         local followoverride = %s
-        local match
-        if followoverride then
-          match = Private.ExecEnv.CompareSpellIds(spellname, spellName, useExact)
-        else
-          match = Private.ExecEnv.CompareSpellIds(spellname, overrideSpell, useExact)
-        end
+        local name, _, icon = Private.ExecEnv.GetSpellInfo(overrideSpell)
+        local effectiveTriggerSpellName = Private.ExecEnv.GetEffectiveSpellId(triggerSpellName, useExact, followoverride)
+        local match = overrideSpell == effectiveTriggerSpellName
       ]=]
       return ret:format(spellName,
                         trigger.use_exact_spellName and "true" or "false",
@@ -5753,50 +5693,26 @@ Private.event_prototypes = {
     type = "spell",
     events = {},
     loadInternalEventFunc = function(trigger, untrigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName;
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
-      end
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
       if spellName == nil then return {} end
       return { "SPELL_CHARGES_CHANGED:" .. spellName }
     end,
     name = L["Charges Changed Event"],
     loadFunc = function(trigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName;
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      local useExact = trigger.use_exact_spellName
       local followoverride = not trigger.use_ignoreoverride
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
-      end
-      WeakAuras.WatchSpellCooldown(spellName, false, followoverride)
+      WeakAuras.WatchSpellCooldown(spellName, false, useExact, followoverride)
     end,
     init = function(trigger)
-      local spellName;
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName
-        spellName = spellName or ""
-      end
-      if (type(spellName) == "string") then
-        spellName = string.format("%q", spellName)
-      end
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
       local ret = [=[
-        local spellname = %s
-        local name, _, icon = Private.ExecEnv.GetSpellInfo(spellname)
+        local triggerSpellName = %s
         local useExact = %s
         local followoverride = %s
-        local match
-        if followoverride then
-          match = Private.ExecEnv.CompareSpellIds(spellname, spellName, useExact)
-        else
-          match = Private.ExecEnv.CompareSpellIds(spellname, overrideSpell, useExact)
-        end
+        local effectiveTriggerSpellName = Private.ExecEnv.GetEffectiveSpellId(triggerSpellName, useExact, followoverride)
+        local name, _, icon = Private.ExecEnv.GetSpellInfo(overrideSpell)
+        local match = overrideSpell == effectiveTriggerSpellName
       ]=]
       return ret:format(spellName,
                         trigger.use_exact_spellName and "true" or "false",
@@ -6615,13 +6531,7 @@ Private.event_prototypes = {
       }
     end,
     loadInternalEventFunc = function(trigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
-      end
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
       if spellName == nil then return {} end
       return { "SPELL_COOLDOWN_CHANGED:" .. spellName }
     end,
@@ -6629,30 +6539,22 @@ Private.event_prototypes = {
     name = L["Action Usable"],
     statesParameter = "one",
     loadFunc = function(trigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName;
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      local useExact = trigger.use_exact_spellName
       local followoverride = not trigger.use_ignoreoverride
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
-      end
-      WeakAuras.WatchSpellCooldown(spellName, false, followoverride)
+      WeakAuras.WatchSpellCooldown(spellName, false, useExact, followoverride)
     end,
     init = function(trigger)
-      trigger.spellName = trigger.spellName or 0;
-      local spellName;
-      if (trigger.use_exact_spellName) then
-        spellName = trigger.spellName;
-      else
-        spellName = type(trigger.spellName) == "number" and Private.ExecEnv.GetSpellName(trigger.spellName) or trigger.spellName;
-      end
+      local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
       local ret = [=[
         local spellName = %s
-        local name, _, icon = Private.ExecEnv.GetSpellInfo(spellName)
+        local useExact = %s
         local followoverride = %s
-        local startTime, duration, gcdCooldown, readyTime, paused = WeakAuras.GetSpellCooldown(spellName, nil, nil, nil, nil, followoverride)
-        local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(spellName, nil, followoverride)
+        local effectiveSpellId = Private.ExecEnv.GetEffectiveSpellId(spellName, useExact, followoverride)
+        local name, _, icon = Private.ExecEnv.GetSpellInfo(effectiveSpellId)
+
+        local startTime, duration, gcdCooldown, readyTime, paused = WeakAuras.GetSpellCooldown(effectiveSpellId, nil, nil, nil, nil)
+        local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(effectiveSpellId, nil)
         local stacks = maxCharges and maxCharges > 1 and charges
                        or spellCount and spellCount > 0 and spellCount
                        or nil
@@ -6674,6 +6576,7 @@ Private.event_prototypes = {
       end
 
       return ret:format(spellName,
+                        trigger.use_exact_spellName and "true" or "false",
                         not trigger.use_ignoreoverride and "true" or "false")
     end,
     GetNameAndIcon = GetNameAndIconForSpellName,

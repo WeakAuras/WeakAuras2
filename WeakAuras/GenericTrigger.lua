@@ -2147,19 +2147,6 @@ end
 do
   local cdReadyFrame;
 
-  ---@type table<number|string, boolean> Tracks which spells we want to fetch information on,
-  local spells = {};
-  ---@type table<number, boolean>
-  local checkOverrideSpell = {}
-  ---@type table<number, boolean>
-  local spellKnown = {};
-
-  local spellCharges = {};
-  local spellChargesMax = {};
-  local spellCounts = {}
-  local spellChargeGainTime = {}
-  local spellChargeLostTime = {}
-
   local items = {};
   local itemCdDurs = {};
   local itemCdExps = {};
@@ -2366,6 +2353,15 @@ do
     return changed, nowReady
   end
 
+  ---@class SpellCDHandler
+  ---@field duration table<number, number>
+  ---@field expirationTime table<number, number>
+  ---@field remainingTime table<number, number>
+  ---@field readyTime table<number, number>
+  ---@field modRate table<number, number>
+  ---@field handles table<number, any>
+  ---@field HandleSpell fun(self: SpellCDHandler, id: number, startTime: number?, duration: number?, modRate: number?, paused: boolean?)
+  ---@field FetchSpellCooldown fun(self: SpellCDHandler, id: number): number, number, boolean, number, number
   local function CreateSpellCDHandler()
     local cd = {
       duration = {},
@@ -2380,13 +2376,337 @@ do
     return cd
   end
 
-  local spellCds = CreateSpellCDHandler();
-  local spellCdsRune = CreateSpellCDHandler();
-  local spellCdsOnlyCooldown = CreateSpellCDHandler();
-  local spellCdsOnlyCooldownRune = CreateSpellCDHandler();
-  local spellCdsCharges = CreateSpellCDHandler();
 
-  local spellDetails = {}
+  --- @class PerSpellDetails
+  --- @field known boolean? whether the spell is known by the player or not
+  --- @field charges number? the number of charges as returned by GetSpellCharges
+  --- @field chargesMax number? the number of max charges as returned by GetSpellCharges
+  --- @field chargeGainTime number?
+  --- @field chargeLostTime number?
+  --- @field count number?
+  --- @field name string
+  --- @field icon number
+  --- @field id number
+  --- @field watched number[]
+
+  -- Basic details like name, icon, charges, times per effective spell id
+  -- Also contains the mapping from effective spell id to watched
+  --- @class SpellDetails
+  --- @field private data table<number, PerSpellDetails>
+  --- @field private watchedSpellIds table<number, table<boolean, table<boolean, number>>> --- Maps user spell id to effective spell id via useExact and followoverride
+  --- @field private spellCds SpellCDHandler
+  --- @field private spellCdsRune SpellCDHandler
+  --- @field private spellCdsOnlyCooldown SpellCDHandler
+  --- @field private spellCdsOnlyCooldownRune SpellCDHandler
+  --- @field private spellCdsCharges SpellCDHandler
+  --- @field private AddEffectiveSpellId fun(self: SpellDetails, effectiveSpellId: number, userSpellId: number)
+  --- @field CheckSpellKnown fun(self: SpellDetails) Handles the SPELLS_CHANGED event (and intial setup)
+  --- @field CheckSpellCooldowns fun(self: SpellDetails, runeDuration: number?)
+  --- @field CheckSpellCooldown fun(self: SpellDetails, effectiveSpelLId: number, runeDuration: number?)
+  --- @field SendEventsForSpell fun(self: SpellDetails, effectiveSpellId: number, event: string, ...: any[])
+  --- @field GetSpellCharges fun(self: SpellDetails, effectiveSpellId: number, ignoreSpellKnown: boolean): number?, number?, number?, number?, number?
+  local SpellDetails = {
+    -- The data per effective spellId
+    data = {
+    },
+    -- The SpellDetails uses internally effective spell ids,
+    -- But the api uses user spell ids, so we need to map in three places
+    -- In the API, when SPELLS_CHANGED and when sending the events
+    -- Contains the list of user spell ids we watch
+    watchedSpellIds = {
+
+    },
+
+    -- Interprets the basic information to figure out whether an ability is on cd or not
+    -- for th various different api variants we have
+    -- This can probably be simplfied
+    spellCds = CreateSpellCDHandler(),
+    spellCdsRune = CreateSpellCDHandler(),
+    spellCdsOnlyCooldown = CreateSpellCDHandler(),
+    spellCdsOnlyCooldownRune = CreateSpellCDHandler(),
+    spellCdsCharges = CreateSpellCDHandler(),
+
+    -- Helper functions
+    AddEffectiveSpellId = function(self, effectiveSpellId, userSpellId)
+      local name, _, icon, _, _, _, spellId = Private.ExecEnv.GetSpellInfo(effectiveSpellId)
+      self.data[effectiveSpellId] = {
+        name = name,
+        icon = icon,
+        id = spellId,
+        watched = { effectiveSpellId }
+      }
+      if effectiveSpellId ~= userSpellId then
+        tinsert(self.data[effectiveSpellId].watched, userSpellId)
+      end
+
+      local spellDetail = self.data[effectiveSpellId]
+      spellDetail.known = WeakAuras.IsSpellKnownIncludingPet(effectiveSpellId)
+
+      local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
+            startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
+            spellCount, unifiedModRate, modRate, modRateCharges, paused
+            = WeakAuras.GetSpellCooldownUnified(effectiveSpellId, GetRuneDuration());
+
+      spellDetail.charges = charges
+      spellDetail.chargesMax = maxCharges
+      spellDetail.count = spellCount
+      self.spellCds:HandleSpell(effectiveSpellId, startTime, duration, unifiedModRate, paused)
+      if not unifiedCooldownBecauseRune then
+        self.spellCdsRune:HandleSpell(effectiveSpellId, startTime, duration, unifiedModRate, paused)
+      end
+      self.spellCdsOnlyCooldown:HandleSpell(effectiveSpellId, startTimeCooldown, durationCooldown, modRate, paused)
+      if not cooldownBecauseRune then
+        self.spellCdsOnlyCooldownRune:HandleSpell(effectiveSpellId, startTimeCooldown, durationCooldown, modRate, paused)
+      end
+      self.spellCdsCharges:HandleSpell(effectiveSpellId, startTimeCharges, durationCharges, modRateCharges, paused)
+    end,
+
+    -- Actual api
+    CheckSpellKnown = function(self)
+      -- Check for spells whose effective spell id changed
+      for userSpellId, watchedData in pairs(self.watchedSpellIds) do
+        for useExact, useExactData in pairs(watchedData) do
+          for followoverride, oldEffectiveSpellId in pairs(useExactData) do
+            local newEffectiveSpellId = Private.ExecEnv.GetEffectiveSpellId(userSpellId, useExact, followoverride)
+
+            if oldEffectiveSpellId ~= newEffectiveSpellId then
+              -- The effective spell id has changed
+              -- There are lots of cases to consider here:
+
+              -- For the new effective spell id
+              -- a) We are already tracking it, only add the wathed spell ids
+              -- b) We aren't tracking it yet add it
+              if self.data[newEffectiveSpellId] then
+                tinsert(self.data[newEffectiveSpellId].watched, userSpellId)
+              else
+                self:AddEffectiveSpellId(newEffectiveSpellId, userSpellId)
+              end
+
+              local oldSpellDetail = self.data[oldEffectiveSpellId]
+              local newSpellDetail = self.data[newEffectiveSpellId]
+
+              -- Check whether we need to emit the SPEL_CHARGES_CHANGED or SPELL_COOLDOWN_READY events
+              local chargesChanged = oldSpellDetail.charges ~= newSpellDetail.charges or oldSpellDetail.count ~= newSpellDetail.count
+                or oldSpellDetail.chargesMax ~= newSpellDetail.maxCharges
+              local oldCharge = oldSpellDetail.charges or oldSpellDetail.count or 0
+              local newCharge = newSpellDetail.charges or newSpellDetail.count or 0
+              local chargesDifference = newCharge - oldCharge
+
+              local nowReady = not self.spellCdsOnlyCooldown.readyTime[oldEffectiveSpellId]
+                               and self.spellCdsOnlyCooldown.readyTime[newEffectiveSpellId]
+
+              -- For the old effective spell id
+              -- * Remove the spell from watched
+              -- * If we removed the last mapping, remove the spell details of the effective spell id
+              tremove(oldSpellDetail.watched, userSpellId)
+              if #oldSpellDetail.watched == 0 then
+                self.data[oldEffectiveSpellId] = nil
+              end
+
+              -- Finally update the watchedSpellIds mapping
+              self.watchedSpellIds[userSpellId][useExact][followoverride] = newEffectiveSpellId
+
+              -- We only send events for the userSpellId, since only those get remapped
+              Private.ScanEventsByID("SPELL_COOLDOWN_CHANGED", userSpellId, newEffectiveSpellId)
+              if nowReady then
+                Private.ScanEventsByID("SPELL_COOLDOWN_READY", userSpellId, newEffectiveSpellId)
+              end
+              if chargesChanged ~= 0 then
+                Private.ScanEventsByID("SPELL_CHARGES_CHANGED", userSpellId, newEffectiveSpellId, chargesDifference, newCharge)
+              end
+            end
+          end
+        end
+      end
+
+      -- Check for changes in the effective spells
+      local changed = {}
+      for effectiveSpellId, spellDetailsData in pairs(self.data) do
+        local known = WeakAuras.IsSpellKnownIncludingPet(effectiveSpellId)
+        if (known ~= spellDetailsData.known) then
+          spellDetailsData.known = known
+          changed[effectiveSpellId] = true
+        end
+
+        local name, _, icon, _, _, _, spellId = Private.ExecEnv.GetSpellInfo(effectiveSpellId)
+        if self.data[effectiveSpellId].name ~= name then
+          self.data[effectiveSpellId].name = name
+          changed[effectiveSpellId] = true
+        end
+        if self.data[effectiveSpellId].icon ~= icon then
+          self.data[effectiveSpellId].icon = icon
+          changed[effectiveSpellId] = true
+        end
+      end
+
+      if not WeakAuras.IsPaused() then
+        for id in pairs(changed) do
+          self:SendEventsForSpell(id, "SPELL_COOLDOWN_CHANGED", id)
+        end
+      end
+    end,
+
+    CheckSpellCooldowns = function(self, runeDuration)
+      for id, _ in pairs(self.data) do
+        self:CheckSpellCooldown(id, runeDuration)
+      end
+    end,
+
+    CheckSpellCooldown = function(self, effectiveSpelLId, runeDuration)
+      local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
+        startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
+        spellCount, unifiedModRate, modRate, modRateCharges, paused
+        = WeakAuras.GetSpellCooldownUnified(effectiveSpelLId, runeDuration);
+
+      local time = GetTime();
+
+      local spellDetail = self.data[effectiveSpelLId]
+
+      local chargesChanged = spellDetail.charges ~= charges or spellDetail.count ~= spellCount
+                            or spellDetail.chargesMax ~= maxCharges
+      local chargesDifference = (charges or spellCount or 0) - (spellDetail.charges or spellDetail.count or 0)
+      spellDetail.charges = charges
+      spellDetail.chargesMax = maxCharges
+      spellDetail.count = spellCount
+      if chargesDifference ~= 0 then
+        if chargesDifference > 0 then
+          spellDetail.chargeGainTime = time
+          spellDetail.chargeLostTime = nil
+        else
+          spellDetail.chargeGainTime = nil
+          spellDetail.chargeLostTime = time
+        end
+      end
+
+      local changed = false
+      changed = self.spellCds:HandleSpell(effectiveSpelLId, startTime, duration, unifiedModRate, paused) or changed
+      if not unifiedCooldownBecauseRune then
+        changed = self.spellCdsRune:HandleSpell(effectiveSpelLId, startTime, duration, unifiedModRate, paused) or changed
+      end
+      local cdChanged, nowReady = self.spellCdsOnlyCooldown:HandleSpell(effectiveSpelLId, startTimeCooldown, durationCooldown, modRate, paused)
+      changed = cdChanged or changed
+      if not cooldownBecauseRune then
+        changed = self.spellCdsOnlyCooldownRune:HandleSpell(effectiveSpelLId, startTimeCooldown, durationCooldown, modRate, paused) or changed
+      end
+      local chargeChanged = self.spellCdsCharges:HandleSpell(effectiveSpelLId, startTimeCharges, durationCharges, modRateCharges)
+      changed = chargeChanged or changed
+
+      if not WeakAuras.IsPaused() then
+        if nowReady then
+          self:SendEventsForSpell(effectiveSpelLId, "SPELL_COOLDOWN_READY", effectiveSpelLId)
+        end
+
+        if changed or chargesChanged then
+          self:SendEventsForSpell(effectiveSpelLId, "SPELL_COOLDOWN_CHANGED", effectiveSpelLId)
+        end
+
+        if (chargesDifference ~= 0 ) then
+          self:SendEventsForSpell(effectiveSpelLId, "SPELL_CHARGES_CHANGED", effectiveSpelLId, chargesDifference, charges or spellCount or 0)
+        end
+      end
+    end,
+
+    WatchSpellCooldown = function(self, userSpellId, ignoreRunes, useExact, followoverride)
+      if not(cdReadyFrame) then
+        Private.InitCooldownReady();
+      end
+
+      if not userSpellId or userSpellId == 0 then
+        return
+      end
+
+      useExact = useExact and true or false
+      followoverride = followoverride and true or false
+
+      if ignoreRunes and WeakAuras.IsCataOrRetail() then
+        for i = 1, 6 do
+          WeakAuras.WatchRuneCooldown(i)
+        end
+      end
+
+      local effectiveSpellId = Private.ExecEnv.GetEffectiveSpellId(userSpellId, useExact, followoverride)
+
+      self.watchedSpellIds[userSpellId] = self. watchedSpellIds[userSpellId] or {}
+      self.watchedSpellIds[userSpellId][useExact] = self.watchedSpellIds[userSpellId][useExact] or {}
+      if self.watchedSpellIds[userSpellId][useExact][followoverride] == effectiveSpellId then
+        -- We are already watching userSpellId and have the mapping to effectiveSpellId
+        -- Nothing t odo then
+        return
+      end
+
+      -- We aren't watching userSpellId yet
+      self.watchedSpellIds[userSpellId][useExact][followoverride] = effectiveSpellId
+
+      if self.data[effectiveSpellId] then
+        -- But we are already tracking the effectiveSpellId, so only add the mapping
+        if not tContains(self.data[effectiveSpellId].watched, userSpellId) then
+          tinsert(self.data[effectiveSpellId].watched, userSpellId)
+        end
+        return
+      end
+
+      self:AddEffectiveSpellId(effectiveSpellId, userSpellId)
+    end,
+
+    SendEventsForSpell = function(self, effectiveSpellId, event, ...)
+      local watchedSpells = self.data[effectiveSpellId] and self.data[effectiveSpellId].watched
+      if watchedSpells then
+        for _, userSpellId in ipairs(watchedSpells) do
+          Private.ScanEventsByID(event, userSpellId, ...)
+        end
+      end
+    end,
+
+    GetSpellCharges = function(self, effectiveSpellId, ignoreSpellKnown)
+      local spellDetail = self.data[effectiveSpellId]
+      if not spellDetail then
+        return
+      end
+
+      if not spellDetail.known and not ignoreSpellKnown then
+        return
+      end
+      return spellDetail.charges, spellDetail.chargesMax, spellDetail.count, spellDetail.chargeGainTime, spellDetail.chargeLostTime
+    end,
+
+    GetSpellCooldown = function(self, effectiveSpellId, ignoreRuneCD, showgcd, ignoreSpellKnown, track)
+      if (not (self.data[effectiveSpellId] and self.data[effectiveSpellId].known) and not ignoreSpellKnown) then
+        return;
+      end
+      local startTime, duration, paused, gcdCooldown, readyTime, modRate
+      if track == "charges" then
+        startTime, duration, paused, readyTime, modRate = self.spellCdsCharges:FetchSpellCooldown(effectiveSpellId)
+      elseif track == "cooldown" then
+        if ignoreRuneCD then
+          startTime, duration, paused, readyTime, modRate = self.spellCdsOnlyCooldownRune:FetchSpellCooldown(effectiveSpellId)
+        else
+          startTime, duration, paused, readyTime, modRate = self.spellCdsOnlyCooldown:FetchSpellCooldown(effectiveSpellId)
+        end
+      elseif (ignoreRuneCD) then
+        startTime, duration, paused, readyTime, modRate = self.spellCdsRune:FetchSpellCooldown(effectiveSpellId)
+      else
+        startTime, duration, paused, readyTime, modRate = self.spellCds:FetchSpellCooldown(effectiveSpellId)
+      end
+
+      if paused then
+        return startTime, duration, false, readyTime, modRate, true
+      end
+
+      if (showgcd) then
+        if ((gcdStart or 0) + (gcdDuration or 0) > startTime + duration) then
+          if startTime == 0 then
+            gcdCooldown = true
+          end
+          startTime = gcdStart;
+          duration = gcdDuration;
+          modRate = gcdModrate
+        end
+      end
+
+      return startTime, duration, gcdCooldown, readyTime, modRate, false
+    end
+  }
+
   local mark_ACTIONBAR_UPDATE_COOLDOWN, mark_PLAYER_ENTERING_WORLD
 
   ---@type fun()
@@ -2441,7 +2761,7 @@ do
       Private.StartProfileSystem("generictrigger cd tracking");
       if type(event) == "number" then-- Called from OnUpdate!
         if mark_PLAYER_ENTERING_WORLD then
-          Private.CheckSpellKnown()
+          SpellDetails:CheckSpellKnown()
           Private.CheckCooldownReady()
           Private.CheckItemSlotCooldowns()
           mark_PLAYER_ENTERING_WORLD = nil
@@ -2460,7 +2780,7 @@ do
         end
         Private.CheckCooldownReady();
       elseif(event == "SPELLS_CHANGED") then
-        Private.CheckSpellKnown()
+        SpellDetails:CheckSpellKnown()
         Private.CheckCooldownReady()
       elseif(event == "UNIT_SPELLCAST_SENT") then
         local unit, guid, castGUID, name = ...;
@@ -2627,75 +2947,25 @@ do
   ---@param showgcd boolean
   ---@param ignoreSpellKnown boolean
   ---@param track boolean
-  ---@param followOverride boolean
   ---@return number? startTime
   ---@return number? duration
   ---@return number? gcdCooldown
   ---@return number? readyTime
   ---@return number? modRate
   ---@return boolean? paused
-  function WeakAuras.GetSpellCooldown(id, ignoreRuneCD, showgcd, ignoreSpellKnown, track, followOverride)
-    if followOverride then
-      if spellDetails[id] then
-        id = spellDetails[id].override or id
-      end
-    end
-
-    if (not spellKnown[id] and not ignoreSpellKnown) then
-      return;
-    end
-    local startTime, duration, paused, gcdCooldown, readyTime, modRate
-    if track == "charges" then
-      startTime, duration, paused, readyTime, modRate = spellCdsCharges:FetchSpellCooldown(id)
-    elseif track == "cooldown" then
-      if ignoreRuneCD then
-        startTime, duration, paused, readyTime, modRate = spellCdsOnlyCooldownRune:FetchSpellCooldown(id)
-      else
-        startTime, duration, paused, readyTime, modRate = spellCdsOnlyCooldown:FetchSpellCooldown(id)
-      end
-    elseif (ignoreRuneCD) then
-      startTime, duration, paused, readyTime, modRate = spellCdsRune:FetchSpellCooldown(id)
-    else
-      startTime, duration, paused, readyTime, modRate = spellCds:FetchSpellCooldown(id)
-    end
-
-    if paused then
-      return startTime, duration, false, readyTime, modRate, true
-    end
-
-    if (showgcd) then
-      if ((gcdStart or 0) + (gcdDuration or 0) > startTime + duration) then
-        if startTime == 0 then
-          gcdCooldown = true
-        end
-        startTime = gcdStart;
-        duration = gcdDuration;
-        modRate = gcdModrate
-      end
-    end
-
-    return startTime, duration, gcdCooldown, readyTime, modRate, false
+  function WeakAuras.GetSpellCooldown(id, ignoreRuneCD, showgcd, ignoreSpellKnown, track)
+    return SpellDetails:GetSpellCooldown(id, ignoreRuneCD, showgcd, ignoreSpellKnown, track)
   end
 
   ---@param id string
   ---@param ignoreSpellKnown? boolean
-  ---@param followoverride? boolean
   ---@return integer? charges
   ---@return integer? chargesMax
   ---@return integer? count
   ---@return number? chargeGainTime
   ---@return number? chargeLostTime
-  function WeakAuras.GetSpellCharges(id, ignoreSpellKnown, followoverride)
-    if followoverride then
-      if spellDetails[id] then
-        id = spellDetails[id].override or id
-      end
-    end
-
-    if (not spellKnown[id] and not ignoreSpellKnown) then
-      return;
-    end
-    return spellCharges[id], spellChargesMax[id], spellCounts[id], spellChargeGainTime[id], spellChargeLostTime[id]
+  function WeakAuras.GetSpellCharges(id, ignoreSpellKnown)
+    return SpellDetails:GetSpellCharges(id, ignoreSpellKnown)
   end
 
   ---@param id string
@@ -2945,163 +3215,9 @@ do
            count, unifiedModRate, modRate, modRateCharges, not enabled
   end
 
-  local function FindSpellOverrideByIDOrNil(spellId)
-    local override = FindSpellOverrideByID(spellId)
-    return override ~= spellId and override or nil
-  end
-
-  ---@type fun()
-  function Private.CheckSpellKnown()
-    local overrides = {}
-    -- First check for overrides, if we don't yet track a specific override, add it
-    for id, _ in pairs(checkOverrideSpell) do
-      local override
-      if type(id) == "number" then
-        override = FindSpellOverrideByIDOrNil(id)
-      else
-        local spellId = select(7, Private.ExecEnv.GetSpellInfo(id))
-        if spellId then
-          local overrideSpellId = FindSpellOverrideByIDOrNil(spellId)
-          override = overrideSpellId and Private.ExecEnv.GetSpellName(overrideSpellId) or nil
-        end
-      end
-      if override and not spells[override] then
-        WeakAuras.WatchSpellCooldown(override, false, false)
-      end
-      overrides[id] = override
-    end
-
-    for id, _ in pairs(spells) do
-      local known = WeakAuras.IsSpellKnownIncludingPet(id);
-      local changed = false
-      if (known ~= spellKnown[id]) then
-        spellKnown[id] = known
-        changed = true
-      end
-
-      local name, _, icon, _, _, _, spellId = Private.ExecEnv.GetSpellInfo(id)
-      if spellDetails[id].name ~= name then
-        spellDetails[id].name = name
-        changed = true
-      end
-      if spellDetails[id].icon ~= icon then
-        spellDetails[id].icon = icon
-        changed = true
-      end
-      if spellDetails[id].id ~= spellId then
-        spellDetails[id].id = spellId
-        changed = true
-      end
-
-      if checkOverrideSpell[id] then
-        local override = overrides[id]
-        if spellDetails[id].override ~= override then
-          spellDetails[id].override = override
-          changed = true
-        end
-      end
-
-      local baseSpell
-      if type(id) == "number" then
-        baseSpell = FindBaseSpellByID(id)
-        if baseSpell == id or not checkOverrideSpell[baseSpell] then
-          baseSpell = nil
-        end
-      else
-        local spellId = select(7, Private.ExecEnv.GetSpellInfo(id))
-        if spellId then
-          baseSpell = Private.ExecEnv.GetSpellName(FindBaseSpellByID(spellId))
-        end
-        if baseSpell == id or not checkOverrideSpell[baseSpell] then
-          baseSpell = nil
-        end
-      end
-
-      if spellDetails[id].baseSpell ~= baseSpell then
-        spellDetails[id].baseSpell = baseSpell
-        changed = true
-      end
-
-      if changed and not WeakAuras.IsPaused() then
-        Private.ScanEventsByID("SPELL_COOLDOWN_CHANGED", id, id)
-        if baseSpell then
-          Private.ScanEventsByID("SPELL_COOLDOWN_CHANGED", baseSpell, id)
-        end
-      end
-    end
-  end
-
   ---@type fun(id, runeDuration)
   function Private.CheckSpellCooldown(id, runeDuration)
-    local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
-          startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
-          spellCount, unifiedModRate, modRate, modRateCharges, paused
-          = WeakAuras.GetSpellCooldownUnified(id, runeDuration);
-
-    local time = GetTime();
-
-    local chargesChanged = spellCharges[id] ~= charges or spellCounts[id] ~= spellCount
-                           or spellChargesMax[id] ~= maxCharges
-    local chargesDifference = (charges or spellCount or 0) - (spellCharges[id] or spellCounts[id] or 0)
-    spellCharges[id] = charges;
-    spellChargesMax[id] = maxCharges;
-    spellCounts[id] = spellCount
-    if chargesDifference ~= 0 then
-      if chargesDifference > 0 then
-        spellChargeGainTime[id] = time
-        spellChargeLostTime[id] = nil
-      else
-        spellChargeGainTime[id] = nil
-        spellChargeLostTime[id] = time
-      end
-    end
-
-    local changed = false
-    changed = spellCds:HandleSpell(id, startTime, duration, unifiedModRate, paused) or changed
-    if not unifiedCooldownBecauseRune then
-      changed = spellCdsRune:HandleSpell(id, startTime, duration, unifiedModRate, paused) or changed
-    end
-    local cdChanged, nowReady = spellCdsOnlyCooldown:HandleSpell(id, startTimeCooldown, durationCooldown, modRate, paused)
-    changed = cdChanged or changed
-    if not cooldownBecauseRune then
-      changed = spellCdsOnlyCooldownRune:HandleSpell(id, startTimeCooldown, durationCooldown, modRate, paused) or changed
-    end
-    local chargeChanged, chargeNowReady = spellCdsCharges:HandleSpell(id, startTimeCharges, durationCharges, modRateCharges)
-    changed = chargeChanged or changed
-    nowReady = chargeNowReady or nowReady
-
-    if not WeakAuras.IsPaused() then
-      if nowReady then
-        Private.ScanEventsByID("SPELL_COOLDOWN_READY", id, id)
-        local baseSpell = spellDetails[id].baseSpell
-        if (baseSpell) then
-          Private.ScanEventsByID("SPELL_COOLDOWN_READY", baseSpell, id)
-        end
-      end
-
-      if changed or chargesChanged then
-        Private.ScanEventsByID("SPELL_COOLDOWN_CHANGED", id, id)
-        local baseSpell = spellDetails[id].baseSpell
-        if (baseSpell) then
-          Private.ScanEventsByID("SPELL_COOLDOWN_CHANGED", baseSpell, id)
-        end
-      end
-
-      if (chargesDifference ~= 0 ) then
-        Private.ScanEventsByID("SPELL_CHARGES_CHANGED", id, id, chargesDifference, charges or spellCount or 0);
-        local baseSpell = spellDetails[id].baseSpell
-        if (baseSpell) then
-          Private.ScanEventsByID("SPELL_CHARGES_CHANGED", baseSpell, id, chargesDifference, charges or spellCount or 0);
-        end
-      end
-    end
-  end
-
-  ---@type fun(runeDuration)
-  function Private.CheckSpellCooldowns(runeDuration)
-    for id, _ in pairs(spells) do
-      Private.CheckSpellCooldown(id, runeDuration)
-    end
+    SpellDetails:CheckSpellCooldown(id, runeDuration)
   end
 
   ---@type fun()
@@ -3237,7 +3353,7 @@ do
   function Private.CheckCooldownReady()
     CheckGCD();
     local runeDuration = Private.CheckRuneCooldown();
-    Private.CheckSpellCooldowns(runeDuration);
+    SpellDetails:CheckSpellCooldowns(runeDuration);
     Private.CheckItemCooldowns();
     Private.CheckItemSlotCooldowns();
   end
@@ -3278,69 +3394,36 @@ do
     end
   end
 
-  ---@private
-  function WeakAuras.WatchSpellCooldown(id, ignoreRunes, followoverride)
-    if not(cdReadyFrame) then
-      Private.InitCooldownReady();
-    end
+  local GetOverrideSpell
+  if WeakAuras.IsTWW() then
+    GetOverrideSpell = C_Spell.GetOverrideSpell
+  else
+    GetOverrideSpell = FindSpellOverrideByID
+  end
 
-    if not id or id == 0 then return end
-
-    if ignoreRunes and WeakAuras.IsCataOrRetail() then
-      for i = 1, 6 do
-        WeakAuras.WatchRuneCooldown(i);
-      end
-    end
-
-    if (spells[id] and not followoverride or checkOverrideSpell[id]) then
-      return;
-    end
-    spells[id] = true;
-    checkOverrideSpell[id] = followoverride or checkOverrideSpell[id]
-    local name, _, icon, _, _, _, spellId = Private.ExecEnv.GetSpellInfo(id)
-    spellDetails[id] = {
-      name = name,
-      icon = icon,
-      id = spellId
-    }
-
-    if followoverride then
-      if type(id) == "number" then
-        spellDetails[id].override = FindSpellOverrideByIDOrNil(id)
-      else
-        if spellId then
-          local overrideSpellId = FindSpellOverrideByIDOrNil(spellId)
-          spellDetails[id].override = overrideSpellId and Private.ExecEnv.GetSpellName(overrideSpellId) or nil
+  function Private.ExecEnv.GetEffectiveSpellId(spellId, exactMatch, followoverride)
+    if not exactMatch then
+      local spellName = Private.ExecEnv.GetSpellName(spellId)
+      if spellName then
+        local spellIdForName = select(7, Private.ExecEnv.GetSpellInfo(spellName))
+        if spellIdForName then
+          spellId = spellIdForName
         end
       end
     end
-
-    spellKnown[id] = WeakAuras.IsSpellKnownIncludingPet(id);
-
-    local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
-          startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
-          spellCount, unifiedModRate, modRate, modRateCharges, paused
-          = WeakAuras.GetSpellCooldownUnified(id, GetRuneDuration());
-
-    spellCharges[id] = charges;
-    spellChargesMax[id] = maxCharges;
-    spellCounts[id] = spellCount
-    spellCds:HandleSpell(id, startTime, duration, unifiedModRate, paused)
-    if not unifiedCooldownBecauseRune then
-      spellCdsRune:HandleSpell(id, startTime, duration, unifiedModRate, paused)
-    end
-    spellCdsOnlyCooldown:HandleSpell(id, startTimeCooldown, durationCooldown, modRate, paused)
-    if not cooldownBecauseRune then
-      spellCdsOnlyCooldownRune:HandleSpell(id, startTimeCooldown, durationCooldown, modRate, paused)
-    end
-    spellCdsCharges:HandleSpell(id, startTimeCharges, durationCharges, modRateCharges, paused)
-
-    if spellDetails[id].override then
-      -- If this spell is overridden and the option is on, track the overridden spell too
-      if spellDetails[id].override ~= id then
-        WeakAuras.WatchSpellCooldown(spellDetails[id].override, false, false)
+    if followoverride then
+      local override = spellId and GetOverrideSpell(spellId)
+      if override then
+        spellId = override
       end
     end
+
+    return spellId
+  end
+
+  ---@private
+  function WeakAuras.WatchSpellCooldown(id, ignoreRunes, useExact, followoverride)
+    SpellDetails:WatchSpellCooldown(id, ignoreRunes, useExact, followoverride)
   end
 
   ---@private
