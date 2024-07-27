@@ -610,7 +610,7 @@ function RequestDisplay(characterName, displayName)
     d = displayName
   };
   local transmitString = TableToString(transmit);
-  Comm:SendCommMessage("WeakAuras", transmitString, characterName);
+  Comm:SendCommMessage("WeakAuras", transmitString, "WHISPER", characterName);
 end
 
 function TransmitError(errorMsg, characterName)
@@ -618,14 +618,14 @@ function TransmitError(errorMsg, characterName)
     m = "dE",
     eM = errorMsg
   };
-  Comm:SendCommMessage("WeakAuras", TableToString(transmit), characterName);
+  Comm:SendCommMessage("WeakAuras", TableToString(transmit), "WHISPER", characterName);
 end
 
 function TransmitDisplay(id, characterName)
   local encoded = Private.DisplayToString(id);
   if(encoded ~= "") then
-    Comm:SendCommMessage("WeakAuras", encoded, characterName, "BULK", function(displayName, done, total)
-      Comm:SendCommMessage("WeakAurasProg", done.." "..total.." "..displayName, characterName, "ALERT");
+    Comm:SendCommMessage("WeakAuras", encoded, "WHISPER", characterName, "BULK", function(displayName, done, total)
+      Comm:SendCommMessage("WeakAurasProg", done.." "..total.." "..displayName, "WHISPER", characterName, "ALERT");
     end, id);
   else
     TransmitError("dne", characterName);
@@ -633,18 +633,6 @@ function TransmitDisplay(id, characterName)
 end
 
 Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sender)
-  if distribution == "PARTY" or distribution == "RAID" then
-    local dest, msg = string.match(message, "^§§(.+):(.+)$")
-    if dest then
-      local dName, dServer = string.match(dest, "^(.*)-(.*)$")
-      local myName, myServer = UnitFullName("player")
-      if myName == dName and myServer == dServer then
-        message = msg
-      else
-        return
-      end
-    end
-  end
   if tooltipLoading and ItemRefTooltip:IsVisible() and safeSenders[sender] then
     receivedData = true;
     local done, total, displayName = strsplit(" ", message, 3)
@@ -663,19 +651,6 @@ Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sende
 end)
 
 Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
-  if distribution == "PARTY" or distribution == "RAID" then
-    local dest, msg = string.match(message, "^§§([^:]+):(.+)$")
-    if dest then
-      local dName, dServer = string.match(dest, "^(.*)-(.*)$")
-      local myName, myServer = UnitFullName("player")
-      if myName == dName and myServer == dServer then
-        message = msg
-      else
-        return
-      end
-    end
-  end
-
   local linkValidityDuration = 60 * 5
   local safeSender = safeSenders[sender]
   local validLink = false
