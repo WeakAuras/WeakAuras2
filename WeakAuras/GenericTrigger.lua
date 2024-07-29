@@ -4936,6 +4936,16 @@ Private.GetCurrencyInfoForTrigger = function(trigger)
   end
 end
 
+Private.ExecEnv.FetchCurrencyDataFromAccountCharacters = function(currencyId, refresh)
+  Private.AccountCurrencyData = Private.AccountCurrencyData or {}
+  if Private.AccountCurrencyData[currencyId] and not refresh then
+    return Private.AccountCurrencyData[currencyId]
+  end
+
+  Private.AccountCurrencyData[currencyId] = C_CurrencyInfo.FetchCurrencyDataFromAccountCharacters(currencyId)
+  return Private.AccountCurrencyData[currencyId]
+end
+
 
 local types = {}
 tinsert(types, "custom")
