@@ -3862,12 +3862,16 @@ local wrappedGetOverlayInfo = wrapTriggerSystemFunction("GetOverlayInfo", "table
 
 Private.GetAdditionalProperties = function(data)
   local props = {}
-  for i = 1, #data.triggers do
-    local triggerSystem = GetTriggerSystem(data, i);
-    if (triggerSystem) then
-      local triggerProps = triggerSystem.GetAdditionalProperties(data, i)
-      if triggerProps then
-        props[i] = triggerProps
+  for child in Private.TraverseLeafsOrAura(data) do
+    for i, trigger in ipairs(child.triggers) do
+      local triggerSystem = GetTriggerSystem(child, i)
+      if triggerSystem then
+        local triggerProps = triggerSystem.GetAdditionalProperties(child, i)
+        if triggerProps and props[i] then
+          MergeTable(props[i], triggerProps)
+        elseif triggerProps then
+          props[i] = triggerProps
+        end
       end
     end
   end
