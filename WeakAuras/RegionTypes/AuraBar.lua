@@ -583,7 +583,7 @@ local barPrototype = {
   end,
 
   ["GetStatusBarTexture"] = function(self)
-    return self.fg:GetTexture();
+    return self.fg:GetAtlas() or self.fg:GetTexture()
   end,
 
   -- Set bar color
