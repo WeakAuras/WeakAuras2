@@ -498,6 +498,7 @@ local function modify(parent, region, data)
       region.FrameTick = FrameTickFunctions.timed
       region.subRegionEvents:AddSubscriber("FrameTick", region, true)
       function region:Update()
+        region:UpdateProgress()
       end
     elseif data.animationType == "progress" then
       function region:Update()
