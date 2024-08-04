@@ -11310,7 +11310,7 @@ Private.event_prototypes = {
                 if currencyInfo.transferPercentage and currencyInfo.transferPercentage > 0 and currencyInfo.transferPercentage < 100 then
                   realQuantity = math.floor(realQuantity * (currencyInfo.transferPercentage/100))
                 end
-                currencyData.realQuantity = realQuantity
+                currencyData.realCharacterQuantity = realQuantity
                 currencyInfo.realAccountQuantity = currencyInfo.realAccountQuantity + realQuantity
                 currencyInfo.accountQuantity = currencyInfo.accountQuantity + currencyData.quantity
               end
@@ -11350,57 +11350,70 @@ Private.event_prototypes = {
         checkTristate(seasonCapped, currencyInfo.totalEarned >= (currencyInfo.maxQuantity or 0), currencyInfo.useTotalEarnedForMaxQty and currencyInfo.maxQuantity and currencyInfo.maxQuantity > 0, true)
         checkTristate(weeklyCapped, currencyInfo.quantityEarnedThisWeek >= (currencyInfo.maxWeeklyQuantity or 0), currencyInfo.maxWeeklyQuantity and currencyInfo.maxWeeklyQuantity > 0, true)
 
+        local sharedStateValues = {
+          name = currencyInfo.name,
+          icon = currencyInfo.iconFileID,
+          total = currencyInfo.maxQuantity,
+          maxQuantity = currencyInfo.maxQuantity,
+          progressType = "static",
+          accountQuantity = currencyInfo.accountQuantity,
+          realAccountQuantity = currencyInfo.realAccountQuantity,
+          description = currencyInfo.description,
+          quality = currencyInfo.quality,
+          discovered = currencyInfo.discovered,
+          transferPercentage = currencyInfo.transferPercentage,
+          quantityEarnedThisWeek = currencyInfo.quantityEarnedThisWeek,
+          totalEarned = currencyInfo.totalEarned,
+          changed = true,
+        }
+
         states[""] = states[""] or {}
         local state = states[""]
         state.show = active
-        state.changed = true
-        state.name = currencyInfo.name
-        state.icon = currencyInfo.iconFileID
         state.value = currencyInfo.quantity
-        state.total = currencyInfo.maxQuantity
-        state.progressType = "static"
-        state.accountQuantity = currencyInfo.accountQuantity
-        state.realAccountQuantity = currencyInfo.realAccountQuantity
         state.realCharacterQuantity = currencyInfo.realCharacterQuantity
-        state.maxQuantity = currencyInfo.maxQuantity
-        state.quantityEarnedThisWeek = currencyInfo.quantityEarnedThisWeek
-        state.totalEarned = currencyInfo.totalEarned
         state.capped = currencyInfo.maxQuantity and currencyInfo.maxQuantity > 0 and currencyInfo.quantity >= currencyInfo.maxQuantity
         state.seasonCapped = currencyInfo.useTotalEarnedForMaxQty and currencyInfo.maxQuantity and currencyInfo.maxQuantity > 0 and currencyInfo.totalEarned >= currencyInfo.maxQuantity
         state.weeklyCapped = currencyInfo.maxWeeklyQuantity and currencyInfo.maxWeeklyQuantity > 0 and currencyInfo.quantityEarnedThisweek >= currencyInfo.maxWeeklyQuantity
-        state.description = currencyInfo.description
-        state.quality = currencyInfo.quality
-        state.discovered = currencyInfo.discovered
-        state.transferPercentage = currencyInfo.transferPercentage
-        state.unitName = UnitName("player")
-        state.unitGUID = UnitGUID("player")
+        state.characterName = UnitName("player")
+        state.characterGUID = UnitGUID("player")
         state.mainCharacter = true
 
-        if clone and not primaryCheckFailed then
+        -- Apply shared values to main state
+        for key, value in pairs(sharedStateValues) do
+          state[key] = value
+        end
+
+        if clone then
           for i, currencyData in ipairs(accountCurrencyData) do
+            local cloneActive = not primaryCheckFailed
             local cloneId = currencyData.characterGUID or tostring(i)
-            states[cloneId] = CopyTable(states[""])
+            states[cloneId] = states[cloneId] or {}
             local s = states[cloneId]
             s.value = currencyData.quantity
-            s.realCharacterQuantity = currencyData.realQuantity
-            s.unitName = currencyData.characterName
-            s.unitGUID = currencyData.characterGUID
+            s.realCharacterQuantity = currencyData.realCharacterQuantity
+            s.characterName = currencyData.characterName
+            s.characterGUID = currencyData.characterGUID
             s.mainCharacter = false
-            s.show = true
+
+            -- Apply shared values to clone state
+            for key, value in pairs(sharedStateValues) do
+              s[key] = value
+            end
 
             -- Check quantity-related values
-            if triggerQuantities.quantity ~= nil then
-              s.show = check(currencyData.quantity, triggerQuantities.quantity, triggerOperators.quantity)
+            if cloneActive and triggerQuantities.quantity ~= nil then
+              cloneActive = check(currencyData.quantity, triggerQuantities.quantity, triggerOperators.quantity)
             end
-            if triggerQuantities.realCharacterQuantity ~= nil then
-              s.show = s.show and check(currencyData.realQuantity, triggerQuantities.realCharacterQuantity, triggerOperators.realCharacterQuantity)
+            if cloneActive and triggerQuantities.realCharacterQuantity ~= nil then
+              cloneActive = check(currencyData.realQuantity, triggerQuantities.realCharacterQuantity, triggerOperators.realCharacterQuantity)
+            end
+            -- No warband currencies exist with a season or weekly max, hence we only need to check for a maxQuantity
+            if cloneActive and capped ~= "nil" and currencyInfo.maxQuantity and currencyInfo.maxQuantity > 0 then
+              cloneActive = tostring((currencyData.quantity or 0) >= (currencyInfo.maxQuantity or 0)) == capped
             end
 
-            -- No warband currencies exist with a season or weekly max, hence we only need to check for a maxQuantity
-            if s.show and capped ~= "nil" and currencyInfo.maxQuantity and currencyInfo.maxQuantity > 0 then
-              s.capped = currencyData.quantity >= currencyInfo.maxQuantity
-              s.show = tostring(currencyData.quantity >= (currencyInfo.maxQuantity or 0)) == capped
-            end
+            s.show = cloneActive
           end
         end
 
@@ -11619,17 +11632,17 @@ Private.event_prototypes = {
         test = "true",
       },
       {
-        name = "unitName",
+        name = "characterName",
         type = "string",
-        display = L["Unit Name"],
+        display = L["Character Name"],
         store = true,
         hidden = true,
         test = "true",
       },
       {
-        name = "unitGUID",
+        name = "characterGUID",
         type = "string",
-        display = L["Unit GUID"],
+        display = L["Character GUID"],
         store = true,
         hidden = true,
         test = "true",
