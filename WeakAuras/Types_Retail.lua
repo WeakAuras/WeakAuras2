@@ -231,11 +231,12 @@ function Private.GetTalentData(specId)
 									tinsert(talentData[4], targetNodeTalentId1)
 								end
 							end
-							if node.subTreeID then
+							local subTreeIndex = node.subTreeID and tIndexOf(subTreeIDs, node.subTreeID) or nil
+							if subTreeIndex then
 								local subTreeInfo = C_Traits.GetSubTreeInfo(configId, node.subTreeID)
 								talentData[3][1] = node.posX - subTreeInfo.posX
 								talentData[3][2] = node.posY - subTreeInfo.posY
-								talentData[3][5] = tIndexOf(subTreeIDs, node.subTreeID)
+								talentData[3][5] = subTreeIndex
 								tinsert(heroData, talentData)
 							else
 								tinsert(specData, talentData)
