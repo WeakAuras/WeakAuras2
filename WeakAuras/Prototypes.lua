@@ -7787,7 +7787,7 @@ Private.event_prototypes = {
         name = "enchanted",
         display = L["Enchanted"],
         hidden = true,
-        init = "found ~= nil",
+        init = "found == true",
         test = "true",
         store = true,
         conditionType = "bool",
