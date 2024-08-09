@@ -7737,6 +7737,16 @@ Private.event_prototypes = {
         test = "true"
       },
       {
+        name = "enchantID",
+        hidden = true,
+        test = "true",
+        display = L["Enchant ID"],
+        store = true,
+        conditionType = "number",
+        operator_types = "only_equal",
+        noProgressSource = true
+      },
+      {
         name = "stacks",
         display = L["Stack Count"],
         type = "number",
