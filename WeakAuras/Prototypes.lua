@@ -1342,7 +1342,7 @@ Private.load_prototype = {
     },
     {
       name = "dragonriding",
-      display = L["Dragonriding"],
+      display = L["Skyriding"],
       type = "tristate",
       init = WeakAuras.IsRetail() and "arg" or nil,
       width = WeakAuras.doubleWidth,
