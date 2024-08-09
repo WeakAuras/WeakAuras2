@@ -88,3 +88,4 @@ SubRegionTypes\Model.lua
 
 # Misc
 Legendaries.lua
+PatreonList.lua

@@ -1,0 +1,35 @@
+name: Create Patreon Update Pull Request
+
+on:
+#  schedule:
+#    - cron: "0 10 * * 1"
+  workflow_dispatch:
+
+jobs:
+  patreonUpdate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install patreon pip
+        run: |
+          pip install patreon
+        shell: bash
+      - name: Update Patreon list
+        run: |
+          /usr/bin/env python3 .github/scripts/patreonupate.py
+        shell: bash
+        env:
+          PATREON_CREATOR_ACCESS_TOKEN: ${{ secrets.PATREON_CREATOR_ACCESS_TOKEN}}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: update-patreonlist
+          commit-message: Update Patreons List
+          title: Update Patreon List
+          body: Update Patreon List
+          delete-branch: true
+
