@@ -1,0 +1,44 @@
+name: Update Wiki Documentation
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - WeakAurasOptions/WeakAurasAPI.lua
+
+jobs:
+  update-wiki-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout WeakAuras
+        uses: actions/checkout@v4
+        with:
+          path: WeakAuras
+
+      - name: Checkout WeakAuras Wiki
+        uses: actions/checkout@v4
+        with:
+          repository: WeakAuras/WeakAuras2.wiki
+          path: wiki
+
+      - name: Install LuaLS
+        run: |
+          brew install lua-language-server
+      - name: Update Documentation Files
+        run: |
+          ./.github/scripts/docs/update-documentation-files.sh
+        shell: bash
+
+      - name: Copy Documentation Files
+        run: |
+          mv .github/scripts/docs/docs.md wiki/API-Documentation.md
+        shell: bash
+
+      - name: Update Wiki
+        run: |
+          cd wiki
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          git commit -am "Update API Docs from ${GITHUB_SHA:0:7}" || true
+          git push

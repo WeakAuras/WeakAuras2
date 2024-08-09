@@ -1,0 +1,36 @@
+name: Regenerate Type Definitions
+
+on:
+  push:
+    branches:
+      - main
+  pull_request_target:
+
+jobs:
+  type-definitions-update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout WeakAuras
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Install LuaLS
+        run: |
+          brew install lua-language-server
+      - name: Regenerate Type Definitions
+        run: |
+          ./.github/scripts/docs/update-documentation-files.sh
+        shell: bash
+
+      - name: Push Changes to PR
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Update generated types from ${GITHUB_SHA:0:7}"
