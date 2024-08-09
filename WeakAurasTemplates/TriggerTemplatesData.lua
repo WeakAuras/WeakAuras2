@@ -450,27 +450,38 @@ templates.class.WARRIOR = {
     [1] = {
       title = L["Buffs"],
       args = {
+        { spell = 1719, type = "buff", unit = "player" }, -- Recklessness
         { spell = 6673, type = "buff", unit = "player" }, -- Battle Shout
         { spell = 7384, type = "buff", unit = "player", talent = 112123 }, -- Overpower
-        { spell = 18499, type = "buff", unit = "player", talent = 112239 }, -- Berserker Rage
+        { spell = 18499, type = "buff", unit = "player" }, -- Berserker Rage
         { spell = 23920, type = "buff", unit = "player", talent = 112253 }, -- Spell Reflection
         { spell = 52437, type = "buff", unit = "player", talent = 112126 }, -- Sudden Death
         { spell = 97463, type = "buff", unit = "player", talent = 112188 }, -- Rallying Cry
         { spell = 107574, type = "buff", unit = "player", talent = 112232 }, -- Avatar
         { spell = 118038, type = "buff", unit = "player", talent = 112128 }, -- Die by the Sword
         { spell = 132404, type = "buff", unit = "player" }, -- Shield Block
+        { spell = 190456, type = "buff", unit = "player", talent = 114738 }, -- Ignore Pain
         { spell = 202164, type = "buff", unit = "player", talent = 112219 }, -- Bounding Stride
         { spell = 227847, type = "buff", unit = "player", talent = 112314 }, -- Bladestorm
+        { spell = 228920, type = "buff", unit = "player", talent = 119138 }, -- Ravager
+        { spell = 248622, type = "buff", unit = "player", talent = 112142 }, -- In For The Kill
         { spell = 260708, type = "buff", unit = "player" }, -- Sweeping Strikes
-        { spell = 351077, type = "buff", unit = "player", talent = 112189 }, -- Second Wind
+        { spell = 334783, type = "buff", unit = "player", talent = 114739 }, -- Collateral Damage
+        { spell = 351077, type = "buff", unit = "player", talent = 112190 }, -- Second Wind
         { spell = 383290, type = "buff", unit = "player", talent = 112319 }, -- Juggernaut
         { spell = 383316, type = "buff", unit = "player", talent = 112117 }, -- Merciless Bonegrinder
+        { spell = 384100, type = "buff", unit = "player", talent = 112211 }, -- Berserker Shout
         { spell = 385013, type = "buff", unit = "player", talent = 112141 }, -- Test of Might
         { spell = 386164, type = "buff", unit = "player", talent = 112184 }, -- Battle Stance
         { spell = 386208, type = "buff", unit = "player", talent = 114643 }, -- Defensive Stance
-        { spell = 386631, type = "buff", unit = "player", talent = 114740 }, -- Battlelord
-        { spell = 390581, type = "buff", unit = "player", talent = 112312 }, -- Hurricane
         { spell = 392778, type = "buff", unit = "player", talent = 112224 }, -- Wild Strikes
+        { spell = 439601, type = "buff", unit = "player", talent = 112119 }, -- Storm of Swords
+        { spell = 440989, type = "buff", unit = "player", herotalent = 117416 }, -- Colossal Might
+        { spell = 445606, type = "buff", unit = "player", herotalent = 117385 }, -- Imminent Demise
+        { spell = 446044, type = "buff", unit = "player", herotalent = 117392 }, -- Relentless Pursuit
+        { spell = 446918, type = "buff", unit = "player", herotalent = 123409 }, -- Brutal Finish
+        { spell = 456120, type = "buff", unit = "player", herotalent = 123770 }, -- Opportunist
+        { spell = 458689, type = "buff", unit = "player", herotalent = 117384 }, -- Fierce Followthrough
         { spell = 147833, type = "buff", unit = "target", talent = 112186 }, -- Intervene
       },
       icon = 132333
@@ -481,7 +492,6 @@ templates.class.WARRIOR = {
         { spell = 355, type = "debuff", unit = "target" }, -- Taunt
         { spell = 1715, type = "debuff", unit = "target" }, -- Hamstring
         { spell = 5246, type = "debuff", unit = "target", talent = 112252 }, -- Intimidating Shout
-        { spell = 6343, type = "debuff", unit = "target", talent = 114296 }, -- Thunder Clap
         { spell = 12323, type = "debuff", unit = "target", talent = 112210 }, -- Piercing Howl
         { spell = 105771, type = "debuff", unit = "target" }, -- Charge
         { spell = 115804, type = "debuff", unit = "target" }, -- Mortal Wounds
@@ -489,34 +499,41 @@ templates.class.WARRIOR = {
         { spell = 132169, type = "debuff", unit = "target", talent = 112198 }, -- Storm Bolt
         { spell = 208086, type = "debuff", unit = "target", talent = 112144 }, -- Colossus Smash
         { spell = 262115, type = "debuff", unit = "target" }, -- Deep Wounds
-        { spell = 376080, type = "debuff", unit = "target", talent = 112247 }, -- Spear of Bastion
+        { spell = 376080, type = "debuff", unit = "target", talent = 112247 }, -- Champion's Spear
         { spell = 383704, type = "debuff", unit = "target" }, -- Fatal Mark
-        { spell = 384318, type = "debuff", unit = "target", talent = 112223 }, -- Thunderous Roar
         { spell = 386633, type = "debuff", unit = "target", talent = 112318 }, -- Executioner's Precision
         { spell = 388539, type = "debuff", unit = "target", talent = 112136 }, -- Rend
+        { spell = 397364, type = "debuff", unit = "target", talent = 112223 }, -- Thunderous Roar
+        { spell = 424597, type = "debuff", unit = "target" }, -- Storm of Destruction
+        { spell = 427040, type = "debuff", unit = "target", talent = 112133 }, -- Skullsplitter
+        { spell = 435203, type = "debuff", unit = "target", talent = 112205 }, -- Thunder Clap
+        { spell = 445584, type = "debuff", unit = "target" }, -- Marked for Execution
+        { spell = 445836, type = "debuff", unit = "target" }, -- Overwhelmed
+        { spell = 447513, type = "debuff", unit = "target" }, -- Wrecked
+        { spell = 458480, type = "debuff", unit = "target", herotalent = 117386 }, -- Boneshaker
       },
       icon = 132366
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 100, type = "ability", charges = true, requiresTarget = true }, -- Charge
-        { spell = 355, type = "ability", requiresTarget = true }, -- Taunt
+        { spell = 100, type = "ability", charges = true, requiresTarget = true, usable = true }, -- Charge
+        { spell = 355, type = "ability", debuff = true, requiresTarget = true }, -- Taunt
         { spell = 772, type = "ability", requiresTarget = true, talent = 112136 }, -- Rend
-        { spell = 845, type = "ability", overlayGlow = true, usable = true, talent = 112147 }, -- Cleave
+        { spell = 845, type = "ability", overlayGlow = true, talent = 112147 }, -- Cleave
         { spell = 1464, type = "ability", requiresTarget = true }, -- Slam
-        { spell = 1715, type = "ability", requiresTarget = true }, -- Hamstring
+        { spell = 1715, type = "ability", debuff = true, requiresTarget = true }, -- Hamstring
         { spell = 2565, type = "ability", usable = true }, -- Shield Block
         { spell = 3411, type = "ability", talent = 112186 }, -- Intervene
-        { spell = 5246, type = "ability", requiresTarget = true, talent = 112252 }, -- Intimidating Shout
-        { spell = 6343, type = "ability", talent = 114296 }, -- Thunder Clap
+        { spell = 5246, type = "ability", debuff = true, requiresTarget = true, talent = 112252 }, -- Intimidating Shout
+        { spell = 6343, type = "ability", talent = 112205 }, -- Thunder Clap
         { spell = 6544, type = "ability", talent = 112208 }, -- Heroic Leap
         { spell = 6552, type = "ability", requiresTarget = true }, -- Pummel
         { spell = 6673, type = "ability", buff = true }, -- Battle Shout
         { spell = 7384, type = "ability", charges = true, buff = true, overlayGlow = true, requiresTarget = true, talent = 112123 }, -- Overpower
-        { spell = 12294, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 112122 }, -- Mortal Strike
-        { spell = 12323, type = "ability", talent = 112210 }, -- Piercing Howl
-        { spell = 18499, type = "ability", buff = true, talent = 112239 }, -- Berserker Rage
+        { spell = 12294, type = "ability", overlayGlow = true, requiresTarget = true, talent = 112122 }, -- Mortal Strike
+        { spell = 12323, type = "ability", debuff = true, talent = 112210 }, -- Piercing Howl
+        { spell = 18499, type = "ability", buff = true }, -- Berserker Rage
         { spell = 23920, type = "ability", buff = true, talent = 112253 }, -- Spell Reflection
         { spell = 23922, type = "ability", requiresTarget = true, usable = true }, -- Shield Slam
         { spell = 34428, type = "ability", requiresTarget = true, usable = true }, -- Victory Rush
@@ -528,16 +545,24 @@ templates.class.WARRIOR = {
         { spell = 107574, type = "ability", buff = true, talent = 112232 }, -- Avatar
         { spell = 118038, type = "ability", buff = true, talent = 112128 }, -- Die by the Sword
         { spell = 163201, type = "ability", overlayGlow = true, requiresTarget = true, usable = true }, -- Execute
+        { spell = 190456, type = "ability", buff = true, talent = 114738 }, -- Ignore Pain
+        { spell = 202168, type = "ability", requiresTarget = true, talent = 112183 }, -- Impending Victory
         { spell = 227847, type = "ability", buff = true, talent = 112314 }, -- Bladestorm
+        { spell = 228920, type = "ability", buff = true, talent = 119138 }, -- Ravager
         { spell = 260643, type = "ability", requiresTarget = true, talent = 112133 }, -- Skullsplitter
         { spell = 260708, type = "ability", buff = true }, -- Sweeping Strikes
         { spell = 262161, type = "ability", talent = 112139 }, -- Warbreaker
-        { spell = 376079, type = "ability", talent = 112247 }, -- Spear of Bastion
+        { spell = 281000, type = "ability", overlayGlow = true, requiresTarget = true }, -- Execute
+        { spell = 316593, type = "ability", debuff = true, talent = 112252 }, -- Intimidating Shout
+        { spell = 376079, type = "ability", talent = 112247 }, -- Champion's Spear
         { spell = 383762, type = "ability", talent = 112220 }, -- Bitter Immunity
+        { spell = 384100, type = "ability", buff = true, talent = 112211 }, -- Berserker Shout
+        { spell = 384110, type = "ability", requiresTarget = true, talent = 112215 }, -- Wrecking Throw
         { spell = 384318, type = "ability", talent = 112223 }, -- Thunderous Roar
         { spell = 386164, type = "ability", buff = true, talent = 112184 }, -- Battle Stance
         { spell = 386208, type = "ability", buff = true, talent = 114643 }, -- Defensive Stance
-        { spell = 394062, type = "ability", requiresTarget = true, talent = 112136 }, -- Rend
+        { spell = 394062, type = "ability", requiresTarget = true, talent = 112156 }, -- Rend
+        { spell = 436358, type = "ability", overlayGlow = true, requiresTarget = true, herotalent = 117415 }, -- Demolish
       },
       icon = 132355
     },
@@ -566,7 +591,7 @@ templates.class.WARRIOR = {
       args = {
         { spell = 1719, type = "buff", unit = "player", talent = 112281 }, -- Recklessness
         { spell = 6673, type = "buff", unit = "player" }, -- Battle Shout
-        { spell = 18499, type = "buff", unit = "player", talent = 112239 }, -- Berserker Rage
+        { spell = 18499, type = "buff", unit = "player" }, -- Berserker Rage
         { spell = 23920, type = "buff", unit = "player", talent = 112253 }, -- Spell Reflection
         { spell = 85739, type = "buff", unit = "player" }, -- Whirlwind
         { spell = 97463, type = "buff", unit = "player", talent = 112188 }, -- Rallying Cry
@@ -575,10 +600,12 @@ templates.class.WARRIOR = {
         { spell = 184362, type = "buff", unit = "player" }, -- Enrage
         { spell = 184364, type = "buff", unit = "player", talent = 112264 }, -- Enraged Regeneration
         { spell = 202164, type = "buff", unit = "player", talent = 112219 }, -- Bounding Stride
+        { spell = 228920, type = "buff", unit = "player", talent = 112256 }, -- Ravager
+        { spell = 280746, type = "buff", unit = "player" }, -- Barbarian
         { spell = 280776, type = "buff", unit = "player", talent = 112300 }, -- Sudden Death
-        { spell = 311193, type = "buff", unit = "player", talent = 112180 }, -- Elysian Might
         { spell = 335082, type = "buff", unit = "player", talent = 112275 }, -- Frenzy
-        { spell = 351077, type = "buff", unit = "player", talent = 112189 }, -- Second Wind
+        { spell = 351077, type = "buff", unit = "player", talent = 112190 }, -- Second Wind
+        { spell = 384100, type = "buff", unit = "player", talent = 112211 }, -- Berserker Shout
         { spell = 386196, type = "buff", unit = "player", talent = 112182 }, -- Berserker Stance
         { spell = 386208, type = "buff", unit = "player", talent = 114644 }, -- Defensive Stance
         { spell = 391688, type = "buff", unit = "player", talent = 112288 }, -- Dancing Blades
@@ -586,7 +613,19 @@ templates.class.WARRIOR = {
         { spell = 392778, type = "buff", unit = "player", talent = 112224 }, -- Wild Strikes
         { spell = 393931, type = "buff", unit = "player", talent = 112280 }, -- Slaughtering Strikes
         { spell = 393951, type = "buff", unit = "player", talent = 112274 }, -- Bloodcraze
+        { spell = 396752, type = "buff", unit = "player" }, -- Crushing Blow
+        { spell = 435615, type = "buff", unit = "player", herotalent = 117382 }, -- Thunder Blast
+        { spell = 437121, type = "buff", unit = "player", herotalent = 117404 }, -- Burst of Power
+        { spell = 437152, type = "buff", unit = "player", herotalent = 118836 }, -- Steadfast as the Peaks
+        { spell = 438591, type = "buff", unit = "player", herotalent = 117395 }, -- Keep Your Feet on the Ground
+        { spell = 445606, type = "buff", unit = "player", herotalent = 117385 }, -- Imminent Demise
+        { spell = 446035, type = "buff", unit = "player", talent = 119139 }, -- Bladestorm
+        { spell = 446044, type = "buff", unit = "player", herotalent = 117392 }, -- Relentless Pursuit
+        { spell = 446918, type = "buff", unit = "player", herotalent = 123409 }, -- Brutal Finish
+        { spell = 458689, type = "buff", unit = "player", herotalent = 117384 }, -- Fierce Followthrough
+        { spell = 461288, type = "buff", unit = "player" }, -- Bloodbath
         { spell = 147833, type = "buff", unit = "target", talent = 112186 }, -- Intervene
+        { spell = 438598, type = "buff", unit = "target", herotalent = 118835 }, -- Storm Shield
       },
       icon = 136224
     },
@@ -596,61 +635,72 @@ templates.class.WARRIOR = {
         { spell = 355, type = "debuff", unit = "target" }, -- Taunt
         { spell = 1715, type = "debuff", unit = "target" }, -- Hamstring
         { spell = 5246, type = "debuff", unit = "target", talent = 112252 }, -- Intimidating Shout
-        { spell = 6343, type = "debuff", unit = "target", talent = 114295 }, -- Thunder Clap
         { spell = 12323, type = "debuff", unit = "target", talent = 112210 }, -- Piercing Howl
         { spell = 105771, type = "debuff", unit = "target" }, -- Charge
         { spell = 132168, type = "debuff", unit = "target", talent = 112242 }, -- Shockwave
         { spell = 132169, type = "debuff", unit = "target", talent = 112198 }, -- Storm Bolt
-        { spell = 376080, type = "debuff", unit = "target", talent = 112247 }, -- Spear of Bastion
-        { spell = 384318, type = "debuff", unit = "target", talent = 112223 }, -- Thunderous Roar
+        { spell = 376080, type = "debuff", unit = "target", talent = 112247 }, -- Champion's Spear
         { spell = 385042, type = "debuff", unit = "target" }, -- Gushing Wound
         { spell = 385060, type = "debuff", unit = "target", talent = 112289 }, -- Odyn's Fury
+        { spell = 397364, type = "debuff", unit = "target", talent = 112223 }, -- Thunderous Roar
+        { spell = 435203, type = "debuff", unit = "target", talent = 112205 }, -- Thunder Clap
+        { spell = 445584, type = "debuff", unit = "target" }, -- Marked for Execution
+        { spell = 445836, type = "debuff", unit = "target" }, -- Overwhelmed
       },
       icon = 132154
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 100, type = "ability", charges = true, requiresTarget = true }, -- Charge
-        { spell = 355, type = "ability", requiresTarget = true }, -- Taunt
+        { spell = 100, type = "ability", charges = true, requiresTarget = true, usable = true }, -- Charge
+        { spell = 355, type = "ability", debuff = true, requiresTarget = true }, -- Taunt
+        { spell = 772, type = "ability", requiresTarget = true, talent = 112136 }, -- Rend
+        { spell = 845, type = "ability", talent = 112147 }, -- Cleave
         { spell = 1464, type = "ability", requiresTarget = true }, -- Slam
-        { spell = 1715, type = "ability", requiresTarget = true }, -- Hamstring
+        { spell = 1715, type = "ability", debuff = true, requiresTarget = true }, -- Hamstring
         { spell = 1719, type = "ability", buff = true, talent = 112281 }, -- Recklessness
-        { spell = 2565, type = "ability", charges = true, usable = true }, -- Shield Block
+        { spell = 2565, type = "ability", usable = true }, -- Shield Block
         { spell = 3411, type = "ability", talent = 112186 }, -- Intervene
-        { spell = 5246, type = "ability", requiresTarget = true, talent = 112252 }, -- Intimidating Shout
+        { spell = 5246, type = "ability", debuff = true, requiresTarget = true, talent = 112252 }, -- Intimidating Shout
         { spell = 5308, type = "ability", overlayGlow = true, requiresTarget = true, usable = true }, -- Execute
-        { spell = 6343, type = "ability", talent = 114295 }, -- Thunder Clap
-        { spell = 6544, type = "ability", talent = 112208 }, -- Heroic Leap
+        { spell = 6343, type = "ability", overlayGlow = true, talent = 112205 }, -- Thunder Clap
+        { spell = 6544, type = "ability", charges = true, overlayGlow = true, talent = 112208 }, -- Heroic Leap
         { spell = 6552, type = "ability", requiresTarget = true }, -- Pummel
         { spell = 6673, type = "ability", buff = true }, -- Battle Shout
-        { spell = 12323, type = "ability", talent = 112210 }, -- Piercing Howl
-        { spell = 18499, type = "ability", buff = true, talent = 112239 }, -- Berserker Rage
-        { spell = 23881, type = "ability", requiresTarget = true, talent = 112261 }, -- Bloodthirst
+        { spell = 12323, type = "ability", debuff = true, talent = 112210 }, -- Piercing Howl
+        { spell = 18499, type = "ability", buff = true }, -- Berserker Rage
+        { spell = 23881, type = "ability", overlayGlow = true, requiresTarget = true, talent = 112261 }, -- Bloodthirst
         { spell = 23920, type = "ability", buff = true, talent = 112253 }, -- Spell Reflection
-        { spell = 23922, type = "ability", requiresTarget = true, usable = true }, -- Shield Slam
+        { spell = 23922, type = "ability", overlayGlow = true, requiresTarget = true, usable = true }, -- Shield Slam
         { spell = 34428, type = "ability", requiresTarget = true }, -- Victory Rush
         { spell = 46968, type = "ability", talent = 112242 }, -- Shockwave
         { spell = 57755, type = "ability", requiresTarget = true }, -- Heroic Throw
+        { spell = 64382, type = "ability", requiresTarget = true, talent = 112214 }, -- Shattering Throw
         { spell = 85288, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 112265 }, -- Raging Blow
         { spell = 97462, type = "ability", talent = 112188 }, -- Rallying Cry
-        { spell = 107570, type = "ability", requiresTarget = true, talent = 112198 }, -- Storm Bolt
+        { spell = 107570, type = "ability", talent = 112198 }, -- Storm Bolt
         { spell = 107574, type = "ability", buff = true, talent = 114770 }, -- Avatar
         { spell = 184364, type = "ability", buff = true, talent = 112264 }, -- Enraged Regeneration
         { spell = 184367, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 112277 }, -- Rampage
-        { spell = 190411, type = "ability" }, -- Whirlwind
         { spell = 202168, type = "ability", requiresTarget = true, talent = 112183 }, -- Impending Victory
-        { spell = 228920, type = "ability", charges = true, talent = 112256 }, -- Ravager
+        { spell = 228920, type = "ability", buff = true, talent = 112256 }, -- Ravager
         { spell = 280735, type = "ability", overlayGlow = true, requiresTarget = true }, -- Execute
-        { spell = 315720, type = "ability", requiresTarget = true, usable = true, talent = 112295 }, -- Onslaught
-        { spell = 376079, type = "ability", talent = 112247 }, -- Spear of Bastion
+        { spell = 315720, type = "ability", requiresTarget = true, talent = 112295 }, -- Onslaught
+        { spell = 316593, type = "ability", debuff = true, requiresTarget = true, talent = 112252 }, -- Intimidating Shout
+        { spell = 335096, type = "ability", overlayGlow = true, requiresTarget = true }, -- Bloodbath
+        { spell = 335097, type = "ability", charges = true, overlayGlow = true, requiresTarget = true }, -- Crushing Blow
+        { spell = 376079, type = "ability", talent = 112247 }, -- Champion's Spear
         { spell = 383762, type = "ability", talent = 112220 }, -- Bitter Immunity
+        { spell = 384100, type = "ability", buff = true, talent = 112211 }, -- Berserker Shout
         { spell = 384110, type = "ability", requiresTarget = true, talent = 112215 }, -- Wrecking Throw
         { spell = 384318, type = "ability", talent = 112223 }, -- Thunderous Roar
         { spell = 385059, type = "ability", talent = 112289 }, -- Odyn's Fury
+        { spell = 386164, type = "ability", talent = 112184 }, -- Battle Stance
         { spell = 386196, type = "ability", buff = true, talent = 112182 }, -- Berserker Stance
         { spell = 386208, type = "ability", buff = true, talent = 114644 }, -- Defensive Stance
-        { spell = 396719, type = "ability", talent = 114295 }, -- Thunder Clap
+        { spell = 435222, type = "ability", overlayGlow = true, herotalent = 117382 }, -- Thunder Blast
+        { spell = 436358, type = "ability", requiresTarget = true, herotalent = 117415 }, -- Demolish
+        { spell = 446035, type = "ability", charges = true, buff = true, talent = 119139 }, -- Bladestorm
       },
       icon = 136012
     },
@@ -677,26 +727,37 @@ templates.class.WARRIOR = {
     [1] = {
       title = L["Buffs"],
       args = {
-        { spell = 871, type = "buff", unit = "player", talent = 871 }, -- Shield Wall
+        { spell = 871, type = "buff", unit = "player", talent = 112167 }, -- Shield Wall
+        { spell = 5302, type = "buff", unit = "player" }, -- Revenge!
         { spell = 6673, type = "buff", unit = "player" }, -- Battle Shout
-        { spell = 12975, type = "buff", unit = "player", talent = 12975 }, -- Last Stand
-        { spell = 18499, type = "buff", unit = "player", talent = 18499 }, -- Berserker Rage
-        { spell = 23920, type = "buff", unit = "player", talent = 23920 }, -- Spell Reflection
-        { spell = 52437, type = "buff", unit = "player", talent = 29725 }, -- Sudden Death
-        { spell = 97463, type = "buff", unit = "player", talent = 97462 }, -- Rallying Cry
+        { spell = 12975, type = "buff", unit = "player", talent = 112151 }, -- Last Stand
+        { spell = 18499, type = "buff", unit = "player" }, -- Berserker Rage
+        { spell = 23920, type = "buff", unit = "player", talent = 112253 }, -- Spell Reflection
+        { spell = 52437, type = "buff", unit = "player", talent = 112111 }, -- Sudden Death
+        { spell = 97463, type = "buff", unit = "player", talent = 112188 }, -- Rallying Cry
         { spell = 132404, type = "buff", unit = "player" }, -- Shield Block
-        { spell = 190456, type = "buff", unit = "player", talent = 190456 }, -- Ignore Pain
-        { spell = 202164, type = "buff", unit = "player", talent = 202163 }, -- Bounding Stride
-        { spell = 202602, type = "buff", unit = "player", talent = 202603 }, -- Into the Fray
-        { spell = 351077, type = "buff", unit = "player", talent = 29838 }, -- Second Wind
-        { spell = 383290, type = "buff", unit = "player", talent = 393967 }, -- Juggernaut
-        { spell = 385842, type = "buff", unit = "player", talent = 385843 }, -- Show of Force
-        { spell = 386029, type = "buff", unit = "player", talent = 386030 }, -- Brace For Impact
-        { spell = 386164, type = "buff", unit = "player", talent = 386164 }, -- Battle Stance
-        { spell = 386208, type = "buff", unit = "player", talent = 386208 }, -- Defensive Stance
-        { spell = 386478, type = "buff", unit = "player", talent = 386477 }, -- Violent Outburst
+        { spell = 190456, type = "buff", unit = "player", talent = 112149 }, -- Ignore Pain
+        { spell = 202164, type = "buff", unit = "player", talent = 112219 }, -- Bounding Stride
+        { spell = 202602, type = "buff", unit = "player", talent = 112175 }, -- Into the Fray
+        { spell = 351077, type = "buff", unit = "player", talent = 112190 }, -- Second Wind
+        { spell = 384043, type = "buff", unit = "player", talent = 112327 }, -- Unnerving Focus
+        { spell = 385842, type = "buff", unit = "player", talent = 112177 }, -- Show of Force
+        { spell = 386029, type = "buff", unit = "player", talent = 112150 }, -- Brace For Impact
+        { spell = 386164, type = "buff", unit = "player", talent = 112112 }, -- Battle Stance
+        { spell = 386208, type = "buff", unit = "player", talent = 112187 }, -- Defensive Stance
         { spell = 386486, type = "buff", unit = "player" }, -- Seeing Red
-        { spell = 392778, type = "buff", unit = "player", talent = 382946 }, -- Wild Strikes
+        { spell = 392778, type = "buff", unit = "player", talent = 112224 }, -- Wild Strikes
+        { spell = 392966, type = "buff", unit = "player", talent = 112110 }, -- Spell Block
+        { spell = 393968, type = "buff", unit = "player", talent = 112322 }, -- Juggernaut
+        { spell = 394313, type = "buff", unit = "player", talent = 112113 }, -- Battering Ram
+        { spell = 401150, type = "buff", unit = "player", talent = 114769 }, -- Avatar
+        { spell = 435615, type = "buff", unit = "player", talent = 117382 }, -- Thunder Blast
+        { spell = 437121, type = "buff", unit = "player", talent = 117404 }, -- Burst of Power
+        { spell = 437152, type = "buff", unit = "player", talent = 118836 }, -- Steadfast as the Peaks
+        { spell = 438591, type = "buff", unit = "player", talent = 117395 }, -- Keep Your Feet on the Ground
+        { spell = 440989, type = "buff", unit = "player", talent = 117416 }, -- Colossal Might
+        { spell = 147833, type = "buff", unit = "target", talent = 112186 }, -- Intervene
+        { spell = 438598, type = "buff", unit = "target", talent = 118835 }, -- Storm Shield
       },
       icon = 1377132
     },
@@ -707,40 +768,42 @@ templates.class.WARRIOR = {
         { spell = 1160, type = "debuff", unit = "target", talent = 112159 }, -- Demoralizing Shout
         { spell = 1715, type = "debuff", unit = "target" }, -- Hamstring
         { spell = 5246, type = "debuff", unit = "target", talent = 112252 }, -- Intimidating Shout
-        { spell = 6343, type = "debuff", unit = "target", talent = 112205 }, -- Thunder Clap
-        { spell = 12323, type = "debuff", unit = "target", talent = 112210 }, -- Piercing Howl
         { spell = 105771, type = "debuff", unit = "target" }, -- Charge
         { spell = 115767, type = "debuff", unit = "target" }, -- Deep Wounds
         { spell = 132168, type = "debuff", unit = "target", talent = 112242 }, -- Shockwave
         { spell = 132169, type = "debuff", unit = "target", talent = 112198 }, -- Storm Bolt
-        { spell = 376080, type = "debuff", unit = "target", talent = 112247 }, -- Spear of Bastion
-        { spell = 384318, type = "debuff", unit = "target", talent = 112223 }, -- Thunderous Roar
+        { spell = 275335, type = "debuff", unit = "target", talent = 112323 }, -- Punish
+        { spell = 376080, type = "debuff", unit = "target", talent = 112247 }, -- Champion's Spear
         { spell = 385954, type = "debuff", unit = "target", talent = 112173 }, -- Shield Charge
         { spell = 386071, type = "debuff", unit = "target", talent = 112161 }, -- Disrupting Shout
+        { spell = 388539, type = "debuff", unit = "target", talent = 112156 }, -- Rend
+        { spell = 397364, type = "debuff", unit = "target", talent = 112223 }, -- Thunderous Roar
+        { spell = 435203, type = "debuff", unit = "target", talent = 112205 }, -- Thunder Clap
+        { spell = 447513, type = "debuff", unit = "target" }, -- Wrecked
+        { spell = 458480, type = "debuff", unit = "target", talent = 117386 }, -- Boneshaker
       },
       icon = 132090
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 100, type = "ability", charges = true, requiresTarget = true }, -- Charge
-        { spell = 355, type = "ability", requiresTarget = true }, -- Taunt
-        { spell = 772, type = "ability", requiresTarget = true, talent = 112156 }, -- Rend
-        { spell = 871, type = "ability", charges = true, buff = true, talent = 112167 }, -- Shield Wall
-        { spell = 1160, type = "ability", talent = 112159 }, -- Demoralizing Shout
-        { spell = 1464, type = "ability", requiresTarget = true }, -- Slam
-        { spell = 1715, type = "ability", requiresTarget = true }, -- Hamstring
+        { spell = 100, type = "ability", charges = true, requiresTarget = true, usable = true }, -- Charge
+        { spell = 355, type = "ability", debuff = true, requiresTarget = true }, -- Taunt
+        { spell = 871, type = "ability", buff = true, requiresTarget = true, talent = 112167 }, -- Shield Wall
+        { spell = 1160, type = "ability", debuff = true, talent = 112159 }, -- Demoralizing Shout
+        { spell = 1161, type = "ability", talent = 112163 }, -- Challenging Shout
+        { spell = 1715, type = "ability", debuff = true, requiresTarget = true }, -- Hamstring
         { spell = 2565, type = "ability", charges = true }, -- Shield Block
-        { spell = 3411, type = "ability", talent = 112186 }, -- Intervene
-        { spell = 5246, type = "ability", requiresTarget = true, talent = 112252 }, -- Intimidating Shout
-        { spell = 6343, type = "ability", talent = 112205 }, -- Thunder Clap
+        { spell = 3411, type = "ability", requiresTarget = true, talent = 112186 }, -- Intervene
+        { spell = 5246, type = "ability", debuff = true, requiresTarget = true, talent = 112252 }, -- Intimidating Shout
+        { spell = 6343, type = "ability", overlayGlow = true, talent = 112205 }, -- Thunder Clap
         { spell = 6544, type = "ability", talent = 112208 }, -- Heroic Leap
         { spell = 6552, type = "ability", requiresTarget = true }, -- Pummel
+        { spell = 6572, type = "ability", overlayGlow = true, talent = 112152 }, -- Revenge
         { spell = 6673, type = "ability", buff = true }, -- Battle Shout
         { spell = 12323, type = "ability", talent = 112210 }, -- Piercing Howl
         { spell = 12975, type = "ability", buff = true, talent = 112151 }, -- Last Stand
-        { spell = 18499, type = "ability", buff = true, talent = 112239 }, -- Berserker Rage
-        { spell = 20243, type = "ability", requiresTarget = true }, -- Devastate
+        { spell = 18499, type = "ability", buff = true }, -- Berserker Rage
         { spell = 23920, type = "ability", buff = true, talent = 112253 }, -- Spell Reflection
         { spell = 23922, type = "ability", overlayGlow = true, requiresTarget = true }, -- Shield Slam
         { spell = 34428, type = "ability", requiresTarget = true, usable = true }, -- Victory Rush
@@ -752,18 +815,24 @@ templates.class.WARRIOR = {
         { spell = 163201, type = "ability", overlayGlow = true, requiresTarget = true, usable = true }, -- Execute
         { spell = 190456, type = "ability", buff = true, talent = 112149 }, -- Ignore Pain
         { spell = 202168, type = "ability", requiresTarget = true, talent = 112183 }, -- Impending Victory
-        { spell = 228920, type = "ability", charges = true, talent = 112304 }, -- Ravager
-        { spell = 281000, type = "ability", requiresTarget = true }, -- Execute
-        { spell = 376079, type = "ability", talent = 112247 }, -- Spear of Bastion
-        { spell = 383762, type = "ability", talent = 112220 }, -- Bitter Immunity
-        { spell = 384090, type = "ability", requiresTarget = true, talent = 112202 }, -- Titanic Throw
+        { spell = 227847, type = "ability", talent = 119139 }, -- Bladestorm
+        { spell = 228920, type = "ability", talent = 112304 }, -- Ravager
+        { spell = 316593, type = "ability", debuff = true, requiresTarget = true, talent = 112252 }, -- Intimidating Shout
+        { spell = 376079, type = "ability", talent = 112247 }, -- Champion's Spear
+        { spell = 383762, type = "ability", requiresTarget = true, talent = 112220 }, -- Bitter Immunity
+        { spell = 384100, type = "ability", talent = 112211 }, -- Berserker Shout
         { spell = 384110, type = "ability", requiresTarget = true, talent = 112215 }, -- Wrecking Throw
         { spell = 384318, type = "ability", talent = 112223 }, -- Thunderous Roar
         { spell = 385952, type = "ability", requiresTarget = true, talent = 112173 }, -- Shield Charge
-        { spell = 386071, type = "ability", talent = 112161 }, -- Disrupting Shout
+        { spell = 386071, type = "ability", debuff = true, talent = 112161 }, -- Disrupting Shout
         { spell = 386164, type = "ability", buff = true, talent = 112112 }, -- Battle Stance
+        { spell = 386196, type = "ability", talent = 112182 }, -- Berserker Stance
         { spell = 386208, type = "ability", buff = true, talent = 112187 }, -- Defensive Stance
+        { spell = 392966, type = "ability", buff = true, talent = 112110 }, -- Spell Block
         { spell = 394062, type = "ability", requiresTarget = true, talent = 112156 }, -- Rend
+        { spell = 401150, type = "ability", buff = true, talent = 114769 }, -- Avatar
+        { spell = 435222, type = "ability", overlayGlow = true, herotalent = 117382 }, -- Thunder Blast
+        { spell = 436358, type = "ability", overlayGlow = true, requiresTarget = true, herotalent = 117415 }, -- Demolish
       },
       icon = 134951
     },
