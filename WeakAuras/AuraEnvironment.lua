@@ -557,8 +557,20 @@ local exec_env_custom = setmetatable({
       return {}
     elseif overridden[k] then
       return overridden[k]
-    else
+    elseif _G[k] then
       return _G[k]
+    elseif k:find(".", 1, true) then
+      local f
+      for i, n in ipairs{strsplit(".", k)} do
+        if i == 1 then
+          f = _G[n]
+        elseif f then
+          f = f[n]
+        else
+          return
+        end
+      end
+      return f
     end
   end,
   __newindex = function(table, key, value)
