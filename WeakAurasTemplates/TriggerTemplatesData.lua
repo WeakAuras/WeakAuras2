@@ -5365,7 +5365,7 @@ tinsert(templates.general.args, {
   forceOwnOnly = true,
   ownOnly = nil,
   overideTitle = L["Bloodlust/Heroism"],
-  spellIds = {2825, 32182, 80353, 264667}}
+  spellIds = {2825, 32182, 80353, 264667, 390386}}
 );
 
 -- Meta template for Power triggers
