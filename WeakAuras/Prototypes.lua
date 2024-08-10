@@ -11379,11 +11379,6 @@ Private.event_prototypes = {
         state.characterGUID = UnitGUID("player")
         state.mainCharacter = true
 
-        -- Apply shared values to main state
-        for key, value in pairs(sharedStateValues) do
-          state[key] = value
-        end
-
         if clone then
           for i, currencyData in ipairs(accountCurrencyData) do
             local cloneActive = not primaryCheckFailed
@@ -11395,11 +11390,6 @@ Private.event_prototypes = {
             s.characterName = currencyData.characterName
             s.characterGUID = currencyData.characterGUID
             s.mainCharacter = false
-
-            -- Apply shared values to clone state
-            for key, value in pairs(sharedStateValues) do
-              s[key] = value
-            end
 
             -- Check quantity-related values
             if cloneActive and triggerQuantities.quantity ~= nil then
@@ -11414,6 +11404,13 @@ Private.event_prototypes = {
             end
 
             s.show = cloneActive
+          end
+        end
+
+        -- Apply shared values to states
+        for _, state in pairs(states) do
+          for key, value in pairs(sharedStateValues) do
+            state[key] = value
           end
         end
 
