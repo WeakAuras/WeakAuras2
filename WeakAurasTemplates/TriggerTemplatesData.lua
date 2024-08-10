@@ -2648,37 +2648,50 @@ templates.class.MAGE = {
     [1] = {
       title = L["Buffs"],
       args = {
-        { spell = 66, type = "buff", unit = "player", talent = 80177 }, -- Invisibility
+        { spell = 66, type = "buff", unit = "player" }, -- Invisibility
         { spell = 130, type = "buff", unit = "player" }, -- Slow Fall
         { spell = 1459, type = "buff", unit = "player" }, -- Arcane Intellect
-        { spell = 12051, type = "buff", unit = "player", talent = 80209 }, -- Evocation
+        { spell = 12051, type = "buff", unit = "player", talent = 126529 }, -- Evocation
         { spell = 45438, type = "buff", unit = "player", talent = 80181 }, -- Ice Block
+        { spell = 55342, type = "buff", unit = "player", talent = 80183 }, -- Mirror Image
         { spell = 80353, type = "buff", unit = "player" }, -- Time Warp
-        { spell = 108839, type = "buff", unit = "player", talent = 80162 }, -- Ice Floes
         { spell = 110960, type = "buff", unit = "player", talent = 115877 }, -- Greater Invisibility
-        { spell = 116014, type = "buff", unit = "player", talent = 80171 }, -- Rune of Power
-        { spell = 116267, type = "buff", unit = "player", talent = 80172 }, -- Incanter's Flow
-        { spell = 205025, type = "buff", unit = "player", talent = 80208 }, -- Presence of Mind
-        { spell = 210126, type = "buff", unit = "player", talent = 80207 }, -- Arcane Familiar
+        { spell = 116267, type = "buff", unit = "player", talent = 80177 }, -- Incanter's Flow
+        { spell = 205025, type = "buff", unit = "player", talent = 126530 }, -- Presence of Mind
+        { spell = 210126, type = "buff", unit = "player", talent = 126509 }, -- Arcane Familiar
         { spell = 235450, type = "buff", unit = "player", talent = 80180 }, -- Prismatic Barrier
-        { spell = 236298, type = "buff", unit = "player", talent = 80202 }, -- Chrono Shift
-        { spell = 263725, type = "buff", unit = "player", talent = 80298 }, -- Clearcasting
-        { spell = 264774, type = "buff", unit = "player", talent = 80206 }, -- Rule of Threes
-        { spell = 321388, type = "buff", unit = "player", talent = 80204 }, -- Enlightened
+        { spell = 263725, type = "buff", unit = "player" }, -- Clearcasting
+        { spell = 321388, type = "buff", unit = "player", talent = 126540 }, -- Enlightened
         { spell = 342246, type = "buff", unit = "player", talent = 80174 }, -- Alter Time
-        { spell = 365362, type = "buff", unit = "player", talent = 80299 }, -- Arcane Surge
+        { spell = 365362, type = "buff", unit = "player", talent = 126519 }, -- Arcane Surge
         { spell = 382290, type = "buff", unit = "player", talent = 80169 }, -- Tempest Barrier
-        { spell = 382440, type = "buff", unit = "player", talent = 80141 }, -- Shifting Power
+        { spell = 382294, type = "buff", unit = "player", talent = 80170 }, -- Incantation of Swiftness
+        { spell = 382440, type = "buff", unit = "player", talent = 80171 }, -- Shifting Power
         { spell = 382824, type = "buff", unit = "player", talent = 80156 }, -- Temporal Velocity
-        { spell = 383783, type = "buff", unit = "player", talent = 80295 }, -- Nether Precision
-        { spell = 383997, type = "buff", unit = "player", talent = 80205 }, -- Arcane Tempo
-        { spell = 384267, type = "buff", unit = "player", talent = 80210 }, -- Siphon Storm
-        { spell = 384455, type = "buff", unit = "player", talent = 80195 }, -- Arcane Harmony
-        { spell = 384859, type = "buff", unit = "player", talent = 80196 }, -- Orb Barrage
-        { spell = 384865, type = "buff", unit = "player", talent = 80203 }, -- Foresight
+        { spell = 383783, type = "buff", unit = "player", talent = 126543 }, -- Nether Precision
+        { spell = 383997, type = "buff", unit = "player", talent = 126506 }, -- Arcane Tempo
+        { spell = 384267, type = "buff", unit = "player" }, -- Siphon Storm
+        { spell = 384379, type = "buff", unit = "player", talent = 126508 }, -- Concentration
+        { spell = 384455, type = "buff", unit = "player", talent = 126517 }, -- Arcane Harmony
         { spell = 389714, type = "buff", unit = "player" }, -- Displacement Beacon
-        { spell = 393939, type = "buff", unit = "player", talent = 80291 }, -- Impetus
+        { spell = 393939, type = "buff", unit = "player", talent = 126550 }, -- Impetus
         { spell = 394195, type = "buff", unit = "player", talent = 80179 }, -- Overflowing Energy
+        { spell = 414658, type = "buff", unit = "player", talent = 80141 }, -- Ice Cold
+        { spell = 444754, type = "buff", unit = "player", herotalent = 117262 }, -- Slippery Slinging
+        { spell = 444981, type = "buff", unit = "player", herotalent = 123407 }, -- Unerring Proficiency
+        { spell = 448604, type = "buff", unit = "player" }, -- Spellfire Sphere
+        { spell = 448659, type = "buff", unit = "player" }, -- Arcane Phoenix
+        { spell = 449322, type = "buff", unit = "player", herotalent = 117256 }, -- Mana Cascade
+        { spell = 449331, type = "buff", unit = "player", herotalent = 117252 }, -- Merely a Setback
+        { spell = 449400, type = "buff", unit = "player", herotalent = 117250 }, -- Spellfire Spheres
+        { spell = 451038, type = "buff", unit = "player" }, -- Arcane Soul
+        { spell = 451049, type = "buff", unit = "player", herotalent = 117247 }, -- Burden of Power
+        { spell = 451073, type = "buff", unit = "player", herotalent = 117248 }, -- Glorious Incandescence
+        { spell = 453601, type = "buff", unit = "player", talent = 126546 }, -- Aether Attunement
+        { spell = 453758, type = "buff", unit = "player", talent = 126544 }, -- Leydrinker
+        { spell = 461145, type = "buff", unit = "player" }, -- Lingering Embers
+        { spell = 461515, type = "buff", unit = "player", talent = 126545 }, -- Static Cloud
+        { spell = 461531, type = "buff", unit = "player", talent = 126516 }, -- Big Brained
       },
       icon = 136096
     },
@@ -2687,65 +2700,63 @@ templates.class.MAGE = {
       args = {
         { spell = 122, type = "debuff", unit = "target" }, -- Frost Nova
         { spell = 31589, type = "debuff", unit = "target", talent = 80154 }, -- Slow
-        { spell = 31661, type = "debuff", unit = "target", talent = 80147 }, -- Dragon's Breath
+        { spell = 31661, type = "debuff", unit = "target", talent = 125819 }, -- Dragon's Breath
         { spell = 59638, type = "debuff", unit = "target" }, -- Frostbolt
-        { spell = 114923, type = "debuff", unit = "target", talent = 80199 }, -- Nether Tempest
-        { spell = 155158, type = "debuff", unit = "target" }, -- Meteor Burn
+        { spell = 82691, type = "debuff", unit = "target", talent = 80144 }, -- Ring of Frost
         { spell = 157981, type = "debuff", unit = "target", talent = 80160 }, -- Blast Wave
-        { spell = 157997, type = "debuff", unit = "target", talent = 80186 }, -- Ice Nova
+        { spell = 157997, type = "debuff", unit = "target", talent = 125820 }, -- Ice Nova
         { spell = 205708, type = "debuff", unit = "target" }, -- Chilled
-        { spell = 210824, type = "debuff", unit = "target", talent = 80302 }, -- Touch of the Magi
-        { spell = 212792, type = "debuff", unit = "target" }, -- Cone of Cold
-        { spell = 236299, type = "debuff", unit = "target", talent = 80202 }, -- Chrono Shift
-        { spell = 376103, type = "debuff", unit = "target", talent = 80304 }, -- Radiant Spark
-        { spell = 376104, type = "debuff", unit = "target" }, -- Radiant Spark Vulnerability
+        { spell = 210824, type = "debuff", unit = "target", talent = 126538 }, -- Touch of the Magi
         { spell = 386770, type = "debuff", unit = "target", talent = 80143 }, -- Freezing Cold
+        { spell = 444735, type = "debuff", unit = "target" }, -- Embedded Arcane Splinter
+        { spell = 453599, type = "debuff", unit = "target", talent = 126533 }, -- Arcane Debilitation
+        { spell = 454004, type = "debuff", unit = "target", talent = 126504 }, -- Nether Munitions
+        { spell = 454214, type = "debuff", unit = "target", herotalent = 117266 }, -- Controlled Instincts
+        { spell = 461498, type = "debuff", unit = "target", talent = 126526 }, -- Dematerialize
       },
       icon = 135848
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 66, type = "ability", buff = true, talent = 80177 }, -- Invisibility
+        { spell = 66, type = "ability", buff = true }, -- Invisibility
         { spell = 116, type = "ability", requiresTarget = true }, -- Frostbolt
         { spell = 120, type = "ability" }, -- Cone of Cold
-        { spell = 122, type = "ability", charges = true }, -- Frost Nova
+        { spell = 122, type = "ability", charges = true, debuff = true }, -- Frost Nova
         { spell = 475, type = "ability", talent = 80175 }, -- Remove Curse
-        { spell = 1953, type = "ability" }, -- Blink
         { spell = 2139, type = "ability", requiresTarget = true }, -- Counterspell
-        { spell = 5143, type = "ability", overlayGlow = true, requiresTarget = true, talent = 80307 }, -- Arcane Missiles
-        { spell = 12051, type = "ability", buff = true, talent = 80209 }, -- Evocation
+        { spell = 5143, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 126537 }, -- Arcane Missiles
+        { spell = 12051, type = "ability", buff = true, talent = 126529 }, -- Evocation
         { spell = 30449, type = "ability", requiresTarget = true, talent = 80140 }, -- Spellsteal
         { spell = 30451, type = "ability", requiresTarget = true }, -- Arcane Blast
-        { spell = 31589, type = "ability", requiresTarget = true, talent = 80154 }, -- Slow
-        { spell = 31661, type = "ability", talent = 80147 }, -- Dragon's Breath
-        { spell = 44425, type = "ability", requiresTarget = true, talent = 80306 }, -- Arcane Barrage
-        { spell = 45438, type = "ability", buff = true, usable = true, talent = 80181 }, -- Ice Block
-        { spell = 55342, type = "ability", talent = 80183 }, -- Mirror Image
+        { spell = 31589, type = "ability", debuff = true, requiresTarget = true, talent = 80154 }, -- Slow
+        { spell = 31661, type = "ability", debuff = true, talent = 125819 }, -- Dragon's Breath
+        { spell = 44425, type = "ability", overlayGlow = true, requiresTarget = true }, -- Arcane Barrage
+        { spell = 45438, type = "ability", buff = true, talent = 80181 }, -- Ice Block
+        { spell = 55342, type = "ability", buff = true, talent = 80183 }, -- Mirror Image
         { spell = 80353, type = "ability", buff = true }, -- Time Warp
-        { spell = 108839, type = "ability", charges = true, buff = true, talent = 80162 }, -- Ice Floes
-        { spell = 108853, type = "ability", requiresTarget = true }, -- Fire Blast
+        { spell = 108839, type = "ability", charges = true, talent = 80162 }, -- Ice Floes
         { spell = 110959, type = "ability", talent = 115877 }, -- Greater Invisibility
         { spell = 113724, type = "ability", talent = 80144 }, -- Ring of Frost
-        { spell = 114923, type = "ability", requiresTarget = true, talent = 80199 }, -- Nether Tempest
-        { spell = 153561, type = "ability", talent = 80146 }, -- Meteor
-        { spell = 153626, type = "ability", charges = true, talent = 80308 }, -- Arcane Orb
-        { spell = 157980, type = "ability", requiresTarget = true, talent = 80290 }, -- Supernova
-        { spell = 157981, type = "ability", talent = 80160 }, -- Blast Wave
-        { spell = 157997, type = "ability", requiresTarget = true, talent = 80186 }, -- Ice Nova
+        { spell = 153626, type = "ability", charges = true }, -- Arcane Orb
+        { spell = 157980, type = "ability", talent = 125818 }, -- Supernova
+        { spell = 157981, type = "ability", debuff = true, talent = 80160 }, -- Blast Wave
+        { spell = 157997, type = "ability", debuff = true, requiresTarget = true, talent = 125820 }, -- Ice Nova
         { spell = 190336, type = "ability" }, -- Conjure Refreshment
-        { spell = 205022, type = "ability", talent = 80207 }, -- Arcane Familiar
-        { spell = 205025, type = "ability", buff = true, usable = true, talent = 80208 }, -- Presence of Mind
+        { spell = 205025, type = "ability", buff = true, talent = 126530 }, -- Presence of Mind
         { spell = 212653, type = "ability", charges = true, talent = 80163 }, -- Shimmer
         { spell = 235450, type = "ability", buff = true, talent = 80180 }, -- Prismatic Barrier
-        { spell = 319836, type = "ability", charges = true, requiresTarget = true }, -- Fire Blast
-        { spell = 321507, type = "ability", requiresTarget = true, talent = 80302 }, -- Touch of the Magi
+        { spell = 319836, type = "ability", requiresTarget = true }, -- Fire Blast
+        { spell = 321507, type = "ability", requiresTarget = true, talent = 126538 }, -- Touch of the Magi
         { spell = 342245, type = "ability", talent = 80174 }, -- Alter Time
-        { spell = 365350, type = "ability", requiresTarget = true, talent = 80299 }, -- Arcane Surge
-        { spell = 376103, type = "ability", requiresTarget = true, talent = 80304 }, -- Radiant Spark
-        { spell = 382440, type = "ability", buff = true, talent = 80141 }, -- Shifting Power
+        { spell = 365350, type = "ability", requiresTarget = true, talent = 126519 }, -- Arcane Surge
+        { spell = 382440, type = "ability", buff = true, talent = 80171 }, -- Shifting Power
         { spell = 383121, type = "ability", talent = 80164 }, -- Mass Polymorph
-        { spell = 389713, type = "ability", talent = 80148 }, -- Displacement
+        { spell = 389713, type = "ability", usable = true, talent = 80152 }, -- Displacement
+        { spell = 414658, type = "ability", buff = true, talent = 80141 }, -- Ice Cold
+        { spell = 414660, type = "ability", talent = 125817 }, -- Mass Barrier
+        { spell = 414664, type = "ability", buff = true, talent = 115878 }, -- Mass Invisibility
+        { spell = 449700, type = "ability", herotalent = 123832 }, -- Gravity Lapse
       },
       icon = 136075
     },
@@ -2767,35 +2778,60 @@ templates.class.MAGE = {
     [1] = {
       title = L["Buffs"],
       args = {
-        { spell = 66, type = "buff", unit = "player", talent = 80177 }, -- Invisibility
+        { spell = 66, type = "buff", unit = "player" }, -- Invisibility
         { spell = 130, type = "buff", unit = "player" }, -- Slow Fall
         { spell = 1459, type = "buff", unit = "player" }, -- Arcane Intellect
+        { spell = 11426, type = "buff", unit = "player" }, -- Ice Barrier
         { spell = 45438, type = "buff", unit = "player", talent = 80181 }, -- Ice Block
         { spell = 48107, type = "buff", unit = "player" }, -- Heating Up
         { spell = 48108, type = "buff", unit = "player" }, -- Hot Streak!
+        { spell = 55342, type = "buff", unit = "player", talent = 80183 }, -- Mirror Image
         { spell = 80353, type = "buff", unit = "player" }, -- Time Warp
         { spell = 108839, type = "buff", unit = "player", talent = 80162 }, -- Ice Floes
         { spell = 110960, type = "buff", unit = "player", talent = 115877 }, -- Greater Invisibility
-        { spell = 116014, type = "buff", unit = "player", talent = 80171 }, -- Rune of Power
-        { spell = 116267, type = "buff", unit = "player", talent = 80172 }, -- Incanter's Flow
-        { spell = 190319, type = "buff", unit = "player", talent = 80275 }, -- Combustion
-        { spell = 203277, type = "buff", unit = "player", talent = 80267 }, -- Flame Accelerant
-        { spell = 203285, type = "buff", unit = "player" }, -- Flamecannon
+        { spell = 116267, type = "buff", unit = "player", talent = 80177 }, -- Incanter's Flow
+        { spell = 190319, type = "buff", unit = "player", talent = 124756 }, -- Combustion
         { spell = 235313, type = "buff", unit = "player", talent = 80178 }, -- Blazing Barrier
         { spell = 236060, type = "buff", unit = "player" }, -- Frenetic Speed
-        { spell = 269651, type = "buff", unit = "player", talent = 80277 }, -- Pyroclasm
         { spell = 342246, type = "buff", unit = "player", talent = 80174 }, -- Alter Time
         { spell = 382290, type = "buff", unit = "player", talent = 80169 }, -- Tempest Barrier
-        { spell = 382440, type = "buff", unit = "player", talent = 80141 }, -- Shifting Power
+        { spell = 382294, type = "buff", unit = "player", talent = 80170 }, -- Incantation of Swiftness
+        { spell = 382440, type = "buff", unit = "player", talent = 80171 }, -- Shifting Power
         { spell = 382824, type = "buff", unit = "player", talent = 80156 }, -- Temporal Velocity
-        { spell = 383395, type = "buff", unit = "player", talent = 80261 }, -- Feel the Burn
-        { spell = 383492, type = "buff", unit = "player", talent = 80270 }, -- Wildfire
-        { spell = 383501, type = "buff", unit = "player", talent = 80276 }, -- Firemind
-        { spell = 383637, type = "buff", unit = "player", talent = 80271 }, -- Fiery Rush
-        { spell = 383811, type = "buff", unit = "player", talent = 80253 }, -- Fevered Incantation
-        { spell = 383882, type = "buff", unit = "player", talent = 80273 }, -- Sun King's Blessing
+        { spell = 383395, type = "buff", unit = "player", talent = 124777 }, -- Feel the Burn
+        { spell = 383492, type = "buff", unit = "player", talent = 125942 }, -- Wildfire
+        { spell = 383637, type = "buff", unit = "player", talent = 124764 }, -- Fiery Rush
+        { spell = 383811, type = "buff", unit = "player", talent = 124783 }, -- Fevered Incantation
+        { spell = 383874, type = "buff", unit = "player", talent = 125940 }, -- Hyperthermia
+        { spell = 383882, type = "buff", unit = "player", talent = 124791 }, -- Sun King's Blessing
+        { spell = 383883, type = "buff", unit = "player" }, -- Fury of the Sun King
+        { spell = 384035, type = "buff", unit = "player", talent = 124757 }, -- Firefall
         { spell = 389714, type = "buff", unit = "player" }, -- Displacement Beacon
         { spell = 394195, type = "buff", unit = "player", talent = 80179 }, -- Overflowing Energy
+        { spell = 408673, type = "buff", unit = "player" }, -- Calefaction
+        { spell = 409964, type = "buff", unit = "player" }, -- Flame's Fury
+        { spell = 414658, type = "buff", unit = "player", talent = 80141 }, -- Ice Cold
+        { spell = 414664, type = "buff", unit = "player", talent = 115878 }, -- Mass Invisibility
+        { spell = 431039, type = "buff", unit = "player" }, -- Frost Mastery
+        { spell = 431040, type = "buff", unit = "player" }, -- Fire Mastery
+        { spell = 431177, type = "buff", unit = "player", herotalent = 117235 }, -- Frostfire Empowerment
+        { spell = 431190, type = "buff", unit = "player", herotalent = 117243 }, -- Severe Temperatures
+        { spell = 438611, type = "buff", unit = "player", herotalent = 117242 }, -- Excess Frost
+        { spell = 438624, type = "buff", unit = "player", herotalent = 117240 }, -- Excess Fire
+        { spell = 448604, type = "buff", unit = "player" }, -- Spellfire Sphere
+        { spell = 448659, type = "buff", unit = "player" }, -- Arcane Phoenix
+        { spell = 449314, type = "buff", unit = "player", herotalent = 117256 }, -- Mana Cascade
+        { spell = 449400, type = "buff", unit = "player", herotalent = 117250 }, -- Spellfire Spheres
+        { spell = 451049, type = "buff", unit = "player", herotalent = 117247 }, -- Burden of Power
+        { spell = 451073, type = "buff", unit = "player", herotalent = 117248 }, -- Glorious Incandescence
+        { spell = 453207, type = "buff", unit = "player", talent = 124755 }, -- Lit Fuse
+        { spell = 453283, type = "buff", unit = "player", talent = 126021 }, -- Flame Accelerant
+        { spell = 453329, type = "buff", unit = "player", talent = 124770 }, -- Majesty of the Phoenix
+        { spell = 453385, type = "buff", unit = "player", talent = 124765 }, -- Fire's Ire
+        { spell = 457729, type = "buff", unit = "player", talent = 126020 }, -- Sparking Cinders
+        { spell = 458964, type = "buff", unit = "player", talent = 126019 }, -- Heat Shimmer
+        { spell = 461145, type = "buff", unit = "player" }, -- Lingering Embers
+        { spell = 461515, type = "buff", unit = "player", talent = 126545 }, -- Static Cloud
       },
       icon = 1035045
     },
@@ -2803,56 +2839,55 @@ templates.class.MAGE = {
       title = L["Debuffs"],
       args = {
         { spell = 122, type = "debuff", unit = "target" }, -- Frost Nova
-        { spell = 2120, type = "debuff", unit = "target", talent = 80258 }, -- Flamestrike
+        { spell = 2120, type = "debuff", unit = "target" }, -- Flamestrike
         { spell = 12654, type = "debuff", unit = "target" }, -- Ignite
         { spell = 31589, type = "debuff", unit = "target", talent = 80154 }, -- Slow
+        { spell = 31661, type = "debuff", unit = "target", talent = 125819 }, -- Dragon's Breath
         { spell = 59638, type = "debuff", unit = "target" }, -- Frostbolt
+        { spell = 82691, type = "debuff", unit = "target", talent = 80144 }, -- Ring of Frost
         { spell = 155158, type = "debuff", unit = "target" }, -- Meteor Burn
         { spell = 157981, type = "debuff", unit = "target", talent = 80160 }, -- Blast Wave
-        { spell = 157997, type = "debuff", unit = "target", talent = 80186 }, -- Ice Nova
-        { spell = 205708, type = "debuff", unit = "target" }, -- Chilled
-        { spell = 217694, type = "debuff", unit = "target", talent = 80260 }, -- Living Bomb
-        { spell = 226757, type = "debuff", unit = "target", talent = 80254 }, -- Conflagration
+        { spell = 217694, type = "debuff", unit = "target" }, -- Living Bomb
+        { spell = 383608, type = "debuff", unit = "target", talent = 124774 }, -- Improved Scorch
         { spell = 386770, type = "debuff", unit = "target", talent = 80143 }, -- Freezing Cold
+        { spell = 431044, type = "debuff", unit = "target", herotalent = 117244 }, -- Frostfire Bolt
+        { spell = 449700, type = "debuff", unit = "target", herotalent = 123832 }, -- Gravity Lapse
+        { spell = 453268, type = "debuff", unit = "target", talent = 124763 }, -- Controlled Destruction
       },
       icon = 135818
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 66, type = "ability", buff = true, talent = 80177 }, -- Invisibility
-        { spell = 116, type = "ability", requiresTarget = true }, -- Frostbolt
+        { spell = 66, type = "ability", buff = true }, -- Invisibility
         { spell = 120, type = "ability" }, -- Cone of Cold
-        { spell = 122, type = "ability", charges = true }, -- Frost Nova
-        { spell = 133, type = "ability", requiresTarget = true }, -- Fireball
+        { spell = 122, type = "ability", charges = true, debuff = true }, -- Frost Nova
         { spell = 475, type = "ability", talent = 80175 }, -- Remove Curse
-        { spell = 1953, type = "ability" }, -- Blink
-        { spell = 2139, type = "ability", requiresTarget = true }, -- Counterspell
-        { spell = 2948, type = "ability", requiresTarget = true, talent = 80281 }, -- Scorch
-        { spell = 11366, type = "ability", overlayGlow = true, requiresTarget = true, talent = 80283 }, -- Pyroblast
-        { spell = 30449, type = "ability", requiresTarget = true, talent = 80140 }, -- Spellsteal
-        { spell = 31589, type = "ability", requiresTarget = true, talent = 80154 }, -- Slow
-        { spell = 31661, type = "ability", talent = 80147 }, -- Dragon's Breath
-        { spell = 44457, type = "ability", requiresTarget = true, talent = 80260 }, -- Living Bomb
-        { spell = 45438, type = "ability", buff = true, usable = true, talent = 80181 }, -- Ice Block
-        { spell = 55342, type = "ability", talent = 80183 }, -- Mirror Image
+        { spell = 2139, type = "ability" }, -- Counterspell
+        { spell = 31661, type = "ability", debuff = true, talent = 125819 }, -- Dragon's Breath
+        { spell = 45438, type = "ability", buff = true, talent = 80181 }, -- Ice Block
+        { spell = 55342, type = "ability", buff = true, talent = 80183 }, -- Mirror Image
         { spell = 80353, type = "ability", buff = true }, -- Time Warp
         { spell = 108839, type = "ability", charges = true, buff = true, talent = 80162 }, -- Ice Floes
-        { spell = 108853, type = "ability", charges = true, requiresTarget = true, talent = 80282 }, -- Fire Blast
+        { spell = 108853, type = "ability", charges = true, overlayGlow = true, talent = 124750 }, -- Fire Blast
         { spell = 110959, type = "ability", talent = 115877 }, -- Greater Invisibility
         { spell = 113724, type = "ability", talent = 80144 }, -- Ring of Frost
-        { spell = 153561, type = "ability", talent = 80146 }, -- Meteor
-        { spell = 157981, type = "ability", talent = 80160 }, -- Blast Wave
-        { spell = 157997, type = "ability", requiresTarget = true, talent = 80186 }, -- Ice Nova
-        { spell = 190319, type = "ability", buff = true, talent = 80275 }, -- Combustion
+        { spell = 153561, type = "ability", talent = 124779 }, -- Meteor
+        { spell = 157980, type = "ability", talent = 125818 }, -- Supernova
+        { spell = 157981, type = "ability", debuff = true, talent = 80160 }, -- Blast Wave
+        { spell = 190319, type = "ability", buff = true, talent = 124756 }, -- Combustion
         { spell = 190336, type = "ability" }, -- Conjure Refreshment
         { spell = 212653, type = "ability", charges = true, talent = 80163 }, -- Shimmer
         { spell = 235313, type = "ability", buff = true, talent = 80178 }, -- Blazing Barrier
-        { spell = 257541, type = "ability", charges = true, requiresTarget = true, talent = 80285 }, -- Phoenix Flames
+        { spell = 257541, type = "ability", charges = true, overlayGlow = true, talent = 124775 }, -- Phoenix Flames
         { spell = 342245, type = "ability", talent = 80174 }, -- Alter Time
-        { spell = 382440, type = "ability", buff = true, talent = 80141 }, -- Shifting Power
+        { spell = 382440, type = "ability", buff = true, talent = 80171 }, -- Shifting Power
         { spell = 383121, type = "ability", talent = 80164 }, -- Mass Polymorph
-        { spell = 389713, type = "ability", talent = 80148 }, -- Displacement
+        { spell = 389713, type = "ability", usable = true, talent = 80152 }, -- Displacement
+        { spell = 414658, type = "ability", buff = true, talent = 80141 }, -- Ice Cold
+        { spell = 414660, type = "ability", talent = 125817 }, -- Mass Barrier
+        { spell = 414664, type = "ability", buff = true, talent = 115878 }, -- Mass Invisibility
+        { spell = 449700, type = "ability", debuff = true, herotalent = 123832 }, -- Gravity Lapse
       },
       icon = 610633
     },
@@ -2874,34 +2909,49 @@ templates.class.MAGE = {
     [1] = {
       title = L["Buffs"],
       args = {
-        { spell = 66, type = "buff", unit = "player", talent = 80177 }, -- Invisibility
+        { spell = 66, type = "buff", unit = "player" }, -- Invisibility
         { spell = 130, type = "buff", unit = "player" }, -- Slow Fall
         { spell = 1459, type = "buff", unit = "player" }, -- Arcane Intellect
         { spell = 11426, type = "buff", unit = "player", talent = 80176 }, -- Ice Barrier
         { spell = 12472, type = "buff", unit = "player", talent = 80235 }, -- Icy Veins
         { spell = 44544, type = "buff", unit = "player", talent = 80227 }, -- Fingers of Frost
         { spell = 45438, type = "buff", unit = "player", talent = 80181 }, -- Ice Block
+        { spell = 55342, type = "buff", unit = "player", talent = 80183 }, -- Mirror Image
         { spell = 80353, type = "buff", unit = "player" }, -- Time Warp
         { spell = 108839, type = "buff", unit = "player", talent = 80162 }, -- Ice Floes
         { spell = 110960, type = "buff", unit = "player", talent = 115877 }, -- Greater Invisibility
-        { spell = 116014, type = "buff", unit = "player", talent = 80171 }, -- Rune of Power
-        { spell = 116267, type = "buff", unit = "player", talent = 80172 }, -- Incanter's Flow
+        { spell = 116267, type = "buff", unit = "player", talent = 80177 }, -- Incanter's Flow
         { spell = 190446, type = "buff", unit = "player", talent = 80244 }, -- Brain Freeze
         { spell = 199844, type = "buff", unit = "player" }, -- Glacial Spike!
         { spell = 205473, type = "buff", unit = "player" }, -- Icicles
         { spell = 205766, type = "buff", unit = "player", talent = 80230 }, -- Bone Chilling
+        { spell = 235313, type = "buff", unit = "player", talent = 80178 }, -- Blazing Barrier
         { spell = 270232, type = "buff", unit = "player", talent = 80212 }, -- Freezing Rain
-        { spell = 278310, type = "buff", unit = "player", talent = 80218 }, -- Chain Reaction
+        { spell = 278310, type = "buff", unit = "player", talent = 80224 }, -- Chain Reaction
         { spell = 342246, type = "buff", unit = "player", talent = 80174 }, -- Alter Time
-        { spell = 381522, type = "buff", unit = "player", talent = 80234 }, -- Snowstorm
-        { spell = 382106, type = "buff", unit = "player", talent = 80214 }, -- Freezing Winds
-        { spell = 382113, type = "buff", unit = "player", talent = 80251 }, -- Cold Front
-        { spell = 382148, type = "buff", unit = "player", talent = 80216 }, -- Slick Ice
+        { spell = 382106, type = "buff", unit = "player", talent = 80250 }, -- Freezing Winds
+        { spell = 382113, type = "buff", unit = "player", talent = 80218 }, -- Cold Front
+        { spell = 382148, type = "buff", unit = "player", talent = 80219 }, -- Slick Ice
         { spell = 382290, type = "buff", unit = "player", talent = 80169 }, -- Tempest Barrier
-        { spell = 382440, type = "buff", unit = "player", talent = 80141 }, -- Shifting Power
+        { spell = 382294, type = "buff", unit = "player", talent = 80170 }, -- Incantation of Swiftness
+        { spell = 382440, type = "buff", unit = "player", talent = 80171 }, -- Shifting Power
         { spell = 382824, type = "buff", unit = "player", talent = 80156 }, -- Temporal Velocity
+        { spell = 389714, type = "buff", unit = "player" }, -- Displacement Beacon
         { spell = 394195, type = "buff", unit = "player", talent = 80179 }, -- Overflowing Energy
-        { spell = 394994, type = "buff", unit = "player" }, -- Touch of Ice
+        { spell = 414658, type = "buff", unit = "player", talent = 80141 }, -- Ice Cold
+        { spell = 414664, type = "buff", unit = "player", talent = 115878 }, -- Mass Invisibility
+        { spell = 417488, type = "buff", unit = "player" }, -- Frigid Empowerment
+        { spell = 417492, type = "buff", unit = "player", talent = 80215 }, -- Cryopathy
+        { spell = 431039, type = "buff", unit = "player" }, -- Frost Mastery
+        { spell = 431040, type = "buff", unit = "player" }, -- Fire Mastery
+        { spell = 431177, type = "buff", unit = "player", herotalent = 117235 }, -- Frostfire Empowerment
+        { spell = 431190, type = "buff", unit = "player", herotalent = 117243 }, -- Severe Temperatures
+        { spell = 438611, type = "buff", unit = "player", herotalent = 117242 }, -- Excess Frost
+        { spell = 438624, type = "buff", unit = "player", herotalent = 117240 }, -- Excess Fire
+        { spell = 444976, type = "buff", unit = "player", herotalent = 123407 }, -- Unerring Proficiency
+        { spell = 454371, type = "buff", unit = "player", talent = 125131 }, -- Death's Chill
+        { spell = 455122, type = "buff", unit = "player", talent = 80233 }, -- Permafrost Lances
+        { spell = 458411, type = "buff", unit = "player", herotalent = 117258 }, -- Spellfrost Teachings
       },
       icon = 236227
     },
@@ -2909,14 +2959,16 @@ templates.class.MAGE = {
       title = L["Debuffs"],
       args = {
         { spell = 122, type = "debuff", unit = "target" }, -- Frost Nova
-        { spell = 12486, type = "debuff", unit = "target", talent = 80240 }, -- Blizzard
-        { spell = 31589, type = "debuff", unit = "target", talent = 80154 }, -- Slow
-        { spell = 31661, type = "debuff", unit = "target", talent = 80147 }, -- Dragon's Breath
+        { spell = 12486, type = "debuff", unit = "target" }, -- Blizzard
+        { spell = 31661, type = "debuff", unit = "target", talent = 125819 }, -- Dragon's Breath
+        { spell = 33395, type = "debuff", unit = "target" }, -- Freeze
         { spell = 59638, type = "debuff", unit = "target" }, -- Frostbolt
+        { spell = 82691, type = "debuff", unit = "target", talent = 80144 }, -- Ring of Frost
         { spell = 135029, type = "debuff", unit = "target" }, -- Water Jet
         { spell = 155158, type = "debuff", unit = "target" }, -- Meteor Burn
         { spell = 157981, type = "debuff", unit = "target", talent = 80160 }, -- Blast Wave
-        { spell = 205021, type = "debuff", unit = "target", talent = 80226 }, -- Ray of Frost
+        { spell = 157997, type = "debuff", unit = "target", talent = 125820 }, -- Ice Nova
+        { spell = 205021, type = "debuff", unit = "target", talent = 80216 }, -- Ray of Frost
         { spell = 205708, type = "debuff", unit = "target" }, -- Chilled
         { spell = 212792, type = "debuff", unit = "target" }, -- Cone of Cold
         { spell = 228354, type = "debuff", unit = "target", talent = 80243 }, -- Flurry
@@ -2925,54 +2977,55 @@ templates.class.MAGE = {
         { spell = 289308, type = "debuff", unit = "target", talent = 80242 }, -- Frozen Orb
         { spell = 378760, type = "debuff", unit = "target", talent = 102428 }, -- Frostbite
         { spell = 386770, type = "debuff", unit = "target", talent = 80143 }, -- Freezing Cold
-        { spell = 389823, type = "debuff", unit = "target" }, -- Snowdrift
-        { spell = 390614, type = "debuff", unit = "target" }, -- Frost Bomb
+        { spell = 417490, type = "debuff", unit = "target" }, -- Numbing Blast
+        { spell = 431044, type = "debuff", unit = "target", herotalent = 117244 }, -- Frostfire Bolt
+        { spell = 438671, type = "debuff", unit = "target" }, -- Living Bomb
+        { spell = 443740, type = "debuff", unit = "target" }, -- Embedded Frost Splinter
+        { spell = 463192, type = "debuff", unit = "target", herotalent = 117266 }, -- Controlled Instincts
       },
       icon = 236208
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 66, type = "ability", buff = true, talent = 80177 }, -- Invisibility
-        { spell = 116, type = "ability", requiresTarget = true }, -- Frostbolt
+        { spell = 66, type = "ability", buff = true }, -- Invisibility
         { spell = 120, type = "ability" }, -- Cone of Cold
-        { spell = 122, type = "ability", charges = true }, -- Frost Nova
+        { spell = 122, type = "ability", charges = true, debuff = true }, -- Frost Nova
         { spell = 475, type = "ability", talent = 80175 }, -- Remove Curse
-        { spell = 2139, type = "ability", requiresTarget = true }, -- Counterspell
+        { spell = 2139, type = "ability" }, -- Counterspell
         { spell = 11426, type = "ability", buff = true, talent = 80176 }, -- Ice Barrier
         { spell = 12472, type = "ability", buff = true, talent = 80235 }, -- Icy Veins
-        { spell = 30449, type = "ability", requiresTarget = true, talent = 80140 }, -- Spellsteal
-        { spell = 30455, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 80241 }, -- Ice Lance
+        { spell = 30455, type = "ability", charges = true, overlayGlow = true, talent = 80241 }, -- Ice Lance
         { spell = 31589, type = "ability", requiresTarget = true, talent = 80154 }, -- Slow
-        { spell = 31661, type = "ability", talent = 80147 }, -- Dragon's Breath
-        { spell = 31687, type = "ability", talent = 80237 }, -- Summon Water Elemental
+        { spell = 31661, type = "ability", debuff = true, talent = 125819 }, -- Dragon's Breath
         { spell = 31707, type = "ability" }, -- Waterbolt
-        { spell = 44614, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 80243 }, -- Flurry
+        { spell = 33395, type = "ability", debuff = true }, -- Freeze
+        { spell = 44614, type = "ability", charges = true, overlayGlow = true, talent = 80243 }, -- Flurry
         { spell = 45438, type = "ability", buff = true, usable = true, talent = 80181 }, -- Ice Block
-        { spell = 55342, type = "ability", talent = 80183 }, -- Mirror Image
+        { spell = 55342, type = "ability", buff = true, talent = 80183 }, -- Mirror Image
         { spell = 80353, type = "ability", buff = true }, -- Time Warp
-        { spell = 84714, type = "ability", talent = 80242 }, -- Frozen Orb
+        { spell = 84714, type = "ability", overlayGlow = true, talent = 80242 }, -- Frozen Orb
         { spell = 108839, type = "ability", charges = true, buff = true, talent = 80162 }, -- Ice Floes
-        { spell = 108853, type = "ability", requiresTarget = true }, -- Fire Blast
         { spell = 110959, type = "ability", talent = 115877 }, -- Greater Invisibility
         { spell = 113724, type = "ability", talent = 80144 }, -- Ring of Frost
-        { spell = 135029, type = "ability" }, -- Water Jet
-        { spell = 153561, type = "ability", talent = 80146 }, -- Meteor
-        { spell = 153595, type = "ability", requiresTarget = true, talent = 80249 }, -- Comet Storm
-        { spell = 157981, type = "ability", talent = 80160 }, -- Blast Wave
-        { spell = 157997, type = "ability", requiresTarget = true, talent = 80186 }, -- Ice Nova
+        { spell = 135029, type = "ability", debuff = true }, -- Water Jet
+        { spell = 153595, type = "ability", talent = 80248 }, -- Comet Storm
+        { spell = 157980, type = "ability", talent = 125818 }, -- Supernova
+        { spell = 157981, type = "ability", debuff = true, talent = 80160 }, -- Blast Wave
+        { spell = 157997, type = "ability", debuff = true, talent = 125820 }, -- Ice Nova
         { spell = 190336, type = "ability" }, -- Conjure Refreshment
-        { spell = 190356, type = "ability", overlayGlow = true, talent = 80240 }, -- Blizzard
-        { spell = 199786, type = "ability", overlayGlow = true, requiresTarget = true, talent = 80220 }, -- Glacial Spike
-        { spell = 205021, type = "ability", requiresTarget = true, talent = 80226 }, -- Ray of Frost
+        { spell = 190356, type = "ability", overlayGlow = true }, -- Blizzard
+        { spell = 205021, type = "ability", debuff = true, overlayGlow = true, talent = 80216 }, -- Ray of Frost
         { spell = 212653, type = "ability", charges = true, talent = 80163 }, -- Shimmer
-        { spell = 235219, type = "ability", talent = 80239 }, -- Cold Snap
-        { spell = 257537, type = "ability", requiresTarget = true, talent = 80245 }, -- Ebonbolt
-        { spell = 319836, type = "ability", requiresTarget = true }, -- Fire Blast
+        { spell = 235219, type = "ability" }, -- Cold Snap
+        { spell = 319836, type = "ability", overlayGlow = true, talent = 124750 }, -- Fire Blast
         { spell = 342245, type = "ability", talent = 80174 }, -- Alter Time
-        { spell = 382440, type = "ability", buff = true, talent = 80141 }, -- Shifting Power
+        { spell = 382440, type = "ability", buff = true, talent = 80171 }, -- Shifting Power
         { spell = 383121, type = "ability", talent = 80164 }, -- Mass Polymorph
-        { spell = 389713, type = "ability", talent = 80148 }, -- Displacement
+        { spell = 389713, type = "ability", usable = true, talent = 80152 }, -- Displacement
+        { spell = 414658, type = "ability", buff = true, talent = 80141 }, -- Ice Cold
+        { spell = 414660, type = "ability", talent = 125817 }, -- Mass Barrier
+        { spell = 414664, type = "ability", buff = true, talent = 115878 }, -- Mass Invisibility
       },
       icon = 629077
     },
