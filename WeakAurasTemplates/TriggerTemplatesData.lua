@@ -89,29 +89,33 @@ templates.class.EVOKER = {
     [1] = {
       title = L["Buffs"],
       args = {
-        { spell = 236321, type = "buff", unit = "player" }, -- War Banner
         { spell = 357210, type = "buff", unit = "player" }, -- Deep Breath
         { spell = 358267, type = "buff", unit = "player" }, -- Hover
-        { spell = 358733, type = "buff", unit = "player" }, -- Glide
-        { spell = 359618, type = "buff", unit = "player" }, -- Essence Burst
-        { spell = 361509, type = "buff", unit = "player" }, -- Living Flame
-        { spell = 363916, type = "buff", unit = "player", talent = 87702 }, -- Obsidian Scales
-        { spell = 366646, type = "buff", unit = "player" }, -- Familiar Skies
-        { spell = 370454, type = "buff", unit = "player", talent = 87651 }, -- Charged Blast
-        { spell = 370553, type = "buff", unit = "player", talent = 87713 }, -- Tip the Scales
-        { spell = 370818, type = "buff", unit = "player", talent = 115025 }, -- Snapfire
-        { spell = 370901, type = "buff", unit = "player", talent = 87689 }, -- Leaping Flames
-        { spell = 372470, type = "buff", unit = "player", talent = 87714 }, -- Scarlet Adaptation
-        { spell = 374227, type = "buff", unit = "player", talent = 87682 }, -- Zephyr
-        { spell = 374348, type = "buff", unit = "player", talent = 87679 }, -- Renewing Blaze
-        { spell = 375087, type = "buff", unit = "player", talent = 87665 }, -- Dragonrage
-        { spell = 375234, type = "buff", unit = "player", talent = 87676 }, -- Time Spiral
-        { spell = 375802, type = "buff", unit = "player", talent = 87657 }, -- Burnout
-        { spell = 376850, type = "buff", unit = "player", talent = 87644 }, -- Power Swell
+        { spell = 359618, type = "buff", unit = "player", talent = 115520 }, -- Essence Burst
+        { spell = 363916, type = "buff", unit = "player", talent = 115613 }, -- Obsidian Scales
+        { spell = 370454, type = "buff", unit = "player", talent = 115628 }, -- Charged Blast
+        { spell = 370553, type = "buff", unit = "player", talent = 115665 }, -- Tip the Scales
+        { spell = 370818, type = "buff", unit = "player", talent = 115584 }, -- Snapfire
+        { spell = 370901, type = "buff", unit = "player", talent = 115657 }, -- Leaping Flames
+        { spell = 374227, type = "buff", unit = "player", talent = 115661 }, -- Zephyr
+        { spell = 374348, type = "buff", unit = "player", talent = 115669 }, -- Renewing Blaze
+        { spell = 375087, type = "buff", unit = "player", talent = 115643 }, -- Dragonrage
+        { spell = 375234, type = "buff", unit = "player", talent = 115666 }, -- Time Spiral
+        { spell = 375583, type = "buff", unit = "player", talent = 115577 }, -- Ancient Flame
+        { spell = 375802, type = "buff", unit = "player", talent = 115624 }, -- Burnout
+        { spell = 376850, type = "buff", unit = "player", talent = 115634 }, -- Power Swell
         { spell = 381748, type = "buff", unit = "player" }, -- Blessing of the Bronze
         { spell = 386353, type = "buff", unit = "player" }, -- Iridescence: Red
         { spell = 386399, type = "buff", unit = "player" }, -- Iridescence: Blue
         { spell = 390386, type = "buff", unit = "player" }, -- Fury of the Aspects
+        { spell = 405874, type = "buff", unit = "player", talent = 115623 }, -- Feed the Flames
+        { spell = 406732, type = "buff", unit = "player", talent = 125610 }, -- Spatial Paradox
+        { spell = 411055, type = "buff", unit = "player", talent = 115638 }, -- Imminent Destruction
+        { spell = 436336, type = "buff", unit = "player", herotalent = 117536 }, -- Mass Disintegrate
+        { spell = 441248, type = "buff", unit = "player", herotalent = 117531 }, -- Unrelenting Siege
+        { spell = 444019, type = "buff", unit = "player", herotalent = 117543 }, -- Burning Adrenaline
+        { spell = 445740, type = "buff", unit = "player", herotalent = 117553 }, -- Enkindle
+        { spell = 455962, type = "buff", unit = "player", talent = 115610 }, -- Recall
       },
       icon = 4622463
     },
@@ -119,61 +123,60 @@ templates.class.EVOKER = {
       title = L["Debuffs"],
       args = {
         { spell = 353759, type = "debuff", unit = "target" }, -- Deep Breath
-        { spell = 355689, type = "debuff", unit = "target", talent = 87708 }, -- Landslide
+        { spell = 355689, type = "debuff", unit = "target", talent = 115614 }, -- Landslide
         { spell = 356995, type = "debuff", unit = "target" }, -- Disintegrate
         { spell = 357209, type = "debuff", unit = "target" }, -- Fire Breath
         { spell = 357214, type = "debuff", unit = "target" }, -- Wing Buffet
-        { spell = 360806, type = "debuff", unit = "target", talent = 87587 }, -- Sleep Walk
         { spell = 361500, type = "debuff", unit = "target" }, -- Living Flame
         { spell = 368970, type = "debuff", unit = "target" }, -- Tail Swipe
-        { spell = 370452, type = "debuff", unit = "target", talent = 87641 }, -- Shattering Star
-        { spell = 370898, type = "debuff", unit = "target", talent = 87703 }, -- Permeating Chill
-        { spell = 372048, type = "debuff", unit = "target", talent = 87695 }, -- Oppressing Roar
-        { spell = 372245, type = "debuff", unit = "target", talent = 87675 }, -- Terror of the Skies
+        { spell = 370452, type = "debuff", unit = "target", talent = 115627 }, -- Shattering Star
+        { spell = 370898, type = "debuff", unit = "target", talent = 115612 }, -- Permeating Chill
+        { spell = 406971, type = "debuff", unit = "target", talent = 115607 }, -- Oppressing Roar
+        { spell = 434473, type = "debuff", unit = "target", herotalent = 117533 }, -- Bombardments
+        { spell = 441172, type = "debuff", unit = "target", herotalent = 117518 }, -- Melt Armor
+        { spell = 444017, type = "debuff", unit = "target", herotalent = 117553 }, -- Enkindle
       },
       icon = 4622458
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 351338, type = "ability", requiresTarget = true, talent = 87692 }, -- Quell
+        { spell = 351338, type = "ability", requiresTarget = true, talent = 115620 }, -- Quell
         { spell = 355913, type = "ability" }, -- Emerald Blossom
-        { spell = 356995, type = "ability", overlayGlow = true, requiresTarget = true }, -- Disintegrate
-        { spell = 357208, type = "ability", overlayGlow = true, talent = { -87656 }, exactSpellId = true, titleSuffix = L["Max 3"] }, -- Fire Breath
-        { spell = 382266, type = "ability", overlayGlow = true, talent = { 87656 }, exactSpellId = true, titleSuffix = L["Max 4"] }, -- Fire Breath
+        { spell = 356995, type = "ability", debuff = true, overlayGlow = true, requiresTarget = true }, -- Disintegrate
+        { spell = 357208, type = "ability", overlayGlow = true }, -- Fire Breath
         { spell = 357210, type = "ability", buff = true }, -- Deep Breath
-        { spell = 357211, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 87669 }, -- Pyre
-        { spell = 357214, type = "ability" }, -- Wing Buffet
+        { spell = 357211, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 115647 }, -- Pyre
+        { spell = 357214, type = "ability", debuff = true }, -- Wing Buffet
         { spell = 358267, type = "ability", charges = true, buff = true, overlayGlow = true }, -- Hover
-        { spell = 358385, type = "ability", talent = 87708 }, -- Landslide
-        { spell = 358733, type = "ability", buff = true }, -- Glide
-        { spell = 359073, type = "ability", overlayGlow = true, requiresTarget = true, talent = { 87647, -87656 }, exactSpellId = true, titleSuffix = L["Max 3"] }, -- Eternity Surge
-        { spell = 382411, type = "ability", overlayGlow = true, requiresTarget = true, talent = { 87647, 87656 }, exactSpellId = true, titleSuffix = L["Max 4"] }, -- Eternity Surge
-        { spell = 360806, type = "ability", requiresTarget = true, talent = 87587 }, -- Sleep Walk
-        { spell = 360995, type = "ability", requiresTarget = true, talent = 87715 }, -- Verdant Embrace
-        { spell = 361469, type = "ability", requiresTarget = true }, -- Living Flame
-        { spell = 361584, type = "ability" }, -- Whirling Surge
+        { spell = 358385, type = "ability", talent = 115614 }, -- Landslide
+        { spell = 359073, type = "ability", overlayGlow = true, requiresTarget = true, talent = 115581 }, -- Eternity Surge
+        { spell = 360806, type = "ability", requiresTarget = true, talent = 115601 }, -- Sleep Walk
+        { spell = 360995, type = "ability", talent = 115655 }, -- Verdant Embrace
+        { spell = 361469, type = "ability", overlayGlow = true, requiresTarget = true }, -- Living Flame
         { spell = 362969, type = "ability", requiresTarget = true }, -- Azure Strike
-        { spell = 363916, type = "ability", charges = true, buff = true, talent = 87702 }, -- Obsidian Scales
+        { spell = 363916, type = "ability", charges = true, buff = true, talent = 115613 }, -- Obsidian Scales
         { spell = 364342, type = "ability" }, -- Blessing of the Bronze
-        { spell = 365585, type = "ability", talent = 87716 }, -- Expunge
-        { spell = 368432, type = "ability", overlayGlow = true, requiresTarget = true, talent = 87690 }, -- Unravel
-        { spell = 368847, type = "ability", overlayGlow = true, talent = 87659 }, -- Firestorm
-        { spell = 368970, type = "ability" }, -- Tail Swipe
-        { spell = 369536, type = "ability", usable = true }, -- Soar
-        { spell = 370452, type = "ability", requiresTarget = true, talent = 87641 }, -- Shattering Star
-        { spell = 370553, type = "ability", buff = true, usable = true, talent = 87713 }, -- Tip the Scales
-        { spell = 370665, type = "ability", talent = 87685 }, -- Rescue
-        { spell = 372048, type = "ability", talent = 87695 }, -- Oppressing Roar
-        { spell = 372608, type = "ability" }, -- Surge Forward
-        { spell = 372610, type = "ability" }, -- Skyward Ascent
-        { spell = 374227, type = "ability", buff = true, talent = 87682 }, -- Zephyr
-        { spell = 374251, type = "ability", talent = 87700 }, -- Cauterizing Flame
-        { spell = 374348, type = "ability", buff = true, talent = 87679 }, -- Renewing Blaze
-        { spell = 374968, type = "ability", talent = 87676 }, -- Time Spiral
-        { spell = 375087, type = "ability", buff = true, talent = 87665 }, -- Dragonrage
-        { spell = 383332, type = "ability" }, -- Time Stop
+        { spell = 365585, type = "ability", talent = 115615 }, -- Expunge
+        { spell = 368432, type = "ability", requiresTarget = true, talent = 115617 }, -- Unravel
+        { spell = 368847, type = "ability", overlayGlow = true, talent = 115585 }, -- Firestorm
+        { spell = 368970, type = "ability", debuff = true }, -- Tail Swipe
+        { spell = 369536, type = "ability" }, -- Soar
+        { spell = 370452, type = "ability", debuff = true, requiresTarget = true, talent = 115627 }, -- Shattering Star
+        { spell = 370553, type = "ability", buff = true, talent = 115665 }, -- Tip the Scales
+        { spell = 370665, type = "ability", talent = 115596 }, -- Rescue
+        { spell = 374227, type = "ability", buff = true, talent = 115661 }, -- Zephyr
+        { spell = 374251, type = "ability", talent = 115602 }, -- Cauterizing Flame
+        { spell = 374348, type = "ability", buff = true, talent = 115669 }, -- Renewing Blaze
+        { spell = 374968, type = "ability", talent = 115666 }, -- Time Spiral
+        { spell = 375087, type = "ability", buff = true, talent = 115643 }, -- Dragonrage
+        { spell = 382266, type = "ability", overlayGlow = true }, -- Fire Breath
+        { spell = 382411, type = "ability", overlayGlow = true, requiresTarget = true, talent = 115581 }, -- Eternity Surge
         { spell = 390386, type = "ability", buff = true }, -- Fury of the Aspects
+        { spell = 406732, type = "ability", buff = true, talent = 125610 }, -- Spatial Paradox
+        { spell = 406971, type = "ability", debuff = true, talent = 115607 }, -- Oppressing Roar
+        { spell = 433874, type = "ability", buff = true }, -- Deep Breath
+        { spell = 443328, type = "ability", charges = true, requiresTarget = true, herotalent = 117547 }, -- Engulf
       },
       icon = 4622452
     },
@@ -206,40 +209,42 @@ templates.class.EVOKER = {
     [1] = {
       title = L["Buffs"],
       args = {
-        { spell = 357170, type = "buff", unit = "player", talent = 87613 }, -- Time Dilation
+        { spell = 355941, type = "buff", unit = "player", talent = 115542 }, -- Dream Breath
+        { spell = 357170, type = "buff", unit = "player", talent = 115650 }, -- Time Dilation
         { spell = 357210, type = "buff", unit = "player" }, -- Deep Breath
-        { spell = 358134, type = "buff", unit = "player" }, -- Star Burst
         { spell = 358267, type = "buff", unit = "player" }, -- Hover
-        { spell = 358733, type = "buff", unit = "player" }, -- Glide
-        { spell = 359816, type = "buff", unit = "player", talent = 87597 }, -- Dream Flight
-        { spell = 362877, type = "buff", unit = "player", talent = 87626 }, -- Temporal Compression
-        { spell = 363534, type = "buff", unit = "player", talent = 87612 }, -- Rewind
-        { spell = 363916, type = "buff", unit = "player", talent = 87702 }, -- Obsidian Scales
-        { spell = 364343, type = "buff", unit = "player", talent = 87628 }, -- Echo
-        { spell = 366155, type = "buff", unit = "player", talent = 87629 }, -- Reversion
-        { spell = 366646, type = "buff", unit = "player" }, -- Familiar Skies
-        { spell = 369299, type = "buff", unit = "player", talent = 87630 }, -- Essence Burst
-        { spell = 369536, type = "buff", unit = "player" }, -- Soar
-        { spell = 370537, type = "buff", unit = "player", talent = 87603 }, -- Stasis
-        { spell = 370553, type = "buff", unit = "player", talent = 87713 }, -- Tip the Scales
-        { spell = 370840, type = "buff", unit = "player", talent = 87624 }, -- Empath
-        { spell = 370901, type = "buff", unit = "player", talent = 87689 }, -- Leaping Flames
-        { spell = 370960, type = "buff", unit = "player", talent = 87594 }, -- Emerald Communion
-        { spell = 372014, type = "buff", unit = "player" }, -- Visage
-        { spell = 372470, type = "buff", unit = "player", talent = 87714 }, -- Scarlet Adaptation
-        { spell = 373267, type = "buff", unit = "player", talent = 87634 }, -- Lifebind
-        { spell = 373835, type = "buff", unit = "player", talent = 87618 }, -- Call of Ysera
-        { spell = 374227, type = "buff", unit = "player", talent = 87682 }, -- Zephyr
-        { spell = 374348, type = "buff", unit = "player", talent = 87679 }, -- Renewing Blaze
-        { spell = 375234, type = "buff", unit = "player", talent = 87676 }, -- Time Spiral
-        { spell = 375583, type = "buff", unit = "player", talent = 87698 }, -- Ancient Flame
-        { spell = 377088, type = "buff", unit = "player", talent = 87592 }, -- Rush of Vitality
-        { spell = 377102, type = "buff", unit = "player", talent = 87595 }, -- Exhilarating Burst
-        { spell = 378001, type = "buff", unit = "player" }, -- Dream Projection
+        { spell = 359816, type = "buff", unit = "player", talent = 115573 }, -- Dream Flight
+        { spell = 362877, type = "buff", unit = "player", talent = 115543 }, -- Temporal Compression
+        { spell = 363534, type = "buff", unit = "player", talent = 115651 }, -- Rewind
+        { spell = 363916, type = "buff", unit = "player", talent = 115613 }, -- Obsidian Scales
+        { spell = 364343, type = "buff", unit = "player", talent = 115653 }, -- Echo
+        { spell = 366155, type = "buff", unit = "player", talent = 115652 }, -- Reversion
+        { spell = 369299, type = "buff", unit = "player", talent = 115541 }, -- Essence Burst
+        { spell = 370537, type = "buff", unit = "player", talent = 115567 }, -- Stasis
+        { spell = 370553, type = "buff", unit = "player", talent = 115665 }, -- Tip the Scales
+        { spell = 370901, type = "buff", unit = "player", talent = 115657 }, -- Leaping Flames
+        { spell = 370960, type = "buff", unit = "player", talent = 115549 }, -- Emerald Communion
+        { spell = 371877, type = "buff", unit = "player", talent = 115572 }, -- Cycle of Life
+        { spell = 373267, type = "buff", unit = "player", talent = 115557 }, -- Lifebind
+        { spell = 373835, type = "buff", unit = "player", talent = 115554 }, -- Call of Ysera
+        { spell = 373862, type = "buff", unit = "player", talent = 115561 }, -- Temporal Anomaly
+        { spell = 374227, type = "buff", unit = "player", talent = 115661 }, -- Zephyr
+        { spell = 374348, type = "buff", unit = "player", talent = 115669 }, -- Renewing Blaze
+        { spell = 375583, type = "buff", unit = "player", talent = 115577 }, -- Ancient Flame
+        { spell = 377102, type = "buff", unit = "player", talent = 115550 }, -- Exhilarating Burst
         { spell = 381748, type = "buff", unit = "player" }, -- Blessing of the Bronze
-        { spell = 387350, type = "buff", unit = "player", talent = 87600 }, -- Ouroboros
-        { spell = 390148, type = "buff", unit = "player", talent = 87610 }, -- Flow State
+        { spell = 387350, type = "buff", unit = "player", talent = 115555 }, -- Ouroboros
+        { spell = 390148, type = "buff", unit = "player", talent = 115560 }, -- Flow State
         { spell = 390386, type = "buff", unit = "player" }, -- Fury of the Aspects
+        { spell = 406732, type = "buff", unit = "player", talent = 125610 }, -- Spatial Paradox
+        { spell = 409895, type = "buff", unit = "player", talent = 115546 }, -- Spiritbloom
+        { spell = 431654, type = "buff", unit = "player", herotalent = 117548 }, -- Primacy
+        { spell = 431698, type = "buff", unit = "player", herotalent = 117552 }, -- Temporal Burst
+        { spell = 431872, type = "buff", unit = "player", herotalent = 117532 }, -- Temporality
+        { spell = 431991, type = "buff", unit = "player", herotalent = 117786 }, -- Time Convergence
+        { spell = 443176, type = "buff", unit = "player", talent = 123294 }, -- Lifespark
+        { spell = 444019, type = "buff", unit = "player", herotalent = 117543 }, -- Burning Adrenaline
+        { spell = 445740, type = "buff", unit = "player", herotalent = 117553 }, -- Enkindle
       },
       icon = 4630476
     },
@@ -247,60 +252,57 @@ templates.class.EVOKER = {
       title = L["Debuffs"],
       args = {
         { spell = 353759, type = "debuff", unit = "target" }, -- Deep Breath
-        { spell = 355689, type = "debuff", unit = "target", talent = 87708 }, -- Landslide
+        { spell = 355689, type = "debuff", unit = "target", talent = 115614 }, -- Landslide
         { spell = 356995, type = "debuff", unit = "target" }, -- Disintegrate
         { spell = 357209, type = "debuff", unit = "target" }, -- Fire Breath
-        { spell = 357214, type = "debuff", unit = "target" }, -- Wing Buffet
-        { spell = 360806, type = "debuff", unit = "target", talent = 87587 }, -- Sleep Walk
-        { spell = 368970, type = "debuff", unit = "target" }, -- Tail Swipe
-        { spell = 370898, type = "debuff", unit = "target", talent = 87703 }, -- Permeating Chill
-        { spell = 372245, type = "debuff", unit = "target", talent = 87675 }, -- Terror of the Skies
+        { spell = 360806, type = "debuff", unit = "target", talent = 115601 }, -- Sleep Walk
+        { spell = 370898, type = "debuff", unit = "target", talent = 115612 }, -- Permeating Chill
+        { spell = 406971, type = "debuff", unit = "target", talent = 115607 }, -- Oppressing Roar
+        { spell = 444017, type = "debuff", unit = "target", herotalent = 117553 }, -- Enkindle
       },
       icon = 4622488
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 351338, type = "ability", requiresTarget = true, talent = 87692 }, -- Quell
+        { spell = 351338, type = "ability", requiresTarget = true, talent = 115620 }, -- Quell
         { spell = 355913, type = "ability", overlayGlow = true }, -- Emerald Blossom
-        { spell = 355936, type = "ability", overlayGlow = true, talent = { 87627, -87596 }, exactSpellId = true, titleSuffix = L["Max 3"] }, -- Dream Breath
-        { spell = 382614, type = "ability", overlayGlow = true, talent = { 87627, 87596 }, exactSpellId = true, titleSuffix = L["Max 4"] }, -- Dream Breath
-        { spell = 356995, type = "ability", overlayGlow = true, requiresTarget = true }, -- Disintegrate
-        { spell = 357170, type = "ability", buff = true, debuff = true, talent = 87613 }, -- Time Dilation
-        { spell = 357208, type = "ability", overlayGlow = true, talent = { -87596 }, exactSpellId = true, titleSuffix = L["Max 3"] }, -- Fire Breath
-        { spell = 382266, type = "ability", overlayGlow = true, talent = { 87596 }, exactSpellId = true, titleSuffix = L["Max 4"] }, -- Fire Breath
+        { spell = 356995, type = "ability", debuff = true, overlayGlow = true, requiresTarget = true }, -- Disintegrate
+        { spell = 357170, type = "ability", buff = true, talent = 115650 }, -- Time Dilation
         { spell = 357210, type = "ability", buff = true }, -- Deep Breath
         { spell = 357214, type = "ability" }, -- Wing Buffet
-        { spell = 358267, type = "ability", charges = true, buff = true, overlayGlow = true }, -- Hover
-        { spell = 358385, type = "ability", talent = 87708 }, -- Landslide
-        { spell = 358733, type = "ability", buff = true }, -- Glide
-        { spell = 359816, type = "ability", buff = true, talent = 87597 }, -- Dream Flight
-        { spell = 360806, type = "ability", requiresTarget = true, talent = 87587 }, -- Sleep Walk
+        { spell = 358267, type = "ability", charges = true, buff = true }, -- Hover
+        { spell = 358385, type = "ability", talent = 115614 }, -- Landslide
+        { spell = 359816, type = "ability", buff = true, talent = 115573 }, -- Dream Flight
+        { spell = 360806, type = "ability", debuff = true, requiresTarget = true, talent = 115601 }, -- Sleep Walk
         { spell = 360823, type = "ability" }, -- Naturalize
-        { spell = 360995, type = "ability", requiresTarget = true, talent = 87715 }, -- Verdant Embrace
-        { spell = 361469, type = "ability", requiresTarget = true }, -- Living Flame
+        { spell = 360995, type = "ability", talent = 115655 }, -- Verdant Embrace
+        { spell = 361469, type = "ability", overlayGlow = true, requiresTarget = true }, -- Living Flame
         { spell = 362969, type = "ability", requiresTarget = true }, -- Azure Strike
-        { spell = 363534, type = "ability", charges = true, buff = true, debuff = true, talent = 87612 }, -- Rewind
-        { spell = 363916, type = "ability", buff = true, talent = 87702 }, -- Obsidian Scales
+        { spell = 363534, type = "ability", charges = true, buff = true, talent = 115651 }, -- Rewind
+        { spell = 363916, type = "ability", charges = true, buff = true, talent = 115613 }, -- Obsidian Scales
         { spell = 364342, type = "ability" }, -- Blessing of the Bronze
-        { spell = 364343, type = "ability", buff = true,  debuff = true, overlayGlow = true, talent = 87628 }, -- Echo
-        { spell = 366155, type = "ability", charges = true, buff = true, talent = 87629 }, -- Reversion
+        { spell = 364343, type = "ability", buff = true, overlayGlow = true, talent = 115653 }, -- Echo
+        { spell = 366155, type = "ability", charges = true, buff = true, talent = 115652 }, -- Reversion
+        { spell = 368432, type = "ability", requiresTarget = true, talent = 115617 }, -- Unravel
         { spell = 368970, type = "ability" }, -- Tail Swipe
-        { spell = 369536, type = "ability", buff = true, usable = true }, -- Soar
-        { spell = 370537, type = "ability", buff = true, usable = true, talent = 87603 }, -- Stasis
-        { spell = 370553, type = "ability", buff = true, usable = true, talent = 87713 }, -- Tip the Scales
-        { spell = 370665, type = "ability", talent = 87685 }, -- Rescue
-        { spell = 370960, type = "ability", buff = true, talent = 87594 }, -- Emerald Communion
-        { spell = 373861, type = "ability", talent = 87611 }, -- Temporal Anomaly
-        { spell = 374227, type = "ability", buff = true, talent = 87682 }, -- Zephyr
-        { spell = 374251, type = "ability", talent = 87700 }, -- Cauterizing Flame
-        { spell = 374348, type = "ability", buff = true, talent = 87679 }, -- Renewing Blaze
-        { spell = 374968, type = "ability", talent = 87676 }, -- Time Spiral
-        { spell = 376743, type = "ability", charges = true }, -- Surge Forward
-        { spell = 376744, type = "ability" }, -- Skyward Ascent
-        { spell = 367226, type = "ability", overlayGlow = true, talent = { 87625, -87596 }, exactSpellId = true, titleSuffix = L["Max 3"] }, -- Spiritbloom
-        { spell = 382731, type = "ability", overlayGlow = true, talent = { 87625, 87596 }, exactSpellId = true, titleSuffix = L["Max 4"] }, -- Spiritbloom
+        { spell = 369536, type = "ability" }, -- Soar
+        { spell = 370537, type = "ability", buff = true, talent = 115567 }, -- Stasis
+        { spell = 370553, type = "ability", buff = true, talent = 115665 }, -- Tip the Scales
+        { spell = 370665, type = "ability", talent = 115596 }, -- Rescue
+        { spell = 370960, type = "ability", buff = true, talent = 115549 }, -- Emerald Communion
+        { spell = 373861, type = "ability", talent = 115561 }, -- Temporal Anomaly
+        { spell = 374227, type = "ability", buff = true, talent = 115661 }, -- Zephyr
+        { spell = 374251, type = "ability", talent = 115602 }, -- Cauterizing Flame
+        { spell = 374348, type = "ability", buff = true, talent = 115669 }, -- Renewing Blaze
+        { spell = 374968, type = "ability", talent = 115666 }, -- Time Spiral
+        { spell = 382266, type = "ability", overlayGlow = true }, -- Fire Breath
+        { spell = 382614, type = "ability", overlayGlow = true, talent = 115542 }, -- Dream Breath
+        { spell = 382731, type = "ability", overlayGlow = true, talent = 115546 }, -- Spiritbloom
         { spell = 390386, type = "ability", buff = true }, -- Fury of the Aspects
+        { spell = 406732, type = "ability", buff = true, talent = 125610 }, -- Spatial Paradox
+        { spell = 406971, type = "ability", debuff = true, talent = 115607 }, -- Oppressing Roar
+        { spell = 443328, type = "ability", charges = true, requiresTarget = true, herotalent = 117547 }, -- Engulf
       },
       icon = 4622474
     },
@@ -330,36 +332,34 @@ templates.class.EVOKER = {
     [1] = {
       title = L["Buffs"],
       args = {
-        { spell = 358267, type = "buff", unit = "player" }, -- Hover
-        { spell = 358733, type = "buff", unit = "player" }, -- Glide
         { spell = 360827, type = "buff", unit = "player", talent = 115508 }, -- Blistering Scales
+        { spell = 361021, type = "buff", unit = "player" }, -- Sense Power
         { spell = 363916, type = "buff", unit = "player", talent = 115613 }, -- Obsidian Scales
+        { spell = 370553, type = "buff", unit = "player", talent = 115665 }, -- Tip the Scales
         { spell = 370901, type = "buff", unit = "player", talent = 115657 }, -- Leaping Flames
         { spell = 374227, type = "buff", unit = "player", talent = 115661 }, -- Zephyr
-        { spell = 374348, type = "buff", unit = "player", talent = 115658 }, -- Renewing Blaze
-        { spell = 375234, type = "buff", unit = "player", talent = 115666 }, -- Time Spiral
+        { spell = 374348, type = "buff", unit = "player", talent = 115669 }, -- Renewing Blaze
         { spell = 375583, type = "buff", unit = "player", talent = 115577 }, -- Ancient Flame
+        { spell = 375802, type = "buff", unit = "player" }, -- Burnout
         { spell = 381748, type = "buff", unit = "player" }, -- Blessing of the Bronze
-        { spell = 390216, type = "buff", unit = "player" }, -- Sophic Writ
         { spell = 390386, type = "buff", unit = "player" }, -- Fury of the Aspects
         { spell = 392268, type = "buff", unit = "player", talent = 115520 }, -- Essence Burst
         { spell = 395296, type = "buff", unit = "player", talent = 115496 }, -- Ebon Might
         { spell = 403264, type = "buff", unit = "player" }, -- Black Attunement
         { spell = 403265, type = "buff", unit = "player" }, -- Bronze Attunement
-        { spell = 403631, type = "buff", unit = "player", talent = 115536 }, -- Breath of Eons
-        { spell = 403760, type = "buff", unit = "player", talent = 115610 }, -- Recall
         { spell = 404977, type = "buff", unit = "player", talent = 115533 }, -- Time Skip
-        { spell = 406732, type = "buff", unit = "player", talent = 115526 }, -- Spatial Paradox
-        { spell = 406927, type = "buff", unit = "player" }, -- Adaptive Stonescales
-        { spell = 407244, type = "buff", unit = "player" }, -- Bronze Aspect's Favor
+        { spell = 406732, type = "buff", unit = "player", talent = 125610 }, -- Spatial Paradox
         { spell = 407254, type = "buff", unit = "player" }, -- Black Aspect's Favor
-        { spell = 408005, type = "buff", unit = "player", talent = 115532 }, -- Momentum Shift
-        { spell = 409678, type = "buff", unit = "player", talent = 115706 }, -- Chrono Ward
+        { spell = 410263, type = "buff", unit = "player", talent = 115495 }, -- Inferno's Blessing
         { spell = 410355, type = "buff", unit = "player", talent = 115534 }, -- Stretch Time
         { spell = 410651, type = "buff", unit = "player", talent = 115510 }, -- Molten Blood
         { spell = 410686, type = "buff", unit = "player", talent = 115515 }, -- Symbiotic Bloom
-        { spell = 412710, type = "buff", unit = "player", talent = 115688 }, -- Timelessness
-        { spell = 403295, type = "buff", unit = "target" }, -- Black Attunement
+        { spell = 412710, type = "buff", unit = "player", talent = 115679 }, -- Timelessness
+        { spell = 438588, type = "buff", unit = "player", herotalent = 122279 }, -- Mass Eruption
+        { spell = 441248, type = "buff", unit = "player", herotalent = 117531 }, -- Unrelenting Siege
+        { spell = 442204, type = "buff", unit = "player", talent = 115536 }, -- Breath of Eons
+        { spell = 455962, type = "buff", unit = "player", talent = 115610 }, -- Recall
+        { spell = 459574, type = "buff", unit = "player", talent = 126304 }, -- Imminent Destruction
       },
       icon = 5061347
     },
@@ -368,10 +368,16 @@ templates.class.EVOKER = {
       args = {
         { spell = 355689, type = "debuff", unit = "target", talent = 115614 }, -- Landslide
         { spell = 357209, type = "debuff", unit = "target" }, -- Fire Breath
+        { spell = 357214, type = "debuff", unit = "target" }, -- Wing Buffet
+        { spell = 360806, type = "debuff", unit = "target", talent = 115601 }, -- Sleep Walk
+        { spell = 368970, type = "debuff", unit = "target" }, -- Tail Swipe
         { spell = 370898, type = "debuff", unit = "target", talent = 115612 }, -- Permeating Chill
-        { spell = 372245, type = "debuff", unit = "target", talent = 115656 }, -- Terror of the Skies
         { spell = 406971, type = "debuff", unit = "target", talent = 115607 }, -- Oppressing Roar
         { spell = 409560, type = "debuff", unit = "target" }, -- Temporal Wound
+        { spell = 434473, type = "debuff", unit = "target", herotalent = 117533 }, -- Bombardments
+        { spell = 439606, type = "debuff", unit = "target", talent = 115537 }, -- Perilous Fate
+        { spell = 441172, type = "debuff", unit = "target", herotalent = 117518 }, -- Melt Armor
+        { spell = 441201, type = "debuff", unit = "target", herotalent = 120125 }, -- Menacing Presence
       },
       icon = 5199622
     },
@@ -379,40 +385,42 @@ templates.class.EVOKER = {
       title = L["Cooldowns"],
       args = {
         { spell = 351338, type = "ability", requiresTarget = true, talent = 115620 }, -- Quell
-        { spell = 355913, type = "ability", overlayGlow = true }, -- Emerald Blossom
-        { spell = 357208, type = "ability", overlayGlow = true, usable = true }, -- Fire Breath
-        { spell = 357214, type = "ability", usable = true }, -- Wing Buffet
-        { spell = 358267, type = "ability", charges = true, buff = true, overlayGlow = true, usable = true }, -- Hover
+        { spell = 355913, type = "ability" }, -- Emerald Blossom
+        { spell = 357208, type = "ability", overlayGlow = true }, -- Fire Breath
+        { spell = 357214, type = "ability", debuff = true }, -- Wing Buffet
+        { spell = 358267, type = "ability", charges = true }, -- Hover
         { spell = 358385, type = "ability", talent = 115614 }, -- Landslide
-        { spell = 358733, type = "ability", buff = true }, -- Glide
-        { spell = 360827, type = "ability", buff = true, usable = true, talent = 115508 }, -- Blistering Scales
-        { spell = 360995, type = "ability", usable = true, talent = 115655 }, -- Verdant Embrace
-        { spell = 361469, type = "ability", requiresTarget = true }, -- Living Flame
-        { spell = 362969, type = "ability", requiresTarget = true, usable = true }, -- Azure Strike
-        { spell = 363916, type = "ability", charges = true, buff = true, usable = true, talent = 115613 }, -- Obsidian Scales
-        { spell = 364342, type = "ability", usable = true }, -- Blessing of the Bronze
+        { spell = 360806, type = "ability", debuff = true, requiresTarget = true, talent = 115601 }, -- Sleep Walk
+        { spell = 360827, type = "ability", buff = true, talent = 115508 }, -- Blistering Scales
+        { spell = 360995, type = "ability", talent = 115655 }, -- Verdant Embrace
+        { spell = 361021, type = "ability", buff = true }, -- Sense Power
+        { spell = 361469, type = "ability", overlayGlow = true, requiresTarget = true }, -- Living Flame
+        { spell = 362969, type = "ability", requiresTarget = true }, -- Azure Strike
+        { spell = 363916, type = "ability", charges = true, buff = true, talent = 115613 }, -- Obsidian Scales
+        { spell = 364342, type = "ability" }, -- Blessing of the Bronze
         { spell = 365585, type = "ability", talent = 115615 }, -- Expunge
-        { spell = 368432, type = "ability", usable = true, talent = 115617 }, -- Unravel
-        { spell = 368970, type = "ability", usable = true }, -- Tail Swipe
-        { spell = 369536, type = "ability" }, -- Soar
-        { spell = 370553, type = "ability", usable = true, talent = 115665 }, -- Tip the Scales
+        { spell = 368432, type = "ability", requiresTarget = true, talent = 115617 }, -- Unravel
+        { spell = 368970, type = "ability", debuff = true }, -- Tail Swipe
+        { spell = 370553, type = "ability", buff = true, talent = 115665 }, -- Tip the Scales
         { spell = 370665, type = "ability", talent = 115596 }, -- Rescue
         { spell = 374227, type = "ability", buff = true, talent = 115661 }, -- Zephyr
         { spell = 374251, type = "ability", talent = 115602 }, -- Cauterizing Flame
-        { spell = 374348, type = "ability", buff = true, talent = 115658 }, -- Renewing Blaze
-        { spell = 374968, type = "ability", usable = true, talent = 115666 }, -- Time Spiral
-        { spell = 390386, type = "ability", buff = true, usable = true }, -- Fury of the Aspects
-        { spell = 395152, type = "ability", usable = true, talent = 115496 }, -- Ebon Might
-        { spell = 395160, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 115498 }, -- Eruption
-        { spell = 396286, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 115502 }, -- Upheaval
+        { spell = 374348, type = "ability", buff = true, talent = 115669 }, -- Renewing Blaze
+        { spell = 374968, type = "ability", talent = 115666 }, -- Time Spiral
+        { spell = 382266, type = "ability", overlayGlow = true }, -- Fire Breath
+        { spell = 390386, type = "ability", buff = true }, -- Fury of the Aspects
+        { spell = 395152, type = "ability", talent = 115496 }, -- Ebon Might
+        { spell = 395160, type = "ability", overlayGlow = true, requiresTarget = true, talent = 115498 }, -- Eruption
+        { spell = 396286, type = "ability", overlayGlow = true, requiresTarget = true, talent = 115502 }, -- Upheaval
         { spell = 403264, type = "ability", buff = true }, -- Black Attunement
         { spell = 403265, type = "ability", buff = true }, -- Bronze Attunement
-        { spell = 403631, type = "ability", buff = true, usable = true, talent = 115536 }, -- Breath of Eons
         { spell = 404977, type = "ability", buff = true, talent = 115533 }, -- Time Skip
-        { spell = 406732, type = "ability", buff = true, usable = true, talent = 115526 }, -- Spatial Paradox
-        { spell = 406971, type = "ability", talent = 115607 }, -- Oppressing Roar
+        { spell = 406732, type = "ability", buff = true, talent = 125610 }, -- Spatial Paradox
+        { spell = 406971, type = "ability", debuff = true, talent = 115607 }, -- Oppressing Roar
+        { spell = 408092, type = "ability", overlayGlow = true, requiresTarget = true, talent = 115502 }, -- Upheaval
         { spell = 408233, type = "ability", talent = 115493 }, -- Bestow Weyrnstone
-        { spell = 409311, type = "ability", usable = true, talent = 115675 }, -- Prescience
+        { spell = 409311, type = "ability", charges = true, talent = 115675 }, -- Prescience
+        { spell = 442204, type = "ability", buff = true, talent = 115536 }, -- Breath of Eons
       },
       icon = 5199630
     },
