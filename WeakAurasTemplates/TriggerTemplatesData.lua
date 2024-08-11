@@ -4496,22 +4496,35 @@ templates.class.DEMONHUNTER = {
       args = {
         { spell = 162264, type = "buff", unit = "player" }, -- Metamorphosis
         { spell = 188501, type = "buff", unit = "player" }, -- Spectral Sight
-        { spell = 206804, type = "buff", unit = "player" }, -- Rain from Above
+        { spell = 196555, type = "buff", unit = "player", talent = 115247 }, -- Netherwalk
         { spell = 208628, type = "buff", unit = "player", talent = 112943 }, -- Momentum
         { spell = 209426, type = "buff", unit = "player", talent = 112921 }, -- Darkness
         { spell = 212800, type = "buff", unit = "player" }, -- Blur
         { spell = 258920, type = "buff", unit = "player" }, -- Immolation Aura
+        { spell = 258925, type = "buff", unit = "player", talent = 117742 }, -- Fel Barrage
         { spell = 343312, type = "buff", unit = "player", talent = 112948 }, -- Furious Gaze
         { spell = 347462, type = "buff", unit = "player", talent = 112942 }, -- Unbound Chaos
-        { spell = 347765, type = "buff", unit = "player" }, -- Demon Soul
-        { spell = 354610, type = "buff", unit = "player" }, -- Glimpse
-        { spell = 358134, type = "buff", unit = "player" }, -- Star Burst
+        { spell = 389847, type = "buff", unit = "player", talent = 112850 }, -- Felfire Haste
         { spell = 389890, type = "buff", unit = "player", talent = 112944 }, -- Tactical Retreat
-        { spell = 390145, type = "buff", unit = "player", talent = 112929 }, -- Inner Demon
+        { spell = 390145, type = "buff", unit = "player", talent = 112947 }, -- Inner Demon
+        { spell = 390192, type = "buff", unit = "player", talent = 112827 }, -- Ragefire
         { spell = 390195, type = "buff", unit = "player", talent = 112958 }, -- Chaos Theory
+        { spell = 390212, type = "buff", unit = "player", talent = 117765 }, -- Restless Hunter
         { spell = 391215, type = "buff", unit = "player", talent = 112950 }, -- Initiative
         { spell = 427641, type = "buff", unit = "player", talent = 117744 }, -- Inertia
-
+        { spell = 427901, type = "buff", unit = "player", talent = 115246 }, -- Deflecting Dance
+        { spell = 442435, type = "buff", unit = "player" }, -- Glaive Flurry
+        { spell = 442442, type = "buff", unit = "player" }, -- Rending Strike
+        { spell = 442503, type = "buff", unit = "player", herotalent = 117503 }, -- Warblade's Hunger
+        { spell = 442688, type = "buff", unit = "player", herotalent = 117516 }, -- Thrill of the Fight
+        { spell = 442715, type = "buff", unit = "player" }, -- Blade Ward
+        { spell = 442788, type = "buff", unit = "player", herotalent = 123046 }, -- Incorruptible Spirit
+        { spell = 444661, type = "buff", unit = "player", herotalent = 117512 }, -- Art of the Glaive
+        { spell = 444929, type = "buff", unit = "player", herotalent = 117508 }, -- Evasive Action
+        { spell = 452416, type = "buff", unit = "player", herotalent = 117514 }, -- Demonsurge
+        { spell = 452550, type = "buff", unit = "player", herotalent = 117506 }, -- Monster Rising
+        { spell = 453239, type = "buff", unit = "player", herotalent = 117499 }, -- Student of Suffering
+        { spell = 453314, type = "buff", unit = "player", herotalent = 117513 }, -- Enduring Torment
       },
       icon = 1247266
     },
@@ -4519,55 +4532,63 @@ templates.class.DEMONHUNTER = {
       title = L["Debuffs"],
       args = {
         { spell = 1490, type = "debuff", unit = "target" }, -- Chaos Brand
-        { spell = 179057, type = "debuff", unit = "target", talent = 112911 }, -- Chaos Nova
         { spell = 185245, type = "debuff", unit = "target" }, -- Torment
         { spell = 198813, type = "debuff", unit = "target", talent = 112853 }, -- Vengeful Retreat
         { spell = 200166, type = "debuff", unit = "target" }, -- Metamorphosis
         { spell = 204598, type = "debuff", unit = "target" }, -- Sigil of Flame
         { spell = 207685, type = "debuff", unit = "target", talent = 112859 }, -- Sigil of Misery
         { spell = 211881, type = "debuff", unit = "target" }, -- Fel Eruption
-        { spell = 213405, type = "debuff", unit = "target", talent = 112912 }, -- Master of the Glaive
         { spell = 258883, type = "debuff", unit = "target", talent = 112824 }, -- Trail of Ruin
         { spell = 320338, type = "debuff", unit = "target", talent = 112956 }, -- Essence Break
+        { spell = 356608, type = "debuff", unit = "target", talent = 117743 }, -- Mortal Dance
         { spell = 370966, type = "debuff", unit = "target", talent = 112837 }, -- The Hunt
         { spell = 390155, type = "debuff", unit = "target", talent = 112934 }, -- Serrated Glaive
-        { spell = 390181, type = "debuff", unit = "target", talent = 112829 }, -- Soulscar
+        { spell = 390181, type = "debuff", unit = "target", talent = 117764 }, -- Soulscar
+        { spell = 391191, type = "debuff", unit = "target", talent = 112826 }, -- Burning Wound
+        { spell = 394933, type = "debuff", unit = "target", talent = 112838 }, -- Demon Muzzle
+        { spell = 442624, type = "debuff", unit = "target", herotalent = 117500 }, -- Reaver's Mark
+        { spell = 453177, type = "debuff", unit = "target", herotalent = 117502 }, -- Burning Blades
       },
       icon = 1392554
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 131347, type = "ability" }, -- Glide
+        { spell = 131347, type = "ability", usable = true }, -- Glide
         { spell = 162243, type = "ability", requiresTarget = true, usable = true }, -- Demon's Bite
-        { spell = 162794, type = "ability", overlayGlow = true, requiresTarget = true, usable = true }, -- Chaos Strike
+        { spell = 162794, type = "ability", requiresTarget = true, usable = true }, -- Chaos Strike
         { spell = 179057, type = "ability", usable = true, talent = 112911 }, -- Chaos Nova
-        { spell = 183752, type = "ability", requiresTarget = true, usable = true, talent = 112849 }, -- Disrupt
-        { spell = 185123, type = "ability", charges = true, requiresTarget = true, usable = true }, -- Throw Glaive
-        { spell = 185245, type = "ability", requiresTarget = true, usable = true }, -- Torment
-        { spell = 188499, type = "ability", usable = true }, -- Blade Dance
+        { spell = 183752, type = "ability", requiresTarget = true, usable = true }, -- Disrupt
+        { spell = 185123, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, usable = true }, -- Throw Glaive
+        { spell = 185245, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Torment
+        { spell = 188499, type = "ability", overlayGlow = true, usable = true }, -- Blade Dance
         { spell = 188501, type = "ability", buff = true, usable = true }, -- Spectral Sight
         { spell = 191427, type = "ability", usable = true }, -- Metamorphosis
         { spell = 195072, type = "ability", charges = true, overlayGlow = true, usable = true }, -- Fel Rush
+        { spell = 196555, type = "ability", buff = true, usable = true, talent = 115247 }, -- Netherwalk
         { spell = 196718, type = "ability", usable = true, talent = 112921 }, -- Darkness
         { spell = 198013, type = "ability", usable = true, talent = 112939 }, -- Eye Beam
         { spell = 198589, type = "ability", usable = true }, -- Blur
         { spell = 198793, type = "ability", usable = true, talent = 112853 }, -- Vengeful Retreat
-        { spell = 203720, type = "ability", charges = true }, -- Demon Spikes
-        { spell = 204596, type = "ability", usable = true }, -- Sigil of Flame
-        { spell = 207684, type = "ability", usable = true, talent = 112859 }, -- Sigil of Misery
-        { spell = 210152, type = "ability" }, -- Death Sweep
-        { spell = 211881, type = "ability", requiresTarget = true, usable = true }, -- Fel Eruption
+        { spell = 202137, type = "ability", requiresTarget = true, talent = 112904 }, -- Sigil of Silence
+        { spell = 202138, type = "ability", requiresTarget = true, talent = 112867 }, -- Sigil of Chains
+        { spell = 204596, type = "ability", requiresTarget = true, usable = true }, -- Sigil of Flame
+        { spell = 207684, type = "ability", requiresTarget = true, talent = 112859 }, -- Sigil of Misery
+        { spell = 210152, type = "ability", overlayGlow = true }, -- Death Sweep
+        { spell = 211881, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Fel Eruption
         { spell = 217832, type = "ability", usable = true, talent = 112927 }, -- Imprison
-        { spell = 232893, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 112842 }, -- Felblade
-        { spell = 258860, type = "ability", talent = 112956 }, -- Essence Break
-        { spell = 258920, type = "ability", buff = true, usable = true }, -- Immolation Aura
-        { spell = 258925, type = "ability", usable = true, talent = 112945 }, -- Fel Barrage
+        { spell = 232893, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 117759 }, -- Felblade
+        { spell = 258860, type = "ability", usable = true, talent = 112956 }, -- Essence Break
+        { spell = 258920, type = "ability", charges = true, buff = true, usable = true }, -- Immolation Aura
+        { spell = 258925, type = "ability", buff = true, usable = true, talent = 117742 }, -- Fel Barrage
         { spell = 278326, type = "ability", requiresTarget = true, usable = true, talent = 112926 }, -- Consume Magic
-        { spell = 342817, type = "ability", usable = true, talent = 112946 }, -- Glaive Tempest
-        { spell = 344865, type = "ability", charges = true, overlayGlow = true }, -- Fel Rush
+        { spell = 342817, type = "ability", talent = 117763 }, -- Glaive Tempest
         { spell = 370965, type = "ability", requiresTarget = true, usable = true, talent = 112837 }, -- The Hunt
-        { spell = 390163, type = "ability", usable = true, talent = 117755 }, -- Elysian Decree
+        { spell = 389815, type = "ability", requiresTarget = true, talent = 117755 }, -- Sigil of Spite
+        { spell = 427785, type = "ability", overlayGlow = true }, -- Fel Rush
+        { spell = 427917, type = "ability", charges = true }, -- Immolation Aura
+        { spell = 452487, type = "ability", overlayGlow = true }, -- Consuming Fire
+        { spell = 452497, type = "ability", overlayGlow = true }, -- Abyssal Gaze
       },
       icon = 1305156
     },
@@ -4597,18 +4618,35 @@ templates.class.DEMONHUNTER = {
     [1] = {
       title = L["Buffs"],
       args = {
+        { spell = 131347, type = "buff", unit = "player" }, -- Glide
         { spell = 187827, type = "buff", unit = "player" }, -- Metamorphosis
         { spell = 188501, type = "buff", unit = "player" }, -- Spectral Sight
         { spell = 203819, type = "buff", unit = "player" }, -- Demon Spikes
         { spell = 203981, type = "buff", unit = "player" }, -- Soul Fragments
+        { spell = 207693, type = "buff", unit = "player", talent = 112884 }, -- Feast of Souls
         { spell = 209426, type = "buff", unit = "player", talent = 112921 }, -- Darkness
+        { spell = 212988, type = "buff", unit = "player", talent = 112892 }, -- Painbringer
         { spell = 258920, type = "buff", unit = "player" }, -- Immolation Aura
         { spell = 263648, type = "buff", unit = "player", talent = 112870 }, -- Soul Barrier
-        { spell = 358134, type = "buff", unit = "player" }, -- Star Burst
+        { spell = 326863, type = "buff", unit = "player", talent = 112880 }, -- Ruinous Bulwark
+        { spell = 343013, type = "buff", unit = "player", talent = 112871 }, -- Revel in Pain
         { spell = 389847, type = "buff", unit = "player", talent = 112850 }, -- Felfire Haste
         { spell = 391166, type = "buff", unit = "player", talent = 112890 }, -- Soul Furnace
         { spell = 391171, type = "buff", unit = "player", talent = 112882 }, -- Calcified Spikes
+        { spell = 391234, type = "buff", unit = "player", talent = 112889 }, -- Soulmonger
         { spell = 393009, type = "buff", unit = "player", talent = 112868 }, -- Fel Flame Fortification
+        { spell = 442435, type = "buff", unit = "player" }, -- Glaive Flurry
+        { spell = 442442, type = "buff", unit = "player" }, -- Rending Strike
+        { spell = 442503, type = "buff", unit = "player", herotalent = 117503 }, -- Warblade's Hunger
+        { spell = 442688, type = "buff", unit = "player", herotalent = 117516 }, -- Thrill of the Fight
+        { spell = 442715, type = "buff", unit = "player" }, -- Blade Ward
+        { spell = 442788, type = "buff", unit = "player", herotalent = 123046 }, -- Incorruptible Spirit
+        { spell = 444661, type = "buff", unit = "player", herotalent = 117512 }, -- Art of the Glaive
+        { spell = 444929, type = "buff", unit = "player", herotalent = 117508 }, -- Evasive Action
+        { spell = 452416, type = "buff", unit = "player", herotalent = 117514 }, -- Demonsurge
+        { spell = 452550, type = "buff", unit = "player", herotalent = 117506 }, -- Monster Rising
+        { spell = 453239, type = "buff", unit = "player", herotalent = 117499 }, -- Student of Suffering
+        { spell = 453314, type = "buff", unit = "player", herotalent = 117513 }, -- Enduring Torment
       },
       icon = 1247263
     },
@@ -4622,48 +4660,52 @@ templates.class.DEMONHUNTER = {
         { spell = 204490, type = "debuff", unit = "target", talent = 112904 }, -- Sigil of Silence
         { spell = 204598, type = "debuff", unit = "target" }, -- Sigil of Flame
         { spell = 204843, type = "debuff", unit = "target", talent = 112867 }, -- Sigil of Chains
-        { spell = 206891, type = "debuff", unit = "target" }, -- Focused Assault
         { spell = 207407, type = "debuff", unit = "target", talent = 112898 }, -- Soul Carver
+        { spell = 207685, type = "debuff", unit = "target", talent = 112859 }, -- Sigil of Misery
         { spell = 207771, type = "debuff", unit = "target", talent = 112864 }, -- Fiery Brand
-        { spell = 213491, type = "debuff", unit = "target" }, -- Demonic Trample
         { spell = 247456, type = "debuff", unit = "target", talent = 112907 }, -- Frailty
-        { spell = 289212, type = "debuff", unit = "target" }, -- Trampled
         { spell = 370966, type = "debuff", unit = "target", talent = 112837 }, -- The Hunt
+        { spell = 394933, type = "debuff", unit = "target", talent = 112838 }, -- Demon Muzzle
+        { spell = 442624, type = "debuff", unit = "target", herotalent = 117500 }, -- Reaver's Mark
+        { spell = 453177, type = "debuff", unit = "target", herotalent = 117502 }, -- Burning Blades
       },
       icon = 1344647
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 131347, type = "ability" }, -- Glide
-        { spell = 179057, type = "ability", talent = 112911 }, -- Chaos Nova
-        { spell = 183752, type = "ability", requiresTarget = true, talent = 112849 }, -- Disrupt
-        { spell = 185245, type = "ability", requiresTarget = true }, -- Torment
+        { spell = 131347, type = "ability", buff = true, usable = true }, -- Glide
+        { spell = 179057, type = "ability", debuff = true, talent = 112911 }, -- Chaos Nova
+        { spell = 183752, type = "ability", requiresTarget = true }, -- Disrupt
+        { spell = 185245, type = "ability", debuff = true, requiresTarget = true }, -- Torment
         { spell = 187827, type = "ability", buff = true }, -- Metamorphosis
         { spell = 188501, type = "ability", buff = true }, -- Spectral Sight
         { spell = 189110, type = "ability", charges = true }, -- Infernal Strike
         { spell = 196718, type = "ability", talent = 112921 }, -- Darkness
         { spell = 198793, type = "ability", talent = 112853 }, -- Vengeful Retreat
-        { spell = 202137, type = "ability", talent = 112904 }, -- Sigil of Silence
-        { spell = 202140, type = "ability", talent = 112859 }, -- Sigil of Misery
+        { spell = 202137, type = "ability", requiresTarget = true, talent = 112904 }, -- Sigil of Silence
+        { spell = 202138, type = "ability", requiresTarget = true, talent = 112867 }, -- Sigil of Chains
         { spell = 203720, type = "ability", charges = true }, -- Demon Spikes
-        { spell = 203782, type = "ability", requiresTarget = true }, -- Shear
         { spell = 204021, type = "ability", charges = true, requiresTarget = true, talent = 112864 }, -- Fiery Brand
-        { spell = 204157, type = "ability", charges = true, requiresTarget = true }, -- Throw Glaive
-        { spell = 204596, type = "ability" }, -- Sigil of Flame
-        { spell = 207407, type = "ability", requiresTarget = true, talent = 112898 }, -- Soul Carver
+        { spell = 204157, type = "ability", charges = true, overlayGlow = true, requiresTarget = true }, -- Throw Glaive
+        { spell = 204596, type = "ability", requiresTarget = true }, -- Sigil of Flame
+        { spell = 207407, type = "ability", debuff = true, requiresTarget = true, talent = 112898 }, -- Soul Carver
+        { spell = 207684, type = "ability", requiresTarget = true, talent = 112859 }, -- Sigil of Misery
         { spell = 212084, type = "ability", talent = 112908 }, -- Fel Devastation
-        { spell = 207665, type = "ability", talent = 112867 }, -- Sigil of Chains
         { spell = 217832, type = "ability", talent = 112927 }, -- Imprison
-        { spell = 228477, type = "ability", charges = true, requiresTarget = true }, -- Soul Cleave
-        { spell = 232893, type = "ability", overlayGlow = true, requiresTarget = true, talent = 112842 }, -- Felblade
-        { spell = 247454, type = "ability", charges = true, usable = true, talent = 112894 }, -- Spirit Bomb
+        { spell = 228477, type = "ability", charges = true, overlayGlow = true, requiresTarget = true }, -- Soul Cleave
+        { spell = 232893, type = "ability", requiresTarget = true, talent = 117759 }, -- Felblade
+        { spell = 247454, type = "ability", charges = true, overlayGlow = true, usable = true, talent = 112894 }, -- Spirit Bomb
         { spell = 258920, type = "ability", buff = true }, -- Immolation Aura
         { spell = 263642, type = "ability", charges = true, requiresTarget = true, talent = 112885 }, -- Fracture
         { spell = 263648, type = "ability", charges = true, buff = true, talent = 112870 }, -- Soul Barrier
         { spell = 278326, type = "ability", requiresTarget = true, talent = 112926 }, -- Consume Magic
-        { spell = 370965, type = "ability", requiresTarget = true, talent = 112837 }, -- The Hunt
-        { spell = 390163, type = "ability", talent = 112874 }, -- Elysian Decree
+        { spell = 320341, type = "ability", talent = 112869 }, -- Bulk Extraction
+        { spell = 370965, type = "ability", usable = true, talent = 112837 }, -- The Hunt
+        { spell = 389815, type = "ability", requiresTarget = true, talent = 117755 }, -- Sigil of Spite
+        { spell = 452436, type = "ability", charges = true, overlayGlow = true }, -- Soul Sunder
+        { spell = 452486, type = "ability", overlayGlow = true }, -- Fel Desolation
+        { spell = 452487, type = "ability", overlayGlow = true }, -- Consuming Fire
       },
       icon = 1344650
     },
