@@ -2298,103 +2298,104 @@ templates.class.SHAMAN = {
         { spell = 546, type = "buff", unit = "player" }, -- Water Walking
         { spell = 2645, type = "buff", unit = "player" }, -- Ghost Wolf
         { spell = 2825, type = "buff", unit = "player" }, -- Bloodlust
-        { spell = 6196, type = "buff", unit = "player" }, -- Far Sight
-        { spell = 8178, type = "buff", unit = "player" }, -- Grounding Totem
-        { spell = 58875, type = "buff", unit = "player", talent = 101983 }, -- Spirit Walk
-        { spell = 77762, type = "buff", unit = "player", talent = 101846 }, -- Lava Surge
-        { spell = 79206, type = "buff", unit = "player", talent = 101955 }, -- Spiritwalker's Grace
-        { spell = 108271, type = "buff", unit = "player", talent = 101945 }, -- Astral Shift
-        { spell = 108281, type = "buff", unit = "player", talent = 102000 }, -- Ancestral Guidance
+        { spell = 58875, type = "buff", unit = "player", talent = 127865 }, -- Spirit Walk
+        { spell = 77762, type = "buff", unit = "player" }, -- Lava Surge
+        { spell = 79206, type = "buff", unit = "player", talent = 127857 }, -- Spiritwalker's Grace
+        { spell = 108271, type = "buff", unit = "player", talent = 127893 }, -- Astral Shift
+        { spell = 108281, type = "buff", unit = "player", talent = 128116 }, -- Ancestral Guidance
         { spell = 114050, type = "buff", unit = "player", talent = 101877 }, -- Ascendance
-        { spell = 118522, type = "buff", unit = "player" }, -- Elemental Blast: Critical Strike
-        { spell = 173183, type = "buff", unit = "player" }, -- Elemental Blast: Haste
-        { spell = 173184, type = "buff", unit = "player" }, -- Elemental Blast: Mastery
+        { spell = 114893, type = "buff", unit = "player" }, -- Stone Bulwark
         { spell = 191634, type = "buff", unit = "player", talent = 101860 }, -- Stormkeeper
         { spell = 191877, type = "buff", unit = "player", talent = 101892 }, -- Power of the Maelstrom
         { spell = 192082, type = "buff", unit = "player" }, -- Wind Rush
         { spell = 192106, type = "buff", unit = "player" }, -- Lightning Shield
-        { spell = 208963, type = "buff", unit = "player" }, -- Skyfury Totem
-        { spell = 210714, type = "buff", unit = "player", talent = 101870 }, -- Icefury
-        { spell = 236502, type = "buff", unit = "player" }, -- Tidebringer
         { spell = 260734, type = "buff", unit = "player", talent = 101879 }, -- Master of the Elements
+        { spell = 260881, type = "buff", unit = "player", talent = 127854 }, -- Spirit Wolf
+        { spell = 263806, type = "buff", unit = "player" }, -- Wind Gust
         { spell = 285514, type = "buff", unit = "player", talent = 101873 }, -- Surge of Power
         { spell = 375986, type = "buff", unit = "player", talent = 101891 }, -- Primordial Wave
-        { spell = 378081, type = "buff", unit = "player", talent = 101997 }, -- Nature's Swiftness
-        { spell = 378269, type = "buff", unit = "player", talent = 101882 }, -- Windspeaker's Lava Resurgence
-        { spell = 378275, type = "buff", unit = "player", talent = 101865 }, -- Elemental Equilibrium
-        { spell = 381755, type = "buff", unit = "player", talent = 101952 }, -- Earth Elemental
-        { spell = 381761, type = "buff", unit = "player", talent = 101847 }, -- Primordial Bond
-        { spell = 381777, type = "buff", unit = "player", talent = 101869 }, -- Flux Melting
-        { spell = 381786, type = "buff", unit = "player", talent = 101876 }, -- Oath of the Far Seer
+        { spell = 381755, type = "buff", unit = "player", talent = 127858 }, -- Earth Elemental
+        { spell = 381761, type = "buff", unit = "player", talent = 127889 }, -- Primordial Bond
         { spell = 381933, type = "buff", unit = "player", talent = 101883 }, -- Magma Chamber
         { spell = 382028, type = "buff", unit = "player", talent = 101886 }, -- Improved Flametongue Weapon
-        { spell = 382889, type = "buff", unit = "player", talent = 101947 }, -- Flurry
-        { spell = 383018, type = "buff", unit = "player" }, -- Stoneskin
-        { spell = 383020, type = "buff", unit = "player" }, -- Tranquil Air
-        { spell = 383648, type = "buff", unit = "player", talent = 102004 }, -- Earth Shield
+        { spell = 382043, type = "buff", unit = "player", talent = 101844 }, -- Splintered Elements
+        { spell = 382217, type = "buff", unit = "player", talent = 127891 }, -- Winds of Al'Akir
+        { spell = 383648, type = "buff", unit = "player", talent = 127871 }, -- Earth Shield
         { spell = 384088, type = "buff", unit = "player", talent = 101862 }, -- Echoes of Great Sundering
-        { spell = 395197, type = "buff", unit = "player", talent = 102001 }, -- Mana Spring
+        { spell = 395197, type = "buff", unit = "player", talent = 127860 }, -- Mana Spring
+        { spell = 443454, type = "buff", unit = "player", herotalent = 117491 }, -- Ancestral Swiftness
+        { spell = 447244, type = "buff", unit = "player", herotalent = 117485 }, -- Call of the Ancestors
+        { spell = 454015, type = "buff", unit = "player", herotalent = 117489 }, -- Tempest
+        { spell = 454394, type = "buff", unit = "player", herotalent = 117483 }, -- Unlimited Power
+        { spell = 462131, type = "buff", unit = "player", herotalent = 117464 }, -- Awakening Storms
+        { spell = 462725, type = "buff", unit = "player", talent = 127917 }, -- Storm Frenzy
+        { spell = 462818, type = "buff", unit = "player", talent = 101870 }, -- Icefury
+        { spell = 462854, type = "buff", unit = "player" }, -- Skyfury
+        { spell = 157348, type = "buff", unit = "pet" }, -- Call Lightning
       },
       icon = 135863
     },
     [2] = {
       title = L["Debuffs"],
       args = {
-        { spell = 3600, type = "debuff", unit = "target" }, -- Earthbind
-        { spell = 51490, type = "debuff", unit = "target", talent = 101995 }, -- Thunderstorm
+        { spell = 51490, type = "debuff", unit = "target", talent = 127878 }, -- Thunderstorm
+        { spell = 64695, type = "debuff", unit = "target" }, -- Earthgrab
+        { spell = 77505, type = "debuff", unit = "target", talent = 127925 }, -- Earthquake
+        { spell = 116947, type = "debuff", unit = "target" }, -- Earthbind
         { spell = 118297, type = "debuff", unit = "target" }, -- Immolate
-        { spell = 118905, type = "debuff", unit = "target", talent = 101960 }, -- Static Charge
+        { spell = 118345, type = "debuff", unit = "target" }, -- Pulverize
+        { spell = 118905, type = "debuff", unit = "target", talent = 127896 }, -- Static Charge
+        { spell = 157375, type = "debuff", unit = "target", herotalent = 117489 }, -- Tempest
         { spell = 188389, type = "debuff", unit = "target" }, -- Flame Shock
-        { spell = 196840, type = "debuff", unit = "target", talent = 101965 }, -- Frost Shock
+        { spell = 196840, type = "debuff", unit = "target", talent = 127879 }, -- Frost Shock
         { spell = 197209, type = "debuff", unit = "target", talent = 101864 }, -- Lightning Rod
-        { spell = 208997, type = "debuff", unit = "target" }, -- Counterstrike Totem
-        { spell = 305485, type = "debuff", unit = "target", talent = 101993 }, -- Lightning Lasso
+        { spell = 285515, type = "debuff", unit = "target", talent = 101873 }, -- Surge of Power
+        { spell = 454025, type = "debuff", unit = "target", herotalent = 117460 }, -- Shocking Grasp
+        { spell = 454029, type = "debuff", unit = "target", herotalent = 117477 }, -- Nature's Protection
       },
       icon = 135813
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 370, type = "ability", requiresTarget = true, talent = 101968 }, -- Purge
+        { spell = 370, type = "ability", requiresTarget = true, talent = 127905 }, -- Purge
         { spell = 556, type = "ability", usable = true }, -- Astral Recall
-        { spell = 2484, type = "ability", totem = true }, -- Earthbind Totem
         { spell = 2825, type = "ability", buff = true }, -- Bloodlust
-        { spell = 5394, type = "ability", talent = 101998 }, -- Healing Stream Totem
+        { spell = 5394, type = "ability", totem = true, talent = 127863 }, -- Healing Stream Totem
         { spell = 8042, type = "ability", overlayGlow = true, requiresTarget = true, talent = 101854 }, -- Earth Shock
-        { spell = 8143, type = "ability", totem = true, talent = 101958 }, -- Tremor Totem
-        { spell = 51490, type = "ability", talent = 101995 }, -- Thunderstorm
-        { spell = 51505, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 101950 }, -- Lava Burst
-        { spell = 51514, type = "ability", talent = 101972 }, -- Hex
-        { spell = 51886, type = "ability", talent = 101966 }, -- Cleanse Spirit
-        { spell = 57994, type = "ability", requiresTarget = true, talent = 101957 }, -- Wind Shear
-        { spell = 58875, type = "ability", buff = true, talent = 101983 }, -- Spirit Walk
+        { spell = 8143, type = "ability", totem = true, talent = 127868 }, -- Tremor Totem
+        { spell = 51485, type = "ability", totem = true, talent = 127894 }, -- Earthgrab Totem
+        { spell = 51490, type = "ability", debuff = true, talent = 127878 }, -- Thunderstorm
+        { spell = 51505, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 127873 }, -- Lava Burst
+        { spell = 51514, type = "ability", talent = 127903 }, -- Hex
+        { spell = 51886, type = "ability", talent = 127884 }, -- Cleanse Spirit
+        { spell = 57994, type = "ability", requiresTarget = true, talent = 127892 }, -- Wind Shear
+        { spell = 58875, type = "ability", buff = true, talent = 127865 }, -- Spirit Walk
+        { spell = 61882, type = "ability", overlayGlow = true, requiresTarget = true, talent = 127925 }, -- Earthquake
         { spell = 73899, type = "ability", requiresTarget = true }, -- Primal Strike
-        { spell = 79206, type = "ability", buff = true, talent = 101955 }, -- Spiritwalker's Grace
-        { spell = 108271, type = "ability", buff = true, talent = 101945 }, -- Astral Shift
-        { spell = 108281, type = "ability", buff = true, talent = 102000 }, -- Ancestral Guidance
-        { spell = 108285, type = "ability", talent = 101987 }, -- Totemic Recall
-        { spell = 108287, type = "ability", talent = 101973 }, -- Totemic Projection
+        { spell = 79206, type = "ability", buff = true, talent = 127857 }, -- Spiritwalker's Grace
+        { spell = 108270, type = "ability", totem = true, talent = 127911 }, -- Stone Bulwark Totem
+        { spell = 108271, type = "ability", buff = true, talent = 127893 }, -- Astral Shift
+        { spell = 108281, type = "ability", buff = true, talent = 128116 }, -- Ancestral Guidance
+        { spell = 108285, type = "ability", talent = 127870 }, -- Totemic Recall
+        { spell = 108287, type = "ability", talent = 127859 }, -- Totemic Projection
         { spell = 114050, type = "ability", buff = true, talent = 101877 }, -- Ascendance
-        { spell = 117014, type = "ability", overlayGlow = true, requiresTarget = true, talent = 101866 }, -- Elemental Blast
         { spell = 188196, type = "ability", overlayGlow = true, requiresTarget = true }, -- Lightning Bolt
-        { spell = 188389, type = "ability", requiresTarget = true }, -- Flame Shock
-        { spell = 188443, type = "ability", overlayGlow = true, requiresTarget = true, talent = 101949 }, -- Chain Lightning
-        { spell = 191634, type = "ability", charges = true, buff = true, talent = 101860 }, -- Stormkeeper
-        { spell = 192058, type = "ability", totem = true, talent = 101961 }, -- Capacitor Totem
-        { spell = 192063, type = "ability", talent = 101982 }, -- Gust of Wind
-        { spell = 192077, type = "ability", totem = true, talent = 101976 }, -- Wind Rush Totem
+        { spell = 188389, type = "ability", debuff = true, requiresTarget = true }, -- Flame Shock
+        { spell = 188443, type = "ability", overlayGlow = true, requiresTarget = true, talent = 127856 }, -- Chain Lightning
+        { spell = 191634, type = "ability", buff = true, talent = 101860 }, -- Stormkeeper
+        { spell = 192058, type = "ability", totem = true, talent = 127851 }, -- Capacitor Totem
+        { spell = 192077, type = "ability", totem = true, talent = 127909 }, -- Wind Rush Totem
         { spell = 192222, type = "ability", totem = true, talent = 101884 }, -- Liquid Magma Totem
         { spell = 192249, type = "ability", requiresTarget = true, talent = 101849 }, -- Storm Elemental
-        { spell = 196840, type = "ability", requiresTarget = true, talent = 101965 }, -- Frost Shock
+        { spell = 196840, type = "ability", debuff = true, requiresTarget = true, talent = 127879 }, -- Frost Shock
         { spell = 198067, type = "ability", requiresTarget = true, totem = true, talent = 101850 }, -- Fire Elemental
-        { spell = 198103, type = "ability", requiresTarget = true, totem = true, talent = 101952 }, -- Earth Elemental
-        { spell = 210714, type = "ability", buff = true, requiresTarget = true, talent = 101870 }, -- Icefury
-        { spell = 305483, type = "ability", requiresTarget = true, talent = 101993 }, -- Lightning Lasso
+        { spell = 198103, type = "ability", requiresTarget = true, talent = 127858 }, -- Earth Elemental
+        { spell = 305483, type = "ability", requiresTarget = true, talent = 127862 }, -- Lightning Lasso
         { spell = 375982, type = "ability", requiresTarget = true, talent = 101891 }, -- Primordial Wave
-        { spell = 378081, type = "ability", buff = true, usable = true, talent = 101997 }, -- Nature's Swiftness
-        { spell = 383013, type = "ability", totem = true, talent = 101989 }, -- Poison Cleansing Totem
-        { spell = 383017, type = "ability", totem = true, talent = 101992 }, -- Stoneskin Totem
-        { spell = 383019, type = "ability", totem = true, talent = 101991 }, -- Tranquil Air Totem
+        { spell = 378773, type = "ability", requiresTarget = true, talent = 127904 }, -- Greater Purge
+        { spell = 383013, type = "ability", totem = true, talent = 127885 }, -- Poison Cleansing Totem
+        { spell = 443454, type = "ability", buff = true, usable = true, herotalent = 117491 }, -- Ancestral Swiftness
       },
       icon = 135963
     },
@@ -2429,12 +2430,12 @@ templates.class.SHAMAN = {
         { spell = 546, type = "buff", unit = "player" }, -- Water Walking
         { spell = 2645, type = "buff", unit = "player" }, -- Ghost Wolf
         { spell = 2825, type = "buff", unit = "player" }, -- Bloodlust
-        { spell = 8178, type = "buff", unit = "player" }, -- Grounding Totem
-        { spell = 58875, type = "buff", unit = "player", talent = 101983 }, -- Spirit Walk
-        { spell = 79206, type = "buff", unit = "player", talent = 101955 }, -- Spiritwalker's Grace
-        { spell = 108271, type = "buff", unit = "player", talent = 101945 }, -- Astral Shift
-        { spell = 108281, type = "buff", unit = "player", talent = 102000 }, -- Ancestral Guidance
+        { spell = 58875, type = "buff", unit = "player", talent = 127865 }, -- Spirit Walk
+        { spell = 79206, type = "buff", unit = "player", talent = 127857 }, -- Spiritwalker's Grace
+        { spell = 108271, type = "buff", unit = "player", talent = 127893 }, -- Astral Shift
+        { spell = 108281, type = "buff", unit = "player", talent = 128116 }, -- Ancestral Guidance
         { spell = 114051, type = "buff", unit = "player", talent = 114291 }, -- Ascendance
+        { spell = 114893, type = "buff", unit = "player" }, -- Stone Bulwark
         { spell = 118522, type = "buff", unit = "player" }, -- Elemental Blast: Critical Strike
         { spell = 173183, type = "buff", unit = "player" }, -- Elemental Blast: Haste
         { spell = 173184, type = "buff", unit = "player" }, -- Elemental Blast: Mastery
@@ -2443,93 +2444,112 @@ templates.class.SHAMAN = {
         { spell = 192106, type = "buff", unit = "player" }, -- Lightning Shield
         { spell = 198300, type = "buff", unit = "player", talent = 101839 }, -- Converging Storms
         { spell = 201846, type = "buff", unit = "player" }, -- Stormbringer
-        { spell = 208963, type = "buff", unit = "player" }, -- Skyfury Totem
         { spell = 215785, type = "buff", unit = "player", talent = 101809 }, -- Hot Hand
         { spell = 224125, type = "buff", unit = "player" }, -- Molten Weapon
         { spell = 224126, type = "buff", unit = "player" }, -- Icy Edge
         { spell = 224127, type = "buff", unit = "player" }, -- Crackling Surge
-        { spell = 236502, type = "buff", unit = "player" }, -- Tidebringer
+        { spell = 260881, type = "buff", unit = "player", talent = 127854 }, -- Spirit Wolf
         { spell = 262652, type = "buff", unit = "player", talent = 101834 }, -- Forceful Winds
-        { spell = 327942, type = "buff", unit = "player", talent = 101803 }, -- Windfury Totem
         { spell = 333957, type = "buff", unit = "player", talent = 101838 }, -- Feral Spirit
         { spell = 334196, type = "buff", unit = "player", talent = 101808 }, -- Hailstorm
-        { spell = 344179, type = "buff", unit = "player", talent = 101948 }, -- Maelstrom Weapon
+        { spell = 344179, type = "buff", unit = "player" }, -- Maelstrom Weapon
         { spell = 375986, type = "buff", unit = "player", talent = 101830 }, -- Primordial Wave
-        { spell = 378081, type = "buff", unit = "player", talent = 101997 }, -- Nature's Swiftness
-        { spell = 381755, type = "buff", unit = "player", talent = 101952 }, -- Earth Elemental
-        { spell = 382217, type = "buff", unit = "player", talent = 101981 }, -- Winds of Al'Akir
-        { spell = 382889, type = "buff", unit = "player", talent = 101947 }, -- Flurry
-        { spell = 383018, type = "buff", unit = "player" }, -- Stoneskin
-        { spell = 383648, type = "buff", unit = "player", talent = 102004 }, -- Earth Shield
+        { spell = 378076, type = "buff", unit = "player", talent = 127853 }, -- Thunderous Paws
+        { spell = 378078, type = "buff", unit = "player", talent = 127907 }, -- Spiritwalker's Aegis
+        { spell = 378081, type = "buff", unit = "player", talent = 127899 }, -- Nature's Swiftness
+        { spell = 381755, type = "buff", unit = "player", talent = 127858 }, -- Earth Elemental
+        { spell = 381761, type = "buff", unit = "player", talent = 127889 }, -- Primordial Bond
+        { spell = 382217, type = "buff", unit = "player", talent = 127891 }, -- Winds of Al'Akir
+        { spell = 382889, type = "buff", unit = "player", talent = 101799 }, -- Flurry
+        { spell = 383648, type = "buff", unit = "player", talent = 127871 }, -- Earth Shield
         { spell = 384352, type = "buff", unit = "player", talent = 101824 }, -- Doom Winds
         { spell = 384357, type = "buff", unit = "player", talent = 101821 }, -- Ice Strike
         { spell = 384451, type = "buff", unit = "player", talent = 101815 }, -- Legacy of the Frost Witch
         { spell = 390371, type = "buff", unit = "player", talent = 101811 }, -- Ashen Catalyst
         { spell = 392375, type = "buff", unit = "player" }, -- Earthen Weapon
+        { spell = 395197, type = "buff", unit = "player", talent = 127860 }, -- Mana Spring
+        { spell = 453405, type = "buff", unit = "player" }, -- Whirling Fire
+        { spell = 453406, type = "buff", unit = "player" }, -- Whirling Earth
+        { spell = 453409, type = "buff", unit = "player" }, -- Whirling Air
+        { spell = 454015, type = "buff", unit = "player", herotalent = 117489 }, -- Tempest
+        { spell = 454376, type = "buff", unit = "player", herotalent = 125617 }, -- Surging Currents
+        { spell = 454394, type = "buff", unit = "player", herotalent = 117483 }, -- Unlimited Power
+        { spell = 455097, type = "buff", unit = "player", herotalent = 125616 }, -- Arc Discharge
+        { spell = 456369, type = "buff", unit = "player", herotalent = 117471 }, -- Amplification Core
+        { spell = 457387, type = "buff", unit = "player", herotalent = 117488 }, -- Wind Barrier
+        { spell = 458269, type = "buff", unit = "player", herotalent = 117487 }, -- Totemic Rebound
+        { spell = 461242, type = "buff", unit = "player", herotalent = 117479 }, -- Lively Totems
+        { spell = 462131, type = "buff", unit = "player", herotalent = 117464 }, -- Awakening Storms
+        { spell = 462854, type = "buff", unit = "player" }, -- Skyfury
       },
       icon = 136099
     },
     [2] = {
       title = L["Debuffs"],
       args = {
-        { spell = 3600, type = "debuff", unit = "target" }, -- Earthbind
-        { spell = 51490, type = "debuff", unit = "target", talent = 101995 }, -- Thunderstorm
+        { spell = 51490, type = "debuff", unit = "target", talent = 127878 }, -- Thunderstorm
         { spell = 64695, type = "debuff", unit = "target" }, -- Earthgrab
-        { spell = 118905, type = "debuff", unit = "target", talent = 101960 }, -- Static Charge
+        { spell = 116947, type = "debuff", unit = "target" }, -- Earthbind
+        { spell = 118905, type = "debuff", unit = "target", talent = 127896 }, -- Static Charge
         { spell = 188389, type = "debuff", unit = "target" }, -- Flame Shock
-        { spell = 196840, type = "debuff", unit = "target", talent = 101965 }, -- Frost Shock
+        { spell = 196840, type = "debuff", unit = "target", talent = 127879 }, -- Frost Shock
+        { spell = 197209, type = "debuff", unit = "target", talent = 101864 }, -- Lightning Rod
         { spell = 197214, type = "debuff", unit = "target", talent = 101841 }, -- Sundering
-        { spell = 208997, type = "debuff", unit = "target" }, -- Counterstrike Totem
-        { spell = 305485, type = "debuff", unit = "target", talent = 101993 }, -- Lightning Lasso
+        { spell = 305485, type = "debuff", unit = "target", talent = 127862 }, -- Lightning Lasso
         { spell = 334168, type = "debuff", unit = "target", talent = 101812 }, -- Lashing Flames
         { spell = 342240, type = "debuff", unit = "target", talent = 101821 }, -- Ice Strike
+        { spell = 454025, type = "debuff", unit = "target", herotalent = 117460 }, -- Shocking Grasp
       },
       icon = 462327
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 370, type = "ability", requiresTarget = true, talent = 101968 }, -- Purge
+        { spell = 370, type = "ability", requiresTarget = true, talent = 127905 }, -- Purge
         { spell = 556, type = "ability", usable = true }, -- Astral Recall
-        { spell = 2484, type = "ability", totem = true }, -- Earthbind Totem
         { spell = 2825, type = "ability", buff = true }, -- Bloodlust
-        { spell = 5394, type = "ability", totem = true, talent = 101998 }, -- Healing Stream Totem
+        { spell = 5394, type = "ability", totem = true, talent = 127863 }, -- Healing Stream Totem
+        { spell = 8143, type = "ability", totem = true, talent = 127868 }, -- Tremor Totem
         { spell = 17364, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 101804 }, -- Stormstrike
-        { spell = 51485, type = "ability", totem = true, talent = 101975 }, -- Earthgrab Totem
-        { spell = 51490, type = "ability", talent = 101995 }, -- Thunderstorm
-        { spell = 51505, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 101950 }, -- Lava Burst
-        { spell = 51514, type = "ability", talent = 101972 }, -- Hex
+        { spell = 51485, type = "ability", totem = true, talent = 127894 }, -- Earthgrab Totem
+        { spell = 51490, type = "ability", debuff = true, talent = 127878 }, -- Thunderstorm
+        { spell = 51505, type = "ability", overlayGlow = true, requiresTarget = true, talent = 127873 }, -- Lava Burst
+        { spell = 51514, type = "ability", talent = 127903 }, -- Hex
         { spell = 51533, type = "ability", requiresTarget = true, talent = 101838 }, -- Feral Spirit
-        { spell = 57994, type = "ability", requiresTarget = true, talent = 101957 }, -- Wind Shear
-        { spell = 58875, type = "ability", buff = true, talent = 101983 }, -- Spirit Walk
+        { spell = 51886, type = "ability", talent = 127884 }, -- Cleanse Spirit
+        { spell = 57994, type = "ability", requiresTarget = true, talent = 127892 }, -- Wind Shear
+        { spell = 58875, type = "ability", buff = true, talent = 127865 }, -- Spirit Walk
         { spell = 60103, type = "ability", overlayGlow = true, requiresTarget = true, usable = true, talent = 101805 }, -- Lava Lash
-        { spell = 79206, type = "ability", buff = true, talent = 101955 }, -- Spiritwalker's Grace
-        { spell = 108271, type = "ability", buff = true, talent = 101945 }, -- Astral Shift
-        { spell = 108281, type = "ability", buff = true, talent = 102000 }, -- Ancestral Guidance
-        { spell = 108285, type = "ability", talent = 101987 }, -- Totemic Recall
+        { spell = 79206, type = "ability", buff = true, talent = 127857 }, -- Spiritwalker's Grace
+        { spell = 108270, type = "ability", totem = true, talent = 127911 }, -- Stone Bulwark Totem
+        { spell = 108271, type = "ability", buff = true, talent = 127893 }, -- Astral Shift
+        { spell = 108281, type = "ability", buff = true, talent = 128116 }, -- Ancestral Guidance
+        { spell = 108285, type = "ability", talent = 127870 }, -- Totemic Recall
+        { spell = 108287, type = "ability", talent = 127859 }, -- Totemic Projection
         { spell = 114051, type = "ability", buff = true, talent = 114291 }, -- Ascendance
         { spell = 115356, type = "ability", overlayGlow = true }, -- Windstrike
-        { spell = 117014, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 101831 }, -- Elemental Blast
+        { spell = 117014, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 117750 }, -- Elemental Blast
         { spell = 187874, type = "ability", talent = 101840 }, -- Crash Lightning
         { spell = 188196, type = "ability", overlayGlow = true, requiresTarget = true }, -- Lightning Bolt
-        { spell = 188389, type = "ability", requiresTarget = true }, -- Flame Shock
-        { spell = 188443, type = "ability", overlayGlow = true, requiresTarget = true, talent = 101949 }, -- Chain Lightning
-        { spell = 192058, type = "ability", totem = true, talent = 101961 }, -- Capacitor Totem
-        { spell = 192077, type = "ability", totem = true, talent = 101976 }, -- Wind Rush Totem
-        { spell = 196840, type = "ability", overlayGlow = true, requiresTarget = true, talent = 101965 }, -- Frost Shock
-        { spell = 196884, type = "ability", requiresTarget = true, talent = 101810 }, -- Feral Lunge
-        { spell = 197214, type = "ability", talent = 101841 }, -- Sundering
-        { spell = 198103, type = "ability", requiresTarget = true, totem = true, talent = 101952 }, -- Earth Elemental
-        { spell = 204406, type = "ability", talent = 101995 }, -- Thunderstorm
-        { spell = 305483, type = "ability", requiresTarget = true, talent = 101993 }, -- Lightning Lasso
+        { spell = 188389, type = "ability", debuff = true, requiresTarget = true }, -- Flame Shock
+        { spell = 188443, type = "ability", overlayGlow = true, requiresTarget = true, talent = 127856 }, -- Chain Lightning
+        { spell = 192058, type = "ability", totem = true, talent = 127851 }, -- Capacitor Totem
+        { spell = 192063, type = "ability", talent = 127864 }, -- Gust of Wind
+        { spell = 192077, type = "ability", talent = 127909 }, -- Wind Rush Totem
+        { spell = 196840, type = "ability", debuff = true, overlayGlow = true, requiresTarget = true, talent = 127879 }, -- Frost Shock
+        { spell = 196884, type = "ability", requiresTarget = true }, -- Feral Lunge
+        { spell = 197214, type = "ability", debuff = true, talent = 101841 }, -- Sundering
+        { spell = 198103, type = "ability", requiresTarget = true, totem = true, talent = 127858 }, -- Earth Elemental
+        { spell = 204406, type = "ability", talent = 127878 }, -- Thunderstorm
+        { spell = 305483, type = "ability", requiresTarget = true, talent = 127862 }, -- Lightning Lasso
         { spell = 333974, type = "ability", talent = 101807 }, -- Fire Nova
-        { spell = 342240, type = "ability", requiresTarget = true, talent = 101821 }, -- Ice Strike
+        { spell = 342240, type = "ability", debuff = true, requiresTarget = true, talent = 101821 }, -- Ice Strike
         { spell = 375982, type = "ability", requiresTarget = true, talent = 101830 }, -- Primordial Wave
-        { spell = 378081, type = "ability", buff = true, talent = 101997 }, -- Nature's Swiftness
-        { spell = 383013, type = "ability", totem = true, talent = 101989 }, -- Poison Cleansing Totem
-        { spell = 383017, type = "ability", totem = true, talent = 101992 }, -- Stoneskin Totem
-        { spell = 383019, type = "ability", talent = 101991 }, -- Tranquil Air Totem
+        { spell = 378081, type = "ability", buff = true, usable = true, talent = 127899 }, -- Nature's Swiftness
+        { spell = 378773, type = "ability", requiresTarget = true, talent = 127904 }, -- Greater Purge
+        { spell = 383013, type = "ability", talent = 127885 }, -- Poison Cleansing Totem
         { spell = 384352, type = "ability", buff = true, requiresTarget = true, talent = 101824 }, -- Doom Winds
+        { spell = 444995, type = "ability", totem = true, herotalent = 117474 }, -- Surging Totem
       },
       icon = 1370984
     },
@@ -2563,112 +2583,117 @@ templates.class.SHAMAN = {
       title = L["Buffs"],
       args = {
         { spell = 546, type = "buff", unit = "player" }, -- Water Walking
-        { spell = 974, type = "buff", unit = "player", talent = 102004 }, -- Earth Shield
+        { spell = 974, type = "buff", unit = "player", talent = 127871 }, -- Earth Shield
         { spell = 2645, type = "buff", unit = "player" }, -- Ghost Wolf
         { spell = 2825, type = "buff", unit = "player" }, -- Bloodlust
-        { spell = 6196, type = "buff", unit = "player" }, -- Far Sight
-        { spell = 8178, type = "buff", unit = "player" }, -- Grounding Totem
         { spell = 52127, type = "buff", unit = "player" }, -- Water Shield
         { spell = 53390, type = "buff", unit = "player", talent = 101899 }, -- Tidal Waves
-        { spell = 58875, type = "buff", unit = "player", talent = 101983 }, -- Spirit Walk
+        { spell = 58875, type = "buff", unit = "player", talent = 127865 }, -- Spirit Walk
         { spell = 61295, type = "buff", unit = "player", talent = 101905 }, -- Riptide
         { spell = 73685, type = "buff", unit = "player", talent = 101918 }, -- Unleash Life
         { spell = 73920, type = "buff", unit = "player", talent = 101923 }, -- Healing Rain
-        { spell = 77762, type = "buff", unit = "player", talent = 101894 }, -- Lava Surge
-        { spell = 79206, type = "buff", unit = "player", talent = 101955 }, -- Spiritwalker's Grace
-        { spell = 108271, type = "buff", unit = "player", talent = 101945 }, -- Astral Shift
-        { spell = 108281, type = "buff", unit = "player", talent = 102000 }, -- Ancestral Guidance
+        { spell = 77762, type = "buff", unit = "player" }, -- Lava Surge
+        { spell = 79206, type = "buff", unit = "player", talent = 127857 }, -- Spiritwalker's Grace
+        { spell = 108271, type = "buff", unit = "player", talent = 127893 }, -- Astral Shift
+        { spell = 108281, type = "buff", unit = "player", talent = 128116 }, -- Ancestral Guidance
         { spell = 114052, type = "buff", unit = "player", talent = 101942 }, -- Ascendance
+        { spell = 114893, type = "buff", unit = "player" }, -- Stone Bulwark
         { spell = 157504, type = "buff", unit = "player", talent = 101933 }, -- Cloudburst Totem
         { spell = 192082, type = "buff", unit = "player" }, -- Wind Rush
         { spell = 192106, type = "buff", unit = "player" }, -- Lightning Shield
         { spell = 201633, type = "buff", unit = "player" }, -- Earthen Wall
-        { spell = 204262, type = "buff", unit = "player" },
-        { spell = 207400, type = "buff", unit = "player", talent = 101909 }, -- Ancestral Vigor
-        { spell = 208963, type = "buff", unit = "player" }, -- Skyfury Totem
+        { spell = 207400, type = "buff", unit = "player", talent = 127673 }, -- Ancestral Vigor
+        { spell = 207778, type = "buff", unit = "player", talent = 101842 }, -- Downpour
         { spell = 216251, type = "buff", unit = "player", talent = 101919 }, -- Undulation
-        { spell = 236502, type = "buff", unit = "player" }, -- Tidebringer
-        { spell = 260734, type = "buff", unit = "player", talent = 101896 }, -- Master of the Elements
-        { spell = 260881, type = "buff", unit = "player", talent = 101963 }, -- Spirit Wolf
-        { spell = 280615, type = "buff", unit = "player", talent = 101898 }, -- Flash Flood
-        { spell = 288675, type = "buff", unit = "player", talent = 101925 }, -- High Tide
+        { spell = 236502, type = "buff", unit = "player", talent = 101924 }, -- Tidebringer
+        { spell = 260881, type = "buff", unit = "player", talent = 127854 }, -- Spirit Wolf
         { spell = 320763, type = "buff", unit = "player", talent = 101929 }, -- Mana Tide Totem
         { spell = 325174, type = "buff", unit = "player", talent = 101913 }, -- Spirit Link Totem
-        { spell = 344179, type = "buff", unit = "player", talent = 101948 }, -- Maelstrom Weapon
         { spell = 375986, type = "buff", unit = "player", talent = 101917 }, -- Primordial Wave
-        { spell = 378081, type = "buff", unit = "player", talent = 101997 }, -- Nature's Swiftness
-        { spell = 381755, type = "buff", unit = "player", talent = 101952 }, -- Earth Elemental
+        { spell = 378076, type = "buff", unit = "player", talent = 127853 }, -- Thunderous Paws
+        { spell = 378078, type = "buff", unit = "player", talent = 127907 }, -- Spiritwalker's Aegis
+        { spell = 381755, type = "buff", unit = "player", talent = 127858 }, -- Earth Elemental
+        { spell = 381761, type = "buff", unit = "player", talent = 127889 }, -- Primordial Bond
         { spell = 382024, type = "buff", unit = "player", talent = 101935 }, -- Earthliving Weapon
-        { spell = 382217, type = "buff", unit = "player", talent = 101981 }, -- Winds of Al'Akir
-        { spell = 382889, type = "buff", unit = "player", talent = 101947 }, -- Flurry
-        { spell = 383009, type = "buff", unit = "player", talent = 101901 }, -- Stormkeeper
-        { spell = 383018, type = "buff", unit = "player" }, -- Stoneskin
-        { spell = 383020, type = "buff", unit = "player" }, -- Tranquil Air
+        { spell = 382217, type = "buff", unit = "player", talent = 127891 }, -- Winds of Al'Akir
         { spell = 383235, type = "buff", unit = "player", talent = 101939 }, -- Undercurrent
-        { spell = 395197, type = "buff", unit = "player", talent = 102001 }, -- Mana Spring
+        { spell = 395197, type = "buff", unit = "player", talent = 127860 }, -- Mana Spring
+        { spell = 404523, type = "buff", unit = "player", talent = 114817 }, -- Spiritwalker's Tidal Totem
+        { spell = 443454, type = "buff", unit = "player", herotalent = 117491 }, -- Ancestral Swiftness
+        { spell = 447244, type = "buff", unit = "player", herotalent = 117485 }, -- Call of the Ancestors
+        { spell = 453406, type = "buff", unit = "player" }, -- Whirling Earth
+        { spell = 453407, type = "buff", unit = "player" }, -- Whirling Water
+        { spell = 453409, type = "buff", unit = "player" }, -- Whirling Air
+        { spell = 456369, type = "buff", unit = "player", herotalent = 117471 }, -- Amplification Core
+        { spell = 457387, type = "buff", unit = "player", herotalent = 117488 }, -- Wind Barrier
+        { spell = 462377, type = "buff", unit = "player", talent = 101896 }, -- Master of the Elements
+        { spell = 462568, type = "buff", unit = "player", talent = 127876 }, -- Elemental Resistance
+        { spell = 462854, type = "buff", unit = "player" }, -- Skyfury
       },
       icon = 252995
     },
     [2] = {
       title = L["Debuffs"],
       args = {
-        { spell = 3600, type = "debuff", unit = "target" }, -- Earthbind
-        { spell = 51490, type = "debuff", unit = "target", talent = 101995 }, -- Thunderstorm
-        { spell = 118905, type = "debuff", unit = "target", talent = 101960 }, -- Static Charge
+        { spell = 51490, type = "debuff", unit = "target", talent = 127878 }, -- Thunderstorm
+        { spell = 64695, type = "debuff", unit = "target" }, -- Earthgrab
+        { spell = 116947, type = "debuff", unit = "target" }, -- Earthbind
+        { spell = 118905, type = "debuff", unit = "target", talent = 127896 }, -- Static Charge
         { spell = 188389, type = "debuff", unit = "target" }, -- Flame Shock
-        { spell = 196840, type = "debuff", unit = "target", talent = 101965 }, -- Frost Shock
-        { spell = 356824, type = "debuff", unit = "target" }, -- Water Unleashed
+        { spell = 196840, type = "debuff", unit = "target", talent = 127879 }, -- Frost Shock
+        { spell = 305485, type = "debuff", unit = "target", talent = 127862 }, -- Lightning Lasso
       },
       icon = 135813
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-        { spell = 370, type = "ability", requiresTarget = true, talent = 101968 }, -- Purge
+        { spell = 370, type = "ability", requiresTarget = true, talent = 127905 }, -- Purge
         { spell = 556, type = "ability", usable = true }, -- Astral Recall
-        { spell = 2484, type = "ability", totem = true }, -- Earthbind Totem
+        { spell = 2484, type = "ability" }, -- Earthbind Totem
         { spell = 2825, type = "ability", buff = true }, -- Bloodlust
-        { spell = 5394, type = "ability", charges = true, totem = true, talent = 101900 }, -- Healing Stream Totem
-        { spell = 8143, type = "ability", totem = true, talent = 101958 }, -- Tremor Totem
+        { spell = 5394, type = "ability", charges = true, totem = true, talent = 127863 }, -- Healing Stream Totem
+        { spell = 8004, type = "ability", charges = true, overlayGlow = true }, -- Healing Surge
+        { spell = 8143, type = "ability", totem = true, talent = 127868 }, -- Tremor Totem
         { spell = 16191, type = "ability", totem = true, talent = 101929 }, -- Mana Tide Totem
-        { spell = 51490, type = "ability", talent = 101995 }, -- Thunderstorm
-        { spell = 51505, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 101950 }, -- Lava Burst
-        { spell = 51514, type = "ability", talent = 101972 }, -- Hex
-        { spell = 57994, type = "ability", requiresTarget = true, talent = 101957 }, -- Wind Shear
-        { spell = 58875, type = "ability", buff = true, talent = 101983 }, -- Spirit Walk
+        { spell = 51485, type = "ability", totem = true, talent = 127894 }, -- Earthgrab Totem
+        { spell = 51490, type = "ability", debuff = true, talent = 127878 }, -- Thunderstorm
+        { spell = 51505, type = "ability", charges = true, overlayGlow = true, requiresTarget = true, talent = 127873 }, -- Lava Burst
+        { spell = 51514, type = "ability", talent = 127903 }, -- Hex
+        { spell = 57994, type = "ability", requiresTarget = true, talent = 127892 }, -- Wind Shear
+        { spell = 58875, type = "ability", buff = true, talent = 127865 }, -- Spirit Walk
         { spell = 61295, type = "ability", charges = true, buff = true, talent = 101905 }, -- Riptide
         { spell = 73685, type = "ability", buff = true, talent = 101918 }, -- Unleash Life
         { spell = 73899, type = "ability", requiresTarget = true }, -- Primal Strike
         { spell = 73920, type = "ability", buff = true, talent = 101923 }, -- Healing Rain
-        { spell = 79206, type = "ability", buff = true, talent = 101955 }, -- Spiritwalker's Grace
+        { spell = 77472, type = "ability", charges = true, overlayGlow = true, talent = 101904 }, -- Healing Wave
+        { spell = 79206, type = "ability", buff = true, talent = 127857 }, -- Spiritwalker's Grace
         { spell = 98008, type = "ability", totem = true, talent = 101913 }, -- Spirit Link Totem
-        { spell = 108271, type = "ability", buff = true, talent = 101945 }, -- Astral Shift
+        { spell = 108270, type = "ability", totem = true, talent = 127911 }, -- Stone Bulwark Totem
+        { spell = 108271, type = "ability", buff = true, talent = 127893 }, -- Astral Shift
         { spell = 108280, type = "ability", totem = true, talent = 101912 }, -- Healing Tide Totem
-        { spell = 108281, type = "ability", buff = true, talent = 102000 }, -- Ancestral Guidance
-        { spell = 108285, type = "ability", talent = 101987 }, -- Totemic Recall
-        { spell = 108287, type = "ability", talent = 101973 }, -- Totemic Projection
+        { spell = 108281, type = "ability", buff = true, talent = 128116 }, -- Ancestral Guidance
+        { spell = 108285, type = "ability", talent = 127870 }, -- Totemic Recall
+        { spell = 108287, type = "ability", talent = 127859 }, -- Totemic Projection
         { spell = 114052, type = "ability", buff = true, talent = 101942 }, -- Ascendance
-        { spell = 157153, type = "ability", totem = true, talent = 101933 }, -- Cloudburst Totem
-        { spell = 188196, type = "ability", overlayGlow = true, requiresTarget = true }, -- Lightning Bolt
-        { spell = 188389, type = "ability", requiresTarget = true }, -- Flame Shock
-        { spell = 188443, type = "ability", overlayGlow = true, requiresTarget = true, talent = 101949 }, -- Chain Lightning
-        { spell = 192058, type = "ability", totem = true, talent = 101961 }, -- Capacitor Totem
-        { spell = 192063, type = "ability", talent = 101982 }, -- Gust of Wind
-        { spell = 192077, type = "ability", totem = true, talent = 101976 }, -- Wind Rush Totem
-        { spell = 196840, type = "ability", requiresTarget = true, talent = 101965 }, -- Frost Shock
-        { spell = 197995, type = "ability", talent = 101937 }, -- Wellspring
-        { spell = 198103, type = "ability", requiresTarget = true, totem = true, talent = 101952 }, -- Earth Elemental
+        { spell = 157153, type = "ability", charges = true, totem = true, talent = 101933 }, -- Cloudburst Totem
+        { spell = 188196, type = "ability", requiresTarget = true }, -- Lightning Bolt
+        { spell = 188389, type = "ability", debuff = true, requiresTarget = true }, -- Flame Shock
+        { spell = 188443, type = "ability", requiresTarget = true, talent = 127856 }, -- Chain Lightning
+        { spell = 192058, type = "ability", totem = true, talent = 127851 }, -- Capacitor Totem
+        { spell = 192063, type = "ability", talent = 127864 }, -- Gust of Wind
+        { spell = 192077, type = "ability", totem = true, talent = 127909 }, -- Wind Rush Totem
+        { spell = 196840, type = "ability", debuff = true, requiresTarget = true, talent = 127879 }, -- Frost Shock
+        { spell = 197995, type = "ability", talent = 127676 }, -- Wellspring
+        { spell = 198103, type = "ability", requiresTarget = true, totem = true, talent = 127858 }, -- Earth Elemental
         { spell = 198838, type = "ability", totem = true, talent = 101931 }, -- Earthen Wall Totem
         { spell = 201764, type = "ability" }, -- Recall Cloudburst Totem
         { spell = 207399, type = "ability", talent = 101930 }, -- Ancestral Protection Totem
-        { spell = 207778, type = "ability", talent = 101842 }, -- Downpour
-        { spell = 305483, type = "ability", requiresTarget = true, talent = 101993 }, -- Lightning Lasso
-        { spell = 375982, type = "ability", overlayGlow = true, requiresTarget = true, talent = 101917 }, -- Primordial Wave
-        { spell = 378081, type = "ability", buff = true, usable = true, talent = 101997 }, -- Nature's Swiftness
-        { spell = 383009, type = "ability", buff = true, talent = 101901 }, -- Stormkeeper
-        { spell = 383013, type = "ability", totem = true, talent = 101989 }, -- Poison Cleansing Totem
-        { spell = 383017, type = "ability", totem = true, talent = 101992 }, -- Stoneskin Totem
-        { spell = 383019, type = "ability", totem = true, talent = 101991 }, -- Tranquil Air Totem
+        { spell = 305483, type = "ability", requiresTarget = true, talent = 127862 }, -- Lightning Lasso
+        { spell = 375982, type = "ability", requiresTarget = true, talent = 101830 }, -- Primordial Wave
+        { spell = 378773, type = "ability", requiresTarget = true, talent = 127904 }, -- Greater Purge
+        { spell = 443454, type = "ability", buff = true, usable = true, herotalent = 117491 }, -- Ancestral Swiftness
+        { spell = 444995, type = "ability", totem = true, herotalent = 117474 }, -- Surging Totem
       },
       icon = 135127
     },
