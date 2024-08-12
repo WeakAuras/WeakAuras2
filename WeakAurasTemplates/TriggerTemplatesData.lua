@@ -3995,7 +3995,7 @@ templates.class.DRUID = {
         { spell = 450346, type = "buff", unit = "player", talent = 109857 }, -- Nature's Grace
         { spell = 394049, type = "buff", unit = "player", talent = 109848 }, -- Balance of All Things
         { spell = 394108, type = "buff", unit = "player", talent = 109851 }, -- Sundered Firmament
-        { spell = 395110, type = "buff", unit = "player" }, -- Parting Skies
+        { spell = 395110, type = "buff", unit = "player", talent = 109851  }, -- Parting Skies
         { spell = 395336, type = "buff", unit = "player", talent = 103325 }, -- Protector of the Pack
       },
       icon = 136097
