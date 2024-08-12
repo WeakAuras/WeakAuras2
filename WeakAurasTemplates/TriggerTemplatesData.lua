@@ -3990,8 +3990,8 @@ templates.class.DRUID = {
         { spell = 393763, type = "buff", unit = "player", talent = 109850 }, -- Umbral Embrace
         { spell = 393897, type = "buff", unit = "player", talent = 103274 }, -- Tireless Pursuit
         { spell = 393903, type = "buff", unit = "player", talent = 103313 }, -- Ursine Vigor
-        { spell = 393942, type = "buff", unit = "player" }, -- Starweaver's Warp
-        { spell = 393944, type = "buff", unit = "player" }, -- Starweaver's Weft
+        { spell = 393942, type = "buff", unit = "player", talent = 109873 }, -- Starweaver's Warp
+        { spell = 393944, type = "buff", unit = "player", talent = 109873 }, -- Starweaver's Weft
         { spell = 450346, type = "buff", unit = "player", talent = 109857 }, -- Nature's Grace
         { spell = 394049, type = "buff", unit = "player", talent = 109848 }, -- Balance of All Things (Nature)
         { spell = 394050, type = "buff", unit = "player", talent = 109848 }, -- Balance of All Things (Arcane)
