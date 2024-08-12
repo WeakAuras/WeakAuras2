@@ -3978,7 +3978,6 @@ templates.class.DRUID = {
         { spell = 192081, type = "buff", unit = "player", talent = 103305 }, -- Ironfur
         { spell = 194223, type = "buff", unit = "player", talent = 109849 }, -- Celestial Alignment
         { spell = 202425, type = "buff", unit = "player", talent = 114648 }, -- Warrior of Elune
-        { spell = 203407, type = "buff", unit = "player" }, -- Reactive Resin
         { spell = 209746, type = "buff", unit = "player" }, -- Moonkin Aura
         { spell = 234084, type = "buff", unit = "player" }, -- Moon and Stars
         { spell = 252216, type = "buff", unit = "player", talent = 103275 }, -- Tiger Dash
@@ -4424,6 +4423,7 @@ templates.class.DRUID = {
         { spell = 192081, type = "buff", unit = "player", talent = 103305 }, -- Ironfur
         { spell = 197625, type = "buff", unit = "player", talent = 112965 }, -- Moonkin Form
         { spell = 197721, type = "buff", unit = "player", talent = 103136 }, -- Flourish
+        { spell = 203407, type = "buff", unit = "player" }, -- Reactive Resin
         { spell = 203554, type = "buff", unit = "player" }, -- Focused Growth
         { spell = 207386, type = "buff", unit = "player", talent = 103116 }, -- Spring Blossoms
         { spell = 207640, type = "buff", unit = "player", talent = 103105 }, -- Abundance
