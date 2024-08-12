@@ -3992,7 +3992,7 @@ templates.class.DRUID = {
         { spell = 393903, type = "buff", unit = "player", talent = 103313 }, -- Ursine Vigor
         { spell = 393942, type = "buff", unit = "player" }, -- Starweaver's Warp
         { spell = 393944, type = "buff", unit = "player" }, -- Starweaver's Weft
-        { spell = 393959, type = "buff", unit = "player", talent = 109857 }, -- Nature's Grace
+        { spell = 450346, type = "buff", unit = "player", talent = 109857 }, -- Nature's Grace
         { spell = 394049, type = "buff", unit = "player", talent = 109848 }, -- Balance of All Things
         { spell = 394108, type = "buff", unit = "player", talent = 109851 }, -- Sundered Firmament
         { spell = 395110, type = "buff", unit = "player" }, -- Parting Skies
