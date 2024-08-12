@@ -5305,6 +5305,7 @@ for i = 1, 4 do
       }}}
   });
 end
+-- Feral/Guardian/Restoration druid forms
 for j, id in ipairs({5487, 768, 783, 114282, 210053}) do
   local title, _, icon = GetSpellInfo(id)
   if title then
