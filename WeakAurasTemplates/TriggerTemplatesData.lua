@@ -5380,10 +5380,12 @@ for i = 1, 4 do
       }}}
   });
 end
-for j, id in ipairs({5487, 768, 783, 114282, 1394966}) do
-  local title, _, icon = GetSpellInfo(id)
-  if title then
-    for i = 1, 4 do
+
+for i = 1, 4 do
+  local ids = i == 1 and {5487, 768, 783, 24858, 114282, 210053} or {5487, 768, 783, 114282, 210053}
+  for j, id in ipairs(ids) do
+    local title, _, icon = GetSpellInfo(id)
+    if title then
       tinsert(templates.class.DRUID[i][resourceSection].args, {
         title = title,
         icon = icon,
@@ -5397,7 +5399,7 @@ for j, id in ipairs({5487, 768, 783, 114282, 1394966}) do
             }
           }
         }
-      });
+      })
     end
   end
 end
