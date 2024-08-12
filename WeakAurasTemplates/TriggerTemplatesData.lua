@@ -3985,6 +3985,7 @@ templates.class.DRUID = {
         { spell = 319454, type = "buff", unit = "player", talent = 103309 }, -- Heart of the Wild
         { spell = 343648, type = "buff", unit = "player", talent = 109835 }, -- Solstice
         { spell = 385787, type = "buff", unit = "player", talent = 103314 }, -- Matted Fur
+        { spell = 390414, type = "buff", unit = "player", talent = 109839 }, -- Incarnation: Chosen of Elune
         { spell = 391528, type = "buff", unit = "player", talent = 109838 }, -- Convoke the Spirits
         { spell = 393763, type = "buff", unit = "player", talent = 109850 }, -- Umbral Embrace
         { spell = 393897, type = "buff", unit = "player", talent = 103274 }, -- Tireless Pursuit
