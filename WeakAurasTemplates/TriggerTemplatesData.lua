@@ -5326,6 +5326,7 @@ for j, id in ipairs({5487, 768, 783, 24858, 114282, 210053}) do
       });
     end
 end
+
 -- Feral/Guardian/Restoration druid forms
 for j, id in ipairs({5487, 768, 783, 114282, 210053}) do
   local title, _, icon = GetSpellInfo(id)
@@ -5348,7 +5349,6 @@ for j, id in ipairs({5487, 768, 783, 114282, 210053}) do
     end
   end
 end
-
 
 -- Astral Power
 tinsert(templates.class.DRUID[1][resourceSection].args, createSimplePowerTemplate(8));
