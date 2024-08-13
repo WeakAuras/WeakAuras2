@@ -3975,11 +3975,10 @@ templates.class.DRUID = {
         { spell = 77764, type = "buff", unit = "player", talent = 103312 }, -- Stampeding Roar
         { spell = 102560, type = "buff", unit = "player", talent = 109839 }, -- Incarnation: Chosen of Elune
         { spell = 124974, type = "buff", unit = "player", talent = 103324 }, -- Nature's Vigil
+        { spell = 157228, type = "buff", unit = "player" }, -- Owlkin Frenzy
         { spell = 191034, type = "buff", unit = "player", talent = 109833 }, -- Starfall
         { spell = 192081, type = "buff", unit = "player", talent = 103305 }, -- Ironfur
         { spell = 202425, type = "buff", unit = "player", talent = 114648 }, -- Warrior of Elune
-        { spell = 234081, type = "buff", unit = "player" }, -- Celestial Guardian
-        { spell = 234084, type = "buff", unit = "player" }, -- Moon and Stars
         { spell = 252216, type = "buff", unit = "player", talent = 103275 }, -- Tiger Dash
         { spell = 279709, type = "buff", unit = "player", talent = 109840 }, -- Starlord
         { spell = 319454, type = "buff", unit = "player", talent = 103309 }, -- Heart of the Wild
@@ -3989,18 +3988,21 @@ templates.class.DRUID = {
         { spell = 391528, type = "buff", unit = "player", talent = 109838 }, -- Convoke the Spirits
         { spell = 393763, type = "buff", unit = "player", talent = 109850 }, -- Umbral Embrace
         { spell = 393903, type = "buff", unit = "player", talent = 103313 }, -- Ursine Vigor
-        { spell = 393942, type = "buff", unit = "player" }, -- Starweaver's Warp
-        { spell = 393944, type = "buff", unit = "player" }, -- Starweaver's Weft
-        { spell = 394049, type = "buff", unit = "player", talent = 109848 }, -- Balance of All Things
+        { spell = 393942, type = "buff", unit = "player", talent = 109873 }, -- Starweaver's Warp
+        { spell = 393944, type = "buff", unit = "player", talent = 109873 }, -- Starweaver's Weft
+        { spell = 394049, type = "buff", unit = "player", talent = 109848 }, -- Balance of All Things (Nature)
+        { spell = 394050, type = "buff", unit = "player", talent = 109848 }, -- Balance of All Things (Arcane)
         { spell = 394108, type = "buff", unit = "player", talent = 109831 }, -- Sundered Firmament
-        { spell = 395110, type = "buff", unit = "player" }, -- Parting Skies
+        { spell = 395110, type = "buff", unit = "player", talent = 109851 }, -- Parting Skies
         { spell = 400126, type = "buff", unit = "player", talent = 123792 }, -- Forestwalk
         { spell = 428735, type = "buff", unit = "player", herotalent = 117203 }, -- Harmony of the Grove
         { spell = 429438, type = "buff", unit = "player", herotalent = 117196 }, -- Blooming Infusion
         { spell = 431250, type = "buff", unit = "player", herotalent = 117190 }, -- Lunar Amplification
         { spell = 433749, type = "buff", unit = "player", herotalent = 117186 }, -- Protective Growth
         { spell = 433832, type = "buff", unit = "player" }, -- Dream Burst
-        { spell = 450346, type = "buff", unit = "player" }, -- Dreamstate
+        { spell = 450346, type = "buff", unit = "player", talent = 109857 }, -- Dreamstate
+        { spell = 450360, type = "buff", unit = "player", talent = 123859 }, -- Touch the Cosmos (Starsurge)
+        { spell = 450361, type = "buff", unit = "player", talent = 123859 }, -- Touch the Cosmos (Starfall)
         { spell = 450419, type = "buff", unit = "player", talent = 109851 }, -- Umbral Inspiration
         { spell = 455801, type = "buff", unit = "player", herotalent = 117199 }, -- Cenarius' Might
       },
@@ -4084,9 +4086,9 @@ templates.class.DRUID = {
         { spell = 202770, type = "ability", requiresTarget = true, talent = 109859 }, -- Fury of Elune
         { spell = 205636, type = "ability", talent = 109844 }, -- Force of Nature
         { spell = 252216, type = "ability", buff = true, talent = 103275 }, -- Tiger Dash
-        { spell = 274281, type = "ability", charges = true, requiresTarget = true, talent = 109860 }, -- New Moon
-        { spell = 274282, type = "ability", charges = true }, -- Half Moon
-        { spell = 274283, type = "ability", charges = true }, -- Full Moon
+        { spell = 274281, type = "ability", charges = true, requiresTarget = true, usable = true, talent = 109860 }, -- New Moon
+        { spell = 274282, type = "ability", charges = true, requiresTarget = true, usable = true, talent = 109860 }, -- Half Moon
+        { spell = 274283, type = "ability", charges = true, requiresTarget = true, usable = true, talent = 109860 }, -- Full Moon
         { spell = 319454, type = "ability", buff = true, talent = 103309 }, -- Heart of the Wild
         { spell = 383410, type = "ability", buff = true, talent = 109849 }, -- Celestial Alignment
         { spell = 391528, type = "ability", buff = true, talent = 109838 }, -- Convoke the Spirits
