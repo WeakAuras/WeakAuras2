@@ -5035,9 +5035,7 @@ templates.class.DEATHKNIGHT = {
         { spell = 444763, type = "buff", unit = "player" }, -- Apocalyptic Conquest
         { spell = 453773, type = "buff", unit = "player", herotalent = 123410 }, -- Pact of the Apocalypse
         { spell = 459238, type = "buff", unit = "player", talent = 96330 }, -- Festering Scythe
-        { spell = 3714, type = "buff", unit = "pet" }, -- Path of Frost
         { spell = 63560, type = "buff", unit = "pet", talent = 96324 }, -- Dark Transformation
-        { spell = 377589, type = "buff", unit = "pet", talent = 96331 }, -- Ghoulish Frenzy
       },
       icon = 136181
     },
