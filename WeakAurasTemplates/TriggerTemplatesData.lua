@@ -3979,14 +3979,21 @@ templates.class.DRUID = {
         { spell = 191034, type = "buff", unit = "player", talent = 109833 }, -- Starfall
         { spell = 192081, type = "buff", unit = "player", talent = 103305 }, -- Ironfur
         { spell = 202425, type = "buff", unit = "player", talent = 114648 }, -- Warrior of Elune
+        { spell = 209731, type = "buff", unit = "player", }, -- Protector of the Grove
+        { spell = 209746, type = "buff", unit = "player", }, -- Moonkin Aura
+        { spell = 234081, type = "buff", unit = "player" }, -- Celestial Guardian
+        { spell = 234084, type = "buff", unit = "player" }, -- Moon and Stars
         { spell = 252216, type = "buff", unit = "player", talent = 103275 }, -- Tiger Dash
         { spell = 279709, type = "buff", unit = "player", talent = 109840 }, -- Starlord
+        { spell = 305497, type = "buff", unit = "player" }, -- Thorns
         { spell = 319454, type = "buff", unit = "player", talent = 103309 }, -- Heart of the Wild
         { spell = 343648, type = "buff", unit = "player", talent = 109835 }, -- Solstice
+        { spell = 358134, type = "buff", unit = "player" }, -- Star Burst
         { spell = 383410, type = "buff", unit = "player", talent = 109849 }, -- Celestial Alignment
         { spell = 385787, type = "buff", unit = "player", talent = 103314 }, -- Matted Fur
         { spell = 391528, type = "buff", unit = "player", talent = 109838 }, -- Convoke the Spirits
         { spell = 393763, type = "buff", unit = "player", talent = 109850 }, -- Umbral Embrace
+        { spell = 393897, type = "buff", unit = "player" }, -- Tireless Pursuit
         { spell = 393903, type = "buff", unit = "player", talent = 103313 }, -- Ursine Vigor
         { spell = 393942, type = "buff", unit = "player", talent = 109873 }, -- Starweaver's Warp
         { spell = 393944, type = "buff", unit = "player", talent = 109873 }, -- Starweaver's Weft
@@ -4029,6 +4036,9 @@ templates.class.DRUID = {
         { spell = 202347, type = "debuff", unit = "target", talent = 109841 }, -- Stellar Flare
         { spell = 203123, type = "debuff", unit = "target", talent = 103299 }, -- Maim
         { spell = 205644, type = "debuff", unit = "target", talent = 109844 }, -- Force of Nature
+        { spell = 209749, type = "debuff", unit = "target" }, -- Faerie Swarm
+        { spell = 232559, type = "debuff", unit = "target" }, -- Thorns
+        { spell = 410559, type = "debuff", unit = "target" }, -- Dying Stars
         { spell = 393957, type = "debuff", unit = "target", talent = 109834 }, -- Waning Twilight
         { spell = 394061, type = "debuff", unit = "target", talent = 109836 }, -- Astral Smolder
         { spell = 430589, type = "debuff", unit = "target", herotalent = 117204 }, -- Atmospheric Exposure
@@ -4085,10 +4095,12 @@ templates.class.DRUID = {
         { spell = 202425, type = "ability", buff = true, talent = 114648 }, -- Warrior of Elune
         { spell = 202770, type = "ability", requiresTarget = true, talent = 109859 }, -- Fury of Elune
         { spell = 205636, type = "ability", talent = 109844 }, -- Force of Nature
+        { spell = 209749, type = "ability", debuff = true, requiresTarget = true }, -- Faerie Swarm
         { spell = 252216, type = "ability", buff = true, talent = 103275 }, -- Tiger Dash
         { spell = 274281, type = "ability", charges = true, requiresTarget = true, usable = true, talent = 109860 }, -- New Moon
         { spell = 274282, type = "ability", charges = true, requiresTarget = true, usable = true, talent = 109860 }, -- Half Moon
         { spell = 274283, type = "ability", charges = true, requiresTarget = true, usable = true, talent = 109860 }, -- Full Moon
+        { spell = 305497, type = "ability", buff = true }, -- Thorns
         { spell = 319454, type = "ability", buff = true, talent = 103309 }, -- Heart of the Wild
         { spell = 383410, type = "ability", buff = true, talent = 109849 }, -- Celestial Alignment
         { spell = 391528, type = "ability", buff = true, talent = 109838 }, -- Convoke the Spirits
