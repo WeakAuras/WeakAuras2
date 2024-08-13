@@ -4064,7 +4064,7 @@ templates.class.DRUID = {
         { spell = 33917, type = "ability", requiresTarget = true, usable = true }, -- Mangle
         { spell = 48438, type = "ability", buff = true, requiresTarget = true, talent = 103320 }, -- Wild Growth
         { spell = 49376, type = "ability", talent = 103276 }, -- Wild Charge
-        { spell = 77758, type = "ability", requiresTarget = true, talent = 103301 }, -- Thrash
+        { spell = 77758, type = "ability", talent = 103301 }, -- Thrash
         { spell = 77764, type = "ability", buff = true, talent = 103312 }, -- Stampeding Roar
         { spell = 78674, type = "ability", overlayGlow = true, requiresTarget = true, talent = 103280 }, -- Starsurge
         { spell = 78675, type = "ability", requiresTarget = true, talent = 109867 }, -- Solar Beam
@@ -4073,7 +4073,7 @@ templates.class.DRUID = {
         { spell = 102359, type = "ability", debuff = true, requiresTarget = true, talent = 103322 }, -- Mass Entanglement
         { spell = 102560, type = "ability", buff = true, talent = 109839 }, -- Incarnation: Chosen of Elune
         { spell = 102793, type = "ability", talent = 103321 }, -- Ursol's Vortex
-        { spell = 106832, type = "ability", requiresTarget = true, usable = true, talent = 103301 }, -- Thrash
+        { spell = 106832, type = "ability", usable = true, talent = 103301 }, -- Thrash
         { spell = 106839, type = "ability", requiresTarget = true, usable = true, talent = 103302 }, -- Skull Bash
         { spell = 108238, type = "ability", talent = 103310 }, -- Renewal
         { spell = 124974, type = "ability", buff = true, talent = 103324 }, -- Nature's Vigil
