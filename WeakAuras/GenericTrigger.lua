@@ -3403,7 +3403,7 @@ do
 
   function Private.ExecEnv.GetEffectiveSpellId(spellId, exactMatch, followoverride)
     if not exactMatch then
-      local spellName = Private.ExecEnv.GetSpellName(spellId)
+      local spellName = Private.ExecEnv.GetSpellName(spellId or "")
       if spellName then
         local spellIdForName = select(7, Private.ExecEnv.GetSpellInfo(spellName))
         if spellIdForName then
