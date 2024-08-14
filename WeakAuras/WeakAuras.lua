@@ -104,7 +104,7 @@ do
   local currentErrorHandlerUid
   local currentErrorHandlerContext
   local function waErrorHandler(errorMessage)
-    local prefix = ""
+    local juicedMessage = {}
     local data
     if currentErrorHandlerId then
       data = WeakAuras.GetData(currentErrorHandlerId)
@@ -114,17 +114,18 @@ do
     if data then
       Private.AuraWarnings.UpdateWarning(data.uid, "LuaError", "error",
         L["This aura has caused a Lua error."] .. "\n" .. L["Install the addons BugSack and BugGrabber for detailed error logs."], true)
-      prefix = L["Lua error in aura '%s': %s"]:format(data.id, currentErrorHandlerContext or L["unknown location"]) .. "\n"
+      table.insert(juicedMessage, L["Lua error in aura '%s': %s"]:format(data.id, currentErrorHandlerContext or L["unknown location"]))
     else
-      prefix = L["Lua error"] .. "\n"
+      table.insert(juicedMessage, L["Lua error"])
     end
-    prefix = prefix .. L["WeakAuras Version: %s"]:format(WeakAuras.versionString) .. "\n"
+    table.insert(juicedMessage, L["WeakAuras Version: %s"]:format(WeakAuras.versionString))
     local version = data and (data.semver or data.version)
     if version then
-      prefix = prefix .. L["Aura Version: %s"]:format(version) .. "\n"
+      table.insert(juicedMessage, L["Aura Version: %s"]:format(version))
     end
-
-    geterrorhandler()(prefix .. errorMessage)
+    table.insert(juicedMessage, L["Stack trace:"])
+    table.insert(juicedMessage, errorMessage)
+    geterrorhandler()(table.concat(juicedMessage, "\n"))
   end
 
   function Private.GetErrorHandlerId(id, context)
