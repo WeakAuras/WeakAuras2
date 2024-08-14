@@ -440,7 +440,9 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               name = L["Operator"],
               order = order,
               hidden = disabled or hidden,
-              values = arg.operator_types == "without_equal" and OptionsPrivate.Private.operator_types_without_equal or OptionsPrivate.Private.operator_types,
+              values = arg.operator_types == "without_equal" and OptionsPrivate.Private.operator_types_without_equal
+                       or arg.operator_types == "only_equal" and OptionsPrivate.Private.equality_operator_types
+                       or OptionsPrivate.Private.operator_types,
 
               get = function()
                 return getValue(trigger, "use_"..realname, realname.."_operator", multiEntry, entryNumber)
