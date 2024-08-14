@@ -946,6 +946,13 @@ function OptionsPrivate.CreateFrame()
     end
   end
 
+  frame.ReloadOptions = function(self)
+    if self.pickedDisplay then
+      self:ClearAndUpdateOptions(self.pickedDisplay, true)
+      self:FillOptions()
+    end
+  end
+
   frame.ClearAndUpdateOptions = function(self, id, clearChildren)
     frame:ClearOptions(id)
 
