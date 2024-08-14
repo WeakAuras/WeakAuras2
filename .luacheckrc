@@ -3977,6 +3977,7 @@ globals = {
 	"tAppendAll",
 	"time",
 	"tinsert",
+	"tCompare",
 	"tonumber",
 	"tostring",
 	"tremove",
