@@ -1,4 +1,4 @@
-## Interface: 100207, 110000
+## Interface: 110002
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
 ## Version: @project-version@
