@@ -995,6 +995,10 @@ Private.debuff_class_types = {
   none = L["None"]
 }
 
+if WeakAuras.IsRetail() then
+  Private.debuff_class_types.bleed = L["Bleed"]
+end
+
 ---@type table<string, string>
 Private.player_target_events = {
   PLAYER_TARGET_CHANGED = "target",
