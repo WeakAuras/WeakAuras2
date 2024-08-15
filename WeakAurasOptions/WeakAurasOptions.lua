@@ -1146,7 +1146,8 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
   tinsert(frame.buttonsScroll.children, frame.loadedButton);
 
   local aurasMatchingFilter = {}
-  local useTextFilter = filter and filter ~= ""
+  local useTextFilter = filter ~= ""
+  local filterTable = OptionsPrivate.Private.splitAtOr(filter)
   local topLevelLoadedAuras = {}
   local topLevelUnloadedAuras = {}
   local visible = {}
@@ -1184,10 +1185,12 @@ function OptionsPrivate.SortDisplayButtons(filter, overrideReset, id)
     end
 
     if useTextFilter then
-      if(id:lower():find(filter, 1, true)) then
-        aurasMatchingFilter[id] = true
-        for parent in OptionsPrivate.Private.TraverseParents(child.data) do
-          aurasMatchingFilter[parent.id] = true
+      for _, word in ipairs(filterTable) do
+        if(id:lower():find(word, 1, true)) then
+          aurasMatchingFilter[id] = true
+          for parent in OptionsPrivate.Private.TraverseParents(child.data) do
+            aurasMatchingFilter[parent.id] = true
+          end
         end
       end
     else

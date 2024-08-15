@@ -103,7 +103,7 @@ end
 function WeakAuras.split(input)
   input = input or "";
   local ret = {};
-  local split, element = true, nil
+  local split, element = nil, nil
   split = input:find("[,%s]");
   while(split) do
     element, input = input:sub(1, split-1), input:sub(split+1);
@@ -114,6 +114,38 @@ function WeakAuras.split(input)
   end
   if(input ~= "") then
     tinsert(ret, input);
+  end
+  return ret;
+end
+
+local function findFirstOf(input, words, start, plain)
+  local startPos, endPos
+  for _, w in ipairs(words) do
+    local s, e = input:find(w, start, plain)
+    if s and (not startPos or startPos > s) then
+      startPos, endPos = s, e
+    end
+  end
+  return startPos, endPos
+end
+
+---@param input string
+---@return string[] subStrings
+function Private.splitAtOr(input)
+  input = input or ""
+  local ret = {}
+  local splitStart, splitEnd, element = nil, nil, nil
+  local separators = { "|", " or "}
+  splitStart, splitEnd = findFirstOf(input, separators, 1, true);
+  while(splitStart) do
+    element, input = input:sub(1, splitStart -1 ), input:sub(splitEnd + 1)
+    if(element ~= "") then
+      tinsert(ret, element)
+    end
+    splitStart, splitEnd = findFirstOf(input, separators, 1, true);
+  end
+  if(input ~= "") then
+    tinsert(ret, input)
   end
   return ret;
 end
