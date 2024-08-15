@@ -33,6 +33,8 @@ local templates =
       Draenei = {},
       Worgen = {},
       Pandaren = {},
+      Dracthyr = {},
+      EarthenDwarf = {},
       Orc = {},
       Scourge = {},
       Tauren = {},
@@ -5368,6 +5370,12 @@ tinsert(templates.race.Worgen, { spell = 68992, type = "buff", unit = "player", 
 -- Quaking Palm
 tinsert(templates.race.Pandaren, { spell = 107079, type = "ability", titleSuffix = L["cooldown"]});
 tinsert(templates.race.Pandaren, { spell = 107079, type = "buff", titleSuffix = L["buff"]});
+-- Tail Swipe
+tinsert(templates.race.Dracthyr, { spell = 368970, type = "ability" })
+-- Wing Buffet
+tinsert(templates.race.Dracthyr, { spell = 357214, type = "ability" })
+ -- Azerite Surge)
+tinsert(templates.race.EarthenDwarf, { spell = 436344, type = "ability" })
 -- Blood Fury
 tinsert(templates.race.Orc, { spell = 20572, type = "ability", titleSuffix = L["cooldown"]});
 tinsert(templates.race.Orc, { spell = 20572, type = "buff", unit = "player", titleSuffix = L["buff"]});
