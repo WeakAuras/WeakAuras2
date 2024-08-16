@@ -173,7 +173,7 @@ end
 local function get_zoneId_list()
   local currentmap_id = C_Map.GetBestMapForUnit("player")
   local instanceId = select(8, GetInstanceInfo())
-  local bottomText = L["Supports multiple entries, separated by commas. To include child zone ids, prefix with 'c', e.g. 'c2022'.\nGroup Zone IDs must be prefixed with 'g', e.g. 'g277'. \nSupports Area IDs from https://wago.tools/db2/AreaTable prefixed with 'a'. \nSupports Instance IDs prefixed with 'i'."]
+  local bottomText = L["Supports multiple entries, separated by commas. To include child zone ids, prefix with 'c', e.g. 'c2022'.\nGroup Zone IDs must be prefixed with 'g', e.g. 'g277'. \nSupports Area IDs from https://wago.tools/db2/AreaTable prefixed with 'a'. \nSupports Instance IDs prefixed with 'i'.\nEntries can be prefixed with '-' to negate."]
   if not instanceId and not currentmap_id then
     return ("%s\n\n%s"):format(Private.get_zoneId_list(), bottomText)
   elseif not currentmap_id then
@@ -920,18 +920,33 @@ end
 function Private.ExecEnv.ParseStringCheck(input)
   if not input then return end
   local matcher = {
-    zones = {},
-    Check = function(self, zone)
-      return self.zones[zone]
+    entries = {},
+    negativeEntries = {},
+    Check = function(self, e)
+      return false
     end,
-    Add = function(self, z)
-      self.zones[z] = true
+    CheckBoth = function(self, e)
+      return self.entries[e] and not self.negativeEntries[e]
+    end,
+    CheckPositive = function(self, e)
+      return self.entries[e]
+    end,
+    CheckNegative = function(self, e)
+      return not self.negativeEntries[e]
+    end,
+    Add = function(self, e, negate)
+      if negate then
+        self.negativeEntries[e] = true
+      else
+        self.entries[e] = true
+      end
     end
   }
 
   local start = 1
   local escaped = false
   local partial = ""
+  local negate = false
   for i = 1, #input do
     local c = input:sub(i, i)
     if escaped then
@@ -941,12 +956,25 @@ function Private.ExecEnv.ParseStringCheck(input)
       start = i + 1
       escaped = true
     elseif c == "," then
-      matcher:Add(partial .. input:sub(start, i - 1):trim())
+      matcher:Add(partial .. input:sub(start, i - 1):trim(), negate)
       start = i + 1
       partial = ""
+      negate = false
+    elseif c == "-" and partial:trim() == "" and input:sub(start, i - 1):trim() == "" then
+      start = i + 1
+      negate = true
     end
   end
-  matcher:Add(partial .. input:sub(start, #input):trim())
+  matcher:Add(partial .. input:sub(start, #input):trim(), negate)
+
+  -- Update check function
+  if next(matcher.entries) and next(matcher.negativeEntries) then
+    matcher.Check = matcher.CheckBoth
+  elseif next(matcher.entries) then
+    matcher.Check = matcher.CheckPositive
+  elseif next(matcher.negativeEntries) then
+    matcher.Check = matcher.CheckNegative
+  end
 
   return matcher
 end
@@ -1844,7 +1872,7 @@ Private.load_prototype = {
       preamble = "local checker = Private.ExecEnv.ParseStringCheck(%q)",
       test = "checker:Check(zone)",
       events = {"ZONE_CHANGED", "ZONE_CHANGED_INDOORS", "ZONE_CHANGED_NEW_AREA", "VEHICLE_UPDATE"},
-      desc = L["Supports multiple entries, separated by commas. Escape ',' with \\"],
+      desc = L["Supports multiple entries, separated by commas. Escape ',' with \\. Prefix with '-' for negation."],
       optional = true,
     },
     {
@@ -2475,7 +2503,7 @@ Private.event_prototypes = {
           return preamble:Check(state.npcId)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"]
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."]
       },
       {
         name = "attackable",
@@ -3297,7 +3325,7 @@ Private.event_prototypes = {
           return preamble:Check(state.npcId)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"]
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."]
       },
       {
         name = "class",
@@ -3946,7 +3974,7 @@ Private.event_prototypes = {
           return preamble:Check(state.npcId)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"]
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."]
       },
       {
         name = "class",
@@ -4463,7 +4491,7 @@ Private.event_prototypes = {
         conditionType = "string",
         preamble = "local sourceNameChecker = Private.ExecEnv.ParseStringCheck(%q)",
         test = "sourceNameChecker:Check(sourceName)",
-        desc = L["Supports multiple entries, separated by commas"],
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."],
       },
       {
         name = "sourceNpcId",
@@ -4482,7 +4510,7 @@ Private.event_prototypes = {
           return preamble:Check(state.sourceNpcId)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"],
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."],
         enable = function(trigger)
           return not (trigger.subeventPrefix == "ENVIRONMENTAL")
         end,
@@ -4600,7 +4628,7 @@ Private.event_prototypes = {
         conditionType = "string",
         preamble = "local destNameChecker = Private.ExecEnv.ParseStringCheck(%q)",
         test = "destNameChecker:Check(destName)",
-        desc = L["Supports multiple entries, separated by commas"],
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."],
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end,
@@ -4622,7 +4650,7 @@ Private.event_prototypes = {
           return preamble:Check(state.destNpcId)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"],
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."],
         enable = function(trigger)
           return not (trigger.subeventPrefix == "SPELL" and trigger.subeventSuffix == "_CAST_START");
         end,
@@ -9117,7 +9145,7 @@ Private.event_prototypes = {
           return preamble:Check(state.name)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"]
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."]
       },
       {
         name = "npcId",
@@ -9136,7 +9164,7 @@ Private.event_prototypes = {
           return preamble:Check(state.npcId)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"]
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."]
       },
       {
         name = "value",
@@ -9655,7 +9683,7 @@ Private.event_prototypes = {
           return preamble:Check(state.npcId)
         end,
         operator_types = "none",
-        desc = L["Supports multiple entries, separated by commas"],
+        desc = L["Supports multiple entries, separated by commas. Prefix with '-' for negation."],
         enable = function(trigger)
           return not trigger.use_inverse
         end,
