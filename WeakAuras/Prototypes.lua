@@ -1045,11 +1045,12 @@ function Private.ExecEnv.CheckRaidFlags(flags, flagToCheck)
 end
 
 local function IsSpellKnownOrOverridesAndBaseIsKnown(spell, pet)
+  if spell == 0 then return false end
   if IsSpellKnown(spell, pet) then
     return true
   end
   local baseSpell = FindBaseSpellByID(spell)
-  if baseSpell and baseSpell ~= spell then
+  if baseSpell and baseSpell ~= spell and baseSpell ~= 0 then
     if FindSpellOverrideByID(baseSpell) == spell then
       return IsSpellKnown(baseSpell, pet)
     end
@@ -1059,11 +1060,12 @@ end
 ---@param spell string|number
 ---@return boolean result
 function WeakAuras.IsPlayerSpellOrOverridesAndBaseIsPlayerSpell(spell)
+  if spell == 0 then return false end
   if IsPlayerSpell(spell) then
     return true
   end
   local baseSpell = FindBaseSpellByID(spell)
-  if baseSpell and baseSpell ~= spell then
+  if baseSpell and baseSpell ~= spell and baseSpell ~= 0 then
     if FindSpellOverrideByID(baseSpell) == spell then
       return IsPlayerSpell(baseSpell)
     end
@@ -1073,6 +1075,7 @@ end
 
 ---@private
 function WeakAuras.IsSpellKnownForLoad(spell, exact)
+  if spell == 0 then return false end
   local result = IsPlayerSpell(spell)
                  or IsSpellKnownOrOverridesAndBaseIsKnown(spell, false)
                  or IsSpellKnownOrOverridesAndBaseIsKnown(spell, true)
@@ -1093,6 +1096,7 @@ end
 ---@param pet boolean?
 ---@return boolean result
 function WeakAuras.IsSpellKnown(spell, pet)
+  if spell == 0 then return false end
   if (pet) then
     return IsSpellKnownOrOverridesAndBaseIsKnown(spell, true)
   end
