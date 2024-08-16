@@ -6148,32 +6148,66 @@ function Private.ExecEnv.ParseZoneCheck(input)
   if not input then return end
 
   local matcher = {
-    Check = function(self, zoneId, zonegroupId, instanceId, minimapZoneText)
+    Check = function(self)
+      return false
+    end,
+    CheckBoth = function(self, zoneId, zonegroupId, instanceId, minimapZoneText)
+      return self:CheckPositive(zoneId, zonegroupId, instanceId, minimapZoneText)
+             and self:CheckNegative(zoneId, zonegroupId, instanceId, minimapZoneText)
+    end,
+    CheckPositive = function(self, zoneId, zonegroupId, instanceId, minimapZoneText)
       return self.zoneIds[zoneId] or self.zoneGroupIds[zonegroupId] or (instanceId and self.instanceIds[instanceId]) or self.areaNames[minimapZoneText]
+    end,
+    CheckNegative = function(self, zoneId, zonegroupId, instanceId, minimapZoneText)
+      return not (self.negZoneIds[zoneId]
+                  or self.negZoneGroupIds[zonegroupId]
+                  or (instanceId and self.negInstanceIds[instanceId])
+                  or self.negAreaNames[minimapZoneText])
     end,
     AddId = function(self, input, start, last)
       local id = tonumber(strtrim(input:sub(start, last)))
       if id then
         local prevChar = input:sub(start - 1, start - 1)
+        local prevPrevchar = input:sub(start - 2, start - 2)
         if prevChar == 'g' or prevChar == 'G' then
-          self.zoneGroupIds[id] = true
+          if prevPrevchar == "-" then
+            self.negZoneGroupIds[id] = true
+          else
+            self.zoneGroupIds[id] = true
+          end
         elseif prevChar == 'c' or prevChar == 'C' then
-          self.zoneIds[id] = true
+          local addTo = self.zoneIds
+          if prevPrevchar == "-" then
+            addTo = self.negZoneIds
+          end
+          addTo[id] = true
           local info = C_Map.GetMapChildrenInfo(id, nil, true)
           if info then
             for _,childInfo in pairs(info) do
-              self.zoneIds[childInfo.mapID] = true
+              addTo[childInfo.mapID] = true
             end
           end
         elseif prevChar == 'a' or prevChar == 'A' then
           local areaName = C_Map.GetAreaInfo(id)
           if areaName then
-            self.areaNames[areaName] = true
+            if prevPrevchar == "-" then
+              self.negAreaNames[areaName] = true
+            else
+              self.areaNames[areaName] = true
+            end
           end
         elseif prevChar == 'i' or prevChar == 'I' then
-          self.instanceIds[id] = true
+          if prevPrevchar == "-" then
+            self.negInstanceIds[id] = true
+          else
+            self.instanceIds[id] = true
+          end
         else
-          self.zoneIds[id] = true
+          if prevChar == "-" then
+            self.negZoneIds[id] = true
+          else
+            self.zoneIds[id] = true
+          end
         end
       end
     end,
@@ -6181,6 +6215,10 @@ function Private.ExecEnv.ParseZoneCheck(input)
     zoneGroupIds = {},
     instanceIds = {},
     areaNames = {},
+    negZoneIds = {},
+    negZoneGroupIds = {},
+    negInstanceIds = {},
+    negAreaNames = {},
   }
 
   local start = input:find('%d', 1)
@@ -6194,6 +6232,15 @@ function Private.ExecEnv.ParseZoneCheck(input)
 
     last = #input
     matcher:AddId(input, start, last)
+  end
+  local hasPositive = next(matcher.zoneIds) or next(matcher.zoneGroupIds) or next(matcher.instanceIds) or next(matcher.areaNames)
+  local hasNegative = next(matcher.negZoneIds) or next(matcher.negZoneGroupIds) or next(matcher.negInstanceIds) or next(matcher.negAreaNames)
+  if hasPositive and hasNegative then
+    matcher.Check = matcher.CheckBoth
+  elseif hasPositive then
+    matcher.Check = matcher.CheckPositive
+  elseif hasNegative then
+    matcher.Check = matcher.CheckNegative
   end
   return matcher
 end
