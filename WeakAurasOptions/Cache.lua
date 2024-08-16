@@ -142,7 +142,7 @@ function spellCache.GetIcon(name)
         for spell, icon in icons.spells:gmatch("(%d+)=(%d+)") do
           local spellId = tonumber(spell)
 
-          if not bestMatch or (spellId and IsSpellKnown(spellId)) then
+          if not bestMatch or (spellId and spellId ~= 0 and IsSpellKnown(spellId)) then
             bestMatch = tonumber(icon)
           end
         end
