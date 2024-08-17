@@ -5171,6 +5171,9 @@ Private.event_prototypes = {
     end,
     loadInternalEventFunc = function(trigger, untrigger)
       local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0;
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
+      end
       if spellName == nil then return {} end
       local events = {
         "SPELL_COOLDOWN_CHANGED:" .. spellName,
@@ -5188,6 +5191,9 @@ Private.event_prototypes = {
     name = L["Cooldown/Charges/Count"],
     loadFunc = function(trigger)
       local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0;
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
+      end
       local exactMatch = trigger.use_exact_spellName
       local followoverride = not trigger.use_ignoreoverride
       WeakAuras.WatchSpellCooldown(spellName, trigger.use_matchedRune, exactMatch, followoverride)
@@ -5197,6 +5203,9 @@ Private.event_prototypes = {
     end,
     init = function(trigger)
       local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
+      end
       local ret = {}
 
       local showOnCheck = "false";
@@ -5212,10 +5221,6 @@ Private.event_prototypes = {
       local track = trigger.track or "auto"
       if track == "auto" and trackSpecificCharge then
         track = "charges"
-      end
-
-      if (type(spellName) == "string") then
-        spellName = string.format("%q", spellName)
       end
 
       table.insert(ret, ([=[
@@ -5624,18 +5629,27 @@ Private.event_prototypes = {
     events = {},
     loadInternalEventFunc = function(trigger, untrigger)
       local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
+      end
       if spellName == nil then return {} end
       return { "SPELL_COOLDOWN_READY:" .. spellName }
     end,
     name = L["Cooldown Ready Event"],
     loadFunc = function(trigger)
       local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
+      end
       local useExact = trigger.use_exact_spellName
       local followoverride = not trigger.use_ignoreoverride
       WeakAuras.WatchSpellCooldown(spellName, false, useExact, followoverride)
     end,
     init = function(trigger)
       local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
+      end
       local ret = [=[
         local triggerSpellName = %s
         local useExact = %s
@@ -5698,18 +5712,27 @@ Private.event_prototypes = {
     events = {},
     loadInternalEventFunc = function(trigger, untrigger)
       local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
+      end
       if spellName == nil then return {} end
       return { "SPELL_CHARGES_CHANGED:" .. spellName }
     end,
     name = L["Charges Changed Event"],
     loadFunc = function(trigger)
       local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
+      end
       local useExact = trigger.use_exact_spellName
       local followoverride = not trigger.use_ignoreoverride
       WeakAuras.WatchSpellCooldown(spellName, false, useExact, followoverride)
     end,
     init = function(trigger)
       local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
+      end
       local ret = [=[
         local triggerSpellName = %s
         local useExact = %s
@@ -6536,6 +6559,9 @@ Private.event_prototypes = {
     end,
     loadInternalEventFunc = function(trigger)
       local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
+      end
       if spellName == nil then return {} end
       return { "SPELL_COOLDOWN_CHANGED:" .. spellName }
     end,
@@ -6544,12 +6570,18 @@ Private.event_prototypes = {
     statesParameter = "one",
     loadFunc = function(trigger)
       local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
+      end
       local useExact = trigger.use_exact_spellName
       local followoverride = not trigger.use_ignoreoverride
       WeakAuras.WatchSpellCooldown(spellName, false, useExact, followoverride)
     end,
     init = function(trigger)
       local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
+      if type(trigger.spellName) == "string" then
+        spellName = select(7, Private.ExecEnv.GetSpellInfo(spellName)) or 0
+      end
       local ret = [=[
         local spellName = %s
         local useExact = %s
