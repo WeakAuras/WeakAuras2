@@ -55,6 +55,9 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
   elseif vType == "progressSource" then
     if type(value) == "table" then
       local progressSource = Private.AddProgressSourceMetaData(data, value)
+      if not progressSource then
+        return "{}"
+      end
       local trigger = progressSource[1] or -1
       local progressType = progressSource[2] or "auto"
       local property = progressSource[3]

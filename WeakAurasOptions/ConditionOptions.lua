@@ -666,7 +666,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
           local v = conditions[i].changes[j].value
           local progressSource = OptionsPrivate.Private.AddProgressSourceMetaData(data, v)
           -- Auto progress, Manual Progress or the progress source has a total property
-          if progressSource[2] == "auto" or progressSource[1] == 0 or progressSource[4] ~= nil then
+          if progressSource and (progressSource[2] == "auto" or progressSource[1] == 0 or progressSource[4] ~= nil) then
             return true
           end
           return false
@@ -677,7 +677,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       local function hiddenManual()
         local v = conditions[i].changes[j].value
         local progressSource = OptionsPrivate.Private.AddProgressSourceMetaData(data, v)
-        if progressSource[1] == 0 then
+        if progressSource and progressSource[1] == 0 then
           return false
         end
         return true
