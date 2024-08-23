@@ -1674,7 +1674,7 @@ local function InitializeReputations()
   local index = 1
   while index <= Private.ExecEnv.GetNumFactions() do
     local factionData = Private.ExecEnv.GetFactionDataByIndex(index)
-    if factionData.isHeader and factionData.isCollapsed then
+    if factionData and factionData.isHeader and factionData.isCollapsed then
       Private.ExecEnv.ExpandFactionHeader(index)
       collapsed[factionData.name] = true
     end
@@ -1684,24 +1684,26 @@ local function InitializeReputations()
   -- Process all faction data
   for i = 1, Private.ExecEnv.GetNumFactions() do
     local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
-    if factionData.currentStanding > 0 or not factionData.isHeader then
-      local factionID = factionData.factionID
-      if factionID then
-        Private.reputations[factionID] = factionData.name
-        Private.reputations_sorted[factionID] = i
+    if factionData then
+      if factionData.currentStanding > 0 or not factionData.isHeader then
+        local factionID = factionData.factionID
+        if factionID then
+          Private.reputations[factionID] = factionData.name
+          Private.reputations_sorted[factionID] = i
+        end
+      else
+        local name = factionData.name
+        Private.reputations[name] = name
+        Private.reputations_sorted[name] = i
+        Private.reputations_headers[name] = true
       end
-    else
-      local name = factionData.name
-      Private.reputations[name] = name
-      Private.reputations_sorted[name] = i
-      Private.reputations_headers[name] = true
     end
   end
 
   -- Collapse headers back to their original state
   for i = Private.ExecEnv.GetNumFactions(), 1, -1 do
     local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
-    if collapsed[factionData.name] then
+    if factionData and collapsed[factionData.name] then
       Private.ExecEnv.CollapseFactionHeader(i)
     end
   end
