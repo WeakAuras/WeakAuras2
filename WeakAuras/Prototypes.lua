@@ -7518,7 +7518,7 @@ Private.event_prototypes = {
         if not exactSpellMatch and tonumber(itemName) then
           itemName = C_Item.GetItemInfo(itemName)
         end
-        local count = C_Item.GetItemCount(itemName or "", %s, %s);
+        local count = C_Item.GetItemCount(itemName or "", %s, %s, %s, %s);
         local reagentQuality, reagentQualityTexture
         if WeakAuras.IsRetail() and itemName then
           reagentQuality = C_TradeSkillUI.GetItemReagentQualityByItemInfo(itemName)
@@ -7531,7 +7531,9 @@ Private.event_prototypes = {
         itemName,
         trigger.use_exact_itemName and "true" or "nil",
         trigger.use_includeBank and "true" or "nil",
-        trigger.use_includeCharges and "true" or "nil"
+        trigger.use_includeCharges and "true" or "nil",
+        WeakAuras.IsRetail() and trigger.use_includeReagentBank and "true" or "nil",
+        WeakAuras.IsRetail() and trigger.use_includeWarBandBank and "true" or "nil"
       )
     end,
     args = {
@@ -7558,6 +7560,20 @@ Private.event_prototypes = {
         display = L["Include Bank"],
         type = "toggle",
         test = "true"
+      },
+      {
+        name = "includeReagentBank",
+        display = L["Include Reagent Bank"],
+        type = "toggle",
+        test = "true",
+        enable = WeakAuras.IsRetail(),
+      },
+      {
+        name = "includeWarBandBank",
+        display = L["Include War Band Bank"],
+        type = "toggle",
+        test = "true",
+        enable = WeakAuras.IsRetail(),
       },
       {
         name = "includeCharges",
