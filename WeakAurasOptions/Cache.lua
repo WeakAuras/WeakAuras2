@@ -98,7 +98,7 @@ function spellCache.Build()
 
     metaData.needsRebuild = false
   end)
-  OptionsPrivate.Private.Threads:Add("spellCache", co)
+  OptionsPrivate.Private.Threads:Add("spellCache", co, 'background')
 end
 
 --[[ function to help find big holes in spellIds to help speedup Build()
