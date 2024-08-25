@@ -2613,14 +2613,23 @@ function Private.AddMany(tbl, takeSnapshots)
   coroutine.yield(5000)
 
   local oldSnapshots = {}
+  local copies = {}
   if takeSnapshots then
     for _, data in ipairs(order) do
       if Private.ModernizeNeedsOldSnapshot(data) then
         oldSnapshots[data.uid] = Private.GetMigrationSnapshot(data.uid)
       end
-      Private.SetMigrationSnapshot(data.uid, data)
-      coroutine.yield(2000, "addmany snapshot")
+      copies[data.uid] = CopyTable(data)
+      coroutine.yield(200, "addmany prepare snapshot")
     end
+    Private.Threads:Add("snapshot", coroutine.create(function()
+      prettyPrint(L["WeakAuras is creating a rollback snapshot of your auras. This snapshot will allow you to revert to the current state of your auras if something goes wrong. This process may cause your framerate to drop until it is complete."])
+      for uid, data in pairs(copies) do
+        Private.SetMigrationSnapshot(uid, data)
+        coroutine.yield(200, "snapshot")
+      end
+      prettyPrint(L["Rollback snapshot is complete. Thank you for your patience!"])
+    end), 'normal')
   end
 
   local groups = {}
