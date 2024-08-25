@@ -130,9 +130,6 @@ print("lastId", lastId)
 ]]
 
 function spellCache.GetIcon(name)
-  if metaData.rebuilding then
-    OptionsPrivate.Private.Threads:SetPriority(spellCache, 'normal')
-  end
   if (name == nil) then
     return nil;
   end
@@ -153,6 +150,8 @@ function spellCache.GetIcon(name)
           end
         end
       end
+    elseif metaData.rebuilding then
+      OptionsPrivate.Private.Threads:SetPriority('spellCache', 'normal')
     end
 
     bestIcon[name] = bestMatch
@@ -173,6 +172,8 @@ function spellCache.GetSpellsMatching(name)
       end
       return result
     end
+  elseif metaData.rebuilding then
+    OptionsPrivate.Private.Threads:SetPriority('spellCache', 'normal')
   end
 end
 
