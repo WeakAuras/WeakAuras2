@@ -51,6 +51,7 @@ function spellCache.Build()
   end
   wipe(cache)
   local co = coroutine.create(function()
+    metaData.rebuilding = true
     local id = 0
     local misses = 0
     while misses < 80000 do
@@ -75,7 +76,7 @@ function spellCache.Build()
       else
         misses = misses + 1
       end
-      coroutine.yield()
+      coroutine.yield(0.01, "spells")
     end
 
     if WeakAuras.IsCataOrRetail() then
@@ -91,12 +92,14 @@ function spellCache.Build()
               cache[name].achievements = cache[name].achievements .. "," .. id .. "=" .. iconID
             end
           end
+          coroutine.yield(0.1, "achievements")
         end
-        coroutine.yield()
+        coroutine.yield(0.1, "categories")
       end
     end
 
     metaData.needsRebuild = false
+    metaData.rebuilding = false
   end)
   OptionsPrivate.Private.Threads:Add("spellCache", co, 'background')
 end
@@ -127,6 +130,9 @@ print("lastId", lastId)
 ]]
 
 function spellCache.GetIcon(name)
+  if metaData.rebuilding then
+    OptionsPrivate.Private.Threads:SetPriority(spellCache, 'normal')
+  end
   if (name == nil) then
     return nil;
   end
