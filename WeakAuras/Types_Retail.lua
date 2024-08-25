@@ -238,7 +238,7 @@ function Private.GetTalentData(specId)
 								talentData[3][2] = node.posY - subTreeInfo.posY
 								talentData[3][5] = subTreeIndex
 								tinsert(heroData, talentData)
-							else
+							elseif not node.subTreeID then
 								tinsert(specData, talentData)
 							end
 						end
