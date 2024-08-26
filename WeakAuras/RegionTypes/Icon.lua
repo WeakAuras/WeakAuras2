@@ -436,6 +436,8 @@ local function modify(parent, region, data)
            and ElvUI[1].ToggleCooldown and ElvUI[1]:CooldownEnabled()
     then
       ElvUI[1]:ToggleCooldown(cooldown, not cooldownTextDisabled);
+    elseif NDui and NDui[2] and NDui[2].db and NDui[2].db.Actionbar.Cooldown then
+      cooldown.noCooldownCount = cooldownTextDisabled
     end
   end
   region:SetHideCountdownNumbers(data.cooldownTextDisabled)
