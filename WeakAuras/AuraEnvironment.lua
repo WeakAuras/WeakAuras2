@@ -643,14 +643,14 @@ end
 
 local function CreateFunctionCache(exec_env)
   local cache = {}
-  cache.Load = function(self, string)
+  cache.Load = function(self, string, silent)
     if self[string] then
       return self[string]
     else
       local loadedFunction, errorString = loadstring(string, firstLine(string))
-      if errorString then
+      if errorString and not silent then
         print(errorString)
-      else
+      elseif loadedFunction then
         --- @cast loadedFunction -nil
         setfenv(loadedFunction, exec_env)
         local success, func = pcall(assert(loadedFunction))
@@ -671,8 +671,8 @@ function WeakAuras.LoadFunction(string)
   return function_cache_custom:Load(string)
 end
 
-function Private.LoadFunction(string)
-  return function_cache_builtin:Load(string)
+function Private.LoadFunction(string, silent)
+  return function_cache_builtin:Load(string, silent)
 end
 
 function Private.GetSanitizedGlobal(key)

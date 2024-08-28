@@ -6,7 +6,6 @@ local OptionsPrivate = select(2, ...)
 
 -- Lua APIs
 local pairs, type, ipairs = pairs, type, ipairs
-local loadstring = loadstring
 local gsub = gsub
 
 -- WoW APIs
@@ -914,9 +913,9 @@ local function ConstructTextEditor(frame)
         else
           local func, errorString
           if (enclose) then
-            func, errorString = loadstring("return function() " .. str .. "\n end")
+            func, errorString = OptionsPrivate.Private.LoadFunction("return function() " .. str .. "\n end", true)
           else
-            func, errorString = loadstring("return " .. str)
+            func, errorString = OptionsPrivate.Private.LoadFunction("return " .. str, true)
           end
           if not errorString and validator then
             local ok, validate = xpcall(func, function(err) errorString = err end)
