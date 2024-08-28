@@ -642,10 +642,12 @@ local function firstLine(string)
 end
 
 local function CreateFunctionCache(exec_env)
-  local cache = {}
+  local cache = {
+    funcs = setmetatable({}, {__mode = "v"})
+  }
   cache.Load = function(self, string, silent)
-    if self[string] then
-      return self[string]
+    if self.funcs[string] then
+      return self.funcs[string]
     else
       local loadedFunction, errorString = loadstring(string, firstLine(string))
       if errorString and not silent then
@@ -655,7 +657,7 @@ local function CreateFunctionCache(exec_env)
         setfenv(loadedFunction, exec_env)
         local success, func = pcall(assert(loadedFunction))
         if success then
-          self[string] = func
+          self.funcs[string] = func
           return func
         end
       end
