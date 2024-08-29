@@ -99,7 +99,7 @@ local function setValue(trigger, field, value, multiEntry, entryNumber)
         trigger[field] = { trigger[field] }
       end
     end
-    if value == "" then
+    if value == "" or value == nil then
       shiftTable(trigger[field], entryNumber)
     else
       trigger[field][entryNumber] = value
