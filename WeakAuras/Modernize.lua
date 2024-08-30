@@ -2074,6 +2074,141 @@ function Private.Modernize(data, oldSnapshot)
     end
   end
 
+  if data.internalVersion < 76 then
+    local function removeHoles(t)
+      local keys = {}
+      for key in pairs(t) do
+        table.insert(keys, key)
+      end
+      if #keys ~= #t then
+        table.sort(keys)
+        local newTable = {}
+        for i, key in ipairs(keys) do
+          newTable[i] = t[key]
+        end
+        return newTable
+      else
+        return t
+      end
+    end
+    local trigger_migration = {
+      ["Spell Cast Succeeded"] = {
+        "spellId",
+      },
+      ["Unit Characteristics"] = {
+        "level",
+      },
+      ["Power"] = {
+        "power",
+        "percentpower",
+        "deficit",
+        "maxpower",
+      },
+      ["Combat Log"] = {
+        "spellId",
+        "spellName",
+      },
+      ["Health"] = {
+        "health",
+        "percenthealth",
+        "deficit",
+        "maxhealth",
+        "absorb",
+        "healabsorb",
+        "healprediction",
+      },
+      ["Faction Reputation"] = {
+        "value",
+        "total",
+        "percentRep",
+      },
+      ["Location"] = {
+        "zone",
+        "subzone",
+      },
+      ["Threat Situation"] = {
+        "threatpct",
+        "rawthreatpct",
+        "threatvalue",
+      },
+      ["Character Stats"] = {
+        "mainstat",
+        "strength",
+        "agility",
+        "intellect",
+        "spirit",
+        "stamina",
+        "criticalrating",
+        "criticalpercent",
+        "hitrating",
+        "hitpercent",
+        "hasterating",
+        "hastepercent",
+        "meleehastepercent",
+        "expertiserating",
+        "expertisebonus",
+        "spellpenpercent",
+        "masteryrating",
+        "masterypercent",
+        "versatilityrating",
+        "versatilitypercent",
+        "attackpower",
+        "leechrating",
+        "leechpercent",
+        "movespeedrating",
+        "movespeedpercent",
+        "runspeedpercent",
+        "avoidancerating",
+        "avoidancepercent",
+        "dodgerating",
+        "dodgepercent",
+        "parryrating",
+        "parrypercent",
+        "blockpercent",
+        "blocktargetpercent",
+        "blockvalue",
+        "staggerpercent",
+        "staggertargetpercent",
+        "armorrating",
+        "armorpercent",
+        "armortargetpercent",
+        "resistanceholy",
+        "resistancefire",
+        "resistancenature",
+        "resistancefrost",
+        "resistanceshadow",
+        "resistancearcane",
+      },
+      ["Cast"] = {
+        "spellNames",
+        "spellIds",
+        "stage",
+      },
+      ["Alternate Power"] = {
+        "power",
+      },
+      ["Experience"] = {
+        "level",
+        "currentXP",
+        "totalXP",
+        "percentXP",
+        "restedXP",
+        "percentrested",
+      }
+    }
+    for _, triggerData in ipairs(data.triggers) do
+      local trigger = triggerData.trigger
+      local fieldsToMigrate = trigger_migration[trigger.event]
+      if fieldsToMigrate then
+        for _, field in ipairs(fieldsToMigrate) do
+          if type(trigger[field]) == "table" then
+            trigger[field] = removeHoles(trigger[field])
+          end
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 
