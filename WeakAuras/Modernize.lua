@@ -2209,6 +2209,72 @@ function Private.Modernize(data, oldSnapshot)
     end
   end
 
+  if data.internalVersion < 77 then
+    -- fix data broken by wago export
+    local triggerFix = {
+      talent = {
+        multi = true
+      },
+      herotalent = {
+        multi = true
+      },
+      form = {
+        multi = true
+      },
+      specId = {
+        multi = true
+      },
+      actualSpec = true,
+      arena_spec = true
+    }
+    local loadFix = {
+      talent = {
+        multi = true
+      },
+      talent2 = {
+        multi = true
+      },
+      talent3 = {
+        multi = true
+      },
+      herotalent = {
+        multi = true
+      },
+      class_and_spec = {
+        multi = true
+      }
+    }
+
+    local function fixData(data, fields)
+      for k, v in pairs(fields) do
+        if v == true and type(data[k]) == "table" then
+          -- fix field k
+          local tofix = {}
+          for key in pairs(data[k]) do
+              if type(key) == "string" then
+                table.insert(tofix, key)
+              end
+          end
+          for _, oldkey in ipairs(tofix) do
+              local newkey = tonumber(oldkey)
+              if newkey then
+                data[k][newkey] = data[k][oldkey]
+              end
+              data[k][oldkey] = nil
+          end
+        elseif type(v) == "table" and type(data[k]) == "table" then
+          -- recurse
+          fixData(data[k], fields[k])
+        end
+      end
+    end
+
+    for _, triggerData in ipairs(data.triggers) do
+      fixData(triggerData.trigger, triggerFix)
+    end
+    fixData(data.load, loadFix)
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 
