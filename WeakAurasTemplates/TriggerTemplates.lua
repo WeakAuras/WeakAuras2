@@ -1213,6 +1213,7 @@ local function subTypesFor(item, regionType)
   return fallbacks
 end
 
+---@private
 function WeakAuras.CreateTemplateView(Private, frame)
   TemplatePrivate.Private = Private
 

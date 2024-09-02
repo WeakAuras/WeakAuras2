@@ -876,6 +876,7 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   Private.StopProfileSystem("generictrigger " .. system)
 end
 
+---@private
 ---@param event string
 ---@param unit UnitToken
 ---@param ... any
@@ -3571,6 +3572,7 @@ function WeakAuras.GetPlayerReaction(unit)
   end
 end
 
+---@private
 ---@param unit UnitToken
 function WeakAuras.WatchUnitChange(unit)
   unit = string.lower(unit)
@@ -3894,6 +3896,7 @@ if WeakAuras.IsClassicEra() then
   queueableSpells = classQueueableSpells[class]
 
   local queuedSpellFrame
+  ---@private
   function WeakAuras.WatchForQueuedSpell()
     if not queuedSpellFrame then
       queuedSpellFrame = CreateFrame("Frame")

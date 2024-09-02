@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  atlasUpdate:
+  atlas-update:
     if: github.repository == 'WeakAuras/WeakAuras2'
     runs-on: ubuntu-latest
     steps:
