@@ -984,8 +984,8 @@ end
 ---@return boolean result
 function WeakAuras.ValidateNumericOrPercent(info, val)
   if val ~= nil and val ~= "" then
-    local percent = string.match(val, "(%d+)%%")
-    local number = percent and tonumber(percent) or tonumber(val)
+    local percent, count = val:gsub("%%", " ", 1)
+    local number = count == 1 and tonumber(percent) or tonumber(val)
     if(not number or number >= 2^31) then
       return false;
     end
