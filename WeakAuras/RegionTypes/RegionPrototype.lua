@@ -348,8 +348,9 @@ local function SetProgressSource(self, progressSource)
 end
 
 local function SetAdjustedMin(self, adjustedMin)
-  local percent, count = adjustedMin:gsub("%%", " ", 1)
-  if count == 1 then
+  local index = adjustedMin:find("%% *$")
+  if index then
+    local percent = adjustedMin:sub(1, index-1)
     self.adjustedMinRelPercent = tonumber(percent) / 100
     self.adjustedMin = nil
   else
@@ -360,8 +361,9 @@ local function SetAdjustedMin(self, adjustedMin)
 end
 
 local function SetAdjustedMax(self, adjustedMax)
-  local percent, count = adjustedMax:gsub("%%", " ", 1)
-  if count == 1 then
+  local index = adjustedMax:find("%% *$")
+  if index then
+    local percent = adjustedMax:sub(1, index-1)
     self.adjustedMaxRelPercent = tonumber(percent) / 100
   else
     self.adjustedMax = tonumber(adjustedMax)
