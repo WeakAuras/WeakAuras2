@@ -2509,7 +2509,9 @@ do
               -- a) We are already tracking it, only add the wathed spell ids
               -- b) We aren't tracking it yet add it
               if self.data[newEffectiveSpellId] then
-                tinsert(self.data[newEffectiveSpellId].watched, userSpellId)
+                if not tContains(self.data[newEffectiveSpellId].watched, userSpellId) then
+                  tinsert(self.data[newEffectiveSpellId].watched, userSpellId)
+                end
               else
                 self:AddEffectiveSpellId(newEffectiveSpellId, userSpellId)
               end
