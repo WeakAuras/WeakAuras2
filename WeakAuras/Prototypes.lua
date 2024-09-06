@@ -11137,12 +11137,6 @@ Private.event_prototypes = {
       end
       local ret = [=[
         local spellname = %q
-        local spellid = select(7, Private.ExecEnv.GetSpellInfo(spellname))
-        local button
-        if spellid then
-            local slotList = C_ActionBar.FindSpellActionButtons(spellid)
-            button = slotList and slotList[1]
-        end
       ]=]
       return ret:format(spellName)
     end,
@@ -11157,7 +11151,7 @@ Private.event_prototypes = {
       },
       {
         hidden = true,
-        test = "button and IsCurrentAction(button)";
+        test = "spellname and IsCurrentSpell(spellname)";
       },
     },
     iconFunc = function(trigger)
