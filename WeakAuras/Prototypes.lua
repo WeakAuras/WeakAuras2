@@ -720,6 +720,7 @@ if WeakAuras.IsRetail() then
   talentCheckFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
   talentCheckFrame:RegisterEvent("PLAYER_TALENT_UPDATE")
   talentCheckFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+  talentCheckFrame:RegisterEvent("PLAYER_LOGIN")
 
   --- @type table<number, {rank: number, spellId: number}>
   local selectedTalentsById = {}
