@@ -2462,16 +2462,19 @@ do
 
     -- Helper functions
     AddEffectiveSpellId = function(self, effectiveSpellId, userSpellId)
+      if self.data[effectiveSpellId] then
+        self.data[effectiveSpellId].watched[userSpellId] = (self.data[effectiveSpellId].watched[userSpellId] or 0) + 1
+        return
+      end
+
       local name, _, icon, _, _, _, spellId = Private.ExecEnv.GetSpellInfo(effectiveSpellId)
       self.data[effectiveSpellId] = {
         name = name,
         icon = icon,
         id = spellId,
-        watched = { [effectiveSpellId] = true }
+        watched = {}
       }
-      if effectiveSpellId ~= userSpellId then
-        self.data[effectiveSpellId].watched[userSpellId] = true
-      end
+      self.data[effectiveSpellId].watched[userSpellId] = 1
 
       local spellDetail = self.data[effectiveSpellId]
       spellDetail.known = WeakAuras.IsSpellKnownIncludingPet(effectiveSpellId)
@@ -2508,18 +2511,12 @@ do
               -- There are lots of cases to consider here:
 
               -- For the new effective spell id
-              -- a) We are already tracking it, only add the watched spell ids
-              -- b) We aren't tracking it yet add it
-              if self.data[newEffectiveSpellId] then
-                self.data[newEffectiveSpellId].watched[userSpellId] = true
-              else
-                self:AddEffectiveSpellId(newEffectiveSpellId, userSpellId)
-              end
+              self:AddEffectiveSpellId(newEffectiveSpellId, userSpellId)
 
               local oldSpellDetail = self.data[oldEffectiveSpellId]
               local newSpellDetail = self.data[newEffectiveSpellId]
 
-              -- Check whether we need to emit the SPEL_CHARGES_CHANGED or SPELL_COOLDOWN_READY events
+              -- Check whether we need to emit the SPELL_CHARGES_CHANGED or SPELL_COOLDOWN_READY events
               local chargesChanged = oldSpellDetail.charges ~= newSpellDetail.charges or oldSpellDetail.count ~= newSpellDetail.count
                 or oldSpellDetail.chargesMax ~= newSpellDetail.maxCharges
               local oldCharge = oldSpellDetail.charges or oldSpellDetail.count or 0
@@ -2532,10 +2529,14 @@ do
               -- For the old effective spell id
               -- * Remove the spell from watched
               -- * If we removed the last mapping, remove the spell details of the effective spell id
-              oldSpellDetail.watched[userSpellId] = nil
-              if next(oldSpellDetail.watched) == nil then
-                self.data[oldEffectiveSpellId] = nil
-                RecheckHandles:Cancel(oldEffectiveSpellId)
+              if oldSpellDetail.watched[userSpellId] == 1 then
+                oldSpellDetail.watched[userSpellId] = nil
+                if next(self.data[oldEffectiveSpellId].watched) == nil then
+                  self.data[oldEffectiveSpellId] = nil
+                  RecheckHandles:Cancel(oldEffectiveSpellId)
+                end
+              else
+                oldSpellDetail.watched[userSpellId] = oldSpellDetail.watched[userSpellId] - 1
               end
 
               -- Finally update the watchedSpellIds mapping
@@ -2661,31 +2662,27 @@ do
 
       local effectiveSpellId = Private.ExecEnv.GetEffectiveSpellId(userSpellId, useExact, followoverride)
 
-      self.watchedSpellIds[userSpellId] = self. watchedSpellIds[userSpellId] or {}
+      self.watchedSpellIds[userSpellId] = self.watchedSpellIds[userSpellId] or {}
       self.watchedSpellIds[userSpellId][useExact] = self.watchedSpellIds[userSpellId][useExact] or {}
       if self.watchedSpellIds[userSpellId][useExact][followoverride] == effectiveSpellId then
-        -- We are already watching userSpellId and have the mapping to effectiveSpellId
-        -- Nothing t odo then
+        -- We are already watching userSpellId in the exact useExact/followoverride mode, so there's
+        -- nothing to do then
         return
       end
 
       -- We aren't watching userSpellId yet
       self.watchedSpellIds[userSpellId][useExact][followoverride] = effectiveSpellId
-
-      if self.data[effectiveSpellId] then
-        -- But we are already tracking the effectiveSpellId, so only add the mapping
-        self.data[effectiveSpellId].watched[userSpellId] = true
-        return
-      end
-
       self:AddEffectiveSpellId(effectiveSpellId, userSpellId)
     end,
 
     SendEventsForSpell = function(self, effectiveSpellId, event, ...)
       local watchedSpells = self.data[effectiveSpellId] and self.data[effectiveSpellId].watched
+      Private.ScanEventsByID(event, effectiveSpellId, ...)
       if watchedSpells then
         for userSpellId in pairs(watchedSpells) do
-          Private.ScanEventsByID(event, userSpellId, ...)
+          if userSpellId ~= effectiveSpellId then
+            Private.ScanEventsByID(event, userSpellId, ...)
+          end
         end
       end
     end,
