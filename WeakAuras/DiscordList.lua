@@ -25,6 +25,7 @@ Private.DiscordList = {
   [=[kanegasi]=],
   [=[Koxy]=],
   [=[Listefano]=],
+  [=[Luckyone]=],
   [=[Luxthos]=],
   [=[MetalMusicMan]=],
   [=[Oi]=],
