@@ -189,6 +189,7 @@ local function ConstructTextEditor(frame)
   -- The indention lib overrides GetText, but for the line number
   -- display we ned the original, so save it here.
   local originalGetText = editor.editBox.GetText
+  local originalSetText = editor.editBox.SetText
   set_scheme()
   LAAC:enable(editor.editBox)
   IndentationLib.enable(editor.editBox, color_scheme, WeakAurasSaved.editor_tab_spaces)
@@ -734,7 +735,7 @@ local function ConstructTextEditor(frame)
         if self.timeMachine[self.timeMachinePos + 1] then
           self.timeMachinePos = self.timeMachinePos + 1
           self.skipOnTextChanged = true
-          self:SetText(self.timeMachine[self.timeMachinePos][1])
+          originalSetText(self, self.timeMachine[self.timeMachinePos][1])
           self:SetCursorPosition(self.timeMachine[self.timeMachinePos][2])
         end
       elseif key == "Y" and IsControlKeyDown() then
@@ -742,7 +743,7 @@ local function ConstructTextEditor(frame)
         if self.timeMachine[self.timeMachinePos - 1] then
           self.timeMachinePos = self.timeMachinePos - 1
           self.skipOnTextChanged = true
-          self:SetText(self.timeMachine[self.timeMachinePos][1])
+          originalSetText(self, self.timeMachine[self.timeMachinePos][1])
           self:SetCursorPosition(self.timeMachine[self.timeMachinePos][2])
         end
       end
