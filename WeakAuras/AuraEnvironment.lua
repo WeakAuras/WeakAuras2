@@ -650,8 +650,11 @@ local function CreateFunctionCache(exec_env)
       return self.funcs[string]
     else
       local loadedFunction, errorString = loadstring(string, firstLine(string))
-      if errorString and not silent then
-        print(errorString)
+      if errorString then
+        if not silent then
+          print(errorString)
+        end
+        return nil, errorString
       elseif loadedFunction then
         --- @cast loadedFunction -nil
         setfenv(loadedFunction, exec_env)
