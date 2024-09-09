@@ -321,7 +321,7 @@ local function createTotemTrigger(triggers, position, item)
       type = WeakAuras.GetTriggerCategoryFor("Totem"),
       event = "Totem",
       use_totemName = item.totemNumber == nil,
-      totemName = GetSpellInfo(item.spell),
+      totemName = TemplatePrivate.Private.ExecEnv.GetSpellInfo(item.spell),
     }
   };
   if (item.totemNumber) then
