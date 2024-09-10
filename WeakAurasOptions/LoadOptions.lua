@@ -43,6 +43,16 @@ local function CorrectSpellName(input)
     if(link) and link ~= "" then
       local itemId = link:match("spell:(%d+)");
       return tonumber(itemId);
+    else
+      local spells = spellCache.GetSpellsMatching(input)
+      if type(spells) == "table" then
+        for id in pairs(spells) do
+          if IsPlayerSpell(id) then
+            return id
+          end
+        end
+        return next(spells)
+      end
     end
   end
 end
@@ -56,8 +66,6 @@ local function CorrectItemName(input)
     if(link) then
       local itemId = link:match("item:(%d+)");
       return tonumber(itemId);
-    else
-      return nil;
     end
   end
 end
