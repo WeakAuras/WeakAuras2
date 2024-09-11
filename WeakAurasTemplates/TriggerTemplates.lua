@@ -164,10 +164,6 @@ local function missingBuffGreyed(conditions, trigger, regionType)
   tinsert(conditions, buildCondition(trigger, checks.buffedFalseAuraAlways, {changes("grey", regionType)}));
 end
 
-local function hasTargetAlpha(conditions, regionType)
-  tinsert(conditions, buildCondition(nil, checks.hasTarget, {changes("alpha", regionType)}));
-end
-
 local function isNotUsableBlue(conditions, trigger, regionType)
   tinsert(conditions, buildCondition(trigger, checks.usable, {changes("blue", regionType)}));
 end
@@ -1241,16 +1237,6 @@ function WeakAuras.CreateTemplateView(Private, frame)
   newViewScroll.frame:SetClipsChildren(true);
   newView:AddChild(newViewScroll);
 
-  local function createNewId(prefix)
-    local new_id = prefix or "New";
-    local num = 2;
-    while(WeakAuras.GetData(new_id)) do
-      new_id = prefix .. " " .. num;
-      num = num + 1;
-    end
-    return new_id;
-  end
-
   local function createConditionsFor(item, subType, regionType)
     if (subType.createConditions) then
       local conditions = {};
@@ -1420,25 +1406,6 @@ function WeakAuras.CreateTemplateView(Private, frame)
     spacer:SetFullWidth(true);
     spacer:SetText(" ");
     return spacer;
-  end
-
-  local function relativeWidth(totalWidth)
-    local columns = floor(totalWidth / 300);
-    return 1 / columns;
-  end
-
-  local function batchModeToggler(value)
-    if (not value) then
-      -- clean selection
-      for k in pairs(newView.chosenItemBatch) do
-        newView.chosenItemBatch[k] = nil;
-      end
-      for k, f in pairs(newView.chosenItemButtonsBatch) do
-        f.frame:UnlockHighlight();
-        newView.chosenItemButtonsBatch[k] = nil;
-      end
-      newView.batchButton:Hide();
-    end
   end
 
   local function createTriggerFlyout(section, fullWidth)
