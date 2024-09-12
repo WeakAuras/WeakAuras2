@@ -4420,7 +4420,8 @@ do
           ok, val1, val2 = coroutine.resume(threadData.thread)
           if not ok then
             geterrorhandler()(val1 .. '\n' .. debugstack(threadData.thread))
-          elseif coroutine.status(threadData.thread) ~= "dead" then
+          end
+          if coroutine.status(threadData.thread) ~= "dead" then
             estimates[name] = type(val1) == "number" and val1 or defaultEstimate
             local sequence = val2 or "" --[[@as string]]
             threadData.sequence[sequence] = (threadData.sequence[sequence] or 0) + 1

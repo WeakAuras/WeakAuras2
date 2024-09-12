@@ -726,9 +726,11 @@ local function LayoutDisplayButtons(msg)
       for id, button in pairs(displayButtons) do
         if OptionsPrivate.Private.loaded[id] then
           button:PriorityShow(1);
+          coroutine.yield()
         end
       end
       OptionsPrivate.Private.OptionsFrame().loadedButton:RecheckVisibility()
+      coroutine.yield()
     end
     OptionsPrivate.Private.ResumeAllDynamicGroups(suspended)
 
