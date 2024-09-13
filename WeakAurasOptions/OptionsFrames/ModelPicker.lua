@@ -52,7 +52,7 @@ local function ConstructModelPicker(frame)
       end
       return filterList
     end
-    
+  
     local function MatchesAllFilters(text, filters)
       for _, f in ipairs(filters) do
         if not text:find(f, 1, true) then
@@ -61,9 +61,9 @@ local function ConstructModelPicker(frame)
       end
       return true
     end
-    
+  
     local filterList = ConstructFilterList(filter)
-
+  
     local function RecurseSetFilterInner(tree)
       for k, v in ipairs(tree) do
         if v.children == nil and v.text then
