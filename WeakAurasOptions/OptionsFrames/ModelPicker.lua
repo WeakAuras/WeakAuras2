@@ -44,13 +44,38 @@ end
 
 local function ConstructModelPicker(frame)
   local function RecurseSetFilter(tree, filter)
-    for k, v in ipairs(tree) do
-      if v.children == nil and v.text then
-        v.visible = not filter or filter == "" or v.text:find(filter, 1, true) ~= nil
-      else
-        RecurseSetFilter(v.children, filter)
+    local function ConstructFilterList(filter)
+      -- Split filter string by spaces into a list of filters
+      local filterList = {}
+      for word in (filter or ""):gmatch("%S+") do
+        table.insert(filterList, word)
+      end
+      return filterList
+    end
+    
+    local function MatchesAllFilters(text, filters)
+      for _, f in ipairs(filters) do
+        if not text:find(f, 1, true) then
+          return false
+        end
+      end
+      return true
+    end
+    
+    local filterList = ConstructFilterList(filter)
+
+    local function RecurseSetFilterInner(tree)
+      for k, v in ipairs(tree) do
+        if v.children == nil and v.text then
+          -- Set visibility to true only if all filters match
+          v.visible = #filterList == 0 or MatchesAllFilters(v.text, filterList)
+        else
+          RecurseSetFilterInner(v.children)
+        end
       end
     end
+
+    RecurseSetFilterInner(tree)
   end
 
   local group = AceGUI:Create("SimpleGroup");
