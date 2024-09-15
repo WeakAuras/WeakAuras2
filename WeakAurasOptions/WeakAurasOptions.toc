@@ -18,6 +18,7 @@
 embeds.xml
 locales.xml
 
+VersionCheck.lua
 ForAllIndentsAndPurposes.lua
 
 RegionOptions\AuraBar.lua
