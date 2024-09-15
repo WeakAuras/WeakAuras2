@@ -6595,7 +6595,7 @@ Private.event_prototypes = {
       return { "SPELL_COOLDOWN_CHANGED:" .. spellName }
     end,
     force_events = "SPELL_UPDATE_USABLE",
-    name = L["Action Usable"],
+    name = L["Spell Usable"],
     statesParameter = "one",
     loadFunc = function(trigger)
       local spellName = type(trigger.spellName) ~= "table" and trigger.spellName or 0
@@ -6617,7 +6617,12 @@ Private.event_prototypes = {
         local followoverride = %s
         local effectiveSpellId = Private.ExecEnv.GetEffectiveSpellId(spellName, useExact, followoverride)
         local name, _, icon = Private.ExecEnv.GetSpellInfo(effectiveSpellId)
+      ]=]
 
+      if trigger.use_ignoreSpellCooldown then
+        ret = ret .. [=[local active = Private.ExecEnv.IsUsableSpell(spellName or "")]=]
+      else
+        ret = ret .. [=[
         local startTime, duration, gcdCooldown, readyTime, paused = WeakAuras.GetSpellCooldown(effectiveSpellId, nil, nil, nil, nil)
         local charges, maxCharges, spellCount, chargeGainTime, chargeLostTime = WeakAuras.GetSpellCharges(effectiveSpellId, nil)
         local stacks = maxCharges and maxCharges > 1 and charges
@@ -6628,7 +6633,8 @@ Private.event_prototypes = {
         end
         local ready = (startTime == 0 and not paused) or charges > 0
         local active = Private.ExecEnv.IsUsableSpell(spellName or "") and ready
-      ]=]
+        ]=]
+      end
       if(trigger.use_targetRequired) then
         ret = ret.."active = active and WeakAuras.IsSpellInRange(spellName or '', 'target')\n";
       end
@@ -6670,10 +6676,16 @@ Private.event_prototypes = {
         test = "true"
       },
       {
+        name = "ignoreSpellCooldown",
+        display = L["Ignore Spell Cooldown/Charges"],
+        type = "toggle",
+        test = "true"
+      },
+      {
         name = "charges",
         display = L["Charges"],
         type = "number",
-        enable = function(trigger) return not(trigger.use_inverse) end,
+        enable = function(trigger) return not trigger.use_inverse and not trigger.use_ignoreSpellCooldown end,
         store = true,
         conditionType = "number",
       },
@@ -6681,7 +6693,7 @@ Private.event_prototypes = {
         name = "spellCount",
         display = L["Spell Count"],
         type = "number",
-        enable = function(trigger) return not(trigger.use_inverse) end,
+        enable = function(trigger) return not trigger.use_ignoreSpellCooldown end,
         store = true,
         conditionType = "number",
       },
@@ -6691,7 +6703,8 @@ Private.event_prototypes = {
         display = L["Since Ready"],
         conditionType = "elapsedTimer",
         store = true,
-        test = "true"
+        test = "true",
+        enable = function(trigger) return not trigger.use_ignoreSpellCooldown end,
       },
       {
         hidden = true,
@@ -6699,7 +6712,8 @@ Private.event_prototypes = {
         display = L["Since Charge Gain"],
         conditionType = "elapsedTimer",
         store = true,
-        test = "true"
+        test = "true",
+        enable = function(trigger) return not trigger.use_ignoreSpellCooldown end,
       },
       {
         hidden = true,
@@ -6707,7 +6721,8 @@ Private.event_prototypes = {
         display = L["Since Charge Lost"],
         conditionType = "elapsedTimer",
         store = true,
-        test = "true"
+        test = "true",
+        enable = function(trigger) return not trigger.use_ignoreSpellCooldown end,
       },
       {
         name = "inverse",
@@ -6752,7 +6767,8 @@ Private.event_prototypes = {
         init = "stacks",
         test = "true",
         store = true,
-        conditionType = "number"
+        conditionType = "number",
+        enable = function(trigger) return not trigger.use_ignoreSpellCooldown end,
       },
       {
         hidden = true,
