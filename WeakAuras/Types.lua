@@ -3900,7 +3900,15 @@ Private.difficulty_info = {
   [176] = {
     size = "twentyfive",
     difficulty = "heroic",
-  }
+  },
+  [186] = {
+    size = "fortyman",
+    difficulty = "normal",
+  },
+  [226] = {
+    size = "twenty",
+    difficulty = "normal",
+  },
 }
 
 Private.glow_types = {
