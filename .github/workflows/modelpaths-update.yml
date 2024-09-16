@@ -20,7 +20,7 @@ jobs:
         shell: bash
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v6
+        uses: peter-evans/create-pull-request@v7
         with:
           branch: update-modelpaths
           commit-message: Update WeakAurasModelPaths from wago.tools
