@@ -1661,10 +1661,7 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
 
       if not errorString then
         if options.validator then
-          local ok, validate = xpcall(loadedFunction, function(err) errorString = err end)
-          if ok then
-            errorString = options.validator(validate)
-          end
+          errorString = options.validator(loadedFunction)
         end
       end
       return errorString and "|cFFFF0000"..errorString or "";

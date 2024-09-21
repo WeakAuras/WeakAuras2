@@ -919,10 +919,7 @@ local function ConstructTextEditor(frame)
             func, errorString = OptionsPrivate.Private.LoadFunction("return " .. str, true)
           end
           if not errorString and validator then
-            local ok, validate = xpcall(func, function(err) errorString = err end)
-            if ok then
-              errorString = validator(validate)
-            end
+            errorString = validator(func)
           end
           if errorString then
             if self.url then
