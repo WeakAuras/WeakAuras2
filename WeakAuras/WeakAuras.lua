@@ -2563,7 +2563,7 @@ local function loadOrder(tbl, idtable)
     end
   end
 
-  for id, data in pairs(idtable) do
+  for id in pairs(idtable) do
     load(id, {});
     coroutine.yield(100, "sort deps")
   end
@@ -2573,6 +2573,29 @@ end
 
 ---@type fun(data: auraData)
 local pAdd
+
+function Private.CheckForAnchorCycle(source)
+  local cycle = {}
+  while source do
+    cycle[source] = true
+    local data = WeakAuras.GetData(source)
+    local target
+    if data then
+      if data.anchorFrameType == "SELECTFRAME" and data.anchorFrameFrame then
+        if data.anchorFrameFrame:sub(1, 10) == "WeakAuras:" then
+          target = data.anchorFrameFrame:sub(11)
+        end
+      else
+        target = data.parent
+      end
+    end
+    if target and cycle[target] then
+      return true
+    end
+    source = target
+  end
+  return false
+end
 
 ---@param tbl auraData[]
 ---@param takeSnapshots boolean
@@ -2596,18 +2619,14 @@ function Private.AddMany(tbl, takeSnapshots)
   end
 
   -- Now fix up anchors, see #3971, where aura p was anchored to aura c and where c was a child of p, thus c was anchored to p
+  -- And #5395, where aura a was anchored to aura b, which was anchored to aura a
   -- The game used to detect such anchoring circles. We can't detect all of them, but at least detect the one from the ticket.
-  for target, source in pairs(anchorTargets) do
+  for _, source in pairs(anchorTargets) do
     -- We walk up the parent's of target, to check for source
-    local parent = target
-    if idtable[target] then
-      while(parent) do
-        if parent == source then
-          WeakAuras.prettyPrint(L["Warning: Anchoring to your own child '%s' in aura '%s' is imposssible."]:format(target, source))
-          idtable[source].anchorFrameType = "SCREEN"
-        end
-        parent = idtable[parent].parent
-      end
+    if Private.CheckForAnchorCycle(source) then
+      WeakAuras.prettyPrint(L["Warning: Anchoring in aura '%s' is imposssible, due to an anchoring cycle"]:format(source))
+      idtable[source].anchorFrameType = "UIPARENT"
+      idtable[source].anchorFrameFrame = ""
     end
   end
 
@@ -3040,6 +3059,17 @@ function WeakAuras.PreAdd(data, snapshot)
   data.expanded = nil
 end
 
+local function cycleCheck(data)
+  local id = data.id
+  if data.anchorFrameType == "SELECTFRAME" and data.anchorFrameFrame and data.anchorFrameFrame:sub(1, 10) == "WeakAuras:" then
+    if Private.CheckForAnchorCycle(id) then
+      WeakAuras.prettyPrint(L["Warning: Anchoring in aura '%s' is imposssible, due to an anchoring cycle"]:format(id))
+      db.displays[id].anchorFrameType = "UIPARENT"
+      db.displays[id].anchorFrameFrame = ""
+    end
+  end
+end
+
 function pAdd(data, simpleChange)
   local id = data.id;
   if not(id) then
@@ -3066,6 +3096,7 @@ function pAdd(data, simpleChange)
 
   if simpleChange then
     db.displays[id] = data
+    cycleCheck(data)
     if WeakAuras.GetRegion(data.id) then
       Private.SetRegion(data)
     end
@@ -3085,6 +3116,8 @@ function pAdd(data, simpleChange)
         Private.ClearAuraEnvironment(parent.id);
       end
       db.displays[id] = data;
+      cycleCheck(data)
+
       if WeakAuras.GetRegion(data.id) then
         Private.SetRegion(data)
       end
@@ -3120,7 +3153,8 @@ function pAdd(data, simpleChange)
         Private.ClearAuraEnvironment(parent.id);
       end
 
-      db.displays[id] = data;
+      db.displays[id] = data
+      cycleCheck(data)
 
       if (not data.triggers.activeTriggerMode or data.triggers.activeTriggerMode > #data.triggers) then
         data.triggers.activeTriggerMode = Private.trigger_modes.first_active;
@@ -5860,16 +5894,6 @@ local function GetAnchorFrame(data, region, parent)
       local frame_name = anchorFrameFrame:sub(11);
       if (frame_name == id) then
         return parent;
-      end
-
-      local targetData = WeakAuras.GetData(frame_name)
-      if targetData then
-        for parentData in Private.TraverseParents(targetData) do
-          if parentData.id == data.id then
-            WeakAuras.prettyPrint(L["Warning: Anchoring to your own child '%s' in aura '%s' is imposssible."]:format(frame_name, data.id))
-            return parent
-          end
-        end
       end
 
       if Private.regions[frame_name] and Private.regions[frame_name].region then
