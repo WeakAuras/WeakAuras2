@@ -489,7 +489,7 @@ local methods = {
             end
           end
 
-          if GetCurrentRegion() ~= 5 then -- 5 is for China, region doesn't allow links in chat
+          if not (GetCurrentRegion() == 5 or GetLocale() == "zhCN") then -- China region (5), and chinese locale profanity filter doesn't allow links in chat
             local url = ""
             if self.data.url then
               url = " ".. self.data.url
