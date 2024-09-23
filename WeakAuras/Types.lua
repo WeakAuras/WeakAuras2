@@ -3531,7 +3531,8 @@ Private.update_categories = {
       "url",
       "desc",
       "version",
-      "semver"
+      "semver",
+      "wagoID", -- i don't *love* that we're so closely tied to wago, but eh
     },
     default = true,
     label = L["Meta Data"],
