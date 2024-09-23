@@ -10109,6 +10109,7 @@ Private.AtlasList = {
 "shop-card-full-rx1",
 "shop-card-full-rx2",
 "shop-card-full-t27",
+"shop-card-full-traveling-repair-bear",
 "shop-card-full-tw1",
 "shop-card-full-wsg7",
 "shop-card-full-y46",
