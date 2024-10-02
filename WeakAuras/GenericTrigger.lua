@@ -876,39 +876,61 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
   Private.StopProfileSystem("generictrigger " .. system)
 end
 
----@param event string
----@param unit UnitToken
----@param ... any
-function WeakAuras.ScanUnitEvents(event, unit, ...)
-  Private.StartProfileSystem("generictrigger " .. event .. " " .. unit)
-  local unit_list = loaded_unit_events[unit]
-  if unit_list then
-    local event_list = unit_list[event]
-    if event_list then
-      for id, triggers in pairs(event_list) do
-        Private.StartProfileAura(id);
-        Private.ActivateAuraEnvironment(id);
-        local updateTriggerState = false;
-        for triggernum, data in pairs(triggers) do
-          local delay = GenericTrigger.GetDelay(data)
-          if delay == 0 then
-            local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
-            if (RunTriggerFunc(allStates, data, id, triggernum, event, unit, ...)) then
-              updateTriggerState = true;
+do
+  local skipTheseUnitsInRaid = {
+    player = true,
+    pet = true,
+    party1 = true,
+    party1pet = true,
+    party2 = true,
+    party2pet = true,
+    party3 = true,
+    party3pet = true,
+    party4 = true,
+    party4pet = true,
+  }
+
+  ---@param event string
+  ---@param unit UnitToken
+  ---@param ... any
+  function WeakAuras.ScanUnitEvents(event, unit, ...)
+    Private.StartProfileSystem("generictrigger " .. event .. " " .. unit)
+    local unit_list = loaded_unit_events[unit]
+    if unit_list then
+      local event_list = unit_list[event]
+      if event_list then
+        for id, triggers in pairs(event_list) do
+          Private.StartProfileAura(id);
+          Private.ActivateAuraEnvironment(id);
+          local updateTriggerState = false;
+          for triggernum, data in pairs(triggers) do
+            local skipThisUnit = false
+            -- for unit = "group" skip any unit that would trigger twice with a raidX unit
+            if data.trigger and data.trigger.unit == "group" and IsInRaid() and skipTheseUnitsInRaid[unit] then
+              skipThisUnit = true
             end
-          else
-            Private.RunTriggerFuncWithDelay(delay, id, triggernum, data, event, unit, ...)
+            if not skipThisUnit then
+              local delay = GenericTrigger.GetDelay(data)
+              if delay == 0 then
+                local allStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum);
+                if (RunTriggerFunc(allStates, data, id, triggernum, event, unit, ...)) then
+                  updateTriggerState = true;
+                end
+              else
+                Private.RunTriggerFuncWithDelay(delay, id, triggernum, data, event, unit, ...)
+              end
+            end
           end
+          if (updateTriggerState) then
+            Private.UpdatedTriggerState(id);
+          end
+          Private.StopProfileAura(id);
+          Private.ActivateAuraEnvironment(nil);
         end
-        if (updateTriggerState) then
-          Private.UpdatedTriggerState(id);
-        end
-        Private.StopProfileAura(id);
-        Private.ActivateAuraEnvironment(nil);
       end
     end
+    Private.StopProfileSystem("generictrigger " .. event .. " " .. unit)
   end
-  Private.StopProfileSystem("generictrigger " .. event .. " " .. unit)
 end
 
 ---@private
