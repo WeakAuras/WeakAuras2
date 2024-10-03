@@ -2275,6 +2275,24 @@ function Private.Modernize(data, oldSnapshot)
     fixData(data.load, loadFix)
   end
 
+  if data.internalVersion < 78 then
+    if data.triggers then
+      for triggerId, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
+        -- Item Type is now always a multi selection
+        if trigger and trigger.type == "item" and trigger.event == "Item Type Equipped" then
+          local value = trigger.itemTypeName and trigger.itemTypeName.single or nil
+          if trigger.use_itemTypeName and value then
+            trigger.use_itemTypeName = false
+            trigger.itemTypeName = {multi = {[value] = true}}
+          else
+            trigger.itemTypeName = {multi = {}}
+          end
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 
