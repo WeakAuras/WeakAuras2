@@ -1071,6 +1071,7 @@ local function ProgressOptions(data)
   local options = {
     __title = L["Progress Settings"],
     __order = 98,
+    __collapsed = true
   }
 
   options.progressSource = {
@@ -1244,6 +1245,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
   local positionOptions = {
     __title = L["Position Settings"],
     __order = metaOrder,
+    __collapsed = true,
     width = {
       type = "range",
       control = "WeakAurasSpinBox",
