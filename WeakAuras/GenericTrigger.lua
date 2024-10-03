@@ -702,6 +702,10 @@ local function RunTriggerFunc(allStates, data, id, triggernum, event, arg1, arg2
     elseif (data.statesParameter == "unit") then
       if arg1 then
         if Private.multiUnitUnits[data.trigger.unit] then
+          if data.trigger.unit == "group" and IsInRaid() and Private.multiUnitUnits.party[arg1] then
+            return
+          end
+
           unitForUnitTrigger = arg1
           cloneIdForUnitTrigger = arg1
         else
