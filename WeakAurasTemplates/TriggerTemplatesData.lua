@@ -523,6 +523,7 @@ templates.class.WARRIOR = {
         { spell = 107574, type = "ability", buff = true, talent = 112232 }, -- Avatar
         { spell = 118038, type = "ability", buff = true, talent = 112128 }, -- Die by the Sword
         { spell = 163201, type = "ability", overlayGlow = true, requiresTarget = true, usable = true }, -- Execute
+        { spell = 167105, type = "ability", requiresTarget = true, debuff = true }, -- Colossus Smash
         { spell = 190456, type = "ability", buff = true, talent = 114738 }, -- Ignore Pain
         { spell = 202168, type = "ability", requiresTarget = true, talent = 112183 }, -- Impending Victory
         { spell = 227847, type = "ability", buff = true, talent = 112314 }, -- Bladestorm
