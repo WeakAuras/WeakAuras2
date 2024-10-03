@@ -377,7 +377,11 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         options["use_"..name].desc = arg.desc;
       end
       if(arg.required) then
-        trigger["use_"..realname] = true;
+        if arg.type == "multiselect" and arg.multiNoSingle then
+          trigger["use_"..realname] = false
+        else
+          trigger["use_"..realname] = true
+        end
         if not(triggertype) then
           options["use_"..name].disabled = true;
         else
