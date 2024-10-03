@@ -2281,39 +2281,22 @@ templates.class.PRIEST = {
     [2] = {
       title = L["Debuffs"],
       args = {
-        { spell = 17, type = "buff", unit = "player" }, -- Power Word: Shield
-        { spell = 139, type = "buff", unit = "player", talent = 103869 }, -- Renew
-        { spell = 586, type = "buff", unit = "player" }, -- Fade
-        { spell = 10060, type = "buff", unit = "player", talent = 103844 }, -- Power Infusion
-        { spell = 15286, type = "buff", unit = "player", talent = 103841 }, -- Vampiric Embrace
-        { spell = 21562, type = "buff", unit = "player" }, -- Power Word: Fortitude
-        { spell = 41635, type = "buff", unit = "player", talent = 103870 }, -- Prayer of Mending
-        { spell = 47585, type = "buff", unit = "player", talent = 103806 }, -- Dispersion
-        { spell = 65081, type = "buff", unit = "player", talent = 103856 }, -- Body and Soul
-        { spell = 111759, type = "buff", unit = "player" }, -- Levitate
-        { spell = 114255, type = "buff", unit = "player", talent = 103823 }, -- Surge of Light
-        { spell = 121557, type = "buff", unit = "player", talent = 103853 }, -- Angelic Feather
-        { spell = 193065, type = "buff", unit = "player", talent = 103858 }, -- Protective Light
-        { spell = 194249, type = "buff", unit = "player" }, -- Voidform
-        { spell = 232698, type = "buff", unit = "player" }, -- Shadowform
-        { spell = 247776, type = "buff", unit = "player" }, -- Mind Trauma
-        { spell = 341282, type = "buff", unit = "player", talent = 103804 }, -- Unfurling Darkness
-        { spell = 373204, type = "buff", unit = "player", talent = 103684 }, -- Mind Devourer
-        { spell = 373213, type = "buff", unit = "player", talent = 103683 }, -- Insidious Ire
-        { spell = 373276, type = "buff", unit = "player", talent = 103817 }, -- Idol of Yogg-Saron
-        { spell = 375981, type = "buff", unit = "player", talent = 103805 }, -- Shadowy Insight
-        { spell = 377066, type = "buff", unit = "player", talent = 103800 }, -- Mental Fortitude
-        { spell = 390617, type = "buff", unit = "player", talent = 103857 }, -- From Darkness Comes Light
-        { spell = 390636, type = "buff", unit = "player", talent = 103850 }, -- Rhapsody
-        { spell = 390933, type = "buff", unit = "player", talent = 103873 }, -- Words of the Pious
-        { spell = 390978, type = "buff", unit = "player", talent = 103833 }, -- Twist of Fate
-        { spell = 391092, type = "buff", unit = "player", talent = 115449 }, -- Mind Melt
-        { spell = 391099, type = "buff", unit = "player", talent = 103802 }, -- Dark Evangelism
-        { spell = 391109, type = "buff", unit = "player", talent = 103680 }, -- Dark Ascension
-        { spell = 391401, type = "buff", unit = "player" }, -- Mind Flay: Insanity
-        { spell = 392511, type = "buff", unit = "player", talent = 103681 }, -- Deathspeaker
-        { spell = 393919, type = "buff", unit = "player", talent = 103789 }, -- Screams of the Void
-        { spell = 407468, type = "buff", unit = "player" }, -- Mind Spike: Insanity
+        { spell = 589, type = "debuff", unit = "target" }, -- Shadow Word: Pain
+        { spell = 8122, type = "debuff", unit = "target" }, -- Psychic Scream
+        { spell = 15407, type = "debuff", unit = "target" }, -- Mind Flay
+        { spell = 15487, type = "debuff", unit = "target", talent = 103792 }, -- Silence
+        { spell = 34914, type = "debuff", unit = "target" }, -- Vampiric Touch
+        { spell = 64044, type = "debuff", unit = "target", talent = 103793 }, -- Psychic Horror
+        { spell = 114404, type = "debuff", unit = "target" }, -- Void Tendril's Grasp
+        { spell = 247777, type = "debuff", unit = "target" }, -- Mind Trauma
+        { spell = 263165, type = "debuff", unit = "target", talent = 103796 }, -- Void Torrent
+        { spell = 322098, type = "debuff", unit = "target", talent = 103863 }, -- Death and Madness
+        { spell = 335467, type = "debuff", unit = "target", talent = 103808 }, -- Devouring Plague
+        { spell = 373281, type = "debuff", unit = "target" }, -- Echoing Void
+        { spell = 390669, type = "debuff", unit = "target", talent = 103839 }, -- Apathy
+        { spell = 391403, type = "debuff", unit = "target" }, -- Mind Flay: Insanity
+        { spell = 394976, type = "debuff", unit = "target" }, -- Mind Sear
+        { spell = 453850, type = "debuff", unit = "target", herotalent = 117284 }, -- Resonant Energy
       },
       icon = 136207
     },
