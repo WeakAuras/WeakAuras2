@@ -5981,7 +5981,13 @@ Private.event_prototypes = {
         test = "true",
         conditionType = "bool",
         conditionTest = function(state, needle)
-          return state and state.show and (UnitExists('target') and C_Item.IsItemInRange(state.itemname, 'target')) == (needle == 1)
+          if not state or not state.show or not UnitExists('target') then
+            return false
+          end
+          if InCombatLockdown() and not UnitCanAttack('player', 'target') then
+            return false
+          end
+          return C_Item.IsItemInRange(state.itemname, 'target') == (needle == 1)
         end,
         conditionEvents = AddTargetConditionEvents({
           "WA_SPELL_RANGECHECK",
