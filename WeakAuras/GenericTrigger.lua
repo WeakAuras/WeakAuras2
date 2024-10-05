@@ -5018,16 +5018,20 @@ WeakAuras.GetBonusIdInfo = function(ids, specificSlot)
   end
 end
 
----@param itemName string
+---@param itemId string
 ---@param specificSlot? number
 ---@return boolean|nil isItemEquipped
-WeakAuras.CheckForItemEquipped = function(itemName, specificSlot)
+WeakAuras.CheckForItemEquipped = function(itemId, specificSlot)
   if not specificSlot then
-    return C_Item.IsEquippedItem(itemName or '')
+    return C_Item.IsEquippedItem(itemId or '')
   else
     local item = Item:CreateFromEquipmentSlot(specificSlot)
     if item and not item:IsItemEmpty() then
-      return itemName == item:GetItemName()
+      if type(itemId) == "number" then
+        return itemId == item:GetItemID()
+      else
+        return itemId == item:GetItemName()
+      end
     end
   end
 end

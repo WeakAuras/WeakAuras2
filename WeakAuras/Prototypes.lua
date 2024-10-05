@@ -8656,13 +8656,23 @@ Private.event_prototypes = {
       local itemName = type(trigger.itemName) == "number" and trigger.itemName or string.format("%q", trigger.itemName or "0")
 
       local ret = [[
-        local inverse = %s;
+        local inverse = %s
         local triggerItemName = %s
-        local itemName = C_Item.GetItemInfo(triggerItemName)
         local _, _, _, _, icon = C_Item.GetItemInfoInstant(triggerItemName)
-        local itemSlot = %s;
-        local equipped = WeakAuras.CheckForItemEquipped(itemName, itemSlot);
-      ]];
+        local itemSlot = %s
+      ]]
+
+      if trigger.use_exact_itemName then
+        ret = ret ..[[
+          local itemName = triggerItemName
+          local equipped = WeakAuras.CheckForItemEquipped(triggerItemName, itemSlot)
+        ]]
+      else
+        ret = ret ..[[
+          local itemName = C_Item.GetItemInfo(triggerItemName)
+          local equipped = WeakAuras.CheckForItemEquipped(itemName, itemSlot)
+        ]]
+      end
 
       return ret:format(trigger.use_inverse and "true" or "false", itemName, trigger.use_itemSlot and trigger.itemSlot or "nil");
     end,
@@ -8678,7 +8688,8 @@ Private.event_prototypes = {
         display = L["Item"],
         type = "item",
         required = true,
-        test = "true"
+        test = "true",
+        showExactOption = true
       },
       {
         name = "itemSlot",
