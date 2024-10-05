@@ -221,6 +221,7 @@ Private.frames = {}
 --- @class actionData
 --- @field do_glow boolean
 --- @field do_message boolean
+--- @field do_sound boolean
 --- @field message string
 --- @field message_type string
 
