@@ -3438,6 +3438,9 @@ do
   end
 
   function Private.ExecEnv.GetEffectiveSpellId(spellId, exactMatch, followoverride)
+    if type(spellId) == "string" then
+      spellId = select(7, Private.ExecEnv.GetSpellInfo(spellId))
+    end
     if not exactMatch then
       local spellName = Private.ExecEnv.GetSpellName(spellId or "")
       if spellName then
