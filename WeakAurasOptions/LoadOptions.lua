@@ -20,14 +20,9 @@ local ValidateNumeric = WeakAuras.ValidateNumeric;
 local spellCache = WeakAuras.spellCache;
 
 local function CorrectSpellName(input)
-  local inputId = tonumber(input);
+  local inputId = tonumber(input)
   if(inputId) then
-    local name = OptionsPrivate.Private.ExecEnv.GetSpellName(inputId);
-    if(name) then
-      return inputId;
-    else
-      return nil;
-    end
+    return inputId
   elseif WeakAuras.IsClassicEra() and input then
     local _, _, _, _, _, _, spellId = OptionsPrivate.Private.ExecEnv.GetSpellInfo(input)
     if spellId then
@@ -723,11 +718,13 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                       if tbl and tbl.title then
                         return ("%s (%s)"):format(spellID, tbl.title) .. "\0" .. value
                       end
+                      return ("%s (%s)"):format(spellID, L["Unknown Encounter's Spell Id"]) .. "\0" .. value
                     end
-                    local spellName = OptionsPrivate.Private.ExecEnv.GetSpellName(WeakAuras.SafeToNumber(value))
+                    local spellName = OptionsPrivate.Private.ExecEnv.GetSpellName(spellID)
                     if spellName then
                       return ("%s (%s)"):format(spellID, spellName) .. "\0" .. value
                     end
+                    return ("%s (%s)"):format(spellID, L["Unknown Spell"]) .. "\0" .. value
                   elseif not useExactSpellId and not arg.noValidation then
                     local spellName = OptionsPrivate.Private.ExecEnv.GetSpellName(value)
                     if spellName then
