@@ -455,6 +455,14 @@ local function IsParentRecursive(needle, parent)
   end
 end
 
+local tabsForWarning = {
+  tts_condition = "conditions",
+  sound_condition = "conditions",
+  tts_action = "action",
+  sound_action = "action",
+  spammy_event_warning = "trigger"
+}
+
 --[[-----------------------------------------------------------------------------
 Methods
 -------------------------------------------------------------------------------]]
@@ -1400,6 +1408,7 @@ local methods = {
     end
     if not iconButton then
       iconButton = statusIconPool:Acquire()
+      iconButton:RegisterForClicks("LeftButtonUp", "RightButtonUp")
       tinsert(self.statusIcons.buttons, iconButton)
       iconButton:SetParent(self.statusIcons)
       iconButton.key = key
@@ -1464,9 +1473,30 @@ local methods = {
     end
     if warnings then
       for severity, warning in pairs(warnings) do
-        local onClick = function()
-          WeakAuras.PickDisplay(warning.auraId, warning.tab)
+        local onClick
+        if severity == "sound" or severity == "tts" then
+          local soundText = L["Show Sound Setting"]
+          local removeText = L["Remove All Sounds"]
+          if severity == "tts" then
+            soundText = L["Show Text To Speech Setting"]
+            removeText = L["Remove All Text To Speech"]
+          end
+          onClick = function()
+            MenuUtil.CreateContextMenu(UIParent, function(ownerRegion, root)
+              root:CreateButton(soundText, function()
+                WeakAuras.PickDisplay(warning.auraId, tabsForWarning[warning.key] or "information")
+              end)
+              root:CreateButton(removeText, function()
+                OptionsPrivate.Private.ClearSounds(self.data.uid, severity)
+              end)
+            end)
+          end
+        else
+          onClick = function()
+            WeakAuras.PickDisplay(warning.auraId, tabsForWarning[warning.key] or "information")
+          end
         end
+
         self:UpdateStatusIcon(severity, warning.prio, warning.icon, warning.title, warning.message, onClick)
       end
     end

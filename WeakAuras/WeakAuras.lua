@@ -2966,6 +2966,7 @@ local oldDataStub2 = {
   conditions = {},
 }
 
+--- @type fun(data: auraData)
 function Private.UpdateSoundIcon(data)
   local function testConditions()
     local sound, tts
@@ -3014,6 +3015,48 @@ function Private.UpdateSoundIcon(data)
   else
     Private.AuraWarnings.UpdateWarning(data.uid, "tts_condition")
   end
+end
+
+function Private.ClearSounds(uid, severity)
+  local data = Private.GetDataByUID(uid)
+
+  for child in Private.TraverseLeafsOrAura(data) do
+    local changed = false
+    if child.conditions then
+      for _, condition in ipairs(child.conditions) do
+        for changeIndex = #condition.changes, 1, -1 do
+          local change = condition.changes[changeIndex]
+          if change.property == "sound" and severity == "sound" then
+            tremove(condition.changes, changeIndex)
+            changed = true
+          elseif change.property == "chat" and change.value and change.value.message_type == "TTS" and severity == "tts" then
+            tremove(condition.changes, changeIndex)
+            changed = true
+          end
+        end
+      end
+    end
+
+    if severity == "sound" and (child.actions.start.do_sound or child.actions.finish.do_sound) then
+      child.actions.start.do_sound = false
+      child.actions.finish.do_sound = false
+      changed = true
+    elseif severity == "tts" then
+      if child.actions.start.do_message and child.actions.start.message_type == "TTS" then
+        child.actions.start.do_message = false
+        changed = true
+      end
+      if child.actions.finish.do_message and child.actions.finish.message_type == "TTS" then
+        child.actions.finish.do_message = false
+        changed = true
+      end
+    end
+    if changed then
+      WeakAuras.Add(child)
+    end
+  end
+  WeakAuras.ClearAndUpdateOptions(data.id, true)
+  WeakAuras.FillOptions()
 end
 
 function WeakAuras.PreAdd(data, snapshot)
