@@ -37,6 +37,7 @@ SubRegionOptions\Border.lua
 SubRegionOptions\Glow.lua
 SubRegionOptions\Tick.lua
 SubRegionOptions\Model.lua
+SubRegionOptions\StopMotion.lua
 
 Cache.lua
 

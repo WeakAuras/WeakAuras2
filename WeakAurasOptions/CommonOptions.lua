@@ -1475,6 +1475,113 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
   return positionOptions;
 end
 
+--- @type fun(data: auraData, options: table, startOrder: number, areaAnchors: table, pointAnchors: table)
+local function PositionOptionsForSubElement(data, options, startOrder, areaAnchors, pointAnchors)
+  options.anchor_mode = {
+    name = L["Anchor Mode"],
+    type = "select",
+    width = WeakAuras.normalWidth,
+    order = startOrder,
+    values = OptionsPrivate.Private.anchor_mode,
+  }
+
+  options.anchor_area = {
+    name = L["Area"],
+    type = "select",
+    width = WeakAuras.normalWidth,
+    control = "WeakAurasTwoColumnDropdown",
+    order = startOrder + 0.1,
+    values = areaAnchors,
+    hidden = function()
+      return data.anchor_mode == "point"
+    end
+  }
+
+  options.anchor_space = {
+    name = "",
+    type = "description",
+    order = startOrder + 0.2,
+    hidden = function()
+      return data.anchor_mode == "area"
+    end
+  }
+
+  options.self_point = {
+    name = L["Anchor"],
+    type = "select",
+    width = WeakAuras.normalWidth,
+    control = "WeakAurasTwoColumnDropdown",
+    order = startOrder + 0.3,
+    values = OptionsPrivate.Private.point_types,
+    hidden = function()
+      return data.anchor_mode == "area"
+    end
+  }
+
+  options.anchor_point = {
+    name = L["To Region's"],
+    type = "select",
+    width = WeakAuras.normalWidth,
+    control = "WeakAurasTwoColumnDropdown",
+    order = startOrder + 0.4,
+    values = pointAnchors,
+    hidden = function()
+      return data.anchor_mode == "area"
+    end
+  }
+
+  options.width = {
+    name = L["Width"],
+    type = "range",
+    control = "WeakAurasSpinBox",
+    width = WeakAuras.normalWidth,
+    min = 0,
+    softMax = 200,
+    step = 1,
+    order = startOrder + 0.5,
+    hidden = function()
+      return data.anchor_mode == "area"
+    end
+  }
+
+  options.height = {
+    name = L["Height"],
+    type = "range",
+    control = "WeakAurasSpinBox",
+    width = WeakAuras.normalWidth,
+    min = 0,
+    softMax = 200,
+    step = 1,
+    order = startOrder + 0.6,
+    hidden = function()
+      return data.anchor_mode == "area"
+    end
+  }
+
+  options.xOffset = {
+    type = "range",
+    control = "WeakAurasSpinBox",
+    name = L["X Offset"],
+    order = startOrder + 0.7,
+    width = WeakAuras.normalWidth,
+    softMin = -200,
+    softMax = 200,
+    step = 1,
+  }
+
+  options.yOffset = {
+    type = "range",
+    control = "WeakAurasSpinBox",
+    name = L["Y Offset"],
+    order = startOrder + 0.8,
+    width = WeakAuras.normalWidth,
+    softMin = -200,
+    softMax = 200,
+    step = 1,
+  }
+
+end
+
 local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
   local borderOptions = {
     borderHeader = {
@@ -1806,6 +1913,7 @@ OptionsPrivate.commonOptions.CreateSetAll = CreateSetAll
 OptionsPrivate.commonOptions.CreateExecuteAll = CreateExecuteAll
 
 OptionsPrivate.commonOptions.PositionOptions = PositionOptions
+OptionsPrivate.commonOptions.PositionOptionsForSubElement = PositionOptionsForSubElement
 OptionsPrivate.commonOptions.ProgressOptions = ProgressOptions
 OptionsPrivate.commonOptions.BorderOptions = BorderOptions
 OptionsPrivate.commonOptions.AddCodeOption = AddCodeOption

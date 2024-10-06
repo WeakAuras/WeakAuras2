@@ -16,7 +16,7 @@ local default = function(parentType)
     border_size = 2,
   }
   if parentType == "aurabar" then
-    options["border_anchor"] = "bar"
+    options["anchor_area"] = "bar"
   end
   return options
 end
@@ -52,9 +52,6 @@ end
 local function modify(parent, region, parentData, data, first)
   region:SetParent(parent)
 
-  parent:AnchorSubRegion(region, "area", parentData.regionType == "aurabar" and data.border_anchor,
-                         nil, data.border_offset, data.border_offset)
-
   local edgeFile = SharedMedia:Fetch("border", data.border_edge)
   if edgeFile and edgeFile ~= "" then
     region:SetBackdrop({
@@ -82,6 +79,11 @@ local function modify(parent, region, parentData, data, first)
   end
 
   region:SetVisible(data.border_visible)
+
+  region.Anchor = function()
+    parent:AnchorSubRegion(region, "area", parentData.regionType == "aurabar" and data.anchor_area or nil,
+                           nil, data.border_offset, data.border_offset)
+  end
 end
 
 local function supports(regionType)

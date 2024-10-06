@@ -3,7 +3,7 @@ local AddonName = ...
 ---@class Private
 local Private = select(2, ...)
 
-local internalVersion = 79
+local internalVersion = 80
 
 -- Lua APIs
 local insert = table.insert
@@ -602,7 +602,8 @@ end
 ---@param name string
 ---@param createFunction function
 ---@param description string
-function WeakAuras.RegisterSubRegionOptions(name, createFunction, description)
+---@param getAnchors function?
+function WeakAuras.RegisterSubRegionOptions(name, createFunction, description, getAnchors)
   if not(name) then
     error("Improper arguments to WeakAuras.RegisterSubRegionOptions - name is not defined", 2);
   elseif(type(name) ~= "string") then
@@ -611,11 +612,14 @@ function WeakAuras.RegisterSubRegionOptions(name, createFunction, description)
     error("Improper arguments to WeakAuras.RegisterSubRegionOptions - creation function is not defined", 2);
   elseif(type(createFunction) ~= "function") then
     error("Improper arguments to WeakAuras.RegisterSubRegionOptions - creation function is not a function", 2);
+  elseif(getAnchors and type(getAnchors) ~= "function") then
+    error("Improper arguments to WeakAuras.RegisterSubRegionOptions - getAnchors function is not a function", 2);
   elseif(subRegionOptions[name]) then
     error("Improper arguments to WeakAuras.RegisterSubRegionOptions - region type \""..name.."\" already defined", 2);
   else
     subRegionOptions[name] = {
       create = createFunction,
+      getAnchors = getAnchors,
       description = description,
     };
   end

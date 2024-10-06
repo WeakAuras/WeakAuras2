@@ -259,7 +259,6 @@ function Private.GetTalentData(specId)
 	heroData[1001] = true
 	Private.talentInfo[specId] = { specData, heroData, specDataByNodeId }
 	return specData, heroData, specDataByNodeId
-  -- TODO fix callers
 end
 
 WeakAuras.StopMotion = {

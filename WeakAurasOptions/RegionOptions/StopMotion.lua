@@ -7,7 +7,6 @@ local OptionsPrivate = select(2, ...)
 local texture_types = WeakAuras.StopMotion.texture_types;
 local texture_data = WeakAuras.StopMotion.texture_data;
 local animation_types = WeakAuras.StopMotion.animation_types;
-local setTile = WeakAuras.setTile
 
 -- Returns value only for Blizzard flipbooks
 function OptionsPrivate.GetFlipbookTileSize(name)
@@ -20,99 +19,9 @@ function OptionsPrivate.GetFlipbookTileSize(name)
   end
 end
 
-local function setTextureFunc(textureWidget, texturePath, textureName)
-  local data = texture_data[texturePath];
-  if not(data) then
-    local pattern = "%.x(%d+)y(%d+)f(%d+)%.[tb][gl][ap]"
-    local pattern2 = "%.x(%d+)y(%d+)f(%d+)w(%d+)h(%d+)W(%d+)H(%d+)%.[tb][gl][ap]"
-    local rows, columns, frames = texturePath:lower():match(pattern)
-    if rows then
-      data = {
-        count = tonumber(frames),
-        rows = tonumber(rows),
-        columns = tonumber(columns)
-      }
-    else
-      local rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight = texturePath:match(pattern2)
-      if rows then
-        rows, columns, frames, frameWidth, frameHeight, fileWidth, fileHeight
-          = tonumber(rows), tonumber(columns), tonumber(frames), tonumber(frameWidth), tonumber(frameHeight), tonumber(fileWidth), tonumber(fileHeight)
-        local frameScaleW = 1
-        local frameScaleH = 1
-        if fileWidth > 0 and frameWidth > 0 then
-          frameScaleW = (frameWidth * columns) / fileWidth
-        end
-        if fileHeight > 0 and frameHeight > 0 then
-          frameScaleH = (frameHeight * rows) / fileHeight
-        end
-        data = {
-          count = frames,
-          rows = rows,
-          columns = columns,
-          frameScaleW = frameScaleW,
-          frameScaleH = frameScaleH
-        }
-      end
-    end
-  end
-  textureWidget.frameNr = 0;
-  if (data) then
-      if (data.rows and data.columns) then
-        -- Texture Atlas
-        textureWidget:SetTexture(texturePath, textureName, true);
-
-        setTile(textureWidget, data.count, data.rows, data.columns, data.frameScaleW or 1, data.frameScaleH or 1);
-
-        textureWidget:SetOnUpdate(function(self, elapsed)
-          self.elapsed = (self.elapsed or 0) + elapsed
-          if(self.elapsed > 0.1) then
-            self.elapsed = self.elapsed - 0.1;
-            textureWidget.frameNr = textureWidget.frameNr + 1;
-            if (textureWidget.frameNr == data.count) then
-              textureWidget.frameNr = 1;
-            end
-            setTile(textureWidget, textureWidget.frameNr, data.rows, data.columns, data.frameScaleW or 1, data.frameScaleH or 1);
-          end
-        end)
-      else
-        -- Numbered Textures
-        local texture = texturePath .. format("%03d", texture_data[texturePath].count)
-        textureWidget:SetTexture(texture, textureName, true)
-        textureWidget:SetTexCoord(0, 1, 0, 1);
-
-        textureWidget:SetOnUpdate(function(self, elapsed)
-          self.elapsed = (self.elapsed or 0) + elapsed
-          if(self.elapsed > 0.1) then
-            self.elapsed = self.elapsed - 0.1;
-            textureWidget.frameNr = textureWidget.frameNr + 1;
-            if (textureWidget.frameNr == data.count) then
-              textureWidget.frameNr = 1;
-            end
-            local texture = texturePath .. format("%03d", textureWidget.frameNr)
-            textureWidget:SetTexture(texture, textureName);
-          end
-        end);
-      end
-  else
-    local texture = texturePath .. format("%03d", 1)
-    textureWidget:SetTexture(texture, textureName, true);
-  end
-end
-
-local function textureNameHasData(textureName)
-  local pattern = "%.x(%d+)y(%d+)f(%d+)%.[tb][gl][ap]$"
-  local pattern2 = "%.x(%d+)y(%d+)f(%d+)w(%d+)h(%d+)W(%d+)H(%d+)%.[tb][gl][ap]$"
-  local ok = textureName:lower():match(pattern)
-  if ok then return true end
-  local ok2 = textureName:match(pattern2)
-  if ok2 then
-     return true
-  else
-     return false
-  end
-end
-
 local function createOptions(id, data)
+    local textureNameHasData = OptionsPrivate.Private.StopMotionBase.textureNameHasData
+    local setTextureFunc = OptionsPrivate.Private.StopMotionBase.setTextureFunc
     local options = {
         __title = L["Stop Motion Settings"],
         __order = 1,
@@ -467,7 +376,7 @@ local function createOptions(id, data)
           hidden = function()
             return data.sameTexture
                    or texture_data[data.backgroundTexture]
-                  or textureNameHasData(data.backgroundTexture)
+                   or textureNameHasData(data.backgroundTexture)
           end
       },
       customBackgroundFrames = {
@@ -703,11 +612,11 @@ local function modifyThumbnail(parent, region, data, fullModify, size)
         frameScaleH = (region.foreground.frameHeight * region.foreground.rows) / region.foreground.fileHeight
       end
 
-      setTile(region.texture, frame, region.foreground.rows, region.foreground.columns, frameScaleW, frameScaleH);
+      WeakAuras.setTile(region.texture, frame, region.foreground.rows, region.foreground.columns, frameScaleW, frameScaleH);
 
       region.SetValue = function(self, percent)
         local frame = floor(percent * (region.endFrame - region.startFrame) + region.startFrame);
-        setTile(self.texture, frame, region.foreground.rows, region.foreground.columns, frameScaleW, frameScaleH);
+        WeakAuras.setTile(self.texture, frame, region.foreground.rows, region.foreground.columns, frameScaleW, frameScaleH);
       end
     else
       region.texture:SetTexture(texture .. format("%03d", frame));

@@ -323,7 +323,7 @@ local function createOptions(parentData, data, index, subIndex)
     control = "WeakAurasExpandSmall",
     name = function()
       local selfPoint = data.text_selfPoint ~= "AUTO" and self_point_types[data.text_selfPoint]
-      local anchorPoint = anchors[data.text_anchorPoint or "CENTER"] or anchors["CENTER"]
+      local anchorPoint = anchors[data.anchor_point or "CENTER"] or anchors["CENTER"]
 
       local xOffset = data.text_anchorXOffset or 0
       local yOffset = data.text_anchorYOffset or 0
@@ -388,7 +388,7 @@ local function createOptions(parentData, data, index, subIndex)
     hidden = hiddenFunction
   }
 
-  options.text_anchorPoint = {
+  options.anchor_point = {
     type = "select",
     width = WeakAuras.normalWidth,
     name = function()

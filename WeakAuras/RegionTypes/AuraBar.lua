@@ -787,16 +787,21 @@ local function FrameTick(self)
 end
 
 local funcs = {
-  AnchorSubRegion = function(self, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
+  AnchorSubRegion = function(self, subRegion, anchorType, anchorPoint, selfPoint, anchorXOffset, anchorYOffset)
+    if anchorPoint:sub(1, 4) == "sub." then
+      Private.regionPrototype.AnchorSubRegion(self, subRegion, anchorType, anchorPoint, selfPoint, anchorXOffset, anchorYOffset)
+      return
+    end
     if anchorType == "area" then
       local anchor = self
-      if selfPoint == "bar" then
+
+      if anchorPoint == "bar" then
         anchor = self
-      elseif selfPoint == "icon" then
+      elseif anchorPoint == "icon" then
         anchor = self.icon
-      elseif selfPoint == "fg" then
+      elseif anchorPoint == "fg" then
         anchor = self.bar.fgMask
-      elseif selfPoint == "bg" then
+      elseif anchorPoint == "bg" then
         anchor = self.bar.bg
       end
 

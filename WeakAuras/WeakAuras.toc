@@ -76,6 +76,7 @@ RegionTypes\Icon.lua
 RegionTypes\Text.lua
 RegionTypes\Group.lua
 RegionTypes\DynamicGroup.lua
+BaseRegions\StopMotion.lua
 RegionTypes\StopMotion.lua
 RegionTypes\Model.lua
 
@@ -86,6 +87,7 @@ SubRegionTypes\Border.lua
 SubRegionTypes\Glow.lua
 SubRegionTypes\Tick.lua
 SubRegionTypes\Model.lua
+SubRegionTypes\StopMotion.lua
 
 # Misc
 Legendaries.lua

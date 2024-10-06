@@ -97,8 +97,6 @@ local function create(parent)
     region[k] = v
   end
 
-  region.AnchorSubRegion = Private.regionPrototype.AnchorSubRegion
-
   -- Return complete region
   return region;
 end
