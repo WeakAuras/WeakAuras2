@@ -45,6 +45,10 @@ Private.frames = {}
 ---@field state state
 ---@field states state[]
 ---@field regionType string
+---@field FrameTick fun(self: WARegion)?
+---@field UpdateValue fun(self: WARegion)?
+---@field UpdateTime fun(self: WARegion)?
+---@field Update fun(self: WARegion)?
 
 --- @class Private
 --- @field ActivateAuraEnvironment fun(id: auraId?, cloneId: string?, state: state?, states: state[]?, config: boolean?)

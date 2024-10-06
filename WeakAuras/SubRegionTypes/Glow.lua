@@ -27,7 +27,7 @@ local default = function(parentType)
   }
   if parentType == "aurabar" then
     options["glowType"] = "Pixel"
-    options["glow_anchor"] = "bar"
+    options["anchor_area"] = "bar"
   end
   return options
 end
@@ -373,12 +373,6 @@ end
 local function modify(parent, region, parentData, data, first)
   region:SetParent(parent)
   region.parentRegionType = parentData.regionType
-  if parentData.regionType == "aurabar" then
-    parent:AnchorSubRegion(region, "area", data.glow_anchor)
-  else
-    parent:AnchorSubRegion(region, "area", (data.glowType == "buttonOverlay" or data.glowType == "Proc") and "region")
-  end
-
   region.parent = parent
 
   region.parentType = parentData.regionType
@@ -399,6 +393,14 @@ local function modify(parent, region, parentData, data, first)
   region:SetVisible(data.glow)
 
   region:SetScript("OnSizeChanged", region.UpdateSize)
+
+  region.Anchor = function()
+    if parentData.regionType == "aurabar" then
+      parent:AnchorSubRegion(region, "area", data.anchor_area)
+    else
+      parent:AnchorSubRegion(region, "area", (data.glowType == "buttonOverlay" or data.glowType == "Proc") and "region")
+    end
+  end
 end
 
 -- This is used by the templates to add glow
@@ -419,7 +421,7 @@ function Private.getDefaultGlow(regionType)
       glowBorder = false,
       glowXOffset = 0,
       glowYOffset = 0,
-      glow_anchor = "bar"
+      anchor_area = "bar"
     }
   else
     return {

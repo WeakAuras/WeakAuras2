@@ -25,25 +25,44 @@ end
 
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
-function Private.GetAnchorsForData(parentData, type)
-  local result
-  if not parentData.controlledChildren then
-    if not Private.regionOptions[parentData.regionType] then
+function Private.GetAnchorsForData(data, filter)
+  local result = {}
+  if not data.controlledChildren then
+    if not Private.regionOptions[data.regionType] then
       return
     end
 
     local anchors
-    if Private.regionOptions[parentData.regionType].getAnchors then
-      anchors = Private.regionOptions[parentData.regionType].getAnchors(parentData)
+    if Private.regionOptions[data.regionType].getAnchors then
+      anchors = Private.regionOptions[data.regionType].getAnchors(data)
     else
       anchors = Private.default_types_for_anchor
     end
+
     for anchorId, anchorData in pairs(anchors) do
-      if anchorData.type == type then
-        result = result or {}
+      if anchorData.type == filter then
         result[anchorId] = anchorData.display
       end
     end
+
+    local subElementTypeCounter = {}
+    for i, subRegion in ipairs(data.subRegions) do
+      subElementTypeCounter[subRegion.type] = (subElementTypeCounter[subRegion.type] or 0) + 1
+      local getAnchors = Private.subRegionOptions[subRegion.type].getAnchors
+      if getAnchors then
+        local subRegionTypeData = Private.subRegionTypes[subRegion.type]
+
+        local anchors = getAnchors(subRegion)
+        for key, anchorData in pairs(anchors) do
+          if anchorData.type == filter then
+            local subElementName = subRegionTypeData.displayName .. " " .. subElementTypeCounter[subRegion.type]
+            local anchorId = "sub." .. i .. "." ..  key
+            result[anchorId] = {subElementName, anchorData.display}
+          end
+        end
+      end
+    end
+
   end
   return result
 end
@@ -638,16 +657,32 @@ local function Tick(self)
   Private.StopProfileAura(self.id)
 end
 
-local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
-  subRegion:ClearAllPoints()
+local function ForwardAnchorToSubRegion(self, subRegion, anchorType, anchorPoint, selfPoint, anchorXOffset, anchorYOffset)
+  local nextdot = anchorPoint:find(".", 5, true)
+  local index = tonumber(anchorPoint:sub(5, nextdot - 1))
+  local subElement = index and self.subRegions[index] or nil
+  if subElement then
+    local key = anchorPoint:sub(nextdot + 1)
+    if subElement.AnchorSubRegion then
+      subElement:AnchorSubRegion(subRegion, anchorType, key, selfPoint, anchorXOffset, anchorYOffset)
+    end
+  end
+end
 
+local function AnchorSubRegion(self, subRegion, anchorType, anchorPoint, selfPoint, anchorXOffset, anchorYOffset)
+  if anchorPoint and anchorPoint:sub(1, 4) == "sub." then
+    self:ForwardAnchorToSubRegion(subRegion, anchorType, anchorPoint, selfPoint, anchorXOffset, anchorYOffset)
+    return
+  end
   if anchorType == "point" then
+    subRegion:ClearAllPoints()
     local xOffset = anchorXOffset or 0
     local yOffset = anchorYOffset or 0
     subRegion:SetPoint(Private.point_types[selfPoint] and selfPoint or "CENTER",
                        self, Private.point_types[anchorPoint] and anchorPoint or "CENTER",
                        xOffset, yOffset)
   else
+    subRegion:ClearAllPoints()
     anchorXOffset = anchorXOffset or 0
     anchorYOffset = anchorYOffset or 0
     subRegion:SetPoint("bottomleft", self, "bottomleft", -anchorXOffset, -anchorYOffset)
@@ -702,8 +737,10 @@ function Private.regionPrototype.create(region)
   region.UpdateTick = UpdateTick
   region.Tick = Tick
 
+
   region.subRegionEvents = Private.CreateSubscribableObject()
   region.AnchorSubRegion = AnchorSubRegion
+  region.ForwardAnchorToSubRegion = ForwardAnchorToSubRegion
   region.values = {} -- For SubText
 
   region:SetPoint("CENTER", UIParent, "CENTER")
@@ -824,6 +861,13 @@ function Private.regionPrototype.modifyFinish(parent, region, data)
         tinsert(region.subRegions, subRegion)
       end
     end
+
+    for index, subRegion in pairs(region.subRegions) do
+      if subRegion.Anchor then
+        subRegion:Anchor()
+      end
+    end
+
   end
 
   region.subRegionEvents:SetOnSubscriptionStatusChanged("FrameTick", function()

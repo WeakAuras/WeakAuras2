@@ -2313,6 +2313,35 @@ function Private.Modernize(data, oldSnapshot)
     end
   end
 
+
+  if data.internalVersion < 80 then
+    -- Use common names for anchor areas/points so
+    -- that up/down of sub regions can adapt that
+
+    local conversions = {
+      subborder = {
+        border_anchor = "anchor_area",
+      },
+      subglow = {
+        glow_anchor = "anchor_area"
+      },
+      subtext = {
+        text_anchorPoint = "anchor_point"
+      }
+    }
+
+    if data.subRegions then
+      for index, subRegionData in ipairs(data.subRegions) do
+        if conversions[subRegionData.type] then
+          for oldKey, newKey in pairs(conversions[subRegionData.type]) do
+            subRegionData[newKey] = subRegionData[oldKey]
+            subRegionData[oldKey] = nil
+          end
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 

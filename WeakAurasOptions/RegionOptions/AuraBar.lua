@@ -874,10 +874,26 @@ local anchorPoints = {
     display = L["Spark"],
     type = "point"
   },
-  ALL = {
-    display = L["Whole Area"],
+
+  bar = {
+    display = L["Full Bar"],
     type = "area"
   },
+
+  icon = {
+    display = L["Icon"],
+    type = "area"
+  },
+
+  fg = {
+    display = L["Foreground"],
+    type = "area"
+  },
+
+  bg = {
+    display = L["Background"],
+    type = "area"
+  }
 }
 
 local function GetAnchors(data)

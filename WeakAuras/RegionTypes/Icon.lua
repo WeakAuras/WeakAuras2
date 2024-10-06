@@ -156,10 +156,15 @@ local function GetTexCoord(region, texWidth, aspectRatio, xOffset, yOffset)
   return unpack(region.currentCoord)
 end
 
-local function AnchorSubRegion(self, subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
+local function AnchorSubRegion(self, subRegion, anchorType, anchorPoint, selfPoint, anchorXOffset, anchorYOffset)
+  if type(anchorPoint) == "string" and anchorPoint:sub(1, 4) == "sub." then
+    Private.regionPrototype.AnchorSubRegion(self, subRegion, anchorType, anchorPoint, selfPoint, anchorXOffset, anchorYOffset)
+    return
+  end
+
   if anchorType == "area" then
     Private.regionPrototype.AnchorSubRegion(selfPoint == "region" and self or self.icon,
-                    subRegion, anchorType, selfPoint, anchorPoint, anchorXOffset, anchorYOffset)
+                    subRegion, anchorType, anchorPoint, selfPoint, anchorXOffset, anchorYOffset)
   else
     subRegion:ClearAllPoints()
     anchorPoint = anchorPoint or "CENTER"

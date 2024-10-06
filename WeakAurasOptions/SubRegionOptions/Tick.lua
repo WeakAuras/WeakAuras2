@@ -320,4 +320,19 @@ local function createOptions(parentData, data, index, subIndex)
   return options
 end
 
-WeakAuras.RegisterSubRegionOptions("subtick", createOptions, L["Places a tick on the bar"]);
+local getAnchors = function(data)
+  local anchors = {}
+  for i in ipairs(data.tick_placements) do
+    anchors["tick."..i] = {
+      display = L["Tick Center %s"]:format(i),
+      type = "point"
+    }
+    anchors["tickarea."..i] = {
+      display = L["Tick Area %s"]:format(i),
+      type = "area"
+    }
+  end
+  return anchors
+end
+
+WeakAuras.RegisterSubRegionOptions("subtick", createOptions, L["Places a tick on the bar"], getAnchors)
