@@ -696,6 +696,10 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                   if useExactSpellId then
                     local itemId = tonumber(value)
                     if itemId and itemId ~= 0 then
+                      local itemName = C_Item.GetItemInfo(value)
+                      if itemName then
+                        return ("%s (%s)"):format(itemId, itemName) .. "\0" .. value
+                      end
                       return tostring(value)
                     end
                   else
