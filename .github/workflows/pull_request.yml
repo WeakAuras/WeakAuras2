@@ -45,14 +45,15 @@ jobs:
       - name: Create Package
         uses: BigWigsMods/packager@v2
         with:
-          args: -d
+          args: -d -z
 
       - uses: actions/upload-artifact@v4
         if: ${{ needs.permission_check.outputs.require-result == 'true' && contains(github.event.pull_request.labels.*.name, '🆕 Feature Preview')}}
         id: upload-artifact
         with:
           name: WeakAuras-PR#${{ github.event.number }}-${{ github.sha }}
-          path: .release/
+          path:  .release/
+          include-hidden-files: true
 
   advertise:
     runs-on: ubuntu-latest
