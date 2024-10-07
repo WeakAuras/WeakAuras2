@@ -892,13 +892,6 @@ function Private.ScanEvents(event, arg1, arg2, ...)
       return;
     end
     Private.ScanEventsInternal(event_list, event, CombatLogGetCurrentEventInfo());
-
-  elseif (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
-    -- This reverts the COMBAT_LOG_EVENT_UNFILTERED_CUSTOM workaround so that custom triggers that check the event argument will work as expected
-    if(event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
-      event = "COMBAT_LOG_EVENT_UNFILTERED";
-    end
-    Private.ScanEventsInternal(event_list, event, CombatLogGetCurrentEventInfo());
   else
     Private.ScanEventsInternal(event_list, event, arg1, arg2, ...);
   end
@@ -1162,9 +1155,6 @@ function GenericTrigger.ScanWithFakeEvent(id, fake)
         end
       elseif (type(event.force_events) == "boolean" and event.force_events) then
         for i, eventName in pairs(event.events) do
-          if eventName == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM" then
-            eventName = "COMBAT_LOG_EVENT_UNFILTERED"
-          end
           updateTriggerState = RunTriggerFunc(allStates, events[id][triggernum], id, triggernum, eventName) or updateTriggerState;
         end
         for unit, unitData in pairs(event.unit_events) do
@@ -1193,9 +1183,6 @@ function HandleEvent(frame, event, arg1, arg2, ...)
   if not(WeakAuras.IsPaused()) then
     if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
       Private.ScanEvents(event);
-      -- This triggers the scanning of "hacked" COMBAT_LOG_EVENT_UNFILTERED events that were renamed in order to circumvent
-      -- the "proper" COMBAT_LOG_EVENT_UNFILTERED checks
-      Private.ScanEvents("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM");
     else
       Private.ScanEvents(event, arg1, arg2, ...);
     end
@@ -1445,18 +1432,10 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
       for triggernum, data in pairs(events[id]) do
         if data.events then
           for index, event in pairs(data.events) do
-            if (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
-              if not genericTriggerRegisteredEvents["COMBAT_LOG_EVENT_UNFILTERED"] then
-                eventsToRegister["COMBAT_LOG_EVENT_UNFILTERED"] = true;
-              end
-            elseif (event == "FRAME_UPDATE") then
+            if (event == "FRAME_UPDATE") then
               register_for_frame_updates = true;
-            else
-              if (genericTriggerRegisteredEvents[event]) then
-                -- Already registered event
-              else
-                eventsToRegister[event] = true;
-              end
+            elseif not genericTriggerRegisteredEvents[event] then
+              eventsToRegister[event] = true;
             end
           end
         end
@@ -1834,12 +1813,7 @@ function GenericTrigger.Add(data, region)
               if isCLEU then
                 if hasParam then
                   tinsert(trigger_events, "COMBAT_LOG_EVENT_UNFILTERED")
-                else
-                  -- This is a dirty, lazy, dirty hack. "Proper" COMBAT_LOG_EVENT_UNFILTERED events are indexed by their sub-event types (e.g. SPELL_PERIODIC_DAMAGE),
-                  -- but custom COMBAT_LOG_EVENT_UNFILTERED events are not guaranteed to have sub-event types. Thus, if the user specifies that they want to use
-                  -- COMBAT_LOG_EVENT_UNFILTERED, this hack renames the event to COMBAT_LOG_EVENT_UNFILTERED_CUSTOM to circumvent the COMBAT_LOG_EVENT_UNFILTERED checks
-                  -- that are already in place. Replacing all those checks would be a pain in the ass.
-                  tinsert(trigger_events, "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM")
+                  -- We don't register CLEU events without parameters anymore
                 end
               elseif isUnitEvent then
                 -- not added to trigger_events
@@ -1900,7 +1874,7 @@ function GenericTrigger.Add(data, region)
 
   if warnAboutCLEUEvents then
     Private.AuraWarnings.UpdateWarning(data.uid, "spammy_event_warning", "error",
-                L["|cFFFF0000Support for unfiltered COMBAT_LOG_EVENT_UNFILTERED is deprecated|r\nCOMBAT_LOG_EVENT_UNFILTERED without a filter is advised against as it’s very performance costly.\nFind more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Deprecated-CLEU"], true)
+                L["|cFFFF0000Support for unfiltered COMBAT_LOG_EVENT_UNFILTERED is deprecated|r\nCOMBAT_LOG_EVENT_UNFILTERED without a filter are disabled as it’s very performance costly.\nFind more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Custom-Triggers#events"])
   else
     Private.AuraWarnings.UpdateWarning(data.uid, "spammy_event_warning")
   end
