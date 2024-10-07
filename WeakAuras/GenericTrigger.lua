@@ -1862,7 +1862,7 @@ function GenericTrigger.Add(data, region)
   end
 
   if warnAboutCLEUEvents then
-    Private.AuraWarnings.UpdateWarning(data.uid, "spammy_event_warning", "warning",
+    Private.AuraWarnings.UpdateWarning(data.uid, "spammy_event_warning", "error",
                 L["COMBAT_LOG_EVENT_UNFILTERED without a filter is generally advised against as it’s very performance costly.\nFind more information:\nhttps://github.com/WeakAuras/WeakAuras2/wiki/Custom-Triggers#events"])
   else
     Private.AuraWarnings.UpdateWarning(data.uid, "spammy_event_warning")
