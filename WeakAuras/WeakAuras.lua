@@ -204,6 +204,8 @@ function SlashCmdList.WEAKAURAS(input)
     WeakAuras.PrintProfile();
   elseif msg == "pcancel" then
     WeakAuras.CancelScheduledProfile()
+  elseif msg == "pshow" or msg == "profiling" then
+    WeakAurasProfilingFrame:Toggle()
   elseif msg == "minimap" then
     WeakAuras.ToggleMinimap();
   elseif msg == "help" then
