@@ -10079,6 +10079,7 @@ Private.AtlasList = {
 "shop-card-full-gametimebundle4",
 "shop-card-full-generic1",
 "shop-card-full-generic2",
+"shop-card-full-ghastly-charger",
 "shop-card-full-gr45",
 "shop-card-full-gs1",
 "shop-card-full-h35",
