@@ -3677,7 +3677,7 @@ Private.event_prototypes = {
         if powerType == 4 then
           table.insert(ret, [[
             local power = GetComboPoints(unit, unit .. '-target')
-            local total = math.max(1, UnitPowerMax(unit, 4))
+            local total = math.max(1, UnitPowerMax(unit, Enum.PowerType.ComboPoints))
           ]])
         else
           table.insert(ret, [[
