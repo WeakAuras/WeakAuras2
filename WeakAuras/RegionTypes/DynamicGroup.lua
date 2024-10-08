@@ -449,7 +449,7 @@ local centeredIndexerStart = {
     if maxIndex >= 3 then
       return maxIndex - maxIndex % 2
     else
-      return maxIndex
+      return maxIndex > 0 and maxIndex or nil
     end
   end,
   -- Center -> Right -> Left, e.g: 3 1 2 4
@@ -457,7 +457,7 @@ local centeredIndexerStart = {
     if maxIndex % 2 == 1 then
       return maxIndex
     else
-     return maxIndex - 1
+     return maxIndex > 0 and maxIndex - 1 or nil
     end
   end
 }
