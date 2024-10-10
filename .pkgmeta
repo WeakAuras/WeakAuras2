@@ -9,6 +9,7 @@ externals:
   WeakAuras/Libs/LibSharedMedia-3.0: https://repos.curseforge.com/wow/libsharedmedia-3-0/trunk/LibSharedMedia-3.0
   WeakAuras/Libs/LibDataBroker-1.1: https://github.com/tekkub/libdatabroker-1-1
   WeakAuras/Libs/LibCompress: https://repos.curseforge.com/wow/libcompress/trunk
+  WeakAuras/Libs/LibDeflate: https://github.com/SafeteeWoW/LibDeflate
   WeakAuras/Libs/LibSpellRange-1.0: https://github.com/ascott18/LibSpellRange-1.0
   WeakAuras/Libs/LibRangeCheck-3.0: https://github.com/WeakAuras/LibRangeCheck-3.0/
   WeakAuras/Libs/LibCustomGlow-1.0: https://github.com/Stanzilla/LibCustomGlow
@@ -45,6 +46,9 @@ ignore:
   - babelfish.lua
   - update_translations.sh
   - generate_changelog.sh
+  - WeakAuras/Libs/LibDeflate/docs
+  - WeakAuras/Libs/LibDeflate/examples
+  - WeakAuras/Libs/LibDeflate/*.md
 
 plain-copy:
   - WeakAurasModelPaths/*.lua
