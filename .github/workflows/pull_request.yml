@@ -17,7 +17,7 @@ jobs:
       require-result: ${{ steps.check-permission.outputs.require-result }}
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [permission_check]
     outputs:
       artifact-id: ${{ steps.upload-artifact.outputs.artifact-id}}
