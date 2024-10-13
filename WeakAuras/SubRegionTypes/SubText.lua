@@ -567,6 +567,7 @@ local function supports(regionType)
          or regionType == "progresstexture"
          or regionType == "icon"
          or regionType == "aurabar"
+         or regionType == "empty"
 end
 
 WeakAuras.RegisterSubRegionType("subtext", L["Text"], supports, create, modify, onAcquire, onRelease,
