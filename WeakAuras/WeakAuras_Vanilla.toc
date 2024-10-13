@@ -59,6 +59,7 @@ DebugLog.lua
 # Region support
 RegionTypes\SmoothStatusBarMixin.lua
 RegionTypes\RegionPrototype.lua
+RegionTypes\Empty.lua
 BaseRegions\TextureCoords.lua
 BaseRegions\CircularProgressTexture.lua
 BaseRegions\LinearProgressTexture.lua

@@ -261,6 +261,7 @@ local function supports(regionType)
          or regionType == "icon"
          or regionType == "aurabar"
          or regionType == "text"
+         or regionType == "empty"
 end
 
 WeakAuras.RegisterSubRegionType("submodel", L["Model"], supports, create, modify, onAcquire, onRelease, default, nil, properties);
