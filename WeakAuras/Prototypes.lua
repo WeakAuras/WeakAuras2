@@ -3626,11 +3626,9 @@ Private.event_prototypes = {
           ]]):format(trigger.use_scaleStagger and trigger.scaleStagger or 1))
         elseif powerType == 4 and trigger.unit == 'player' then
           table.insert(ret, ([[
-            local chargedAsSeven = %s
             local comboPoint = UnitPower(unit, 4)
             local chargedComboPoint = GetUnitChargedPowerPoints('player') or {}
             if state.chargedComboPoint1 ~= chargedComboPoint[1] then
-              state.chargedComboPoint = chargedComboPoint[1] -- For backwards compability
               state.chargedComboPoint1 = chargedComboPoint[1]
               state.changed = true
             end
@@ -3654,18 +3652,9 @@ Private.event_prototypes = {
               state.currentCharged = currentCharged
               state.changed = true
             end
-            local power
-            if chargedAsSeven then
-              if tContains(chargedComboPoint, comboPoint) then
-                power = 7
-              else
-                power = comboPoint
-              end
-            else
-              power = UnitPower(unit, powerType)
-            end
+            local power = UnitPower(unit, powerType)
             local total = math.max(1, UnitPowerMax(unit, powerType))
-          ]]):format(trigger.use_chargedAsSeven and "true" or "false"))
+          ]]))
         else
           table.insert(ret, [[
             local power = UnitPower(unit, powerType)
@@ -3759,16 +3748,6 @@ Private.event_prototypes = {
         type = "toggle",
         test = "true",
         reloadOptions = true,
-        enable = function(trigger)
-          return WeakAuras.IsRetail() and trigger.unit == 'player' and trigger.use_powertype and trigger.powertype == 4
-        end,
-        hidden = not WeakAuras.IsRetail()
-      },
-      {
-        name = "chargedAsSeven",
-        display = L["Treat charged combo point as 7 combo points"],
-        type = "toggle",
-        test = "true",
         enable = function(trigger)
           return WeakAuras.IsRetail() and trigger.unit == 'player' and trigger.use_powertype and trigger.powertype == 4
         end,
