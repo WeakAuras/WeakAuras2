@@ -4162,6 +4162,7 @@ templates.class.DRUID = {
         { spell = 391528, type = "buff", unit = "player", talent = 103177 }, -- Convoke the Spirits
         { spell = 391873, type = "buff", unit = "player", talent = 103168 }, -- Tiger's Tenacity
         { spell = 391876, type = "buff", unit = "player", talent = 103179 }, -- Frantic Momentum
+        { spell = 391882, type = "buff", unit = "player", talent = 103152 }, -- Apex Predator's Craving
         { spell = 391974, type = "buff", unit = "player", talent = 103165 }, -- Sudden Ambush
         { spell = 393903, type = "buff", unit = "player", talent = 103313 }, -- Ursine Vigor
         { spell = 400126, type = "buff", unit = "player", talent = 123792 }, -- Forestwalk
@@ -4228,7 +4229,7 @@ templates.class.DRUID = {
         { spell = 6795, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Growl
         { spell = 8921, type = "ability", requiresTarget = true }, -- Moonfire
         { spell = 20484, type = "ability" }, -- Rebirth
-        { spell = 22568, type = "ability", requiresTarget = true, usable = true }, -- Ferocious Bite
+        { spell = 22568, type = "ability", overlayGlow = true, requiresTarget = true, usable = true }, -- Ferocious Bite
         { spell = 22570, type = "ability", requiresTarget = true, usable = true, talent = 103299 }, -- Maim
         { spell = 22812, type = "ability", buff = true }, -- Barkskin
         { spell = 22842, type = "ability", charges = true, buff = true, usable = true, talent = 103298 }, -- Frenzied Regeneration
