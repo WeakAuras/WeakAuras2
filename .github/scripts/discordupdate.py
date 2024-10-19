@@ -57,7 +57,7 @@ def has_k(text):
   return False
 
 def checkChar(char):
-  for name in ('CJK','CHINESE','KATAKANA', 'LATIN', 'DIGIT', 'SPACE', 'HANGUL'):
+  for name in ('CJK','CHINESE','KATAKANA', 'LATIN', 'DIGIT', 'SPACE', 'HANGUL', 'CYRILLIC'):
     if unicodedata.name(char).startswith(name):
       return True
   return False
