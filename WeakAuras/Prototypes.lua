@@ -3542,9 +3542,7 @@ Private.event_prototypes = {
         AddUnitEventForEvents(result, "player", "UNIT_SPELLCAST_FAILED")
         AddUnitEventForEvents(result, "player", "UNIT_SPELLCAST_SUCCEEDED")
       end
-      if trigger.use_powertype and trigger.powertype == 99 then
-        AddUnitEventForEvents(result, unit, "UNIT_ABSORB_AMOUNT_CHANGED")
-      end
+
       if trigger.use_ignoreDead or trigger.use_ignoreDisconnected then
         AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
       end
@@ -3572,6 +3570,10 @@ Private.event_prototypes = {
         AddUnitRoleChangeInternalEvents(unit, result)
       end
       AddUnitSpecChangeInternalEvents(unit, result)
+      if trigger.use_powertype and trigger.powertype == 99 and trigger.unit == "player" then
+        Private.WatchStagger()
+        tinsert(result, "WA_UNIT_STAGGER_CHANGED");
+      end
       if WeakAuras.IsClassicEra() and trigger.use_showCost and trigger.unit == "player" then
         tinsert(result, "WA_UNIT_QUEUED_SPELL_CHANGED");
       end
