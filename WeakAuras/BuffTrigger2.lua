@@ -4278,7 +4278,8 @@ function BuffTrigger.InitMultiAura()
 end
 
 function BuffTrigger.HandleMultiEvent(frame, event, ...)
-  Private.StartProfileSystem("bufftrigger2 - multi")
+  local system = "bufftrigger2 - multi - " .. event
+  Private.StartProfileSystem(system)
   if event == "COMBAT_LOG_EVENT_UNFILTERED" then
     CombatLog(CombatLogGetCurrentEventInfo())
   elseif event == "UNIT_TARGET" then
@@ -4308,7 +4309,7 @@ function BuffTrigger.HandleMultiEvent(frame, event, ...)
     end
     wipe(matchDataMulti)
   end
-  Private.StopProfileSystem("bufftrigger2 - multi")
+  Private.StopProfileSystem(system)
 end
 
 function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)
