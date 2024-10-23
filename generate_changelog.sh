@@ -27,7 +27,7 @@ echo -ne "# [${version}](${url}/tree/${current}) ($date)\n\n[Full Changelog](${u
 
 if [ "$version" = "$tag" ]; then # on a tag
   highlights=$( git cat-file -p "$tag" | sed -e '1,5d' -e '/^-----BEGIN PGP/,/^-----END PGP/d' )
-  echo -ne "## Highlights\n\n ${highlights} \n\n## Commits\n\n" >> "CHANGELOG.md"
+  echo -ne "## Highlights\n\n${highlights}\n\n## Commits\n\n" >> "CHANGELOG.md"
 fi
 
 git shortlog --no-merges --reverse "$previous..$current" | sed -e  '/^\w/G' -e 's/^      /- /' >> "CHANGELOG.md"
