@@ -203,7 +203,17 @@ local function get_zoneId_list()
                                          L["Parent Zone"], parentmap_name, currentmap_info.parentMapID)
   end
 
-  return ("%s|cffffd200%s|r\n%s: %d\n\n%s%s|cffffd200%s|r\n%s: i%d\n\n%s"):format(
+  local minimapZoneText = GetMinimapZoneText()
+  local currentAreaID = L["not found"]
+  for id=1,30000 do
+    local areaID = C_Map.GetAreaInfo(id)
+    if areaID == minimapZoneText then
+      currentAreaID =  "a" .. id
+      break
+    end
+  end
+
+  return ("%s|cffffd200%s|r\n%s: %d\n\n%s%s|cffffd200%s|r\n%s: i%d\n\n|cffffd200%s|r\n%s: %s\n\n%s"):format(
     Private.get_zoneId_list(),
     L["Current Zone"],
     currentmap_name,
@@ -213,6 +223,9 @@ local function get_zoneId_list()
     L["Current Instance"],
     L["Instance Id"],
     instanceId,
+    L["Current Area"],
+    minimapZoneText,
+    currentAreaID,
     bottomText
   )
 end
