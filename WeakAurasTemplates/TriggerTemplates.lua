@@ -245,7 +245,7 @@ local function itemInRangeRed(conditions, trigger, regionType)
   tinsert(conditions, buildCondition(trigger, checks.itemInRange, {changes("red", regionType)}));
 end
 
-local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
+local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff, data)
   triggers[position] = {
     trigger = {
       unit = item.unit or isBuff and "player" or "target",
@@ -293,6 +293,15 @@ local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
   end
   if (item.unit == "multi") then
     triggers[position].trigger.spellId = item.buffId or item.spell;
+  end
+
+  if item.progressSource then
+    data.progressSource = { position, item.progressSource }
+  end
+
+  if item.maxProgress then
+    data.useAdjustededMax = true
+    data.adjustedMax = item.maxProgress
   end
 end
 
@@ -437,13 +446,13 @@ local function createAbilityAndDurationTrigger(triggers, item)
   createAbilityTrigger(triggers, 2, item, "showAlways");
 end
 
-local function createAbilityAndBuffTrigger(triggers, item)
-  createBuffTrigger(triggers, 1, item, "showOnActive", true);
+local function createAbilityAndBuffTrigger(triggers, item, data)
+  createBuffTrigger(triggers, 1, item, "showOnActive", true, data);
   createAbilityTrigger(triggers, 2, item, "showAlways");
 end
 
-local function createAbilityAndDebuffTrigger(triggers, item)
-  createBuffTrigger(triggers, 1, item, "showOnActive", false);
+local function createAbilityAndDebuffTrigger(triggers, item, data)
+  createBuffTrigger(triggers, 1, item, "showOnActive", false, data);
   createAbilityTrigger(triggers, 2, item, "showAlways");
 end
 
@@ -991,8 +1000,8 @@ local function subTypesFor(item, regionType)
       icon = icon.cd,
       title = L["Show Only if Buffed"],
       description = L["Only shows the aura if the target has the buff."],
-      createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 1, item, "showOnActive", true);
+      createTriggers = function(triggers, item, data)
+        createBuffTrigger(triggers, 1, item, "showOnActive", true, data);
       end,
       data = data,
     });
@@ -1001,8 +1010,8 @@ local function subTypesFor(item, regionType)
       title = L["Always Show"],
       description = L["Always shows the aura, highlight it if buffed."],
       buffShowOn = "showAlways",
-      createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 1, item, "showAlways", true);
+      createTriggers = function(triggers, item, data)
+        createBuffTrigger(triggers, 1, item, "showAlways", true, data);
       end,
       createConditions = function(conditions, item, regionType)
         isBuffedGlowAuraAlways(conditions, 1, regionType);
@@ -1013,8 +1022,8 @@ local function subTypesFor(item, regionType)
       icon = icon.cd2,
       title = L["Always Show"],
       description = L["Always shows the aura, grey if buff not active."],
-      createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 1, item, "showAlways", true);
+      createTriggers = function(triggers, item, data)
+        createBuffTrigger(triggers, 1, item, "showAlways", true, data);
       end,
       createConditions = function(conditions, item, regionType)
         missingBuffGreyed(conditions, 1, regionType);
@@ -1028,8 +1037,8 @@ local function subTypesFor(item, regionType)
       icon = icon.cd,
       title = L["Show Only if Debuffed"],
       description = L["Only show the aura if the target has the debuff."],
-      createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 1, item, "showOnActive", false);
+      createTriggers = function(triggers, item, data)
+        createBuffTrigger(triggers, 1, item, "showOnActive", false, data);
       end,
       data = data,
     });
@@ -1037,8 +1046,8 @@ local function subTypesFor(item, regionType)
       icon = icon.glow,
       title = L["Always Show"],
       description = L["Always show the aura, highlight it if debuffed."],
-      createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 1, item, "showAlways", false);
+      createTriggers = function(triggers, item, data)
+        createBuffTrigger(triggers, 1, item, "showAlways", false, data);
       end,
       createConditions = function(conditions, item, regionType)
         isBuffedGlowAuraAlways(conditions, 1, regionType);
@@ -1049,8 +1058,8 @@ local function subTypesFor(item, regionType)
       icon = icon.cd2,
       title = L["Always Show"],
       description = L["Always show the aura, turns grey if the debuff not active."],
-      createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 1, item, "showAlways", false);
+      createTriggers = function(triggers, item, data)
+        createBuffTrigger(triggers, 1, item, "showAlways", false, data);
       end,
       createConditions = function(conditions, item, regionType)
         missingBuffGreyed(conditions, 1, regionType);
@@ -1271,9 +1280,9 @@ function WeakAuras.CreateTemplateView(Private, frame)
     end
   end
 
-  local function createTriggersFor(item, subType)
+  local function createTriggersFor(item, subType, data)
     local triggers = {};
-    subType.createTriggers(triggers, item);
+    subType.createTriggers(triggers, item, data);
     return triggers;
   end
 
@@ -1303,7 +1312,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
     if (item.triggers) then
       triggers = item.triggers;
     else
-      triggers = createTriggersFor(item, subType);
+      triggers = createTriggersFor(item, subType, data);
     end
 
     data.triggers = {}
@@ -1326,7 +1335,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
     if (item.triggers) then
       triggers = item.triggers;
     else
-      triggers = createTriggersFor(item, subType);
+      triggers = createTriggersFor(item, subType, data);
     end
 
     for i, v in pairs(triggers) do
