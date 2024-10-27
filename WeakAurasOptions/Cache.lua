@@ -277,19 +277,24 @@ function spellCache.BestKeyMatch(nearkey)
   return bestKey;
 end
 
+---@param input string | number
+---@return string name, number? id
 function spellCache.CorrectAuraName(input)
   if (not cache) then
     error("spellCache has not been loaded. Call WeakAuras.spellCache.Load(...) first.")
   end
 
-  local spellId = WeakAuras.SafeToNumber(input);
+  local spellId = WeakAuras.SafeToNumber(input)
+  if type(input) == "string" and input:find("|", nil, true) then
+    spellId = WeakAuras.SafeToNumber(input:match("|Hspell:(%d+)"))
+  end
   if(spellId) then
     local name, _, icon = OptionsPrivate.Private.ExecEnv.GetSpellInfo(spellId);
     if(name) then
       spellCache.AddIcon(name, spellId, icon)
       return name, spellId;
     else
-      return "Invalid Spell ID";
+      return "Invalid Spell ID", spellId;
     end
   else
     local ret = spellCache.BestKeyMatch(input);
