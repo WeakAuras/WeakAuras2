@@ -1233,7 +1233,7 @@ templates.class.HUNTER = {
         { spell = 459731, type = "buff", unit = "player", talent = 126411 }, -- Huntmaster's Call
         { spell = 459735, type = "buff", unit = "player" }, -- Summon Fenryr
         { spell = 459759, type = "buff", unit = "player", talent = 126414 }, -- A Murder of Crows
-        { spell = 461762, type = "buff", unit = "player", herotalent = 117590 }, -- Withering Fire
+        { spell = 466991, type = "buff", unit = "player", herotalent = 117590 }, -- Withering Fire
         { spell = 461866, type = "buff", unit = "player", herotalent = 117566 }, -- Scattered Prey
         { spell = 462515, type = "buff", unit = "player", herotalent = 117589 }, -- Howl of the Pack
         { spell = 136, type = "buff", unit = "pet" }, -- Mend Pet
@@ -1277,6 +1277,7 @@ templates.class.HUNTER = {
         { spell = 459668, type = "debuff", unit = "target", talent = 126429 }, -- Venomous Bite
         { spell = 459753, type = "debuff", unit = "target" }, -- Ravenous Leap
         { spell = 462033, type = "debuff", unit = "target", talent = 126829 }, -- Implosive Trap
+        { spell = 467745, type = "debuff", unit = "target", herotalent = 128219 }, -- Shadow Dagger
       },
       icon = 135860
     },
@@ -1377,7 +1378,7 @@ templates.class.HUNTER = {
         { spell = 459468, type = "buff", unit = "player", talent = 126448 }, -- Ghillie Suit
         { spell = 459805, type = "buff", unit = "player", talent = 126359 }, -- Wailing Arrow
         { spell = 459919, type = "buff", unit = "player", talent = 126370 }, -- Kill Zone
-        { spell = 461762, type = "buff", unit = "player", herotalent = 117590 }, -- Withering Fire
+        { spell = 466991, type = "buff", unit = "player", herotalent = 117590 }, -- Withering Fire
         { spell = 378770, type = "buff", unit = "player", talent = 126474 }, -- Deathblow
         { spell = 264663, type = "buff", unit = "pet" }, -- Predator's Thirst
         { spell = 459722, type = "buff", unit = "pet" }, -- Mastery: Spirit Bond
@@ -1412,6 +1413,7 @@ templates.class.HUNTER = {
         { spell = 451531, type = "debuff", unit = "target", herotalent = 123870 }, -- Crescent Steel
         { spell = 459796, type = "debuff", unit = "target", talent = 126392 }, -- Barrage
         { spell = 462033, type = "debuff", unit = "target", talent = 126829 }, -- Implosive Trap
+        { spell = 467745, type = "debuff", unit = "target", herotalent = 128219 }, -- Shadow Dagger
       },
       icon = 236188
     },
@@ -2390,11 +2392,15 @@ templates.class.SHAMAN = {
         { spell = 443454, type = "buff", unit = "player", herotalent = 117491 }, -- Ancestral Swiftness
         { spell = 447244, type = "buff", unit = "player", herotalent = 117485 }, -- Call of the Ancestors
         { spell = 454015, type = "buff", unit = "player", herotalent = 117489 }, -- Tempest
+        { spell = 454025, type = "buff", unit = "player", herotalent = 128226 }, -- Electroshock
+        { spell = 454376, type = "buff", unit = "player", herotalent = 125617 }, -- Surging Currents
         { spell = 454394, type = "buff", unit = "player", herotalent = 117483 }, -- Unlimited Power
+        { spell = 455089, type = "buff", unit = "player", herotalent = 117470 }, -- Storm Swell
         { spell = 462131, type = "buff", unit = "player", herotalent = 117464 }, -- Awakening Storms
         { spell = 462725, type = "buff", unit = "player", talent = 127917 }, -- Storm Frenzy
         { spell = 462818, type = "buff", unit = "player", talent = 101870 }, -- Icefury
         { spell = 462854, type = "buff", unit = "player" }, -- Skyfury
+        { spell = 468226, type = "buff", unit = "player", herotalent = 117460 }, -- Lightning Conduit
         { spell = 157348, type = "buff", unit = "pet" }, -- Call Lightning
       },
       icon = 135863
@@ -2525,15 +2531,18 @@ templates.class.SHAMAN = {
         { spell = 453406, type = "buff", unit = "player" }, -- Whirling Earth
         { spell = 453409, type = "buff", unit = "player" }, -- Whirling Air
         { spell = 454015, type = "buff", unit = "player", herotalent = 117489 }, -- Tempest
+        { spell = 454025, type = "buff", unit = "player", herotalent = 128226 }, -- Electroshock
         { spell = 454376, type = "buff", unit = "player", herotalent = 125617 }, -- Surging Currents
         { spell = 454394, type = "buff", unit = "player", herotalent = 117483 }, -- Unlimited Power
         { spell = 455097, type = "buff", unit = "player", herotalent = 125616 }, -- Arc Discharge
+        { spell = 455089, type = "buff", unit = "player", herotalent = 117470 }, -- Storm Swell
         { spell = 456369, type = "buff", unit = "player", herotalent = 117471 }, -- Amplification Core
         { spell = 457387, type = "buff", unit = "player", herotalent = 117488 }, -- Wind Barrier
         { spell = 458269, type = "buff", unit = "player", herotalent = 117487 }, -- Totemic Rebound
         { spell = 461242, type = "buff", unit = "player", herotalent = 117479 }, -- Lively Totems
         { spell = 462131, type = "buff", unit = "player", herotalent = 117464 }, -- Awakening Storms
         { spell = 462854, type = "buff", unit = "player" }, -- Skyfury
+        { spell = 468226, type = "buff", unit = "player", herotalent = 117460 }, -- Lightning Conduit
         { spell = 470058, type = "buff", unit = "player", talent = 128270 }, -- Voltaic Blaze
       },
       icon = 136099
@@ -3638,6 +3647,7 @@ templates.class.MONK = {
         { spell = 451508, type = "buff", unit = "player", herotalent = 125043 }, -- Balanced Stratagem
         { spell = 454494, type = "buff", unit = "player", talent = 124861 }, -- August Blessing
         { spell = 455071, type = "buff", unit = "player", talent = 125004 }, -- Ox Stance
+        { spell = 470670, type = "buff", unit = "player", herotalent = 125069, progressSource = "stacks", maxProgress = "240" }, -- Flurry Strikes
       },
       icon = 613398
     },
@@ -3907,6 +3917,7 @@ templates.class.MONK = {
         { spell = 459841, type = "buff", unit = "player", talent = 126307 }, -- Darting Hurricane
         { spell = 460127, type = "buff", unit = "player", herotalent = 125061 }, -- Courage of the White Tiger
         { spell = 460490, type = "buff", unit = "player", talent = 124952 }, -- Chi Burst
+        { spell = 470670, type = "buff", unit = "player", herotalent = 125069, progressSource = "stacks", maxProgress = "240" }, -- Flurry Strikes
       },
       icon = 611420
     },
@@ -4837,6 +4848,8 @@ templates.class.DEATHKNIGHT = {
         { spell = 458745, type = "buff", unit = "player", talent = 96279 }, -- Ossified Vitriol
         { spell = 460049, type = "buff", unit = "player", herotalent = 117630 }, -- Infliction of Sorrow
         { spell = 461130, type = "buff", unit = "player", herotalent = 117642 }, -- Visceral Strength
+        { spell = 469169, type = "buff", unit = "player", herotalent = 117629 }, -- Swift and Painful
+        { spell = 469172, type = "buff", unit = "player", herotalent = 128235 }, -- Reaper of Souls
       },
       icon = 237517
     },
@@ -4951,6 +4964,8 @@ templates.class.DEATHKNIGHT = {
         { spell = 444505, type = "buff", unit = "player", herotalent = 117664 }, -- Mograine's Might
         { spell = 444763, type = "buff", unit = "player" }, -- Apocalyptic Conquest
         { spell = 456370, type = "buff", unit = "player", talent = 96239 }, -- Cryogenic Chamber
+        { spell = 469169, type = "buff", unit = "player", herotalent = 117629 }, -- Swift and Painful
+        { spell = 469172, type = "buff", unit = "player", herotalent = 128235 }, -- Reaper of Souls
       },
       icon = 135305
     },
