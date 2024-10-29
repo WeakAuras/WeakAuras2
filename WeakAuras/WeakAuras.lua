@@ -3540,6 +3540,8 @@ local function actionGlowStop(actions, frame, id)
     LCG.AutoCastGlow_Stop(frame.__WAGlowFrame, id)
   elseif actions.glow_type == "Proc" then
     LCG.ProcGlow_Stop(frame.__WAGlowFrame, id)
+  elseif actions.glow_type == "Stealable" then
+    LCG.StealableGlow_Stop(frame.__WAGlowFrame, id)
   end
 end
 
@@ -3590,6 +3592,13 @@ local function actionGlowStart(actions, frame, id)
       duration = actions.glow_duration or 1,
       key = id
   })
+  elseif actions.glow_type == "Stealable" then
+    LCG.StealableGlow_Start(frame.__WAGlowFrame, {
+      color = color,
+      xOffset = actions.glow_XOffset,
+      yOffset = actions.glow_YOffset,
+      key = id
+    })
   end
 end
 

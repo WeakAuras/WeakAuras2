@@ -87,6 +87,11 @@ local function createOptions(parentData, data, index, subIndex)
           if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
             line = L["%s, offset: %0.2f;%0.2f"]:format(line, data.glowXOffset, data.glowYOffset)
           end
+        elseif data.glowType == "Stealable" then
+          line = ("%s %s"):format(line, color)
+          if data.glowXOffset ~= 0 or data.glowYOffset ~= 0 then
+            line = L["%s, offset: %0.2f;%0.2f"]:format(line, data.glowXOffset, data.glowYOffset)
+          end
         end
         return line
       end,
@@ -135,7 +140,7 @@ local function createOptions(parentData, data, index, subIndex)
       name = "",
       width = indentWidth,
       order = 8,
-      hidden = hiddenGlowExtra,
+      hidden = function() return hiddenGlowExtra() or data.glowType == "Stealable" end,
     },
     glowStartAnim = {
       type = "toggle",
@@ -153,7 +158,7 @@ local function createOptions(parentData, data, index, subIndex)
       min = 1,
       softMax = 30,
       step = 1,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" or data.glowType == "Proc" end,
+      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" or data.glowType == "Proc" or data.glowType == "Stealable" end,
     },
     glowFrequency = {
       type = "range",
@@ -164,7 +169,7 @@ local function createOptions(parentData, data, index, subIndex)
       softMin = -2,
       softMax = 2,
       step = 0.05,
-      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" or data.glowType == "Proc" end,
+      hidden = function() return hiddenGlowExtra() or data.glowType == "buttonOverlay" or data.glowType == "Proc" or data.glowType == "Stealable" end,
     },
     glowDuration = {
       type = "range",

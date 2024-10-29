@@ -3222,6 +3222,7 @@ LSM:Register("statusbar", "Stripes", [[Interface\AddOns\WeakAuras\Media\Textures
 LSM:Register("statusbar", "Thick Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes_Thick]])
 LSM:Register("statusbar", "Thin Stripes", [[Interface\AddOns\WeakAuras\Media\Textures\Statusbar_Stripes_Thin]])
 LSM:Register("border", "Drop Shadow", [[Interface\AddOns\WeakAuras\Media\Textures\Border_DropShadow]])
+LSM:Register("border", "Stealable Glow", [[Interface\TargetingFrame\UI-TargetingFrame-Stealable]])
 
 if PowerBarColor then
   local function capitalizeFirstLetter(str)
@@ -3916,6 +3917,7 @@ Private.glow_types = {
   ACShine = L["Autocast Shine"],
   Pixel = L["Pixel Glow"],
   buttonOverlay = L["Action Button Glow"],
+  Stealable = L["Stealable Glow"]
 }
 
 if WeakAuras.IsRetail() then

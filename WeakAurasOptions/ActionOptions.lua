@@ -472,6 +472,7 @@ function OptionsPrivate.GetActionOptions(data)
           or not data.actions.start.glow_type
           or data.actions.start.glow_type == "buttonOverlay"
           or data.actions.start.glow_type == "Proc"
+          or data.actions.start.glow_type == "Stealable"
           or data.actions.start.glow_frame_type == nil
         end,
       },
@@ -493,6 +494,7 @@ function OptionsPrivate.GetActionOptions(data)
           or not data.actions.start.glow_type
           or data.actions.start.glow_type == "buttonOverlay"
           or data.actions.start.glow_type == "Proc"
+          or data.actions.start.glow_type == "Stealable"
           or data.actions.start.glow_frame_type == nil
         end,
       },
@@ -992,7 +994,8 @@ function OptionsPrivate.GetActionOptions(data)
           or data.actions.finish.glow_action ~= "show"
           or not data.actions.finish.glow_type
           or data.actions.finish.glow_type == "buttonOverlay"
-          or data.actions.start.glow_type == "Proc"
+          or data.actions.finish.glow_type == "Proc"
+          or data.actions.finish.glow_type == "Stealable"
           or data.actions.finish.glow_frame_type == nil
         end,
       },
@@ -1013,7 +1016,8 @@ function OptionsPrivate.GetActionOptions(data)
           or data.actions.finish.glow_action ~= "show"
           or not data.actions.finish.glow_type
           or data.actions.finish.glow_type == "buttonOverlay"
-          or data.actions.start.glow_type == "Proc"
+          or data.actions.finish.glow_type == "Proc"
+          or data.actions.finish.glow_type == "Stealable"
           or data.actions.finish.glow_frame_type == nil
         end,
       },

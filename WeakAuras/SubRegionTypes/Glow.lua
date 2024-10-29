@@ -184,6 +184,13 @@ local function glowStart(self, frame, color)
       yOffset = self.glowYOffset,
       frameLevel = 0
     })
+  elseif self.glowType == "Stealable" then
+    self.glowStart(frame, {
+      color = color,
+      xOffset = self.glowXOffset,
+      yOffset = self.glowYOffset,
+      frameLevel = 0
+    })
   end
 end
 
@@ -252,6 +259,12 @@ local funcs = {
     elseif newType == "Proc" then
       self.glowStart = LCG.ProcGlow_Start
       self.glowStop = LCG.ProcGlow_Stop
+      if self.parentRegionType ~= "aurabar" then
+        self.parent:AnchorSubRegion(self, "area", "region")
+      end
+    elseif newType == "Stealable" then
+      self.glowStart = LCG.StealableGlow_Start
+      self.glowStop = LCG.StealableGlow_Stop
       if self.parentRegionType ~= "aurabar" then
         self.parent:AnchorSubRegion(self, "area", "region")
       end
