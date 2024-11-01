@@ -9,7 +9,7 @@ end
 
 local keepOpenForReload = {}
 
-local widgetType, widgetVersion = "WeakAurasMiniTalent", 3
+local widgetType, widgetVersion = "WeakAurasMiniTalent", 4
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(widgetType) or 0) >= widgetVersion then
   return

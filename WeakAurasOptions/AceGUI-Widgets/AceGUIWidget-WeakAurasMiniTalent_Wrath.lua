@@ -2,7 +2,7 @@ if not WeakAuras.IsLibsOK() then
   return
 end
 
-local widgetType, widgetVersion = "WeakAurasMiniTalent", 2
+local widgetType, widgetVersion = "WeakAurasMiniTalent", 3
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(widgetType) or 0) >= widgetVersion then
   return
