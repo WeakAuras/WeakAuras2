@@ -300,7 +300,7 @@ local function Constructor()
 
   toggle:SetCallback("OnClick", function(self)
     local parent = self.frame:GetParent()
-    parent.obj:ToggleView(parent.obj)
+    parent.obj:ToggleView()
   end)
 
   local widget = {
