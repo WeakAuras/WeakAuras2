@@ -909,7 +909,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               values = WeakAuras[arg.values];
             end
           end
-          local sortOrder = arg.sorted and OptionsPrivate.Private.SortOrderForValues(values) or nil
+          local sortOrder = arg.sorted and (arg.sortOrder or OptionsPrivate.Private.SortOrderForValues(values)) or nil
           options[name..suffix] = {
             type = "select",
             width = WeakAuras.normalWidth,
