@@ -685,12 +685,15 @@ Private.anim_presets = {
 };
 
 WeakAuras.class_ids = {}
+WeakAuras.classes_sorted = {}
 for classID = 1, 20 do -- GetNumClasses not supported by wow classic
   local classInfo = C_CreatureInfo.GetClassInfo(classID)
   if classInfo then
     WeakAuras.class_ids[classInfo.classFile] = classInfo.classID
+    tinsert(WeakAuras.classes_sorted, classInfo.classFile)
   end
 end
+table.sort(WeakAuras.classes_sorted)
 
 if WeakAuras.IsClassicOrCata() then
   ---@param index integer
@@ -1415,7 +1418,9 @@ Private.load_prototype = {
       init = WeakAuras.IsCataOrRetail() and "arg" or nil,
       enable = WeakAuras.IsCataOrRetail(),
       hidden = not WeakAuras.IsCataOrRetail(),
-      events = {"PLAYER_TALENT_UPDATE"}
+      events = {"PLAYER_TALENT_UPDATE"},
+      sorted = true,
+      sortOrder = Private.specs_sorted,
     },
     {
       name = "talent",
@@ -2374,6 +2379,8 @@ Private.event_prototypes = {
           return WeakAuras.IsCataOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end,
         desc = L["Requires syncing the specialization via LibSpecialization."],
+        sorted = true,
+        sortOrder = Private.specs_sorted,
       },
       {
         name = "classification",
@@ -3358,6 +3365,8 @@ Private.event_prototypes = {
           return WeakAuras.IsCataOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end,
         desc = L["Requires syncing the specialization via LibSpecialization."],
+        sorted = true,
+        sortOrder = Private.specs_sorted,
       },
       {
         name = "role",
@@ -3926,6 +3935,8 @@ Private.event_prototypes = {
           return WeakAuras.IsCataOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
         end,
         desc = L["Requires syncing the specialization via LibSpecialization."],
+        sorted = true,
+        sortOrder = Private.specs_sorted,
       },
       {
         name = "role",
@@ -4222,6 +4233,8 @@ Private.event_prototypes = {
           return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end,
         desc = L["Requires syncing the specialization via LibSpecialization."],
+        sorted = true,
+        sortOrder = Private.specs_sorted,
       },
       {
         name = "role",
@@ -7134,7 +7147,9 @@ Private.event_prototypes = {
         type = "multiselect",
         values = "spec_types_all",
         store = "true",
-        conditionType = "select"
+        conditionType = "select",
+        sorted = true,
+        sortOrder = Private.specs_sorted,
       },
       {
         hidden = true,
@@ -7184,6 +7199,8 @@ Private.event_prototypes = {
         values = "spec_types_all",
         conditionType = "select",
         store = true,
+        sorted = true,
+        sortOrder = Private.specs_sorted,
       },
       {
         name = "name",
