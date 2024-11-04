@@ -186,15 +186,15 @@ local function recurseUpdate(data, chunk)
   end
 end
 
-local function RecurseDiff(ours, theirs, ignoredForDiffChecking)
+local function RecurseDiff(ours, theirs, ignored)
   local diff, seen, same = {}, {}, true
   for key, ourVal in pairs(ours) do
-    if not (type(ignoredForDiffChecking) == "table" and ignoredForDiffChecking[key] == true) then
+    local ignoredVal = ignored and ignored[key]
+    if not ignoredVal or type(ignoredVal) == "table" then
       seen[key] = true
       local theirVal = theirs[key]
       if type(ourVal) == "table" and type(theirVal) == "table" then
-        local diffVal = RecurseDiff(ourVal, theirVal,
-                                    type(ignoredForDiffChecking) == table and ignoredForDiffChecking[key] or nil)
+        local diffVal = RecurseDiff(ourVal, theirVal, type(ignoredVal) == "table" and ignoredVal or nil)
         if diffVal then
           diff[key] = diffVal
           same = false
@@ -211,7 +211,7 @@ local function RecurseDiff(ours, theirs, ignoredForDiffChecking)
     end
   end
   for key, theirVal in pairs(theirs) do
-    if not seen[key] and not (type(ignoredForDiffChecking) == "table" and ignoredForDiffChecking[key] == true) then
+    if not seen[key] and not (type(ignored) == "table" and ignored[key] == true) then
       diff[key] = theirVal
       same = false
     end
@@ -247,13 +247,15 @@ local function DebugPrintDiff(diff, id, uid)
 end
 
 local function Diff(ours, theirs)
-  local ignoredForDiffChecking = CreateFromMixins(OptionsPrivate.Private.internal_fields,
-                                                  OptionsPrivate.Private.non_transmissable_fields)
+  local ignored = CreateFromMixins(
+    OptionsPrivate.Private.internal_fields,
+    OptionsPrivate.Private.non_transmissable_fields
+  )
 
   -- generates a diff which WeakAuras.Update can use
   local debug = false
   if not ours or not theirs then return end
-  local diff = RecurseDiff(ours, theirs, ignoredForDiffChecking)
+  local diff = RecurseDiff(ours, theirs, ignored)
   if diff then
     if debug then
       DebugPrintDiff(diff, theirs.id, theirs.uid)
