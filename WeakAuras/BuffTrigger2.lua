@@ -642,10 +642,14 @@ local function FindBestMatchData(time, id, triggernum, triggerInfo, matchedUnits
     for index, auraData in pairs(unitData) do
       local remCheck = true
       if triggerInfo.remainingFunc and auraData.expirationTime then
-        local modRate = auraData.modRate or 1
-        local remaining = (auraData.expirationTime - time) / modRate
-        remCheck = triggerInfo.remainingFunc(remaining)
-        nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, modRate, nextCheck)
+        if auraData.duration == 0 then
+          remCheck = false
+        else
+          local modRate = auraData.modRate or 1
+          local remaining = (auraData.expirationTime - time) / modRate
+          remCheck = triggerInfo.remainingFunc(remaining)
+          nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, modRate, nextCheck)
+        end
       end
 
       if remCheck then
@@ -679,10 +683,14 @@ local function FindBestMatchDataForUnit(time, id, triggernum, triggerInfo, unit)
   for index, auraData in pairs(matchDataByTrigger[id][triggernum][unit]) do
     local remCheck = true
     if triggerInfo.remainingFunc and auraData.expirationTime then
-      local modRate = auraData.modRate or 1
-      local remaining = (auraData.expirationTime - time) / modRate
-      remCheck = triggerInfo.remainingFunc(remaining)
-      nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, modRate, nextCheck)
+      if auraData.expirationTime == 0 then
+        remCheck = false
+      else
+        local modRate = auraData.modRate or 1
+        local remaining = (auraData.expirationTime - time) / modRate
+        remCheck = triggerInfo.remainingFunc(remaining)
+        nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, modRate, nextCheck)
+      end
     end
 
     if remCheck then
@@ -1578,10 +1586,14 @@ local function UpdateTriggerState(time, id, triggernum)
         for index, auraData in pairs(unitData) do
           local remCheck = true
           if triggerInfo.remainingFunc and auraData.expirationTime then
-            local modRate = auraData.modRate or 1
-            local remaining = (auraData.expirationTime - time) / modRate
-            remCheck = triggerInfo.remainingFunc(remaining)
-            nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, modRate, nextCheck)
+            if auraData.expirationTime == 0 then
+              remCheck = false
+            else
+              local modRate = auraData.modRate or 1
+              local remaining = (auraData.expirationTime - time) / modRate
+              remCheck = triggerInfo.remainingFunc(remaining)
+              nextCheck = calculateNextCheck(triggerInfo.remainingCheck, remaining, auraData.expirationTime, modRate, nextCheck)
+            end
           end
 
           if remCheck then
