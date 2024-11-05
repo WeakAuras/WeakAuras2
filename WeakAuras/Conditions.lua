@@ -335,9 +335,9 @@ local function CreateTestForCondition(data, input, allConditionsTemplate, usedSt
             or ""
 
       if (op == "==") then
-        check = stateCheck .. stateVariableCheck .. "abs((" .. remainingTime .. "-" .. value .. ")" .. divideModRate .. ") < 0.05"
+        check = stateCheck .. stateVariableCheck .. varString .. "~= 0 and " .. "abs((" .. remainingTime .. "-" .. value .. ")" .. divideModRate .. ") < 0.05"
       else
-        check = stateCheck .. stateVariableCheck .. remainingTime .. divideModRate .. op .. value
+        check = stateCheck .. stateVariableCheck .. varString .. "~= 0 and " .. remainingTime .. divideModRate .. op .. value
       end
     elseif (cType == "elapsedTimer" and value and op) then
       if (op == "==") then
