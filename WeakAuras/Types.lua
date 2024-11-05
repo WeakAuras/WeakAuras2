@@ -1976,6 +1976,8 @@ Private.texture_types = {
     ["2888300"] = "Demonic Core Vertical",
     ["4699056"] = "Essence Burst",
     ["4699057"] = "Snapfire",
+    ["6160020"] = "Arcane Soul",
+    ["6160021"] = "Hyperthermia",
   },
   ["Icons"] = {
     ["165558"] = "Paw",
