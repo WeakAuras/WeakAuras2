@@ -1977,7 +1977,7 @@ Private.texture_types = {
     ["4699056"] = "Essence Burst",
     ["4699057"] = "Snapfire",
     ["6160020"] = "Arcane Soul",
-    ["6160021"] = "Hyperthermia"
+    ["6160021"] = "Hyperthermia",
   },
   ["Icons"] = {
     ["165558"] = "Paw",
