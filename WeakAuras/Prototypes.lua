@@ -11226,20 +11226,20 @@ Private.event_prototypes = {
         {attribute = "quantity", trigger_key = "use_capped",check_type = "tristate"}
       }
 
-      local quantityChecks = ""
-      local tristateChecks = ""
-      local cloneChecks = ""
+      local quantityChecks = {}
+      local tristateChecks = {}
+      local cloneChecks = {}
 
       -- Iterate over quantity options
       for _, option in ipairs(quantityConditions) do
         if trigger[option.use_key] then
           local operator = trigger[option.operator_key] or "<"
           local triggerValue = trigger[option.override] or trigger[option.attribute]
-          quantityChecks = quantityChecks .. ([[
+          table.insert(quantityChecks, ([[
             if not primaryCheckFailed and not check(currencyInfo.%s or 0, %s, %q) then
               active = false %s
             end
-          ]]):format(option.attribute, tonumber(triggerValue), operator, option.attribute ~= "quantity" and option.attribute ~= "realCharacterQuantity" and "; primaryCheckFailed = true" or "")
+          ]]):format(option.attribute, tonumber(triggerValue), operator, option.attribute ~= "quantity" and option.attribute ~= "realCharacterQuantity" and "; primaryCheckFailed = true" or ""))
         end
       end
 
@@ -11247,9 +11247,9 @@ Private.event_prototypes = {
       for _, option in ipairs(tristateConditions) do
         if trigger[option.use_key] ~= nil then
           local tristateValue = trigger[option.use_key] and "true" or "false"
-          tristateChecks = tristateChecks .. ([[
+          table.insert(tristateChecks, ([[
             if tostring(currencyInfo.%s) ~= %q then active = false %s end
-            ]]):format(option.attribute, tristateValue, option.primary and "; primaryCheckFailed = true" or "")
+            ]]):format(option.attribute, tristateValue, option.primary and "; primaryCheckFailed = true" or ""))
         end
       end
 
@@ -11259,18 +11259,23 @@ Private.event_prototypes = {
           if check.check_type == "number" then
             local operator = trigger[check.operator_key] or "<"
             local triggerValue = trigger[check.trigger_value_key]
-            cloneChecks = cloneChecks .. ([[
+            table.insert(cloneChecks, ([[
               if cloneActive and not check(currencyData.%s or 0, %s, %q) then cloneActive = false end
-            ]]):format(check.attribute, tonumber(triggerValue), operator)
+            ]]):format(check.attribute, tonumber(triggerValue), operator))
 
           elseif check.check_type == "tristate" then
             local isCapped = trigger.use_capped and "true" or "false"
-            cloneChecks = cloneChecks .. ([[
+            table.insert(cloneChecks, ([[
               if cloneActive and tostring((currencyData.%s or 0) >= (currencyInfo.maxQuantity or 0)) ~= %q then cloneActive = false end
-            ]]):format(check.attribute, isCapped)
+            ]]):format(check.attribute, isCapped))
           end
         end
       end
+
+      -- Concatenate checkstring-tables into strings
+      local quantityCheckString = table.concat(quantityChecks, "\n")
+      local tristateCheckString = table.concat(tristateChecks, "\n")
+      local cloneCheckString = table.concat(cloneChecks, "\n")
 
       local ret = [=[return
       function(states)
@@ -11371,9 +11376,9 @@ Private.event_prototypes = {
       return ret:format(
         trigger.currencyId or 1,
         trigger.use_clones and "true" or "false",
-        quantityChecks,
-        tristateChecks,
-        cloneChecks
+        quantityCheckString,
+        tristateCheckString,
+        cloneCheckString
       );
     end,
     statesParameter = "full",
