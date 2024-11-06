@@ -5126,14 +5126,49 @@ Private.GetCurrencyInfoForTrigger = function(trigger)
   end
 end
 
-Private.ExecEnv.FetchCurrencyDataFromAccountCharacters = function(currencyId, refresh)
-  Private.AccountCurrencyData = Private.AccountCurrencyData or {}
-  if Private.AccountCurrencyData[currencyId] and not refresh then
-    return Private.AccountCurrencyData[currencyId]
+Private.ExecEnv.GetCurrencyAccountInfo = function(currencyId)
+  local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(currencyId)
+
+  -- Gather currency data for account characters
+  if WeakAuras.IsRetail() and currencyInfo and currencyInfo.isAccountTransferable then
+    if C_CurrencyInfo.IsAccountCharacterCurrencyDataReady() then
+      currencyInfo.accountQuantity = currencyInfo.quantity
+      currencyInfo.realAccountQuantity = currencyInfo.quantity
+      if currencyInfo.transferPercentage then
+          currencyInfo.realCharacterQuantity = math.floor(currencyInfo.quantity * (currencyInfo.transferPercentage/100))
+      end
+
+      currencyInfo.accountCurrencyData = C_CurrencyInfo.FetchCurrencyDataFromAccountCharacters(currencyId) or {}
+
+      for _, currencyData in ipairs(currencyInfo.accountCurrencyData) do
+        if currencyData.quantity then
+          local realQuantity = currencyData.quantity
+          if currencyInfo.transferPercentage and currencyInfo.transferPercentage > 0 and currencyInfo.transferPercentage < 100 then
+            realQuantity = math.floor(realQuantity * (currencyInfo.transferPercentage/100))
+          end
+          currencyData.realCharacterQuantity = realQuantity
+          currencyInfo.realAccountQuantity = currencyInfo.realAccountQuantity + realQuantity
+          currencyInfo.accountQuantity = currencyInfo.accountQuantity + currencyData.quantity
+        end
+      end
+    else
+      C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
+    end
   end
 
-  Private.AccountCurrencyData[currencyId] = C_CurrencyInfo.FetchCurrencyDataFromAccountCharacters(currencyId)
-  return Private.AccountCurrencyData[currencyId]
+  -- WORKAROUND https://github.com/WeakAuras/WeakAuras2/issues/5106
+  if currencyInfo and WeakAuras.IsCataClassic() then
+    if currencyInfo.quantityEarnedThisWeek then
+      currencyInfo.quantityEarnedThisWeek = currencyInfo.quantityEarnedThisWeek / 100
+    end
+  end
+
+  if not currencyInfo then
+    currencyInfo = C_CurrencyInfo.GetCurrencyInfo(1) --Currency Token Test Token 4
+    currencyInfo.iconFileID = "Interface\\Icons\\INV_Misc_QuestionMark" --We don't want the user to think their input was valid
+  end
+
+  return currencyInfo
 end
 
 

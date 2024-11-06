@@ -11188,46 +11188,96 @@ Private.event_prototypes = {
   ["Currency"] = {
     type = "unit",
     progressType = "static",
-    events = {
-      ["events"] = {
+    events = function()
+      local events = {
         "CHAT_MSG_CURRENCY",
         "CURRENCY_DISPLAY_UPDATE",
-        "ACCOUNT_CHARACTER_CURRENCY_DATA_RECEIVED",
-        "CURRENCY_TRANSFER_LOG_UPDATE",
       }
-    },
+      if WeakAuras.IsRetail() then
+        tinsert(events, "ACCOUNT_CHARACTER_CURRENCY_DATA_RECEIVED")
+        tinsert(events, "CURRENCY_TRANSFER_LOG_UPDATE")
+      end
+      return {["events"] = events}
+    end,
     internal_events = {"WA_DELAYED_PLAYER_ENTERING_WORLD"},
     force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
     name = WeakAuras.newFeatureString..L["Currency"],
     triggerFunction = function(trigger)
+      local quantityConditions = {
+        {attribute = "quantity", override = "value", operator_key = "value_operator", use_key = "use_value"},
+        {attribute = "realCharacterQuantity", operator_key = "realCharacterQuantity_operator", use_key = "use_realCharacterQuantity"},
+        {attribute = "accountQuantity", operator_key = "accountQuantity_operator", use_key = "use_accountQuantity"},
+        {attribute = "realAccountQuantity", operator_key = "realAccountQuantity_operator", use_key = "use_realAccountQuantity"},
+        {attribute = "maxQuantity", operator_key = "maxQuantity_operator", use_key = "use_maxQuantity"},
+        {attribute = "quantityEarnedThisWeek", operator_key = "quantityEarnedThisWeek_operator", use_key = "use_quantityEarnedThisWeek"},
+        {attribute = "totalEarned", operator_key = "totalEarned_operator", use_key = "use_totalEarned"}
+      }
+
+      local tristateConditions = {
+        {attribute = "discovered", use_key = "use_discovered", primary = false},
+        {attribute = "capped", use_key = "use_capped", primary = false},
+        {attribute = "seasonCapped", use_key = "use_seasonCapped", primary = true},
+        {attribute = "weeklyCapped", use_key = "use_weeklyCapped", primary = true}
+      }
+
+      local cloneConditions = {
+        {attribute = "quantity", trigger_key = "use_value", operator_key = "value_operator", trigger_value_key = "value", check_type = "number"},
+        {attribute = "realCharacterQuantity", trigger_key = "use_realCharacterQuantity", operator_key = "realCharacterQuantity_operator", trigger_value_key = "realCharacterQuantity", check_type = "number"},
+        {attribute = "quantity", trigger_key = "use_capped",check_type = "tristate"}
+      }
+
+      local quantityChecks = ""
+      local tristateChecks = ""
+      local cloneChecks = ""
+
+      -- Iterate over quantity options
+      for _, option in ipairs(quantityConditions) do
+        if trigger[option.use_key] then
+          local operator = trigger[option.operator_key] or "<"
+          local triggerValue = trigger[option.override] or trigger[option.attribute]
+          quantityChecks = quantityChecks .. ([[
+            if not primaryCheckFailed and not check(currencyInfo.%s or 0, %s, %q) then
+              active = false %s
+            end
+          ]]):format(option.attribute, tonumber(triggerValue), operator, option.attribute ~= "quantity" and option.attribute ~= "realCharacterQuantity" and "; primaryCheckFailed = true" or "")
+        end
+      end
+
+      -- Iterate over tristate options
+      for _, option in ipairs(tristateConditions) do
+        if trigger[option.use_key] ~= nil then
+          local tristateValue = trigger[option.use_key] and "true" or "false"
+          tristateChecks = tristateChecks .. ([[
+            if tostring(currencyInfo.%s) ~= %q then active = false %s end
+            ]]):format(option.attribute, tristateValue, option.primary and "; primaryCheckFailed = true" or "")
+        end
+      end
+
+      -- Iterate over clone checks
+      for _, check in ipairs(cloneConditions) do
+        if trigger[check.trigger_key] then
+          if check.check_type == "number" then
+            local operator = trigger[check.operator_key] or "<"
+            local triggerValue = trigger[check.trigger_value_key]
+            cloneChecks = cloneChecks .. ([[
+              if cloneActive and not check(currencyData.%s or 0, %s, %q) then cloneActive = false end
+            ]]):format(check.attribute, tonumber(triggerValue), operator)
+
+          elseif check.check_type == "tristate" then
+            local isCapped = trigger.use_capped and "true" or "false"
+            cloneChecks = cloneChecks .. ([[
+              if cloneActive and tostring((currencyData.%s or 0) >= (currencyInfo.maxQuantity or 0)) ~= %q then cloneActive = false end
+            ]]):format(check.attribute, isCapped)
+          end
+        end
+      end
+
       local ret = [=[return
       function(states)
-        local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(%d)
-        local triggerQuantities = {
-          quantity = %s,
-          realCharacterQuantity = %s,
-          accountQuantity = %s,
-          realAccountQuantity = %s,
-          maxQuantity = %s,
-          quantityEarnedThisWeek = %s,
-          totalEarned = %s
-        }
-        local triggerOperators = {
-          quantity = %q,
-          realCharacterQuantity = %q,
-          accountQuantity = %q,
-          realAccountQuantity = %q,
-          maxQuantity = %q,
-          quantityEarnedThisWeek = %q,
-          totalEarned = %q
-        }
-        local discovered = %q
-        local capped = %q
-        local seasonCapped = %q
-        local weeklyCapped = %q
+        local currencyInfo = Private.ExecEnv.GetCurrencyAccountInfo(%d)
         local clone = %s
-
-        local accountCurrencyData = {}
+        local active = true
+        local primaryCheckFailed = false
 
         local operators = {
           ["<"] = function(a, b) return a < b end,
@@ -11242,81 +11292,11 @@ Private.event_prototypes = {
           return operators[op](a, b)
         end
 
-        if not currencyInfo then
-          currencyInfo = C_CurrencyInfo.GetCurrencyInfo(1) --Currency Token Test Token 4
-          currencyInfo.iconFileID = "Interface\\Icons\\INV_Misc_QuestionMark" --We don't want the user to think their input was valid
-        end
-        ]=]
+        -- Insert Quantity-related checks
+        %s
 
-      -- WORKAROUND https://github.com/WeakAuras/WeakAuras2/issues/5106
-      if WeakAuras.IsCataClassic() then
-        ret = ret .. [=[
-          if currencyInfo.quantityEarnedThisWeek then
-            currencyInfo.quantityEarnedThisWeek = currencyInfo.quantityEarnedThisWeek / 100
-          end
-        ]=]
-      end
-
-      ret = ret .. [=[
-        -- Gather currency data for account characters
-        if currencyInfo and currencyInfo.isAccountTransferable then
-          if C_CurrencyInfo.IsAccountCharacterCurrencyDataReady() then
-            currencyInfo.accountQuantity = currencyInfo.quantity
-            currencyInfo.realAccountQuantity = currencyInfo.quantity
-            if currencyInfo.transferPercentage then
-                currencyInfo.realCharacterQuantity = math.floor(currencyInfo.quantity * (currencyInfo.transferPercentage/100))
-            end
-
-            accountCurrencyData = Private.ExecEnv.FetchCurrencyDataFromAccountCharacters(
-              currencyInfo.currencyID,
-              event == "CURRENCY_TRANSFER_LOG_UPDATE"
-            ) or {}
-
-            for _, currencyData in ipairs(accountCurrencyData) do
-              if currencyData.quantity then
-                local realQuantity = currencyData.quantity
-                if currencyInfo.transferPercentage and currencyInfo.transferPercentage > 0 and currencyInfo.transferPercentage < 100 then
-                  realQuantity = math.floor(realQuantity * (currencyInfo.transferPercentage/100))
-                end
-                currencyData.realCharacterQuantity = realQuantity
-                currencyInfo.realAccountQuantity = currencyInfo.realAccountQuantity + realQuantity
-                currencyInfo.accountQuantity = currencyInfo.accountQuantity + currencyData.quantity
-              end
-            end
-          else
-            C_CurrencyInfo.RequestCurrencyDataForAccountCharacters()
-          end
-        end
-
-        local active = true
-        local primaryCheckFailed = false
-
-        -- Check quantity-related values
-        for attribute, triggerValue in pairs(triggerQuantities) do
-          if triggerValue ~= "nil" and not check(currencyInfo[attribute] or 0, triggerValue, triggerOperators[attribute]) then
-            active = false
-            if attribute ~= "quantity" and attribute ~= "realCharacterQuantity" then
-              primaryCheckFailed = true
-              break;
-            end
-          end
-        end
-
-        -- Helper function to check tristate values
-        local function checkTristate(tristateValue, attribute, condition, primary)
-          if active and tristateValue ~= "nil" and condition then
-            if tostring(attribute) ~= tristateValue then
-              active = false
-              primaryCheckFailed = primary and true
-            end
-          end
-        end
-
-        -- Check tristate values
-        checkTristate(discovered, currencyInfo.discovered, true, true)
-        checkTristate(capped, currencyInfo.quantity >= (currencyInfo.maxQuantity or 0), currencyInfo.maxQuantity and currencyInfo.maxQuantity > 0, false)
-        checkTristate(seasonCapped, currencyInfo.totalEarned >= (currencyInfo.maxQuantity or 0), currencyInfo.useTotalEarnedForMaxQty and currencyInfo.maxQuantity and currencyInfo.maxQuantity > 0, true)
-        checkTristate(weeklyCapped, currencyInfo.quantityEarnedThisWeek >= (currencyInfo.maxWeeklyQuantity or 0), currencyInfo.maxWeeklyQuantity and currencyInfo.maxWeeklyQuantity > 0, true)
+        -- Insert Tristate checks
+        %s
 
         local sharedStateValues = {
           name = currencyInfo.name,
@@ -11335,23 +11315,29 @@ Private.event_prototypes = {
           changed = true,
         }
 
-        states[""] = states[""] or {}
-        local state = states[""]
+        local playerGUID = UnitGUID("player")
+        local activeCharacterGUIDs = {[playerGUID] = true}
+
+        states[playerGUID] = states[playerGUID] or {}
+        local state = states[playerGUID]
         state.show = active
         state.value = currencyInfo.quantity
         state.realCharacterQuantity = currencyInfo.realCharacterQuantity
-        state.capped = currencyInfo.maxQuantity and currencyInfo.maxQuantity > 0 and currencyInfo.quantity >= currencyInfo.maxQuantity
-        state.seasonCapped = currencyInfo.useTotalEarnedForMaxQty and currencyInfo.maxQuantity and currencyInfo.maxQuantity > 0 and currencyInfo.totalEarned >= currencyInfo.maxQuantity
-        state.weeklyCapped = currencyInfo.maxWeeklyQuantity and currencyInfo.maxWeeklyQuantity > 0 and currencyInfo.quantityEarnedThisweek >= currencyInfo.maxWeeklyQuantity
+        state.capped = (currencyInfo.quantity >= currencyInfo.maxQuantity)
+        state.seasonCapped = (currencyInfo.totalEarned >= currencyInfo.maxQuantity)
+        state.weeklyCapped = (currencyInfo.quantityEarnedThisWeek >= currencyInfo.maxWeeklyQuantity)
         state.characterName = UnitName("player")
-        state.characterGUID = UnitGUID("player")
+        state.characterGUID = playerGUID
         state.mainCharacter = true
 
-        if clone then
-          for i, currencyData in ipairs(accountCurrencyData) do
+        if clone and currencyInfo.accountCurrencyData then
+          -- Build clone state
+          for i, currencyData in ipairs(currencyInfo.accountCurrencyData) do
             local cloneActive = not primaryCheckFailed
             local cloneId = currencyData.characterGUID or tostring(i)
+            activeCharacterGUIDs[cloneId] = true
             states[cloneId] = states[cloneId] or {}
+
             local s = states[cloneId]
             s.value = currencyData.quantity
             s.realCharacterQuantity = currencyData.realCharacterQuantity
@@ -11359,28 +11345,24 @@ Private.event_prototypes = {
             s.characterGUID = currencyData.characterGUID
             s.mainCharacter = false
 
-            -- Check quantity-related values
-            if cloneActive and triggerQuantities.quantity ~= nil then
-              cloneActive = check(currencyData.quantity, triggerQuantities.quantity, triggerOperators.quantity)
-            end
-            if cloneActive and triggerQuantities.realCharacterQuantity ~= nil then
-              cloneActive = check(currencyData.realQuantity, triggerQuantities.realCharacterQuantity, triggerOperators.realCharacterQuantity)
-            end
-            -- No warband currencies exist with a season or weekly max, hence we only need to check for a maxQuantity
-            if cloneActive and capped ~= "nil" and currencyInfo.maxQuantity and currencyInfo.maxQuantity > 0 then
-              cloneActive = tostring((currencyData.quantity or 0) >= (currencyInfo.maxQuantity or 0)) == capped
-            end
+            -- Insert Clone-specific checks
+            %s
 
             s.show = cloneActive
           end
         end
 
-        -- Apply shared values to states
-        for _, state in pairs(states) do
-          for key, value in pairs(sharedStateValues) do
-            state[key] = value
+        -- Remove inactive states or apply shared values
+          for cloneId, state in pairs(states) do
+            if not activeCharacterGUIDs[cloneId] then
+              state.show = false
+              state.changed = true
+            else
+              for key, value in pairs(sharedStateValues) do
+                state[key] = value
+              end
+            end
           end
-        end
 
         return true
       end
@@ -11388,25 +11370,10 @@ Private.event_prototypes = {
 
       return ret:format(
         trigger.currencyId or 1,
-        trigger.use_value and tonumber(trigger.value) or "nil",
-        trigger.use_realCharacterQuantity and tonumber(trigger.realCharacterQuantity) or "nil",
-        trigger.use_accountQuantity and tonumber(trigger.accountQuantity) or "nil",
-        trigger.use_realAccountQuantity and tonumber(trigger.realAccountQuantity) or "nil",
-        trigger.use_maxQuantity and tonumber(trigger.maxQuantity) or "nil",
-        trigger.use_quantityEarnedThisWeek and tonumber(trigger.quantityEarnedThisWeek) or "nil",
-        trigger.use_totalEarned and tonumber(trigger.totalEarned) or "nil",
-        trigger.use_value and trigger.value_operator or "<",
-        trigger.use_realCharacterQuantity and trigger.realCharacterQuantity_operator or "<",
-        trigger.use_accountQuantity and trigger.accountQuantity_operator or "<",
-        trigger.use_realAccountQuantity and trigger.realAccountQuantity_operator or "<",
-        trigger.use_maxQuantity and trigger.maxQuantity_operator or "<",
-        trigger.use_quantityEarnedThisWeek and trigger.quantityEarnedThisWeek_operator or "<",
-        trigger.use_totalEarned and trigger.totalEarned_operator or "<",
-        trigger.use_discovered ~= nil and (trigger.use_discovered and "true" or "false") or "nil",
-        trigger.use_capped ~= nil and (trigger.use_capped and "true" or "false") or "nil",
-        trigger.use_seasonCapped ~= nil and (trigger.use_seasonCapped and "true" or "false") or "nil",
-        trigger.use_weeklyCapped ~= nil and (trigger.use_weeklyCapped and "true" or "false") or "nil",
-        trigger.use_clones and "true" or "false"
+        trigger.use_clones and "true" or "false",
+        quantityChecks,
+        tristateChecks,
+        cloneChecks
       );
     end,
     statesParameter = "full",
