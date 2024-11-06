@@ -164,10 +164,6 @@ local function missingBuffGreyed(conditions, trigger, regionType)
   tinsert(conditions, buildCondition(trigger, checks.buffedFalseAuraAlways, {changes("grey", regionType)}));
 end
 
-local function hasTargetAlpha(conditions, regionType)
-  tinsert(conditions, buildCondition(nil, checks.hasTarget, {changes("alpha", regionType)}));
-end
-
 local function isNotUsableBlue(conditions, trigger, regionType)
   tinsert(conditions, buildCondition(trigger, checks.usable, {changes("blue", regionType)}));
 end
@@ -249,7 +245,7 @@ local function itemInRangeRed(conditions, trigger, regionType)
   tinsert(conditions, buildCondition(trigger, checks.itemInRange, {changes("red", regionType)}));
 end
 
-local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
+local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff, data)
   triggers[position] = {
     trigger = {
       unit = item.unit or isBuff and "player" or "target",
@@ -298,6 +294,15 @@ local function createBuffTrigger(triggers, position, item, buffShowOn, isBuff)
   if (item.unit == "multi") then
     triggers[position].trigger.spellId = item.buffId or item.spell;
   end
+
+  if item.progressSource then
+    data.progressSource = { position, item.progressSource }
+  end
+
+  if item.maxProgress then
+    data.useAdjustededMax = true
+    data.adjustedMax = item.maxProgress
+  end
 end
 
 local function createDurationTrigger(triggers, position, item)
@@ -321,7 +326,7 @@ local function createTotemTrigger(triggers, position, item)
       type = WeakAuras.GetTriggerCategoryFor("Totem"),
       event = "Totem",
       use_totemName = item.totemNumber == nil,
-      totemName = GetSpellInfo(item.spell),
+      totemName = TemplatePrivate.Private.ExecEnv.GetSpellInfo(item.spell),
     }
   };
   if (item.totemNumber) then
@@ -441,13 +446,13 @@ local function createAbilityAndDurationTrigger(triggers, item)
   createAbilityTrigger(triggers, 2, item, "showAlways");
 end
 
-local function createAbilityAndBuffTrigger(triggers, item)
-  createBuffTrigger(triggers, 1, item, "showOnActive", true);
+local function createAbilityAndBuffTrigger(triggers, item, data)
+  createBuffTrigger(triggers, 1, item, "showOnActive", true, data);
   createAbilityTrigger(triggers, 2, item, "showAlways");
 end
 
-local function createAbilityAndDebuffTrigger(triggers, item)
-  createBuffTrigger(triggers, 1, item, "showOnActive", false);
+local function createAbilityAndDebuffTrigger(triggers, item, data)
+  createBuffTrigger(triggers, 1, item, "showOnActive", false, data);
   createAbilityTrigger(triggers, 2, item, "showAlways");
 end
 
@@ -995,8 +1000,8 @@ local function subTypesFor(item, regionType)
       icon = icon.cd,
       title = L["Show Only if Buffed"],
       description = L["Only shows the aura if the target has the buff."],
-      createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 1, item, "showOnActive", true);
+      createTriggers = function(triggers, item, data)
+        createBuffTrigger(triggers, 1, item, "showOnActive", true, data);
       end,
       data = data,
     });
@@ -1005,8 +1010,8 @@ local function subTypesFor(item, regionType)
       title = L["Always Show"],
       description = L["Always shows the aura, highlight it if buffed."],
       buffShowOn = "showAlways",
-      createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 1, item, "showAlways", true);
+      createTriggers = function(triggers, item, data)
+        createBuffTrigger(triggers, 1, item, "showAlways", true, data);
       end,
       createConditions = function(conditions, item, regionType)
         isBuffedGlowAuraAlways(conditions, 1, regionType);
@@ -1017,8 +1022,8 @@ local function subTypesFor(item, regionType)
       icon = icon.cd2,
       title = L["Always Show"],
       description = L["Always shows the aura, grey if buff not active."],
-      createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 1, item, "showAlways", true);
+      createTriggers = function(triggers, item, data)
+        createBuffTrigger(triggers, 1, item, "showAlways", true, data);
       end,
       createConditions = function(conditions, item, regionType)
         missingBuffGreyed(conditions, 1, regionType);
@@ -1032,8 +1037,8 @@ local function subTypesFor(item, regionType)
       icon = icon.cd,
       title = L["Show Only if Debuffed"],
       description = L["Only show the aura if the target has the debuff."],
-      createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 1, item, "showOnActive", false);
+      createTriggers = function(triggers, item, data)
+        createBuffTrigger(triggers, 1, item, "showOnActive", false, data);
       end,
       data = data,
     });
@@ -1041,8 +1046,8 @@ local function subTypesFor(item, regionType)
       icon = icon.glow,
       title = L["Always Show"],
       description = L["Always show the aura, highlight it if debuffed."],
-      createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 1, item, "showAlways", false);
+      createTriggers = function(triggers, item, data)
+        createBuffTrigger(triggers, 1, item, "showAlways", false, data);
       end,
       createConditions = function(conditions, item, regionType)
         isBuffedGlowAuraAlways(conditions, 1, regionType);
@@ -1053,8 +1058,8 @@ local function subTypesFor(item, regionType)
       icon = icon.cd2,
       title = L["Always Show"],
       description = L["Always show the aura, turns grey if the debuff not active."],
-      createTriggers = function(triggers, item)
-        createBuffTrigger(triggers, 1, item, "showAlways", false);
+      createTriggers = function(triggers, item, data)
+        createBuffTrigger(triggers, 1, item, "showAlways", false, data);
       end,
       createConditions = function(conditions, item, regionType)
         missingBuffGreyed(conditions, 1, regionType);
@@ -1241,16 +1246,6 @@ function WeakAuras.CreateTemplateView(Private, frame)
   newViewScroll.frame:SetClipsChildren(true);
   newView:AddChild(newViewScroll);
 
-  local function createNewId(prefix)
-    local new_id = prefix or "New";
-    local num = 2;
-    while(WeakAuras.GetData(new_id)) do
-      new_id = prefix .. " " .. num;
-      num = num + 1;
-    end
-    return new_id;
-  end
-
   local function createConditionsFor(item, subType, regionType)
     if (subType.createConditions) then
       local conditions = {};
@@ -1285,9 +1280,9 @@ function WeakAuras.CreateTemplateView(Private, frame)
     end
   end
 
-  local function createTriggersFor(item, subType)
+  local function createTriggersFor(item, subType, data)
     local triggers = {};
-    subType.createTriggers(triggers, item);
+    subType.createTriggers(triggers, item, data);
     return triggers;
   end
 
@@ -1317,7 +1312,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
     if (item.triggers) then
       triggers = item.triggers;
     else
-      triggers = createTriggersFor(item, subType);
+      triggers = createTriggersFor(item, subType, data);
     end
 
     data.triggers = {}
@@ -1340,7 +1335,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
     if (item.triggers) then
       triggers = item.triggers;
     else
-      triggers = createTriggersFor(item, subType);
+      triggers = createTriggersFor(item, subType, data);
     end
 
     for i, v in pairs(triggers) do
@@ -1420,25 +1415,6 @@ function WeakAuras.CreateTemplateView(Private, frame)
     spacer:SetFullWidth(true);
     spacer:SetText(" ");
     return spacer;
-  end
-
-  local function relativeWidth(totalWidth)
-    local columns = floor(totalWidth / 300);
-    return 1 / columns;
-  end
-
-  local function batchModeToggler(value)
-    if (not value) then
-      -- clean selection
-      for k in pairs(newView.chosenItemBatch) do
-        newView.chosenItemBatch[k] = nil;
-      end
-      for k, f in pairs(newView.chosenItemButtonsBatch) do
-        f.frame:UnlockHighlight();
-        newView.chosenItemButtonsBatch[k] = nil;
-      end
-      newView.batchButton:Hide();
-    end
   end
 
   local function createTriggerFlyout(section, fullWidth)
@@ -1651,7 +1627,7 @@ function WeakAuras.CreateTemplateView(Private, frame)
     replaceButton:SetFullWidth(true);
     replaceButton:SetClick(function()
       replaceTriggers(newView.data, newView.chosenItem, newView.chosenSubType);
-      for _,v in pairs({"class", "spec", "talent", "pvptalent", "race", "covenant"}) do
+      for _,v in pairs({"class", "spec", "talent", "herotalent", "pvptalent", "race", "covenant"}) do
         newView.data.load[v] = nil;
         newView.data.load["use_"..v] = nil;
       end

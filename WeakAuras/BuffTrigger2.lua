@@ -49,6 +49,38 @@ local AddonName = ...
 ---@class Private
 local Private = select(2, ...)
 
+local FixDebuffClass
+if WeakAuras.IsRetail() then
+  local LibDispell = LibStub("LibDispel-1.0")
+  FixDebuffClass = function(debuffClass, spellId)
+    if debuffClass == nil then
+      local bleedList = LibDispell:GetBleedList()
+      if bleedList[spellId] then
+        debuffClass = "bleed"
+      else
+        debuffClass = "none"
+      end
+    elseif debuffClass == "" then
+      debuffClass = "enrage"
+    else
+      debuffClass = string.lower(debuffClass)
+    end
+    return debuffClass
+  end
+else
+  FixDebuffClass = function(debuffClass)
+    if debuffClass == nil then
+      debuffClass = "none"
+    elseif debuffClass == "" then
+      debuffClass = "enrage"
+    else
+      debuffClass = string.lower(debuffClass)
+    end
+    return debuffClass
+  end
+end
+
+
 -- Lua APIs
 local tinsert, wipe = table.insert, wipe
 local pairs, next, type = pairs, next, type
@@ -1732,14 +1764,7 @@ do
     if (not aura or not aura.name) then
       return
     end
-    local debuffClass = aura.dispelName
-    if debuffClass == nil then
-      debuffClass = "none"
-    elseif debuffClass == "" then
-      debuffClass = "enrage"
-    else
-      debuffClass = string.lower(debuffClass)
-    end
+    local debuffClass = FixDebuffClass(aura.dispelName, aura.spellId)
     UpdateMatchData(_time, matchDataChanged, _unit, nil, aura.auraInstanceID, _filter, aura.name, aura.icon, aura.applications, debuffClass, aura.duration, aura.expirationTime, aura.sourceUnit, aura.isStealable, aura.isBossAura, aura.isFromPlayerOrPlayerPet, aura.spellId, aura.timeMod, aura.points)
   end
 
@@ -1759,14 +1784,7 @@ do
             break
           end
 
-          if debuffClass == nil then
-            debuffClass = "none"
-          elseif debuffClass == "" then
-            debuffClass = "enrage"
-          else
-            debuffClass = string.lower(debuffClass)
-          end
-
+          debuffClass = FixDebuffClass(debuffClass, spellId)
           UpdateMatchData(time, matchDataChanged, unit, index, nil, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, isBossDebuff, isCastByPlayer, spellId, modRate, nil)
           index = index + 1
         end
@@ -1867,14 +1885,7 @@ do
     if (not aura or not aura.name) then
       return
     end
-    local debuffClass = aura.dispelName
-    if debuffClass == nil then
-      debuffClass = "none"
-    elseif debuffClass == "" then
-      debuffClass = "enrage"
-    else
-      debuffClass = string.lower(debuffClass)
-    end
+    local debuffClass = FixDebuffClass(aura.dispelName, aura.spellId)
 
     local name, spellId, auraInstanceID = aura.name, aura.spellId, aura.auraInstanceID
     local updatedMatchData = UpdateMatchData(_time, _matchDataChanged, _unit, nil, auraInstanceID, _filter, name, aura.icon, aura.applications, debuffClass, aura.duration, aura.expirationTime, aura.sourceUnit, aura.isStealable, aura.isBossAura, aura.isFromPlayerOrPlayerPet, spellId, aura.timeMod, aura.points)
@@ -1957,13 +1968,7 @@ do
             break
           end
 
-          if debuffClass == nil then
-            debuffClass = "none"
-          elseif debuffClass == "" then
-            debuffClass = "enrage"
-          else
-            debuffClass = string.lower(debuffClass)
-          end
+          debuffClass = FixDebuffClass(debuffClass, spellId)
 
           local updatedMatchData = UpdateMatchData(time, matchDataChanged, unit, index, nil, filter, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, isBossDebuff, isCastByPlayer, spellId, modRate, nil)
 
@@ -3149,7 +3154,7 @@ function BuffTrigger.Add(data)
       local effectiveClass = groupTrigger and trigger.useClass and trigger.class
       local effectiveSpecId = WeakAuras.IsCataOrRetail() and (groupTrigger and trigger.useActualSpec and trigger.actualSpec) or nil
       local effectiveArenaSpec = WeakAuras.IsRetail() and (trigger.unit == "arena" and trigger.useArenaSpec and trigger.arena_spec) or nil
-      local effectiveHostility = trigger.unit == "nameplate" and trigger.useHostility and trigger.hostility
+      local effectiveHostility = (groupTrigger or trigger.unit == "nameplate") and trigger.useHostility and trigger.hostility
       local effectiveIgnoreDead = groupTrigger and trigger.ignoreDead
       local effectiveIgnoreDisconnected = groupTrigger and trigger.ignoreDisconnected
       local effectiveIgnoreInvisible = groupTrigger and trigger.ignoreInvisible
@@ -4064,14 +4069,7 @@ do
     if (not aura or not aura.name) then
       return
     end
-    local debuffClass = aura.dispelName
-    if debuffClass == nil then
-      debuffClass = "none"
-    elseif debuffClass == "" then
-      debuffClass = "enrage"
-    else
-      debuffClass = string.lower(debuffClass)
-    end
+    local debuffClass = FixDebuffClass(aura.dispelName, aura.spellId)
     local auraSourceGuid = aura.sourceUnit and UnitGUID(aura.sourceUnit)
     local name = aura.name
     local spellId = aura.spellId
@@ -4093,13 +4091,7 @@ do
           return false
         end
 
-        if debuffClass == nil then
-          debuffClass = "none"
-        elseif debuffClass == "" then
-          debuffClass = "enrage"
-        else
-          debuffClass = string.lower(debuffClass)
-        end
+        debuffClass = FixDebuffClass(debuffClass, spellId)
         local auraSourceGuid = unitCaster and UnitGUID(unitCaster)
         if (name == nameKey or spellId == spellKey) and sourceGUID == auraSourceGuid then
           local changed = AugmentMatchDataMultiWith(matchData, unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate)
@@ -4184,14 +4176,7 @@ do
     if (not aura or not aura.name) then
       return
     end
-    local debuffClass = aura.dispelName
-    if debuffClass == nil then
-      debuffClass = "none"
-    elseif debuffClass == "" then
-      debuffClass = "enrage"
-    else
-      debuffClass = string.lower(debuffClass)
-    end
+    local debuffClass = FixDebuffClass(aura.dispelName, aura.spellId)
     local auraCasterGUID = aura.sourceUnit and UnitGUID(aura.sourceUnit)
     local name = aura.name
     local spellId = aura.spellId
@@ -4232,13 +4217,8 @@ do
           return false
         end
 
-        if debuffClass == nil then
-          debuffClass = "none"
-        elseif debuffClass == "" then
-          debuffClass = "enrage"
-        else
-          debuffClass = string.lower(debuffClass)
-        end
+        debuffClass = FixDebuffClass(debuffClass, spellId)
+
         local auraCasterGUID = unitCaster and UnitGUID(unitCaster)
         if base[name] and base[name][auraCasterGUID] then
           local changed = AugmentMatchDataMultiWith(base[name][auraCasterGUID], unit, name, icon, stacks, debuffClass, duration, expirationTime, unitCaster, isStealable, _, spellId, _, _, _, _, modRate)
@@ -4298,7 +4278,8 @@ function BuffTrigger.InitMultiAura()
 end
 
 function BuffTrigger.HandleMultiEvent(frame, event, ...)
-  Private.StartProfileSystem("bufftrigger2 - multi")
+  local system = "bufftrigger2 - multi - " .. event
+  Private.StartProfileSystem(system)
   if event == "COMBAT_LOG_EVENT_UNFILTERED" then
     CombatLog(CombatLogGetCurrentEventInfo())
   elseif event == "UNIT_TARGET" then
@@ -4328,7 +4309,7 @@ function BuffTrigger.HandleMultiEvent(frame, event, ...)
     end
     wipe(matchDataMulti)
   end
-  Private.StopProfileSystem("bufftrigger2 - multi")
+  Private.StopProfileSystem(system)
 end
 
 function BuffTrigger.GetTriggerDescription(data, triggernum, namestable)

@@ -142,6 +142,24 @@ local properties = {
     bigStep = 1,
     default = 0
   },
+  crop_x = {
+    display = L["Crop X"],
+    setter = "SetCropX",
+    type = "number",
+    min = 0,
+    softMax = 2,
+    bigStep = 0.01,
+    isPercent = true,
+  },
+  crop_y = {
+    display = L["Crop Y"],
+    setter = "SetCropY",
+    type = "number",
+    min = 0,
+    softMax = 2,
+    bigStep = 0.01,
+    isPercent = true,
+  },
 }
 
 Private.regionPrototype.AddProperties(properties, default);
@@ -209,17 +227,8 @@ function spinnerFunctions.Color(self, r, g, b, a)
   end
 end
 
-function spinnerFunctions.UpdateSize(self)
-  if (self.region) then
-    self:SetProgress(self.region, self.angle1, self.angle2);
-  end
-end
-
-function spinnerFunctions.SetProgress(self, region, angle1, angle2)
-  self.region = region;
-  self.angle1 = angle1;
-  self.angle2 = angle2;
-
+function spinnerFunctions.UpdateTextures(self)
+  local region = self.region
   local crop_x = region.crop_x or 1;
   local crop_y = region.crop_y or 1;
   local texRotation = region.effectiveTexRotation or 0
@@ -231,6 +240,13 @@ function spinnerFunctions.SetProgress(self, region, angle1, angle2)
 
   local width = region.width * (region.scalex or 1) + 2 * self.offset;
   local height = region.height * (region.scaley or 1) + 2 * self.offset;
+
+  local angle1 = self.angle1
+  local angle2 = self.angle2
+
+  if angle1 == nil or angle2 == nil then
+    return
+  end
 
   if (angle2 - angle1 >= 360) then
     -- SHOW everything
@@ -287,6 +303,12 @@ function spinnerFunctions.SetProgress(self, region, angle1, angle2)
   end
 end
 
+function spinnerFunctions.SetProgress(self, angle1, angle2)
+  self.angle1 = angle1
+  self.angle2 = angle2
+  self:UpdateTextures()
+end
+
 function spinnerFunctions.SetBackgroundOffset(self, region, offset)
   self.offset = offset;
   for i = 1, 3 do
@@ -295,7 +317,7 @@ function spinnerFunctions.SetBackgroundOffset(self, region, offset)
     self.textures[i]:SetPoint('BOTTOMLEFT', region, -offset, -offset)
     self.textures[i]:SetPoint('TOPLEFT', region, -offset, offset)
   end
-  self:UpdateSize();
+  self:UpdateTextures()
 end
 
 function spinnerFunctions:SetHeight(height)
@@ -503,9 +525,9 @@ local function createTexCoord(texture)
   return coord;
 end
 
-
 local function createSpinner(parent, layer, drawlayer)
   local spinner = {};
+  spinner.region = parent
   spinner.textures = {};
   spinner.coords = {};
   spinner.offset = 0;
@@ -539,7 +561,7 @@ local orientationToAnchorPoint = {
 }
 
 local textureFunctions = {
-  SetValueFunctions = {
+  ApplyProgressToCoordFunctions = {
     ["HORIZONTAL"] = function(self, startProgress, endProgress)
       self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "UL", startProgress, 0 );
       self.coord:MoveCorner(self:GetWidth(), self:GetHeight(), "LL", startProgress, 1 );
@@ -570,7 +592,7 @@ local textureFunctions = {
     end,
   },
 
-  SetValueFunctionsSlanted = {
+  ApplyProgressToCoordFunctionsSlanted = {
     ["HORIZONTAL"] = function(self, startProgress, endProgress)
       local slant = self.slant or 0;
       if (self.slantMode == "EXTEND") then
@@ -654,8 +676,8 @@ local textureFunctions = {
   end,
 
   SetOrientation = function(self, orientation, compress, slanted, slant, slantFirst, slantMode)
-    self.SetValueFunction = slanted and self.SetValueFunctionsSlanted[orientation]
-                            or self.SetValueFunctions[orientation]
+    self.ApplyProgressToCoord = slanted and self.ApplyProgressToCoordFunctionsSlanted[orientation]
+                                or self.ApplyProgressToCoordFunctions[orientation]
     self.compress = compress;
     self.slanted = slanted;
     self.slant = slant;
@@ -693,24 +715,26 @@ local textureFunctions = {
         startProgress, endProgress = 0, 0;
       end
     end
+    self:UpdateTextures()
+  end,
 
-    self.coord:SetFull();
-    self:SetValueFunction(startProgress, endProgress);
-
-    local region = self.region;
-    local crop_x = region.crop_x or 1;
-    local crop_y = region.crop_y or 1;
+  UpdateTextures = function(self)
+    self.coord:SetFull()
+    self:ApplyProgressToCoord(self.startProgress, self.endProgress)
+    local region = self.region
+    local crop_x = region.crop_x or 1
+    local crop_y = region.crop_y or 1
     local texRotation = region.effectiveTexRotation or 0
-    local mirror_h = region.mirror_h or false;
+    local mirror_h = region.mirror_h or false
     if region.mirror then
       mirror_h = not mirror_h
     end
-    local mirror_v = region.mirror_v or false;
-    local user_x = region.user_x;
-    local user_y = region.user_y;
+    local mirror_v = region.mirror_v or false
+    local user_x = region.user_x
+    local user_y = region.user_y
 
-    self.coord:Transform(crop_x, crop_y, texRotation, mirror_h, mirror_v, user_x, user_y);
-    self.coord:Apply();
+    self.coord:Transform(crop_x, crop_y, texRotation, mirror_h, mirror_v, user_x, user_y)
+    self.coord:Apply()
   end,
 
   Update = function(self)
@@ -764,7 +788,7 @@ local CircularSetValueFunctions = {
     end
 
     local pAngle = (endAngle - startAngle) * progress + startAngle;
-    self.foregroundSpinner:SetProgress(self, startAngle, pAngle);
+    self.foregroundSpinner:SetProgress(startAngle, pAngle);
   end,
   ["ANTICLOCKWISE"] = function(self, progress)
     local startAngle = self.startAngle;
@@ -782,7 +806,7 @@ local CircularSetValueFunctions = {
     progress = 1 - progress;
 
     local pAngle = (endAngle - startAngle) * progress + startAngle;
-    self.foregroundSpinner:SetProgress(self, pAngle, endAngle);
+    self.foregroundSpinner:SetProgress(pAngle, endAngle);
   end
 }
 
@@ -919,7 +943,7 @@ local function ApplyAdditionalProgressCircular(self, additionalProgress, min, ma
       end
 
       if ((endProgress - startProgress) == 0) then
-        extraSpinner:SetProgress(self, 0, 0);
+        extraSpinner:SetProgress(0, 0);
       else
         local color = self.overlays[index];
         if (color) then
@@ -938,7 +962,7 @@ local function ApplyAdditionalProgressCircular(self, additionalProgress, min, ma
           pAngleEnd = pAngleEnd + 360;
         end
 
-        extraSpinner:SetProgress(self, pAngleStart, pAngleEnd);
+        extraSpinner:SetProgress(pAngleStart, pAngleEnd);
       end
     end
 
@@ -973,8 +997,8 @@ local function SetOrientation(region, orientation)
   region.orientation = orientation;
   if(region.orientation == "CLOCKWISE" or region.orientation == "ANTICLOCKWISE") then
     showCircularProgress(region);
-    region.foregroundSpinner:UpdateSize();
-    region.backgroundSpinner:UpdateSize();
+    region.foregroundSpinner:UpdateTextures()
+    region.backgroundSpinner:UpdateTextures()
     region.SetValueOnTexture = CircularSetValueFunctions[region.orientation];
     region.ApplyAdditionalProgress = ApplyAdditionalProgressCircular;
   else
@@ -1110,8 +1134,8 @@ local function modify(parent, region, data)
   end
 
   region.mirror = data.mirror
-  region.crop_x = 1 + (data.crop_x or 0.41);
-  region.crop_y = 1 + (data.crop_y or 0.41);
+  region.crop_x = 1 + data.crop_x
+  region.crop_y = 1 + data.crop_y
   region.texRotation = data.rotation or 0
   region.auraRotation = data.auraRotation or 0
   region.user_x = -1 * (data.user_x or 0);
@@ -1128,7 +1152,7 @@ local function modify(parent, region, data)
 
   region.inverseDirection = data.inverse;
   region.progress = 0.667;
-  backgroundSpinner:SetProgress(region, region.startAngle, region.endAngle);
+  backgroundSpinner:SetProgress(region.startAngle, region.endAngle);
   backgroundSpinner:SetBackgroundOffset(region, data.backgroundOffset);
 
   if (data.overlays) then
@@ -1183,10 +1207,10 @@ local function modify(parent, region, data)
     region:SetHeight(region.height * region.scaley);
 
     if (data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE") then
-      region.foregroundSpinner:UpdateSize();
-      region.backgroundSpinner:UpdateSize();
+      region.foregroundSpinner:UpdateTextures()
+      region.backgroundSpinner:UpdateTextures()
       for i = 1, #region.extraSpinners do
-        region.extraSpinners[i]:UpdateSize();
+        region.extraSpinners[i]:UpdateTextures()
       end
     else
       region.background:Update();
@@ -1239,13 +1263,36 @@ local function modify(parent, region, data)
     DoPosition(region)
   end
 
+  function region:UpdateTextures()
+    region.foreground:UpdateTextures()
+    region.background:UpdateTextures()
+    region.foregroundSpinner:UpdateTextures()
+    region.backgroundSpinner:UpdateTextures()
+    for _, extraTexture in ipairs(region.extraTextures) do
+      extraTexture:UpdateTextures()
+    end
+    for _, extraSpinner in ipairs(region.extraSpinners) do
+      extraSpinner:UpdateTextures()
+    end
+  end
+
+  function region:SetCropX(x)
+    region.crop_x = 1 + x
+    region:UpdateTextures()
+  end
+
+  function region:SetCropY(y)
+    region.crop_y = 1 + y
+    region:UpdateTextures()
+  end
+
   function region:UpdateEffectiveRotation()
     region.effectiveTexRotation = region.texAnimationRotation or region.texRotation
     if (data.orientation == "CLOCKWISE" or data.orientation == "ANTICLOCKWISE") then
-      region.foregroundSpinner:UpdateSize();
-      region.backgroundSpinner:UpdateSize();
+      region.foregroundSpinner:UpdateTextures()
+      region.backgroundSpinner:UpdateTextures()
       for i = 1, #region.extraSpinners do
-        region.extraSpinners[i]:UpdateSize();
+        region.extraSpinners[i]:UpdateTextures()
       end
     else
       region.background:Update();

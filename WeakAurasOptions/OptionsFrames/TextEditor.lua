@@ -6,7 +6,6 @@ local OptionsPrivate = select(2, ...)
 
 -- Lua APIs
 local pairs, type, ipairs = pairs, type, ipairs
-local loadstring = loadstring
 local gsub = gsub
 
 -- WoW APIs
@@ -190,6 +189,7 @@ local function ConstructTextEditor(frame)
   -- The indention lib overrides GetText, but for the line number
   -- display we ned the original, so save it here.
   local originalGetText = editor.editBox.GetText
+  local originalSetText = editor.editBox.SetText
   set_scheme()
   LAAC:enable(editor.editBox)
   IndentationLib.enable(editor.editBox, color_scheme, WeakAurasSaved.editor_tab_spaces)
@@ -720,13 +720,63 @@ local function ConstructTextEditor(frame)
     end
   )
 
-  -- CTRL + S saves and closes
+  editor.editBox.timeMachine = {}
+  editor.editBox.timeMachinePos = 1
+  local TimeMachineMaximumRollback = 10
+
   editor.editBox:HookScript(
     "OnKeyDown",
-    function(_, key)
+    function(self, key)
+      -- CTRL + S saves and closes
       if IsControlKeyDown() and key == "S" then
         group:Close()
+      elseif key == "Z" and IsControlKeyDown() then
+        self:SetPropagateKeyboardInput(false)
+        if self.timeMachine[self.timeMachinePos + 1] then
+          self.timeMachinePos = self.timeMachinePos + 1
+          self.skipOnTextChanged = true
+          originalSetText(self, self.timeMachine[self.timeMachinePos][1])
+          self:SetCursorPosition(self.timeMachine[self.timeMachinePos][2])
+        end
+      elseif key == "Y" and IsControlKeyDown() then
+        self:SetPropagateKeyboardInput(false)
+        if self.timeMachine[self.timeMachinePos - 1] then
+          self.timeMachinePos = self.timeMachinePos - 1
+          self.skipOnTextChanged = true
+          originalSetText(self, self.timeMachine[self.timeMachinePos][1])
+          self:SetCursorPosition(self.timeMachine[self.timeMachinePos][2])
+        end
       end
+    end
+  )
+
+  editor.editBox:HookScript(
+    "OnTextChanged",
+    function(self, userInput)
+      if not userInput then return end
+      if self.skipOnTextChanged then
+        self.skipOnTextChanged = false
+        return
+      end
+      local cursorPosition = self:GetCursorPosition()
+      local text = originalGetText(self)
+      if IndentationLib then
+        text, cursorPosition = IndentationLib.stripWowColorsWithPos(text, cursorPosition)
+      end
+      if self.timeMachine[1] and text == self.timeMachine[1][1] then
+        return
+      end
+      -- if cursor is not at position 1, remove elements before cursor
+      for i = 2, self.timeMachinePos do
+        table.remove(self.timeMachine, 1)
+      end
+      -- insert current text
+      table.insert(self.timeMachine, 1, {text, cursorPosition - 1})
+      -- timeMachine is limited to a number of TimeMachineMaximumRollback elements
+      for i = #self.timeMachine, TimeMachineMaximumRollback + 1, -1 do
+        table.remove(self.timeMachine, i)
+      end
+      self.timeMachinePos = 1
     end
   )
 
@@ -846,6 +896,8 @@ local function ConstructTextEditor(frame)
       end
     end
     editor:SetLabel(title)
+    editor.editBox.timeMachine = {}
+    editor.editBox.timeMachinePos = 1
     editor.editBox:SetScript(
       "OnEscapePressed",
       function()
@@ -862,15 +914,12 @@ local function ConstructTextEditor(frame)
         else
           local func, errorString
           if (enclose) then
-            func, errorString = loadstring("return function() " .. str .. "\n end")
+            func, errorString = OptionsPrivate.Private.LoadFunction("return function() " .. str .. "\n end", true)
           else
-            func, errorString = loadstring("return " .. str)
+            func, errorString = OptionsPrivate.Private.LoadFunction("return " .. str, true)
           end
           if not errorString and validator then
-            local ok, validate = xpcall(func, function(err) errorString = err end)
-            if ok then
-              errorString = validator(validate)
-            end
+            errorString = validator(func)
           end
           if errorString then
             if self.url then

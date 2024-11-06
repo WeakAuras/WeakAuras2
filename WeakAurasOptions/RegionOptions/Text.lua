@@ -46,7 +46,7 @@ local function createOptions(id, data)
     __order = 1,
     __dynamicTextCodes = function()
       local widget = dynamicTextInputs["displayText"]
-      OptionsPrivate.ToggleTextReplacements(data, nil, widget)
+      OptionsPrivate.ToggleTextReplacements(data, widget, "ToggleButton")
     end,
     displayText = {
       type = "input",
@@ -68,7 +68,10 @@ local function createOptions(id, data)
       callbacks = {
         OnEditFocusGained = function(self)
           local widget = dynamicTextInputs["displayText"]
-          OptionsPrivate.ToggleTextReplacements(data, true, widget)
+          OptionsPrivate.ToggleTextReplacements(data, widget, "OnEditFocusGained")
+        end,
+        OnEditFocusLost = function(self)
+          OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEditFocusLost")
         end,
         OnShow = function(self)
           dynamicTextInputs["displayText"] = self

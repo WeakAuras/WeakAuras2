@@ -483,10 +483,10 @@ local function createOptions(id, data)
     for id, display in ipairs(overlayInfo) do
       options["overlaytexture" .. id] = {
         type = "select",
-        dialogControl = "LSM30_Statusbar",
+        dialogControl = "WA_LSM30_StatusbarAtlas",
         width = WeakAuras.doubleWidth,
         name = string.format(L["%s Texture"], display),
-        values = AceGUIWidgetLSMlists.statusbar,
+        values = statusbarList,
         order = 58.1 + index,
         set = function(info, texture)
           if (not data.overlaysTexture) then

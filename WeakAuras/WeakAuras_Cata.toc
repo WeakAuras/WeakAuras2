@@ -1,4 +1,4 @@
-## Interface: 40400
+## Interface: 40401
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
 ## Version: @project-version@
@@ -84,3 +84,6 @@ SubRegionTypes\Border.lua
 SubRegionTypes\Glow.lua
 SubRegionTypes\Tick.lua
 SubRegionTypes\Model.lua
+
+#Misc
+DiscordList.lua

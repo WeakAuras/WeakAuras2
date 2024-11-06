@@ -132,7 +132,8 @@ globals = {
 	"ItemTransmogInfoMixin",
 	"TransmogPendingInfoMixin",
 	"TransmogLocationMixin",
-	"PlayerLocationMixin",
+    "PlayerLocationMixin",
+	"MenuUtil",
 
 
 	-- FrameXML frames
@@ -3976,6 +3977,7 @@ globals = {
 	"tAppendAll",
 	"time",
 	"tinsert",
+	"tCompare",
 	"tonumber",
 	"tostring",
 	"tremove",
@@ -4173,6 +4175,7 @@ globals = {
 	"LockPetActionBar",
 	"LowerFrameLevel",
 	"ManageBackpackTokenFrame",
+	"MergeTable",
 	"MicroButtonPulse",
 	"MicroButtonPulseStop",
 	"MicroButtonTooltipText",

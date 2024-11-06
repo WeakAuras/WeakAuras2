@@ -170,10 +170,13 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
       order = baseOrder + i / 100 + 0.0003,
       hidden = hiddenFunction,
       get = function(info)
-        local rawString = trigger[optionKey] and trigger[optionKey][i] or ""
+        local rawString = trigger[optionKey] and trigger[optionKey][i]
+        if not rawString then return "" end
         local spellName, _, _, _, _, _, spellID = OptionsPrivate.Private.ExecEnv.GetSpellInfo(WeakAuras.SafeToNumber(rawString))
         if spellName and spellID then
           return ("%s (%s)"):format(spellID, spellName) .. "\0" .. rawString
+        elseif WeakAuras.SafeToNumber(rawString) then
+          return ("%s (%s)"):format(rawString, L["Unknown Spell"]) .. "\0" .. rawString
         else
           return rawString .. "\0" .. rawString
         end
@@ -186,10 +189,9 @@ local function CreateNameOptions(aura_options, data, trigger, size, isExactSpell
           if isExactSpellId then
             trigger[optionKey][i] = v
           else
-            local spellId = tonumber(v)
+            local _, spellId = WeakAuras.spellCache.CorrectAuraName(v)
             if spellId then
-              WeakAuras.spellCache.CorrectAuraName(v)
-              trigger[optionKey][i] = v
+              trigger[optionKey][i] = tostring(spellId)
             else
               trigger[optionKey][i] = spellCache.BestKeyMatch(v)
             end
@@ -306,7 +308,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       width = WeakAuras.normalWidth,
       name = L["Debuff Type"],
       order = 11.2,
-      desc = L["Filter to only dispellable de/buffs of the given type(s)"],
+      desc = L["Filter to only dispellable de/buffs of the given type(s)\nBleed classification via LibDispel"],
       hidden = function() return not (trigger.type == "aura2" and trigger.unit ~= "multi" and CanHaveMatchCheck(trigger)) end
     },
     debuffClass = {
@@ -968,10 +970,14 @@ local function GetBuffTriggerOptions(data, triggernum)
     useHostility = {
       type = "toggle",
       width = WeakAuras.normalWidth,
-      name = L["Filter by Nameplate Type"],
+      name = L["Filter by Hostility"],
       order = 69.1,
-      hidden = function() return
-        not (trigger.type == "aura2" and trigger.unit == "nameplate")
+      hidden = function()
+        return not (trigger.type == "aura2"
+                    and (trigger.unit == "group"
+                         or trigger.unit == "raid"
+                         or trigger.unit == "party"
+                         or trigger.unit == "nameplate"))
       end
     },
     hostility = {
@@ -979,7 +985,14 @@ local function GetBuffTriggerOptions(data, triggernum)
       width = WeakAuras.normalWidth,
       name = L["Hostility"],
       values = OptionsPrivate.Private.hostility_types,
-      hidden = function() return not (trigger.type == "aura2" and trigger.useHostility) end,
+      hidden = function()
+        return not (trigger.type == "aura2"
+                    and trigger.useHostility
+                    and (trigger.unit == "group"
+                         or trigger.unit == "raid"
+                         or trigger.unit == "party"
+                         or trigger.unit == "nameplate"))
+      end,
       order = 69.2
     },
     hostilitySpace = {
@@ -987,7 +1000,14 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = "",
       order = 69.3,
       width = WeakAuras.normalWidth,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and not trigger.useHostility) end
+      hidden = function()
+        return not (trigger.type == "aura2"
+                    and not trigger.useHostility
+                    and (trigger.unit == "group"
+                         or trigger.unit == "raid"
+                         or trigger.unit == "party"
+                         or trigger.unit == "nameplate"))
+      end
     },
 
     useNpcId = {

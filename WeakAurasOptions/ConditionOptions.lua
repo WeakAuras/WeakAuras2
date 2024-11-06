@@ -666,7 +666,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
           local v = conditions[i].changes[j].value
           local progressSource = OptionsPrivate.Private.AddProgressSourceMetaData(data, v)
           -- Auto progress, Manual Progress or the progress source has a total property
-          if progressSource[2] == "auto" or progressSource[1] == 0 or progressSource[4] ~= nil then
+          if progressSource and (progressSource[2] == "auto" or progressSource[1] == 0 or progressSource[4] ~= nil) then
             return true
           end
           return false
@@ -677,7 +677,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       local function hiddenManual()
         local v = conditions[i].changes[j].value
         local progressSource = OptionsPrivate.Private.AddProgressSourceMetaData(data, v)
-        if progressSource[1] == 0 then
+        if progressSource and progressSource[1] == 0 then
           return false
         end
         return true
@@ -972,7 +972,13 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       callbacks = {
         OnEditFocusGained = function(self)
           local widget = dynamicTextInputs["condition" .. i .. "value" .. j .. "message dest"]
-          OptionsPrivate.ToggleTextReplacements(data, true, widget)
+          OptionsPrivate.ToggleTextReplacements(data, widget, "OnEditFocusGained")
+        end,
+        OnEditFocusLost = function(self)
+          OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEditFocusLost")
+        end,
+        OnEnterPressed = function(self)
+          OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEnterPressed")
         end,
         OnShow = function(self)
           dynamicTextInputs["condition" .. i .. "value" .. j .. "message dest"] = self
@@ -992,7 +998,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       end,
       func = function()
         local widget = dynamicTextInputs["condition" .. i .. "value" .. j .. "message dest"]
-        OptionsPrivate.ToggleTextReplacements(data, nil, widget)
+        OptionsPrivate.ToggleTextReplacements(data, widget, "ToggleButton")
       end,
       imageWidth = 24,
       imageHeight = 24,
@@ -1049,7 +1055,13 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       callbacks = {
         OnEditFocusGained = function(self)
           local widget = dynamicTextInputs["condition" .. i .. "value" .. j .. "message"]
-          OptionsPrivate.ToggleTextReplacements(data, true, widget)
+          OptionsPrivate.ToggleTextReplacements(data, widget, "OnEditFocusGained")
+        end,
+        OnEditFocusLost = function(self)
+          OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEditFocusLost")
+        end,
+        OnEnterPressed = function(self)
+          OptionsPrivate.ToggleTextReplacements(nil, nil, "OnEnterPressed")
         end,
         OnShow = function(self)
           dynamicTextInputs["condition" .. i .. "value" .. j .. "message"] = self
@@ -1066,7 +1078,7 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
       order = order,
       func = function()
         local widget = dynamicTextInputs["condition" .. i .. "value" .. j .. "message"]
-        OptionsPrivate.ToggleTextReplacements(data, nil, widget)
+        OptionsPrivate.ToggleTextReplacements(data, widget, "ToggleButton")
       end,
       imageWidth = 24,
       imageHeight = 24,

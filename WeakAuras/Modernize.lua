@@ -2074,6 +2074,225 @@ function Private.Modernize(data, oldSnapshot)
     end
   end
 
+  if data.internalVersion < 76 then
+    local function removeHoles(t)
+      local keys = {}
+      for key in pairs(t) do
+        table.insert(keys, key)
+      end
+      if #keys ~= #t then
+        table.sort(keys)
+        local newTable = {}
+        for i, key in ipairs(keys) do
+          newTable[i] = t[key]
+        end
+        return newTable
+      else
+        return t
+      end
+    end
+    local trigger_migration = {
+      ["Spell Cast Succeeded"] = {
+        "spellId",
+      },
+      ["Unit Characteristics"] = {
+        "level",
+      },
+      ["Power"] = {
+        "power",
+        "percentpower",
+        "deficit",
+        "maxpower",
+      },
+      ["Combat Log"] = {
+        "spellId",
+        "spellName",
+      },
+      ["Health"] = {
+        "health",
+        "percenthealth",
+        "deficit",
+        "maxhealth",
+        "absorb",
+        "healabsorb",
+        "healprediction",
+      },
+      ["Faction Reputation"] = {
+        "value",
+        "total",
+        "percentRep",
+      },
+      ["Location"] = {
+        "zone",
+        "subzone",
+      },
+      ["Threat Situation"] = {
+        "threatpct",
+        "rawthreatpct",
+        "threatvalue",
+      },
+      ["Character Stats"] = {
+        "mainstat",
+        "strength",
+        "agility",
+        "intellect",
+        "spirit",
+        "stamina",
+        "criticalrating",
+        "criticalpercent",
+        "hitrating",
+        "hitpercent",
+        "hasterating",
+        "hastepercent",
+        "meleehastepercent",
+        "expertiserating",
+        "expertisebonus",
+        "spellpenpercent",
+        "masteryrating",
+        "masterypercent",
+        "versatilityrating",
+        "versatilitypercent",
+        "attackpower",
+        "leechrating",
+        "leechpercent",
+        "movespeedrating",
+        "movespeedpercent",
+        "runspeedpercent",
+        "avoidancerating",
+        "avoidancepercent",
+        "dodgerating",
+        "dodgepercent",
+        "parryrating",
+        "parrypercent",
+        "blockpercent",
+        "blocktargetpercent",
+        "blockvalue",
+        "staggerpercent",
+        "staggertargetpercent",
+        "armorrating",
+        "armorpercent",
+        "armortargetpercent",
+        "resistanceholy",
+        "resistancefire",
+        "resistancenature",
+        "resistancefrost",
+        "resistanceshadow",
+        "resistancearcane",
+      },
+      ["Cast"] = {
+        "spellNames",
+        "spellIds",
+        "stage",
+      },
+      ["Alternate Power"] = {
+        "power",
+      },
+      ["Experience"] = {
+        "level",
+        "currentXP",
+        "totalXP",
+        "percentXP",
+        "restedXP",
+        "percentrested",
+      }
+    }
+    for _, triggerData in ipairs(data.triggers) do
+      local trigger = triggerData.trigger
+      local fieldsToMigrate = trigger_migration[trigger.event]
+      if fieldsToMigrate then
+        for _, field in ipairs(fieldsToMigrate) do
+          if type(trigger[field]) == "table" then
+            trigger[field] = removeHoles(trigger[field])
+          end
+        end
+      end
+    end
+  end
+
+  if data.internalVersion < 77 then
+    -- fix data broken by wago export
+    local triggerFix = {
+      talent = {
+        multi = true
+      },
+      herotalent = {
+        multi = true
+      },
+      form = {
+        multi = true
+      },
+      specId = {
+        multi = true
+      },
+      actualSpec = true,
+      arena_spec = true
+    }
+    local loadFix = {
+      talent = {
+        multi = true
+      },
+      talent2 = {
+        multi = true
+      },
+      talent3 = {
+        multi = true
+      },
+      herotalent = {
+        multi = true
+      },
+      class_and_spec = {
+        multi = true
+      }
+    }
+
+    local function fixData(data, fields)
+      for k, v in pairs(fields) do
+        if v == true and type(data[k]) == "table" then
+          -- fix field k
+          local tofix = {}
+          for key in pairs(data[k]) do
+              if type(key) == "string" then
+                table.insert(tofix, key)
+              end
+          end
+          for _, oldkey in ipairs(tofix) do
+              local newkey = tonumber(oldkey)
+              if newkey then
+                data[k][newkey] = data[k][oldkey]
+              end
+              data[k][oldkey] = nil
+          end
+        elseif type(v) == "table" and type(data[k]) == "table" then
+          -- recurse
+          fixData(data[k], fields[k])
+        end
+      end
+    end
+
+    for _, triggerData in ipairs(data.triggers) do
+      fixData(triggerData.trigger, triggerFix)
+    end
+    fixData(data.load, loadFix)
+  end
+
+  if data.internalVersion < 78 then
+    if data.triggers then
+      for triggerId, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
+        -- Item Type is now always a multi selection
+        if trigger and trigger.type == "item" and trigger.event == "Item Type Equipped" then
+          local value = trigger.itemTypeName and trigger.itemTypeName.single or nil
+          if trigger.use_itemTypeName and value then
+            trigger.use_itemTypeName = false
+            trigger.itemTypeName = {multi = {[value] = true}}
+          else
+            trigger.itemTypeName = {multi = {}}
+          end
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 

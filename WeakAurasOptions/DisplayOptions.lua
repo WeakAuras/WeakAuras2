@@ -104,6 +104,7 @@ function OptionsPrivate.GetDisplayOptions(data)
             subIndex[subRegionType] = subIndex[subRegionType] and subIndex[subRegionType] + 1 or 1
             local options, common = OptionsPrivate.Private.subRegionOptions[subRegionType].create(data, subRegionData, index, subIndex[subRegionType])
             options.__order = 200 + index
+            options.__collapsed = true
             regionOption["sub." .. index .. "." .. subRegionType] = options
             commonOption[subRegionType] = common
           end

@@ -242,8 +242,7 @@ hooksecurefunc("SetItemRef", function(link, text)
         characterName = characterName:gsub("%.", "")
         ShowTooltip({
           {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
-          {1, L["Requesting display information from %s ..."]:format(characterName), 1, 0.82, 0},
-          {1, L["Note, that cross realm transmission is possible if you are on the same group"], 1, 0.82, 0}
+          {1, L["Requesting display information from %s ..."]:format(characterName), 1, 0.82, 0}
         });
         tooltipLoading = true;
         receivedData = false;
@@ -252,8 +251,7 @@ hooksecurefunc("SetItemRef", function(link, text)
           if (tooltipLoading and not receivedData and ItemRefTooltip:IsVisible()) then
             ShowTooltip({
               {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
-              {1, L["Error not receiving display information from %s"]:format(characterName), 1, 0, 0},
-              {1, L["Note, that cross realm transmission is possible if you are on the same group"], 1, 0.82, 0}
+              {1, L["Error not receiving display information from %s"]:format(characterName), 1, 0, 0}
             })
           end
         end, 5);
@@ -603,21 +601,6 @@ function WeakAuras.Import(inData, target, callbackFunc, linkedAuras)
   return ImportNow(data, children, target, linkedAuras, nil, callbackFunc)
 end
 
-local function crossRealmSendCommMessage(prefix, text, target, queueName, callbackFn, callbackArg)
-  local chattype = "WHISPER"
-  -- WORKAROUND https://github.com/Stanzilla/WoWUIBugs/issues/535, and use RAID/PARTY comms for connected realms
-  if target and (UnitRealmRelationship(target) or 0) ~= 1 then
-    if UnitInRaid(target) then
-      chattype = "RAID"
-      text = ("§§%s:%s"):format(target, text)
-    elseif UnitInParty(target) then
-      chattype = "PARTY"
-      text = ("§§%s:%s"):format(target, text)
-    end
-  end
-  Comm:SendCommMessage(prefix, text, chattype, target, queueName, callbackFn, callbackArg)
-end
-
 local safeSenders = {}
 function RequestDisplay(characterName, displayName)
   safeSenders[characterName] = true
@@ -627,7 +610,7 @@ function RequestDisplay(characterName, displayName)
     d = displayName
   };
   local transmitString = TableToString(transmit);
-  crossRealmSendCommMessage("WeakAuras", transmitString, characterName);
+  Comm:SendCommMessage("WeakAuras", transmitString, "WHISPER", characterName);
 end
 
 function TransmitError(errorMsg, characterName)
@@ -635,14 +618,14 @@ function TransmitError(errorMsg, characterName)
     m = "dE",
     eM = errorMsg
   };
-  crossRealmSendCommMessage("WeakAuras", TableToString(transmit), characterName);
+  Comm:SendCommMessage("WeakAuras", TableToString(transmit), "WHISPER", characterName);
 end
 
 function TransmitDisplay(id, characterName)
   local encoded = Private.DisplayToString(id);
   if(encoded ~= "") then
-    crossRealmSendCommMessage("WeakAuras", encoded, characterName, "BULK", function(displayName, done, total)
-      crossRealmSendCommMessage("WeakAurasProg", done.." "..total.." "..displayName, characterName, "ALERT");
+    Comm:SendCommMessage("WeakAuras", encoded, "WHISPER", characterName, "BULK", function(displayName, done, total)
+      Comm:SendCommMessage("WeakAurasProg", done.." "..total.." "..displayName, "WHISPER", characterName, "ALERT");
     end, id);
   else
     TransmitError("dne", characterName);
@@ -650,18 +633,6 @@ function TransmitDisplay(id, characterName)
 end
 
 Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sender)
-  if distribution == "PARTY" or distribution == "RAID" then
-    local dest, msg = string.match(message, "^§§(.+):(.+)$")
-    if dest then
-      local dName, dServer = string.match(dest, "^(.*)-(.*)$")
-      local myName, myServer = UnitFullName("player")
-      if myName == dName and myServer == dServer then
-        message = msg
-      else
-        return
-      end
-    end
-  end
   if tooltipLoading and ItemRefTooltip:IsVisible() and safeSenders[sender] then
     receivedData = true;
     local done, total, displayName = strsplit(" ", message, 3)
@@ -680,19 +651,6 @@ Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sende
 end)
 
 Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
-  if distribution == "PARTY" or distribution == "RAID" then
-    local dest, msg = string.match(message, "^§§([^:]+):(.+)$")
-    if dest then
-      local dName, dServer = string.match(dest, "^(.*)-(.*)$")
-      local myName, myServer = UnitFullName("player")
-      if myName == dName and myServer == dServer then
-        message = msg
-      else
-        return
-      end
-    end
-  end
-
   local linkValidityDuration = 60 * 5
   local safeSender = safeSenders[sender]
   local validLink = false

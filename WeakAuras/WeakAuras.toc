@@ -1,4 +1,4 @@
-## Interface: 100207, 110000
+## Interface: 110005
 ## Title: WeakAuras
 ## Author: The WeakAuras Team
 ## Version: @project-version@
@@ -28,6 +28,7 @@ Libs\TaintLess\TaintLess.xml
 
 # Client flavor specific libs
 Libs\LibSpecialization\LibSpecialization.lua
+Libs\LibDispel\LibDispel.lua
 
 Init.lua
 Compatibility.lua
@@ -88,3 +89,4 @@ SubRegionTypes\Model.lua
 
 # Misc
 Legendaries.lua
+DiscordList.lua

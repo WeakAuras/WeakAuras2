@@ -17,7 +17,7 @@ jobs:
       require-result: ${{ steps.check-permission.outputs.require-result }}
 
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: [permission_check]
     outputs:
       artifact-id: ${{ steps.upload-artifact.outputs.artifact-id}}
@@ -52,7 +52,8 @@ jobs:
         id: upload-artifact
         with:
           name: WeakAuras-PR#${{ github.event.number }}-${{ github.sha }}
-          path: .release/
+          path:  .release/
+          include-hidden-files: true
 
   advertise:
     runs-on: ubuntu-latest
@@ -69,6 +70,7 @@ jobs:
           template-variables: |
             {
               "datestr": "${{ steps.datestr.outputs.datestr }}",
+              "sha": "${{ github.event.pull_request.head.sha }}",
               "repository": "${{ github.repository }}",
               "build_id": "${{ needs.build.outputs.artifact-id }}",
               "run_id": "${{ github.run_id }}"

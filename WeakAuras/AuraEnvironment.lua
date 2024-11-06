@@ -557,8 +557,20 @@ local exec_env_custom = setmetatable({
       return {}
     elseif overridden[k] then
       return overridden[k]
-    else
+    elseif _G[k] then
       return _G[k]
+    elseif k:find(".", 1, true) then
+      local f
+      for i, n in ipairs{strsplit(".", k)} do
+        if i == 1 then
+          f = _G[n]
+        elseif f then
+          f = f[n]
+        else
+          return
+        end
+      end
+      return f
     end
   end,
   __newindex = function(table, key, value)
@@ -630,20 +642,25 @@ local function firstLine(string)
 end
 
 local function CreateFunctionCache(exec_env)
-  local cache = {}
-  cache.Load = function(self, string)
-    if self[string] then
-      return self[string]
+  local cache = {
+    funcs = setmetatable({}, {__mode = "v"})
+  }
+  cache.Load = function(self, string, silent)
+    if self.funcs[string] then
+      return self.funcs[string]
     else
       local loadedFunction, errorString = loadstring(string, firstLine(string))
       if errorString then
-        print(errorString)
-      else
+        if not silent then
+          print(errorString)
+        end
+        return nil, errorString
+      elseif loadedFunction then
         --- @cast loadedFunction -nil
         setfenv(loadedFunction, exec_env)
         local success, func = pcall(assert(loadedFunction))
         if success then
-          self[string] = func
+          self.funcs[string] = func
           return func
         end
       end
@@ -659,8 +676,8 @@ function WeakAuras.LoadFunction(string)
   return function_cache_custom:Load(string)
 end
 
-function Private.LoadFunction(string)
-  return function_cache_builtin:Load(string)
+function Private.LoadFunction(string, silent)
+  return function_cache_builtin:Load(string, silent)
 end
 
 function Private.GetSanitizedGlobal(key)

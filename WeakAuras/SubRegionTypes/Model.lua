@@ -26,8 +26,7 @@ local default = function(parentType)
     model_st_rz = 0,
     model_st_us = 40,
 
-    model_fileId = "235338",
-    model_path = "spells/arcanepower_state_chest.m2",
+    model_fileId = WeakAuras.IsClassic() and "165589" or "235338",
     bar_model_clip = true
   }
 end
@@ -194,6 +193,7 @@ local funcs = {
 
 local function create()
   local subRegion = CreateFrame("Frame", nil, UIParent)
+  subRegion:SetFlattensRenderLayers(true)
   if not WeakAuras.IsTWW() then
     subRegion:SetClipsChildren(true)
   end

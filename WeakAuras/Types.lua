@@ -995,6 +995,10 @@ Private.debuff_class_types = {
   none = L["None"]
 }
 
+if WeakAuras.IsRetail() then
+  Private.debuff_class_types.bleed = L["Bleed"]
+end
+
 ---@type table<string, string>
 Private.player_target_events = {
   PLAYER_TARGET_CHANGED = "target",
@@ -1165,8 +1169,9 @@ Private.faction_group = {
 ---@type table<number, string>
 Private.form_types = {};
 local function update_forms()
-  wipe(Private.form_types);
-  Private.form_types[0] = "0 - "..L["Humanoid"]
+  local oldForms = Private.form_types
+  Private.form_types = {}
+  Private.form_types[0] = "0 - " .. L["Humanoid"]
   for i = 1, GetNumShapeshiftForms() do
     local _, _, _, id = GetShapeshiftFormInfo(i);
     if(id) then
@@ -1175,6 +1180,9 @@ local function update_forms()
         Private.form_types[i] = i.." - "..name
       end
     end
+  end
+  if Private.OptionsFrame and not tCompare(oldForms, Private.form_types) then
+    Private.OptionsFrame():ReloadOptions()
   end
 end
 
@@ -1666,7 +1674,7 @@ local function InitializeReputations()
   local index = 1
   while index <= Private.ExecEnv.GetNumFactions() do
     local factionData = Private.ExecEnv.GetFactionDataByIndex(index)
-    if factionData.isHeader and factionData.isCollapsed then
+    if factionData and factionData.isHeader and factionData.isCollapsed then
       Private.ExecEnv.ExpandFactionHeader(index)
       collapsed[factionData.name] = true
     end
@@ -1676,24 +1684,26 @@ local function InitializeReputations()
   -- Process all faction data
   for i = 1, Private.ExecEnv.GetNumFactions() do
     local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
-    if factionData.currentStanding > 0 or not factionData.isHeader then
-      local factionID = factionData.factionID
-      if factionID then
-        Private.reputations[factionID] = factionData.name
-        Private.reputations_sorted[factionID] = i
+    if factionData then
+      if factionData.currentStanding > 0 or not factionData.isHeader then
+        local factionID = factionData.factionID
+        if factionID then
+          Private.reputations[factionID] = factionData.name
+          Private.reputations_sorted[factionID] = i
+        end
+      else
+        local name = factionData.name
+        Private.reputations[name] = name
+        Private.reputations_sorted[name] = i
+        Private.reputations_headers[name] = true
       end
-    else
-      local name = factionData.name
-      Private.reputations[name] = name
-      Private.reputations_sorted[name] = i
-      Private.reputations_headers[name] = true
     end
   end
 
   -- Collapse headers back to their original state
   for i = Private.ExecEnv.GetNumFactions(), 1, -1 do
     local factionData = Private.ExecEnv.GetFactionDataByIndex(i)
-    if collapsed[factionData.name] then
+    if factionData and collapsed[factionData.name] then
       Private.ExecEnv.CollapseFactionHeader(i)
     end
   end
@@ -1800,18 +1810,20 @@ WeakAuras.spec_types_specific = {}
 
 ---@type table<number, string>
 Private.spec_types_all = {}
+Private.specs_sorted = {}
 local function update_specs()
-  local cataFix = WeakAuras.IsCataClassic() and -1 or 0 -- see https://github.com/Stanzilla/WoWUIBugs/issues/559
-  for classFileName, classID in pairs(WeakAuras.class_ids) do
+  for _, classFileName in pairs(WeakAuras.classes_sorted) do
+    local classID = WeakAuras.class_ids[classFileName]
     WeakAuras.spec_types_specific[classFileName] = {}
-    local numSpecs = WeakAuras.IsCataClassic() and 3 or GetNumSpecializationsForClassID(classID)
+    local numSpecs = WeakAuras.IsCataClassic() and 3 or GetNumSpecializationsForClassID(classID) -- see https://github.com/Stanzilla/WoWUIBugs/issues/559
     for i = 1, numSpecs do
-      local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i + cataFix);
+      local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i);
       if tabName then
         tinsert(WeakAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
         local classColor = WA_GetClassColor(classFileName)
         Private.spec_types_all[specId] = CreateAtlasMarkup(GetClassAtlas(classFileName:lower()))
         .. "|T"..(icon or "error")..":0|t "..(WrapTextInColorCode(tabName, classColor) or "error");
+        tinsert(Private.specs_sorted, specId)
       end
     end
   end
@@ -1829,14 +1841,6 @@ else
       local talentId = (tab - 1) * MAX_NUM_TALENTS + num_talent
       Private.talent_types[talentId] = L["Tab "]..tab.." - "..num_talent
     end
-  end
-end
-
----@type table<number, string>
-Private.pvp_talent_types = {}
-if WeakAuras.IsRetail() then
-  for i = 1,10 do
-    tinsert(Private.pvp_talent_types, string.format(L["PvP Talent %i"], i));
   end
 end
 
@@ -1972,6 +1976,8 @@ Private.texture_types = {
     ["2888300"] = "Demonic Core Vertical",
     ["4699056"] = "Essence Burst",
     ["4699057"] = "Snapfire",
+    ["6160020"] = "Arcane Soul",
+    ["6160021"] = "Hyperthermia",
   },
   ["Icons"] = {
     ["165558"] = "Paw",
@@ -2967,6 +2973,7 @@ Private.chat_message_types = {
   CHAT_MSG_BG_SYSTEM_HORDE = L["BG-System Horde"],
   CHAT_MSG_BN_WHISPER = L["Battle.net Whisper"],
   CHAT_MSG_CHANNEL = L["Channel"],
+  CHAT_MSG_COMMUNITIES_CHANNEL = L["Communities"],
   CHAT_MSG_EMOTE = L["Emote"],
   CHAT_MSG_GUILD = L["Guild"],
   CHAT_MSG_MONSTER_YELL = L["Monster Yell"],
@@ -3204,8 +3211,8 @@ end
 -- register options font
 LSM:Register("font", "Fira Mono Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraMono-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 -- Other Fira fonts
-LSM:Register("font", "Fira Sans Black", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraSans-Black.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
-LSM:Register("font", "Fira Sans Condensed Black", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraSansCondensed-Black.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
+LSM:Register("font", "Fira Sans Black", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraSans-Heavy.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
+LSM:Register("font", "Fira Sans Condensed Black", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraSansCondensed-Heavy.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 LSM:Register("font", "Fira Sans Condensed Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraSansCondensed-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 LSM:Register("font", "Fira Sans Medium", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\FiraSans-Medium.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
 LSM:Register("font", "PT Sans Narrow Regular", "Interface\\Addons\\WeakAuras\\Media\\Fonts\\PTSansNarrow-Regular.ttf", LSM.LOCALE_BIT_western + LSM.LOCALE_BIT_ruRU)
@@ -3528,7 +3535,8 @@ Private.update_categories = {
       "url",
       "desc",
       "version",
-      "semver"
+      "semver",
+      "wagoID", -- i don't *love* that we're so closely tied to wago, but eh
     },
     default = true,
     label = L["Meta Data"],
@@ -3897,7 +3905,15 @@ Private.difficulty_info = {
   [176] = {
     size = "twentyfive",
     difficulty = "heroic",
-  }
+  },
+  [186] = {
+    size = "fortyman",
+    difficulty = "normal",
+  },
+  [226] = {
+    size = "twenty",
+    difficulty = "normal",
+  },
 }
 
 Private.glow_types = {

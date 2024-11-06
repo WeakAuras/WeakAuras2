@@ -1071,6 +1071,7 @@ local function ProgressOptions(data)
   local options = {
     __title = L["Progress Settings"],
     __order = 98,
+    __collapsed = true
   }
 
   options.progressSource = {
@@ -1244,6 +1245,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
   local positionOptions = {
     __title = L["Position Settings"],
     __order = metaOrder,
+    __collapsed = true,
     width = {
       type = "range",
       control = "WeakAurasSpinBox",
@@ -1657,14 +1659,11 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
 
       code = "return " .. code;
 
-      local loadedFunction, errorString = loadstring(code);
+      local loadedFunction, errorString = OptionsPrivate.Private.LoadFunction(code, true);
 
       if not errorString then
         if options.validator then
-          local ok, validate = xpcall(loadedFunction, function(err) errorString = err end)
-          if ok then
-            errorString = options.validator(validate)
-          end
+          errorString = options.validator(loadedFunction)
         end
       end
       return errorString and "|cFFFF0000"..errorString or "";
