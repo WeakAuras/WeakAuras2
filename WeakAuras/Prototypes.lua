@@ -11204,71 +11204,68 @@ Private.event_prototypes = {
     name = WeakAuras.newFeatureString..L["Currency"],
     triggerFunction = function(trigger)
       local quantityConditions = {
-        {attribute = "quantity", override = "value", operator_key = "value_operator", use_key = "use_value"},
-        {attribute = "realCharacterQuantity", operator_key = "realCharacterQuantity_operator", use_key = "use_realCharacterQuantity"},
-        {attribute = "accountQuantity", operator_key = "accountQuantity_operator", use_key = "use_accountQuantity"},
-        {attribute = "realAccountQuantity", operator_key = "realAccountQuantity_operator", use_key = "use_realAccountQuantity"},
-        {attribute = "maxQuantity", operator_key = "maxQuantity_operator", use_key = "use_maxQuantity"},
-        {attribute = "quantityEarnedThisWeek", operator_key = "quantityEarnedThisWeek_operator", use_key = "use_quantityEarnedThisWeek"},
-        {attribute = "totalEarned", operator_key = "totalEarned_operator", use_key = "use_totalEarned"}
+        {attribute = "quantity", trigger = "value"},
+        {attribute = "realCharacterQuantity", trigger = "realCharacterQuantity"},
+        {attribute = "accountQuantity", trigger = "accountQuantity"},
+        {attribute = "realAccountQuantity", trigger = "realAccountQuantity"},
+        {attribute = "maxQuantity",  trigger = "maxQuantity"},
+        {attribute = "quantityEarnedThisWeek", trigger = "quantityEarnedThisWeek"},
+        {attribute = "totalEarned", trigger = "totalEarned"}
       }
 
       local tristateConditions = {
-        {attribute = "discovered", use_key = "use_discovered", primary = false},
-        {attribute = "capped", use_key = "use_capped", primary = false},
-        {attribute = "seasonCapped", use_key = "use_seasonCapped", primary = true},
-        {attribute = "weeklyCapped", use_key = "use_weeklyCapped", primary = true}
+        {attribute = "discovered", trigger = "discovered", primary = false},
+        {attribute = "capped", trigger = "capped", primary = false},
+        {attribute = "seasonCapped", trigger = "seasonCapped", primary = true},
+        {attribute = "weeklyCapped", trigger = "weeklyCapped", primary = true}
       }
 
       local cloneConditions = {
-        {attribute = "quantity", trigger_key = "use_value", operator_key = "value_operator", trigger_value_key = "value", check_type = "number"},
-        {attribute = "realCharacterQuantity", trigger_key = "use_realCharacterQuantity", operator_key = "realCharacterQuantity_operator", trigger_value_key = "realCharacterQuantity", check_type = "number"},
-        {attribute = "quantity", trigger_key = "use_capped",check_type = "tristate"}
+        {attribute = "quantity", trigger = "value", check_type = "number"},
+        {attribute = "realCharacterQuantity", trigger = "realCharacterQuantity", check_type = "number"},
+        {attribute = "capped", trigger = "capped", check_type = "tristate", condition = "(currencyData.quantity or 0) >= (currencyInfo.maxQuantity or 0)"}
       }
 
       local quantityChecks = {}
       local tristateChecks = {}
       local cloneChecks = {}
 
-      -- Iterate over quantity options
-      for _, option in ipairs(quantityConditions) do
-        if trigger[option.use_key] then
-          local operator = trigger[option.operator_key] or "<"
-          local triggerValue = trigger[option.override] or trigger[option.attribute]
+      -- Iterate over quantity checks
+      for _, check in ipairs(quantityConditions) do
+        if trigger["use_"..check.trigger] then
+          local operator = trigger[check.trigger.."_operator"] or "<"
+          local triggerValue = trigger[check.trigger] or 0
           table.insert(quantityChecks, ([[
             if not primaryCheckFailed and not check(currencyInfo.%s or 0, %s, %q) then
-              active = false %s
+                active = false %s
             end
-          ]]):format(option.attribute, tonumber(triggerValue), operator, option.attribute ~= "quantity" and option.attribute ~= "realCharacterQuantity" and "; primaryCheckFailed = true" or ""))
+          ]]):format(check.attribute, tonumber(triggerValue), operator, check.attribute ~= "quantity" and check.attribute ~= "realCharacterQuantity" and "; primaryCheckFailed = true" or ""))
         end
       end
 
-      -- Iterate over tristate options
-      for _, option in ipairs(tristateConditions) do
-        if trigger[option.use_key] ~= nil then
-          local tristateValue = trigger[option.use_key] and "true" or "false"
+      -- Iterate over tristate checks
+      for _, check in ipairs(tristateConditions) do
+        if trigger["use_"..check.trigger] ~= nil then
+          local tristateValue = trigger["use_"..check.trigger] and "true" or "false"
           table.insert(tristateChecks, ([[
             if tostring(currencyInfo.%s) ~= %q then active = false %s end
-            ]]):format(option.attribute, tristateValue, option.primary and "; primaryCheckFailed = true" or ""))
+          ]]):format(check.attribute, tristateValue, check.primary and "; primaryCheckFailed = true" or ""))
         end
       end
 
       -- Iterate over clone checks
       for _, check in ipairs(cloneConditions) do
-        if trigger[check.trigger_key] then
-          if check.check_type == "number" then
-            local operator = trigger[check.operator_key] or "<"
-            local triggerValue = trigger[check.trigger_value_key]
-            table.insert(cloneChecks, ([[
-              if cloneActive and not check(currencyData.%s or 0, %s, %q) then cloneActive = false end
-            ]]):format(check.attribute, tonumber(triggerValue), operator))
-
-          elseif check.check_type == "tristate" then
-            local isCapped = trigger.use_capped and "true" or "false"
-            table.insert(cloneChecks, ([[
-              if cloneActive and tostring((currencyData.%s or 0) >= (currencyInfo.maxQuantity or 0)) ~= %q then cloneActive = false end
-            ]]):format(check.attribute, isCapped))
-          end
+        if check.check_type == "number" and trigger["use_"..check.trigger] then
+          local operator = trigger[check.trigger.."_operator"] or "<"
+          local triggerValue = trigger[check.trigger] or 0
+          table.insert(cloneChecks, ([[
+            if cloneActive and not check(currencyData.%s or 0, %s, %q) then cloneActive = false end
+          ]]):format(check.attribute, tonumber(triggerValue), operator))
+        elseif check.check_type == "tristate" and trigger["use_"..check.trigger] ~= nil then
+          local tristateValue = trigger["use_"..check.trigger] and "true" or "false"
+          table.insert(cloneChecks, ([[
+            if cloneActive and tostring(%s) ~= %q then cloneActive = false end
+          ]]):format(check.condition, tristateValue))
         end
       end
 
@@ -11328,9 +11325,9 @@ Private.event_prototypes = {
         state.show = active
         state.value = currencyInfo.quantity
         state.realCharacterQuantity = currencyInfo.realCharacterQuantity
-        state.capped = (currencyInfo.quantity >= currencyInfo.maxQuantity)
-        state.seasonCapped = (currencyInfo.totalEarned >= currencyInfo.maxQuantity)
-        state.weeklyCapped = (currencyInfo.quantityEarnedThisWeek >= currencyInfo.maxWeeklyQuantity)
+        state.capped = currencyInfo.capped
+        state.seasonCapped = currencyInfo.seasonCapped
+        state.weeklyCapped = currencyInfo.weeklyCapped
         state.characterName = UnitName("player")
         state.characterGUID = playerGUID
         state.mainCharacter = true

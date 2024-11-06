@@ -5163,6 +5163,12 @@ Private.ExecEnv.GetCurrencyAccountInfo = function(currencyId)
     end
   end
 
+  if currencyInfo then
+    currencyInfo.capped = currencyInfo.maxQuantity and currencyInfo.maxQuantity > 0 and currencyInfo.quantity >= currencyInfo.maxQuantity
+    currencyInfo.seasonCapped = currencyInfo.maxQuantity and currencyInfo.maxQuantity > 0 and currencyInfo.useTotalEarnedForMaxQty and currencyInfo.totalEarned >= currencyInfo.maxQuantity
+    currencyInfo.weeklyCapped = currencyInfo.maxWeeklyQuantity and currencyInfo.maxWeeklyQuantity > 0 and currencyInfo.quantityEarnedThisWeek >= currencyInfo.maxWeeklyQuantity
+  end
+
   if not currencyInfo then
     currencyInfo = C_CurrencyInfo.GetCurrencyInfo(1) --Currency Token Test Token 4
     currencyInfo.iconFileID = "Interface\\Icons\\INV_Misc_QuestionMark" --We don't want the user to think their input was valid
