@@ -5142,12 +5142,10 @@ Private.ExecEnv.GetCurrencyAccountInfo = function(currencyId)
 
       for _, currencyData in ipairs(currencyInfo.accountCurrencyData) do
         if currencyData.quantity then
-          local realQuantity = currencyData.quantity
-          if currencyInfo.transferPercentage and currencyInfo.transferPercentage > 0 and currencyInfo.transferPercentage < 100 then
-            realQuantity = math.floor(realQuantity * (currencyInfo.transferPercentage/100))
+          if currencyInfo.transferPercentage then
+            currencyData.realCharacterQuantity = math.floor(currencyData.quantity * (currencyInfo.transferPercentage/100))
           end
-          currencyData.realCharacterQuantity = realQuantity
-          currencyInfo.realAccountQuantity = currencyInfo.realAccountQuantity + realQuantity
+          currencyInfo.realAccountQuantity = currencyInfo.realAccountQuantity + (currencyData.realCharacterQuantity or currencyData.quantity)
           currencyInfo.accountQuantity = currencyInfo.accountQuantity + currencyData.quantity
         end
       end

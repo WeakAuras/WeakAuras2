@@ -11208,7 +11208,7 @@ Private.event_prototypes = {
         {attribute = "realCharacterQuantity", trigger = "realCharacterQuantity"},
         {attribute = "accountQuantity", trigger = "accountQuantity"},
         {attribute = "realAccountQuantity", trigger = "realAccountQuantity"},
-        {attribute = "maxQuantity",  trigger = "maxQuantity"},
+        {attribute = "maxQuantity", trigger = "maxQuantity"},
         {attribute = "quantityEarnedThisWeek", trigger = "quantityEarnedThisWeek"},
         {attribute = "totalEarned", trigger = "totalEarned"}
       }
@@ -11246,10 +11246,10 @@ Private.event_prototypes = {
       -- Iterate over tristate checks
       for _, check in ipairs(tristateConditions) do
         if trigger["use_"..check.trigger] ~= nil then
-          local tristateValue = trigger["use_"..check.trigger] and "true" or "false"
+          local tristateValue = trigger["use_"..check.trigger]
           table.insert(tristateChecks, ([[
-            if tostring(currencyInfo.%s) ~= %q then active = false %s end
-          ]]):format(check.attribute, tristateValue, check.primary and "; primaryCheckFailed = true" or ""))
+            if currencyInfo.%s ~= %s then active = false %s end
+          ]]):format(check.attribute, tristateValue and "true" or "false", check.primary and "; primaryCheckFailed = true" or ""))
         end
       end
 
@@ -11262,10 +11262,10 @@ Private.event_prototypes = {
             if cloneActive and not check(currencyData.%s or 0, %s, %q) then cloneActive = false end
           ]]):format(check.attribute, tonumber(triggerValue), operator))
         elseif check.check_type == "tristate" and trigger["use_"..check.trigger] ~= nil then
-          local tristateValue = trigger["use_"..check.trigger] and "true" or "false"
+          local tristateValue = trigger["use_"..check.trigger]
           table.insert(cloneChecks, ([[
-            if cloneActive and tostring(%s) ~= %q then cloneActive = false end
-          ]]):format(check.condition, tristateValue))
+            if cloneActive and %s ~= %s then cloneActive = false end
+          ]]):format(check.condition, tristateValue and "true" or "false"))
         end
       end
 
@@ -11280,6 +11280,8 @@ Private.event_prototypes = {
         local clone = %s
         local active = true
         local primaryCheckFailed = false
+        local activeCharacterGUIDs = {}
+        local changed
 
         local operators = {
           ["<"] = function(a, b) return a < b end,
@@ -11314,43 +11316,57 @@ Private.event_prototypes = {
           transferPercentage = currencyInfo.transferPercentage,
           quantityEarnedThisWeek = currencyInfo.quantityEarnedThisWeek,
           totalEarned = currencyInfo.totalEarned,
-          changed = true,
         }
 
-        local playerGUID = UnitGUID("player")
-        local activeCharacterGUIDs = {[playerGUID] = true}
+        if active then
+          activeCharacterGUIDs[""] = true
+          states[""] = states[""] or {}
+          local state = states[""]
 
-        states[playerGUID] = states[playerGUID] or {}
-        local state = states[playerGUID]
-        state.show = active
-        state.value = currencyInfo.quantity
-        state.realCharacterQuantity = currencyInfo.realCharacterQuantity
-        state.capped = currencyInfo.capped
-        state.seasonCapped = currencyInfo.seasonCapped
-        state.weeklyCapped = currencyInfo.weeklyCapped
-        state.characterName = UnitName("player")
-        state.characterGUID = playerGUID
-        state.mainCharacter = true
+          if state.value == currencyInfo.quantity and state.discovered == currencyInfo.discovered and state.realCharacterQuantity == currencyInfo.realCharacterQuantity then
+            state.changed = false
+          else
+            changed = true
+            state.changed = true
+            state.show = active
+            state.value = currencyInfo.quantity
+            state.realCharacterQuantity = currencyInfo.realCharacterQuantity
+            state.capped = currencyInfo.capped
+            state.seasonCapped = currencyInfo.seasonCapped
+            state.weeklyCapped = currencyInfo.weeklyCapped
+            state.characterName = UnitName("player")
+            state.characterGUID = UnitGUID("player")
+            state.mainCharacter = true
+          end
+        end
 
-        if clone and currencyInfo.accountCurrencyData then
-          -- Build clone state
+        -- Create clone states
+        if clone and currencyInfo.accountCurrencyData and not primaryCheckFailed then
           for i, currencyData in ipairs(currencyInfo.accountCurrencyData) do
-            local cloneActive = not primaryCheckFailed
-            local cloneId = currencyData.characterGUID or tostring(i)
-            activeCharacterGUIDs[cloneId] = true
-            states[cloneId] = states[cloneId] or {}
-
-            local s = states[cloneId]
-            s.value = currencyData.quantity
-            s.realCharacterQuantity = currencyData.realCharacterQuantity
-            s.characterName = currencyData.characterName
-            s.characterGUID = currencyData.characterGUID
-            s.mainCharacter = false
+            local cloneActive = true
 
             -- Insert Clone-specific checks
             %s
 
-            s.show = cloneActive
+            if cloneActive then
+              local cloneId = currencyData.characterGUID or tostring(i)
+              activeCharacterGUIDs[cloneId] = true
+              states[cloneId] = states[cloneId] or {}
+              local s = states[cloneId]
+
+              if s.value == currencyData.quantity then
+                s.changed = false
+              else
+                changed = true
+                s.changed = true
+                s.value = currencyData.quantity
+                s.realCharacterQuantity = currencyData.realCharacterQuantity
+                s.characterName = currencyData.characterName
+                s.characterGUID = currencyData.characterGUID
+                s.mainCharacter = false
+                s.show = true
+              end
+            end
           end
         end
 
@@ -11366,7 +11382,7 @@ Private.event_prototypes = {
             end
           end
 
-        return true
+        return changed
       end
       ]=]
 
