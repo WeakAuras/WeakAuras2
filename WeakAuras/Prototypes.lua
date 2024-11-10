@@ -11353,6 +11353,7 @@ Private.event_prototypes = {
             if not activeCharacterGUIDs[cloneId] then
               state.show = false
               state.changed = true
+              changed = true
             else
               for key, value in pairs(sharedStateValues) do
                 state[key] = value
