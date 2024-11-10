@@ -11203,71 +11203,62 @@ Private.event_prototypes = {
     force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
     name = WeakAuras.newFeatureString..L["Currency"],
     triggerFunction = function(trigger)
-      local quantityConditions = {
-        {attribute = "quantity", trigger = "value"},
-        {attribute = "realCharacterQuantity", trigger = "realCharacterQuantity"},
-        {attribute = "accountQuantity", trigger = "accountQuantity"},
-        {attribute = "realAccountQuantity", trigger = "realAccountQuantity"},
-        {attribute = "maxQuantity", trigger = "maxQuantity"},
-        {attribute = "quantityEarnedThisWeek", trigger = "quantityEarnedThisWeek"},
-        {attribute = "totalEarned", trigger = "totalEarned"}
-      }
+      local quantityChecks, tristateChecks, cloneChecks = {}, {}, {}
 
-      local tristateConditions = {
-        {attribute = "discovered", trigger = "discovered", primary = false},
-        {attribute = "capped", trigger = "capped", primary = false},
-        {attribute = "seasonCapped", trigger = "seasonCapped", primary = true},
-        {attribute = "weeklyCapped", trigger = "weeklyCapped", primary = true}
-      }
+      local function createQuantityCheck(property, operator, value, primary, use)
+        if not use then return nil end
+        return([[
+          if not primaryCheckFailed and not ((currencyInfo["%s"] or 0) %s %s) then
+            active = false
+            %s
+          end
+        ]]):format(property, operator or "<", tonumber(value) or 0, primary and "primaryCheckFailed = true" or "")
+      end
 
-      local cloneConditions = {
-        {attribute = "quantity", trigger = "value", check_type = "number"},
-        {attribute = "realCharacterQuantity", trigger = "realCharacterQuantity", check_type = "number"},
-        {attribute = "capped", trigger = "capped", check_type = "tristate", condition = "(currencyData.quantity or 0) >= (currencyInfo.maxQuantity or 0)"}
-      }
+      local function createTristateCheck(property, value, primary)
+        if value == nil then return nil end
+        return([[
+          if currencyInfo["%s"] ~= %s then
+            active = false
+            %s
+          end
+        ]]):format(property, value and "true" or "false", primary and "primaryCheckFailed = true" or "")
+      end
 
-      local quantityChecks = {}
-      local tristateChecks = {}
-      local cloneChecks = {}
-
-      -- Iterate over quantity checks
-      for _, check in ipairs(quantityConditions) do
-        if trigger["use_"..check.trigger] then
-          local operator = trigger[check.trigger.."_operator"] or "<"
-          local triggerValue = trigger[check.trigger] or 0
-          table.insert(quantityChecks, ([[
-            if not primaryCheckFailed and not check(currencyInfo.%s or 0, %s, %q) then
-                active = false %s
+      local function createCloneCheck(property, operator, value, check_type, condition, use)
+        if check_type == "number" and use then
+          return([[
+            if cloneActive and not ((currencyData["%s"] or 0) %s %s) then
+              cloneActive = false
             end
-          ]]):format(check.attribute, tonumber(triggerValue), operator, check.attribute ~= "quantity" and check.attribute ~= "realCharacterQuantity" and "; primaryCheckFailed = true" or ""))
+          ]]):format(property, operator or "<", tonumber(value) or 0)
+        elseif check_type == "tristate" and value ~= nil then
+          return([[
+            if cloneActive and %s ~= %s then
+              cloneActive = false
+            end
+          ]]):format(condition, value and "true" or "false")
+        else
+          return nil
         end
       end
 
-      -- Iterate over tristate checks
-      for _, check in ipairs(tristateConditions) do
-        if trigger["use_"..check.trigger] ~= nil then
-          local tristateValue = trigger["use_"..check.trigger]
-          table.insert(tristateChecks, ([[
-            if currencyInfo.%s ~= %s then active = false %s end
-          ]]):format(check.attribute, tristateValue and "true" or "false", check.primary and "; primaryCheckFailed = true" or ""))
-        end
-      end
+      table.insert(quantityChecks, createQuantityCheck("quantity", trigger.value_operator, trigger.value, nil, trigger.use_value))
+      table.insert(quantityChecks, createQuantityCheck("realCharacterQuantity", trigger.realCharacterQuantity_operator, trigger.realCharacterQuantity, nil, trigger.use_realCharacterQuantity))
+      table.insert(quantityChecks, createQuantityCheck("accountQuantity", trigger.accountQuantity_operator, trigger.accountQuantity, true, trigger.use_accountQuantity))
+      table.insert(quantityChecks, createQuantityCheck("realAccountQuantity", trigger.realAccountQuantity_operator, trigger.realAccountQuantity, true, trigger.use_realAccountQuantity))
+      table.insert(quantityChecks, createQuantityCheck("maxQuantity", trigger.maxQuantity_operator, trigger.maxQuantity, true, trigger.use_maxQuantity))
+      table.insert(quantityChecks, createQuantityCheck("quantityEarnedThisWeek", trigger.quantityEarnedThisWeek_operator, trigger.quantityEarnedThisWeek, true, trigger.use_quantityEarnedThisWeek))
+      table.insert(quantityChecks, createQuantityCheck("totalEarned", trigger.totalEarned_operator, trigger.totalEarned, true, trigger.use_totalEarned))
 
-      -- Iterate over clone checks
-      for _, check in ipairs(cloneConditions) do
-        if check.check_type == "number" and trigger["use_"..check.trigger] then
-          local operator = trigger[check.trigger.."_operator"] or "<"
-          local triggerValue = trigger[check.trigger] or 0
-          table.insert(cloneChecks, ([[
-            if cloneActive and not check(currencyData.%s or 0, %s, %q) then cloneActive = false end
-          ]]):format(check.attribute, tonumber(triggerValue), operator))
-        elseif check.check_type == "tristate" and trigger["use_"..check.trigger] ~= nil then
-          local tristateValue = trigger["use_"..check.trigger]
-          table.insert(cloneChecks, ([[
-            if cloneActive and %s ~= %s then cloneActive = false end
-          ]]):format(check.condition, tristateValue and "true" or "false"))
-        end
-      end
+      table.insert(tristateChecks, createTristateCheck("discovered", trigger.use_discovered))
+      table.insert(tristateChecks, createTristateCheck("capped", trigger.use_capped))
+      table.insert(tristateChecks, createTristateCheck("seasonCapped", trigger.use_seasonCapped, true))
+      table.insert(tristateChecks, createTristateCheck("weeklyCapped", trigger.use_weeklyCapped, true))
+
+      table.insert(cloneChecks, createCloneCheck("quantity", trigger.value_operator, trigger.value, "number", nil, trigger.use_value))
+      table.insert(cloneChecks, createCloneCheck("realCharacterQuantity", trigger.realCharacterQuantity_operator, trigger.realCharacterQuantity, "number", nil, trigger.use_realCharacterQuantity))
+      table.insert(cloneChecks, createCloneCheck("capped", nil, trigger.use_capped, "tristate", "(currencyData.quantity or 0) >= (currencyInfo.maxQuantity or 0)"))
 
       -- Concatenate checkstring-tables into strings
       local quantityCheckString = table.concat(quantityChecks, "\n")
@@ -11282,19 +11273,6 @@ Private.event_prototypes = {
         local primaryCheckFailed = false
         local activeCharacterGUIDs = {}
         local changed
-
-        local operators = {
-          ["<"] = function(a, b) return a < b end,
-          [">"] = function(a, b) return a > b end,
-          ["=="] = function(a, b) return a == b end,
-          ["<="] = function(a, b) return a <= b end,
-          [">="] = function(a, b) return a >= b end,
-          ["~="] = function(a, b) return a ~= b end,
-        }
-
-        local function check(a, b, op)
-          return operators[op](a, b)
-        end
 
         -- Insert Quantity-related checks
         %s
