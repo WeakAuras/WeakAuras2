@@ -11301,9 +11301,7 @@ Private.event_prototypes = {
           states[""] = states[""] or {}
           local state = states[""]
 
-          if state.value == currencyInfo.quantity and state.discovered == currencyInfo.discovered and state.realCharacterQuantity == currencyInfo.realCharacterQuantity then
-            state.changed = false
-          else
+          if state.value ~= currencyInfo.quantity or state.realCharacterQuantity ~= currencyInfo.realCharacterQuantity then
             changed = true
             state.changed = true
             state.show = active
@@ -11332,9 +11330,7 @@ Private.event_prototypes = {
               states[cloneId] = states[cloneId] or {}
               local s = states[cloneId]
 
-              if s.value == currencyData.quantity then
-                s.changed = false
-              else
+              if s.value ~= currencyData.quantity then
                 changed = true
                 s.changed = true
                 s.value = currencyData.quantity
@@ -11356,7 +11352,11 @@ Private.event_prototypes = {
               changed = true
             else
               for key, value in pairs(sharedStateValues) do
-                state[key] = value
+                if state[key] ~= value then
+                  state[key] = value
+                  state.changed = true
+                  changed = true
+                end
               end
             end
           end
