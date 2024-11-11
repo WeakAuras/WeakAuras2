@@ -5131,19 +5131,21 @@ Private.ExecEnv.GetCurrencyAccountInfo = function(currencyId)
 
   -- Gather currency data for account characters
   if WeakAuras.IsRetail() and currencyInfo and currencyInfo.isAccountTransferable then
-    if C_CurrencyInfo.IsAccountCharacterCurrencyDataReady() then
+    local dataReady = C_CurrencyInfo.IsAccountCharacterCurrencyDataReady()
+    local accountCurrencyData = dataReady and C_CurrencyInfo.FetchCurrencyDataFromAccountCharacters(currencyId)
+
+    if dataReady and accountCurrencyData then
       currencyInfo.accountQuantity = currencyInfo.quantity
       currencyInfo.realAccountQuantity = currencyInfo.quantity
       if currencyInfo.transferPercentage then
-          currencyInfo.realCharacterQuantity = math.floor(currencyInfo.quantity * (currencyInfo.transferPercentage/100))
+        currencyInfo.realCharacterQuantity = math.floor(currencyInfo.quantity * (currencyInfo.transferPercentage / 100))
       end
 
-      currencyInfo.accountCurrencyData = C_CurrencyInfo.FetchCurrencyDataFromAccountCharacters(currencyId) or {}
-
+      currencyInfo.accountCurrencyData = accountCurrencyData
       for _, currencyData in ipairs(currencyInfo.accountCurrencyData) do
         if currencyData.quantity then
           if currencyInfo.transferPercentage then
-            currencyData.realCharacterQuantity = math.floor(currencyData.quantity * (currencyInfo.transferPercentage/100))
+            currencyData.realCharacterQuantity = math.floor(currencyData.quantity * (currencyInfo.transferPercentage / 100))
           end
           currencyInfo.realAccountQuantity = currencyInfo.realAccountQuantity + (currencyData.realCharacterQuantity or currencyData.quantity)
           currencyInfo.accountQuantity = currencyInfo.accountQuantity + currencyData.quantity
