@@ -11188,33 +11188,192 @@ Private.event_prototypes = {
   ["Currency"] = {
     type = "unit",
     progressType = "static",
-    events = {
-      ["events"] = {
+    events = function()
+      local events = {
         "CHAT_MSG_CURRENCY",
         "CURRENCY_DISPLAY_UPDATE",
       }
-    },
-    force_events = "CHAT_MSG_CURRENCY",
-    name = WeakAuras.newFeatureString..L["Currency"],
-    init = function(trigger)
-      local ret = [=[
-        local currencyInfo = C_CurrencyInfo.GetCurrencyInfo(%d)
-        if not currencyInfo then
-          currencyInfo = C_CurrencyInfo.GetCurrencyInfo(1) --Currency Token Test Token 4
-          currencyInfo.iconFileID = "Interface\\Icons\\INV_Misc_QuestionMark" --We don't want the user to think their input was valid
-        end
-      ]=]
-      -- WORKAROUND https://github.com/WeakAuras/WeakAuras2/issues/5106
-      if WeakAuras.IsCataClassic() then
-        ret = ret .. [=[
-          if currencyInfo.quantityEarnedThisWeek then
-            currencyInfo.quantityEarnedThisWeek = currencyInfo.quantityEarnedThisWeek / 100
-          end
-        ]=]
+      if WeakAuras.IsRetail() then
+        tinsert(events, "ACCOUNT_CHARACTER_CURRENCY_DATA_RECEIVED")
+        tinsert(events, "CURRENCY_TRANSFER_LOG_UPDATE")
       end
-      return ret:format(trigger.currencyId or 1)
+      return {["events"] = events}
     end,
-    statesParameter = "one",
+    internal_events = {"WA_DELAYED_PLAYER_ENTERING_WORLD"},
+    force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
+    name = WeakAuras.newFeatureString..L["Currency"],
+    triggerFunction = function(trigger)
+      local quantityChecks, tristateChecks, cloneChecks = {}, {}, {}
+
+      local function createQuantityCheck(property, operator, value, primary, use)
+        if not use then return nil end
+        return([[
+          if not primaryCheckFailed and not ((currencyInfo["%s"] or 0) %s %s) then
+            active = false
+            %s
+          end
+        ]]):format(property, operator or "<", tonumber(value) or 0, primary and "primaryCheckFailed = true" or "")
+      end
+
+      local function createTristateCheck(property, value, primary)
+        if value == nil then return nil end
+        return([[
+          if currencyInfo["%s"] ~= %s then
+            active = false
+            %s
+          end
+        ]]):format(property, value and "true" or "false", primary and "primaryCheckFailed = true" or "")
+      end
+
+      local function createCloneCheck(property, operator, value, check_type, condition, use)
+        if check_type == "number" and use then
+          return([[
+            if cloneActive and not ((currencyData["%s"] or 0) %s %s) then
+              cloneActive = false
+            end
+          ]]):format(property, operator or "<", tonumber(value) or 0)
+        elseif check_type == "tristate" and value ~= nil then
+          return([[
+            if cloneActive and %s ~= %s then
+              cloneActive = false
+            end
+          ]]):format(condition, value and "true" or "false")
+        else
+          return nil
+        end
+      end
+
+      table.insert(quantityChecks, createQuantityCheck("quantity", trigger.value_operator, trigger.value, nil, trigger.use_value))
+      table.insert(quantityChecks, createQuantityCheck("realCharacterQuantity", trigger.realCharacterQuantity_operator, trigger.realCharacterQuantity, nil, trigger.use_realCharacterQuantity))
+      table.insert(quantityChecks, createQuantityCheck("accountQuantity", trigger.accountQuantity_operator, trigger.accountQuantity, true, trigger.use_accountQuantity))
+      table.insert(quantityChecks, createQuantityCheck("realAccountQuantity", trigger.realAccountQuantity_operator, trigger.realAccountQuantity, true, trigger.use_realAccountQuantity))
+      table.insert(quantityChecks, createQuantityCheck("maxQuantity", trigger.maxQuantity_operator, trigger.maxQuantity, true, trigger.use_maxQuantity))
+      table.insert(quantityChecks, createQuantityCheck("quantityEarnedThisWeek", trigger.quantityEarnedThisWeek_operator, trigger.quantityEarnedThisWeek, true, trigger.use_quantityEarnedThisWeek))
+      table.insert(quantityChecks, createQuantityCheck("totalEarned", trigger.totalEarned_operator, trigger.totalEarned, true, trigger.use_totalEarned))
+
+      table.insert(tristateChecks, createTristateCheck("discovered", trigger.use_discovered))
+      table.insert(tristateChecks, createTristateCheck("capped", trigger.use_capped))
+      table.insert(tristateChecks, createTristateCheck("seasonCapped", trigger.use_seasonCapped, true))
+      table.insert(tristateChecks, createTristateCheck("weeklyCapped", trigger.use_weeklyCapped, true))
+
+      table.insert(cloneChecks, createCloneCheck("quantity", trigger.value_operator, trigger.value, "number", nil, trigger.use_value))
+      table.insert(cloneChecks, createCloneCheck("realCharacterQuantity", trigger.realCharacterQuantity_operator, trigger.realCharacterQuantity, "number", nil, trigger.use_realCharacterQuantity))
+      table.insert(cloneChecks, createCloneCheck("capped", nil, trigger.use_capped, "tristate", "(currencyData.quantity or 0) >= (currencyInfo.maxQuantity or 0)"))
+
+      -- Concatenate checkstring-tables into strings
+      local quantityCheckString = table.concat(quantityChecks, "\n")
+      local tristateCheckString = table.concat(tristateChecks, "\n")
+      local cloneCheckString = table.concat(cloneChecks, "\n")
+
+      local ret = [=[return
+      function(states)
+        local currencyInfo = Private.ExecEnv.GetCurrencyAccountInfo(%d)
+        local clone = %s
+        local active = true
+        local primaryCheckFailed = false
+        local activeCharacterGUIDs = {}
+        local changed
+
+        -- Insert Quantity-related checks
+        %s
+
+        -- Insert Tristate checks
+        %s
+
+        local sharedStateValues = {
+          name = currencyInfo.name,
+          icon = currencyInfo.iconFileID,
+          total = currencyInfo.maxQuantity,
+          maxQuantity = currencyInfo.maxQuantity,
+          progressType = "static",
+          accountQuantity = currencyInfo.accountQuantity,
+          realAccountQuantity = currencyInfo.realAccountQuantity,
+          description = currencyInfo.description,
+          quality = currencyInfo.quality,
+          discovered = currencyInfo.discovered,
+          transferPercentage = currencyInfo.transferPercentage,
+          quantityEarnedThisWeek = currencyInfo.quantityEarnedThisWeek,
+          totalEarned = currencyInfo.totalEarned,
+        }
+
+        if active then
+          activeCharacterGUIDs[""] = true
+          states[""] = states[""] or {}
+          local state = states[""]
+
+          if state.value ~= currencyInfo.quantity or state.realCharacterQuantity ~= currencyInfo.realCharacterQuantity then
+            changed = true
+            state.changed = true
+            state.show = active
+            state.value = currencyInfo.quantity
+            state.realCharacterQuantity = currencyInfo.realCharacterQuantity
+            state.capped = currencyInfo.capped
+            state.seasonCapped = currencyInfo.seasonCapped
+            state.weeklyCapped = currencyInfo.weeklyCapped
+            state.characterName = UnitName("player")
+            state.characterGUID = UnitGUID("player")
+            state.mainCharacter = true
+          end
+        end
+
+        -- Create clone states
+        if clone and currencyInfo.accountCurrencyData and not primaryCheckFailed then
+          for i, currencyData in ipairs(currencyInfo.accountCurrencyData) do
+            local cloneActive = true
+
+            -- Insert Clone-specific checks
+            %s
+
+            if cloneActive then
+              local cloneId = currencyData.characterGUID or tostring(i)
+              activeCharacterGUIDs[cloneId] = true
+              states[cloneId] = states[cloneId] or {}
+              local s = states[cloneId]
+
+              if s.value ~= currencyData.quantity then
+                changed = true
+                s.changed = true
+                s.value = currencyData.quantity
+                s.realCharacterQuantity = currencyData.realCharacterQuantity
+                s.characterName = currencyData.characterName
+                s.characterGUID = currencyData.characterGUID
+                s.mainCharacter = false
+                s.show = true
+              end
+            end
+          end
+        end
+
+        -- Remove inactive states or apply shared values
+          for cloneId, state in pairs(states) do
+            if not activeCharacterGUIDs[cloneId] then
+              state.show = false
+              state.changed = true
+              changed = true
+            else
+              for key, value in pairs(sharedStateValues) do
+                if state[key] ~= value then
+                  state[key] = value
+                  state.changed = true
+                  changed = true
+                end
+              end
+            end
+          end
+
+        return changed
+      end
+      ]=]
+
+      return ret:format(
+        trigger.currencyId or 1,
+        trigger.use_clones and "true" or "false",
+        quantityCheckString,
+        tristateCheckString,
+        cloneCheckString
+      );
+    end,
+    statesParameter = "full",
     args = {
       {
         name = "currencyId",
@@ -11243,14 +11402,12 @@ Private.event_prototypes = {
       },
       {
         name = "name",
-        init = "currencyInfo.name",
         hidden = true,
         store = true,
         test = "true",
       },
       {
         name = "value",
-        init = "currencyInfo.quantity",
         type = "number",
         display = L["Quantity"],
         store = true,
@@ -11258,29 +11415,54 @@ Private.event_prototypes = {
       },
       {
         name = "total",
-        init = "currencyInfo.maxQuantity",
         type = "number",
         hidden = true,
         store = true,
         test = "true",
       },
       {
-        name = "progressType",
-        init = "'static'",
-        hidden = true,
+        name = "icon",
         store = true,
+        hidden = true,
         test = "true",
       },
       {
-        name = "icon",
-        init = "currencyInfo.iconFileID",
+        name = "realCharacterQuantity",
+        type = "number",
+        display = L["Character Transferred Quantity"],
+        desc = L["The total quantity a warband character can transfer after paying the transfer cost"],
         store = true,
-        hidden = true,
-        test = "true",
+        conditionType = "number",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.isAccountTransferable
+        end
+      },
+      {
+        name = "accountQuantity",
+        type = "number",
+        display = L["Warband Quantity Total"],
+        store = true,
+        conditionType = "number",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.isAccountTransferable
+        end
+      },
+      {
+        name = "realAccountQuantity",
+        type = "number",
+        display = L["Warband Transferred Quantity"],
+        desc = L["The total quantity after transferring everything to your current character and paying the transfer cost"],
+        store = true,
+        conditionType = "number",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.isAccountTransferable
+        end
       },
       {
         name = "maxQuantity",
-        init = "currencyInfo.maxQuantity",
         type = "number",
         display = L["Max Quantity"],
         store = true,
@@ -11292,7 +11474,6 @@ Private.event_prototypes = {
       },
       {
         name = "quantityEarnedThisWeek",
-        init = "currencyInfo.quantityEarnedThisWeek",
         type = "number",
         display = L["Quantity earned this week"],
         store = true,
@@ -11304,7 +11485,6 @@ Private.event_prototypes = {
       },
       {
         name = "totalEarned",
-        init = "currencyInfo.totalEarned",
         type = "number",
         display = L["Total Earned in this Season"],
         store = true,
@@ -11317,7 +11497,6 @@ Private.event_prototypes = {
       -- Various Capped properties
       {-- quantity / maxQuantity cap
         name = "capped",
-        init = [[currencyInfo.maxQuantity > 0 and currencyInfo.quantity >= currencyInfo.maxQuantity]],
         type = "tristate",
         display = L["Capped"],
         store = true,
@@ -11329,7 +11508,6 @@ Private.event_prototypes = {
       },
       {-- "Season" Cap: totalEarned / maxQuantity
         name = "seasonCapped",
-        init = [[currencyInfo.maxQuantity > 0 and currencyInfo.totalEarned >= currencyInfo.maxQuantity]],
         type = "tristate",
         display = L["Capped at Season Max"],
         store = true,
@@ -11341,7 +11519,6 @@ Private.event_prototypes = {
       },
       {-- "Weekly" Cap: quantityEarnedThisWeek / maxWeeklyQuantity
         name = "weeklyCapped",
-        init = [[currencyInfo.maxWeeklyQuantity > 0 and currencyInfo.quantityEarnedThisWeek >= currencyInfo.maxWeeklyQuantity]],
         type = "tristate",
         display = L["Capped at Weekly Max"],
         store = true,
@@ -11353,7 +11530,6 @@ Private.event_prototypes = {
       },
       {
         name = "description",
-        init = "currencyInfo.description",
         type = "string",
         display = L["Description"],
         store = true,
@@ -11362,7 +11538,6 @@ Private.event_prototypes = {
       },
       {
         name = "quality",
-        init = "currencyInfo.quality",
         type = "number",
         display = L["Quality Id"],
         hidden = true,
@@ -11371,11 +11546,54 @@ Private.event_prototypes = {
       },
       {
         name = "discovered",
-        init = "currencyInfo.discovered",
         type = "tristate",
         display = L["Discovered"],
         store = true,
         conditionType = "bool",
+      },
+      {
+        name = "transferPercentage",
+        type = "number",
+        display = L["Warband Transfer Percentage"],
+        store = true,
+        conditionType = "number",
+        hidden = true,
+        test = "true",
+      },
+      {
+        name = "characterName",
+        type = "string",
+        display = L["Character Name"],
+        store = true,
+        hidden = true,
+        test = "true",
+      },
+      {
+        name = "characterGUID",
+        type = "string",
+        display = L["Character GUID"],
+        store = true,
+        hidden = true,
+        test = "true",
+      },
+      {
+        name = "mainCharacter",
+        type = "boolean",
+        display = L["Main Character"],
+        store = true,
+        conditionType = "bool",
+        hidden = true,
+        test = "true",
+      },
+      {
+        name = "clones",
+        type = "toggle",
+        display = L["Clone per Character"],
+        test = "true",
+        enable = function(trigger)
+          local currencyInfo = Private.GetCurrencyInfoForTrigger(trigger)
+          return currencyInfo and currencyInfo.isAccountTransferable
+        end
       },
     },
     GetNameAndIcon = function(trigger)
