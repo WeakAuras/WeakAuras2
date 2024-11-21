@@ -1016,14 +1016,14 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = L["Filter by Npc ID"],
       order = 69.31,
       hidden = function() return
-        not (trigger.type == "aura2" and trigger.unit == "nameplate")
+        not (trigger.type == "aura2" and (trigger.unit == "nameplate" or trigger.unit == "boss"))
       end
     },
     npcId = {
       type = "input",
       width = WeakAuras.normalWidth,
       name = L["Npc ID"],
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and trigger.useNpcId) end,
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "nameplate" or trigger.unit == "boss") and trigger.useNpcId) end,
       order = 69.32,
       desc = L["Supports multiple entries, separated by commas"]
     },
@@ -1032,7 +1032,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       name = "",
       order = 69.33,
       width = WeakAuras.normalWidth,
-      hidden = function() return not (trigger.type == "aura2" and trigger.unit == "nameplate" and not trigger.useNpcId) end
+      hidden = function() return not (trigger.type == "aura2" and (trigger.unit == "nameplate" or trigger.unit == "boss") and not trigger.useNpcId) end
     },
 
     ignoreSelf = {
