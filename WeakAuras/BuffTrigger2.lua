@@ -3171,7 +3171,7 @@ function BuffTrigger.Add(data)
       local effectiveIgnoreDisconnected = groupTrigger and trigger.ignoreDisconnected
       local effectiveIgnoreInvisible = groupTrigger and trigger.ignoreInvisible
       local effectiveNameCheck = groupTrigger and trigger.useUnitName and trigger.unitName
-      local effectiveNpcId = trigger.unit == "nameplate" and trigger.useNpcId and Private.ExecEnv.ParseStringCheck(trigger.npcId)
+      local effectiveNpcId = (trigger.unit == "nameplate" or trigger.unit == "boss") and trigger.useNpcId and Private.ExecEnv.ParseStringCheck(trigger.npcId)
       local effectiveInRange = WeakAuras.IsRetail() and groupTrigger and trigger.inRange
 
       if trigger.unit == "multi" then
