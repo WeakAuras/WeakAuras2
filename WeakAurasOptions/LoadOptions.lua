@@ -651,7 +651,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             hidden = disabled or hidden,
             image = function()
               local value = getValue(trigger, "use_"..realname, realname, multiEntry, entryNumber)
-              if value then
+              if type(value) == "number" or type(value) == "string" then
                 if(arg.type == "aura") then
                   local icon = spellCache.GetIcon(value);
                   return icon and tostring(icon) or "", 18, 18;
@@ -677,6 +677,9 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             end,
             disabled = function()
               local value = getValue(trigger, nil, realname, multiEntry, entryNumber)
+              if type(value) ~= "number" and type(value) ~= "string" then
+                return true
+              end
               return not ((arg.type == "aura" and value and spellCache.GetIcon(value)) or (arg.type == "spell" and value and OptionsPrivate.Private.ExecEnv.GetSpellName(value)) or (arg.type == "item" and value and C_Item.GetItemIconByID(value or '')))
             end
           };
@@ -714,7 +717,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                 end
               elseif(arg.type == "spell") then
                 local useExactSpellId = (arg.showExactOption and getValue(trigger, nil, "use_exact_"..realname, multiEntry, entryNumber))
-                if value and value ~= "" then
+                if value and value ~= "" and type(value) == "number" or type(value) == "string" then
                   local spellID = WeakAuras.SafeToNumber(value)
                   if spellID then
                     if arg.negativeIsEJ and WeakAuras.IsRetail() and spellID < 0 then
