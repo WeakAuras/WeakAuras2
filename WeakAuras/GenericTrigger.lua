@@ -274,7 +274,7 @@ local function singleTest(arg, trigger, name, value, operator, use_exact)
   end
 end
 
-function ConstructTest(trigger, arg, testGroups, preambleGroups)
+function ConstructTest(trigger, arg, preambleGroups)
   local test
   local preamble
   local name = arg.name;
@@ -333,7 +333,7 @@ function ConstructTest(trigger, arg, testGroups, preambleGroups)
     end
   end
 
-  if not test or test == "(true)" or arg.testGroup and testGroups[arg.testGroup] then
+  if not test or test == "(true)" then
     return nil, preamble
   end
 
@@ -368,7 +368,6 @@ function ConstructFunction(prototype, trigger)
   local preambles = "\n"
   local orConjunctionGroups = {}
   local preambleGroups = {}
-  local testGroups = {}
   if(prototype.init) then
     init = prototype.init(trigger);
   else
@@ -394,7 +393,7 @@ function ConstructFunction(prototype, trigger)
         if (arg.store) then
           tinsert(store, name);
         end
-        local test, preamble = ConstructTest(trigger, arg, testGroups, preambleGroups);
+        local test, preamble = ConstructTest(trigger, arg, preambleGroups);
         if (test) then
           if(arg.required) then
             tinsert(required, test);

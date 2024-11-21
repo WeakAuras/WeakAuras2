@@ -4713,7 +4713,6 @@ Private.event_prototypes = {
           preambleAdd = "spellChecker:AddExact(%q)"
         },
         test = "spellChecker:Check(spellId)",
-        testGroup = "spell",
         conditionType = "number",
         type = "spell",
         showExactOption = false,
@@ -4736,7 +4735,6 @@ Private.event_prototypes = {
           preambleAdd = "spellChecker:AddName(%q)"
         },
         test = "spellChecker:Check(spellId)",
-        testGroup = "spell",
         conditionType = "string"
       },
       {
@@ -8014,7 +8012,6 @@ Private.event_prototypes = {
         },
         preamble = "local spellChecker = Private.ExecEnv.CreateSpellChecker()",
         preambleGroup = "spell",
-        testGroup = "spell",
         test = "spellChecker:Check(spellId)",
         noValidation = true,
       },
@@ -8030,7 +8027,6 @@ Private.event_prototypes = {
         },
         preamble = "local spellChecker = Private.ExecEnv.CreateSpellChecker()",
         preambleGroup = "spell",
-        testGroup = "spell",
         test = "spellChecker:Check(spellId)",
         conditionType = "number",
         noProgressSource = true
@@ -9470,7 +9466,6 @@ Private.event_prototypes = {
           preambleAdd = "spellChecker:AddName(%q)"
         },
         test = "spellChecker:Check(spellId)",
-        testGroup = "spell",
         noValidation = true,
       },
       {
@@ -9485,7 +9480,6 @@ Private.event_prototypes = {
           preambleAdd = "spellChecker:AddExact(%q)"
         },
         test = "spellChecker:Check(spellId)",
-        testGroup = "spell",
       },
       {
         name = "spellId",
