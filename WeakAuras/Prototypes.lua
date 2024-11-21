@@ -8005,8 +8005,22 @@ Private.event_prototypes = {
       { -- castGUID
       },
       {
+        name = "spellNames",
+        display = L["Name(s)"],
+        type = "spell",
+        multiEntry = {
+          operator = "preamble",
+          preambleAdd = "spellChecker:AddName(%q)"
+        },
+        preamble = "local spellChecker = Private.ExecEnv.CreateSpellChecker()",
+        preambleGroup = "spell",
+        testGroup = "spell",
+        test = "spellChecker:Check(spellId)",
+        noValidation = true,
+      },
+      {
         name = "spellId",
-        display = L["Spell Id"],
+        display = L["Exact Spell ID(s)"],
         type = "spell",
         init = "arg",
         store = true,
@@ -8015,6 +8029,8 @@ Private.event_prototypes = {
           preambleAdd = "spellChecker:AddExact(%q)"
         },
         preamble = "local spellChecker = Private.ExecEnv.CreateSpellChecker()",
+        preambleGroup = "spell",
+        testGroup = "spell",
         test = "spellChecker:Check(spellId)",
         conditionType = "number",
         noProgressSource = true
