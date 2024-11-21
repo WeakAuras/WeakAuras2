@@ -2249,6 +2249,7 @@ Private.event_categories = {
 }
 
 local GetNameAndIconForSpellName = function(trigger)
+  if type(trigger.spellName) == "table" then return end
   local effectiveSpellId = Private.ExecEnv.GetEffectiveSpellId(trigger.spellName, trigger.use_exact_spellName, not trigger.use_ignoreoverride)
   local name, _, icon = Private.ExecEnv.GetSpellInfo(effectiveSpellId)
   return name, icon
