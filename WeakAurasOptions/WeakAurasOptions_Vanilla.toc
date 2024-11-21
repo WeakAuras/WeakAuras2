@@ -1,4 +1,4 @@
-## Interface: 11504
+## Interface: 11505
 ## Title: WeakAuras Options
 ## Author: The WeakAuras Team
 ## Version: @project-version@
