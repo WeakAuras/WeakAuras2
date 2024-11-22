@@ -10589,6 +10589,34 @@ Private.event_prototypes = {
         },
       },
       {
+        name = "resiliencerating",
+        display = L["Resilience Rating"],
+        type = "number",
+        init = "GetCombatRating(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)",
+        store = true,
+        enable = WeakAuras.IsCataClassic(),
+        conditionType = "number",
+        hidden = not WeakAuras.IsCataClassic(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
+      },
+      {
+        name = "resiliencepercent",
+        display = L["Resilience (%)"],
+        type = "number",
+        init = "GetCombatRatingBonus(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)",
+        store = true,
+        enable = WeakAuras.IsCataClassic(),
+        conditionType = "number",
+        hidden = not WeakAuras.IsCataClassic(),
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
+      },
+      {
         type = "header",
         name = "resistanceHeader",
         display = L["Resistances"],
