@@ -401,8 +401,6 @@ local function addControlsForChange(args, order, data, conditionVariable, totalA
           conditions[i].changes[j].value = {};
         end
         conditions[i].changes[j].value[property] = v;
-
-        WeakAuras.Add(data)
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
     end
