@@ -1397,6 +1397,24 @@ Private.load_prototype = {
       events = {"PLAYER_MOUNT_DISPLAY_CHANGED"}
     },
     {
+      name = "hardcore",
+      display = L["Hardcore"],
+      type = "tristate",
+      init = WeakAuras.IsClassicEra() and "arg" or nil,
+      width = WeakAuras.normalWidth,
+      enable = WeakAuras.IsClassicEra(),
+      hidden = not WeakAuras.IsClassicEra(),
+    },
+    {
+      name = "engraving",
+      display = L["Season of Discovery"],
+      type = "tristate",
+      init = WeakAuras.IsClassicEra() and "arg" or nil,
+      width = WeakAuras.normalWidth,
+      enable = WeakAuras.IsClassicEra(),
+      hidden = not WeakAuras.IsClassicEra(),
+    },
+    {
       name ="playerTitle",
       display = L["Player"],
       type = "description",
