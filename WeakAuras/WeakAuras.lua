@@ -2646,14 +2646,22 @@ function Private.AddMany(tbl, takeSnapshots)
       copies[data.uid] = CopyTable(data)
       coroutine.yield(200, "addmany prepare snapshot")
     end
-    Private.Threads:Add("snapshot", coroutine.create(function()
-      prettyPrint(L["WeakAuras is creating a rollback snapshot of your auras. This snapshot will allow you to revert to the current state of your auras if something goes wrong. This process may cause your framerate to drop until it is complete."])
-      for uid, data in pairs(copies) do
-        Private.SetMigrationSnapshot(uid, data)
-        coroutine.yield(200, "snapshot")
+    if #order > 0 then
+      Private.Threads:Add("snapshot", coroutine.create(function()
+        prettyPrint(L["WeakAuras is creating a rollback snapshot of your auras. This snapshot will allow you to revert to the current state of your auras if something goes wrong. This process may cause your framerate to drop until it is complete."])
+        for uid, data in pairs(copies) do
+          Private.SetMigrationSnapshot(uid, data)
+          coroutine.yield(200, "snapshot")
+        end
+        prettyPrint(L["Rollback snapshot is complete. Thank you for your patience!"])
+      end), 'normal')
+    else
+      if next(WeakAuras.LoadFromArchive("Repository", "migration").stores) ~= nil then
+        C_Timer.After(1, function()
+          prettyPrint(L["WeakAuras has detected empty settings. If this is unexpected, ask for assitance on https://discord.gg/weakauras."])
+        end)
       end
-      prettyPrint(L["Rollback snapshot is complete. Thank you for your patience!"])
-    end), 'normal')
+    end
   end
 
   local groups = {}
