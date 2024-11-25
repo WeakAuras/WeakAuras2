@@ -3610,6 +3610,22 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "125988",
+      text = "spectraltiger.m2",
+      value = "spectraltiger.m2",
+     },
+     {
+      fileId = "125989",
+      text = "spectraltigerepic.m2",
+      value = "spectraltigerepic.m2",
+     },
+    },
+    text = "spectraltiger",
+    value = "spectraltiger",
+   },
+   {
+    children = {
+     {
       fileId = "125990",
       text = "airelementaltotem.m2",
       value = "airelementaltotem.m2",
@@ -18921,6 +18937,11 @@ WeakAuras.ModelPaths = {
     value = "7fx_weaponenchant_nightmare.m2",
    },
    {
+    fileId = "2532429",
+    text = "8fx_generic_coin_impact.m2",
+    value = "8fx_generic_coin_impact.m2",
+   },
+   {
     fileId = "1733364",
     text = "8fx_nazmir_bloodtroll_basickit_casthand.m2",
     value = "8fx_nazmir_bloodtroll_basickit_casthand.m2",
@@ -18964,6 +18985,11 @@ WeakAuras.ModelPaths = {
     fileId = "2066495",
     text = "8fx_uldir_bloodofghuun_liquify_aura.m2",
     value = "8fx_uldir_bloodofghuun_liquify_aura.m2",
+   },
+   {
+    fileId = "2480349",
+    text = "8fx_vaultguardian_coinmeteor_impact.m2",
+    value = "8fx_vaultguardian_coinmeteor_impact.m2",
    },
    {
     fileId = "165529",
@@ -22778,6 +22804,16 @@ WeakAuras.ModelPaths = {
     fileId = "166931",
     text = "spawn_impact_base.m2",
     value = "spawn_impact_base.m2",
+   },
+   {
+    fileId = "613809",
+    text = "spell_warlockmorphwings.m2",
+    value = "spell_warlockmorphwings.m2",
+   },
+   {
+    fileId = "904954",
+    text = "spell_warlockmorphwings_fel.m2",
+    value = "spell_warlockmorphwings_fel.m2",
    },
    {
     fileId = "166932",
@@ -30585,6 +30621,40 @@ WeakAuras.ModelPaths = {
     },
     text = "environment",
     value = "environment",
+   },
+   {
+    children = {
+     {
+      children = {
+       {
+        children = {
+         {
+          children = {
+           {
+            fileId = "384743",
+            text = "uldum_titan_chest01.m2",
+            value = "uldum_titan_chest01.m2",
+           },
+           {
+            fileId = "384744",
+            text = "uldum_titan_chest02.m2",
+            value = "uldum_titan_chest02.m2",
+           },
+          },
+          text = "titan",
+          value = "titan",
+         },
+        },
+        text = "uldum",
+        value = "uldum",
+       },
+      },
+      text = "doodads",
+      value = "doodads",
+     },
+    },
+    text = "expansion03",
+    value = "expansion03",
    },
    {
     children = {
