@@ -139,9 +139,9 @@ Private.ExecEnv.BossMods.DBM = {
           end
           if not bar.expired then
             bar.expired = true
-            WeakAuras.ScanEvents("DBM_TimerStop", timerId)
+            Private.ScanEvents("DBM_TimerStop", timerId)
             if self.isGeneric then
-              WeakAuras.ScanEvents("BossMod_TimerStop", timerId)
+              Private.ScanEvents("BossMod_TimerStop", timerId)
             end
           end
         elseif self.nextExpire == nil then
@@ -159,10 +159,10 @@ Private.ExecEnv.BossMods.DBM = {
   EventCallback = function(self, event, ...)
     if event == "DBM_Announce" then
       local message, icon, _, spellId, _, count = ...
-      WeakAuras.ScanEvents("DBM_Announce", spellId, message, icon)
+      Private.ScanEvents("DBM_Announce", spellId, message, icon)
       if self.isGeneric then
         count = count and tostring(count) or "0"
-        WeakAuras.ScanEvents("BossMod_Announce", spellId, message, icon, count)
+        Private.ScanEvents("BossMod_Announce", spellId, message, icon, count)
       end
     elseif event == "DBM_TimerStart" then
       local timerId, msg, duration, icon, timerType, spellId, dbmType, _, _, _, _, _, timerCount = ...
@@ -211,9 +211,9 @@ Private.ExecEnv.BossMods.DBM = {
       end
       bar.dbmColor = {r, g, b}
 
-      WeakAuras.ScanEvents("DBM_TimerStart", timerId)
+      Private.ScanEvents("DBM_TimerStart", timerId)
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_TimerStart", timerId)
+        Private.ScanEvents("BossMod_TimerStart", timerId)
       end
       if self.nextExpire == nil then
         self.recheckTimer = timer:ScheduleTimerFixed(self.RecheckTimers, expirationTime - now, self)
@@ -231,9 +231,9 @@ Private.ExecEnv.BossMods.DBM = {
           self.bars[timerId] = nil
         end
         bar.expired = true
-        WeakAuras.ScanEvents("DBM_TimerStop", timerId)
+        Private.ScanEvents("DBM_TimerStop", timerId)
         if self.isGeneric then
-          WeakAuras.ScanEvents("BossMod_TimerStop", timerId)
+          Private.ScanEvents("BossMod_TimerStop", timerId)
         end
       end
     elseif event == "DBM_TimerPause" then
@@ -242,9 +242,9 @@ Private.ExecEnv.BossMods.DBM = {
       if bar then
         bar.paused = true
         bar.remaining = bar.expirationTime - GetTime()
-        WeakAuras.ScanEvents("DBM_TimerPause", timerId)
+        Private.ScanEvents("DBM_TimerPause", timerId)
         if self.isGeneric then
-          WeakAuras.ScanEvents("BossMod_TimerPause", timerId)
+          Private.ScanEvents("BossMod_TimerPause", timerId)
         end
         if self.recheckTimer then
           timer:CancelTimer(self.recheckTimer)
@@ -258,9 +258,9 @@ Private.ExecEnv.BossMods.DBM = {
         bar.paused = nil
         bar.expirationTime = GetTime() + (bar.remaining or 0)
         bar.remaining = nil
-        WeakAuras.ScanEvents("DBM_TimerResume", timerId)
+        Private.ScanEvents("DBM_TimerResume", timerId)
         if self.isGeneric then
-          WeakAuras.ScanEvents("BossMod_TimerResume", timerId)
+          Private.ScanEvents("BossMod_TimerResume", timerId)
         end
         if self.nextExpire == nil then
           self.recheckTimer = timer:ScheduleTimerFixed(self.RecheckTimers, bar.expirationTime - GetTime(), self)
@@ -288,9 +288,9 @@ Private.ExecEnv.BossMods.DBM = {
           self.nextExpire = expirationTime
         end
       end
-      WeakAuras.ScanEvents("DBM_TimerUpdate", timerId)
+      Private.ScanEvents("DBM_TimerUpdate", timerId)
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_TimerUpdate", timerId)
+        Private.ScanEvents("BossMod_TimerUpdate", timerId)
       end
     elseif event == "DBM_TimerUpdateIcon" then
       local timerId, icon = ...
@@ -298,14 +298,14 @@ Private.ExecEnv.BossMods.DBM = {
       if bar then
         bar.icon = icon
       end
-      WeakAuras.ScanEvents("DBM_TimerUpdateIcon", timerId)
+      Private.ScanEvents("DBM_TimerUpdateIcon", timerId)
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_TimerUpdateIcon", timerId)
+        Private.ScanEvents("BossMod_TimerUpdateIcon", timerId)
       end
     elseif event == "DBM_SetStage" or event == "DBM_Pull" or event == "DBM_Wipe" or event == "DBM_Kill" then
-      WeakAuras.ScanEvents("DBM_SetStage")
+      Private.ScanEvents("DBM_SetStage")
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_SetStage")
+        Private.ScanEvents("BossMod_SetStage")
       end
     end
   end,
@@ -343,9 +343,9 @@ Private.ExecEnv.BossMods.DBM = {
 
   DoScan = function(self, fireTime)
     self.scheduled_scans[fireTime] = nil
-    WeakAuras.ScanEvents("DBM_TimerUpdate")
+    Private.ScanEvents("DBM_TimerUpdate")
     if self.isGeneric then
-      WeakAuras.ScanEvents("BossMod_TimerUpdate")
+      Private.ScanEvents("BossMod_TimerUpdate")
     end
   end,
 
@@ -808,9 +808,9 @@ Private.ExecEnv.BossMods.BigWigs = {
           end
           if not bar.expired then
             bar.expired = true
-            WeakAuras.ScanEvents("BigWigs_StopBar", timerId)
+            Private.ScanEvents("BigWigs_StopBar", timerId)
             if self.isGeneric then
-              WeakAuras.ScanEvents("BossMod_TimerStop", timerId)
+              Private.ScanEvents("BossMod_TimerStop", timerId)
             end
           end
         elseif self.nextExpire == nil then
@@ -828,11 +828,11 @@ Private.ExecEnv.BossMods.BigWigs = {
 
   EventCallback = function(self, event, ...)
     if event == "BigWigs_Message" then
-      WeakAuras.ScanEvents("BigWigs_Message", ...)
+      Private.ScanEvents("BigWigs_Message", ...)
       if self.isGeneric then
         local _, spellId, text, _, icon = ...
         local count = text and text:match("%((%d+)%)") or text:match("（(%d+)）") or "0"
-        WeakAuras.ScanEvents("BossMod_Announce", spellId, text, icon, count)
+        Private.ScanEvents("BossMod_Announce", spellId, text, icon, count)
       end
     elseif event == "BigWigs_StartBar" then
       local addon, spellId, text, duration, icon, isCD = ...
@@ -857,9 +857,9 @@ Private.ExecEnv.BossMods.BigWigs = {
       bar.count = text:match("%((%d+)%)") or text:match("（(%d+)）") or "0"
       bar.cast = not(text:match("^[^<]") and true)
 
-      WeakAuras.ScanEvents("BigWigs_StartBar", text)
+      Private.ScanEvents("BigWigs_StartBar", text)
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_TimerStart", text)
+        Private.ScanEvents("BossMod_TimerStart", text)
       end
       if self.nextExpire == nil then
         self.recheckTimer = timer:ScheduleTimerFixed(self.RecheckTimers, expirationTime - now, self)
@@ -876,9 +876,9 @@ Private.ExecEnv.BossMods.BigWigs = {
         if bar.scheduledScanExpireAt == nil or bar.scheduledScanExpireAt <= GetTime() then
           self.bars[text] = nil
         end
-        WeakAuras.ScanEvents("BigWigs_StopBar", text)
+        Private.ScanEvents("BigWigs_StopBar", text)
         if self.isGeneric then
-          WeakAuras.ScanEvents("BossMod_TimerStop", text)
+          Private.ScanEvents("BossMod_TimerStop", text)
         end
       end
     elseif event == "BigWigs_PauseBar" then
@@ -887,9 +887,9 @@ Private.ExecEnv.BossMods.BigWigs = {
       if bar and not bar.paused then
         bar.paused = true
         bar.remaining = bar.expirationTime - GetTime()
-        WeakAuras.ScanEvents("BigWigs_PauseBar", text)
+        Private.ScanEvents("BigWigs_PauseBar", text)
         if self.isGeneric then
-          WeakAuras.ScanEvents("BossMod_TimerPause", text)
+          Private.ScanEvents("BossMod_TimerPause", text)
         end
         if self.recheckTimer then
           timer:CancelTimer(self.recheckTimer)
@@ -903,9 +903,9 @@ Private.ExecEnv.BossMods.BigWigs = {
         bar.paused = nil
         bar.expirationTime = GetTime() + (bar.remaining or 0)
         bar.remaining = nil
-        WeakAuras.ScanEvents("BigWigs_ResumeBar", text)
+        Private.ScanEvents("BigWigs_ResumeBar", text)
         if self.isGeneric then
-          WeakAuras.ScanEvents("BossMod_TimerResume", text)
+          Private.ScanEvents("BossMod_TimerResume", text)
         end
         if self.nextExpire == nil then
           self.recheckTimer = timer:ScheduleTimerFixed(self.RecheckTimers, bar.expirationTime - GetTime(), self)
@@ -923,24 +923,24 @@ Private.ExecEnv.BossMods.BigWigs = {
       for timerId, bar in pairs(self.bars) do
         if bar.addon == addon then
           self.bars[timerId] = nil
-          WeakAuras.ScanEvents("BigWigs_StopBar", timerId)
+          Private.ScanEvents("BigWigs_StopBar", timerId)
           if self.isGeneric then
-            WeakAuras.ScanEvents("BossMod_TimerStop", timerId)
+            Private.ScanEvents("BossMod_TimerStop", timerId)
           end
         end
       end
     elseif event == "BigWigs_SetStage" then
       local addon, stage = ...
       self.currentStage = stage
-      WeakAuras.ScanEvents("BigWigs_SetStage")
+      Private.ScanEvents("BigWigs_SetStage")
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_SetStage")
+        Private.ScanEvents("BossMod_SetStage")
       end
     elseif event == "BigWigs_OnBossWipe" or event == "BigWigs_OnBossWin" then
       self.currentStage = 0
-      WeakAuras.ScanEvents("BigWigs_SetStage")
+      Private.ScanEvents("BigWigs_SetStage")
       if self.isGeneric then
-        WeakAuras.ScanEvents("BossMod_SetStage")
+        Private.ScanEvents("BossMod_SetStage")
       end
     end
   end,
@@ -990,9 +990,9 @@ Private.ExecEnv.BossMods.BigWigs = {
 
   DoScan = function(self, fireTime)
     self.scheduled_scans[fireTime] = nil
-    WeakAuras.ScanEvents("BigWigs_Timer_Update")
+    Private.ScanEvents("BigWigs_Timer_Update")
     if self.isGeneric then
-      WeakAuras.ScanEvents("BossMod_TimerUpdate")
+      Private.ScanEvents("BossMod_TimerUpdate")
     end
   end,
 

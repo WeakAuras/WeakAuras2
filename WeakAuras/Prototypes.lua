@@ -136,7 +136,7 @@ if WeakAuras.IsRetail() then
         castLatencyFrame:GetScript("OnEvent")(nil, event, unit, ...)
       end
     end
-    WeakAuras.ScanUnitEvents(event.."_FAKE", unit, ...)
+    Private.ScanUnitEvents(event.."_FAKE", unit, ...)
   end)
 else
   WeakAuras.UnitChannelInfo = UnitChannelInfo
@@ -766,7 +766,7 @@ if WeakAuras.IsRetail() then
       end
     end
     Private.ScanForLoads(nil, "WA_TALENT_UPDATE")
-    WeakAuras.ScanEvents("WA_TALENT_UPDATE")
+    Private.ScanEvents("WA_TALENT_UPDATE")
 
     if (event == "WA_DELAYED_PLAYER_ENTERING_WORLD" or event == "PLAYER_TALENT_UPDATE") then
       C_Timer.After(1, function()
@@ -1158,7 +1158,7 @@ do
     if waitingFor[itemId] then
       waitingFor[itemId] = nil
       if success then
-        WeakAuras.ScanEvents("WA_DELAYED_SET_INFORMATION")
+        Private.ScanEvents("WA_DELAYED_SET_INFORMATION")
       end
       if next(waitingFor) == nil then
         itemDataLoadFrame:UnregisterEvent("GET_ITEM_INFO_RECEIVED")

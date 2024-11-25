@@ -835,21 +835,47 @@ local function getGameEventFromComposedEvent(composedEvent)
   return separatorPosition == nil and composedEvent or composedEvent:sub(1, separatorPosition - 1)
 end
 
+local scannerFrame = CreateFrame("Frame")
+scannerFrame.queue = {}
+scannerFrame:Hide()
+scannerFrame:SetScript("OnUpdate", function(self)
+  local todo = self.queue
+  self.queue = {}
+  for _, event in ipairs(todo) do
+    event.func(unpack(event.args))
+  end
+  -- there's a chance that a joker dispatched an event in in trigger code,
+  -- so the queue might already be populated
+  -- in that case, we'll process next frame by declining to hide
+  if #self.queue == 0 then
+    self:Hide()
+  end
+end)
+
+function scannerFrame:Queue(func, ...)
+  tinsert(self.queue, {func = func, args = {...}})
+  self:Show()
+end
+
 function Private.ScanEventsByID(event, id, ...)
   if loaded_events[event] then
-    WeakAuras.ScanEvents(event, id, ...)
+    Private.ScanEvents(event, id, ...)
   end
   local eventWithID = event .. ":" .. id
   if loaded_events[eventWithID] then
-    WeakAuras.ScanEvents(eventWithID, id, ...)
+    Private.ScanEvents(eventWithID, id, ...)
   end
+end
+
+function WeakAuras.ScanEventsByID(event, id, ...)
+  scannerFrame:Queue(Private.ScanEventsByID, event, id, ...)
 end
 
 ---@param event string
 ---@param arg1? any
 ---@param arg2? any
 ---@param ... any
-function WeakAuras.ScanEvents(event, arg1, arg2, ...)
+function Private.ScanEvents(event, arg1, arg2, ...)
   local system = getGameEventFromComposedEvent(event)
   Private.StartProfileSystem("generictrigger " .. system)
   local event_list = loaded_events[event];
@@ -865,24 +891,28 @@ function WeakAuras.ScanEvents(event, arg1, arg2, ...)
       Private.StopProfileSystem("generictrigger " .. system)
       return;
     end
-    WeakAuras.ScanEventsInternal(event_list, event, CombatLogGetCurrentEventInfo());
+    Private.ScanEventsInternal(event_list, event, CombatLogGetCurrentEventInfo());
 
   elseif (event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
     -- This reverts the COMBAT_LOG_EVENT_UNFILTERED_CUSTOM workaround so that custom triggers that check the event argument will work as expected
     if(event == "COMBAT_LOG_EVENT_UNFILTERED_CUSTOM") then
       event = "COMBAT_LOG_EVENT_UNFILTERED";
     end
-    WeakAuras.ScanEventsInternal(event_list, event, CombatLogGetCurrentEventInfo());
+    Private.ScanEventsInternal(event_list, event, CombatLogGetCurrentEventInfo());
   else
-    WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ...);
+    Private.ScanEventsInternal(event_list, event, arg1, arg2, ...);
   end
   Private.StopProfileSystem("generictrigger " .. system)
+end
+
+function WeakAuras.ScanEvents(event, arg1, arg2, ...)
+  scannerFrame:Queue(Private.ScanEvents, event, arg1, arg2, ...)
 end
 
 ---@param event string
 ---@param unit UnitToken
 ---@param ... any
-function WeakAuras.ScanUnitEvents(event, unit, ...)
+function Private.ScanUnitEvents(event, unit, ...)
   Private.StartProfileSystem("generictrigger " .. event .. " " .. unit)
   local unit_list = loaded_unit_events[unit]
   if unit_list then
@@ -914,13 +944,17 @@ function WeakAuras.ScanUnitEvents(event, unit, ...)
   Private.StopProfileSystem("generictrigger " .. event .. " " .. unit)
 end
 
+function WeakAuras.ScanUnitEvents(event, unit, ...)
+  scannerFrame:Queue(Private.ScanUnitEvents, event, unit, ...)
+end
+
 ---@private
 ---@param event_list table<string>
 ---@param event string
 ---@param arg1? any
 ---@param arg2? any
 ---@param ... any
-function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
+function Private.ScanEventsInternal(event_list, event, arg1, arg2, ... )
   for id, triggers in pairs(event_list) do
     Private.StartProfileAura(id);
     Private.ActivateAuraEnvironment(id);
@@ -942,6 +976,10 @@ function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
     Private.StopProfileAura(id);
     Private.ActivateAuraEnvironment(nil);
   end
+end
+
+function WeakAuras.ScanEventsInternal(event_list, event, arg1, arg2, ... )
+  scannerFrame:Queue(Private.ScanEventsInternal, event_list, event, arg1, arg2, ...)
 end
 
 do
@@ -1154,12 +1192,12 @@ function HandleEvent(frame, event, arg1, arg2, ...)
 
   if not(WeakAuras.IsPaused()) then
     if(event == "COMBAT_LOG_EVENT_UNFILTERED") then
-      WeakAuras.ScanEvents(event);
+      Private.ScanEvents(event);
       -- This triggers the scanning of "hacked" COMBAT_LOG_EVENT_UNFILTERED events that were renamed in order to circumvent
       -- the "proper" COMBAT_LOG_EVENT_UNFILTERED checks
-      WeakAuras.ScanEvents("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM");
+      Private.ScanEvents("COMBAT_LOG_EVENT_UNFILTERED_CUSTOM");
     else
-      WeakAuras.ScanEvents(event, arg1, arg2, ...);
+      Private.ScanEvents(event, arg1, arg2, ...);
     end
   end
   if (event == "PLAYER_ENTERING_WORLD") then
@@ -1188,7 +1226,7 @@ function HandleUnitEvent(frame, event, unit, ...)
   Private.StartProfileSystem("generictrigger " .. event .. " " .. unit);
   if not(WeakAuras.IsPaused()) then
     if (UnitIsUnit(unit, frame.unit)) then
-      WeakAuras.ScanUnitEvents(event, frame.unit, ...);
+      Private.ScanUnitEvents(event, frame.unit, ...);
     end
   end
   Private.StopProfileSystem("generictrigger " .. event .. " " .. unit);
@@ -1477,11 +1515,11 @@ function GenericTrigger.LoadDisplays(toLoad, loadEvent, ...)
 
   -- Replay events that lead to loading, if we weren't already registered for them
   if (eventsToRegister[loadEvent]) then
-    WeakAuras.ScanEvents(loadEvent, ...);
+    Private.ScanEvents(loadEvent, ...);
   end
   local loadUnit = ...
   if loadUnit and unitEventsToRegister[loadUnit] and unitEventsToRegister[loadUnit][loadEvent] then
-    WeakAuras.ScanUnitEvents(loadEvent, ...);
+    Private.ScanUnitEvents(loadEvent, ...);
   end
 
   wipe(eventsToRegister);
@@ -1887,7 +1925,7 @@ do
     if not(updating) then
       update_frame:SetScript("OnUpdate", function(self, elapsed)
         if not(WeakAuras.IsPaused()) then
-          WeakAuras.ScanEvents("FRAME_UPDATE", elapsed);
+          Private.ScanEvents("FRAME_UPDATE", elapsed);
         end
       end);
       updating = true;
@@ -1983,7 +2021,7 @@ do
   end
 
   local function swingTriggerUpdate()
-    WeakAuras.ScanEvents("SWING_TIMER_UPDATE")
+    Private.ScanEvents("SWING_TIMER_UPDATE")
   end
 
   local function swingEnd(hand)
@@ -2257,7 +2295,7 @@ do
       gcdEndCheck = 0;
     end
     if(event and not WeakAuras.IsPaused()) then
-      WeakAuras.ScanEvents(event);
+      Private.ScanEvents(event);
     end
   end
 
@@ -2826,7 +2864,7 @@ do
             gcdSpellName = name;
             gcdSpellIcon = icon;
             if not WeakAuras.IsPaused() then
-              WeakAuras.ScanEvents("GCD_UPDATE")
+              Private.ScanEvents("GCD_UPDATE")
             end
           end
         end
@@ -2930,7 +2968,7 @@ do
       end
       lastTime = now
       Private.StopProfileSystem("generictrigger essence")
-      WeakAuras.ScanEvents("ESSENCE_UPDATE")
+      Private.ScanEvents("ESSENCE_UPDATE")
     end
     essenceEventFrame:SetScript("OnEvent", essenceEventHandler)
     essenceEventFrame:Show()
@@ -3081,7 +3119,7 @@ do
     runeCdHandles[id] = nil;
     runeCdDurs[id] = nil;
     runeCdExps[id] = nil;
-    WeakAuras.ScanEvents("RUNE_COOLDOWN_READY", id);
+    Private.ScanEvents("RUNE_COOLDOWN_READY", id);
   end
 
   local function ItemCooldownFinished(id)
@@ -3124,7 +3162,7 @@ do
           runeCdDurs[id] = duration;
           runeCdExps[id] = endTime;
           runeCdHandles[id] = timer:ScheduleTimerFixed(RuneCooldownFinished, endTime - time, id);
-          WeakAuras.ScanEvents("RUNE_COOLDOWN_STARTED", id);
+          Private.ScanEvents("RUNE_COOLDOWN_STARTED", id);
         elseif(runeCdExps[id] ~= endTime) then
           -- Cooldown is now different
           if(runeCdHandles[id]) then
@@ -3133,7 +3171,7 @@ do
           runeCdDurs[id] = duration;
           runeCdExps[id] = endTime;
           runeCdHandles[id] = timer:ScheduleTimerFixed(RuneCooldownFinished, endTime - time, id);
-          WeakAuras.ScanEvents("RUNE_COOLDOWN_CHANGED", id);
+          Private.ScanEvents("RUNE_COOLDOWN_CHANGED", id);
         end
       elseif(duration > 0) then
       -- GCD, do nothing
@@ -3797,7 +3835,7 @@ function WeakAuras.WatchUnitChange(unit)
       handleEvent[event](unit, eventsToSend)
       -- send events
       for event, unit in pairs(eventsToSend) do
-        WeakAuras.ScanEvents(event, unit)
+        Private.ScanEvents(event, unit)
       end
 
       Private.StopProfileSystem("generictrigger unit change");
@@ -3861,7 +3899,7 @@ function Private.WatchStagger()
             local stagger = UnitStagger("player")
             if stagger ~= staggerWatchFrame.stagger then
               staggerWatchFrame.stagger = stagger
-              WeakAuras.ScanEvents("WA_UNIT_STAGGER_CHANGED", "player", stagger)
+              Private.ScanEvents("WA_UNIT_STAGGER_CHANGED", "player", stagger)
             end
             if stagger == 0 then
               staggerWatchFrame:SetScript("OnUpdate", nil)
@@ -3874,7 +3912,7 @@ function Private.WatchStagger()
 
       if stagger ~= staggerWatchFrame.stagger then
         staggerWatchFrame.stagger = stagger
-        WeakAuras.ScanEvents("WA_UNIT_STAGGER_CHANGED", "player", stagger)
+        Private.ScanEvents("WA_UNIT_STAGGER_CHANGED", "player", stagger)
       end
       Private.StopProfileSystem("stagger")
     end)
@@ -3958,7 +3996,7 @@ if WeakAuras.IsClassicEra() then
         end
         if newQueuedSpell ~= self.queuedSpell then
           self.queuedSpell = newQueuedSpell
-          WeakAuras.ScanEvents("WA_UNIT_QUEUED_SPELL_CHANGED", "player")
+          Private.ScanEvents("WA_UNIT_QUEUED_SPELL_CHANGED", "player")
         end
       end)
     end
@@ -4117,7 +4155,7 @@ do
             rw_icon = GetInventoryItemTexture("player", rw)
           end
         end
-        WeakAuras.ScanEvents("TENCH_UPDATE");
+        Private.ScanEvents("TENCH_UPDATE");
         Private.StopProfileSystem("generictrigger temporary enchant");
       end
 
@@ -4155,7 +4193,7 @@ do
       petFrame:RegisterUnitEvent("UNIT_PET", "player")
       petFrame:SetScript("OnEvent", function(event, unit)
         Private.StartProfileSystem("generictrigger pet update")
-        WeakAuras.ScanEvents("PET_UPDATE", "pet")
+        Private.ScanEvents("PET_UPDATE", "pet")
         Private.StopProfileSystem("generictrigger pet update")
       end)
     end
@@ -4170,7 +4208,7 @@ do
       watchFrame:RegisterEvent("COMBO_TARGET_CHANGED")
       watchFrame:SetScript("OnEvent", function()
         Private.StartProfileSystem("generictrigger COMBO_TARGET_CHANGED")
-        WeakAuras.ScanEvents("WA_COMBO_TARGET_CHANGED", "player")
+        Private.ScanEvents("WA_COMBO_TARGET_CHANGED", "player")
         Private.StopProfileSystem("generictrigger COMBO_TARGET_CHANGED")
       end)
     end
@@ -4247,7 +4285,7 @@ do
         or (newTargetGUID ~= nil and targetGUID ~= newTargetGUID)
         then
           nameplateTargets[unit] = newTargetGUID or true
-          WeakAuras.ScanEvents("WA_UNIT_TARGET_NAME_PLATE", unit)
+          Private.ScanEvents("WA_UNIT_TARGET_NAME_PLATE", unit)
         end
       end
       throttle_update = tick_throttle
@@ -4281,13 +4319,13 @@ do
     local moving = IsPlayerMoving()
     if (playerMovingFrame.moving ~= moving or playerMovingFrame.moving == nil) then
       playerMovingFrame.moving = moving
-      WeakAuras.ScanEvents("PLAYER_MOVING_UPDATE")
+      Private.ScanEvents("PLAYER_MOVING_UPDATE")
     end
 
     local speed = GetUnitSpeed("player")
     if playerMovingFrame.speed ~= speed then
       playerMovingFrame.speed = speed
-      WeakAuras.ScanEvents("PLAYER_MOVE_SPEED_UPDATE")
+      Private.ScanEvents("PLAYER_MOVE_SPEED_UPDATE")
     end
     Private.StopProfileSystem("generictrigger player moving");
   end
@@ -4315,7 +4353,7 @@ function WeakAuras.RegisterItemCountWatch()
     local batchUpdateCount = function()
       itemCountWatchFrame:SetScript("OnUpdate", nil)
       Private.StartProfileSystem("generictrigger ITEM_COUNT_UPDATE")
-      WeakAuras.ScanEvents("ITEM_COUNT_UPDATE")
+      Private.ScanEvents("ITEM_COUNT_UPDATE")
       Private.StopProfileSystem("generictrigger ITEM_COUNT_UPDATE")
     end
     itemCountWatchFrame:SetScript("OnEvent", function(self, event)
@@ -4339,7 +4377,7 @@ end
 -- early if anyone wants the event
 if WeakAuras.IsCataOrRetail() then
   Private.LibSpecWrapper.Register(function(unit)
-    WeakAuras.ScanEvents("UNIT_SPEC_CHANGED_" .. unit, unit)
+    Private.ScanEvents("UNIT_SPEC_CHANGED_" .. unit, unit)
   end)
 end
 
@@ -4348,7 +4386,7 @@ do
 
   local function doScan(fireTime, event)
     scheduled_scans[event][fireTime] = nil;
-    WeakAuras.ScanEvents(event);
+    Private.ScanEvents(event);
   end
   function Private.ExecEnv.ScheduleScan(fireTime, event)
     event = event or "COOLDOWN_REMAINING_CHECK"
@@ -4364,7 +4402,7 @@ do
 
   local function doCastScan(firetime, unit)
     scheduled_scans[unit][firetime] = nil;
-    WeakAuras.ScanEvents("CAST_REMAINING_CHECK_" .. string.lower(unit), unit);
+    Private.ScanEvents("CAST_REMAINING_CHECK_" .. string.lower(unit), unit);
   end
   function Private.ExecEnv.ScheduleCastCheck(fireTime, unit)
     scheduled_scans[unit] = scheduled_scans[unit] or {}
