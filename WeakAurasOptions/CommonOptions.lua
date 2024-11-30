@@ -1243,7 +1243,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
 
   local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
   local positionOptions = {
-    __title = L["Position Settings"],
+    __title = L["Position and Size Settings"],
     __order = metaOrder,
     __collapsed = true,
     width = {
