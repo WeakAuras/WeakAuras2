@@ -68,6 +68,7 @@ DebugLog.lua
 RegionTypes\SmoothStatusBarMixin.lua
 RegionTypes\RegionPrototype.lua
 RegionTypes\ProgressTexture.lua
+BaseRegions\Texture.lua
 RegionTypes\Texture.lua
 RegionTypes\AuraBar.lua
 RegionTypes\Icon.lua
@@ -86,6 +87,7 @@ SubRegionTypes\Glow.lua
 SubRegionTypes\Tick.lua
 SubRegionTypes\Model.lua
 SubRegionTypes\StopMotion.lua
+SubRegionTypes\Texture.lua
 
 #Misc
 DiscordList.lua
