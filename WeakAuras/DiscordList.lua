@@ -49,8 +49,6 @@ Private.DiscordList = {
   [=[phoenix7700]=],
   [=[Pseiko]=],
   [=[Reloe]=],
-  [=[Shwinsta]=],
-  [=[Slurp]=],
   [=[Spaten]=],
   [=[Tollo]=],
   [=[update]=],
