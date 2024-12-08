@@ -2284,6 +2284,8 @@ Private.event_prototypes = {
       AddUnitEventForEvents(result, unit, "UNIT_NAME_UPDATE")
       AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
       AddUnitEventForEvents(result, unit, "PLAYER_FLAGS_CHANGED")
+      AddUnitEventForEvents(result, unit, "INCOMING_RESURRECT_CHANGED")
+      AddUnitEventForEvents(result, unit, "INCOMING_SUMMON_CHANGED")
       if trigger.use_inRange then
         AddUnitEventForEvents(result, unit, "UNIT_IN_RANGE_UPDATE")
       end
@@ -2452,6 +2454,33 @@ Private.event_prototypes = {
         init = "raidMarkIndex > 0 and '{rt'..raidMarkIndex..'}' or ''"
       },
       {
+        name = "dead",
+        display = L["Dead"],
+        type = "tristate",
+        width = WeakAuras.doubleWidth,
+        init = "UnitIsDeadOrGhost(unit)",
+        store = true,
+        conditionType = "bool",
+      },
+      {
+        name = "resurrectPending",
+        display = L["Resurrect Pending"],
+        type = "tristate",
+        width = WeakAuras.doubleWidth,
+        init = "UnitHasIncomingResurrection(unit)",
+        store = true,
+        conditionType = "bool",
+      },
+      {
+        name = "summonPending",
+        display = L["Summon Pending"],
+        type = "tristate",
+        width = WeakAuras.doubleWidth,
+        init = "C_IncomingSummon.HasIncomingSummon(unit)",
+        store = true,
+        conditionType = "bool",
+      },
+      {
         name = "ignoreSelf",
         display = L["Ignore Self"],
         type = "toggle",
@@ -2460,16 +2489,6 @@ Private.event_prototypes = {
           return trigger.unit == "nameplate" or trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end,
         init = "not UnitIsUnit(\"player\", unit)"
-      },
-      {
-        name = "ignoreDead",
-        display = L["Ignore Dead"],
-        type = "toggle",
-        width = WeakAuras.doubleWidth,
-        enable = function(trigger)
-          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
-        end,
-        init = "not UnitIsDeadOrGhost(unit)"
       },
       {
         name = "ignoreDisconnected",

@@ -2293,6 +2293,26 @@ function Private.Modernize(data, oldSnapshot)
     end
   end
 
+  if data.internalVersion < 79 then
+    if data.triggers then
+      for _, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
+        if trigger and trigger.type == "unit" and trigger.event == "Unit Characteristics" then
+          if trigger.use_ignoreDead then
+            if trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party" then
+              trigger.use_dead = false
+            else
+              -- since this option was previously only available for group units,
+              -- nil it out if the unit isn't group to avoid surprises from vestigial data
+              trigger.use_dead = nil
+            end
+          end
+          trigger.use_ignoreDead = nil
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 
