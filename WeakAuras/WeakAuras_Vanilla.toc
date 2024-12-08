@@ -59,6 +59,9 @@ DebugLog.lua
 # Region support
 RegionTypes\SmoothStatusBarMixin.lua
 RegionTypes\RegionPrototype.lua
+BaseRegions\TextureCoords.lua
+BaseRegions\CircularProgressTexture.lua
+BaseRegions\LinearProgressTexture.lua
 RegionTypes\ProgressTexture.lua
 BaseRegions\Texture.lua
 RegionTypes\Texture.lua
@@ -80,6 +83,8 @@ SubRegionTypes\Tick.lua
 SubRegionTypes\Model.lua
 SubRegionTypes\StopMotion.lua
 SubRegionTypes\Texture.lua
+SubRegionTypes\CircularProgressTexture.lua
+SubRegionTypes\LinearProgressTexture.lua
 
 #Misc
 DiscordList.lua
