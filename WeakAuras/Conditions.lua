@@ -214,7 +214,7 @@ end
 
 function Private.ExecEnv.CallCustomConditionTest(uid, testFunctionNumber, ...)
   local ok, result = xpcall(Private.ExecEnv.conditionHelpers[uid].customTestFunctions[testFunctionNumber],
-                            Private.GetErrorHandlerUid(uid, L["Condition Custom Text"]), ...)
+                            Private.GetErrorHandlerUid(uid, L["Condition Custom Test"]), ...)
   if (ok) then
     return result
   end
