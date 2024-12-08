@@ -463,8 +463,8 @@ local function createThumbnail()
   end
   background.SetTexture = foreground.SetTexture;
 
-  borderframe.backgroundSpinner = WeakAuras.createSpinner(region, "BACKGROUND", 1);
-  borderframe.foregroundSpinner = WeakAuras.createSpinner(region, "ARTWORK", 1);
+  borderframe.backgroundSpinner = OptionsPrivate.Private.CircularProgressTextureBase.create(region, "BACKGROUND", 1)
+  borderframe.foregroundSpinner = OptionsPrivate.Private.CircularProgressTextureBase.create(region, "ARTWORK", 1)
 
   return borderframe;
 end
@@ -481,10 +481,6 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     region:SetHeight(size);
     foreground:SetWidth(scale * data.width);
     foreground:SetHeight(size);
-    foregroundSpinner:SetWidth(scale * data.width);
-    foregroundSpinner:SetHeight(size);
-    backgroundSpinner:SetWidth(scale * data.width)
-    backgroundSpinner:SetHeight(size);
     region.width = scale * data.width;
     region.height = size;
   else
@@ -493,10 +489,6 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
     region:SetHeight(scale * data.height);
     foreground:SetWidth(size);
     foreground:SetHeight(scale * data.height);
-    foregroundSpinner:SetWidth(size);
-    foregroundSpinner:SetHeight(scale * data.height);
-    backgroundSpinner:SetWidth(size)
-    backgroundSpinner:SetHeight(scale * data.height);
     region.width = size;
     region.height = scale * data.height;
   end
@@ -511,7 +503,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
 
   backgroundSpinner:SetTextureOrAtlas(data.sameTexture and data.foregroundTexture or data.backgroundTexture);
   backgroundSpinner:SetDesaturated(data.desaturateBackground)
-  backgroundSpinner:Color(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
+  backgroundSpinner:SetColor(data.backgroundColor[1], data.backgroundColor[2], data.backgroundColor[3], data.backgroundColor[4]);
   backgroundSpinner:SetBlendMode(data.blendMode);
 
   foreground:SetTexture(data.foregroundTexture);
@@ -520,7 +512,7 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
 
   foregroundSpinner:SetTextureOrAtlas(data.foregroundTexture);
   foregroundSpinner:SetDesaturated(data.desaturateForeground);
-  foregroundSpinner:Color(data.foregroundColor[1], data.foregroundColor[2], data.foregroundColor[3], data.foregroundColor[4])
+  foregroundSpinner:SetColor(data.foregroundColor[1], data.foregroundColor[2], data.foregroundColor[3], data.foregroundColor[4])
   foregroundSpinner:SetBlendMode(data.blendMode);
 
   background:ClearAllPoints();
@@ -702,6 +694,10 @@ local function modifyThumbnail(parent, borderframe, data, fullModify, size)
       endAngle = endAngle + 360;
     end
 
+    backgroundSpinner:SetWidth(30)
+    backgroundSpinner:SetHeight(30)
+    foregroundSpinner:SetWidth(30)
+    foregroundSpinner:SetHeight(30)
     backgroundSpinner:SetProgress(startAngle, endAngle);
     foregroundSpinner:SetProgress(startAngle, endAngle);
 

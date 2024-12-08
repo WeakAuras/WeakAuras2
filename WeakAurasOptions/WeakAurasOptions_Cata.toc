@@ -39,6 +39,8 @@ SubRegionOptions\Tick.lua
 SubRegionOptions\Model.lua
 SubRegionOptions\StopMotion.lua
 SubRegionOptions\Texture.lua
+SubRegionOptions\CircularProgressTexture.lua
+SubRegionOptions\LinearProgressTexture.lua
 
 Cache.lua
 

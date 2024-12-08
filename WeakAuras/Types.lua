@@ -1770,6 +1770,7 @@ Private.orientation_types = {
   VERTICAL_INVERSE = L["Top to Bottom"]
 }
 
+---@type table<string, string>
 Private.orientation_with_circle_types = {
   HORIZONTAL_INVERSE = L["Left to Right"],
   HORIZONTAL = L["Right to Left"],
