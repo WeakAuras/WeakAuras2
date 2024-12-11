@@ -843,7 +843,7 @@ end
 function Private.RunConditions(region, uid, hideRegion)
   if (checkConditions[uid]) then
     Private.ActivateAuraEnvironmentForRegion(region)
-    checkConditions[uid](region, hideRegion);
+    xpcall(checkConditions[uid], Private.GetErrorHandlerUid(uid, L["Execute Conditions"]), region, hideRegion);
     Private.ActivateAuraEnvironment()
   end
 end
