@@ -162,7 +162,7 @@ local function ConstructIconPicker(frame)
     else
       self.givenPath = {};
       for child in OptionsPrivate.Private.TraverseLeafsOrAura(baseObject) do
-        if(child) then
+        if child and paths[child.id] then
           local value = valueFromPath(child, paths[child.id])
           self.givenPath[child.id] = value or "";
         end
