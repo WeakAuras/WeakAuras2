@@ -4063,9 +4063,8 @@ do
       tenchFrame:RegisterEvent("PLAYER_ENTERING_WORLD");
       if WeakAuras.IsRetail() then
         tenchFrame:RegisterEvent("WEAPON_ENCHANT_CHANGED")
-      else
-        tenchFrame:RegisterUnitEvent("UNIT_INVENTORY_CHANGED", "player")
       end
+      tenchFrame:RegisterUnitEvent("UNIT_INVENTORY_CHANGED", "player")
       if WeakAuras.IsClassicEra() then
         tenchFrame:RegisterEvent("PLAYER_EQUIPMENT_CHANGED");
       end
