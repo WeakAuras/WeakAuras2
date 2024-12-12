@@ -1206,6 +1206,16 @@ function WeakAuras.GetEffectiveAttackPower()
   return base + pos + neg
 end
 
+--- @type fun(): number
+function WeakAuras.GetEffectiveSpellPower()
+  -- Straight from the PaperDoll
+  local spellPower = 0
+  for i = 2, MAX_SPELL_SCHOOLS or 7 do
+    spellPower = max(spellPower, GetSpellBonusDamage(i))
+  end
+  return spellPower
+end
+
 local function valuesForTalentFunction(trigger)
   return function()
     local single_class = Private.checkForSingleLoadCondition(trigger, "class")
@@ -10366,6 +10376,20 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+      },
+      {
+        name = "spellpower",
+        display = L["Spell Power"],
+        type = "number",
+        init = "WeakAuras.GetEffectiveSpellPower()",
+        store = true,
+        conditionType = "number",
+        multiEntry = {
+          operator = "and",
+          limit = 2
+        },
+        enable = WeakAuras.IsClassicOrCata(),
+        hidden = not WeakAuras.IsClassicOrCata(),
       },
       {
         type = "header",
