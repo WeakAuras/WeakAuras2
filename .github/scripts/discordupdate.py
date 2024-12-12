@@ -123,6 +123,12 @@ class DiscordNameGather(discord.Client):
       else:
         commitMsgPrint("Ignoring user, because they don't have the right role:", message.author.name)
 
+  async def parseDMChannel(self, channel):
+    messages = [message async for message in channel.history(limit=1)]
+    if messages:
+      return messages[0]
+    return None
+
   # New method of parsing reactions to a singular message
   async def parseReactions(self, channel, msgId):
     message = await channel.fetch_message(msgId)
@@ -131,6 +137,10 @@ class DiscordNameGather(discord.Client):
         if isinstance(user, discord.member.Member):
           if self.hasRightRole(user.roles):
             self.messagePerAuthor[user.id] = user.display_name
+            msg = await self.parseDMChannel(user)
+            if msg:
+              self.messagePerAuthor[user.id] = msg.content
+              commitMsgPrint("Using DM message:", user.display_name, "=>", msg.content)
           else:
             commitMsgPrint("Ignoring User (missing role): ", user.display_name)
     self.writeFile()
