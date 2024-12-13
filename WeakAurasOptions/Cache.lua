@@ -39,6 +39,7 @@ function spellCache.Build()
     holes[219004] = 285223
     holes[285224] = 301088
     holes[301101] = 324269
+    holes[474742] = 1213143
   elseif WeakAuras.IsCataClassic() then
     holes = {}
     holes[121820] = 158262
@@ -110,7 +111,7 @@ local id = 0
 local misses = 0
 local lastId
 print("####")
-while misses < 400000 do
+while misses < 4000000 do
    id = id + 1
    local name = GetSpellInfo(id)
    local icon = GetSpellTexture(id)
