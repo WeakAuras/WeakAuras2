@@ -12,7 +12,7 @@ Private.DiscordList = {
   [=[Azortharion]=],
   [=[BadBrain]=],
   [=[Bart]=],
-  [=[Boneshock]=],
+  [=[Bohohoneshock]=],
   [=[Boxthor]=],
   [=[Burlis]=],
   [=[Causese]=],
@@ -56,7 +56,6 @@ Private.DiscordList = {
   [=[vozochris]=],
   [=[Wizeowel]=],
   [=[Xepheris]=],
-  [=[Мектран]=],
 }
 Private.DiscordListCJ = {
 }
