@@ -62,6 +62,8 @@ WeakAurasOptions.lua
 ConditionOptions.lua
 AuthorOptions.lua
 
+Changelog.lua
+
 OptionsFrames\OptionsFrame.lua
 
 # Groups
