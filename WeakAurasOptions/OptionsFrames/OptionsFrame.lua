@@ -515,6 +515,21 @@ function OptionsPrivate.CreateFrame()
   thanksButton:SetParent(tipFrame)
   thanksButton:SetPoint("LEFT", documentationButton, "RIGHT", 10, 0)
 
+  if OptionsPrivate.changelog then
+    local changelog
+    if OptionsPrivate.changelog.highlightText then
+      changelog = L["Highlights"] .. "\n" .. OptionsPrivate.changelog.highlightText .. "\n"
+      .. L["Commits"] .. "\n" ..OptionsPrivate.changelog.commitText
+    else
+      changelog = OptionsPrivate.changelog.commitText
+    end
+
+    local changelogButton = addFooter(L["Changelog"], "", OptionsPrivate.changelog.fullChangeLogUrl,
+                                      changelog, nil, nil, false, 800)
+    changelogButton:SetParent(tipFrame)
+    changelogButton:SetPoint("LEFT", thanksButton, "RIGHT", 10, 0)
+  end
+
   local reportbugButton = addFooter(L["Found a Bug?"], [[Interface\AddOns\WeakAuras\Media\Textures\bug_report.tga]], "https://github.com/WeakAuras/WeakAuras2/issues/new?assignees=&labels=%F0%9F%90%9B+Bug&template=bug_report.md&title=",
             L["Report bugs on our issue tracker."], nil, nil, true)
   reportbugButton:SetParent(tipFrame)
