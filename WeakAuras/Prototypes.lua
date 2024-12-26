@@ -8019,6 +8019,32 @@ Private.event_prototypes = {
         conditionType = "string",
       },
       {
+        -- flags
+      },
+      {
+        -- zone Channel id
+      },
+      {
+        -- channel index
+      },
+      {
+        -- channel base name
+      },
+      {
+        -- language id
+      },
+      {
+        -- line id
+      },
+      {
+        name = "sourceGUID",
+        display = L["Source GUID"],
+        init = "arg",
+        store = true,
+        hidden = true,
+        test = "true",
+      },
+      {
         name = "cloneId",
         display = L["Clone per Event"],
         type = "toggle",
