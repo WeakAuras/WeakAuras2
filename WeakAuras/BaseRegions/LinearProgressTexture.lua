@@ -265,7 +265,7 @@ local funcs = {
 
   --- @type fun(self: LinearProgressTextureInstance)
   UpdateTextures = function(self)
-    if not self.visible then
+    if not self.visible or not self.ApplyProgressToCoord then
       return
     end
     self.coord:SetFull()
@@ -360,7 +360,7 @@ function Private.LinearProgressTextureBase.create(frame, layer, drawLayer)
     linearTexture[funcName] = func
   end
 
-  --- @cast linearTexture CircularProgressTextureInstance
+  --- @cast linearTexture LinearProgressTextureInstance
   return linearTexture
 end
 
