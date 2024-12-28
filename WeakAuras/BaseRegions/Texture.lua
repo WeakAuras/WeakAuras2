@@ -169,7 +169,6 @@ function Private.TextureBase.create(frame)
     return base
 end
 
--- TODO better type for options
 --- @type fun(base: TextureBaseInstance, options: TextureBaseOptions)
 function Private.TextureBase.modify(base, options)
   base.canRotate = options.canRotate
