@@ -1579,8 +1579,191 @@ local function PositionOptionsForSubElement(data, options, startOrder, areaAncho
     softMax = 200,
     step = 1,
   }
-
 end
+
+--- @type fun(parentData: auraData, data: table, options: table, startOrder: number)
+local function ProgressOptionsForSubElement(parentData, data, options, startOrder, progressSourceHidden)
+  options.progress_source = {
+    type = "select",
+    width = WeakAuras.doubleWidth,
+    name = L["Progress Source"],
+    order = startOrder,
+    control = "WeakAurasTwoColumnDropdown",
+    values = OptionsPrivate.Private.GetProgressSourcesForUi(parentData, true),
+    get = function(info)
+      return OptionsPrivate.Private.GetProgressValueConstant(data.progressSource or {-2, ""})
+    end,
+    set = function(info, value)
+      if value then
+        data.progressSource = data.progressSource or {}
+        -- Copy only trigger + property
+        data.progressSource[1] = value[1]
+        data.progressSource[2] = value[2]
+      else
+        data.progressSource = nil
+      end
+      WeakAuras.Add(parentData)
+    end,
+    hidden = progressSourceHidden
+  }
+
+  options.progressSourceWarning = {
+    type = "description",
+    width = WeakAuras.doubleWidth,
+    name = L["Note: This progress source does not provide a total value/duration. A total value/duration must be set via \"Set Maximum Progress\""],
+    order = startOrder + 0.1,
+    hidden = function()
+      if type(progressSourceHidden) == "function" and progressSourceHidden() then
+        return true
+      end
+      local progressSource = OptionsPrivate.Private.AddProgressSourceMetaData(parentData, data.progressSource)
+      -- Auto progress, Manual Progress or the progress source has a total property
+      if not progressSource or progressSource[2] == "auto" or progressSource[1] == 0 or progressSource[4] ~= nil then
+        return true
+      end
+      return false
+    end,
+  }
+
+  local function hiddenManual()
+    if type(progressSourceHidden) == "function" and progressSourceHidden() then
+      return true
+    end
+    if data.progressSource and data.progressSource[1] == 0 then
+      return false
+    end
+    return true
+  end
+
+  options.progressSourceManualValue = {
+    type = "range",
+    control = "WeakAurasSpinBox",
+    width = WeakAuras.normalWidth,
+    name = L["Value"],
+    order = startOrder + 0.2,
+    min = 0,
+    softMax = 100,
+    bigStep = 1,
+    hidden = hiddenManual,
+    get = function(info)
+      return data.progressSource and data.progressSource[3] or 0
+    end,
+    set = function(info, value)
+      data.progressSource = data.progressSource or {}
+      data.progressSource[3] = value
+      WeakAuras.Add(parentData)
+    end
+  }
+
+  options.progressSourceManualTotal = {
+    type = "range",
+    control = "WeakAurasSpinBox",
+    width = WeakAuras.normalWidth,
+    name = L["Total"],
+    order = startOrder + 0.3,
+    min = 0,
+    softMax = 100,
+    bigStep = 1,
+    hidden = hiddenManual,
+    get = function(info)
+      return data.progressSource and data.progressSource[4] or 100
+    end,
+    set = function(info, value)
+      data.progressSource = data.progressSource or {}
+      data.progressSource[4] = value
+      WeakAuras.Add(parentData)
+    end
+  }
+
+  options.useAdjustededMin = {
+    type = "toggle",
+    width = WeakAuras.normalWidth,
+    name = L["Set Minimum Progress"],
+    desc = L["Values/Remaining Time below this value are displayed as zero progress."],
+    order = startOrder + 0.4,
+    set = function(info, value)
+      data.useAdjustededMin = value
+      if not value then
+        data.adjustedMin = ""
+      end
+      WeakAuras.Add(parentData)
+    end,
+    hidden = progressSourceHidden
+  };
+
+  options.adjustedMin = {
+    type = "input",
+    validate = WeakAuras.ValidateNumericOrPercent,
+    width = WeakAuras.normalWidth,
+    order = startOrder + 0.5,
+    name = L["Minimum"],
+    hidden = function()
+      if type(progressSourceHidden) == "function" and progressSourceHidden() then
+        return true
+      end
+      return not data.useAdjustededMin
+    end,
+    desc = L["Enter static or relative values with %"]
+  };
+
+  options.useAdjustedMinSpacer = {
+    type = "description",
+    width = WeakAuras.normalWidth,
+    name = "",
+    order = startOrder + 0.6,
+    hidden = function()
+      if type(progressSourceHidden) == "function" and progressSourceHidden() then
+        return true
+      end
+      return not (not data.useAdjustededMin and data.useAdjustededMax)
+    end,
+  }
+
+  options.useAdjustededMax = {
+    type = "toggle",
+    width = WeakAuras.normalWidth,
+    name = L["Set Maximum Progress"],
+    desc = L["Values/Remaining Time above this value are displayed as full progress."],
+    order = startOrder + 0.7,
+    set = function(info, value)
+      data.useAdjustededMax = value
+      if not value then
+        data.adjustedMax = ""
+      end
+      WeakAuras.Add(parentData)
+    end,
+    hidden = progressSourceHidden
+  }
+
+  options.adjustedMax = {
+    type = "input",
+    width = WeakAuras.normalWidth,
+    validate = WeakAuras.ValidateNumericOrPercent,
+    order = startOrder + 0.8,
+    name = L["Maximum"],
+    hidden = function()
+      if type(progressSourceHidden) == "function" and progressSourceHidden() then
+        return true
+      end
+      return not data.useAdjustededMax
+    end,
+    desc = L["Enter static or relative values with %"]
+  }
+
+  options.useAdjustedMaxSpacer = {
+    type = "description",
+    width = WeakAuras.normalWidth,
+    name = "",
+    order = startOrder + 0.9,
+    hidden = function()
+      if type(progressSourceHidden) == "function" and progressSourceHidden() then
+        return true
+      end
+      return not (data.useAdjustededMin and not data.useAdjustededMax)
+    end,
+  }
+end
+
 
 local function BorderOptions(id, data, showBackDropOptions, hiddenFunc, order)
   local borderOptions = {
@@ -1915,6 +2098,7 @@ OptionsPrivate.commonOptions.CreateExecuteAll = CreateExecuteAll
 OptionsPrivate.commonOptions.PositionOptions = PositionOptions
 OptionsPrivate.commonOptions.PositionOptionsForSubElement = PositionOptionsForSubElement
 OptionsPrivate.commonOptions.ProgressOptions = ProgressOptions
+OptionsPrivate.commonOptions.ProgressOptionsForSubElement = ProgressOptionsForSubElement
 OptionsPrivate.commonOptions.BorderOptions = BorderOptions
 OptionsPrivate.commonOptions.AddCodeOption = AddCodeOption
 

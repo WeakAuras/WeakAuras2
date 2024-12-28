@@ -154,38 +154,9 @@ local function createOptions(parentData, data, index, subIndex)
       max = 360,
       bigStep = 1
     },
-
-    progress_source = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Progress Source"],
-      order = 16,
-      control = "WeakAurasTwoColumnDropdown",
-      values = OptionsPrivate.Private.GetProgressSourcesForUi(parentData, true),
-      get = function(info)
-        return OptionsPrivate.Private.GetProgressValueConstant(data.progressSources or {-2, ""})
-      end,
-      set = function(info, value)
-        if value then
-          data.progressSources = data.progressSources or {}
-          -- Copy only trigger + property
-          data.progressSources[1] = value[1]
-          data.progressSources[2] = value[2]
-        else
-          data.progressSources = nil
-        end
-        WeakAuras.Add(parentData)
-      end,
-    },
-
-    progress_source_space = {
-      type = "description",
-      name = "",
-      order = 16.1,
-      width = WeakAuras.normalWidth,
-    },
   }
 
+  OptionsPrivate.commonOptions.ProgressOptionsForSubElement(parentData, data, options, 16)
   OptionsPrivate.commonOptions.PositionOptionsForSubElement(data, options, 17, areaAnchors, pointAnchors)
 
   OptionsPrivate.AddUpDownDeleteDuplicate(options, parentData, index, "subcirculartexture")

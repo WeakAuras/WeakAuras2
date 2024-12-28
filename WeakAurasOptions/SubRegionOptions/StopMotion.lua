@@ -226,41 +226,7 @@ local function createOptions(parentData, data, index, subIndex)
       values = animation_types
     },
 
-    progress_source = {
-      type = "select",
-      width = WeakAuras.normalWidth,
-      name = L["Progress Source"],
-      order = 15,
-      control = "WeakAurasTwoColumnDropdown",
-      values = OptionsPrivate.Private.GetProgressSourcesForUi(parentData, true),
-      get = function(info)
-        return OptionsPrivate.Private.GetProgressValueConstant(data.progressSources or {-2, ""})
-      end,
-      set = function(info, value)
-        if value then
-          data.progressSources = data.progressSources or {}
-          -- Copy only trigger + property
-          data.progressSources[1] = value[1]
-          data.progressSources[2] = value[2]
-        else
-          data.progressSources = nil
-        end
-        WeakAuras.Add(parentData)
-      end,
-      hidden = function()
-        return not(data.animationType == "progress")
-      end
-    },
-
-    progress_source_space = {
-      type = "description",
-      name = "",
-      order = 16,
-      width = WeakAuras.normalWidth,
-      hidden = function()
-        return not(data.animationType == "progress")
-      end
-    },
+    -- progress source added below
 
     startPercent = {
       type = "range",
@@ -341,6 +307,11 @@ local function createOptions(parentData, data, index, subIndex)
     },
   }
 
+  local progressSourceHiden = function()
+    return not(data.animationType == "progress")
+  end
+
+  OptionsPrivate.commonOptions.ProgressOptionsForSubElement(parentData, data, options, 15, progressSourceHiden)
   OptionsPrivate.commonOptions.PositionOptionsForSubElement(data, options, 21, areaAnchors, pointAnchors)
   OptionsPrivate.AddUpDownDeleteDuplicate(options, parentData, index, "substopmotion")
 

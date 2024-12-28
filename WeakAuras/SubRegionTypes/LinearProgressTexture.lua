@@ -31,7 +31,7 @@ local default = function(parentType)
     height = 32,
     scale = 1,
 
-    progressSources = {-2, ""},
+    progressSource = {-2, ""},
   }
 
   if parentType == "aurabar" then
@@ -175,7 +175,7 @@ local funcs = {
     end
   end,
   Update = function(self, state, states)
-    Private.UpdateProgressFrom(self.progressData, self.progressSource, {}, state, states, self.parent)
+    Private.UpdateProgressFrom(self.progressData, self.progressSource, self, state, states, self.parent)
     self:UpdateFrame()
     self:UpdateFrameTick()
   end,
@@ -251,8 +251,7 @@ local function modify(parent, region, parentData, data, first)
   })
 
   region.linearTexture:SetOrientation(data.linearTextureOrientation, false, false, 0, false, nil)
-
-  region.progressSource = Private.AddProgressSourceMetaData(parentData, data.progressSources or {-2, ""})
+  Private.regionPrototype.AddMinMaxProgressSource(true, region, parentData, data)
 
   region.FrameTick = nil
   parent.subRegionEvents:AddSubscriber("Update", region)
