@@ -746,20 +746,7 @@ function Private.regionPrototype.create(region)
   region:SetPoint("CENTER", UIParent, "CENTER")
 end
 
-function Private.regionPrototype.modify(parent, region, data)
-  region.state = nil
-  region.states = nil
-  region.subRegionEvents:ClearSubscribers()
-  region.subRegionEvents:ClearCallbacks()
-  Private.FrameTick:RemoveSubscriber("Tick", region)
-
-  local defaultsForRegion = Private.regionTypes[data.regionType] and Private.regionTypes[data.regionType].default;
-
-  if region.SetRegionAlpha then
-    region:SetRegionAlpha(data.alpha)
-  end
-
-  local hasProgressSource = defaultsForRegion and defaultsForRegion.progressSource
+function Private.regionPrototype.AddMinMaxProgressSource(hasProgressSource, region, parentData, data)
   local hasAdjustedMin = hasProgressSource and data.useAdjustededMin and data.adjustedMin
   local hasAdjustedMax = hasProgressSource and data.useAdjustededMax and data.adjustedMax
 
@@ -770,7 +757,7 @@ function Private.regionPrototype.modify(parent, region, data)
   region.adjustedMaxRelPercent = nil
 
   if hasProgressSource then
-    region.progressSource = Private.AddProgressSourceMetaData(data, data.progressSource)
+    region.progressSource = Private.AddProgressSourceMetaData(parentData, data.progressSource)
   end
 
   if (hasAdjustedMin) then
@@ -789,6 +776,24 @@ function Private.regionPrototype.modify(parent, region, data)
       region.adjustedMax = tonumber(data.adjustedMax)
     end
   end
+end
+
+function Private.regionPrototype.modify(parent, region, data)
+  region.state = nil
+  region.states = nil
+  region.subRegionEvents:ClearSubscribers()
+  region.subRegionEvents:ClearCallbacks()
+  Private.FrameTick:RemoveSubscriber("Tick", region)
+
+  local defaultsForRegion = Private.regionTypes[data.regionType] and Private.regionTypes[data.regionType].default;
+
+  if region.SetRegionAlpha then
+    region:SetRegionAlpha(data.alpha)
+  end
+
+  local hasProgressSource = defaultsForRegion and defaultsForRegion.progressSource
+
+  Private.regionPrototype.AddMinMaxProgressSource(hasProgressSource, region, data, data)
 
   region:SetOffset(data.xOffset or 0, data.yOffset or 0);
   region:SetOffsetRelative(0, 0)

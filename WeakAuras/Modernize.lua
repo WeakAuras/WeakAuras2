@@ -2342,6 +2342,31 @@ function Private.Modernize(data, oldSnapshot)
     end
   end
 
+  if data.internalVersion < 81 then
+    -- Rename 'progressSources' to 'progressSource' for Linear/CircularProgressTexture/StopMotion sub elements
+    local conversions = {
+      sublineartexture = {
+        progressSources = "progressSource",
+      },
+      subcirculartexture = {
+        progressSources = "progressSource",
+      },
+      substopmotion = {
+        progressSources = "progressSource",
+      }
+    }
+    if data.subRegions then
+      for index, subRegionData in ipairs(data.subRegions) do
+        if conversions[subRegionData.type] then
+          for oldKey, newKey in pairs(conversions[subRegionData.type]) do
+            subRegionData[newKey] = subRegionData[oldKey]
+            subRegionData[oldKey] = nil
+          end
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 

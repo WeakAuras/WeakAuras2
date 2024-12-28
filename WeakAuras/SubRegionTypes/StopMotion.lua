@@ -36,7 +36,7 @@ local default = function(parentType)
     height = 32,
     scale = 1,
 
-    progressSources = {-2, ""},
+    progressSource = {-2, ""},
   }
 
   if C_AddOns.IsAddOnLoaded("WeakAurasStopMotion") then
@@ -155,7 +155,7 @@ local ProgressFuncs = {
     end
   end,
   Update = function(self, state, states)
-    Private.UpdateProgressFrom(self.progressData, self.progressSource, {}, state, states, self.parent)
+    Private.UpdateProgressFrom(self.progressData, self.progressSource, self, state, states, self.parent)
     self:UpdateFrame()
     self:UpdateFrameTick()
   end,
@@ -247,7 +247,7 @@ local function modify(parent, region, parentData, data, first)
     customFrameHeight = data.customFrameHeight,
   })
 
-  region.progressSource = Private.AddProgressSourceMetaData(parentData, data.progressSources or {-2, ""})
+  Private.regionPrototype.AddMinMaxProgressSource(true, region, parentData, data)
 
   region.FrameTick = nil
   if data.animationType == "loop" or data.animationType == "bounce" or data.animationType == "once" then
