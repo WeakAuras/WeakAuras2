@@ -68,10 +68,6 @@ local properties = {
     bigStep = 1,
     default = 0
   }
-
-  -- TODO width?
-  -- TODO height?
-  --
 }
 
 local funcs = {
