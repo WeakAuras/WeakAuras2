@@ -9,6 +9,7 @@ Creative Commons - Sampling Plus 1.0
 
 Overview:
 
+HeartbeatSingle - Creative Commons CC0 1.0 - original by: bart (https://opengameart.org/content/heartbeat-sounds), modified by: Jieiku (https://github.com/Jieiku)
 BatmanPunch - Sampling Plus 1.0 - CGEffex (http://www.freesound.org/people/CGEffex/)
 BikeHorn - Sampling Plus 1.0 - StickInTheMud 
 BoxingArenaSound - Attribution 3.0 - Samantha Enrico
