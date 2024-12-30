@@ -11315,7 +11315,8 @@ Private.event_prototypes = {
         type = "number",
         display = Private.coin_icons.silver .. L["Silver"],
         store = true,
-        conditionType = "number",
+        hidden = true,
+        test = "true",
       },
       {
         name = "copper",
@@ -11323,7 +11324,8 @@ Private.event_prototypes = {
         type = "number",
         display = Private.coin_icons.copper .. L["Copper"],
         store = true,
-        conditionType = "number",
+        hidden = true,
+        test = "true",
       },
       {
         name = "icon",
