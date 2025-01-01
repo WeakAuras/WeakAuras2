@@ -318,4 +318,4 @@ local function createOptions(parentData, data, index, subIndex)
   return options
 end
 
-  WeakAuras.RegisterSubRegionOptions("substopmotion", createOptions, L["Shows a Stop Moption"]);
+  WeakAuras.RegisterSubRegionOptions("substopmotion", createOptions, L["Shows a Stop Motion"]);
