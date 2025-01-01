@@ -26,6 +26,7 @@ VALID_ROLES = {
   402021459440173056, # Regular
   172440752045948928, # Moderator,
   294497613565263872, # Super Moderator
+  1323828198479233054, # thankyou
 }
 
 MSG = """React to this message to have your name included in the Thanks list inside the WeakAuras GUI.
