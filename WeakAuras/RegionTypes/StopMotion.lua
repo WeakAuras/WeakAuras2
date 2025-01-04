@@ -262,7 +262,7 @@ local function modify(parent, region, data)
     --- @class StopMotionRegion
     --- @field GetColor fun(self: StopMotionRegion): number, number, number, number
     function region:GetColor()
-      return self.foreground:GetColor()
+      return region.color_r, region.color_g, region.color_b, region.color_a
     end
 
     --- @class StopMotionRegion
