@@ -33,7 +33,7 @@ local function createOptions(parentData, data, index, subIndex)
       type = "execute",
       width = 0.15,
       name = L["Choose"],
-      order = 2,
+      order = 2.1,
       func = function()
         local path = { "subRegions", index }
         local paths = {}
