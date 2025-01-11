@@ -533,7 +533,6 @@ Private.format_types = {
         local gold = floor(value / 1e4)
         local silver = floor(value / 100 % 100)
         local copper = value % 100
-        local formatCode = "%s%s %d%s %d%s"
 
         if (format == "AbbreviateNumbers") then
           gold = simpleFormatters.AbbreviateNumbers(gold)
@@ -543,10 +542,13 @@ Private.format_types = {
           gold = simpleFormatters.AbbreviateLargeNumbers(gold)
         end
 
+        local formatCode
         if precision == 1 then
           formatCode = "%s%s"
         elseif precision == 2 then
           formatCode = "%s%s %d%s"
+        else
+          formatCode = "%s%s %d%s %d%s"
         end
 
         return string.format(formatCode,

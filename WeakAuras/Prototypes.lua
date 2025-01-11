@@ -11282,7 +11282,7 @@ Private.event_prototypes = {
     },
     internal_events = {"WA_DELAYED_PLAYER_ENTERING_WORLD"},
     force_events = "WA_DELAYED_PLAYER_ENTERING_WORLD",
-    name = L["Player Money"],
+    name = WeakAuras.newFeatureString..L["Player Money"],
     init = function()
       return [=[
         local money = GetMoney()
