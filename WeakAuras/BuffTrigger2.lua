@@ -3010,19 +3010,32 @@ local function createScanFunc(trigger)
   end
 end
 
-local function highestExpirationTime(bestMatch, auraMatch)
-  if bestMatch.expirationTime and auraMatch.expirationTime then
-    return auraMatch.expirationTime > bestMatch.expirationTime
-  end
-  return true
-end
-
-local function lowestExpirationTime(bestMatch, auraMatch)
-  if bestMatch.expirationTime and auraMatch.expirationTime then
-    return auraMatch.expirationTime < bestMatch.expirationTime
-  end
-  return false
-end
+local matchCombineFunctions = {
+  showHighest = function(bestMatch, auraMatch)
+    if bestMatch.expirationTime and auraMatch.expirationTime then
+      return auraMatch.expirationTime > bestMatch.expirationTime
+    end
+    return true
+  end,
+  showLowest = function(bestMatch, auraMatch)
+    if bestMatch.expirationTime and auraMatch.expirationTime then
+      return auraMatch.expirationTime < bestMatch.expirationTime
+    end
+    return false
+  end,
+  showLowestSpellId  = function(bestMatch, auraMatch)
+    if bestMatch.spellId and auraMatch.spellId then
+      return auraMatch.spellId < bestMatch.spellId
+    end
+    return false
+  end,
+  showHighestSpellId  = function(bestMatch, auraMatch)
+    if bestMatch.spellId and auraMatch.spellId then
+      return auraMatch.spellId > bestMatch.spellId
+    end
+    return false
+  end,
+}
 
 local function GreaterEqualOne(x)
   return x >= 1
@@ -3218,7 +3231,7 @@ function BuffTrigger.Add(data)
         remainingCheck = trigger.unit ~= "multi" and CanHaveMatchCheck(trigger) and trigger.useRem and tonumber(trigger.rem) or 0,
         id = id,
         triggernum = triggernum,
-        compareFunc = trigger.combineMode == "showHighest" and highestExpirationTime or lowestExpirationTime,
+        compareFunc = matchCombineFunctions[trigger.combineMode] or matchCombineFunctions["showLowest"],
         unitExists = showIfInvalidUnit,
         fetchTooltip = not IsSingleMissing(trigger) and trigger.unit ~= "multi" and trigger.fetchTooltip,
         fetchRole = WeakAuras.IsCataOrRetail() and trigger.unit ~= "multi" and trigger.fetchRole,
