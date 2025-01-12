@@ -97,8 +97,6 @@ local triggerInfos = {}
 
 local watched_trigger_events = Private.watched_trigger_events
 
-local UnitGroupRolesAssigned = WeakAuras.IsCataOrRetail() and UnitGroupRolesAssigned or function() return "DAMAGER" end
-
 -- Active scan functions used to quickly check which apply to a aura instance
 -- keyed on unit, debuffType, spellname, with a scan object value
 local scanFuncName = {}
