@@ -2964,13 +2964,11 @@ if WeakAuras.IsClassicOrCata() then
 end
 
 ---@type table<string, string>
-if WeakAuras.IsCataOrRetail() then
-  Private.role_types = {
-    TANK = INLINE_TANK_ICON.." "..TANK,
-    DAMAGER = INLINE_DAMAGER_ICON.." "..DAMAGER,
-    HEALER = INLINE_HEALER_ICON.." "..HEALER
-  }
-end
+Private.role_types = {
+  TANK = INLINE_TANK_ICON.." "..TANK,
+  DAMAGER = INLINE_DAMAGER_ICON.." "..DAMAGER,
+  HEALER = INLINE_HEALER_ICON.." "..HEALER
+}
 
 ---@type table<string, string>
 Private.group_member_types = {
