@@ -197,13 +197,13 @@ templates.class.PALADIN = {
         { spell = 19888, type = "ability", buff = true}, -- Frost Resistance Aura
         { spell = 19891, type = "ability", buff = true}, -- Fire Resistance Aura
         { spell = 20066, type = "ability", requiresTarget = true, debuff = true, talent = 55}, -- Repentance
-        { spell = 20165, type = "ability", buff = true}, -- Seal of Justice
+        { spell = 20164, type = "ability", buff = true}, -- Seal of Justice
         { spell = 20165, type = "ability", buff = true}, -- Seal of Light
         { spell = 20166, type = "ability", buff = true}, -- Seal of Wisdom
-        { spell = 20182, type = "ability", buff = true}, -- Seal of the Crusader
         { spell = 20271, type = "ability", buff = true, requiresTarget = true}, -- Judgement
         { spell = 20375, type = "ability", buff = true, talent = 48}, -- Seal of Command
         { spell = 20925, type = "ability", charges = true, buff = true, talent = 35}, -- Holy Shield
+        { spell = 21082, type = "ability", buff = true}, -- Seal of the Crusader
         { spell = 21084, type = "ability", buff = true}, -- Seal of Righteousness
         { spell = 24275, type = "ability", requiresTarget = true, usable = true}, -- Hammer of Wrath
         { spell = 26573, type = "ability", talent = 6}, -- Consecration
