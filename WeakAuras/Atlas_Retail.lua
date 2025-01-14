@@ -10486,6 +10486,7 @@ Private.AtlasList = {
 "shop-card-full-npe-subscription",
 "shop-card-full-p27a",
 "shop-card-full-p74",
+"shop-card-full-panda-teleport",
 "shop-card-full-reven-ibelin-charity-pet",
 "shop-card-full-ro64",
 "shop-card-full-rx1",
