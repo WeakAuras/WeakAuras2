@@ -128,7 +128,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
   local function appendPath(base, ...)
     local path = CopyTable(base)
     for i = 1, select("#", ...) do
-      table.insert(path, select(i, ...))
+      table.insert(path, (select(i, ...)))
     end
     return path
   end
