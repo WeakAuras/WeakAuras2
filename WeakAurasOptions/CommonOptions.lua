@@ -1448,7 +1448,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       bigStep = 10,
       get = function() return data.xOffset end,
       set = function(info, v)
-        OptionsPrivate.TimeMachine:Append({
+        OptionsPrivate.Private.TimeMachine:Append({
           actionType = "set",
           uid = data.uid,
           path = {"xOffset"},
@@ -1472,7 +1472,7 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       bigStep = 10,
       get = function() return data.yOffset end,
       set = function(info, v)
-        OptionsPrivate.TimeMachine:Append({
+        OptionsPrivate.Private.TimeMachine:Append({
           actionType = "set",
           uid = data.uid,
           path = {"yOffset"},
@@ -1943,7 +1943,7 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
       extraFunctions = options.extraFunctions,
     },
     set = function(info, v)
-      OptionsPrivate.TimeMachine:Append({
+      OptionsPrivate.Private.TimeMachine:Append({
         actionType = "set",
         uid = data.uid,
         path = path,
@@ -2063,7 +2063,7 @@ local function AddCommonTriggerOptions(options, data, triggernum, doubleWidth)
           }
         end
       end
-      OptionsPrivate.TimeMachine:AppendMany(changes)
+      OptionsPrivate.Private.TimeMachine:AppendMany(changes)
       WeakAuras.UpdateThumbnail(data);
       WeakAuras.ClearAndUpdateOptions(data.id);
     end,
@@ -2106,14 +2106,14 @@ local function AddTriggerGetterSetter(options, data, triggernum)
           if payload == nil
             and (next(trigger[key]) == nil or next(trigger[key], (next(trigger[key]))) == nil)
           then
-            OptionsPrivate.TimeMachine:Append({
+            OptionsPrivate.Private.TimeMachine:Append({
               actionType = "set",
               uid = data.uid,
               path = {"triggers", triggernum, "trigger", key},
               payload = nil
             })
           else
-            OptionsPrivate.TimeMachine:Append({
+            OptionsPrivate.Private.TimeMachine:Append({
               actionType = "set",
               uid = data.uid,
               path = {"triggers", triggernum, "trigger", key, index},
@@ -2124,7 +2124,7 @@ local function AddTriggerGetterSetter(options, data, triggernum)
         end
       else
         option.set = function(info, v)
-          OptionsPrivate.TimeMachine:Append({
+          OptionsPrivate.Private.TimeMachine:Append({
             actionType = "set",
             uid = data.uid,
             path = {"triggers", triggernum, "trigger", key},

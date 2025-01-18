@@ -202,22 +202,22 @@ function OptionsPrivate.GetTriggerOptions(data)
   return triggerOptions
 end
 
----@type fun(records: actionRecord[], path: keyPath, checks: conditionCheck[], triggernum: number)
-local function DeleteConditionsForTriggerHandleSubChecks(records, path, checks, triggernum)
+---@type fun(records: actionRecord[], path: keyPath, checks: conditionCheck[], uid: uid, triggernum: number)
+local function DeleteConditionsForTriggerHandleSubChecks(records, path, checks, uid, triggernum)
   tinsert(path, 0)
   for i, check in ipairs(checks) do
     path[#path] = i
     tinsert(path, "trigger")
     if (check.trigger == triggernum) then
       tinsert(records, {
-        uid = check.uid,
+        uid = uid,
         actionType = "set",
         path = path,
         payload = i
       })
     elseif (check.trigger and check.trigger > triggernum) then
       tinsert(records, {
-        uid = check.uid,
+        uid = uid,
         actionType = "set",
         path = path,
         payload = check.trigger - 1
@@ -226,7 +226,7 @@ local function DeleteConditionsForTriggerHandleSubChecks(records, path, checks, 
 
     if (check.checks) then
       path[#path] = "checks"
-      DeleteConditionsForTriggerHandleSubChecks(records, path, check.checks, triggernum);
+      DeleteConditionsForTriggerHandleSubChecks(records, path, check.checks, uid, triggernum);
       tremove(path)
     end
   end
@@ -253,38 +253,43 @@ local function DeleteConditionsForTrigger(records, data, triggernum)
     end
 
     if (condition.check and condition.check.checks) then
-      DeleteConditionsForTriggerHandleSubChecks(records, {"conditions", i, "check", "checks"}, condition.check.checks, triggernum)
+      DeleteConditionsForTriggerHandleSubChecks(records, {"conditions", i, "check", "checks"}, condition.check.checks, data.uid, triggernum)
     end
   end
 end
 
 ---@type fun(records: actionRecord[], path: keyPath, check: conditionCheck, triggernum: number)
-local function moveTriggerDownConditionCheck(records, path, check, triggernum)
+local function moveTriggerDownConditionCheck(records, path, check, uid, triggernum)
+  print("moving condition.check.trigger down for condition " .. path[#path])
+  tinsert(path, "check")
+  tinsert(path, "trigger")
   if (check.trigger == triggernum) then
     tinsert(records, {
-      uid = check.uid,
+      uid = uid,
       actionType = "set",
-      path = path,
+      path = CopyTable(path),
       payload = triggernum + 1
     })
   elseif (check.trigger == triggernum  + 1) then
     tinsert(records, {
-      uid = check.uid,
+      uid = uid,
       actionType = "set",
-      path = {"trigger"},
+      path = CopyTable(path),
       payload = triggernum
     })
   end
+  tremove(path)
   if (check.checks) then
     tinsert(path, "checks")
     tinsert(path, 0)
     for k, subCheck in ipairs(check.checks) do
       path[#path] = k
-      moveTriggerDownConditionCheck(records, path, subCheck, triggernum)
+      moveTriggerDownConditionCheck(records, path, subCheck, uid, triggernum)
     end
     tremove(path)
     tremove(path)
   end
+  tremove(path)
 end
 
 ---@type fun(data: auraData, i: number): boolean
@@ -302,9 +307,9 @@ local function moveTriggerDownImpl(data, i)
   local path = {"conditions", 0}
   for j, condition in ipairs(data.conditions) do
     path[#path] = j
-    moveTriggerDownConditionCheck(records, path, condition.check, i);
+    moveTriggerDownConditionCheck(records, path, condition.check, data.uid, i);
   end
-
+  OptionsPrivate.Private.TimeMachine:AppendMany(records)
   return true;
 end
 
@@ -382,7 +387,7 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
       path = {"triggers"},
       payload = {
         index = triggernum + 1,
-        value = trigger
+        value = CopyTable(trigger)
       }
     })
     WeakAuras.ClearAndUpdateOptions(data.id)
