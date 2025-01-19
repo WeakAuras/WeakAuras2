@@ -1083,7 +1083,8 @@ local function AddFakeInformation(data, triggernum, state, eventData)
     state.progressType = "timed"
   end
   if state.progressType == "timed" then
-    if state.expirationTime and state.expirationTime ~= math.huge and state.expirationTime > GetTime() then
+    local expirationTime = state.expirationTime
+    if expirationTime and type(expirationTime) == "number" and expirationTime ~= math.huge and expirationTime > GetTime() then
       return
     end
     state.progressType = "timed"

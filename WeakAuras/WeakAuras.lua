@@ -4574,10 +4574,16 @@ do
       local changed = false
       for triggernum, triggerData in ipairs(triggers) do
         for id, state in pairs(triggerData) do
-          if state.progressType == "timed" and state.expirationTime and state.expirationTime < t and state.duration and state.duration > 0 then
-            state.expirationTime = t + state.duration
-            state.changed = true
-            changed = true
+          if state.progressType == "timed" then
+            local expirationTime = state.expirationTime
+            local duration = state.duration
+            if expirationTime and type(expirationTime) == "number" and expirationTime < t
+               and duration and type(duration) == "number" and duration > 0
+            then
+              state.expirationTime = t + state.duration
+              state.changed = true
+              changed = true
+            end
           end
         end
       end
@@ -4701,7 +4707,7 @@ local function startStopTimers(id, cloneId, triggernum, state)
       timer:CancelTimer(record.handle);
     end
 
-    if expirationTime then
+    if expirationTime and type(expirationTime) == "number" then
       record.handle = timer:ScheduleTimerFixed(
         function()
           if (state.show ~= false and state.show ~= nil) then
@@ -4712,7 +4718,6 @@ local function startStopTimers(id, cloneId, triggernum, state)
             if Private.watched_trigger_events[id] and Private.watched_trigger_events[id][triggernum] then
               Private.AddToWatchedTriggerDelay(id, triggernum)
             end
-
             Private.UpdatedTriggerState(id);
           end
         end,
