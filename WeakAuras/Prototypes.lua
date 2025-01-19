@@ -2430,9 +2430,6 @@ Private.event_prototypes = {
         values = "role_types",
         store = true,
         conditionType = "select",
-        enable = function(trigger)
-          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
-        end
       },
       {
         name = "raid_role",
