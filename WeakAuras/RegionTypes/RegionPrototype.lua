@@ -463,6 +463,9 @@ local function UpdateProgressFromState(self, minMaxConfig, state, progressSource
     end
 
     local duration = totalProperty and state[totalProperty] or 0
+    if type(duration) ~= "number" then
+      duration = 0
+    end
     local modRate = modRateProperty and state[modRateProperty] or nil
     local adjustMin
     if minMaxConfig.adjustedMin then
@@ -521,6 +524,7 @@ local function UpdateProgressFromState(self, minMaxConfig, state, progressSource
     else
       max = duration
     end
+
     self.minProgress, self.maxProgress = adjustMin, max
     self.progressType = "timed"
     self.duration = max - adjustMin
