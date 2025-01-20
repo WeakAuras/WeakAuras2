@@ -238,12 +238,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             else return "true"; end
           end,
           set = function(info, v)
-            local path = "use_"..realname
+            local path = appendPath(basePath, "use_"..realname)
             local payload
             if(v) then
               payload = true;
             else
-              local value = trigger[path]
+              local value = trigger["use_"..realname]
               if(value == false) then
                 payload = nil
               else
