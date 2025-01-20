@@ -2964,13 +2964,11 @@ if WeakAuras.IsClassicOrCata() then
 end
 
 ---@type table<string, string>
-if WeakAuras.IsCataOrRetail() then
-  Private.role_types = {
-    TANK = INLINE_TANK_ICON.." "..TANK,
-    DAMAGER = INLINE_DAMAGER_ICON.." "..DAMAGER,
-    HEALER = INLINE_HEALER_ICON.." "..HEALER
-  }
-end
+Private.role_types = {
+  TANK = INLINE_TANK_ICON.." "..TANK,
+  DAMAGER = INLINE_DAMAGER_ICON.." "..DAMAGER,
+  HEALER = INLINE_HEALER_ICON.." "..HEALER
+}
 
 ---@type table<string, string>
 Private.group_member_types = {
@@ -3399,7 +3397,9 @@ Private.bufftrigger_2_progress_behavior_types = {
 ---@type table<string, string>
 Private.bufftrigger_2_preferred_match_types = {
   showLowest = L["Least remaining time"],
-  showHighest = L["Most remaining time"]
+  showHighest = L["Most remaining time"],
+  showLowestSpellId = L["Lowest Spell Id"],
+  showHighestSpellId = L["Highest Spell Id"],
 }
 
 ---@type table<string, string>
@@ -3805,7 +3805,6 @@ Private.author_option_fields = {
   header = {
     useName = false,
     text = "",
-    noMerge = false
   },
   group = {
     groupType = "simple",

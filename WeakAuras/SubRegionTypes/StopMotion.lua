@@ -247,6 +247,8 @@ local function modify(parent, region, parentData, data, first)
     customFrameHeight = data.customFrameHeight,
   })
 
+  region.stopMotion:SetColor(unpack(data.stopmotionColor))
+
   Private.regionPrototype.AddMinMaxProgressSource(true, region, parentData, data)
 
   region.FrameTick = nil

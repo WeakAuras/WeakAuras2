@@ -3697,11 +3697,18 @@ function WeakAuras.WatchUnitChange(unit)
     local roleUpdate
     if WeakAuras.IsClassicEra() then
       function roleUpdate(unit, eventsToSend)
+        -- For classic check both raid role and group role
         local oldRaidRole = watchUnitChange.unitRaidRole[unit]
         local newRaidRole = WeakAuras.UnitRaidRole(unit)
         if oldRaidRole ~= newRaidRole then
           eventsToSend["UNIT_ROLE_CHANGED_" .. unit] = unit
           watchUnitChange.unitRaidRole[unit] = newRaidRole
+        end
+        local oldRole = watchUnitChange.unitRoles[unit]
+        local newRole = UnitGroupRolesAssigned(unit)
+        if oldRole ~= newRole then
+          eventsToSend["UNIT_ROLE_CHANGED_" .. unit] = unit
+          watchUnitChange.unitRoles[unit] = newRole
         end
       end
     end

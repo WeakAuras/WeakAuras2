@@ -2431,7 +2431,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsCataOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end
       },
       {
@@ -3427,7 +3427,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsCataOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end
       },
       {
@@ -3997,7 +3997,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsCataOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
         end
       },
       {
@@ -9764,7 +9764,7 @@ Private.event_prototypes = {
         store = true,
         conditionType = "select",
         enable = function(trigger)
-          return WeakAuras.IsCataOrRetail() and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
+          return trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party"
                  and not trigger.use_inverse
         end
       },
