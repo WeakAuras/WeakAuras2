@@ -1194,15 +1194,6 @@ typeControlAdders = {
         return not option.useName
       end
     }
-    args[prefix .. "noMerge"] = {
-      type = "toggle",
-      name = name(option, "noMerge", L["Prevent Merging"]),
-      desc = desc(option, "noMerge", L["If checked, then this separator will not merge with other separators when selecting multiple auras."]),
-      order = order(),
-      width = WeakAuras.doubleWidth,
-      get = get(option, "noMerge"),
-      set = set(data, option, "noMerge"),
-    }
   end,
   group = function(options, args, data, order, prefix, i)
     local option = options[i]
