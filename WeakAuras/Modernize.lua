@@ -2367,6 +2367,17 @@ function Private.Modernize(data, oldSnapshot)
     end
   end
 
+  if data.internalVersion < 82 then
+    -- noMerge for separator custom option doesn't make sense,
+    -- and groups achieve the desired effect better,
+    -- so drop the feature
+    for _, optionData in ipairs(data.authorOptions) do
+      if optionData.type == "header" then
+        optionData.noMerge = nil
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 
