@@ -95,7 +95,7 @@ end
 
 ---@type fun(uid: string, triggernum: number, field: string, value: any, multiEntry?: boolean, entryNumber?: number): actionRecord
 local function setValue(uid, triggernum, field, value, multiEntry, entryNumber)
-  local path = { "triggers", triggernum, "trigger", field }
+  local path = triggernum ~= nil and { "triggers", triggernum, "trigger", field } or { "load", field }
   local actionType = "set"
   local payload = value
   if multiEntry then

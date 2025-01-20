@@ -1192,11 +1192,12 @@ local function ProgressOptions(data)
     desc = L["Values/Remaining Time below this value are displayed as zero progress."],
     order = order + 1,
     set = function(info, value)
-      data.useAdjustededMin = value
-      if not value then
-        data.adjustedMin = ""
-      end
-      WeakAuras.Add(data)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = {"useAdjustededMin"},
+        payload = value or ""
+      })
     end
   };
 
@@ -1225,11 +1226,12 @@ local function ProgressOptions(data)
     desc = L["Values/Remaining Time above this value are displayed as full progress."],
     order = order + 4,
     set = function(info, value)
-      data.useAdjustededMax = value
-      if not value then
-        data.adjustedMax = ""
-      end
-      WeakAuras.Add(data)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = {"useAdjustededMax"},
+        payload = value or ""
+      })
     end
   }
 
@@ -1633,10 +1635,20 @@ local function ProgressOptionsForSubElement(parentData, data, options, startOrde
         -- Copy only trigger + property
         data.progressSource[1] = value[1]
         data.progressSource[2] = value[2]
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "setmany",
+          uid = parentData.uid,
+          path = { "progressSource" },
+          payload = { value[1], value[2] }
+        })
       else
-        data.progressSource = nil
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = parentData.uid,
+          path = { "progressSource" },
+          payload = nil
+        })
       end
-      WeakAuras.Add(parentData)
     end,
     hidden = progressSourceHidden
   }
@@ -1683,9 +1695,12 @@ local function ProgressOptionsForSubElement(parentData, data, options, startOrde
       return data.progressSource and data.progressSource[3] or 0
     end,
     set = function(info, value)
-      data.progressSource = data.progressSource or {}
-      data.progressSource[3] = value
-      WeakAuras.Add(parentData)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = parentData.uid,
+        path = { "progressSource", 3 },
+        payload = value
+      })
     end
   }
 
@@ -1703,9 +1718,12 @@ local function ProgressOptionsForSubElement(parentData, data, options, startOrde
       return data.progressSource and data.progressSource[4] or 100
     end,
     set = function(info, value)
-      data.progressSource = data.progressSource or {}
-      data.progressSource[4] = value
-      WeakAuras.Add(parentData)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = parentData.uid,
+        path = { "progressSource", 4 },
+        payload = value
+      })
     end
   }
 
@@ -1716,11 +1734,12 @@ local function ProgressOptionsForSubElement(parentData, data, options, startOrde
     desc = L["Values/Remaining Time below this value are displayed as zero progress."],
     order = startOrder + 0.4,
     set = function(info, value)
-      data.useAdjustededMin = value
-      if not value then
-        data.adjustedMin = ""
-      end
-      WeakAuras.Add(parentData)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = parentData.uid,
+        path = { "useAdjustededMin" },
+        payload = value or ""
+      })
     end,
     hidden = progressSourceHidden
   };
@@ -1760,11 +1779,12 @@ local function ProgressOptionsForSubElement(parentData, data, options, startOrde
     desc = L["Values/Remaining Time above this value are displayed as full progress."],
     order = startOrder + 0.7,
     set = function(info, value)
-      data.useAdjustededMax = value
-      if not value then
-        data.adjustedMax = ""
-      end
-      WeakAuras.Add(parentData)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = parentData.uid,
+        path = { "useAdjustededMax" },
+        payload = value or ""
+      })
     end,
     hidden = progressSourceHidden
   }
