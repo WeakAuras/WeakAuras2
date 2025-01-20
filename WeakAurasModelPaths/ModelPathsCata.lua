@@ -648,6 +648,50 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "6036383",
+      text = "30thbatmountcata.m2",
+      value = "30thbatmountcata.m2",
+     },
+    },
+    text = "30thbatmountcata",
+    value = "30thbatmountcata",
+   },
+   {
+    children = {
+     {
+      fileId = "6036384",
+      text = "30thgryphonmountcata.m2",
+      value = "30thgryphonmountcata.m2",
+     },
+    },
+    text = "30thgryphonmountcata",
+    value = "30thgryphonmountcata",
+   },
+   {
+    children = {
+     {
+      fileId = "6036385",
+      text = "30thhippogrypmountcata.m2",
+      value = "30thhippogrypmountcata.m2",
+     },
+    },
+    text = "30thhippogrypmountcat",
+    value = "30thhippogrypmountcat",
+   },
+   {
+    children = {
+     {
+      fileId = "6036386",
+      text = "30thwyvernmountcata.m2",
+      value = "30thwyvernmountcata.m2",
+     },
+    },
+    text = "30thwyvernmountcata",
+    value = "30thwyvernmountcata",
+   },
+   {
+    children = {
+     {
       fileId = "122866",
       text = "abyssal_illidan.m2",
       value = "abyssal_illidan.m2",
@@ -2340,6 +2384,11 @@ WeakAuras.ModelPaths = {
       fileId = "234564",
       text = "drakemount.m2",
       value = "drakemount.m2",
+     },
+     {
+      fileId = "5862903",
+      text = "drakemountcata.m2",
+      value = "drakemountcata.m2",
      },
     },
     text = "drakemount",
@@ -5193,6 +5242,28 @@ WeakAuras.ModelPaths = {
    {
     children = {
      {
+      fileId = "5140797",
+      text = "lunardragonmountcata.m2",
+      value = "lunardragonmountcata.m2",
+     },
+    },
+    text = "lunardragonmountcata",
+    value = "lunardragonmountcata",
+   },
+   {
+    children = {
+     {
+      fileId = "5006181",
+      text = "lunardragonpetcata.m2",
+      value = "lunardragonpetcata.m2",
+     },
+    },
+    text = "lunardragonpetcata",
+    value = "lunardragonpetcata",
+   },
+   {
+    children = {
+     {
       fileId = "4680342",
       text = "lunarrabbitpet.m2",
       value = "lunarrabbitpet.m2",
@@ -7059,6 +7130,17 @@ WeakAuras.ModelPaths = {
     },
     text = "ridingphoenix",
     value = "ridingphoenix",
+   },
+   {
+    children = {
+     {
+      fileId = "5905188",
+      text = "ridingphoenix2.m2",
+      value = "ridingphoenix2.m2",
+     },
+    },
+    text = "ridingphoenix2",
+    value = "ridingphoenix2",
    },
    {
     children = {
@@ -51608,29 +51690,6 @@ WeakAuras.ModelPaths = {
   },
   text = "item",
   value = "item",
- },
- {
-  children = {
-   {
-    children = {
-     {
-      children = {
-       {
-        fileId = "5905188",
-        text = "5905188.m2",
-        value = "5905188.m2",
-       },
-      },
-      text = "unk_exp10_5905188",
-      value = "unk_exp10_5905188",
-     },
-    },
-    text = "creature",
-    value = "creature",
-   },
-  },
-  text = "models",
-  value = "models",
  },
  {
   children = {
