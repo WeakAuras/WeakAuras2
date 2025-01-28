@@ -6087,16 +6087,13 @@ Private.event_prototypes = {
         test = "true",
         conditionType = "bool",
         conditionTest = function(state, needle)
-          if not state or not state.show or not UnitExists('target') then
+          if not state or not state.name or not state.show or not UnitExists('target') then
             return false
           end
           if InCombatLockdown() and not UnitCanAttack('player', 'target') then
             return false
           end
-          local itemSlot = state.trigger.itemSlot
-          local item = GetInventoryItemID("player", itemSlot or 0)
-          local itemName = item and C_Item.GetItemInfo(item) or nil
-          return C_Item.IsItemInRange(itemName, 'target') == (needle == 1)
+          return C_Item.IsItemInRange(state.name, 'target') == (needle == 1)
         end,
         conditionEvents = AddTargetConditionEvents({
           "WA_SPELL_RANGECHECK",
