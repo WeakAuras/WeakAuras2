@@ -55,6 +55,11 @@ local properties = {
     setter = "SetDesaturated",
     type = "bool",
   },
+  linearTextureInverse = {
+    display = L["Inverse"],
+    setter = "SetInverse",
+    type = "bool",
+  },
   linearTextureColor = {
     display = L["Color"],
     setter = "SetColor",
@@ -160,15 +165,24 @@ local funcs = {
         if progressData.total ~= 0 then
           progress = progressData.value / progressData.total
         end
+        if self.inverse then
+          progress = 1 - progress
+        end
         self.linearTexture:SetValue(0, progress)
       elseif progressData.progressType == "timed" then
         if progressData.paused then
           local remaining = self.progressData.remaining
           local progress = remaining / self.progressData.duration
+          if self.inverse then
+            progress = 1 - progress
+          end
           self.linearTexture:SetValue(0, progress)
         else
           local remaining = self.progressData.expirationTime - GetTime()
           local progress = remaining / self.progressData.duration
+          if self.inverse then
+            progress = 1 - progress
+          end
           self.linearTexture:SetValue(0, progress)
         end
       end
@@ -185,6 +199,10 @@ local funcs = {
     self.linearTexture:SetHeight(h)
     self.linearTexture:UpdateTextures()
   end,
+  SetInverse = function(self, inverse)
+    self.inverse = inverse
+    self:UpdateFrame()
+  end
 }
 
 local function create()
@@ -223,6 +241,7 @@ local function modify(parent, region, parentData, data, first)
     region:SetSize(data.width or 0, data.height or 0)
   end
 
+  region.inverse = data.linearTextureInverse
 
   region.Anchor = function()
     region:ClearAllPoints()
