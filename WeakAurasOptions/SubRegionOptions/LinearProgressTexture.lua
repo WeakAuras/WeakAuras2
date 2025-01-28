@@ -65,6 +65,12 @@ local function createOptions(parentData, data, index, subIndex)
       order = 5,
       values = OptionsPrivate.Private.texture_wrap_types
     },
+    linearTextureInverse = {
+      type = "toggle",
+      width = WeakAuras.normalWidth,
+      name = L["Inverse"],
+      order = 5.5,
+    },
     linearTextureMirror = {
       type = "toggle",
       width = WeakAuras.normalWidth,
