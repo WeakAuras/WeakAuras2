@@ -83,11 +83,11 @@ local function createOptions(parentData, data, index, subIndex)
       order = 8,
       values = OptionsPrivate.Private.blend_types
     },
-    space = {
-      type = "description",
-      name = "",
-      order = 8.5,
+    circularTextureInverse = {
+      type = "toggle",
       width = WeakAuras.normalWidth,
+      name = L["Inverse"],
+      order = 8.5,
     },
     circularTextureStartAngle = {
       type = "range",

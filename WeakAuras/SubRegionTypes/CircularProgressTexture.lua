@@ -55,6 +55,11 @@ local properties = {
     setter = "SetDesaturated",
     type = "bool",
   },
+  circularTextureInverse = {
+    display = L["Inverse"],
+    setter = "SetInverse",
+    type = "bool",
+  },
   circularTextureColor = {
     display = L["Color"],
     setter = "SetColor",
@@ -195,15 +200,24 @@ local funcs = {
         if progressData.total ~= 0 then
           progress = progressData.value / progressData.total
         end
+        if self.inverse then
+          progress = 1 - progress
+        end
         self.circularTexture:SetProgress(self:ProgressToAngles(progress))
       elseif progressData.progressType == "timed" then
         if progressData.paused then
           local remaining = self.progressData.remaining
           local progress = remaining / self.progressData.duration
+          if self.inverse then
+            progress = 1 - progress
+          end
           self.circularTexture:SetProgress(self:ProgressToAngles(progress))
         else
           local remaining = self.progressData.expirationTime - GetTime()
           local progress = remaining / self.progressData.duration
+          if self.inverse then
+            progress = 1 - progress
+          end
           self.circularTexture:SetProgress(self:ProgressToAngles(progress))
         end
       end
@@ -220,6 +234,10 @@ local funcs = {
     self.circularTexture:SetHeight(h)
     self.circularTexture:UpdateTextures()
   end,
+  SetInverse = function(self, inverse)
+    self.inverse = inverse
+    self:UpdateFrame()
+  end
 }
 
 local function create()
@@ -264,6 +282,8 @@ local function modify(parent, region, parentData, data, first)
     parent:AnchorSubRegion(region, data.anchor_mode, arg1, arg2, data.xOffset, data.yOffset)
     region:OnSizeChanged()
   end
+
+  region.inverse = data.circularTextureInverse
 
   Private.CircularProgressTextureBase.modify(region.circularTexture, {
     crop_x = 1 + data.circularTextureCrop_x,
