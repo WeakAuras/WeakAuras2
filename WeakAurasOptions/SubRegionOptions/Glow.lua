@@ -36,6 +36,7 @@ local function createOptions(parentData, data, index, subIndex)
     anchor_area = {
       type = "select",
       width = WeakAuras.normalWidth,
+      control = "WeakAurasTwoColumnDropdown",
       name = L["Glow Anchor"],
       order = 3,
       values = areaAnchors,
