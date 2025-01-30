@@ -6162,6 +6162,16 @@ Private.event_prototypes = {
         conditionType = "string"
       },
       {
+        name = "itemId",
+        display = L["ItemId"],
+        hidden = true,
+        init = "item",
+        test = "true",
+        store = true,
+        conditionType = "number",
+        operator_types = "only_equal",
+      },
+      {
         name = "icon",
         hidden = true,
         init = "icon",

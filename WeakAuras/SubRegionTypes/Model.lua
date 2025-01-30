@@ -93,7 +93,7 @@ local function AcquireModel(region, data)
 
   local anchor
   if region.parentType == "aurabar" then
-    if data.bar_model_clip and WeakAuras.IsTWW() then
+    if data.bar_model_clip then
       anchor = region.parent.bar.fgMask
     else
       anchor = region.parent.bar
@@ -194,9 +194,6 @@ local funcs = {
 local function create()
   local subRegion = CreateFrame("Frame", nil, UIParent)
   subRegion:SetFlattensRenderLayers(true)
-  if not WeakAuras.IsTWW() then
-    subRegion:SetClipsChildren(true)
-  end
 
   for k, v in pairs(funcs) do
     subRegion[k] = v
