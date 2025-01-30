@@ -38,7 +38,7 @@ local function createOptions(parentData, data, index, subIndex)
     bar_model_clip = {
       type = "toggle",
       width = WeakAuras.doubleWidth,
-      name = WeakAuras.IsTWW() and L["Attach to Foreground"] or L["Clipped by Progress"],
+      name = L["Attach to Foreground"],
       order = 12,
       hidden = function() return parentData.regionType ~= "aurabar" end
     },
