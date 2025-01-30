@@ -2371,9 +2371,11 @@ function Private.Modernize(data, oldSnapshot)
     -- noMerge for separator custom option doesn't make sense,
     -- and groups achieve the desired effect better,
     -- so drop the feature
-    for _, optionData in ipairs(data.authorOptions) do
-      if optionData.type == "header" then
-        optionData.noMerge = nil
+    if data.authorOptions then
+      for _, optionData in ipairs(data.authorOptions) do
+        if optionData.type == "header" then
+          optionData.noMerge = nil
+        end
       end
     end
   end
