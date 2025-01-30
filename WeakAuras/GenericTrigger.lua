@@ -899,6 +899,9 @@ function Private.ScanEvents(event, arg1, arg2, ...)
 end
 
 function WeakAuras.ScanEvents(event, arg1, arg2, ...)
+  if type(event) ~= "string" then
+    return
+  end
   scannerFrame:Queue(Private.ScanEvents, event, arg1, arg2, ...)
 end
 
