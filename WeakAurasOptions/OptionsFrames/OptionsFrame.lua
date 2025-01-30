@@ -518,8 +518,7 @@ function OptionsPrivate.CreateFrame()
   if OptionsPrivate.changelog then
     local changelog
     if OptionsPrivate.changelog.highlightText then
-      changelog = L["Highlights"] .. "\n" .. OptionsPrivate.changelog.highlightText .. "\n"
-      .. L["Commits"] .. "\n" ..OptionsPrivate.changelog.commitText
+      changelog = L["Highlights"] .. "\n" .. OptionsPrivate.changelog.highlightText
     else
       changelog = OptionsPrivate.changelog.commitText
     end
