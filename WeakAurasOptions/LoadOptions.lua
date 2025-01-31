@@ -880,6 +880,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                   payload = nil
                 })
               end
+              OptionsPrivate.Private.TimeMachine:AppendMany(records)
               if (reloadOptions) then
                 WeakAuras.ClearAndUpdateOptions(data.id)
               end
