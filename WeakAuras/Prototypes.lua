@@ -6081,19 +6081,29 @@ Private.event_prototypes = {
     statesParameter = "one",
     args = {
       {
+        name = "itemId",
+        display = WeakAuras.newFeatureString .. L["ItemId"],
+        hidden = true,
+        init = "item",
+        test = "true",
+        store = true,
+        conditionType = "number",
+        operator_types = "only_equal",
+      },
+      {
         name = "itemInRange",
         display = WeakAuras.newFeatureString .. L["Item in Range"],
         hidden = true,
         test = "true",
         conditionType = "bool",
         conditionTest = function(state, needle)
-          if not state or not state.name or not state.show or not UnitExists('target') then
+          if not state or not state.itemId or not state.show or not UnitExists('target') then
             return false
           end
           if InCombatLockdown() and not UnitCanAttack('player', 'target') then
             return false
           end
-          return C_Item.IsItemInRange(state.name, 'target') == (needle == 1)
+          return C_Item.IsItemInRange(state.itemId, 'target') == (needle == 1)
         end,
         conditionEvents = AddTargetConditionEvents({
           "WA_SPELL_RANGECHECK",
