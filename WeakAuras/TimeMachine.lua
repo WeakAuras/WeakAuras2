@@ -176,7 +176,10 @@ local function keyPathToString(path)
 end
 
 function TimeMachine:StartTransaction()
-  self:Reject()
+  if self.transaction then
+    WeakAuras.prettyPrint("If you're reading this, a time machine transaction was started, but there was already one in  progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
+    self:Reject()
+  end
   self.transaction = true
 end
 
