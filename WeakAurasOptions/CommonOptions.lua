@@ -1193,10 +1193,13 @@ local function ProgressOptions(data)
     order = order + 1,
     set = function(info, value)
       OptionsPrivate.Private.TimeMachine:Append({
-        actionType = "set",
+        actionType = "setmany",
         uid = data.uid,
-        path = {"useAdjustededMin"},
-        payload = value or ""
+        path = {},
+        payload = {
+          useAdjustededMin = value or "",
+          adjustedMin = value and data.adjustedMin or ""
+        }
       })
     end
   };
@@ -1227,10 +1230,13 @@ local function ProgressOptions(data)
     order = order + 4,
     set = function(info, value)
       OptionsPrivate.Private.TimeMachine:Append({
-        actionType = "set",
+        actionType = "setmany",
         uid = data.uid,
-        path = {"useAdjustededMax"},
-        payload = value or ""
+        path = {},
+        payload = {
+          useAdjustededMax = value or "",
+          adjustedMax = value and data.adjustedMax or ""
+        }
       })
     end
   }
@@ -1735,10 +1741,13 @@ local function ProgressOptionsForSubElement(parentData, data, options, startOrde
     order = startOrder + 0.4,
     set = function(info, value)
       OptionsPrivate.Private.TimeMachine:Append({
-        actionType = "set",
+        actionType = "setmany",
         uid = parentData.uid,
-        path = { "useAdjustededMin" },
-        payload = value or ""
+        path = {},
+        payload = {
+          useAdjustededMin = value or "",
+          adjustedMin = value and data.adjustedMin or ""
+        }
       })
     end,
     hidden = progressSourceHidden
@@ -1780,10 +1789,13 @@ local function ProgressOptionsForSubElement(parentData, data, options, startOrde
     order = startOrder + 0.7,
     set = function(info, value)
       OptionsPrivate.Private.TimeMachine:Append({
-        actionType = "set",
+        actionType = "setmany",
         uid = parentData.uid,
-        path = { "useAdjustededMax" },
-        payload = value or ""
+        path = {},
+        payload = {
+          useAdjustededMax = value or "",
+          adjustedMax = value and data.adjustedMax or ""
+        }
       })
     end,
     hidden = progressSourceHidden
