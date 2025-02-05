@@ -386,35 +386,17 @@ function OptionsPrivate.GetAnimationOptions(data)
             data.animation.start.colorA or 1;
         end,
         set = function(info, r, g, b, a)
-          OptionsPrivate.Private.TimeMachine:AppendMany(
-            -- todo: maybe condense these values into 1 table?
-            {
-              {
-                uid = data.uid,
-                actionType = "set",
-                path = {"animation", "start", "colorR"},
-                payload = r
-              },
-              {
-                uid = data.uid,
-                actionType = "set",
-                path = {"animation", "start", "colorG"},
-                payload = g
-              },
-              {
-                uid = data.uid,
-                actionType = "set",
-                path = {"animation", "start", "colorB"},
-                payload = b
-              },
-              {
-                uid = data.uid,
-                actionType = "set",
-                path = {"animation", "start", "colorA"},
-                payload = a
-              }
+          OptionsPrivate.Private.TimeMachine:Append( {
+            uid = data.uid,
+            actionType = "setmany",
+            path = {"animation", "start"},
+            payload = {
+              colorR = r,
+              colorG = g,
+              colorB = b,
+              colorA = a
             }
-          )
+        })
         end
       },
       main_header = {
