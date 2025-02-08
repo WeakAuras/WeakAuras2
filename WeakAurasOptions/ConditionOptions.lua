@@ -337,7 +337,7 @@ local function addControlsForChange(args, order, data, totalAuraCount, condition
       local default = allProperties.propertyMap[property].default;
       if (data.controlledChildren) then
         OptionsPrivate.Private.TimeMachine:StartTransaction()
-        for id, reference in pairs(conditions[i].changes[j].references) do
+        for id, reference in pairs(conditqions[i].changes[j].references) do
           local auraData = WeakAuras.GetData(id);
           local conditionIndex = conditions[i].check.references[id].conditionIndex;
           OptionsPrivate.Private.TimeMachine:AppendMany({
@@ -357,8 +357,6 @@ local function addControlsForChange(args, order, data, totalAuraCount, condition
           OptionsPrivate.ClearOptions(auraData.id)
         end
         OptionsPrivate.Private.TimeMachine:Commit()
-        -- ? does this do anything? Shouldn't AceConfig refill after the set() which "blows away" this change?
-        conditions[i].changes[j].property = property
         WeakAuras.ClearAndUpdateOptions(data.id)
       else
         OptionsPrivate.Private.TimeMachine:AppendMany({
@@ -415,7 +413,6 @@ local function addControlsForChange(args, order, data, totalAuraCount, condition
           path = {"conditions", conditionIndex, "changes", reference.changeIndex, "value"},
           payload = CopyTable(v)
         })
-        auraData.conditions[conditionIndex].changes[reference.changeIndex].value = CopyTable(v)
         OptionsPrivate.ClearOptions(auraData.id)
       end
       conditions[i].changes[j].value = CopyTable(v)
@@ -459,7 +456,6 @@ local function addControlsForChange(args, order, data, totalAuraCount, condition
             path = {"conditions", conditionIndex, "changes", reference.changeIndex, "value", property},
             payload = v
           })
-          auraData.conditions[conditionIndex].changes[reference.changeIndex].value[property] = v;
           OptionsPrivate.ClearOptions(auraData.id)
         end
         if (type(conditions[i].changes[j].value) ~= "table") then
@@ -507,7 +503,6 @@ local function addControlsForChange(args, order, data, totalAuraCount, condition
         path = {"conditions", i, "changes", j, "value"},
         payload = v
       })
-      conditions[i].changes[j].value = v;
       WeakAuras.ClearAndUpdateOptions(data.id)
     end
     setValueTable = function(info, v)
@@ -1970,7 +1965,6 @@ local function addControlsForIfLine(args, order, data, totalAuraCount, condition
           })
           OptionsPrivate.ClearOptions(auraData.id)
         end
-        WeakAuras.ClearAndUpdateOptions(data.id)
       else
         local oldType;
         check = getOrCreateSubCheck(conditions[i].check, path);
@@ -2745,6 +2739,7 @@ local function addControlsForCondition(args, order, data, totalAuraCount, condit
           OptionsPrivate.RemoveCollapsed(auraData.id, "condition", {reference.conditionIndex})
           OptionsPrivate.ClearOptions(auraData.id)
         end
+        OptionsPrivate.Private.TimeMachine:Commit()
         WeakAuras.ClearAndUpdateOptions(data.id)
         return;
       else
@@ -2818,6 +2813,7 @@ local function addControlsForCondition(args, order, data, totalAuraCount, condit
           })
           OptionsPrivate.ClearOptions(auradata.id)
         end
+        OptionsPrivate.Private.TimeMachine:Commit()
         WeakAuras.ClearAndUpdateOptions(data.id)
       else
         conditions[i].changes = conditions[i].changes or {};
