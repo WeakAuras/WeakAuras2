@@ -84,7 +84,7 @@ local function createOptions(parentData, data, index, subIndex)
       width = WeakAuras.normalWidth,
       name = L["Allow Full Rotation"],
       order = 13,
-      hidden = OptionsPrivate.Private.TextureBase.IsAtlas(data.texture)
+      hidden = data and OptionsPrivate.Private.TextureBase.IsAtlas(data.texture)
     },
     textureRotation = {
       type = "range",
