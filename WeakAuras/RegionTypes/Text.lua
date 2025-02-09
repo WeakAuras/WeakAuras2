@@ -87,7 +87,9 @@ local function modify(parent, region, data)
   if not text:GetFont() then -- Font invalid, set the font but keep the setting
     text:SetFont(STANDARD_TEXT_FONT, data.fontSize, data.outline);
   end
+
   text:SetJustifyH(data.justify);
+  text:SetText("")
 
   text:ClearAllPoints();
   text:SetPoint("CENTER", UIParent, "CENTER");
