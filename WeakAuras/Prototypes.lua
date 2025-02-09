@@ -2195,6 +2195,8 @@ local function AddTargetConditionEvents(result, useFocus)
   return result
 end
 
+Private.AddTargetConditionEvents = AddTargetConditionEvents
+
 local unitHelperFunctions = {
   UnitChangedForceEventsWithPets = function(trigger)
     local events = {}
@@ -5832,7 +5834,7 @@ Private.event_prototypes = {
       local ret = [=[
         local itemname = %s;
         local name = C_Item.GetItemInfo(itemname or 0) or "Invalid"
-        local _, _, _, _, icon = C_Item.GetItemInfoInstant(itemname or 0)
+        local itemId, _, _, _, icon = C_Item.GetItemInfoInstant(itemname or 0)
         local showgcd = %s
         local startTime, duration, enabled, gcdCooldown = WeakAuras.GetItemCooldown(itemname, showgcd);
         local expirationTime = startTime + duration
@@ -5867,6 +5869,16 @@ Private.event_prototypes = {
         display = L["Item"],
         type = "item",
         test = "true"
+      },
+      {
+        name = "itemId",
+        display = WeakAuras.newFeatureString .. L["ItemId"],
+        hidden = true,
+        init = "itemId",
+        test = "true",
+        store = true,
+        conditionType = "number",
+        operator_types = "only_equal",
       },
       {
         name = "remaining",
@@ -5923,25 +5935,6 @@ Private.event_prototypes = {
         conditionTest = function(state, needle)
           return state and state.show and (not state.gcdCooldown and state.expirationTime and state.expirationTime > GetTime() or state.enabled == 0) == (needle == 1)
         end,
-      },
-      {
-        name = "itemInRange",
-        display = L["Item in Range"],
-        hidden = true,
-        test = "true",
-        conditionType = "bool",
-        conditionTest = function(state, needle)
-          if not state or not state.show or not UnitExists('target') then
-            return false
-          end
-          if InCombatLockdown() and not UnitCanAttack('player', 'target') then
-            return false
-          end
-          return C_Item.IsItemInRange(state.itemname, 'target') == (needle == 1)
-        end,
-        conditionEvents = AddTargetConditionEvents({
-          "WA_SPELL_RANGECHECK",
-        })
       },
       {
         hidden = true,
@@ -6078,6 +6071,16 @@ Private.event_prototypes = {
     statesParameter = "one",
     args = {
       {
+        name = "itemId",
+        display = WeakAuras.newFeatureString .. L["ItemId"],
+        hidden = true,
+        init = "item",
+        test = "true",
+        store = true,
+        conditionType = "number",
+        operator_types = "only_equal",
+      },
+      {
         name = "itemSlot",
         required = true,
         display = L["Equipment Slot"],
@@ -6211,6 +6214,7 @@ Private.event_prototypes = {
       }
     },
     automaticrequired = true,
+    hasItemID = true,
     progressType = "timed"
   },
   ["Cooldown Ready (Item)"] = {
@@ -6227,7 +6231,7 @@ Private.event_prototypes = {
       local ret = [[
         local itemName = %s
         local name = C_Item.GetItemInfo(itemName) or "Invalid"
-        local _, _, _, _, icon = C_Item.GetItemInfoInstant(itemName)
+        local itemId, _, _, _, icon = C_Item.GetItemInfoInstant(itemName)
       ]]
 
       local itemName = type(trigger.itemName) == "number" and trigger.itemName or string.format("%q", trigger.itemName or "0")
@@ -6246,6 +6250,16 @@ Private.event_prototypes = {
         display = L["Item"],
         type = "item",
         init = "arg"
+      },
+      {
+        name = "itemId",
+        display = WeakAuras.newFeatureString .. L["ItemId"],
+        hidden = true,
+        init = "itemId",
+        test = "true",
+        store = true,
+        conditionType = "number",
+        operator_types = "only_equal",
       },
       {
         name = "name",
@@ -6308,6 +6322,16 @@ Private.event_prototypes = {
         type = "select",
         values = "item_slot_types",
         init = "arg"
+      },
+      {
+        name = "itemId",
+        display = WeakAuras.newFeatureString .. L["ItemId"],
+        hidden = true,
+        init = "item",
+        test = "true",
+        store = true,
+        conditionType = "number",
+        operator_types = "only_equal",
       },
       {
         name = "name",
@@ -7511,8 +7535,9 @@ Private.event_prototypes = {
       local ret = [[
         local itemName = %s
         local exactSpellMatch = %s
+        local itemId = C_Item.GetItemInfo(itemName)
         if not exactSpellMatch and tonumber(itemName) then
-          itemName = C_Item.GetItemInfo(itemName)
+          itemName = itemId
         end
         local count = C_Item.GetItemCount(itemName or "", %s, %s, %s, %s);
         local reagentQuality, reagentQualityTexture
@@ -7540,6 +7565,16 @@ Private.event_prototypes = {
         type = "item",
         showExactOption = true,
         test = "true"
+      },
+      {
+        name = "itemId",
+        display = WeakAuras.newFeatureString .. L["ItemId"],
+        hidden = true,
+        init = "itemId",
+        test = "true",
+        store = true,
+        conditionType = "number",
+        operator_types = "only_equal",
       },
       {
         name = "name",
@@ -8662,7 +8697,7 @@ Private.event_prototypes = {
       local ret = [[
         local inverse = %s
         local triggerItemName = %s
-        local _, _, _, _, icon = C_Item.GetItemInfoInstant(triggerItemName)
+        local itemId, _, _, _, icon = C_Item.GetItemInfoInstant(triggerItemName)
         local itemSlot = %s
       ]]
 
@@ -8694,6 +8729,16 @@ Private.event_prototypes = {
         required = true,
         test = "true",
         showExactOption = true
+      },
+      {
+        name = "itemId",
+        display = WeakAuras.newFeatureString .. L["ItemId"],
+        hidden = true,
+        init = "itemId",
+        test = "true",
+        store = true,
+        conditionType = "number",
+        operator_types = "only_equal",
       },
       {
         name = "itemSlot",
@@ -9070,7 +9115,6 @@ Private.event_prototypes = {
         test = "(inverse and itemSetName == nil) or (not inverse and itemSetName)"
       }
     },
-    hasItemID = true,
     automaticrequired = true,
     progressType = "static"
   },
