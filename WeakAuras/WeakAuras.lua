@@ -5203,7 +5203,7 @@ function Private.ReplacePlaceHolders(textStr, region, customFunc, useHiddenState
   local regionState = region.state or {};
   local regionStates = region.states or {};
   if (not regionState and not regionValues) then
-    return;
+    return ""
   end
   local endPos = textStr:len();
   if (endPos < 2) then
