@@ -4713,7 +4713,25 @@ local commonConditions = {
   name = {
     display = L["Name"],
     type = "string"
-  }
+  },
+  itemInRange = {
+    display = WeakAuras.newFeatureString .. L["Item in Range"],
+    hidden = true,
+    type = "bool",
+    test = function(state, needle)
+      print("HERE", not state, not state.itemId, not state.show, not UnitExists('target'))
+      if not state or not state.itemId or not state.show or not UnitExists('target') then
+        return false
+      end
+      if InCombatLockdown() and not UnitCanAttack('player', 'target') then
+        return false
+      end
+      return C_Item.IsItemInRange(state.itemId, 'target') == (needle == 1)
+    end,
+    events = Private.AddTargetConditionEvents({
+      "WA_SPELL_RANGECHECK",
+    })
+  },
 }
 
 ---@type fun(variables: table)
@@ -4794,6 +4812,10 @@ function GenericTrigger.GetTriggerConditions(data, triggernum)
 
     if prototype.nameFunc then
       result.name = commonConditions.name;
+    end
+
+    if prototype.hasItemID then
+      result.itemInRange = commonConditions.itemInRange
     end
 
     for _, v in pairs(prototype.args) do
