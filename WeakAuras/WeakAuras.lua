@@ -1341,9 +1341,9 @@ else
   loadedFrame:RegisterEvent("CHARACTER_POINTS_CHANGED");
   loadedFrame:RegisterEvent("SPELLS_CHANGED");
 end
-loadedFrame:SetScript("OnEvent", function(self, event, addon)
+loadedFrame:SetScript("OnEvent", function(self, event, ...)
   if(event == "ADDON_LOADED") then
-    if(addon == ADDON_NAME) then
+    if(... == ADDON_NAME) then
       ---@type WeakAurasSaved
       WeakAurasSaved = WeakAurasSaved or {};
       db = WeakAurasSaved;
@@ -1409,6 +1409,7 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
   else
     local callback
     if(event == "PLAYER_ENTERING_WORLD") then
+      local isInitialLogin, isReloadingUi = ...
       -- Schedule events that need to be handled some time after login
       local now = GetTime()
       callback = function()
@@ -1420,7 +1421,9 @@ loadedFrame:SetScript("OnEvent", function(self, event, addon)
         CreateTalentCache() -- It seems that GetTalentInfo might give info about whatever class was previously being played, until PLAYER_ENTERING_WORLD
         Private.InitializeEncounterAndZoneLists()
       end
-      Private.PostAddCompanion()
+      if isInitialLogin or isReloadingUi then
+        Private.PostAddCompanion()
+      end
     elseif(event == "PLAYER_PVP_TALENT_UPDATE") then
       callback = CreatePvPTalentCache;
     elseif(event == "ACTIVE_TALENT_GROUP_CHANGED" or event == "CHARACTER_POINTS_CHANGED" or event == "SPELLS_CHANGED") then
