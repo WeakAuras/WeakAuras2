@@ -665,7 +665,15 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                       end
                     end
                   end
-                  local icon = OptionsPrivate.Private.ExecEnv.GetSpellIcon(value);
+                  local name, _, icon = OptionsPrivate.Private.ExecEnv.GetSpellInfo(value)
+                  if arg.noValidation then
+                    -- GetSpellInfo and other wow apis are case insensitive, but the later matching we do
+                    -- isn't. For validted inputs, we automatically correct the casing via GetSpellName
+                    -- Since we don't do that for noValidation, we are extra picky on the input
+                    if type(value) == "string" and name ~= value then
+                      return "", 18, 18
+                    end
+                  end
                   return icon and tostring(icon) or "", 18, 18;
                 elseif(arg.type == "item") then
                   local _, _, _, _, _, _, _, _, _, icon = C_Item.GetItemInfo(value);
