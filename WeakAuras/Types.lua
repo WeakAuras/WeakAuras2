@@ -530,6 +530,9 @@ Private.format_types = {
       local precision = get(symbol .. "_money_precision", 3)
 
       return function(value)
+        if type(value) ~= "number" then
+          return ""
+        end
         local gold = floor(value / 1e4)
         local silver = floor(value / 100 % 100)
         local copper = value % 100
