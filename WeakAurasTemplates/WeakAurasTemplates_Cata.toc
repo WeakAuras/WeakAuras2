@@ -1,4 +1,4 @@
-## Interface: 40401
+## Interface: 40402
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
 ## Version: @project-version@
