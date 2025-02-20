@@ -40,23 +40,27 @@ local function parseFile(filename)
 end
 
 -- extract data from specified lua files
+local dedupe = {}
 for _, namespace in ipairs(ordered) do
     print(namespace)
     local ns_file = assert(io.open(namespace .. ".lua", "w"), "Error opening file")
+    local sorted = {}
     for _, file in ipairs(fileList[namespace]) do
+        local count = 0
         local strings = parseFile(file)
 
-        local sorted = {}
         for k in next, strings do
-            table.insert(sorted, k)
-        end
-        table.sort(sorted)
-        if #sorted > 0 then
-            for _, v in ipairs(sorted) do
-                ns_file:write(string.format("L[\"%s\"] = true\n", v))
+            if not dedupe[k] then
+                table.insert(sorted, string.format("L[\"%s\"] = true", k))
+                dedupe[k] = true
+                count = count + 1
             end
         end
-        print("  (" .. #sorted .. ") " .. file)
+        print("  (" .. count .. ") " .. file)
+    end
+    table.sort(sorted)
+    if #sorted > 0 then
+        ns_file:write(table.concat(sorted, "\n"))
     end
     ns_file:close()
 end
