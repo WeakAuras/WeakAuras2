@@ -45,6 +45,8 @@ local default = {
   borderBackdrop = "Blizzard Tooltip"
 };
 
+Private.regionPrototype.AddAlphaToDefault(default)
+
 local screenWidth, screenHeight = math.ceil(GetScreenWidth() / 20) * 20, math.ceil(GetScreenHeight() / 20) * 20;
 
 local properties = {
@@ -75,7 +77,12 @@ local function GetProperties(data)
 end
 
 local regionFunctions = {
-  Update = function() end
+  Update = function() end,
+  SetAlpha = function(self, alpha)
+    if self.model then
+      self.model:SetAlpha(alpha)
+    end
+  end
 }
 
 -- Called when first creating a new region/display
@@ -186,6 +193,7 @@ local function AcquireModel(region, data)
 end
 
 local function ReleaseModel(model)
+  model:SetAlpha(1)
   model:SetKeepModelOnHide(false)
   model:Hide()
   model:UnregisterEvent("UNIT_MODEL_CHANGED");
