@@ -6,6 +6,7 @@ externals:
   WeakAuras/Libs/AceTimer-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceTimer-3.0
   WeakAuras/Libs/AceSerializer-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceSerializer-3.0
   WeakAuras/Libs/AceComm-3.0: https://repos.curseforge.com/wow/ace3/trunk/AceComm-3.0
+  WeakAuras/Libs/Chomp: https://github.com/wow-rp-addons/Chomp.git
   WeakAuras/Libs/LibSharedMedia-3.0: https://repos.curseforge.com/wow/libsharedmedia-3-0/trunk/LibSharedMedia-3.0
   WeakAuras/Libs/LibDataBroker-1.1: https://github.com/tekkub/libdatabroker-1-1
   WeakAuras/Libs/LibCompress: https://repos.curseforge.com/wow/libcompress/trunk

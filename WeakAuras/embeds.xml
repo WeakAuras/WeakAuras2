@@ -5,6 +5,7 @@
   <Include file="Libs\AceTimer-3.0\AceTimer-3.0.xml"/>
   <Include file="Libs\AceSerializer-3.0\AceSerializer-3.0.xml"/>
   <Include file="Libs\AceComm-3.0\AceComm-3.0.xml"/>
+  <Include file="Libs\Chomp\Chomp.xml"/>
   <Include file="Libs\LibSharedMedia-3.0\lib.xml"/>
   <Script file="Libs\LibCompress\LibCompress.lua"/>
   <Script file="Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua"/>
