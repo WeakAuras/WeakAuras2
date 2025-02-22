@@ -28,7 +28,7 @@ local methods = {
     self.companionData = companionData
 
     function self.callbacks.OnUpdateClick()
-      WeakAuras.Import(self.companionData.encoded)
+      OptionsPrivate.Private.Import(self.companionData.encoded)
     end
 
     self:SetTitle(self.companionData.name)

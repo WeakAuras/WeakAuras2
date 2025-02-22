@@ -531,7 +531,7 @@ local function ImportNow(data, children, target, linkedAuras, sender, callbackFu
   end
 end
 
-function WeakAuras.Import(inData, target, callbackFunc, linkedAuras)
+function Private.Import(inData, target, callbackFunc, linkedAuras)
   local data, children, version
   if type(inData) == 'string' then
     -- encoded data
@@ -600,6 +600,26 @@ function WeakAuras.Import(inData, target, callbackFunc, linkedAuras)
 
   tooltipLoading = nil;
   return ImportNow(data, children, target, linkedAuras, nil, callbackFunc)
+end
+
+function WeakAuras.Import(...)
+  local ok = true
+
+  local incompatibleAddons = {
+    ["Aura Updater"] = true
+  }
+
+  for i = 1, C_AddOns.GetNumAddOns() do
+    local addon = C_AddOns.GetAddOnMetadata(i, "Title")
+    if incompatibleAddons[addon] and C_AddOns.IsAddOnLoaded(i) then
+      WeakAuras.prettyPrint(string.format("Found incompatible addon %s. Importing API is disabled.", addon))
+      ok = false
+    end
+  end
+
+  if ok then
+    Private.Import(...)
+  end
 end
 
 local safeSenders = {}
