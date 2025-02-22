@@ -718,17 +718,6 @@ AlignmentLines.CreateLineInformation = function(self, data, sizerPoint)
       centerX = centerX and AlignToPixelX(centerX * scale) or nil
       centerY = centerY and AlignToPixelY(centerY * scale) or nil
 
-      if v.data.regionType == "group" then
-        -- This is the correct code for groups, but it is disabled above
-        -- Imho it works better if it is disabled
-        left = left + region.blx * scale
-        right = right + region.trx * scale
-        bottom = bottom + region.bly * scale
-        top = top + region.try * scale
-        centerX = (left + right) / 2
-        centerY = (bottom + top) / 2
-      end
-
       if not IsControlKeyDown() then
         if addVertical then
           if left and bottom and top then
@@ -1207,8 +1196,10 @@ local function ConstructMoverSizer(parent)
     mover:ClearAllPoints()
     frame:ClearAllPoints()
     if data.regionType == "group" then
-      mover:SetWidth((region.trx - region.blx) * scale)
-      mover:SetHeight((region.try - region.bly) * scale)
+      local blx, bly, trx, try = region:GetBoundingRect()
+      mover:SetWidth((trx - blx) * scale)
+      mover:SetHeight((try - bly) * scale)
+
       mover:SetPoint("BOTTOMLEFT", mover.anchor or UIParent, mover.anchorPoint or "CENTER",
                      (xOff + region.blx) * scale, (yOff + region.bly) * scale)
     else
