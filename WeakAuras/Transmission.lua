@@ -218,6 +218,7 @@ local LibDeflate = LibStub:GetLibrary("LibDeflate")
 local Serializer = LibStub:GetLibrary("AceSerializer-3.0")
 local LibSerialize = LibStub("LibSerialize")
 local Comm = LibStub:GetLibrary("AceComm-3.0")
+local Chomp = LibStub:GetLibrary("Chomp")
 -- the biggest bottleneck by far is in transmission and printing; so use maximal compression
 local configForDeflate = {level = 9}
 local configForLS = {
@@ -603,11 +604,20 @@ end
 
 local safeSenders = {}
 function RequestDisplay(characterName, displayName)
+  local characterNameAmbiguate = Ambiguate(characterName, "none")
   safeSenders[characterName] = true
-  safeSenders[Ambiguate(characterName, "none")] = true
+  safeSenders[characterNameAmbiguate] = true
+
+  local version = nil
+  if characterNameAmbiguate:find("-", 1, true) then
+    -- Cross realm transfer, use chomp
+    version = 2
+  end
+
   local transmit = {
     m = "dR",
-    d = displayName
+    d = displayName,
+    v = version
   };
   local transmitString = TableToString(transmit);
   Comm:SendCommMessage("WeakAuras", transmitString, "WHISPER", characterName);
@@ -621,36 +631,59 @@ function TransmitError(errorMsg, characterName)
   Comm:SendCommMessage("WeakAuras", TableToString(transmit), "WHISPER", characterName);
 end
 
-function TransmitDisplay(id, characterName)
+function TransmitDisplay(id, characterName, version)
   local encoded = Private.DisplayToString(id);
   if(encoded ~= "") then
-    Comm:SendCommMessage("WeakAuras", encoded, "WHISPER", characterName, "BULK", function(displayName, done, total)
-      Comm:SendCommMessage("WeakAurasProg", done.." "..total.." "..displayName, "WHISPER", characterName, "ALERT");
-    end, id);
+    if version == 2  then
+      -- Cross Realm communication
+      local total = #encoded
+      local messageOptions = {
+        serialize = false,
+        binaryBlob = true
+      }
+
+      Chomp.SmartAddonMessage("WeakAuras2", encoded, "WHISPER", characterName, messageOptions)
+      -- Chomp has no progress callback for SmartAddonMessage. Send a -1 as progress info
+      local done = -1
+      Comm:SendCommMessage("WeakAurasProg", done.." "..total.." "..id, "WHISPER", characterName, "ALERT");
+    else
+      Comm:SendCommMessage("WeakAuras", encoded, "WHISPER", characterName, "BULK", function(displayName, done, total)
+        Comm:SendCommMessage("WeakAurasProg", done.." "..total.." "..displayName, "WHISPER", characterName, "ALERT");
+      end, id);
+    end
   else
     TransmitError("dne", characterName);
   end
 end
 
-Comm:RegisterComm("WeakAurasProg", function(prefix, message, distribution, sender)
+local function HandleProgressComm(prefix, message, distribution, sender)
   if tooltipLoading and ItemRefTooltip:IsVisible() and safeSenders[sender] then
     receivedData = true;
     local done, total, displayName = strsplit(" ", message, 3)
     done = tonumber(done)
     total = tonumber(total)
-    if(done and total and total >= done) then
-      local red = min(255, (1 - done / total) * 511)
-      local green = min(255, (done / total) * 511)
-      ShowTooltip({
-        {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
-        {1, L["Receiving display information"]:format(sender), 1, 0.82, 0},
-        {2, " ", ("|cFF%2x%2x00"):format(red, green)..done.."|cFF00FF00/"..total}
-      })
+    if done and total then
+      if done == -1 then
+        ShowTooltip({
+          {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
+          {1, L["Receiving display information"]:format(sender), 1, 0.82, 0},
+          {2, L["No Progress Information available."]},
+          {2, L["Receiving %s Bytes"]:format(total)}
+        })
+      elseif total >= done then
+        local red = min(255, (1 - done / total) * 511)
+        local green = min(255, (done / total) * 511)
+        ShowTooltip({
+          {2, "WeakAuras", displayName, 0.5, 0, 1, 1, 1, 1},
+          {1, L["Receiving display information"]:format(sender), 1, 0.82, 0},
+          {2, " ", ("|cFF%2x%2x00"):format(red, green)..done.."|cFF00FF00/"..total}
+        })
+      end
     end
   end
-end)
+end
 
-Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
+local function HandleComm(prefix, message, distribution, sender)
   local linkValidityDuration = 60 * 5
   local safeSender = safeSenders[sender]
   local validLink = false
@@ -691,7 +724,7 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
       ImportNow(data, children, nil, nil, sender)
     elseif(received.m == "dR") then
       if(Private.linked and Private.linked[received.d] and Private.linked[received.d] > GetTime() - linkValidityDuration) then
-        TransmitDisplay(received.d, sender);
+        TransmitDisplay(received.d, sender, received.v);
       end
     elseif(received.m == "dE") then
       tooltipLoading = nil;
@@ -713,4 +746,10 @@ Comm:RegisterComm("WeakAuras", function(prefix, message, distribution, sender)
       {1, L["Transmission error"], 1, 0, 0}
     });
   end
-end);
+end
+
+Comm:RegisterComm("WeakAurasProg", HandleProgressComm)
+Comm:RegisterComm("WeakAuras", HandleComm)
+Chomp.RegisterAddonPrefix("WeakAuras2", HandleComm)
+
+
