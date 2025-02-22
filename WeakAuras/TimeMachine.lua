@@ -17,7 +17,8 @@ local TimeMachine = {
   actions = {},
   ---@type table<actionType, Inverter>
   inverters = {},
-  index = 0
+  index = 0,
+  sub = Private.CreateSubscribableObject(),
 }
 
 Private.TimeMachine = TimeMachine
@@ -203,7 +204,7 @@ function TimeMachine:Append(record)
   }
   Private.DebugPrint("Backward action", actionType, "for", record.uid, "at", keyPathToString(path), "with", payload)
   table.insert(self.next.forward, record)
-  table.insert(self.next.backward, inverseRecord)
+  table.insert(self.next.backward, 1, inverseRecord)
   if not self.transaction then
     self:Commit(true)
   end
@@ -234,7 +235,10 @@ end
 
 ---@param instant? boolean
 function TimeMachine:Commit(instant)
-  if not self.transaction and not instant then return end
+  if not self.transaction and not instant then
+    WeakAuras.prettyPrint("If you're reading this, a time machine transaction was committed, but there was no transaction in progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
+    return
+  end
   while self.index < #self.changes do
     table.remove(self.changes)
   end
@@ -280,6 +284,10 @@ function TimeMachine:StepForward()
   if self.index < #self.changes then
     self.index = self.index + 1
     self:Apply(self.changes[self.index].forward)
+    if self.sub:HasSubscribers("Step") then
+      self.sub:Notify("Step", self.index)
+    else
+    end
   end
 end
 
@@ -287,16 +295,16 @@ function TimeMachine:StepBackward()
   if self.index > 0 then
     self:Apply(self.changes[self.index].backward)
     self.index = self.index - 1
+    if self.sub:HasSubscribers("Step") then
+      self.sub:Notify("Step", self.index)
+    end
   end
 end
 
-function TimeMachine:TravelTo(index)
-  if index < 0 or index > #self.changes then
-    error("Invalid index: " .. index)
-  end
-  local direction = index > self.index and "forward" or "backward"
-  for i = self.index, index, direction == "forward" and 1 or -1 do
-    self:Apply(self.changes[i][direction], i ~= index)
-  end
-  self.index = index
+function TimeMachine:DescribeNext()
+  return self.changes[self.index + 1]
+end
+
+function TimeMachine:DescribePrevious()
+  return self.changes[self.index]
 end

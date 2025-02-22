@@ -205,21 +205,21 @@ end
 ---@type fun(records: actionRecord[], path: keyPath, checks: conditionCheck[], uid: uid, triggernum: number)
 local function DeleteConditionsForTriggerHandleSubChecks(records, path, checks, uid, triggernum)
   tinsert(path, 0)
+  tinsert(path, "trigger")
   for i, check in ipairs(checks) do
-    path[#path] = i
-    tinsert(path, "trigger")
+    path[#path - 1] = i
     if (check.trigger == triggernum) then
       tinsert(records, {
         uid = uid,
         actionType = "set",
-        path = path,
+        path = CopyTable(path),
         payload = i
       })
     elseif (check.trigger and check.trigger > triggernum) then
       tinsert(records, {
         uid = uid,
         actionType = "set",
-        path = path,
+        path = CopyTable(path),
         payload = check.trigger - 1
       })
     end
@@ -227,9 +227,9 @@ local function DeleteConditionsForTriggerHandleSubChecks(records, path, checks, 
     if (check.checks) then
       path[#path] = "checks"
       DeleteConditionsForTriggerHandleSubChecks(records, path, check.checks, uid, triggernum);
-      tremove(path)
     end
   end
+  tremove(path)
   tremove(path)
 end
 
@@ -260,7 +260,6 @@ end
 
 ---@type fun(records: actionRecord[], path: keyPath, check: conditionCheck, triggernum: number)
 local function moveTriggerDownConditionCheck(records, path, check, uid, triggernum)
-  print("moving condition.check.trigger down for condition " .. path[#path])
   tinsert(path, "check")
   tinsert(path, "trigger")
   if (check.trigger == triggernum) then
@@ -399,20 +398,19 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
     func = function(...)
       -- Since we want to handle all selected auras in one dialog, we have to iterate over GetPickedDisplay
       local picked = OptionsPrivate.GetPickedDisplay()
+      local records = {}
       for child in OptionsPrivate.Private.TraverseLeafsOrAura(picked) do
         if #child.triggers > 1 and #child.triggers >= triggernum then
-          local records = {
-            {
+          tinsert(records, {
               uid = child.uid,
               actionType = "remove",
               path = {"triggers"},
               payload = triggernum
-            }
-          }
+          })
           DeleteConditionsForTrigger(records, child, triggernum)
-          OptionsPrivate.Private.TimeMachine:AppendMany(records)
           OptionsPrivate.RemoveCollapsed(collapsedId, "trigger", {triggernum})
         end
+        OptionsPrivate.Private.TimeMachine:AppendMany(records)
         WeakAuras.ClearAndUpdateOptions(data.id)
         -- WeakAuras.FillOptions()
       end

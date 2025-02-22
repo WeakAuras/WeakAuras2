@@ -186,14 +186,19 @@ function OptionsPrivate.GetDisplayOptions(data)
       end,
       set = function(info, v, g, b, a)
         local path = prefixToPath(info[#info])
+        local payload
+        if info.type == "color" then
+          payload = {v, g, b, a}
+        elseif info.type == "toggle" then
+          payload = v
+        else
+          payload = v ~= "" and v or nil
+        end
         OptionsPrivate.Private.TimeMachine:Append({
           uid = data.uid,
           actionType = "set",
           path = path,
-          payload = info.type == "color" and {v, g, b, a}
-          or info.type == "toggle" and v
-          or (v ~= "" and v)
-          or nil,
+          payload = payload,
         })
         WeakAuras.UpdateThumbnail(data);
         OptionsPrivate.Private.AddParents(data)

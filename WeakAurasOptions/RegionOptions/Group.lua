@@ -132,14 +132,14 @@ local function createDistributeAlignOptions(id, data)
                   uid = childData.uid,
                   actionType = "set",
                   path = "xOffset",
-                  payload = 0 - getWidth(childData, childRegion)
+                  payload = 0 + getWidth(childData, childRegion)
                 })
               else
                 tinsert(records, {
                   uid = childData.uid,
                   actionType = "set",
                   path = "xOffset",
-                  payload = 0 - (getWidth(childData, childRegion) / 2)
+                  payload = 0 + (getWidth(childData, childRegion) / 2)
                 })
               end
             elseif(v == "RIGHT") then
@@ -148,7 +148,7 @@ local function createDistributeAlignOptions(id, data)
                   uid = childData.uid,
                   actionType = "set",
                   path = "xOffset",
-                  payload = 0 + getWidth(childData, childRegion)
+                  payload = 0 - getWidth(childData, childRegion)
                 })
               elseif(childData.selfPoint:find("RIGHT")) then
                 tinsert(records, {
@@ -162,7 +162,7 @@ local function createDistributeAlignOptions(id, data)
                   uid = childData.uid,
                   actionType = "set",
                   path = "xOffset",
-                  payload = 0 + (getWidth(childData, childRegion) / 2)
+                  payload = 0 - (getWidth(childData, childRegion) / 2)
                 })
               end
             end
@@ -238,6 +238,29 @@ local function createDistributeAlignOptions(id, data)
                   uid = childData.uid,
                   actionType = "set",
                   path = "yOffset",
+                  payload = 0 + getHeight(childData, childRegion)
+                })
+              elseif(childData.selfPoint:find("TOP")) then
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = 0 + getHeight(childData, childRegion)
+                })
+              else
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
+                  payload = 0 + (getHeight(childData, childRegion) / 2)
+                })
+              end
+            elseif(v == "LEFT") then
+              if(childData.selfPoint:find("BOTTOM")) then
+                tinsert(records, {
+                  uid = childData.uid,
+                  actionType = "set",
+                  path = "yOffset",
                   payload = 0 - getHeight(childData, childRegion)
                 })
               elseif(childData.selfPoint:find("TOP")) then
@@ -253,29 +276,6 @@ local function createDistributeAlignOptions(id, data)
                   actionType = "set",
                   path = "yOffset",
                   payload = 0 - (getHeight(childData, childRegion) / 2)
-                })
-              end
-            elseif(v == "LEFT") then
-              if(childData.selfPoint:find("BOTTOM")) then
-                tinsert(records, {
-                  uid = childData.uid,
-                  actionType = "set",
-                  path = "yOffset",
-                  payload = 0 + getHeight(childData, childRegion)
-                })
-              elseif(childData.selfPoint:find("TOP")) then
-                tinsert(records, {
-                  uid = childData.uid,
-                  actionType = "set",
-                  path = "yOffset",
-                  payload = 0
-                })
-              else
-                tinsert(records, {
-                  uid = childData.uid,
-                  actionType = "set",
-                  path = "yOffset",
-                  payload = 0 + (getHeight(childData, childRegion) / 2)
                 })
               end
             end
@@ -623,6 +623,7 @@ local function createDistributeAlignOptions(id, data)
             end
           end
         end
+        OptionsPrivate.Private.TimeMachine:AppendMany(records)
         OptionsPrivate.Private.TimeMachine:Commit()
         OptionsPrivate.ResetMoverSizer();
       end

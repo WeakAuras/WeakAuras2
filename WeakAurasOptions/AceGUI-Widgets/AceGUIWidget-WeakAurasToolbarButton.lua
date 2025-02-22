@@ -3,7 +3,7 @@ if not WeakAuras.IsLibsOK() then return end
 ToolbarButton Widget, based on AceGUI Button
 Graphical Button.
 -------------------------------------------------------------------------------]]
-local Type, Version = "WeakAurasToolbarButton", 6
+local Type, Version = "WeakAurasToolbarButton", 7
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -70,9 +70,15 @@ local methods = {
 	["SetDisabled"] = function(self, disabled)
 		self.disabled = disabled
 		if disabled then
+    -- workaround, disabling a button while it is pushed makes the pushtexture "sticky"
+    -- it will only be removed when the button is released, *after the next click*
+    -- so instead set button to normal state, which for some reason fixes it
+      self.frame:SetButtonState("NORMAL")
 			self.frame:Disable()
+      self.text:SetTextColor(0.5, 0.5, 0.5)
 		else
 			self.frame:Enable()
+      self.text:SetTextColor(GameFontNormal:GetTextColor())
 		end
 	end,
 

@@ -75,9 +75,7 @@ local function GetCustomTriggerOptions(data, triggernum)
         end
       end,
       order = 8.1,
-      hidden = function() return not (trigger.type == "custom"
-        and (trigger.custom_type == "status" or trigger.custom_type == "stateupdate")
-        and trigger.check ~= "update") end,
+      hidden = function() return not (trigger.type == "custom" and trigger.custom_type ~= nil and trigger.check ~= "update") end,
       get = function() return trigger.events end,
       set = function(info, v)
         OptionsPrivate.Private.TimeMachine:Append({
@@ -185,7 +183,7 @@ local function GetCustomTriggerOptions(data, triggernum)
       order = 12,
       hidden = function() return not (trigger.type == "custom" and trigger.custom_type == "event") end,
       values = OptionsPrivate.Private.eventend_types,
-      get = function() return trigger.custom_hide or "timed" end,
+      -- get = function() return trigger.custom_hide end,
       set = function(info, v)
         OptionsPrivate.Private.TimeMachine:Append({
           actionType = "set",

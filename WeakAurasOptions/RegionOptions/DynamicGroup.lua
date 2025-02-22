@@ -653,6 +653,7 @@ local function createOptions(id, data)
         })
         for parent in OptionsPrivate.Private.TraverseParents(data) do
           -- ? no change to ancestors? why do they need adding?
+
           WeakAuras.Add(parent)
         end
       end

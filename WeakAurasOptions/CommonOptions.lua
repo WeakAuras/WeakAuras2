@@ -1197,7 +1197,7 @@ local function ProgressOptions(data)
         uid = data.uid,
         path = {},
         payload = {
-          useAdjustededMin = value or "",
+          useAdjustededMin = value,
           adjustedMin = value and data.adjustedMin or ""
         }
       })
@@ -1234,7 +1234,7 @@ local function ProgressOptions(data)
         uid = data.uid,
         path = {},
         payload = {
-          useAdjustededMax = value or "",
+          useAdjustededMax = value,
           adjustedMax = value and data.adjustedMax or ""
         }
       })
@@ -1745,7 +1745,7 @@ local function ProgressOptionsForSubElement(parentData, data, options, startOrde
         uid = parentData.uid,
         path = {},
         payload = {
-          useAdjustededMin = value or "",
+          useAdjustededMin = value,
           adjustedMin = value and data.adjustedMin or ""
         }
       })
@@ -1793,7 +1793,7 @@ local function ProgressOptionsForSubElement(parentData, data, options, startOrde
         uid = parentData.uid,
         path = {},
         payload = {
-          useAdjustededMax = value or "",
+          useAdjustededMax = value,
           adjustedMax = value and data.adjustedMax or ""
         }
       })

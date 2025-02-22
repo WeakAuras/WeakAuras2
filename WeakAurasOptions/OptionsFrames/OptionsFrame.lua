@@ -678,41 +678,55 @@ function OptionsPrivate.CreateFrame()
     self:UpdateFrameVisible()
   end
 
-  local undoButton = AceGUI:Create("WeakAurasToolbarButton")
-  undoButton:SetText(L["Undo"])
-  undoButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\upleft")
-  undoButton:SetCallback("OnClick", function()
+  local undo = AceGUI:Create("WeakAurasToolbarButton")
+  undo:SetText(L["Undo"])
+  undo:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\upleft")
+  undo:SetCallback("OnClick", function()
     OptionsPrivate.Private.TimeMachine:StepBackward()
-    frame:ClearOptions(frame.pickedDisplay)
     frame:ClearAndUpdateOptions(frame.pickedDisplay)
     frame:FillOptions()
   end)
-  undoButton.frame:SetParent(toolbarContainer)
-  undoButton.frame:SetShown(OptionsPrivate.Private.Features:Enabled("undo"))
-  undoButton:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 55, -55)
+  undo.frame:SetParent(toolbarContainer)
+  undo.frame:SetShown(OptionsPrivate.Private.Features:Enabled("undo"))
+  undo:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 55, -55)
 
-  local redoButton = AceGUI:Create("WeakAurasToolbarButton")
-  redoButton:SetText(L["Redo"])
-  redoButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\upright")
-  redoButton:SetCallback("OnClick", function()
+  local redo = AceGUI:Create("WeakAurasToolbarButton")
+  redo:SetText(L["Redo"])
+  redo:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\upright")
+  redo:SetCallback("OnClick", function()
     OptionsPrivate.Private.TimeMachine:StepForward()
     frame:ClearAndUpdateOptions(frame.pickedDisplay)
     frame:FillOptions()
   end)
-  redoButton.frame:SetParent(toolbarContainer)
-  redoButton.frame:SetShown(OptionsPrivate.Private.Features:Enabled("undo"))
-  redoButton:SetPoint("LEFT", undoButton.frame, "RIGHT", 10, 0)
+  redo.frame:SetParent(toolbarContainer)
+  redo.frame:SetShown(OptionsPrivate.Private.Features:Enabled("undo"))
+  redo:SetPoint("LEFT", undo.frame, "RIGHT", 10, 0)
+  redo.frame:SetEnabled(OptionsPrivate.Private.TimeMachine:DescribeNext() ~= nil)
 
   OptionsPrivate.Private.Features:Subscribe("undo",
     function()
-      undoButton.frame:Show()
-      redoButton.frame:Show()
+      undo.frame:Show()
+      undo.frame:Refresh()
+      redo.frame:Show()
+      redo.frame:Refresh()
     end,
     function()
-      undoButton.frame:Hide()
-      redoButton.frame:Hide()
+      undo.frame:Hide()
+      redo.frame:Hide()
     end
   )
+
+  local tmControls = {
+    undo = undo,
+    redo = redo,
+  }
+
+  function tmControls:Step()
+      self.undo:SetDisabled(OptionsPrivate.Private.TimeMachine:DescribePrevious() == nil)
+      self.redo:SetDisabled(OptionsPrivate.Private.TimeMachine:DescribeNext() == nil)
+  end
+  tmControls:Step()
+  OptionsPrivate.Private.TimeMachine.sub:AddSubscriber("Step", tmControls)
 
   local buttonsScroll = AceGUI:Create("ScrollFrame")
   buttonsScroll:SetLayout("ButtonsScrollLayout")

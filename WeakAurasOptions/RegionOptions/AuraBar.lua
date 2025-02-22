@@ -110,18 +110,6 @@ local function createOptions(id, data)
             path = "height",
             payload = data.width
           })
-          if #records <= 2 then
-            -- yes, this is magic... we're doing it because
-            -- behavior is that if either this or above branch is taken,
-            -- then we flipflop icon_side
-            -- doing that twice would be weird
-            tinsert(records, {
-              actionType = "set",
-              uid = data.uid,
-              path = "icon_side",
-              payload = data.icon_side == "LEFT" and "RIGHT" or "LEFT"
-            })
-          end
           tinsert(records, {
             actionType = "set",
             uid = data.uid,

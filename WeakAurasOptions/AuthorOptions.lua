@@ -640,6 +640,7 @@ end
 ---@type fun(data: auraData, option: Option): fun(_, value: number)
 local function setSelectDefault(data, option)
   return function(_, value)
+    OptionsPrivate.Private.TimeMachine:StartTransaction()
     for id, optionData in pairs(option.references) do
       local childOption = optionData.options[optionData.index]
       local childData = optionData.data
@@ -1087,6 +1088,7 @@ local function addAuthorModeOption(options, args, data, order, prefix, i)
     order = order(),
     hidden = function() return not isInGroup end,
     func = function()
+      OptionsPrivate.Private.TimeMachine:StartTransaction()
       for id, optionData in pairs(option.references) do
         local collapsePath = CopyTable(optionData.path)
         local parent = optionData.parent
@@ -2671,7 +2673,6 @@ local function addUserModeOption(options, args, data, order, prefix, i)
                 local childData = optionData.data
                 if childOption.limitType == "none" or #childConfigList < childOption.size then
                   setPage(id, optionData.path, #childConfigList)
-                  tinsert(childConfigList, {})
                   OptionsPrivate.Private.TimeMachine:Append({
                     uid = childData.uid,
                     actionType = "insert",

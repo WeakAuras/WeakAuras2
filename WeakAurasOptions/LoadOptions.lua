@@ -135,11 +135,11 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
   if(data.controlledChildren) then
     trigger = {}
   elseif(triggertype == "load") then
-    basePath = appendPath({}, "load")
+    basePath = {"load"}
     trigger = data.load;
   elseif data.triggers[triggernum] then
     trigger = data.triggers[triggernum].trigger
-    basePath = appendPath({}, "triggers", triggernum, "trigger")
+    basePath = {"triggers", triggernum, "trigger"}
   else
     error("Improper argument to OptionsPrivate.ConstructOptions - trigger number not in range");
   end
@@ -313,7 +313,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                   payload = nil
                 else
                   payload = false
-                  if(trigger[realname].single) then
+                  if(trigger[realname] and trigger[realname].single) then
                     tinsert(records, {
                       uid = data.uid,
                       actionType = "set",
@@ -915,8 +915,6 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                   payload = nil
                 })
                 trigger["use_specific_"..realname] = nil
-                -- !!! this is wild
-                options[name .. suffix].set(info, "player")
               end
             }
             order = order + 1;
