@@ -102,22 +102,28 @@ local function modify(parent, region, data)
   -- Scale
   region:SetScale(data.scale and data.scale > 0 and data.scale <= 10 and data.scale or 1)
 
-  -- Get overall bounding box
-  local leftest, rightest, lowest, highest = 0, 0, 0, 0;
-  for child in Private.TraverseLeafs(data) do
-    local childRegion = WeakAuras.GetRegion(child.id)
-    if(child) then
-      local blx, bly, trx, try = getRect(child, childRegion);
-      leftest = math.min(leftest, blx);
-      rightest = math.max(rightest, trx);
-      lowest = math.min(lowest, bly);
-      highest = math.max(highest, try);
+  region.GetBoundingRect = function(self)
+    if not self.boundingRect then
+      local leftest, rightest, lowest, highest = 0, 0, 0, 0;
+      for child in Private.TraverseLeafs(data) do
+        local childRegion = WeakAuras.GetRegion(child.id)
+        if(child) then
+          local blx, bly, trx, try = getRect(child, childRegion);
+          leftest = math.min(leftest, blx);
+          rightest = math.max(rightest, trx);
+          lowest = math.min(lowest, bly);
+          highest = math.max(highest, try);
+        end
+      end
+      self.blx = leftest
+      self.bly = lowest
+      self.trx = rightest
+      self.try = highest
+      self.boundingRect = true
     end
+    return self.blx, self.bly, self.trx, self.try
   end
-  region.blx = leftest;
-  region.bly = lowest;
-  region.trx = rightest;
-  region.try = highest;
+  region.boundingRect = false
 
   -- Adjust frame-level sorting
   Private.FixGroupChildrenOrderForGroup(data);
@@ -153,6 +159,8 @@ local function modify(parent, region, data)
 
         -- Show border if child is visible
         if childVisible then
+          local blx, bly, trx, try = self:GetBoundingRect()
+
           border:SetBackdrop({
             edgeFile = data.borderEdge ~= "None" and SharedMedia:Fetch("border", data.borderEdge) or "",
             edgeSize = data.borderSize,
@@ -168,8 +176,8 @@ local function modify(parent, region, data)
           border:SetBackdropColor(data.backdropColor[1], data.backdropColor[2], data.backdropColor[3], data.backdropColor[4]);
 
           border:ClearAllPoints();
-          border:SetPoint("bottomleft", region, "bottomleft", leftest-data.borderOffset, lowest-data.borderOffset);
-          border:SetPoint("topright",   region, "topright",   rightest+data.borderOffset, highest+data.borderOffset);
+          border:SetPoint("bottomleft", region, "bottomleft", blx - data.borderOffset, bly - data.borderOffset);
+          border:SetPoint("topright",   region, "topright",   trx + data.borderOffset, try + data.borderOffset);
           border:Show();
         else
           border:Hide();
