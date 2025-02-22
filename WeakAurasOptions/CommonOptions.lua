@@ -60,26 +60,32 @@ commonOptionsCache.Clear = function(self)
 end
 
 
-local parsePrefix = function(input, data, create)
+local prefixToPath = function(input)
   local subRegionIndex, property = string.match(input, "^sub%.(%d+)%..-%.(.+)")
   subRegionIndex = tonumber(subRegionIndex)
   if subRegionIndex then
-    if create then
-      data.subRegions = data.subRegions or {}
-      data.subRegions[subRegionIndex] = data.subRegions[subRegionIndex] or {}
-    else
-      if not data.subRegions or not data.subRegions[subRegionIndex] then
-        return nil
-      end
-    end
-    return data.subRegions[subRegionIndex], property
+    return {"subRegions", subRegionIndex, property}
   end
-  local index = string.find(input, ".", 1, true);
+  local index = string.find(input, ".", 1, true)
   if (index) then
-    return data, string.sub(input, index + 1);
+    return {string.sub(input, index + 1)}
   end
-  return data, input
+  return {input}
 end
+
+local pathToDataKey = function(data, path)
+  local tbl = data
+  local i = 1
+  while i < #path do
+    tbl = tbl[path[i]]
+    if not tbl then
+      return nil
+    end
+    i = i + 1
+  end
+  return tbl, path[#path]
+end
+
 
 local function setFuncs(option, input)
   if type(input) == "function" then
@@ -995,6 +1001,7 @@ end
 
 local function CreateSetAll(subOption, getAll)
   return function(data, info, ...)
+    OptionsPrivate.Private.TimeMachine:StartTransaction()
     OptionsPrivate.Private.pauseOptionsProcessing(true);
     local suspended = OptionsPrivate.Private.PauseAllDynamicGroups()
     local before = getAll(data, info, ...)
@@ -1006,7 +1013,6 @@ local function CreateSetAll(subOption, getAll)
         childOption = childOption.args[info[i]];
         childOptionTable[i] = childOption;
       end
-
       if (childOption and not disabledOrHiddenChild(childOptionTable, info)) then
         for i=#childOptionTable,0,-1 do
           local optionTable = childOptionTable[i]
@@ -1033,7 +1039,7 @@ local function CreateSetAll(subOption, getAll)
         end
       end
     end
-
+    OptionsPrivate.Private.TimeMachine:Commit()
     OptionsPrivate.Private.ResumeAllDynamicGroups(suspended)
     OptionsPrivate.Private.pauseOptionsProcessing(false);
     OptionsPrivate.Private.ScanForLoads();
@@ -1086,14 +1092,28 @@ local function ProgressOptions(data)
     end,
     set = function(info, value)
       if value then
-        data.progressSource = data.progressSource or {}
-        -- Copy only trigger + property
-        data.progressSource[1] = value[1]
-        data.progressSource[2] = value[2]
+        OptionsPrivate.Private.TimeMachine:AppendMany({
+          {
+            actionType = "set",
+            uid = data.uid,
+            path = {"progressSource", 1},
+            payload = value[1]
+          },
+          {
+            actionType = "set",
+            uid = data.uid,
+            path = {"progressSource", 2},
+            payload = value[2]
+          }
+        })
       else
-        data.progressSource = nil
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = {"progressSource"},
+          payload = nil
+        })
       end
-      WeakAuras.Add(data)
     end
   }
 
@@ -1133,9 +1153,12 @@ local function ProgressOptions(data)
       return data.progressSource and data.progressSource[3] or 0
     end,
     set = function(info, value)
-      data.progressSource = data.progressSource or {}
-      data.progressSource[3] = value
-      WeakAuras.Add(data)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = {"progressSource", 3},
+        payload = value
+      })
     end
   }
 
@@ -1153,9 +1176,12 @@ local function ProgressOptions(data)
       return data.progressSource and data.progressSource[4] or 100
     end,
     set = function(info, value)
-      data.progressSource = data.progressSource or {}
-      data.progressSource[4] = value
-      WeakAuras.Add(data)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = {"progressSource", 4},
+        payload = value
+      })
     end
   }
 
@@ -1166,11 +1192,15 @@ local function ProgressOptions(data)
     desc = L["Values/Remaining Time below this value are displayed as zero progress."],
     order = order + 1,
     set = function(info, value)
-      data.useAdjustededMin = value
-      if not value then
-        data.adjustedMin = ""
-      end
-      WeakAuras.Add(data)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "setmany",
+        uid = data.uid,
+        path = {},
+        payload = {
+          useAdjustededMin = value,
+          adjustedMin = value and data.adjustedMin or ""
+        }
+      })
     end
   };
 
@@ -1199,11 +1229,15 @@ local function ProgressOptions(data)
     desc = L["Values/Remaining Time above this value are displayed as full progress."],
     order = order + 4,
     set = function(info, value)
-      data.useAdjustededMax = value
-      if not value then
-        data.adjustedMax = ""
-      end
-      WeakAuras.Add(data)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "setmany",
+        uid = data.uid,
+        path = {},
+        payload = {
+          useAdjustededMax = value,
+          adjustedMax = value and data.adjustedMax or ""
+        }
+      })
     end
   }
 
@@ -1422,8 +1456,12 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       bigStep = 10,
       get = function() return data.xOffset end,
       set = function(info, v)
-        data.xOffset = v;
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = {"xOffset"},
+          payload = v
+        })
         WeakAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
         OptionsPrivate.Private.AddParents(data)
@@ -1442,8 +1480,12 @@ local function PositionOptions(id, data, _, hideWidthHeight, disableSelfPoint, g
       bigStep = 10,
       get = function() return data.yOffset end,
       set = function(info, v)
-        data.yOffset = v;
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = {"yOffset"},
+          payload = v
+        })
         WeakAuras.UpdateThumbnail(data);
         OptionsPrivate.ResetMoverSizer();
         OptionsPrivate.Private.AddParents(data)
@@ -1599,10 +1641,20 @@ local function ProgressOptionsForSubElement(parentData, data, options, startOrde
         -- Copy only trigger + property
         data.progressSource[1] = value[1]
         data.progressSource[2] = value[2]
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "setmany",
+          uid = parentData.uid,
+          path = { "progressSource" },
+          payload = { value[1], value[2] }
+        })
       else
-        data.progressSource = nil
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = parentData.uid,
+          path = { "progressSource" },
+          payload = nil
+        })
       end
-      WeakAuras.Add(parentData)
     end,
     hidden = progressSourceHidden
   }
@@ -1649,9 +1701,12 @@ local function ProgressOptionsForSubElement(parentData, data, options, startOrde
       return data.progressSource and data.progressSource[3] or 0
     end,
     set = function(info, value)
-      data.progressSource = data.progressSource or {}
-      data.progressSource[3] = value
-      WeakAuras.Add(parentData)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = parentData.uid,
+        path = { "progressSource", 3 },
+        payload = value
+      })
     end
   }
 
@@ -1669,9 +1724,12 @@ local function ProgressOptionsForSubElement(parentData, data, options, startOrde
       return data.progressSource and data.progressSource[4] or 100
     end,
     set = function(info, value)
-      data.progressSource = data.progressSource or {}
-      data.progressSource[4] = value
-      WeakAuras.Add(parentData)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = parentData.uid,
+        path = { "progressSource", 4 },
+        payload = value
+      })
     end
   }
 
@@ -1682,11 +1740,15 @@ local function ProgressOptionsForSubElement(parentData, data, options, startOrde
     desc = L["Values/Remaining Time below this value are displayed as zero progress."],
     order = startOrder + 0.4,
     set = function(info, value)
-      data.useAdjustededMin = value
-      if not value then
-        data.adjustedMin = ""
-      end
-      WeakAuras.Add(parentData)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "setmany",
+        uid = parentData.uid,
+        path = {},
+        payload = {
+          useAdjustededMin = value,
+          adjustedMin = value and data.adjustedMin or ""
+        }
+      })
     end,
     hidden = progressSourceHidden
   };
@@ -1726,11 +1788,15 @@ local function ProgressOptionsForSubElement(parentData, data, options, startOrde
     desc = L["Values/Remaining Time above this value are displayed as full progress."],
     order = startOrder + 0.7,
     set = function(info, value)
-      data.useAdjustededMax = value
-      if not value then
-        data.adjustedMax = ""
-      end
-      WeakAuras.Add(parentData)
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "setmany",
+        uid = parentData.uid,
+        path = {},
+        payload = {
+          useAdjustededMax = value,
+          adjustedMax = value and data.adjustedMax or ""
+        }
+      })
     end,
     hidden = progressSourceHidden
   }
@@ -1909,15 +1975,12 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
       extraFunctions = options.extraFunctions,
     },
     set = function(info, v)
-      local subdata = data;
-      for i = 1, #path -1 do
-        local key = path[i];
-        subdata[key] = subdata[key] or {};
-        subdata = subdata[key];
-      end
-
-      subdata[path[#path]] = v;
-      WeakAuras.Add(data);
+      OptionsPrivate.Private.TimeMachine:Append({
+        actionType = "set",
+        uid = data.uid,
+        path = path,
+        payload = v
+      })
       if (options.extraSetFunction) then
         options.extraSetFunction();
       end
@@ -2013,14 +2076,26 @@ local function AddCommonTriggerOptions(options, data, triggernum, doubleWidth)
       return trigger.type
     end,
     set = function(info, v)
-      trigger.type = v;
+      local changes = {
+        {
+          actionType = "set",
+          uid = data.uid,
+          path = {"triggers", triggernum, "trigger", "type"},
+          payload = v
+        }
+      }
       local prototype = trigger.event and OptionsPrivate.Private.event_prototypes[trigger.event];
       if OptionsPrivate.Private.event_categories[v] and OptionsPrivate.Private.event_categories[v].default then
         if not prototype or prototype.type ~= v then
-          trigger.event = OptionsPrivate.Private.event_categories[v].default
+          changes[#changes + 1] = {
+            actionType = "set",
+            uid = data.uid,
+            path = {"triggers", triggernum, "trigger", "event"},
+            payload = OptionsPrivate.Private.event_categories[v].default
+          }
         end
       end
-      WeakAuras.Add(data);
+      OptionsPrivate.Private.TimeMachine:AppendMany(changes)
       WeakAuras.UpdateThumbnail(data);
       WeakAuras.ClearAndUpdateOptions(data.id);
     end,
@@ -2046,33 +2121,47 @@ local function AddTriggerGetterSetter(options, data, triggernum)
     if type(option) == "table" and not option.set then
       if option.type == "multiselect" then
         option.set = function(info, index, value)
-          if type(trigger[key]) ~= "table" then
-            trigger[key] = {}
-          end
+          local payload
           if value ~= nil then
             if value then
-              trigger[key][index] = true
+              payload = true
             else
-              trigger[key][index] = nil
+              payload = nil
             end
           else
             if trigger[key][index] then
-              trigger[key][index] = nil
+              payload = nil
             else
-              trigger[key][index] = true
+              payload = true
             end
           end
-          if next(trigger[key]) == nil then
-            trigger[key] = nil
+          if payload == nil
+            and (next(trigger[key]) == nil or next(trigger[key], (next(trigger[key]))) == nil)
+          then
+            OptionsPrivate.Private.TimeMachine:Append({
+              actionType = "set",
+              uid = data.uid,
+              path = {"triggers", triggernum, "trigger", key},
+              payload = nil
+            })
+          else
+            OptionsPrivate.Private.TimeMachine:Append({
+              actionType = "set",
+              uid = data.uid,
+              path = {"triggers", triggernum, "trigger", key, index},
+              payload = payload
+            })
           end
-
-          WeakAuras.Add(data)
           WeakAuras.ClearAndUpdateOptions(data.id)
         end
       else
         option.set = function(info, v)
-          trigger[key] = v
-          WeakAuras.Add(data)
+          OptionsPrivate.Private.TimeMachine:Append({
+            actionType = "set",
+            uid = data.uid,
+            path = {"triggers", triggernum, "trigger", key},
+            payload = v
+          })
           WeakAuras.ClearAndUpdateOptions(data.id)
         end
       end
@@ -2082,7 +2171,8 @@ end
 
 
 OptionsPrivate.commonOptions = {}
-OptionsPrivate.commonOptions.parsePrefix = parsePrefix
+OptionsPrivate.commonOptions.prefixToPath = prefixToPath
+OptionsPrivate.commonOptions.pathToDataKey = pathToDataKey
 OptionsPrivate.commonOptions.flattenRegionOptions = flattenRegionOptions
 OptionsPrivate.commonOptions.fixMetaOrders = fixMetaOrders
 OptionsPrivate.commonOptions.removeFuncs = removeFuncs

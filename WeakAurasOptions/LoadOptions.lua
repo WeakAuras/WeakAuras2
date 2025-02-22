@@ -93,36 +93,53 @@ local function shiftTable(tbl, pos)
   end
 end
 
-local function setValue(trigger, field, value, multiEntry, entryNumber)
+---@type fun(uid: string, triggernum: number, field: string, value: any, multiEntry?: boolean, entryNumber?: number): actionRecord
+local function setValue(uid, triggernum, field, value, multiEntry, entryNumber)
+  local path = triggernum ~= nil and { "triggers", triggernum, "trigger", field } or { "load", field }
+  local actionType = "set"
+  local payload = value
   if multiEntry then
-    if type(trigger[field]) ~= "table" then
-      if trigger[field] == nil then
-        trigger[field] = {}
-      else
-        trigger[field] = { trigger[field] }
-      end
-    end
     if value == "" or value == nil then
-      shiftTable(trigger[field], entryNumber)
+      actionType = "remove"
+      payload = entryNumber
     else
-      trigger[field][entryNumber] = value
+      tinsert(path, entryNumber)
     end
-  else
-    trigger[field] = value
   end
+  return {
+    uid = uid,
+    actionType = actionType,
+    path = path,
+    payload = payload
+  }
 end
 
+---@type fun(prototype: prototypeData, data: auraData, startorder: number, triggernum: number, triggertype: string): table
 function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum, triggertype)
   local trigger
   -- For load options only the hidden property counts, but for the generic trigger
   -- we look at enabled.
   local hiddenProperty = triggertype == "load" and "hidden" or "enable"
+  local basePath = {}
+
+  ---@param base (string | number)[]
+  ---@param ... (string | number)
+  ---@return (string | number)[]
+  local function appendPath(base, ...)
+    local path = CopyTable(base)
+    for i = 1, select("#", ...) do
+      table.insert(path, (select(i, ...)))
+    end
+    return path
+  end
   if(data.controlledChildren) then
     trigger = {}
   elseif(triggertype == "load") then
+    basePath = {"load"}
     trigger = data.load;
   elseif data.triggers[triggernum] then
     trigger = data.triggers[triggernum].trigger
+    basePath = {"triggers", triggernum, "trigger"}
   else
     error("Improper argument to OptionsPrivate.ConstructOptions - trigger number not in range");
   end
@@ -221,17 +238,24 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             else return "true"; end
           end,
           set = function(info, v)
+            local path = appendPath(basePath, "use_"..realname)
+            local payload
             if(v) then
-              trigger["use_"..realname] = true;
+              payload = true;
             else
-              local value = trigger["use_"..realname];
+              local value = trigger["use_"..realname]
               if(value == false) then
-                trigger["use_"..realname] = nil;
+                payload = nil
               else
-                trigger["use_"..realname] = false
+                payload = false
               end
             end
-            WeakAuras.Add(data);
+            OptionsPrivate.Private.TimeMachine:Append({
+              uid = data.uid,
+              actionType = "set",
+              path = path,
+              payload = payload
+            })
             WeakAuras.ClearAndUpdateOptions(data.id)
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
@@ -271,32 +295,42 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             end
           end,
           set = function(info, v)
+            local payload
+            local path = appendPath(basePath, "use_" .. realname)
+            local records = {}
             if arg.multiNoSingle then
-              trigger[realname] = trigger[realname] or {};
-              trigger[realname].multi = trigger[realname].multi or {};
               if v == true then
-                trigger["use_"..realname] = false;
+                payload = false
               else
-                trigger["use_"..realname] = nil;
+                payload = nil
               end
             else
               if v then
-                trigger["use_"..realname] = true;
+                payload = true
               else
-                local value = trigger["use_"..realname];
+                local value = trigger["use_"..realname]
                 if(value == false) then
-                  trigger["use_"..realname] = nil;
+                  payload = nil
                 else
-                  trigger["use_"..realname] = false
-                  trigger[realname] = trigger[realname] or {};
-                  if(trigger[realname].single) then
-                    trigger[realname].multi = trigger[realname].multi or {};
-                    trigger[realname].multi[trigger[realname].single] = true;
+                  payload = false
+                  if(trigger[realname] and trigger[realname].single) then
+                    tinsert(records, {
+                      uid = data.uid,
+                      actionType = "set",
+                      path = appendPath(basePath, realname, "multi", trigger[realname].single),
+                      payload = true
+                    })
                   end
                 end
               end
             end
-            WeakAuras.Add(data);
+            tinsert(records, {
+              uid = data.uid,
+              actionType = "set",
+              path = path,
+              payload = payload
+            })
+            OptionsPrivate.Private.TimeMachine:AppendMany(records)
             WeakAuras.ClearAndUpdateOptions(data.id)
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
@@ -350,8 +384,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           desc = arg.desc,
           get = function() return trigger["use_"..realname]; end,
           set = function(info, v)
-            trigger["use_"..realname] = v;
-            WeakAuras.Add(data);
+            OptionsPrivate.Private.TimeMachine:Append({
+              uid = data.uid,
+              actionType = "set",
+              path = appendPath(basePath, "use_"..realname),
+              payload = v
+            })
             WeakAuras.ClearAndUpdateOptions(data.id)
             OptionsPrivate.Private.ScanForLoads({[data.id] = true});
             WeakAuras.UpdateThumbnail(data);
@@ -455,8 +493,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                 return getValue(trigger, "use_"..realname, realname.."_operator", multiEntry, entryNumber)
               end,
               set = function(info, v)
-                setValue(trigger, realname.."_operator", v, multiEntry, entryNumber)
-                WeakAuras.Add(data);
+                OptionsPrivate.Private.TimeMachine:Append(setValue(data.uid, triggernum, realname.."_operator", v, multiEntry, entryNumber))
                 if (reloadOptions) then
                   WeakAuras.ClearAndUpdateOptions(data.id)
                 end
@@ -477,8 +514,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             desc = arg.desc,
             get = function() return getValue(trigger, "use_"..realname, realname, multiEntry, entryNumber) end,
             set = function(info, v)
-              setValue(trigger, realname, v, multiEntry, entryNumber)
-              WeakAuras.Add(data);
+              OptionsPrivate.Private.TimeMachine:Append(setValue(data.uid, triggernum, realname, v, multiEntry, entryNumber))
               if (reloadOptions) then
                 WeakAuras.ClearAndUpdateOptions(data.id)
               end
@@ -523,8 +559,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               return getValue(trigger, "use_"..realname, realname, multiEntry, entryNumber, arg.type == "tristatestring")
             end,
             set = function(info, v)
-              setValue(trigger, realname, v, multiEntry, entryNumber)
-              WeakAuras.Add(data);
+              OptionsPrivate.Private.TimeMachine:Append(setValue(data.uid, triggernum, realname, v, multiEntry, entryNumber))
               if (reloadOptions) then
                 WeakAuras.ClearAndUpdateOptions(data.id)
               end
@@ -557,8 +592,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             values = OptionsPrivate.Private.string_operator_types,
             get = function() return getValue(trigger, "use_"..realname, realname.."_operator", multiEntry, entryNumber) end,
             set = function(info, v)
-              setValue(trigger, realname.."_operator", v, multiEntry, entryNumber)
-              WeakAuras.Add(data);
+              OptionsPrivate.Private.TimeMachine:Append(setValue(data.uid, triggernum, realname.."_operator", v, multiEntry, entryNumber))
               if (reloadOptions) then
                 WeakAuras.ClearAndUpdateOptions(data.id)
               end
@@ -577,8 +611,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             validate = validate,
             get = function() return getValue(trigger, "use_"..realname, realname, multiEntry, entryNumber) end,
             set = function(info, v)
-              setValue(trigger, realname, v, multiEntry, entryNumber)
-              WeakAuras.Add(data);
+              OptionsPrivate.Private.TimeMachine:Append(setValue(data.uid, triggernum, realname, v, multiEntry, entryNumber))
               if (reloadOptions) then
                 WeakAuras.ClearAndUpdateOptions(data.id)
               end
@@ -597,8 +630,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               hidden = disabled or hidden,
               get = function() return getValue(trigger, "use_"..realname, realname.."_caseInsensitive", multiEntry, entryNumber) end,
               set = function(info, v)
-                setValue(trigger, realname.."_caseInsensitive", v, multiEntry, entryNumber)
-                WeakAuras.Add(data);
+                OptionsPrivate.Private.TimeMachine:Append(setValue(data.uid, triggernum, realname.."_caseInsensitive", v, multiEntry, entryNumber))
                 if (reloadOptions) then
                   WeakAuras.ClearAndUpdateOptions(data.id)
                 end
@@ -634,8 +666,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                 return getValue(trigger, nil, "use_exact_"..realname, multiEntry, entryNumber)
               end,
               set = function(info, v)
-                setValue(trigger, "use_exact_"..realname, v, multiEntry, entryNumber)
-                WeakAuras.Add(data);
+                OptionsPrivate.Private.TimeMachine:Append(setValue(data, triggernum, "use_exact_"..realname, v, multiEntry, entryNumber))
                 OptionsPrivate.Private.ScanForLoads({[data.id] = true});
                 WeakAuras.UpdateThumbnail(data);
                 OptionsPrivate.SortDisplayButtons(nil, true);
@@ -761,8 +792,7 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                   fixedInput = CorrectItemName(v);
                 end
               end
-              setValue(trigger, realname, fixedInput, multiEntry, entryNumber)
-              WeakAuras.Add(data);
+              OptionsPrivate.Private.TimeMachine:Append(setValue(data.uid, triggernum, realname, fixedInput, multiEntry, entryNumber))
               if (reloadOptions) then
                 WeakAuras.ClearAndUpdateOptions(data.id)
               end
@@ -828,14 +858,29 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               return trigger[realname] or nil;
             end,
             set = function(info, v)
-              setValue(trigger, realname, v, multiEntry, entryNumber)
+              local records = {setValue(data.uid, triggernum, realname, v, multiEntry, entryNumber)}
               if((arg.type == "unit" or arg.type == "currency") and v == "member") then
-                trigger["use_specific_"..realname] = true;
-                trigger[realname] = arg.type == "unit" and UnitName("player") or nil;
+                tinsert(records, {
+                  uid = data.uid,
+                  actionType = "set",
+                  path = appendPath(basePath, "use_specific_"..realname),
+                  payload = true
+                })
+                tinsert(records, {
+                  uid = data.uid,
+                  actionType = "set",
+                  path = appendPath(basePath, realname),
+                  payload = arg.type == "unit" and UnitName("player") or nil
+                })
               else
-                trigger["use_specific_"..realname] = nil;
+                tinsert(records, {
+                  uid = data.uid,
+                  actionType = "set",
+                  path = appendPath(basePath, "use_specific_"..realname),
+                  payload = nil
+                })
               end
-              WeakAuras.Add(data);
+              OptionsPrivate.Private.TimeMachine:AppendMany(records)
               if (reloadOptions) then
                 WeakAuras.ClearAndUpdateOptions(data.id)
               end
@@ -863,9 +908,13 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                 end,
               get = function() return true end,
               set = function(info, v)
-                trigger["use_specific_"..realname] = nil;
-                options[name .. suffix].set(info, "player");
-                WeakAuras.Add(data)
+                OptionsPrivate.Private.TimeMachine:Append({
+                  uid = data.uid,
+                  actionType = "set",
+                  path = appendPath(basePath, "use_specific_"..realname),
+                  payload = nil
+                })
+                trigger["use_specific_"..realname] = nil
               end
             }
             order = order + 1;
@@ -879,8 +928,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
               hidden = disabled or function() return (not trigger["use_specific_"..realname] and trigger[realname] ~= "member") or (type(hidden) == "function" and hidden(trigger)) or (type(hidden) ~= "function" and hidden) end,
               get = function() return trigger[realname] end,
               set = function(info, v)
-                trigger[realname] = v;
-                WeakAuras.Add(data);
+                OptionsPrivate.Private.TimeMachine:Append({
+                  uid = data.uid,
+                  actionType = "set",
+                  path = appendPath(basePath, realname),
+                  payload = v
+                })
                 if (reloadOptions) then
                   WeakAuras.ClearAndUpdateOptions(data.id)
                 end
@@ -926,9 +979,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
             end,
             get = function() return trigger["use_"..realname] and trigger[realname] and trigger[realname].single or nil; end,
             set = function(info, v)
-              trigger[realname] = trigger[realname] or {};
-              trigger[realname].single = v;
-              WeakAuras.Add(data);
+              OptionsPrivate.Private.TimeMachine:Append({
+                uid = data.uid,
+                actionType = "set",
+                path = appendPath(basePath, realname, "single"),
+                payload = v
+              })
               if (reloadOptions) then
                 WeakAuras.ClearAndUpdateOptions(data.id)
               end
@@ -951,8 +1007,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                 return trigger[realname .. "_extraOption"] or 0
               end,
               set = function(info, v)
-                trigger[realname .. "_extraOption"] = v
-                WeakAuras.Add(data)
+                OptionsPrivate.Private.TimeMachine:Append({
+                  uid = data.uid,
+                  actionType = "set",
+                  path = appendPath(basePath, realname .. "_extraOption"),
+                  payload = v
+                })
                 OptionsPrivate.Private.ScanForLoads({[data.id] = true})
                 OptionsPrivate.SortDisplayButtons(nil, true)
               end
@@ -984,16 +1044,20 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
                 v = arg.multiConvertKey(trigger, v)
               end
               if v then
-                trigger[realname] = trigger[realname] or {}
-                trigger[realname].multi = trigger[realname].multi or {};
+                local payload
                 if (calledFromSetAll or arg.multiTristate) then
-                  trigger[realname].multi[v] = calledFromSetAll;
+                  payload = calledFromSetAll
                 elseif(trigger[realname].multi[v]) then
-                  trigger[realname].multi[v] = nil;
+                  payload = nil
                 else
-                  trigger[realname].multi[v] = true;
+                  payload = true
                 end
-                WeakAuras.Add(data);
+                OptionsPrivate.Private.TimeMachine:Append({
+                  uid = data.uid,
+                  actionType = "set",
+                  path = appendPath(basePath, realname, "multi", v),
+                  payload = payload
+                })
                 if (reloadOptions) then
                   -- Hack specifally for dragon flight mini talent
                   -- That widget needs to be informed before and
@@ -1030,8 +1094,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         return trigger.use_count
       end,
       set = function(info, v)
-        trigger.use_count = v
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "set",
+          path = appendPath(basePath, "use_count"),
+          payload = v
+        })
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
     };
@@ -1059,8 +1127,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           return trigger.count
         end,
         set = function(info, v)
-          trigger.count = v
-          WeakAuras.Add(data)
+          OptionsPrivate.Private.TimeMachine:Append({
+            uid = data.uid,
+            actionType = "set",
+            path = appendPath(basePath, "count"),
+            payload = v
+          })
         end,
         hidden = disabled
       };
@@ -1077,8 +1149,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         return trigger.use_delay
       end,
       set = function(info, v)
-        trigger.use_delay = v
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "set",
+          path = appendPath(basePath, "use_delay"),
+          payload = v
+        })
         WeakAuras.ClearAndUpdateOptions(data.id)
       end
     };
@@ -1106,8 +1182,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
           return OptionsPrivate.Private.tinySecondFormat(trigger.delay)
         end,
         set = function(info, v)
-          trigger.delay = WeakAuras.TimeToSeconds(v)
-          WeakAuras.Add(data)
+          OptionsPrivate.Private.TimeMachine:Append({
+            uid = data.uid,
+            actionType = "set",
+            path = appendPath(basePath, "delay"),
+            payload = WeakAuras.TimeToSeconds(v)
+          })
         end
       };
       order = order + 1;
@@ -1139,8 +1219,12 @@ function OptionsPrivate.ConstructOptions(prototype, data, startorder, triggernum
         return OptionsPrivate.Private.tinySecondFormat(trigger.duration)
       end,
       set = function(info, v)
-        trigger.duration = tostring(WeakAuras.TimeToSeconds(v))
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "set",
+          path = appendPath(basePath, "duration"),
+          payload = tostring(WeakAuras.TimeToSeconds(v))
+        })
       end
     }
     order = order + 1;
@@ -1169,13 +1253,17 @@ function OptionsPrivate.GetLoadOptions(data)
     order = 0,
     get = function(info) return data.load[info[#info]] end,
     set = function(info, v)
-        data.load[info[#info]] = (v ~= "" and v) or nil;
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
-        OptionsPrivate.Private.ScanForLoads({[data.id] = true});
-        OptionsPrivate.SortDisplayButtons(nil, true);
-      end,
-      args = {}
+      OptionsPrivate.Private.TimeMachine:Append({
+        uid = data.uid,
+        actionType = "set",
+        path = {"load", info[#info]},
+        payload = (v ~= "" and v) or nil
+      })
+      WeakAuras.UpdateThumbnail(data);
+      OptionsPrivate.Private.ScanForLoads({[data.id] = true});
+      OptionsPrivate.SortDisplayButtons(nil, true);
+    end,
+    args = {}
     }
 
     load.args = OptionsPrivate.ConstructOptions(OptionsPrivate.Private.load_prototype, data, 10, nil, "load");

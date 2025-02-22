@@ -101,8 +101,12 @@ local function createOptions(id, data)
         return data.groupIcon and tostring(data.groupIcon) or ""
       end,
       set = function(info, v)
-        data.groupIcon = v
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = {"groupIcon"},
+          value = v
+        })
         WeakAuras.UpdateThumbnail(data)
       end
     },
@@ -127,17 +131,34 @@ local function createOptions(id, data)
       order = 1,
       values = OptionsPrivate.Private.grow_types,
       set = function(info, v)
-        data.grow = v
+        ---@type actionRecord[]
+        local records = {}
+        tinsert(records, {
+          actionType = "set",
+          uid = data.uid,
+          path = {"grow"},
+          value = v
+        })
         if v == "GRID" then
-          data.selfPoint = gridSelfPoints[data.gridType]
+          tinsert(records, {
+            actionType = "set",
+            uid = data.uid,
+            path = {"selfPoint"},
+            value = gridSelfPoints[data.gridType]
+          })
         else
           local selfPoint = selfPoints[data.grow] or selfPoints.default
           if type(selfPoint) == "function" then
             selfPoint = selfPoint(data)
           end
-          data.selfPoint = selfPoint
+          tinsert(records, {
+            actionType = "set",
+            uid = data.uid,
+            path = {"selfPoint"},
+            value = selfPoint
+          })
         end
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:AppendMany(records)
         WeakAuras.ClearAndUpdateOptions(data.id)
         OptionsPrivate.ResetMoverSizer()
       end,
@@ -153,8 +174,12 @@ local function createOptions(id, data)
       end,
       hidden = function() return data.grow ~= "CUSTOM" end,
       set = function(info, v)
-        data.growOn = v
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = {"growOn"},
+          value = v
+        })
         WeakAuras.ClearAndUpdateOptions(data.id)
         OptionsPrivate.ResetMoverSizer()
       end
@@ -193,8 +218,12 @@ local function createOptions(id, data)
         return not(data.grow ~= "CUSTOM" and data.useAnchorPerUnit and data.anchorPerUnit == "CUSTOM")
       end,
       set = function(info, v)
-        data.anchorOn = v
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = {"anchorOn"},
+          value = v
+        })
         WeakAuras.ClearAndUpdateOptions(data.id)
         OptionsPrivate.ResetMoverSizer()
       end
@@ -207,13 +236,25 @@ local function createOptions(id, data)
       order = 2,
       values = OptionsPrivate.Private.align_types,
       set = function(info, v)
-        data.align = v
+        ---@type actionRecord[]
+        local records = {}
+        tinsert(records, {
+          actionType = "set",
+          uid = data.uid,
+          path = {"align"},
+          value = v
+        })
         local selfPoint = selfPoints[data.grow] or selfPoints.default
         if type(selfPoint) == "function" then
           selfPoint = selfPoint(data)
         end
-        data.selfPoint = selfPoint
-        WeakAuras.Add(data)
+        tinsert(records, {
+          actionType = "set",
+          uid = data.uid,
+          path = {"selfPoint"},
+          value = selfPoint
+        })
+        OptionsPrivate.Private.TimeMachine:AppendMany(records)
         WeakAuras.ClearAndUpdateOptions(data.id)
         OptionsPrivate.ResetMoverSizer()
       end,
@@ -229,13 +270,25 @@ local function createOptions(id, data)
       hidden = function() return (data.grow == "CUSTOM" or data.grow == "UP" or data.grow == "DOWN" or data.grow == "VERTICAL" or data.grow == "CIRCLE" or data.grow == "COUNTERCIRCLE" or data.grow == "GRID") end,
       get = function() return data.align; end,
       set = function(info, v)
-        data.align = v
+        ---@type actionRecord[]
+        local records = {}
+        tinsert(records, {
+          actionType = "set",
+          uid = data.uid,
+          path = {"align"},
+          payload = v
+        })
         local selfPoint = selfPoints[data.grow] or selfPoints.default
         if type(selfPoint) == "function" then
           selfPoint = selfPoint(data)
         end
-        data.selfPoint = selfPoint
-        WeakAuras.Add(data)
+        tinsert(records, {
+          actionType = "set",
+          uid = data.uid,
+          path = {"selfPoint"},
+          payload = selfPoint
+        })
+        OptionsPrivate.Private.TimeMachine:AppendMany(records)
         WeakAuras.ClearAndUpdateOptions(data.id)
         OptionsPrivate.ResetMoverSizer()
       end,
@@ -338,9 +391,20 @@ local function createOptions(id, data)
       values = OptionsPrivate.Private.grid_types,
       hidden = function() return data.grow ~= "GRID" end,
       set = function(info, value)
-        data.selfPoint = gridSelfPoints[value]
-        data.gridType = value
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:AppendMany({
+          {
+            actionType = "set",
+            uid = data.uid,
+            path = {"gridType"},
+            value = value
+          },
+          {
+            actionType = "set",
+            uid = data.uid,
+            path = {"selfPoint"},
+            value = gridSelfPoints[value]
+          }
+        })
         OptionsPrivate.ResetMoverSizer()
       end,
     },
@@ -439,8 +503,12 @@ local function createOptions(id, data)
       end,
       hidden = function() return data.sort ~= "custom" end,
       set = function(info, v)
-        data.sortOn = v
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = {"sortOn"},
+          value = v
+        })
         WeakAuras.ClearAndUpdateOptions(data.id)
         OptionsPrivate.ResetMoverSizer()
       end
@@ -534,12 +602,28 @@ local function createOptions(id, data)
         return data.scale or 1
       end,
       set = function(info, v)
-        data.scale = data.scale or 1
-        local change = 1 - (v/data.scale)
-        data.xOffset = data.xOffset/(1-change)
-        data.yOffset = data.yOffset/(1-change)
-        data.scale = v
-        WeakAuras.Add(data);
+        local scale = data.scale or 1
+        local change = 1 - (v/scale)
+        OptionsPrivate.Private.TimeMachine:AppendMany({
+          {
+            actionType = "set",
+            uid = data.uid,
+            path = {"scale"},
+            value = v
+          },
+          {
+            actionType = "set",
+            uid = data.uid,
+            path = {"xOffset"},
+            value = data.xOffset/(1-change)
+          },
+          {
+            actionType = "set",
+            uid = data.uid,
+            path = {"yOffset"},
+            value = data.yOffset/(1-change)
+          }
+        })
         OptionsPrivate.ResetMoverSizer();
       end
     },
@@ -561,9 +645,15 @@ local function createOptions(id, data)
       desc = L["The group and all direct children will share the same base frame level."],
       order = 30,
       set = function(info, v)
-        data.sharedFrameLevel = v
-        WeakAuras.Add(data)
+        OptionsPrivate.Private.TimeMachine:Append({
+          actionType = "set",
+          uid = data.uid,
+          path = {"sharedFrameLevel"},
+          value = v
+        })
         for parent in OptionsPrivate.Private.TraverseParents(data) do
+          -- ? no change to ancestors? why do they need adding?
+
           WeakAuras.Add(parent)
         end
       end

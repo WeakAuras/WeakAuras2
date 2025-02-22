@@ -55,8 +55,12 @@ local function GetGlobalOptions(data)
         end
       end,
       set = function(info, v)
-        data.triggers.disjunctive = v;
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "set",
+          path = {"triggers", "disjunctive"},
+          payload = v
+        })
       end
     },
     -- custom trigger combiner text editor added below
@@ -77,8 +81,12 @@ local function GetGlobalOptions(data)
         return data.triggers.activeTriggerMode or OptionsPrivate.Private.trigger_modes.first_active;
       end,
       set = function(info, v)
-        data.triggers.activeTriggerMode = v;
-        WeakAuras.Add(data);
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "set",
+          path = {"triggers", "activeTriggerMode"},
+          payload = v
+        })
         WeakAuras.UpdateThumbnail(data);
       end,
       hidden = function() return #data.triggers <= 1 end
@@ -130,16 +138,18 @@ local function AddOptions(allOptions, data)
       name = L["Add Trigger"],
       order = 1,
       func = function()
-        tinsert(data.triggers,
-          {
-            trigger =
-            {
-              type = "aura2"
-            },
-            untrigger = {
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = data.uid,
+          actionType = "insert",
+          path = {"triggers"},
+          payload = {
+            value = {
+              trigger = {
+                type = "aura2"
+              },
             }
-          })
-        WeakAuras.Add(data)
+          }
+        })
         OptionsPrivate.SetCollapsed(collapsedId, "trigger", #data.triggers, false)
         maxTriggerNumForExpand = max(maxTriggerNumForExpand, #data.triggers)
         WeakAuras.ClearAndUpdateOptions(data.id)
@@ -192,60 +202,113 @@ function OptionsPrivate.GetTriggerOptions(data)
   return triggerOptions
 end
 
-local function DeleteConditionsForTriggerHandleSubChecks(checks, triggernum)
-  for _, check in ipairs(checks) do
+---@type fun(records: actionRecord[], path: keyPath, checks: conditionCheck[], uid: uid, triggernum: number)
+local function DeleteConditionsForTriggerHandleSubChecks(records, path, checks, uid, triggernum)
+  tinsert(path, 0)
+  tinsert(path, "trigger")
+  for i, check in ipairs(checks) do
+    path[#path - 1] = i
     if (check.trigger == triggernum) then
-      check.trigger = nil;
-    end
-
-    if (check.trigger and check.trigger > triggernum) then
-      check.trigger = check.trigger - 1;
+      tinsert(records, {
+        uid = uid,
+        actionType = "set",
+        path = CopyTable(path),
+        payload = i
+      })
+    elseif (check.trigger and check.trigger > triggernum) then
+      tinsert(records, {
+        uid = uid,
+        actionType = "set",
+        path = CopyTable(path),
+        payload = check.trigger - 1
+      })
     end
 
     if (check.checks) then
-      DeleteConditionsForTriggerHandleSubChecks(check.checks, triggernum);
+      path[#path] = "checks"
+      DeleteConditionsForTriggerHandleSubChecks(records, path, check.checks, uid, triggernum);
     end
   end
+  tremove(path)
+  tremove(path)
 end
 
-local function DeleteConditionsForTrigger(data, triggernum)
-  for _, condition in ipairs(data.conditions) do
+---@type fun(records: actionRecord[], data: auraData, triggernum: number)
+local function DeleteConditionsForTrigger(records, data, triggernum)
+  for i, condition in ipairs(data.conditions) do
     if (condition.check and condition.check.trigger == triggernum) then
-      condition.check.trigger = nil;
-    end
-
-    if (condition.check and condition.check.trigger and condition.check.trigger > triggernum) then
-      condition.check.trigger = condition.check.trigger - 1;
+      tinsert(records, {
+        uid = data.uid,
+        actionType = "set",
+        path = {"conditions", i , "check", "trigger"},
+        payload = nil
+      })
+    elseif (condition.check and condition.check.trigger and condition.check.trigger > triggernum) then
+      tinsert(records, {
+        uid = data.uid,
+        actionType = "set",
+        path = {"conditions", i , "check", "trigger"},
+        payload = condition.check.trigger - 1
+      })
     end
 
     if (condition.check and condition.check.checks) then
-      DeleteConditionsForTriggerHandleSubChecks(condition.check.checks, triggernum)
+      DeleteConditionsForTriggerHandleSubChecks(records, {"conditions", i, "check", "checks"}, condition.check.checks, data.uid, triggernum)
     end
   end
 end
 
-local function moveTriggerDownConditionCheck(check, i)
-  if (check.trigger == i) then
-    check.trigger = i + 1;
-  elseif (check.trigger == i  + 1) then
-    check.trigger = i;
+---@type fun(records: actionRecord[], path: keyPath, check: conditionCheck, triggernum: number)
+local function moveTriggerDownConditionCheck(records, path, check, uid, triggernum)
+  tinsert(path, "check")
+  tinsert(path, "trigger")
+  if (check.trigger == triggernum) then
+    tinsert(records, {
+      uid = uid,
+      actionType = "set",
+      path = CopyTable(path),
+      payload = triggernum + 1
+    })
+  elseif (check.trigger == triggernum  + 1) then
+    tinsert(records, {
+      uid = uid,
+      actionType = "set",
+      path = CopyTable(path),
+      payload = triggernum
+    })
   end
+  tremove(path)
   if (check.checks) then
-    for _, subCheck in ipairs(check.checks) do
-      moveTriggerDownConditionCheck(subCheck, i);
+    tinsert(path, "checks")
+    tinsert(path, 0)
+    for k, subCheck in ipairs(check.checks) do
+      path[#path] = k
+      moveTriggerDownConditionCheck(records, path, subCheck, uid, triggernum)
     end
+    tremove(path)
+    tremove(path)
   end
+  tremove(path)
 end
 
+---@type fun(data: auraData, i: number): boolean
 local function moveTriggerDownImpl(data, i)
   if (i < 1 or i >= #data.triggers) then
     return false;
   end
-  data.triggers[i], data.triggers[i + 1] = data.triggers[i + 1], data.triggers[i]
-  for _, condition in ipairs(data.conditions) do
-    moveTriggerDownConditionCheck(condition.check, i);
+  ---@type actionRecord[]
+  local records = {{
+    uid = data.uid,
+    actionType = "swap",
+    path = {"triggers"},
+    payload = {i, i + 1}
+  }}
+  local path = {"conditions", 0}
+  for j, condition in ipairs(data.conditions) do
+    path[#path] = j
+    moveTriggerDownConditionCheck(records, path, condition.check, data.uid, i);
   end
-
+  OptionsPrivate.Private.TimeMachine:AppendMany(records)
   return true;
 end
 
@@ -276,7 +339,6 @@ function OptionsPrivate.GetTriggerTitle(data, triggernum)
   return L["Trigger %i"]:format(triggernum)
 end
 
-local triggerDeleteDialogOpen = false
 
 function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
   options.__title = OptionsPrivate.GetTriggerTitle(data, triggernum)
@@ -299,7 +361,6 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
     end,
     func = function()
       if (moveTriggerDownImpl(data, triggernum - 1)) then
-        WeakAuras.Add(data);
         OptionsPrivate.MoveCollapseDataUp(collapsedId, "trigger", {triggernum})
         WeakAuras.ClearAndUpdateOptions(data.id);
       end
@@ -312,7 +373,6 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
     end,
     func = function()
       if (moveTriggerDownImpl(data, triggernum)) then
-        WeakAuras.Add(data);
         OptionsPrivate.MoveCollapseDataDown(collapsedId, "trigger", {triggernum})
         WeakAuras.ClearAndUpdateOptions(data.id);
       end
@@ -320,8 +380,15 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
   }
   options.__duplicate = function()
     local trigger = CopyTable(data.triggers[triggernum])
-    tinsert(data.triggers, trigger)
-    WeakAuras.Add(data)
+    OptionsPrivate.Private.TimeMachine:Append({
+      uid = data.uid,
+      actionType = "insert",
+      path = {"triggers"},
+      payload = {
+        index = triggernum + 1,
+        value = CopyTable(trigger)
+      }
+    })
     WeakAuras.ClearAndUpdateOptions(data.id)
   end
   options.__delete = {
@@ -329,50 +396,25 @@ function OptionsPrivate.AddTriggerMetaFunctions(options, data, triggernum)
       return #data.triggers == 1
     end,
     func = function(...)
-      if triggerDeleteDialogOpen then
-        -- This function is called multiple times if multiple auras are selected
-        return
-      end
-
-      local canDelete = false
       -- Since we want to handle all selected auras in one dialog, we have to iterate over GetPickedDisplay
       local picked = OptionsPrivate.GetPickedDisplay()
+      local records = {}
       for child in OptionsPrivate.Private.TraverseLeafsOrAura(picked) do
         if #child.triggers > 1 and #child.triggers >= triggernum then
-          canDelete = true
-          break;
+          tinsert(records, {
+              uid = child.uid,
+              actionType = "remove",
+              path = {"triggers"},
+              payload = triggernum
+          })
+          DeleteConditionsForTrigger(records, child, triggernum)
+          OptionsPrivate.RemoveCollapsed(collapsedId, "trigger", {triggernum})
         end
+        OptionsPrivate.Private.TimeMachine:AppendMany(records)
+        WeakAuras.ClearAndUpdateOptions(data.id)
+        -- WeakAuras.FillOptions()
       end
 
-      if canDelete then
-        StaticPopupDialogs["WEAKAURAS_CONFIRM_TRIGGER_DELETE"] = {
-          text = L["You are about to delete a trigger. |cFFFF0000This cannot be undone!|r Would you like to continue?"],
-          button1 = L["Delete"],
-          button2 = L["Cancel"],
-          OnAccept = function()
-            for child in OptionsPrivate.Private.TraverseLeafsOrAura(picked) do
-              if #child.triggers > 1 and #child.triggers >= triggernum then
-                tremove(child.triggers, triggernum)
-                DeleteConditionsForTrigger(child, triggernum)
-                WeakAuras.Add(child)
-                OptionsPrivate.RemoveCollapsed(collapsedId, "trigger", {triggernum})
-                OptionsPrivate.ClearOptions(child.id)
-              end
-            end
-
-            WeakAuras.FillOptions()
-            triggerDeleteDialogOpen = false
-          end,
-          OnCancel = function()
-            triggerDeleteDialogOpen = false
-          end,
-          showAlert = true,
-          whileDead = true,
-          preferredindex = STATICPOPUP_NUMDIALOGS,
-        }
-        triggerDeleteDialogOpen = true
-        StaticPopup_Show("WEAKAURAS_CONFIRM_TRIGGER_DELETE")
-      end
     end
   }
   if (C_AddOns.GetAddOnEnableState("WeakAurasTemplates") ~= Enum.AddOnEnableState.None) then

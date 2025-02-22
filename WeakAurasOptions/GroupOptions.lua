@@ -5,7 +5,8 @@ local AddonName = ...
 local OptionsPrivate = select(2, ...)
 
 local L = WeakAuras.L
-local parsePrefix = OptionsPrivate.commonOptions.parsePrefix
+local prefixToPath = OptionsPrivate.commonOptions.prefixToPath
+local pathToDataKey = OptionsPrivate.commonOptions.pathToDataKey
 local flattenRegionOptions = OptionsPrivate.commonOptions.flattenRegionOptions
 
 function OptionsPrivate.GetGroupOptions(data)
@@ -31,30 +32,35 @@ function OptionsPrivate.GetGroupOptions(data)
     name = L["Group Options"],
     order = 0,
     get = function(info)
-      local base, property = parsePrefix(info[#info], data);
+      local path = prefixToPath(info[#info])
+      local base, property = pathToDataKey(data, path)
       if not base then
         return nil
       end
       if(info.type == "color") then
-        base[property] = base[property] or {};
-        local c = base[property];
-        return c[1], c[2], c[3], c[4];
+        base[property] = base[property] or {}
+        local c = base[property]
+        return c[1], c[2], c[3], c[4]
       else
-        return base[property];
+        return base[property]
       end
     end,
     set = function(info, v, g, b, a)
-      local base, property = parsePrefix(info[#info], data, true);
-      if(info.type == "color") then
-        base[property] = base[property] or {};
-        local c = base[property];
-        c[1], c[2], c[3], c[4] = v, g, b, a;
-      elseif(info.type == "toggle") then
-        base[property] = v;
+      local path = prefixToPath(info[#info], data, true)
+      local payload
+      if info.type == "color" then
+        payload = {v, g, b, a}
+      elseif info.type == "toggle" then
+        payload = v
       else
-        base[property] = (v ~= "" and v) or nil;
+        payload = v ~= "" and v or nil
       end
-      WeakAuras.Add(data);
+      OptionsPrivate.Private.TimeMachine:Append({
+        uid = data.uid,
+        actionType = "set",
+        path = path,
+        payload = payload,
+      })
       WeakAuras.UpdateThumbnail(data);
       OptionsPrivate.ResetMoverSizer();
     end,
