@@ -4869,7 +4869,7 @@ function Private.UpdatedTriggerState(id)
 
   local changed = false;
   for triggernum = 1, triggerState[id].numTriggers do
-    triggerState[id][triggernum] = triggerState[id][triggernum] or {};
+    triggerState[id][triggernum] = triggerState[id][triggernum] or setmetatable({}, Private.allstatesMetatable)
 
     local anyStateShown = false;
 
@@ -4960,7 +4960,6 @@ function Private.UpdatedTriggerState(id)
   end
 
   for triggernum = 1, triggerState[id].numTriggers do
-    triggerState[id][triggernum] = triggerState[id][triggernum] or {};
     for cloneId, state in pairs(triggerState[id][triggernum]) do
       if (not state.show) then
         triggerState[id][triggernum][cloneId] = nil;
