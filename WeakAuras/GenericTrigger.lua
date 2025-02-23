@@ -4719,7 +4719,6 @@ local commonConditions = {
     hidden = true,
     type = "bool",
     test = function(state, needle)
-      print("HERE", not state, not state.itemId, not state.show, not UnitExists('target'))
       if not state or not state.itemId or not state.show or not UnitExists('target') then
         return false
       end
