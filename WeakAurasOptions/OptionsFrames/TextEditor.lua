@@ -136,9 +136,7 @@ end]=]
     name = "Trigger State Updater",
     snippet = [=[
 function(allstates, event, ...)
-    return allstates:Update("", {
-        show = true,
-        changed = true,
+    allstates:Update("", {
         progressType = "static"||"timed",
         value = ,
         total = ,
@@ -150,6 +148,8 @@ function(allstates, event, ...)
         stacks = ,
         index = ,
     })
+    -- allstates:Remove("")
+    -- allstates:RemoveAll()
 end]=]
   },
 }
