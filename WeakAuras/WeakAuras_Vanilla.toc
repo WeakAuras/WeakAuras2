@@ -52,6 +52,7 @@ GenericTrigger.lua
 BossMods.lua
 
 # Helper Systems
+TSUHelpers.lua
 AuraWarnings.lua
 AuraEnvironment.lua
 AuraEnvironmentWrappedSystems.lua
