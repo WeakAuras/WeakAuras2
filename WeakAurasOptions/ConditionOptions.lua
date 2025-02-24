@@ -337,7 +337,7 @@ local function addControlsForChange(args, order, data, totalAuraCount, condition
       local default = allProperties.propertyMap[property].default;
       if (data.controlledChildren) then
         OptionsPrivate.Private.TimeMachine:StartTransaction()
-        for id, reference in pairs(conditqions[i].changes[j].references) do
+        for id, reference in pairs(conditions[i].changes[j].references) do
           local auraData = WeakAuras.GetData(id);
           local conditionIndex = conditions[i].check.references[id].conditionIndex;
           OptionsPrivate.Private.TimeMachine:AppendMany({
