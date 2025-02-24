@@ -88,7 +88,7 @@ local properties = {
     setter = "SetCooldownEdge",
     type = "bool",
   },
-  cooldownText = {
+  cooldownTextDisabled = {
     display = { L["Cooldown"], L["Hide Timer Text"]},
     setter = "SetHideCountdownNumbers",
     type = "bool",

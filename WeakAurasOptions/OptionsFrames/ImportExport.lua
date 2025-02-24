@@ -88,7 +88,7 @@ local function ConstructImportExport(frame)
         local pasted = self:GetText()
         pasted = pasted:match("^%s*(.-)%s*$")
         if #pasted > 20 then
-          WeakAuras.Import(pasted)
+          OptionsPrivate.Private.Import(pasted)
         end
       end)
       input.editBox:SetText("");

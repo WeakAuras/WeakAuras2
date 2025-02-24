@@ -287,6 +287,7 @@ globals = {
 	"BuyTrainerService",
 	"BuybackItem",
 	"C_ActionBar",
+	"C_AddOns.GetNumAddOns",
 	"C_AddOns.DisableAddOn",
 	"C_AddOns.EnableAddOn",
 	"C_AddOns.GetAddOnEnableState",

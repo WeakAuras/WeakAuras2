@@ -67,7 +67,7 @@ local methods = {
         end
       end
 
-      WeakAuras.Import(self.companionData.encoded, nil, nil, linkedAuras)
+      OptionsPrivate.Private.Import(self.companionData.encoded, nil, nil, linkedAuras)
     end
 
     self:SetTitle(self.companionData.name)
