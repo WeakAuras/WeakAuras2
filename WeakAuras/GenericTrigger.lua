@@ -3603,6 +3603,7 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange.trackedUnits = {}
     watchUnitChange.unitIdToGUID = {}
     watchUnitChange.GUIDToUnitIds = {}
+    watchUnitChange.unitExists = {}
     watchUnitChange.unitRoles = {}
     watchUnitChange.unitRaidRole = {}
     watchUnitChange.inRaid = IsInRaid()
@@ -3630,9 +3631,11 @@ function WeakAuras.WatchUnitChange(unit)
     watchUnitChange:RegisterEvent("RAID_TARGET_UPDATE")
 
     local function unitUpdate(unitA, eventsToSend)
+      local oldUnitExists = watchUnitChange.unitExists[unitA]
       local oldGUID = watchUnitChange.unitIdToGUID[unitA]
       local newGUID = WeakAuras.UnitExistsFixed(unitA) and UnitGUID(unitA)
-      if oldGUID ~= newGUID then
+      local unitExists = UnitExists(unitA) -- UnitExistsFixed check both UnitExists and UnitGUID, but in edge cases we are interested in UnitExists
+      if oldGUID ~= newGUID or oldUnitExists ~= unitExists then
         eventsToSend["UNIT_CHANGED_" .. unitA] = unitA
         if watchUnitChange.GUIDToUnitIds[oldGUID] then
           for unitB in pairs(watchUnitChange.GUIDToUnitIds[oldGUID]) do
@@ -3663,6 +3666,7 @@ function WeakAuras.WatchUnitChange(unit)
         watchUnitChange.GUIDToUnitIds[newGUID][unitA] = true
       end
       watchUnitChange.unitIdToGUID[unitA] = newGUID
+      watchUnitChange.unitExists[unitA] = unitExists
     end
 
     local function markerUpdate(unit, eventsToSend)
@@ -3832,7 +3836,9 @@ function WeakAuras.WatchUnitChange(unit)
   end
   local guid = UnitGUID(unit)
   watchUnitChange.trackedUnits[unit] = true
-  watchUnitChange.unitIdToGUID[unit] = guid
+  watchUnitChange.unitIdToGUID[unit] = WeakAuras.UnitExistsFixed(unit) and UnitGUID(unit)
+  watchUnitChange.unitExists[unit] = UnitExists(unit)
+
   if guid then
     watchUnitChange.GUIDToUnitIds[guid] = watchUnitChange.GUIDToUnitIds[guid] or {}
     watchUnitChange.GUIDToUnitIds[guid][unit] = true
