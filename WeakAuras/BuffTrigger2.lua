@@ -2212,6 +2212,13 @@ end
 local Buff2Frame = CreateFrame("Frame")
 Private.frames["WeakAuras Buff2 Frame"] = Buff2Frame
 
+local brokenUnitMap = {
+  arena1 = "boss6",
+  arena2 = "boss7",
+  arena3 = "boss8",
+  arena4 = "boss9",
+  arena5 = "boss10"
+}
 
 local function EventHandler(frame, event, arg1, arg2, ...)
   Private.StartProfileSystem("bufftrigger2")
@@ -2292,6 +2299,10 @@ local function EventHandler(frame, event, arg1, arg2, ...)
       ScanGroupUnit(time, matchDataChanged, nil, "vehicle")
     end
   elseif event == "UNIT_AURA" then
+    if brokenUnitMap[arg1] and not UnitExists(arg1) then
+      arg1 = brokenUnitMap[arg1]
+    end
+
     if newAPI then
       -- arg1: unit
       -- arg2: unitAuraUpdateInfo
