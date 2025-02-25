@@ -79,6 +79,7 @@ end
 local regionFunctions = {
   Update = function() end,
   SetAlpha = function(self, alpha)
+    self.alpha = alpha
     if self.model then
       self.model:SetAlpha(alpha)
     end
@@ -315,6 +316,9 @@ local function modify(parent, region, data)
       region.model = AcquireModel(self, data)
     else
       ConfigureModel(region, region.model, data)
+    end
+    if type(data.alpha) == "number" then
+      region:SetAlpha(data.alpha)
     end
   end
 
