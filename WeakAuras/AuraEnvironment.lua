@@ -523,9 +523,8 @@ local overridden = {
   WeakAuras = FakeWeakAuras
 }
 
-local env_getglobal_custom
 -- WORKAROUND API which return Mixin'd values need those mixin "rawgettable" in caller's fenv #5071
-local exec_env_custom = setmetatable({
+local mixins = {
   ColorMixin = ColorMixin,
   Vector2DMixin = Vector2DMixin,
   Vector3DMixin = Vector3DMixin,
@@ -534,7 +533,10 @@ local exec_env_custom = setmetatable({
   TransmogPendingInfoMixin = TransmogPendingInfoMixin,
   TransmogLocationMixin = TransmogLocationMixin,
   PlayerLocationMixin = PlayerLocationMixin,
-},
+}
+
+local env_getglobal_custom
+local exec_env_custom = setmetatable(CopyTable(mixins),
 {
   __index = function(t, k)
     if k == "_G" then
@@ -592,7 +594,7 @@ local PrivateForBuiltIn = {
 }
 
 local env_getglobal_builtin
-local exec_env_builtin = setmetatable({},
+local exec_env_builtin = setmetatable(CopyTable(mixins),
 {
   __index = function(t, k)
     if k == "_G" then
