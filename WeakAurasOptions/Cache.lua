@@ -49,6 +49,11 @@ function spellCache.Build()
     holes[243806] = 261127
     holes[262591] = 281624
     holes[301101] = 324269
+  elseif WeakAuras.IsRetail() then
+    holes = {}
+    holes[556606] = 936050
+    holes[936051] = 1049295
+    holes[1049296] = 1213133
   end
   wipe(cache)
   local co = coroutine.create(function()
@@ -113,8 +118,9 @@ local lastId
 print("####")
 while misses < 4000000 do
    id = id + 1
-   local name = GetSpellInfo(id)
-   local icon = GetSpellTexture(id)
+   local spellInfo = C_Spell.GetSpellInfo(id)
+   local name = spellInfo and spellInfo.name
+   local icon = C_Spell.GetSpellTexture(id)
    if icon == 136243 then -- 136243 is the a gear icon, we can ignore those spells
       misses = 0
    elseif name and name ~= "" and icon then
