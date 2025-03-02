@@ -81,8 +81,7 @@ local function createOptions(parentData, data, index, subIndex)
         end,
         set = function(info, v)
           data.customRows = v and tonumber(v) or 0
-          WeakAuras.Add(data);
-          WeakAuras.UpdateThumbnail(data);
+          WeakAuras.Add(parentData)
         end,
         order = 6,
         hidden = function()
@@ -99,8 +98,7 @@ local function createOptions(parentData, data, index, subIndex)
         end,
         set = function(info, v)
           data.customColumns = v and tonumber(v) or 0
-          WeakAuras.Add(data);
-          WeakAuras.UpdateThumbnail(data);
+          WeakAuras.Add(parentData)
         end,
         order = 7,
         hidden = function()
@@ -117,8 +115,7 @@ local function createOptions(parentData, data, index, subIndex)
         end,
         set = function(info, v)
           data.customFrames = v and tonumber(v) or 0
-          WeakAuras.Add(data);
-          WeakAuras.UpdateThumbnail(data);
+          WeakAuras.Add(parentData)
         end,
         order = 8,
         hidden = function()
@@ -141,8 +138,7 @@ local function createOptions(parentData, data, index, subIndex)
       end,
       set = function(info, v)
         data.customFileWidth = v and tonumber(v) or 0
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        WeakAuras.Add(parentData)
       end,
       order = 9,
       hidden = function()
@@ -165,8 +161,7 @@ local function createOptions(parentData, data, index, subIndex)
       end,
       set = function(info, v)
         data.customFileHeight = v and tonumber(v) or 0
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        WeakAuras.Add(parentData)
       end,
       order = 10,
       hidden = function()
@@ -184,8 +179,7 @@ local function createOptions(parentData, data, index, subIndex)
       end,
       set = function(info, v)
         data.customFrameWidth = v and tonumber(v) or 0
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        WeakAuras.Add(parentData)
       end,
       order = 11,
       hidden = function()
@@ -203,8 +197,7 @@ local function createOptions(parentData, data, index, subIndex)
       end,
       set = function(info, v)
         data.customFrameHeight = v and tonumber(v) or 0
-        WeakAuras.Add(data);
-        WeakAuras.UpdateThumbnail(data);
+        WeakAuras.Add(parentData)
       end,
       order = 12,
       hidden = function()
