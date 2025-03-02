@@ -45,7 +45,7 @@ local function createOptions(parentData, data, index, subIndex)
           color = "textureColor",
           mirror = "textureMirror",
           blendMode = "textureBlendMode"
-        }, OptionsPrivate.Private.texture_types, nil, true)
+        }, OptionsPrivate.Private.texture_types)
       end,
       imageWidth = 24,
       imageHeight = 24,
