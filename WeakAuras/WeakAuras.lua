@@ -3327,8 +3327,8 @@ function Private.SetRegion(data, cloneId)
       Private.validate(data, regionTypes[regionType].default);
 
       local parent = WeakAurasFrame;
-      if(data.parent) then
-        local parentRegion = WeakAuras.GetRegion(data.parent)
+      if data.parent then
+        local parentRegion = Private.EnsureRegion(data.parent)
         if parentRegion then
           parent = parentRegion
         else
