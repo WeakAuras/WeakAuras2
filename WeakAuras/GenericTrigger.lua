@@ -5124,12 +5124,20 @@ WeakAuras.GetBonusIdInfo = function(ids, specificSlot)
   end
 end
 
----@param itemId string
+---@param itemId string|number
 ---@param specificSlot? number
 ---@return boolean|nil isItemEquipped
 WeakAuras.CheckForItemEquipped = function(itemId, specificSlot)
   if not specificSlot then
-    return C_Item.IsEquippedItem(itemId or '')
+    if type(itemId) == "number" then
+      return C_Item.IsEquippedItem(itemId or '')
+    else
+      for slot in pairs(Private.item_slot_types) do
+        if WeakAuras.CheckForItemEquipped(itemId, slot) then
+          return true
+        end
+      end
+    end
   else
     local item = Item:CreateFromEquipmentSlot(specificSlot)
     if item and not item:IsItemEmpty() then
@@ -5138,6 +5146,20 @@ WeakAuras.CheckForItemEquipped = function(itemId, specificSlot)
       else
         return itemId == item:GetItemName()
       end
+    end
+  end
+end
+
+Private.ExecEnv.IsEquippedItemForLoad = function(item, exact)
+  if not item then
+    return
+  end
+  if exact then
+    return WeakAuras.CheckForItemEquipped(item)
+  else
+    item = C_Item.GetItemInfo(item)
+    if item then
+      return WeakAuras.CheckForItemEquipped(item)
     end
   end
 end
