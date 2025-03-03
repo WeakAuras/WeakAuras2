@@ -2025,8 +2025,9 @@ Private.load_prototype = {
       multiEntry = {
         operator = "or"
       },
-      test = "C_Item.IsEquippedItem(C_Item.GetItemInfo(%s) or '')",
-      events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"}
+      test = "Private.ExecEnv.IsEquippedItemForLoad(%s, %s)",
+      events = { "UNIT_INVENTORY_CHANGED", "PLAYER_EQUIPMENT_CHANGED"},
+      showExactOption = true
     },
     {
       name = "not_itemequiped",
