@@ -67,7 +67,7 @@ jobs:
     steps:
     # using Discord webhook to send release information
       - name: Discord Release Webhook Action
-        uses: tsickert/discord-webhook@v6.0.0
+        uses: tsickert/discord-webhook@v7.0.0
         if: success()
         with:
           webhook-url: ${{ secrets.RELEASE_WEBHOOK_URL }}
