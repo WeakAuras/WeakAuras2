@@ -854,8 +854,25 @@ Private.ExecEnv.BossMods.BigWigs = {
         local count = text and text:match("%((%d+)%)") or text:match("（(%d+)）") or "0"
         Private.ScanEvents("BossMod_Announce", spellId, text, icon, count)
       end
-    elseif event == "BigWigs_Timer" then
-      local addon, spellId, duration, _, text, count, icon, isCooldown, isBarEnabled = ...
+    elseif event == "BigWigs_Timer"
+    or event == "BigWigs_TargetTimer"
+    or event == "BigWigs_CastTimer"
+    or event == "BigWigs_StartBreak"
+    then
+      local addon, spellId, duration, _, text, count, icon, isCooldown, isBarEnabled
+      if event == "BigWigs_Timer" then
+        addon, spellId, duration, _, text, count, icon, isCooldown, isBarEnabled = ...
+      elseif event == "BigWigs_TargetTimer" or event == "BigWigs_CastTimer" then
+        addon, spellId, duration, _, text, count, icon, _, isBarEnabled = ...
+        isCooldown = false
+      elseif event == "BigWigs_StartBreak" then
+        addon, duration = ...
+        text = L["Break"]
+        spellId = 0
+        count = 0
+        isCooldown = false
+        isBarEnabled = true
+      end
       local now = GetTime()
       local expirationTime = now + duration
 
@@ -876,7 +893,7 @@ Private.ExecEnv.BossMods.BigWigs = {
       bar.bwBackgroundColor = BWColorModule:GetColorTable("barBackground", addon, spellId)
       bar.count = count or 0
       bar.isBarEnabled = isBarEnabled
-      bar.cast = not(text:match("^[^<]") and true)
+      bar.cast = event == "BigWigs_CastTimer"
 
       Private.ScanEvents("BigWigs_StartBar", text)
       if self.isGeneric then
@@ -990,6 +1007,9 @@ Private.ExecEnv.BossMods.BigWigs = {
 
   RegisterTimer = function(self)
     self:RegisterCallback("BigWigs_Timer")
+    self:RegisterCallback("BigWigs_TargetTimer")
+    self:RegisterCallback("BigWigs_StartBreak")
+    self:RegisterCallback("BigWigs_CastTimer")
     self:RegisterCallback("BigWigs_StopBar")
     self:RegisterCallback("BigWigs_StopBars")
     self:RegisterCallback("BigWigs_OnBossDisable")
