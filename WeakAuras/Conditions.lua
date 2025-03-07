@@ -102,8 +102,9 @@ local function formatValueForAssignment(vType, value, pathToCustomFunction, path
   elseif (vType == "string" or vType == "texture") then
     if type(value) == "string" then
       return string.format("%s", Private.QuotedString(value))
+    else
+      return '""'
     end
-    return "nil"
   elseif(vType == "color") then
     if (value and type(value) == "table") then
       return string.format("{%s, %s, %s, %s}",
