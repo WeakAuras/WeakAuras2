@@ -51,6 +51,7 @@ function spellCache.Build()
     holes[301101] = 324269
   elseif WeakAuras.IsRetail() then
     holes = {}
+    holes[474771] = 556604
     holes[556606] = 936050
     holes[936051] = 1049295
     holes[1049296] = 1213133
@@ -76,11 +77,11 @@ function spellCache.Build()
           cache[name].spells = cache[name].spells .. "," .. id .. "=" .. icon
         end
         misses = 0
-        if holes and holes[id] then
-          id = holes[id]
-        end
       else
         misses = misses + 1
+      end
+      if holes and holes[id] then
+        id = holes[id]
       end
       coroutine.yield(0.01, "spells")
     end
