@@ -228,7 +228,7 @@ local function createOptions(id, data)
             name = L["Animation Start"],
             min = 0,
             max = 1,
-            --bigStep = 0.01,
+            bigStep = 0.01,
             order = 13,
             isPercent = true
         },
@@ -239,7 +239,7 @@ local function createOptions(id, data)
             name = L["Animation End"],
             min = 0,
             max = 1,
-            --bigStep  = 0.01,
+            bigStep  = 0.01,
             order = 14,
             isPercent = true
         },
