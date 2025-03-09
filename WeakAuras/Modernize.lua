@@ -2396,6 +2396,23 @@ function Private.Modernize(data, oldSnapshot)
     end
   end
 
+  if data.internalVersion < 84 then
+    if data.triggers then
+      for _, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
+        if trigger and trigger.type == "addons" then
+          if trigger.event == "Boss Mod Timer" or trigger.event == "BigWigs Timer" or trigger.event == "DBM Timer" then
+            -- if trigger don't filter bars, show only those active in the addon config for triggers made before this option was added
+            -- show disabled bars when looking for specific ids/name
+            if not (trigger.use_message or trigger.use_spellId) then
+              trigger.use_isBarEnabled = true
+            end
+          end
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 
