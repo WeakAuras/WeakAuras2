@@ -3546,8 +3546,10 @@ Private.event_prototypes = {
           local absorb = state.absorb
           if (trigger.absorbMode == "OVERLAY_FROM_START") then
             return 0, absorb;
-          else
+          elseif (trigger.absorbMode == "OVERLAY_FROM_END") then
             return "forward", absorb;
+          else
+            return state.total - absorb, state.total
           end
         end,
         enable = function(trigger)
@@ -3560,8 +3562,10 @@ Private.event_prototypes = {
           local healabsorb = state.healabsorb
           if (trigger.absorbHealMode == "OVERLAY_FROM_START") then
             return 0, healabsorb;
-          else
+          elseif (trigger.absorbMode == "OVERLAY_FROM_END") then
             return "forward", healabsorb;
+          else
+            return state.total - healabsorb, state.total
           end
         end,
         enable = function(trigger)
