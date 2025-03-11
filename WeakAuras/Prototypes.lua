@@ -145,6 +145,7 @@ end
 local constants = {
   nameRealmFilterDesc = L[" Filter formats: 'Name', 'Name-Realm', '-Realm'. \n\nSupports multiple entries, separated by commas\nCan use \\ to escape -."],
   instanceFilterDeprecated = L["This filter has been moved to the Location trigger. Change your aura to use the new Location trigger or join the WeakAuras Discord server for help."],
+  guildFilterDesc = L["Supports multiple entries, separated by commas. Escape with \\. Prefix with '-' for negation."]
 }
 
 if WeakAuras.IsClassicOrCata() then
@@ -1782,6 +1783,12 @@ Private.load_prototype = {
       hidden = true
     },
     {
+      name = "guild",
+      init = "arg",
+      enable = false,
+      hidden = true
+    },
+    {
       name = "namerealm",
       display = L["Player Name/Realm"],
       type = "string",
@@ -1798,6 +1805,16 @@ Private.load_prototype = {
       test = "not nameRealmIgnoreChecker:Check(player, realm)",
       preamble = "local nameRealmIgnoreChecker = Private.ExecEnv.ParseNameCheck(%q)",
       desc = constants.nameRealmFilterDesc,
+    },
+    {
+      name = "guildcheck",
+      display = L["Guild"],
+      type = "string",
+      multiline = true,
+      test = "guildChecker:Check(guild)",
+      preamble = "local guildChecker = Private.ExecEnv.ParseStringCheck(%q)",
+      desc = constants.guildFilterDesc,
+      events = {"PLAYER_GUILD_UPDATE"}
     },
     {
       name = "race",
