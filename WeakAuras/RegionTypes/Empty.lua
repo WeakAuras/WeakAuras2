@@ -32,7 +32,9 @@ local function create(parent)
   region:SetResizable(true)
   region:SetResizeBounds(1, 1)
 
-  region.Update = function() end
+  region.Update = function()
+    region:UpdateProgress()
+  end
 
   Private.regionPrototype.create(region)
   return region
