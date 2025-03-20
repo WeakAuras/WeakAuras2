@@ -629,7 +629,7 @@ local function UpdateProgressFrom(self, progressSource, minMaxConfig, state, sta
   elseif trigger == 0 then
     UpdateProgressFromManual(self, minMaxConfig, state, progressSource[3], progressSource[4])
   else
-    UpdateProgressFromState(self, minMaxConfig, states[trigger] or {}, progressSource)
+    UpdateProgressFromState(self, minMaxConfig, states and states[trigger] or {}, progressSource)
   end
 end
 
