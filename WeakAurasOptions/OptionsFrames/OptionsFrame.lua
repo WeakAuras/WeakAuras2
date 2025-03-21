@@ -530,7 +530,7 @@ function OptionsPrivate.CreateFrame()
     changelogButton:SetPoint("LEFT", thanksButton, "RIGHT", 10, 0)
   end
 
-  local reportbugButton = addFooter(L["Found a Bug?"], [[Interface\AddOns\WeakAuras\Media\Textures\bug_report.tga]], "https://github.com/WeakAuras/WeakAuras2/issues/new?assignees=&labels=%F0%9F%90%9B+Bug&template=bug_report.md&title=",
+  local reportbugButton = addFooter(L["Found a Bug?"], [[Interface\AddOns\WeakAuras\Media\Textures\bug_report.tga]], "https://github.com/WeakAuras/WeakAuras2/issues/new?template=bug_report.yml",
             L["Report bugs on our issue tracker."], nil, nil, true)
   reportbugButton:SetParent(tipFrame)
   reportbugButton:SetPoint("RIGHT", tipFrame, "RIGHT")
