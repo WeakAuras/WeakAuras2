@@ -636,7 +636,7 @@ end
 -- For regions
 local function UpdateProgress(self)
   UpdateProgressFrom(self, self.progressSource, self, self.state, self.states)
-  self.subRegionEvents:Notify("UpdateProgress")
+  self.subRegionEvents:Notify("UpdateProgress", self.state, self.states)
 end
 
 Private.UpdateProgressFrom = UpdateProgressFrom
