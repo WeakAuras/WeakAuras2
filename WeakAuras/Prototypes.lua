@@ -3561,12 +3561,22 @@ Private.event_prototypes = {
         name = L["Absorb"],
         func = function(trigger, state)
           local absorb = state.absorb
+          if not absorb then
+            return
+          end
           if (trigger.absorbMode == "OVERLAY_FROM_START") then
             return 0, absorb;
           elseif (trigger.absorbMode == "OVERLAY_FROM_END") then
             return "forward", absorb;
           else
-            return state.total - absorb, state.total
+            if not state.total then
+              return
+            end
+            local total = state.total
+            if not total then
+              return
+            end
+            return total - absorb, total
           end
         end,
         enable = function(trigger)
@@ -3577,12 +3587,19 @@ Private.event_prototypes = {
         name = L["Heal Absorb"],
         func = function(trigger, state)
           local healabsorb = state.healabsorb
+          if not healabsorb then
+            return
+          end
           if (trigger.absorbHealMode == "OVERLAY_FROM_START") then
             return 0, healabsorb;
           elseif (trigger.absorbMode == "OVERLAY_FROM_END") then
             return "forward", healabsorb;
           else
-            return state.total - healabsorb, state.total
+            local total = state.total
+            if not total then
+              return
+            end
+            return total - healabsorb, total
           end
         end,
         enable = function(trigger)
