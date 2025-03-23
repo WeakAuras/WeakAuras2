@@ -5397,12 +5397,6 @@ function WeakAuras.IsAuraActive(id)
   return active and active.show
 end
 
-function Private.ActiveTrigger(uid)
-  local id = Private.UIDtoID(uid)
-
-  return triggerState[id] and triggerState[id].activeTrigger
-end
-
 -- Attach to Cursor/Frames code
 -- Very simple function to convert a hsv angle to a color with
 -- value hardcoded to 1 and saturation hardcoded to 0.75
