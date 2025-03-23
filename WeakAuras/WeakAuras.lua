@@ -5196,16 +5196,15 @@ local function ValueForSymbol(symbol, region, customFunc, regionState, regionSta
     if(useHiddenStates or regionState.show) then
       local value = regionState[symbol]
       if formatters[symbol] then
-        return tostring(formatters[symbol](value, regionState, triggerState[regionState.id].activeTrigger) or "") or ""
+        return tostring(formatters[symbol](value, regionState, regionState.triggernum) or "") or ""
       else
         return tostring(value) or ""
       end
     end
     return ""
   else
-    local activeTrigger = triggerState[regionState.id].activeTrigger
     local value = (useHiddenStates or regionState.show)
-                  and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState, formatters[symbol], activeTrigger)
+                  and ReplaceValuePlaceHolders(symbol, region, customFunc, regionState, formatters[symbol], regionState.triggernum)
     return value or ""
   end
 end
