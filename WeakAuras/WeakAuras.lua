@@ -4097,6 +4097,7 @@ local function CreateFallbackState(id, triggernum)
   local triggerSystem = GetTriggerSystem(data, triggernum);
   if (triggerSystem) then
     triggerSystem.CreateFallbackState(data, triggernum, state)
+    state.id = id
     state.trigger = data.triggers[triggernum].trigger
     state.triggernum = triggernum
   else
