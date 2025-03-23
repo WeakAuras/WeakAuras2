@@ -1982,7 +1982,6 @@ function Private.LoadDisplays(toLoad, ...)
     triggerState[id].triggers = {};
     triggerState[id].triggerCount = 0;
     triggerState[id].show = false;
-    triggerState[id].activeTrigger = nil;
     triggerState[id].activatedConditions = {};
     if Private.DebugLog.IsEnabled(uid) then
       WeakAuras.prettyPrint(L["Debug Logging enabled for '%s'"]:format(id))
@@ -2007,7 +2006,6 @@ function Private.UnloadDisplays(toUnload, ...)
       end
     end
     triggerState[id].show = nil;
-    triggerState[id].activeTrigger = nil;
 
     if (timers[id]) then
       for _, trigger in pairs(timers[id]) do
@@ -4915,7 +4913,6 @@ function Private.UpdatedTriggerState(id)
   end
 
   local oldShow = triggerState[id].show;
-  triggerState[id].activeTrigger = newActiveTrigger;
   triggerState[id].show = show;
   triggerState[id].fallbackStates = nil
 
