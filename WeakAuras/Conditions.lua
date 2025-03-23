@@ -272,7 +272,7 @@ local function CreateTestForCondition(data, input, allConditionsTemplate, usedSt
       remainingProperty = progressSource[8]
     end
 
-    local stateCheck = "state[" .. trigger .. "] and state[" .. trigger .. "].show and ";
+    local stateCheck = "state[" .. trigger .. "] and ";
     local stateVariableCheck = string.format("state[" .. trigger .. "][%q]", variable) .. "~= nil and ";
 
     local preambleString
