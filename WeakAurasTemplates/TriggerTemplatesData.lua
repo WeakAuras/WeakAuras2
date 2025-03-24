@@ -2370,7 +2370,7 @@ templates.class.SHAMAN = {
         { spell = 79206, type = "buff", unit = "player", talent = 127857 }, -- Spiritwalker's Grace
         { spell = 108271, type = "buff", unit = "player", talent = 127893 }, -- Astral Shift
         { spell = 108281, type = "buff", unit = "player", talent = 128116 }, -- Ancestral Guidance
-        { spell = 114050, type = "buff", unit = "player", talent = 101877 }, -- Ascendance
+        { spell = 1219480, type = "buff", unit = "player", talent = 101860 }, -- Ascendance
         { spell = 114893, type = "buff", unit = "player" }, -- Stone Bulwark
         { spell = 191634, type = "buff", unit = "player", talent = 101860 }, -- Stormkeeper
         { spell = 191877, type = "buff", unit = "player", talent = 101892 }, -- Power of the Maelstrom
@@ -2449,7 +2449,7 @@ templates.class.SHAMAN = {
         { spell = 108281, type = "ability", buff = true, talent = 128116 }, -- Ancestral Guidance
         { spell = 108285, type = "ability", talent = 127870 }, -- Totemic Recall
         { spell = 108287, type = "ability", talent = 127859 }, -- Totemic Projection
-        { spell = 114050, type = "ability", buff = true, talent = 101877 }, -- Ascendance
+        { spell = 114050, type = "ability", buff = true, talent = 101860 }, -- Ascendance
         { spell = 188196, type = "ability", overlayGlow = true, requiresTarget = true }, -- Lightning Bolt
         { spell = 188389, type = "ability", debuff = true, requiresTarget = true }, -- Flame Shock
         { spell = 188443, type = "ability", overlayGlow = true, requiresTarget = true, talent = 127856 }, -- Chain Lightning
