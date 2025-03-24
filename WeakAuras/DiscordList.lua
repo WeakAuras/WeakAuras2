@@ -4,7 +4,6 @@ local AddonName = ...
 ---@class Private
 local Private = select(2, ...)
 Private.DiscordList = {
-  [=[007bb]=],
   [=[AcidWeb]=],
   [=[aelen]=],
   [=[Aishuu]=],
@@ -50,6 +49,7 @@ Private.DiscordList = {
   [=[reggie]=],
   [=[Reloe]=],
   [=[Spaten]=],
+  [=[Tel]=],
   [=[Tollo]=],
   [=[Translit]=],
   [=[update]=],
