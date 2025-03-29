@@ -868,7 +868,7 @@ Private.ExecEnv.BossMods.BigWigs = {
         isCooldown = false
       elseif event == "BigWigs_StartBreak" or event == "BigWigs_StartPull" then
         addon, duration = ...
-        local BwPluginAPI = BigWigsAPI:GetLocale("BigWigs: Plugins")
+        local BwPluginAPI = BigWigsAPI:GetLocale("BigWigs")
         text = event == "BigWigs_StartBreak" and BwPluginAPI.breakBar or BwPluginAPI.pull
         spellId = 0
         count = 0
