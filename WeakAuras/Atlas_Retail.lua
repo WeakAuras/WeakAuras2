@@ -10521,6 +10521,7 @@ Private.AtlasList = {
 "shop-card-full-1107-6monthsbundle",
 "shop-card-full-1107-moppreorder-heroic",
 "shop-card-full-1107-witchbroombundle",
+"shop-card-full-111-opulenttransmogbundle",
 "shop-card-full-111-redpandabundle",
 "shop-card-full-1110-moppreorder-heroic",
 "shop-card-full-15thAnniversary",
