@@ -67,7 +67,7 @@ local function PreShow(self)
       data.model_st_us / 1000);
   else
     self:SetPosition(data.model_z, data.model_x, data.model_y);
-    self:SetFacing(0);
+    self:SetFacing(rad(data.rotation))
   end
   self:SetModelAlpha(self.region.alpha)
 end
@@ -130,7 +130,7 @@ local function AcquireModel(region, data)
       data.model_st_us / 1000);
   else
     model:SetPosition(data.model_z, data.model_x, data.model_y);
-    model:SetFacing(0);
+    model:SetFacing(rad(data.rotation))
   end
   return model
 end
