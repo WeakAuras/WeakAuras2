@@ -776,7 +776,7 @@ local function singleTest(arg, trigger, use, name, value, operator, use_exact, c
         return name;
       end
     end
-  elseif arg.type == "spell" or arg.type == "item" then
+  elseif (arg.type == "spell") then
     if arg.showExactOption then
       return "("..arg.test:format(value, tostring(use_exact) or "false") ..")";
     else
