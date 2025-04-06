@@ -818,7 +818,7 @@ Private.format_types = {
 
       if realm == "never" then
         nameFunc = function(unit)
-          return unit and WeakAuras.UnitName(unit)
+          return unit and WeakAuras.UnitName(unit) or ""
         end
       elseif realm == "star" then
         nameFunc = function(unit)
@@ -829,7 +829,7 @@ Private.format_types = {
           if realm then
             return name .. "*"
           end
-          return name
+          return name or ""
         end
       elseif realm == "differentServer" then
         nameFunc = function(unit)
@@ -840,7 +840,7 @@ Private.format_types = {
           if realm then
             return name .. "-" .. realm
           end
-          return name
+          return name or ""
         end
       elseif realm == "always" then
         nameFunc = function(unit)
