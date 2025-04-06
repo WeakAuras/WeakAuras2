@@ -12042,6 +12042,7 @@ if WeakAuras.IsClassicEra() then
   Private.event_prototypes["Death Knight Rune"] = nil
   Private.event_prototypes["Currency"] = nil
   Private.event_prototypes["Alternate Power"] = nil
+  Private.event_prototypes["Spell Activation Overlay"] = nil
 end
 if WeakAuras.IsCataClassic() then
   Private.event_prototypes["Swing Timer"] = nil
@@ -12052,7 +12053,6 @@ if WeakAuras.IsClassicOrCata() then
   end
   Private.event_prototypes["Evoker Essence"] = nil
   Private.event_prototypes["Equipment Set"] = nil
-  Private.event_prototypes["Spell Activation Overlay"] = nil
   Private.event_prototypes["PvP Talent Selected"] = nil
   Private.event_prototypes["Class/Spec"] = nil
   Private.event_prototypes["Loot Specialization"] = nil
