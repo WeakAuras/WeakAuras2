@@ -454,6 +454,7 @@ function OptionsPrivate.CreateFrame()
   --- @type fun(title: string, texture: string, url: string, description: string, descriptionCJ: string?, descriptionK: string?, rightAligned: boolean?, width: number?)
   local addFooter = function(title, texture, url, description, descriptionCJ, descriptionK, rightAligned, width)
     local button = AceGUI:Create("WeakAurasToolbarButton")
+    button:SetSmallFont(true)
     button:SetText(title)
     button:SetTexture(texture)
     button:SetCallback("OnClick", function()
@@ -498,10 +499,11 @@ function OptionsPrivate.CreateFrame()
 
   thanksList = thanksList .. lineWrapDiscordList(OptionsPrivate.Private.DiscordList)
 
+  local footerSpacing = 4
   local thanksListCJ = lineWrapDiscordList(OptionsPrivate.Private.DiscordListCJ)
   local thanksListK = lineWrapDiscordList(OptionsPrivate.Private.DiscordListK)
 
-  local discordButton = addFooter(L["Join Discord"], [[Interface\AddOns\WeakAuras\Media\Textures\discord.tga]], "https://discord.gg/weakauras",
+  local discordButton = addFooter(L["Discord"], [[Interface\AddOns\WeakAuras\Media\Textures\discord.tga]], "https://discord.gg/weakauras",
             L["Chat with WeakAuras experts on our Discord server."])
   discordButton:SetParent(tipFrame)
   discordButton:SetPoint("LEFT", tipFrame, "LEFT")
@@ -509,12 +511,12 @@ function OptionsPrivate.CreateFrame()
   local documentationButton = addFooter(L["Documentation"], [[Interface\AddOns\WeakAuras\Media\Textures\GitHub.tga]], "https://github.com/WeakAuras/WeakAuras2/wiki",
             L["Check out our wiki for a large collection of examples and snippets."])
   documentationButton:SetParent(tipFrame)
-  documentationButton:SetPoint("LEFT", discordButton, "RIGHT", 10, 0)
+  documentationButton:SetPoint("LEFT", discordButton, "RIGHT", footerSpacing, 0)
 
   local thanksButton = addFooter(L["Thanks"], [[Interface\AddOns\WeakAuras\Media\Textures\waheart.tga]],
                                  "https://www.patreon.com/WeakAuras", thanksList, thanksListCJ, thanksListK, nil, 800)
   thanksButton:SetParent(tipFrame)
-  thanksButton:SetPoint("LEFT", documentationButton, "RIGHT", 10, 0)
+  thanksButton:SetPoint("LEFT", documentationButton, "RIGHT", footerSpacing, 0)
 
   if OptionsPrivate.changelog then
     local changelog
@@ -527,7 +529,7 @@ function OptionsPrivate.CreateFrame()
     local changelogButton = addFooter(L["Changelog"], "", OptionsPrivate.changelog.fullChangeLogUrl,
                                       changelog, nil, nil, false, 800)
     changelogButton:SetParent(tipFrame)
-    changelogButton:SetPoint("LEFT", thanksButton, "RIGHT", 10, 0)
+    changelogButton:SetPoint("LEFT", thanksButton, "RIGHT", footerSpacing, 0)
   end
 
   local reportbugButton = addFooter(L["Found a Bug?"], [[Interface\AddOns\WeakAuras\Media\Textures\bug_report.tga]], "https://github.com/WeakAuras/WeakAuras2/issues/new?template=bug_report.yml",
@@ -538,14 +540,14 @@ function OptionsPrivate.CreateFrame()
   local wagoButton = addFooter(L["Find Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wago.tga]], "https://wago.io",
             L["Browse Wago, the largest collection of auras."], nil, nil, true)
   wagoButton:SetParent(tipFrame)
-  wagoButton:SetPoint("RIGHT", reportbugButton, "LEFT", -10, 0)
+  wagoButton:SetPoint("RIGHT", reportbugButton, "LEFT", -footerSpacing, 0)
 
   local companionButton
   if not OptionsPrivate.Private.CompanionData.slugs then
     companionButton = addFooter(L["Update Auras"], [[Interface\AddOns\WeakAuras\Media\Textures\wagoupdate_refresh.tga]], "https://weakauras.wtf",
             L["Keep your Wago imports up to date with the Companion App."])
     companionButton:SetParent(tipFrame)
-    companionButton:SetPoint("RIGHT", wagoButton, "LEFT", -10, 0)
+    companionButton:SetPoint("RIGHT", wagoButton, "LEFT", -footerSpacing, 0)
   end
 
   frame.ShowTip = function(self)

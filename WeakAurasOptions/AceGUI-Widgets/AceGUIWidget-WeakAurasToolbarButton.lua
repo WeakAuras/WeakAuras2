@@ -50,6 +50,7 @@ local methods = {
 		self:SetDisabled(false)
 		self:SetText()
 		self.hTex:SetVertexColor(1, 1, 1, 0.1)
+		self:SetSmallFont(false)
 	end,
 
 	-- ["OnRelease"] = nil,
@@ -90,6 +91,13 @@ local methods = {
 			self.hTex:SetVertexColor(1, 1, 1, 0.3)
 		else
 			self.hTex:SetVertexColor(1, 1, 1, 0.1)
+		end
+	end,
+	["SetSmallFont"] = function(self, small)
+		if small then
+			self.text:SetFontObject("GameFontNormalSmall")
+		else
+			self.text:SetFontObject("GameFontNormal")
 		end
 	end
 
