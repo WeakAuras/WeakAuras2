@@ -5133,11 +5133,7 @@ WeakAuras.CheckForItemEquipped = function(itemId, specificSlot)
   else
     local item = Item:CreateFromEquipmentSlot(specificSlot)
     if item and not item:IsItemEmpty() then
-      if type(itemId) == "number" then
-        return itemId == item:GetItemID()
-      else
-        return itemId == item:GetItemName()
-      end
+      return itemId == item:GetItemID()
     end
   end
 end
