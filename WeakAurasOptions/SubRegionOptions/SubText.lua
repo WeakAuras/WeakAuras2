@@ -58,7 +58,7 @@ local function createOptions(parentData, data, index, subIndex)
         WeakAuras.Add(parentData)
         WeakAuras.ClearAndUpdateOptions(parentData.id)
       end,
-      control = "WeakAurasInput",
+      control = "WeakAurasInputWithIndentation",
       callbacks = {
         OnEditFocusGained = function(self)
           local widget = dynamicTextInputs[subIndex]

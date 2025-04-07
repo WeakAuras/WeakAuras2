@@ -107,5 +107,6 @@ AceGUI-Widgets\AceGUIWidget-WeakAurasSpinBox.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasScrollArea.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasInput.lua
 AceGUI-Widgets\AceGUIWidget-WeakAurasInputFocus.lua
+AceGUI-Widgets\AceGUIWidget-WeakAurasInputWithIndentation.lua
 AceGUI-Widgets\AceGuiWidget-WeakAurasMediaSound.lua
 AceGUI-Widgets\WeakAurasStatusbarAtlasWidget.lua
