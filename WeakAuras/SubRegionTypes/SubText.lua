@@ -76,7 +76,8 @@ local properties = {
   text_text = {
     display = L["Text"],
     setter = "ChangeText",
-    type = "string"
+    type = "string",
+    control = "WeakAurasInputWithIndentation"
   },
   text_color = {
     display = L["Color"],
