@@ -1,4 +1,4 @@
-## Interface: 11506
+## Interface: 11507
 ## Title: WeakAuras Templates
 ## Author: The WeakAuras Team
 ## Version: @project-version@
