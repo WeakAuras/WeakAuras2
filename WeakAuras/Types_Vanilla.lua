@@ -114,6 +114,19 @@ function Private.InitializeEncounterAndZoneLists()
         { L["Sapphiron"], 1119 },
         { L["Kel'Thuzad"], 1114 }
       }
+    },
+    {
+      L["Scarlet Enclave"],
+      {
+        { L["Balnazzar"], 3185 },
+        { L["Beatrix"], 3187 },
+        { L["Solistrasza"], 3186 },
+        { L["Mason"], 3197 },
+        { L["Beastmaster"], 3196 },
+        { L["Reborn Council"], 3188 },
+        { L["Lillian Voss"], 3190 },
+        { L["Caldoran"], 3189 },
+      }
     }
   }
 
