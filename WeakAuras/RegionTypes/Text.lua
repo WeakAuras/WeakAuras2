@@ -251,7 +251,7 @@ local function modify(parent, region, data)
 
   local customTextFunc = nil
   if containsCustomText and data.customText and data.customText ~= "" then
-    customTextFunc = WeakAuras.LoadFunction("return "..data.customText)
+    customTextFunc = WeakAuras.LoadFunction("return "..data.customText, data.id)
   end
 
   function region:ConfigureTextUpdate()

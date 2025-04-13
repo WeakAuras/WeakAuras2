@@ -820,7 +820,7 @@ function Private.regionPrototype.modify(parent, region, data)
   region:SetOffsetAnim(0, 0);
 
   if data.anchorFrameType == "CUSTOM" and data.customAnchor then
-    region.customAnchorFunc = WeakAuras.LoadFunction("return " .. data.customAnchor)
+    region.customAnchorFunc = WeakAuras.LoadFunction("return " .. data.customAnchor, data.id)
   else
     region.customAnchorFunc = nil
   end
