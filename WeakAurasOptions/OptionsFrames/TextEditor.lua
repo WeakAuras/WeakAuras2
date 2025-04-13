@@ -913,9 +913,9 @@ local function ConstructTextEditor(frame)
         else
           local func, errorString
           if (enclose) then
-            func, errorString = OptionsPrivate.Private.LoadFunction("return function() " .. str .. "\n end", true)
+            func, errorString = OptionsPrivate.Private.LoadFunction("return function() " .. str .. "\n end", data.id,  true)
           else
-            func, errorString = OptionsPrivate.Private.LoadFunction("return " .. str, true)
+            func, errorString = OptionsPrivate.Private.LoadFunction("return " .. str, data.id, true)
           end
           if not errorString and validator then
             errorString = validator(func)

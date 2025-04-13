@@ -1949,7 +1949,7 @@ local function AddCodeOption(args, data, name, prefix, url, order, hiddenFunc, p
 
       code = "return " .. code;
 
-      local loadedFunction, errorString = OptionsPrivate.Private.LoadFunction(code, true);
+      local loadedFunction, errorString = OptionsPrivate.Private.LoadFunction(code, data.id, true);
 
       if not errorString then
         if options.validator then

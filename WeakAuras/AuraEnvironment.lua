@@ -668,14 +668,14 @@ local function CreateFunctionCache(exec_env)
   local cache = {
     funcs = setmetatable({}, {__mode = "v"})
   }
-  cache.Load = function(self, string, silent)
+  cache.Load = function(self, string, id, silent)
     if self.funcs[string] then
       return self.funcs[string]
     else
       local loadedFunction, errorString = loadstring(string, firstLine(string))
       if errorString then
         if not silent then
-          print(errorString)
+          print(string.format(L["Error in aura '%s'"], id), errorString)
         end
         return nil, errorString
       elseif loadedFunction then
@@ -695,12 +695,12 @@ end
 local function_cache_custom = CreateFunctionCache(exec_env_custom)
 local function_cache_builtin = CreateFunctionCache(exec_env_builtin)
 
-function WeakAuras.LoadFunction(string)
-  return function_cache_custom:Load(string)
+function WeakAuras.LoadFunction(string, id)
+  return function_cache_custom:Load(string, id)
 end
 
-function Private.LoadFunction(string, silent)
-  return function_cache_builtin:Load(string, silent)
+function Private.LoadFunction(string, id, silent)
+  return function_cache_builtin:Load(string, id, silent)
 end
 
 function Private.GetSanitizedGlobal(key)
