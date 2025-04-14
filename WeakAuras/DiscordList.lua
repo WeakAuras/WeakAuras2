@@ -33,7 +33,6 @@ Private.DiscordList = {
   [=[kanegasi]=],
   [=[Koxy]=],
   [=[Krazyito]=],
-  [=[Leezy]=],
   [=[Listefano]=],
   [=[Luckyone]=],
   [=[Luxthos]=],
