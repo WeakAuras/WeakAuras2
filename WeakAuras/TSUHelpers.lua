@@ -23,7 +23,7 @@ local remove = function(states, key)
   if state then
     state.show = false
     state.changed = true
-    states.__changed = true
+    states:SetChanged(true)
     changed = true
   end
   return changed
@@ -38,7 +38,7 @@ local removeAll = function(states)
     changed = true
   end
   if changed then
-    states.__changed = true
+    states:SetChanged(true)
   end
   return changed
 end
@@ -91,7 +91,7 @@ local replaceOrUpdate = function(states, key, newState, replace)
     changed = recurseReplaceOrUpdate(state, newState, true, replace)
     if changed then
       state.changed = true
-      states.__changed = true
+      states:SetChanged(true)
     end
   end
   return changed
@@ -101,7 +101,7 @@ end
 local create = function(states, key, newState)
   states[key] = newState
   states[key].changed = true
-  states.__changed = true
+  states:SetChanged(true)
   fixMissingFields(states[key])
   return true
 end
@@ -140,12 +140,24 @@ local createOrReplace = function(states, key, newState)
   end
 end
 
+local changedStates = {}
+
+local isChanged = function(states)
+  return changedStates[states] == true
+end
+
+local setChanged = function(states, changed)
+  changedStates[states] = changed
+end
+
 Private.allstatesMetatable = {
   __index = {
     Update = createOrUpdate,
     Replace = createOrReplace,
     Remove = remove,
     RemoveAll = removeAll,
-    Get = get
+    Get = get,
+    IsChanged = isChanged,
+    SetChanged = setChanged,
   }
 }
