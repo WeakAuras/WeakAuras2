@@ -3,7 +3,7 @@ local version = ...
 print("Creating atlas file for", version)
 
 local versionMap = {
-  wow = "_Retail",
+  -- wow = "_Retail",
   wow_classic = "_Cata",
   wow_classic_era = "_Vanilla"
 }
