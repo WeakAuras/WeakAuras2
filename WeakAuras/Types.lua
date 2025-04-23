@@ -2499,7 +2499,21 @@ Private.texture_types = {
   }
 }
 
-if Private.AtlasList then
+if C_Texture and C_Texture.GetAtlasElements then
+  if WeakAuras.buildType == "dev" and Private.AtlasList then
+    WeakAuras.prettyPrint("Private.AtlasList can be removed now.")
+  end
+
+  Private.texture_types["Blizzard Atlas"] = function()
+    local atlasList = C_Texture.GetAtlasElements()
+    table.sort(atlasList)
+    local atlasTable = {}
+    for _, atlas in ipairs(atlasList) do
+      atlasTable[atlas] = atlas
+    end
+    return atlasTable
+  end
+elseif Private.AtlasList then
   Private.texture_types["Blizzard Atlas"] = {}
   for _, atlas in ipairs(Private.AtlasList) do
     Private.texture_types["Blizzard Atlas"][atlas] = atlas
