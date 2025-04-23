@@ -3180,6 +3180,26 @@ Private.classification_types = {
   minus = L["Minus (Small Nameplate)"]
 }
 
+if WeakAuras.IsRetail() then
+  ---@type table<number, string>
+  Private.creature_type_types = {}
+  for _, creatureID in ipairs(C_CreatureInfo.GetCreatureTypeIDs()) do
+    local creatureInfo = C_CreatureInfo.GetCreatureTypeInfo(creatureID)
+    if creatureInfo then
+      Private.creature_type_types[creatureID] = creatureInfo.name
+    end
+  end
+
+  ---@type table<number, string>
+  Private.creature_family_types = {}
+  for _, familyID in ipairs(C_CreatureInfo.GetCreatureFamilyIDs()) do
+    local familyInfo = C_CreatureInfo.GetCreatureFamilyInfo(familyID)
+    if familyInfo then
+      Private.creature_family_types[familyID] = familyInfo.name
+    end
+  end
+end
+
 ---@type table<string, string>
 Private.anim_start_preset_types = {
   slidetop = L["Slide from Top"],
