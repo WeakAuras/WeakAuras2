@@ -434,13 +434,16 @@ local function modify(parent, region, data)
   region:SetInverse(data.inverse)
 
   function region:SetHideCountdownNumbers(cooldownTextDisabled)
-    cooldown:SetHideCountdownNumbers(cooldownTextDisabled);
     if OmniCC and OmniCC.Cooldown and OmniCC.Cooldown.SetNoCooldownCount then
+      cooldown:SetHideCountdownNumbers(true)
       OmniCC.Cooldown.SetNoCooldownCount(cooldown, cooldownTextDisabled)
     elseif ElvUI and ElvUI[1] and ElvUI[1].CooldownEnabled
            and ElvUI[1].ToggleCooldown and ElvUI[1]:CooldownEnabled()
     then
+      cooldown:SetHideCountdownNumbers(true)
       ElvUI[1]:ToggleCooldown(cooldown, not cooldownTextDisabled);
+    else
+      cooldown:SetHideCountdownNumbers(cooldownTextDisabled);
     end
   end
   region:SetHideCountdownNumbers(data.cooldownTextDisabled)
