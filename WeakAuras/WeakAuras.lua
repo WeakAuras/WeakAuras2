@@ -935,9 +935,19 @@ local function LoadCustomActionFunctions(data)
   Private.customActionsFunctions[id] = {};
 
   if (data.actions) then
-    if (data.actions.init and data.actions.init.do_custom and data.actions.init.custom) then
-      local func = WeakAuras.LoadFunction("return function() "..(data.actions.init.custom).."\n end");
-      Private.customActionsFunctions[id]["init"] = func;
+    if data.actions.init then
+      if data.actions.init.do_custom and data.actions.init.custom then
+        local func = WeakAuras.LoadFunction("return function() "..(data.actions.init.custom).."\n end");
+        Private.customActionsFunctions[id]["init"] = func
+      end
+      if data.actions.init.do_custom_load and data.actions.init.customOnLoad then
+        local func = WeakAuras.LoadFunction("return function() "..(data.actions.init.customOnLoad).."\n end");
+        Private.customActionsFunctions[id]["load"] = func
+      end
+      if data.actions.init.do_custom_unload and data.actions.init.customOnUnload then
+        local func = WeakAuras.LoadFunction("return function() "..(data.actions.init.customOnUnload).."\n end");
+        Private.customActionsFunctions[id]["unload"] = func
+      end
     end
 
     if (data.actions.start) then
@@ -1945,6 +1955,13 @@ local function UnloadAll()
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.UnloadAll();
   end
+
+  for id in pairs(loaded) do
+    local func = Private.customActionsFunctions[id] and Private.customActionsFunctions[id]["unload"]
+    if func then
+      xpcall(func, Private.GetErrorHandlerId(id, "onUnload"))
+    end
+  end
   wipe(loaded);
 end
 
@@ -1992,21 +2009,34 @@ function Private.LoadDisplays(toLoad, ...)
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.LoadDisplays(toLoad, ...);
   end
+  for id in pairs(toLoad) do
+    local func = Private.customActionsFunctions[id] and Private.customActionsFunctions[id]["load"]
+    if func then
+      xpcall(func, Private.GetErrorHandlerId(id, "onLoad"))
+    end
+  end
 end
 
 function Private.UnloadDisplays(toUnload, ...)
+  for id in pairs(toUnload) do
+    local func = Private.customActionsFunctions[id] and Private.customActionsFunctions[id]["unload"]
+    if func then
+      xpcall(func, Private.GetErrorHandlerId(id, "onUnload"))
+    end
+  end
   for _, triggerSystem in pairs(triggerSystems) do
     triggerSystem.UnloadDisplays(toUnload, ...);
   end
 
   for id in pairs(toUnload) do
-
-    for i = 1, triggerState[id].numTriggers do
-      if (triggerState[id][i]) then
-        wipe(triggerState[id][i]);
+    if triggerState[id] then
+      for i = 1, triggerState[id].numTriggers do
+        if (triggerState[id][i]) then
+          wipe(triggerState[id][i])
+        end
       end
+      triggerState[id].show = nil
     end
-    triggerState[id].show = nil;
 
     if (timers[id]) then
       for _, trigger in pairs(timers[id]) do
@@ -2061,6 +2091,11 @@ function WeakAuras.Delete(data)
   local uid = data.uid
   local parentId = data.parent
   local parentUid = data.parent and db.displays[data.parent].uid
+
+
+  if loaded[id] then
+    Private.UnloadDisplays({[id] = true})
+  end
 
   Private.callbacks:Fire("AboutToDelete", uid, id, parentUid, parentId)
 
