@@ -1246,7 +1246,7 @@ end
 
 function GenericTrigger.UnloadDisplays(toUnload)
   for id in pairs(toUnload) do
-    loaded_auras[id] = false;
+    loaded_auras[id] = nil
     for eventname, events in pairs(loaded_events) do
       if(eventname == "COMBAT_LOG_EVENT_UNFILTERED") then
         for subeventname, subevents in pairs(events) do
@@ -1283,7 +1283,8 @@ genericTriggerRegisteredEvents["NAME_PLATE_UNIT_REMOVED"] = true;
 frame:SetScript("OnEvent", HandleEvent);
 
 function GenericTrigger.Delete(id)
-  GenericTrigger.UnloadDisplays({[id] = true});
+  events[id] = nil
+  watched_trigger_events[id] = nil
 end
 
 function GenericTrigger.Rename(oldid, newid)
