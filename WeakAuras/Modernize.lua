@@ -2413,6 +2413,34 @@ function Private.Modernize(data, oldSnapshot)
     end
   end
 
+  if data.internalVersion < 85 then
+    if data.triggers then
+      local eventTypes = {
+        ["Unit Characteristics"] = true,
+        ["Health"] = true,
+        ["Power"] = true,
+        ["Alternate Power"] = true,
+        ["Cast"] = true
+      }
+      for _, triggerData in ipairs(data.triggers) do
+        local trigger = triggerData.trigger
+        if trigger and trigger.type == "unit" then
+          if eventTypes[trigger.event] then
+            local rt = trigger.raidMarkIndex
+            if type(rt) == "number" then
+              trigger.raidMarkIndex = {
+                single = rt
+              }
+            end
+            if trigger.use_raidMarkIndex == false then
+              trigger.use_raidMarkIndex = nil
+            end
+          end
+        end
+      end
+    end
+  end
+
   data.internalVersion = max(data.internalVersion or 0, WeakAuras.InternalVersion())
 end
 
