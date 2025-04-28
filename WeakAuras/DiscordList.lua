@@ -51,6 +51,7 @@ Private.DiscordList = {
   [=[Putro]=],
   [=[reggie]=],
   [=[Reloe]=],
+  [=[Saaggs]=],
   [=[Spaten]=],
   [=[Tel]=],
   [=[Translit]=],
