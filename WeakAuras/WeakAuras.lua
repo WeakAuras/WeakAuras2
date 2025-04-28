@@ -4929,7 +4929,16 @@ local function ApplyStatesToRegions(id, activeTrigger, states)
         triggerState = state
       else
         local triggerStates = WeakAuras.GetTriggerStateForTrigger(id, triggernum)
-        triggerState = triggerStates[cloneId] or triggerStates[""] or {}
+        triggerState = triggerStates[cloneId]
+        if not triggerState then
+          local pos = type(cloneId) == "string" and cloneId:find('.', 1, true) or nil
+          if pos then
+            local cloneIdPrefix = cloneId:sub(1, pos - 1)
+            triggerState = triggerStates[cloneIdPrefix] or triggerStates[""] or {}
+          else
+            triggerState = triggerStates[""] or {}
+          end
+        end
       end
       if triggernum > 0 then
         applyChanges = applyChanges or region.states[triggernum] ~= triggerState or (triggerState and triggerState.changed)
