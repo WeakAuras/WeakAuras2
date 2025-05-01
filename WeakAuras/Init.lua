@@ -390,10 +390,10 @@ local flavorFromTocToNumber = {
   TBC = 2,
   Wrath = 3,
   Cata = 4,
+  Mists = 5,
   Mainline = 10
 }
 local flavor = flavorFromTocToNumber[flavorFromToc]
-
 
 if not versionString:find("beta", 1, true) then
   WeakAuras.buildType = "release"
@@ -435,6 +435,11 @@ function WeakAuras.IsCataClassic()
 end
 
 ---@return boolean result
+function WeakAuras.IsMists()
+  return flavor == 5
+end
+
+---@return boolean result
 function WeakAuras.IsRetail()
   return flavor == 10
 end
@@ -442,6 +447,25 @@ end
 ---@return boolean result
 function WeakAuras.IsClassicOrCata()
   return WeakAuras.IsClassicEra() or WeakAuras.IsCataClassic()
+end
+
+---@return boolean result
+function WeakAuras.IsClassicOrCataOrMists()
+  return WeakAuras.IsClassicOrCata() or WeakAuras.IsMists()
+end
+
+---@return boolean result
+function WeakAuras.IsCataOrMists()
+  return WeakAuras.IsCataClassic() or WeakAuras.IsMists()
+end
+
+function WeakAuras.IsCataOrMistsOrRetail()
+  return WeakAuras.IsCataClassic() or WeakAuras.IsMists() or WeakAuras.IsRetail()
+end
+
+---@return boolean result
+function WeakAuras.IsMistsOrRetail()
+  return WeakAuras.IsMists() or WeakAuras.IsRetail()
 end
 
 ---@return boolean result

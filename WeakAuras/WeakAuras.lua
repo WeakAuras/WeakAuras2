@@ -993,6 +993,21 @@ local function CreateTalentCache()
         end
       end
     end
+  elseif WeakAuras.IsMists() then
+    local spec = C_SpecializationInfo.GetSpecialization()
+    Private.talent_types_specific[player_class][spec] = Private.talent_types_specific[player_class][spec] or {};
+
+    for tier=1, MAX_NUM_TALENT_TIERS do
+      for column=1, NUM_TALENT_COLUMNS do
+        -- Get name and icon info for the current talent of the current class and save it
+        local _, talentName, talentIcon = GetTalentInfo(tier, column, 1)
+        local talentId = (tier-1)*3+column
+        -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
+        if (talentName and talentIcon) then
+          Private.talent_types_specific[player_class][spec][talentId] = "|T"..talentIcon..":0|t "..talentName
+        end
+      end
+    end
   else
     local spec = GetSpecialization()
     Private.talent_types_specific[player_class][spec] = Private.talent_types_specific[player_class][spec] or {};
