@@ -361,7 +361,7 @@ Private.ExecEnv.BossMods.DBM = {
   end
 }
 
-if not WeakAuras.IsTWW() then
+if not WeakAuras.IsMistsOrRetail() then
   Private.event_prototypes["DBM Stage"] = {
     type = "addons",
     events = {},
@@ -1048,7 +1048,7 @@ Private.ExecEnv.BossMods.BigWigs = {
   end
 }
 
-if not WeakAuras.IsTWW() then
+if not WeakAuras.IsMistsOrRetail() then
   Private.event_prototypes["BigWigs Stage"] = {
     type = "addons",
     events = {},
