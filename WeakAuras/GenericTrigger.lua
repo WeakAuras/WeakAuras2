@@ -3734,7 +3734,7 @@ function WeakAuras.WatchUnitChange(unit)
         end
       end
     end
-    if WeakAuras.IsCataOrRetail() then
+    if WeakAuras.IsCataOrMistsOrRetail() then
       function roleUpdate(unit, eventsToSend)
         local oldRole = watchUnitChange.unitRoles[unit]
         local newRole = UnitGroupRolesAssigned(unit)
@@ -5065,8 +5065,8 @@ do
     end
   elseif class == "MONK" then
     function WeakAuras.CalculatedGcdDuration()
-      local spec = GetSpecialization()
-      local primaryStat = select(6, GetSpecializationInfo(spec))
+      local spec = Private.ExecEnv.GetSpecialization()
+      local primaryStat = select(6, Private.ExecEnv.GetSpecializationInfo(spec))
       if primaryStat == LE_UNIT_STAT_AGILITY then
         return 1
       end
