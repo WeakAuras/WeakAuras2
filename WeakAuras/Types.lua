@@ -1782,7 +1782,7 @@ if WeakAuras.IsRetail() then
   Private.GetCurrencyIDFromLink = C_CurrencyInfo.GetCurrencyIDFromLink
   Private.ExpandCurrencyList = C_CurrencyInfo.ExpandCurrencyList
   Private.GetCurrencyListInfo = C_CurrencyInfo.GetCurrencyListInfo
-elseif WeakAuras.IsCataClassic() then
+elseif WeakAuras.IsCataOrMists() then
   Private.GetCurrencyListSize = GetCurrencyListSize
   ---@type fun(currencyLink: string): number?
   Private.GetCurrencyIDFromLink = function(currencyLink)
