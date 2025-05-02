@@ -12100,6 +12100,10 @@ if WeakAuras.IsClassicOrCata() then
   Private.event_prototypes["Class/Spec"] = nil
   Private.event_prototypes["Loot Specialization"] = nil
 end
+if WeakAuras.IsMists() then
+  Private.event_prototypes["Evoker Essence"] = nil
+  Private.event_prototypes["PvP Talent Selected"] = nil
+end
 if WeakAuras.IsRetail() then
   Private.event_prototypes["Queued Action"] = nil
 end
