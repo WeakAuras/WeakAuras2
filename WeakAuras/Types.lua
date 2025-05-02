@@ -1661,14 +1661,25 @@ elseif WeakAuras.IsCataClassic() then
   Private.power_types[16] = nil
   Private.power_types[17] = nil
   Private.power_types[18] = nil
+elseif WeakAuras.IsMists() then
+  Private.power_types[8] = nil
+  Private.power_types[14] = L["Burning Embers"]
+  Private.power_types[13] = nil
+  Private.power_types[15] = POWER_TYPE_DEMONIC_FURY
+  Private.power_types[16] = nil
+  Private.power_types[17] = nil
+  Private.power_types[18] = nil
+end
+
+if WeakAuras.IsCataOrMists() then
   Private.power_types[26] = L["Eclipse"] -- couldn't find a localised global
 
----@type table<string, string>
-  Private.eclipse_direction_types = {
-    none = L["None"],
-    sun = L["Sun"],
-    moon = L["Moon"]
-  }
+  ---@type table<string, string>
+    Private.eclipse_direction_types = {
+      none = L["None"],
+      sun = L["Sun"],
+      moon = L["Moon"]
+    }
 end
 
 ---@type table<string, string>
