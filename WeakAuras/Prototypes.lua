@@ -11284,9 +11284,9 @@ Private.event_prototypes = {
       end
       if (trigger.use_petspec) then
         ret = ret .. [[
-          local petspec = GetSpecialization(false, true)
+          local petspec = Private.ExecEnv.GetSpecialization(false, true)
           if (petspec) then
-            activeIcon = select(4, GetSpecializationInfo(petspec, false, true));
+            activeIcon = select(4, Private.ExecEnv.GetSpecializationInfo(petspec, false, true));
           end
         ]]
       end
