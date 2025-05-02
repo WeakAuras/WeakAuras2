@@ -12,7 +12,6 @@ local ceil = ceil
 
 -- WoW APIs
 local GetTalentInfo = GetTalentInfo
-local GetSpecialization = GetSpecialization
 local UnitClass = UnitClass
 local GetShapeshiftFormInfo, GetShapeshiftForm = GetShapeshiftFormInfo, GetShapeshiftForm
 local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitCastingInfo, UnitChannelInfo
@@ -771,9 +770,9 @@ if WeakAuras.IsRetail() then
 
     if (event == "WA_DELAYED_PLAYER_ENTERING_WORLD" or event == "PLAYER_TALENT_UPDATE") then
       C_Timer.After(1, function()
-        local spec = GetSpecialization()
+        local spec = Private.ExecEnv.GetSpecialization()
         if type(spec) == "number" and spec > 0 then
-          local specId = GetSpecializationInfo(spec)
+          local specId = Private.ExecEnv.GetSpecializationInfo(spec)
           if specId then
             Private.talentInfo[specId] = nil
             Private.GetTalentData(specId)
@@ -1730,7 +1729,7 @@ Private.load_prototype = {
           end
 
           if (trigger.use_spec == nil) then
-            single_spec = GetSpecialization();
+            single_spec = Private.ExecEnv.GetSpecialization();
           end
 
           -- If a single specific class was found, load the specific list for it
@@ -1738,7 +1737,7 @@ Private.load_prototype = {
             single_class = select(2, UnitClass("player"))
           end
           if not single_spec then
-            single_spec  = GetSpecialization()
+            single_spec = Private.ExecEnv.GetSpecialization()
           end
 
           if(single_class and Private.pvp_talent_types_specific[single_class]
@@ -3756,7 +3755,7 @@ Private.event_prototypes = {
             local shardModifier = UnitPowerDisplayMod(powerType)
             local power = UnitPower(unit, powerType, true) / shardModifier
             local total = math.max(1, UnitPowerMax(unit, powerType, true)) / shardModifier
-            if GetSpecialization() ~= SPEC_WARLOCK_DESTRUCTION then
+            if Private.ExecEnv.GetSpecialization() ~= SPEC_WARLOCK_DESTRUCTION then
               power = floor(power)
             end
           ]])
@@ -7012,7 +7011,7 @@ Private.event_prototypes = {
         name = "spec",
         display = L["Talent Specialization"],
         type = "select",
-        init = "WeakAuras.IsRetail() and GetSpecialization()",
+        init = "WeakAuras.IsRetail() and Private.ExecEnv.GetSpecialization()",
         required = true,
         values = function(trigger)
           return WeakAuras.spec_types_specific[trigger.class]
@@ -7261,7 +7260,7 @@ Private.event_prototypes = {
         type = "multiselect",
         values = function()
           local class = select(2, UnitClass("player"));
-          local spec =  GetSpecialization();
+          local spec = Private.ExecEnv.GetSpecialization();
           if(Private.pvp_talent_types_specific[class] and  Private.pvp_talent_types_specific[class][spec]) then
             return Private.pvp_talent_types_specific[class][spec];
           else
@@ -7307,7 +7306,7 @@ Private.event_prototypes = {
     name = L["Class and Specialization"],
     init = function(trigger)
       return [[
-         local specId, specName, _, specIcon = GetSpecializationInfo(GetSpecialization())
+         local specId, specName, _, specIcon = Private.ExecEnv.GetSpecializationInfo(Private.ExecEnv.GetSpecialization())
       ]]
     end,
     args = {
@@ -7353,7 +7352,7 @@ Private.event_prototypes = {
     init = function(trigger)
       return [[
          local lootSpecId = GetLootSpecialization()
-         local currentSpecId = GetSpecializationInfo(GetSpecialization())
+         local currentSpecId = Private.ExecEnv.GetSpecializationInfo(Private.ExecEnv.GetSpecialization())
          if lootSpecId == 0 then --Player chose 'Current Specialization'
           lootSpecId = currentSpecId
          end
@@ -10228,7 +10227,7 @@ Private.event_prototypes = {
       local ret = [[
         local main_stat, _
         if WeakAuras.IsRetail() then
-          _, _, _, _, _, main_stat = GetSpecializationInfo(GetSpecialization() or 0)
+          _, _, _, _, _, main_stat = Private.ExecEnv.GetSpecializationInfo(Private.ExecEnv.GetSpecialization() or 0)
         end
       ]]
       return ret;
@@ -10261,7 +10260,7 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitStat('player', LE_UNIT_STAT_STRENGTH)",
         store = true,
-        enable = WeakAuras.IsClassicOrCata(),
+        enable = WeakAuras.IsClassicOrCataOrMists(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail(),
         multiEntry = {
@@ -10275,7 +10274,7 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitStat('player', LE_UNIT_STAT_AGILITY)",
         store = true,
-        enable = WeakAuras.IsClassicOrCata(),
+        enable = WeakAuras.IsClassicOrCataOrMists(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail(),
         multiEntry = {
@@ -10289,7 +10288,7 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitStat('player', LE_UNIT_STAT_INTELLECT)",
         store = true,
-        enable = WeakAuras.IsClassicOrCata(),
+        enable = WeakAuras.IsClassicOrCataOrMists(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail(),
         multiEntry = {
@@ -10303,7 +10302,7 @@ Private.event_prototypes = {
         type = "number",
         init = "UnitStat('player', 5)",
         store = true,
-        enable = WeakAuras.IsClassicOrCata(),
+        enable = WeakAuras.IsClassicOrCataOrMists(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail(),
         multiEntry = {
@@ -10334,9 +10333,9 @@ Private.event_prototypes = {
         type = "number",
         init = "max(GetCombatRating(CR_CRIT_MELEE), GetCombatRating(CR_CRIT_RANGED), GetCombatRating(CR_CRIT_SPELL))",
         store = true,
-        enable = WeakAuras.IsCataOrRetail(),
+        enable = WeakAuras.IsCataOrMistsOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsCataOrRetail(),
+        hidden = not WeakAuras.IsCataOrMistsOrRetail(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10360,9 +10359,9 @@ Private.event_prototypes = {
         type = "number",
         init = "max(GetCombatRating(CR_HIT_MELEE), GetCombatRating(CR_HIT_RANGED), GetCombatRating(CR_HIT_SPELL))",
         store = true,
-        enable = WeakAuras.IsCataClassic(),
+        enable = WeakAuras.IsCataOrMists(),
         conditionType = "number",
-        hidden = not WeakAuras.IsCataClassic(),
+        hidden = not WeakAuras.IsCataOrMists(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10375,8 +10374,8 @@ Private.event_prototypes = {
         init = "WeakAuras.GetHitChance()",
         store = true,
         conditionType = "number",
-        enable = WeakAuras.IsCataClassic(),
-        hidden = not WeakAuras.IsCataClassic(),
+        enable = WeakAuras.IsCataOrMists(),
+        hidden = not WeakAuras.IsCataOrMists(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10388,9 +10387,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_HASTE_SPELL)",
         store = true,
-        enable = WeakAuras.IsCataOrRetail(),
+        enable = WeakAuras.IsCataOrMistsOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsCataOrRetail(),
+        hidden = not WeakAuras.IsCataOrMistsOrRetail(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10415,8 +10414,8 @@ Private.event_prototypes = {
         init = "GetMeleeHaste()",
         store = true,
         conditionType = "number",
-        enable = WeakAuras.IsCataClassic(),
-        hidden = not WeakAuras.IsCataClassic(),
+        enable = WeakAuras.IsCataOrMists(),
+        hidden = not WeakAuras.IsCataOrMists(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10428,9 +10427,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_EXPERTISE)",
         store = true,
-        enable = WeakAuras.IsCataClassic(),
+        enable = WeakAuras.IsCataOrMists(),
         conditionType = "number",
-        hidden = not WeakAuras.IsCataClassic(),
+        hidden = not WeakAuras.IsCataOrMists(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10443,8 +10442,8 @@ Private.event_prototypes = {
         init = "GetCombatRatingBonus(CR_EXPERTISE)",
         store = true,
         conditionType = "number",
-        enable = WeakAuras.IsCataClassic(),
-        hidden = not WeakAuras.IsCataClassic(),
+        enable = WeakAuras.IsCataOrMists(),
+        hidden = not WeakAuras.IsCataOrMists(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10456,9 +10455,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetSpellPenetration()",
         store = true,
-        enable = WeakAuras.IsCataClassic(),
+        enable = WeakAuras.IsCataOrMists(),
         conditionType = "number",
-        hidden = not WeakAuras.IsCataClassic(),
+        hidden = not WeakAuras.IsCataOrMists(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10470,9 +10469,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_MASTERY)",
         store = true,
-        enable = WeakAuras.IsCataOrRetail(),
+        enable = WeakAuras.IsCataOrMistsOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsCataOrRetail(),
+        hidden = not WeakAuras.IsCataOrMistsOrRetail(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10484,9 +10483,9 @@ Private.event_prototypes = {
         type = "number",
         init = "WeakAuras.IsCataClassic() and GetMastery() or GetMasteryEffect()",
         store = true,
-        enable = WeakAuras.IsCataOrRetail(),
+        enable = WeakAuras.IsCataOrMistsOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsCataOrRetail(),
+        hidden = not WeakAuras.IsCataOrMistsOrRetail(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10543,8 +10542,8 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
-        enable = WeakAuras.IsClassicOrCata(),
-        hidden = not WeakAuras.IsClassicOrCata(),
+        enable = WeakAuras.IsClassicOrCataOrMists(),
+        hidden = not WeakAuras.IsClassicOrCataOrMists(),
       },
       {
         type = "header",
@@ -10663,9 +10662,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_DODGE)",
         store = true,
-        enable = WeakAuras.IsCataOrRetail(),
+        enable = WeakAuras.IsCataOrMistsOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsCataOrRetail(),
+        hidden = not WeakAuras.IsCataOrMistsOrRetail(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10689,9 +10688,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(CR_PARRY)",
         store = true,
-        enable = WeakAuras.IsCataOrRetail(),
+        enable = WeakAuras.IsCataOrMistsOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsCataOrRetail(),
+        hidden = not WeakAuras.IsCataOrMistsOrRetail(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10793,9 +10792,9 @@ Private.event_prototypes = {
         type = "number",
         init = "PaperDollFrame_GetArmorReduction(select(2, UnitArmor('player')), UnitEffectiveLevel and UnitEffectiveLevel('player') or UnitLevel('player'))",
         store = true,
-        enable = WeakAuras.IsCataOrRetail(),
+        enable = WeakAuras.IsCataOrMistsOrRetail(),
         conditionType = "number",
-        hidden = not WeakAuras.IsCataOrRetail(),
+        hidden = not WeakAuras.IsCataOrMistsOrRetail(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10821,9 +10820,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRating(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)",
         store = true,
-        enable = WeakAuras.IsCataClassic(),
+        enable = WeakAuras.IsCataOrMists(),
         conditionType = "number",
-        hidden = not WeakAuras.IsCataClassic(),
+        hidden = not WeakAuras.IsCataOrMists(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10835,9 +10834,9 @@ Private.event_prototypes = {
         type = "number",
         init = "GetCombatRatingBonus(COMBAT_RATING_RESILIENCE_PLAYER_DAMAGE_TAKEN)",
         store = true,
-        enable = WeakAuras.IsCataClassic(),
+        enable = WeakAuras.IsCataOrMists(),
         conditionType = "number",
-        hidden = not WeakAuras.IsCataClassic(),
+        hidden = not WeakAuras.IsCataOrMists(),
         multiEntry = {
           operator = "and",
           limit = 2
@@ -10848,7 +10847,7 @@ Private.event_prototypes = {
         name = "resistanceHeader",
         display = L["Resistances"],
         hidden = WeakAuras.IsRetail(),
-        enable = WeakAuras.IsClassicOrCata(),
+        enable = WeakAuras.IsClassicOrCataOrMists(),
       },
       {
         name = "resistanceholy",
@@ -10856,7 +10855,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 1))",
         store = true,
-        enable = WeakAuras.IsClassicOrCata(),
+        enable = WeakAuras.IsClassicOrCataOrMists(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail(),
         multiEntry = {
@@ -10870,7 +10869,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 2))",
         store = true,
-        enable = WeakAuras.IsClassicOrCata(),
+        enable = WeakAuras.IsClassicOrCataOrMists(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail(),
         multiEntry = {
@@ -10884,7 +10883,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 3))",
         store = true,
-        enable = WeakAuras.IsClassicOrCata(),
+        enable = WeakAuras.IsClassicOrCataOrMists(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail(),
         multiEntry = {
@@ -10898,7 +10897,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 4))",
         store = true,
-        enable = WeakAuras.IsClassicOrCata(),
+        enable = WeakAuras.IsClassicOrCataOrMists(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail(),
         multiEntry = {
@@ -10912,7 +10911,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 5))",
         store = true,
-        enable = WeakAuras.IsClassicOrCata(),
+        enable = WeakAuras.IsClassicOrCataOrMists(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail(),
         multiEntry = {
@@ -10926,7 +10925,7 @@ Private.event_prototypes = {
         type = "number",
         init = "select(2, UnitResistance('player', 6))",
         store = true,
-        enable = WeakAuras.IsClassicOrCata(),
+        enable = WeakAuras.IsClassicOrCataOrMists(),
         conditionType = "number",
         hidden = WeakAuras.IsRetail(),
         multiEntry = {
@@ -12103,6 +12102,7 @@ end
 if WeakAuras.IsMists() then
   Private.event_prototypes["Evoker Essence"] = nil
   Private.event_prototypes["PvP Talent Selected"] = nil
+  Private.event_prototypes["Loot Specialization"] = nil
 end
 if WeakAuras.IsRetail() then
   Private.event_prototypes["Queued Action"] = nil
