@@ -1524,10 +1524,10 @@ Private.event_prototypes["Boss Mod Announce"] = {
       preamble = "local counter = Private.ExecEnv.CreateTriggerCounter(%q)",
       test = "counter:SetCount(tonumber(count) or 0) == nil and counter:Match()",
       conditionTest = function(state, needle, op, preamble)
-        return preamble:Check(state.count)
+        return preamble and preamble:Check(state.count)
       end,
       store = true,
-      conditionType = "string",
+      conditionType = "number",
     },
     {
       name = "cloneId",
