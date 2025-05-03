@@ -3154,10 +3154,19 @@ elseif WeakAuras.IsCataClassic() then
     normal = PLAYER_DIFFICULTY1,
     heroic = PLAYER_DIFFICULTY2,
   }
+elseif WeakAuras.IsMists() then
+  Private.difficulty_types = {
+    none = L["None"],
+    normal = PLAYER_DIFFICULTY1,
+    heroic = PLAYER_DIFFICULTY2,
+    mythic = PLAYER_DIFFICULTY6,
+    lfr = PLAYER_DIFFICULTY3,
+    challenge = PLAYER_DIFFICULTY5
+  }
 end
 
 ---@type table<string, string>
-if WeakAuras.IsClassicOrCata() then
+if WeakAuras.IsClassicOrCataOrMists() then
   Private.raid_role_types = {
     MAINTANK = "|TInterface\\GroupFrame\\UI-Group-maintankIcon:16:16|t "..MAINTANK,
     MAINASSIST = "|TInterface\\GroupFrame\\UI-Group-mainassistIcon:16:16|t "..MAINASSIST,
@@ -3190,7 +3199,7 @@ Private.classification_types = {
   minus = L["Minus (Small Nameplate)"]
 }
 
-if WeakAuras.IsRetail() then
+if WeakAuras.IsMistsOrRetail() then
   ---@type table<number, string>
   Private.creature_type_types = {}
   for _, creatureID in ipairs(C_CreatureInfo.GetCreatureTypeIDs()) do

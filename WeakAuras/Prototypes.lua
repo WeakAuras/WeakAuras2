@@ -1382,8 +1382,8 @@ Private.load_prototype = {
       init = WeakAuras.IsCataOrRetail() and "arg" or nil,
       width = WeakAuras.normalWidth,
       optional = true,
-      enable = WeakAuras.IsCataOrRetail(),
-      hidden = not WeakAuras.IsCataOrRetail(),
+      enable = WeakAuras.IsCataOrMistsOrRetail(),
+      hidden = not WeakAuras.IsCataOrMistsOrRetail(),
       events = {"VEHICLE_UPDATE", "UNIT_ENTERED_VEHICLE", "UNIT_EXITED_VEHICLE", "UPDATE_OVERRIDE_ACTIONBAR", "UPDATE_VEHICLE_ACTIONBAR"}
     },
     {
@@ -1443,9 +1443,9 @@ Private.load_prototype = {
       display = L["Class and Specialization"],
       type = "multiselect",
       values = "spec_types_all",
-      init = WeakAuras.IsCataOrRetail() and "arg" or nil,
-      enable = WeakAuras.IsCataOrRetail(),
-      hidden = not WeakAuras.IsCataOrRetail(),
+      init = WeakAuras.IsCataOrMistsOrRetail() and "arg" or nil,
+      enable = WeakAuras.IsCataOrMistsOrRetail(),
+      hidden = not WeakAuras.IsCataOrMistsOrRetail(),
       events = {"PLAYER_TALENT_UPDATE"},
       sorted = true,
       sortOrder = Private.specs_sorted,
@@ -1859,9 +1859,9 @@ Private.load_prototype = {
       display = L["Spec Role"],
       type = "multiselect",
       values = "role_types",
-      init = WeakAuras.IsCataOrRetail() and "arg" or nil,
-      enable = WeakAuras.IsCataOrRetail(),
-      hidden = not WeakAuras.IsCataOrRetail(),
+      init = WeakAuras.IsCataOrMistsOrRetail() and "arg" or nil,
+      enable = WeakAuras.IsCataOrMistsOrRetail(),
+      hidden = not WeakAuras.IsCataOrMistsOrRetail(),
       events = {"PLAYER_ROLES_ASSIGNED", "PLAYER_TALENT_UPDATE"}
     },
     {
@@ -1869,9 +1869,9 @@ Private.load_prototype = {
       display = WeakAuras.newFeatureString .. L["Spec Position"],
       type = "multiselect",
       values = "spec_position_types",
-      init = WeakAuras.IsCataOrRetail() and "arg" or nil,
-      enable = WeakAuras.IsCataOrRetail(),
-      hidden = not WeakAuras.IsCataOrRetail(),
+      init = WeakAuras.IsCataOrMistsOrRetail() and "arg" or nil,
+      enable = WeakAuras.IsCataOrMistsOrRetail(),
+      hidden = not WeakAuras.IsCataOrMistsOrRetail(),
       events = {"ACTIVE_TALENT_GROUP_CHANGED"}
     },
     {
@@ -1879,8 +1879,8 @@ Private.load_prototype = {
       display = L["Raid Role"],
       type = "multiselect",
       values = "raid_role_types",
-      init = WeakAuras.IsClassicOrCata() and "arg" or nil,
-      enable = WeakAuras.IsClassicOrCata(),
+      init = WeakAuras.IsClassicOrCataOrMists() and "arg" or nil,
+      enable = WeakAuras.IsClassicOrCataOrMists(),
       hidden = WeakAuras.IsRetail(),
       events = {"PLAYER_ROLES_ASSIGNED"}
     },
@@ -2451,8 +2451,8 @@ Private.event_prototypes = {
         store = true,
         sorted = true,
         conditionType = "select",
-        enable = WeakAuras.IsRetail(),
-        hidden = not WeakAuras.IsRetail(),
+        enable = WeakAuras.IsMistsOrRetail(),
+        hidden = not WeakAuras.IsMistsOrRetail(),
       },
       {
         name = "creatureType",
@@ -2461,7 +2461,7 @@ Private.event_prototypes = {
         store = true,
         test = "true",
         hidden = true,
-        enable = WeakAuras.IsRetail(),
+        enable = WeakAuras.IsMistsOrRetail(),
       },
       {
         name = "creatureFamilyIndex",
@@ -2472,8 +2472,8 @@ Private.event_prototypes = {
         store = true,
         sorted = true,
         conditionType = "select",
-        enable = WeakAuras.IsRetail(),
-        hidden = not WeakAuras.IsRetail(),
+        enable = WeakAuras.IsMistsOrRetail(),
+        hidden = not WeakAuras.IsMistsOrRetail(),
       },
       {
         name = "creatureFamily",
@@ -2482,7 +2482,7 @@ Private.event_prototypes = {
         store = true,
         test = "true",
         hidden = true,
-        enable = WeakAuras.IsRetail(),
+        enable = WeakAuras.IsMistsOrRetail(),
       },
       {
         name = "role",
