@@ -7123,6 +7123,7 @@ Private.event_prototypes = {
         display = L["Hero Talent"],
         type = "multiselect",
         values = function(trigger)
+          if not WeakAuras.IsTWW() then return {} end
           local classId
           for i = 1, GetNumClasses() do
             if select(2, GetClassInfo(i)) == trigger.class then
@@ -12100,6 +12101,7 @@ if WeakAuras.IsClassicOrCata() then
   Private.event_prototypes["Loot Specialization"] = nil
 end
 if WeakAuras.IsMists() then
+  Private.event_prototypes["Talent Known"] = nil -- TODO
   Private.event_prototypes["Evoker Essence"] = nil
   Private.event_prototypes["PvP Talent Selected"] = nil
   Private.event_prototypes["Loot Specialization"] = nil
