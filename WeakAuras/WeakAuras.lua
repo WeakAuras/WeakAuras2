@@ -1719,6 +1719,11 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
 
   if WeakAuras.IsCataOrRetail() then
     specId, role, position = Private.LibSpecWrapper.SpecRolePositionForUnit("player")
+  elseif WeakAuras.IsMists() then
+    local spec = Private.ExecEnv.GetSpecialization()
+    if type(spec) == "number" and spec > 0 then
+      specId,_,_,_,role = Private.ExecEnv.GetSpecializationInfo(spec)
+    end
   end
 
   local size, difficulty, instanceType, instanceId, difficultyIndex = GetInstanceTypeAndSize()
