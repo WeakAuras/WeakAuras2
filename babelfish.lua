@@ -27,6 +27,10 @@ local ordered = {
     "WeakAuras_Templates",
 }
 
+local overrides = {
+    ["Negator"] = "Not"
+}
+
 local function parseFile(filename)
     local strings = {}
     local file = assert(io.open(string.format("%s%s", filePrefix or "", filename), "r"), "Could not open " .. filename)
@@ -51,7 +55,11 @@ for _, namespace in ipairs(ordered) do
 
         for k in next, strings do
             if not dedupe[k] then
-                table.insert(sorted, string.format("L[\"%s\"] = true", k))
+                if overrides[k] then
+                    table.insert(sorted, string.format("L[\"%s\"] = \"%s\"", k, overrides[k]))
+                else
+                    table.insert(sorted, string.format("L[\"%s\"] = true", k))
+                end
                 dedupe[k] = true
                 count = count + 1
             end
