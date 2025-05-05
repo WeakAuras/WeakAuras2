@@ -42,6 +42,7 @@ Private.DiscordList = {
   [=[MetalMusicMan]=],
   [=[Murph]=],
   [=[Mynze]=],
+  [=[NoM0Re]=],
   [=[Nona]=],
   [=[NostraDumAzz]=],
   [=[Oi]=],
