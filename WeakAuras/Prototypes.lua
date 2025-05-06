@@ -3784,17 +3784,18 @@ Private.event_prototypes = {
             local total = math.max(1, UnitPowerMax(unit, powerType))
           ]])
         end
+      elseif WeakAuras.IsMists() and (powerType == 14 or powerType == 7) then
+        table.insert(ret, [[
+          local displayMod = UnitPowerDisplayMod(powerType)
+          local power = UnitPower(unit, powerType, true) / displayMod
+          local total = math.max(1, UnitPowerMax(unit, powerType, true)) / displayMod
+        ]])
       else
         -- Combo Points
         if powerType == 4 then
           table.insert(ret, [[
             local power = GetComboPoints(unit, unit .. '-target')
             local total = math.max(1, UnitPowerMax(unit, Enum.PowerType.ComboPoints))
-          ]])
-        elseif powerType == 14 then
-          table.insert(ret, [[
-            local power = UnitPower(unit, powerType, true) / 10
-            local total = math.max(1, UnitPowerMax(unit, powerType))
           ]])
         else
           table.insert(ret, [[
