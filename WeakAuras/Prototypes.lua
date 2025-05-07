@@ -8522,7 +8522,7 @@ Private.event_prototypes = {
   ["Death Knight Rune"] = {
     type = "unit",
     events = function()
-      if WeakAuras.IsCataClassic() then
+      if WeakAuras.IsCataOrMists() then
         return { events = { "RUNE_POWER_UPDATE", "RUNE_TYPE_UPDATE"} }
       else
         return { events = { "RUNE_POWER_UPDATE" } }
@@ -8550,7 +8550,7 @@ Private.event_prototypes = {
     init = function(trigger)
       trigger.rune = trigger.rune or 0;
       local ret
-      if WeakAuras.IsCataClassic() then
+      if WeakAuras.IsCataOrMists() then
         ret = [[
           local rune = %s;
           local genericShowOn = %s
@@ -8609,7 +8609,7 @@ Private.event_prototypes = {
         ]];
         ret = ret..ret2:format(tonumber(trigger.remaining or 0) or 0);
       end
-      if WeakAuras.IsCataClassic() then
+      if WeakAuras.IsCataOrMists() then
         return ret:format(
           trigger.rune,
           "[[" .. (trigger.genericShowOn or "") .. "]]",
@@ -8641,8 +8641,8 @@ Private.event_prototypes = {
         init = "isDeathRune",
         store = true,
         conditionType = "bool",
-        enable = function(trigger) return WeakAuras.IsCataClassic() and trigger.use_rune end,
-        hidden = not WeakAuras.IsCataClassic()
+        enable = function(trigger) return WeakAuras.IsCataOrMists() and trigger.use_rune end,
+        hidden = not WeakAuras.IsCataOrMists()
       },
       {
         name = "remaining",
@@ -8684,8 +8684,8 @@ Private.event_prototypes = {
         init = "numBloodRunes",
         store = true,
         conditionType = "number",
-        enable = function(trigger) return WeakAuras.IsCataClassic() and not trigger.use_rune end,
-        hidden = not WeakAuras.IsCataClassic()
+        enable = function(trigger) return WeakAuras.IsCataOrMists() and not trigger.use_rune end,
+        hidden = not WeakAuras.IsCataOrMists()
       },
       {
         name = "frostRunes",
@@ -8694,8 +8694,8 @@ Private.event_prototypes = {
         init = "numFrostRunes",
         store = true,
         conditionType = "number",
-        enable = function(trigger) return WeakAuras.IsCataClassic() and not trigger.use_rune end,
-        hidden = not WeakAuras.IsCataClassic()
+        enable = function(trigger) return WeakAuras.IsCataOrMists() and not trigger.use_rune end,
+        hidden = not WeakAuras.IsCataOrMists()
       },
       {
         name = "unholyRunes",
@@ -8704,16 +8704,16 @@ Private.event_prototypes = {
         init = "numUnholyRunes",
         store = true,
         conditionType = "number",
-        enable = function(trigger) return WeakAuras.IsCataClassic() and not trigger.use_rune end,
-        hidden = not WeakAuras.IsCataClassic()
+        enable = function(trigger) return WeakAuras.IsCataOrMists() and not trigger.use_rune end,
+        hidden = not WeakAuras.IsCataOrMists()
       },
       {
         name = "includeDeathRunes",
         display = L["Include Death Runes"],
         type = "toggle",
         test = "true",
-        enable = function(trigger) return WeakAuras.IsCataClassic() and trigger.use_bloodRunes or trigger.use_unholyRunes or trigger.use_frostRunes end,
-        hidden = not WeakAuras.IsCataClassic()
+        enable = function(trigger) return WeakAuras.IsCataOrMists() and trigger.use_bloodRunes or trigger.use_unholyRunes or trigger.use_frostRunes end,
+        hidden = not WeakAuras.IsCataOrMists()
       },
     },
     durationFunc = function(trigger)
@@ -8740,13 +8740,13 @@ Private.event_prototypes = {
       return numRunes;
     end,
     nameFunc = function(trigger)
-      if WeakAuras.IsCataClassic() then
+      if WeakAuras.IsCataOrMists() then
         local runeNames = { L["Blood"], L["Frost"], L["Unholy"], L["Death"] }
         return runeNames[GetRuneType(trigger.rune)];
       end
     end,
     iconFunc = function(trigger)
-      if WeakAuras.IsCataClassic() then
+      if WeakAuras.IsCataOrMists() then
         if trigger.rune then
           local runeIcons = {
             "Interface\\PlayerFrame\\UI-PlayerFrame-Deathknight-Blood",
