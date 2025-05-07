@@ -2471,7 +2471,7 @@ do
   --- @field private AddEffectiveSpellId fun(self: SpellDetails, effectiveSpellId: number, userSpellId: number)
   --- @field CheckSpellKnown fun(self: SpellDetails) Handles the SPELLS_CHANGED event (and intial setup)
   --- @field CheckSpellCooldowns fun(self: SpellDetails, runeDuration: number?)
-  --- @field CheckSpellCooldown fun(self: SpellDetails, effectiveSpelLId: number, runeDuration: number?)
+  --- @field CheckSpellCooldown fun(self: SpellDetails, effectiveSpellId: number, runeDuration: number?)
   --- @field SendEventsForSpell fun(self: SpellDetails, effectiveSpellId: number, event: string, ...: any[])
   --- @field GetSpellCharges fun(self: SpellDetails, effectiveSpellId: number, ignoreSpellKnown: boolean): number?, number?, number?, number?, number?
   local SpellDetails = {
@@ -2623,15 +2623,15 @@ do
       end
     end,
 
-    CheckSpellCooldown = function(self, effectiveSpelLId, runeDuration)
+    CheckSpellCooldown = function(self, effectiveSpellId, runeDuration)
       local charges, maxCharges, startTime, duration, unifiedCooldownBecauseRune,
         startTimeCooldown, durationCooldown, cooldownBecauseRune, startTimeCharges, durationCharges,
         spellCount, unifiedModRate, modRate, modRateCharges, paused
-        = WeakAuras.GetSpellCooldownUnified(effectiveSpelLId, runeDuration);
+        = WeakAuras.GetSpellCooldownUnified(effectiveSpellId, runeDuration);
 
       local time = GetTime();
 
-      local spellDetail = self.data[effectiveSpelLId]
+      local spellDetail = self.data[effectiveSpellId]
 
       local chargesChanged = spellDetail.charges ~= charges or spellDetail.count ~= spellCount
                             or spellDetail.chargesMax ~= maxCharges
@@ -2650,29 +2650,29 @@ do
       end
 
       local changed = false
-      changed = self.spellCds:HandleSpell(effectiveSpelLId, startTime, duration, unifiedModRate, paused) or changed
+      changed = self.spellCds:HandleSpell(effectiveSpellId, startTime, duration, unifiedModRate, paused) or changed
       if not unifiedCooldownBecauseRune then
-        changed = self.spellCdsRune:HandleSpell(effectiveSpelLId, startTime, duration, unifiedModRate, paused) or changed
+        changed = self.spellCdsRune:HandleSpell(effectiveSpellId, startTime, duration, unifiedModRate, paused) or changed
       end
-      local cdChanged, nowReady = self.spellCdsOnlyCooldown:HandleSpell(effectiveSpelLId, startTimeCooldown, durationCooldown, modRate, paused)
+      local cdChanged, nowReady = self.spellCdsOnlyCooldown:HandleSpell(effectiveSpellId, startTimeCooldown, durationCooldown, modRate, paused)
       changed = cdChanged or changed
       if not cooldownBecauseRune then
-        changed = self.spellCdsOnlyCooldownRune:HandleSpell(effectiveSpelLId, startTimeCooldown, durationCooldown, modRate, paused) or changed
+        changed = self.spellCdsOnlyCooldownRune:HandleSpell(effectiveSpellId, startTimeCooldown, durationCooldown, modRate, paused) or changed
       end
-      local chargeChanged = self.spellCdsCharges:HandleSpell(effectiveSpelLId, startTimeCharges, durationCharges, modRateCharges)
+      local chargeChanged = self.spellCdsCharges:HandleSpell(effectiveSpellId, startTimeCharges, durationCharges, modRateCharges)
       changed = chargeChanged or changed
 
       if not WeakAuras.IsPaused() then
         if nowReady then
-          self:SendEventsForSpell(effectiveSpelLId, "SPELL_COOLDOWN_READY", effectiveSpelLId)
+          self:SendEventsForSpell(effectiveSpellId, "SPELL_COOLDOWN_READY", effectiveSpellId)
         end
 
         if changed or chargesChanged then
-          self:SendEventsForSpell(effectiveSpelLId, "SPELL_COOLDOWN_CHANGED", effectiveSpelLId)
+          self:SendEventsForSpell(effectiveSpellId, "SPELL_COOLDOWN_CHANGED", effectiveSpellId)
         end
 
         if (chargesDifference ~= 0 ) then
-          self:SendEventsForSpell(effectiveSpelLId, "SPELL_CHARGES_CHANGED", effectiveSpelLId, chargesDifference, charges or spellCount or 0)
+          self:SendEventsForSpell(effectiveSpellId, "SPELL_CHARGES_CHANGED", effectiveSpellId, chargesDifference, charges or spellCount or 0)
         end
       end
     end,
