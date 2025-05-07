@@ -2840,10 +2840,29 @@ do
         or event == "CHARACTER_POINTS_CHANGED" or event == "RUNE_TYPE_UPDATE")
         or event == "SPELL_UPDATE_USABLE"
       then
+        local skipCheckAll = false
         if event == "SPELL_UPDATE_COOLDOWN" then
+          local spellId, baseSpellId = ...
+          local spellIdName
+          if spellId and type(spellId) == "number" then
+            Private.CheckCooldownReady(spellId)
+            spellIdName = C_Spell.GetSpellName(spellId)
+            Private.CheckCooldownReady(spellIdName)
+            skipCheckAll = true
+          end
+          if baseSpellId and type(baseSpellId) == "number" then
+            Private.CheckCooldownReady(baseSpellId)
+            local baseSpellIdName = C_Spell.GetSpellName(baseSpellId)
+            if baseSpellIdName ~= spellIdName then
+              Private.CheckCooldownReady(baseSpellIdName)
+            end
+            skipCheckAll = true
+          end
           mark_ACTIONBAR_UPDATE_COOLDOWN = nil
         end
-        Private.CheckCooldownReady();
+        if not skipCheckAll then
+          Private.CheckCooldownReady()
+        end
       elseif(event == "SPELLS_CHANGED") then
         SpellDetails:CheckSpellKnown()
         Private.CheckCooldownReady()
@@ -3414,13 +3433,19 @@ do
     end
   end
 
-  ---@type fun()
-  function Private.CheckCooldownReady()
+  ---@type fun(spell: number|string?)
+  function Private.CheckCooldownReady(spell)
     CheckGCD();
     local runeDuration = Private.CheckRuneCooldown();
-    SpellDetails:CheckSpellCooldowns(runeDuration);
-    Private.CheckItemCooldowns();
-    Private.CheckItemSlotCooldowns();
+    if spell then
+      if SpellDetails.data[spell] then
+        SpellDetails:CheckSpellCooldown(spell, runeDuration)
+      end
+    else
+      SpellDetails:CheckSpellCooldowns(runeDuration);
+      Private.CheckItemCooldowns();
+      Private.CheckItemSlotCooldowns();
+    end
   end
 
   ---@private
