@@ -986,7 +986,7 @@ local function CreateTalentCache()
   if WeakAuras.IsClassicOrCata() then
     for tab = 1, GetNumTalentTabs() do
       for num_talent = 1, GetNumTalents(tab) do
-        local talentName, talentIcon = GetTalentInfo(tab, num_talent);
+        local talentName, talentIcon = Private.ExecEnv.GetTalentInfo(tab, num_talent);
         local talentId = (tab - 1) * MAX_NUM_TALENTS + num_talent
         if (talentName and talentIcon) then
           Private.talent_types_specific[player_class][talentId] = "|T"..talentIcon..":0|t "..talentName
@@ -1000,7 +1000,7 @@ local function CreateTalentCache()
     for tier=1, MAX_NUM_TALENT_TIERS do
       for column=1, NUM_TALENT_COLUMNS do
         -- Get name and icon info for the current talent of the current class and save it
-        local _, talentName, talentIcon = GetTalentInfo(tier, column, 1)
+        local _, talentName, talentIcon = Private.ExecEnv.GetTalentInfo(tier, column, 1)
         local talentId = (tier-1)*3+column
         -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
         if (talentName and talentIcon) then
@@ -1015,7 +1015,7 @@ local function CreateTalentCache()
     for tier = 1, MAX_TALENT_TIERS do
       for column = 1, NUM_TALENT_COLUMNS do
         -- Get name and icon info for the current talent of the current class and save it
-        local _, talentName, talentIcon = GetTalentInfo(tier, column, 1)
+        local _, talentName, talentIcon = Private.ExecEnv.GetTalentInfo(tier, column, 1)
         local talentId = (tier-1)*3+column
         -- Get the icon and name from the talent cache and record it in the table that will be used by WeakAurasOptions
         if (talentName and talentIcon) then

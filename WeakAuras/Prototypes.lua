@@ -11,7 +11,6 @@ local select, pairs, type = select, pairs, type
 local ceil = ceil
 
 -- WoW APIs
-local GetTalentInfo = GetTalentInfo
 local UnitClass = UnitClass
 local GetShapeshiftFormInfo, GetShapeshiftForm = GetShapeshiftFormInfo, GetShapeshiftForm
 local GetRuneCooldown, UnitCastingInfo, UnitChannelInfo = GetRuneCooldown, UnitCastingInfo, UnitChannelInfo
@@ -702,7 +701,7 @@ if WeakAuras.IsClassicOrCata() then
   function WeakAuras.CheckTalentByIndex(index, extraOption)
     local tab = ceil(index / MAX_NUM_TALENTS)
     local num_talent = (index - 1) % MAX_NUM_TALENTS + 1
-    local name, _, _, _, rank  = GetTalentInfo(tab, num_talent)
+    local name, _, _, _, rank  = Private.ExecEnv.GetTalentInfo(tab, num_talent)
     if name == nil then
       return nil
     end
@@ -6902,7 +6901,7 @@ Private.event_prototypes = {
           local tier = %s;
           local column = %s;
           local active = false
-          local name, icon, _, _, rank = GetTalentInfo(tier, column)
+          local name, icon, _, _, rank = Private.ExecEnv.GetTalentInfo(tier, column)
           if rank and rank > 0 then
             active = true;
             activeName = name;
@@ -6939,7 +6938,7 @@ Private.event_prototypes = {
                 if (not active) then
                   tier = %s
                   column = %s
-                  local name, icon, _, _, rank = GetTalentInfo(tier, column)
+                  local name, icon, _, _, rank = Private.ExecEnv.GetTalentInfo(tier, column)
                   if rank > 0 then
                     active = true;
                     activeName = name;
