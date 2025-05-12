@@ -44,6 +44,7 @@ local removeAll = function(states)
 end
 
 local skipKeys = {
+  trigger = true,
   triggernum = true
 }
 
