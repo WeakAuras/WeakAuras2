@@ -4220,18 +4220,22 @@ function Private.ShowMouseoverTooltip(region, owner)
   GameTooltip:SetPoint("LEFT", owner, "RIGHT");
   GameTooltip:ClearLines();
 
-  local triggerType;
-  if (region.state) then
-    triggerType = region.state.trigger.type;
+  local trigger
+  local state = region.state
+  if state and state.id and state.triggernum then
+    local data = WeakAuras.GetData(state.id)
+    if data then
+      trigger = data.triggers[state.triggernum].trigger
+    end
   end
 
-  local triggerSystem = triggerType and triggerTypes[triggerType];
+  local triggerSystem = trigger and trigger.type and triggerTypes[trigger.type]
   if (not triggerSystem) then
     GameTooltip:Hide();
     return;
   end
 
-  if (triggerSystem.SetToolTip(region.state.trigger, region.state)) then
+  if (triggerSystem.SetToolTip(trigger, region.state)) then
     GameTooltip:Show();
   else
     GameTooltip:Hide();
