@@ -886,6 +886,20 @@ local function ConstructTextEditor(frame)
     end
   )
 
+  local eventEditor = AceGUI:Create("MultiLineEditBox")
+  eventEditor.frame:SetParent(group.frame)
+  eventEditor.frame:SetPoint("TOPLEFT", frame, "TOPLEFT", 240, -10)
+  eventEditor.frame:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -250, -70)
+  eventEditor:DisableButton(true)
+  eventEditor.label:Hide()
+  local eventEditorLabel = eventEditor.frame:CreateFontString(nil, "OVERLAY","GameFontNormalSmall")
+  eventEditorLabel:SetPoint("RIGHT", eventEditor.frame, "TOPLEFT", 0, -24)
+  eventEditorLabel:SetFont(STANDARD_TEXT_FONT, 10, "")
+  eventEditorLabel:SetText("Event(s)")
+  if fontPath then
+    eventEditor.editBox:SetFont(fontPath, WeakAurasSaved.editor_font_size, "")
+  end
+  LAAC:enable(eventEditor.editBox)
   function group.Open(self, data, path, enclose, multipath, reloadOptions, setOnParent, url, validator)
     self.data = data
     self.path = path
@@ -970,6 +984,24 @@ local function ConstructTextEditor(frame)
         editor.combinedText = true
       end
     end
+    local showEventFrame = false
+    if not multipath then
+      for index, field in pairs(self.path) do
+        if type(field) == "number" then
+          if self.data.triggers[field].trigger.check == "event" then
+            local eventString = OptionsPrivate.Private.ValueFromPath(self.data, { "triggers", field, "trigger", "events" })
+            eventEditor:SetText(eventString or "")
+            showEventFrame = true
+            break
+          end
+        end
+      end
+    end
+    if showEventFrame then
+      eventEditor.frame:Show()
+    else
+      eventEditor.frame:Hide()
+    end
     editor:SetFocus()
   end
 
@@ -1026,6 +1058,14 @@ local function ConstructTextEditor(frame)
       for child in OptionsPrivate.Private.TraverseLeafsOrAura(self.data) do
         local text = editor.combinedText and (textById[child.id] or "") or editor:GetText()
         OptionsPrivate.Private.ValueToPath(child, self.multipath and self.path[child.id] or self.path, text)
+        if not self.multipath then
+          for index, field in pairs(self.path) do
+            if type(field) == "number" and self.data.triggers[field].trigger.check == "event" then
+              OptionsPrivate.Private.ValueToPath(child, { "triggers", field, "trigger", "events" }, eventEditor:GetText())
+              break
+            end
+          end
+        end
         WeakAuras.Add(child)
         OptionsPrivate.ClearOptions(child.id)
       end
