@@ -895,7 +895,7 @@ local function ConstructTextEditor(frame)
   local eventEditorLabel = eventEditor.frame:CreateFontString(nil, "OVERLAY","GameFontNormalSmall")
   eventEditorLabel:SetPoint("RIGHT", eventEditor.frame, "TOPLEFT", 0, -24)
   eventEditorLabel:SetFont(STANDARD_TEXT_FONT, 10, "")
-  eventEditorLabel:SetText("Event(s)")
+  eventEditorLabel:SetText(L["Event(s)]")
   if fontPath then
     eventEditor.editBox:SetFont(fontPath, WeakAurasSaved.editor_font_size, "")
   end
