@@ -94,7 +94,7 @@ if C_SpecializationInfo and C_SpecializationInfo.GetTalentInfo then
 		-- Note: rank, maxRank, meetsPrereq, previewRank, meetsPreviewPrereq, isExceptional, and hasGoldBorder are not supported outputs in 5.5.x and onward.
 		-- They have default values not reflective of actual system state.
 		-- selected, available, spellID, isPVPTalentUnlocked, known, and grantedByAura are new supported outputs in 5.5.x and onward.
-		return talentInfo.name, talentInfo.icon, talentInfo.tier, talentInfo.column, talentInfo.rank,
+		return talentInfo.name, talentInfo.icon, talentInfo.tier, talentInfo.column, talentInfo.selected and talentInfo.rank or 0,
 			talentInfo.maxRank, talentInfo.meetsPrereq, talentInfo.previewRank,
 			talentInfo.meetsPreviewPrereq, talentInfo.isExceptional, talentInfo.hasGoldBorder,
 			talentInfo.talentID

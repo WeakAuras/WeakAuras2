@@ -715,6 +715,25 @@ if WeakAuras.IsClassicOrCata() then
   end
 end
 
+if WeakAuras.IsMists() then
+  function WeakAuras.CheckTalentByIndex(index, extraOption)
+    local talentInfo = C_SpecializationInfo.GetTalentInfo({
+      tier = math.ceil(index / 3),
+      column = (index - 1) % 3 + 1
+    })
+    if talentInfo == nil then
+      return nil
+    end
+    local result = talentInfo.selected
+    if extraOption == 4 then
+      return result
+    elseif extraOption == 5 then
+      return not result
+    end
+    return result
+  end
+end
+
 if WeakAuras.IsRetail() then
   local talentCheckFrame = CreateFrame("Frame")
   Private.frames["WeakAuras talentCheckFrame"] = talentCheckFrame
@@ -1233,6 +1252,8 @@ local function valuesForTalentFunction(trigger)
       end
     elseif WeakAuras.IsCataClassic() then
       return Private.talentInfo[single_class]
+    elseif WeakAuras.IsMists() then
+      return Private.talentInfo[single_class]
     else -- classic & tbc
       if single_class and Private.talent_types_specific[single_class] then
         return Private.talent_types_specific[single_class]
@@ -1481,7 +1502,7 @@ Private.load_prototype = {
           end
         end
       end or nil,
-      events = (WeakAuras.IsClassicOrCata() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE", "ACTIVE_TALENT_GROUP_CHANGED"})
+      events = (WeakAuras.IsClassicOrCataOrMists() and {"CHARACTER_POINTS_CHANGED", "PLAYER_TALENT_UPDATE", "ACTIVE_TALENT_GROUP_CHANGED"})
         or (WeakAuras.IsRetail() and {"WA_TALENT_UPDATE"}),
       inverse = function(load)
         -- Check for multi select!
@@ -1493,21 +1514,21 @@ Private.load_prototype = {
           return Private.talent_extra_option_types
         end
       },
-      control = WeakAuras.IsCataOrRetail() and "WeakAurasMiniTalent" or nil,
-      multiNoSingle = WeakAuras.IsCataOrRetail(), -- no single mode
-      multiTristate = WeakAuras.IsCataOrRetail(), -- values can be true/false/nil
-      multiAll = WeakAuras.IsCataOrRetail(), -- require all tests
-      orConjunctionGroup = WeakAuras.IsCataOrRetail() and "talent",
-      multiUseControlWhenFalse = WeakAuras.IsCataOrRetail(),
+      control = WeakAuras.IsCataOrMistsOrRetail() and "WeakAurasMiniTalent" or nil,
+      multiNoSingle = WeakAuras.IsCataOrMistsOrRetail(), -- no single mode
+      multiTristate = WeakAuras.IsCataOrMistsOrRetail(), -- values can be true/false/nil
+      multiAll = WeakAuras.IsCataOrMistsOrRetail(), -- require all tests
+      orConjunctionGroup = WeakAuras.IsCataOrMistsOrRetail() and "talent",
+      multiUseControlWhenFalse = WeakAuras.IsCataOrMistsOrRetail(),
       enable = function(trigger)
         return WeakAuras.IsClassicEra()
-            or (WeakAuras.IsCataClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
+            or (WeakAuras.IsCataOrMists() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
             or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil)
       end,
       hidden = function(trigger)
         return not (
             WeakAuras.IsClassicEra()
-            or (WeakAuras.IsCataClassic() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
+            or (WeakAuras.IsCataOrMists() and Private.checkForSingleLoadCondition(trigger, "class") ~= nil)
             or (WeakAuras.IsRetail() and Private.checkForSingleLoadCondition(trigger, "class_and_spec") ~= nil))
       end,
     },
@@ -6890,7 +6911,7 @@ Private.event_prototypes = {
     force_events = (WeakAuras.IsRetail() and "TRAIT_CONFIG_UPDATED") or "CHARACTER_POINTS_CHANGED",
     name = L["Talent Known"],
     init = function(trigger)
-      local inverse = trigger.use_inverse and not WeakAuras.IsRetail()
+      local inverse = trigger.use_inverse and not WeakAuras.IsMistsOrRetail()
       local ret = {}
       if (trigger.use_talent) then
         -- Single selection
@@ -6946,6 +6967,22 @@ Private.event_prototypes = {
                   end
                 end
               ]]):format(tier, column))
+            elseif WeakAuras.IsMists() then
+              local tier = index and ceil(index / MAX_NUM_TALENTS)
+              local column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
+              table.insert(ret, ([[
+                tier = %s
+                column = %s
+                local shouldBeActive = %s
+                local talentInfo = C_SpecializationInfo.GetTalentInfo({tier = tier, column = column})
+                if talentInfo then
+                  activeName = talentInfo.name
+                  activeIcon = talentInfo.icon
+                  if talentInfo.selected ~= shouldBeActive then
+                    active = false
+                  end
+                end
+              ]]):format(tier, column, value and "true" or "false"))
             elseif WeakAuras.IsRetail() then
               table.insert(ret, ([[
                 local talentId = %s
@@ -7053,6 +7090,8 @@ Private.event_prototypes = {
               end
             end
             return {}
+          elseif WeakAuras.IsMists() then
+            return Private.talentInfo[class]
           else
             if Private.talent_types_specific[class] then
               return Private.talent_types_specific[class];
@@ -7061,11 +7100,11 @@ Private.event_prototypes = {
             end
           end
         end,
-        multiUseControlWhenFalse = WeakAuras.IsRetail(),
-        multiAll = WeakAuras.IsRetail(),
-        multiNoSingle = WeakAuras.IsRetail(),
-        multiTristate = WeakAuras.IsRetail(), -- values can be true/false/nil
-        control = WeakAuras.IsRetail() and "WeakAurasMiniTalent" or nil,
+        multiUseControlWhenFalse = WeakAuras.IsMistsOrRetail(),
+        multiAll = WeakAuras.IsMistsOrRetail(),
+        multiNoSingle = WeakAuras.IsMistsOrRetail(),
+        multiTristate = WeakAuras.IsMistsOrRetail(), -- values can be true/false/nil
+        control = WeakAuras.IsMistsOrRetail() and "WeakAurasMiniTalent" or nil,
         multiConvertKey = WeakAuras.IsRetail() and function(trigger, key)
           local classId
           for i = 1, GetNumClasses() do
@@ -7179,8 +7218,8 @@ Private.event_prototypes = {
         display = L["Inverse"],
         type = "toggle",
         test = "true",
-        enable = not WeakAuras.IsRetail(),
-        hidden = WeakAuras.IsRetail(),
+        enable = not WeakAuras.IsMistsOrRetail(),
+        hidden = WeakAuras.IsMistsOrRetail(),
       },
       {
         hidden = true,
@@ -12106,7 +12145,6 @@ if WeakAuras.IsClassicOrCata() then
   Private.event_prototypes["Loot Specialization"] = nil
 end
 if WeakAuras.IsMists() then
-  Private.event_prototypes["Talent Known"] = nil -- TODO
   Private.event_prototypes["Evoker Essence"] = nil
   Private.event_prototypes["PvP Talent Selected"] = nil
   Private.event_prototypes["Loot Specialization"] = nil
