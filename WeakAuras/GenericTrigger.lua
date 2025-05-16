@@ -3746,7 +3746,7 @@ function WeakAuras.WatchUnitChange(unit)
         end
       end
     end
-    if WeakAuras.IsCataOrRetail() then
+    if WeakAuras.IsCataOrMistsOrRetail() then
       function roleUpdate(unit, eventsToSend)
         local oldRole = watchUnitChange.unitRoles[unit]
         local newRole = UnitGroupRolesAssigned(unit)
@@ -4391,7 +4391,7 @@ end
 -- LibSpecWrapper
 -- We always register, because it's probably not that often called, and ScanEvents checks
 -- early if anyone wants the event
-if WeakAuras.IsCataOrRetail() then
+if WeakAuras.IsCataOrMistsOrRetail() then
   Private.LibSpecWrapper.Register(function(unit)
     Private.ScanEvents("UNIT_SPEC_CHANGED_" .. unit, unit)
   end)
@@ -5077,8 +5077,8 @@ do
     end
   elseif class == "MONK" then
     function WeakAuras.CalculatedGcdDuration()
-      local spec = GetSpecialization()
-      local primaryStat = select(6, GetSpecializationInfo(spec))
+      local spec = Private.ExecEnv.GetSpecialization()
+      local primaryStat = select(6, Private.ExecEnv.GetSpecializationInfo(spec))
       if primaryStat == LE_UNIT_STAT_AGILITY then
         return 1
       end
