@@ -1673,7 +1673,7 @@ elseif WeakAuras.IsMists() then
 end
 
 if WeakAuras.IsCataOrMists() then
-  Private.power_types[26] = ECLIPSE -- couldn't find a localised global
+  Private.power_types[26] = ECLIPSE
 
   ---@type table<string, string>
     Private.eclipse_direction_types = {
@@ -2789,7 +2789,7 @@ if WeakAuras.IsClassicEra() then
   Private.swing_types["ranged"] = RANGEDSLOT
 end
 
-if WeakAuras.IsCataClassic() then
+if WeakAuras.IsCataOrMists() then
   ---@type string[]
   Private.rune_specific_types = {
     [1] = L["Blood Rune #1"],
