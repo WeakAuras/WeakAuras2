@@ -28,7 +28,7 @@ embeds.xml
 Libs\TaintLess\TaintLess.xml
 
 # Client flavor specific libs
-#Libs\LibSpecialization\LibSpecialization.lua
+Libs\LibSpecialization\LibSpecialization.lua
 
 Init.lua
 Compatibility.lua

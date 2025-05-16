@@ -1704,13 +1704,8 @@ local function scanForLoadsImpl(toCheck, event, arg1, ...)
     vehicleUi = UnitHasVehicleUI('player') or HasOverrideActionBar() or HasVehicleActionBar() or false
   end
 
-  if WeakAuras.IsCataOrRetail() then
+  if WeakAuras.IsCataOrMistsOrRetail() then
     specId, role, position = Private.LibSpecWrapper.SpecRolePositionForUnit("player")
-  elseif WeakAuras.IsMists() then
-    local spec = Private.ExecEnv.GetSpecialization()
-    if type(spec) == "number" and spec > 0 then
-      specId,_,_,_,role = Private.ExecEnv.GetSpecializationInfo(spec)
-    end
   end
 
   local size, difficulty, instanceType, instanceId, difficultyIndex = GetInstanceTypeAndSize()
