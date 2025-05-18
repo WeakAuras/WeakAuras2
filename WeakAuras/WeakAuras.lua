@@ -2097,6 +2097,7 @@ end
 
 ---@private
 function WeakAuras.Delete(data)
+  Private.TimeMachine:DestroyTheUniverse(data.id)
   local id = data.id;
   local uid = data.uid
   local parentId = data.parent
@@ -2196,6 +2197,7 @@ function WeakAuras.Delete(data)
 end
 
 function WeakAuras.Rename(data, newid)
+  Private.TimeMachine:DestroyTheUniverse(data.id)
   local oldid = data.id
   if(data.parent) then
     local parentData = db.displays[data.parent];
@@ -2298,6 +2300,7 @@ function WeakAuras.Rename(data, newid)
 end
 
 function Private.Convert(data, newType)
+  Private.TimeMachine:DestroyTheUniverse(data.id)
   local id = data.id;
   Private.FakeStatesFor(id, false)
 
@@ -2724,7 +2727,7 @@ function Private.AddMany(tbl, takeSnapshots)
           Private.regions[data.id].region:ReloadControlledChildren()
         end
       else
-        WeakAuras.Add(data)
+        Private.Add(data)
       end
     end
     coroutine.yield(1000, "addmany reload dynamic group");
@@ -3295,8 +3298,7 @@ function pAdd(data, simpleChange)
   end
 end
 
----@private
-function WeakAuras.Add(data, simpleChange)
+function Private.Add(data, simpleChange)
   local oldSnapshot
   if Private.ModernizeNeedsOldSnapshot(data) then
     oldSnapshot = Private.GetMigrationSnapshot(data.uid)
@@ -3308,6 +3310,11 @@ function WeakAuras.Add(data, simpleChange)
   if ok then
     pAdd(data, simpleChange)
   end
+end
+
+function WeakAuras.Add(data, simpleChange)
+  Private.TimeMachine:DestroyTheUniverse()
+  Private.Add(data, simpleChange)
 end
 
 function Private.AddParents(data)
