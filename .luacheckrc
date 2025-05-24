@@ -369,6 +369,8 @@ globals = {
 	"C_ArtifactUI.SetForgeRotation",
 	"C_ArtifactUI.SetPreviewAppearance",
 	"C_ArtifactUI.ShouldSuppressForgeRotation",
+	"C_AssistedCombat",
+	"C_AssistedCombat.GetNextCastSpell",
 	"C_AuthChallenge",
 	"C_AuthChallenge.Cancel",
 	"C_AuthChallenge.DidChallengeSucceed",
