@@ -76,6 +76,27 @@ function Private.get_zoneId_list()
   return zoneId_list
 end
 
+Private.glyph_types = {}
+Private.glyph_sorted = {}
+do
+  local sorted = {}
+  for i = 1, GetNumGlyphs() do
+    local name, glyphType, isKnown, icon, glyphID = GetGlyphInfo(i)
+    if name and icon and glyphID then
+      Private.glyph_types[glyphID] = "|T" .. icon .. ":0|t" .. name
+      table.insert(sorted, {glyphID = glyphID, name = name})
+    end
+  end
+
+  table.sort(sorted, function(a, b)
+    return a.name < b.name
+  end)
+
+  for _, glyph in ipairs(sorted) do
+    table.insert(Private.glyph_sorted, glyph.glyphID)
+  end
+end
+
 Private.talentInfo = {
   ["HUNTER"] = {
     {

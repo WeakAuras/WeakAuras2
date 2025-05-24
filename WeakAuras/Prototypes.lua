@@ -1165,6 +1165,23 @@ function WeakAuras.IsSpellKnownIncludingPet(spell)
   return WeakAuras.IsSpellKnown(spell, false) or WeakAuras.IsSpellKnown(spell, true)
 end
 
+if WeakAuras.IsMists() then
+  function WeakAuras.IsGlyphActive(glyphID)
+    glyphID = tostring(glyphID)
+    local numSlots = NUM_GLYPH_SLOTS or 6 -- fallback if not defined
+    for slot = 1, numSlots do
+        local enabled = GetGlyphSocketInfo(slot)
+        if enabled then
+          local link = GetGlyphLink(slot)
+          if link and link:match("|Hglyph:%d+:(%d+)|h") == glyphID then
+              return true
+          end
+        end
+    end
+    return false
+  end
+end
+
 do
 -- A small helper to fire WA_DELAYED_SET_INFORMATION if GetNumSetItemsEquipped couldn't give
 -- accurate information due to item information being unavailable
@@ -1772,6 +1789,17 @@ Private.load_prototype = {
       enable = WeakAuras.IsRetail(),
       hidden = not WeakAuras.IsRetail(),
       events = {"PLAYER_PVP_TALENT_UPDATE"}
+    },
+    {
+      name = "glyph",
+      display = L["Glyph"],
+      type = "multiselect",
+      values = "glyph_types",
+      sorted = true,
+      sortOrder = Private.glyph_sorted,
+      test = "WeakAuras.IsGlyphActive(%s)",
+      events = {"GLYPH_ADDED", "GLYPH_REMOVED", "GLYPH_UPDATED", "USE_GLYPH"},
+      enable = WeakAuras.IsMists(),
     },
     {
       name = "spellknown",
