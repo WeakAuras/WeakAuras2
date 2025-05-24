@@ -4358,6 +4358,31 @@ do
   end
 end
 
+-- combat assist next cast
+if C_AssistedCombat and C_AssistedCombat.GetNextCastSpell then
+  local assistedCombatFrame
+
+  local function assistedCombatUpdate(self, elapsed)
+    Private.StartProfileSystem("generictrigger assisted combat next cast")
+    local nextCastSpell = C_AssistedCombat.GetNextCastSpell()
+    if nextCastSpell ~= assistedCombatFrame.lastSpell then
+      assistedCombatFrame.lastSpell = nextCastSpell
+      Private.ScanEvents("WA_ASSISTED_COMBAT_NEXT_CAST", nextCastSpell)
+    end
+    Private.StopProfileSystem("generictrigger assisted combat next cast")
+  end
+
+  ---@private
+  function WeakAuras.WatchForAssistedCombatNextCast()
+    if not assistedCombatFrame then
+      assistedCombatFrame = CreateFrame("Frame")
+      Private.frames["Assisted Combat Next Cast Frame"] = assistedCombatFrame
+      assistedCombatFrame.lastSpell = C_AssistedCombat.GetNextCastSpell()
+    end
+    assistedCombatFrame:SetScript("OnUpdate", assistedCombatUpdate)
+  end
+end
+
 -- Item Count
 local itemCountWatchFrame
 ---@private
