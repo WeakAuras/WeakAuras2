@@ -34,6 +34,75 @@ else
   Private.ExecEnv.IsUsableSpell = C_Spell.IsSpellUsable
 end
 
+if C_SpecializationInfo and C_SpecializationInfo.GetSpecialization then
+  Private.ExecEnv.GetSpecialization = C_SpecializationInfo.GetSpecialization
+else
+  Private.ExecEnv.GetSpecialization = GetSpecialization
+end
+if C_SpecializationInfo and C_SpecializationInfo.GetSpecializationInfo then
+  Private.ExecEnv.GetSpecializationInfo = C_SpecializationInfo.GetSpecializationInfo
+else
+  Private.ExecEnv.GetSpecializationInfo = GetSpecializationInfo
+end
+if C_SpecializationInfo and C_SpecializationInfo.GetNumSpecializationsForClassID then
+  Private.ExecEnv.GetNumSpecializationsForClassID = C_SpecializationInfo.GetNumSpecializationsForClassID
+else
+  Private.ExecEnv.GetNumSpecializationsForClassID = GetNumSpecializationsForClassID
+end
+if WeakAuras.IsMists() then
+  local specsByClassID = {
+    [0] = { 74, 81, 79 },
+    [1] = { 71, 72, 73, 1446 },
+    [2] = { 65, 66, 70, 1451 },
+    [3] = { 253, 254, 255, 1448 },
+    [4] = { 259, 260, 261, 1453 },
+    [5] = { 256, 257, 258, 1452 },
+    [6] = { 250, 251, 252, 1455 },
+    [7] = { 262, 263, 264, 1444 },
+    [8] = { 62, 63, 64, 1449 },
+    [9] = { 265, 266, 267, 1454 },
+    [10] = { 268, 270, 269, 1450 },
+    [11] = { 102, 103, 104, 105, 1447 },
+  }
+  Private.ExecEnv.GetSpecializationInfoForClassID = function (classID, specIndex)
+    local specID = specsByClassID[classID][specIndex]
+    if not specID then
+      return nil
+    end
+    return GetSpecializationInfoByID(specID)
+  end
+else
+  Private.ExecEnv.GetSpecializationInfoForClassID = GetSpecializationInfoForClassID
+end
+
+if C_SpecializationInfo and C_SpecializationInfo.GetTalentInfo then
+  -- copy pasta from Interface/AddOns/Blizzard_DeprecatedSpecialization/Deprecated_Specialization_Mists.lua
+  Private.ExecEnv.GetTalentInfo = function(tabIndex, talentIndex, isInspect, isPet, groupIndex)
+		-- Note: tabIndex, talentIndex, and isPet are not supported parameters in 5.5.x and onward.
+		local numColumns = 3
+		local talentInfoQuery = {}
+		talentInfoQuery.tier = math.ceil(talentIndex / numColumns)
+		talentInfoQuery.column = talentIndex % numColumns
+		talentInfoQuery.groupIndex = groupIndex
+		talentInfoQuery.isInspect = isInspect
+		talentInfoQuery.target = nil
+		local talentInfo = C_SpecializationInfo.GetTalentInfo(talentInfoQuery)
+		if not talentInfo then
+			return nil
+		end
+
+		-- Note: rank, maxRank, meetsPrereq, previewRank, meetsPreviewPrereq, isExceptional, and hasGoldBorder are not supported outputs in 5.5.x and onward.
+		-- They have default values not reflective of actual system state.
+		-- selected, available, spellID, isPVPTalentUnlocked, known, and grantedByAura are new supported outputs in 5.5.x and onward.
+		return talentInfo.name, talentInfo.icon, talentInfo.tier, talentInfo.column, talentInfo.selected and talentInfo.rank or 0,
+			talentInfo.maxRank, talentInfo.meetsPrereq, talentInfo.previewRank,
+			talentInfo.meetsPreviewPrereq, talentInfo.isExceptional, talentInfo.hasGoldBorder,
+			talentInfo.talentID
+	end
+else
+  Private.ExecEnv.GetTalentInfo = GetTalentInfo
+end
+
 Private.ExecEnv.GetNumFactions = C_Reputation.GetNumFactions or GetNumFactions
 
 Private.ExecEnv.GetFactionDataByIndex = C_Reputation.GetFactionDataByIndex or function(index)

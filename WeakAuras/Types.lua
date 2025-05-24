@@ -13,7 +13,6 @@ local LSM = LibStub("LibSharedMedia-3.0");
 
 local wipe, tinsert = wipe, tinsert
 local GetNumShapeshiftForms, GetShapeshiftFormInfo = GetNumShapeshiftForms, GetShapeshiftFormInfo
-local GetNumSpecializationsForClassID, GetSpecializationInfoForClassID = GetNumSpecializationsForClassID, GetSpecializationInfoForClassID
 local WrapTextInColorCode = WrapTextInColorCode
 local MAX_NUM_TALENTS = MAX_NUM_TALENTS or 20
 
@@ -1662,14 +1661,26 @@ elseif WeakAuras.IsCataClassic() then
   Private.power_types[16] = nil
   Private.power_types[17] = nil
   Private.power_types[18] = nil
-  Private.power_types[26] = L["Eclipse"] -- couldn't find a localised global
+elseif WeakAuras.IsMists() then
+  Private.power_types[8] = nil
+  Private.power_types[14] = BURNING_EMBERS
+  Private.power_types[13] = nil
+  Private.power_types[15] = POWER_TYPE_DEMONIC_FURY
+  Private.power_types[16] = nil
+  Private.power_types[17] = nil
+  Private.power_types[18] = nil
+  Private.power_types[28] = SHADOW_ORBS
+end
 
----@type table<string, string>
-  Private.eclipse_direction_types = {
-    none = L["None"],
-    sun = L["Sun"],
-    moon = L["Moon"]
-  }
+if WeakAuras.IsCataOrMists() then
+  Private.power_types[26] = ECLIPSE
+
+  ---@type table<string, string>
+    Private.eclipse_direction_types = {
+      none = L["None"],
+      sun = L["Sun"],
+      moon = L["Moon"]
+    }
 end
 
 ---@type table<string, string>
@@ -1783,7 +1794,7 @@ if WeakAuras.IsRetail() then
   Private.GetCurrencyIDFromLink = C_CurrencyInfo.GetCurrencyIDFromLink
   Private.ExpandCurrencyList = C_CurrencyInfo.ExpandCurrencyList
   Private.GetCurrencyListInfo = C_CurrencyInfo.GetCurrencyListInfo
-elseif WeakAuras.IsCataClassic() then
+elseif WeakAuras.IsCataOrMists() then
   Private.GetCurrencyListSize = GetCurrencyListSize
   ---@type fun(currencyLink: string): number?
   Private.GetCurrencyIDFromLink = function(currencyLink)
@@ -2061,9 +2072,9 @@ local function update_specs()
   for _, classFileName in pairs(WeakAuras.classes_sorted) do
     local classID = WeakAuras.class_ids[classFileName]
     WeakAuras.spec_types_specific[classFileName] = {}
-    local numSpecs = WeakAuras.IsCataClassic() and 3 or GetNumSpecializationsForClassID(classID) -- see https://github.com/Stanzilla/WoWUIBugs/issues/559
+    local numSpecs = WeakAuras.IsCataClassic() and 3 or Private.ExecEnv.GetNumSpecializationsForClassID(classID) -- see https://github.com/Stanzilla/WoWUIBugs/issues/559
     for i = 1, numSpecs do
-      local specId, tabName, _, icon = GetSpecializationInfoForClassID(classID, i);
+      local specId, tabName, _, icon = Private.ExecEnv.GetSpecializationInfoForClassID(classID, i);
       if tabName then
         tinsert(WeakAuras.spec_types_specific[classFileName], "|T"..(icon or "error")..":0|t "..(tabName or "error"));
         local classColor = WA_GetClassColor(classFileName)
@@ -2077,7 +2088,7 @@ end
 
 ---@type table<number, string>
 Private.talent_types = {}
-if WeakAuras.IsCataOrRetail() then
+if WeakAuras.IsCataOrMistsOrRetail() then
   local spec_frame = CreateFrame("Frame");
   spec_frame:RegisterEvent("PLAYER_LOGIN")
   spec_frame:SetScript("OnEvent", update_specs);
@@ -2778,7 +2789,7 @@ if WeakAuras.IsClassicEra() then
   Private.swing_types["ranged"] = RANGEDSLOT
 end
 
-if WeakAuras.IsCataClassic() then
+if WeakAuras.IsCataOrMists() then
   ---@type string[]
   Private.rune_specific_types = {
     [1] = L["Blood Rune #1"],
@@ -3144,10 +3155,19 @@ elseif WeakAuras.IsCataClassic() then
     normal = PLAYER_DIFFICULTY1,
     heroic = PLAYER_DIFFICULTY2,
   }
+elseif WeakAuras.IsMists() then
+  Private.difficulty_types = {
+    none = L["None"],
+    normal = PLAYER_DIFFICULTY1,
+    heroic = PLAYER_DIFFICULTY2,
+    mythic = PLAYER_DIFFICULTY6,
+    lfr = PLAYER_DIFFICULTY3,
+    challenge = PLAYER_DIFFICULTY5
+  }
 end
 
 ---@type table<string, string>
-if WeakAuras.IsClassicOrCata() then
+if WeakAuras.IsClassicOrCataOrMists() then
   Private.raid_role_types = {
     MAINTANK = "|TInterface\\GroupFrame\\UI-Group-maintankIcon:16:16|t "..MAINTANK,
     MAINASSIST = "|TInterface\\GroupFrame\\UI-Group-mainassistIcon:16:16|t "..MAINASSIST,
@@ -3180,7 +3200,7 @@ Private.classification_types = {
   minus = L["Minus (Small Nameplate)"]
 }
 
-if WeakAuras.IsRetail() then
+if WeakAuras.IsMistsOrRetail() then
   ---@type table<number, string>
   Private.creature_type_types = {}
   for _, creatureID in ipairs(C_CreatureInfo.GetCreatureTypeIDs()) do
@@ -4203,11 +4223,8 @@ Private.glow_types = {
   buttonOverlay = L["Action Button Glow"],
 }
 
-if WeakAuras.IsRetail() then
-  local build = select(4, GetBuildInfo())
-  if build >= 100105 then
-    Private.glow_types.Proc = L["Proc Glow"]
-  end
+if WeakAuras.IsMistsOrRetail() then
+  Private.glow_types.Proc = L["Proc Glow"]
 end
 
 ---@type table<string, string>
@@ -4267,7 +4284,7 @@ for i = 1, 4 do
   Private.multiUnitUnits.party["partypet"..i] = true
 end
 
-if WeakAuras.IsCataOrRetail() then
+if WeakAuras.IsCataOrMistsOrRetail() then
   for i = 1, 10 do
     Private.baseUnitId["boss"..i] = true
     Private.multiUnitUnits.boss["boss"..i] = true
@@ -4380,7 +4397,7 @@ skippedWeaponTypes[11] = true -- Bear Claws
 skippedWeaponTypes[12] = true -- Cat Claws
 skippedWeaponTypes[14] = true -- Misc
 skippedWeaponTypes[17] = true -- Spears
-if WeakAuras.IsClassicOrCata() then
+if WeakAuras.IsClassicOrCataOrMists() then
   skippedWeaponTypes[9] = true -- Glaives
 else
   skippedWeaponTypes[16] = true -- Thrown
