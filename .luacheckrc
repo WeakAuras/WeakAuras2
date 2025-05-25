@@ -84,6 +84,7 @@ globals = {
 	-- FrameXML misc
 	"BackdropTemplateMixin",
 	"C_Timer",
+	"C_DateAndTime",
 	"C_EditMode",
 	"ChatFrame_AddMessageEventFilter",
 	"Clamp",
