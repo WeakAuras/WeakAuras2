@@ -5402,6 +5402,51 @@ function Private.ParseTextStr(textStr, symbolCallback)
   end
 end
 
+function Private.SetDefaultFormatters(data, input, keyPrefix, metaData)
+  local seenSymbols = {}
+  local setDefaultFormatters = function(symbol)
+    if not data[keyPrefix .. symbol .. "_format"] and not seenSymbols[symbol] then
+      local trigger, sym = string.match(symbol, "(.+)%.(.+)")
+      sym = sym or symbol
+
+      local formatter = Private.DefaultFormatterFor(metaData, trigger, sym)
+      data[keyPrefix .. symbol .. "_format"] = formatter
+    end
+    seenSymbols[symbol] = true
+  end
+  Private.ParseTextStr(input, setDefaultFormatters)
+end
+
+function Private.DefaultFormatterFor(stateMetaData, trigger, sym)
+  local formatter
+
+  if sym == "p" or sym == "t" then
+    return "timed"
+  end
+
+  trigger = tonumber(trigger)
+  if trigger then
+    local metaData = stateMetaData[trigger] and stateMetaData[trigger][sym]
+    if metaData then
+      formatter = metaData.formatter
+    end
+  else
+    for index, perTriggerData in pairs(stateMetaData) do
+      if perTriggerData[sym] then
+        if not formatter then
+          formatter = perTriggerData[sym].formatter
+        else
+          if formatter ~= perTriggerData[sym].formatter then
+            return "none"
+          end
+        end
+      end
+    end
+  end
+
+  return formatter or "none"
+end
+
 function Private.CreateFormatters(input, getter, withoutColor, data)
   local seenSymbols = {}
   local formatters = {}

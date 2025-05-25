@@ -1781,8 +1781,8 @@ function OptionsPrivate.UpdateTextReplacements(frame, data)
       local tempProps = {}
 
       -- Add the properties to the temporary table
-      for name, desc in pairs(triggerProps) do
-        table.insert(tempProps, {triggerNum = triggerNum, name = name, desc = desc})
+      for name, data in pairs(triggerProps) do
+        table.insert(tempProps, {triggerNum = triggerNum, name = name, desc = data.display})
       end
 
       -- Sort the temporary table by name

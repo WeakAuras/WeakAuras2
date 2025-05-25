@@ -55,6 +55,9 @@ local function createOptions(parentData, data, index, subIndex)
       order = 11,
       set = function(info, v)
         data.text_text = OptionsPrivate.Private.ReplaceLocalizedRaidMarkers(v)
+        local metaData = OptionsPrivate.Private.GetAdditionalProperties(parentData)
+        OptionsPrivate.Private.SetDefaultFormatters(data, data.text_text, "text_text_format_", metaData)
+
         WeakAuras.Add(parentData)
         WeakAuras.ClearAndUpdateOptions(parentData.id)
       end,
@@ -554,7 +557,6 @@ local function createOptions(parentData, data, index, subIndex)
         end
       end
     end
-
     OptionsPrivate.AddTextFormatOption(texts, true, get, addOption, hidden, setHidden, false, listIndex, #list)
   end
 

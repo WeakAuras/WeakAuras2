@@ -2895,6 +2895,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "standing",
@@ -3150,6 +3151,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         type = "header",
@@ -3186,6 +3188,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
     },
     overlayFuncs = {
@@ -3287,7 +3290,8 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
-        progressTotal = "maxhealth"
+        progressTotal = "maxhealth",
+        formatter = "BigNumber",
       },
       {
         name = "value",
@@ -3321,6 +3325,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "deficit",
@@ -3333,7 +3338,8 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
-        progressTotal = "total"
+        progressTotal = "total",
+        formatter = "BigNumber",
       },
       {
         name = "maxhealth",
@@ -3346,6 +3352,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "BigNumber",
       },
       {
         type = "header",
@@ -4011,6 +4018,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "deficit",
@@ -4551,7 +4559,8 @@ Private.event_prototypes = {
         hidden = "true",
         test = "true",
         store = true,
-        display = L["Source GUID"]
+        display = L["Source GUID"],
+        formatter = "guid"
       },
       {
         name = "sourceUnit",
@@ -4688,7 +4697,8 @@ Private.event_prototypes = {
         hidden = "true",
         test = "true",
         store = true,
-        display = L["Destination GUID"]
+        display = L["Destination GUID"],
+        formatter = "guid"
       },
       {
         name = "destUnit",
@@ -8239,6 +8249,7 @@ Private.event_prototypes = {
         store = true,
         hidden = true,
         test = "true",
+        formatter = "guid"
       },
       {
         name = "cloneId",
@@ -9354,6 +9365,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "rawthreatpct",
@@ -10424,6 +10436,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "hitrating",
@@ -10452,6 +10465,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "hasterating",
@@ -10478,6 +10492,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "meleehastepercent",
@@ -10492,6 +10507,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "expertiserating",
@@ -10534,6 +10550,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "masteryrating",
@@ -10562,6 +10579,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "versatilityrating",
@@ -10590,6 +10608,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "attackpower",
@@ -10649,6 +10668,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "movespeedrating",
@@ -10682,6 +10702,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "runspeedpercent",
@@ -10694,6 +10715,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "avoidancerating",
@@ -10722,6 +10744,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         type = "header",
@@ -10753,6 +10776,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "parryrating",
@@ -10779,6 +10803,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "blockpercent",
@@ -10791,6 +10816,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "blocktargetpercent",
@@ -10805,6 +10831,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "blockvalue",
@@ -10831,6 +10858,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "staggertargetpercent",
@@ -10845,6 +10873,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "armorrating",
@@ -10871,6 +10900,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "armortargetpercent",
@@ -10885,6 +10915,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         name = "resiliencerating",
@@ -10913,6 +10944,7 @@ Private.event_prototypes = {
           operator = "and",
           limit = 2
         },
+        formatter = "Number",
       },
       {
         type = "header",
@@ -11558,6 +11590,7 @@ Private.event_prototypes = {
         display = Private.coin_icons.gold .. L["Gold"],
         store = true,
         conditionType = "number",
+        formatter = "BigNumber"
       },
       {
         name = "silver",
