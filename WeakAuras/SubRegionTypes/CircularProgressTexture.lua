@@ -220,9 +220,15 @@ local funcs = {
           self.circularTexture:SetProgress(self:ProgressToAngles(progress))
         else
           local remaining = self.progressData.expirationTime - GetTime()
-          local progress = remaining / self.progressData.duration
-          if self.inverse then
-            progress = 1 - progress
+          local duration = self.progressData.duration
+          local progress
+          if duration == 0 then
+            progress = 0
+          else
+            progress = remaining / self.progressData.duration
+            if self.inverse then
+              progress = 1 - progress
+            end
           end
           self.circularTexture:SetProgress(self:ProgressToAngles(progress))
         end
