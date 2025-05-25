@@ -59,6 +59,10 @@ local function createOptions(id, data)
       end,
       set = function(info, v)
         data.displayText = OptionsPrivate.Private.ReplaceLocalizedRaidMarkers(v);
+
+        local metaData = OptionsPrivate.Private.GetAdditionalProperties(data)
+        OptionsPrivate.Private.SetDefaultFormatters(data, data.displayText, "displayText_format_", metaData)
+
         WeakAuras.Add(data);
         WeakAuras.ClearAndUpdateOptions(data.id)
         WeakAuras.UpdateThumbnail(data);
