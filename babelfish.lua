@@ -92,6 +92,7 @@ local function parseFile(filename)
     for match in string.gmatch(text, "L%[\"(.-)\"%]") do
         strings[match] = true
     end
+
     return strings
 end
 
@@ -108,7 +109,7 @@ for _, namespace in ipairs(ordered) do
         for k in next, strings do
             if not dedupe[k] then
                 if overrides[k] then
-                    table.insert(sorted, string.format("L[\"%s\"] = \"%s\"", k, overrides[k]))
+                    table.insert(sorted, string.format("L[\"%s\"] = [=[%s]=]", k, overrides[k]))
                 else
                     table.insert(sorted, string.format("L[\"%s\"] = true", k))
                 end
