@@ -2689,7 +2689,7 @@ do
       useExact = useExact and true or false
       followoverride = followoverride and true or false
 
-      if ignoreRunes and WeakAuras.IsCataOrRetail() then
+      if ignoreRunes and WeakAuras.IsCataOrMistsOrRetail() then
         for i = 1, 6 do
           WeakAuras.WatchRuneCooldown(i)
         end
