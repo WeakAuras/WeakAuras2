@@ -49,6 +49,15 @@ function spellCache.Build()
     holes[243806] = 261127
     holes[262591] = 281624
     holes[301101] = 324269
+  elseif WeakAuras.IsMists() then
+    holes = {}
+    holes[171557] = 186402
+    holes[186403] = 219002
+    holes[219004] = 243805
+    holes[243819] = 261127
+    holes[262591] = 281624
+    holes[301101] = 324269
+    holes[473745] = 1214175
   elseif WeakAuras.IsRetail() then
     holes = {}
     holes[474771] = 556604
@@ -86,7 +95,7 @@ function spellCache.Build()
       coroutine.yield(0.01, "spells")
     end
 
-    if WeakAuras.IsCataOrRetail() then
+    if WeakAuras.IsCataOrMistsOrRetail() then
       for _, category in pairs(GetCategoryList()) do
         local total = GetCategoryNumAchievements(category, true)
         for i = 1, total do
