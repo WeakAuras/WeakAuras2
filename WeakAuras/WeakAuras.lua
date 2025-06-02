@@ -1603,7 +1603,7 @@ local function GetInstanceTypeAndSize()
     end
     return size, difficulty, instanceType, instanceId, difficultyIndex
   end
-  return "none", "none", nil, nil, nil
+  return "none", "none", nil, nil, 0
 end
 
 ---@return string instanceType

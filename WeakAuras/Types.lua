@@ -3100,6 +3100,8 @@ if not WeakAuras.IsClassicEra() then
     [220] = L["Story Raid"]
   }
 
+  Private.instance_difficulty_types[0] =L["None"]
+
   for i = 1, 220 do
     local name, type = GetDifficultyInfo(i)
     if name then
