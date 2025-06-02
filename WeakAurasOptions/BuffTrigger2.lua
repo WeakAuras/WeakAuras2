@@ -790,7 +790,7 @@ local function GetBuffTriggerOptions(data, triggernum)
       order = 66.3,
       hidden = function() return
         not (trigger.type == "aura2" and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
-        and WeakAuras.IsCataOrRetail())
+        and WeakAuras.IsCataOrMistsOrRetail())
       end,
     },
     actualSpec = {
@@ -803,7 +803,7 @@ local function GetBuffTriggerOptions(data, triggernum)
         return not (trigger.type == "aura2"
                     and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
                     and trigger.useActualSpec
-                    and WeakAuras.IsCataOrRetail())
+                    and WeakAuras.IsCataOrMistsOrRetail())
       end,
       order = 66.4
     },
@@ -816,7 +816,7 @@ local function GetBuffTriggerOptions(data, triggernum)
         return not (trigger.type == "aura2"
                     and (trigger.unit == "group" or trigger.unit == "raid" or trigger.unit == "party")
                     and not trigger.useActualSpec
-                    and WeakAuras.IsCataOrRetail())
+                    and WeakAuras.IsCataOrMistsOrRetail())
       end
     },
 

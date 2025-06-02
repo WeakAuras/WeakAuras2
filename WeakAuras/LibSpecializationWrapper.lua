@@ -1,5 +1,5 @@
 if not WeakAuras.IsLibsOK() then return end
-if not WeakAuras.IsCataOrRetail() then return end
+if not WeakAuras.IsCataOrMistsOrRetail() then return end
 ---@type string
 local AddonName = ...
 ---@class Private
