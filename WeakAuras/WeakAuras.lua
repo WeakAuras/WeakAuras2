@@ -1963,7 +1963,9 @@ local function UnloadAll()
   for id in pairs(loaded) do
     local func = Private.customActionsFunctions[id] and Private.customActionsFunctions[id]["unload"]
     if func then
+      Private.ActivateAuraEnvironment(id)
       xpcall(func, Private.GetErrorHandlerId(id, "onUnload"))
+      Private.ActivateAuraEnvironment(nil)
     end
   end
   wipe(loaded);
@@ -2016,7 +2018,9 @@ function Private.LoadDisplays(toLoad, ...)
   for id in pairs(toLoad) do
     local func = Private.customActionsFunctions[id] and Private.customActionsFunctions[id]["load"]
     if func then
+      Private.ActivateAuraEnvironment(id)
       xpcall(func, Private.GetErrorHandlerId(id, "onLoad"))
+      Private.ActivateAuraEnvironment(nil)
     end
   end
 end
@@ -2025,7 +2029,9 @@ function Private.UnloadDisplays(toUnload, ...)
   for id in pairs(toUnload) do
     local func = Private.customActionsFunctions[id] and Private.customActionsFunctions[id]["unload"]
     if func then
+      Private.ActivateAuraEnvironment(id)
       xpcall(func, Private.GetErrorHandlerId(id, "onUnload"))
+      Private.ActivateAuraEnvironment(nil)
     end
   end
   for _, triggerSystem in pairs(triggerSystems) do
