@@ -4270,6 +4270,7 @@ Private.event_prototypes = {
         AddUnitEventForEvents(result, unit, "UNIT_FLAGS")
       end
       AddUnitEventForEvents(result, unit, "UNIT_POWER_BAR_SHOW")
+      AddUnitEventForEvents(result, unit, "UNIT_POWER_BAR_HIDE")
       if trigger.use_inRange then
         AddUnitEventForEvents(result, unit, "UNIT_IN_RANGE_UPDATE")
       end
