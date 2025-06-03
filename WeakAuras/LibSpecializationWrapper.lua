@@ -149,47 +149,60 @@ if LibSpec then
     [2] = true
   }
 
-  function Private.LibSpecWrapper.CheckTalentForUnit(unit, talentId)
-    if UnitIsUnit(unit, "player") then
-      return select(4, WeakAuras.GetTalentById(talentId))
-    end
-    local unitName = GetUnitName(unit, true)
-    if not nameToTalents[unitName] then
-      -- Parse Talent String once and store which talents are selected
-      if not nameToSpecMap[unitName] then return nil end
-      local talentString = nameToSpecMap[unitName][4]
-      if not talentString then return nil end
-
-      local importStream = CreateAndInitFromMixin(ImportDataStreamMixin, talentString)
-      local headerValid, serializationVersion, specID, treeHash = ReadLoadoutHeader(importStream);
-      local currentSerializationVersion = C_Traits.GetLoadoutSerializationVersion();
-      if(not headerValid) then
-        return nil
+  if WeakAuras.IsRetail() then
+    function Private.LibSpecWrapper.CheckTalentForUnit(unit, talentId)
+      if UnitIsUnit(unit, "player") then
+        return select(4, WeakAuras.GetTalentById(talentId))
       end
-      if(serializationVersion ~= currentSerializationVersion or not validSerializationVersions[serializationVersion]) then
-        return nil
-      end
+      local unitName = GetUnitName(unit, true)
+      if not nameToTalents[unitName] then
+        -- Parse Talent String once and store which talents are selected
+        if not nameToSpecMap[unitName] then return nil end
+        local talentString = nameToSpecMap[unitName][4]
+        if not talentString then return nil end
 
-      local treeID = C_ClassTalents.GetTraitTreeForSpec(specID)
+        local importStream = CreateAndInitFromMixin(ImportDataStreamMixin, talentString)
+        local headerValid, serializationVersion, specID, treeHash = ReadLoadoutHeader(importStream);
+        local currentSerializationVersion = C_Traits.GetLoadoutSerializationVersion();
+        if(not headerValid) then
+          return nil
+        end
+        if(serializationVersion ~= currentSerializationVersion or not validSerializationVersions[serializationVersion]) then
+          return nil
+        end
 
-      local results = {};
-      local bitWidthRanksPurchased = 6
+        local treeID = C_ClassTalents.GetTraitTreeForSpec(specID)
 
-      local _, _, talentsData = Private.GetTalentData(specID)
-      local treeNodes = C_Traits.GetTreeNodes(treeID);
-      for _, nodeId in ipairs(treeNodes) do
-        local nodeSelectedValue = importStream:ExtractValue(1)
-        local isNodeSelected = nodeSelectedValue == 1
-        local isPartiallyRanked = false
-        local partialRanksPurchased = 0
-        local isChoiceNode = false
-        local choiceNodeSelection = 1
+        local results = {};
+        local bitWidthRanksPurchased = 6
 
-        if(isNodeSelected) then
-          if serializationVersion == 2 then
-            local nodePurchasedValue = importStream:ExtractValue(1)
-            local isNodePurchased = nodePurchasedValue == 1
-            if(isNodePurchased) then
+        local _, _, talentsData = Private.GetTalentData(specID)
+        local treeNodes = C_Traits.GetTreeNodes(treeID);
+        for _, nodeId in ipairs(treeNodes) do
+          local nodeSelectedValue = importStream:ExtractValue(1)
+          local isNodeSelected = nodeSelectedValue == 1
+          local isPartiallyRanked = false
+          local partialRanksPurchased = 0
+          local isChoiceNode = false
+          local choiceNodeSelection = 1
+
+          if(isNodeSelected) then
+            if serializationVersion == 2 then
+              local nodePurchasedValue = importStream:ExtractValue(1)
+              local isNodePurchased = nodePurchasedValue == 1
+              if(isNodePurchased) then
+                local isPartiallyRankedValue = importStream:ExtractValue(1)
+                isPartiallyRanked = isPartiallyRankedValue == 1
+                if(isPartiallyRanked) then
+                  partialRanksPurchased = importStream:ExtractValue(bitWidthRanksPurchased)
+                end
+                local isChoiceNodeValue = importStream:ExtractValue(1)
+                isChoiceNode = isChoiceNodeValue == 1
+                if(isChoiceNode) then
+                  choiceNodeSelection = importStream:ExtractValue(2) + 1
+                end
+              end
+            else
               local isPartiallyRankedValue = importStream:ExtractValue(1)
               isPartiallyRanked = isPartiallyRankedValue == 1
               if(isPartiallyRanked) then
@@ -201,43 +214,85 @@ if LibSpec then
                 choiceNodeSelection = importStream:ExtractValue(2) + 1
               end
             end
-          else
-            local isPartiallyRankedValue = importStream:ExtractValue(1)
-            isPartiallyRanked = isPartiallyRankedValue == 1
-            if(isPartiallyRanked) then
-              partialRanksPurchased = importStream:ExtractValue(bitWidthRanksPurchased)
-            end
-            local isChoiceNodeValue = importStream:ExtractValue(1)
-            isChoiceNode = isChoiceNodeValue == 1
-            if(isChoiceNode) then
-              choiceNodeSelection = importStream:ExtractValue(2) + 1
-            end
           end
-        end
 
-        local talentData = talentsData and talentsData[nodeId] and talentsData[nodeId][choiceNodeSelection]
-        if talentData then
-          if isPartiallyRanked then
-            results[talentData[1]] = partialRanksPurchased
-          else
-            results[talentData[1]] = nodeSelectedValue == 1 and talentData[5] or 0
+          local talentData = talentsData and talentsData[nodeId] and talentsData[nodeId][choiceNodeSelection]
+          if talentData then
+            if isPartiallyRanked then
+              results[talentData[1]] = partialRanksPurchased
+            else
+              results[talentData[1]] = nodeSelectedValue == 1 and talentData[5] or 0
+            end
+          end
+          if isChoiceNode then
+            local unselectedChoiceNodeIdx = choiceNodeSelection == 1 and 2 or 1
+            local unselectedTalentData = talentsData and talentsData[nodeId] and talentsData[nodeId][unselectedChoiceNodeIdx]
+            if unselectedTalentData then
+              results[unselectedTalentData[1]] = 0
+            end
           end
         end
-        if isChoiceNode then
-          local unselectedChoiceNodeIdx = choiceNodeSelection == 1 and 2 or 1
-          local unselectedTalentData = talentsData and talentsData[nodeId] and talentsData[nodeId][unselectedChoiceNodeIdx]
-          if unselectedTalentData then
-            results[unselectedTalentData[1]] = 0
-          end
+        nameToTalents[unitName] = results
+      end
+
+      if nameToTalents[unitName] then
+        return nameToTalents[unitName][talentId]
+      end
+    end
+  elseif WeakAuras.IsMists() then
+    local function cacheData(unitName)
+      -- Parse Talent String once and store which talents are selected
+      if not nameToSpecMap[unitName] then return nil end
+      local JSONtalentString = nameToSpecMap[unitName][4]
+      if not JSONtalentString then return nil end
+
+      local talentsAndGlyphs = C_EncodingUtil.DeserializeJSON(JSONtalentString)
+      if not talentsAndGlyphs then return nil end
+
+      local results = {
+        talents = {},
+        glyphs = {}
+      }
+
+      for _, id in ipairs(talentsAndGlyphs.talents) do
+        if id > 0 then
+          results.talents[id] = true
+        end
+      end
+      for _, id in ipairs(talentsAndGlyphs.glyphs) do
+        if id > 0 then
+          results.glyphs[id] = true
         end
       end
       nameToTalents[unitName] = results
     end
 
-    if nameToTalents[unitName] then
-      return nameToTalents[unitName][talentId]
+    function Private.LibSpecWrapper.CheckTalentForUnit(unit, talentId)
+      if UnitIsUnit(unit, "player") then
+        return select(4, WeakAuras.GetTalentById(talentId))
+      end
+      local unitName = GetUnitName(unit, true)
+      if not nameToTalents[unitName] then
+        cacheData(unitName)
+      end
+
+      if nameToTalents[unitName] then
+        return nameToTalents[unitName].talents[talentId]
+      end
+    end
+
+    function Private.LibSpecWrapper.CheckGlyphForUnit(unit, glyphId)
+      local unitName = GetUnitName(unit, true)
+      if not nameToTalents[unitName] then
+        cacheData(unitName)
+      end
+
+      if nameToTalents[unitName] then
+        return nameToTalents[unitName].glyphs[glyphId]
+      end
     end
   end
+
 else -- non retail
   function Private.LibSpecWrapper.Register(f)
 
@@ -260,3 +315,9 @@ end
 WeakAuras.SpecForUnit = Private.LibSpecWrapper.SpecForUnit
 WeakAuras.SpecRolePositionForUnit = Private.LibSpecWrapper.SpecRolePositionForUnit
 WeakAuras.CheckTalentForUnit = Private.LibSpecWrapper.CheckTalentForUnit
+
+if Private.LibSpecWrapper.CheckGlyphForUnit then
+  WeakAuras.CheckGlyphForUnit = Private.LibSpecWrapper.CheckGlyphForUnit
+else
+  WeakAuras.CheckGlyphForUnit = function() return nil end
+end

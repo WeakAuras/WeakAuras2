@@ -503,6 +503,7 @@ globals = {
 	"C_CreatureInfo.GetRaceInfo",
 	"C_CurrencyInfo",
 	"C_CVar",
+	"C_EncodingUtil",
 	"C_EncounterJournal",
 	"C_Engraving",
 	"C_EquipmentSet",
