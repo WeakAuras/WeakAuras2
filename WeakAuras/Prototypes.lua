@@ -1167,16 +1167,12 @@ end
 
 if WeakAuras.IsMists() then
   function WeakAuras.IsGlyphActive(glyphID)
-    glyphID = tostring(glyphID)
     local numSlots = NUM_GLYPH_SLOTS or 6 -- fallback if not defined
     for slot = 1, numSlots do
-        local enabled = GetGlyphSocketInfo(slot)
-        if enabled then
-          local link = GetGlyphLink(slot)
-          if link and link:match("|Hglyph:%d+:(%d+)|h") == glyphID then
-              return true
-          end
-        end
+      local enabled, _, _, _ , _, id = GetGlyphSocketInfo(slot)
+      if enabled and id == glyphID then
+        return true
+      end
     end
     return false
   end
