@@ -80,13 +80,16 @@ function OptionsPrivate.GetInformationOptions(data)
       return sameURL and commonURL or ""
     end,
     set = function(info, v)
+      OptionsPrivate.Private.TimeMachine:StartTransaction()
       for child in traverseForUrl(data) do
-        child.url = v
-        WeakAuras.Add(child)
-        OptionsPrivate.ClearOptions(child.id)
+        OptionsPrivate.Private.TimeMachine:Append({
+          uid = child.uid,
+          actionType = "set",
+          path = {"url"},
+          payload = v
+        })
       end
-
-      WeakAuras.ClearAndUpdateOptions(data.id)
+      OptionsPrivate.Private.TimeMachine:Commit()
     end,
     desc = sameURL and "" or desc,
     order = order
