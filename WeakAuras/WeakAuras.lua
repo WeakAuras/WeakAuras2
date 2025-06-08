@@ -6497,11 +6497,11 @@ function Private.SortOrderForValues(values)
     local aValue = values[aKey]
     local bValue = values[bKey]
 
-    if aValue:sub(1, #WeakAuras.newFeatureString) == WeakAuras.newFeatureString then
+    if type(aValue) == "string" and aValue:sub(1, #WeakAuras.newFeatureString) == WeakAuras.newFeatureString then
       aValue = aValue:sub(#WeakAuras.newFeatureString + 1)
     end
 
-    if bValue:sub(1, #WeakAuras.newFeatureString) == WeakAuras.newFeatureString then
+    if type(bValue) == "string" and bValue:sub(1, #WeakAuras.newFeatureString) == WeakAuras.newFeatureString then
       bValue = bValue:sub(#WeakAuras.newFeatureString + 1)
     end
 
