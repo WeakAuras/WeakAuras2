@@ -40,6 +40,7 @@ DefaultOptions.lua
 # Core files
 SubscribableObject.lua
 Features.lua
+TimeMachine.lua
 Types_Retail.lua
 Types.lua
 Prototypes.lua
