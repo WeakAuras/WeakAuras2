@@ -6428,6 +6428,10 @@ function WeakAuras.IsAuraLoaded(id)
   return Private.loaded[id]
 end
 
+function WeakAuras.IsAuraStandby(id)
+  return Private.loaded[id] == false
+end
+
 function Private.ExecEnv.CreateSpellChecker()
   local matcher = {
     names = {},
