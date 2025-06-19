@@ -208,38 +208,40 @@ function Private.GetTalentData(specId)
 			if node and node.ID ~= 0 then
 				for idx, talentId in ipairs(node.entryIDs) do
 					local entryInfo = C_Traits.GetEntryInfo(configId, talentId)
-					local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
-					if definitionInfo.spellID then
-						local spellName = Private.ExecEnv.GetSpellName(definitionInfo.spellID)
-						if spellName then
-							local talentData = {
-								talentId,
-								definitionInfo.spellID,
-								{ node.posX, node.posY, idx, #node.entryIDs },
-								{}, -- Target if it exists,
-								node.maxRanks
-							}
-							specDataByNodeId[node.ID] = specDataByNodeId[node.ID] or {}
-							specDataByNodeId[node.ID][idx] = talentData
-							for _, edge in pairs(node.visibleEdges) do
-								local targetNodeId = edge.targetNode
-								local targetNode = C_Traits.GetNodeInfo(configId, targetNodeId)
-								local targetNodeTalentId1 = targetNode.entryIDs[1]
-								if targetNodeTalentId1 then
-									-- add as target 1st talentId
-									-- because we don't save nodes
-									tinsert(talentData[4], targetNodeTalentId1)
+					if entryInfo.definitionID then
+						local definitionInfo = C_Traits.GetDefinitionInfo(entryInfo.definitionID)
+						if definitionInfo.spellID then
+							local spellName = Private.ExecEnv.GetSpellName(definitionInfo.spellID)
+							if spellName then
+								local talentData = {
+									talentId,
+									definitionInfo.spellID,
+									{ node.posX, node.posY, idx, #node.entryIDs },
+									{}, -- Target if it exists,
+									node.maxRanks
+								}
+								specDataByNodeId[node.ID] = specDataByNodeId[node.ID] or {}
+								specDataByNodeId[node.ID][idx] = talentData
+								for _, edge in pairs(node.visibleEdges) do
+									local targetNodeId = edge.targetNode
+									local targetNode = C_Traits.GetNodeInfo(configId, targetNodeId)
+									local targetNodeTalentId1 = targetNode.entryIDs[1]
+									if targetNodeTalentId1 then
+										-- add as target 1st talentId
+										-- because we don't save nodes
+										tinsert(talentData[4], targetNodeTalentId1)
+									end
 								end
-							end
-							local subTreeIndex = node.subTreeID and tIndexOf(subTreeIDs, node.subTreeID) or nil
-							if subTreeIndex then
-								local subTreeInfo = C_Traits.GetSubTreeInfo(configId, node.subTreeID)
-								talentData[3][1] = node.posX - subTreeInfo.posX
-								talentData[3][2] = node.posY - subTreeInfo.posY
-								talentData[3][5] = subTreeIndex
-								tinsert(heroData, talentData)
-							elseif not node.subTreeID then
-								tinsert(specData, talentData)
+								local subTreeIndex = node.subTreeID and tIndexOf(subTreeIDs, node.subTreeID) or nil
+								if subTreeIndex then
+									local subTreeInfo = C_Traits.GetSubTreeInfo(configId, node.subTreeID)
+									talentData[3][1] = node.posX - subTreeInfo.posX
+									talentData[3][2] = node.posY - subTreeInfo.posY
+									talentData[3][5] = subTreeIndex
+									tinsert(heroData, talentData)
+								elseif not node.subTreeID then
+									tinsert(specData, talentData)
+								end
 							end
 						end
 					end
