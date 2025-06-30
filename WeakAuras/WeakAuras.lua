@@ -4924,6 +4924,9 @@ Private.callbacks:RegisterCallback("Rename", function(_, uid, oldId, newId)
 end)
 
 function Private.SendDelayedWatchedTriggers()
+  if WeakAuras.IsOptionsOpen() then
+    return
+  end
   for id in pairs(delayed_watched_trigger) do
     local watched = delayed_watched_trigger[id]
     -- Since the observers are themselves observable, we set the list of observers to
