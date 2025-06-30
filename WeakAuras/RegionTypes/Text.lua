@@ -269,12 +269,20 @@ local function modify(parent, region, data)
 
     local Update
     if customTextFunc and self.displayText and Private.ContainsCustomPlaceHolder(self.displayText) then
-      Update = function()
+      Update = function(self)
         self.values.custom = Private.RunCustomTextFunc(self, customTextFunc)
         UpdateText()
+        self:UpdateProgress()
       end
     else
-      Update = UpdateText or function() end
+      if UpdateText then
+        Update = function()
+          UpdateText()
+          self:UpdateProgress()
+        end
+      else
+        Update = function() self:UpdateProgress() end
+      end
     end
 
     local FrameTick
