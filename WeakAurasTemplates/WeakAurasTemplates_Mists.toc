@@ -15,6 +15,6 @@
 locales.xml
 
 TriggerTemplates.lua
-TriggerTemplatesDataCataclysm.lua
+TriggerTemplatesDataMists.lua
 
 AceGUI-Widgets\AceGUIContainer-WeakAurasTemplateGroup.lua
