@@ -223,21 +223,115 @@ templates.class.HUNTER = {
     [1] = {
       title = L["Buffs"],
       args = {
-
+        { spell = 3045, type = "buff", unit = "player" }, -- Rapid Fire
+        { spell = 5118, type = "buff", unit = "player" }, -- Aspect of the Cheetah
+        { spell = 5384, type = "buff", unit = "player" }, -- Feign Death
+        { spell = 13159, type = "buff", unit = "player" }, -- Aspect of the Pack
+        { spell = 13165, type = "buff", unit = "player" }, -- Aspect of the Hawk
+        { spell = 19263, type = "buff", unit = "player" }, -- Deterrence
+        { spell = 19506, type = "buff", unit = "player" }, -- Trueshot Aura
+        { spell = 19615, type = "buff", unit = "player" }, -- Frenzy
+        { spell = 34471, type = "buff", unit = "player" }, -- The Beast Within
+        { spell = 34720, type = "buff", unit = "player", talent = 12 }, -- Thrill of the Hunt
+        { spell = 45444, type = "buff", unit = "player" }, -- Bonfire's Blessing
+        { spell = 51755, type = "buff", unit = "player" }, -- Camouflage
+        { spell = 53257, type = "buff", unit = "player" }, -- Cobra Strikes
+        { spell = 54216, type = "buff", unit = "player" }, -- Master's Call
+        { spell = 54227, type = "buff", unit = "player" }, -- Rapid Recuperation
+        { spell = 56453, type = "buff", unit = "player" }, -- Lock and Load
+        { spell = 77769, type = "buff", unit = "player" }, -- Trap Launcher
+        { spell = 82692, type = "buff", unit = "player" }, -- Focus Fire
+        { spell = 82726, type = "buff", unit = "player", talent = 10 }, -- Fervor
+        { spell = 109260, type = "buff", unit = "player", talent = 8 }, -- Aspect of the Iron Hawk
+        { spell = 118694, type = "buff", unit = "player", talent = 9 }, -- Spirit Bond
+        { spell = 118922, type = "buff", unit = "player", talent = 1 }, -- Posthaste
+        { spell = 126483, type = "buff", unit = "player" }, -- Windswept Pages
+        { spell = 136, type = "buff", unit = "target" }, -- Mend Pet
+        { spell = 136, type = "buff", unit = "pet" }, -- Mend Pet
+        { spell = 19574, type = "buff", unit = "pet" }, -- Bestial Wrath
+        { spell = 61684, type = "buff", unit = "pet" }, -- Dash
+        { spell = 62305, type = "buff", unit = "pet" }, -- Master's Call
+        { spell = 82728, type = "buff", unit = "pet", talent = 10 }, -- Fervor
+        { spell = 118455, type = "buff", unit = "pet" }, -- Beast Cleave
       },
       icon = 132242
     },
     [2] = {
       title = L["Debuffs"],
       args = {
-
+        { spell = 1130, type = "debuff", unit = "target" }, -- Hunter's Mark
+        { spell = 2649, type = "debuff", unit = "target" }, -- Growl
+        { spell = 3674, type = "debuff", unit = "target" }, -- Black Arrow
+        { spell = 4167, type = "debuff", unit = "target" }, -- Web
+        { spell = 5116, type = "debuff", unit = "target" }, -- Concussive Shot
+        { spell = 19386, type = "debuff", unit = "target", talent = 5 }, -- Wyvern Sting
+        { spell = 19503, type = "debuff", unit = "target" }, -- Scatter Shot
+        { spell = 20736, type = "debuff", unit = "target" }, -- Distracting Shot
+        { spell = 24394, type = "debuff", unit = "target", talent = 6 }, -- Intimidation
+        { spell = 34490, type = "debuff", unit = "target" }, -- Silencing Shot
+        { spell = 35101, type = "debuff", unit = "target" }, -- Concussive Barrage
+        { spell = 53301, type = "debuff", unit = "target" }, -- Explosive Shot
+        { spell = 82654, type = "debuff", unit = "target" }, -- Widow Venom
+        { spell = 117405, type = "debuff", unit = "target", talent = 4 }, -- Binding Shot
+        { spell = 118253, type = "debuff", unit = "target" }, -- Serpent Sting
+        { spell = 120699, type = "debuff", unit = "target", talent = 15 }, -- Lynx Rush
+        { spell = 120761, type = "debuff", unit = "target", talent = 16 }, -- Glaive Toss
+        { spell = 131894, type = "debuff", unit = "target", talent = 13 }, -- A Murder of Crows
       },
       icon = 135860
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-
+        { spell = 75, type = "ability", requiresTarget = true, usable = true }, -- Auto Shot
+        { spell = 781, type = "ability" }, -- Disengage
+        { spell = 1543, type = "ability" }, -- Flare
+        { spell = 1978, type = "ability", requiresTarget = true, usable = true }, -- Serpent Sting
+        { spell = 2643, type = "ability", overlayGlow = true, requiresTarget = true, usable = true }, -- Multi-Shot
+        { spell = 2649, type = "ability", debuff = true }, -- Growl
+        { spell = 3044, type = "ability", overlayGlow = true, requiresTarget = true, usable = true }, -- Arcane Shot
+        { spell = 3045, type = "ability", buff = true }, -- Rapid Fire
+        { spell = 3674, type = "ability", debuff = true }, -- Black Arrow
+        { spell = 4167, type = "ability", debuff = true }, -- Web
+        { spell = 5116, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Concussive Shot
+        { spell = 5118, type = "ability", buff = true }, -- Aspect of the Cheetah
+        { spell = 5384, type = "ability", buff = true }, -- Feign Death
+        { spell = 6991, type = "ability", requiresTarget = true, usable = true }, -- Feed Pet
+        { spell = 13159, type = "ability", buff = true }, -- Aspect of the Pack
+        { spell = 13165, type = "ability", buff = true }, -- Aspect of the Hawk
+        { spell = 17253, type = "ability" }, -- Bite
+        { spell = 19263, type = "ability", charges = true, buff = true }, -- Deterrence
+        { spell = 19386, type = "ability", debuff = true, talent = 5 }, -- Wyvern Sting
+        { spell = 19503, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Scatter Shot
+        { spell = 19574, type = "ability", buff = true, unit = 'pet' }, -- Bestial Wrath
+        { spell = 19577, type = "ability", talent = 6 }, -- Intimidation
+        { spell = 19801, type = "ability", requiresTarget = true, usable = true }, -- Tranquilizing Shot
+        { spell = 20736, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Distracting Shot
+        { spell = 34026, type = "ability" }, -- Kill Command
+        { spell = 34490, type = "ability", debuff = true }, -- Silencing Shot
+        { spell = 51753, type = "ability" }, -- Camouflage
+        { spell = 53209, type = "ability" }, -- Chimera Shot
+        { spell = 53271, type = "ability" }, -- Master's Call
+        { spell = 53301, type = "ability", debuff = true, overlayGlow = true }, -- Explosive Shot
+        { spell = 53351, type = "ability", overlayGlow = true, requiresTarget = true, usable = true }, -- Kill Shot
+        { spell = 61684, type = "ability", buff = true, unit = 'pet' }, -- Dash
+        { spell = 77767, type = "ability", requiresTarget = true, usable = true }, -- Cobra Shot
+        { spell = 77769, type = "ability", buff = true }, -- Trap Launcher
+        { spell = 82654, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Widow Venom
+        { spell = 82692, type = "ability", charges = true, buff = true, overlayGlow = true, usable = true }, -- Focus Fire
+        { spell = 82726, type = "ability", buff = true, talent = 10 }, -- Fervor
+        { spell = 109248, type = "ability", usable = true, talent = 4 }, -- Binding Shot
+        { spell = 109259, type = "ability", talent = 17 }, -- Powershot
+        { spell = 109260, type = "ability", buff = true, talent = 8 }, -- Aspect of the Iron Hawk
+        { spell = 109304, type = "ability", talent = 7 }, -- Exhilaration
+        { spell = 117050, type = "ability", requiresTarget = true, usable = true, talent = 16 }, -- Glaive Toss
+        { spell = 120360, type = "ability", usable = true, talent = 18 }, -- Barrage
+        { spell = 120679, type = "ability", talent = 11 }, -- Dire Beast
+        { spell = 120697, type = "ability", talent = 15 }, -- Lynx Rush
+        { spell = 121818, type = "ability", requiresTarget = true }, -- Stampede
+        { spell = 131894, type = "ability", debuff = true, requiresTarget = true, talent = 13 }, -- A Murder of Crows
+        { spell = 147362, type = "ability", requiresTarget = true, usable = true }, -- Counter Shot
+        { spell = 148467, type = "ability", charges = true, buff = true }, -- Deterrence
       },
       icon = 135130
     },
