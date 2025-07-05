@@ -1670,6 +1670,7 @@ elseif WeakAuras.IsMists() then
   Private.power_types[17] = nil
   Private.power_types[18] = nil
   Private.power_types[28] = SHADOW_ORBS
+  Private.power_types[99] = L["Stagger"]
 end
 
 if WeakAuras.IsCataOrMists() then
