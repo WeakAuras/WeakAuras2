@@ -3393,11 +3393,11 @@ function BuffTrigger.GetAdditionalProperties(data, triggernum)
   props["spellId"] = { display = L["Spell ID"] }
   props["debuffClass"] = { display =  L["Debuff Class"] }
   props["debuffClassIcon"] = { display = L["Debuff Class Icon"] }
-  props["unitCaster"] = { display = L["Caster Unit"], formatter = "Unit" }
+  props["unitCaster"] = { display = L["Caster Unit"], formatter = "Unit", formatterArgs = { color = "class" } }
   props["casterName"] = { display = L["Caster Name"], formatter = "string" }
 
   if trigger.unit ~= "multi" then
-    props["unit"] = { display = L["Unit"], formatter = "Unit" }
+    props["unit"] = { display = L["Unit"], formatter = "Unit", formatterArgs = { color = "class" } }
     props["unitName"] = { display = L["Unit Name"] }
   end
 
@@ -3548,7 +3548,8 @@ function BuffTrigger.GetTriggerConditions(data, triggernum)
   result["unitCaster"] = {
     display = L["Caster Unit"],
     type = "unit",
-    formatter = "Unit"
+    formatter = "Unit",
+    formatterArgs = { color = "class" }
   }
 
   result["nameCaster"] = {
