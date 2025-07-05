@@ -5427,7 +5427,7 @@ function Private.DefaultFormatterFor(stateMetaData, trigger, sym)
   local formatter
   local args = {}
   if sym == "p" or sym == "t" then
-    return "timed"
+    return "timed", { time_dynamic_threshold = 3 }
   end
 
   trigger = tonumber(trigger)
