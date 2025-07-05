@@ -3835,6 +3835,12 @@ Private.event_prototypes = {
             local total = math.max(1, UnitPowerMax(unit, powerType))
           ]])
         end
+      elseif WeakAuras.IsMists() and powerType == 99 then
+        table.insert(ret, ([[
+          local power = UnitStagger(unit) or 0
+          local scaleStagger = %s
+          local total = math.max(1, UnitHealthMax(unit) * scaleStagger)
+        ]]):format(trigger.use_scaleStagger and trigger.scaleStagger or 1))
       elseif WeakAuras.IsMists() and (powerType == 14 or powerType == 7) then
         table.insert(ret, [[
           local displayMod = UnitPowerDisplayMod(powerType)

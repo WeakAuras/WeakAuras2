@@ -3917,35 +3917,49 @@ function Private.WatchStagger()
   if not staggerWatchFrame then
     staggerWatchFrame = CreateFrame("FRAME")
     Private.frames["WeakAuras Stagger Frame"] = staggerWatchFrame
-    staggerWatchFrame:RegisterUnitEvent("UNIT_ABSORB_AMOUNT_CHANGED", "player")
-    staggerWatchFrame:SetScript("OnEvent", function()
-      Private.StartProfileSystem("stagger")
-      local stagger = UnitStagger("player")
-      if stagger > 0 then
-        if not staggerWatchFrame.onupdate then
-          staggerWatchFrame.onupdate = true
-          staggerWatchFrame:SetScript("OnUpdate", function()
-            Private.StartProfileSystem("stagger")
-            local stagger = UnitStagger("player")
-            if stagger ~= staggerWatchFrame.stagger then
-              staggerWatchFrame.stagger = stagger
-              Private.ScanEvents("WA_UNIT_STAGGER_CHANGED", "player", stagger)
-            end
-            if stagger == 0 then
-              staggerWatchFrame:SetScript("OnUpdate", nil)
-              staggerWatchFrame.onupdate = nil
-            end
-            Private.StopProfileSystem("stagger")
-          end)
-        end
-      end
 
-      if stagger ~= staggerWatchFrame.stagger then
-        staggerWatchFrame.stagger = stagger
-        Private.ScanEvents("WA_UNIT_STAGGER_CHANGED", "player", stagger)
-      end
-      Private.StopProfileSystem("stagger")
-    end)
+    if WeakAuras.IsRetail() then
+      staggerWatchFrame:RegisterUnitEvent("UNIT_ABSORB_AMOUNT_CHANGED", "player")
+      staggerWatchFrame:SetScript("OnEvent", function()
+        Private.StartProfileSystem("stagger")
+        local stagger = UnitStagger("player")
+        if stagger > 0 then
+          if not staggerWatchFrame.onupdate then
+            staggerWatchFrame.onupdate = true
+            staggerWatchFrame:SetScript("OnUpdate", function()
+              Private.StartProfileSystem("stagger")
+              local stagger = UnitStagger("player")
+              if stagger ~= staggerWatchFrame.stagger then
+                staggerWatchFrame.stagger = stagger
+                Private.ScanEvents("WA_UNIT_STAGGER_CHANGED", "player", stagger)
+              end
+              if stagger == 0 then
+                staggerWatchFrame:SetScript("OnUpdate", nil)
+                staggerWatchFrame.onupdate = nil
+              end
+              Private.StopProfileSystem("stagger")
+            end)
+          end
+        end
+
+        if stagger ~= staggerWatchFrame.stagger then
+          staggerWatchFrame.stagger = stagger
+          Private.ScanEvents("WA_UNIT_STAGGER_CHANGED", "player", stagger)
+        end
+        Private.StopProfileSystem("stagger")
+      end)
+    elseif WeakAuras.IsMists() then
+      -- On Mists Stagger has no events
+      staggerWatchFrame:SetScript("OnUpdate", function()
+        Private.StartProfileSystem("stagger")
+        local stagger = UnitStagger("player")
+        if stagger ~= staggerWatchFrame.stagger then
+          staggerWatchFrame.stagger = stagger
+          Private.ScanEvents("WA_UNIT_STAGGER_CHANGED", "player", stagger)
+        end
+        Private.StopProfileSystem("stagger")
+      end)
+    end
   end
 end
 
