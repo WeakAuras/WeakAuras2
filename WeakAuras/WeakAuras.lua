@@ -5412,8 +5412,11 @@ function Private.SetDefaultFormatters(data, input, keyPrefix, metaData)
       local trigger, sym = string.match(symbol, "(.+)%.(.+)")
       sym = sym or symbol
 
-      local formatter = Private.DefaultFormatterFor(metaData, trigger, sym)
+      local formatter, args = Private.DefaultFormatterFor(metaData, trigger, sym)
       data[keyPrefix .. symbol .. "_format"] = formatter
+      for arg, value in pairs(args or {}) do
+        data[keyPrefix .. symbol .. "_" .. arg] = value
+      end
     end
     seenSymbols[symbol] = true
   end
@@ -5422,7 +5425,7 @@ end
 
 function Private.DefaultFormatterFor(stateMetaData, trigger, sym)
   local formatter
-
+  local args = {}
   if sym == "p" or sym == "t" then
     return "timed"
   end
@@ -5432,6 +5435,11 @@ function Private.DefaultFormatterFor(stateMetaData, trigger, sym)
     local metaData = stateMetaData[trigger] and stateMetaData[trigger][sym]
     if metaData then
       formatter = metaData.formatter
+      if metaData.formatterArgs then
+        for arg, value in pairs(metaData.formatterArgs) do
+          args[arg] = value
+        end
+      end
     end
   else
     for index, perTriggerData in pairs(stateMetaData) do
@@ -5447,7 +5455,7 @@ function Private.DefaultFormatterFor(stateMetaData, trigger, sym)
     end
   end
 
-  return formatter or "none"
+  return formatter or "none", args
 end
 
 function Private.CreateFormatters(input, getter, withoutColor, data)
