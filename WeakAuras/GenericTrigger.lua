@@ -4684,10 +4684,10 @@ function GenericTrigger.GetAdditionalProperties(data, triggernum)
         local formatter = v.formatter
         local formatterArgs = v.formatterArgs or {}
         if not formatter then
-          if type == "unit" then
+          if v.type == "unit" then
             formatter = "Unit"
             formatterArgs = { color = "class" }
-          elseif type == "string" then
+          elseif v.type == "string" then
             formatter = "string"
           end
         end
