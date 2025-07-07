@@ -612,82 +612,9 @@ function OptionsPrivate.CreateFrame()
   -- Toolbar
   local toolbarContainer = CreateFrame("Frame", nil, buttonsContainer.frame)
   toolbarContainer:SetParent(buttonsContainer.frame)
-  toolbarContainer:Hide()
-
-  local importButton = AceGUI:Create("WeakAurasToolbarButton")
-  importButton:SetText(L["Import"])
-  importButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\importsmall")
-  importButton:SetCallback("OnClick", OptionsPrivate.ImportFromString)
-  importButton.frame:SetParent(toolbarContainer)
-  importButton.frame:Show()
-  importButton:SetPoint("RIGHT", filterInput, "RIGHT")
-  importButton:SetPoint("BOTTOM", frame, "TOP", 0, -55)
-
-  local newButton = AceGUI:Create("WeakAurasToolbarButton")
-  newButton:SetText(L["New Aura"])
-  newButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\newaura")
-  newButton.frame:SetParent(toolbarContainer)
-  newButton.frame:Show()
-  newButton:SetPoint("RIGHT", importButton.frame, "LEFT", -10, 0)
-  frame.toolbarContainer = toolbarContainer
-
-  newButton:SetCallback("OnClick", function()
-    frame:NewAura()
-  end)
-
-  local magnetButton = AceGUI:Create("WeakAurasToolbarButton")
-  magnetButton:SetText(L["Magnetically Align"])
-  magnetButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\magnetic")
-  magnetButton:SetCallback("OnClick", function(self)
-    if WeakAurasOptionsSaved.magnetAlign then
-      magnetButton:SetStrongHighlight(false)
-      magnetButton:UnlockHighlight()
-      WeakAurasOptionsSaved.magnetAlign = false
-    else
-      magnetButton:SetStrongHighlight(true)
-      magnetButton:LockHighlight()
-      WeakAurasOptionsSaved.magnetAlign = true
-    end
-  end)
-
-  if WeakAurasOptionsSaved.magnetAlign then
-    magnetButton:LockHighlight()
-  end
-  magnetButton.frame:SetParent(toolbarContainer)
-  magnetButton.frame:Show()
-  magnetButton:SetPoint("BOTTOMRIGHT", frame, "TOPRIGHT", -17, -55)
-
-  local lockButton = AceGUI:Create("WeakAurasToolbarButton")
-  lockButton:SetText(L["Lock Positions"])
-  lockButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\lockPosition")
-  lockButton:SetCallback("OnClick", function(self)
-    if WeakAurasOptionsSaved.lockPositions then
-      lockButton:SetStrongHighlight(false)
-      lockButton:UnlockHighlight()
-      WeakAurasOptionsSaved.lockPositions = false
-    else
-      lockButton:SetStrongHighlight(true)
-      lockButton:LockHighlight()
-      WeakAurasOptionsSaved.lockPositions = true
-    end
-  end)
-  if WeakAurasOptionsSaved.lockPositions then
-    lockButton:LockHighlight()
-  end
-  lockButton.frame:SetParent(toolbarContainer)
-  lockButton.frame:Show()
-  lockButton:SetPoint("RIGHT", magnetButton.frame, "LEFT", -10, 0)
-
-  local loadProgress = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-  loadProgress:SetPoint("TOP", buttonsContainer.frame, "TOP", 0, -4)
-  loadProgress:SetText(L["Creating options: "].."0/0")
-  frame.loadProgress = loadProgress
-
-  frame.SetLoadProgressVisible = function(self, visible)
-    self.loadProgessVisible = visible
-    self:UpdateFrameVisible()
-  end
-
+  -- toolbarContainer:Hide()
+  toolbarContainer:SetPoint("TOPLEFT", buttonsContainer.frame, "TOPLEFT", 30, 30)
+  toolbarContainer:SetPoint("BOTTOMRIGHT", buttonsContainer.frame, "TOPRIGHT", 0, 0)
 
   local undo = AceGUI:Create("WeakAurasToolbarButton")
   undo:SetText(L["Undo"])
@@ -698,7 +625,8 @@ function OptionsPrivate.CreateFrame()
   end)
   undo.frame:SetParent(toolbarContainer)
   undo.frame:SetShown(OptionsPrivate.Private.Features:Enabled("undo"))
-  undo:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 55, -55)
+  undo:SetPoint("LEFT")
+  undo.frame:SetCollapsesLayout(true)
 
   local redo = AceGUI:Create("WeakAurasToolbarButton")
   redo:SetText(L["Redo"])
@@ -711,7 +639,7 @@ function OptionsPrivate.CreateFrame()
   redo.frame:SetShown(OptionsPrivate.Private.Features:Enabled("undo"))
   redo:SetPoint("LEFT", undo.frame, "RIGHT", 10, 0)
   redo.frame:SetEnabled(OptionsPrivate.Private.TimeMachine:DescribeNext() ~= nil)
-
+  redo.frame:SetCollapsesLayout(true)
   OptionsPrivate.Private.Features:Subscribe("undo",
     function()
       undo.frame:Show()
@@ -740,6 +668,80 @@ function OptionsPrivate.CreateFrame()
   end
   tmControls:Step()
   OptionsPrivate.Private.TimeMachine.sub:AddSubscriber("Step", tmControls)
+
+  local newButton = AceGUI:Create("WeakAurasToolbarButton")
+  newButton:SetText(L["New Aura"])
+  newButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\newaura")
+  newButton.frame:SetParent(toolbarContainer)
+  newButton.frame:Show()
+  newButton:SetPoint("LEFT", redo.frame, "RIGHT", 10, 0)
+  frame.toolbarContainer = toolbarContainer
+
+  newButton:SetCallback("OnClick", function()
+    frame:NewAura()
+  end)
+
+  local importButton = AceGUI:Create("WeakAurasToolbarButton")
+  importButton:SetText(L["Import"])
+  importButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\importsmall")
+  importButton:SetCallback("OnClick", OptionsPrivate.ImportFromString)
+  importButton.frame:SetParent(toolbarContainer)
+  importButton.frame:Show()
+  importButton:SetPoint("LEFT", newButton.frame, "RIGHT", 10, 0)
+
+  local lockButton = AceGUI:Create("WeakAurasToolbarButton")
+  lockButton:SetText(L["Lock Positions"])
+  lockButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\lockPosition")
+  lockButton:SetCallback("OnClick", function(self)
+    if WeakAurasOptionsSaved.lockPositions then
+      lockButton:SetStrongHighlight(false)
+      lockButton:UnlockHighlight()
+      WeakAurasOptionsSaved.lockPositions = false
+    else
+      lockButton:SetStrongHighlight(true)
+      lockButton:LockHighlight()
+      WeakAurasOptionsSaved.lockPositions = true
+    end
+  end)
+  if WeakAurasOptionsSaved.lockPositions then
+    lockButton:LockHighlight()
+  end
+  lockButton.frame:SetParent(toolbarContainer)
+  lockButton.frame:Show()
+  lockButton:SetPoint("LEFT", importButton.frame, "RIGHT", 10, 0)
+
+  local magnetButton = AceGUI:Create("WeakAurasToolbarButton")
+  magnetButton:SetText(L["Magnetically Align"])
+  magnetButton:SetTexture("Interface\\AddOns\\WeakAuras\\Media\\Textures\\magnetic")
+  magnetButton:SetCallback("OnClick", function(self)
+    if WeakAurasOptionsSaved.magnetAlign then
+      magnetButton:SetStrongHighlight(false)
+      magnetButton:UnlockHighlight()
+      WeakAurasOptionsSaved.magnetAlign = false
+    else
+      magnetButton:SetStrongHighlight(true)
+      magnetButton:LockHighlight()
+      WeakAurasOptionsSaved.magnetAlign = true
+    end
+  end)
+
+  if WeakAurasOptionsSaved.magnetAlign then
+    magnetButton:LockHighlight()
+  end
+  magnetButton.frame:SetParent(toolbarContainer)
+  magnetButton.frame:Show()
+  magnetButton:SetPoint("LEFT", lockButton.frame, "RIGHT", 10, 0)
+
+
+  local loadProgress = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+  loadProgress:SetPoint("TOP", buttonsContainer.frame, "TOP", 0, -4)
+  loadProgress:SetText(L["Creating options: "].."0/0")
+  frame.loadProgress = loadProgress
+
+  frame.SetLoadProgressVisible = function(self, visible)
+    self.loadProgessVisible = visible
+    self:UpdateFrameVisible()
+  end
 
   local buttonsScroll = AceGUI:Create("ScrollFrame")
   buttonsScroll:SetLayout("ButtonsScrollLayout")
