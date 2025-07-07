@@ -2197,7 +2197,7 @@ function WeakAuras.Delete(data)
 end
 
 function WeakAuras.Rename(data, newid)
-  Private.TimeMachine:DestroyTheUniverse(data.id)
+  -- since we Add() later in this function, we need to destroy the universe first
   local oldid = data.id
   if(data.parent) then
     local parentData = db.displays[data.parent];
@@ -3313,7 +3313,7 @@ function Private.Add(data, simpleChange)
 end
 
 function WeakAuras.Add(data, simpleChange)
-  Private.TimeMachine:DestroyTheUniverse()
+  Private.TimeMachine:DestroyTheUniverse(data.id)
   Private.Add(data, simpleChange)
 end
 

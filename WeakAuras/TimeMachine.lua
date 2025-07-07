@@ -332,7 +332,7 @@ function TimeMachine:Apply(records, delayedEffects)
           error("No effect for effectType: " .. effect)
         end
         if not delayedEffects or not effect.idempotent then
-          if not record.effects or record.effects[effect] ~= false then
+          if not record.effects or record.suppressAutoEffects then
             effect.func(record.uid, data)
           end
         else
@@ -372,7 +372,7 @@ function TimeMachine:DestroyTheUniverse(id)
     WeakAuras.prettyPrint("If you're reading this, a time machine transaction was destroyed, but there was one in progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
     self:Reject()
   end
-  Private.DebugPrint(string.format("Destroying the universe where %i change(s) happpened, because an unexpected change happened to ", #self.changes, id))
+  Private.DebugPrint(string.format("Destroying the universe where %i change(s) happpened, because an unexpected change happened to %q.", #self.changes, id))
   self.changes = {}
   self.index = 0
   if self.sub:HasSubscribers("Step") then

@@ -241,7 +241,8 @@
     "ToggleDropDownMenu",
     "GetPrimaryTalentTree",
     "GetTalentTabInfo",
-    "MenuUtil"
+    "MenuUtil",
+        "RunNextFrame"
   ],
   "runtime.version": "Lua 5.1",
   "workspace.ignoreDir": [

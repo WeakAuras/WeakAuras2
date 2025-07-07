@@ -51,7 +51,7 @@ local methods = {
 		self:SetText()
 		self.hTex:SetVertexColor(1, 1, 1, 0.1)
 		self:SetSmallFont(false)
-    self.text:SetTextColor(GameFontNormal:GetTextColor())
+		self.text:SetTextColor(GameFontNormal:GetTextColor())
 	end,
 
 	-- ["OnRelease"] = nil,
@@ -76,11 +76,11 @@ local methods = {
       self.text:SetTextColor(0.5, 0.5, 0.5)
 		else
 			self.frame:Enable()
-      if self.smallFont then
-        self.text:SetTextColor(GameFontNormalSmall:GetTextColor())
-      else
-        self.text:SetTextColor(GameFontNormal:GetTextColor())
-      end
+			if self.smallFont then
+				self.text:SetTextColor(GameFontNormalSmall:GetTextColor())
+			else
+				self.text:SetTextColor(GameFontNormal:GetTextColor())
+			end
 		end
 	end,
 

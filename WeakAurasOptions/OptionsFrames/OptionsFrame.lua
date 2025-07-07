@@ -717,9 +717,7 @@ function OptionsPrivate.CreateFrame()
   OptionsPrivate.Private.Features:Subscribe("undo",
     function()
       undo.frame:Show()
-      undo.frame:Refresh()
       redo.frame:Show()
-      redo.frame:Refresh()
     end,
     function()
       undo.frame:Hide()
@@ -733,10 +731,14 @@ function OptionsPrivate.CreateFrame()
   }
 
   function tmControls:Step()
-      RunNextFrame(function()
-        self.undo:SetDisabled(OptionsPrivate.Private.TimeMachine:DescribePrevious() == nil)
-        self.redo:SetDisabled(OptionsPrivate.Private.TimeMachine:DescribeNext() == nil)
-      end)
+    -- slightly annoying workaround
+    -- Buttons behave in a strange way if they are disabled inside of the OnClick handler
+    -- where the pushed texture refuses to vanish until the button is enabled & user clicks it again
+    -- so, just disable the button after next frame draw, so it's imperceptible to the user but we're not in the OnClick handler
+    C_Timer.After(0, function()
+      self.undo:SetDisabled(OptionsPrivate.Private.TimeMachine:DescribePrevious() == nil)
+      self.redo:SetDisabled(OptionsPrivate.Private.TimeMachine:DescribeNext() == nil)
+    end)
   end
   tmControls:Step()
   OptionsPrivate.Private.TimeMachine.sub:AddSubscriber("Step", tmControls)
