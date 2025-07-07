@@ -98,7 +98,9 @@ TimeMachine:RegisterEffect("add", function(uid, data)
 end, true)
 
 TimeMachine:RegisterEffect("options_cu", function(uid, data)
-  WeakAuras.ClearAndUpdateOptions(data.id, true)
+  if WeakAuras.IsOptionsOpen() then
+    WeakAuras.ClearAndUpdateOptions(data.id, true)
+  end
 end, true)
 
 ---@type fun(self: self, actionType: actionType, action: Actor<any>, inverter: Inverter<any, any>, autoEffects?: effectType[])
