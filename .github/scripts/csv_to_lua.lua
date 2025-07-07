@@ -9,7 +9,7 @@ local releases = {
   },
   wow_classic = {
     input = "wow_classic.csv",
-    output = "ModelPathsCata.lua",
+    output = "ModelPathsMists.lua",
     generate = true,
   },
   wow = {

@@ -15,4 +15,4 @@
 ## Dependencies: WeakAuras, WeakAurasOptions
 ## AllowLoadGameType: mists
 
-ModelPathsCata.lua
+ModelPathsMists.lua
