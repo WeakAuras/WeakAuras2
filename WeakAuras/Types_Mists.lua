@@ -78,7 +78,8 @@ end
 
 Private.glyph_types = {}
 Private.glyph_sorted = {}
-do
+
+local function FillGlyphData()
   local sorted = {}
   for i = 1, GetNumGlyphs() do
     local name, glyphType, isKnown, icon, glyphID = GetGlyphInfo(i)
@@ -96,6 +97,13 @@ do
     table.insert(Private.glyph_sorted, glyph.glyphID)
   end
 end
+
+local initGlyphFrame = CreateFrame("Frame")
+initGlyphFrame:RegisterEvent("PLAYER_ENTERING_WORLD")
+initGlyphFrame:SetScript("OnEvent", function()
+  initGlyphFrame:UnregisterEvent("PLAYER_ENTERING_WORLD")
+  FillGlyphData()
+end)
 
 Private.talentInfo = {
   ["HUNTER"] = {
