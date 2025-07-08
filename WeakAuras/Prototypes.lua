@@ -7011,8 +7011,8 @@ Private.event_prototypes = {
                 end
               ]]):format(tier, column))
             elseif WeakAuras.IsMists() then
-              local tier = index and ceil(index / MAX_NUM_TALENTS)
-              local column = index and ((index - 1) % MAX_NUM_TALENTS + 1)
+              local tier = index and math.ceil(index / 3)
+              local column = index and (index - 1) % 3 + 1
               table.insert(ret, ([[
                 tier = %s
                 column = %s
