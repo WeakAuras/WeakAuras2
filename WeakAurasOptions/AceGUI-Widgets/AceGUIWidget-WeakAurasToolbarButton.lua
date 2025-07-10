@@ -3,7 +3,7 @@ if not WeakAuras.IsLibsOK() then return end
 ToolbarButton Widget, based on AceGUI Button
 Graphical Button.
 -------------------------------------------------------------------------------]]
-local Type, Version = "WeakAurasToolbarButton", 6
+local Type, Version = "WeakAurasToolbarButton", 7
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -51,6 +51,7 @@ local methods = {
 		self:SetText()
 		self.hTex:SetVertexColor(1, 1, 1, 0.1)
 		self:SetSmallFont(false)
+		self.text:SetTextColor(GameFontNormal:GetTextColor())
 	end,
 
 	-- ["OnRelease"] = nil,
@@ -72,8 +73,14 @@ local methods = {
 		self.disabled = disabled
 		if disabled then
 			self.frame:Disable()
+      self.text:SetTextColor(0.5, 0.5, 0.5)
 		else
 			self.frame:Enable()
+			if self.smallFont then
+				self.text:SetTextColor(GameFontNormalSmall:GetTextColor())
+			else
+				self.text:SetTextColor(GameFontNormal:GetTextColor())
+			end
 		end
 	end,
 
@@ -94,6 +101,7 @@ local methods = {
 		end
 	end,
 	["SetSmallFont"] = function(self, small)
+    self.smallFont = small
 		if small then
 			self.text:SetFontObject("GameFontNormalSmall")
 		else

@@ -152,6 +152,7 @@ globals = {
 	"ChatFontNormal",
 	"GameFontNormal",
 	"GameFontNormalHuge",
+	"GameFontNormalSmall",
 	"GameFontNormalSmall2",
 	"GameFontHighlight",
 	"GameFontHighlightLarge",
