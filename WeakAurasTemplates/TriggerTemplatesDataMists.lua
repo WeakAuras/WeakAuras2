@@ -425,21 +425,105 @@ templates.class.SHAMAN = {
     [1] = {
       title = L["Buffs"],
       args = {
-
+        { spell = 324, type = "buff", unit = "player" }, -- Lightning Shield
+        { spell = 546, type = "buff", unit = "player" }, -- Water Walking
+        { spell = 974, type = "buff", unit = "player" }, -- Earth Shield
+        { spell = 2645, type = "buff", unit = "player" }, -- Ghost Wolf
+        { spell = 2825, type = "buff", unit = "player" }, -- Bloodlust
+        { spell = 8178, type = "buff", unit = "player" }, -- Grounding Totem Effect
+        { spell = 16166, type = "buff", unit = "player", talent = 10 }, -- Elemental Mastery
+        { spell = 16188, type = "buff", unit = "player", talent = 11 }, -- Ancestral Swiftness
+        { spell = 16246, type = "buff", unit = "player" }, -- Clearcasting
+        { spell = 16278, type = "buff", unit = "player" }, -- Flurry
+        { spell = 30809, type = "buff", unit = "player" }, -- Unleashed Rage
+        { spell = 30823, type = "buff", unit = "player" }, -- Shamanistic Rage
+        { spell = 51470, type = "buff", unit = "player" }, -- Elemental Oath
+        { spell = 51945, type = "buff", unit = "player" }, -- Earthliving
+        { spell = 52127, type = "buff", unit = "player" }, -- Water Shield
+        { spell = 53390, type = "buff", unit = "player" }, -- Tidal Waves
+        { spell = 53817, type = "buff", unit = "player" }, -- Maelstrom Weapon
+        { spell = 58875, type = "buff", unit = "player" }, -- Spirit Walk
+        { spell = 61295, type = "buff", unit = "player" }, -- Riptide
+        { spell = 73681, type = "buff", unit = "player" }, -- Unleash Wind
+        { spell = 73683, type = "buff", unit = "player" }, -- Unleash Flame
+        { spell = 73920, type = "buff", unit = "player" }, -- Healing Rain
+        { spell = 77747, type = "buff", unit = "player" }, -- Burning Wrath
+        { spell = 77762, type = "buff", unit = "player" }, -- Lava Surge
+        { spell = 79206, type = "buff", unit = "player" }, -- Spiritwalker's Grace
+        { spell = 98007, type = "buff", unit = "player" }, -- Spirit Link Totem
+        { spell = 105284, type = "buff", unit = "player" }, -- Ancestral Vigor
+        { spell = 108271, type = "buff", unit = "player", talent = 3 }, -- Astral Shift
+        { spell = 108281, type = "buff", unit = "player", talent = 14 }, -- Ancestral Guidance
+        { spell = 114050, type = "buff", unit = "player" }, -- Ascendance
+        { spell = 114893, type = "buff", unit = "player" }, -- Stone Bulwark
+        { spell = 114896, type = "buff", unit = "player", talent = 6 }, -- Windwalk Totem
+        { spell = 116956, type = "buff", unit = "player" }, -- Grace of Air
+        { spell = 118474, type = "buff", unit = "player", talent = 16 }, -- Unleashed Fury
+        { spell = 118522, type = "buff", unit = "player", talent = 18 }, -- Elemental Blast
+        { spell = 120676, type = "buff", unit = "player" }, -- Stormlash Totem
+        { spell = 126266, type = "buff", unit = "player" }, -- Enlightenment
+        { spell = 131526, type = "buff", unit = "player" }, -- Cyclonic Inspiration
       },
       icon = 135863
     },
     [2] = {
       title = L["Debuffs"],
       args = {
-
+        { spell = 3600, type = "debuff", unit = "target" }, -- Earthbind
+        { spell = 8034, type = "debuff", unit = "target" }, -- Frostbrand Attack
+        { spell = 8050, type = "debuff", unit = "target" }, -- Flame Shock
+        { spell = 8056, type = "debuff", unit = "target" }, -- Frost Shock
+        { spell = 17364, type = "debuff", unit = "target" }, -- Stormstrike
+        { spell = 51490, type = "debuff", unit = "target" }, -- Thunderstorm
+        { spell = 61882, type = "debuff", unit = "target" }, -- Earthquake
+        { spell = 63685, type = "debuff", unit = "target" }, -- Freeze
+        { spell = 64695, type = "debuff", unit = "target" }, -- Earthgrab
+        { spell = 73682, type = "debuff", unit = "target" }, -- Unleash Frost
+        { spell = 73684, type = "debuff", unit = "target" }, -- Unleash Earth
+        { spell = 115798, type = "debuff", unit = "target" }, -- Weakened Blows
+        { spell = 118470, type = "debuff", unit = "target", talent = 16 }, -- Unleashed Fury
+        { spell = 118905, type = "debuff", unit = "target" }, -- Static Charge
       },
       icon = 135813
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-
+        { spell = 370, type = "ability", requiresTarget = true }, -- Purge
+        { spell = 403, type = "ability", requiresTarget = true }, -- Lightning Bolt
+        { spell = 421, type = "ability", requiresTarget = true }, -- Chain Lightning
+        { spell = 556, type = "ability", usable = true }, -- Astral Recall
+        { spell = 1535, type = "ability" }, -- Fire Nova
+        { spell = 2825, type = "ability", buff = true }, -- Bloodlust
+        { spell = 8042, type = "ability", overlayGlow = true, requiresTarget = true }, -- Earth Shock
+        { spell = 8050, type = "ability", debuff = true, requiresTarget = true }, -- Flame Shock
+        { spell = 8056, type = "ability", debuff = true, requiresTarget = true }, -- Frost Shock
+        { spell = 16166, type = "ability", buff = true, talent = 10 }, -- Elemental Mastery
+        { spell = 16188, type = "ability", buff = true, talent = 11 }, -- Ancestral Swiftness
+        { spell = 17364, type = "ability", debuff = true, requiresTarget = true }, -- Stormstrike
+        { spell = 30823, type = "ability", buff = true }, -- Shamanistic Rage
+        { spell = 51490, type = "ability", debuff = true }, -- Thunderstorm
+        { spell = 51505, type = "ability", overlayGlow = true, requiresTarget = true }, -- Lava Burst
+        { spell = 51514, type = "ability", debuff = true }, -- Hex
+        { spell = 51533, type = "ability" }, -- Feral Spirit
+        { spell = 51886, type = "ability" }, -- Cleanse Spirit
+        { spell = 57994, type = "ability", requiresTarget = true }, -- Wind Shear
+        { spell = 58875, type = "ability", buff = true }, -- Spirit Walk
+        { spell = 60103, type = "ability", requiresTarget = true, usable = true }, -- Lava Lash
+        { spell = 61295, type = "ability", buff = true }, -- Riptide
+        { spell = 61882, type = "ability", debuff = true }, -- Earthquake
+        { spell = 73680, type = "ability", requiresTarget = true }, -- Unleash Elements
+        { spell = 73899, type = "ability", requiresTarget = true }, -- Primal Strike
+        { spell = 73920, type = "ability", buff = true }, -- Healing Rain
+        { spell = 77130, type = "ability" }, -- Purify Spirit
+        { spell = 79206, type = "ability", buff = true }, -- Spiritwalker's Grace
+        { spell = 107079, type = "ability", requiresTarget = true }, -- Quaking Palm
+        { spell = 108271, type = "ability", buff = true, talent = 3 }, -- Astral Shift
+        { spell = 108281, type = "ability", buff = true, talent = 14 }, -- Ancestral Guidance
+        { spell = 108285, type = "ability", talent = 7 }, -- Call of the Elements
+        { spell = 108287, type = "ability", talent = 9 }, -- Totemic Projection
+        { spell = 114049, type = "ability", buff = true }, -- Ascendance
+        { spell = 117014, type = "ability", talent = 18, requiresTarget = true }, -- Elemental Blast
       },
       icon = 135963
     },
