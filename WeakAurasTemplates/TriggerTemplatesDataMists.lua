@@ -353,21 +353,116 @@ templates.class.ROGUE = {
     [1] = {
       title = L["Buffs"],
       args = {
-
+        { spell = 1784, type = "buff", unit = "player" }, -- Stealth
+        { spell = 1966, type = "buff", unit = "player" }, -- Feint
+        { spell = 2823, type = "buff", unit = "player" }, -- Deadly Poison
+        { spell = 2983, type = "buff", unit = "player" }, -- Sprint
+        { spell = 3408, type = "buff", unit = "player" }, -- Crippling Poison
+        { spell = 5171, type = "buff", unit = "player" }, -- Slice and Dice
+        { spell = 5277, type = "buff", unit = "player" }, -- Evasion
+        { spell = 5761, type = "buff", unit = "player" }, -- Mind-numbing Poison
+        { spell = 8679, type = "buff", unit = "player" }, -- Wound Poison
+        { spell = 11327, type = "buff", unit = "player" }, -- Vanish
+        { spell = 13750, type = "buff", unit = "player" }, -- Adrenaline Rush
+        { spell = 13877, type = "buff", unit = "player" }, -- Blade Flurry
+        { spell = 31224, type = "buff", unit = "player" }, -- Cloak of Shadows
+        { spell = 31665, type = "buff", unit = "player" }, -- Master of Subtlety
+        { spell = 32645, type = "buff", unit = "player" }, -- Envenom
+        { spell = 36554, type = "buff", unit = "player", talent = 11 }, -- Shadowstep
+        { spell = 51690, type = "buff", unit = "player" }, -- Killing Spree
+        { spell = 51713, type = "buff", unit = "player" }, -- Shadow Dance
+        { spell = 73651, type = "buff", unit = "player" }, -- Recuperate
+        { spell = 74001, type = "buff", unit = "player", talent = 6 }, -- Combat Readiness
+        { spell = 84745, type = "buff", unit = "player" }, -- Shallow Insight
+        { spell = 108211, type = "buff", unit = "player", talent = 8 }, -- Leeching Poison
+        { spell = 108215, type = "buff", unit = "player", talent = 14 }, -- Paralytic Poison
+        { spell = 112942, type = "buff", unit = "player", talent = 3 }, -- Shadow Focus
+        { spell = 113742, type = "buff", unit = "player" }, -- Swiftblade's Cunning
+        { spell = 114018, type = "buff", unit = "player" }, -- Shroud of Concealment
+        { spell = 114842, type = "buff", unit = "player" }, -- Shadow Walk
+        { spell = 115189, type = "buff", unit = "player", talent = 18 }, -- Anticipation
+        { spell = 115192, type = "buff", unit = "player", talent = 2 }, -- Subterfuge
+        { spell = 121153, type = "buff", unit = "player" }, -- Blindside
+        { spell = 121471, type = "buff", unit = "player" }, -- Shadow Blades
+        { spell = 137573, type = "buff", unit = "player", talent = 12 }, -- Burst of Speed
+        { spell = 1246774, type = "buff", unit = "player" }, -- Bandit's Guile
       },
       icon = 132290
     },
     [2] = {
       title = L["Debuffs"],
       args = {
-
+        { spell = 408, type = "debuff", unit = "target" }, -- Kidney Shot
+        { spell = 703, type = "debuff", unit = "target" }, -- Garrote
+        { spell = 1330, type = "debuff", unit = "target" }, -- Garrote - Silence
+        { spell = 1776, type = "debuff", unit = "target" }, -- Gouge
+        { spell = 1833, type = "debuff", unit = "target" }, -- Cheap Shot
+        { spell = 1943, type = "debuff", unit = "target" }, -- Rupture
+        { spell = 2094, type = "debuff", unit = "target" }, -- Blind
+        { spell = 2818, type = "debuff", unit = "target" }, -- Deadly Poison
+        { spell = 3409, type = "debuff", unit = "target" }, -- Crippling Poison
+        { spell = 5760, type = "debuff", unit = "target" }, -- Mind-numbing Poison
+        { spell = 8680, type = "debuff", unit = "target" }, -- Wound Poison
+        { spell = 79140, type = "debuff", unit = "target" }, -- Vendetta
+        { spell = 84617, type = "debuff", unit = "target" }, -- Revealing Strike
+        { spell = 88611, type = "debuff", unit = "target" }, -- Smoke Bomb
+        { spell = 89775, type = "debuff", unit = "target" }, -- Hemorrhage
+        { spell = 91021, type = "debuff", unit = "target" }, -- Find Weakness
+        { spell = 93068, type = "debuff", unit = "target" }, -- Master Poisoner
+        { spell = 112947, type = "debuff", unit = "target", talent = 5 }, -- Nerve Strike
+        { spell = 112961, type = "debuff", unit = "target", talent = 8 }, -- Leeching Poison
+        { spell = 113746, type = "debuff", unit = "target" }, -- Weakened Armor
+        { spell = 113952, type = "debuff", unit = "target", talent = 14 }, -- Paralytic Poison
+        { spell = 113953, type = "debuff", unit = "target" }, -- Paralysis
+        { spell = 115197, type = "debuff", unit = "target" }, -- Partial Paralysis
+        { spell = 122233, type = "debuff", unit = "target" }, -- Crimson Tempest
+        { spell = 137619, type = "debuff", unit = "target", talent = 17 }, -- Marked for Death
       },
       icon = 132302
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-
+        { spell = 53, type = "ability", requiresTarget = true }, -- Backstab
+        { spell = 408, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Kidney Shot
+        { spell = 703, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Garrote
+        { spell = 921, type = "ability", requiresTarget = true, usable = true }, -- Pick Pocket
+        { spell = 1725, type = "ability" }, -- Distract
+        { spell = 1752, type = "ability", requiresTarget = true, usable = true }, -- Sinister Strike
+        { spell = 1766, type = "ability", requiresTarget = true }, -- Kick
+        { spell = 1776, type = "ability", debuff = true, requiresTarget = true }, -- Gouge
+        { spell = 1784, type = "ability", buff = true, usable = true }, -- Stealth
+        { spell = 1833, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Cheap Shot
+        { spell = 1856, type = "ability" }, -- Vanish
+        { spell = 1943, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Rupture
+        { spell = 2094, type = "ability", debuff = true, requiresTarget = true }, -- Blind
+        { spell = 2098, type = "ability", requiresTarget = true, usable = true }, -- Eviscerate
+        { spell = 2983, type = "ability", buff = true, usable = true }, -- Sprint
+        { spell = 5277, type = "ability", buff = true }, -- Evasion
+        { spell = 5938, type = "ability", requiresTarget = true }, -- Shiv
+        { spell = 8647, type = "ability", requiresTarget = true }, -- Expose Armor
+        { spell = 8676, type = "ability", requiresTarget = true, usable = true }, -- Ambush
+        { spell = 13750, type = "ability", buff = true }, -- Adrenaline Rush
+        { spell = 13877, type = "ability", buff = true }, -- Blade Flurry
+        { spell = 14183, type = "ability", requiresTarget = true, usable = true }, -- Premeditation
+        { spell = 14185, type = "ability" }, -- Preparation
+        { spell = 16511, type = "ability", requiresTarget = true }, -- Hemorrhage
+        { spell = 31224, type = "ability", buff = true }, -- Cloak of Shadows
+        { spell = 36554, type = "ability", buff = true, requiresTarget = true, talent = 11 }, -- Shadowstep
+        { spell = 51690, type = "ability", buff = true }, -- Killing Spree
+        { spell = 51713, type = "ability", buff = true }, -- Shadow Dance
+        { spell = 51722, type = "ability", requiresTarget = true }, -- Dismantle
+        { spell = 73981, type = "ability", requiresTarget = true }, -- Redirect
+        { spell = 74001, type = "ability", buff = true, talent = 6 }, -- Combat Readiness
+        { spell = 76577, type = "ability" }, -- Smoke Bomb
+        { spell = 79140, type = "ability", debuff = true }, -- Vendetta
+        { spell = 84617, type = "ability", debuff = true, requiresTarget = true }, -- Revealing Strike
+        { spell = 114018, type = "ability", buff = true, usable = true }, -- Shroud of Concealment
+        { spell = 114842, type = "ability", buff = true, usable = true }, -- Shadow Walk
+        { spell = 115191, type = "ability", buff = true }, -- Stealth
+        { spell = 121471, type = "ability", buff = true }, -- Shadow Blades
+        { spell = 121733, type = "ability", requiresTarget = true }, -- Throw
+        { spell = 137619, type = "ability", debuff = true, requiresTarget = true, talent = 17 }, -- Marked for Death
       },
       icon = 132350
     },
