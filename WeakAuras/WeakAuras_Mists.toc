@@ -39,6 +39,7 @@ DefaultOptions.lua
 # Core files
 SubscribableObject.lua
 Features.lua
+TimeMachine.lua
 Types_Mists.lua
 Types.lua
 Prototypes.lua
