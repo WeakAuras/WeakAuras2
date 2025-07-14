@@ -374,7 +374,9 @@ function TimeMachine:DestroyTheUniverse(id)
     WeakAuras.prettyPrint("If you're reading this, a time machine transaction was destroyed, but there was one in progress. That's not supposed to happen. Please report this to the WeakAuras developers, thanks!")
     self:Reject()
   end
-  Private.DebugPrint(string.format("Destroying the universe where %i change(s) happpened, because an unexpected change happened to %q.", #self.changes, id))
+  if #self.changes > 0 then
+    Private.DebugPrint(string.format("Destroying the universe where %i change(s) happpened, because an unexpected change happened to %q.", #self.changes, id))
+  end
   self.changes = {}
   self.index = 0
   if self.sub:HasSubscribers("Step") then
