@@ -18,7 +18,6 @@ Private.DiscordList = {
   [=[Cherry]=],
   [=[Darian]=],
   [=[Desik]=],
-  [=[DjinnFish]=],
   [=[Dodgen]=],
   [=[exality]=],
   [=[Fatpala]=],
@@ -61,6 +60,7 @@ Private.DiscordList = {
   [=[vozochris]=],
   [=[Wizeowel]=],
   [=[Xepheris]=],
+  [=[Zeus]=],
 }
 Private.DiscordListCJ = {
 }
