@@ -2221,8 +2221,7 @@ local brokenUnitMap = {
 }
 
 local function EventHandler(frame, event, arg1, arg2, ...)
-  Private.StartProfileSystem("bufftrigger2")
-
+  Private.StartProfileSystem("bufftrigger2 - ".. event)
   local deactivatedTriggerInfos = {}
   local unitsToRemove = {}
 
@@ -2361,19 +2360,19 @@ local function EventHandler(frame, event, arg1, arg2, ...)
     matchDataUpToDate[unit] = nil
   end
 
-  Private.StopProfileSystem("bufftrigger2")
+  Private.StopProfileSystem("bufftrigger2 - ".. event)
 end
 
 if WeakAuras.IsCataOrMistsOrRetail() then
   Private.LibSpecWrapper.Register(function(unit)
-    Private.StartProfileSystem("bufftrigger2")
+    Private.StartProfileSystem("bufftrigger2 - LibSpecWrapper")
 
     local deactivatedTriggerInfos = {}
     RecheckActiveForUnitType("group", unit, deactivatedTriggerInfos)
     RecheckActiveForUnitType("group", WeakAuras.unitToPetUnit[unit], deactivatedTriggerInfos)
     DeactivateScanFuncs(deactivatedTriggerInfos)
 
-    Private.StopProfileSystem("bufftrigger2")
+    Private.StopProfileSystem("bufftrigger2 - LibSpecWrapper")
   end)
 end
 
@@ -2502,13 +2501,13 @@ Buff2Frame:SetScript("OnUpdate", function()
   if WeakAuras.IsPaused() then
     return
   end
-  Private.StartProfileSystem("bufftrigger2")
+  Private.StartProfileSystem("bufftrigger2 - OnUpdate")
   if next(matchDataChanged) then
     local time = GetTime()
     UpdateStates(matchDataChanged, time)
     wipe(matchDataChanged)
   end
-  Private.StopProfileSystem("bufftrigger2")
+  Private.StopProfileSystem("bufftrigger2 - OnUpdate")
 end)
 
 local function UnloadAura(scanFuncName, id)
