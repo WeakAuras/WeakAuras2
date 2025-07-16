@@ -905,21 +905,174 @@ templates.class.DRUID = {
     [1] = {
       title = L["Buffs"],
       args = {
-
+        { spell = 768, type = "buff", unit = "player" }, -- Katzengestalt
+        { spell = 774, type = "buff", unit = "player" }, -- Verjüngung
+        { spell = 783, type = "buff", unit = "player" }, -- Reisegestalt
+        { spell = 1126, type = "buff", unit = "player" }, -- Mal der Wildnis
+        { spell = 1850, type = "buff", unit = "player" }, -- Spurt
+        { spell = 5215, type = "buff", unit = "player" }, -- Schleichen
+        { spell = 5217, type = "buff", unit = "player" }, -- Tigerfuror
+        { spell = 5229, type = "buff", unit = "player" }, -- Wutanfall
+        { spell = 5487, type = "buff", unit = "player" }, -- Bärengestalt
+        { spell = 8936, type = "buff", unit = "player" }, -- Nachwachsen
+        { spell = 16689, type = "buff", unit = "player" }, -- Griff der Natur
+        { spell = 16886, type = "buff", unit = "player" }, -- Anmut der Natur
+        { spell = 22812, type = "buff", unit = "player" }, -- Baumrinde
+        { spell = 24858, type = "buff", unit = "player" }, -- Mondkingestalt
+        { spell = 24907, type = "buff", unit = "player" }, -- Aura des Mondkin
+        { spell = 24932, type = "buff", unit = "player" }, -- Rudelführer
+        { spell = 29166, type = "buff", unit = "player" }, -- Anregen
+        { spell = 33763, type = "buff", unit = "player" }, -- Blühendes Leben
+        { spell = 33891, type = "buff", unit = "player" }, -- Inkarnation: Baum des Lebens
+        { spell = 40120, type = "buff", unit = "player" }, -- Schnelle Fluggestalt
+        { spell = 44203, type = "buff", unit = "player" }, -- Gelassenheit
+        { spell = 48438, type = "buff", unit = "player" }, -- Wildwuchs
+        { spell = 48504, type = "buff", unit = "player" }, -- Samenkorn des Lebens
+        { spell = 48505, type = "buff", unit = "player" }, -- Sternenregen
+        { spell = 48518, type = "buff", unit = "player" }, -- Mondfinsternis
+        { spell = 50334, type = "buff", unit = "player" }, -- Berserker
+        { spell = 52610, type = "buff", unit = "player" }, -- Wildes Brüllen
+        { spell = 58984, type = "buff", unit = "player" }, -- Schattenmimik
+        { spell = 61336, type = "buff", unit = "player" }, -- Überlebensinstinkte
+        { spell = 69369, type = "buff", unit = "player" }, -- Schnelligkeit des Raubtiers
+        { spell = 77761, type = "buff", unit = "player" }, -- Anstachelndes Gebrüll
+        { spell = 81192, type = "buff", unit = "player" }, -- Mondregen
+        { spell = 93400, type = "buff", unit = "player" }, -- Sternschnuppen
+        { spell = 100977, type = "buff", unit = "player" }, -- Harmonie
+        { spell = 102342, type = "buff", unit = "player" }, -- Eisenborke
+        { spell = 102351, type = "buff", unit = "player", talent = 6 }, -- Cenarischer Zauberschutz
+        { spell = 102543, type = "buff", unit = "player" }, -- Inkarnation: König des Dschungels
+        { spell = 106922, type = "buff", unit = "player" }, -- Ursocs Macht
+        { spell = 108291, type = "buff", unit = "player", talent = 16 }, -- Herz der Wildnis
+        { spell = 112071, type = "buff", unit = "player" }, -- Himmlische Ausrichtung
+        { spell = 117679, type = "buff", unit = "player", talent = 11 }, -- Inkarnation
+        { spell = 124974, type = "buff", unit = "player", talent = 18 }, -- Wache der Natur
+        { spell = 126266, type = "buff", unit = "player" }, -- Erleuchtung
+        { spell = 127663, type = "buff", unit = "player" }, -- Astrale Vereinigung
+        { spell = 132158, type = "buff", unit = "player" }, -- Schnelligkeit der Natur
+        { spell = 132402, type = "buff", unit = "player" }, -- Wilde Verteidigung
+        { spell = 135286, type = "buff", unit = "player" }, -- Mit Klauen und Zähnen
+        { spell = 135700, type = "buff", unit = "player" }, -- Freizaubern
+        { spell = 137452, type = "buff", unit = "player", talent = 2 }, -- Phasenbestie
+        { spell = 145138, type = "buff", unit = "player" }, -- Astrale Einsicht
       },
       icon = 136097
     },
     [2] = {
       title = L["Debuffs"],
       args = {
-
+        { spell = 99, type = "debuff", unit = "target", talent = 13 }, -- Desorientierendes Gebrüll
+        { spell = 339, type = "debuff", unit = "target" }, -- Wucherwurzeln
+        { spell = 770, type = "debuff", unit = "target" }, -- Feenfeuer
+        { spell = 1079, type = "debuff", unit = "target" }, -- Zerfetzen
+        { spell = 1822, type = "debuff", unit = "target" }, -- Krallenhieb
+        { spell = 5211, type = "debuff", unit = "target", talent = 15 }, -- Mächtiger Hieb
+        { spell = 6795, type = "debuff", unit = "target" }, -- Knurren
+        { spell = 8921, type = "debuff", unit = "target" }, -- Mondfeuer
+        { spell = 9005, type = "debuff", unit = "target" }, -- Anspringen
+        { spell = 9007, type = "debuff", unit = "target" }, -- Anspringblutung
+        { spell = 16914, type = "debuff", unit = "target" }, -- Hurrikan
+        { spell = 22570, type = "debuff", unit = "target" }, -- Zerfleddern
+        { spell = 33745, type = "debuff", unit = "target" }, -- Aufschlitzen
+        { spell = 45334, type = "debuff", unit = "target" }, -- Bewegungsunfähig
+        { spell = 58180, type = "debuff", unit = "target" }, -- Infizierte Wunden
+        { spell = 61391, type = "debuff", unit = "target", talent = 9 }, -- Taifun
+        { spell = 77758, type = "debuff", unit = "target" }, -- Hauen
+        { spell = 81261, type = "debuff", unit = "target" }, -- Sonnenstrahl
+        { spell = 81281, type = "debuff", unit = "target" }, -- Pilzbewuchs
+        { spell = 93402, type = "debuff", unit = "target" }, -- Sonnenfeuer
+        { spell = 102355, type = "debuff", unit = "target", talent = 7 }, -- Feenschwarm
+        { spell = 102359, type = "debuff", unit = "target", talent = 8 }, -- Massenumschlingung
+        { spell = 102795, type = "debuff", unit = "target" }, -- Klammergriff
+        { spell = 106996, type = "debuff", unit = "target" }, -- Astralsturm
+        { spell = 113746, type = "debuff", unit = "target" }, -- Rüstungsschwächung
+        { spell = 113830, type = "debuff", unit = "target" }, -- Spott
+        { spell = 115798, type = "debuff", unit = "target" }, -- Kampfesmüdigkeit
+        { spell = 127797, type = "debuff", unit = "target", talent = 14 }, -- Ursols Vortex
+        { spell = 135601, type = "debuff", unit = "target" }, -- Mit Klauen und Zähnen
       },
       icon = 132114
     },
     [3] = {
       title = L["Cooldowns"],
       args = {
-
+        { spell = 99, type = "ability", debuff = true, talent = 13 }, -- Desorientierendes Gebrüll
+        { spell = 339, type = "ability", debuff = true, overlayGlow = true, requiresTarget = true, usable = true }, -- Wucherwurzeln
+        { spell = 740, type = "ability", usable = true }, -- Gelassenheit
+        { spell = 770, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Feenfeuer
+        { spell = 779, type = "ability" }, -- Prankenhieb
+        { spell = 1079, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Zerfetzen
+        { spell = 1822, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Krallenhieb
+        { spell = 1850, type = "ability", buff = true, usable = true }, -- Spurt
+        { spell = 2782, type = "ability", usable = true }, -- Verderbnis entfernen
+        { spell = 5211, type = "ability", debuff = true, requiresTarget = true, talent = 15 }, -- Mächtiger Hieb
+        { spell = 5215, type = "ability", buff = true, usable = true }, -- Schleichen
+        { spell = 5217, type = "ability", buff = true }, -- Tigerfuror
+        { spell = 5221, type = "ability", requiresTarget = true, usable = true }, -- Schreddern
+        { spell = 5225, type = "ability", usable = true }, -- Humanoide aufspüren
+        { spell = 5229, type = "ability", buff = true }, -- Wutanfall
+        { spell = 6785, type = "ability", requiresTarget = true, usable = true }, -- Verheeren
+        { spell = 6795, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Knurren
+        { spell = 6807, type = "ability", overlayGlow = true, requiresTarget = true, usable = true }, -- Zermalmen
+        { spell = 9005, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Anspringen
+        { spell = 16689, type = "ability", buff = true, usable = true }, -- Griff der Natur
+        { spell = 16979, type = "ability", talent = 3 }, -- Wilde Attacke
+        { spell = 18562, type = "ability", usable = true }, -- Rasche Heilung
+        { spell = 20484, type = "ability", usable = true }, -- Wiedergeburt
+        { spell = 22568, type = "ability", requiresTarget = true, usable = true }, -- Wilder Biss
+        { spell = 22570, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Zerfleddern
+        { spell = 22812, type = "ability", buff = true, usable = true }, -- Baumrinde
+        { spell = 22842, type = "ability", usable = true }, -- Rasende Regeneration
+        { spell = 29166, type = "ability", buff = true, usable = true }, -- Anregen
+        { spell = 33745, type = "ability", debuff = true, requiresTarget = true, usable = true }, -- Aufschlitzen
+        { spell = 33786, type = "ability", requiresTarget = true, usable = true }, -- Wirbelsturm
+        { spell = 33878, type = "ability", overlayGlow = true, requiresTarget = true }, -- Zerfleischen
+        { spell = 33891, type = "ability", buff = true }, -- Inkarnation: Baum des Lebens
+        { spell = 33917, type = "ability", overlayGlow = true, requiresTarget = true, usable = true }, -- Zerfleischen
+        { spell = 48438, type = "ability", buff = true, overlayGlow = true }, -- Wildwuchs
+        { spell = 48505, type = "ability", buff = true, overlayGlow = true, usable = true }, -- Sternenregen
+        { spell = 50334, type = "ability", buff = true }, -- Berserker
+        { spell = 58984, type = "ability", buff = true }, -- Schattenmimik
+        { spell = 61336, type = "ability", buff = true }, -- Überlebensinstinkte
+        { spell = 62606, type = "ability", charges = true, usable = true }, -- Wilde Verteidigung
+        { spell = 77758, type = "ability", debuff = true, requiresTarget = true }, -- Hauen
+        { spell = 77761, type = "ability", buff = true }, -- Anstachelndes Gebrüll
+        { spell = 77764, type = "ability" }, -- Anstachelndes Gebrüll
+        { spell = 78674, type = "ability", overlayGlow = true, usable = true }, -- Sternensog
+        { spell = 78675, type = "ability", usable = true }, -- Sonnenstrahl
+        { spell = 80964, type = "ability", requiresTarget = true }, -- Schädelstoß
+        { spell = 80965, type = "ability", requiresTarget = true }, -- Schädelstoß
+        { spell = 88423, type = "ability" }, -- Heilung der Natur
+        { spell = 88751, type = "ability", usable = true }, -- Wildpilz: Detonieren
+        { spell = 102280, type = "ability", talent = 2 }, -- Phasenbestie
+        { spell = 102342, type = "ability", buff = true }, -- Eisenborke
+        { spell = 102351, type = "ability", buff = true, talent = 6 }, -- Cenarischer Zauberschutz
+        { spell = 102359, type = "ability", debuff = true, usable = true, talent = 8 }, -- Massenumschlingung
+        { spell = 102401, type = "ability", requiresTarget = true, usable = true, talent = 3 }, -- Wilde Attacke
+        { spell = 102543, type = "ability", buff = true }, -- Inkarnation: König des Dschungels
+        { spell = 102547, type = "ability", buff = true }, -- Schleichen
+        { spell = 102791, type = "ability" }, -- Wildpilz: Erblühen
+        { spell = 102793, type = "ability", talent = 14 }, -- Ursols Vortex
+        { spell = 102795, type = "ability", debuff = true, requiresTarget = true }, -- Klammergriff
+        { spell = 106737, type = "ability", charges = true, talent = 12 }, -- Naturgewalt
+        { spell = 106832, type = "ability", requiresTarget = true, usable = true }, -- Hauen
+        { spell = 106839, type = "ability", requiresTarget = true, usable = true }, -- Schädelstoß
+        { spell = 106898, type = "ability", buff = true, usable = true }, -- Anstachelndes Gebrüll
+        { spell = 106922, type = "ability", buff = true }, -- Ursocs Macht
+        { spell = 106951, type = "ability" }, -- Berserker
+        { spell = 106952, type = "ability", usable = true }, -- Berserker
+        { spell = 108238, type = "ability", usable = true, talent = 5 }, -- Erneuerung
+        { spell = 108288, type = "ability", talent = 16 }, -- Herz der Wildnis
+        { spell = 108291, type = "ability", buff = true, talent = 16 }, -- Herz der Wildnis
+        { spell = 108292, type = "ability", buff = true, talent = 16 }, -- Herz der Wildnis
+        { spell = 108294, type = "ability", buff = true, talent = 16 }, -- Herz der Wildnis
+        { spell = 110309, type = "ability", usable = true }, -- Symbiose
+        { spell = 112071, type = "ability", buff = true, usable = true }, -- Himmlische Ausrichtung
+        { spell = 124974, type = "ability", buff = true, talent = 18 }, -- Wache der Natur
+        { spell = 125439, type = "ability" }, -- Haustiere beleben
+        { spell = 132158, type = "ability", buff = true, usable = true }, -- Schnelligkeit der Natur
+        { spell = 132469, type = "ability", talent = 9 }, -- Taifun
+        { spell = 145205, type = "ability", totem = true }, -- Wildpilz
       },
       icon = 132134
     },
