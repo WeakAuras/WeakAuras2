@@ -96,7 +96,8 @@ if LibSpec then
     end
   end
 
-  LibSpec:Register("WeakAuras", LibSpecCallback)
+  local libSpecCallBackTable = {}
+  LibSpec.RegisterGroup(libSpecCallBackTable, LibSpecCallback)
 
   function Private.LibSpecWrapper.Register(f)
     tinsert(subscribers, f)
